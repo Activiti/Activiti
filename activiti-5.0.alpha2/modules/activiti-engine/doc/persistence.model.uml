@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<uml:Package xmi:version="2.1" xmlns:xmi="http://schema.omg.org/spec/XMI/2.1" xmlns:uml="http://www.eclipse.org/uml2/3.0.0/UML" xmi:id="_MlwokBJIEd-gY95cWoSK6g" name="default">
+  <elementImport xmi:id="_MmzKpBJIEd-gY95cWoSK6g">
+    <importedElement xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#Boolean"/>
+  </elementImport>
+  <elementImport xmi:id="_MmzKpRJIEd-gY95cWoSK6g">
+    <importedElement xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#String"/>
+  </elementImport>
+  <elementImport xmi:id="_MmzKphJIEd-gY95cWoSK6g">
+    <importedElement xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#UnlimitedNatural"/>
+  </elementImport>
+  <elementImport xmi:id="_MmzKpxJIEd-gY95cWoSK6g">
+    <importedElement xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#Integer"/>
+  </elementImport>
+  <packagedElement xmi:type="uml:Class" xmi:id="_NuB4MBJIEd-gY95cWoSK6g" name="ExecutionImpl"/>
+  <packagedElement xmi:type="uml:Class" xmi:id="__OwVwBJIEd-gY95cWoSK6g" name="VariableInstance"/>
+  <packagedElement xmi:type="uml:Class" xmi:id="_BSyDABJJEd-gY95cWoSK6g" name="TimerImpl"/>
+  <packagedElement xmi:type="uml:Association" xmi:id="_GoUkUBJJEd-gY95cWoSK6g" memberEnd="_GoUkURJJEd-gY95cWoSK6g _GoUkVBJJEd-gY95cWoSK6g">
+    <ownedEnd xmi:id="_GoUkURJJEd-gY95cWoSK6g" name="src" type="_NuB4MBJIEd-gY95cWoSK6g" association="_GoUkUBJJEd-gY95cWoSK6g">
+      <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_GoUkUxJJEd-gY95cWoSK6g" value="1"/>
+      <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_GoUkUhJJEd-gY95cWoSK6g" value="1"/>
+    </ownedEnd>
+    <ownedEnd xmi:id="_GoUkVBJJEd-gY95cWoSK6g" name="variableInstances" type="__OwVwBJIEd-gY95cWoSK6g" isDerived="true" aggregation="composite" association="_GoUkUBJJEd-gY95cWoSK6g">
+      <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_HBrNYEL6Ed-wuulJoy7zcA" value="*"/>
+      <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_HBrNYUL6Ed-wuulJoy7zcA"/>
+    </ownedEnd>
+  </packagedElement>
+  <packagedElement xmi:type="uml:Association" xmi:id="_YrIssBJNEd-gY95cWoSK6g" memberEnd="_YrR2oBJNEd-gY95cWoSK6g _YrR2oxJNEd-gY95cWoSK6g">
+    <ownedEnd xmi:id="_YrR2oBJNEd-gY95cWoSK6g" name="executions" isStatic="true" type="_NuB4MBJIEd-gY95cWoSK6g" association="_YrIssBJNEd-gY95cWoSK6g">
+      <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_8F9twEL5Ed-wuulJoy7zcA" value="*"/>
+      <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_8F-74EL5Ed-wuulJoy7zcA"/>
+    </ownedEnd>
+    <ownedEnd xmi:id="_YrR2oxJNEd-gY95cWoSK6g" name="parent" type="_NuB4MBJIEd-gY95cWoSK6g" association="_YrIssBJNEd-gY95cWoSK6g">
+      <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_YrR2pRJNEd-gY95cWoSK6g" value="1"/>
+      <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_YrR2pBJNEd-gY95cWoSK6g" value="1"/>
+    </ownedEnd>
+  </packagedElement>
+  <packagedElement xmi:type="uml:Association" xmi:id="_jVHN0EL6Ed-wuulJoy7zcA" memberEnd="_jVIb8EL6Ed-wuulJoy7zcA _jVJDAEL6Ed-wuulJoy7zcA">
+    <ownedEnd xmi:id="_jVIb8EL6Ed-wuulJoy7zcA" name="" type="_NuB4MBJIEd-gY95cWoSK6g" association="_jVHN0EL6Ed-wuulJoy7zcA">
+      <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_jVIb8kL6Ed-wuulJoy7zcA" value="1"/>
+      <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_jVIb8UL6Ed-wuulJoy7zcA" value="1"/>
+    </ownedEnd>
+    <ownedEnd xmi:id="_jVJDAEL6Ed-wuulJoy7zcA" name="processInstance" type="_NuB4MBJIEd-gY95cWoSK6g" association="_jVHN0EL6Ed-wuulJoy7zcA">
+      <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_jVJDAkL6Ed-wuulJoy7zcA" value="1"/>
+      <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_jVJDAUL6Ed-wuulJoy7zcA" value="1"/>
+    </ownedEnd>
+  </packagedElement>
+  <packagedElement xmi:type="uml:Class" xmi:id="_En-8sEL7Ed-wuulJoy7zcA" name="TaskImpl"/>
+</uml:Package>

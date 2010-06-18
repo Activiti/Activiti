@@ -1,0 +1,21 @@
+<html>
+  <body>
+    Public API of the Activiti engine.<br/><br/>
+    Typical usage of the API starts by the creation of a {@link org.activiti.Configuration}
+    (typically based on a configuration file), from which a {@link org.activiti.ProcessEngine} can be obtained.<br/><br/>
+    Through the services obtained from such a {@link org.activiti.ProcessEngine}, BPM and workflow operation 
+    can be executed:<br/><br/>
+    
+    <b>{@link org.activiti.ProcessService}: </b> Allows the creation of {@link org.activiti.Deployment}s and the 
+    starting of and searching on {@link org.activiti.ProcessInstance}s <br/>
+    
+    <b>{@link org.activiti.TaskService}: </b> Exposes operations to manage human (standalone) {@link org.activiti.Task}s, 
+    such as claiming, completing and assigning tasks<br/>
+
+    <b>{@link org.activiti.IdentityService}: </b> Used for managing {@link org.activiti.identity.User}s, 
+    {@link org.activiti.identity.Group}s and the relations between them<br/>
+        
+    <b>{@link org.activiti.ManagementService}: </b> Exposes engine admin and maintenance operations,
+    which have no relation to the runtime exection of business processes<br/>
+  </body>
+</html> 

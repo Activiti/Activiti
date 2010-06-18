@@ -1,0 +1,5 @@
+<webscript>
+  <shortname>Probe Navigation</shortname>
+  <description>The navigation menu for the Probe application</description>
+  <url>/component/navigation</url>
+</webscript>

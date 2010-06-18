@@ -1,0 +1,7 @@
+<webscript>
+  <shortname>Task form</shortname>
+  <description>Returns the task's form</description>
+  <url>/task/{taskId}/form</url>
+  <authentication>user</authentication>
+  <format default="html">argument</format>
+</webscript>

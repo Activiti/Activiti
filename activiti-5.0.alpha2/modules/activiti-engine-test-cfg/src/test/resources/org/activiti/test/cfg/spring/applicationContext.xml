@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+  xmlns:aop="http://www.springframework.org/schema/aop" xmlns:context="http://www.springframework.org/schema/context"
+  xmlns:tx="http://www.springframework.org/schema/tx" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="
+          http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+          http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.5.xsd
+          http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-2.5.xsd
+          http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd">
+
+  <bean id="entityManagerFactory"
+        class="org.springframework.orm.jpa.LocalEntityManagerFactoryBean">
+    <property name="persistenceUnitName" value="activitiPU" />
+  </bean>
+  
+  <!-- 
+    <context:load-time-weaver 
+      weaver-class="org.springframework.instrument.classloading.SimpleLoadTimeWeaver"/> 
+      
+    <tx:annotation-driven transaction-manager="transactionManager"/>
+  -->
+
+  <bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
+    <property name="entityManagerFactory" ref="entityManagerFactory" />
+  </bean>
+  
+  <bean id="processEngine" 
+        class="org.activiti.ProcessEngine"
+        factory-method="createProcessEngine">
+    <constructor-arg value="org/activiti/test/cfg/spring/activiti.cfg.xml" />
+    <property name="entityManagerFactory" ref="entityManagerFactory" />
+  </bean>
+
+  <bean id="userBean" class="org.activiti.test.cfg.spring.UserBean">
+    <property name="processEngine" ref="processEngine" />
+  </bean>
+
+</beans>

@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project name="activiti.distro" default="distro">
+  
+  <property file="${user.home}/.activiti/build.properties" />
+	<property name="mvn.executable" value="mvn" />
+  <property name="activiti.version" value="5.0.alpha2" /> 
+  <property name="target.distro.root" value="target/activiti-${activiti.version}" />
+	<property name="activiti.website" value="../../activiti-website" />
+  
+  <target name="clean">
+  	<delete dir="target" />
+  </target>
+
+  <target name="distro" depends="build.modules, get.libs, build.userguide, build.javadocs">
+    <mkdir dir="${target.distro.root}" />
+    <copy todir="${target.distro.root}">
+      <fileset dir="src" />
+    </copy>
+ 
+    <copy todir="${target.distro.root}/docs/examples/src">
+      <fileset dir="../modules/activiti-engine-examples/src/test/java" />
+      <fileset dir="../modules/activiti-engine-examples/src/test/resources" />
+    </copy>
+  
+    <copy todir="${target.distro.root}/docs/xsd">
+      <fileset dir="../modules/activiti-engine/src/main/resources/org/activiti/impl/bpmn/parser">
+      	<include name="*.xsd" />
+      </fileset>
+    </copy>
+  
+    <mkdir dir="${target.distro.root}/lib" />
+    <copy todir="${target.distro.root}/lib">
+    	<fileset dir="../modules/activiti-engine/target">
+    		<include name="activiti-engine-*.jar"/>
+    	</fileset>
+    </copy>
+  	
+    <mkdir dir="${target.distro.root}/setup/files/webapps/activiti-probe.war" />
+    <unzip dest="${target.distro.root}/setup/files/webapps/activiti-probe.war" 
+           src="../modules/activiti-probe/target/activiti-probe-${activiti.version}.war"/>
+    <mkdir dir="${target.distro.root}/setup/files/webapps/libs" />
+    <move todir="${target.distro.root}/setup/files/webapps/libs/WEB-INF/lib">
+      <fileset dir="${target.distro.root}/setup/files/webapps/activiti-probe.war/WEB-INF/lib" />
+    </move>
+
+    <mkdir dir="${target.distro.root}/setup/files/webapps/activiti-explorer.war" />
+    <unzip dest="${target.distro.root}/setup/files/webapps/activiti-explorer.war" 
+           src="../modules/activiti-explorer/target/activiti-explorer-${activiti.version}.war"/>
+    <delete>
+      <fileset dir="${target.distro.root}/setup/files/webapps/activiti-explorer.war/WEB-INF/lib" />
+    </delete>
+    
+  	<mkdir dir="${target.distro.root}/setup/files/webapps/activiti-rest.war" />
+    <unzip dest="${target.distro.root}/setup/files/webapps/activiti-rest.war" 
+           src="../modules/activiti-rest/target/activiti-rest-${activiti.version}.war"/>
+  	<delete>
+  		<fileset dir="${target.distro.root}/setup/files/webapps/activiti-rest.war/WEB-INF/lib" />
+  	</delete>
+
+    <mkdir dir="${target.distro.root}/setup/files/webapps/activiti-engine-init.war" />
+    <unzip dest="${target.distro.root}/setup/files/webapps/activiti-engine-init.war" 
+           src="../modules/activiti-engine-init/target/activiti-engine-init-${activiti.version}.war"/>
+
+  	<zip destfile="${target.distro.root}.zip">
+  		<fileset dir="${target.distro.root}" />
+  	</zip>
+  </target>
+  
+  <target name="get.libs">
+    <mkdir dir="${target.distro.root}/lib" />
+    <exec executable="${mvn.executable}" dir="../modules/activiti-engine">
+      <arg line="-DoutputDirectory=../../distro/${target.distro.root}/lib dependency:copy-dependencies" />
+    </exec>
+  </target>
+  
+  <target name="build.modules">
+    <exec executable="${mvn.executable}" dir="..">
+      <arg line="-Pdistro clean install" />
+    </exec>
+  </target>
+  
+  <target name="build.userguide" unless="nodocs">
+    <ant antfile="../userguide/build.xml" inheritall="false" />
+    <mkdir dir="${target.distro.root}/docs/userguide" />
+  	<copy todir="${target.distro.root}/docs/userguide">
+  		<fileset dir="../userguide/target/html/en" />
+  	</copy>
+  </target>
+  
+  <target name="build.javadocs" unless="nodocs">
+    <exec executable="${mvn.executable}" dir="../modules/activiti-engine">
+      <arg line="javadoc:javadoc" />
+    </exec>
+    <mkdir dir="${target.distro.root}/docs/javadocs" />
+    <copy todir="${target.distro.root}/docs/javadocs">
+      <fileset dir="../modules/activiti-engine/target/site/apidocs" />
+    </copy>
+  </target>
+	
+	<target name="publish.docs" depends="build.javadocs, build.userguide">
+		<mkdir dir="${activiti.website}/javadocs" />
+    <copy todir="${activiti.website}/javadocs" overwrite="true">
+      <fileset dir="../modules/activiti-engine/target/site/apidocs" />
+    </copy>
+    <mkdir dir="${activiti.website}/userguide" />
+    <copy todir="${activiti.website}/userguide" overwrite="true">
+      <fileset dir="../userguide/target/html/en" />
+    </copy>
+	</target>
+	
+</project>

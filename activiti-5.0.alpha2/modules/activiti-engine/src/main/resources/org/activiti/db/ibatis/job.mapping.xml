@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+<!DOCTYPE mapper
+  PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN"
+  "http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+  
+<mapper namespace="org.activiti.persistence">
+
+  <!-- RESULTMAP -->
+
+  <resultMap id="jobResultMap" type="org.activiti.impl.job.JobImpl">
+    <id property="id" column="ID_" jdbcType="VARCHAR" />
+    <result property="lockOwner" column="LOCK_OWNER_" jdbcType="VARCHAR" />
+    <result property="lockExpirationTime" column="LOCK_EXP_TIME_" jdbcType="TIMESTAMP" />
+    <result property="exclusive" column="EXCLUSIVE_" jdbcType="BOOLEAN" />
+    <result property="exectionId" column="EXECUTION_ID_" jdbcType="VARCHAR" />
+    <result property="processInstanceId" column="PROCESS_INSTANCE_ID_" jdbcType="VARCHAR" />
+    <result property="retries" column="RETRIES_" jdbcType="INTEGER" />
+    <result property="exception" column="EXCEPTION_" jdbcType="VARCHAR" />
+    <result property="dueDate" column="DUEDATE_" jdbcType="TIMESTAMP" />
+    <result property="repeat" column="REPEAT_" jdbcType="VARCHAR" />
+  </resultMap>
+
+  <!-- TODO job inheritence   
+    private Date dueDate = null;
+    private String repeat = null;
+  -->
+  
+  <!-- SELECT -->
+  
+  <select id="selectJob" parameterType="string" resultMap="jobResultMap">
+    select * from ACT_JOB where ID_ = #{id}
+  </select>
+
+  <!-- CLAIM -->
+
+  <!-- INSERT -->
+  
+  <insert id="insertJob" parameterType="org.activiti.impl.job.JobImpl">
+    insert into ACT_JOB (
+            ID_, 
+            LOCK_OWNER_, 
+            LOCK_EXP_TIME_,
+            EXCLUSIVE_,
+            EXECUTION_ID_, P
+            ROCESS_INSTANCE_ID_,
+            RETRIES_, 
+            EXCEPTION_,
+            DUEDATE_,
+            REPEAT_ )
+    values (#{id, jdbcType=VARCHAR},
+            #{lockOwner, jdbcType=VARCHAR},
+            #{lockExpirationTime, jdbcType=TIMESTAMP},
+            #{exclusive, jdbcType=BOOLEAN},
+            #{executionId, jdbcType=VARCHAR},
+            #{processInstanceId, jdbcType=VARCHAR},
+            #{retries, jdbcType=INTEGER},
+            #{exception, jdbcType=VARCHAR},
+            #{dueDate, jdbcType=TIMESTAMP},
+            #{repeat, jdbcType=VARCHAR}
+    )
+  </insert>
+  
+  <!-- UPDATE -->
+  
+  <update id="updateJob" parameterType="org.activiti.impl.job.JobImpl">
+    update ACT_JOB
+    <set>
+       LOCK_EXP_TIME_ = #{claimedUntil, jdbcType=TIMESTAMP},
+       LOCK_OWNER_ = #{claimedBy, jdbcType=VARCHAR},
+       EXCLUSIVE_ = #{exclusive, jdbcType=BOOLEAN},
+       EXECUTION_ID_ = #{executionId, jdbcType=VARCHAR},
+       PROCESS_INSTANCE_ID_ = #{processInstanceId, jdbcType=VARCHAR},
+       RETRIES_ = #{retries, jdbcType=INTEGER},
+       EXCEPTION_ = #{exception, jdbcType=VARCHAR},
+       DUEDATE_ = #{lastException, jdbcType=TIMESTAMP},
+       REPEAT_ = #{lastException, jdbcType=VARCHAR}
+    </set>
+    where ID_= #{id, jdbcType=VARCHAR}
+  </update>
+
+  <!-- DELETE -->
+  
+  <delete id="deleteJob" parameterType="string">
+    delete from ACT_JOB where ID_ = #{id}
+  </delete>
+  
+</mapper>
