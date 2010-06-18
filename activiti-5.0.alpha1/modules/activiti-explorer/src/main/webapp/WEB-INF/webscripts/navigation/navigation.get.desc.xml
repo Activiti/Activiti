@@ -1,0 +1,5 @@
+<webscript>
+  <shortname>Explorer Navigation</shortname>
+  <description>The navigation menu for the Explorer application</description>
+  <url>/component/navigation</url>
+</webscript>

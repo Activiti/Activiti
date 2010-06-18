@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+<!DOCTYPE mapper
+  PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN"
+  "http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+  
+<mapper namespace="org.activiti.persistence">
+  
+  <!-- RESULTMAP -->
+  
+  <resultMap id="executionResultMap" type="org.activiti.impl.execution.ExecutionDbImpl">
+    <id property="id" column="ID_" jdbcType="VARCHAR" />
+    <result property="processDefinitionId" column="PROC_DEF_ID_" jdbcType="VARCHAR" />
+    <result property="activityId" column="ACTIVITY_ID_" jdbcType="VARCHAR" />
+    <result property="isActive" column="IS_ACTIVE_" jdbcType="BOOLEAN" />
+    <result property="isConcurrencyScope" column="IS_CONCURRENCY_SCOPE_" jdbcType="BOOLEAN" />
+    <!-- TODO: relations -->  
+  </resultMap>
+  
+  <!-- SELECT -->
+  
+  <select id="selectExecution" parameterType="string" resultMap="executionResultMap">
+    select * from ACT_EXECUTION where ID_ = #{id}
+  </select>
+  
+  <select id="selectExecutionsForProcessDefinition" parameterType="string" resultMap="executionResultMap">
+    select * from ACT_EXECUTION where PROC_DEF_ID_ = #{processDefinitionId}
+  </select>
+  
+   <select id="dynamicSelectProcessInstance" parameterType="map" resultMap="executionResultMap">
+    select *
+    <include refid="dynamicSelectProcessInstanceSql"/>
+  </select>
+  
+  <select id="dynamicSelectProcessInstanceCount" parameterType="map" resultType="long">
+    select count(*)
+    <include refid="dynamicSelectProcessInstanceSql"/>
+  </select>
+  
+  <sql id="dynamicSelectProcessInstanceSql">
+    from ACT_EXECUTION E
+    <if test="processDefinitionKey != null">
+      inner join ACT_PROCESSDEFINITION P on E.PROC_DEF_ID_ = P.ID_
+    </if>
+    <where>
+      E.PARENT_ID_ is null
+      <if test="processDefinitionKey != null">
+        and P.KEY_ = #{processDefinitionKey}
+      </if>
+    </where>
+  </sql>
+  
+  <!-- INSERT -->
+  
+  <insert id="insertExecution" parameterType="org.activiti.impl.execution.ExecutionDbImpl">
+    insert into ACT_EXECUTION (ID_, PROC_DEF_ID_, ACTIVITY_ID_, IS_ACTIVE_, IS_CONCURRENCY_SCOPE_)
+    values (
+      #{id ,jdbcType=VARCHAR},
+      #{processDefinitionId ,jdbcType=VARCHAR},
+      #{activityId ,jdbcType=VARCHAR},
+      #{isActive ,jdbcType=BOOLEAN},
+      #{isConcurrencyScope ,jdbcType=BOOLEAN},
+    )
+  </insert>
+  
+  <!-- UPDATE -->
+  
+  <update id="updateExecution" parameterType="org.activiti.impl.execution.ExecutionDbImpl">
+    update ACT_EXECUTION set
+      PROC_DEF_ID_ = #{processDefinitionId, jdbcType=VARCHAR},
+      ACTIVITY_ID_ = #{activityId, jdbcType=VARCHAR},
+      IS_ACTIVE_ = #{isActive, jdbcType=VARCHAR},
+      IS_CONCURRENCY_SCOPE_ = #{isConcurrencyScope, jdbcType=VARCHAR}
+    where ID_ = #{id}
+  </update>
+  
+  <!-- DELETE -->
+  
+  <delete id="deleteExecution" parameterType="string">
+    delete from ACT_EXECUTION where ID_ = #{id}
+  </delete>
+ 
+</mapper>

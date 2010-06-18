@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema targetNamespace="http://www.omg.com/di/1.0.0" xmlns:dd="http://www.omg.com/dd/1.0.0" xmlns:di="http://www.omg.com/di/1.0.0" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+
+  <xsd:import namespace="http://www.omg.com/dd/1.0.0" schemaLocation="DiagramDefinition.xsd"/>
+  
+  <xsd:element name="view" type="di:View"/>
+  <xsd:element name="diagram" type="di:Diagram" substitutionGroup="di:view"/>
+  <xsd:element name="node" type="di:Node" substitutionGroup="di:view"/>
+  <xsd:element name="connector" type="di:Connector" substitutionGroup="di:view"/>
+  <xsd:element name="style" type="di:Style"/>
+  <xsd:element name="bendpoint" type="di:Bendpoint"/>
+  
+  <xsd:complexType abstract="true" name="View">
+    <xsd:sequence>
+      <xsd:element maxOccurs="unbounded" minOccurs="0" ref="di:style"/>
+      <xsd:element maxOccurs="unbounded" minOccurs="0" name="child" type="di:Node" form="qualified"/>
+    </xsd:sequence>
+    <xsd:attribute name="id" type="xsd:NCName" use="required"/>
+    <xsd:attribute name="context" type="xsd:anyURI"/>
+    <xsd:attribute name="definition" use="required">
+      <xsd:simpleType>
+        <xsd:list itemType="xsd:QName"/>
+      </xsd:simpleType>
+    </xsd:attribute>
+    <xsd:attribute name="targetConnector">
+      <xsd:simpleType>
+        <xsd:list itemType="xsd:anyURI"/>
+      </xsd:simpleType>
+    </xsd:attribute>
+    <xsd:attribute name="sourceConnector">
+      <xsd:simpleType>
+        <xsd:list itemType="xsd:anyURI"/>
+      </xsd:simpleType>
+    </xsd:attribute>
+  </xsd:complexType>
+  
+  <xsd:complexType name="Diagram">
+    <xsd:complexContent>
+      <xsd:extension base="di:View">
+        <xsd:sequence>
+          <xsd:element maxOccurs="unbounded" minOccurs="0" ref="di:connector"/>
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+  
+  <xsd:complexType name="Node">
+    <xsd:complexContent>
+      <xsd:extension base="di:View"/>
+    </xsd:complexContent>
+  </xsd:complexType>
+  
+  <xsd:complexType name="Connector">
+    <xsd:complexContent>
+      <xsd:extension base="di:View">
+        <xsd:sequence>
+          <xsd:element maxOccurs="unbounded" minOccurs="0" ref="di:bendpoint"/>
+        </xsd:sequence>
+        <xsd:attribute name="source" type="xsd:anyURI" use="required"/>
+        <xsd:attribute name="target" type="xsd:anyURI" use="required"/>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+  
+  <xsd:complexType name="Style">
+    <xsd:attribute name="name" type="xsd:NCName" use="required"/>
+    <xsd:attribute name="value" type="xsd:string" use="required"/>
+  </xsd:complexType>
+  
+  <xsd:complexType name="Bendpoint">
+    <xsd:attribute name="sourceX" type="xsd:int" use="required"/>
+    <xsd:attribute name="sourceY" type="xsd:int" use="required"/>
+    <xsd:attribute name="targetX" type="xsd:int" use="required"/>
+    <xsd:attribute name="targetY" type="xsd:int" use="required"/>
+  </xsd:complexType>
+  
+</xsd:schema>
