@@ -38,6 +38,8 @@ arguments that give us guidance on what kind of conformance we target and how st
 The alternative is that we define our own subset of what we think is useful.  
 </p>
 
+<p>Database upgrades.  Automatic QA for upgrade.</p>
+
 <h3>PVM</h3>
 <p>Extracting PVM into separate library?</p>
 <p>Define which aspects need to be pluggable/configurable and which not.</p>
@@ -93,6 +95,19 @@ similar to jBPM 4.  For example
 granularity: Cloud stores whole process instances, DB stores executions individually.  Implementations of 
 PersistenceSession impl should be able to cope with this diff by using the object's relations in the cloud.
 </p>
+
+<h3>Delegatable tasks</h3>
+<ul>
+  <li>Process instance migration</li>
+  <li>History / reporting</li>
+  <li>Email notifications / email form processor</li>
+  <li>Business calendar</li>
+  <li>Rules integration</li>
+  <li>web service invocation</li>
+  <li>Functional activity types / connectors: SQL, SAP/Abab, file, esb, xml transformation</li>
+  <li>Identity pluggability + LDAP implementation</li>
+</ul>
+
 
 </body>
 </html>
