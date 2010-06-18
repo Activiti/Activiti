@@ -1,0 +1,434 @@
+16:37:39,352 FIN  |                                                                                              [org.activiti.test.LogTestCase]
+16:37:39,352 FIN  | ---- START org.activiti.test.db.ProcessEngineInitializationTest.testNoTables ------------------------------------------------------  [org.activiti.test.LogTestCase]
+16:37:39,365 FIN  | PooledDataSource forcefully closed/removed all connections.  [org.apache.ibatis.datasource.pooled.PooledDataSource]
+16:37:39,366 FIN  | PooledDataSource forcefully closed/removed all connections.  [org.apache.ibatis.datasource.pooled.PooledDataSource]
+16:37:39,366 FIN  | PooledDataSource forcefully closed/removed all connections.  [org.apache.ibatis.datasource.pooled.PooledDataSource]
+16:37:39,366 FIN  | PooledDataSource forcefully closed/removed all connections.  [org.apache.ibatis.datasource.pooled.PooledDataSource]
+16:37:39,372 FIN    | PooledDataSource forcefully closed/removed all connections.  [org.apache.ibatis.datasource.pooled.PooledDataSource]
+16:37:39,818 FIN  | PooledDataSource forcefully closed/removed all connections.  [org.apache.ibatis.datasource.pooled.PooledDataSource]
+16:37:39,819 FIN  | PooledDataSource forcefully closed/removed all connections.  [org.apache.ibatis.datasource.pooled.PooledDataSource]
+16:37:39,819 FIN  | PooledDataSource forcefully closed/removed all connections.  [org.apache.ibatis.datasource.pooled.PooledDataSource]
+16:37:39,819 FIN  | PooledDataSource forcefully closed/removed all connections.  [org.apache.ibatis.datasource.pooled.PooledDataSource]
+16:37:40,143 FIN  | Created connection 1010440244.  [org.apache.ibatis.datasource.pooled.PooledDataSource]
+16:37:40,145 FIN  | ooo Connection Opened  [java.sql.Connection]
+16:37:40,187 SEV  | Error calling Connection.prepareStatement:
+org.h2.jdbc.JdbcSQLException: Table "ACT_PROPERTY" not found; SQL statement:
+select VALUE_ from ACT_PROPERTY where NAME_ = 'schema.version' [42102-132]
+	at org.h2.message.DbException.getJdbcSQLException(DbException.java:316)
+	at org.h2.message.DbException.get(DbException.java:167)
+	at org.h2.message.DbException.get(DbException.java:144)
+	at org.h2.command.Parser.readTableOrView(Parser.java:4347)
+	at org.h2.command.Parser.readTableFilter(Parser.java:1001)
+	at org.h2.command.Parser.parseSelectSimpleFromPart(Parser.java:1529)
+	at org.h2.command.Parser.parseSelectSimple(Parser.java:1626)
+	at org.h2.command.Parser.parseSelectSub(Parser.java:1523)
+	at org.h2.command.Parser.parseSelectUnion(Parser.java:1368)
+	at org.h2.command.Parser.parseSelect(Parser.java:1356)
+	at org.h2.command.Parser.parsePrepared(Parser.java:395)
+	at org.h2.command.Parser.parse(Parser.java:278)
+	at org.h2.command.Parser.parse(Parser.java:250)
+	at org.h2.command.Parser.prepareCommand(Parser.java:222)
+	at org.h2.engine.Session.prepareLocal(Session.java:420)
+	at org.h2.engine.Session.prepareCommand(Session.java:381)
+	at org.h2.jdbc.JdbcConnection.prepareCommand(JdbcConnection.java:1070)
+	at org.h2.jdbc.JdbcPreparedStatement.<init>(JdbcPreparedStatement.java:71)
+	at org.h2.jdbc.JdbcConnection.prepareStatement(JdbcConnection.java:233)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:39)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)
+	at java.lang.reflect.Method.invoke(Method.java:597)
+	at org.apache.ibatis.datasource.pooled.PooledConnection.invoke(PooledConnection.java:225)
+	at $Proxy0.prepareStatement(Unknown Source)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:39)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)
+	at java.lang.reflect.Method.invoke(Method.java:597)
+	at org.apache.ibatis.logging.jdbc.ConnectionLogger.invoke(ConnectionLogger.java:35)
+	at $Proxy0.prepareStatement(Unknown Source)
+	at org.apache.ibatis.executor.statement.PreparedStatementHandler.instantiateStatement(PreparedStatementHandler.java:50)
+	at org.apache.ibatis.executor.statement.BaseStatementHandler.prepare(BaseStatementHandler.java:64)
+	at org.apache.ibatis.executor.statement.RoutingStatementHandler.prepare(RoutingStatementHandler.java:39)
+	at org.apache.ibatis.executor.BatchExecutor.doQuery(BatchExecutor.java:60)
+	at org.apache.ibatis.executor.BaseExecutor.query(BaseExecutor.java:94)
+	at org.apache.ibatis.executor.CachingExecutor.query(CachingExecutor.java:72)
+	at org.apache.ibatis.session.defaults.DefaultSqlSession.selectList(DefaultSqlSession.java:59)
+	at org.apache.ibatis.session.defaults.DefaultSqlSession.selectList(DefaultSqlSession.java:53)
+	at org.apache.ibatis.session.defaults.DefaultSqlSession.selectOne(DefaultSqlSession.java:38)
+	at org.apache.ibatis.session.defaults.DefaultSqlSession.selectOne(DefaultSqlSession.java:33)
+	at org.activiti.impl.persistence.IbatisPersistenceSessionFactory.dbSchemaCheckVersion(IbatisPersistenceSessionFactory.java:213)
+	at org.activiti.impl.ProcessEngineImpl.<init>(ProcessEngineImpl.java:58)
+	at org.activiti.impl.cfg.ProcessEngineConfiguration.buildProcessEngine(ProcessEngineConfiguration.java:124)
+	at org.activiti.DbProcessEngineBuilder.buildProcessEngine(DbProcessEngineBuilder.java:261)
+	at org.activiti.test.db.ProcessEngineInitializationTest.testNoTables(ProcessEngineInitializationTest.java:38)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:39)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)
+	at java.lang.reflect.Method.invoke(Method.java:597)
+	at junit.framework.TestCase.runTest(TestCase.java:168)
+	at org.activiti.test.LogTestCase.runTest(LogTestCase.java:41)
+	at junit.framework.TestCase.runBare(TestCase.java:134)
+	at junit.framework.TestResult$1.protect(TestResult.java:110)
+	at junit.framework.TestResult.runProtected(TestResult.java:128)
+	at junit.framework.TestResult.run(TestResult.java:113)
+	at junit.framework.TestCase.run(TestCase.java:124)
+	at junit.framework.TestSuite.runTest(TestSuite.java:232)
+	at junit.framework.TestSuite.run(TestSuite.java:227)
+	at org.junit.internal.runners.JUnit38ClassRunner.run(JUnit38ClassRunner.java:83)
+	at org.apache.maven.surefire.junit4.JUnit4TestSet.execute(JUnit4TestSet.java:59)
+	at org.apache.maven.surefire.suite.AbstractDirectoryTestSuite.executeTestSet(AbstractDirectoryTestSuite.java:115)
+	at org.apache.maven.surefire.suite.AbstractDirectoryTestSuite.execute(AbstractDirectoryTestSuite.java:102)
+	at org.apache.maven.surefire.Surefire.run(Surefire.java:180)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:39)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)
+	at java.lang.reflect.Method.invoke(Method.java:597)
+	at org.apache.maven.surefire.booter.SurefireBooter.runSuitesInProcess(SurefireBooter.java:350)
+	at org.apache.maven.surefire.booter.SurefireBooter.main(SurefireBooter.java:1021)
+  [java.sql.Connection]
+16:37:40,190 FIN  | xxx Connection Closed  [java.sql.Connection]
+16:37:40,190 FIN  | Returned connection 1010440244 to pool.  [org.apache.ibatis.datasource.pooled.PooledDataSource]
+16:37:40,191 FIN  | ---- END org.activiti.test.db.ProcessEngineInitializationTest.testNoTables ------------------------------------------------------  [org.activiti.test.LogTestCase]
+16:37:40,191 FIN  |                                                                                              [org.activiti.test.LogTestCase]
+16:37:40,192 FIN  | ---- START org.activiti.test.db.ProcessEngineInitializationTest.testVersionMismatch ------------------------------------------------------  [org.activiti.test.LogTestCase]
+16:37:40,208 FIN  | PooledDataSource forcefully closed/removed all connections.  [org.apache.ibatis.datasource.pooled.PooledDataSource]
+16:37:40,209 FIN  | PooledDataSource forcefully closed/removed all connections.  [org.apache.ibatis.datasource.pooled.PooledDataSource]
+16:37:40,209 FIN  | PooledDataSource forcefully closed/removed all connections.  [org.apache.ibatis.datasource.pooled.PooledDataSource]
+16:37:40,209 FIN  | PooledDataSource forcefully closed/removed all connections.  [org.apache.ibatis.datasource.pooled.PooledDataSource]
+16:37:40,226 FIN    | PooledDataSource forcefully closed/removed all connections.  [org.apache.ibatis.datasource.pooled.PooledDataSource]
+16:37:40,403 FIN  | PooledDataSource forcefully closed/removed all connections.  [org.apache.ibatis.datasource.pooled.PooledDataSource]
+16:37:40,403 FIN  | PooledDataSource forcefully closed/removed all connections.  [org.apache.ibatis.datasource.pooled.PooledDataSource]
+16:37:40,403 FIN  | PooledDataSource forcefully closed/removed all connections.  [org.apache.ibatis.datasource.pooled.PooledDataSource]
+16:37:40,404 FIN  | PooledDataSource forcefully closed/removed all connections.  [org.apache.ibatis.datasource.pooled.PooledDataSource]
+16:37:40,785 FIN  | Created connection 181278381.  [org.apache.ibatis.datasource.pooled.PooledDataSource]
+16:37:40,785 FIN  | ooo Connection Opened  [java.sql.Connection]
+16:37:40,830 FIN  | 
+create table ACT_PROPERTY (
+    NAME_ varchar,
+    VALUE_ varchar,
+    REV_ integer,
+    primary key (NAME_)
+)  [org.activiti.impl.persistence.IbatisPersistenceSessionFactory]
+16:37:40,831 FIN  | ==>  Executing: create table ACT_PROPERTY ( NAME_ varchar, VALUE_ varchar, REV_ integer, primary key (NAME_) )   [java.sql.Statement]
+16:37:40,846 FIN  | 
+insert into ACT_PROPERTY
+values ('schema.version', '5.0.alpha3-SNAPSHOT', 1)  [org.activiti.impl.persistence.IbatisPersistenceSessionFactory]
+16:37:40,846 FIN  | ==>  Executing: insert into ACT_PROPERTY values ('schema.version', '5.0.alpha3-SNAPSHOT', 1)   [java.sql.Statement]
+16:37:40,849 FIN  | 
+insert into ACT_PROPERTY
+values ('next.dbid', '1', 1)  [org.activiti.impl.persistence.IbatisPersistenceSessionFactory]
+16:37:40,857 FIN  | ==>  Executing: insert into ACT_PROPERTY values ('next.dbid', '1', 1)   [java.sql.Statement]
+16:37:40,858 FIN  | 
+create table ACT_BYTEARRAY (
+    ID_ varchar(255),
+    REV_ integer,
+    NAME_ varchar(255),
+    DEPLOYMENT_ID_ varchar(255),
+    BYTES_ longvarbinary,
+    primary key (ID_)
+)  [org.activiti.impl.persistence.IbatisPersistenceSessionFactory]
+16:37:40,863 FIN    | PooledDataSource forcefully closed/removed all connections.  [org.apache.ibatis.datasource.pooled.PooledDataSource]
+16:37:40,864 FIN  | ==>  Executing: create table ACT_BYTEARRAY ( ID_ varchar(255), REV_ integer, NAME_ varchar(255), DEPLOYMENT_ID_ varchar(255), BYTES_ longvarbinary, primary key (ID_) )   [java.sql.Statement]
+16:37:40,865 FIN  | 
+create table ACT_DEPLOYMENT (
+    ID_ varchar(255),
+    NAME_ varchar(255),
+    DEPLOY_TIME_ timestamp,
+    primary key (ID_)
+)  [org.activiti.impl.persistence.IbatisPersistenceSessionFactory]
+16:37:40,865 FIN  | ==>  Executing: create table ACT_DEPLOYMENT ( ID_ varchar(255), NAME_ varchar(255), DEPLOY_TIME_ timestamp, primary key (ID_) )   [java.sql.Statement]
+16:37:40,866 FIN  | 
+create table ACT_EXECUTION (
+    ID_ varchar(255),
+    REV_ integer,
+    PROC_INST_ID_ varchar(255),
+    PARENT_ID_ varchar(255),
+    PROC_DEF_ID_ varchar(255),
+    ACTIVITY_ID_ varchar(255),
+    IS_ACTIVE_ bit,
+    IS_CONCURRENCY_SCOPE_ bit,
+    primary key (ID_)
+)  [org.activiti.impl.persistence.IbatisPersistenceSessionFactory]
+16:37:40,866 FIN  | ==>  Executing: create table ACT_EXECUTION ( ID_ varchar(255), REV_ integer, PROC_INST_ID_ varchar(255), PARENT_ID_ varchar(255), PROC_DEF_ID_ varchar(255), ACTIVITY_ID_ varchar(255), IS_ACTIVE_ bit, IS_CONCURRENCY_SCOPE_ bit, primary key (ID_) )   [java.sql.Statement]
+16:37:40,867 FIN  | 
+create table ACT_JOB (
+    ID_ varchar(255) NOT NULL,
+    TYPE_ varchar(255) NOT NULL,
+    LOCK_EXP_TIME_ timestamp,
+    LOCK_OWNER_ varchar(255),
+    EXCLUSIVE_ boolean,
+    EXECUTION_ID_ varchar(255),
+    PROCESS_INSTANCE_ID_ varchar(255),
+    RETRIES_ integer,
+    EXCEPTION_ varchar(255),
+    DUEDATE_ timestamp,
+    REPEAT_ varchar(255),
+    HANDLER_TYPE_ varchar(255),
+    HANDLER_CFG_ varchar(255),
+    primary key (ID_)
+)  [org.activiti.impl.persistence.IbatisPersistenceSessionFactory]
+16:37:40,867 FIN  | ==>  Executing: create table ACT_JOB ( ID_ varchar(255) NOT NULL, TYPE_ varchar(255) NOT NULL, LOCK_EXP_TIME_ timestamp, LOCK_OWNER_ varchar(255), EXCLUSIVE_ boolean, EXECUTION_ID_ varchar(255), PROCESS_INSTANCE_ID_ varchar(255), RETRIES_ integer, EXCEPTION_ varchar(255), DUEDATE_ timestamp, REPEAT_ varchar(255), HANDLER_TYPE_ varchar(255), HANDLER_CFG_ varchar(255), primary key (ID_) )   [java.sql.Statement]
+16:37:40,869 FIN  | 
+create table ACT_ID_GROUP (
+    ID_ varchar(255),
+    REV_ integer,
+    NAME_ varchar(255),
+    TYPE_ varchar(255),
+    primary key (ID_)
+)  [org.activiti.impl.persistence.IbatisPersistenceSessionFactory]
+16:37:40,869 FIN  | ==>  Executing: create table ACT_ID_GROUP ( ID_ varchar(255), REV_ integer, NAME_ varchar(255), TYPE_ varchar(255), primary key (ID_) )   [java.sql.Statement]
+16:37:40,869 FIN  | 
+create table ACT_ID_MEMBERSHIP (
+    USER_ID_ varchar(255),
+    GROUP_ID_ varchar(255),
+    primary key (USER_ID_, GROUP_ID_)
+)  [org.activiti.impl.persistence.IbatisPersistenceSessionFactory]
+16:37:40,869 FIN  | ==>  Executing: create table ACT_ID_MEMBERSHIP ( USER_ID_ varchar(255), GROUP_ID_ varchar(255), primary key (USER_ID_, GROUP_ID_) )   [java.sql.Statement]
+16:37:40,870 FIN  | 
+create table ACT_ID_USER (
+    ID_ varchar(255),
+    REV_ integer,
+    FIRST_ varchar(255),
+    LAST_ varchar(255),
+    EMAIL_ varchar(255),
+    PWD_ varchar(255),
+    primary key (ID_)
+)  [org.activiti.impl.persistence.IbatisPersistenceSessionFactory]
+16:37:40,870 FIN  | ==>  Executing: create table ACT_ID_USER ( ID_ varchar(255), REV_ integer, FIRST_ varchar(255), LAST_ varchar(255), EMAIL_ varchar(255), PWD_ varchar(255), primary key (ID_) )   [java.sql.Statement]
+16:37:40,871 FIN  | 
+create table ACT_PROCESSDEFINITION (
+    ID_ varchar(255),
+    NAME_ varchar(255),
+    KEY_ varchar(255),
+    VERSION_ integer,
+    DEPLOYMENT_ID_ varchar(255),
+    primary key (ID_)
+)  [org.activiti.impl.persistence.IbatisPersistenceSessionFactory]
+16:37:40,871 FIN  | ==>  Executing: create table ACT_PROCESSDEFINITION ( ID_ varchar(255), NAME_ varchar(255), KEY_ varchar(255), VERSION_ integer, DEPLOYMENT_ID_ varchar(255), primary key (ID_) )   [java.sql.Statement]
+16:37:40,871 FIN  | 
+create table ACT_TASK (
+    ID_ varchar(255),
+    REV_ integer,
+    NAME_ varchar(255),
+    DESCRIPTION_ varchar(255),
+    ASSIGNEE_ varchar(255),
+    PRIORITY_ integer,
+    EXECUTION_ID_ varchar(255),
+    PROC_INST_ID_ varchar(255),
+    PROC_DEF_ID_ varchar(255),
+    CREATE_TIME_ timestamp,
+    START_DEADLINE_ timestamp,
+    COMPLETION_DEADLINE_ timestamp,
+    SKIPPABLE_ bit,
+    primary key (ID_)
+)  [org.activiti.impl.persistence.IbatisPersistenceSessionFactory]
+16:37:40,871 FIN  | ==>  Executing: create table ACT_TASK ( ID_ varchar(255), REV_ integer, NAME_ varchar(255), DESCRIPTION_ varchar(255), ASSIGNEE_ varchar(255), PRIORITY_ integer, EXECUTION_ID_ varchar(255), PROC_INST_ID_ varchar(255), PROC_DEF_ID_ varchar(255), CREATE_TIME_ timestamp, START_DEADLINE_ timestamp, COMPLETION_DEADLINE_ timestamp, SKIPPABLE_ bit, primary key (ID_) )   [java.sql.Statement]
+16:37:40,873 FIN  | 
+create table ACT_TASKINVOLVEMENT (
+    ID_ varchar(255),
+    REV_ integer,
+    GROUP_ID_ varchar(255),
+    TYPE_ varchar(255),
+    USER_ID_ varchar(255),
+    TASK_ID_ bigint,
+    primary key (ID_)
+)  [org.activiti.impl.persistence.IbatisPersistenceSessionFactory]
+16:37:40,873 FIN  | ==>  Executing: create table ACT_TASKINVOLVEMENT ( ID_ varchar(255), REV_ integer, GROUP_ID_ varchar(255), TYPE_ varchar(255), USER_ID_ varchar(255), TASK_ID_ bigint, primary key (ID_) )   [java.sql.Statement]
+16:37:40,874 FIN  | 
+create table ACT_VARIABLE (
+    ID_ varchar not null,
+    REV_ integer,
+    TYPE_ varchar(255) not null,
+    NAME_ varchar(255) not null,
+    EXECUTION_ID_ varchar(255),
+    TASK_ID_ varchar(255),
+    BYTEARRAY_ID_ varchar(255),
+    DATE_ timestamp,
+    DOUBLE_ double,
+    LONG_ bigint,
+    TEXT_ varchar(255),
+    primary key (ID_)
+)  [org.activiti.impl.persistence.IbatisPersistenceSessionFactory]
+16:37:40,874 FIN  | ==>  Executing: create table ACT_VARIABLE ( ID_ varchar not null, REV_ integer, TYPE_ varchar(255) not null, NAME_ varchar(255) not null, EXECUTION_ID_ varchar(255), TASK_ID_ varchar(255), BYTEARRAY_ID_ varchar(255), DATE_ timestamp, DOUBLE_ double, LONG_ bigint, TEXT_ varchar(255), primary key (ID_) )   [java.sql.Statement]
+16:37:40,875 FIN  | 
+alter table ACT_BYTEARRAY 
+    add constraint FK_BYTEARR_DEPL 
+    foreign key (DEPLOYMENT_ID_) 
+    references ACT_DEPLOYMENT  [org.activiti.impl.persistence.IbatisPersistenceSessionFactory]
+16:37:40,875 FIN  | ==>  Executing: alter table ACT_BYTEARRAY add constraint FK_BYTEARR_DEPL foreign key (DEPLOYMENT_ID_) references ACT_DEPLOYMENT   [java.sql.Statement]
+16:37:40,902 FIN  | 
+alter table ACT_EXECUTION
+    add constraint FK_EXE_PROCINST 
+    foreign key (PROC_INST_ID_) 
+    references ACT_EXECUTION  [org.activiti.impl.persistence.IbatisPersistenceSessionFactory]
+16:37:40,902 FIN  | ==>  Executing: alter table ACT_EXECUTION add constraint FK_EXE_PROCINST foreign key (PROC_INST_ID_) references ACT_EXECUTION   [java.sql.Statement]
+16:37:40,918 FIN  | 
+alter table ACT_EXECUTION
+    add constraint FK_EXE_PARENT 
+    foreign key (PARENT_ID_) 
+    references ACT_EXECUTION  [org.activiti.impl.persistence.IbatisPersistenceSessionFactory]
+16:37:40,918 FIN  | ==>  Executing: alter table ACT_EXECUTION add constraint FK_EXE_PARENT foreign key (PARENT_ID_) references ACT_EXECUTION   [java.sql.Statement]
+16:37:40,921 FIN  | 
+alter table ACT_ID_MEMBERSHIP 
+    add constraint FK_MEMB_GROUP 
+    foreign key (GROUP_ID_) 
+    references ACT_ID_GROUP  [org.activiti.impl.persistence.IbatisPersistenceSessionFactory]
+16:37:40,921 FIN  | ==>  Executing: alter table ACT_ID_MEMBERSHIP add constraint FK_MEMB_GROUP foreign key (GROUP_ID_) references ACT_ID_GROUP   [java.sql.Statement]
+16:37:40,923 FIN  | 
+alter table ACT_ID_MEMBERSHIP 
+    add constraint FK_MEMB_USER 
+    foreign key (USER_ID_) 
+    references ACT_ID_USER  [org.activiti.impl.persistence.IbatisPersistenceSessionFactory]
+16:37:40,923 FIN  | ==>  Executing: alter table ACT_ID_MEMBERSHIP add constraint FK_MEMB_USER foreign key (USER_ID_) references ACT_ID_USER   [java.sql.Statement]
+16:37:40,946 FIN  | 
+alter table ACT_TASKINVOLVEMENT
+    add constraint FK_TSKASS_TASK 
+    foreign key (TASK_ID_) 
+    references ACT_TASK  [org.activiti.impl.persistence.IbatisPersistenceSessionFactory]
+16:37:40,947 FIN  | ==>  Executing: alter table ACT_TASKINVOLVEMENT add constraint FK_TSKASS_TASK foreign key (TASK_ID_) references ACT_TASK   [java.sql.Statement]
+16:37:40,948 FIN  | 
+alter table ACT_TASK
+    add constraint FK_TASK_EXEC
+    foreign key (EXECUTION_ID_)
+    references ACT_EXECUTION  [org.activiti.impl.persistence.IbatisPersistenceSessionFactory]
+16:37:40,948 FIN  | ==>  Executing: alter table ACT_TASK add constraint FK_TASK_EXEC foreign key (EXECUTION_ID_) references ACT_EXECUTION   [java.sql.Statement]
+16:37:40,950 FIN  | 
+alter table ACT_TASK
+    add constraint FK_TASK_PROCINST
+    foreign key (PROC_INST_ID_)
+    references ACT_EXECUTION  [org.activiti.impl.persistence.IbatisPersistenceSessionFactory]
+16:37:40,950 FIN  | ==>  Executing: alter table ACT_TASK add constraint FK_TASK_PROCINST foreign key (PROC_INST_ID_) references ACT_EXECUTION   [java.sql.Statement]
+16:37:40,952 FIN  | 
+alter table ACT_TASK
+  add constraint FK_TASK_PROCDEF
+  foreign key (PROC_DEF_ID_)
+  references ACT_PROCESSDEFINITION  [org.activiti.impl.persistence.IbatisPersistenceSessionFactory]
+16:37:40,952 FIN  | ==>  Executing: alter table ACT_TASK add constraint FK_TASK_PROCDEF foreign key (PROC_DEF_ID_) references ACT_PROCESSDEFINITION   [java.sql.Statement]
+16:37:40,957 FIN  | 
+alter table ACT_VARIABLE 
+    add constraint FK_VAR_TASK 
+    foreign key (TASK_ID_) 
+    references ACT_TASK  [org.activiti.impl.persistence.IbatisPersistenceSessionFactory]
+16:37:40,957 FIN  | ==>  Executing: alter table ACT_VARIABLE add constraint FK_VAR_TASK foreign key (TASK_ID_) references ACT_TASK   [java.sql.Statement]
+16:37:40,959 FIN  | 
+alter table ACT_VARIABLE 
+    add constraint FK_VAR_EXE 
+    foreign key (EXECUTION_ID_) 
+    references ACT_EXECUTION  [org.activiti.impl.persistence.IbatisPersistenceSessionFactory]
+16:37:40,959 FIN  | ==>  Executing: alter table ACT_VARIABLE add constraint FK_VAR_EXE foreign key (EXECUTION_ID_) references ACT_EXECUTION   [java.sql.Statement]
+16:37:40,963 FIN  | 
+alter table ACT_VARIABLE 
+    add constraint FK_VAR_BYTEARRAY 
+    foreign key (BYTEARRAY_ID_) 
+    references ACT_BYTEARRAY  [org.activiti.impl.persistence.IbatisPersistenceSessionFactory]
+16:37:40,964 FIN  | ==>  Executing: alter table ACT_VARIABLE add constraint FK_VAR_BYTEARRAY foreign key (BYTEARRAY_ID_) references ACT_BYTEARRAY   [java.sql.Statement]
+16:37:40,966 FIN  | 
+  [org.activiti.impl.persistence.IbatisPersistenceSessionFactory]
+16:37:40,966 FIN  | ==>  Executing:   [java.sql.Statement]
+16:37:40,967 FIN  | xxx Connection Closed  [java.sql.Connection]
+16:37:40,967 FIN  | Returned connection 181278381 to pool.  [org.apache.ibatis.datasource.pooled.PooledDataSource]
+16:37:40,967 FIN  | activiti db schema creation successful  [org.activiti.impl.persistence.IbatisPersistenceSessionFactory]
+16:37:40,967 FIN  | activiti db schema creation successful  [org.activiti.impl.persistence.IbatisPersistenceSessionFactory]
+16:37:40,967 INF  | ProcessEngine default created  [org.activiti.impl.ProcessEngineImpl]
+16:37:40,967 FIN  | Checked out connection 181278381 from pool.  [org.apache.ibatis.datasource.pooled.PooledDataSource]
+16:37:40,976 FIN  | ooo Connection Opened  [java.sql.Connection]
+16:37:41,127 FIN  | ==>  Executing: update ACT_PROPERTY SET REV_ = ?, VALUE_ = ? where NAME_ = ? and REV_ = ?   [java.sql.PreparedStatement]
+16:37:41,128 FIN  | ==> Parameters: 2(Integer), 25.7(String), schema.version(String), 1(Integer)  [java.sql.PreparedStatement]
+16:37:41,130 FIN  | xxx Connection Closed  [java.sql.Connection]
+16:37:41,131 FIN  | Returned connection 181278381 to pool.  [org.apache.ibatis.datasource.pooled.PooledDataSource]
+16:37:41,172 FIN  | PooledDataSource forcefully closed/removed all connections.  [org.apache.ibatis.datasource.pooled.PooledDataSource]
+16:37:41,173 FIN  | PooledDataSource forcefully closed/removed all connections.  [org.apache.ibatis.datasource.pooled.PooledDataSource]
+16:37:41,173 FIN  | PooledDataSource forcefully closed/removed all connections.  [org.apache.ibatis.datasource.pooled.PooledDataSource]
+16:37:41,173 FIN  | PooledDataSource forcefully closed/removed all connections.  [org.apache.ibatis.datasource.pooled.PooledDataSource]
+16:37:41,325 FIN  | PooledDataSource forcefully closed/removed all connections.  [org.apache.ibatis.datasource.pooled.PooledDataSource]
+16:37:41,325 FIN  | PooledDataSource forcefully closed/removed all connections.  [org.apache.ibatis.datasource.pooled.PooledDataSource]
+16:37:41,326 FIN  | PooledDataSource forcefully closed/removed all connections.  [org.apache.ibatis.datasource.pooled.PooledDataSource]
+16:37:41,326 FIN  | PooledDataSource forcefully closed/removed all connections.  [org.apache.ibatis.datasource.pooled.PooledDataSource]
+16:37:41,463 FIN  | Created connection 674653555.  [org.apache.ibatis.datasource.pooled.PooledDataSource]
+16:37:41,463 FIN  | ooo Connection Opened  [java.sql.Connection]
+16:37:41,464 FIN  | ==>  Executing: select VALUE_ from ACT_PROPERTY where NAME_ = 'schema.version'   [java.sql.PreparedStatement]
+16:37:41,464 FIN  | ==> Parameters:   [java.sql.PreparedStatement]
+16:37:41,486 FIN  | <==    Columns: VALUE_  [java.sql.ResultSet]
+16:37:41,487 FIN  | <==        Row: 25.7  [java.sql.ResultSet]
+16:37:41,490 FIN  | xxx Connection Closed  [java.sql.Connection]
+16:37:41,490 FIN  | Returned connection 674653555 to pool.  [org.apache.ibatis.datasource.pooled.PooledDataSource]
+16:37:41,490 FIN  | Checked out connection 181278381 from pool.  [org.apache.ibatis.datasource.pooled.PooledDataSource]
+16:37:41,491 FIN  | ooo Connection Opened  [java.sql.Connection]
+16:37:41,491 FIN  | 
+alter table ACT_BYTEARRAY 
+    drop constraint FK_BYTEARR_DEPL  [org.activiti.impl.persistence.IbatisPersistenceSessionFactory]
+16:37:41,491 FIN  | ==>  Executing: alter table ACT_BYTEARRAY drop constraint FK_BYTEARR_DEPL   [java.sql.Statement]
+16:37:41,492 FIN  | 
+alter table ACT_EXECUTION
+    drop constraint FK_EXE_PROCINST  [org.activiti.impl.persistence.IbatisPersistenceSessionFactory]
+16:37:41,492 FIN  | ==>  Executing: alter table ACT_EXECUTION drop constraint FK_EXE_PROCINST   [java.sql.Statement]
+16:37:41,493 FIN  | 
+alter table ACT_EXECUTION 
+    drop constraint FK_EXE_PARENT  [org.activiti.impl.persistence.IbatisPersistenceSessionFactory]
+16:37:41,493 FIN  | ==>  Executing: alter table ACT_EXECUTION drop constraint FK_EXE_PARENT   [java.sql.Statement]
+16:37:41,493 FIN  | 
+alter table ACT_ID_MEMBERSHIP 
+    drop constraint FK_MEMB_GROUP  [org.activiti.impl.persistence.IbatisPersistenceSessionFactory]
+16:37:41,493 FIN  | ==>  Executing: alter table ACT_ID_MEMBERSHIP drop constraint FK_MEMB_GROUP   [java.sql.Statement]
+16:37:41,493 FIN  | 
+alter table ACT_ID_MEMBERSHIP 
+    drop constraint FK_MEMB_USER  [org.activiti.impl.persistence.IbatisPersistenceSessionFactory]
+16:37:41,493 FIN  | ==>  Executing: alter table ACT_ID_MEMBERSHIP drop constraint FK_MEMB_USER   [java.sql.Statement]
+16:37:41,494 FIN  | 
+alter table ACT_TASKINVOLVEMENT
+    drop constraint FK_TSKASS_TASK  [org.activiti.impl.persistence.IbatisPersistenceSessionFactory]
+16:37:41,494 FIN  | ==>  Executing: alter table ACT_TASKINVOLVEMENT drop constraint FK_TSKASS_TASK   [java.sql.Statement]
+16:37:41,494 FIN  | 
+alter table ACT_VARIABLE
+    drop constraint FK_VAR_EXE  [org.activiti.impl.persistence.IbatisPersistenceSessionFactory]
+16:37:41,494 FIN  | ==>  Executing: alter table ACT_VARIABLE drop constraint FK_VAR_EXE   [java.sql.Statement]
+16:37:41,494 FIN  | 
+alter table ACT_VARIABLE
+    drop constraint FK_VAR_TASK  [org.activiti.impl.persistence.IbatisPersistenceSessionFactory]
+16:37:41,494 FIN  | ==>  Executing: alter table ACT_VARIABLE drop constraint FK_VAR_TASK   [java.sql.Statement]
+16:37:41,495 FIN  | 
+alter table ACT_VARIABLE
+    drop constraint FK_VAR_BYTEARRAY  [org.activiti.impl.persistence.IbatisPersistenceSessionFactory]
+16:37:41,495 FIN  | ==>  Executing: alter table ACT_VARIABLE drop constraint FK_VAR_BYTEARRAY   [java.sql.Statement]
+16:37:41,495 FIN  | 
+drop table ACT_PROPERTY if exists  [org.activiti.impl.persistence.IbatisPersistenceSessionFactory]
+16:37:41,495 FIN  | ==>  Executing: drop table ACT_PROPERTY if exists   [java.sql.Statement]
+16:37:41,500 FIN  | 
+drop table ACT_BYTEARRAY if exists  [org.activiti.impl.persistence.IbatisPersistenceSessionFactory]
+16:37:41,501 FIN  | ==>  Executing: drop table ACT_BYTEARRAY if exists   [java.sql.Statement]
+16:37:41,501 FIN  | 
+drop table ACT_DEPLOYMENT if exists  [org.activiti.impl.persistence.IbatisPersistenceSessionFactory]
+16:37:41,501 FIN  | ==>  Executing: drop table ACT_DEPLOYMENT if exists   [java.sql.Statement]
+16:37:41,501 FIN  | 
+drop table ACT_EXECUTION if exists  [org.activiti.impl.persistence.IbatisPersistenceSessionFactory]
+16:37:41,502 FIN  | ==>  Executing: drop table ACT_EXECUTION if exists   [java.sql.Statement]
+16:37:41,502 FIN  | 
+drop table ACT_ID_GROUP if exists  [org.activiti.impl.persistence.IbatisPersistenceSessionFactory]
+16:37:41,502 FIN  | ==>  Executing: drop table ACT_ID_GROUP if exists   [java.sql.Statement]
+16:37:41,503 FIN  | 
+drop table ACT_ID_MEMBERSHIP if exists  [org.activiti.impl.persistence.IbatisPersistenceSessionFactory]
+16:37:41,503 FIN  | ==>  Executing: drop table ACT_ID_MEMBERSHIP if exists   [java.sql.Statement]
+16:37:41,503 FIN  | 
+drop table ACT_ID_USER if exists  [org.activiti.impl.persistence.IbatisPersistenceSessionFactory]
+16:37:41,503 FIN  | ==>  Executing: drop table ACT_ID_USER if exists   [java.sql.Statement]
+16:37:41,504 FIN  | 
+drop table ACT_JOB if exists  [org.activiti.impl.persistence.IbatisPersistenceSessionFactory]
+16:37:41,504 FIN  | ==>  Executing: drop table ACT_JOB if exists   [java.sql.Statement]
+16:37:41,504 FIN  | 
+drop table ACT_PROCESSDEFINITION if exists  [org.activiti.impl.persistence.IbatisPersistenceSessionFactory]
+16:37:41,504 FIN  | ==>  Executing: drop table ACT_PROCESSDEFINITION if exists   [java.sql.Statement]
+16:37:41,505 FIN  | 
+drop table ACT_TASK if exists  [org.activiti.impl.persistence.IbatisPersistenceSessionFactory]
+16:37:41,505 FIN  | ==>  Executing: drop table ACT_TASK if exists   [java.sql.Statement]
+16:37:41,505 FIN  | 
+drop table ACT_TASKINVOLVEMENT if exists  [org.activiti.impl.persistence.IbatisPersistenceSessionFactory]
+16:37:41,505 FIN  | ==>  Executing: drop table ACT_TASKINVOLVEMENT if exists   [java.sql.Statement]
+16:37:41,506 FIN  | 
+drop table ACT_VARIABLE if exists  [org.activiti.impl.persistence.IbatisPersistenceSessionFactory]
+16:37:41,506 FIN  | ==>  Executing: drop table ACT_VARIABLE if exists   [java.sql.Statement]
+16:37:41,506 FIN  | 
+  [org.activiti.impl.persistence.IbatisPersistenceSessionFactory]
+16:37:41,506 FIN  | ==>  Executing:   [java.sql.Statement]
+16:37:41,506 FIN  | xxx Connection Closed  [java.sql.Connection]
+16:37:41,507 FIN  | Returned connection 181278381 to pool.  [org.apache.ibatis.datasource.pooled.PooledDataSource]
+16:37:41,507 FIN  | activiti db schema creation successful  [org.activiti.impl.persistence.IbatisPersistenceSessionFactory]
+16:37:41,507 FIN  | ---- END org.activiti.test.db.ProcessEngineInitializationTest.testVersionMismatch ------------------------------------------------------  [org.activiti.test.LogTestCase]

@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<title>Activiti Developers Guide</title>
+</head>
+<body>
+
+<h1>Activiti Developers Guide</h1>
+<h2>Building the sources</h2>
+<h3>Dependencies</h3>
+<ul><li>JDK 5+ : Make sure that you do <b>not</b> use code constructs that require JDK 6 or higher.</li>
+<li>Maven 2.0.9</li>
+<li>Ant 1.7.1</li></ul>
+<h3>Running tests before commit</h3>
+<div>Before a checkin is done, a developers should make sure to update to the latest sources and then run</div>
+<div>&nbsp;&nbsp; &nbsp;<font class="Apple-style-span" face="'Courier New'"><b>mvn -Pcheck clean install</b></font><br>
+in the root activiti directory <br>
+</div>
+<h3>Demo setup</h3>
+<div>To run smoke tests on webapps, the quickest way to get started is using the target <font class="Apple-style-span" face="'Courier New'"><b>test.demo.setup</b></font> in <font class="Apple-style-span" face="'Courier New'"><b>qa/build.xml</b></font></div>
+<div>That will also startup h2 and tomcat. So to rebuild, you can use the target&nbsp;<font class="Apple-style-span" face="'Courier New'"><b>test.demo.setup.refresh</b></font> &nbsp;That target will first shutdown tomcat and h2 and then do a full new demo test setup.</div>
+<h3>Building the javadocs</h3>
+Use target <font class="Apple-style-span" face="'Courier New'"><b>build.javadocs</b></font> in <font class="Apple-style-span" face="'Courier New'"><b>qa/build.xml</b></font><br>
+<h3>Building a distribution</h3>
+<div>To build a distribution, run target <font class="Apple-style-span" face="'Courier New'"><b>distro</b></font> of build file <font class="Apple-style-span" face="'Courier New'"><b>distro/build.xml</b></font></div>
+<h3>User scripts</h3>
+<div>After an distribution is unzipped (or directly in the distro/target/activiti-version directory), a number of scripts are offered to our users as well. &nbsp;Those scripts can be found in <font class="Apple-style-span" face="'Courier New'"><b>${activiti.home}/setup/build.xml</b></font></div>
+<h3>${user.home}/.activiti/build.properties</h3>
+<p>As an example, here's the content of my&nbsp;<b><font class="Apple-style-span" face="'Courier New'">${user.home}/.activiti/build.properties:</font>&nbsp;</b></p>
+<blockquote class="webkit-indent-blockquote" style="border:medium none;margin:0pt 0pt 0pt 40px"><font class="Apple-style-span" face="'Courier New'"><font class="Apple-style-span" size="2">activiti.home=/Users/tombaeyens/Documents/workspace/activiti/distro/target/activiti-5.0.alpha1-SNAPSHOT<br>
+downloads.dir=/Users/tombaeyens/Downloads<br>
+</font></font>
+<p style="margin-left:0px;margin-right:0px"><font class="Apple-style-span" face="'Courier New'"><font class="Apple-style-span" size="2">tomcat.enable.debug=true</font></font></p>
+</blockquote>
+<p></p>
+<p><font class="Apple-style-span" face="'Courier New'"><b>activiti.home</b></font>, is used in the setup/build.xml. It will work straight from the sources. &nbsp;So you can add the setup from the sources to your ant view in your IDE.</p>
+<font class="Apple-style-span" face="'Courier New'"><b>downloads.dir</b></font>, is used in the setup/build.xml. It allows you to configure a custom location for your directory to download/find tomcat. &nbsp;If you don't specify this, the default is relative to the setup directory (../downloads). &nbsp;So if you use the setup/build from the sources, you might end up downloading tomcat into your sources. &nbsp;If that still would happen, don't check it in! ;-) &nbsp;
+<div><b><font class="Apple-style-span" face="'Courier New'">tomcat.enable.debug</font></b> is used in setup/build.xml when tomcat is installed. &nbsp;if the property is specified (whatever value), the following line will be added at the beginning of the catalina.sh:</div>
+<p style="font-family:monaco;font-size:11px;font-style:normal;margin:0px">&nbsp;&nbsp; &nbsp;JAVA_OPTS="-Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=8787"</p>
+<p style="font-family:monaco;font-size:11px;font-style:normal;margin:0px"><font class="Apple-style-span" face="courier new" size="2"><b>skip.deploy.activiti.modeler=true</b></font> <font class="Apple-style-span" size="2"><font class="Apple-style-span" face="verdana">set this property if the activiti modeler fetching from net and deployment must be skipped. <br>
+</font></font></p>
+<p style="font-family:monaco;font-size:11px;font-style:normal;margin:0px"><font class="Apple-style-span" size="2"><font class="Apple-style-span" face="Verdana">Unless before a release or explicitely working on Signavio, it's advised to set this property since sometimes a version matching the current trunk version isn't uploaded yet, causing the demo setup to fail.</font></font><br>
+</p>
+<p style="font-family:monaco;font-size:11px;font-style:normal;margin:0px"></p>
+<p style="font-family:monaco;font-size:11px;font-style:normal;margin-left:0px;margin-right:0px"><font class="Apple-style-span" face="courier new" size="2"><b>mvn.executable=mvn.bat</b></font>&nbsp;<font class="Apple-style-span" face="verdana, sans-serif"><font class="Apple-style-span" size="2">on windows you have to set this property to make the calls from the ant build scripts (distro/build.xml and qa/build.xml) to maven work.</font></font></p>
+<p></p>
+<p style="font-family:monaco;font-size:11px;font-style:normal;margin:0px"></p>
+<h3 style="font-size:12pt">${user.home}/.activiti/tomcat-users.xml</h3>
+<div>To enable the automatic redeployment targets in qa/build.xml, put a tomcat-users.xml in your ${user.home}/.activiti directory with the following content:</div>
+<p style="margin-left:0px;margin-right:0px"><font class="Apple-style-span" face="'Courier New'">&nbsp;&nbsp;&lt;?xml version="1.0" encoding="utf-8"?&gt;&nbsp;</font></p>
+<p style="margin-left:0px;margin-right:0px"><font class="Apple-style-span" face="'Courier New'">&nbsp;&nbsp;&lt;tomcat-users&gt;&nbsp;</font></p>
+<p style="margin-left:0px;margin-right:0px"><font class="Apple-style-span" face="'Courier New'">&nbsp;&nbsp; &nbsp;&lt;role rolename="manager"/&gt;&nbsp;</font></p>
+<p style="margin-left:0px;margin-right:0px"><font class="Apple-style-span" face="'Courier New'">&nbsp;&nbsp; &nbsp;&lt;user username="activiti" password="activiti" roles="manager"/&gt;&nbsp;</font></p>
+<p style="margin-left:0px;margin-right:0px"><font class="Apple-style-span" face="'Courier New'">&nbsp;&nbsp;&lt;/tomcat-users&gt;</font></p>
+<p></p>
+<h3 style="font-size:12pt">QA</h3>
+<div>Build file <font class="Apple-style-span" face="'Courier New'"><b>qa/build.xml</b></font> contains a number of targets for driving the QA. &nbsp;It also contains convenience targets for developers to do integration testing.</div>
+<h3>Eclipse IDE Setup</h3>
+You'll need to install the maven and svn plugins.<br>
+<br>
+<div>In the "Galileo - http://download.eclipse.org/releases/galileo" update site, which should be available automatically, install "Collaboration --&gt; Subversibe SVN Team provider". &nbsp;After rebooting and adding an SVN repository, you'll be asked automatically to install one of the polarion connectors for SVN. &nbsp;Just take the latest version of the polarion connectors. &nbsp;In case that doesn't happen automatically install a polarion connector manually from "Subversive SVN Connectors Site http://community.polarion.com/projects/subversive/download/eclipse/2.0/update-site/"</div>
+<br>
+<div>Install the maven plugins from http://m2eclipse.sonatype.org/sites/m2e</div>
+<br>
+<div>First check out the activiti root from svn as one project. &nbsp;Then import existing projects and navigate to the modules directory. &nbsp;All the module projects should then be found and can be imported in one go.</div>
+<br>
+<div>in the <font class="Apple-style-span" face="'Courier New'"><b>eclipse</b></font> directory of the root activiti source directory are some files that should be imported as eclipse preferences. &nbsp;The filenames indicate the dialog that can be used to import them.<br>
+<br>
+<h3>Deployment to Alfresco repo</h3>
+<br>
+Add following to /{$user.home}/.m2/settings.xml<br>
+<br>
+&lt;settings xmlns="http://maven.apache.org/POM/4.0.0"<br>
+&nbsp; xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"<br>
+&nbsp; xsi:schemaLocation="http://maven.apache.org/POM/4.0.0<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; http://maven.apache.org/xsd/settings-1.0.0.xsd"&gt;<br>
+<br>
+&nbsp; &lt;servers&gt;<br>
+&nbsp;&nbsp;&nbsp; &lt;server&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;id&gt;alfresco.snapshot.repo&lt;/id&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;username&gt;jbarrez&lt;/username&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;password&gt;XXX&lt;/password&gt;<br>
+&nbsp;&nbsp;&nbsp; &lt;/server&gt;<br>
+<br>
+&nbsp;&nbsp;&nbsp; &lt;server&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;id&gt;alfresco.release.repo&lt;/id&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;username&gt;jbarrez&lt;/username&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;password&gt;XXX&lt;/password&gt;<br>
+&nbsp;&nbsp;&nbsp; &lt;/server&gt;<br>
+&nbsp; &lt;/servers&gt;<br>
+<br>
+&lt;/settings&gt;<br>
+<br>
+<br>
+Note that this will save your password in plain text.<br>
+</div>
+It is possible (since maven 2.1.0) to encrypt your password (untested): http://maven.apache.org/guides/mini/guide-encryption.html<br>
+<br>
+Just do a <b>mvn -Pcheck clean install followed by a mvn deploy</b> on the root. This will publish all artifact to the snapshot/release repo, depending whether '-SNAPSHOT' is added to the current project version.<br>
+<br>
+snapshot repo: http://maven.alfresco.com/nexus/content/repositories/activiti-snapshots/<br>
+release repo: http://maven.alfresco.com/nexus/content/repositories/activiti-releases/<br>
+<br>
+<h3>Debugging ant task</h3>
+http://www.vitorrodrigues.com/blog/2009/07/10/debugging-ant-tasks-in-eclipse/<br>
+<br>
+<h3>Signavio</h3>
+See&nbsp;<a href="View?docid=dgfrhrmh_136cd6vgqgf" id="pqc:" title="activiti - signavio rebranding">activiti - signavio rebranding</a><br>
+<br>
+
+</body>
+</html>

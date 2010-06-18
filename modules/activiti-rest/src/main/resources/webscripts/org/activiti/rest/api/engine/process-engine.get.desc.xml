@@ -1,0 +1,7 @@
+<webscript>
+  <shortname>Process Engine</shortname>
+  <description>Returns information about the process engine</description>
+  <url>/process-engine</url>
+  <authentication>user</authentication>
+  <format default="json">argument</format>
+</webscript>

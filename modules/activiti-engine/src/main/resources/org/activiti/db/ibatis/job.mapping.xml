@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
+  
+<mapper namespace="org.activiti.persistence">
+
+  <!-- RESULTMAP -->
+
+  <resultMap id="jobResultMap" type="org.activiti.impl.job.JobImpl">
+    <id property="id" column="ID_" jdbcType="VARCHAR" />
+    <result property="lockOwner" column="LOCK_OWNER_" jdbcType="VARCHAR" />
+    <result property="lockExpirationTime" column="LOCK_EXP_TIME_" jdbcType="TIMESTAMP" />
+    <result property="exclusive" column="EXCLUSIVE_" jdbcType="BOOLEAN" />
+    <result property="executionId" column="EXECUTION_ID_" jdbcType="VARCHAR" />
+    <result property="processInstanceId" column="PROCESS_INSTANCE_ID_" jdbcType="VARCHAR" />
+    <result property="retries" column="RETRIES_" jdbcType="INTEGER" />
+    <result property="exception" column="EXCEPTION_" jdbcType="VARCHAR" />
+    <result property="jobHandlerType" column="HANDLER_TYPE_" jdbcType="VARCHAR" />
+    <result property="jobHandlerConfiguration" column="HANDLER_CFG_" jdbcType="VARCHAR" />
+    <discriminator javaType="string" column="TYPE_">
+      <case value="message" resultMap="messageResultMap"/> 
+      <case value="timer" resultMap="timerResultMap"/> 
+    </discriminator>
+  </resultMap>
+
+  <resultMap id="messageResultMap" type="org.activiti.impl.job.MessageImpl" extends="jobResultMap"/>
+
+  <resultMap id="timerResultMap" type="org.activiti.impl.job.TimerImpl" extends="jobResultMap">
+    <result property="duedate" column="DUEDATE_" jdbcType="TIMESTAMP" />
+    <result property="repeat" column="REPEAT_" jdbcType="VARCHAR" />
+  </resultMap>
+
+  <!-- SELECT -->
+  
+  <select id="selectJobs" resultMap="jobResultMap">
+    select * from ACT_JOB
+  </select>
+
+  <select id="selectJob" parameterType="string" resultMap="jobResultMap">
+    select * from ACT_JOB where ID_ = #{id}
+  </select>
+
+  <select id="selectNextJobsToExecute" parameterType="string" resultMap="jobResultMap">
+    select * 
+    from ACT_JOB 
+    where (RETRIES_ &gt; 0)
+      and (DUEDATE_ is null or DUEDATE_ &lt; #{now, jdbcType=TIMESTAMP})
+      and (LOCK_OWNER_ is null or LOCK_EXP_TIME_ &lt; #{now, jdbcType=TIMESTAMP})
+  </select>
+
+  <select id="selectFirstTimer" parameterType="string" resultMap="jobResultMap">
+    select * 
+    from ACT_JOB 
+    where (RETRIES_ &gt; 0)
+      and (DUEDATE_ is not null)
+      and (LOCK_OWNER_ is null or LOCK_EXP_TIME_ &lt; #{now, jdbcType=TIMESTAMP})
+    order by DUEDATE_
+  </select>
+
+  <select id="selectTimersByExecutionId" parameterType="string" resultMap="jobResultMap">
+    select * 
+    from ACT_JOB 
+    where (RETRIES_ &gt; 0)
+      and (TYPE_ = 'timer')
+      and (EXECUTION_ID_ = #{executionId})
+  </select>
+  
+  <select id="selectJobByDynamicCriteria" parameterType="map" resultMap="jobResultMap">
+    select *
+    <include refid="selectJobByDynamicCriteriaSql"/>
+    order by ID_
+  </select>
+
+  <select id="selectJobCountByDynamicCriteria" parameterType="map" resultType="long">
+    select count(distinct ID_)
+    <include refid="selectJobByDynamicCriteriaSql"/>
+  </select>
+  
+  <sql id="selectJobByDynamicCriteriaSql">
+    from ACT_JOB
+    <where>
+      <if test="processInstanceId != null">
+        PROCESS_INSTANCE_ID_ = #{processInstanceId}
+      </if>
+    </where>
+  </sql>
+
+  <!-- INSERT -->
+  
+  <insert id="insertTimer" parameterType="org.activiti.impl.job.TimerImpl">
+    insert into ACT_JOB (
+            ID_, 
+            TYPE_,
+            LOCK_OWNER_, 
+            LOCK_EXP_TIME_,
+            EXCLUSIVE_,
+            EXECUTION_ID_, 
+            PROCESS_INSTANCE_ID_,
+            RETRIES_, 
+            EXCEPTION_,
+            DUEDATE_,
+            REPEAT_,
+            HANDLER_TYPE_,
+            HANDLER_CFG_ )
+    values (#{id, jdbcType=VARCHAR},
+            'timer',
+            #{lockOwner, jdbcType=VARCHAR},
+            #{lockExpirationTime, jdbcType=TIMESTAMP},
+            #{exclusive, jdbcType=BOOLEAN},
+            #{executionId, jdbcType=VARCHAR},
+            #{processInstanceId, jdbcType=VARCHAR},
+            #{retries, jdbcType=INTEGER},
+            #{exception, jdbcType=VARCHAR},
+            #{duedate, jdbcType=TIMESTAMP},
+            #{repeat, jdbcType=VARCHAR},
+            #{jobHandlerType, jdbcType=VARCHAR},
+            #{jobHandlerConfiguration, jdbcType=VARCHAR}
+    )
+  </insert>
+
+  <insert id="insertMessage" parameterType="org.activiti.impl.job.MessageImpl">
+    insert into ACT_JOB (
+            ID_, 
+            TYPE_,
+            LOCK_OWNER_, 
+            LOCK_EXP_TIME_,
+            EXCLUSIVE_,
+            EXECUTION_ID_, 
+            PROCESS_INSTANCE_ID_,
+            RETRIES_, 
+            EXCEPTION_,
+            HANDLER_TYPE_,
+            HANDLER_CFG_)
+    values (#{id, jdbcType=VARCHAR},
+            'message',
+            #{lockOwner, jdbcType=VARCHAR},
+            #{lockExpirationTime, jdbcType=TIMESTAMP},
+            #{exclusive, jdbcType=BOOLEAN},
+            #{executionId, jdbcType=VARCHAR},
+            #{processInstanceId, jdbcType=VARCHAR},
+            #{retries, jdbcType=INTEGER},
+            #{exception, jdbcType=VARCHAR},
+            #{jobHandlerType, jdbcType=VARCHAR},
+            #{jobHandlerConfiguration, jdbcType=VARCHAR}
+    )
+  </insert>
+  
+  <!-- UPDATE -->
+  
+  <update id="updateMessage" parameterType="org.activiti.impl.job.MessageImpl">
+    update ACT_JOB
+    <set>
+       LOCK_EXP_TIME_ = #{lockExpirationTime, jdbcType=TIMESTAMP},
+       LOCK_OWNER_ = #{lockOwner, jdbcType=VARCHAR},
+       RETRIES_ = #{retries, jdbcType=INTEGER},
+       EXCEPTION_ = #{exception, jdbcType=VARCHAR}
+    </set>
+    where ID_= #{id, jdbcType=VARCHAR}
+  </update>
+
+  <update id="updateTimer" parameterType="org.activiti.impl.job.TimerImpl">
+    update ACT_JOB
+    <set>
+       LOCK_EXP_TIME_ = #{lockExpirationTime, jdbcType=TIMESTAMP},
+       LOCK_OWNER_ = #{lockOwner, jdbcType=VARCHAR},
+       RETRIES_ = #{retries, jdbcType=INTEGER},
+       EXCEPTION_ = #{exception, jdbcType=VARCHAR},
+       DUEDATE_ = #{duedate, jdbcType=TIMESTAMP}
+    </set>
+    where ID_= #{id, jdbcType=VARCHAR}
+  </update>
+
+  <!-- DELETE -->
+  
+  <delete id="deleteJob" parameterType="string">
+    delete from ACT_JOB where ID_ = #{id}
+  </delete>
+  
+</mapper>

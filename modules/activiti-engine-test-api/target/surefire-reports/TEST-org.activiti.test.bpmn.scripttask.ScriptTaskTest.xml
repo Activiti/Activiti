@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<testsuite failures="0" time="0.943" errors="0" skipped="0" tests="1" name="org.activiti.test.bpmn.scripttask.ScriptTaskTest">
+  <properties>
+    <property name="java.runtime.name" value="Java(TM) SE Runtime Environment"/>
+    <property name="sun.boot.library.path" value="/System/Library/Frameworks/JavaVM.framework/Versions/1.6.0/Libraries"/>
+    <property name="java.vm.version" value="16.3-b01-279"/>
+    <property name="awt.nativeDoubleBuffering" value="true"/>
+    <property name="gopherProxySet" value="false"/>
+    <property name="mrj.build" value="10M3065"/>
+    <property name="java.vm.vendor" value="Apple Inc."/>
+    <property name="java.vendor.url" value="http://www.apple.com/"/>
+    <property name="path.separator" value=":"/>
+    <property name="java.vm.name" value="Java HotSpot(TM) 64-Bit Server VM"/>
+    <property name="file.encoding.pkg" value="sun.io"/>
+    <property name="user.country" value="US"/>
+    <property name="sun.java.launcher" value="SUN_STANDARD"/>
+    <property name="sun.os.patch.level" value="unknown"/>
+    <property name="java.vm.specification.name" value="Java Virtual Machine Specification"/>
+    <property name="user.dir" value="/Users/tombaeyens/Documents/workspace/activiti/modules/activiti-engine-test-api"/>
+    <property name="java.runtime.version" value="1.6.0_20-b02-279-10M3065"/>
+    <property name="java.awt.graphicsenv" value="apple.awt.CGraphicsEnvironment"/>
+    <property name="basedir" value="/Users/tombaeyens/Documents/workspace/activiti/modules/activiti-engine-test-api"/>
+    <property name="java.endorsed.dirs" value="/System/Library/Frameworks/JavaVM.framework/Versions/1.6.0/Home/lib/endorsed"/>
+    <property name="os.arch" value="x86_64"/>
+    <property name="surefire.real.class.path" value="/var/folders/Qd/QdGjuSeGET8jCAOiwWFkV++++TI/-Tmp-/surefirebooter5651009631160592070.jar"/>
+    <property name="java.io.tmpdir" value="/var/folders/Qd/QdGjuSeGET8jCAOiwWFkV++++TI/-Tmp-/"/>
+    <property name="line.separator" value="
+"/>
+    <property name="java.vm.specification.vendor" value="Sun Microsystems Inc."/>
+    <property name="os.name" value="Mac OS X"/>
+    <property name="sun.jnu.encoding" value="MacRoman"/>
+    <property name="java.library.path" value=".:/Library/Java/Extensions:/System/Library/Java/Extensions:/usr/lib/java"/>
+    <property name="surefire.test.class.path" value="/Users/tombaeyens/Documents/workspace/activiti/modules/activiti-engine-test-api/target/test-classes:/Users/tombaeyens/Documents/workspace/activiti/modules/activiti-engine-test-api/target/classes:/Users/tombaeyens/.m2/repository/junit/junit/4.7/junit-4.7.jar:/Users/tombaeyens/Documents/workspace/activiti/modules/activiti-engine/target/activiti-engine-5.0.alpha3-SNAPSHOT.jar:/Users/tombaeyens/.m2/repository/com/h2database/h2/1.2.132/h2-1.2.132.jar:/Users/tombaeyens/.m2/repository/juel/juel/2.1.0/juel-2.1.0.jar:/Users/tombaeyens/.m2/repository/juel/juel-engine/2.1.0/juel-engine-2.1.0.jar:/Users/tombaeyens/.m2/repository/org/codehaus/groovy/groovy-all/1.7.2/groovy-all-1.7.2.jar:/Users/tombaeyens/.m2/repository/org/springframework/spring-core/2.5.6/spring-core-2.5.6.jar:/Users/tombaeyens/.m2/repository/commons-logging/commons-logging/1.1.1/commons-logging-1.1.1.jar:/Users/tombaeyens/.m2/repository/org/springframework/spring-jdbc/2.5.6/spring-jdbc-2.5.6.jar:/Users/tombaeyens/.m2/repository/org/springframework/spring-beans/2.5.6/spring-beans-2.5.6.jar:/Users/tombaeyens/.m2/repository/org/springframework/spring-context/2.5.6/spring-context-2.5.6.jar:/Users/tombaeyens/.m2/repository/aopalliance/aopalliance/1.0/aopalliance-1.0.jar:/Users/tombaeyens/.m2/repository/org/springframework/spring-tx/2.5.6/spring-tx-2.5.6.jar:/Users/tombaeyens/.m2/repository/org/springframework/spring-orm/2.5.6/spring-orm-2.5.6.jar:/Users/tombaeyens/.m2/repository/org/mybatis/mybatis/3.0.1/mybatis-3.0.1.jar:"/>
+    <property name="java.specification.name" value="Java Platform API Specification"/>
+    <property name="java.class.version" value="50.0"/>
+    <property name="sun.management.compiler" value="HotSpot 64-Bit Server Compiler"/>
+    <property name="os.version" value="10.6.3"/>
+    <property name="http.nonProxyHosts" value="local|*.local|169.254/16|*.169.254/16"/>
+    <property name="user.home" value="/Users/tombaeyens"/>
+    <property name="user.timezone" value="Europe/Brussels"/>
+    <property name="java.awt.printerjob" value="apple.awt.CPrinterJob"/>
+    <property name="java.specification.version" value="1.6"/>
+    <property name="file.encoding" value="MacRoman"/>
+    <property name="user.name" value="tombaeyens"/>
+    <property name="java.class.path" value="/Users/tombaeyens/Documents/workspace/activiti/modules/activiti-engine-test-api/target/test-classes:/Users/tombaeyens/Documents/workspace/activiti/modules/activiti-engine-test-api/target/classes:/Users/tombaeyens/.m2/repository/junit/junit/4.7/junit-4.7.jar:/Users/tombaeyens/Documents/workspace/activiti/modules/activiti-engine/target/activiti-engine-5.0.alpha3-SNAPSHOT.jar:/Users/tombaeyens/.m2/repository/com/h2database/h2/1.2.132/h2-1.2.132.jar:/Users/tombaeyens/.m2/repository/juel/juel/2.1.0/juel-2.1.0.jar:/Users/tombaeyens/.m2/repository/juel/juel-engine/2.1.0/juel-engine-2.1.0.jar:/Users/tombaeyens/.m2/repository/org/codehaus/groovy/groovy-all/1.7.2/groovy-all-1.7.2.jar:/Users/tombaeyens/.m2/repository/org/springframework/spring-core/2.5.6/spring-core-2.5.6.jar:/Users/tombaeyens/.m2/repository/commons-logging/commons-logging/1.1.1/commons-logging-1.1.1.jar:/Users/tombaeyens/.m2/repository/org/springframework/spring-jdbc/2.5.6/spring-jdbc-2.5.6.jar:/Users/tombaeyens/.m2/repository/org/springframework/spring-beans/2.5.6/spring-beans-2.5.6.jar:/Users/tombaeyens/.m2/repository/org/springframework/spring-context/2.5.6/spring-context-2.5.6.jar:/Users/tombaeyens/.m2/repository/aopalliance/aopalliance/1.0/aopalliance-1.0.jar:/Users/tombaeyens/.m2/repository/org/springframework/spring-tx/2.5.6/spring-tx-2.5.6.jar:/Users/tombaeyens/.m2/repository/org/springframework/spring-orm/2.5.6/spring-orm-2.5.6.jar:/Users/tombaeyens/.m2/repository/org/mybatis/mybatis/3.0.1/mybatis-3.0.1.jar:"/>
+    <property name="java.vm.specification.version" value="1.0"/>
+    <property name="sun.arch.data.model" value="64"/>
+    <property name="java.home" value="/System/Library/Frameworks/JavaVM.framework/Versions/1.6.0/Home"/>
+    <property name="java.specification.vendor" value="Sun Microsystems Inc."/>
+    <property name="user.language" value="en"/>
+    <property name="awt.toolkit" value="apple.awt.CToolkit"/>
+    <property name="java.vm.info" value="mixed mode"/>
+    <property name="java.version" value="1.6.0_20"/>
+    <property name="java.ext.dirs" value="/Library/Java/Extensions:/System/Library/Java/Extensions:/System/Library/Frameworks/JavaVM.framework/Versions/1.6.0/Home/lib/ext"/>
+    <property name="sun.boot.class.path" value="/System/Library/Frameworks/JavaVM.framework/Versions/1.6.0/Classes/jsfd.jar:/System/Library/Frameworks/JavaVM.framework/Versions/1.6.0/Classes/classes.jar:/System/Library/Frameworks/JavaVM.framework/Frameworks/JavaRuntimeSupport.framework/Resources/Java/JavaRuntimeSupport.jar:/System/Library/Frameworks/JavaVM.framework/Versions/1.6.0/Classes/ui.jar:/System/Library/Frameworks/JavaVM.framework/Versions/1.6.0/Classes/laf.jar:/System/Library/Frameworks/JavaVM.framework/Versions/1.6.0/Classes/sunrsasign.jar:/System/Library/Frameworks/JavaVM.framework/Versions/1.6.0/Classes/jsse.jar:/System/Library/Frameworks/JavaVM.framework/Versions/1.6.0/Classes/jce.jar:/System/Library/Frameworks/JavaVM.framework/Versions/1.6.0/Classes/charsets.jar"/>
+    <property name="java.vendor" value="Apple Inc."/>
+    <property name="localRepository" value="/Users/tombaeyens/.m2/repository"/>
+    <property name="file.separator" value="/"/>
+    <property name="java.vendor.url.bug" value="http://bugreport.apple.com/"/>
+    <property name="sun.cpu.endian" value="little"/>
+    <property name="sun.io.unicode.encoding" value="UnicodeLittle"/>
+    <property name="mrj.version" value="1060.1.6.0_20-279"/>
+    <property name="socksNonProxyHosts" value="local|*.local|169.254/16|*.169.254/16"/>
+    <property name="ftp.nonProxyHosts" value="local|*.local|169.254/16|*.169.254/16"/>
+    <property name="sun.cpu.isalist" value=""/>
+  </properties>
+  <testcase time="0.941" classname="org.activiti.test.bpmn.scripttask.ScriptTaskTest" name="testScriptExecution"/>
+</testsuite>

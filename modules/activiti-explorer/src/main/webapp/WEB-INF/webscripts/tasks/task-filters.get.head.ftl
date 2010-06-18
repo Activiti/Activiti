@@ -1,0 +1,1 @@
+<script type="text/javascript" src="${url.context}/res/components/tasks/task-filters.js"></script>

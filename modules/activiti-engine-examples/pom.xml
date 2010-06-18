@@ -1,0 +1,65 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <name>Activiti - Engine - Examples</name>
+  <groupId>org.activiti</groupId>
+  <artifactId>activiti-engine-examples</artifactId>
+
+  <parent>
+    <groupId>org.activiti</groupId>
+    <artifactId>activiti-root</artifactId>
+    <relativePath>../..</relativePath>
+    <version>5.0.alpha3-SNAPSHOT</version>
+  </parent>
+
+  <dependencies>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.activiti</groupId>
+      <artifactId>activiti-engine</artifactId>
+    </dependency>
+  </dependencies>
+  
+  <profiles>
+    <profile>
+      <id>database</id>
+      <activation>
+        <property>
+          <name>database</name>
+        </property>
+      </activation>
+      <build>
+        <plugins>
+          <plugin>
+            <artifactId>maven-antrun-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>database-test-create-schema</id>
+                <phase>process-test-classes</phase>
+                <goals>
+                  <goal>run</goal>
+                </goals>
+                <configuration>
+                  <tasks>
+                    <echo message="CREATING SCHEMA AND UPDATING PROPERTIES ${database} #{database} @{database} " />
+	                  <ant antfile="${basedir}/../../qa/db/build.xml" target="create.db.schema" inheritall="false">
+                      <property name="test_classpath" refid="maven.test.classpath"/>
+                      <property name="database" value="${database}"/>
+	                  </ant>
+	                  <!-- TODO overwrite the target/classes/activiti.properties -->
+                  </tasks>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
+
+</project>

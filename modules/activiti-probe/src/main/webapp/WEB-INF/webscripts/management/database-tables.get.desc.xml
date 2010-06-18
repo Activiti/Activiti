@@ -1,0 +1,5 @@
+<webscript>
+  <shortname>Probe Database Tables</shortname>
+  <description>Displays the database tables</description>
+  <url>/component/database-tables</url>
+</webscript>

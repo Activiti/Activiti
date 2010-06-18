@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions id="definitions" 
+  xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:activiti="http://activiti.org/bpmn-extensions"
+  typeLanguage="http://www.w3.org/2001/XMLSchema"
+  expressionLanguage="http://www.w3.org/1999/XPath" 
+  targetNamespace="http://www.activiti.org/bpmn2.0">
+  
+  <interface id="counter" name="org.activiti.test.bpmn.servicetask.Counter">
+    <operation id="counter.increment" name="increment">
+      <inMessageRef >b</inMessageRef> <!-- Sadly, needs to be defined according to XSD, even if we don't need params -->
+    </operation>
+    <operation id="counter.decrement" name="decrement" >
+      <inMessageRef>d</inMessageRef>
+    </operation>
+  </interface>
+  
+  <process id="javaServiceNoParamsOrResult">
+  
+    <startEvent id="theStart" />
+    
+    <sequenceFlow id="flow1" sourceRef="theStart" targetRef="javaService" />
+    
+    <serviceTask id="javaService" 
+                 name="Java service invocation" 
+                 operationRef="counter.increment" />
+    
+    <sequenceFlow id="flow2" sourceRef="javaService" targetRef="theEnd" />
+    
+    <endEvent id="theEnd" />
+    
+  </process>
+
+</definitions>
