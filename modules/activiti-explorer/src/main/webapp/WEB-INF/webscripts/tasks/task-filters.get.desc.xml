@@ -1,0 +1,5 @@
+<webscript>
+  <shortname>Task filters</shortname>
+  <description>Displays tasks in a list</description>
+  <url>/component/task-filters</url>
+</webscript>

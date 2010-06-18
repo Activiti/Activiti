@@ -1,0 +1,1 @@
+<script type="text/javascript" src="${url.context}/res/components/navigation/navigation.js"></script>

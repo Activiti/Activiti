@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions id="taskAssigneeExample" 
+  xmlns="http://schema.omg.org/spec/BPMN/2.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	typeLanguage="http://www.w3.org/2001/XMLSchema"
+	expressionLanguage="http://www.w3.org/1999/XPath" 
+	targetNamespace="http://www.activiti.org/bpmn2.0">
+	
+	<resource id="accountantResource" name="accountant" />
+
+	<process id='multipleCandidatesGroup' name="Multiple candidate groups example">
+	
+		<startEvent id='theStart' />
+		
+		<sequenceFlow id='flow1' sourceRef='theStart' targetRef='theTask' />
+
+		<userTask id='theTask' name='Approve expenses' >
+		  <documentation>
+		    Judge expenses of employees before end of fiscal quarter.
+		  </documentation>
+		  <potentialOwner resourceRef="accountantResource">
+		    <resourceAssignmentExpression>
+		      <formalExpression>group(accountancy), group(management)</formalExpression>
+		    </resourceAssignmentExpression>
+		  </potentialOwner>
+		</userTask>
+		
+		<sequenceFlow id='flow2' sourceRef='theTask' targetRef='theEnd' />
+		
+		<endEvent id='theEnd' />
+		
+	</process>
+
+</definitions>

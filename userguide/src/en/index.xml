@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE book [
+  <!ENTITY ch01 SYSTEM "chapters/ch01-Introduction.xml">
+  <!ENTITY ch02 SYSTEM "chapters/ch02-GettingStarted.xml">
+  <!ENTITY ch03 SYSTEM "chapters/ch03-Configuration.xml">
+  <!ENTITY ch04 SYSTEM "chapters/ch04-API.xml">
+  <!ENTITY ch05 SYSTEM "chapters/ch05-Deployment.xml">
+  <!ENTITY ch06 SYSTEM "chapters/ch06-BPMN.xml">
+  <!ENTITY ch07 SYSTEM "chapters/ch07-REST.xml">
+]>
+
+<book>
+
+  <bookinfo><title>Activiti User Guide</title></bookinfo>
+  
+  <toc />
+  
+&ch01;
+&ch02;
+&ch03;
+&ch04;
+&ch05;
+&ch06;
+&ch07;
+  
+</book>

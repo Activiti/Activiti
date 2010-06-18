@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+<!DOCTYPE mapper
+  PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN"
+  "http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+  
+<mapper namespace="org.activiti.persistence">
+
+  <!-- PROPERTY -->
+  
+  <resultMap id="propertyResultMap" type="org.activiti.impl.db.PropertyImpl">
+    <id property="name" column="NAME_" jdbcType="VARCHAR" />
+    <result property="dbversion" column="DBVERSION_" jdbcType="INTEGER" />
+    <result property="value" column="VALUE_" jdbcType="VARCHAR" />
+  </resultMap>
+  
+  <select id="selectDbSchemaVersion" resultType="string">
+    select VALUE_ from ACT_PROPERTY where NAME_ = 'schema.version'
+  </select>
+
+  <select id="selectProperty" parameterType="string" resultMap="propertyResultMap">
+    select * from ACT_PROPERTY where NAME_ = #{name}
+  </select>
+  
+  <update id="updateProperty" parameterType="org.activiti.impl.db.PropertyImpl">
+    update ACT_PROPERTY
+    <set>
+      DBVERSION_ = #{newDbversion, jdbcType=INTEGER},
+      VALUE_ = #{value, jdbcType=VARCHAR},
+    </set>
+    where NAME_ = #{name, jdbcType=VARCHAR}
+      and DBVERSION_ = #{dbversion, jdbcType=INTEGER}
+  </update>
+
+  <!-- TABLE DATA -->
+  
+  <!-- The property passing doesn't seem to work with parameterType='string', so we are forced to use a map here -->
+  <select id="selectTableCount" parameterType="map" resultType="long" >
+    select count(*) from ${tableName}
+  </select>
+  
+  <select id="selectTableData" parameterType="map" resultType="map"> <!-- TODO: set resultSetType! (performace) -->
+    select * from ${tableName}
+  </select>
+
+</mapper>
