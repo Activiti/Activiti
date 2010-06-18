@@ -1,0 +1,107 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>  
+  <groupId>org.activiti</groupId>
+  <artifactId>activiti-webapp</artifactId>
+  <packaging>war</packaging>  
+  <name>Activiti - Webapp resources</name>
+  <parent>
+    <groupId>org.activiti</groupId>
+    <artifactId>activiti-root</artifactId>
+    <relativePath>../..</relativePath>
+    <version>5.0.alpha2</version>
+  </parent>  
+
+  <build>
+    
+    <plugins>
+
+      <plugin>
+        <artifactId>maven-eclipse-plugin</artifactId>
+        <configuration>
+          <wtpversion>1.5</wtpversion>
+        </configuration>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-war-plugin</artifactId>
+        <configuration>
+          <!--
+             <overlays>
+                <overlay>
+                   <groupId>org.springframework.extensions.surf</groupId>
+                   <artifactId>spring-surf-application</artifactId>
+                   <type>war</type>
+                </overlay>
+             </overlays>
+          -->
+        </configuration>
+      </plugin>
+
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>tomcat-maven-plugin</artifactId>
+        <configuration>
+          <url>http://localhost:8080/manager</url>
+        </configuration>
+      </plugin>
+
+      <!-- Jetty Plugin for smoke screen tests -->
+      <plugin>
+        <groupId>org.mortbay.jetty</groupId>
+        <artifactId>jetty-maven-plugin</artifactId>
+        <version>7.0.1.v20091125</version>
+        <configuration>
+          <scanIntervalSeconds>1</scanIntervalSeconds>
+          <stopPort>9966</stopPort>
+          <stopKey>foo</stopKey>
+          <webAppConfig>
+            <contextPath>/</contextPath>
+          </webAppConfig>
+          <connectors>
+            <connector implementation="org.eclipse.jetty.server.nio.SelectChannelConnector">
+              <port>8180</port>
+            </connector>
+          </connectors>
+          <scanTargets>
+            <scanTarget>src/main/webapp</scanTarget>
+          </scanTargets>
+        </configuration>
+      </plugin>
+
+    </plugins>
+    
+  </build>
+  
+  <dependencies>
+
+    <dependency>
+      <groupId>org.springframework.extensions.surf</groupId>
+      <artifactId>spring-surf-application</artifactId>
+      <version>1.0.0.M3</version>
+      <type>war</type>
+      <scope>runtime</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.springframework.extensions.surf</groupId>
+      <artifactId>spring-surf</artifactId>
+      <scope>provided</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>javax.servlet</groupId>
+      <artifactId>servlet-api</artifactId>
+      <scope>provided</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.json</groupId>
+      <artifactId>json</artifactId>
+      <scope>provided</scope>
+    </dependency>
+
+  </dependencies>
+
+</project>

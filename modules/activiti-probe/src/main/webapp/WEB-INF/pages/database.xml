@@ -1,0 +1,17 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<page>
+  <id>database</id>
+  <title>Database</title>
+  <template-instance>divided-left</template-instance>
+  <authentication>user</authentication>
+  <components>
+    <component>
+      <region-id>left1</region-id>
+      <url>/component/database-tables</url>
+    </component>
+    <component>
+      <region-id>main1</region-id>
+      <url>/component/database-table</url>
+    </component>
+  </components>
+</page>

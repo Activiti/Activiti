@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions id="propertyTest" 
+  xmlns="http://schema.omg.org/spec/BPMN/2.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:activiti="http://activiti.org/bpmn-extensions"
+  typeLanguage="http://www.w3.org/2001/XMLSchema"
+  expressionLanguage="http://www.w3.org/1999/XPath" 
+  targetNamespace="http://www.activiti.org/bpmn2.0">
+  
+  <process id="testUserTaskDstExprProperty">
+  
+    <startEvent id="theStart" />
+    
+    <sequenceFlow id="flow1" sourceRef="theStart" targetRef="theTask" />
+
+    <userTask id="theTask" name="My task">
+      <property id="orderAddress" activiti:dstExpr="${order.address}" />
+    </userTask>
+    
+    <sequenceFlow id="flow2" sourceRef="theTask" targetRef="theTask2" />
+    
+    <userTask id="theTask2" name="My second task" />
+
+    <sequenceFlow id="flow3" sourceRef="theTask2" targetRef="theEnd" />
+    
+    <endEvent id="theEnd" />
+    
+  </process>
+
+</definitions>

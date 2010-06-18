@@ -1,0 +1,23 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<page>
+  <id>start</id>
+  <title>Process Engine</title>
+  <template-instance>standard</template-instance>
+  <authentication>admin</authentication>
+  <components>
+    <component>
+      <region-id>main1</region-id>
+      <url>/component/process-engine</url>
+    </component>
+  </components>
+  <associations>
+    <page-association>
+      <dest-id>database</dest-id>
+      <assoc-type>child</assoc-type>
+    </page-association>
+    <page-association>
+      <dest-id>about</dest-id>
+      <assoc-type>child</assoc-type>
+    </page-association>
+  </associations>
+</page>

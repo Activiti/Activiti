@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<definitions id="sid-8cae7938-acbb-4e4c-b5bb-0bc3b252baec"
+	typeLanguage="http://www.w3.org/2001/XMLSchema"
+	expressionLanguage="http://www.w3.org/1999/XPath"
+	targetNamespace="http://activiti.org/bpmn20" 
+	xmlns="http://schema.omg.org/spec/BPMN/2.0">
+	
+	<process id="financialReport" name="Monthly financial report">
+	
+		<startEvent id="theStart" />
+		
+		<sequenceFlow id='flow1' sourceRef='theStart' targetRef='writeReportTask' />
+		
+		<userTask id="writeReportTask" name="Write monthly financial report" >
+		  <documentation>
+        Write monthly financial report for publication to shareholders.
+      </documentation>
+      <potentialOwner resourceRef="accountant">
+        <resourceAssignmentExpression>
+          <formalExpression>accountancy</formalExpression>
+        </resourceAssignmentExpression>
+      </potentialOwner>
+		</userTask>
+		
+		<sequenceFlow id='flow2' sourceRef='writeReportTask' targetRef='verifyReportTask' />
+			
+		<userTask id="verifyReportTask" name="Verify monthly financial report" >
+		  <documentation>
+        Verify monthly financial report composed by the accountancy departement.
+        This financial report is going to be sent to all the company shareholders.  
+      </documentation>
+      <potentialOwner resourceRef="manager">
+        <resourceAssignmentExpression>
+          <formalExpression>management</formalExpression>
+        </resourceAssignmentExpression>
+      </potentialOwner>
+		</userTask>
+		
+		<sequenceFlow id='flow3' sourceRef='verifyReportTask' targetRef='theEnd' />
+			
+		<endEvent id="theEnd" />
+			
+	</process>
+	
+</definitions>

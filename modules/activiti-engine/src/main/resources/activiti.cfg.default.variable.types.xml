@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<variable-types>
+
+  <object name="Types" class="org.activiti.impl.variable.Types">
+    <property name="typesList">
+      <list>
+			  <object class="org.activiti.impl.variable.NullType" />
+			  <object class="org.activiti.impl.variable.StringType" />
+			  <object class="org.activiti.impl.variable.LongType" />
+        <object class="org.activiti.impl.variable.DateType" />
+			  <object class="org.activiti.impl.variable.ByteArrayType" />
+			  <object class="org.activiti.impl.variable.SerializableType" />
+      </list>
+    </property>
+  </object>
+  
+</variable-types>

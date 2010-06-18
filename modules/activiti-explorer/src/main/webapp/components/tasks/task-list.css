@@ -1,0 +1,57 @@
+.task-list h1 {
+  float: left;
+}
+
+.task-list .yui-pg-container {
+  float: right;
+}
+
+.task-list .activiti-datatable.yui-dt {
+  clear: both;
+}
+
+/* COLUMN WIDTHS */
+
+/* ICON */
+
+.task-list .activiti-datatable.yui-dt .yui-dt-col-id
+{
+  text-align: center;
+}
+
+
+.task-list .activiti-datatable.yui-dt .yui-dt-col-id .yui-dt-liner 
+{
+  padding:0.4em 0.9em;
+}
+
+.task-list .activiti-datatable.yui-dt .yui-dt-col-id .task{
+  background-image: url(../../images/task-icon.png);
+  background-repeat: no-repeat;
+  background-position: center;
+  margin: 0.25em;
+  padding: 1.5em;
+}
+
+.task-list .activiti-datatable.yui-dt .yui-dt-col-assignee .user-task-assigned,
+.task-list .activiti-datatable.yui-dt .yui-dt-col-assignee .user-task-unassigned {
+  background-repeat: no-repeat;
+  background-position: center;
+  padding: 1.1em ;
+}
+
+.task-list .activiti-datatable.yui-dt .yui-dt-col-assignee .user-task-assigned {
+  background-image: url(../../images/user-task-assigned-icon.png);
+}
+
+.task-list .activiti-datatable.yui-dt .yui-dt-col-assignee .user-task-unassigned {
+  background-image: url(../../images/user-task-unassigned-icon.png);
+}
+
+
+/* ACTIONS */
+
+.task-list .activiti-datatable.yui-dt .yui-dt-col-priority {
+  text-align: right;  
+}
+

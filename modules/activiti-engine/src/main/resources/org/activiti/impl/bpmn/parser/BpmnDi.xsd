@@ -1,0 +1,273 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with XMLSpy v2009 sp1 (http://www.altova.com) by Bruce Silver (private) -->
+<xs:schema xmlns="http://bpmndi.org" xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="http://bpmndi.org" elementFormDefault="qualified" attributeFormDefault="unqualified">
+	<xs:element name="bpmndi">
+		<xs:annotation>
+			<xs:documentation>Comment describing your root element</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="diagram" maxOccurs="unbounded"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="diagram" type="diagramType"/>
+	<xs:complexType name="diagramType">
+		<xs:attribute name="id" type="xs:ID" use="required"/>
+		<xs:attribute name="name" type="xs:string"/>
+		<xs:anyAttribute namespace="##other"/>
+	</xs:complexType>
+	<xs:element name="processDiagram" type="processDiagramType" substitutionGroup="diagram"/>
+	<xs:complexType name="processDiagramType">
+		<xs:complexContent>
+			<xs:extension base="diagramType">
+				<xs:sequence>
+					<xs:element ref="laneCompartment" maxOccurs="unbounded"/>
+					<xs:element ref="sequenceFlowConnector" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:element ref="associationConnector" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:element ref="dataAssociationConnector" minOccurs="0" maxOccurs="unbounded"/>
+				</xs:sequence>
+				<xs:attribute name="processRef" type="xs:IDREF"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:element name="collaborationDiagram" type="collaborationDiagramType" substitutionGroup="diagram"/>
+	<xs:complexType name="collaborationDiagramType">
+		<xs:complexContent>
+			<xs:extension base="diagramType">
+				<xs:sequence>
+					<xs:element name="pool" type="poolCompartmentType" minOccurs="2" maxOccurs="unbounded"/>
+					<xs:element ref="messageFlowConnector" minOccurs="0" maxOccurs="unbounded"/>
+				</xs:sequence>
+				<xs:attribute name="collaborationRef" type="xs:IDREF"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:element name="bpmnNode" type="bpmnNodeType"/>
+	<xs:complexType name="bpmnNodeType">
+		<xs:attribute name="id" type="xs:ID" use="required"/>
+		<xs:attribute name="name" type="xs:string"/>
+		<xs:attribute name="x"/>
+		<xs:attribute name="y"/>
+		<xs:attribute name="width"/>
+		<xs:attribute name="height"/>
+	</xs:complexType>
+	<xs:element name="bpmnCompartment" type="bpmnCompartmentType" substitutionGroup="bpmnNode"/>
+	<xs:complexType name="bpmnCompartmentType">
+		<xs:complexContent>
+			<xs:extension base="bpmnNodeType">
+				<xs:attribute name="isVisible" type="xs:boolean"/>
+				<xs:attribute name="orientation">
+					<xs:simpleType>
+						<xs:restriction base="xs:string">
+							<xs:enumeration value="horizontal"/>
+							<xs:enumeration value="vertical"/>
+						</xs:restriction>
+					</xs:simpleType>
+				</xs:attribute>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:element name="laneCompartment" type="laneCompartmentType_1" substitutionGroup="bpmnCompartment"/>
+	<xs:complexType name="laneCompartmentType">
+		<xs:complexContent>
+			<xs:extension base="bpmnCompartmentType">
+				<xs:sequence>
+					<xs:element ref="bpmnShape" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:element name="subLane" type="laneCompartmentType_1" minOccurs="0" maxOccurs="unbounded"/>
+				</xs:sequence>
+				<xs:attribute name="laneRef" type="xs:IDREF"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:element name="poolCompartment" type="poolCompartmentType" substitutionGroup="bpmnCompartment"/>
+	<xs:complexType name="poolCompartmentType">
+		<xs:complexContent>
+			<xs:extension base="bpmnCompartmentType">
+				<xs:sequence>
+					<xs:element name="laneCompRef" type="xs:IDREF" minOccurs="0" maxOccurs="unbounded"/>
+				</xs:sequence>
+				<xs:attribute name="participantRef" type="xs:IDREF"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:element name="bpmnShape" type="bpmnNodeType" substitutionGroup="bpmnNode"/>
+	<xs:element name="bpmnLabel" substitutionGroup="bpmnNode"/>
+	<xs:element name="activityShape" type="activityShapeType_1" substitutionGroup="bpmnShape"/>
+	<xs:complexType name="activityShapeType">
+		<xs:attribute name="activityRef" type="xs:IDREF"/>
+	</xs:complexType>
+	<xs:complexType name="activityShapeType_1">
+		<xs:complexContent>
+			<xs:extension base="bpmnNodeType">
+				<xs:attribute name="activityRef"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:element name="subprocessShape" type="subprocessShapeType" substitutionGroup="activityShape"/>
+	<xs:complexType name="subprocessShapeType">
+		<xs:complexContent>
+			<xs:extension base="activityShapeType_1">
+				<xs:sequence>
+					<xs:element name="laneCompRef" type="xs:IDREF" minOccurs="0" maxOccurs="unbounded"/>
+				</xs:sequence>
+				<xs:attribute name="isExpanded" type="xs:boolean"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:element name="calledSubprocessShape" type="calledSubprocessShapeType" substitutionGroup="activityShape"/>
+	<xs:complexType name="calledSubprocessShapeType">
+		<xs:complexContent>
+			<xs:extension base="activityShapeType_1">
+				<xs:attribute name="isExpanded" type="xs:boolean"/>
+				<xs:attribute name="diagramLink" type="xs:IDREF"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:element name="taskShape" type="activityShapeType_1" substitutionGroup="activityShape"/>
+	<xs:element name="gatewayShape" substitutionGroup="bpmnShape">
+		<xs:complexType>
+			<xs:complexContent>
+				<xs:extension base="bpmnNodeType">
+					<xs:attribute name="gatewayRef"/>
+				</xs:extension>
+			</xs:complexContent>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="eventShape" substitutionGroup="bpmnShape">
+		<xs:complexType>
+			<xs:complexContent>
+				<xs:extension base="bpmnNodeType">
+					<xs:attribute name="eventRef"/>
+				</xs:extension>
+			</xs:complexContent>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="dataObjectShape" substitutionGroup="bpmnShape">
+		<xs:complexType>
+			<xs:complexContent>
+				<xs:extension base="bpmnNodeType">
+					<xs:attribute name="dataObjectRef" type="xs:IDREF"/>
+				</xs:extension>
+			</xs:complexContent>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="dataStoreShape" substitutionGroup="bpmnShape">
+		<xs:complexType>
+			<xs:complexContent>
+				<xs:extension base="bpmnNodeType">
+					<xs:attribute name="dataStoreRef" type="xs:IDREF"/>
+				</xs:extension>
+			</xs:complexContent>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="dataInputShape" substitutionGroup="bpmnShape">
+		<xs:complexType>
+			<xs:complexContent>
+				<xs:extension base="bpmnNodeType">
+					<xs:attribute name="dataInputRef" type="xs:IDREF"/>
+				</xs:extension>
+			</xs:complexContent>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="dataOutputShape" substitutionGroup="bpmnShape">
+		<xs:complexType>
+			<xs:complexContent>
+				<xs:extension base="bpmnNodeType">
+					<xs:attribute name="dataOutputRef" type="xs:IDREF"/>
+				</xs:extension>
+			</xs:complexContent>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="messageShape" substitutionGroup="bpmnShape">
+		<xs:complexType>
+			<xs:complexContent>
+				<xs:extension base="bpmnNodeType">
+					<xs:attribute name="messageRef" type="xs:IDREF"/>
+				</xs:extension>
+			</xs:complexContent>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="groupShape" substitutionGroup="bpmnShape">
+		<xs:complexType>
+			<xs:complexContent>
+				<xs:extension base="bpmnNodeType">
+					<xs:attribute name="categoryRef" type="xs:IDREF"/>
+				</xs:extension>
+			</xs:complexContent>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="textAnnotationShape" substitutionGroup="bpmnShape">
+		<xs:complexType>
+			<xs:complexContent>
+				<xs:extension base="bpmnNodeType">
+					<xs:attribute name="annotationRef" type="xs:IDREF"/>
+				</xs:extension>
+			</xs:complexContent>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="bpmnConnector" type="bpmnConnectorType"/>
+	<xs:complexType name="bpmnConnectorType">
+		<xs:sequence>
+			<xs:element name="bendpoint" minOccurs="0" maxOccurs="unbounded">
+				<xs:complexType>
+					<xs:attribute name="x" type="xs:double"/>
+					<xs:attribute name="y" type="xs:double"/>
+				</xs:complexType>
+			</xs:element>
+		</xs:sequence>
+		<xs:attribute name="id" type="xs:ID" use="required"/>
+		<xs:attribute name="sourceRef" type="xs:IDREF" use="required"/>
+		<xs:attribute name="targetRef" type="xs:IDREF" use="required"/>
+		<xs:attribute name="label" type="xs:string"/>
+	</xs:complexType>
+	<xs:element name="sequenceFlowConnector" substitutionGroup="bpmnConnector">
+		<xs:complexType>
+			<xs:complexContent>
+				<xs:extension base="bpmnConnectorType">
+					<xs:attribute name="sequenceFlowRef" type="xs:IDREF"/>
+				</xs:extension>
+			</xs:complexContent>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="messageFlowConnector">
+		<xs:complexType>
+			<xs:complexContent>
+				<xs:extension base="bpmnConnectorType">
+					<xs:attribute name="messageFlowRef" type="xs:IDREF"/>
+				</xs:extension>
+			</xs:complexContent>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="dataAssociationConnector" substitutionGroup="bpmnConnector">
+		<xs:complexType>
+			<xs:complexContent>
+				<xs:extension base="associationConnectorType">
+					<xs:attribute name="dataAssociationRef" type="xs:IDREF"/>
+				</xs:extension>
+			</xs:complexContent>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="associationConnector" type="associationConnectorType_1" substitutionGroup="bpmnConnector"/>
+	<xs:complexType name="associationConnectorType">
+		<xs:complexContent>
+			<xs:extension base="bpmnConnectorType">
+				<xs:attribute name="isDirectional" type="xs:boolean"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:element name="compensationFlowConnector" type="associationConnectorType_1" substitutionGroup="associationConnector"/>
+	<xs:element name="lane" type="laneCompartmentType"/>
+	<xs:complexType name="laneCompartmentType_1">
+		<xs:complexContent>
+			<xs:extension base="laneCompartmentType"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="associationConnectorType_1">
+		<xs:complexContent>
+			<xs:extension base="associationConnectorType">
+				<xs:attribute name="associationRef" type="xs:IDREF"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+</xs:schema>
