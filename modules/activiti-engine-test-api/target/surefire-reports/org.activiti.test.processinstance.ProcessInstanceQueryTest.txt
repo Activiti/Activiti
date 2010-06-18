@@ -1,4 +1,0 @@
--------------------------------------------------------------------------------
-Test set: org.activiti.test.processinstance.ProcessInstanceQueryTest
--------------------------------------------------------------------------------
-Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.341 sec
