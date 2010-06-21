@@ -29,6 +29,7 @@ import org.activiti.impl.bpmn.ExclusiveGatewayActivity;
 import org.activiti.impl.bpmn.JavaServiceTaskActivity;
 import org.activiti.impl.bpmn.NoneStartEventActivity;
 import org.activiti.impl.bpmn.Operation;
+import org.activiti.impl.bpmn.ParallelGatewayActivity;
 import org.activiti.impl.bpmn.ScriptTaskActivity;
 import org.activiti.impl.bpmn.TaskActivity;
 import org.activiti.impl.bpmn.UserTaskActivity;
@@ -280,6 +281,8 @@ public class BpmnParse extends Parse {
     for (Element activityElement : parentElement.elements()) {
       if (activityElement.getTagName().equals("exclusiveGateway")) {
         parseExclusiveGateway(activityElement, scopeElement);
+      } else if (activityElement.getTagName().equals("parallelGateway")) { 
+        parseParallelGateway(activityElement, scopeElement);
       } else if (activityElement.getTagName().equals("scriptTask")) {
         parseScriptTask(activityElement, scopeElement);
       } else if (activityElement.getTagName().equals("serviceTask")) {
@@ -327,6 +330,14 @@ public class BpmnParse extends Parse {
   public void parseExclusiveGateway(Element exclusiveGwElement, ScopeElementImpl scopeElement) {
     ActivityImpl activity = parseAndCreateActivityOnScopeElement(exclusiveGwElement, scopeElement);
     activity.setActivityBehavior(new ExclusiveGatewayActivity());
+  }
+  
+  /**
+   * Parses a parallel gateway declaration.
+   */
+  public void parseParallelGateway(Element parallelGwElement, ScopeElementImpl scopeElement) {
+    ActivityImpl activity = parseAndCreateActivityOnScopeElement(parallelGwElement, scopeElement);
+    activity.setActivityBehavior(new ParallelGatewayActivity());
   }
   
   /**

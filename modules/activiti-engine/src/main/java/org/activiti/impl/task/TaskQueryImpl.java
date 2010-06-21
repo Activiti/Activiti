@@ -20,6 +20,7 @@ import java.util.Map;
 
 import org.activiti.ActivitiException;
 import org.activiti.Page;
+import org.activiti.SortOrder;
 import org.activiti.Task;
 import org.activiti.TaskQuery;
 import org.activiti.impl.identity.GroupImpl;
@@ -41,6 +42,10 @@ public class TaskQueryImpl extends AbstractListQuery<Task> implements TaskQuery 
   protected String candidateGroup;
   
   protected String processInstanceId;
+  
+  protected String sortColumn;
+  
+  protected SortOrder sortOrder;
   
   public TaskQueryImpl(CommandExecutor commandExecutor) {
     super(commandExecutor);
@@ -77,6 +82,24 @@ public class TaskQueryImpl extends AbstractListQuery<Task> implements TaskQuery 
     return this;
   }
   
+  public TaskQuery orderAsc(String column) {
+    if (sortColumn != null) {
+      throw new ActivitiException("Invalid usage: cannot use both orderAsc and orderDesc in same query");
+    }
+    this.sortOrder = SortOrder.ASCENDING;
+    this.sortColumn = column;
+    return this;
+  }
+  
+  public TaskQuery orderDesc(String column) {
+    if (sortColumn != null) {
+      throw new ActivitiException("Invalid usage: cannot use both orderAsc and orderDesc in same query");
+    }
+    this.sortOrder = SortOrder.DESCENDING;
+    this.sortColumn = column;
+    return this;
+  }
+  
   protected List<Task> executeList(CommandContext commandContext, Page page) {
     return commandContext
       .getPersistenceSession()
@@ -109,6 +132,14 @@ public class TaskQueryImpl extends AbstractListQuery<Task> implements TaskQuery 
     if (processInstanceId != null) {
       params.put("processInstanceId", processInstanceId);
     }
+    if (sortColumn != null) {
+      params.put("sortColumn", sortColumn);
+      if (sortOrder.equals(SortOrder.ASCENDING)) {
+        params.put("sortOrder", "asc");        
+      } else {
+        params.put("sortOrder", "desc");
+      }
+    } 
     return params;
   }
   

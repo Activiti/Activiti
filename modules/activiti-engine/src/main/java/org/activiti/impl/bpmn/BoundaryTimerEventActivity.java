@@ -21,7 +21,7 @@ import org.activiti.pvm.ActivityExecution;
  * 
  * @author Joram Barrez
  */
-public class BoundaryTimerEventActivity extends FlownodeActivity {
+public class BoundaryTimerEventActivity extends BpmnActivity {
   
   protected boolean interrupting;
     
@@ -33,7 +33,7 @@ public class BoundaryTimerEventActivity extends FlownodeActivity {
       throw new ActivitiException("Non-interrupting boundary timer event not yet implemented");
     }
     
-    leave(execution);
+    leave(execution, true);
   }
 
   public boolean isInterrupting() {

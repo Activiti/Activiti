@@ -73,7 +73,12 @@
   <select id="selectTaskByDynamicCriteria" parameterType="map" resultMap="taskResultMap">
     select distinct(T.*)
     <include refid="selectTaskByDynamicCriteriaSql"/>
-    order by ID_
+     <if test="sortColumn != null">
+      order by T.${sortColumn} ${sortOrder}
+    </if>
+    <if test="sortColumn == null">
+      order by T.ID_
+    </if>
   </select>
 
   <select id="selectTaskCountByDynamicCriteria" parameterType="map" resultType="long">

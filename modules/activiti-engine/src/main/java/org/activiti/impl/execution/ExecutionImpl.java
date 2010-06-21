@@ -361,7 +361,7 @@ public class ExecutionImpl implements
     if (isConcurrencyScope) {
       return this;
     }
-    return parent;
+    return getParent();
   }
 
   public boolean hasExecutions() {

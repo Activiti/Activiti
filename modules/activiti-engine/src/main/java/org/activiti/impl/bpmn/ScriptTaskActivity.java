@@ -39,7 +39,7 @@ public class ScriptTaskActivity extends TaskActivity {
   
   public void execute(ActivityExecution execution) throws Exception {
     ScriptingEngines.getScriptingEngines().evaluate(script, language, (ExecutionImpl) execution);
-    leave(execution);
+    leave(execution, true);
   }
 
   public void setScript(String script) {

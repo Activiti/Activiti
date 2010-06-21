@@ -43,7 +43,7 @@ public class UserTaskActivity extends TaskActivity {
   }
   
   public void event(ActivityExecution execution, Object event) throws Exception {
-    leave(execution);
+    leave(execution, true);
   }
   
   protected void handleAssignments(TaskImpl task, ActivityExecution execution) {

@@ -20,6 +20,6 @@ package org.activiti.impl.bpmn;
  * 
  * @author Joram Barrez
  */
-public class TaskActivity extends FlownodeActivity {
+public class TaskActivity extends BpmnActivity {
 
 }

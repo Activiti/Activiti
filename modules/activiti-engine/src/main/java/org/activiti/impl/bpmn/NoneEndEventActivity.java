@@ -18,7 +18,7 @@ import org.activiti.pvm.ActivityExecution;
 /**
  * @author Joram Barrez
  */
-public class NoneEndEventActivity extends FlownodeActivity {
+public class NoneEndEventActivity extends BpmnActivity {
   
   public void execute(ActivityExecution execution) throws Exception {
     execution.end(); // todo: implement for subprocesses / on the border etc.

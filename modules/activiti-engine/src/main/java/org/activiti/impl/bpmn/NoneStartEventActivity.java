@@ -21,7 +21,7 @@ package org.activiti.impl.bpmn;
  * 
  * @author Joram Barrez
  */
-public class NoneStartEventActivity extends FlownodeActivity {
+public class NoneStartEventActivity extends BpmnActivity {
 
   // Nothing to see here.
   // The default behaviour of the BpmnActivity is exactly what

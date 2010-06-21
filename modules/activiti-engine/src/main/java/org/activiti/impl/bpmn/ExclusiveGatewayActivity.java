@@ -42,6 +42,7 @@ public class ExclusiveGatewayActivity extends GatewayActivity {
    * (or which hasn't got a condition) and leaving the activity through that
    * sequence flow. 
    */
+  @Override
   protected void leave(ActivityExecution execution) {
     
     if (log.isLoggable(Level.FINE)) {

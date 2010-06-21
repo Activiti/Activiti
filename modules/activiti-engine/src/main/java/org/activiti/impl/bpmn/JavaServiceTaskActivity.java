@@ -48,7 +48,7 @@ public class JavaServiceTaskActivity extends TaskActivity {
   public void execute(ActivityExecution execution) throws Exception {
     Object object = ReflectUtil.instantiate(className);
     ReflectUtil.invoke(object, method, null);
-    leave(execution);
+    leave(execution, true);
   }
 
   public void setClassName(String className) {

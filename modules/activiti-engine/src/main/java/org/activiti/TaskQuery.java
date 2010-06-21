@@ -22,6 +22,8 @@ import java.util.List;
  */
 public interface TaskQuery {
   
+  final String PROPERTY_NAME = "NAME_";
+  
   TaskQuery name(String name);
   
   TaskQuery assignee(String assignee);
@@ -31,6 +33,10 @@ public interface TaskQuery {
   TaskQuery candidateGroup(String candidateGroup);
   
   TaskQuery processInstance(String processInstanceId);
+  
+  TaskQuery orderAsc(String property);
+  
+  TaskQuery orderDesc(String property);
   
   long count();
   
