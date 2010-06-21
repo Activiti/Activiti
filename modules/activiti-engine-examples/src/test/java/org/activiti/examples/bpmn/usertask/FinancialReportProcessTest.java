@@ -2,13 +2,12 @@ package org.activiti.examples.bpmn.usertask;
 
 import static org.junit.Assert.assertEquals;
 
-import java.util.Collections;
 import java.util.List;
 
-import org.activiti.Deployment;
 import org.activiti.ProcessInstance;
 import org.activiti.Task;
 import org.activiti.test.ActivitiTestCase;
+import org.activiti.test.ProcessDeclared;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -37,11 +36,8 @@ public class FinancialReportProcessTest extends ActivitiTestCase {
   }
   
   @Test
+  @ProcessDeclared(resources={"FinancialReportProcess.bpmn20.xml"})
   public void testProcess() {
-    Deployment deployment = processService.createDeployment()
-      .addClasspathResource("org/activiti/examples/bpmn/usertask/FinancialReportProcess.bpmn20.xml")
-      .deploy();
-    registerDeployment(deployment.getId());
     
     ProcessInstance processInstance = processService.startProcessInstanceByKey("financialReport");
     
@@ -63,7 +59,6 @@ public class FinancialReportProcessTest extends ActivitiTestCase {
     taskService.complete(tasks.get(0).getId());
     
     assertProcessInstanceEnded(processInstance.getId());
-    deleteDeploymentsCascade(Collections.singletonList(deployment.getId()));
   }
 
 }

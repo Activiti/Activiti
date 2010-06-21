@@ -42,7 +42,7 @@ public class DbNotCleanTest extends ActivitiTestCase {
       // Manually call the check on db cleaning check
       checkDbIsClean();
     } finally {
-      // Registering the deployment will clean it up in the 'real' tearDown
+      // Registering the deployment will clean it up in the tearDown
       registerDeployment(deployment.getId());
     }
   }

@@ -19,7 +19,6 @@ import static org.junit.Assert.assertNull;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.activiti.Deployment;
 import org.activiti.Task;
 import org.activiti.test.ActivitiTestCase;
 import org.activiti.test.ProcessDeclared;
@@ -46,17 +45,9 @@ public class TaskFormsTest extends ActivitiTestCase {
     identityService.deleteUser("fozzie");
   }
 
-  private void deployVacationRequestProcess() {
-    Deployment deployment = processService.createDeployment().addClasspathResource("org/activiti/examples/taskforms/VacationRequest.bpmn20.xml")
-            .addClasspathResource("org/activiti/examples/taskforms/approve.form").addClasspathResource("org/activiti/examples/taskforms/request.form")
-            .addClasspathResource("org/activiti/examples/taskforms/adjustRequest.form").deploy();
-
-    registerDeployment(deployment.getId());
-  }
-
   @Test
+  @ProcessDeclared(resources = { "VacationRequest.bpmn20.xml", "approve.form", "request.form", "adjustRequest.form" })
   public void testTaskFormsWithVacationRequestProcess() {
-    deployVacationRequestProcess();
 
     // Get start form
     Object startForm = processService.getStartFormByKey("vacationRequest");

@@ -18,7 +18,7 @@ import static org.junit.Assert.assertNotNull;
 import org.activiti.ActivitiException;
 import org.activiti.ProcessInstanceQuery;
 import org.activiti.test.ActivitiTestCase;
-import org.junit.Before;
+import org.activiti.test.ProcessDeclared;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -35,11 +35,7 @@ public class ProcessInstanceQueryTest extends ActivitiTestCase {
 
   private static String PROCESS_KEY_2 = "oneTaskProcess2";
 
-  @Before
-  public void setUp() throws Exception {
-    deployProcessResource("org/activiti/test/processinstance/oneTaskProcess.bpmn20.xml");
-    deployProcessResource("org/activiti/test/processinstance/oneTaskProcess2.bpmn20.xml");
-
+  private void start() {
     for (int i = 0; i < 4; i++) {
       processService.startProcessInstanceByKey(PROCESS_KEY);
     }
@@ -47,7 +43,9 @@ public class ProcessInstanceQueryTest extends ActivitiTestCase {
   }
 
   @Test
+  @ProcessDeclared(resources = { "oneTaskProcess.bpmn20.xml", "oneTaskProcess2.bpmn20.xml" })
   public void testQueryNoSpecifics() {
+    start();
     ProcessInstanceQuery query = processService.createProcessInstanceQuery();
     assertEquals(5, query.count());
     assertEquals(5, query.list().size());
@@ -56,7 +54,9 @@ public class ProcessInstanceQueryTest extends ActivitiTestCase {
   }
 
   @Test
+  @ProcessDeclared(resources = { "oneTaskProcess.bpmn20.xml", "oneTaskProcess2.bpmn20.xml" })
   public void testQueryByProcessDefinitionKeyUniqueResult() {
+    start();
     ProcessInstanceQuery query = processService.createProcessInstanceQuery().processDefinitionKey(PROCESS_KEY);
     assertEquals(4, query.count());
     assertEquals(4, query.list().size());
@@ -65,7 +65,9 @@ public class ProcessInstanceQueryTest extends ActivitiTestCase {
   }
 
   @Test
+  @ProcessDeclared(resources = { "oneTaskProcess.bpmn20.xml", "oneTaskProcess2.bpmn20.xml" })
   public void testQueryByProcessDefinitionKeySunnyDay() {
+    start();
     ProcessInstanceQuery query = processService.createProcessInstanceQuery().processDefinitionKey(PROCESS_KEY_2);
     assertEquals(1, query.count());
     assertEquals(1, query.list().size());

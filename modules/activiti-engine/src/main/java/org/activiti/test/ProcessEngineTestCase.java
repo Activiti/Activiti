@@ -92,7 +92,7 @@ public abstract class ProcessEngineTestCase {
     }
   }
   
-  public static void closeProcessEngine() {
+  private static void closeProcessEngine() {
     if (processEngine!=null) {
       processEngine.close();
       processEngine = null;

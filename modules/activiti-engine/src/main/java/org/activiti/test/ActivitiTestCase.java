@@ -21,6 +21,7 @@ import java.util.logging.Logger;
 
 import org.activiti.ActivitiException;
 import org.activiti.Deployment;
+import org.activiti.DeploymentBuilder;
 import org.activiti.impl.ProcessEngineImpl;
 import org.activiti.impl.bpmn.BpmnDeployer;
 import org.activiti.impl.interceptor.Command;
@@ -50,18 +51,42 @@ public abstract class ActivitiTestCase extends ProcessEngineTestCase {
 
     @Override
     public void starting(FrameworkMethod method) {
-      if (method.getAnnotation(ProcessDeclared.class) != null) {
-        String name = method.getName();
-        String resource = getProcessDefinitionResource(method.getMethod().getDeclaringClass(), name);
-        log.fine("deploying bpmn process resource " + resource);
-        deployProcessResource(resource);
+      ProcessDeclared process = method.getAnnotation(ProcessDeclared.class);
+      if (process != null) {
+        String[] resources = process.resources();
+        resources = resources.length == 0 ? process.value() : resources;
+        if (resources.length == 0) {
+          String name = method.getName();
+          String resource = getBpmnProcessDefinitionResource(method.getMethod().getDeclaringClass(), name);
+          log.fine("deploying bpmn process resource: " + resource);
+          deployProcessResource(resource);
+        } else {
+          DeploymentBuilder builder = processService.createDeployment();
+          for (String resource : resources) {
+            if (resource.startsWith("/")) {
+              resource = resource.substring(1);
+            } else {
+              resource = getProcessDefinitionResource(method.getMethod().getDeclaringClass(), resource);
+            }
+            builder.addClasspathResource(resource);
+          }
+          Deployment deployment = builder.deploy();
+          registerDeployment(deployment.getId());
+        }
       }
     }
 
   }
 
-  public static String getProcessDefinitionResource(Class< ? > type, String name) {
+  private static String getBpmnProcessDefinitionResource(Class< ? > type, String name) {
     return type.getName().replace('.', '/') + "." + name + "." + BpmnDeployer.BPMN_RESOURCE_SUFFIX;
+  }
+
+  public static String getProcessDefinitionResource(Class< ? > type, String name) {
+    String path = type.getName();
+    path = path.substring(0, path.lastIndexOf(type.getSimpleName())-1);
+    System.err.println(path);
+    return path.replace('.', '/') + "/" + name;
   }
 
   protected Set<String> registeredDeploymentIds = new HashSet<String>();
@@ -73,7 +98,7 @@ public abstract class ActivitiTestCase extends ProcessEngineTestCase {
     }
   }
 
-  public String deployProcessResource(String resource) {
+  private String deployProcessResource(String resource) {
     Deployment deployment = processEngine.getProcessService().createDeployment().name(resource).addClasspathResource(resource).deploy();
     registerDeployment(deployment.getId());
     return deployment.getId();
@@ -83,7 +108,7 @@ public abstract class ActivitiTestCase extends ProcessEngineTestCase {
     deployProcessString("xmlString." + BpmnDeployer.BPMN_RESOURCE_SUFFIX, xmlString);
   }
 
-  public void deployProcessString(String resourceName, String xmlString) {
+  private void deployProcessString(String resourceName, String xmlString) {
     Deployment deployment = processEngine.getProcessService().createDeployment().name(resourceName).addString(resourceName, xmlString).deploy();
     registerDeployment(deployment.getId());
   }

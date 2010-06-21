@@ -14,7 +14,6 @@ package org.activiti.test.service;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.fail;
 
 import java.util.List;
 
@@ -22,6 +21,7 @@ import org.activiti.ActivitiException;
 import org.activiti.ProcessDefinition;
 import org.activiti.ProcessInstance;
 import org.activiti.test.ActivitiTestCase;
+import org.activiti.test.ProcessDeclared;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -35,8 +35,8 @@ public class ProcessServiceTest extends ActivitiTestCase {
   public ExpectedException exception = ExpectedException.none();
 
   @Test
+  @ProcessDeclared(resources = {"oneTaskProcess.bpmn20.xml"})
   public void testStartProcessInstanceById() {
-    deployProcessResource("org/activiti/test/service/oneTaskProcess.bpmn20.xml");
     List<ProcessDefinition> processDefinitions = processService.findProcessDefinitions();
     assertEquals(1, processDefinitions.size());
 
@@ -74,9 +74,9 @@ public class ProcessServiceTest extends ActivitiTestCase {
   // assertNotNull(processInstance);
   // }
 
+  @Test
+  @ProcessDeclared(resources={"oneTaskProcess.bpmn20.xml"})
   public void testFindProcessDefinitionById() {
-    deployProcessResource("org/activiti/test/service/oneTaskProcess.bpmn20.xml");
-
     List<ProcessDefinition> definitions = processService.findProcessDefinitions();
     assertEquals(1, definitions.size());
 
@@ -86,6 +86,7 @@ public class ProcessServiceTest extends ActivitiTestCase {
     assertEquals("The One Task Process", processDefinition.getName());
   }
 
+  @Test
   public void testFindProcessDefinitionByNullId() {
     exception.expect(ActivitiException.class);
     exception.expectMessage("Couldn't find process definiton");
