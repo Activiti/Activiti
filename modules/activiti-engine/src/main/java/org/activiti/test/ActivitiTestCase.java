@@ -27,70 +27,82 @@ import org.activiti.impl.interceptor.Command;
 import org.activiti.impl.interceptor.CommandContext;
 import org.activiti.impl.interceptor.CommandExecutor;
 import org.activiti.impl.jobexecutor.JobExecutor;
-
+import org.junit.After;
+import org.junit.Assert;
+import org.junit.Rule;
+import org.junit.rules.TestWatchman;
+import org.junit.runners.model.FrameworkMethod;
 
 /**
  * @author Tom Baeyens
  */
-public class ActivitiTestCase extends ProcessEngineTestCase {
+public abstract class ActivitiTestCase extends ProcessEngineTestCase {
 
   private static Logger log = Logger.getLogger(ActivitiTestCase.class.getName());
-  
+
+  @Rule
+  public LogInitializer logSetup = new LogInitializer();
+
+  @Rule
+  public ProcessDeployer undeployer = new ProcessDeployer();
+
+  public class ProcessDeployer extends TestWatchman {
+
+    @Override
+    public void starting(FrameworkMethod method) {
+      if (method.getAnnotation(ProcessDeclared.class) != null) {
+        String name = method.getName();
+        String resource = getProcessDefinitionResource(method.getMethod().getDeclaringClass(), name);
+        log.fine("deploying bpmn process resource " + resource);
+        deployProcessResource(resource);
+      }
+    }
+
+  }
+
+  public static String getProcessDefinitionResource(Class< ? > type, String name) {
+    return type.getName().replace('.', '/') + "." + name + "." + BpmnDeployer.BPMN_RESOURCE_SUFFIX;
+  }
+
   protected Set<String> registeredDeploymentIds = new HashSet<String>();
-  
-  protected void tearDown() throws Exception {
-    for (String deploymentId : registeredDeploymentIds) {      
+
+  @After
+  public void finished() {
+    for (String deploymentId : registeredDeploymentIds) {
       processService.deleteDeploymentCascade(deploymentId);
     }
-    
-    super.tearDown();
   }
-  
-  public String deployProcessForThisTestMethod() {
-    String resource = getClass().getName().replace('.', '/')+"."+getName()+"."+BpmnDeployer.BPMN_RESOURCE_SUFFIX;
-    log.fine("deploying bpmn process resource "+resource);
-    return deployProcessResource(resource);
-  }
-  
+
   public String deployProcessResource(String resource) {
-    Deployment deployment = processEngine.getProcessService()
-      .createDeployment()
-      .name(resource)
-      .addClasspathResource(resource)                                       
-      .deploy();
+    Deployment deployment = processEngine.getProcessService().createDeployment().name(resource).addClasspathResource(resource).deploy();
     registerDeployment(deployment.getId());
     return deployment.getId();
   }
-  
+
   public void deployProcessString(String xmlString) {
-    deployProcessString("xmlString." + BpmnDeployer.BPMN_RESOURCE_SUFFIX , xmlString);
+    deployProcessString("xmlString." + BpmnDeployer.BPMN_RESOURCE_SUFFIX, xmlString);
   }
-  
+
   public void deployProcessString(String resourceName, String xmlString) {
-    Deployment deployment = processEngine.getProcessService()
-      .createDeployment()
-      .name(resourceName)
-      .addString(resourceName, xmlString)                                 
-      .deploy();
+    Deployment deployment = processEngine.getProcessService().createDeployment().name(resourceName).addString(resourceName, xmlString).deploy();
     registerDeployment(deployment.getId());
   }
-  
+
   /**
-   * Registers the given deployment for post-test clean up.
-   * All the related data such as process instances, tasks, etc
-   * will be deleted when the test case has run.
+   * Registers the given deployment for post-test clean up. All the related data
+   * such as process instances, tasks, etc will be deleted when the test case
+   * has run.
    */
   protected void registerDeployment(String deploymentId) {
     if (deploymentId == null) { // common error
-      throw new ActivitiException("Trying to add a deploymentid which is null." 
-              + "This is not possible and probably due to not using a resource name " 
+      throw new ActivitiException("Trying to add a deploymentid which is null." + "This is not possible and probably due to not using a resource name "
               + "with a recognized extension.");
     }
     registeredDeploymentIds.add(deploymentId);
   }
-  
+
   /* Deletion helpers */
-  
+
   /**
    * 
    * @param deploymentIds
@@ -100,23 +112,25 @@ public class ActivitiTestCase extends ProcessEngineTestCase {
       processService.deleteDeploymentCascade(id);
     }
   }
-  
+
   protected void deleteTasks(Collection<String> taskIds) {
     for (String id : taskIds) {
       taskService.deleteTask(id);
     }
   }
-  
+
   /* Assertion helpers */
-  
+
   public void assertProcessInstanceEnded(String processInstanceId) {
-    assertNull("An active execution with id " + processInstanceId + " was found.",
-        processEngine.getProcessService().findProcessInstanceById(processInstanceId));
+    Assert.assertNull("An active execution with id " + processInstanceId + " was found.", processEngine.getProcessService().findProcessInstanceById(
+            processInstanceId));
   }
 
   protected static class InteruptTask extends TimerTask {
+
     ActivitiTestCase jobExecutorTestCase;
     Thread thread;
+
     public InteruptTask(ActivitiTestCase jobExecutorTestCase, Thread thread) {
       this.jobExecutorTestCase = jobExecutorTestCase;
       this.thread = thread;
@@ -128,9 +142,9 @@ public class ActivitiTestCase extends ProcessEngineTestCase {
   }
 
   boolean timeLimitExceeded = false;
-  
+
   public void waitForJobExecutorToProcessAllJobs(long maxMillisToWait, long intervalMillis) {
-    JobExecutor jobExecutor = ((ProcessEngineImpl)processEngine).getJobExecutor();
+    JobExecutor jobExecutor = ((ProcessEngineImpl) processEngine).getJobExecutor();
     jobExecutor.start();
 
     try {
@@ -147,18 +161,19 @@ public class ActivitiTestCase extends ProcessEngineTestCase {
         timer.cancel();
       }
       if (areJobsAvailable) {
-        throw new ActivitiException("time limit of "+maxMillisToWait+" was exceeded");
+        throw new ActivitiException("time limit of " + maxMillisToWait + " was exceeded");
       }
-      
+
     } finally {
       jobExecutor.shutdown();
     }
   }
 
   public boolean areJobsAvailable() {
-    ProcessEngineImpl processEngineImpl = (ProcessEngineImpl)processEngine;
+    ProcessEngineImpl processEngineImpl = (ProcessEngineImpl) processEngine;
     CommandExecutor commandExecutor = processEngineImpl.getProcessEngineConfiguration().getCommandExecutor();
     Boolean areJobsAvailable = commandExecutor.execute(new Command<Boolean>() {
+
       public Boolean execute(CommandContext commandContext) {
         return !commandContext.getPersistenceSession().findNextJobsToExecute(1).isEmpty();
       }

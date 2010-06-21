@@ -12,19 +12,23 @@
  */
 package org.activiti.test.pvm;
 
+import static org.junit.Assert.assertEquals;
+
 import org.activiti.pvm.ObjectExecution;
 import org.activiti.pvm.ObjectProcessDefinition;
 import org.activiti.pvm.ObjectProcessInstance;
 import org.activiti.pvm.ProcessDefinitionBuilder;
-import org.activiti.test.LogTestCase;
+import org.activiti.test.LogInitializer;
 import org.activiti.test.pvm.activities.WaitState;
+import org.junit.Test;
 
 
 /**
  * @author Tom Baeyens
  */
-public class PvmVariablesTest extends LogTestCase {
+public class PvmVariablesTest extends LogInitializer {
 
+  @Test
   public void testVariables() {
     ObjectProcessDefinition processDefinition = ProcessDefinitionBuilder
     .createProcessDefinition()

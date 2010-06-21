@@ -12,16 +12,20 @@
  */
 package org.activiti.test.bpmn.servicetask;
 
-import org.activiti.test.ActivitiTestCase;
+import static org.junit.Assert.assertEquals;
 
+import org.activiti.test.ActivitiTestCase;
+import org.activiti.test.ProcessDeclared;
+import org.junit.Test;
 
 /**
  * @author Joram Barrez
  */
 public class JavaServiceTaskTest extends ActivitiTestCase {
-  
+
+  @Test
+  @ProcessDeclared
   public void testJavaServiceNoParamsOrResult() {
-    deployProcessForThisTestMethod();
     processService.startProcessInstanceByKey("javaServiceNoParamsOrResult");
     assertEquals(1, Counter.COUNTER);
   }

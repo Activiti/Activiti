@@ -12,6 +12,8 @@
  */
 package org.activiti.examples.mgmt;
 
+import static org.junit.Assert.assertEquals;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -19,6 +21,7 @@ import java.util.Map;
 import org.activiti.TablePage;
 import org.activiti.Task;
 import org.activiti.test.ActivitiTestCase;
+import org.junit.Test;
 
 
 /**
@@ -26,6 +29,7 @@ import org.activiti.test.ActivitiTestCase;
  */
 public class TablePageQueryTest extends ActivitiTestCase {
   
+  @Test
   public void testGetTablePage() {
     List<String> taskIds = generateDummyTasks(20);
     
@@ -54,6 +58,7 @@ public class TablePageQueryTest extends ActivitiTestCase {
     deleteTasks(taskIds);
   }
   
+  @Test 
   public void testGetSortedTablePage() {
     List<String> taskIds = generateDummyTasks(15);
     

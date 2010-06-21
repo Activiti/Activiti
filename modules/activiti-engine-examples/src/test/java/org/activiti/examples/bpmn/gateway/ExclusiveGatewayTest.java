@@ -12,6 +12,8 @@
  */
 package org.activiti.examples.bpmn.gateway;
 
+import static org.junit.Assert.*;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -19,7 +21,8 @@ import org.activiti.ActivitiException;
 import org.activiti.ProcessInstance;
 import org.activiti.Task;
 import org.activiti.test.ActivitiTestCase;
-
+import org.activiti.test.ProcessDeclared;
+import org.junit.Test;
 
 /**
  * Example of using the exclusive gateway.
@@ -27,41 +30,36 @@ import org.activiti.test.ActivitiTestCase;
  * @author Joram Barrez
  */
 public class ExclusiveGatewayTest extends ActivitiTestCase {
-  
+
   /**
-   * The test process has an XOR gateway where, the 'input' variable
-   * is used to select one of the outgoing sequence flow.
-   * Every one of those sequence flow goes to another task,
-   * allowing us to test the decision very easily.
+   * The test process has an XOR gateway where, the 'input' variable is used to
+   * select one of the outgoing sequence flow. Every one of those sequence flow
+   * goes to another task, allowing us to test the decision very easily.
    */
+  @Test
+  @ProcessDeclared
   public void testDecisionFunctionality() {
-    deployProcessForThisTestMethod();
+
     Map<String, Object> variables = new HashMap<String, Object>();
 
     // Test with input == 1
     variables.put("input", 1);
     ProcessInstance pi = processService.startProcessInstanceByKey("exclusiveGateway", variables);
-    Task task = taskService.createTaskQuery()
-                           .processInstance(pi.getId())
-                           .singleResult();
+    Task task = taskService.createTaskQuery().processInstance(pi.getId()).singleResult();
     assertEquals("Send e-mail for more information", task.getName());
-     
+
     // Test with input == 2
     variables.put("input", 2);
     pi = processService.startProcessInstanceByKey("exclusiveGateway", variables);
-    task = taskService.createTaskQuery()
-                      .processInstance(pi.getId())
-                      .singleResult();
+    task = taskService.createTaskQuery().processInstance(pi.getId()).singleResult();
     assertEquals("Check account balance", task.getName());
-    
+
     // Test with input == 3
     variables.put("input", 3);
     pi = processService.startProcessInstanceByKey("exclusiveGateway", variables);
-    task = taskService.createTaskQuery()
-                      .processInstance(pi.getId())
-                      .singleResult();
+    task = taskService.createTaskQuery().processInstance(pi.getId()).singleResult();
     assertEquals("Call customer", task.getName());
-    
+
     // Test with input == 4
     variables.put("input", 4);
     try {
@@ -70,7 +68,7 @@ public class ExclusiveGatewayTest extends ActivitiTestCase {
     } catch (ActivitiException e) {
       // Exception is expected since no outgoing sequence flow matches
     }
-    
+
   }
 
 }

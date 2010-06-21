@@ -12,17 +12,21 @@
  */
 package org.activiti.test.bpmn;
 
+import static org.junit.Assert.assertTrue;
+
 import org.activiti.ProcessInstance;
 import org.activiti.test.ActivitiTestCase;
-
+import org.activiti.test.ProcessDeclared;
+import org.junit.Test;
 
 /**
  * @author Joram Barrez
  */
 public class StartToEndTest extends ActivitiTestCase {
-  
+
+  @Test
+  @ProcessDeclared
   public void testStartToEnd() {
-    deployProcessForThisTestMethod();
     ProcessInstance processInstance = processService.startProcessInstanceByKey("startToEnd");
     assertProcessInstanceEnded(processInstance.getId());
     assertTrue(processInstance.isEnded());

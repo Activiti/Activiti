@@ -12,6 +12,8 @@
  */
 package org.activiti.test.pvm;
 
+import static org.junit.Assert.*;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,19 +21,21 @@ import org.activiti.pvm.ObjectExecution;
 import org.activiti.pvm.ObjectProcessDefinition;
 import org.activiti.pvm.ObjectProcessInstance;
 import org.activiti.pvm.ProcessDefinitionBuilder;
-import org.activiti.test.LogTestCase;
+import org.activiti.test.LogInitializer;
 import org.activiti.test.pvm.activities.Automatic;
 import org.activiti.test.pvm.activities.Fork;
 import org.activiti.test.pvm.activities.Join;
 import org.activiti.test.pvm.activities.WaitState;
+import org.junit.Test;
 
 
 
 /**
  * @author Tom Baeyens
  */
-public class PvmConcurrencyTest extends LogTestCase {
+public class PvmConcurrencyTest extends LogInitializer {
 
+  @Test
   public void testSimpleAutmaticConcurrency() {
     ObjectProcessDefinition processDefinition = ProcessDefinitionBuilder
     .createProcessDefinition()
@@ -68,6 +72,7 @@ public class PvmConcurrencyTest extends LogTestCase {
     assertNotNull(processInstance.findExecution("end"));
   }
 
+  @Test
   public void testSimpleWaitStateConcurrency() {
     ObjectProcessDefinition processDefinition = ProcessDefinitionBuilder
     .createProcessDefinition()

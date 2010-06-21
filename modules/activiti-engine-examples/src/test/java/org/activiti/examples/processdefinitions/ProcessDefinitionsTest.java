@@ -12,51 +12,35 @@
  */
 package org.activiti.examples.processdefinitions;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+
 import java.util.List;
 
 import org.activiti.ProcessDefinition;
 import org.activiti.test.ActivitiTestCase;
-
+import org.junit.Test;
 
 /**
  * @author Tom Baeyens
  */
 public class ProcessDefinitionsTest extends ActivitiTestCase {
-  
+
   private static final String NAMESPACE = "xmlns='http://www.omg.org/spec/BPMN/20100524/MODEL'";
-  
+
   private static final String TARGET_NAMESPACE = "targetNamespace='http://activiti.org/BPMN20'";
 
+  @Test
   public void testGetProcessDefinitions() {
-    deployProcessString(
-      "<definitions " + NAMESPACE + " " + TARGET_NAMESPACE + ">" +
-      "  <process id='IDR' name='Insurance Damage Report' />" +
-      "</definitions>"
-    );
-    deployProcessString(
-      "<definitions " + NAMESPACE + " " + TARGET_NAMESPACE + ">" +
-      "  <process id='IDR' name='Insurance Damage Report' />" +
-      "</definitions>"
-    );
-    deployProcessString(
-      "<definitions " + NAMESPACE + " " + TARGET_NAMESPACE + ">" +
-      "  <process id='IDR' name='Insurance Damage Report' />" +
-      "</definitions>"
-    );
-    deployProcessString(
-      "<definitions " + NAMESPACE + " " + TARGET_NAMESPACE + ">" +
-      "  <process id='EN' name='Expense Note' />" +
-      "</definitions>"
-    );
-    deployProcessString(
-      "<definitions " + NAMESPACE + " " + TARGET_NAMESPACE + ">" +
-      "  <process id='EN' name='Expense Note' />" +
-      "</definitions>"
-    );
-    
+    deployProcessString("<definitions " + NAMESPACE + " " + TARGET_NAMESPACE + ">" + "  <process id='IDR' name='Insurance Damage Report' />" + "</definitions>");
+    deployProcessString("<definitions " + NAMESPACE + " " + TARGET_NAMESPACE + ">" + "  <process id='IDR' name='Insurance Damage Report' />" + "</definitions>");
+    deployProcessString("<definitions " + NAMESPACE + " " + TARGET_NAMESPACE + ">" + "  <process id='IDR' name='Insurance Damage Report' />" + "</definitions>");
+    deployProcessString("<definitions " + NAMESPACE + " " + TARGET_NAMESPACE + ">" + "  <process id='EN' name='Expense Note' />" + "</definitions>");
+    deployProcessString("<definitions " + NAMESPACE + " " + TARGET_NAMESPACE + ">" + "  <process id='EN' name='Expense Note' />" + "</definitions>");
+
     List<ProcessDefinition> processDefinitions = processService.findProcessDefinitions();
     assertNotNull(processDefinitions);
-    
+
     ProcessDefinition processDefinition = processDefinitions.get(0);
     assertEquals("EN", processDefinition.getKey());
     assertEquals("Expense Note", processDefinition.getName());
@@ -68,7 +52,7 @@ public class ProcessDefinitionsTest extends ActivitiTestCase {
     assertEquals("Expense Note", processDefinition.getName());
     assertEquals("EN:1", processDefinition.getId());
     assertEquals(1, processDefinition.getVersion());
-    
+
     processDefinition = processDefinitions.get(2);
     assertEquals("IDR", processDefinition.getKey());
     assertEquals("Insurance Damage Report", processDefinition.getName());
@@ -86,7 +70,7 @@ public class ProcessDefinitionsTest extends ActivitiTestCase {
     assertEquals("Insurance Damage Report", processDefinition.getName());
     assertEquals("IDR:1", processDefinition.getId());
     assertEquals(1, processDefinition.getVersion());
-    
+
     assertEquals(5, processDefinitions.size());
   }
 }

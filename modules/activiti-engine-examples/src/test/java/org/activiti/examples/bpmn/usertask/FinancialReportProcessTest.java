@@ -1,5 +1,7 @@
 package org.activiti.examples.bpmn.usertask;
 
+import static org.junit.Assert.assertEquals;
+
 import java.util.Collections;
 import java.util.List;
 
@@ -7,14 +9,15 @@ import org.activiti.Deployment;
 import org.activiti.ProcessInstance;
 import org.activiti.Task;
 import org.activiti.test.ActivitiTestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
 
 public class FinancialReportProcessTest extends ActivitiTestCase {
   
-  @Override
-  protected void setUp() throws Exception {
-    super.setUp();
-    
+  @Before
+  public void setUp() throws Exception {
     identityService.saveUser(identityService.newUser("fozzie"));
     identityService.saveUser(identityService.newUser("kermit"));
     
@@ -25,15 +28,15 @@ public class FinancialReportProcessTest extends ActivitiTestCase {
     identityService.createMembership("kermit", "management");
   }
   
-  @Override
-  protected void tearDown() throws Exception {
+  @After
+  public void tearDown() throws Exception {
     identityService.deleteUser("fozzie");
     identityService.deleteUser("kermit");
     identityService.deleteGroup("accountancy");
     identityService.deleteGroup("management");
-    super.tearDown();
   }
   
+  @Test
   public void testProcess() {
     Deployment deployment = processService.createDeployment()
       .addClasspathResource("org/activiti/examples/bpmn/usertask/FinancialReportProcess.bpmn20.xml")

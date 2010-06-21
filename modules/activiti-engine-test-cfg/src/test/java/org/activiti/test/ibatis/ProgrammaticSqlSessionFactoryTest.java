@@ -12,7 +12,7 @@
  */
 package org.activiti.test.ibatis;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.assertNotNull;
 
 import org.apache.ibatis.datasource.pooled.PooledDataSource;
 import org.apache.ibatis.mapping.Environment;
@@ -21,12 +21,14 @@ import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 import org.apache.ibatis.transaction.TransactionFactory;
 import org.apache.ibatis.transaction.jdbc.JdbcTransactionFactory;
+import org.junit.Test;
 
 /**
  * @author Joram Barrez
  */
-public class ProgrammaticSqlSessionFactoryTest extends TestCase {
+public class ProgrammaticSqlSessionFactoryTest {
 
+  @Test
   public void testProgrammticSqlSessionFactory() {
     ClassLoader contextClassLoader = Thread.currentThread().getContextClassLoader();
     PooledDataSource dataSource = new PooledDataSource(contextClassLoader, "org.hsqldb.jdbcDriver", "jdbc:hsqldb:.", "sa", "");

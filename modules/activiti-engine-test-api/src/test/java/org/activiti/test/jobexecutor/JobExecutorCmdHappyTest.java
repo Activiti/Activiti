@@ -12,6 +12,8 @@
  */
 package org.activiti.test.jobexecutor;
 
+import static org.junit.Assert.assertEquals;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -26,17 +28,19 @@ import org.activiti.impl.jobexecutor.AcquireJobsCmd;
 import org.activiti.impl.jobexecutor.AcquiredJobs;
 import org.activiti.impl.jobexecutor.ExecuteJobsCmd;
 import org.activiti.impl.time.Clock;
-
+import org.junit.Test;
 
 /**
  * @author Tom Baeyens
  */
 public class JobExecutorCmdHappyTest extends JobExecutorTestCase {
 
+  @Test
   public void testJobCommandsWithMessage() {
-    ProcessEngineImpl processEngineImpl = (ProcessEngineImpl)processEngine;
+    ProcessEngineImpl processEngineImpl = (ProcessEngineImpl) processEngine;
     CommandExecutor commandExecutor = processEngineImpl.getProcessEngineConfiguration().getCommandExecutor();
     String jobId = commandExecutor.execute(new Command<String>() {
+
       public String execute(CommandContext commandContext) {
         MessageImpl message = createTweetMessage("i'm coding a test");
         commandContext.getMessageSession().send(message);
@@ -47,12 +51,12 @@ public class JobExecutorCmdHappyTest extends JobExecutorTestCase {
     AcquiredJobs acquiredJobs = commandExecutor.execute(new AcquireJobsCmd());
     List<List<String>> jobIdsList = acquiredJobs.getJobIdsList();
     assertEquals(1, jobIdsList.size());
-    
+
     List<String> jobIds = jobIdsList.get(0);
-    
+
     List<String> expectedJobIds = new ArrayList<String>();
     expectedJobIds.add(jobId);
-    
+
     assertEquals(expectedJobIds, new ArrayList<String>(jobIds));
     assertEquals(0, tweetHandler.getMessages().size());
 
@@ -64,16 +68,18 @@ public class JobExecutorCmdHappyTest extends JobExecutorTestCase {
 
   static final long SOME_TIME = 928374923546L;
   static final long SECOND = 1000;
-  
+
+  @Test
   public void testJobCommandsWithTimer() {
     // clock gets automatically reset in LogTestCase.runTest
     Clock.setCurrentTime(new Date(SOME_TIME));
-    
-    ProcessEngineImpl processEngineImpl = (ProcessEngineImpl)processEngine;
+
+    ProcessEngineImpl processEngineImpl = (ProcessEngineImpl) processEngine;
     CommandExecutor commandExecutor = processEngineImpl.getProcessEngineConfiguration().getCommandExecutor();
     String jobId = commandExecutor.execute(new Command<String>() {
+
       public String execute(CommandContext commandContext) {
-        TimerImpl timer = createTweetTimer("i'm coding a test", new Date(SOME_TIME + (10*SECOND)));
+        TimerImpl timer = createTweetTimer("i'm coding a test", new Date(SOME_TIME + (10 * SECOND)));
         commandContext.getTimerSession().schedule(timer);
         return timer.getId();
       }
@@ -82,15 +88,15 @@ public class JobExecutorCmdHappyTest extends JobExecutorTestCase {
     AcquiredJobs acquiredJobs = commandExecutor.execute(new AcquireJobsCmd());
     List<List<String>> jobIdsList = acquiredJobs.getJobIdsList();
     assertEquals(0, jobIdsList.size());
-    
+
     List<String> expectedJobIds = new ArrayList<String>();
-    
-    Clock.setCurrentTime(new Date(SOME_TIME + (20*SECOND)));
+
+    Clock.setCurrentTime(new Date(SOME_TIME + (20 * SECOND)));
 
     acquiredJobs = commandExecutor.execute(new AcquireJobsCmd());
     jobIdsList = acquiredJobs.getJobIdsList();
     assertEquals(1, jobIdsList.size());
-    
+
     List<String> jobIds = jobIdsList.get(0);
 
     expectedJobIds.add(jobId);

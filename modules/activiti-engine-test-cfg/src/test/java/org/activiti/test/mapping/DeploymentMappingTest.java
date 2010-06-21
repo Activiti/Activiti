@@ -12,56 +12,60 @@
  */
 package org.activiti.test.mapping;
 
-import junit.framework.TestCase;
-
-import org.activiti.impl.repository.DeploymentImpl;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
 /**
  * @author Joram Barrez
  */
-public class DeploymentMappingTest extends TestCase {
-	
-//	private EntityManagerFactory emf;
-	
-//	private JpaStandaloneTemplate template;
-	
-	@Override
-	protected void setUp() throws Exception {
-//	  this.emf = Persistence.createEntityManagerFactory("activitiPU");
-//	  this.template = new JpaStandaloneTemplate(emf);
-	}
-	
-	@Override
-	protected void tearDown() throws Exception {
-//	  emf.close();
-	}
-	
-	public void testDeploymentImplMapping() {
-		
-		// First transaction: persist a deployment
-//		final long deploymentId = (Long) template.execute(new JpaStandaloneCallback() {
-//			
-//			public Object executeInJpaTransaction(EntityManager entityManager) {
-//				DeploymentImpl deployment = new DeploymentImpl();
-//				deployment.setName("myDeployment");
-//				deployment.addResourceFromString("testResource", "theTestResource");
-//				entityManager.persist(deployment);
-//				assertTrue(deployment.getDbid() != 0);
-//				return deployment.getDbid();
-//			}
-//		});
-//		
-//		// Second transaction: load the deployment and verify values
-//		template.execute(new JpaStandaloneCallback() {
-//			
-//			public Object executeInJpaTransaction(EntityManager entityManager) {
-//				DeploymentImpl deployment = entityManager.find(DeploymentImpl.class, deploymentId);
-//				assertEquals("myDeployment", deployment.getName());
-//				assertEquals("theTestResource", new String(deployment.getResource("testResource").getBytes()));
-//				return null;
-//			}
-//		});
-		
-	}
+public class DeploymentMappingTest {
+
+  // private EntityManagerFactory emf;
+
+  // private JpaStandaloneTemplate template;
+
+  @Before
+  public void setUp() throws Exception {
+    // this.emf = Persistence.createEntityManagerFactory("activitiPU");
+    // this.template = new JpaStandaloneTemplate(emf);
+  }
+
+  @After
+  public void tearDown() throws Exception {
+    // emf.close();
+  }
+
+  @Test
+  public void testDeploymentImplMapping() {
+
+    // First transaction: persist a deployment
+    // final long deploymentId = (Long) template.execute(new
+    // JpaStandaloneCallback() {
+    //			
+    // public Object executeInJpaTransaction(EntityManager entityManager) {
+    // DeploymentImpl deployment = new DeploymentImpl();
+    // deployment.setName("myDeployment");
+    // deployment.addResourceFromString("testResource", "theTestResource");
+    // entityManager.persist(deployment);
+    // assertTrue(deployment.getDbid() != 0);
+    // return deployment.getDbid();
+    // }
+    // });
+    //		
+    // // Second transaction: load the deployment and verify values
+    // template.execute(new JpaStandaloneCallback() {
+    //			
+    // public Object executeInJpaTransaction(EntityManager entityManager) {
+    // DeploymentImpl deployment = entityManager.find(DeploymentImpl.class,
+    // deploymentId);
+    // assertEquals("myDeployment", deployment.getName());
+    // assertEquals("theTestResource", new
+    // String(deployment.getResource("testResource").getBytes()));
+    // return null;
+    // }
+    // });
+
+  }
 
 }

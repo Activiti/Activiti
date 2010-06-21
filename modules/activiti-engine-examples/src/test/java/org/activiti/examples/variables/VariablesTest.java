@@ -12,6 +12,9 @@
  */
 package org.activiti.examples.variables;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -21,23 +24,25 @@ import java.util.Map;
 
 import org.activiti.ProcessInstance;
 import org.activiti.test.ActivitiTestCase;
-
+import org.activiti.test.ProcessDeclared;
+import org.junit.Test;
 
 /**
  * @author Tom Baeyens
  */
 public class VariablesTest extends ActivitiTestCase {
 
+  @Test
+  @ProcessDeclared
   public void testBasicVariableOperations() {
-    deployProcessForThisTestMethod();
-    
+ 
     Date now = new Date();
     List<String> serializable = new ArrayList<String>();
     serializable.add("one");
     serializable.add("two");
     serializable.add("three");
     byte[] bytes = "somebytes".getBytes();
-    
+
     // Start process instance
     Map<String, Object> variables = new HashMap<String, Object>();
     variables.put("cost center", 928374L);
@@ -58,7 +63,7 @@ public class VariablesTest extends ActivitiTestCase {
     assertEquals(serializable, variables.get("numbers"));
     assertTrue(Arrays.equals(bytes, (byte[]) variables.get("manybits")));
     assertEquals(7, variables.size());
-    
+
     processService.setVariable(processInstance.getId(), "cost center", null);
     processService.setVariable(processInstance.getId(), "customer", null);
     processService.setVariable(processInstance.getId(), "message", null);
@@ -66,7 +71,7 @@ public class VariablesTest extends ActivitiTestCase {
     processService.setVariable(processInstance.getId(), "nihil", null);
     processService.setVariable(processInstance.getId(), "numbers", null);
     processService.setVariable(processInstance.getId(), "manybits", null);
-    
+
     variables = processService.getVariables(processInstance.getId());
     assertEquals(null, variables.get("cost center"));
     assertEquals(null, variables.get("customer"));
@@ -84,7 +89,7 @@ public class VariablesTest extends ActivitiTestCase {
     processService.setVariable(processInstance.getId(), "start date", now);
     processService.setVariable(processInstance.getId(), "numbers", serializable);
     processService.setVariable(processInstance.getId(), "manybits", bytes);
-    
+
     variables = processService.getVariables(processInstance.getId());
     assertEquals("hi", variables.get("new var"));
     assertEquals(9987L, variables.get("cost center"));

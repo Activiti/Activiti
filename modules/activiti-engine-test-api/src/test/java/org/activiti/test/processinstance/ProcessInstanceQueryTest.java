@@ -12,54 +12,61 @@
  */
 package org.activiti.test.processinstance;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+
 import org.activiti.ActivitiException;
 import org.activiti.ProcessInstanceQuery;
 import org.activiti.test.ActivitiTestCase;
-
+import org.junit.Before;
+import org.junit.Rule;
+import org.junit.Test;
+import org.junit.rules.ExpectedException;
 
 /**
  * @author Joram Barrez
  */
 public class ProcessInstanceQueryTest extends ActivitiTestCase {
-  
+
+  @Rule
+  public ExpectedException exception = ExpectedException.none();
+
   private static String PROCESS_KEY = "oneTaskProcess";
-  
+
   private static String PROCESS_KEY_2 = "oneTaskProcess2";
-  
-  @Override
-  protected void setUp() throws Exception {
-    super.setUp();
-    
+
+  @Before
+  public void setUp() throws Exception {
     deployProcessResource("org/activiti/test/processinstance/oneTaskProcess.bpmn20.xml");
     deployProcessResource("org/activiti/test/processinstance/oneTaskProcess2.bpmn20.xml");
-    
-    for (int i=0; i<4; i++) {
-      processService.startProcessInstanceByKey(PROCESS_KEY);      
+
+    for (int i = 0; i < 4; i++) {
+      processService.startProcessInstanceByKey(PROCESS_KEY);
     }
     processService.startProcessInstanceByKey(PROCESS_KEY_2);
   }
 
-  
+  @Test
   public void testQueryNoSpecifics() {
     ProcessInstanceQuery query = processService.createProcessInstanceQuery();
     assertEquals(5, query.count());
     assertEquals(5, query.list().size());
-    try {
-      query.singleResult();
-      fail();
-    } catch (ActivitiException e) {}
+    exception.expect(ActivitiException.class);
+    query.singleResult();
   }
-  
-  public void testQueryByProcessDefinitionKey() {
+
+  @Test
+  public void testQueryByProcessDefinitionKeyUniqueResult() {
     ProcessInstanceQuery query = processService.createProcessInstanceQuery().processDefinitionKey(PROCESS_KEY);
     assertEquals(4, query.count());
     assertEquals(4, query.list().size());
-    try {
-      query.singleResult();
-      fail();
-    } catch (ActivitiException e) {}
-    
-    query = processService.createProcessInstanceQuery().processDefinitionKey(PROCESS_KEY_2);
+    exception.expect(ActivitiException.class);
+    query.singleResult();
+  }
+
+  @Test
+  public void testQueryByProcessDefinitionKeySunnyDay() {
+    ProcessInstanceQuery query = processService.createProcessInstanceQuery().processDefinitionKey(PROCESS_KEY_2);
     assertEquals(1, query.count());
     assertEquals(1, query.list().size());
     assertNotNull(query.singleResult());

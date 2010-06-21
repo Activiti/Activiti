@@ -14,23 +14,27 @@ package org.activiti.test.bpmn.parse;
 
 import org.activiti.ActivitiException;
 import org.activiti.test.ActivitiTestCase;
-
+import org.junit.Rule;
+import org.junit.Test;
+import org.junit.rules.ExpectedException;
 
 /**
- * Test case for verifying if the parser throws validation exceptions
- * when a process definition is given that is not conform the BPMN 2.0 schemas.
+ * Test case for verifying if the parser throws validation exceptions when a
+ * process definition is given that is not conform the BPMN 2.0 schemas.
  * 
  * @author Joram Barrez
  */
 public class InvalidProcessTest extends ActivitiTestCase {
+
+  @Rule
+  public ExpectedException exception = ExpectedException.none();
   
+  @Test
   public void testInvalidProcessDefinition() {
-    try {
-      deployProcessForThisTestMethod();
-    } catch (ActivitiException e) {
-      assertTextPresent("Attribute 'invalidAttribute' is not allowed to appear in element 'process'",
-                        e.getMessage());
-    }
+    exception.expect(ActivitiException.class);
+    exception.expectMessage("Attribute 'invalidAttribute' is not allowed to appear in element 'process'");
+    String resource = ActivitiTestCase.getProcessDefinitionResource(getClass(), "testInvalidProcessDefinition");
+    processEngine.getProcessService().createDeployment().name(resource).addClasspathResource(resource).deploy();
   }
 
 }

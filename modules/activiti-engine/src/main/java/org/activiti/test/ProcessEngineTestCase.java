@@ -22,12 +22,15 @@ import org.activiti.ManagementService;
 import org.activiti.ProcessEngine;
 import org.activiti.ProcessService;
 import org.activiti.TaskService;
+import org.junit.Before;
+import org.junit.Rule;
+import org.junit.rules.TestWatchman;
 
 
 /**
  * @author Tom Baeyens
  */
-public class ProcessEngineTestCase extends LogTestCase {
+public abstract class ProcessEngineTestCase {
   /** 
    * The configurationResource at the time that the
    *  current {@link #processEngine} was created
@@ -48,17 +51,19 @@ public class ProcessEngineTestCase extends LogTestCase {
   
   private static Logger log = Logger.getLogger(ProcessEngineTestCase.class.getName());
 
+  @Rule
+  public ProcessEngineBuilder builder = new ProcessEngineBuilder();
+  
+  public class ProcessEngineBuilder extends TestWatchman {
+  }
+
   /** allows for tests to configure another configuration resource then the default activiti.properties 
    * Tests should call this method in the constructor. */
   protected void setConfigurationResource(String configurationResource) {
     this.configurationResource = configurationResource;
   }
 
-  protected void setUp() throws Exception {
-    buildProcessEngine();
-    super.setUp();
-  }
-
+  @Before
   public void buildProcessEngine() {
     // Is our cached process engine still valid?
     if (processEngine != null) {
@@ -98,13 +103,8 @@ public class ProcessEngineTestCase extends LogTestCase {
       managementService = null;
     }
   }
-  
-  protected void tearDown() throws Exception {
-    checkDbIsClean();
-    super.tearDown();
-  }
-  
-  protected void checkDbIsClean() {
+    
+  public void checkDbIsClean() {
     Map<String, Long> tableCounts = processEngine.getManagementService().getTableCount();
     StringBuilder outputMessage = new StringBuilder();
     for (String table : tableCounts.keySet()) {

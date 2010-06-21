@@ -12,19 +12,21 @@
  */
 package org.activiti.examples.pojo;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.assertTrue;
 
 import org.activiti.impl.scripting.ExpressionCondition;
 import org.activiti.pvm.ObjectProcessDefinition;
 import org.activiti.pvm.ObjectProcessInstance;
 import org.activiti.pvm.ProcessDefinitionBuilder;
+import org.junit.Test;
 
 
 /**
  * @author Tom Baeyens
  */
-public class PojoTest extends TestCase {
+public class PojoTest {
 
+  @Test
   public void testPojoWaitState() {
     ObjectProcessDefinition processDefinition = ProcessDefinitionBuilder
     .createProcessDefinition()
@@ -57,6 +59,7 @@ public class PojoTest extends TestCase {
     assertTrue(processInstance.isActive("c"));
   }
   
+  @Test
   public void testPojoAutomatic() {
     ObjectProcessDefinition processDefinition = ProcessDefinitionBuilder
     .createProcessDefinition()
@@ -81,6 +84,7 @@ public class PojoTest extends TestCase {
     assertTrue(processInstance.isActive("c"));
   }
   
+  @Test
   public void testDecision() {
     ObjectProcessDefinition processDefinition = ProcessDefinitionBuilder
     .createProcessDefinition()

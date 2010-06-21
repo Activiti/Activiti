@@ -13,6 +13,8 @@
 
 package org.activiti.test.bpmn.event.timer;
 
+import static org.junit.Assert.assertEquals;
+
 import java.util.Date;
 import java.util.List;
 
@@ -22,38 +24,40 @@ import org.activiti.ProcessInstance;
 import org.activiti.Task;
 import org.activiti.impl.time.Clock;
 import org.activiti.test.ActivitiTestCase;
-
+import org.activiti.test.ProcessDeclared;
+import org.junit.Test;
 
 /**
  * @author jbarrez
  */
 public class BoundaryTimerEventTest extends ActivitiTestCase {
-  
+
   /*
-   * Test for when multiple boundary timer events are defined on the same user task
+   * Test for when multiple boundary timer events are defined on the same user
+   * task
    * 
-   * Configuration:
-   *   - timer 1 -> 2 hours -> secondTask
-   *   - timer 2 -> 1 hour  -> thirdTask
-   *   - timer 3 -> 3 hours -> fourthTask
+   * Configuration: - timer 1 -> 2 hours -> secondTask - timer 2 -> 1 hour ->
+   * thirdTask - timer 3 -> 3 hours -> fourthTask
    */
+  @Test
+  @ProcessDeclared
   public void testMultipleTimersOnUserTask() {
-    deployProcessForThisTestMethod();
-    
+
     // Set the clock to time '0'
     Clock.setCurrentTime(new Date(0L));
-    
+
     // After process start, there should be 3 timers created
     ProcessInstance pi = processService.startProcessInstanceByKey("multipleTimersOnUserTask");
     JobQuery jobQuery = managementService.createJobQuery().processInstanceId(pi.getId());
     List<Job> jobs = jobQuery.list();
     assertEquals(3, jobs.size());
-    
-    // After setting the clock to time '1 hour and 5 seconds', the second timer should fire
-    Clock.setCurrentTime(new Date( (60 * 60 * 1000) + 5000));
+
+    // After setting the clock to time '1 hour and 5 seconds', the second timer
+    // should fire
+    Clock.setCurrentTime(new Date((60 * 60 * 1000) + 5000));
     waitForJobExecutorToProcessAllJobs(5000L, 25L);
     assertEquals(0L, jobQuery.count());
-    
+
     // which means that the third task is reached
     Task task = taskService.createTaskQuery().singleResult();
     assertEquals("Third Task", task.getName());

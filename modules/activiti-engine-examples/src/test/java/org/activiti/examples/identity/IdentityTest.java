@@ -12,6 +12,10 @@
  */
 package org.activiti.examples.identity;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -20,6 +24,7 @@ import org.activiti.IdentityService;
 import org.activiti.identity.Group;
 import org.activiti.identity.User;
 import org.activiti.test.ActivitiTestCase;
+import org.junit.Test;
 
 
 /**
@@ -27,6 +32,7 @@ import org.activiti.test.ActivitiTestCase;
  */
 public class IdentityTest extends ActivitiTestCase {
 
+  @Test
   public void testAuthentication() {
     IdentityService identityService = processEngine.getIdentityService();
     
@@ -40,6 +46,7 @@ public class IdentityTest extends ActivitiTestCase {
     identityService.deleteUser("johndoe");
   }
 
+  @Test
   public void testFindGroupsByUserAndType() {
     IdentityService identityService = processEngine.getIdentityService();
     
@@ -99,7 +106,7 @@ public class IdentityTest extends ActivitiTestCase {
     identityService.deleteUser("jackblack");
   }
 
-
+  @Test
   public void testUser() {
     IdentityService identityService = processEngine.getIdentityService();
     
@@ -118,6 +125,7 @@ public class IdentityTest extends ActivitiTestCase {
     identityService.deleteUser("johndoe");
   }
 
+  @Test
   public void testGroup() {
     IdentityService identityService = processEngine.getIdentityService();
     
@@ -132,6 +140,7 @@ public class IdentityTest extends ActivitiTestCase {
     identityService.deleteGroup("sales");
   }
 
+  @Test
   public void testMembership() {
     IdentityService identityService = processEngine.getIdentityService();
     

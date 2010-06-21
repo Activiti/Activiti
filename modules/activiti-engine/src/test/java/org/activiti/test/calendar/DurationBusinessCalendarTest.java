@@ -13,30 +13,38 @@
 
 package org.activiti.test.calendar;
 
+import static org.junit.Assert.assertEquals;
+
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import org.activiti.impl.calendar.DurationBusinessCalendar;
 import org.activiti.impl.time.Clock;
-import org.activiti.test.LogTestCase;
-
+import org.activiti.test.LogInitializer;
+import org.junit.Rule;
+import org.junit.Test;
 
 /**
  * @author Tom Baeyens
  */
-public class DurationBusinessCalendarTest extends LogTestCase {
-  
+public class DurationBusinessCalendarTest {
+
+  @Rule
+  public LogInitializer logInitializer = new LogInitializer();
+
+  @Test
   public void testSimpleDuration() throws Exception {
     DurationBusinessCalendar businessCalendar = new DurationBusinessCalendar();
 
     SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy MMM dd - HH:mm");
     Date now = simpleDateFormat.parse("2010 Jun 11 - 17:23");
     Clock.setCurrentTime(now);
-    
+
     Date duedate = businessCalendar.resolveDuedate("P2DT5H70M");
-    
+
     Date expectedDuedate = simpleDateFormat.parse("2010 Jun 13 - 23:33");
 
     assertEquals(expectedDuedate, duedate);
   }
+
 }

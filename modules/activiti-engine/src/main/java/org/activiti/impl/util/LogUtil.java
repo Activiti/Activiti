@@ -31,7 +31,7 @@ import java.util.logging.LogRecord;
 public class LogUtil {
 
   private static final String LINE_SEPARATOR = System.getProperty("line.separator");
-  private static Map<Integer, String> threadIndents = new HashMap<Integer, String>(); 
+  private static Map<Integer, String> threadIndents = new HashMap<Integer, String>();
 
   public static void readJavaUtilLoggingConfigFromClasspath() {
     ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
@@ -41,10 +41,8 @@ public class LogUtil {
         LogManager.getLogManager().readConfiguration(inputStream);
 
         String redirectCommons = LogManager.getLogManager().getProperty("redirect.commons.logging");
-        if ( (redirectCommons != null) 
-             && (!redirectCommons.equalsIgnoreCase("false"))
-           ) {
-          System.setProperty("org.apache.commons.logging.Log", "org.apache.commons.logging.impl.Jdk14Logger" );
+        if ((redirectCommons != null) && (!redirectCommons.equalsIgnoreCase("false"))) {
+          System.setProperty("org.apache.commons.logging.Log", "org.apache.commons.logging.impl.Jdk14Logger");
         }
 
         inputStream.close();
@@ -53,10 +51,11 @@ public class LogUtil {
       throw new RuntimeException("couldn't initialize logging properly", e);
     }
   }
-  
+
   private static Format dateFormat = new SimpleDateFormat("HH:mm:ss,SSS");
-  
+
   public static class LogFormatter extends Formatter {
+
     public String format(LogRecord record) {
       StringBuilder line = new StringBuilder();
       line.append(dateFormat.format(new Date()));
@@ -75,17 +74,17 @@ public class LogUtil {
       } else if (Level.CONFIG.equals(record.getLevel())) {
         line.append(" CFG ");
       }
-      
+
       int threadId = record.getThreadID();
       String threadIndent = getThreadIndent(threadId);
-      
+
       line.append(threadIndent);
       line.append(" | ");
       line.append(record.getMessage());
 
-      if (record.getThrown()!=null) {
+      if (record.getThrown() != null) {
         line.append(LINE_SEPARATOR);
-        
+
         StringWriter stringWriter = new StringWriter();
         PrintWriter printWriter = new PrintWriter(stringWriter);
         record.getThrown().printStackTrace(printWriter);
@@ -104,9 +103,9 @@ public class LogUtil {
     protected static String getThreadIndent(int threadId) {
       Integer threadIdInteger = new Integer(threadId);
       String threadIndent = threadIndents.get(threadIdInteger);
-      if (threadIndent==null) {
+      if (threadIndent == null) {
         StringBuilder stringBuilder = new StringBuilder();
-        for (int i=0; i<threadIndents.size(); i++) {
+        for (int i = 0; i < threadIndents.size(); i++) {
           stringBuilder.append("  ");
         }
         threadIndent = stringBuilder.toString();
@@ -114,7 +113,7 @@ public class LogUtil {
       }
       return threadIndent;
     }
-    
+
   }
 
   public static void resetThreadIndents() {

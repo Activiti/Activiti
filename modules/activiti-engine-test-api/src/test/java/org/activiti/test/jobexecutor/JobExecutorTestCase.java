@@ -13,19 +13,13 @@
 package org.activiti.test.jobexecutor;
 
 import java.util.Date;
-import java.util.Timer;
-import java.util.TimerTask;
 
-import org.activiti.ActivitiException;
 import org.activiti.impl.ProcessEngineImpl;
-import org.activiti.impl.interceptor.Command;
-import org.activiti.impl.interceptor.CommandContext;
-import org.activiti.impl.interceptor.CommandExecutor;
 import org.activiti.impl.job.MessageImpl;
 import org.activiti.impl.job.TimerImpl;
-import org.activiti.impl.jobexecutor.JobExecutor;
 import org.activiti.test.ActivitiTestCase;
-
+import org.junit.After;
+import org.junit.Before;
 
 /**
  * @author Tom Baeyens
@@ -33,25 +27,17 @@ import org.activiti.test.ActivitiTestCase;
 public class JobExecutorTestCase extends ActivitiTestCase {
 
   protected TweetHandler tweetHandler = new TweetHandler();
-  
-  protected void setUp() throws Exception {
-    super.setUp();
-    
-    ProcessEngineImpl processEngineImpl = (ProcessEngineImpl)processEngine;
-    processEngineImpl
-      .getProcessEngineConfiguration()
-      .getJobCommands()
-      .addJobHandler(tweetHandler);
+
+  @Before
+  public void setUp() throws Exception {
+    ProcessEngineImpl processEngineImpl = (ProcessEngineImpl) processEngine;
+    processEngineImpl.getProcessEngineConfiguration().getJobCommands().addJobHandler(tweetHandler);
   }
 
-  protected void tearDown() throws Exception {
-    ProcessEngineImpl processEngineImpl = (ProcessEngineImpl)processEngine;
-    processEngineImpl
-      .getProcessEngineConfiguration()
-      .getJobCommands()
-      .removeJobHandler(tweetHandler);
-
-    super.tearDown();
+  @After
+  public void tearDown() throws Exception {
+    ProcessEngineImpl processEngineImpl = (ProcessEngineImpl) processEngine;
+    processEngineImpl.getProcessEngineConfiguration().getJobCommands().removeJobHandler(tweetHandler);
   }
 
   protected MessageImpl createTweetMessage(String msg) {

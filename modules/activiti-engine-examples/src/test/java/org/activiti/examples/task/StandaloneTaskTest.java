@@ -12,63 +12,68 @@
  */
 package org.activiti.examples.task;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+
 import java.util.List;
 
 import org.activiti.Task;
 import org.activiti.test.ActivitiTestCase;
-
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
 /**
  * @author Joram Barrez
  */
 public class StandaloneTaskTest extends ActivitiTestCase {
-  
-  @Override
-  protected void setUp() throws Exception {
-    super.setUp();
+
+  @Before
+  public void setUp() throws Exception {
     identityService.saveUser(identityService.newUser("kermit"));
     identityService.saveUser(identityService.newUser("gonzo"));
   }
-  
-  @Override
-  protected void tearDown() throws Exception {
+
+  @After
+  public void tearDown() throws Exception {
     identityService.deleteUser("kermit");
     identityService.deleteUser("gonzo");
-    super.tearDown();
   }
-  
+
+  @Test
   public void testCreateToComplete() {
-    
+
     // Create and save task
     Task task = taskService.newTask();
     task.setName("testTask");
     taskService.saveTask(task);
     String taskId = task.getId();
-    
+
     // Add user as candidate user
     taskService.addCandidateUser(taskId, "kermit");
     taskService.addCandidateUser(taskId, "gonzo");
-    
+
     // Retrieve task list for jbarrez
     List<Task> tasks = taskService.findUnassignedTasks("kermit");
     assertEquals(1, tasks.size());
     assertEquals("testTask", tasks.get(0).getName());
-    
+
     // Retrieve task list for tbaeyens
     tasks = taskService.findUnassignedTasks("gonzo");
     assertEquals(1, tasks.size());
     assertEquals("testTask", tasks.get(0).getName());
-    
+
     // Claim task
     taskService.claim(taskId, "kermit");
-    
+
     // Tasks shouldn't appear in the candidate tasklists anymore
     assertTrue(taskService.findUnassignedTasks("kermit").isEmpty());
     assertTrue(taskService.findUnassignedTasks("gonzo").isEmpty());
-   
+
     // Complete task
     taskService.complete(taskId);
-    
+
     // Task should be removed from runtime data
     // TODO: check for historic data when implemented!
     assertNull(taskService.findTask(taskId));

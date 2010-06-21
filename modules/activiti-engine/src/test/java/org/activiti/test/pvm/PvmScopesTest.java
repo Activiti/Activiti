@@ -12,21 +12,26 @@
  */
 package org.activiti.test.pvm;
 
-import org.activiti.impl.util.LogUtil;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertSame;
+
 import org.activiti.pvm.ObjectExecution;
 import org.activiti.pvm.ObjectProcessDefinition;
 import org.activiti.pvm.ObjectProcessInstance;
 import org.activiti.pvm.ProcessDefinitionBuilder;
-import org.activiti.test.LogTestCase;
+import org.activiti.test.LogInitializer;
 import org.activiti.test.pvm.activities.Automatic;
 import org.activiti.test.pvm.activities.WaitState;
+import org.junit.Test;
 
 
 /**
  * @author Tom Baeyens
  */
-public class PvmScopesTest extends LogTestCase {
+public class PvmScopesTest extends LogInitializer {
 
+  @Test
   public void testSimpleNestedScope() {
     ObjectProcessDefinition processDefinition = ProcessDefinitionBuilder
     .createProcessDefinition()

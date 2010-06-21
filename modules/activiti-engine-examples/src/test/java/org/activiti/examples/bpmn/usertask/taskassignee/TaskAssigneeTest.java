@@ -12,11 +12,15 @@
  */
 package org.activiti.examples.bpmn.usertask.taskassignee;
 
+import static org.junit.Assert.assertEquals;
+
 import java.util.List;
 
 import org.activiti.ProcessInstance;
 import org.activiti.Task;
 import org.activiti.test.ActivitiTestCase;
+import org.activiti.test.ProcessDeclared;
+import org.junit.Test;
 
 
 /**
@@ -26,9 +30,9 @@ import org.activiti.test.ActivitiTestCase;
  */
 public class TaskAssigneeTest extends ActivitiTestCase {
 
+  @Test
+  @ProcessDeclared
   public void testTaskAssignee() {    
-    // Deploy test process
-    deployProcessForThisTestMethod();
     
     // Start process instance
     ProcessInstance processInstance = processService.startProcessInstanceByKey("taskAssigneeProcess");

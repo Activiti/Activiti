@@ -18,6 +18,7 @@ import java.util.List;
 import org.activiti.impl.execution.ExecutionImpl;
 import org.activiti.impl.interceptor.CommandContext;
 import org.activiti.impl.job.JobHandler;
+import org.junit.Assert;
 
 public class TweetHandler implements JobHandler {
 
@@ -26,10 +27,10 @@ public class TweetHandler implements JobHandler {
   public String getType() {
     return "tweet";
   }
-  
+
   public void execute(String configuration, ExecutionImpl execution, CommandContext commandContext) {
     messages.add(configuration);
-    JobExecutorCmdHappyTest.assertNotNull(commandContext);
+    Assert.assertNotNull(commandContext);
   }
   
   public List<String> getMessages() {

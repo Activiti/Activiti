@@ -12,42 +12,48 @@
  */
 package org.activiti.test.connection;
 
-import java.io.PrintWriter;
-import java.io.StringWriter;
 import java.sql.SQLException;
 
-import junit.framework.TestCase;
-
 import org.activiti.DbProcessEngineBuilder;
-
+import org.hamcrest.Description;
+import org.junit.Rule;
+import org.junit.Test;
+import org.junit.internal.matchers.TypeSafeMatcher;
+import org.junit.rules.ExpectedException;
 
 /**
  * @author Tom Baeyens
  */
-public class NoDbConnectionTest extends TestCase {
+public class NoDbConnectionTest {
 
+  @Rule
+  public ExpectedException exception = ExpectedException.none();
+
+  @Test
   public void testNoDbConnection() {
-    try {
-      new DbProcessEngineBuilder()
-        .configureFromPropertiesResource("org/activiti/test/connection/activiti.properties")
-        .buildProcessEngine();
-      fail("expected exception");
-    } catch (RuntimeException e) {
-      if (!containsSqlException(e)) {
-        StringWriter stringWriter = new StringWriter();
-        e.printStackTrace(new PrintWriter(stringWriter));
-        fail("expected sql exception.  but was: "+stringWriter.toString());
-      }
-    }
+    exception.expect(RuntimeException.class);
+    exception.expect(new SqlExceptionMatcher());
+    new DbProcessEngineBuilder().configureFromPropertiesResource("org/activiti/test/connection/activiti.properties").buildProcessEngine();
   }
 
-  protected boolean containsSqlException(Throwable e) {
-    if (e==null) {
-      return false;
+  private static final class SqlExceptionMatcher extends TypeSafeMatcher<RuntimeException> {
+
+    public boolean matchesSafely(RuntimeException e) {
+      return containsSqlException(e);
     }
-    if (e instanceof SQLException) {
-      return true;
+    public void describeTo(Description description) {
     }
-    return containsSqlException(e.getCause());
+
+    private boolean containsSqlException(Throwable e) {
+      if (e == null) {
+        return false;
+      }
+      if (e instanceof SQLException) {
+        return true;
+      }
+      return containsSqlException(e.getCause());
+    }
+
   }
+
 }

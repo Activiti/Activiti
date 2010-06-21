@@ -12,14 +12,17 @@
  */
 package org.activiti.test.pvm.embeddedorder;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.assertEquals;
+
+import org.junit.Test;
 
 
 /**
  * @author Tom Baeyens
  */
-public class OrderTest extends TestCase {
+public class OrderTest {
 
+  @Test
   public void testOrder() {
     Order order = new Order("someOrderInitializationParameter");
     assertEquals("verification", order.getState());

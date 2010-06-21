@@ -12,12 +12,15 @@
  */
 package org.activiti.examples.mgmt;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
 import java.util.Map;
 
 import org.activiti.ManagementService;
 import org.activiti.TableMetaData;
 import org.activiti.test.ActivitiTestCase;
-
+import org.junit.Test;
 
 /**
  * Test case for the various operations of the {@link ManagementService}
@@ -26,7 +29,8 @@ import org.activiti.test.ActivitiTestCase;
  * @author Joram Barrez
  */
 public class ManagementServiceTest extends ActivitiTestCase {
-  
+
+  @Test
   public void testTableCount() {
     Map<String, Long> tableCount = managementService.getTableCount();
 
@@ -39,20 +43,22 @@ public class ManagementServiceTest extends ActivitiTestCase {
     assertEquals(new Long(0), tableCount.get("ACT_ID_USER"));
     assertEquals(new Long(0), tableCount.get("ACT_PROCESSDEFINITION"));
     assertEquals(new Long(0), tableCount.get("ACT_TASK"));
-    assertEquals(new Long(0), tableCount.get("ACT_TASKINVOLVEMENT"));;
+    assertEquals(new Long(0), tableCount.get("ACT_TASKINVOLVEMENT"));
+    ;
   }
-  
+
+  @Test
   public void testGetTableMetaData() {
     TableMetaData tableMetaData = managementService.getTableMetaData("ACT_TASK");
     assertEquals(tableMetaData.getColumnNames().size(), tableMetaData.getColumnTypes().size());
     assertEquals(13, tableMetaData.getColumnNames().size());
-    
+
     int assigneeIndex = tableMetaData.getColumnNames().indexOf("ASSIGNEE_");
     int createTimeIndex = tableMetaData.getColumnNames().indexOf("CREATE_TIME_");
 
     assertTrue(assigneeIndex >= 0);
     assertTrue(createTimeIndex >= 0);
-    
+
     assertEquals("VARCHAR", tableMetaData.getColumnTypes().get(assigneeIndex));
     assertEquals("TIMESTAMP", tableMetaData.getColumnTypes().get(createTimeIndex));
   }

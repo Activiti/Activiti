@@ -12,6 +12,8 @@
  */
 package org.activiti.test.jobexecutor;
 
+import static org.junit.Assert.assertEquals;
+
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
@@ -22,6 +24,7 @@ import org.activiti.impl.interceptor.CommandContext;
 import org.activiti.impl.interceptor.CommandExecutor;
 import org.activiti.impl.msg.MessageSession;
 import org.activiti.impl.timer.TimerSession;
+import org.junit.Test;
 
 
 
@@ -30,6 +33,7 @@ import org.activiti.impl.timer.TimerSession;
  */
 public class JobExecutorTest extends JobExecutorTestCase {
 
+  @Test
   public void testBasicJobExecutorOperation() throws Exception {
     ProcessEngineImpl processEngineImpl = (ProcessEngineImpl)processEngine;
     CommandExecutor commandExecutor = processEngineImpl.getProcessEngineConfiguration().getCommandExecutor();

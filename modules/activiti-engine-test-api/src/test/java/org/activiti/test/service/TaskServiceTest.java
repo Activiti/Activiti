@@ -12,6 +12,8 @@
  */
 package org.activiti.test.service;
 
+import static org.junit.Assert.assertEquals;
+
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -19,12 +21,14 @@ import java.util.Map;
 import org.activiti.ProcessInstance;
 import org.activiti.Task;
 import org.activiti.test.ActivitiTestCase;
+import org.junit.Test;
 
 /**
  * @author Joram Barrez
  */
 public class TaskServiceTest extends ActivitiTestCase {
   
+  @Test
   public void testCompleteWithParametersTask() {
     deployProcessResource("org/activiti/test/service/twoTasksProcess.bpmn20.xml");
     ProcessInstance processInstance = processService.startProcessInstanceByKey("twoTasksProcess");

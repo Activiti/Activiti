@@ -12,31 +12,35 @@
  */
 package org.activiti.examples.bpmn.scripttask;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+
 import org.activiti.ProcessInstance;
 import org.activiti.test.ActivitiTestCase;
+import org.activiti.test.ProcessDeclared;
 import org.activiti.util.CollectionUtil;
-
+import org.junit.Test;
 
 /**
  * @author Joram Barrez
  */
 public class ScriptTaskTest extends ActivitiTestCase {
-  
-  public void testScriptExecution() {
-    deployProcessForThisTestMethod();
 
-    int[] inputArray = new int[] {1, 2, 3, 4, 5}; 
-    ProcessInstance pi = processService.startProcessInstanceByKey("scriptExecution", 
-            CollectionUtil.singletonMap("inputArray", inputArray));
+  @Test
+  @ProcessDeclared
+  public void testScriptExecution() {
+    int[] inputArray = new int[] { 1, 2, 3, 4, 5 };
+    ProcessInstance pi = processService.startProcessInstanceByKey("scriptExecution", CollectionUtil.singletonMap("inputArray", inputArray));
 
     Integer result = (Integer) processService.getVariable(pi.getId(), "sum");
     assertEquals(15, result.intValue());
   }
-  
+
+  @Test
+  @ProcessDeclared
   public void testSetVariableThroughExecutionInScript() {
-    deployProcessForThisTestMethod();
     ProcessInstance pi = processService.startProcessInstanceByKey("setScriptVariableThroughExecution");
-    
+
     // Since 'def' is used, the 'scriptVar' will be script local
     // and not automatically stored as a process variable.
     assertNull(processService.getVariable(pi.getId(), "scriptVar"));

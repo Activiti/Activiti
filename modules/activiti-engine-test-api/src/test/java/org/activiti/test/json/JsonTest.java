@@ -19,6 +19,7 @@ import org.activiti.ProcessService;
 import org.activiti.json.JsonListConverter;
 import org.activiti.json.JsonProcessDefinitionConverter;
 import org.activiti.test.ActivitiTestCase;
+import org.junit.Test;
 
 
 /**
@@ -26,6 +27,7 @@ import org.activiti.test.ActivitiTestCase;
  */
 public class JsonTest extends ActivitiTestCase {
 
+  @Test
   public void testJson() {
     deployProcessString(
       "<definitions xmlns='http://www.omg.org/spec/BPMN/20100524/MODEL'" +

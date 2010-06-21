@@ -12,42 +12,47 @@
  */
 package org.activiti.examples.mgmt;
 
-import java.util.List;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 
-import junit.framework.TestCase;
+import java.util.List;
 
 import org.activiti.ProcessEngine;
 import org.activiti.ProcessEngineInfo;
 import org.activiti.ProcessEngines;
 import org.activiti.test.ProcessEngineTestCase;
-
+import org.junit.Before;
+import org.junit.Test;
 
 /**
  * @author Tom Baeyens
  */
-public class ProcessEnginesTest extends TestCase {
-  
-  protected void setUp() throws Exception {
+public class ProcessEnginesTest {
+
+  @Before
+  public void setUp() throws Exception {
     // in case previous ProcessEngineTestCase s (or ActivitiTestCase s)
-    // already have inialized and cached a process engine, it needs to 
+    // already have inialized and cached a process engine, it needs to
     // be closed first.
     ProcessEngineTestCase.closeProcessEngine();
   }
 
+  @Test
   public void testProcessEngineInfo() {
     ProcessEngines.init();
-    
+
     List<ProcessEngineInfo> processEngineInfos = ProcessEngines.getProcessEngineInfos();
     assertEquals(1, processEngineInfos.size());
-    
+
     ProcessEngineInfo processEngineInfo = processEngineInfos.get(0);
-    assertNull(processEngineInfo.getException()); 
-    assertNotNull(processEngineInfo.getName()); 
-    assertNotNull(processEngineInfo.getResourceUrl()); 
-    
+    assertNull(processEngineInfo.getException());
+    assertNotNull(processEngineInfo.getName());
+    assertNotNull(processEngineInfo.getResourceUrl());
+
     ProcessEngine processEngine = ProcessEngines.getProcessEngine(ProcessEngines.NAME_DEFAULT);
     assertNotNull(processEngine);
-    
+
     ProcessEngines.destroy();
   }
 }

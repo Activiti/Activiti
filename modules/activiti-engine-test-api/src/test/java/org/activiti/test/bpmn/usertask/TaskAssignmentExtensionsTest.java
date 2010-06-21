@@ -12,13 +12,20 @@
  */
 package org.activiti.test.bpmn.usertask;
 
+import static org.junit.Assert.assertEquals;
+
 import java.util.List;
 
 import org.activiti.ActivitiException;
 import org.activiti.Task;
 import org.activiti.TaskQuery;
 import org.activiti.test.ActivitiTestCase;
-
+import org.activiti.test.ProcessDeclared;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Rule;
+import org.junit.Test;
+import org.junit.rules.ExpectedException;
 
 /**
  * Testcase for the non-spec extensions to the task candidate use case.
@@ -26,96 +33,97 @@ import org.activiti.test.ActivitiTestCase;
  * @author Joram Barrez
  */
 public class TaskAssignmentExtensionsTest extends ActivitiTestCase {
-  
-  @Override
-  protected void setUp() throws Exception {
-    super.setUp();
-    
+
+  @Rule
+  public ExpectedException exception = ExpectedException.none();
+
+  @Before
+  public void setUp() throws Exception {
     identityService.saveUser(identityService.newUser("kermit"));
     identityService.saveUser(identityService.newUser("gonzo"));
     identityService.saveUser(identityService.newUser("fozzie"));
-    
+
     identityService.saveGroup(identityService.newGroup("management"));
     identityService.saveGroup(identityService.newGroup("accountancy"));
-    
+
     identityService.createMembership("kermit", "management");
     identityService.createMembership("kermit", "accountancy");
     identityService.createMembership("fozzie", "management");
   }
-  
-  @Override
-  protected void tearDown() throws Exception {
+
+  @After
+  public void tearDown() throws Exception {
     identityService.deleteGroup("accountancy");
     identityService.deleteGroup("management");
     identityService.deleteUser("fozzie");
     identityService.deleteUser("gonzo");
     identityService.deleteUser("kermit");
-    super.tearDown();
   }
-  
+
+  @Test
+  @ProcessDeclared
   public void testAssigneeExtension() {
-    deployProcessForThisTestMethod();
     processService.startProcessInstanceByKey("assigneeExtension");
-    
     List<Task> tasks = taskService.findAssignedTasks("kermit");
     assertEquals(1, tasks.size());
     assertEquals("my task", tasks.get(0).getName());
   }
-  
+
+  @Test
   public void testDuplicateAssigneeDeclaration() {
-    try {
-      deployProcessForThisTestMethod();
-      fail("Duplicate assignee declaration should throw an exception");
-    } catch (ActivitiException e) {
-      assertTextPresent("duplicate assignee declaration", e.getMessage());
-    }
+    exception.expect(ActivitiException.class);
+    exception.expectMessage("duplicate assignee declaration for task");
+    String resource = ActivitiTestCase.getProcessDefinitionResource(getClass(), "testDuplicateAssigneeDeclaration");
+    processEngine.getProcessService().createDeployment().name(resource).addClasspathResource(resource).deploy();
   }
-  
+
+  @Test
+  @ProcessDeclared
   public void testCandidateUsersExtension() {
-    deployProcessForThisTestMethod();
     processService.startProcessInstanceByKey("candidateUsersExtension");
-    
     List<Task> tasks = taskService.findUnassignedTasks("kermit");
     assertEquals(1, tasks.size());
     tasks = taskService.findUnassignedTasks("gonzo");
     assertEquals(1, tasks.size());
   }
-  
+
+  @Test
+  @ProcessDeclared
   public void testCandidateGroupsExtension() {
-    deployProcessForThisTestMethod();
     processService.startProcessInstanceByKey("candidateGroupsExtension");
-    
+
     // Bugfix check: potentially the query could return 2 tasks since
-    // kermit is a member of the two candidate groups 
+    // kermit is a member of the two candidate groups
     List<Task> tasks = taskService.findUnassignedTasks("kermit");
     assertEquals(1, tasks.size());
     assertEquals("make profit", tasks.get(0).getName());
-    
-    tasks  = taskService.findUnassignedTasks("fozzie");
+
+    tasks = taskService.findUnassignedTasks("fozzie");
     assertEquals(1, tasks.size());
     assertEquals("make profit", tasks.get(0).getName());
-    
+
     // Test the task query find-by-candidate-group operation
     TaskQuery query = taskService.createTaskQuery();
     assertEquals(1, query.candidateGroup("management").count());
     assertEquals(1, query.candidateGroup("accountancy").count());
   }
-  
+
   // Test where the candidate user extension is used together
   // with the spec way of defining candidate users
+  @Test
+  @ProcessDeclared
   public void testMixedCandidateUserDefinition() {
-    deployProcessForThisTestMethod();
     processService.startProcessInstanceByKey("mixedCandidateUser");
-    
+
     List<Task> tasks = taskService.findUnassignedTasks("kermit");
     assertEquals(1, tasks.size());
-    
+
     tasks = taskService.findUnassignedTasks("fozzie");
     assertEquals(1, tasks.size());
-    
+
     tasks = taskService.findUnassignedTasks("gonzo");
     assertEquals(1, tasks.size());
-    
+
     tasks = taskService.findUnassignedTasks("mispiggy");
     assertEquals(0, tasks.size());
   }
