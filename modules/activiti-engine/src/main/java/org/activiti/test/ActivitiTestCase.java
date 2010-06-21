@@ -54,7 +54,7 @@ public class ActivitiTestCase extends ProcessEngineTestCase {
   
   public String deployProcessResource(String resource) {
     Deployment deployment = processEngine.getProcessService()
-      .newDeployment()
+      .createDeployment()
       .name(resource)
       .addClasspathResource(resource)                                       
       .deploy();
@@ -68,7 +68,7 @@ public class ActivitiTestCase extends ProcessEngineTestCase {
   
   public void deployProcessString(String resourceName, String xmlString) {
     Deployment deployment = processEngine.getProcessService()
-      .newDeployment()
+      .createDeployment()
       .name(resourceName)
       .addString(resourceName, xmlString)                                 
       .deploy();

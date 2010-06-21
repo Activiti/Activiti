@@ -14,7 +14,7 @@ package org.activiti.test.pvm.activities;
 
 import org.activiti.pvm.ActivityBehavior;
 import org.activiti.pvm.ActivityExecution;
-import org.activiti.pvm.ConcurrencyScope;
+import org.activiti.pvm.ConcurrencyController;
 import org.activiti.pvm.Transition;
 
 
@@ -26,7 +26,7 @@ public class Fork implements ActivityBehavior {
   public void execute(ActivityExecution execution) {
     execution.end();
 
-    ConcurrencyScope scopeInstance = execution.getConcurrencyScope();
+    ConcurrencyController scopeInstance = execution.getConcurrencyController();
     for (Transition transition: execution.getOutgoingTransitions()) {
       ActivityExecution concurrentExecution = scopeInstance.createExecution();
       concurrentExecution.take(transition);

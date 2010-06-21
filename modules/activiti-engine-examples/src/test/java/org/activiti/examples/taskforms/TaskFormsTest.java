@@ -42,7 +42,7 @@ public class TaskFormsTest extends ActivitiTestCase {
   }
     
   private void deployVacationRequestProcess() {
-    Deployment deployment = processService.newDeployment()
+    Deployment deployment = processService.createDeployment()
       .addClasspathResource("org/activiti/examples/taskforms/VacationRequest.bpmn20.xml")
       .addClasspathResource("org/activiti/examples/taskforms/approve.form")
       .addClasspathResource("org/activiti/examples/taskforms/request.form")

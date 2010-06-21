@@ -17,7 +17,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.activiti.pvm.ActivityExecution;
-import org.activiti.pvm.ConcurrencyScope;
+import org.activiti.pvm.ConcurrencyController;
 import org.activiti.pvm.EventActivityBehavior;
 import org.activiti.pvm.Transition;
 
@@ -55,10 +55,10 @@ public abstract class FlownodeActivity implements EventActivityBehavior {
     if (outgoingSequenceFlow.size() == 1) {
       execution.take(outgoingSequenceFlow.get(0));
     } else if (outgoingSequenceFlow.size() > 1) {
-      ConcurrencyScope scopeInstance = execution.getConcurrencyScope();
+      ConcurrencyController concurrencyController = execution.getConcurrencyController();
       for (Transition transition: outgoingSequenceFlow) {
         if (transition.getCondition() == null || transition.getCondition().evaluate(execution)) {
-          ActivityExecution concurrentExecution = scopeInstance.createExecution();
+          ActivityExecution concurrentExecution = concurrencyController.createExecution();
           concurrentExecution.take(transition);
         }
       }

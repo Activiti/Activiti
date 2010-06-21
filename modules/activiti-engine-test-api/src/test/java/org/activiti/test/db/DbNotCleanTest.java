@@ -25,7 +25,7 @@ public class DbNotCleanTest extends ActivitiTestCase {
   public void testDbNotCleanAfterTest() {
     Deployment deployment = 
       processEngine.getProcessService()
-        .newDeployment()
+        .createDeployment()
         .addString("test.bpmn20.xml", "<definitions xmlns='http://www.omg.org/spec/BPMN/20100524/MODEL' " +
         		"targetNamespace='http://www.activiti.org/bpmn2.0' />")
         .deploy();

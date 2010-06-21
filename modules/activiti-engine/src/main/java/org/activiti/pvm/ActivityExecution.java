@@ -30,7 +30,7 @@ public interface ActivityExecution {
   void take(Transition transition);
   void take(String transitionId);
 
-  ConcurrencyScope getConcurrencyScope();
+  ConcurrencyController getConcurrencyController();
 
   void end();
 

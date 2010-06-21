@@ -35,7 +35,7 @@ public class FinancialReportProcessTest extends ActivitiTestCase {
   }
   
   public void testProcess() {
-    Deployment deployment = processService.newDeployment()
+    Deployment deployment = processService.createDeployment()
       .addClasspathResource("org/activiti/examples/bpmn/usertask/FinancialReportProcess.bpmn20.xml")
       .deploy();
     registerDeployment(deployment.getId());

@@ -38,6 +38,7 @@ import org.activiti.impl.cmd.GetDeploymentResourceCmd;
 import org.activiti.impl.cmd.GetExecutionVariableCmd;
 import org.activiti.impl.cmd.GetExecutionVariablesCmd;
 import org.activiti.impl.cmd.GetFormCmd;
+import org.activiti.impl.cmd.SendEventCmd;
 import org.activiti.impl.cmd.SetExecutionVariablesCmd;
 import org.activiti.impl.cmd.StartProcessInstanceCmd;
 import org.activiti.impl.execution.ProcessInstanceQueryImpl;
@@ -57,7 +58,7 @@ public class ProcessServiceImpl implements ProcessService {
     this.commandExecutor = commandExecutor;
   }
 
-  public DeploymentBuilder newDeployment() {
+  public DeploymentBuilder createDeployment() {
     return new DeploymentBuilderImpl(this);
   }
 
@@ -157,5 +158,13 @@ public class ProcessServiceImpl implements ProcessService {
 
   public Object getStartFormByKey(String processDefinitionKey) {
     return commandExecutor.execute(new GetFormCmd(null, processDefinitionKey, null));
+  }
+
+  public void sendEvent(String executionId) {
+    commandExecutor.execute(new SendEventCmd(executionId, null));
+  }
+
+  public void sendEvent(String executionId, Object eventData) {
+    commandExecutor.execute(new SendEventCmd(executionId, eventData));
   }
 }

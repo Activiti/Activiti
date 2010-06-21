@@ -88,20 +88,20 @@ public class DeploymentTest extends ActivitiTestCase {
     final String hiringDeploymentName = "hiringDeployment";
     
     Deployment deployment1 = 
-      processService.newDeployment()
+      processService.createDeployment()
                     .name(idrDeploymentName)
                     .addString("idr_process01.bpmn20.xml", MINIMAL_PROC_DEF.replace(TO_REPLACE, "IDR1"))
                     .addString("idr_process02.bpmn20.xml", MINIMAL_PROC_DEF.replace(TO_REPLACE, "IDR2"))
                     .deploy();
     
     Deployment deployment2 =
-      processService.newDeployment()
+      processService.createDeployment()
                     .name(expenseDeploymentName)
                     .addString("expense_proc.bpmn20.xml", MINIMAL_PROC_DEF.replace(TO_REPLACE, "EXP"))
                     .deploy();
     
     Deployment deployment3 =
-       processService.newDeployment()
+       processService.createDeployment()
                      .name(hiringDeploymentName)
                      .addString("hiring_process.bpmn20.xml", MINIMAL_PROC_DEF.replace(TO_REPLACE, "HIR"))
                      .addString("hiring_remote_employee.bpmn20.xml", MINIMAL_PROC_DEF.replace(TO_REPLACE, "HIR_REM"))

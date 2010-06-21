@@ -32,7 +32,7 @@ import org.activiti.impl.job.TimerImpl;
 import org.activiti.impl.timer.TimerDeclarationImpl;
 import org.activiti.pvm.Activity;
 import org.activiti.pvm.ActivityExecution;
-import org.activiti.pvm.ConcurrencyScope;
+import org.activiti.pvm.ConcurrencyController;
 import org.activiti.pvm.ListenerExecution;
 import org.activiti.pvm.ObjectProcessInstance;
 import org.activiti.pvm.Transition;
@@ -46,7 +46,7 @@ public class ExecutionImpl implements
         ActivityExecution, 
         ListenerExecution, 
         ObjectProcessInstance, 
-        ConcurrencyScope {
+        ConcurrencyController {
   
   private static final long serialVersionUID = 1L;
   
@@ -357,7 +357,7 @@ public class ExecutionImpl implements
     }
   }
 
-  public ConcurrencyScope getConcurrencyScope() {
+  public ConcurrencyController getConcurrencyController() {
     if (isConcurrencyScope) {
       return this;
     }

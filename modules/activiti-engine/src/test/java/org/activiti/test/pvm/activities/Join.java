@@ -20,7 +20,7 @@ import java.util.logging.Logger;
 import org.activiti.pvm.Activity;
 import org.activiti.pvm.ActivityBehavior;
 import org.activiti.pvm.ActivityExecution;
-import org.activiti.pvm.ConcurrencyScope;
+import org.activiti.pvm.ConcurrencyController;
 
 /**
  * @author Tom Baeyens
@@ -34,7 +34,7 @@ public class Join implements ActivityBehavior {
     
     Activity joinActivity = execution.getActivity();
     List<ActivityExecution> joinedExecutions = new ArrayList<ActivityExecution>();
-    ConcurrencyScope scopeInstance = execution.getConcurrencyScope();
+    ConcurrencyController scopeInstance = execution.getConcurrencyController();
     List<? extends ActivityExecution> concurrentExecutions = scopeInstance.getExecutions();
     for (ActivityExecution concurrentExecution: concurrentExecutions) {
       if (concurrentExecution.getActivity()==joinActivity) {
@@ -53,7 +53,7 @@ public class Join implements ActivityBehavior {
     }
   }
 
-  protected void activate(ConcurrencyScope scopeInstance, Activity joinActivity, List<ActivityExecution> joinedExecutions) {
+  protected void activate(ConcurrencyController scopeInstance, Activity joinActivity, List<ActivityExecution> joinedExecutions) {
     for (ActivityExecution joinedExecution: joinedExecutions) {
       joinedExecution.end();
     }

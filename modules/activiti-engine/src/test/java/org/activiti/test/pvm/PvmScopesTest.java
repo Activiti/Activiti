@@ -12,13 +12,12 @@
  */
 package org.activiti.test.pvm;
 
-import junit.framework.TestCase;
-
 import org.activiti.impl.util.LogUtil;
 import org.activiti.pvm.ObjectExecution;
 import org.activiti.pvm.ObjectProcessDefinition;
 import org.activiti.pvm.ObjectProcessInstance;
 import org.activiti.pvm.ProcessDefinitionBuilder;
+import org.activiti.test.LogTestCase;
 import org.activiti.test.pvm.activities.Automatic;
 import org.activiti.test.pvm.activities.WaitState;
 
@@ -26,9 +25,7 @@ import org.activiti.test.pvm.activities.WaitState;
 /**
  * @author Tom Baeyens
  */
-public class PvmScopesTest extends TestCase {
-
-  static {LogUtil.readJavaUtilLoggingConfigFromClasspath();}
+public class PvmScopesTest extends LogTestCase {
 
   public void testSimpleNestedScope() {
     ObjectProcessDefinition processDefinition = ProcessDefinitionBuilder

@@ -26,7 +26,7 @@ import java.util.Map;
 public interface ProcessService {
   
   /** starts creating a new deployment */
-  DeploymentBuilder newDeployment();
+  DeploymentBuilder createDeployment();
   
   /** deletes the given deployment and fails if there are still process instances or jobs for this deployment. 
    * @throws ActivitiException if there are still process instances or jobs related to this deployment. */
@@ -60,7 +60,7 @@ public interface ProcessService {
   
   /** gets the details of a process instance 
    * @return the process instance or null if no process instance could be found with the given id. */
-  ProcessInstance findProcessInstanceById(String id);
+  ProcessInstance findProcessInstanceById(String processInstanceId);
 
   /** creates a new {@link ProcessInstanceQuery} instance, 
    * that can be used to dynamically query the process instances. */
@@ -68,11 +68,17 @@ public interface ProcessService {
 
   /** gets the details of an execution
    * @return the execution or null if no execution could be found with the given id. */
-  Execution findExecutionById(String id);
+  Execution findExecutionById(String executionId);
   
   /** retrieves the child executions (if any) of the given parent execution. */
-  List<Execution> findChildExecutions(String id);
+  List<Execution> findChildExecutions(String executionId);
 
+  /** sends an external trigger to an execution that is waiting. */
+  void sendEvent(String executionId);
+  
+  /** sends an external trigger to an execution that is waiting. */
+  void sendEvent(String executionId, Object eventData);
+  
   /** variables for the given execution. */
   Map<String, Object> getVariables(String executionId);
   
@@ -95,7 +101,7 @@ public interface ProcessService {
    * returns the {@link ProcessDefinition} with the given id, 
    * or null if none is found.
    */
-  ProcessDefinition findProcessDefinitionById(String id);
+  ProcessDefinition findProcessDefinitionById(String processDefinitionId);
   
   /** 
    * lists all deployments, ordered by deployment date (ascending).

@@ -12,12 +12,14 @@
  */
 package org.activiti.test.pvm;
 
-import junit.framework.TestCase;
+import java.util.ArrayList;
+import java.util.List;
 
-import org.activiti.impl.util.LogUtil;
+import org.activiti.pvm.ObjectExecution;
 import org.activiti.pvm.ObjectProcessDefinition;
 import org.activiti.pvm.ObjectProcessInstance;
 import org.activiti.pvm.ProcessDefinitionBuilder;
+import org.activiti.test.LogTestCase;
 import org.activiti.test.pvm.activities.Automatic;
 import org.activiti.test.pvm.activities.Fork;
 import org.activiti.test.pvm.activities.Join;
@@ -28,9 +30,7 @@ import org.activiti.test.pvm.activities.WaitState;
 /**
  * @author Tom Baeyens
  */
-public class PvmConcurrencyTest extends TestCase {
-
-  static {LogUtil.readJavaUtilLoggingConfigFromClasspath();}
+public class PvmConcurrencyTest extends LogTestCase {
 
   public void testSimpleAutmaticConcurrency() {
     ObjectProcessDefinition processDefinition = ProcessDefinitionBuilder
@@ -66,5 +66,54 @@ public class PvmConcurrencyTest extends TestCase {
     processInstance.start();
     
     assertNotNull(processInstance.findExecution("end"));
+  }
+
+  public void testSimpleWaitStateConcurrency() {
+    ObjectProcessDefinition processDefinition = ProcessDefinitionBuilder
+    .createProcessDefinition()
+      .createActivity("start")
+        .initial()
+        .behavior(new Automatic())
+        .transition("fork")
+      .endActivity()
+      .createActivity("fork")
+        .behavior(new Fork())
+        .transition("c1")
+        .transition("c2")
+      .endActivity()
+      .createActivity("c1")
+        .behavior(new WaitState())
+        .transition("join")
+      .endActivity()
+      .createActivity("c2")
+        .behavior(new WaitState())
+        .transition("join")
+      .endActivity()
+      .createActivity("join")
+        .behavior(new Join())
+        .transition("end")
+      .endActivity()
+      .createActivity("end")
+        .behavior(new WaitState())
+      .endActivity()
+    .endProcessDefinition();
+    
+    ObjectProcessInstance processInstance = processDefinition.createProcessInstance(); 
+    processInstance.start();
+    
+    ObjectExecution executionC1 = processInstance.findExecution("c1");
+    assertNotNull(executionC1);
+    
+    ObjectExecution executionC2 = processInstance.findExecution("c2");
+    assertNotNull(executionC2);
+    
+    executionC1.event(null);
+    executionC2.event(null);
+    
+    List<String> activityNames = processInstance.getActivityNames();
+    List<String> expectedActivityNames = new ArrayList<String>();
+    expectedActivityNames.add("end");
+    
+    assertEquals(expectedActivityNames, activityNames);
   }
 }

@@ -12,22 +12,18 @@
  */
 package org.activiti.test.pvm;
 
-import org.activiti.impl.util.LogUtil;
 import org.activiti.pvm.ObjectExecution;
 import org.activiti.pvm.ObjectProcessDefinition;
 import org.activiti.pvm.ObjectProcessInstance;
 import org.activiti.pvm.ProcessDefinitionBuilder;
+import org.activiti.test.LogTestCase;
 import org.activiti.test.pvm.activities.WaitState;
-
-import junit.framework.TestCase;
 
 
 /**
  * @author Tom Baeyens
  */
-public class PvmVariablesTest extends TestCase {
-
-  static {LogUtil.readJavaUtilLoggingConfigFromClasspath();}
+public class PvmVariablesTest extends LogTestCase {
 
   public void testVariables() {
     ObjectProcessDefinition processDefinition = ProcessDefinitionBuilder

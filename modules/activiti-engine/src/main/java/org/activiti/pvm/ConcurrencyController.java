@@ -15,10 +15,23 @@ package org.activiti.pvm;
 import java.util.List;
 
 
-/**
+/** controls concurrent executions for an ActivityExecution.
+ * 
+ * In case there is just 1 path of execution, a concurrency scope 
+ * is represented by 1 execution.  In case there are multiple paths 
+ * of execution, there is one parent and many concurrent children.
+ * This interface provides convenience for dealing with those 
+ * two situations.
+ * 
+ * The distinction between all executions and the active executions 
+ * is created in order to simplify the implement of joins.  Concurrent 
+ * executions that are ended will not be deleted/removed when they arrive,
+ * but only when the parent is ended.  
+ * 
+ * @see ActivityExecution#getConcurrencyController()
  * @author Tom Baeyens
  */
-public interface ConcurrencyScope {
+public interface ConcurrencyController {
 
   List<? extends ActivityExecution> getExecutions();
   List<? extends ActivityExecution> getActiveExecutions();

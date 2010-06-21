@@ -83,7 +83,7 @@ public class DeployBarTask extends Task {
           try {
             log("deploying bar "+path);
             processService
-                .newDeployment()
+                .createDeployment()
                 .name(file.getName())
                 .addZipInputStream(new ZipInputStream(inputStream))
                 .deploy();
