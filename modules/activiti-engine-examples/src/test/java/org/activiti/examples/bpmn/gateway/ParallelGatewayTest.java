@@ -42,14 +42,11 @@ public class ParallelGatewayTest extends ActivitiTestCase {
 //    
 //    // Completing the second task should trigger the join
 //    taskService.complete(tasks.get(1).getId());
-//    tasks = query.list();
-//    assertEquals(2, tasks.size());
-//    assertEquals("Task 4", tasks.get(1));
-//    
+//    assertEquals(1, query.count());
+//
+//    taskService.complete(tasks.get(2).getId());
+//
 //    // Completing the remaing tasks should trigger the second join and end the process
-//    for (Task t : tasks) {
-//      taskService.complete(t.getId());
-//    }
 //    assertProcessInstanceEnded(pi.getId());
   }
   
