@@ -22,6 +22,7 @@ import org.activiti.ManagementService;
 import org.activiti.ProcessEngine;
 import org.activiti.ProcessService;
 import org.activiti.TaskService;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.rules.TestWatchman;
@@ -47,7 +48,7 @@ public abstract class ProcessEngineTestCase {
   
   protected static IdentityService identityService;
   
-  String configurationResource = "activiti.properties";
+  private String configurationResource = "activiti.properties";
   
   private static Logger log = Logger.getLogger(ProcessEngineTestCase.class.getName());
 
@@ -65,16 +66,6 @@ public abstract class ProcessEngineTestCase {
 
   @Before
   public void buildProcessEngine() {
-    // Is our cached process engine still valid?
-    if (processEngine != null) {
-      if(configurationResource != null &&
-          processEngineConfigurationResource != null &&
-          ! configurationResource.equals(processEngineConfigurationResource)) {
-        log.fine("Configuration Resource has changed");
-        log.fine("Refreshing the Process Engine");
-        closeProcessEngine();
-      }
-    }
     
     // Create a process engine if we don't have one
     if (processEngine==null) {
@@ -92,7 +83,8 @@ public abstract class ProcessEngineTestCase {
     }
   }
   
-  private static void closeProcessEngine() {
+  @After
+  public void closeProcessEngine() {
     if (processEngine!=null) {
       processEngine.close();
       processEngine = null;

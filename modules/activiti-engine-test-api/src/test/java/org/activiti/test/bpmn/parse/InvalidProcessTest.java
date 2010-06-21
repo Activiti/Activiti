@@ -33,7 +33,7 @@ public class InvalidProcessTest extends ActivitiTestCase {
   public void testInvalidProcessDefinition() {
     exception.expect(ActivitiException.class);
     exception.expectMessage("Attribute 'invalidAttribute' is not allowed to appear in element 'process'");
-    String resource = ActivitiTestCase.getProcessDefinitionResource(getClass(), "testInvalidProcessDefinition");
+    String resource = ActivitiTestCase.getProcessDefinitionResource(getClass(), getClass().getSimpleName()+".testInvalidProcessDefinition.bpmn20.xml");
     processEngine.getProcessService().createDeployment().name(resource).addClasspathResource(resource).deploy();
   }
 

@@ -12,23 +12,13 @@
  */
 package org.activiti.test.cfg.spring;
 
-import junit.framework.TestCase;
-
-import org.activiti.impl.repository.DeploymentImpl;
 import org.activiti.impl.util.LogUtil;
 import org.junit.Test;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
-import org.springframework.orm.jpa.EntityManagerFactoryUtils;
-import org.springframework.transaction.PlatformTransactionManager;
-import org.springframework.transaction.TransactionStatus;
-import org.springframework.transaction.support.TransactionCallback;
-import org.springframework.transaction.support.TransactionTemplate;
 
 /**
  * @author Tom Baeyens
  */
-public class SpringTest extends TestCase {
+public class SpringTest {
 
   static {
     LogUtil.readJavaUtilLoggingConfigFromClasspath();

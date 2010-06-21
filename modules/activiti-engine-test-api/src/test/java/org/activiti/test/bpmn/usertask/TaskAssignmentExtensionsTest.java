@@ -73,7 +73,7 @@ public class TaskAssignmentExtensionsTest extends ActivitiTestCase {
   public void testDuplicateAssigneeDeclaration() {
     exception.expect(ActivitiException.class);
     exception.expectMessage("duplicate assignee declaration for task");
-    String resource = ActivitiTestCase.getProcessDefinitionResource(getClass(), "testDuplicateAssigneeDeclaration");
+    String resource = ActivitiTestCase.getProcessDefinitionResource(getClass(), getClass().getSimpleName()+".testDuplicateAssigneeDeclaration.bpmn20.xml");
     processEngine.getProcessService().createDeployment().name(resource).addClasspathResource(resource).deploy();
   }
 

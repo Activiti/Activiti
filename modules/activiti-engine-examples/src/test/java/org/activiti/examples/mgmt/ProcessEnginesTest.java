@@ -21,7 +21,7 @@ import java.util.List;
 import org.activiti.ProcessEngine;
 import org.activiti.ProcessEngineInfo;
 import org.activiti.ProcessEngines;
-import org.activiti.test.ProcessEngineTestCase;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -31,16 +31,17 @@ import org.junit.Test;
 public class ProcessEnginesTest {
 
   @Before
-  public void setUp() throws Exception {
-    // in case previous ProcessEngineTestCase s (or ActivitiTestCase s)
-    // already have inialized and cached a process engine, it needs to
-    // be closed first.
-    ProcessEngineTestCase.closeProcessEngine();
+  public void open() throws Exception {
+    ProcessEngines.init();
+  }
+
+  @After
+  public void close() throws Exception {
+    ProcessEngines.destroy();
   }
 
   @Test
   public void testProcessEngineInfo() {
-    ProcessEngines.init();
 
     List<ProcessEngineInfo> processEngineInfos = ProcessEngines.getProcessEngineInfos();
     assertEquals(1, processEngineInfos.size());
@@ -53,6 +54,6 @@ public class ProcessEnginesTest {
     ProcessEngine processEngine = ProcessEngines.getProcessEngine(ProcessEngines.NAME_DEFAULT);
     assertNotNull(processEngine);
 
-    ProcessEngines.destroy();
   }
+
 }
