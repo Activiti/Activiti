@@ -13,12 +13,17 @@
 
 package org.activiti.examples.bpmn.gateway;
 
+import static org.junit.Assert.assertEquals;
+
 import java.util.List;
 
 import org.activiti.ProcessInstance;
 import org.activiti.Task;
 import org.activiti.TaskQuery;
 import org.activiti.test.ActivitiTestCase;
+import org.activiti.test.ProcessDeclared;
+import org.junit.Ignore;
+import org.junit.Test;
 
 
 /**
@@ -26,28 +31,29 @@ import org.activiti.test.ActivitiTestCase;
  */
 public class ParallelGatewayTest extends ActivitiTestCase {
 
+  @Test
+  @ProcessDeclared
+  @Ignore
   public void testUnbalancedForkJoin() {
-//    deployProcessForThisTestMethod();
-//    
-//    ProcessInstance pi = processService.startProcessInstanceByKey("UnbalancedForkJoin");
-//    TaskQuery query = taskService.createTaskQuery()
-//                                 .processInstance(pi.getId())
-//                                 .orderAsc(TaskQuery.PROPERTY_NAME);
-//    List<Task> tasks = query.list(); 
-//    assertEquals(3, tasks.size());
-//    
-//    // Completing the first task should not trigger the join
-//    taskService.complete(tasks.get(0).getId());
-//    assertEquals(2, query.count());
-//    
-//    // Completing the second task should trigger the join
-//    taskService.complete(tasks.get(1).getId());
-//    assertEquals(1, query.count());
-//
-//    taskService.complete(tasks.get(2).getId());
-//
-//    // Completing the remaing tasks should trigger the second join and end the process
-//    assertProcessInstanceEnded(pi.getId());
+
+    ProcessInstance pi = processService.startProcessInstanceByKey("UnbalancedForkJoin");
+    TaskQuery query = taskService.createTaskQuery().processInstance(pi.getId()).orderAsc(TaskQuery.PROPERTY_NAME);
+    List<Task> tasks = query.list();
+    assertEquals(3, tasks.size());
+
+    // Completing the first task should not trigger the join
+    taskService.complete(tasks.get(0).getId());
+    assertEquals(2, query.count());
+
+    // Completing the second task should trigger the join
+    taskService.complete(tasks.get(1).getId());
+    assertEquals(1, query.count());
+
+    taskService.complete(tasks.get(2).getId());
+
+    // Completing the remaing tasks should trigger the second join and end the
+    // process
+    assertProcessInstanceEnded(pi.getId());
   }
   
 }
