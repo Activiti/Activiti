@@ -62,7 +62,7 @@ public class ParallelGatewayActivity extends GatewayActivity {
       Activity joinActivity = execution.getActivity();
       List<ActivityExecution> joinedExecutions = new ArrayList<ActivityExecution>();
       
-      List<? extends ActivityExecution> concurrentExecutions = execution.getConcurrencyScope().getExecutions();
+      List<? extends ActivityExecution> concurrentExecutions = execution.getConcurrencyController().getExecutions();
       for (ActivityExecution concurrentExecution: concurrentExecutions) {
         if (concurrentExecution.getActivity().equals(joinActivity)) {
           joinedExecutions.add(concurrentExecution);
@@ -90,7 +90,7 @@ public class ParallelGatewayActivity extends GatewayActivity {
   }
   
   protected ActivityExecution join(ActivityExecution execution, List<ActivityExecution> joinedExecutions) {
-    ActivityExecution outgoingExecution = execution.getConcurrencyScope().createExecution();
+    ActivityExecution outgoingExecution = execution.getConcurrencyController().createExecution();
     outgoingExecution.setActivity(execution.getActivity());
     
     for (ActivityExecution joinedExecution: joinedExecutions) {

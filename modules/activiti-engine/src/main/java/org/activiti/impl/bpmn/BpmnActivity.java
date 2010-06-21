@@ -19,7 +19,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.activiti.pvm.ActivityExecution;
-import org.activiti.pvm.ConcurrencyScope;
+import org.activiti.pvm.ConcurrencyController;
 import org.activiti.pvm.EventActivityBehavior;
 import org.activiti.pvm.Transition;
 
@@ -68,13 +68,13 @@ public abstract class BpmnActivity implements EventActivityBehavior {
 
       Map<ActivityExecution, Transition> childExecutionMapping 
           = new LinkedHashMap<ActivityExecution, Transition>(); // Linked? -> order is important
-      ConcurrencyScope scopeInstance = execution.getConcurrencyScope();
+      ConcurrencyController concurrencyController = execution.getConcurrencyController();
       
       for (Transition outSeqFlow: outgoingSequenceFlow) {
         if (outSeqFlow.getCondition() == null 
                 || !checkConditions 
                 || outSeqFlow.getCondition().evaluate(execution)) {
-          ActivityExecution concurrentExecution = scopeInstance.createExecution();
+          ActivityExecution concurrentExecution = concurrencyController.createExecution();
           childExecutionMapping.put(concurrentExecution, outSeqFlow);
         }
       }
