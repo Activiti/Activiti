@@ -52,7 +52,8 @@ public class ProcessEngineImpl implements ProcessEngine {
     this.jobExecutor = processEngineConfiguration.getJobExecutor();
     this.persistenceSessionFactory = processEngineConfiguration.getPersistenceSessionFactory();
 
-    if (DbSchemaStrategy.CREATE_DROP==dbSchemaStrategy) {
+    if (DbSchemaStrategy.CREATE_DROP==dbSchemaStrategy 
+            || DbSchemaStrategy.CREATE==dbSchemaStrategy) {
       persistenceSessionFactory.dbSchemaCreate();
     } else if (DbSchemaStrategy.CHECK_VERSION==dbSchemaStrategy) {
       persistenceSessionFactory.dbSchemaCheckVersion();

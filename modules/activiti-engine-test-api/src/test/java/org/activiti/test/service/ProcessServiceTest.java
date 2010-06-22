@@ -51,33 +51,8 @@ public class ProcessServiceTest {
 
     ProcessInstance processInstance = deployer.getProcessService().startProcessInstanceById(processDefinition.getId());
     assertNotNull(processInstance);
-    assertEquals(1, processInstance.getActivityNames().size());
-    assertEquals("theTask", processInstance.getActivityNames().get(0));
+    assertNotNull(deployer.getTaskService().createTaskQuery().singleResult());
   }
-
-  // Test for a bug: when the process engine is rebooted the
-  // cache is cleaned and the deployed process definition is
-  // removed from the process cache. This led to problems because
-  // the id wasnt fetched from the DB after a redeploy.
-
-  // TODO figure out how we're going to test this as i don't want access to the
-  // process cache in the public api
-  // public void testStartProcessInstanceByIdAfterReboot() {
-  // deployProcessResource("org/activiti/test/service/oneTaskProcess.bpmn20.xml");
-  //
-  // List<ProcessDefinition> processDefinitions =
-  // processService.findProcessDefinitions();
-  // assertEquals(1, processDefinitions.size());
-  // ProcessInstance processInstance =
-  // processService.startProcessInstanceById(processDefinitions.get(0).getId());
-  // assertNotNull(processInstance);
-  //    
-  // resetProcessCache();
-  //    
-  // processInstance =
-  // processService.startProcessInstanceById(processDefinitions.get(0).getId());
-  // assertNotNull(processInstance);
-  // }
 
   @Test
   @ProcessDeclared(resources={"oneTaskProcess.bpmn20.xml"})

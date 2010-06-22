@@ -80,9 +80,13 @@ public class ProcessEngineBuilder extends TestWatchman {
   public void starting(FrameworkMethod method) {
     // Create a process engine if we don't have one
     if (processEngine == null) {
-      log.fine("Creating process engine: " + configurationResource);
-      processEngine = new DbProcessEngineBuilder().configureFromPropertiesResource(configurationResource).buildProcessEngine();
+      buildProcessEngine();
     }
+  }
+
+  public void buildProcessEngine() {
+    log.fine("Creating process engine: " + configurationResource);
+    processEngine = new DbProcessEngineBuilder().configureFromPropertiesResource(configurationResource).buildProcessEngine();
   }
 
   @Override

@@ -17,6 +17,13 @@ package org.activiti;
  * @author Tom Baeyens
  */
 public enum DbSchemaStrategy {
+  
+  /**
+   * Creates the schema when the process engine is being created.
+   * 
+   * Probably only useful in testing (eg. when testing rebooting the process engine).
+   */
+  CREATE,
 
   /** creates the schema when the process engine is being created and 
    * drops the schema when the process engine is being closed.

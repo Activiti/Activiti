@@ -48,11 +48,7 @@
 				<version>2.5</version>
 				<configuration>
 					<excludes>
-						<exclude>**/DeploymentMappingTest.java</exclude>
 						<exclude>**/SpringTest.java</exclude>
-						<exclude>**/StandaloneTransactionPerMethodTest.java</exclude>
-						<exclude>**/WsHtTaskLifeCycleTest.java</exclude>
-						<exclude>**/IbatisTryoutTest.java</exclude>
 					</excludes>
 				</configuration>
 			</plugin>

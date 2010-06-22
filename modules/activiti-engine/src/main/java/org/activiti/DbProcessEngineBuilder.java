@@ -181,6 +181,8 @@ public class DbProcessEngineBuilder {
     if (dbSchemaStrategy!=null) {
       if ("create-drop".equals(dbSchemaStrategy)) {
         this.dbSchemaStrategy = DbSchemaStrategy.CREATE_DROP;
+      } else if ("create".equals(dbSchemaStrategy)) { 
+        this.dbSchemaStrategy = DbSchemaStrategy.CREATE;
       } else if ("check-version".equals(dbSchemaStrategy)) {
         this.dbSchemaStrategy = DbSchemaStrategy.CHECK_VERSION;
       } else {
