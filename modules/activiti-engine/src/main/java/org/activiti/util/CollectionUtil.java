@@ -12,7 +12,6 @@
  */
 package org.activiti.util;
 
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -37,18 +36,6 @@ public class CollectionUtil {
     Map<String, Object> map = new HashMap<String, Object>();
     map.put(key, value);
     return map;
-  }
-
-  /**
-   * Produces a readable string of the given collection of strings.
-   */
-  public static String toReadableString(Collection<String> elements) {
-    StringBuilder strb = new StringBuilder();    
-    for (String element : elements) {
-      strb.append(element);
-      strb.append(", ");
-    }
-    return strb.delete(strb.length() - 2, strb.length()).toString();
   }
   
 }

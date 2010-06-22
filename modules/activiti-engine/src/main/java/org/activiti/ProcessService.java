@@ -70,8 +70,9 @@ public interface ProcessService {
    * @return the execution or null if no execution could be found with the given id. */
   Execution findExecutionById(String executionId);
   
-  /** retrieves the child executions (if any) of the given parent execution. */
-  List<Execution> findChildExecutions(String executionId);
+  /** returns the execution that currently is waiting at the given activityId,
+   * or null if none exists. */
+  Execution findExecutionInActivity(String processInstanceId, String activityId);
 
   /** sends an external trigger to an execution that is waiting. */
   void sendEvent(String executionId);

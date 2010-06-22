@@ -10,33 +10,39 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.activiti.test.bpmn.servicetask;
 
-import static org.junit.Assert.assertEquals;
+package org.activiti.examples.bpmn.receivetask;
 
+import static org.junit.Assert.assertNotNull;
+
+import org.activiti.Execution;
+import org.activiti.ProcessInstance;
 import org.activiti.test.LogInitializer;
 import org.activiti.test.ProcessDeclared;
 import org.activiti.test.ProcessDeployer;
-import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
+
 
 /**
  * @author Joram Barrez
  */
-public class JavaServiceTaskTest {
-
+public class ReceiveTaskTest {
+  
   @Rule
   public LogInitializer logSetup = new LogInitializer();
   @Rule
   public ProcessDeployer deployer = new ProcessDeployer();
-
+  
   @Test
   @ProcessDeclared
-  @Ignore
-  public void testJavaServiceNoParamsOrResult() {
-    deployer.getProcessService().startProcessInstanceByKey("javaServiceNoParamsOrResult");
-    assertEquals(1, Counter.COUNTER);
+  public void testWaitStateBehavior() {
+    ProcessInstance pi = deployer.getProcessService().startProcessInstanceByKey("receiveTask");
+    Execution execution = deployer.getProcessService().findExecutionInActivity(pi.getId(), "waitState");
+    assertNotNull(execution);
+    
+    deployer.getProcessService().sendEvent(execution.getId());
+    deployer.expectProcessEnds(pi.getId());
   }
 
 }

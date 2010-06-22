@@ -112,7 +112,7 @@ public class ExecutionImpl implements
    * means it can't be fetched from the database and also that there is a need
    * to store this boolean).
    */
-  transient boolean ended = true;
+  transient boolean ended = false;
  
   /* Default constructor for ibatis/jpa/etc. */
   protected ExecutionImpl() {
@@ -236,8 +236,8 @@ public class ExecutionImpl implements
   }
 
   public ExecutionImpl findExecution(String activityId) {
-    if ( (activity!=null)
-         && (activity.getId().equals(activityId))
+    if ( (getActivity()!=null)
+         && (getActivity().getId().equals(activityId))
        ) {
       return this;
     }
@@ -365,7 +365,13 @@ public class ExecutionImpl implements
   }
 
   public boolean hasExecutions() {
-    return !getExecutions().isEmpty();
+//    return !getExecutions().isEmpty();
+    for (ExecutionImpl execution : getExecutions()) {
+      if (!execution.isEnded()) {
+        return true;
+      }
+    }
+    return false;
   }
 
   /** allows specific process languages to instantiate 

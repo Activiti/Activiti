@@ -31,6 +31,7 @@ import org.activiti.impl.cmd.FindChildExecutionsCmd;
 import org.activiti.impl.cmd.FindDeploymentResourcesCmd;
 import org.activiti.impl.cmd.FindDeploymentsCmd;
 import org.activiti.impl.cmd.FindExecutionCmd;
+import org.activiti.impl.cmd.FindExecutionInActivityCmd;
 import org.activiti.impl.cmd.FindProcessDefinitionCmd;
 import org.activiti.impl.cmd.FindProcessDefinitionsCmd;
 import org.activiti.impl.cmd.FindProcessInstanceCmd;
@@ -70,11 +71,6 @@ public class ProcessServiceImpl implements ProcessService {
     return commandExecutor.execute(new FindExecutionCmd(id));
   }
   
-  @SuppressWarnings("unchecked")
-  public List<Execution> findChildExecutions(String id) {
-    return commandExecutor.execute(new FindChildExecutionsCmd(id));
-  }
-
   public void deleteDeployment(String deploymentId) {
     commandExecutor.execute(new DeleteDeploymentCmd(deploymentId, false));
   }
@@ -166,5 +162,9 @@ public class ProcessServiceImpl implements ProcessService {
 
   public void sendEvent(String executionId, Object eventData) {
     commandExecutor.execute(new SendEventCmd(executionId, eventData));
+  }
+  
+  public Execution findExecutionInActivity(String processInstanceId, String activityId) {
+    return commandExecutor.execute(new FindExecutionInActivityCmd(processInstanceId, activityId));
   }
 }

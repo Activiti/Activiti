@@ -26,7 +26,7 @@
 
     <userTask id="theTask" name="my task" />
     
-     <sequenceFlow id="flow3" sourceRef="theTask" targetRef="theEnd" />
+    <sequenceFlow id="flow3" sourceRef="theTask" targetRef="theEnd" />
     
     <endEvent id="theEnd" />
     

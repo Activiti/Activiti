@@ -8,6 +8,7 @@
   
   <resultMap id="executionResultMap" type="org.activiti.impl.db.execution.DbExecutionImpl">
     <id property="id" column="ID_" jdbcType="VARCHAR" />
+    <result property="processInstanceId" column="PROC_INST_ID_" jdbcType="VARCHAR" />
     <result property="processDefinitionId" column="PROC_DEF_ID_" jdbcType="VARCHAR" />
     <result property="activityId" column="ACTIVITY_ID_" jdbcType="VARCHAR" />
     <result property="isActive" column="IS_ACTIVE_" jdbcType="BOOLEAN" />
@@ -58,9 +59,10 @@
   <!-- INSERT -->
   
   <insert id="insertExecution" parameterType="org.activiti.impl.db.execution.DbExecutionImpl">
-    insert into ACT_EXECUTION (ID_, PROC_DEF_ID_, ACTIVITY_ID_, IS_ACTIVE_, IS_CONCURRENCY_SCOPE_, PARENT_ID_)
+    insert into ACT_EXECUTION (ID_, PROC_INST_ID_, PROC_DEF_ID_, ACTIVITY_ID_, IS_ACTIVE_, IS_CONCURRENCY_SCOPE_, PARENT_ID_)
     values (
       #{id ,jdbcType=VARCHAR},
+      #{processInstanceId, jdbcType=VARCHAR},
       #{processDefinitionId ,jdbcType=VARCHAR},
       #{activityId ,jdbcType=VARCHAR},
       #{isActive ,jdbcType=BOOLEAN},

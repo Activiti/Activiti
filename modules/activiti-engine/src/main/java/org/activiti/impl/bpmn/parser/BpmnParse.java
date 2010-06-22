@@ -27,9 +27,11 @@ import org.activiti.impl.bpmn.BoundaryTimerEventActivity;
 import org.activiti.impl.bpmn.BpmnInterface;
 import org.activiti.impl.bpmn.ExclusiveGatewayActivity;
 import org.activiti.impl.bpmn.JavaServiceTaskActivity;
+import org.activiti.impl.bpmn.NoneEndEventActivity;
 import org.activiti.impl.bpmn.NoneStartEventActivity;
 import org.activiti.impl.bpmn.Operation;
 import org.activiti.impl.bpmn.ParallelGatewayActivity;
+import org.activiti.impl.bpmn.ReceiveTaskActivity;
 import org.activiti.impl.bpmn.ScriptTaskActivity;
 import org.activiti.impl.bpmn.TaskActivity;
 import org.activiti.impl.bpmn.UserTaskActivity;
@@ -291,6 +293,8 @@ public class BpmnParse extends Parse {
         parseTask(activityElement, scopeElement);
       } else if(activityElement.getTagName().equals("userTask")) {
         parseUserTask(activityElement, scopeElement);
+      } else if(activityElement.getTagName().equals("receiveTask")) {
+        parseReceiveTask(activityElement, scopeElement);
       }
     }
   }
@@ -391,6 +395,14 @@ public class BpmnParse extends Parse {
   public void parseTask(Element taskElement, ScopeElementImpl scopeElement) {
     ActivityImpl activity = parseAndCreateActivityOnScopeElement(taskElement, scopeElement);
     activity.setActivityBehavior(new TaskActivity());
+  }
+  
+  /**
+   * Parses a receive task.
+   */
+  public void parseReceiveTask(Element receiveTaskElement, ScopeElementImpl scopeElement) {
+    ActivityImpl activity = parseAndCreateActivityOnScopeElement(receiveTaskElement, scopeElement);
+    activity.setActivityBehavior(new ReceiveTaskActivity());
   }
   
   /* userTask specific finals */
@@ -563,7 +575,7 @@ public class BpmnParse extends Parse {
       activity.setName(name);
       
       // Only none end events are currently supported
-      activity.setActivityBehavior(new NoneStartEventActivity());
+      activity.setActivityBehavior(new NoneEndEventActivity());
     }
   }
   

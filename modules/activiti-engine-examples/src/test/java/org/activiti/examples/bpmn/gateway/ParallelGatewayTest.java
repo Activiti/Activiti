@@ -28,10 +28,10 @@ import org.junit.Rule;
 import org.junit.Test;
 
 /**
- * @author jbarrez
+ * @author Joram Barrez
  */
 public class ParallelGatewayTest {
-
+  
   @Rule
   public LogInitializer logSetup = new LogInitializer();
   @Rule
@@ -41,26 +41,30 @@ public class ParallelGatewayTest {
   @ProcessDeclared
   @Ignore
   public void testUnbalancedForkJoin() {
-
-    ProcessInstance processInstance = deployer.getProcessService().startProcessInstanceByKey("UnbalancedForkJoin");
-
-    // Completing the remaining tasks should trigger the second join and end the
-    // process
-    deployer.expectProcessEnds(processInstance.getId());
-
-    TaskQuery query = deployer.getTaskService().createTaskQuery().processInstance(processInstance.getId()).orderAsc(TaskQuery.PROPERTY_NAME);
-    List<Task> tasks = query.list();
+    
+    ProcessInstance pi = deployer.getProcessService().startProcessInstanceByKey("UnbalancedForkJoin");
+    TaskQuery query = deployer.getTaskService().createTaskQuery()
+                                 .processInstance(pi.getId())
+                                 .orderAsc(TaskQuery.PROPERTY_NAME);
+    List<Task> tasks = query.list(); 
     assertEquals(3, tasks.size());
-
+    
     // Completing the first task should not trigger the join
     deployer.getTaskService().complete(tasks.get(0).getId());
     assertEquals(2, query.count());
-
+    
     // Completing the second task should trigger the join
     deployer.getTaskService().complete(tasks.get(1).getId());
-    assertEquals(1, query.count());
+    tasks = query.list();
+    assertEquals(2, tasks.size());
+    assertEquals("Task 4", tasks.get(1).getName());
+    
+    // Completing the remaing tasks should trigger the second join and end the process
+    deployer.getTaskService().complete(tasks.get(0).getId());
+    deployer.getTaskService().complete(tasks.get(1).getId());
+    deployer.expectProcessEnds(pi.getId());
 
-    deployer.getTaskService().complete(tasks.get(2).getId());
+    deployer.expectProcessEnds(pi.getId());
   }
-
+  
 }

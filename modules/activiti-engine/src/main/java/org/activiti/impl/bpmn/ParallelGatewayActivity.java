@@ -71,7 +71,8 @@ public class ParallelGatewayActivity extends GatewayActivity {
       
       int nbrOfExecutionsJoined = joinedExecutions.size();
       if (log.isLoggable(Level.FINE)) {
-        log.fine(nbrOfExecutionsJoined + " of " + nbrOfExecutionsToJoin + " joined");
+        log.fine(nbrOfExecutionsJoined + " of " + nbrOfExecutionsToJoin 
+                + " joined in " + execution.getActivity().getId());
       }
           
       if (nbrOfExecutionsJoined == nbrOfExecutionsToJoin) {

@@ -12,7 +12,7 @@
       <inMessageRef >b</inMessageRef> <!-- Sadly, needs to be defined according to XSD, even if we don't need params -->
     </operation>
     <operation id="counter.decrement" name="decrement" >
-      <inMessageRef>d</inMessageRef>
+      <inMessageRef />
     </operation>
   </interface>
   

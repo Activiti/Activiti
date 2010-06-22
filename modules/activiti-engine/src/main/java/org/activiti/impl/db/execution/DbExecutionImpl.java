@@ -96,13 +96,13 @@ public class DbExecutionImpl extends ExecutionImpl implements PersistentObject {
   
   public static DbExecutionImpl createAndInsert(ExecutionImpl parent) {
     DbExecutionImpl childExecution = new DbExecutionImpl(parent);
-    childExecution.setProcessInstance(parent.getProcessInstance());
     
     CommandContext
       .getCurrent()
       .getPersistenceSession()
       .insert(childExecution);
     
+    childExecution.setProcessInstance(parent.getProcessInstance());
     
     return childExecution;
   }
