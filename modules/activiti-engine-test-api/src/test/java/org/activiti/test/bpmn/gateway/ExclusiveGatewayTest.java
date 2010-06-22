@@ -16,7 +16,6 @@ import static org.junit.Assert.assertEquals;
 
 import org.activiti.ActivitiException;
 import org.activiti.ProcessInstance;
-import org.activiti.test.ActivitiTestCase;
 import org.activiti.test.LogInitializer;
 import org.activiti.test.ProcessDeclared;
 import org.activiti.test.ProcessDeployer;
@@ -28,7 +27,7 @@ import org.junit.rules.ExpectedException;
 /**
  * @author Joram Barrez
  */
-public class ExclusiveGatewayTest extends ActivitiTestCase {
+public class ExclusiveGatewayTest {
 
   @Rule
   public ExpectedException exception = ExpectedException.none();

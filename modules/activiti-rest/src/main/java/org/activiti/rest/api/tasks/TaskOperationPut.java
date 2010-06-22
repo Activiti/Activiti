@@ -12,7 +12,6 @@
  */
 package org.activiti.rest.api.tasks;
 
-import org.activiti.Task;
 import org.activiti.rest.util.ActivitiWebScript;
 import org.springframework.extensions.webscripts.Cache;
 import org.springframework.extensions.webscripts.Status;
@@ -24,7 +23,7 @@ import java.util.Map;
 /**
  * Performs a given action on a task.
  *
- * @author Erik Winlšf
+ * @author Erik Winlï¿½f
  */
 public class TaskOperationPut extends ActivitiWebScript
 {

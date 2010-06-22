@@ -20,7 +20,6 @@ import java.util.List;
 import org.activiti.ProcessInstance;
 import org.activiti.Task;
 import org.activiti.TaskQuery;
-import org.activiti.test.ActivitiTestCase;
 import org.activiti.test.LogInitializer;
 import org.activiti.test.ProcessDeclared;
 import org.activiti.test.ProcessDeployer;
@@ -31,7 +30,7 @@ import org.junit.Test;
 /**
  * @author jbarrez
  */
-public class ParallelGatewayTest extends ActivitiTestCase {
+public class ParallelGatewayTest {
 
   @Rule
   public LogInitializer logSetup = new LogInitializer();

@@ -23,7 +23,6 @@ import org.activiti.Task;
 import org.activiti.TaskService;
 import org.activiti.identity.Group;
 import org.activiti.identity.User;
-import org.activiti.test.ActivitiTestCase;
 import org.activiti.test.LogInitializer;
 import org.activiti.test.ProcessDeclared;
 import org.activiti.test.ProcessDeployer;
@@ -35,7 +34,7 @@ import org.junit.Test;
 /**
  * @author Joram Barrez
  */
-public class TaskCandidateTest extends ActivitiTestCase {
+public class TaskCandidateTest {
 
   private static final String KERMIT = "kermit";
 

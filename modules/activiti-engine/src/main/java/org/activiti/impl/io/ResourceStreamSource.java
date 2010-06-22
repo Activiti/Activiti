@@ -13,8 +13,6 @@
 package org.activiti.impl.io;
 
 import java.io.InputStream;
-import java.rmi.activation.ActivateFailedException;
-
 import org.activiti.ActivitiException;
 
 

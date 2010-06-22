@@ -21,7 +21,6 @@ import java.util.Map;
 import org.activiti.Deployment;
 import org.activiti.impl.bytes.ByteArrayImpl;
 import org.activiti.impl.interceptor.CommandContext;
-import org.activiti.impl.persistence.PersistenceSession;
 
 /**
  * @author Tom Baeyens

@@ -18,7 +18,6 @@ import org.activiti.ProcessDefinition;
 import org.activiti.ProcessService;
 import org.activiti.json.JsonListConverter;
 import org.activiti.json.JsonProcessDefinitionConverter;
-import org.activiti.test.ActivitiTestCase;
 import org.activiti.test.LogInitializer;
 import org.activiti.test.ProcessDeployer;
 import org.junit.Rule;
@@ -28,7 +27,7 @@ import org.junit.Test;
 /**
  * @author Tom Baeyens
  */
-public class JsonTest extends ActivitiTestCase {
+public class JsonTest {
 
   @Rule
   public LogInitializer logSetup = new LogInitializer();

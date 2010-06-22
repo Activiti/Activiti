@@ -23,7 +23,6 @@ import org.activiti.ProcessInstance;
 import org.activiti.impl.definition.ProcessDefinitionImpl;
 import org.activiti.impl.execution.ExecutionImpl;
 import org.activiti.pvm.Activity;
-import org.activiti.pvm.ActivityExecution;
 import org.activiti.pvm.Transition;
 
 /**

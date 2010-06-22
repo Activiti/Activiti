@@ -18,7 +18,6 @@ import static org.junit.Assert.assertNotNull;
 import java.util.List;
 
 import org.activiti.ProcessDefinition;
-import org.activiti.test.ActivitiTestCase;
 import org.activiti.test.LogInitializer;
 import org.activiti.test.ProcessDeployer;
 import org.junit.Rule;
@@ -27,7 +26,7 @@ import org.junit.Test;
 /**
  * @author Tom Baeyens
  */
-public class ProcessDefinitionsTest extends ActivitiTestCase {
+public class ProcessDefinitionsTest {
 
   private static final String NAMESPACE = "xmlns='http://www.omg.org/spec/BPMN/20100524/MODEL'";
 

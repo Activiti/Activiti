@@ -20,7 +20,6 @@ import java.util.List;
 import org.activiti.ActivitiException;
 import org.activiti.ProcessDefinition;
 import org.activiti.ProcessInstance;
-import org.activiti.test.ActivitiTestCase;
 import org.activiti.test.LogInitializer;
 import org.activiti.test.ProcessDeclared;
 import org.activiti.test.ProcessDeployer;
@@ -31,7 +30,7 @@ import org.junit.rules.ExpectedException;
 /**
  * @author Joram Barrez
  */
-public class ProcessServiceTest extends ActivitiTestCase {
+public class ProcessServiceTest {
 
   @Rule
   public ExpectedException exception = ExpectedException.none();

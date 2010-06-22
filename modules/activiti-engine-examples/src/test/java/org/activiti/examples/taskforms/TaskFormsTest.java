@@ -20,7 +20,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.activiti.Task;
-import org.activiti.test.ActivitiTestCase;
 import org.activiti.test.LogInitializer;
 import org.activiti.test.ProcessDeclared;
 import org.activiti.test.ProcessDeployer;
@@ -33,7 +32,7 @@ import org.junit.Test;
  * @author Tom Baeyens
  * @author Joram Barrez
  */
-public class TaskFormsTest extends ActivitiTestCase {
+public class TaskFormsTest {
 
   @Rule
   public LogInitializer logSetup = new LogInitializer();

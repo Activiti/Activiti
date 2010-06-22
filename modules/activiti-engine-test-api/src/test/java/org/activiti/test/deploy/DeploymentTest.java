@@ -20,7 +20,6 @@ import java.util.List;
 
 import org.activiti.Deployment;
 import org.activiti.impl.util.IoUtil;
-import org.activiti.test.ActivitiTestCase;
 import org.activiti.test.LogInitializer;
 import org.activiti.test.ProcessDeployer;
 import org.junit.Rule;
@@ -30,7 +29,7 @@ import org.junit.Test;
  * @author Tom Baeyens
  * @author Joram Barrez
  */
-public class DeploymentTest extends ActivitiTestCase {
+public class DeploymentTest {
 
   private static final String TO_REPLACE = "to_replace";
 

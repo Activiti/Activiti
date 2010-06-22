@@ -23,7 +23,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.activiti.ProcessInstance;
-import org.activiti.test.ActivitiTestCase;
 import org.activiti.test.LogInitializer;
 import org.activiti.test.ProcessDeclared;
 import org.activiti.test.ProcessDeployer;
@@ -33,7 +32,7 @@ import org.junit.Test;
 /**
  * @author Tom Baeyens
  */
-public class VariablesTest extends ActivitiTestCase {
+public class VariablesTest {
 
   @Rule
   public LogInitializer logSetup = new LogInitializer();

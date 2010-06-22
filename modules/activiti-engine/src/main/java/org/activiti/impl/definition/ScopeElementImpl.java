@@ -21,7 +21,6 @@ import java.util.Map;
 
 import org.activiti.impl.timer.TimerDeclarationImpl;
 import org.activiti.pvm.Listener;
-import org.apache.ibatis.builder.xml.dynamic.SetSqlNode;
 
 /**
  * @author Tom Baeyens

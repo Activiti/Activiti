@@ -12,20 +12,9 @@
  */
 package org.activiti.impl.form;
 
-import java.io.ByteArrayInputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
-import java.io.StringWriter;
-import java.io.Writer;
-
 import javax.el.ELContext;
-import javax.el.ELResolver;
 import javax.el.ExpressionFactory;
-import javax.el.FunctionMapper;
-import javax.el.MethodExpression;
 import javax.el.ValueExpression;
-import javax.el.VariableMapper;
-
 import org.activiti.ActivitiException;
 import org.activiti.impl.bytes.ByteArrayImpl;
 import org.activiti.impl.repository.DeploymentImpl;

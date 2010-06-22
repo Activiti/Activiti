@@ -17,13 +17,13 @@ import static org.junit.Assert.assertEquals;
 import java.util.List;
 
 import org.activiti.ActivitiException;
+import org.activiti.IdentityService;
 import org.activiti.Task;
 import org.activiti.TaskQuery;
-import org.activiti.test.ActivitiTestCase;
+import org.activiti.TaskService;
 import org.activiti.test.LogInitializer;
 import org.activiti.test.ProcessDeclared;
 import org.activiti.test.ProcessDeployer;
-import org.activiti.test.ResourceUtils;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
@@ -35,36 +35,40 @@ import org.junit.rules.ExpectedException;
  * 
  * @author Joram Barrez
  */
-public class TaskAssignmentExtensionsTest extends ActivitiTestCase {
+public class TaskAssignmentExtensionsTest {
 
   @Rule
   public ExpectedException exception = ExpectedException.none();
+
   @Rule
   public LogInitializer logSetup = new LogInitializer();
+
   @Rule
   public ProcessDeployer deployer = new ProcessDeployer();
 
   @Before
   public void setUp() throws Exception {
-    deployer.getIdentityService().saveUser(deployer.getIdentityService().newUser("kermit"));
-    deployer.getIdentityService().saveUser(deployer.getIdentityService().newUser("gonzo"));
-    deployer.getIdentityService().saveUser(deployer.getIdentityService().newUser("fozzie"));
+    IdentityService identityService = deployer.getIdentityService();
+    identityService.saveUser(identityService.newUser("kermit"));
+    identityService.saveUser(identityService.newUser("gonzo"));
+    identityService.saveUser(identityService.newUser("fozzie"));
 
-    deployer.getIdentityService().saveGroup(deployer.getIdentityService().newGroup("management"));
-    deployer.getIdentityService().saveGroup(deployer.getIdentityService().newGroup("accountancy"));
+    identityService.saveGroup(identityService.newGroup("management"));
+    identityService.saveGroup(identityService.newGroup("accountancy"));
 
-    deployer.getIdentityService().createMembership("kermit", "management");
-    deployer.getIdentityService().createMembership("kermit", "accountancy");
-    deployer.getIdentityService().createMembership("fozzie", "management");
+    identityService.createMembership("kermit", "management");
+    identityService.createMembership("kermit", "accountancy");
+    identityService.createMembership("fozzie", "management");
   }
 
   @After
   public void tearDown() throws Exception {
-    deployer.getIdentityService().deleteGroup("accountancy");
-    deployer.getIdentityService().deleteGroup("management");
-    deployer.getIdentityService().deleteUser("fozzie");
-    deployer.getIdentityService().deleteUser("gonzo");
-    deployer.getIdentityService().deleteUser("kermit");
+    IdentityService identityService = deployer.getIdentityService();
+    identityService.deleteGroup("accountancy");
+    identityService.deleteGroup("management");
+    identityService.deleteUser("fozzie");
+    identityService.deleteUser("gonzo");
+    identityService.deleteUser("kermit");
   }
 
   @Test
@@ -80,8 +84,8 @@ public class TaskAssignmentExtensionsTest extends ActivitiTestCase {
   public void testDuplicateAssigneeDeclaration() {
     exception.expect(ActivitiException.class);
     exception.expectMessage("duplicate assignee declaration for task");
-    String resource = ResourceUtils.getProcessDefinitionResource(getClass(), (getClass().getSimpleName()+".testDuplicateAssigneeDeclaration.bpmn20.xml"));
-    deployer.getProcessService().createDeployment().name(resource).addClasspathResource(resource).deploy();
+    String resource = ProcessDeployer.getBpmnProcessDefinitionResource(getClass(), "testDuplicateAssigneeDeclaration");
+    deployer.createDeployment().name(resource).addClasspathResource(resource).deploy();
   }
 
   @Test
@@ -101,16 +105,17 @@ public class TaskAssignmentExtensionsTest extends ActivitiTestCase {
 
     // Bugfix check: potentially the query could return 2 tasks since
     // kermit is a member of the two candidate groups
-    List<Task> tasks = deployer.getTaskService().findUnassignedTasks("kermit");
+    TaskService taskService = deployer.getTaskService();
+    List<Task> tasks = taskService.findUnassignedTasks("kermit");
     assertEquals(1, tasks.size());
     assertEquals("make profit", tasks.get(0).getName());
 
-    tasks = deployer.getTaskService().findUnassignedTasks("fozzie");
+    tasks = taskService.findUnassignedTasks("fozzie");
     assertEquals(1, tasks.size());
     assertEquals("make profit", tasks.get(0).getName());
 
     // Test the task query find-by-candidate-group operation
-    TaskQuery query = deployer.getTaskService().createTaskQuery();
+    TaskQuery query = taskService.createTaskQuery();
     assertEquals(1, query.candidateGroup("management").count());
     assertEquals(1, query.candidateGroup("accountancy").count());
   }
@@ -122,16 +127,17 @@ public class TaskAssignmentExtensionsTest extends ActivitiTestCase {
   public void testMixedCandidateUserDefinition() {
     deployer.getProcessService().startProcessInstanceByKey("mixedCandidateUser");
 
-    List<Task> tasks = deployer.getTaskService().findUnassignedTasks("kermit");
+    TaskService taskService = deployer.getTaskService();
+    List<Task> tasks = taskService.findUnassignedTasks("kermit");
     assertEquals(1, tasks.size());
 
-    tasks = deployer.getTaskService().findUnassignedTasks("fozzie");
+    tasks = taskService.findUnassignedTasks("fozzie");
     assertEquals(1, tasks.size());
 
-    tasks = deployer.getTaskService().findUnassignedTasks("gonzo");
+    tasks = taskService.findUnassignedTasks("gonzo");
     assertEquals(1, tasks.size());
 
-    tasks = deployer.getTaskService().findUnassignedTasks("mispiggy");
+    tasks = taskService.findUnassignedTasks("mispiggy");
     assertEquals(0, tasks.size());
   }
 

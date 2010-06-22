@@ -9,7 +9,6 @@ import org.activiti.impl.interceptor.Command;
 import org.activiti.impl.interceptor.CommandContext;
 import org.activiti.impl.interceptor.CommandExecutor;
 import org.activiti.impl.job.MessageImpl;
-import org.activiti.test.ActivitiTestCase;
 import org.activiti.test.JobExecutorPoller;
 import org.activiti.test.LogInitializer;
 import org.activiti.test.ProcessDeployer;
@@ -22,7 +21,7 @@ import org.junit.Test;
  * @author tombaeyens
  * 
  */
-public class JobExecutorCmdExceptionTest extends ActivitiTestCase {
+public class JobExecutorCmdExceptionTest {
 
   protected TweetExceptionHandler tweetExceptionHandler = new TweetExceptionHandler();
 

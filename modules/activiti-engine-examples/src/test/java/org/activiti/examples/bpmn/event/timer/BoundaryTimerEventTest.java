@@ -19,7 +19,6 @@ import java.util.Date;
 import org.activiti.ProcessInstance;
 import org.activiti.Task;
 import org.activiti.impl.time.Clock;
-import org.activiti.test.ActivitiTestCase;
 import org.activiti.test.JobExecutorPoller;
 import org.activiti.test.LogInitializer;
 import org.activiti.test.ProcessDeclared;
@@ -30,7 +29,7 @@ import org.junit.Test;
 /**
  * @author Joram Barrez
  */
-public class BoundaryTimerEventTest extends ActivitiTestCase {
+public class BoundaryTimerEventTest {
 
   @Rule
   public LogInitializer logSetup = new LogInitializer();

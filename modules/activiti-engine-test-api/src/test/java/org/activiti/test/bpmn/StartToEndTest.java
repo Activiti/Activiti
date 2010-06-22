@@ -15,7 +15,6 @@ package org.activiti.test.bpmn;
 import static org.junit.Assert.assertTrue;
 
 import org.activiti.ProcessInstance;
-import org.activiti.test.ActivitiTestCase;
 import org.activiti.test.LogInitializer;
 import org.activiti.test.ProcessDeclared;
 import org.activiti.test.ProcessDeployer;
@@ -25,7 +24,7 @@ import org.junit.Test;
 /**
  * @author Joram Barrez
  */
-public class StartToEndTest extends ActivitiTestCase {
+public class StartToEndTest {
 
   @Rule
   public LogInitializer logSetup = new LogInitializer();

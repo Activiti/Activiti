@@ -27,14 +27,51 @@ import org.activiti.impl.bpmn.BpmnDeployer;
 import org.junit.runners.model.FrameworkMethod;
 
 /**
+ * <p>
  * a JUnit &#64;Rule that can be used to deploy and automatically undeploy
- * processes.
+ * processes. The easiest way to use it is to simply declare it as a rule and
+ * then use the {@link ProcessDeclared} annotation on your test method. For
+ * example:
+ * </p>
+ * 
+ * <pre>
+ * &#64;Rule
+ * public ProcessDeployer deployer = new ProcessDeployer();
+ * 
+ * &#64;Test
+ * &#64;ProcessDeclared
+ * public void testTaskAssignee() {    
+ *   ...
+ * }
+ * </pre>
+ * 
+ * <p>
+ * This will load a process definition from a resource on the classpath with a
+ * name equal to
+ * {@link ProcessDeployer#getBpmnProcessDefinitionResource(Class, String)
+ * &lt;className&gt;.&lt;methodName&gt;.bpmn20.xml)}.
+ * <p/>
+ * 
+ * <p>
+ * The annotation can also be used to specify a list of resources explicitly.
+ * See the {@link ProcessDeclared javadocs} for more information.
+ * <p/>
+ * 
+ * <p>
+ * An alternative to the annotation, giving more control over the deployment, is
+ * the {@link #createDeployment()} method. This can be used to create a builder
+ * that registers its deployment with the test case, so that it can be
+ * automatically cleaned up after the test method completes.
+ * </p>
+ * 
+ * @see ProcessDeclared
+ * @see ResourceUtils
  * 
  * @author Dave Syer
  */
 public class ProcessDeployer extends ProcessEngineBuilder {
 
-  private static Logger log = Logger.getLogger(ActivitiTestCase.class.getName());
+  private static Logger log = Logger.getLogger(ProcessDeployer.class.getName());
 
   private Set<String> registeredDeploymentIds = new HashSet<String>();
 
@@ -49,7 +86,7 @@ public class ProcessDeployer extends ProcessEngineBuilder {
       resources = resources.length == 0 ? process.value() : resources;
       if (resources.length == 0) {
         String name = method.getName();
-        String resource = ResourceUtils.getBpmnProcessDefinitionResource(method.getMethod().getDeclaringClass(), name);
+        String resource = ProcessDeployer.getBpmnProcessDefinitionResource(method.getMethod().getDeclaringClass(), name);
         log.fine("deploying bpmn process resource: " + resource);
         createDeployment().name(resource).addClasspathResource(resource).deploy();
       } else {
@@ -58,7 +95,7 @@ public class ProcessDeployer extends ProcessEngineBuilder {
           if (resource.startsWith("/")) {
             resource = resource.substring(1);
           } else {
-            resource = ResourceUtils.getProcessDefinitionResource(method.getMethod().getDeclaringClass(), resource);
+            resource = getProcessDefinitionResource(method.getMethod().getDeclaringClass(), resource);
           }
           builder.addClasspathResource(resource);
         }
@@ -108,6 +145,17 @@ public class ProcessDeployer extends ProcessEngineBuilder {
               + "with a recognized extension.");
     }
     registeredDeploymentIds.add(deploymentId);
+  }
+
+  public static String getBpmnProcessDefinitionResource(Class< ? > type, String name) {
+    return type.getName().replace('.', '/') + "." + name + "." + BpmnDeployer.BPMN_RESOURCE_SUFFIX;
+  }
+
+  private static String getProcessDefinitionResource(Class< ? > type, String name) {
+    String path = type.getName();
+    path = path.substring(0, path.lastIndexOf(type.getSimpleName()) - 1);
+    System.err.println(path);
+    return path.replace('.', '/') + "/" + name;
   }
 
   /**

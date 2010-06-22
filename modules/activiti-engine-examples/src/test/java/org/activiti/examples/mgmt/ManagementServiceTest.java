@@ -19,7 +19,6 @@ import java.util.Map;
 
 import org.activiti.ManagementService;
 import org.activiti.TableMetaData;
-import org.activiti.test.ActivitiTestCase;
 import org.activiti.test.LogInitializer;
 import org.activiti.test.ProcessDeployer;
 import org.junit.Rule;
@@ -31,7 +30,7 @@ import org.junit.Test;
  * @author Tom Baeyens
  * @author Joram Barrez
  */
-public class ManagementServiceTest extends ActivitiTestCase {
+public class ManagementServiceTest {
 
   @Rule
   public LogInitializer logSetup = new LogInitializer();

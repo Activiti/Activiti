@@ -16,7 +16,6 @@ import java.io.Serializable;
 
 import org.activiti.ActivitiException;
 import org.activiti.impl.interceptor.CommandContext;
-import org.activiti.impl.persistence.PersistenceSession;
 import org.activiti.impl.persistence.PersistentObject;
 
 

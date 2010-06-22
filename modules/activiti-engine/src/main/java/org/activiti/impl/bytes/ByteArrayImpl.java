@@ -14,7 +14,6 @@ package org.activiti.impl.bytes;
 
 import java.io.Serializable;
 
-import org.activiti.impl.interceptor.CommandContext;
 import org.activiti.impl.persistence.PersistentObject;
 import org.activiti.impl.variable.ByteArrayType;
 

@@ -12,14 +12,7 @@
  */
 package org.activiti.impl.query;
 
-import java.util.List;
-
-import org.activiti.ActivitiException;
-import org.activiti.Page;
-import org.activiti.impl.ProcessEngineImpl;
-import org.activiti.impl.interceptor.Command;
 import org.activiti.impl.interceptor.CommandExecutor;
-import org.activiti.impl.interceptor.CommandContext;
 
 
 /**

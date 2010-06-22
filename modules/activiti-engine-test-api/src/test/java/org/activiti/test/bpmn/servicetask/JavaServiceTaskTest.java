@@ -14,7 +14,6 @@ package org.activiti.test.bpmn.servicetask;
 
 import static org.junit.Assert.assertEquals;
 
-import org.activiti.test.ActivitiTestCase;
 import org.activiti.test.LogInitializer;
 import org.activiti.test.ProcessDeclared;
 import org.activiti.test.ProcessDeployer;
@@ -24,7 +23,7 @@ import org.junit.Test;
 /**
  * @author Joram Barrez
  */
-public class JavaServiceTaskTest extends ActivitiTestCase {
+public class JavaServiceTaskTest {
 
   @Rule
   public LogInitializer logSetup = new LogInitializer();

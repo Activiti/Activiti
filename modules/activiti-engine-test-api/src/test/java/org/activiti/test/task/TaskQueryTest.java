@@ -24,7 +24,6 @@ import org.activiti.ActivitiException;
 import org.activiti.IdentityService;
 import org.activiti.Task;
 import org.activiti.TaskQuery;
-import org.activiti.test.ActivitiTestCase;
 import org.activiti.test.LogInitializer;
 import org.activiti.test.ProcessDeployer;
 import org.junit.After;
@@ -35,7 +34,7 @@ import org.junit.Test;
 /**
  * @author Joram Barrez
  */
-public class TaskQueryTest extends ActivitiTestCase {
+public class TaskQueryTest {
 
   private List<String> taskIds;
   @Rule

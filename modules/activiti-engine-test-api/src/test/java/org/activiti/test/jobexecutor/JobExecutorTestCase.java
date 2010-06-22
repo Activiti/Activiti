@@ -17,7 +17,6 @@ import java.util.Date;
 import org.activiti.impl.ProcessEngineImpl;
 import org.activiti.impl.job.MessageImpl;
 import org.activiti.impl.job.TimerImpl;
-import org.activiti.test.ActivitiTestCase;
 import org.activiti.test.LogInitializer;
 import org.activiti.test.ProcessDeployer;
 import org.junit.After;
@@ -27,7 +26,7 @@ import org.junit.Rule;
 /**
  * @author Tom Baeyens
  */
-public class JobExecutorTestCase extends ActivitiTestCase {
+public class JobExecutorTestCase {
 
   protected TweetHandler tweetHandler = new TweetHandler();
   @Rule

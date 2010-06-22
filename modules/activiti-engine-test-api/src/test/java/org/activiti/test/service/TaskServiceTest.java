@@ -19,7 +19,6 @@ import java.util.Map;
 
 import org.activiti.ProcessInstance;
 import org.activiti.Task;
-import org.activiti.test.ActivitiTestCase;
 import org.activiti.test.LogInitializer;
 import org.activiti.test.ProcessDeclared;
 import org.activiti.test.ProcessDeployer;
@@ -29,7 +28,7 @@ import org.junit.Test;
 /**
  * @author Joram Barrez
  */
-public class TaskServiceTest extends ActivitiTestCase {
+public class TaskServiceTest {
   
   @Rule
   public LogInitializer logSetup = new LogInitializer();

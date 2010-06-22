@@ -19,7 +19,6 @@ import static org.junit.Assert.assertTrue;
 import java.util.List;
 
 import org.activiti.Task;
-import org.activiti.test.ActivitiTestCase;
 import org.activiti.test.LogInitializer;
 import org.activiti.test.ProcessDeployer;
 import org.junit.After;
@@ -30,7 +29,7 @@ import org.junit.Test;
 /**
  * @author Joram Barrez
  */
-public class StandaloneTaskTest extends ActivitiTestCase {
+public class StandaloneTaskTest {
 
   @Rule
   public LogInitializer logSetup = new LogInitializer();

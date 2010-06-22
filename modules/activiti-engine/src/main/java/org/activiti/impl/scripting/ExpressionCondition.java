@@ -14,7 +14,6 @@ package org.activiti.impl.scripting;
 
 import org.activiti.ActivitiException;
 import org.activiti.impl.execution.ExecutionImpl;
-import org.activiti.impl.interceptor.CommandContext;
 import org.activiti.pvm.ActivityExecution;
 import org.activiti.pvm.Condition;
 

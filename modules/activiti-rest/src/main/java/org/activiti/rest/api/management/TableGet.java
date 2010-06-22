@@ -14,7 +14,6 @@ package org.activiti.rest.api.management;
 
 import java.util.Map;
 
-import org.activiti.TablePage;
 import org.activiti.rest.util.ActivitiWebScript;
 import org.springframework.extensions.webscripts.Cache;
 import org.springframework.extensions.webscripts.Status;
@@ -23,7 +22,7 @@ import org.springframework.extensions.webscripts.WebScriptRequest;
 /**
  * Returns data, metadata and paging info about a table.
  *
- * @author Erik Winlšf
+ * @author Erik Winlï¿½f
  */
 public class TableGet extends ActivitiWebScript
 {
