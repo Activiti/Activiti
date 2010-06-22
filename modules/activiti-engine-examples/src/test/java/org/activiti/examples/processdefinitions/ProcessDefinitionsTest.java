@@ -32,13 +32,13 @@ public class ProcessDefinitionsTest extends ActivitiTestCase {
 
   @Test
   public void testGetProcessDefinitions() {
-    deployProcessString("<definitions " + NAMESPACE + " " + TARGET_NAMESPACE + ">" + "  <process id='IDR' name='Insurance Damage Report' />" + "</definitions>");
-    deployProcessString("<definitions " + NAMESPACE + " " + TARGET_NAMESPACE + ">" + "  <process id='IDR' name='Insurance Damage Report' />" + "</definitions>");
-    deployProcessString("<definitions " + NAMESPACE + " " + TARGET_NAMESPACE + ">" + "  <process id='IDR' name='Insurance Damage Report' />" + "</definitions>");
-    deployProcessString("<definitions " + NAMESPACE + " " + TARGET_NAMESPACE + ">" + "  <process id='EN' name='Expense Note' />" + "</definitions>");
-    deployProcessString("<definitions " + NAMESPACE + " " + TARGET_NAMESPACE + ">" + "  <process id='EN' name='Expense Note' />" + "</definitions>");
+    deployer.deployProcessString(("<definitions " + NAMESPACE + " " + TARGET_NAMESPACE + ">" + "  <process id='IDR' name='Insurance Damage Report' />" + "</definitions>"));
+    deployer.deployProcessString(("<definitions " + NAMESPACE + " " + TARGET_NAMESPACE + ">" + "  <process id='IDR' name='Insurance Damage Report' />" + "</definitions>"));
+    deployer.deployProcessString(("<definitions " + NAMESPACE + " " + TARGET_NAMESPACE + ">" + "  <process id='IDR' name='Insurance Damage Report' />" + "</definitions>"));
+    deployer.deployProcessString(("<definitions " + NAMESPACE + " " + TARGET_NAMESPACE + ">" + "  <process id='EN' name='Expense Note' />" + "</definitions>"));
+    deployer.deployProcessString(("<definitions " + NAMESPACE + " " + TARGET_NAMESPACE + ">" + "  <process id='EN' name='Expense Note' />" + "</definitions>"));
 
-    List<ProcessDefinition> processDefinitions = processService.findProcessDefinitions();
+    List<ProcessDefinition> processDefinitions = processEngineBuilder.getProcessService().findProcessDefinitions();
     assertNotNull(processDefinitions);
 
     ProcessDefinition processDefinition = processDefinitions.get(0);

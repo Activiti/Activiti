@@ -35,17 +35,17 @@ public class ExclusiveGatewayTest extends ActivitiTestCase {
   @ProcessDeclared
   public void testDivergingExclusiveGateway() {
     for (int i = 1; i <= 3; i++) {
-      ProcessInstance pi = processService.startProcessInstanceByKey("exclusiveGwDiverging", CollectionUtil.singletonMap("input", i));
-      assertEquals("Task " + i, taskService.createTaskQuery().singleResult().getName());
-      processService.deleteProcessInstance(pi.getId());
+      ProcessInstance pi = processEngineBuilder.getProcessService().startProcessInstanceByKey("exclusiveGwDiverging", CollectionUtil.singletonMap("input", i));
+      assertEquals("Task " + i, processEngineBuilder.getTaskService().createTaskQuery().singleResult().getName());
+      processEngineBuilder.getProcessService().deleteProcessInstance(pi.getId());
     }
   }
 
   @Test
   @ProcessDeclared
   public void testMergingExclusiveGateway() {
-    processService.startProcessInstanceByKey("exclusiveGwMerging");
-    assertEquals(3, taskService.createTaskQuery().count());
+    processEngineBuilder.getProcessService().startProcessInstanceByKey("exclusiveGwMerging");
+    assertEquals(3, processEngineBuilder.getTaskService().createTaskQuery().count());
   }
 
   // If there are multiple outgoing seqFlow with valid conditions, the first
@@ -53,8 +53,8 @@ public class ExclusiveGatewayTest extends ActivitiTestCase {
   @Test
   @ProcessDeclared
   public void testMultipleValidConditions() {
-    processService.startProcessInstanceByKey("exclusiveGwMultipleValidConditions", CollectionUtil.singletonMap("input", 5));
-    assertEquals("Task 2", taskService.createTaskQuery().singleResult().getName());
+    processEngineBuilder.getProcessService().startProcessInstanceByKey("exclusiveGwMultipleValidConditions", CollectionUtil.singletonMap("input", 5));
+    assertEquals("Task 2", processEngineBuilder.getTaskService().createTaskQuery().singleResult().getName());
   }
 
   @Test
@@ -62,7 +62,7 @@ public class ExclusiveGatewayTest extends ActivitiTestCase {
   public void testNoSequenceFlowSelected() {
     exception.expect(ActivitiException.class);
     exception.expectMessage("No outgoing sequence flow of the exclusive gateway " + "'exclusiveGw' could be selected for continuing the process");
-    processService.startProcessInstanceByKey("exclusiveGwNoSeqFlowSelected", CollectionUtil.singletonMap("input", 4));
+    processEngineBuilder.getProcessService().startProcessInstanceByKey("exclusiveGwNoSeqFlowSelected", CollectionUtil.singletonMap("input", 4));
   }
 
 }

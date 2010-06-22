@@ -17,8 +17,10 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.List;
 
+import org.activiti.IdentityService;
 import org.activiti.ProcessInstance;
 import org.activiti.Task;
+import org.activiti.TaskService;
 import org.activiti.identity.Group;
 import org.activiti.identity.User;
 import org.activiti.test.ActivitiTestCase;
@@ -38,6 +40,7 @@ public class TaskCandidateTest extends ActivitiTestCase {
 
   @Before
   public void setUp() throws Exception {
+    IdentityService identityService = processEngineBuilder.getIdentityService();
     Group accountants = identityService.newGroup("accountancy");
     identityService.saveGroup(accountants);
     Group managers = identityService.newGroup("management");
@@ -58,6 +61,7 @@ public class TaskCandidateTest extends ActivitiTestCase {
 
   @After
   public void tearDown() throws Exception {
+    IdentityService identityService = processEngineBuilder.getIdentityService();
     identityService.deleteUser(KERMIT);
     identityService.deleteUser(GONZO);
     identityService.deleteGroup("sales");
@@ -70,9 +74,11 @@ public class TaskCandidateTest extends ActivitiTestCase {
   public void testSingleCandidateGroup() {
 
     // Deploy and start process
-    ProcessInstance processInstance = processService.startProcessInstanceByKey("singleCandidateGroup");
+    ProcessInstance processInstance = processEngineBuilder.getProcessService().startProcessInstanceByKey("singleCandidateGroup");
+    processEngineBuilder.expectProcessEnds(processInstance.getId());
 
     // Task should not yet be assigned to kermit
+    TaskService taskService = processEngineBuilder.getTaskService();
     List<Task> tasks = taskService.findAssignedTasks(KERMIT);
     assertTrue(tasks.isEmpty());
 
@@ -96,7 +102,6 @@ public class TaskCandidateTest extends ActivitiTestCase {
 
     // Completing the task ends the process
     taskService.complete(task.getId());
-    assertProcessInstanceEnded(processInstance.getId());
   }
 
   @Test
@@ -104,9 +109,11 @@ public class TaskCandidateTest extends ActivitiTestCase {
   public void testMultipleCandidateGroups() {
 
     // Deploy and start process
-    ProcessInstance processInstance = processService.startProcessInstanceByKey("multipleCandidatesGroup");
+    ProcessInstance processInstance = processEngineBuilder.getProcessService().startProcessInstanceByKey("multipleCandidatesGroup");
+    processEngineBuilder.expectProcessEnds(processInstance.getId());
 
     // Task should not yet be assigned to anyone
+    TaskService taskService = processEngineBuilder.getTaskService();
     List<Task> tasks = taskService.findAssignedTasks(KERMIT);
     assertTrue(tasks.isEmpty());
     tasks = taskService.findAssignedTasks(GONZO);
@@ -139,25 +146,24 @@ public class TaskCandidateTest extends ActivitiTestCase {
 
     // Completing the task ends the process
     taskService.complete(task.getId());
-    assertProcessInstanceEnded(processInstance.getId());
   }
 
   @Test
   @ProcessDeclared
   public void testMultipleCandidateUsers() {
-    processService.startProcessInstanceByKey("multipleCandidateUsers");
+    processEngineBuilder.getProcessService().startProcessInstanceByKey("multipleCandidateUsers");
 
-    assertEquals(1, taskService.findUnassignedTasks(GONZO).size());
-    assertEquals(1, taskService.findUnassignedTasks(KERMIT).size());
+    assertEquals(1, processEngineBuilder.getTaskService().findUnassignedTasks(GONZO).size());
+    assertEquals(1, processEngineBuilder.getTaskService().findUnassignedTasks(KERMIT).size());
   }
 
   @Test
   @ProcessDeclared
   public void testMixedCandidateUserAndGroup() {
-    processService.startProcessInstanceByKey("mixedCandidateUserAndGroup");
+    processEngineBuilder.getProcessService().startProcessInstanceByKey("mixedCandidateUserAndGroup");
 
-    assertEquals(1, taskService.findUnassignedTasks(GONZO).size());
-    assertEquals(1, taskService.findUnassignedTasks(KERMIT).size());
+    assertEquals(1, processEngineBuilder.getTaskService().findUnassignedTasks(GONZO).size());
+    assertEquals(1, processEngineBuilder.getTaskService().findUnassignedTasks(KERMIT).size());
   }
 
 }

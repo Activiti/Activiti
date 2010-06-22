@@ -24,6 +24,7 @@ import org.activiti.ProcessInstance;
 import org.activiti.Task;
 import org.activiti.impl.time.Clock;
 import org.activiti.test.ActivitiTestCase;
+import org.activiti.test.JobExecutorPoller;
 import org.activiti.test.ProcessDeclared;
 import org.junit.Test;
 
@@ -47,19 +48,19 @@ public class BoundaryTimerEventTest extends ActivitiTestCase {
     Clock.setCurrentTime(new Date(0L));
 
     // After process start, there should be 3 timers created
-    ProcessInstance pi = processService.startProcessInstanceByKey("multipleTimersOnUserTask");
-    JobQuery jobQuery = managementService.createJobQuery().processInstanceId(pi.getId());
+    ProcessInstance pi = processEngineBuilder.getProcessService().startProcessInstanceByKey("multipleTimersOnUserTask");
+    JobQuery jobQuery = processEngineBuilder.getManagementService().createJobQuery().processInstanceId(pi.getId());
     List<Job> jobs = jobQuery.list();
     assertEquals(3, jobs.size());
 
     // After setting the clock to time '1 hour and 5 seconds', the second timer
     // should fire
     Clock.setCurrentTime(new Date((60 * 60 * 1000) + 5000));
-    waitForJobExecutorToProcessAllJobs(5000L, 25L);
+    new JobExecutorPoller(processEngineBuilder.getProcessEngine()).waitForJobExecutorToProcessAllJobs(5000L, 25L);
     assertEquals(0L, jobQuery.count());
 
     // which means that the third task is reached
-    Task task = taskService.createTaskQuery().singleResult();
+    Task task = processEngineBuilder.getTaskService().createTaskQuery().singleResult();
     assertEquals("Third Task", task.getName());
   }
 

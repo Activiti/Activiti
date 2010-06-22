@@ -30,21 +30,21 @@ public class ScriptTaskTest extends ActivitiTestCase {
   @ProcessDeclared
   public void testScriptExecution() {
     int[] inputArray = new int[] { 1, 2, 3, 4, 5 };
-    ProcessInstance pi = processService.startProcessInstanceByKey("scriptExecution", CollectionUtil.singletonMap("inputArray", inputArray));
+    ProcessInstance pi = processEngineBuilder.getProcessService().startProcessInstanceByKey("scriptExecution", CollectionUtil.singletonMap("inputArray", inputArray));
 
-    Integer result = (Integer) processService.getVariable(pi.getId(), "sum");
+    Integer result = (Integer) processEngineBuilder.getProcessService().getVariable(pi.getId(), "sum");
     assertEquals(15, result.intValue());
   }
 
   @Test
   @ProcessDeclared
   public void testSetVariableThroughExecutionInScript() {
-    ProcessInstance pi = processService.startProcessInstanceByKey("setScriptVariableThroughExecution");
+    ProcessInstance pi = processEngineBuilder.getProcessService().startProcessInstanceByKey("setScriptVariableThroughExecution");
 
     // Since 'def' is used, the 'scriptVar' will be script local
     // and not automatically stored as a process variable.
-    assertNull(processService.getVariable(pi.getId(), "scriptVar"));
-    assertEquals("test123", processService.getVariable(pi.getId(), "myVar"));
+    assertNull(processEngineBuilder.getProcessService().getVariable(pi.getId(), "scriptVar"));
+    assertEquals("test123", processEngineBuilder.getProcessService().getVariable(pi.getId(), "myVar"));
   }
 
 }

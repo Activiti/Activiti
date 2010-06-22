@@ -10,6 +10,7 @@ import org.activiti.impl.interceptor.CommandContext;
 import org.activiti.impl.interceptor.CommandExecutor;
 import org.activiti.impl.job.MessageImpl;
 import org.activiti.test.ActivitiTestCase;
+import org.activiti.test.JobExecutorPoller;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -47,7 +48,7 @@ public class JobExecutorCmdExceptionTest extends ActivitiTestCase {
       }
     });
 
-    waitForJobExecutorToProcessAllJobs(8000, 250);
+    new JobExecutorPoller(processEngineBuilder.getProcessEngine()).waitForJobExecutorToProcessAllJobs(8000, 250);
   }
 
   @Test
@@ -64,7 +65,7 @@ public class JobExecutorCmdExceptionTest extends ActivitiTestCase {
       }
     });
 
-    waitForJobExecutorToProcessAllJobs(8000, 250);
+    new JobExecutorPoller(processEngineBuilder.getProcessEngine()).waitForJobExecutorToProcessAllJobs(8000, 250);
 
     // TODO check if there is a failed job in the DLQ
 

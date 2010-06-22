@@ -31,23 +31,23 @@ public class TaskServiceTest extends ActivitiTestCase {
   @Test
   @ProcessDeclared(resources={"twoTasksProcess.bpmn20.xml"})
   public void testCompleteWithParametersTask() {
-    ProcessInstance processInstance = processService.startProcessInstanceByKey("twoTasksProcess");
+    ProcessInstance processInstance = processEngineBuilder.getProcessService().startProcessInstanceByKey("twoTasksProcess");
     
     // Fetch first task
-    Task task = taskService.createTaskQuery().singleResult();
+    Task task = processEngineBuilder.getTaskService().createTaskQuery().singleResult();
     assertEquals("First task", task.getName());
     
     // Complete first task
     Map<String, Object> taskParams = new HashMap<String, Object>();
     taskParams.put("myParam", "myValue");
-    taskService.complete(task.getId(), taskParams);
+    processEngineBuilder.getTaskService().complete(task.getId(), taskParams);
     
     // Fetch second task
-    task = taskService.createTaskQuery().singleResult();
+    task = processEngineBuilder.getTaskService().createTaskQuery().singleResult();
     assertEquals("Second task", task.getName());
     
     // Verify task parameters set on execution
-    Map<String, Object> variables = processService.getVariables(processInstance.getId());
+    Map<String, Object> variables = processEngineBuilder.getProcessService().getVariables(processInstance.getId());
     assertEquals(1, variables.size());
     assertEquals("myValue", variables.get("myParam"));
   }

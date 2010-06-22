@@ -37,16 +37,16 @@ public class ProcessInstanceQueryTest extends ActivitiTestCase {
 
   private void start() {
     for (int i = 0; i < 4; i++) {
-      processService.startProcessInstanceByKey(PROCESS_KEY);
+      processEngineBuilder.getProcessService().startProcessInstanceByKey(PROCESS_KEY);
     }
-    processService.startProcessInstanceByKey(PROCESS_KEY_2);
+    processEngineBuilder.getProcessService().startProcessInstanceByKey(PROCESS_KEY_2);
   }
 
   @Test
   @ProcessDeclared(resources = { "oneTaskProcess.bpmn20.xml", "oneTaskProcess2.bpmn20.xml" })
   public void testQueryNoSpecifics() {
     start();
-    ProcessInstanceQuery query = processService.createProcessInstanceQuery();
+    ProcessInstanceQuery query = processEngineBuilder.getProcessService().createProcessInstanceQuery();
     assertEquals(5, query.count());
     assertEquals(5, query.list().size());
     exception.expect(ActivitiException.class);
@@ -57,7 +57,7 @@ public class ProcessInstanceQueryTest extends ActivitiTestCase {
   @ProcessDeclared(resources = { "oneTaskProcess.bpmn20.xml", "oneTaskProcess2.bpmn20.xml" })
   public void testQueryByProcessDefinitionKeyUniqueResult() {
     start();
-    ProcessInstanceQuery query = processService.createProcessInstanceQuery().processDefinitionKey(PROCESS_KEY);
+    ProcessInstanceQuery query = processEngineBuilder.getProcessService().createProcessInstanceQuery().processDefinitionKey(PROCESS_KEY);
     assertEquals(4, query.count());
     assertEquals(4, query.list().size());
     exception.expect(ActivitiException.class);
@@ -68,7 +68,7 @@ public class ProcessInstanceQueryTest extends ActivitiTestCase {
   @ProcessDeclared(resources = { "oneTaskProcess.bpmn20.xml", "oneTaskProcess2.bpmn20.xml" })
   public void testQueryByProcessDefinitionKeySunnyDay() {
     start();
-    ProcessInstanceQuery query = processService.createProcessInstanceQuery().processDefinitionKey(PROCESS_KEY_2);
+    ProcessInstanceQuery query = processEngineBuilder.getProcessService().createProcessInstanceQuery().processDefinitionKey(PROCESS_KEY_2);
     assertEquals(1, query.count());
     assertEquals(1, query.list().size());
     assertNotNull(query.singleResult());

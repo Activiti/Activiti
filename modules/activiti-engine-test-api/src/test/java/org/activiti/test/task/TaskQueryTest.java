@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.activiti.ActivitiException;
+import org.activiti.IdentityService;
 import org.activiti.Task;
 import org.activiti.TaskQuery;
 import org.activiti.test.ActivitiTestCase;
@@ -39,6 +40,7 @@ public class TaskQueryTest extends ActivitiTestCase {
   public void setUp() throws Exception {
     taskIds = generateTestTasks();
 
+    IdentityService identityService = processEngineBuilder.getIdentityService();
     identityService.saveUser(identityService.newUser("kermit"));
     identityService.saveUser(identityService.newUser("gonzo"));
     identityService.saveUser(identityService.newUser("fozzie"));
@@ -53,17 +55,18 @@ public class TaskQueryTest extends ActivitiTestCase {
 
   @After
   public void tearDown() throws Exception {
+    IdentityService identityService = processEngineBuilder.getIdentityService();
     identityService.deleteGroup("accountancy");
     identityService.deleteGroup("management");
     identityService.deleteUser("fozzie");
     identityService.deleteUser("gonzo");
     identityService.deleteUser("kermit");
-    deleteTasks(taskIds);
+    processEngineBuilder.deleteTasks(taskIds);
   }
 
   @Test
   public void testQueryNoSpecifics() {
-    TaskQuery query = taskService.createTaskQuery();
+    TaskQuery query = processEngineBuilder.getTaskService().createTaskQuery();
     assertEquals(12, query.count());
     assertEquals(12, query.list().size());
     try {
@@ -75,12 +78,12 @@ public class TaskQueryTest extends ActivitiTestCase {
 
   @Test
   public void testQueryByAssignee() {
-    TaskQuery query = taskService.createTaskQuery().assignee("gonzo");
+    TaskQuery query = processEngineBuilder.getTaskService().createTaskQuery().assignee("gonzo");
     assertEquals(1, query.count());
     assertEquals(1, query.list().size());
     assertNotNull(query.singleResult());
 
-    query = taskService.createTaskQuery().assignee("kermit");
+    query = processEngineBuilder.getTaskService().createTaskQuery().assignee("kermit");
     assertEquals(0, query.count());
     assertEquals(0, query.list().size());
     assertNull(query.singleResult());
@@ -88,7 +91,7 @@ public class TaskQueryTest extends ActivitiTestCase {
 
   @Test
   public void testQueryByCandidate() {
-    TaskQuery query = taskService.createTaskQuery().candidateUser("kermit");
+    TaskQuery query = processEngineBuilder.getTaskService().createTaskQuery().candidateUser("kermit");
     assertEquals(11, query.count());
     assertEquals(11, query.list().size());
     try {
@@ -97,7 +100,7 @@ public class TaskQueryTest extends ActivitiTestCase {
     } catch (ActivitiException e) {
     }
 
-    query = taskService.createTaskQuery().candidateUser("fozzie");
+    query = processEngineBuilder.getTaskService().createTaskQuery().candidateUser("fozzie");
     assertEquals(3, query.count());
     assertEquals(3, query.list().size());
     try {
@@ -109,7 +112,7 @@ public class TaskQueryTest extends ActivitiTestCase {
 
   @Test
   public void testQueryByCandidateGroup() {
-    TaskQuery query = taskService.createTaskQuery().candidateGroup("management");
+    TaskQuery query = processEngineBuilder.getTaskService().createTaskQuery().candidateGroup("management");
     assertEquals(3, query.count());
     assertEquals(3, query.list().size());
     try {
@@ -118,14 +121,14 @@ public class TaskQueryTest extends ActivitiTestCase {
     } catch (ActivitiException e) {
     }
 
-    query = taskService.createTaskQuery().candidateGroup("sales");
+    query = processEngineBuilder.getTaskService().createTaskQuery().candidateGroup("sales");
     assertEquals(0, query.count());
     assertEquals(0, query.list().size());
   }
 
   @Test
   public void testQueryPagedList() {
-    TaskQuery query = taskService.createTaskQuery().candidateUser("kermit");
+    TaskQuery query = processEngineBuilder.getTaskService().createTaskQuery().candidateUser("kermit");
 
     // Verifying the un-paged results
     assertEquals(11, query.count());
@@ -157,40 +160,40 @@ public class TaskQueryTest extends ActivitiTestCase {
 
     // 6 tasks for kermit
     for (int i = 0; i < 6; i++) {
-      Task task = taskService.newTask();
+      Task task = processEngineBuilder.getTaskService().newTask();
       task.setName("testTask");
-      taskService.saveTask(task);
+      processEngineBuilder.getTaskService().saveTask(task);
       ids.add(task.getId());
-      taskService.addCandidateUser(task.getId(), "kermit");
+      processEngineBuilder.getTaskService().addCandidateUser(task.getId(), "kermit");
     }
 
     // 1 task for gonzo
-    Task task = taskService.newTask();
-    taskService.saveTask(task);
-    taskService.setAssignee(task.getId(), "gonzo");
+    Task task = processEngineBuilder.getTaskService().newTask();
+    processEngineBuilder.getTaskService().saveTask(task);
+    processEngineBuilder.getTaskService().setAssignee(task.getId(), "gonzo");
     ids.add(task.getId());
 
     // 2 tasks for management group
     for (int i = 0; i < 2; i++) {
-      task = taskService.newTask();
-      taskService.saveTask(task);
-      taskService.addCandidateGroup(task.getId(), "management");
+      task = processEngineBuilder.getTaskService().newTask();
+      processEngineBuilder.getTaskService().saveTask(task);
+      processEngineBuilder.getTaskService().addCandidateGroup(task.getId(), "management");
       ids.add(task.getId());
     }
 
     // 2 tasks for accountancy group
     for (int i = 0; i < 2; i++) {
-      task = taskService.newTask();
-      taskService.saveTask(task);
-      taskService.addCandidateGroup(task.getId(), "accountancy");
+      task = processEngineBuilder.getTaskService().newTask();
+      processEngineBuilder.getTaskService().saveTask(task);
+      processEngineBuilder.getTaskService().addCandidateGroup(task.getId(), "accountancy");
       ids.add(task.getId());
     }
 
     // 1 task assigned to management and accountancy group
-    task = taskService.newTask();
-    taskService.saveTask(task);
-    taskService.addCandidateGroup(task.getId(), "management");
-    taskService.addCandidateGroup(task.getId(), "accountancy");
+    task = processEngineBuilder.getTaskService().newTask();
+    processEngineBuilder.getTaskService().saveTask(task);
+    processEngineBuilder.getTaskService().addCandidateGroup(task.getId(), "management");
+    processEngineBuilder.getTaskService().addCandidateGroup(task.getId(), "accountancy");
     ids.add(task.getId());
 
     return ids;

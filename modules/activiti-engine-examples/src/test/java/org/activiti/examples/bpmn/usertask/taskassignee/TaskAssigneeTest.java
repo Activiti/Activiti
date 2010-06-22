@@ -35,20 +35,20 @@ public class TaskAssigneeTest extends ActivitiTestCase {
   public void testTaskAssignee() {    
     
     // Start process instance
-    ProcessInstance processInstance = processService.startProcessInstanceByKey("taskAssigneeProcess");
+    ProcessInstance processInstance = processEngineBuilder.getProcessService().startProcessInstanceByKey("taskAssigneeProcess");
+
+    // assert if the process instance completed
+    processEngineBuilder.expectProcessEnds(processInstance.getId());
 
     // Get task list
-    List<Task> tasks = taskService.findAssignedTasks("kermit");
+    List<Task> tasks = processEngineBuilder.getTaskService().findAssignedTasks("kermit");
     assertEquals(1, tasks.size());
     Task myTask = tasks.get(0);
     assertEquals("Schedule meeting", myTask.getName());
     assertEquals("Schedule an engineering meeting for next week with the new hire.", myTask.getDescription());
 
     // Complete task. Process is now finished
-    taskService.complete(myTask.getId());
-   
-    // assert if the process instance completed
-    assertProcessInstanceEnded(processInstance.getId());
+    processEngineBuilder.getTaskService().complete(myTask.getId());
   }
 
 }

@@ -12,19 +12,27 @@
  */
 package org.activiti.test;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 
 import org.activiti.ActivitiException;
 import org.activiti.DbProcessEngineBuilder;
 import org.activiti.IdentityService;
+import org.activiti.ManagementService;
 import org.activiti.ProcessEngine;
 import org.activiti.ProcessService;
 import org.activiti.TaskService;
+import org.junit.Assert;
 import org.junit.rules.TestWatchman;
 import org.junit.runners.model.FrameworkMethod;
 
 /**
+ * A JUnit &#64;Rule that bootstraps a {@link ProcessEngine} and makes it
+ * available to test methods.
+ * 
  * @author Tom Baeyens
  * @author Dave Syer
  */
@@ -35,6 +43,8 @@ public class ProcessEngineBuilder extends TestWatchman {
   private final String configurationResource;
 
   private ProcessEngine processEngine;
+
+  private List<Runnable> verifiers = new ArrayList<Runnable>();
 
   public ProcessEngineBuilder() {
     this("activiti.properties");
@@ -49,28 +59,23 @@ public class ProcessEngineBuilder extends TestWatchman {
   }
 
   public ProcessService getProcessService() {
-    return processEngine==null ? null : processEngine.getProcessService();
+    return processEngine == null ? null : processEngine.getProcessService();
   }
 
   public IdentityService getIdentityService() {
-    return processEngine==null ? null : processEngine.getIdentityService();
+    return processEngine == null ? null : processEngine.getIdentityService();
   }
 
   public TaskService getTaskService() {
-    return processEngine==null ? null : processEngine.getTaskService();
+    return processEngine == null ? null : processEngine.getTaskService();
+  }
+
+  public ManagementService getManagementService() {
+    return processEngine == null ? null : processEngine.getManagementService();
   }
 
   @Override
   public void starting(FrameworkMethod method) {
-    buildProcessEngine();
-  }
-  @Override
-  public void finished(FrameworkMethod method) {
-    closeProcessEngine();
-  }
-
-  private void buildProcessEngine() {
-
     // Create a process engine if we don't have one
     if (processEngine == null) {
       log.fine("Creating process engine: " + configurationResource);
@@ -78,11 +83,29 @@ public class ProcessEngineBuilder extends TestWatchman {
     }
   }
 
-  private void closeProcessEngine() {
+  @Override
+  public void succeeded(FrameworkMethod method) {
+    for (Runnable verifier : verifiers) {
+      verifier.run();
+    }
+  }
+
+  @Override
+  public void finished(FrameworkMethod method) {
     if (processEngine != null) {
       processEngine.close();
       processEngine = null;
     }
+  }
+
+  public void expectProcessEnds(final String processInstanceId) {
+    Runnable verifier = new Runnable() {
+      public void run() {
+        Assert.assertNull("An active execution with id " + processInstanceId + " was found.", processEngine.getProcessService().findProcessInstanceById(
+                processInstanceId));
+      }
+    };
+    verifiers.add(verifier);
   }
 
   public void checkDbIsClean() {
@@ -98,6 +121,12 @@ public class ProcessEngineBuilder extends TestWatchman {
     if (outputMessage.length() > 0) {
       outputMessage.insert(0, "Database not clean! ");
       throw new ActivitiException(outputMessage.toString());
+    }
+  }
+
+  public void deleteTasks(Collection<String> taskIds) {
+    for (String id : taskIds) {
+      processEngine.getTaskService().deleteTask(id);
     }
   }
 

@@ -52,9 +52,9 @@ public class VariablesTest extends ActivitiTestCase {
     variables.put("nihil", null);
     variables.put("numbers", serializable);
     variables.put("manybits", bytes);
-    ProcessInstance processInstance = processService.startProcessInstanceByKey("taskAssigneeProcess", variables);
+    ProcessInstance processInstance = processEngineBuilder.getProcessService().startProcessInstanceByKey("taskAssigneeProcess", variables);
 
-    variables = processService.getVariables(processInstance.getId());
+    variables = processEngineBuilder.getProcessService().getVariables(processInstance.getId());
     assertEquals(928374L, variables.get("cost center"));
     assertEquals("coca-cola", variables.get("customer"));
     assertEquals("<xml />", variables.get("message"));
@@ -64,15 +64,15 @@ public class VariablesTest extends ActivitiTestCase {
     assertTrue(Arrays.equals(bytes, (byte[]) variables.get("manybits")));
     assertEquals(7, variables.size());
 
-    processService.setVariable(processInstance.getId(), "cost center", null);
-    processService.setVariable(processInstance.getId(), "customer", null);
-    processService.setVariable(processInstance.getId(), "message", null);
-    processService.setVariable(processInstance.getId(), "start date", null);
-    processService.setVariable(processInstance.getId(), "nihil", null);
-    processService.setVariable(processInstance.getId(), "numbers", null);
-    processService.setVariable(processInstance.getId(), "manybits", null);
+    processEngineBuilder.getProcessService().setVariable(processInstance.getId(), "cost center", null);
+    processEngineBuilder.getProcessService().setVariable(processInstance.getId(), "customer", null);
+    processEngineBuilder.getProcessService().setVariable(processInstance.getId(), "message", null);
+    processEngineBuilder.getProcessService().setVariable(processInstance.getId(), "start date", null);
+    processEngineBuilder.getProcessService().setVariable(processInstance.getId(), "nihil", null);
+    processEngineBuilder.getProcessService().setVariable(processInstance.getId(), "numbers", null);
+    processEngineBuilder.getProcessService().setVariable(processInstance.getId(), "manybits", null);
 
-    variables = processService.getVariables(processInstance.getId());
+    variables = processEngineBuilder.getProcessService().getVariables(processInstance.getId());
     assertEquals(null, variables.get("cost center"));
     assertEquals(null, variables.get("customer"));
     assertEquals(null, variables.get("message"));
@@ -82,15 +82,15 @@ public class VariablesTest extends ActivitiTestCase {
     assertEquals(null, variables.get("manybits"));
     assertEquals(7, variables.size());
 
-    processService.setVariable(processInstance.getId(), "new var", "hi");
-    processService.setVariable(processInstance.getId(), "cost center", 9987L);
-    processService.setVariable(processInstance.getId(), "customer", "colgate");
-    processService.setVariable(processInstance.getId(), "message", "{json}");
-    processService.setVariable(processInstance.getId(), "start date", now);
-    processService.setVariable(processInstance.getId(), "numbers", serializable);
-    processService.setVariable(processInstance.getId(), "manybits", bytes);
+    processEngineBuilder.getProcessService().setVariable(processInstance.getId(), "new var", "hi");
+    processEngineBuilder.getProcessService().setVariable(processInstance.getId(), "cost center", 9987L);
+    processEngineBuilder.getProcessService().setVariable(processInstance.getId(), "customer", "colgate");
+    processEngineBuilder.getProcessService().setVariable(processInstance.getId(), "message", "{json}");
+    processEngineBuilder.getProcessService().setVariable(processInstance.getId(), "start date", now);
+    processEngineBuilder.getProcessService().setVariable(processInstance.getId(), "numbers", serializable);
+    processEngineBuilder.getProcessService().setVariable(processInstance.getId(), "manybits", bytes);
 
-    variables = processService.getVariables(processInstance.getId());
+    variables = processEngineBuilder.getProcessService().getVariables(processInstance.getId());
     assertEquals("hi", variables.get("new var"));
     assertEquals(9987L, variables.get("cost center"));
     assertEquals("colgate", variables.get("customer"));

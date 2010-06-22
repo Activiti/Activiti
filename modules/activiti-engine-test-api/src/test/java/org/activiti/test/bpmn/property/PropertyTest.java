@@ -40,34 +40,34 @@ public class PropertyTest extends ActivitiTestCase {
     // Start the process -> waits in usertask
     Map<String, Object> vars = new HashMap<String, Object>();
     vars.put("inputVar", "test");
-    ProcessInstance pi = processService.startProcessInstanceByKey("testUserTaskSrcProperty", vars);
+    ProcessInstance pi = processEngineBuilder.getProcessService().startProcessInstanceByKey("testUserTaskSrcProperty", vars);
 
     // 1 task should be active, and since the task is scoped 1 child execution
     // should exist
-    assertNotNull(taskService.createTaskQuery().singleResult());
-    List<Execution> childExecutions = processService.findChildExecutions(pi.getId());
+    assertNotNull(processEngineBuilder.getTaskService().createTaskQuery().singleResult());
+    List<Execution> childExecutions = processEngineBuilder.getProcessService().findChildExecutions(pi.getId());
     assertEquals(1, childExecutions.size());
 
     // The scope at the task should be able to see the 'myVar' variable,
     // but the process instance shouldn't be able to see it
     Execution childExecution = childExecutions.get(0);
-    assertEquals("test", processService.getVariable(childExecution.getId(), "myVar"));
-    assertNull(processService.getVariable(pi.getId(), "myVar"));
+    assertEquals("test", processEngineBuilder.getProcessService().getVariable(childExecution.getId(), "myVar"));
+    assertNull(processEngineBuilder.getProcessService().getVariable(pi.getId(), "myVar"));
 
     // The variable 'inputVar' should be visible for both
-    assertEquals("test", processService.getVariable(childExecution.getId(), "inputVar"));
-    assertEquals("test", processService.getVariable(pi.getId(), "inputVar"));
+    assertEquals("test", processEngineBuilder.getProcessService().getVariable(childExecution.getId(), "inputVar"));
+    assertEquals("test", processEngineBuilder.getProcessService().getVariable(pi.getId(), "inputVar"));
 
     // Change the value of variable 'myVar' on the task scope
-    processService.setVariable(childExecution.getId(), "myVar", "new_value");
-    assertEquals("new_value", processService.getVariable(childExecution.getId(), "myVar"));
-    assertEquals("test", processService.getVariable(childExecution.getId(), "inputVar"));
-    assertNull(processService.getVariable(pi.getId(), "myVar"));
+    processEngineBuilder.getProcessService().setVariable(childExecution.getId(), "myVar", "new_value");
+    assertEquals("new_value", processEngineBuilder.getProcessService().getVariable(childExecution.getId(), "myVar"));
+    assertEquals("test", processEngineBuilder.getProcessService().getVariable(childExecution.getId(), "inputVar"));
+    assertNull(processEngineBuilder.getProcessService().getVariable(pi.getId(), "myVar"));
 
     // When the task completes, the variable 'myVar' is destroyed
-    taskService.complete(taskService.createTaskQuery().singleResult().getId());
-    for (Execution execution : processService.findChildExecutions(pi.getId())) {
-      assertNull(processService.getVariable(execution.getId(), "myVar"));
+    processEngineBuilder.getTaskService().complete(processEngineBuilder.getTaskService().createTaskQuery().singleResult().getId());
+    for (Execution execution : processEngineBuilder.getProcessService().findChildExecutions(pi.getId())) {
+      assertNull(processEngineBuilder.getProcessService().getVariable(execution.getId(), "myVar"));
     }
   }
 
@@ -80,43 +80,43 @@ public class PropertyTest extends ActivitiTestCase {
     Order order = new Order(address);
     Map<String, Object> vars = new HashMap<String, Object>();
     vars.put("order", order);
-    ProcessInstance pi = processService.startProcessInstanceByKey("testUserTaskSrcExprProperty", vars);
+    ProcessInstance pi = processEngineBuilder.getProcessService().startProcessInstanceByKey("testUserTaskSrcExprProperty", vars);
 
     // The execution at the task should be able to see the 'orderAddress'
     // variable,
     // but the process instance shouldn't be able to see it
-    List<Execution> childExecutions = processService.findChildExecutions(pi.getId());
+    List<Execution> childExecutions = processEngineBuilder.getProcessService().findChildExecutions(pi.getId());
     String childExecutionId = childExecutions.get(0).getId();
-    assertEquals(address, processService.getVariable(childExecutionId, "orderAddress"));
-    assertNull(processService.getVariable(pi.getId(), "orderAddress"));
+    assertEquals(address, processEngineBuilder.getProcessService().getVariable(childExecutionId, "orderAddress"));
+    assertNull(processEngineBuilder.getProcessService().getVariable(pi.getId(), "orderAddress"));
 
     // Completing the task removes the 'orderAddress' variable
-    taskService.complete(taskService.createTaskQuery().singleResult().getId());
-    assertNull(processService.getVariable(pi.getId(), "orderAddress"));
-    assertNotNull(processService.getVariable(pi.getId(), "order"));
+    processEngineBuilder.getTaskService().complete(processEngineBuilder.getTaskService().createTaskQuery().singleResult().getId());
+    assertNull(processEngineBuilder.getProcessService().getVariable(pi.getId(), "orderAddress"));
+    assertNotNull(processEngineBuilder.getProcessService().getVariable(pi.getId(), "order"));
   }
 
   @Test
   @ProcessDeclared
   public void testUserTaskDstProperty() {
 
-    ProcessInstance pi = processService.startProcessInstanceByKey("testUserTaskDstProperty");
-    List<Execution> childExecutions = processService.findChildExecutions(pi.getId());
+    ProcessInstance pi = processEngineBuilder.getProcessService().startProcessInstanceByKey("testUserTaskDstProperty");
+    List<Execution> childExecutions = processEngineBuilder.getProcessService().findChildExecutions(pi.getId());
     String childExecutionId = childExecutions.get(0).getId();
 
     // The execution at the task should be able to see the 'taskVar' variable,
-    Map<String, Object> vars = processService.getVariables(childExecutionId);
+    Map<String, Object> vars = processEngineBuilder.getProcessService().getVariables(childExecutionId);
     assertEquals(1, vars.size());
     assertTrue(vars.containsKey("taskVar"));
 
     // but the process instance shouldn't be able to see it
-    assertTrue(processService.getVariables(pi.getId()).isEmpty());
+    assertTrue(processEngineBuilder.getProcessService().getVariables(pi.getId()).isEmpty());
 
     // Setting the 'taskVar' value and completing the task should push the value
     // into 'processVar'
-    processService.setVariable(childExecutionId, "taskVar", "myValue");
-    taskService.complete(taskService.createTaskQuery().singleResult().getId());
-    vars = processService.getVariables(pi.getId());
+    processEngineBuilder.getProcessService().setVariable(childExecutionId, "taskVar", "myValue");
+    processEngineBuilder.getTaskService().complete(processEngineBuilder.getTaskService().createTaskQuery().singleResult().getId());
+    vars = processEngineBuilder.getProcessService().getVariables(pi.getId());
     assertEquals(1, vars.size());
     assertTrue(vars.containsKey("processVar"));
   }
@@ -129,29 +129,29 @@ public class PropertyTest extends ActivitiTestCase {
     Order order = new Order();
     Map<String, Object> vars = new HashMap<String, Object>();
     vars.put("order", order);
-    ProcessInstance pi = processService.startProcessInstanceByKey("testUserTaskDstExprProperty", vars);
+    ProcessInstance pi = processEngineBuilder.getProcessService().startProcessInstanceByKey("testUserTaskDstExprProperty", vars);
 
-    List<Execution> childExecutions = processService.findChildExecutions(pi.getId());
+    List<Execution> childExecutions = processEngineBuilder.getProcessService().findChildExecutions(pi.getId());
     String childExecutionId = childExecutions.get(0).getId();
 
     // The execution at the task should be able to see the 'orderAddress'
     // variable,
-    vars = processService.getVariables(childExecutionId);
+    vars = processEngineBuilder.getProcessService().getVariables(childExecutionId);
     assertEquals(1, vars.size());
     assertTrue(vars.containsKey("orderAddress"));
 
     // but the process instance shouldn't be able to see it
-    vars = processService.getVariables(pi.getId());
+    vars = processEngineBuilder.getProcessService().getVariables(pi.getId());
     assertEquals(1, vars.size());
     assertTrue(vars.containsKey("order"));
 
     // Setting the 'orderAddress' value and completing the task should push the
     // value into order object
-    processService.setVariable(childExecutionId, "orderAddress", "testAddress");
-    taskService.complete(taskService.createTaskQuery().singleResult().getId());
-    assertEquals(1, processService.getVariables(pi.getId()).size());
+    processEngineBuilder.getProcessService().setVariable(childExecutionId, "orderAddress", "testAddress");
+    processEngineBuilder.getTaskService().complete(processEngineBuilder.getTaskService().createTaskQuery().singleResult().getId());
+    assertEquals(1, processEngineBuilder.getProcessService().getVariables(pi.getId()).size());
 
-    Order orderAfterComplete = (Order) processService.getVariable(pi.getId(), "order");
+    Order orderAfterComplete = (Order) processEngineBuilder.getProcessService().getVariable(pi.getId(), "order");
     assertEquals("testAddress", orderAfterComplete.getAddress());
   }
 
@@ -162,30 +162,30 @@ public class PropertyTest extends ActivitiTestCase {
     // Start the process -> waits in usertask
     Map<String, Object> vars = new HashMap<String, Object>();
     vars.put("inputVar", "test");
-    ProcessInstance pi = processService.startProcessInstanceByKey("testUserTaskLinkProperty", vars);
+    ProcessInstance pi = processEngineBuilder.getProcessService().startProcessInstanceByKey("testUserTaskLinkProperty", vars);
 
     // Variable 'taskVar' should only be visible for the task scoped execution
-    Execution childExecution = processService.findChildExecutions(pi.getId()).get(0);
-    assertEquals("test", processService.getVariable(childExecution.getId(), "taskVar"));
-    assertEquals("test", processService.getVariable(childExecution.getId(), "inputVar"));
+    Execution childExecution = processEngineBuilder.getProcessService().findChildExecutions(pi.getId()).get(0);
+    assertEquals("test", processEngineBuilder.getProcessService().getVariable(childExecution.getId(), "taskVar"));
+    assertEquals("test", processEngineBuilder.getProcessService().getVariable(childExecution.getId(), "inputVar"));
 
     // Change the value of variable 'taskVar' on the task scope
     String taskScopedExecutionId = childExecution.getId();
-    processService.setVariable(taskScopedExecutionId, "taskVar", "new_value");
-    assertEquals("new_value", processService.getVariable(taskScopedExecutionId, "taskVar"));
-    assertEquals("test", processService.getVariable(taskScopedExecutionId, "inputVar"));
-    assertNull(processService.getVariable(pi.getId(), "taskVar"));
+    processEngineBuilder.getProcessService().setVariable(taskScopedExecutionId, "taskVar", "new_value");
+    assertEquals("new_value", processEngineBuilder.getProcessService().getVariable(taskScopedExecutionId, "taskVar"));
+    assertEquals("test", processEngineBuilder.getProcessService().getVariable(taskScopedExecutionId, "inputVar"));
+    assertNull(processEngineBuilder.getProcessService().getVariable(pi.getId(), "taskVar"));
 
     // Completing the task copies the value of 'taskVar' into 'inputVar'
-    taskService.complete(taskService.createTaskQuery().singleResult().getId());
-    assertTrue(processService.findChildExecutions(pi.getId()).isEmpty()); // second
+    processEngineBuilder.getTaskService().complete(processEngineBuilder.getTaskService().createTaskQuery().singleResult().getId());
+    assertTrue(processEngineBuilder.getProcessService().findChildExecutions(pi.getId()).isEmpty()); // second
                                                                           // task
                                                                           // is
                                                                           // not
                                                                           // scoped
-    assertNull(processService.findExecutionById(taskScopedExecutionId));
-    assertNull(processService.getVariable(pi.getId(), "taskVar"));
-    assertEquals("new_value", processService.getVariable(pi.getId(), "inputVar"));
+    assertNull(processEngineBuilder.getProcessService().findExecutionById(taskScopedExecutionId));
+    assertNull(processEngineBuilder.getProcessService().getVariable(pi.getId(), "taskVar"));
+    assertEquals("new_value", processEngineBuilder.getProcessService().getVariable(pi.getId(), "inputVar"));
 
   }
 

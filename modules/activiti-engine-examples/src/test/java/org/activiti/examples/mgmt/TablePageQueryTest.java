@@ -20,20 +20,24 @@ import java.util.Map;
 
 import org.activiti.TablePage;
 import org.activiti.Task;
-import org.activiti.test.ActivitiTestCase;
+import org.activiti.test.ProcessEngineBuilder;
+import org.junit.Rule;
 import org.junit.Test;
 
 
 /**
  * @author Joram Barrez
  */
-public class TablePageQueryTest extends ActivitiTestCase {
+public class TablePageQueryTest {
   
+  @Rule
+  public ProcessEngineBuilder processEngineBuilder = new ProcessEngineBuilder();
+
   @Test
   public void testGetTablePage() {
     List<String> taskIds = generateDummyTasks(20);
     
-    TablePage tablePage = managementService.createTablePageQuery()
+    TablePage tablePage = processEngineBuilder.getManagementService().createTablePageQuery()
       .tableName("ACT_TASK")
       .start(0)
       .size(5)
@@ -44,7 +48,7 @@ public class TablePageQueryTest extends ActivitiTestCase {
     assertEquals(5, tablePage.getRows().size());
     assertEquals(20, tablePage.getTotal());
     
-    tablePage = managementService.createTablePageQuery()
+    tablePage = processEngineBuilder.getManagementService().createTablePageQuery()
       .tableName("ACT_TASK")
       .start(14)
       .size(10)
@@ -55,7 +59,7 @@ public class TablePageQueryTest extends ActivitiTestCase {
     assertEquals(6, tablePage.getRows().size());
     assertEquals(20, tablePage.getTotal());
     
-    deleteTasks(taskIds);
+    processEngineBuilder.deleteTasks(taskIds);
   }
   
   @Test 
@@ -63,7 +67,7 @@ public class TablePageQueryTest extends ActivitiTestCase {
     List<String> taskIds = generateDummyTasks(15);
     
     // Without a sort
-    TablePage tablePage = managementService.createTablePageQuery()
+    TablePage tablePage = processEngineBuilder.getManagementService().createTablePageQuery()
       .tableName("ACT_TASK")
       .start(1)
       .size(7)
@@ -72,7 +76,7 @@ public class TablePageQueryTest extends ActivitiTestCase {
     verifyTaskNames(expectedTaskNames, tablePage.getRows());
     
     // With an ascending sort
-    tablePage = managementService.createTablePageQuery()
+    tablePage = processEngineBuilder.getManagementService().createTablePageQuery()
       .tableName("ACT_TASK")
       .start(1)
       .size(7)
@@ -82,7 +86,7 @@ public class TablePageQueryTest extends ActivitiTestCase {
     verifyTaskNames(expectedTaskNames, tablePage.getRows());
     
     // With a descending sort
-    tablePage = managementService.createTablePageQuery()
+    tablePage = processEngineBuilder.getManagementService().createTablePageQuery()
       .tableName("ACT_TASK")
       .start(6)
       .size(8)
@@ -91,7 +95,7 @@ public class TablePageQueryTest extends ActivitiTestCase {
     expectedTaskNames = new String[] {"3", "2", "14", "13", "12", "11", "10", "1"} ;
     verifyTaskNames(expectedTaskNames, tablePage.getRows());
     
-    deleteTasks(taskIds);
+    processEngineBuilder.deleteTasks(taskIds);
   }
   
   private void verifyTaskNames(String[] expectedTaskNames, List<Map<String, Object>> rowData) {
@@ -104,9 +108,9 @@ public class TablePageQueryTest extends ActivitiTestCase {
   private List<String> generateDummyTasks(int nrOfTasks) {
     ArrayList<String> taskIds = new ArrayList<String>();
     for (int i = 0; i < nrOfTasks; i++) {
-      Task task = taskService.newTask();
+      Task task = processEngineBuilder.getTaskService().newTask();
       task.setName(String.valueOf(i));
-      taskService.saveTask(task);
+      processEngineBuilder.getTaskService().saveTask(task);
       taskIds.add(task.getId());
     }
     return taskIds;

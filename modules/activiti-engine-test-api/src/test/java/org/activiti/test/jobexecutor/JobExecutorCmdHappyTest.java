@@ -37,7 +37,7 @@ public class JobExecutorCmdHappyTest extends JobExecutorTestCase {
 
   @Test
   public void testJobCommandsWithMessage() {
-    ProcessEngineImpl processEngineImpl = (ProcessEngineImpl) processEngine;
+    ProcessEngineImpl processEngineImpl = (ProcessEngineImpl) processEngineBuilder.getProcessEngine();
     CommandExecutor commandExecutor = processEngineImpl.getProcessEngineConfiguration().getCommandExecutor();
     String jobId = commandExecutor.execute(new Command<String>() {
 
@@ -74,7 +74,7 @@ public class JobExecutorCmdHappyTest extends JobExecutorTestCase {
     // clock gets automatically reset in LogTestCase.runTest
     Clock.setCurrentTime(new Date(SOME_TIME));
 
-    ProcessEngineImpl processEngineImpl = (ProcessEngineImpl) processEngine;
+    ProcessEngineImpl processEngineImpl = (ProcessEngineImpl) processEngineBuilder.getProcessEngine();
     CommandExecutor commandExecutor = processEngineImpl.getProcessEngineConfiguration().getCommandExecutor();
     String jobId = commandExecutor.execute(new Command<String>() {
 

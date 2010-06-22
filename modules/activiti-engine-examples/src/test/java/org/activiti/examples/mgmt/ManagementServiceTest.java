@@ -32,7 +32,7 @@ public class ManagementServiceTest extends ActivitiTestCase {
 
   @Test
   public void testTableCount() {
-    Map<String, Long> tableCount = managementService.getTableCount();
+    Map<String, Long> tableCount = processEngineBuilder.getManagementService().getTableCount();
 
     assertEquals(new Long(2), tableCount.get("ACT_PROPERTY"));
     assertEquals(new Long(0), tableCount.get("ACT_BYTEARRAY"));
@@ -49,7 +49,7 @@ public class ManagementServiceTest extends ActivitiTestCase {
 
   @Test
   public void testGetTableMetaData() {
-    TableMetaData tableMetaData = managementService.getTableMetaData("ACT_TASK");
+    TableMetaData tableMetaData = processEngineBuilder.getManagementService().getTableMetaData("ACT_TASK");
     assertEquals(tableMetaData.getColumnNames().size(), tableMetaData.getColumnTypes().size());
     assertEquals(13, tableMetaData.getColumnNames().size());
 

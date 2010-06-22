@@ -25,7 +25,6 @@ import org.activiti.test.ProcessDeclared;
 import org.junit.Ignore;
 import org.junit.Test;
 
-
 /**
  * @author jbarrez
  */
@@ -36,24 +35,25 @@ public class ParallelGatewayTest extends ActivitiTestCase {
   @Ignore
   public void testUnbalancedForkJoin() {
 
-    ProcessInstance pi = processService.startProcessInstanceByKey("UnbalancedForkJoin");
-    TaskQuery query = taskService.createTaskQuery().processInstance(pi.getId()).orderAsc(TaskQuery.PROPERTY_NAME);
+    ProcessInstance processInstance = processEngineBuilder.getProcessService().startProcessInstanceByKey("UnbalancedForkJoin");
+
+    // Completing the remaining tasks should trigger the second join and end the
+    // process
+    processEngineBuilder.expectProcessEnds(processInstance.getId());
+
+    TaskQuery query = processEngineBuilder.getTaskService().createTaskQuery().processInstance(processInstance.getId()).orderAsc(TaskQuery.PROPERTY_NAME);
     List<Task> tasks = query.list();
     assertEquals(3, tasks.size());
 
     // Completing the first task should not trigger the join
-    taskService.complete(tasks.get(0).getId());
+    processEngineBuilder.getTaskService().complete(tasks.get(0).getId());
     assertEquals(2, query.count());
 
     // Completing the second task should trigger the join
-    taskService.complete(tasks.get(1).getId());
+    processEngineBuilder.getTaskService().complete(tasks.get(1).getId());
     assertEquals(1, query.count());
 
-    taskService.complete(tasks.get(2).getId());
-
-    // Completing the remaing tasks should trigger the second join and end the
-    // process
-    assertProcessInstanceEnded(pi.getId());
+    processEngineBuilder.getTaskService().complete(tasks.get(2).getId());
   }
-  
+
 }

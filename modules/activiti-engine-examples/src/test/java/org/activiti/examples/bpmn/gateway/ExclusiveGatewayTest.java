@@ -44,26 +44,26 @@ public class ExclusiveGatewayTest extends ActivitiTestCase {
 
     // Test with input == 1
     variables.put("input", 1);
-    ProcessInstance pi = processService.startProcessInstanceByKey("exclusiveGateway", variables);
-    Task task = taskService.createTaskQuery().processInstance(pi.getId()).singleResult();
+    ProcessInstance pi = processEngineBuilder.getProcessService().startProcessInstanceByKey("exclusiveGateway", variables);
+    Task task = processEngineBuilder.getTaskService().createTaskQuery().processInstance(pi.getId()).singleResult();
     assertEquals("Send e-mail for more information", task.getName());
 
     // Test with input == 2
     variables.put("input", 2);
-    pi = processService.startProcessInstanceByKey("exclusiveGateway", variables);
-    task = taskService.createTaskQuery().processInstance(pi.getId()).singleResult();
+    pi = processEngineBuilder.getProcessService().startProcessInstanceByKey("exclusiveGateway", variables);
+    task = processEngineBuilder.getTaskService().createTaskQuery().processInstance(pi.getId()).singleResult();
     assertEquals("Check account balance", task.getName());
 
     // Test with input == 3
     variables.put("input", 3);
-    pi = processService.startProcessInstanceByKey("exclusiveGateway", variables);
-    task = taskService.createTaskQuery().processInstance(pi.getId()).singleResult();
+    pi = processEngineBuilder.getProcessService().startProcessInstanceByKey("exclusiveGateway", variables);
+    task = processEngineBuilder.getTaskService().createTaskQuery().processInstance(pi.getId()).singleResult();
     assertEquals("Call customer", task.getName());
 
     // Test with input == 4
     variables.put("input", 4);
     try {
-      processService.startProcessInstanceByKey("exclusiveGateway", variables);
+      processEngineBuilder.getProcessService().startProcessInstanceByKey("exclusiveGateway", variables);
       fail();
     } catch (ActivitiException e) {
       // Exception is expected since no outgoing sequence flow matches

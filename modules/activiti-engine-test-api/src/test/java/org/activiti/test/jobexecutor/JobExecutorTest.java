@@ -24,6 +24,7 @@ import org.activiti.impl.interceptor.CommandContext;
 import org.activiti.impl.interceptor.CommandExecutor;
 import org.activiti.impl.msg.MessageSession;
 import org.activiti.impl.timer.TimerSession;
+import org.activiti.test.JobExecutorPoller;
 import org.junit.Test;
 
 
@@ -35,7 +36,7 @@ public class JobExecutorTest extends JobExecutorTestCase {
 
   @Test
   public void testBasicJobExecutorOperation() throws Exception {
-    ProcessEngineImpl processEngineImpl = (ProcessEngineImpl)processEngine;
+    ProcessEngineImpl processEngineImpl = (ProcessEngineImpl)processEngineBuilder.getProcessEngine();
     CommandExecutor commandExecutor = processEngineImpl.getProcessEngineConfiguration().getCommandExecutor();
     commandExecutor.execute(new Command<Void>() {
       public Void execute(CommandContext commandContext) {
@@ -52,7 +53,7 @@ public class JobExecutorTest extends JobExecutorTestCase {
       }
     });
     
-    waitForJobExecutorToProcessAllJobs(8000, 200);
+    new JobExecutorPoller(processEngineBuilder.getProcessEngine()).waitForJobExecutorToProcessAllJobs(8000, 200);
     
     Set<String> messages = new HashSet<String>(tweetHandler.getMessages());
     Set<String> expectedMessages = new HashSet<String>();

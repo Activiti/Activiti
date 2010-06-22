@@ -20,6 +20,7 @@ import org.activiti.ProcessInstance;
 import org.activiti.Task;
 import org.activiti.impl.time.Clock;
 import org.activiti.test.ActivitiTestCase;
+import org.activiti.test.JobExecutorPoller;
 import org.activiti.test.ProcessDeclared;
 import org.junit.Test;
 
@@ -33,18 +34,18 @@ public class BoundaryTimerEventTest extends ActivitiTestCase {
   public void testInterruptingTimerDuration() {
 
     // Start process instance
-    ProcessInstance pi = processService.startProcessInstanceByKey("interruptingBoundaryTimer");
+    ProcessInstance pi = processEngineBuilder.getProcessService().startProcessInstanceByKey("interruptingBoundaryTimer");
 
     // There should be one task, with a timer : first line support
-    Task task = taskService.createTaskQuery().processInstance(pi.getId()).singleResult();
+    Task task = processEngineBuilder.getTaskService().createTaskQuery().processInstance(pi.getId()).singleResult();
     assertEquals("First line support", task.getName());
 
     // Set clock to the future such that the timer can fire
     Clock.setCurrentTime(new Date(System.currentTimeMillis() + (5 * 60 * 60 * 1000)));
-    waitForJobExecutorToProcessAllJobs(10000L, 250);
+    new JobExecutorPoller(processEngineBuilder.getProcessEngine()).waitForJobExecutorToProcessAllJobs(10000L, 250);
 
     // The timer has fired, and the second task (secondlinesupport) now exists
-    task = taskService.createTaskQuery().processInstance(pi.getId()).singleResult();
+    task = processEngineBuilder.getTaskService().createTaskQuery().processInstance(pi.getId()).singleResult();
     assertEquals("Second line support", task.getName());
   }
 

@@ -17,48 +17,47 @@ public class FinancialReportProcessTest extends ActivitiTestCase {
   
   @Before
   public void setUp() throws Exception {
-    identityService.saveUser(identityService.newUser("fozzie"));
-    identityService.saveUser(identityService.newUser("kermit"));
+    processEngineBuilder.getIdentityService().saveUser(processEngineBuilder.getIdentityService().newUser("fozzie"));
+    processEngineBuilder.getIdentityService().saveUser(processEngineBuilder.getIdentityService().newUser("kermit"));
     
-    identityService.saveGroup(identityService.newGroup("accountancy"));
-    identityService.saveGroup(identityService.newGroup("management"));
+    processEngineBuilder.getIdentityService().saveGroup(processEngineBuilder.getIdentityService().newGroup("accountancy"));
+    processEngineBuilder.getIdentityService().saveGroup(processEngineBuilder.getIdentityService().newGroup("management"));
     
-    identityService.createMembership("fozzie", "accountancy");
-    identityService.createMembership("kermit", "management");
+    processEngineBuilder.getIdentityService().createMembership("fozzie", "accountancy");
+    processEngineBuilder.getIdentityService().createMembership("kermit", "management");
   }
   
   @After
   public void tearDown() throws Exception {
-    identityService.deleteUser("fozzie");
-    identityService.deleteUser("kermit");
-    identityService.deleteGroup("accountancy");
-    identityService.deleteGroup("management");
+    processEngineBuilder.getIdentityService().deleteUser("fozzie");
+    processEngineBuilder.getIdentityService().deleteUser("kermit");
+    processEngineBuilder.getIdentityService().deleteGroup("accountancy");
+    processEngineBuilder.getIdentityService().deleteGroup("management");
   }
   
   @Test
   @ProcessDeclared(resources={"FinancialReportProcess.bpmn20.xml"})
   public void testProcess() {
     
-    ProcessInstance processInstance = processService.startProcessInstanceByKey("financialReport");
+    ProcessInstance processInstance = processEngineBuilder.getProcessService().startProcessInstanceByKey("financialReport");
+    processEngineBuilder.expectProcessEnds(processInstance.getId());
     
-    List<Task> tasks = taskService.findUnassignedTasks("fozzie");
+    List<Task> tasks = processEngineBuilder.getTaskService().findUnassignedTasks("fozzie");
     assertEquals(1, tasks.size());
     Task task = tasks.get(0);
     assertEquals("Write monthly financial report", task.getName());
     
-    taskService.claim(task.getId(), "fozzie");
-    tasks = taskService.findAssignedTasks("fozzie");
+    processEngineBuilder.getTaskService().claim(task.getId(), "fozzie");
+    tasks = processEngineBuilder.getTaskService().findAssignedTasks("fozzie");
     assertEquals(1, tasks.size());
-    taskService.complete(task.getId());
+    processEngineBuilder.getTaskService().complete(task.getId());
 
-    tasks = taskService.findUnassignedTasks("fozzie");
+    tasks = processEngineBuilder.getTaskService().findUnassignedTasks("fozzie");
     assertEquals(0, tasks.size());
-    tasks = taskService.findUnassignedTasks("kermit");
+    tasks = processEngineBuilder.getTaskService().findUnassignedTasks("kermit");
     assertEquals(1, tasks.size());
     assertEquals("Verify monthly financial report", tasks.get(0).getName());
-    taskService.complete(tasks.get(0).getId());
-    
-    assertProcessInstanceEnded(processInstance.getId());
+    processEngineBuilder.getTaskService().complete(tasks.get(0).getId());
   }
 
 }

@@ -30,13 +30,13 @@ public class JobExecutorTestCase extends ActivitiTestCase {
 
   @Before
   public void setUp() throws Exception {
-    ProcessEngineImpl processEngineImpl = (ProcessEngineImpl) processEngine;
+    ProcessEngineImpl processEngineImpl = (ProcessEngineImpl) processEngineBuilder.getProcessEngine();
     processEngineImpl.getProcessEngineConfiguration().getJobCommands().addJobHandler(tweetHandler);
   }
 
   @After
   public void tearDown() throws Exception {
-    ProcessEngineImpl processEngineImpl = (ProcessEngineImpl) processEngine;
+    ProcessEngineImpl processEngineImpl = (ProcessEngineImpl) processEngineBuilder.getProcessEngine();
     processEngineImpl.getProcessEngineConfiguration().getJobCommands().removeJobHandler(tweetHandler);
   }
 

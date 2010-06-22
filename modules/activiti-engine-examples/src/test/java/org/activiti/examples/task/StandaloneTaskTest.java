@@ -31,52 +31,52 @@ public class StandaloneTaskTest extends ActivitiTestCase {
 
   @Before
   public void setUp() throws Exception {
-    identityService.saveUser(identityService.newUser("kermit"));
-    identityService.saveUser(identityService.newUser("gonzo"));
+    processEngineBuilder.getIdentityService().saveUser(processEngineBuilder.getIdentityService().newUser("kermit"));
+    processEngineBuilder.getIdentityService().saveUser(processEngineBuilder.getIdentityService().newUser("gonzo"));
   }
 
   @After
   public void tearDown() throws Exception {
-    identityService.deleteUser("kermit");
-    identityService.deleteUser("gonzo");
+    processEngineBuilder.getIdentityService().deleteUser("kermit");
+    processEngineBuilder.getIdentityService().deleteUser("gonzo");
   }
 
   @Test
   public void testCreateToComplete() {
 
     // Create and save task
-    Task task = taskService.newTask();
+    Task task = processEngineBuilder.getTaskService().newTask();
     task.setName("testTask");
-    taskService.saveTask(task);
+    processEngineBuilder.getTaskService().saveTask(task);
     String taskId = task.getId();
 
     // Add user as candidate user
-    taskService.addCandidateUser(taskId, "kermit");
-    taskService.addCandidateUser(taskId, "gonzo");
+    processEngineBuilder.getTaskService().addCandidateUser(taskId, "kermit");
+    processEngineBuilder.getTaskService().addCandidateUser(taskId, "gonzo");
 
     // Retrieve task list for jbarrez
-    List<Task> tasks = taskService.findUnassignedTasks("kermit");
+    List<Task> tasks = processEngineBuilder.getTaskService().findUnassignedTasks("kermit");
     assertEquals(1, tasks.size());
     assertEquals("testTask", tasks.get(0).getName());
 
     // Retrieve task list for tbaeyens
-    tasks = taskService.findUnassignedTasks("gonzo");
+    tasks = processEngineBuilder.getTaskService().findUnassignedTasks("gonzo");
     assertEquals(1, tasks.size());
     assertEquals("testTask", tasks.get(0).getName());
 
     // Claim task
-    taskService.claim(taskId, "kermit");
+    processEngineBuilder.getTaskService().claim(taskId, "kermit");
 
     // Tasks shouldn't appear in the candidate tasklists anymore
-    assertTrue(taskService.findUnassignedTasks("kermit").isEmpty());
-    assertTrue(taskService.findUnassignedTasks("gonzo").isEmpty());
+    assertTrue(processEngineBuilder.getTaskService().findUnassignedTasks("kermit").isEmpty());
+    assertTrue(processEngineBuilder.getTaskService().findUnassignedTasks("gonzo").isEmpty());
 
     // Complete task
-    taskService.complete(taskId);
+    processEngineBuilder.getTaskService().complete(taskId);
 
     // Task should be removed from runtime data
     // TODO: check for historic data when implemented!
-    assertNull(taskService.findTask(taskId));
+    assertNull(processEngineBuilder.getTaskService().findTask(taskId));
   }
 
 }

@@ -26,7 +26,7 @@ public class JavaServiceTaskTest extends ActivitiTestCase {
   @Test
   @ProcessDeclared
   public void testJavaServiceNoParamsOrResult() {
-    processService.startProcessInstanceByKey("javaServiceNoParamsOrResult");
+    processEngineBuilder.getProcessService().startProcessInstanceByKey("javaServiceNoParamsOrResult");
     assertEquals(1, Counter.COUNTER);
   }
 

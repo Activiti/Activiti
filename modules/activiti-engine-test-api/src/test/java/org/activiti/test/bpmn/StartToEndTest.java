@@ -27,8 +27,8 @@ public class StartToEndTest extends ActivitiTestCase {
   @Test
   @ProcessDeclared
   public void testStartToEnd() {
-    ProcessInstance processInstance = processService.startProcessInstanceByKey("startToEnd");
-    assertProcessInstanceEnded(processInstance.getId());
+    ProcessInstance processInstance = processEngineBuilder.getProcessService().startProcessInstanceByKey("startToEnd");
+    processEngineBuilder.expectProcessEnds(processInstance.getId());
     assertTrue(processInstance.isEnded());
   }
 

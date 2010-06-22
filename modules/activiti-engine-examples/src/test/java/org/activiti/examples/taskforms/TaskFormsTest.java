@@ -34,15 +34,15 @@ public class TaskFormsTest extends ActivitiTestCase {
 
   @Before
   public void setUp() throws Exception {
-    identityService.saveUser(identityService.newUser("fozzie"));
-    identityService.saveGroup(identityService.newGroup("management"));
-    identityService.createMembership("fozzie", "management");
+    processEngineBuilder.getIdentityService().saveUser(processEngineBuilder.getIdentityService().newUser("fozzie"));
+    processEngineBuilder.getIdentityService().saveGroup(processEngineBuilder.getIdentityService().newGroup("management"));
+    processEngineBuilder.getIdentityService().createMembership("fozzie", "management");
   }
 
   @After
   public void tearDown() throws Exception {
-    identityService.deleteGroup("management");
-    identityService.deleteUser("fozzie");
+    processEngineBuilder.getIdentityService().deleteGroup("management");
+    processEngineBuilder.getIdentityService().deleteUser("fozzie");
   }
 
   @Test
@@ -50,7 +50,7 @@ public class TaskFormsTest extends ActivitiTestCase {
   public void testTaskFormsWithVacationRequestProcess() {
 
     // Get start form
-    Object startForm = processService.getStartFormByKey("vacationRequest");
+    Object startForm = processEngineBuilder.getProcessService().getStartFormByKey("vacationRequest");
     assertNotNull(startForm);
 
     // Define variables that would be filled in through the form
@@ -58,12 +58,12 @@ public class TaskFormsTest extends ActivitiTestCase {
     parameters.put("employeeName", "kermit");
     parameters.put("numberOfDays", "4");
     parameters.put("vacationMotivation", "I'm tired");
-    processService.startProcessInstanceByKey("vacationRequest", parameters);
+    processEngineBuilder.getProcessService().startProcessInstanceByKey("vacationRequest", parameters);
 
     // Management should now have a task assigned to them
-    Task task = taskService.createTaskQuery().candidateGroup("management").singleResult();
+    Task task = processEngineBuilder.getTaskService().createTaskQuery().candidateGroup("management").singleResult();
     assertEquals("Vacation request by kermit", task.getDescription());
-    Object taskForm = taskService.getTaskForm(task.getId());
+    Object taskForm = processEngineBuilder.getTaskService().getTaskForm(task.getId());
     assertNotNull(taskForm);
 
   }
@@ -71,11 +71,11 @@ public class TaskFormsTest extends ActivitiTestCase {
   @Test
   @ProcessDeclared
   public void testTaskFormUnavailable() {
-    assertNull(processService.getStartFormByKey("noStartOrTaskForm"));
+    assertNull(processEngineBuilder.getProcessService().getStartFormByKey("noStartOrTaskForm"));
 
-    processService.startProcessInstanceByKey("noStartOrTaskForm");
-    Task task = taskService.createTaskQuery().singleResult();
-    assertNull(taskService.getTaskForm(task.getId()));
+    processEngineBuilder.getProcessService().startProcessInstanceByKey("noStartOrTaskForm");
+    Task task = processEngineBuilder.getTaskService().createTaskQuery().singleResult();
+    assertNull(processEngineBuilder.getTaskService().getTaskForm(task.getId()));
   }
 
 }
