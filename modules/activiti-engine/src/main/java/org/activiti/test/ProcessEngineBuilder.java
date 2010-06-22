@@ -92,6 +92,7 @@ public class ProcessEngineBuilder extends TestWatchman {
 
   @Override
   public void finished(FrameworkMethod method) {
+    assertDatabaseIsClean();
     if (processEngine != null) {
       processEngine.close();
       processEngine = null;
@@ -108,7 +109,7 @@ public class ProcessEngineBuilder extends TestWatchman {
     verifiers.add(verifier);
   }
 
-  public void checkDbIsClean() {
+  public void assertDatabaseIsClean() {
     Map<String, Long> tableCounts = processEngine.getManagementService().getTableCount();
     StringBuilder outputMessage = new StringBuilder();
     for (String table : tableCounts.keySet()) {

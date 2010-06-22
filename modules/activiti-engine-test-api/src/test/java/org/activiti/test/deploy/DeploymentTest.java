@@ -36,7 +36,7 @@ public class DeploymentTest extends ActivitiTestCase {
 
   @Test
   public void testSimpleString() {
-    deployer.deployProcessString(("<definitions xmlns='http://www.omg.org/spec/BPMN/20100524/MODEL' " + "targetNamespace='http://www.activiti.org/bpmn2.0' />"));
+    deployer.deployProcessString(("<definitions xmlns='http://www.omg.org/spec/BPMN/20100524/MODEL' targetNamespace='http://www.activiti.org/bpmn2.0' />"));
   }
 
   @Test
@@ -83,13 +83,13 @@ public class DeploymentTest extends ActivitiTestCase {
     final String expenseDeploymentName = "expenseDeployment";
     final String hiringDeploymentName = "hiringDeployment";
 
-    Deployment deployment1 = processEngineBuilder.getProcessService().createDeployment().name(idrDeploymentName).addString("idr_process01.bpmn20.xml",
+    Deployment deployment1 = deployer.createDeployment().name(idrDeploymentName).addString("idr_process01.bpmn20.xml",
             MINIMAL_PROC_DEF.replace(TO_REPLACE, "IDR1")).addString("idr_process02.bpmn20.xml", MINIMAL_PROC_DEF.replace(TO_REPLACE, "IDR2")).deploy();
 
-    Deployment deployment2 = processEngineBuilder.getProcessService().createDeployment().name(expenseDeploymentName).addString("expense_proc.bpmn20.xml",
+    Deployment deployment2 = deployer.createDeployment().name(expenseDeploymentName).addString("expense_proc.bpmn20.xml",
             MINIMAL_PROC_DEF.replace(TO_REPLACE, "EXP")).deploy();
 
-    Deployment deployment3 = processEngineBuilder.getProcessService().createDeployment().name(hiringDeploymentName).addString("hiring_process.bpmn20.xml",
+    Deployment deployment3 = deployer.createDeployment().name(hiringDeploymentName).addString("hiring_process.bpmn20.xml",
             MINIMAL_PROC_DEF.replace(TO_REPLACE, "HIR")).addString("hiring_remote_employee.bpmn20.xml", MINIMAL_PROC_DEF.replace(TO_REPLACE, "HIR_REM"))
             .addString("hiring_process_sales.bpmn20.xml", MINIMAL_PROC_DEF.replace(TO_REPLACE, "HIR_SAL")).deploy();
 

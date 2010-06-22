@@ -12,6 +12,9 @@
  */
 package org.activiti.test;
 
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.logging.Logger;
@@ -47,7 +50,7 @@ public abstract class ActivitiTestCase {
     @Override
     public void starting(FrameworkMethod method) {
 
-       ProcessDeclared process = method.getAnnotation(ProcessDeclared.class);
+      ProcessDeclared process = method.getAnnotation(ProcessDeclared.class);
       if (process != null) {
         String[] resources = process.resources();
         resources = resources.length == 0 ? process.value() : resources;
@@ -55,7 +58,7 @@ public abstract class ActivitiTestCase {
           String name = method.getName();
           String resource = ResourceUtils.getBpmnProcessDefinitionResource(method.getMethod().getDeclaringClass(), name);
           log.fine("deploying bpmn process resource: " + resource);
-          deployProcessResource(resource);
+          createDeployment().name(resource).addClasspathResource(resource).deploy();
         } else {
           DeploymentBuilder builder = processEngineBuilder.getProcessService().createDeployment();
           for (String resource : resources) {
@@ -80,27 +83,24 @@ public abstract class ActivitiTestCase {
       }
     }
 
+    public DeploymentBuilder createDeployment() {
+      final DeploymentBuilder builder = processEngineBuilder.getProcessService().createDeployment();
+      return getDeploymentBuilderProxy(builder);
+    }
+
+    private DeploymentBuilder getDeploymentBuilderProxy(final DeploymentBuilder builder) {
+      return (DeploymentBuilder) Proxy.newProxyInstance(getClass().getClassLoader(), new Class< ? >[] { DeploymentBuilder.class }, new DeploymentBuilderInvoker(builder));
+    }
+
     public void deployProcessString(String xmlString) {
-      deployProcessString("xmlString." + BpmnDeployer.BPMN_RESOURCE_SUFFIX, xmlString);
-    }
-
-    private String deployProcessResource(String resource) {
-      Deployment deployment = processEngineBuilder.getProcessService().createDeployment().name(resource).addClasspathResource(resource)
-              .deploy();
-      registerDeployment(deployment.getId());
-      return deployment.getId();
-    }
-
-    private void deployProcessString(String resourceName, String xmlString) {
-      Deployment deployment = processEngineBuilder.getProcessEngine().getProcessService().createDeployment().name(resourceName)
-              .addString(resourceName, xmlString).deploy();
-      registerDeployment(deployment.getId());
+      String resourceName = "xmlString." + BpmnDeployer.BPMN_RESOURCE_SUFFIX;
+      createDeployment().name(resourceName).addString(resourceName, xmlString).deploy();
     }
 
     /**
-     * Registers the given deployment for post-test clean up. All the related data
-     * such as process instances, tasks, etc will be deleted when the test case
-     * has run.
+     * Registers the given deployment for post-test clean up. All the related
+     * data such as process instances, tasks, etc will be deleted when the test
+     * case has run.
      */
     private void registerDeployment(String deploymentId) {
       if (deploymentId == null) { // common error
@@ -108,6 +108,28 @@ public abstract class ActivitiTestCase {
                 + "with a recognized extension.");
       }
       registeredDeploymentIds.add(deploymentId);
+    }
+
+    private final class DeploymentBuilderInvoker implements InvocationHandler {
+
+      private final DeploymentBuilder builder;
+
+      private DeploymentBuilderInvoker(DeploymentBuilder builder) {
+        this.builder = builder;
+      }
+      public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+        String name = method.getName();
+        if (name.equals("deploy")) {
+          Deployment deployment = builder.deploy();
+          registerDeployment(deployment.getId());
+          return deployment;
+        }
+        Object result = method.invoke(builder, args);
+        if (result instanceof DeploymentBuilder) {
+          return getDeploymentBuilderProxy(builder);
+        }
+        return result;
+      }
     }
 
   }
