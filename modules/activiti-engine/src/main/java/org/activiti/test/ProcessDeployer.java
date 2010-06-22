@@ -75,6 +75,16 @@ public class ProcessDeployer extends ProcessEngineBuilder {
 
   private Set<String> registeredDeploymentIds = new HashSet<String>();
 
+  /**
+   * get a resource location by convention based on a class (type) and a
+   * relative resource name. The return value will be the full classpath
+   * location of the type, plus a suffix built from the name parameter:
+   * <code>.&lt;name&gt;.bpmn20.xml</code>.
+   */
+  public static String getBpmnProcessDefinitionResource(Class< ? > type, String name) {
+    return type.getName().replace('.', '/') + "." + name + "." + BpmnDeployer.BPMN_RESOURCE_SUFFIX;
+  }
+
   @Override
   public void starting(FrameworkMethod method) {
 
@@ -124,6 +134,11 @@ public class ProcessDeployer extends ProcessEngineBuilder {
     return getDeploymentBuilderProxy(builder);
   }
 
+  /**
+   * convenience method for deploying a string literal (XML) as a process
+   * definition. It will be deployed with the name
+   * <code>xmlString.bpmn20.xml</code>
+   */
   public void deployProcessString(String xmlString) {
     String resourceName = "xmlString." + BpmnDeployer.BPMN_RESOURCE_SUFFIX;
     createDeployment().name(resourceName).addString(resourceName, xmlString).deploy();
@@ -145,10 +160,6 @@ public class ProcessDeployer extends ProcessEngineBuilder {
               + "with a recognized extension.");
     }
     registeredDeploymentIds.add(deploymentId);
-  }
-
-  public static String getBpmnProcessDefinitionResource(Class< ? > type, String name) {
-    return type.getName().replace('.', '/') + "." + name + "." + BpmnDeployer.BPMN_RESOURCE_SUFFIX;
   }
 
   private static String getProcessDefinitionResource(Class< ? > type, String name) {
