@@ -19,6 +19,9 @@ import java.util.List;
 
 import org.activiti.ProcessDefinition;
 import org.activiti.test.ActivitiTestCase;
+import org.activiti.test.LogInitializer;
+import org.activiti.test.ProcessDeployer;
+import org.junit.Rule;
 import org.junit.Test;
 
 /**
@@ -30,6 +33,12 @@ public class ProcessDefinitionsTest extends ActivitiTestCase {
 
   private static final String TARGET_NAMESPACE = "targetNamespace='http://activiti.org/BPMN20'";
 
+  @Rule
+  public LogInitializer logSetup = new LogInitializer();
+
+  @Rule
+  public ProcessDeployer deployer = new ProcessDeployer();
+
   @Test
   public void testGetProcessDefinitions() {
     deployer.deployProcessString(("<definitions " + NAMESPACE + " " + TARGET_NAMESPACE + ">" + "  <process id='IDR' name='Insurance Damage Report' />" + "</definitions>"));
@@ -38,7 +47,7 @@ public class ProcessDefinitionsTest extends ActivitiTestCase {
     deployer.deployProcessString(("<definitions " + NAMESPACE + " " + TARGET_NAMESPACE + ">" + "  <process id='EN' name='Expense Note' />" + "</definitions>"));
     deployer.deployProcessString(("<definitions " + NAMESPACE + " " + TARGET_NAMESPACE + ">" + "  <process id='EN' name='Expense Note' />" + "</definitions>"));
 
-    List<ProcessDefinition> processDefinitions = processEngineBuilder.getProcessService().findProcessDefinitions();
+    List<ProcessDefinition> processDefinitions = deployer.getProcessService().findProcessDefinitions();
     assertNotNull(processDefinitions);
 
     ProcessDefinition processDefinition = processDefinitions.get(0);

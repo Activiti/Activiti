@@ -21,7 +21,10 @@ import org.activiti.ActivitiException;
 import org.activiti.ProcessInstance;
 import org.activiti.Task;
 import org.activiti.test.ActivitiTestCase;
+import org.activiti.test.LogInitializer;
 import org.activiti.test.ProcessDeclared;
+import org.activiti.test.ProcessDeployer;
+import org.junit.Rule;
 import org.junit.Test;
 
 /**
@@ -30,6 +33,11 @@ import org.junit.Test;
  * @author Joram Barrez
  */
 public class ExclusiveGatewayTest extends ActivitiTestCase {
+
+  @Rule
+  public LogInitializer logSetup = new LogInitializer();
+  @Rule
+  public ProcessDeployer deployer = new ProcessDeployer();
 
   /**
    * The test process has an XOR gateway where, the 'input' variable is used to
@@ -44,26 +52,26 @@ public class ExclusiveGatewayTest extends ActivitiTestCase {
 
     // Test with input == 1
     variables.put("input", 1);
-    ProcessInstance pi = processEngineBuilder.getProcessService().startProcessInstanceByKey("exclusiveGateway", variables);
-    Task task = processEngineBuilder.getTaskService().createTaskQuery().processInstance(pi.getId()).singleResult();
+    ProcessInstance pi = deployer.getProcessService().startProcessInstanceByKey("exclusiveGateway", variables);
+    Task task = deployer.getTaskService().createTaskQuery().processInstance(pi.getId()).singleResult();
     assertEquals("Send e-mail for more information", task.getName());
 
     // Test with input == 2
     variables.put("input", 2);
-    pi = processEngineBuilder.getProcessService().startProcessInstanceByKey("exclusiveGateway", variables);
-    task = processEngineBuilder.getTaskService().createTaskQuery().processInstance(pi.getId()).singleResult();
+    pi = deployer.getProcessService().startProcessInstanceByKey("exclusiveGateway", variables);
+    task = deployer.getTaskService().createTaskQuery().processInstance(pi.getId()).singleResult();
     assertEquals("Check account balance", task.getName());
 
     // Test with input == 3
     variables.put("input", 3);
-    pi = processEngineBuilder.getProcessService().startProcessInstanceByKey("exclusiveGateway", variables);
-    task = processEngineBuilder.getTaskService().createTaskQuery().processInstance(pi.getId()).singleResult();
+    pi = deployer.getProcessService().startProcessInstanceByKey("exclusiveGateway", variables);
+    task = deployer.getTaskService().createTaskQuery().processInstance(pi.getId()).singleResult();
     assertEquals("Call customer", task.getName());
 
     // Test with input == 4
     variables.put("input", 4);
     try {
-      processEngineBuilder.getProcessService().startProcessInstanceByKey("exclusiveGateway", variables);
+      deployer.getProcessService().startProcessInstanceByKey("exclusiveGateway", variables);
       fail();
     } catch (ActivitiException e) {
       // Exception is expected since no outgoing sequence flow matches

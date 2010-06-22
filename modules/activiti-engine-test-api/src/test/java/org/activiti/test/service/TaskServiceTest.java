@@ -20,7 +20,10 @@ import java.util.Map;
 import org.activiti.ProcessInstance;
 import org.activiti.Task;
 import org.activiti.test.ActivitiTestCase;
+import org.activiti.test.LogInitializer;
 import org.activiti.test.ProcessDeclared;
+import org.activiti.test.ProcessDeployer;
+import org.junit.Rule;
 import org.junit.Test;
 
 /**
@@ -28,26 +31,31 @@ import org.junit.Test;
  */
 public class TaskServiceTest extends ActivitiTestCase {
   
+  @Rule
+  public LogInitializer logSetup = new LogInitializer();
+  @Rule
+  public ProcessDeployer deployer = new ProcessDeployer();
+
   @Test
   @ProcessDeclared(resources={"twoTasksProcess.bpmn20.xml"})
   public void testCompleteWithParametersTask() {
-    ProcessInstance processInstance = processEngineBuilder.getProcessService().startProcessInstanceByKey("twoTasksProcess");
+    ProcessInstance processInstance = deployer.getProcessService().startProcessInstanceByKey("twoTasksProcess");
     
     // Fetch first task
-    Task task = processEngineBuilder.getTaskService().createTaskQuery().singleResult();
+    Task task = deployer.getTaskService().createTaskQuery().singleResult();
     assertEquals("First task", task.getName());
     
     // Complete first task
     Map<String, Object> taskParams = new HashMap<String, Object>();
     taskParams.put("myParam", "myValue");
-    processEngineBuilder.getTaskService().complete(task.getId(), taskParams);
+    deployer.getTaskService().complete(task.getId(), taskParams);
     
     // Fetch second task
-    task = processEngineBuilder.getTaskService().createTaskQuery().singleResult();
+    task = deployer.getTaskService().createTaskQuery().singleResult();
     assertEquals("Second task", task.getName());
     
     // Verify task parameters set on execution
-    Map<String, Object> variables = processEngineBuilder.getProcessService().getVariables(processInstance.getId());
+    Map<String, Object> variables = deployer.getProcessService().getVariables(processInstance.getId());
     assertEquals(1, variables.size());
     assertEquals("myValue", variables.get("myParam"));
   }

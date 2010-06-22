@@ -21,9 +21,12 @@ import java.util.Map;
 
 import org.activiti.Task;
 import org.activiti.test.ActivitiTestCase;
+import org.activiti.test.LogInitializer;
 import org.activiti.test.ProcessDeclared;
+import org.activiti.test.ProcessDeployer;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 
 /**
@@ -32,17 +35,22 @@ import org.junit.Test;
  */
 public class TaskFormsTest extends ActivitiTestCase {
 
+  @Rule
+  public LogInitializer logSetup = new LogInitializer();
+  @Rule
+  public ProcessDeployer deployer = new ProcessDeployer();
+
   @Before
   public void setUp() throws Exception {
-    processEngineBuilder.getIdentityService().saveUser(processEngineBuilder.getIdentityService().newUser("fozzie"));
-    processEngineBuilder.getIdentityService().saveGroup(processEngineBuilder.getIdentityService().newGroup("management"));
-    processEngineBuilder.getIdentityService().createMembership("fozzie", "management");
+    deployer.getIdentityService().saveUser(deployer.getIdentityService().newUser("fozzie"));
+    deployer.getIdentityService().saveGroup(deployer.getIdentityService().newGroup("management"));
+    deployer.getIdentityService().createMembership("fozzie", "management");
   }
 
   @After
   public void tearDown() throws Exception {
-    processEngineBuilder.getIdentityService().deleteGroup("management");
-    processEngineBuilder.getIdentityService().deleteUser("fozzie");
+    deployer.getIdentityService().deleteGroup("management");
+    deployer.getIdentityService().deleteUser("fozzie");
   }
 
   @Test
@@ -50,7 +58,7 @@ public class TaskFormsTest extends ActivitiTestCase {
   public void testTaskFormsWithVacationRequestProcess() {
 
     // Get start form
-    Object startForm = processEngineBuilder.getProcessService().getStartFormByKey("vacationRequest");
+    Object startForm = deployer.getProcessService().getStartFormByKey("vacationRequest");
     assertNotNull(startForm);
 
     // Define variables that would be filled in through the form
@@ -58,12 +66,12 @@ public class TaskFormsTest extends ActivitiTestCase {
     parameters.put("employeeName", "kermit");
     parameters.put("numberOfDays", "4");
     parameters.put("vacationMotivation", "I'm tired");
-    processEngineBuilder.getProcessService().startProcessInstanceByKey("vacationRequest", parameters);
+    deployer.getProcessService().startProcessInstanceByKey("vacationRequest", parameters);
 
     // Management should now have a task assigned to them
-    Task task = processEngineBuilder.getTaskService().createTaskQuery().candidateGroup("management").singleResult();
+    Task task = deployer.getTaskService().createTaskQuery().candidateGroup("management").singleResult();
     assertEquals("Vacation request by kermit", task.getDescription());
-    Object taskForm = processEngineBuilder.getTaskService().getTaskForm(task.getId());
+    Object taskForm = deployer.getTaskService().getTaskForm(task.getId());
     assertNotNull(taskForm);
 
   }
@@ -71,11 +79,11 @@ public class TaskFormsTest extends ActivitiTestCase {
   @Test
   @ProcessDeclared
   public void testTaskFormUnavailable() {
-    assertNull(processEngineBuilder.getProcessService().getStartFormByKey("noStartOrTaskForm"));
+    assertNull(deployer.getProcessService().getStartFormByKey("noStartOrTaskForm"));
 
-    processEngineBuilder.getProcessService().startProcessInstanceByKey("noStartOrTaskForm");
-    Task task = processEngineBuilder.getTaskService().createTaskQuery().singleResult();
-    assertNull(processEngineBuilder.getTaskService().getTaskForm(task.getId()));
+    deployer.getProcessService().startProcessInstanceByKey("noStartOrTaskForm");
+    Task task = deployer.getTaskService().createTaskQuery().singleResult();
+    assertNull(deployer.getTaskService().getTaskForm(task.getId()));
   }
 
 }

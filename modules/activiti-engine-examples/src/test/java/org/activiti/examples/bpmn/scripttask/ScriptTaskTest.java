@@ -17,8 +17,11 @@ import static org.junit.Assert.assertNull;
 
 import org.activiti.ProcessInstance;
 import org.activiti.test.ActivitiTestCase;
+import org.activiti.test.LogInitializer;
 import org.activiti.test.ProcessDeclared;
+import org.activiti.test.ProcessDeployer;
 import org.activiti.util.CollectionUtil;
+import org.junit.Rule;
 import org.junit.Test;
 
 /**
@@ -26,25 +29,30 @@ import org.junit.Test;
  */
 public class ScriptTaskTest extends ActivitiTestCase {
 
+  @Rule
+  public LogInitializer logSetup = new LogInitializer();
+  @Rule
+  public ProcessDeployer deployer = new ProcessDeployer();
+
   @Test
   @ProcessDeclared
   public void testScriptExecution() {
     int[] inputArray = new int[] { 1, 2, 3, 4, 5 };
-    ProcessInstance pi = processEngineBuilder.getProcessService().startProcessInstanceByKey("scriptExecution", CollectionUtil.singletonMap("inputArray", inputArray));
+    ProcessInstance pi = deployer.getProcessService().startProcessInstanceByKey("scriptExecution", CollectionUtil.singletonMap("inputArray", inputArray));
 
-    Integer result = (Integer) processEngineBuilder.getProcessService().getVariable(pi.getId(), "sum");
+    Integer result = (Integer) deployer.getProcessService().getVariable(pi.getId(), "sum");
     assertEquals(15, result.intValue());
   }
 
   @Test
   @ProcessDeclared
   public void testSetVariableThroughExecutionInScript() {
-    ProcessInstance pi = processEngineBuilder.getProcessService().startProcessInstanceByKey("setScriptVariableThroughExecution");
+    ProcessInstance pi = deployer.getProcessService().startProcessInstanceByKey("setScriptVariableThroughExecution");
 
     // Since 'def' is used, the 'scriptVar' will be script local
     // and not automatically stored as a process variable.
-    assertNull(processEngineBuilder.getProcessService().getVariable(pi.getId(), "scriptVar"));
-    assertEquals("test123", processEngineBuilder.getProcessService().getVariable(pi.getId(), "myVar"));
+    assertNull(deployer.getProcessService().getVariable(pi.getId(), "scriptVar"));
+    assertEquals("test123", deployer.getProcessService().getVariable(pi.getId(), "myVar"));
   }
 
 }

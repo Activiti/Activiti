@@ -21,6 +21,9 @@ import java.util.List;
 import org.activiti.Deployment;
 import org.activiti.impl.util.IoUtil;
 import org.activiti.test.ActivitiTestCase;
+import org.activiti.test.LogInitializer;
+import org.activiti.test.ProcessDeployer;
+import org.junit.Rule;
 import org.junit.Test;
 
 /**
@@ -34,6 +37,12 @@ public class DeploymentTest extends ActivitiTestCase {
   private static final String MINIMAL_PROC_DEF = "<definitions xmlns='http://www.omg.org/spec/BPMN/20100524/MODEL' "
           + "             targetNamespace='http://www.activiti.org/bpmn2.0' >" + "  <process id='" + TO_REPLACE + "' />" + "</definitions>";
 
+  @Rule
+  public LogInitializer logSetup = new LogInitializer();
+
+  @Rule
+  public ProcessDeployer deployer = new ProcessDeployer();
+
   @Test
   public void testSimpleString() {
     deployer.deployProcessString(("<definitions xmlns='http://www.omg.org/spec/BPMN/20100524/MODEL' targetNamespace='http://www.activiti.org/bpmn2.0' />"));
@@ -43,7 +52,7 @@ public class DeploymentTest extends ActivitiTestCase {
   public void testMultipleStringResources() throws Exception {
 
     List<String> deploymentIds = deployTestProcesses();
-    List<Deployment> deployments = processEngineBuilder.getProcessService().findDeployments();
+    List<Deployment> deployments = deployer.getProcessService().findDeployments();
     assertEquals(3, deployments.size());
 
     // Results should be ordered by deployment time
@@ -53,16 +62,16 @@ public class DeploymentTest extends ActivitiTestCase {
 
     // Resources should be ordered by name
     String deploymentId = deploymentIds.get(0);
-    List<String> resources = processEngineBuilder.getProcessService().findDeploymentResources(deploymentId);
+    List<String> resources = deployer.getProcessService().findDeploymentResources(deploymentId);
     assertEquals(2, resources.size());
     assertEquals("idr_process01.bpmn20.xml", resources.get(0));
     assertEquals("idr_process02.bpmn20.xml", resources.get(1));
 
     // Validate the content of the deployment resources
-    InputStream resourceIs = processEngineBuilder.getProcessService().getDeploymentResourceContent(deploymentId, resources.get(0));
+    InputStream resourceIs = deployer.getProcessService().getDeploymentResourceContent(deploymentId, resources.get(0));
     assertEquals(MINIMAL_PROC_DEF.replace(TO_REPLACE, "IDR1"), new String(IoUtil.readInputStream(resourceIs, null)));
     resourceIs.close();
-    resourceIs = processEngineBuilder.getProcessService().getDeploymentResourceContent(deploymentId, resources.get(1));
+    resourceIs = deployer.getProcessService().getDeploymentResourceContent(deploymentId, resources.get(1));
     assertEquals(MINIMAL_PROC_DEF.replace(TO_REPLACE, "IDR2"), new String(IoUtil.readInputStream(resourceIs, null)));
     resourceIs.close();
 

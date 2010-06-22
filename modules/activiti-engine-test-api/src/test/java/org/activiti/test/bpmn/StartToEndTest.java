@@ -16,7 +16,10 @@ import static org.junit.Assert.assertTrue;
 
 import org.activiti.ProcessInstance;
 import org.activiti.test.ActivitiTestCase;
+import org.activiti.test.LogInitializer;
 import org.activiti.test.ProcessDeclared;
+import org.activiti.test.ProcessDeployer;
+import org.junit.Rule;
 import org.junit.Test;
 
 /**
@@ -24,11 +27,16 @@ import org.junit.Test;
  */
 public class StartToEndTest extends ActivitiTestCase {
 
+  @Rule
+  public LogInitializer logSetup = new LogInitializer();
+  @Rule
+  public ProcessDeployer deployer = new ProcessDeployer();
+
   @Test
   @ProcessDeclared
   public void testStartToEnd() {
-    ProcessInstance processInstance = processEngineBuilder.getProcessService().startProcessInstanceByKey("startToEnd");
-    processEngineBuilder.expectProcessEnds(processInstance.getId());
+    ProcessInstance processInstance = deployer.getProcessService().startProcessInstanceByKey("startToEnd");
+    deployer.expectProcessEnds(processInstance.getId());
     assertTrue(processInstance.isEnded());
   }
 

@@ -12,6 +12,9 @@
  */
 package org.activiti.test;
 
+import static org.hamcrest.CoreMatchers.nullValue;
+import static org.junit.Assert.assertThat;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -25,7 +28,6 @@ import org.activiti.ManagementService;
 import org.activiti.ProcessEngine;
 import org.activiti.ProcessService;
 import org.activiti.TaskService;
-import org.junit.Assert;
 import org.junit.rules.TestWatchman;
 import org.junit.runners.model.FrameworkMethod;
 
@@ -101,14 +103,20 @@ public class ProcessEngineBuilder extends TestWatchman {
 
   public void expectProcessEnds(final String processInstanceId) {
     Runnable verifier = new Runnable() {
+
       public void run() {
-        Assert.assertNull("An active execution with id " + processInstanceId + " was found.", processEngine.getProcessService().findProcessInstanceById(
-                processInstanceId));
+        assertThat("An active execution with id " + processInstanceId + " was found.", processEngine.getProcessService().findProcessInstanceById(
+                processInstanceId), nullValue());
       }
     };
     verifiers.add(verifier);
   }
 
+  /**
+   * asserts that the database is clean after a test. Normally called
+   * automatically, but exposed as a public method in case it is needed as a
+   * manual check.
+   */
   public void assertDatabaseIsClean() {
     Map<String, Long> tableCounts = processEngine.getManagementService().getTableCount();
     StringBuilder outputMessage = new StringBuilder();

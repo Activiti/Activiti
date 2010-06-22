@@ -18,7 +18,9 @@ import static org.junit.Assert.assertNotNull;
 import org.activiti.ActivitiException;
 import org.activiti.ProcessInstanceQuery;
 import org.activiti.test.ActivitiTestCase;
+import org.activiti.test.LogInitializer;
 import org.activiti.test.ProcessDeclared;
+import org.activiti.test.ProcessDeployer;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -32,6 +34,12 @@ public class ProcessInstanceQueryTest extends ActivitiTestCase {
   @Rule
   public ExpectedException exception = ExpectedException.none();
 
+  @Rule
+  public LogInitializer logSetup = new LogInitializer();
+
+  @Rule
+  public ProcessDeployer deployer = new ProcessDeployer();
+
   private static String PROCESS_KEY = "oneTaskProcess";
 
   private static String PROCESS_KEY_2 = "oneTaskProcess2";
@@ -39,15 +47,15 @@ public class ProcessInstanceQueryTest extends ActivitiTestCase {
   @Before
   public void start() {
     for (int i = 0; i < 4; i++) {
-      processEngineBuilder.getProcessService().startProcessInstanceByKey(PROCESS_KEY);
+      deployer.getProcessService().startProcessInstanceByKey(PROCESS_KEY);
     }
-    processEngineBuilder.getProcessService().startProcessInstanceByKey(PROCESS_KEY_2);
+    deployer.getProcessService().startProcessInstanceByKey(PROCESS_KEY_2);
   }
 
   @Test
   @ProcessDeclared(resources = { "oneTaskProcess.bpmn20.xml", "oneTaskProcess2.bpmn20.xml" })
   public void testQueryNoSpecifics() {
-    ProcessInstanceQuery query = processEngineBuilder.getProcessService().createProcessInstanceQuery();
+    ProcessInstanceQuery query = deployer.getProcessService().createProcessInstanceQuery();
     assertEquals(5, query.count());
     assertEquals(5, query.list().size());
     exception.expect(ActivitiException.class);
@@ -57,7 +65,7 @@ public class ProcessInstanceQueryTest extends ActivitiTestCase {
   @Test
   @ProcessDeclared(resources = { "oneTaskProcess.bpmn20.xml", "oneTaskProcess2.bpmn20.xml" })
   public void testQueryByProcessDefinitionKeyUniqueResult() {
-    ProcessInstanceQuery query = processEngineBuilder.getProcessService().createProcessInstanceQuery().processDefinitionKey(PROCESS_KEY);
+    ProcessInstanceQuery query = deployer.getProcessService().createProcessInstanceQuery().processDefinitionKey(PROCESS_KEY);
     assertEquals(4, query.count());
     assertEquals(4, query.list().size());
     exception.expect(ActivitiException.class);
@@ -67,7 +75,7 @@ public class ProcessInstanceQueryTest extends ActivitiTestCase {
   @Test
   @ProcessDeclared(resources = { "oneTaskProcess.bpmn20.xml", "oneTaskProcess2.bpmn20.xml" })
   public void testQueryByProcessDefinitionKeySunnyDay() {
-    ProcessInstanceQuery query = processEngineBuilder.getProcessService().createProcessInstanceQuery().processDefinitionKey(PROCESS_KEY_2);
+    ProcessInstanceQuery query = deployer.getProcessService().createProcessInstanceQuery().processDefinitionKey(PROCESS_KEY_2);
     assertEquals(1, query.count());
     assertEquals(1, query.list().size());
     assertNotNull(query.singleResult());

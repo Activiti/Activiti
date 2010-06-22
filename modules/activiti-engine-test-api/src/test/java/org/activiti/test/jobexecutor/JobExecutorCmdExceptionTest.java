@@ -11,8 +11,11 @@ import org.activiti.impl.interceptor.CommandExecutor;
 import org.activiti.impl.job.MessageImpl;
 import org.activiti.test.ActivitiTestCase;
 import org.activiti.test.JobExecutorPoller;
+import org.activiti.test.LogInitializer;
+import org.activiti.test.ProcessDeployer;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 
 /**
@@ -25,9 +28,15 @@ public class JobExecutorCmdExceptionTest extends ActivitiTestCase {
 
   private ProcessEngineImpl processEngineImpl;
 
+  @Rule
+  public LogInitializer logSetup = new LogInitializer();
+
+  @Rule
+  public ProcessDeployer deployer = new ProcessDeployer();
+
   @Before
   public void setUp() throws Exception {
-    processEngineImpl = (ProcessEngineImpl) processEngineBuilder.getProcessEngine();
+    processEngineImpl = (ProcessEngineImpl) deployer.getProcessEngine();
     processEngineImpl.getProcessEngineConfiguration().getJobCommands().addJobHandler(tweetExceptionHandler);
   }
 
@@ -48,7 +57,7 @@ public class JobExecutorCmdExceptionTest extends ActivitiTestCase {
       }
     });
 
-    new JobExecutorPoller(processEngineBuilder.getProcessEngine()).waitForJobExecutorToProcessAllJobs(8000, 250);
+    new JobExecutorPoller(deployer.getProcessEngine()).waitForJobExecutorToProcessAllJobs(8000, 250);
   }
 
   @Test
@@ -65,7 +74,7 @@ public class JobExecutorCmdExceptionTest extends ActivitiTestCase {
       }
     });
 
-    new JobExecutorPoller(processEngineBuilder.getProcessEngine()).waitForJobExecutorToProcessAllJobs(8000, 250);
+    new JobExecutorPoller(deployer.getProcessEngine()).waitForJobExecutorToProcessAllJobs(8000, 250);
 
     // TODO check if there is a failed job in the DLQ
 

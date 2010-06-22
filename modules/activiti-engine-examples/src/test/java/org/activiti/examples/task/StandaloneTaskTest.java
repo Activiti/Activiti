@@ -20,8 +20,11 @@ import java.util.List;
 
 import org.activiti.Task;
 import org.activiti.test.ActivitiTestCase;
+import org.activiti.test.LogInitializer;
+import org.activiti.test.ProcessDeployer;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 
 /**
@@ -29,54 +32,59 @@ import org.junit.Test;
  */
 public class StandaloneTaskTest extends ActivitiTestCase {
 
+  @Rule
+  public LogInitializer logSetup = new LogInitializer();
+  @Rule
+  public ProcessDeployer deployer = new ProcessDeployer();
+
   @Before
   public void setUp() throws Exception {
-    processEngineBuilder.getIdentityService().saveUser(processEngineBuilder.getIdentityService().newUser("kermit"));
-    processEngineBuilder.getIdentityService().saveUser(processEngineBuilder.getIdentityService().newUser("gonzo"));
+    deployer.getIdentityService().saveUser(deployer.getIdentityService().newUser("kermit"));
+    deployer.getIdentityService().saveUser(deployer.getIdentityService().newUser("gonzo"));
   }
 
   @After
   public void tearDown() throws Exception {
-    processEngineBuilder.getIdentityService().deleteUser("kermit");
-    processEngineBuilder.getIdentityService().deleteUser("gonzo");
+    deployer.getIdentityService().deleteUser("kermit");
+    deployer.getIdentityService().deleteUser("gonzo");
   }
 
   @Test
   public void testCreateToComplete() {
 
     // Create and save task
-    Task task = processEngineBuilder.getTaskService().newTask();
+    Task task = deployer.getTaskService().newTask();
     task.setName("testTask");
-    processEngineBuilder.getTaskService().saveTask(task);
+    deployer.getTaskService().saveTask(task);
     String taskId = task.getId();
 
     // Add user as candidate user
-    processEngineBuilder.getTaskService().addCandidateUser(taskId, "kermit");
-    processEngineBuilder.getTaskService().addCandidateUser(taskId, "gonzo");
+    deployer.getTaskService().addCandidateUser(taskId, "kermit");
+    deployer.getTaskService().addCandidateUser(taskId, "gonzo");
 
     // Retrieve task list for jbarrez
-    List<Task> tasks = processEngineBuilder.getTaskService().findUnassignedTasks("kermit");
+    List<Task> tasks = deployer.getTaskService().findUnassignedTasks("kermit");
     assertEquals(1, tasks.size());
     assertEquals("testTask", tasks.get(0).getName());
 
     // Retrieve task list for tbaeyens
-    tasks = processEngineBuilder.getTaskService().findUnassignedTasks("gonzo");
+    tasks = deployer.getTaskService().findUnassignedTasks("gonzo");
     assertEquals(1, tasks.size());
     assertEquals("testTask", tasks.get(0).getName());
 
     // Claim task
-    processEngineBuilder.getTaskService().claim(taskId, "kermit");
+    deployer.getTaskService().claim(taskId, "kermit");
 
     // Tasks shouldn't appear in the candidate tasklists anymore
-    assertTrue(processEngineBuilder.getTaskService().findUnassignedTasks("kermit").isEmpty());
-    assertTrue(processEngineBuilder.getTaskService().findUnassignedTasks("gonzo").isEmpty());
+    assertTrue(deployer.getTaskService().findUnassignedTasks("kermit").isEmpty());
+    assertTrue(deployer.getTaskService().findUnassignedTasks("gonzo").isEmpty());
 
     // Complete task
-    processEngineBuilder.getTaskService().complete(taskId);
+    deployer.getTaskService().complete(taskId);
 
     // Task should be removed from runtime data
     // TODO: check for historic data when implemented!
-    assertNull(processEngineBuilder.getTaskService().findTask(taskId));
+    assertNull(deployer.getTaskService().findTask(taskId));
   }
 
 }

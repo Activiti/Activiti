@@ -20,6 +20,9 @@ import java.util.Map;
 import org.activiti.ManagementService;
 import org.activiti.TableMetaData;
 import org.activiti.test.ActivitiTestCase;
+import org.activiti.test.LogInitializer;
+import org.activiti.test.ProcessDeployer;
+import org.junit.Rule;
 import org.junit.Test;
 
 /**
@@ -30,9 +33,14 @@ import org.junit.Test;
  */
 public class ManagementServiceTest extends ActivitiTestCase {
 
+  @Rule
+  public LogInitializer logSetup = new LogInitializer();
+  @Rule
+  public ProcessDeployer deployer = new ProcessDeployer();
+
   @Test
   public void testTableCount() {
-    Map<String, Long> tableCount = processEngineBuilder.getManagementService().getTableCount();
+    Map<String, Long> tableCount = deployer.getManagementService().getTableCount();
 
     assertEquals(new Long(2), tableCount.get("ACT_PROPERTY"));
     assertEquals(new Long(0), tableCount.get("ACT_BYTEARRAY"));
@@ -49,7 +57,7 @@ public class ManagementServiceTest extends ActivitiTestCase {
 
   @Test
   public void testGetTableMetaData() {
-    TableMetaData tableMetaData = processEngineBuilder.getManagementService().getTableMetaData("ACT_TASK");
+    TableMetaData tableMetaData = deployer.getManagementService().getTableMetaData("ACT_TASK");
     assertEquals(tableMetaData.getColumnNames().size(), tableMetaData.getColumnTypes().size());
     assertEquals(13, tableMetaData.getColumnNames().size());
 

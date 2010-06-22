@@ -21,7 +21,9 @@ import org.activiti.ActivitiException;
 import org.activiti.ProcessDefinition;
 import org.activiti.ProcessInstance;
 import org.activiti.test.ActivitiTestCase;
+import org.activiti.test.LogInitializer;
 import org.activiti.test.ProcessDeclared;
+import org.activiti.test.ProcessDeployer;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -33,18 +35,22 @@ public class ProcessServiceTest extends ActivitiTestCase {
 
   @Rule
   public ExpectedException exception = ExpectedException.none();
+  @Rule
+  public LogInitializer logSetup = new LogInitializer();
+  @Rule
+  public ProcessDeployer deployer = new ProcessDeployer();
 
   @Test
   @ProcessDeclared(resources = {"oneTaskProcess.bpmn20.xml"})
   public void testStartProcessInstanceById() {
-    List<ProcessDefinition> processDefinitions = processEngineBuilder.getProcessService().findProcessDefinitions();
+    List<ProcessDefinition> processDefinitions = deployer.getProcessService().findProcessDefinitions();
     assertEquals(1, processDefinitions.size());
 
     ProcessDefinition processDefinition = processDefinitions.get(0);
     assertEquals("oneTaskProcess", processDefinition.getKey());
     assertNotNull(processDefinition.getId());
 
-    ProcessInstance processInstance = processEngineBuilder.getProcessService().startProcessInstanceById(processDefinition.getId());
+    ProcessInstance processInstance = deployer.getProcessService().startProcessInstanceById(processDefinition.getId());
     assertNotNull(processInstance);
     assertEquals(1, processInstance.getActivityNames().size());
     assertEquals("theTask", processInstance.getActivityNames().get(0));
@@ -77,10 +83,10 @@ public class ProcessServiceTest extends ActivitiTestCase {
   @Test
   @ProcessDeclared(resources={"oneTaskProcess.bpmn20.xml"})
   public void testFindProcessDefinitionById() {
-    List<ProcessDefinition> definitions = processEngineBuilder.getProcessService().findProcessDefinitions();
+    List<ProcessDefinition> definitions = deployer.getProcessService().findProcessDefinitions();
     assertEquals(1, definitions.size());
 
-    ProcessDefinition processDefinition = processEngineBuilder.getProcessService().findProcessDefinitionById(definitions.get(0).getId());
+    ProcessDefinition processDefinition = deployer.getProcessService().findProcessDefinitionById(definitions.get(0).getId());
     assertNotNull(processDefinition);
     assertEquals("oneTaskProcess", processDefinition.getKey());
     assertEquals("The One Task Process", processDefinition.getName());
@@ -90,6 +96,6 @@ public class ProcessServiceTest extends ActivitiTestCase {
   public void testFindProcessDefinitionByNullId() {
     exception.expect(ActivitiException.class);
     exception.expectMessage("Couldn't find process definiton");
-    processEngineBuilder.getProcessService().findProcessDefinitionById(null);
+    deployer.getProcessService().findProcessDefinitionById(null);
   }
 }

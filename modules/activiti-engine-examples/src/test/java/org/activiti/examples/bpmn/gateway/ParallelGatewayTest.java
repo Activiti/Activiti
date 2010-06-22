@@ -21,8 +21,11 @@ import org.activiti.ProcessInstance;
 import org.activiti.Task;
 import org.activiti.TaskQuery;
 import org.activiti.test.ActivitiTestCase;
+import org.activiti.test.LogInitializer;
 import org.activiti.test.ProcessDeclared;
+import org.activiti.test.ProcessDeployer;
 import org.junit.Ignore;
+import org.junit.Rule;
 import org.junit.Test;
 
 /**
@@ -30,30 +33,35 @@ import org.junit.Test;
  */
 public class ParallelGatewayTest extends ActivitiTestCase {
 
+  @Rule
+  public LogInitializer logSetup = new LogInitializer();
+  @Rule
+  public ProcessDeployer deployer = new ProcessDeployer();
+
   @Test
   @ProcessDeclared
   @Ignore
   public void testUnbalancedForkJoin() {
 
-    ProcessInstance processInstance = processEngineBuilder.getProcessService().startProcessInstanceByKey("UnbalancedForkJoin");
+    ProcessInstance processInstance = deployer.getProcessService().startProcessInstanceByKey("UnbalancedForkJoin");
 
     // Completing the remaining tasks should trigger the second join and end the
     // process
-    processEngineBuilder.expectProcessEnds(processInstance.getId());
+    deployer.expectProcessEnds(processInstance.getId());
 
-    TaskQuery query = processEngineBuilder.getTaskService().createTaskQuery().processInstance(processInstance.getId()).orderAsc(TaskQuery.PROPERTY_NAME);
+    TaskQuery query = deployer.getTaskService().createTaskQuery().processInstance(processInstance.getId()).orderAsc(TaskQuery.PROPERTY_NAME);
     List<Task> tasks = query.list();
     assertEquals(3, tasks.size());
 
     // Completing the first task should not trigger the join
-    processEngineBuilder.getTaskService().complete(tasks.get(0).getId());
+    deployer.getTaskService().complete(tasks.get(0).getId());
     assertEquals(2, query.count());
 
     // Completing the second task should trigger the join
-    processEngineBuilder.getTaskService().complete(tasks.get(1).getId());
+    deployer.getTaskService().complete(tasks.get(1).getId());
     assertEquals(1, query.count());
 
-    processEngineBuilder.getTaskService().complete(tasks.get(2).getId());
+    deployer.getTaskService().complete(tasks.get(2).getId());
   }
 
 }

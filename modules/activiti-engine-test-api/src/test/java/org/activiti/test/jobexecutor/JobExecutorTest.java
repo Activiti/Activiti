@@ -36,7 +36,7 @@ public class JobExecutorTest extends JobExecutorTestCase {
 
   @Test
   public void testBasicJobExecutorOperation() throws Exception {
-    ProcessEngineImpl processEngineImpl = (ProcessEngineImpl)processEngineBuilder.getProcessEngine();
+    ProcessEngineImpl processEngineImpl = (ProcessEngineImpl)deployer.getProcessEngine();
     CommandExecutor commandExecutor = processEngineImpl.getProcessEngineConfiguration().getCommandExecutor();
     commandExecutor.execute(new Command<Void>() {
       public Void execute(CommandContext commandContext) {
@@ -53,7 +53,7 @@ public class JobExecutorTest extends JobExecutorTestCase {
       }
     });
     
-    new JobExecutorPoller(processEngineBuilder.getProcessEngine()).waitForJobExecutorToProcessAllJobs(8000, 200);
+    new JobExecutorPoller(deployer.getProcessEngine()).waitForJobExecutorToProcessAllJobs(8000, 200);
     
     Set<String> messages = new HashSet<String>(tweetHandler.getMessages());
     Set<String> expectedMessages = new HashSet<String>();

@@ -19,6 +19,9 @@ import org.activiti.ProcessService;
 import org.activiti.json.JsonListConverter;
 import org.activiti.json.JsonProcessDefinitionConverter;
 import org.activiti.test.ActivitiTestCase;
+import org.activiti.test.LogInitializer;
+import org.activiti.test.ProcessDeployer;
+import org.junit.Rule;
 import org.junit.Test;
 
 
@@ -26,6 +29,11 @@ import org.junit.Test;
  * @author Tom Baeyens
  */
 public class JsonTest extends ActivitiTestCase {
+
+  @Rule
+  public LogInitializer logSetup = new LogInitializer();
+  @Rule
+  public ProcessDeployer deployer = new ProcessDeployer();
 
   @Test
   public void testJson() {
@@ -51,7 +59,7 @@ public class JsonTest extends ActivitiTestCase {
     "  </process>" +
     "</definitions>"));
           
-    ProcessService processService = processEngineBuilder.getProcessEngine().getProcessService();
+    ProcessService processService = deployer.getProcessEngine().getProcessService();
     List<ProcessDefinition> processDefinitions = processService.findProcessDefinitions();
     
     JsonListConverter<ProcessDefinition> jsonListConverter = new JsonListConverter<ProcessDefinition>(new JsonProcessDefinitionConverter());

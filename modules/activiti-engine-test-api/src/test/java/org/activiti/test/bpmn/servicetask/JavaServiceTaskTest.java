@@ -15,7 +15,10 @@ package org.activiti.test.bpmn.servicetask;
 import static org.junit.Assert.assertEquals;
 
 import org.activiti.test.ActivitiTestCase;
+import org.activiti.test.LogInitializer;
 import org.activiti.test.ProcessDeclared;
+import org.activiti.test.ProcessDeployer;
+import org.junit.Rule;
 import org.junit.Test;
 
 /**
@@ -23,10 +26,15 @@ import org.junit.Test;
  */
 public class JavaServiceTaskTest extends ActivitiTestCase {
 
+  @Rule
+  public LogInitializer logSetup = new LogInitializer();
+  @Rule
+  public ProcessDeployer deployer = new ProcessDeployer();
+
   @Test
   @ProcessDeclared
   public void testJavaServiceNoParamsOrResult() {
-    processEngineBuilder.getProcessService().startProcessInstanceByKey("javaServiceNoParamsOrResult");
+    deployer.getProcessService().startProcessInstanceByKey("javaServiceNoParamsOrResult");
     assertEquals(1, Counter.COUNTER);
   }
 

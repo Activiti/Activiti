@@ -18,8 +18,11 @@ import org.activiti.impl.ProcessEngineImpl;
 import org.activiti.impl.job.MessageImpl;
 import org.activiti.impl.job.TimerImpl;
 import org.activiti.test.ActivitiTestCase;
+import org.activiti.test.LogInitializer;
+import org.activiti.test.ProcessDeployer;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Rule;
 
 /**
  * @author Tom Baeyens
@@ -27,16 +30,20 @@ import org.junit.Before;
 public class JobExecutorTestCase extends ActivitiTestCase {
 
   protected TweetHandler tweetHandler = new TweetHandler();
+  @Rule
+  public LogInitializer logSetup = new LogInitializer();
+  @Rule
+  public ProcessDeployer deployer = new ProcessDeployer();
 
   @Before
   public void setUp() throws Exception {
-    ProcessEngineImpl processEngineImpl = (ProcessEngineImpl) processEngineBuilder.getProcessEngine();
+    ProcessEngineImpl processEngineImpl = (ProcessEngineImpl) deployer.getProcessEngine();
     processEngineImpl.getProcessEngineConfiguration().getJobCommands().addJobHandler(tweetHandler);
   }
 
   @After
   public void tearDown() throws Exception {
-    ProcessEngineImpl processEngineImpl = (ProcessEngineImpl) processEngineBuilder.getProcessEngine();
+    ProcessEngineImpl processEngineImpl = (ProcessEngineImpl) deployer.getProcessEngine();
     processEngineImpl.getProcessEngineConfiguration().getJobCommands().removeJobHandler(tweetHandler);
   }
 
