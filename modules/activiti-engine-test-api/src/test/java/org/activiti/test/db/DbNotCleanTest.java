@@ -16,22 +16,27 @@ import static org.junit.Assert.assertNotNull;
 
 import org.activiti.ActivitiException;
 import org.activiti.Deployment;
-import org.activiti.test.ActivitiTestCase;
+import org.activiti.test.ProcessEngineBuilder;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
 /**
  * @author Joram Barrez
+ * @author Dave Syer
  */
-public class DbNotCleanTest extends ActivitiTestCase {
+public class DbNotCleanTest {
+
+  @Rule
+  public ProcessEngineBuilder processEngineBuilder = new ProcessEngineBuilder();
 
   @Rule
   public ExpectedException exception = ExpectedException.none();
 
   @Test
   public void testDbNotCleanAfterTest() {
-    Deployment deployment = processEngine.getProcessService().createDeployment().addString("test.bpmn20.xml",
+
+    Deployment deployment = processEngineBuilder.getProcessEngine().getProcessService().createDeployment().addString("test.bpmn20.xml",
             "<definitions xmlns='http://www.omg.org/spec/BPMN/20100524/MODEL' " + "targetNamespace='http://www.activiti.org/bpmn2.0' />").deploy();
     assertNotNull(deployment);
 
@@ -40,11 +45,11 @@ public class DbNotCleanTest extends ActivitiTestCase {
 
     try {
       // Manually call the check on db cleaning check
-      checkDbIsClean();
+      processEngineBuilder.checkDbIsClean();
     } finally {
-      // Registering the deployment will clean it up in the tearDown
-      registerDeployment(deployment.getId());
+      processEngineBuilder.getProcessEngine().getProcessService().deleteDeploymentCascade(deployment.getId());
     }
+
   }
 
 }

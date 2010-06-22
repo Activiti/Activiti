@@ -14,6 +14,7 @@ package org.activiti.test.bpmn.parse;
 
 import org.activiti.ActivitiException;
 import org.activiti.test.ActivitiTestCase;
+import org.activiti.test.ProcessEngineBuilder;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -24,17 +25,20 @@ import org.junit.rules.ExpectedException;
  * 
  * @author Joram Barrez
  */
-public class InvalidProcessTest extends ActivitiTestCase {
+public class InvalidProcessTest {
 
   @Rule
   public ExpectedException exception = ExpectedException.none();
   
+  @Rule
+  public ProcessEngineBuilder processEngineBuilder = new ProcessEngineBuilder();
+
   @Test
   public void testInvalidProcessDefinition() {
     exception.expect(ActivitiException.class);
     exception.expectMessage("Attribute 'invalidAttribute' is not allowed to appear in element 'process'");
     String resource = ActivitiTestCase.getProcessDefinitionResource(getClass(), getClass().getSimpleName()+".testInvalidProcessDefinition.bpmn20.xml");
-    processEngine.getProcessService().createDeployment().name(resource).addClasspathResource(resource).deploy();
+    processEngineBuilder.getProcessService().createDeployment().name(resource).addClasspathResource(resource).deploy();
   }
 
 }

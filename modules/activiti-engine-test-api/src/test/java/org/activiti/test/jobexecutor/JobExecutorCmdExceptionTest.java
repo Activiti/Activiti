@@ -22,21 +22,21 @@ public class JobExecutorCmdExceptionTest extends ActivitiTestCase {
 
   protected TweetExceptionHandler tweetExceptionHandler = new TweetExceptionHandler();
 
+  private ProcessEngineImpl processEngineImpl;
+
   @Before
   public void setUp() throws Exception {
-    ProcessEngineImpl processEngineImpl = (ProcessEngineImpl) processEngine;
+    processEngineImpl = (ProcessEngineImpl) processEngineBuilder.getProcessEngine();
     processEngineImpl.getProcessEngineConfiguration().getJobCommands().addJobHandler(tweetExceptionHandler);
   }
 
   @After
   public void tearDown() throws Exception {
-    ProcessEngineImpl processEngineImpl = (ProcessEngineImpl) processEngine;
     processEngineImpl.getProcessEngineConfiguration().getJobCommands().removeJobHandler(tweetExceptionHandler);
   }
 
   @Test
   public void testJobCommandsWith2Exceptions() {
-    ProcessEngineImpl processEngineImpl = (ProcessEngineImpl) processEngine;
     CommandExecutor commandExecutor = processEngineImpl.getProcessEngineConfiguration().getCommandExecutor();
     commandExecutor.execute(new Command<String>() {
 
@@ -54,7 +54,6 @@ public class JobExecutorCmdExceptionTest extends ActivitiTestCase {
   public void testJobCommandsWith3Exceptions() {
     tweetExceptionHandler.setExceptionsRemaining(3);
 
-    ProcessEngineImpl processEngineImpl = (ProcessEngineImpl) processEngine;
     CommandExecutor commandExecutor = processEngineImpl.getProcessEngineConfiguration().getCommandExecutor();
     String jobId = commandExecutor.execute(new Command<String>() {
 

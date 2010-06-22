@@ -23,19 +23,28 @@ import java.util.Set;
 import org.activiti.IdentityService;
 import org.activiti.identity.Group;
 import org.activiti.identity.User;
-import org.activiti.test.ActivitiTestCase;
+import org.activiti.test.ProcessEngineBuilder;
+import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
-
 
 /**
  * @author Tom Baeyens
  */
-public class IdentityTest extends ActivitiTestCase {
+public class IdentityTest {
+
+  private IdentityService identityService;
+
+  @Rule
+  public ProcessEngineBuilder processEngineBuilder = new ProcessEngineBuilder();
+
+  @Before
+  public void init() {
+    identityService = processEngineBuilder.getProcessEngine().getIdentityService();
+  }
 
   @Test
   public void testAuthentication() {
-    IdentityService identityService = processEngine.getIdentityService();
-    
     User user = identityService.newUser("johndoe");
     user.setPassword("xxx");
     identityService.saveUser(user);
@@ -48,8 +57,6 @@ public class IdentityTest extends ActivitiTestCase {
 
   @Test
   public void testFindGroupsByUserAndType() {
-    IdentityService identityService = processEngine.getIdentityService();
-    
     Group sales = identityService.newGroup("sales");
     sales.setType("hierarchy");
     identityService.saveGroup(sales);
@@ -57,15 +64,15 @@ public class IdentityTest extends ActivitiTestCase {
     Group development = identityService.newGroup("development");
     development.setType("hierarchy");
     identityService.saveGroup(development);
-    
+
     Group admin = identityService.newGroup("admin");
     admin.setType("security-role");
     identityService.saveGroup(admin);
-    
+
     Group user = identityService.newGroup("user");
     user.setType("security-role");
     identityService.saveGroup(user);
-    
+
     User johndoe = identityService.newUser("johndoe");
     identityService.saveUser(johndoe);
 
@@ -80,14 +87,14 @@ public class IdentityTest extends ActivitiTestCase {
     identityService.createMembership("johndoe", "admin");
 
     identityService.createMembership("joesmoe", "user");
-    
+
     List<Group> groups = identityService.findGroupsByUserAndType("johndoe", "security-role");
     Set<String> groupIds = getGroupIds(groups);
     Set<String> expectedGroupIds = new HashSet<String>();
     expectedGroupIds.add("user");
     expectedGroupIds.add("admin");
     assertEquals(expectedGroupIds, groupIds);
-    
+
     groups = identityService.findGroupsByUserAndType("joesmoe", "security-role");
     groupIds = getGroupIds(groups);
     expectedGroupIds = new HashSet<String>();
@@ -108,8 +115,6 @@ public class IdentityTest extends ActivitiTestCase {
 
   @Test
   public void testUser() {
-    IdentityService identityService = processEngine.getIdentityService();
-    
     User user = identityService.newUser("johndoe");
     user.setFirstName("John");
     user.setLastName("Doe");
@@ -121,14 +126,12 @@ public class IdentityTest extends ActivitiTestCase {
     assertEquals("John", user.getFirstName());
     assertEquals("Doe", user.getLastName());
     assertEquals("johndoe@alfresco.com", user.getEmail());
-    
+
     identityService.deleteUser("johndoe");
   }
 
   @Test
   public void testGroup() {
-    IdentityService identityService = processEngine.getIdentityService();
-    
     Group group = identityService.newGroup("sales");
     group.setName("Sales division");
     identityService.saveGroup(group);
@@ -136,20 +139,18 @@ public class IdentityTest extends ActivitiTestCase {
     group = identityService.findGroup("sales");
     assertEquals("sales", group.getId());
     assertEquals("Sales division", group.getName());
-    
+
     identityService.deleteGroup("sales");
   }
 
   @Test
   public void testMembership() {
-    IdentityService identityService = processEngine.getIdentityService();
-    
     Group sales = identityService.newGroup("sales");
     identityService.saveGroup(sales);
 
     Group development = identityService.newGroup("development");
     identityService.saveGroup(development);
-    
+
     User johndoe = identityService.newUser("johndoe");
     identityService.saveUser(johndoe);
 
@@ -182,7 +183,7 @@ public class IdentityTest extends ActivitiTestCase {
 
     identityService.deleteGroup("sales");
     identityService.deleteGroup("development");
-    
+
     identityService.deleteUser("jackblack");
     identityService.deleteUser("joesmoe");
     identityService.deleteUser("johndoe");
@@ -190,7 +191,7 @@ public class IdentityTest extends ActivitiTestCase {
 
   private Object createStringSet(String... strings) {
     Set<String> stringSet = new HashSet<String>();
-    for (String string: strings) {
+    for (String string : strings) {
       stringSet.add(string);
     }
     return stringSet;
@@ -198,14 +199,14 @@ public class IdentityTest extends ActivitiTestCase {
 
   public Set<String> getGroupIds(List<Group> groups) {
     Set<String> groupIds = new HashSet<String>();
-    for (Group group: groups) {
+    for (Group group : groups) {
       groupIds.add(group.getId());
     }
     return groupIds;
   }
   public Set<String> getUserIds(List<User> users) {
     Set<String> userIds = new HashSet<String>();
-    for (User user: users) {
+    for (User user : users) {
       userIds.add(user.getId());
     }
     return userIds;

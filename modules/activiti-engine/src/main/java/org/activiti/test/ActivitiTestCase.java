@@ -22,13 +22,17 @@ import java.util.logging.Logger;
 import org.activiti.ActivitiException;
 import org.activiti.Deployment;
 import org.activiti.DeploymentBuilder;
+import org.activiti.IdentityService;
+import org.activiti.ManagementService;
+import org.activiti.ProcessEngine;
+import org.activiti.ProcessService;
+import org.activiti.TaskService;
 import org.activiti.impl.ProcessEngineImpl;
 import org.activiti.impl.bpmn.BpmnDeployer;
 import org.activiti.impl.interceptor.Command;
 import org.activiti.impl.interceptor.CommandContext;
 import org.activiti.impl.interceptor.CommandExecutor;
 import org.activiti.impl.jobexecutor.JobExecutor;
-import org.junit.After;
 import org.junit.Assert;
 import org.junit.Rule;
 import org.junit.rules.TestWatchman;
@@ -37,20 +41,40 @@ import org.junit.runners.model.FrameworkMethod;
 /**
  * @author Tom Baeyens
  */
-public abstract class ActivitiTestCase extends ProcessEngineTestCase {
+public abstract class ActivitiTestCase {
 
   private static Logger log = Logger.getLogger(ActivitiTestCase.class.getName());
 
+  protected ProcessEngine processEngine;
+  
+  protected ProcessService processService;
+
+  protected IdentityService identityService;
+
+  protected TaskService taskService;
+
+  protected ManagementService managementService;
+  
   @Rule
   public LogInitializer logSetup = new LogInitializer();
 
   @Rule
   public ProcessDeployer undeployer = new ProcessDeployer();
+  
+  @Rule
+  public ProcessEngineBuilder processEngineBuilder = new ProcessEngineBuilder();
 
   public class ProcessDeployer extends TestWatchman {
 
     @Override
     public void starting(FrameworkMethod method) {
+
+      processEngine = processEngineBuilder.getProcessEngine();
+      processService = processEngine.getProcessService();
+      taskService = processEngine.getTaskService();
+      identityService = processEngine.getIdentityService();
+      managementService = processEngine.getManagementService();
+
       ProcessDeclared process = method.getAnnotation(ProcessDeclared.class);
       if (process != null) {
         String[] resources = process.resources();
@@ -61,7 +85,7 @@ public abstract class ActivitiTestCase extends ProcessEngineTestCase {
           log.fine("deploying bpmn process resource: " + resource);
           deployProcessResource(resource);
         } else {
-          DeploymentBuilder builder = processService.createDeployment();
+          DeploymentBuilder builder = processEngine.getProcessService().createDeployment();
           for (String resource : resources) {
             if (resource.startsWith("/")) {
               resource = resource.substring(1);
@@ -73,6 +97,13 @@ public abstract class ActivitiTestCase extends ProcessEngineTestCase {
           Deployment deployment = builder.deploy();
           registerDeployment(deployment.getId());
         }
+      }
+    }
+    
+    @Override
+    public void finished(FrameworkMethod method) {
+      for (String deploymentId : registeredDeploymentIds) {
+        processEngine.getProcessService().deleteDeploymentCascade(deploymentId);
       }
     }
 
@@ -90,13 +121,6 @@ public abstract class ActivitiTestCase extends ProcessEngineTestCase {
   }
 
   protected Set<String> registeredDeploymentIds = new HashSet<String>();
-
-  @After
-  public void finished() {
-    for (String deploymentId : registeredDeploymentIds) {
-      processService.deleteDeploymentCascade(deploymentId);
-    }
-  }
 
   private String deployProcessResource(String resource) {
     Deployment deployment = processEngine.getProcessService().createDeployment().name(resource).addClasspathResource(resource).deploy();
@@ -118,7 +142,7 @@ public abstract class ActivitiTestCase extends ProcessEngineTestCase {
    * such as process instances, tasks, etc will be deleted when the test case
    * has run.
    */
-  protected void registerDeployment(String deploymentId) {
+  private void registerDeployment(String deploymentId) {
     if (deploymentId == null) { // common error
       throw new ActivitiException("Trying to add a deploymentid which is null." + "This is not possible and probably due to not using a resource name "
               + "with a recognized extension.");
@@ -134,13 +158,13 @@ public abstract class ActivitiTestCase extends ProcessEngineTestCase {
    */
   protected void deleteDeploymentsCascade(Collection<String> deploymentIds) {
     for (String id : deploymentIds) {
-      processService.deleteDeploymentCascade(id);
+      processEngine.getProcessService().deleteDeploymentCascade(id);
     }
   }
 
   protected void deleteTasks(Collection<String> taskIds) {
     for (String id : taskIds) {
-      taskService.deleteTask(id);
+      processEngine.getTaskService().deleteTask(id);
     }
   }
 
