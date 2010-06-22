@@ -145,8 +145,8 @@ public class ProcessDeployer extends ProcessEngineBuilder {
   }
 
   private DeploymentBuilder getDeploymentBuilderProxy(final DeploymentBuilder builder) {
-    return (DeploymentBuilder) Proxy.newProxyInstance(getClass().getClassLoader(), new Class< ? >[] { DeploymentBuilder.class }, new DeploymentBuilderInvoker(
-            builder));
+    return (DeploymentBuilder) Proxy.newProxyInstance(Thread.currentThread().getContextClassLoader(), new Class< ? >[] { DeploymentBuilder.class },
+            new DeploymentBuilderInvoker(builder));
   }
 
   /**
