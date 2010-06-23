@@ -15,7 +15,6 @@ package org.activiti.impl.persistence;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
-import java.lang.reflect.Field;
 import java.sql.Connection;
 import java.sql.Statement;
 import java.util.ArrayList;
@@ -26,8 +25,6 @@ import java.util.StringTokenizer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.sql.DataSource;
-
 import org.activiti.ActivitiException;
 import org.activiti.ActivitiWrongDbException;
 import org.activiti.ProcessEngine;
@@ -35,11 +32,12 @@ import org.activiti.impl.db.IdGenerator;
 import org.activiti.impl.interceptor.CommandContext;
 import org.activiti.impl.util.IoUtil;
 import org.apache.ibatis.datasource.pooled.PooledDataSource;
-import org.apache.ibatis.datasource.unpooled.UnpooledDataSource;
+import org.apache.ibatis.mapping.Environment;
 import org.apache.ibatis.session.ExecutorType;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.session.SqlSessionFactoryBuilder;
+import org.apache.ibatis.transaction.jdbc.JdbcTransactionFactory;
 
 
 /**
@@ -170,16 +168,16 @@ public class IbatisPersistenceSessionFactory implements PersistenceSessionFactor
       
       ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
       InputStream inputStream = classLoader.getResourceAsStream("org/activiti/db/ibatis/activiti.ibatis.mem.conf.xml"); 
-      Reader reader = new InputStreamReader(inputStream);
-      sqlSessionFactory = new SqlSessionFactoryBuilder().build(reader);
-      
+
       // update the jdbc parameters to the configured ones...
       // TODO ask iBatis people for a more elegant way of building the SqlSessionFactory programmatically
-      PooledDataSource originalPooledDatasource = (PooledDataSource) this.sqlSessionFactory.getConfiguration().getEnvironment().getDataSource();
-      DataSource newUnpooledDataSource = new UnpooledDataSource(jdbcDriver,jdbcUrl,jdbcUsername,jdbcPassword);
-      Field dataSourceField = PooledDataSource.class.getDeclaredField("dataSource");
-      dataSourceField.setAccessible(true);
-      dataSourceField.set(originalPooledDatasource, newUnpooledDataSource);
+      Reader reader = new InputStreamReader(inputStream);
+      sqlSessionFactory = new SqlSessionFactoryBuilder().build(reader);
+      PooledDataSource dataSource = new PooledDataSource(classLoader, jdbcDriver, jdbcUrl, jdbcUsername, jdbcPassword);
+      // update the jdbc parameters to the configured ones...
+      dataSource.forceCloseAll(); // Bug in iBatis makes this necessary
+      Environment environment = new Environment("default", new JdbcTransactionFactory(), dataSource);
+      sqlSessionFactory.getConfiguration().setEnvironment(environment);
       
     } catch (Exception e) {
       throw new ActivitiException("Error while building ibatis SqlSessionFactory: "+e.getMessage(), e);
