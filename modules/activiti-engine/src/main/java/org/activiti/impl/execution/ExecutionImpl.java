@@ -21,6 +21,7 @@ import java.util.Map;
 import java.util.logging.Logger;
 
 import org.activiti.ActivitiException;
+import org.activiti.BpmnExecution;
 import org.activiti.impl.calendar.BusinessCalendar;
 import org.activiti.impl.calendar.BusinessCalendarManager;
 import org.activiti.impl.definition.ActivityImpl;
@@ -44,6 +45,7 @@ import org.activiti.pvm.Transition;
 public class ExecutionImpl implements
         Serializable,
         ActivityExecution, 
+        BpmnExecution,
         ListenerExecution, 
         ObjectProcessInstance, 
         ConcurrencyController {

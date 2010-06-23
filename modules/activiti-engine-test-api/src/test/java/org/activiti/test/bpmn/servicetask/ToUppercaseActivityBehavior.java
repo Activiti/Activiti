@@ -12,20 +12,21 @@
  */
 package org.activiti.test.bpmn.servicetask;
 
+import org.activiti.BpmnActivityBehavior;
+import org.activiti.BpmnExecution;
+
 
 /**
  * @author Joram Barrez
  */
-public class Counter {
+public class ToUppercaseActivityBehavior implements BpmnActivityBehavior {
   
-  public static int COUNTER = 0;
+  private static final String VARIABLE_NAME = "input";
   
-  public void increment() {
-    COUNTER++;
-  }
-  
-  public void decrement() {
-    COUNTER--;
+  public void execute(BpmnExecution bpmnExecution) {
+    String var = (String) bpmnExecution.getVariable(VARIABLE_NAME);
+    var = var.toUpperCase();
+    bpmnExecution.setVariable(VARIABLE_NAME, var);
   }
 
 }

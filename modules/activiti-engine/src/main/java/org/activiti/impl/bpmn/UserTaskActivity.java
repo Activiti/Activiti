@@ -31,8 +31,12 @@ public class UserTaskActivity extends TaskActivity {
 
   public void execute(ActivityExecution execution) throws Exception {
     TaskImpl task = TaskImpl.createAndInsert();
-    task.setName(taskDefinition.getName());    
     task.setExecution(execution);
+    
+    if (taskDefinition.getName() != null) {
+      String name = evaluateExpression(taskDefinition.getName(), execution);
+      task.setName(name);    
+    }
     
     if (taskDefinition.getDescription() != null) {
       String description = evaluateExpression(taskDefinition.getDescription(), execution);

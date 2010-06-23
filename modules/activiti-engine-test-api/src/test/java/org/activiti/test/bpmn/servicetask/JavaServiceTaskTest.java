@@ -14,10 +14,13 @@ package org.activiti.test.bpmn.servicetask;
 
 import static org.junit.Assert.assertEquals;
 
+import org.activiti.Execution;
+import org.activiti.ProcessInstance;
+import org.activiti.ProcessService;
 import org.activiti.test.LogInitializer;
 import org.activiti.test.ProcessDeclared;
 import org.activiti.test.ProcessDeployer;
-import org.junit.Ignore;
+import org.activiti.util.CollectionUtil;
 import org.junit.Rule;
 import org.junit.Test;
 
@@ -33,10 +36,12 @@ public class JavaServiceTaskTest {
 
   @Test
   @ProcessDeclared
-  @Ignore
-  public void testJavaServiceNoParamsOrResult() {
-    deployer.getProcessService().startProcessInstanceByKey("javaServiceNoParamsOrResult");
-    assertEquals(1, Counter.COUNTER);
+  public void testJavaServiceDelegation() {
+    ProcessService processService = deployer.getProcessService();
+    ProcessInstance pi = processService.startProcessInstanceByKey("javaServiceDelegation", 
+            CollectionUtil.singletonMap("input", "Activiti BPM Engine"));
+    Execution execution = processService.findExecutionInActivity(pi.getId(), "waitState");
+    assertEquals("ACTIVITI BPM ENGINE", processService.getVariable(execution.getId(), "input"));
   }
 
 }

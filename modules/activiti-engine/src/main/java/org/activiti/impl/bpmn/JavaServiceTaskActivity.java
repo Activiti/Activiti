@@ -12,6 +12,9 @@
  */
 package org.activiti.impl.bpmn;
 
+import org.activiti.ActivitiException;
+import org.activiti.BpmnActivityBehavior;
+import org.activiti.BpmnExecution;
 import org.activiti.impl.util.ReflectUtil;
 import org.activiti.pvm.ActivityExecution;
 
@@ -31,32 +34,28 @@ public class JavaServiceTaskActivity extends TaskActivity {
    */
   protected String className;
   
-  /**
-   * The method that is invoked during execution.
-   */
-  protected String method;
   
   public JavaServiceTaskActivity() {
     
   }
   
-  public JavaServiceTaskActivity(String className, String method) {
+  public JavaServiceTaskActivity(String className) {
     setClassName(className);
-    setMethod(method);
   }
 
   public void execute(ActivityExecution execution) throws Exception {
     Object object = ReflectUtil.instantiate(className);
-    ReflectUtil.invoke(object, method, null);
+    if ( !(object instanceof BpmnActivityBehavior) ) {
+      throw new ActivitiException("Class " + className + " does not implement the "
+              + BpmnActivityBehavior.class.getCanonicalName() + " interface");
+    }
+    BpmnActivityBehavior activityBehavior = (BpmnActivityBehavior) object;
+    activityBehavior.execute((BpmnExecution) execution);
     leave(execution, true);
   }
 
   public void setClassName(String className) {
     this.className = className;
-  }
-
-  public void setMethod(String method) {
-    this.method = method;
   }
 
 }

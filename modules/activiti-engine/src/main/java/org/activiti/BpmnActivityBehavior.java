@@ -10,28 +10,32 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.activiti;
 
 
 
 /**
- * represent a 'path of execution' in a process instance.
+ * <p>
+ * interface to be implemented by Java service delegations.
+ * </p>
  * 
- * Note that a {@link ProcessInstance} also is an execution.
+ * <p>
+ * A java service task in BPMN 2.0 is defined as follows:
+ * 
+ * <pre>&lt;serviceTask javaClass=&quot;org.activiti.MyBpmnActivityBehavior&quot; ... /&gt;</pre>
+ * </p>
+ * 
+ * <p>
+ * The class referenced by the 'javaClass' attribute must implement this interface.
+ * At runtime, when process execution reaches the Java service task, the engine
+ * will delegate to the implementation class and execute the custom logic.
+ * </p>
  * 
  * @author Joram Barrez
  */
-public interface Execution {
+public interface BpmnActivityBehavior {
   
-  /**
-   * the unique identifier of the process instance.
-   */
-  String getId();
-  
-  /**
-   * indicates if the process instance is ended.
-   * @return
-   */
-  boolean isEnded();
+  void execute(BpmnExecution bpmnExecution);
 
 }

@@ -7,16 +7,7 @@
   expressionLanguage="http://www.w3.org/1999/XPath" 
   targetNamespace="http://www.activiti.org/bpmn2.0">
   
-  <interface id="counter" name="org.activiti.test.bpmn.servicetask.Counter">
-    <operation id="counter.increment" name="increment">
-      <inMessageRef >b</inMessageRef> <!-- Sadly, needs to be defined according to XSD, even if we don't need params -->
-    </operation>
-    <operation id="counter.decrement" name="decrement" >
-      <inMessageRef />
-    </operation>
-  </interface>
-  
-  <process id="javaServiceNoParamsOrResult">
+  <process id="javaServiceDelegation">
   
     <startEvent id="theStart" />
     
@@ -24,9 +15,13 @@
     
     <serviceTask id="javaService" 
                  name="Java service invocation" 
-                 operationRef="counter.increment" />
+                 activiti:javaClass="org.activiti.test.bpmn.servicetask.ToUppercaseActivityBehavior" />
     
-    <sequenceFlow id="flow2" sourceRef="javaService" targetRef="theEnd" />
+    <sequenceFlow id="flow2" sourceRef="javaService" targetRef="waitState" />
+    
+    <receiveTask id="waitState" />
+    
+    <sequenceFlow id="flow3" sourceRef="waitState" targetRef="theEnd" />
     
     <endEvent id="theEnd" />
     

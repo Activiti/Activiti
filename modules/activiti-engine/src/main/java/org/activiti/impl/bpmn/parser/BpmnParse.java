@@ -368,25 +368,31 @@ public class BpmnParse extends Parse {
    */
   public void parseServiceTask(Element serviceTaskElement, ScopeElementImpl scopeElement) {
     ActivityImpl activity = parseAndCreateActivityOnScopeElement(serviceTaskElement, scopeElement);
-    String operationRef = serviceTaskElement.attribute("operationRef");
     
-    if (operationRef != null) {
-      Operation operation = getOperation(operationRef);
-      if (operation != null) {
-        
-        BpmnInterface bpmnInterface = operation.getInterface();
-        String className = bpmnInterface.getName();
-        String method = operation.getName();
-        activity.setActivityBehavior(new JavaServiceTaskActivity(className, method));
-        
-      } else {
-        throw new ActivitiException("Invalid operationReference on line " + serviceTaskElement.getLine() 
-                + ": operation '" + operationRef + "' not found");
-      }
-    } else {
-      throw new ActivitiException("Line " + serviceTaskElement.getLine() 
-              + ": The attribute operationRef on a serviceTask is required");
+    String className = serviceTaskElement.attributeNS(BpmnParser.BPMN_EXTENSIONS_NS, "javaClass");
+    if (className != null) {
+      activity.setActivityBehavior(new JavaServiceTaskActivity(className));
     }
+    
+    // OLD implementation with BPMN interfaces/operations/etc
+//    String operationRef = serviceTaskElement.attribute("operationRef");
+//    if (operationRef != null) {
+//      Operation operation = getOperation(operationRef);
+//      if (operation != null) {
+//        
+//        BpmnInterface bpmnInterface = operation.getInterface();
+//        String className = bpmnInterface.getName();
+//        String method = operation.getName();
+//        activity.setActivityBehavior(new JavaServiceTaskActivity(className));
+//        
+//      } else {
+//        throw new ActivitiException("Invalid operationReference on line " + serviceTaskElement.getLine() 
+//                + ": operation '" + operationRef + "' not found");
+//      }
+//    } else {
+//      throw new ActivitiException("Line " + serviceTaskElement.getLine() 
+//              + ": The attribute operationRef on a serviceTask is required");
+//    }
   }
   
   /**
