@@ -186,7 +186,8 @@ public class DbProcessEngineBuilder {
       } else if ("check-version".equals(dbSchemaStrategy)) {
         this.dbSchemaStrategy = DbSchemaStrategy.CHECK_VERSION;
       } else {
-        throw new ActivitiException("unknown db.schema.strategy: '"+dbSchemaStrategy+"': should be 'create-drop' or 'check-version'");
+        throw new ActivitiException("unknown db.schema.strategy: '"+dbSchemaStrategy
+                +"': should be 'create', 'create-drop' or 'check-version'");
       }
     }
 
