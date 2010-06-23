@@ -37,6 +37,8 @@
         <plugins>
           <plugin>
             <artifactId>maven-antrun-plugin</artifactId>
+            <!-- only worked with this version, there might be a bug with antrun see http://jira.codehaus.org/browse/MANTRUN-109--> 
+            <version>1.4</version>
             <executions>
               <execution>
                 <id>database-test-create-schema</id>
@@ -47,11 +49,27 @@
                 <configuration>
                   <tasks>
                     <echo message="CREATING SCHEMA AND UPDATING PROPERTIES ${database} #{database} @{database} " />
-	                  <ant antfile="${basedir}/../../qa/db/build.xml" target="create.db.schema" inheritall="false">
+	                  <ant antfile="${basedir}/../../qa/db/build.xml" target="create.db.schema" inheritAll="false"> 
                       <property name="test_classpath" refid="maven.test.classpath"/>
                       <property name="database" value="${database}"/>
 	                  </ant>
 	                  <!-- TODO overwrite the target/classes/activiti.properties -->
+                  </tasks>
+                </configuration>
+              </execution>
+              <execution>
+                <id>database-test-drop-schema</id>
+                <phase>prepare-package</phase>
+                <goals>
+                  <goal>run</goal>
+                </goals>
+                <configuration>
+                  <tasks>
+                    <echo message="DROPPING SCHEMA ${database} #{database} @{database} " />
+	                  <ant antfile="${basedir}/../../qa/db/build.xml" target="drop.db.schema" inheritAll="false"> 
+                      <property name="test_classpath" refid="maven.test.classpath"/>
+                      <property name="database" value="${database}"/>
+	                  </ant>
                   </tasks>
                 </configuration>
               </execution>
@@ -61,5 +79,4 @@
       </build>
     </profile>
   </profiles>
-
 </project>
