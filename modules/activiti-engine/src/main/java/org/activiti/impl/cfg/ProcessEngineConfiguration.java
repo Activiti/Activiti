@@ -13,6 +13,10 @@
 package org.activiti.impl.cfg;
 
 import org.activiti.DbSchemaStrategy;
+import org.activiti.IdentityService;
+import org.activiti.ManagementService;
+import org.activiti.ProcessService;
+import org.activiti.TaskService;
 import org.activiti.impl.IdentityServiceImpl;
 import org.activiti.impl.ManagementServiceImpl;
 import org.activiti.impl.ProcessEngineImpl;
@@ -24,6 +28,7 @@ import org.activiti.impl.calendar.DurationBusinessCalendar;
 import org.activiti.impl.calendar.MapBusinessCalendarManager;
 import org.activiti.impl.db.IdGenerator;
 import org.activiti.impl.el.ExpressionManager;
+import org.activiti.impl.identity.IdentitySession;
 import org.activiti.impl.interceptor.CommandContextFactory;
 import org.activiti.impl.interceptor.CommandContextInterceptor;
 import org.activiti.impl.interceptor.CommandExecutor;
@@ -34,7 +39,9 @@ import org.activiti.impl.job.TimerExecuteNestedActivityJobHandler;
 import org.activiti.impl.jobexecutor.JobExecutor;
 import org.activiti.impl.msg.JobExecutorMessageSessionFactory;
 import org.activiti.impl.msg.MessageSessionFactory;
+import org.activiti.impl.persistence.IbatisIdentitySessionFactory;
 import org.activiti.impl.persistence.IbatisPersistenceSessionFactory;
+import org.activiti.impl.persistence.PersistenceSession;
 import org.activiti.impl.persistence.PersistenceSessionFactory;
 import org.activiti.impl.repository.DeployerManager;
 import org.activiti.impl.repository.ProcessCache;
@@ -62,6 +69,12 @@ import com.sun.script.juel.JuelScriptEngineFactory;
 public class ProcessEngineConfiguration {
 
   String processEngineName;
+
+  ProcessService processService;
+  IdentityService identityService;
+  TaskService taskService;
+  ManagementService managementService;
+
   DeployerManager deployerManager;
   VariableTypes variableTypes;
   ScriptingEngines scriptingEngines;
@@ -69,17 +82,13 @@ public class ProcessEngineConfiguration {
   boolean jobExecutorAutoActivate;
   IdGenerator idGenerator;
   ProcessCache processCache;
-  CommandContextFactory commandContextFactory;
   CommandExecutor commandExecutor;
   DbSchemaStrategy dbSchemaStrategy;
-  ProcessServiceImpl processService;
-  IdentityServiceImpl identityService;
-  TaskServiceImpl taskService;
-  ManagementServiceImpl managementService;
   ExpressionManager expressionManager;
   JobHandlers jobHandlers;
   BusinessCalendarManager businessCalendarManager;
 
+  CommandContextFactory commandContextFactory;
   PersistenceSessionFactory persistenceSessionFactory;
   MessageSessionFactory messageSessionFactory;
   TimerSessionFactory timerSessionFactory;
@@ -93,7 +102,6 @@ public class ProcessEngineConfiguration {
     jobExecutorAutoActivate = createDefaultJobExecutorAutoActivate();
     idGenerator = createDefaultIdGenerator();
     processCache = createDefaultProcessCache();
-    commandContextFactory = createDefaultCommandContextFactory();
     commandExecutor = createDefaultCmdExecutor();
     dbSchemaStrategy = createDefaultDbSchemaStrategy();
     processService = createDefaultProcessService();
@@ -104,6 +112,8 @@ public class ProcessEngineConfiguration {
     jobHandlers = createDefaultJobHandlers();
     businessCalendarManager = createDefaultBusinessCalendarManager();
 
+    commandContextFactory = createDefaultCommandContextFactory();
+
     persistenceSessionFactory = createDefaultPersistenceSessionFactory();
     messageSessionFactory = createDefaultMessageSessionFactory();
     timerSessionFactory = createDefaultTimerSessionFactory();
@@ -111,18 +121,6 @@ public class ProcessEngineConfiguration {
   }
 
   public ProcessEngineImpl buildProcessEngine() {
-    // wiring the configurable objects together
-    this.processService.setCmdExecutor(commandExecutor);
-    this.identityService.setCmdExecutor(commandExecutor);
-    this.taskService.setCmdExecutor(commandExecutor);
-    this.managementService.setCmdExecutor(commandExecutor);
-    this.idGenerator.setCmdExecutor(commandExecutor);
-    this.processCache.setDeployerManager(deployerManager);
-    this.jobExecutor.setCommandExecutor(commandExecutor);
-    this.persistenceSessionFactory.setDbidGenerator(idGenerator);
-    this.commandExecutor.setProcessEngineConfiguration(this);
-    this.commandContextFactory.setProcessEngineConfiguration(this);
- 
     return new ProcessEngineImpl(this);
   }
   
@@ -151,7 +149,18 @@ public class ProcessEngineConfiguration {
   }
 
   protected CommandContextFactory createDefaultCommandContextFactory() {
-    return new CommandContextFactory();
+//    IbatisPersistenceSessionFactory defaultPersistenceSessionFactory = new IbatisPersistenceSessionFactory(
+//      "h2",
+//      "org.h2.Driver",
+//      "jdbc:h2:mem:activiti",
+//      "sa",
+//      ""
+//    );
+    
+    CommandContextFactory commandContextFactory = new CommandContextFactory();
+    commandContextFactory.addSessionFactory(IdentitySession.class, new IbatisIdentitySessionFactory());
+//    commandContextFactory.addSessionFactory(PersistenceSession.class, defaultPersistenceSessionFactory);
+    return commandContextFactory;
   }
 
   protected JobExecutor createDefaultJobExecutor() {
@@ -331,51 +340,45 @@ public class ProcessEngineConfiguration {
     this.dbSchemaStrategy = dbSchemaStrategy;
   }
 
-
-  
-  public ProcessServiceImpl getProcessService() {
+  public ProcessService getProcessService() {
     return processService;
   }
 
-
   
-  public void setProcessService(ProcessServiceImpl processService) {
+  public void setProcessService(ProcessService processService) {
     this.processService = processService;
   }
 
-
   
-  public IdentityServiceImpl getIdentityService() {
+  public IdentityService getIdentityService() {
     return identityService;
   }
 
-
   
-  public void setIdentityService(IdentityServiceImpl identityService) {
+  public void setIdentityService(IdentityService identityService) {
     this.identityService = identityService;
   }
 
-
   
-  public TaskServiceImpl getTaskService() {
+  public TaskService getTaskService() {
     return taskService;
   }
 
-
   
-  public void setTaskService(TaskServiceImpl taskService) {
+  public void setTaskService(TaskService taskService) {
     this.taskService = taskService;
   }
 
-
   
-  public ManagementServiceImpl getManagementService() {
+  public ManagementService getManagementService() {
     return managementService;
   }
 
+  
+  public void setManagementService(ManagementService managementService) {
+    this.managementService = managementService;
+  }
 
-  
-  
   public boolean isJobExecutorAutoActivate() {
     return jobExecutorAutoActivate;
   }

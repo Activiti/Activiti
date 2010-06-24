@@ -113,5 +113,23 @@ PersistenceSession impl should be able to cope with this diff by using the objec
   <li>Define PVM event (api)/history event/event (listeners) and map it to BPMN</li>
 </ul>
 
+<h3>Configuration, initialization of process engines</h3>
+<p>Currently there is the strategy of setup building jars containing configurations.
+There is the programmatic creation of a process engine, there is the 
+ProcessEngines registry and the servlet for automatic initialization.
+</p>
+<p>We should establish a common strategy on how we deal with configuration 
+files and initialization.
+</p>
+
+<p>Following aspects should be considered and as much as possible unified:</p>
+<ul>
+  <li>registry pattern</li>
+  <li>auto scanning and init and destroy</li>
+  <li>basic process engine creation</li> 
+  <li>support for multiple engines</li>
+  <li>ant process engine initialization, caching and destruction.  also, how does an ant task reference a process engine</li>
+</ul>
+
 </body>
 </html>

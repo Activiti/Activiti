@@ -30,10 +30,6 @@ public class ProcessCache {
   DeployerManager deployerManager;
   Map<String, ProcessDefinitionImpl> processDefinitions = new HashMap<String, ProcessDefinitionImpl>();
   
-  public void setDeployerManager(DeployerManager deployerManager) {
-    this.deployerManager = deployerManager;
-  }
-
   public void setProcessDefinition(ProcessDefinitionImpl processDefinition) {
     PersistenceSession persistenceSession = CommandContext.getCurrent().getPersistenceSession();
     if (processDefinition.isNew()) {
@@ -88,4 +84,14 @@ public class ProcessCache {
     processDefinitions = new HashMap<String, ProcessDefinitionImpl>();
   }
   
+  // getters and setters ////////////////////////////////////////////////////// 
+
+  public DeployerManager getDeployerManager() {
+    return deployerManager;
+  }
+
+  
+  public void setDeployerManager(DeployerManager deployerManager) {
+    this.deployerManager = deployerManager;
+  }
 }

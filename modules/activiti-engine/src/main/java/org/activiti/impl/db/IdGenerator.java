@@ -30,12 +30,8 @@ public class IdGenerator {
   protected long nextDbid = 0;
   protected long lastDbid = -1;
   
-  CommandExecutor commandExecutor;
+  protected CommandExecutor commandExecutor;
   
-  public void setCmdExecutor(CommandExecutor commandExecutor) {
-    this.commandExecutor = commandExecutor;
-  }
-
   public synchronized long getNextDbid() {
     if (lastDbid<nextDbid) {
       getNewBlock();
@@ -47,5 +43,14 @@ public class IdGenerator {
     DbidBlock dbidBlock = commandExecutor.execute(new GetNextDbidBlockCmd());
     this.nextDbid = dbidBlock.getNextDbid();
     this.lastDbid = dbidBlock.getLastDbid();
+  }
+
+  // getters and setters //////////////////////////////////////////////////////
+  
+  public CommandExecutor getCommandExecutor() {
+    return commandExecutor;
+  }
+  public void setCommandExecutor(CommandExecutor commandExecutor) {
+    this.commandExecutor = commandExecutor;
   }
 }

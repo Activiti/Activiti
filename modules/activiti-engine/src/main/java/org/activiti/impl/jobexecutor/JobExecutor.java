@@ -111,12 +111,14 @@ public class JobExecutor {
     }
   }
   
+  public void executeJobs(List<String> jobIds) {
+    threadPoolExecutor.execute(new ExecuteJobsRunnable(commandExecutor, jobIds));
+  }
+
+  // getters and setters ////////////////////////////////////////////////////// 
+
   public CommandExecutor getCommandExecutor() {
     return commandExecutor;
-  }
-  
-  public void setCommandExecutor(CommandExecutor commandExecutor) {
-    this.commandExecutor = commandExecutor;
   }
   
   public int getWaitTimeInMillis() {
@@ -203,7 +205,7 @@ public class JobExecutor {
     this.lockOwner = lockOwner;
   }
 
-  public void executeJobs(List<String> jobIds) {
-    threadPoolExecutor.execute(new ExecuteJobsRunnable(commandExecutor, jobIds));
+  public void setCommandExecutor(CommandExecutor commandExecutor) {
+    this.commandExecutor = commandExecutor;
   }
 }

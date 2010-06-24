@@ -17,6 +17,7 @@ import java.util.List;
 import org.activiti.IdentityService;
 import org.activiti.identity.Group;
 import org.activiti.identity.User;
+import org.activiti.impl.cmd.CheckPassword;
 import org.activiti.impl.cmd.CreateMembershipCmd;
 import org.activiti.impl.cmd.DeleteGroupCmd;
 import org.activiti.impl.cmd.DeleteMembershipCmd;
@@ -25,7 +26,6 @@ import org.activiti.impl.cmd.FindGroupCmd;
 import org.activiti.impl.cmd.FindGroupsByUserCmd;
 import org.activiti.impl.cmd.FindUserCmd;
 import org.activiti.impl.cmd.FindUsersByGroupCmd;
-import org.activiti.impl.cmd.CheckPassword;
 import org.activiti.impl.cmd.SaveGroupCmd;
 import org.activiti.impl.cmd.SaveUserCmd;
 import org.activiti.impl.identity.GroupImpl;
@@ -38,11 +38,8 @@ import org.activiti.impl.interceptor.CommandExecutor;
  */
 public class IdentityServiceImpl implements IdentityService {
   
+  /** must be injected with {@link #setCommandExecutor(CommandExecutor)} */
   protected CommandExecutor commandExecutor;
-  
-  public void setCmdExecutor(CommandExecutor commandExecutor) {
-    this.commandExecutor = commandExecutor;
-  }
   
   public Group newGroup(String groupId) {
     return new GroupImpl(groupId);
@@ -98,5 +95,15 @@ public class IdentityServiceImpl implements IdentityService {
 
   public void deleteUser(String userId) {
     commandExecutor.execute(new DeleteUserCmd(userId));
+  }
+
+  // getters and setters //////////////////////////////////////////////////////
+  
+  public CommandExecutor getCommandExecutor() {
+    return commandExecutor;
+  }
+  
+  public void setCommandExecutor(CommandExecutor commandExecutor) {
+    this.commandExecutor = commandExecutor;
   }
 }

@@ -28,6 +28,7 @@ import java.util.logging.Logger;
 import org.activiti.ActivitiException;
 import org.activiti.ActivitiWrongDbException;
 import org.activiti.ProcessEngine;
+import org.activiti.impl.cfg.ProcessEngineConfiguration;
 import org.activiti.impl.db.IdGenerator;
 import org.activiti.impl.interceptor.CommandContext;
 import org.activiti.impl.util.IoUtil;
@@ -183,7 +184,11 @@ public class IbatisPersistenceSessionFactory implements PersistenceSessionFactor
       throw new ActivitiException("Error while building ibatis SqlSessionFactory: "+e.getMessage(), e);
     }
   }
-  
+
+  public void setProcessEngineConfiguration(ProcessEngineConfiguration processEngineConfiguration) {
+    this.idGenerator = processEngineConfiguration.getIdGenerator();
+  }
+
   // database statements //////////////////////////////////////////////////////
 
   protected void initializeDatabaseStatements(String databaseName) {
@@ -313,13 +318,13 @@ public class IbatisPersistenceSessionFactory implements PersistenceSessionFactor
   public SqlSessionFactory getSqlSessionFactory() {
     return sqlSessionFactory;
   }
-  
   public IdGenerator getIdGenerator() {
     return idGenerator;
   }
-  
-  public void setDbidGenerator(IdGenerator idGenerator) {
+  public void setSqlSessionFactory(SqlSessionFactory sqlSessionFactory) {
+    this.sqlSessionFactory = sqlSessionFactory;
+  }
+  public void setIdGenerator(IdGenerator idGenerator) {
     this.idGenerator = idGenerator;
   }
-
 }

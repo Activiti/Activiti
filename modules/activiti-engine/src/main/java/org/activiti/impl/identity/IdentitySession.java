@@ -10,21 +10,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.activiti.impl.persistence;
 
-import org.activiti.impl.interceptor.CommandContext;
+package org.activiti.impl.identity;
 
 
 /**
  * @author Tom Baeyens
  */
-public interface PersistenceSessionFactory {
+public interface IdentitySession {
 
-  void dbSchemaCheckVersion();
-
-  void dbSchemaCreate();
-
-  void dbSchemaDrop();
-  
-  PersistenceSession openPersistenceSession(CommandContext commandContext);
 }

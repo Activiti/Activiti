@@ -10,21 +10,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.activiti.impl.persistence;
 
-import org.activiti.impl.interceptor.CommandContext;
+import org.activiti.impl.interceptor.SessionFactory;
+import org.activiti.impl.tx.Session;
 
 
 /**
  * @author Tom Baeyens
  */
-public interface PersistenceSessionFactory {
+public class IbatisIdentitySessionFactory implements SessionFactory {
 
-  void dbSchemaCheckVersion();
+  public Session openSession() {
+    return new IbatisIdentitySession();
+  }
 
-  void dbSchemaCreate();
-
-  void dbSchemaDrop();
-  
-  PersistenceSession openPersistenceSession(CommandContext commandContext);
 }

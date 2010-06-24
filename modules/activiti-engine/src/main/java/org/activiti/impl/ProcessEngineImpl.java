@@ -33,10 +33,10 @@ public class ProcessEngineImpl implements ProcessEngine {
   
   ProcessEngineConfiguration processEngineConfiguration;
   String name;
-  ProcessServiceImpl processService;
-  IdentityServiceImpl identityService;
-  TaskServiceImpl taskService;
-  ManagementServiceImpl managementService;
+  ProcessService processService;
+  IdentityService identityService;
+  TaskService taskService;
+  ManagementService managementService;
   DbSchemaStrategy dbSchemaStrategy;
   JobExecutor jobExecutor;
   PersistenceSessionFactory persistenceSessionFactory;

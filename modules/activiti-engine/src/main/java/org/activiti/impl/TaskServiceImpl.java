@@ -39,11 +39,8 @@ import org.activiti.impl.task.TaskQueryImpl;
  */
 public class TaskServiceImpl implements TaskService {
 
+  /** must be injected with {@link #setCommandExecutor(CommandExecutor)} */
   protected CommandExecutor commandExecutor;
-  
-  public void setCmdExecutor(CommandExecutor commandExecutor) {
-    this.commandExecutor = commandExecutor;
-  }
 
   public Task newTask() {
     return new TaskImpl(null);
@@ -142,5 +139,14 @@ public class TaskServiceImpl implements TaskService {
   public Object getTaskForm(String taskId) {
     return commandExecutor.execute(new GetFormCmd(null, null, taskId));
   }
+
+  // getters and setters //////////////////////////////////////////////////////
   
+  public CommandExecutor getCommandExecutor() {
+    return commandExecutor;
+  }
+  
+  public void setCommandExecutor(CommandExecutor commandExecutor) {
+    this.commandExecutor = commandExecutor;
+  }
 }

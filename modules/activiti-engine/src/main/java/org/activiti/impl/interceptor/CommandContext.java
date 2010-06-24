@@ -12,6 +12,8 @@
  */
 package org.activiti.impl.interceptor;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Stack;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -28,6 +30,7 @@ import org.activiti.impl.repository.DeployerManager;
 import org.activiti.impl.repository.ProcessCache;
 import org.activiti.impl.scripting.ScriptingEngines;
 import org.activiti.impl.timer.TimerSession;
+import org.activiti.impl.tx.Session;
 import org.activiti.impl.tx.TransactionContext;
 import org.activiti.impl.variable.VariableTypes;
 
@@ -41,18 +44,23 @@ public class CommandContext {
 
   static ThreadLocal<Stack<CommandContext>> txContextStacks = new ThreadLocal<Stack<CommandContext>>();
   
-  Command<?> command;
-  Throwable exception = null;
-  PersistenceSession persistenceSession;
-  MessageSession messageSession;
-  TimerSession timerSession;
-  CommandContextFactory commandContextFactory;
-  TransactionContext transactionContext;
+  protected CommandContextFactory commandContextFactory;
+  protected Command<?> command;
+  protected Throwable exception = null;
+
+  protected PersistenceSession persistenceSession;
+  protected MessageSession messageSession;
+  protected TimerSession timerSession;
+  protected TransactionContext transactionContext;
+
+  protected Map<Class< ? >, SessionFactory> sessionFactories;
+  protected Map<Class< ? >, Session> sessions = new HashMap<Class<?>, Session>();
 
   public CommandContext(Command<?> command, 
                         CommandContextFactory commandContextFactory) {
     this.command = command;
     this.commandContextFactory = commandContextFactory;
+    this.sessionFactories = commandContextFactory.getSessionFactories();
 
     this.transactionContext = commandContextFactory
       .getProcessEngineConfiguration()
@@ -85,42 +93,32 @@ public class CommandContext {
     try {
       try {
         try {
-          try {
-            
-            if (exception==null) {
-              // first flush
-              persistenceSession.flush();
-              messageSession.flush();
-            }
-            
-          } catch (Throwable exception) {
-            exception(exception);
-          } finally {
-            
-            try {
-              if (exception==null) {
-                transactionContext.commit();
-              }
-            } catch (Throwable exception) {
-              exception(exception);
-            }
-            
-            if (exception!=null) {
-              transactionContext.rollback();
-            }
+          
+          if (exception==null) {
+            flushSessions();
           }
+          
         } catch (Throwable exception) {
           exception(exception);
         } finally {
-
-          messageSession.close();
-
+          
+          try {
+            if (exception==null) {
+              transactionContext.commit();
+            }
+          } catch (Throwable exception) {
+            exception(exception);
+          }
+          
+          if (exception!=null) {
+            transactionContext.rollback();
+          }
         }
       } catch (Throwable exception) {
         exception(exception);
       } finally {
 
-        persistenceSession.close();
+        closeSessions();
 
       }
     } catch (Throwable exception) {
@@ -142,11 +140,33 @@ public class CommandContext {
     }
   }
 
+  protected void flushSessions() {
+    persistenceSession.flush();
+    messageSession.flush();
+    
+    for (Session session: sessions.values()) {
+      session.flush();
+    }
+  }
+
+  protected void closeSessions() {
+    messageSession.close();
+    persistenceSession.close();
+
+    for (Session session: sessions.values()) {
+      try {
+        session.close();
+      } catch (Throwable exception) {
+        exception(exception);
+      }
+    }
+  }
+
   public void exception(Throwable exception) {
     if (this.exception==null) {
       this.exception = exception;
     } else {
-      log.log(Level.SEVERE, "exception potentially caused by previous exception", exception);
+      log.log(Level.SEVERE, "exception in command context", exception);
     }
   }
   
@@ -178,6 +198,17 @@ public class CommandContext {
   public TimerSession getTimerSession() {
     return timerSession;
   }
+  
+  public <T> T getSession(Class<T> sessionClass) {
+    Session session = sessions.get(sessionClass);
+    if (session==null) {
+      SessionFactory sessionFactory = sessionFactories.get(sessionClass);
+      session = sessionFactory.openSession();
+      sessions.put(sessionClass, session);
+    }
+    return (T) session;
+  }
+  
   public TransactionContext getTransactionContext() {
     return transactionContext;
   }

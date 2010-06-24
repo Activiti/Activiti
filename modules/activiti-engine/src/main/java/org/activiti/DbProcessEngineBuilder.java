@@ -16,10 +16,20 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 
+import org.activiti.impl.IdentityServiceImpl;
+import org.activiti.impl.ManagementServiceImpl;
 import org.activiti.impl.ProcessEngineImpl;
+import org.activiti.impl.ProcessServiceImpl;
+import org.activiti.impl.TaskServiceImpl;
 import org.activiti.impl.cfg.ProcessEngineConfiguration;
+import org.activiti.impl.db.IdGenerator;
+import org.activiti.impl.interceptor.CommandContextFactory;
+import org.activiti.impl.interceptor.CommandExecutor;
+import org.activiti.impl.jobexecutor.JobExecutor;
 import org.activiti.impl.persistence.IbatisPersistenceSessionFactory;
 import org.activiti.impl.persistence.PersistenceSessionFactory;
+import org.activiti.impl.repository.DeployerManager;
+import org.activiti.impl.repository.ProcessCache;
 
 
 /** builds a process engine based on a couple of simple properties.
@@ -249,7 +259,7 @@ public class DbProcessEngineBuilder {
       throw new ActivitiException("no jdbc password specified");
     }
     
-    PersistenceSessionFactory persistenceSessionFactory = new IbatisPersistenceSessionFactory(
+    IbatisPersistenceSessionFactory persistenceSessionFactory = new IbatisPersistenceSessionFactory(
             databaseName,
             jdbcDriver,
             jdbcUrl,
@@ -261,8 +271,39 @@ public class DbProcessEngineBuilder {
     processEngineConfiguration.setPersistenceSessionFactory(persistenceSessionFactory);
     processEngineConfiguration.setDbSchemaStrategy(dbSchemaStrategy);
     processEngineConfiguration.setJobExecutorAutoActivate(jobExecutorAutoActivate);
-    ProcessEngineImpl processEngine = processEngineConfiguration.buildProcessEngine();
     
-    return processEngine;
+    // wiring the configurable objects together
+    CommandExecutor commandExecutor = processEngineConfiguration.getCommandExecutor();
+    
+    ProcessServiceImpl processService = (ProcessServiceImpl) processEngineConfiguration.getProcessService();
+    processService.setCmdExecutor(commandExecutor);
+    
+    IdentityServiceImpl identityService = (IdentityServiceImpl) processEngineConfiguration.getIdentityService();
+    identityService.setCommandExecutor(commandExecutor);
+    
+    TaskServiceImpl taskService = (TaskServiceImpl) processEngineConfiguration.getTaskService();
+    taskService.setCommandExecutor(commandExecutor);
+    
+    ManagementServiceImpl managementService = (ManagementServiceImpl) processEngineConfiguration.getManagementService();
+    managementService.setCommandExecutor(commandExecutor);
+
+    IdGenerator idGenerator = processEngineConfiguration.getIdGenerator();
+    idGenerator.setCommandExecutor(commandExecutor);
+    
+    ProcessCache processCache = processEngineConfiguration.getProcessCache();
+    DeployerManager deployerManager = processEngineConfiguration.getDeployerManager();
+    processCache.setDeployerManager(deployerManager);
+    
+    JobExecutor jobExecutor = processEngineConfiguration.getJobExecutor();
+    jobExecutor.setCommandExecutor(commandExecutor);
+
+    persistenceSessionFactory.setIdGenerator(idGenerator);
+    
+    commandExecutor.setProcessEngineConfiguration(processEngineConfiguration);
+    
+    CommandContextFactory commandContextFactory = processEngineConfiguration.getCommandContextFactory();
+    commandContextFactory.setProcessEngineConfiguration(processEngineConfiguration);
+
+    return processEngineConfiguration.buildProcessEngine();
   }
 }
