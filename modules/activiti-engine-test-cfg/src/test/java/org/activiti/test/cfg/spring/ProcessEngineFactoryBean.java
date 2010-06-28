@@ -15,54 +15,67 @@ package org.activiti.test.cfg.spring;
 
 import javax.sql.DataSource;
 
-import org.activiti.DbProcessEngineBuilder;
 import org.activiti.DbSchemaStrategy;
 import org.activiti.ProcessEngine;
+import org.activiti.impl.cfg.ProcessEngineConfiguration;
+import org.activiti.impl.db.IdGenerator;
+import org.activiti.impl.persistence.IbatisPersistenceSessionFactory;
+import org.activiti.impl.persistence.PersistenceSessionFactory;
 import org.springframework.beans.factory.FactoryBean;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.util.Assert;
 
 /**
  * @author Dave Syer
  */
 public class ProcessEngineFactoryBean implements FactoryBean {
 
-	private String configurationResource = "activiti.properties";
-  private DbProcessEngineBuilder builder = new DbProcessEngineBuilder();
+  private ProcessEngineConfiguration configuration = new ProcessEngineConfiguration();
+  private String databaseName;
+  private DataSource dataSource;
+  private PlatformTransactionManager transactionManager;
 
-	public void setConfigurationResource(String configurationResource) {
-		this.configurationResource = configurationResource;
-	}
+  public Object getObject() throws Exception {
+    Assert.state(databaseName != null, "A database name must be provided (e.g. 'h2')");
+    IdGenerator idGenerator = configuration.getIdGenerator();
+    PersistenceSessionFactory persistenceSessionFactory = new IbatisPersistenceSessionFactory(idGenerator, databaseName, dataSource, transactionManager == null);
+    configuration.setPersistenceSessionFactory(persistenceSessionFactory);
+    if (transactionManager != null) {
+      // configuration.setTransactionContextFactory(new SpringTransactionContextFactory(transactionManager));
+    }
+    return configuration.buildProcessEngine();
+  }
 
-	public Object getObject() throws Exception {
-    return builder.configureFromPropertiesResource(
-				configurationResource).buildProcessEngine();
-	}
+  public Class< ? > getObjectType() {
+    return ProcessEngine.class;
+  }
 
-	public Class<?> getObjectType() {
-		return ProcessEngine.class;
-	}
-
-	public boolean isSingleton() {
-		return true;
-	}
+  public boolean isSingleton() {
+    return true;
+  }
 
   public void setDatabaseName(String databaseName) {
-    builder.setDatabaseName(databaseName);
+    this.databaseName = databaseName;
   }
 
   public void setDataSource(DataSource dataSource) {
-    builder.setDataSource(dataSource);
+    this.dataSource = dataSource;
   }
 
   public void setDbSchemaStrategy(DbSchemaStrategy dbSchemaStrategy) {
-    builder.setDbSchemaStrategy(dbSchemaStrategy);
+    configuration.setDbSchemaStrategy(dbSchemaStrategy);
   }
 
   public void setJobExecutorAutoActivation(boolean jobExecutorAutoActivate) {
-    builder.setJobExecutorAutoActivation(jobExecutorAutoActivate);
+    configuration.setJobExecutorAutoActivate(jobExecutorAutoActivate);
   }
 
   public void setProcessEngineName(String processEngineName) {
-    builder.setProcessEngineName(processEngineName);
+    configuration.setProcessEngineName(processEngineName);
+  }
+
+  public void setTransactionManager(PlatformTransactionManager transactionManager) {
+    this.transactionManager = transactionManager;
   }
 
 }

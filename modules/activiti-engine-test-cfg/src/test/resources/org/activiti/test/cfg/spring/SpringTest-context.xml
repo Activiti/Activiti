@@ -14,7 +14,9 @@
     </bean>
 
 	<bean id="processEngine" class="org.activiti.test.cfg.spring.ProcessEngineFactoryBean">
-		<property name="dataSource" ref="dataSource"/>
+		<property name="databaseName" value="${database}"/>
+ 		<property name="dataSource" ref="dataSource"/>
+    	<property name="dbSchemaStrategy" value="${db.schema.strategy}"/>
 	</bean>
 
 	<bean id="userBean" class="org.activiti.test.cfg.spring.UserBean">

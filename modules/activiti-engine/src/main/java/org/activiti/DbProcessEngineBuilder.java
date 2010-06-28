@@ -16,14 +16,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 
-import javax.sql.DataSource;
-
 import org.activiti.impl.cfg.ProcessEngineConfiguration;
 import org.activiti.impl.db.IdGenerator;
-import org.activiti.impl.interceptor.CommandContextFactory;
 import org.activiti.impl.persistence.IbatisPersistenceSessionFactory;
-import org.activiti.impl.repository.DeployerManager;
-import org.activiti.impl.repository.ProcessCache;
+import org.activiti.impl.persistence.PersistenceSessionFactory;
 
 /**
  * builds a process engine based on a couple of simple properties.
@@ -33,6 +29,7 @@ import org.activiti.impl.repository.ProcessCache;
  * <pre>
  * 
  * 
+ * 
  * ProcessEngine processEngine = DbProcessEngineBuilder.setDatabaseName(&quot;h2&quot;).setJdbcDriver(&quot;org.h2.Driver&quot;).setJdbcUrl(&quot;jdbc:h2:tcp://localhost/activiti&quot;)
  *         .setJdbcUsername(&quot;sa&quot;).setJdbcPassword(&quot;&quot;).setDbSchemaStrategy(DbSchemaStrategy.CHECK_VERSION).buildProcessEngine();
  * </pre>
@@ -40,6 +37,7 @@ import org.activiti.impl.repository.ProcessCache;
  * To build a ProcessEngine that's using a h2 in memory database:
  * 
  * <pre>
+ * 
  * 
  * 
  * ProcessEngine processEngine = DbProcessEngineBuilder.setDatabaseName(&quot;h2&quot;).setJdbcDriver(&quot;org.h2.Driver&quot;).setJdbcUrl(&quot;jdbc:h2:mem:activiti&quot;).setJdbcUsername(
@@ -52,17 +50,14 @@ import org.activiti.impl.repository.ProcessCache;
  */
 public class DbProcessEngineBuilder {
 
-  private static final String DATABASE_NAME_H2 = "h2";
-
   private String processEngineName = ProcessEngines.NAME_DEFAULT;
   private String databaseName;
   private String jdbcDriver;
   private String jdbcUrl;
   private String jdbcUsername;
   private String jdbcPassword;
-  private DbSchemaStrategy dbSchemaStrategy;
+  private DbSchemaStrategy dbSchemaStrategy = DbSchemaStrategy.CHECK_VERSION;
   private boolean jobExecutorAutoActivate = true;
-  private DataSource dataSource;
   private boolean localTransactions = true;
 
   public String getProcessEngineName() {
@@ -89,15 +84,6 @@ public class DbProcessEngineBuilder {
 
   public DbProcessEngineBuilder setJdbcDriver(String jdbcDriver) {
     this.jdbcDriver = jdbcDriver;
-    return this;
-  }
-
-  public DataSource getDataSource() {
-    return dataSource;
-  }
-
-  public DbProcessEngineBuilder setDataSource(DataSource dataSource) {
-    this.dataSource = dataSource;
     return this;
   }
 
@@ -183,11 +169,11 @@ public class DbProcessEngineBuilder {
 
     String dbSchemaStrategy = configurationProperties.getProperty("db.schema.strategy");
     if (dbSchemaStrategy != null) {
-      if ("create-drop".equals(dbSchemaStrategy)) {
+      if ("create-drop".equals(dbSchemaStrategy.toLowerCase().replace("_", "-"))) {
         this.dbSchemaStrategy = DbSchemaStrategy.CREATE_DROP;
-      } else if ("create".equals(dbSchemaStrategy)) {
+      } else if ("create".equals(dbSchemaStrategy.toLowerCase().replace("_", "-"))) {
         this.dbSchemaStrategy = DbSchemaStrategy.CREATE;
-      } else if ("check-version".equals(dbSchemaStrategy)) {
+      } else if ("check-version".equals(dbSchemaStrategy.toLowerCase().replace("_", "-"))) {
         this.dbSchemaStrategy = DbSchemaStrategy.CHECK_VERSION;
       } else {
         throw new ActivitiException("unknown db.schema.strategy: '" + dbSchemaStrategy + "': should be 'create', 'create-drop' or 'check-version'");
@@ -244,31 +230,22 @@ public class DbProcessEngineBuilder {
 
     IdGenerator idGenerator = processEngineConfiguration.getIdGenerator();
 
-    IbatisPersistenceSessionFactory persistenceSessionFactory;
+    PersistenceSessionFactory persistenceSessionFactory;
 
-    if (dataSource != null) {
-
-      persistenceSessionFactory = new IbatisPersistenceSessionFactory(idGenerator, databaseName, dataSource, localTransactions);
-
-    } else {
-
-      if (jdbcDriver == null) {
-        throw new ActivitiException("no jdbc driver specified");
-      }
-      if (jdbcUrl == null) {
-        throw new ActivitiException("no jdbc url specified");
-      }
-      if (jdbcUsername == null) {
-        throw new ActivitiException("no jdbc username specified");
-      }
-      if (jdbcPassword == null) {
-        throw new ActivitiException("no jdbc password specified");
-      }
-
-      persistenceSessionFactory = new IbatisPersistenceSessionFactory(idGenerator, databaseName, jdbcDriver, jdbcUrl, jdbcUsername, jdbcPassword);
-
+    if (jdbcDriver == null) {
+      throw new ActivitiException("no jdbc driver specified");
+    }
+    if (jdbcUrl == null) {
+      throw new ActivitiException("no jdbc url specified");
+    }
+    if (jdbcUsername == null) {
+      throw new ActivitiException("no jdbc username specified");
+    }
+    if (jdbcPassword == null) {
+      throw new ActivitiException("no jdbc password specified");
     }
 
+    persistenceSessionFactory = new IbatisPersistenceSessionFactory(idGenerator, databaseName, jdbcDriver, jdbcUrl, jdbcUsername, jdbcPassword);
     processEngineConfiguration.setPersistenceSessionFactory(persistenceSessionFactory);
 
     return processEngineConfiguration.buildProcessEngine();

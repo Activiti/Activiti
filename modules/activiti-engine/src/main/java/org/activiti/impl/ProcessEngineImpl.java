@@ -12,7 +12,6 @@
  */
 package org.activiti.impl;
 
-import java.rmi.activation.ActivationException;
 import java.util.logging.Logger;
 
 import org.activiti.DbSchemaStrategy;
