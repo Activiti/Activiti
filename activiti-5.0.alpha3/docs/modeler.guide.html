@@ -1,0 +1,269 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<title>Activiti Modeler Build Guide</title>
+</head>
+<body>
+
+This document list all changes we did tfo signavio for rebranding it to Activiti Modeler<br>
+<br>
+<h3>Checkout</h3>
+We'll be using the <b>bpmn20</b> branch:<br>
+<br>
+svn checkout <b><i>https</i></b>://signavio-oryx-initiative.googlecode.com/svn/branches/bpmn20 signavio-oryx-initiative --username joram.barrez<br>
+<br>
+<h3>Build</h3>
+in <b>build.xml</b> at the root of the project:<br>
+<br>
+* add the following target:<br>
+<br>
+&lt;target name="build-activiti-war"&gt;<br>
+&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;<br>
+&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&lt;delete dir="build"/&gt;<br>
+&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&lt;delete file="${dist-dir}/activiti-modeler.war"/&gt;<br>
+&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&lt;mkdir dir="${dist-dir}"/&gt;<br>
+&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;<br>
+&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&lt;!-- Prepare Explorer, Libs and Editor --&gt;<br>
+&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&lt;ant antfile="build.xml" target="com.signavio.explorer.dir" dir="${explorer-srcdir}"&gt;<br>
+&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&lt;property name="dir-target" value="../build/explorer" /&gt;<br>
+&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&lt;/ant&gt;<br>
+&nbsp;&nbsp; &nbsp;<br>
+&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&lt;ant antfile="build.xml" target="com.signavio.libs.dir" dir="${libs-srcdir}"&gt;<br>
+&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&lt;property name="dir-target" value="../build/libs" /&gt;<br>
+&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&lt;/ant&gt;<br>
+<br>
+&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&lt;ant antfile="build.xml" target="com.signavio.editor.dir" dir="${editor-modifications-srcdir}"&gt;<br>
+&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&lt;property name="dir-oryx-editor" value="../${oryx-editor-srcdir}" /&gt;<br>
+&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&lt;property name="dir-target" value="../build/editor" /&gt;<br>
+&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&lt;/ant&gt;<br>
+&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;<br>
+&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;<br>
+&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;<br>
+&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&lt;!-- Prepare Platform --&gt;<br>
+&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&lt;ant antfile="build.xml" target="org.oryxeditor.platform.weaving" dir="${platform-srcdir}" /&gt;<br>
+&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;<br>
+&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&lt;!-- Build War --&gt;<br>
+&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&lt;war destfile="${dist-dir}/activiti-modeler.war"<br>
+&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp; webxml="${platform-srcdir}/WebContent/WEB-INF/web.xml"<br>
+&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp; update="true"&gt;<br>
+&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;fileset dir="${platform-srcdir}/WebContent"&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;exclude name="WEB-INF/"/&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;exclude name="META-INF/"/&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;/fileset&gt;<br>
+&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;<br>
+&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&lt;webinf dir="${platform-srcdir}/WebContent/WEB-INF" /&gt;<br>
+&nbsp; &nbsp;<br>
+&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&lt;classes dir="${platform-srcdir}/target/woven-classes"/&gt;<br>
+&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;<br>
+&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&lt;classes dir="build/editor/classes"/&gt;<br>
+&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;lib dir="${oryx-editor-srcdir}/lib"&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;include name="*.jar"/&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;include name="*.xsl"/&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;exclude name="deprecated/**"/&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;exclude name="sources/**"/&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;exclude name="servlet-api.jar" /&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&lt;exclude name="activation.jar" /&gt;<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&lt;exclude name="batik-anim.jar" /&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&lt;exclude name="batik-awt-util.jar" /&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&lt;exclude name="batik-bridge.jar" /&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&lt;exclude name="batik-codec.jar" /&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&lt;exclude name="batik-css.jar" /&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&lt;exclude name="batik-dom.jar" /&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&lt;exclude name="batik-ext.jar" /&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&lt;exclude name="batik-extension.jar" /&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&lt;exclude name="batik-gui-util.jar" /&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&lt;exclude name="batik-gvt.jar" /&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&lt;exclude name="batik-parser.jar" /&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&lt;exclude name="batik-script.jar" /&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&lt;exclude name="batik-svg-dom.jar" /&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&lt;exclude name="batik-svggen.jar" /&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&lt;exclude name="batik-swing.jar" /&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&lt;exclude name="batik-transcoder.jar" /&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&lt;exclude name="batik-util.jar" /&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&lt;exclude name="batik-xml.jar" /&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&lt;exclude name="js.jar" /&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&lt;exclude name="org.json.jar" /&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&lt;exclude name="pdf-transcoder.jar" /&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&lt;exclude name="xml-apis-ext.jar" /&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&lt;exclude name="xalan-2.7.1.jar" /&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&lt;exclude name="xercesImpl-2.8.1.jar" /&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;/lib&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;lib dir="${oryx-editor-srcdir}/lib/wsdl2xforms"&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;include name="*.xsl"/&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;/lib&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;<br>
+&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&lt;lib dir="${oryx-editor-srcdir}/lib/xsd"&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&lt;include name="*.xsd"/&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;/lib&gt;<br>
+&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;<br>
+&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&lt;metainf dir="${platform-srcdir}/WebContent/META-INF"/&gt;<br>
+&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;<br>
+&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&lt;fileset dir="build"&gt;<br>
+&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&lt;exclude name="editor/classes/**"/&gt;<br>
+&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&lt;exclude name="editor/*.xhtml"/&gt;<br>
+&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&lt;exclude name="editor/stencilsets/aress/**" /&gt;<br>
+&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&lt;exclude name="editor/stencilsets/b3mn/**" /&gt;<br>
+&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&lt;exclude name="editor/stencilsets/bpel/**" /&gt;<br>
+&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&lt;exclude name="editor/stencilsets/bpel4chor/**" /&gt;<br>
+&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&lt;exclude name="editor/stencilsets/bpmnexecutable/**" /&gt;<br>
+&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&lt;exclude name="editor/stencilsets/bpmnplus/**" /&gt;<br>
+&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&lt;exclude name="editor/stencilsets/bpmnq/**" /&gt;<br>
+&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&lt;exclude name="editor/stencilsets/extensions/bpel4chor/**" /&gt;<br>
+&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&lt;exclude name="editor/stencilsets/extensions/bpel4chor_grounding/**" /&gt;<br>
+&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&lt;exclude name="editor/stencilsets/extensions/bpmn-design-thinking-subset/**" /&gt;<br>
+&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&lt;exclude name="editor/stencilsets/extensions/bpmn-xforms-user-interfaces/**" /&gt;<br>
+&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&lt;exclude name="editor/stencilsets/extensions/bpmn1.1basicsubset/**" /&gt;<br>
+&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&lt;exclude name="editor/stencilsets/extensions/bpmncosts/**" /&gt;<br>
+&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&lt;exclude name="editor/stencilsets/extensions/bpmnservicecompositionsubset/**" /&gt;<br>
+&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&lt;exclude name="editor/stencilsets/extensions/bpmnwikirefs/**" /&gt;<br>
+&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&lt;exclude name="editor/stencilsets/extensions/generated-stencil-set-extensions/**" /&gt;<br>
+&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&lt;exclude name="editor/stencilsets/extensions/ibpmn-FH/**" /&gt;<br>
+&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&lt;exclude name="editor/stencilsets/fmcblockdiagram/**" /&gt;<br>
+&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&lt;exclude name="editor/stencilsets/ibpmn/**" /&gt;<br>
+&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&lt;exclude name="editor/stencilsets/interactiondiagram/**" /&gt;<br>
+&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&lt;exclude name="editor/stencilsets/interactionpetrinets/**" /&gt;<br>
+&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&lt;exclude name="editor/stencilsets/kmnets/**" /&gt;<br>
+&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&lt;exclude name="editor/stencilsets/letsdance/**" /&gt;<br>
+&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&lt;exclude name="editor/stencilsets/trackerworkflow/**" /&gt;<br>
+&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&lt;exclude name="editor/stencilsets/treeGraph/**" /&gt;<br>
+&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&lt;exclude name="editor/stencilsets/uml/**" /&gt;<br>
+&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&lt;exclude name="editor/stencilsets/xforms/**" /&gt;<br>
+<br>
+&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&lt;/fileset&gt;<br>
+&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;<br>
+&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&lt;fileset file="${oryx-editor-srcdir}/favicon.ico"/&gt;<br>
+<br>
+&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&lt;/war&gt;<br>
+&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;<br>
+&nbsp;&nbsp; &nbsp;&lt;/target&gt;<br>
+<br>
+<br>
+<h3>Url changes</h3>
+<br>
+Edit the file<b> platform/WebContent/WEB-INF/web.xml</b> and change the following parameters to the following values:<br>
+<br>
+&lt;context-param&gt;<br>
+&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&lt;description&gt;Filesystem directory that is used to store models&lt;/description&gt;<br>
+&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&lt;param-name&gt;fileSystemRootDirectory&lt;/param-name&gt;<br>
+&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&lt;param-value&gt;/Users/jbarrez/&lt;/param-value&gt;<br>
+&nbsp;&nbsp; &nbsp;&lt;/context-param&gt;<br>
+&nbsp;&nbsp; &nbsp;&lt;context-param&gt;<br>
+&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&lt;description&gt;Base URL of the Explorer web application&lt;/description&gt;<br>
+&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&lt;param-name&gt;explorer&lt;/param-name&gt;<br>
+&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&lt;param-value&gt;/activiti-modeler/explorer&lt;/param-value&gt;<br>
+&nbsp;&nbsp; &nbsp;&lt;/context-param&gt;<br>
+&nbsp;&nbsp; &nbsp;&lt;context-param&gt;<br>
+&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&lt;description&gt;Base URL of the Editor web application&lt;/description&gt;<br>
+&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&lt;param-name&gt;editor&lt;/param-name&gt;<br>
+&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&lt;param-value&gt;/activiti-modeler/editor&lt;/param-value&gt;<br>
+&nbsp;&nbsp; &nbsp;&lt;/context-param&gt;<br>
+&nbsp;&nbsp; &nbsp;&lt;context-param&gt;<br>
+&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&lt;description&gt;Base URL of the JS libraries&lt;/description&gt;<br>
+&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&lt;param-name&gt;libs&lt;/param-name&gt;<br>
+&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&lt;param-value&gt;/activiti-modeler/libs&lt;/param-value&gt;<br>
+&nbsp;&nbsp; &nbsp;&lt;/context-param&gt;<br>
+<br>
+Edit the file <b>\editor modifications\src\client\scripts\config.js</b> line 37:<br>
+<br>
+&nbsp;&nbsp; ORYX.CONFIG.WEB_URL = &nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;"/activiti-modeler/explorer";<br>
+&nbsp;&nbsp; ORYX.CONFIG.WAR_PATH =&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;"/activiti-modeler";<br>
+<br>
+Edit the file <b>\explorer\src\javascript\config.js</b> line 46<br>
+&nbsp;&nbsp; <br>
+Signavio.Config.EXPLORER_PATH&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;= '/activiti-modeler/explorer';<br>
+Signavio.Config.EDITOR_PATH&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;= '/activiti-modeler/editor';<br>
+Signavio.Config.BACKEND_PATH&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;= '/activiti-modeler/p';<br>
+Signavio.Config.LIBS_PATH&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;= '/activiti-modeler/libs';<br>
+<br>
+Edit the file <b>editor\ modifications/src/client/css/theme_norm_signavio.css<br>
+<br>
+</b>replace all urls with signavio to 'activiti-modeler'<br>
+<br>
+<h3>Images</h3>
+<br>
+* replace <b>explorer/src/img/signavio/smoky/logo.png</b> with Activiti splash logo<br>
+<br>
+* replace <b>explorer/src/img/signavio/smoky/logo2.png</b> with Activiti header logo<br>
+<br>
+* edit <b>explorer/src/css/xtheme-specific.css </b>to the dimension of the Activiti header logo<br>
+<br>
+#signavio_repository_header #signavio_repository_logo, #oryx_editor_header a {<br>
+&nbsp;&nbsp; &nbsp;background:transparent url(../img/signavio/smoky/logo2.png) no-repeat scroll 0 0 !important;<br>
+&nbsp;&nbsp; &nbsp;height:32px !important;<br>
+&nbsp;&nbsp;<b> &nbsp;left:10px !important;</b><br>
+&nbsp;&nbsp; <b>&nbsp;margin-top:4px !important;</b><br>
+&nbsp;&nbsp; &nbsp;position:absolute;<br>
+&nbsp;&nbsp; &nbsp;top:0 !important;<br>
+&nbsp;&nbsp; <b>&nbsp;width:350px !important;</b><br>
+&nbsp;&nbsp; &nbsp;z-index:1000;<br>
+}<br>
+<br>
+Delete in this file also in mask-logo the border-bottom and change<br>
+<br>
+.mask-logo div img {<br>
+&nbsp;&nbsp; &nbsp;padding-bottom:<b>0</b>px;<br>
+&nbsp;&nbsp; &nbsp;visibility: hidden;<br>
+}<br>
+<br>
+<br>
+* Edit <b>editor\ modifications/src/client/scripts/Plugins/signavio.js </b><br>
+&nbsp;&nbsp;&nbsp; * "&lt;span class='mask-title' style='"+stitle+"'&gt;Editor&lt;/span&gt;"+<br>
+&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;"&lt;span class='mask-version' style='"+sversion+"'&gt;Version "+version+"&lt;/span&gt;"+<br>
+&nbsp;&nbsp; * Search in that file for 'mask-logo' to get to the right line<br>
+&nbsp;&nbsp;&nbsp; * Switch those to Activiti-Modeler and the right version<br>
+<br>
+* Edit <b>explorer/src/javascript/core/repository.js</b><br>
+&nbsp;&nbsp;&nbsp; * Same changes as the previous one, now replacing 'explorer'<br>
+&nbsp;&nbsp;&nbsp; * Search in that file for 'mask-logo' to get to the right line<br>
+<br>
+* Replace <b>explorer/src/img/signavio/signavio_logo.png</b> with the Activiti splash logo<br>
+<br>
+* Edit <b>editor/src/client/css/theme_norm_signavio.css </b>to match the settings of xtheme-specific.css (it's the same logo):<br>
+<br>
+<br>
+#oryx_editor_header a {<br>
+&nbsp;&nbsp; &nbsp;background:transparent url(/activiti-modeler/explorer/src/img/signavio/smoky/logo2.png) no-repeat scroll 0 0 !important;<br>
+&nbsp;&nbsp; &nbsp;height:32px !important;<br>
+&nbsp;&nbsp; &nbsp;left:10px !important;<br>
+&nbsp;&nbsp; &nbsp;margin-top:4px !important;<br>
+&nbsp;&nbsp; &nbsp;position:absolute;<br>
+&nbsp;&nbsp; &nbsp;top:0 !important;<br>
+&nbsp;&nbsp; &nbsp;width:350px !important;<br>
+&nbsp;&nbsp; &nbsp;z-index:1000;<br>
+}<br>
+<br>
+* Replace <b>explorer/src/img/signavio/header_background2.png</b> with the image that acts as background for the header<br>
+&nbsp;&nbsp;&nbsp; * This will change the <b>editor background</b><br>
+<br>
+* Replace <b>explorer/src/img/signavio/smoky/header_background2.png</b> with the image that acts as background for the header<br>
+&nbsp;&nbsp;&nbsp; * This will change the <b>explorer background</b><br>
+<br>
+<br>
+<h3>Exception during saving of bpmn 2.0 processes:</h3>
+<br>
+changed in <b>build.xml</b><br>
+<br>
+&lt;lib dir="${oryx-editor-srcdir}/lib/xsd"&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&lt;include name="*.xsd"/&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;/lib&gt;<br>
+<br>
+to <br>
+<br>
+&lt;lib dir="${oryx-editor-srcdir}/lib/xsd"&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&lt;include name="*.xsd"/&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&lt;include name="bpmn20/*.xsd" /&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;/lib&gt;<br>
+<br>
+<h3>Build the war</h3>
+<br>
+ant build-activiti-war<br>
+<br>
+
+</body>
+</html>

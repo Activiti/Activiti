@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<activiti-cfg>
+
+  <object name="DeployerManager" class="org.activiti.impl.repository.DeployerManager">
+    <property name="deployers">
+      <list>
+        <object class="org.activiti.impl.bpmn.BpmnDeployer" />
+      </list>
+    </property>
+  </object>
+  
+</activiti-cfg>

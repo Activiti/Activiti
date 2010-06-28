@@ -1,0 +1,269 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+  <name>Activiti</name>
+  <description>BPM and workflow engine</description>
+	<groupId>org.activiti</groupId>
+	<artifactId>activiti-root</artifactId>
+
+	<packaging>pom</packaging>
+	<version>5.0.alpha3-SNAPSHOT</version>
+
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>com.h2database</groupId>
+				<artifactId>h2</artifactId>
+				<version>1.2.132</version>
+			</dependency>
+      <dependency>
+        <groupId>juel</groupId>
+        <artifactId>juel</artifactId>
+        <version>2.1.0</version>
+      </dependency>
+      <dependency>
+        <groupId>juel</groupId>
+        <artifactId>juel-engine</artifactId>
+        <version>2.1.0</version>
+      </dependency>
+      <dependency>
+        <groupId>org.codehaus.groovy</groupId>
+        <artifactId>groovy-all</artifactId>
+        <version>1.7.2</version>
+      </dependency>
+			<dependency>
+				<groupId>javax.servlet</groupId>
+				<artifactId>servlet-api</artifactId>
+				<version>2.5</version>
+			</dependency>
+			<dependency>
+				<groupId>junit</groupId>
+				<artifactId>junit</artifactId>
+				<version>4.8.1</version>
+			</dependency>
+			<dependency>
+				<groupId>org.activiti</groupId>
+				<artifactId>activiti-engine</artifactId>
+				<version>${version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.ant</groupId>
+				<artifactId>ant</artifactId>
+				<version>1.7.1</version>
+				<scope>provided</scope>
+			</dependency>
+			<dependency>
+				<groupId>org.springframework</groupId>
+				<artifactId>spring-core</artifactId>
+				<version>2.5.6</version>
+			</dependency>
+			<dependency>
+				<groupId>org.springframework</groupId>
+				<artifactId>spring-jdbc</artifactId>
+				<version>2.5.6</version>
+			</dependency>
+			<dependency>
+				<groupId>org.springframework</groupId>
+				<artifactId>spring-orm</artifactId>
+				<version>2.5.6</version>
+			</dependency>
+			<dependency>
+				<groupId>org.springframework</groupId>
+				<artifactId>spring-tx</artifactId>
+				<version>2.5.6</version>
+			</dependency>
+			<dependency>
+				<groupId>org.mybatis</groupId>
+				<artifactId>mybatis</artifactId>
+				<version>3.0.1</version>
+			</dependency>
+      <dependency>
+        <groupId>org.springframework.extensions.surf</groupId>
+        <artifactId>spring-surf</artifactId>
+        <version>1.0.0.M3</version>
+      </dependency>
+      <dependency>
+        <groupId>org.springframework.extensions.surf</groupId>
+        <artifactId>spring-webscripts</artifactId>
+        <version>1.0.0.M3</version>
+      </dependency>
+      <dependency>
+        <groupId>org.springframework.extensions.surf</groupId>
+        <artifactId>spring-webscripts-api</artifactId>
+        <version>1.0.0.M3</version>
+      </dependency>
+      <dependency>
+        <groupId>org.json</groupId>
+        <artifactId>json</artifactId>
+        <version>20070829</version>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+
+  <modules>
+    <module>modules/activiti-engine</module>
+  </modules>
+
+	<repositories>
+		<repository>
+			<id>alfresco</id>
+			<url>http://maven.alfresco.com/nexus/content/groups/public</url>
+		</repository>
+		<repository>
+      <id>activiti</id>
+      <url>http://maven.alfresco.com/nexus/content/repositories/activiti/</url>
+    </repository>
+		<repository>
+			<id>ibiblio</id>
+			<url>http://mirrors.ibiblio.org/pub/mirrors/eclipse/rt/eclipselink/maven.repo</url>
+		</repository>
+		<repository>
+			<id>spring-extensions-milestone</id>
+			<name>Spring Extensions Milestone Repository</name>
+			<url>http://extensions.springframework.org/milestone</url>
+		</repository>
+	</repositories>
+
+	<pluginRepositories>
+		<pluginRepository>
+			<id>maven2.java.net</id>
+			<name>Java.net Repository for Maven 2</name>
+			<url>http://download.java.net/maven/2/</url>
+		</pluginRepository>
+	</pluginRepositories>
+
+	<build>
+		<plugins>
+			<plugin>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<configuration>
+					<source>1.5</source>
+					<target>1.5</target>
+					<showDeprecation>true</showDeprecation>
+					<showWarnings>true</showWarnings>
+					<optimize>true</optimize>
+				</configuration>
+			</plugin>
+			<plugin>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<configuration>
+					<failIfNoTests>false</failIfNoTests>
+					<trimStackTrace>false</trimStackTrace>
+					<redirectTestOutputToFile>true</redirectTestOutputToFile>
+					<excludes>
+						<exclude>**/*TestCase.java</exclude>
+					</excludes>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+
+	<profiles>
+		<profile>
+			<id>check</id>
+			<modules>
+		    <module>modules/activiti-engine-examples</module>
+        <module>modules/activiti-engine-test-api</module>
+        <module>modules/activiti-engine-test-cfg</module>
+		    <module>modules/activiti-rest</module>
+		    <module>modules/activiti-webapp</module>
+		    <module>modules/activiti-probe</module>
+		    <module>modules/activiti-explorer</module>
+			</modules>
+		</profile>
+		<profile>
+			<id>distro</id>
+			<modules>
+        <module>modules/activiti-engine-examples</module>
+        <module>modules/activiti-rest</module>
+        <module>modules/activiti-webapp</module>
+				<module>modules/activiti-engine-init</module>
+				<module>modules/activiti-rest</module>
+				<module>modules/activiti-probe</module>
+				<module>modules/activiti-explorer</module>
+			</modules>
+		</profile>
+    <profile>
+      <id>database</id>
+      <activation>
+        <property>
+          <name>database</name>
+        </property>
+      </activation>
+      <modules>
+        <module>modules/activiti-engine-examples</module>
+        <module>modules/activiti-engine-test-api</module>
+      </modules>
+    </profile>
+	</profiles>
+
+	<distributionManagement>
+		<snapshotRepository>
+		  <id>alfresco.snapshot.repo</id>
+		  <url>http://maven.alfresco.com/nexus/content/repositories/activiti-snapshots/</url>
+		  <uniqueVersion>false</uniqueVersion>
+		</snapshotRepository>
+		<repository>
+		  <id>alfresco.release.repo</id>
+		  <url>http://maven.alfresco.com/nexus/content/repositories/activiti/</url>
+		</repository>
+	</distributionManagement>
+
+	<!-- Various information, not used by the build -->
+
+	<url>http://activiti.org</url>
+	<licenses>
+		<license>
+			<name>Apache v2</name>
+			<url>http://www.apache.org/licenses/LICENSE-2.0.html</url>
+		</license>
+	</licenses>
+	<organization>
+		<name>Alfresco</name>
+		<url>http://alfresco.com</url>
+	</organization>
+	<developers>
+		<developer>
+			<name>Tom Baeyens</name>
+			<organization>Alfresco</organization>
+			<url>http://alfresco.com</url>
+		</developer>
+		<developer>
+			<name>Joram Barrez</name>
+			<organization>Alfresco</organization>
+			<url>http://alfresco.com</url>
+		</developer>
+		<developer>
+			<name>Bernd Ruecker</name>
+			<organization>Camunda</organization>
+			<url>http://camunda.com</url>
+		</developer>
+		<developer>
+			<name>Gero Decker</name>
+			<organization>Signavio</organization>
+			<url>http://signavio.com</url>
+		</developer>
+		<developer>
+			<name>Erik Winlöf</name>
+			<organization>Alfresco</organization>
+			<url>http://alfresco.com</url>
+		</developer>
+		<developer>
+		   <name>Nick Burch</name>
+		   <organization>Alfresco</organization>
+		   <url>http://alfresco.com</url> 
+		</developer>
+	</developers>
+	<issueManagement>
+		<system>TODO</system>
+		<url>TODO</url>
+	</issueManagement>
+	<ciManagement>
+		<system>Bamboo</system>
+		<url>TODO</url>
+	</ciManagement>
+	<scm>
+	</scm>
+
+</project>

@@ -1,0 +1,7 @@
+<webscript>
+  <shortname>Task</shortname>
+  <description>Returns details about a task</description>
+  <url>/task/{taskId}</url>
+  <authentication>user</authentication>
+  <format default="json">argument</format>
+</webscript>

@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<title>The Activiti Community Kickoff Meeting</title>
+</head>
+<body>
+
+<h1>The Activiti Community Kickoff Meeting</h1>
+
+<h3>Goals of he meeting</h3>
+<ol>
+  <li>Define the roadmap
+    <ul>
+      <li>lot of initiatives have impact on roadmap</li>
+      <li>distill most important decisions</li> 
+      <li>analyse impact on roadmap</li>
+      <li>discuss and decide on those important decisions</li> 
+      <li>come to a concrete achievable roadmap </li>
+      <li>that way we all know what we can expect this year</li> 
+    </ul>
+  </li>
+  <li>Get to know each other to improve the collaboration</li>
+  <li>Clarify which parties take on which task assignments and responsibilities and commitments. Work is only pulled by volunteers. No workload is being pushed to community people.</li>
+</ol>
+
+<h3>BPMN compatibility</h3>
+<p>Biggest question around BPMN is the suitability for developers.  jPDL was much more readable.
+Will BPMN shortcut suffice?  Will just have to take the pain of a verbose language?  Or do we need to 
+go for usability, compactness and readability without compromises.
+</p>
+<p>How do we make it easy for users to work with all these namespaces (if we decide to put 
+custom conveniences in namespaces)
+</p>
+<p>Is there a clear scope we can target? Simple or descriptive conformance?  Maybe Bernd could prepare 
+this topic as he's closest to the spec.  But most important is not the knowledge of the actual conformance, but 
+arguments that give us guidance on what kind of conformance we target and how strict we'll be.
+The alternative is that we define our own subset of what we think is useful.  
+</p>
+
+<p>Database upgrades.  Automatic QA for upgrade.</p>
+
+<h3>PVM</h3>
+<p>Extracting PVM into separate library?</p>
+<p>Define which aspects need to be pluggable/configurable and which not.</p>
+
+<p>Currently our strategy is to combine the PVM with other components like task management and command interceptors 
+into the core activi jar. So the biggest question is if we will be extracting the PVM into a separate 
+project jar, and productize it.  Roughly, the downside of extracting it is that we'll have to define a 
+very clear boundary between what is in the PVM and what is not.  This will also lead to more decoupling 
+and hence more indirections being placed.  That might impact the readability and simplicity of the whole engine.
+</p>
+<p>Further, it only makes sense to extract the PVM if we do the effort of productizing it.  Meaning,
+have a specific documentation set for it and also build out a test suite for the PVM itself.
+</p>
+
+<p>Currently we have the PVM design as the basis, but we avoid all this because of practical reasons: 1) We can go 
+faster in terms of features if we combine the PVM with the other components.  2) We don't have to do the effort 
+of productizing (QA + docs) of the PVM component itself.
+</p>
+
+<p>One aspect of this is timer sessions and message session: Currently, timers and async continuations are part of 
+the PVM infrastructure.  This implies that the CommandContext, Interceptors, Service API also should be included in the PVM.
+Is that desirable?
+</p>
+
+<p>Another aspect is testing.  The test helper methods often want to make use of implementation classes.  Even 
+if the test method API doesn't expose the impl classes, those test helper classes always will have a dependency
+on the implementation lib. 
+</p>
+
+<h3>DB persistence</h3>
+<p>iBatis, JPA and others?</p>
+<p>Is the current architecture OK for 5.0?</p>
+
+<h3>Cloud support</h3>
+
+<p>The biggest question here is: How will we aling the roadmap of researching the cloud solution
+with the roadmap towards 5.0GA in november?
+</p>
+
+<h5>Query APIs</h5>
+<p>An important aspect of cloud is the query API.  We currently plan to build out the query API
+similar to jBPM 4.  For example
+</p>  
+<pre>taskService.createTaskQuery()
+  .processInstanceId(processInstanceId)
+  .activityName("task1")
+  .orderAsc(TaskQuery.PROPERTY_NAME)</pre>
+<p>But that might be hard to implement on cloud persistence.  Maybe there are solutions. MapReduce?  
+</p>
+
+<h5>Persistence</h5>
+<p>For persistence, we can serialize the process instances to JSON.  Diff between DB is then still 
+granularity: Cloud stores whole process instances, DB stores executions individually.  Implementations of 
+PersistenceSession impl should be able to cope with this diff by using the object's relations in the cloud.
+</p>
+
+<h3>Delegatable tasks</h3>
+<ul>
+  <li>Process instance migration</li>
+  <li>History / reporting</li>
+  <li>Email notifications / email form processor</li>
+  <li>Business calendar</li>
+  <li>Rules integration</li>
+  <li>web service invocation</li>
+  <li>Functional activity types / connectors: SQL, SAP/Abab, file, esb, xml transformation</li>
+  <li>Identity pluggability + LDAP implementation</li>
+</ul>
+
+<h3>Nomenclature</h3>
+<ul>
+  <li>Define PVM event (api)/history event/event (listeners) and map it to BPMN</li>
+</ul>
+
+<h3>Configuration, initialization of process engines</h3>
+<p>Currently there is the strategy of setup building jars containing configurations.
+There is the programmatic creation of a process engine, there is the 
+ProcessEngines registry and the servlet for automatic initialization.
+</p>
+<p>We should establish a common strategy on how we deal with configuration 
+files and initialization.
+</p>
+
+<p>Following aspects should be considered and as much as possible unified:</p>
+<ul>
+  <li>registry pattern</li>
+  <li>auto scanning and init and destroy</li>
+  <li>basic process engine creation</li> 
+  <li>support for multiple engines</li>
+  <li>ant process engine initialization, caching and destruction.  also, how does an ant task reference a process engine</li>
+</ul>
+
+</body>
+</html>

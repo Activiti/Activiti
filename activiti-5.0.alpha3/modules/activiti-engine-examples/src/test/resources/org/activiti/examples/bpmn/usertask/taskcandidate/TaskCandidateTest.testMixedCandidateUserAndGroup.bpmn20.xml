@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions id="taskAssigneeExample" 
+  xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://schema.omg.org/spec/BPMN/2.0 BPMN20.xsd"
+	typeLanguage="http://www.w3.org/2001/XMLSchema"
+	expressionLanguage="http://www.w3.org/1999/XPath" 
+	targetNamespace="http://www.activiti.org/bpmn2.0">
+	
+	<process id='mixedCandidateUserAndGroup' name="Mixed candidate user and group example">
+	
+		<startEvent id='theStart' />
+		
+		<sequenceFlow id='flow1' sourceRef='theStart' targetRef='theTask' />
+
+		<userTask id='theTask' name='Write financial report' >
+		  <documentation>
+		    Write the bi-monthly financial report for the shareholders newsletter.
+		  </documentation>
+		  <potentialOwner>
+		    <resourceAssignmentExpression>
+		      <formalExpression>user(kermit), group(sales)</formalExpression>
+		    </resourceAssignmentExpression>
+		  </potentialOwner>
+		</userTask>
+		
+		<sequenceFlow id='flow2' sourceRef='theTask' targetRef='theEnd' />
+		
+		<endEvent id='theEnd' />
+		
+	</process>
+
+</definitions>

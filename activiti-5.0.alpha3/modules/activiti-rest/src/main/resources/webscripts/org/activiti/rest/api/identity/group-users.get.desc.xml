@@ -1,0 +1,7 @@
+<webscript>
+  <shortname>Group's users</shortname>
+  <description>Returns details about the user's belonging to a group</description>
+  <url>/group/{groupId}/users</url>
+  <authentication>user</authentication>
+  <format default="json">argument</format>
+</webscript>
