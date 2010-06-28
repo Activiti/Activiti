@@ -13,27 +13,35 @@
 
 package org.activiti.test.cfg.spring;
 
+import org.activiti.DbProcessEngineBuilder;
 import org.activiti.ProcessEngine;
-import org.activiti.ProcessEngines;
 import org.springframework.beans.factory.FactoryBean;
-
 
 /**
  * @author Dave Syer
  */
 public class ProcessEngineFactoryBean implements FactoryBean {
 
-  public Object getObject() throws Exception {
-    ProcessEngines.init();
-    return ProcessEngines.getDefaultProcessEngine();
-  }
+	private String configurationResource = "activiti.properties";
 
-  public Class<?> getObjectType() {
-    return ProcessEngine.class;
-  }
+	public void setConfigurationResource(String configurationResource) {
+		this.configurationResource = configurationResource;
+	}
 
-  public boolean isSingleton() {
-    return true;
-  }
+	public Object getObject() throws Exception {
+		// ProcessEngines is not very friendly for configuration
+		// ProcessEngines.init();
+		// return ProcessEngines.getDefaultProcessEngine();
+		return new DbProcessEngineBuilder().configureFromPropertiesResource(
+				configurationResource).buildProcessEngine();
+	}
+
+	public Class<?> getObjectType() {
+		return ProcessEngine.class;
+	}
+
+	public boolean isSingleton() {
+		return true;
+	}
 
 }

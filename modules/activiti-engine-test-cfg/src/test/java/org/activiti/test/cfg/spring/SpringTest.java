@@ -12,103 +12,53 @@
  */
 package org.activiti.test.cfg.spring;
 
+import org.activiti.Deployment;
+import org.activiti.ProcessEngine;
+import org.activiti.ProcessService;
 import org.activiti.impl.util.LogUtil;
 import org.junit.Test;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.util.ClassUtils;
 
 /**
  * @author Tom Baeyens
+ * @author Dave Syer
  */
+@ContextConfiguration
+@RunWith(SpringJUnit4ClassRunner.class)
 public class SpringTest {
 
-  static {
-    LogUtil.readJavaUtilLoggingConfigFromClasspath();
-  }
+	@Autowired
+	private ProcessEngine processEngine;
 
-  @Test
-  public void testSpringApi() {
+	@Autowired
+	private UserBean userBean;
 
-    ClassPathXmlApplicationContext applicationContext = new ClassPathXmlApplicationContext("org/activiti/test/cfg/spring/applicationContext.xml");
-    UserBean userBean = (UserBean) applicationContext.getBean("userBean");
-    userBean.doTransactional();
-    applicationContext.close();
+	static {
+		LogUtil.readJavaUtilLoggingConfigFromClasspath();
+	}
 
-  }
+	@Test
+	public void testSpringApi() {
+		userBean.doTransactional();
+	}
 
-  // Temp test to try out some Spring stuff
-  @Test
-  public void testSaveDeployment() {
-    // ApplicationContext applicationContext = new
-    // ClassPathXmlApplicationContext("org/activiti/test/cfg/spring/applicationContext.xml");
-    // PlatformTransactionManager ptm = (PlatformTransactionManager)
-    // applicationContext.getBean("transactionManager");
-    // final EntityManagerFactory emf = (EntityManagerFactory)
-    // applicationContext.getBean("entityManagerFactory");
-    // TransactionTemplate transactionTemplate = new TransactionTemplate(ptm);
-    //		
-    // // See logging: transaction is committed: '[DEBUG]: Committing JPA
-    // transaction on EntityManager ...'
-    // final Long dbId = (Long) transactionTemplate.execute(new
-    // TransactionCallback() {
-    //			
-    // public Object doInTransaction(TransactionStatus transactionStatus) {
-    //					
-    // // IMPORTANT!!!
-    // // cannot use EntityManager em = emf.createEntityManager();
-    // //
-    // // The JPATransactionManager will create a new entityManager and bind it
-    // to the thread
-    // // When you create an entityManager yourself, it will NOT participate in
-    // the
-    // // current transaction and the test will fail because the database will
-    // remain empty.
-    //					
-    // EntityManager em =
-    // EntityManagerFactoryUtils.getTransactionalEntityManager(emf);
-    //					
-    // DeploymentImpl deployment = new DeploymentImpl();
-    // deployment.setName("TEST_DEPLOYMENT");
-    // assertEquals(0L, deployment.getDbid());
-    //					
-    // em.persist(deployment);
-    // assertTrue(deployment.getDbid() != 0L);
-    //					
-    // return deployment.getDbid();
-    // }
-    // });
-    //		
-    // transactionTemplate.execute(new TransactionCallback() {
-    //
-    // public Object doInTransaction(TransactionStatus transactionStatus) {
-    //
-    // EntityManager em =
-    // EntityManagerFactoryUtils.getTransactionalEntityManager(emf);
-    // DeploymentImpl deploymentFromDb = em.find(DeploymentImpl.class, dbId);
-    //
-    // assertEquals("TEST_DEPLOYMENT", deploymentFromDb.getName());
-    //
-    // return null;
-    // }
-    // });
-    //
-    // }
-  }
+	@Test
+	public void testSaveDeployment() {
 
-  // TODO
-  // @Test public void testActivitiApi() {
-  // SpringProcessManagerFactory springProcessSessionFactory =
-  // (SpringProcessManagerFactory) ProcessConfiguration.create()
-  // .configureResource("org/activiti/test/cfg/spring/activiti.properties")
-  // .buildProcessSessionFactory();
-  //
-  // AbstractApplicationContext applicationContext =
-  // (AbstractApplicationContext)
-  // springProcessSessionFactory.getApplicationContext();
-  //    
-  // UserBean userBean = (UserBean) applicationContext.getBean("userBean");
-  //    
-  // userBean.doTransactional();
-  //
-  // applicationContext.close();
-  // }
+		String resource = ClassUtils.addResourcePathToPackagePath(getClass(),
+				"testProcess.bpmn20.xml");
+		ProcessService processService = processEngine.getProcessService();
+		Deployment deployment = processService.createDeployment()
+				.name(resource).addClasspathResource(resource).deploy();
+
+		if (deployment != null) {
+			processService.deleteDeploymentCascade(deployment.getId());
+		}
+
+	}
+
 }
