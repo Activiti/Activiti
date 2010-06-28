@@ -16,7 +16,7 @@ creating the release branch.
 <h2>Release day</h2>
 <ol>
   <li>Create the release branch: <code>svn -m "creating release branch for 5.0.alpha3" copy https://svn.activiti.org/repo/activiti/trunk https://svn.activiti.org/repo/activiti/tags/activiti-5.0.alpha3</code> </li>
-  <li>Update the version in the release branch: <code>s/5.0.alpha3-SNAPSHOT/5.0.alpha3/g</code> </li>
+  <li>Update the version in the release branch: <code>s/5.0.alpha3/5.0.alpha3/g</code> </li>
   <li>Verification: Run the test suite: <code>mvn -Pcheck clean install</code> in the code base root</li>
   <li>Verification: Run the demo setup: <code>ant test.demo.setup</code> in directory <code>qa</code> </li>
   <li>Build the distribution: <code>ant clean distro</code> in directory <code>distro</code> </li>
