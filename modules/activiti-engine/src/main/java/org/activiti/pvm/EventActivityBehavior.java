@@ -19,4 +19,5 @@ package org.activiti.pvm;
 public interface EventActivityBehavior extends ActivityBehavior {
 
   void event(ActivityExecution execution, Object event) throws Exception;
+  
 }

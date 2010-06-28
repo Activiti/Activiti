@@ -21,7 +21,7 @@ import org.activiti.pvm.ActivityExecution;
 public class NoneEndEventActivity extends BpmnActivity {
   
   public void execute(ActivityExecution execution) throws Exception {
-    execution.end(); // todo: implement for subprocesses / on the border etc.
+    execution.getExecutionController().end(); // todo: implement for subprocesses / on the border etc.
   }
 
 }

@@ -26,7 +26,6 @@ import org.activiti.ProcessDefinition;
 import org.activiti.impl.bpmn.BoundaryTimerEventActivity;
 import org.activiti.impl.bpmn.BpmnInterface;
 import org.activiti.impl.bpmn.ExclusiveGatewayActivity;
-import org.activiti.impl.bpmn.JavaServiceTaskActivity;
 import org.activiti.impl.bpmn.NoneEndEventActivity;
 import org.activiti.impl.bpmn.NoneStartEventActivity;
 import org.activiti.impl.bpmn.Operation;
@@ -49,6 +48,7 @@ import org.activiti.impl.scripting.ExpressionCondition;
 import org.activiti.impl.scripting.ScriptingEngines;
 import org.activiti.impl.task.TaskDefinition;
 import org.activiti.impl.timer.TimerDeclarationImpl;
+import org.activiti.impl.util.ReflectUtil;
 import org.activiti.impl.variable.VariableDestroyWithExpression;
 import org.activiti.impl.variable.VariableDestroyWithVariable;
 import org.activiti.impl.variable.VariableInitializeWithExpression;
@@ -371,7 +371,15 @@ public class BpmnParse extends Parse {
     
     String className = serviceTaskElement.attributeNS(BpmnParser.BPMN_EXTENSIONS_NS, "javaClass");
     if (className != null) {
-      activity.setActivityBehavior(new JavaServiceTaskActivity(className));
+      Object obj = ReflectUtil.instantiate(className);
+      if (obj instanceof ActivityBehavior) {
+        activity.setActivityBehavior((ActivityBehavior) obj);
+      } else {
+        throw new ActivitiException("Class " + className + " is used in a serviceTask, but does not" 
+                + " implement the " + ActivityBehavior.class.getCanonicalName() + " interface");
+      }
+    } else {
+      throw new ActivitiException("javaClass attribute is mandatory on serviceTask");
     }
     
     // OLD implementation with BPMN interfaces/operations/etc

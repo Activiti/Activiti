@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.activiti.impl.interceptor.CommandContext;
 import org.activiti.pvm.Activity;
 import org.activiti.pvm.ActivityExecution;
 
@@ -48,8 +49,7 @@ public class ParallelGatewayActivity extends GatewayActivity {
 
   public void execute(ActivityExecution execution) throws Exception { 
     
-    // If there is only one incoming sequence flow, 
-    // we don't need to waste CPU cycles on checking join behavior 
+    // If there is only one incoming sequence flow, we can directly execute the fork behavior
     int nbrOfExecutionsToJoin = execution.getIncomingTransitions().size();
     if (nbrOfExecutionsToJoin == 1) {
       if (log.isLoggable(Level.FINE)) {
@@ -62,7 +62,7 @@ public class ParallelGatewayActivity extends GatewayActivity {
       Activity joinActivity = execution.getActivity();
       List<ActivityExecution> joinedExecutions = new ArrayList<ActivityExecution>();
       
-      List<? extends ActivityExecution> concurrentExecutions = execution.getConcurrencyController().getExecutions();
+      List<? extends ActivityExecution> concurrentExecutions = execution.getExecutionController().getExecutions();
       for (ActivityExecution concurrentExecution: concurrentExecutions) {
         if (concurrentExecution.getActivity().equals(joinActivity)) {
           joinedExecutions.add(concurrentExecution);
@@ -77,26 +77,36 @@ public class ParallelGatewayActivity extends GatewayActivity {
           
       if (nbrOfExecutionsJoined == nbrOfExecutionsToJoin) {
         ActivityExecution outgoingExecution = join(execution, joinedExecutions);
-  
         // After all incoming executions are joined, potentially there can be multiple
         // outgoing sequence flow, requiring fork behavior.
         fork(outgoingExecution);
+      } else {
+        if (log.isLoggable(Level.FINE)) {
+          log.fine("Not all executions arrived in parallel gateway '" + execution.getActivity().getId() + "'");
+        }
       }
       
     }
   }
   
   protected void fork(ActivityExecution execution) {
-    leave(execution, true); // a parallel gateway does NOT evaluate conditions 
+    leaveIgnoreConditions(execution); // a parallel gateway does NOT evaluate conditions 
   }
   
   protected ActivityExecution join(ActivityExecution execution, List<ActivityExecution> joinedExecutions) {
-    ActivityExecution outgoingExecution = execution.getConcurrencyController().createExecution();
-    outgoingExecution.setActivity(execution.getActivity());
     
+    // Child executions must be ended before selecting the ougoing sequence flowm
+    // since the children endings have an influence on the reusal of the parent execution
     for (ActivityExecution joinedExecution: joinedExecutions) {
-      joinedExecution.end();
+      joinedExecution.getExecutionController().end();
     }
+
+    //HACKHACKHACKHACKHACKHACKHACK
+    CommandContext.getCurrent().getPersistenceSession().flush();
+    // HACKHACKHACKHACKHACKHACKHACK
+    
+    ActivityExecution outgoingExecution = execution.getExecutionController().createExecution();
+    outgoingExecution.getExecutionController().setActivity(execution.getActivity());
     
     return outgoingExecution;
   }

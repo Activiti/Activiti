@@ -244,6 +244,7 @@ public class DbProcessEngineBuilder {
     if (jdbcPassword == null) {
       throw new ActivitiException("no jdbc password specified");
     }
+    
 
     persistenceSessionFactory = new IbatisPersistenceSessionFactory(idGenerator, databaseName, jdbcDriver, jdbcUrl, jdbcUsername, jdbcPassword);
     processEngineConfiguration.setPersistenceSessionFactory(persistenceSessionFactory);

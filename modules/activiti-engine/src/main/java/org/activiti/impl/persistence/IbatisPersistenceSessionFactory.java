@@ -178,6 +178,11 @@ public class IbatisPersistenceSessionFactory implements PersistenceSessionFactor
       // update the jdbc parameters to the configured ones...
       Reader reader = new InputStreamReader(inputStream);
       SqlSessionFactory sqlSessionFactory = new SqlSessionFactoryBuilder().build(reader);
+      
+      // TODO: HACK, remove!
+      ((PooledDataSource)dataSource).forceCloseAll(); // Bug in iBatis makes this necessary
+      
+      
       Environment environment = new Environment("default", transactionFactory, dataSource);
       sqlSessionFactory.getConfiguration().setEnvironment(environment);
       return sqlSessionFactory;

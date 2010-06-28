@@ -13,20 +13,23 @@
 package org.activiti.test.bpmn.servicetask;
 
 import org.activiti.BpmnActivityBehavior;
-import org.activiti.BpmnExecution;
+import org.activiti.pvm.ActivityBehavior;
+import org.activiti.pvm.ActivityExecution;
 
 
 /**
  * @author Joram Barrez
  */
-public class ToUppercaseActivityBehavior implements BpmnActivityBehavior {
+public class ToUppercaseActivityBehavior extends BpmnActivityBehavior implements ActivityBehavior {
   
   private static final String VARIABLE_NAME = "input";
   
-  public void execute(BpmnExecution bpmnExecution) {
-    String var = (String) bpmnExecution.getVariable(VARIABLE_NAME);
+  public void execute(ActivityExecution execution) throws Exception {
+    String var = (String) execution.getVariable(VARIABLE_NAME);
     var = var.toUpperCase();
-    bpmnExecution.setVariable(VARIABLE_NAME, var);
+    execution.setVariable(VARIABLE_NAME, var);
+    
+    performDefaultOutgoingBehavior(execution);
   }
-
+  
 }

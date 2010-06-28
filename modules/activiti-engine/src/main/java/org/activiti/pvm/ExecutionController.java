@@ -15,7 +15,10 @@ package org.activiti.pvm;
 import java.util.List;
 
 
-/** controls concurrent executions for an ActivityExecution.
+/**
+ * <b>Important: </b> this class is experimental, and is likely to change in newer releases.
+ *  
+ * controls concurrent executions for an ActivityExecution.
  * 
  * In case there is just 1 path of execution, a concurrency scope 
  * is represented by 1 execution.  In case there are multiple paths 
@@ -28,13 +31,23 @@ import java.util.List;
  * executions that are ended will not be deleted/removed when they arrive,
  * but only when the parent is ended.  
  * 
- * @see ActivityExecution#getConcurrencyController()
+ * 
+ * @see ActivityExecution#getExecutionController()
  * @author Tom Baeyens
+ * @author Joram Barrez
  */
-public interface ConcurrencyController {
+public interface ExecutionController {
 
   List<? extends ActivityExecution> getExecutions();
+  
   List<? extends ActivityExecution> getActiveExecutions();
+  
   ActivityExecution createExecution();
+  
+  void end();
+
+  void setActive(boolean isActive);
+
+  void setActivity(Activity activity);
 
 }

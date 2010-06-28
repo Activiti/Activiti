@@ -33,7 +33,7 @@ public class BoundaryTimerEventActivity extends BpmnActivity {
       throw new ActivitiException("Non-interrupting boundary timer event not yet implemented");
     }
     
-    leave(execution, true);
+    leave(execution);
   }
 
   public boolean isInterrupting() {

@@ -21,7 +21,6 @@ import java.util.Map;
 import java.util.logging.Logger;
 
 import org.activiti.ActivitiException;
-import org.activiti.BpmnExecution;
 import org.activiti.impl.calendar.BusinessCalendar;
 import org.activiti.impl.calendar.BusinessCalendarManager;
 import org.activiti.impl.definition.ActivityImpl;
@@ -33,7 +32,8 @@ import org.activiti.impl.job.TimerImpl;
 import org.activiti.impl.timer.TimerDeclarationImpl;
 import org.activiti.pvm.Activity;
 import org.activiti.pvm.ActivityExecution;
-import org.activiti.pvm.ConcurrencyController;
+import org.activiti.pvm.ExecutionController;
+import org.activiti.pvm.ExecutionControllerImpl;
 import org.activiti.pvm.ListenerExecution;
 import org.activiti.pvm.ObjectProcessInstance;
 import org.activiti.pvm.Transition;
@@ -45,10 +45,8 @@ import org.activiti.pvm.Transition;
 public class ExecutionImpl implements
         Serializable,
         ActivityExecution, 
-        BpmnExecution,
         ListenerExecution, 
-        ObjectProcessInstance, 
-        ConcurrencyController {
+        ObjectProcessInstance {
   
   private static final long serialVersionUID = 1L;
   
@@ -115,7 +113,7 @@ public class ExecutionImpl implements
    * to store this boolean).
    */
   transient boolean ended = false;
- 
+  
   /* Default constructor for ibatis/jpa/etc. */
   protected ExecutionImpl() {
   }
@@ -359,11 +357,8 @@ public class ExecutionImpl implements
     }
   }
 
-  public ConcurrencyController getConcurrencyController() {
-    if (isConcurrencyScope) {
-      return this;
-    }
-    return getParent();
+  public ExecutionController getExecutionController() {
+    return new ExecutionControllerImpl(this);
   }
 
   public boolean hasExecutions() {

@@ -12,14 +12,13 @@
  */
 package org.activiti.impl.bpmn;
 
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.activiti.BpmnActivityBehavior;
 import org.activiti.pvm.ActivityExecution;
-import org.activiti.pvm.ConcurrencyController;
+import org.activiti.pvm.ExecutionController;
 import org.activiti.pvm.EventActivityBehavior;
 import org.activiti.pvm.Transition;
 
@@ -36,6 +35,8 @@ public abstract class BpmnActivity implements EventActivityBehavior {
   
   private static final Logger LOG = Logger.getLogger(BpmnActivity.class.getName());
   
+  protected BpmnActivityBehavior bpmnActivityBehavior = new BpmnActivityBehavior();
+  
   /**
    * Default behaviour: just leave the activity with no extra functionality.
    */
@@ -48,58 +49,13 @@ public abstract class BpmnActivity implements EventActivityBehavior {
    * outgoing sequence flow and take those that evaluate to true.
    */
   protected void leave(ActivityExecution execution) {
-    leave(execution, true);
-  }
-
-  /**
-   * In BPMN 2.0, every outgoing sequence flow (which has no expression or has
-   * an expression evaluating to true) is taken when leaving an activity.
-   */
-  protected void leave(ActivityExecution execution, boolean checkConditions) {
-   
-    if (LOG.isLoggable(Level.FINE)) {
-      LOG.fine("Leaving activity '" + execution.getActivity().getId() + "'");
-    }
-    
-    List<Transition> outgoingSequenceFlow = execution.getOutgoingTransitions();   
-    if (outgoingSequenceFlow.size() == 1) {
-      execution.take(outgoingSequenceFlow.get(0));
-    } else if (outgoingSequenceFlow.size() > 1) {
-
-      Map<ActivityExecution, Transition> childExecutionMapping 
-          = new LinkedHashMap<ActivityExecution, Transition>(); // Linked? -> order is important
-      ConcurrencyController concurrencyController = execution.getConcurrencyController();
-      
-      for (Transition outSeqFlow: outgoingSequenceFlow) {
-        if (outSeqFlow.getCondition() == null 
-                || !checkConditions 
-                || outSeqFlow.getCondition().evaluate(execution)) {
-          ActivityExecution concurrentExecution = concurrencyController.createExecution();
-          childExecutionMapping.put(concurrentExecution, outSeqFlow);
-        }
-      }
-      
-      execution.setActive(false);
-      execution.setActivity(null);
-      
-      // Only after all child executions have been created, we start taking the sequence flow
-      // (If the 'take' would be done immediately, this causes some really tricky bugs)
-      for (Map.Entry<ActivityExecution, Transition> entry : childExecutionMapping.entrySet()) {
-        entry.getKey().take(entry.getValue());
-      }
-      
-    } else {
-      
-      if (LOG.isLoggable(Level.FINE)) {
-        LOG.fine("No outgoing sequence flow found for " + execution.getActivity().getId() 
-                + ". Ending execution.");
-      }
-      execution.end();
-      
-    }
-    
+    bpmnActivityBehavior.performDefaultOutgoingBehavior(execution);
   }
   
+  protected void leaveIgnoreConditions(ActivityExecution execution) {
+    bpmnActivityBehavior.performIgnoreConditionsOutgoingBehavior(execution);
+  }
+
   public void event(ActivityExecution execution, Object event) throws Exception {
   }
 

@@ -29,14 +29,8 @@ public interface ActivityExecution {
   void takeDefaultOutgoingTransition();
   void take(Transition transition);
   void take(String transitionId);
-
-  ConcurrencyController getConcurrencyController();
-
-  void end();
-
-  void setActive(boolean isActive);
-
-  void setActivity(Activity activity);
+  
+  ExecutionController getExecutionController();
   
   Object getVariable(String variableName);
   void setVariable(String variableName, Object value);

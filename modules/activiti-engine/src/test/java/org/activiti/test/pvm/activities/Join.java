@@ -20,7 +20,7 @@ import java.util.logging.Logger;
 import org.activiti.pvm.Activity;
 import org.activiti.pvm.ActivityBehavior;
 import org.activiti.pvm.ActivityExecution;
-import org.activiti.pvm.ConcurrencyController;
+import org.activiti.pvm.ExecutionController;
 
 /**
  * @author Tom Baeyens
@@ -30,12 +30,12 @@ public class Join implements ActivityBehavior {
   private static Logger log = Logger.getLogger(Join.class.getName());
 
   public void execute(ActivityExecution execution) {
-    execution.setActive(false);
+    execution.getExecutionController().setActive(false);
     
     Activity joinActivity = execution.getActivity();
     List<ActivityExecution> joinedExecutions = new ArrayList<ActivityExecution>();
-    ConcurrencyController scopeInstance = execution.getConcurrencyController();
-    List<? extends ActivityExecution> concurrentExecutions = scopeInstance.getExecutions();
+    ExecutionController executionController = execution.getExecutionController();
+    List<? extends ActivityExecution> concurrentExecutions = executionController.getExecutions();
     for (ActivityExecution concurrentExecution: concurrentExecutions) {
       if (concurrentExecution.getActivity()==joinActivity) {
         joinedExecutions.add(concurrentExecution);
@@ -47,19 +47,19 @@ public class Join implements ActivityBehavior {
     
     if (nbrOfExecutionsJoined==nbrOfExecutionsToJoin) {
       log.fine("join '"+joinActivity.getId()+"' activates: "+nbrOfExecutionsJoined+" of "+nbrOfExecutionsToJoin+" joined");
-      activate(scopeInstance, joinActivity, joinedExecutions);
+      activate(executionController, joinActivity, joinedExecutions);
     } else if (log.isLoggable(Level.FINE)){
       log.fine("join '"+joinActivity.getId()+"' does not activate: "+nbrOfExecutionsJoined+" of "+nbrOfExecutionsToJoin+" joined");
     }
   }
 
-  protected void activate(ConcurrencyController scopeInstance, Activity joinActivity, List<ActivityExecution> joinedExecutions) {
+  protected void activate(ExecutionController executionController, Activity joinActivity, List<ActivityExecution> joinedExecutions) {
     for (ActivityExecution joinedExecution: joinedExecutions) {
-      joinedExecution.end();
+      joinedExecution.getExecutionController().end();
     }
     
-    ActivityExecution outgoingExecution = scopeInstance.createExecution();
-    outgoingExecution.setActivity(joinActivity);
+    ActivityExecution outgoingExecution = executionController.createExecution();
+    outgoingExecution.getExecutionController().setActivity(joinActivity);
     outgoingExecution.takeDefaultOutgoingTransition();
   }
 }
