@@ -1,3 +1,6 @@
 target
 bin
-
+modules/activiti-webapp/src/main/webapp/WEB-INF/web.xml
+modules/activiti-probe/src/main/webapp/WEB-INF/web.xml
+modules/activiti-explorer/src/main/webapp/WEB-INF/web.xml
+distro/downloads
