@@ -14,6 +14,7 @@ package org.activiti.test.cfg.spring;
 
 import org.activiti.impl.util.LogUtil;
 import org.junit.Test;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 /**
  * @author Tom Baeyens
@@ -26,14 +27,12 @@ public class SpringTest {
 
   @Test
   public void testSpringApi() {
-    // ClassPathXmlApplicationContext applicationContext = new
-    // ClassPathXmlApplicationContext("org/activiti/test/cfg/spring/applicationContext.xml");
-    //    
-    // UserBean userBean = (UserBean) applicationContext.getBean("userBean");
-    //    
-    // userBean.doTransactional();
-    //
-    // applicationContext.close();
+
+    ClassPathXmlApplicationContext applicationContext = new ClassPathXmlApplicationContext("org/activiti/test/cfg/spring/applicationContext.xml");
+    UserBean userBean = (UserBean) applicationContext.getBean("userBean");
+    userBean.doTransactional();
+    applicationContext.close();
+
   }
 
   // Temp test to try out some Spring stuff

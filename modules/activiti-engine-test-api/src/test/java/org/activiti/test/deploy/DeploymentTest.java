@@ -44,7 +44,7 @@ public class DeploymentTest {
 
   @Test
   public void testSimpleString() {
-    deployer.deployProcessString(("<definitions xmlns='http://www.omg.org/spec/BPMN/20100524/MODEL' targetNamespace='http://www.activiti.org/bpmn2.0' />"));
+    deployer.deployProcessString("<definitions xmlns='http://www.omg.org/spec/BPMN/20100524/MODEL' targetNamespace='http://www.activiti.org/bpmn2.0' />");
   }
 
   @Test

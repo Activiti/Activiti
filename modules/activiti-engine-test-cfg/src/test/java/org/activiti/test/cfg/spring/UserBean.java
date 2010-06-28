@@ -14,7 +14,6 @@ package org.activiti.test.cfg.spring;
 
 import org.activiti.ProcessEngine;
 
-
 /**
  * @author Tom Baeyens
  */
@@ -22,17 +21,9 @@ public class UserBean {
 
   /** injected by spring */
   protected ProcessEngine processEngine;
-  
+
   public void doTransactional() {
-    processEngine.getProcessService().startProcessInstanceById(null);
-//    processEngine.execute(new CommandVoid() {
-//      public void executeVoid(ProcessService processService) throws Exception {
-//        processService.newDeployment()
-//          .addString("userprocess.bpmn.xml",
-//            "<bpmn-process />" )
-//          .deploy();
-//      }
-//    });
+    processEngine.getProcessService().createDeployment().addString("userprocess.bpmn.xml", "<bpmn-process />").deploy();
   }
 
   public void setProcessEngine(ProcessEngine processEngine) {
