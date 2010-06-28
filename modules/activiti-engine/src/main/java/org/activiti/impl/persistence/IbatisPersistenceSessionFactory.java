@@ -25,10 +25,11 @@ import java.util.StringTokenizer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.sql.DataSource;
+
 import org.activiti.ActivitiException;
 import org.activiti.ActivitiWrongDbException;
 import org.activiti.ProcessEngine;
-import org.activiti.impl.cfg.ProcessEngineConfiguration;
 import org.activiti.impl.db.IdGenerator;
 import org.activiti.impl.interceptor.CommandContext;
 import org.activiti.impl.util.IoUtil;
@@ -38,18 +39,19 @@ import org.apache.ibatis.session.ExecutorType;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.session.SqlSessionFactoryBuilder;
+import org.apache.ibatis.transaction.TransactionFactory;
 import org.apache.ibatis.transaction.jdbc.JdbcTransactionFactory;
-
+import org.apache.ibatis.transaction.managed.ManagedTransactionFactory;
 
 /**
  * @author Tom Baeyens
  */
 public class IbatisPersistenceSessionFactory implements PersistenceSessionFactory {
-  
+
   private static Logger log = Logger.getLogger(IbatisPersistenceSessionFactory.class.getName());
-  
+
   protected static List<String> statements = new ArrayList<String>();
-  protected static Map<String, Map<String, String>> databaseSpecificStatements = new HashMap<String, Map<String,String>>();
+  protected static Map<String, Map<String, String>> databaseSpecificStatements = new HashMap<String, Map<String, String>>();
   static {
     // Default statement ids
     statements.add("selectExecution");
@@ -95,7 +97,7 @@ public class IbatisPersistenceSessionFactory implements PersistenceSessionFactor
     statements.add("selectTableCount");
     statements.add("selectTableData");
     statements.add("selectProperty");
-    
+
     statements.add("insertExecution");
     statements.add("insertJob");
     statements.add("insertTask");
@@ -110,7 +112,7 @@ public class IbatisPersistenceSessionFactory implements PersistenceSessionFactor
     statements.add("insertGroup");
     statements.add("insertUser");
     statements.add("insertMembership");
-    
+
     statements.add("updateUser");
     statements.add("updateGroup");
     statements.add("updateProperty");
@@ -121,7 +123,7 @@ public class IbatisPersistenceSessionFactory implements PersistenceSessionFactor
     statements.add("updateByteArray");
     statements.add("updateMessage");
     statements.add("updateTimer");
-    
+
     statements.add("deleteMembership");
     statements.add("deleteDeployment");
     statements.add("deleteExecution");
@@ -138,71 +140,67 @@ public class IbatisPersistenceSessionFactory implements PersistenceSessionFactor
     statements.add("deleteUser");
 
     // DB specific statement ids
-    // e.g. addDatabaseSpecificStatement("oracle", "selectExecution", "selectExecution_oracle");
+    // e.g. addDatabaseSpecificStatement("oracle", "selectExecution",
+    // "selectExecution_oracle");
   }
-  
+
   protected static void addDatabaseSpecificStatement(String databaseName, String activitiStatement, String ibatisStatement) {
     Map<String, String> specificStatements = databaseSpecificStatements.get(databaseName);
-    if (databaseSpecificStatements==null) {
+    if (databaseSpecificStatements == null) {
       specificStatements = new HashMap<String, String>();
       databaseSpecificStatements.put(databaseName, specificStatements);
     }
     specificStatements.put(activitiStatement, ibatisStatement);
   }
 
-  protected String databaseName;
-  protected SqlSessionFactory sqlSessionFactory;
-  protected IdGenerator idGenerator;
+  protected final String databaseName;
+  protected final SqlSessionFactory sqlSessionFactory;
+  protected final IdGenerator idGenerator;
   protected Map<String, String> databaseStatements;
-  
 
-  public IbatisPersistenceSessionFactory(
-              String databaseName,
-              String jdbcDriver,
-              String jdbcUrl,
-              String jdbcUsername,
-              String jdbcPassword) {
-    
-    try {
-      this.databaseName = databaseName;
-      initializeDatabaseStatements(databaseName);
-      
-      ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
-      InputStream inputStream = classLoader.getResourceAsStream("org/activiti/db/ibatis/activiti.ibatis.mem.conf.xml"); 
-
-      // update the jdbc parameters to the configured ones...
-      // TODO ask iBatis people for a more elegant way of building the SqlSessionFactory programmatically
-      Reader reader = new InputStreamReader(inputStream);
-      sqlSessionFactory = new SqlSessionFactoryBuilder().build(reader);
-      PooledDataSource dataSource = new PooledDataSource(classLoader, jdbcDriver, jdbcUrl, jdbcUsername, jdbcPassword);
-      // update the jdbc parameters to the configured ones...
-      dataSource.forceCloseAll(); // Bug in iBatis makes this necessary
-      Environment environment = new Environment("default", new JdbcTransactionFactory(), dataSource);
-      sqlSessionFactory.getConfiguration().setEnvironment(environment);
-      
-    } catch (Exception e) {
-      throw new ActivitiException("Error while building ibatis SqlSessionFactory: "+e.getMessage(), e);
-    }
+  public IbatisPersistenceSessionFactory(IdGenerator idGenerator, String databaseName, String jdbcDriver, String jdbcUrl, String jdbcUsername, String jdbcPassword) {
+    this(idGenerator, databaseName, new PooledDataSource(Thread.currentThread().getContextClassLoader(), jdbcDriver, jdbcUrl, jdbcUsername, jdbcPassword), true);
   }
 
-  public void setProcessEngineConfiguration(ProcessEngineConfiguration processEngineConfiguration) {
-    this.idGenerator = processEngineConfiguration.getIdGenerator();
+  public IbatisPersistenceSessionFactory(IdGenerator idGenerator, String databaseName, DataSource dataSource, boolean localTransactions) {
+    this.idGenerator = idGenerator;
+    this.databaseName = databaseName;
+    sqlSessionFactory = createSessionFactory(dataSource, localTransactions ? new JdbcTransactionFactory() : new ManagedTransactionFactory());
+  }
+
+  private SqlSessionFactory createSessionFactory(DataSource dataSource, TransactionFactory transactionFactory) {
+    try {
+      initializeDatabaseStatements(databaseName);
+
+      ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+      InputStream inputStream = classLoader.getResourceAsStream("org/activiti/db/ibatis/activiti.ibatis.mem.conf.xml");
+
+      // update the jdbc parameters to the configured ones...
+      Reader reader = new InputStreamReader(inputStream);
+      SqlSessionFactory sqlSessionFactory = new SqlSessionFactoryBuilder().build(reader);
+      Environment environment = new Environment("default", transactionFactory, dataSource);
+      sqlSessionFactory.getConfiguration().setEnvironment(environment);
+      return sqlSessionFactory;
+
+    } catch (Exception e) {
+      throw new ActivitiException("Error while building ibatis SqlSessionFactory: " + e.getMessage(), e);
+    }
   }
 
   // database statements //////////////////////////////////////////////////////
 
   protected void initializeDatabaseStatements(String databaseName) {
     databaseStatements = new HashMap<String, String>();
-    for (String defaultStatement: statements) {
+    for (String defaultStatement : statements) {
       databaseStatements.put(defaultStatement, defaultStatement);
     }
-    
+
     Map<String, String> specificStatements = databaseSpecificStatements.get(databaseName);
-    if (specificStatements!=null) {
+    if (specificStatements != null) {
       databaseStatements.putAll(specificStatements);
     }
   }
-  
+
   public String statement(String statement) {
     return databaseStatements.get(statement);
   }
@@ -210,22 +208,25 @@ public class IbatisPersistenceSessionFactory implements PersistenceSessionFactor
   // database version check ///////////////////////////////////////////////////
 
   public void dbSchemaCheckVersion() {
-    SqlSession sqlSession = sqlSessionFactory.openSession(ExecutorType.BATCH); // Not quite sure if this is the right setting? We do want multiple updates to be batched for performance ...
+    /*
+     * Not quite sure if this is the right setting? We do want multiple updates
+     * to be batched for performance ...
+     */
+    SqlSession sqlSession = sqlSessionFactory.openSession(ExecutorType.BATCH);
     boolean success = false;
     try {
       String dbVersion = (String) sqlSession.selectOne(statement("selectDbSchemaVersion"));
       if (!ProcessEngine.VERSION.equals(dbVersion)) {
         throw new ActivitiWrongDbException(ProcessEngine.VERSION, dbVersion);
       }
-      
+
       success = true;
 
-    } catch(Exception e) {
+    } catch (Exception e) {
       String exceptionMessage = e.getMessage();
-      if ( (exceptionMessage.indexOf("Table")!=-1)
-           && (exceptionMessage.indexOf("not found")!=-1)
-         ) {
-        throw new ActivitiException("no activiti tables in db.  set property db.schema.strategy=create-drop in activiti.properties for automatic schema creation", e);
+      if ((exceptionMessage.indexOf("Table") != -1) && (exceptionMessage.indexOf("not found") != -1)) {
+        throw new ActivitiException(
+                "no activiti tables in db.  set property db.schema.strategy=create-drop in activiti.properties for automatic schema creation", e);
       } else {
         if (e instanceof RuntimeException) {
           throw (RuntimeException) e;
@@ -237,17 +238,16 @@ public class IbatisPersistenceSessionFactory implements PersistenceSessionFactor
       if (success) {
         sqlSession.commit(true);
       } else {
-        sqlSession.rollback(true);        
+        sqlSession.rollback(true);
       }
-      sqlSession.close();        
+      sqlSession.close();
     }
-    
+
     log.fine("activiti db schema check successful");
   }
 
   public void dbSchemaCreate() {
     executeSchemaResource("create", sqlSessionFactory);
-    log.fine("activiti db schema creation successful");
   }
 
   public void dbSchemaDrop() {
@@ -255,17 +255,17 @@ public class IbatisPersistenceSessionFactory implements PersistenceSessionFactor
   }
 
   public void executeSchemaResource(String operation, SqlSessionFactory sqlSessionFactory) {
-    SqlSession sqlSession = sqlSessionFactory.openSession(); 
+    SqlSession sqlSession = sqlSessionFactory.openSession();
     boolean success = false;
     try {
       Connection connection = sqlSession.getConnection();
       ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
-      String resource = "org/activiti/db/"+operation+"/activiti."+databaseName+"."+operation+".sql";
+      String resource = "org/activiti/db/" + operation + "/activiti." + databaseName + "." + operation + ".sql";
       InputStream inputStream = classLoader.getResourceAsStream(resource);
-      if (inputStream==null) {
-        throw new ActivitiException("resource '"+resource+"' is not available for creating the schema");
+      if (inputStream == null) {
+        throw new ActivitiException("resource '" + resource + "' is not available for creating the schema");
       }
-      
+
       Exception exception = null;
       byte[] bytes = IoUtil.readInputStream(inputStream, resource);
       String ddlStatements = new String(bytes);
@@ -275,37 +275,37 @@ public class IbatisPersistenceSessionFactory implements PersistenceSessionFactor
         if (!ddlStatement.startsWith("#")) {
           Statement jdbcStatement = connection.createStatement();
           try {
-            log.fine("\n"+ddlStatement);
+            log.fine("\n" + ddlStatement);
             jdbcStatement.execute(ddlStatement);
             jdbcStatement.close();
           } catch (Exception e) {
-            if (exception==null) {
+            if (exception == null) {
               exception = e;
             }
-            log.log(Level.SEVERE, "problem during schema "+operation+", statement '"+ddlStatement, e);
+            log.log(Level.SEVERE, "problem during schema " + operation + ", statement '" + ddlStatement, e);
           }
         }
       }
-      
-      if (exception!=null) {
-        throw exception;          
+
+      if (exception != null) {
+        throw exception;
       }
-      
+
       success = true;
 
-    } catch(Exception e) {
+    } catch (Exception e) {
       throw new ActivitiException("couldn't create db schema", e);
-      
+
     } finally {
       if (success) {
         sqlSession.commit(true);
       } else {
-        sqlSession.rollback(true);        
+        sqlSession.rollback(true);
       }
-      sqlSession.close();        
+      sqlSession.close();
     }
-    
-    log.fine("activiti db schema creation successful");
+
+    log.fine("activiti db schema " + operation + " successful");
   }
 
   public PersistenceSession openPersistenceSession(CommandContext commandContext) {
@@ -314,17 +314,11 @@ public class IbatisPersistenceSessionFactory implements PersistenceSessionFactor
   }
 
   // getters and setters //////////////////////////////////////////////////////
-  
+
   public SqlSessionFactory getSqlSessionFactory() {
     return sqlSessionFactory;
   }
   public IdGenerator getIdGenerator() {
     return idGenerator;
-  }
-  public void setSqlSessionFactory(SqlSessionFactory sqlSessionFactory) {
-    this.sqlSessionFactory = sqlSessionFactory;
-  }
-  public void setIdGenerator(IdGenerator idGenerator) {
-    this.idGenerator = idGenerator;
   }
 }

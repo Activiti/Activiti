@@ -12,7 +12,6 @@
  */
 package org.activiti.impl.interceptor;
 
-import org.activiti.impl.cfg.ProcessEngineConfiguration;
 
 
 
@@ -25,5 +24,4 @@ public interface CommandExecutor {
 
   <T> T execute(Command<T> cmd);
 
-  void setProcessEngineConfiguration(ProcessEngineConfiguration processEngineConfiguration);
 }

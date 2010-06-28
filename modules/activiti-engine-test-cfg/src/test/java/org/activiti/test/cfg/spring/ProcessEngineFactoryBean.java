@@ -13,7 +13,10 @@
 
 package org.activiti.test.cfg.spring;
 
+import javax.sql.DataSource;
+
 import org.activiti.DbProcessEngineBuilder;
+import org.activiti.DbSchemaStrategy;
 import org.activiti.ProcessEngine;
 import org.springframework.beans.factory.FactoryBean;
 
@@ -23,16 +26,14 @@ import org.springframework.beans.factory.FactoryBean;
 public class ProcessEngineFactoryBean implements FactoryBean {
 
 	private String configurationResource = "activiti.properties";
+  private DbProcessEngineBuilder builder = new DbProcessEngineBuilder();
 
 	public void setConfigurationResource(String configurationResource) {
 		this.configurationResource = configurationResource;
 	}
 
 	public Object getObject() throws Exception {
-		// ProcessEngines is not very friendly for configuration
-		// ProcessEngines.init();
-		// return ProcessEngines.getDefaultProcessEngine();
-		return new DbProcessEngineBuilder().configureFromPropertiesResource(
+    return builder.configureFromPropertiesResource(
 				configurationResource).buildProcessEngine();
 	}
 
@@ -43,5 +44,25 @@ public class ProcessEngineFactoryBean implements FactoryBean {
 	public boolean isSingleton() {
 		return true;
 	}
+
+  public void setDatabaseName(String databaseName) {
+    builder.setDatabaseName(databaseName);
+  }
+
+  public void setDataSource(DataSource dataSource) {
+    builder.setDataSource(dataSource);
+  }
+
+  public void setDbSchemaStrategy(DbSchemaStrategy dbSchemaStrategy) {
+    builder.setDbSchemaStrategy(dbSchemaStrategy);
+  }
+
+  public void setJobExecutorAutoActivation(boolean jobExecutorAutoActivate) {
+    builder.setJobExecutorAutoActivation(jobExecutorAutoActivate);
+  }
+
+  public void setProcessEngineName(String processEngineName) {
+    builder.setProcessEngineName(processEngineName);
+  }
 
 }

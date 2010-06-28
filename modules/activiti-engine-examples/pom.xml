@@ -1,82 +1,93 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <modelVersion>4.0.0</modelVersion>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
 
-  <name>Activiti - Engine - Examples</name>
-  <groupId>org.activiti</groupId>
-  <artifactId>activiti-engine-examples</artifactId>
+	<name>Activiti - Engine - Examples</name>
+	<groupId>org.activiti</groupId>
+	<artifactId>activiti-engine-examples</artifactId>
 
-  <parent>
-    <groupId>org.activiti</groupId>
-    <artifactId>activiti-root</artifactId>
-    <relativePath>../..</relativePath>
-    <version>5.0.alpha3-SNAPSHOT</version>
-  </parent>
+	<parent>
+		<groupId>org.activiti</groupId>
+		<artifactId>activiti-root</artifactId>
+		<relativePath>../..</relativePath>
+		<version>5.0.alpha3-SNAPSHOT</version>
+	</parent>
 
-  <dependencies>
-    <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.activiti</groupId>
-      <artifactId>activiti-engine</artifactId>
-    </dependency>
-  </dependencies>
-  
-  <profiles>
-    <profile>
-      <id>database</id>
-      <activation>
-        <property>
-          <name>database</name>
-        </property>
-      </activation>
-      <build>
-        <plugins>
-          <plugin>
-            <artifactId>maven-antrun-plugin</artifactId>
-            <!-- only worked with this version, there might be a bug with antrun see http://jira.codehaus.org/browse/MANTRUN-109--> 
-            <version>1.4</version>
-            <executions>
-              <execution>
-                <id>database-test-create-schema</id>
-                <phase>process-test-classes</phase>
-                <goals>
-                  <goal>run</goal>
-                </goals>
-                <configuration>
-                  <tasks>
-                    <echo message="CREATING SCHEMA AND UPDATING PROPERTIES ${database} #{database} @{database} " />
-	                  <ant antfile="${basedir}/../../qa/db/build.xml" target="create.db.schema" inheritAll="false"> 
-                      <property name="test_classpath" refid="maven.test.classpath"/>
-                      <property name="database" value="${database}"/>
-	                  </ant>
-	                  <!-- TODO overwrite the target/classes/activiti.properties -->
-                  </tasks>
-                </configuration>
-              </execution>
-              <execution>
-                <id>database-test-drop-schema</id>
-                <phase>prepare-package</phase>
-                <goals>
-                  <goal>run</goal>
-                </goals>
-                <configuration>
-                  <tasks>
-                    <echo message="DROPPING SCHEMA ${database} #{database} @{database} " />
-	                  <ant antfile="${basedir}/../../qa/db/build.xml" target="drop.db.schema" inheritAll="false"> 
-                      <property name="test_classpath" refid="maven.test.classpath"/>
-                      <property name="database" value="${database}"/>
-	                  </ant>
-                  </tasks>
-                </configuration>
-              </execution>
-            </executions>
-          </plugin>
-        </plugins>
-      </build>
-    </profile>
-  </profiles>
+	<dependencies>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.activiti</groupId>
+			<artifactId>activiti-engine</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>hsqldb</groupId>
+			<artifactId>hsqldb</artifactId>
+			<version>1.8.0.7</version>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
+
+	<profiles>
+		<profile>
+			<id>database</id>
+			<activation>
+				<property>
+					<name>database</name>
+				</property>
+			</activation>
+			<build>
+				<plugins>
+					<plugin>
+						<artifactId>maven-antrun-plugin</artifactId>
+						<!--
+							only worked with this version, there might be a bug with antrun
+							see http://jira.codehaus.org/browse/MANTRUN-109
+						-->
+						<version>1.4</version>
+						<executions>
+							<execution>
+								<id>database-test-create-schema</id>
+								<phase>process-test-classes</phase>
+								<goals>
+									<goal>run</goal>
+								</goals>
+								<configuration>
+									<tasks>
+										<echo
+											message="CREATING SCHEMA AND UPDATING PROPERTIES ${database} #{database} @{database} " />
+										<ant antfile="${basedir}/../../qa/db/build.xml" target="create.db.schema"
+											inheritAll="false">
+											<property name="test_classpath" refid="maven.test.classpath" />
+											<property name="database" value="${database}" />
+										</ant>
+										<!-- TODO overwrite the target/classes/activiti.properties -->
+									</tasks>
+								</configuration>
+							</execution>
+							<execution>
+								<id>database-test-drop-schema</id>
+								<phase>prepare-package</phase>
+								<goals>
+									<goal>run</goal>
+								</goals>
+								<configuration>
+									<tasks>
+										<echo message="DROPPING SCHEMA ${database} #{database} @{database} " />
+										<ant antfile="${basedir}/../../qa/db/build.xml" target="drop.db.schema"
+											inheritAll="false">
+											<property name="test_classpath" refid="maven.test.classpath" />
+											<property name="database" value="${database}" />
+										</ant>
+									</tasks>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
 </project>

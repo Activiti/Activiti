@@ -12,7 +12,6 @@
  */
 package org.activiti.impl.interceptor;
 
-import org.activiti.impl.cfg.ProcessEngineConfiguration;
 
 
 
@@ -30,7 +29,4 @@ public abstract class Interceptor implements CommandExecutor {
     this.next = next;
   }
 
-  public void setProcessEngineConfiguration(ProcessEngineConfiguration processEngineConfiguration) {
-    next.setProcessEngineConfiguration(processEngineConfiguration);
-  }
 }

@@ -112,7 +112,7 @@ create table ACT_TASKINVOLVEMENT (
     GROUP_ID_ varchar(255),
     TYPE_ varchar(255),
     USER_ID_ varchar(255),
-    TASK_ID_ bigint,
+    TASK_ID_ varchar(255),
     primary key (ID_)
 );
 

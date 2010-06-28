@@ -26,25 +26,16 @@ public class CommandContextInterceptor extends Interceptor {
   
   private static Logger log = Logger.getLogger(CommandContextInterceptor.class.getName());
   
-  CommandContextFactory commandContextFactory;
+  private final ProcessEngineConfiguration processEngineConfiguration;
 
-  public void setProcessEngineConfiguration(ProcessEngineConfiguration processEngineConfiguration) {
-    this.commandContextFactory = processEngineConfiguration.getCommandContextFactory();
-    super.setProcessEngineConfiguration(processEngineConfiguration);
+  public CommandContextInterceptor(ProcessEngineConfiguration processEngineConfiguration) {
+    this.processEngineConfiguration = processEngineConfiguration;
   }
 
-  public CommandContextFactory getCommandContextFactory() {
-    return commandContextFactory;
-  }
-
-  public void setCommandContextFactory(CommandContextFactory commandContextFactory) {
-    this.commandContextFactory = commandContextFactory;
-  }
-  
   public <T> T execute(Command<T> command) {
     log.fine("");
     log.fine("=== starting command "+command+" ===========================================");
-    CommandContext commandContext = commandContextFactory.createCommandContext(command);
+    CommandContext commandContext = processEngineConfiguration.getCommandContextFactory().createCommandContext(command);
     try {
       T result = next.execute(command);
       return result;

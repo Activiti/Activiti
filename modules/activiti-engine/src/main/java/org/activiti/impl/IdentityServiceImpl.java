@@ -38,9 +38,13 @@ import org.activiti.impl.interceptor.CommandExecutor;
  */
 public class IdentityServiceImpl implements IdentityService {
   
-  /** must be injected with {@link #setCommandExecutor(CommandExecutor)} */
-  protected CommandExecutor commandExecutor;
+  /** must be injected */
+  protected final CommandExecutor commandExecutor;
   
+  public IdentityServiceImpl(CommandExecutor commandExecutor) {
+    this.commandExecutor = commandExecutor;
+  }
+
   public Group newGroup(String groupId) {
     return new GroupImpl(groupId);
   }
@@ -103,7 +107,4 @@ public class IdentityServiceImpl implements IdentityService {
     return commandExecutor;
   }
   
-  public void setCommandExecutor(CommandExecutor commandExecutor) {
-    this.commandExecutor = commandExecutor;
-  }
 }

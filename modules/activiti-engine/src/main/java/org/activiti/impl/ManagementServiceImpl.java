@@ -31,9 +31,13 @@ import org.activiti.impl.query.TablePageQueryImpl;
  */
 public class ManagementServiceImpl implements ManagementService {
 
-  /** must be injected with {@link #setCommandExecutor(CommandExecutor)} */
-  protected CommandExecutor commandExecutor;
+  /** must be injected */
+  protected final CommandExecutor commandExecutor;
   
+  public ManagementServiceImpl(CommandExecutor commandExecutor) {
+    this.commandExecutor = commandExecutor;
+  }
+
   public Map<String, Long> getTableCount() {
     return commandExecutor.execute(new GetTableCountCmd());
   }
@@ -55,8 +59,5 @@ public class ManagementServiceImpl implements ManagementService {
   public CommandExecutor getCommandExecutor() {
     return commandExecutor;
   }
-  
-  public void setCommandExecutor(CommandExecutor commandExecutor) {
-    this.commandExecutor = commandExecutor;
-  }
+
 }

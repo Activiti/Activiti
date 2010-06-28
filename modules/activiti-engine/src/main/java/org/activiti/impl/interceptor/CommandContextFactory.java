@@ -27,7 +27,7 @@ import org.activiti.impl.tx.TransactionContextFactory;
  */
 public class CommandContextFactory {
   
-  protected ProcessEngineConfiguration processEngineConfiguration;
+  protected final ProcessEngineConfiguration processEngineConfiguration;
   protected PersistenceSessionFactory persistenceSessionFactory;
   protected MessageSessionFactory messageSessionFactory;
   protected TimerSessionFactory timerSessionFactory;
@@ -36,6 +36,10 @@ public class CommandContextFactory {
   /** is this open ended set of session factories useful?
    * intended purpose is to allow for user defined session factories and sessions. */  
   protected Map<Class<?>, SessionFactory> sessionFactories = new HashMap<Class<?>, SessionFactory>();
+
+  public CommandContextFactory(ProcessEngineConfiguration processEngineConfiguration) {
+    this.processEngineConfiguration = processEngineConfiguration;
+  }
 
   public CommandContext createCommandContext(Command<?> cmd) {
     return new CommandContext(cmd, this);
@@ -57,9 +61,6 @@ public class CommandContextFactory {
   
   public ProcessEngineConfiguration getProcessEngineConfiguration() {
     return processEngineConfiguration;
-  }
-  public void setProcessEngineConfiguration(ProcessEngineConfiguration processEngineConfiguration) {
-    this.processEngineConfiguration = processEngineConfiguration;
   }
   public Map<Class< ? >, SessionFactory> getSessionFactories() {
     return sessionFactories;

@@ -35,7 +35,7 @@ public class JobExecutor {
   
   private static Logger log = Logger.getLogger(JobExecutor.class.getName());
 
-  protected CommandExecutor commandExecutor;
+  protected final CommandExecutor commandExecutor;
 
   protected int maxJobsPerAcquisition = 3;
   protected int waitTimeInMillis = 5 * 1000;
@@ -50,6 +50,10 @@ public class JobExecutor {
   protected ThreadPoolExecutor threadPoolExecutor;
   
   protected boolean isActive = false;
+
+  public JobExecutor(CommandExecutor commandExecutor) {
+    this.commandExecutor = commandExecutor;
+  }
 
   public synchronized void start() {
     if(isActive) {
@@ -205,7 +209,4 @@ public class JobExecutor {
     this.lockOwner = lockOwner;
   }
 
-  public void setCommandExecutor(CommandExecutor commandExecutor) {
-    this.commandExecutor = commandExecutor;
-  }
 }

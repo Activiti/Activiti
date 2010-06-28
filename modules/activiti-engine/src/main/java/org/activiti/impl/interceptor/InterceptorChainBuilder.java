@@ -14,6 +14,7 @@ package org.activiti.impl.interceptor;
 
 
 
+
 /**
  * @author Tom Baeyens
  */
@@ -36,4 +37,5 @@ public class InterceptorChainBuilder {
   public CommandExecutor getFirst() {
     return first;
   }
+
 }

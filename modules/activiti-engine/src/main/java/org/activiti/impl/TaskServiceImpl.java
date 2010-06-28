@@ -39,8 +39,12 @@ import org.activiti.impl.task.TaskQueryImpl;
  */
 public class TaskServiceImpl implements TaskService {
 
-  /** must be injected with {@link #setCommandExecutor(CommandExecutor)} */
-  protected CommandExecutor commandExecutor;
+  /** must be injected */
+  protected final CommandExecutor commandExecutor;
+
+  public TaskServiceImpl(CommandExecutor commandExecutor) {
+    this.commandExecutor = commandExecutor;
+  }
 
   public Task newTask() {
     return new TaskImpl(null);
@@ -145,8 +149,5 @@ public class TaskServiceImpl implements TaskService {
   public CommandExecutor getCommandExecutor() {
     return commandExecutor;
   }
-  
-  public void setCommandExecutor(CommandExecutor commandExecutor) {
-    this.commandExecutor = commandExecutor;
-  }
+
 }

@@ -27,7 +27,6 @@ import org.activiti.ProcessService;
 import org.activiti.impl.cmd.DeleteDeploymentCmd;
 import org.activiti.impl.cmd.DeleteProcessInstanceCmd;
 import org.activiti.impl.cmd.DeployCmd;
-import org.activiti.impl.cmd.FindChildExecutionsCmd;
 import org.activiti.impl.cmd.FindDeploymentResourcesCmd;
 import org.activiti.impl.cmd.FindDeploymentsCmd;
 import org.activiti.impl.cmd.FindExecutionCmd;
@@ -53,10 +52,10 @@ import org.activiti.impl.repository.DeploymentImpl;
  */
 public class ProcessServiceImpl implements ProcessService {
   
-  protected CommandExecutor commandExecutor;
+  protected final CommandExecutor commandExecutor;
   
-  public void setCmdExecutor(CommandExecutor commandExecutor) {
-    this.commandExecutor = commandExecutor;
+  public ProcessServiceImpl(CommandExecutor commandExecutor) {
+    this.commandExecutor = commandExecutor;  
   }
 
   public DeploymentBuilder createDeployment() {
