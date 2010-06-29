@@ -70,7 +70,7 @@
               <programlisting>
 {
   "name": "default",
-  "resourceUrl": "jar:file:\//&lt;path-to-deployment&gt;\/activiti-cfg.jar!\/activiti.cfg.xml",
+  "resourceUrl": "jar:file:\//&lt;path-to-deployment&gt;\/activiti-cfg.jar!\/activiti.properties",
   "exception": null,
   "version": "5.0.alpha3"
 }</programlisting>
