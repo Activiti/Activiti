@@ -14,42 +14,6 @@
 
 	</section>
 
-  <!-- Commented 06/05/2010: currently no focus on multiple languages support 
-  
-	<section id="bpmnConfiguration">
-
-		<title>Configuration</title>
-
-		<para>
-		  The Activiti engine is capable of running mutliple process languages, due to its
-		  Process Virtual Machine (PVM) design. Currently, we've implemented the BPMN 2.0,
-		  but the mechanism described here for enabling a certain process language will be the same.
-		</para>
-		
-		<para>
-		  To enable BPMN 2.0 support, add the following lines to 
-      the Activiti <emphasis role="bold">configuration file</emphasis> (default this is
-      <emphasis>activiti.cfg.xml</emphasis>).
-      
-      <programlisting>
-&lt;object name=&quot;DeployerManager&quot; class=&quot;org.activiti.impl.repository.DeployerManager&quot;&gt;
-  &lt;property name=&quot;deployers&quot;&gt;
-    &lt;list&gt;
-      <emphasis role="bold">&lt;object class=&quot;org.activiti.impl.bpmn.BpmnDeployer&quot; /&gt;</emphasis>
-    &lt;/list&gt;
-  &lt;/property&gt;
-&lt;/object&gt;</programlisting>  
-		</para>
-		
-		<para>
-		  This will add a BPMN 2.0 process deployer (implementation of the
-		  <emphasis>org.activiti.impl.repository.Deployer</emphasis> interface) to the 
-		  <emphasis>DeployManager</emphasis> of the engine. 
-		</para>
-
-	</section>
-	-->
-	
 	<section id="bpmnExamples">
 
 		<title>Examples</title>
