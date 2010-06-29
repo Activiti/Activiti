@@ -8,7 +8,7 @@
 	<artifactId>activiti-root</artifactId>
 
 	<packaging>pom</packaging>
-	<version>5.0.alpha3-SNAPSHOT</version>
+	<version>5.0.alpha4-SNAPSHOT</version>
 
 	<dependencyManagement>
 		<dependencies>
