@@ -38,7 +38,7 @@
           <plugin>
             <artifactId>maven-antrun-plugin</artifactId>
             <!-- only worked with this version, there might be a bug with antrun see http://jira.codehaus.org/browse/MANTRUN-109--> 
-            <version>1.4</version>
+            <!-- version>1.4</version -->
             <executions>
               <execution>
                 <id>database-test-create-schema</id>
