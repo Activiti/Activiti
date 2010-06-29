@@ -12,7 +12,6 @@
  */
 package org.activiti.impl.interceptor;
 
-import org.activiti.impl.cfg.ProcessEngineConfiguration;
 
 
 
@@ -26,6 +25,4 @@ public class CommandExecutorImpl implements CommandExecutor {
     return command.execute(commandContext);
   }
 
-  public void setProcessEngineConfiguration(ProcessEngineConfiguration processEngineConfiguration) {
-  }
 }
