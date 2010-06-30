@@ -113,10 +113,10 @@
           <if test="candidateUser != null">
             I.USER_ID_ = #{candidateUser}          
           </if>
-          <if test="candidateUser != null &amp;&amp; candidateGroups != null">
+          <if test="candidateUser != null &amp;&amp; candidateGroups != null &amp;&amp; candidateGroups.size() &gt; 0">
             or
           </if>
-          <if test="candidateGroups != null">
+          <if test="candidateGroups != null &amp;&amp; candidateGroups.size() &gt; 0">
             I.GROUP_ID_ IN
             <foreach item="group" index="index" collection="candidateGroups" 
                      open="(" separator="," close=")">
@@ -197,5 +197,18 @@
   <delete id="deleteTaskInvolvement" parameterType="string">
     delete from ACT_TASKINVOLVEMENT where ID_ = #{id}
   </delete>
- 
+
+
+  <!-- DATABASE SPECIFIC SQLs --> 
+  <select id="selectTaskByDynamicCriteria_mysql" parameterType="map" resultMap="taskResultMap">
+    select distinct T.*
+    <include refid="selectTaskByDynamicCriteriaSql"/>
+     <if test="sortColumn != null">
+      order by T.${sortColumn} ${sortOrder}
+    </if>
+    <if test="sortColumn == null">
+      order by T.ID_
+    </if>
+  </select>
+   
 </mapper>

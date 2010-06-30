@@ -44,4 +44,14 @@
     </if>
   </select>
 
+  <select id="selectTableData_mysql" parameterType="map" resultType="map">
+    select * from ${tableName}
+    <if test="sortColumn != null">
+      order by ${sortColumn} ${sortOrder}
+    </if>
+    <if test="sortColumn == null">
+     order by CREATE_TIME_ asc	
+    </if>
+  </select>
+
 </mapper>

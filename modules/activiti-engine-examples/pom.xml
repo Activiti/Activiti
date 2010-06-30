@@ -28,6 +28,12 @@
 			<version>1.8.0.7</version>
 			<scope>test</scope>
 		</dependency>
+		<dependency>
+			<groupId>mysql</groupId>
+			<artifactId>mysql-connector-java</artifactId>
+			<version>5.1.6</version>
+			<scope>test</scope>
+		</dependency>
 	</dependencies>
 
 	<profiles>
@@ -63,8 +69,9 @@
 											<property name="test_classpath" refid="maven.test.classpath" />
 											<property name="database" value="${database}" />
 										</ant>
-										<!-- TODO overwrite the target/classes/activiti.properties -->
-									</tasks>
+										<ant antfile="${basedir}/../../qa/db/build.xml" target="create.activiti.prop">
+											<property name="database" value="${database}"/>
+										</ant>									</tasks>
 								</configuration>
 							</execution>
 							<execution>

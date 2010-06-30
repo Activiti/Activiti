@@ -51,7 +51,7 @@ public class IbatisPersistenceSessionFactory implements PersistenceSessionFactor
   private static Logger log = Logger.getLogger(IbatisPersistenceSessionFactory.class.getName());
 
   protected static List<String> statements = new ArrayList<String>();
-  protected static Map<String, Map<String, String>> databaseSpecificStatements = new HashMap<String, Map<String, String>>();
+  protected static Map<String, Map<String, String>> databaseSpecificStatements = null;
   static {
     // Default statement ids
     statements.add("selectExecution");
@@ -142,14 +142,22 @@ public class IbatisPersistenceSessionFactory implements PersistenceSessionFactor
     // DB specific statement ids
     // e.g. addDatabaseSpecificStatement("oracle", "selectExecution",
     // "selectExecution_oracle");
+    addDatabaseSpecificStatement("mysql", "selectTableData", "selectTableData_mysql");
+    addDatabaseSpecificStatement("mysql", "selectTaskByDynamicCriteria", "selectTaskByDynamicCriteria_mysql");
   }
 
   protected static void addDatabaseSpecificStatement(String databaseName, String activitiStatement, String ibatisStatement) {
-    Map<String, String> specificStatements = databaseSpecificStatements.get(databaseName);
-    if (databaseSpecificStatements == null) {
+	Map<String, String> specificStatements = null;
+	if (databaseSpecificStatements==null) {
+	  databaseSpecificStatements = new HashMap<String, Map<String,String>>();	
       specificStatements = new HashMap<String, String>();
       databaseSpecificStatements.put(databaseName, specificStatements);
     }
+	else
+	{
+		specificStatements = databaseSpecificStatements.get(databaseName);
+	}
+
     specificStatements.put(activitiStatement, ibatisStatement);
   }
 
