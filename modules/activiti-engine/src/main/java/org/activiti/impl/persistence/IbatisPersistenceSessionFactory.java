@@ -142,7 +142,6 @@ public class IbatisPersistenceSessionFactory implements PersistenceSessionFactor
     // DB specific statement ids
     // e.g. addDatabaseSpecificStatement("oracle", "selectExecution",
     // "selectExecution_oracle");
-    addDatabaseSpecificStatement("mysql", "selectTableData", "selectTableData_mysql");
     addDatabaseSpecificStatement("mysql", "selectTaskByDynamicCriteria", "selectTaskByDynamicCriteria_mysql");
   }
 
