@@ -50,7 +50,6 @@ public interface ProcessEngine {
 
   /** the name as specified in the 'process.engine.name' property in 
    * the activiti.properties configuration file or in the 
-   * {@link ProcessEngineConfiguration#setProcessEngineName(String)}.
    * The default name for a process engine is 'default */
   String getName();
 

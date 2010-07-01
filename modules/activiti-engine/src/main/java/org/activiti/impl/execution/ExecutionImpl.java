@@ -95,7 +95,6 @@ public class ExecutionImpl implements
   transient protected boolean isOperating = false;
   
   /** non-persisted pointer to the process definition.
-   * @see #processDefinitionName
    * @see #getProcessDefinition()
    * @see #setProcessDefinition(ProcessDefinitionImpl) */
   transient protected ProcessDefinitionImpl processDefinition;

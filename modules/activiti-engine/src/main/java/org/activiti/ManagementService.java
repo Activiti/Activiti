@@ -41,8 +41,6 @@ public interface ManagementService {
   /**
    * creates a {@link TablePageQuery} that can be used to fetch {@link TablePage}
    * containing specific sections of table row data.
-   * 
-   * @see #createTablePageQuery(tableName, offset, maxResult) for the convience usage.
    */
   TablePageQuery createTablePageQuery();
   

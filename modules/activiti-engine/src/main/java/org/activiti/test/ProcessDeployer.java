@@ -65,7 +65,6 @@ import org.junit.runners.model.FrameworkMethod;
  * </p>
  * 
  * @see ProcessDeclared
- * @see ResourceUtils
  * 
  * @author Dave Syer
  */
