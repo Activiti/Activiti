@@ -26,7 +26,7 @@ import org.activiti.impl.interceptor.CommandExecutor;
 import org.activiti.impl.jobexecutor.JobExecutor;
 
 /**
- * @author Dave Syer
+ * @author Nick Burch
  */
 public class JobExecutorPoller {
   
