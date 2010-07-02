@@ -85,16 +85,16 @@ public class JobExecutor {
       return;
     }
     
-    isActive = false;
-
     log.info("Shutting down the JobExecutor");
-    
-    // Close the pending jobs task
-    jobAcquisitionThread.shutdown();
     
     // Ask the thread pool to finish and exit
     threadPoolExecutor.shutdown();
     
+    // Close the pending jobs task
+    jobAcquisitionThread.shutdown();
+    
+    isActive = false;
+
     // Clear references
     threadPoolExecutor = null;
     jobAcquisitionThread = null;

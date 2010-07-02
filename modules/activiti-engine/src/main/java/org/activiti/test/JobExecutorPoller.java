@@ -15,6 +15,7 @@ package org.activiti.test;
 
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.logging.Logger;
 
 import org.activiti.ActivitiException;
 import org.activiti.ProcessEngine;
@@ -28,6 +29,8 @@ import org.activiti.impl.jobexecutor.JobExecutor;
  * @author Dave Syer
  */
 public class JobExecutorPoller {
+  
+  private static Logger log = Logger.getLogger(JobExecutorPoller.class.getName());
 
   private final ProcessEngine processEngine;
 
@@ -71,6 +74,7 @@ public class JobExecutorPoller {
         return !commandContext.getPersistenceSession().findNextJobsToExecute(1).isEmpty();
       }
     });
+    log.info("Jobs available: "+areJobsAvailable);
     return areJobsAvailable;
   }
 

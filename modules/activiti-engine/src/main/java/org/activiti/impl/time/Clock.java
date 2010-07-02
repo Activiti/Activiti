@@ -20,7 +20,7 @@ import java.util.Date;
  */
 public class Clock {
   
-  protected static Date CURRENT_TIME = null;
+  private volatile static Date CURRENT_TIME = null;
   
   public static void setCurrentTime(Date currentTime) {
     Clock.CURRENT_TIME = currentTime;

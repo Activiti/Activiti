@@ -29,9 +29,24 @@ import java.util.logging.LogRecord;
  * @author Tom Baeyens
  */
 public class LogUtil {
+  
+  public static enum ThreadRenderingMode {
+    NONE, INDENT, PRINT_ID;
+  }
 
   private static final String LINE_SEPARATOR = System.getProperty("line.separator");
   private static Map<Integer, String> threadIndents = new HashMap<Integer, String>();
+  private static ThreadRenderingMode threadRenderingMode = ThreadRenderingMode.NONE;
+  
+  public static ThreadRenderingMode getThreadRenderingMode() {
+    return threadRenderingMode;
+  }
+
+  public static ThreadRenderingMode setThreadRenderingMode(ThreadRenderingMode threadRenderingMode) {
+    ThreadRenderingMode old = LogUtil.threadRenderingMode;
+    LogUtil.threadRenderingMode = threadRenderingMode;
+    return old;
+  }
 
   public static void readJavaUtilLoggingConfigFromClasspath() {
     ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
@@ -102,6 +117,12 @@ public class LogUtil {
 
     protected static String getThreadIndent(int threadId) {
       Integer threadIdInteger = new Integer(threadId);
+      if (threadRenderingMode==ThreadRenderingMode.NONE) {
+        return "";
+      }
+      if (threadRenderingMode==ThreadRenderingMode.PRINT_ID) {
+        return ""+threadId;
+      }
       String threadIndent = threadIndents.get(threadIdInteger);
       if (threadIndent == null) {
         StringBuilder stringBuilder = new StringBuilder();

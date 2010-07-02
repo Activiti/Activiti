@@ -21,6 +21,7 @@ import org.activiti.impl.interceptor.Command;
 import org.activiti.impl.interceptor.CommandContext;
 import org.activiti.impl.job.JobImpl;
 import org.activiti.impl.persistence.PersistenceSession;
+import org.activiti.impl.time.Clock;
 
 
 /**
@@ -46,6 +47,7 @@ public class AcquireJobsCmd implements Command<AcquiredJobs> {
       if (job != null) {
         job.setLockOwner(lockOwner);
         GregorianCalendar gregorianCalendar = new GregorianCalendar();
+        gregorianCalendar.setTime(Clock.getCurrentTime());
         gregorianCalendar.add(Calendar.MILLISECOND, lockTimeInMillis);
         job.setLockExpirationTime(gregorianCalendar.getTime());
         jobIds.add(job.getId());

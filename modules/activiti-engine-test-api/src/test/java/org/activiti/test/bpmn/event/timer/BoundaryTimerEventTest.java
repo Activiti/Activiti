@@ -17,12 +17,14 @@ import static org.junit.Assert.assertEquals;
 
 import java.util.Date;
 import java.util.List;
+import java.util.logging.Logger;
 
 import org.activiti.Job;
 import org.activiti.JobQuery;
 import org.activiti.ProcessInstance;
 import org.activiti.Task;
 import org.activiti.impl.time.Clock;
+import org.activiti.impl.util.LogUtil.ThreadRenderingMode;
 import org.activiti.test.JobExecutorPoller;
 import org.activiti.test.LogInitializer;
 import org.activiti.test.ProcessDeclared;
@@ -34,9 +36,9 @@ import org.junit.Test;
  * @author jbarrez
  */
 public class BoundaryTimerEventTest {
-
+  
   @Rule
-  public LogInitializer logSetup = new LogInitializer();
+  public LogInitializer logSetup = new LogInitializer(ThreadRenderingMode.PRINT_ID);
   @Rule
   public ProcessDeployer deployer = new ProcessDeployer();
 

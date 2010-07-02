@@ -19,6 +19,7 @@ import junit.framework.AssertionFailedError;
 
 import org.activiti.impl.time.Clock;
 import org.activiti.impl.util.LogUtil;
+import org.activiti.impl.util.LogUtil.ThreadRenderingMode;
 import org.junit.rules.MethodRule;
 import org.junit.runners.model.FrameworkMethod;
 import org.junit.runners.model.Statement;
@@ -37,25 +38,38 @@ public class LogInitializer implements MethodRule {
   }
   
   private static Logger log = Logger.getLogger(LogInitializer.class.getName());
+  private final ThreadRenderingMode threadRenderingMode;
   
+  public LogInitializer() {
+    this(ThreadRenderingMode.INDENT);
+  }
+  
+  public LogInitializer(ThreadRenderingMode threadRenderingMode) {
+    this.threadRenderingMode = threadRenderingMode;   
+  }
+
   public Statement apply(Statement base, FrameworkMethod method, Object target) {
-    return new LogUtilStatement(base, method);
+    return new LogUtilStatement(base, method, threadRenderingMode);
   }
  
   private class LogUtilStatement extends Statement {
 
     private final Statement base;
     private final FrameworkMethod method;
+    private final ThreadRenderingMode threadRenderingMode;
 
-    public LogUtilStatement(Statement base, FrameworkMethod method) {
+    public LogUtilStatement(Statement base, FrameworkMethod method, ThreadRenderingMode threadRenderingMode) {
       this.base= base;
       this.method = method;
+      this.threadRenderingMode = threadRenderingMode;
     }
 
     @Override
     public void evaluate() throws Throwable {
 
       LogUtil.resetThreadIndents();
+      ThreadRenderingMode oldThreadRenderingMode = LogUtil.setThreadRenderingMode(threadRenderingMode);
+
       log.fine(EMPTY_LINE);
       log.fine("---- START "+method.getMethod().getDeclaringClass().getName()+"."+method.getName()+" ------------------------------------------------------");
 
@@ -74,6 +88,7 @@ public class LogInitializer implements MethodRule {
       } finally {
         Clock.reset();
         log.fine("---- END "+method.getMethod().getDeclaringClass().getName()+"."+method.getName()+" ------------------------------------------------------");
+        LogUtil.setThreadRenderingMode(oldThreadRenderingMode);
       }
     }
  
