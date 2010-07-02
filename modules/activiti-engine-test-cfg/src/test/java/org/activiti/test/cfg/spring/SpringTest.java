@@ -12,15 +12,24 @@
  */
 package org.activiti.test.cfg.spring;
 
+import static org.junit.Assert.assertEquals;
+
+import org.activiti.ActivitiException;
 import org.activiti.Deployment;
 import org.activiti.ProcessEngine;
 import org.activiti.ProcessService;
 import org.activiti.impl.util.LogUtil;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.support.TransactionCallback;
+import org.springframework.transaction.support.TransactionTemplate;
 import org.springframework.util.ClassUtils;
 
 /**
@@ -31,34 +40,60 @@ import org.springframework.util.ClassUtils;
 @RunWith(SpringJUnit4ClassRunner.class)
 public class SpringTest {
 
-	@Autowired
-	private ProcessEngine processEngine;
+  @Autowired
+  private ProcessEngine processEngine;
 
-	@Autowired
-	private UserBean userBean;
+  @Autowired
+  private UserBean userBean;
 
-	static {
-		LogUtil.readJavaUtilLoggingConfigFromClasspath();
-	}
+  @Autowired
+  private PlatformTransactionManager transactionManager;
 
-	@Test
-	public void testSpringApi() {
-		userBean.doTransactional();
-	}
+  @Rule
+  public ExpectedException exception = ExpectedException.none();
 
-	@Test
-	public void testSaveDeployment() {
+  static {
+    LogUtil.readJavaUtilLoggingConfigFromClasspath();
+  }
 
-		String resource = ClassUtils.addResourcePathToPackagePath(getClass(),
-				"testProcess.bpmn20.xml");
-		ProcessService processService = processEngine.getProcessService();
-		Deployment deployment = processService.createDeployment()
-				.name(resource).addClasspathResource(resource).deploy();
+  @Test
+  public void testSpringTransaction() {
+    int before = processEngine.getProcessService().findDeployments().size();
+    userBean.doTransactional();
+    assertEquals(before + 1, processEngine.getProcessService().findDeployments().size());
+  }
 
-		if (deployment != null) {
-			processService.deleteDeploymentCascade(deployment.getId());
-		}
+  @Test
+  public void testSpringTransactionRollback() {
+    int before = processEngine.getProcessService().findDeployments().size();
+    userBean.setFail(true);
+    exception.expect(ActivitiException.class);
+    exception.expectMessage("aprocess");
+    try {
+      new TransactionTemplate(transactionManager).execute(new TransactionCallback<Object>() {
 
-	}
+        public Object doInTransaction(TransactionStatus status) {
+          userBean.doTransactional();
+          return null;
+        }
+      });
+
+    } finally {
+      assertEquals(before, processEngine.getProcessService().findDeployments().size());
+    }
+  }
+
+  @Test
+  public void testSaveDeployment() {
+
+    String resource = ClassUtils.addResourcePathToPackagePath(getClass(), "testProcess.bpmn20.xml");
+    ProcessService processService = processEngine.getProcessService();
+    Deployment deployment = processService.createDeployment().name(resource).addClasspathResource(resource).deploy();
+
+    if (deployment != null) {
+      processService.deleteDeploymentCascade(deployment.getId());
+    }
+
+  }
 
 }

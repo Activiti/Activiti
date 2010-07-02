@@ -20,13 +20,28 @@ import org.activiti.ProcessEngine;
 public class UserBean {
 
   /** injected by spring */
-  protected ProcessEngine processEngine;
+  private ProcessEngine processEngine;
+
+  private boolean fail = false;
+
+  private static final String NAMESPACE = "xmlns='http://www.omg.org/spec/BPMN/20100524/MODEL'";
+
+  private static final String TARGET_NAMESPACE = "targetNamespace='http://activiti.org/BPMN20'";
 
   public void doTransactional() {
-    processEngine.getProcessService().createDeployment().addString("userprocess.bpmn.xml", "<bpmn-process />").deploy();
+    processEngine.getProcessService().createDeployment().addString("userprocess.bpmn20.xml",
+            "<definitions " + NAMESPACE + " " + TARGET_NAMESPACE + ">" + "  <process id='IDR' name='Insurance Damage Report' />" + "</definitions>").deploy();
+    if (fail) {
+      processEngine.getProcessService().createDeployment().addString("invalidprocess.bpmn20.xml",
+              "<definitions " + NAMESPACE + " " + TARGET_NAMESPACE + ">" + "  <aprocess id='IDR' name='Insurance Damage Report' />" + "</definitions>").deploy();
+    }
   }
 
   public void setProcessEngine(ProcessEngine processEngine) {
     this.processEngine = processEngine;
+  }
+
+  public void setFail(boolean fail) {
+    this.fail = fail;
   }
 }

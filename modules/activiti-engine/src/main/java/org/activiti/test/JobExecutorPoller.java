@@ -18,8 +18,6 @@ import java.util.TimerTask;
 import java.util.logging.Logger;
 
 import org.activiti.ActivitiException;
-import org.activiti.ProcessEngine;
-import org.activiti.impl.ProcessEngineImpl;
 import org.activiti.impl.interceptor.Command;
 import org.activiti.impl.interceptor.CommandContext;
 import org.activiti.impl.interceptor.CommandExecutor;
@@ -32,14 +30,15 @@ public class JobExecutorPoller {
   
   private static Logger log = Logger.getLogger(JobExecutorPoller.class.getName());
 
-  private final ProcessEngine processEngine;
+  private final JobExecutor jobExecutor;
+  private final CommandExecutor commandExecutor;
 
-  public JobExecutorPoller(ProcessEngine processEngine) {
-    this.processEngine = processEngine;
+  public JobExecutorPoller(JobExecutor jobExecutor, CommandExecutor commandExecutor) {
+    this.jobExecutor = jobExecutor;
+    this.commandExecutor = commandExecutor;
   }
 
   public void waitForJobExecutorToProcessAllJobs(long maxMillisToWait, long intervalMillis) {
-    JobExecutor jobExecutor = ((ProcessEngineImpl) processEngine).getJobExecutor();
     jobExecutor.start();
 
     try {
@@ -66,10 +65,7 @@ public class JobExecutorPoller {
   }
 
   private boolean areJobsAvailable() {
-    ProcessEngineImpl processEngineImpl = (ProcessEngineImpl) processEngine;
-    CommandExecutor commandExecutor = processEngineImpl.getProcessEngineConfiguration().getCommandExecutor();
-    Boolean areJobsAvailable = commandExecutor.execute(new Command<Boolean>() {
-
+     Boolean areJobsAvailable = commandExecutor.execute(new Command<Boolean>() {
       public Boolean execute(CommandContext commandContext) {
         return !commandContext.getPersistenceSession().findNextJobsToExecute(1).isEmpty();
       }

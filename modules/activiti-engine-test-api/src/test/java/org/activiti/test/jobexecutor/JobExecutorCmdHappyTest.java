@@ -18,7 +18,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import org.activiti.impl.ProcessEngineImpl;
 import org.activiti.impl.interceptor.Command;
 import org.activiti.impl.interceptor.CommandContext;
 import org.activiti.impl.interceptor.CommandExecutor;
@@ -37,8 +36,7 @@ public class JobExecutorCmdHappyTest extends JobExecutorTestCase {
 
   @Test
   public void testJobCommandsWithMessage() {
-    ProcessEngineImpl processEngineImpl = (ProcessEngineImpl) deployer.getProcessEngine();
-    CommandExecutor commandExecutor = processEngineImpl.getProcessEngineConfiguration().getCommandExecutor();
+    CommandExecutor commandExecutor = deployer.getCommandExecutor();
     String jobId = commandExecutor.execute(new Command<String>() {
 
       public String execute(CommandContext commandContext) {
@@ -74,8 +72,7 @@ public class JobExecutorCmdHappyTest extends JobExecutorTestCase {
     // clock gets automatically reset in LogTestCase.runTest
     Clock.setCurrentTime(new Date(SOME_TIME));
 
-    ProcessEngineImpl processEngineImpl = (ProcessEngineImpl) deployer.getProcessEngine();
-    CommandExecutor commandExecutor = processEngineImpl.getProcessEngineConfiguration().getCommandExecutor();
+    CommandExecutor commandExecutor = deployer.getCommandExecutor();
     String jobId = commandExecutor.execute(new Command<String>() {
 
       public String execute(CommandContext commandContext) {

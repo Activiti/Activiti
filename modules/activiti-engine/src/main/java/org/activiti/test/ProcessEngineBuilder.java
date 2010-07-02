@@ -28,6 +28,9 @@ import org.activiti.ManagementService;
 import org.activiti.ProcessEngine;
 import org.activiti.ProcessService;
 import org.activiti.TaskService;
+import org.activiti.impl.ProcessEngineImpl;
+import org.activiti.impl.interceptor.CommandExecutor;
+import org.activiti.impl.jobexecutor.JobExecutor;
 import org.junit.rules.TestWatchman;
 import org.junit.runners.model.FrameworkMethod;
 
@@ -141,6 +144,16 @@ public class ProcessEngineBuilder extends TestWatchman {
     for (String id : taskIds) {
       processEngine.getTaskService().deleteTask(id);
     }
+  }
+
+  public CommandExecutor getCommandExecutor() {
+   // FIXME: downcast
+    return ((ProcessEngineImpl) processEngine).getProcessEngineConfiguration().getCommandExecutor();
+  }
+
+  public JobExecutor getJobExecutor() {
+    // FIXME: downcast
+   return ((ProcessEngineImpl) processEngine).getProcessEngineConfiguration().getJobExecutor();
   }
 
 }

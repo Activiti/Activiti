@@ -49,9 +49,4 @@ public class IdGenerator {
     this.lastDbid = dbidBlock.getLastDbid();
   }
 
-  // getters and setters //////////////////////////////////////////////////////
-  
-  public CommandExecutor getCommandExecutor() {
-    return commandExecutor;
-  }
 }

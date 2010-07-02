@@ -37,13 +37,13 @@ public class JobExecutorTestCase {
   @Before
   public void setUp() throws Exception {
     ProcessEngineImpl processEngineImpl = (ProcessEngineImpl) deployer.getProcessEngine();
-    processEngineImpl.getProcessEngineConfiguration().getJobCommands().addJobHandler(tweetHandler);
+    processEngineImpl.getProcessEngineConfiguration().getJobHandlers().addJobHandler(tweetHandler);
   }
 
   @After
   public void tearDown() throws Exception {
     ProcessEngineImpl processEngineImpl = (ProcessEngineImpl) deployer.getProcessEngine();
-    processEngineImpl.getProcessEngineConfiguration().getJobCommands().removeJobHandler(tweetHandler);
+    processEngineImpl.getProcessEngineConfiguration().getJobHandlers().removeJobHandler(tweetHandler);
   }
 
   protected MessageImpl createTweetMessage(String msg) {

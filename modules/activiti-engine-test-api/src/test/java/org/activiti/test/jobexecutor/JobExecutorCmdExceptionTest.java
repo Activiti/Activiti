@@ -35,18 +35,19 @@ public class JobExecutorCmdExceptionTest {
 
   @Before
   public void setUp() throws Exception {
+    // FIXME: downcast
     processEngineImpl = (ProcessEngineImpl) deployer.getProcessEngine();
-    processEngineImpl.getProcessEngineConfiguration().getJobCommands().addJobHandler(tweetExceptionHandler);
+    processEngineImpl.getProcessEngineConfiguration().getJobHandlers().addJobHandler(tweetExceptionHandler);
   }
 
   @After
   public void tearDown() throws Exception {
-    processEngineImpl.getProcessEngineConfiguration().getJobCommands().removeJobHandler(tweetExceptionHandler);
+    processEngineImpl.getProcessEngineConfiguration().getJobHandlers().removeJobHandler(tweetExceptionHandler);
   }
 
   @Test
   public void testJobCommandsWith2Exceptions() {
-    CommandExecutor commandExecutor = processEngineImpl.getProcessEngineConfiguration().getCommandExecutor();
+    CommandExecutor commandExecutor = deployer.getCommandExecutor();
     commandExecutor.execute(new Command<String>() {
 
       public String execute(CommandContext commandContext) {
@@ -56,14 +57,14 @@ public class JobExecutorCmdExceptionTest {
       }
     });
 
-    new JobExecutorPoller(deployer.getProcessEngine()).waitForJobExecutorToProcessAllJobs(8000, 250);
+    new JobExecutorPoller(deployer.getJobExecutor(), deployer.getCommandExecutor()).waitForJobExecutorToProcessAllJobs(8000, 250);
   }
 
   @Test
   public void testJobCommandsWith3Exceptions() {
     tweetExceptionHandler.setExceptionsRemaining(3);
 
-    CommandExecutor commandExecutor = processEngineImpl.getProcessEngineConfiguration().getCommandExecutor();
+    CommandExecutor commandExecutor = deployer.getCommandExecutor();
     String jobId = commandExecutor.execute(new Command<String>() {
 
       public String execute(CommandContext commandContext) {
@@ -73,7 +74,7 @@ public class JobExecutorCmdExceptionTest {
       }
     });
 
-    new JobExecutorPoller(deployer.getProcessEngine()).waitForJobExecutorToProcessAllJobs(8000, 250);
+    new JobExecutorPoller(deployer.getJobExecutor(), deployer.getCommandExecutor()).waitForJobExecutorToProcessAllJobs(8000, 250);
 
     // TODO check if there is a failed job in the DLQ
 

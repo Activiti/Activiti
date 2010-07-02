@@ -65,7 +65,7 @@ public class BoundaryTimerEventTest {
     // After setting the clock to time '1 hour and 5 seconds', the second timer
     // should fire
     Clock.setCurrentTime(new Date((60 * 60 * 1000) + 5000));
-    new JobExecutorPoller(deployer.getProcessEngine()).waitForJobExecutorToProcessAllJobs(5000L, 25L);
+    new JobExecutorPoller(deployer.getJobExecutor(), deployer.getCommandExecutor()).waitForJobExecutorToProcessAllJobs(5000L, 25L);
     assertEquals(0L, jobQuery.count());
 
     // which means that the third task is reached

@@ -18,7 +18,6 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.activiti.impl.ProcessEngineImpl;
 import org.activiti.impl.interceptor.Command;
 import org.activiti.impl.interceptor.CommandContext;
 import org.activiti.impl.interceptor.CommandExecutor;
@@ -36,8 +35,7 @@ public class JobExecutorTest extends JobExecutorTestCase {
 
   @Test
   public void testBasicJobExecutorOperation() throws Exception {
-    ProcessEngineImpl processEngineImpl = (ProcessEngineImpl)deployer.getProcessEngine();
-    CommandExecutor commandExecutor = processEngineImpl.getProcessEngineConfiguration().getCommandExecutor();
+    CommandExecutor commandExecutor = deployer.getCommandExecutor();
     commandExecutor.execute(new Command<Void>() {
       public Void execute(CommandContext commandContext) {
         MessageSession messageSession = commandContext.getMessageSession();
@@ -53,7 +51,7 @@ public class JobExecutorTest extends JobExecutorTestCase {
       }
     });
     
-    new JobExecutorPoller(deployer.getProcessEngine()).waitForJobExecutorToProcessAllJobs(8000, 200);
+    new JobExecutorPoller(deployer.getJobExecutor(), commandExecutor).waitForJobExecutorToProcessAllJobs(8000, 200);
     
     Set<String> messages = new HashSet<String>(tweetHandler.getMessages());
     Set<String> expectedMessages = new HashSet<String>();

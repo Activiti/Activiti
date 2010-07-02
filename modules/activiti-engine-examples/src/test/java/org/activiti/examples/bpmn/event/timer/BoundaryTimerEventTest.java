@@ -12,7 +12,7 @@
  */
 package org.activiti.examples.bpmn.event.timer;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import java.util.Date;
 
@@ -49,7 +49,7 @@ public class BoundaryTimerEventTest {
 
     // Set clock to the future such that the timer can fire
     Clock.setCurrentTime(new Date(System.currentTimeMillis() + (5 * 60 * 60 * 1000)));
-    new JobExecutorPoller(deployer.getProcessEngine()).waitForJobExecutorToProcessAllJobs(10000L, 250);
+    new JobExecutorPoller(deployer.getJobExecutor(), deployer.getCommandExecutor()).waitForJobExecutorToProcessAllJobs(10000L, 250);
 
     // The timer has fired, and the second task (secondlinesupport) now exists
     task = deployer.getTaskService().createTaskQuery().processInstance(pi.getId()).singleResult();

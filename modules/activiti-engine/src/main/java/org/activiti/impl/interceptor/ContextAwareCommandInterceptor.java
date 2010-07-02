@@ -10,32 +10,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.activiti.impl.interceptor;
 
 
-
-
 /**
- * @author Tom Baeyens
+ * @author Dave Syer
  */
-public class InterceptorChainBuilder {
+public interface ContextAwareCommandInterceptor {
 
-  CommandExecutor first = null;
-  CommandExecutor last = null;
+  <T> T invoke(CommandExecutor next, Command<T> command, CommandContext context);
   
-  public InterceptorChainBuilder addInterceptor(CommandExecutor commandExecutor) {
-    if (first==null) {
-      first = commandExecutor;
-    }
-    if (last!=null) {
-      ((Interceptor)last).setNext(commandExecutor);
-    }
-    last = commandExecutor;
-    return this;
-  }
-
-  public CommandExecutor getFirst() {
-    return first;
-  }
-
 }
