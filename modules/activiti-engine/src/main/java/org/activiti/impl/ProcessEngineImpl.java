@@ -54,13 +54,13 @@ public class ProcessEngineImpl implements ProcessEngine {
 
     if (DbSchemaStrategy.CREATE_DROP==dbSchemaStrategy 
             || DbSchemaStrategy.CREATE==dbSchemaStrategy) {
-      if (DbSchemaStrategy.CREATE_DROP==dbSchemaStrategy) {        
-        try {
-          persistenceSessionFactory.dbSchemaDrop();
-        } catch (RuntimeException e) {
-          // ignore
-        }
-      }
+//      if (DbSchemaStrategy.CREATE_DROP==dbSchemaStrategy) {        
+//        try {
+//          persistenceSessionFactory.dbSchemaDrop();
+//        } catch (RuntimeException e) {
+//          // ignore
+//        }
+//      }
       persistenceSessionFactory.dbSchemaCreate();
     } else if (DbSchemaStrategy.CHECK_VERSION==dbSchemaStrategy) {
       persistenceSessionFactory.dbSchemaCheckVersion();
