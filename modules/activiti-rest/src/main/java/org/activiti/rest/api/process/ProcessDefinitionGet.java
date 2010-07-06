@@ -10,7 +10,7 @@ import java.util.Map;
 /**
  * Returns details about a process definition.
  *
- * @author Erik Winlöf
+ * @author Erik Winl√∂f
  */
 public class ProcessDefinitionGet extends ActivitiWebScript
 {

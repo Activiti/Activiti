@@ -28,7 +28,7 @@ import java.util.Map;
 /**
  * Helper class for all activiti webscripts.
  *
- * @author Erik Winlöf
+ * @author Erik Winl√∂f
  */
 public class ActivitiWebScript extends DeclarativeWebScript {
 

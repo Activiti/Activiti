@@ -13,7 +13,7 @@
 package org.activiti.rest;
 
 /**
- * @author Erik Winlöf
+ * @author Erik Winl√∂f
  */
 public class Config {
 

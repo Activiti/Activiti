@@ -11,7 +11,7 @@ import java.util.Map;
 /**
  * Returns a process definition's form.
  *
- * @author Erik Winlöf
+ * @author Erik Winl√∂f
  */
 public class ProcessDefinitionFormGet extends ActivitiWebScript {
 

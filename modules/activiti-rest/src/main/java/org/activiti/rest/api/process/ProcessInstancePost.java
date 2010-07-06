@@ -22,7 +22,7 @@ import java.util.Map;
 /**
  * Creates a new process instance base on a process definition id and returns details about the new process instance.
  *
- * @author Erik Winlöf
+ * @author Erik Winl√∂f
  */
 public class ProcessInstancePost extends ActivitiWebScript
 {

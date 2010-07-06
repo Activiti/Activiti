@@ -34,7 +34,7 @@ import org.springframework.extensions.webscripts.WebScriptRequest;
 /**
  * Authenticates username and password..
  *
- * @author Erik Winlöf
+ * @author Erik Winl√∂f
  */
 public class LoginPost extends ActivitiWebScript
 {
