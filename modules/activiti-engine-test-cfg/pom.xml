@@ -4,7 +4,7 @@
 
 	<name>Activiti - Engine - Test - Configurations</name>
 	<groupId>org.activiti</groupId>
-	<artifactId>activiti-cfg</artifactId>
+	<artifactId>activiti-engine-test-cfg</artifactId>
 
 	<parent>
 		<groupId>org.activiti</groupId>
