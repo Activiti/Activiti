@@ -39,8 +39,12 @@ import org.activiti.impl.execution.ExecutionImpl;
  */
 public class ExpressionManager {
 
+  public static final String UEL_VALUE = "uel-value";
+  public static final String UEL_METHOD = "uel_method";
+  public static final String DEFAULT_EXPRESSION_LANGUAGE = UEL_VALUE;
+  
   ExpressionFactory expressionFactory = ExpressionFactory.newInstance();
-  ELContext parsingElContext = null;
+  ELContext parsingElContext = new ParsingElContext(); // Default implementation (does nothing)
 
   public ActivitiValueExpression createValueExpression(String expression) {
     ValueExpression valueExpression = expressionFactory.createValueExpression(parsingElContext, expression, Object.class);

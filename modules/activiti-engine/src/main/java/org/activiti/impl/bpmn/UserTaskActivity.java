@@ -71,7 +71,7 @@ public class UserTaskActivity extends TaskActivity {
   protected String evaluateExpression(String expr, ActivityExecution execution) {
     ScriptingEngines scriptingEngines = CommandContext.getCurrent().getScriptingEngines();
     return (String) scriptingEngines.evaluate(expr, 
-            ScriptingEngines.DEFAULT_EXPRESSION_LANGUAGE, (ExecutionImpl) execution);
+            ScriptingEngines.DEFAULT_SCRIPTING_LANGUAGE, (ExecutionImpl) execution);
   }
 
   public void setTaskDefinition(TaskDefinition taskDefinition) {

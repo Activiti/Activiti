@@ -17,14 +17,13 @@ import org.activiti.impl.execution.ExecutionImpl;
 import org.activiti.pvm.ActivityExecution;
 import org.activiti.pvm.Condition;
 
-
 /**
  * @author Tom Baeyens
  */
 public class ExpressionCondition implements Condition {
 
   String expression;
-  String language = ScriptingEngines.DEFAULT_EXPRESSION_LANGUAGE;
+  String language = ScriptingEngines.DEFAULT_SCRIPTING_LANGUAGE;
 
   public ExpressionCondition(String expression) {
     this.expression = expression;
@@ -38,11 +37,11 @@ public class ExpressionCondition implements Condition {
   public boolean evaluate(ActivityExecution execution) {
     ScriptingEngines scriptingEngines = ScriptingEngines.getScriptingEngines();
     Object result = scriptingEngines.evaluate(expression, language, (ExecutionImpl) execution);
-    if (result==null) {
-      throw new ActivitiException("condition expression returns null: "+expression);
+    if (result == null) {
+      throw new ActivitiException("condition expression returns null: " + expression);
     }
-    if (! (result instanceof Boolean)) {
-      throw new ActivitiException("condition expression returns non-Boolean: "+result+" ("+result.getClass().getName()+")");
+    if (!(result instanceof Boolean)) {
+      throw new ActivitiException("condition expression returns non-Boolean: " + result + " (" + result.getClass().getName() + ")");
     }
     return (Boolean) result;
   }

@@ -10,47 +10,40 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.activiti.impl.el;
 
-import javax.el.ArrayELResolver;
-import javax.el.BeanELResolver;
-import javax.el.CompositeELResolver;
 import javax.el.ELContext;
 import javax.el.ELResolver;
+import javax.el.ExpressionFactory;
 import javax.el.FunctionMapper;
-import javax.el.ListELResolver;
-import javax.el.MapELResolver;
 import javax.el.VariableMapper;
-
-import org.activiti.impl.execution.ExecutionImpl;
 
 
 /**
- * @author Tom Baeyens
+ * Simple implementation of the {@link ELContext} used during parsings.
+ * 
+ * Currently this implementation does nothing, but a non-null implementation
+ * of the {@link ELContext} interface is required by the {@link ExpressionFactory}
+ * when create value- and methodexpressions.
+ * 
+ * @see ExpressionManager#createValueExpression(String)
+ * @see ExpressionManager#createMethodExpression(String)
+ * 
  * @author Joram Barrez
  */
-public class ExecutionELContext extends ELContext {
-  
-  protected ExecutionImpl execution;
-    
-  public ExecutionELContext(ExecutionImpl execution) {
-    this.execution = execution;
-  }
+public class ParsingElContext extends ELContext {
 
   public ELResolver getELResolver() {
-    CompositeELResolver elResolver = new CompositeELResolver();
-    elResolver.add(new ExecutionVariableElResolver(execution));
-    elResolver.add(new ListELResolver());
-    elResolver.add(new MapELResolver());
-    elResolver.add(new BeanELResolver());
-    elResolver.add(new ArrayELResolver());
-    return elResolver;
+    return null;
   }
-  
+
   public FunctionMapper getFunctionMapper() {
-    return new ActivitiFunctionMapper();
+    return null;
   }
+
   public VariableMapper getVariableMapper() {
     return null;
   }
+
 }

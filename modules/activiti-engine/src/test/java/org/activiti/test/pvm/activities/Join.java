@@ -34,6 +34,7 @@ public class Join implements ActivityBehavior {
     
     Activity joinActivity = execution.getActivity();
     List<ActivityExecution> joinedExecutions = new ArrayList<ActivityExecution>();
+    
     ExecutionController executionController = execution.getExecutionController();
     List<? extends ActivityExecution> concurrentExecutions = executionController.getExecutions();
     for (ActivityExecution concurrentExecution: concurrentExecutions) {

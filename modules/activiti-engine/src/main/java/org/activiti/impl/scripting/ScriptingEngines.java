@@ -34,7 +34,7 @@ import com.sun.script.juel.JuelScriptEngineFactory;
  */
 public class ScriptingEngines {
   
-  public static final String DEFAULT_EXPRESSION_LANGUAGE =  "juel"; 
+  public static final String DEFAULT_SCRIPTING_LANGUAGE =  "juel"; 
 
   static ScriptingEngines defaultScriptingEngines = new ScriptingEngines(
     new ScriptEngineFactory[]{

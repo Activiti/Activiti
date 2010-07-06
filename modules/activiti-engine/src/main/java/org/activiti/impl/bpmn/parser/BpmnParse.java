@@ -42,9 +42,10 @@ import org.activiti.impl.definition.ProcessDefinitionImpl;
 import org.activiti.impl.definition.ScopeElementImpl;
 import org.activiti.impl.definition.TransitionImpl;
 import org.activiti.impl.el.ExpressionManager;
+import org.activiti.impl.el.UelMethodExpressionCondition;
+import org.activiti.impl.el.UelValueExpressionCondition;
 import org.activiti.impl.interceptor.CommandContext;
 import org.activiti.impl.job.TimerExecuteNestedActivityJobHandler;
-import org.activiti.impl.scripting.ExpressionCondition;
 import org.activiti.impl.scripting.ScriptingEngines;
 import org.activiti.impl.task.TaskDefinition;
 import org.activiti.impl.timer.TimerDeclarationImpl;
@@ -56,6 +57,7 @@ import org.activiti.impl.variable.VariableInitializeWithVariable;
 import org.activiti.impl.xml.Element;
 import org.activiti.impl.xml.Parse;
 import org.activiti.pvm.ActivityBehavior;
+import org.activiti.pvm.Condition;
 import org.activiti.pvm.Listener;
 
 /**
@@ -263,7 +265,7 @@ public class BpmnParse extends Parse {
       
       String form = startEventElement.attributeNS(BpmnParser.BPMN_EXTENSIONS_NS, "form");
       String formLanguage = startEventElement.attributeNS(BpmnParser.BPMN_EXTENSIONS_NS, 
-              "form-language", ScriptingEngines.DEFAULT_EXPRESSION_LANGUAGE);
+              "form-language", ScriptingEngines.DEFAULT_SCRIPTING_LANGUAGE);
       if (form != null) {
         activity.setFormReference(new FormReference(form, formLanguage));      
       }
@@ -357,7 +359,7 @@ public class BpmnParse extends Parse {
       script = scriptElement.getText();
       language = scriptTaskElement.attribute("scriptFormat");
       if (language == null) {
-        language = ScriptingEngines.DEFAULT_EXPRESSION_LANGUAGE;
+        language = ScriptingEngines.DEFAULT_SCRIPTING_LANGUAGE;
       }
     }
     activity.setActivityBehavior(new ScriptTaskActivity(script, language));
@@ -444,7 +446,7 @@ public class BpmnParse extends Parse {
     
     String form = userTaskElement.attributeNS(BpmnParser.BPMN_EXTENSIONS_NS, "form");
     String formLanguage = userTaskElement.attributeNS(BpmnParser.BPMN_EXTENSIONS_NS, "form-language",
-            ScriptingEngines.DEFAULT_EXPRESSION_LANGUAGE);
+            ScriptingEngines.DEFAULT_SCRIPTING_LANGUAGE);
     if (form != null) {
       activity.setFormReference(new FormReference(form, formLanguage));      
     }
@@ -829,7 +831,7 @@ public class BpmnParse extends Parse {
   public void parseSequenceFlowConditionExpression(Element seqFlowElement, TransitionImpl seqFlow) {
     Element conditionExprElement = seqFlowElement.element("conditionExpression");
     if (conditionExprElement != null) {
-      String expr = conditionExprElement.getText();
+      String expr = conditionExprElement.getText().trim();
       String type = conditionExprElement.attributeNS(BpmnParser.XSI_NS, "type");
       if (type != null && !type.equals("tFormalExpression")) {
         throw new ActivitiException("Invalid type on conditionExpression (" 
@@ -839,10 +841,19 @@ public class BpmnParse extends Parse {
       
       String language = conditionExprElement.attribute("language");
       if (language == null) {
-        language = ScriptingEngines.DEFAULT_EXPRESSION_LANGUAGE;
+        language = ExpressionManager.DEFAULT_EXPRESSION_LANGUAGE;
       }
       
-      seqFlow.setCondition(new ExpressionCondition(expr, language));
+      Condition condition = null;
+      if ("uel-value".equals(language)) {
+        condition = new UelValueExpressionCondition(commandContext.getExpressionManager().createValueExpression(expr));
+      } else if("uel-method".equals(language)) {
+        condition = new UelMethodExpressionCondition(commandContext.getExpressionManager().createMethodExpression(expr));
+      } else {
+        throw new ActivitiException("Unknown language for condition: " + language);
+      }
+      
+      seqFlow.setCondition(condition);
     }
   }
   
