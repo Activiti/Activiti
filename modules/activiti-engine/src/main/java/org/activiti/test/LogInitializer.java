@@ -19,7 +19,7 @@ import junit.framework.AssertionFailedError;
 
 import org.activiti.impl.time.Clock;
 import org.activiti.impl.util.LogUtil;
-import org.activiti.impl.util.LogUtil.ThreadRenderingMode;
+import org.activiti.impl.util.LogUtil.ThreadLogMode;
 import org.junit.rules.MethodRule;
 import org.junit.runners.model.FrameworkMethod;
 import org.junit.runners.model.Statement;
@@ -38,13 +38,13 @@ public class LogInitializer implements MethodRule {
   }
   
   private static Logger log = Logger.getLogger(LogInitializer.class.getName());
-  private final ThreadRenderingMode threadRenderingMode;
+  private final ThreadLogMode threadRenderingMode;
   
   public LogInitializer() {
-    this(ThreadRenderingMode.INDENT);
+    this(ThreadLogMode.INDENT);
   }
   
-  public LogInitializer(ThreadRenderingMode threadRenderingMode) {
+  public LogInitializer(ThreadLogMode threadRenderingMode) {
     this.threadRenderingMode = threadRenderingMode;   
   }
 
@@ -56,9 +56,9 @@ public class LogInitializer implements MethodRule {
 
     private final Statement base;
     private final FrameworkMethod method;
-    private final ThreadRenderingMode threadRenderingMode;
+    private final ThreadLogMode threadRenderingMode;
 
-    public LogUtilStatement(Statement base, FrameworkMethod method, ThreadRenderingMode threadRenderingMode) {
+    public LogUtilStatement(Statement base, FrameworkMethod method, ThreadLogMode threadRenderingMode) {
       this.base= base;
       this.method = method;
       this.threadRenderingMode = threadRenderingMode;
@@ -68,7 +68,7 @@ public class LogInitializer implements MethodRule {
     public void evaluate() throws Throwable {
 
       LogUtil.resetThreadIndents();
-      ThreadRenderingMode oldThreadRenderingMode = LogUtil.setThreadRenderingMode(threadRenderingMode);
+      ThreadLogMode oldThreadRenderingMode = LogUtil.setThreadLogMode(threadRenderingMode);
 
       log.fine(EMPTY_LINE);
       log.fine("---- START "+method.getMethod().getDeclaringClass().getName()+"."+method.getName()+" ------------------------------------------------------");
@@ -88,7 +88,7 @@ public class LogInitializer implements MethodRule {
       } finally {
         Clock.reset();
         log.fine("---- END "+method.getMethod().getDeclaringClass().getName()+"."+method.getName()+" ------------------------------------------------------");
-        LogUtil.setThreadRenderingMode(oldThreadRenderingMode);
+        LogUtil.setThreadLogMode(oldThreadRenderingMode);
       }
     }
  

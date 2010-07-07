@@ -30,21 +30,21 @@ import java.util.logging.LogRecord;
  */
 public class LogUtil {
   
-  public static enum ThreadRenderingMode {
+  public static enum ThreadLogMode {
     NONE, INDENT, PRINT_ID;
   }
 
   private static final String LINE_SEPARATOR = System.getProperty("line.separator");
   private static Map<Integer, String> threadIndents = new HashMap<Integer, String>();
-  private static ThreadRenderingMode threadRenderingMode = ThreadRenderingMode.NONE;
+  private static ThreadLogMode threadLogMode = ThreadLogMode.NONE;
   
-  public static ThreadRenderingMode getThreadRenderingMode() {
-    return threadRenderingMode;
+  public static ThreadLogMode getThreadLogMode() {
+    return threadLogMode;
   }
 
-  public static ThreadRenderingMode setThreadRenderingMode(ThreadRenderingMode threadRenderingMode) {
-    ThreadRenderingMode old = LogUtil.threadRenderingMode;
-    LogUtil.threadRenderingMode = threadRenderingMode;
+  public static ThreadLogMode setThreadLogMode(ThreadLogMode threadLogMode) {
+    ThreadLogMode old = LogUtil.threadLogMode;
+    LogUtil.threadLogMode = threadLogMode;
     return old;
   }
 
@@ -117,10 +117,10 @@ public class LogUtil {
 
     protected static String getThreadIndent(int threadId) {
       Integer threadIdInteger = new Integer(threadId);
-      if (threadRenderingMode==ThreadRenderingMode.NONE) {
+      if (threadLogMode==ThreadLogMode.NONE) {
         return "";
       }
-      if (threadRenderingMode==ThreadRenderingMode.PRINT_ID) {
+      if (threadLogMode==ThreadLogMode.PRINT_ID) {
         return ""+threadId;
       }
       String threadIndent = threadIndents.get(threadIdInteger);

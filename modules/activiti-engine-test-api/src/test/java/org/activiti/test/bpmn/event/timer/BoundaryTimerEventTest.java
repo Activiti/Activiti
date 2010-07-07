@@ -24,7 +24,7 @@ import org.activiti.JobQuery;
 import org.activiti.ProcessInstance;
 import org.activiti.Task;
 import org.activiti.impl.time.Clock;
-import org.activiti.impl.util.LogUtil.ThreadRenderingMode;
+import org.activiti.impl.util.LogUtil.ThreadLogMode;
 import org.activiti.test.JobExecutorPoller;
 import org.activiti.test.LogInitializer;
 import org.activiti.test.ProcessDeclared;
@@ -38,7 +38,7 @@ import org.junit.Test;
 public class BoundaryTimerEventTest {
   
   @Rule
-  public LogInitializer logSetup = new LogInitializer(ThreadRenderingMode.PRINT_ID);
+  public LogInitializer logSetup = new LogInitializer(ThreadLogMode.PRINT_ID);
   @Rule
   public ProcessDeployer deployer = new ProcessDeployer();
 
