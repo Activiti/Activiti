@@ -44,22 +44,32 @@ public class ParallelGatewayTest {
     TaskQuery query = deployer.getTaskService().createTaskQuery()
                                  .processInstance(pi.getId())
                                  .orderAsc(TaskQuery.PROPERTY_NAME);
+    
     List<Task> tasks = query.list(); 
     assertEquals(3, tasks.size());
+    // the tasks are order by name (see above)
+    Task task1 = tasks.get(0);
+    assertEquals("Task 1", task1.getName());
+    Task task2 = tasks.get(1);
+    assertEquals("Task 2", task2.getName());
     
-    // Completing the first task should not trigger the join
-    deployer.getTaskService().complete(tasks.get(0).getId());
-    assertEquals(2, query.count());
+    // Completing the first task should *not* trigger the join
+    deployer.getTaskService().complete(task1.getId());
     
-    // Completing the second task should trigger the join
-    deployer.getTaskService().complete(tasks.get(1).getId());
+    // Completing the second task should trigger the first join
+    deployer.getTaskService().complete(task2.getId());
+    
     tasks = query.list();
+    Task task3 = tasks.get(0);
     assertEquals(2, tasks.size());
-    assertEquals("Task 4", tasks.get(1).getName());
+    assertEquals("Task 3", task3.getName());
+    Task task4 = tasks.get(1);
+    assertEquals("Task 4", task4.getName());
     
     // Completing the remaing tasks should trigger the second join and end the process
-    deployer.getTaskService().complete(tasks.get(0).getId());
-    deployer.getTaskService().complete(tasks.get(1).getId());
+    deployer.getTaskService().complete(task3.getId());
+    deployer.getTaskService().complete(task4.getId());
+    
     deployer.assertProcessEnded(pi.getId());
   }
   

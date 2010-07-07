@@ -64,7 +64,7 @@ public class FinancialReportProcessTest {
     assertEquals(1, tasks.size());
     assertEquals("Verify monthly financial report", tasks.get(0).getName());
     deployer.getTaskService().complete(tasks.get(0).getId());
-    
+
     deployer.assertProcessEnded(processInstance.getId());
   }
 

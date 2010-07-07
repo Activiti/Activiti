@@ -54,6 +54,7 @@ public class TaskAssigneeTest {
 
     // Complete task. Process is now finished
     deployer.getTaskService().complete(myTask.getId());
+    // assert if the process instance completed
     deployer.assertProcessEnded(processInstance.getId());
   }
 

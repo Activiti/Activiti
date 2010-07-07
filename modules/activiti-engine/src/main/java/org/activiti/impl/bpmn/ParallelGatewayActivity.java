@@ -21,6 +21,7 @@ import java.util.logging.Logger;
 import org.activiti.impl.interceptor.CommandContext;
 import org.activiti.pvm.Activity;
 import org.activiti.pvm.ActivityExecution;
+import org.activiti.pvm.ExecutionController;
 
 /**
  * Implementation of the Parallel Gateway/AND gateway as definined in the BPMN
@@ -94,18 +95,17 @@ public class ParallelGatewayActivity extends GatewayActivity {
   }
   
   protected ActivityExecution join(ActivityExecution execution, List<ActivityExecution> joinedExecutions) {
-    
+
+    ExecutionController executionController = execution.getExecutionController();
+
     // Child executions must be ended before selecting the outgoing sequence flow
     // since the children endings have an influence on the reuse of the parent execution
     for (ActivityExecution joinedExecution: joinedExecutions) {
-      joinedExecution.getExecutionController().end();
+      ExecutionController joinedExecutionController = joinedExecution.getExecutionController();
+      joinedExecutionController.end();
     }
 
-    // FIXME: HACKHACKHACKHACKHACKHACKHACK
-    CommandContext.getCurrent().getPersistenceSession().flush();
-    // HACKHACKHACKHACKHACKHACKHACK
-    
-    ActivityExecution outgoingExecution = execution.getExecutionController().createExecution();
+    ActivityExecution outgoingExecution = executionController.createExecution();
     outgoingExecution.getExecutionController().setActivity(execution.getActivity());
     
     return outgoingExecution;

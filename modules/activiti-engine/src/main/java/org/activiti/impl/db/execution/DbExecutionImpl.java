@@ -62,6 +62,7 @@ public class DbExecutionImpl extends ExecutionImpl implements PersistentObject {
   protected String parentId;
   
   protected boolean isNew = false;
+  protected boolean isExecutionsInitialized = false;
   
   transient protected List<TaskImpl> tasks = null;
   
@@ -72,12 +73,14 @@ public class DbExecutionImpl extends ExecutionImpl implements PersistentObject {
   DbExecutionImpl(ProcessDefinitionDbImpl processDefinition) {
     super(processDefinition);
     this.isNew = true;
+    this.isExecutionsInitialized = true;
     this.variableMap = new DbVariableMap(this);
   }
   
   DbExecutionImpl(ExecutionImpl parent) {
     super(parent);
     this.isNew = true;
+    this.isExecutionsInitialized = true;
     this.variableMap = new DbVariableMap(this);
   }
   
@@ -186,6 +189,8 @@ public class DbExecutionImpl extends ExecutionImpl implements PersistentObject {
     
     if (parent != null) {
       this.parentId = parent.getId();
+    } else {
+      this.parentId = null;
     }
   }
   
@@ -220,15 +225,15 @@ public class DbExecutionImpl extends ExecutionImpl implements PersistentObject {
   @Override
   public List< ? extends ExecutionImpl> getExecutions() {
     // If the execution is new, then the child execution objects are already fetched
-    if (!isNew && (executions == null || executions.isEmpty())) {
+    if (!isExecutionsInitialized) {
       this.executions =  
         CommandContext
           .getCurrent()
           .getPersistenceSession()
-          .findChildExecutions(getId()); 
-      return executions;
+          .findChildExecutions(getId());
+      this.isExecutionsInitialized = true;
     }
-    return super.getExecutions();
+    return executions;
   }
  
   @Override
