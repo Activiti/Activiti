@@ -40,12 +40,14 @@ public class ExecutionVariableElResolver extends ELResolver {
     
     // Variable resolution
     if (base == null) {
-      String variable = (String) property; // according to spec, can only be a String
-      context.setPropertyResolved(true); // if not set, the next elResolver in the CompositeElResolver will be called
-      return execution.getVariable(variable);
+      String variable = (String) property; // according to javadoc, can only be a String
+      if (execution.hasVariable(variable)) {
+        context.setPropertyResolved(true); // if not set, the next elResolver in the CompositeElResolver will be called
+        return execution.getVariable(variable);
+      }
     }
     
-    // property resolution will be done by the BeanElResolver (part of the CompositeElResolver)
+    // property resolution (eg. bean.value) will be done by the BeanElResolver (part of the CompositeElResolver)
     // It will use the bean resolved in this resolver as base.
     
     return null;

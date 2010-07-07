@@ -852,7 +852,6 @@ public class BpmnParse extends Parse {
       } else {
         throw new ActivitiException("Unknown language for condition: " + language);
       }
-      
       seqFlow.setCondition(condition);
     }
   }

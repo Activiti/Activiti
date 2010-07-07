@@ -7,7 +7,7 @@
   expressionLanguage="http://www.w3.org/1999/XPath" 
   targetNamespace="http://www.activiti.org/bpmn2.0">
   
-  <process id="whiteSpaceInExpression">
+  <process id="invalidMethodExpression">
   
     <startEvent id="theStart" />
     
@@ -15,25 +15,21 @@
     
     <exclusiveGateway id="exclusiveGw" name="Exclusive Gateway" />
     
-    <sequenceFlow id="flow2" sourceRef="exclusiveGw" targetRef="theTask1">
-      <conditionExpression xsi:type="tFormalExpression">
-        ${input == 1}
+    <sequenceFlow id="flow2" sourceRef="exclusiveGw" targetRef="basicService">
+      <conditionExpression xsi:type="tFormalExpression" language="uel-method">
+        <![CDATA[${order.invalidMethod}]]>
       </conditionExpression>
     </sequenceFlow>
     
-    <sequenceFlow id="flow3" sourceRef="exclusiveGw" targetRef="theTask2">
-      <conditionExpression xsi:type="tFormalExpression">${input == 2}</conditionExpression>
+    <sequenceFlow id="flow3" sourceRef="exclusiveGw" targetRef="standardService">
+      <conditionExpression xsi:type="tFormalExpression" language="uel-method">
+        <![CDATA[${order.isStandard}]]>
+      </conditionExpression>
     </sequenceFlow>
-
-    <userTask id="theTask1" name="Task 1" />
     
-    <sequenceFlow id="flow5" sourceRef="theTask1" targetRef="theEnd" />
+    <userTask id="basicService" name="Basic service" />
     
-    <userTask id="theTask2" name="Task 2" />
-    
-    <sequenceFlow id="flow6" sourceRef="theTask2" targetRef="theEnd" />
-    
-    <endEvent id="theEnd" />
+    <userTask id="standardService" name="Standard service" />
     
   </process>
 

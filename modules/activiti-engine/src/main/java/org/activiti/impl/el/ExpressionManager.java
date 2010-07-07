@@ -40,7 +40,7 @@ import org.activiti.impl.execution.ExecutionImpl;
 public class ExpressionManager {
 
   public static final String UEL_VALUE = "uel-value";
-  public static final String UEL_METHOD = "uel_method";
+  public static final String UEL_METHOD = "uel-method";
   public static final String DEFAULT_EXPRESSION_LANGUAGE = UEL_VALUE;
   
   ExpressionFactory expressionFactory = ExpressionFactory.newInstance();
@@ -52,7 +52,8 @@ public class ExpressionManager {
   }
   
   public ActivitiMethodExpression createMethodExpression(String expression) {
-    MethodExpression methodExpression = expressionFactory.createMethodExpression(parsingElContext, expression, Object.class, null);
+    MethodExpression methodExpression = expressionFactory.createMethodExpression(parsingElContext, 
+            expression, null, new Class<?>[] {}); // Returntype: passing in a value of null indicates the caller does not care what the return type is, and the check is disabled.
     return new ActivitiMethodExpression(methodExpression, this);
   }
   

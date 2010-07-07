@@ -40,10 +40,10 @@ public class ExecutionELContext extends ELContext {
   public ELResolver getELResolver() {
     CompositeELResolver elResolver = new CompositeELResolver();
     elResolver.add(new ExecutionVariableElResolver(execution));
+    elResolver.add(new ArrayELResolver());
     elResolver.add(new ListELResolver());
     elResolver.add(new MapELResolver());
     elResolver.add(new BeanELResolver());
-    elResolver.add(new ArrayELResolver());
     return elResolver;
   }
   

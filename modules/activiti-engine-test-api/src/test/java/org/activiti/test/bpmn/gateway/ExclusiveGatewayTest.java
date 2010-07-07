@@ -13,9 +13,14 @@
 package org.activiti.test.bpmn.gateway;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import org.activiti.ActivitiException;
 import org.activiti.ProcessInstance;
+import org.activiti.Task;
 import org.activiti.test.LogInitializer;
 import org.activiti.test.ProcessDeclared;
 import org.activiti.test.ProcessDeployer;
@@ -80,5 +85,73 @@ public class ExclusiveGatewayTest {
     deployer.getProcessService().startProcessInstanceByKey("whiteSpaceInExpression",
             CollectionUtil.singletonMap("input", 1));
   }
-
+  
+  @Test
+  @ProcessDeclared(resources = {"/org/activiti/test/bpmn/gateway/ExclusiveGatewayTest.testDivergingExclusiveGateway.bpmn20.xml"})
+  public void testUnknownVariableInExpression() {
+    // Instead of 'input' we're starting a process instance with the name 'iinput' (ie. a typo)
+    exception.expect(ActivitiException.class);
+    exception.expectMessage("Unknown property used in expression");
+    deployer.getProcessService().startProcessInstanceByKey(
+            "exclusiveGwDiverging", CollectionUtil.singletonMap("iinput", 1));
+  }
+  
+  @Test
+  @ProcessDeclared
+  public void testDecideBasedOnBeanProperty() {
+    deployer.getProcessService().startProcessInstanceByKey("decisionBasedOnBeanProperty", 
+            CollectionUtil.singletonMap("order", new ExclusiveGatewayTestOrder(150)));
+    
+    Task task = deployer.getTaskService().createTaskQuery().singleResult();
+    assertNotNull(task);
+    assertEquals("Standard service", task.getName());
+  }
+  
+  @Test
+  @ProcessDeclared
+  public void testDecideBasedOnListOrArrayOfBeans() {
+    List<ExclusiveGatewayTestOrder> orders = new ArrayList<ExclusiveGatewayTestOrder>();
+    orders.add(new ExclusiveGatewayTestOrder(50));
+    orders.add(new ExclusiveGatewayTestOrder(300));
+    orders.add(new ExclusiveGatewayTestOrder(175));
+    
+    ProcessInstance pi = deployer.getProcessService().startProcessInstanceByKey(
+            "decisionBasedOnListOrArrayOfBeans", CollectionUtil.singletonMap("orders", orders));
+    
+    Task task = deployer.getTaskService().createTaskQuery().processInstance(pi.getId()).singleResult();
+    assertNotNull(task);
+    assertEquals("Gold Member service", task.getName());
+    
+    
+    // Arrays are usable in exactly the same way
+    ExclusiveGatewayTestOrder[] orderArray = orders.toArray(new ExclusiveGatewayTestOrder[orders.size()]);
+    orderArray[1].setPrice(10);
+    pi = deployer.getProcessService().startProcessInstanceByKey(
+            "decisionBasedOnListOrArrayOfBeans", CollectionUtil.singletonMap("orders", orderArray));
+    
+    task = deployer.getTaskService().createTaskQuery().processInstance(pi.getId()).singleResult();
+    assertNotNull(task);
+    assertEquals("Basic service", task.getName());
+  }
+  
+  @Test
+  @ProcessDeclared
+  public void testDecideBasedOnBeanMethod() {
+    deployer.getProcessService().startProcessInstanceByKey("decisionBasedOnBeanMethod", 
+            CollectionUtil.singletonMap("order", new ExclusiveGatewayTestOrder(300)));
+    
+    Task task = deployer.getTaskService().createTaskQuery().singleResult();
+    assertNotNull(task);
+    assertEquals("Gold Member service", task.getName());
+  }
+  
+  @Test
+  @ProcessDeclared
+  public void testInvalidMethodExpression() {
+    exception.expect(ActivitiException.class);
+    exception.expectMessage("Unknown method used in expression");
+    deployer.getProcessService().startProcessInstanceByKey("invalidMethodExpression", 
+            CollectionUtil.singletonMap("order", new ExclusiveGatewayTestOrder(50)));
+  }
+  
 }

@@ -9,9 +9,9 @@
 
 	<packaging>pom</packaging>
 	<version>5.0.alpha4-SNAPSHOT</version>
-    <properties>
-      <spring.framework.version>3.0.3.RELEASE</spring.framework.version>
-    </properties>
+  <properties>
+    <spring.framework.version>3.0.3.RELEASE</spring.framework.version>
+  </properties>
 
 	<dependencyManagement>
 		<dependencies>
@@ -23,11 +23,11 @@
       <dependency>
         <groupId>juel</groupId>
         <artifactId>juel</artifactId>
-        <version>2.1.0</version>
+        <version>2.2.1</version>
       </dependency>
       <dependency>
         <groupId>juel</groupId>
-        <artifactId>juel-engine</artifactId>
+        <artifactId>juel-engine</artifactId> <!-- Implementation of JSR-223 (Scripting) with JUEL -->
         <version>2.1.0</version>
       </dependency>
       <dependency>
@@ -60,7 +60,7 @@
 				<groupId>org.springframework</groupId>
 				<artifactId>spring-test</artifactId>
 				<version>${spring.framework.version}</version>
-                <scope>test</scope>
+        <scope>test</scope>
 			</dependency>
 			<dependency>
 				<groupId>org.springframework</groupId>
@@ -125,13 +125,9 @@
 			<url>http://maven.alfresco.com/nexus/content/groups/public</url>
 		</repository>
 		<repository>
-      <id>activiti</id>
-      <url>http://maven.alfresco.com/nexus/content/repositories/activiti/</url>
-    </repository>
-		<repository>
-			<id>ibiblio</id>
-			<url>http://mirrors.ibiblio.org/pub/mirrors/eclipse/rt/eclipselink/maven.repo</url>
-		</repository>
+        <id>Activiti third party</id>
+        <url>http://maven.alfresco.com/nexus/content/repositories/activiti-thirdparty/</url>
+     </repository>
 		<repository>
 			<id>spring-extensions-milestone</id>
 			<name>Spring Extensions Milestone Repository</name>

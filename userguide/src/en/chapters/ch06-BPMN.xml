@@ -783,7 +783,9 @@ ProcessInstance processInstance = processService.startProcessInstanceByXXX();</p
           Omitting the <emphasis>xsi:type=&quot;&quot;</emphasis> definition will simply
           default to this only supported type of expressions. 
           <programlisting>&lt;sequenceFlow id=&quot;flow&quot; sourceRef=&quot;theStart&quot; targetRef=&quot;theTask&quot;&gt;
-  &lt;conditionExpression xsi:type=&quot;tFormalExpression&quot;&gt;${input == 1}&lt;/conditionExpression&gt;
+  &lt;conditionExpression xsi:type=&quot;tFormalExpression&quot;&gt;
+    &lt;![CDATA[${order.price &gt; 100 &amp;&amp; order.price &lt; 250}]]&gt;
+  &lt;/conditionExpression&gt;
 &lt;/sequenceFlow&gt;</programlisting>
         </para>
       
