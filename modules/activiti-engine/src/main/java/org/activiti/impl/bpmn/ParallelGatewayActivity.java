@@ -95,13 +95,13 @@ public class ParallelGatewayActivity extends GatewayActivity {
   
   protected ActivityExecution join(ActivityExecution execution, List<ActivityExecution> joinedExecutions) {
     
-    // Child executions must be ended before selecting the ougoing sequence flowm
-    // since the children endings have an influence on the reusal of the parent execution
+    // Child executions must be ended before selecting the outgoing sequence flow
+    // since the children endings have an influence on the reuse of the parent execution
     for (ActivityExecution joinedExecution: joinedExecutions) {
       joinedExecution.getExecutionController().end();
     }
 
-    //HACKHACKHACKHACKHACKHACKHACK
+    // FIXME: HACKHACKHACKHACKHACKHACKHACK
     CommandContext.getCurrent().getPersistenceSession().flush();
     // HACKHACKHACKHACKHACKHACKHACK
     

@@ -42,7 +42,7 @@ public class ReceiveTaskTest {
     assertNotNull(execution);
     
     deployer.getProcessService().sendEvent(execution.getId());
-    deployer.expectProcessEnds(pi.getId());
+    deployer.assertProcessEnded(pi.getId());
   }
 
 }

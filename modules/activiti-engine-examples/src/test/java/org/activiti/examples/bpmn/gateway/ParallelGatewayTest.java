@@ -60,7 +60,7 @@ public class ParallelGatewayTest {
     // Completing the remaing tasks should trigger the second join and end the process
     deployer.getTaskService().complete(tasks.get(0).getId());
     deployer.getTaskService().complete(tasks.get(1).getId());
-    deployer.expectProcessEnds(pi.getId());
+    deployer.assertProcessEnded(pi.getId());
   }
   
 }

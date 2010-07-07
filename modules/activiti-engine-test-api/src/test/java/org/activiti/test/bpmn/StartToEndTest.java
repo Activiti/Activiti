@@ -35,7 +35,7 @@ public class StartToEndTest {
   @ProcessDeclared
   public void testStartToEnd() {
     ProcessInstance processInstance = deployer.getProcessService().startProcessInstanceByKey("startToEnd");
-    deployer.expectProcessEnds(processInstance.getId());
+    deployer.assertProcessEnded(processInstance.getId());
     assertTrue(processInstance.isEnded());
   }
 

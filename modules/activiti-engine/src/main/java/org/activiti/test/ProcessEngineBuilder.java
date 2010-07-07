@@ -108,15 +108,9 @@ public class ProcessEngineBuilder extends TestWatchman {
     }
   }
 
-  public void expectProcessEnds(final String processInstanceId) {
-    Runnable verifier = new Runnable() {
-
-      public void run() {
-        assertThat("An active execution with id " + processInstanceId + " was found.", processEngine.getProcessService().findProcessInstanceById(
-                processInstanceId), nullValue());
-      }
-    };
-    verifiers.add(verifier);
+  public void assertProcessEnded(final String processInstanceId) {
+    assertThat("An active execution with id " + processInstanceId + " was found when expecting none (it should have ended and been removed).", processEngine
+            .getProcessService().findProcessInstanceById(processInstanceId), nullValue());
   }
 
   /**
@@ -147,13 +141,13 @@ public class ProcessEngineBuilder extends TestWatchman {
   }
 
   public CommandExecutor getCommandExecutor() {
-   // FIXME: downcast
+    // FIXME: downcast
     return ((ProcessEngineImpl) processEngine).getProcessEngineConfiguration().getCommandExecutor();
   }
 
   public JobExecutor getJobExecutor() {
     // FIXME: downcast
-   return ((ProcessEngineImpl) processEngine).getProcessEngineConfiguration().getJobExecutor();
+    return ((ProcessEngineImpl) processEngine).getProcessEngineConfiguration().getJobExecutor();
   }
 
 }
