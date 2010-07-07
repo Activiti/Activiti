@@ -45,9 +45,6 @@ public class TaskAssigneeTest {
     // Start process instance
     ProcessInstance processInstance = deployer.getProcessService().startProcessInstanceByKey("taskAssigneeProcess");
 
-    // assert if the process instance completed
-    deployer.assertProcessEnded(processInstance.getId());
-
     // Get task list
     List<Task> tasks = deployer.getTaskService().findAssignedTasks("kermit");
     assertEquals(1, tasks.size());
@@ -57,6 +54,7 @@ public class TaskAssigneeTest {
 
     // Complete task. Process is now finished
     deployer.getTaskService().complete(myTask.getId());
+    deployer.assertProcessEnded(processInstance.getId());
   }
 
 }

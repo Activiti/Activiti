@@ -47,7 +47,6 @@ public class FinancialReportProcessTest {
   public void testProcess() {
     
     ProcessInstance processInstance = deployer.getProcessService().startProcessInstanceByKey("financialReport");
-    deployer.assertProcessEnded(processInstance.getId());
     
     List<Task> tasks = deployer.getTaskService().findUnassignedTasks("fozzie");
     assertEquals(1, tasks.size());
@@ -65,6 +64,8 @@ public class FinancialReportProcessTest {
     assertEquals(1, tasks.size());
     assertEquals("Verify monthly financial report", tasks.get(0).getName());
     deployer.getTaskService().complete(tasks.get(0).getId());
+    
+    deployer.assertProcessEnded(processInstance.getId());
   }
 
 }
