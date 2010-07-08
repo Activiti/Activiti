@@ -47,7 +47,7 @@ public class ParallelGatewayTest {
     
     List<Task> tasks = query.list(); 
     assertEquals(3, tasks.size());
-    // the tasks are order by name (see above)
+    // the tasks are ordered by name (see above)
     Task task1 = tasks.get(0);
     assertEquals("Task 1", task1.getName());
     Task task2 = tasks.get(1);

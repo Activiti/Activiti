@@ -40,7 +40,7 @@
 		
 		<para>
 		  Create a new XML file (<emphasis>New->Other->XML-XML</emphasis>) and give it a name.
-		  Make sure that the file <emphasis role="bold">ends with .bpmn.xml</emphasis>, since
+		  Make sure that the file <emphasis role="bold">ends with .bpmn20.xml</emphasis>, since
 		  otherwise the engine won't pick up this file for deployment.
 		  <mediaobject><imageobject><imagedata align="center" fileref="images/new.bpmn.procdef.png"/></imageobject></mediaobject>
 		</para>
@@ -747,7 +747,7 @@ ProcessInstance processInstance = processService.startProcessInstanceByXXX();</p
           is left, the default behaviour is to evaluate the conditions on the outgoing
           sequence flow. When a condition evaluates to <emphasis>true</emphasis>, that
           outgoing sequence flow is selected. When multiple sequence flow are selected
-          that way, multiple <emphasis>tokens of execution</emphasis> will be generated
+          that way, multiple <emphasis>executions</emphasis> will be generated
           and the process will be continued in a parallel way.
         </para>
         
@@ -788,9 +788,58 @@ ProcessInstance processInstance = processService.startProcessInstanceByXXX();</p
   &lt;/conditionExpression&gt;
 &lt;/sequenceFlow&gt;</programlisting>
         </para>
+        
+        <para>
+          Activiti supports two kind of expressions: UEL-value and UEL-method expressions 
+          (UEL stands for <emphasis>Unified Expression Language</emphasis> and is part of the EE6 specification, see
+          <ulink url="http://docs.sun.com/app/docs/doc/820-7627/gjddd?l=en&amp;a=view">
+          the EE6 specification</ulink> for detailed information)
+        </para>
+        
+        <para>
+          Specifying the type of expression, is done through the <emphasis role="bold">language</emphasis>
+          attribute on the <emphasis>expression</emphasis> element:
+  <programlisting>
+&lt;conditionExpression xsi:type=&quot;tFormalExpression&quot; <emphasis role="bold">language=&quot;uel-value | uel-method</emphasis>&quot;>
+  &lt;![CDATA[${order.isStandard}]]&gt;
+&lt;/conditionExpression&gt;</programlisting>
+        </para>
+        
+        <para>
+          <itemizedlist>
+            <listitem>
+              <para>
+                <emphasis role="bold">uel-value</emphasis>: references data of a process 
+                variable, in the typical JavaBean style through getters. 
+              </para>
+              <para>
+<programlisting>&lt;conditionExpression xsi:type=&quot;tFormalExpression&quot; <emphasis role="bold">language=&quot;uel-value&quot;</emphasis>&gt;
+  &lt;![CDATA[${order.price &gt; 100 &amp;&amp; order.price &lt; 250}]]&gt;
+&lt;/conditionExpression&gt;</programlisting>
+              </para>
+            </listitem>
+             <listitem>
+              <para>
+                <emphasis role="bold">uel-method</emphasis>: invokes a method that resolves to a boolean value.
+<programlisting>&lt;conditionExpression xsi:type=&quot;tFormalExpression&quot; <emphasis role="bold">language=&quot;uel-method&quot;</emphasis>&gt;
+  &lt;![CDATA[${order.isStandardOrder}]]&gt;
+&lt;/conditionExpression&gt;</programlisting>                
+              </para>
+            </listitem>
+          </itemizedlist>
+          Note that these expressions support resolving primitives (incl. comparing them), beans, lists, arrays and maps.
+          <emphasis role="bold">If no value for the language attribute is specified, by default
+          the expression is resolved as a value expression.</emphasis> 
+        </para>
+        
+        <para>
+          The Activiti distribution contains the following example process using value and method expressions
+          (see <emphasis>org.activiti.examples.bpmn.expression)</emphasis>:
+          <mediaobject><imageobject><imagedata align="center" fileref="images/bpmn.uel-expression.on.seq.flow.png"/></imageobject></mediaobject>
+        </para>
       
       </section>
-    
+      
     </section>
     
     <section id="bpmnGateways">
@@ -831,10 +880,15 @@ ProcessInstance processInstance = processService.startProcessInstanceByXXX();</p
         </para>
         
         <para>
-          <emphasis role="bold">Note:</emphasis> an exclusive gateway will never
-          consume nor generate new tokens.
+          <emphasis role="bold">Note that the semantics of outgoing sequence flow is 
+          different to that of the general case in BPMN 2.0. While in general all sequence
+          flow which condition evaluates to true are selected to continue in a parallel way,
+          only one sequence flow is selected when using the exclusive gateway. 
+          In case multiple sequence flow have a condition that evaluates to true, the 
+          first one defined in the XML (and only that one!) is selected for continuing the process.
+          If no sequence flow can be selected, an exception will be thrown.</emphasis>
         </para>
-      
+        
       </section>
       
       <section id="exclusiveGatewayGraphNotation">
@@ -859,6 +913,11 @@ ProcessInstance processInstance = processService.startProcessInstanceByXXX();</p
         <para>
           The XML representation of an exclusive gateway is straight-forward: one line defining
           the gateway and condition expressions defined on the outgoing sequence flow. 
+          See the section on <link linkend="bpmnConditionalSequenceFlow">conditional sequence flow</link>
+          to see which options are available for such expressions.
+       </para>
+       
+       <para>   
           Take for example the following model:
           <mediaobject><imageobject><imagedata align="center" fileref="images/bpmn.exclusive.gateway.png"/></imageobject></mediaobject> 
           Which is represented in XML as follows:
@@ -876,7 +935,7 @@ ProcessInstance processInstance = processService.startProcessInstanceByXXX();</p
   &lt;conditionExpression xsi:type=&quot;tFormalExpression&quot;&gt;${input == 3}&lt;/conditionExpression&gt;
 &lt;/sequenceFlow&gt;</programlisting>
         </para>
-      
+        
       </section>
     
     </section>
@@ -1293,6 +1352,13 @@ List&lt;Task&gt; tasks = taskService.createTaskQuery().assignee(&quot;kermit&quo
           can be specified as subelement of <emphasis>timerEventDefinition</emphasis>. The format
           used is the <ulink url="http://en.wikipedia.org/wiki/ISO_8601#Durations">ISO 8601</ulink>
           format (as required by the BPMN 2.0 specification).
+        </para>
+        
+        <para>
+          <emphasis role="bold">Note:</emphasis> boundary timer events are only fired when 
+          the job executor is enabled (ie. <emphasis>job.executor.auto.activate=off</emphasis>
+          needs to be removed from the <emphasis>activiti.properties</emphasis>, since the job
+          executor is otherwise enabled by default). 
         </para>
       
       </section>
