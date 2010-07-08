@@ -28,7 +28,7 @@ import static org.junit.Assert.*;
 /**
  * @author Joram Barrez
  */
-public class ConditionalSequenceflowTest {
+public class ConditionalSequenceFlowTest {
   
   @Rule
   public LogInitializer logSetup = new LogInitializer();
