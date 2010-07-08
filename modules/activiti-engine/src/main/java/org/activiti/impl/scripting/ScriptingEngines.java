@@ -12,7 +12,6 @@
  */
 package org.activiti.impl.scripting;
 
-import java.util.Arrays;
 import java.util.List;
 
 import javax.script.Bindings;
@@ -24,26 +23,22 @@ import javax.script.SimpleBindings;
 
 import org.activiti.ActivitiException;
 import org.activiti.impl.execution.ExecutionImpl;
-import org.activiti.impl.interceptor.CommandContext;
-
-import com.sun.script.juel.JuelScriptEngineFactory;
-
 
 /**
  * @author Tom Baeyens
  */
 public class ScriptingEngines {
-  
-  public static final String DEFAULT_SCRIPTING_LANGUAGE =  "juel"; 
 
-  static ScriptingEngines defaultScriptingEngines = new ScriptingEngines(
-    new ScriptEngineFactory[]{
-      new JuelScriptEngineFactory()
-    }
-  );
-  ScriptEngineManager scriptEngineManager = new ScriptEngineManager();
-  
+  public static final String DEFAULT_SCRIPTING_LANGUAGE = "juel";
+
+  private final ScriptEngineManager scriptEngineManager;
+
   public ScriptingEngines() {
+    this(new ScriptEngineManager());
+  }
+
+  public ScriptingEngines(ScriptEngineManager scriptEngineManager) {
+    this.scriptEngineManager = scriptEngineManager;
   }
 
   public ScriptingEngines addScriptEngineFactory(ScriptEngineFactory scriptEngineFactory) {
@@ -51,46 +46,32 @@ public class ScriptingEngines {
     return this;
   }
 
-
-  public ScriptingEngines(ScriptEngineFactory[] scriptEngineFactories) {
-    setScriptEngineFactories(Arrays.asList(scriptEngineFactories));
-  }
-
-  public static ScriptingEngines getScriptingEngines() {
-    CommandContext commandContext = CommandContext.getCurrent();
-    if (commandContext!=null) {
-      return commandContext
-        .getScriptingEngines();
-    }
-    return defaultScriptingEngines;
-  }
-  
   public void setScriptEngineFactories(List<ScriptEngineFactory> scriptEngineFactories) {
-    if (scriptEngineFactories!=null) {
-      for (ScriptEngineFactory scriptEngineFactory: scriptEngineFactories) {
+    if (scriptEngineFactories != null) {
+      for (ScriptEngineFactory scriptEngineFactory : scriptEngineFactories) {
         scriptEngineManager.registerEngineName(scriptEngineFactory.getEngineName(), scriptEngineFactory);
       }
     }
   }
-  
+
   public Object evaluate(String script, String language, ExecutionImpl execution) {
     Bindings bindings = createBindings(execution);
     ScriptEngine scriptEngine = scriptEngineManager.getEngineByName(language);
-    
+
     if (scriptEngine == null) {
       throw new ActivitiException("Can't find scripting engine for '" + language + "'");
     }
-    
+
     try {
       return scriptEngine.eval(script, bindings);
     } catch (ScriptException e) {
-      throw new ActivitiException("problem evaluating script: "+e.getMessage(), e);
+      throw new ActivitiException("problem evaluating script: " + e.getMessage(), e);
     }
   }
 
   /** override to build a spring aware ScriptingEngines */
   protected Bindings createBindings(ExecutionImpl execution) {
-    if (execution!=null) {
+    if (execution != null) {
       return new ExecutionBindings(execution);
     }
     return new SimpleBindings();

@@ -20,16 +20,17 @@ import org.activiti.impl.msg.MessageAddedNotification;
 import org.activiti.impl.persistence.PersistenceSession;
 import org.activiti.impl.tx.TransactionState;
 
-
 /**
  * @author Tom Baeyens
  */
 public class DecrementJobRetriesCmd implements Command<Object> {
 
-  String jobId;
-  Throwable exception;
+  private final String jobId;
+  private final Throwable exception;
+  private final JobExecutor jobExecutor;
 
-  public DecrementJobRetriesCmd(String jobId, Throwable exception) {
+  public DecrementJobRetriesCmd(JobExecutor jobExecutor, String jobId, Throwable exception) {
+    this.jobExecutor = jobExecutor;
     this.jobId = jobId;
     this.exception = exception;
   }
@@ -37,19 +38,17 @@ public class DecrementJobRetriesCmd implements Command<Object> {
   public Object execute(CommandContext commandContext) {
     PersistenceSession persistenceSession = commandContext.getPersistenceSession();
     JobImpl job = persistenceSession.findJobById(jobId);
-    job.setRetries(job.getRetries()-1);
+    job.setRetries(job.getRetries() - 1);
     job.setLockOwner(null);
     job.setLockExpirationTime(null);
-    
-    commandContext
-      .getTransactionContext()
-      .addTransactionListener(TransactionState.COMMITTED, new MessageAddedNotification());
 
-// TODO store the exception in a byte array
-//    StringWriter stringWriter = new StringWriter();
-//    exception.printStackTrace(new PrintWriter(stringWriter));
-//    byte[] exceptionBytes = stringWriter.toString().getBytes();
-    
+    commandContext.getTransactionContext().addTransactionListener(TransactionState.COMMITTED, new MessageAddedNotification(jobExecutor));
+
+    // TODO store the exception in a byte array
+    // StringWriter stringWriter = new StringWriter();
+    // exception.printStackTrace(new PrintWriter(stringWriter));
+    // byte[] exceptionBytes = stringWriter.toString().getBytes();
+
     return null;
   }
 }

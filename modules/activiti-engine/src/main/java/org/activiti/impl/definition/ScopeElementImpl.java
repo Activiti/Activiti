@@ -19,6 +19,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.activiti.impl.calendar.BusinessCalendar;
 import org.activiti.impl.timer.TimerDeclarationImpl;
 import org.activiti.pvm.Listener;
 
@@ -50,10 +51,8 @@ public class ScopeElementImpl implements Serializable {
     return variableDeclaration;
   }
 
-  public TimerDeclarationImpl createTimerDeclaration(String duedate, String jobHandlerType) {
-    TimerDeclarationImpl timerDeclaration = new TimerDeclarationImpl();
-    timerDeclaration.setDuedate(duedate);
-    timerDeclaration.setJobHandlerType(jobHandlerType);
+  public TimerDeclarationImpl createTimerDeclaration(BusinessCalendar businessCalendar, String duedate, String jobHandlerType) {
+    TimerDeclarationImpl timerDeclaration = new TimerDeclarationImpl(businessCalendar, duedate, jobHandlerType);
     timerDeclarations.add(timerDeclaration);
     return timerDeclaration;
   }

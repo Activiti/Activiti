@@ -20,39 +20,33 @@ import java.util.Set;
 
 import org.activiti.impl.execution.VariableMap;
 import org.activiti.impl.interceptor.CommandContext;
-import org.activiti.impl.task.TaskImpl;
+import org.activiti.impl.variable.Type;
 import org.activiti.impl.variable.VariableInstance;
-
-
+import org.activiti.impl.variable.VariableTypes;
 
 /**
  * @author Tom Baeyens
  */
 public class DbVariableMap extends VariableMap implements Serializable {
-  
+
   private static final long serialVersionUID = 1L;
-  
-  protected Map<String, VariableInstance> variableInstances = null;
-  protected DbExecutionImpl execution;
-  protected TaskImpl task;
-  
+
+  private Map<String, VariableInstance> variableInstances = null;
+  private final DbExecutionImpl execution;
+
+  private final VariableTypes variableTypes;
+
   public DbVariableMap(DbExecutionImpl execution) {
     this.execution = execution;
     if (execution.isNew()) {
       variableInstances = new HashMap<String, VariableInstance>();
     }
+    variableTypes = execution.getVariableTypes();
   }
 
-  public DbVariableMap(TaskImpl task) {
-    this.task = task;
-    if (task.isNew()) {
-      variableInstances = new HashMap<String, VariableInstance>();
-    }
-  }
-
-  public Object getVariable(String variableName) {    
+  public Object getVariable(String variableName) {
     VariableInstance variableInstance = getInitializedVariableInstances().get(variableName);
-    if (variableInstance!=null) {
+    if (variableInstance != null) {
       return variableInstance.getValue();
     }
     return null;
@@ -60,15 +54,13 @@ public class DbVariableMap extends VariableMap implements Serializable {
 
   public void setVariable(String variableName, Object value) {
     VariableInstance variableInstance = getInitializedVariableInstances().get(variableName);
-    if ( (variableInstance!=null)
-         && (!variableInstance.getType().isAbleToStore(value))
-       ) {
+    if ((variableInstance != null) && (!variableInstance.getType().isAbleToStore(value))) {
       // delete variable
       deleteVariable(variableName);
       variableInstance = null;
     }
     boolean isCreated = false;
-    if (variableInstance==null) {
+    if (variableInstance == null) {
       isCreated = true;
       variableInstance = createVariableInstance(variableName, value);
     }
@@ -77,15 +69,10 @@ public class DbVariableMap extends VariableMap implements Serializable {
       insertVariableInstance(variableInstance);
     }
   }
-  
-  public void createVariable(String name, String type) {
-    VariableInstance variableInstance = createVariableInstance(name, type);
-    insertVariableInstance(variableInstance);
-  }
 
   public Map<String, Object> getVariables() {
     Map<String, Object> variables = new HashMap<String, Object>();
-    for (String variableName: getVariableNames()) {
+    for (String variableName : getVariableNames()) {
       VariableInstance variableInstance = variableInstances.get(variableName);
       Object value = variableInstance.getValue();
       variables.put(variableName, value);
@@ -95,11 +82,11 @@ public class DbVariableMap extends VariableMap implements Serializable {
 
   public void deleteVariable(String variableName) {
     VariableInstance variableInstance = getInitializedVariableInstances().remove(variableName);
-    if (variableInstance!=null) {
+    if (variableInstance != null) {
       variableInstance.delete();
     }
   }
-  
+
   public Set<String> getVariableNames() {
     return getInitializedVariableInstances().keySet();
   }
@@ -108,32 +95,18 @@ public class DbVariableMap extends VariableMap implements Serializable {
     return getInitializedVariableInstances().containsKey(variableName);
   }
 
-  
   // variable instance methods ////////////////////////////////////////////////
 
   protected void insertVariableInstance(VariableInstance variableInstance) {
-    CommandContext
-      .getCurrent()
-      .getPersistenceSession()
-      .insert(variableInstance);
+    CommandContext.getCurrent().getPersistenceSession().insert(variableInstance);
   }
 
   protected Map<String, VariableInstance> getInitializedVariableInstances() {
-    if (variableInstances==null) {
+    if (variableInstances == null) {
       List<VariableInstance> variableInstanceList = null;
-      if (execution!=null) {
-        variableInstanceList = CommandContext
-            .getCurrent()
-            .getPersistenceSession()
-            .findVariablesByExecutionId(execution.getId());
-      } else {
-        variableInstanceList = CommandContext
-            .getCurrent()
-            .getPersistenceSession()
-            .findVariablesByTaskId(task.getId());
-      }
+      variableInstanceList = CommandContext.getCurrent().getPersistenceSession().findVariablesByExecutionId(execution.getId());
       variableInstances = new HashMap<String, VariableInstance>();
-      for (VariableInstance variableInstance: variableInstanceList) {
+      for (VariableInstance variableInstance : variableInstanceList) {
         variableInstances.put(variableInstance.getName(), variableInstance);
       }
     }
@@ -141,23 +114,15 @@ public class DbVariableMap extends VariableMap implements Serializable {
   }
 
   protected void addVariableInstance(VariableInstance variableInstance) {
-    if (execution!=null) {
-      variableInstance.setExecution(execution);
-    } else {
-      variableInstance.setTask(task);
-    }
+    variableInstance.setExecution(execution);
     variableInstances.put(variableInstance.getName(), variableInstance);
   }
-  
+
   protected VariableInstance createVariableInstance(String variableName, Object value) {
-    VariableInstance variableInstance = new VariableInstance(variableName, value);
+    Type type = variableTypes.findVariableType(value);
+    VariableInstance variableInstance = new VariableInstance(type, variableName, value);
     addVariableInstance(variableInstance);
     return variableInstance;
   }
 
-  protected VariableInstance createVariableInstance(String name, String typeName) {
-    VariableInstance variableInstance = new VariableInstance(name, typeName);
-    addVariableInstance(variableInstance);
-    return variableInstance;
-  }
 }

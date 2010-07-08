@@ -26,9 +26,11 @@ import org.activiti.impl.time.Clock;
  */
 public class DeployCmd<T> implements Command<Deployment> {
 
-  DeploymentImpl deployment;
+  private final DeploymentImpl deployment;
+  private final DeployerManager deployerManager;
   
-  public DeployCmd(DeploymentImpl deployment) {
+  public DeployCmd(DeployerManager deployerManager, DeploymentImpl deployment) {
+    this.deployerManager = deployerManager;
     this.deployment = deployment;
   }
 
@@ -36,8 +38,6 @@ public class DeployCmd<T> implements Command<Deployment> {
     PersistenceSession persistenceSession = commandContext.getPersistenceSession();
     deployment.setDeploymentTime(Clock.getCurrentTime());
     persistenceSession.insertDeployment(deployment);
-
-    DeployerManager deployerManager = commandContext.getDeployerManager();
     deployerManager.deploy(deployment, commandContext);
     return deployment;
   }

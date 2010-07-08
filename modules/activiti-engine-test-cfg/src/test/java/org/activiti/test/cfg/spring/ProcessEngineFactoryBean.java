@@ -53,7 +53,7 @@ public class ProcessEngineFactoryBean implements FactoryBean<ProcessEngine> {
     configuration.setJobExecutorAutoActivate(jobExecutorAutoActivate);
     configuration.setProcessEngineName(processEngineName);
     IdGenerator idGenerator = configuration.getIdGenerator();
-    PersistenceSessionFactory persistenceSessionFactory = new IbatisPersistenceSessionFactory(idGenerator, databaseName, dataSource, transactionManager == null);
+    PersistenceSessionFactory persistenceSessionFactory = new IbatisPersistenceSessionFactory(configuration.getVariableTypes(), idGenerator, databaseName, dataSource, transactionManager == null);
     configuration.setPersistenceSessionFactory(persistenceSessionFactory);
 
     if (transactionManager != null) {

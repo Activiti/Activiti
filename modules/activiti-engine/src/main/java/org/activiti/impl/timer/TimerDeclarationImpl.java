@@ -13,7 +13,9 @@
 package org.activiti.impl.timer;
 
 import java.io.Serializable;
+import java.util.Date;
 
+import org.activiti.impl.calendar.BusinessCalendar;
 import org.activiti.impl.job.TimerImpl;
 
 
@@ -24,22 +26,25 @@ public class TimerDeclarationImpl implements Serializable {
 
   private static final long serialVersionUID = 1L;
 
-  protected String jobHandlerType = null;
-  protected String jobHandlerConfiguration = null;
-  protected String duedate;
-  protected String businessCalendarRef = null;
-  protected String repeat;
-  protected boolean exclusive = TimerImpl.DEFAULT_EXCLUSIVE;
-  protected int retries = TimerImpl.DEFAULT_RETRIES;
+  private final BusinessCalendar calendar;
+  private final String duedateDeclaration;
+  private final String jobHandlerType;
+  private String jobHandlerConfiguration = null;
+  private String repeat;
+  private boolean exclusive = TimerImpl.DEFAULT_EXCLUSIVE;
+  private int retries = TimerImpl.DEFAULT_RETRIES;
+
+  
+  public TimerDeclarationImpl(BusinessCalendar calendar, String duedateDeclaration, String jobHandlerType) {
+    this.calendar = calendar;
+    this.duedateDeclaration = duedateDeclaration;
+    this.jobHandlerType = jobHandlerType;
+  }
   
   public String getJobHandlerType() {
     return jobHandlerType;
   }
-  
-  public void setJobHandlerType(String jobHandlerType) {
-    this.jobHandlerType = jobHandlerType;
-  }
-  
+
   public String getJobHandlerConfiguration() {
     return jobHandlerConfiguration;
   }
@@ -48,14 +53,10 @@ public class TimerDeclarationImpl implements Serializable {
     this.jobHandlerConfiguration = jobHandlerConfiguration;
   }
   
-  public String getDuedate() {
-    return duedate;
+  public Date getDuedate() {
+    return calendar.resolveDuedate(duedateDeclaration);
   }
-  
-  public void setDuedate(String duedate) {
-    this.duedate = duedate;
-  }
-  
+
   public String getRepeat() {
     return repeat;
   }
@@ -70,14 +71,6 @@ public class TimerDeclarationImpl implements Serializable {
   
   public void setExclusive(boolean exclusive) {
     this.exclusive = exclusive;
-  }
-  
-  public String getBusinessCalendarRef() {
-    return businessCalendarRef;
-  }
-  
-  public void setBusinessCalendarRef(String businessCalendarRef) {
-    this.businessCalendarRef = businessCalendarRef;
   }
   
   public int getRetries() {

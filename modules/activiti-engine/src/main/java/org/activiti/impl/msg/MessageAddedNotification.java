@@ -15,6 +15,7 @@ package org.activiti.impl.msg;
 import java.util.logging.Logger;
 
 import org.activiti.impl.interceptor.CommandContext;
+import org.activiti.impl.jobexecutor.JobExecutor;
 import org.activiti.impl.tx.TransactionListener;
 
 
@@ -25,10 +26,14 @@ public class MessageAddedNotification implements TransactionListener {
   
   private static Logger log = Logger.getLogger(MessageAddedNotification.class.getName());
   
+  private final JobExecutor jobExecutor;
+
+  public MessageAddedNotification(JobExecutor jobExecutor) {
+    this.jobExecutor = jobExecutor;
+  }
+
   public void execute(CommandContext commandContext) {
     log.fine("notifying job executor of new job");
-    commandContext
-      .getJobExecutor()
-      .jobWasAdded();  
+    jobExecutor.jobWasAdded();
   }
 }

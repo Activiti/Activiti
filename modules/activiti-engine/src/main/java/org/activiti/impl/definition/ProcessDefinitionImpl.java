@@ -16,6 +16,7 @@ import org.activiti.impl.Jsonnable;
 import org.activiti.impl.execution.ExecutionImpl;
 import org.activiti.impl.json.JSONObject;
 import org.activiti.impl.repository.DeploymentImpl;
+import org.activiti.impl.variable.VariableTypes;
 import org.activiti.pvm.ObjectProcessDefinition;
 
 /**
@@ -36,20 +37,20 @@ public class ProcessDefinitionImpl extends ScopeElementImpl implements ObjectPro
   protected boolean isNew = false;
   
   /* Name of the resource that was used to deploy this processDefinition */
-  transient protected String resourceName; 
+  transient protected String resourceName;
+
+  private final VariableTypes variableTypes;
+
+  public ProcessDefinitionImpl(VariableTypes variableTypes) {
+    this.variableTypes = variableTypes;
+  }
   
   public ExecutionImpl createProcessInstance() {
     ExecutionImpl execution = new ExecutionImpl(this);
-    initializeVariableDeclarations(execution);
+    // TODO: maybe initialize variable declarations if needed;
     return execution;
   }
   
-  protected void initializeVariableDeclarations(ExecutionImpl execution) {
-    for (VariableDeclarationImpl varDec: getVariableDeclarations()) {
-      execution.createVariable(varDec.getName(), varDec.getType());
-    }
-  }
-
   public String getName() {
     return name;
   }
@@ -96,6 +97,10 @@ public class ProcessDefinitionImpl extends ScopeElementImpl implements ObjectPro
     return this;
   }
   
+  public VariableTypes getVariableTypes() {
+    return variableTypes;
+  }
+
   public JSONObject toJsonObject() {
     JSONObject jsonObject = new JSONObject();
     jsonObject.put("id", id);

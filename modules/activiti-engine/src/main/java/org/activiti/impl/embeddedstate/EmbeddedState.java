@@ -82,7 +82,7 @@ public abstract class EmbeddedState {
       String[] splittedSerialization = procInstString.split(",");
       String activityId = splittedSerialization[0].replace("activity:", "");
       ProcessDefinitionImpl processDefinitionImpl = getProcessDefinition();
-      embeddedProcessInstance = new ExecutionImpl(processDefinitionImpl);
+      embeddedProcessInstance = processDefinitionImpl.createProcessInstance();
       embeddedProcessInstance.setActivity(processDefinitionImpl.findActivity(activityId));
     }
   }
@@ -100,7 +100,7 @@ public abstract class EmbeddedState {
   public void start(Map<String, Object> variables) {
     
     if (embeddedProcessInstance == null) {
-      embeddedProcessInstance = new ExecutionImpl(getProcessDefinition());
+      embeddedProcessInstance = getProcessDefinition().createProcessInstance();
     }
     
     if (variables != null) {

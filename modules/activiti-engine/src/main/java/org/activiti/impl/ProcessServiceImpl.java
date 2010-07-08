@@ -43,8 +43,10 @@ import org.activiti.impl.cmd.SetExecutionVariablesCmd;
 import org.activiti.impl.cmd.StartProcessInstanceCmd;
 import org.activiti.impl.execution.ProcessInstanceQueryImpl;
 import org.activiti.impl.interceptor.CommandExecutor;
+import org.activiti.impl.repository.DeployerManager;
 import org.activiti.impl.repository.DeploymentBuilderImpl;
 import org.activiti.impl.repository.DeploymentImpl;
+import org.activiti.impl.scripting.ScriptingEngines;
 
 
 /**
@@ -52,10 +54,16 @@ import org.activiti.impl.repository.DeploymentImpl;
  */
 public class ProcessServiceImpl implements ProcessService {
   
-  protected final CommandExecutor commandExecutor;
+  private final CommandExecutor commandExecutor;
   
-  public ProcessServiceImpl(CommandExecutor commandExecutor) {
-    this.commandExecutor = commandExecutor;  
+  private final DeployerManager deployerManager;
+
+  private final ScriptingEngines scriptingEngines;
+
+  public ProcessServiceImpl(CommandExecutor commandExecutor, DeployerManager deployerManager, ScriptingEngines scriptingEngines) {
+    this.commandExecutor = commandExecutor;
+    this.deployerManager = deployerManager;
+    this.scriptingEngines = scriptingEngines;
   }
 
   public DeploymentBuilder createDeployment() {
@@ -99,7 +107,7 @@ public class ProcessServiceImpl implements ProcessService {
   }
 
   public Deployment deploy(DeploymentImpl deployment) {
-    return commandExecutor.execute(new DeployCmd<Deployment>(deployment));
+    return commandExecutor.execute(new DeployCmd<Deployment>(deployerManager, deployment));
   }
 
   @SuppressWarnings("unchecked")
@@ -148,11 +156,11 @@ public class ProcessServiceImpl implements ProcessService {
   }
 
   public Object getStartFormById(String processDefinitionId) {
-    return commandExecutor.execute(new GetFormCmd(processDefinitionId, null, null));
+    return commandExecutor.execute(new GetFormCmd(scriptingEngines, processDefinitionId, null, null));
   }
 
   public Object getStartFormByKey(String processDefinitionKey) {
-    return commandExecutor.execute(new GetFormCmd(null, processDefinitionKey, null));
+    return commandExecutor.execute(new GetFormCmd(scriptingEngines, null, processDefinitionKey, null));
   }
 
   public void sendEvent(String executionId) {

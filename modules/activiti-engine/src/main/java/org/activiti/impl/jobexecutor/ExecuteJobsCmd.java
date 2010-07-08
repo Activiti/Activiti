@@ -18,6 +18,8 @@ import java.util.logging.Logger;
 import org.activiti.ActivitiException;
 import org.activiti.impl.interceptor.Command;
 import org.activiti.impl.interceptor.CommandContext;
+import org.activiti.impl.job.JobHandler;
+import org.activiti.impl.job.JobHandlers;
 import org.activiti.impl.job.JobImpl;
 
 
@@ -28,9 +30,11 @@ public class ExecuteJobsCmd implements Command<Object> {
 
   private static Logger log = Logger.getLogger(ExecuteJobsCmd.class.getName());
   
-  protected String jobId;
-  
-  public ExecuteJobsCmd(String jobId) {
+  private final String jobId;
+  private final JobHandlers jobHandlers;
+
+  public ExecuteJobsCmd(JobHandlers jobHandlers, String jobId) {
+    this.jobHandlers = jobHandlers;
     this.jobId = jobId;
   }
 
@@ -43,8 +47,8 @@ public class ExecuteJobsCmd implements Command<Object> {
     if (job == null) {
       throw new ActivitiException("No job found for jobId '" + jobId + "'");
     }
-    
-    job.execute(commandContext);
+    JobHandler jobHandler = jobHandlers.getJobHandler(job.getJobHandlerType());
+    job.execute(jobHandler, commandContext);
     return null;
   }
 }

@@ -17,19 +17,20 @@ import org.activiti.impl.scripting.ScriptingEngines;
 import org.activiti.pvm.Listener;
 import org.activiti.pvm.ListenerExecution;
 
-
 /**
  * @author Tom Baeyens
  * @author Joram Barrez
  */
 public class VariableInitializeWithExpression implements Listener {
-  
-  protected String destinationVariableName;
-  protected String sourceValueExpression;
-  protected String sourceValueExpressionLanguage;
-  
-  public VariableInitializeWithExpression(String destinationVariableName, 
-          String sourceValueExpression, String sourceValueExpressionLanguage) {
+
+  private final String destinationVariableName;
+  private final String sourceValueExpression;
+  private final String sourceValueExpressionLanguage;
+  private final ScriptingEngines scriptingEngines;
+
+  public VariableInitializeWithExpression(ScriptingEngines scriptingEngines, String destinationVariableName, String sourceValueExpression,
+          String sourceValueExpressionLanguage) {
+    this.scriptingEngines = scriptingEngines;
     this.destinationVariableName = destinationVariableName;
     this.sourceValueExpression = sourceValueExpression;
     this.sourceValueExpressionLanguage = sourceValueExpressionLanguage;
@@ -38,8 +39,6 @@ public class VariableInitializeWithExpression implements Listener {
   public void notify(ListenerExecution execution) {
     ExecutionImpl innerScope = (ExecutionImpl) execution;
     ExecutionImpl outerScope = innerScope.getParent();
-    
-    ScriptingEngines scriptingEngines = ScriptingEngines.getScriptingEngines();
     Object value = scriptingEngines.evaluate(sourceValueExpression, sourceValueExpressionLanguage, outerScope);
     innerScope.setVariable(destinationVariableName, value);
   }

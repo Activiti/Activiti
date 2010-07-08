@@ -14,6 +14,7 @@ package org.activiti.impl.msg;
 
 import org.activiti.impl.interceptor.CommandContext;
 import org.activiti.impl.job.MessageImpl;
+import org.activiti.impl.jobexecutor.JobExecutor;
 import org.activiti.impl.persistence.PersistenceSession;
 import org.activiti.impl.tx.TransactionState;
 
@@ -23,10 +24,12 @@ import org.activiti.impl.tx.TransactionState;
  */
 public class JobExecutorMessageSession implements MessageSession {
 
-  CommandContext commandContext;
+  private final CommandContext commandContext;
+  private final JobExecutor jobExecutor;
   
-  public JobExecutorMessageSession(CommandContext commandContext) {
+  public JobExecutorMessageSession(CommandContext commandContext, JobExecutor jobExecutor) {
     this.commandContext = commandContext;
+    this.jobExecutor = jobExecutor;
   }
 
   public void send(MessageImpl message) {
@@ -35,7 +38,7 @@ public class JobExecutorMessageSession implements MessageSession {
     
     commandContext
       .getTransactionContext()
-      .addTransactionListener(TransactionState.COMMITTED, new MessageAddedNotification());
+      .addTransactionListener(TransactionState.COMMITTED, new MessageAddedNotification(jobExecutor));
   }
 
   public void close() {

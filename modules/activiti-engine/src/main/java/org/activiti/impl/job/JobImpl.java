@@ -19,66 +19,51 @@ import java.util.Map;
 
 import org.activiti.Job;
 import org.activiti.impl.execution.ExecutionImpl;
-import org.activiti.impl.interceptor.Command;
 import org.activiti.impl.interceptor.CommandContext;
 import org.activiti.impl.persistence.PersistentObject;
 
-
 /**
- * Stub of the common parts of a Job.
- * You will normally work with a subclass of
- *  JobImpl, such as {@link TimerImpl} or
- *  {@link MessageImpl}.
+ * Stub of the common parts of a Job. You will normally work with a subclass of
+ * JobImpl, such as {@link TimerImpl} or {@link MessageImpl}.
+ *
  * @author Tom Baeyens
  * @author Nick Burch
+ * @author Dave Syer
  */
-public abstract class JobImpl implements Serializable, Job, PersistentObject, Command <Void> {
-  
+public abstract class JobImpl implements Serializable, Job, PersistentObject {
+
   public static final boolean DEFAULT_EXCLUSIVE = false;
   public static final int DEFAULT_RETRIES = 3;
 
   private static final long serialVersionUID = 1L;
-  
-  protected String id;
-  
-  protected Date duedate;
 
-  protected String lockOwner = null;
-  protected Date lockExpirationTime = null;
+  private String id;
 
-  protected String executionId = null;
-  protected String processInstanceId = null;
+  private Date duedate;
 
-  protected boolean exclusive = DEFAULT_EXCLUSIVE;
+  private String lockOwner = null;
+  private Date lockExpirationTime = null;
 
-  protected int retries = DEFAULT_RETRIES;
-  protected String exception = null;
-  
-  protected String jobHandlerType = null;
-  protected String jobHandlerConfiguration = null;
+  private String executionId = null;
+  private String processInstanceId = null;
+
+  private boolean exclusive = DEFAULT_EXCLUSIVE;
+
+  private int retries = DEFAULT_RETRIES;
+  private String exception = null;
+
+  private String jobHandlerType = null;
+  private String jobHandlerConfiguration = null;
 
   public Object getPersistentState() {
-    Map<String, Object> persistentState = new  HashMap<String, Object>();
+    Map<String, Object> persistentState = new HashMap<String, Object>();
     persistentState.put("lockOwner", lockOwner);
     persistentState.put("lockExpirationTime", lockExpirationTime);
     persistentState.put("retries", retries);
     persistentState.put("exception", exception);
     return persistentState;
   }
-  
-  public Void execute(CommandContext commandContext) {
-    JobHandlers jobHandlers = commandContext.getJobHandlers();
-    JobHandler jobHandler = jobHandlers.getJobHandler(jobHandlerType);
-    ExecutionImpl execution = null;
-    if (executionId!=null) {
-      execution = commandContext
-        .getPersistenceSession()
-        .findExecution(executionId);
-    }
-    jobHandler.execute(jobHandlerConfiguration, execution, commandContext);
-    return null;
-  }
-  
+
   public void setExecution(ExecutionImpl execution) {
     executionId = execution.getId();
     processInstanceId = execution.getProcessInstance().getId();
@@ -149,5 +134,13 @@ public abstract class JobImpl implements Serializable, Job, PersistentObject, Co
   }
   public void setJobHandlerConfiguration(String jobHandlerConfiguration) {
     this.jobHandlerConfiguration = jobHandlerConfiguration;
+  }
+
+  public void execute(JobHandler jobHandler, CommandContext commandContext) {
+    ExecutionImpl execution = null;
+    if (executionId != null) {
+      execution = commandContext.getPersistenceSession().findExecution(executionId);
+    }
+    jobHandler.execute(jobHandlerConfiguration, execution, commandContext);
   }
 }

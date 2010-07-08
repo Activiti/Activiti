@@ -1,73 +1,83 @@
 <?xml version="1.0" encoding="UTF-8" ?> 
 
-<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
-  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
 <mapper namespace="org.activiti.persistence">
-  
-  <!-- RESULTMAP -->
-  
-  <resultMap id="variableInstanceResultMap" type="org.activiti.impl.variable.VariableInstance">
-    <id property="id" column="ID_" jdbcType="VARCHAR" />
-    <result property="name" column="NAME_" jdbcType="VARCHAR" />
-    <result property="processDefinitionId" column="PROC_DEF_ID_" jdbcType="VARCHAR" />
-    <result property="activityId" column="ACTIVITY_ID_" jdbcType="VARCHAR" />
-    <result property="isActive" column="IS_ACTIVE_" jdbcType="BOOLEAN" />
-    <result property="isConcurrencyScope" column="IS_CONCURRENCY_SCOPE_" jdbcType="BOOLEAN" />
-    <result property="byteArrayValueId" column="BYTEARRAY_ID_"  />
-    <result property="doubleValue" column="DOUBLE_"  />
-    <result property="textValue" column="TEXT_"  />
-    <result property="longValue" column="LONG_"  />
-    <result property="typeName" column="TYPE_"  />
-  </resultMap>
-  
-  <!-- SELECT -->
-  
-  <select id="selectVariableInstance" parameterType="string" resultMap="variableInstanceResultMap">
-    select * from ACT_VARIABLE where ID_ = #{id, jdbcType=VARCHAR}
+
+	<!-- RESULTMAP -->
+
+	<resultMap id="variableInstanceResultMap" type="org.activiti.impl.variable.VariableInstance">
+		<id property="id" column="ID_" jdbcType="VARCHAR" />
+		<result property="type" column="TYPE_" javaType="org.activiti.impl.variable.Type" jdbcType="VARCHAR"/>
+		<result property="name" column="NAME_" javaType="String" jdbcType="VARCHAR" />
+		<result property="processDefinitionId" column="PROC_DEF_ID_" jdbcType="VARCHAR" />
+		<result property="activityId" column="ACTIVITY_ID_" jdbcType="VARCHAR" />
+		<result property="isActive" column="IS_ACTIVE_" jdbcType="BOOLEAN" />
+		<result property="isConcurrencyScope" column="IS_CONCURRENCY_SCOPE_" jdbcType="BOOLEAN" />
+		<result property="byteArrayValueId" column="BYTEARRAY_ID_" />
+		<result property="doubleValue" column="DOUBLE_" />
+		<result property="textValue" column="TEXT_" />
+		<result property="longValue" column="LONG_" />
+	</resultMap>
+
+	<!-- SELECT -->
+
+	<select id="selectVariableInstance" parameterType="string" resultMap="variableInstanceResultMap">
+		select * from ACT_VARIABLE where ID_ =
+		#{id, jdbcType=VARCHAR}
   </select>
-  
-  <select id="selectVariablesByExecutionId" parameterType="string" resultMap="variableInstanceResultMap">
-    select * from ACT_VARIABLE where EXECUTION_ID_ = #{executionId, jdbcType=VARCHAR}
+
+	<select id="selectVariablesByExecutionId" parameterType="string" resultMap="variableInstanceResultMap">
+		select * from ACT_VARIABLE where
+		EXECUTION_ID_ = #{executionId,
+		jdbcType=VARCHAR}
   </select>
-  
-  <select id="selectVariablesByTaskId" parameterType="string" resultMap="variableInstanceResultMap">
-    select * from ACT_VARIABLE where TASK_ID_ = #{executionId, jdbcType=VARCHAR}
-  </select>
-  
-  <!-- INSERT -->
-  
-  <insert id="insertVariableInstance" parameterType="org.activiti.impl.variable.VariableInstance">
-    insert into ACT_VARIABLE (ID_, REV_, TYPE_, NAME_, EXECUTION_ID_, TASK_ID_, BYTEARRAY_ID_, DOUBLE_, LONG_ , TEXT_)
-    values (
-      #{id, jdbcType=VARCHAR},
-      #{revision, jdbcType=INTEGER},
-      #{typeName, jdbcType=VARCHAR},
-      #{name, jdbcType=VARCHAR},
-      #{executionId, jdbcType=VARCHAR},
-      #{taskId, jdbcType=VARCHAR},
-      #{byteArrayValueId, jdbcType=VARCHAR},
-      #{doubleValue, jdbcType=DOUBLE},
-      #{longValue, jdbcType=BIGINT},
-      #{textValue, jdbcType=VARCHAR}
-    )
+
+	<select id="selectVariablesByTaskId" parameterType="string" resultMap="variableInstanceResultMap">
+		select * from ACT_VARIABLE where TASK_ID_
+		= #{executionId, jdbcType=VARCHAR}
+	</select>
+
+	<!-- INSERT -->
+
+	<insert id="insertVariableInstance" parameterType="org.activiti.impl.variable.VariableInstance">
+		insert into ACT_VARIABLE (ID_, REV_, TYPE_, NAME_,
+		EXECUTION_ID_, TASK_ID_,
+		BYTEARRAY_ID_, DOUBLE_, LONG_ , TEXT_)
+		values (
+		#{id, jdbcType=VARCHAR},
+		#{revision,
+		jdbcType=INTEGER},
+		#{type, jdbcType=VARCHAR },
+		#{name, jdbcType=VARCHAR},
+		#{executionId, jdbcType=VARCHAR},
+		#{taskId,
+		jdbcType=VARCHAR},
+		#{byteArrayValueId, jdbcType=VARCHAR},
+		#{doubleValue, jdbcType=DOUBLE},
+		#{longValue, jdbcType=BIGINT},
+		#{textValue, jdbcType=VARCHAR}
+		)
   </insert>
 
-  <!-- UPDATE -->
-  
-  <update id="updateVariableInstance" parameterType="org.activiti.impl.variable.VariableInstance">
-    update ACT_VARIABLE 
-    set BYTEARRAY_ID_ = #{byteArrayValueId, jdbcType=VARCHAR},
-        DOUBLE_ = #{doubleValue, jdbcType=DOUBLE},
-        LONG_ = #{longValue, jdbcType=BIGINT},
-        TEXT_ = #{textValue, jdbcType=VARCHAR}
-    where ID_ = #{id, jdbcType=VARCHAR}
-      and REV_ = #{revision, jdbcType=INTEGER}
+	<!-- UPDATE -->
+
+	<update id="updateVariableInstance" parameterType="org.activiti.impl.variable.VariableInstance">
+		update ACT_VARIABLE
+		set BYTEARRAY_ID_ = #{byteArrayValueId,
+		jdbcType=VARCHAR},
+		DOUBLE_ = #{doubleValue, jdbcType=DOUBLE},
+		LONG_ = #{longValue, jdbcType=BIGINT},
+		TEXT_ = #{textValue,
+		jdbcType=VARCHAR}
+		where ID_ = #{id, jdbcType=VARCHAR}
+		and REV_ = #{revision, jdbcType=INTEGER}
   </update>
-  
-  <!-- DELETE -->
-  
-  <delete id="deleteVariableInstance" parameterType="string">
-    delete from ACT_VARIABLE where ID_ = #{id, jdbcType=VARCHAR}
-  </delete>
- 
+
+	<!-- DELETE -->
+
+	<delete id="deleteVariableInstance" parameterType="string">
+		delete from ACT_VARIABLE where ID_ = #{id, jdbcType=VARCHAR}
+	</delete>
+
 </mapper>

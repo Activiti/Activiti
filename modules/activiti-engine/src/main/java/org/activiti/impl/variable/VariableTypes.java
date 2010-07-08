@@ -10,56 +10,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.activiti.impl.variable;
 
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import org.activiti.ActivitiException;
-
-
 /**
- * @author Tom Baeyens
+ * @author dsyer
  */
-public class VariableTypes implements Serializable {
-  
-  private static final long serialVersionUID = 1L;
+public interface VariableTypes {
 
-  protected List<Type> typesList = new ArrayList<Type>();
-  protected Map<String, Type> typesMap = new HashMap<String, Type>();
-  
-  public VariableTypes addType(Type type) {
-    typesList.add(type);
-    typesMap.put(type.getTypeName(), type);
-    return this;
-  }
+  public abstract Type getVariableType(String typeName);
 
-  
-  public void setTypesList(List<Type> typesList) {
-    this.typesList = typesList;
-    this.typesMap = new HashMap<String, Type>();
-    for (Type type: typesList) {
-      typesMap.put(type.getTypeName(), type);
-    }
-  }
+  public abstract Type findVariableType(Object value);
 
-  public Type getVariableType(String typeName) {
-    Type type = typesMap.get(typeName);
-    if (type==null) {
-      throw new ActivitiException("unknown variable type name "+typeName);
-    }
-    return type;
-  }
-
-  public Type findVariableType(Object value) {
-    for (Type type: typesList) {
-      if (type.isAbleToStore(value)) {
-        return type;
-      }
-    }
-    throw new ActivitiException("couldn't find type for "+value);
-  }
 }

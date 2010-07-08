@@ -70,7 +70,7 @@ public class StateManager {
       } catch (Exception e) {
         throw new ActivitiException("couldn't get field "+stateFieldName, e);
       }
-      processInstance = new ExecutionImpl((ProcessDefinitionImpl) processDefinition);
+      processInstance = processDefinition.createProcessInstance();
       ActivityImpl activity = processDefinition.getActivity(state);
       processInstance.setActivity(activity);
     }

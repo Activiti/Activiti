@@ -30,6 +30,7 @@ import org.activiti.ProcessService;
 import org.activiti.TaskService;
 import org.activiti.impl.ProcessEngineImpl;
 import org.activiti.impl.interceptor.CommandExecutor;
+import org.activiti.impl.job.JobHandlers;
 import org.activiti.impl.jobexecutor.JobExecutor;
 import org.junit.rules.TestWatchman;
 import org.junit.runners.model.FrameworkMethod;
@@ -148,6 +149,11 @@ public class ProcessEngineBuilder extends TestWatchman {
   public JobExecutor getJobExecutor() {
     // FIXME: downcast
     return ((ProcessEngineImpl) processEngine).getProcessEngineConfiguration().getJobExecutor();
+  }
+
+  public JobHandlers getJobHandlers() {
+    // FIXME: downcast
+    return ((ProcessEngineImpl) processEngine).getProcessEngineConfiguration().getJobHandlers();
   }
 
 }

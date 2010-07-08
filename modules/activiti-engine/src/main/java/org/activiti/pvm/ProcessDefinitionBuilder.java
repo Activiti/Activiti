@@ -21,6 +21,8 @@ import org.activiti.impl.definition.ActivityImpl;
 import org.activiti.impl.definition.ProcessDefinitionImpl;
 import org.activiti.impl.definition.ScopeElementImpl;
 import org.activiti.impl.definition.TransitionImpl;
+import org.activiti.impl.variable.DefaultVariableTypes;
+import org.activiti.impl.variable.VariableTypes;
 
 
 /**
@@ -30,11 +32,10 @@ public class ProcessDefinitionBuilder {
   
   protected ProcessDefinitionImpl processDefinition;
   protected Stack<ScopeElementImpl> scopeElementStack;
-  protected List<UnresolvedTransition> unresolvedTransitions; 
+  protected List<UnresolvedTransition> unresolvedTransitions;
   
-  protected ProcessDefinitionBuilder(String id) {
-    this.processDefinition = new ProcessDefinitionImpl();
-    this.processDefinition.setId(id);
+  private ProcessDefinitionBuilder(VariableTypes variableTypes) {
+    this.processDefinition = new ProcessDefinitionImpl(variableTypes);
     this.scopeElementStack = new Stack<ScopeElementImpl>();
     this.scopeElementStack.push(processDefinition);
     this.unresolvedTransitions = new ArrayList<UnresolvedTransition>();
@@ -44,17 +45,8 @@ public class ProcessDefinitionBuilder {
    * Creates a new process definition with an unspecified id.
    */
   public static ProcessDefinitionBuilder createProcessDefinition() {
-    return createProcessDefinition(null);
+    return new ProcessDefinitionBuilder(new DefaultVariableTypes());
   }
-
-  /**
-   * Creates a new process definition with a specific id.
-   */
-  public static ProcessDefinitionBuilder createProcessDefinition(String id) {
-    return new ProcessDefinitionBuilder(id);
-  }
-  
-  
 
   public ObjectProcessDefinition endProcessDefinition() {
     resolveTransitions();

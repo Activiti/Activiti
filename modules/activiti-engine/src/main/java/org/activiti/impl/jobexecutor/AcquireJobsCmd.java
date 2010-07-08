@@ -29,10 +29,14 @@ import org.activiti.impl.time.Clock;
  */
 public class AcquireJobsCmd implements Command<AcquiredJobs> {
 
+  private final JobExecutor jobExecutor;
+
+  public AcquireJobsCmd(JobExecutor jobExecutor) {
+    this.jobExecutor = jobExecutor;
+  }
   
   public AcquiredJobs execute(CommandContext commandContext) {
     PersistenceSession persistenceSession = commandContext.getPersistenceSession();
-    JobExecutor jobExecutor = commandContext.getJobExecutor();
     
     String lockOwner = jobExecutor.getLockOwner();
     int lockTimeInMillis = jobExecutor.getLockTimeInMillis();

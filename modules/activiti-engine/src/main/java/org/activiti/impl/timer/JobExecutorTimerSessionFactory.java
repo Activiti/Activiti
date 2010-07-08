@@ -13,15 +13,21 @@
 package org.activiti.impl.timer;
 
 import org.activiti.impl.interceptor.CommandContext;
-
+import org.activiti.impl.jobexecutor.JobExecutor;
 
 /**
  * @author Tom Baeyens
  */
 public class JobExecutorTimerSessionFactory implements TimerSessionFactory {
 
+  private final JobExecutor jobExecutor;
+
+  public JobExecutorTimerSessionFactory(JobExecutor jobExecutor) {
+    this.jobExecutor = jobExecutor;
+  }
+
   public TimerSession openTimerSession(CommandContext commandContext) {
-    return new JobExecutorTimerSession(commandContext);
+    return new JobExecutorTimerSession(commandContext, jobExecutor);
   }
 
 }

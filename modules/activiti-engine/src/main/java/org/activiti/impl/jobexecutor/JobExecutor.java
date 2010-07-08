@@ -21,6 +21,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
 
 import org.activiti.impl.interceptor.CommandExecutor;
+import org.activiti.impl.job.JobHandlers;
 
 /**
  * Manager class in charge of all background / asynchronous
@@ -35,24 +36,26 @@ public class JobExecutor {
   
   private static Logger log = Logger.getLogger(JobExecutor.class.getName());
 
-  protected final CommandExecutor commandExecutor;
+  private final CommandExecutor commandExecutor;
+  private final JobHandlers jobHandlers;
 
-  protected int maxJobsPerAcquisition = 3;
-  protected int waitTimeInMillis = 5 * 1000;
-  protected String lockOwner = UUID.randomUUID().toString();
-  protected int lockTimeInMillis = 5 * 60 * 1000;
-  protected int queueSize = 5;
-  protected int corePoolSize = 3;
-  protected int maxPoolSize = 10;
+  private int maxJobsPerAcquisition = 3;
+  private int waitTimeInMillis = 5 * 1000;
+  private String lockOwner = UUID.randomUUID().toString();
+  private int lockTimeInMillis = 5 * 60 * 1000;
+  private int queueSize = 5;
+  private int corePoolSize = 3;
+  private int maxPoolSize = 10;
 
-  protected JobAcquisitionThread jobAcquisitionThread;
-  protected BlockingQueue<Runnable> threadPoolQueue;
-  protected ThreadPoolExecutor threadPoolExecutor;
+  private JobAcquisitionThread jobAcquisitionThread;
+  private BlockingQueue<Runnable> threadPoolQueue;
+  private ThreadPoolExecutor threadPoolExecutor;
   
-  protected boolean isActive = false;
+  private boolean isActive = false;
 
-  public JobExecutor(CommandExecutor commandExecutor) {
+  public JobExecutor(CommandExecutor commandExecutor, JobHandlers jobHandlers) {
     this.commandExecutor = commandExecutor;
+    this.jobHandlers = jobHandlers;
   }
 
   public synchronized void start() {
@@ -109,14 +112,14 @@ public class JobExecutor {
   public void jobWasAdded() {
     if ( isActive 
          && jobAcquisitionThread != null 
-         && jobAcquisitionThread.isActive
+         && jobAcquisitionThread.isActive()
        ) {
       jobAcquisitionThread.jobWasAdded();
     }
   }
   
   public void executeJobs(List<String> jobIds) {
-    threadPoolExecutor.execute(new ExecuteJobsRunnable(commandExecutor, jobIds));
+    threadPoolExecutor.execute(new ExecuteJobsRunnable(commandExecutor, jobIds, jobHandlers, this));
   }
 
   // getters and setters ////////////////////////////////////////////////////// 

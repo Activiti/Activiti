@@ -19,8 +19,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.logging.Logger;
 
 import org.activiti.ActivitiException;
@@ -42,6 +44,7 @@ import org.activiti.impl.execution.ExecutionImpl;
 import org.activiti.impl.identity.GroupImpl;
 import org.activiti.impl.identity.UserImpl;
 import org.activiti.impl.job.JobImpl;
+import org.activiti.impl.job.MessageImpl;
 import org.activiti.impl.job.TimerImpl;
 import org.activiti.impl.repository.DeploymentImpl;
 import org.activiti.impl.task.TaskImpl;
@@ -129,6 +132,14 @@ public class IbatisPersistenceSession implements PersistenceSession {
     sqlSession.close();
   }
   
+  public void commit() {
+    sqlSession.commit();
+  }
+
+  public void rollback() {
+    sqlSession.rollback();
+  }
+
   public String statement(String statement) {
     return databaseStatements.get(statement);
   }
@@ -560,5 +571,228 @@ public class IbatisPersistenceSession implements PersistenceSession {
   }
   public static String[] getTableNames() {
     return tableNames;
+  }
+
+  private static class Loaded {
+
+    private static Logger log = Logger.getLogger(Loaded.class.getName());
+
+    protected static Map<Class<?>,String> updateStatementIds = new HashMap<Class<?>, String>();
+    static {
+      updateStatementIds.put(DbExecutionImpl.class, "updateExecution");
+      updateStatementIds.put(TaskImpl.class, "updateTask");
+      updateStatementIds.put(TaskInvolvement.class, "updateTaskInvolvement");
+      updateStatementIds.put(VariableInstance.class, "updateVariableInstance");
+      updateStatementIds.put(ByteArrayImpl.class, "updateByteArray");
+      updateStatementIds.put(MessageImpl.class, "updateMessage");
+      updateStatementIds.put(TimerImpl.class, "updateTimer");
+    }
+
+    protected Map<Object, LoadedObject> loadedObjects = new HashMap<Object, LoadedObject>();
+    protected IbatisPersistenceSession ibatisPersistenceSession;
+
+    public Loaded(IbatisPersistenceSession ibatisPersistenceSession) {
+      this.ibatisPersistenceSession = ibatisPersistenceSession;
+    }
+
+    public PersistentObject add(PersistentObject persistentObject) {
+      Object key = getKey(persistentObject);
+      LoadedObject loadedObject = loadedObjects.get(key);
+      if (loadedObject!=null) {
+        return loadedObject.getPersistentObject();
+      }
+      loadedObject = new LoadedObject(persistentObject);
+      loadedObjects.put(key, loadedObject);
+      return persistentObject;
+    }
+
+    public List add(List persistentObjects) {
+      List<PersistentObject> loadedPersistentObjects = new ArrayList<PersistentObject>();
+      for (Object persistentObject: persistentObjects) {
+        PersistentObject loadedPersistentObject = add((PersistentObject) persistentObject);
+        loadedPersistentObjects.add(loadedPersistentObject);
+      }
+      return loadedPersistentObjects;
+
+    }
+
+    public void remove(PersistentObject persistentObject) {
+      Object key = getKey(persistentObject);
+      loadedObjects.remove(key);
+    }
+
+    protected Object getKey(PersistentObject persistentObject) {
+      List<Object> key = new ArrayList<Object>();
+      key.add(persistentObject.getClass());
+      key.add(persistentObject.getId());
+      return key;
+    }
+
+    public void flush(SqlSession sqlSession, List<PersistentObject> updatedObjects) {
+      for (PersistentObject updatedObject: updatedObjects) {
+        Class<?> updatedObjectClass = updatedObject.getClass();
+        String updateStatementId = findUpdateStatementId(updatedObjectClass);
+        if (updateStatementId==null) {
+          throw new ActivitiException("no update statement id for "+updatedObject.getClass());
+        }
+        log.fine("updating: "+updatedObjectClass+"["+updatedObject.getId()+"]");
+        sqlSession.update(ibatisPersistenceSession.statement(updateStatementId), updatedObject);
+      }
+      updatedObjects.clear();
+    }
+
+    protected String findUpdateStatementId(Class< ? > updatedObjectClass) {
+      if (updatedObjectClass==null) {
+        return null;
+      }
+      String updateStatementId = updateStatementIds.get(updatedObjectClass);
+      if (updateStatementId==null) {
+        return findUpdateStatementId(updatedObjectClass.getSuperclass());
+      }
+      return updateStatementId;
+    }
+
+    public List<PersistentObject> getUpdatedObjects() {
+      List<PersistentObject> updatedObjects = new ArrayList<PersistentObject>();
+      for (LoadedObject loadedObject: loadedObjects.values()) {
+        PersistentObject persistentObject = (PersistentObject) loadedObject.getPersistentObject();
+        Object originalState = loadedObject.getPersistentObjectState();
+        if (!originalState.equals(persistentObject.getPersistentState())) {
+          updatedObjects.add(persistentObject);
+        } else {
+          log.finest("persistent object '"+persistentObject+"' was not updated");
+        }
+      }
+      return updatedObjects;
+    }
+  }
+
+  private static class Inserted {
+
+    private static Logger log = Logger.getLogger(Inserted.class.getName());
+
+    protected static Map<Class<?>,String> insertStatementIds = new HashMap<Class<?>, String>();
+    static {
+      insertStatementIds.put(DbExecutionImpl.class, "insertExecution");
+      insertStatementIds.put(JobImpl.class, "insertJob");
+      insertStatementIds.put(TaskImpl.class, "insertTask");
+      insertStatementIds.put(TaskInvolvement.class, "insertTaskInvolvement");
+      insertStatementIds.put(VariableInstance.class, "insertVariableInstance");
+      insertStatementIds.put(ByteArrayImpl.class, "insertByteArray");
+      insertStatementIds.put(MessageImpl.class, "insertMessage");
+      insertStatementIds.put(TimerImpl.class, "insertTimer");
+    }
+
+    protected List<PersistentObject> insertedObjects = new ArrayList<PersistentObject>();
+    protected IbatisPersistenceSession ibatisPersistenceSession;
+
+    public Inserted(IbatisPersistenceSession ibatisPersistenceSession) {
+      this.ibatisPersistenceSession = ibatisPersistenceSession;
+    }
+
+    public void add(PersistentObject persistentObject) {
+      insertedObjects.add(persistentObject);
+    }
+
+    public void remove(PersistentObject persistentObject) {
+      insertedObjects.remove(persistentObject);
+    }
+
+    public List<PersistentObject> getInsertedObjects() {
+      return insertedObjects;
+    }
+
+    public void flush(SqlSession sqlSession) {
+      for (PersistentObject insertedObject: insertedObjects) {
+        Class<?> insertedObjectClass = insertedObject.getClass();
+        String insertStatementId = findInsertStatementId(insertedObjectClass);
+        if (insertStatementId==null) {
+          throw new ActivitiException("no insert statement id for "+insertedObject.getClass());
+        }
+        log.fine("inserting: "+insertedObjectClass+"["+insertedObject.getId()+"]");
+        sqlSession.insert(ibatisPersistenceSession.statement(insertStatementId), insertedObject);
+      }
+      insertedObjects.clear();
+    }
+
+    protected String findInsertStatementId(Class< ? > insertedObjectClass) {
+      if (insertedObjectClass==null) {
+        return null;
+      }
+      String insertStatementId = insertStatementIds.get(insertedObjectClass);
+      if (insertStatementId==null) {
+        return findInsertStatementId(insertedObjectClass.getSuperclass());
+      }
+      return insertStatementId;
+    }
+
+    public int size() {
+      return insertedObjects.size();
+    }
+  }
+
+  private static class Deleted {
+
+    private static Logger log = Logger.getLogger(Deleted.class.getName());
+
+    protected static Map<Class<?>,String> deleteStatementIds = new HashMap<Class<?>, String>();
+    static {
+      deleteStatementIds.put(DbExecutionImpl.class, "deleteExecution");
+      deleteStatementIds.put(TaskImpl.class, "deleteTask");
+      deleteStatementIds.put(TaskInvolvement.class, "deleteTaskInvolvement");
+      deleteStatementIds.put(VariableInstance.class, "deleteVariableInstance");
+      deleteStatementIds.put(ByteArrayImpl.class, "deleteByteArray");
+      deleteStatementIds.put(MessageImpl.class, "deleteJob");
+      deleteStatementIds.put(TimerImpl.class, "deleteJob");
+    }
+
+    protected List<PersistentObject> deletedObjects = new ArrayList<PersistentObject>();
+    protected Set<PersistentObjectId> deletedObjectIds = new HashSet<PersistentObjectId>();
+    protected IbatisPersistenceSession ibatisPersistenceSession;
+
+    public Deleted(IbatisPersistenceSession ibatisPersistenceSession) {
+      this.ibatisPersistenceSession = ibatisPersistenceSession;
+    }
+
+    public void add(PersistentObject persistentObject) {
+      PersistentObjectId deletedObjectId = new PersistentObjectId(persistentObject);
+      if (!deletedObjectIds.contains(deletedObjectId)) {
+        deletedObjects.add(persistentObject);
+        deletedObjectIds.add(deletedObjectId);
+      }
+    }
+
+    public int size() {
+      return deletedObjects.size();
+    }
+
+    public List<PersistentObject> getDeletedObjects() {
+      return deletedObjects;
+    }
+
+    public void flush(SqlSession sqlSession) {
+      for (PersistentObject deletedObject: deletedObjects) {
+        Class<?> deletedObjectClass = deletedObject.getClass();
+        String deleteStatementId = findDeleteStatementId(deletedObjectClass);
+        if (deleteStatementId==null) {
+          throw new ActivitiException("no delete statement id for "+deletedObject.getClass());
+        }
+        log.fine("deleting: "+deletedObjectClass+"["+deletedObject.getId()+"]");
+        sqlSession.delete(ibatisPersistenceSession.statement(deleteStatementId), deletedObject);
+      }
+      deletedObjects.clear();
+      deletedObjectIds.clear();
+    }
+
+    protected String findDeleteStatementId(Class< ? > deletedObjectClass) {
+      if (deletedObjectClass==null) {
+        return null;
+      }
+      String deleteStatementId = deleteStatementIds.get(deletedObjectClass);
+      if (deleteStatementId==null) {
+        return findDeleteStatementId(deletedObjectClass.getSuperclass());
+      }
+      return deleteStatementId;
+    }
   }
 }

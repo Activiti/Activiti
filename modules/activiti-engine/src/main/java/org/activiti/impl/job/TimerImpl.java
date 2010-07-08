@@ -29,8 +29,10 @@ public class TimerImpl extends JobImpl {
   
   protected String repeat;
   
-  public Void execute(CommandContext commandContext) {
-    super.execute(commandContext);
+  @Override
+  public void execute(JobHandler jobHandler, CommandContext commandContext) {
+
+    super.execute(jobHandler, commandContext);
 
     if (repeat==null){
 
@@ -48,7 +50,6 @@ public class TimerImpl extends JobImpl {
       throw new UnsupportedOperationException("repeat not yet supported");
     }
     
-    return null;
   }
 
   public String getRepeat() {

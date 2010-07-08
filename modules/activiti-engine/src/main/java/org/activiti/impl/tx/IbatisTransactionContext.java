@@ -19,8 +19,7 @@ import java.util.Map;
 import java.util.logging.Logger;
 
 import org.activiti.impl.interceptor.CommandContext;
-import org.activiti.impl.persistence.IbatisPersistenceSession;
-import org.apache.ibatis.session.SqlSession;
+import org.activiti.impl.persistence.PersistenceSession;
 
 
 /**
@@ -54,7 +53,7 @@ public class IbatisTransactionContext implements TransactionContext {
     log.fine("firing event committing...");
     fireTransactionEvent(TransactionState.COMMITTING);
     log.fine("committing the ibatis sql session...");
-    getSqlSession().commit();
+    getPersistenceSession().commit();
     log.fine("firing event committed...");
     fireTransactionEvent(TransactionState.COMMITTED);
   }
@@ -72,10 +71,8 @@ public class IbatisTransactionContext implements TransactionContext {
     }
   }
 
-  private SqlSession getSqlSession() {
-    IbatisPersistenceSession ibatisPersistenceSession = (IbatisPersistenceSession) commandContext.getPersistenceSession();
-    SqlSession sqlSession = ibatisPersistenceSession.getSqlSession();
-    return sqlSession;
+  private PersistenceSession getPersistenceSession() {
+    return commandContext.getPersistenceSession();
   }
 
   public void rollback() {
@@ -88,7 +85,7 @@ public class IbatisTransactionContext implements TransactionContext {
         commandContext.exception(exception);
       } finally {
         log.fine("rolling back ibatis sql session...");
-        getSqlSession().rollback();
+        getPersistenceSession().rollback();
       }
       
     } catch (Throwable exception) {

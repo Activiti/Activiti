@@ -15,14 +15,11 @@ package org.activiti.impl.execution;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 
 import org.activiti.ActivitiException;
-import org.activiti.impl.calendar.BusinessCalendar;
-import org.activiti.impl.calendar.BusinessCalendarManager;
 import org.activiti.impl.definition.ActivityImpl;
 import org.activiti.impl.definition.ProcessDefinitionImpl;
 import org.activiti.impl.definition.TransitionImpl;
@@ -30,6 +27,7 @@ import org.activiti.impl.definition.VariableDeclarationImpl;
 import org.activiti.impl.interceptor.CommandContext;
 import org.activiti.impl.job.TimerImpl;
 import org.activiti.impl.timer.TimerDeclarationImpl;
+import org.activiti.impl.variable.VariableTypes;
 import org.activiti.pvm.Activity;
 import org.activiti.pvm.ActivityExecution;
 import org.activiti.pvm.ExecutionController;
@@ -112,6 +110,8 @@ public class ExecutionImpl implements
    * to store this boolean).
    */
   transient boolean ended = false;
+
+  private VariableTypes variableTypes;
   
   /* Default constructor for ibatis/jpa/etc. */
   protected ExecutionImpl() {
@@ -125,7 +125,7 @@ public class ExecutionImpl implements
   }
   
   /** constructor for new child executions (both nested scopes and concurrent executions) */
-  public ExecutionImpl(ExecutionImpl parent) {
+  protected ExecutionImpl(ExecutionImpl parent) {
     setProcessDefinition(parent.getProcessDefinition());
     setProcessInstance(parent.getProcessInstance());
     setActivity(parent.getActivity());
@@ -145,8 +145,9 @@ public class ExecutionImpl implements
     return processDefinition;
   }
 
-  public void setProcessDefinition(ProcessDefinitionImpl processDefinition) {
+  protected void setProcessDefinition(ProcessDefinitionImpl processDefinition) {
     this.processDefinition = processDefinition;
+    this.variableTypes = processDefinition.getVariableTypes();
   }
 
   public ActivityImpl getActivity() {
@@ -399,10 +400,7 @@ public class ExecutionImpl implements
     setTransition(null);
     setActive(false);
 
-    // create scoped variables
-    for (VariableDeclarationImpl variableDeclaration: getActivity().getVariableDeclarations()) {
-      scopeExecution.createVariable(variableDeclaration.getName(), variableDeclaration.getType());
-    }
+    // TODO: declare scoped variables if needed
 
     // create scoped timers
     for (TimerDeclarationImpl timerDeclaration: getActivity().getTimerDeclarations()) {
@@ -413,18 +411,10 @@ public class ExecutionImpl implements
   }
 
   public void createTimer(TimerDeclarationImpl timerDeclaration) {
-    BusinessCalendarManager businessCalendarManager = CommandContext
-      .getCurrent()
-      .getBusinessCalendarManager();
-    
-    BusinessCalendar businessCalendar = businessCalendarManager
-      .getBusinessCalendar(timerDeclaration.getBusinessCalendarRef());
-    
-    Date duedate = businessCalendar.resolveDuedate(timerDeclaration.getDuedate());
     
     TimerImpl timer = new TimerImpl();
     timer.setExecution(this);
-    timer.setDuedate( duedate );
+    timer.setDuedate( timerDeclaration.getDuedate() );
     timer.setJobHandlerType( timerDeclaration.getJobHandlerType() );
     timer.setJobHandlerConfiguration( timerDeclaration.getJobHandlerConfiguration() );
     timer.setExclusive(timerDeclaration.isExclusive());
@@ -528,14 +518,10 @@ public class ExecutionImpl implements
     return variableMap.getVariables();
   }
   
-  public void createVariable(String name, String type) {
+  public void setVariables(Map<String, Object> variables) {
     if (variableMap==null) {
       initializeVariableMap();
     }
-    variableMap.createVariable(name, type);
-  }
-
-  public void setVariables(Map<String, Object> variables) {
     if (variables!=null) {
       for (Map.Entry<String, Object> entry: variables.entrySet()) {
         setVariable(entry.getKey(), entry.getValue());
@@ -628,5 +614,9 @@ public class ExecutionImpl implements
   }
   public void setCachedElContext(Object cachedElContext) {
     this.cachedElContext = cachedElContext;
+  }
+
+  public VariableTypes getVariableTypes() {
+    return variableTypes;
   }
 }
