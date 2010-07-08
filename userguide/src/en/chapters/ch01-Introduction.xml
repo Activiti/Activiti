@@ -16,8 +16,9 @@
 
 <section id="sources">
   <title>Sources</title>
-  <para>The distribution contains most of the sources as jar files.  To find and build the full source codebase, 
-  please refer to the TODO: include link to build from source wiki page 
+  <para>The distribution contains most of the sources as jar files. 
+  To find and build the full source codebase, please read the  
+  <ulink url="http://docs.codehaus.org/display/ACT/Build+distribution+from+source">'Build from source' wiki page</ulink> 
   </para>
 </section>
 
