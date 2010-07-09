@@ -152,6 +152,7 @@ public class IbatisPersistenceSessionFactory implements PersistenceSessionFactor
     // e.g. addDatabaseSpecificStatement("oracle", "selectExecution",
     // "selectExecution_oracle");
     addDatabaseSpecificStatement("mysql", "selectTaskByDynamicCriteria", "selectTaskByDynamicCriteria_mysql");
+    addDatabaseSpecificStatement("mysql", "selectNextJobsToExecute", "selectNextJobsToExecute_mysql");
   }
 
   protected static void addDatabaseSpecificStatement(String databaseName, String activitiStatement, String ibatisStatement) {

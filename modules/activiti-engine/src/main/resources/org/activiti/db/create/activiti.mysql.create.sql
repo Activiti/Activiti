@@ -50,7 +50,7 @@ create table ACT_JOB (
     PROCESS_INSTANCE_ID_ varchar(255),
     RETRIES_ integer,
     EXCEPTION_ varchar(255),
-    DUEDATE_ timestamp,
+    DUEDATE_ timestamp NULL,
     REPEAT_ varchar(255),
     HANDLER_TYPE_ varchar(255),
     HANDLER_CFG_ varchar(255),

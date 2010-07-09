@@ -86,6 +86,16 @@
     </where>
   </sql>
 
+  <!--  SELECT DEPENDENT -->	
+   <select id="selectNextJobsToExecute_mysql" parameterType="string" resultMap="jobResultMap">
+    select * 
+    from ACT_JOB 
+    where (RETRIES_ &gt; 0)
+      and (DUEDATE_ is null or DUEDATE_ &lt;= #{now, jdbcType=TIMESTAMP})
+      and (LOCK_OWNER_ is null or LOCK_EXP_TIME_ &lt;= #{now, jdbcType=TIMESTAMP})
+  </select>
+  
+
   <!-- INSERT -->
   
   <insert id="insertTimer" parameterType="org.activiti.impl.job.TimerImpl">
