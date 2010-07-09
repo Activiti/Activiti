@@ -10,7 +10,7 @@
           <root url="file://$MODULE_DIR$/src/main/webapp" relative="/" />
           <root url="file://$MODULE_DIR$/overlays/org.springframework.extensions.surf.spring-surf-application-1.0.0.M3" relative="/" />
         </webroots>
-        <context-artifact name="activiti-webapp:war exploded" />
+        <context-artifact name="activiti-probe:war exploded" />
       </configuration>
     </facet>
     <facet type="Spring" name="Spring">
