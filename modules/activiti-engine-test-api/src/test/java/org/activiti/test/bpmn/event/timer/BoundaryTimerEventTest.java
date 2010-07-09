@@ -47,6 +47,8 @@ public class BoundaryTimerEventTest {
    * 
    * Configuration: - timer 1 -> 2 hours -> secondTask - timer 2 -> 1 hour ->
    * thirdTask - timer 3 -> 3 hours -> fourthTask
+   * 
+   * See process image next to the process xml resource
    */
   @Test
   @ProcessDeclared
