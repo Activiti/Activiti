@@ -57,7 +57,7 @@ public class ProcessEngineInitializationTest {
   public void testVersionMismatch() {
     // first create the schema
     ProcessEngineImpl processEngine = (ProcessEngineImpl) new DbProcessEngineBuilder().configureFromPropertiesResource(
-            "org/activiti/test/db/activiti.properties").setDbSchemaStrategy(DbSchemaStrategy.CREATE_DROP).buildProcessEngine();
+            "org/activiti/test/db/activiti.properties").setDbSchemaStrategy(DbSchemaStrategy.DROP_CREATE).buildProcessEngine();
 
     // then update the version to something that is different to the library
     // version
