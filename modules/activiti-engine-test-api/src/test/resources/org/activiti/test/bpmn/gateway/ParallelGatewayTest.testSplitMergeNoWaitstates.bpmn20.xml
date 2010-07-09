@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions id="propertyTest" 
+  xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:activiti="http://activiti.org/bpmn-extensions"
+  typeLanguage="http://www.w3.org/2001/XMLSchema"
+  expressionLanguage="http://www.w3.org/1999/XPath" 
+  targetNamespace="http://www.activiti.org/bpmn2.0">
+  
+  <process id="splitMergeNoWaitstates">
+  
+    <startEvent id="theStart" />
+    <sequenceFlow id="flow1" sourceRef="theStart" targetRef="split" />
+    
+    <parallelGateway id="split" />
+    <sequenceFlow id="flow2" sourceRef="split" targetRef="merge" />
+    <sequenceFlow id="flow3" sourceRef="split" targetRef="merge" />
+    <sequenceFlow id="flow4" sourceRef="split" targetRef="merge" />
+    
+    <parallelGateway id="merge" />
+    <sequenceFlow id="flow5" sourceRef="merge" targetRef="theEnd" />
+   
+    <endEvent id="theEnd" />
+    
+  </process>
+
+</definitions>
