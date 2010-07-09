@@ -26,7 +26,7 @@
       <listitem>
         <para><emphasis role="bold">Checkout activiti project from SVN</emphasis></para>
         <para>
-          Before you can run the test suite, you need to <ulink url="http://docs.codehaus.org/display/ACT/Build+distribution+from+source">checkout activiti</ulink>. The qa tests are located in the projects 'activiti-engine-examples' and 'activiti-engine-test-api', but you do not need to start 
+          Before you can run the test suite, you need to <ulink url="http://docs.codehaus.org/display/ACT/Developers+Guide#DevelopersGuide-Buildingadistribution">checkout activiti</ulink>. The qa tests are located in the projects 'activiti-engine-examples' and 'activiti-engine-test-api', but you do not need to start 
           them from there separately. You will start the tests from the quality assurance project. But before we have to create a new database schema and user.  
         </para>
       </listitem>
