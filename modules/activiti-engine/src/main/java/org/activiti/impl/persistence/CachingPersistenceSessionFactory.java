@@ -22,7 +22,8 @@ import java.util.Map;
 import org.activiti.ActivitiException;
 import org.activiti.impl.definition.ProcessDefinitionImpl;
 import org.activiti.impl.interceptor.CommandContext;
-
+import org.activiti.impl.repository.DeployerManager;
+import org.activiti.impl.repository.DeploymentImpl;
 
 /**
  * @author Dave Syer
@@ -34,9 +35,11 @@ public class CachingPersistenceSessionFactory implements PersistenceSessionFacto
 
   private final PersistenceSessionFactory delegate;
   private final ClassLoader classLoader;
+  private final DeployerManager deployerManager;
 
-  public CachingPersistenceSessionFactory(PersistenceSessionFactory delegate, ClassLoader classLoader) {
+  public CachingPersistenceSessionFactory(PersistenceSessionFactory delegate, DeployerManager deployerManager, ClassLoader classLoader) {
     this.delegate = delegate;
+    this.deployerManager = deployerManager;
     this.classLoader = classLoader;
   }
 
@@ -53,7 +56,8 @@ public class CachingPersistenceSessionFactory implements PersistenceSessionFacto
   }
 
   public PersistenceSession openPersistenceSession(CommandContext commandContext) {
-    return (PersistenceSession) Proxy.newProxyInstance(classLoader, new Class<?>[] {PersistenceSession.class}, new CacheHandler(delegate.openPersistenceSession(commandContext)));
+    return (PersistenceSession) Proxy.newProxyInstance(classLoader, new Class< ? >[] { PersistenceSession.class }, new CacheHandler(delegate
+            .openPersistenceSession(commandContext)));
   }
 
   public synchronized void reset() {
@@ -68,7 +72,7 @@ public class CachingPersistenceSessionFactory implements PersistenceSessionFacto
 
   private void addProcessDefinition(PersistenceSession persistenceSession, ProcessDefinitionImpl processDefinition) {
 
-    if (processDefinition==null) {
+    if (processDefinition == null) {
       return;
     }
 
@@ -88,21 +92,26 @@ public class CachingPersistenceSessionFactory implements PersistenceSessionFacto
   private synchronized ProcessDefinitionImpl findProcessDefinitionById(PersistenceSession persistenceSession, String processDefinitionId) {
 
     ProcessDefinitionImpl processDefinition = processDefinitionsById.get(processDefinitionId);
-    if (processDefinition==null) {
+    if (processDefinition == null) {
       addProcessDefinition(persistenceSession, persistenceSession.findProcessDefinitionById(processDefinitionId));
+      DeploymentImpl deployment = persistenceSession.findDeploymentByProcessDefinitionId(processDefinitionId);
+      if (deployment != null) {
+        // FIXME: remove command context if possible
+        deployerManager.deploy(deployment, CommandContext.getCurrent());
+      }
     }
 
     processDefinition = processDefinitionsById.get(processDefinitionId);
     if (processDefinition != null) {
       return processDefinition;
     } else {
-     throw new ActivitiException("Couldn't find process definiton with id " + processDefinitionId);
+      throw new ActivitiException("Couldn't find process definiton with id " + processDefinitionId);
     }
   }
 
   private ProcessDefinitionImpl findProcessDefinitionByKey(PersistenceSession persistenceSession, String processDefinitionKey) {
     ProcessDefinitionImpl processDefinition = persistenceSession.findLatestProcessDefinitionByKey(processDefinitionKey);
-    if (processDefinition==null) {
+    if (processDefinition == null) {
       return null;
     }
     return findProcessDefinitionById(persistenceSession, processDefinition.getId());
@@ -119,9 +128,9 @@ public class CachingPersistenceSessionFactory implements PersistenceSessionFacto
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
       String methodName = method.getName();
       if ("findLatestProcessDefinitionByKey".equals(methodName)) {
-        return findProcessDefinitionByKey(persistenceSession, (String)args[0]);
+        return findProcessDefinitionByKey(persistenceSession, (String) args[0]);
       } else if ("findProcessDefinitionById".equals(methodName)) {
-        return findProcessDefinitionById(persistenceSession, (String)args[0]);
+        return findProcessDefinitionById(persistenceSession, (String) args[0]);
       } else if ("insertProcessDefinition".equals(methodName)) {
         ProcessDefinitionImpl processDefinition = (ProcessDefinitionImpl) args[0];
         addProcessDefinition(persistenceSession, processDefinition);

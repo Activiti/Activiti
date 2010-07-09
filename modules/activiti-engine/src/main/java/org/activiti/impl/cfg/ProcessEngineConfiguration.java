@@ -47,16 +47,8 @@ import org.activiti.impl.timer.JobExecutorTimerSessionFactory;
 import org.activiti.impl.timer.TimerSessionFactory;
 import org.activiti.impl.tx.StandaloneTransactionContextFactory;
 import org.activiti.impl.tx.TransactionContextFactory;
-import org.activiti.impl.variable.ByteArrayType;
-import org.activiti.impl.variable.DateType;
-import org.activiti.impl.variable.VariableTypes;
-import org.activiti.impl.variable.IntegerType;
-import org.activiti.impl.variable.LongType;
-import org.activiti.impl.variable.NullType;
-import org.activiti.impl.variable.SerializableType;
-import org.activiti.impl.variable.ShortType;
-import org.activiti.impl.variable.StringType;
 import org.activiti.impl.variable.DefaultVariableTypes;
+import org.activiti.impl.variable.VariableTypes;
 
 /**
  * @author Tom Baeyens
@@ -114,7 +106,7 @@ public class ProcessEngineConfiguration {
     taskService = createDefaultTaskService(commandExecutor, scriptingEngines);
     managementService = createDefaultManagementService(commandExecutor);
 
-    persistenceSessionFactory = createDefaultPersistenceSessionFactory(variableTypes, idGenerator);
+    persistenceSessionFactory = createDefaultPersistenceSessionFactory(deployerManager, variableTypes, idGenerator);
     messageSessionFactory = createDefaultMessageSessionFactory(jobExecutor);
     timerSessionFactory = createDefaultTimerSessionFactory(jobExecutor);
     transactionContextFactory = createDefaultTransactionContextFactory();
@@ -187,9 +179,9 @@ public class ProcessEngineConfiguration {
     return new JobExecutorMessageSessionFactory(jobExecutor);
   }
 
-  protected PersistenceSessionFactory createDefaultPersistenceSessionFactory(VariableTypes variableTypes, IdGenerator idGenerator) {
+  protected PersistenceSessionFactory createDefaultPersistenceSessionFactory(DeployerManager deployerManager, VariableTypes variableTypes, IdGenerator idGenerator) {
     PersistenceSessionFactory persistenceSessionFactory = new IbatisPersistenceSessionFactory(variableTypes, idGenerator, "h2", "org.h2.Driver", "jdbc:h2:mem:activiti", "sa", "");
-    persistenceSessionFactory = new CachingPersistenceSessionFactory(persistenceSessionFactory, Thread.currentThread().getContextClassLoader());
+    persistenceSessionFactory = new CachingPersistenceSessionFactory(persistenceSessionFactory, deployerManager, Thread.currentThread().getContextClassLoader());
     return persistenceSessionFactory;
   }
 

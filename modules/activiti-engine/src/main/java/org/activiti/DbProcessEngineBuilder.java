@@ -241,7 +241,7 @@ public class DbProcessEngineBuilder {
     
 
     persistenceSessionFactory = new IbatisPersistenceSessionFactory(processEngineConfiguration.getVariableTypes(), idGenerator, databaseName, jdbcDriver, jdbcUrl, jdbcUsername, jdbcPassword);
-    persistenceSessionFactory = new CachingPersistenceSessionFactory(persistenceSessionFactory, Thread.currentThread().getContextClassLoader());
+    persistenceSessionFactory = new CachingPersistenceSessionFactory(persistenceSessionFactory, processEngineConfiguration.getDeployerManager(), Thread.currentThread().getContextClassLoader());
     processEngineConfiguration.setPersistenceSessionFactory(persistenceSessionFactory);
 
     return processEngineConfiguration.buildProcessEngine();

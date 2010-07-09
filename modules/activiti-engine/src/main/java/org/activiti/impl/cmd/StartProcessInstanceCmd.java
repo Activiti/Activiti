@@ -39,15 +39,15 @@ public class StartProcessInstanceCmd<T> implements Command<ProcessInstance> {
   }
   
   public ProcessInstance execute(CommandContext commandContext) {
-    PersistenceSession processCache = commandContext.getPersistenceSession();
+    PersistenceSession persistenceSession = commandContext.getPersistenceSession();
     ProcessDefinitionImpl processDefinition = null;
     if (processDefinitionId!=null) {
-      processDefinition = processCache.findProcessDefinitionById(processDefinitionId);
+      processDefinition = persistenceSession.findProcessDefinitionById(processDefinitionId);
       if (processDefinition == null) {
         throw new ActivitiException("No process definition found for id = '" + processDefinitionId + "'");
       }
     } else {
-      processDefinition = processCache.findLatestProcessDefinitionByKey(processDefinitionKey);
+      processDefinition = persistenceSession.findLatestProcessDefinitionByKey(processDefinitionKey);
       if (processDefinition == null) {
         throw new ActivitiException("No process definition found for key '" + processDefinitionKey +"'");
       }
