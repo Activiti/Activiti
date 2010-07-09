@@ -12,6 +12,7 @@
  */
 package org.activiti.impl.jobexecutor;
 
+import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -33,7 +34,6 @@ public class JobAcquisitionThread extends Thread {
   private static Logger log = Logger.getLogger(JobAcquisitionThread.class.getName());
 
   private final AcquireJobsCmd acquireJobsCmd;
-  private static final GetFirstTimerCmd GET_FIRST_TIMER_CMD = new GetFirstTimerCmd();
 
   private JobExecutor jobExecutor;
   private boolean isActive = false;
@@ -68,16 +68,20 @@ public class JobAcquisitionThread extends Thread {
         millisToWait = jobExecutor.getWaitTimeInMillis();
         int jobsAcquired = acquiredJobs.getJobIdsList().size();
         if (jobsAcquired < maxJobsPerAcquisition) {
+        	
           isJobAdded = false;
-          // check if the next timer should fire before the normal sleep time is
-          // over
-          TimerImpl nextTimer = commandExecutor.execute(GET_FIRST_TIMER_CMD);
-          if (nextTimer != null) {
-            long millisTillNextTimer = nextTimer.getDuedate().getTime() - Clock.getCurrentTime().getTime();
+          
+          // check if the next timer should fire before the normal sleep time is over
+          Date duedate = new Date(Clock.getCurrentTime().getTime() + millisToWait);
+          List<TimerImpl> nextTimers = commandExecutor.execute(new GetUnlockedTimersByDuedateCmd(duedate, 1));
+          
+          if (!nextTimers.isEmpty()) {
+        	long millisTillNextTimer = nextTimers.get(0).getDuedate().getTime() - Clock.getCurrentTime().getTime();
             if (millisTillNextTimer < millisToWait) {
               millisToWait = millisTillNextTimer;
             }
           }
+          
         } else {
           millisToWait = 0;
         }

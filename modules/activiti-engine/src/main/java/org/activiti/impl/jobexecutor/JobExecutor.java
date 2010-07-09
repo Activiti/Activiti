@@ -20,6 +20,7 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
 
+import org.activiti.ActivitiException;
 import org.activiti.impl.interceptor.CommandExecutor;
 import org.activiti.impl.job.JobHandlers;
 
@@ -92,6 +93,14 @@ public class JobExecutor {
     
     // Ask the thread pool to finish and exit
     threadPoolExecutor.shutdown();
+    
+    // Waits for 1 minute to finish all currently executing jobs
+    try {
+	  threadPoolExecutor.awaitTermination(60L, TimeUnit.SECONDS);
+	} catch (InterruptedException e) {
+      throw new ActivitiException("Timeout during shutdown of job executor. " +
+	    "The current running jobs could not end withing 60 seconds after shutdown operation.", e);
+	}
     
     // Close the pending jobs task
     jobAcquisitionThread.shutdown();

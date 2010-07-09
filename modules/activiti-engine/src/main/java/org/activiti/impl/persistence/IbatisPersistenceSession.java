@@ -325,10 +325,18 @@ public class IbatisPersistenceSession implements PersistenceSession {
     return jobs;
   }
   
-  public TimerImpl findFirstTimer() {
-    return (TimerImpl) sqlSession.selectOne(statement("selectFirstTimer"));
+  @SuppressWarnings("unchecked")
+  public List<TimerImpl> findUnlockedTimersByDuedate(Date duedate, int nrOfTimers) {
+	final String query = "selectUnlockedTimersByDuedate";
+	if (nrOfTimers > 0) {
+		RowBounds rowBounds = new RowBounds(0,nrOfTimers);
+		return sqlSession.selectList(statement(query), duedate, rowBounds);
+	} else {
+		return sqlSession.selectList(statement(query), duedate);
+	}
   }
   
+  @SuppressWarnings("unchecked")
   public List<TimerImpl> findTimersByExecutionId(String executionId) {
     return sqlSession.selectList(statement("selectTimersByExecutionId"), executionId);
   }

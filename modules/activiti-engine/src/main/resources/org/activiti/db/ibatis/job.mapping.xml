@@ -48,12 +48,13 @@
       and (LOCK_OWNER_ is null or LOCK_EXP_TIME_ &lt; #{now, jdbcType=TIMESTAMP})
   </select>
 
-  <select id="selectFirstTimer" parameterType="string" resultMap="jobResultMap">
-    select * 
-    from ACT_JOB 
-    where (RETRIES_ &gt; 0)
+  <select id="selectUnlockedTimersByDuedate" parameterType="date" resultMap="jobResultMap">
+    select *
+    from ACT_JOB
+    where (TYPE_ = 'timer')
       and (DUEDATE_ is not null)
-      and (LOCK_OWNER_ is null or LOCK_EXP_TIME_ &lt; #{now, jdbcType=TIMESTAMP})
+      and (DUEDATE_ &lt; #{duedate, jdbcType=TIMESTAMP})
+      and (LOCK_OWNER_ is null or LOCK_EXP_TIME_ &lt; #{duedate, jdbcType=TIMESTAMP})
     order by DUEDATE_
   </select>
 

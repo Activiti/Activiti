@@ -12,6 +12,7 @@
  */
 package org.activiti.impl.persistence;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -102,7 +103,7 @@ public interface PersistenceSession extends Session {
   JobImpl findJobById(String jobId);
   List<JobImpl> findJobs();
   List<JobImpl> findNextJobsToExecute(int maxJobsPerAcquisition);
-  TimerImpl findFirstTimer();
+  List<TimerImpl> findUnlockedTimersByDuedate(Date duedate, int nrOfTimers);
   List<TimerImpl> findTimersByExecutionId(String executionId);
   
   List<Job> dynamicFindJobs(Map<String, Object> params, Page page);

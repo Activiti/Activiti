@@ -65,7 +65,7 @@ public class JobExecutorPoller {
   }
 
   private boolean areJobsAvailable() {
-     Boolean areJobsAvailable = commandExecutor.execute(new Command<Boolean>() {
+    Boolean areJobsAvailable = commandExecutor.execute(new Command<Boolean>() {
       public Boolean execute(CommandContext commandContext) {
         return !commandContext.getPersistenceSession().findNextJobsToExecute(1).isEmpty();
       }
