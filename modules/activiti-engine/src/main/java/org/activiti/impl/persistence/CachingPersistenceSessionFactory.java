@@ -141,4 +141,7 @@ public class CachingPersistenceSessionFactory implements PersistenceSessionFacto
 
   }
 
+  public PersistenceSessionFactory getTargetPersistenceSessionFactory() {
+    return delegate;
+  }
 }
