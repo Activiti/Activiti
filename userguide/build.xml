@@ -15,6 +15,10 @@
 
 	<available file="${docbooktool.dir}" property="docbooktool.is.available" />
 
+	<condition property="is.windows">
+		<os family="windows"/>
+	</condition>
+
 	<target name="build.userguide" depends="install.docbooktool, build.html" />
 	
   <path id="xslt.classpath">
@@ -29,13 +33,26 @@
     </fileset>
   </path>
 
+
 	<target name="clean" description="Cleans up generated files.">
     <delete dir="target/html" />
     <delete dir="target/pdf" />
     <delete dir="target/tmp" />
 	</target>
 
-  <target name="install.docbooktool" unless="docbooktool.is.available">
+<target name="install.docbooktool"	unless="docbooktool.is.available">
+	<antcall target="install.docbooktool.windows"/>
+	<antcall target="install.docbooktool.unix"/>
+</target>
+
+  <target name="install.docbooktool.windows">
+  	<mkdir dir="target" />
+    <exec executable="mvn.bat">
+      <arg line="compile" />
+    </exec>
+  </target>
+
+  <target name="install.docbooktool.unix" 	unless="docbooktool.is.available">
   	<mkdir dir="target" />
     <exec executable="mvn">
       <arg line="compile" />
@@ -47,11 +64,18 @@
 		<copy todir="target/prepared-src" overwrite="true">
 			<fileset dir="src" />
 		</copy>
+		<antcall target="windows.convert.line.endings"/>
 		<replace value="" dir="target/prepared-src/en/chapters">
 			<include name="*.xml"/>
 			<replacetoken><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE chapter PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN" "../../../target/docbook-tool-1.0/docbook-xml/docbookx.dtd">]]></replacetoken>
 		</replace>
+	</target>
+
+	<target name="windows.convert.line.endings" if="is.windows">
+		<echo message="CONVERTING CRLF for windows"/>
+		<fixcrlf srcdir="target/prepared-src/en/chapters" includes="*.xml"
+         eol="crlf" eof="remove" />	
 	</target>
 
 	<target name="build.html"
