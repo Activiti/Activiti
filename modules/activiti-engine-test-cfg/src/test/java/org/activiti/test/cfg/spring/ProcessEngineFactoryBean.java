@@ -17,6 +17,7 @@ import javax.sql.DataSource;
 
 import org.activiti.DbSchemaStrategy;
 import org.activiti.ProcessEngine;
+import org.activiti.impl.ProcessEngineImpl;
 import org.activiti.impl.cfg.ProcessEngineConfiguration;
 import org.activiti.impl.db.IdGenerator;
 import org.activiti.impl.interceptor.Command;
@@ -25,6 +26,7 @@ import org.activiti.impl.interceptor.CommandInterceptor;
 import org.activiti.impl.interceptor.DefaultCommandExecutor;
 import org.activiti.impl.persistence.IbatisPersistenceSessionFactory;
 import org.activiti.impl.persistence.PersistenceSessionFactory;
+import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.FactoryBean;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionStatus;
@@ -35,7 +37,7 @@ import org.springframework.util.Assert;
 /**
  * @author Dave Syer
  */
-public class ProcessEngineFactoryBean implements FactoryBean<ProcessEngine> {
+public class ProcessEngineFactoryBean implements FactoryBean<ProcessEngine>, DisposableBean {
 
   private String databaseName;
   private DataSource dataSource;
@@ -43,6 +45,13 @@ public class ProcessEngineFactoryBean implements FactoryBean<ProcessEngine> {
   private DbSchemaStrategy dbSchemaStrategy;
   private boolean jobExecutorAutoActivate;
   private String processEngineName;
+  private ProcessEngineImpl processEngine;
+  
+  public void destroy() throws Exception {
+    if (processEngine!=null) {
+      processEngine.close();
+    }
+  }
 
   public ProcessEngine getObject() throws Exception {
 
@@ -74,7 +83,8 @@ public class ProcessEngineFactoryBean implements FactoryBean<ProcessEngine> {
       });
     }
 
-    return configuration.buildProcessEngine();
+    processEngine = configuration.buildProcessEngine();
+    return processEngine;
 
   }
   public Class< ? > getObjectType() {
