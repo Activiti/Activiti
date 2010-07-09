@@ -29,7 +29,7 @@
     <orderEntry type="library" scope="PROVIDED" name="Maven: javax.servlet:servlet-api:2.5" level="project" />
     <orderEntry type="module" module-name="activiti-engine" scope="PROVIDED" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: com.h2database:h2:1.2.132" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Maven: juel:juel:2.1.0" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Maven: juel:juel:2.2.1" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: juel:juel-engine:2.1.0" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: org.codehaus.groovy:groovy-all:1.7.2" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: junit:junit:4.8.1" level="project" />
