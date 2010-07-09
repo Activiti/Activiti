@@ -8,6 +8,7 @@
   <!ENTITY ch06 SYSTEM "chapters/ch06-BPMN.xml">
   <!ENTITY ch07 SYSTEM "chapters/ch07-TaskForms.xml">
   <!ENTITY ch08 SYSTEM "chapters/ch08-REST.xml">
+  <!ENTITY ch09 SYSTEM "chapters/ch09-QA.xml">
 ]>
 
 <book>
@@ -24,5 +25,6 @@
 &ch06;
 &ch07;
 &ch08;
+&ch09;
   
 </book>
