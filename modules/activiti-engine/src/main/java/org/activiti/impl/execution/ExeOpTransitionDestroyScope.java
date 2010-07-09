@@ -28,11 +28,12 @@ public class ExeOpTransitionDestroyScope implements ExeOp {
     ActivityImpl activity = execution.getActivity();
     if (activity.isScope()) {
       ExecutionImpl parentScopeInstance = null;
-      if (execution.isConcurrencyScope()) {
-        parentScopeInstance = execution.getParent();
-      } else {
-        parentScopeInstance = execution.getParent().getParent();
-      }
+//      if (execution.isConcurrencyScope()) {
+//        parentScopeInstance = execution.getParent();
+//      } else {
+//        parentScopeInstance = execution.getParent().getParent();
+//      }
+      parentScopeInstance = execution.getParent();
       
       if (parentScopeInstance.isActive()) {
         throw new UnsupportedOperationException("not implemented yet");

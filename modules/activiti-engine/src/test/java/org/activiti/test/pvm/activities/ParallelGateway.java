@@ -10,45 +10,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.activiti.test.pvm.activities;
 
-package org.activiti.impl.bpmn;
-
-import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.activiti.impl.execution.ConcurrencyController;
 import org.activiti.pvm.Activity;
+import org.activiti.pvm.ActivityBehavior;
 import org.activiti.pvm.ActivityExecution;
 import org.activiti.pvm.Transition;
 
 /**
- * Implementation of the Parallel Gateway/AND gateway as definined in the BPMN
- * 2.0 specification.
- * 
- * The Parallel Gateway can be used for splitting a path of execution into
- * multiple paths of executions (AND-split/fork behavior), one for every
- * outgoing sequence flow.
- * 
- * The Parallel Gateway can also be used for merging or joinging paths of
- * execution (AND-join). In this case, on every incoming sequence flow an
- * execution needs to arrive, before leaving the Parallel Gateway (and
- * potentially then doing the fork behavior in case of multiple outgoing
- * sequence flow).
- * 
- * Note that a Parallel Gateway having one incoming and multiple ougoing
- * sequence flow, is the same as having multiple outgoing sequence flow on a
- * given activity. However, a parallel gateway does NOT check conditions on the
- * outgoing sequence flow.
- * 
- * @author Joram Barrez
+ * @author Tom Baeyens
  */
-public class ParallelGatewayActivity extends GatewayActivity {
+public class ParallelGateway implements ActivityBehavior {
   
-  private static Logger log = Logger.getLogger(ParallelGatewayActivity.class.getName());
+  private static Logger log = Logger.getLogger(ParallelGateway.class.getName());
 
-  public void execute(ActivityExecution execution) throws Exception { 
+  public void execute(ActivityExecution execution) {
     Activity activity = execution.getActivity();
 
     List<Transition> outgoingTransitions = execution.getOutgoingTransitions();

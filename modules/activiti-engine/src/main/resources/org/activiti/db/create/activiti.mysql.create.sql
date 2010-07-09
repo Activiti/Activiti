@@ -35,7 +35,8 @@ create table ACT_EXECUTION (
     PROC_DEF_ID_ varchar(255),
     ACTIVITY_ID_ varchar(255),
     IS_ACTIVE_ TINYINT,
-    IS_CONCURRENCY_SCOPE_ TINYINT,
+    IS_CONCURRENT_ TINYINT,
+    IS_SCOPE_ TINYINT,
     primary key (ID_)
 );
 

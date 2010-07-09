@@ -12,7 +12,8 @@
     <result property="processDefinitionId" column="PROC_DEF_ID_" jdbcType="VARCHAR" />
     <result property="activityId" column="ACTIVITY_ID_" jdbcType="VARCHAR" />
     <result property="isActive" column="IS_ACTIVE_" jdbcType="BOOLEAN" />
-    <result property="isConcurrencyScope" column="IS_CONCURRENCY_SCOPE_" jdbcType="BOOLEAN" />
+    <result property="isConcurrent" column="IS_CONCURRENT_" jdbcType="BOOLEAN" />
+    <result property="isScope" column="IS_SCOPE_" jdbcType="BOOLEAN" />
     <result property="parentId" column="PARENT_ID_" jdbcType="VARCHAR" />
   </resultMap>
   
@@ -59,14 +60,15 @@
   <!-- INSERT -->
   
   <insert id="insertExecution" parameterType="org.activiti.impl.db.execution.DbExecutionImpl">
-    insert into ACT_EXECUTION (ID_, PROC_INST_ID_, PROC_DEF_ID_, ACTIVITY_ID_, IS_ACTIVE_, IS_CONCURRENCY_SCOPE_, PARENT_ID_)
+    insert into ACT_EXECUTION (ID_, PROC_INST_ID_, PROC_DEF_ID_, ACTIVITY_ID_, IS_ACTIVE_, IS_CONCURRENT_, IS_SCOPE_, PARENT_ID_)
     values (
       #{id ,jdbcType=VARCHAR},
       #{processInstanceId, jdbcType=VARCHAR},
       #{processDefinitionId ,jdbcType=VARCHAR},
       #{activityId ,jdbcType=VARCHAR},
       #{isActive ,jdbcType=BOOLEAN},
-      #{isConcurrencyScope ,jdbcType=BOOLEAN},
+      #{isConcurrent ,jdbcType=BOOLEAN},
+      #{isScope ,jdbcType=BOOLEAN},
       #{parentId, jdbcType=VARCHAR}
     )
   </insert>
@@ -78,7 +80,8 @@
       PROC_DEF_ID_ = #{processDefinitionId, jdbcType=VARCHAR},
       ACTIVITY_ID_ = #{activityId, jdbcType=VARCHAR},
       IS_ACTIVE_ = #{isActive, jdbcType=VARCHAR},
-      IS_CONCURRENCY_SCOPE_ = #{isConcurrencyScope, jdbcType=VARCHAR},
+      IS_CONCURRENT_ = #{isConcurrent, jdbcType=VARCHAR},
+      IS_SCOPE_ = #{isScope, jdbcType=VARCHAR},
       PARENT_ID_ = #{parentId, jdbcType=VARCHAR}
     where ID_ = #{id}
   </update>

@@ -12,6 +12,8 @@
  */
 package org.activiti.impl.execution;
 
+import java.util.logging.Logger;
+
 import org.activiti.ActivitiException;
 import org.activiti.impl.definition.ActivityImpl;
 import org.activiti.pvm.ActivityBehavior;
@@ -22,9 +24,15 @@ import org.activiti.pvm.ActivityBehavior;
  */
 public class ExeOpExecuteCurrentActivity implements ExeOp {
   
+  private static Logger log = Logger.getLogger(ExeOpExecuteCurrentActivity.class.getName());
+  
   public void execute(ExecutionImpl execution) {
     ActivityImpl activity = execution.getActivity();
+    
     ActivityBehavior activityBehavior = activity.getActivityBehavior();
+
+    log.fine("executing "+activity+": "+activityBehavior.getClass().getName());
+    
     try {
       activityBehavior.execute(execution);
     } catch (RuntimeException e) {

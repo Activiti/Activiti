@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.activiti.ActivitiException;
@@ -30,8 +31,6 @@ import org.activiti.impl.timer.TimerDeclarationImpl;
 import org.activiti.impl.variable.VariableTypes;
 import org.activiti.pvm.Activity;
 import org.activiti.pvm.ActivityExecution;
-import org.activiti.pvm.ExecutionController;
-import org.activiti.pvm.ExecutionControllerImpl;
 import org.activiti.pvm.ListenerExecution;
 import org.activiti.pvm.ObjectProcessInstance;
 import org.activiti.pvm.Transition;
@@ -68,11 +67,10 @@ public class ExecutionImpl implements
    *   <li>an execution has arrived in a parallel gateway or join and that join has not yet activated/fired.</li>
    * </ul>*/ 
   protected boolean isActive = true;
-
-  /** indicates if this execution is a concurrency scope.
-   * concurrent executions are also modeled as {@link #executions nested executions} and those 
-   * have isConcurrencyScope=false */
-  protected boolean isConcurrencyScope = true;
+  
+  protected boolean isConcurrent = false;
+  
+  protected boolean isScope = false;
   
   protected VariableMap variableMap = null;
   
@@ -109,7 +107,7 @@ public class ExecutionImpl implements
    * means it can't be fetched from the database and also that there is a need
    * to store this boolean).
    */
-  transient boolean ended = false;
+  transient boolean isEnded = false;
 
   private VariableTypes variableTypes;
   
@@ -124,39 +122,251 @@ public class ExecutionImpl implements
     setProcessInstance(this);
   }
   
-  /** constructor for new child executions (both nested scopes and concurrent executions) */
-  protected ExecutionImpl(ExecutionImpl parent) {
-    setProcessDefinition(parent.getProcessDefinition());
-    setProcessInstance(parent.getProcessInstance());
-    setActivity(parent.getActivity());
-    setParent(parent);
-    parent.addExecution(this);    
+  // parent ///////////////////////////////////////////////////////////////////
+
+  /** ensures initialization and returns the parent */
+  public ExecutionImpl getParent() {
+    ensureParentInitialized();
+    return parent;
   }
 
-  private void addExecution(ExecutionImpl child) {
-    child.setParent(this);
-    getExecutions(); // making sure it's initialized (@see DbExecutionImpl#getExecutions())
-    executions.add(child);
+  /** all updates need to go through this setter as subclasses can override this method */
+  protected void setParent(ExecutionImpl parent) {
+    this.parent = parent;
   }
 
-  // special caching getters and setters for process definition and activity //
+  /** must be called before memberfield parent is used. 
+   * can be used by subclasses to provide parent member field initialization. */
+  protected void ensureParentInitialized() {
+  }
+
+  // executions ///////////////////////////////////////////////////////////////  
+
+  /** ensures initialization and returns the non-null executions list */
+  public List<? extends ExecutionImpl> getExecutions() {
+    ensureExecutionsInitialized();
+    return executions;
+  }
   
+  /** creates a new execution. properties processDefinition, processInstance and activity will be initialized. */  
+  public ExecutionImpl createExecution() {
+    // create the new child execution
+    ExecutionImpl createdExecution = newExecution();
+    
+    // manage the bidirectional parent-child relation
+    ensureExecutionsInitialized();
+    executions.add(createdExecution); 
+    createdExecution.setParent(this);
+    
+    // initialize the new execution
+    createdExecution.setProcessDefinition(getProcessDefinition());
+    createdExecution.setProcessInstance(getProcessInstance());
+    createdExecution.setActivity(getActivity());
+    
+    return createdExecution;
+  }
+  
+  /** removes an execution. if there are nested executions, those will be ended recursively.
+   * if there is a parent, this method removes the bidirectional relation 
+   * between parent and this execution. */
+  public void end() {
+    // first end the nested executions
+    ensureExecutionsInitialized();
+    // Create simple copy of children to avoid concurrentModificationExceptions
+    // (since calling end() on the child will cause a remove in the same collection)
+    List<ExecutionImpl> childExecutions = new ArrayList<ExecutionImpl>(executions);
+    for (ExecutionImpl childExecution : childExecutions) {
+      childExecution.end();
+    }
+    
+    // if there is a parent 
+    ensureParentInitialized();
+    if (parent!=null) {
+      // then remove the bidirectional relation
+      parent.removeExecution(this);
+    } else {
+      isEnded = true;
+    }
+  }
+  
+  /** searches for an execution positioned in the given activity */
+  public ExecutionImpl findExecution(String activityId) {
+    if ( (getActivity()!=null)
+         && (getActivity().getId().equals(activityId))
+       ) {
+      return this;
+    }
+    for (ExecutionImpl nestedExecution : getExecutions()) {
+      ExecutionImpl result = nestedExecution.findExecution(activityId);
+      if (result != null) {
+        return result;
+      }
+    }
+    return null;
+  }
+
+  /** instantiates a new execution.  can be overridden by subclasses */
+  protected ExecutionImpl newExecution() {
+    return new ExecutionImpl();
+  }
+
+  /** disconnects an execution */ 
+  protected void removeExecution(ExecutionImpl execution) {
+    ensureExecutionsInitialized();
+    executions.remove(execution);
+    execution.setParent(null);
+  }
+
+  /** must be called before memberfield executions is used. 
+   * can be used by subclasses to provide executions member field initialization. */
+  protected void ensureExecutionsInitialized() {
+    if (executions==null) {
+      executions = new ArrayList<ExecutionImpl>();
+    }
+  }
+
+  // process definition ///////////////////////////////////////////////////////
+  
+  /** ensures initialization and returns the process definition. */
   public ProcessDefinitionImpl getProcessDefinition() {
+    ensureProcessDefinitionInitialized();
     return processDefinition;
   }
+  
+  public String getProcessDefinitionId() {
+    return getProcessDefinition().getId();
+  }
 
+  /** for setting the process definition, this setter must be used as subclasses can override */  
   protected void setProcessDefinition(ProcessDefinitionImpl processDefinition) {
     this.processDefinition = processDefinition;
     this.variableTypes = processDefinition.getVariableTypes();
   }
 
+  /** must be called before memberfield processDefinition is used. 
+   * can be used by subclasses to provide processDefinition member field initialization. */
+  protected void ensureProcessDefinitionInitialized() {
+  }
+  
+  // process instance /////////////////////////////////////////////////////////
+
+  /** ensures initialization and returns the process instance. */
+  public ExecutionImpl getProcessInstance() {
+    ensureProcessInstanceInitialized();
+    return processInstance;
+  }
+  
+  /** for setting the process instance, this setter must be used as subclasses can override */  
+  protected void setProcessInstance(ExecutionImpl processInstance) {
+    this.processInstance = processInstance;
+  }
+
+  /** must be called before memberfield processInstance is used. 
+   * can be used by subclasses to provide processInstance member field initialization. */
+  protected void ensureProcessInstanceInitialized() {
+  }
+  
+  // activity /////////////////////////////////////////////////////////////////
+  
+  /** ensures initialization and returns the activity */
   public ActivityImpl getActivity() {
+    ensureActivityInitialized();
     return activity;
   }
   
+  /** sets the current activity.  can be overridden by subclasses.  doesn't 
+   * require initialization. */
   public void setActivity(ActivityImpl activity) {
     this.activity = activity;
   }
+
+  /** must be called before the activity member field or getActivity() is called */
+  protected void ensureActivityInitialized() {
+  }
+  
+  // current activities ///////////////////////////////////////////////////////
+
+  public List<Activity> getActivities() {
+    List<Activity> activities = new ArrayList<Activity>();
+    
+    if (getActivity() != null) {
+      activities.add(getActivity());
+    }
+    
+    for (ExecutionImpl childExecution : getExecutions()) {
+      if (childExecution.getActivity() != null) {
+        activities.add(childExecution.getActivity());
+      }
+    }
+    return activities;
+  }
+  
+  public List<String> getActivityNames() {
+    List<Activity> activities = getActivities();
+    List<String> activityNames = new ArrayList<String>();
+    for (Activity activity : activities) {
+      activityNames.add(activity.getId());
+    }
+    return activityNames;
+  }
+
+  // scopes ///////////////////////////////////////////////////////////////////
+  
+  public ExecutionImpl createScope() {
+    ExecutionImpl scopeExecution = createExecution();
+    scopeExecution.setTransition(getTransition());
+    setTransition(null);
+    setActive(false);
+
+    // TODO: create declared scoped variables
+
+    // create scoped timers
+    for (TimerDeclarationImpl timerDeclaration: getActivity().getTimerDeclarations()) {
+      scopeExecution.createTimer(timerDeclaration);
+    }
+
+    return scopeExecution;
+  }
+
+  public void destroyScope() {
+    CommandContext commandContext = CommandContext.getCurrent();
+    if (commandContext!=null) {
+      commandContext
+        .getTimerSession()
+        .cancelTimers(this);
+    }
+
+    // destroy scoped variables
+    for (VariableDeclarationImpl variableDeclaration: getActivity().getVariableDeclarations()) {
+      variableMap.deleteVariable(variableDeclaration.getName());
+    }
+    
+    parent.setActivity(getActivity());
+    parent.setTransition(getTransition());
+    parent.setActive(true);
+    parent.removeExecution(this);
+    
+    end();
+  }
+  
+  // timers ///////////////////////////////////////////////////////////////////
+
+  public void createTimer(TimerDeclarationImpl timerDeclaration) {
+    TimerImpl timer = new TimerImpl();
+    timer.setExecution(this);
+    timer.setDuedate( timerDeclaration.getDuedate() );
+    timer.setJobHandlerType( timerDeclaration.getJobHandlerType() );
+    timer.setJobHandlerConfiguration( timerDeclaration.getJobHandlerConfiguration() );
+    timer.setExclusive(timerDeclaration.isExclusive());
+    timer.setRepeat(timerDeclaration.getRepeat());
+    timer.setRetries(timerDeclaration.getRetries());
+    
+    CommandContext
+      .getCurrent()
+      .getTimerSession()
+      .schedule(timer);
+  }
+
 
   // process instance start implementation ////////////////////////////////////
 
@@ -228,27 +438,15 @@ public class ExecutionImpl implements
       while (nextOperation!=null) {
         ExeOp currentOperation = this.nextOperation;
         this.nextOperation = null;
-        log.fine("ExeOp: "+currentOperation+" on "+this);
+        if (log.isLoggable(Level.FINEST)) {
+          log.finest("ExeOp: " + currentOperation + " on " + this);
+        }
         currentOperation.execute(this);
       }
       isOperating = false;
     }
   }
 
-  public ExecutionImpl findExecution(String activityId) {
-    if ( (getActivity()!=null)
-         && (getActivity().getId().equals(activityId))
-       ) {
-      return this;
-    }
-    for (ExecutionImpl nestedExecution : getExecutions()) {
-      ExecutionImpl result = nestedExecution.findExecution(activityId);
-      if (result != null) {
-        return result;
-      }
-    }
-    return null;
-  }
   
   public boolean isActive(String activityId) {
     return findExecution(activityId)!=null;
@@ -278,223 +476,11 @@ public class ExecutionImpl implements
     return Collections.emptyList();
   }
   
-  public ExecutionImpl getProcessInstance() {
-    return processInstance;
-  }
-  public void setProcessInstance(ExecutionImpl processInstance) {
-    this.processInstance = processInstance;
-  }
 
-  public ExecutionImpl getParent() {
-    return parent;
-  }
-  public void setParent(ExecutionImpl parent) {
-    this.parent = parent;
-  }
-
-  // executions ///////////////////////////////////////////////////////////////
-  
-  public List<? extends ExecutionImpl> getExecutions() {
-    return executions;
-  }
-  
-  public List<? extends ExecutionImpl> getActiveExecutions() {
-    return getExecutions(false);
-  }
-  public List<? extends ExecutionImpl> getExecutions(boolean includeInactive) {
-    if (!isConcurrencyScope) {
-      throw new ActivitiException("this method should not be available on concurrent executions (==non-scope instances)");
-    }
-    List<ExecutionImpl> concurrentExecutions = new ArrayList<ExecutionImpl>();
-    if (includeInactive || isActive) {
-      concurrentExecutions.add(this);
-    }
-    for (ExecutionImpl execution: getExecutions()) {
-      if (includeInactive || execution.isActive()) {
-        concurrentExecutions.add(execution);
-      }
-    }
-    return concurrentExecutions;
-  }
-  
-  public ActivityExecution createExecution() {
-    if (!isConcurrencyScope) {
-      throw new ActivitiException("this method should not be available on concurrent executions (==non-scope instances)");
-    }
-    if (hasExecutions()) {
-      ExecutionImpl concurrentExecution = createChildExecution();
-      concurrentExecution.setConcurrencyScope(false);
-      return concurrentExecution;
-
-    } else if (isActive) {
-      // clone execution for concurrency
-      ExecutionImpl clonedExecution = createChildExecution();
-      clonedExecution.setActivity(activity);
-      clonedExecution.setTransition(transition);
-      clonedExecution.setConcurrencyScope(false);
-      
-      // this execution turns into an inactive scope containing 
-      // a nested list of concurrent executions
-      setActive(false);
-      setTransition(null);
-
-      // create the new concurrent execution
-      ExecutionImpl concurrentExecution = createChildExecution();
-      concurrentExecution.setConcurrencyScope(false);
-      
-      // migrate the next operation
-      if (nextOperation!=null) {
-        nextOperation = new ExeOpTransferOperationLoop(clonedExecution, nextOperation);
-      }
-      
-      return concurrentExecution;
-
-    } else {
-      // re-activate and leverage this execution
-      isActive = true;
-      
-      return this;
-    }
-  }
-
-  public ExecutionController getExecutionController() {
-    return new ExecutionControllerImpl(this);
-  }
-
-  public boolean hasExecutions() {
-//    return !getExecutions().isEmpty();
-    for (ExecutionImpl execution : getExecutions()) {
-      if (!execution.isEnded()) {
-        return true;
-      }
-    }
-    return false;
-  }
-
-  /** allows specific process languages to instantiate 
-   * process language specific execution implementations */
-  protected ExecutionImpl createChildExecution() {
-    return new ExecutionImpl(this);
-  }
-
-  public void end() {
-    if (!isConcurrencyScope) {
-      getParent().removeExecution(this);
-    } else {
-      isActive = false;
-    }
-    
-    ended = true;
-    
-    // Create simple copy of children to avoid concurrentModificationExceptions
-    // (since calling end() on the child will cause a remove in the same collection)
-    List<ExecutionImpl> childExecutions = new ArrayList<ExecutionImpl>(getExecutions());
-    for (ExecutionImpl childExecution : childExecutions) {
-      childExecution.end();
-    }
-  }
-  
-  public ExecutionImpl createScope() {
-    ExecutionImpl scopeExecution = createChildExecution();
-    scopeExecution.setTransition(getTransition());
-    setTransition(null);
-    setActive(false);
-
-    // TODO: declare scoped variables if needed
-
-    // create scoped timers
-    for (TimerDeclarationImpl timerDeclaration: getActivity().getTimerDeclarations()) {
-      scopeExecution.createTimer(timerDeclaration);
-    }
-
-    return scopeExecution;
-  }
-
-  public void createTimer(TimerDeclarationImpl timerDeclaration) {
-    
-    TimerImpl timer = new TimerImpl();
-    timer.setExecution(this);
-    timer.setDuedate( timerDeclaration.getDuedate() );
-    timer.setJobHandlerType( timerDeclaration.getJobHandlerType() );
-    timer.setJobHandlerConfiguration( timerDeclaration.getJobHandlerConfiguration() );
-    timer.setExclusive(timerDeclaration.isExclusive());
-    timer.setRepeat(timerDeclaration.getRepeat());
-    timer.setRetries(timerDeclaration.getRetries());
-    
-    CommandContext
-      .getCurrent()
-      .getTimerSession()
-      .schedule(timer);
-  }
-
-  public void destroyScope() {
-    CommandContext commandContext = CommandContext.getCurrent();
-    if (commandContext!=null) {
-      commandContext
-        .getTimerSession()
-        .cancelTimers(this);
-    }
-
-    // destroy scoped variables
-    for (VariableDeclarationImpl variableDeclaration: getActivity().getVariableDeclarations()) {
-      variableMap.deleteVariable(variableDeclaration.getName());
-    }
-    
-    parent.setActivity(getActivity());
-    parent.setTransition(getTransition());
-    parent.setActive(true);
-    parent.removeExecution(this);
-    
-    end();
-  }
-
-
-  public void removeExecution(ExecutionImpl execution) {
-    getExecutions().remove(execution);
-    execution.setParent(null);
-  }
-
-  public List<Activity> getActivities() {
-    List<Activity> activities = new ArrayList<Activity>();
-    
-    if (getActivity() != null) {
-      activities.add(getActivity());
-    }
-    
-    for (ExecutionImpl childExecution : getExecutions()) {
-      if (childExecution.getActivity() != null) {
-        activities.add(childExecution.getActivity());
-      }
-    }
-    return activities;
-  }
-  
-  public List<String> getActivityNames() {
-    List<Activity> activities = getActivities();
-    List<String> activityNames = new ArrayList<String>();
-    for (Activity activity : activities) {
-      activityNames.add(activity.getId());
-    }
-    return activityNames;
-  }
-
-  public boolean isActive() {
-    return isActive;
-  }
-  public void setActive(boolean isActive) {
-    this.isActive = isActive;
-  }
-  
-  public boolean isEnded() {
-    return ended;
-  }
-  
   // variables ////////////////////////////////////////////////////////////////
 
   public Object getVariable(String variableName) {
-    if (variableMap==null) {
-      initializeVariableMap();
-    }
+    ensureVariableMapInitialized();
     
     // If value is found in this scope, return it
     Object value = variableMap.getVariable(variableName);
@@ -512,16 +498,12 @@ public class ExecutionImpl implements
   }
 
   public Map<String, Object> getVariables() {
-    if (variableMap==null) {
-      initializeVariableMap();
-    }
+    ensureVariableMapInitialized();
     return variableMap.getVariables();
   }
   
   public void setVariables(Map<String, Object> variables) {
-    if (variableMap==null) {
-      initializeVariableMap();
-    }
+    ensureVariableMapInitialized();
     if (variables!=null) {
       for (Map.Entry<String, Object> entry: variables.entrySet()) {
         setVariable(entry.getKey(), entry.getValue());
@@ -530,21 +512,19 @@ public class ExecutionImpl implements
   }
 
   public void setVariable(String variableName, Object value) {
-    if (variableMap==null) {
-      initializeVariableMap();
-    }
+    ensureVariableMapInitialized();
     variableMap.setVariable(variableName, value);
   }
   
   public boolean hasVariable(String variableName) {
-    if (variableMap==null) {
-      initializeVariableMap();
-    }
+    ensureVariableMapInitialized();
     return variableMap.hasVariable(variableName);
   }
 
-  protected void initializeVariableMap() {
-    variableMap = new VariableMap();
+  protected void ensureVariableMapInitialized() {
+    if (variableMap==null) {
+      variableMap = new VariableMap();
+    }
   }
   
   // toString /////////////////////////////////////////////////////////////////
@@ -555,45 +535,28 @@ public class ExecutionImpl implements
   
   public String toString(StringBuilder text) {
     if (isProcessInstance()) {
-      text.append("ProcInst");
+      text.append("ProcessInstance");
     } else {
-      text.append("Exe");
+      text.append("Execution");
     }
-    if (activity!=null) {
-      text.append("(");
-      text.append(activity.getId());
-      text.append(")");
-    }
-    if (hasExecutions()) {
-      text.append("[");
-      for (ExecutionImpl child: executions) {
-        child.toString(text);
-      }
-      text.append("]");
-    }
+    text.append("-");
+    text.append(getIdForToString());
     return text.toString();
   }
 
+  protected String getIdForToString() {
+    return Integer.toString(System.identityHashCode(this));
+  }
+  
+  // customized getters and setters ///////////////////////////////////////////
+
   protected boolean isProcessInstance() {
+    ensureParentInitialized();
     return parent==null;
   }
-
-  public void setActivity(Activity activity) {
-    this.setActivity((ActivityImpl)activity);
-  }
-
-  public String getId() {
-    return null;
-  }
-
+  
   // getters and setters //////////////////////////////////////////////////////
 
-  public boolean isConcurrencyScope() {
-    return isConcurrencyScope;
-  }
-  public void setConcurrencyScope(boolean isConcurrencyScope) {
-    this.isConcurrencyScope = isConcurrencyScope;
-  }
   public TransitionImpl getTransition() {
     return transition;
   }
@@ -606,17 +569,40 @@ public class ExecutionImpl implements
   public void setEventListenerIndex(Integer eventListenerIndex) {
     this.eventListenerIndex = eventListenerIndex;
   }
-  public String getProcessDefinitionId() {
-    return processDefinition.getId();
-  }
   public Object getCachedElContext() {
     return cachedElContext;
   }
   public void setCachedElContext(Object cachedElContext) {
     this.cachedElContext = cachedElContext;
   }
-
   public VariableTypes getVariableTypes() {
     return variableTypes;
+  }
+  public boolean isConcurrent() {
+    return isConcurrent;
+  }
+  public void setConcurrent(boolean isConcurrent) {
+    this.isConcurrent = isConcurrent;
+  }
+  public boolean isScope() {
+    return isScope;
+  }
+  public void setScope(boolean isScope) {
+    this.isScope = isScope;
+  }
+  public boolean isActive() {
+    return isActive;
+  }
+  public void setActive(boolean isActive) {
+    this.isActive = isActive;
+  }
+  public boolean isEnded() {
+    return isEnded;
+  }
+  public void setActivity(Activity activity) {
+    this.setActivity((ActivityImpl)activity);
+  }
+  public String getId() {
+    return null;
   }
 }

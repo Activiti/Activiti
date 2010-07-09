@@ -20,14 +20,18 @@ import org.activiti.pvm.ObjectProcessInstance;
 import org.activiti.pvm.ProcessDefinitionBuilder;
 import org.activiti.test.LogInitializer;
 import org.activiti.test.pvm.activities.WaitState;
+import org.junit.Rule;
 import org.junit.Test;
 
 
 /**
  * @author Tom Baeyens
  */
-public class PvmVariablesTest extends LogInitializer {
+public class PvmVariablesTest {
 
+  @Rule 
+  public LogInitializer logInitializer = new LogInitializer();
+  
   @Test
   public void testVariables() {
     ObjectProcessDefinition processDefinition = ProcessDefinitionBuilder

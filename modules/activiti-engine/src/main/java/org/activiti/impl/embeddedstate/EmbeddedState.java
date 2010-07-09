@@ -64,7 +64,7 @@ public abstract class EmbeddedState {
   public void serializeExecutionTree() {
     if (embeddedProcessInstance != null) {
       StringBuilder strb = new StringBuilder();
-      if (!embeddedProcessInstance.hasExecutions()) {
+      if (embeddedProcessInstance.getExecutions().isEmpty()) {
         if (embeddedProcessInstance.getActivity() != null) {
           strb.append("activity:" + embeddedProcessInstance.getActivity().getId()); // TODO: dummy serialisation. Need to use something more clever
         }

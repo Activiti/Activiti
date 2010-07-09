@@ -12,15 +12,11 @@
  */
 package org.activiti.impl.bpmn;
 
-import java.util.List;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.activiti.BpmnActivityBehavior;
 import org.activiti.pvm.ActivityExecution;
-import org.activiti.pvm.ExecutionController;
 import org.activiti.pvm.EventActivityBehavior;
-import org.activiti.pvm.Transition;
 
 
 /**

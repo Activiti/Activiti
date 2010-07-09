@@ -13,6 +13,7 @@
 package org.activiti.impl.execution;
 
 import java.util.List;
+import java.util.logging.Logger;
 
 import org.activiti.impl.definition.ActivityImpl;
 import org.activiti.impl.definition.ScopeElementImpl;
@@ -24,9 +25,14 @@ import org.activiti.pvm.Listener;
  * @author Tom Baeyens
  */
 public class ExeOpTransitionNotifyListenerTake implements ExeOp {
+  
+  private static Logger log = Logger.getLogger(ExeOpTransitionNotifyListenerTake.class.getName());
 
   public void execute(ExecutionImpl execution) {
     TransitionImpl transition = execution.getTransition();
+    
+    log.fine("taking transition "+transition);
+    
     List<Listener> eventListeners = transition.getListeners();
     int eventListenerIndex = execution.getEventListenerIndex();
     

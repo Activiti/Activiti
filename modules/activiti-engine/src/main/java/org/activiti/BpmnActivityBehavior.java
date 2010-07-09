@@ -13,12 +13,13 @@
 
 package org.activiti;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.activiti.impl.execution.ConcurrencyController;
 import org.activiti.pvm.ActivityExecution;
-import org.activiti.pvm.ExecutionController;
 import org.activiti.pvm.Transition;
 
 /**
@@ -64,51 +65,35 @@ public class BpmnActivityBehavior {
    * Actual implementation of leaving an activity.
    */
   protected void performOutgoingBehavior(ActivityExecution execution, boolean checkConditions) {
+    
+    
       
       if (log.isLoggable(Level.FINE)) {
         log.fine("Leaving activity '" + execution.getActivity().getId() + "'");
       }
       
-      List<Transition> outgoingSequenceFlow = execution.getOutgoingTransitions();   
-      if (outgoingSequenceFlow.size() == 1) {
-        execution.take(outgoingSequenceFlow.get(0));
-      } else if (outgoingSequenceFlow.size() > 1) {
+      List<Transition> outgoingTransitions = execution.getOutgoingTransitions();   
+      if (outgoingTransitions.size() == 1) {
+        execution.take(outgoingTransitions.get(0));
         
-        execution.getExecutionController().setActive(false);
-        ExecutionController concurrencyController = execution.getExecutionController();
+      } else if (outgoingTransitions.size() > 1) {
+        ConcurrencyController concurrencyController = new ConcurrencyController(execution);
+        concurrencyController.inactivate();
         
-        for (Transition outSeqFlow: outgoingSequenceFlow) {
-        if (outSeqFlow.getCondition() == null 
-                || !checkConditions 
-                || outSeqFlow.getCondition().evaluate(execution)) {
-          ActivityExecution concurrentExecution = concurrencyController.createExecution();
-          concurrentExecution.take(outSeqFlow);
+        List<ActivityExecution> joinedExecutions = new ArrayList<ActivityExecution>();
+        joinedExecutions.add(execution);
+        
+        List<Transition> transitionsToTake = new ArrayList<Transition>();
+        
+        for (Transition outgoingTransition: outgoingTransitions) {
+          if (outgoingTransition.getCondition() == null 
+                  || !checkConditions 
+                  || outgoingTransition.getCondition().evaluate(execution)) {
+            transitionsToTake.add(outgoingTransition);
+          }
         }
-      }
         
-        // TODO: The following needs to be implemented somehow
-        // Current execution is deactived (can be reused)
-//        execution.setActive(false);
-//        execution.setActivity(null);
-        
-//        Map<ActivityExecution, Transition> childExecutionMapping 
-//            = new LinkedHashMap<ActivityExecution, Transition>(); // Linked? -> order is important
-//        ConcurrencyController concurrencyController = execution.getConcurrencyController();
-//        
-//        for (Transition outSeqFlow: outgoingSequenceFlow) {
-//          if (outSeqFlow.getCondition() == null 
-//                  || !checkConditions 
-//                  || outSeqFlow.getCondition().evaluate(execution)) {
-//            ActivityExecution concurrentExecution = concurrencyController.createExecution();
-//            childExecutionMapping.put(concurrentExecution, outSeqFlow);
-//          }
-//        }
-//        
-//        // Only after all child executions have been created, we start taking the sequence flow
-//        // (If the 'take' would be done immediately, this causes some really tricky bugs)
-//        for (Map.Entry<ActivityExecution, Transition> entry : childExecutionMapping.entrySet()) {
-//          entry.getKey().take(entry.getValue());
-//        }
+        concurrencyController.takeAll(transitionsToTake, joinedExecutions);
         
       } else {
         
@@ -116,7 +101,7 @@ public class BpmnActivityBehavior {
           log.fine("No outgoing sequence flow found for " + execution.getActivity().getId() 
                   + ". Ending execution.");
         }
-        execution.getExecutionController().end();
+        execution.end();
         
       }
   }

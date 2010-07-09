@@ -30,8 +30,19 @@ public interface ActivityExecution {
   void take(Transition transition);
   void take(String transitionId);
   
-  ExecutionController getExecutionController();
-  
   Object getVariable(String variableName);
   void setVariable(String variableName, Object value);
+  
+  ActivityExecution createExecution();
+  ActivityExecution getParent();
+  List<? extends ActivityExecution> getExecutions();
+  void end();
+  void setActivity(Activity activity);
+
+  void setActive(boolean isActive);
+  boolean isActive();
+  
+  void setConcurrent(boolean isConcurrent);
+  boolean isConcurrent();
+  
 }

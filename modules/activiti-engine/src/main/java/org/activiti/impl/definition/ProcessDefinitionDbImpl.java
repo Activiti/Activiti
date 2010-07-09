@@ -25,7 +25,6 @@ public class ProcessDefinitionDbImpl extends ProcessDefinitionImpl {
 
   private static final long serialVersionUID = 1L;
 
-  // FIXME: add a factory instead of using this default
   public ProcessDefinitionDbImpl() {
     this(new DefaultVariableTypes());
   }
@@ -35,8 +34,7 @@ public class ProcessDefinitionDbImpl extends ProcessDefinitionImpl {
   }
 
   public ExecutionImpl createProcessInstance() {
-    DbExecutionImpl execution = DbExecutionImpl.createAndInsert(this);
-    // TODO: maybe initialize variable declarations if needed;
+    DbExecutionImpl execution = new DbExecutionImpl(this);
     return execution;
   }
   
