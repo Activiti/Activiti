@@ -28,9 +28,9 @@ public class PojoTest {
 
   @Test
   public void testPojoWaitState() {
-    ObjectProcessDefinition processDefinition = ProcessDefinitionBuilder.createProcessDefinition().createActivity("a").initial().behavior(new WaitState())
+    ObjectProcessDefinition processDefinition = ProcessDefinitionBuilder.createProcessDefinitionBuilder().createActivity("a").initial().behavior(new WaitState())
             .transition("b").endActivity().createActivity("b").behavior(new WaitState()).transition("c").endActivity().createActivity("c").behavior(
-                    new WaitState()).endActivity().endProcessDefinition();
+                    new WaitState()).endActivity().build();
 
     ObjectProcessInstance processInstance = processDefinition.createProcessInstance();
     processInstance.start();
@@ -48,9 +48,9 @@ public class PojoTest {
 
   @Test
   public void testPojoAutomatic() {
-    ObjectProcessDefinition processDefinition = ProcessDefinitionBuilder.createProcessDefinition().createActivity("a").initial().behavior(new Automatic())
+    ObjectProcessDefinition processDefinition = ProcessDefinitionBuilder.createProcessDefinitionBuilder().createActivity("a").initial().behavior(new Automatic())
             .transition("b").endActivity().createActivity("b").behavior(new Automatic()).transition("c").endActivity().createActivity("c").behavior(
-                    new WaitState()).endActivity().endProcessDefinition();
+                    new WaitState()).endActivity().build();
 
     ObjectProcessInstance processInstance = processDefinition.createProcessInstance();
     processInstance.start();
@@ -61,12 +61,12 @@ public class PojoTest {
   @Test
   public void testDecision() {
     ScriptingEngines scriptingEngines = new ScriptingEngines();
-    ObjectProcessDefinition processDefinition = ProcessDefinitionBuilder.createProcessDefinition().createActivity("start").initial().behavior(new Automatic())
+    ObjectProcessDefinition processDefinition = ProcessDefinitionBuilder.createProcessDefinitionBuilder().createActivity("start").initial().behavior(new Automatic())
             .transition("checkCredit").endActivity().createActivity("checkCredit").behavior(new Decision()).transition("takeToGolf",
                     new ExpressionCondition(scriptingEngines, "${creditRating=='Aaa-'}", ScriptingEngines.DEFAULT_SCRIPTING_LANGUAGE)).transition("askDaughterOut",
                     new ExpressionCondition(scriptingEngines, "${creditRating=='AAA+'}", ScriptingEngines.DEFAULT_SCRIPTING_LANGUAGE)).transition("ignore").endActivity()
             .createActivity("takeToGolf").behavior(new WaitState()).endActivity().createActivity("askDaughterOut").behavior(new WaitState()).endActivity()
-            .createActivity("ignore").behavior(new WaitState()).endActivity().endProcessDefinition();
+            .createActivity("ignore").behavior(new WaitState()).endActivity().build();
 
     ObjectProcessInstance processInstance = processDefinition.createProcessInstance().variable("creditRating", "Aaa-").start();
     assertTrue(processInstance.isActive("takeToGolf"));

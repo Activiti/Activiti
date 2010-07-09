@@ -466,6 +466,13 @@ public class IbatisPersistenceSession implements PersistenceSession {
   }
 
   public void insertProcessDefinition(ProcessDefinitionImpl processDefinition) {
+    ProcessDefinitionImpl latestProcessDefinition = findLatestProcessDefinitionByKey(processDefinition.getKey());
+    if (latestProcessDefinition!=null) {
+      processDefinition.setVersion(latestProcessDefinition.getVersion()+1);
+    } else {
+      processDefinition.setVersion(1);
+    }
+    processDefinition.setId(processDefinition.getKey()+":"+processDefinition.getVersion());
     sqlSession.insert(statement("insertProcessDefinition"), processDefinition);
   }
   

@@ -170,15 +170,8 @@ public class DbProcessEngineBuilder {
 
     String dbSchemaStrategy = configurationProperties.getProperty("db.schema.strategy");
     if (dbSchemaStrategy != null) {
-      if ("create-drop".equals(dbSchemaStrategy.toLowerCase().replace("_", "-"))) {
-        this.dbSchemaStrategy = DbSchemaStrategy.CREATE_DROP;
-      } else if ("create".equals(dbSchemaStrategy.toLowerCase().replace("_", "-"))) {
-        this.dbSchemaStrategy = DbSchemaStrategy.CREATE;
-      } else if ("check-version".equals(dbSchemaStrategy.toLowerCase().replace("_", "-"))) {
-        this.dbSchemaStrategy = DbSchemaStrategy.CHECK_VERSION;
-      } else {
-        throw new ActivitiException("unknown db.schema.strategy: '" + dbSchemaStrategy + "': should be 'create', 'create-drop' or 'check-version'");
-      }
+      String strategy = dbSchemaStrategy.toUpperCase().replace("-", "_");
+      this.dbSchemaStrategy = DbSchemaStrategy.valueOf(strategy);
     }
 
     String jobExecutorAutoActivate = configurationProperties.getProperty("job.executor.auto.activate");

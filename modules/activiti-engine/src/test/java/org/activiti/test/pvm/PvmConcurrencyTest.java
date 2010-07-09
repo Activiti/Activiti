@@ -38,7 +38,7 @@ public class PvmConcurrencyTest extends LogInitializer {
   @Test
   public void testSimpleAutmaticConcurrency() {
     ObjectProcessDefinition processDefinition = ProcessDefinitionBuilder
-    .createProcessDefinition()
+    .createProcessDefinitionBuilder()
       .createActivity("start")
         .initial()
         .behavior(new Automatic())
@@ -64,7 +64,7 @@ public class PvmConcurrencyTest extends LogInitializer {
       .createActivity("end")
         .behavior(new WaitState())
       .endActivity()
-    .endProcessDefinition();
+    .build();
     
     ObjectProcessInstance processInstance = processDefinition.createProcessInstance(); 
     processInstance.start();
@@ -75,7 +75,7 @@ public class PvmConcurrencyTest extends LogInitializer {
   @Test
   public void testSimpleWaitStateConcurrency() {
     ObjectProcessDefinition processDefinition = ProcessDefinitionBuilder
-    .createProcessDefinition()
+    .createProcessDefinitionBuilder()
       .createActivity("start")
         .initial()
         .behavior(new Automatic())
@@ -101,7 +101,7 @@ public class PvmConcurrencyTest extends LogInitializer {
       .createActivity("end")
         .behavior(new WaitState())
       .endActivity()
-    .endProcessDefinition();
+    .build();
     
     ObjectProcessInstance processInstance = processDefinition.createProcessInstance(); 
     processInstance.start();

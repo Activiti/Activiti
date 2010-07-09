@@ -34,7 +34,7 @@ public class EmployeeCareerProcess extends SimpleEmbeddedState {
 
   protected ProcessDefinitionImpl getProcessDefinition() {
     return (ProcessDefinitionImpl) ProcessDefinitionBuilder
-    .createProcessDefinition()
+    .createProcessDefinitionBuilder()
       .createActivity("junior developer")
         .behavior(new JuniorDeveloperState())
         .initial()
@@ -58,7 +58,7 @@ public class EmployeeCareerProcess extends SimpleEmbeddedState {
       .createActivity("CTO")
         .behavior(new CtoState())
       .endActivity()
-    .endProcessDefinition();
+    .build();
   }
     
   static abstract class CareerState implements EventActivityBehavior {

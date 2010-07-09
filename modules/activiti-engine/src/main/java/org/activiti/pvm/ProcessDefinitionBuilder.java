@@ -41,14 +41,11 @@ public class ProcessDefinitionBuilder {
     this.unresolvedTransitions = new ArrayList<UnresolvedTransition>();
   }
 
-  /**
-   * Creates a new process definition with an unspecified id.
-   */
-  public static ProcessDefinitionBuilder createProcessDefinition() {
+  public static ProcessDefinitionBuilder createProcessDefinitionBuilder() {
     return new ProcessDefinitionBuilder(new DefaultVariableTypes());
   }
 
-  public ObjectProcessDefinition endProcessDefinition() {
+  public ObjectProcessDefinition build() {
     resolveTransitions();
     return processDefinition;
   }

@@ -73,15 +73,7 @@ public class CachingPersistenceSessionFactory implements PersistenceSessionFacto
     }
 
     if (processDefinition.isNew()) {
-      ProcessDefinitionImpl latestProcessDefinition = persistenceSession.findLatestProcessDefinitionByKey(processDefinition.getKey());
-      if (latestProcessDefinition!=null) {
-        processDefinition.setVersion(latestProcessDefinition.getVersion()+1);
-      } else {
-        processDefinition.setVersion(1);
-      }
-      processDefinition.setId(processDefinition.getKey()+":"+processDefinition.getVersion());
       persistenceSession.insertProcessDefinition(processDefinition);
-
     } else {
       String deploymentId = processDefinition.getDeployment().getId();
       ProcessDefinitionImpl persistedProcessDefinition = persistenceSession.findProcessDefinitionByDeploymentAndKey(deploymentId, processDefinition.getKey());

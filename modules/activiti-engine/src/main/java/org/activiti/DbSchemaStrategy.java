@@ -30,6 +30,10 @@ public enum DbSchemaStrategy {
    */
   CREATE_DROP,
   
+  /** drops and creates the schema when the process engine is being created.
+   */
+  DROP_CREATE,
+  
   /** checks the version of the DB schema against the library when 
    * the process engine is being created.
    */

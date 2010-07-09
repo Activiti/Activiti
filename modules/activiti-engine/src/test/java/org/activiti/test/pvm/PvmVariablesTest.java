@@ -31,12 +31,12 @@ public class PvmVariablesTest extends LogInitializer {
   @Test
   public void testVariables() {
     ObjectProcessDefinition processDefinition = ProcessDefinitionBuilder
-    .createProcessDefinition()
+    .createProcessDefinitionBuilder()
       .createActivity("a")
         .initial()
         .behavior(new WaitState())
       .endActivity()
-    .endProcessDefinition();
+    .build();
       
     
     

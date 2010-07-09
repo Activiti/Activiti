@@ -34,7 +34,7 @@ public class PvmScopesTest extends LogInitializer {
   @Test
   public void testSimpleNestedScope() {
     ObjectProcessDefinition processDefinition = ProcessDefinitionBuilder
-    .createProcessDefinition()
+    .createProcessDefinitionBuilder()
       .createActivity("start")
         .initial()
         .behavior(new Automatic())
@@ -52,7 +52,7 @@ public class PvmScopesTest extends LogInitializer {
       .createActivity("unscopedC")
         .behavior(new WaitState())
       .endActivity()
-    .endProcessDefinition();
+    .build();
     
     ObjectProcessInstance processInstance = processDefinition.createProcessInstance(); 
     processInstance.start();

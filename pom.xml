@@ -10,7 +10,6 @@
 	<packaging>pom</packaging>
 	<version>5.0.alpha4-SNAPSHOT</version>
   <properties>
-    <maven.test.failure.ignore>true</maven.test.failure.ignore>
     <spring.framework.version>3.0.3.RELEASE</spring.framework.version>
   </properties>
 
@@ -171,6 +170,12 @@
 	</build>
 
 	<profiles>
+		<profile>
+			<id>nofail</id>
+  <properties>
+    <maven.test.failure.ignore>true</maven.test.failure.ignore>
+  </properties>
+        </profile>
 		<profile>
 			<id>check</id>
 			<modules>
