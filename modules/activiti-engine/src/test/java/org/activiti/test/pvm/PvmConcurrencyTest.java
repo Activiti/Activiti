@@ -286,4 +286,83 @@ public class PvmConcurrencyTest {
     
     assertNotNull(processInstance.findExecution("end"));
   }
+
+  @Test
+  public void testSimpleAutmaticConcurrencyWithNestedScope() {
+    ObjectProcessDefinition processDefinition = ProcessDefinitionBuilder
+    .createProcessDefinitionBuilder()
+      .createActivity("start")
+        .initial()
+        .behavior(new Automatic())
+        .transition("fork")
+      .endActivity()
+      .createActivity("fork")
+        .behavior(new ParallelGateway())
+        .transition("c1")
+        .transition("c2")
+      .endActivity()
+      .createActivity("c1")
+        .behavior(new Automatic())
+        .scope()
+        .transition("join")
+      .endActivity()
+      .createActivity("c2")
+        .behavior(new Automatic())
+        .transition("join")
+      .endActivity()
+      .createActivity("join")
+        .behavior(new ParallelGateway())
+        .transition("end")
+      .endActivity()
+      .createActivity("end")
+        .behavior(new WaitState())
+      .endActivity()
+    .build();
+    
+    ObjectProcessInstance processInstance = processDefinition.createProcessInstance(); 
+    processInstance.start();
+    
+    assertNotNull(processInstance.findExecution("end"));
+  }
+
+  @Test
+  public void testSimpleAutmaticConcurrencyInsideScope() {
+    ObjectProcessDefinition processDefinition = ProcessDefinitionBuilder
+    .createProcessDefinitionBuilder()
+      .createActivity("start")
+        .initial()
+        .behavior(new Automatic())
+        .transition("fork")
+      .endActivity()
+      .createActivity("subprocess")
+        .scope()
+        .createActivity("fork")
+          .behavior(new ParallelGateway())
+          .transition("c1")
+          .transition("c2")
+        .endActivity()
+        .createActivity("c1")
+          .behavior(new Automatic())
+          .transition("join")
+        .endActivity()
+        .createActivity("c2")
+          .behavior(new Automatic())
+          .transition("join")
+        .endActivity()
+        .createActivity("join")
+          .behavior(new ParallelGateway())
+          .transition("end")
+        .endActivity()
+      .endActivity()
+      .createActivity("end")
+        .behavior(new WaitState())
+      .endActivity()
+    .build();
+    
+    ObjectProcessInstance processInstance = processDefinition.createProcessInstance(); 
+    processInstance.start();
+    
+    assertNotNull(processInstance.findExecution("end"));
+  }
+
 }

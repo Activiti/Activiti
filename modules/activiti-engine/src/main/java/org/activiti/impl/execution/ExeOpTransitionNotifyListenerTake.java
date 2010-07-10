@@ -45,7 +45,7 @@ public class ExeOpTransitionNotifyListenerTake implements ExeOp {
     } else {
       execution.setEventListenerIndex(0);
       ActivityImpl activity = execution.getActivity();
-      ActivityImpl nextScope = findNextScope(activity, transition.getDestination());
+      ActivityImpl nextScope = findNextScope(activity.getParent(), transition.getDestination());
       execution.setActivity(nextScope);
       execution.performOperation(TRANSITION_CREATE_SCOPE);
     }

@@ -28,11 +28,11 @@ public class ExeOpTransitionDestroyScope implements ExeOp {
     ActivityImpl activity = execution.getActivity();
     if (activity.isScope()) {
       ExecutionImpl parentScopeInstance = null;
-//      if (execution.isConcurrencyScope()) {
-//        parentScopeInstance = execution.getParent();
-//      } else {
-//        parentScopeInstance = execution.getParent().getParent();
-//      }
+      if (execution.isConcurrent()) {
+        parentScopeInstance = execution.getParent().getParent();
+      } else {
+        parentScopeInstance = execution.getParent();
+      }
       parentScopeInstance = execution.getParent();
       
       if (parentScopeInstance.isActive()) {
