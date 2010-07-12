@@ -35,6 +35,33 @@ public class ParallelGatewayTest {
   public LogInitializer logSetup = new LogInitializer();
   @Rule
   public ProcessDeployer deployer = new ProcessDeployer();
+  
+  @Test
+  @ProcessDeclared
+  public void testForkJoin() {
+
+    ProcessInstance pi = deployer.getProcessService().startProcessInstanceByKey("forkJoin");
+    TaskQuery query = deployer.getTaskService()
+                        .createTaskQuery()
+                        .processInstance(pi.getId())
+                        .orderAsc(TaskQuery.PROPERTY_NAME);
+
+    List<Task> tasks = query.list();
+    assertEquals(2, tasks.size());
+    // the tasks are ordered by name (see above)
+    Task task1 = tasks.get(0);
+    assertEquals("Receive Payment", task1.getName());
+    Task task2 = tasks.get(1);
+    assertEquals("Ship Order", task2.getName());
+    
+    // Completing both tasks will join the concurrent executions
+    deployer.getTaskService().complete(tasks.get(0).getId());
+    deployer.getTaskService().complete(tasks.get(1).getId());
+    
+    tasks = query.list();
+    assertEquals(1, tasks.size());
+    assertEquals("Archive Order", tasks.get(0).getName());
+  }
 
   @Test
   @ProcessDeclared

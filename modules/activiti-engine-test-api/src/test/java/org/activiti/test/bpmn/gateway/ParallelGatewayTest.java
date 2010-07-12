@@ -41,7 +41,23 @@ public class ParallelGatewayTest {
   @ProcessDeclared
   public void testSplitMergeNoWaitstates() {
     ProcessInstance processInstance = 
-      deployer.getProcessService().startProcessInstanceByKey("splitMergeNoWaitstates");
+      deployer.getProcessService().startProcessInstanceByKey("forkJoinNoWaitStates");
+    assertTrue(processInstance.isEnded());
+  }
+  
+  @Test
+  @ProcessDeclared
+  public void testUnstructuredConcurrencyTwoForks() {
+    ProcessInstance processInstance = 
+      deployer.getProcessService().startProcessInstanceByKey("unstructuredConcurrencyTwoForks");
+    assertTrue(processInstance.isEnded());
+  }
+  
+  @Test
+  @ProcessDeclared
+  public void testUnstructuredConcurrencyTwoJoins() {
+    ProcessInstance processInstance = 
+      deployer.getProcessService().startProcessInstanceByKey("unstructuredConcurrencyTwoJoins");
     assertTrue(processInstance.isEnded());
   }
 

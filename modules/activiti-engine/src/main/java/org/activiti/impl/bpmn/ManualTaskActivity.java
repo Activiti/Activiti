@@ -10,30 +10,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.activiti;
 
-import java.util.List;
+package org.activiti.impl.bpmn;
 
-
-
-/** represents one execution of a  {@link ProcessDefinition}.
+/**
+ * Implementation of the BPMN 2.0 'manual task': a task that is external to the
+ * BPMS and to which there is no reference to IT systems whatsoever.
  * 
- * @author Tom Baeyens
+ * Given this definition, this activity will behave simply as a pass-though step
+ * in the process.
+ * 
  * @author Joram Barrez
  */
-public interface ProcessInstance extends Execution {
-  
-  /**
-   * the id of the process definition of the process instance.
-   */
-  String getProcessDefinitionId();
-  
-  /**
-   * the names of the activities that currently are active.
-   */
-  List<String> getActivityNames();
-  
-  /** indicates if the process instance is ended. */
-  boolean isEnded();
-  
+public class ManualTaskActivity extends TaskActivity {
+
 }

@@ -7,18 +7,18 @@
   expressionLanguage="http://www.w3.org/1999/XPath" 
   targetNamespace="http://www.activiti.org/bpmn2.0">
   
-  <process id="splitMergeNoWaitstates">
+  <process id="forkJoinNoWaitStates">
   
     <startEvent id="theStart" />
-    <sequenceFlow id="flow1" sourceRef="theStart" targetRef="split" />
+    <sequenceFlow id="flow1" sourceRef="theStart" targetRef="fork" />
     
-    <parallelGateway id="split" />
-    <sequenceFlow id="flow2" sourceRef="split" targetRef="merge" />
-    <sequenceFlow id="flow3" sourceRef="split" targetRef="merge" />
-    <sequenceFlow id="flow4" sourceRef="split" targetRef="merge" />
+    <parallelGateway id="fork" />
+    <sequenceFlow id="flow2" sourceRef="fork" targetRef="join" />
+    <sequenceFlow id="flow3" sourceRef="fork" targetRef="join" />
+    <sequenceFlow id="flow4" sourceRef="fork" targetRef="join" />
     
-    <parallelGateway id="merge" />
-    <sequenceFlow id="flow5" sourceRef="merge" targetRef="theEnd" />
+    <parallelGateway id="join" />
+    <sequenceFlow id="flow5" sourceRef="join" targetRef="theEnd" />
    
     <endEvent id="theEnd" />
     

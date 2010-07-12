@@ -419,8 +419,8 @@ Deployment deployment = processService.newDeployment()
       
       <para>
         It's easy to see that this business process is too simple to be useable in reality.
-        However, as we are advancing in implementing process constructs, we will be able
-        to enhance the business process by 
+        However, as you are going through the BPMN 2.0 constructs available in Activiti, 
+        you will be able to enhance the business process by 
         
         <itemizedlist>
           <listitem>
@@ -939,6 +939,140 @@ ProcessInstance processInstance = processService.startProcessInstanceByXXX();</p
       </section>
     
     </section>
+    
+    <section id="bpmnParallelGateway">
+      
+      <title>Parallel Gateway</title>
+      
+      <section id="bpmnParallelGatewayDescription">
+        
+        <title>Description</title>
+        
+        <para>
+          Gateways can also be used to model concurrency in a process. The most straightforward
+          gateway to introduce concurrency in a process model, is the 
+          <emphasis role="bold">Parallel Gateway</emphasis>, which allows to <emphasis>fork</emphasis> 
+          into multiple paths of execution or <emphasis>join</emphasis> multiple incoming paths
+          of execution.
+        </para>
+        
+        <para>
+          The funtionality of the parallel gateway is based on the incoming and outgoing sequence flow:
+          <itemizedlist>
+            <listitem>
+              <para>
+                <emphasis role="bold">join:</emphasis>   
+                all concurrent executions arriving at the parallel gateway wait in the gateway
+                until an execution has arrived for each of the incoming sequence flow. Then the 
+                process continues past the joining gateway.
+              </para>
+            </listitem>
+            <listitem>
+              <para>
+                <emphasis role="bold">fork:</emphasis>
+                all outgoing sequence flow are followed in parallel, creating one concurrent
+                execution for each sequence flow.
+              </para>
+            </listitem>
+          </itemizedlist>
+          Note that a parallel gateway can have <emphasis role="bold">both fork and join behavior</emphasis>,
+          if there are multiple incoming and outgoing sequence flow for the same parallel gateway.
+          In that case, the gateway will first join all incoming sequence flow, before splitting
+          into multiple concurrent paths of executions.
+        </para>
+        
+        <para>
+          <emphasis role="bold">An important difference with other gateway types is that
+          the parallel gateway does not evaluate conditions. If conditions are defined
+          on the sequence flow connected with the parallel gateway, they are simply neglected.</emphasis>  
+        </para>
+      
+      </section>
+      
+      <section id="bpmnParallelGatewayGraphicalNotation">
+        
+        <title>Graphical Notation</title>
+        
+        <para>
+          A parallel gateway is visualized as a gateway (diamond shape) with the 'plus' symbol inside,
+          referring to the 'AND' semantics.
+          <mediaobject><imageobject><imagedata align="center" fileref="images/bpmn.parallel.gateway.png"/></imageobject></mediaobject>
+        </para>
+      
+      </section>
+      
+      <section id="bpmnParallelGatewayyXML">
+        
+        <title>XML representation</title>
+        
+        <para>
+          Defining a parallel gateway needs one line of XML:
+          <programlisting>&lt;parallelGateway id=&quot;myParallelGateway&quot; /></programlisting>
+          The actual behavior (fork, join or both), is defined by 
+          the sequence flow connected to the parallel gateway.
+        </para>
+      
+        <para>
+          For example, the model above comes down to the following XML:
+<programlisting>
+    &lt;startEvent id=&quot;theStart&quot; /&gt;
+    &lt;sequenceFlow id=&quot;flow1&quot; sourceRef=&quot;theStart&quot; targetRef=&quot;fork&quot; /&gt;
+    
+    <emphasis role="bold">&lt;parallelGateway id=&quot;fork&quot; /&gt;</emphasis>
+    &lt;sequenceFlow sourceRef=&quot;fork&quot; targetRef=&quot;receivePayment&quot; /&gt;
+    &lt;sequenceFlow sourceRef=&quot;fork&quot; targetRef=&quot;shipOrder&quot; /&gt;
+    
+    &lt;userTask id=&quot;receivePayment&quot; name=&quot;Receive Payment&quot; /&gt;  
+    &lt;sequenceFlow sourceRef=&quot;receivePayment&quot; targetRef=&quot;join&quot; /&gt;
+    
+    &lt;userTask id=&quot;shipOrder&quot; name=&quot;Ship Order&quot; /&gt; 
+    &lt;sequenceFlow sourceRef=&quot;shipOrder&quot; targetRef=&quot;join&quot; /&gt;
+    
+    <emphasis role="bold">&lt;parallelGateway id=&quot;join&quot; /&gt;</emphasis>
+    &lt;sequenceFlow sourceRef=&quot;join&quot; targetRef=&quot;archiveOrder&quot; /&gt;
+    
+    &lt;userTask id=&quot;archiveOrder&quot; name=&quot;Archive Order&quot; /&gt; 
+    &lt;sequenceFlow sourceRef=&quot;archiveOrder&quot; targetRef=&quot;theEnd&quot; /&gt;
+    
+    &lt;endEvent id=&quot;theEnd&quot; /&gt;
+</programlisting>
+        </para>
+        
+        <para>
+          In the above example, after the process is started, two tasks will be created:
+          <programlisting>
+  ProcessInstance pi = processService.startProcessInstanceByKey(&quot;forkJoin&quot;);
+  TaskQuery query = deployer.getTaskService()
+                           .createTaskQuery()
+                           .processInstance(pi.getId())
+                           .orderAsc(TaskQuery.PROPERTY_NAME);
+
+  List&lt;Task&gt; tasks = query.list();
+  assertEquals(2, tasks.size());
+  
+  Task task1 = tasks.get(0);
+  assertEquals(&quot;Receive Payment&quot;, task1.getName());
+  Task task2 = tasks.get(1);
+  assertEquals(&quot;Ship Order&quot;, task2.getName());
+          </programlisting>
+          When these two tasks are completed, the second parallel gateway will join the two
+          executions and since there is only one outgoing sequence flow, no concurrent paths
+          of execution will be created, and only the <emphasis>Archive Order</emphasis>
+          task will be active.
+        </para>
+        
+        <para>
+          Note that a parallel gateway does not need to be 'balanced' (ie. a matching number
+          of incoming/outgoing sequence flow for corresponding parallel gateways). 
+          A parallel gateway will simply wait for all incoming sequence flow and create 
+          a concurrent path of execution for each outgoing sequence flow, not influenced by
+          other constructs in the process model. So, the following process is legal in BPMN 2.0:
+          <mediaobject><imageobject><imagedata align="center" fileref="images/bpmn.unbalanced.parallel.gateway.png"/></imageobject></mediaobject>
+        </para>
+      
+      </section>
+   
+    </section> 
 
 		<section id="bpmnUserTask">
 
@@ -1148,7 +1282,7 @@ List&lt;Task&gt; tasks = taskService.createTaskQuery().assignee(&quot;kermit&quo
 
 			</section> <!-- task assignment -->
 
-		</section> <!-- userTask -->
+		</section>
 		
 		<section id="bpmnScriptTask">
 		
@@ -1249,7 +1383,49 @@ List&lt;Task&gt; tasks = taskService.createTaskQuery().assignee(&quot;kermit&quo
 		  
 		  </section>
 		
-		</section> <!-- scriptTask -->
+		</section> 
+		
+		<section id="bpmnManualTask">
+		
+		  <title>Manual Task</title>
+		  
+		  <section id="bpmnManualTaskDescription">
+		  
+		    <title>Description</title>
+		    
+		    <para>
+		      A <emphasis>Manual Task</emphasis> defines a task that is external to the BPM engine.
+		      It is used to model work that is done by somebody, which the engine
+		      does not need to know of, nor is there a system of UI interface.
+		      For the engine, a manual task is handled as a <emphasis role="bold">pass-though activity</emphasis>,
+		      ,automatically continuing the process from the moment process execution arrives into it. 
+		    </para>
+		  
+		  </section>
+		  
+		  <section id="bpmnManualTaskGraphicalNotation">
+		  
+		    <title>Graphical Notation</title>
+		    
+		    <para>
+		      A manual task is visualized as a rounded rectangle, with a little 'hand' icon 
+		      in the upper left corner
+		      <mediaobject><imageobject><imagedata align="center" fileref="images/bpmn.manual.task.png"/></imageobject></mediaobject>
+		    </para>
+		  
+		  </section>
+		  
+		  <section id="bpmnManualTaskXml">
+		  
+		    <title>XML representation</title>
+		    
+		    <para>
+		      <programlisting>&lt;manualTask id=&quot;myManualTask&quot; name=&quot;Call client for more information&quot; /></programlisting>
+		    </para>
+		  
+		  </section>
+		
+		</section>
 		
 		<section id="bpmnBoundaryEvent">
 		  
