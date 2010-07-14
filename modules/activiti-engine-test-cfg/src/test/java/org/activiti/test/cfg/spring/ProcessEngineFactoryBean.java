@@ -16,6 +16,7 @@ package org.activiti.test.cfg.spring;
 import java.io.IOException;
 import java.util.zip.ZipInputStream;
 
+import javax.el.ELResolver;
 import javax.sql.DataSource;
 
 import org.activiti.DbSchemaStrategy;
@@ -176,6 +177,10 @@ public class ProcessEngineFactoryBean implements FactoryBean<ProcessEngine>, Dis
 
   public void setVariableTypes(VariableTypes variableTypes) {
     factory.setVariableTypes(variableTypes);
+  }
+
+  public void setElResolver(ELResolver elResolver) {
+    factory.setElResolver(elResolver);
   }
 
 }

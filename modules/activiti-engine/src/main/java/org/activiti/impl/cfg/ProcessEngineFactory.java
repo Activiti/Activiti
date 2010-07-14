@@ -12,6 +12,7 @@
  */
 package org.activiti.impl.cfg;
 
+import javax.el.ELResolver;
 import javax.sql.DataSource;
 
 import org.activiti.DbSchemaStrategy;
@@ -77,6 +78,8 @@ public class ProcessEngineFactory {
 
   private final ProcessEngineConfiguration configuration = new ProcessEngineConfiguration();
 
+  private ELResolver elResolver;
+
   public ProcessEngineFactory() {
     this.commandContextFactory = createDefaultCommandContextFactory();
   }
@@ -92,6 +95,9 @@ public class ProcessEngineFactory {
       if (!initialized) {
 
         ExpressionManager expressionManager = createDefaultExpressionManager();
+        if (elResolver != null) {
+          expressionManager.setElResolver(elResolver);
+        }
         ScriptingEngines scriptingEngines = createDefaultScriptingEngines();
         BusinessCalendarManager businessCalendarManager = createDefaultBusinessCalendarManager();
 
@@ -247,6 +253,10 @@ public class ProcessEngineFactory {
 
   public void setIdentityService(IdentityService identityService) {
     this.identityService = identityService;
+  }
+
+  public void setElResolver(ELResolver elResolver) {
+    this.elResolver = elResolver;
   }
 
   public void setVariableTypes(VariableTypes variableTypes) {

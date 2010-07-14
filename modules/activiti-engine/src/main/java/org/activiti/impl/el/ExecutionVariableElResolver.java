@@ -23,7 +23,7 @@ import org.activiti.impl.execution.ExecutionImpl;
 
 
 /**
- * Impelementation of an {@link ELResolver} that resolves expressions 
+ * Implementation of an {@link ELResolver} that resolves expressions 
  * with the process variables of a given {@link ExecutionImpl} as context.
  * 
  * @author Joram Barrez

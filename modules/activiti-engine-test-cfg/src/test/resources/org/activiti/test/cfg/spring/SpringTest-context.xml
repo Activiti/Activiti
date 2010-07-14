@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<beans xmlns="http://www.springframework.org/schema/beans"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
 	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
 		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-2.5.xsd">
 
-	<bean id="dataSource"
-		class="org.springframework.jdbc.datasource.TransactionAwareDataSourceProxy">
+	<bean id="dataSource" class="org.springframework.jdbc.datasource.TransactionAwareDataSourceProxy">
 		<property name="targetDataSource">
 			<bean class="org.springframework.jdbc.datasource.SimpleDriverDataSource">
 				<property name="driverClass" value="${jdbc.driver}" />
@@ -22,15 +21,23 @@
 		<property name="dataSource" ref="dataSource" />
 		<property name="transactionManager" ref="transactionManager" />
 		<property name="dbSchemaStrategy" value="${db.schema.strategy}" />
-		<property name="processResources" value="classpath*:/org/activiti/test/cfg/spring/staticProcess.*.xml"/>
+		<property name="elResolver" ref="elResolver" />
+		<property name="processResources" value="classpath*:/org/activiti/test/cfg/spring/static*.xml" />
 	</bean>
 
 	<bean id="userBean" class="org.activiti.test.cfg.spring.UserBean">
 		<property name="processEngine" ref="processEngine" />
 	</bean>
 
-	<bean id="transactionManager"
-		class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+	<bean id="elResolver" class="org.activiti.impl.el.StaticElResolver">
+		<property name="map">
+			<map>
+				<entry key="user" value="kermit" />
+			</map>
+		</property>
+	</bean>
+
+	<bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
 		<property name="dataSource" ref="dataSource" />
 	</bean>
 

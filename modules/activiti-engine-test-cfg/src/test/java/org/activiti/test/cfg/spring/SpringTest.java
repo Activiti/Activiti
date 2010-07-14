@@ -14,10 +14,17 @@ package org.activiti.test.cfg.spring;
 
 import static org.junit.Assert.assertEquals;
 
+import java.util.List;
+
 import org.activiti.ActivitiException;
 import org.activiti.Deployment;
 import org.activiti.ProcessEngine;
+import org.activiti.ProcessInstance;
 import org.activiti.ProcessService;
+import org.activiti.Task;
+import org.activiti.impl.definition.ActivityImpl;
+import org.activiti.impl.execution.ExecutionImpl;
+import org.activiti.impl.task.TaskDefinition;
 import org.activiti.impl.util.LogUtil;
 import org.junit.Rule;
 import org.junit.Test;
@@ -29,6 +36,7 @@ import org.springframework.core.io.FileSystemResource;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.TransactionCallback;
@@ -57,6 +65,21 @@ public class SpringTest {
 
   static {
     LogUtil.readJavaUtilLoggingConfigFromClasspath();
+  }
+
+  @Test
+  public void testProcessExecutionWithTaskAssignedFromExpression() {
+
+    int before = processEngine.getTaskService().findAssignedTasks("kermit").size();
+    ProcessInstance execution = processEngine.getProcessService().startProcessInstanceByKey("taskAssigneeExpressionProcess");
+    assertEquals("[theTask]", execution.getActivityNames().toString());
+    assertEquals("${user}", ((TaskDefinition) ReflectionTestUtils.getField(((ActivityImpl) ((ExecutionImpl) execution).getActivity()).getActivityBehavior(),
+            "taskDefinition")).getAssignee());
+    List<Task> tasks = processEngine.getTaskService().findAssignedTasks("kermit");
+    assertEquals(before + 1, tasks.size());
+
+    processEngine.getProcessService().deleteProcessInstance(execution.getId());
+    
   }
 
   @Test
@@ -114,12 +137,14 @@ public class SpringTest {
 
     ProcessService processService = processEngine.getProcessService();
 
-    // (N.B. Spring 3 resolves Resource[] from a pattern to FileSystemResource instances)
+    // (N.B. Spring 3 resolves Resource[] from a pattern to FileSystemResource
+    // instances)
     FileSystemResource resource = new FileSystemResource(new ClassPathResource("staticProcess.bpmn20.xml", getClass()).getFile());
     String path = resource.getFile().getAbsolutePath();
 
     Deployment deployment = processService.createDeployment().name(path).addInputStream(path, resource.getInputStream()).deploy();
-    // Should be identical to resource configured in factory bean so no new deployment
+    // Should be identical to resource configured in factory bean so no new
+    // deployment
     assertEquals(before, processEngine.getProcessService().findDeployments().size());
 
     if (deployment != null) {

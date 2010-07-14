@@ -470,7 +470,7 @@ public class BpmnParse extends Parse {
    */
   public void parseUserTask(Element userTaskElement, ScopeElementImpl scopeElement) {
     ActivityImpl activity = parseAndCreateActivityOnScopeElement(userTaskElement, scopeElement);
-    UserTaskActivity userTaskActivity = new UserTaskActivity(scriptingEngines, parseTaskDefinition(userTaskElement));
+    UserTaskActivity userTaskActivity = new UserTaskActivity(expressionManager, parseTaskDefinition(userTaskElement));
 
     String form = userTaskElement.attributeNS(BpmnParser.BPMN_EXTENSIONS_NS, "form");
     String formLanguage = userTaskElement.attributeNS(BpmnParser.BPMN_EXTENSIONS_NS, "form-language", ScriptingEngines.DEFAULT_SCRIPTING_LANGUAGE);

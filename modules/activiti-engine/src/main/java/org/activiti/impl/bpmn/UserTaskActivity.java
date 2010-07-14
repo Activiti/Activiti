@@ -12,8 +12,8 @@
  */
 package org.activiti.impl.bpmn;
 
+import org.activiti.impl.el.ExpressionManager;
 import org.activiti.impl.execution.ExecutionImpl;
-import org.activiti.impl.scripting.ScriptingEngines;
 import org.activiti.impl.task.TaskDefinition;
 import org.activiti.impl.task.TaskImpl;
 import org.activiti.pvm.ActivityExecution;
@@ -26,10 +26,10 @@ import org.activiti.pvm.ActivityExecution;
 public class UserTaskActivity extends TaskActivity {
 
   private final TaskDefinition taskDefinition;
-  private final ScriptingEngines scriptingEngines;
+  private final ExpressionManager expressionManager;
 
-  public UserTaskActivity(ScriptingEngines scriptingEngines, TaskDefinition taskDefinition) {
-    this.scriptingEngines = scriptingEngines;
+  public UserTaskActivity(ExpressionManager expressionManager, TaskDefinition taskDefinition) {
+    this.expressionManager = expressionManager;
     this.taskDefinition = taskDefinition;
   }
 
@@ -73,7 +73,8 @@ public class UserTaskActivity extends TaskActivity {
   }
 
   protected String evaluateExpression(String expr, ActivityExecution execution) {
-    return (String) scriptingEngines.evaluate(expr, ScriptingEngines.DEFAULT_SCRIPTING_LANGUAGE, (ExecutionImpl) execution);
+    // FIXME: downcast
+    return (String) expressionManager.createValueExpression(expr).getValue((ExecutionImpl) execution);
   }
 
 }
