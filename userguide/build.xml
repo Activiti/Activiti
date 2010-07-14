@@ -33,7 +33,6 @@
     </fileset>
   </path>
 
-
 	<target name="clean" description="Cleans up generated files.">
     <delete dir="target/html" />
     <delete dir="target/pdf" />

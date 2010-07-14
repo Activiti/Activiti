@@ -27,7 +27,7 @@ import org.activiti.Task;
 import org.activiti.impl.db.execution.DbExecutionImpl;
 import org.activiti.impl.execution.ExecutionImpl;
 import org.activiti.impl.execution.VariableMap;
-import org.activiti.impl.interceptor.CommandContext;
+import org.activiti.impl.interceptor.CommandContextHolder;
 import org.activiti.impl.persistence.PersistentObject;
 import org.activiti.impl.time.Clock;
 import org.activiti.pvm.ActivityExecution;
@@ -84,8 +84,8 @@ public class TaskImpl implements Task, Serializable, PersistentObject {
   /** creates and initializes a new persistent task. */
   public static TaskImpl createAndInsert() {
     TaskImpl task = create();
-    CommandContext
-        .getCurrent()
+    CommandContextHolder
+        .getCurrentCommandContext()
         .getPersistenceSession()
         .insert(task);
     return task;
@@ -111,8 +111,8 @@ public class TaskImpl implements Task, Serializable, PersistentObject {
       taskInvolvements.delete();
     }
     
-    CommandContext
-        .getCurrent()
+    CommandContextHolder
+        .getCurrentCommandContext()
         .getPersistenceSession()
         .delete(this);
   }
@@ -199,8 +199,8 @@ public class TaskImpl implements Task, Serializable, PersistentObject {
   
   public ExecutionImpl getExecution() {
     if ( (execution==null) && (executionId!=null) ) {
-      this.execution = CommandContext
-        .getCurrent()
+      this.execution = CommandContextHolder
+        .getCurrentCommandContext()
         .getPersistenceSession()
         .findExecution(executionId);
     }
@@ -273,8 +273,8 @@ public class TaskImpl implements Task, Serializable, PersistentObject {
   
   public List<TaskInvolvement> getTaskInvolvements() {
     if (!isTaskInvolvementsInitialized) {
-      taskInvolvements = CommandContext
-          .getCurrent()
+      taskInvolvements = CommandContextHolder
+          .getCurrentCommandContext()
           .getPersistenceSession()
           .findTaskInvolvementsByTask(id);
       isTaskInvolvementsInitialized = true;

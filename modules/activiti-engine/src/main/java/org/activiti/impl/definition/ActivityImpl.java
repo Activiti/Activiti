@@ -85,7 +85,7 @@ public class ActivityImpl extends ScopeElementImpl implements Activity {
   }
 
   public String toString() {
-    return "activity(" + getId() + ")";
+    return "activity[" + getId() + "]";
   }
 
   // public getters and setters

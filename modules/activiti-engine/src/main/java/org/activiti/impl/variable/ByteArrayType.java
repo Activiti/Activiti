@@ -13,8 +13,7 @@
 package org.activiti.impl.variable;
 
 import org.activiti.impl.bytes.ByteArrayImpl;
-import org.activiti.impl.interceptor.CommandContext;
-
+import org.activiti.impl.interceptor.CommandContextHolder;
 
 /**
  * @author Tom Baeyens
@@ -39,8 +38,8 @@ public class ByteArrayType implements Type {
     byte[] bytes = (byte[]) value;
     if (byteArray==null) {
       byteArray = new ByteArrayImpl(this, bytes);
-      CommandContext
-        .getCurrent()
+      CommandContextHolder
+        .getCurrentCommandContext()
         .getPersistenceSession()
         .insert(byteArray);
       variableInstance.setByteArrayValue(byteArray);

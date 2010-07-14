@@ -33,7 +33,6 @@ public class ExeOpTransitionDestroyScope implements ExeOp {
       } else {
         parentScopeInstance = execution.getParent();
       }
-      parentScopeInstance = execution.getParent();
       
       if (parentScopeInstance.isActive()) {
         throw new UnsupportedOperationException("not implemented yet");

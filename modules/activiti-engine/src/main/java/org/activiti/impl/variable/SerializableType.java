@@ -19,8 +19,7 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 
 import org.activiti.ActivitiException;
-import org.activiti.impl.interceptor.CommandContext;
-
+import org.activiti.impl.interceptor.CommandContextHolder;
 
 /**
  * @author Tom Baeyens
@@ -46,8 +45,8 @@ public class SerializableType extends ByteArrayType {
       deserializedObject = ois.readObject();
       variableInstance.setCachedValue(deserializedObject);
       
-      CommandContext
-        .getCurrent()
+      CommandContextHolder
+        .getCurrentCommandContext()
         .getPersistenceSession()
         .addDeserializedObject(deserializedObject, bytes, variableInstance);
       

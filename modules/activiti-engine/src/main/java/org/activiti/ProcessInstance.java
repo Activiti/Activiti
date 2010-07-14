@@ -33,7 +33,4 @@ public interface ProcessInstance extends Execution {
    */
   List<String> getActivityNames();
   
-  /** indicates if the process instance is ended. */
-  boolean isEnded();
-  
 }

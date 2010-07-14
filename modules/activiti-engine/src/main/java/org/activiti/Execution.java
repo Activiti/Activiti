@@ -28,4 +28,10 @@ public interface Execution {
    */
   String getId();
   
+  /**
+   * indicates if the process instance is ended.
+   * @return
+   */
+  boolean isEnded();
+
 }

@@ -31,6 +31,9 @@
     <orderEntry type="library" exported="" name="Maven: org.springframework:spring-expression:3.0.3.RELEASE" level="project" />
     <orderEntry type="library" exported="" name="Maven: org.springframework:spring-orm:3.0.3.RELEASE" level="project" />
     <orderEntry type="library" exported="" name="Maven: org.mybatis:mybatis:3.0.1" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: org.mockito:mockito-core:1.8.2" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: org.hamcrest:hamcrest-core:1.1" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: org.objenesis:objenesis:1.0" level="project" />
   </component>
 </module>
 

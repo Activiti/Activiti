@@ -29,7 +29,11 @@ import org.activiti.pvm.ActivityExecution;
  * multiple paths of executions (AND-split/fork behavior), one for every
  * outgoing sequence flow.
  * 
+<<<<<<< HEAD
  * The Parallel Gateway can also be used for merging or joining paths of
+=======
+ * The Parallel Gateway can also be used for merging or joinging paths of
+>>>>>>> e3d825e... Introduce CommandContextFactory Interface
  * execution (AND-join). In this case, on every incoming sequence flow an
  * execution needs to arrive, before leaving the Parallel Gateway (and
  * potentially then doing the fork behavior in case of multiple outgoing

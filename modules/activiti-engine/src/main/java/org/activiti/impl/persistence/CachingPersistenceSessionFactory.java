@@ -22,6 +22,7 @@ import java.util.Map;
 import org.activiti.ActivitiException;
 import org.activiti.impl.definition.ProcessDefinitionImpl;
 import org.activiti.impl.interceptor.CommandContext;
+import org.activiti.impl.interceptor.CommandContextHolder;
 import org.activiti.impl.repository.DeployerManager;
 import org.activiti.impl.repository.DeploymentImpl;
 
@@ -97,7 +98,7 @@ public class CachingPersistenceSessionFactory implements PersistenceSessionFacto
       DeploymentImpl deployment = persistenceSession.findDeploymentByProcessDefinitionId(processDefinitionId);
       if (deployment != null) {
         // FIXME: remove command context if possible
-        deployerManager.deploy(deployment, CommandContext.getCurrent());
+        deployerManager.deploy(deployment, CommandContextHolder.getCurrentCommandContext());
       }
     }
 

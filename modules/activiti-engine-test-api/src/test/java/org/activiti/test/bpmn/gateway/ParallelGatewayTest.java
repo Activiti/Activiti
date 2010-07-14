@@ -13,14 +13,14 @@
 
 package org.activiti.test.bpmn.gateway;
 
+import static org.junit.Assert.assertTrue;
+
 import org.activiti.ProcessInstance;
 import org.activiti.test.LogInitializer;
 import org.activiti.test.ProcessDeclared;
 import org.activiti.test.ProcessDeployer;
 import org.junit.Rule;
 import org.junit.Test;
-
-import static org.junit.Assert.assertTrue;
 
 /**
  * @author Joram Barrez

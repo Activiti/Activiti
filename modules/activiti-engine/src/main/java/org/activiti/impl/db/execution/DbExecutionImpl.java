@@ -23,7 +23,7 @@ import org.activiti.impl.definition.ActivityImpl;
 import org.activiti.impl.definition.ProcessDefinitionDbImpl;
 import org.activiti.impl.definition.ProcessDefinitionImpl;
 import org.activiti.impl.execution.ExecutionImpl;
-import org.activiti.impl.interceptor.CommandContext;
+import org.activiti.impl.interceptor.CommandContextHolder;
 import org.activiti.impl.persistence.PersistenceSession;
 import org.activiti.impl.persistence.PersistentObject;
 import org.activiti.impl.task.TaskImpl;
@@ -88,8 +88,8 @@ public class DbExecutionImpl extends ExecutionImpl implements PersistentObject {
     this.isExecutionsInitialized = true;
     // Do not initialize variable map (let it happen lazily)
 
-    CommandContext
-      .getCurrent()
+    CommandContextHolder
+      .getCurrentCommandContext()
       .getPersistenceSession()
       .insert(this);
   }
@@ -102,8 +102,8 @@ public class DbExecutionImpl extends ExecutionImpl implements PersistentObject {
     newExecution.isExecutionsInitialized = true;
     // Do not initialize variable map (let it happen lazily)
 
-    CommandContext
-      .getCurrent()
+    CommandContextHolder
+      .getCurrentCommandContext()
       .getPersistenceSession()
       .insert(newExecution);
     
@@ -115,7 +115,7 @@ public class DbExecutionImpl extends ExecutionImpl implements PersistentObject {
   @Override
   public void ensureProcessDefinitionInitialized() {
     if ((processDefinition == null) && (processDefinitionId != null)) {
-      setProcessDefinition(CommandContext.getCurrent().getPersistenceSession().findProcessDefinitionById(processDefinitionId));
+      setProcessDefinition(CommandContextHolder.getCurrentCommandContext().getPersistenceSession().findProcessDefinitionById(processDefinitionId));
     }
   }
 
@@ -130,7 +130,7 @@ public class DbExecutionImpl extends ExecutionImpl implements PersistentObject {
   @Override
   public void ensureProcessInstanceInitialized() {
     if ((processInstance == null) && (processInstanceId != null)) {
-      processInstance = CommandContext.getCurrent().getPersistenceSession().findExecution(processInstanceId);
+      processInstance = CommandContextHolder.getCurrentCommandContext().getPersistenceSession().findExecution(processInstanceId);
     }
   }
 
@@ -173,7 +173,7 @@ public class DbExecutionImpl extends ExecutionImpl implements PersistentObject {
     // If the execution is new, then the child execution objects are already
     // fetched
     if (!isExecutionsInitialized) {
-      this.executions = CommandContext.getCurrent().getPersistenceSession().findChildExecutions(getId());
+      this.executions = CommandContextHolder.getCurrentCommandContext().getPersistenceSession().findChildExecutions(getId());
       this.isExecutionsInitialized = true;
     }
   }
@@ -183,7 +183,7 @@ public class DbExecutionImpl extends ExecutionImpl implements PersistentObject {
   @Override
   public void ensureParentInitialized() {
     if (parent == null && parentId != null) {
-      parent = CommandContext.getCurrent().getPersistenceSession().findExecution(parentId);
+      parent = CommandContextHolder.getCurrentCommandContext().getPersistenceSession().findExecution(parentId);
     }
   }
 
@@ -206,7 +206,7 @@ public class DbExecutionImpl extends ExecutionImpl implements PersistentObject {
 
     ensureVariableMapInitialized();
 
-    PersistenceSession persistenceSession = CommandContext.getCurrent().getPersistenceSession();
+    PersistenceSession persistenceSession = CommandContextHolder.getCurrentCommandContext().getPersistenceSession();
 
     Set<String> variableNames = new HashSet<String>(variableMap.getVariableNames());
     for (String variableName : variableNames) {

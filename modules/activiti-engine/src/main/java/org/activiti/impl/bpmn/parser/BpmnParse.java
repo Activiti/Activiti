@@ -72,7 +72,7 @@ import org.activiti.pvm.Listener;
 public class BpmnParse extends Parse {
 
   private static final Logger LOG = Logger.getLogger(BpmnParse.class.getName());
-  
+
   /**
    * The end result of the parsing: a list of process definition.
    */

@@ -17,7 +17,6 @@ import java.lang.reflect.Constructor;
 import org.activiti.ActivitiException;
 import org.activiti.impl.interceptor.CommandContext;
 
-
 /**
  * @author Tom Baeyens
  */
@@ -28,7 +27,7 @@ public class TypeDescriptor implements Descriptor {
   public Object getObject(CommandContext commandContext, TransactionalObjectFactory transactionalObjectFactory) {
     try {
       Constructor< ? > constructor = getType().getDeclaredConstructor(parameterTypes);    
-      return constructor.newInstance(new Object[]{commandContext});
+      return constructor.newInstance(commandContext);
     } catch (Exception e) {
       throw new ActivitiException("couldn't instantiate class "+typeName, e);
     }

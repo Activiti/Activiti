@@ -19,7 +19,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.activiti.impl.execution.VariableMap;
-import org.activiti.impl.interceptor.CommandContext;
+import org.activiti.impl.interceptor.CommandContextHolder;
 import org.activiti.impl.variable.Type;
 import org.activiti.impl.variable.VariableInstance;
 import org.activiti.impl.variable.VariableTypes;
@@ -98,13 +98,13 @@ public class DbVariableMap extends VariableMap implements Serializable {
   // variable instance methods ////////////////////////////////////////////////
 
   protected void insertVariableInstance(VariableInstance variableInstance) {
-    CommandContext.getCurrent().getPersistenceSession().insert(variableInstance);
+    CommandContextHolder.getCurrentCommandContext().getPersistenceSession().insert(variableInstance);
   }
 
   protected Map<String, VariableInstance> getInitializedVariableInstances() {
     if (variableInstances == null) {
       List<VariableInstance> variableInstanceList = null;
-      variableInstanceList = CommandContext.getCurrent().getPersistenceSession().findVariablesByExecutionId(execution.getId());
+      variableInstanceList = CommandContextHolder.getCurrentCommandContext().getPersistenceSession().findVariablesByExecutionId(execution.getId());
       variableInstances = new HashMap<String, VariableInstance>();
       for (VariableInstance variableInstance : variableInstanceList) {
         variableInstances.put(variableInstance.getName(), variableInstance);

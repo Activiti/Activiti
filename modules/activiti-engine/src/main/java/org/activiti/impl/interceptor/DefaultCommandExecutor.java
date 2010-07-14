@@ -120,15 +120,15 @@ public class DefaultCommandExecutor implements CommandExecutor {
       context = commandContextFactory.createCommandContext(command);
 
       try {
+        CommandContextHolder.setCurrentCommandContext(context);
         return next.execute(command);
       } catch (Exception e) {
         context.exception(e);
       } finally {
         context.close();
+        CommandContextHolder.removeCurrentCommandContext();
       }
       return null;
     }
-
   }
-
 }
