@@ -18,14 +18,11 @@ import javax.sql.DataSource;
 import org.activiti.DbSchemaStrategy;
 import org.activiti.ProcessEngine;
 import org.activiti.impl.ProcessEngineImpl;
-import org.activiti.impl.cfg.ProcessEngineConfiguration;
-import org.activiti.impl.db.IdGenerator;
+import org.activiti.impl.cfg.ProcessEngineFactory;
 import org.activiti.impl.interceptor.Command;
 import org.activiti.impl.interceptor.CommandExecutor;
 import org.activiti.impl.interceptor.CommandInterceptor;
 import org.activiti.impl.interceptor.DefaultCommandExecutor;
-import org.activiti.impl.persistence.IbatisPersistenceSessionFactory;
-import org.activiti.impl.persistence.PersistenceSessionFactory;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.FactoryBean;
 import org.springframework.transaction.PlatformTransactionManager;
@@ -39,41 +36,41 @@ import org.springframework.util.Assert;
  */
 public class ProcessEngineFactoryBean implements FactoryBean<ProcessEngine>, DisposableBean {
 
-  private String databaseName;
+  private String dataBaseName;
   private DataSource dataSource;
   private PlatformTransactionManager transactionManager;
   private DbSchemaStrategy dbSchemaStrategy;
   private boolean jobExecutorAutoActivate;
   private String processEngineName;
   private ProcessEngineImpl processEngine;
-  
+
   public void destroy() throws Exception {
-    if (processEngine!=null) {
+    if (processEngine != null) {
       processEngine.close();
     }
   }
 
   public ProcessEngine getObject() throws Exception {
 
-    Assert.state(databaseName != null, "A database name must be provided (e.g. 'h2')");
+    Assert.state(dataBaseName != null, "A database name must be provided (e.g. 'h2')");
 
-    ProcessEngineConfiguration configuration = new ProcessEngineConfiguration();
-    configuration.setDbSchemaStrategy(dbSchemaStrategy);
-    configuration.setJobExecutorAutoActivate(jobExecutorAutoActivate);
-    configuration.setProcessEngineName(processEngineName);
-    IdGenerator idGenerator = configuration.getIdGenerator();
-    PersistenceSessionFactory persistenceSessionFactory = new IbatisPersistenceSessionFactory(configuration.getVariableTypes(), idGenerator, databaseName, dataSource, transactionManager == null);
-    configuration.setPersistenceSessionFactory(persistenceSessionFactory);
+    ProcessEngineFactory factory = new ProcessEngineFactory();
+    factory.setDbSchemaStrategy(dbSchemaStrategy);
+    factory.setJobExecutorAutoActivate(jobExecutorAutoActivate);
+    factory.setProcessEngineName(processEngineName);
+    factory.setDataSource(dataSource);
+    factory.setDataBaseName(dataBaseName);
+    factory.setLocalTransactions(transactionManager == null);
 
     if (transactionManager != null) {
-      // FIXME: downcast
-      DefaultCommandExecutor commandExecutor = (DefaultCommandExecutor) configuration.getCommandExecutor();
+      DefaultCommandExecutor commandExecutor = new DefaultCommandExecutor(factory.getCommandContextFactory());
       commandExecutor.addCommandInterceptor(new CommandInterceptor() {
 
         public <T> T invoke(final CommandExecutor next, final Command<T> command) {
           // TODO: Add transaction attributes
           @SuppressWarnings("unchecked")
           T result = (T) new TransactionTemplate(transactionManager).execute(new TransactionCallback() {
+
             public Object doInTransaction(TransactionStatus status) {
               return next.execute(command);
             }
@@ -81,9 +78,10 @@ public class ProcessEngineFactoryBean implements FactoryBean<ProcessEngine>, Dis
           return result;
         }
       });
+      factory.setCommandExecutor(commandExecutor);
     }
 
-    processEngine = configuration.buildProcessEngine();
+    processEngine = factory.createProcessEngine();
     return processEngine;
 
   }
@@ -95,8 +93,8 @@ public class ProcessEngineFactoryBean implements FactoryBean<ProcessEngine>, Dis
     return true;
   }
 
-  public void setDatabaseName(String databaseName) {
-    this.databaseName = databaseName;
+  public void setDataBaseName(String databaseName) {
+    this.dataBaseName = databaseName;
   }
 
   public void setDataSource(DataSource dataSource) {

@@ -38,7 +38,7 @@ public class DeployCmd<T> implements Command<Deployment> {
     PersistenceSession persistenceSession = commandContext.getPersistenceSession();
     deployment.setDeploymentTime(Clock.getCurrentTime());
     persistenceSession.insertDeployment(deployment);
-    deployerManager.deploy(deployment, commandContext);
+    deployerManager.deploy(deployment, persistenceSession);
     return deployment;
   }
 }

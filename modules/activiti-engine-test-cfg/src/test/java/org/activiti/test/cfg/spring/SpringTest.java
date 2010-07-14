@@ -92,6 +92,7 @@ public class SpringTest {
     ProcessService processService = processEngine.getProcessService();
     Deployment deployment = processService.createDeployment().name(resource).addClasspathResource(resource).deploy();
 
+    deployment = processService.createDeployment().name(resource).addClasspathResource(resource).deploy();
     if (deployment != null) {
       processService.deleteDeploymentCascade(deployment.getId());
     }

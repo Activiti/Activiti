@@ -16,7 +16,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.activiti.impl.interceptor.CommandContext;
+import org.activiti.impl.persistence.PersistenceSession;
 
 
 /**
@@ -28,9 +28,9 @@ public class DeployerManager implements Serializable {
 
   List<Deployer> deployers = new ArrayList<Deployer>();
 
-  public void deploy(DeploymentImpl deployment, CommandContext commandContext) {
+  public void deploy(DeploymentImpl deployment, PersistenceSession persistenceSession) {
     for (Deployer deployer: deployers) {
-      deployer.deploy(deployment, commandContext);
+      deployer.deploy(deployment, persistenceSession);
     }
   }
 

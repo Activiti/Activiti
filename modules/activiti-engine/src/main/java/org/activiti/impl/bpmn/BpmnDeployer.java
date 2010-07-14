@@ -23,7 +23,6 @@ import org.activiti.impl.calendar.BusinessCalendarManager;
 import org.activiti.impl.definition.ProcessDefinitionDbImpl;
 import org.activiti.impl.definition.ProcessDefinitionImpl;
 import org.activiti.impl.el.ExpressionManager;
-import org.activiti.impl.interceptor.CommandContext;
 import org.activiti.impl.persistence.PersistenceSession;
 import org.activiti.impl.repository.Deployer;
 import org.activiti.impl.repository.DeploymentImpl;
@@ -50,7 +49,7 @@ public class BpmnDeployer implements Deployer {
     this.businessCalendarManager = businessCalendarManager;
   }
 
-  public void deploy(DeploymentImpl deployment, CommandContext commandContext) {
+  public void deploy(DeploymentImpl deployment, PersistenceSession persistenceSession) {
 
     Map<String, ByteArrayImpl> resources = deployment.getResources();
 
@@ -63,8 +62,6 @@ public class BpmnDeployer implements Deployer {
         ByteArrayInputStream inputStream = new ByteArrayInputStream(bytes);
         BpmnParse bpmnParse = new BpmnParser(expressionManager, scriptingEngines, businessCalendarManager).createParse().processDefinitionClass(ProcessDefinitionDbImpl.class).sourceInputStream(inputStream).execute();
 
-        PersistenceSession persistenceSession = commandContext.getPersistenceSession();
-
         for (ProcessDefinitionImpl processDefinition : bpmnParse.getProcessDefinitions()) {
           processDefinition.setDeployment(deployment);
           processDefinition.setNew(deployment.isNew());
@@ -76,6 +73,6 @@ public class BpmnDeployer implements Deployer {
 
   }
 
-  public void delete(DeploymentImpl deployment, CommandContext commandContext) {
+  public void delete(DeploymentImpl deployment, PersistenceSession persistenceSession) {
   }
 }

@@ -54,6 +54,8 @@ public class JobExecutor {
   
   private boolean isActive = false;
 
+  private boolean autoActivate = false;
+
   public JobExecutor(CommandExecutor commandExecutor, JobHandlers jobHandlers) {
     this.commandExecutor = commandExecutor;
     this.jobHandlers = jobHandlers;
@@ -219,6 +221,15 @@ public class JobExecutor {
 
   public void setLockOwner(String lockOwner) {
     this.lockOwner = lockOwner;
+  }
+
+  public boolean isAutoActivate() {
+    return autoActivate;
+  }
+  
+  
+  public void setAutoActivate(boolean autoActivate) {
+    this.autoActivate = autoActivate;
   }
 
 }

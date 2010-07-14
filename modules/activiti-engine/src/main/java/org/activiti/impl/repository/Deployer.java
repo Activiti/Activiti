@@ -12,14 +12,14 @@
  */
 package org.activiti.impl.repository;
 
-import org.activiti.impl.interceptor.CommandContext;
+import org.activiti.impl.persistence.PersistenceSession;
 
 /**
  * @author Tom Baeyens
  */
 public interface Deployer {
 
-  void deploy(DeploymentImpl deployment, CommandContext commandContext);
-  void delete(DeploymentImpl deployment, CommandContext commandContext);
+  void deploy(DeploymentImpl deployment, PersistenceSession persistenceSession);
+  void delete(DeploymentImpl deployment, PersistenceSession persistenceSession);
 
 }
