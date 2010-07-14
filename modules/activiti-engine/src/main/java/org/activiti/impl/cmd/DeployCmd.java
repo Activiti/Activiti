@@ -12,14 +12,21 @@
  */
 package org.activiti.impl.cmd;
 
+import java.math.BigInteger;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+
 import org.activiti.Deployment;
+import org.activiti.impl.bytes.ByteArrayImpl;
 import org.activiti.impl.interceptor.Command;
 import org.activiti.impl.interceptor.CommandContext;
 import org.activiti.impl.persistence.PersistenceSession;
 import org.activiti.impl.repository.DeployerManager;
 import org.activiti.impl.repository.DeploymentImpl;
 import org.activiti.impl.time.Clock;
-
 
 /**
  * @author Tom Baeyens
@@ -28,17 +35,61 @@ public class DeployCmd<T> implements Command<Deployment> {
 
   private final DeploymentImpl deployment;
   private final DeployerManager deployerManager;
-  
+
   public DeployCmd(DeployerManager deployerManager, DeploymentImpl deployment) {
     this.deployerManager = deployerManager;
     this.deployment = deployment;
   }
 
   public Deployment execute(CommandContext commandContext) {
+    DeploymentImpl deployment = this.deployment;
     PersistenceSession persistenceSession = commandContext.getPersistenceSession();
-    deployment.setDeploymentTime(Clock.getCurrentTime());
-    persistenceSession.insertDeployment(deployment);
+    List<DeploymentImpl> deployments = persistenceSession.findDeploymentsByName(deployment.getName());
+    if (deployments.isEmpty() || deploymentsDiffer(deployment, deployments.get(0))) {
+      insertDeployment(persistenceSession);
+    } else {
+      deployment = deployments.get(0);
+    }
     deployerManager.deploy(deployment, persistenceSession);
     return deployment;
+  }
+
+  private boolean deploymentsDiffer(DeploymentImpl deployment, DeploymentImpl saved) {
+    Map<String, ByteArrayImpl> resources = deployment.getResources();
+    Map<String, ByteArrayImpl> savedResources = saved.getResources();
+    for (Entry<String, ByteArrayImpl> entry : resources.entrySet()) {
+      if (resourcesDiffer(entry.getValue(), savedResources.get(entry.getKey()))) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  private boolean resourcesDiffer(ByteArrayImpl value, ByteArrayImpl other) {
+    if (value == null && other == null) {
+      return false;
+    }
+    String bytes = createKey(value.getBytes());
+    String savedBytes = other == null ? null : createKey(other.getBytes());
+    return !bytes.equals(savedBytes);
+  }
+
+  private String createKey(byte[] bytes) {
+    if (bytes == null) {
+      return "";
+    }
+    MessageDigest digest;
+    try {
+      digest = MessageDigest.getInstance("MD5");
+    } catch (NoSuchAlgorithmException e) {
+      throw new IllegalStateException("MD5 algorithm not available.  Fatal (should be in the JDK).");
+    }
+    bytes = digest.digest(bytes);
+    return String.format("%032x", new BigInteger(1, bytes));
+  }
+
+  private void insertDeployment(PersistenceSession persistenceSession) {
+    deployment.setDeploymentTime(Clock.getCurrentTime());
+    persistenceSession.insertDeployment(deployment);
   }
 }

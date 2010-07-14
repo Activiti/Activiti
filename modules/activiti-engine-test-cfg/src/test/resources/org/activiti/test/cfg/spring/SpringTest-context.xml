@@ -22,6 +22,7 @@
 		<property name="dataSource" ref="dataSource" />
 		<property name="transactionManager" ref="transactionManager" />
 		<property name="dbSchemaStrategy" value="${db.schema.strategy}" />
+		<property name="processResources" value="classpath*:/org/activiti/test/cfg/spring/staticProcess.*.xml"/>
 	</bean>
 
 	<bean id="userBean" class="org.activiti.test.cfg.spring.UserBean">

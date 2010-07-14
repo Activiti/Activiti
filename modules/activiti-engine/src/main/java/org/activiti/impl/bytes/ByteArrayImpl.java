@@ -17,20 +17,19 @@ import java.io.Serializable;
 import org.activiti.impl.persistence.PersistentObject;
 import org.activiti.impl.variable.ByteArrayType;
 
-
 /**
  * @author Tom Baeyens
  */
 public class ByteArrayImpl implements Serializable, PersistentObject {
-	
+
   private static final long serialVersionUID = 1L;
-  
+
   private static final Object PERSISTENTSTATE_NULL = new Object();
-  
+
   protected String id;
 
   protected String name;
-  
+
   protected byte[] bytes;
 
   protected String deploymentId;
@@ -51,22 +50,22 @@ public class ByteArrayImpl implements Serializable, PersistentObject {
   }
 
   public byte[] getBytes() {
-//    // the bytes are lazy initialized
-//    if (bytes == null) {
-//      bytes = CommandContext
-//        .getCurrent()
-//        .getPersistenceSession()
-//        .getByteArrayBytes(id);
-//    }
+    // // the bytes are lazy initialized
+    // if (bytes == null) {
+    // bytes = CommandContext
+    // .getCurrent()
+    // .getPersistenceSession()
+    // .getByteArrayBytes(id);
+    // }
     return bytes;
   }
-  
+
   public Object getPersistentState() {
-    return (bytes!=null ? bytes : PERSISTENTSTATE_NULL);
+    return (bytes != null ? bytes : PERSISTENTSTATE_NULL);
   }
 
   // getters and setters //////////////////////////////////////////////////////
-  
+
   public String getId() {
     return id;
   }
@@ -85,4 +84,5 @@ public class ByteArrayImpl implements Serializable, PersistentObject {
   public void setBytes(byte[] bytes) {
     this.bytes = bytes;
   }
+
 }

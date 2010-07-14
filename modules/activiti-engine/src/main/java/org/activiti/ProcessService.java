@@ -116,6 +116,14 @@ public interface ProcessService {
    */
   List<Deployment> findDeployments();
   
+  /** 
+   * lists all deployments by name, ordered by deployment date (ascending).
+   * 
+   * To retrieve the actual bytes of a deployment resource use the
+   * operations <i>findDeploymentResources</i> and <i>getDeploymentResource</i>.
+   */
+  List<Deployment> findDeploymentsByName(String name);
+  
   /**
    * retrieves a list of deployment resources for the given deployment, 
    * ordered alphabetically.

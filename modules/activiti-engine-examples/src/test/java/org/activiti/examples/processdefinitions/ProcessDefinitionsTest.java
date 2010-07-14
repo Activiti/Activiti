@@ -40,45 +40,63 @@ public class ProcessDefinitionsTest {
 
   @Test
   public void testGetProcessDefinitions() {
-    deployer.deployProcessString(("<definitions " + NAMESPACE + " " + TARGET_NAMESPACE + ">" + "  <process id='IDR' name='Insurance Damage Report' />" + "</definitions>"));
-    deployer.deployProcessString(("<definitions " + NAMESPACE + " " + TARGET_NAMESPACE + ">" + "  <process id='IDR' name='Insurance Damage Report' />" + "</definitions>"));
-    deployer.deployProcessString(("<definitions " + NAMESPACE + " " + TARGET_NAMESPACE + ">" + "  <process id='IDR' name='Insurance Damage Report' />" + "</definitions>"));
-    deployer.deployProcessString(("<definitions " + NAMESPACE + " " + TARGET_NAMESPACE + ">" + "  <process id='EN' name='Expense Note' />" + "</definitions>"));
-    deployer.deployProcessString(("<definitions " + NAMESPACE + " " + TARGET_NAMESPACE + ">" + "  <process id='EN' name='Expense Note' />" + "</definitions>"));
+    deployer.deployProcessString(("<definitions " + NAMESPACE + " " + TARGET_NAMESPACE + ">" + "  <process id='IDR' name='Insurance Damage Report 1' />" + "</definitions>"));
+    deployer.deployProcessString(("<definitions " + NAMESPACE + " " + TARGET_NAMESPACE + ">" + "  <process id='IDR' name='Insurance Damage Report 2' />" + "</definitions>"));
+    deployer.deployProcessString(("<definitions " + NAMESPACE + " " + TARGET_NAMESPACE + ">" + "  <process id='IDR' name='Insurance Damage Report 3' />" + "</definitions>"));
+    deployer.deployProcessString(("<definitions " + NAMESPACE + " " + TARGET_NAMESPACE + ">" + "  <process id='EN' name='Expense Note 1' />" + "</definitions>"));
+    deployer.deployProcessString(("<definitions " + NAMESPACE + " " + TARGET_NAMESPACE + ">" + "  <process id='EN' name='Expense Note 2' />" + "</definitions>"));
 
     List<ProcessDefinition> processDefinitions = deployer.getProcessService().findProcessDefinitions();
     assertNotNull(processDefinitions);
 
+    assertEquals(5, processDefinitions.size());
+
     ProcessDefinition processDefinition = processDefinitions.get(0);
     assertEquals("EN", processDefinition.getKey());
-    assertEquals("Expense Note", processDefinition.getName());
+    assertEquals("Expense Note 2", processDefinition.getName());
     assertEquals("EN:2", processDefinition.getId());
     assertEquals(2, processDefinition.getVersion());
 
     processDefinition = processDefinitions.get(1);
     assertEquals("EN", processDefinition.getKey());
-    assertEquals("Expense Note", processDefinition.getName());
+    assertEquals("Expense Note 1", processDefinition.getName());
     assertEquals("EN:1", processDefinition.getId());
     assertEquals(1, processDefinition.getVersion());
 
     processDefinition = processDefinitions.get(2);
     assertEquals("IDR", processDefinition.getKey());
-    assertEquals("Insurance Damage Report", processDefinition.getName());
+    assertEquals("Insurance Damage Report 3", processDefinition.getName());
     assertEquals("IDR:3", processDefinition.getId());
     assertEquals(3, processDefinition.getVersion());
 
     processDefinition = processDefinitions.get(3);
     assertEquals("IDR", processDefinition.getKey());
-    assertEquals("Insurance Damage Report", processDefinition.getName());
+    assertEquals("Insurance Damage Report 2", processDefinition.getName());
     assertEquals("IDR:2", processDefinition.getId());
     assertEquals(2, processDefinition.getVersion());
 
     processDefinition = processDefinitions.get(4);
     assertEquals("IDR", processDefinition.getKey());
+    assertEquals("Insurance Damage Report 1", processDefinition.getName());
+    assertEquals("IDR:1", processDefinition.getId());
+    assertEquals(1, processDefinition.getVersion());
+
+  }
+
+  @Test
+  public void testDeployIdenticalProcessDefinitions() {
+    deployer.deployProcessString(("<definitions " + NAMESPACE + " " + TARGET_NAMESPACE + ">" + "  <process id='IDR' name='Insurance Damage Report' />" + "</definitions>"));
+    deployer.deployProcessString(("<definitions " + NAMESPACE + " " + TARGET_NAMESPACE + ">" + "  <process id='IDR' name='Insurance Damage Report' />" + "</definitions>"));
+
+    List<ProcessDefinition> processDefinitions = deployer.getProcessService().findProcessDefinitions();
+    assertNotNull(processDefinitions);
+    assertEquals(1, processDefinitions.size());
+
+    ProcessDefinition processDefinition = processDefinitions.get(0);
+    assertEquals("IDR", processDefinition.getKey());
     assertEquals("Insurance Damage Report", processDefinition.getName());
     assertEquals("IDR:1", processDefinition.getId());
     assertEquals(1, processDefinition.getVersion());
 
-    assertEquals(5, processDefinitions.size());
   }
 }

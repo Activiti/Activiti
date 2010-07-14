@@ -226,6 +226,11 @@ public class IbatisPersistenceSession implements PersistenceSession {
     return (List<DeploymentImpl>) sqlSession.selectList(statement("selectDeployments"));
   };
   
+  @SuppressWarnings("unchecked")
+  public List<DeploymentImpl> findDeploymentsByName(String name) {
+    return (List<DeploymentImpl>) sqlSession.selectList(statement("selectDeploymentsByName"), name);
+  };
+  
   public DeploymentImpl findDeployment(String deploymentId) {
     return (DeploymentImpl) sqlSession.selectOne(
             statement("selectDeployment"),

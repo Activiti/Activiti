@@ -14,7 +14,6 @@ package org.activiti.test.db;
 
 import static org.junit.Assert.assertNotNull;
 
-import org.activiti.ActivitiException;
 import org.activiti.Deployment;
 import org.activiti.test.ProcessEngineBuilder;
 import org.junit.Rule;
@@ -40,7 +39,7 @@ public class DbNotCleanTest {
             "<definitions xmlns='http://www.omg.org/spec/BPMN/20100524/MODEL' " + "targetNamespace='http://www.activiti.org/bpmn2.0' />").deploy();
     assertNotNull(deployment);
 
-    exception.expect(ActivitiException.class);
+    exception.expect(AssertionError.class);
     exception.expectMessage("Database not clean");
 
     try {

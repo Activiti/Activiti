@@ -74,6 +74,7 @@ public class IbatisPersistenceSessionFactory implements PersistenceSessionFactor
     statements.add("selectTask");
     statements.add("selectTaskByExecution");
     statements.add("selectDeployments");
+    statements.add("selectDeploymentsByName");
     statements.add("selectDeployment");
     statements.add("selectDeploymentByProcessDefinitionId");
     statements.add("selectByteArraysForDeployment");

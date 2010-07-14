@@ -67,6 +67,10 @@
     select * from ACT_DEPLOYMENT D order by D.DEPLOY_TIME_ asc
   </select>
   
+  <select id="selectDeploymentsByName" parameterType="string" resultMap="deploymentResultMap">
+    select * from ACT_DEPLOYMENT D where NAME_=#{name} order by D.DEPLOY_TIME_ asc
+  </select>
+  
   <select id="selectDeployment" parameterType="string" resultMap="deploymentResultMap">
     select * from ACT_DEPLOYMENT where ID_ = #{id}
   </select>

@@ -50,6 +50,7 @@ public interface PersistenceSession extends Session {
 
   /* Deployment */
   List<DeploymentImpl> findDeployments();
+  List<DeploymentImpl> findDeploymentsByName(String name);
   DeploymentImpl findDeployment(String deploymentId);
   DeploymentImpl findDeploymentByProcessDefinitionId(String processDefinitionId);
   List<ByteArrayImpl> findDeploymentResources(String deploymentId);
@@ -132,4 +133,4 @@ public interface PersistenceSession extends Session {
   Map<String, Long> getTableCount();
   TablePage getTablePage(String tableName, int offset, int maxResults, String sortColumn, SortOrder sortOrder);
   TableMetaData getTableMetaData(String tableName);
-}
+  }

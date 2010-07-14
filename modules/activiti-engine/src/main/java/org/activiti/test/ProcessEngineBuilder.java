@@ -15,13 +15,11 @@ package org.activiti.test;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.Assert.assertThat;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.activiti.ActivitiException;
 import org.activiti.DbProcessEngineBuilder;
 import org.activiti.IdentityService;
 import org.activiti.ManagementService;
@@ -32,6 +30,7 @@ import org.activiti.impl.ProcessEngineImpl;
 import org.activiti.impl.interceptor.CommandExecutor;
 import org.activiti.impl.job.JobHandlers;
 import org.activiti.impl.jobexecutor.JobExecutor;
+import org.junit.Assert;
 import org.junit.rules.TestWatchman;
 import org.junit.runners.model.FrameworkMethod;
 
@@ -50,7 +49,7 @@ public class ProcessEngineBuilder extends TestWatchman {
 
   private ProcessEngine processEngine;
 
-  private List<Runnable> verifiers = new ArrayList<Runnable>();
+  private boolean succeeded = false;
 
   public ProcessEngineBuilder() {
     this("activiti.properties");
@@ -95,14 +94,20 @@ public class ProcessEngineBuilder extends TestWatchman {
 
   @Override
   public void succeeded(FrameworkMethod method) {
-    for (Runnable verifier : verifiers) {
-      verifier.run();
-    }
+    succeeded = true;
   }
 
   @Override
   public void finished(FrameworkMethod method) {
-    assertDatabaseIsClean();
+    try {
+      assertDatabaseIsClean();
+    } catch (AssertionError e) {
+      if (succeeded) {
+        throw e;
+      } else {
+        log.log(Level.SEVERE, "Assertion failed in clean up after unsuccessful test", e);
+      }
+    }
     if (processEngine != null) {
       processEngine.close();
       processEngine = null;
@@ -131,7 +136,7 @@ public class ProcessEngineBuilder extends TestWatchman {
 
     if (outputMessage.length() > 0) {
       outputMessage.insert(0, "Database not clean! ");
-      throw new ActivitiException(outputMessage.toString());
+      Assert.fail(outputMessage.toString());
     }
   }
 
