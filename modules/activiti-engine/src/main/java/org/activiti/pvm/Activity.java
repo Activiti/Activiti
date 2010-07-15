@@ -19,4 +19,5 @@ package org.activiti.pvm;
 public interface Activity {
 
   String getId();
+  
 }

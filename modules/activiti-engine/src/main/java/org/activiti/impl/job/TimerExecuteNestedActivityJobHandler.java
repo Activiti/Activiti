@@ -31,14 +31,38 @@ public class TimerExecuteNestedActivityJobHandler implements JobHandler {
 
   public void execute(String configuration, ExecutionImpl execution, CommandContext commandContext) {
     ActivityImpl activity = execution.getActivity();
-    ActivityImpl borderEventActivity = activity.getActivity(configuration);
+    ActivityImpl borderEventActivity = findBorderEventActivity(activity, configuration);
 
     if (borderEventActivity == null) {
       throw new ActivitiException("Error while firing timer: activity " + configuration + " not found");
     }
     
-    // TODO in case of concurrency inside the timed scope, more execution juggling needs to be implemented here. 
+    // TODO in case of concurrency inside the timed scope, 
+    // more execution juggling needs to be implemented here. 
     
     execution.executeActivity(borderEventActivity);
   }
+  
+  /**
+   * Looks for a nested activity with a given name, starting at the
+   * 'currentActivity', traversing its parents until the activity is found or
+   * the top-level is reached without result.
+   * 
+   * @param currentActivity
+   *          The activity to start the search from
+   * @param eventActivityName
+   *          The name of the nested activity that is searched
+   */
+  protected ActivityImpl findBorderEventActivity(ActivityImpl currentActivity, String eventActivityName) {
+    ActivityImpl borderEventActivity = currentActivity.getActivity(eventActivityName);
+    if (borderEventActivity == null) {
+      ActivityImpl parentActivity = currentActivity.getParentActivity();
+      while (parentActivity != null && borderEventActivity == null) {
+        borderEventActivity = parentActivity.findActivity(eventActivityName);
+        parentActivity = parentActivity.getParentActivity();
+      }
+    }
+    return borderEventActivity;
+  }
+  
 }

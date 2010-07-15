@@ -10,35 +10,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.activiti.impl.bpmn;
 
 import org.activiti.impl.definition.ActivityImpl;
-import org.activiti.impl.execution.ExecutionImpl;
+import org.activiti.pvm.Activity;
 import org.activiti.pvm.ActivityExecution;
 
 
 /**
+ * Implementation of the BPMN 2.0 subprocess (formely know as 'embedded' subprocess):
+ * a subprocess defined within another process definition.
+ * 
  * @author Joram Barrez
  */
-public class NoneEndEventActivity extends BpmnActivity {
+public class SubProcessActivity extends BpmnActivity {
   
   public void execute(ActivityExecution execution) throws Exception {
+    Activity activity = execution.getActivity();
+    ActivityImpl initialActivity = ((ActivityImpl) activity).getInitial();
     
-    // TODO: needs cleanup!
-    ActivityImpl currentActivity = (ActivityImpl) execution.getActivity();
-    ActivityImpl parentActivity = (ActivityImpl) currentActivity.getParentActivity();
-    
-    if (parentActivity != null &&
-            parentActivity.getActivityBehavior() instanceof SubProcessActivity) {
-      
-      // No need to end the execution, see ExecutionImpl.destroyScope
-      execution.setActivity(parentActivity);
-      leave(execution);
-      
-    } else {
-      execution.end();
-    }
-    
+    execution.setActivity(initialActivity);
+    initialActivity.getActivityBehavior().execute(execution);
   }
-
+  
 }

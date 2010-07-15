@@ -53,6 +53,7 @@ public abstract class BpmnActivity implements EventActivityBehavior {
   }
 
   public void event(ActivityExecution execution, Object event) throws Exception {
+    // Default behaviour: do nothing
   }
 
 }

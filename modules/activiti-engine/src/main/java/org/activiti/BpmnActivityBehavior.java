@@ -65,10 +65,8 @@ public class BpmnActivityBehavior {
    * Actual implementation of leaving an activity.
    */
   protected void performOutgoingBehavior(ActivityExecution execution, boolean checkConditions) {
-    
-    
-      
-      if (log.isLoggable(Level.FINE)) {
+
+    if (log.isLoggable(Level.FINE)) {
         log.fine("Leaving activity '" + execution.getActivity().getId() + "'");
       }
       

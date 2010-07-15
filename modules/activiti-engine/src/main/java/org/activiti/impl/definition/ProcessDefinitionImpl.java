@@ -32,8 +32,6 @@ public class ProcessDefinitionImpl extends ScopeElementImpl implements ObjectPro
 
   protected DeploymentImpl deployment;
   
-  protected ActivityImpl initial;
-  
   protected boolean isNew = false;
   
   /* Name of the resource that was used to deploy this processDefinition */
@@ -74,12 +72,6 @@ public class ProcessDefinitionImpl extends ScopeElementImpl implements ObjectPro
   }
   public void setDeployment(DeploymentImpl deployment) {
     this.deployment = deployment;
-  }
-  public ActivityImpl getInitial() {
-    return initial;
-  }
-  public void setInitial(ActivityImpl initial) {
-    this.initial = initial;
   }
   public boolean isNew() {
     return isNew;
