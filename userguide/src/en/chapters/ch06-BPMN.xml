@@ -1539,8 +1539,120 @@ List&lt;Task&gt; tasks = taskService.createTaskQuery().assignee(&quot;kermit&quo
       
       </section>
 		
-		</section> <!-- timer boundary event -->
+		</section> 
+		
+		<section id="bpmnSubProcess">
+		
+		  <title>SubProcess</title>
+		  
+		  <section id="bpmnSubProcessDescription">
+		  
+		    <title>Description</title>
+		    
+		    <para>
+		      A <emphasis>subprocess</emphasis> is an activity that contains other activities, gateways,
+		      events, etc. which on itself form a process that is part of the bigger process. 
+		      A <emphasis>subprocess</emphasis> is completely defined inside a parent process
+		      (that's why it's often called an <emphasis>embedded</emphasis> subprocess).
+		    </para>
+		    
+		    <para>
+		      Subprocesses have two major use cases:
+		      <itemizedlist>
+		        <listitem>
+		          <para>
+		            Subprocesses allow <emphasis role="bold">hierarchical modeling</emphasis>.
+		            Many modeling tools allow that subprocesses can be <emphasis>collapsed</emphasis>, 
+		            hiding all the details of the subprocess and displaying a high-level end-to-end
+		            overview of the business process.
+		          </para>
+		        </listitem>
+		        <listitem>
+		          <para>
+		            A subprocess creates a new <emphasis role="bold">scope for events</emphasis>.
+		            Events that are thrown during execution of the subprocess, can be catched by
+		            <link linkend="bpmnBoundaryEvent">a boundary event</link> on the boundary 
+		            of the subprocess, thus creating a scope for that event limited to the subprocess.
+		          </para>
+		        </listitem>
+		      </itemizedlist>
+		    </para>
+		    
+		    <para>
+		      Using a subprocess does impose some constraints:
+		      <itemizedlist>
+		        <listitem>
+		          <para>
+		            A subprocess can only have <emphasis role="bold">one none start event</emphasis>, no other
+		            start event types are allowed. A subprocess must <emphasis role="bold">
+		            at least have one end event</emphasis>. Note that the BPMN 2.0 specification
+		            allows to ommit the start and end events in a sbprocess, but the current
+		            Activiti implementation does not support this.
+		          </para>
+		        </listitem>
+		        <listitem>
+		          <para>
+		            <emphasis role="bold">Sequence flow can not cross subprocess boundaries.</emphasis>
+		          </para>
+		        </listitem>
+		      </itemizedlist>
+		    </para>
+		  
+		  </section>
+		  
+		  <section id="bpmnSubProcessGraphicalNotation">
+      
+        <title>Graphical Notation</title>
+        
+        <para>
+          A subprocess is visualized as a typical activity, ie. a rounded rectangle.
+          In case the subprocess is <emphasis>collapsed</emphasis>, only the name and a plus-sign are displayed,
+          giving a high-level overview of the process:
+          <mediaobject><imageobject><imagedata align="center" fileref="images/bpmn.collapsed.subprocess.png"/></imageobject></mediaobject>
+        </para>
+        
+        <para>  
+          In case the subprocess is <emphasis>expanded</emphasis>, the steps of the subprocess
+          are displayed within the subprocess boundaries:
+          <mediaobject><imageobject><imagedata align="center" fileref="images/bpmn.expanded.subprocess.png"/></imageobject></mediaobject>
+        </para>
+        
+        <para>
+          One of the main reasons to use a subprocess, is to define a scope for a certain event.
+          The following process model shows this: both the <emphasis>investigate software/investigate hardware</emphasis>
+          tasks need to be done in parallel, but both tasks need to be done within a certain time,
+          before <emphasis>Level 2 support</emphasis> is consulted.
+          Here, the scope of the timer (ie. which activities must be done in time) is constrained by the subprocess. 
+          <mediaobject><imageobject><imagedata align="center" fileref="images/bpmn.subprocess.with.boundary.timer.png"/></imageobject></mediaobject>
+        </para>
+      
+      </section>
+      
+      <section id="bpmnSubProcessXML">
+      
+        <title>XML representation</title>
+        
+        <para>
+          A subprocess is defined by the <emphasis>subprocess</emphasis> element.
+          All activities, gateways, events, etc. that are part of the subprocess, need
+          to be enclosed within this element.
+          <programlisting>
+&lt;subProcess id=&quot;subProcess&quot;&gt;
+    
+  &lt;startEvent id=&quot;subProcessStart&quot; /&gt;
+  
+  ... other subprocess elements ...
 
-	</section> <!-- bpmnConstructs -->
+  &lt;endEvent id=&quot;subProcessEnd&quot; /&gt;
+    
+ &lt;/subProcess&gt;          
+          </programlisting> 
+        </para>
+      
+      </section>
+		
+		</section>
+
+	</section>
 
 </chapter>
