@@ -183,8 +183,13 @@ public class ExecutionImpl implements
     // if there is a parent 
     ensureParentInitialized();
     if (parent!=null) {
+      
+      // parent will be set to null down below. Storing it here for using it later on if needed.
+      ExecutionImpl parentLocal = parent; 
+      
       // then remove the bidirectional relation
       parent.removeExecution(this);
+      
     } else {
       isEnded = true;
     }
@@ -554,7 +559,7 @@ public class ExecutionImpl implements
   
   // customized getters and setters ///////////////////////////////////////////
 
-  protected boolean isProcessInstance() {
+  public boolean isProcessInstance() {
     ensureParentInitialized();
     return parent==null;
   }

@@ -82,6 +82,7 @@ public class IbatisTransactionContext implements TransactionContext {
         fireTransactionEvent(TransactionState.ROLLINGBACK);
         
       } catch (Throwable exception) {
+        log.info("Exception during transaction: " + exception.getMessage());
         commandContext.exception(exception);
       } finally {
         log.fine("rolling back ibatis sql session...");
@@ -89,6 +90,7 @@ public class IbatisTransactionContext implements TransactionContext {
       }
       
     } catch (Throwable exception) {
+      log.info("Exception during transaction: " + exception.getMessage());
       commandContext.exception(exception);
 
     } finally {

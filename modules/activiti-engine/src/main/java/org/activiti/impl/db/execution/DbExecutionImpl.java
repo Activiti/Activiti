@@ -143,7 +143,7 @@ public class DbExecutionImpl extends ExecutionImpl implements PersistentObject {
   }
   
   @Override
-  protected boolean isProcessInstance() {
+  public boolean isProcessInstance() {
     return parentId == null;
   }
 

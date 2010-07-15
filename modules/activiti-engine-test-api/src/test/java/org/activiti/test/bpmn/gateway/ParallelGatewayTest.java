@@ -60,5 +60,22 @@ public class ParallelGatewayTest {
       deployer.getProcessService().startProcessInstanceByKey("unstructuredConcurrencyTwoJoins");
     assertTrue(processInstance.isEnded());
   }
+  
+  @Test
+  @ProcessDeclared
+  public void testForkFollowedByOnlyEndEvents() {
+    ProcessInstance processInstance = 
+      deployer.getProcessService().startProcessInstanceByKey("forkFollowedByEndEvents");
+    assertTrue(processInstance.isEnded());
+  }
+  
+  @Test
+  @ProcessDeclared
+  public void testNestedForksFollowedByEndEvents() {
+    ProcessInstance processInstance = 
+      deployer.getProcessService().startProcessInstanceByKey("nestedForksFollowedByEndEvents");
+    assertTrue(processInstance.isEnded());
+  }
+  
 
 }

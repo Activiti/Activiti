@@ -45,4 +45,6 @@ public interface ActivityExecution {
   void setConcurrent(boolean isConcurrent);
   boolean isConcurrent();
   
+  boolean isProcessInstance();
+  
 }

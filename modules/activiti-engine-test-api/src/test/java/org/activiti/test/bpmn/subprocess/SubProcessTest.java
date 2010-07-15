@@ -24,6 +24,7 @@ import org.activiti.test.JobExecutorPoller;
 import org.activiti.test.LogInitializer;
 import org.activiti.test.ProcessDeclared;
 import org.activiti.test.ProcessDeployer;
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 
@@ -90,6 +91,44 @@ public class SubProcessTest {
                                                    .processInstance(pi.getId())
                                                    .singleResult();
     assertEquals("Fix escalated problem", escalationTask.getName());
+  }
+  
+  /**
+   * A test case that has a timer attached to the subprocess,
+   * where 2 concurrent paths are defined when the timer fires.
+   */
+  @Test
+  @ProcessDeclared
+  @Ignore
+  public void testSimpleSubProcessWithConcurrentTimer() {
+    
+    Clock.setCurrentTime(new Date(0L));
+    
+    // After staring the process, the task in the subprocess should be active
+    ProcessInstance pi = deployer.getProcessService().startProcessInstanceByKey("simpleSubProcessWithConcurrentTimer");
+    TaskQuery taskQuery = deployer.getTaskService()
+      .createTaskQuery()
+      .processInstance(pi.getId())
+      .orderAsc(TaskQuery.PROPERTY_NAME);
+    
+    Task subProcessTask = taskQuery.singleResult();
+    assertEquals("Task in subprocess", subProcessTask.getName());
+    
+    // When the timer is fired (after 2 hours), two concurrent paths should be created
+    Clock.setCurrentTime(new Date((2 * 60 * 60 * 1000 ) + 1000));
+    new JobExecutorPoller(deployer.getJobExecutor(), deployer.getCommandExecutor()).waitForJobExecutorToProcessAllJobs(5000L, 25L);
+    
+    List<Task> tasksAfterTimer = taskQuery.list();
+    assertEquals(2, tasksAfterTimer.size());
+    Task taskAfterTimer1 = tasksAfterTimer.get(0);
+    Task taskAfterTimer2 = tasksAfterTimer.get(1);
+    assertEquals("Task after timer 1", taskAfterTimer1.getName());
+    assertEquals("Task after timer 2", taskAfterTimer2.getName());
+    
+    // Completing the two tasks should end the process instance
+    deployer.getTaskService().complete(taskAfterTimer1.getId());
+    deployer.getTaskService().complete(taskAfterTimer2.getId());
+    deployer.assertProcessEnded(pi.getId());
   }
   
   /**
@@ -201,6 +240,97 @@ public class SubProcessTest {
     assertEquals("Task after timer", taskAfterTimer.getName());
 
     // Completing the task after the timer ends the process instance
+    deployer.getTaskService().complete(taskAfterTimer.getId());
+    deployer.assertProcessEnded(pi.getId());
+  }
+  
+  @Test
+  @ProcessDeclared
+  public void testTwoSubProcessInParallel() {
+    ProcessInstance pi = deployer.getProcessService().startProcessInstanceByKey("twoSubProcessInParallel");
+    TaskQuery taskQuery = deployer.getTaskService()
+      .createTaskQuery()
+      .processInstance(pi.getId())
+      .orderAsc(TaskQuery.PROPERTY_NAME);
+    List<Task> tasks = taskQuery.list();
+    
+    // After process start, both tasks in the subprocesses should be active
+    Task taskA = tasks.get(0);
+    Task taskB = tasks.get(1);
+    assertEquals("Task in subprocess A", taskA.getName());
+    assertEquals("Task in subprocess B", taskB.getName());
+    
+    // Completing both tasks should active the tasks outside the subprocesses
+    deployer.getTaskService().complete(taskA.getId());
+    deployer.getTaskService().complete(taskB.getId());
+    tasks = taskQuery.list();
+    
+    taskA = tasks.get(0);
+    taskB = tasks.get(1);
+    assertEquals("Task after subprocess A", taskA.getName());
+    assertEquals("Task after subprocess B", taskB.getName());
+    
+    // Completing these tasks should end the process
+    deployer.getTaskService().complete(taskA.getId());
+    deployer.getTaskService().complete(taskB.getId());
+    deployer.assertProcessEnded(pi.getId());
+  }
+  
+  @Test
+  @ProcessDeclared
+  public void testTwoSubProcessInParallelWithinSubProcess() {
+    ProcessInstance pi = deployer.getProcessService().startProcessInstanceByKey("twoSubProcessInParallelWithinSubProcess");
+    TaskQuery taskQuery = deployer.getTaskService()
+      .createTaskQuery()
+      .processInstance(pi.getId())
+      .orderAsc(TaskQuery.PROPERTY_NAME);
+    List<Task> tasks = taskQuery.list();
+    
+    // After process start, both tasks in the subprocesses should be active
+    Task taskA = tasks.get(0);
+    Task taskB = tasks.get(1);
+    assertEquals("Task in subprocess A", taskA.getName());
+    assertEquals("Task in subprocess B", taskB.getName());
+    
+    // Completing both tasks should active the tasks outside the subprocesses
+    deployer.getTaskService().complete(taskA.getId());
+    deployer.getTaskService().complete(taskB.getId());
+    
+    Task taskAfterSubProcess = taskQuery.singleResult();
+    assertEquals("Task after subprocess", taskAfterSubProcess.getName());
+    
+    // Completing this task should end the process
+    deployer.getTaskService().complete(taskAfterSubProcess.getId());
+    deployer.assertProcessEnded(pi.getId());
+  }
+  
+  @Test
+  @ProcessDeclared
+  public void testTwoNestedSubProcessesInParallelWithTimer() {
+    
+    Clock.setCurrentTime(new Date(0L));
+    
+    ProcessInstance pi = deployer.getProcessService().startProcessInstanceByKey("nestedParallelSubProcessesWithTimer");
+    TaskQuery taskQuery = deployer.getTaskService()
+      .createTaskQuery()
+      .processInstance(pi.getId())
+      .orderAsc(TaskQuery.PROPERTY_NAME);
+    List<Task> tasks = taskQuery.list();
+    
+    // After process start, both tasks in the subprocesses should be active
+    Task taskA = tasks.get(0);
+    Task taskB = tasks.get(1);
+    assertEquals("Task in subprocess A", taskA.getName());
+    assertEquals("Task in subprocess B", taskB.getName());
+    
+    // Firing the timer should destroy all three subprocesses and activate the task after the timer
+    Clock.setCurrentTime(new Date((2 * 60 * 60 * 1000 ) + 1000));
+    new JobExecutorPoller(deployer.getJobExecutor(), deployer.getCommandExecutor()).waitForJobExecutorToProcessAllJobs(5000L, 25L);
+    
+    Task taskAfterTimer = taskQuery.singleResult();
+    assertEquals("Task after timer", taskAfterTimer.getName());
+    
+    // Completing the task should end the process instance
     deployer.getTaskService().complete(taskAfterTimer.getId());
     deployer.assertProcessEnded(pi.getId());
   }
