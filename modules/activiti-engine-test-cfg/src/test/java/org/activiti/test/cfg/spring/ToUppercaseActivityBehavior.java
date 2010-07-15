@@ -10,34 +10,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.activiti.impl.bpmn;
+package org.activiti.test.cfg.spring;
 
-import org.activiti.impl.definition.ActivityImpl;
+import org.activiti.BpmnActivityBehavior;
+import org.activiti.pvm.ActivityBehavior;
 import org.activiti.pvm.ActivityExecution;
 
 
 /**
  * @author Joram Barrez
  */
-public class NoneEndEventActivity extends BpmnActivity {
+public class ToUppercaseActivityBehavior extends BpmnActivityBehavior implements ActivityBehavior {
+  
+  private static final String VARIABLE_NAME = "input";
   
   public void execute(ActivityExecution execution) throws Exception {
+    String var = (String) execution.getVariable(VARIABLE_NAME);
+    var = var.toUpperCase();
+    execution.setVariable(VARIABLE_NAME, var);
     
-    // TODO: needs cleanup!
-    ActivityImpl currentActivity = (ActivityImpl) execution.getActivity();
-    ActivityImpl parentActivity = (ActivityImpl) currentActivity.getParentActivity();
-    
-    if (parentActivity != null &&
-            parentActivity.getActivityBehavior() instanceof SubProcessActivity) {
-      
-      // No need to end the execution, see ExecutionImpl.destroyScope
-      execution.setActivity(parentActivity);
-      leave(execution);
-      
-    } else {
-      execution.end();
-    }
-    
+    performDefaultOutgoingBehavior(execution);
   }
-
+  
 }

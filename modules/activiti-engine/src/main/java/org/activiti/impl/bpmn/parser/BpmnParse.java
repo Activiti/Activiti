@@ -33,6 +33,7 @@ import org.activiti.impl.bpmn.Operation;
 import org.activiti.impl.bpmn.ParallelGatewayActivity;
 import org.activiti.impl.bpmn.ReceiveTaskActivity;
 import org.activiti.impl.bpmn.ScriptTaskActivity;
+import org.activiti.impl.bpmn.ServiceActivatingActivityBehaviour;
 import org.activiti.impl.bpmn.SubProcessActivity;
 import org.activiti.impl.bpmn.TaskActivity;
 import org.activiti.impl.bpmn.UserTaskActivity;
@@ -51,7 +52,6 @@ import org.activiti.impl.job.TimerExecuteNestedActivityJobHandler;
 import org.activiti.impl.scripting.ScriptingEngines;
 import org.activiti.impl.task.TaskDefinition;
 import org.activiti.impl.timer.TimerDeclarationImpl;
-import org.activiti.impl.util.ReflectUtil;
 import org.activiti.impl.variable.VariableDestroyWithExpression;
 import org.activiti.impl.variable.VariableDestroyWithVariable;
 import org.activiti.impl.variable.VariableInitializeWithExpression;
@@ -322,9 +322,9 @@ public class BpmnParse extends Parse {
         parseServiceTask(activityElement, scopeElement);
       } else if (activityElement.getTagName().equals("task")) {
         parseTask(activityElement, scopeElement);
-      } else if (activityElement.getTagName().equals("manualTask")) { 
+      } else if (activityElement.getTagName().equals("manualTask")) {
         parseManualTask(activityElement, scopeElement);
-      }else if (activityElement.getTagName().equals("userTask")) {
+      } else if (activityElement.getTagName().equals("userTask")) {
         parseUserTask(activityElement, scopeElement);
       } else if (activityElement.getTagName().equals("receiveTask")) {
         parseReceiveTask(activityElement, scopeElement);
@@ -403,17 +403,11 @@ public class BpmnParse extends Parse {
   public void parseServiceTask(Element serviceTaskElement, ScopeElementImpl scopeElement) {
     ActivityImpl activity = parseAndCreateActivityOnScopeElement(serviceTaskElement, scopeElement);
 
-    String className = serviceTaskElement.attributeNS(BpmnParser.BPMN_EXTENSIONS_NS, "javaClass");
-    if (className != null) {
-      Object obj = ReflectUtil.instantiate(className);
-      if (obj instanceof ActivityBehavior) {
-        activity.setActivityBehavior((ActivityBehavior) obj);
-      } else {
-        throw new ActivitiException("Class " + className + " is used in a serviceTask, but does not" + " implement the "
-                + ActivityBehavior.class.getCanonicalName() + " interface");
-      }
+    String expression = serviceTaskElement.attributeNS(BpmnParser.BPMN_EXTENSIONS_NS, "java");
+    if (expression != null && expression.trim().length() > 0) {
+      activity.setActivityBehavior(new ServiceActivatingActivityBehaviour(expressionManager.createValueExpression(expression)));
     } else {
-      throw new ActivitiException("javaClass attribute is mandatory on serviceTask");
+      throw new ActivitiException("java attribute is mandatory on serviceTask");
     }
 
     // OLD implementation with BPMN interfaces/operations/etc
@@ -445,7 +439,7 @@ public class BpmnParse extends Parse {
     ActivityImpl activity = parseAndCreateActivityOnScopeElement(taskElement, scopeElement);
     activity.setActivityBehavior(new TaskActivity());
   }
-  
+
   /**
    * Parses a manual task.
    */
@@ -453,7 +447,7 @@ public class BpmnParse extends Parse {
     ActivityImpl activity = parseAndCreateActivityOnScopeElement(manualTaskElement, scopeElement);
     activity.setActivityBehavior(new ManualTaskActivity());
   }
-  
+
   /**
    * Parses a receive task.
    */

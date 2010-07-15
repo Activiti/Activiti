@@ -15,7 +15,7 @@
     
     <serviceTask id="javaService" 
                  name="Java service invocation" 
-                 activiti:java="org.activiti.test.bpmn.servicetask.ToUppercaseActivityBehavior" />
+                 activiti:java="#{service}" />
     
     <sequenceFlow id="flow2" sourceRef="javaService" targetRef="waitState" />
     

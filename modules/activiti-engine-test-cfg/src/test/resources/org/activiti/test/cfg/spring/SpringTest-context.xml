@@ -28,11 +28,14 @@
 	<bean id="userBean" class="org.activiti.test.cfg.spring.UserBean">
 		<property name="processEngine" ref="processEngine" />
 	</bean>
+	
+	<bean id="upperCaser" class="org.activiti.test.cfg.spring.ToUppercaseActivityBehavior"/>
 
 	<bean id="elResolver" class="org.activiti.impl.el.StaticElResolver">
 		<property name="map">
 			<map>
 				<entry key="user" value="kermit" />
+				<entry key="service" value-ref="upperCaser" />
 			</map>
 		</property>
 	</bean>

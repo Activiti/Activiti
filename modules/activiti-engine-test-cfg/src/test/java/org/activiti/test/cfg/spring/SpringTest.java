@@ -18,6 +18,7 @@ import java.util.List;
 
 import org.activiti.ActivitiException;
 import org.activiti.Deployment;
+import org.activiti.Execution;
 import org.activiti.ProcessEngine;
 import org.activiti.ProcessInstance;
 import org.activiti.ProcessService;
@@ -26,6 +27,7 @@ import org.activiti.impl.definition.ActivityImpl;
 import org.activiti.impl.execution.ExecutionImpl;
 import org.activiti.impl.task.TaskDefinition;
 import org.activiti.impl.util.LogUtil;
+import org.activiti.util.CollectionUtil;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -80,6 +82,16 @@ public class SpringTest {
 
     processEngine.getProcessService().deleteProcessInstance(execution.getId());
     
+  }
+
+  @Test
+  public void testJavaServiceDelegation() {
+    ProcessService processService = processEngine.getProcessService();
+    ProcessInstance pi = processService.startProcessInstanceByKey("javaServiceDelegation", 
+            CollectionUtil.singletonMap("input", "Activiti BPM Engine"));
+    Execution execution = processService.findExecutionInActivity(pi.getId(), "waitState");
+    assertEquals("ACTIVITI BPM ENGINE", processService.getVariable(execution.getId(), "input"));
+    processEngine.getProcessService().deleteProcessInstance(execution.getId());
   }
 
   @Test
