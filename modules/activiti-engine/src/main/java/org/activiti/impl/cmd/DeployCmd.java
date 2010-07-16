@@ -50,7 +50,16 @@ public class DeployCmd<T> implements Command<Deployment> {
     } else {
       deployment = deployments.get(0);
     }
-    deployerManager.deploy(deployment, persistenceSession);
+    
+    // Try to deploy the process
+    // If something goes wrong during parsing, the deployment must be deleted from the databse
+    try {
+      deployerManager.deploy(deployment, persistenceSession);
+    } catch (RuntimeException e) {
+      persistenceSession.deleteDeployment(deployment.getId());
+      throw e;
+    }
+    
     return deployment;
   }
 

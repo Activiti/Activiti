@@ -12,7 +12,7 @@
  */
 package org.activiti.test.bpmn.usertask;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 
 import java.util.List;
 
@@ -82,10 +82,13 @@ public class TaskAssignmentExtensionsTest {
 
   @Test
   public void testDuplicateAssigneeDeclaration() {
-    exception.expect(ActivitiException.class);
-    exception.expectMessage("duplicate assignee declaration for task");
-    String resource = ProcessDeployer.getBpmnProcessDefinitionResource(getClass(), "testDuplicateAssigneeDeclaration");
-    deployer.createDeployment().name(resource).addClasspathResource(resource).deploy();
+    try {
+      String resource = ProcessDeployer.getBpmnProcessDefinitionResource(getClass(), "testDuplicateAssigneeDeclaration");
+      deployer.getProcessService().createDeployment().addClasspathResource(resource).deploy();
+      fail("Invalid BPMN 2.0 process should not parse, but it gets parsed sucessfully");
+    } catch (ActivitiException e) {
+      // Exception is to be expected
+    }
   }
 
   @Test
