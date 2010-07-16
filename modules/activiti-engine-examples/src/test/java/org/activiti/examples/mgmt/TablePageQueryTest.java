@@ -66,23 +66,14 @@ public class TablePageQueryTest {
   public void testGetSortedTablePage() {
     List<String> taskIds = generateDummyTasks(15);
     
-    // Without a sort
-    TablePage tablePage = processEngineBuilder.getManagementService().createTablePageQuery()
-      .tableName("ACT_TASK")
-      .start(1)
-      .size(7)
-      .singleResult();
-    String[] expectedTaskNames = new String[] {"1", "2", "3", "4", "5", "6", "7"};
-    verifyTaskNames(expectedTaskNames, tablePage.getRows());
-    
     // With an ascending sort
-    tablePage = processEngineBuilder.getManagementService().createTablePageQuery()
+    TablePage tablePage = processEngineBuilder.getManagementService().createTablePageQuery()
       .tableName("ACT_TASK")
       .start(1)
       .size(7)
       .orderAsc("NAME_")
       .singleResult();
-    expectedTaskNames = new String[] {"1", "10", "11", "12", "13", "14", "2"} ;
+    String[] expectedTaskNames = new String[] {"B", "C", "D", "E", "F", "G", "H"};
     verifyTaskNames(expectedTaskNames, tablePage.getRows());
     
     // With a descending sort
@@ -92,7 +83,7 @@ public class TablePageQueryTest {
       .size(8)
       .orderDesc("NAME_")
       .singleResult();
-    expectedTaskNames = new String[] {"3", "2", "14", "13", "12", "11", "10", "1"} ;
+    expectedTaskNames = new String[] {"I", "H", "G", "F", "E", "D", "C", "B"} ;
     verifyTaskNames(expectedTaskNames, tablePage.getRows());
     
     processEngineBuilder.deleteTasks(taskIds);
@@ -109,7 +100,7 @@ public class TablePageQueryTest {
     ArrayList<String> taskIds = new ArrayList<String>();
     for (int i = 0; i < nrOfTasks; i++) {
       Task task = processEngineBuilder.getTaskService().newTask();
-      task.setName(String.valueOf(i));
+      task.setName(((char)('A' + i)) + "");
       processEngineBuilder.getTaskService().saveTask(task);
       taskIds.add(task.getId());
     }
