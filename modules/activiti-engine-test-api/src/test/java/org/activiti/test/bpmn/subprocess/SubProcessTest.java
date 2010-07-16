@@ -73,7 +73,7 @@ public class SubProcessTest {
   @ProcessDeclared
   public void testSimpleSubProcessWithTimer() {
     
-    Clock.setCurrentTime(new Date(0L));
+    Date startTime = new Date();
     
     // After staring the process, the task in the subprocess should be active
     ProcessInstance pi = deployer.getProcessService().startProcessInstanceByKey("simpleSubProcess");
@@ -83,7 +83,7 @@ public class SubProcessTest {
     assertEquals("Task in subprocess", subProcessTask.getName());
     
     // Setting the clock forward 2 hours 1 second (timer fires in 2 hours) and fire up the job executor 
-    Clock.setCurrentTime(new Date((2 * 60 * 60 * 1000 ) + 1000));
+    Clock.setCurrentTime(new Date(startTime.getTime() + (2 * 60 * 60 * 1000 ) + 1000));
     new JobExecutorPoller(deployer.getJobExecutor(), deployer.getCommandExecutor()).waitForJobExecutorToProcessAllJobs(5000L, 25L);
 
     // The subprocess should be left, and the escalated task should be active
@@ -102,7 +102,7 @@ public class SubProcessTest {
   @Ignore
   public void testSimpleSubProcessWithConcurrentTimer() {
     
-    Clock.setCurrentTime(new Date(0L));
+    Date startTime = new Date();
     
     // After staring the process, the task in the subprocess should be active
     ProcessInstance pi = deployer.getProcessService().startProcessInstanceByKey("simpleSubProcessWithConcurrentTimer");
@@ -115,7 +115,7 @@ public class SubProcessTest {
     assertEquals("Task in subprocess", subProcessTask.getName());
     
     // When the timer is fired (after 2 hours), two concurrent paths should be created
-    Clock.setCurrentTime(new Date((2 * 60 * 60 * 1000 ) + 1000));
+    Clock.setCurrentTime(new Date(startTime.getTime() + (2 * 60 * 60 * 1000 ) + 1000));
     new JobExecutorPoller(deployer.getJobExecutor(), deployer.getCommandExecutor()).waitForJobExecutorToProcessAllJobs(5000L, 25L);
     
     List<Task> tasksAfterTimer = taskQuery.list();
@@ -154,7 +154,7 @@ public class SubProcessTest {
   @Test
   @ProcessDeclared
   public void testNestedSimpleSubprocessWithTimerOnInnerSubProcess() {
-    Clock.setCurrentTime(new Date(0L));
+    Date startTime = new Date();
     
     // After staring the process, the task in the subprocess should be active
     ProcessInstance pi = deployer.getProcessService().startProcessInstanceByKey("nestedSubProcessWithTimer");
@@ -162,7 +162,7 @@ public class SubProcessTest {
     assertEquals("Task in subprocess", subProcessTask.getName());
     
     // Setting the clock forward 1 hour 1 second (timer fires in 1 hour) and fire up the job executor 
-    Clock.setCurrentTime(new Date(( 60 * 60 * 1000 ) + 1000));
+    Clock.setCurrentTime(new Date(startTime.getTime() + ( 60 * 60 * 1000 ) + 1000));
     new JobExecutorPoller(deployer.getJobExecutor(), deployer.getCommandExecutor()).waitForJobExecutorToProcessAllJobs(5000L, 25L);
 
     // The inner subprocess should be destoyed, and the escalated task should be active
@@ -219,7 +219,7 @@ public class SubProcessTest {
   @ProcessDeclared
   public void testSimpleParallelSubProcessWithTimer() {
     
-    Clock.setCurrentTime(new Date(0L));
+    Date startTime = new Date();
     
     // After staring the process, the tasks in the subprocess should be active
     ProcessInstance pi = deployer.getProcessService().startProcessInstanceByKey("simpleParallelSubProcessWithTimer");
@@ -232,7 +232,7 @@ public class SubProcessTest {
     assertEquals("Task B", taskB.getName());
     
     // Setting the clock forward 1 hour 1 second (timer fires in 1 hour) and fire up the job executor 
-    Clock.setCurrentTime(new Date(( 60 * 60 * 1000 ) + 1000));
+    Clock.setCurrentTime(new Date(startTime.getTime() + ( 60 * 60 * 1000 ) + 1000));
     new JobExecutorPoller(deployer.getJobExecutor(), deployer.getCommandExecutor()).waitForJobExecutorToProcessAllJobs(5000L, 25L);
 
     // The inner subprocess should be destoyed, and the tsk after the timer should be active
@@ -308,7 +308,7 @@ public class SubProcessTest {
   @ProcessDeclared
   public void testTwoNestedSubProcessesInParallelWithTimer() {
     
-    Clock.setCurrentTime(new Date(0L));
+    Date startTime = new Date();
     
     ProcessInstance pi = deployer.getProcessService().startProcessInstanceByKey("nestedParallelSubProcessesWithTimer");
     TaskQuery taskQuery = deployer.getTaskService()
@@ -324,7 +324,7 @@ public class SubProcessTest {
     assertEquals("Task in subprocess B", taskB.getName());
     
     // Firing the timer should destroy all three subprocesses and activate the task after the timer
-    Clock.setCurrentTime(new Date((2 * 60 * 60 * 1000 ) + 1000));
+    Clock.setCurrentTime(new Date(startTime.getTime() + (2 * 60 * 60 * 1000 ) + 1000));
     new JobExecutorPoller(deployer.getJobExecutor(), deployer.getCommandExecutor()).waitForJobExecutorToProcessAllJobs(5000L, 25L);
     
     Task taskAfterTimer = taskQuery.singleResult();

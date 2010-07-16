@@ -39,6 +39,8 @@ public class BoundaryTimerEventTest {
   @Test
   @ProcessDeclared
   public void testInterruptingTimerDuration() {
+    
+    Date startTime = new Date();
 
     // Start process instance
     ProcessInstance pi = deployer.getProcessService().startProcessInstanceByKey("interruptingBoundaryTimer");
@@ -48,7 +50,7 @@ public class BoundaryTimerEventTest {
     assertEquals("First line support", task.getName());
 
     // Set clock to the future such that the timer can fire
-    Clock.setCurrentTime(new Date(System.currentTimeMillis() + (5 * 60 * 60 * 1000)));
+    Clock.setCurrentTime(new Date(startTime.getTime() + (5 * 60 * 60 * 1000)));
     new JobExecutorPoller(deployer.getJobExecutor(), deployer.getCommandExecutor()).waitForJobExecutorToProcessAllJobs(10000L, 250);
 
     // The timer has fired, and the second task (secondlinesupport) now exists
