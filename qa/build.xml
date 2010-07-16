@@ -90,7 +90,8 @@
 &lt;tomcat-users&gt; &#10;
  	&lt;role rolename=&quot;manager&quot;/&gt; &#10;
  	&lt;user username=&quot;activiti&quot; password=&quot;activiti&quot; roles=&quot;manager&quot;/&gt; &#10;
-&lt;/tomcat-users>&quot; /&gt; &#10; Then run test.demo.setup to make it get placed inside your tomcat server." unless="tomcat.users.available"/>
+&lt;/tomcat-users&gt; &#10;
+Then run test.demo.setup to make it get placed inside your tomcat server." unless="tomcat.users.available"/>
     <exec executable="mvn" dir="../modules/activiti-webapp">
       <arg line="clean install" />
     </exec>
