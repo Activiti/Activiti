@@ -77,6 +77,7 @@ public class JobExecutor {
       }
       if (threadPoolExecutor==null) {
         threadPoolExecutor = new ThreadPoolExecutor(corePoolSize, maxPoolSize, 0L, TimeUnit.MILLISECONDS, threadPoolQueue);
+        threadPoolExecutor.setRejectedExecutionHandler(new ThreadPoolExecutor.CallerRunsPolicy());
       }
       
       // Create our pending jobs fetcher

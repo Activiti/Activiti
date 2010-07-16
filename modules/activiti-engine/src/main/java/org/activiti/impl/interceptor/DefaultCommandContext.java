@@ -86,6 +86,7 @@ public class DefaultCommandContext implements CommandContext {
           }
 
           if (exception != null) {
+            exception.printStackTrace();
             transactionContext.rollback();
           }
         }
