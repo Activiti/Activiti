@@ -91,6 +91,7 @@ public class IbatisPersistenceSessionFactory implements PersistenceSessionFactor
     statements.add("selectJobs");
     statements.add("selectNextJobsToExecute");
     statements.add("selectUnlockedTimersByDuedate");
+    statements.add("selectLockedJobs");
     statements.add("selectTimersByExecutionId");
     statements.add("selectUser");
     statements.add("selectUsersByGroup");

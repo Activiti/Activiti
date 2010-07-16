@@ -47,6 +47,13 @@
       and (DUEDATE_ is null or DUEDATE_ &lt; #{now, jdbcType=TIMESTAMP})
       and (LOCK_OWNER_ is null or LOCK_EXP_TIME_ &lt; #{now, jdbcType=TIMESTAMP})
   </select>
+  
+  <select id="selectLockedJobs" resultMap="jobResultMap">
+    select * 
+    from ACT_JOB
+    where (RETRIES_ &gt; 0)
+      and (LOCK_OWNER_ is not null)
+  </select>
 
   <select id="selectUnlockedTimersByDuedate" parameterType="date" resultMap="jobResultMap">
     select *

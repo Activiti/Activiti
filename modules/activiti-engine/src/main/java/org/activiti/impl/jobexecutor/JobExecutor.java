@@ -130,6 +130,7 @@ public class JobExecutor {
   }
   
   public void executeJobs(List<String> jobIds) {
+    // TODO: RejectedExecutionException handling!
     threadPoolExecutor.execute(new ExecuteJobsRunnable(commandExecutor, jobIds, jobHandlers, this));
   }
 

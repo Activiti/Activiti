@@ -320,14 +320,19 @@ public class IbatisPersistenceSession implements PersistenceSession {
     return sqlSession.selectList(statement("selectJobs"));
   }
   
-  public List<JobImpl> findNextJobsToExecute(int maxJobsPerAcquisition) {
+  public List<JobImpl> findNextJobsToExecute(int maxNrOfJobs) {
     Date now = Clock.getCurrentTime();
-    RowBounds rowBounds = new RowBounds(0, maxJobsPerAcquisition);
+    RowBounds rowBounds = new RowBounds(0, maxNrOfJobs);
     List<JobImpl> jobs = sqlSession.selectList(statement("selectNextJobsToExecute"), now, rowBounds);
     if (jobs!=null) {
       loaded.add(jobs);
     }
     return jobs;
+  }
+  
+  @SuppressWarnings("unchecked")
+  public List<JobImpl> findLockedJobs() {
+    return sqlSession.selectList(statement("selectLockedJobs"));
   }
   
   @SuppressWarnings("unchecked")
