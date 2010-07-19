@@ -9,10 +9,11 @@
   <property name="macos.browser" value="/usr/bin/open" />
   <property name="windows.browser" value="C:/Program Files/Mozilla Firefox/firefox.exe" />
   <property name="linux.browser" value="firefox" />
-  <property name="tomcat.home" value="${activiti.home}/apps/apache-tomcat-${tomcat.version}" /> 
+  <property name="tomcat.home" value="${activiti.home}/apps/apache-tomcat-${tomcat.version}" />
+  <property name="mvn.executable" value="mvn" />
   
   <target name="pre.commit.check">
-    <exec executable="mvn" dir="..">
+    <exec executable="${mvn.executable}" dir="..">
       <arg line="-Pcheck clean install" />
     </exec>
   </target>
@@ -60,7 +61,7 @@
   </target>
 
   <target name="build.javadocs">
-    <exec executable="mvn" dir="../modules/activiti-engine">
+    <exec executable="${mvn.executable}" dir="../modules/activiti-engine">
       <arg line="javadoc:javadoc" />
     </exec>
   	<property name="url" value="file://${basedir}/../modules/activiti-engine/target/site/apidocs/index.html" />
@@ -92,10 +93,10 @@
  	&lt;user username=&quot;activiti&quot; password=&quot;activiti&quot; roles=&quot;manager&quot;/&gt; &#10;
 &lt;/tomcat-users&gt; &#10;
 Then run test.demo.setup to make it get placed inside your tomcat server." unless="tomcat.users.available"/>
-    <exec executable="mvn" dir="../modules/activiti-webapp">
+    <exec executable="${mvn.executable}" dir="../modules/activiti-webapp">
       <arg line="clean install" />
     </exec>
-    <exec executable="mvn" dir="../modules/activiti-${webapp.redeploy.module}">
+    <exec executable="${mvn.executable}" dir="../modules/activiti-${webapp.redeploy.module}">
       <arg line="clean package" />
     </exec>
     <taskdef name="undeploy" classname="org.apache.catalina.ant.UndeployTask">

@@ -12,6 +12,7 @@
   <property name="docbook.xsl.dir" value="${docbooktool.dir}/docbook-xsl" />
 	<property name="html.stylesheet" value="${docbook.xsl.dir}/html/docbook.xsl" />
   <property name="fo.stylesheet" value="${docbook.xsl.dir}/fo/docbook.xsl" />
+  <property name="mvn.executable" value="mvn" />
 
 	<available file="${docbooktool.dir}" property="docbooktool.is.available" />
 
@@ -39,25 +40,13 @@
     <delete dir="target/tmp" />
 	</target>
 
-<target name="install.docbooktool"	unless="docbooktool.is.available">
-	<antcall target="install.docbooktool.windows"/>
-	<antcall target="install.docbooktool.unix"/>
-</target>
-
-  <target name="install.docbooktool.windows">
+  <target name="install.docbooktool" unless="docbooktool.is.available">
   	<mkdir dir="target" />
-    <exec executable="mvn.bat">
+    <exec executable="${mvn.executable}">
       <arg line="compile" />
     </exec>
   </target>
 
-  <target name="install.docbooktool.unix" 	unless="docbooktool.is.available">
-  	<mkdir dir="target" />
-    <exec executable="mvn">
-      <arg line="compile" />
-    </exec>
-  </target>
-	
 	<target name="prepare.src">
 		<mkdir dir="target/prepared-src" />
 		<copy todir="target/prepared-src" overwrite="true">
