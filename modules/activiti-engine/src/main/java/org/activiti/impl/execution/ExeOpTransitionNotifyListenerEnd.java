@@ -15,6 +15,7 @@ package org.activiti.impl.execution;
 import java.util.List;
 
 import org.activiti.impl.definition.ActivityImpl;
+import org.activiti.impl.event.type.EndActivityEvent;
 import org.activiti.pvm.Listener;
 
 
@@ -35,6 +36,7 @@ public class ExeOpTransitionNotifyListenerEnd implements ExeOp {
       execution.performOperation(this);
 
     } else {
+      execution.fireEvent(EndActivityEvent.INSTANCE);
       execution.setEventListenerIndex(0);
       execution.performOperation(TRANSITION_DESTROY_SCOPE);
     }

@@ -15,7 +15,7 @@ package org.activiti.impl.task;
 import java.io.Serializable;
 
 import org.activiti.ActivitiException;
-import org.activiti.impl.interceptor.CommandContextHolder;
+import org.activiti.impl.interceptor.CommandContext;
 import org.activiti.impl.persistence.PersistentObject;
 
 
@@ -43,7 +43,7 @@ public class TaskInvolvement implements Serializable, PersistentObject {
 
   public static TaskInvolvement createAndInsert() {
     TaskInvolvement taskInvolvement = new TaskInvolvement();
-    CommandContextHolder
+    CommandContext
         .getCurrentCommandContext()
         .getPersistenceSession()
         .insert(taskInvolvement);
@@ -51,7 +51,7 @@ public class TaskInvolvement implements Serializable, PersistentObject {
   }
   
   public void delete() {
-    CommandContextHolder
+    CommandContext
         .getCurrentCommandContext()
         .getPersistenceSession()
         .delete(this);
@@ -115,7 +115,7 @@ public class TaskInvolvement implements Serializable, PersistentObject {
   
   public TaskImpl getTask() {
     if ( (task==null) && (taskId!=null) ) {
-      this.task = CommandContextHolder
+      this.task = CommandContext
           .getCurrentCommandContext()
           .getPersistenceSession()
           .findTask(taskId);

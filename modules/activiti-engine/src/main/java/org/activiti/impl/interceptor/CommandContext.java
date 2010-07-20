@@ -12,23 +12,207 @@
  */
 package org.activiti.impl.interceptor;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Stack;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import org.activiti.ActivitiException;
+import org.activiti.impl.cfg.ProcessEngineConfiguration;
 import org.activiti.impl.msg.MessageSession;
+import org.activiti.impl.msg.MessageSessionFactory;
 import org.activiti.impl.persistence.PersistenceSession;
+import org.activiti.impl.persistence.PersistenceSessionFactory;
 import org.activiti.impl.timer.TimerSession;
+import org.activiti.impl.timer.TimerSessionFactory;
+import org.activiti.impl.tx.Session;
 import org.activiti.impl.tx.TransactionContext;
+import org.activiti.impl.tx.TransactionContextFactory;
 
 /**
+ * @author Tom Baeyens
  * @author Agim Emruli
  */
-public interface CommandContext {
-  PersistenceSession getPersistenceSession();
-  MessageSession getMessageSession();
-  TimerSession getTimerSession();
-  TransactionContext getTransactionContext();
+public class CommandContext {
 
-  //TODO: Probably remove
-  <T> T getSession(Class<T> sessionClass);
+  private static Logger log = Logger.getLogger(CommandContext.class.getName());
 
-  void close();
-  void exception(Throwable exception);
+  private static final ThreadLocal<Stack<CommandContext>> txContextStacks = new ThreadLocal<Stack<CommandContext>>();
+
+  protected Command< ? > command;
+  protected ProcessEngineConfiguration processEngineConfiguration;
+
+  protected PersistenceSession persistenceSession;
+  protected MessageSession messageSession;
+  protected TimerSession timerSession;
+  protected TransactionContext transactionContext;
+
+  protected Map<Class< ? >, SessionFactory> sessionFactories;
+  protected Map<Class< ? >, Session> sessions = new HashMap<Class< ? >, Session>();
+  protected Throwable exception = null;
+
+
+  public static void setCurrentCommandContext(CommandContext commandContext) {
+    getContextStack(true).push(commandContext);
+  }
+
+  public static void removeCurrentCommandContext() {
+    getContextStack(true).pop();
+  }
+
+  public static CommandContext getCurrentCommandContext() {
+    Stack<CommandContext> contextStack = getContextStack(false);
+    if ((contextStack == null) || (contextStack.isEmpty())) {
+      return null;
+    }
+    return contextStack.peek();
+  }
+
+  private static Stack<CommandContext> getContextStack(boolean isInitializationRequired) {
+    Stack<CommandContext> txContextStack = txContextStacks.get();
+    if (txContextStack == null && isInitializationRequired) {
+      txContextStack = new Stack<CommandContext>();
+      txContextStacks.set(txContextStack);
+    }
+    return txContextStack;
+  }
+
+  public CommandContext(Command<?> command, ProcessEngineConfiguration processEngineConfiguration, Map<Class<?>, SessionFactory> sessionFactories, TransactionContextFactory transactionContextFactory, PersistenceSessionFactory persistenceSessionFactory, MessageSessionFactory messageSessionFactory, TimerSessionFactory timerSessionFactory) {
+    this.command = command;
+    this.processEngineConfiguration = processEngineConfiguration;
+
+    this.persistenceSession = persistenceSessionFactory.openPersistenceSession(this);
+    this.messageSession = messageSessionFactory.openMessageSession(this);
+    this.timerSession = timerSessionFactory.openTimerSession(this);
+    this.transactionContext = transactionContextFactory.openTransactionContext(this);
+
+    this.sessionFactories = sessionFactories;
+  }
+
+  public void close() {
+    // the intention of this method is that all resources are closed properly,
+    // even
+    // if exceptions occur in close or flush methods of the sessions or the
+    // transaction context.
+
+    try {
+      try {
+        try {
+
+          if (exception == null) {
+            flushSessions();
+          }
+
+        } catch (Throwable exception) {
+          exception(exception);
+        } finally {
+
+          try {
+            if (exception == null) {
+              transactionContext.commit();
+            }
+          } catch (Throwable exception) {
+            exception(exception);
+          }
+
+          if (exception != null) {
+            exception.printStackTrace();
+            transactionContext.rollback();
+          }
+        }
+      } catch (Throwable exception) {
+        exception(exception);
+      } finally {
+
+        closeSessions();
+
+      }
+    } catch (Throwable exception) {
+      exception(exception);
+    } 
+
+    // rethrow the original exception if there was one
+    if (exception != null) {
+      if (exception instanceof Error) {
+        throw (Error) exception;
+      } else if (exception instanceof RuntimeException) {
+        throw (RuntimeException) exception;
+      } else {
+        throw new ActivitiException("exception while executing command " + command, exception);
+      }
+    }
+  }
+
+  protected void flushSessions() {
+    persistenceSession.flush();
+    messageSession.flush();
+
+    for (Session session : sessions.values()) {
+      session.flush();
+    }
+  }
+
+  protected void closeSessions() {
+    messageSession.close();
+    persistenceSession.close();
+
+    for (Session session : sessions.values()) {
+      try {
+        session.close();
+      } catch (Throwable exception) {
+        exception(exception);
+      }
+    }
+  }
+
+  public void exception(Throwable exception) {
+    if (this.exception == null) {
+      this.exception = exception;
+    } else {
+      log.log(Level.SEVERE, "exception in command context", exception);
+    }
+  }
+
+  @SuppressWarnings({"unchecked"})
+  public <T> T getSession(Class<T> sessionClass) {
+    Session session = sessions.get(sessionClass);
+    if (session == null) {
+      SessionFactory sessionFactory = sessionFactories.get(sessionClass);
+      session = sessionFactory.openSession();
+      sessions.put(sessionClass, session);
+    }
+
+    return (T) session;
+  }
+
+  // getters and setters //////////////////////////////////////////////////////
+
+  public TransactionContext getTransactionContext() {
+    return transactionContext;
+  }
+  public PersistenceSession getPersistenceSession() {
+    return persistenceSession;
+  }
+  public MessageSession getMessageSession() {
+    return messageSession;
+  }
+  public TimerSession getTimerSession() {
+    return timerSession;
+  }
+  public Command< ? > getCommand() {
+    return command;
+  }
+  public Map<Class< ? >, SessionFactory> getSessionFactories() {
+    return sessionFactories;
+  }
+  public Map<Class< ? >, Session> getSessions() {
+    return sessions;
+  }
+  public Throwable getException() {
+    return exception;
+  }
+  public ProcessEngineConfiguration getProcessEngineConfiguration() {
+    return processEngineConfiguration;
+  }
 }

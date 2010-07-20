@@ -16,6 +16,7 @@ import java.util.List;
 
 import org.activiti.impl.definition.ActivityImpl;
 import org.activiti.impl.definition.TransitionImpl;
+import org.activiti.impl.event.type.StartActivityEvent;
 import org.activiti.pvm.Listener;
 
 
@@ -36,6 +37,7 @@ public class ExeOpTransitionNotifyListenerStart implements ExeOp {
       execution.performOperation(this);
 
     } else {
+      execution.fireEvent(StartActivityEvent.INSTANCE);
       execution.setEventListenerIndex(0);
 
       TransitionImpl transition = execution.getTransition();

@@ -27,7 +27,7 @@ import org.activiti.Task;
 import org.activiti.impl.db.execution.DbExecutionImpl;
 import org.activiti.impl.execution.ExecutionImpl;
 import org.activiti.impl.execution.VariableMap;
-import org.activiti.impl.interceptor.CommandContextHolder;
+import org.activiti.impl.interceptor.CommandContext;
 import org.activiti.impl.persistence.PersistentObject;
 import org.activiti.impl.time.Clock;
 import org.activiti.pvm.ActivityExecution;
@@ -84,7 +84,7 @@ public class TaskImpl implements Task, Serializable, PersistentObject {
   /** creates and initializes a new persistent task. */
   public static TaskImpl createAndInsert() {
     TaskImpl task = create();
-    CommandContextHolder
+    CommandContext
         .getCurrentCommandContext()
         .getPersistenceSession()
         .insert(task);
@@ -111,7 +111,7 @@ public class TaskImpl implements Task, Serializable, PersistentObject {
       taskInvolvements.delete();
     }
     
-    CommandContextHolder
+    CommandContext
         .getCurrentCommandContext()
         .getPersistenceSession()
         .delete(this);
@@ -199,7 +199,7 @@ public class TaskImpl implements Task, Serializable, PersistentObject {
   
   public ExecutionImpl getExecution() {
     if ( (execution==null) && (executionId!=null) ) {
-      this.execution = CommandContextHolder
+      this.execution = CommandContext
         .getCurrentCommandContext()
         .getPersistenceSession()
         .findExecution(executionId);
@@ -273,7 +273,7 @@ public class TaskImpl implements Task, Serializable, PersistentObject {
   
   public List<TaskInvolvement> getTaskInvolvements() {
     if (!isTaskInvolvementsInitialized) {
-      taskInvolvements = CommandContextHolder
+      taskInvolvements = CommandContext
           .getCurrentCommandContext()
           .getPersistenceSession()
           .findTaskInvolvementsByTask(id);

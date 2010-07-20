@@ -47,7 +47,7 @@ public class DefaultCommandExecutor implements CommandExecutor {
   }
 
   public <T> T execute(Command<T> command) {
-    log.fine("");
+    log.fine("                                                                                                 ");
     log.fine("=== starting command " + command + " ===========================================");
     try {
 
@@ -64,7 +64,7 @@ public class DefaultCommandExecutor implements CommandExecutor {
 
     } finally {
       log.fine("=== command " + command + " finished ===========================================");
-      log.fine("");
+      log.fine("                                                                                                 ");
     }
   }
 
@@ -120,13 +120,13 @@ public class DefaultCommandExecutor implements CommandExecutor {
       context = commandContextFactory.createCommandContext(command);
 
       try {
-        CommandContextHolder.setCurrentCommandContext(context);
+        CommandContext.setCurrentCommandContext(context);
         return next.execute(command);
       } catch (Exception e) {
         context.exception(e);
       } finally {
         context.close();
-        CommandContextHolder.removeCurrentCommandContext();
+        CommandContext.removeCurrentCommandContext();
       }
       return null;
     }

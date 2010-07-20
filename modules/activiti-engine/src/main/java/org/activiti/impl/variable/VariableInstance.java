@@ -18,7 +18,7 @@ import java.util.Map;
 
 import org.activiti.impl.bytes.ByteArrayImpl;
 import org.activiti.impl.db.execution.DbExecutionImpl;
-import org.activiti.impl.interceptor.CommandContextHolder;
+import org.activiti.impl.interceptor.CommandContext;
 import org.activiti.impl.persistence.PersistenceSession;
 import org.activiti.impl.persistence.PersistentObject;
 import org.activiti.impl.task.TaskImpl;
@@ -79,7 +79,7 @@ public class VariableInstance implements Serializable, PersistentObject {
   }
 
   public void delete() {
-    PersistenceSession persistenceSession = CommandContextHolder.getCurrentCommandContext().getPersistenceSession();
+    PersistenceSession persistenceSession = CommandContext.getCurrentCommandContext().getPersistenceSession();
     persistenceSession.delete(this);
 
     if (byteArrayValueId != null) {
@@ -132,7 +132,7 @@ public class VariableInstance implements Serializable, PersistentObject {
 
   public ByteArrayImpl getByteArrayValue() {
     if ((byteArrayValue == null) && (byteArrayValueId != null)) {
-      byteArrayValue = CommandContextHolder.getCurrentCommandContext().getPersistenceSession().findByteArrayById(byteArrayValueId);
+      byteArrayValue = CommandContext.getCurrentCommandContext().getPersistenceSession().findByteArrayById(byteArrayValueId);
     }
     return byteArrayValue;
   }

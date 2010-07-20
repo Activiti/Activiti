@@ -25,8 +25,11 @@ import org.activiti.impl.definition.ActivityImpl;
 import org.activiti.impl.definition.ProcessDefinitionImpl;
 import org.activiti.impl.definition.TransitionImpl;
 import org.activiti.impl.definition.VariableDeclarationImpl;
+import org.activiti.impl.event.Event;
+import org.activiti.impl.event.EventListener;
+import org.activiti.impl.event.type.EndProcessInstanceEvent;
+import org.activiti.impl.event.type.StartProcessInstanceEvent;
 import org.activiti.impl.interceptor.CommandContext;
-import org.activiti.impl.interceptor.CommandContextHolder;
 import org.activiti.impl.job.TimerImpl;
 import org.activiti.impl.timer.TimerDeclarationImpl;
 import org.activiti.impl.variable.VariableTypes;
@@ -183,15 +186,12 @@ public class ExecutionImpl implements
     // if there is a parent 
     ensureParentInitialized();
     if (parent!=null) {
-      
-      // parent will be set to null down below. Storing it here for using it later on if needed.
-      ExecutionImpl parentLocal = parent; 
-      
       // then remove the bidirectional relation
       parent.removeExecution(this);
       
-    } else {
+    } else { // this is a process instance
       isEnded = true;
+      fireEvent(EndProcessInstanceEvent.INSTANCE);
     }
   }
   
@@ -338,7 +338,7 @@ public class ExecutionImpl implements
 
   public void destroyScope() {
     log.fine("destroy scope: scoped "+this+" continues as parent scope "+getParent());
-    CommandContext commandContext = CommandContextHolder.getCurrentCommandContext();
+    CommandContext commandContext = CommandContext.getCurrentCommandContext();
     if (commandContext!=null) {
       commandContext
         .getTimerSession()
@@ -370,7 +370,7 @@ public class ExecutionImpl implements
     timer.setRepeat(timerDeclaration.getRepeat());
     timer.setRetries(timerDeclaration.getRetries());
     
-    CommandContextHolder
+    CommandContext
       .getCurrentCommandContext()
       .getTimerSession()
       .schedule(timer);
@@ -388,6 +388,7 @@ public class ExecutionImpl implements
   public ObjectProcessInstance start() {
     ActivityImpl initial = getProcessDefinition().getInitial();
     setActivity(initial);
+    fireEvent(StartProcessInstanceEvent.INSTANCE);
     performOperation(ExeOp.EXECUTE_CURRENT_ACTIVITY);
     return this;
   }
@@ -485,6 +486,19 @@ public class ExecutionImpl implements
     return Collections.emptyList();
   }
   
+  // events ///////////////////////////////////////////////////////////////////
+  
+  public void fireEvent(Event event) {
+    CommandContext commandContext = CommandContext.getCurrentCommandContext();
+    if (commandContext!=null) {
+      List<EventListener> eventListeners = commandContext.getProcessEngineConfiguration().getEventListeners();
+      if (eventListeners!=null) {
+        for (EventListener eventListener: eventListeners) {
+          eventListener.notify(this, event);
+        }
+      }
+    }
+  }
 
   // variables ////////////////////////////////////////////////////////////////
 

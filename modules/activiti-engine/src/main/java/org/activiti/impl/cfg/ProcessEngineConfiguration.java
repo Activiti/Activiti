@@ -12,12 +12,15 @@
  */
 package org.activiti.impl.cfg;
 
+import java.util.List;
+
 import org.activiti.DbSchemaStrategy;
 import org.activiti.IdentityService;
 import org.activiti.ManagementService;
 import org.activiti.ProcessService;
 import org.activiti.TaskService;
 import org.activiti.impl.db.IdGenerator;
+import org.activiti.impl.event.EventListener;
 import org.activiti.impl.interceptor.CommandContextFactory;
 import org.activiti.impl.interceptor.CommandExecutor;
 import org.activiti.impl.job.JobHandlers;
@@ -31,27 +34,23 @@ import org.activiti.impl.variable.VariableTypes;
  */
 public class ProcessEngineConfiguration {
 
-  private String processEngineName;
+  protected String processEngineName;
+  protected ProcessService processService;
+  protected IdentityService identityService;
+  protected TaskService taskService;
+  protected ManagementService managementService;
+  protected DeployerManager deployerManager;
+  protected VariableTypes variableTypes;
+  protected JobExecutor jobExecutor;
+  protected JobHandlers jobHandlers;
+  protected IdGenerator idGenerator;
+  protected CommandExecutor commandExecutor;
+  protected List<EventListener> eventListeners;
+  protected DbSchemaStrategy dbSchemaStrategy;
+  protected CommandContextFactory commandContextFactory;
+  protected PersistenceSessionFactory persistenceSessionFactory;
 
-  private ProcessService processService;
-  private IdentityService identityService;
-  private TaskService taskService;
-  private ManagementService managementService;
-
-  private DeployerManager deployerManager;
-  private VariableTypes variableTypes;
-  private JobExecutor jobExecutor;
-  private JobHandlers jobHandlers;
-  private IdGenerator idGenerator;
-  private CommandExecutor commandExecutor;
-
-  private DbSchemaStrategy dbSchemaStrategy;
-
-  private CommandContextFactory commandContextFactory;
-  private PersistenceSessionFactory persistenceSessionFactory;
-
-  // getters and setters
-  // //////////////////////////////////////////////////////
+  // getters and setters //////////////////////////////////////////////////////
 
   public DeployerManager getDeployerManager() {
     return deployerManager;
@@ -163,5 +162,13 @@ public class ProcessEngineConfiguration {
   
   public void setCommandContextFactory(CommandContextFactory commandContextFactory) {
     this.commandContextFactory = commandContextFactory;
+  }
+
+  public List<EventListener> getEventListeners() {
+    return eventListeners;
+  }
+
+  public void setEventListeners(List<EventListener> eventListeners) {
+    this.eventListeners = eventListeners;
   }
 }

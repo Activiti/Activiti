@@ -20,7 +20,7 @@ import java.util.Map;
 
 import org.activiti.Deployment;
 import org.activiti.impl.bytes.ByteArrayImpl;
-import org.activiti.impl.interceptor.CommandContextHolder;
+import org.activiti.impl.interceptor.CommandContext;
 
 /**
  * @author Tom Baeyens
@@ -86,7 +86,7 @@ public class DeploymentImpl implements Serializable, Deployment {
 
   public Map<String, ByteArrayImpl> getResources() {
     if (!resourcesInitialized) {
-      List<ByteArrayImpl> resourceList = CommandContextHolder
+      List<ByteArrayImpl> resourceList = CommandContext
         .getCurrentCommandContext()
         .getPersistenceSession()
         .findDeploymentResources(id);

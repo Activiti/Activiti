@@ -12,6 +12,9 @@
  */
 package org.activiti.impl.cfg;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.el.ELResolver;
 import javax.sql.DataSource;
 
@@ -28,10 +31,11 @@ import org.activiti.impl.calendar.DurationBusinessCalendar;
 import org.activiti.impl.calendar.MapBusinessCalendarManager;
 import org.activiti.impl.db.IdGenerator;
 import org.activiti.impl.el.ExpressionManager;
+import org.activiti.impl.event.EventListener;
+import org.activiti.impl.history.HistoryEventListener;
 import org.activiti.impl.identity.IdentitySession;
 import org.activiti.impl.interceptor.CommandContextFactory;
 import org.activiti.impl.interceptor.CommandExecutor;
-import org.activiti.impl.interceptor.DefaultCommandContextFactory;
 import org.activiti.impl.interceptor.DefaultCommandExecutor;
 import org.activiti.impl.job.JobHandlers;
 import org.activiti.impl.job.TimerExecuteNestedActivityJobHandler;
@@ -71,7 +75,7 @@ public class ProcessEngineFactory {
   private String dataBaseName = "h2";
   private boolean localTransactions = true;
 
-  private final DefaultCommandContextFactory commandContextFactory;
+  private final CommandContextFactory commandContextFactory;
 
   private boolean initialized = false;
   private Object lock = new Object();
@@ -124,7 +128,7 @@ public class ProcessEngineFactory {
         commandContextFactory.setPersistenceSessionFactory(persistenceSessionFactory);
         commandContextFactory.setTimerSessionFactory(createDefaultTimerSessionFactory(jobExecutor));
         commandContextFactory.setTransactionContextFactory(createDefaultTransactionContextFactory());
-
+        
         configuration.setCommandContextFactory(commandContextFactory);
         configuration.setCommandExecutor(commandExecutor);
         configuration.setDbSchemaStrategy(dbSchemaStrategy);
@@ -139,6 +143,12 @@ public class ProcessEngineFactory {
         configuration.setProcessService(processService);
         configuration.setTaskService(taskService);
         configuration.setVariableTypes(variableTypes);
+
+        List<EventListener> eventListeners = new ArrayList<EventListener>();
+        eventListeners.add(new HistoryEventListener());
+        configuration.setEventListeners(eventListeners );
+
+        commandContextFactory.setProcessEngineConfiguration(configuration);
 
         initialized = true;
 
@@ -175,8 +185,8 @@ public class ProcessEngineFactory {
     return jobHandlers;
   }
 
-  protected DefaultCommandContextFactory createDefaultCommandContextFactory() {
-    DefaultCommandContextFactory commandContextFactory = new DefaultCommandContextFactory();
+  protected CommandContextFactory createDefaultCommandContextFactory() {
+    CommandContextFactory commandContextFactory = new CommandContextFactory();
     commandContextFactory.addSessionFactory(IdentitySession.class, new IbatisIdentitySessionFactory());
     return commandContextFactory;
   }

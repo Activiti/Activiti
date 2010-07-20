@@ -13,15 +13,75 @@
  */
 package org.activiti.impl.interceptor;
 
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
 
+import org.activiti.impl.cfg.ProcessEngineConfiguration;
+import org.activiti.impl.msg.MessageSessionFactory;
+import org.activiti.impl.persistence.PersistenceSessionFactory;
+import org.activiti.impl.timer.TimerSessionFactory;
+import org.activiti.impl.tx.TransactionContextFactory;
+
+
 /**
- * @author Agim Emruli
+ * @author Tom Baeyens
  */
-public interface CommandContextFactory {
-  CommandContext createCommandContext(Command<?> cmd);
-  void addSessionFactory(Class<?> sessionClass, SessionFactory sessionFactory);
-  SessionFactory getSessionFactory(Class<?> sessionClass);
-  void removeSessionFactory(Class<?> sessionClass);
-  Map<Class< ? >, SessionFactory> getSessionFactories();
+public class CommandContextFactory {
+
+  protected ProcessEngineConfiguration processEngineConfiguration;
+  
+  // TODO remove (they are in process engine configuration)
+  
+  private PersistenceSessionFactory persistenceSessionFactory;
+  private MessageSessionFactory messageSessionFactory;
+  private TimerSessionFactory timerSessionFactory;
+  private TransactionContextFactory transactionContextFactory;
+
+  /** is this open ended set of session factories useful?
+   * intended purpose is to allow for user defined session factories and sessions. */  
+  private final Map<Class<?>, SessionFactory> sessionFactories = new HashMap<Class<?>, SessionFactory>();
+
+  public CommandContext createCommandContext(Command<?> cmd) {
+    return new CommandContext(cmd, processEngineConfiguration, sessionFactories, transactionContextFactory, persistenceSessionFactory, messageSessionFactory, timerSessionFactory);
+  }
+  
+  public void addSessionFactory(Class<?> sessionClass, SessionFactory sessionFactory) {
+    sessionFactories.put(sessionClass, sessionFactory);
+  }
+  
+  public SessionFactory getSessionFactory(Class<?> sessionClass) {
+    return sessionFactories.get(sessionClass);
+  }
+  
+  public void removeSessionFactory(Class<?> sessionClass) {
+    sessionFactories.remove(sessionClass);
+  }
+
+  // getters and setters //////////////////////////////////////////////////////
+  
+  public ProcessEngineConfiguration getProcessEngineConfiguration() {
+    return processEngineConfiguration;
+  }
+  public void setProcessEngineConfiguration(ProcessEngineConfiguration processEngineConfiguration) {
+    this.processEngineConfiguration = processEngineConfiguration;
+  }
+
+
+  
+  public Map<Class< ? >, SessionFactory> getSessionFactories() {
+    return Collections.unmodifiableMap(sessionFactories);
+  }
+  public void setPersistenceSessionFactory(PersistenceSessionFactory persistenceSessionFactory) {
+    this.persistenceSessionFactory = persistenceSessionFactory;
+  }
+  public void setMessageSessionFactory(MessageSessionFactory messageSessionFactory) {
+    this.messageSessionFactory = messageSessionFactory;
+  }
+  public void setTimerSessionFactory(TimerSessionFactory timerSessionFactory) {
+    this.timerSessionFactory = timerSessionFactory;
+  }
+  public void setTransactionContextFactory(TransactionContextFactory transactionContextFactory) {
+    this.transactionContextFactory = transactionContextFactory;
+  }
 }
