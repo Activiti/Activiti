@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<definitions id="oryx_8671f076-fd70-4f38-a0d5-cb4914906101" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://www.omg.org/bpmn20" xmlns="http://schema.omg.org/spec/BPMN/2.0" xmlns:bpmndi="http://bpmndi.org">
+    <process id="scriptTask">
+        <laneSet id="oryx_626cea57-7c9d-4a0d-8160-cf9e8829f49c">
+            <lane name="DefaultLane" id="oryx_431e048a-bcc0-4cea-8836-2beb184467f4">
+                <flowElementRef>oryx_5B340F01-9584-4696-BFB7-A89AA3E3205D</flowElementRef>
+                <flowElementRef>oryx_02752C52-25EE-4BFE-BCD3-28F36E07DC5A</flowElementRef>
+                <flowElementRef>oryx_CF475872-9880-4759-8994-82DC263FE83F</flowElementRef>
+                <flowElementRef>oryx_958F6F65-FD03-4DDF-A904-83D53D9CEC1F</flowElementRef>
+            </lane>
+        </laneSet>
+        <startEvent name="" id="oryx_5B340F01-9584-4696-BFB7-A89AA3E3205D"/>
+        <scriptTask scriptLanguage="groovy" completionQuantity="1" startQuantity="1" isForCompensation="false" name="Script" id="oryx_02752C52-25EE-4BFE-BCD3-28F36E07DC5A">
+            <script> sum = 0
+        for ( i in numbers) {
+          sum += i
+}</script>
+        </scriptTask>
+        <userTask implementation="webService" completionQuantity="1" startQuantity="1" isForCompensation="false" name="Human task" id="oryx_CF475872-9880-4759-8994-82DC263FE83F"/>
+        <endEvent name="" id="oryx_958F6F65-FD03-4DDF-A904-83D53D9CEC1F"/>
+        <sequenceFlow targetRef="oryx_02752C52-25EE-4BFE-BCD3-28F36E07DC5A" sourceRef="oryx_5B340F01-9584-4696-BFB7-A89AA3E3205D" name="" id="oryx_01D83A04-E3FA-4ED3-BF74-EB21B605429A"/>
+        <sequenceFlow targetRef="oryx_CF475872-9880-4759-8994-82DC263FE83F" sourceRef="oryx_02752C52-25EE-4BFE-BCD3-28F36E07DC5A" name="" id="oryx_1A91BBE4-B704-4250-B7FD-4EE28A0E1216"/>
+        <sequenceFlow targetRef="oryx_958F6F65-FD03-4DDF-A904-83D53D9CEC1F" sourceRef="oryx_CF475872-9880-4759-8994-82DC263FE83F" name="" id="oryx_8A33EC06-65EA-4DC1-8650-C213F7751522"/>
+    </process>
+    <bpmndi:processDiagram processRef="scriptTask" id="scriptTask_gui">
+        <bpmndi:laneCompartment isVisible="false" height="0.0" width="0.0" y="0.0" x="0.0" name="DefaultLane" id="oryx_431e048a-bcc0-4cea-8836-2beb184467f4_gui">
+            <bpmndi:eventShape eventRef="oryx_5B340F01-9584-4696-BFB7-A89AA3E3205D" height="30.0" width="30.0" y="240.0" x="180.0" name="" id="oryx_5B340F01-9584-4696-BFB7-A89AA3E3205D_gui"/>
+            <bpmndi:activityShape activityRef="oryx_02752C52-25EE-4BFE-BCD3-28F36E07DC5A" height="80.0" width="100.0" y="215.0" x="295.0" name="Script" id="oryx_02752C52-25EE-4BFE-BCD3-28F36E07DC5A_gui"/>
+            <bpmndi:activityShape activityRef="oryx_CF475872-9880-4759-8994-82DC263FE83F" height="80.0" width="100.0" y="215.0" x="450.0" name="Human task" id="oryx_CF475872-9880-4759-8994-82DC263FE83F_gui"/>
+            <bpmndi:eventShape eventRef="oryx_958F6F65-FD03-4DDF-A904-83D53D9CEC1F" height="28.0" width="28.0" y="241.0" x="615.0" name="" id="oryx_958F6F65-FD03-4DDF-A904-83D53D9CEC1F_gui"/>
+        </bpmndi:laneCompartment>
+        <bpmndi:sequenceFlowConnector sequenceFlowRef="oryx_01D83A04-E3FA-4ED3-BF74-EB21B605429A" label="" targetRef="oryx_02752C52-25EE-4BFE-BCD3-28F36E07DC5A_gui" sourceRef="oryx_5B340F01-9584-4696-BFB7-A89AA3E3205D_gui" id="oryx_01D83A04-E3FA-4ED3-BF74-EB21B605429A_gui"/>
+        <bpmndi:sequenceFlowConnector sequenceFlowRef="oryx_1A91BBE4-B704-4250-B7FD-4EE28A0E1216" label="" targetRef="oryx_CF475872-9880-4759-8994-82DC263FE83F_gui" sourceRef="oryx_02752C52-25EE-4BFE-BCD3-28F36E07DC5A_gui" id="oryx_1A91BBE4-B704-4250-B7FD-4EE28A0E1216_gui"/>
+        <bpmndi:sequenceFlowConnector sequenceFlowRef="oryx_8A33EC06-65EA-4DC1-8650-C213F7751522" label="" targetRef="oryx_958F6F65-FD03-4DDF-A904-83D53D9CEC1F_gui" sourceRef="oryx_CF475872-9880-4759-8994-82DC263FE83F_gui" id="oryx_8A33EC06-65EA-4DC1-8650-C213F7751522_gui"/>
+    </bpmndi:processDiagram>
+</definitions>

@@ -34,6 +34,13 @@ public class BpmnParser extends Parser {
    * The location of the BPMN 2.0 XML schema
    */
   public static final String SCHEMA_RESOURCE = "org/activiti/impl/bpmn/parser/BPMN20.xsd";
+  
+  /**
+   * The location of the BPMN 2.0 beta XML schema.
+   * 
+   * See ACT-52 (http://jira.codehaus.org/browse/ACT-52)
+   */
+  public static final String BETA_SCHEMA_RESOURCE = "org/activiti/impl/bpmn/parser/beta/BPMN20.xsd";
 
   /**
    * The namespace of the Activiti custom BPMN extensions

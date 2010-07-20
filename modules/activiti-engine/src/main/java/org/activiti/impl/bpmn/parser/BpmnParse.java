@@ -12,6 +12,7 @@
  */
 package org.activiti.impl.bpmn.parser;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.ArrayList;
@@ -33,7 +34,7 @@ import org.activiti.impl.bpmn.Operation;
 import org.activiti.impl.bpmn.ParallelGatewayActivity;
 import org.activiti.impl.bpmn.ReceiveTaskActivity;
 import org.activiti.impl.bpmn.ScriptTaskActivity;
-import org.activiti.impl.bpmn.ServiceActivatingActivityBehaviour;
+import org.activiti.impl.bpmn.ServiceInvocationActivityBehaviour;
 import org.activiti.impl.bpmn.SubProcessActivity;
 import org.activiti.impl.bpmn.TaskActivity;
 import org.activiti.impl.bpmn.UserTaskActivity;
@@ -62,6 +63,7 @@ import org.activiti.impl.xml.Parser;
 import org.activiti.pvm.ActivityBehavior;
 import org.activiti.pvm.Condition;
 import org.activiti.pvm.Listener;
+import org.xml.sax.SAXParseException;
 
 /**
  * Specific parsing representation created by the {@link BpmnParser} to parse
@@ -135,7 +137,22 @@ public class BpmnParse extends Parse {
 
   @Override
   public BpmnParse execute() {
-    super.execute();
+    try {
+      super.execute(); // schema validation
+    } catch (ActivitiException e) {
+      // Fall back to beta 1 XSD (see ACT-52)
+      if (e.getMessage().toLowerCase().contains("cannot find the declaration of element 'definitions'")) {
+        try {
+          streamSource.getInputStream().reset();
+          setSchemaResource(BpmnParser.BETA_SCHEMA_RESOURCE);
+          super.execute();
+        } catch (IOException ioe) {
+          throw e;
+        }
+      } else {
+        throw e;
+      }
+    }
 
     // Item definitions and interfaces/operations are not part of any process definition
     // They need to be parsed before the process definitions since they will refer to them
@@ -389,7 +406,15 @@ public class BpmnParse extends Parse {
     Element scriptElement = scriptTaskElement.element("script");
     if (scriptElement != null) {
       script = scriptElement.getText();
-      language = scriptTaskElement.attribute("scriptFormat");
+      
+      // ACT-52: BPMN 2.0 Beta compatibility
+      language = scriptTaskElement.attribute("scriptLanguage");
+      // end compatibility
+      
+      if (language == null) {
+        language = scriptTaskElement.attribute("scriptFormat");
+      }
+      
       if (language == null) {
         language = ScriptingEngines.DEFAULT_SCRIPTING_LANGUAGE;
       }
@@ -405,7 +430,7 @@ public class BpmnParse extends Parse {
 
     String expression = serviceTaskElement.attributeNS(BpmnParser.BPMN_EXTENSIONS_NS, "java");
     if (expression != null && expression.trim().length() > 0) {
-      activity.setActivityBehavior(new ServiceActivatingActivityBehaviour(expressionManager.createValueExpression(expression)));
+      activity.setActivityBehavior(new ServiceInvocationActivityBehaviour(expressionManager.createValueExpression(expression)));
     } else {
       throw new ActivitiException("java attribute is mandatory on serviceTask");
     }

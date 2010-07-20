@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<definitions id="definitions" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://www.omg.org/bpmn20" xmlns="http://schema.omg.org/spec/BPMN/2.0" xmlns:bpmndi="http://bpmndi.org">
+    <process id="startToEnd">
+        <laneSet id="oryx_a465405e-b4e8-48bf-ad6a-1b57885c7d77">
+            <lane name="DefaultLane" id="oryx_9b47248d-3b94-4517-b881-265a62d307c8">
+                <flowElementRef>oryx_540ED572-1BAD-4DB1-9DAA-AC010BE624AF</flowElementRef>
+                <flowElementRef>oryx_79C56DE7-1031-4DD4-931E-E03937662803</flowElementRef>
+            </lane>
+        </laneSet>
+        <startEvent name="" id="oryx_540ED572-1BAD-4DB1-9DAA-AC010BE624AF"/>
+        <endEvent name="" id="oryx_79C56DE7-1031-4DD4-931E-E03937662803"/>
+        <sequenceFlow targetRef="oryx_79C56DE7-1031-4DD4-931E-E03937662803" sourceRef="oryx_540ED572-1BAD-4DB1-9DAA-AC010BE624AF" name="" id="oryx_6CB23BC9-70AB-4AEB-BB76-2E38C759C2A2"/>
+    </process>
+    <bpmndi:processDiagram processRef="startToEnd" id="startToEnd_gui">
+        <bpmndi:laneCompartment isVisible="false" height="0.0" width="0.0" y="0.0" x="0.0" name="DefaultLane" id="oryx_9b47248d-3b94-4517-b881-265a62d307c8_gui">
+            <bpmndi:eventShape eventRef="oryx_540ED572-1BAD-4DB1-9DAA-AC010BE624AF" height="30.0" width="30.0" y="253.0" x="71.0" name="" id="oryx_540ED572-1BAD-4DB1-9DAA-AC010BE624AF_gui"/>
+            <bpmndi:eventShape eventRef="oryx_79C56DE7-1031-4DD4-931E-E03937662803" height="28.0" width="28.0" y="254.0" x="184.0" name="" id="oryx_79C56DE7-1031-4DD4-931E-E03937662803_gui"/>
+        </bpmndi:laneCompartment>
+        <bpmndi:sequenceFlowConnector sequenceFlowRef="oryx_6CB23BC9-70AB-4AEB-BB76-2E38C759C2A2" label="" targetRef="oryx_79C56DE7-1031-4DD4-931E-E03937662803_gui" sourceRef="oryx_540ED572-1BAD-4DB1-9DAA-AC010BE624AF_gui" id="oryx_6CB23BC9-70AB-4AEB-BB76-2E38C759C2A2_gui"/>
+    </bpmndi:processDiagram>
+</definitions>

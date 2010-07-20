@@ -128,7 +128,7 @@ public class Parse extends DefaultHandler {
       
       SAXParser saxParser = parser.getSaxParser(); 
       saxParser.parse(inputStream, new ParseHandler(this));
-    } catch (Exception e) {
+    } catch (Exception e) { // any exception can happen (Activiti, Io, etc.)
       throw new ActivitiException("couldn't parse " + streamSource + ": "+e.getMessage(), e);
     }
     
