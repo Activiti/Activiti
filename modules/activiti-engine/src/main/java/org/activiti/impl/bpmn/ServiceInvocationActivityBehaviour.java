@@ -23,11 +23,11 @@ import org.activiti.pvm.ActivityExecution;
 /**
  * @author dsyer
  */
-public class ServiceActivatingActivityBehaviour implements ActivityBehavior {
+public class ServiceInvocationActivityBehaviour implements ActivityBehavior {
 
   private final ActivitiValueExpression expression;
 
-  public ServiceActivatingActivityBehaviour(ActivitiValueExpression expression) {
+  public ServiceInvocationActivityBehaviour(ActivitiValueExpression expression) {
     this.expression = expression;
   }
 
