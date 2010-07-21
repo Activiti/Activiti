@@ -42,13 +42,7 @@ public class CommandContext {
 
   protected Command< ? > command;
   protected ProcessEngineConfiguration processEngineConfiguration;
-
-  protected PersistenceSession persistenceSession;
-  protected MessageSession messageSession;
-  protected TimerSession timerSession;
   protected TransactionContext transactionContext;
-
-  protected Map<Class< ? >, SessionFactory> sessionFactories;
   protected Map<Class< ? >, Session> sessions = new HashMap<Class< ? >, Session>();
   protected Throwable exception = null;
 
@@ -78,16 +72,10 @@ public class CommandContext {
     return txContextStack;
   }
 
-  public CommandContext(Command<?> command, ProcessEngineConfiguration processEngineConfiguration, Map<Class<?>, SessionFactory> sessionFactories, TransactionContextFactory transactionContextFactory, PersistenceSessionFactory persistenceSessionFactory, MessageSessionFactory messageSessionFactory, TimerSessionFactory timerSessionFactory) {
+  public CommandContext(Command<?> command, ProcessEngineConfiguration processEngineConfiguration, TransactionContextFactory transactionContextFactory, PersistenceSessionFactory persistenceSessionFactory, MessageSessionFactory messageSessionFactory, TimerSessionFactory timerSessionFactory) {
     this.command = command;
     this.processEngineConfiguration = processEngineConfiguration;
-
-    this.persistenceSession = persistenceSessionFactory.openPersistenceSession(this);
-    this.messageSession = messageSessionFactory.openMessageSession(this);
-    this.timerSession = timerSessionFactory.openTimerSession(this);
     this.transactionContext = transactionContextFactory.openTransactionContext(this);
-
-    this.sessionFactories = sessionFactories;
   }
 
   public void close() {
@@ -145,18 +133,12 @@ public class CommandContext {
   }
 
   protected void flushSessions() {
-    persistenceSession.flush();
-    messageSession.flush();
-
     for (Session session : sessions.values()) {
       session.flush();
     }
   }
 
   protected void closeSessions() {
-    messageSession.close();
-    persistenceSession.close();
-
     for (Session session : sessions.values()) {
       try {
         session.close();
@@ -178,7 +160,7 @@ public class CommandContext {
   public <T> T getSession(Class<T> sessionClass) {
     Session session = sessions.get(sessionClass);
     if (session == null) {
-      SessionFactory sessionFactory = sessionFactories.get(sessionClass);
+      SessionFactory sessionFactory = processEngineConfiguration.getSessionFactories().get(sessionClass);
       session = sessionFactory.openSession();
       sessions.put(sessionClass, session);
     }
@@ -192,19 +174,16 @@ public class CommandContext {
     return transactionContext;
   }
   public PersistenceSession getPersistenceSession() {
-    return persistenceSession;
+    return getSession(PersistenceSession.class);
   }
   public MessageSession getMessageSession() {
-    return messageSession;
+    return getSession(MessageSession.class);
   }
   public TimerSession getTimerSession() {
-    return timerSession;
+    return getSession(TimerSession.class);
   }
   public Command< ? > getCommand() {
     return command;
-  }
-  public Map<Class< ? >, SessionFactory> getSessionFactories() {
-    return sessionFactories;
   }
   public Map<Class< ? >, Session> getSessions() {
     return sessions;

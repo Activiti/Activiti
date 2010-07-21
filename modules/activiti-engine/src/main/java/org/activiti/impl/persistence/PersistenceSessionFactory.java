@@ -12,13 +12,13 @@
  */
 package org.activiti.impl.persistence;
 
-import org.activiti.impl.interceptor.CommandContext;
+import org.activiti.impl.interceptor.SessionFactory;
 
 
 /**
  * @author Tom Baeyens
  */
-public interface PersistenceSessionFactory {
+public interface PersistenceSessionFactory extends SessionFactory {
 
   void dbSchemaCheckVersion();
 
@@ -26,5 +26,4 @@ public interface PersistenceSessionFactory {
 
   void dbSchemaDrop();
   
-  PersistenceSession openPersistenceSession(CommandContext commandContext);
 }

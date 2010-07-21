@@ -32,6 +32,11 @@ public class JobExecutorMessageSession implements MessageSession {
     this.jobExecutor = jobExecutor;
   }
 
+  public JobExecutorMessageSession() {
+    this.commandContext = CommandContext.getCurrentCommandContext();
+    this.jobExecutor = commandContext.getProcessEngineConfiguration().getJobExecutor();
+  }
+
   public void send(MessageImpl message) {
     PersistenceSession persistenceSession = commandContext.getPersistenceSession();
     persistenceSession.insert(message);

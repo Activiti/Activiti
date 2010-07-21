@@ -13,7 +13,9 @@
 package org.activiti.impl.cfg;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.el.ELResolver;
 import javax.sql.DataSource;
@@ -33,23 +35,24 @@ import org.activiti.impl.db.IdGenerator;
 import org.activiti.impl.el.ExpressionManager;
 import org.activiti.impl.event.EventListener;
 import org.activiti.impl.history.HistoryEventListener;
-import org.activiti.impl.identity.IdentitySession;
 import org.activiti.impl.interceptor.CommandContextFactory;
 import org.activiti.impl.interceptor.CommandExecutor;
 import org.activiti.impl.interceptor.DefaultCommandExecutor;
+import org.activiti.impl.interceptor.SessionFactory;
 import org.activiti.impl.job.JobHandlers;
 import org.activiti.impl.job.TimerExecuteNestedActivityJobHandler;
 import org.activiti.impl.jobexecutor.JobExecutor;
 import org.activiti.impl.msg.JobExecutorMessageSessionFactory;
+import org.activiti.impl.msg.MessageSession;
 import org.activiti.impl.msg.MessageSessionFactory;
 import org.activiti.impl.persistence.CachingPersistenceSessionFactory;
-import org.activiti.impl.persistence.IbatisIdentitySessionFactory;
 import org.activiti.impl.persistence.IbatisPersistenceSessionFactory;
+import org.activiti.impl.persistence.PersistenceSession;
 import org.activiti.impl.persistence.PersistenceSessionFactory;
 import org.activiti.impl.repository.DeployerManager;
 import org.activiti.impl.scripting.ScriptingEngines;
 import org.activiti.impl.timer.JobExecutorTimerSessionFactory;
-import org.activiti.impl.timer.TimerSessionFactory;
+import org.activiti.impl.timer.TimerSession;
 import org.activiti.impl.tx.StandaloneTransactionContextFactory;
 import org.activiti.impl.tx.TransactionContextFactory;
 import org.activiti.impl.variable.DefaultVariableTypes;
@@ -121,13 +124,15 @@ public class ProcessEngineFactory {
         TaskServiceImpl taskService = createDefaultTaskService(commandExecutor, scriptingEngines);
         ManagementServiceImpl managementService = createDefaultManagementService(commandExecutor);
 
-        PersistenceSessionFactory persistenceSessionFactory = createDefaultPersistenceSessionFactory(deployerManager, variableTypes, idGenerator, dataBaseName,
-                dataSource, localTransactions);
+        PersistenceSessionFactory persistenceSessionFactory = createDefaultPersistenceSessionFactory(deployerManager, variableTypes, idGenerator, dataBaseName, dataSource, localTransactions);
 
-        commandContextFactory.setMessageSessionFactory(createDefaultMessageSessionFactory(jobExecutor));
         commandContextFactory.setPersistenceSessionFactory(persistenceSessionFactory);
-        commandContextFactory.setTimerSessionFactory(createDefaultTimerSessionFactory(jobExecutor));
         commandContextFactory.setTransactionContextFactory(createDefaultTransactionContextFactory());
+        
+        Map<Class<?>, SessionFactory> sessionFactories = new HashMap<Class<?>, SessionFactory>();
+        sessionFactories.put(MessageSession.class, new JobExecutorMessageSessionFactory());
+        sessionFactories.put(TimerSession.class, new JobExecutorTimerSessionFactory());
+        sessionFactories.put(PersistenceSession.class, persistenceSessionFactory);
         
         configuration.setCommandContextFactory(commandContextFactory);
         configuration.setCommandExecutor(commandExecutor);
@@ -143,6 +148,7 @@ public class ProcessEngineFactory {
         configuration.setProcessService(processService);
         configuration.setTaskService(taskService);
         configuration.setVariableTypes(variableTypes);
+        configuration.setSessionFactories(sessionFactories);
 
         List<EventListener> eventListeners = new ArrayList<EventListener>();
         eventListeners.add(new HistoryEventListener());
@@ -171,10 +177,6 @@ public class ProcessEngineFactory {
     return defaultBusinessCalendarManager;
   }
 
-  protected TimerSessionFactory createDefaultTimerSessionFactory(JobExecutor jobExecutor) {
-    return new JobExecutorTimerSessionFactory(jobExecutor);
-  }
-
   protected TransactionContextFactory createDefaultTransactionContextFactory() {
     return new StandaloneTransactionContextFactory();
   }
@@ -186,9 +188,7 @@ public class ProcessEngineFactory {
   }
 
   protected CommandContextFactory createDefaultCommandContextFactory() {
-    CommandContextFactory commandContextFactory = new CommandContextFactory();
-    commandContextFactory.addSessionFactory(IdentitySession.class, new IbatisIdentitySessionFactory());
-    return commandContextFactory;
+    return new CommandContextFactory();
   }
 
   protected JobExecutor createDefaultJobExecutor(CommandExecutor commandExecutor, JobHandlers jobHandlers, boolean jobExecutorAutoActivate) {

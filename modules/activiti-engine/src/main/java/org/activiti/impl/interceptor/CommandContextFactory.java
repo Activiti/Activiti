@@ -38,26 +38,10 @@ public class CommandContextFactory {
   private TimerSessionFactory timerSessionFactory;
   private TransactionContextFactory transactionContextFactory;
 
-  /** is this open ended set of session factories useful?
-   * intended purpose is to allow for user defined session factories and sessions. */  
-  private final Map<Class<?>, SessionFactory> sessionFactories = new HashMap<Class<?>, SessionFactory>();
-
   public CommandContext createCommandContext(Command<?> cmd) {
-    return new CommandContext(cmd, processEngineConfiguration, sessionFactories, transactionContextFactory, persistenceSessionFactory, messageSessionFactory, timerSessionFactory);
+    return new CommandContext(cmd, processEngineConfiguration, transactionContextFactory, persistenceSessionFactory, messageSessionFactory, timerSessionFactory);
   }
   
-  public void addSessionFactory(Class<?> sessionClass, SessionFactory sessionFactory) {
-    sessionFactories.put(sessionClass, sessionFactory);
-  }
-  
-  public SessionFactory getSessionFactory(Class<?> sessionClass) {
-    return sessionFactories.get(sessionClass);
-  }
-  
-  public void removeSessionFactory(Class<?> sessionClass) {
-    sessionFactories.remove(sessionClass);
-  }
-
   // getters and setters //////////////////////////////////////////////////////
   
   public ProcessEngineConfiguration getProcessEngineConfiguration() {
@@ -68,10 +52,6 @@ public class CommandContextFactory {
   }
 
 
-  
-  public Map<Class< ? >, SessionFactory> getSessionFactories() {
-    return Collections.unmodifiableMap(sessionFactories);
-  }
   public void setPersistenceSessionFactory(PersistenceSessionFactory persistenceSessionFactory) {
     this.persistenceSessionFactory = persistenceSessionFactory;
   }

@@ -33,7 +33,7 @@ import org.activiti.ActivitiWrongDbException;
 import org.activiti.ProcessEngine;
 import org.activiti.impl.db.IdGenerator;
 import org.activiti.impl.definition.ProcessDefinitionDbImpl;
-import org.activiti.impl.interceptor.CommandContext;
+import org.activiti.impl.tx.Session;
 import org.activiti.impl.util.IoUtil;
 import org.activiti.impl.variable.Type;
 import org.activiti.impl.variable.VariableTypes;
@@ -336,7 +336,7 @@ public class IbatisPersistenceSessionFactory implements PersistenceSessionFactor
     log.fine("activiti db schema " + operation + " successful");
   }
 
-  public PersistenceSession openPersistenceSession(CommandContext commandContext) {
+  public Session openSession() {
     SqlSession sqlSession = sqlSessionFactory.openSession();
     return new IbatisPersistenceSession(sqlSession, idGenerator, databaseStatements);
   }

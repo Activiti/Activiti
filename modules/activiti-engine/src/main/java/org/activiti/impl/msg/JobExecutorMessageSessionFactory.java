@@ -14,6 +14,7 @@ package org.activiti.impl.msg;
 
 import org.activiti.impl.interceptor.CommandContext;
 import org.activiti.impl.jobexecutor.JobExecutor;
+import org.activiti.impl.tx.Session;
 
 
 /**
@@ -21,7 +22,10 @@ import org.activiti.impl.jobexecutor.JobExecutor;
  */
 public class JobExecutorMessageSessionFactory implements MessageSessionFactory {
 
-  private final JobExecutor jobExecutor;
+  private JobExecutor jobExecutor;
+
+  public JobExecutorMessageSessionFactory() {
+  }
 
   public JobExecutorMessageSessionFactory(JobExecutor jobExecutor) {
     this.jobExecutor = jobExecutor;
@@ -29,6 +33,10 @@ public class JobExecutorMessageSessionFactory implements MessageSessionFactory {
   
   public MessageSession openMessageSession(CommandContext commandContext) {
     return new JobExecutorMessageSession(commandContext, jobExecutor);
+  }
+
+  public Session openSession() {
+    return new JobExecutorMessageSession();
   }
 
 }

@@ -23,20 +23,21 @@ import org.activiti.impl.jobexecutor.JobExecutor;
 import org.activiti.impl.msg.MessageAddedNotification;
 import org.activiti.impl.persistence.PersistenceSession;
 import org.activiti.impl.time.Clock;
+import org.activiti.impl.tx.Session;
 import org.activiti.impl.tx.TransactionState;
 
 
 /**
  * @author Tom Baeyens
  */
-public class JobExecutorTimerSession implements TimerSession {
+public class JobExecutorTimerSession implements TimerSession, Session {
 
   private final CommandContext commandContext;
   private final JobExecutor jobExecutor;
   
-  public JobExecutorTimerSession(CommandContext commandContext, JobExecutor jobExecutor) {
-    this.commandContext = commandContext;
-    this.jobExecutor = jobExecutor;
+  public JobExecutorTimerSession() {
+    this.commandContext = CommandContext.getCurrentCommandContext();
+    this.jobExecutor = commandContext.getProcessEngineConfiguration().getJobExecutor();
   }
 
   public void schedule(TimerImpl timer) {
@@ -67,5 +68,11 @@ public class JobExecutorTimerSession implements TimerSession {
     for (TimerImpl timer: timers) {
       persistenceSession.delete(timer);
     }
+  }
+
+  public void close() {
+  }
+
+  public void flush() {
   }
 }

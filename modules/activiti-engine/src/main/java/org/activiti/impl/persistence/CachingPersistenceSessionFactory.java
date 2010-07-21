@@ -21,9 +21,9 @@ import java.util.Map;
 
 import org.activiti.ActivitiException;
 import org.activiti.impl.definition.ProcessDefinitionImpl;
-import org.activiti.impl.interceptor.CommandContext;
 import org.activiti.impl.repository.DeployerManager;
 import org.activiti.impl.repository.DeploymentImpl;
+import org.activiti.impl.tx.Session;
 
 /**
  * @author Dave Syer
@@ -55,8 +55,8 @@ public class CachingPersistenceSessionFactory implements PersistenceSessionFacto
     delegate.dbSchemaDrop();
   }
 
-  public PersistenceSession openPersistenceSession(CommandContext commandContext) {
-    return createCachingPersistenceSession(delegate.openPersistenceSession(commandContext));
+  public Session openSession() {
+    return createCachingPersistenceSession((PersistenceSession) delegate.openSession());
   }
   public synchronized void reset() {
     processDefinitionsById = new HashMap<String, ProcessDefinitionImpl>();

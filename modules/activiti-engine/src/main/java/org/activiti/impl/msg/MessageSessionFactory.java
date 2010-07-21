@@ -13,12 +13,13 @@
 package org.activiti.impl.msg;
 
 import org.activiti.impl.interceptor.CommandContext;
+import org.activiti.impl.interceptor.SessionFactory;
 
 
 /**
  * @author Tom Baeyens
  */
-public interface MessageSessionFactory {
+public interface MessageSessionFactory extends SessionFactory {
 
   MessageSession openMessageSession(CommandContext commandContext);
 

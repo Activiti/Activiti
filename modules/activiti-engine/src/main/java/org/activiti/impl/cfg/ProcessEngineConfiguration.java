@@ -12,7 +12,9 @@
  */
 package org.activiti.impl.cfg;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.activiti.DbSchemaStrategy;
 import org.activiti.IdentityService;
@@ -23,6 +25,7 @@ import org.activiti.impl.db.IdGenerator;
 import org.activiti.impl.event.EventListener;
 import org.activiti.impl.interceptor.CommandContextFactory;
 import org.activiti.impl.interceptor.CommandExecutor;
+import org.activiti.impl.interceptor.SessionFactory;
 import org.activiti.impl.job.JobHandlers;
 import org.activiti.impl.jobexecutor.JobExecutor;
 import org.activiti.impl.persistence.PersistenceSessionFactory;
@@ -49,6 +52,8 @@ public class ProcessEngineConfiguration {
   protected DbSchemaStrategy dbSchemaStrategy;
   protected CommandContextFactory commandContextFactory;
   protected PersistenceSessionFactory persistenceSessionFactory;
+  protected Map<Class<?>, SessionFactory> sessionFactories;
+
 
   // getters and setters //////////////////////////////////////////////////////
 
@@ -170,5 +175,13 @@ public class ProcessEngineConfiguration {
 
   public void setEventListeners(List<EventListener> eventListeners) {
     this.eventListeners = eventListeners;
+  }
+
+  public Map<Class< ? >, SessionFactory> getSessionFactories() {
+    return sessionFactories;
+  }
+
+  public void setSessionFactories(Map<Class< ? >, SessionFactory> sessionFactories) {
+    this.sessionFactories = sessionFactories;
   }
 }
