@@ -1260,7 +1260,7 @@ List&lt;Task&gt; tasks = taskService.createTaskQuery().assignee(&quot;kermit&quo
                   <emphasis role="bold">candidateGroups attribute</emphasis>: this custom extension allows to
                   make a group a candidate for a task.
                   <programlisting>
-&lt;userTask id=&quot;theTask&quot; name=&quot;my task&quot; activiti:candidateGroup=&quot;management, accountancy&quot; /&gt;</programlisting>
+&lt;userTask id=&quot;theTask&quot; name=&quot;my task&quot; activiti:candidateGroups=&quot;management, accountancy&quot; /&gt;</programlisting>
 
                   This is exactly the same as using a <emphasis role="bold">potentialOwner</emphasis> 
                   construct as defined <link linkend="bpmnUserTaskAssignment">above</link>.
@@ -1508,7 +1508,7 @@ List&lt;Task&gt; tasks = taskService.createTaskQuery().assignee(&quot;kermit&quo
       
       <section id="bpmnTimerBoundaryEventXml">
       
-        <title>XNL Representation</title>
+        <title>XML Representation</title>
         
         <para>
           A timer boundary event is defined as a <link linkend="bpmnBoundaryEvent">regular boundary event</link>.
