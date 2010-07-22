@@ -118,6 +118,32 @@
         <artifactId>json</artifactId>
         <version>20070829</version>
       </dependency>
+      <dependency>
+			<groupId>org.restlet</groupId>
+			<artifactId>org.restlet</artifactId>
+			<version>1.1.8</version>
+		</dependency>
+		<dependency>
+			<groupId>org.restlet</groupId>
+			<artifactId>org.restlet.ext.json</artifactId>
+			<version>1.1.8</version>
+		</dependency>
+		<dependency>
+			<groupId>com.noelios.restlet</groupId>
+			<artifactId>com.noelios.restlet</artifactId>
+			<version>1.1.8</version>
+		</dependency>
+		<dependency>
+			<groupId>com.noelios.restlet</groupId>
+			<artifactId>com.noelios.restlet.ext.httpclient</artifactId>
+			<version>1.1.8</version>
+		</dependency>
+		<!-- required by Apache commons httpclient, required by restlet -->
+		<dependency>
+		  <groupId>commons-logging</groupId>
+		  <artifactId>commons-logging</artifactId>
+		  <version>1.1.1</version>
+		</dependency>
     </dependencies>
   </dependencyManagement>
 
@@ -139,6 +165,11 @@
 			<name>Spring Extensions Milestone Repository</name>
 			<url>http://extensions.springframework.org/milestone</url>
 		</repository>
+		<repository>
+	       <id>maven-restlet</id>  
+	       <name>Public online Restlet repository</name>  
+	       <url>http://maven.restlet.org</url>  
+	    </repository>
 	</repositories>
 
 	<pluginRepositories>
