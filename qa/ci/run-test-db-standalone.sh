@@ -1,3 +1,3 @@
 #!/bin/sh
 
-mvn -Ddatabase=$1 clean install
+mvn -Ddatabase=$1 -Pcheck clean install

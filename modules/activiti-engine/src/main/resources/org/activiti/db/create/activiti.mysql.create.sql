@@ -33,6 +33,7 @@ create table ACT_EXECUTION (
     PROC_INST_ID_ varchar(255),
     PARENT_ID_ varchar(255),
     PROC_DEF_ID_ varchar(255),
+    SUPER_EXEC_ varchar(255),
     ACTIVITY_ID_ varchar(255),
     IS_ACTIVE_ TINYINT,
     IS_CONCURRENT_ TINYINT,
@@ -149,7 +150,12 @@ alter table ACT_EXECUTION
     add constraint FK_EXE_PARENT 
     foreign key (PARENT_ID_) 
     references ACT_EXECUTION (ID_);
-
+    
+alter table ACT_EXECUTION
+    add constraint FK_EXE_SUPER 
+    foreign key (SUPER_EXEC_) 
+    references ACT_EXECUTION;
+    
 alter table ACT_ID_MEMBERSHIP 
     add constraint FK_MEMB_GROUP 
     foreign key (GROUP_ID_) 

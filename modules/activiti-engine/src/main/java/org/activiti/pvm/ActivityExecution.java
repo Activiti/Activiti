@@ -14,6 +14,9 @@ package org.activiti.pvm;
 
 import java.util.List;
 
+import org.activiti.ProcessDefinition;
+import org.activiti.ProcessInstance;
+
 
 /**
  * @author Tom Baeyens
@@ -34,6 +37,7 @@ public interface ActivityExecution {
   void setVariable(String variableName, Object value);
   
   ActivityExecution createExecution();
+  ObjectProcessInstance createSubProcessInstance(ProcessDefinition processDefinition);
   ActivityExecution getParent();
   List<? extends ActivityExecution> getExecutions();
   void end();

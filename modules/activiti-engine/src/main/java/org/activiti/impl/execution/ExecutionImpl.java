@@ -21,6 +21,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.activiti.ActivitiException;
+import org.activiti.ProcessDefinition;
+import org.activiti.ProcessInstance;
 import org.activiti.impl.definition.ActivityImpl;
 import org.activiti.impl.definition.ProcessDefinitionImpl;
 import org.activiti.impl.definition.TransitionImpl;
@@ -62,6 +64,12 @@ public class ExecutionImpl implements
   
   /** nested executions representing scopes or concurrent paths */
   protected List<ExecutionImpl> executions = new ArrayList<ExecutionImpl>();
+  
+  /** super execution, not-null if this execution is part of a subprocess */
+  protected ExecutionImpl superExecution;
+  
+  /** reference to a subprocessinstance, not-null if currently subprocess is started from this execution */
+  protected ExecutionImpl subProcessInstance;
   
   /** indicates if this execution represents an active path of execution.
    * Executions are made inactive in the following situations:
@@ -152,6 +160,35 @@ public class ExecutionImpl implements
     return executions;
   }
   
+  public ExecutionImpl getSuperExecution() {
+    ensureSuperExecutionInitialized();
+    return superExecution;
+  }
+
+  public void setSuperExecution(ExecutionImpl superExecution) {
+    this.superExecution = superExecution;
+    if (superExecution != null) {
+      superExecution.setSubProcessInstance(null);
+    }
+  }
+  
+  // Meant to be overridden by persistent subclasseses
+  protected void ensureSuperExecutionInitialized() {
+  }
+  
+  public ExecutionImpl getSubProcessInstance() {
+    ensureSubProcessInstanceInitialized();
+    return subProcessInstance;
+  }
+  
+  public void setSubProcessInstance(ExecutionImpl subProcessInstance) {
+    this.subProcessInstance = subProcessInstance;
+  }
+
+  // Meant to be overridden by persistent subclasses
+  protected void ensureSubProcessInstanceInitialized() {
+  }
+
   /** creates a new execution. properties processDefinition, processInstance and activity will be initialized. */  
   public ExecutionImpl createExecution() {
     // create the new child execution
@@ -170,6 +207,19 @@ public class ExecutionImpl implements
     return createdExecution;
   }
   
+  public ObjectProcessInstance createSubProcessInstance(ProcessDefinition processDefinition) {
+    ExecutionImpl subProcessInstance = newExecution();
+    
+    // manage bidirectional super-subprocess relation
+    subProcessInstance.setSuperExecution(this);
+    this.setSubProcessInstance(subProcessInstance);
+    
+    // Initialize the new execution
+    subProcessInstance.setProcessDefinition((ProcessDefinitionImpl) processDefinition);
+    
+    return subProcessInstance;
+  }
+  
   /** removes an execution. if there are nested executions, those will be ended recursively.
    * if there is a parent, this method removes the bidirectional relation 
    * between parent and this execution. */
@@ -186,10 +236,16 @@ public class ExecutionImpl implements
     // if there is a parent 
     ensureParentInitialized();
     if (parent!=null) {
-      // then remove the bidirectional relation
+      // remove the bidirectional relation
       parent.removeExecution(this);
-      
-    } else { // this is a process instance
+    } else { // this execution is a process instance
+      ensureSuperExecutionInitialized();
+      if (superExecution != null) {
+        ExecutionImpl superExecutionCopy = superExecution; // local copy, since we need to set it to null and still call event() on it
+        superExecution.setSubProcessInstance(null);
+        setSuperExecution(null);
+        superExecutionCopy.event("continue process");
+      }
       isEnded = true;
       fireEvent(EndProcessInstanceEvent.INSTANCE);
     }

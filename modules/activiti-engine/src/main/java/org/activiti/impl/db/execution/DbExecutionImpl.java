@@ -72,7 +72,15 @@ public class DbExecutionImpl extends ExecutionImpl implements PersistentObject {
    * @see #setParent(ExecutionImpl)
    */
   protected String parentId;
-
+  
+  /**
+   * persisted reference to the super execution of this execution
+   * 
+   * @See {@link #getSuperExecution()}
+   * @see #setSuperExecution(ExecutionImpl)
+   */
+  protected String superExecutionId;
+  
   protected boolean isNew = false;
   protected boolean isExecutionsInitialized = false;
 
@@ -113,7 +121,7 @@ public class DbExecutionImpl extends ExecutionImpl implements PersistentObject {
   // process definition ///////////////////////////////////////////////////////
 
   @Override
-  public void ensureProcessDefinitionInitialized() {
+  protected void ensureProcessDefinitionInitialized() {
     if ((processDefinition == null) && (processDefinitionId != null)) {
       setProcessDefinition(CommandContext.getCurrentCommandContext().getPersistenceSession().findProcessDefinitionById(processDefinitionId));
     }
@@ -128,7 +136,7 @@ public class DbExecutionImpl extends ExecutionImpl implements PersistentObject {
   // process instance /////////////////////////////////////////////////////////
 
   @Override
-  public void ensureProcessInstanceInitialized() {
+  protected void ensureProcessInstanceInitialized() {
     if ((processInstance == null) && (processInstanceId != null)) {
       processInstance = CommandContext.getCurrentCommandContext().getPersistenceSession().findExecution(processInstanceId);
     }
@@ -150,7 +158,7 @@ public class DbExecutionImpl extends ExecutionImpl implements PersistentObject {
   // activity /////////////////////////////////////////////////////////////////
 
   @Override
-  public void ensureActivityInitialized() {
+  protected void ensureActivityInitialized() {
     if ((activity == null) && (activityId != null)) {
       activity = getProcessDefinition().findActivity(activityId);
     }
@@ -169,7 +177,7 @@ public class DbExecutionImpl extends ExecutionImpl implements PersistentObject {
   // executions ///////////////////////////////////////////////////////////////
   
   @Override
-  public void ensureExecutionsInitialized() {
+  protected void ensureExecutionsInitialized() {
     // If the execution is new, then the child execution objects are already
     // fetched
     if (!isExecutionsInitialized) {
@@ -181,7 +189,7 @@ public class DbExecutionImpl extends ExecutionImpl implements PersistentObject {
   // parent ///////////////////////////////////////////////////////////////////
   
   @Override
-  public void ensureParentInitialized() {
+  protected void ensureParentInitialized() {
     if (parent == null && parentId != null) {
       parent = CommandContext.getCurrentCommandContext().getPersistenceSession().findExecution(parentId);
     }
@@ -195,6 +203,33 @@ public class DbExecutionImpl extends ExecutionImpl implements PersistentObject {
       this.parentId = parent.getId();
     } else {
       this.parentId = null;
+    }
+  }
+  
+  // super- and subprocess executions /////////////////////////////////////////
+  
+  @Override
+  protected void ensureSuperExecutionInitialized() {
+    if (superExecution == null && superExecutionId != null) {
+      superExecution = CommandContext.getCurrentCommandContext().getPersistenceSession().findExecution(superExecutionId);
+    }
+  }
+  
+  @Override
+  public void setSuperExecution(ExecutionImpl superExecution) {
+    super.setSuperExecution(superExecution);
+    
+    if (superExecution != null) {
+      this.superExecutionId = superExecution.getId();
+    } else {
+      this.superExecutionId = null;
+    }
+  }
+  
+  @Override
+  protected void ensureSubProcessInstanceInitialized() {
+    if (subProcessInstance != null) {
+      subProcessInstance = CommandContext.getCurrentCommandContext().getPersistenceSession().findSubProcessInstance(this.getId());
     }
   }
   
@@ -242,7 +277,7 @@ public class DbExecutionImpl extends ExecutionImpl implements PersistentObject {
     persistentState.put("isConcurrent", this.isConcurrent);
     persistentState.put("isScope", this.isScope);
     persistentState.put("parentId", parentId);
-    persistentState.put("transition", this.transition);
+    persistentState.put("superExecution", this.superExecutionId);
     return persistentState;
   }
 
@@ -281,5 +316,8 @@ public class DbExecutionImpl extends ExecutionImpl implements PersistentObject {
   }
   public String getProcessDefinitionId() {
     return processDefinitionId;
+  }
+  public void setProcessDefinitionId(String processDefinitionId) {
+    this.processDefinitionId = processDefinitionId;
   }
 }

@@ -14,6 +14,7 @@ package org.activiti.impl.bpmn.parser;
 
 import org.activiti.impl.calendar.BusinessCalendarManager;
 import org.activiti.impl.el.ExpressionManager;
+import org.activiti.impl.persistence.PersistenceSession;
 import org.activiti.impl.scripting.ScriptingEngines;
 import org.activiti.impl.xml.Parser;
 
@@ -52,13 +53,14 @@ public class BpmnParser extends Parser {
    */
   public static final String XSI_NS = "http://www.w3.org/2001/XMLSchema-instance";
 
-  private final ExpressionManager expressionManager;
+  protected ExpressionManager expressionManager;
 
-  private final ScriptingEngines scriptingEngines;
+  protected ScriptingEngines scriptingEngines;
 
-  private final BusinessCalendarManager businessCalendarManager;
-
-  public BpmnParser(ExpressionManager expressionManager, ScriptingEngines scriptingEngines, BusinessCalendarManager businessCalendarManager) {
+  protected BusinessCalendarManager businessCalendarManager;
+  
+  public BpmnParser(ExpressionManager expressionManager, ScriptingEngines scriptingEngines,
+          BusinessCalendarManager businessCalendarManager) {
     this.expressionManager = expressionManager;
     this.scriptingEngines = scriptingEngines;
     this.businessCalendarManager = businessCalendarManager;

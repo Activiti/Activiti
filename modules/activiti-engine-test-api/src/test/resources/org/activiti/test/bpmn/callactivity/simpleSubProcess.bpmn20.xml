@@ -7,19 +7,16 @@
   expressionLanguage="http://www.w3.org/1999/XPath" 
   targetNamespace="http://www.activiti.org/bpmn2.0">
   
-  <process id="forkJoinNoWaitStates">
+  <process id="simpleSubProcess">
   
     <startEvent id="theStart" />
-    <sequenceFlow id="flow1" sourceRef="theStart" targetRef="fork" />
     
-    <parallelGateway id="fork" />
-    <sequenceFlow id="flow2" sourceRef="fork" targetRef="join" />
-    <sequenceFlow id="flow3" sourceRef="fork" targetRef="join" />
-    <sequenceFlow id="flow4" sourceRef="fork" targetRef="join" />
+    <sequenceFlow id="flow1" sourceRef="theStart" targetRef="task" />
+  
+    <userTask id="task" name="Task in subprocess" />
     
-    <parallelGateway id="join" />
-    <sequenceFlow id="flow5" sourceRef="join" targetRef="theEnd" />
-   
+    <sequenceFlow id="flow2" sourceRef="task" targetRef="theEnd" />
+    
     <endEvent id="theEnd" />
     
   </process>

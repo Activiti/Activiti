@@ -43,7 +43,8 @@ public class NoneEndEventActivity extends BpmnActivity {
       
       // Special case for BPMN 2.0: when the parent is a process instance, 
       // but is not more active and has no children anymore
-      // The process instance cannot continue anymore:
+      // Then the process instance cannot continue anymore:
+      //
       // eg. start -> fork -> task1 -> end1
       //                   -> task2 -> end2
       if (parent != null

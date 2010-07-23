@@ -103,7 +103,9 @@ public class IbatisPersistenceSession implements PersistenceSession {
   public void delete(PersistentObject persistentObject) {
     deleted.add(persistentObject);
     inserted.remove(persistentObject);
-    loaded.remove(persistentObject);
+    // The persistentObject doesnt need to be removed from the loaded objects,
+    // since there can be updates pending that remove foreign keys which would make the delete
+    // fail if they aren't set to null first
   }
 
   public void flush() {
@@ -172,6 +174,14 @@ public class IbatisPersistenceSession implements PersistenceSession {
   public void deleteExecution(String executionId) {
     ExecutionImpl execution = findExecution(executionId);
     execution.end(); // TODO replace with real delete instead of end(), since this will create history traces
+  }
+  
+  public DbExecutionImpl findSubProcessInstance(String superExecutionId) {
+    DbExecutionImpl subProcessInstance = (DbExecutionImpl) sqlSession.selectOne("selectSubProcessInstanceBySuperExecutionId");
+    if (subProcessInstance != null) {
+      subProcessInstance = (DbExecutionImpl) loaded.add(subProcessInstance);
+    }
+    return subProcessInstance;
   }
   
   public long findProcessInstanceCountByDynamicCriteria(Map<String, Object> params) {

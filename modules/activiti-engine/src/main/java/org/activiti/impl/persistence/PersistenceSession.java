@@ -79,6 +79,7 @@ public interface PersistenceSession extends Session {
   List<DbExecutionImpl> findRootExecutionsByProcessDefintion(String processDefinitionId);
   List<ExecutionImpl> findChildExecutions(String parentExecutionid);
   void deleteExecution(String executionId);
+  DbExecutionImpl findSubProcessInstance(String superExecutionId);
   
   List<ProcessInstance> findProcessInstancesByDynamicCriteria(Map<String, Object> params);
   long findProcessInstanceCountByDynamicCriteria(Map<String, Object> params);

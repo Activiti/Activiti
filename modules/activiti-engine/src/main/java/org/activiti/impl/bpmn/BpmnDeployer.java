@@ -60,7 +60,11 @@ public class BpmnDeployer implements Deployer {
         ByteArrayImpl resource = resources.get(resourceName);
         byte[] bytes = resource.getBytes();
         ByteArrayInputStream inputStream = new ByteArrayInputStream(bytes);
-        BpmnParse bpmnParse = new BpmnParser(expressionManager, scriptingEngines, businessCalendarManager).createParse().processDefinitionClass(ProcessDefinitionDbImpl.class).sourceInputStream(inputStream).execute();
+        BpmnParse bpmnParse = new BpmnParser(expressionManager, scriptingEngines, businessCalendarManager)
+          .createParse()
+          .processDefinitionClass(ProcessDefinitionDbImpl.class)
+          .sourceInputStream(inputStream)
+          .execute();
 
         for (ProcessDefinitionImpl processDefinition : bpmnParse.getProcessDefinitions()) {
           processDefinition.setDeployment(deployment);

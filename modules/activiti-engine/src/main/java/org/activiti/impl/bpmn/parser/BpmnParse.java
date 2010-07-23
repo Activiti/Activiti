@@ -26,6 +26,7 @@ import org.activiti.ActivitiException;
 import org.activiti.ProcessDefinition;
 import org.activiti.impl.bpmn.BoundaryTimerEventActivity;
 import org.activiti.impl.bpmn.BpmnInterface;
+import org.activiti.impl.bpmn.CallActivityBehaviour;
 import org.activiti.impl.bpmn.ExclusiveGatewayActivity;
 import org.activiti.impl.bpmn.ManualTaskActivity;
 import org.activiti.impl.bpmn.NoneEndEventActivity;
@@ -50,6 +51,7 @@ import org.activiti.impl.el.ExpressionManager;
 import org.activiti.impl.el.UelMethodExpressionCondition;
 import org.activiti.impl.el.UelValueExpressionCondition;
 import org.activiti.impl.job.TimerExecuteNestedActivityJobHandler;
+import org.activiti.impl.persistence.PersistenceSession;
 import org.activiti.impl.scripting.ScriptingEngines;
 import org.activiti.impl.task.TaskDefinition;
 import org.activiti.impl.timer.TimerDeclarationImpl;
@@ -95,7 +97,7 @@ public class BpmnParse extends Parse {
    * that this map doesn't need to be re-initialized for each new process
    * definition.
    */
-  private final Map<String, Element> itemDefinitions = new HashMap<String, Element>();
+  protected Map<String, Element> itemDefinitions = new HashMap<String, Element>();
 
   /**
    * Map containing the the {@link BpmnInterface}s defined in the XML file. The
@@ -104,7 +106,7 @@ public class BpmnParse extends Parse {
    * Interfaces are defined outside the process definition(s), which means that
    * this map doesn't need to be re-initialized for each new process definition.
    */
-  private final Map<String, BpmnInterface> bpmnInterfaces = new HashMap<String, BpmnInterface>();
+  protected Map<String, BpmnInterface> bpmnInterfaces = new HashMap<String, BpmnInterface>();
 
   /**
    * Map containing the {@link Operation}s defined in the XML file. The key is
@@ -113,21 +115,22 @@ public class BpmnParse extends Parse {
    * Operations are defined outside the process definition(s), which means that
    * this map doesn't need to be re-initialized for each new process definition.
    */
-  private final Map<String, Operation> operations = new HashMap<String, Operation>();
+  protected Map<String, Operation> operations = new HashMap<String, Operation>();
 
-  private final ExpressionManager expressionManager;
+  protected ExpressionManager expressionManager;
 
-  private final ScriptingEngines scriptingEngines;
+  protected ScriptingEngines scriptingEngines;
 
-  private final BusinessCalendarManager businessCalendarManager;
-
+  protected BusinessCalendarManager businessCalendarManager;
+  
   /**
    * Constructor to be called by the {@link BpmnParser}.
    * 
    * Note the package modifier here: only the {@link BpmnParser} is allowed to
    * create instances.
    */
-  BpmnParse(Parser parser, ExpressionManager expressionManager, ScriptingEngines scriptingEngines, BusinessCalendarManager businessCalendarManager) {
+  BpmnParse(Parser parser, ExpressionManager expressionManager, ScriptingEngines scriptingEngines,
+          BusinessCalendarManager businessCalendarManager) {
     super(parser);
     this.expressionManager = expressionManager;
     this.scriptingEngines = scriptingEngines;
@@ -347,6 +350,8 @@ public class BpmnParse extends Parse {
         parseReceiveTask(activityElement, scopeElement);
       } else if (activityElement.getTagName().equals("subProcess")) {
         parseSubProcess(activityElement, scopeElement);
+      } else if (activityElement.getTagName().equals("callActivity")) {
+        parseCallActivity(activityElement, scopeElement);
       }
     }
   }
@@ -752,7 +757,7 @@ public class BpmnParse extends Parse {
    * Parses a subprocess (formely known as an embedded subprocess): a subprocess
    * defined withing another process definition.
    * 
-   * @param subProcessElement The XML element corresponding wit the subprocess definition
+   * @param subProcessElement The XML element corresponding with the subprocess definition
    * @param scopeElement The current scope on which the subprocess is defined.
    */
   public void parseSubProcess(Element subProcessElement, ScopeElementImpl scopeElement) {
@@ -760,6 +765,22 @@ public class BpmnParse extends Parse {
     activity.setScope(true);
     activity.setActivityBehavior(new SubProcessActivity());
     parseScope(subProcessElement, activity);
+  }
+  
+  /**
+   * Parses a call activity (currenly only supporting calling subprocesses).
+   * 
+   * @param callActivityElement The XML element defining the call activity
+   * @param scopeElement The current scope on which the call activity is defined.
+   */
+  public void parseCallActivity(Element callActivityElement, ScopeElementImpl scopeElement) {
+    ActivityImpl activity = parseAndCreateActivityOnScopeElement(callActivityElement, scopeElement);
+    String calledElement = callActivityElement.attribute("calledElement");
+    if (calledElement == null) {
+      throw new ActivitiException("Missing attribute 'calledElement' on callActivity (line " +
+              + callActivityElement.getLine() + ")");
+    }
+    activity.setActivityBehavior(new CallActivityBehaviour(calledElement));
   }
 
   /**
