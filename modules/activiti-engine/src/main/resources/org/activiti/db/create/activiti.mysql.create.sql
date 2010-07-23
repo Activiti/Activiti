@@ -154,7 +154,7 @@ alter table ACT_EXECUTION
 alter table ACT_EXECUTION
     add constraint FK_EXE_SUPER 
     foreign key (SUPER_EXEC_) 
-    references ACT_EXECUTION;
+    references ACT_EXECUTION (ID_);
     
 alter table ACT_ID_MEMBERSHIP 
     add constraint FK_MEMB_GROUP 
