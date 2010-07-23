@@ -806,7 +806,7 @@ Activiti.widget.PopupManager = function()
       // Render the Dialog
       this.dialog.render(document.body);
 
-      // Add validations and save originial attributes (title)
+      // Add validations and save original attributes (title)
       var data = this.getData(),
         applyTabIndex = Selector.query("[tabindex]", this.dialog.form).length == 0,
         inputEl, title;
@@ -815,7 +815,7 @@ Activiti.widget.PopupManager = function()
           if (attr.lastIndexOf("_") < 0) {
             this.orgValuesForEl[attr] = {};
             inputEl = Selector.query("[name=" + attr + "]", this.dialog.form, true);
-            if (inputEl) {
+				if (inputEl) {
               if (applyTabIndex) {
                 inputEl.setAttribute("tabindex", "0");
               }
@@ -832,7 +832,15 @@ Activiti.widget.PopupManager = function()
               }
               this.orgValuesForEl[attr].title =  inputEl.getAttribute("title") || null;
             }
-          }
+          } else 
+			 {
+			 	var attrName = attr.split("_");
+			 	var attrMeta = attrName.length > 1 ? attrName[1] : null;
+				if (attrMeta === "type" && data[attr] == "Date") {
+					// set up date picker
+					this.dateSetup(Selector.query("[name=" + attrName[0] + "]", this.dialog.form, true));
+				} 
+			 }
         }
       }
 
@@ -874,6 +882,7 @@ Activiti.widget.PopupManager = function()
 
       // Run validations on empty form
       this.doValidate(null, null);
+		
     },
 
     getData: function() {
@@ -919,6 +928,9 @@ Activiti.widget.PopupManager = function()
                 else if (data[attr] == "Boolean" && !(/^(true|false)$/.test(value))) {
                   errorMessage = $msg("message.error.invalid.Boolean", value);
                 }
+					 else if (data[attr] === "Date" && !Activiti.util.validDate(value)) {
+					 	errorMessage = $msg("message.error.invalid.Date", value);
+					 }
               }
             }
             else {
@@ -1018,7 +1030,52 @@ Activiti.widget.PopupManager = function()
       if (this.dialog) {
         this.dialog.getButtons()[0].set("disabled", false);
       }
-    }
+    },
+	 
+	 /**
+     * sets up the date picker if required (uses HTML5 input type=date otherwise)
+     *
+     * @method dateSetuo
+     * @param dateEl {Dom Object} the date input element
+     */
+	 dateSetup: function Form_dateSetup(dateEl)
+	 {
+		if (!Activiti.support.inputDate)
+		{
+		 //addcalendar pop up info & create bindings to populate date field
+		 var elementName = dateEl.name,
+		    buttonEl = document.createElement("a"),
+			 popupEl = document.createElement("div"),
+			 labelEl = Dom.getAncestorByTagName(dateEl, "label"),
+          calendar = new YAHOO.widget.Calendar(popupEl, {close:true } ),
+			 zeroPad = Activiti.util.zeroPad;
+			 
+	    buttonEl.id = elementName + "_button";
+		 buttonEl.className = "datePicker";
+       buttonEl.innerHTML = buttonEl.title = $msg("button.datePicker");
+		 
+		 Dom.addClass(labelEl, "date")
+		 
+		 popupEl.id = elementName + "_popup";
+		 Dom.addClass(popupEl, "datePickerPopup");
+		 
+		 Dom.insertAfter(buttonEl, dateEl);
+		 Dom.insertAfter(popupEl, buttonEl)
+		 
+		 calendar.render();
+		 Event.addListener(buttonEl, "click", calendar.show, calendar, true);
+		 
+		 function handleSelect(type,args,obj) 
+		 {
+		 	var dates = args[0], date = dates[0], year = date[0], month = date[1], day = date[2];
+			dateEl.value = year + "-" + zeroPad(month) + "-" + zeroPad(day); // ISO8601
+			calendar.hide();
+			this.doValidate();
+		 }
+		 calendar.selectEvent.subscribe(handleSelect, calendar, this);
+		 
+		}
+	 }
 
   }
 })();

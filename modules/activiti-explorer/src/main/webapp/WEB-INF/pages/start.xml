@@ -19,5 +19,9 @@
       <dest-id>about</dest-id>
       <assoc-type>child</assoc-type>
     </page-association>
+    <page-association>
+      <dest-id>processes</dest-id>
+      <assoc-type>child</assoc-type>
+    </page-association>
   </associations>
 </page>

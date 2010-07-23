@@ -9,6 +9,10 @@ body {
   text-align: left;
 }
 
+a {
+	outline:none;
+}
+
 body,
 #Activiti a,
 #Activiti a:visited,
@@ -426,4 +430,63 @@ html, body
 #Activiti .yui-panel .ft .button-group
 {
   text-align: center;
+}
+
+#Activiti a.datePicker {
+   text-indent: -1000em;
+   background: url(../images/datePicker.png) no-repeat;
+   display:block;
+   width:16px;
+   height:16px;
+	position:absolute;
+	top:2em;
+	left:13em;
+}
+
+#Activiti div.datePickerPopup {
+	display:none;
+	position:absolute;
+	width:150px;
+	left:13em;
+	z-index:999;
+}
+
+#Activiti label.date {
+	position:relative;
+}
+
+/* Re-enable margins specified in YUI skin (and overridden by the general margin on line 378 */
+
+#Activiti.yui-skin-sam .yui-calcontainer span.calclose {
+	margin: 0;
+}
+
+#Activiti.yui-skin-sam .yui-calcontainer div.title {
+	margin: 0 -10px 10px;
+}
+
+/* Activiti Data Table */
+
+.yui-skin-sam tr.yui-dt-odd { 
+   background-color:#E4FFE0;
+}
+
+.yui-skin-sam tr.yui-dt-even td.yui-dt-asc, 
+.yui-skin-sam tr.yui-dt-even td.yui-dt-desc {
+   background-color:#E4FFE0;
+}
+
+.yui-skin-sam tr.yui-dt-odd td.yui-dt-asc, 
+.yui-skin-sam tr.yui-dt-odd td.yui-dt-desc {
+   background-color:#CFE7CB;
+}
+
+.startProcess {
+	text-indent: -1000em;
+	background: url("../images/process-start-icon.png") no-repeat;
+   display:block;
+   float:left;
+   height:16px;
+   text-indent:-1000em;
+   width:16px;
 }

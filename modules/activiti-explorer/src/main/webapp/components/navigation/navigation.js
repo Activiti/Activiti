@@ -46,40 +46,6 @@
     return this;
   };
 
-  YAHOO.extend(Activiti.component.Navigation, Activiti.component.Base,
-  {
-
-    /**
-     * Fired by YUI when parent element is available for scripting.
-     * Template initialisation, including instantiation of YUI widgets and event listener binding.
-     *
-     * @method onReady
-     */
-    onReady: function Navigation_onReady()
-    {
-      // Create menu and listen for clicks
-      this.widgets.startProcessButton = new YAHOO.widget.Button(this.id + "-startProcess-button", {
-        type: "menu",
-        menu: this.id + "-startProcess-menu" 
-      });
-      this.widgets.startProcessButton.getMenu().subscribe("click", this.onStartProcessMenuClick, this, this);
-    },
-
-    /**
-     * Called when an option in the "Start new process..." menu has been selected.
-     * Will start new process based on the option.
-     *
-     * @method onStartProcessMenuClick
-     * @param eventType The name of the event
-     * @param eventArgs Event arguments
-     */
-    onStartProcessMenuClick: function Navigation_onStartProcessMenuClick(eventType, eventArgs) {
-      var oMenuItem = eventArgs[1];
-      if (oMenuItem) {
-        new Activiti.widget.StartProcessInstanceForm(this.id + "-startProcessInstanceForm", oMenuItem.value);
-      }
-    }
-
-  });
+  YAHOO.extend(Activiti.component.Navigation, Activiti.component.Base);
 
 })();

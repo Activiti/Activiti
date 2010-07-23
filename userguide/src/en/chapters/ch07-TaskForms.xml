@@ -6,16 +6,16 @@
 	<title>Task Forms</title>
 	
 	<para>
-	 Business process are used to coordinate and facilitate the way on how people collaborate
-	 to fullfill the goals of a business. People typically nowadays work in (web-based) user
-	 interfaces trough forms to actually do that work.
+	 Business process are used to coordinate and facilitate the way people collaborate
+	 to fullfill the goals of a business. Nowadays people typically work in (web-based) user
+	 interfaces through forms to actually do that work.
 	</para>
 	
 	<para>
 	 The Activiti task forms are a way to attach such data input forms to 
 	 <emphasis role="bold">start events and user tasks</emphasis>. When using the Activiti Explorer
 	 webapplication and the form format as described below, these forms will automatically
-	 be visualized such that user input can be captured for process continuation.
+	 be visualized so that user input can be captured for process continuation.
 	</para>
 	
 	<para>
@@ -28,7 +28,7 @@
     <title>Definition in the process model</title>
     
     <para>
-      The BPMN 2.0 specification does not specifify how tasks or task forms should be rendered, 
+      The BPMN 2.0 specification does not specify how tasks or task forms should be rendered, 
       as such forms are defined using Activiti specific constructs.
       Forms are file resources on the classpath that are referenced by the <emphasis role="bold">form</emphasis> attribute
       (note that this is done under the Activiti namespace).
@@ -141,6 +141,19 @@ Motivation:&lt;br/&gt;
             <programlisting>&lt;input type=&quot;hidden&quot; name=&quot;employeeName_required&quot; value=&quot;true&quot; /></programlisting>
           </para>
         </listitem>
+        <listitem>
+          <para>
+             In Activiti-Explorer, the <emphasis>Date</emphasis> type validates to ISO 8601 (<emphasis>YYYY-MM-DD</emphasis>). This field will also use any native date picker 
+             tools in the browser (using the HTML5 <emphasis>input type="date"</emphasis>) and fall back on a popup date picker using the YUI calendar widget. It is, 
+             of course still possible to manually enter your own date, which is validated as you type.
+          </para> 
+        </listitem>
+        <listitem>
+          <para>
+             The Integer form field in the demo has also been enhanced to make use of HTML5 <emphasis>input type=number</emphasis>, which provides native validation and custom input 
+				 fields in the supported browser(s), although Activiti-Explorer provides client side validation as well.
+          </para> 
+        </listitem>
       </itemizedlist>
     </para>
   
@@ -160,6 +173,7 @@ Motivation:&lt;br/&gt;
       
       The flow of the process is easy to understand. The process starts when an employee fills
       in the vacation request form, stating the requested amount of days and a motivation.
+
       <programlisting>&lt;h1&gt;Vacation Request&lt;/h1&gt;
 
 Employee Name:&lt;br/&gt;
@@ -167,8 +181,16 @@ Employee Name:&lt;br/&gt;
 &lt;input type=&quot;hidden&quot; name=&quot;employeeName_required&quot; value=&quot;true&quot; /&gt;
 
 Number of days:&lt;br/&gt;
-&lt;input type=&quot;text&quot; name=&quot;numberOfDays&quot; value=&quot;1&quot; /&gt;
+&lt;input type=&quot;number&quot; name=&quot;numberOfDays&quot; value=&quot;1&quot; /&gt;
 &lt;input type=&quot;hidden&quot; name=&quot;numberOfDays_type&quot; value=&quot;Integer&quot; /&gt;
+
+First day of vacation:&lt;br/&gt;
+&lt;input type=&quot;date&quot; name=&quot;startDate&quot; /&gt;
+&lt;input type=&quot;hidden&quot; name=&quot;startDate_type&quot; value=&quot;Date&quot; /&gt;
+
+Date of return to work:&lt;br/&gt;
+&lt;input type=&quot;date&quot; name=&quot;returnDate&quot; /&gt;
+&lt;input type=&quot;hidden&quot; name=&quot;returnDate_type&quot; value=&quot;Date&quot; /&gt;
 
 Vacation pay requested
 &lt;input type=&quot;checkbox&quot; name=&quot;vacationPay&quot;/&gt; Vacation pay requested

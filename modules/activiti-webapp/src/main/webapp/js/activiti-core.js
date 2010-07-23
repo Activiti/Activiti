@@ -59,6 +59,15 @@ Activiti.util = Activiti.util || {};
 Activiti.thirdparty = Activiti.thirdparty || {};
 
 /**
+ * Activit top-level support namespace.
+ * Used for storing feature support flags
+ * @namespace Activiti
+ * @class Activiti.support
+ */
+
+Activiti.support = Activiti.support || {}
+
+/**
  * Copies the values in an object into a new instance.
  *
  * Note 1. This method ONLY copy values of type object, array, date, boolean, string or number.
@@ -420,6 +429,44 @@ Activiti.util.Pagination = function() {
   };
   return p;
 }();
+
+/**
+ * It check the entered parameters to ensure they're a valid date
+ *
+ * @method Activiti.util.validDate
+ * @param year {Number| String} YYYY | ISO 8601 string
+ * @param month {Number} MM 
+ * @param day {Number} DD
+ * @static
+ */
+Activiti.util.validDate = function(year, month, day) 
+{
+	var dateObj, dates;
+	if (typeof(year) === "string") 
+	{
+		dateObj = Activiti.thirdparty.fromISO8601(year);
+		dates = year.split("-"); 
+		year = parseInt(dates[0], 10);
+		month = parseInt(dates[1], 10);
+		day = parseInt(dates[2], 10);
+	} else 
+	{
+		dateObj = new Date(year, month, day); 
+	}
+	return (dateObj !== null && (dateObj.getFullYear() == year && dateObj.getMonth() + 1 == month && dateObj.getDate() == day));
+}
+
+/**
+ * Adds a leading zero to a number if required
+ * 
+ * @method Activiti.util.zeroPad
+ * @param {Number} value
+ */
+
+Activiti.util.zeroPad = function(value)
+   {
+      return (value < 10) ? '0' + value : value;
+   };
 
 /**
  * Removes selectClass from all elements in els but adds it to el.
@@ -1418,6 +1465,21 @@ Activiti.thirdparty.toISO8601 = function()
 
   return toISOString.apply(arguments.callee, arguments);
 };
+
+/**
+ *  Activiti.support.inputDate
+ *  
+ *  Determines support for HTML5 input type=date
+ *  @method inputDate
+ *  @return {Boolean} HTML5 input type=date supported?
+ */
+
+Activiti.support.inputDate = function()
+{
+	var i = document.createElement("input");
+	i.setAttribute("type", "date");
+	return (i.type !== "text")
+}();
 
 
 /**

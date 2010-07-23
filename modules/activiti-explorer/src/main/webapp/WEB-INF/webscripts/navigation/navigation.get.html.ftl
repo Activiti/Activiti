@@ -1,14 +1,4 @@
 <#assign el=args.htmlid/>
-<ul class="activiti-menu actions">
-  <li>
-    <button id="${el}-startProcess-button" tabindex="0">${msg("button.start-process")}</button>
-    <select id="${el}-startProcess-menu">
-       <#list processDefinitions as processDefinition>
-       <option value="${processDefinition.id!""}">${processDefinition.name!processDefinition.id}</option>
-       </#list>
-    </select>
-  </li>
-</ul>
 <ul class="activiti-menu pages">
 <#list pages as p>
   <li>
