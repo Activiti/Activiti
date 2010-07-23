@@ -125,8 +125,11 @@ public class DefaultCommandExecutor implements CommandExecutor {
       } catch (Exception e) {
         context.exception(e);
       } finally {
-        context.close();
-        CommandContext.removeCurrentCommandContext();
+        try {
+          context.close();
+        } finally {
+          CommandContext.removeCurrentCommandContext();
+        }
       }
       return null;
     }

@@ -105,7 +105,6 @@ public class CommandContext {
           }
 
           if (exception != null) {
-            exception.printStackTrace();
             transactionContext.rollback();
           }
         }
@@ -152,7 +151,7 @@ public class CommandContext {
     if (this.exception == null) {
       this.exception = exception;
     } else {
-      log.log(Level.SEVERE, "exception in command context", exception);
+      log.log(Level.SEVERE, "masked exception in command context. for root cause, see below as it will be rethrown later.", exception);
     }
   }
 
