@@ -28,6 +28,8 @@ import org.activiti.impl.db.DbidBlock;
 import org.activiti.impl.db.execution.DbExecutionImpl;
 import org.activiti.impl.definition.ProcessDefinitionImpl;
 import org.activiti.impl.execution.ExecutionImpl;
+import org.activiti.impl.history.HistoricActivityInstanceImpl;
+import org.activiti.impl.history.HistoricProcessInstanceImpl;
 import org.activiti.impl.identity.GroupImpl;
 import org.activiti.impl.identity.UserImpl;
 import org.activiti.impl.job.JobImpl;
@@ -135,4 +137,12 @@ public interface PersistenceSession extends Session {
   Map<String, Long> getTableCount();
   TablePage getTablePage(String tableName, int offset, int maxResults, String sortColumn, SortOrder sortOrder);
   TableMetaData getTableMetaData(String tableName);
+
+  /* History */
+  void saveHistoricProcessInstance(HistoricProcessInstanceImpl historicProcessInstance);
+  HistoricProcessInstanceImpl findHistoricProcessInstance(String processInstanceId);
+  void deleteHistoricProcessInstance(String processInstanceId);
+  void saveHistoricActivityInstance(HistoricActivityInstanceImpl historicActivityInstance);
+  HistoricActivityInstanceImpl findHistoricActivityInstance(String activityId, String processInstanceId);
+  void deleteHistoricActivityInstance(String activityId, String processInstanceId);
   }

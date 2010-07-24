@@ -21,6 +21,7 @@ import javax.sql.DataSource;
 
 import org.activiti.DbSchemaStrategy;
 import org.activiti.DeploymentBuilder;
+import org.activiti.HistoricDataService;
 import org.activiti.IdentityService;
 import org.activiti.ProcessEngine;
 import org.activiti.ProcessService;
@@ -33,6 +34,7 @@ import org.activiti.impl.interceptor.CommandInterceptor;
 import org.activiti.impl.interceptor.DefaultCommandExecutor;
 import org.activiti.impl.jobexecutor.JobExecutor;
 import org.activiti.impl.variable.VariableTypes;
+import org.activiti.pvm.event.ProcessEventBus;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.FactoryBean;
 import org.springframework.core.io.ByteArrayResource;
@@ -45,6 +47,7 @@ import org.springframework.transaction.support.TransactionTemplate;
 
 /**
  * @author Dave Syer
+ * @author Christian Stettler
  */
 public class ProcessEngineFactoryBean implements FactoryBean<ProcessEngine>, DisposableBean {
 
@@ -139,6 +142,10 @@ public class ProcessEngineFactoryBean implements FactoryBean<ProcessEngine>, Dis
     this.processResources = processResources;
   }
 
+  public void setProcessEventBus(ProcessEventBus processEventBus) {
+    factory.setProcessEventBus(processEventBus);
+  }
+  
   public void setCommandExecutor(CommandExecutor commandExecutor) {
     factory.setCommandExecutor(commandExecutor);
   }
@@ -153,6 +160,10 @@ public class ProcessEngineFactoryBean implements FactoryBean<ProcessEngine>, Dis
 
   public void setDbSchemaStrategy(DbSchemaStrategy dbSchemaStrategy) {
     factory.setDbSchemaStrategy(dbSchemaStrategy);
+  }
+
+  public void setHistoricDataService(HistoricDataService historicDataService) {
+    factory.setHistoricDataService(historicDataService);
   }
 
   public void setIdentityService(IdentityService identityService) {

@@ -133,20 +133,46 @@ create table ACT_VARIABLE (
     primary key (ID_)
 );
 
+create table ACT_H_PROCINST (
+    ID_ varchar not null,
+    PROC_INST_ID_ varchar(255) not null,
+    PROC_DEF_ID_ varchar(255) not null,
+    START_TIME_ timestamp not null,
+    END_TIME_ timestamp,
+    DURATION_IN_MILLIS_ bigint,
+    -- TODO: check endStateName length
+    END_STATE_NAME_ varchar(255),
+    primary key (ID_),
+    unique (PROC_INST_ID_)
+);
 
-alter table ACT_BYTEARRAY 
-    add constraint FK_BYTEARR_DEPL 
-    foreign key (DEPLOYMENT_ID_) 
+create table ACT_H_ACTINST (
+    ID_ varchar not null,
+    ACT_ID_ varchar(255) not null,
+    ACT_NAME_ varchar(255),
+    ACT_TYPE_ varchar(255) not null,
+    PROC_INST_ID_ varchar(255) not null,
+    PROC_DEF_ID_ varchar(255) not null,
+    START_TIME_ timestamp not null,
+    END_TIME_ timestamp,
+    DURATION_IN_MILLIS_ bigint,
+    primary key (ID_),
+    unique (ACT_ID_, PROC_INST_ID_)
+);
+
+alter table ACT_BYTEARRAY
+    add constraint FK_BYTEARR_DEPL
+    foreign key (DEPLOYMENT_ID_)
     references ACT_DEPLOYMENT;
 
 alter table ACT_EXECUTION
-    add constraint FK_EXE_PROCINST 
-    foreign key (PROC_INST_ID_) 
+    add constraint FK_EXE_PROCINST
+    foreign key (PROC_INST_ID_)
     references ACT_EXECUTION;
 
 alter table ACT_EXECUTION
-    add constraint FK_EXE_PARENT 
-    foreign key (PARENT_ID_) 
+    add constraint FK_EXE_PARENT
+    foreign key (PARENT_ID_)
     references ACT_EXECUTION;
     
 alter table ACT_EXECUTION
@@ -154,47 +180,47 @@ alter table ACT_EXECUTION
     foreign key (SUPER_EXEC_) 
     references ACT_EXECUTION;
 
-alter table ACT_ID_MEMBERSHIP 
-    add constraint FK_MEMB_GROUP 
-    foreign key (GROUP_ID_) 
+alter table ACT_ID_MEMBERSHIP
+    add constraint FK_MEMB_GROUP
+    foreign key (GROUP_ID_)
     references ACT_ID_GROUP;
 
-alter table ACT_ID_MEMBERSHIP 
-    add constraint FK_MEMB_USER 
-    foreign key (USER_ID_) 
+alter table ACT_ID_MEMBERSHIP
+    add constraint FK_MEMB_USER
+    foreign key (USER_ID_)
     references ACT_ID_USER;
 
 alter table ACT_TASKINVOLVEMENT
-    add constraint FK_TSKASS_TASK 
-    foreign key (TASK_ID_) 
+    add constraint FK_TSKASS_TASK
+    foreign key (TASK_ID_)
     references ACT_TASK;
-    
+
 alter table ACT_TASK
     add constraint FK_TASK_EXEC
     foreign key (EXECUTION_ID_)
     references ACT_EXECUTION;
-    
+
 alter table ACT_TASK
     add constraint FK_TASK_PROCINST
     foreign key (PROC_INST_ID_)
     references ACT_EXECUTION;
-    
+
 alter table ACT_TASK
   add constraint FK_TASK_PROCDEF
   foreign key (PROC_DEF_ID_)
   references ACT_PROCESSDEFINITION;
-  
-alter table ACT_VARIABLE 
-    add constraint FK_VAR_TASK 
-    foreign key (TASK_ID_) 
+
+alter table ACT_VARIABLE
+    add constraint FK_VAR_TASK
+    foreign key (TASK_ID_)
     references ACT_TASK;
 
-alter table ACT_VARIABLE 
-    add constraint FK_VAR_EXE 
-    foreign key (EXECUTION_ID_) 
+alter table ACT_VARIABLE
+    add constraint FK_VAR_EXE
+    foreign key (EXECUTION_ID_)
     references ACT_EXECUTION;
 
-alter table ACT_VARIABLE 
-    add constraint FK_VAR_BYTEARRAY 
-    foreign key (BYTEARRAY_ID_) 
+alter table ACT_VARIABLE
+    add constraint FK_VAR_BYTEARRAY
+    foreign key (BYTEARRAY_ID_)
     references ACT_BYTEARRAY;

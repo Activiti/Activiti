@@ -133,8 +133,33 @@ create table ACT_VARIABLE (
     primary key (ID_)
 );
 
+create table ACT_H_PROCINST (
+    ID_ varchar(255) not null,
+    PROC_INST_ID_ varchar(255) not null,
+    PROC_DEF_ID_ varchar(255) not null,
+    START_TIME_ datetime not null,
+    END_TIME_ datetime,
+    DURATION_IN_MILLIS_ bigint,
+    END_STATE_NAME_ varchar(255),
+    primary key (ID_),
+    unique (PROC_INST_ID_)
+);
 
-alter table ACT_BYTEARRAY 
+create table ACT_H_ACTINST (
+    ID_ varchar(255) not null,
+    ACT_ID_ varchar(255) not null,
+    ACT_NAME_ varchar(255),
+    ACT_TYPE_ varchar(255) not null,
+    PROC_INST_ID_ varchar(255) not null,
+    PROC_DEF_ID_ varchar(255) not null,
+    START_TIME_ datetime not null,
+    END_TIME_ datetime,
+    DURATION_IN_MILLIS_ bigint,
+    primary key (ID_),
+    unique (ACT_ID_, PROC_INST_ID_)
+);
+
+alter table ACT_BYTEARRAY
     add constraint FK_BYTEARR_DEPL 
     foreign key (DEPLOYMENT_ID_) 
     references ACT_DEPLOYMENT (ID_);

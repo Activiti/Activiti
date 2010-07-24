@@ -12,9 +12,7 @@
  */
 package org.activiti.impl.cfg;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import javax.el.ELResolver;
@@ -33,8 +31,9 @@ import org.activiti.impl.calendar.DurationBusinessCalendar;
 import org.activiti.impl.calendar.MapBusinessCalendarManager;
 import org.activiti.impl.db.IdGenerator;
 import org.activiti.impl.el.ExpressionManager;
-import org.activiti.impl.event.EventListener;
-import org.activiti.impl.history.HistoryEventListener;
+import org.activiti.impl.event.DefaultProcessEventBus;
+import org.activiti.HistoricDataService;
+import org.activiti.impl.history.HistoricDataServiceImpl;
 import org.activiti.impl.interceptor.CommandContextFactory;
 import org.activiti.impl.interceptor.CommandExecutor;
 import org.activiti.impl.interceptor.DefaultCommandExecutor;
@@ -57,14 +56,18 @@ import org.activiti.impl.tx.StandaloneTransactionContextFactory;
 import org.activiti.impl.tx.TransactionContextFactory;
 import org.activiti.impl.variable.DefaultVariableTypes;
 import org.activiti.impl.variable.VariableTypes;
+import org.activiti.pvm.event.ProcessEventBus;
 
 /**
  * @author Dave Syer
+ * @author Christian Stettler
  */
 public class ProcessEngineFactory {
 
   private String processEngineName;
+  private ProcessEventBus processEventBus;
 
+  private HistoricDataService historicDataService;
   private IdentityService identityService;
 
   private VariableTypes variableTypes;
@@ -116,7 +119,9 @@ public class ProcessEngineFactory {
 
         commandExecutor = createDefaultCmdExecutor(this.commandContextFactory);
 
+        processEventBus = processEventBus == null ? createDefaultProcessEventBus() : processEventBus;
         jobExecutor = jobExecutor == null ? createDefaultJobExecutor(commandExecutor, jobHandlers, jobExecutorAutoActivate) : jobExecutor;
+        historicDataService = historicDataService == null ? createDefaultHistoricDataService(commandExecutor, processEventBus) : historicDataService;
         idGenerator = idGenerator == null ? createDefaultIdGenerator(commandExecutor) : idGenerator;
         identityService = identityService == null ? createDefaultIdentityService(commandExecutor) : identityService;
 
@@ -138,6 +143,7 @@ public class ProcessEngineFactory {
         configuration.setCommandExecutor(commandExecutor);
         configuration.setDbSchemaStrategy(dbSchemaStrategy);
         configuration.setDeployerManager(deployerManager);
+        configuration.setHistoricDataService(historicDataService);
         configuration.setIdentityService(identityService);
         configuration.setIdGenerator(idGenerator);
         configuration.setJobExecutor(jobExecutor);
@@ -145,14 +151,11 @@ public class ProcessEngineFactory {
         configuration.setManagementService(managementService);
         configuration.setPersistenceSessionFactory(persistenceSessionFactory);
         configuration.setProcessEngineName(processEngineName);
+        configuration.setProcessEventBus(processEventBus);
         configuration.setProcessService(processService);
         configuration.setTaskService(taskService);
         configuration.setVariableTypes(variableTypes);
         configuration.setSessionFactories(sessionFactories);
-
-        List<EventListener> eventListeners = new ArrayList<EventListener>();
-        eventListeners.add(new HistoryEventListener());
-        configuration.setEventListeners(eventListeners );
 
         commandContextFactory.setProcessEngineConfiguration(configuration);
 
@@ -189,6 +192,16 @@ public class ProcessEngineFactory {
 
   protected CommandContextFactory createDefaultCommandContextFactory() {
     return new CommandContextFactory();
+  }
+
+  protected ProcessEventBus createDefaultProcessEventBus() {
+    return new DefaultProcessEventBus();
+  }
+
+  protected HistoricDataService createDefaultHistoricDataService(CommandExecutor commandExecutor, ProcessEventBus processEventBus) {
+    HistoricDataServiceImpl historicDataService = new HistoricDataServiceImpl(commandExecutor);
+    historicDataService.registerEventConsumers(processEventBus);    
+    return historicDataService;
   }
 
   protected JobExecutor createDefaultJobExecutor(CommandExecutor commandExecutor, JobHandlers jobHandlers, boolean jobExecutorAutoActivate) {
@@ -259,6 +272,14 @@ public class ProcessEngineFactory {
 
   public void setProcessEngineName(String processEngineName) {
     this.processEngineName = processEngineName;
+  }
+
+  public void setProcessEventBus(ProcessEventBus processEventBus) {
+    this.processEventBus = processEventBus;
+  }
+
+  public void setHistoricDataService(HistoricDataService historicDataService) {
+    this.historicDataService = historicDataService;
   }
 
   public void setIdentityService(IdentityService identityService) {

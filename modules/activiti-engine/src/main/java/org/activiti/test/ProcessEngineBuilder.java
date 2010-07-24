@@ -15,12 +15,15 @@ package org.activiti.test;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.Assert.assertThat;
 
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.activiti.DbProcessEngineBuilder;
+import org.activiti.HistoricDataService;
 import org.activiti.IdentityService;
 import org.activiti.ManagementService;
 import org.activiti.ProcessEngine;
@@ -42,6 +45,12 @@ import org.junit.runners.model.FrameworkMethod;
  * @author Dave Syer
  */
 public class ProcessEngineBuilder extends TestWatchman {
+
+  private static final List<String> EXCLUDED_TABLES = Arrays.asList(
+          "ACT_PROPERTY",
+          "ACT_H_PROCINST",
+          "ACT_H_ACTINST"
+  );
 
   private static Logger log = Logger.getLogger(ProcessEngineBuilder.class.getName());
 
@@ -65,6 +74,10 @@ public class ProcessEngineBuilder extends TestWatchman {
 
   public ProcessService getProcessService() {
     return processEngine == null ? null : processEngine.getProcessService();
+  }
+
+  public HistoricDataService getHistoricDataService() {
+    return processEngine == null ? null : processEngine.getHistoricDataService();  
   }
 
   public IdentityService getIdentityService() {
@@ -129,7 +142,8 @@ public class ProcessEngineBuilder extends TestWatchman {
     StringBuilder outputMessage = new StringBuilder();
     for (String table : tableCounts.keySet()) {
       Long count = tableCounts.get(table);
-      if (!table.equals("ACT_PROPERTY") && count != 0L) {
+
+      if (!EXCLUDED_TABLES.contains(table) && count != 0L) {
         outputMessage.append(table + ":" + count + " record(s) ");
       }
     }

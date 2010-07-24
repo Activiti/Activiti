@@ -19,5 +19,9 @@ package org.activiti.pvm;
 public interface Activity {
 
   String getId();
+
+  String getName();
+  
+  String getType();
   
 }

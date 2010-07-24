@@ -37,3 +37,5 @@ drop table if exists ACT_TASKINVOLVEMENT;
 drop table if exists ACT_VARIABLE;
 drop table if exists ACT_EXECUTION;
 drop table if exists ACT_PROCESSDEFINITION;
+drop table if exists ACT_H_PROCINST;
+drop table if exists ACT_H_ACTINST;

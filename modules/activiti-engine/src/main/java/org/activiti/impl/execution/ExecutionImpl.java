@@ -27,10 +27,8 @@ import org.activiti.impl.definition.ActivityImpl;
 import org.activiti.impl.definition.ProcessDefinitionImpl;
 import org.activiti.impl.definition.TransitionImpl;
 import org.activiti.impl.definition.VariableDeclarationImpl;
-import org.activiti.impl.event.Event;
-import org.activiti.impl.event.EventListener;
-import org.activiti.impl.event.type.EndProcessInstanceEvent;
-import org.activiti.impl.event.type.StartProcessInstanceEvent;
+import org.activiti.impl.event.ProcessInstanceEndedEvent;
+import org.activiti.impl.event.ProcessInstanceStartedEvent;
 import org.activiti.impl.interceptor.CommandContext;
 import org.activiti.impl.job.TimerImpl;
 import org.activiti.impl.timer.TimerDeclarationImpl;
@@ -40,6 +38,7 @@ import org.activiti.pvm.ActivityExecution;
 import org.activiti.pvm.ListenerExecution;
 import org.activiti.pvm.ObjectProcessInstance;
 import org.activiti.pvm.Transition;
+import org.activiti.pvm.event.ProcessEvent;
 
 /**
  * @author Tom Baeyens
@@ -193,7 +192,7 @@ public class ExecutionImpl implements
   public ExecutionImpl createExecution() {
     // create the new child execution
     ExecutionImpl createdExecution = newExecution();
-    
+
     // manage the bidirectional parent-child relation
     ensureExecutionsInitialized();
     executions.add(createdExecution); 
@@ -216,7 +215,8 @@ public class ExecutionImpl implements
     
     // Initialize the new execution
     subProcessInstance.setProcessDefinition((ProcessDefinitionImpl) processDefinition);
-    
+    subProcessInstance.setProcessInstance(subProcessInstance);
+
     return subProcessInstance;
   }
   
@@ -247,7 +247,7 @@ public class ExecutionImpl implements
         superExecutionCopy.event("continue process");
       }
       isEnded = true;
-      fireEvent(EndProcessInstanceEvent.INSTANCE);
+      fireEvent(new ProcessInstanceEndedEvent(getProcessInstance()));
     }
   }
   
@@ -444,7 +444,7 @@ public class ExecutionImpl implements
   public ObjectProcessInstance start() {
     ActivityImpl initial = getProcessDefinition().getInitial();
     setActivity(initial);
-    fireEvent(StartProcessInstanceEvent.INSTANCE);
+    fireEvent(new ProcessInstanceStartedEvent(getProcessInstance()));
     performOperation(ExeOp.EXECUTE_CURRENT_ACTIVITY);
     return this;
   }
@@ -544,15 +544,10 @@ public class ExecutionImpl implements
   
   // events ///////////////////////////////////////////////////////////////////
   
-  public void fireEvent(Event event) {
+  public void fireEvent(ProcessEvent<?> event) {
     CommandContext commandContext = CommandContext.getCurrentCommandContext();
     if (commandContext!=null) {
-      List<EventListener> eventListeners = commandContext.getProcessEngineConfiguration().getEventListeners();
-      if (eventListeners!=null) {
-        for (EventListener eventListener: eventListeners) {
-          eventListener.notify(this, event);
-        }
-      }
+      commandContext.getProcessEngineConfiguration().getProcessEventBus().postEvent(event);
     }
   }
 

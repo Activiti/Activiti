@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!--
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~       http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="org.activiti.persistence">
+
+    <resultMap id="historicProcessInstanceResultMap" type="org.activiti.impl.history.HistoricProcessInstanceImpl">
+      <id property="id" column="ID_" jdbcType="VARCHAR" />
+      <result property="processInstanceId" column="PROC_INST_ID_" jdbcType="VARCHAR" />
+      <result property="processDefinitionId" column="PROC_DEF_ID_" jdbcType="VARCHAR" />
+      <result property="startTime" column="START_TIME_" jdbcType="TIMESTAMP" />
+      <result property="endTime" column="END_TIME_" jdbcType="TIMESTAMP" />
+      <result property="durationInMillis" column="DURATION_IN_MILLIS_" jdbcType="BIGINT" />
+      <result property="endStateName" column="END_STATE_NAME_" jdbcType="VARCHAR" />
+    </resultMap>
+
+    <resultMap id="historicActivityInstanceResultMap" type="org.activiti.impl.history.HistoricActivityInstanceImpl">
+      <id property="id" column="ID_" jdbcType="VARCHAR" />
+      <result property="activityId" column="ACT_ID_" jdbcType="VARCHAR" />
+      <result property="activityName" column="ACT_NAME_" jdbcType="VARCHAR" />
+      <result property="activityType" column="ACT_TYPE_" jdbcType="VARCHAR" />
+      <result property="processInstanceId" column="PROC_INST_ID_" jdbcType="VARCHAR" />
+      <result property="processDefinitionId" column="PROC_DEF_ID_" jdbcType="VARCHAR" />
+      <result property="startTime" column="START_TIME_" jdbcType="TIMESTAMP" />
+      <result property="endTime" column="END_TIME_" jdbcType="TIMESTAMP" />
+      <result property="durationInMillis" column="DURATION_IN_MILLIS_" jdbcType="BIGINT" />
+    </resultMap>
+
+    <insert id="insertHistoricProcessInstance" parameterType="org.activiti.impl.history.HistoricProcessInstanceImpl">
+        insert into ACT_H_PROCINST (
+          ID_,
+          PROC_INST_ID_,
+          PROC_DEF_ID_,
+          START_TIME_,
+          END_TIME_,
+          DURATION_IN_MILLIS_,
+          END_STATE_NAME_
+        ) values (
+          #{id ,jdbcType=VARCHAR},
+          #{processInstanceId, jdbcType=VARCHAR},
+          #{processDefinitionId, jdbcType=VARCHAR},
+          #{startTime, jdbcType=TIMESTAMP},
+          #{endTime, jdbcType=TIMESTAMP},
+          #{durationInMillis ,jdbcType=BIGINT},
+          #{endStateName, jdbcType=VARCHAR}
+        )
+    </insert>
+
+    <insert id="insertHistoricActivityInstance" parameterType="org.activiti.impl.history.HistoricActivityInstanceImpl">
+        insert into ACT_H_ACTINST (
+          ID_,
+          ACT_ID_,
+          ACT_NAME_,
+          ACT_TYPE_,
+          PROC_INST_ID_,
+          PROC_DEF_ID_,
+          START_TIME_,
+          END_TIME_,
+          DURATION_IN_MILLIS_
+        ) values (
+          #{id ,jdbcType=VARCHAR},
+          #{activityId ,jdbcType=VARCHAR},
+          #{activityName ,jdbcType=VARCHAR},
+          #{activityType ,jdbcType=VARCHAR},
+          #{processInstanceId, jdbcType=VARCHAR},
+          #{processDefinitionId, jdbcType=VARCHAR},
+          #{startTime, jdbcType=TIMESTAMP},
+          #{endTime, jdbcType=TIMESTAMP},
+          #{durationInMillis ,jdbcType=BIGINT}
+        )
+    </insert>
+
+    <update id="updateHistoricProcessInstance" parameterType="org.activiti.impl.history.HistoricProcessInstanceImpl">
+      update ACT_H_PROCINST set
+        PROC_INST_ID_ = #{processInstanceId, jdbcType=VARCHAR},
+        PROC_DEF_ID_ = #{processDefinitionId, jdbcType=VARCHAR},
+        START_TIME_ = #{startTime, jdbcType=TIMESTAMP},
+        END_TIME_ = #{endTime, jdbcType=TIMESTAMP},
+        DURATION_IN_MILLIS_ = #{durationInMillis ,jdbcType=BIGINT},
+        END_STATE_NAME_ = #{endStateName, jdbcType=VARCHAR}        
+      where ID_ = #{id}
+    </update>
+
+    <update id="updateHistoricActivityInstance" parameterType="org.activiti.impl.history.HistoricActivityInstanceImpl">
+      update ACT_H_ACTINST set
+        ACT_ID_ = #{activityId, jdbcType=VARCHAR},
+        ACT_NAME_ = #{activityName, jdbcType=VARCHAR},
+        ACT_TYPE_ = #{activityType, jdbcType=VARCHAR},
+        PROC_INST_ID_ = #{processInstanceId, jdbcType=VARCHAR},
+        PROC_DEF_ID_ = #{processDefinitionId, jdbcType=VARCHAR},
+        START_TIME_ = #{startTime, jdbcType=TIMESTAMP},
+        END_TIME_ = #{endTime, jdbcType=TIMESTAMP},
+        DURATION_IN_MILLIS_ = #{durationInMillis ,jdbcType=BIGINT}
+      where ID_ = #{id}
+    </update>
+
+    <select id="selectHistoricProcessInstance" resultMap="historicProcessInstanceResultMap">
+      select * from ACT_H_PROCINST where PROC_INST_ID_ = #{processInstanceId}
+    </select>
+
+    <select id="selectHistoricActivityInstance" resultMap="historicActivityInstanceResultMap">
+      select * from ACT_H_ACTINST where ACT_ID_ = #{activityId} and PROC_INST_ID_ = #{processInstanceId}
+    </select>
+
+    <delete id="deleteHistoricProcessInstance">
+      delete from ACT_H_PROCINST where PROC_INST_ID_ = #{processInstanceId}
+    </delete>
+
+    <delete id="deleteHistoricActivityInstance">
+      delete from ACT_H_ACTINST where ACT_ID_ = #{activityId} and PROC_INST_ID_ = #{processInstanceId}
+    </delete>
+
+</mapper>

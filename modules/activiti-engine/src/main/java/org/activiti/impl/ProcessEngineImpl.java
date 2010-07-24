@@ -21,6 +21,7 @@ import org.activiti.ProcessEngine;
 import org.activiti.ProcessService;
 import org.activiti.TaskService;
 import org.activiti.impl.cfg.ProcessEngineConfiguration;
+import org.activiti.HistoricDataService;
 import org.activiti.impl.jobexecutor.JobExecutor;
 import org.activiti.impl.persistence.PersistenceSessionFactory;
 
@@ -34,6 +35,7 @@ public class ProcessEngineImpl implements ProcessEngine {
   ProcessEngineConfiguration processEngineConfiguration;
   String name;
   ProcessService processService;
+  HistoricDataService historicDataService;
   IdentityService identityService;
   TaskService taskService;
   ManagementService managementService;
@@ -45,6 +47,7 @@ public class ProcessEngineImpl implements ProcessEngine {
     this.processEngineConfiguration = processEngineConfiguration;
     this.name = processEngineConfiguration.getProcessEngineName();
     this.processService = processEngineConfiguration.getProcessService();
+    this.historicDataService = processEngineConfiguration.getHistoricDataService();
     this.identityService = processEngineConfiguration.getIdentityService();
     this.taskService = processEngineConfiguration.getTaskService();
     this.managementService = processEngineConfiguration.getManagementService();
@@ -104,6 +107,10 @@ public class ProcessEngineImpl implements ProcessEngine {
 
   public TaskService getTaskService() {
     return taskService;
+  }
+
+  public HistoricDataService getHistoricDataService() {
+    return historicDataService;
   }
 
   public ProcessService getProcessService() {

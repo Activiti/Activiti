@@ -33,6 +33,7 @@ public class ActivityImpl extends ScopeElementImpl implements Activity {
   protected ActivityBehavior activityBehavior;
   protected boolean isScope = false;
   protected FormReference formReference;
+  protected String type;
 
   protected ActivityImpl() {
   }
@@ -43,7 +44,7 @@ public class ActivityImpl extends ScopeElementImpl implements Activity {
     transition.setSource(this);
     return transition;
   }
-  
+
   public TimerDeclarationImpl createTimerDeclaration(BusinessCalendar businessCalendar, String duedate, String jobHandlerType) {
     setScope(true);
     return super.createTimerDeclaration(businessCalendar, duedate, jobHandlerType);
@@ -116,5 +117,11 @@ public class ActivityImpl extends ScopeElementImpl implements Activity {
   }
   public void setFormReference(FormReference formReference) {
     this.formReference = formReference;
+  }
+  public String getType() {
+    return type;
+  }
+  public void setType(String type) {
+    this.type = type;
   }
 }

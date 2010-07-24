@@ -16,13 +16,14 @@ import java.util.List;
 
 import org.activiti.ProcessDefinition;
 import org.activiti.ProcessInstance;
-
+import org.activiti.pvm.event.ProcessEvent;
 
 /**
  * @author Tom Baeyens
  */
 public interface ActivityExecution {
-  
+
+  ProcessInstance getProcessInstance();
   Activity getActivity();
   List<Transition> getOutgoingTransitions();
   List<Transition> getIncomingTransitions();
@@ -50,5 +51,6 @@ public interface ActivityExecution {
   boolean isConcurrent();
   
   boolean isProcessInstance();
-  
+
+  void fireEvent(ProcessEvent<?> event);
 }

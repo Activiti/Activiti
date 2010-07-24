@@ -12,17 +12,15 @@
  */
 package org.activiti.impl.cfg;
 
-import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.activiti.DbSchemaStrategy;
+import org.activiti.HistoricDataService;
 import org.activiti.IdentityService;
 import org.activiti.ManagementService;
 import org.activiti.ProcessService;
 import org.activiti.TaskService;
 import org.activiti.impl.db.IdGenerator;
-import org.activiti.impl.event.EventListener;
 import org.activiti.impl.interceptor.CommandContextFactory;
 import org.activiti.impl.interceptor.CommandExecutor;
 import org.activiti.impl.interceptor.SessionFactory;
@@ -31,6 +29,7 @@ import org.activiti.impl.jobexecutor.JobExecutor;
 import org.activiti.impl.persistence.PersistenceSessionFactory;
 import org.activiti.impl.repository.DeployerManager;
 import org.activiti.impl.variable.VariableTypes;
+import org.activiti.pvm.event.ProcessEventBus;
 
 /**
  * @author Tom Baeyens
@@ -38,7 +37,9 @@ import org.activiti.impl.variable.VariableTypes;
 public class ProcessEngineConfiguration {
 
   protected String processEngineName;
+  protected ProcessEventBus processEventBus;
   protected ProcessService processService;
+  protected HistoricDataService historicDataService;
   protected IdentityService identityService;
   protected TaskService taskService;
   protected ManagementService managementService;
@@ -48,7 +49,6 @@ public class ProcessEngineConfiguration {
   protected JobHandlers jobHandlers;
   protected IdGenerator idGenerator;
   protected CommandExecutor commandExecutor;
-  protected List<EventListener> eventListeners;
   protected DbSchemaStrategy dbSchemaStrategy;
   protected CommandContextFactory commandContextFactory;
   protected PersistenceSessionFactory persistenceSessionFactory;
@@ -77,6 +77,14 @@ public class ProcessEngineConfiguration {
     this.processEngineName = processEngineName;
   }
 
+  public ProcessEventBus getProcessEventBus() {
+    return processEventBus;
+  }
+
+  public void setProcessEventBus(ProcessEventBus processEventBus) {
+    this.processEventBus = processEventBus;
+  }
+
   public JobExecutor getJobExecutor() {
     return jobExecutor;
   }
@@ -91,6 +99,14 @@ public class ProcessEngineConfiguration {
 
   public ProcessService getProcessService() {
     return processService;
+  }
+
+  public void setHistoricDataService(HistoricDataService historicDataService) {
+    this.historicDataService = historicDataService;
+  }
+
+  public HistoricDataService getHistoricDataService() {
+    return historicDataService;
   }
 
   public IdentityService getIdentityService() {
@@ -128,7 +144,7 @@ public class ProcessEngineConfiguration {
   public void setProcessService(ProcessService processService) {
     this.processService = processService;
   }
-  
+
   public void setIdentityService(IdentityService identityService) {
     this.identityService = identityService;
   }
@@ -167,14 +183,6 @@ public class ProcessEngineConfiguration {
   
   public void setCommandContextFactory(CommandContextFactory commandContextFactory) {
     this.commandContextFactory = commandContextFactory;
-  }
-
-  public List<EventListener> getEventListeners() {
-    return eventListeners;
-  }
-
-  public void setEventListeners(List<EventListener> eventListeners) {
-    this.eventListeners = eventListeners;
   }
 
   public Map<Class< ? >, SessionFactory> getSessionFactories() {

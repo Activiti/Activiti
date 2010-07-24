@@ -55,6 +55,7 @@ public interface ProcessEngine {
 
   ProcessService getProcessService();
   TaskService getTaskService();
+  HistoricDataService getHistoricDataService();
   IdentityService getIdentityService();
   ManagementService getManagementService();
 
