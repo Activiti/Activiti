@@ -228,12 +228,21 @@ JAVA_OPTS="-Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=8787
       <fileset dir="${activiti.home}/setup/files/webapps/libs" />
     </zip>
   </target>
+  
+  <target name="build.webapp.activiti.cycle">
+    <zip destfile="${activiti.home}/setup/build/activiti-cycle.war">
+      <fileset dir="${activiti.home}/setup/files/webapps/activiti-cycle.war"/>
+      <fileset dir="${activiti.home}/setup/files/webapps/libs" />
+    </zip>
+  </target>
 
-  <target name="deploy.activiti.explorer.and.probe.into.tomcat" depends="build.webapp.activiti.explorer, build.webapp.activiti.probe">
+  <target name="deploy.activiti.explorer.and.probe.into.tomcat" depends="build.webapp.activiti.explorer, build.webapp.activiti.probe, build.webapp.activiti.cycle">
     <mkdir dir="${tomcat.home}/webapps/activiti-explorer" />
     <unzip dest="${tomcat.home}/webapps/activiti-explorer" src="${activiti.home}/setup/build/activiti-explorer.war" />
     <mkdir dir="${tomcat.home}/webapps/activiti-probe" />
     <unzip dest="${tomcat.home}/webapps/activiti-probe" src="${activiti.home}/setup/build/activiti-probe.war" />
+    <mkdir dir="${tomcat.home}/webapps/activiti-cycle" />
+    <unzip dest="${tomcat.home}/webapps/activiti-cycle" src="${activiti.home}/setup/build/activiti-cycle.war" />
   </target>
 
 	<target name="deploy.activiti.modeler.into.tomcat" unless="skip.deploy.activiti.modeler">

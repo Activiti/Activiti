@@ -977,6 +977,13 @@ Activiti.event = function() {
      */
     selectDatabaseTable: "selectDatabaseTable",
 
+		/**
+		 * Shall be fired when a tree node is selected.
+		 * 
+		 * @property selectTreeLabel
+		 * @type string
+		 */
+		selectTreeLabel: "selectTreeLabel",
 
     /**
      * Called from the activiti initializer when the first body element is ready.

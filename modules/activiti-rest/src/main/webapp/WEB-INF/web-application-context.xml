@@ -144,4 +144,14 @@
         parent="activitiWebScript">
   </bean>
 
+  <bean id="webscript.org.activiti.rest.api.cycle.tree.get"
+        class="org.activiti.rest.api.cycle.TreeGet"
+        parent="activitiWebScript">
+  </bean>
+
+  <bean id="webscript.org.activiti.rest.api.cycle.artifact.get"
+        class="org.activiti.rest.api.cycle.ArtifactGet"
+        parent="activitiWebScript">
+  </bean>
+  
 </beans>

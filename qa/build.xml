@@ -83,6 +83,11 @@
     <antcall target="webapp.redeploy"/>
   </target>
 
+  <target name="webapp.cycle.redeploy">
+    <property name="webapp.redeploy.module" value="cycle"/>
+    <antcall target="webapp.redeploy"/>
+  </target>
+
   <target name="webapp.redeploy">
     <fail message="To use this target, set property webapp.redeploy.module to the chosen module" unless="webapp.redeploy.module"/>
     <available file="${user.home}/.activiti/tomcat-users.xml" property="tomcat.users.available" />
@@ -142,6 +147,11 @@ Then run test.demo.setup to make it get placed inside your tomcat server." unles
 
   <target name="webapp.explorer.redeploy.resources">
     <property name="webapp.redeploy.module" value="explorer"/>
+    <antcall target="webapp.redeploy.resources"/>
+  </target>
+
+  <target name="webapp.cycle.redeploy.resources">
+    <property name="webapp.redeploy.module" value="cycle"/>
     <antcall target="webapp.redeploy.resources"/>
   </target>
 

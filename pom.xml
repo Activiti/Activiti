@@ -223,6 +223,7 @@
 		    <module>modules/activiti-webapp</module>
 		    <module>modules/activiti-probe</module>
 		    <module>modules/activiti-explorer</module>
+		    <module>modules/activiti-cycle</module>
 			</modules>
 		</profile>
 		<profile>
@@ -235,6 +236,7 @@
 				<module>modules/activiti-rest</module>
 				<module>modules/activiti-probe</module>
 				<module>modules/activiti-explorer</module>
+				<module>modules/activiti-cycle</module>
 			</modules>
 		</profile>
     <profile>

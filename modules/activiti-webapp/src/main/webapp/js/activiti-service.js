@@ -1217,3 +1217,86 @@ Activiti.service.Ajax = function() {
 
   });
 })();
+
+/**
+ * Activiti RepositoryService.
+ *
+ * @namespace Activiti.service
+ * @class Activiti.service.RepositoryService
+ */
+(function()
+{
+  /**
+   * RepositoryService constructor.
+   *
+   * @parameter handler {object} The response handler object
+   * @return {Activiti.service.RepositoryService} The new Activiti.service.RepositoryService instance
+   * @constructor
+   */
+  Activiti.service.RepositoryService = function RepositoryService_constructor(callbackHandler)
+  {
+    Activiti.service.RepositoryService.superclass.constructor.call(this, "Activiti.service.RepositoryService", callbackHandler);
+    return this;
+  };
+
+  /**
+   * Event constants
+   */
+   YAHOO.lang.augmentObject(Activiti.service.ManagementService,
+   {
+     event: {
+       loadTree: "loadTree"
+     }
+   });
+
+  YAHOO.extend(Activiti.service.RepositoryService, Activiti.service.RestService,
+  {
+
+    /**
+     * Loads the repository tree
+     *
+     * @method loadTree
+     * @param obj {Object} Helper object to be sent to the callback
+     */
+    loadTree: function RepositoryService_loadTree(obj)
+    {
+      this.jsonGet(this.loadTreeURL(), obj, "loadTree");
+    },
+
+    /**
+     * Creates the GET url used to load the tree
+     *
+     * @method loadTreeURL
+     * @return {string} The url
+     */
+    loadTreeURL: function RepositoryService_loadTreeURL()
+    {
+      return Activiti.service.REST_PROXY_URI_RELATIVE + "repo-tree";
+    },
+
+		/**
+     * Loads an artifact (id and url)
+     *
+     * @method loadArtifact
+     * @param artifactid {string} The id of the artifact to be loaded
+     * @param obj {Object} Helper object to be sent to the callback
+     */
+    loadArtifact: function RepositoryService_loadArtifact(artifactid, obj)
+    {
+      this.jsonGet(this.loadArtifactURL(artifactid), obj, "loadArtifact");
+    },
+
+    /**
+     * Creates the GET url used to load the artifact
+     *
+     * @method loadArtifactURL
+		 * @param artifactid {string} The id of the artifact
+     * @return {string} The url
+     */
+    loadArtifactURL: function RepositoryService_loadArtifactURL(artifactid)
+    {
+      return Activiti.service.REST_PROXY_URI_RELATIVE + "artifact?artifactId=" + encodeURIComponent(artifactid);
+    }
+
+  });
+})();

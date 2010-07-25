@@ -43,6 +43,13 @@
     <move todir="${target.distro.root}/setup/files/webapps/libs/WEB-INF/lib">
       <fileset dir="${target.distro.root}/setup/files/webapps/activiti-probe.war/WEB-INF/lib" />
     </move>
+    
+    <mkdir dir="${target.distro.root}/setup/files/webapps/activiti-cycle.war" />
+    <unzip dest="${target.distro.root}/setup/files/webapps/activiti-cycle.war" 
+           src="../modules/activiti-cycle/target/activiti-cycle-${activiti.version}.war"/>
+    <delete>
+      <fileset dir="${target.distro.root}/setup/files/webapps/activiti-cycle.war/WEB-INF/lib" />
+    </delete>
 
     <mkdir dir="${target.distro.root}/setup/files/webapps/activiti-explorer.war" />
     <unzip dest="${target.distro.root}/setup/files/webapps/activiti-explorer.war" 
