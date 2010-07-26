@@ -34,6 +34,13 @@ public class SignavioConnectorConfiguration {
 	public static String MODEL_URL_SUFFIX = "model/";
 	public static String DIRECTORY_URL_SUFFIX = "directory/";	
 	public static String MASHUP_URL_SUFFIX = "mashup/";
+	
+	public SignavioConnectorConfiguration() {		
+	}
+	
+	public SignavioConnectorConfiguration(String signavioUrl) {
+		setSignavioUrl(signavioUrl);
+	}
 
 	public String getSignavioUrl() {
 		return signavioUrl;
