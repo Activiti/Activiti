@@ -13,12 +13,15 @@
 
 package org.activiti.test.bpmn.callactivity;
 
+import java.util.Date;
 import java.util.List;
 
 import org.activiti.ProcessInstance;
 import org.activiti.ProcessService;
 import org.activiti.Task;
 import org.activiti.TaskQuery;
+import org.activiti.impl.time.Clock;
+import org.activiti.test.JobExecutorPoller;
 import org.activiti.test.LogInitializer;
 import org.activiti.test.ProcessDeclared;
 import org.activiti.test.ProcessDeployer;
@@ -86,7 +89,7 @@ public class CallActivityTest {
   @Test
   @ProcessDeclared(resources = {"CallActivity.testCallParallelSubProcess.bpmn20.xml", "simpleParallelSubProcess.bpmn20.xml"})
   public void testCallParallelSubProcess() {
-    ProcessInstance processInstance = deployer.getProcessService().startProcessInstanceByKey("callParallelSubProcess");
+    deployer.getProcessService().startProcessInstanceByKey("callParallelSubProcess");
   
     // The two tasks in the parallel subprocess should be active
     TaskQuery taskQuery = deployer.getTaskService()
@@ -107,6 +110,29 @@ public class CallActivityTest {
     
     // Completing the second task should end the subprocess and end the whole process instance
     deployer.getTaskService().complete(taskB.getId());
+    assertEquals(0, deployer.getProcessService().createProcessInstanceQuery().list().size());
+  }
+  
+  @Test
+  @ProcessDeclared(resources = {"CallActivity.testTimerOnCallActivity.bpmn20.xml", "simpleSubProcess.bpmn20.xml"})
+  public void testTimerOnCallActivity() {
+    Date startTime = Clock.getCurrentTime();
+    
+    // After process start, the task in the subprocess should be active
+    deployer.getProcessService().startProcessInstanceByKey("timerOnCallActivity");
+    TaskQuery taskQuery = deployer.getTaskService().createTaskQuery();
+    Task taskInSubProcess = taskQuery.singleResult();
+    assertEquals("Task in subprocess", taskInSubProcess.getName());
+    
+    // When the timer on the subprocess is fired, the complete subprocess is destroyed
+    Clock.setCurrentTime(new Date(startTime.getTime() + (6 * 60 * 1000))); // + 6 minutes, timer fires on 5 minutes
+    new JobExecutorPoller(deployer.getJobExecutor(), deployer.getCommandExecutor()).waitForJobExecutorToProcessAllJobs(5000L, 25L);
+    
+    Task escalatedTask = taskQuery.singleResult();
+    assertEquals("Escalated Task", escalatedTask.getName());
+    
+    // Completing the task ends the complete process
+    deployer.getTaskService().complete(escalatedTask.getId());
     assertEquals(0, deployer.getProcessService().createProcessInstanceQuery().list().size());
   }
   

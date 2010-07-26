@@ -231,7 +231,7 @@ public class DbExecutionImpl extends ExecutionImpl implements PersistentObject {
   
   @Override
   protected void ensureSubProcessInstanceInitialized() {
-    if (subProcessInstance != null) {
+    if (subProcessInstance == null) {
       subProcessInstance = CommandContext.getCurrentCommandContext().getPersistenceSession().findSubProcessInstance(this.getId());
     }
   }

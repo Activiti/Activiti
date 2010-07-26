@@ -181,7 +181,7 @@ public class IbatisPersistenceSession implements PersistenceSession {
   }
 
   public DbExecutionImpl findSubProcessInstance(String superExecutionId) {
-    DbExecutionImpl subProcessInstance = (DbExecutionImpl) sqlSession.selectOne("selectSubProcessInstanceBySuperExecutionId");
+    DbExecutionImpl subProcessInstance = (DbExecutionImpl) sqlSession.selectOne("selectSubProcessInstanceBySuperExecutionId", superExecutionId);
     if (subProcessInstance != null) {
       subProcessInstance = (DbExecutionImpl) loaded.add(subProcessInstance);
     }

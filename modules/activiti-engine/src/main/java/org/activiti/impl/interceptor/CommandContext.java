@@ -105,13 +105,13 @@ public class CommandContext {
           }
 
           if (exception != null) {
+            exception.printStackTrace();
             transactionContext.rollback();
           }
         }
       } catch (Throwable exception) {
         exception(exception);
       } finally {
-
         closeSessions();
 
       }

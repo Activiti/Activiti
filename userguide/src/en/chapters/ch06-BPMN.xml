@@ -1752,6 +1752,114 @@ public class ToUppercaseActivityBehavior extends BpmnActivityBehavior implements
       </section>
 		
 		</section>
+		
+		<section id="bpmnCallActivity">
+		
+		  <title>Call activity (subprocess)</title>
+		  
+		  <section id="bpmnCallActivityDescription">
+		  
+		    <title>Description</title>
+		    
+		    <para>
+		      BPMN 2.0 makes a distinction between a regular <emphasis><link linkend="bpmnSubProcess">subprocess</link></emphasis>,
+		      often also called <emphasis>embedded subprocess</emphasis>, and the call activity, which
+		      looks very similar. From a conceptual point of view, both will call a subprocess when
+		      process execution arrives at the activity.
+		    </para>
+		    
+		    <para>
+		      The difference is that the call activity references a process that is external to
+		      the process definition, whereas the <emphasis><link linkend="bpmnSubProcess">subprocess</link></emphasis>
+		      is embedded within the original process definition. The main use case for the call
+		      activity is to have a reusable process definition that can be called from multiple
+		      other process definitions.
+		    </para>
+		    
+		    <para>
+		      When process execution arrives in the <emphasis>call activity</emphasis>, a new 
+		      execution is created that is a sub-execution of the execution that arrives in the
+		      call activity. This sub-execution is then used to execute the subprocess, potentially
+		      creating parallel child execution as within a regular process. The super-execution
+		      waits until the subprocess is completely ended, and continues the original 
+		      process afterwards.
+		    </para>
+		    
+		  </section>
+		  
+		  <section id="bpmnCallActivityGraphicalNotation">
+      
+        <title>Graphical Notation</title>
+        
+        <para>
+          A call activity is visualized exactly the same as a <link linkend="bpmnSubProcessGraphicalNotation">subprocess</link>.
+          Depending on the modeling tool, a call activity can also be expanded, but the default
+          visualization is the collapsed subprocess representation.
+          <mediaobject><imageobject><imagedata align="center" fileref="images/bpmn.collapsed.subprocess.png"/></imageobject></mediaobject>
+        </para>
+        
+      </section>
+      
+      <section id="bpmnCallActivityXMLRepresentation">
+      
+        <title>XML representation</title>
+        
+        <para>
+          A call activity is a regular activity, that requires a <emphasis>calledElement</emphasis>
+          that references a process definition by its <emphasis role="bold">key</emphasis>.
+          In practice, this means that the <emphasis role="bold">id of the process</emphasis> is
+          used in the <emphasis>calledElement</emphasis>.
+<programlisting>
+&lt;callActivity id=&quot;callCheckCreditProcess&quot; name=&quot;Check credit&quot; calledElement=&quot;checkCreditProcess&quot; /&gt;
+</programlisting>
+        </para>
+        
+        <para>
+          Note that the process definition of the subprocess is <emphasis role="bold">resolved 
+          at runtime</emphasis>. This means that the subprocess can be deployed independently
+          from the calling process, if needed.
+        </para>
+        
+      </section>
+      
+      <section id="bpmnCallActivityExample">
+      
+        <title>Example</title>
+        
+        <para>
+          The following process diagram shows a simple handling of an order. Since the
+          checking of the customer's credit could be common to many other processes, the 
+          <emphasis>check credit step</emphasis> is modeled here as a call activity.
+          <mediaobject><imageobject><imagedata align="center" fileref="images/bpmn.call.activity.super.process.png"/></imageobject></mediaobject>
+          The process looks as follows:
+<programlisting>
+&lt;startEvent id=&quot;theStart&quot; /&gt;
+
+&lt;sequenceFlow id=&quot;flow1&quot; sourceRef=&quot;theStart&quot; targetRef=&quot;receiveOrder&quot; /&gt;
+
+&lt;manualTask id=&quot;receiveOrder&quot; name=&quot;Receive Order&quot; /&gt;
+    
+&lt;sequenceFlow id=&quot;flow2&quot; sourceRef=&quot;receiveOrder&quot; targetRef=&quot;callCheckCreditProcess&quot; /&gt;
+    
+<emphasis role="bold">&lt;callActivity id=&quot;callCheckCreditProcess&quot; name=&quot;Check credit&quot; calledElement=&quot;checkCreditProcess&quot; /&gt;</emphasis>
+    
+&lt;sequenceFlow id=&quot;flow3&quot; sourceRef=&quot;callCheckCreditProcess&quot; targetRef=&quot;prepareAndShipTask&quot; /&gt;
+   
+&lt;userTask id=&quot;prepareAndShipTask&quot; name=&quot;Prepare and Ship&quot; /&gt;
+    
+&lt;sequenceFlow id=&quot;flow4&quot; sourceRef=&quot;prepareAndShipTask&quot; targetRef=&quot;end&quot; /&gt;
+    
+&lt;endEvent id=&quot;end&quot; /&gt;
+</programlisting>
+          The subprocess looks as follows:
+          <mediaobject><imageobject><imagedata align="center" fileref="images/bpmn.call.activity.sub.process.png"/></imageobject></mediaobject>
+          There is nothing special to the process definition of the subprocess. It could as well
+          be used without being called from another process.
+        </para>
+      
+      </section>
+		
+		</section>
 
 	</section>
 

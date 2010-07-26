@@ -233,12 +233,21 @@ public class ExecutionImpl implements
       childExecution.end();
     }
     
+    // If there is a subprocess instance
+    ensureSubProcessInstanceInitialized();
+    if (subProcessInstance != null) {
+      subProcessInstance.setSuperExecution(null);
+      subProcessInstance.end();
+    }
+    
     // if there is a parent 
     ensureParentInitialized();
     if (parent!=null) {
       // remove the bidirectional relation
       parent.removeExecution(this);
     } else { // this execution is a process instance
+      
+      // If there is a super execution
       ensureSuperExecutionInitialized();
       if (superExecution != null) {
         ExecutionImpl superExecutionCopy = superExecution; // local copy, since we need to set it to null and still call event() on it
@@ -246,6 +255,8 @@ public class ExecutionImpl implements
         setSuperExecution(null);
         superExecutionCopy.event("continue process");
       }
+      
+      // ending this execution
       isEnded = true;
       fireEvent(new ProcessInstanceEndedEvent(getProcessInstance()));
     }
