@@ -1575,7 +1575,7 @@ public class ToUppercaseActivityBehavior extends BpmnActivityBehavior implements
 		    </itemizedlist>
 		  </para>
 		  
-		</section> <!-- Boundary event -->
+		</section>
 		  
 		<section id="bpmnTimerBoundaryEvent">
       
@@ -1638,6 +1638,20 @@ public class ToUppercaseActivityBehavior extends BpmnActivityBehavior implements
         </para>
       
       </section>
+      
+      <section id="bpmnKnownIssueBoundaryEvent">
+    
+      <title>Known issue with boundary events</title>
+      
+      <para>
+        There is a known issue regarding concurrency when using boundary events of any type.
+        Currently, it is not possible to have multiple outgoing sequence flow attached to 
+        a boundary even (see issue <ulink url="http://jira.codehaus.org/browse/ACT-47">ACT-47</ulink>).
+        A solution to this problem is to use one outgoing sequence flow that goes to a parallel gateway.
+        <mediaobject><imageobject><imagedata align="center" fileref="images/bpmn.known.issue.boundary.event.png"/></imageobject></mediaobject>
+      </para>
+    
+    </section>
 		
 		</section> 
 		
