@@ -21,7 +21,6 @@ import org.activiti.impl.cycle.connect.api.RepositoryException;
 import org.activiti.impl.cycle.connect.api.actions.FileAction;
 import org.activiti.impl.cycle.connect.api.actions.FileActionGuiRepresentation;
 import org.activiti.impl.cycle.connect.signavio.SignavioConnector;
-import org.activiti.impl.cycle.connect.signavio.SignavioConnectorUrl;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -132,7 +131,7 @@ public class ShowModelViewerAction extends FileAction {
       // 2) + "mashup/signavio.js";
       // Letzteres um das 'p' in SERVER_URL wegzukriegen
 
-      String firstScriptTag = "<script type=\"text/javascript\" src=\"" + SignavioConnectorUrl.MASHUP_URL + "/signavio.js" + "\"></script>";
+      String firstScriptTag = "<script type=\"text/javascript\" src=\"" + connector.getSignavioConfiguration().getMashupUrl() + "signavio.js" + "\"></script>";
       String secondScriptTag = "<script type=\"text/plain\">" + resultJsonObject.toString() + "</script>";
 
       String resultHtmlSnippet = firstScriptTag.concat(secondScriptTag);

@@ -10,9 +10,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.activiti.impl.cycle.connect.api;
+package org.activiti.impl.cycle.connect.util;
 
 import java.util.logging.Logger;
+
+import org.activiti.impl.cycle.connect.api.FileInfo;
+import org.activiti.impl.cycle.connect.api.FolderInfo;
 
 /**
  * 

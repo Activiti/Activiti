@@ -12,9 +12,14 @@
  */
 package org.activiti.impl.cycle;
 
+import org.activiti.impl.cycle.connect.api.ItemInfo;
+
 /**
+ * TODO: Clarify what this is used for, sounds like a duplicate for {@link ItemInfo}
+ * 
  * @author Nils Preusker
  */
+@Deprecated
 public class Artifact {
 
   private Long id;

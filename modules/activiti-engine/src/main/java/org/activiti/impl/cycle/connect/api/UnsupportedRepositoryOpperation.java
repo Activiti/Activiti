@@ -20,12 +20,12 @@ public class UnsupportedRepositoryOpperation extends RuntimeException {
 
   private static final long serialVersionUID = 1L;
 
-  public UnsupportedRepositoryOpperation(String arg0, Throwable arg1) {
-    super(arg0, arg1);
+  public UnsupportedRepositoryOpperation(String msg, Throwable arg1) {
+    super(msg, arg1);
   }
 
-  public UnsupportedRepositoryOpperation(String arg0) {
-    super(arg0);
+  public UnsupportedRepositoryOpperation(String msg) {
+    super(msg);
   }
 
 }

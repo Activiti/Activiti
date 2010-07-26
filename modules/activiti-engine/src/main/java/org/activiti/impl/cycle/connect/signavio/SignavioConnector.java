@@ -68,16 +68,6 @@ import org.restlet.util.Series;
  */
 public class SignavioConnector implements RepositoryConnector {
 
-	public static String HOST;
-	public static String SERVER_URL;
-	public static String REGISTRATION_URL;
-	public static String LOGIN_URL;
-	public static String EDITOR_URL;
-	public static String EXPLORER_URL;
-	public static String MODEL_URL;
-	public static String DIRECTORY_URL;
-	public static String MASHUP_URL;
-
 	// register Signavio stencilsets to identify file types
 	public static final String SIGNAVIO_BPMN_2_0 = "http://b3mn.org/stencilset/bpmn2.0#";
 	public static final String SIGNAVIO_BPMN_JBPM4 = "http://b3mn.org/stencilset/jbpm4#";
@@ -107,16 +97,10 @@ public class SignavioConnector implements RepositoryConnector {
 	private String securityToken = "";
 	private List<Cookie> securityCookieList = new ArrayList<Cookie>();
 	
-	public SignavioConnector(String url) {
-		HOST = url;
-		SERVER_URL = HOST + "/p";
-		REGISTRATION_URL = SERVER_URL + "/register";
-		LOGIN_URL = SERVER_URL + "/login";
-		EDITOR_URL = SERVER_URL + "/editor";
-		EXPLORER_URL = SERVER_URL + "/explorer";
-		MODEL_URL = SERVER_URL + "/model";
-		DIRECTORY_URL = SERVER_URL + "/directory";
-		MASHUP_URL = HOST + "/mashup";
+	private SignavioConnectorConfiguration conf;
+	
+	public SignavioConnector(SignavioConnectorConfiguration signavioConfiguration) {
+		this.conf = signavioConfiguration;
 	}
 	
 	private Client initClient() {
@@ -130,7 +114,7 @@ public class SignavioConnector implements RepositoryConnector {
 	public boolean registerUserWithSignavio(String firstname, String lastname, String email, String password) {
 		Client client = initClient();
 
-		Reference registrationRef = new Reference(REGISTRATION_URL);
+		Reference registrationRef = new Reference(conf.getRegistrationUrl());
 
 		// Create the Post Parameters for registering a new user
 		Form registrationForm = new Form();
@@ -162,9 +146,9 @@ public class SignavioConnector implements RepositoryConnector {
 		try {
 			Client client = initClient();
 
-			log.info("Logging into Signavio on url: " + LOGIN_URL);
+			log.info("Logging into Signavio on url: " + conf.getLoginUrl());
 
-			Reference loginRef = new Reference(LOGIN_URL);
+			Reference loginRef = new Reference(conf.getLoginUrl());
 
 			// Login a user
 			Form loginForm = new Form();
@@ -211,7 +195,7 @@ public class SignavioConnector implements RepositoryConnector {
 
 		Client client = initClient();
 
-		Reference directoryRef = new Reference(DIRECTORY_URL);
+		Reference directoryRef = new Reference(conf.getDirectoryUrl());
 
 		Request directoryRequest = new Request(Method.GET, directoryRef);
 		directoryRequest.getClientInfo().getAcceptedMediaTypes().add(new Preference<MediaType>(MediaType.APPLICATION_JSON));
@@ -312,7 +296,7 @@ public class SignavioConnector implements RepositoryConnector {
 		try {
 			Client client = initClient();
 
-			Reference directoryRef = new Reference(SERVER_URL + folder.getPath());
+			Reference directoryRef = new Reference(conf.getSignavioUrl() + folder.getPath());
 
 			Request directoryRequest = new Request(Method.GET, directoryRef);
 			directoryRequest.getClientInfo().getAcceptedMediaTypes().add(new Preference<MediaType>(MediaType.APPLICATION_JSON));
@@ -377,7 +361,7 @@ public class SignavioConnector implements RepositoryConnector {
 		try {
 			Client client = initClient();
 			// TODO: what to add here to get json out of signavio? have to reengineer signavio rest mechanism
-			Reference jsonRef = new Reference(SERVER_URL + fileInfo.getPath() + "/json");
+			Reference jsonRef = new Reference(conf.getSignavioUrl() + fileInfo.getPath() + "/json");
 
 			Request jsonRequest = new Request(Method.GET, jsonRef);
 			jsonRequest.getClientInfo().getAcceptedMediaTypes().add(new Preference<MediaType>(MediaType.APPLICATION_JSON));
@@ -398,7 +382,7 @@ public class SignavioConnector implements RepositoryConnector {
 	public String getModelAsJpdl4Representation(FileInfo fileInfo) {
 		try {
 			Client client = initClient();
-			Reference jpdlRef = new Reference(SERVER_URL + fileInfo.getPath() + "/jpdl4");
+			Reference jpdlRef = new Reference(conf.getSignavioUrl() + fileInfo.getPath() + "/jpdl4");
 
 			Request jpdlRequest = new Request(Method.GET, jpdlRef);
 			jpdlRequest.getClientInfo().getAcceptedMediaTypes().add(new Preference<MediaType>(MediaType.APPLICATION_XML));
@@ -433,7 +417,7 @@ public class SignavioConnector implements RepositoryConnector {
 
 		try {
 			Client client = initClient();
-			Reference bpmn20Ref = new Reference(SERVER_URL + fileInfo.getPath() + "/bpmn2_0_xml");
+			Reference bpmn20Ref = new Reference(conf.getSignavioUrl() + fileInfo.getPath() + "/bpmn2_0_xml");
 
 			Request bpmn20Request = new Request(Method.GET, bpmn20Ref);
 			bpmn20Request.getClientInfo().getAcceptedMediaTypes().add(new Preference<MediaType>(MediaType.APPLICATION_XML));
@@ -467,7 +451,7 @@ public class SignavioConnector implements RepositoryConnector {
 	public byte[] getModelAsPngRepresentation(FileInfo fileInfo) {
 		try {
 			Client client = initClient();
-			Reference pngRef = new Reference(SERVER_URL + fileInfo.getPath() + "/png");
+			Reference pngRef = new Reference(conf.getSignavioUrl() + fileInfo.getPath() + "/png");
 
 			Request pngRequest = new Request(Method.GET, pngRef);
 			pngRequest.getClientInfo().getAcceptedMediaTypes().add(new Preference<MediaType>(MediaType.IMAGE_PNG));
@@ -495,23 +479,23 @@ public class SignavioConnector implements RepositoryConnector {
 	}
 
 	public String getModelAsPngUrl(FileInfo fileInfo) {
-		return SERVER_URL + fileInfo.getPath() + "/png?token=" + getSecurityToken();
+		return conf.getSignavioUrl() + fileInfo.getPath() + "/png?token=" + getSecurityToken();
 	}
 
 	public String getModellerUrl(FileInfo fileInfo) {
 		// substring 7 to remove prefix_string '/model/' return from getPath() to get raw model id
-		return EDITOR_URL + "?id=" + fileInfo.getPath().substring(7);
+		return conf.getEditorUrl() + "?id=" + fileInfo.getPath().substring(7);
 	}
 
 	public String getModelUrl(FileInfo fileInfo) {
-		return SERVER_URL + fileInfo.getPath();
+		return conf.getSignavioUrl() + fileInfo.getPath();
 	}
 
 	public JSONArray getEmbeddedModel(FileInfo fileInfo) {
 		try {
 			Client client = initClient();
 
-			Reference embeddedModelRef = new Reference(SERVER_URL + "/purl");
+			Reference embeddedModelRef = new Reference(conf.getSignavioUrl() + "purl");
 
 			// Create POST parameters
 			Form embeddedModelForm = new Form();
@@ -626,7 +610,7 @@ public class SignavioConnector implements RepositoryConnector {
 		try {
 			Client client = initClient();
 
-			Reference embeddedModelRef = new Reference(SERVER_URL + "/purl/" + fileInfo.getPath().substring(7) + "/info/");
+			Reference embeddedModelRef = new Reference(conf.getSignavioUrl() + "purl/" + fileInfo.getPath().substring(7) + "/info/");
 
 			Request embeddedModelRequest = new Request(Method.DELETE, embeddedModelRef);
 
@@ -653,5 +637,9 @@ public class SignavioConnector implements RepositoryConnector {
   public List<FolderInfo> getChildFolders(FolderInfo parentFolder) {
     
     return null;
+  }
+
+  public SignavioConnectorConfiguration getSignavioConfiguration() {
+    return conf;
   }
 }

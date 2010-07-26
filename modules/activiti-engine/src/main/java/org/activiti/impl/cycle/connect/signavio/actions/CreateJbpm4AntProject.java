@@ -28,8 +28,8 @@ import org.activiti.impl.cycle.connect.api.ItemInfo;
 import org.activiti.impl.cycle.connect.api.RepositoryConnector;
 import org.activiti.impl.cycle.connect.api.actions.FileAction;
 import org.activiti.impl.cycle.connect.api.actions.FileActionGuiRepresentation;
-import org.activiti.impl.cycle.connect.signavio.IoUtils;
 import org.activiti.impl.cycle.connect.signavio.SignavioConnector;
+import org.activiti.impl.cycle.connect.util.IoUtils;
 
 /**
  * @author christian.lipphardt@camunda.com
