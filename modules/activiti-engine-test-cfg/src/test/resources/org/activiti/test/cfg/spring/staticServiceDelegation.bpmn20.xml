@@ -15,7 +15,7 @@
     
     <serviceTask id="javaService" 
                  name="Java service invocation" 
-                 activiti:java="#{service}" />
+                 activiti:class="#{service}" />
     
     <sequenceFlow id="flow2" sourceRef="javaService" targetRef="waitState" />
     

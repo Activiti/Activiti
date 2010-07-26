@@ -11,7 +11,7 @@
  * limitations under the License.
  */
 
-package org.activiti;
+package org.activiti.impl.bpmn;
 
 import java.util.ArrayList;
 import java.util.List;

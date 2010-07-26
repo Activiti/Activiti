@@ -12,7 +12,7 @@
  */
 package org.activiti.test.cfg.spring;
 
-import org.activiti.BpmnActivityBehavior;
+import org.activiti.impl.bpmn.BpmnActivityBehavior;
 import org.activiti.pvm.ActivityBehavior;
 import org.activiti.pvm.ActivityExecution;
 

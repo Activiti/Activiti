@@ -10,9 +10,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.activiti.test.bpmn.servicetask;
+package org.activiti.examples.bpmn.servicetask;
 
-import org.activiti.BpmnActivityBehavior;
+import org.activiti.impl.bpmn.BpmnActivityBehavior;
 import org.activiti.pvm.ActivityBehavior;
 import org.activiti.pvm.ActivityExecution;
 

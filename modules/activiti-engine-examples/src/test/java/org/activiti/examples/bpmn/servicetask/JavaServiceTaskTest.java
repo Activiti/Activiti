@@ -10,7 +10,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.activiti.test.bpmn.servicetask;
+package org.activiti.examples.bpmn.servicetask;
 
 import static org.junit.Assert.assertEquals;
 

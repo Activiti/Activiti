@@ -1385,6 +1385,106 @@ List&lt;Task&gt; tasks = taskService.createTaskQuery().assignee(&quot;kermit&quo
 		
 		</section> 
 		
+		<section id="bpmnJavaServiceTask">
+	
+	   <title>Java Service Task</title>
+	   
+	   <section id="bpmnJavaServiceTaskDescription">
+	   
+	     <title>Description</title>
+	     
+	     <para>
+	       A Java service task is used to invoke an external Java class.
+	     </para>
+	   
+	   </section>	
+	   
+	   <section id="bpmnJavaServiceTaskGraphicalNotation">
+     
+       <title>Graphical Notation</title>
+       
+       <para>
+        A service task is visualized as a rounded rectangle with a small cogs icon in the top-left corner.
+        <mediaobject><imageobject><imagedata align="center" fileref="images/bpmn.java.service.task.png"/></imageobject></mediaobject>
+       </para>
+     
+     </section> 
+     
+     <section id="bpmnJavaServiceTaskXML">
+     
+       <title>XML representation</title>
+       
+       <para>
+         To call a Java pojo during process execution, the fully qualified classname 
+         needs to be provided by the <emphasis role="bold">'activiti:java'</emphasis>
+         attribute.
+<programlisting>
+&lt;serviceTask id=&quot;javaService&quot; 
+             name=&quot;My Java Service Task&quot; 
+             activiti:class=&quot;org.activiti.MyActivityBehavior&quot; /&gt;
+</programlisting>
+       </para>
+       
+     </section> 
+     
+     <section id="bpmnJavaServiceTaskImplementation">
+     
+      <title>Implementation</title>
+      
+      <para>
+        To implement a class that can be called during process execution, this class needs to
+        implement the <emphasis>org.activiti.pvm.ActivityBehavior</emphasis> interface.
+      </para>
+      
+      <para>
+        Let's create for example a Java class that can be used to change a process variable String
+        to uppercase. This class needs to implement the <emphasis>ActivityBehavior</emphasis>
+        interface, which requires us to implement the <emphasis>execute(ActivityExecution)</emphasis>
+        method. It's this operation that will be called by the engine and which needs to contain
+        the business logic. Process instance information such as process variables, executions, etc.
+        can be accessed and manipulated through the 
+        <ulink url="http://activiti.org/javadocs/org/activiti/pvm/ActivityExecution.html">ActivityExecution</ulink>
+        interface (click on the link for a detailed Javadoc of its operations).
+<programlisting>
+public class ToUppercaseActivityBehavior extends BpmnActivityBehavior implements ActivityBehavior {
+  
+  public void execute(ActivityExecution execution) throws Exception {
+    String var = (String) execution.getVariable(&quot;input&quot;);
+    var = var.toUpperCase();
+    execution.setVariable(&quot;input&quot;, var);
+    
+    performDefaultOutgoingBehavior(execution);
+  }
+  
+}
+</programlisting>
+        Also note that here we're extending from the <emphasis>org.activiti.impl.bpmn.BpmnActivityBehavior</emphasis> class.
+        This allows us to convience methods such as 
+        <itemizedlist>
+          <listitem>
+            <para>
+              <emphasis>performDefaultOutgoingBehavior</emphasis>,
+              which will execute the default BPMN 2.0 outgoing behavior: all outgoing
+              sequence flow are taken in parallel and conditions on the sequence flow are evaluated
+              before the sequence flow is selected for leaving the current activity.  
+            </para>
+          </listitem>
+          <listitem>
+            <para>
+              <emphasis>performIgnoreConditionsOutgoingBehavior</emphasis>, which
+              takes all outgoing sequence flow in parallel, regardless of having a condition
+              defined on it (eg. this is the behavior of the
+              <link linkend="bpmnParallelGateway">parallel gateway</link>).
+            </para>
+          </listitem>          
+        </itemizedlist>
+        Note that this class can be used by inheritance (as it is used here) or by composition.
+      </para>
+     
+     </section>
+  		
+		</section>
+		
 		<section id="bpmnManualTask">
 		
 		  <title>Manual Task</title>

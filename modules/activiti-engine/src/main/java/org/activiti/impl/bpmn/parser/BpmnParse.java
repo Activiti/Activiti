@@ -434,7 +434,7 @@ public class BpmnParse extends Parse {
   public void parseServiceTask(Element serviceTaskElement, ScopeElementImpl scopeElement) {
     ActivityImpl activity = parseAndCreateActivityOnScopeElement(serviceTaskElement, scopeElement);
 
-    String expression = serviceTaskElement.attributeNS(BpmnParser.BPMN_EXTENSIONS_NS, "java");
+    String expression = serviceTaskElement.attributeNS(BpmnParser.BPMN_EXTENSIONS_NS, "class");
     if (expression != null && expression.trim().length() > 0) {
       activity.setActivityBehavior(new ServiceInvocationActivityBehaviour(expressionManager.createValueExpression(expression)));
     } else {
