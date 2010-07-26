@@ -11,7 +11,7 @@
  * limitations under the License.
  */
 
-package org.activiti.test.cfg.spring;
+package org.activiti.impl.cfg.spring;
 
 import java.io.IOException;
 import java.util.zip.ZipInputStream;
