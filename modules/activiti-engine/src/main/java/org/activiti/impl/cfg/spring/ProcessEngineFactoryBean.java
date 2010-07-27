@@ -151,7 +151,7 @@ public class ProcessEngineFactoryBean implements FactoryBean<ProcessEngine>, Dis
   }
 
   public void setDataBaseName(String dataBaseName) {
-    factory.setDataBaseName(dataBaseName);
+    factory.setDatabaseName(dataBaseName);
   }
 
   public void setDataSource(DataSource dataSource) {

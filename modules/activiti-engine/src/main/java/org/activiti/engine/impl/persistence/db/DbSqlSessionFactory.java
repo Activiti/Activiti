@@ -80,6 +80,12 @@ public class DbSqlSessionFactory implements SessionFactory {
   protected Map<Class<?>,String>  updateStatements = DEFAULT_UPDATE_STATEMENTS;
   protected Map<Class<?>,String>  deleteStatements = DEFAULT_DELETE_STATEMENTS;
   
+  public DbSqlSessionFactory(SqlSessionFactory sqlSessionFactory, IdGenerator idGenerator, String databaseName) {
+    this.sqlSessionFactory = sqlSessionFactory;
+    this.idGenerator = idGenerator;
+    this.statementMappings = databaseSpecificStatements.get(databaseName);
+  }
+
   public Session openSession() {
     return new DbSqlSession(this);
   }
@@ -95,10 +101,6 @@ public class DbSqlSessionFactory implements SessionFactory {
     specificStatements.put(activitiStatement, ibatisStatement);
   }
   
-  public void setDatabaseName(String databaseName) {
-    statementMappings = databaseSpecificStatements.get(databaseName);
-  }
-
   public String mapStatement(String statement) {
     String mappedStatement = statementMappings.get(statement);
     return (mappedStatement!=null ? mappedStatement : statement);

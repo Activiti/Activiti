@@ -208,7 +208,7 @@ public class DbProcessEngineBuilder {
 
     DataSource dataSource = new PooledDataSource(Thread.currentThread().getContextClassLoader(), jdbcDriver, jdbcUrl, jdbcUsername, jdbcPassword);
     factory.setDataSource(dataSource);
-    factory.setDataBaseName(dataBaseName);
+    factory.setDatabaseName(dataBaseName);
     factory.setLocalTransactions(localTransactions);
 
     return factory.createProcessEngine();

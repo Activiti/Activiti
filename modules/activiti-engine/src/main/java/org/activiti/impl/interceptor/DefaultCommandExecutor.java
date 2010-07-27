@@ -47,8 +47,8 @@ public class DefaultCommandExecutor implements CommandExecutor {
   }
 
   public <T> T execute(Command<T> command) {
-    log.fine("                                                                                                 ");
-    log.fine("=== starting command " + command + " ===========================================");
+    log.fine("                                                                                                    ");
+    log.fine("--- starting command " + command + " --------------------------------------------------------");
     try {
 
       return new InternalCommandInterceptorChain(interceptors, contextAwareInterceptors, commandContextFactory).execute(command);
@@ -63,8 +63,8 @@ public class DefaultCommandExecutor implements CommandExecutor {
       throw new ActivitiException("Command failed with unknown exception.", exception);
 
     } finally {
-      log.fine("=== command " + command + " finished ===========================================");
-      log.fine("                                                                                                 ");
+      log.fine("--- command " + command + " finished --------------------------------------------------------");
+      log.fine("                                                                                                    ");
     }
   }
 

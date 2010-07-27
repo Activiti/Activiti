@@ -13,28 +13,34 @@
 
 package org.activiti.engine.test.db;
 
+import org.activiti.engine.impl.persistence.RepositorySession;
+import org.activiti.engine.impl.persistence.repository.DeploymentEntity;
+import org.activiti.engine.impl.persistence.repository.ResourceEntity;
+import org.activiti.engine.test.ProcessEngineImplTestCase;
+import org.activiti.impl.interceptor.Command;
+import org.activiti.impl.interceptor.CommandContext;
+
 
 
 /**
  * @author Tom Baeyens
  */
-public class DeploymentPersistenceTestXXX {
+public class DeploymentPersistenceTest extends ProcessEngineImplTestCase {
 
-//  @Test
-//  public void testDeployment() {
-//    final DeploymentEntity deployment = new DeploymentEntity();
-//    
-//    final int deploymentId = getCommandExecutor().execute(new Command<Integer>() {
-//      public Integer execute(CommandContext commandContext) {
+  public void testDeployment() {
+    final DeploymentEntity deployment = new DeploymentEntity();
+    
+    final int deploymentId = commandExecutor.execute(new Command<Integer>() {
+      public Integer execute(CommandContext commandContext) {
 //        RepositorySession repositorySession = commandContext.getRepostorySession();
 //        repositorySession.insertDeployment(deployment);
 //        
 //        for (ResourceEntity resource: deployment.getResources().values()) {
 //          repositorySession.insertResource(resource);
 //        }
-//        
-//        return 4;
-//      }
-//    });
-//  }
+        
+        return 4;
+      }
+    });
+  }
 }

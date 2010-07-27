@@ -19,13 +19,11 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.activiti.ActivitiException;
+import org.activiti.engine.impl.persistence.RepositorySession;
 import org.activiti.impl.cfg.ProcessEngineConfiguration;
 import org.activiti.impl.msg.MessageSession;
-import org.activiti.impl.msg.MessageSessionFactory;
 import org.activiti.impl.persistence.PersistenceSession;
-import org.activiti.impl.persistence.PersistenceSessionFactory;
 import org.activiti.impl.timer.TimerSession;
-import org.activiti.impl.timer.TimerSessionFactory;
 import org.activiti.impl.tx.Session;
 import org.activiti.impl.tx.TransactionContext;
 import org.activiti.impl.tx.TransactionContextFactory;
@@ -72,7 +70,7 @@ public class CommandContext {
     return txContextStack;
   }
 
-  public CommandContext(Command<?> command, ProcessEngineConfiguration processEngineConfiguration, TransactionContextFactory transactionContextFactory, PersistenceSessionFactory persistenceSessionFactory, MessageSessionFactory messageSessionFactory, TimerSessionFactory timerSessionFactory) {
+  public CommandContext(Command<?> command, ProcessEngineConfiguration processEngineConfiguration, TransactionContextFactory transactionContextFactory) {
     this.command = command;
     this.processEngineConfiguration = processEngineConfiguration;
     this.transactionContext = transactionContextFactory.openTransactionContext(this);
@@ -160,6 +158,9 @@ public class CommandContext {
     Session session = sessions.get(sessionClass);
     if (session == null) {
       SessionFactory sessionFactory = processEngineConfiguration.getSessionFactories().get(sessionClass);
+      if (sessionFactory==null) {
+        throw new ActivitiException("no session factory configured for "+sessionClass.getName());
+      }
       session = sessionFactory.openSession();
       sessions.put(sessionClass, session);
     }
@@ -167,11 +168,6 @@ public class CommandContext {
     return (T) session;
   }
 
-  // getters and setters //////////////////////////////////////////////////////
-
-  public TransactionContext getTransactionContext() {
-    return transactionContext;
-  }
   public PersistenceSession getPersistenceSession() {
     return getSession(PersistenceSession.class);
   }
@@ -180,6 +176,15 @@ public class CommandContext {
   }
   public TimerSession getTimerSession() {
     return getSession(TimerSession.class);
+  }
+  public RepositorySession getRepostorySession() {
+    return getSession(RepositorySession.class);
+  }
+
+  // getters and setters //////////////////////////////////////////////////////
+
+  public TransactionContext getTransactionContext() {
+    return transactionContext;
   }
   public Command< ? > getCommand() {
     return command;

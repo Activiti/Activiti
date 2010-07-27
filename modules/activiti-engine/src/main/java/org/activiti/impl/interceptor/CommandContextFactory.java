@@ -13,10 +13,6 @@
  */
 package org.activiti.impl.interceptor;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-
 import org.activiti.impl.cfg.ProcessEngineConfiguration;
 import org.activiti.impl.msg.MessageSessionFactory;
 import org.activiti.impl.persistence.PersistenceSessionFactory;
@@ -33,13 +29,10 @@ public class CommandContextFactory {
   
   // TODO remove (they are in process engine configuration)
   
-  private PersistenceSessionFactory persistenceSessionFactory;
-  private MessageSessionFactory messageSessionFactory;
-  private TimerSessionFactory timerSessionFactory;
   private TransactionContextFactory transactionContextFactory;
 
   public CommandContext createCommandContext(Command<?> cmd) {
-    return new CommandContext(cmd, processEngineConfiguration, transactionContextFactory, persistenceSessionFactory, messageSessionFactory, timerSessionFactory);
+    return new CommandContext(cmd, processEngineConfiguration, transactionContextFactory);
   }
   
   // getters and setters //////////////////////////////////////////////////////
@@ -50,18 +43,10 @@ public class CommandContextFactory {
   public void setProcessEngineConfiguration(ProcessEngineConfiguration processEngineConfiguration) {
     this.processEngineConfiguration = processEngineConfiguration;
   }
-
-
-  public void setPersistenceSessionFactory(PersistenceSessionFactory persistenceSessionFactory) {
-    this.persistenceSessionFactory = persistenceSessionFactory;
-  }
-  public void setMessageSessionFactory(MessageSessionFactory messageSessionFactory) {
-    this.messageSessionFactory = messageSessionFactory;
-  }
-  public void setTimerSessionFactory(TimerSessionFactory timerSessionFactory) {
-    this.timerSessionFactory = timerSessionFactory;
-  }
   public void setTransactionContextFactory(TransactionContextFactory transactionContextFactory) {
     this.transactionContextFactory = transactionContextFactory;
+  }
+  public TransactionContextFactory getTransactionContextFactory() {
+    return transactionContextFactory;
   }
 }

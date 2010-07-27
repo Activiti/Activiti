@@ -15,6 +15,7 @@ package org.activiti.engine.test;
 
 import org.activiti.impl.ProcessEngineImpl;
 import org.activiti.impl.interceptor.CommandExecutor;
+import org.activiti.impl.util.LogUtil.ThreadLogMode;
 
 
 /** JUnit 3 style base class that also exposes selected implementation 
@@ -24,14 +25,27 @@ import org.activiti.impl.interceptor.CommandExecutor;
  */
 public class ProcessEngineImplTestCase extends ProcessEngineTestCase {
 
+  protected CommandExecutor commandExecutor;
+  
   public ProcessEngineImplTestCase() {
+    super();
+  }
+
+  public ProcessEngineImplTestCase(String configurationResource, ThreadLogMode threadRenderingMode) {
+    super(configurationResource, threadRenderingMode);
   }
 
   public ProcessEngineImplTestCase(String configurationResource) {
     super(configurationResource);
   }
 
-  public CommandExecutor getCommandExecutor() {
-    return ((ProcessEngineImpl) processEngineRule.getProcessEngine()).getProcessEngineConfiguration().getCommandExecutor();
+  public ProcessEngineImplTestCase(ThreadLogMode threadRenderingMode) {
+    super(threadRenderingMode);
+  }
+
+  @Override
+  void initializeServices() {
+    super.initializeServices();
+    commandExecutor = ((ProcessEngineImpl) processEngine).getProcessEngineConfiguration().getCommandExecutor();
   }
 }
