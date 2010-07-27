@@ -12,8 +12,6 @@
  */
 package org.activiti.impl.bpmn;
 
-import java.util.logging.Logger;
-
 import org.activiti.pvm.ActivityExecution;
 import org.activiti.pvm.EventActivityBehavior;
 
@@ -27,8 +25,6 @@ import org.activiti.pvm.EventActivityBehavior;
  * @author Joram Barrez
  */
 public abstract class BpmnActivity implements EventActivityBehavior {
-  
-  private static final Logger LOG = Logger.getLogger(BpmnActivity.class.getName());
   
   protected BpmnActivityBehavior bpmnActivityBehavior = new BpmnActivityBehavior();
   

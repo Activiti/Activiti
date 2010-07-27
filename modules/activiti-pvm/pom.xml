@@ -1,0 +1,36 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+	<modelVersion>4.0.0</modelVersion>
+
+	<name>Activiti - PVM</name>
+	<groupId>org.activiti</groupId>
+	<artifactId>activiti-pvm</artifactId>
+
+	<parent>
+		<groupId>org.activiti</groupId>
+		<artifactId>activiti-root</artifactId>
+		<relativePath>../..</relativePath>
+		<version>5.0.beta1-SNAPSHOT</version>
+	</parent>
+
+	<dependencies>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+    </dependency>
+	</dependencies>
+	
+	<reporting>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-javadoc-plugin</artifactId>
+				<configuration>
+					<excludePackageNames>org.activiti.pvm.impl*</excludePackageNames>
+				</configuration>
+			</plugin>
+		</plugins>
+	</reporting>
+
+</project>

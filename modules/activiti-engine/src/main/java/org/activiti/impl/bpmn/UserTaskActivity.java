@@ -13,8 +13,6 @@
 package org.activiti.impl.bpmn;
 
 import org.activiti.impl.el.ExpressionManager;
-import org.activiti.impl.event.ActivityEndedEvent;
-import org.activiti.impl.event.ActivityStartedEvent;
 import org.activiti.impl.execution.ExecutionImpl;
 import org.activiti.impl.task.TaskDefinition;
 import org.activiti.impl.task.TaskImpl;

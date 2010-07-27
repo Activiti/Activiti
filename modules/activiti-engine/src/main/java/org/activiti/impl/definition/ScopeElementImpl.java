@@ -80,6 +80,7 @@ public class ScopeElementImpl implements Serializable {
     listeners.add(listener);
   }
 
+  @SuppressWarnings("unchecked")
   public List<Listener> getEventListeners(String eventId) {
     if (eventListeners == null) {
       return Collections.EMPTY_LIST;

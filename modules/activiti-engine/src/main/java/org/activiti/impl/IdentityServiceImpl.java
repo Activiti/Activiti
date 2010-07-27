@@ -73,14 +73,17 @@ public class IdentityServiceImpl implements IdentityService {
     commandExecutor.execute(new CreateMembershipCmd(userId, groupId));
   }
 
+  @SuppressWarnings("unchecked")
   public List<Group> findGroupsByUser(String userId) {
     return commandExecutor.execute(new FindGroupsByUserCmd(userId, null));
   }
 
+  @SuppressWarnings("unchecked")
   public List<Group> findGroupsByUserAndType(String userId, String groupType) {
     return commandExecutor.execute(new FindGroupsByUserCmd(userId, groupType));
   }
 
+  @SuppressWarnings("unchecked")
   public List<User> findUsersByGroup(String groupId) {
     return commandExecutor.execute(new FindUsersByGroupCmd(groupId));
   }

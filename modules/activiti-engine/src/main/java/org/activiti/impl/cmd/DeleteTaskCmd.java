@@ -12,8 +12,6 @@
  */
 package org.activiti.impl.cmd;
 
-import java.util.logging.Logger;
-
 import org.activiti.ActivitiException;
 import org.activiti.impl.interceptor.CommandContext;
 import org.activiti.impl.persistence.PersistenceSession;
@@ -24,8 +22,6 @@ import org.activiti.impl.task.TaskImpl;
  * @author Joram Barrez
  */
 public class DeleteTaskCmd extends CmdVoid {
-  
-  private static Logger log = Logger.getLogger(DeleteTaskCmd.class.getName());
   
   protected String taskId;
   

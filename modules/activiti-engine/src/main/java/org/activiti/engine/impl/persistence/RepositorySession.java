@@ -10,39 +10,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.activiti.impl.cycle;
+
+package org.activiti.engine.impl.persistence;
+
+import org.activiti.engine.impl.persistence.repository.DeploymentEntity;
+import org.activiti.engine.impl.persistence.repository.ResourceEntity;
 
 
 /**
- * TODO: Clarify what this is used for, sounds like a duplicate for {@link ItemInfo}
- * 
- * @author Nils Preusker
+ * @author Tom Baeyens
  */
-@Deprecated
-public class Artifact {
+public interface RepositorySession {
 
-  private Long id;
-  private String url;
+  void insertDeployment(DeploymentEntity deployment);
+  void deleteDeployment(DeploymentEntity deployment);
 
-  public Artifact(Long id, String url) {
-    this.id = id;
-    this.url = url;
-  }
-
-  public void setId(Long id) {
-    this.id = id;
-  }
-
-  public Long getId() {
-    return id;
-  }
-
-  public void setUrl(String url) {
-    this.url = url;
-  }
-
-  public String getUrl() {
-    return url;
-  }
+  void insertResource(ResourceEntity resource);
+  void deleteResource(ResourceEntity resource);
 
 }

@@ -51,7 +51,6 @@ import org.activiti.impl.el.ExpressionManager;
 import org.activiti.impl.el.UelMethodExpressionCondition;
 import org.activiti.impl.el.UelValueExpressionCondition;
 import org.activiti.impl.job.TimerExecuteNestedActivityJobHandler;
-import org.activiti.impl.persistence.PersistenceSession;
 import org.activiti.impl.scripting.ScriptingEngines;
 import org.activiti.impl.task.TaskDefinition;
 import org.activiti.impl.timer.TimerDeclarationImpl;
@@ -65,7 +64,6 @@ import org.activiti.impl.xml.Parser;
 import org.activiti.pvm.ActivityBehavior;
 import org.activiti.pvm.Condition;
 import org.activiti.pvm.Listener;
-import org.xml.sax.SAXParseException;
 
 /**
  * Specific parsing representation created by the {@link BpmnParser} to parse

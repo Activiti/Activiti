@@ -10,39 +10,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.activiti.impl.cycle;
+
+package org.activiti.pvm.impl.runtime;
+
+import org.activiti.pvm.impl.process.ProcessDefinitionImpl;
+import org.activiti.pvm.runtime.PvmProcessInstance;
 
 
 /**
- * TODO: Clarify what this is used for, sounds like a duplicate for {@link ItemInfo}
- * 
- * @author Nils Preusker
+ * @author Tom Baeyens
  */
-@Deprecated
-public class Artifact {
-
-  private Long id;
-  private String url;
-
-  public Artifact(Long id, String url) {
-    this.id = id;
-    this.url = url;
+public class ProcessInstanceImpl extends ScopeInstanceImpl implements PvmProcessInstance {
+  
+  public ProcessInstanceImpl(ProcessDefinitionImpl processDefinition) {
+    super(processDefinition, processDefinition);
   }
-
-  public void setId(Long id) {
-    this.id = id;
-  }
-
-  public Long getId() {
-    return id;
-  }
-
-  public void setUrl(String url) {
-    this.url = url;
-  }
-
-  public String getUrl() {
-    return url;
+  
+  public void start() {
+    new ExecutionContextImpl().startProcessInstance(this);
   }
 
 }
