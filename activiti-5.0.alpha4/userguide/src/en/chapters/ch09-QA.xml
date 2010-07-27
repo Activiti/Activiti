@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE chapter PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN" "../../../target/docbook-tool-1.0/docbook-xml/docbookx.dtd">
+<chapter>
+  <title>Running QA tests</title>
+  <section id="introduction">
+    <title>Introduction</title>
+    <para>
+      This chapter describes how to run the qa tests for Activiti. After defining the configuration these tests ensure that activiti supports your database environment. Tested database systems so far are:
+    </para>
+    <itemizedlist>
+      <listitem>
+        <para>H2</para>
+      </listitem>
+      <listitem>
+        <para>MySQL 5.1</para>
+      </listitem>
+    </itemizedlist>
+  </section>
+  
+  <section id="setup">
+    <title>Setup / Configuration</title>
+    <para>The following lines will guide you through running the test suite. For this example we will use MySQL 5.1 as database environment. If you would like to run the test suite against a 
+      yet unsupported database environment, consult the <ulink url="http://docs.codehaus.org/display/ACT/Developers+Guide">Developer Guide - Adding support for new database systems</ulink>. </para>
+      
+    <itemizedlist>
+      <listitem>
+        <para><emphasis role="bold">Checkout activiti project from SVN</emphasis></para>
+        <para>
+          Before you can run the test suite, you need to <ulink url="http://docs.codehaus.org/display/ACT/Developers+Guide#DevelopersGuide-Buildingadistribution">checkout activiti</ulink>. The qa tests are located in the projects 'activiti-engine-examples' and 'activiti-engine-test-api', but you do not need to start 
+          them from there separately. You will start the tests from the quality assurance project. But before we have to create a new database schema and user.  
+        </para>
+      </listitem>
+
+      <listitem>
+        <para><emphasis role="bold">Create a new schema and user</emphasis></para>
+        <para>
+          First we need to create a new schema and a new user for the database connection. We set the schema name to 'activiti'.The users name and  password are 'qa'! If you need guidance 
+          on how to create a new schema and user for MySQL, please consult their <ulink url="http://dev.mysql.com/doc/">documentation</ulink>. Now we need to make sure that the test suite gets a database connection.
+        </para>
+      </listitem>
+      <listitem>
+        <para><emphasis role="bold">Create a database connection file</emphasis></para>
+        <para>You need to provide databse connection properties for the test suite to be executed. This information goes into a file called 'mysql.properties'. Please create the following folder    structure:</para> 
+        <para><literal>/{user_home}/.activiti/jdbc</literal></para>
+        <para>Within this directoy create a new file mysql.properties like this:</para>
+        <programlisting>jdbc.driver=com.mysql.jdbc.Driver
+jdbc.url=jdbc:mysql://&lt;hostname&gt;:&lt;port&gt;/activiti
+jdbc.username=qa
+jdbc.password=qa</programlisting>
+      </listitem>
+    </itemizedlist> 
+  </section>
+  
+  
+  <section id="run">
+    <title>Run the test suite</title>
+    <para>
+      Now we are ready to run the qa script. Navigate to <literal>/activiti/trunk/qa/ci</literal> and run the script that is suitable for your operating system like this:
+    </para>
+    <programlisting>run-test-db-standalone mysql</programlisting>
+    <para>If you would like to run the qa script against H2, then you need to execute this command:</para>
+    <programlisting>run-test-db-standalone h2</programlisting>
+  </section>
+  
+
+</chapter>

@@ -1,0 +1,5 @@
+<webscript>
+  <shortname>Activiti - About Explorer</shortname>
+  <description>Describes the Activiti Explorer application</description>
+  <url>/component/about</url>
+</webscript>
