@@ -11,7 +11,7 @@
     <groupId>org.activiti</groupId>
     <artifactId>activiti-root</artifactId>
     <relativePath>../..</relativePath>
-    <version>5.0.alpha4-SNAPSHOT</version>
+    <version>5.0.alpha4</version>
   </parent>
 
   <build>
@@ -41,7 +41,7 @@
       <groupId>org.activiti</groupId>
       <artifactId>activiti-webapp</artifactId>
       <type>war</type>      
-      <version>5.0.alpha4-SNAPSHOT</version>
+      <version>5.0.alpha4</version>
       <scope>runtime</scope>
     </dependency>
   </dependencies>
