@@ -10,22 +10,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.activiti.impl.cycle.connect.api;
+package org.activiti.impl.cycle.connect;
 
 /**
  * 
  * @author bernd.ruecker@camunda.com
  */
-public class UnsupportedRepositoryOpperation extends RuntimeException {
+public class RepositoryException extends RuntimeException {
 
   private static final long serialVersionUID = 1L;
 
-  public UnsupportedRepositoryOpperation(String msg, Throwable arg1) {
-    super(msg, arg1);
+  public RepositoryException(String arg0, Throwable arg1) {
+    super(arg0, arg1);
   }
 
-  public UnsupportedRepositoryOpperation(String msg) {
-    super(msg);
+  public RepositoryException(String arg0) {
+    super(arg0);
   }
 
 }

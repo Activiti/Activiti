@@ -19,50 +19,80 @@ import java.util.List;
  * @author bernd.ruecker@camunda.com
  */
 public interface RepositoryConnector {
+  
+  public boolean login(String username, String password);
+
+  // /**
+  // * get Root folder
+  // */
+  // public RepositoryFolder getRootFolder();
+
+  // /**
+  // * Get child folders for the given parent folder. If parentFolder is null
+  // * sub folders for the root folder are returned.
+  // */
+  // public List<RepositoryFolder> getChildFolders(RepositoryFolder
+  // parentFolder);
 
   /**
-   * get Root folder
+   * get all child nodes of a node with the given url, independent if the
+   * children are folders or artifacts. No details are prefetched as default.
    */
-  public FolderInfo getRootFolder();
+  public List<RepositoryNode> getChildNodes(String parentId);
 
-   /**
-   * Get child folders for the given parent folder. If parentFolder is null
-   * sub folders for the root folder are returned.
+  // /**
+  // * get all child nodes of a node with the given url, independent if the
+  // * children are folders or artifacts.
+  // *
+  // * With fetch details the client can indicate, that all details should be
+  // * fetched, default should be false or let the repository decide if that can
+  // * be done efficiently
+  // */
+  // public List<RepositoryNode> getChildNodes(String parentId, boolean
+  // fetchDetails);
+
+  /**
+   * load all details for a {@link RepositoryNode} (if that wasn't prefetched,
+   * which is indicated in a node with a flag).
    */
-   public List<FolderInfo> getChildFolders(FolderInfo parentFolder);
+  public RepositoryNode getNodeDetails(String id);
   
+  // where to get contentType
+  public ContentRepresentation getContent(String nodeId, String representationName);
+
+
   // /**
   // * get files for the given parent folder. If parentFolder is null
   // * files for the root folder are returned.
   // */
   // public List<FileInfo> getFiles(FolderInfo parentFolder);
 
-  /**
-   * load sub folders and files for the given folder and add them to the
-   * {@link FolderInfo} object, which is returned again.
-   */
-  public FolderInfo loadChildren(FolderInfo folder);
+  // /**
+  // * load sub folders and files for the given folder and add them to the
+  // * {@link RepositoryFolder} object, which is returned again.
+  // */
+  // public RepositoryFolder loadChildren(RepositoryFolder folder);
 
   /**
    * create a new file in the given folder
    */
-  public void createNewFile(FolderInfo folderInfo, FileInfo file);
+  public void createNewFile(String folderId, RepositoryArtifact file);
 
   /**
    * deletes the given file from the folder
    */
-  public void deleteFile(FolderInfo folderInfo, FileInfo file);
+  public void deleteArtifact(String artifactId);
 
   /**
    * create a new subfolder in the given folder
    */
-  public void createNewSubFolder(FolderInfo parentFolder, FolderInfo subFolder);
+  public void createNewSubFolder(String parentFolderId, RepositoryFolder subFolder);
 
   /**
    * deletes the given subfolder of the parent folder.
    * 
    * TODO: Think about if we need the parent folder as argument of this API
    */
-  public void deleteSubFolder(FolderInfo parentFolder, FolderInfo subFolder);
+  public void deleteSubFolder(String subFolderId);
 
 }

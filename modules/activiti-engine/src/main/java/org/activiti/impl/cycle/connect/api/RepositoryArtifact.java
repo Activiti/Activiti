@@ -19,29 +19,50 @@ import java.util.logging.Level;
 import org.activiti.impl.cycle.connect.api.actions.FileAction;
 
 /**
- * Information about a file (or more general: any artifact contained in the
- * repository)
+ * Information about an artifact contained in the repository
+ * (e.g. a file, signavio model, ...)
  * 
  * @author bernd.ruecker@camunda.com
  */
-public class FileInfo extends ItemInfo {
+public class RepositoryArtifact extends RepositoryNode {
 
-  private String textContent;
-  private byte[] binaryContent;
+  private static final long serialVersionUID = 1L;
 
   // TODO: Think about file types, associated actions and so on. What impact
   // does it have on the content? ...?
-  private FileType fileType;
+  private ArtifactType artifactType;
 
   private transient List<FileAction> cachedFileActions;
   private transient FileAction cachedDefaultFileAction;
 
-  public FileInfo() {
+  public RepositoryArtifact() {
   }
 
-  public FileInfo(RepositoryConnector connector) {
+  public RepositoryArtifact(RepositoryConnector connector) {
     super(connector);
   }
+
+  // public Map<String, ContentLink> getContentLinkMap() {
+  // return contentLinks;
+  // }
+  //
+  // public void addContentLink(ContentLink link) {
+  // contentLinks.put(link.getName(), link);
+  // }
+
+  public List<ContentRepresentation> getContentRepresentations() {
+    if (getFileType() == null) {
+      return new ArrayList<ContentRepresentation>();
+    } else {
+      ArrayList<ContentRepresentation> list = new ArrayList<ContentRepresentation>();
+      
+      List<ContentRepresentationProvider> providers = getFileType().getContentRepresentationProviders();
+      for (ContentRepresentationProvider p : providers) {
+        list.add(p.createContentRepresentation(this, false));
+      }
+      return list;      
+    } 
+  }  
 
   public List<FileAction> getActions() {
     if (getFileType() == null) {
@@ -71,6 +92,7 @@ public class FileInfo extends ItemInfo {
     return cachedFileActions;
   }
 
+  @Deprecated
   public FileAction getDefaultFileAction() {
     if (cachedDefaultFileAction == null) {
       // lazy loading of action definitions if not already done
@@ -83,45 +105,42 @@ public class FileInfo extends ItemInfo {
     return cachedDefaultFileAction;
   }
 
+  @Deprecated
   public boolean isDefaultAction(Class< ? extends FileAction> actionType) {
-    if (fileType != null && fileType.getDefaultAction() != null) {
-      return fileType.getDefaultAction().equals(actionType);
+    if (artifactType != null && artifactType.getDefaultAction() != null) {
+      return artifactType.getDefaultAction().equals(actionType);
     } else {
       return false;
     }
   }
 
   public List<Class< ? extends FileAction>> getRegisteredActionTypes() {
-    if (fileType != null) {
-      return fileType.getRegisteredActions();
+    if (artifactType != null) {
+      return artifactType.getRegisteredActions();
     } else {
       return new ArrayList<Class< ? extends FileAction>>();
     }
   }
 
-  public String getTextContent() {
-    return textContent;
-  }
-  public void setTextContent(String textContent) {
-    this.textContent = textContent;
-  }
-  public byte[] getBinaryContent() {
-    return binaryContent;
-  }
-  public void setBinaryContent(byte[] binaryContent) {
-    this.binaryContent = binaryContent;
+//  public String getTextContent() {
+//    return textContent;
+//  }
+//  public void setTextContent(String textContent) {
+//    this.textContent = textContent;
+//  }
+//  public byte[] getBinaryContent() {
+//    return binaryContent;
+//  }
+//  public void setBinaryContent(byte[] binaryContent) {
+//    this.binaryContent = binaryContent;
+//  }
+
+  public ArtifactType getFileType() {
+    return artifactType;
   }
 
-  public FileType getFileType() {
-    return fileType;
-  }
-
-  public void setFileType(FileType fileType) {
-    this.fileType = fileType;
-  }
-
-  public String toString() {
-    return "FileInfo [id=" + id + ";name=" + name + ";path=" + path + "]";
+  public void setFileType(ArtifactType fileType) {
+    this.artifactType = fileType;
   }
 
 }

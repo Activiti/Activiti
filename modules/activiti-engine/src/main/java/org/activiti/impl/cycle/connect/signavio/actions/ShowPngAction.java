@@ -14,10 +14,9 @@ package org.activiti.impl.cycle.connect.signavio.actions;
 
 import java.util.Map;
 
-import org.activiti.impl.cycle.connect.api.ItemInfo;
+import org.activiti.impl.cycle.connect.api.RepositoryNode;
 import org.activiti.impl.cycle.connect.api.actions.FileAction;
 import org.activiti.impl.cycle.connect.api.actions.FileActionGuiRepresentation;
-import org.activiti.impl.cycle.connect.signavio.SignavioConnector;
 
 
 /**
@@ -32,11 +31,11 @@ public class ShowPngAction extends FileAction {
 	}
 
 	@Override
-	public void execute(ItemInfo itemInfo) {
+	public void execute(RepositoryNode itemInfo) {
 	}
 	
 	@Override
-	public void execute(ItemInfo itemInfo, Map<String, Object> param) {
+	public void execute(RepositoryNode itemInfo, Map<String, Object> param) {
 	}
 
 	@Override
@@ -46,11 +45,16 @@ public class ShowPngAction extends FileAction {
 	
 	@Override
 	public String getGuiRepresentationHtmlSnippet() {
-		// TODO: Think about all the casting stuff, maybe make that nicer?
-		SignavioConnector connector = (SignavioConnector) getFile().getConnector();
-		String imageUrl = connector.getModelAsPngUrl(getFile());
-		// TODO: Think about how to get this from the Signavio Connector by the API in the best way 
-		return "<img src='" + imageUrl + "' />";
+    return null;
+    // TODO: Implement
+
+    // // TODO: Think about all the casting stuff, maybe make that nicer?
+    // SignavioConnector connector = (SignavioConnector)
+    // getFile().getConnector();
+    // String imageUrl = connector.getModelAsPngUrl(getFile());
+    // // TODO: Think about how to get this from the Signavio Connector by the
+    // API in the best way
+    // return "<img src='" + imageUrl + "' />";
 	}
 
 	@Override

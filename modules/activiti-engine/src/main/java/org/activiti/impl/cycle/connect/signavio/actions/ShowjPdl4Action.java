@@ -14,10 +14,9 @@ package org.activiti.impl.cycle.connect.signavio.actions;
 
 import java.util.Map;
 
-import org.activiti.impl.cycle.connect.api.ItemInfo;
+import org.activiti.impl.cycle.connect.api.RepositoryNode;
 import org.activiti.impl.cycle.connect.api.actions.FileAction;
 import org.activiti.impl.cycle.connect.api.actions.FileActionGuiRepresentation;
-import org.activiti.impl.cycle.connect.signavio.SignavioConnector;
 
 /**
  * @author bernd.ruecker@camunda.com
@@ -30,11 +29,11 @@ public class ShowjPdl4Action extends FileAction {
   }
 
   @Override
-  public void execute(ItemInfo itemInfo) {
+  public void execute(RepositoryNode itemInfo) {
   }
 
   @Override
-  public void execute(ItemInfo itemInfo, Map<String, Object> param) {
+  public void execute(RepositoryNode itemInfo, Map<String, Object> param) {
   }
   
   @Override
@@ -44,9 +43,13 @@ public class ShowjPdl4Action extends FileAction {
 
   @Override
   public String getGuiRepresentationContent() {
-    SignavioConnector connector = (SignavioConnector) getFile().getConnector();
-    String jpdl4 = connector.getModelAsJpdl4Representation(getFile());
-    return jpdl4;
+    return null;
+    // TODO: Implement
+    
+    // SignavioConnector connector = (SignavioConnector)
+    // getFile().getConnector();
+    // String jpdl4 = connector.getModelAsJpdl4Representation(getFile());
+    // return jpdl4;
   }
 
   @Override

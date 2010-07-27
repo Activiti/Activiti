@@ -10,7 +10,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.activiti.impl.cycle.connect.api;
+package org.activiti.impl.cycle.connect;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -18,20 +18,25 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.activiti.impl.cycle.connect.api.ArtifactType;
+import org.activiti.impl.cycle.connect.api.ContentRepresentationProvider;
 import org.activiti.impl.cycle.connect.api.actions.FileAction;
 
 /**
- * Central class to register {@link FileType}s and associated {@link FileAction}s.
+ * Central class to register {@link ArtifactType}s, associated {@link FileAction}s and {@link ContentLink}s.
  * 
  * @author bernd.ruecker@camunda.com
  */
-public class FileTypeRegistry {
+public class RepositoryRegistry {
 
-  private static Map<String, FileType> registeredFileTypes = new HashMap<String, FileType>();
+  private static Map<String, ArtifactType> registeredFileTypes = new HashMap<String, ArtifactType>();
+  
   private static Map<String, List<Class< ? extends FileAction>>> registeredFileActions = new HashMap<String, List<Class< ? extends FileAction>>>();
+  private static Map<String, List<ContentRepresentationProvider>> registeredContentLinkProviders = new HashMap<String, List<ContentRepresentationProvider>>();
+  
   private static Map<String, Class< ? extends FileAction>> defaultFileActions = new HashMap<String, Class< ? extends FileAction>>();
 
-  public static void registerFileType(FileType ft) {
+  public static void registerFileType(ArtifactType ft) {
     registeredFileTypes.put(ft.getTypeIdentifier(), ft);
   }
 
@@ -39,11 +44,7 @@ public class FileTypeRegistry {
     return registeredFileTypes.keySet();
   }
 
-  // public static FileType getFileTypeByName(String fileTypeName) {
-  //
-  // }
-
-  public static FileType getFileTypeByIdentifier(String fileTypeIdentifier) {
+  public static ArtifactType getFileTypeByIdentifier(String fileTypeIdentifier) {
     return registeredFileTypes.get(fileTypeIdentifier);
   }
 
@@ -51,6 +52,18 @@ public class FileTypeRegistry {
     registerFileAction(fileTypeIdentifier, action, false);
   }
 
+  public static void registerContentLinkProvider(String fileTypeIdentifier, ContentRepresentationProvider provider) {
+    if (registeredContentLinkProviders.containsKey(fileTypeIdentifier)) {
+    	registeredContentLinkProviders.get(fileTypeIdentifier).add(provider);
+	} 
+    else {
+		ArrayList<ContentRepresentationProvider> list = new ArrayList<ContentRepresentationProvider>();
+		list.add(provider);
+		registeredContentLinkProviders.put(fileTypeIdentifier, list);
+	}
+  }
+
+  @Deprecated /** use the one without default flag */  
   public static void registerFileAction(String fileTypeIdentifier, Class< ? extends FileAction> action, boolean isDefault) {
     if (registeredFileActions.containsKey(fileTypeIdentifier)) {
       registeredFileActions.get(fileTypeIdentifier).add(action);
@@ -65,16 +78,34 @@ public class FileTypeRegistry {
     }
   }
 
+  @Deprecated
   public static Class< ? extends FileAction> getDefaultActionForFileType(String fileTypeName) {
     return defaultFileActions.get(fileTypeName);
   }
 
-  public static List<Class< ? extends FileAction>> getRegisteredActionsForFileType(String fileTypeName) {
+  public static List<Class< ? extends FileAction>> getActionsForFileType(String fileTypeName) {
     if (registeredFileActions.containsKey(fileTypeName)) {
       return registeredFileActions.get(fileTypeName);
     } else {
       return new ArrayList<Class< ? extends FileAction>>();
     }
+  }
+
+  public static List<ContentRepresentationProvider> getContentLinkProviders(String fileTypeName) {
+	    if (registeredContentLinkProviders.containsKey(fileTypeName)) {
+	      return registeredContentLinkProviders.get(fileTypeName);
+	    } else {
+	      return new ArrayList<ContentRepresentationProvider>();
+	    }
+	  }
+
+  public static ContentRepresentationProvider getContentLinkProvider(String fileTypeName, String providerName) {
+    for (ContentRepresentationProvider provder : getContentLinkProviders(fileTypeName)) {
+      if (provder.getName().equals(providerName)) {
+        return provder;
+      }
+    }
+    throw new RepositoryException("Couldn't find content provider '" + providerName + "' for filetype '" + fileTypeName + "'");
   }
 
 }

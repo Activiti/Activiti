@@ -14,8 +14,8 @@ package org.activiti.impl.cycle.connect.util;
 
 import java.util.logging.Logger;
 
-import org.activiti.impl.cycle.connect.api.FileInfo;
-import org.activiti.impl.cycle.connect.api.FolderInfo;
+import org.activiti.impl.cycle.connect.api.RepositoryArtifact;
+import org.activiti.impl.cycle.connect.api.RepositoryFolder;
 
 /**
  * 
@@ -25,16 +25,16 @@ public class RepositoryLogHelper {
 
   private static Logger log = Logger.getLogger(RepositoryLogHelper.class.getName());
   
-  public static void printFolder(FolderInfo folder) {
+  public static void printFolder(RepositoryFolder folder) {
     printFolder("", folder);
   }
 
-  public static void printFolder(String intend, FolderInfo folder) {
+  public static void printFolder(String intend, RepositoryFolder folder) {
     log.fine(intend + folder);
-    for (FolderInfo subFolder : folder.getSubFolders()) {
+    for (RepositoryFolder subFolder : folder.getSubFolders()) {
       printFolder(intend + "   ", subFolder);
     }
-    for (FileInfo file : folder.getFiles()) {
+    for (RepositoryArtifact file : folder.getArtifacts()) {
       log.fine(intend + "-" + file);
     }
   }

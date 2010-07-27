@@ -16,7 +16,7 @@ package org.activiti.impl.cycle.connect.signavio;
  * Object used to configure signavio connector. Candidate for 
  * Entity to save config later on.
  * 
- * ALL url's have a trailing "/".
+ * ALL url's have a trailing "/"!
  * 
  * @author bernd.ruecker@camunda.com
  */
@@ -26,6 +26,13 @@ public class SignavioConnectorConfiguration {
 	 * default URL
 	 */
 	private String signavioUrl = "http://127.0.0.1:8080/p/";
+	
+	// TODO?
+	private String name;
+	
+	// use it or not?
+	private String folderRootUrl;
+	//
 	
 	public static String REGISTRATION_URL_SUFFIX = "register/";
 	public static String LOGIN_URL_SUFFIX = "login/";

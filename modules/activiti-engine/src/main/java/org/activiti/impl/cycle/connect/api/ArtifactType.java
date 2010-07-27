@@ -14,6 +14,7 @@ package org.activiti.impl.cycle.connect.api;
 
 import java.util.List;
 
+import org.activiti.impl.cycle.connect.RepositoryRegistry;
 import org.activiti.impl.cycle.connect.api.actions.FileAction;
 
 /**
@@ -23,7 +24,7 @@ import org.activiti.impl.cycle.connect.api.actions.FileAction;
  * 
  * @author bernd.ruecker@camunda.com
  */
-public class FileType {
+public class ArtifactType {
 
   private String name;
 
@@ -34,20 +35,33 @@ public class FileType {
 
   // TODO: think about artifacts containing different files (e.g. jBPM)
 
-  public FileType() {
+  public ArtifactType() {
   }
 
-  public FileType(String name, String typeIdentifier) {
+  public ArtifactType(String name, String typeIdentifier) {
     this.name = name;
     this.typeIdentifier = typeIdentifier;
   }
 
   public List<Class< ? extends FileAction>> getRegisteredActions() {
-    return FileTypeRegistry.getRegisteredActionsForFileType(getTypeIdentifier());
+    return RepositoryRegistry.getActionsForFileType(getTypeIdentifier());
   }
 
+  public List<ContentRepresentationProvider> getContentRepresentationProviders() {
+    return RepositoryRegistry.getContentLinkProviders(getTypeIdentifier());
+    // ArrayList<String> list = new ArrayList<String>();
+    //
+    // List<ContentRepresentationProvider> providers =
+    // RepositoryRegistry.getContentLinkProviders(getTypeIdentifier());
+    // for (ContentRepresentationProvider p : providers) {
+    // list.add(p.getName());
+    // }
+    // return list;
+  }
+
+  @Deprecated
   public Class< ? extends FileAction> getDefaultAction() {
-    return FileTypeRegistry.getDefaultActionForFileType(getTypeIdentifier());
+    return RepositoryRegistry.getDefaultActionForFileType(getTypeIdentifier());
   }
 
   public String getName() {

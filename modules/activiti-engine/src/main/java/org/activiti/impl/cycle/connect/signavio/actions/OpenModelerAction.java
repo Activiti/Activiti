@@ -14,10 +14,9 @@ package org.activiti.impl.cycle.connect.signavio.actions;
 
 import java.util.Map;
 
-import org.activiti.impl.cycle.connect.api.ItemInfo;
+import org.activiti.impl.cycle.connect.api.RepositoryNode;
 import org.activiti.impl.cycle.connect.api.actions.FileAction;
 import org.activiti.impl.cycle.connect.api.actions.FileActionGuiRepresentation;
-import org.activiti.impl.cycle.connect.signavio.SignavioConnector;
 
 /**
  * TODO: Wie die URL zurueckgeben um das in der GUI zu verwursten?
@@ -32,11 +31,11 @@ public class OpenModelerAction extends FileAction {
   }
 
   @Override
-  public void execute(ItemInfo itemInfo) {
+  public void execute(RepositoryNode itemInfo) {
   }
 
   @Override
-  public void execute(ItemInfo itemInfo, Map<String, Object> param) {
+  public void execute(RepositoryNode itemInfo, Map<String, Object> param) {
   }
 
   @Override
@@ -46,8 +45,12 @@ public class OpenModelerAction extends FileAction {
 
   @Override
   public String getGuiRepresentationUrl() {
-    SignavioConnector signavioConnector = (SignavioConnector) getFile().getConnector();
-    return signavioConnector.getModellerUrl(getFile());
+    return null;
+    // TODO: Implement
+
+    // SignavioConnector signavioConnector = (SignavioConnector)
+    // getFile().getConnector();
+    // return signavioConnector.getModellerUrl(getFile());
     // TODO: Think about how to get this from the Signavio Connector by the API in the best way
   }
 

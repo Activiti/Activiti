@@ -15,13 +15,13 @@ package org.activiti.impl.cycle.connect.api.actions;
 import java.util.Map;
 import java.util.logging.Logger;
 
-import org.activiti.impl.cycle.connect.api.FileInfo;
-import org.activiti.impl.cycle.connect.api.FileType;
-import org.activiti.impl.cycle.connect.api.ItemInfo;
+import org.activiti.impl.cycle.connect.api.RepositoryArtifact;
+import org.activiti.impl.cycle.connect.api.ArtifactType;
+import org.activiti.impl.cycle.connect.api.RepositoryNode;
 
 /**
  * The file action defines an action you can execute upon a file / artefact
- * normally depending on the {@link FileType}.
+ * normally depending on the {@link ArtifactType}.
  * 
  * An action can have a GUI representation (e.g. a showing a picture may result
  * in an own web site being opened, showing it in the default panel or doing
@@ -36,7 +36,7 @@ import org.activiti.impl.cycle.connect.api.ItemInfo;
  */
 public abstract class FileAction {
 
-  private FileInfo file;
+  private RepositoryArtifact file;
   private String status;
 
   protected static Logger log = Logger.getLogger(FileAction.class.getName());
@@ -54,13 +54,13 @@ public abstract class FileAction {
   /**
    * execute this action on the file with an additional fileInfo object.
    */
-  public abstract void execute(ItemInfo itemInfo);
+  public abstract void execute(RepositoryNode itemInfo);
 
   /**
    * execute this action on the file with an additional fileInfo object and a
    * parameter list
    */
-  public abstract void execute(ItemInfo itemInfo, Map<String, Object> param);
+  public abstract void execute(RepositoryNode itemInfo, Map<String, Object> param);
 
   // /**
   // * returns a {@link List} of {@link FileType}s for which this action can be
@@ -100,11 +100,11 @@ public abstract class FileAction {
     return null;
   }
 
-  public FileInfo getFile() {
+  public RepositoryArtifact getFile() {
     return file;
   }
 
-  public void setFile(FileInfo file) {
+  public void setFile(RepositoryArtifact file) {
     this.file = file;
   }
 
