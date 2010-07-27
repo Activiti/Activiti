@@ -58,7 +58,7 @@ IdentityService identityService = processEngine.getIdentityService();</programli
     </para>
     <para>For example:</para>
     <programlisting>ClientProcessDefinition processDefinition = 
-  ProcessDefinitionBuilder.createProcessDefinition()
+  ProcessDefinitionBuilder.createProcessDefinitionBuilder()
     .createActivity("a")
       .initial()
       .behavior(new WaitState())
