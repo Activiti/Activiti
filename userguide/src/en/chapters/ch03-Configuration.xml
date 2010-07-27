@@ -4,7 +4,7 @@
 <chapter>
   <title>Configuration</title>
 
-  <para>Activiti configuration files should be generated with the setup ant script.
+  <para>Activiti configuration files should be generated with the setup ant script that can be found in the <emphasis>setup</emphasis> folder.
   The <literal>cfg.create</literal> target can be easily configured 
   in the <literal>setup/build.properties</literal> and the <literal>setup/build.${db}.properties</literal>.
   Our QA runs only the configurations that are generatable by the setup script.
@@ -12,5 +12,44 @@
   as you will always be able to regenerate it.   So customizing the configuration files is 
   not recommended.  
   </para>  
+  
+  <section>
+  
+    <title>Changing the database</title>
+    
+    <para>
+      One of the things you probably want to do fairly soon, is configuring Activiti to
+      use a different database. To generate a configuration file that can be used
+      to configure the engine, following steps need to be done:
+      <itemizedlist>
+        <listitem>
+          <para>
+            Edit <literal>setup/build.properties</literal> and change the <literal>db</literal>
+            parameter to your type of database (eg. mysql).
+          </para>
+        </listitem>
+        <listitem>
+          <para>
+            Edit <literal>setup/build.${db}.properties</literal> and change the 
+            JDBC connection parameters to those of your database installation.
+          </para>
+        </listitem>
+        <listitem>
+          <para>
+            Run <literal>'ant cfg.create'</literal> from within the <literal>setup</literal>
+            folder.
+          </para>
+        </listitem>
+        <listitem>
+          <para>
+            The generate configuration file can now be found in <literal>setup/build/activiti-cfg</literal>.
+            Also, for convience, a jar called <literal>activiti-cfg.jar</literal> containing the configuration file can be found in
+            <literal>setup/build</literal> 
+          </para>
+        </listitem>
+      </itemizedlist>
+    </para>
+  
+  </section>
   
 </chapter>
