@@ -2,19 +2,21 @@ package org.activiti.impl.cycle.connect.mock;
 
 import java.util.List;
 
-import junit.framework.TestCase;
-
 import org.activiti.impl.cycle.connect.RestClientRepositoryConnector;
 import org.activiti.impl.cycle.connect.api.RepositoryArtifact;
 import org.activiti.impl.cycle.connect.api.RepositoryConnector;
 import org.activiti.impl.cycle.connect.api.RepositoryFolder;
 import org.activiti.impl.cycle.connect.api.RepositoryNode;
 
-public class DemoConnectorTest extends TestCase {
+import static org.junit.Assert.assertEquals;
+import org.junit.Test;
 
+public class DemoConnectorTest {
+
+  @Test
   public void testFirstPlay() {
     
-    RepositoryConnector conn = new RestClientRepositoryConnector("demo-repo", "http://locahost:8080/activiti-cycle/", new DemoConnector());
+    RepositoryConnector conn = new RestClientRepositoryConnector("demo-repo", "http://localhost:8080/activiti-cycle/", new DemoConnector());
     
     List<RepositoryNode> childNodes = conn.getChildNodes("/");
     assertEquals(2, childNodes.size());
@@ -22,6 +24,8 @@ public class DemoConnectorTest extends TestCase {
     assertEquals(RepositoryFolder.class, childNodes.get(0).getClass());
     RepositoryFolder folder1 = (RepositoryFolder) childNodes.get(0);
     assertEquals("/meeting-minutes", folder1.getId());
+    // TODO: Think about //
+    assertEquals("http://localhost:8080/activiti-cycle/demo-repo//meeting-minutes", folder1.getClientUrl());
     
     assertEquals(RepositoryFolder.class, childNodes.get(1).getClass());
     RepositoryFolder folder2 = (RepositoryFolder) childNodes.get(1);
