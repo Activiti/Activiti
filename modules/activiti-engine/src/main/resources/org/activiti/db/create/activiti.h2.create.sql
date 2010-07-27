@@ -6,7 +6,7 @@ create table ACT_PROPERTY (
 );
 
 insert into ACT_PROPERTY
-values ('schema.version', '5.0.alpha4-SNAPSHOT', 1);
+values ('schema.version', '5.0.beta1-SNAPSHOT', 1);
 
 insert into ACT_PROPERTY
 values ('next.dbid', '1', 1);
