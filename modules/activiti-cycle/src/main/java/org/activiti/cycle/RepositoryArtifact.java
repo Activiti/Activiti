@@ -29,6 +29,12 @@ public class RepositoryArtifact extends RepositoryNode {
   // TODO: Think about file types, associated actions and so on. What impact
   // does it have on the content? ...?
   private ArtifactType artifactType;
+  
+  /**
+   * list for {@link ContentRepresentation}s, which is lazily loaded when you
+   * first query it
+   */
+  private List<ContentRepresentation> contentRepresentationList;
 
   private transient List<ArtifactAction> cachedFileActions;
   private transient ArtifactAction cachedDefaultFileAction;
@@ -40,30 +46,33 @@ public class RepositoryArtifact extends RepositoryNode {
     super(connector);
   }
 
-  // public Map<String, ContentLink> getContentLinkMap() {
-  // return contentLinks;
-  // }
-  //
-  // public void addContentLink(ContentLink link) {
-  // contentLinks.put(link.getName(), link);
-  // }
-
   public List<ContentRepresentation> getContentRepresentations() {
-    if (getFileType() == null) {
-      return new ArrayList<ContentRepresentation>();
-    } else {
-      ArrayList<ContentRepresentation> list = new ArrayList<ContentRepresentation>();
-      
-      List<ContentRepresentationProvider> providers = getFileType().getContentRepresentationProviders();
+    if (contentRepresentationList != null) {
+      return contentRepresentationList;
+    }
+    
+    // if not done already lazy load the content from the registered providers
+    contentRepresentationList = new ArrayList<ContentRepresentation>();
+    if (getArtifactType() != null) {
+      List<ContentRepresentationProvider> providers = getArtifactType().getContentRepresentationProviders();
       for (ContentRepresentationProvider p : providers) {
-        list.add(p.createContentRepresentation(this, false));
+        ContentRepresentation cr = p.createContentRepresentation(this, false);
+        if (cr!=null) {
+          cr.setArtifact(this);
+          contentRepresentationList.add(cr);
+        }
+        else {
+          log.warning("content provider '" + p + "' created NULL instead of proper ContentRepresentation object for artifact " + this
+                  + ". Check configuration!");
+        }
       }
-      return list;      
-    } 
+    }
+    
+    return contentRepresentationList;
   }  
 
   public List<ArtifactAction> getActions() {
-    if (getFileType() == null) {
+    if (getArtifactType() == null) {
       return new ArrayList<ArtifactAction>();
     }
 
@@ -85,7 +94,7 @@ public class RepositoryArtifact extends RepositoryNode {
       }
     }
 
-    log.fine("Actions for file type " + getFileType().getName() + " requested, returning " + cachedFileActions.size() + " actions.");
+    log.fine("Actions for file type " + getArtifactType().getName() + " requested, returning " + cachedFileActions.size() + " actions.");
 
     return cachedFileActions;
   }
@@ -97,7 +106,7 @@ public class RepositoryArtifact extends RepositoryNode {
       getActions();
     }
 
-    log.info("Default actions for file type " + getFileType() + " requested, returning "
+    log.info("Default actions for file type " + getArtifactType() + " requested, returning "
             + (cachedDefaultFileAction == null ? "null" : cachedDefaultFileAction.getName()));
 
     return cachedDefaultFileAction;
@@ -120,24 +129,11 @@ public class RepositoryArtifact extends RepositoryNode {
     }
   }
 
-//  public String getTextContent() {
-//    return textContent;
-//  }
-//  public void setTextContent(String textContent) {
-//    this.textContent = textContent;
-//  }
-//  public byte[] getBinaryContent() {
-//    return binaryContent;
-//  }
-//  public void setBinaryContent(byte[] binaryContent) {
-//    this.binaryContent = binaryContent;
-//  }
-
-  public ArtifactType getFileType() {
+  public ArtifactType getArtifactType() {
     return artifactType;
   }
 
-  public void setFileType(ArtifactType fileType) {
+  public void setArtifactType(ArtifactType fileType) {
     this.artifactType = fileType;
   }
 

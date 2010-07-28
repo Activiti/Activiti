@@ -75,7 +75,7 @@ public class RepositoryNode implements Serializable {
   }
 
   public String toString() {
-    return this.getClass() + " [id=" + id + ";metadata=" + metadata + "]";
+    return this.getClass().getSimpleName() + " [id=" + id + ";metadata=" + metadata + "]";
   }
 
   public boolean isDetailsFetched() {

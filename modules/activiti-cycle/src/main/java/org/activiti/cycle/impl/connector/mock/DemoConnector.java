@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 
+import org.activiti.cycle.ArtifactType;
 import org.activiti.cycle.ContentRepresentation;
 import org.activiti.cycle.ContentRepresentationProvider;
 import org.activiti.cycle.ContentRepresentationType;
@@ -55,13 +56,20 @@ public class DemoConnector implements RepositoryConnector {
       }
       throw new RepositoryException("Couldn't find content representation '" + getName() + "' for artifact " + artifact.getId());
     }
+    public String toString() {
+      return "TestProvider [" + getName() + "]";
+    }
   }  
 
   public static void registerMetaddata() {
+    RepositoryRegistry.registerFileType(new ArtifactType(ARTIFACT_TYPE_TEXT, ARTIFACT_TYPE_TEXT));
+    RepositoryRegistry.registerFileType(new ArtifactType(ARTIFACT_TYPE_MINDMAP, ARTIFACT_TYPE_MINDMAP));
+    RepositoryRegistry.registerFileType(new ArtifactType(ARTIFACT_TYPE_BPMN_20, ARTIFACT_TYPE_BPMN_20));
+    
     RepositoryRegistry.registerContentLinkProvider(ARTIFACT_TYPE_TEXT, new TestProvider("Text"));
     RepositoryRegistry.registerContentLinkProvider(ARTIFACT_TYPE_MINDMAP, new TestProvider("Image"));
     RepositoryRegistry.registerContentLinkProvider(ARTIFACT_TYPE_BPMN_20, new TestProvider("Image"));
-    RepositoryRegistry.registerContentLinkProvider(ARTIFACT_TYPE_BPMN_20, new TestProvider("Text"));
+    RepositoryRegistry.registerContentLinkProvider(ARTIFACT_TYPE_BPMN_20, new TestProvider("XML"));
   }
 
   public static void createDemoData() {
@@ -72,7 +80,8 @@ public class DemoConnector implements RepositoryConnector {
       folder1.getMetadata().setPath("/");
 
       RepositoryArtifact file1 = new RepositoryArtifact();
-      file1.setId("/meeting-minutes/20100701-KickOffMeeting.doc");
+      file1.setArtifactType(RepositoryRegistry.getFileTypeByIdentifier(ARTIFACT_TYPE_TEXT));
+      file1.setId("/meeting-minutes/20100701-KickOffMeeting.txt");
       file1.getMetadata().setName("20100701-KickOffMeeting");
       // file1.setFileType(RepositoryRegistry.getFileTypeByIdentifier(XXX));
 
@@ -80,6 +89,7 @@ public class DemoConnector implements RepositoryConnector {
               "http://www.apache.org/foundation/records/minutes/2008/board_minutes_2008_10_15.txt");
 
       RepositoryArtifact file2 = new RepositoryArtifact();
+      file2.setArtifactType(RepositoryRegistry.getFileTypeByIdentifier(ARTIFACT_TYPE_MINDMAP));
       file2.setId("/meeting-minutes/InitialMindmap.mm");
       file2.getMetadata().setName("InitialMindmap");
       // file1.setFileType(RepositoryRegistry.getFileTypeByIdentifier(XXX));
@@ -110,6 +120,7 @@ public class DemoConnector implements RepositoryConnector {
       folder2.getMetadata().setPath("/BPMN");
 
       RepositoryArtifact file1 = new RepositoryArtifact();
+      file1.setArtifactType(RepositoryRegistry.getFileTypeByIdentifier(ARTIFACT_TYPE_BPMN_20));
       file1.setId("/BPMN/Level3/789237892374239");
       file1.getMetadata().setName("InitialBpmnModel");
       file1.getMetadata().setPath("/BPMN/Level3");
@@ -152,8 +163,6 @@ public class DemoConnector implements RepositoryConnector {
     // cp.setContent(content)
     
     map.put(name, cp);
-    
-    artifact.getContentRepresentations().add(cp);
   }
 
   public void createNewFile(String folderUrl, RepositoryArtifact file) {

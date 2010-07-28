@@ -37,7 +37,7 @@ public class DemoConnectorTest {
     assertEquals(2, childNodes.size());
 
     RepositoryArtifact file1 = (RepositoryArtifact) childNodes.get(0);
-    assertEquals("/meeting-minutes/20100701-KickOffMeeting.doc", file1.getId());
+    assertEquals("/meeting-minutes/20100701-KickOffMeeting.txt", file1.getId());
 
     RepositoryArtifact file2 = (RepositoryArtifact) childNodes.get(1);
     assertEquals("/meeting-minutes/InitialMindmap.mm", file2.getId());
@@ -57,6 +57,10 @@ public class DemoConnectorTest {
     assertEquals("/BPMN/Level3/789237892374239", file3.getId());
     assertEquals("InitialBpmnModel", file3.getMetadata().getName());
     assertEquals("/BPMN/Level3", file3.getMetadata().getPath());
+
+    System.out.println(folder2.getId() + " -> " + folder2.getClientUrl());
+    System.out.println(folder3.getId() + " -> " + folder3.getClientUrl());
+    System.out.println(file3.getId() + " -> " + file3.getClientUrl());
     
     List<ContentRepresentation> contentRepresentations = file3.getContentRepresentations();
     for (ContentRepresentation contentRepresentation : contentRepresentations) {

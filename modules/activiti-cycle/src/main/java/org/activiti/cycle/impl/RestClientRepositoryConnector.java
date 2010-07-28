@@ -30,6 +30,14 @@ public class RestClientRepositoryConnector implements RepositoryConnector {
   
   private RepositoryNode adjustClientUrl(RepositoryNode repositoryNode) {
     repositoryNode.setClientUrl(baseUrl + repositoryName + "/" + repositoryNode.getId());
+    
+    if (repositoryNode instanceof RepositoryArtifact) {
+      List<ContentRepresentation> contentRepresentations = ((RepositoryArtifact) repositoryNode).getContentRepresentations();
+      for (ContentRepresentation contentRepresentation : contentRepresentations) {
+        adjustClientUrl(contentRepresentation);
+      }
+    }
+    
     return repositoryNode;
   }
   
