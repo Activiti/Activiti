@@ -13,10 +13,23 @@
 
 package org.activiti.engine.impl;
 
+import java.io.InputStream;
+import java.util.List;
+
 import org.activiti.engine.Deployment;
+import org.activiti.engine.DeploymentBuilder;
+import org.activiti.engine.ProcessDefinition;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.impl.persistence.repository.DeploymentBuilderImpl;
+import org.activiti.impl.cmd.DeleteDeploymentCmd;
 import org.activiti.impl.cmd.DeployCmd;
+import org.activiti.impl.cmd.FindDeploymentResourcesCmd;
+import org.activiti.impl.cmd.FindDeploymentsByNameCmd;
+import org.activiti.impl.cmd.FindDeploymentsCmd;
+import org.activiti.impl.cmd.FindProcessDefinitionCmd;
+import org.activiti.impl.cmd.FindProcessDefinitionsCmd;
+import org.activiti.impl.cmd.GetDeploymentResourceCmd;
+import org.activiti.impl.cmd.GetFormCmd;
 import org.activiti.impl.interceptor.CommandExecutor;
 
 
@@ -29,7 +42,56 @@ public class RepositoryServiceImpl extends ServiceImpl implements RepositoryServ
     super(commandExecutor);
   }
 
+  public DeploymentBuilder createDeployment() {
+    return new DeploymentBuilderImpl(this);
+  }
+
   public Deployment deploy(DeploymentBuilderImpl deploymentBuilder) {
     return commandExecutor.execute(new DeployCmd<Deployment>(deploymentBuilder));
   }
+
+  public void deleteDeployment(String deploymentId) {
+    commandExecutor.execute(new DeleteDeploymentCmd(deploymentId, false));
+  }
+
+  public void deleteDeploymentCascade(String deploymentId) {
+    commandExecutor.execute(new DeleteDeploymentCmd(deploymentId, true));
+  }
+
+  @SuppressWarnings("unchecked")
+  public List<ProcessDefinition> findProcessDefinitions() {
+    return commandExecutor.execute(new FindProcessDefinitionsCmd());
+  }
+
+  public ProcessDefinition findProcessDefinitionById(String processDefinitionId) {
+    return commandExecutor.execute(new FindProcessDefinitionCmd(processDefinitionId));
+  }
+
+  @SuppressWarnings("unchecked")
+  public List<Deployment> findDeployments() {
+    return commandExecutor.execute(new FindDeploymentsCmd());
+  }
+
+  @SuppressWarnings("unchecked")
+  public List<String> findDeploymentResources(String deploymentId) {
+    return commandExecutor.execute(new FindDeploymentResourcesCmd(deploymentId));
+  }
+
+  @SuppressWarnings("unchecked")
+  public List<Deployment> findDeploymentsByName(String name) {
+    return (List<Deployment>) commandExecutor.execute(new FindDeploymentsByNameCmd(name));
+  }
+
+  public InputStream getDeploymentResourceContent(String deploymentId, String resourceName) {
+    return commandExecutor.execute(new GetDeploymentResourceCmd(deploymentId, resourceName));
+  }
+
+  public Object getStartFormById(String processDefinitionId) {
+    return commandExecutor.execute(new GetFormCmd(processDefinitionId, null, null));
+  }
+
+  public Object getStartFormByKey(String processDefinitionKey) {
+    return commandExecutor.execute(new GetFormCmd(null, processDefinitionKey, null));
+  }
 }
+

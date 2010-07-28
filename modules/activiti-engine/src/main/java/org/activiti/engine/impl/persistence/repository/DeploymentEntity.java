@@ -33,6 +33,19 @@ public class DeploymentEntity implements Serializable, Deployment, PersistentObj
   protected Map<String, ResourceEntity> resources;
   protected Date deploymentTime;
   
+  public ResourceEntity getResource(String resourceName) {
+    return getResources().get(resourceName);
+  }
+
+  public Object getPersistentState() {
+    // properties of this entity are immutable
+    // so always the same value is returned
+    // so never will an update be issued for a DeploymentEntity
+    return DeploymentEntity.class;
+  }
+
+  // getters and setters //////////////////////////////////////////////////////
+
   public String getId() {
     return id;
   }
@@ -63,12 +76,5 @@ public class DeploymentEntity implements Serializable, Deployment, PersistentObj
   
   public void setDeploymentTime(Date deploymentTime) {
     this.deploymentTime = deploymentTime;
-  }
-
-  public Object getPersistentState() {
-    // properties of this entity are immutable
-    // so always the same value is returned
-    // so never will an update be issued for a DeploymentEntity
-    return DeploymentEntity.class;
   }
 }

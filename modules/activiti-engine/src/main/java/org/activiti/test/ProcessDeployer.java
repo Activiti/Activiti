@@ -102,7 +102,7 @@ public class ProcessDeployer extends ProcessEngineTestWatchman {
         log.fine("deploying bpmn process resource: " + resource);
         createDeployment().name(resource).addClasspathResource(resource).deploy();
       } else {
-        DeploymentBuilder builder = getProcessService().createDeployment();
+        DeploymentBuilder builder = getRepositoryService().createDeployment();
         for (String resource : resources) {
           if (resource.startsWith("/")) {
             resource = resource.substring(1);
@@ -121,7 +121,7 @@ public class ProcessDeployer extends ProcessEngineTestWatchman {
   @Override
   public void finished(FrameworkMethod method) {
     for (String deploymentId : registeredDeploymentIds) {
-      getProcessService().deleteDeploymentCascade(deploymentId);
+      getRepositoryService().deleteDeploymentCascade(deploymentId);
     }
     super.finished(method);
   }
@@ -132,7 +132,7 @@ public class ProcessDeployer extends ProcessEngineTestWatchman {
    * from the engine when the test method finishes.
    */
   public DeploymentBuilder createDeployment() {
-    final DeploymentBuilder builder = getProcessService().createDeployment();
+    final DeploymentBuilder builder = getRepositoryService().createDeployment();
     return getDeploymentBuilderProxy(builder);
   }
 

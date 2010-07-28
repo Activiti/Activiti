@@ -20,6 +20,7 @@ import org.activiti.engine.IdentityService;
 import org.activiti.engine.ManagementService;
 import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.ProcessService;
+import org.activiti.engine.RepositoryService;
 import org.activiti.engine.TaskService;
 import org.activiti.impl.cfg.ProcessEngineConfiguration;
 import org.activiti.impl.jobexecutor.JobExecutor;
@@ -32,20 +33,22 @@ public class ProcessEngineImpl implements ProcessEngine {
 
   private static Logger log = Logger.getLogger(ProcessEngineImpl.class.getName());
 
-  ProcessEngineConfiguration processEngineConfiguration;
-  String name;
-  ProcessService processService;
-  HistoricDataService historicDataService;
-  IdentityService identityService;
-  TaskService taskService;
-  ManagementService managementService;
-  DbSchemaStrategy dbSchemaStrategy;
-  JobExecutor jobExecutor;
-  PersistenceSessionFactory persistenceSessionFactory;
+  protected ProcessEngineConfiguration processEngineConfiguration;
+  protected String name;
+  protected RepositoryService repositoryService;
+  protected ProcessService processService;
+  protected HistoricDataService historicDataService;
+  protected IdentityService identityService;
+  protected TaskService taskService;
+  protected ManagementService managementService;
+  protected DbSchemaStrategy dbSchemaStrategy;
+  protected JobExecutor jobExecutor;
+  protected PersistenceSessionFactory persistenceSessionFactory;
 
   public ProcessEngineImpl(ProcessEngineConfiguration processEngineConfiguration) {
     this.processEngineConfiguration = processEngineConfiguration;
     this.name = processEngineConfiguration.getProcessEngineName();
+    this.repositoryService = processEngineConfiguration.getRepositoryService();
     this.processService = processEngineConfiguration.getProcessService();
     this.historicDataService = processEngineConfiguration.getHistoricDataService();
     this.identityService = processEngineConfiguration.getIdentityService();
@@ -124,5 +127,9 @@ public class ProcessEngineImpl implements ProcessEngine {
   }
   public ProcessEngineConfiguration getProcessEngineConfiguration() {
     return processEngineConfiguration;
+  }
+
+  public RepositoryService getRepositoryService() {
+    return repositoryService;
   }
 }

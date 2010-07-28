@@ -38,7 +38,7 @@ public class ProcessDefinitionsGet extends ActivitiWebScript
   @Override
   protected void executeWebScript(WebScriptRequest req, Status status, Cache cache, Map<String, Object> model)
   {
-    model.put("processDefinitions", getProcessService().findProcessDefinitions());
+    model.put("processDefinitions", getRepositoryService().findProcessDefinitions());
   }
 
 }

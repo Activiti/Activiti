@@ -13,14 +13,14 @@
 package org.activiti.impl.cmd;
 
 import org.activiti.engine.ActivitiException;
-import org.activiti.impl.bytes.ByteArrayImpl;
+import org.activiti.engine.impl.persistence.repository.DeploymentEntity;
+import org.activiti.engine.impl.persistence.repository.ResourceEntity;
 import org.activiti.impl.definition.FormReference;
 import org.activiti.impl.definition.ProcessDefinitionImpl;
 import org.activiti.impl.execution.ExecutionImpl;
 import org.activiti.impl.interceptor.Command;
 import org.activiti.impl.interceptor.CommandContext;
 import org.activiti.impl.persistence.PersistenceSession;
-import org.activiti.impl.repository.DeploymentImpl;
 import org.activiti.impl.scripting.ScriptingEngines;
 import org.activiti.impl.task.TaskImpl;
 
@@ -34,10 +34,8 @@ public class GetFormCmd implements Command<Object> {
   private final String processDefinitionId;
   private final String processDefinitionKey;
   private final String taskId;
-  private final ScriptingEngines scriptingEngines;
   
-  public GetFormCmd(ScriptingEngines scriptingEngines, String processDefinitionId, String processDefinitionKey, String taskId) {
-    this.scriptingEngines = scriptingEngines;
+  public GetFormCmd(String processDefinitionId, String processDefinitionKey, String taskId) {
     this.processDefinitionId = processDefinitionId;
     this.processDefinitionKey = processDefinitionKey;
     this.taskId = taskId;
@@ -77,7 +75,7 @@ public class GetFormCmd implements Command<Object> {
       formReference = processDefinition.getInitial().getFormReference();
     } 
 
-    DeploymentImpl deployment = processDefinition.getDeployment();
+    DeploymentEntity deployment = processDefinition.getDeployment();
     
     Object result = null;
     if (formReference != null) {
@@ -85,19 +83,20 @@ public class GetFormCmd implements Command<Object> {
       String form = formReference.getForm();
       String formTemplateString = getFormTemplateString(form, deployment);      
       
+      ScriptingEngines scriptingEngines = commandContext.getProcessEngineConfiguration().getScriptingEngines();
       result = scriptingEngines.evaluate(formTemplateString, formLanguage, execution);
     }
 
     return result;
   }
 
-  protected String getFormTemplateString(String formResource, DeploymentImpl deployment) {
+  protected String getFormTemplateString(String formResourceName, DeploymentEntity deployment) {
     // get the template
-    ByteArrayImpl formResourceByteArray = deployment.getResource(formResource);
-    if (formResourceByteArray==null) {
+    ResourceEntity formResource = deployment.getResource(formResourceName);
+    if (formResource==null) {
       throw new ActivitiException("form '"+formResource+"' not available in "+deployment);
     }
-    byte[] formResourceBytes = formResourceByteArray.getBytes();
+    byte[] formResourceBytes = formResource.getBytes();
     return new String(formResourceBytes);
   }
 }

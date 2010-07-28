@@ -19,8 +19,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.activiti.engine.impl.persistence.repository.ProcessDefinitionEntity;
 import org.activiti.impl.definition.ActivityImpl;
-import org.activiti.impl.definition.ProcessDefinitionDbImpl;
 import org.activiti.impl.definition.ProcessDefinitionImpl;
 import org.activiti.impl.execution.ExecutionImpl;
 import org.activiti.impl.interceptor.CommandContext;
@@ -89,7 +89,7 @@ public class DbExecutionImpl extends ExecutionImpl implements PersistentObject {
   DbExecutionImpl() {
   }
 
-  public DbExecutionImpl(ProcessDefinitionDbImpl processDefinition) {
+  public DbExecutionImpl(ProcessDefinitionEntity processDefinition) {
     super(processDefinition);
     this.isNew = true;
     this.executions = new ArrayList<ExecutionImpl>();

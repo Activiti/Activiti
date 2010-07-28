@@ -31,8 +31,8 @@ import javax.sql.DataSource;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiWrongDbException;
 import org.activiti.engine.ProcessEngine;
+import org.activiti.engine.impl.persistence.repository.ProcessDefinitionEntity;
 import org.activiti.impl.db.IdGenerator;
-import org.activiti.impl.definition.ProcessDefinitionDbImpl;
 import org.activiti.impl.tx.Session;
 import org.activiti.impl.util.IoUtil;
 import org.activiti.impl.variable.Type;
@@ -373,8 +373,8 @@ public class IbatisPersistenceSessionFactory implements PersistenceSessionFactor
     }
 
     public Object create(Class type) {
-      if (type==ProcessDefinitionDbImpl.class) {
-        return new ProcessDefinitionDbImpl(variableTypes);
+      if (type==ProcessDefinitionEntity.class) {
+        return new ProcessDefinitionEntity(variableTypes);
       }
       return delegate.create(type);
     }

@@ -35,7 +35,7 @@ public class DbNotCleanTest {
   @Test
   public void testDbNotCleanAfterTest() {
 
-    Deployment deployment = processEngineBuilder.getProcessEngine().getProcessService().createDeployment().addString("test.bpmn20.xml",
+    Deployment deployment = processEngineBuilder.getProcessEngine().getRepositoryService().createDeployment().addString("test.bpmn20.xml",
             "<definitions xmlns='http://www.omg.org/spec/BPMN/20100524/MODEL' " + "targetNamespace='http://www.activiti.org/bpmn2.0' />").deploy();
     assertNotNull(deployment);
 
@@ -46,7 +46,7 @@ public class DbNotCleanTest {
       // Manually call the check on db cleaning check
       processEngineBuilder.assertDatabaseIsClean();
     } finally {
-      processEngineBuilder.getProcessEngine().getProcessService().deleteDeploymentCascade(deployment.getId());
+      processEngineBuilder.getProcessEngine().getRepositoryService().deleteDeploymentCascade(deployment.getId());
     }
 
   }

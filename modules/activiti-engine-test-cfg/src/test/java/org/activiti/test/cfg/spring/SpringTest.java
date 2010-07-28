@@ -22,6 +22,7 @@ import org.activiti.engine.Execution;
 import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.ProcessInstance;
 import org.activiti.engine.ProcessService;
+import org.activiti.engine.RepositoryService;
 import org.activiti.engine.Task;
 import org.activiti.impl.definition.ActivityImpl;
 import org.activiti.impl.execution.ExecutionImpl;
@@ -96,14 +97,14 @@ public class SpringTest {
 
   @Test
   public void testSpringTransaction() {
-    int before = processEngine.getProcessService().findDeployments().size();
+    int before = processEngine.getRepositoryService().findDeployments().size();
     userBean.doTransactional();
-    assertEquals(before + 1, processEngine.getProcessService().findDeployments().size());
+    assertEquals(before + 1, processEngine.getRepositoryService().findDeployments().size());
   }
 
   @Test
   public void testSpringTransactionRollback() {
-    int before = processEngine.getProcessService().findDeployments().size();
+    int before = processEngine.getRepositoryService().findDeployments().size();
     userBean.setFail(true);
     exception.expect(ActivitiException.class);
     exception.expectMessage("aprocess");
@@ -117,7 +118,7 @@ public class SpringTest {
       });
 
     } finally {
-      assertEquals(before, processEngine.getProcessService().findDeployments().size());
+      assertEquals(before, processEngine.getRepositoryService().findDeployments().size());
     }
   }
 
@@ -125,18 +126,18 @@ public class SpringTest {
   @DirtiesContext
   public void testSaveDeployment() {
 
-    int before = processEngine.getProcessService().findDeployments().size();
+    int before = processEngine.getRepositoryService().findDeployments().size();
 
     String resource = ClassUtils.addResourcePathToPackagePath(getClass(), "testProcess.bpmn20.xml");
-    ProcessService processService = processEngine.getProcessService();
-    Deployment deployment = processService.createDeployment().name(resource).addClasspathResource(resource).deploy();
+    RepositoryService repositoryService = processEngine.getRepositoryService();
+    Deployment deployment = repositoryService.createDeployment().name(resource).addClasspathResource(resource).deploy();
 
-    assertEquals(before + 1, processEngine.getProcessService().findDeployments().size());
-    deployment = processService.createDeployment().name(resource).addClasspathResource(resource).deploy();
-    assertEquals(before + 1, processEngine.getProcessService().findDeployments().size());
+    assertEquals(before + 1, processEngine.getRepositoryService().findDeployments().size());
+    deployment = repositoryService.createDeployment().name(resource).addClasspathResource(resource).deploy();
+    assertEquals(before + 1, processEngine.getRepositoryService().findDeployments().size());
 
     if (deployment != null) {
-      processService.deleteDeploymentCascade(deployment.getId());
+      repositoryService.deleteDeploymentCascade(deployment.getId());
     }
 
   }
@@ -145,22 +146,22 @@ public class SpringTest {
   @DirtiesContext
   public void testConfigureDeploymentCheck() throws Exception {
 
-    int before = processEngine.getProcessService().findDeployments().size();
+    int before = processEngine.getRepositoryService().findDeployments().size();
 
-    ProcessService processService = processEngine.getProcessService();
+    RepositoryService repositoryService = processEngine.getRepositoryService();
 
     // (N.B. Spring 3 resolves Resource[] from a pattern to FileSystemResource
     // instances)
     FileSystemResource resource = new FileSystemResource(new ClassPathResource("staticProcess.bpmn20.xml", getClass()).getFile());
     String path = resource.getFile().getAbsolutePath();
 
-    Deployment deployment = processService.createDeployment().name(path).addInputStream(path, resource.getInputStream()).deploy();
+    Deployment deployment = repositoryService.createDeployment().name(path).addInputStream(path, resource.getInputStream()).deploy();
     // Should be identical to resource configured in factory bean so no new
     // deployment
-    assertEquals(before, processEngine.getProcessService().findDeployments().size());
+    assertEquals(before, processEngine.getRepositoryService().findDeployments().size());
 
     if (deployment != null) {
-      processService.deleteDeploymentCascade(deployment.getId());
+      repositoryService.deleteDeploymentCascade(deployment.getId());
     }
 
   }

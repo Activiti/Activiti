@@ -19,6 +19,7 @@ import org.activiti.engine.HistoricDataService;
 import org.activiti.engine.IdentityService;
 import org.activiti.engine.ManagementService;
 import org.activiti.engine.ProcessService;
+import org.activiti.engine.RepositoryService;
 import org.activiti.engine.TaskService;
 import org.activiti.impl.db.IdGenerator;
 import org.activiti.impl.interceptor.CommandContextFactory;
@@ -28,6 +29,7 @@ import org.activiti.impl.job.JobHandlers;
 import org.activiti.impl.jobexecutor.JobExecutor;
 import org.activiti.impl.persistence.PersistenceSessionFactory;
 import org.activiti.impl.repository.DeployerManager;
+import org.activiti.impl.scripting.ScriptingEngines;
 import org.activiti.impl.variable.VariableTypes;
 import org.activiti.pvm.event.ProcessEventBus;
 
@@ -38,6 +40,7 @@ public class ProcessEngineConfiguration {
 
   protected String processEngineName;
   protected ProcessEventBus processEventBus;
+  protected RepositoryService repositoryService;
   protected ProcessService processService;
   protected HistoricDataService historicDataService;
   protected IdentityService identityService;
@@ -53,7 +56,7 @@ public class ProcessEngineConfiguration {
   protected CommandContextFactory commandContextFactory;
   protected PersistenceSessionFactory persistenceSessionFactory;
   protected Map<Class<?>, SessionFactory> sessionFactories;
-
+  protected ScriptingEngines scriptingEngines;
 
   // getters and setters //////////////////////////////////////////////////////
 
@@ -191,5 +194,21 @@ public class ProcessEngineConfiguration {
 
   public void setSessionFactories(Map<Class< ? >, SessionFactory> sessionFactories) {
     this.sessionFactories = sessionFactories;
+  }
+
+  public RepositoryService getRepositoryService() {
+    return repositoryService;
+  }
+  
+  public void setRepositoryService(RepositoryService repositoryService) {
+    this.repositoryService = repositoryService;
+  }
+  
+  public ScriptingEngines getScriptingEngines() {
+    return scriptingEngines;
+  }
+  
+  public void setScriptingEngines(ScriptingEngines scriptingEngines) {
+    this.scriptingEngines = scriptingEngines;
   }
 }

@@ -12,25 +12,29 @@
  */
 package org.activiti.rest.util;
 
-import org.activiti.*;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
 import org.activiti.engine.IdentityService;
 import org.activiti.engine.ManagementService;
 import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.ProcessEngineInfo;
 import org.activiti.engine.ProcessEngines;
 import org.activiti.engine.ProcessService;
+import org.activiti.engine.RepositoryService;
 import org.activiti.engine.TaskService;
 import org.activiti.identity.Group;
 import org.activiti.impl.json.JSONObject;
 import org.activiti.rest.Config;
 import org.springframework.extensions.surf.util.Base64;
-import org.springframework.extensions.webscripts.*;
-
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import org.springframework.extensions.webscripts.Cache;
+import org.springframework.extensions.webscripts.DeclarativeWebScript;
+import org.springframework.extensions.webscripts.Status;
+import org.springframework.extensions.webscripts.WebScriptException;
+import org.springframework.extensions.webscripts.WebScriptRequest;
 
 /**
  * Helper class for all activiti webscripts.
@@ -133,6 +137,15 @@ public class ActivitiWebScript extends DeclarativeWebScript {
    */
   protected ProcessService getProcessService() {
     return getProcessEngine().getProcessService();
+  }
+
+  /**
+   * Returns The repository service.
+   *
+   * @return The repository service
+   */
+  protected RepositoryService getRepositoryService() {
+    return getProcessEngine().getRepositoryService();
   }
 
   /**

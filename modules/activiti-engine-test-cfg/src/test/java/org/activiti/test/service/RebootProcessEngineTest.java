@@ -18,9 +18,9 @@ import static org.junit.Assert.assertNotNull;
 
 import java.util.List;
 
-import org.activiti.engine.ProcessEngineBuilder;
 import org.activiti.engine.ProcessDefinition;
 import org.activiti.engine.ProcessEngine;
+import org.activiti.engine.ProcessEngineBuilder;
 import org.activiti.engine.ProcessInstance;
 import org.activiti.engine.impl.ProcessEngineImpl;
 import org.activiti.test.LogInitializer;
@@ -47,13 +47,13 @@ public class RebootProcessEngineTest {
     
     // Create process engine and deploy test process
      ProcessEngine processEngine = buildProcessEngine("activiti.properties");
-     processEngine.getProcessService()
+     processEngine.getRepositoryService()
        .createDeployment()
        .addClasspathResource("org/activiti/test/service/RebootProcessEngineTestProcess.bpmn20.xml")
        .deploy();
   
      // verify existance of process definiton
-     List<ProcessDefinition> processDefinitions = processEngine.getProcessService().findProcessDefinitions();
+     List<ProcessDefinition> processDefinitions = processEngine.getRepositoryService().findProcessDefinitions();
      assertEquals(1, processDefinitions.size());
      
      // Start a new Process instance

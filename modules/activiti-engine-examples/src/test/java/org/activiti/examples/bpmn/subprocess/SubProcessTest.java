@@ -19,7 +19,7 @@ import java.util.List;
 
 import org.activiti.engine.Deployment;
 import org.activiti.engine.ProcessInstance;
-import org.activiti.engine.ProcessService;
+import org.activiti.engine.RepositoryService;
 import org.activiti.engine.Task;
 import org.activiti.engine.TaskQuery;
 import org.activiti.engine.TaskService;
@@ -41,11 +41,11 @@ public class SubProcessTest {
   
   @Test
   public void testSimpleSubProcess() {
-    ProcessService processService = deployer.getProcessService();
+    RepositoryService repositoryService = deployer.getRepositoryService();
     TaskService taskService = deployer.getTaskService();
     
     Deployment deployment = 
-      processService.createDeployment()
+      repositoryService.createDeployment()
                   .addClasspathResource("org/activiti/examples/bpmn/subprocess/SubProcessTest.fixSystemFailureProcess.bpmn20.xml")
                   .deploy();
     
@@ -69,7 +69,7 @@ public class SubProcessTest {
     assertEquals("Write report", writeReportTask.getName());
     
     // Clean up
-    processService.deleteDeploymentCascade(deployment.getId());
+    repositoryService.deleteDeploymentCascade(deployment.getId());
   }
 
 }

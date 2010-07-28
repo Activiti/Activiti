@@ -84,7 +84,7 @@ public class TaskAssignmentExtensionsTest {
   public void testDuplicateAssigneeDeclaration() {
     try {
       String resource = ProcessDeployer.getBpmnProcessDefinitionResource(getClass(), "testDuplicateAssigneeDeclaration");
-      deployer.getProcessService().createDeployment().addClasspathResource(resource).deploy();
+      deployer.getRepositoryService().createDeployment().addClasspathResource(resource).deploy();
       fail("Invalid BPMN 2.0 process should not parse, but it gets parsed sucessfully");
     } catch (ActivitiException e) {
       // Exception is to be expected

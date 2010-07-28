@@ -12,7 +12,6 @@
  */
 package org.activiti.engine;
 
-import java.io.InputStream;
 import java.util.List;
 import java.util.Map;
 
@@ -24,24 +23,6 @@ import java.util.Map;
  * @author Joram Barrez
  */
 public interface ProcessService {
-  
-  /** starts creating a new deployment */
-  DeploymentBuilder createDeployment();
-  
-  /** deletes the given deployment and fails if there are still process instances or jobs for this deployment. 
-   * @throws ActivitiException if there are still process instances or jobs related to this deployment. */
-  void deleteDeployment(String deploymentId);
-  
-  /** deletes the given deployment and cascade deletion to process instances and jobs */
-  void deleteDeploymentCascade(String deploymentId);
-  
-  /** get a rendered startform, for collecting parameters from a user to start 
-   * a new process instance */ 
-  Object getStartFormByKey(String processDefinitionKey);
-  
-  /** get a rendered startform, for collecting parameters from a user to start 
-   * a new process instance */ 
-  Object getStartFormById(String processDefinitionId);
   
   /** starts a new process instance in the latest version of the process definition with the given key */
   ProcessInstance startProcessInstanceByKey(String processDefinitionKey);
@@ -91,47 +72,4 @@ public interface ProcessService {
 
   /** update or create given variables */
   void setVariables(String executionId, Map<String, Object> variables);
-
-  /** 
-   * lists all versions of all process definitions ordered by 
-   * key (asc) and version (desc). 
-   */
-  List<ProcessDefinition> findProcessDefinitions();
-  
-  /**
-   * returns the {@link ProcessDefinition} with the given id, 
-   * or null if none is found.
-   */
-  ProcessDefinition findProcessDefinitionById(String processDefinitionId);
-  
-  /** 
-   * lists all deployments, ordered by deployment date (ascending).
-   * 
-   * Note that it is impossible to retrieve the deployment resources
-   * through the results of this operation, since that would cause a 
-   * huge transfer of (possibly) unneeded bytes over the wire.
-   * 
-   * To retrieve the actual bytes of a deployment resource use the
-   * operations <i>findDeploymentResources</i> and <i>getDeploymentResource</i>.
-   */
-  List<Deployment> findDeployments();
-  
-  /** 
-   * lists all deployments by name, ordered by deployment date (ascending).
-   * 
-   * To retrieve the actual bytes of a deployment resource use the
-   * operations <i>findDeploymentResources</i> and <i>getDeploymentResource</i>.
-   */
-  List<Deployment> findDeploymentsByName(String name);
-  
-  /**
-   * retrieves a list of deployment resources for the given deployment, 
-   * ordered alphabetically.
-   */
-  List<String> findDeploymentResources(String deploymentId);
-  
-  /**
-   * gives access to a deployment resource through a stream of bytes.
-   */
-  InputStream getDeploymentResourceContent(String deploymentId, String resourceName);
 }

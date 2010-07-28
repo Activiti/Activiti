@@ -29,10 +29,10 @@ public class UserBean {
   private static final String TARGET_NAMESPACE = "targetNamespace='http://activiti.org/BPMN20'";
 
   public void doTransactional() {
-    processEngine.getProcessService().createDeployment().addString("userprocess.bpmn20.xml",
+    processEngine.getRepositoryService().createDeployment().addString("userprocess.bpmn20.xml",
             "<definitions " + NAMESPACE + " " + TARGET_NAMESPACE + ">" + "  <process id='IDR' name='Insurance Damage Report' />" + "</definitions>").deploy();
     if (fail) {
-      processEngine.getProcessService().createDeployment().addString("invalidprocess.bpmn20.xml",
+      processEngine.getRepositoryService().createDeployment().addString("invalidprocess.bpmn20.xml",
               "<definitions " + NAMESPACE + " " + TARGET_NAMESPACE + ">" + "  <aprocess id='IDR' name='Insurance Damage Report' />" + "</definitions>").deploy();
     }
   }

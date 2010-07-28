@@ -12,6 +12,8 @@
  */
 package org.activiti.engine.impl.persistence.repository;
 
+import org.activiti.engine.impl.persistence.RepositorySession;
+
 
 
 /**
@@ -19,7 +21,7 @@ package org.activiti.engine.impl.persistence.repository;
  */
 public interface Deployer {
 
-  void deploy(DeploymentEntity deployment, boolean isNew);
-  void delete(DeploymentEntity deployment);
+  void deploy(DeploymentEntity deployment, RepositorySession repositorySession, boolean isNew);
+  void delete(DeploymentEntity deployment, RepositorySession repositorySession);
 
 }

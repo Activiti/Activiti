@@ -13,9 +13,8 @@
 
 package org.activiti.engine.test.db;
 
+import org.activiti.engine.Deployment;
 import org.activiti.engine.impl.persistence.RepositorySession;
-import org.activiti.engine.impl.persistence.repository.DeploymentEntity;
-import org.activiti.engine.impl.persistence.repository.ResourceEntity;
 import org.activiti.engine.test.ProcessEngineImplTestCase;
 import org.activiti.impl.interceptor.Command;
 import org.activiti.impl.interceptor.CommandContext;
@@ -28,18 +27,20 @@ import org.activiti.impl.interceptor.CommandContext;
 public class DeploymentPersistenceTest extends ProcessEngineImplTestCase {
 
   public void testDeployment() {
-    final DeploymentEntity deployment = new DeploymentEntity();
+    Deployment deployment = processEngine
+      .getRepositoryService()
+      .createDeployment()
+      .addString("org/activiti/test/HelloWorld.string", "hello world")
+      .addString("org/activiti/test/TheAnswer.string", "42")
+      .deploy();
     
-    final int deploymentId = commandExecutor.execute(new Command<Integer>() {
-      public Integer execute(CommandContext commandContext) {
+    final String deploymentId = deployment.getId();
+    
+    commandExecutor.execute(new Command<Object>() {
+      public Object execute(CommandContext commandContext) {
         RepositorySession repositorySession = commandContext.getRepositorySession();
-        repositorySession.insertDeployment(deployment);
         
-//        for (ResourceEntity resource: deployment.getResources().values()) {
-//          repositorySession.insertResource(resource);
-//        }
-        
-        return 4;
+        return null;
       }
     });
   }

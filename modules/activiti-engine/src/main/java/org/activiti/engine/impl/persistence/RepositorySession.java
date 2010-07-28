@@ -16,6 +16,7 @@ package org.activiti.engine.impl.persistence;
 import org.activiti.engine.DeploymentBuilder;
 import org.activiti.engine.impl.persistence.repository.Deployer;
 import org.activiti.engine.impl.persistence.repository.DeploymentEntity;
+import org.activiti.engine.impl.persistence.repository.ProcessDefinitionEntity;
 import org.activiti.impl.definition.ProcessDefinitionImpl;
 
 
@@ -33,9 +34,11 @@ public interface RepositorySession {
   
   /** used when {@link DeploymentBuilder#enableDuplicateFiltering()} is called 
    * while building a deployment. */
-  DeploymentEntity findLatestDeploymentsByName(String deploymentName);
+  DeploymentEntity findLatestDeploymentByName(String deploymentName);
 
   /** must be called by deployers that have parsed process definitions when
    * isNew in {@link Deployer#deploy(DeploymentEntity, boolean)} is true. */
   void insertProcessDefinition(ProcessDefinitionImpl processDefinition);
+
+  ProcessDefinitionEntity findProcessDefinitionByDeploymentAndKey(String deploymentId, String processDefinitionKey);
 }

@@ -10,10 +10,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.activiti.impl.definition;
+package org.activiti.engine.impl.persistence.repository;
 
 import org.activiti.impl.db.execution.DbExecutionImpl;
+import org.activiti.impl.definition.ProcessDefinitionImpl;
 import org.activiti.impl.execution.ExecutionImpl;
+import org.activiti.impl.persistence.PersistentObject;
 import org.activiti.impl.variable.DefaultVariableTypes;
 import org.activiti.impl.variable.VariableTypes;
 
@@ -21,15 +23,15 @@ import org.activiti.impl.variable.VariableTypes;
 /**
  * @author Tom Baeyens
  */
-public class ProcessDefinitionDbImpl extends ProcessDefinitionImpl {
+public class ProcessDefinitionEntity extends ProcessDefinitionImpl implements PersistentObject {
 
   private static final long serialVersionUID = 1L;
 
-  public ProcessDefinitionDbImpl() {
+  public ProcessDefinitionEntity() {
     this(new DefaultVariableTypes());
   }
 
-  public ProcessDefinitionDbImpl(VariableTypes variableTypes) {
+  public ProcessDefinitionEntity(VariableTypes variableTypes) {
     super(variableTypes);
   }
 
@@ -37,5 +39,8 @@ public class ProcessDefinitionDbImpl extends ProcessDefinitionImpl {
     DbExecutionImpl execution = new DbExecutionImpl(this);
     return execution;
   }
-  
+
+  public Object getPersistentState() {
+    return ProcessDefinitionEntity.class;
+  }
 }

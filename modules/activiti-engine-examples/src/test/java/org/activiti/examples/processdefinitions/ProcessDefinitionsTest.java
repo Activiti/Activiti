@@ -46,7 +46,7 @@ public class ProcessDefinitionsTest {
     deployer.deployProcessString(("<definitions " + NAMESPACE + " " + TARGET_NAMESPACE + ">" + "  <process id='EN' name='Expense Note 1' />" + "</definitions>"));
     deployer.deployProcessString(("<definitions " + NAMESPACE + " " + TARGET_NAMESPACE + ">" + "  <process id='EN' name='Expense Note 2' />" + "</definitions>"));
 
-    List<ProcessDefinition> processDefinitions = deployer.getProcessService().findProcessDefinitions();
+    List<ProcessDefinition> processDefinitions = deployer.getRepositoryService().findProcessDefinitions();
     assertNotNull(processDefinitions);
 
     assertEquals(5, processDefinitions.size());
@@ -88,7 +88,7 @@ public class ProcessDefinitionsTest {
     deployer.deployProcessString(("<definitions " + NAMESPACE + " " + TARGET_NAMESPACE + ">" + "  <process id='IDR' name='Insurance Damage Report' />" + "</definitions>"));
     deployer.deployProcessString(("<definitions " + NAMESPACE + " " + TARGET_NAMESPACE + ">" + "  <process id='IDR' name='Insurance Damage Report' />" + "</definitions>"));
 
-    List<ProcessDefinition> processDefinitions = deployer.getProcessService().findProcessDefinitions();
+    List<ProcessDefinition> processDefinitions = deployer.getRepositoryService().findProcessDefinitions();
     assertNotNull(processDefinitions);
     assertEquals(1, processDefinitions.size());
 

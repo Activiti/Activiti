@@ -92,11 +92,6 @@ public class ProcessDefinitionBuilder {
     return this;
   }
 
-  public ProcessDefinitionBuilder name(String name) {
-    processElement.setName(name);
-    return this;
-  }
-
   public ProcessDefinitionBuilder behaviour(ActivityBehaviour activityBehaviour) {
     getActivity().setActivityBehaviour(activityBehaviour);
     return this;

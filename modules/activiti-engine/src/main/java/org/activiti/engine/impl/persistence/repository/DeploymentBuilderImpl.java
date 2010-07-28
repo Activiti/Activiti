@@ -20,7 +20,7 @@ import java.util.zip.ZipInputStream;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.Deployment;
 import org.activiti.engine.DeploymentBuilder;
-import org.activiti.engine.impl.ProcessServiceImpl;
+import org.activiti.engine.RepositoryService;
 import org.activiti.engine.impl.RepositoryServiceImpl;
 import org.activiti.impl.util.IoUtil;
 

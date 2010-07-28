@@ -22,12 +22,13 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.activiti.engine.ProcessEngineBuilder;
 import org.activiti.engine.HistoricDataService;
 import org.activiti.engine.IdentityService;
 import org.activiti.engine.ManagementService;
 import org.activiti.engine.ProcessEngine;
+import org.activiti.engine.ProcessEngineBuilder;
 import org.activiti.engine.ProcessService;
+import org.activiti.engine.RepositoryService;
 import org.activiti.engine.TaskService;
 import org.activiti.engine.impl.ProcessEngineImpl;
 import org.activiti.impl.interceptor.CommandExecutor;
@@ -70,6 +71,10 @@ public class ProcessEngineTestWatchman extends TestWatchman {
 
   public ProcessEngine getProcessEngine() {
     return processEngine;
+  }
+
+  public RepositoryService getRepositoryService() {
+    return processEngine == null ? null : processEngine.getRepositoryService();
   }
 
   public ProcessService getProcessService() {

@@ -22,8 +22,6 @@ import java.util.List;
  */
 public class ScopeImpl extends ProcessElementImpl {
 
-  protected String id;
-  protected String name;
   protected List<ActivityImpl> activities = new ArrayList<ActivityImpl>();
   
   public ActivityImpl findActivity(String activityName) {
@@ -64,11 +62,5 @@ public class ScopeImpl extends ProcessElementImpl {
   }
   public List<ActivityImpl> getActivities() {
     return activities;
-  }
-  public String getName() {
-    return name;
-  }
-  public void setName(String name) {
-    this.name = name;
   }
 }

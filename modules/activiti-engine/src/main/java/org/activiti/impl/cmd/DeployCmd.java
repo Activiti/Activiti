@@ -44,7 +44,7 @@ public class DeployCmd<T> implements Command<Deployment> {
     deployment.setDeploymentTime(Clock.getCurrentTime());
 
     if ( deploymentBuilder.isDuplicateFilterEnabled() ) {
-      DeploymentEntity existingDeployment = repositorySession.findLatestDeploymentsByName(deployment.getName());
+      DeploymentEntity existingDeployment = repositorySession.findLatestDeploymentByName(deployment.getName());
       if ( (existingDeployment!=null)
            && !deploymentsDiffer(deployment, existingDeployment)) {
         return existingDeployment;

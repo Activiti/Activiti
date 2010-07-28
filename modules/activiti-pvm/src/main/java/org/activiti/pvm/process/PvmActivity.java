@@ -20,6 +20,4 @@ package org.activiti.pvm.process;
 public interface PvmActivity {
 
   public String getId();
-  public String getName();
-
 }

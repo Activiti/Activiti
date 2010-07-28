@@ -57,7 +57,7 @@ public class TaskFormsTest {
   public void testTaskFormsWithVacationRequestProcess() {
 
     // Get start form
-    Object startForm = deployer.getProcessService().getStartFormByKey("vacationRequest");
+    Object startForm = deployer.getRepositoryService().getStartFormByKey("vacationRequest");
     assertNotNull(startForm);
 
     // Define variables that would be filled in through the form
@@ -78,7 +78,7 @@ public class TaskFormsTest {
   @Test
   @ProcessDeclared
   public void testTaskFormUnavailable() {
-    assertNull(deployer.getProcessService().getStartFormByKey("noStartOrTaskForm"));
+    assertNull(deployer.getRepositoryService().getStartFormByKey("noStartOrTaskForm"));
 
     deployer.getProcessService().startProcessInstanceByKey("noStartOrTaskForm");
     Task task = deployer.getTaskService().createTaskQuery().singleResult();

@@ -53,6 +53,7 @@ public interface ProcessEngine {
    * The default name for a process engine is 'default */
   String getName();
 
+  RepositoryService getRepositoryService();
   ProcessService getProcessService();
   TaskService getTaskService();
   HistoricDataService getHistoricDataService();

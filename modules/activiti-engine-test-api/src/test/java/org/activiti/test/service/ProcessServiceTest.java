@@ -42,7 +42,7 @@ public class ProcessServiceTest {
   @Test
   @ProcessDeclared(resources = {"oneTaskProcess.bpmn20.xml"})
   public void testStartProcessInstanceById() {
-    List<ProcessDefinition> processDefinitions = deployer.getProcessService().findProcessDefinitions();
+    List<ProcessDefinition> processDefinitions = deployer.getRepositoryService().findProcessDefinitions();
     assertEquals(1, processDefinitions.size());
 
     ProcessDefinition processDefinition = processDefinitions.get(0);
@@ -57,10 +57,10 @@ public class ProcessServiceTest {
   @Test
   @ProcessDeclared(resources={"oneTaskProcess.bpmn20.xml"})
   public void testFindProcessDefinitionById() {
-    List<ProcessDefinition> definitions = deployer.getProcessService().findProcessDefinitions();
+    List<ProcessDefinition> definitions = deployer.getRepositoryService().findProcessDefinitions();
     assertEquals(1, definitions.size());
 
-    ProcessDefinition processDefinition = deployer.getProcessService().findProcessDefinitionById(definitions.get(0).getId());
+    ProcessDefinition processDefinition = deployer.getRepositoryService().findProcessDefinitionById(definitions.get(0).getId());
     assertNotNull(processDefinition);
     assertEquals("oneTaskProcess", processDefinition.getKey());
     assertEquals("The One Task Process", processDefinition.getName());
@@ -70,6 +70,6 @@ public class ProcessServiceTest {
   public void testFindProcessDefinitionByNullId() {
     exception.expect(ActivitiException.class);
     exception.expectMessage("Couldn't find process definiton");
-    deployer.getProcessService().findProcessDefinitionById(null);
+    deployer.getRepositoryService().findProcessDefinitionById(null);
   }
 }

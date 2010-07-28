@@ -22,7 +22,7 @@ import java.util.zip.ZipInputStream;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.ProcessEngines;
-import org.activiti.engine.ProcessService;
+import org.activiti.engine.RepositoryService;
 import org.activiti.impl.util.LogUtil;
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.DirectoryScanner;
@@ -72,7 +72,7 @@ public class DeployBarTask extends Task {
       if (processEngine == null) {
         throw new ActivitiException("Could not find a process engine with name '" + processEngineName + "'");
       }
-      ProcessService processService = processEngine.getProcessService();
+      RepositoryService repositoryService = processEngine.getRepositoryService();
 
       log("Starting to deploy " + files.size() + " files");
       for (File file: files) {
@@ -82,7 +82,7 @@ public class DeployBarTask extends Task {
           FileInputStream inputStream = new FileInputStream(file);
           try {
             log("deploying bar "+path);
-            processService
+            repositoryService
                 .createDeployment()
                 .name(file.getName())
                 .addZipInputStream(new ZipInputStream(inputStream))

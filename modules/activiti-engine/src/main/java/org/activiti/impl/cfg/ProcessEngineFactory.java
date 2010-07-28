@@ -25,6 +25,7 @@ import org.activiti.engine.impl.IdentityServiceImpl;
 import org.activiti.engine.impl.ManagementServiceImpl;
 import org.activiti.engine.impl.ProcessEngineImpl;
 import org.activiti.engine.impl.ProcessServiceImpl;
+import org.activiti.engine.impl.RepositoryServiceImpl;
 import org.activiti.engine.impl.TaskServiceImpl;
 import org.activiti.engine.impl.persistence.RepositorySession;
 import org.activiti.engine.impl.persistence.db.DbRepositorySessionFactory;
@@ -48,10 +49,8 @@ import org.activiti.impl.jobexecutor.JobExecutor;
 import org.activiti.impl.msg.JobExecutorMessageSessionFactory;
 import org.activiti.impl.msg.MessageSession;
 import org.activiti.impl.msg.MessageSessionFactory;
-import org.activiti.impl.persistence.CachingPersistenceSessionFactory;
 import org.activiti.impl.persistence.IbatisPersistenceSessionFactory;
 import org.activiti.impl.persistence.PersistenceSession;
-import org.activiti.impl.persistence.PersistenceSessionFactory;
 import org.activiti.impl.repository.DeployerManager;
 import org.activiti.impl.scripting.ScriptingEngines;
 import org.activiti.impl.timer.JobExecutorTimerSessionFactory;
@@ -129,19 +128,19 @@ public class ProcessEngineFactory {
         idGenerator = idGenerator == null ? createDefaultIdGenerator(commandExecutor) : idGenerator;
         identityService = identityService == null ? createDefaultIdentityService(commandExecutor) : identityService;
 
+        RepositoryServiceImpl repositoryService = new RepositoryServiceImpl(commandExecutor);
         ProcessServiceImpl processService = createDefaultProcessService(commandExecutor, deployerManager, scriptingEngines);
         TaskServiceImpl taskService = createDefaultTaskService(commandExecutor, scriptingEngines);
         ManagementServiceImpl managementService = createDefaultManagementService(commandExecutor);
 
         IbatisPersistenceSessionFactory ibatisPersistenceSessionFactory = new IbatisPersistenceSessionFactory(variableTypes, idGenerator, databaseName, dataSource, localTransactions);
-        CachingPersistenceSessionFactory cachingPersistenceSessionFactory = new CachingPersistenceSessionFactory(ibatisPersistenceSessionFactory, deployerManager, Thread.currentThread().getContextClassLoader());
 
         commandContextFactory.setTransactionContextFactory(createDefaultTransactionContextFactory());
         
         Map<Class<?>, SessionFactory> sessionFactories = new HashMap<Class<?>, SessionFactory>();
         sessionFactories.put(MessageSession.class, new JobExecutorMessageSessionFactory());
         sessionFactories.put(TimerSession.class, new JobExecutorTimerSessionFactory());
-        sessionFactories.put(PersistenceSession.class, cachingPersistenceSessionFactory);
+        sessionFactories.put(PersistenceSession.class, ibatisPersistenceSessionFactory);
         sessionFactories.put(RepositorySession.class, new DbRepositorySessionFactory());
         sessionFactories.put(DbSqlSession.class, new DbSqlSessionFactory(ibatisPersistenceSessionFactory.getSqlSessionFactory(), idGenerator, databaseName));
         
@@ -149,19 +148,22 @@ public class ProcessEngineFactory {
         configuration.setCommandExecutor(commandExecutor);
         configuration.setDbSchemaStrategy(dbSchemaStrategy);
         configuration.setDeployerManager(deployerManager);
-        configuration.setHistoricDataService(historicDataService);
-        configuration.setIdentityService(identityService);
         configuration.setIdGenerator(idGenerator);
         configuration.setJobExecutor(jobExecutor);
         configuration.setJobHandlers(jobHandlers);
-        configuration.setManagementService(managementService);
-        configuration.setPersistenceSessionFactory(cachingPersistenceSessionFactory);
+        configuration.setPersistenceSessionFactory(ibatisPersistenceSessionFactory);
         configuration.setProcessEngineName(processEngineName);
         configuration.setProcessEventBus(processEventBus);
-        configuration.setProcessService(processService);
-        configuration.setTaskService(taskService);
         configuration.setVariableTypes(variableTypes);
         configuration.setSessionFactories(sessionFactories);
+        configuration.setScriptingEngines(scriptingEngines);
+
+        configuration.setRepositoryService(repositoryService);
+        configuration.setProcessService(processService);
+        configuration.setTaskService(taskService);
+        configuration.setHistoricDataService(historicDataService);
+        configuration.setManagementService(managementService);
+        configuration.setIdentityService(identityService);
 
         commandContextFactory.setProcessEngineConfiguration(configuration);
 
@@ -238,14 +240,6 @@ public class ProcessEngineFactory {
 
   protected MessageSessionFactory createDefaultMessageSessionFactory(JobExecutor jobExecutor) {
     return new JobExecutorMessageSessionFactory(jobExecutor);
-  }
-
-  protected PersistenceSessionFactory createDefaultPersistenceSessionFactory(DeployerManager deployerManager, VariableTypes variableTypes,
-          IdGenerator idGenerator, String databaseName, DataSource dataSource, boolean localTransactions) {
-    PersistenceSessionFactory persistenceSessionFactory = new IbatisPersistenceSessionFactory(variableTypes, idGenerator, databaseName, dataSource,
-            localTransactions);
-    persistenceSessionFactory = new CachingPersistenceSessionFactory(persistenceSessionFactory, deployerManager, Thread.currentThread().getContextClassLoader());
-    return persistenceSessionFactory;
   }
 
   protected CommandExecutor createDefaultCmdExecutor(CommandContextFactory commandContextFactory) {

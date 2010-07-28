@@ -28,7 +28,6 @@ import org.activiti.pvm.event.EventListener;
 public class ProcessElementImpl {
 
   protected String id;
-  protected String name;
   protected Map<String, List<EventListener>> eventListeners = new HashMap<String, List<EventListener>>();
 
   protected void setEventListeners(Map<String, List<EventListener>> eventListeners) {
@@ -51,15 +50,5 @@ public class ProcessElementImpl {
   
   public void setId(String id) {
     this.id = id;
-  }
-
-  
-  public String getName() {
-    return name;
-  }
-
-  
-  public void setName(String name) {
-    this.name = name;
   }
 }

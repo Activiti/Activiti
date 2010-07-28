@@ -144,7 +144,7 @@ public class TaskServiceImpl implements TaskService {
   }
 
   public Object getTaskForm(String taskId) {
-    return commandExecutor.execute(new GetFormCmd(scriptingEngines, null, null, taskId));
+    return commandExecutor.execute(new GetFormCmd(null, null, taskId));
   }
 
   // getters and setters //////////////////////////////////////////////////////

@@ -58,8 +58,7 @@ public class JsonTest {
     "  </process>" +
     "</definitions>"));
           
-    ProcessService processService = deployer.getProcessEngine().getProcessService();
-    List<ProcessDefinition> processDefinitions = processService.findProcessDefinitions();
+    List<ProcessDefinition> processDefinitions = deployer.getRepositoryService().findProcessDefinitions();
     
     JsonListConverter<ProcessDefinition> jsonListConverter = new JsonListConverter<ProcessDefinition>(new JsonProcessDefinitionConverter());
     System.out.println(jsonListConverter.toJson(processDefinitions, 2));

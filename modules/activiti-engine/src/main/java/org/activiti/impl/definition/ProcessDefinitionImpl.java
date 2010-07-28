@@ -12,17 +12,16 @@
  */
 package org.activiti.impl.definition;
 
-import org.activiti.impl.Jsonnable;
+import org.activiti.engine.impl.persistence.repository.DeploymentEntity;
 import org.activiti.impl.execution.ExecutionImpl;
-import org.activiti.impl.json.JSONObject;
-import org.activiti.impl.repository.DeploymentImpl;
+import org.activiti.impl.persistence.PersistentObject;
 import org.activiti.impl.variable.VariableTypes;
 import org.activiti.pvm.ObjectProcessDefinition;
 
 /**
  * @author Tom Baeyens
  */
-public class ProcessDefinitionImpl extends ScopeElementImpl implements ObjectProcessDefinition, Jsonnable {
+public class ProcessDefinitionImpl extends ScopeElementImpl implements ObjectProcessDefinition, PersistentObject {
   
   private static final long serialVersionUID = 1L;
 
@@ -30,9 +29,7 @@ public class ProcessDefinitionImpl extends ScopeElementImpl implements ObjectPro
 
   protected int version;
 
-  protected DeploymentImpl deployment;
-  
-  protected boolean isNew = false;
+  protected DeploymentEntity deployment;
   
   /* Name of the resource that was used to deploy this processDefinition */
   transient protected String resourceName;
@@ -48,6 +45,12 @@ public class ProcessDefinitionImpl extends ScopeElementImpl implements ObjectPro
     // TODO: maybe initialize variable declarations if needed;
     return execution;
   }
+  
+  public Object getPersistentState() {
+    return ProcessDefinitionImpl.class;
+  }
+
+  // getters and setters //////////////////////////////////////////////////////
   
   public String getName() {
     return name;
@@ -67,17 +70,11 @@ public class ProcessDefinitionImpl extends ScopeElementImpl implements ObjectPro
   public void setVersion(int version) {
     this.version = version;
   }
-  public DeploymentImpl getDeployment() {
+  public DeploymentEntity getDeployment() {
     return deployment;
   }
-  public void setDeployment(DeploymentImpl deployment) {
+  public void setDeployment(DeploymentEntity deployment) {
     this.deployment = deployment;
-  }
-  public boolean isNew() {
-    return isNew;
-  }
-  public void setNew(boolean isNew) {
-    this.isNew = isNew;
   }
   public String getResourceName() {
     return resourceName;
@@ -91,17 +88,5 @@ public class ProcessDefinitionImpl extends ScopeElementImpl implements ObjectPro
   
   public VariableTypes getVariableTypes() {
     return variableTypes;
-  }
-
-  public JSONObject toJsonObject() {
-    JSONObject jsonObject = new JSONObject();
-    jsonObject.put("id", id);
-    if (key!=null) {
-      jsonObject.put("key", key);
-    }
-    if (deployment!=null) {
-      jsonObject.put("deploymentId", deployment.getId());
-    }
-    return jsonObject;
   }
 }

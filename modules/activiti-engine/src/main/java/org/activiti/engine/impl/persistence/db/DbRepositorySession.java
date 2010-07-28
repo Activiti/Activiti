@@ -18,10 +18,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.activiti.engine.DeploymentBuilder;
 import org.activiti.engine.impl.persistence.RepositorySession;
-import org.activiti.engine.impl.persistence.process.ProcessDefinitionEntity;
 import org.activiti.engine.impl.persistence.repository.Deployer;
 import org.activiti.engine.impl.persistence.repository.DeploymentEntity;
+import org.activiti.engine.impl.persistence.repository.ProcessDefinitionEntity;
 import org.activiti.impl.definition.ProcessDefinitionImpl;
 import org.activiti.impl.interceptor.CommandContext;
 import org.activiti.impl.tx.Session;
@@ -52,11 +53,11 @@ public class DbRepositorySession implements Session, RepositorySession {
 
   public void deployNew(DeploymentEntity deployment) {
     for (Deployer deployer: deployers) {
-      deployer.deploy(deployment, true);
+      deployer.deploy(deployment, this, true);
     }
   }
 
-  public DeploymentEntity findLatestDeploymentsByName(String deploymentName) {
+  public DeploymentEntity findLatestDeploymentByName(String deploymentName) {
     return (DeploymentEntity) dbSqlSession.selectOne("selectLatestDeploymentByName", deploymentName);
   }
 
@@ -64,5 +65,13 @@ public class DbRepositorySession implements Session, RepositorySession {
   }
 
   public void insertProcessDefinition(ProcessDefinitionImpl processDefinition) {
+    dbSqlSession.insert(processDefinition);
+  }
+
+  public ProcessDefinitionEntity findProcessDefinitionByDeploymentAndKey(String deploymentId, String processDefinitionKey) {
+    Map<String, Object> parameters = new HashMap<String, Object>();
+    parameters.put("deploymentId", deploymentId);
+    parameters.put("processDefinitionKey", processDefinitionKey);
+    return (ProcessDefinitionEntity) dbSqlSession.selectOne("selectProcessDefinitionByDeploymentAndKey", parameters);
   }
 }

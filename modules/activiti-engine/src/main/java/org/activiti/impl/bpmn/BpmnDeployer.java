@@ -19,16 +19,12 @@ import java.util.logging.Logger;
 import org.activiti.engine.impl.persistence.RepositorySession;
 import org.activiti.engine.impl.persistence.repository.Deployer;
 import org.activiti.engine.impl.persistence.repository.DeploymentEntity;
+import org.activiti.engine.impl.persistence.repository.ProcessDefinitionEntity;
 import org.activiti.engine.impl.persistence.repository.ResourceEntity;
 import org.activiti.impl.bpmn.parser.BpmnParse;
 import org.activiti.impl.bpmn.parser.BpmnParser;
-import org.activiti.impl.bytes.ByteArrayImpl;
 import org.activiti.impl.calendar.BusinessCalendarManager;
-import org.activiti.impl.definition.ProcessDefinitionDbImpl;
-import org.activiti.impl.definition.ProcessDefinitionImpl;
 import org.activiti.impl.el.ExpressionManager;
-import org.activiti.impl.persistence.PersistenceSession;
-import org.activiti.impl.repository.DeploymentImpl;
 import org.activiti.impl.scripting.ScriptingEngines;
 
 /**
@@ -52,7 +48,7 @@ public class BpmnDeployer implements Deployer {
     this.businessCalendarManager = businessCalendarManager;
   }
 
-  public void deploy(DeploymentEntity deployment, boolean isNew, RepositorySession repositorySession) {
+  public void deploy(DeploymentEntity deployment, RepositorySession repositorySession, boolean isNew) {
 
     Map<String, ResourceEntity> resources = deployment.getResources();
 
@@ -65,20 +61,27 @@ public class BpmnDeployer implements Deployer {
         ByteArrayInputStream inputStream = new ByteArrayInputStream(bytes);
         BpmnParse bpmnParse = new BpmnParser(expressionManager, scriptingEngines, businessCalendarManager)
           .createParse()
-          .processDefinitionClass(ProcessDefinitionDbImpl.class)
+          .processDefinitionClass(ProcessDefinitionEntity.class)
           .sourceInputStream(inputStream)
           .execute();
 
-        for (ProcessDefinitionImpl processDefinition : bpmnParse.getProcessDefinitions()) {
+        for (ProcessDefinitionEntity processDefinition : bpmnParse.getProcessDefinitions()) {
           processDefinition.setDeployment(deployment);
-          processDefinition.setNew(isNew);
-          repositorySession.insertProcessDefinition(processDefinition);
+          if (isNew) {
+            repositorySession.insertProcessDefinition(processDefinition);
+          } else {
+            String deploymentId = processDefinition.getDeployment().getId();
+            ProcessDefinitionEntity persistedProcessDefinition = repositorySession.findProcessDefinitionByDeploymentAndKey(deploymentId, processDefinition.getKey());
+            processDefinition.setId(persistedProcessDefinition.getId());
+            processDefinition.setVersion(persistedProcessDefinition.getVersion());
+            
+          }
         }
       }
     }
   }
 
-  public void delete(DeploymentEntity deployment) {
+  public void delete(DeploymentEntity deployment, RepositorySession repositorySession) {
     // TODO if this class inserts the process definitions, then it should also be responsible for deleting them
   }
 }

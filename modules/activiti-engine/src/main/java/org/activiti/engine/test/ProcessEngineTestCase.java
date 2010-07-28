@@ -27,6 +27,7 @@ import org.activiti.engine.IdentityService;
 import org.activiti.engine.ManagementService;
 import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.ProcessService;
+import org.activiti.engine.RepositoryService;
 import org.activiti.engine.TaskService;
 import org.activiti.engine.impl.util.ClassNameUtil;
 import org.activiti.impl.time.Clock;
@@ -55,6 +56,7 @@ public class ProcessEngineTestCase extends TestCase {
   protected ThreadLogMode threadRenderingMode;
   protected String configurationResource;
   protected ProcessEngine processEngine;
+  protected RepositoryService repositoryService;
   protected ProcessService processService;
   protected TaskService taskService;
   protected HistoricDataService historicDataService;
@@ -118,6 +120,7 @@ public class ProcessEngineTestCase extends TestCase {
   }
 
   void initializeServices() {
+    repositoryService = processEngine.getRepositoryService();
     processService = processEngine.getProcessService();
     taskService = processEngine.getTaskService();
     historicDataService = processEngine.getHistoricDataService();

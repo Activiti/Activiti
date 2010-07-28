@@ -17,11 +17,10 @@ import java.util.Map;
 
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiWrongDbException;
-import org.activiti.engine.ProcessEngineBuilder;
 import org.activiti.engine.DbSchemaStrategy;
 import org.activiti.engine.ProcessEngine;
+import org.activiti.engine.ProcessEngineBuilder;
 import org.activiti.engine.impl.ProcessEngineImpl;
-import org.activiti.impl.persistence.CachingPersistenceSessionFactory;
 import org.activiti.impl.persistence.IbatisPersistenceSessionFactory;
 import org.activiti.impl.persistence.PersistenceSessionFactory;
 import org.activiti.test.LogInitializer;
@@ -63,9 +62,9 @@ public class ProcessEngineInitializationTest {
     // then update the version to something that is different to the library
     // version
     PersistenceSessionFactory persistenceSessionFactory = processEngine.getPersistenceSessionFactory();
-    if(persistenceSessionFactory instanceof CachingPersistenceSessionFactory){
-      persistenceSessionFactory = ((CachingPersistenceSessionFactory) persistenceSessionFactory).getTargetPersistenceSessionFactory();
-    }
+//    if(persistenceSessionFactory instanceof CachingPersistenceSessionFactory){
+//      persistenceSessionFactory = ((CachingPersistenceSessionFactory) persistenceSessionFactory).getTargetPersistenceSessionFactory();
+//    }
 
     SqlSessionFactory sqlSessionFactory = ((IbatisPersistenceSessionFactory) persistenceSessionFactory).getSqlSessionFactory();
     SqlSession sqlSession = sqlSessionFactory.openSession();

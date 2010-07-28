@@ -24,7 +24,7 @@ import org.activiti.engine.DeploymentBuilder;
 import org.activiti.engine.HistoricDataService;
 import org.activiti.engine.IdentityService;
 import org.activiti.engine.ProcessEngine;
-import org.activiti.engine.ProcessService;
+import org.activiti.engine.RepositoryService;
 import org.activiti.engine.impl.ProcessEngineImpl;
 import org.activiti.impl.cfg.ProcessEngineFactory;
 import org.activiti.impl.db.IdGenerator;
@@ -89,7 +89,7 @@ public class ProcessEngineFactoryBean implements FactoryBean<ProcessEngine>, Dis
     }
 
     processEngine = factory.createProcessEngine();
-    refreshProcessResources(processEngine.getProcessService(), processResources);
+    refreshProcessResources(processEngine.getRepositoryService(), processResources);
     return processEngine;
 
   }
@@ -101,10 +101,13 @@ public class ProcessEngineFactoryBean implements FactoryBean<ProcessEngine>, Dis
     return true;
   }
 
-  protected void refreshProcessResources(ProcessService processService, Resource[] processResources) throws IOException {
+  protected void refreshProcessResources(RepositoryService repositoryService, Resource[] processResources) throws IOException {
     for (Resource resource : processResources) {
       String name = getResourceName(resource);
-      DeploymentBuilder deploymentBuilder = processService.createDeployment().name(name);
+      DeploymentBuilder deploymentBuilder = repositoryService
+        .createDeployment()
+        .enableDuplicateFiltering()
+        .name(name);
       deploy(deploymentBuilder, resource, name);
     }
   }

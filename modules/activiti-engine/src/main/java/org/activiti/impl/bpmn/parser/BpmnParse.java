@@ -24,6 +24,7 @@ import java.util.logging.Logger;
 
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ProcessDefinition;
+import org.activiti.engine.impl.persistence.repository.ProcessDefinitionEntity;
 import org.activiti.impl.bpmn.BoundaryTimerEventActivity;
 import org.activiti.impl.bpmn.BpmnInterface;
 import org.activiti.impl.bpmn.CallActivityBehaviour;
@@ -79,13 +80,13 @@ public class BpmnParse extends Parse {
   /**
    * The end result of the parsing: a list of process definition.
    */
-  private final List<ProcessDefinitionImpl> processDefinitions = new ArrayList<ProcessDefinitionImpl>();
+  private final List<ProcessDefinitionEntity> processDefinitions = new ArrayList<ProcessDefinitionEntity>();
 
   /**
    * The class to instantiate during parsing where all the runtime data will be
    * stored.
    */
-  protected Class< ? extends ProcessDefinition> processDefinitionClass = ProcessDefinitionImpl.class;
+  protected Class< ? extends ProcessDefinition> processDefinitionClass = ProcessDefinitionEntity.class;
 
   /**
    * Map containing the BPMN 2.0 item definitions, stored during the first phase
@@ -233,10 +234,10 @@ public class BpmnParse extends Parse {
    * @return The parsed version of the XML: a {@link ProcessDefinitionImpl}
    *         object.
    */
-  public ProcessDefinitionImpl parseProcess(Element processElement) {
-    ProcessDefinitionImpl processDefinition = null;
+  public ProcessDefinitionEntity parseProcess(Element processElement) {
+    ProcessDefinitionEntity processDefinition = null;
     try {
-      processDefinition = (ProcessDefinitionImpl) processDefinitionClass.newInstance();
+      processDefinition = (ProcessDefinitionEntity) processDefinitionClass.newInstance();
     } catch (Exception e) {
       throw new ActivitiException("couldn't instantiate process definition '" + processDefinitionClass + "'", e);
     }
@@ -970,7 +971,7 @@ public class BpmnParse extends Parse {
 
   /* Getters, setters and Parser overriden operations */
 
-  public List<ProcessDefinitionImpl> getProcessDefinitions() {
+  public List<ProcessDefinitionEntity> getProcessDefinitions() {
     return processDefinitions;
   }
 
