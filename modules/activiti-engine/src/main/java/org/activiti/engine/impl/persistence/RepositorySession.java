@@ -19,6 +19,7 @@ import org.activiti.engine.DeploymentBuilder;
 import org.activiti.engine.impl.persistence.repository.Deployer;
 import org.activiti.engine.impl.persistence.repository.DeploymentEntity;
 import org.activiti.engine.impl.persistence.repository.ProcessDefinitionEntity;
+import org.activiti.engine.impl.persistence.repository.ResourceEntity;
 import org.activiti.impl.definition.ProcessDefinitionImpl;
 
 
@@ -28,15 +29,19 @@ import org.activiti.impl.definition.ProcessDefinitionImpl;
 public interface RepositorySession {
 
   /** inserts the deployment and contained resources in the persistent 
-   * storage and runs the deployers on the deployment. */
+   * storage and runs the deployers on the deployment and those 
+   * should {@link #insertProcessDefinition(ProcessDefinitionImpl) insert the process definitions}. */
   void deployNew(DeploymentEntity deployment);
   
-  /** deletes the deployment and cascades deletion to the contained resources */
+  /** deletes the deployment and cascades deletion to the contained resources
+   * and process definitions */
   void deleteDeployment(String deploymentId);
   
   /** used when {@link DeploymentBuilder#enableDuplicateFiltering()} is called 
    * while building a deployment. */
   DeploymentEntity findLatestDeploymentByName(String deploymentName);
+  
+  ResourceEntity findResourceByDeploymentIdAndResourceName(String deploymentId, String resourceName);
 
   /** must be called by deployers that have parsed process definitions when
    * isNew in {@link Deployer#deploy(DeploymentEntity, boolean)} is true. */

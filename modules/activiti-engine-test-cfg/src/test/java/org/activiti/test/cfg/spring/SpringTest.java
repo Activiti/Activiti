@@ -137,7 +137,7 @@ public class SpringTest {
     assertEquals(before + 1, processEngine.getRepositoryService().findDeployments().size());
 
     if (deployment != null) {
-      repositoryService.deleteDeploymentCascade(deployment.getId());
+      repositoryService.deleteDeployment(deployment.getId());
     }
 
   }
@@ -161,7 +161,7 @@ public class SpringTest {
     assertEquals(before, processEngine.getRepositoryService().findDeployments().size());
 
     if (deployment != null) {
-      repositoryService.deleteDeploymentCascade(deployment.getId());
+      repositoryService.deleteDeployment(deployment.getId());
     }
 
   }

@@ -264,13 +264,6 @@ public class IbatisPersistenceSession implements PersistenceSession {
     return sqlSession.selectList(statement("selectResourceNamesForDeployment"), deploymentId);
   }
 
-  public ByteArrayImpl findDeploymentResource(String deploymentId, String resourceName) {
-    Map<String, Object> params = new HashMap<String, Object>();
-    params.put("deploymentId", deploymentId);
-    params.put("resourceName", resourceName);
-    return (ByteArrayImpl) sqlSession.selectOne(statement("selectDeploymentResource"), params);
-  }
-
   @SuppressWarnings("unchecked")
   public byte[] getByteArrayBytes(String byteArrayId) {
    Map<String, Object> temp = (Map) sqlSession.selectOne(statement("selectBytesOfByteArray"), byteArrayId);

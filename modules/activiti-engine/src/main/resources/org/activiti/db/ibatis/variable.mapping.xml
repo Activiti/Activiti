@@ -80,4 +80,55 @@
 		delete from ACT_VARIABLE where ID_ = #{id, jdbcType=VARCHAR}
 	</delete>
 
+  <!-- ByteArrayImpl
+  
+  <resultMap id="byteArrayResultMap" type="org.activiti.impl.bytes.ByteArrayImpl">
+    <id property="id" column="ID_" jdbcType="VARCHAR" />
+    <result property="name" column="NAME_" jdbcType="VARCHAR"/>
+    <result property="bytes" column="BYTES_" jdbcType="BLOB"/>
+  </resultMap>
+
+  <insert id="insertByteArray" parameterType="org.activiti.impl.bytes.ByteArrayImpl">
+    insert into ACT_BYTEARRAY(ID_, NAME_, BYTES_, DEPLOYMENT_ID_)
+    values (#{id, jdbcType=VARCHAR}, #{name, jdbcType=VARCHAR}, #{bytes, jdbcType=BLOB}, #{deploymentId, jdbcType=VARCHAR})  
+  </insert>
+  
+  <update id="updateByteArray" parameterType="org.activiti.impl.bytes.ByteArrayImpl">
+    update ACT_BYTEARRAY 
+    set
+      BYTES_ = #{bytes, jdbcType=BLOB}
+    where ID_ = #{id}
+  </update>
+  
+  <select id="selectBytesOfByteArray" parameterType="string" resultType="hashmap">
+    select BYTES_ from ACT_BYTEARRAY where ID_ = #{id}
+  </select>
+  
+  <delete id="deleteByteArraysForDeployment" parameterType="string">
+    delete from ACT_BYTEARRAY where DEPLOYMENT_ID_ = #{id}
+  </delete>
+  
+  <delete id="deleteByteArray" parameterType="string">
+    delete from ACT_BYTEARRAY where ID_ = #{id}
+  </delete>
+
+  <select id="selectByteArrayById" parameterType="string" resultMap="byteArrayResultMap">
+   select * from ACT_BYTEARRAY where ID_ = #{id}
+  </select>
+  
+  <select id="selectByteArraysForDeployment" parameterType="string" resultMap="byteArrayResultMap">
+    select * from ACT_BYTEARRAY where DEPLOYMENT_ID_ = #{deploymentId} order by NAME_ asc
+  </select>  
+  
+  <select id="selectResourceNamesForDeployment" parameterType="string" resultType="string">
+    select NAME_ from ACT_BYTEARRAY where DEPLOYMENT_ID_ = #{deploymentId} order by NAME_ asc
+  </select>
+  
+  <select id="selectDeploymentResource" parameterType="map" resultMap="byteArrayResultMap">
+    select * from ACT_BYTEARRAY 
+    where DEPLOYMENT_ID_ = #{deploymentId}
+          AND NAME_ = #{resourceName}
+  </select>
+-->
+
 </mapper>

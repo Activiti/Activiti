@@ -15,6 +15,7 @@ package org.activiti.impl.cmd;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 
+import org.activiti.engine.impl.persistence.repository.ResourceEntity;
 import org.activiti.impl.bytes.ByteArrayImpl;
 import org.activiti.impl.interceptor.Command;
 import org.activiti.impl.interceptor.CommandContext;
@@ -36,8 +37,9 @@ public class GetDeploymentResourceCmd implements Command<InputStream> {
   }
 
   public InputStream execute(CommandContext commandContext) {
-    PersistenceSession persistenceSession = commandContext.getPersistenceSession();
-    ByteArrayImpl resource = persistenceSession.findDeploymentResource(deploymentId, resourceName);
+    ResourceEntity resource = commandContext
+      .getRepositorySession()
+      .findResourceByDeploymentIdAndResourceName(deploymentId, resourceName);
     return new ByteArrayInputStream(resource.getBytes());
   }
   

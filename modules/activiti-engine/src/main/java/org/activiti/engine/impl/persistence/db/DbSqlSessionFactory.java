@@ -17,6 +17,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.activiti.engine.impl.persistence.repository.DeploymentEntity;
+import org.activiti.engine.impl.persistence.repository.ResourceEntity;
 import org.activiti.impl.bytes.ByteArrayImpl;
 import org.activiti.impl.db.IdGenerator;
 import org.activiti.impl.db.execution.DbExecutionImpl;
@@ -46,6 +47,7 @@ public class DbSqlSessionFactory implements SessionFactory {
 
   static {
     DEFAULT_INSERT_STATEMENTS.put(DeploymentEntity.class, "insertDeployment");
+    DEFAULT_INSERT_STATEMENTS.put(ResourceEntity.class, "insertResource");
     DEFAULT_INSERT_STATEMENTS.put(DbExecutionImpl.class, "insertExecution");
     DEFAULT_INSERT_STATEMENTS.put(JobImpl.class, "insertJob");
     DEFAULT_INSERT_STATEMENTS.put(TaskImpl.class, "insertTask");

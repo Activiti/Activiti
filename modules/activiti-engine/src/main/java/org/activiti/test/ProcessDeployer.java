@@ -121,7 +121,7 @@ public class ProcessDeployer extends ProcessEngineTestWatchman {
   @Override
   public void finished(FrameworkMethod method) {
     for (String deploymentId : registeredDeploymentIds) {
-      getRepositoryService().deleteDeploymentCascade(deploymentId);
+      getRepositoryService().deleteDeployment(deploymentId);
     }
     super.finished(method);
   }

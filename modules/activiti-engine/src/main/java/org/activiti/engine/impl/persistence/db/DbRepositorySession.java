@@ -22,6 +22,8 @@ import org.activiti.engine.impl.persistence.RepositorySession;
 import org.activiti.engine.impl.persistence.repository.Deployer;
 import org.activiti.engine.impl.persistence.repository.DeploymentEntity;
 import org.activiti.engine.impl.persistence.repository.ProcessDefinitionEntity;
+import org.activiti.engine.impl.persistence.repository.ResourceEntity;
+import org.activiti.impl.bytes.ByteArrayImpl;
 import org.activiti.impl.definition.ProcessDefinitionImpl;
 import org.activiti.impl.interceptor.CommandContext;
 import org.activiti.impl.tx.Session;
@@ -52,6 +54,10 @@ public class DbRepositorySession implements Session, RepositorySession {
 
   public void deployNew(DeploymentEntity deployment) {
     dbSqlSession.insert(deployment);
+    for (ResourceEntity resource: deployment.getResources().values()) {
+      resource.setDeploymentId(deployment.getId());
+      dbSqlSession.insert(resource);
+    }
     for (Deployer deployer: deployers) {
       deployer.deploy(deployment, this, true);
     }
@@ -64,14 +70,16 @@ public class DbRepositorySession implements Session, RepositorySession {
   }
 
   public void deleteDeployment(String deploymentId) {
-    dbSqlSession.delete("deleteProcessDefinitionsForDeployment", deploymentId);
-    dbSqlSession.delete("deleteByteArraysForDeployment", deploymentId);
-    dbSqlSession.delete("deleteDeployment", deploymentId);
+    dbSqlSession.delete("deleteProcessDefinitionsByDeploymentId", deploymentId);
+    dbSqlSession.delete("deleteResourcesByDeploymentId", deploymentId);
+    dbSqlSession.delete("deleteDeploymentById", deploymentId);
   }
 
-
-  public void insertProcessDefinition(ProcessDefinitionImpl processDefinition) {
-    dbSqlSession.insert(processDefinition);
+  public ResourceEntity findResourceByDeploymentIdAndResourceName(String deploymentId, String resourceName) {
+    Map<String, Object> params = new HashMap<String, Object>();
+    params.put("deploymentId", deploymentId);
+    params.put("resourceName", resourceName);
+    return (ResourceEntity) dbSqlSession.selectOne("selectResourceByDeploymentIdAndResourceName", params);
   }
 
   @SuppressWarnings("unchecked")
@@ -79,10 +87,12 @@ public class DbRepositorySession implements Session, RepositorySession {
     return (List<DeploymentEntity>) dbSqlSession.selectList("selectDeployments");
   };
 
-
-  
   public DeploymentEntity findLatestDeploymentByName(String deploymentName) {
     return (DeploymentEntity) dbSqlSession.selectOne("selectLatestDeploymentByName", deploymentName);
+  }
+
+  public void insertProcessDefinition(ProcessDefinitionImpl processDefinition) {
+    dbSqlSession.insert(processDefinition);
   }
 
   public ProcessDefinitionEntity findProcessDefinitionByDeploymentAndKey(String deploymentId, String processDefinitionKey) {

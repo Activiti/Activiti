@@ -13,28 +13,51 @@
 
 package org.activiti.engine.test.db;
 
+import java.io.InputStream;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.activiti.engine.Deployment;
-import org.activiti.engine.test.ProcessEngineImplTestCase;
+import org.activiti.engine.test.ProcessEngineTestCase;
+import org.activiti.impl.util.IoUtil;
 
 
 
 /**
  * @author Tom Baeyens
  */
-public class DeploymentPersistenceTest extends ProcessEngineImplTestCase {
+public class DeploymentPersistenceTest extends ProcessEngineTestCase {
 
   public void testDeployment() {
     Deployment deployment = repositoryService
       .createDeployment()
+      .name("strings")
       .addString("org/activiti/test/HelloWorld.string", "hello world")
       .addString("org/activiti/test/TheAnswer.string", "42")
       .deploy();
     
     List<Deployment> deployments = repositoryService.findDeployments();
     assertEquals(1, deployments.size());
+    deployment = deployments.get(0);
     
-    repositoryService.deleteDeploymentCascade(deployment.getId());
+    assertEquals("strings", deployment.getName());
+    assertNotNull(deployment.getDeploymentTime());
+    
+    String deploymentId = deployment.getId();
+    List<String> resourceNames = repositoryService.findDeploymentResourceNames(deploymentId);
+    Set<String> expectedResourceNames = new HashSet<String>();
+    expectedResourceNames.add("org/activiti/test/HelloWorld.string");
+    expectedResourceNames.add("org/activiti/test/TheAnswer.string");
+    assertEquals(expectedResourceNames, new HashSet<String>(resourceNames));
+    
+    InputStream resourceStream = repositoryService.getResourceAsStream(deploymentId, "org/activiti/test/HelloWorld.string");
+    assertTrue(Arrays.equals("hello world".getBytes(), IoUtil.readInputStream(resourceStream, "test")));
+    
+    resourceStream = repositoryService.getResourceAsStream(deploymentId, "org/activiti/test/TheAnswer.string");
+    assertTrue(Arrays.equals("42".getBytes(), IoUtil.readInputStream(resourceStream, "test")));
+
+    repositoryService.deleteDeployment(deploymentId);
   }
 }

@@ -37,7 +37,6 @@ public class DeploymentBuilderImpl implements DeploymentBuilder {
 
   public DeploymentBuilderImpl(RepositoryServiceImpl repositoryService) {
     this.repositoryService = repositoryService;
-    deployment.setResources(new HashMap<String, ResourceEntity>());
   }
 
   public DeploymentBuilder addInputStream(String resourceName, InputStream inputStream) {
@@ -45,7 +44,7 @@ public class DeploymentBuilderImpl implements DeploymentBuilder {
     ResourceEntity resource = new ResourceEntity();
     resource.setName(resourceName);
     resource.setBytes(bytes);
-    deployment.getResources().put(resourceName, resource);
+    deployment.addResource(resource);
     return this;
   }
 
@@ -59,7 +58,7 @@ public class DeploymentBuilderImpl implements DeploymentBuilder {
     ResourceEntity resource = new ResourceEntity();
     resource.setName(resourceName);
     resource.setBytes(text.getBytes());
-    deployment.getResources().put(resourceName, resource);
+    deployment.addResource(resource);
     return this;
   }
 
@@ -72,7 +71,7 @@ public class DeploymentBuilderImpl implements DeploymentBuilder {
         ResourceEntity resource = new ResourceEntity();
         resource.setName(entryName);
         resource.setBytes(bytes);
-        deployment.getResources().put(entryName, resource);
+        deployment.addResource(resource);
         entry = zipInputStream.getNextEntry();
       }
     } catch (Exception e) {

@@ -54,7 +54,6 @@ public interface PersistenceSession extends Session {
   List<DeploymentImpl> findDeploymentsByName(String name);
   List<ByteArrayImpl> findDeploymentResources(String deploymentId);
   List<String> findDeploymentResourceNames(String deploymentId);
-  ByteArrayImpl findDeploymentResource(String deploymentId, String resourceName);
   
   byte[] getByteArrayBytes(String byteArrayId);
   ByteArrayImpl findByteArrayById(String byteArrayValueId);

@@ -27,24 +27,19 @@ public class DeleteDeploymentCmd extends CmdVoid {
 
   protected String deploymentId;
 
-  protected boolean cascade;
-
-  public DeleteDeploymentCmd(String deploymentId, boolean cascade) {
+  public DeleteDeploymentCmd(String deploymentId) {
     this.deploymentId = deploymentId;
-    this.cascade = cascade;
   }
 
   public void executeVoid(CommandContext commandContext) {
     RepositorySession repositorySession = commandContext.getRepositorySession();
     PersistenceSession persistenceSession = commandContext.getPersistenceSession();
     
-    if (cascade) {
-      List<ProcessDefinitionEntity> processDefinitions = repositorySession.findUndeployedProcessDefinitionsByDeploymentId(deploymentId);
-      for (ProcessDefinitionEntity processDefinition : processDefinitions) {
-        List<DbExecutionImpl> executions = persistenceSession.findProcessInstancesByProcessDefintionId(processDefinition.getId());
-        for (DbExecutionImpl execution : executions) {
-          execution.end();
-        }
+    List<ProcessDefinitionEntity> processDefinitions = repositorySession.findUndeployedProcessDefinitionsByDeploymentId(deploymentId);
+    for (ProcessDefinitionEntity processDefinition : processDefinitions) {
+      List<DbExecutionImpl> executions = persistenceSession.findProcessInstancesByProcessDefintionId(processDefinition.getId());
+      for (DbExecutionImpl execution : executions) {
+        execution.end();
       }
     }
 

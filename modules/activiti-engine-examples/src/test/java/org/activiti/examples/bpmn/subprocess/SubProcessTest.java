@@ -69,7 +69,7 @@ public class SubProcessTest {
     assertEquals("Write report", writeReportTask.getName());
     
     // Clean up
-    repositoryService.deleteDeploymentCascade(deployment.getId());
+    repositoryService.deleteDeployment(deployment.getId());
   }
 
 }

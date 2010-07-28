@@ -46,7 +46,7 @@ public class DbNotCleanTest {
       // Manually call the check on db cleaning check
       processEngineBuilder.assertDatabaseIsClean();
     } finally {
-      processEngineBuilder.getProcessEngine().getRepositoryService().deleteDeploymentCascade(deployment.getId());
+      processEngineBuilder.getProcessEngine().getRepositoryService().deleteDeployment(deployment.getId());
     }
 
   }

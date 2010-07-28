@@ -15,6 +15,7 @@ package org.activiti.engine.impl.persistence.repository;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Map;
 
 import org.activiti.engine.Deployment;
@@ -35,6 +36,13 @@ public class DeploymentEntity implements Serializable, Deployment, PersistentObj
   
   public ResourceEntity getResource(String resourceName) {
     return getResources().get(resourceName);
+  }
+
+  public void addResource(ResourceEntity resource) {
+    if (resources==null) {
+      resources = new HashMap<String, ResourceEntity>();
+    }
+    resources.put(resource.getName(), resource);
   }
 
   public Object getPersistentState() {
