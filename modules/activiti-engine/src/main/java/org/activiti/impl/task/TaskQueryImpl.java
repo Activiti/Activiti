@@ -145,7 +145,7 @@ public class TaskQueryImpl extends AbstractListQuery<Task> implements TaskQuery 
   
   protected List<String> getGroupsForCandidateUser(String candidateUser) {
     List<GroupImpl> groups = CommandContext
-      .getCurrentCommandContext()
+      .getCurrent()
       .getPersistenceSession()
       .findGroupsByUser(candidateUser);
     List<String> groupIds = new ArrayList<String>();

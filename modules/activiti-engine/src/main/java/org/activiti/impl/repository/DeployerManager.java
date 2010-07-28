@@ -16,6 +16,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.activiti.engine.impl.persistence.repository.Deployer;
 import org.activiti.impl.persistence.PersistenceSession;
 
 
@@ -30,7 +31,7 @@ public class DeployerManager implements Serializable {
 
   public void deploy(DeploymentImpl deployment, PersistenceSession persistenceSession) {
     for (Deployer deployer: deployers) {
-      deployer.deploy(deployment, persistenceSession);
+      //deployer.deploy(deployment, persistenceSession);
     }
   }
 

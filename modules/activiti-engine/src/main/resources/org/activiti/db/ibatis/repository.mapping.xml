@@ -4,6 +4,41 @@
   
 <mapper namespace="org.activiti.persistence">
 
+  <!-- Deployment -->
+  
+  <insert id="insertDeployment" parameterType="org.activiti.engine.impl.persistence.repository.DeploymentEntity">
+    insert into ACT_DEPLOYMENT(ID_, NAME_, DEPLOY_TIME_)
+    values(#{id, jdbcType=VARCHAR}, #{name, jdbcType=VARCHAR}, #{deploymentTime, jdbcType=TIMESTAMP})
+  </insert>
+  
+  <delete id="deleteDeployment" parameterType="string">
+    delete from ACT_DEPLOYMENT where ID_ = #{id}
+  </delete>
+
+  <resultMap id="deploymentResultMap" type="org.activiti.engine.impl.persistence.repository.DeploymentEntity">
+    <id property="id" column="ID_" jdbcType="VARCHAR" />
+    <result property="name" column="NAME_" jdbcType="VARCHAR" />
+    <result property="deploymentTime" column="DEPLOY_TIME_" jdbcType="TIMESTAMP"/>
+  </resultMap>
+
+  <select id="selectDeployments" resultMap="deploymentResultMap">
+    select * from ACT_DEPLOYMENT D order by D.DEPLOY_TIME_ asc
+  </select>
+  
+  <select id="selectDeploymentsByName" parameterType="string" resultMap="deploymentResultMap">
+    select * from ACT_DEPLOYMENT D where NAME_=#{name} order by D.DEPLOY_TIME_ asc
+  </select>
+  
+  <select id="selectDeployment" parameterType="string" resultMap="deploymentResultMap">
+    select * from ACT_DEPLOYMENT where ID_ = #{id}
+  </select>
+  
+  <select id="selectDeploymentByProcessDefinitionId" parameterType="string" resultMap="deploymentResultMap">
+    select * from ACT_DEPLOYMENT D 
+    where D.ID_ = 
+      (select P.DEPLOYMENT_ID_ from ACT_PROCESSDEFINITION P where P.ID_ = #{processDefinitionId})
+  </select>
+  
   <!-- ByteArrayImpl -->
   
   <resultMap id="byteArrayResultMap" type="org.activiti.impl.bytes.ByteArrayImpl">
@@ -55,39 +90,5 @@
   </select>
   
   
-  <!-- Deployment -->
-  
-  <resultMap id="deploymentResultMap" type="org.activiti.impl.repository.DeploymentImpl">
-    <id property="id" column="ID_" jdbcType="VARCHAR" />
-    <result property="name" column="NAME_" jdbcType="VARCHAR" />
-    <result property="deploymentTime" column="DEPLOY_TIME_" jdbcType="TIMESTAMP"/>
-  </resultMap>
-
-  <select id="selectDeployments" resultMap="deploymentResultMap">
-    select * from ACT_DEPLOYMENT D order by D.DEPLOY_TIME_ asc
-  </select>
-  
-  <select id="selectDeploymentsByName" parameterType="string" resultMap="deploymentResultMap">
-    select * from ACT_DEPLOYMENT D where NAME_=#{name} order by D.DEPLOY_TIME_ asc
-  </select>
-  
-  <select id="selectDeployment" parameterType="string" resultMap="deploymentResultMap">
-    select * from ACT_DEPLOYMENT where ID_ = #{id}
-  </select>
-  
-  <select id="selectDeploymentByProcessDefinitionId" parameterType="string" resultMap="deploymentResultMap">
-    select * from ACT_DEPLOYMENT D 
-    where D.ID_ = 
-      (select P.DEPLOYMENT_ID_ from ACT_PROCESSDEFINITION P where P.ID_ = #{processDefinitionId})
-  </select>
-  
-  <insert id="insertDeployment" parameterType="org.activiti.impl.repository.DeploymentImpl">
-    insert into ACT_DEPLOYMENT(ID_, NAME_, DEPLOY_TIME_)
-    values(#{id, jdbcType=VARCHAR}, #{name, jdbcType=VARCHAR}, #{deploymentTime, jdbcType=TIMESTAMP})
-  </insert>
-  
-  <delete id="deleteDeployment" parameterType="string">
-    delete from ACT_DEPLOYMENT where ID_ = #{id}
-  </delete>
   
 </mapper>

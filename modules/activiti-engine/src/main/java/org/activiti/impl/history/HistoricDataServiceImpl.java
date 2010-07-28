@@ -67,7 +67,7 @@ public class HistoricDataServiceImpl implements HistoricDataService {
   }
 
   private static void ensureCommandContextAvailable() {
-    if (CommandContext.getCurrentCommandContext() == null) {
+    if (CommandContext.getCurrent() == null) {
       throw new IllegalStateException("History events can only be processed in the context of a command execution");
     }
   }
@@ -82,7 +82,7 @@ public class HistoricDataServiceImpl implements HistoricDataService {
 
       HistoricProcessInstanceImpl historicProcessInstance = new HistoricProcessInstanceImpl(processInstanceId, processDefinitionId, startTime);
 
-      CommandContext.getCurrentCommandContext().getPersistenceSession().saveHistoricProcessInstance(historicProcessInstance);
+      CommandContext.getCurrent().getPersistenceSession().saveHistoricProcessInstance(historicProcessInstance);
     }
   }
 
@@ -90,7 +90,7 @@ public class HistoricDataServiceImpl implements HistoricDataService {
     public void consumeEvent(ProcessInstanceEndedEvent event) {
       ensureCommandContextAvailable();
 
-      HistoricProcessInstanceImpl historicProcessInstance = CommandContext.getCurrentCommandContext().getPersistenceSession().findHistoricProcessInstance(event.getProcessInstanceId());
+      HistoricProcessInstanceImpl historicProcessInstance = CommandContext.getCurrent().getPersistenceSession().findHistoricProcessInstance(event.getProcessInstanceId());
 
       if (historicProcessInstance == null) {
         String processInstanceId = event.getProcessInstanceId();
@@ -105,7 +105,7 @@ public class HistoricDataServiceImpl implements HistoricDataService {
       // TODO: does end state name makes sense at all (might be multiple)
       historicProcessInstance.markEnded(endTime, "endStateName");
 
-      CommandContext.getCurrentCommandContext().getPersistenceSession().saveHistoricProcessInstance(historicProcessInstance);
+      CommandContext.getCurrent().getPersistenceSession().saveHistoricProcessInstance(historicProcessInstance);
     }
   }
 
@@ -122,7 +122,7 @@ public class HistoricDataServiceImpl implements HistoricDataService {
 
       HistoricActivityInstanceImpl historicActivityInstance = new HistoricActivityInstanceImpl(activityId, activityName, activityType, processInstanceId, processDefinitionId, startTime);
 
-      CommandContext.getCurrentCommandContext().getPersistenceSession().saveHistoricActivityInstance(historicActivityInstance);
+      CommandContext.getCurrent().getPersistenceSession().saveHistoricActivityInstance(historicActivityInstance);
     }
   }
 
@@ -130,7 +130,7 @@ public class HistoricDataServiceImpl implements HistoricDataService {
     public void consumeEvent(ActivityEndedEvent event) {
       ensureCommandContextAvailable();
 
-      HistoricActivityInstanceImpl historicActivityInstance = CommandContext.getCurrentCommandContext().getPersistenceSession().findHistoricActivityInstance(event.getActivityId(), event.getProcessInstanceId());
+      HistoricActivityInstanceImpl historicActivityInstance = CommandContext.getCurrent().getPersistenceSession().findHistoricActivityInstance(event.getActivityId(), event.getProcessInstanceId());
 
       if (historicActivityInstance == null) {
         String activityId = event.getActivityId();
@@ -147,7 +147,7 @@ public class HistoricDataServiceImpl implements HistoricDataService {
 
       historicActivityInstance.markEnded(Clock.getCurrentTime());
 
-      CommandContext.getCurrentCommandContext().getPersistenceSession().saveHistoricActivityInstance(historicActivityInstance);
+      CommandContext.getCurrent().getPersistenceSession().saveHistoricActivityInstance(historicActivityInstance);
     }
   }
 }

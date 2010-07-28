@@ -16,6 +16,7 @@ package org.activiti.engine.impl.persistence.db;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.activiti.engine.impl.persistence.repository.DeploymentEntity;
 import org.activiti.impl.bytes.ByteArrayImpl;
 import org.activiti.impl.db.IdGenerator;
 import org.activiti.impl.db.execution.DbExecutionImpl;
@@ -44,6 +45,7 @@ public class DbSqlSessionFactory implements SessionFactory {
   protected Map<Object, LoadedObject> loadedObjects = new HashMap<Object, LoadedObject>();
 
   static {
+    DEFAULT_INSERT_STATEMENTS.put(DeploymentEntity.class, "insertDeployment");
     DEFAULT_INSERT_STATEMENTS.put(DbExecutionImpl.class, "insertExecution");
     DEFAULT_INSERT_STATEMENTS.put(JobImpl.class, "insertJob");
     DEFAULT_INSERT_STATEMENTS.put(TaskImpl.class, "insertTask");
@@ -61,6 +63,7 @@ public class DbSqlSessionFactory implements SessionFactory {
     DEFAULT_UPDATE_STATEMENTS.put(MessageImpl.class, "updateMessage");
     DEFAULT_UPDATE_STATEMENTS.put(TimerImpl.class, "updateTimer");
 
+    DEFAULT_DELETE_STATEMENTS.put(DeploymentEntity.class, "deleteDeployment");
     DEFAULT_DELETE_STATEMENTS.put(DbExecutionImpl.class, "deleteExecution");
     DEFAULT_DELETE_STATEMENTS.put(TaskImpl.class, "deleteTask");
     DEFAULT_DELETE_STATEMENTS.put(TaskInvolvement.class, "deleteTaskInvolvement");
@@ -102,6 +105,9 @@ public class DbSqlSessionFactory implements SessionFactory {
   }
   
   public String mapStatement(String statement) {
+    if (statementMappings==null) {
+      return statement;
+    }
     String mappedStatement = statementMappings.get(statement);
     return (mappedStatement!=null ? mappedStatement : statement);
   }

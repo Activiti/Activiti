@@ -33,7 +33,7 @@ public class JobExecutorMessageSession implements MessageSession {
   }
 
   public JobExecutorMessageSession() {
-    this.commandContext = CommandContext.getCurrentCommandContext();
+    this.commandContext = CommandContext.getCurrent();
     this.jobExecutor = commandContext.getProcessEngineConfiguration().getJobExecutor();
   }
 

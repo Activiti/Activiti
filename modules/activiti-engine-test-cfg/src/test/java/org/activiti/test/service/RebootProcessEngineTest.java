@@ -22,7 +22,7 @@ import org.activiti.engine.ProcessEngineBuilder;
 import org.activiti.engine.ProcessDefinition;
 import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.ProcessInstance;
-import org.activiti.impl.ProcessEngineImpl;
+import org.activiti.engine.impl.ProcessEngineImpl;
 import org.activiti.test.LogInitializer;
 import org.junit.Rule;
 import org.junit.Test;

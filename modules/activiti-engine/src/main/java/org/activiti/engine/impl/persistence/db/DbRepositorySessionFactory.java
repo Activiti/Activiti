@@ -19,8 +19,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.activiti.engine.impl.persistence.process.ProcessDefinitionEntity;
+import org.activiti.engine.impl.persistence.repository.Deployer;
 import org.activiti.impl.interceptor.SessionFactory;
-import org.activiti.impl.repository.Deployer;
 import org.activiti.impl.tx.Session;
 
 

@@ -46,7 +46,7 @@ public class SerializableType extends ByteArrayType {
       variableInstance.setCachedValue(deserializedObject);
       
       CommandContext
-        .getCurrentCommandContext()
+        .getCurrent()
         .getPersistenceSession()
         .addDeserializedObject(deserializedObject, bytes, variableInstance);
       

@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.activiti.engine.Deployment;
+import org.activiti.engine.impl.persistence.repository.DeploymentBuilderImpl;
 import org.activiti.impl.bytes.ByteArrayImpl;
 import org.activiti.impl.interceptor.CommandContext;
 
@@ -87,7 +88,7 @@ public class DeploymentImpl implements Serializable, Deployment {
   public Map<String, ByteArrayImpl> getResources() {
     if (!resourcesInitialized) {
       List<ByteArrayImpl> resourceList = CommandContext
-        .getCurrentCommandContext()
+        .getCurrent()
         .getPersistenceSession()
         .findDeploymentResources(id);
       resources = new HashMap<String, ByteArrayImpl>();

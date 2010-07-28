@@ -10,20 +10,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.activiti.impl;
 
-import org.activiti.impl.interceptor.CommandExecutor;
-
+package org.activiti.engine;
 
 
-/**
+/** provides access to the repository of process definitions and deployments.
+ * 
  * @author Tom Baeyens
  */
-public class ServiceImpl {
+public interface RepositoryService {
 
-  protected CommandExecutor commandExecutor;
-  
-  public ServiceImpl(CommandExecutor commandExecutor) {
-    this.commandExecutor = commandExecutor;
-  }
 }

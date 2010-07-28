@@ -15,17 +15,15 @@ package org.activiti.impl.cmd;
 import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
 
 import org.activiti.engine.Deployment;
+import org.activiti.engine.impl.persistence.RepositorySession;
+import org.activiti.engine.impl.persistence.repository.DeploymentBuilderImpl;
+import org.activiti.engine.impl.persistence.repository.DeploymentEntity;
 import org.activiti.impl.bytes.ByteArrayImpl;
 import org.activiti.impl.interceptor.Command;
 import org.activiti.impl.interceptor.CommandContext;
-import org.activiti.impl.persistence.PersistenceSession;
 import org.activiti.impl.repository.DeployerManager;
-import org.activiti.impl.repository.DeploymentImpl;
 import org.activiti.impl.time.Clock;
 
 /**
@@ -33,44 +31,39 @@ import org.activiti.impl.time.Clock;
  */
 public class DeployCmd<T> implements Command<Deployment> {
 
-  private final DeploymentImpl deployment;
-  private final DeployerManager deployerManager;
+  protected DeploymentBuilderImpl deploymentBuilder;
 
-  public DeployCmd(DeployerManager deployerManager, DeploymentImpl deployment) {
-    this.deployerManager = deployerManager;
-    this.deployment = deployment;
+  public DeployCmd(DeploymentBuilderImpl deploymentBuilder) {
+    this.deploymentBuilder = deploymentBuilder;
   }
 
   public Deployment execute(CommandContext commandContext) {
-    DeploymentImpl deployment = this.deployment;
-    PersistenceSession persistenceSession = commandContext.getPersistenceSession();
-    List<DeploymentImpl> deployments = persistenceSession.findDeploymentsByName(deployment.getName());
-    if (deployments.isEmpty() || deploymentsDiffer(deployment, deployments.get(0))) {
-      insertDeployment(persistenceSession);
-    } else {
-      deployment = deployments.get(0);
-    }
+    DeploymentEntity deployment = deploymentBuilder.getDeployment();
+    RepositorySession repositorySession = commandContext.getRepositorySession();
     
-    // Try to deploy the process
-    // If something goes wrong during parsing, the deployment must be deleted from the databse
-    try {
-      deployerManager.deploy(deployment, persistenceSession);
-    } catch (RuntimeException e) {
-      persistenceSession.deleteDeployment(deployment.getId());
-      throw e;
+    deployment.setDeploymentTime(Clock.getCurrentTime());
+
+    if ( deploymentBuilder.isDuplicateFilterEnabled() ) {
+      DeploymentEntity existingDeployment = repositorySession.findLatestDeploymentsByName(deployment.getName());
+      if ( (existingDeployment!=null)
+           && !deploymentsDiffer(deployment, existingDeployment)) {
+        return existingDeployment;
+      }
     }
+
+    repositorySession.deployNew(deployment);
     
     return deployment;
   }
 
-  private boolean deploymentsDiffer(DeploymentImpl deployment, DeploymentImpl saved) {
-    Map<String, ByteArrayImpl> resources = deployment.getResources();
-    Map<String, ByteArrayImpl> savedResources = saved.getResources();
-    for (Entry<String, ByteArrayImpl> entry : resources.entrySet()) {
-      if (resourcesDiffer(entry.getValue(), savedResources.get(entry.getKey()))) {
-        return true;
-      }
-    }
+  private boolean deploymentsDiffer(DeploymentEntity deployment, DeploymentEntity saved) {
+//    Map<String, ByteArrayImpl> resources = deployment.getResources();
+//    Map<String, ByteArrayImpl> savedResources = saved.getResources();
+//    for (Entry<String, ByteArrayImpl> entry : resources.entrySet()) {
+//      if (resourcesDiffer(entry.getValue(), savedResources.get(entry.getKey()))) {
+//        return true;
+//      }
+//    }
     return false;
   }
 
@@ -95,10 +88,5 @@ public class DeployCmd<T> implements Command<Deployment> {
     }
     bytes = digest.digest(bytes);
     return String.format("%032x", new BigInteger(1, bytes));
-  }
-
-  private void insertDeployment(PersistenceSession persistenceSession) {
-    deployment.setDeploymentTime(Clock.getCurrentTime());
-    persistenceSession.insertDeployment(deployment);
   }
 }

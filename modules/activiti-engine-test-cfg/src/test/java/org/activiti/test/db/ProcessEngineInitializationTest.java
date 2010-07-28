@@ -20,7 +20,7 @@ import org.activiti.engine.ActivitiWrongDbException;
 import org.activiti.engine.ProcessEngineBuilder;
 import org.activiti.engine.DbSchemaStrategy;
 import org.activiti.engine.ProcessEngine;
-import org.activiti.impl.ProcessEngineImpl;
+import org.activiti.engine.impl.ProcessEngineImpl;
 import org.activiti.impl.persistence.CachingPersistenceSessionFactory;
 import org.activiti.impl.persistence.IbatisPersistenceSessionFactory;
 import org.activiti.impl.persistence.PersistenceSessionFactory;

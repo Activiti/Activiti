@@ -29,7 +29,7 @@ public class DbRuntimeSession implements Session, RuntimeSession {
   
   public DbRuntimeSession() {
     dbSqlSession = CommandContext
-      .getCurrentCommandContext()
+      .getCurrent()
       .getSession(DbSqlSession.class);
   }
 

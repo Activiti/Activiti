@@ -47,6 +47,6 @@ public class CommandContextTest {
       // OK
     }
     
-    assertNull(CommandContext.getCurrentCommandContext());
+    assertNull(CommandContext.getCurrent());
   }
 }

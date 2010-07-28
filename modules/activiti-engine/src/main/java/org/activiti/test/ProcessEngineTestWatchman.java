@@ -29,7 +29,7 @@ import org.activiti.engine.ManagementService;
 import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.ProcessService;
 import org.activiti.engine.TaskService;
-import org.activiti.impl.ProcessEngineImpl;
+import org.activiti.engine.impl.ProcessEngineImpl;
 import org.activiti.impl.interceptor.CommandExecutor;
 import org.activiti.impl.job.JobHandlers;
 import org.activiti.impl.jobexecutor.JobExecutor;

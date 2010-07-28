@@ -28,6 +28,7 @@ import org.activiti.engine.ManagementService;
 import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.ProcessService;
 import org.activiti.engine.TaskService;
+import org.activiti.engine.impl.util.ClassNameUtil;
 import org.activiti.impl.time.Clock;
 import org.activiti.impl.util.LogUtil;
 import org.activiti.impl.util.LogUtil.ThreadLogMode;
@@ -95,7 +96,7 @@ public class ProcessEngineTestCase extends TestCase {
     }
 
     log.fine(EMPTY_LINE);
-    log.fine("#### START "+getClass().getName()+"."+getName()+" ###########################################################");
+    log.fine("#### START "+ClassNameUtil.getClassNameWithoutPackage(this)+"."+getName()+" ###########################################################");
 
     try {
       
@@ -111,7 +112,7 @@ public class ProcessEngineTestCase extends TestCase {
       throw e;
     } finally {
       Clock.reset();
-      log.fine("#### END "+getClass().getName()+"."+getName()+" #############################################################");
+      log.fine("#### END "+ClassNameUtil.getClassNameWithoutPackage(this)+"."+getName()+" #############################################################");
       LogUtil.setThreadLogMode(oldThreadRenderingMode);
     }
   }

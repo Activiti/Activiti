@@ -20,10 +20,10 @@ import java.util.Map;
 
 import org.activiti.engine.impl.persistence.RepositorySession;
 import org.activiti.engine.impl.persistence.process.ProcessDefinitionEntity;
+import org.activiti.engine.impl.persistence.repository.Deployer;
 import org.activiti.engine.impl.persistence.repository.DeploymentEntity;
-import org.activiti.engine.impl.persistence.repository.ResourceEntity;
+import org.activiti.impl.definition.ProcessDefinitionImpl;
 import org.activiti.impl.interceptor.CommandContext;
-import org.activiti.impl.repository.Deployer;
 import org.activiti.impl.tx.Session;
 
 
@@ -40,7 +40,7 @@ public class DbRepositorySession implements Session, RepositorySession {
     this.deployers = deployers;
     this.processDefinitionCache = processDefinitionCache;
     this.dbSqlSession = CommandContext
-      .getCurrentCommandContext()
+      .getCurrent()
       .getSession(DbSqlSession.class);
   }
 
@@ -50,19 +50,19 @@ public class DbRepositorySession implements Session, RepositorySession {
   public void flush() {
   }
 
-  public void insertDeployment(DeploymentEntity deployment) {
-    dbSqlSession.insert(deployment);
+  public void deployNew(DeploymentEntity deployment) {
+    for (Deployer deployer: deployers) {
+      deployer.deploy(deployment, true);
+    }
   }
 
-  public void deleteDeployment(DeploymentEntity deployment) {
-    dbSqlSession.delete(deployment);
+  public DeploymentEntity findLatestDeploymentsByName(String deploymentName) {
+    return (DeploymentEntity) dbSqlSession.selectOne("selectLatestDeploymentByName", deploymentName);
   }
 
-  public void deleteResource(ResourceEntity resource) {
-    dbSqlSession.delete(resource);
+  public void deleteDeploymentCascade(DeploymentEntity deployment) {
   }
 
-  public void insertResource(ResourceEntity resource) {
-    dbSqlSession.insert(resource);
+  public void insertProcessDefinition(ProcessDefinitionImpl processDefinition) {
   }
 }

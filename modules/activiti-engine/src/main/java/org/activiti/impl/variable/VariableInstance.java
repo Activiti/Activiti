@@ -79,7 +79,7 @@ public class VariableInstance implements Serializable, PersistentObject {
   }
 
   public void delete() {
-    PersistenceSession persistenceSession = CommandContext.getCurrentCommandContext().getPersistenceSession();
+    PersistenceSession persistenceSession = CommandContext.getCurrent().getPersistenceSession();
     persistenceSession.delete(this);
 
     if (byteArrayValueId != null) {
@@ -132,7 +132,7 @@ public class VariableInstance implements Serializable, PersistentObject {
 
   public ByteArrayImpl getByteArrayValue() {
     if ((byteArrayValue == null) && (byteArrayValueId != null)) {
-      byteArrayValue = CommandContext.getCurrentCommandContext().getPersistenceSession().findByteArrayById(byteArrayValueId);
+      byteArrayValue = CommandContext.getCurrent().getPersistenceSession().findByteArrayById(byteArrayValueId);
     }
     return byteArrayValue;
   }

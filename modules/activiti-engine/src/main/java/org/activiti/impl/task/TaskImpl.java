@@ -85,7 +85,7 @@ public class TaskImpl implements Task, Serializable, PersistentObject {
   public static TaskImpl createAndInsert() {
     TaskImpl task = create();
     CommandContext
-        .getCurrentCommandContext()
+        .getCurrent()
         .getPersistenceSession()
         .insert(task);
     return task;
@@ -112,7 +112,7 @@ public class TaskImpl implements Task, Serializable, PersistentObject {
     }
     
     CommandContext
-        .getCurrentCommandContext()
+        .getCurrent()
         .getPersistenceSession()
         .delete(this);
   }
@@ -200,7 +200,7 @@ public class TaskImpl implements Task, Serializable, PersistentObject {
   public ExecutionImpl getExecution() {
     if ( (execution==null) && (executionId!=null) ) {
       this.execution = CommandContext
-        .getCurrentCommandContext()
+        .getCurrent()
         .getPersistenceSession()
         .findExecution(executionId);
     }
@@ -274,7 +274,7 @@ public class TaskImpl implements Task, Serializable, PersistentObject {
   public List<TaskInvolvement> getTaskInvolvements() {
     if (!isTaskInvolvementsInitialized) {
       taskInvolvements = CommandContext
-          .getCurrentCommandContext()
+          .getCurrent()
           .getPersistenceSession()
           .findTaskInvolvementsByTask(id);
       isTaskInvolvementsInitialized = true;

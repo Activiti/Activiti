@@ -97,7 +97,7 @@ public class DbExecutionImpl extends ExecutionImpl implements PersistentObject {
     // Do not initialize variable map (let it happen lazily)
 
     CommandContext
-      .getCurrentCommandContext()
+      .getCurrent()
       .getPersistenceSession()
       .insert(this);
 
@@ -114,7 +114,7 @@ public class DbExecutionImpl extends ExecutionImpl implements PersistentObject {
     // Do not initialize variable map (let it happen lazily)
 
     CommandContext
-      .getCurrentCommandContext()
+      .getCurrent()
       .getPersistenceSession()
       .insert(newExecution);
 
@@ -126,7 +126,7 @@ public class DbExecutionImpl extends ExecutionImpl implements PersistentObject {
   @Override
   protected void ensureProcessDefinitionInitialized() {
     if ((processDefinition == null) && (processDefinitionId != null)) {
-      setProcessDefinition(CommandContext.getCurrentCommandContext().getPersistenceSession().findProcessDefinitionById(processDefinitionId));
+      setProcessDefinition(CommandContext.getCurrent().getPersistenceSession().findProcessDefinitionById(processDefinitionId));
     }
   }
 
@@ -141,7 +141,7 @@ public class DbExecutionImpl extends ExecutionImpl implements PersistentObject {
   @Override
   protected void ensureProcessInstanceInitialized() {
     if ((processInstance == null) && (processInstanceId != null)) {
-      processInstance = CommandContext.getCurrentCommandContext().getPersistenceSession().findExecution(processInstanceId);
+      processInstance = CommandContext.getCurrent().getPersistenceSession().findExecution(processInstanceId);
     }
   }
 
@@ -184,7 +184,7 @@ public class DbExecutionImpl extends ExecutionImpl implements PersistentObject {
     // If the execution is new, then the child execution objects are already
     // fetched
     if (!isExecutionsInitialized) {
-      this.executions = CommandContext.getCurrentCommandContext().getPersistenceSession().findChildExecutions(getId());
+      this.executions = CommandContext.getCurrent().getPersistenceSession().findChildExecutions(getId());
       this.isExecutionsInitialized = true;
     }
   }
@@ -194,7 +194,7 @@ public class DbExecutionImpl extends ExecutionImpl implements PersistentObject {
   @Override
   protected void ensureParentInitialized() {
     if (parent == null && parentId != null) {
-      parent = CommandContext.getCurrentCommandContext().getPersistenceSession().findExecution(parentId);
+      parent = CommandContext.getCurrent().getPersistenceSession().findExecution(parentId);
     }
   }
 
@@ -214,7 +214,7 @@ public class DbExecutionImpl extends ExecutionImpl implements PersistentObject {
   @Override
   protected void ensureSuperExecutionInitialized() {
     if (superExecution == null && superExecutionId != null) {
-      superExecution = CommandContext.getCurrentCommandContext().getPersistenceSession().findExecution(superExecutionId);
+      superExecution = CommandContext.getCurrent().getPersistenceSession().findExecution(superExecutionId);
     }
   }
   
@@ -232,7 +232,7 @@ public class DbExecutionImpl extends ExecutionImpl implements PersistentObject {
   @Override
   protected void ensureSubProcessInstanceInitialized() {
     if (subProcessInstance == null) {
-      subProcessInstance = CommandContext.getCurrentCommandContext().getPersistenceSession().findSubProcessInstance(this.getId());
+      subProcessInstance = CommandContext.getCurrent().getPersistenceSession().findSubProcessInstance(this.getId());
     }
   }
   
@@ -244,7 +244,7 @@ public class DbExecutionImpl extends ExecutionImpl implements PersistentObject {
 
     ensureVariableMapInitialized();
 
-    PersistenceSession persistenceSession = CommandContext.getCurrentCommandContext().getPersistenceSession();
+    PersistenceSession persistenceSession = CommandContext.getCurrent().getPersistenceSession();
 
     Set<String> variableNames = new HashSet<String>(variableMap.getVariableNames());
     for (String variableName : variableNames) {

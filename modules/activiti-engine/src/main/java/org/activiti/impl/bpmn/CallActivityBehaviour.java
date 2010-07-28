@@ -35,7 +35,7 @@ public class CallActivityBehaviour extends BpmnActivity {
   }
   
   public void execute(ActivityExecution execution) throws Exception {
-    PersistenceSession persistenceSession = CommandContext.getCurrentCommandContext().getPersistenceSession();
+    PersistenceSession persistenceSession = CommandContext.getCurrent().getPersistenceSession();
     ProcessDefinitionImpl processDefinition =  persistenceSession.findLatestProcessDefinitionByKey(processDefinitonKey);
     
     ObjectProcessInstance processInstance = execution.createSubProcessInstance(processDefinition);

@@ -3,7 +3,7 @@
  */
 package org.activiti.test.jobexecutor;
 
-import org.activiti.impl.ProcessEngineImpl;
+import org.activiti.engine.impl.ProcessEngineImpl;
 import org.activiti.impl.cmd.DeleteJobsCmd;
 import org.activiti.impl.interceptor.Command;
 import org.activiti.impl.interceptor.CommandContext;

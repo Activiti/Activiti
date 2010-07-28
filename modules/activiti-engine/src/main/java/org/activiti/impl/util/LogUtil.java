@@ -25,6 +25,8 @@ import java.util.logging.Level;
 import java.util.logging.LogManager;
 import java.util.logging.LogRecord;
 
+import org.activiti.engine.ActivitiException;
+
 /**
  * @author Tom Baeyens
  */
@@ -63,7 +65,7 @@ public class LogUtil {
         inputStream.close();
       }
     } catch (Exception e) {
-      throw new RuntimeException("couldn't initialize logging properly", e);
+      throw new ActivitiException("couldn't initialize logging properly", e);
     }
   }
 

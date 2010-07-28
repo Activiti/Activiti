@@ -10,7 +10,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.activiti.impl.repository;
+package org.activiti.engine.impl.persistence.repository;
 
 import java.io.InputStream;
 import java.util.HashMap;
@@ -20,8 +20,8 @@ import java.util.zip.ZipInputStream;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.Deployment;
 import org.activiti.engine.DeploymentBuilder;
-import org.activiti.impl.ProcessServiceImpl;
-import org.activiti.impl.bytes.ByteArrayImpl;
+import org.activiti.engine.impl.ProcessServiceImpl;
+import org.activiti.engine.impl.RepositoryServiceImpl;
 import org.activiti.impl.util.IoUtil;
 
 /**
@@ -31,18 +31,21 @@ public class DeploymentBuilderImpl implements DeploymentBuilder {
 
   private static final long serialVersionUID = 1L;
 
-  private final ProcessServiceImpl processService;
-  private final DeploymentImpl deployment = DeploymentImpl.create();
+  protected RepositoryServiceImpl repositoryService;
+  protected DeploymentEntity deployment = new DeploymentEntity();
+  protected boolean isDuplicateFilterEnabled = false;
 
-  public DeploymentBuilderImpl(ProcessServiceImpl processManager) {
-    this.processService = processManager;
-    deployment.resources = new HashMap<String, ByteArrayImpl>();
+  public DeploymentBuilderImpl(RepositoryServiceImpl repositoryService) {
+    this.repositoryService = repositoryService;
+    deployment.setResources(new HashMap<String, ResourceEntity>());
   }
 
   public DeploymentBuilder addInputStream(String resourceName, InputStream inputStream) {
     byte[] bytes = IoUtil.readInputStream(inputStream, resourceName);
-    ByteArrayImpl resource = new ByteArrayImpl(resourceName, bytes);
-    deployment.resources.put(resourceName, resource);
+    ResourceEntity resource = new ResourceEntity();
+    resource.setName(resourceName);
+    resource.setBytes(bytes);
+    deployment.getResources().put(resourceName, resource);
     return this;
   }
 
@@ -53,8 +56,10 @@ public class DeploymentBuilderImpl implements DeploymentBuilder {
   }
 
   public DeploymentBuilder addString(String resourceName, String text) {
-    ByteArrayImpl resource = new ByteArrayImpl(resourceName, text.getBytes());
-    deployment.resources.put(resourceName, resource);
+    ResourceEntity resource = new ResourceEntity();
+    resource.setName(resourceName);
+    resource.setBytes(text.getBytes());
+    deployment.getResources().put(resourceName, resource);
     return this;
   }
 
@@ -64,8 +69,10 @@ public class DeploymentBuilderImpl implements DeploymentBuilder {
       while (entry != null) {
         String entryName = entry.getName();
         byte[] bytes = IoUtil.readInputStream(zipInputStream, entryName);
-        ByteArrayImpl byteArray = new ByteArrayImpl(entryName, bytes);
-        deployment.resources.put(entryName, byteArray);
+        ResourceEntity resource = new ResourceEntity();
+        resource.setName(entryName);
+        resource.setBytes(bytes);
+        deployment.getResources().put(entryName, resource);
         entry = zipInputStream.getNextEntry();
       }
     } catch (Exception e) {
@@ -78,8 +85,22 @@ public class DeploymentBuilderImpl implements DeploymentBuilder {
     deployment.setName(name);
     return this;
   }
+  
+  public DeploymentBuilder enableDuplicateFiltering() {
+    isDuplicateFilterEnabled = true;
+    return this;
+  }
 
   public Deployment deploy() {
-    return processService.deploy(deployment);
+    return repositoryService.deploy(this);
+  }
+  
+  // getters and setters //////////////////////////////////////////////////////
+  
+  public DeploymentEntity getDeployment() {
+    return deployment;
+  }
+  public boolean isDuplicateFilterEnabled() {
+    return isDuplicateFilterEnabled;
   }
 }

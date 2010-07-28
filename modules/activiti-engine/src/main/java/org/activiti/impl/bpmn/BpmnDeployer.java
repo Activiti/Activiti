@@ -16,6 +16,10 @@ import java.io.ByteArrayInputStream;
 import java.util.Map;
 import java.util.logging.Logger;
 
+import org.activiti.engine.impl.persistence.RepositorySession;
+import org.activiti.engine.impl.persistence.repository.Deployer;
+import org.activiti.engine.impl.persistence.repository.DeploymentEntity;
+import org.activiti.engine.impl.persistence.repository.ResourceEntity;
 import org.activiti.impl.bpmn.parser.BpmnParse;
 import org.activiti.impl.bpmn.parser.BpmnParser;
 import org.activiti.impl.bytes.ByteArrayImpl;
@@ -24,7 +28,6 @@ import org.activiti.impl.definition.ProcessDefinitionDbImpl;
 import org.activiti.impl.definition.ProcessDefinitionImpl;
 import org.activiti.impl.el.ExpressionManager;
 import org.activiti.impl.persistence.PersistenceSession;
-import org.activiti.impl.repository.Deployer;
 import org.activiti.impl.repository.DeploymentImpl;
 import org.activiti.impl.scripting.ScriptingEngines;
 
@@ -49,15 +52,15 @@ public class BpmnDeployer implements Deployer {
     this.businessCalendarManager = businessCalendarManager;
   }
 
-  public void deploy(DeploymentImpl deployment, PersistenceSession persistenceSession) {
+  public void deploy(DeploymentEntity deployment, boolean isNew, RepositorySession repositorySession) {
 
-    Map<String, ByteArrayImpl> resources = deployment.getResources();
+    Map<String, ResourceEntity> resources = deployment.getResources();
 
     for (String resourceName : resources.keySet()) {
 
       LOG.info("Processing resource " + resourceName);
       if (resourceName.endsWith(BPMN_RESOURCE_SUFFIX)) {
-        ByteArrayImpl resource = resources.get(resourceName);
+        ResourceEntity resource = resources.get(resourceName);
         byte[] bytes = resource.getBytes();
         ByteArrayInputStream inputStream = new ByteArrayInputStream(bytes);
         BpmnParse bpmnParse = new BpmnParser(expressionManager, scriptingEngines, businessCalendarManager)
@@ -68,15 +71,14 @@ public class BpmnDeployer implements Deployer {
 
         for (ProcessDefinitionImpl processDefinition : bpmnParse.getProcessDefinitions()) {
           processDefinition.setDeployment(deployment);
-          processDefinition.setNew(deployment.isNew());
-          persistenceSession.insertProcessDefinition(processDefinition);
+          processDefinition.setNew(isNew);
+          repositorySession.insertProcessDefinition(processDefinition);
         }
-
       }
     }
-
   }
 
-  public void delete(DeploymentImpl deployment, PersistenceSession persistenceSession) {
+  public void delete(DeploymentEntity deployment) {
+    // TODO if this class inserts the process definitions, then it should also be responsible for deleting them
   }
 }

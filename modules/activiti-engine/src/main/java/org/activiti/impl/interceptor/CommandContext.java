@@ -53,12 +53,16 @@ public class CommandContext {
     getContextStack(true).pop();
   }
 
-  public static CommandContext getCurrentCommandContext() {
+  public static CommandContext getCurrent() {
     Stack<CommandContext> contextStack = getContextStack(false);
     if ((contextStack == null) || (contextStack.isEmpty())) {
       return null;
     }
     return contextStack.peek();
+  }
+  
+  public static <T> T getCurrentSession(Class<T> sessionClass) {
+    return (T) getCurrent().getSession(sessionClass);
   }
 
   private static Stack<CommandContext> getContextStack(boolean isInitializationRequired) {
@@ -177,7 +181,7 @@ public class CommandContext {
   public TimerSession getTimerSession() {
     return getSession(TimerSession.class);
   }
-  public RepositorySession getRepostorySession() {
+  public RepositorySession getRepositorySession() {
     return getSession(RepositorySession.class);
   }
 

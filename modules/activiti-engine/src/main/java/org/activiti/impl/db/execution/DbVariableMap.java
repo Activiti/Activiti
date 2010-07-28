@@ -98,13 +98,13 @@ public class DbVariableMap extends VariableMap implements Serializable {
   // variable instance methods ////////////////////////////////////////////////
 
   protected void insertVariableInstance(VariableInstance variableInstance) {
-    CommandContext.getCurrentCommandContext().getPersistenceSession().insert(variableInstance);
+    CommandContext.getCurrent().getPersistenceSession().insert(variableInstance);
   }
 
   protected Map<String, VariableInstance> getInitializedVariableInstances() {
     if (variableInstances == null) {
       List<VariableInstance> variableInstanceList = null;
-      variableInstanceList = CommandContext.getCurrentCommandContext().getPersistenceSession().findVariablesByExecutionId(execution.getId());
+      variableInstanceList = CommandContext.getCurrent().getPersistenceSession().findVariablesByExecutionId(execution.getId());
       variableInstances = new HashMap<String, VariableInstance>();
       for (VariableInstance variableInstance : variableInstanceList) {
         variableInstances.put(variableInstance.getName(), variableInstance);

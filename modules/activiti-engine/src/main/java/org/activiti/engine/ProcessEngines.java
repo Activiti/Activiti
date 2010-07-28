@@ -27,7 +27,7 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.activiti.impl.ProcessEngineInfoImpl;
+import org.activiti.engine.impl.ProcessEngineInfoImpl;
 
 
 /** helper for initializing and closing process engines in server environments.

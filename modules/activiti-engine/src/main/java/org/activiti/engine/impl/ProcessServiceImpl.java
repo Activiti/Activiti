@@ -10,7 +10,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.activiti.impl;
+package org.activiti.engine.impl;
 
 import java.io.InputStream;
 import java.util.HashMap;
@@ -24,6 +24,7 @@ import org.activiti.engine.ProcessDefinition;
 import org.activiti.engine.ProcessInstance;
 import org.activiti.engine.ProcessInstanceQuery;
 import org.activiti.engine.ProcessService;
+import org.activiti.engine.impl.persistence.repository.DeploymentBuilderImpl;
 import org.activiti.impl.cmd.DeleteDeploymentCmd;
 import org.activiti.impl.cmd.DeleteProcessInstanceCmd;
 import org.activiti.impl.cmd.DeployCmd;
@@ -45,7 +46,6 @@ import org.activiti.impl.cmd.StartProcessInstanceCmd;
 import org.activiti.impl.execution.ProcessInstanceQueryImpl;
 import org.activiti.impl.interceptor.CommandExecutor;
 import org.activiti.impl.repository.DeployerManager;
-import org.activiti.impl.repository.DeploymentBuilderImpl;
 import org.activiti.impl.repository.DeploymentImpl;
 import org.activiti.impl.scripting.ScriptingEngines;
 
@@ -67,7 +67,7 @@ public class ProcessServiceImpl implements ProcessService {
   }
 
   public DeploymentBuilder createDeployment() {
-    return new DeploymentBuilderImpl(this);
+    return null;
   }
 
   public ProcessInstance findProcessInstanceById(String id) {
@@ -104,10 +104,6 @@ public class ProcessServiceImpl implements ProcessService {
 
   public ProcessInstance startProcessInstanceById(String processDefinitionId, Map<String, Object> variables) {
     return commandExecutor.execute(new StartProcessInstanceCmd<ProcessInstance>(null, processDefinitionId, variables));
-  }
-
-  public Deployment deploy(DeploymentImpl deployment) {
-    return commandExecutor.execute(new DeployCmd<Deployment>(deployerManager, deployment));
   }
 
   @SuppressWarnings("unchecked")

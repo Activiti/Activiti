@@ -44,7 +44,7 @@ public class TaskInvolvement implements Serializable, PersistentObject {
   public static TaskInvolvement createAndInsert() {
     TaskInvolvement taskInvolvement = new TaskInvolvement();
     CommandContext
-        .getCurrentCommandContext()
+        .getCurrent()
         .getPersistenceSession()
         .insert(taskInvolvement);
     return taskInvolvement;
@@ -52,7 +52,7 @@ public class TaskInvolvement implements Serializable, PersistentObject {
   
   public void delete() {
     CommandContext
-        .getCurrentCommandContext()
+        .getCurrent()
         .getPersistenceSession()
         .delete(this);
     
@@ -116,7 +116,7 @@ public class TaskInvolvement implements Serializable, PersistentObject {
   public TaskImpl getTask() {
     if ( (task==null) && (taskId!=null) ) {
       this.task = CommandContext
-          .getCurrentCommandContext()
+          .getCurrent()
           .getPersistenceSession()
           .findTask(taskId);
     }

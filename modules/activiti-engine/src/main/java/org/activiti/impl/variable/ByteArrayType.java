@@ -39,7 +39,7 @@ public class ByteArrayType implements Type {
     if (byteArray==null) {
       byteArray = new ByteArrayImpl(this, bytes);
       CommandContext
-        .getCurrentCommandContext()
+        .getCurrent()
         .getPersistenceSession()
         .insert(byteArray);
       variableInstance.setByteArrayValue(byteArray);

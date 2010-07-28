@@ -10,16 +10,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.activiti.impl.repository;
+package org.activiti.engine.impl.persistence.repository;
 
-import org.activiti.impl.persistence.PersistenceSession;
+
 
 /**
  * @author Tom Baeyens
  */
 public interface Deployer {
 
-  void deploy(DeploymentImpl deployment, PersistenceSession persistenceSession);
-  void delete(DeploymentImpl deployment, PersistenceSession persistenceSession);
+  void deploy(DeploymentEntity deployment, boolean isNew);
+  void delete(DeploymentEntity deployment);
 
 }

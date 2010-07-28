@@ -21,6 +21,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.impl.persistence.repository.DeploymentEntity;
 import org.activiti.impl.persistence.PersistentObject;
 import org.activiti.impl.tx.Session;
 import org.activiti.impl.variable.DeserializedObject;
@@ -59,6 +60,8 @@ public class DbSqlSession implements Session {
     long nextDbid = dbSqlSessionFactory.getIdGenerator().getNextDbid();
     String id = Long.toString(nextDbid);
     persistentObject.setId(id);
+    insertedObjects.add(persistentObject);
+    deletedObjects.remove(persistentObject);
     cachePut(persistentObject);
   }
   
@@ -71,10 +74,17 @@ public class DbSqlSession implements Session {
     return filterLoadedObjects(loadedObjects);
   }
 
+  public Object selectOne(String statement, Object parameter) {
+    statement = dbSqlSessionFactory.mapStatement(statement);
+    PersistentObject loadedObject = (PersistentObject) sqlSession.selectOne(statement, parameter);
+    return cacheGet(loadedObject);
+  }
+
   // delete ///////////////////////////////////////////////////////////////////
   
   public void delete(PersistentObject persistentObject) {
     deletedObjects.add(persistentObject);
+    insertedObjects.remove(persistentObject);
   }
 
   // internal session cache ///////////////////////////////////////////////////
@@ -83,8 +93,8 @@ public class DbSqlSession implements Session {
   protected List filterLoadedObjects(List<PersistentObject> loadedObjects) {
     List<PersistentObject> filteredObjects = new ArrayList<PersistentObject>(loadedObjects.size());
     for (PersistentObject loadedObject: loadedObjects) {
-      PersistentObject cachedObject = cacheGet(loadedObject);
-      filteredObjects.add(cachedObject);
+      PersistentObject cachedPersistentObject = cacheGet(loadedObject);
+      filteredObjects.add(cachedPersistentObject);
     }
     return filteredObjects;
   }
@@ -175,11 +185,13 @@ public class DbSqlSession implements Session {
       Map<String, CachedObject> classCache = cachedObjects.get(clazz);
       for (CachedObject cachedObject: classCache.values()) {
         PersistentObject persistentObject = (PersistentObject) cachedObject.getPersistentObject();
-        Object originalState = cachedObject.getPersistentObjectState();
-        if (!originalState.equals(persistentObject.getPersistentState())) {
-          updatedObjects.add(persistentObject);
-        } else {
-          log.finest("loaded object '"+persistentObject+"' was not updated");
+        if (!deletedObjects.contains(persistentObject)) {
+          Object originalState = cachedObject.getPersistentObjectState();
+          if (!originalState.equals(persistentObject.getPersistentState())) {
+            updatedObjects.add(persistentObject);
+          } else {
+            log.finest("loaded object '"+persistentObject+"' was not updated");
+          }
         }
       }
     }
@@ -195,7 +207,7 @@ public class DbSqlSession implements Session {
       insertStatement = dbSqlSessionFactory.mapStatement(insertStatement);
 
       if (insertStatement==null) {
-        throw new ActivitiException("no insert statement id for "+insertedObject.getClass());
+        throw new ActivitiException("no insert statement for "+insertedObject.getClass()+" in the ibatis mapping files");
       }
       
       log.fine("inserting: "+toString(insertedObject));
@@ -212,7 +224,7 @@ public class DbSqlSession implements Session {
         .get(updatedObjectClass);
       updateStatement = dbSqlSessionFactory.mapStatement(updateStatement);
       if (updateStatement==null) {
-        throw new ActivitiException("no update statement id for "+updatedObject.getClass());
+        throw new ActivitiException("no update statement for "+updatedObject.getClass()+" in the ibatis mapping files");
       }
       log.fine("updating: "+toString(updatedObject)+"]");
       sqlSession.update(updateStatement, updatedObject);
@@ -228,7 +240,7 @@ public class DbSqlSession implements Session {
         .get(deletedObjectClass);
       deleteStatement = dbSqlSessionFactory.mapStatement(deleteStatement);
       if (deleteStatement==null) {
-        throw new ActivitiException("no delete statement id for "+deletedObject.getClass());
+        throw new ActivitiException("no delete statement for "+deletedObject.getClass()+" in the ibatis mapping files");
       }
       log.fine("deleting: "+toString(deletedObject));
       sqlSession.delete(deleteStatement, deletedObject);

@@ -405,7 +405,7 @@ public class ExecutionImpl implements
 
   public void destroyScope() {
     log.fine("destroy scope: scoped "+this+" continues as parent scope "+getParent());
-    CommandContext commandContext = CommandContext.getCurrentCommandContext();
+    CommandContext commandContext = CommandContext.getCurrent();
     if (commandContext!=null) {
       commandContext
         .getTimerSession()
@@ -438,7 +438,7 @@ public class ExecutionImpl implements
     timer.setRetries(timerDeclaration.getRetries());
     
     CommandContext
-      .getCurrentCommandContext()
+      .getCurrent()
       .getTimerSession()
       .schedule(timer);
   }
@@ -556,7 +556,7 @@ public class ExecutionImpl implements
   // events ///////////////////////////////////////////////////////////////////
   
   public void fireEvent(ProcessEvent<?> event) {
-    CommandContext commandContext = CommandContext.getCurrentCommandContext();
+    CommandContext commandContext = CommandContext.getCurrent();
     if (commandContext!=null) {
       commandContext.getProcessEngineConfiguration().getProcessEventBus().postEvent(event);
     }

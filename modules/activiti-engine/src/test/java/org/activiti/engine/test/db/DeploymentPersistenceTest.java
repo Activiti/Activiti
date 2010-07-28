@@ -32,9 +32,9 @@ public class DeploymentPersistenceTest extends ProcessEngineImplTestCase {
     
     final int deploymentId = commandExecutor.execute(new Command<Integer>() {
       public Integer execute(CommandContext commandContext) {
-//        RepositorySession repositorySession = commandContext.getRepostorySession();
-//        repositorySession.insertDeployment(deployment);
-//        
+        RepositorySession repositorySession = commandContext.getRepositorySession();
+        repositorySession.insertDeployment(deployment);
+        
 //        for (ResourceEntity resource: deployment.getResources().values()) {
 //          repositorySession.insertResource(resource);
 //        }

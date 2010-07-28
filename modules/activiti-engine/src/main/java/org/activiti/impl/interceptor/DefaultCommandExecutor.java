@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.logging.Logger;
 
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.impl.util.ClassNameUtil;
 
 /**
  * @author Dave Syer
@@ -48,7 +49,7 @@ public class DefaultCommandExecutor implements CommandExecutor {
 
   public <T> T execute(Command<T> command) {
     log.fine("                                                                                                    ");
-    log.fine("--- starting command " + command + " --------------------------------------------------------");
+    log.fine("--- starting command " + ClassNameUtil.getClassNameWithoutPackage(command) + " --------------------------------------------------------");
     try {
 
       return new InternalCommandInterceptorChain(interceptors, contextAwareInterceptors, commandContextFactory).execute(command);
@@ -63,7 +64,7 @@ public class DefaultCommandExecutor implements CommandExecutor {
       throw new ActivitiException("Command failed with unknown exception.", exception);
 
     } finally {
-      log.fine("--- command " + command + " finished --------------------------------------------------------");
+      log.fine("--- command " + ClassNameUtil.getClassNameWithoutPackage(command) + " finished --------------------------------------------------------");
       log.fine("                                                                                                    ");
     }
   }

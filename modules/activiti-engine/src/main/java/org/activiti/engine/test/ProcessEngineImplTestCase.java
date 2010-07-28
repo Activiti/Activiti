@@ -13,7 +13,7 @@
 
 package org.activiti.engine.test;
 
-import org.activiti.impl.ProcessEngineImpl;
+import org.activiti.engine.impl.ProcessEngineImpl;
 import org.activiti.impl.interceptor.CommandExecutor;
 import org.activiti.impl.util.LogUtil.ThreadLogMode;
 

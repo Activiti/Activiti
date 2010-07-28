@@ -25,7 +25,7 @@ import org.activiti.engine.HistoricDataService;
 import org.activiti.engine.IdentityService;
 import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.ProcessService;
-import org.activiti.impl.ProcessEngineImpl;
+import org.activiti.engine.impl.ProcessEngineImpl;
 import org.activiti.impl.cfg.ProcessEngineFactory;
 import org.activiti.impl.db.IdGenerator;
 import org.activiti.impl.interceptor.Command;

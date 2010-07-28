@@ -36,7 +36,7 @@ public class JobExecutorTimerSession implements TimerSession, Session {
   private final JobExecutor jobExecutor;
   
   public JobExecutorTimerSession() {
-    this.commandContext = CommandContext.getCurrentCommandContext();
+    this.commandContext = CommandContext.getCurrent();
     this.jobExecutor = commandContext.getProcessEngineConfiguration().getJobExecutor();
   }
 
