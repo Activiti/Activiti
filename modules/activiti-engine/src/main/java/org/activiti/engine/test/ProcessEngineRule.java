@@ -20,7 +20,7 @@ import java.util.logging.Logger;
 
 import junit.framework.AssertionFailedError;
 
-import org.activiti.engine.DbProcessEngineBuilder;
+import org.activiti.engine.ProcessEngineBuilder;
 import org.activiti.engine.ProcessEngine;
 import org.activiti.impl.time.Clock;
 import org.activiti.impl.util.LogUtil;
@@ -93,7 +93,7 @@ public class ProcessEngineRule implements MethodRule {
         processEngine = processEngines.get(configurationResource);
         if (processEngine==null) {
           log.fine("#### BUILDING PROCESS ENGINE ########################################################################");
-          processEngine = new DbProcessEngineBuilder()
+          processEngine = new ProcessEngineBuilder()
             .configureFromPropertiesResource(configurationResource)
             .buildProcessEngine();
           log.fine("#### PROCESS ENGINE CREATED #########################################################################");

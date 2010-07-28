@@ -119,7 +119,7 @@ public abstract class ProcessEngines {
   private static ProcessEngine buildProcessEngine(URL resource) {
     try {
       InputStream inputStream = resource.openStream();
-      ProcessEngine processEngine = new DbProcessEngineBuilder()
+      ProcessEngine processEngine = new ProcessEngineBuilder()
           .configureFromPropertiesInputStream(inputStream)
           .buildProcessEngine();
       return processEngine;

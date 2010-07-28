@@ -52,7 +52,7 @@ import org.apache.ibatis.datasource.pooled.PooledDataSource;
  * @author Tom Baeyens
  * @author Joram Barrez
  */
-public class DbProcessEngineBuilder {
+public class ProcessEngineBuilder {
 
   private String processEngineName = ProcessEngines.NAME_DEFAULT;
   private String dataBaseName;
@@ -64,47 +64,47 @@ public class DbProcessEngineBuilder {
   private boolean jobExecutorAutoActivate = true;
   private boolean localTransactions = true;
 
-  public DbProcessEngineBuilder setProcessEngineName(String processEngineName) {
+  public ProcessEngineBuilder setProcessEngineName(String processEngineName) {
     this.processEngineName = processEngineName;
     return this;
   }
 
-  public DbProcessEngineBuilder setDatabaseName(String databaseName) {
+  public ProcessEngineBuilder setDatabaseName(String databaseName) {
     this.dataBaseName = databaseName;
     return this;
   }
 
-  public DbProcessEngineBuilder setJdbcDriver(String jdbcDriver) {
+  public ProcessEngineBuilder setJdbcDriver(String jdbcDriver) {
     this.jdbcDriver = jdbcDriver;
     return this;
   }
 
-  public DbProcessEngineBuilder setLocalTransactions(boolean localTransactions) {
+  public ProcessEngineBuilder setLocalTransactions(boolean localTransactions) {
     this.localTransactions = localTransactions;
     return this;
   }
 
-  public DbProcessEngineBuilder setJdbcUrl(String jdbcUrl) {
+  public ProcessEngineBuilder setJdbcUrl(String jdbcUrl) {
     this.jdbcUrl = jdbcUrl;
     return this;
   }
 
-  public DbProcessEngineBuilder setJdbcUsername(String jdbcUsername) {
+  public ProcessEngineBuilder setJdbcUsername(String jdbcUsername) {
     this.jdbcUsername = jdbcUsername;
     return this;
   }
 
-  public DbProcessEngineBuilder setJdbcPassword(String jdbcPassword) {
+  public ProcessEngineBuilder setJdbcPassword(String jdbcPassword) {
     this.jdbcPassword = jdbcPassword;
     return this;
   }
 
-  public DbProcessEngineBuilder setDbSchemaStrategy(DbSchemaStrategy dbSchemaStrategy) {
+  public ProcessEngineBuilder setDbSchemaStrategy(DbSchemaStrategy dbSchemaStrategy) {
     this.dbSchemaStrategy = dbSchemaStrategy;
     return this;
   }
 
-  public DbProcessEngineBuilder configureFromProperties(Properties configurationProperties) {
+  public ProcessEngineBuilder configureFromProperties(Properties configurationProperties) {
     if (configurationProperties == null) {
       throw new ActivitiException("configurationProperties is null");
     }
@@ -154,7 +154,7 @@ public class DbProcessEngineBuilder {
     return this;
   }
 
-  public DbProcessEngineBuilder configureFromPropertiesInputStream(InputStream inputStream) {
+  public ProcessEngineBuilder configureFromPropertiesInputStream(InputStream inputStream) {
     if (inputStream == null) {
       throw new ActivitiException("inputStream is null");
     }
@@ -168,7 +168,7 @@ public class DbProcessEngineBuilder {
     return this;
   }
 
-  public DbProcessEngineBuilder configureFromPropertiesResource(String propertiesResource) {
+  public ProcessEngineBuilder configureFromPropertiesResource(String propertiesResource) {
     InputStream inputStream = Thread.currentThread().getContextClassLoader().getResourceAsStream(propertiesResource);
     if (inputStream == null) {
       throw new ActivitiException("configuration properties resource '" + propertiesResource + "' is unavailable on classpath "
@@ -178,7 +178,7 @@ public class DbProcessEngineBuilder {
     return this;
   }
 
-  public DbProcessEngineBuilder setJobExecutorAutoActivation(boolean jobExecutorAutoActivate) {
+  public ProcessEngineBuilder setJobExecutorAutoActivation(boolean jobExecutorAutoActivate) {
     this.jobExecutorAutoActivate = jobExecutorAutoActivate;
     return this;
   }

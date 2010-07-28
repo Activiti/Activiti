@@ -17,7 +17,7 @@ import java.util.Map;
 
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiWrongDbException;
-import org.activiti.engine.DbProcessEngineBuilder;
+import org.activiti.engine.ProcessEngineBuilder;
 import org.activiti.engine.DbSchemaStrategy;
 import org.activiti.engine.ProcessEngine;
 import org.activiti.impl.ProcessEngineImpl;
@@ -50,14 +50,14 @@ public class ProcessEngineInitializationTest {
     exception.expect(ActivitiException.class);
     exception.expectMessage("no activiti tables in db.  set property db.schema.strategy=create-drop in activiti.properties for automatic schema creation");
 
-    new DbProcessEngineBuilder().configureFromPropertiesResource("org/activiti/test/db/activiti.properties").buildProcessEngine();
+    new ProcessEngineBuilder().configureFromPropertiesResource("org/activiti/test/db/activiti.properties").buildProcessEngine();
 
   }
 
   @Test
   public void testVersionMismatch() {
     // first create the schema
-    ProcessEngineImpl processEngine = (ProcessEngineImpl) new DbProcessEngineBuilder().configureFromPropertiesResource(
+    ProcessEngineImpl processEngine = (ProcessEngineImpl) new ProcessEngineBuilder().configureFromPropertiesResource(
             "org/activiti/test/db/activiti.properties").setDbSchemaStrategy(DbSchemaStrategy.CREATE_DROP).buildProcessEngine();
 
     // then update the version to something that is different to the library
@@ -103,7 +103,7 @@ public class ProcessEngineInitializationTest {
 
     // now we can see what happens if when a process engine is being
     // build with a version mismatch between library and db tables
-    new DbProcessEngineBuilder().configureFromPropertiesResource("org/activiti/test/db/activiti.properties")
+    new ProcessEngineBuilder().configureFromPropertiesResource("org/activiti/test/db/activiti.properties")
             .setDbSchemaStrategy(DbSchemaStrategy.CHECK_VERSION).buildProcessEngine();
 
     // closing the original process engine to drop the db tables

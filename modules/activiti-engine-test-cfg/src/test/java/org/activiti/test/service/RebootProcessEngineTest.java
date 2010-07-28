@@ -18,7 +18,7 @@ import static org.junit.Assert.assertNotNull;
 
 import java.util.List;
 
-import org.activiti.engine.DbProcessEngineBuilder;
+import org.activiti.engine.ProcessEngineBuilder;
 import org.activiti.engine.ProcessDefinition;
 import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.ProcessInstance;
@@ -75,7 +75,7 @@ public class RebootProcessEngineTest {
    }
 
   private ProcessEngine buildProcessEngine(String propertyFileName) {
-    ProcessEngine processEngine = new DbProcessEngineBuilder()
+    ProcessEngine processEngine = new ProcessEngineBuilder()
        .configureFromPropertiesResource("org/activiti/test/service/" + propertyFileName)
        .buildProcessEngine();
     return processEngine;

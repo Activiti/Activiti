@@ -71,7 +71,7 @@ import org.junit.runners.model.FrameworkMethod;
  * 
  * @author Dave Syer
  */
-public class ProcessDeployer extends ProcessEngineBuilder {
+public class ProcessDeployer extends ProcessEngineTestWatchman {
 
   private static Logger log = Logger.getLogger(ProcessDeployer.class.getName());
 

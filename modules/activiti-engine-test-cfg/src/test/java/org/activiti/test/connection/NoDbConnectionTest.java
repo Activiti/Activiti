@@ -14,7 +14,7 @@ package org.activiti.test.connection;
 
 import java.sql.SQLException;
 
-import org.activiti.engine.DbProcessEngineBuilder;
+import org.activiti.engine.ProcessEngineBuilder;
 import org.hamcrest.Description;
 import org.junit.Rule;
 import org.junit.Test;
@@ -33,7 +33,7 @@ public class NoDbConnectionTest {
   public void testNoDbConnection() {
     exception.expect(RuntimeException.class);
     exception.expect(new SqlExceptionMatcher());
-    new DbProcessEngineBuilder().configureFromPropertiesResource("org/activiti/test/connection/activiti.properties").buildProcessEngine();
+    new ProcessEngineBuilder().configureFromPropertiesResource("org/activiti/test/connection/activiti.properties").buildProcessEngine();
   }
 
   private static final class SqlExceptionMatcher extends TypeSafeMatcher<RuntimeException> {

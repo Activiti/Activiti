@@ -23,7 +23,7 @@ import java.util.Set;
 import org.activiti.engine.IdentityService;
 import org.activiti.identity.Group;
 import org.activiti.identity.User;
-import org.activiti.test.ProcessEngineBuilder;
+import org.activiti.test.ProcessEngineTestWatchman;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -36,7 +36,7 @@ public class IdentityTest {
   private IdentityService identityService;
 
   @Rule
-  public ProcessEngineBuilder processEngineBuilder = new ProcessEngineBuilder();
+  public ProcessEngineTestWatchman processEngineBuilder = new ProcessEngineTestWatchman();
 
   @Before
   public void init() {

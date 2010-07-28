@@ -35,7 +35,7 @@ package org.activiti.engine;
  * 
  * Typically, there will be only one central ProcessEngine instance needed in a
  * end-user application. Building a ProcessEngine is done through a
- * {@link DbProcessEngineBuilder} instance and is a costly operation which should be
+ * {@link ProcessEngineBuilder} instance and is a costly operation which should be
  * avoided. For that purpose, it is advised to store it in a static field or
  * JNDI location (or something similar). This is a thread-safe object, so no
  * special precautions need to be taken.

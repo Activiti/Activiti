@@ -20,7 +20,7 @@ import java.util.Map;
 
 import org.activiti.engine.TablePage;
 import org.activiti.engine.Task;
-import org.activiti.test.ProcessEngineBuilder;
+import org.activiti.test.ProcessEngineTestWatchman;
 import org.junit.Rule;
 import org.junit.Test;
 
@@ -31,7 +31,7 @@ import org.junit.Test;
 public class TablePageQueryTest {
   
   @Rule
-  public ProcessEngineBuilder processEngineBuilder = new ProcessEngineBuilder();
+  public ProcessEngineTestWatchman processEngineBuilder = new ProcessEngineTestWatchman();
 
   @Test
   public void testGetTablePage() {

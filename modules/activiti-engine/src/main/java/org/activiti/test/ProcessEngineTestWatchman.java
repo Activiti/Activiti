@@ -22,7 +22,7 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.activiti.engine.DbProcessEngineBuilder;
+import org.activiti.engine.ProcessEngineBuilder;
 import org.activiti.engine.HistoricDataService;
 import org.activiti.engine.IdentityService;
 import org.activiti.engine.ManagementService;
@@ -44,7 +44,7 @@ import org.junit.runners.model.FrameworkMethod;
  * @author Tom Baeyens
  * @author Dave Syer
  */
-public class ProcessEngineBuilder extends TestWatchman {
+public class ProcessEngineTestWatchman extends TestWatchman {
 
   private static final List<String> EXCLUDED_TABLES = Arrays.asList(
           "ACT_PROPERTY",
@@ -52,7 +52,7 @@ public class ProcessEngineBuilder extends TestWatchman {
           "ACT_H_ACTINST"
   );
 
-  private static Logger log = Logger.getLogger(ProcessEngineBuilder.class.getName());
+  private static Logger log = Logger.getLogger(ProcessEngineTestWatchman.class.getName());
 
   private final String configurationResource;
 
@@ -60,11 +60,11 @@ public class ProcessEngineBuilder extends TestWatchman {
 
   private boolean succeeded = false;
 
-  public ProcessEngineBuilder() {
+  public ProcessEngineTestWatchman() {
     this("activiti.properties");
   }
 
-  public ProcessEngineBuilder(String configurationResource) {
+  public ProcessEngineTestWatchman(String configurationResource) {
     this.configurationResource = configurationResource;
   }
 
@@ -102,7 +102,7 @@ public class ProcessEngineBuilder extends TestWatchman {
 
   public void buildProcessEngine() {
     log.fine("Creating process engine: " + configurationResource);
-    processEngine = new DbProcessEngineBuilder().configureFromPropertiesResource(configurationResource).buildProcessEngine();
+    processEngine = new ProcessEngineBuilder().configureFromPropertiesResource(configurationResource).buildProcessEngine();
   }
 
   @Override

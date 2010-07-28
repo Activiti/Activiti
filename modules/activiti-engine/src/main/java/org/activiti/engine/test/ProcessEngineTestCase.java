@@ -21,7 +21,7 @@ import java.util.logging.Logger;
 import junit.framework.AssertionFailedError;
 import junit.framework.TestCase;
 
-import org.activiti.engine.DbProcessEngineBuilder;
+import org.activiti.engine.ProcessEngineBuilder;
 import org.activiti.engine.HistoricDataService;
 import org.activiti.engine.IdentityService;
 import org.activiti.engine.ManagementService;
@@ -86,7 +86,7 @@ public class ProcessEngineTestCase extends TestCase {
       processEngine = processEngines.get(configurationResource);
       if (processEngine==null) {
         log.fine("==== BUILDING PROCESS ENGINE ========================================================================");
-        processEngine = new DbProcessEngineBuilder()
+        processEngine = new ProcessEngineBuilder()
           .configureFromPropertiesResource(configurationResource)
           .buildProcessEngine();
         log.fine("==== PROCESS ENGINE CREATED =========================================================================");

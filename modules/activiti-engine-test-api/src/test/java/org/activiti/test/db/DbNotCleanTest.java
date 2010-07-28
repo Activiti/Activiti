@@ -15,7 +15,7 @@ package org.activiti.test.db;
 import static org.junit.Assert.assertNotNull;
 
 import org.activiti.engine.Deployment;
-import org.activiti.test.ProcessEngineBuilder;
+import org.activiti.test.ProcessEngineTestWatchman;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -27,7 +27,7 @@ import org.junit.rules.ExpectedException;
 public class DbNotCleanTest {
 
   @Rule
-  public ProcessEngineBuilder processEngineBuilder = new ProcessEngineBuilder();
+  public ProcessEngineTestWatchman processEngineBuilder = new ProcessEngineTestWatchman();
 
   @Rule
   public ExpectedException exception = ExpectedException.none();
