@@ -47,7 +47,7 @@
       <type>war</type>      
       <version>5.0.beta1-SNAPSHOT</version>
       <scope>runtime</scope>
-    </dependency>
+    </dependency> 
   </dependencies>
 
 </project>

@@ -14,7 +14,6 @@ package org.activiti.rest.api.cycle;
 
 import java.util.Map;
 
-import org.activiti.impl.cycle.Artifact;
 import org.activiti.rest.util.ActivitiWebScript;
 import org.springframework.extensions.webscripts.Cache;
 import org.springframework.extensions.webscripts.Status;

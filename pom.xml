@@ -55,6 +55,11 @@
         <artifactId>activiti-pvm</artifactId>
         <version>${version}</version>
       </dependency>
+            <dependency>
+                <groupId>org.activiti</groupId>
+                <artifactId>activiti-cycle</artifactId>
+                <version>${version}</version>
+            </dependency>
 			<dependency>
 				<groupId>org.apache.ant</groupId>
 				<artifactId>ant</artifactId>
@@ -160,6 +165,7 @@
   <modules>
     <module>modules/activiti-pvm</module>
     <module>modules/activiti-engine</module>
+    <module>modules/activiti-cycle</module>
   </modules>
 
 	<repositories>
