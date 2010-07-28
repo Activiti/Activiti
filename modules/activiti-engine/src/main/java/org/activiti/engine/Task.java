@@ -10,19 +10,33 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.activiti;
+package org.activiti.engine;
 
-/** represents information about the initialization of the process engine. 
+
+
+/** represents one task for a human user.
  * 
- * @see ProcessEngines
- * @author Tom Baeyens
+ * @author Joram Barrez
  */
-public interface ProcessEngineInfo {
+public interface Task {
+	
+	String getId();
+	
+	String getName();
 
-  String getName();
-
-  String getResourceUrl();
-
-  String getException();
-
+	void setName(String name);
+	
+	String getDescription();
+	
+	void setDescription(String description);
+	
+	int getPriority();
+	
+	void setPriority(int priority);
+	
+	String getAssignee();
+	
+	String getExecutionId();
+	
+	String getProcessDefinitionId();
 }

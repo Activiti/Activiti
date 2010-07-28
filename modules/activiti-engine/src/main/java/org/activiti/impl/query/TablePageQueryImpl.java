@@ -12,10 +12,10 @@
  */
 package org.activiti.impl.query;
 
-import org.activiti.ActivitiException;
-import org.activiti.SortOrder;
-import org.activiti.TablePage;
-import org.activiti.TablePageQuery;
+import org.activiti.engine.ActivitiException;
+import org.activiti.engine.SortOrder;
+import org.activiti.engine.TablePage;
+import org.activiti.engine.TablePageQuery;
 import org.activiti.impl.interceptor.CommandContext;
 import org.activiti.impl.interceptor.CommandExecutor;
 import org.activiti.impl.query.AbstractSingleResultQuery;

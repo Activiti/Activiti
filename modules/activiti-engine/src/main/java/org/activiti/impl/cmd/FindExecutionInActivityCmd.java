@@ -13,7 +13,7 @@
 
 package org.activiti.impl.cmd;
 
-import org.activiti.Execution;
+import org.activiti.engine.Execution;
 import org.activiti.impl.execution.ExecutionImpl;
 import org.activiti.impl.interceptor.Command;
 import org.activiti.impl.interceptor.CommandContext;

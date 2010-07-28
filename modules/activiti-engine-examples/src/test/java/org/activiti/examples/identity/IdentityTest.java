@@ -20,7 +20,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.activiti.IdentityService;
+import org.activiti.engine.IdentityService;
 import org.activiti.identity.Group;
 import org.activiti.identity.User;
 import org.activiti.test.ProcessEngineBuilder;

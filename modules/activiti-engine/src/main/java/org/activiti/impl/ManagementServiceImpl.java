@@ -14,10 +14,10 @@ package org.activiti.impl;
 
 import java.util.Map;
 
-import org.activiti.JobQuery;
-import org.activiti.ManagementService;
-import org.activiti.TableMetaData;
-import org.activiti.TablePageQuery;
+import org.activiti.engine.JobQuery;
+import org.activiti.engine.ManagementService;
+import org.activiti.engine.TableMetaData;
+import org.activiti.engine.TablePageQuery;
 import org.activiti.impl.cmd.GetTableCountCmd;
 import org.activiti.impl.cmd.GetTableMetaDataCmd;
 import org.activiti.impl.interceptor.CommandExecutor;

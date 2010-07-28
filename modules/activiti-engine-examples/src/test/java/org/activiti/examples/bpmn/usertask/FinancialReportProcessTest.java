@@ -4,8 +4,8 @@ import static org.junit.Assert.assertEquals;
 
 import java.util.List;
 
-import org.activiti.ProcessInstance;
-import org.activiti.Task;
+import org.activiti.engine.ProcessInstance;
+import org.activiti.engine.Task;
 import org.activiti.test.LogInitializer;
 import org.activiti.test.ProcessDeclared;
 import org.activiti.test.ProcessDeployer;

@@ -19,13 +19,13 @@ import static org.mockito.Mockito.*;
 
 import java.util.Date;
 
-import org.activiti.HistoricDataService;
-import org.activiti.ProcessInstance;
 import org.activiti.impl.event.ActivityEndedEvent;
 import org.activiti.impl.event.ActivityStartedEvent;
 import org.activiti.impl.event.ProcessInstanceEndedEvent;
 import org.activiti.impl.event.ProcessInstanceStartedEvent;
 import org.activiti.impl.event.DefaultProcessEventBus;
+import org.activiti.engine.HistoricDataService;
+import org.activiti.engine.ProcessInstance;
 import org.activiti.history.HistoricActivityInstance;
 import org.activiti.impl.history.HistoricDataServiceImpl;
 import org.activiti.history.HistoricProcessInstance;

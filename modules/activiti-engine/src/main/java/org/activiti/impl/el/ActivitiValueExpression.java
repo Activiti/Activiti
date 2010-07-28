@@ -16,7 +16,7 @@ import javax.el.ELContext;
 import javax.el.PropertyNotFoundException;
 import javax.el.ValueExpression;
 
-import org.activiti.ActivitiException;
+import org.activiti.engine.ActivitiException;
 import org.activiti.impl.execution.ExecutionImpl;
 
 

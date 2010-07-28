@@ -16,11 +16,11 @@ import static org.junit.Assert.*;
 
 import java.util.List;
 
-import org.activiti.ActivitiException;
-import org.activiti.IdentityService;
-import org.activiti.Task;
-import org.activiti.TaskQuery;
-import org.activiti.TaskService;
+import org.activiti.engine.ActivitiException;
+import org.activiti.engine.IdentityService;
+import org.activiti.engine.Task;
+import org.activiti.engine.TaskQuery;
+import org.activiti.engine.TaskService;
 import org.activiti.test.LogInitializer;
 import org.activiti.test.ProcessDeclared;
 import org.activiti.test.ProcessDeployer;

@@ -12,7 +12,7 @@
  * limitations under the License.
  */
 
-package org.activiti;
+package org.activiti.engine;
 
 import org.activiti.history.HistoricActivityInstance;
 import org.activiti.history.HistoricProcessInstance;

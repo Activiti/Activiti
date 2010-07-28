@@ -14,8 +14,8 @@ package org.activiti.impl.query;
 
 import java.util.List;
 
-import org.activiti.ActivitiException;
-import org.activiti.Page;
+import org.activiti.engine.ActivitiException;
+import org.activiti.engine.Page;
 import org.activiti.impl.interceptor.Command;
 import org.activiti.impl.interceptor.CommandContext;
 import org.activiti.impl.interceptor.CommandExecutor;

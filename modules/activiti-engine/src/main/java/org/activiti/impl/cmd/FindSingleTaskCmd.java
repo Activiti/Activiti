@@ -12,7 +12,7 @@
  */
 package org.activiti.impl.cmd;
 
-import org.activiti.Task;
+import org.activiti.engine.Task;
 import org.activiti.impl.interceptor.Command;
 import org.activiti.impl.interceptor.CommandContext;
 import org.activiti.impl.persistence.PersistenceSession;

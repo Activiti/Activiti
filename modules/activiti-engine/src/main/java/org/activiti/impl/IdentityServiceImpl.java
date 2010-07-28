@@ -14,7 +14,7 @@ package org.activiti.impl;
 
 import java.util.List;
 
-import org.activiti.IdentityService;
+import org.activiti.engine.IdentityService;
 import org.activiti.identity.Group;
 import org.activiti.identity.User;
 import org.activiti.impl.cmd.CheckPassword;

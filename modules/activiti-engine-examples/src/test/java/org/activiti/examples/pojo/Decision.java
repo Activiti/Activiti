@@ -14,7 +14,7 @@ package org.activiti.examples.pojo;
 
 import java.util.List;
 
-import org.activiti.ActivitiException;
+import org.activiti.engine.ActivitiException;
 import org.activiti.pvm.ActivityBehavior;
 import org.activiti.pvm.ActivityExecution;
 import org.activiti.pvm.Condition;

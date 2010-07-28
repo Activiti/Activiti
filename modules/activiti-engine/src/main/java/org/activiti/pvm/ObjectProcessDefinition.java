@@ -12,7 +12,7 @@
  */
 package org.activiti.pvm;
 
-import org.activiti.ProcessDefinition;
+import org.activiti.engine.ProcessDefinition;
 
 
 

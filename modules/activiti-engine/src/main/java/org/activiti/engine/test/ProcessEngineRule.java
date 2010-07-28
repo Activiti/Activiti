@@ -20,8 +20,8 @@ import java.util.logging.Logger;
 
 import junit.framework.AssertionFailedError;
 
-import org.activiti.DbProcessEngineBuilder;
-import org.activiti.ProcessEngine;
+import org.activiti.engine.DbProcessEngineBuilder;
+import org.activiti.engine.ProcessEngine;
 import org.activiti.impl.time.Clock;
 import org.activiti.impl.util.LogUtil;
 import org.activiti.impl.util.LogUtil.ThreadLogMode;

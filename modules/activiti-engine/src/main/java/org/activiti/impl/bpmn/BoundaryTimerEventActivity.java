@@ -12,7 +12,7 @@
  */
 package org.activiti.impl.bpmn;
 
-import org.activiti.ActivitiException;
+import org.activiti.engine.ActivitiException;
 import org.activiti.pvm.ActivityExecution;
 
 

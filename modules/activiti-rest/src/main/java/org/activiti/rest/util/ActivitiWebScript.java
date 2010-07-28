@@ -13,6 +13,13 @@
 package org.activiti.rest.util;
 
 import org.activiti.*;
+import org.activiti.engine.IdentityService;
+import org.activiti.engine.ManagementService;
+import org.activiti.engine.ProcessEngine;
+import org.activiti.engine.ProcessEngineInfo;
+import org.activiti.engine.ProcessEngines;
+import org.activiti.engine.ProcessService;
+import org.activiti.engine.TaskService;
 import org.activiti.identity.Group;
 import org.activiti.impl.json.JSONObject;
 import org.activiti.rest.Config;

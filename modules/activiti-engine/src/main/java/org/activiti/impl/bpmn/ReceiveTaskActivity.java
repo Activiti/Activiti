@@ -13,7 +13,7 @@
 
 package org.activiti.impl.bpmn;
 
-import org.activiti.ProcessService;
+import org.activiti.engine.ProcessService;
 import org.activiti.pvm.ActivityExecution;
 
 

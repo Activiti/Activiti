@@ -15,7 +15,7 @@ package org.activiti.impl.jobexecutor;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.activiti.ActivitiException;
+import org.activiti.engine.ActivitiException;
 import org.activiti.impl.interceptor.Command;
 import org.activiti.impl.interceptor.CommandContext;
 import org.activiti.impl.job.JobHandler;

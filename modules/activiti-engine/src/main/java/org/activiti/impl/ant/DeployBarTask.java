@@ -19,10 +19,10 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.zip.ZipInputStream;
 
-import org.activiti.ActivitiException;
-import org.activiti.ProcessEngine;
-import org.activiti.ProcessEngines;
-import org.activiti.ProcessService;
+import org.activiti.engine.ActivitiException;
+import org.activiti.engine.ProcessEngine;
+import org.activiti.engine.ProcessEngines;
+import org.activiti.engine.ProcessService;
 import org.activiti.impl.util.LogUtil;
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.DirectoryScanner;

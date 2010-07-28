@@ -15,7 +15,7 @@ package org.activiti.impl.util;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 
-import org.activiti.ActivitiException;
+import org.activiti.engine.ActivitiException;
 
 
 /**

@@ -17,7 +17,7 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.Map;
 
-import org.activiti.Deployment;
+import org.activiti.engine.Deployment;
 import org.activiti.impl.persistence.PersistentObject;
 
 

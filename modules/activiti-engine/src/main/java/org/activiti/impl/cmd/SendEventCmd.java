@@ -13,7 +13,7 @@
 
 package org.activiti.impl.cmd;
 
-import org.activiti.ActivitiException;
+import org.activiti.engine.ActivitiException;
 import org.activiti.impl.db.execution.DbExecutionImpl;
 import org.activiti.impl.interceptor.Command;
 import org.activiti.impl.interceptor.CommandContext;

@@ -19,7 +19,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import org.activiti.Deployment;
+import org.activiti.engine.Deployment;
 import org.activiti.impl.bytes.ByteArrayImpl;
 import org.activiti.impl.interceptor.Command;
 import org.activiti.impl.interceptor.CommandContext;

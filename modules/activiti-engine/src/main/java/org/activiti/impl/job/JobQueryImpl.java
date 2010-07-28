@@ -17,9 +17,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.activiti.Job;
-import org.activiti.JobQuery;
-import org.activiti.Page;
+import org.activiti.engine.Job;
+import org.activiti.engine.JobQuery;
+import org.activiti.engine.Page;
 import org.activiti.impl.interceptor.CommandContext;
 import org.activiti.impl.interceptor.CommandExecutor;
 import org.activiti.impl.query.AbstractListQuery;

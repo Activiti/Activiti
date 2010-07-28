@@ -12,7 +12,7 @@
  */
 package org.activiti.impl.job;
 
-import org.activiti.ActivitiException;
+import org.activiti.engine.ActivitiException;
 import org.activiti.impl.definition.ActivityImpl;
 import org.activiti.impl.execution.ExecutionImpl;
 import org.activiti.impl.interceptor.CommandContext;

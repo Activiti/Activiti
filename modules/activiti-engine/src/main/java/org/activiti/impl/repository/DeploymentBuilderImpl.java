@@ -17,9 +17,9 @@ import java.util.HashMap;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
-import org.activiti.ActivitiException;
-import org.activiti.Deployment;
-import org.activiti.DeploymentBuilder;
+import org.activiti.engine.ActivitiException;
+import org.activiti.engine.Deployment;
+import org.activiti.engine.DeploymentBuilder;
 import org.activiti.impl.ProcessServiceImpl;
 import org.activiti.impl.bytes.ByteArrayImpl;
 import org.activiti.impl.util.IoUtil;

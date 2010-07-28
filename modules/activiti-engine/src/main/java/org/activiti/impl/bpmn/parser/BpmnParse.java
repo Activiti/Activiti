@@ -22,8 +22,8 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.activiti.ActivitiException;
-import org.activiti.ProcessDefinition;
+import org.activiti.engine.ActivitiException;
+import org.activiti.engine.ProcessDefinition;
 import org.activiti.impl.bpmn.BoundaryTimerEventActivity;
 import org.activiti.impl.bpmn.BpmnInterface;
 import org.activiti.impl.bpmn.CallActivityBehaviour;

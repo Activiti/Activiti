@@ -18,7 +18,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.List;
 
-import org.activiti.Task;
+import org.activiti.engine.Task;
 import org.activiti.test.LogInitializer;
 import org.activiti.test.ProcessDeployer;
 import org.junit.After;

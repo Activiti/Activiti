@@ -18,7 +18,7 @@ import java.io.InputStream;
 import java.util.Arrays;
 import java.util.List;
 
-import org.activiti.Deployment;
+import org.activiti.engine.Deployment;
 import org.activiti.impl.util.IoUtil;
 import org.activiti.test.LogInitializer;
 import org.activiti.test.ProcessDeployer;

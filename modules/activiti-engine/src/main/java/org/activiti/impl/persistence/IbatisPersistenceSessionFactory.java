@@ -28,9 +28,9 @@ import java.util.logging.Logger;
 
 import javax.sql.DataSource;
 
-import org.activiti.ActivitiException;
-import org.activiti.ActivitiWrongDbException;
-import org.activiti.ProcessEngine;
+import org.activiti.engine.ActivitiException;
+import org.activiti.engine.ActivitiWrongDbException;
+import org.activiti.engine.ProcessEngine;
 import org.activiti.impl.db.IdGenerator;
 import org.activiti.impl.definition.ProcessDefinitionDbImpl;
 import org.activiti.impl.tx.Session;

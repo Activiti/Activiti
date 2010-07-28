@@ -10,15 +10,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.activiti;
+package org.activiti.engine;
 
 
 /**
- * @author Joram Barrez
+ * runtime exception that is the superclass of all Activiti exceptions.
+ * 
+ * @author Tom Baeyens
  */
-public enum SortOrder {
+public class ActivitiException extends RuntimeException {
 
-  ASCENDING,
-  DESCENDING;
-  
+  private static final long serialVersionUID = 1L;
+
+  public ActivitiException(String message, Throwable cause) {
+    super(message, cause);
+  }
+
+  public ActivitiException(String message) {
+    super(message);
+  }
 }

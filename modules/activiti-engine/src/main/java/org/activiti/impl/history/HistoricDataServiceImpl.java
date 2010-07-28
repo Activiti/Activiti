@@ -16,7 +16,7 @@ package org.activiti.impl.history;
 
 import java.util.Date;
 
-import org.activiti.HistoricDataService;
+import org.activiti.engine.HistoricDataService;
 import org.activiti.history.HistoricActivityInstance;
 import org.activiti.history.HistoricProcessInstance;
 import org.activiti.impl.event.ActivityEndedEvent;

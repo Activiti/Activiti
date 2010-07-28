@@ -12,7 +12,7 @@
  */
 package org.activiti.impl.cmd;
 
-import org.activiti.TableMetaData;
+import org.activiti.engine.TableMetaData;
 import org.activiti.impl.interceptor.Command;
 import org.activiti.impl.interceptor.CommandContext;
 import org.activiti.impl.persistence.PersistenceSession;

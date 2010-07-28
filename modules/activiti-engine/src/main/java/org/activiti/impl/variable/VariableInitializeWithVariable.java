@@ -12,7 +12,7 @@
  */
 package org.activiti.impl.variable;
 
-import org.activiti.ActivitiException;
+import org.activiti.engine.ActivitiException;
 import org.activiti.impl.execution.ExecutionImpl;
 import org.activiti.pvm.Listener;
 import org.activiti.pvm.ListenerExecution;

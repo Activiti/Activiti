@@ -16,8 +16,8 @@ import static org.junit.Assert.assertEquals;
 
 import java.util.Date;
 
-import org.activiti.ProcessInstance;
-import org.activiti.Task;
+import org.activiti.engine.ProcessInstance;
+import org.activiti.engine.Task;
 import org.activiti.impl.time.Clock;
 import org.activiti.test.JobExecutorPoller;
 import org.activiti.test.LogInitializer;

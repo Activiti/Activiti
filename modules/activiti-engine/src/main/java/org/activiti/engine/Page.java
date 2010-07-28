@@ -10,33 +10,31 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.activiti;
+package org.activiti.engine;
 
 
-
-/** represents one task for a human user.
+/**
+ * holds the parameters of a page (partial result) for a query. 
  * 
  * @author Joram Barrez
  */
-public interface Task {
-	
-	String getId();
-	
-	String getName();
+public class Page {
+  
+  protected int offset;
+  
+  protected int maxResults;
+  
+  public Page(int offset, int maxResults) {
+    this.offset = offset;
+    this.maxResults = maxResults;
+  }
+  
+  public int getOffset() {
+    return offset;
+  }
 
-	void setName(String name);
-	
-	String getDescription();
-	
-	void setDescription(String description);
-	
-	int getPriority();
-	
-	void setPriority(int priority);
-	
-	String getAssignee();
-	
-	String getExecutionId();
-	
-	String getProcessDefinitionId();
+  public int getMaxResults() {
+    return maxResults;
+  }
+
 }

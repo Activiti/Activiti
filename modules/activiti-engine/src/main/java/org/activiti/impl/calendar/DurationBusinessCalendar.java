@@ -19,7 +19,7 @@ import java.util.GregorianCalendar;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.Duration;
 
-import org.activiti.ActivitiException;
+import org.activiti.engine.ActivitiException;
 import org.activiti.impl.time.Clock;
 
 

@@ -19,12 +19,12 @@ import java.util.zip.ZipInputStream;
 import javax.el.ELResolver;
 import javax.sql.DataSource;
 
-import org.activiti.DbSchemaStrategy;
-import org.activiti.DeploymentBuilder;
-import org.activiti.HistoricDataService;
-import org.activiti.IdentityService;
-import org.activiti.ProcessEngine;
-import org.activiti.ProcessService;
+import org.activiti.engine.DbSchemaStrategy;
+import org.activiti.engine.DeploymentBuilder;
+import org.activiti.engine.HistoricDataService;
+import org.activiti.engine.IdentityService;
+import org.activiti.engine.ProcessEngine;
+import org.activiti.engine.ProcessService;
 import org.activiti.impl.ProcessEngineImpl;
 import org.activiti.impl.cfg.ProcessEngineFactory;
 import org.activiti.impl.db.IdGenerator;

@@ -12,7 +12,7 @@
  */
 package org.activiti.impl.execution;
 
-import org.activiti.ActivitiException;
+import org.activiti.engine.ActivitiException;
 import org.activiti.impl.definition.ActivityImpl;
 import org.activiti.pvm.EventActivityBehavior;
 

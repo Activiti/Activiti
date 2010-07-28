@@ -20,7 +20,7 @@ import java.util.Set;
 
 import javax.script.Bindings;
 
-import org.activiti.ActivitiException;
+import org.activiti.engine.ActivitiException;
 import org.activiti.impl.execution.ExecutionImpl;
 
 

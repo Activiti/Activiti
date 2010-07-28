@@ -12,7 +12,7 @@
  */
 package org.activiti.rest.api.management;
 
-import org.activiti.TablePageQuery;
+import org.activiti.engine.TablePageQuery;
 import org.activiti.rest.util.ActivitiWebScript;
 import org.springframework.extensions.webscripts.Cache;
 import org.springframework.extensions.webscripts.Status;

@@ -14,7 +14,7 @@ package org.activiti.test.connection;
 
 import java.sql.SQLException;
 
-import org.activiti.DbProcessEngineBuilder;
+import org.activiti.engine.DbProcessEngineBuilder;
 import org.hamcrest.Description;
 import org.junit.Rule;
 import org.junit.Test;

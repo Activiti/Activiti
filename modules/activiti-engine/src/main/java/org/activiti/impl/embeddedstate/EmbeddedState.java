@@ -18,8 +18,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.activiti.ActivitiException;
-import org.activiti.ProcessInstance;
+import org.activiti.engine.ActivitiException;
+import org.activiti.engine.ProcessInstance;
 import org.activiti.impl.definition.ProcessDefinitionImpl;
 import org.activiti.impl.execution.ExecutionImpl;
 import org.activiti.pvm.Activity;

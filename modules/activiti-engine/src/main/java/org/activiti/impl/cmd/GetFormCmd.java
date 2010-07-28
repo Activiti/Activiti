@@ -12,7 +12,7 @@
  */
 package org.activiti.impl.cmd;
 
-import org.activiti.ActivitiException;
+import org.activiti.engine.ActivitiException;
 import org.activiti.impl.bytes.ByteArrayImpl;
 import org.activiti.impl.definition.FormReference;
 import org.activiti.impl.definition.ProcessDefinitionImpl;

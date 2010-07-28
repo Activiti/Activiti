@@ -16,8 +16,8 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 
-import org.activiti.ActivitiException;
-import org.activiti.ProcessEngine;
+import org.activiti.engine.ActivitiException;
+import org.activiti.engine.ProcessEngine;
 
 
 /**

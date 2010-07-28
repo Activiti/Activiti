@@ -10,23 +10,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.activiti;
+package org.activiti.engine;
 
-
-/**
- * runtime exception that is the superclass of all Activiti exceptions.
+/** represents information about the initialization of the process engine. 
  * 
+ * @see ProcessEngines
  * @author Tom Baeyens
  */
-public class ActivitiException extends RuntimeException {
+public interface ProcessEngineInfo {
 
-  private static final long serialVersionUID = 1L;
+  String getName();
 
-  public ActivitiException(String message, Throwable cause) {
-    super(message, cause);
-  }
+  String getResourceUrl();
 
-  public ActivitiException(String message) {
-    super(message);
-  }
+  String getException();
+
 }

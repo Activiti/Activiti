@@ -14,7 +14,7 @@ package org.activiti.impl;
 
 import java.io.Serializable;
 
-import org.activiti.ProcessEngineInfo;
+import org.activiti.engine.ProcessEngineInfo;
 import org.activiti.impl.json.JSONObject;
 
 

@@ -18,7 +18,7 @@ import java.util.Stack;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.activiti.ActivitiException;
+import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.persistence.RepositorySession;
 import org.activiti.impl.cfg.ProcessEngineConfiguration;
 import org.activiti.impl.msg.MessageSession;

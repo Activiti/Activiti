@@ -15,7 +15,7 @@ package org.activiti.impl.timer;
 import java.util.Date;
 import java.util.List;
 
-import org.activiti.ActivitiException;
+import org.activiti.engine.ActivitiException;
 import org.activiti.impl.execution.ExecutionImpl;
 import org.activiti.impl.interceptor.CommandContext;
 import org.activiti.impl.job.TimerImpl;

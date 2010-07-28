@@ -16,13 +16,13 @@ import static org.junit.Assert.assertEquals;
 
 import java.util.List;
 
-import org.activiti.ActivitiException;
-import org.activiti.Deployment;
-import org.activiti.Execution;
-import org.activiti.ProcessEngine;
-import org.activiti.ProcessInstance;
-import org.activiti.ProcessService;
-import org.activiti.Task;
+import org.activiti.engine.ActivitiException;
+import org.activiti.engine.Deployment;
+import org.activiti.engine.Execution;
+import org.activiti.engine.ProcessEngine;
+import org.activiti.engine.ProcessInstance;
+import org.activiti.engine.ProcessService;
+import org.activiti.engine.Task;
 import org.activiti.impl.definition.ActivityImpl;
 import org.activiti.impl.execution.ExecutionImpl;
 import org.activiti.impl.task.TaskDefinition;

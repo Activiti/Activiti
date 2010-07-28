@@ -10,31 +10,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.activiti;
+
+package org.activiti.engine;
+
+import java.util.Date;
 
 
 /**
- * holds the parameters of a page (partial result) for a query. 
+ * represents one job (timer, message, etc.).
  * 
  * @author Joram Barrez
  */
-public class Page {
+public interface Job {
   
-  protected int offset;
+  /**
+   * Returns the unique identifier for this job.
+   */
+  String getId();
   
-  protected int maxResults;
-  
-  public Page(int offset, int maxResults) {
-    this.offset = offset;
-    this.maxResults = maxResults;
-  }
-  
-  public int getOffset() {
-    return offset;
-  }
-
-  public int getMaxResults() {
-    return maxResults;
-  }
+  /**
+   * Returns the date on which this job is supposed to be processed.
+   */
+  Date getDuedate();
 
 }

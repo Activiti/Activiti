@@ -18,7 +18,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Logger;
 
-import org.activiti.ActivitiException;
+import org.activiti.engine.ActivitiException;
 
 /**
  * @author Dave Syer

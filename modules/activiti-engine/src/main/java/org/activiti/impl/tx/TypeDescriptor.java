@@ -14,7 +14,7 @@ package org.activiti.impl.tx;
 
 import java.lang.reflect.Constructor;
 
-import org.activiti.ActivitiException;
+import org.activiti.engine.ActivitiException;
 import org.activiti.impl.interceptor.CommandContext;
 
 /**

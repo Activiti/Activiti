@@ -14,7 +14,7 @@ package org.activiti.rest.api.engine;
 
 import java.util.Map;
 
-import org.activiti.ProcessEngine;
+import org.activiti.engine.ProcessEngine;
 import org.activiti.rest.util.ActivitiWebScript;
 import org.springframework.extensions.webscripts.*;
 

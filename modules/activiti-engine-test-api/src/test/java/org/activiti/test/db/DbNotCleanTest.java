@@ -14,7 +14,7 @@ package org.activiti.test.db;
 
 import static org.junit.Assert.assertNotNull;
 
-import org.activiti.Deployment;
+import org.activiti.engine.Deployment;
 import org.activiti.test.ProcessEngineBuilder;
 import org.junit.Rule;
 import org.junit.Test;

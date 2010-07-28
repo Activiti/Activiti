@@ -17,7 +17,7 @@ import static org.junit.Assert.assertNotNull;
 
 import java.util.List;
 
-import org.activiti.ProcessDefinition;
+import org.activiti.engine.ProcessDefinition;
 import org.activiti.test.LogInitializer;
 import org.activiti.test.ProcessDeployer;
 import org.junit.Rule;

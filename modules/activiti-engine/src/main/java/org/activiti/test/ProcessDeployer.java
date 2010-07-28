@@ -23,9 +23,9 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.logging.Logger;
 
-import org.activiti.ActivitiException;
-import org.activiti.Deployment;
-import org.activiti.DeploymentBuilder;
+import org.activiti.engine.ActivitiException;
+import org.activiti.engine.Deployment;
+import org.activiti.engine.DeploymentBuilder;
 import org.activiti.impl.bpmn.BpmnDeployer;
 import org.junit.runners.model.FrameworkMethod;
 

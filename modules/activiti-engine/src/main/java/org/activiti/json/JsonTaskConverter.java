@@ -14,8 +14,8 @@ package org.activiti.json;
 
 import java.io.Reader;
 
-import org.activiti.ActivitiException;
-import org.activiti.Task;
+import org.activiti.engine.ActivitiException;
+import org.activiti.engine.Task;
 import org.activiti.impl.json.JSONObject;
 import org.activiti.impl.task.TaskImpl;
 

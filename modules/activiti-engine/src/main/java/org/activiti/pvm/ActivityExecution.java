@@ -14,8 +14,8 @@ package org.activiti.pvm;
 
 import java.util.List;
 
-import org.activiti.ProcessDefinition;
-import org.activiti.ProcessInstance;
+import org.activiti.engine.ProcessDefinition;
+import org.activiti.engine.ProcessInstance;
 import org.activiti.pvm.event.ProcessEvent;
 
 /**

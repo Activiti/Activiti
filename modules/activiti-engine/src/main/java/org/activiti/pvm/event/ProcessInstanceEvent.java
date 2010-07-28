@@ -18,7 +18,7 @@ package org.activiti.pvm.event;
  * This interface is common to all process events being fired in the context of
  * a specific process instance and handled by the {@link
  * org.activiti.pvm.event.ProcessEventBus}. A process instance event is always
- * related to a {@link org.activiti.ProcessInstance} and optionally to an {@link
+ * related to a {@link org.activiti.engine.ProcessInstance} and optionally to an {@link
  * org.activiti.pvm.Activity}.
  *
  * @author Christian Stettler

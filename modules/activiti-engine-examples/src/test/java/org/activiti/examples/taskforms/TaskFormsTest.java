@@ -19,7 +19,7 @@ import static org.junit.Assert.assertNull;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.activiti.Task;
+import org.activiti.engine.Task;
 import org.activiti.test.LogInitializer;
 import org.activiti.test.ProcessDeclared;
 import org.activiti.test.ProcessDeployer;

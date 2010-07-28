@@ -17,12 +17,12 @@ import static org.junit.Assert.assertEquals;
 
 import java.util.List;
 
-import org.activiti.Deployment;
-import org.activiti.ProcessInstance;
-import org.activiti.ProcessService;
-import org.activiti.Task;
-import org.activiti.TaskQuery;
-import org.activiti.TaskService;
+import org.activiti.engine.Deployment;
+import org.activiti.engine.ProcessInstance;
+import org.activiti.engine.ProcessService;
+import org.activiti.engine.Task;
+import org.activiti.engine.TaskQuery;
+import org.activiti.engine.TaskService;
 import org.activiti.test.LogInitializer;
 import org.activiti.test.ProcessDeployer;
 import org.junit.Rule;

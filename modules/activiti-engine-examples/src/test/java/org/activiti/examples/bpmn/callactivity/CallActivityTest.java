@@ -13,8 +13,8 @@
 
 package org.activiti.examples.bpmn.callactivity;
 
-import org.activiti.Task;
-import org.activiti.TaskQuery;
+import org.activiti.engine.Task;
+import org.activiti.engine.TaskQuery;
 import org.activiti.test.LogInitializer;
 import org.activiti.test.ProcessDeclared;
 import org.activiti.test.ProcessDeployer;

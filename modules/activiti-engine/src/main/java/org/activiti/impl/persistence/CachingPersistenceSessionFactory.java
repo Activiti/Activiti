@@ -19,7 +19,7 @@ import java.lang.reflect.Proxy;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.activiti.ActivitiException;
+import org.activiti.engine.ActivitiException;
 import org.activiti.impl.definition.ProcessDefinitionImpl;
 import org.activiti.impl.repository.DeployerManager;
 import org.activiti.impl.repository.DeploymentImpl;

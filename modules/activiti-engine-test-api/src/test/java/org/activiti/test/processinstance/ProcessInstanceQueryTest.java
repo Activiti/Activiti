@@ -15,8 +15,8 @@ package org.activiti.test.processinstance;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
-import org.activiti.ActivitiException;
-import org.activiti.ProcessInstanceQuery;
+import org.activiti.engine.ActivitiException;
+import org.activiti.engine.ProcessInstanceQuery;
 import org.activiti.test.LogInitializer;
 import org.activiti.test.ProcessDeclared;
 import org.activiti.test.ProcessDeployer;

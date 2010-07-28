@@ -15,8 +15,8 @@ package org.activiti.impl.cmd;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.activiti.Task;
-import org.activiti.TaskQuery;
+import org.activiti.engine.Task;
+import org.activiti.engine.TaskQuery;
 import org.activiti.impl.identity.GroupImpl;
 import org.activiti.impl.interceptor.Command;
 import org.activiti.impl.interceptor.CommandContext;

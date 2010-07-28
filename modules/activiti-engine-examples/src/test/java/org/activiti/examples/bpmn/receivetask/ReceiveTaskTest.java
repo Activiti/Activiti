@@ -15,8 +15,8 @@ package org.activiti.examples.bpmn.receivetask;
 
 import static org.junit.Assert.assertNotNull;
 
-import org.activiti.Execution;
-import org.activiti.ProcessInstance;
+import org.activiti.engine.Execution;
+import org.activiti.engine.ProcessInstance;
 import org.activiti.test.LogInitializer;
 import org.activiti.test.ProcessDeclared;
 import org.activiti.test.ProcessDeployer;

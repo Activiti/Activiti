@@ -18,10 +18,10 @@ import static org.junit.Assert.assertNotNull;
 
 import java.util.List;
 
-import org.activiti.DbProcessEngineBuilder;
-import org.activiti.ProcessDefinition;
-import org.activiti.ProcessEngine;
-import org.activiti.ProcessInstance;
+import org.activiti.engine.DbProcessEngineBuilder;
+import org.activiti.engine.ProcessDefinition;
+import org.activiti.engine.ProcessEngine;
+import org.activiti.engine.ProcessInstance;
 import org.activiti.impl.ProcessEngineImpl;
 import org.activiti.test.LogInitializer;
 import org.junit.Rule;

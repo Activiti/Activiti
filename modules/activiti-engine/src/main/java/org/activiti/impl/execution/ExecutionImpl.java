@@ -20,9 +20,9 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.activiti.ActivitiException;
-import org.activiti.ProcessDefinition;
-import org.activiti.ProcessInstance;
+import org.activiti.engine.ActivitiException;
+import org.activiti.engine.ProcessDefinition;
+import org.activiti.engine.ProcessInstance;
 import org.activiti.impl.definition.ActivityImpl;
 import org.activiti.impl.definition.ProcessDefinitionImpl;
 import org.activiti.impl.definition.TransitionImpl;

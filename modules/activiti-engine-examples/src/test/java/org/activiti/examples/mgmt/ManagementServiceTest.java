@@ -17,8 +17,8 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.Map;
 
-import org.activiti.ManagementService;
-import org.activiti.TableMetaData;
+import org.activiti.engine.ManagementService;
+import org.activiti.engine.TableMetaData;
 import org.activiti.test.LogInitializer;
 import org.activiti.test.ProcessDeployer;
 import org.junit.Rule;

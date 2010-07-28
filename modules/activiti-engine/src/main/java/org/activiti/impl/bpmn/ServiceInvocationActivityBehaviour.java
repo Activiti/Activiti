@@ -13,7 +13,7 @@
 
 package org.activiti.impl.bpmn;
 
-import org.activiti.ActivitiException;
+import org.activiti.engine.ActivitiException;
 import org.activiti.impl.el.ActivitiValueExpression;
 import org.activiti.impl.execution.ExecutionImpl;
 import org.activiti.impl.util.ReflectUtil;

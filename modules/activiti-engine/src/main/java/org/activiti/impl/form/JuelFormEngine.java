@@ -15,7 +15,8 @@ package org.activiti.impl.form;
 import javax.el.ELContext;
 import javax.el.ExpressionFactory;
 import javax.el.ValueExpression;
-import org.activiti.ActivitiException;
+
+import org.activiti.engine.ActivitiException;
 import org.activiti.impl.bytes.ByteArrayImpl;
 import org.activiti.impl.repository.DeploymentImpl;
 import org.activiti.impl.task.TaskImpl;

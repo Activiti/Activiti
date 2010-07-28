@@ -15,11 +15,11 @@ package org.activiti.test.db;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.activiti.ActivitiException;
-import org.activiti.ActivitiWrongDbException;
-import org.activiti.DbProcessEngineBuilder;
-import org.activiti.DbSchemaStrategy;
-import org.activiti.ProcessEngine;
+import org.activiti.engine.ActivitiException;
+import org.activiti.engine.ActivitiWrongDbException;
+import org.activiti.engine.DbProcessEngineBuilder;
+import org.activiti.engine.DbSchemaStrategy;
+import org.activiti.engine.ProcessEngine;
 import org.activiti.impl.ProcessEngineImpl;
 import org.activiti.impl.persistence.CachingPersistenceSessionFactory;
 import org.activiti.impl.persistence.IbatisPersistenceSessionFactory;

@@ -22,8 +22,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.activiti.ProcessInstance;
-import org.activiti.Task;
+import org.activiti.engine.ProcessInstance;
+import org.activiti.engine.Task;
 import org.activiti.impl.db.execution.DbExecutionImpl;
 import org.activiti.impl.execution.ExecutionImpl;
 import org.activiti.impl.execution.VariableMap;

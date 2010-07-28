@@ -10,7 +10,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.activiti;
+package org.activiti.engine;
 
 import java.io.InputStream;
 import java.util.zip.ZipInputStream;
@@ -18,7 +18,7 @@ import java.util.zip.ZipInputStream;
 /**
  * builder for creating new deployments.
  * 
- * A builder instance can be obtained through {@link org.activiti.ProcessService#createDeployment()}.
+ * A builder instance can be obtained through {@link org.activiti.engine.ProcessService#createDeployment()}.
  * 
  * Multiple resources can be added to one deployment before calling the {@link #deploy()}
  * operation.

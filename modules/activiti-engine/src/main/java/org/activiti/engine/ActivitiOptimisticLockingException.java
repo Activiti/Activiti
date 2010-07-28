@@ -10,28 +10,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.activiti;
-
+package org.activiti.engine;
 
 
 /**
- * represent a 'path of execution' in a process instance.
+ * is thrown when an optimistic locking occurs in the datastore 
+ * caused by concurrent access of the same data entry. 
  * 
- * Note that a {@link ProcessInstance} also is an execution.
- * 
+ * @author Tom Baeyens
  * @author Joram Barrez
  */
-public interface Execution {
-  
-  /**
-   * the unique identifier of the process instance.
-   */
-  String getId();
-  
-  /**
-   * indicates if the process instance is ended.
-   * @return
-   */
-  boolean isEnded();
+public class ActivitiOptimisticLockingException extends ActivitiException {
+
+  private static final long serialVersionUID = 1L;
+
+  public ActivitiOptimisticLockingException(String message) {
+    super(message);
+  }
 
 }

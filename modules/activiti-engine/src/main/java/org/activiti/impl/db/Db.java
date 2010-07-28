@@ -19,9 +19,9 @@ import java.util.StringTokenizer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.activiti.ActivitiException;
-import org.activiti.ActivitiWrongDbException;
-import org.activiti.ProcessEngine;
+import org.activiti.engine.ActivitiException;
+import org.activiti.engine.ActivitiWrongDbException;
+import org.activiti.engine.ProcessEngine;
 import org.activiti.impl.util.IoUtil;
 import org.apache.ibatis.session.ExecutorType;
 import org.apache.ibatis.session.SqlSession;

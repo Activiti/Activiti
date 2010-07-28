@@ -10,27 +10,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-package org.activiti;
-
-import java.util.Date;
+package org.activiti.engine;
 
 
 /**
- * represents one job (timer, message, etc.).
- * 
  * @author Joram Barrez
  */
-public interface Job {
-  
-  /**
-   * Returns the unique identifier for this job.
-   */
-  String getId();
-  
-  /**
-   * Returns the date on which this job is supposed to be processed.
-   */
-  Date getDuedate();
+public enum SortOrder {
 
+  ASCENDING,
+  DESCENDING;
+  
 }

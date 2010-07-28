@@ -14,7 +14,7 @@ package org.activiti.impl.cmd;
 
 import java.util.List;
 
-import org.activiti.Deployment;
+import org.activiti.engine.Deployment;
 import org.activiti.impl.interceptor.Command;
 import org.activiti.impl.interceptor.CommandContext;
 import org.activiti.impl.persistence.PersistenceSession;

@@ -13,7 +13,8 @@
 package org.activiti.impl.io;
 
 import java.io.InputStream;
-import org.activiti.ActivitiException;
+
+import org.activiti.engine.ActivitiException;
 
 
 /**

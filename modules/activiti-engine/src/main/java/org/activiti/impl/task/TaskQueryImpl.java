@@ -18,11 +18,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.activiti.ActivitiException;
-import org.activiti.Page;
-import org.activiti.SortOrder;
-import org.activiti.Task;
-import org.activiti.TaskQuery;
+import org.activiti.engine.ActivitiException;
+import org.activiti.engine.Page;
+import org.activiti.engine.SortOrder;
+import org.activiti.engine.Task;
+import org.activiti.engine.TaskQuery;
 import org.activiti.impl.identity.GroupImpl;
 import org.activiti.impl.interceptor.CommandContext;
 import org.activiti.impl.interceptor.CommandExecutor;

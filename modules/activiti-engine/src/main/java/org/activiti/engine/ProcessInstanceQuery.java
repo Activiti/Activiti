@@ -10,22 +10,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.activiti;
+package org.activiti.engine;
+
+import java.util.List;
 
 
-/**
- * is thrown when an optimistic locking occurs in the datastore 
- * caused by concurrent access of the same data entry. 
+
+/** builds dynamic search queries for process instances.
  * 
- * @author Tom Baeyens
  * @author Joram Barrez
  */
-public class ActivitiOptimisticLockingException extends ActivitiException {
-
-  private static final long serialVersionUID = 1L;
-
-  public ActivitiOptimisticLockingException(String message) {
-    super(message);
-  }
+public interface ProcessInstanceQuery {
+  
+  ProcessInstanceQuery processDefinitionKey(String processDefinitionKey);
+  
+  long count();
+  
+  List<ProcessInstance> list();
+  
+  List<ProcessInstance> paginatedList(int start, int maxResults);
+  
+  ProcessInstance singleResult();
 
 }

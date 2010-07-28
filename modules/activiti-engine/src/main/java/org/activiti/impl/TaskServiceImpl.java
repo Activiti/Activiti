@@ -15,10 +15,10 @@ package org.activiti.impl;
 import java.util.List;
 import java.util.Map;
 
-import org.activiti.Page;
-import org.activiti.Task;
-import org.activiti.TaskQuery;
-import org.activiti.TaskService;
+import org.activiti.engine.Page;
+import org.activiti.engine.Task;
+import org.activiti.engine.TaskQuery;
+import org.activiti.engine.TaskService;
 import org.activiti.impl.cmd.AddTaskInvolvementCmd;
 import org.activiti.impl.cmd.ClaimTaskCmd;
 import org.activiti.impl.cmd.CompleteTaskCmd;

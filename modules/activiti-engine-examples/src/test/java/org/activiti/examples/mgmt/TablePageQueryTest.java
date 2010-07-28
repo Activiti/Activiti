@@ -18,8 +18,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import org.activiti.TablePage;
-import org.activiti.Task;
+import org.activiti.engine.TablePage;
+import org.activiti.engine.Task;
 import org.activiti.test.ProcessEngineBuilder;
 import org.junit.Rule;
 import org.junit.Test;

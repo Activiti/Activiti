@@ -14,8 +14,8 @@ package org.activiti.test.json;
 
 import java.util.List;
 
-import org.activiti.ProcessDefinition;
-import org.activiti.ProcessService;
+import org.activiti.engine.ProcessDefinition;
+import org.activiti.engine.ProcessService;
 import org.activiti.json.JsonListConverter;
 import org.activiti.json.JsonProcessDefinitionConverter;
 import org.activiti.test.LogInitializer;

@@ -12,7 +12,7 @@
  */
 package org.activiti.test.bpmn.parse;
 
-import org.activiti.ActivitiException;
+import org.activiti.engine.ActivitiException;
 import org.activiti.test.ProcessDeployer;
 import org.junit.Rule;
 import org.junit.Test;

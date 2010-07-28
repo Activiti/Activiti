@@ -12,9 +12,9 @@
  */
 package org.activiti.rest.api.identity;
 
-import org.activiti.ProcessEngine;
-import org.activiti.ProcessEngineInfo;
-import org.activiti.ProcessEngines;
+import org.activiti.engine.ProcessEngine;
+import org.activiti.engine.ProcessEngineInfo;
+import org.activiti.engine.ProcessEngines;
 import org.activiti.rest.util.ActivitiWebScript;
 import org.json.JSONException;
 import org.json.JSONObject;

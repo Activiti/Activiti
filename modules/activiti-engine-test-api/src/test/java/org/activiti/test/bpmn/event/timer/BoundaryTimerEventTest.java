@@ -18,10 +18,10 @@ import static org.junit.Assert.assertEquals;
 import java.util.Date;
 import java.util.List;
 
-import org.activiti.Job;
-import org.activiti.JobQuery;
-import org.activiti.ProcessInstance;
-import org.activiti.Task;
+import org.activiti.engine.Job;
+import org.activiti.engine.JobQuery;
+import org.activiti.engine.ProcessInstance;
+import org.activiti.engine.Task;
 import org.activiti.impl.time.Clock;
 import org.activiti.impl.util.LogUtil.ThreadLogMode;
 import org.activiti.test.JobExecutorPoller;

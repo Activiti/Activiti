@@ -16,9 +16,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.activiti.Page;
-import org.activiti.ProcessInstance;
-import org.activiti.ProcessInstanceQuery;
+import org.activiti.engine.Page;
+import org.activiti.engine.ProcessInstance;
+import org.activiti.engine.ProcessInstanceQuery;
 import org.activiti.impl.interceptor.CommandContext;
 import org.activiti.impl.interceptor.CommandExecutor;
 import org.activiti.impl.query.AbstractListQuery;

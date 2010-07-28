@@ -10,26 +10,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.activiti;
-
-import java.util.List;
+package org.activiti.engine;
 
 
 
-/** builds dynamic search queries for process instances.
+/**
+ * represent a 'path of execution' in a process instance.
+ * 
+ * Note that a {@link ProcessInstance} also is an execution.
  * 
  * @author Joram Barrez
  */
-public interface ProcessInstanceQuery {
+public interface Execution {
   
-  ProcessInstanceQuery processDefinitionKey(String processDefinitionKey);
+  /**
+   * the unique identifier of the process instance.
+   */
+  String getId();
   
-  long count();
-  
-  List<ProcessInstance> list();
-  
-  List<ProcessInstance> paginatedList(int start, int maxResults);
-  
-  ProcessInstance singleResult();
+  /**
+   * indicates if the process instance is ended.
+   * @return
+   */
+  boolean isEnded();
 
 }

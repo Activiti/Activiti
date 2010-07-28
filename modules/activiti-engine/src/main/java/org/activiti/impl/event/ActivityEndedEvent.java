@@ -14,7 +14,7 @@
 
 package org.activiti.impl.event;
 
-import org.activiti.ProcessInstance;
+import org.activiti.engine.ProcessInstance;
 import org.activiti.pvm.Activity;
 
 /**

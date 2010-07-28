@@ -14,7 +14,7 @@ package org.activiti.impl.task;
 
 import java.io.Serializable;
 
-import org.activiti.ActivitiException;
+import org.activiti.engine.ActivitiException;
 import org.activiti.impl.interceptor.CommandContext;
 import org.activiti.impl.persistence.PersistentObject;
 

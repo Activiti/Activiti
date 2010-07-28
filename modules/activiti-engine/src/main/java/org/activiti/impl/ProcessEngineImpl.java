@@ -14,14 +14,14 @@ package org.activiti.impl;
 
 import java.util.logging.Logger;
 
-import org.activiti.DbSchemaStrategy;
-import org.activiti.IdentityService;
-import org.activiti.ManagementService;
-import org.activiti.ProcessEngine;
-import org.activiti.ProcessService;
-import org.activiti.TaskService;
+import org.activiti.engine.DbSchemaStrategy;
+import org.activiti.engine.HistoricDataService;
+import org.activiti.engine.IdentityService;
+import org.activiti.engine.ManagementService;
+import org.activiti.engine.ProcessEngine;
+import org.activiti.engine.ProcessService;
+import org.activiti.engine.TaskService;
 import org.activiti.impl.cfg.ProcessEngineConfiguration;
-import org.activiti.HistoricDataService;
 import org.activiti.impl.jobexecutor.JobExecutor;
 import org.activiti.impl.persistence.PersistenceSessionFactory;
 

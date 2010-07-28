@@ -20,7 +20,7 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.activiti.ActivitiException;
+import org.activiti.engine.ActivitiException;
 import org.activiti.impl.persistence.PersistentObject;
 import org.activiti.impl.tx.Session;
 import org.activiti.impl.variable.DeserializedObject;

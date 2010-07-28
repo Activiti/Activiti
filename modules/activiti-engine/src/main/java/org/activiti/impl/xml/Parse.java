@@ -26,7 +26,7 @@ import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 import javax.xml.validation.Validator;
 
-import org.activiti.ActivitiException;
+import org.activiti.engine.ActivitiException;
 import org.activiti.impl.io.InputStreamSource;
 import org.activiti.impl.io.ResourceStreamSource;
 import org.activiti.impl.io.StreamSource;

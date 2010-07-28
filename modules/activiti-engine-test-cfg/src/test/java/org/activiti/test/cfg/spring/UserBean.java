@@ -12,7 +12,7 @@
  */
 package org.activiti.test.cfg.spring;
 
-import org.activiti.ProcessEngine;
+import org.activiti.engine.ProcessEngine;
 
 /**
  * @author Tom Baeyens

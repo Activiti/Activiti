@@ -10,31 +10,40 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-package org.activiti;
+package org.activiti.engine;
 
 import java.util.List;
 
 
 /**
- * builds dynamic queries for Jobs.
+ * builds dynamic search queries for tasks.
  * 
- * @author jbarrez
+ * @author Joram Barrez
  */
-public interface JobQuery {
+public interface TaskQuery {
   
-  JobQuery processInstanceId(String processInstanceId);
+  final String PROPERTY_NAME = "NAME_";
   
-  //JobQuery timers();
+  TaskQuery name(String name);
   
-  // JobQuery messages();
+  TaskQuery assignee(String assignee);
+  
+  TaskQuery candidateUser(String candidateUser);
+  
+  TaskQuery candidateGroup(String candidateGroup);
+  
+  TaskQuery processInstance(String processInstanceId);
+  
+  TaskQuery orderAsc(String property);
+  
+  TaskQuery orderDesc(String property);
   
   long count();
   
-  Job singleResult();
+  Task singleResult();
   
-  List<Job> list();
+  List<Task> list();
   
-  List<Job> paginatedList(int start, int size);
+  List<Task> paginatedList(int start, int size);
 
 }

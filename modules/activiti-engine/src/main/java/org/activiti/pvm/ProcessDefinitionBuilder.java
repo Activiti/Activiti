@@ -16,7 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
 
-import org.activiti.ActivitiException;
+import org.activiti.engine.ActivitiException;
 import org.activiti.impl.definition.ActivityImpl;
 import org.activiti.impl.definition.ProcessDefinitionImpl;
 import org.activiti.impl.definition.ScopeElementImpl;

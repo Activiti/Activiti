@@ -14,7 +14,7 @@ package org.activiti.json;
 
 import java.io.Reader;
 
-import org.activiti.ProcessEngineInfo;
+import org.activiti.engine.ProcessEngineInfo;
 import org.activiti.impl.ProcessEngineInfoImpl;
 import org.activiti.impl.json.JSONObject;
 

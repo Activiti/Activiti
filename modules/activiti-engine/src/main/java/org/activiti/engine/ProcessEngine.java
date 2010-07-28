@@ -10,26 +10,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.activiti;
+package org.activiti.engine;
 
 /**
  * provides access to all the services that expose the BPM and workflow operations.
  * 
  * <ul>
  * <li>
- * <b>{@link org.activiti.ProcessService}: </b> Allows the creation of
- * {@link org.activiti.Deployment}s and the starting of and searching on
- * {@link org.activiti.ProcessInstance}s.</li>
+ * <b>{@link org.activiti.engine.ProcessService}: </b> Allows the creation of
+ * {@link org.activiti.engine.Deployment}s and the starting of and searching on
+ * {@link org.activiti.engine.ProcessInstance}s.</li>
  * <li>
- * <b>{@link org.activiti.TaskService}: </b> Exposes operations to manage human
- * (standalone) {@link org.activiti.Task}s, such as claiming, completing and
+ * <b>{@link org.activiti.engine.TaskService}: </b> Exposes operations to manage human
+ * (standalone) {@link org.activiti.engine.Task}s, such as claiming, completing and
  * assigning tasks</li>
  * <li>
- * <b>{@link org.activiti.IdentityService}: </b> Used for managing
+ * <b>{@link org.activiti.engine.IdentityService}: </b> Used for managing
  * {@link org.activiti.identity.User}s, {@link org.activiti.identity.Group}s and
  * the relations between them<</li>
  * <li>
- * <b>{@link org.activiti.ManagementService}: </b> Exposes engine admin and
+ * <b>{@link org.activiti.engine.ManagementService}: </b> Exposes engine admin and
  * maintenance operations</li>
  * </ul>
  * 

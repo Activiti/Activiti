@@ -17,10 +17,10 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.List;
 
-import org.activiti.IdentityService;
-import org.activiti.ProcessInstance;
-import org.activiti.Task;
-import org.activiti.TaskService;
+import org.activiti.engine.IdentityService;
+import org.activiti.engine.ProcessInstance;
+import org.activiti.engine.Task;
+import org.activiti.engine.TaskService;
 import org.activiti.identity.Group;
 import org.activiti.identity.User;
 import org.activiti.test.LogInitializer;
