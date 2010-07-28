@@ -73,16 +73,11 @@ public class RepositoryServiceImpl extends ServiceImpl implements RepositoryServ
   }
 
   @SuppressWarnings("unchecked")
-  public List<String> findDeploymentResources(String deploymentId) {
+  public List<String> findDeploymentResourceNames(String deploymentId) {
     return commandExecutor.execute(new FindDeploymentResourcesCmd(deploymentId));
   }
 
-  @SuppressWarnings("unchecked")
-  public List<Deployment> findDeploymentsByName(String name) {
-    return (List<Deployment>) commandExecutor.execute(new FindDeploymentsByNameCmd(name));
-  }
-
-  public InputStream getDeploymentResourceContent(String deploymentId, String resourceName) {
+  public InputStream getResourceAsStream(String deploymentId, String resourceName) {
     return commandExecutor.execute(new GetDeploymentResourceCmd(deploymentId, resourceName));
   }
 

@@ -51,10 +51,7 @@ public interface PersistenceSession extends Session {
   void rollback();
 
   /* Deployment */
-  List<DeploymentImpl> findDeployments();
   List<DeploymentImpl> findDeploymentsByName(String name);
-  DeploymentImpl findDeployment(String deploymentId);
-  DeploymentImpl findDeploymentByProcessDefinitionId(String processDefinitionId);
   List<ByteArrayImpl> findDeploymentResources(String deploymentId);
   List<String> findDeploymentResourceNames(String deploymentId);
   ByteArrayImpl findDeploymentResource(String deploymentId, String resourceName);
@@ -62,14 +59,10 @@ public interface PersistenceSession extends Session {
   byte[] getByteArrayBytes(String byteArrayId);
   ByteArrayImpl findByteArrayById(String byteArrayValueId);
   
-  void insertDeployment(DeploymentImpl deployment);
-  void deleteDeployment(String deploymentId);
-  
   /* Process definition */
   ProcessDefinitionImpl findProcessDefinitionById(String processDefinitionId);
   ProcessDefinitionImpl findLatestProcessDefinitionByKey(String processDefinitionKey);
   List<ProcessDefinitionImpl> findProcessDefinitions();
-  List<ProcessDefinitionImpl> findProcessDefinitionsByDeployment(String deploymentId);
   ProcessDefinitionImpl findProcessDefinitionByDeploymentAndKey(String deploymentId, String processDefinitionKey);
   void insertProcessDefinition(ProcessDefinitionImpl processDefinition);
 
@@ -78,7 +71,7 @@ public interface PersistenceSession extends Session {
 
   /* Execution */
   DbExecutionImpl findExecution(String executionId);
-  List<DbExecutionImpl> findRootExecutionsByProcessDefintion(String processDefinitionId);
+  List<DbExecutionImpl> findProcessInstancesByProcessDefintionId(String processDefinitionId);
   List<ExecutionImpl> findChildExecutions(String parentExecutionid);
   void deleteExecution(String executionId);
   DbExecutionImpl findSubProcessInstance(String superExecutionId);

@@ -61,16 +61,16 @@ public class DeploymentTest {
 
     // Resources should be ordered by name
     String deploymentId = deploymentIds.get(0);
-    List<String> resources = deployer.getRepositoryService().findDeploymentResources(deploymentId);
+    List<String> resources = deployer.getRepositoryService().findDeploymentResourceNames(deploymentId);
     assertEquals(2, resources.size());
     assertEquals("idr_process01.bpmn20.xml", resources.get(0));
     assertEquals("idr_process02.bpmn20.xml", resources.get(1));
 
     // Validate the content of the deployment resources
-    InputStream resourceIs = deployer.getRepositoryService().getDeploymentResourceContent(deploymentId, resources.get(0));
+    InputStream resourceIs = deployer.getRepositoryService().getResourceAsStream(deploymentId, resources.get(0));
     assertEquals(MINIMAL_PROC_DEF.replace(TO_REPLACE, "IDR1"), new String(IoUtil.readInputStream(resourceIs, null)));
     resourceIs.close();
-    resourceIs = deployer.getRepositoryService().getDeploymentResourceContent(deploymentId, resources.get(1));
+    resourceIs = deployer.getRepositoryService().getResourceAsStream(deploymentId, resources.get(1));
     assertEquals(MINIMAL_PROC_DEF.replace(TO_REPLACE, "IDR2"), new String(IoUtil.readInputStream(resourceIs, null)));
     resourceIs.close();
 

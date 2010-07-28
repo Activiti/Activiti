@@ -13,11 +13,10 @@
 
 package org.activiti.engine.test.db;
 
+import java.util.List;
+
 import org.activiti.engine.Deployment;
-import org.activiti.engine.impl.persistence.RepositorySession;
 import org.activiti.engine.test.ProcessEngineImplTestCase;
-import org.activiti.impl.interceptor.Command;
-import org.activiti.impl.interceptor.CommandContext;
 
 
 
@@ -27,21 +26,15 @@ import org.activiti.impl.interceptor.CommandContext;
 public class DeploymentPersistenceTest extends ProcessEngineImplTestCase {
 
   public void testDeployment() {
-    Deployment deployment = processEngine
-      .getRepositoryService()
+    Deployment deployment = repositoryService
       .createDeployment()
       .addString("org/activiti/test/HelloWorld.string", "hello world")
       .addString("org/activiti/test/TheAnswer.string", "42")
       .deploy();
     
-    final String deploymentId = deployment.getId();
+    List<Deployment> deployments = repositoryService.findDeployments();
+    assertEquals(1, deployments.size());
     
-    commandExecutor.execute(new Command<Object>() {
-      public Object execute(CommandContext commandContext) {
-        RepositorySession repositorySession = commandContext.getRepositorySession();
-        
-        return null;
-      }
-    });
+    repositoryService.deleteDeploymentCascade(deployment.getId());
   }
 }

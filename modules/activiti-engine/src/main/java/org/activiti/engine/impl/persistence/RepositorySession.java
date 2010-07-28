@@ -13,6 +13,8 @@
 
 package org.activiti.engine.impl.persistence;
 
+import java.util.List;
+
 import org.activiti.engine.DeploymentBuilder;
 import org.activiti.engine.impl.persistence.repository.Deployer;
 import org.activiti.engine.impl.persistence.repository.DeploymentEntity;
@@ -30,7 +32,7 @@ public interface RepositorySession {
   void deployNew(DeploymentEntity deployment);
   
   /** deletes the deployment and cascades deletion to the contained resources */
-  void deleteDeploymentCascade(DeploymentEntity deployment);
+  void deleteDeployment(String deploymentId);
   
   /** used when {@link DeploymentBuilder#enableDuplicateFiltering()} is called 
    * while building a deployment. */
@@ -41,4 +43,7 @@ public interface RepositorySession {
   void insertProcessDefinition(ProcessDefinitionImpl processDefinition);
 
   ProcessDefinitionEntity findProcessDefinitionByDeploymentAndKey(String deploymentId, String processDefinitionKey);
+  List<ProcessDefinitionEntity> findUndeployedProcessDefinitionsByDeploymentId(String deploymentId);
+
+  List<DeploymentEntity> findDeployments();
 }

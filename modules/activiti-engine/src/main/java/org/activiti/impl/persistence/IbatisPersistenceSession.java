@@ -164,7 +164,7 @@ public class IbatisPersistenceSession implements PersistenceSession {
   }
 
   @SuppressWarnings("unchecked")
-  public List<DbExecutionImpl> findRootExecutionsByProcessDefintion(String processDefinitionId) {
+  public List<DbExecutionImpl> findProcessInstancesByProcessDefintionId(String processDefinitionId) {
     List executions = sqlSession.selectList(statement("selectRootExecutionsForProcessDefinition"), processDefinitionId);
     return loaded.add(executions);
   }
@@ -236,11 +236,6 @@ public class IbatisPersistenceSession implements PersistenceSession {
   // finders for static deployment and process definition information /////////
 
   @SuppressWarnings("unchecked")
-  public List<DeploymentImpl> findDeployments() {
-    return (List<DeploymentImpl>) sqlSession.selectList(statement("selectDeployments"));
-  };
-
-  @SuppressWarnings("unchecked")
   public List<DeploymentImpl> findDeploymentsByName(String name) {
     return (List<DeploymentImpl>) sqlSession.selectList(statement("selectDeploymentsByName"), name);
   };
@@ -300,16 +295,6 @@ public class IbatisPersistenceSession implements PersistenceSession {
   @SuppressWarnings("unchecked")
   public List<ProcessDefinitionImpl> findProcessDefinitions() {
     return sqlSession.selectList(statement("selectProcessDefinitions"));
-  }
-
-  @SuppressWarnings("unchecked")
-  public List<ProcessDefinitionImpl> findProcessDefinitionsByDeployment(String deploymentId) {
-    List<ProcessDefinitionImpl> processDefinitions = new ArrayList<ProcessDefinitionImpl>();
-    List<String> ids =  sqlSession.selectList(statement("selectProcessDefinitionIdsByDeployment"), deploymentId);
-    for (String id : ids) {
-      processDefinitions.add(findProcessDefinitionById(id));
-    }
-    return processDefinitions;
   }
 
   public ProcessDefinitionImpl findProcessDefinitionByDeploymentAndKey(String deploymentId, String processDefinitionKey) {
@@ -506,12 +491,6 @@ public class IbatisPersistenceSession implements PersistenceSession {
     }
     processDefinition.setId(processDefinition.getKey()+":"+processDefinition.getVersion());
     sqlSession.insert(statement("insertProcessDefinition"), processDefinition);
-  }
-
-  public void deleteDeployment(String deploymentId) {
-    sqlSession.delete(statement("deleteProcessDefinitionsForDeployment"), deploymentId);
-    sqlSession.delete(statement("deleteByteArraysForDeployment"), deploymentId);
-    sqlSession.delete(statement("deleteDeployment"), deploymentId);
   }
 
   public Map<String, Long> getTableCount() {

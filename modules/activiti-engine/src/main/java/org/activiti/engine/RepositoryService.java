@@ -33,15 +33,6 @@ public interface RepositoryService {
   /** deletes the given deployment and cascade deletion to process instances and jobs */
   void deleteDeploymentCascade(String deploymentId);
   
-  /** get a rendered startform, for collecting parameters from a user to start 
-   * a new process instance */ 
-  Object getStartFormByKey(String processDefinitionKey);
-  
-  /** get a rendered startform, for collecting parameters from a user to start 
-   * a new process instance */ 
-  Object getStartFormById(String processDefinitionId);
-  
-
   /** 
    * lists all deployments, ordered by deployment date (ascending).
    * 
@@ -53,25 +44,27 @@ public interface RepositoryService {
    * operations <i>findDeploymentResources</i> and <i>getDeploymentResource</i>.
    */
   List<Deployment> findDeployments();
-  
-  /** 
-   * lists all deployments by name, ordered by deployment date (ascending).
-   * 
-   * To retrieve the actual bytes of a deployment resource use the
-   * operations <i>findDeploymentResources</i> and <i>getDeploymentResource</i>.
-   */
-  List<Deployment> findDeploymentsByName(String name);
-  
+
   /**
    * retrieves a list of deployment resources for the given deployment, 
    * ordered alphabetically.
    */
-  List<String> findDeploymentResources(String deploymentId);
+  List<String> findDeploymentResourceNames(String deploymentId);
   
   /**
    * gives access to a deployment resource through a stream of bytes.
    */
-  InputStream getDeploymentResourceContent(String deploymentId, String resourceName);
+  InputStream getResourceAsStream(String deploymentId, String resourceName);
+  
+  
+  /** get a rendered startform, for collecting parameters from a user to start 
+   * a new process instance */ 
+  Object getStartFormByKey(String processDefinitionKey);
+  
+  /** get a rendered startform, for collecting parameters from a user to start 
+   * a new process instance */ 
+  Object getStartFormById(String processDefinitionId);
+
   
   /** 
    * lists all versions of all process definitions ordered by 

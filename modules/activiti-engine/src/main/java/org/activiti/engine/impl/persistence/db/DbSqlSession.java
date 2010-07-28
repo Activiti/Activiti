@@ -21,7 +21,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.activiti.engine.ActivitiException;
-import org.activiti.engine.impl.persistence.repository.DeploymentEntity;
+import org.activiti.engine.impl.util.ClassNameUtil;
+import org.activiti.impl.interceptor.CommandContext;
 import org.activiti.impl.persistence.PersistentObject;
 import org.activiti.impl.tx.Session;
 import org.activiti.impl.variable.DeserializedObject;
@@ -44,7 +45,7 @@ public class DbSqlSession implements Session {
   protected DbSqlSessionFactory dbSqlSessionFactory;
   protected List<PersistentObject> insertedObjects = new ArrayList<PersistentObject>();
   protected Map<Class<?>, Map<String, CachedObject>> cachedObjects = new HashMap<Class<?>, Map<String,CachedObject>>();
-  protected List<PersistentObject> deletedObjects = new ArrayList<PersistentObject>();
+  protected List<Object> deletedObjects = new ArrayList<Object>();
   protected List<DeserializedObject> deserializedObjects = new ArrayList<DeserializedObject>();
 
   public DbSqlSession(DbSqlSessionFactory dbSqlSessionFactory) {
@@ -65,7 +66,32 @@ public class DbSqlSession implements Session {
     cachePut(persistentObject);
   }
   
+  // delete ///////////////////////////////////////////////////////////////////
+  
+  public void delete(PersistentObject persistentObject) {
+    deletedObjects.add(persistentObject);
+    insertedObjects.remove(persistentObject);
+  }
+  
+  public void delete(String statement, Object parameter) {
+    deletedObjects.add(new BulkDeleteOperation(statement, parameter));
+  }
+  
+  public class BulkDeleteOperation {
+    String statement;
+    Object parameter;
+    public BulkDeleteOperation(String statement, Object parameter) {
+      this.statement = statement;
+      this.parameter = parameter;
+    }
+  }
+  
   // select ///////////////////////////////////////////////////////////////////
+
+  @SuppressWarnings("unchecked")
+  public List selectList(String statement) {
+    return selectList(statement, null);
+  }
 
   @SuppressWarnings("unchecked")
   public List selectList(String statement, Object parameter) {
@@ -78,13 +104,6 @@ public class DbSqlSession implements Session {
     statement = dbSqlSessionFactory.mapStatement(statement);
     PersistentObject loadedObject = (PersistentObject) sqlSession.selectOne(statement, parameter);
     return cacheGet(loadedObject);
-  }
-
-  // delete ///////////////////////////////////////////////////////////////////
-  
-  public void delete(PersistentObject persistentObject) {
-    deletedObjects.add(persistentObject);
-    insertedObjects.remove(persistentObject);
   }
 
   // internal session cache ///////////////////////////////////////////////////
@@ -156,16 +175,21 @@ public class DbSqlSession implements Session {
     List<PersistentObject> updatedObjects = getUpdatedObjects();
     
     if (log.isLoggable(Level.FINE)) {
-      log.fine("flushing...");
+      log.fine("flush summary:");
       for (PersistentObject insertedObject: insertedObjects) {
         log.fine("  insert "+toString(insertedObject));
       }
       for (PersistentObject updatedObject: updatedObjects) {
         log.fine("  update "+toString(updatedObject));
       }
-      for (PersistentObject deletedObject: deletedObjects) {
-        log.fine("  delete "+toString(deletedObject));
+      for (Object deletedObject: deletedObjects) {
+        if (deletedObject instanceof BulkDeleteOperation) {
+          log.fine("  bulk delete "+((BulkDeleteOperation)deletedObject).statement);
+        } else {
+          log.fine("  delete "+toString((PersistentObject)deletedObject));
+        }
       }
+      log.fine("now executing flush...");
     }
 
     flushInserts();
@@ -233,17 +257,26 @@ public class DbSqlSession implements Session {
   }
 
   protected void flushDeletes() {
-    for (PersistentObject deletedObject: deletedObjects) {
-      Class<?> deletedObjectClass = deletedObject.getClass();
-      String deleteStatement = dbSqlSessionFactory
-        .getDeleteStatements()
-        .get(deletedObjectClass);
-      deleteStatement = dbSqlSessionFactory.mapStatement(deleteStatement);
-      if (deleteStatement==null) {
-        throw new ActivitiException("no delete statement for "+deletedObject.getClass()+" in the ibatis mapping files");
+    for (Object delete: deletedObjects) {
+      if (delete instanceof BulkDeleteOperation) {
+        BulkDeleteOperation bulkDeleteOperation = (BulkDeleteOperation) delete;
+        String bulkDeleteStatement = dbSqlSessionFactory.mapStatement(bulkDeleteOperation.statement);
+        log.fine("bulk deleting: "+bulkDeleteStatement);
+        sqlSession.delete(bulkDeleteStatement, bulkDeleteOperation.parameter);
+
+      } else {
+        PersistentObject persistentObject = (PersistentObject) delete;
+        Class<?> deletedObjectClass = delete.getClass();
+        String deleteStatement = dbSqlSessionFactory
+          .getDeleteStatements()
+          .get(deletedObjectClass);
+        deleteStatement = dbSqlSessionFactory.mapStatement(deleteStatement);
+        if (deleteStatement==null) {
+          throw new ActivitiException("no delete statement for "+delete.getClass()+" in the ibatis mapping files");
+        }
+        log.fine("deleting: "+toString(persistentObject));
+        sqlSession.delete(deleteStatement, persistentObject);
       }
-      log.fine("deleting: "+toString(deletedObject));
-      sqlSession.delete(deleteStatement, deletedObject);
     }
     deletedObjects.clear();
   }
@@ -252,10 +285,18 @@ public class DbSqlSession implements Session {
     sqlSession.close();
   }
 
+  public void commit() {
+    sqlSession.commit();
+  }
+
+  public void rollback() {
+    sqlSession.rollback();
+  }
+
   protected String toString(PersistentObject persistentObject) {
     if (persistentObject==null) {
       return "null";
     }
-    return persistentObject.getClass().getName()+"["+persistentObject.getId()+"]";
+    return ClassNameUtil.getClassNameWithoutPackage(persistentObject)+"["+persistentObject.getId()+"]";
   }
 }

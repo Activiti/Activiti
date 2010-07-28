@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 
+import org.activiti.engine.impl.persistence.db.DbSqlSession;
 import org.activiti.impl.interceptor.CommandContext;
 import org.activiti.impl.persistence.PersistenceSession;
 
@@ -53,6 +54,7 @@ public class IbatisTransactionContext implements TransactionContext {
     log.fine("firing event committing...");
     fireTransactionEvent(TransactionState.COMMITTING);
     log.fine("committing the ibatis sql session...");
+    getDbSqlSession().commit();
     getPersistenceSession().commit();
     log.fine("firing event committed...");
     fireTransactionEvent(TransactionState.COMMITTED);
@@ -75,6 +77,10 @@ public class IbatisTransactionContext implements TransactionContext {
     return commandContext.getPersistenceSession();
   }
 
+  private DbSqlSession getDbSqlSession() {
+    return commandContext.getSession(DbSqlSession.class);
+  }
+
   public void rollback() {
     try {
       try {
@@ -86,6 +92,7 @@ public class IbatisTransactionContext implements TransactionContext {
         commandContext.exception(exception);
       } finally {
         log.fine("rolling back ibatis sql session...");
+        getDbSqlSession().rollback();
         getPersistenceSession().rollback();
       }
       

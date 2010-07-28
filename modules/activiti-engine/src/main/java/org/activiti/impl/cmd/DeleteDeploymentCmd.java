@@ -14,8 +14,9 @@ package org.activiti.impl.cmd;
 
 import java.util.List;
 
+import org.activiti.engine.impl.persistence.RepositorySession;
+import org.activiti.engine.impl.persistence.repository.ProcessDefinitionEntity;
 import org.activiti.impl.db.execution.DbExecutionImpl;
-import org.activiti.impl.definition.ProcessDefinitionImpl;
 import org.activiti.impl.interceptor.CommandContext;
 import org.activiti.impl.persistence.PersistenceSession;
 
@@ -34,24 +35,20 @@ public class DeleteDeploymentCmd extends CmdVoid {
   }
 
   public void executeVoid(CommandContext commandContext) {
+    RepositorySession repositorySession = commandContext.getRepositorySession();
     PersistenceSession persistenceSession = commandContext.getPersistenceSession();
-    if (!cascade) {
-      persistenceSession.deleteDeployment(deploymentId);
-    } else {
-      
-      List<ProcessDefinitionImpl> procDefs = persistenceSession.findProcessDefinitionsByDeployment(deploymentId);
-      for (ProcessDefinitionImpl processDefinition : procDefs) {
-        List<DbExecutionImpl> executions = persistenceSession.findRootExecutionsByProcessDefintion(processDefinition.getId());
+    
+    if (cascade) {
+      List<ProcessDefinitionEntity> processDefinitions = repositorySession.findUndeployedProcessDefinitionsByDeploymentId(deploymentId);
+      for (ProcessDefinitionEntity processDefinition : processDefinitions) {
+        List<DbExecutionImpl> executions = persistenceSession.findProcessInstancesByProcessDefintionId(processDefinition.getId());
         for (DbExecutionImpl execution : executions) {
           execution.end();
         }
       }
-
-      // TODO: find better workaround
-      persistenceSession.flush(); // need to flush all pending deletes before the process definition can be deleted
-
-      persistenceSession.deleteDeployment(deploymentId);
     }
+
+    repositorySession.deleteDeployment(deploymentId);
   }
 
 }

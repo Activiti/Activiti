@@ -16,7 +16,6 @@ import java.util.List;
 
 import org.activiti.impl.interceptor.Command;
 import org.activiti.impl.interceptor.CommandContext;
-import org.activiti.impl.persistence.PersistenceSession;
 
 
 /**
@@ -26,8 +25,9 @@ import org.activiti.impl.persistence.PersistenceSession;
 public class FindDeploymentsCmd implements Command<List> {
   
   public List execute(CommandContext commandContext) {
-    PersistenceSession persistenceSession = commandContext.getPersistenceSession();
-    return persistenceSession.findDeployments();
+    return commandContext
+      .getRepositorySession()
+      .findDeployments();
   }
 
 }

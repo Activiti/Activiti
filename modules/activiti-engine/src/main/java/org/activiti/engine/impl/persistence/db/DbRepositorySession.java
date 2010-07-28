@@ -18,7 +18,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.activiti.engine.DeploymentBuilder;
 import org.activiti.engine.impl.persistence.RepositorySession;
 import org.activiti.engine.impl.persistence.repository.Deployer;
 import org.activiti.engine.impl.persistence.repository.DeploymentEntity;
@@ -52,20 +51,38 @@ public class DbRepositorySession implements Session, RepositorySession {
   }
 
   public void deployNew(DeploymentEntity deployment) {
+    dbSqlSession.insert(deployment);
     for (Deployer deployer: deployers) {
       deployer.deploy(deployment, this, true);
     }
   }
 
-  public DeploymentEntity findLatestDeploymentByName(String deploymentName) {
-    return (DeploymentEntity) dbSqlSession.selectOne("selectLatestDeploymentByName", deploymentName);
+  public void deployExisting(DeploymentEntity deployment) {
+    for (Deployer deployer: deployers) {
+      deployer.deploy(deployment, this, false);
+    }
   }
 
-  public void deleteDeploymentCascade(DeploymentEntity deployment) {
+  public void deleteDeployment(String deploymentId) {
+    dbSqlSession.delete("deleteProcessDefinitionsForDeployment", deploymentId);
+    dbSqlSession.delete("deleteByteArraysForDeployment", deploymentId);
+    dbSqlSession.delete("deleteDeployment", deploymentId);
   }
+
 
   public void insertProcessDefinition(ProcessDefinitionImpl processDefinition) {
     dbSqlSession.insert(processDefinition);
+  }
+
+  @SuppressWarnings("unchecked")
+  public List<DeploymentEntity> findDeployments() {
+    return (List<DeploymentEntity>) dbSqlSession.selectList("selectDeployments");
+  };
+
+
+  
+  public DeploymentEntity findLatestDeploymentByName(String deploymentName) {
+    return (DeploymentEntity) dbSqlSession.selectOne("selectLatestDeploymentByName", deploymentName);
   }
 
   public ProcessDefinitionEntity findProcessDefinitionByDeploymentAndKey(String deploymentId, String processDefinitionKey) {
@@ -73,5 +90,10 @@ public class DbRepositorySession implements Session, RepositorySession {
     parameters.put("deploymentId", deploymentId);
     parameters.put("processDefinitionKey", processDefinitionKey);
     return (ProcessDefinitionEntity) dbSqlSession.selectOne("selectProcessDefinitionByDeploymentAndKey", parameters);
+  }
+
+  @SuppressWarnings("unchecked")
+  public List<ProcessDefinitionEntity> findUndeployedProcessDefinitionsByDeploymentId(String deploymentId) {
+    return dbSqlSession.selectList("selectProcessDefinitionsByDeploymentId", deploymentId);
   }
 }
