@@ -1,14 +1,15 @@
 package org.activiti.impl.cycle.connect.mock;
 
+import static org.junit.Assert.assertEquals;
+
 import java.util.List;
 
 import org.activiti.impl.cycle.connect.RestClientRepositoryConnector;
+import org.activiti.impl.cycle.connect.api.ContentRepresentation;
 import org.activiti.impl.cycle.connect.api.RepositoryArtifact;
 import org.activiti.impl.cycle.connect.api.RepositoryConnector;
 import org.activiti.impl.cycle.connect.api.RepositoryFolder;
 import org.activiti.impl.cycle.connect.api.RepositoryNode;
-
-import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 
 public class DemoConnectorTest {
@@ -56,6 +57,11 @@ public class DemoConnectorTest {
     assertEquals("/BPMN/Level3/789237892374239", file3.getId());
     assertEquals("InitialBpmnModel", file3.getMetadata().getName());
     assertEquals("/BPMN/Level3", file3.getMetadata().getPath());
+    
+    List<ContentRepresentation> contentRepresentations = file3.getContentRepresentations();
+    for (ContentRepresentation contentRepresentation : contentRepresentations) {
+      System.out.println(contentRepresentation.getName() + " -> " + contentRepresentation.getClientUrl());
+    }
     
 
     

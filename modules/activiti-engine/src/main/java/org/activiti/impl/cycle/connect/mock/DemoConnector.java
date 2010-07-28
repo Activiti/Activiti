@@ -152,6 +152,8 @@ public class DemoConnector implements RepositoryConnector {
     // cp.setContent(content)
     
     map.put(name, cp);
+    
+    artifact.getContentRepresentations().add(cp);
   }
 
   public void createNewFile(String folderUrl, RepositoryArtifact file) {

@@ -243,7 +243,7 @@
 				<module>modules/activiti-rest</module>
 				<module>modules/activiti-probe</module>
 				<module>modules/activiti-explorer</module>
-				<module>modules/activiti-cycle</module>
+				<module>modules/activiti-webapp-cycle</module>
 			</modules>
 		</profile>
     <profile>
@@ -298,7 +298,22 @@
 		</developer>
 		<developer>
 			<name>Bernd Ruecker</name>
-			<organization>Camunda</organization>
+			<organization>camunda</organization>
+			<url>http://camunda.com</url>
+		</developer>
+		<developer>
+			<name>Falko Menge</name>
+			<organization>camunda</organization>
+			<url>http://camunda.com</url>
+		</developer>
+		<developer>
+			<name>Nils Preusker</name>
+			<organization>camunda</organization>
+			<url>http://camunda.com</url>
+		</developer>
+		<developer>
+			<name>Christian Lipphardt</name>
+			<organization>camunda</organization>
 			<url>http://camunda.com</url>
 		</developer>
 		<developer>
