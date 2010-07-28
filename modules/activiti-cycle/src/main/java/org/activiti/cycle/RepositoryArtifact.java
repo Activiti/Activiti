@@ -35,15 +35,29 @@ public class RepositoryArtifact extends RepositoryNode {
    * first query it
    */
   private List<ContentRepresentation> contentRepresentationList;
-
-  private transient List<ArtifactAction> cachedFileActions;
-  private transient ArtifactAction cachedDefaultFileAction;
+  private List<ArtifactAction> cachedFileActions;
 
   public RepositoryArtifact() {
   }
 
   public RepositoryArtifact(RepositoryConnector connector) {
     super(connector);
+  }
+  
+  public ContentRepresentation getContentRepresentation(String representationName) {
+    if (getArtifactType() != null) {
+      for (Class< ? extends ContentRepresentationProvider> providerClass : getArtifactType().getContentRepresentationProviders()) {
+        try {
+          ContentRepresentationProvider p = providerClass.newInstance();
+          if (p.getContentRepresentationName().equals(representationName)) {
+            return p.createContentRepresentation(this, true);
+          }
+        } catch (Exception ex) {
+          log.log(Level.SEVERE, "couldn't create content provider of class " + providerClass, ex);
+        }
+      }
+    }
+    throw new RepositoryException("Couldn't find or load content representation '" + representationName + "' for artifact " + this);
   }
 
   public List<ContentRepresentation> getContentRepresentations() {
@@ -54,16 +68,19 @@ public class RepositoryArtifact extends RepositoryNode {
     // if not done already lazy load the content from the registered providers
     contentRepresentationList = new ArrayList<ContentRepresentation>();
     if (getArtifactType() != null) {
-      List<ContentRepresentationProvider> providers = getArtifactType().getContentRepresentationProviders();
-      for (ContentRepresentationProvider p : providers) {
-        ContentRepresentation cr = p.createContentRepresentation(this, false);
-        if (cr!=null) {
-          cr.setArtifact(this);
-          contentRepresentationList.add(cr);
+      for (Class< ? extends ContentRepresentationProvider> providerClass : getArtifactType().getContentRepresentationProviders()) {
+        try {
+          ContentRepresentationProvider p = providerClass.newInstance();
+          ContentRepresentation cr = p.createContentRepresentation(this, false);
+          if (cr != null) {
+            contentRepresentationList.add(cr);
+          } else {
+            log.warning("content provider '" + p + "' created NULL instead of proper ContentRepresentation object for artifact " + this
+                    + ". Check configuration!");
+          }
         }
-        else {
-          log.warning("content provider '" + p + "' created NULL instead of proper ContentRepresentation object for artifact " + this
-                  + ". Check configuration!");
+        catch (Exception ex) {
+          log.log(Level.SEVERE, "couldn't create content provider of class " + providerClass, ex);
         }
       }
     }
@@ -72,22 +89,19 @@ public class RepositoryArtifact extends RepositoryNode {
   }  
 
   public List<ArtifactAction> getActions() {
-    if (getArtifactType() == null) {
-      return new ArrayList<ArtifactAction>();
+    if (cachedFileActions != null) {
+      return cachedFileActions;
     }
-
-    if (cachedFileActions == null) {
+    
+    cachedFileActions = new ArrayList<ArtifactAction>();
+    if (getArtifactType() != null) {
       cachedFileActions = new ArrayList<ArtifactAction>();
-      for (Class< ? extends ArtifactAction> clazz : getRegisteredActionTypes()) {
+      
+      for (Class< ? extends ArtifactAction> clazz : artifactType.getRegisteredActions()) {
         try {
           ArtifactAction action = clazz.newInstance();
           action.setFile(this);
           cachedFileActions.add(action);
-
-          // check if default and if yes, remember it
-          if (isDefaultAction(clazz)) {
-            cachedDefaultFileAction = action;
-          }
         } catch (Exception ex) {
           log.log(Level.SEVERE, "couldn't create file action of class " + clazz, ex);
         }
@@ -97,36 +111,6 @@ public class RepositoryArtifact extends RepositoryNode {
     log.fine("Actions for file type " + getArtifactType().getName() + " requested, returning " + cachedFileActions.size() + " actions.");
 
     return cachedFileActions;
-  }
-
-  @Deprecated
-  public ArtifactAction getDefaultFileAction() {
-    if (cachedDefaultFileAction == null) {
-      // lazy loading of action definitions if not already done
-      getActions();
-    }
-
-    log.info("Default actions for file type " + getArtifactType() + " requested, returning "
-            + (cachedDefaultFileAction == null ? "null" : cachedDefaultFileAction.getName()));
-
-    return cachedDefaultFileAction;
-  }
-
-  @Deprecated
-  public boolean isDefaultAction(Class< ? extends ArtifactAction> actionType) {
-    if (artifactType != null && artifactType.getDefaultAction() != null) {
-      return artifactType.getDefaultAction().equals(actionType);
-    } else {
-      return false;
-    }
-  }
-
-  public List<Class< ? extends ArtifactAction>> getRegisteredActionTypes() {
-    if (artifactType != null) {
-      return artifactType.getRegisteredActions();
-    } else {
-      return new ArrayList<Class< ? extends ArtifactAction>>();
-    }
   }
 
   public ArtifactType getArtifactType() {

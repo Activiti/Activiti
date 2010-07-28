@@ -64,7 +64,9 @@ public class DemoConnectorTest {
     
     List<ContentRepresentation> contentRepresentations = file3.getContentRepresentations();
     for (ContentRepresentation contentRepresentation : contentRepresentations) {
-      System.out.println(contentRepresentation.getName() + " -> " + contentRepresentation.getClientUrl());
+      System.out.println(contentRepresentation.getName() + " -> " + contentRepresentation.getClientUrl() + " is loaded? "
+              + contentRepresentation.isContentFetched());
+      System.out.println("  # FETCHED CONTENT VIA API: # " + conn.getContent(file3.getId(), contentRepresentation.getName()).getContent());
     }  
     
 

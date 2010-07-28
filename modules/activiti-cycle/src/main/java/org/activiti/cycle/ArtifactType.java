@@ -17,22 +17,27 @@ import java.util.List;
 import org.activiti.cycle.impl.RepositoryRegistry;
 
 /**
- * The file type specifies the type of an artifact, e.g. Signavio model, jpdl process model, text file, word document, ...
+ * The type specifies the type of an artifact, e.g. Signavio model, jpdl process
+ * model, text file, word document, ...
  * 
- * TODO: Think about FileType hierarchy
+ * Linked to this type {@link ContentRepresentation}s for the GUI and
+ * {@link ArtifactAction}s are defined.
+ * 
+ * TODO: Think about hierarchy
  * 
  * @author bernd.ruecker@camunda.com
  */
 public class ArtifactType {
 
+  /**
+   * Human readable name of type
+   */
   private String name;
 
   /**
    * the unique identifier for this file (e.g. file extension for files, namespace for Signavio, ...)
    */
   private String typeIdentifier;
-
-  // TODO: think about artifacts containing different files (e.g. jBPM)
 
   public ArtifactType() {
   }
@@ -43,24 +48,11 @@ public class ArtifactType {
   }
 
   public List<Class< ? extends ArtifactAction>> getRegisteredActions() {
-    return RepositoryRegistry.getActionsForFileType(getTypeIdentifier());
+    return RepositoryRegistry.getArtifactAction(getTypeIdentifier());
   }
 
-  public List<ContentRepresentationProvider> getContentRepresentationProviders() {
-    return RepositoryRegistry.getContentLinkProviders(getTypeIdentifier());
-    // ArrayList<String> list = new ArrayList<String>();
-    //
-    // List<ContentRepresentationProvider> providers =
-    // RepositoryRegistry.getContentLinkProviders(getTypeIdentifier());
-    // for (ContentRepresentationProvider p : providers) {
-    // list.add(p.getName());
-    // }
-    // return list;
-  }
-
-  @Deprecated
-  public Class< ? extends ArtifactAction> getDefaultAction() {
-    return RepositoryRegistry.getDefaultActionForFileType(getTypeIdentifier());
+  public List<Class< ? extends ContentRepresentationProvider>> getContentRepresentationProviders() {
+    return RepositoryRegistry.getContentRepresentationProviders(getTypeIdentifier());
   }
 
   public String getName() {

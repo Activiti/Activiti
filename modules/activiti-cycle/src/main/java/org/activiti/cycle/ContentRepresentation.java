@@ -7,6 +7,12 @@ import java.io.Serializable;
  * type (see {@link ContentRepresentationType}) and a name (which is shown in
  * the GUI).
  * 
+ * The client URL should be normally set by the infrastructure, so a
+ * {@link ContentRepresentationProvider} can concentrate on really providing the
+ * content itself (as byte array). If that is an expensive operation (maybe slow
+ * or big content), then this should only be done if the
+ * {@link ContentRepresentationProvider} is asked to create the content as well.
+ * 
  * @author bernd.ruecker@camunda.com
  */
 public class ContentRepresentation implements Serializable {
@@ -15,18 +21,28 @@ public class ContentRepresentation implements Serializable {
 	
 	private RepositoryArtifact artifact;
 
+	/**
+   * type of content as normally indicated by {@link ContentRepresentationType}
+   * (e.g. text file, image, ...). Information for the client to render it
+   * correctly.
+   */
   private String type;
 	
+  /**
+   * Name of this representation, serves as a key to query the correct
+   * representation and may be used by the client to show a list of possible
+   * {@link ContentRepresentation}s
+   */
 	private String name;
 	
 	private String clientUrl;
-	
+
 	/**
    * the true content as byte array, is not always fetched, so it maybe null!
    */
 	private byte[] content;
 	
-	private boolean contentfetched = false;
+	private boolean contentFetched = false;
 
   public ContentRepresentation() {
   }
@@ -59,18 +75,21 @@ public class ContentRepresentation implements Serializable {
     return content;
   }
 
+  public void setContent(String text) {
+    this.content = text.getBytes();
+  }
+
   public void setContent(byte[] content) {
     this.content = content;
   }
 
-  public boolean isContentfetched() {
-    return contentfetched;
+  public boolean isContentFetched() {
+    return contentFetched;
   }
 
-  public void setContentfetched(boolean contentfetched) {
-    this.contentfetched = contentfetched;
+  public void setContentFetched(boolean contentFetched) {
+    this.contentFetched = contentFetched;
   }
-
   
   public RepositoryArtifact getArtifact() {
     return artifact;

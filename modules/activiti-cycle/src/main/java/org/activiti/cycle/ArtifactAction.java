@@ -16,12 +16,12 @@ import java.util.Map;
 import java.util.logging.Logger;
 
 /**
- * The file action defines an action you can execute upon a file / artefact
+ * The file action defines an action you can execute upon a file / artifact
  * normally depending on the {@link ArtifactType}.
  * 
  * An action can have a GUI representation (e.g. a showing a picture may result
  * in an own web site being opened, showing it in the default panel or doing
- * nothing).
+ * nothing). THIS IS CURRENTLY UNDER CONSTRUCTION.
  * 
  * And it can have come functionality to do something with the file. Idea: Could
  * this be maybe implemented as some kind of pipeline, where the file can be
@@ -36,8 +36,7 @@ public abstract class ArtifactAction {
   private String status;
 
   protected static Logger log = Logger.getLogger(ArtifactAction.class.getName());
-
-  // gui: standard panel / own url / nothing / modal panel
+  
   /**
    * The list of options (still under development): *
    * <tr>
@@ -50,8 +49,6 @@ public abstract class ArtifactAction {
    * </tr>
    */
   public abstract String getGuiRepresentation();
-
-  public abstract String getGuiRepresentationAsString();
 
   /**
    * execute this action on the file.

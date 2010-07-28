@@ -36,11 +36,11 @@ public class RepositoryNode implements Serializable {
    * the beginning.
    */
   private String id;
-  
-  /**
-   * The URL used in the repo internally to query the artifact
-   */
-  private String sourceSystemUrl;
+
+  // /**
+  // * The URL used in the repo internally to query the artifact
+  // */
+  // private String sourceSystem;
 
   /**
    * The url used in the client (e.g. GUI) for this artifact
@@ -54,7 +54,7 @@ public class RepositoryNode implements Serializable {
    * Eager fetching or lazy loading can be decided by the Connector, since this
    * is pretty different depending on the technology.
    */
-  private boolean detailsFetched = false;
+  // private boolean detailsFetched = false;
 
   private RepositoryNodeMetadata metadata = new RepositoryNodeMetadata();
 
@@ -78,9 +78,9 @@ public class RepositoryNode implements Serializable {
     return this.getClass().getSimpleName() + " [id=" + id + ";metadata=" + metadata + "]";
   }
 
-  public boolean isDetailsFetched() {
-    return detailsFetched;
-  }
+  // public boolean isDetailsFetched() {
+  // return detailsFetched;
+  // }
 
   public RepositoryNodeMetadata getMetadata() {
     return metadata;
@@ -88,14 +88,6 @@ public class RepositoryNode implements Serializable {
   
   public Map<String, String> getMetadataAsMap() {
     return metadata.getAsStringMap();
-  }
-  
-  public String getSourceSystemUrl() {
-    return sourceSystemUrl;
-  }
-
-  public void setSourceSystemUrl(String sourceSystemUrl) {
-    this.sourceSystemUrl = sourceSystemUrl;
   }
 
   public String getClientUrl() {
@@ -105,7 +97,6 @@ public class RepositoryNode implements Serializable {
   public void setClientUrl(String clientUrl) {
     this.clientUrl = clientUrl;
   }
-
   
   public String getId() {
     return id;

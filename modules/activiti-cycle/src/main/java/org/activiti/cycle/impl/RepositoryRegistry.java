@@ -21,92 +21,77 @@ import java.util.Map;
 import org.activiti.cycle.ArtifactAction;
 import org.activiti.cycle.ArtifactType;
 import org.activiti.cycle.ContentRepresentationProvider;
-import org.activiti.cycle.RepositoryException;
 
 /**
- * Central class to register {@link ArtifactType}s, associated {@link FileAction}s and {@link ContentLink}s.
+ * Central class to register {@link ArtifactType}s, associated
+ * {@link ArtifactAction}s and {@link ContentRepresentationProvider}s.
  * 
  * @author bernd.ruecker@camunda.com
  */
 public class RepositoryRegistry {
 
-  private static Map<String, ArtifactType> registeredFileTypes = new HashMap<String, ArtifactType>();
-  
-  private static Map<String, List<Class< ? extends ArtifactAction>>> registeredFileActions = new HashMap<String, List<Class< ? extends ArtifactAction>>>();
-  private static Map<String, List<ContentRepresentationProvider>> registeredContentLinkProviders = new HashMap<String, List<ContentRepresentationProvider>>();
-  
-  private static Map<String, Class< ? extends ArtifactAction>> defaultFileActions = new HashMap<String, Class< ? extends ArtifactAction>>();
+  private static Map<String, ArtifactType> registeredArtifactTypes = new HashMap<String, ArtifactType>();
+  private static Map<String, List<Class< ? extends ArtifactAction>>> registeredArtifactActions = new HashMap<String, List<Class< ? extends ArtifactAction>>>();
+  private static Map<String, List<Class< ? extends ContentRepresentationProvider>>> registeredContentRepresentationProviders = new HashMap<String, List<Class< ? extends ContentRepresentationProvider>>>();
 
-  public static void registerFileType(ArtifactType ft) {
-    registeredFileTypes.put(ft.getTypeIdentifier(), ft);
+  public static void registerArtifactType(ArtifactType ft) {
+    registeredArtifactTypes.put(ft.getTypeIdentifier(), ft);
   }
 
-  public static Collection<String> getFileTypeIdentifiers() {
-    return registeredFileTypes.keySet();
+  public static Collection<String> getArtifactTypeIdentifiers() {
+    return registeredArtifactTypes.keySet();
   }
 
-  public static ArtifactType getFileTypeByIdentifier(String fileTypeIdentifier) {
-    return registeredFileTypes.get(fileTypeIdentifier);
+  public static ArtifactType getArtifactTypeByIdentifier(String fileTypeIdentifier) {
+    return registeredArtifactTypes.get(fileTypeIdentifier);
   }
 
-  public static void registerFileAction(String fileTypeIdentifier, Class< ? extends ArtifactAction> action) {
-    registerFileAction(fileTypeIdentifier, action, false);
+  public static void registerContentRepresentationProvider(String fileTypeIdentifier, Class< ? extends ContentRepresentationProvider> provider) {
+    if (registeredContentRepresentationProviders.containsKey(fileTypeIdentifier)) {
+      registeredContentRepresentationProviders.get(fileTypeIdentifier).add(provider);
+    } else {
+      ArrayList<Class< ? extends ContentRepresentationProvider>> list = new ArrayList<Class< ? extends ContentRepresentationProvider>>();
+      list.add(provider);
+      registeredContentRepresentationProviders.put(fileTypeIdentifier, list);
+    }
   }
 
-  public static void registerContentLinkProvider(String fileTypeIdentifier, ContentRepresentationProvider provider) {
-    if (registeredContentLinkProviders.containsKey(fileTypeIdentifier)) {
-    	registeredContentLinkProviders.get(fileTypeIdentifier).add(provider);
-	} 
-    else {
-		ArrayList<ContentRepresentationProvider> list = new ArrayList<ContentRepresentationProvider>();
-		list.add(provider);
-		registeredContentLinkProviders.put(fileTypeIdentifier, list);
-	}
-  }
-
-  @Deprecated /** use the one without default flag */  
-  public static void registerFileAction(String fileTypeIdentifier, Class< ? extends ArtifactAction> action, boolean isDefault) {
-    if (registeredFileActions.containsKey(fileTypeIdentifier)) {
-      registeredFileActions.get(fileTypeIdentifier).add(action);
+  public static void registerArtifactAction(String artifactTypeIdentifier, Class< ? extends ArtifactAction> action) {
+    if (registeredArtifactActions.containsKey(artifactTypeIdentifier)) {
+      registeredArtifactActions.get(artifactTypeIdentifier).add(action);
     } else {
       ArrayList<Class< ? extends ArtifactAction>> list = new ArrayList<Class< ? extends ArtifactAction>>();
       list.add(action);
-      registeredFileActions.put(fileTypeIdentifier, list);
-    }
-    // register default action. If a default action was already registered it is overwritten.
-    if (isDefault) {
-      defaultFileActions.put(fileTypeIdentifier, action);
+      registeredArtifactActions.put(artifactTypeIdentifier, list);
     }
   }
 
-  @Deprecated
-  public static Class< ? extends ArtifactAction> getDefaultActionForFileType(String fileTypeName) {
-    return defaultFileActions.get(fileTypeName);
-  }
-
-  public static List<Class< ? extends ArtifactAction>> getActionsForFileType(String fileTypeName) {
-    if (registeredFileActions.containsKey(fileTypeName)) {
-      return registeredFileActions.get(fileTypeName);
+  public static List<Class< ? extends ArtifactAction>> getArtifactAction(String artifactTypeName) {
+    if (registeredArtifactActions.containsKey(artifactTypeName)) {
+      return registeredArtifactActions.get(artifactTypeName);
     } else {
       return new ArrayList<Class< ? extends ArtifactAction>>();
     }
   }
 
-  public static List<ContentRepresentationProvider> getContentLinkProviders(String fileTypeName) {
-	    if (registeredContentLinkProviders.containsKey(fileTypeName)) {
-	      return registeredContentLinkProviders.get(fileTypeName);
-	    } else {
-	      return new ArrayList<ContentRepresentationProvider>();
-	    }
-	  }
-
-  public static ContentRepresentationProvider getContentLinkProvider(String fileTypeName, String providerName) {
-    for (ContentRepresentationProvider provder : getContentLinkProviders(fileTypeName)) {
-      if (provder.getName().equals(providerName)) {
-        return provder;
-      }
+  public static List<Class< ? extends ContentRepresentationProvider>> getContentRepresentationProviders(String fileTypeName) {
+    if (registeredContentRepresentationProviders.containsKey(fileTypeName)) {
+      return registeredContentRepresentationProviders.get(fileTypeName);
+    } else {
+      return new ArrayList<Class< ? extends ContentRepresentationProvider>>();
     }
-    throw new RepositoryException("Couldn't find content provider '" + providerName + "' for filetype '" + fileTypeName + "'");
   }
+
+  // public static ContentRepresentationProvider getContentLinkProvider(String
+  // fileTypeName, String providerName) {
+  // for (ContentRepresentationProvider provder :
+  // getContentRepresentationProviders(fileTypeName)) {
+  // if (provder.getName().equals(providerName)) {
+  // return provder;
+  // }
+  // }
+  // throw new RepositoryException("Couldn't find content provider '" +
+  // providerName + "' for filetype '" + fileTypeName + "'");
+  // }
 
 }
