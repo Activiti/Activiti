@@ -20,21 +20,23 @@ import java.util.logging.Logger;
 
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.util.ClassNameUtil;
+import org.activiti.impl.cfg.ProcessEngineConfiguration;
+import org.activiti.impl.cfg.ProcessEngineConfigurationAware;
 
 /**
+ * @author Tom Baeyens
  * @author Dave Syer
  */
-public class DefaultCommandExecutor implements CommandExecutor {
+public class DefaultCommandExecutor implements CommandExecutor, ProcessEngineConfigurationAware {
 
   private static Logger log = Logger.getLogger(DefaultCommandExecutor.class.getName());
-  private final List<ContextAwareCommandInterceptor> contextAwareInterceptors = new ArrayList<ContextAwareCommandInterceptor>();
+  
+  protected List<ContextAwareCommandInterceptor> contextAwareInterceptors = new ArrayList<ContextAwareCommandInterceptor>();
+  protected List<CommandInterceptor> interceptors = new ArrayList<CommandInterceptor>();
+  protected CommandContextFactory commandContextFactory;
 
-  private final List<CommandInterceptor> interceptors = new ArrayList<CommandInterceptor>();
-
-  private final CommandContextFactory commandContextFactory;
-
-  public DefaultCommandExecutor(CommandContextFactory commandContextFactory) {
-    this.commandContextFactory = commandContextFactory;
+  public void configurationCompleted(ProcessEngineConfiguration processEngineConfiguration) {
+    this.commandContextFactory = processEngineConfiguration.getCommandContextFactory();
   }
 
   public DefaultCommandExecutor addContextAwareCommandInterceptor(ContextAwareCommandInterceptor interceptor) {
@@ -134,5 +136,15 @@ public class DefaultCommandExecutor implements CommandExecutor {
       }
       return null;
     }
+  }
+
+  // getters and setters //////////////////////////////////////////////////////
+  
+  public CommandContextFactory getCommandContextFactory() {
+    return commandContextFactory;
+  }
+
+  public void setCommandContextFactory(CommandContextFactory commandContextFactory) {
+    this.commandContextFactory = commandContextFactory;
   }
 }

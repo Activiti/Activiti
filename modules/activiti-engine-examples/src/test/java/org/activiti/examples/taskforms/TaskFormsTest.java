@@ -20,8 +20,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.activiti.engine.Task;
+import org.activiti.engine.test.Deployment;
 import org.activiti.test.LogInitializer;
-import org.activiti.test.ProcessDeclared;
 import org.activiti.test.ProcessDeployer;
 import org.junit.After;
 import org.junit.Before;
@@ -53,7 +53,7 @@ public class TaskFormsTest {
   }
 
   @Test
-  @ProcessDeclared(resources = { "VacationRequest.bpmn20.xml", "approve.form", "request.form", "adjustRequest.form" })
+  @Deployment(resources = { "VacationRequest.bpmn20.xml", "approve.form", "request.form", "adjustRequest.form" })
   public void testTaskFormsWithVacationRequestProcess() {
 
     // Get start form
@@ -76,7 +76,7 @@ public class TaskFormsTest {
   }
 
   @Test
-  @ProcessDeclared
+  @Deployment
   public void testTaskFormUnavailable() {
     assertNull(deployer.getRepositoryService().getStartFormByKey("noStartOrTaskForm"));
 

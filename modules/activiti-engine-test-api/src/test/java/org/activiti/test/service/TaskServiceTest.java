@@ -19,8 +19,8 @@ import java.util.Map;
 
 import org.activiti.engine.ProcessInstance;
 import org.activiti.engine.Task;
+import org.activiti.engine.test.Deployment;
 import org.activiti.test.LogInitializer;
-import org.activiti.test.ProcessDeclared;
 import org.activiti.test.ProcessDeployer;
 import org.junit.Rule;
 import org.junit.Test;
@@ -36,7 +36,7 @@ public class TaskServiceTest {
   public ProcessDeployer deployer = new ProcessDeployer();
 
   @Test
-  @ProcessDeclared(resources={"twoTasksProcess.bpmn20.xml"})
+  @Deployment(resources={"twoTasksProcess.bpmn20.xml"})
   public void testCompleteWithParametersTask() {
     ProcessInstance processInstance = deployer.getProcessService().startProcessInstanceByKey("twoTasksProcess");
     

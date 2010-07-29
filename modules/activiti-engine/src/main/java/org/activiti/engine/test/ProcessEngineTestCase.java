@@ -13,7 +13,10 @@
 
 package org.activiti.engine.test;
 
+import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -21,11 +24,13 @@ import java.util.logging.Logger;
 import junit.framework.AssertionFailedError;
 import junit.framework.TestCase;
 
-import org.activiti.engine.ProcessEngineBuilder;
+import org.activiti.engine.ActivitiException;
+import org.activiti.engine.DeploymentBuilder;
 import org.activiti.engine.HistoricDataService;
 import org.activiti.engine.IdentityService;
 import org.activiti.engine.ManagementService;
 import org.activiti.engine.ProcessEngine;
+import org.activiti.engine.ProcessEngineBuilder;
 import org.activiti.engine.ProcessService;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.TaskService;
@@ -33,6 +38,7 @@ import org.activiti.engine.impl.util.ClassNameUtil;
 import org.activiti.impl.time.Clock;
 import org.activiti.impl.util.LogUtil;
 import org.activiti.impl.util.LogUtil.ThreadLogMode;
+import org.activiti.test.ProcessDeployer;
 
 
 /** JUnit 3 style base class that only exposes the public API services. 
@@ -55,6 +61,8 @@ public class ProcessEngineTestCase extends TestCase {
   
   protected ThreadLogMode threadRenderingMode;
   protected String configurationResource;
+  protected List<String> deploymentsToDeleteAfterTestMethod = new ArrayList<String>();
+
   protected ProcessEngine processEngine;
   protected RepositoryService repositoryService;
   protected ProcessService processService;
@@ -62,7 +70,7 @@ public class ProcessEngineTestCase extends TestCase {
   protected HistoricDataService historicDataService;
   protected IdentityService identityService;
   protected ManagementService managementService;
-  
+
   public ProcessEngineTestCase() {
     this(DEFAULT_CONFIGURATION_RESOURCE, DEFAULT_THREAD_LOG_MODE);
   }
@@ -102,6 +110,8 @@ public class ProcessEngineTestCase extends TestCase {
 
     try {
       
+      processDeploymentAnnotation();
+      
       super.runTest();
 
     }  catch (AssertionFailedError e) {
@@ -113,9 +123,41 @@ public class ProcessEngineTestCase extends TestCase {
       log.log(Level.SEVERE, "EXCEPTION: "+e, e);
       throw e;
     } finally {
+      for (String deploymentId: deploymentsToDeleteAfterTestMethod) {
+        repositoryService.deleteDeployment(deploymentId);
+      }
       Clock.reset();
       log.fine("#### END "+ClassNameUtil.getClassNameWithoutPackage(this)+"."+getName()+" #############################################################");
       LogUtil.setThreadLogMode(oldThreadRenderingMode);
+    }
+  }
+
+  protected void processDeploymentAnnotation() {
+    Method method = null;
+    try {
+      method = getClass().getDeclaredMethod(getName(), (Class<?>[])null);
+    } catch (Exception e) {
+      throw new ActivitiException("can't get method by reflection", e);
+    }
+    Deployment deploymentAnnotation = method.getAnnotation(Deployment.class);
+    if (deploymentAnnotation != null) {
+      String[] resources = deploymentAnnotation.resources();
+      if (resources.length == 0) {
+        String name = method.getName();
+        String resource = ProcessDeployer.getBpmnProcessDefinitionResource(getClass(), name);
+        resources = new String[]{resource};
+      }
+      
+      DeploymentBuilder deploymentBuilder = repositoryService
+        .createDeployment()
+        .name(ClassNameUtil.getClassNameWithoutPackage(this)+"."+getName());
+      
+      for (String resource: resources) {
+        deploymentBuilder.addClasspathResource(resource);
+      }
+      
+      String deploymentId = deploymentBuilder.deploy().getId();
+      deploymentsToDeleteAfterTestMethod.add(deploymentId);
     }
   }
 

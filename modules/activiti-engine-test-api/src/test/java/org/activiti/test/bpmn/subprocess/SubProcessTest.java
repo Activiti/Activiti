@@ -19,10 +19,10 @@ import java.util.List;
 import org.activiti.engine.ProcessInstance;
 import org.activiti.engine.Task;
 import org.activiti.engine.TaskQuery;
+import org.activiti.engine.test.Deployment;
 import org.activiti.impl.time.Clock;
 import org.activiti.test.JobExecutorPoller;
 import org.activiti.test.LogInitializer;
-import org.activiti.test.ProcessDeclared;
 import org.activiti.test.ProcessDeployer;
 import org.junit.Ignore;
 import org.junit.Rule;
@@ -42,7 +42,7 @@ public class SubProcessTest {
   public ProcessDeployer deployer = new ProcessDeployer();
   
   @Test
-  @ProcessDeclared
+  @Deployment
   public void testSimpleSubProcess() {
     
     // After staring the process, the task in the subprocess should be active
@@ -62,7 +62,7 @@ public class SubProcessTest {
    * Same test case as before, but now with all automatic steps
    */
   @Test
-  @ProcessDeclared
+  @Deployment
   public void testSimpleAutomaticSubProcess() {
     ProcessInstance pi = deployer.getProcessService().startProcessInstanceByKey("simpleSubProcessAutomatic");
     assertTrue(pi.isEnded());
@@ -70,7 +70,7 @@ public class SubProcessTest {
   }
   
   @Test
-  @ProcessDeclared
+  @Deployment
   public void testSimpleSubProcessWithTimer() {
     
     Date startTime = new Date();
@@ -98,7 +98,7 @@ public class SubProcessTest {
    * where 2 concurrent paths are defined when the timer fires.
    */
   @Test
-  @ProcessDeclared
+  @Deployment
   @Ignore
   public void testSimpleSubProcessWithConcurrentTimer() {
     
@@ -136,7 +136,7 @@ public class SubProcessTest {
    * is nested within another subprocess.
    */
   @Test
-  @ProcessDeclared
+  @Deployment
   public void testNestedSimpleSubProcess() {
     
     // After staring the process, the task in the inner subprocess must be active
@@ -152,7 +152,7 @@ public class SubProcessTest {
   }
   
   @Test
-  @ProcessDeclared
+  @Deployment
   public void testNestedSimpleSubprocessWithTimerOnInnerSubProcess() {
     Date startTime = new Date();
     
@@ -180,7 +180,7 @@ public class SubProcessTest {
    * is nested within two other sub processes
    */
   @Test
-  @ProcessDeclared
+  @Deployment
   public void testDoubleNestedSimpleSubProcess() {
     // After staring the process, the task in the inner subprocess must be active
     ProcessInstance pi = deployer.getProcessService().startProcessInstanceByKey("nestedSimpleSubProcess");
@@ -195,7 +195,7 @@ public class SubProcessTest {
   }
   
   @Test
-  @ProcessDeclared
+  @Deployment
   public void testSimpleParallelSubProcess() {
     
     // After starting the process, the two task in the subprocess should be active
@@ -216,7 +216,7 @@ public class SubProcessTest {
   }
   
   @Test
-  @ProcessDeclared
+  @Deployment
   public void testSimpleParallelSubProcessWithTimer() {
     
     Date startTime = new Date();
@@ -245,7 +245,7 @@ public class SubProcessTest {
   }
   
   @Test
-  @ProcessDeclared
+  @Deployment
   public void testTwoSubProcessInParallel() {
     ProcessInstance pi = deployer.getProcessService().startProcessInstanceByKey("twoSubProcessInParallel");
     TaskQuery taskQuery = deployer.getTaskService()
@@ -277,7 +277,7 @@ public class SubProcessTest {
   }
   
   @Test
-  @ProcessDeclared
+  @Deployment
   public void testTwoSubProcessInParallelWithinSubProcess() {
     ProcessInstance pi = deployer.getProcessService().startProcessInstanceByKey("twoSubProcessInParallelWithinSubProcess");
     TaskQuery taskQuery = deployer.getTaskService()
@@ -305,7 +305,7 @@ public class SubProcessTest {
   }
   
   @Test
-  @ProcessDeclared
+  @Deployment
   public void testTwoNestedSubProcessesInParallelWithTimer() {
     
     Date startTime = new Date();

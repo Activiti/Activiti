@@ -12,8 +12,8 @@
  */
 package org.activiti.test.bpmn.property;
 
+import org.activiti.engine.test.Deployment;
 import org.activiti.test.LogInitializer;
-import org.activiti.test.ProcessDeclared;
 import org.activiti.test.ProcessDeployer;
 import org.junit.Ignore;
 import org.junit.Rule;
@@ -30,7 +30,7 @@ public class PropertyTest {
   public ProcessDeployer deployer = new ProcessDeployer();
 
   @Test
-  @ProcessDeclared
+  @Deployment
   public void testUserTaskSrcProperty() {
 
 //    // Start the process -> waits in usertask
@@ -68,7 +68,7 @@ public class PropertyTest {
   }
 
   @Test
-  @ProcessDeclared
+  @Deployment
   public void testUserTaskSrcExprProperty() {
 
 //    // Start the process -> waits in usertask
@@ -93,7 +93,7 @@ public class PropertyTest {
   }
 
   @Test
-  @ProcessDeclared
+  @Deployment
   public void testUserTaskDstProperty() {
 
 //    ProcessInstance pi = deployer.getProcessService().startProcessInstanceByKey("testUserTaskDstProperty");
@@ -118,7 +118,7 @@ public class PropertyTest {
   }
 
   @Test
-  @ProcessDeclared
+  @Deployment
   @Ignore // NOT YET IMPLEMENTED
   public void testUserTaskDstExprProperty() {
 
@@ -152,7 +152,7 @@ public class PropertyTest {
   }
 
   @Test
-  @ProcessDeclared
+  @Deployment
   public void testUserTaskLinkProperty() {
 
 //    // Start the process -> waits in usertask

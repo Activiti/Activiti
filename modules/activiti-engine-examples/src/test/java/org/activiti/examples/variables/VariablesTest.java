@@ -23,8 +23,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.activiti.engine.ProcessInstance;
+import org.activiti.engine.test.Deployment;
 import org.activiti.test.LogInitializer;
-import org.activiti.test.ProcessDeclared;
 import org.activiti.test.ProcessDeployer;
 import org.junit.Rule;
 import org.junit.Test;
@@ -40,7 +40,7 @@ public class VariablesTest {
   public ProcessDeployer deployer = new ProcessDeployer();
 
   @Test
-  @ProcessDeclared
+  @Deployment
   public void testBasicVariableOperations() {
  
     Date now = new Date();

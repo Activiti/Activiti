@@ -26,7 +26,7 @@ import org.activiti.engine.IdentityService;
 import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.impl.ProcessEngineImpl;
-import org.activiti.impl.cfg.ProcessEngineFactory;
+import org.activiti.impl.cfg.ProcessEngineConfiguration;
 import org.activiti.impl.db.IdGenerator;
 import org.activiti.impl.interceptor.Command;
 import org.activiti.impl.interceptor.CommandExecutor;
@@ -48,10 +48,11 @@ import org.springframework.transaction.support.TransactionTemplate;
 /**
  * @author Dave Syer
  * @author Christian Stettler
+ * @author Tom Baeyens
  */
 public class ProcessEngineFactoryBean implements FactoryBean<ProcessEngine>, DisposableBean {
 
-  private ProcessEngineFactory factory = new ProcessEngineFactory();
+  private ProcessEngineConfiguration processEngineConfiguration = new ProcessEngineConfiguration();
 
   private PlatformTransactionManager transactionManager;
 
@@ -67,10 +68,10 @@ public class ProcessEngineFactoryBean implements FactoryBean<ProcessEngine>, Dis
 
   public ProcessEngine getObject() throws Exception {
 
-    factory.setLocalTransactions(transactionManager == null);
+    processEngineConfiguration.setLocalTransactions(transactionManager == null);
 
     if (transactionManager != null) {
-      DefaultCommandExecutor commandExecutor = new DefaultCommandExecutor(factory.getCommandContextFactory());
+      DefaultCommandExecutor commandExecutor = (DefaultCommandExecutor) processEngineConfiguration.getCommandExecutor();
       commandExecutor.addCommandInterceptor(new CommandInterceptor() {
 
         public <T> T invoke(final CommandExecutor next, final Command<T> command) {
@@ -85,10 +86,10 @@ public class ProcessEngineFactoryBean implements FactoryBean<ProcessEngine>, Dis
           return result;
         }
       });
-      factory.setCommandExecutor(commandExecutor);
+      processEngineConfiguration.setCommandExecutor(commandExecutor);
     }
 
-    processEngine = factory.createProcessEngine();
+    processEngine = (ProcessEngineImpl) processEngineConfiguration.buildProcessEngine();
     refreshProcessResources(processEngine.getRepositoryService(), processResources);
     return processEngine;
 
@@ -146,55 +147,55 @@ public class ProcessEngineFactoryBean implements FactoryBean<ProcessEngine>, Dis
   }
 
   public void setProcessEventBus(ProcessEventBus processEventBus) {
-    factory.setProcessEventBus(processEventBus);
+    processEngineConfiguration.setProcessEventBus(processEventBus);
   }
   
   public void setCommandExecutor(CommandExecutor commandExecutor) {
-    factory.setCommandExecutor(commandExecutor);
+    processEngineConfiguration.setCommandExecutor(commandExecutor);
   }
 
   public void setDataBaseName(String dataBaseName) {
-    factory.setDatabaseName(dataBaseName);
+    processEngineConfiguration.setDatabaseName(dataBaseName);
   }
 
   public void setDataSource(DataSource dataSource) {
-    factory.setDataSource(dataSource);
+    processEngineConfiguration.setDataSource(dataSource);
   }
 
   public void setDbSchemaStrategy(DbSchemaStrategy dbSchemaStrategy) {
-    factory.setDbSchemaStrategy(dbSchemaStrategy);
+    processEngineConfiguration.setDbSchemaStrategy(dbSchemaStrategy);
   }
 
   public void setHistoricDataService(HistoricDataService historicDataService) {
-    factory.setHistoricDataService(historicDataService);
+    processEngineConfiguration.setHistoricDataService(historicDataService);
   }
 
   public void setIdentityService(IdentityService identityService) {
-    factory.setIdentityService(identityService);
+    processEngineConfiguration.setIdentityService(identityService);
   }
 
   public void setIdGenerator(IdGenerator idGenerator) {
-    factory.setIdGenerator(idGenerator);
+    processEngineConfiguration.setIdGenerator(idGenerator);
   }
 
   public void setJobExecutor(JobExecutor jobExecutor) {
-    factory.setJobExecutor(jobExecutor);
+    processEngineConfiguration.setJobExecutor(jobExecutor);
   }
 
   public void setJobExecutorAutoActivate(boolean jobExecutorAutoActivate) {
-    factory.setJobExecutorAutoActivate(jobExecutorAutoActivate);
+    processEngineConfiguration.setJobExecutorAutoActivate(jobExecutorAutoActivate);
   }
 
   public void setProcessEngineName(String processEngineName) {
-    factory.setProcessEngineName(processEngineName);
+    processEngineConfiguration.setProcessEngineName(processEngineName);
   }
 
   public void setVariableTypes(VariableTypes variableTypes) {
-    factory.setVariableTypes(variableTypes);
+    processEngineConfiguration.setVariableTypes(variableTypes);
   }
 
   public void setElResolver(ELResolver elResolver) {
-    factory.setElResolver(elResolver);
+    processEngineConfiguration.setElResolver(elResolver);
   }
 
 }

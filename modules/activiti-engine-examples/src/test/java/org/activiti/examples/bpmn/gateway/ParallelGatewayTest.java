@@ -20,8 +20,8 @@ import java.util.List;
 import org.activiti.engine.ProcessInstance;
 import org.activiti.engine.Task;
 import org.activiti.engine.TaskQuery;
+import org.activiti.engine.test.Deployment;
 import org.activiti.test.LogInitializer;
-import org.activiti.test.ProcessDeclared;
 import org.activiti.test.ProcessDeployer;
 import org.junit.Rule;
 import org.junit.Test;
@@ -37,7 +37,7 @@ public class ParallelGatewayTest {
   public ProcessDeployer deployer = new ProcessDeployer();
   
   @Test
-  @ProcessDeclared
+  @Deployment
   public void testForkJoin() {
 
     ProcessInstance pi = deployer.getProcessService().startProcessInstanceByKey("forkJoin");
@@ -64,7 +64,7 @@ public class ParallelGatewayTest {
   }
 
   @Test
-  @ProcessDeclared
+  @Deployment
   public void testUnbalancedForkJoin() {
     
     ProcessInstance pi = deployer.getProcessService().startProcessInstanceByKey("UnbalancedForkJoin");

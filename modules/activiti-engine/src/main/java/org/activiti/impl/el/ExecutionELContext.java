@@ -33,12 +33,9 @@ public class ExecutionELContext extends ELContext {
   
   private final ExecutionImpl execution;
   private ELResolver elResolver;
-    
-  public ExecutionELContext(ExecutionImpl execution) {
+
+  public ExecutionELContext(ExecutionImpl execution, ELResolver elResolver) {
     this.execution = execution;
-  }
-  
-  public void setElResolver(ELResolver elResolver) {
     this.elResolver = elResolver;
   }
 

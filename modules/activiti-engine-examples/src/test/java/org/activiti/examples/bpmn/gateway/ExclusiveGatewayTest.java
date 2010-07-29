@@ -20,8 +20,8 @@ import java.util.Map;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ProcessInstance;
 import org.activiti.engine.Task;
+import org.activiti.engine.test.Deployment;
 import org.activiti.test.LogInitializer;
-import org.activiti.test.ProcessDeclared;
 import org.activiti.test.ProcessDeployer;
 import org.junit.Rule;
 import org.junit.Test;
@@ -44,7 +44,7 @@ public class ExclusiveGatewayTest {
    * goes to another task, allowing us to test the decision very easily.
    */
   @Test
-  @ProcessDeclared
+  @Deployment
   public void testDecisionFunctionality() {
 
     Map<String, Object> variables = new HashMap<String, Object>();

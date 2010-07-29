@@ -24,23 +24,17 @@ import org.activiti.engine.impl.persistence.repository.DeploymentBuilderImpl;
 import org.activiti.impl.cmd.DeleteDeploymentCmd;
 import org.activiti.impl.cmd.DeployCmd;
 import org.activiti.impl.cmd.FindDeploymentResourcesCmd;
-import org.activiti.impl.cmd.FindDeploymentsByNameCmd;
 import org.activiti.impl.cmd.FindDeploymentsCmd;
 import org.activiti.impl.cmd.FindProcessDefinitionCmd;
 import org.activiti.impl.cmd.FindProcessDefinitionsCmd;
 import org.activiti.impl.cmd.GetDeploymentResourceCmd;
 import org.activiti.impl.cmd.GetFormCmd;
-import org.activiti.impl.interceptor.CommandExecutor;
 
 
 /**
  * @author Tom Baeyens
  */
 public class RepositoryServiceImpl extends ServiceImpl implements RepositoryService {
-
-  public RepositoryServiceImpl(CommandExecutor commandExecutor) {
-    super(commandExecutor);
-  }
 
   public DeploymentBuilder createDeployment() {
     return new DeploymentBuilderImpl(this);

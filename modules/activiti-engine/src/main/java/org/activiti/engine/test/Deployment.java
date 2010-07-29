@@ -11,7 +11,7 @@
  * limitations under the License.
  */
 
-package org.activiti.test;
+package org.activiti.engine.test;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -24,16 +24,11 @@ import java.lang.annotation.RetentionPolicy;
  * <code>&lt;methodName&gt;.bpmn20.xml.</code> Resources to load can be
  * explicitly specified using either resources or value attributes.
  * 
- * 
  * @author Dave Syer
+ * @author Tom Baeyens
  */
 @Retention(RetentionPolicy.RUNTIME)
-public @interface ProcessDeclared {
-
-  /**
-   * Synonym for {@link #resources()}.
-   */
-  public String[] value() default {};
+public @interface Deployment {
 
   /**
    * Specify resources that make up the process definition. A resource can be

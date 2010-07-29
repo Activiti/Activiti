@@ -13,10 +13,11 @@
 package org.activiti.impl.bpmn;
 
 import java.io.ByteArrayInputStream;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 
-import org.activiti.engine.impl.persistence.RepositorySession;
 import org.activiti.engine.impl.persistence.repository.Deployer;
 import org.activiti.engine.impl.persistence.repository.DeploymentEntity;
 import org.activiti.engine.impl.persistence.repository.ProcessDefinitionEntity;
@@ -48,8 +49,8 @@ public class BpmnDeployer implements Deployer {
     this.businessCalendarManager = businessCalendarManager;
   }
 
-  public void deploy(DeploymentEntity deployment, RepositorySession repositorySession, boolean isNew) {
-
+  public List<ProcessDefinitionEntity> deploy(DeploymentEntity deployment) {
+    List<ProcessDefinitionEntity> processDefinitions = new ArrayList<ProcessDefinitionEntity>();
     Map<String, ResourceEntity> resources = deployment.getResources();
 
     for (String resourceName : resources.keySet()) {
@@ -64,24 +65,11 @@ public class BpmnDeployer implements Deployer {
           .processDefinitionClass(ProcessDefinitionEntity.class)
           .sourceInputStream(inputStream)
           .execute();
-
-        for (ProcessDefinitionEntity processDefinition : bpmnParse.getProcessDefinitions()) {
-          processDefinition.setDeployment(deployment);
-          if (isNew) {
-            repositorySession.insertProcessDefinition(processDefinition);
-          } else {
-            String deploymentId = processDefinition.getDeployment().getId();
-            ProcessDefinitionEntity persistedProcessDefinition = repositorySession.findProcessDefinitionByDeploymentAndKey(deploymentId, processDefinition.getKey());
-            processDefinition.setId(persistedProcessDefinition.getId());
-            processDefinition.setVersion(persistedProcessDefinition.getVersion());
-            
-          }
-        }
+        
+        processDefinitions.addAll(bpmnParse.getProcessDefinitions());
       }
     }
-  }
-
-  public void delete(DeploymentEntity deployment, RepositorySession repositorySession) {
-    // TODO if this class inserts the process definitions, then it should also be responsible for deleting them
+    
+    return processDefinitions;
   }
 }

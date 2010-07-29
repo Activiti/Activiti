@@ -19,12 +19,15 @@ import java.util.Map;
 import org.activiti.engine.impl.persistence.repository.DeploymentEntity;
 import org.activiti.engine.impl.persistence.repository.ResourceEntity;
 import org.activiti.impl.bytes.ByteArrayImpl;
+import org.activiti.impl.cfg.ProcessEngineConfiguration;
+import org.activiti.impl.cfg.ProcessEngineConfigurationAware;
 import org.activiti.impl.db.IdGenerator;
 import org.activiti.impl.db.execution.DbExecutionImpl;
 import org.activiti.impl.interceptor.SessionFactory;
 import org.activiti.impl.job.JobImpl;
 import org.activiti.impl.job.MessageImpl;
 import org.activiti.impl.job.TimerImpl;
+import org.activiti.impl.persistence.IbatisPersistenceSessionFactory;
 import org.activiti.impl.persistence.LoadedObject;
 import org.activiti.impl.task.TaskImpl;
 import org.activiti.impl.task.TaskInvolvement;
@@ -36,7 +39,7 @@ import org.apache.ibatis.session.SqlSessionFactory;
 /**
  * @author Tom Baeyens
  */
-public class DbSqlSessionFactory implements SessionFactory {
+public class DbSqlSessionFactory implements SessionFactory, ProcessEngineConfigurationAware {
 
   public static final Map<Class<?>,String> DEFAULT_INSERT_STATEMENTS = new HashMap<Class<?>, String>();
   public static final Map<Class<?>,String> DEFAULT_UPDATE_STATEMENTS = new HashMap<Class<?>, String>();
@@ -85,10 +88,10 @@ public class DbSqlSessionFactory implements SessionFactory {
   protected Map<Class<?>,String>  updateStatements = DEFAULT_UPDATE_STATEMENTS;
   protected Map<Class<?>,String>  deleteStatements = DEFAULT_DELETE_STATEMENTS;
   
-  public DbSqlSessionFactory(SqlSessionFactory sqlSessionFactory, IdGenerator idGenerator, String databaseName) {
-    this.sqlSessionFactory = sqlSessionFactory;
-    this.idGenerator = idGenerator;
-    this.statementMappings = databaseSpecificStatements.get(databaseName);
+  public void configurationCompleted(ProcessEngineConfiguration processEngineConfiguration) {
+    this.sqlSessionFactory = ((IbatisPersistenceSessionFactory)processEngineConfiguration.getPersistenceSessionFactory()).getSqlSessionFactory();
+    this.idGenerator = processEngineConfiguration.getIdGenerator();
+    this.statementMappings = databaseSpecificStatements.get(processEngineConfiguration.getDatabaseName());
   }
 
   public Session openSession() {

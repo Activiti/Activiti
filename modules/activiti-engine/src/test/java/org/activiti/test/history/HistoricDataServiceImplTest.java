@@ -14,21 +14,27 @@
 
 package org.activiti.test.history;
 
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.fail;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import java.util.Date;
 
-import org.activiti.impl.event.ActivityEndedEvent;
-import org.activiti.impl.event.ActivityStartedEvent;
-import org.activiti.impl.event.ProcessInstanceEndedEvent;
-import org.activiti.impl.event.ProcessInstanceStartedEvent;
-import org.activiti.impl.event.DefaultProcessEventBus;
 import org.activiti.engine.HistoricDataService;
 import org.activiti.engine.ProcessInstance;
+import org.activiti.engine.impl.ProcessEngineImpl;
+import org.activiti.engine.impl.ServiceImpl;
 import org.activiti.history.HistoricActivityInstance;
-import org.activiti.impl.history.HistoricDataServiceImpl;
 import org.activiti.history.HistoricProcessInstance;
+import org.activiti.impl.event.ActivityEndedEvent;
+import org.activiti.impl.event.ActivityStartedEvent;
+import org.activiti.impl.event.DefaultProcessEventBus;
+import org.activiti.impl.event.ProcessInstanceEndedEvent;
+import org.activiti.impl.event.ProcessInstanceStartedEvent;
+import org.activiti.impl.history.HistoricDataServiceImpl;
 import org.activiti.impl.interceptor.Command;
 import org.activiti.impl.interceptor.CommandContext;
 import org.activiti.impl.time.Clock;
@@ -57,7 +63,10 @@ public class HistoricDataServiceImplTest {
   public void setUp() {
     processEventBus = new DefaultProcessEventBus();
 
-    historicDataService = new HistoricDataServiceImpl(deployer.getCommandExecutor());
+    historicDataService = new HistoricDataServiceImpl();
+    // initialization hack :-)
+    ((ServiceImpl)historicDataService).setCommandExecutor(deployer.getCommandExecutor());
+    
     ((HistoricDataServiceImpl) historicDataService).registerEventConsumers(processEventBus);
   }
 
@@ -145,7 +154,9 @@ public class HistoricDataServiceImplTest {
       when(processInstance.getId()).thenReturn("processInstanceId");
       when(processInstance.getProcessDefinitionId()).thenReturn("processDefinitionId");
 
-      HistoricDataService historicDataService = new HistoricDataServiceImpl(deployer.getCommandExecutor());
+      HistoricDataService historicDataService = new HistoricDataServiceImpl();
+      // initialization hack :-)
+      ((ServiceImpl)historicDataService).setCommandExecutor(deployer.getCommandExecutor());
 
       Date startTime = new Date();
       Clock.setCurrentTime(startTime);

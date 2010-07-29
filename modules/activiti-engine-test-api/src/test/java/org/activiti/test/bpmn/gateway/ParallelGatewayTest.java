@@ -16,8 +16,8 @@ package org.activiti.test.bpmn.gateway;
 import static org.junit.Assert.assertTrue;
 
 import org.activiti.engine.ProcessInstance;
+import org.activiti.engine.test.Deployment;
 import org.activiti.test.LogInitializer;
-import org.activiti.test.ProcessDeclared;
 import org.activiti.test.ProcessDeployer;
 import org.junit.Rule;
 import org.junit.Test;
@@ -38,7 +38,7 @@ public class ParallelGatewayTest {
    * In the end, no executions should be in the database.
    */
   @Test
-  @ProcessDeclared
+  @Deployment
   public void testSplitMergeNoWaitstates() {
     ProcessInstance processInstance = 
       deployer.getProcessService().startProcessInstanceByKey("forkJoinNoWaitStates");
@@ -46,7 +46,7 @@ public class ParallelGatewayTest {
   }
   
   @Test
-  @ProcessDeclared
+  @Deployment
   public void testUnstructuredConcurrencyTwoForks() {
     ProcessInstance processInstance = 
       deployer.getProcessService().startProcessInstanceByKey("unstructuredConcurrencyTwoForks");
@@ -54,7 +54,7 @@ public class ParallelGatewayTest {
   }
   
   @Test
-  @ProcessDeclared
+  @Deployment
   public void testUnstructuredConcurrencyTwoJoins() {
     ProcessInstance processInstance = 
       deployer.getProcessService().startProcessInstanceByKey("unstructuredConcurrencyTwoJoins");
@@ -62,7 +62,7 @@ public class ParallelGatewayTest {
   }
   
   @Test
-  @ProcessDeclared
+  @Deployment
   public void testForkFollowedByOnlyEndEvents() {
     ProcessInstance processInstance = 
       deployer.getProcessService().startProcessInstanceByKey("forkFollowedByEndEvents");
@@ -70,7 +70,7 @@ public class ParallelGatewayTest {
   }
   
   @Test
-  @ProcessDeclared
+  @Deployment
   public void testNestedForksFollowedByEndEvents() {
     ProcessInstance processInstance = 
       deployer.getProcessService().startProcessInstanceByKey("nestedForksFollowedByEndEvents");

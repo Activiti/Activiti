@@ -21,10 +21,10 @@ import org.activiti.engine.IdentityService;
 import org.activiti.engine.ProcessInstance;
 import org.activiti.engine.Task;
 import org.activiti.engine.TaskService;
+import org.activiti.engine.test.Deployment;
 import org.activiti.identity.Group;
 import org.activiti.identity.User;
 import org.activiti.test.LogInitializer;
-import org.activiti.test.ProcessDeclared;
 import org.activiti.test.ProcessDeployer;
 import org.junit.After;
 import org.junit.Before;
@@ -78,7 +78,7 @@ public class TaskCandidateTest {
   }
 
   @Test
-  @ProcessDeclared
+  @Deployment
   public void testSingleCandidateGroup() {
 
     // Deploy and start process
@@ -114,7 +114,7 @@ public class TaskCandidateTest {
   }
 
   @Test
-  @ProcessDeclared
+  @Deployment
   public void testMultipleCandidateGroups() {
 
     // Deploy and start process
@@ -159,7 +159,7 @@ public class TaskCandidateTest {
   }
 
   @Test
-  @ProcessDeclared
+  @Deployment
   public void testMultipleCandidateUsers() {
     deployer.getProcessService().startProcessInstanceByKey("multipleCandidateUsers");
 
@@ -168,7 +168,7 @@ public class TaskCandidateTest {
   }
 
   @Test
-  @ProcessDeclared
+  @Deployment
   public void testMixedCandidateUserAndGroup() {
     deployer.getProcessService().startProcessInstanceByKey("mixedCandidateUserAndGroup");
 

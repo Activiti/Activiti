@@ -13,7 +13,6 @@
 
 package org.activiti.engine.impl.persistence.db;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -23,8 +22,6 @@ import org.activiti.engine.impl.persistence.repository.Deployer;
 import org.activiti.engine.impl.persistence.repository.DeploymentEntity;
 import org.activiti.engine.impl.persistence.repository.ProcessDefinitionEntity;
 import org.activiti.engine.impl.persistence.repository.ResourceEntity;
-import org.activiti.impl.bytes.ByteArrayImpl;
-import org.activiti.impl.definition.ProcessDefinitionImpl;
 import org.activiti.impl.interceptor.CommandContext;
 import org.activiti.impl.tx.Session;
 
@@ -34,13 +31,11 @@ import org.activiti.impl.tx.Session;
  */
 public class DbRepositorySession implements Session, RepositorySession {
 
-  protected List<Deployer> deployers = new ArrayList<Deployer>();
-  protected Map<String, ProcessDefinitionEntity> processDefinitionCache = new HashMap<String, ProcessDefinitionEntity>(); 
+  protected DbRepositorySessionFactory dbRepositorySessionFactory;
   protected DbSqlSession dbSqlSession;
   
-  public DbRepositorySession(List<Deployer> deployers, Map<String, ProcessDefinitionEntity> processDefinitionCache) {
-    this.deployers = deployers;
-    this.processDefinitionCache = processDefinitionCache;
+  public DbRepositorySession(DbRepositorySessionFactory dbRepositorySessionFactory) {
+    this.dbRepositorySessionFactory = dbRepositorySessionFactory;
     this.dbSqlSession = CommandContext
       .getCurrent()
       .getSession(DbSqlSession.class);
@@ -58,15 +53,33 @@ public class DbRepositorySession implements Session, RepositorySession {
       resource.setDeploymentId(deployment.getId());
       dbSqlSession.insert(resource);
     }
-    for (Deployer deployer: deployers) {
-      deployer.deploy(deployment, this, true);
+    for (Deployer deployer: dbRepositorySessionFactory.getDeployers()) {
+      List<ProcessDefinitionEntity> processDefinitions = deployer.deploy(deployment);
+      for (ProcessDefinitionEntity processDefinition : processDefinitions) {
+        processDefinition.setDeployment(deployment);
+        dbSqlSession.insert(processDefinition);
+        addToProcessDefinitionCache(processDefinition);
+      }
     }
   }
 
   public void deployExisting(DeploymentEntity deployment) {
-    for (Deployer deployer: deployers) {
-      deployer.deploy(deployment, this, false);
+    for (Deployer deployer: dbRepositorySessionFactory.getDeployers()) {
+      List<ProcessDefinitionEntity> processDefinitions = deployer.deploy(deployment);
+      for (ProcessDefinitionEntity processDefinition : processDefinitions) {
+        String deploymentId = processDefinition.getDeployment().getId();
+        ProcessDefinitionEntity persistedProcessDefinition = findProcessDefinitionByDeploymentAndKey(deploymentId, processDefinition.getKey());
+        processDefinition.setId(persistedProcessDefinition.getId());
+        processDefinition.setVersion(persistedProcessDefinition.getVersion());
+        addToProcessDefinitionCache(processDefinition);
+      }
     }
+  }
+
+  protected void addToProcessDefinitionCache(ProcessDefinitionEntity processDefinition) {
+    Map<String, ProcessDefinitionEntity> processDefinitionCache = dbRepositorySessionFactory.getProcessDefinitionCache();
+    String processDefinitionId = processDefinition.getId();
+    processDefinitionCache.put(processDefinitionId, processDefinition);
   }
 
   public void deleteDeployment(String deploymentId) {
@@ -89,10 +102,6 @@ public class DbRepositorySession implements Session, RepositorySession {
 
   public DeploymentEntity findLatestDeploymentByName(String deploymentName) {
     return (DeploymentEntity) dbSqlSession.selectOne("selectLatestDeploymentByName", deploymentName);
-  }
-
-  public void insertProcessDefinition(ProcessDefinitionImpl processDefinition) {
-    dbSqlSession.insert(processDefinition);
   }
 
   public ProcessDefinitionEntity findProcessDefinitionByDeploymentAndKey(String deploymentId, String processDefinitionKey) {

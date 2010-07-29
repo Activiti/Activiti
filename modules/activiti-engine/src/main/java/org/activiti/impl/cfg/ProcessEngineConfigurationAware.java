@@ -10,17 +10,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.activiti.engine.impl.persistence.repository;
 
-import java.util.List;
-
-
+package org.activiti.impl.cfg;
 
 
 /**
  * @author Tom Baeyens
  */
-public interface Deployer {
+public interface ProcessEngineConfigurationAware {
 
-  List<ProcessDefinitionEntity> deploy(DeploymentEntity deployment);
+  void configurationCompleted(ProcessEngineConfiguration processEngineConfiguration);
 }

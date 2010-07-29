@@ -22,11 +22,11 @@ import org.activiti.engine.Job;
 import org.activiti.engine.JobQuery;
 import org.activiti.engine.ProcessInstance;
 import org.activiti.engine.Task;
+import org.activiti.engine.test.Deployment;
 import org.activiti.impl.time.Clock;
 import org.activiti.impl.util.LogUtil.ThreadLogMode;
 import org.activiti.test.JobExecutorPoller;
 import org.activiti.test.LogInitializer;
-import org.activiti.test.ProcessDeclared;
 import org.activiti.test.ProcessDeployer;
 import org.junit.Rule;
 import org.junit.Test;
@@ -51,7 +51,7 @@ public class BoundaryTimerEventTest {
    * See process image next to the process xml resource
    */
   @Test
-  @ProcessDeclared
+  @Deployment
   public void testMultipleTimersOnUserTask() {
 
     // Set the clock fixed

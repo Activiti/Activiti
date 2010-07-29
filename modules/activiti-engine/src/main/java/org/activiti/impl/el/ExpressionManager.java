@@ -18,6 +18,8 @@ import javax.el.ExpressionFactory;
 import javax.el.MethodExpression;
 import javax.el.ValueExpression;
 
+import org.activiti.impl.cfg.ProcessEngineConfiguration;
+import org.activiti.impl.cfg.ProcessEngineConfigurationAware;
 import org.activiti.impl.execution.ExecutionImpl;
 
 /**
@@ -43,7 +45,7 @@ import org.activiti.impl.execution.ExecutionImpl;
  * @author Tom Baeyens
  * @author Dave Syer
  */
-public class ExpressionManager {
+public class ExpressionManager implements ProcessEngineConfigurationAware {
 
   public static final String UEL_VALUE = "uel-value";
   public static final String UEL_METHOD = "uel-method";
@@ -53,17 +55,6 @@ public class ExpressionManager {
   // Default implementation (does nothing)
   private ELContext parsingElContext = new ParsingElContext();
   private ELResolver elResolver;
-
-  /**
-   * A custom variable resolver for expressions in process definitions. It will
-   * have second highest priority after the native Activiti resolver based on
-   * process instance variables. Could be used, for instance, to resolve a set
-   * of global variables in a static engine wide scope. Defaults to null (so no
-   * custom variables).
-   */
-  public void setElResolver(ELResolver elResolver) {
-    this.elResolver = elResolver;
-  }
 
   public ActivitiValueExpression createValueExpression(String expression) {
     ValueExpression valueExpression = expressionFactory.createValueExpression(parsingElContext, expression, Object.class);
@@ -95,10 +86,10 @@ public class ExpressionManager {
   }
 
   protected ExecutionELContext createExecutionElContext(ExecutionImpl execution) {
-    ExecutionELContext context = new ExecutionELContext(execution);
-    if (elResolver != null) {
-      context.setElResolver(elResolver);
-    }
-    return context;
+    return  new ExecutionELContext(execution, elResolver);
   }
+
+  public void configurationCompleted(ProcessEngineConfiguration processEngineConfiguration) {
+    this.elResolver = processEngineConfiguration.getElResolver();
+  } 
 }

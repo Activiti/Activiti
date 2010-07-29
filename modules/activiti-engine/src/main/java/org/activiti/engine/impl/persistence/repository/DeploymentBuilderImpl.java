@@ -13,14 +13,12 @@
 package org.activiti.engine.impl.persistence.repository;
 
 import java.io.InputStream;
-import java.util.HashMap;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.Deployment;
 import org.activiti.engine.DeploymentBuilder;
-import org.activiti.engine.RepositoryService;
 import org.activiti.engine.impl.RepositoryServiceImpl;
 import org.activiti.impl.util.IoUtil;
 
@@ -40,6 +38,9 @@ public class DeploymentBuilderImpl implements DeploymentBuilder {
   }
 
   public DeploymentBuilder addInputStream(String resourceName, InputStream inputStream) {
+    if (inputStream==null) {
+      throw new ActivitiException("inputStream for resource '"+resourceName+"' is null");
+    }
     byte[] bytes = IoUtil.readInputStream(inputStream, resourceName);
     ResourceEntity resource = new ResourceEntity();
     resource.setName(resourceName);
@@ -51,10 +52,16 @@ public class DeploymentBuilderImpl implements DeploymentBuilder {
   public DeploymentBuilder addClasspathResource(String resource) {
     ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
     InputStream inputStream = classLoader.getResourceAsStream(resource);
+    if (inputStream==null) {
+      throw new ActivitiException("resource '"+resource+"' not found");
+    }
     return addInputStream(resource, inputStream);
   }
 
   public DeploymentBuilder addString(String resourceName, String text) {
+    if (text==null) {
+      throw new ActivitiException("text is null");
+    }
     ResourceEntity resource = new ResourceEntity();
     resource.setName(resourceName);
     resource.setBytes(text.getBytes());

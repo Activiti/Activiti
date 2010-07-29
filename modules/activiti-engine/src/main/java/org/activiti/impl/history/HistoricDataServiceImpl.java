@@ -17,29 +17,31 @@ package org.activiti.impl.history;
 import java.util.Date;
 
 import org.activiti.engine.HistoricDataService;
+import org.activiti.engine.impl.ServiceImpl;
 import org.activiti.history.HistoricActivityInstance;
 import org.activiti.history.HistoricProcessInstance;
+import org.activiti.impl.cfg.ProcessEngineConfiguration;
 import org.activiti.impl.event.ActivityEndedEvent;
 import org.activiti.impl.event.ActivityStartedEvent;
 import org.activiti.impl.event.ProcessInstanceEndedEvent;
 import org.activiti.impl.event.ProcessInstanceStartedEvent;
 import org.activiti.impl.interceptor.Command;
 import org.activiti.impl.interceptor.CommandContext;
-import org.activiti.impl.interceptor.CommandExecutor;
 import org.activiti.impl.time.Clock;
 import org.activiti.pvm.event.ProcessEventBus;
 import org.activiti.pvm.event.ProcessEventConsumer;
 
 /**
+ * @author Tom Baeyens
  * @author Christian Stettler
  */
 // TODO: define/implement semantics of historic data: only completed processes vs. also ongoing ones
-public class HistoricDataServiceImpl implements HistoricDataService {
+public class HistoricDataServiceImpl extends ServiceImpl implements HistoricDataService {
 
-  private final CommandExecutor commandExecutor;
-
-  public HistoricDataServiceImpl(CommandExecutor commandExecutor) {
-    this.commandExecutor = commandExecutor;
+  @Override
+  public void configurationCompleted(ProcessEngineConfiguration processEngineConfiguration) {
+    super.configurationCompleted(processEngineConfiguration);
+    registerEventConsumers(processEngineConfiguration.getProcessEventBus());
   }
 
   public void registerEventConsumers(ProcessEventBus processEventBus) {

@@ -17,8 +17,8 @@ import static org.junit.Assert.assertNotNull;
 
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ProcessInstanceQuery;
+import org.activiti.engine.test.Deployment;
 import org.activiti.test.LogInitializer;
-import org.activiti.test.ProcessDeclared;
 import org.activiti.test.ProcessDeployer;
 import org.junit.Before;
 import org.junit.Rule;
@@ -52,7 +52,7 @@ public class ProcessInstanceQueryTest {
   }
 
   @Test
-  @ProcessDeclared(resources = { "oneTaskProcess.bpmn20.xml", "oneTaskProcess2.bpmn20.xml" })
+  @Deployment(resources = { "oneTaskProcess.bpmn20.xml", "oneTaskProcess2.bpmn20.xml" })
   public void testQueryNoSpecifics() {
     ProcessInstanceQuery query = deployer.getProcessService().createProcessInstanceQuery();
     assertEquals(5, query.count());
@@ -62,7 +62,7 @@ public class ProcessInstanceQueryTest {
   }
 
   @Test
-  @ProcessDeclared(resources = { "oneTaskProcess.bpmn20.xml", "oneTaskProcess2.bpmn20.xml" })
+  @Deployment(resources = { "oneTaskProcess.bpmn20.xml", "oneTaskProcess2.bpmn20.xml" })
   public void testQueryByProcessDefinitionKeyUniqueResult() {
     ProcessInstanceQuery query = deployer.getProcessService().createProcessInstanceQuery().processDefinitionKey(PROCESS_KEY);
     assertEquals(4, query.count());
@@ -72,7 +72,7 @@ public class ProcessInstanceQueryTest {
   }
 
   @Test
-  @ProcessDeclared(resources = { "oneTaskProcess.bpmn20.xml", "oneTaskProcess2.bpmn20.xml" })
+  @Deployment(resources = { "oneTaskProcess.bpmn20.xml", "oneTaskProcess2.bpmn20.xml" })
   public void testQueryByProcessDefinitionKeySunnyDay() {
     ProcessInstanceQuery query = deployer.getProcessService().createProcessInstanceQuery().processDefinitionKey(PROCESS_KEY_2);
     assertEquals(1, query.count());

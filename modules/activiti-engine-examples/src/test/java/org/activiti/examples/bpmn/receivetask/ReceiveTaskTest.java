@@ -17,8 +17,8 @@ import static org.junit.Assert.assertNotNull;
 
 import org.activiti.engine.Execution;
 import org.activiti.engine.ProcessInstance;
+import org.activiti.engine.test.Deployment;
 import org.activiti.test.LogInitializer;
-import org.activiti.test.ProcessDeclared;
 import org.activiti.test.ProcessDeployer;
 import org.junit.Rule;
 import org.junit.Test;
@@ -35,7 +35,7 @@ public class ReceiveTaskTest {
   public ProcessDeployer deployer = new ProcessDeployer();
   
   @Test
-  @ProcessDeclared
+  @Deployment
   public void testWaitStateBehavior() {
     ProcessInstance pi = deployer.getProcessService().startProcessInstanceByKey("receiveTask");
     Execution execution = deployer.getProcessService().findExecutionInActivity(pi.getId(), "waitState");

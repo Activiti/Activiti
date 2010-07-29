@@ -21,8 +21,8 @@ import org.activiti.engine.IdentityService;
 import org.activiti.engine.Task;
 import org.activiti.engine.TaskQuery;
 import org.activiti.engine.TaskService;
+import org.activiti.engine.test.Deployment;
 import org.activiti.test.LogInitializer;
-import org.activiti.test.ProcessDeclared;
 import org.activiti.test.ProcessDeployer;
 import org.junit.After;
 import org.junit.Before;
@@ -72,7 +72,7 @@ public class TaskAssignmentExtensionsTest {
   }
 
   @Test
-  @ProcessDeclared
+  @Deployment
   public void testAssigneeExtension() {
     deployer.getProcessService().startProcessInstanceByKey("assigneeExtension");
     List<Task> tasks = deployer.getTaskService().findAssignedTasks("kermit");
@@ -92,7 +92,7 @@ public class TaskAssignmentExtensionsTest {
   }
 
   @Test
-  @ProcessDeclared
+  @Deployment
   public void testCandidateUsersExtension() {
     deployer.getProcessService().startProcessInstanceByKey("candidateUsersExtension");
     List<Task> tasks = deployer.getTaskService().findUnassignedTasks("kermit");
@@ -102,7 +102,7 @@ public class TaskAssignmentExtensionsTest {
   }
 
   @Test
-  @ProcessDeclared
+  @Deployment
   public void testCandidateGroupsExtension() {
     deployer.getProcessService().startProcessInstanceByKey("candidateGroupsExtension");
 
@@ -126,7 +126,7 @@ public class TaskAssignmentExtensionsTest {
   // Test where the candidate user extension is used together
   // with the spec way of defining candidate users
   @Test
-  @ProcessDeclared
+  @Deployment
   public void testMixedCandidateUserDefinition() {
     deployer.getProcessService().startProcessInstanceByKey("mixedCandidateUser");
 

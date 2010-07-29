@@ -12,18 +12,16 @@
  */
 package org.activiti.impl.cmd;
 
-import java.math.BigInteger;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
+import java.util.Arrays;
+import java.util.Map;
 
 import org.activiti.engine.Deployment;
 import org.activiti.engine.impl.persistence.RepositorySession;
 import org.activiti.engine.impl.persistence.repository.DeploymentBuilderImpl;
 import org.activiti.engine.impl.persistence.repository.DeploymentEntity;
-import org.activiti.impl.bytes.ByteArrayImpl;
+import org.activiti.engine.impl.persistence.repository.ResourceEntity;
 import org.activiti.impl.interceptor.Command;
 import org.activiti.impl.interceptor.CommandContext;
-import org.activiti.impl.repository.DeployerManager;
 import org.activiti.impl.time.Clock;
 
 /**
@@ -56,37 +54,44 @@ public class DeployCmd<T> implements Command<Deployment> {
     return deployment;
   }
 
-  private boolean deploymentsDiffer(DeploymentEntity deployment, DeploymentEntity saved) {
-//    Map<String, ByteArrayImpl> resources = deployment.getResources();
-//    Map<String, ByteArrayImpl> savedResources = saved.getResources();
-//    for (Entry<String, ByteArrayImpl> entry : resources.entrySet()) {
-//      if (resourcesDiffer(entry.getValue(), savedResources.get(entry.getKey()))) {
-//        return true;
-//      }
-//    }
-    return false;
-  }
-
-  private boolean resourcesDiffer(ByteArrayImpl value, ByteArrayImpl other) {
-    if (value == null && other == null) {
+  protected boolean deploymentsDiffer(DeploymentEntity deployment, DeploymentEntity saved) {
+    Map<String, ResourceEntity> resources = deployment.getResources();
+    Map<String, ResourceEntity> savedResources = saved.getResources();
+    if (!resources.keySet().equals(savedResources.keySet())) {
       return false;
     }
-    String bytes = createKey(value.getBytes());
-    String savedBytes = other == null ? null : createKey(other.getBytes());
-    return !bytes.equals(savedBytes);
+    for (String resourceName: resources.keySet()) {
+      ResourceEntity resource = resources.get(resourceName);
+      byte[] bytes = resource.getBytes();
+      ResourceEntity savedResource = savedResources.get(resourceName);
+      byte[] savedBytes = savedResource.getBytes();
+      if (!Arrays.equals(bytes, savedBytes)) {
+        return false;
+      }
+    }
+    return true;
   }
 
-  private String createKey(byte[] bytes) {
-    if (bytes == null) {
-      return "";
-    }
-    MessageDigest digest;
-    try {
-      digest = MessageDigest.getInstance("MD5");
-    } catch (NoSuchAlgorithmException e) {
-      throw new IllegalStateException("MD5 algorithm not available.  Fatal (should be in the JDK).");
-    }
-    bytes = digest.digest(bytes);
-    return String.format("%032x", new BigInteger(1, bytes));
-  }
+//  private boolean resourcesDiffer(ByteArrayImpl value, ByteArrayImpl other) {
+//    if (value == null && other == null) {
+//      return false;
+//    }
+//    String bytes = createKey(value.getBytes());
+//    String savedBytes = other == null ? null : createKey(other.getBytes());
+//    return !bytes.equals(savedBytes);
+//  }
+//
+//  private String createKey(byte[] bytes) {
+//    if (bytes == null) {
+//      return "";
+//    }
+//    MessageDigest digest;
+//    try {
+//      digest = MessageDigest.getInstance("MD5");
+//    } catch (NoSuchAlgorithmException e) {
+//      throw new IllegalStateException("MD5 algorithm not available.  Fatal (should be in the JDK).");
+//    }
+//    bytes = digest.digest(bytes);
+//    return String.format("%032x", new BigInteger(1, bytes));
+//  }
 }

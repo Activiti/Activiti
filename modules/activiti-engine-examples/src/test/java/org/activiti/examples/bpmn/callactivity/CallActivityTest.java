@@ -15,39 +15,29 @@ package org.activiti.examples.bpmn.callactivity;
 
 import org.activiti.engine.Task;
 import org.activiti.engine.TaskQuery;
-import org.activiti.test.LogInitializer;
-import org.activiti.test.ProcessDeclared;
-import org.activiti.test.ProcessDeployer;
+import org.activiti.engine.test.Deployment;
+import org.activiti.engine.test.ProcessEngineTestCase;
 import org.activiti.util.CollectionUtil;
-import org.junit.Rule;
-import org.junit.Test;
-
-import static org.junit.Assert.*;
 
 /**
  * @author Joram Barrez
  */
-public class CallActivityTest {
-  
-  @Rule
-  public LogInitializer logSetup = new LogInitializer();
-  @Rule
-  public ProcessDeployer deployer = new ProcessDeployer();
+public class CallActivityTest extends ProcessEngineTestCase {
 
-  @Test
-  @ProcessDeclared(resources = {"orderProcess.bpmn20.xml", "checkCreditProcess.bpmn20.xml"})
+  @Deployment(resources={
+    "org/activiti/examples/bpmn/callactivity/orderProcess.bpmn20.xml",
+    "org/activiti/examples/bpmn/callactivity/checkCreditProcess.bpmn20.xml"       
+  })
   public void testOrderProcessWithCallActivity() {
-    
     // After the process has started, the 'verify credit history' task should be active
-    deployer.getProcessService().startProcessInstanceByKey("orderProcess");
-    TaskQuery taskQuery = deployer.getTaskService().createTaskQuery();
+    processService.startProcessInstanceByKey("orderProcess");
+    TaskQuery taskQuery = taskService.createTaskQuery();
     Task verifyCreditTask = taskQuery.singleResult();
     assertEquals("Verify credit history", verifyCreditTask.getName());
     
     // Completing the task with approval, will end the subprocess and continue the original process
-    deployer.getTaskService().complete(verifyCreditTask.getId(), CollectionUtil.singletonMap("creditApproved", true));
+    taskService.complete(verifyCreditTask.getId(), CollectionUtil.singletonMap("creditApproved", true));
     Task prepareAndShipTask = taskQuery.singleResult();
     assertEquals("Prepare and Ship", prepareAndShipTask.getName());
   }
-
 }

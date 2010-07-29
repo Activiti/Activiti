@@ -21,8 +21,8 @@ import java.util.List;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ProcessInstance;
 import org.activiti.engine.Task;
+import org.activiti.engine.test.Deployment;
 import org.activiti.test.LogInitializer;
-import org.activiti.test.ProcessDeclared;
 import org.activiti.test.ProcessDeployer;
 import org.activiti.util.CollectionUtil;
 import org.junit.Rule;
@@ -42,7 +42,7 @@ public class ExclusiveGatewayTest {
   public ProcessDeployer deployer = new ProcessDeployer();
 
   @Test
-  @ProcessDeclared
+  @Deployment
   public void testDivergingExclusiveGateway() {
     for (int i = 1; i <= 3; i++) {
       ProcessInstance pi = deployer.getProcessService().startProcessInstanceByKey("exclusiveGwDiverging", CollectionUtil.singletonMap("input", i));
@@ -52,7 +52,7 @@ public class ExclusiveGatewayTest {
   }
 
   @Test
-  @ProcessDeclared
+  @Deployment
   public void testMergingExclusiveGateway() {
     deployer.getProcessService().startProcessInstanceByKey("exclusiveGwMerging");
     assertEquals(3, deployer.getTaskService().createTaskQuery().count());
@@ -61,14 +61,14 @@ public class ExclusiveGatewayTest {
   // If there are multiple outgoing seqFlow with valid conditions, the first
   // defined one should be chosen.
   @Test
-  @ProcessDeclared
+  @Deployment
   public void testMultipleValidConditions() {
     deployer.getProcessService().startProcessInstanceByKey("exclusiveGwMultipleValidConditions", CollectionUtil.singletonMap("input", 5));
     assertEquals("Task 2", deployer.getTaskService().createTaskQuery().singleResult().getName());
   }
 
   @Test
-  @ProcessDeclared
+  @Deployment
   public void testNoSequenceFlowSelected() {
     exception.expect(ActivitiException.class);
     exception.expectMessage("No outgoing sequence flow of the exclusive gateway " + "'exclusiveGw' could be selected for continuing the process");
@@ -79,7 +79,7 @@ public class ExclusiveGatewayTest {
    * Test for bug ACT-10: whitespaces/newlines in expressions lead to exceptions 
    */
   @Test
-  @ProcessDeclared
+  @Deployment
   public void testWhitespaceInExpression() {
     // Starting a process instance will lead to an exception if whitespace are incorrectly handled
     deployer.getProcessService().startProcessInstanceByKey("whiteSpaceInExpression",
@@ -87,7 +87,7 @@ public class ExclusiveGatewayTest {
   }
   
   @Test
-  @ProcessDeclared(resources = {"/org/activiti/test/bpmn/gateway/ExclusiveGatewayTest.testDivergingExclusiveGateway.bpmn20.xml"})
+  @Deployment(resources = {"/org/activiti/test/bpmn/gateway/ExclusiveGatewayTest.testDivergingExclusiveGateway.bpmn20.xml"})
   public void testUnknownVariableInExpression() {
     // Instead of 'input' we're starting a process instance with the name 'iinput' (ie. a typo)
     exception.expect(ActivitiException.class);
@@ -97,7 +97,7 @@ public class ExclusiveGatewayTest {
   }
   
   @Test
-  @ProcessDeclared
+  @Deployment
   public void testDecideBasedOnBeanProperty() {
     deployer.getProcessService().startProcessInstanceByKey("decisionBasedOnBeanProperty", 
             CollectionUtil.singletonMap("order", new ExclusiveGatewayTestOrder(150)));
@@ -108,7 +108,7 @@ public class ExclusiveGatewayTest {
   }
   
   @Test
-  @ProcessDeclared
+  @Deployment
   public void testDecideBasedOnListOrArrayOfBeans() {
     List<ExclusiveGatewayTestOrder> orders = new ArrayList<ExclusiveGatewayTestOrder>();
     orders.add(new ExclusiveGatewayTestOrder(50));
@@ -135,7 +135,7 @@ public class ExclusiveGatewayTest {
   }
   
   @Test
-  @ProcessDeclared
+  @Deployment
   public void testDecideBasedOnBeanMethod() {
     deployer.getProcessService().startProcessInstanceByKey("decisionBasedOnBeanMethod", 
             CollectionUtil.singletonMap("order", new ExclusiveGatewayTestOrder(300)));
@@ -146,7 +146,7 @@ public class ExclusiveGatewayTest {
   }
   
   @Test
-  @ProcessDeclared
+  @Deployment
   public void testInvalidMethodExpression() {
     exception.expect(ActivitiException.class);
     exception.expectMessage("Unknown method used in expression");

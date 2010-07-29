@@ -16,10 +16,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 
-import javax.sql.DataSource;
-
-import org.activiti.impl.cfg.ProcessEngineFactory;
-import org.apache.ibatis.datasource.pooled.PooledDataSource;
+import org.activiti.impl.cfg.ProcessEngineConfiguration;
 
 /**
  * builds a process engine based on a couple of simple properties.
@@ -188,29 +185,17 @@ public class ProcessEngineBuilder {
       throw new ActivitiException("no database name specified (used to look up queries and scripts)");
     }
 
-    ProcessEngineFactory factory = new ProcessEngineFactory();
-    factory.setProcessEngineName(processEngineName);
-    factory.setDbSchemaStrategy(dbSchemaStrategy);
-    factory.setJobExecutorAutoActivate(jobExecutorAutoActivate);
+    ProcessEngineConfiguration processEngineConfiguration = new ProcessEngineConfiguration();
+    processEngineConfiguration.setProcessEngineName(processEngineName);
+    processEngineConfiguration.setDbSchemaStrategy(dbSchemaStrategy);
+    processEngineConfiguration.setJobExecutorAutoActivate(jobExecutorAutoActivate);
+    processEngineConfiguration.setJdbcDriver(jdbcDriver);
+    processEngineConfiguration.setJdbcUrl(jdbcUrl);
+    processEngineConfiguration.setJdbcUsername(jdbcUsername);
+    processEngineConfiguration.setJdbcPassword(jdbcPassword);
+    processEngineConfiguration.setDatabaseName(dataBaseName);
+    processEngineConfiguration.setLocalTransactions(localTransactions);
 
-    if (jdbcDriver == null) {
-      throw new ActivitiException("no jdbc driver specified");
-    }
-    if (jdbcUrl == null) {
-      throw new ActivitiException("no jdbc url specified");
-    }
-    if (jdbcUsername == null) {
-      throw new ActivitiException("no jdbc username specified");
-    }
-    if (jdbcPassword == null) {
-      throw new ActivitiException("no jdbc password specified");
-    }
-
-    DataSource dataSource = new PooledDataSource(Thread.currentThread().getContextClassLoader(), jdbcDriver, jdbcUrl, jdbcUsername, jdbcPassword);
-    factory.setDataSource(dataSource);
-    factory.setDatabaseName(dataBaseName);
-    factory.setLocalTransactions(localTransactions);
-
-    return factory.createProcessEngine();
+    return processEngineConfiguration.buildProcessEngine();
   }
 }

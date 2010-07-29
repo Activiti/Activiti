@@ -20,8 +20,8 @@ import java.util.List;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ProcessDefinition;
 import org.activiti.engine.ProcessInstance;
+import org.activiti.engine.test.Deployment;
 import org.activiti.test.LogInitializer;
-import org.activiti.test.ProcessDeclared;
 import org.activiti.test.ProcessDeployer;
 import org.junit.Rule;
 import org.junit.Test;
@@ -40,7 +40,7 @@ public class ProcessServiceTest {
   public ProcessDeployer deployer = new ProcessDeployer();
 
   @Test
-  @ProcessDeclared(resources = {"oneTaskProcess.bpmn20.xml"})
+  @Deployment(resources = {"oneTaskProcess.bpmn20.xml"})
   public void testStartProcessInstanceById() {
     List<ProcessDefinition> processDefinitions = deployer.getRepositoryService().findProcessDefinitions();
     assertEquals(1, processDefinitions.size());
@@ -55,7 +55,7 @@ public class ProcessServiceTest {
   }
 
   @Test
-  @ProcessDeclared(resources={"oneTaskProcess.bpmn20.xml"})
+  @Deployment(resources={"oneTaskProcess.bpmn20.xml"})
   public void testFindProcessDefinitionById() {
     List<ProcessDefinition> definitions = deployer.getRepositoryService().findProcessDefinitions();
     assertEquals(1, definitions.size());

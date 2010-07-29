@@ -19,8 +19,8 @@ import java.util.Arrays;
 
 import org.activiti.engine.ProcessInstance;
 import org.activiti.engine.Task;
+import org.activiti.engine.test.Deployment;
 import org.activiti.test.LogInitializer;
-import org.activiti.test.ProcessDeclared;
 import org.activiti.test.ProcessDeployer;
 import org.activiti.util.CollectionUtil;
 import org.junit.Rule;
@@ -43,7 +43,7 @@ public class BpmnBetaCompatibilityTest {
   public ProcessDeployer deployer = new ProcessDeployer();
   
   @Test
-  @ProcessDeclared
+  @Deployment
   public void testStartToEndProcess() {
     ProcessInstance processInstance = deployer.getProcessService().startProcessInstanceByKey("startToEnd");
     assertTrue(processInstance.isEnded());
@@ -54,7 +54,7 @@ public class BpmnBetaCompatibilityTest {
    * This test verifies that the parsing is done correctly.
    */
   @Test
-  @ProcessDeclared
+  @Deployment
   public void testScriptTask() {
     ProcessInstance processInstance = deployer.getProcessService()
       .startProcessInstanceByKey("scriptTask", CollectionUtil.singletonMap("numbers", Arrays.asList(1,2,3)));

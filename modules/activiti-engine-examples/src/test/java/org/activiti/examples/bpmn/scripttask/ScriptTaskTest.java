@@ -16,8 +16,8 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
 import org.activiti.engine.ProcessInstance;
+import org.activiti.engine.test.Deployment;
 import org.activiti.test.LogInitializer;
-import org.activiti.test.ProcessDeclared;
 import org.activiti.test.ProcessDeployer;
 import org.activiti.util.CollectionUtil;
 import org.junit.Rule;
@@ -34,7 +34,7 @@ public class ScriptTaskTest {
   public ProcessDeployer deployer = new ProcessDeployer();
 
   @Test
-  @ProcessDeclared
+  @Deployment
   public void testScriptExecution() {
     int[] inputArray = new int[] { 1, 2, 3, 4, 5 };
     ProcessInstance pi = deployer.getProcessService().startProcessInstanceByKey("scriptExecution", CollectionUtil.singletonMap("inputArray", inputArray));
@@ -44,7 +44,7 @@ public class ScriptTaskTest {
   }
 
   @Test
-  @ProcessDeclared
+  @Deployment
   public void testSetVariableThroughExecutionInScript() {
     ProcessInstance pi = deployer.getProcessService().startProcessInstanceByKey("setScriptVariableThroughExecution");
 

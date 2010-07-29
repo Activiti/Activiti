@@ -14,10 +14,6 @@
 package org.activiti.impl.interceptor;
 
 import org.activiti.impl.cfg.ProcessEngineConfiguration;
-import org.activiti.impl.msg.MessageSessionFactory;
-import org.activiti.impl.persistence.PersistenceSessionFactory;
-import org.activiti.impl.timer.TimerSessionFactory;
-import org.activiti.impl.tx.TransactionContextFactory;
 
 
 /**
@@ -26,13 +22,13 @@ import org.activiti.impl.tx.TransactionContextFactory;
 public class CommandContextFactory {
 
   protected ProcessEngineConfiguration processEngineConfiguration;
-  
-  // TODO remove (they are in process engine configuration)
-  
-  private TransactionContextFactory transactionContextFactory;
+
+  public CommandContextFactory(ProcessEngineConfiguration processEngineConfiguration) {
+    this.processEngineConfiguration = processEngineConfiguration;
+  }
 
   public CommandContext createCommandContext(Command<?> cmd) {
-    return new CommandContext(cmd, processEngineConfiguration, transactionContextFactory);
+    return new CommandContext(cmd, processEngineConfiguration);
   }
   
   // getters and setters //////////////////////////////////////////////////////
@@ -42,11 +38,5 @@ public class CommandContextFactory {
   }
   public void setProcessEngineConfiguration(ProcessEngineConfiguration processEngineConfiguration) {
     this.processEngineConfiguration = processEngineConfiguration;
-  }
-  public void setTransactionContextFactory(TransactionContextFactory transactionContextFactory) {
-    this.transactionContextFactory = transactionContextFactory;
-  }
-  public TransactionContextFactory getTransactionContextFactory() {
-    return transactionContextFactory;
   }
 }

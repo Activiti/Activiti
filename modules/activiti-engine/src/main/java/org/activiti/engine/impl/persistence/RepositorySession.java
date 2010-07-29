@@ -16,7 +16,6 @@ package org.activiti.engine.impl.persistence;
 import java.util.List;
 
 import org.activiti.engine.DeploymentBuilder;
-import org.activiti.engine.impl.persistence.repository.Deployer;
 import org.activiti.engine.impl.persistence.repository.DeploymentEntity;
 import org.activiti.engine.impl.persistence.repository.ProcessDefinitionEntity;
 import org.activiti.engine.impl.persistence.repository.ResourceEntity;
@@ -37,18 +36,17 @@ public interface RepositorySession {
    * and process definitions */
   void deleteDeployment(String deploymentId);
   
+  // TODO replace with query api
+  List<DeploymentEntity> findDeployments();
+
+  // TODO replace with query api
+  List<ProcessDefinitionEntity> findUndeployedProcessDefinitionsByDeploymentId(String deploymentId);
+
+  // TODO replace with query api
   /** used when {@link DeploymentBuilder#enableDuplicateFiltering()} is called 
    * while building a deployment. */
   DeploymentEntity findLatestDeploymentByName(String deploymentName);
-  
+
+  // TODO replace with query api
   ResourceEntity findResourceByDeploymentIdAndResourceName(String deploymentId, String resourceName);
-
-  /** must be called by deployers that have parsed process definitions when
-   * isNew in {@link Deployer#deploy(DeploymentEntity, boolean)} is true. */
-  void insertProcessDefinition(ProcessDefinitionImpl processDefinition);
-
-  ProcessDefinitionEntity findProcessDefinitionByDeploymentAndKey(String deploymentId, String processDefinitionKey);
-  List<ProcessDefinitionEntity> findUndeployedProcessDefinitionsByDeploymentId(String deploymentId);
-
-  List<DeploymentEntity> findDeployments();
 }

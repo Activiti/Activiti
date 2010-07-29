@@ -28,7 +28,6 @@ import org.activiti.impl.cmd.GetFormCmd;
 import org.activiti.impl.cmd.SaveTaskCmd;
 import org.activiti.impl.cmd.SetTaskPriorityCmd;
 import org.activiti.impl.interceptor.CommandExecutor;
-import org.activiti.impl.scripting.ScriptingEngines;
 import org.activiti.impl.task.TaskImpl;
 import org.activiti.impl.task.TaskInvolvementType;
 import org.activiti.impl.task.TaskQueryImpl;
@@ -38,16 +37,7 @@ import org.activiti.impl.task.TaskQueryImpl;
  * @author Tom Baeyens
  * @author Joram Barrez
  */
-public class TaskServiceImpl implements TaskService {
-
-  /** must be injected */
-  protected final CommandExecutor commandExecutor;
-  private final ScriptingEngines scriptingEngines;
-
-  public TaskServiceImpl(CommandExecutor commandExecutor, ScriptingEngines scriptingEngines) {
-    this.commandExecutor = commandExecutor;
-    this.scriptingEngines = scriptingEngines;
-  }
+public class TaskServiceImpl extends ServiceImpl implements TaskService {
 
   public Task newTask() {
     return new TaskImpl(null);

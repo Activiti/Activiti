@@ -12,6 +12,8 @@
  */
 package org.activiti.impl.db;
 
+import org.activiti.impl.cfg.ProcessEngineConfiguration;
+import org.activiti.impl.cfg.ProcessEngineConfigurationAware;
 import org.activiti.impl.cmd.GetNextDbidBlockCmd;
 import org.activiti.impl.interceptor.CommandExecutor;
 
@@ -25,15 +27,15 @@ import org.activiti.impl.interceptor.CommandExecutor;
  * @author Tom Baeyens
  * @author Joram Barrez
  */
-public class IdGenerator {
+public class IdGenerator implements ProcessEngineConfigurationAware {
 
   protected long nextDbid = 0;
   protected long lastDbid = -1;
   
-  protected final CommandExecutor commandExecutor;
+  protected CommandExecutor commandExecutor;
   
-  public IdGenerator(CommandExecutor commandExecutor) {
-    this.commandExecutor = commandExecutor;
+  public void configurationCompleted(ProcessEngineConfiguration processEngineConfiguration) {
+    this.commandExecutor = processEngineConfiguration.getCommandExecutor();
   }
 
   public synchronized long getNextDbid() {

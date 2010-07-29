@@ -20,10 +20,10 @@ import org.activiti.engine.ProcessInstance;
 import org.activiti.engine.ProcessService;
 import org.activiti.engine.Task;
 import org.activiti.engine.TaskQuery;
+import org.activiti.engine.test.Deployment;
 import org.activiti.impl.time.Clock;
 import org.activiti.test.JobExecutorPoller;
 import org.activiti.test.LogInitializer;
-import org.activiti.test.ProcessDeclared;
 import org.activiti.test.ProcessDeployer;
 import org.junit.Rule;
 import org.junit.Test;
@@ -41,7 +41,7 @@ public class CallActivityTest {
   public ProcessDeployer deployer = new ProcessDeployer();
   
   @Test
-  @ProcessDeclared(resources = {"CallActivity.testCallSimpleSubProcess.bpmn20.xml", "simpleSubProcess.bpmn20.xml"})
+  @Deployment(resources = {"CallActivity.testCallSimpleSubProcess.bpmn20.xml", "simpleSubProcess.bpmn20.xml"})
   public void testCallSimpleSubProcess() {
     ProcessInstance processInstance = deployer.getProcessService().startProcessInstanceByKey("callSimpleSubProcess");
     
@@ -70,7 +70,7 @@ public class CallActivityTest {
    * of the subprocess leads to an end event in the super process instance.
    */
   @Test
-  @ProcessDeclared(resources = {"CallActivity.testSubProcessEndsSuperProcess.bpmn20.xml", "simpleSubProcess.bpmn20.xml"})
+  @Deployment(resources = {"CallActivity.testSubProcessEndsSuperProcess.bpmn20.xml", "simpleSubProcess.bpmn20.xml"})
   public void testSubProcessEndsSuperProcess() {
     ProcessService processService = deployer.getProcessService();
     ProcessInstance processInstance = processService.startProcessInstanceByKey("subProcessEndsSuperProcess");
@@ -87,7 +87,7 @@ public class CallActivityTest {
   }
   
   @Test
-  @ProcessDeclared(resources = {"CallActivity.testCallParallelSubProcess.bpmn20.xml", "simpleParallelSubProcess.bpmn20.xml"})
+  @Deployment(resources = {"CallActivity.testCallParallelSubProcess.bpmn20.xml", "simpleParallelSubProcess.bpmn20.xml"})
   public void testCallParallelSubProcess() {
     deployer.getProcessService().startProcessInstanceByKey("callParallelSubProcess");
   
@@ -114,7 +114,7 @@ public class CallActivityTest {
   }
   
   @Test
-  @ProcessDeclared(resources = {"CallActivity.testTimerOnCallActivity.bpmn20.xml", "simpleSubProcess.bpmn20.xml"})
+  @Deployment(resources = {"CallActivity.testTimerOnCallActivity.bpmn20.xml", "simpleSubProcess.bpmn20.xml"})
   public void testTimerOnCallActivity() {
     Date startTime = Clock.getCurrentTime();
     

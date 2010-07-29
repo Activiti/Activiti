@@ -20,11 +20,11 @@ import java.util.List;
 
 import org.activiti.engine.ProcessInstance;
 import org.activiti.engine.Task;
+import org.activiti.engine.test.Deployment;
 import org.activiti.history.HistoricProcessInstance;
 import org.activiti.impl.interceptor.Command;
 import org.activiti.impl.interceptor.CommandContext;
 import org.activiti.test.LogInitializer;
-import org.activiti.test.ProcessDeclared;
 import org.activiti.test.ProcessDeployer;
 import org.junit.Rule;
 import org.junit.Test;
@@ -41,7 +41,7 @@ public class HistoricDataServiceTest {
   public ProcessDeployer deployer = new ProcessDeployer();
 
   @Test
-  @ProcessDeclared(resources = {"oneTaskProcess.bpmn20.xml"})
+  @Deployment(resources = {"oneTaskProcess.bpmn20.xml"})
   public void testHistoricDataCreatedForProcessExecution() {
     final ProcessInstance processInstance = deployer.getProcessService().startProcessInstanceByKey("oneTaskProcess");
 

@@ -15,8 +15,8 @@ package org.activiti.test.bpmn;
 import static org.junit.Assert.assertTrue;
 
 import org.activiti.engine.ProcessInstance;
+import org.activiti.engine.test.Deployment;
 import org.activiti.test.LogInitializer;
-import org.activiti.test.ProcessDeclared;
 import org.activiti.test.ProcessDeployer;
 import org.junit.Rule;
 import org.junit.Test;
@@ -32,7 +32,7 @@ public class StartToEndTest {
   public ProcessDeployer deployer = new ProcessDeployer();
 
   @Test
-  @ProcessDeclared
+  @Deployment
   public void testStartToEnd() {
     ProcessInstance processInstance = deployer.getProcessService().startProcessInstanceByKey("startToEnd");
     deployer.assertProcessEnded(processInstance.getId());

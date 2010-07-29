@@ -33,7 +33,7 @@ import org.junit.runners.model.FrameworkMethod;
  * <p>
  * a JUnit &#64;Rule that can be used to deploy and automatically undeploy
  * processes. The easiest way to use it is to simply declare it as a rule and
- * then use the {@link ProcessDeclared} annotation on your test method. For
+ * then use the {@link Deployment} annotation on your test method. For
  * example:
  * </p>
  * 
@@ -57,7 +57,7 @@ import org.junit.runners.model.FrameworkMethod;
  * 
  * <p>
  * The annotation can also be used to specify a list of resources explicitly.
- * See the {@link ProcessDeclared javadocs} for more information.
+ * See the {@link Deployment javadocs} for more information.
  * <p/>
  * 
  * <p>
@@ -67,7 +67,7 @@ import org.junit.runners.model.FrameworkMethod;
  * automatically cleaned up after the test method completes.
  * </p>
  * 
- * @see ProcessDeclared
+ * @see Deployment
  * 
  * @author Dave Syer
  */
@@ -92,29 +92,29 @@ public class ProcessDeployer extends ProcessEngineTestWatchman {
 
     super.starting(method);
 
-    ProcessDeclared process = method.getAnnotation(ProcessDeclared.class);
-    if (process != null) {
-      String[] resources = process.resources();
-      resources = resources.length == 0 ? process.value() : resources;
-      if (resources.length == 0) {
-        String name = method.getName();
-        String resource = ProcessDeployer.getBpmnProcessDefinitionResource(method.getMethod().getDeclaringClass(), name);
-        log.fine("deploying bpmn process resource: " + resource);
-        createDeployment().name(resource).addClasspathResource(resource).deploy();
-      } else {
-        DeploymentBuilder builder = getRepositoryService().createDeployment();
-        for (String resource : resources) {
-          if (resource.startsWith("/")) {
-            resource = resource.substring(1);
-          } else {
-            resource = getProcessDefinitionResource(method.getMethod().getDeclaringClass(), resource);
-          }
-          builder.addClasspathResource(resource);
-        }
-        Deployment deployment = builder.deploy();
-        registerDeployment(deployment.getId());
-      }
-    }
+//    Deployment process = method.getAnnotation(Deployment.class);
+//    if (process != null) {
+//      String[] resources = process.resources();
+//      resources = resources.length == 0 ? process.value() : resources;
+//      if (resources.length == 0) {
+//        String name = method.getName();
+//        String resource = ProcessDeployer.getBpmnProcessDefinitionResource(method.getMethod().getDeclaringClass(), name);
+//        log.fine("deploying bpmn process resource: " + resource);
+//        createDeployment().name(resource).addClasspathResource(resource).deploy();
+//      } else {
+//        DeploymentBuilder builder = getRepositoryService().createDeployment();
+//        for (String resource : resources) {
+//          if (resource.startsWith("/")) {
+//            resource = resource.substring(1);
+//          } else {
+//            resource = getProcessDefinitionResource(method.getMethod().getDeclaringClass(), resource);
+//          }
+//          builder.addClasspathResource(resource);
+//        }
+//        Deployment deployment = builder.deploy();
+//        registerDeployment(deployment.getId());
+//      }
+//    }
 
   }
 

@@ -32,6 +32,8 @@ import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiWrongDbException;
 import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.impl.persistence.repository.ProcessDefinitionEntity;
+import org.activiti.impl.cfg.ProcessEngineConfiguration;
+import org.activiti.impl.cfg.ProcessEngineConfigurationAware;
 import org.activiti.impl.db.IdGenerator;
 import org.activiti.impl.tx.Session;
 import org.activiti.impl.util.IoUtil;
@@ -55,7 +57,7 @@ import org.apache.ibatis.type.JdbcType;
 /**
  * @author Tom Baeyens
  */
-public class IbatisPersistenceSessionFactory implements PersistenceSessionFactory {
+public class IbatisPersistenceSessionFactory implements PersistenceSessionFactory, ProcessEngineConfigurationAware {
 
   private static Logger log = Logger.getLogger(IbatisPersistenceSessionFactory.class.getName());
 
@@ -178,28 +180,51 @@ public class IbatisPersistenceSessionFactory implements PersistenceSessionFactor
     specificStatements.put(activitiStatement, ibatisStatement);
   }
 
-  protected final String databaseName;
-  protected final SqlSessionFactory sqlSessionFactory;
-  protected final IdGenerator idGenerator;
+  protected String databaseName;
+  protected SqlSessionFactory sqlSessionFactory;
+  protected IdGenerator idGenerator;
   protected Map<String, String> databaseStatements;
+  protected VariableTypes variableTypes;
 
-  private final VariableTypes variableTypes;
+  public void configurationCompleted(ProcessEngineConfiguration processEngineConfiguration) {
+    this.variableTypes = processEngineConfiguration.getVariableTypes();
+    this.idGenerator = processEngineConfiguration.getIdGenerator();
+    this.databaseName = processEngineConfiguration.getDatabaseName();
+    
+    DataSource dataSource = processEngineConfiguration.getDataSource();
+    if (dataSource==null) {
+      
+      String jdbcDriver = processEngineConfiguration.getJdbcDriver(); 
+      String jdbcUrl = processEngineConfiguration.getJdbcUrl(); 
+      String jdbcUsername = processEngineConfiguration.getJdbcUsername();
+      String jdbcPassword = processEngineConfiguration.getJdbcPassword();
 
-  public IbatisPersistenceSessionFactory(VariableTypes variableTypes, IdGenerator idGenerator, String databaseName, String jdbcDriver, String jdbcUrl,
-          String jdbcUsername, String jdbcPassword) {
-    this(variableTypes, idGenerator, databaseName, new PooledDataSource(Thread.currentThread().getContextClassLoader(), jdbcDriver, jdbcUrl, jdbcUsername,
-            jdbcPassword), true);
+      if ( (jdbcDriver==null)
+           || (jdbcUrl==null)
+           || (jdbcUsername==null)
+         ) {
+        throw new ActivitiException("DataSource or JDBC properties have to be specified in a process engine configuration");
+      }
+      
+      dataSource = new PooledDataSource(
+              Thread.currentThread().getContextClassLoader(), 
+              jdbcDriver, 
+              jdbcUrl, 
+              jdbcUsername,
+              jdbcPassword );
+    }
+    
+    TransactionFactory transactionFactory = null;
+    if (processEngineConfiguration.isLocalTransactions()) {
+      transactionFactory = new JdbcTransactionFactory();
+    } else {
+      transactionFactory = new ManagedTransactionFactory();
+    }
+    
+    sqlSessionFactory = createSessionFactory(dataSource, transactionFactory);
   }
 
-  public IbatisPersistenceSessionFactory(VariableTypes variableTypes, IdGenerator idGenerator, String databaseName, DataSource dataSource,
-          boolean localTransactions) {
-    this.variableTypes = variableTypes;
-    this.idGenerator = idGenerator;
-    this.databaseName = databaseName;
-    sqlSessionFactory = createSessionFactory(dataSource, localTransactions ? new JdbcTransactionFactory() : new ManagedTransactionFactory());
-  }
-
-  private SqlSessionFactory createSessionFactory(DataSource dataSource, TransactionFactory transactionFactory) {
+  protected SqlSessionFactory createSessionFactory(DataSource dataSource, TransactionFactory transactionFactory) {
     try {
       initializeDatabaseStatements(databaseName);
 
@@ -383,5 +408,4 @@ public class IbatisPersistenceSessionFactory implements PersistenceSessionFactor
       delegate.setProperties(properties);
     }
   }
-
 }

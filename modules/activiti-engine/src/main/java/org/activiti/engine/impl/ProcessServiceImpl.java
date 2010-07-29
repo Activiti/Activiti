@@ -12,59 +12,28 @@
  */
 package org.activiti.engine.impl;
 
-import java.io.InputStream;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
-import org.activiti.engine.Deployment;
-import org.activiti.engine.DeploymentBuilder;
 import org.activiti.engine.Execution;
-import org.activiti.engine.ProcessDefinition;
 import org.activiti.engine.ProcessInstance;
 import org.activiti.engine.ProcessInstanceQuery;
 import org.activiti.engine.ProcessService;
-import org.activiti.engine.impl.persistence.repository.DeploymentBuilderImpl;
-import org.activiti.impl.cmd.DeleteDeploymentCmd;
 import org.activiti.impl.cmd.DeleteProcessInstanceCmd;
-import org.activiti.impl.cmd.DeployCmd;
-import org.activiti.impl.cmd.FindDeploymentResourcesCmd;
-import org.activiti.impl.cmd.FindDeploymentsByNameCmd;
-import org.activiti.impl.cmd.FindDeploymentsCmd;
 import org.activiti.impl.cmd.FindExecutionCmd;
 import org.activiti.impl.cmd.FindExecutionInActivityCmd;
-import org.activiti.impl.cmd.FindProcessDefinitionCmd;
-import org.activiti.impl.cmd.FindProcessDefinitionsCmd;
 import org.activiti.impl.cmd.FindProcessInstanceCmd;
-import org.activiti.impl.cmd.GetDeploymentResourceCmd;
 import org.activiti.impl.cmd.GetExecutionVariableCmd;
 import org.activiti.impl.cmd.GetExecutionVariablesCmd;
-import org.activiti.impl.cmd.GetFormCmd;
 import org.activiti.impl.cmd.SendEventCmd;
 import org.activiti.impl.cmd.SetExecutionVariablesCmd;
 import org.activiti.impl.cmd.StartProcessInstanceCmd;
 import org.activiti.impl.execution.ProcessInstanceQueryImpl;
-import org.activiti.impl.interceptor.CommandExecutor;
-import org.activiti.impl.repository.DeployerManager;
-import org.activiti.impl.repository.DeploymentImpl;
-import org.activiti.impl.scripting.ScriptingEngines;
 
 /**
  * @author Tom Baeyens
  */
-public class ProcessServiceImpl implements ProcessService {
-
-  private final CommandExecutor commandExecutor;
-
-  private final DeployerManager deployerManager;
-
-  private final ScriptingEngines scriptingEngines;
-
-  public ProcessServiceImpl(CommandExecutor commandExecutor, DeployerManager deployerManager, ScriptingEngines scriptingEngines) {
-    this.commandExecutor = commandExecutor;
-    this.deployerManager = deployerManager;
-    this.scriptingEngines = scriptingEngines;
-  }
+public class ProcessServiceImpl extends ServiceImpl implements ProcessService {
 
   public Execution findExecutionById(String id) {
     return commandExecutor.execute(new FindExecutionCmd(id));

@@ -12,24 +12,57 @@
  */
 package org.activiti.impl.cfg;
 
+import java.util.HashMap;
 import java.util.Map;
+
+import javax.el.ELResolver;
+import javax.sql.DataSource;
 
 import org.activiti.engine.DbSchemaStrategy;
 import org.activiti.engine.HistoricDataService;
 import org.activiti.engine.IdentityService;
 import org.activiti.engine.ManagementService;
+import org.activiti.engine.ProcessEngine;
+import org.activiti.engine.ProcessEngines;
 import org.activiti.engine.ProcessService;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.TaskService;
+import org.activiti.engine.impl.IdentityServiceImpl;
+import org.activiti.engine.impl.ManagementServiceImpl;
+import org.activiti.engine.impl.ProcessEngineImpl;
+import org.activiti.engine.impl.ProcessServiceImpl;
+import org.activiti.engine.impl.RepositoryServiceImpl;
+import org.activiti.engine.impl.TaskServiceImpl;
+import org.activiti.engine.impl.persistence.RepositorySession;
+import org.activiti.engine.impl.persistence.db.DbRepositorySessionFactory;
+import org.activiti.engine.impl.persistence.db.DbSqlSession;
+import org.activiti.engine.impl.persistence.db.DbSqlSessionFactory;
+import org.activiti.impl.calendar.BusinessCalendarManager;
+import org.activiti.impl.calendar.DurationBusinessCalendar;
+import org.activiti.impl.calendar.MapBusinessCalendarManager;
 import org.activiti.impl.db.IdGenerator;
+import org.activiti.impl.el.ExpressionManager;
+import org.activiti.impl.event.DefaultProcessEventBus;
+import org.activiti.impl.history.HistoricDataServiceImpl;
 import org.activiti.impl.interceptor.CommandContextFactory;
 import org.activiti.impl.interceptor.CommandExecutor;
+import org.activiti.impl.interceptor.DefaultCommandExecutor;
 import org.activiti.impl.interceptor.SessionFactory;
 import org.activiti.impl.job.JobHandlers;
+import org.activiti.impl.job.TimerExecuteNestedActivityJobHandler;
 import org.activiti.impl.jobexecutor.JobExecutor;
+import org.activiti.impl.msg.JobExecutorMessageSessionFactory;
+import org.activiti.impl.msg.MessageSession;
+import org.activiti.impl.persistence.IbatisPersistenceSessionFactory;
+import org.activiti.impl.persistence.PersistenceSession;
 import org.activiti.impl.persistence.PersistenceSessionFactory;
 import org.activiti.impl.repository.DeployerManager;
 import org.activiti.impl.scripting.ScriptingEngines;
+import org.activiti.impl.timer.JobExecutorTimerSessionFactory;
+import org.activiti.impl.timer.TimerSession;
+import org.activiti.impl.tx.StandaloneTransactionContextFactory;
+import org.activiti.impl.tx.TransactionContextFactory;
+import org.activiti.impl.variable.DefaultVariableTypes;
 import org.activiti.impl.variable.VariableTypes;
 import org.activiti.pvm.event.ProcessEventBus;
 
@@ -39,24 +72,149 @@ import org.activiti.pvm.event.ProcessEventBus;
 public class ProcessEngineConfiguration {
 
   protected String processEngineName;
-  protected ProcessEventBus processEventBus;
+
+  protected CommandExecutor commandExecutor;
+  protected CommandContextFactory commandContextFactory;
+  protected TransactionContextFactory transactionContextFactory;
+
   protected RepositoryService repositoryService;
   protected ProcessService processService;
   protected HistoricDataService historicDataService;
   protected IdentityService identityService;
   protected TaskService taskService;
   protected ManagementService managementService;
-  protected DeployerManager deployerManager;
-  protected VariableTypes variableTypes;
+  
+  protected SessionFactory repositorySessionFactory;
+  protected SessionFactory persistenceSessionFactory;
+  protected SessionFactory messageSessionFactory;
+  protected SessionFactory timerSessionFactory;
+  protected SessionFactory dbSqlSessionFactory;
+  protected Map<Class<?>, SessionFactory> sessionFactories;
+
   protected JobExecutor jobExecutor;
   protected JobHandlers jobHandlers;
-  protected IdGenerator idGenerator;
-  protected CommandExecutor commandExecutor;
+  protected boolean jobExecutorAutoActivate;
+  
+  protected String databaseName;
   protected DbSchemaStrategy dbSchemaStrategy;
-  protected CommandContextFactory commandContextFactory;
-  protected PersistenceSessionFactory persistenceSessionFactory;
-  protected Map<Class<?>, SessionFactory> sessionFactories;
+  protected IdGenerator idGenerator;
+  protected DataSource dataSource;
+  protected boolean localTransactions;
+  protected String jdbcDriver;
+  protected String jdbcUrl;
+  protected String jdbcUsername;
+  protected String jdbcPassword;
+
   protected ScriptingEngines scriptingEngines;
+  protected VariableTypes variableTypes;
+  protected ExpressionManager expressionManager;
+  protected ELResolver elResolver;
+  protected BusinessCalendarManager businessCalendarManager;
+  protected ProcessEventBus processEventBus;
+
+  // TODO remove
+  protected DeployerManager deployerManager;
+
+  public ProcessEngineConfiguration() {
+    processEngineName = ProcessEngines.NAME_DEFAULT;
+
+    commandExecutor = new DefaultCommandExecutor();
+    commandContextFactory = new CommandContextFactory(this);
+    transactionContextFactory = new StandaloneTransactionContextFactory();
+
+    repositoryService = new RepositoryServiceImpl();
+    processService = new ProcessServiceImpl();
+    taskService = new TaskServiceImpl();
+    managementService = new ManagementServiceImpl();
+    identityService = new IdentityServiceImpl();
+    historicDataService = new HistoricDataServiceImpl();
+
+    messageSessionFactory = new JobExecutorMessageSessionFactory();
+    timerSessionFactory = new JobExecutorTimerSessionFactory();
+    persistenceSessionFactory = new IbatisPersistenceSessionFactory();
+    repositorySessionFactory = new DbRepositorySessionFactory();
+    dbSqlSessionFactory = new DbSqlSessionFactory();
+    sessionFactories = new HashMap<Class<?>, SessionFactory>();
+
+    jobHandlers = new JobHandlers();
+    jobHandlers.addJobHandler(new TimerExecuteNestedActivityJobHandler());
+    jobExecutor = new JobExecutor();
+    jobExecutorAutoActivate = false;
+    
+    databaseName = "h2";
+    dbSchemaStrategy = DbSchemaStrategy.CREATE_DROP;
+    idGenerator = new IdGenerator();
+    dataSource = null;
+    localTransactions = true;
+    jdbcDriver = "org.h2.Driver";
+    jdbcUrl = "jdbc:h2:mem:activiti";
+    jdbcUsername = "sa";
+    jdbcPassword = "";
+
+    scriptingEngines = new ScriptingEngines();
+    variableTypes = new DefaultVariableTypes();
+    expressionManager = new ExpressionManager();
+    elResolver = null;
+    MapBusinessCalendarManager mapBusinessCalendarManager = new MapBusinessCalendarManager();
+    mapBusinessCalendarManager.addBusinessCalendar(DurationBusinessCalendar.NAME, new DurationBusinessCalendar());
+    businessCalendarManager = mapBusinessCalendarManager;
+    processEventBus = new DefaultProcessEventBus();
+  }
+  
+  public ProcessEngine buildProcessEngine() {
+    if (messageSessionFactory!=null) {
+      sessionFactories.put(MessageSession.class, messageSessionFactory);
+    }
+    if (timerSessionFactory!=null) {
+      sessionFactories.put(TimerSession.class, timerSessionFactory);
+    }
+    if (persistenceSessionFactory!=null) {
+      sessionFactories.put(PersistenceSession.class, persistenceSessionFactory);
+    }
+    if (repositorySessionFactory!=null) {
+      sessionFactories.put(RepositorySession.class, repositorySessionFactory);
+    }
+    if (dbSqlSessionFactory!=null) {
+      sessionFactories.put(DbSqlSession.class, dbSqlSessionFactory);
+    }
+    
+    notifyConfigurationComplete(commandExecutor);
+    notifyConfigurationComplete(commandContextFactory);
+    notifyConfigurationComplete(transactionContextFactory);
+
+    notifyConfigurationComplete(repositoryService);
+    notifyConfigurationComplete(processService);
+    notifyConfigurationComplete(taskService);
+    notifyConfigurationComplete(managementService);
+    notifyConfigurationComplete(identityService);
+    notifyConfigurationComplete(historicDataService);
+
+    notifyConfigurationComplete(messageSessionFactory);
+    notifyConfigurationComplete(timerSessionFactory);
+    notifyConfigurationComplete(persistenceSessionFactory);
+    notifyConfigurationComplete(repositorySessionFactory);
+    notifyConfigurationComplete(dbSqlSessionFactory);
+
+    notifyConfigurationComplete(jobHandlers);
+    notifyConfigurationComplete(jobExecutor);
+    notifyConfigurationComplete(idGenerator);
+    notifyConfigurationComplete(dataSource);
+
+    notifyConfigurationComplete(scriptingEngines);
+    notifyConfigurationComplete(variableTypes);
+    notifyConfigurationComplete(expressionManager);
+    notifyConfigurationComplete(elResolver);
+    notifyConfigurationComplete(businessCalendarManager);
+    notifyConfigurationComplete(processEventBus);
+
+    return new ProcessEngineImpl(this);
+  }
+
+  protected void notifyConfigurationComplete(Object object) {
+    if (object instanceof ProcessEngineConfigurationAware) {
+      ((ProcessEngineConfigurationAware)object).configurationCompleted(this);
+    }
+  }
 
   // getters and setters //////////////////////////////////////////////////////
 
@@ -64,7 +222,7 @@ public class ProcessEngineConfiguration {
     return deployerManager;
   }
 
-  public PersistenceSessionFactory getPersistenceSessionFactory() {
+  public SessionFactory getPersistenceSessionFactory() {
     return persistenceSessionFactory;
   }
 
@@ -211,4 +369,175 @@ public class ProcessEngineConfiguration {
   public void setScriptingEngines(ScriptingEngines scriptingEngines) {
     this.scriptingEngines = scriptingEngines;
   }
+
+  
+  public ExpressionManager getExpressionManager() {
+    return expressionManager;
+  }
+
+  
+  public void setExpressionManager(ExpressionManager expressionManager) {
+    this.expressionManager = expressionManager;
+  }
+
+  
+  public ELResolver getElResolver() {
+    return elResolver;
+  }
+
+  /**
+   * A custom variable resolver for expressions in process definitions. It will
+   * have second highest priority after the native Activiti resolver based on
+   * process instance variables. Could be used, for instance, to resolve a set
+   * of global variables in a static engine wide scope. Defaults to null (so no
+   * custom variables).
+   */
+  public void setElResolver(ELResolver elResolver) {
+    this.elResolver = elResolver;
+  }
+
+  
+  public BusinessCalendarManager getBusinessCalendarManager() {
+    return businessCalendarManager;
+  }
+
+  
+  public void setBusinessCalendarManager(BusinessCalendarManager businessCalendarManager) {
+    this.businessCalendarManager = businessCalendarManager;
+  }
+
+  
+  public TransactionContextFactory getTransactionContextFactory() {
+    return transactionContextFactory;
+  }
+
+  
+  public void setTransactionContextFactory(TransactionContextFactory transactionContextFactory) {
+    this.transactionContextFactory = transactionContextFactory;
+  }
+
+  
+  public String getDatabaseName() {
+    return databaseName;
+  }
+
+  
+  public void setDatabaseName(String databaseName) {
+    this.databaseName = databaseName;
+  }
+
+  
+  public DataSource getDataSource() {
+    return dataSource;
+  }
+
+  
+  public void setDataSource(DataSource dataSource) {
+    this.dataSource = dataSource;
+  }
+
+  public String getJdbcDriver() {
+    return jdbcDriver;
+  }
+
+  
+  public void setJdbcDriver(String jdbcDriver) {
+    this.jdbcDriver = jdbcDriver;
+  }
+
+  
+  public String getJdbcUrl() {
+    return jdbcUrl;
+  }
+
+  
+  public void setJdbcUrl(String jdbcUrl) {
+    this.jdbcUrl = jdbcUrl;
+  }
+
+  
+  public String getJdbcUsername() {
+    return jdbcUsername;
+  }
+
+  
+  public void setJdbcUsername(String jdbcUsername) {
+    this.jdbcUsername = jdbcUsername;
+  }
+
+  
+  public String getJdbcPassword() {
+    return jdbcPassword;
+  }
+
+  
+  public void setJdbcPassword(String jdbcPassword) {
+    this.jdbcPassword = jdbcPassword;
+  }
+
+  
+  public SessionFactory getRepositorySessionFactory() {
+    return repositorySessionFactory;
+  }
+
+  
+  public void setRepositorySessionFactory(SessionFactory repositorySessionFactory) {
+    this.repositorySessionFactory = repositorySessionFactory;
+  }
+
+  
+  public SessionFactory getMessageSessionFactory() {
+    return messageSessionFactory;
+  }
+
+  
+  public void setMessageSessionFactory(SessionFactory messageSessionFactory) {
+    this.messageSessionFactory = messageSessionFactory;
+  }
+
+  
+  public SessionFactory getTimerSessionFactory() {
+    return timerSessionFactory;
+  }
+
+  
+  public void setTimerSessionFactory(SessionFactory timerSessionFactory) {
+    this.timerSessionFactory = timerSessionFactory;
+  }
+
+  
+  public SessionFactory getDbSqlSessionFactory() {
+    return dbSqlSessionFactory;
+  }
+
+  
+  public void setDbSqlSessionFactory(SessionFactory dbSqlSessionFactory) {
+    this.dbSqlSessionFactory = dbSqlSessionFactory;
+  }
+
+  
+  public boolean isJobExecutorAutoActivate() {
+    return jobExecutorAutoActivate;
+  }
+
+  
+  public void setJobExecutorAutoActivate(boolean jobExecutorAutoActivate) {
+    this.jobExecutorAutoActivate = jobExecutorAutoActivate;
+  }
+
+  
+  public boolean isLocalTransactions() {
+    return localTransactions;
+  }
+
+  
+  public void setLocalTransactions(boolean localTransactions) {
+    this.localTransactions = localTransactions;
+  }
+
+  
+  public void setPersistenceSessionFactory(SessionFactory persistenceSessionFactory) {
+    this.persistenceSessionFactory = persistenceSessionFactory;
+  }
+
 }

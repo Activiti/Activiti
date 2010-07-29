@@ -1,7 +1,8 @@
 package org.activiti.impl.interceptor;
 
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import org.junit.Rule;
 import org.junit.Test;
@@ -20,7 +21,8 @@ public class DefaultCommandExecutorTest {
     CommandContextFactory commandContextFactory = mock(CommandContextFactory.class);
     CommandContext commandContext = mock(CommandContext.class);
 
-    DefaultCommandExecutor chain = new DefaultCommandExecutor(commandContextFactory);
+    DefaultCommandExecutor chain = new DefaultCommandExecutor();
+    chain.setCommandContextFactory(commandContextFactory);
 
     chain.addContextAwareCommandInterceptor(new ContextAwareCommandInterceptor() {
 
@@ -60,7 +62,8 @@ public class DefaultCommandExecutorTest {
     CommandContextFactory commandContextFactory = mock(CommandContextFactory.class);
     CommandContext commandContext = mock(CommandContext.class);
 
-    DefaultCommandExecutor chain = new DefaultCommandExecutor(commandContextFactory);
+    DefaultCommandExecutor chain = new DefaultCommandExecutor();
+    chain.setCommandContextFactory(commandContextFactory);
 
     chain.addCommandInterceptor(new CommandInterceptor() {
 
@@ -99,7 +102,8 @@ public class DefaultCommandExecutorTest {
     CommandContextFactory commandContextFactory = mock(CommandContextFactory.class);
     CommandContext commandContext = mock(CommandContext.class);
 
-    DefaultCommandExecutor chain = new DefaultCommandExecutor(commandContextFactory);
+    DefaultCommandExecutor chain = new DefaultCommandExecutor();
+    chain.setCommandContextFactory(commandContextFactory);
 
     chain.addCommandInterceptor(new CommandInterceptor() {
 
@@ -140,7 +144,8 @@ public class DefaultCommandExecutorTest {
     CommandContext commandContext = mock(CommandContext.class);
 
 
-    DefaultCommandExecutor chain = new DefaultCommandExecutor(commandContextFactory);
+    DefaultCommandExecutor chain = new DefaultCommandExecutor();
+    chain.setCommandContextFactory(commandContextFactory);
 
     Command<String> command = new Command<String>() {
 

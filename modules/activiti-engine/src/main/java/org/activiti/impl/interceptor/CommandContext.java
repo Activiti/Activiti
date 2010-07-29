@@ -74,10 +74,12 @@ public class CommandContext {
     return txContextStack;
   }
 
-  public CommandContext(Command<?> command, ProcessEngineConfiguration processEngineConfiguration, TransactionContextFactory transactionContextFactory) {
+  public CommandContext(Command<?> command, ProcessEngineConfiguration processEngineConfiguration) {
     this.command = command;
     this.processEngineConfiguration = processEngineConfiguration;
-    this.transactionContext = transactionContextFactory.openTransactionContext(this);
+    this.transactionContext = processEngineConfiguration
+      .getTransactionContextFactory()
+      .openTransactionContext(this);
   }
 
   public void close() {

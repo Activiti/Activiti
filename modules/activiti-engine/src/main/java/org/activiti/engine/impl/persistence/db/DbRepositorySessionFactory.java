@@ -33,7 +33,26 @@ public class DbRepositorySessionFactory implements SessionFactory {
   protected Map<String, ProcessDefinitionEntity> processDefinitionCache = new HashMap<String, ProcessDefinitionEntity>(); 
 
   public Session openSession() {
-    return new DbRepositorySession(deployers, processDefinitionCache);
+    return new DbRepositorySession(this);
   }
 
+  
+  public List<Deployer> getDeployers() {
+    return deployers;
+  }
+
+  
+  public void setDeployers(List<Deployer> deployers) {
+    this.deployers = deployers;
+  }
+
+  
+  public Map<String, ProcessDefinitionEntity> getProcessDefinitionCache() {
+    return processDefinitionCache;
+  }
+
+  
+  public void setProcessDefinitionCache(Map<String, ProcessDefinitionEntity> processDefinitionCache) {
+    this.processDefinitionCache = processDefinitionCache;
+  }
 }

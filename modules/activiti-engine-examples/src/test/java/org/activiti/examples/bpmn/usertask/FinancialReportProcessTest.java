@@ -6,8 +6,8 @@ import java.util.List;
 
 import org.activiti.engine.ProcessInstance;
 import org.activiti.engine.Task;
+import org.activiti.engine.test.Deployment;
 import org.activiti.test.LogInitializer;
-import org.activiti.test.ProcessDeclared;
 import org.activiti.test.ProcessDeployer;
 import org.junit.After;
 import org.junit.Before;
@@ -43,7 +43,7 @@ public class FinancialReportProcessTest {
   }
   
   @Test
-  @ProcessDeclared(resources={"FinancialReportProcess.bpmn20.xml"})
+  @Deployment(resources={"FinancialReportProcess.bpmn20.xml"})
   public void testProcess() {
     
     ProcessInstance processInstance = deployer.getProcessService().startProcessInstanceByKey("financialReport");

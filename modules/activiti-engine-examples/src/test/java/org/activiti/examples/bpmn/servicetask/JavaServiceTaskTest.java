@@ -17,8 +17,8 @@ import static org.junit.Assert.assertEquals;
 import org.activiti.engine.Execution;
 import org.activiti.engine.ProcessInstance;
 import org.activiti.engine.ProcessService;
+import org.activiti.engine.test.Deployment;
 import org.activiti.test.LogInitializer;
-import org.activiti.test.ProcessDeclared;
 import org.activiti.test.ProcessDeployer;
 import org.activiti.util.CollectionUtil;
 import org.junit.Rule;
@@ -35,7 +35,7 @@ public class JavaServiceTaskTest {
   public ProcessDeployer deployer = new ProcessDeployer();
 
   @Test
-  @ProcessDeclared
+  @Deployment
   public void testJavaServiceDelegation() {
     ProcessService processService = deployer.getProcessService();
     ProcessInstance pi = processService.startProcessInstanceByKey("javaServiceDelegation", 

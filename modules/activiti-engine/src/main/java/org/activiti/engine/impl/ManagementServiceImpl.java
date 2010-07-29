@@ -29,14 +29,7 @@ import org.activiti.impl.query.TablePageQueryImpl;
  * @author Tom Baeyens
  * @author Joram Barrez
  */
-public class ManagementServiceImpl implements ManagementService {
-
-  /** must be injected */
-  protected final CommandExecutor commandExecutor;
-  
-  public ManagementServiceImpl(CommandExecutor commandExecutor) {
-    this.commandExecutor = commandExecutor;
-  }
+public class ManagementServiceImpl extends ServiceImpl implements ManagementService {
 
   public Map<String, Long> getTableCount() {
     return commandExecutor.execute(new GetTableCountCmd());

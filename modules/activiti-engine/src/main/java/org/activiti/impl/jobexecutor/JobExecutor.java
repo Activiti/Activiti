@@ -21,6 +21,8 @@ import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
 
 import org.activiti.engine.ActivitiException;
+import org.activiti.impl.cfg.ProcessEngineConfiguration;
+import org.activiti.impl.cfg.ProcessEngineConfigurationAware;
 import org.activiti.impl.interceptor.CommandExecutor;
 import org.activiti.impl.job.JobHandlers;
 
@@ -33,32 +35,31 @@ import org.activiti.impl.job.JobHandlers;
  *  pending job list.
  * Uses a {@link ThreadPoolExecutor} internally.
  */
-public class JobExecutor {
+public class JobExecutor implements ProcessEngineConfigurationAware {
   
   private static Logger log = Logger.getLogger(JobExecutor.class.getName());
 
-  private final CommandExecutor commandExecutor;
-  private final JobHandlers jobHandlers;
+  protected CommandExecutor commandExecutor;
+  protected JobHandlers jobHandlers;
+  protected boolean isAutoActivate = false;
 
-  private int maxJobsPerAcquisition = 3;
-  private int waitTimeInMillis = 5 * 1000;
-  private String lockOwner = UUID.randomUUID().toString();
-  private int lockTimeInMillis = 5 * 60 * 1000;
-  private int queueSize = 5;
-  private int corePoolSize = 3;
+  protected int maxJobsPerAcquisition = 3;
+  protected int waitTimeInMillis = 5 * 1000;
+  protected String lockOwner = UUID.randomUUID().toString();
+  protected int lockTimeInMillis = 5 * 60 * 1000;
+  protected int queueSize = 5;
+  protected int corePoolSize = 3;
   private int maxPoolSize = 10;
 
-  private JobAcquisitionThread jobAcquisitionThread;
-  private BlockingQueue<Runnable> threadPoolQueue;
-  private ThreadPoolExecutor threadPoolExecutor;
-  
-  private boolean isActive = false;
+  protected JobAcquisitionThread jobAcquisitionThread;
+  protected BlockingQueue<Runnable> threadPoolQueue;
+  protected ThreadPoolExecutor threadPoolExecutor;
+  protected boolean isActive = false;
 
-  private boolean autoActivate = false;
-
-  public JobExecutor(CommandExecutor commandExecutor, JobHandlers jobHandlers) {
-    this.commandExecutor = commandExecutor;
-    this.jobHandlers = jobHandlers;
+  public void configurationCompleted(ProcessEngineConfiguration processEngineConfiguration) {
+    this.commandExecutor = processEngineConfiguration.getCommandExecutor();
+    this.jobHandlers = processEngineConfiguration.getJobHandlers();
+    this.isAutoActivate = processEngineConfiguration.isJobExecutorAutoActivate();
   }
 
   public synchronized void start() {
@@ -226,12 +227,7 @@ public class JobExecutor {
   }
 
   public boolean isAutoActivate() {
-    return autoActivate;
+    return isAutoActivate;
   }
   
-  
-  public void setAutoActivate(boolean autoActivate) {
-    this.autoActivate = autoActivate;
-  }
-
 }

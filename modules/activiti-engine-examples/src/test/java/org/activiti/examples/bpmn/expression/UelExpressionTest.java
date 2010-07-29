@@ -19,8 +19,8 @@ import org.activiti.engine.ProcessInstance;
 import org.activiti.engine.ProcessService;
 import org.activiti.engine.Task;
 import org.activiti.engine.TaskService;
+import org.activiti.engine.test.Deployment;
 import org.activiti.test.LogInitializer;
-import org.activiti.test.ProcessDeclared;
 import org.activiti.test.ProcessDeployer;
 import org.activiti.util.CollectionUtil;
 import org.junit.Rule;
@@ -38,7 +38,7 @@ public class UelExpressionTest {
   public ProcessDeployer deployer = new ProcessDeployer();
   
   @Test
-  @ProcessDeclared
+  @Deployment
   public void testValueAndMethodExpression() {
     ProcessService processService = deployer.getProcessService();
     TaskService taskService = deployer.getTaskService();
