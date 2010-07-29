@@ -12,14 +12,13 @@ public class JsonProvider extends SignavioContentRepresentationProvider {
   }
 
   public byte[] getContent(RepositoryArtifact artifact) {
-      try {
-        Response jsonResponse = getJsonResponse(artifact, "/json");
-        // return new JSONObject(jsonResponse.getEntity().getText());
-
-        return toBytes(jsonResponse.getEntity().getText());
-      } catch (Exception ex) {
-        throw new RepositoryException("Error while accessing Signavio repository", ex);
-      }    
+    try {
+      Response jsonResponse = getJsonResponse(artifact, "/json");
+      String jsonString = jsonResponse.getEntity().getText();
+      return toBytes(jsonString);
+    } catch (Exception ex) {
+      throw new RepositoryException("Error while accessing Signavio repository", ex);
+    }
   }
 
 }

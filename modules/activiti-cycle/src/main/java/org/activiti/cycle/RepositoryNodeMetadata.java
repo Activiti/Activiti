@@ -33,7 +33,7 @@ public class RepositoryNodeMetadata {
 	
 	private String lastAuthor;
 	
-	private int version;
+	private String version;
 	 // ...?
 
 	/**
@@ -109,11 +109,11 @@ public class RepositoryNodeMetadata {
 		this.lastAuthor = lastAuthor;
 	}
 
-	public int getVersion() {
+	public String getVersion() {
 		return version;
 	}
 
-	public void setVersion(int version) {
+	public void setVersion(String version) {
 		this.version = version;
 	}
 }

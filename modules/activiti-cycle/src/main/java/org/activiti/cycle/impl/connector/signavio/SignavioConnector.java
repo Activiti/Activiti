@@ -14,6 +14,7 @@ package org.activiti.cycle.impl.connector.signavio;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map.Entry;
@@ -109,6 +110,8 @@ public class SignavioConnector implements RepositoryConnector {
    */
   private String securityToken = "";
   private List<Cookie> securityCookieList = new ArrayList<Cookie>();
+  
+  private transient Client restletClient; 
 
   private SignavioConnectorConfiguration conf;
 
@@ -116,21 +119,15 @@ public class SignavioConnector implements RepositoryConnector {
     this.conf = signavioConfiguration;
   }
 
-  /**
-   * get the part of the URL identifying the real ID needed to be stored in the
-   * API object to be able to identify the object later on
-   */
-  private String retrieveIdFromUrl(String href, String baseUrl) {
-    // TODO: Check implementation!
-    return href.replaceAll(baseUrl, "");
-  }
-
   public Client initClient() {
-    // Create and initialize HTTP client for HTTP REST API calls
-    Client client = new Client(new Context(), Protocol.HTTP);
-    client.getContext().getParameters().add("converter", "com.noelios.restlet.http.HttpClientConverter");
-
-    return client;
+    // TODO: Check timeout on client and re-create it
+    
+    if (restletClient == null) {
+      // Create and initialize HTTP client for HTTP REST API calls
+      restletClient = new Client(new Context(), Protocol.HTTP);
+      restletClient.getContext().getParameters().add("converter", "com.noelios.restlet.http.HttpClientConverter");
+    }
+    return restletClient;
   }
   
   public Response getJsonResponse(String url) {
@@ -276,7 +273,7 @@ public class SignavioConnector implements RepositoryConnector {
     RepositoryFolder folderInfo = new RepositoryFolder(this);
     // folderInfo.setId( directoryId );
     // TODO: Check where we get the real ID from!
-    folderInfo.setId(retrieveIdFromUrl(href, conf.getDirectoryUrl()));
+    folderInfo.setId(conf.getDirectoryIdFromUrl(href));
 
     folderInfo.getMetadata().setName(directoryName);
     // TODO: Where do we get the path from?
@@ -285,35 +282,53 @@ public class SignavioConnector implements RepositoryConnector {
     return folderInfo;
   }
 
-  private RepositoryArtifact getArtifactInfo(JSONObject relObject) throws JSONException {
+  private RepositoryArtifact getArtifactInfoFromFolderLink(JSONObject json) throws JSONException {
+    String id = conf.getModelIdFromUrl(json.getString("href"));
+    return getArtifactInfoFromFile(id, json.getJSONObject("rep"));
+  }
+
+  private RepositoryArtifact getArtifactInfoFromFile(String id, JSONObject json) throws JSONException {
     RepositoryArtifact fileInfo = new RepositoryArtifact(this);
-    // TODO: where do we get the id from?
-    fileInfo.setId(retrieveIdFromUrl(relObject.getString("href"), conf.getModelUrl()));
-    log.finest("FileInfo-setPath: " + relObject.getString("href"));
-    fileInfo.getMetadata().setName(relObject.getJSONObject("rep").getString("name"));
+    fileInfo.setId(id);
+    fileInfo.getMetadata().setName(getValueIfExists(json, "name"));
+    fileInfo.getMetadata().setVersion(getValueIfExists(json, "rev"));
 
-    // fileInfo.setId(id);
-    // relObject.getJSONObject("rep").getInt("rev");
+    // TODO: Check if that is really last author and if we can get the origiinal
+    // author
+    fileInfo.getMetadata().setLastAuthor(getValueIfExists(json, "author"));
+    fileInfo.getMetadata().setCreated(getDateValueIfExists(json, "created"));
+    fileInfo.getMetadata().setLastChanged(getDateValueIfExists(json, "updated"));
 
-    String fileTypeIdentifier = relObject.getJSONObject("rep").getString("namespace");
+    String fileTypeIdentifier = json.getString("namespace");
     fileInfo.setArtifactType(RepositoryRegistry.getArtifactTypeByIdentifier(fileTypeIdentifier));
-    // if ("BPMN 1.2".equals(relObject.getJSONObject("rep").getString("type")))
-    // {
-    // fileInfo.setFileType(FileTypeRegistry.getFileTyp(SIGNAVIO_BPMN_1_2));
-    // }
-    // else if
-    // ("BPMN 2.0".equals(relObject.getJSONObject("rep").getString("type"))) {
-    // fileInfo.setFileType(FileTypeRegistry.getFileTyp(SIGNAVIO_BPMN_2_0));
-    // }
-    // relObject.getJSONObject("rep").getString("author");
-    // relObject.getJSONObject("rep").getString("revision");
+
+    // relObject.getJSONObject("rep").getString("revision"); --> UUID of
+    // revision
     // relObject.getJSONObject("rep").getString("description");
     // relObject.getJSONObject("rep").getString("comment");
-    // relObject.getJSONObject("rep").getString("namespace");
     return fileInfo;
 
     // TODO: Add file actions here (jpdl4/bpmn20/png), maybe define an action
     // factory which produces the concrete actions?
+  }
+
+  private String getValueIfExists(JSONObject json, String name) throws JSONException {
+    if (json.has(name)) {
+      return json.getString("name");
+    } else {
+      return null;
+    }
+  }
+
+  private Date getDateValueIfExists(JSONObject json, String name) throws JSONException {
+    if (json.has(name)) {
+      // TODO: IMplement Date conversion, Signavio has: 2010-06-21 17:36:23
+      // +0200
+      return null;
+      // return json.getString("name");
+    } else {
+      return null;
+    }
   }
 
   public RepositoryFolder getRootFolder() {
@@ -342,7 +357,7 @@ public class SignavioConnector implements RepositoryConnector {
           RepositoryFolder folderInfo = getFolderInfo(relObject);
           nodes.add(folderInfo);
         } else if ("mod".equals(relObject.getString("rel"))) {
-          RepositoryArtifact fileInfo = getArtifactInfo(relObject);
+          RepositoryArtifact fileInfo = getArtifactInfoFromFolderLink(relObject);
           nodes.add(fileInfo);
         }
       }
@@ -353,15 +368,15 @@ public class SignavioConnector implements RepositoryConnector {
   }
 
   public ContentRepresentation getContent(String nodeId, String representationName) {
-     return RepositoryArtifact.getContentRepresentation(getArtifactDetails(nodeId), representationName);
+    RepositoryArtifact artifact = getArtifactDetails(nodeId);
+    return RepositoryArtifact.getContentRepresentation(artifact, representationName);
   }
 
   public RepositoryArtifact getArtifactDetails(String id) {
     try {
-      Response modelResponse = getJsonResponse(getModelUrl(id));
-      JsonRepresentation json = new JsonRepresentation(modelResponse.getEntity());
-      JSONObject jsonObject = json.toJsonObject();      
-      return getArtifactInfo(jsonObject);
+      Response modelResponse = getJsonResponse(getModelUrl(id) + "/info");
+      JSONObject jsonObject = new JsonRepresentation(modelResponse.getEntity()).toJsonObject();      
+      return getArtifactInfoFromFile(id, jsonObject);
     } catch (Exception ex) {
       throw new RepositoryException("Exception while accessing Signavio repository", ex);
     }

@@ -60,6 +60,23 @@ public class SignavioConnectorConfiguration {
 		this.signavioUrl = signavioUrl;
 	}
 	
+  public String getDirectoryIdFromUrl(String href) {
+    return retrieveIdFromUrl(href, "/" + DIRECTORY_URL_SUFFIX);
+  }
+
+  public String getModelIdFromUrl(String href) {
+    return retrieveIdFromUrl(href, "/" + MODEL_URL_SUFFIX);
+  }
+  
+  /**
+   * get the part of the URL identifying the real ID needed to be stored in the
+   * API object to be able to identify the object later on
+   */
+  private String retrieveIdFromUrl(String href, String baseUrl) {
+    // TODO: Check implementation!
+    return href.replaceAll(baseUrl, "");
+  }
+  
 	public String getRegistrationUrl() {
 		return getSignavioUrl() + REGISTRATION_URL_SUFFIX;
 	}
