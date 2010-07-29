@@ -46,7 +46,7 @@
     
     <mkdir dir="${target.distro.root}/setup/files/webapps/activiti-cycle.war" />
     <unzip dest="${target.distro.root}/setup/files/webapps/activiti-cycle.war" 
-           src="../modules/activiti-cycle/target/activiti-webapp-cycle-${activiti.version}.war"/>
+           src="../modules/activiti-webapp-cycle/target/activiti-webapp-cycle-${activiti.version}.war"/>
     <delete>
       <fileset dir="${target.distro.root}/setup/files/webapps/activiti-cycle.war/WEB-INF/lib" />
     </delete>
