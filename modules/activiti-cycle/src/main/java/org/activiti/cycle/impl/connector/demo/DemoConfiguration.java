@@ -1,4 +1,4 @@
-package org.activiti.cycle.impl.connector.mock;
+package org.activiti.cycle.impl.connector.demo;
 
 
 public class DemoConfiguration {

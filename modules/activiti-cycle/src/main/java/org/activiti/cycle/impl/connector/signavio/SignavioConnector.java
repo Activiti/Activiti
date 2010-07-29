@@ -32,7 +32,7 @@ import org.activiti.cycle.impl.RepositoryRegistry;
 import org.activiti.cycle.impl.connector.signavio.action.OpenModelerAction;
 import org.activiti.cycle.impl.connector.signavio.provider.Bpmn20Provider;
 import org.activiti.cycle.impl.connector.signavio.provider.EmbeddableModelProvider;
-import org.activiti.cycle.impl.connector.signavio.provider.JasonProvider;
+import org.activiti.cycle.impl.connector.signavio.provider.JsonProvider;
 import org.activiti.cycle.impl.connector.signavio.provider.Jpdl4Provider;
 import org.activiti.cycle.impl.connector.signavio.provider.PngProvider;
 import org.json.JSONArray;
@@ -72,11 +72,11 @@ public class SignavioConnector implements RepositoryConnector {
     RepositoryRegistry.registerArtifactType(new ArtifactType("Signavio BPMN for jBPM 4", SIGNAVIO_BPMN_JBPM4));
 
     RepositoryRegistry.registerContentRepresentationProvider(SIGNAVIO_BPMN_2_0, Bpmn20Provider.class);
-    RepositoryRegistry.registerContentRepresentationProvider(SIGNAVIO_BPMN_2_0, JasonProvider.class);
+    RepositoryRegistry.registerContentRepresentationProvider(SIGNAVIO_BPMN_2_0, JsonProvider.class);
     RepositoryRegistry.registerContentRepresentationProvider(SIGNAVIO_BPMN_2_0, PngProvider.class);
     RepositoryRegistry.registerContentRepresentationProvider(SIGNAVIO_BPMN_2_0, EmbeddableModelProvider.class);
 
-    RepositoryRegistry.registerContentRepresentationProvider(SIGNAVIO_BPMN_JBPM4, JasonProvider.class);
+    RepositoryRegistry.registerContentRepresentationProvider(SIGNAVIO_BPMN_JBPM4, JsonProvider.class);
     RepositoryRegistry.registerContentRepresentationProvider(SIGNAVIO_BPMN_JBPM4, Jpdl4Provider.class);
     RepositoryRegistry.registerContentRepresentationProvider(SIGNAVIO_BPMN_JBPM4, PngProvider.class);
     RepositoryRegistry.registerContentRepresentationProvider(SIGNAVIO_BPMN_JBPM4, EmbeddableModelProvider.class);

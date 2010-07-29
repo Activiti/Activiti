@@ -1,4 +1,4 @@
-package org.activiti.cycle.impl.connector.mock;
+package org.activiti.cycle.impl.connector.demo;
 
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
@@ -40,9 +40,6 @@ public class DemoConnector implements RepositoryConnector {
 
   private static Map<RepositoryNode, Map<String, byte[]>> content;
 
-  // private static Map<RepositoryNode, List<RepositoryNode>> childNodes = new
-  // HashMap<RepositoryNode, List<RepositoryNode>>();
-
   private static Logger log = Logger.getLogger(DemoConnector.class.getName());
 
   public static final String ARTIFACT_TYPE_TEXT = "ARTIFACT_TYPE_TEXT";
@@ -50,6 +47,7 @@ public class DemoConnector implements RepositoryConnector {
   public static final String ARTIFACT_TYPE_BPMN_20 = "ARTIFACT_TYPE_BPMN_20";
 
   public static class TestProvider extends ContentRepresentationProvider {
+
     public TestProvider(String name, String type) {
       super(name, type);
     }
@@ -71,6 +69,7 @@ public class DemoConnector implements RepositoryConnector {
       super("Text", ContentRepresentationType.TEXT);
     }
   }
+
   public static class TestImageProvider extends TestProvider {
 
     public TestImageProvider() {
@@ -97,78 +96,51 @@ public class DemoConnector implements RepositoryConnector {
   }
 
   public static void createDemoData() {
-    { // folder one
-      RepositoryFolder folder1 = new RepositoryFolder();
-      folder1.setId("/meeting-minutes");
-      folder1.getMetadata().setName("Meeting Minutes");
-      folder1.getMetadata().setPath("/");
+    // Folder minutes
+    RepositoryFolder folder1 = createFolder("/minutes", "Meeting Minutes", "/");
 
-      RepositoryArtifact file1 = new RepositoryArtifact();
-      file1.setArtifactType(RepositoryRegistry.getArtifactTypeByIdentifier(ARTIFACT_TYPE_TEXT));
-      file1.setId("/meeting-minutes/20100701-KickOffMeeting.txt");
-      file1.getMetadata().setName("20100701-KickOffMeeting");
-      // file1.setFileType(RepositoryRegistry.getFileTypeByIdentifier(XXX));
+    RepositoryArtifact file1 = createArtifact("/minutes/20100701-KickOffMeeting.txt", ARTIFACT_TYPE_TEXT, "20100701-KickOffMeeting", "/minutes");
+    addContentRepresentation(file1, "Text", "http://www.apache.org/foundation/records/minutes/2008/board_minutes_2008_10_15.txt");
 
-      addContentRepresentation(file1, "Text",
-              "http://www.apache.org/foundation/records/minutes/2008/board_minutes_2008_10_15.txt");
+    RepositoryArtifact file2 = createArtifact("/minutes/InitialMindmap.mm", ARTIFACT_TYPE_MINDMAP, "InitialMindmap", "/minutes");
+    addContentRepresentation(file2, "Image", "http://www.buzan.com.au/images/EnergyMindMap_big.jpg");
+    addContentRepresentation(file2, "Text", "http://en.wikipedia.org/wiki/Energy");
 
-      RepositoryArtifact file2 = new RepositoryArtifact();
-      file2.setArtifactType(RepositoryRegistry.getArtifactTypeByIdentifier(ARTIFACT_TYPE_MINDMAP));
-      file2.setId("/meeting-minutes/InitialMindmap.mm");
-      file2.getMetadata().setName("InitialMindmap");
-      // file1.setFileType(RepositoryRegistry.getFileTypeByIdentifier(XXX));
+    rootNodes.add(folder1);
+    nodes.add(folder1);
+    nodes.add(file1);
+    nodes.add(file2);
 
-      addContentRepresentation(file2, "Image", "http://www.buzan.com.au/images/EnergyMindMap_big.jpg");
-      addContentRepresentation(file2, "Text", "http://en.wikipedia.org/wiki/Energy");
+    // Folder BPMN
 
-      // ArrayList<RepositoryNode> children = new ArrayList<RepositoryNode>();
-      // children.add(file1);
-      // children.add(file2);
-      //      
-      // childNodes.put(folder1, children);
-      rootNodes.add(folder1);
+    RepositoryFolder folder2 = createFolder("/BPMN", "BPMN", "/");
+    RepositoryFolder folder3 = createFolder("/BPMN/Level3", "Level3", "/BPMN");
 
-      nodes.add(folder1);
-      nodes.add(file1);
-      nodes.add(file2);
-    }
-    { // folder one
-      RepositoryFolder folder1 = new RepositoryFolder();
-      folder1.setId("/BPMN");
-      folder1.getMetadata().setName("BPMN");
-      folder1.getMetadata().setPath("/");
+    RepositoryArtifact file3 = createArtifact("/BPMN/Level3/789237892374239", ARTIFACT_TYPE_BPMN_20, "InitialBpmnModel", "/BPMN/Level3");
+    addContentRepresentation(file3, "Image", "http://www.bpm-guide.de/wp-content/uploads/2010/07/Incident-Management-collab.png");
+    addContentRepresentation(file3, "XML", "http://www.bpm-guide.de/wp-content/uploads/2010/07/engine-pool.xml");
 
-      RepositoryFolder folder2 = new RepositoryFolder();
-      folder2.setId("/BPMN/Level3");
-      folder2.getMetadata().setName("Level3");
-      folder2.getMetadata().setPath("/BPMN");
+    rootNodes.add(folder2);
+    nodes.add(folder2);
+    nodes.add(folder3);
+    nodes.add(file3);
+  }
 
-      RepositoryArtifact file1 = new RepositoryArtifact();
-      file1.setArtifactType(RepositoryRegistry.getArtifactTypeByIdentifier(ARTIFACT_TYPE_BPMN_20));
-      file1.setId("/BPMN/Level3/789237892374239");
-      file1.getMetadata().setName("InitialBpmnModel");
-      file1.getMetadata().setPath("/BPMN/Level3");
-      // file1.setFileType(RepositoryRegistry.getFileTypeByIdentifier(XXX));
+  private static RepositoryFolder createFolder(String id, String name, String parentPath) {
+    RepositoryFolder newFolder = new RepositoryFolder();
+    newFolder.setId(id);
+    newFolder.getMetadata().setName(name);
+    newFolder.getMetadata().setPath(parentPath);
+    return newFolder;
+  }
 
-      addContentRepresentation(file1, "Image",
-              "http://www.bpm-guide.de/wp-content/uploads/2010/07/Incident-Management-collab.png");
-      addContentRepresentation(file1, "XML", "http://www.bpm-guide.de/wp-content/uploads/2010/07/engine-pool.xml");
-
-      // ArrayList<RepositoryNode> children1 = new ArrayList<RepositoryNode>();
-      // children1.add(folder2);
-      //
-      // ArrayList<RepositoryNode> children2 = new ArrayList<RepositoryNode>();
-      // children2.add(file1);
-      //
-      // childNodes.put(folder1, children1);
-      // childNodes.put(folder2, children2);
-      //
-      rootNodes.add(folder1);
-
-      nodes.add(folder1);
-      nodes.add(folder2);
-      nodes.add(file1);
-    }
+  private static RepositoryArtifact createArtifact(String id, String artifactTypeIdentifier, String name, String parentPath) {
+    RepositoryArtifact newArtifact = new RepositoryArtifact();
+    newArtifact.setArtifactType(RepositoryRegistry.getArtifactTypeByIdentifier(artifactTypeIdentifier));
+    newArtifact.setId(id);
+    newArtifact.getMetadata().setName(name);
+    newArtifact.getMetadata().setPath(parentPath);
+    return newArtifact;
   }
 
   private static void addContentRepresentation(RepositoryArtifact artifact, String name, String contentSourceUrl) {
@@ -193,7 +165,7 @@ public class DemoConnector implements RepositoryConnector {
       }
       byteStream.close();
       map.put(name, byteStream.toByteArray());
-      
+
     } catch (Exception ex) {
       log.log(Level.SEVERE, "couldn't load content for artifact " + artifact + " from URL " + contentSourceUrl, ex);
     }
@@ -257,7 +229,7 @@ public class DemoConnector implements RepositoryConnector {
     return true;
   }
 
-   public ContentRepresentation getContent(String nodeId, String representationName) {
-    return ((RepositoryArtifact)getNodeDetails(nodeId)).getContentRepresentation(representationName);
+  public ContentRepresentation getContent(String nodeId, String representationName) {
+    return ((RepositoryArtifact) getNodeDetails(nodeId)).getContentRepresentation(representationName);
   }
 }

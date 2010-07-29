@@ -5,10 +5,10 @@ import org.activiti.cycle.RepositoryArtifact;
 import org.activiti.cycle.RepositoryException;
 import org.restlet.data.Response;
 
-public class JasonProvider extends SignavioContentRepresentationProvider {
+public class JsonProvider extends SignavioContentRepresentationProvider {
 
-  public JasonProvider() {
-    super("Jason", ContentRepresentationType.TEXT);
+  public JsonProvider() {
+    super("json", ContentRepresentationType.TEXT);
   }
 
   public byte[] getContent(RepositoryArtifact artifact) {

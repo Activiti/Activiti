@@ -10,13 +10,13 @@ import org.activiti.cycle.RepositoryConnector;
 import org.activiti.cycle.RepositoryFolder;
 import org.activiti.cycle.RepositoryNode;
 import org.activiti.cycle.impl.RestClientRepositoryConnector;
+import org.activiti.cycle.impl.connector.demo.DemoConnector;
 import org.junit.Test;
 
 public class DemoConnectorTest {
 
   @Test
-  public void testFirstPlay() {
-    
+  public void testFirstPlay() {    
     RepositoryConnector conn = new RestClientRepositoryConnector("demo-repo", "http://localhost:8080/activiti-cycle/", new DemoConnector());
     
     List<RepositoryNode> childNodes = conn.getChildNodes("/");
@@ -24,9 +24,9 @@ public class DemoConnectorTest {
 
     assertEquals(RepositoryFolder.class, childNodes.get(0).getClass());
     RepositoryFolder folder1 = (RepositoryFolder) childNodes.get(0);
-    assertEquals("/meeting-minutes", folder1.getId());
+    assertEquals("/minutes", folder1.getId());
     // TODO: Think about //
-    assertEquals("http://localhost:8080/activiti-cycle/demo-repo//meeting-minutes", folder1.getClientUrl());
+    assertEquals("http://localhost:8080/activiti-cycle/demo-repo//minutes", folder1.getClientUrl());
     
     assertEquals(RepositoryFolder.class, childNodes.get(1).getClass());
     RepositoryFolder folder2 = (RepositoryFolder) childNodes.get(1);
@@ -37,10 +37,10 @@ public class DemoConnectorTest {
     assertEquals(2, childNodes.size());
 
     RepositoryArtifact file1 = (RepositoryArtifact) childNodes.get(0);
-    assertEquals("/meeting-minutes/20100701-KickOffMeeting.txt", file1.getId());
+    assertEquals("/minutes/20100701-KickOffMeeting.txt", file1.getId());
 
     RepositoryArtifact file2 = (RepositoryArtifact) childNodes.get(1);
-    assertEquals("/meeting-minutes/InitialMindmap.mm", file2.getId());
+    assertEquals("/minutes/InitialMindmap.mm", file2.getId());
     
 
     // check sub elements of folder 2
