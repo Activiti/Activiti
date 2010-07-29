@@ -29,7 +29,7 @@ public class ProcessDefinitionImpl extends ScopeElementImpl implements ObjectPro
 
   protected int version;
 
-  protected DeploymentEntity deployment;
+  protected String deploymentId;
   
   /* Name of the resource that was used to deploy this processDefinition */
   transient protected String resourceName;
@@ -70,12 +70,6 @@ public class ProcessDefinitionImpl extends ScopeElementImpl implements ObjectPro
   public void setVersion(int version) {
     this.version = version;
   }
-  public DeploymentEntity getDeployment() {
-    return deployment;
-  }
-  public void setDeployment(DeploymentEntity deployment) {
-    this.deployment = deployment;
-  }
   public String getResourceName() {
     return resourceName;
   }
@@ -85,8 +79,13 @@ public class ProcessDefinitionImpl extends ScopeElementImpl implements ObjectPro
   public ProcessDefinitionImpl getProcessDefinition() {
     return this;
   }
-  
   public VariableTypes getVariableTypes() {
     return variableTypes;
+  }
+  public String getDeploymentId() {
+    return deploymentId;
+  }
+  public void setDeploymentId(String deploymentId) {
+    this.deploymentId = deploymentId;
   }
 }

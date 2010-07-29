@@ -14,6 +14,7 @@
 package org.activiti.engine.impl.persistence;
 
 import java.util.List;
+import java.util.Map;
 
 import org.activiti.engine.DeploymentBuilder;
 import org.activiti.engine.impl.persistence.repository.DeploymentEntity;
@@ -39,8 +40,11 @@ public interface RepositorySession {
   // TODO replace with query api
   List<DeploymentEntity> findDeployments();
 
+  DeploymentEntity findDeploymentById(String deploymentId);
+
   // TODO replace with query api
-  List<ProcessDefinitionEntity> findUndeployedProcessDefinitionsByDeploymentId(String deploymentId);
+  // document that these process definitions might not be deployed
+  List<ProcessDefinitionEntity> findProcessDefinitionsByDeploymentId(String deploymentId);
 
   // TODO replace with query api
   /** used when {@link DeploymentBuilder#enableDuplicateFiltering()} is called 
@@ -52,7 +56,16 @@ public interface RepositorySession {
   // TODO replace with query api
   ResourceEntity findResourceByDeploymentIdAndResourceName(String deploymentId, String resourceName);
   
-  ProcessDefinitionImpl findLatestProcessDefinitionByKey(String processDefinitionKey);
+  // TODO replace with query api
+  List<ResourceEntity> findResourcesByDeploymentId(String deploymentId);
 
+  // TODO document that these process definitions are not deployed and what that means
   ProcessDefinitionEntity findProcessDefinitionById(String processDefinitionId);
+  
+  // TODO document that these process definitions are deployed
+  ProcessDefinitionEntity findDeployedLatestProcessDefinitionByKey(String processDefinitionKey);
+
+  // TODO document that these process definitions are deployed
+  ProcessDefinitionEntity findDeployedProcessDefinitionById(String processDefinitionId);
+
 }

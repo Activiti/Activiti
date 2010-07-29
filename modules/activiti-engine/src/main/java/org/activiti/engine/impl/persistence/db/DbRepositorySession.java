@@ -57,7 +57,7 @@ public class DbRepositorySession implements Session, RepositorySession {
     for (Deployer deployer: dbRepositorySessionFactory.getDeployers()) {
       List<ProcessDefinitionEntity> processDefinitions = deployer.deploy(deployment);
       for (ProcessDefinitionEntity processDefinition : processDefinitions) {
-        processDefinition.setDeployment(deployment);
+        processDefinition.setDeploymentId(deployment.getId());
         dbSqlSession.insert(processDefinition);
         addToProcessDefinitionCache(processDefinition);
       }
@@ -68,7 +68,8 @@ public class DbRepositorySession implements Session, RepositorySession {
     for (Deployer deployer: dbRepositorySessionFactory.getDeployers()) {
       List<ProcessDefinitionEntity> processDefinitions = deployer.deploy(deployment);
       for (ProcessDefinitionEntity processDefinition : processDefinitions) {
-        String deploymentId = processDefinition.getDeployment().getId();
+        String deploymentId = deployment.getId();
+        processDefinition.setDeploymentId(deploymentId);
         ProcessDefinitionEntity persistedProcessDefinition = findProcessDefinitionByDeploymentAndKey(deploymentId, processDefinition.getKey());
         processDefinition.setId(persistedProcessDefinition.getId());
         processDefinition.setVersion(persistedProcessDefinition.getVersion());
@@ -88,12 +89,21 @@ public class DbRepositorySession implements Session, RepositorySession {
     dbSqlSession.delete("deleteResourcesByDeploymentId", deploymentId);
     dbSqlSession.delete("deleteDeploymentById", deploymentId);
   }
+  
+  public DeploymentEntity findDeploymentById(String deploymentId) {
+    return (DeploymentEntity) dbSqlSession.selectOne("selectDeploymentById", deploymentId);
+  }
 
   public ResourceEntity findResourceByDeploymentIdAndResourceName(String deploymentId, String resourceName) {
     Map<String, Object> params = new HashMap<String, Object>();
     params.put("deploymentId", deploymentId);
     params.put("resourceName", resourceName);
     return (ResourceEntity) dbSqlSession.selectOne("selectResourceByDeploymentIdAndResourceName", params);
+  }
+
+  @SuppressWarnings("unchecked")
+  public List<ResourceEntity> findResourcesByDeploymentId(String deploymentId) {
+    return dbSqlSession.selectList("selectResourcesByDeploymentId", deploymentId);
   }
 
   @SuppressWarnings("unchecked")
@@ -117,16 +127,36 @@ public class DbRepositorySession implements Session, RepositorySession {
     return (ProcessDefinitionEntity) dbSqlSession.selectOne("selectProcessDefinitionByDeploymentAndKey", parameters);
   }
 
+  @SuppressWarnings("unchecked")
+  public List<ProcessDefinitionEntity> findProcessDefinitionsByDeploymentId(String deploymentId) {
+    return dbSqlSession.selectList("selectProcessDefinitionsByDeploymentId", deploymentId);
+  }
+
   public ProcessDefinitionEntity findProcessDefinitionById(String processDefinitionId) {
     return (ProcessDefinitionEntity) dbSqlSession.selectOne("selectProcessDefinitionById", processDefinitionId);
   }
 
-  public ProcessDefinitionEntity findLatestProcessDefinitionByKey(String processDefinitionKey) {
-    return (ProcessDefinitionEntity) dbSqlSession.selectOne("selectLatestProcessDefinitionByKey", processDefinitionKey);
+  public ProcessDefinitionEntity findDeployedLatestProcessDefinitionByKey(String processDefinitionKey) {
+    ProcessDefinitionEntity processDefinition = (ProcessDefinitionEntity) dbSqlSession.selectOne("selectLatestProcessDefinitionByKey", processDefinitionKey);
+    processDefinition = resolveProcessDefinition(processDefinition);
+    return processDefinition;
   }
 
-  @SuppressWarnings("unchecked")
-  public List<ProcessDefinitionEntity> findUndeployedProcessDefinitionsByDeploymentId(String deploymentId) {
-    return dbSqlSession.selectList("selectProcessDefinitionsByDeploymentId", deploymentId);
+  public ProcessDefinitionEntity findDeployedProcessDefinitionById(String processDefinitionId) {
+    ProcessDefinitionEntity processDefinition = (ProcessDefinitionEntity) dbSqlSession.selectOne("selectProcessDefinitionById", processDefinitionId);
+    processDefinition = resolveProcessDefinition(processDefinition);
+    return processDefinition;
+  }
+
+  protected ProcessDefinitionEntity resolveProcessDefinition(ProcessDefinitionEntity processDefinition) {
+    String processDefinitionId = processDefinition.getId();
+    String deploymentId = processDefinition.getDeploymentId();
+    processDefinition = dbRepositorySessionFactory.getProcessDefinitionCache().get(processDefinitionId);
+    if (processDefinition==null) {
+      DeploymentEntity deployment = findDeploymentById(deploymentId);
+      deployExisting(deployment);
+      processDefinition = dbRepositorySessionFactory.getProcessDefinitionCache().get(processDefinitionId);
+    }
+    return processDefinition;
   }
 }

@@ -26,7 +26,7 @@ import org.activiti.impl.variable.VariableTypes;
 public class ProcessDefinitionEntity extends ProcessDefinitionImpl implements PersistentObject {
 
   private static final long serialVersionUID = 1L;
-
+  
   public ProcessDefinitionEntity() {
     this(new DefaultVariableTypes());
   }

@@ -31,8 +31,8 @@ public class JsonProcessDefinitionConverter extends JsonObjectConverter<ProcessD
     if (processDefinitionImpl.getKey()!=null) {
       jsonObject.put("key", processDefinitionImpl.getKey());
     }
-    if (processDefinitionImpl.getDeployment()!=null) {
-      jsonObject.put("deploymentId", processDefinitionImpl.getDeployment().getId());
+    if (processDefinitionImpl.getDeploymentId()!=null) {
+      jsonObject.put("deploymentId", processDefinitionImpl.getDeploymentId());
     }
     return jsonObject;
   }

@@ -57,12 +57,12 @@ public class GetFormCmd implements Command<Object> {
         throw new ActivitiException("No task found for id = '" + taskId + "'");
       }
       execution = task.getExecution();
-      processDefinition = repositorySession.findProcessDefinitionById(task.getProcessDefinitionId());
+      processDefinition = repositorySession.findDeployedProcessDefinitionById(task.getProcessDefinitionId());
       formReference = execution.getActivity().getFormReference();
       
     } else if (processDefinitionId!=null) {
       
-      processDefinition = repositorySession.findProcessDefinitionById(processDefinitionId);
+      processDefinition = repositorySession.findDeployedProcessDefinitionById(processDefinitionId);
       if (processDefinition == null) {
         throw new ActivitiException("No process definition found for id = '" + processDefinitionId + "'");
       }
@@ -70,14 +70,15 @@ public class GetFormCmd implements Command<Object> {
       
     } else if (processDefinitionKey!=null) {
       
-      processDefinition = repositorySession.findLatestProcessDefinitionByKey(processDefinitionKey);
+      processDefinition = repositorySession.findDeployedLatestProcessDefinitionByKey(processDefinitionKey);
       if (processDefinition == null) {
         throw new ActivitiException("No process definition found for key '" + processDefinitionKey +"'");
       }
       formReference = processDefinition.getInitial().getFormReference();
     } 
 
-    DeploymentEntity deployment = processDefinition.getDeployment();
+    String deploymentId = processDefinition.getDeploymentId();
+    DeploymentEntity deployment = repositorySession.findDeploymentById(deploymentId);
     
     Object result = null;
     if (formReference != null) {

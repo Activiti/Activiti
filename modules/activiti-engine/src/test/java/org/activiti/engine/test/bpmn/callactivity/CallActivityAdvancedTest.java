@@ -27,7 +27,7 @@ import org.activiti.test.JobExecutorPoller;
 /**
  * @author Joram Barrez
  */
-public class CallActivityAcvancedTest extends ProcessEngineImplTestCase {
+public class CallActivityAdvancedTest extends ProcessEngineImplTestCase {
 
   @Deployment(resources = {
     "org/activiti/engine/test/bpmn/callactivity/CallActivity.testCallSimpleSubProcess.bpmn20.xml", 

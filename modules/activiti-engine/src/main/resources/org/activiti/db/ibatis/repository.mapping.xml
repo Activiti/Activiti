@@ -29,7 +29,7 @@
     select * from ACT_DEPLOYMENT D where NAME_=#{name} order by D.DEPLOY_TIME_ asc
   </select>
   
-  <select id="selectDeployment" parameterType="string" resultMap="deploymentResultMap">
+  <select id="selectDeploymentById" parameterType="string" resultMap="deploymentResultMap">
     select * from ACT_DEPLOYMENT where ID_ = #{id}
   </select>
   
@@ -66,7 +66,6 @@
           AND NAME_ = #{resourceName}
   </select>
 
-
   <select id="selectResourcesByDeploymentId" parameterType="string" resultMap="resourceResultMap">
     select * from ACT_BYTEARRAY where DEPLOYMENT_ID_ = #{deploymentId} order by NAME_ asc
   </select>  
@@ -80,7 +79,7 @@
             #{name, jdbcType=VARCHAR},
             #{key, jdbcType=VARCHAR}, 
             #{version, jdbcType=INTEGER},
-            #{deployment.id, jdbcType=VARCHAR})
+            #{deploymentId, jdbcType=VARCHAR})
   </insert>
   
   <delete id="deleteProcessDefinitionsByDeploymentId" parameterType="string">
@@ -92,11 +91,7 @@
     <result property="name" column="NAME_" />
     <result property="key" column="KEY_" jdbcType="VARCHAR" />
     <result property="version" column="VERSION_" jdbcType="INTEGER"/>
-    <association property="deployment" 
-                 column="DEPLOYMENT_ID_" 
-                 javaType="org.activiti.impl.repository.DeploymentImpl"
-                 select="selectDeployment" >
-    </association>
+    <result property="deploymentId" column="DEPLOYMENT_ID_" jdbcType="VARCHAR"/>
   </resultMap>
   
   <select id="selectProcessDefinitions" resultMap="processDefinitionResultMap">

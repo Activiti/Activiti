@@ -126,7 +126,7 @@ public class DbExecutionImpl extends ExecutionImpl implements PersistentObject {
   @Override
   protected void ensureProcessDefinitionInitialized() {
     if ((processDefinition == null) && (processDefinitionId != null)) {
-      setProcessDefinition(CommandContext.getCurrent().getRepositorySession().findProcessDefinitionById(processDefinitionId));
+      setProcessDefinition(CommandContext.getCurrent().getRepositorySession().findDeployedProcessDefinitionById(processDefinitionId));
     }
   }
 

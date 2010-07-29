@@ -37,7 +37,7 @@ public class CallActivityBehaviour extends BpmnActivity {
   
   public void execute(ActivityExecution execution) throws Exception {
     RepositorySession repositorySession = CommandContext.getCurrent().getRepositorySession();
-    ProcessDefinitionImpl processDefinition =  repositorySession.findLatestProcessDefinitionByKey(processDefinitonKey);
+    ProcessDefinitionImpl processDefinition =  repositorySession.findDeployedLatestProcessDefinitionByKey(processDefinitonKey);
     
     ObjectProcessInstance processInstance = execution.createSubProcessInstance(processDefinition);
     processInstance.start();

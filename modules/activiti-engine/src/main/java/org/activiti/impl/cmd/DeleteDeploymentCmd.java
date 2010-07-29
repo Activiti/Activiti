@@ -35,7 +35,7 @@ public class DeleteDeploymentCmd extends CmdVoid {
     RepositorySession repositorySession = commandContext.getRepositorySession();
     PersistenceSession persistenceSession = commandContext.getPersistenceSession();
     
-    List<ProcessDefinitionEntity> processDefinitions = repositorySession.findUndeployedProcessDefinitionsByDeploymentId(deploymentId);
+    List<ProcessDefinitionEntity> processDefinitions = repositorySession.findProcessDefinitionsByDeploymentId(deploymentId);
     for (ProcessDefinitionEntity processDefinition : processDefinitions) {
       List<DbExecutionImpl> executions = persistenceSession.findProcessInstancesByProcessDefintionId(processDefinition.getId());
       for (DbExecutionImpl execution : executions) {

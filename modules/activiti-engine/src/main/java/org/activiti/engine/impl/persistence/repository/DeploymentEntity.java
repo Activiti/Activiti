@@ -16,9 +16,12 @@ package org.activiti.engine.impl.persistence.repository;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.activiti.engine.Deployment;
+import org.activiti.engine.impl.persistence.RepositorySession;
+import org.activiti.impl.interceptor.CommandContext;
 import org.activiti.impl.persistence.PersistentObject;
 
 
@@ -52,6 +55,20 @@ public class DeploymentEntity implements Serializable, Deployment, PersistentObj
     return DeploymentEntity.class;
   }
 
+  // lazy loading /////////////////////////////////////////////////////////////
+  
+  public Map<String, ResourceEntity> getResources() {
+    if (resources==null && id!=null) {
+      RepositorySession repositorySession = CommandContext.getCurrentSession(RepositorySession.class);
+      List<ResourceEntity> resourcesList = repositorySession.findResourcesByDeploymentId(id);
+      resources = new HashMap<String, ResourceEntity>();
+      for (ResourceEntity resource: resourcesList) {
+        resources.put(resource.getName(), resource);
+      }
+    }
+    return resources;
+  }
+
   // getters and setters //////////////////////////////////////////////////////
 
   public String getId() {
@@ -68,10 +85,6 @@ public class DeploymentEntity implements Serializable, Deployment, PersistentObj
   
   public void setName(String name) {
     this.name = name;
-  }
-  
-  public Map<String, ResourceEntity> getResources() {
-    return resources;
   }
   
   public void setResources(Map<String, ResourceEntity> resources) {

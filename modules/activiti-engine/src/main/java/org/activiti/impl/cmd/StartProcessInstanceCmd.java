@@ -43,12 +43,12 @@ public class StartProcessInstanceCmd<T> implements Command<ProcessInstance> {
     RepositorySession repositorySession = commandContext.getRepositorySession();
     ProcessDefinitionImpl processDefinition = null;
     if (processDefinitionId!=null) {
-      processDefinition = repositorySession.findProcessDefinitionById(processDefinitionId);
+      processDefinition = repositorySession.findDeployedProcessDefinitionById(processDefinitionId);
       if (processDefinition == null) {
         throw new ActivitiException("No process definition found for id = '" + processDefinitionId + "'");
       }
     } else {
-      processDefinition = repositorySession.findLatestProcessDefinitionByKey(processDefinitionKey);
+      processDefinition = repositorySession.findDeployedLatestProcessDefinitionByKey(processDefinitionKey);
       if (processDefinition == null) {
         throw new ActivitiException("No process definition found for key '" + processDefinitionKey +"'");
       }
