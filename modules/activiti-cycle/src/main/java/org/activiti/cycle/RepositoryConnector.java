@@ -25,7 +25,7 @@ public interface RepositoryConnector {
   // /**
   // * get Root folder
   // */
-  // public RepositoryFolder getRootFolder();
+  // public RepositoryFolder getRootFolders();
 
   // /**
   // * Get child folders for the given parent folder. If parentFolder is null
@@ -52,10 +52,9 @@ public interface RepositoryConnector {
   // fetchDetails);
 
   /**
-   * load all details for a {@link RepositoryNode} (if that wasn't prefetched,
-   * which is indicated in a node with a flag).
+   * load all details for a {@link RepositoryArtifact}.
    */
-  public RepositoryNode getNodeDetails(String id);
+  public RepositoryArtifact getArtifactDetails(String id);
   
   // where to get contentType
   public ContentRepresentation getContent(String nodeId, String representationName);
@@ -95,4 +94,11 @@ public interface RepositoryConnector {
    */
   public void deleteSubFolder(String subFolderId);
 
+  /**
+   * Some connectors support commit (like SVN), so all pending changes must be
+   * committed correctly. If the connector doesn't support committing, this
+   * method just does nothing. This means, there is no rollback and you
+   * shouldn't rely on a transaction behavior.
+   */
+  public void commitPendingChanges(String comment);
 }

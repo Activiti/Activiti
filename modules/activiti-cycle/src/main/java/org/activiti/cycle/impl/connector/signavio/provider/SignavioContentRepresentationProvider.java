@@ -15,13 +15,6 @@ import javax.xml.transform.stream.StreamResult;
 import org.activiti.cycle.ContentRepresentationProvider;
 import org.activiti.cycle.RepositoryArtifact;
 import org.activiti.cycle.impl.connector.signavio.SignavioConnector;
-import org.restlet.Client;
-import org.restlet.data.Form;
-import org.restlet.data.MediaType;
-import org.restlet.data.Method;
-import org.restlet.data.Preference;
-import org.restlet.data.Reference;
-import org.restlet.data.Request;
 import org.restlet.data.Response;
 import org.restlet.resource.DomRepresentation;
 
@@ -39,18 +32,8 @@ public abstract class SignavioContentRepresentationProvider extends ContentRepre
   
   public Response getJsonResponse(RepositoryArtifact artifact, String urlSuffix) {
     SignavioConnector connector = getConnector(artifact);
-    Client client = connector.initClient();
-
-    Reference jsonRef = new Reference(connector.getSignavioConfiguration().getModelUrl() + artifact.getId() + urlSuffix);
-
-    Request jsonRequest = new Request(Method.GET, jsonRef);
-    jsonRequest.getClientInfo().getAcceptedMediaTypes().add(new Preference<MediaType>(MediaType.APPLICATION_JSON));
-
-    Form requestHeaders = new Form();
-    requestHeaders.add("token", connector.getSecurityToken());
-    jsonRequest.getAttributes().put("org.restlet.http.headers", requestHeaders);
-
-    return client.handle(jsonRequest);
+    String url = connector.getModelUrl(artifact) + urlSuffix;
+    return connector.getJsonResponse(url);
   }
 
   public String getXmlAsString(DomRepresentation xmlData) throws TransformerFactoryConfigurationError, TransformerConfigurationException,

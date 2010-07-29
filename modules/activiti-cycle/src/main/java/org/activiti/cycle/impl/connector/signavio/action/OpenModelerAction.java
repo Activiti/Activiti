@@ -46,7 +46,7 @@ public class OpenModelerAction extends ArtifactAction {
   @Override
   public String getGuiRepresentationUrl() {
     SignavioConnector signavioConnector = (SignavioConnector) getFile().getConnector();
-    return signavioConnector.getModellerUrl(getFile());
+    return signavioConnector.getModelUrl(getFile());
     // TODO: Think about how to get this from the Signavio Connector by the API in the best way
   }
 

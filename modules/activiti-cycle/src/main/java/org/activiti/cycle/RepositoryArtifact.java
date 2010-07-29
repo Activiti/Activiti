@@ -44,20 +44,24 @@ public class RepositoryArtifact extends RepositoryNode {
     super(connector);
   }
   
-  public ContentRepresentation getContentRepresentation(String representationName) {
-    if (getArtifactType() != null) {
-      for (Class< ? extends ContentRepresentationProvider> providerClass : getArtifactType().getContentRepresentationProviders()) {
+  /**
+   * load Content Representation with content as byte[] included for given
+   * {@link RepositoryArtifact}
+   */
+  public static ContentRepresentation getContentRepresentation(RepositoryArtifact artifact, String representationName) {
+    if (artifact.getArtifactType() != null) {
+      for (Class< ? extends ContentRepresentationProvider> providerClass : artifact.getArtifactType().getContentRepresentationProviders()) {
         try {
           ContentRepresentationProvider p = providerClass.newInstance();
           if (p.getContentRepresentationName().equals(representationName)) {
-            return p.createContentRepresentation(this, true);
+            return p.createContentRepresentation(artifact, true);
           }
         } catch (Exception ex) {
           log.log(Level.SEVERE, "couldn't create content provider of class " + providerClass, ex);
         }
       }
     }
-    throw new RepositoryException("Couldn't find or load content representation '" + representationName + "' for artifact " + this);
+    throw new RepositoryException("Couldn't find or load content representation '" + representationName + "' for artifact " + artifact);
   }
 
   public List<ContentRepresentation> getContentRepresentations() {

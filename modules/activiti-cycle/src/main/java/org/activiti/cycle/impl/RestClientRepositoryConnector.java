@@ -70,8 +70,8 @@ public class RestClientRepositoryConnector implements RepositoryConnector {
     return childNodes;
   }
   
-  public RepositoryNode getNodeDetails(String id) {
-    return adjustClientUrl(connector.getNodeDetails(id));
+  public RepositoryArtifact getArtifactDetails(String id) {
+    return (RepositoryArtifact) adjustClientUrl(connector.getArtifactDetails(id));
   }
 
   public boolean login(String username, String password) {
@@ -82,4 +82,7 @@ public class RestClientRepositoryConnector implements RepositoryConnector {
     return adjustClientUrl(connector.getContent(nodeId, representationName));
   }
 
+  public void commitPendingChanges(String comment) {
+    connector.commitPendingChanges(comment);
+  }
 }

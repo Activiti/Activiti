@@ -74,6 +74,10 @@ public class ContentRepresentation implements Serializable {
   public byte[] getContent() {
     return content;
   }
+  
+  public String getContentAsString() {
+    return content.toString();
+  }
 
   public void setContent(String text) {
     this.content = text.getBytes();

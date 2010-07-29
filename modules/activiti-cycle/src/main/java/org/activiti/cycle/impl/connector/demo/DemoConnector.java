@@ -214,13 +214,13 @@ public class DemoConnector implements RepositoryConnector {
     return getChildNodes(parentUrl);
   }
 
-  public RepositoryNode getNodeDetails(String url) {
+  public RepositoryArtifact getArtifactDetails(String id) {
     for (RepositoryNode node : nodes) {
-      if (node.getId().equals(url)) {
-        return node;
+      if (node.getId().equals(id) && node instanceof RepositoryArtifact) {
+        return (RepositoryArtifact) node;
       }
     }
-    throw new RepositoryException("Couldn't find node with url '" + url + "'");
+    throw new RepositoryException("Couldn't find node with url '" + id + "'");
   }
 
   public boolean login(String username, String password) {
@@ -230,6 +230,9 @@ public class DemoConnector implements RepositoryConnector {
   }
 
   public ContentRepresentation getContent(String nodeId, String representationName) {
-    return ((RepositoryArtifact) getNodeDetails(nodeId)).getContentRepresentation(representationName);
+    return RepositoryArtifact.getContentRepresentation(getArtifactDetails(nodeId), representationName);
+  }
+
+  public void commitPendingChanges(String comment) {
   }
 }

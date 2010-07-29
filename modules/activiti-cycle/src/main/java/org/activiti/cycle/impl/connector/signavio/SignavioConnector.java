@@ -32,8 +32,8 @@ import org.activiti.cycle.impl.RepositoryRegistry;
 import org.activiti.cycle.impl.connector.signavio.action.OpenModelerAction;
 import org.activiti.cycle.impl.connector.signavio.provider.Bpmn20Provider;
 import org.activiti.cycle.impl.connector.signavio.provider.EmbeddableModelProvider;
-import org.activiti.cycle.impl.connector.signavio.provider.JsonProvider;
 import org.activiti.cycle.impl.connector.signavio.provider.Jpdl4Provider;
+import org.activiti.cycle.impl.connector.signavio.provider.JsonProvider;
 import org.activiti.cycle.impl.connector.signavio.provider.PngProvider;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -132,6 +132,18 @@ public class SignavioConnector implements RepositoryConnector {
 
     return client;
   }
+  
+  public Response getJsonResponse(String url) {
+    Form requestHeaders = new Form();
+    requestHeaders.add("token", getSecurityToken());
+
+    Request jsonRequest = new Request(Method.GET, new Reference(url));
+    jsonRequest.getClientInfo().getAcceptedMediaTypes().add(new Preference<MediaType>(MediaType.APPLICATION_JSON));
+    jsonRequest.getAttributes().put("org.restlet.http.headers", requestHeaders);
+
+    Client client = initClient();
+    return client.handle(jsonRequest);
+  }  
 
   public boolean registerUserWithSignavio(String firstname, String lastname, String email, String password) {
     Client client = initClient();
@@ -214,20 +226,8 @@ public class SignavioConnector implements RepositoryConnector {
   }
 
   public JSONObject getPublicRootDirectory() throws IOException, JSONException {
-    Client client = initClient();
-
-    Reference directoryRef = new Reference(conf.getDirectoryUrl());
-
-    Request directoryRequest = new Request(Method.GET, directoryRef);
-    directoryRequest.getClientInfo().getAcceptedMediaTypes().add(new Preference<MediaType>(MediaType.APPLICATION_JSON));
-
-    Form requestHeaders = new Form();
-    requestHeaders.add("token", securityToken);
-    directoryRequest.getAttributes().put("org.restlet.http.headers", requestHeaders);
-
-    Response directoryResponse = client.handle(directoryRequest);
+    Response directoryResponse = getJsonResponse(conf.getDirectoryUrl());
     JsonRepresentation jsonData = new JsonRepresentation(directoryResponse.getEntity());
-
     JSONArray rootJsonArray = jsonData.toJsonArray();
 
     if (log.isLoggable(Level.FINEST)) {
@@ -238,7 +238,6 @@ public class SignavioConnector implements RepositoryConnector {
     // models of this account
     for (int i = 0; i < rootJsonArray.length(); i++) {
       JSONObject rootObject = rootJsonArray.getJSONObject(i);
-
       if ("public".equals(rootObject.getJSONObject("rep").get("type"))) {
         return rootObject;
       }
@@ -327,20 +326,8 @@ public class SignavioConnector implements RepositoryConnector {
 
   public List<RepositoryNode> getChildNodes(String parentId) {
     try {
-      Client client = initClient();
-
-      Reference directoryRef = new Reference(conf.getDirectoryUrl() + parentId);
-
-      Request directoryRequest = new Request(Method.GET, directoryRef);
-      directoryRequest.getClientInfo().getAcceptedMediaTypes().add(new Preference<MediaType>(MediaType.APPLICATION_JSON));
-
-      Form requestHeaders = new Form();
-      requestHeaders.add("token", securityToken);
-      directoryRequest.getAttributes().put("org.restlet.http.headers", requestHeaders);
-
-      Response directoryResponse = client.handle(directoryRequest);
+      Response directoryResponse = getJsonResponse(conf.getDirectoryUrl() + parentId);
       JsonRepresentation jsonData = new JsonRepresentation(directoryResponse.getEntity());
-
       JSONArray relJsonArray = jsonData.toJsonArray();
 
       if (log.isLoggable(Level.FINEST)) {
@@ -348,7 +335,6 @@ public class SignavioConnector implements RepositoryConnector {
       }
 
       ArrayList<RepositoryNode> nodes = new ArrayList<RepositoryNode>();
-
       for (int i = 0; i < relJsonArray.length(); i++) {
         JSONObject relObject = relJsonArray.getJSONObject(i);
 
@@ -360,7 +346,6 @@ public class SignavioConnector implements RepositoryConnector {
           nodes.add(fileInfo);
         }
       }
-
       return nodes;
     } catch (Exception ex) {
       throw new RepositoryException("Exception while accessing Signavio repository", ex);
@@ -368,11 +353,18 @@ public class SignavioConnector implements RepositoryConnector {
   }
 
   public ContentRepresentation getContent(String nodeId, String representationName) {
-    return null;
+     return RepositoryArtifact.getContentRepresentation(getArtifactDetails(nodeId), representationName);
   }
 
-  public RepositoryNode getNodeDetails(String id) {
-    return null;
+  public RepositoryArtifact getArtifactDetails(String id) {
+    try {
+      Response modelResponse = getJsonResponse(getModelUrl(id));
+      JsonRepresentation json = new JsonRepresentation(modelResponse.getEntity());
+      JSONObject jsonObject = json.toJsonObject();      
+      return getArtifactInfo(jsonObject);
+    } catch (Exception ex) {
+      throw new RepositoryException("Exception while accessing Signavio repository", ex);
+    }
   }
 
   public String getSecurityToken() {
@@ -403,7 +395,13 @@ public class SignavioConnector implements RepositoryConnector {
     throw new UnsupportedRepositoryOpperation("not yet implemented in Signavio repo");
   }
 
-  public String getModellerUrl(RepositoryArtifact artifact) {
-    return getSignavioConfiguration().getModelUrl() + artifact.getId();
+  public String getModelUrl(RepositoryArtifact artifact) {
+    return getModelUrl(artifact.getId());
+  }
+  public String getModelUrl(String artifactId) {
+    return getSignavioConfiguration().getModelUrl() + artifactId;
+  }
+
+  public void commitPendingChanges(String comment) {
   }
 }
