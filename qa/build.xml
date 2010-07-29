@@ -10,7 +10,11 @@
   <property name="windows.browser" value="C:/Program Files/Mozilla Firefox/firefox.exe" />
   <property name="linux.browser" value="firefox" />
   <property name="tomcat.home" value="${activiti.home}/apps/apache-tomcat-${tomcat.version}" />
-  <property name="mvn.executable" value="mvn" />
+  
+  <condition property="mvn.executable" value="mvn.bat" else="mvn">
+     <os family="windows"/>
+  </condition>
+
   
   <target name="pre.commit.check">
     <exec executable="${mvn.executable}" dir="..">

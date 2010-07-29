@@ -12,7 +12,9 @@
   <property name="docbook.xsl.dir" value="${docbooktool.dir}/docbook-xsl" />
 	<property name="html.stylesheet" value="${docbook.xsl.dir}/html/docbook.xsl" />
   <property name="fo.stylesheet" value="${docbook.xsl.dir}/fo/docbook.xsl" />
-  <property name="mvn.executable" value="mvn" />
+  <condition property="mvn.executable" value="mvn.bat" else="mvn">
+     <os family="windows"/>
+  </condition>
 
 	<available file="${docbooktool.dir}" property="docbooktool.is.available" />
 
