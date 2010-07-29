@@ -13,26 +13,31 @@
 
 package org.activiti.engine.impl.persistence.db;
 
+import java.io.InputStream;
+import java.sql.Connection;
+import java.sql.Statement;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.StringTokenizer;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
-import org.activiti.engine.impl.persistence.repository.DeploymentEntity;
-import org.activiti.engine.impl.persistence.repository.ResourceEntity;
-import org.activiti.impl.bytes.ByteArrayImpl;
+import org.activiti.engine.ActivitiException;
+import org.activiti.engine.ActivitiWrongDbException;
+import org.activiti.engine.ProcessEngine;
+import org.activiti.engine.impl.util.ClassNameUtil;
 import org.activiti.impl.cfg.ProcessEngineConfiguration;
 import org.activiti.impl.cfg.ProcessEngineConfigurationAware;
 import org.activiti.impl.db.IdGenerator;
-import org.activiti.impl.db.execution.DbExecutionImpl;
 import org.activiti.impl.interceptor.SessionFactory;
-import org.activiti.impl.job.JobImpl;
-import org.activiti.impl.job.MessageImpl;
-import org.activiti.impl.job.TimerImpl;
 import org.activiti.impl.persistence.IbatisPersistenceSessionFactory;
 import org.activiti.impl.persistence.LoadedObject;
-import org.activiti.impl.task.TaskImpl;
-import org.activiti.impl.task.TaskInvolvement;
+import org.activiti.impl.persistence.PersistentObject;
 import org.activiti.impl.tx.Session;
-import org.activiti.impl.variable.VariableInstance;
+import org.activiti.impl.util.IoUtil;
+import org.apache.ibatis.session.ExecutorType;
+import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 
 
@@ -41,54 +46,26 @@ import org.apache.ibatis.session.SqlSessionFactory;
  */
 public class DbSqlSessionFactory implements SessionFactory, ProcessEngineConfigurationAware {
 
-  public static final Map<Class<?>,String> DEFAULT_INSERT_STATEMENTS = new HashMap<Class<?>, String>();
-  public static final Map<Class<?>,String> DEFAULT_UPDATE_STATEMENTS = new HashMap<Class<?>, String>();
-  public static final Map<Class<?>,String> DEFAULT_DELETE_STATEMENTS = new HashMap<Class<?>, String>();
+  private static Logger log = Logger.getLogger(DbSqlSessionFactory.class.getName());
   protected static final Map<String, Map<String, String>> databaseSpecificStatements = new HashMap<String, Map<String,String>>();
 
   protected Map<Object, LoadedObject> loadedObjects = new HashMap<Object, LoadedObject>();
 
   static {
-    DEFAULT_INSERT_STATEMENTS.put(DeploymentEntity.class, "insertDeployment");
-    DEFAULT_INSERT_STATEMENTS.put(ResourceEntity.class, "insertResource");
-    DEFAULT_INSERT_STATEMENTS.put(DbExecutionImpl.class, "insertExecution");
-    DEFAULT_INSERT_STATEMENTS.put(JobImpl.class, "insertJob");
-    DEFAULT_INSERT_STATEMENTS.put(TaskImpl.class, "insertTask");
-    DEFAULT_INSERT_STATEMENTS.put(TaskInvolvement.class, "insertTaskInvolvement");
-    DEFAULT_INSERT_STATEMENTS.put(VariableInstance.class, "insertVariableInstance");
-    DEFAULT_INSERT_STATEMENTS.put(ByteArrayImpl.class, "insertByteArray");
-    DEFAULT_INSERT_STATEMENTS.put(MessageImpl.class, "insertMessage");
-    DEFAULT_INSERT_STATEMENTS.put(TimerImpl.class, "insertTimer");
-
-    DEFAULT_UPDATE_STATEMENTS.put(DbExecutionImpl.class, "updateExecution");
-    DEFAULT_UPDATE_STATEMENTS.put(TaskImpl.class, "updateTask");
-    DEFAULT_UPDATE_STATEMENTS.put(TaskInvolvement.class, "updateTaskInvolvement");
-    DEFAULT_UPDATE_STATEMENTS.put(VariableInstance.class, "updateVariableInstance");
-    DEFAULT_UPDATE_STATEMENTS.put(ByteArrayImpl.class, "updateByteArray");
-    DEFAULT_UPDATE_STATEMENTS.put(MessageImpl.class, "updateMessage");
-    DEFAULT_UPDATE_STATEMENTS.put(TimerImpl.class, "updateTimer");
-
-    DEFAULT_DELETE_STATEMENTS.put(DeploymentEntity.class, "deleteDeployment");
-    DEFAULT_DELETE_STATEMENTS.put(DbExecutionImpl.class, "deleteExecution");
-    DEFAULT_DELETE_STATEMENTS.put(TaskImpl.class, "deleteTask");
-    DEFAULT_DELETE_STATEMENTS.put(TaskInvolvement.class, "deleteTaskInvolvement");
-    DEFAULT_DELETE_STATEMENTS.put(VariableInstance.class, "deleteVariableInstance");
-    DEFAULT_DELETE_STATEMENTS.put(ByteArrayImpl.class, "deleteByteArray");
-    DEFAULT_DELETE_STATEMENTS.put(MessageImpl.class, "deleteJob");
-    DEFAULT_DELETE_STATEMENTS.put(TimerImpl.class, "deleteJob");
-    
     addDatabaseSpecificStatement("mysql", "selectTaskByDynamicCriteria", "selectTaskByDynamicCriteria_mysql");
     addDatabaseSpecificStatement("mysql", "selectNextJobsToExecute", "selectNextJobsToExecute_mysql");
   }
   
+  protected String databaseName;
   protected SqlSessionFactory sqlSessionFactory;
   protected IdGenerator idGenerator;
   protected Map<String, String> statementMappings;
-  protected Map<Class<?>,String>  insertStatements = DEFAULT_INSERT_STATEMENTS;
-  protected Map<Class<?>,String>  updateStatements = DEFAULT_UPDATE_STATEMENTS;
-  protected Map<Class<?>,String>  deleteStatements = DEFAULT_DELETE_STATEMENTS;
+  protected Map<Class<?>,String>  insertStatements = Collections.synchronizedMap(new HashMap<Class<?>, String>());
+  protected Map<Class<?>,String>  updateStatements = Collections.synchronizedMap(new HashMap<Class<?>, String>());
+  protected Map<Class<?>,String>  deleteStatements = Collections.synchronizedMap(new HashMap<Class<?>, String>());
   
   public void configurationCompleted(ProcessEngineConfiguration processEngineConfiguration) {
+    this.databaseName = processEngineConfiguration.getDatabaseName();
     this.sqlSessionFactory = ((IbatisPersistenceSessionFactory)processEngineConfiguration.getPersistenceSessionFactory()).getSqlSessionFactory();
     this.idGenerator = processEngineConfiguration.getIdGenerator();
     this.statementMappings = databaseSpecificStatements.get(processEngineConfiguration.getDatabaseName());
@@ -96,6 +73,31 @@ public class DbSqlSessionFactory implements SessionFactory, ProcessEngineConfigu
 
   public Session openSession() {
     return new DbSqlSession(this);
+  }
+  
+  // insert, update and delete statements /////////////////////////////////////
+  
+  public String getInsertStatement(PersistentObject object) {
+    return getStatement(object, insertStatements, "insert");
+  }
+
+  public String getUpdateStatement(PersistentObject object) {
+    return getStatement(object, updateStatements, "update");
+  }
+
+  public String getDeleteStatement(PersistentObject object) {
+    return getStatement(object, deleteStatements, "delete");
+  }
+
+  private String getStatement(PersistentObject object, Map<Class<?>,String> cachedStatements, String prefix) {
+    Class< ? extends PersistentObject> persistentObjectClass = object.getClass();
+    String statement = cachedStatements.get(persistentObjectClass);
+    if (statement!=null) {
+      return statement;
+    }
+    statement = prefix+ClassNameUtil.getClassNameWithoutPackage(object);
+    cachedStatements.put(persistentObjectClass, statement);
+    return statement;
   }
   
   // db specific mappings /////////////////////////////////////////////////////
@@ -116,6 +118,110 @@ public class DbSqlSessionFactory implements SessionFactory, ProcessEngineConfigu
     String mappedStatement = statementMappings.get(statement);
     return (mappedStatement!=null ? mappedStatement : statement);
   }
+  
+  // db operations ////////////////////////////////////////////////////////////
+  
+  public void dbSchemaCheckVersion() {
+    /*
+     * Not quite sure if this is the right setting? We do want multiple updates
+     * to be batched for performance ...
+     */
+    SqlSession sqlSession = sqlSessionFactory.openSession(ExecutorType.BATCH);
+    boolean success = false;
+    try {
+      String selectSchemaVersionStatement = mapStatement("selectDbSchemaVersion");
+      String dbVersion = (String) sqlSession.selectOne(selectSchemaVersionStatement);
+      if (!ProcessEngine.VERSION.equals(dbVersion)) {
+        throw new ActivitiWrongDbException(ProcessEngine.VERSION, dbVersion);
+      }
+
+      success = true;
+
+    } catch (Exception e) {
+      String exceptionMessage = e.getMessage();
+      if ((exceptionMessage.indexOf("Table") != -1) && (exceptionMessage.indexOf("not found") != -1)) {
+        throw new ActivitiException(
+                "no activiti tables in db.  set property db.schema.strategy=create-drop in activiti.properties for automatic schema creation", e);
+      } else {
+        if (e instanceof RuntimeException) {
+          throw (RuntimeException) e;
+        } else {
+          throw new ActivitiException("couldn't get db schema version", e);
+        }
+      }
+    } finally {
+      if (success) {
+        sqlSession.commit(true);
+      } else {
+        sqlSession.rollback(true);
+      }
+      sqlSession.close();
+    }
+
+    log.fine("activiti db schema check successful");
+  }
+
+  public void dbSchemaCreate() {
+    executeSchemaResource("create", databaseName, sqlSessionFactory);
+  }
+
+  public void dbSchemaDrop() {
+    executeSchemaResource("drop", databaseName, sqlSessionFactory);
+  }
+
+  public static void executeSchemaResource(String operation, String databaseName, SqlSessionFactory sqlSessionFactory) {
+    SqlSession sqlSession = sqlSessionFactory.openSession();
+    boolean success = false;
+    try {
+      Connection connection = sqlSession.getConnection();
+      ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+      String resource = "org/activiti/db/" + operation + "/activiti." + databaseName + "." + operation + ".sql";
+      InputStream inputStream = classLoader.getResourceAsStream(resource);
+      if (inputStream == null) {
+        throw new ActivitiException("resource '" + resource + "' is not available for creating the schema");
+      }
+
+      Exception exception = null;
+      byte[] bytes = IoUtil.readInputStream(inputStream, resource);
+      String ddlStatements = new String(bytes);
+      StringTokenizer tokenizer = new StringTokenizer(ddlStatements, ";");
+      while (tokenizer.hasMoreTokens()) {
+        String ddlStatement = tokenizer.nextToken().trim();
+        if (!ddlStatement.startsWith("#")) {
+          Statement jdbcStatement = connection.createStatement();
+          try {
+            log.fine("\n" + ddlStatement);
+            jdbcStatement.execute(ddlStatement);
+            jdbcStatement.close();
+          } catch (Exception e) {
+            if (exception == null) {
+              exception = e;
+            }
+            log.log(Level.SEVERE, "problem during schema " + operation + ", statement '" + ddlStatement, e);
+          }
+        }
+      }
+
+      if (exception != null) {
+        throw exception;
+      }
+
+      success = true;
+
+    } catch (Exception e) {
+      throw new ActivitiException("couldn't create db schema", e);
+
+    } finally {
+      if (success) {
+        sqlSession.commit(true);
+      } else {
+        sqlSession.rollback(true);
+      }
+      sqlSession.close();
+    }
+
+    log.fine("activiti db schema " + operation + " successful");
+  }
 
   // getters and setters //////////////////////////////////////////////////////
   
@@ -125,14 +231,6 @@ public class DbSqlSessionFactory implements SessionFactory, ProcessEngineConfigu
   
   public void setSqlSessionFactory(SqlSessionFactory sqlSessionFactory) {
     this.sqlSessionFactory = sqlSessionFactory;
-  }
-  
-  public Map<Class< ? >, String> getInsertStatements() {
-    return insertStatements;
-  }
-  
-  public void setInsertStatements(Map<Class< ? >, String> insertStatements) {
-    this.insertStatements = insertStatements;
   }
   
   public IdGenerator getIdGenerator() {
@@ -149,21 +247,5 @@ public class DbSqlSessionFactory implements SessionFactory, ProcessEngineConfigu
   
   public void setLoadedObjects(Map<Object, LoadedObject> loadedObjects) {
     this.loadedObjects = loadedObjects;
-  }
-  
-  public Map<Class< ? >, String> getUpdateStatements() {
-    return updateStatements;
-  }
-
-  public void setUpdateStatements(Map<Class< ? >, String> updateStatements) {
-    this.updateStatements = updateStatements;
-  }
-
-  public Map<Class< ? >, String> getDeleteStatements() {
-    return deleteStatements;
-  }
-
-  public void setDeleteStatements(Map<Class< ? >, String> deleteStatements) {
-    this.deleteStatements = deleteStatements;
   }
 }

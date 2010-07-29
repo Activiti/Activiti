@@ -22,6 +22,7 @@ import org.activiti.engine.impl.persistence.repository.Deployer;
 import org.activiti.engine.impl.persistence.repository.DeploymentEntity;
 import org.activiti.engine.impl.persistence.repository.ProcessDefinitionEntity;
 import org.activiti.engine.impl.persistence.repository.ResourceEntity;
+import org.activiti.impl.definition.ProcessDefinitionImpl;
 import org.activiti.impl.interceptor.CommandContext;
 import org.activiti.impl.tx.Session;
 
@@ -104,11 +105,24 @@ public class DbRepositorySession implements Session, RepositorySession {
     return (DeploymentEntity) dbSqlSession.selectOne("selectLatestDeploymentByName", deploymentName);
   }
 
+  @SuppressWarnings("unchecked")
+  public List<ProcessDefinitionImpl> findProcessDefinitions() {
+    return dbSqlSession.selectList("selectProcessDefinitions");
+  }
+
   public ProcessDefinitionEntity findProcessDefinitionByDeploymentAndKey(String deploymentId, String processDefinitionKey) {
     Map<String, Object> parameters = new HashMap<String, Object>();
     parameters.put("deploymentId", deploymentId);
     parameters.put("processDefinitionKey", processDefinitionKey);
     return (ProcessDefinitionEntity) dbSqlSession.selectOne("selectProcessDefinitionByDeploymentAndKey", parameters);
+  }
+
+  public ProcessDefinitionEntity findProcessDefinitionById(String processDefinitionId) {
+    return (ProcessDefinitionEntity) dbSqlSession.selectOne("selectProcessDefinitionById", processDefinitionId);
+  }
+
+  public ProcessDefinitionEntity findLatestProcessDefinitionByKey(String processDefinitionKey) {
+    return (ProcessDefinitionEntity) dbSqlSession.selectOne("selectLatestProcessDefinitionByKey", processDefinitionKey);
   }
 
   @SuppressWarnings("unchecked")

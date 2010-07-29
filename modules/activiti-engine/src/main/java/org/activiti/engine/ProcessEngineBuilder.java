@@ -51,15 +51,15 @@ import org.activiti.impl.cfg.ProcessEngineConfiguration;
  */
 public class ProcessEngineBuilder {
 
-  private String processEngineName = ProcessEngines.NAME_DEFAULT;
-  private String dataBaseName;
-  private String jdbcDriver;
-  private String jdbcUrl;
-  private String jdbcUsername;
-  private String jdbcPassword;
-  private DbSchemaStrategy dbSchemaStrategy = DbSchemaStrategy.CHECK_VERSION;
-  private boolean jobExecutorAutoActivate = true;
-  private boolean localTransactions = true;
+  protected String processEngineName = ProcessEngines.NAME_DEFAULT;
+  protected String databaseName = ProcessEngineConfiguration.DEFAULT_DATABASE_NAME;
+  protected String jdbcDriver = ProcessEngineConfiguration.DEFAULT_JDBC_DRIVER;
+  protected String jdbcUrl = ProcessEngineConfiguration.DEFAULT_JDBC_URL;
+  protected String jdbcUsername = ProcessEngineConfiguration.DEFAULT_JDBC_USERNAME;
+  protected String jdbcPassword = ProcessEngineConfiguration.DEFAULT_JDBC_PASSWORD;
+  protected DbSchemaStrategy dbSchemaStrategy = DbSchemaStrategy.CHECK_VERSION;
+  protected boolean jobExecutorAutoActivate = true;
+  protected boolean localTransactions = true;
 
   public ProcessEngineBuilder setProcessEngineName(String processEngineName) {
     this.processEngineName = processEngineName;
@@ -67,7 +67,7 @@ public class ProcessEngineBuilder {
   }
 
   public ProcessEngineBuilder setDatabaseName(String databaseName) {
-    this.dataBaseName = databaseName;
+    this.databaseName = databaseName;
     return this;
   }
 
@@ -113,7 +113,7 @@ public class ProcessEngineBuilder {
 
     String databaseName = configurationProperties.getProperty("database");
     if (databaseName != null) {
-      this.dataBaseName = databaseName;
+      this.databaseName = databaseName;
     }
 
     String jdbcDriver = configurationProperties.getProperty("jdbc.driver");
@@ -181,7 +181,7 @@ public class ProcessEngineBuilder {
   }
 
   public ProcessEngine buildProcessEngine() {
-    if (dataBaseName == null) {
+    if (databaseName == null) {
       throw new ActivitiException("no database name specified (used to look up queries and scripts)");
     }
 
@@ -193,7 +193,7 @@ public class ProcessEngineBuilder {
     processEngineConfiguration.setJdbcUrl(jdbcUrl);
     processEngineConfiguration.setJdbcUsername(jdbcUsername);
     processEngineConfiguration.setJdbcPassword(jdbcPassword);
-    processEngineConfiguration.setDatabaseName(dataBaseName);
+    processEngineConfiguration.setDatabaseName(databaseName);
     processEngineConfiguration.setLocalTransactions(localTransactions);
 
     return processEngineConfiguration.buildProcessEngine();

@@ -30,7 +30,7 @@ import org.activiti.impl.util.IoUtil;
  */
 public class DeploymentPersistenceTest extends ProcessEngineTestCase {
 
-  public void testDeployment() {
+  public void testDeploymentPersistence() {
     Deployment deployment = repositoryService
       .createDeployment()
       .name("strings")

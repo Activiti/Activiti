@@ -59,9 +59,6 @@ public interface PersistenceSession extends Session {
   ByteArrayImpl findByteArrayById(String byteArrayValueId);
   
   /* Process definition */
-  ProcessDefinitionImpl findProcessDefinitionById(String processDefinitionId);
-  ProcessDefinitionImpl findLatestProcessDefinitionByKey(String processDefinitionKey);
-  List<ProcessDefinitionImpl> findProcessDefinitions();
   ProcessDefinitionImpl findProcessDefinitionByDeploymentAndKey(String deploymentId, String processDefinitionKey);
   void insertProcessDefinition(ProcessDefinitionImpl processDefinition);
 

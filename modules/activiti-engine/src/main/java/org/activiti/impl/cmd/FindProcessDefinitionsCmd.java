@@ -17,7 +17,6 @@ import java.util.List;
 import org.activiti.impl.definition.ProcessDefinitionImpl;
 import org.activiti.impl.interceptor.Command;
 import org.activiti.impl.interceptor.CommandContext;
-import org.activiti.impl.persistence.PersistenceSession;
 
 
 /**
@@ -27,8 +26,9 @@ import org.activiti.impl.persistence.PersistenceSession;
 public class FindProcessDefinitionsCmd implements Command<List> {
 
   public List<ProcessDefinitionImpl> execute(CommandContext commandContext) {
-    PersistenceSession persistenceSession = commandContext.getPersistenceSession();
-    return persistenceSession.findProcessDefinitions();
+    return commandContext
+      .getRepositorySession()
+      .findProcessDefinitions();
   }
 
 }

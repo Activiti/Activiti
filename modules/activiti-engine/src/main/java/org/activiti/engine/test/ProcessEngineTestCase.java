@@ -15,6 +15,7 @@ package org.activiti.engine.test;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -31,14 +32,17 @@ import org.activiti.engine.IdentityService;
 import org.activiti.engine.ManagementService;
 import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.ProcessEngineBuilder;
+import org.activiti.engine.ProcessInstance;
 import org.activiti.engine.ProcessService;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.TaskService;
+import org.activiti.engine.impl.ProcessEngineImpl;
 import org.activiti.engine.impl.util.ClassNameUtil;
 import org.activiti.impl.time.Clock;
 import org.activiti.impl.util.LogUtil;
 import org.activiti.impl.util.LogUtil.ThreadLogMode;
 import org.activiti.test.ProcessDeployer;
+import org.junit.Assert;
 
 
 /** JUnit 3 style base class that only exposes the public API services. 
@@ -54,6 +58,10 @@ public class ProcessEngineTestCase extends TestCase {
   }
   
   private static Logger log = Logger.getLogger(ProcessEngineTestCase.class.getName());
+
+  private static final List<String> TABLENAMES_EXCLUDED_FROM_DB_CLEAN_CHECK = Arrays.asList(
+    "ACT_PROPERTY"
+  );
 
   private static final ThreadLogMode DEFAULT_THREAD_LOG_MODE = ThreadLogMode.INDENT;
   private static final String DEFAULT_CONFIGURATION_RESOURCE = "activiti.properties";
@@ -88,6 +96,24 @@ public class ProcessEngineTestCase extends TestCase {
     this.threadRenderingMode = threadRenderingMode;
   }
   
+  public void assertTextPresent(String expected, String actual) {
+    if ( (actual==null)
+         || (actual.indexOf(expected)==-1)
+       ) {
+      throw new AssertionFailedError("expected presence of ["+expected+"], but was ["+actual+"]");
+    }
+  }
+  
+  public void assertProcessEnded(final String processInstanceId) {
+    ProcessInstance processInstance = processEngine
+      .getProcessService()
+      .findProcessInstanceById(processInstanceId);
+    
+    if (processInstance!=null) {
+      throw new AssertionFailedError("expected finished process instance '"+processInstanceId+"' but it was still in the db"); 
+    }
+  }
+
   @Override
   protected void runTest() throws Throwable {
     LogUtil.resetThreadIndents();
@@ -101,6 +127,7 @@ public class ProcessEngineTestCase extends TestCase {
           .configureFromPropertiesResource(configurationResource)
           .buildProcessEngine();
         log.fine("==== PROCESS ENGINE CREATED =========================================================================");
+        processEngines.put(configurationResource, processEngine);
       }
       initializeServices();
     }
@@ -118,21 +145,52 @@ public class ProcessEngineTestCase extends TestCase {
       log.severe(EMPTY_LINE);
       log.log(Level.SEVERE, "ASSERTION FAILED: "+e, e);
       throw e;
+      
     } catch (Throwable e) {
       log.severe(EMPTY_LINE);
       log.log(Level.SEVERE, "EXCEPTION: "+e, e);
       throw e;
+      
     } finally {
       for (String deploymentId: deploymentsToDeleteAfterTestMethod) {
         repositoryService.deleteDeployment(deploymentId);
       }
+      assertAndEnsureCleanDb();
       Clock.reset();
       log.fine("#### END "+ClassNameUtil.getClassNameWithoutPackage(this)+"."+getName()+" #############################################################");
       LogUtil.setThreadLogMode(oldThreadRenderingMode);
     }
   }
 
-  protected void processDeploymentAnnotation() {
+  /** Each test is assumed to clean up all DB content it entered.
+   * After a test method executed, this method scans all tables to see if the DB is completely clean. 
+   * It throws AssertionFailed in case the DB is not clean.
+   * If the DB is not clean, it is cleaned by performing a create a drop.   */
+  void assertAndEnsureCleanDb() {
+    Map<String, Long> tableCounts = processEngine.getManagementService().getTableCount();
+    StringBuilder outputMessage = new StringBuilder();
+    for (String tableName : tableCounts.keySet()) {
+      if (!TABLENAMES_EXCLUDED_FROM_DB_CLEAN_CHECK.contains(tableName)) {
+        Long count = tableCounts.get(tableName);
+        if (count!=0L) {
+          outputMessage.append("  "+tableName + ": " + count + " record(s) ");
+        }
+      }
+    }
+    if (outputMessage.length() > 0) {
+      outputMessage.insert(0, "DB NOT CLEAN: \n");
+      log.severe(EMPTY_LINE);
+      log.severe(outputMessage.toString());
+      
+      ((ProcessEngineImpl)processEngine)
+        .getProcessEngineConfiguration()
+        .getDbSqlSessionFactory();
+      
+      Assert.fail(outputMessage.toString());
+    }
+  }
+
+  void processDeploymentAnnotation() {
     Method method = null;
     try {
       method = getClass().getDeclaredMethod(getName(), (Class<?>[])null);
@@ -168,5 +226,11 @@ public class ProcessEngineTestCase extends TestCase {
     historicDataService = processEngine.getHistoricDataService();
     identityService = processEngine.getIdentityService();
     managementService = processEngine.getManagementService();
+  }
+
+  public static void closeProcessEngines() {
+    for (ProcessEngine processEngine: processEngines.values()) {
+      processEngine.close();
+    }
   }
 }

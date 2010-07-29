@@ -16,6 +16,7 @@ import java.util.Map;
 
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ProcessInstance;
+import org.activiti.engine.impl.persistence.RepositorySession;
 import org.activiti.impl.definition.ProcessDefinitionImpl;
 import org.activiti.impl.execution.ExecutionImpl;
 import org.activiti.impl.interceptor.Command;
@@ -39,15 +40,15 @@ public class StartProcessInstanceCmd<T> implements Command<ProcessInstance> {
   }
   
   public ProcessInstance execute(CommandContext commandContext) {
-    PersistenceSession persistenceSession = commandContext.getPersistenceSession();
+    RepositorySession repositorySession = commandContext.getRepositorySession();
     ProcessDefinitionImpl processDefinition = null;
     if (processDefinitionId!=null) {
-      processDefinition = persistenceSession.findProcessDefinitionById(processDefinitionId);
+      processDefinition = repositorySession.findProcessDefinitionById(processDefinitionId);
       if (processDefinition == null) {
         throw new ActivitiException("No process definition found for id = '" + processDefinitionId + "'");
       }
     } else {
-      processDefinition = persistenceSession.findLatestProcessDefinitionByKey(processDefinitionKey);
+      processDefinition = repositorySession.findLatestProcessDefinitionByKey(processDefinitionKey);
       if (processDefinition == null) {
         throw new ActivitiException("No process definition found for key '" + processDefinitionKey +"'");
       }

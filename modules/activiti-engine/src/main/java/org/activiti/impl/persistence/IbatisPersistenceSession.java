@@ -277,19 +277,6 @@ public class IbatisPersistenceSession implements PersistenceSession {
   }
 
 
-  public ProcessDefinitionImpl findProcessDefinitionById(String processDefinitionId) {
-    return (ProcessDefinitionImpl) sqlSession.selectOne(statement("selectProcessDefinitionById"), processDefinitionId);
-  }
-
-  public ProcessDefinitionImpl findLatestProcessDefinitionByKey(String processDefinitionKey) {
-    return (ProcessDefinitionImpl) sqlSession.selectOne(statement("selectLatestProcessDefinitionByKey"), processDefinitionKey);
-  }
-
-  @SuppressWarnings("unchecked")
-  public List<ProcessDefinitionImpl> findProcessDefinitions() {
-    return sqlSession.selectList(statement("selectProcessDefinitions"));
-  }
-
   public ProcessDefinitionImpl findProcessDefinitionByDeploymentAndKey(String deploymentId, String processDefinitionKey) {
     Map<String, Object> parameters = new HashMap<String, Object>();
     parameters.put("deploymentId", deploymentId);
@@ -476,14 +463,14 @@ public class IbatisPersistenceSession implements PersistenceSession {
   }
 
   public void insertProcessDefinition(ProcessDefinitionImpl processDefinition) {
-    ProcessDefinitionImpl latestProcessDefinition = findLatestProcessDefinitionByKey(processDefinition.getKey());
-    if (latestProcessDefinition!=null) {
-      processDefinition.setVersion(latestProcessDefinition.getVersion()+1);
-    } else {
-      processDefinition.setVersion(1);
-    }
-    processDefinition.setId(processDefinition.getKey()+":"+processDefinition.getVersion());
-    sqlSession.insert(statement("insertProcessDefinition"), processDefinition);
+//    ProcessDefinitionImpl latestProcessDefinition = findLatestProcessDefinitionByKey(processDefinition.getKey());
+//    if (latestProcessDefinition!=null) {
+//      processDefinition.setVersion(latestProcessDefinition.getVersion()+1);
+//    } else {
+//      processDefinition.setVersion(1);
+//    }
+//    processDefinition.setId(processDefinition.getKey()+":"+processDefinition.getVersion());
+//    sqlSession.insert(statement("insertProcessDefinition"), processDefinition);
   }
 
   public Map<String, Long> getTableCount() {

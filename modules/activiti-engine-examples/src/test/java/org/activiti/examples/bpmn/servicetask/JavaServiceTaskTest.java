@@ -12,32 +12,19 @@
  */
 package org.activiti.examples.bpmn.servicetask;
 
-import static org.junit.Assert.assertEquals;
-
 import org.activiti.engine.Execution;
 import org.activiti.engine.ProcessInstance;
-import org.activiti.engine.ProcessService;
 import org.activiti.engine.test.Deployment;
-import org.activiti.test.LogInitializer;
-import org.activiti.test.ProcessDeployer;
+import org.activiti.engine.test.ProcessEngineTestCase;
 import org.activiti.util.CollectionUtil;
-import org.junit.Rule;
-import org.junit.Test;
 
 /**
  * @author Joram Barrez
  */
-public class JavaServiceTaskTest {
+public class JavaServiceTaskTest extends ProcessEngineTestCase {
 
-  @Rule
-  public LogInitializer logSetup = new LogInitializer();
-  @Rule
-  public ProcessDeployer deployer = new ProcessDeployer();
-
-  @Test
   @Deployment
   public void testJavaServiceDelegation() {
-    ProcessService processService = deployer.getProcessService();
     ProcessInstance pi = processService.startProcessInstanceByKey("javaServiceDelegation", 
             CollectionUtil.singletonMap("input", "Activiti BPM Engine"));
     Execution execution = processService.findExecutionInActivity(pi.getId(), "waitState");

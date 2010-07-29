@@ -12,7 +12,9 @@
  */
 package org.activiti.impl.cfg;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.el.ELResolver;
@@ -37,6 +39,8 @@ import org.activiti.engine.impl.persistence.RepositorySession;
 import org.activiti.engine.impl.persistence.db.DbRepositorySessionFactory;
 import org.activiti.engine.impl.persistence.db.DbSqlSession;
 import org.activiti.engine.impl.persistence.db.DbSqlSessionFactory;
+import org.activiti.engine.impl.persistence.repository.Deployer;
+import org.activiti.impl.bpmn.BpmnDeployer;
 import org.activiti.impl.calendar.BusinessCalendarManager;
 import org.activiti.impl.calendar.DurationBusinessCalendar;
 import org.activiti.impl.calendar.MapBusinessCalendarManager;
@@ -71,6 +75,12 @@ import org.activiti.pvm.event.ProcessEventBus;
  */
 public class ProcessEngineConfiguration {
 
+  public static final String DEFAULT_DATABASE_NAME = "h2";
+  public static final String DEFAULT_JDBC_DRIVER = "org.h2.Driver";
+  public static final String DEFAULT_JDBC_URL = "jdbc:h2:mem:activiti";
+  public static final String DEFAULT_JDBC_USERNAME = "sa";
+  public static final String DEFAULT_JDBC_PASSWORD = "";
+
   protected String processEngineName;
 
   protected CommandExecutor commandExecutor;
@@ -88,8 +98,10 @@ public class ProcessEngineConfiguration {
   protected SessionFactory persistenceSessionFactory;
   protected SessionFactory messageSessionFactory;
   protected SessionFactory timerSessionFactory;
-  protected SessionFactory dbSqlSessionFactory;
+  protected DbSqlSessionFactory dbSqlSessionFactory;
+
   protected Map<Class<?>, SessionFactory> sessionFactories;
+  protected List<Deployer> deployers;
 
   protected JobExecutor jobExecutor;
   protected JobHandlers jobHandlers;
@@ -111,6 +123,8 @@ public class ProcessEngineConfiguration {
   protected ELResolver elResolver;
   protected BusinessCalendarManager businessCalendarManager;
   protected ProcessEventBus processEventBus;
+  
+  protected boolean isConfigurationCompleted = false;
 
   // TODO remove
   protected DeployerManager deployerManager;
@@ -134,22 +148,25 @@ public class ProcessEngineConfiguration {
     persistenceSessionFactory = new IbatisPersistenceSessionFactory();
     repositorySessionFactory = new DbRepositorySessionFactory();
     dbSqlSessionFactory = new DbSqlSessionFactory();
+    
     sessionFactories = new HashMap<Class<?>, SessionFactory>();
+    deployers = new ArrayList<Deployer>();
+    deployers.add(new BpmnDeployer());
 
     jobHandlers = new JobHandlers();
     jobHandlers.addJobHandler(new TimerExecuteNestedActivityJobHandler());
     jobExecutor = new JobExecutor();
     jobExecutorAutoActivate = false;
     
-    databaseName = "h2";
+    databaseName = DEFAULT_DATABASE_NAME;
     dbSchemaStrategy = DbSchemaStrategy.CREATE_DROP;
     idGenerator = new IdGenerator();
     dataSource = null;
     localTransactions = true;
-    jdbcDriver = "org.h2.Driver";
-    jdbcUrl = "jdbc:h2:mem:activiti";
-    jdbcUsername = "sa";
-    jdbcPassword = "";
+    jdbcDriver = DEFAULT_JDBC_DRIVER;
+    jdbcUrl = DEFAULT_JDBC_URL;
+    jdbcUsername = DEFAULT_JDBC_USERNAME;
+    jdbcPassword = DEFAULT_JDBC_PASSWORD;
 
     scriptingEngines = new ScriptingEngines();
     variableTypes = new DefaultVariableTypes();
@@ -162,58 +179,74 @@ public class ProcessEngineConfiguration {
   }
   
   public ProcessEngine buildProcessEngine() {
-    if (messageSessionFactory!=null) {
-      sessionFactories.put(MessageSession.class, messageSessionFactory);
-    }
-    if (timerSessionFactory!=null) {
-      sessionFactories.put(TimerSession.class, timerSessionFactory);
-    }
-    if (persistenceSessionFactory!=null) {
-      sessionFactories.put(PersistenceSession.class, persistenceSessionFactory);
-    }
-    if (repositorySessionFactory!=null) {
-      sessionFactories.put(RepositorySession.class, repositorySessionFactory);
-    }
-    if (dbSqlSessionFactory!=null) {
-      sessionFactories.put(DbSqlSession.class, dbSqlSessionFactory);
-    }
-    
-    notifyConfigurationComplete(commandExecutor);
-    notifyConfigurationComplete(commandContextFactory);
-    notifyConfigurationComplete(transactionContextFactory);
-
-    notifyConfigurationComplete(repositoryService);
-    notifyConfigurationComplete(processService);
-    notifyConfigurationComplete(taskService);
-    notifyConfigurationComplete(managementService);
-    notifyConfigurationComplete(identityService);
-    notifyConfigurationComplete(historicDataService);
-
-    notifyConfigurationComplete(messageSessionFactory);
-    notifyConfigurationComplete(timerSessionFactory);
-    notifyConfigurationComplete(persistenceSessionFactory);
-    notifyConfigurationComplete(repositorySessionFactory);
-    notifyConfigurationComplete(dbSqlSessionFactory);
-
-    notifyConfigurationComplete(jobHandlers);
-    notifyConfigurationComplete(jobExecutor);
-    notifyConfigurationComplete(idGenerator);
-    notifyConfigurationComplete(dataSource);
-
-    notifyConfigurationComplete(scriptingEngines);
-    notifyConfigurationComplete(variableTypes);
-    notifyConfigurationComplete(expressionManager);
-    notifyConfigurationComplete(elResolver);
-    notifyConfigurationComplete(businessCalendarManager);
-    notifyConfigurationComplete(processEventBus);
+    configurationComplete();
 
     return new ProcessEngineImpl(this);
   }
 
+  protected void configurationComplete() {
+    if (!isConfigurationCompleted) {
+      if (messageSessionFactory != null) {
+        sessionFactories.put(MessageSession.class, messageSessionFactory);
+      }
+      if (timerSessionFactory != null) {
+        sessionFactories.put(TimerSession.class, timerSessionFactory);
+      }
+      if (persistenceSessionFactory != null) {
+        sessionFactories.put(PersistenceSession.class, persistenceSessionFactory);
+      }
+      if (repositorySessionFactory != null) {
+        sessionFactories.put(RepositorySession.class, repositorySessionFactory);
+      }
+      if (dbSqlSessionFactory != null) {
+        sessionFactories.put(DbSqlSession.class, dbSqlSessionFactory);
+      }
+      notifyConfigurationComplete(commandExecutor);
+      notifyConfigurationComplete(commandContextFactory);
+      notifyConfigurationComplete(transactionContextFactory);
+      notifyConfigurationComplete(repositoryService);
+      notifyConfigurationComplete(processService);
+      notifyConfigurationComplete(taskService);
+      notifyConfigurationComplete(managementService);
+      notifyConfigurationComplete(identityService);
+      notifyConfigurationComplete(historicDataService);
+      notifyConfigurationComplete(messageSessionFactory);
+      notifyConfigurationComplete(timerSessionFactory);
+      notifyConfigurationComplete(persistenceSessionFactory);
+      notifyConfigurationComplete(repositorySessionFactory);
+      notifyConfigurationComplete(dbSqlSessionFactory);
+      for (Deployer deployer : deployers) {
+        notifyConfigurationComplete(deployer);
+      }
+      notifyConfigurationComplete(jobHandlers);
+      notifyConfigurationComplete(jobExecutor);
+      notifyConfigurationComplete(idGenerator);
+      notifyConfigurationComplete(dataSource);
+      notifyConfigurationComplete(scriptingEngines);
+      notifyConfigurationComplete(variableTypes);
+      notifyConfigurationComplete(expressionManager);
+      notifyConfigurationComplete(elResolver);
+      notifyConfigurationComplete(businessCalendarManager);
+      notifyConfigurationComplete(processEventBus);
+      
+      isConfigurationCompleted = true;
+    }
+  }
+  
   protected void notifyConfigurationComplete(Object object) {
     if (object instanceof ProcessEngineConfigurationAware) {
       ((ProcessEngineConfigurationAware)object).configurationCompleted(this);
     }
+  }
+
+  public void dbSchemaCreate() {
+    configurationComplete();
+    dbSqlSessionFactory.dbSchemaCreate();
+  }
+
+  public void dbSchemaDrop() {
+    configurationComplete();
+    dbSqlSessionFactory.dbSchemaDrop();
   }
 
   // getters and setters //////////////////////////////////////////////////////
@@ -506,12 +539,12 @@ public class ProcessEngineConfiguration {
   }
 
   
-  public SessionFactory getDbSqlSessionFactory() {
+  public DbSqlSessionFactory getDbSqlSessionFactory() {
     return dbSqlSessionFactory;
   }
 
   
-  public void setDbSqlSessionFactory(SessionFactory dbSqlSessionFactory) {
+  public void setDbSqlSessionFactory(DbSqlSessionFactory dbSqlSessionFactory) {
     this.dbSqlSessionFactory = dbSqlSessionFactory;
   }
 
@@ -534,10 +567,16 @@ public class ProcessEngineConfiguration {
   public void setLocalTransactions(boolean localTransactions) {
     this.localTransactions = localTransactions;
   }
-
   
   public void setPersistenceSessionFactory(SessionFactory persistenceSessionFactory) {
     this.persistenceSessionFactory = persistenceSessionFactory;
   }
-
+  
+  public List<Deployer> getDeployers() {
+    return deployers;
+  }
+  
+  public void setDeployers(List<Deployer> deployers) {
+    this.deployers = deployers;
+  }
 }

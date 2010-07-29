@@ -13,13 +13,14 @@
 
 package org.activiti.engine.impl.persistence.db;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.activiti.engine.impl.persistence.repository.Deployer;
 import org.activiti.engine.impl.persistence.repository.ProcessDefinitionEntity;
+import org.activiti.impl.cfg.ProcessEngineConfiguration;
+import org.activiti.impl.cfg.ProcessEngineConfigurationAware;
 import org.activiti.impl.interceptor.SessionFactory;
 import org.activiti.impl.tx.Session;
 
@@ -27,32 +28,34 @@ import org.activiti.impl.tx.Session;
 /**
  * @author Tom Baeyens
  */
-public class DbRepositorySessionFactory implements SessionFactory {
+public class DbRepositorySessionFactory implements SessionFactory, ProcessEngineConfigurationAware {
   
-  protected List<Deployer> deployers = new ArrayList<Deployer>();
   protected Map<String, ProcessDefinitionEntity> processDefinitionCache = new HashMap<String, ProcessDefinitionEntity>(); 
+  protected List<Deployer> deployers;
+
+  public void configurationCompleted(ProcessEngineConfiguration processEngineConfiguration) {
+    deployers = processEngineConfiguration.getDeployers();
+  }
 
   public Session openSession() {
     return new DbRepositorySession(this);
   }
 
-  
-  public List<Deployer> getDeployers() {
-    return deployers;
-  }
-
-  
-  public void setDeployers(List<Deployer> deployers) {
-    this.deployers = deployers;
-  }
-
+  // getters and setters //////////////////////////////////////////////////////
   
   public Map<String, ProcessDefinitionEntity> getProcessDefinitionCache() {
     return processDefinitionCache;
   }
-
   
   public void setProcessDefinitionCache(Map<String, ProcessDefinitionEntity> processDefinitionCache) {
     this.processDefinitionCache = processDefinitionCache;
+  }
+  
+  public List<Deployer> getDeployers() {
+    return deployers;
+  }
+  
+  public void setDeployers(List<Deployer> deployers) {
+    this.deployers = deployers;
   }
 }

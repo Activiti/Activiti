@@ -6,7 +6,7 @@
 
   <!-- DEPLOYMENT -->
   
-  <insert id="insertDeployment" parameterType="org.activiti.engine.impl.persistence.repository.DeploymentEntity">
+  <insert id="insertDeploymentEntity" parameterType="org.activiti.engine.impl.persistence.repository.DeploymentEntity">
     insert into ACT_DEPLOYMENT(ID_, NAME_, DEPLOY_TIME_)
     values(#{id, jdbcType=VARCHAR}, #{name, jdbcType=VARCHAR}, #{deploymentTime, jdbcType=TIMESTAMP})
   </insert>
@@ -41,7 +41,7 @@
   
   <!-- RESOURCE -->
 
-  <insert id="insertResource" parameterType="org.activiti.engine.impl.persistence.repository.ResourceEntity">
+  <insert id="insertResourceEntity" parameterType="org.activiti.engine.impl.persistence.repository.ResourceEntity">
     insert into ACT_BYTEARRAY(ID_, NAME_, BYTES_, DEPLOYMENT_ID_)
     values (#{id, jdbcType=VARCHAR}, #{name, jdbcType=VARCHAR}, #{bytes, jdbcType=BLOB}, #{deploymentId, jdbcType=VARCHAR})  
   </insert>
@@ -73,13 +73,20 @@
 
     
   <!-- PROCESSDEFINITION -->
+
+  <insert id="insertProcessDefinitionEntity" parameterType="org.activiti.engine.impl.persistence.repository.ProcessDefinitionEntity">
+    insert into ACT_PROCESSDEFINITION(ID_, NAME_, KEY_, VERSION_, DEPLOYMENT_ID_)
+    values (#{id, jdbcType=VARCHAR},
+            #{name, jdbcType=VARCHAR},
+            #{key, jdbcType=VARCHAR}, 
+            #{version, jdbcType=INTEGER},
+            #{deployment.id, jdbcType=VARCHAR})
+  </insert>
   
   <delete id="deleteProcessDefinitionsByDeploymentId" parameterType="string">
     delete from ACT_PROCESSDEFINITION where DEPLOYMENT_ID_ = #{deploymenId} 
   </delete>
   
-  <!-- RESULTMAP -->
-    
   <resultMap id="processDefinitionResultMap" type="org.activiti.engine.impl.persistence.repository.ProcessDefinitionEntity">
     <id property="id" column="ID_" jdbcType="VARCHAR" />
     <result property="name" column="NAME_" />
@@ -91,8 +98,6 @@
                  select="selectDeployment" >
     </association>
   </resultMap>
-  
-  <!-- SELECT -->
   
   <select id="selectProcessDefinitions" resultMap="processDefinitionResultMap">
     select * from ACT_PROCESSDEFINITION
@@ -124,16 +129,5 @@
     where KEY_ = #{key} and
           VERSION_ = (select max(VERSION_) from ACT_PROCESSDEFINITION where KEY_ = #{processDefinitionKey})
   </select>
-  
-  <!-- INSERT -->
-  
-  <insert id="insertProcessDefinition" parameterType="org.activiti.engine.impl.persistence.repository.ProcessDefinitionEntity">
-    insert into ACT_PROCESSDEFINITION(ID_, NAME_, KEY_, VERSION_, DEPLOYMENT_ID_)
-    values (#{id, jdbcType=VARCHAR},
-            #{name, jdbcType=VARCHAR},
-            #{key, jdbcType=VARCHAR}, 
-            #{version, jdbcType=INTEGER},
-            #{deployment.id, jdbcType=VARCHAR})
-  </insert>
-  
+
 </mapper>

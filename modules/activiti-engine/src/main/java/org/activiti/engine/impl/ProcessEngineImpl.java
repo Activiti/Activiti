@@ -22,6 +22,7 @@ import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.ProcessService;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.TaskService;
+import org.activiti.engine.impl.persistence.db.DbSqlSessionFactory;
 import org.activiti.impl.cfg.ProcessEngineConfiguration;
 import org.activiti.impl.jobexecutor.JobExecutor;
 import org.activiti.impl.persistence.PersistenceSessionFactory;
@@ -56,19 +57,19 @@ public class ProcessEngineImpl implements ProcessEngine {
     this.managementService = processEngineConfiguration.getManagementService();
     this.dbSchemaStrategy = processEngineConfiguration.getDbSchemaStrategy();
     this.jobExecutor = processEngineConfiguration.getJobExecutor();
-    this.persistenceSessionFactory = (PersistenceSessionFactory) processEngineConfiguration.getPersistenceSessionFactory();
-
+    
+    DbSqlSessionFactory dbSqlSessionFactory = processEngineConfiguration.getDbSqlSessionFactory();
     if (DbSchemaStrategy.DROP_CREATE == dbSchemaStrategy) {
       try {
-        persistenceSessionFactory.dbSchemaDrop();
+        dbSqlSessionFactory.dbSchemaDrop();
       } catch (RuntimeException e) {
         // ignore
       }
     }
     if (DbSchemaStrategy.CREATE_DROP == dbSchemaStrategy || DbSchemaStrategy.DROP_CREATE == dbSchemaStrategy || DbSchemaStrategy.CREATE == dbSchemaStrategy) {
-      persistenceSessionFactory.dbSchemaCreate();
+      dbSqlSessionFactory.dbSchemaCreate();
     } else if (DbSchemaStrategy.CHECK_VERSION == dbSchemaStrategy) {
-      persistenceSessionFactory.dbSchemaCheckVersion();
+      dbSqlSessionFactory.dbSchemaCheckVersion();
     }
 
     if (name == null) {
@@ -88,7 +89,8 @@ public class ProcessEngineImpl implements ProcessEngine {
     }
 
     if (DbSchemaStrategy.CREATE_DROP == dbSchemaStrategy) {
-      persistenceSessionFactory.dbSchemaDrop();
+      DbSqlSessionFactory dbSqlSessionFactory = processEngineConfiguration.getDbSqlSessionFactory();
+      dbSqlSessionFactory.dbSchemaDrop();
     }
   }
 

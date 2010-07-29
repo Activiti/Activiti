@@ -14,7 +14,7 @@
 package org.activiti.engine.test;
 
 import org.activiti.engine.impl.ProcessEngineImpl;
-import org.activiti.impl.interceptor.CommandExecutor;
+import org.activiti.impl.cfg.ProcessEngineConfiguration;
 import org.activiti.impl.util.LogUtil.ThreadLogMode;
 
 
@@ -25,7 +25,7 @@ import org.activiti.impl.util.LogUtil.ThreadLogMode;
  */
 public class ProcessEngineImplTestCase extends ProcessEngineTestCase {
 
-  protected CommandExecutor commandExecutor;
+  protected ProcessEngineConfiguration processEngineConfiguration;
   
   public ProcessEngineImplTestCase() {
     super();
@@ -46,6 +46,6 @@ public class ProcessEngineImplTestCase extends ProcessEngineTestCase {
   @Override
   void initializeServices() {
     super.initializeServices();
-    commandExecutor = ((ProcessEngineImpl) processEngine).getProcessEngineConfiguration().getCommandExecutor();
+    processEngineConfiguration = ((ProcessEngineImpl) processEngine).getProcessEngineConfiguration();
   }
 }

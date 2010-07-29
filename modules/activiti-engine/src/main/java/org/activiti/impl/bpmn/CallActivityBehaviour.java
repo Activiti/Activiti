@@ -13,6 +13,7 @@
 
 package org.activiti.impl.bpmn;
 
+import org.activiti.engine.impl.persistence.RepositorySession;
 import org.activiti.impl.definition.ProcessDefinitionImpl;
 import org.activiti.impl.interceptor.CommandContext;
 import org.activiti.impl.persistence.PersistenceSession;
@@ -35,8 +36,8 @@ public class CallActivityBehaviour extends BpmnActivity {
   }
   
   public void execute(ActivityExecution execution) throws Exception {
-    PersistenceSession persistenceSession = CommandContext.getCurrent().getPersistenceSession();
-    ProcessDefinitionImpl processDefinition =  persistenceSession.findLatestProcessDefinitionByKey(processDefinitonKey);
+    RepositorySession repositorySession = CommandContext.getCurrent().getRepositorySession();
+    ProcessDefinitionImpl processDefinition =  repositorySession.findLatestProcessDefinitionByKey(processDefinitonKey);
     
     ObjectProcessInstance processInstance = execution.createSubProcessInstance(processDefinition);
     processInstance.start();

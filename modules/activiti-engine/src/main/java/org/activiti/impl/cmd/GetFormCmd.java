@@ -13,6 +13,7 @@
 package org.activiti.impl.cmd;
 
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.impl.persistence.RepositorySession;
 import org.activiti.engine.impl.persistence.repository.DeploymentEntity;
 import org.activiti.engine.impl.persistence.repository.ResourceEntity;
 import org.activiti.impl.definition.FormReference;
@@ -43,6 +44,7 @@ public class GetFormCmd implements Command<Object> {
 
   public Object execute(CommandContext commandContext) {
     PersistenceSession persistenceSession = commandContext.getPersistenceSession();
+    RepositorySession repositorySession = commandContext.getRepositorySession();
     ProcessDefinitionImpl processDefinition = null;
     TaskImpl task = null;
     ExecutionImpl execution = null;
@@ -55,12 +57,12 @@ public class GetFormCmd implements Command<Object> {
         throw new ActivitiException("No task found for id = '" + taskId + "'");
       }
       execution = task.getExecution();
-      processDefinition = persistenceSession.findProcessDefinitionById(task.getProcessDefinitionId());
+      processDefinition = repositorySession.findProcessDefinitionById(task.getProcessDefinitionId());
       formReference = execution.getActivity().getFormReference();
       
     } else if (processDefinitionId!=null) {
       
-      processDefinition = persistenceSession.findProcessDefinitionById(processDefinitionId);
+      processDefinition = repositorySession.findProcessDefinitionById(processDefinitionId);
       if (processDefinition == null) {
         throw new ActivitiException("No process definition found for id = '" + processDefinitionId + "'");
       }
@@ -68,7 +70,7 @@ public class GetFormCmd implements Command<Object> {
       
     } else if (processDefinitionKey!=null) {
       
-      processDefinition = persistenceSession.findLatestProcessDefinitionByKey(processDefinitionKey);
+      processDefinition = repositorySession.findLatestProcessDefinitionByKey(processDefinitionKey);
       if (processDefinition == null) {
         throw new ActivitiException("No process definition found for key '" + processDefinitionKey +"'");
       }

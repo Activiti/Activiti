@@ -47,6 +47,12 @@ public interface RepositorySession {
    * while building a deployment. */
   DeploymentEntity findLatestDeploymentByName(String deploymentName);
 
+  List<ProcessDefinitionImpl> findProcessDefinitions();
+
   // TODO replace with query api
   ResourceEntity findResourceByDeploymentIdAndResourceName(String deploymentId, String resourceName);
+  
+  ProcessDefinitionImpl findLatestProcessDefinitionByKey(String processDefinitionKey);
+
+  ProcessDefinitionEntity findProcessDefinitionById(String processDefinitionId);
 }

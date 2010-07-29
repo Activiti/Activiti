@@ -25,28 +25,28 @@ import org.activiti.engine.impl.persistence.repository.ResourceEntity;
 import org.activiti.impl.bpmn.parser.BpmnParse;
 import org.activiti.impl.bpmn.parser.BpmnParser;
 import org.activiti.impl.calendar.BusinessCalendarManager;
+import org.activiti.impl.cfg.ProcessEngineConfiguration;
+import org.activiti.impl.cfg.ProcessEngineConfigurationAware;
 import org.activiti.impl.el.ExpressionManager;
 import org.activiti.impl.scripting.ScriptingEngines;
 
 /**
  * @author Tom Baeyens
  */
-public class BpmnDeployer implements Deployer {
+public class BpmnDeployer implements Deployer, ProcessEngineConfigurationAware {
 
   private static final Logger LOG = Logger.getLogger(BpmnDeployer.class.getName());;
 
   public static final String BPMN_RESOURCE_SUFFIX = "bpmn20.xml";
 
-  private final ExpressionManager expressionManager;
+  protected ExpressionManager expressionManager;
+  protected ScriptingEngines scriptingEngines;
+  protected BusinessCalendarManager businessCalendarManager;
 
-  private final ScriptingEngines scriptingEngines;
-
-  private final BusinessCalendarManager businessCalendarManager;
-
-  public BpmnDeployer(ExpressionManager expressionManager, ScriptingEngines scriptingEngines, BusinessCalendarManager businessCalendarManager) {
-    this.expressionManager = expressionManager;
-    this.scriptingEngines = scriptingEngines;
-    this.businessCalendarManager = businessCalendarManager;
+  public void configurationCompleted(ProcessEngineConfiguration processEngineConfiguration) {
+    this.expressionManager = processEngineConfiguration.getExpressionManager();
+    this.scriptingEngines = processEngineConfiguration.getScriptingEngines();
+    this.businessCalendarManager = processEngineConfiguration.getBusinessCalendarManager();
   }
 
   public List<ProcessDefinitionEntity> deploy(DeploymentEntity deployment) {

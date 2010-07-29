@@ -46,10 +46,13 @@ public class HistoricDataServiceImpl extends ServiceImpl implements HistoricData
 
   public void registerEventConsumers(ProcessEventBus processEventBus) {
     // TODO: where/how to register historic data service with event bus?
-    processEventBus.subscribe(new ProcessInstanceStartedEventConsumer(), ProcessInstanceStartedEvent.class);
-    processEventBus.subscribe(new ProcessInstanceEndedEventConsumer(), ProcessInstanceEndedEvent.class);
-    processEventBus.subscribe(new ActivityStartedEventConsumer(), ActivityStartedEvent.class);
-    processEventBus.subscribe(new ActivityEndedEventConsumer(), ActivityEndedEvent.class);
+    
+// unconfiguring history event generation till persistence is refactored.
+//
+//    processEventBus.subscribe(new ProcessInstanceStartedEventConsumer(), ProcessInstanceStartedEvent.class);
+//    processEventBus.subscribe(new ProcessInstanceEndedEventConsumer(), ProcessInstanceEndedEvent.class);
+//    processEventBus.subscribe(new ActivityStartedEventConsumer(), ActivityStartedEvent.class);
+//    processEventBus.subscribe(new ActivityEndedEventConsumer(), ActivityEndedEvent.class);
   }
 
   public HistoricProcessInstance findHistoricProcessInstance(final String processInstanceId) {

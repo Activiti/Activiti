@@ -29,7 +29,7 @@ public class FindProcessDefinitionCmd implements Command<ProcessDefinitionImpl> 
   }
   
   public ProcessDefinitionImpl execute(CommandContext commandContext) {
-    return commandContext.getPersistenceSession().findProcessDefinitionById(processDefinitionId);
+    return commandContext.getRepositorySession().findProcessDefinitionById(processDefinitionId);
   }
 
 }

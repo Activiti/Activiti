@@ -224,10 +224,7 @@ public class DbSqlSession implements Session {
 
   protected void flushInserts() {
     for (PersistentObject insertedObject: insertedObjects) {
-      Class<?> insertObjectClass = insertedObject.getClass();
-      String insertStatement = dbSqlSessionFactory
-        .getInsertStatements()
-        .get(insertObjectClass);
+      String insertStatement = dbSqlSessionFactory.getInsertStatement(insertedObject);
       insertStatement = dbSqlSessionFactory.mapStatement(insertStatement);
 
       if (insertStatement==null) {
@@ -242,10 +239,7 @@ public class DbSqlSession implements Session {
 
   protected void flushUpdates(List<PersistentObject> updatedObjects) {
     for (PersistentObject updatedObject: updatedObjects) {
-      Class<?> updatedObjectClass = updatedObject.getClass();
-      String updateStatement = dbSqlSessionFactory
-        .getUpdateStatements()
-        .get(updatedObjectClass);
+      String updateStatement = dbSqlSessionFactory.getUpdateStatement(updatedObject);
       updateStatement = dbSqlSessionFactory.mapStatement(updateStatement);
       if (updateStatement==null) {
         throw new ActivitiException("no update statement for "+updatedObject.getClass()+" in the ibatis mapping files");
@@ -266,10 +260,7 @@ public class DbSqlSession implements Session {
 
       } else {
         PersistentObject persistentObject = (PersistentObject) delete;
-        Class<?> deletedObjectClass = delete.getClass();
-        String deleteStatement = dbSqlSessionFactory
-          .getDeleteStatements()
-          .get(deletedObjectClass);
+        String deleteStatement = dbSqlSessionFactory.getDeleteStatement(persistentObject);
         deleteStatement = dbSqlSessionFactory.mapStatement(deleteStatement);
         if (deleteStatement==null) {
           throw new ActivitiException("no delete statement for "+delete.getClass()+" in the ibatis mapping files");

@@ -20,10 +20,4 @@ import org.activiti.impl.interceptor.SessionFactory;
  */
 public interface PersistenceSessionFactory extends SessionFactory {
 
-  void dbSchemaCheckVersion();
-
-  void dbSchemaCreate();
-
-  void dbSchemaDrop();
-  
 }
