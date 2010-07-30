@@ -23,7 +23,6 @@ import org.activiti.pvm.process.PvmTransition;
  */
 public class Automatic implements ActivityBehaviour {
 
-  @Override
   public void start(ActivityContext activityExecutionContext) {
     PvmTransition transition = activityExecutionContext.getOutgoingTransitions().get(0);
     activityExecutionContext.take(transition);

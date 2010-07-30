@@ -23,11 +23,9 @@ import org.activiti.pvm.process.PvmTransition;
  */
 public class WaitState implements SignallableActivityBehaviour {
 
-  @Override
   public void start(ActivityContext activityExecutionContext) {
   }
   
-  @Override
   public void signal(ActivityContext activityExecutionContext, String signal, Object signalData) {
     PvmTransition transition = activityExecutionContext.getOutgoingTransitions().get(0);
     activityExecutionContext.take(transition);

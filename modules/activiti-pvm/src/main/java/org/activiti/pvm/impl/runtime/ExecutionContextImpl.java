@@ -119,7 +119,6 @@ public class ExecutionContextImpl implements EventContext, ActivityContext {
   }
   
   private static class EventListenerInvoke implements AtomicOperation {
-    @Override
     public void perform(ExecutionContextImpl executionContext) {
       if (executionContext.eventListenerIndex<executionContext.eventListeners.size()) {
         EventListener eventListener = executionContext.eventListeners.get(executionContext.eventListenerIndex);
@@ -138,7 +137,6 @@ public class ExecutionContextImpl implements EventContext, ActivityContext {
   }
   
   private static class ProcessStart implements AtomicOperation {
-    @Override
     public void perform(ExecutionContextImpl executionContext) {
       ProcessInstanceImpl processInstance = executionContext.processInstance;
       ActivityImpl initial = processInstance.getProcessDefinition().getInitial();
@@ -148,7 +146,6 @@ public class ExecutionContextImpl implements EventContext, ActivityContext {
   }
 
   private static class ActivityStart implements AtomicOperation {
-    @Override
     public void perform(ExecutionContextImpl executionContext) {
       ActivityInstanceImpl activityInstance = executionContext.activityInstance;
       activityInstance.setExecutionContext(executionContext);
@@ -158,7 +155,6 @@ public class ExecutionContextImpl implements EventContext, ActivityContext {
   }
 
   private static class TransitionActivityEnd implements AtomicOperation {
-    @Override
     public void perform(ExecutionContextImpl executionContext) {
       ActivityInstanceImpl activityInstance = executionContext.activityInstance;
       TransitionImpl transition = executionContext.transition;
@@ -170,14 +166,12 @@ public class ExecutionContextImpl implements EventContext, ActivityContext {
   }
 
   private static class TransitionTake implements AtomicOperation {
-    @Override
     public void perform(ExecutionContextImpl executionContext) {
       executionContext.fireEvent(executionContext.transition, Event.TRANSITION_TAKE, TRANSITION_ACTIVITY_START);
     }
   }
 
   private static class TransitionActivityStart implements AtomicOperation {
-    @Override
     public void perform(ExecutionContextImpl executionContext) {
       ActivityImpl destination = executionContext.transition.getDestination();
       executionContext.activityInstance = executionContext.scopeInstance.createActivityInstance(destination);
@@ -186,7 +180,6 @@ public class ExecutionContextImpl implements EventContext, ActivityContext {
   }
 
   private static class ActivitySignal implements AtomicOperation {
-    @Override
     public void perform(ExecutionContextImpl executionContext) {
       ActivityInstanceImpl activityInstance = executionContext.activityInstance;
       SignallableActivityBehaviour signallableActivityBehaviour = (SignallableActivityBehaviour) activityInstance.getActivity().getActivityBehaviour();
