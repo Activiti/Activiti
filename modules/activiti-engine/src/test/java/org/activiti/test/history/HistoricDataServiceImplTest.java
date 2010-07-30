@@ -31,13 +31,13 @@ import org.activiti.engine.impl.ProcessEngineImpl;
 import org.activiti.engine.impl.ServiceImpl;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
+import org.activiti.engine.impl.util.ClockUtil;
 import org.activiti.impl.event.ActivityEndedEvent;
 import org.activiti.impl.event.ActivityStartedEvent;
 import org.activiti.impl.event.DefaultProcessEventBus;
 import org.activiti.impl.event.ProcessInstanceEndedEvent;
 import org.activiti.impl.event.ProcessInstanceStartedEvent;
 import org.activiti.impl.history.HistoricDataServiceImpl;
-import org.activiti.impl.time.Clock;
 import org.activiti.pvm.Activity;
 import org.activiti.pvm.event.ProcessEventBus;
 import org.activiti.test.LogInitializer;
@@ -78,7 +78,7 @@ public class HistoricDataServiceImplTest {
       when(processInstance.getProcessDefinitionId()).thenReturn("processDefinitionId");
 
       Date startTime = new Date();
-      Clock.setCurrentTime(startTime);
+      ClockUtil.setCurrentTime(startTime);
 
       fireProcessInstanceStartedEvent(processInstance);
 
@@ -93,7 +93,7 @@ public class HistoricDataServiceImplTest {
       assertNull(historicProcessInstance.getEndStateName());
 
       Date endTime = new Date(startTime.getTime() + 1000);
-      Clock.setCurrentTime(endTime);
+      ClockUtil.setCurrentTime(endTime);
 
       fireProcessInstanceEndedEvent(processInstance);
 
@@ -106,7 +106,7 @@ public class HistoricDataServiceImplTest {
       assertEquals(Long.valueOf(1000L), historicProcessInstance.getDurationInMillis());
       assertEquals("endStateName", historicProcessInstance.getEndStateName());
     } finally {
-      Clock.reset();
+      ClockUtil.reset();
       cleanHistoricProcessInstancesFromDatabase("processInstanceId");
     }
   }
@@ -159,7 +159,7 @@ public class HistoricDataServiceImplTest {
       ((ServiceImpl)historicDataService).setCommandExecutor(deployer.getCommandExecutor());
 
       Date startTime = new Date();
-      Clock.setCurrentTime(startTime);
+      ClockUtil.setCurrentTime(startTime);
 
       fireActivityStartedEvent(processInstance, activity);
 
@@ -176,7 +176,7 @@ public class HistoricDataServiceImplTest {
       assertNull(historicActivityInstance.getDurationInMillis());
 
       Date endTime = new Date(startTime.getTime() + 1000);
-      Clock.setCurrentTime(endTime);
+      ClockUtil.setCurrentTime(endTime);
 
       fireActivityEndedEvent(processInstance, activity);
 
@@ -191,7 +191,7 @@ public class HistoricDataServiceImplTest {
       assertEquals(endTime, historicActivityInstance.getEndTime());
       assertEquals(Long.valueOf(1000L), historicActivityInstance.getDurationInMillis());
     } finally {
-      Clock.reset();
+      ClockUtil.reset();
       cleanHistoricActivityInstancesFromDatabase("activityId", "processInstanceId");
     }
   }

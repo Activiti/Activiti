@@ -28,15 +28,15 @@ import org.activiti.engine.impl.persistence.db.IdBlock;
 import org.activiti.engine.impl.persistence.identity.GroupImpl;
 import org.activiti.engine.impl.persistence.identity.UserImpl;
 import org.activiti.engine.impl.persistence.runtime.ByteArrayImpl;
+import org.activiti.engine.impl.persistence.runtime.JobImpl;
+import org.activiti.engine.impl.persistence.runtime.TimerImpl;
+import org.activiti.engine.impl.persistence.task.TaskImpl;
+import org.activiti.engine.impl.persistence.task.TaskInvolvement;
+import org.activiti.engine.impl.variable.VariableInstance;
 import org.activiti.impl.db.execution.DbExecutionImpl;
 import org.activiti.impl.execution.ExecutionImpl;
 import org.activiti.impl.history.HistoricActivityInstanceImpl;
 import org.activiti.impl.history.HistoricProcessInstanceImpl;
-import org.activiti.impl.job.JobImpl;
-import org.activiti.impl.job.TimerImpl;
-import org.activiti.impl.task.TaskImpl;
-import org.activiti.impl.task.TaskInvolvement;
-import org.activiti.impl.variable.VariableInstance;
 
 
 /**

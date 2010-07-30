@@ -20,7 +20,7 @@ import org.activiti.engine.ActivitiException;
 import org.activiti.engine.Deployment;
 import org.activiti.engine.DeploymentBuilder;
 import org.activiti.engine.impl.RepositoryServiceImpl;
-import org.activiti.impl.util.IoUtil;
+import org.activiti.engine.impl.util.IoUtil;
 
 /**
  * @author Tom Baeyens

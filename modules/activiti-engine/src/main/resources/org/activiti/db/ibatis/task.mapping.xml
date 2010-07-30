@@ -6,7 +6,7 @@
 
   <!-- RESULTMAP -->
   
-  <resultMap id="taskResultMap" type="org.activiti.impl.task.TaskImpl">
+  <resultMap id="taskResultMap" type="org.activiti.engine.impl.persistence.task.TaskImpl">
     <id property="id" column="ID_" jdbcType="VARCHAR"/>
     <result property="name" column="NAME_" jdbcType="VARCHAR"/>
     <result property="description" column="DESCRIPTION_" jdbcType="VARCHAR"/>
@@ -20,7 +20,7 @@
     <result property="processDefinitionId" column="PROC_DEF_ID_" jdbcType="VARCHAR"/>
   </resultMap>
   
-  <resultMap id="taskInvolvementResultMap" type="org.activiti.impl.task.TaskInvolvement">
+  <resultMap id="taskInvolvementResultMap" type="org.activiti.engine.impl.persistence.task.TaskInvolvement">
     <id property="id" column="ID_" jdbcType="VARCHAR" />
     <result property="type" column="TYPE_" jdbcType="VARCHAR" />
     <result property="userId" column="USER_ID_" jdbcType="VARCHAR" />
@@ -130,7 +130,7 @@
   
   <!-- INSERT -->
   
-  <insert id="insertTask" parameterType="org.activiti.impl.task.TaskImpl">
+  <insert id="insertTask" parameterType="org.activiti.engine.impl.persistence.task.TaskImpl">
     insert into ACT_TASK (ID_, NAME_, DESCRIPTION_, PRIORITY_, CREATE_TIME_, SKIPPABLE_,
                       START_DEADLINE_, COMPLETION_DEADLINE_, ASSIGNEE_,
                       EXECUTION_ID_, PROC_INST_ID_, PROC_DEF_ID_)
@@ -149,7 +149,7 @@
              )
   </insert>
   
-  <insert id="insertTaskInvolvement" parameterType="org.activiti.impl.task.TaskInvolvement">
+  <insert id="insertTaskInvolvement" parameterType="org.activiti.engine.impl.persistence.task.TaskInvolvement">
     insert into ACT_TASKINVOLVEMENT (ID_, TYPE_, USER_ID_, GROUP_ID_, TASK_ID_)
     values (#{id, jdbcType=VARCHAR},
             #{type, jdbcType=VARCHAR},
@@ -160,7 +160,7 @@
   
   <!-- UPDATE -->
   
-   <update id="updateTask" parameterType="org.activiti.impl.task.TaskImpl">
+   <update id="updateTask" parameterType="org.activiti.engine.impl.persistence.task.TaskImpl">
     update ACT_TASK
     <set>
       NAME_ = #{name, jdbcType=VARCHAR},
@@ -177,7 +177,7 @@
     where ID_= #{id, jdbcType=VARCHAR}
   </update>
   
-  <update id="updateTaskInvolvement" parameterType="org.activiti.impl.task.TaskInvolvement">
+  <update id="updateTaskInvolvement" parameterType="org.activiti.engine.impl.persistence.task.TaskInvolvement">
     update ACT_TASKINVOLVEMENT
     <set>
       TYPE_ = #{type, jdbcType=VARCHAR},

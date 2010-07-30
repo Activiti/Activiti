@@ -13,9 +13,9 @@
 package org.activiti.impl.definition;
 
 import org.activiti.engine.impl.persistence.repository.DeploymentEntity;
+import org.activiti.engine.impl.variable.VariableTypes;
 import org.activiti.impl.execution.ExecutionImpl;
 import org.activiti.impl.persistence.PersistentObject;
-import org.activiti.impl.variable.VariableTypes;
 import org.activiti.pvm.ObjectProcessDefinition;
 
 /**

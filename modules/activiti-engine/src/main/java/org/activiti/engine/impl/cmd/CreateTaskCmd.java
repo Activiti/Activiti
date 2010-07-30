@@ -15,7 +15,7 @@ package org.activiti.engine.impl.cmd;
 import org.activiti.engine.Task;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
-import org.activiti.impl.task.TaskImpl;
+import org.activiti.engine.impl.persistence.task.TaskImpl;
 
 /**
  * @author Joram Barrez

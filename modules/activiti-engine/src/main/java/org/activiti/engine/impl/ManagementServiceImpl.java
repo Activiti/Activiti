@@ -21,8 +21,6 @@ import org.activiti.engine.TablePageQuery;
 import org.activiti.engine.impl.cmd.GetTableCountCmd;
 import org.activiti.engine.impl.cmd.GetTableMetaDataCmd;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
-import org.activiti.impl.job.JobQueryImpl;
-import org.activiti.impl.query.TablePageQueryImpl;
 
 
 /**

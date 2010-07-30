@@ -15,8 +15,8 @@ package org.activiti.engine.impl.bpmn;
 
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.el.ActivitiValueExpression;
+import org.activiti.engine.impl.util.ReflectUtil;
 import org.activiti.impl.execution.ExecutionImpl;
-import org.activiti.impl.util.ReflectUtil;
 import org.activiti.pvm.ActivityBehavior;
 import org.activiti.pvm.ActivityExecution;
 

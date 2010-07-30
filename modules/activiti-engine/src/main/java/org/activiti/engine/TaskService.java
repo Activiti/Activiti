@@ -15,7 +15,7 @@ package org.activiti.engine;
 import java.util.List;
 import java.util.Map;
 
-import org.activiti.impl.task.TaskInvolvementType;
+import org.activiti.engine.impl.persistence.task.TaskInvolvementType;
 
 /** provides access to {@link Task} related operations.
  * 

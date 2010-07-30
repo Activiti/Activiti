@@ -38,9 +38,9 @@ import org.activiti.engine.RepositoryService;
 import org.activiti.engine.TaskService;
 import org.activiti.engine.impl.ProcessEngineImpl;
 import org.activiti.engine.impl.util.ClassNameUtil;
-import org.activiti.impl.time.Clock;
-import org.activiti.impl.util.LogUtil;
-import org.activiti.impl.util.LogUtil.ThreadLogMode;
+import org.activiti.engine.impl.util.ClockUtil;
+import org.activiti.engine.impl.util.LogUtil;
+import org.activiti.engine.impl.util.LogUtil.ThreadLogMode;
 import org.activiti.test.ProcessDeployer;
 import org.junit.Assert;
 
@@ -156,7 +156,7 @@ public class ProcessEngineTestCase extends TestCase {
         repositoryService.deleteDeployment(deploymentId);
       }
       assertAndEnsureCleanDb();
-      Clock.reset();
+      ClockUtil.reset();
       log.fine("#### END "+ClassNameUtil.getClassNameWithoutPackage(this)+"."+getName()+" #############################################################");
       LogUtil.setThreadLogMode(oldThreadRenderingMode);
     }

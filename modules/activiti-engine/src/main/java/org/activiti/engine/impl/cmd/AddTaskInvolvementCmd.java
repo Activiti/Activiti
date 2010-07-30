@@ -14,10 +14,10 @@ package org.activiti.engine.impl.cmd;
 
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.interceptor.CommandContext;
+import org.activiti.engine.impl.persistence.task.TaskImpl;
+import org.activiti.engine.impl.persistence.task.TaskInvolvement;
+import org.activiti.engine.impl.persistence.task.TaskInvolvementType;
 import org.activiti.impl.persistence.PersistenceSession;
-import org.activiti.impl.task.TaskImpl;
-import org.activiti.impl.task.TaskInvolvement;
-import org.activiti.impl.task.TaskInvolvementType;
 
 
 /**

@@ -18,8 +18,8 @@ import javax.el.ValueExpression;
 
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.persistence.runtime.ByteArrayImpl;
+import org.activiti.engine.impl.persistence.task.TaskImpl;
 import org.activiti.impl.repository.DeploymentImpl;
-import org.activiti.impl.task.TaskImpl;
 
 import de.odysseus.el.ExpressionFactoryImpl;
 

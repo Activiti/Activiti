@@ -17,12 +17,12 @@ import java.util.List;
 import java.util.Stack;
 
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.impl.variable.DefaultVariableTypes;
+import org.activiti.engine.impl.variable.VariableTypes;
 import org.activiti.impl.definition.ActivityImpl;
 import org.activiti.impl.definition.ProcessDefinitionImpl;
 import org.activiti.impl.definition.ScopeElementImpl;
 import org.activiti.impl.definition.TransitionImpl;
-import org.activiti.impl.variable.DefaultVariableTypes;
-import org.activiti.impl.variable.VariableTypes;
 
 
 /**

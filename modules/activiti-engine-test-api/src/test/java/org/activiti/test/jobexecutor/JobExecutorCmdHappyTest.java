@@ -21,14 +21,14 @@ import java.util.List;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
-import org.activiti.impl.job.JobHandlers;
-import org.activiti.impl.job.MessageImpl;
-import org.activiti.impl.job.TimerImpl;
-import org.activiti.impl.jobexecutor.AcquireJobsCmd;
-import org.activiti.impl.jobexecutor.AcquiredJobs;
-import org.activiti.impl.jobexecutor.ExecuteJobsCmd;
-import org.activiti.impl.jobexecutor.JobExecutor;
-import org.activiti.impl.time.Clock;
+import org.activiti.engine.impl.jobexecutor.AcquireJobsCmd;
+import org.activiti.engine.impl.jobexecutor.AcquiredJobs;
+import org.activiti.engine.impl.jobexecutor.ExecuteJobsCmd;
+import org.activiti.engine.impl.jobexecutor.JobExecutor;
+import org.activiti.engine.impl.jobexecutor.JobHandlers;
+import org.activiti.engine.impl.persistence.runtime.MessageImpl;
+import org.activiti.engine.impl.persistence.runtime.TimerImpl;
+import org.activiti.engine.impl.util.ClockUtil;
 import org.junit.Test;
 
 /**
@@ -74,7 +74,7 @@ public class JobExecutorCmdHappyTest extends JobExecutorTestCase {
   @Test
   public void testJobCommandsWithTimer() {
     // clock gets automatically reset in LogTestCase.runTest
-    Clock.setCurrentTime(new Date(SOME_TIME));
+    ClockUtil.setCurrentTime(new Date(SOME_TIME));
 
     CommandExecutor commandExecutor = deployer.getCommandExecutor();
     JobHandlers jobHandlers = deployer.getJobHandlers();
@@ -95,7 +95,7 @@ public class JobExecutorCmdHappyTest extends JobExecutorTestCase {
 
     List<String> expectedJobIds = new ArrayList<String>();
 
-    Clock.setCurrentTime(new Date(SOME_TIME + (20 * SECOND)));
+    ClockUtil.setCurrentTime(new Date(SOME_TIME + (20 * SECOND)));
 
     acquiredJobs = commandExecutor.execute(new AcquireJobsCmd(jobExecutor));
     jobIdsList = acquiredJobs.getJobIdsList();

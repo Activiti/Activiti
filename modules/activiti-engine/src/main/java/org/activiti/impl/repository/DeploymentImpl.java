@@ -14,12 +14,9 @@ package org.activiti.impl.repository;
 
 import java.io.Serializable;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.activiti.engine.Deployment;
-import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.repository.DeploymentBuilderImpl;
 import org.activiti.engine.impl.persistence.runtime.ByteArrayImpl;
 

@@ -23,11 +23,11 @@ import org.activiti.engine.impl.ServiceImpl;
 import org.activiti.engine.impl.cfg.ProcessEngineConfiguration;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
+import org.activiti.engine.impl.util.ClockUtil;
 import org.activiti.impl.event.ActivityEndedEvent;
 import org.activiti.impl.event.ActivityStartedEvent;
 import org.activiti.impl.event.ProcessInstanceEndedEvent;
 import org.activiti.impl.event.ProcessInstanceStartedEvent;
-import org.activiti.impl.time.Clock;
 import org.activiti.pvm.event.ProcessEventBus;
 import org.activiti.pvm.event.ProcessEventConsumer;
 
@@ -83,7 +83,7 @@ public class HistoricDataServiceImpl extends ServiceImpl implements HistoricData
 
       String processInstanceId = event.getProcessInstanceId();
       String processDefinitionId = event.getProcessDefinitionId();
-      Date startTime = Clock.getCurrentTime();
+      Date startTime = ClockUtil.getCurrentTime();
 
       HistoricProcessInstanceImpl historicProcessInstance = new HistoricProcessInstanceImpl(processInstanceId, processDefinitionId, startTime);
 
@@ -100,13 +100,13 @@ public class HistoricDataServiceImpl extends ServiceImpl implements HistoricData
       if (historicProcessInstance == null) {
         String processInstanceId = event.getProcessInstanceId();
         String processDefinitionId = event.getProcessDefinitionId();
-        Date startTime = Clock.getCurrentTime();
+        Date startTime = ClockUtil.getCurrentTime();
         historicProcessInstance = new HistoricProcessInstanceImpl(processInstanceId, processDefinitionId, startTime);
 
         // throw new IllegalArgumentException("No historic process instance found for process instance id '" + event.getProcessInstanceId() + "'");
       }
 
-      Date endTime = Clock.getCurrentTime();
+      Date endTime = ClockUtil.getCurrentTime();
       // TODO: does end state name makes sense at all (might be multiple)
       historicProcessInstance.markEnded(endTime, "endStateName");
 
@@ -123,7 +123,7 @@ public class HistoricDataServiceImpl extends ServiceImpl implements HistoricData
       String activityType = event.getPayload().getType();
       String processInstanceId = event.getProcessInstanceId();
       String processDefinitionId = event.getProcessDefinitionId();
-      Date startTime = Clock.getCurrentTime();
+      Date startTime = ClockUtil.getCurrentTime();
 
       HistoricActivityInstanceImpl historicActivityInstance = new HistoricActivityInstanceImpl(activityId, activityName, activityType, processInstanceId, processDefinitionId, startTime);
 
@@ -143,14 +143,14 @@ public class HistoricDataServiceImpl extends ServiceImpl implements HistoricData
         String activityType = event.getPayload().getType();
         String processInstanceId = event.getProcessInstanceId();
         String processDefinitionId = event.getProcessDefinitionId();
-        Date startTime = Clock.getCurrentTime();
+        Date startTime = ClockUtil.getCurrentTime();
 
         historicActivityInstance = new HistoricActivityInstanceImpl(activityId, activityName, activityType, processInstanceId, processDefinitionId, startTime);
 
         // throw new IllegalArgumentException("No historic activity instance found for activity id '" + event.getActivityId() + "' and process instance id '" + event.getProcessInstanceId() + "'");
       }
 
-      historicActivityInstance.markEnded(Clock.getCurrentTime());
+      historicActivityInstance.markEnded(ClockUtil.getCurrentTime());
 
       CommandContext.getCurrent().getPersistenceSession().saveHistoricActivityInstance(historicActivityInstance);
     }

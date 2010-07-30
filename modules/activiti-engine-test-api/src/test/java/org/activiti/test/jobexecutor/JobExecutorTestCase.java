@@ -15,8 +15,8 @@ package org.activiti.test.jobexecutor;
 import java.util.Date;
 
 import org.activiti.engine.impl.ProcessEngineImpl;
-import org.activiti.impl.job.MessageImpl;
-import org.activiti.impl.job.TimerImpl;
+import org.activiti.engine.impl.persistence.runtime.MessageImpl;
+import org.activiti.engine.impl.persistence.runtime.TimerImpl;
 import org.activiti.test.LogInitializer;
 import org.activiti.test.ProcessDeployer;
 import org.junit.After;

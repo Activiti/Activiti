@@ -34,26 +34,26 @@ import org.activiti.engine.SortOrder;
 import org.activiti.engine.TableMetaData;
 import org.activiti.engine.TablePage;
 import org.activiti.engine.Task;
-import org.activiti.engine.impl.persistence.IdGenerator;
+import org.activiti.engine.impl.cfg.IdGenerator;
 import org.activiti.engine.impl.persistence.db.IdBlock;
 import org.activiti.engine.impl.persistence.identity.GroupImpl;
 import org.activiti.engine.impl.persistence.identity.UserImpl;
 import org.activiti.engine.impl.persistence.repository.PropertyEntity;
 import org.activiti.engine.impl.persistence.runtime.ByteArrayImpl;
+import org.activiti.engine.impl.persistence.runtime.JobImpl;
+import org.activiti.engine.impl.persistence.runtime.MessageImpl;
+import org.activiti.engine.impl.persistence.runtime.TimerImpl;
+import org.activiti.engine.impl.persistence.task.TaskImpl;
+import org.activiti.engine.impl.persistence.task.TaskInvolvement;
+import org.activiti.engine.impl.util.ClockUtil;
+import org.activiti.engine.impl.variable.DeserializedObject;
+import org.activiti.engine.impl.variable.VariableInstance;
 import org.activiti.impl.db.execution.DbExecutionImpl;
 import org.activiti.impl.definition.ProcessDefinitionImpl;
 import org.activiti.impl.execution.ExecutionImpl;
 import org.activiti.impl.history.HistoricActivityInstanceImpl;
 import org.activiti.impl.history.HistoricProcessInstanceImpl;
-import org.activiti.impl.job.JobImpl;
-import org.activiti.impl.job.MessageImpl;
-import org.activiti.impl.job.TimerImpl;
 import org.activiti.impl.repository.DeploymentImpl;
-import org.activiti.impl.task.TaskImpl;
-import org.activiti.impl.task.TaskInvolvement;
-import org.activiti.impl.time.Clock;
-import org.activiti.impl.variable.DeserializedObject;
-import org.activiti.impl.variable.VariableInstance;
 import org.apache.ibatis.session.RowBounds;
 import org.apache.ibatis.session.SqlSession;
 
@@ -294,7 +294,7 @@ public class IbatisPersistenceSession implements PersistenceSession {
   }
   
   public List<JobImpl> findNextJobsToExecute(int maxNrOfJobs) {
-    Date now = Clock.getCurrentTime();
+    Date now = ClockUtil.getCurrentTime();
     RowBounds rowBounds = new RowBounds(0, maxNrOfJobs);
     List<JobImpl> jobs = sqlSession.selectList(statement("selectNextJobsToExecute"), now, rowBounds);
     if (jobs!=null) {

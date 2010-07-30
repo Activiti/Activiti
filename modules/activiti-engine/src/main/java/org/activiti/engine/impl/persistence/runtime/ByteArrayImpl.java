@@ -14,8 +14,8 @@ package org.activiti.engine.impl.persistence.runtime;
 
 import java.io.Serializable;
 
+import org.activiti.engine.impl.variable.ByteArrayType;
 import org.activiti.impl.persistence.PersistentObject;
-import org.activiti.impl.variable.ByteArrayType;
 
 /**
  * @author Tom Baeyens

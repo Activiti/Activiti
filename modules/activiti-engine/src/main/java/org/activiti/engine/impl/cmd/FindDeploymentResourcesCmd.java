@@ -14,9 +14,9 @@ package org.activiti.engine.impl.cmd;
 
 import java.util.List;
 
+import org.activiti.engine.impl.cfg.RepositorySession;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
-import org.activiti.engine.impl.persistence.RepositorySession;
 import org.activiti.impl.persistence.PersistenceSession;
 
 

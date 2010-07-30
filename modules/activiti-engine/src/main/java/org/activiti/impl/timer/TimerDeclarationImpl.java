@@ -16,7 +16,7 @@ import java.io.Serializable;
 import java.util.Date;
 
 import org.activiti.engine.impl.calendar.BusinessCalendar;
-import org.activiti.impl.job.TimerImpl;
+import org.activiti.engine.impl.persistence.runtime.TimerImpl;
 
 
 /**

@@ -19,10 +19,10 @@ import java.util.Map;
 import java.util.Set;
 
 import org.activiti.engine.impl.interceptor.CommandContext;
+import org.activiti.engine.impl.variable.Type;
+import org.activiti.engine.impl.variable.VariableInstance;
+import org.activiti.engine.impl.variable.VariableTypes;
 import org.activiti.impl.execution.VariableMap;
-import org.activiti.impl.variable.Type;
-import org.activiti.impl.variable.VariableInstance;
-import org.activiti.impl.variable.VariableTypes;
 
 /**
  * @author Tom Baeyens

@@ -18,7 +18,7 @@ import java.util.List;
 
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
-import org.activiti.impl.job.JobImpl;
+import org.activiti.engine.impl.persistence.runtime.JobImpl;
 import org.activiti.impl.persistence.PersistenceSession;
 
 

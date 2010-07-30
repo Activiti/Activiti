@@ -12,12 +12,12 @@
  */
 package org.activiti.engine.impl.persistence.repository;
 
+import org.activiti.engine.impl.variable.DefaultVariableTypes;
+import org.activiti.engine.impl.variable.VariableTypes;
 import org.activiti.impl.db.execution.DbExecutionImpl;
 import org.activiti.impl.definition.ProcessDefinitionImpl;
 import org.activiti.impl.execution.ExecutionImpl;
 import org.activiti.impl.persistence.PersistentObject;
-import org.activiti.impl.variable.DefaultVariableTypes;
-import org.activiti.impl.variable.VariableTypes;
 
 
 /**

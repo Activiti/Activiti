@@ -14,8 +14,8 @@ package org.activiti.engine.impl.bpmn.parser;
 
 import org.activiti.engine.impl.calendar.BusinessCalendarManager;
 import org.activiti.engine.impl.el.ExpressionManager;
-import org.activiti.impl.scripting.ScriptingEngines;
-import org.activiti.impl.xml.Parser;
+import org.activiti.engine.impl.scripting.ScriptingEngines;
+import org.activiti.engine.impl.util.xml.Parser;
 
 
 /**

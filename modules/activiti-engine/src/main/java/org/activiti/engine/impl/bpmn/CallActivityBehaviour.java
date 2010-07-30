@@ -13,8 +13,8 @@
 
 package org.activiti.engine.impl.bpmn;
 
+import org.activiti.engine.impl.cfg.RepositorySession;
 import org.activiti.engine.impl.interceptor.CommandContext;
-import org.activiti.engine.impl.persistence.RepositorySession;
 import org.activiti.impl.definition.ProcessDefinitionImpl;
 import org.activiti.impl.persistence.PersistenceSession;
 import org.activiti.pvm.ActivityExecution;

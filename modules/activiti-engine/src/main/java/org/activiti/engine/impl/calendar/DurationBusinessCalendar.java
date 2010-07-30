@@ -20,7 +20,7 @@ import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.Duration;
 
 import org.activiti.engine.ActivitiException;
-import org.activiti.impl.time.Clock;
+import org.activiti.engine.impl.util.ClockUtil;
 
 
 /**
@@ -36,7 +36,7 @@ public class DurationBusinessCalendar implements BusinessCalendar {
       Duration duration = datatypeFactory.newDuration(duedate);
       
       Calendar calendar = new GregorianCalendar();
-      calendar.setTime(Clock.getCurrentTime());
+      calendar.setTime(ClockUtil.getCurrentTime());
       duration.addTo(calendar);
       
       return calendar.getTime();

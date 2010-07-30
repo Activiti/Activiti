@@ -28,7 +28,7 @@ import org.activiti.engine.impl.persistence.repository.Deployer;
 import org.activiti.engine.impl.persistence.repository.DeploymentEntity;
 import org.activiti.engine.impl.persistence.repository.ProcessDefinitionEntity;
 import org.activiti.engine.impl.persistence.repository.ResourceEntity;
-import org.activiti.impl.scripting.ScriptingEngines;
+import org.activiti.engine.impl.scripting.ScriptingEngines;
 
 /**
  * @author Tom Baeyens

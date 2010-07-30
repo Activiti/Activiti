@@ -18,8 +18,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import org.activiti.impl.variable.VariableTypes;
-import org.activiti.impl.variable.Type;
+import org.activiti.engine.impl.variable.Type;
+import org.activiti.engine.impl.variable.VariableTypes;
 import org.apache.ibatis.type.JdbcType;
 import org.apache.ibatis.type.TypeHandler;
 

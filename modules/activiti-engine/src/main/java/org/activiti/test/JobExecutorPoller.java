@@ -21,7 +21,7 @@ import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
-import org.activiti.impl.jobexecutor.JobExecutor;
+import org.activiti.engine.impl.jobexecutor.JobExecutor;
 
 /**
  * @author Nick Burch

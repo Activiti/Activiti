@@ -19,9 +19,9 @@ import java.util.List;
 import org.activiti.engine.ProcessInstance;
 import org.activiti.engine.Task;
 import org.activiti.engine.TaskQuery;
+import org.activiti.engine.impl.util.ClockUtil;
 import org.activiti.engine.test.Deployment;
 import org.activiti.engine.test.ProcessEngineImplTestCase;
-import org.activiti.impl.time.Clock;
 import org.activiti.test.JobExecutorPoller;
 
 /**
@@ -103,7 +103,7 @@ public class CallActivityAdvancedTest extends ProcessEngineImplTestCase {
   
   @Deployment(resources = {"CallActivity.testTimerOnCallActivity.bpmn20.xml", "simpleSubProcess.bpmn20.xml"})
   public void testTimerOnCallActivity() {
-    Date startTime = Clock.getCurrentTime();
+    Date startTime = ClockUtil.getCurrentTime();
     
     // After process start, the task in the subprocess should be active
     processService.startProcessInstanceByKey("timerOnCallActivity");
@@ -112,7 +112,7 @@ public class CallActivityAdvancedTest extends ProcessEngineImplTestCase {
     assertEquals("Task in subprocess", taskInSubProcess.getName());
     
     // When the timer on the subprocess is fired, the complete subprocess is destroyed
-    Clock.setCurrentTime(new Date(startTime.getTime() + (6 * 60 * 1000))); // + 6 minutes, timer fires on 5 minutes
+    ClockUtil.setCurrentTime(new Date(startTime.getTime() + (6 * 60 * 1000))); // + 6 minutes, timer fires on 5 minutes
     new JobExecutorPoller(processEngineConfiguration.getJobExecutor(), 
                           processEngineConfiguration.getCommandExecutor()
                          ).waitForJobExecutorToProcessAllJobs(5000L, 25L);

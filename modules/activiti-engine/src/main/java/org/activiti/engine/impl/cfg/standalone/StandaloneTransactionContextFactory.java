@@ -12,9 +12,9 @@
  */
 package org.activiti.engine.impl.cfg.standalone;
 
+import org.activiti.engine.impl.cfg.TransactionContext;
+import org.activiti.engine.impl.cfg.TransactionContextFactory;
 import org.activiti.engine.impl.interceptor.CommandContext;
-import org.activiti.engine.impl.persistence.TransactionContext;
-import org.activiti.engine.impl.persistence.TransactionContextFactory;
 
 
 /**

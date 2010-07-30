@@ -15,9 +15,9 @@ package org.activiti.examples.bpmn.callactivity;
 
 import org.activiti.engine.Task;
 import org.activiti.engine.TaskQuery;
+import org.activiti.engine.impl.util.CollectionUtil;
 import org.activiti.engine.test.Deployment;
 import org.activiti.engine.test.ProcessEngineTestCase;
-import org.activiti.util.CollectionUtil;
 
 /**
  * @author Joram Barrez

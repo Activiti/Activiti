@@ -27,7 +27,7 @@ import org.activiti.engine.ProcessService;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.TaskService;
 import org.activiti.engine.identity.Group;
-import org.activiti.impl.json.JSONObject;
+import org.activiti.engine.impl.util.json.JSONObject;
 import org.activiti.rest.Config;
 import org.springframework.extensions.surf.util.Base64;
 import org.springframework.extensions.webscripts.Cache;

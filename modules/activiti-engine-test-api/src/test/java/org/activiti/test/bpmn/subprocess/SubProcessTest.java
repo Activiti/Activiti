@@ -19,8 +19,8 @@ import java.util.List;
 import org.activiti.engine.ProcessInstance;
 import org.activiti.engine.Task;
 import org.activiti.engine.TaskQuery;
+import org.activiti.engine.impl.util.ClockUtil;
 import org.activiti.engine.test.Deployment;
-import org.activiti.impl.time.Clock;
 import org.activiti.test.JobExecutorPoller;
 import org.activiti.test.LogInitializer;
 import org.activiti.test.ProcessDeployer;
@@ -83,7 +83,7 @@ public class SubProcessTest {
     assertEquals("Task in subprocess", subProcessTask.getName());
     
     // Setting the clock forward 2 hours 1 second (timer fires in 2 hours) and fire up the job executor 
-    Clock.setCurrentTime(new Date(startTime.getTime() + (2 * 60 * 60 * 1000 ) + 1000));
+    ClockUtil.setCurrentTime(new Date(startTime.getTime() + (2 * 60 * 60 * 1000 ) + 1000));
     new JobExecutorPoller(deployer.getJobExecutor(), deployer.getCommandExecutor()).waitForJobExecutorToProcessAllJobs(5000L, 25L);
 
     // The subprocess should be left, and the escalated task should be active
@@ -115,7 +115,7 @@ public class SubProcessTest {
     assertEquals("Task in subprocess", subProcessTask.getName());
     
     // When the timer is fired (after 2 hours), two concurrent paths should be created
-    Clock.setCurrentTime(new Date(startTime.getTime() + (2 * 60 * 60 * 1000 ) + 1000));
+    ClockUtil.setCurrentTime(new Date(startTime.getTime() + (2 * 60 * 60 * 1000 ) + 1000));
     new JobExecutorPoller(deployer.getJobExecutor(), deployer.getCommandExecutor()).waitForJobExecutorToProcessAllJobs(5000L, 25L);
     
     List<Task> tasksAfterTimer = taskQuery.list();
@@ -162,7 +162,7 @@ public class SubProcessTest {
     assertEquals("Task in subprocess", subProcessTask.getName());
     
     // Setting the clock forward 1 hour 1 second (timer fires in 1 hour) and fire up the job executor 
-    Clock.setCurrentTime(new Date(startTime.getTime() + ( 60 * 60 * 1000 ) + 1000));
+    ClockUtil.setCurrentTime(new Date(startTime.getTime() + ( 60 * 60 * 1000 ) + 1000));
     new JobExecutorPoller(deployer.getJobExecutor(), deployer.getCommandExecutor()).waitForJobExecutorToProcessAllJobs(5000L, 25L);
 
     // The inner subprocess should be destoyed, and the escalated task should be active
@@ -232,7 +232,7 @@ public class SubProcessTest {
     assertEquals("Task B", taskB.getName());
     
     // Setting the clock forward 1 hour 1 second (timer fires in 1 hour) and fire up the job executor 
-    Clock.setCurrentTime(new Date(startTime.getTime() + ( 60 * 60 * 1000 ) + 1000));
+    ClockUtil.setCurrentTime(new Date(startTime.getTime() + ( 60 * 60 * 1000 ) + 1000));
     new JobExecutorPoller(deployer.getJobExecutor(), deployer.getCommandExecutor()).waitForJobExecutorToProcessAllJobs(5000L, 25L);
 
     // The inner subprocess should be destoyed, and the tsk after the timer should be active
@@ -324,7 +324,7 @@ public class SubProcessTest {
     assertEquals("Task in subprocess B", taskB.getName());
     
     // Firing the timer should destroy all three subprocesses and activate the task after the timer
-    Clock.setCurrentTime(new Date(startTime.getTime() + (2 * 60 * 60 * 1000 ) + 1000));
+    ClockUtil.setCurrentTime(new Date(startTime.getTime() + (2 * 60 * 60 * 1000 ) + 1000));
     new JobExecutorPoller(deployer.getJobExecutor(), deployer.getCommandExecutor()).waitForJobExecutorToProcessAllJobs(5000L, 25L);
     
     Task taskAfterTimer = taskQuery.singleResult();

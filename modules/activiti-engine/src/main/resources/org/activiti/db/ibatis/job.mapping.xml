@@ -6,7 +6,7 @@
 
   <!-- RESULTMAP -->
 
-  <resultMap id="jobResultMap" type="org.activiti.impl.job.JobImpl">
+  <resultMap id="jobResultMap" type="org.activiti.engine.impl.persistence.runtime.JobImpl">
     <id property="id" column="ID_" jdbcType="VARCHAR" />
     <result property="lockOwner" column="LOCK_OWNER_" jdbcType="VARCHAR" />
     <result property="lockExpirationTime" column="LOCK_EXP_TIME_" jdbcType="TIMESTAMP" />
@@ -23,9 +23,9 @@
     </discriminator>
   </resultMap>
 
-  <resultMap id="messageResultMap" type="org.activiti.impl.job.MessageImpl" extends="jobResultMap"/>
+  <resultMap id="messageResultMap" type="org.activiti.engine.impl.persistence.runtime.MessageImpl" extends="jobResultMap"/>
 
-  <resultMap id="timerResultMap" type="org.activiti.impl.job.TimerImpl" extends="jobResultMap">
+  <resultMap id="timerResultMap" type="org.activiti.engine.impl.persistence.runtime.TimerImpl" extends="jobResultMap">
     <result property="duedate" column="DUEDATE_" jdbcType="TIMESTAMP" />
     <result property="repeat" column="REPEAT_" jdbcType="VARCHAR" />
   </resultMap>
@@ -105,7 +105,7 @@
 
   <!-- INSERT -->
   
-  <insert id="insertTimer" parameterType="org.activiti.impl.job.TimerImpl">
+  <insert id="insertTimer" parameterType="org.activiti.engine.impl.persistence.runtime.TimerImpl">
     insert into ACT_JOB (
             ID_, 
             TYPE_,
@@ -136,7 +136,7 @@
     )
   </insert>
 
-  <insert id="insertMessage" parameterType="org.activiti.impl.job.MessageImpl">
+  <insert id="insertMessage" parameterType="org.activiti.engine.impl.persistence.runtime.MessageImpl">
     insert into ACT_JOB (
             ID_, 
             TYPE_,
@@ -165,7 +165,7 @@
   
   <!-- UPDATE -->
   
-  <update id="updateMessage" parameterType="org.activiti.impl.job.MessageImpl">
+  <update id="updateMessage" parameterType="org.activiti.engine.impl.persistence.runtime.MessageImpl">
     update ACT_JOB
     <set>
        LOCK_EXP_TIME_ = #{lockExpirationTime, jdbcType=TIMESTAMP},
@@ -176,7 +176,7 @@
     where ID_= #{id, jdbcType=VARCHAR}
   </update>
 
-  <update id="updateTimer" parameterType="org.activiti.impl.job.TimerImpl">
+  <update id="updateTimer" parameterType="org.activiti.engine.impl.persistence.runtime.TimerImpl">
     update ACT_JOB
     <set>
        LOCK_EXP_TIME_ = #{lockExpirationTime, jdbcType=TIMESTAMP},

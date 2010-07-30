@@ -6,9 +6,9 @@
 
 	<!-- RESULTMAP -->
 
-	<resultMap id="variableInstanceResultMap" type="org.activiti.impl.variable.VariableInstance">
+	<resultMap id="variableInstanceResultMap" type="org.activiti.engine.impl.variable.VariableInstance">
 		<id property="id" column="ID_" jdbcType="VARCHAR" />
-		<result property="type" column="TYPE_" javaType="org.activiti.impl.variable.Type" jdbcType="VARCHAR"/>
+		<result property="type" column="TYPE_" javaType="org.activiti.engine.impl.variable.Type" jdbcType="VARCHAR"/>
 		<result property="name" column="NAME_" javaType="String" jdbcType="VARCHAR" />
 		<result property="processDefinitionId" column="PROC_DEF_ID_" jdbcType="VARCHAR" />
 		<result property="activityId" column="ACTIVITY_ID_" jdbcType="VARCHAR" />
@@ -40,7 +40,7 @@
 
 	<!-- INSERT -->
 
-	<insert id="insertVariableInstance" parameterType="org.activiti.impl.variable.VariableInstance">
+	<insert id="insertVariableInstance" parameterType="org.activiti.engine.impl.variable.VariableInstance">
 		insert into ACT_VARIABLE (ID_, REV_, TYPE_, NAME_,
 		EXECUTION_ID_, TASK_ID_,
 		BYTEARRAY_ID_, DOUBLE_, LONG_ , TEXT_)
@@ -62,7 +62,7 @@
 
 	<!-- UPDATE -->
 
-	<update id="updateVariableInstance" parameterType="org.activiti.impl.variable.VariableInstance">
+	<update id="updateVariableInstance" parameterType="org.activiti.engine.impl.variable.VariableInstance">
 		update ACT_VARIABLE
 		set BYTEARRAY_ID_ = #{byteArrayValueId,
 		jdbcType=VARCHAR},

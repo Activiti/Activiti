@@ -19,13 +19,13 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.impl.cfg.MessageSession;
 import org.activiti.engine.impl.cfg.ProcessEngineConfiguration;
-import org.activiti.engine.impl.persistence.RepositorySession;
-import org.activiti.engine.impl.persistence.TransactionContext;
-import org.activiti.engine.impl.persistence.TransactionContextFactory;
-import org.activiti.impl.msg.MessageSession;
+import org.activiti.engine.impl.cfg.RepositorySession;
+import org.activiti.engine.impl.cfg.TimerSession;
+import org.activiti.engine.impl.cfg.TransactionContext;
+import org.activiti.engine.impl.cfg.TransactionContextFactory;
 import org.activiti.impl.persistence.PersistenceSession;
-import org.activiti.impl.timer.TimerSession;
 
 /**
  * @author Tom Baeyens

@@ -17,9 +17,9 @@ import java.util.logging.Logger;
 
 import junit.framework.AssertionFailedError;
 
-import org.activiti.impl.time.Clock;
-import org.activiti.impl.util.LogUtil;
-import org.activiti.impl.util.LogUtil.ThreadLogMode;
+import org.activiti.engine.impl.util.ClockUtil;
+import org.activiti.engine.impl.util.LogUtil;
+import org.activiti.engine.impl.util.LogUtil.ThreadLogMode;
 import org.junit.rules.MethodRule;
 import org.junit.runners.model.FrameworkMethod;
 import org.junit.runners.model.Statement;
@@ -86,7 +86,7 @@ public class LogInitializer implements MethodRule {
         log.log(Level.SEVERE, "EXCEPTION: "+e, e);
         throw e;
       } finally {
-        Clock.reset();
+        ClockUtil.reset();
         log.fine("---- END "+method.getMethod().getDeclaringClass().getName()+"."+method.getName()+" ------------------------------------------------------");
         LogUtil.setThreadLogMode(oldThreadRenderingMode);
       }

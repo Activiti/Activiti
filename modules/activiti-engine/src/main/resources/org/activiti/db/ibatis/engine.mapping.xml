@@ -6,7 +6,7 @@
 
   <!-- PROPERTY -->
   
-  <resultMap id="propertyResultMap" type="org.activiti.engine.impl.persistence.repository.PropertyImpl">
+  <resultMap id="propertyResultMap" type="org.activiti.engine.impl.persistence.repository.PropertyEntity">
     <id property="name" column="NAME_" jdbcType="VARCHAR" />
     <result property="dbversion" column="REV_" jdbcType="INTEGER" />
     <result property="value" column="VALUE_" jdbcType="VARCHAR" />
@@ -20,7 +20,7 @@
     select * from ACT_PROPERTY where NAME_ = #{name}
   </select>
   
-  <update id="updateProperty" parameterType="org.activiti.engine.impl.persistence.repository.PropertyImpl">
+  <update id="updateProperty" parameterType="org.activiti.engine.impl.persistence.repository.PropertyEntity">
     update ACT_PROPERTY
     <set>
       REV_ = #{newRevision, jdbcType=INTEGER},

@@ -18,9 +18,9 @@ import java.util.List;
 import java.util.Map;
 
 import org.activiti.engine.ActivitiOptimisticLockingException;
+import org.activiti.engine.impl.cfg.RepositorySession;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.interceptor.Session;
-import org.activiti.engine.impl.persistence.RepositorySession;
 import org.activiti.engine.impl.persistence.repository.Deployer;
 import org.activiti.engine.impl.persistence.repository.DeploymentEntity;
 import org.activiti.engine.impl.persistence.repository.ProcessDefinitionEntity;
@@ -168,7 +168,8 @@ public class DbRepositorySession implements Session, RepositorySession {
   }
   
   public IdBlock getNextDbidBlock() {
-    PropertyEntity property = (PropertyEntity) dbSqlSession.selectOne("selectProperty", "next.dbid");
+    String statement = dbSqlSession.dbSqlSessionFactory.mapStatement("selectProperty");
+    PropertyEntity property = (PropertyEntity) dbSqlSession.sqlSession.selectOne(statement, "next.dbid");
     long oldValue = Long.parseLong(property.getValue());
     long newValue = oldValue+dbRepositorySessionFactory.getIdBlockSize();
     Map<String, Object> updateValues = new HashMap<String, Object>();
@@ -176,7 +177,7 @@ public class DbRepositorySession implements Session, RepositorySession {
     updateValues.put("revision", property.getDbversion());
     updateValues.put("newRevision", property.getDbversion()+1);
     updateValues.put("value", Long.toString(newValue));
-    int rowsUpdated = dbSqlSession.update("updateProperty", updateValues);
+    int rowsUpdated = dbSqlSession.sqlSession.update("updateProperty", updateValues);
     if (rowsUpdated!=1) {
       throw new ActivitiOptimisticLockingException("couldn't get next block of dbids");
     }

@@ -14,8 +14,8 @@ package org.activiti.examples.pojo;
 
 import static org.junit.Assert.assertTrue;
 
-import org.activiti.impl.scripting.ExpressionCondition;
-import org.activiti.impl.scripting.ScriptingEngines;
+import org.activiti.engine.impl.scripting.ExpressionCondition;
+import org.activiti.engine.impl.scripting.ScriptingEngines;
 import org.activiti.pvm.ObjectProcessDefinition;
 import org.activiti.pvm.ObjectProcessInstance;
 import org.activiti.pvm.ProcessDefinitionBuilder;

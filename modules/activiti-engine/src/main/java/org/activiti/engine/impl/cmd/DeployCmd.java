@@ -16,13 +16,13 @@ import java.util.Arrays;
 import java.util.Map;
 
 import org.activiti.engine.Deployment;
+import org.activiti.engine.impl.cfg.RepositorySession;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
-import org.activiti.engine.impl.persistence.RepositorySession;
 import org.activiti.engine.impl.persistence.repository.DeploymentBuilderImpl;
 import org.activiti.engine.impl.persistence.repository.DeploymentEntity;
 import org.activiti.engine.impl.persistence.repository.ResourceEntity;
-import org.activiti.impl.time.Clock;
+import org.activiti.engine.impl.util.ClockUtil;
 
 /**
  * @author Tom Baeyens
@@ -39,7 +39,7 @@ public class DeployCmd<T> implements Command<Deployment> {
     DeploymentEntity deployment = deploymentBuilder.getDeployment();
     RepositorySession repositorySession = commandContext.getRepositorySession();
     
-    deployment.setDeploymentTime(Clock.getCurrentTime());
+    deployment.setDeploymentTime(ClockUtil.getCurrentTime());
 
     if ( deploymentBuilder.isDuplicateFilterEnabled() ) {
       DeploymentEntity existingDeployment = repositorySession.findLatestDeploymentByName(deployment.getName());

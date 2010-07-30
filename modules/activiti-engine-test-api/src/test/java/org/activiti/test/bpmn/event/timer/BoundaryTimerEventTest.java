@@ -22,9 +22,9 @@ import org.activiti.engine.Job;
 import org.activiti.engine.JobQuery;
 import org.activiti.engine.ProcessInstance;
 import org.activiti.engine.Task;
+import org.activiti.engine.impl.util.ClockUtil;
+import org.activiti.engine.impl.util.LogUtil.ThreadLogMode;
 import org.activiti.engine.test.Deployment;
-import org.activiti.impl.time.Clock;
-import org.activiti.impl.util.LogUtil.ThreadLogMode;
 import org.activiti.test.JobExecutorPoller;
 import org.activiti.test.LogInitializer;
 import org.activiti.test.ProcessDeployer;
@@ -64,7 +64,7 @@ public class BoundaryTimerEventTest {
     assertEquals(3, jobs.size());
 
     // After setting the clock to time '1 hour and 5 seconds', the second timer should fire
-    Clock.setCurrentTime(new Date(startTime.getTime() + ((60 * 60 * 1000) + 5000)));
+    ClockUtil.setCurrentTime(new Date(startTime.getTime() + ((60 * 60 * 1000) + 5000)));
     new JobExecutorPoller(deployer.getJobExecutor(), deployer.getCommandExecutor()).waitForJobExecutorToProcessAllJobs(5000L, 25L);
     assertEquals(0L, jobQuery.count());
 

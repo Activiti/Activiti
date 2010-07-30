@@ -12,8 +12,8 @@
  */
 package org.activiti.engine.impl.form;
 
+import org.activiti.engine.impl.persistence.task.TaskImpl;
 import org.activiti.impl.repository.DeploymentImpl;
-import org.activiti.impl.task.TaskImpl;
 
 
 /**

@@ -19,7 +19,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.activiti.engine.ActivitiException;
-import org.activiti.impl.time.Clock;
+import org.activiti.engine.impl.util.ClockUtil;
 
 
 /**
@@ -47,7 +47,7 @@ public class DefaultBusinessCalendar implements BusinessCalendar {
   }
   
   public Date resolveDuedate(String duedate) {
-    Date resolvedDuedate = Clock.getCurrentTime();
+    Date resolvedDuedate = ClockUtil.getCurrentTime();
     
     String[] tokens = duedate.split(" and ");
     for (String token : tokens) {

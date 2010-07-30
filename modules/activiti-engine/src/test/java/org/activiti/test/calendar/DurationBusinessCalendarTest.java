@@ -19,7 +19,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import org.activiti.engine.impl.calendar.DurationBusinessCalendar;
-import org.activiti.impl.time.Clock;
+import org.activiti.engine.impl.util.ClockUtil;
 import org.activiti.test.LogInitializer;
 import org.junit.Rule;
 import org.junit.Test;
@@ -38,7 +38,7 @@ public class DurationBusinessCalendarTest {
 
     SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy MMM dd - HH:mm");
     Date now = simpleDateFormat.parse("2010 Jun 11 - 17:23");
-    Clock.setCurrentTime(now);
+    ClockUtil.setCurrentTime(now);
 
     Date duedate = businessCalendar.resolveDuedate("P2DT5H70M");
 

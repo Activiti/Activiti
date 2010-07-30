@@ -13,11 +13,11 @@
 
 package org.activiti.engine.impl.persistence.db;
 
+import org.activiti.engine.impl.cfg.IdGenerator;
 import org.activiti.engine.impl.cfg.ProcessEngineConfiguration;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationAware;
 import org.activiti.engine.impl.cmd.GetNextIdBlockCmd;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
-import org.activiti.engine.impl.persistence.IdGenerator;
 
 
 /**

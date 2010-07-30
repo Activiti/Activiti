@@ -13,9 +13,9 @@
 package org.activiti.engine.impl.bpmn;
 
 import org.activiti.engine.impl.el.ExpressionManager;
+import org.activiti.engine.impl.persistence.task.TaskDefinition;
+import org.activiti.engine.impl.persistence.task.TaskImpl;
 import org.activiti.impl.execution.ExecutionImpl;
-import org.activiti.impl.task.TaskDefinition;
-import org.activiti.impl.task.TaskImpl;
 import org.activiti.pvm.ActivityExecution;
 
 /**

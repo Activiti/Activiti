@@ -18,8 +18,8 @@ import java.util.Date;
 
 import org.activiti.engine.ProcessInstance;
 import org.activiti.engine.Task;
+import org.activiti.engine.impl.util.ClockUtil;
 import org.activiti.engine.test.Deployment;
-import org.activiti.impl.time.Clock;
 import org.activiti.test.JobExecutorPoller;
 import org.activiti.test.LogInitializer;
 import org.activiti.test.ProcessDeployer;
@@ -50,7 +50,7 @@ public class BoundaryTimerEventTest {
     assertEquals("First line support", task.getName());
 
     // Set clock to the future such that the timer can fire
-    Clock.setCurrentTime(new Date(startTime.getTime() + (5 * 60 * 60 * 1000)));
+    ClockUtil.setCurrentTime(new Date(startTime.getTime() + (5 * 60 * 60 * 1000)));
     new JobExecutorPoller(deployer.getJobExecutor(), deployer.getCommandExecutor()).waitForJobExecutorToProcessAllJobs(10000L, 250);
 
     // The timer has fired, and the second task (secondlinesupport) now exists

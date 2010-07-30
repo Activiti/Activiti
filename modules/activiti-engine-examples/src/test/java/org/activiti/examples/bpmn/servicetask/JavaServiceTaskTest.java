@@ -14,9 +14,9 @@ package org.activiti.examples.bpmn.servicetask;
 
 import org.activiti.engine.Execution;
 import org.activiti.engine.ProcessInstance;
+import org.activiti.engine.impl.util.CollectionUtil;
 import org.activiti.engine.test.Deployment;
 import org.activiti.engine.test.ProcessEngineTestCase;
-import org.activiti.util.CollectionUtil;
 
 /**
  * @author Joram Barrez
