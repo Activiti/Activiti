@@ -18,8 +18,8 @@ import javax.el.ExpressionFactory;
 import javax.el.MethodExpression;
 import javax.el.ValueExpression;
 
-import org.activiti.impl.cfg.ProcessEngineConfiguration;
-import org.activiti.impl.cfg.ProcessEngineConfigurationAware;
+import org.activiti.engine.impl.cfg.ProcessEngineConfiguration;
+import org.activiti.engine.impl.cfg.ProcessEngineConfigurationAware;
 import org.activiti.impl.execution.ExecutionImpl;
 
 /**

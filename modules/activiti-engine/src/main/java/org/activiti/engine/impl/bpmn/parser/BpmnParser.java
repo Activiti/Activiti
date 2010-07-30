@@ -12,7 +12,7 @@
  */
 package org.activiti.engine.impl.bpmn.parser;
 
-import org.activiti.impl.calendar.BusinessCalendarManager;
+import org.activiti.engine.impl.calendar.BusinessCalendarManager;
 import org.activiti.impl.el.ExpressionManager;
 import org.activiti.impl.scripting.ScriptingEngines;
 import org.activiti.impl.xml.Parser;

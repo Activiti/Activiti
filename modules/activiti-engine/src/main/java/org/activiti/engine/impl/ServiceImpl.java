@@ -12,8 +12,8 @@
  */
 package org.activiti.engine.impl;
 
-import org.activiti.impl.cfg.ProcessEngineConfiguration;
-import org.activiti.impl.cfg.ProcessEngineConfigurationAware;
+import org.activiti.engine.impl.cfg.ProcessEngineConfiguration;
+import org.activiti.engine.impl.cfg.ProcessEngineConfigurationAware;
 import org.activiti.impl.interceptor.CommandExecutor;
 
 

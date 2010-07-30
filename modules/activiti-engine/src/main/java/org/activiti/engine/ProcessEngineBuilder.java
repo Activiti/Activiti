@@ -16,7 +16,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 
-import org.activiti.impl.cfg.ProcessEngineConfiguration;
+import org.activiti.engine.impl.cfg.ProcessEngineConfiguration;
 
 /**
  * builds a process engine based on a couple of simple properties.

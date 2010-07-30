@@ -13,7 +13,7 @@
  */
 package org.activiti.impl.interceptor;
 
-import org.activiti.impl.cfg.ProcessEngineConfiguration;
+import org.activiti.engine.impl.cfg.ProcessEngineConfiguration;
 
 
 /**

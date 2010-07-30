@@ -22,8 +22,8 @@ import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.ProcessService;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.TaskService;
+import org.activiti.engine.impl.cfg.ProcessEngineConfiguration;
 import org.activiti.engine.impl.persistence.db.DbSqlSessionFactory;
-import org.activiti.impl.cfg.ProcessEngineConfiguration;
 import org.activiti.impl.jobexecutor.JobExecutor;
 import org.activiti.impl.persistence.PersistenceSessionFactory;
 

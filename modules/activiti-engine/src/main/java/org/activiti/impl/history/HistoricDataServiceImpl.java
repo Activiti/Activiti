@@ -20,7 +20,7 @@ import org.activiti.engine.HistoricDataService;
 import org.activiti.engine.history.HistoricActivityInstance;
 import org.activiti.engine.history.HistoricProcessInstance;
 import org.activiti.engine.impl.ServiceImpl;
-import org.activiti.impl.cfg.ProcessEngineConfiguration;
+import org.activiti.engine.impl.cfg.ProcessEngineConfiguration;
 import org.activiti.impl.event.ActivityEndedEvent;
 import org.activiti.impl.event.ActivityStartedEvent;
 import org.activiti.impl.event.ProcessInstanceEndedEvent;

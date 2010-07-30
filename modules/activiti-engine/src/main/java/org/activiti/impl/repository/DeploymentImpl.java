@@ -20,7 +20,7 @@ import java.util.Map;
 
 import org.activiti.engine.Deployment;
 import org.activiti.engine.impl.persistence.repository.DeploymentBuilderImpl;
-import org.activiti.impl.bytes.ByteArrayImpl;
+import org.activiti.engine.impl.persistence.runtime.ByteArrayImpl;
 import org.activiti.impl.interceptor.CommandContext;
 
 /**

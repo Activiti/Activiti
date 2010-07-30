@@ -14,7 +14,7 @@
 package org.activiti.engine.test;
 
 import org.activiti.engine.impl.ProcessEngineImpl;
-import org.activiti.impl.cfg.ProcessEngineConfiguration;
+import org.activiti.engine.impl.cfg.ProcessEngineConfiguration;
 import org.activiti.impl.util.LogUtil.ThreadLogMode;
 
 

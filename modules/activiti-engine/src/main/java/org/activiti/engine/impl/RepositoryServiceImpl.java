@@ -20,15 +20,15 @@ import org.activiti.engine.Deployment;
 import org.activiti.engine.DeploymentBuilder;
 import org.activiti.engine.ProcessDefinition;
 import org.activiti.engine.RepositoryService;
+import org.activiti.engine.impl.cmd.DeleteDeploymentCmd;
+import org.activiti.engine.impl.cmd.DeployCmd;
+import org.activiti.engine.impl.cmd.FindDeploymentResourcesCmd;
+import org.activiti.engine.impl.cmd.FindDeploymentsCmd;
+import org.activiti.engine.impl.cmd.FindProcessDefinitionCmd;
+import org.activiti.engine.impl.cmd.FindProcessDefinitionsCmd;
+import org.activiti.engine.impl.cmd.GetDeploymentResourceCmd;
+import org.activiti.engine.impl.cmd.GetFormCmd;
 import org.activiti.engine.impl.persistence.repository.DeploymentBuilderImpl;
-import org.activiti.impl.cmd.DeleteDeploymentCmd;
-import org.activiti.impl.cmd.DeployCmd;
-import org.activiti.impl.cmd.FindDeploymentResourcesCmd;
-import org.activiti.impl.cmd.FindDeploymentsCmd;
-import org.activiti.impl.cmd.FindProcessDefinitionCmd;
-import org.activiti.impl.cmd.FindProcessDefinitionsCmd;
-import org.activiti.impl.cmd.GetDeploymentResourceCmd;
-import org.activiti.impl.cmd.GetFormCmd;
 
 
 /**

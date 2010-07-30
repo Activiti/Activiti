@@ -16,7 +16,7 @@
 		</property>
 	</bean>
 
-	<bean id="processEngine" class="org.activiti.impl.cfg.spring.ProcessEngineFactoryBean">
+	<bean id="processEngine" class="org.activiti.engine.impl.cfg.spring.ProcessEngineFactoryBean">
 		<property name="dataBaseName" value="${database}" />
 		<property name="dataSource" ref="dataSource" />
 		<property name="transactionManager" ref="transactionManager" />

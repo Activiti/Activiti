@@ -16,7 +16,7 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.activiti.impl.bytes.ByteArrayImpl;
+import org.activiti.engine.impl.persistence.runtime.ByteArrayImpl;
 import org.activiti.impl.db.execution.DbExecutionImpl;
 import org.activiti.impl.interceptor.CommandContext;
 import org.activiti.impl.persistence.PersistenceSession;

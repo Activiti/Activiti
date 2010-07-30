@@ -12,9 +12,9 @@
  */
 package org.activiti.impl.db;
 
-import org.activiti.impl.cfg.ProcessEngineConfiguration;
-import org.activiti.impl.cfg.ProcessEngineConfigurationAware;
-import org.activiti.impl.cmd.GetNextDbidBlockCmd;
+import org.activiti.engine.impl.cfg.ProcessEngineConfiguration;
+import org.activiti.engine.impl.cfg.ProcessEngineConfigurationAware;
+import org.activiti.engine.impl.cmd.GetNextDbidBlockCmd;
 import org.activiti.impl.interceptor.CommandExecutor;
 
 

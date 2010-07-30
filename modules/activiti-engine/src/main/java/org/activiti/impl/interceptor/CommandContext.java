@@ -19,8 +19,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.impl.cfg.ProcessEngineConfiguration;
 import org.activiti.engine.impl.persistence.RepositorySession;
-import org.activiti.impl.cfg.ProcessEngineConfiguration;
 import org.activiti.impl.msg.MessageSession;
 import org.activiti.impl.persistence.PersistenceSession;
 import org.activiti.impl.timer.TimerSession;

@@ -19,15 +19,15 @@ import org.activiti.engine.Execution;
 import org.activiti.engine.ProcessInstance;
 import org.activiti.engine.ProcessInstanceQuery;
 import org.activiti.engine.ProcessService;
-import org.activiti.impl.cmd.DeleteProcessInstanceCmd;
-import org.activiti.impl.cmd.FindExecutionCmd;
-import org.activiti.impl.cmd.FindExecutionInActivityCmd;
-import org.activiti.impl.cmd.FindProcessInstanceCmd;
-import org.activiti.impl.cmd.GetExecutionVariableCmd;
-import org.activiti.impl.cmd.GetExecutionVariablesCmd;
-import org.activiti.impl.cmd.SendEventCmd;
-import org.activiti.impl.cmd.SetExecutionVariablesCmd;
-import org.activiti.impl.cmd.StartProcessInstanceCmd;
+import org.activiti.engine.impl.cmd.DeleteProcessInstanceCmd;
+import org.activiti.engine.impl.cmd.FindExecutionCmd;
+import org.activiti.engine.impl.cmd.FindExecutionInActivityCmd;
+import org.activiti.engine.impl.cmd.FindProcessInstanceCmd;
+import org.activiti.engine.impl.cmd.GetExecutionVariableCmd;
+import org.activiti.engine.impl.cmd.GetExecutionVariablesCmd;
+import org.activiti.engine.impl.cmd.SendEventCmd;
+import org.activiti.engine.impl.cmd.SetExecutionVariablesCmd;
+import org.activiti.engine.impl.cmd.StartProcessInstanceCmd;
 import org.activiti.impl.execution.ProcessInstanceQueryImpl;
 
 /**

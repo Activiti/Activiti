@@ -23,7 +23,7 @@ import org.activiti.engine.SortOrder;
 import org.activiti.engine.TableMetaData;
 import org.activiti.engine.TablePage;
 import org.activiti.engine.Task;
-import org.activiti.impl.bytes.ByteArrayImpl;
+import org.activiti.engine.impl.persistence.runtime.ByteArrayImpl;
 import org.activiti.impl.db.DbidBlock;
 import org.activiti.impl.db.execution.DbExecutionImpl;
 import org.activiti.impl.execution.ExecutionImpl;

@@ -17,10 +17,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.activiti.engine.impl.cfg.ProcessEngineConfiguration;
+import org.activiti.engine.impl.cfg.ProcessEngineConfigurationAware;
 import org.activiti.engine.impl.persistence.repository.Deployer;
 import org.activiti.engine.impl.persistence.repository.ProcessDefinitionEntity;
-import org.activiti.impl.cfg.ProcessEngineConfiguration;
-import org.activiti.impl.cfg.ProcessEngineConfigurationAware;
 import org.activiti.impl.interceptor.SessionFactory;
 import org.activiti.impl.tx.Session;
 

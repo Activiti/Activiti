@@ -12,7 +12,7 @@
  */
 package org.activiti.impl.variable;
 
-import org.activiti.impl.bytes.ByteArrayImpl;
+import org.activiti.engine.impl.persistence.runtime.ByteArrayImpl;
 import org.activiti.impl.interceptor.CommandContext;
 
 /**

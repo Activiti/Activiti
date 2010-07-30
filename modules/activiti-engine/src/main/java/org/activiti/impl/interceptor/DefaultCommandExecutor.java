@@ -19,9 +19,9 @@ import java.util.List;
 import java.util.logging.Logger;
 
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.impl.cfg.ProcessEngineConfiguration;
+import org.activiti.engine.impl.cfg.ProcessEngineConfigurationAware;
 import org.activiti.engine.impl.util.ClassNameUtil;
-import org.activiti.impl.cfg.ProcessEngineConfiguration;
-import org.activiti.impl.cfg.ProcessEngineConfigurationAware;
 
 /**
  * @author Tom Baeyens

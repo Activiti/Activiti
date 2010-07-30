@@ -15,7 +15,7 @@ package org.activiti.impl.definition;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.activiti.impl.calendar.BusinessCalendar;
+import org.activiti.engine.impl.calendar.BusinessCalendar;
 import org.activiti.impl.timer.TimerDeclarationImpl;
 import org.activiti.pvm.Activity;
 import org.activiti.pvm.ActivityBehavior;

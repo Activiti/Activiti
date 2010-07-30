@@ -18,7 +18,7 @@ import static org.junit.Assert.assertEquals;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import org.activiti.impl.calendar.DurationBusinessCalendar;
+import org.activiti.engine.impl.calendar.DurationBusinessCalendar;
 import org.activiti.impl.time.Clock;
 import org.activiti.test.LogInitializer;
 import org.junit.Rule;

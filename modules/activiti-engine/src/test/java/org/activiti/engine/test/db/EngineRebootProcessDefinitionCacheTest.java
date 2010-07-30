@@ -24,8 +24,8 @@ import org.activiti.engine.ProcessEngineBuilder;
 import org.activiti.engine.ProcessInstance;
 import org.activiti.engine.Task;
 import org.activiti.engine.TaskService;
+import org.activiti.engine.impl.cfg.ProcessEngineConfiguration;
 import org.activiti.engine.test.ProcessEngineTestCase;
-import org.activiti.impl.cfg.ProcessEngineConfiguration;
 
 
 /**

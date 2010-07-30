@@ -19,7 +19,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.activiti.impl.calendar.BusinessCalendar;
+import org.activiti.engine.impl.calendar.BusinessCalendar;
 import org.activiti.impl.timer.TimerDeclarationImpl;
 import org.activiti.pvm.Listener;
 
