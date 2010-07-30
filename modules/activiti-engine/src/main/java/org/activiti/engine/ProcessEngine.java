@@ -26,7 +26,7 @@ package org.activiti.engine;
  * assigning tasks</li>
  * <li>
  * <b>{@link org.activiti.engine.IdentityService}: </b> Used for managing
- * {@link org.activiti.identity.User}s, {@link org.activiti.identity.Group}s and
+ * {@link org.activiti.engine.identity.User}s, {@link org.activiti.engine.identity.Group}s and
  * the relations between them<</li>
  * <li>
  * <b>{@link org.activiti.engine.ManagementService}: </b> Exposes engine admin and

@@ -14,8 +14,8 @@
 
 package org.activiti.engine;
 
-import org.activiti.history.HistoricActivityInstance;
-import org.activiti.history.HistoricProcessInstance;
+import org.activiti.engine.history.HistoricActivityInstance;
+import org.activiti.engine.history.HistoricProcessInstance;
 
 /**
  * @author Christian Stettler

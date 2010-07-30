@@ -10,26 +10,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.activiti.test.cfg.spring;
 
-import org.activiti.engine.impl.bpmn.BpmnActivityBehavior;
-import org.activiti.pvm.ActivityBehavior;
+package org.activiti.engine.impl.bpmn;
+
+import org.activiti.impl.definition.ActivityImpl;
+import org.activiti.pvm.Activity;
 import org.activiti.pvm.ActivityExecution;
 
 
 /**
+ * Implementation of the BPMN 2.0 subprocess (formely know as 'embedded' subprocess):
+ * a subprocess defined within another process definition.
+ * 
  * @author Joram Barrez
  */
-public class ToUppercaseActivityBehavior extends BpmnActivityBehavior implements ActivityBehavior {
-  
-  private static final String VARIABLE_NAME = "input";
+public class SubProcessActivity extends BpmnActivity {
   
   public void execute(ActivityExecution execution) throws Exception {
-    String var = (String) execution.getVariable(VARIABLE_NAME);
-    var = var.toUpperCase();
-    execution.setVariable(VARIABLE_NAME, var);
+    Activity activity = execution.getActivity();
+    ActivityImpl initialActivity = ((ActivityImpl) activity).getInitial();
     
-    performDefaultOutgoingBehavior(execution);
+    execution.setActivity(initialActivity);
+    initialActivity.getActivityBehavior().execute(execution);
   }
   
 }

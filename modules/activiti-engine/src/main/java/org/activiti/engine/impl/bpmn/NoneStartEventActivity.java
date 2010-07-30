@@ -10,28 +10,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.activiti.impl.cmd;
+package org.activiti.engine.impl.bpmn;
 
-import org.activiti.engine.identity.User;
-import org.activiti.impl.identity.UserImpl;
-import org.activiti.impl.interceptor.CommandContext;
-import org.activiti.impl.persistence.PersistenceSession;
 
 
 /**
+ * implementation of the 'none start event': a start event that has no 
+ * specific trigger but the programmatic one (processService.startProcessInstanceXXX()).
+ * 
+ * 
  * @author Joram Barrez
  */
-public class SaveUserCmd extends CmdVoid {
-  
-  protected User user;
-  
-  public SaveUserCmd(User user) {
-    this.user = user;
-  }
-  
-  public void executeVoid(CommandContext commandContext) {
-    PersistenceSession persistenceSession = commandContext.getPersistenceSession();
-    persistenceSession.saveUser((UserImpl) user);
-  }
+public class NoneStartEventActivity extends BpmnActivity {
 
+  // Nothing to see here.
+  // The default behaviour of the BpmnActivity is exactly what
+  // a none start event should be doing.
+  
 }

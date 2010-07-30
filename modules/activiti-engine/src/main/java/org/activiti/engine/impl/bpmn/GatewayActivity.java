@@ -10,28 +10,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.activiti.identity;
-
-import java.io.Serializable;
+package org.activiti.engine.impl.bpmn;
 
 
 /**
- * @author Tom Baeyens
+ * super class for all gateway activity implementations.
+ * 
+ * @author Joram Barrez
  */
-public interface User extends Serializable {
-
-  String getId();
-  void setId(String id);
-
-  String getFirstName();
-  void setFirstName(String firstName);
+public abstract class GatewayActivity extends BpmnActivity {
   
-  void setLastName(String lastName);
-  String getLastName();
+  // TODO: implement diverging/converging 
 
-  void setEmail(String email);
-  String getEmail();
-  
-  String getPassword(); 
-  void setPassword(String string);
 }

@@ -177,7 +177,7 @@ JAVA_OPTS="-Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=8787
   			<include name="org/activiti/examples/taskforms/adjustRequest.form"/>
   		</fileset>
   	</zip>
-  	<taskdef name="deploy-bar" classname="org.activiti.impl.ant.DeployBarTask">
+  	<taskdef name="deploy-bar" classname="org.activiti.engine.impl.ant.DeployBarTask">
   		<classpath>
   			<pathelement path="files/demo"/>
   			<fileset dir="build">
@@ -264,7 +264,7 @@ JAVA_OPTS="-Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=8787
   </target>
   
   <target name="internal.taskdef.launch" depends="internal.classpath.libs">
-    <taskdef name="launch" classname="org.activiti.impl.ant.LaunchTask" classpathref="classpath.libs" />
+    <taskdef name="launch" classname="org.activiti.engine.impl.ant.LaunchTask" classpathref="classpath.libs" />
   </target>
 	
 	<target name="internal.classpath.libs">

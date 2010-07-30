@@ -10,28 +10,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.activiti.impl.cmd;
-
-import org.activiti.engine.identity.User;
-import org.activiti.impl.identity.UserImpl;
-import org.activiti.impl.interceptor.CommandContext;
-import org.activiti.impl.persistence.PersistenceSession;
+package org.activiti.engine.impl.bpmn;
 
 
 /**
+ * Parent class for all BPMN 2.0 task types such as ServiceTask, ScriptTask, UserTask, etc.
+ * 
+ * When used on its own, it behaves just as a pass-through activity.
+ * 
  * @author Joram Barrez
  */
-public class SaveUserCmd extends CmdVoid {
-  
-  protected User user;
-  
-  public SaveUserCmd(User user) {
-    this.user = user;
-  }
-  
-  public void executeVoid(CommandContext commandContext) {
-    PersistenceSession persistenceSession = commandContext.getPersistenceSession();
-    persistenceSession.saveUser((UserImpl) user);
-  }
+public class TaskActivity extends BpmnActivity {
 
 }

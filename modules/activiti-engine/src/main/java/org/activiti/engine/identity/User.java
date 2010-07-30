@@ -10,16 +10,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.activiti.impl.bpmn.parser;
+package org.activiti.engine.identity;
 
-import org.activiti.impl.definition.ProcessDefinitionImpl;
+import java.io.Serializable;
 
 
 /**
- * @author Joram Barrez
+ * @author Tom Baeyens
  */
-public interface UnresolvedReference {
-  
-  void resolve(ProcessDefinitionImpl processDefinition);
+public interface User extends Serializable {
 
+  String getId();
+  void setId(String id);
+
+  String getFirstName();
+  void setFirstName(String firstName);
+  
+  void setLastName(String lastName);
+  String getLastName();
+
+  void setEmail(String email);
+  String getEmail();
+  
+  String getPassword(); 
+  void setPassword(String string);
 }

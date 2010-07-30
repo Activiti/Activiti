@@ -13,7 +13,7 @@
 package org.activiti.rest.auth;
 
 import org.activiti.engine.ProcessEngines;
-import org.activiti.identity.Group;
+import org.activiti.engine.identity.Group;
 import org.activiti.rest.Config;
 import org.springframework.extensions.webscripts.Description;
 

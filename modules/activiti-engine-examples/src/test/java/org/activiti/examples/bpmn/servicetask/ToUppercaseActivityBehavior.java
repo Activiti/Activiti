@@ -12,7 +12,7 @@
  */
 package org.activiti.examples.bpmn.servicetask;
 
-import org.activiti.impl.bpmn.BpmnActivityBehavior;
+import org.activiti.engine.impl.bpmn.BpmnActivityBehavior;
 import org.activiti.pvm.ActivityBehavior;
 import org.activiti.pvm.ActivityExecution;
 

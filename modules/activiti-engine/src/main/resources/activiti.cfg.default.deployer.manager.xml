@@ -5,7 +5,7 @@
   <object name="DeployerManager" class="org.activiti.impl.repository.DeployerManager">
     <property name="deployers">
       <list>
-        <object class="org.activiti.impl.bpmn.BpmnDeployer" />
+        <object class="org.activiti.engine.impl.bpmn.deployer.BpmnDeployer" />
       </list>
     </property>
   </object>

@@ -14,7 +14,7 @@ package org.activiti.impl.identity;
 
 import java.io.Serializable;
 
-import org.activiti.identity.User;
+import org.activiti.engine.identity.User;
 
 
 /**

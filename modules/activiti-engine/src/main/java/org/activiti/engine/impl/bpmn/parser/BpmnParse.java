@@ -10,7 +10,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.activiti.impl.bpmn.parser;
+package org.activiti.engine.impl.bpmn.parser;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -24,22 +24,22 @@ import java.util.logging.Logger;
 
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ProcessDefinition;
+import org.activiti.engine.impl.bpmn.BoundaryTimerEventActivity;
+import org.activiti.engine.impl.bpmn.BpmnInterface;
+import org.activiti.engine.impl.bpmn.CallActivityBehaviour;
+import org.activiti.engine.impl.bpmn.ExclusiveGatewayActivity;
+import org.activiti.engine.impl.bpmn.ManualTaskActivity;
+import org.activiti.engine.impl.bpmn.NoneEndEventActivity;
+import org.activiti.engine.impl.bpmn.NoneStartEventActivity;
+import org.activiti.engine.impl.bpmn.Operation;
+import org.activiti.engine.impl.bpmn.ParallelGatewayActivity;
+import org.activiti.engine.impl.bpmn.ReceiveTaskActivity;
+import org.activiti.engine.impl.bpmn.ScriptTaskActivity;
+import org.activiti.engine.impl.bpmn.ServiceInvocationActivityBehaviour;
+import org.activiti.engine.impl.bpmn.SubProcessActivity;
+import org.activiti.engine.impl.bpmn.TaskActivity;
+import org.activiti.engine.impl.bpmn.UserTaskActivity;
 import org.activiti.engine.impl.persistence.repository.ProcessDefinitionEntity;
-import org.activiti.impl.bpmn.BoundaryTimerEventActivity;
-import org.activiti.impl.bpmn.BpmnInterface;
-import org.activiti.impl.bpmn.CallActivityBehaviour;
-import org.activiti.impl.bpmn.ExclusiveGatewayActivity;
-import org.activiti.impl.bpmn.ManualTaskActivity;
-import org.activiti.impl.bpmn.NoneEndEventActivity;
-import org.activiti.impl.bpmn.NoneStartEventActivity;
-import org.activiti.impl.bpmn.Operation;
-import org.activiti.impl.bpmn.ParallelGatewayActivity;
-import org.activiti.impl.bpmn.ReceiveTaskActivity;
-import org.activiti.impl.bpmn.ScriptTaskActivity;
-import org.activiti.impl.bpmn.ServiceInvocationActivityBehaviour;
-import org.activiti.impl.bpmn.SubProcessActivity;
-import org.activiti.impl.bpmn.TaskActivity;
-import org.activiti.impl.bpmn.UserTaskActivity;
 import org.activiti.impl.calendar.BusinessCalendar;
 import org.activiti.impl.calendar.BusinessCalendarManager;
 import org.activiti.impl.calendar.DurationBusinessCalendar;

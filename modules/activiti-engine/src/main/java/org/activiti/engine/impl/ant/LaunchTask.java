@@ -10,7 +10,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.activiti.impl.ant;
+package org.activiti.engine.impl.ant;
 
 import java.io.File;
 

@@ -26,7 +26,7 @@ import java.util.logging.Logger;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.Deployment;
 import org.activiti.engine.DeploymentBuilder;
-import org.activiti.impl.bpmn.BpmnDeployer;
+import org.activiti.engine.impl.bpmn.deployer.BpmnDeployer;
 import org.junit.runners.model.FrameworkMethod;
 
 /**

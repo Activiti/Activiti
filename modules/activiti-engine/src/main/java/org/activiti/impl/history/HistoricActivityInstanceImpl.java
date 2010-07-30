@@ -16,7 +16,7 @@ package org.activiti.impl.history;
 
 import java.util.Date;
 
-import org.activiti.history.HistoricActivityInstance;
+import org.activiti.engine.history.HistoricActivityInstance;
 
 /**
  * @author Christian Stettler

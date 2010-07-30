@@ -59,6 +59,8 @@ public interface RepositorySession {
   // TODO replace with query api
   List<ResourceEntity> findResourcesByDeploymentId(String deploymentId);
 
+  List<String> findDeploymentResourceNames(String deploymentId);
+  
   // TODO document that these process definitions are not deployed and what that means
   ProcessDefinitionEntity findProcessDefinitionById(String processDefinitionId);
   

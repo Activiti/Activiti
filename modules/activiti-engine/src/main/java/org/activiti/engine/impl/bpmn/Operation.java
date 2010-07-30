@@ -10,53 +10,58 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.activiti.impl.identity;
-
-import java.io.Serializable;
-
-import org.activiti.engine.identity.Group;
+package org.activiti.engine.impl.bpmn;
 
 
 /**
- * @author Tom Baeyens
+ * An Operation is part of an {@link BpmnInterface} and it defines Messages that are consumed and
+ * (optionally) produced when the Operation is called.
+ * 
+ * @author Joram Barrez
  */
-public class GroupImpl implements Group, Serializable {
-
-  private static final long serialVersionUID = 1L;
-
+public class Operation {
+  
   protected String id;
+  
   protected String name;
-  protected String type;
   
-  protected boolean isNew = false;
+  /**
+   * The interface to which this operations belongs
+   */
+  protected BpmnInterface bpmnInterface;
+  
+  public Operation() {
+    
+  }
+  
+  public Operation(String id, String name, BpmnInterface bpmnInterface) {
+    setId(id);
+    setName(name);
+    setInterface(bpmnInterface);
+  }
 
-  public GroupImpl() {
-  }
-  
-  public GroupImpl(String id) {
-    this.id = id;
-    this.isNew = true;
-  }
-  
   public String getId() {
     return id;
   }
+
   public void setId(String id) {
     this.id = id;
   }
+
   public String getName() {
     return name;
   }
+
   public void setName(String name) {
     this.name = name;
   }
-  public String getType() {
-    return type;
+  
+  public BpmnInterface getInterface() {
+    return bpmnInterface;
   }
-  public void setType(String type) {
-    this.type = type;
+
+  public void setInterface(BpmnInterface bpmnInterface) {
+    this.bpmnInterface = bpmnInterface;
   }
-  public boolean isNew() {
-    return isNew;
-  }  
+  
 }

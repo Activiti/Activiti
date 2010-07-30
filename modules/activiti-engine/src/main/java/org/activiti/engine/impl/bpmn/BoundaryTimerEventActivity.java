@@ -10,26 +10,36 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.activiti.test.cfg.spring;
+package org.activiti.engine.impl.bpmn;
 
-import org.activiti.engine.impl.bpmn.BpmnActivityBehavior;
-import org.activiti.pvm.ActivityBehavior;
+import org.activiti.engine.ActivitiException;
 import org.activiti.pvm.ActivityExecution;
 
 
 /**
+ * implementation of the boundary timer event logic.
+ * 
  * @author Joram Barrez
  */
-public class ToUppercaseActivityBehavior extends BpmnActivityBehavior implements ActivityBehavior {
+public class BoundaryTimerEventActivity extends BpmnActivity {
   
-  private static final String VARIABLE_NAME = "input";
-  
-  public void execute(ActivityExecution execution) throws Exception {
-    String var = (String) execution.getVariable(VARIABLE_NAME);
-    var = var.toUpperCase();
-    execution.setVariable(VARIABLE_NAME, var);
+  protected boolean interrupting;
     
-    performDefaultOutgoingBehavior(execution);
+  public void execute(ActivityExecution execution) throws Exception {
+    
+    if (interrupting) {
+      leave(execution);
+    } else {
+      throw new ActivitiException("Non-interrupting boundary timer event not yet implemented");
+    }
+  }
+
+  public boolean isInterrupting() {
+    return interrupting;
+  }
+
+  public void setInterrupting(boolean interrupting) {
+    this.interrupting = interrupting;
   }
   
 }

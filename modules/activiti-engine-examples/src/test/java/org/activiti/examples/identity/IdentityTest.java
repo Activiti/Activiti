@@ -21,8 +21,8 @@ import java.util.List;
 import java.util.Set;
 
 import org.activiti.engine.IdentityService;
-import org.activiti.identity.Group;
-import org.activiti.identity.User;
+import org.activiti.engine.identity.Group;
+import org.activiti.engine.identity.User;
 import org.activiti.test.ProcessEngineTestWatchman;
 import org.junit.Before;
 import org.junit.Rule;

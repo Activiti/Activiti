@@ -56,7 +56,7 @@
     <result property="bytes" column="BYTES_" jdbcType="BLOB"/>
   </resultMap>
   
-  <select id="selectResourceNamesForDeployment" parameterType="string" resultType="string">
+  <select id="selectResourceNamesByDeploymentId" parameterType="string" resultType="string">
     select NAME_ from ACT_BYTEARRAY where DEPLOYMENT_ID_ = #{deploymentId} order by NAME_ asc
   </select>
   

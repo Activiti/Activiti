@@ -10,28 +10,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.activiti.impl.cmd;
 
-import org.activiti.engine.identity.User;
-import org.activiti.impl.identity.UserImpl;
-import org.activiti.impl.interceptor.CommandContext;
-import org.activiti.impl.persistence.PersistenceSession;
-
+package org.activiti.engine.impl.bpmn;
 
 /**
+ * Implementation of the BPMN 2.0 'manual task': a task that is external to the
+ * BPMS and to which there is no reference to IT systems whatsoever.
+ * 
+ * Given this definition, this activity will behave simply as a pass-though step
+ * in the process.
+ * 
  * @author Joram Barrez
  */
-public class SaveUserCmd extends CmdVoid {
-  
-  protected User user;
-  
-  public SaveUserCmd(User user) {
-    this.user = user;
-  }
-  
-  public void executeVoid(CommandContext commandContext) {
-    PersistenceSession persistenceSession = commandContext.getPersistenceSession();
-    persistenceSession.saveUser((UserImpl) user);
-  }
+public class ManualTaskActivity extends TaskActivity {
 
 }

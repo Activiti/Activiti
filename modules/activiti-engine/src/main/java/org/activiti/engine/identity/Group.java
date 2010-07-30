@@ -10,37 +10,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.activiti.engine.impl;
+package org.activiti.engine.identity;
 
 import java.io.Serializable;
-
-import org.activiti.engine.ProcessEngineInfo;
 
 
 /**
  * @author Tom Baeyens
  */
-public class ProcessEngineInfoImpl implements Serializable, ProcessEngineInfo {
+public interface Group extends Serializable {
 
-  private static final long serialVersionUID = 1L;
+  String getId();
+  void setId(String id);
   
-  String name;
-  String resourceUrl;
-  String exception;
-
-  public ProcessEngineInfoImpl(String name, String resourceUrl, String exception) {
-    this.name = name;
-    this.resourceUrl = resourceUrl;
-    this.exception = exception;
-  }
+  String getName();
+  void setName(String name);
   
-  public String getName() {
-    return name;
-  }
-  public String getResourceUrl() {
-    return resourceUrl;
-  }
-  public String getException() {
-    return exception;
-  }
+  String getType();
+  void setType(String string);
 }

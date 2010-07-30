@@ -54,8 +54,8 @@ public class IbatisTransactionContext implements TransactionContext {
     log.fine("firing event committing...");
     fireTransactionEvent(TransactionState.COMMITTING);
     log.fine("committing the ibatis sql session...");
-    getDbSqlSession().commit();
     getPersistenceSession().commit();
+    getDbSqlSession().commit();
     log.fine("firing event committed...");
     fireTransactionEvent(TransactionState.COMMITTED);
   }
@@ -92,8 +92,8 @@ public class IbatisTransactionContext implements TransactionContext {
         commandContext.exception(exception);
       } finally {
         log.fine("rolling back ibatis sql session...");
-        getDbSqlSession().rollback();
         getPersistenceSession().rollback();
+        getDbSqlSession().rollback();
       }
       
     } catch (Throwable exception) {

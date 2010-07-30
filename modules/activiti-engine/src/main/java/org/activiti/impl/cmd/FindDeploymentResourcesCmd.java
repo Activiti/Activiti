@@ -14,6 +14,7 @@ package org.activiti.impl.cmd;
 
 import java.util.List;
 
+import org.activiti.engine.impl.persistence.RepositorySession;
 import org.activiti.impl.interceptor.Command;
 import org.activiti.impl.interceptor.CommandContext;
 import org.activiti.impl.persistence.PersistenceSession;
@@ -32,8 +33,8 @@ public class FindDeploymentResourcesCmd implements Command<List> {
   }
   
   public List execute(CommandContext commandContext) {
-    PersistenceSession persistenceSession = commandContext.getPersistenceSession();
-    return persistenceSession.findDeploymentResourceNames(deploymentId);
+    RepositorySession repositorySession = commandContext.getRepositorySession();
+    return repositorySession.findDeploymentResourceNames(deploymentId);
   }
 
 }

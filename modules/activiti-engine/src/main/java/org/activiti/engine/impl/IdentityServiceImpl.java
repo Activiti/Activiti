@@ -15,8 +15,8 @@ package org.activiti.engine.impl;
 import java.util.List;
 
 import org.activiti.engine.IdentityService;
-import org.activiti.identity.Group;
-import org.activiti.identity.User;
+import org.activiti.engine.identity.Group;
+import org.activiti.engine.identity.User;
 import org.activiti.impl.cmd.CheckPassword;
 import org.activiti.impl.cmd.CreateMembershipCmd;
 import org.activiti.impl.cmd.DeleteGroupCmd;

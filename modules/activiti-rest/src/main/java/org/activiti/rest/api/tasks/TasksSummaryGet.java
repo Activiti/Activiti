@@ -13,7 +13,7 @@
 package org.activiti.rest.api.tasks;
 
 import org.activiti.engine.TaskService;
-import org.activiti.identity.Group;
+import org.activiti.engine.identity.Group;
 import org.activiti.rest.util.ActivitiWebScript;
 import org.springframework.extensions.webscripts.Cache;
 import org.springframework.extensions.webscripts.Status;

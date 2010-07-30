@@ -12,21 +12,15 @@
  * limitations under the License.
  */
 
-package org.activiti.history;
+package org.activiti.engine.history;
 
 import java.util.Date;
 
 /**
  * @author Christian Stettler
  */
-public interface HistoricActivityInstance {
-
-  String getActivityId();
-
-  String getActivityName();
-
-  String getActivityType();
-
+public interface HistoricProcessInstance {
+  
   String getProcessInstanceId();
 
   String getProcessDefinitionId();
@@ -36,5 +30,7 @@ public interface HistoricActivityInstance {
   Date getEndTime();
 
   Long getDurationInMillis();
+
+  String getEndStateName();
 
 }

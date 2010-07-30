@@ -10,26 +10,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.activiti.test.cfg.spring;
 
-import org.activiti.engine.impl.bpmn.BpmnActivityBehavior;
-import org.activiti.pvm.ActivityBehavior;
+package org.activiti.engine.impl.bpmn;
+
+import org.activiti.engine.ProcessService;
 import org.activiti.pvm.ActivityExecution;
 
 
 /**
+ * A receive task is a wait state that waits for the receival of some message.
+ * 
+ * Currently, the only message that is supported is the external trigger,
+ * given by calling the {@link ProcessService#sendEvent(String)} operation.
+ * 
  * @author Joram Barrez
  */
-public class ToUppercaseActivityBehavior extends BpmnActivityBehavior implements ActivityBehavior {
-  
-  private static final String VARIABLE_NAME = "input";
-  
+public class ReceiveTaskActivity extends TaskActivity {
+
   public void execute(ActivityExecution execution) throws Exception {
-    String var = (String) execution.getVariable(VARIABLE_NAME);
-    var = var.toUpperCase();
-    execution.setVariable(VARIABLE_NAME, var);
-    
-    performDefaultOutgoingBehavior(execution);
+    // Do nothing: waitstate behavior
+  }
+  
+  public void event(ActivityExecution execution, Object event) throws Exception {
+    leave(execution);
   }
   
 }

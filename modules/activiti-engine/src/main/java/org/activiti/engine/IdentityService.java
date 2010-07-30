@@ -14,8 +14,8 @@ package org.activiti.engine;
 
 import java.util.List;
 
-import org.activiti.identity.Group;
-import org.activiti.identity.User;
+import org.activiti.engine.identity.Group;
+import org.activiti.engine.identity.User;
 
 
 /**

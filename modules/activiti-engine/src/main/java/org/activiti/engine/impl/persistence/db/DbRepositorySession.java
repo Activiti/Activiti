@@ -105,6 +105,11 @@ public class DbRepositorySession implements Session, RepositorySession {
   public List<ResourceEntity> findResourcesByDeploymentId(String deploymentId) {
     return dbSqlSession.selectList("selectResourcesByDeploymentId", deploymentId);
   }
+  
+  @SuppressWarnings("unchecked")
+  public List<String> findDeploymentResourceNames(String deploymentId) {
+    return dbSqlSession.selectList("selectResourceNamesByDeploymentId", deploymentId);
+  }
 
   @SuppressWarnings("unchecked")
   public List<DeploymentEntity> findDeployments() {

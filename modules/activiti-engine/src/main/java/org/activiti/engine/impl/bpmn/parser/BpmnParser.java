@@ -10,7 +10,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.activiti.impl.bpmn.parser;
+package org.activiti.engine.impl.bpmn.parser;
 
 import org.activiti.impl.calendar.BusinessCalendarManager;
 import org.activiti.impl.el.ExpressionManager;

@@ -86,16 +86,6 @@ public class DeploymentImpl implements Serializable, Deployment {
   }
 
   public Map<String, ByteArrayImpl> getResources() {
-    if (!resourcesInitialized) {
-      List<ByteArrayImpl> resourceList = CommandContext
-        .getCurrent()
-        .getPersistenceSession()
-        .findDeploymentResources(id);
-      resources = new HashMap<String, ByteArrayImpl>();
-      for (ByteArrayImpl resource : resourceList) {
-        resources.put(resource.getName(), resource);
-      }
-    }
     return resources;
   }
   

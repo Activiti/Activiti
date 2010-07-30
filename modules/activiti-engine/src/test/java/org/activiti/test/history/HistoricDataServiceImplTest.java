@@ -25,10 +25,10 @@ import java.util.Date;
 
 import org.activiti.engine.HistoricDataService;
 import org.activiti.engine.ProcessInstance;
+import org.activiti.engine.history.HistoricActivityInstance;
+import org.activiti.engine.history.HistoricProcessInstance;
 import org.activiti.engine.impl.ProcessEngineImpl;
 import org.activiti.engine.impl.ServiceImpl;
-import org.activiti.history.HistoricActivityInstance;
-import org.activiti.history.HistoricProcessInstance;
 import org.activiti.impl.event.ActivityEndedEvent;
 import org.activiti.impl.event.ActivityStartedEvent;
 import org.activiti.impl.event.DefaultProcessEventBus;

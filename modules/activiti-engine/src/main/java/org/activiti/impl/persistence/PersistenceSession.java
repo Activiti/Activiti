@@ -26,7 +26,6 @@ import org.activiti.engine.Task;
 import org.activiti.impl.bytes.ByteArrayImpl;
 import org.activiti.impl.db.DbidBlock;
 import org.activiti.impl.db.execution.DbExecutionImpl;
-import org.activiti.impl.definition.ProcessDefinitionImpl;
 import org.activiti.impl.execution.ExecutionImpl;
 import org.activiti.impl.history.HistoricActivityInstanceImpl;
 import org.activiti.impl.history.HistoricProcessInstanceImpl;
@@ -34,7 +33,6 @@ import org.activiti.impl.identity.GroupImpl;
 import org.activiti.impl.identity.UserImpl;
 import org.activiti.impl.job.JobImpl;
 import org.activiti.impl.job.TimerImpl;
-import org.activiti.impl.repository.DeploymentImpl;
 import org.activiti.impl.task.TaskImpl;
 import org.activiti.impl.task.TaskInvolvement;
 import org.activiti.impl.tx.Session;
@@ -50,18 +48,9 @@ public interface PersistenceSession extends Session {
   void commit();
   void rollback();
 
-  /* Deployment */
-  List<DeploymentImpl> findDeploymentsByName(String name);
-  List<ByteArrayImpl> findDeploymentResources(String deploymentId);
-  List<String> findDeploymentResourceNames(String deploymentId);
-  
   byte[] getByteArrayBytes(String byteArrayId);
   ByteArrayImpl findByteArrayById(String byteArrayValueId);
   
-  /* Process definition */
-  ProcessDefinitionImpl findProcessDefinitionByDeploymentAndKey(String deploymentId, String processDefinitionKey);
-  void insertProcessDefinition(ProcessDefinitionImpl processDefinition);
-
   void insert(PersistentObject persistentObject);
   void delete(PersistentObject persistentObject);
 

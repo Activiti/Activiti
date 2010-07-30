@@ -80,7 +80,7 @@
 		delete from ACT_VARIABLE where ID_ = #{id, jdbcType=VARCHAR}
 	</delete>
 
-  <!-- ByteArrayImpl
+  <!-- ByteArrayImpl -->
   
   <resultMap id="byteArrayResultMap" type="org.activiti.impl.bytes.ByteArrayImpl">
     <id property="id" column="ID_" jdbcType="VARCHAR" />
@@ -129,6 +129,5 @@
     where DEPLOYMENT_ID_ = #{deploymentId}
           AND NAME_ = #{resourceName}
   </select>
--->
 
 </mapper>
