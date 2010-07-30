@@ -27,7 +27,7 @@ import org.activiti.engine.impl.cmd.FindSingleTaskCmd;
 import org.activiti.engine.impl.cmd.GetFormCmd;
 import org.activiti.engine.impl.cmd.SaveTaskCmd;
 import org.activiti.engine.impl.cmd.SetTaskPriorityCmd;
-import org.activiti.impl.interceptor.CommandExecutor;
+import org.activiti.engine.impl.interceptor.CommandExecutor;
 import org.activiti.impl.task.TaskImpl;
 import org.activiti.impl.task.TaskInvolvementType;
 import org.activiti.impl.task.TaskQueryImpl;

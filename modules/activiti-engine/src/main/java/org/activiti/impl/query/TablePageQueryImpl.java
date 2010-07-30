@@ -16,8 +16,8 @@ import org.activiti.engine.ActivitiException;
 import org.activiti.engine.SortOrder;
 import org.activiti.engine.TablePage;
 import org.activiti.engine.TablePageQuery;
-import org.activiti.impl.interceptor.CommandContext;
-import org.activiti.impl.interceptor.CommandExecutor;
+import org.activiti.engine.impl.interceptor.CommandContext;
+import org.activiti.engine.impl.interceptor.CommandExecutor;
 import org.activiti.impl.query.AbstractSingleResultQuery;
 
 

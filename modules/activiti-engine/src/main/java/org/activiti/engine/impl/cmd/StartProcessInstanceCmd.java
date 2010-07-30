@@ -16,11 +16,11 @@ import java.util.Map;
 
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ProcessInstance;
+import org.activiti.engine.impl.interceptor.Command;
+import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.RepositorySession;
 import org.activiti.impl.definition.ProcessDefinitionImpl;
 import org.activiti.impl.execution.ExecutionImpl;
-import org.activiti.impl.interceptor.Command;
-import org.activiti.impl.interceptor.CommandContext;
 import org.activiti.impl.persistence.PersistenceSession;
 
 

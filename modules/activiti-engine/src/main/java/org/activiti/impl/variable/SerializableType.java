@@ -19,7 +19,7 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 
 import org.activiti.engine.ActivitiException;
-import org.activiti.impl.interceptor.CommandContext;
+import org.activiti.engine.impl.interceptor.CommandContext;
 
 /**
  * @author Tom Baeyens

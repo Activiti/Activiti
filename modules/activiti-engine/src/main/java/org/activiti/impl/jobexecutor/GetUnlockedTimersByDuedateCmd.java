@@ -15,8 +15,8 @@ package org.activiti.impl.jobexecutor;
 import java.util.Date;
 import java.util.List;
 
-import org.activiti.impl.interceptor.Command;
-import org.activiti.impl.interceptor.CommandContext;
+import org.activiti.engine.impl.interceptor.Command;
+import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.impl.job.TimerImpl;
 
 

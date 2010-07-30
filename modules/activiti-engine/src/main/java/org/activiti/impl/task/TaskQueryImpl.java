@@ -23,9 +23,9 @@ import org.activiti.engine.Page;
 import org.activiti.engine.SortOrder;
 import org.activiti.engine.Task;
 import org.activiti.engine.TaskQuery;
-import org.activiti.impl.identity.GroupImpl;
-import org.activiti.impl.interceptor.CommandContext;
-import org.activiti.impl.interceptor.CommandExecutor;
+import org.activiti.engine.impl.interceptor.CommandContext;
+import org.activiti.engine.impl.interceptor.CommandExecutor;
+import org.activiti.engine.impl.persistence.identity.GroupImpl;
 import org.activiti.impl.query.AbstractListQuery;
 
 /**

@@ -13,12 +13,12 @@
 
 package org.activiti.impl.jobexecutor;
 
-import org.activiti.impl.interceptor.Command;
-import org.activiti.impl.interceptor.CommandContext;
+import org.activiti.engine.impl.interceptor.Command;
+import org.activiti.engine.impl.interceptor.CommandContext;
+import org.activiti.engine.impl.persistence.TransactionState;
 import org.activiti.impl.job.JobImpl;
 import org.activiti.impl.msg.MessageAddedNotification;
 import org.activiti.impl.persistence.PersistenceSession;
-import org.activiti.impl.tx.TransactionState;
 
 /**
  * @author Tom Baeyens

@@ -23,19 +23,19 @@ import org.activiti.engine.SortOrder;
 import org.activiti.engine.TableMetaData;
 import org.activiti.engine.TablePage;
 import org.activiti.engine.Task;
+import org.activiti.engine.impl.interceptor.Session;
+import org.activiti.engine.impl.persistence.db.IdBlock;
+import org.activiti.engine.impl.persistence.identity.GroupImpl;
+import org.activiti.engine.impl.persistence.identity.UserImpl;
 import org.activiti.engine.impl.persistence.runtime.ByteArrayImpl;
-import org.activiti.impl.db.DbidBlock;
 import org.activiti.impl.db.execution.DbExecutionImpl;
 import org.activiti.impl.execution.ExecutionImpl;
 import org.activiti.impl.history.HistoricActivityInstanceImpl;
 import org.activiti.impl.history.HistoricProcessInstanceImpl;
-import org.activiti.impl.identity.GroupImpl;
-import org.activiti.impl.identity.UserImpl;
 import org.activiti.impl.job.JobImpl;
 import org.activiti.impl.job.TimerImpl;
 import org.activiti.impl.task.TaskImpl;
 import org.activiti.impl.task.TaskInvolvement;
-import org.activiti.impl.tx.Session;
 import org.activiti.impl.variable.VariableInstance;
 
 
@@ -111,7 +111,6 @@ public interface PersistenceSession extends Session {
   void deleteMembership(String userId, String groupId);
 
   /* Management */
-  DbidBlock getNextDbidBlock();
   Map<String, Long> getTableCount();
   TablePage getTablePage(String tableName, int offset, int maxResults, String sortColumn, SortOrder sortOrder);
   TableMetaData getTableMetaData(String tableName);

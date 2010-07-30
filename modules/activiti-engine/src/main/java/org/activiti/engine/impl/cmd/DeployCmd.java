@@ -16,12 +16,12 @@ import java.util.Arrays;
 import java.util.Map;
 
 import org.activiti.engine.Deployment;
+import org.activiti.engine.impl.interceptor.Command;
+import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.RepositorySession;
 import org.activiti.engine.impl.persistence.repository.DeploymentBuilderImpl;
 import org.activiti.engine.impl.persistence.repository.DeploymentEntity;
 import org.activiti.engine.impl.persistence.repository.ResourceEntity;
-import org.activiti.impl.interceptor.Command;
-import org.activiti.impl.interceptor.CommandContext;
 import org.activiti.impl.time.Clock;
 
 /**

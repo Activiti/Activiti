@@ -14,10 +14,10 @@ package org.activiti.engine.impl.cmd;
 
 import java.util.List;
 
+import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.RepositorySession;
 import org.activiti.engine.impl.persistence.repository.ProcessDefinitionEntity;
 import org.activiti.impl.db.execution.DbExecutionImpl;
-import org.activiti.impl.interceptor.CommandContext;
 import org.activiti.impl.persistence.PersistenceSession;
 
 /**

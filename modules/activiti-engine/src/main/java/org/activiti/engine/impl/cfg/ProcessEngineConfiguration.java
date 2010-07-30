@@ -39,19 +39,22 @@ import org.activiti.engine.impl.bpmn.deployer.BpmnDeployer;
 import org.activiti.engine.impl.calendar.BusinessCalendarManager;
 import org.activiti.engine.impl.calendar.DurationBusinessCalendar;
 import org.activiti.engine.impl.calendar.MapBusinessCalendarManager;
+import org.activiti.engine.impl.cfg.standalone.StandaloneTransactionContextFactory;
+import org.activiti.engine.impl.el.ExpressionManager;
+import org.activiti.engine.impl.interceptor.CommandContextFactory;
+import org.activiti.engine.impl.interceptor.CommandExecutor;
+import org.activiti.engine.impl.interceptor.DefaultCommandExecutor;
+import org.activiti.engine.impl.interceptor.SessionFactory;
+import org.activiti.engine.impl.persistence.IdGenerator;
 import org.activiti.engine.impl.persistence.RepositorySession;
+import org.activiti.engine.impl.persistence.TransactionContextFactory;
+import org.activiti.engine.impl.persistence.db.DbIdGenerator;
 import org.activiti.engine.impl.persistence.db.DbRepositorySessionFactory;
 import org.activiti.engine.impl.persistence.db.DbSqlSession;
 import org.activiti.engine.impl.persistence.db.DbSqlSessionFactory;
 import org.activiti.engine.impl.persistence.repository.Deployer;
-import org.activiti.impl.db.IdGenerator;
-import org.activiti.impl.el.ExpressionManager;
 import org.activiti.impl.event.DefaultProcessEventBus;
 import org.activiti.impl.history.HistoricDataServiceImpl;
-import org.activiti.impl.interceptor.CommandContextFactory;
-import org.activiti.impl.interceptor.CommandExecutor;
-import org.activiti.impl.interceptor.DefaultCommandExecutor;
-import org.activiti.impl.interceptor.SessionFactory;
 import org.activiti.impl.job.JobHandlers;
 import org.activiti.impl.job.TimerExecuteNestedActivityJobHandler;
 import org.activiti.impl.jobexecutor.JobExecutor;
@@ -64,8 +67,6 @@ import org.activiti.impl.repository.DeployerManager;
 import org.activiti.impl.scripting.ScriptingEngines;
 import org.activiti.impl.timer.JobExecutorTimerSessionFactory;
 import org.activiti.impl.timer.TimerSession;
-import org.activiti.impl.tx.StandaloneTransactionContextFactory;
-import org.activiti.impl.tx.TransactionContextFactory;
 import org.activiti.impl.variable.DefaultVariableTypes;
 import org.activiti.impl.variable.VariableTypes;
 import org.activiti.pvm.event.ProcessEventBus;
@@ -110,6 +111,7 @@ public class ProcessEngineConfiguration {
   protected String databaseName;
   protected DbSchemaStrategy dbSchemaStrategy;
   protected IdGenerator idGenerator;
+  protected long idBlockSize;
   protected DataSource dataSource;
   protected boolean localTransactions;
   protected String jdbcDriver;
@@ -160,7 +162,8 @@ public class ProcessEngineConfiguration {
     
     databaseName = DEFAULT_DATABASE_NAME;
     dbSchemaStrategy = DbSchemaStrategy.CREATE_DROP;
-    idGenerator = new IdGenerator();
+    idGenerator = new DbIdGenerator();
+    idBlockSize = 100;
     dataSource = null;
     localTransactions = true;
     jdbcDriver = DEFAULT_JDBC_DRIVER;
@@ -578,5 +581,14 @@ public class ProcessEngineConfiguration {
   
   public void setDeployers(List<Deployer> deployers) {
     this.deployers = deployers;
+  }
+
+  
+  public long getIdBlockSize() {
+    return idBlockSize;
+  }
+
+  public void setIdBlockSize(long idBlockSize) {
+    this.idBlockSize = idBlockSize;
   }
 }

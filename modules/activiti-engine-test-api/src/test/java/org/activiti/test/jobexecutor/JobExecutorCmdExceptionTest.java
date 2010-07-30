@@ -5,9 +5,9 @@ package org.activiti.test.jobexecutor;
 
 import org.activiti.engine.impl.ProcessEngineImpl;
 import org.activiti.engine.impl.cmd.DeleteJobsCmd;
-import org.activiti.impl.interceptor.Command;
-import org.activiti.impl.interceptor.CommandContext;
-import org.activiti.impl.interceptor.CommandExecutor;
+import org.activiti.engine.impl.interceptor.Command;
+import org.activiti.engine.impl.interceptor.CommandContext;
+import org.activiti.engine.impl.interceptor.CommandExecutor;
 import org.activiti.impl.job.MessageImpl;
 import org.activiti.test.JobExecutorPoller;
 import org.activiti.test.LogInitializer;

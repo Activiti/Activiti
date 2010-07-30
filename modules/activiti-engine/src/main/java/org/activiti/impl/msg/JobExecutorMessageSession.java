@@ -12,11 +12,11 @@
  */
 package org.activiti.impl.msg;
 
-import org.activiti.impl.interceptor.CommandContext;
+import org.activiti.engine.impl.interceptor.CommandContext;
+import org.activiti.engine.impl.persistence.TransactionState;
 import org.activiti.impl.job.MessageImpl;
 import org.activiti.impl.jobexecutor.JobExecutor;
 import org.activiti.impl.persistence.PersistenceSession;
-import org.activiti.impl.tx.TransactionState;
 
 
 /**

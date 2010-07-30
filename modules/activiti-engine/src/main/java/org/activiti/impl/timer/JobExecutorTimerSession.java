@@ -16,15 +16,15 @@ import java.util.Date;
 import java.util.List;
 
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.impl.interceptor.CommandContext;
+import org.activiti.engine.impl.interceptor.Session;
+import org.activiti.engine.impl.persistence.TransactionState;
 import org.activiti.impl.execution.ExecutionImpl;
-import org.activiti.impl.interceptor.CommandContext;
 import org.activiti.impl.job.TimerImpl;
 import org.activiti.impl.jobexecutor.JobExecutor;
 import org.activiti.impl.msg.MessageAddedNotification;
 import org.activiti.impl.persistence.PersistenceSession;
 import org.activiti.impl.time.Clock;
-import org.activiti.impl.tx.Session;
-import org.activiti.impl.tx.TransactionState;
 
 
 /**

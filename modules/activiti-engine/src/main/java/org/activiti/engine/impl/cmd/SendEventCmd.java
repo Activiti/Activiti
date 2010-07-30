@@ -14,9 +14,9 @@
 package org.activiti.engine.impl.cmd;
 
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.impl.interceptor.Command;
+import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.impl.db.execution.DbExecutionImpl;
-import org.activiti.impl.interceptor.Command;
-import org.activiti.impl.interceptor.CommandContext;
 
 
 /**

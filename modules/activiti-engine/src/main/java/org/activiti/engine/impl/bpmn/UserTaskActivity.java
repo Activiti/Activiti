@@ -12,7 +12,7 @@
  */
 package org.activiti.engine.impl.bpmn;
 
-import org.activiti.impl.el.ExpressionManager;
+import org.activiti.engine.impl.el.ExpressionManager;
 import org.activiti.impl.execution.ExecutionImpl;
 import org.activiti.impl.task.TaskDefinition;
 import org.activiti.impl.task.TaskImpl;

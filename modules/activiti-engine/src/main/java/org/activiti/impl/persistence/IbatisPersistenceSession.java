@@ -34,17 +34,17 @@ import org.activiti.engine.SortOrder;
 import org.activiti.engine.TableMetaData;
 import org.activiti.engine.TablePage;
 import org.activiti.engine.Task;
+import org.activiti.engine.impl.persistence.IdGenerator;
+import org.activiti.engine.impl.persistence.db.IdBlock;
+import org.activiti.engine.impl.persistence.identity.GroupImpl;
+import org.activiti.engine.impl.persistence.identity.UserImpl;
+import org.activiti.engine.impl.persistence.repository.PropertyEntity;
 import org.activiti.engine.impl.persistence.runtime.ByteArrayImpl;
-import org.activiti.impl.db.DbidBlock;
-import org.activiti.impl.db.IdGenerator;
-import org.activiti.impl.db.PropertyImpl;
 import org.activiti.impl.db.execution.DbExecutionImpl;
 import org.activiti.impl.definition.ProcessDefinitionImpl;
 import org.activiti.impl.execution.ExecutionImpl;
 import org.activiti.impl.history.HistoricActivityInstanceImpl;
 import org.activiti.impl.history.HistoricProcessInstanceImpl;
-import org.activiti.impl.identity.GroupImpl;
-import org.activiti.impl.identity.UserImpl;
 import org.activiti.impl.job.JobImpl;
 import org.activiti.impl.job.MessageImpl;
 import org.activiti.impl.job.TimerImpl;
@@ -66,7 +66,6 @@ public class IbatisPersistenceSession implements PersistenceSession {
   private static Logger log = Logger.getLogger(IbatisPersistenceSession.class.getName());
 
   protected SqlSession sqlSession;
-  protected long blockSize = 100;
   protected IdGenerator idGenerator;
   protected Map<String, String> databaseStatements;
 
@@ -99,7 +98,7 @@ public class IbatisPersistenceSession implements PersistenceSession {
   }
 
   public void insert(PersistentObject persistentObject) {
-    String id = String.valueOf(idGenerator.getNextDbid());
+    String id = String.valueOf(idGenerator.getNextId());
     persistentObject.setId(id);
     inserted.add(persistentObject);
   }
@@ -448,10 +447,10 @@ public class IbatisPersistenceSession implements PersistenceSession {
    * INSERT operations
    */
   public void insertDeployment(DeploymentImpl deployment) {
-    deployment.setId(String.valueOf(idGenerator.getNextDbid()));
+    deployment.setId(String.valueOf(idGenerator.getNextId()));
     sqlSession.insert(statement("insertDeployment"), deployment);
     for (ByteArrayImpl resource : deployment.getResources().values()) {
-      resource.setId(String.valueOf(idGenerator.getNextDbid()));
+      resource.setId(String.valueOf(idGenerator.getNextId()));
       resource.setDeploymentId(deployment.getId());
       sqlSession.insert(statement("insertByteArray"), resource);
     }
@@ -536,22 +535,6 @@ public class IbatisPersistenceSession implements PersistenceSession {
     return result;
   }
 
-  public DbidBlock getNextDbidBlock() {
-    PropertyImpl property = (PropertyImpl) sqlSession.selectOne(statement("selectProperty"), "next.dbid");
-    long oldValue = Long.parseLong(property.getValue());
-    long newValue = oldValue+blockSize;
-    Map<String, Object> updateValues = new HashMap<String, Object>();
-    updateValues.put("name", property.getName());
-    updateValues.put("revision", property.getDbversion());
-    updateValues.put("newRevision", property.getDbversion()+1);
-    updateValues.put("value", Long.toString(newValue));
-    int rowsUpdated = sqlSession.update(statement("updateProperty"), updateValues);
-    if (rowsUpdated!=1) {
-      throw new ActivitiOptimisticLockingException("couldn't get next block of dbids");
-    }
-    return new DbidBlock(oldValue, newValue-1);
-  }
-
   public void addDeserializedObject(Object deserializedObject, byte[] serializedBytes, VariableInstance variableInstance) {
     deserializedObjects.add(new DeserializedObject(deserializedObject, serializedBytes, variableInstance));
   }
@@ -568,7 +551,7 @@ public class IbatisPersistenceSession implements PersistenceSession {
 
   public void saveHistoricProcessInstance(HistoricProcessInstanceImpl historicProcessInstance) {
     if (historicProcessInstance.getId() == null) {
-      historicProcessInstance.setId(String.valueOf(idGenerator.getNextDbid()));
+      historicProcessInstance.setId(String.valueOf(idGenerator.getNextId()));
       sqlSession.insert(statement("insertHistoricProcessInstance"), historicProcessInstance);
     } else {
       sqlSession.update(statement("updateHistoricProcessInstance"), historicProcessInstance);
@@ -585,7 +568,7 @@ public class IbatisPersistenceSession implements PersistenceSession {
 
   public void saveHistoricActivityInstance(HistoricActivityInstanceImpl historicActivityInstance) {
     if (historicActivityInstance.getId() == null) {
-      historicActivityInstance.setId(String.valueOf(idGenerator.getNextDbid()));
+      historicActivityInstance.setId(String.valueOf(idGenerator.getNextId()));
       sqlSession.insert(statement("insertHistoricActivityInstance"), historicActivityInstance);
     } else {
       sqlSession.update(statement("updateHistoricActivityInstance"), historicActivityInstance);

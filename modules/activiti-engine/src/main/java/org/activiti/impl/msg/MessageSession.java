@@ -12,8 +12,8 @@
  */
 package org.activiti.impl.msg;
 
+import org.activiti.engine.impl.interceptor.Session;
 import org.activiti.impl.job.MessageImpl;
-import org.activiti.impl.tx.Session;
 
 
 /**

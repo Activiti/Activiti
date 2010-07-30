@@ -20,8 +20,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.activiti.engine.Deployment;
+import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.RepositorySession;
-import org.activiti.impl.interceptor.CommandContext;
 import org.activiti.impl.persistence.PersistentObject;
 
 

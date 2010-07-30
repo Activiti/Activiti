@@ -24,10 +24,10 @@ import java.util.Set;
 
 import org.activiti.engine.ProcessInstance;
 import org.activiti.engine.Task;
+import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.impl.db.execution.DbExecutionImpl;
 import org.activiti.impl.execution.ExecutionImpl;
 import org.activiti.impl.execution.VariableMap;
-import org.activiti.impl.interceptor.CommandContext;
 import org.activiti.impl.persistence.PersistentObject;
 import org.activiti.impl.time.Clock;
 import org.activiti.pvm.ActivityExecution;

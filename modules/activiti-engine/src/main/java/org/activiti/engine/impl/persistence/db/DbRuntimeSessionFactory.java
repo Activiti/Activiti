@@ -13,8 +13,8 @@
 
 package org.activiti.engine.impl.persistence.db;
 
-import org.activiti.impl.interceptor.SessionFactory;
-import org.activiti.impl.tx.Session;
+import org.activiti.engine.impl.interceptor.Session;
+import org.activiti.engine.impl.interceptor.SessionFactory;
 
 
 /**

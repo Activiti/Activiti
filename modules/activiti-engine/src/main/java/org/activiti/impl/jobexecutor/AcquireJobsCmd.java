@@ -17,8 +17,8 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.List;
 
-import org.activiti.impl.interceptor.Command;
-import org.activiti.impl.interceptor.CommandContext;
+import org.activiti.engine.impl.interceptor.Command;
+import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.impl.job.JobImpl;
 import org.activiti.impl.persistence.PersistenceSession;
 import org.activiti.impl.time.Clock;

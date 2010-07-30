@@ -13,9 +13,9 @@
 package org.activiti.impl.job;
 
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.impl.definition.ActivityImpl;
 import org.activiti.impl.execution.ExecutionImpl;
-import org.activiti.impl.interceptor.CommandContext;
 
 
 /**

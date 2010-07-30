@@ -19,10 +19,10 @@ import java.util.Map;
 
 import org.activiti.engine.impl.cfg.ProcessEngineConfiguration;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationAware;
+import org.activiti.engine.impl.interceptor.Session;
+import org.activiti.engine.impl.interceptor.SessionFactory;
 import org.activiti.engine.impl.persistence.repository.Deployer;
 import org.activiti.engine.impl.persistence.repository.ProcessDefinitionEntity;
-import org.activiti.impl.interceptor.SessionFactory;
-import org.activiti.impl.tx.Session;
 
 
 /**
@@ -32,9 +32,11 @@ public class DbRepositorySessionFactory implements SessionFactory, ProcessEngine
   
   protected Map<String, ProcessDefinitionEntity> processDefinitionCache = new HashMap<String, ProcessDefinitionEntity>(); 
   protected List<Deployer> deployers;
+  protected long idBlockSize;
 
   public void configurationCompleted(ProcessEngineConfiguration processEngineConfiguration) {
     deployers = processEngineConfiguration.getDeployers();
+    idBlockSize = processEngineConfiguration.getIdBlockSize();
   }
 
   public Session openSession() {
@@ -57,5 +59,13 @@ public class DbRepositorySessionFactory implements SessionFactory, ProcessEngine
   
   public void setDeployers(List<Deployer> deployers) {
     this.deployers = deployers;
+  }
+  
+  public long getIdBlockSize() {
+    return idBlockSize;
+  }
+
+  public void setIdBlockSize(long idBlockSize) {
+    this.idBlockSize = idBlockSize;
   }
 }

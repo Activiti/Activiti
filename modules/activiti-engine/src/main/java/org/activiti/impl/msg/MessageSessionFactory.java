@@ -12,8 +12,8 @@
  */
 package org.activiti.impl.msg;
 
-import org.activiti.impl.interceptor.CommandContext;
-import org.activiti.impl.interceptor.SessionFactory;
+import org.activiti.engine.impl.interceptor.CommandContext;
+import org.activiti.engine.impl.interceptor.SessionFactory;
 
 
 /**

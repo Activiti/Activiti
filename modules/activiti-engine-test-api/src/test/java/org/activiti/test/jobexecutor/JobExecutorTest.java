@@ -18,9 +18,9 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.activiti.impl.interceptor.Command;
-import org.activiti.impl.interceptor.CommandContext;
-import org.activiti.impl.interceptor.CommandExecutor;
+import org.activiti.engine.impl.interceptor.Command;
+import org.activiti.engine.impl.interceptor.CommandContext;
+import org.activiti.engine.impl.interceptor.CommandExecutor;
 import org.activiti.impl.msg.MessageSession;
 import org.activiti.impl.timer.TimerSession;
 import org.activiti.test.JobExecutorPoller;

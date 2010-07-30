@@ -17,9 +17,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.activiti.impl.identity.GroupImpl;
-import org.activiti.impl.identity.UserImpl;
-import org.activiti.impl.tx.Session;
+import org.activiti.engine.impl.interceptor.Session;
+import org.activiti.engine.impl.persistence.identity.GroupImpl;
+import org.activiti.engine.impl.persistence.identity.UserImpl;
 
 
 /**

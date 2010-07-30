@@ -14,7 +14,7 @@ package org.activiti.impl.jobexecutor;
 
 import java.util.List;
 
-import org.activiti.impl.interceptor.CommandExecutor;
+import org.activiti.engine.impl.interceptor.CommandExecutor;
 import org.activiti.impl.job.JobHandlers;
 
 

@@ -19,9 +19,9 @@ import java.util.List;
 import java.util.Map;
 
 import org.activiti.engine.Deployment;
+import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.repository.DeploymentBuilderImpl;
 import org.activiti.engine.impl.persistence.runtime.ByteArrayImpl;
-import org.activiti.impl.interceptor.CommandContext;
 
 /**
  * @author Tom Baeyens

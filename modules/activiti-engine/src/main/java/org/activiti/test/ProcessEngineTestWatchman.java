@@ -31,7 +31,7 @@ import org.activiti.engine.ProcessService;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.TaskService;
 import org.activiti.engine.impl.ProcessEngineImpl;
-import org.activiti.impl.interceptor.CommandExecutor;
+import org.activiti.engine.impl.interceptor.CommandExecutor;
 import org.activiti.impl.job.JobHandlers;
 import org.activiti.impl.jobexecutor.JobExecutor;
 import org.junit.Assert;

@@ -14,7 +14,7 @@ package org.activiti.impl.job;
 
 import java.util.Map;
 
-import org.activiti.impl.interceptor.CommandContext;
+import org.activiti.engine.impl.interceptor.CommandContext;
 
 
 /**

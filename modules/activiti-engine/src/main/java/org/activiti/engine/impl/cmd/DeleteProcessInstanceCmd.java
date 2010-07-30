@@ -12,7 +12,7 @@
  */
 package org.activiti.engine.impl.cmd;
 
-import org.activiti.impl.interceptor.CommandContext;
+import org.activiti.engine.impl.interceptor.CommandContext;
 
 
 /**

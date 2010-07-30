@@ -14,8 +14,8 @@ package org.activiti.test.jobexecutor;
 
 import java.util.logging.Logger;
 
+import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.impl.execution.ExecutionImpl;
-import org.activiti.impl.interceptor.CommandContext;
 import org.activiti.impl.job.JobHandler;
 
 

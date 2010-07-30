@@ -12,7 +12,7 @@
  */
 package org.activiti.impl.timer;
 
-import org.activiti.impl.interceptor.CommandContext;
+import org.activiti.engine.impl.interceptor.CommandContext;
 
 
 /**

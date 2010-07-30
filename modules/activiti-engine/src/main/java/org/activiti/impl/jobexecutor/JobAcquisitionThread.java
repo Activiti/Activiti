@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.activiti.impl.interceptor.CommandExecutor;
+import org.activiti.engine.impl.interceptor.CommandExecutor;
 import org.activiti.impl.job.TimerImpl;
 import org.activiti.impl.time.Clock;
 

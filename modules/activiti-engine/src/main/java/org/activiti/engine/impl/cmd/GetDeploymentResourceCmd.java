@@ -15,10 +15,10 @@ package org.activiti.engine.impl.cmd;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 
+import org.activiti.engine.impl.interceptor.Command;
+import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.repository.ResourceEntity;
 import org.activiti.engine.impl.persistence.runtime.ByteArrayImpl;
-import org.activiti.impl.interceptor.Command;
-import org.activiti.impl.interceptor.CommandContext;
 import org.activiti.impl.persistence.PersistenceSession;
 
 

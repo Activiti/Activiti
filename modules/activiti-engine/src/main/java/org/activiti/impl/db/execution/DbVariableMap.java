@@ -18,8 +18,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.impl.execution.VariableMap;
-import org.activiti.impl.interceptor.CommandContext;
 import org.activiti.impl.variable.Type;
 import org.activiti.impl.variable.VariableInstance;
 import org.activiti.impl.variable.VariableTypes;

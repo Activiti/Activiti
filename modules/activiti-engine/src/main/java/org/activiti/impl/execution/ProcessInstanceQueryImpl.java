@@ -19,8 +19,8 @@ import java.util.Map;
 import org.activiti.engine.Page;
 import org.activiti.engine.ProcessInstance;
 import org.activiti.engine.ProcessInstanceQuery;
-import org.activiti.impl.interceptor.CommandContext;
-import org.activiti.impl.interceptor.CommandExecutor;
+import org.activiti.engine.impl.interceptor.CommandContext;
+import org.activiti.engine.impl.interceptor.CommandExecutor;
 import org.activiti.impl.query.AbstractListQuery;
 
 

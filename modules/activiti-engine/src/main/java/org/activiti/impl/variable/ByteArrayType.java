@@ -12,8 +12,8 @@
  */
 package org.activiti.impl.variable;
 
+import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.runtime.ByteArrayImpl;
-import org.activiti.impl.interceptor.CommandContext;
 
 /**
  * @author Tom Baeyens

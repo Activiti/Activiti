@@ -28,9 +28,9 @@ import org.activiti.engine.impl.cmd.FindUserCmd;
 import org.activiti.engine.impl.cmd.FindUsersByGroupCmd;
 import org.activiti.engine.impl.cmd.SaveGroupCmd;
 import org.activiti.engine.impl.cmd.SaveUserCmd;
-import org.activiti.impl.identity.GroupImpl;
-import org.activiti.impl.identity.UserImpl;
-import org.activiti.impl.interceptor.CommandExecutor;
+import org.activiti.engine.impl.interceptor.CommandExecutor;
+import org.activiti.engine.impl.persistence.identity.GroupImpl;
+import org.activiti.engine.impl.persistence.identity.UserImpl;
 
 
 /**

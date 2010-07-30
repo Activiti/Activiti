@@ -23,7 +23,7 @@ import java.util.logging.Logger;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.cfg.ProcessEngineConfiguration;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationAware;
-import org.activiti.impl.interceptor.CommandExecutor;
+import org.activiti.engine.impl.interceptor.CommandExecutor;
 import org.activiti.impl.job.JobHandlers;
 
 /**

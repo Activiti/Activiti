@@ -20,7 +20,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.activiti.impl.tx.Session;
+import org.activiti.engine.impl.interceptor.Session;
 import org.apache.ibatis.session.SqlSession;
 
 

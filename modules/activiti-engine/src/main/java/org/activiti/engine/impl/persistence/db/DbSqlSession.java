@@ -21,10 +21,9 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.impl.interceptor.Session;
 import org.activiti.engine.impl.util.ClassNameUtil;
-import org.activiti.impl.interceptor.CommandContext;
 import org.activiti.impl.persistence.PersistentObject;
-import org.activiti.impl.tx.Session;
 import org.activiti.impl.variable.DeserializedObject;
 import org.activiti.impl.variable.VariableInstance;
 import org.apache.ibatis.session.SqlSession;
@@ -58,12 +57,19 @@ public class DbSqlSession implements Session {
   // insert ///////////////////////////////////////////////////////////////////
   
   public void insert(PersistentObject persistentObject) {
-    long nextDbid = dbSqlSessionFactory.getIdGenerator().getNextDbid();
+    long nextDbid = dbSqlSessionFactory.getIdGenerator().getNextId();
     String id = Long.toString(nextDbid);
     persistentObject.setId(id);
     insertedObjects.add(persistentObject);
     deletedObjects.remove(persistentObject);
     cachePut(persistentObject);
+  }
+  
+  // update ///////////////////////////////////////////////////////////////////
+  // only for property updates
+  public int update(String statement, Object parameter) {
+    statement = dbSqlSessionFactory.mapStatement(statement);
+    return sqlSession.update(statement, parameter);
   }
   
   // delete ///////////////////////////////////////////////////////////////////

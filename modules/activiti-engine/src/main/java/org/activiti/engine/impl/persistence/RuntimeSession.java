@@ -13,9 +13,9 @@
 
 package org.activiti.engine.impl.persistence;
 
+import org.activiti.engine.impl.interceptor.Session;
 import org.activiti.engine.impl.persistence.runtime.ActivityInstanceEntity;
 import org.activiti.engine.impl.persistence.runtime.ProcessInstanceEntity;
-import org.activiti.impl.tx.Session;
 
 
 /**

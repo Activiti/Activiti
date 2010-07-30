@@ -15,8 +15,8 @@ package org.activiti.impl.interceptor;
 
 import static org.junit.Assert.*;
 
-import org.activiti.impl.interceptor.Command;
-import org.activiti.impl.interceptor.CommandContext;
+import org.activiti.engine.impl.interceptor.Command;
+import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.test.LogInitializer;
 import org.activiti.test.ProcessDeployer;
 import org.junit.Rule;

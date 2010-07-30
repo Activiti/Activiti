@@ -4,6 +4,13 @@ import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import org.activiti.engine.impl.interceptor.Command;
+import org.activiti.engine.impl.interceptor.CommandContext;
+import org.activiti.engine.impl.interceptor.CommandContextFactory;
+import org.activiti.engine.impl.interceptor.CommandExecutor;
+import org.activiti.engine.impl.interceptor.CommandInterceptor;
+import org.activiti.engine.impl.interceptor.ContextAwareCommandInterceptor;
+import org.activiti.engine.impl.interceptor.DefaultCommandExecutor;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;

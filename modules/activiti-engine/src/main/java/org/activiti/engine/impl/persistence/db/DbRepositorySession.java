@@ -17,14 +17,16 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.activiti.engine.ActivitiOptimisticLockingException;
+import org.activiti.engine.impl.interceptor.CommandContext;
+import org.activiti.engine.impl.interceptor.Session;
 import org.activiti.engine.impl.persistence.RepositorySession;
 import org.activiti.engine.impl.persistence.repository.Deployer;
 import org.activiti.engine.impl.persistence.repository.DeploymentEntity;
 import org.activiti.engine.impl.persistence.repository.ProcessDefinitionEntity;
+import org.activiti.engine.impl.persistence.repository.PropertyEntity;
 import org.activiti.engine.impl.persistence.repository.ResourceEntity;
 import org.activiti.impl.definition.ProcessDefinitionImpl;
-import org.activiti.impl.interceptor.CommandContext;
-import org.activiti.impl.tx.Session;
 
 
 /**
@@ -163,5 +165,21 @@ public class DbRepositorySession implements Session, RepositorySession {
       processDefinition = dbRepositorySessionFactory.getProcessDefinitionCache().get(processDefinitionId);
     }
     return processDefinition;
+  }
+  
+  public IdBlock getNextDbidBlock() {
+    PropertyEntity property = (PropertyEntity) dbSqlSession.selectOne("selectProperty", "next.dbid");
+    long oldValue = Long.parseLong(property.getValue());
+    long newValue = oldValue+dbRepositorySessionFactory.getIdBlockSize();
+    Map<String, Object> updateValues = new HashMap<String, Object>();
+    updateValues.put("name", property.getName());
+    updateValues.put("revision", property.getDbversion());
+    updateValues.put("newRevision", property.getDbversion()+1);
+    updateValues.put("value", Long.toString(newValue));
+    int rowsUpdated = dbSqlSession.update("updateProperty", updateValues);
+    if (rowsUpdated!=1) {
+      throw new ActivitiOptimisticLockingException("couldn't get next block of dbids");
+    }
+    return new IdBlock(oldValue, newValue-1);
   }
 }

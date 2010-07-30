@@ -14,9 +14,9 @@ package org.activiti.impl.msg;
 
 import java.util.logging.Logger;
 
-import org.activiti.impl.interceptor.CommandContext;
+import org.activiti.engine.impl.interceptor.CommandContext;
+import org.activiti.engine.impl.persistence.TransactionListener;
 import org.activiti.impl.jobexecutor.JobExecutor;
-import org.activiti.impl.tx.TransactionListener;
 
 
 /**
