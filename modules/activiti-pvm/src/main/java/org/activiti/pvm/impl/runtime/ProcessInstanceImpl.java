@@ -13,6 +13,9 @@
 
 package org.activiti.pvm.impl.runtime;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.activiti.pvm.impl.process.ProcessDefinitionImpl;
 import org.activiti.pvm.runtime.PvmProcessInstance;
 
@@ -30,4 +33,9 @@ public class ProcessInstanceImpl extends ScopeInstanceImpl implements PvmProcess
     new ExecutionContextImpl().startProcessInstance(this);
   }
 
+  public List<String> findActivityIds() {
+    List<String> activityIds = new ArrayList<String>();
+    collectActivityIds(activityIds);
+    return activityIds;
+  }
 }

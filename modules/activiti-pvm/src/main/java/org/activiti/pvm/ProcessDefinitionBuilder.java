@@ -17,7 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
 
-import org.activiti.pvm.activity.ActivityBehaviour;
+import org.activiti.pvm.activity.ActivityBehavior;
 import org.activiti.pvm.impl.process.ActivityImpl;
 import org.activiti.pvm.impl.process.ProcessDefinitionImpl;
 import org.activiti.pvm.impl.process.ProcessElementImpl;
@@ -42,7 +42,7 @@ public class ProcessDefinitionBuilder {
     scopeStack.push(processDefinition);
   }
 
-  public ProcessDefinitionBuilder startActivity(String id) {
+  public ProcessDefinitionBuilder createActivity(String id) {
     ActivityImpl activity = scopeStack.peek().createActivity();
     activity.setId(id);
     scopeStack.push(activity);
@@ -92,7 +92,7 @@ public class ProcessDefinitionBuilder {
     return this;
   }
 
-  public ProcessDefinitionBuilder behaviour(ActivityBehaviour activityBehaviour) {
+  public ProcessDefinitionBuilder behavior(ActivityBehavior activityBehaviour) {
     getActivity().setActivityBehaviour(activityBehaviour);
     return this;
   }

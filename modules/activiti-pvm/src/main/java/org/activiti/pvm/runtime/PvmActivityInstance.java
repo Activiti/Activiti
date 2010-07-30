@@ -13,6 +13,8 @@
 
 package org.activiti.pvm.runtime;
 
+import java.util.Map;
+
 
 /**
  * @author Tom Baeyens
@@ -21,4 +23,9 @@ public interface PvmActivityInstance {
 
   void signal(String signalName, Object signalData);
 
+  void setVariable(String variableName, Object value);
+  
+  Object getVariable(String variableName);
+
+  Map<String, Object> getVariables();
 }

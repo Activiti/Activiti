@@ -18,7 +18,7 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.activiti.pvm.activity.ActivityBehaviour;
+import org.activiti.pvm.activity.ActivityBehavior;
 import org.activiti.pvm.activity.ActivityContext;
 import org.activiti.pvm.activity.SignallableActivityBehaviour;
 import org.activiti.pvm.event.Event;
@@ -149,7 +149,7 @@ public class ExecutionContextImpl implements EventContext, ActivityContext {
     public void perform(ExecutionContextImpl executionContext) {
       ActivityInstanceImpl activityInstance = executionContext.activityInstance;
       activityInstance.setExecutionContext(executionContext);
-      ActivityBehaviour activityBehaviour = activityInstance.getActivity().getActivityBehaviour();
+      ActivityBehavior activityBehaviour = activityInstance.getActivity().getActivityBehaviour();
       activityBehaviour.start(executionContext);
     }
   }

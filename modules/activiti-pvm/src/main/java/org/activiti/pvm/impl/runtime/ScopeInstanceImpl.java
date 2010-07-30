@@ -79,6 +79,13 @@ public class ScopeInstanceImpl {
     }
   }
   
+  protected void collectActivityIds(List<String> activityIds) {
+    for (ActivityInstanceImpl activityInstance: activityInstances) {
+      activityIds.add(activityInstance.getActivity().getId());
+    }
+  }
+
+  
   // variables ////////////////////////////////////////////////////////////////
   
   public void setVariable(String variableName, Object value) {

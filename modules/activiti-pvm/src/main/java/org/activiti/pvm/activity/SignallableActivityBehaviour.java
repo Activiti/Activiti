@@ -18,7 +18,7 @@ package org.activiti.pvm.activity;
 /**
  * @author Tom Baeyens
  */
-public interface SignallableActivityBehaviour extends ActivityBehaviour {
+public interface SignallableActivityBehaviour extends ActivityBehavior {
 
   void signal(ActivityContext activityContext, String signalName, Object signalData);
 }

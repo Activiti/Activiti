@@ -18,7 +18,7 @@ package org.activiti.pvm.activity;
 /**
  * @author Tom Baeyens
  */
-public interface ActivityBehaviour {
+public interface ActivityBehavior {
 
   void start(ActivityContext activityExecutionContext);
 }

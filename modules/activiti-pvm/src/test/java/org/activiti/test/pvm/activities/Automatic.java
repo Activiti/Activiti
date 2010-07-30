@@ -1,5 +1,5 @@
 package org.activiti.test.pvm.activities;
-import org.activiti.pvm.activity.ActivityBehaviour;
+import org.activiti.pvm.activity.ActivityBehavior;
 import org.activiti.pvm.activity.ActivityContext;
 import org.activiti.pvm.process.PvmTransition;
 
@@ -21,7 +21,7 @@ import org.activiti.pvm.process.PvmTransition;
 /**
  * @author Tom Baeyens
  */
-public class Automatic implements ActivityBehaviour {
+public class Automatic implements ActivityBehavior {
 
   public void start(ActivityContext activityExecutionContext) {
     PvmTransition transition = activityExecutionContext.getOutgoingTransitions().get(0);

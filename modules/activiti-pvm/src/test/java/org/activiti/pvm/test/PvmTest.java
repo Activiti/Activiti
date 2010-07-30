@@ -27,23 +27,23 @@ import org.activiti.test.pvm.activities.WaitState;
  */
 public class PvmTest extends TestCase {
 
-  public void testOne() {
+  public void testBasicLinearActivities() {
     PvmProcessDefinition processDefinition = new ProcessDefinitionBuilder()
-      .startActivity("start")
+      .createActivity("start")
         .initial()
-        .behaviour(new Automatic())
+        .behavior(new Automatic())
         .transition("one")
       .endActivity()
-      .startActivity("one")
-        .behaviour(new WaitState())
+      .createActivity("one")
+        .behavior(new WaitState())
         .transition("two")
       .endActivity()
-      .startActivity("two")
-        .behaviour(new Automatic())
+      .createActivity("two")
+        .behavior(new Automatic())
         .transition("three")
       .endActivity()
-      .startActivity("three")
-        .behaviour(new WaitState())
+      .createActivity("three")
+        .behavior(new WaitState())
       .endActivity()
     .buildProcessDefinition();
     
