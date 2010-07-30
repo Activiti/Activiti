@@ -71,10 +71,9 @@ import org.activiti.pvm.impl.process.TransitionImpl;
  */
 public class BpmnParse extends Parse {
 
+  public static final String PROPERTYNAME_FORM_REFERENCE = "formReference";
   public static final String PROPERTYNAME_CONDITION = "condition";
-
   public static final String PROPERTYNAME_VARIABLE_DECLARATIONS = "variableDeclarations";
-
   public static final String PROPERTYNAME_TIMER_DECLARATION = "timerDeclarations";
 
   private static final Logger LOG = Logger.getLogger(BpmnParse.class.getName());
@@ -310,7 +309,7 @@ public class BpmnParse extends Parse {
       String form = startEventElement.attributeNS(BpmnParser.BPMN_EXTENSIONS_NS, "form");
       String formLanguage = startEventElement.attributeNS(BpmnParser.BPMN_EXTENSIONS_NS, "form-language", ScriptingEngines.DEFAULT_SCRIPTING_LANGUAGE);
       if (form != null) {
-        activity.setProperty("formReference", new FormReference(form, formLanguage));
+        activity.setProperty(PROPERTYNAME_FORM_REFERENCE, new FormReference(form, formLanguage));
       }
 
       // Currently only none start events supported
@@ -516,7 +515,7 @@ public class BpmnParse extends Parse {
     String form = userTaskElement.attributeNS(BpmnParser.BPMN_EXTENSIONS_NS, "form");
     String formLanguage = userTaskElement.attributeNS(BpmnParser.BPMN_EXTENSIONS_NS, "form-language", ScriptingEngines.DEFAULT_SCRIPTING_LANGUAGE);
     if (form != null) {
-      activity.setProperty("formReference", new FormReference(form, formLanguage));
+      activity.setProperty(PROPERTYNAME_FORM_REFERENCE, new FormReference(form, formLanguage));
     }
 
     activity.setActivityBehavior(userTaskActivity);

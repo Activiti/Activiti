@@ -27,6 +27,8 @@ public class ProcessDefinitionEntity extends ProcessDefinitionImpl implements Pe
   
   protected String key;
   protected String name;
+  protected Integer version;
+  protected String deploymentId;
   
   public ProcessInstanceImpl createProcessInstance() {
     return new ProcessInstanceEntity(this);
@@ -52,5 +54,21 @@ public class ProcessDefinitionEntity extends ProcessDefinitionImpl implements Pe
   
   public void setName(String name) {
     this.name = name;
+  }
+
+  public String getDeploymentId() {
+    return deploymentId;
+  }
+
+  public void setDeploymentId(String deploymentId) {
+    this.deploymentId = deploymentId;
+  }
+  
+  public Integer getVersion() {
+    return version;
+  }
+  
+  public void setVersion(Integer version) {
+    this.version = version;
   }
 }

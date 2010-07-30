@@ -14,13 +14,13 @@ package org.activiti.engine.impl.cmd;
 
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
-import org.activiti.impl.definition.ProcessDefinitionImpl;
+import org.activiti.engine.impl.persistence.repository.ProcessDefinitionEntity;
 
 
 /**
  * @author Joram Barrez
  */
-public class FindProcessDefinitionCmd implements Command<ProcessDefinitionImpl> {
+public class FindProcessDefinitionCmd implements Command<ProcessDefinitionEntity> {
 
   protected String processDefinitionId;
   
@@ -28,8 +28,10 @@ public class FindProcessDefinitionCmd implements Command<ProcessDefinitionImpl> 
     this.processDefinitionId = processDefinitionId;
   }
   
-  public ProcessDefinitionImpl execute(CommandContext commandContext) {
-    return commandContext.getRepositorySession().findProcessDefinitionById(processDefinitionId);
+  public ProcessDefinitionEntity execute(CommandContext commandContext) {
+    return commandContext
+      .getRepositorySession()
+      .findProcessDefinitionById(processDefinitionId);
   }
 
 }

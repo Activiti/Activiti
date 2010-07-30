@@ -13,10 +13,12 @@
 package org.activiti.engine.impl.cmd;
 
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.impl.bpmn.parser.BpmnParse;
 import org.activiti.engine.impl.cfg.RepositorySession;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.repository.DeploymentEntity;
+import org.activiti.engine.impl.persistence.repository.ProcessDefinitionEntity;
 import org.activiti.engine.impl.persistence.repository.ResourceEntity;
 import org.activiti.engine.impl.persistence.task.TaskEntity;
 import org.activiti.engine.impl.scripting.ScriptingEngines;
@@ -24,6 +26,7 @@ import org.activiti.impl.definition.FormReference;
 import org.activiti.impl.definition.ProcessDefinitionImpl;
 import org.activiti.impl.execution.ExecutionImpl;
 import org.activiti.impl.persistence.PersistenceSession;
+import org.activiti.pvm.runtime.PvmActivityInstance;
 
 
 /**
@@ -45,9 +48,9 @@ public class GetFormCmd implements Command<Object> {
   public Object execute(CommandContext commandContext) {
     PersistenceSession persistenceSession = commandContext.getPersistenceSession();
     RepositorySession repositorySession = commandContext.getRepositorySession();
-    ProcessDefinitionImpl processDefinition = null;
+    ProcessDefinitionEntity processDefinition = null;
     TaskEntity task = null;
-    ExecutionImpl execution = null;
+    PvmActivityInstance activityInstance = null;
     FormReference formReference = null;
     
     if (taskId!=null) {
@@ -56,9 +59,9 @@ public class GetFormCmd implements Command<Object> {
       if (task == null) {
         throw new ActivitiException("No task found for id = '" + taskId + "'");
       }
-      execution = task.getActivityInstance();
+      activityInstance = task.getActivityInstance();
       processDefinition = repositorySession.findDeployedProcessDefinitionById(task.getProcessDefinitionId());
-      formReference = execution.getActivity().getFormReference();
+      formReference = (FormReference) activityInstance.getActivity().getProperty(BpmnParse.PROPERTYNAME_FORM_REFERENCE);
       
     } else if (processDefinitionId!=null) {
       
@@ -66,7 +69,7 @@ public class GetFormCmd implements Command<Object> {
       if (processDefinition == null) {
         throw new ActivitiException("No process definition found for id = '" + processDefinitionId + "'");
       }
-      formReference = processDefinition.getInitial().getFormReference();
+      formReference = (FormReference) processDefinition.getInitial().getProperty(BpmnParse.PROPERTYNAME_FORM_REFERENCE);
       
     } else if (processDefinitionKey!=null) {
       
@@ -74,7 +77,7 @@ public class GetFormCmd implements Command<Object> {
       if (processDefinition == null) {
         throw new ActivitiException("No process definition found for key '" + processDefinitionKey +"'");
       }
-      formReference = processDefinition.getInitial().getFormReference();
+      formReference = (FormReference) processDefinition.getInitial().getProperty(BpmnParse.PROPERTYNAME_FORM_REFERENCE);
     } 
 
     String deploymentId = processDefinition.getDeploymentId();
@@ -87,7 +90,7 @@ public class GetFormCmd implements Command<Object> {
       String formTemplateString = getFormTemplateString(form, deployment);      
       
       ScriptingEngines scriptingEngines = commandContext.getProcessEngineConfiguration().getScriptingEngines();
-      result = scriptingEngines.evaluate(formTemplateString, formLanguage, execution);
+      result = scriptingEngines.evaluate(formTemplateString, formLanguage, activityInstance);
     }
 
     return result;
