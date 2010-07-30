@@ -14,7 +14,7 @@ package org.activiti.examples.pojo;
 
 import static org.junit.Assert.assertTrue;
 
-import org.activiti.engine.impl.scripting.ExpressionCondition;
+import org.activiti.engine.impl.scripting.ScriptCondition;
 import org.activiti.engine.impl.scripting.ScriptingEngines;
 import org.activiti.pvm.ObjectProcessDefinition;
 import org.activiti.pvm.ObjectProcessInstance;
@@ -63,8 +63,8 @@ public class PojoTest {
     ScriptingEngines scriptingEngines = new ScriptingEngines();
     ObjectProcessDefinition processDefinition = ProcessDefinitionBuilder.createProcessDefinitionBuilder().createActivity("start").initial().behavior(new Automatic())
             .transition("checkCredit").endActivity().createActivity("checkCredit").behavior(new Decision()).transition("takeToGolf",
-                    new ExpressionCondition(scriptingEngines, "${creditRating=='Aaa-'}", ScriptingEngines.DEFAULT_SCRIPTING_LANGUAGE)).transition("askDaughterOut",
-                    new ExpressionCondition(scriptingEngines, "${creditRating=='AAA+'}", ScriptingEngines.DEFAULT_SCRIPTING_LANGUAGE)).transition("ignore").endActivity()
+                    new ScriptCondition("${creditRating=='Aaa-'}", ScriptingEngines.DEFAULT_SCRIPTING_LANGUAGE)).transition("askDaughterOut",
+                    new ScriptCondition("${creditRating=='AAA+'}", ScriptingEngines.DEFAULT_SCRIPTING_LANGUAGE)).transition("ignore").endActivity()
             .createActivity("takeToGolf").behavior(new WaitState()).endActivity().createActivity("askDaughterOut").behavior(new WaitState()).endActivity()
             .createActivity("ignore").behavior(new WaitState()).endActivity().build();
 

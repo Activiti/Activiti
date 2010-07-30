@@ -20,4 +20,6 @@ package org.activiti.pvm.process;
 public interface PvmTransition {
 
   public String getId();
+  
+  Object getProperty(String name);
 }

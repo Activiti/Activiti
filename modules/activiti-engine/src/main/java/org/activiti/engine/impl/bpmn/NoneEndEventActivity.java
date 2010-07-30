@@ -18,7 +18,7 @@ import org.activiti.pvm.activity.ActivityContext;
 /**
  * @author Joram Barrez
  */
-public class NoneEndEventActivity extends BpmnActivity {
+public class NoneEndEventActivity extends AbstractBpmnActivity {
   
   public void start(ActivityContext activityContext) throws Exception {
     

@@ -14,8 +14,6 @@ package org.activiti.engine.impl.bpmn;
 
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.scripting.ScriptingEngines;
-import org.activiti.impl.execution.ExecutionImpl;
-import org.activiti.pvm.ActivityExecution;
 import org.activiti.pvm.activity.ActivityContext;
 
 

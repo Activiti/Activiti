@@ -13,32 +13,35 @@
 package org.activiti.engine.impl.scripting;
 
 import org.activiti.engine.ActivitiException;
-import org.activiti.impl.execution.ExecutionImpl;
-import org.activiti.pvm.ActivityExecution;
+import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.pvm.Condition;
+import org.activiti.pvm.activity.ActivityContext;
 
 /**
  * @author Tom Baeyens
  */
-public class ExpressionCondition implements Condition {
+public class ScriptCondition implements Condition {
 
   private final String expression;
   private final String language;
-  private final ScriptingEngines scriptingEngines;
 
-  public ExpressionCondition(ScriptingEngines scriptingEngines, String expression, String language) {
-    this.scriptingEngines = scriptingEngines;
+  public ScriptCondition(String expression, String language) {
     this.expression = expression;
     this.language = language;
   }
 
-  public boolean evaluate(ActivityExecution execution) {
-    Object result = scriptingEngines.evaluate(expression, language, (ExecutionImpl) execution);
+  public boolean evaluate(ActivityContext activityContext) {
+    ScriptingEngines scriptingEngines = CommandContext
+      .getCurrent()
+      .getProcessEngineConfiguration()
+      .getScriptingEngines();
+    
+    Object result = scriptingEngines.evaluate(expression, language, activityContext);
     if (result == null) {
-      throw new ActivitiException("condition expression returns null: " + expression);
+      throw new ActivitiException("condition script returns null: " + expression);
     }
     if (!(result instanceof Boolean)) {
-      throw new ActivitiException("condition expression returns non-Boolean: " + result + " (" + result.getClass().getName() + ")");
+      throw new ActivitiException("condition script returns non-Boolean: " + result + " (" + result.getClass().getName() + ")");
     }
     return (Boolean) result;
   }

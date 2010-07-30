@@ -37,15 +37,17 @@ public class ActivitiValueExpression {
   }
 
   public Object getValue(ActivityContext activityContext) {
-    return getValue((ExecutionContextImpl) activityContext);
+    ScopeInstanceImpl scopeInstance = ((ExecutionContextImpl) activityContext).getScopeInstance();
+    return getValue(scopeInstance);
   }
   
   public Object getValue(EventContext eventContext) {
-    return getValue((ExecutionContextImpl) eventContext);
+    ScopeInstanceImpl scopeInstance = ((ExecutionContextImpl) eventContext).getScopeInstance();
+    return getValue(scopeInstance);
   }
   
-  protected Object getValue(ExecutionContextImpl executionContext) {
-    ELContext elContext = expressionManager.getElContext(executionContext.getScopeInstance());
+  public Object getValue(ScopeInstanceImpl scopeInstance) {
+    ELContext elContext = expressionManager.getElContext(scopeInstance);
     try {
       return valueExpression.getValue(elContext);
     } catch (PropertyNotFoundException e) {

@@ -25,7 +25,7 @@ import org.activiti.pvm.activity.SignallableActivityBehaviour;
  * 
  * @author Joram Barrez
  */
-public abstract class BpmnActivity implements SignallableActivityBehaviour {
+public abstract class AbstractBpmnActivity implements SignallableActivityBehaviour {
   
   protected BpmnActivityBehavior bpmnActivityBehavior = new BpmnActivityBehavior();
   

@@ -52,6 +52,13 @@ public class ProcessElementImpl {
     properties.put(name, value);
   }
   
+  public Object getProperty(String name) {
+    if (properties==null) {
+      return null;
+    }
+    return properties.get(name);
+  }
+  
   @SuppressWarnings("unchecked")
   public Map<String, Object> getProperties() {
     if (properties==null) {

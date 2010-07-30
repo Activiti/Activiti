@@ -41,7 +41,7 @@ public class ScopeInstanceVariableElResolver extends ELResolver {
     // Variable resolution
     if (base == null) {
       String variableName = (String) property; // according to javadoc, can only be a String
-      if (scopeInstance.getVariables().containsKey(variableName)) {
+      if (scopeInstance.hasVariable(variableName)) {
         context.setPropertyResolved(true); // if not set, the next elResolver in the CompositeElResolver will be called
         return scopeInstance.getVariable(variableName);
       }
@@ -56,7 +56,7 @@ public class ScopeInstanceVariableElResolver extends ELResolver {
   public boolean isReadOnly(ELContext context, Object base, Object property) {
     if (base == null) {
       String variableName = (String) property;
-      return !scopeInstance.getVariables().containsKey(variableName);
+      return !scopeInstance.hasVariable(variableName);
     }
     return true;
   }
@@ -64,7 +64,7 @@ public class ScopeInstanceVariableElResolver extends ELResolver {
   public void setValue(ELContext context, Object base, Object property, Object value) {
     if (base == null) {
       String variableName = (String) property;
-      if (scopeInstance.getVariables().containsKey(variableName)) {
+      if (scopeInstance.hasVariable(variableName)) {
         scopeInstance.setVariable(variableName, value);
       }
     }

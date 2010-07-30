@@ -17,6 +17,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.impl.bpmn.parser.BpmnParse;
+import org.activiti.pvm.Condition;
 import org.activiti.pvm.activity.ActivityContext;
 import org.activiti.pvm.process.PvmTransition;
 
@@ -54,14 +56,14 @@ public class ExclusiveGatewayActivity extends GatewayActivity {
       PvmTransition seqFlow = transitionIterator.next();
       
 // TODO conditions should go into the activity behaviour configuration (probably base BpmnActivity as all activities need conditions)
-//      Condition condition = seqFlow.getCondition();
-//      if ( condition==null || condition.evaluate(activityContext) ) {
-//        if (log.isLoggable(Level.FINE)) {
-//          log.fine("Sequence flow '" + seqFlow.getId() + " '"
-//                  + "selected as outgoing sequence flow.");
-//        }
-//        outgoingSeqFlow = seqFlow;
-//      }
+      Condition condition = (Condition) seqFlow.getProperty(BpmnParse.PROPERTYNAME_CONDITION);
+      if ( condition==null || condition.evaluate(activityContext) ) {
+        if (log.isLoggable(Level.FINE)) {
+          log.fine("Sequence flow '" + seqFlow.getId() + " '"
+                  + "selected as outgoing sequence flow.");
+        }
+        outgoingSeqFlow = seqFlow;
+      }
     }
     
     if (outgoingSeqFlow != null) {

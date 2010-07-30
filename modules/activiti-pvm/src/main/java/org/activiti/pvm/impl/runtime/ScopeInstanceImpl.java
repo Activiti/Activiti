@@ -34,6 +34,7 @@ public class ScopeInstanceImpl {
 
   protected ProcessDefinitionImpl processDefinition;
   protected ScopeImpl scope;
+  protected ScopeInstanceImpl parent;
   protected Set<ActivityInstanceImpl> activityInstances = new HashSet<ActivityInstanceImpl>();
   protected Map<String, Object> variables;
 
@@ -88,7 +89,29 @@ public class ScopeInstanceImpl {
   
   // variables ////////////////////////////////////////////////////////////////
   
+  public boolean hasVariable(String variableName) {
+    if (getVariables().containsKey(variableName)) {
+      return true;
+    }
+    if (parent!=null) {
+      return parent.hasVariable(variableName);
+    }
+    return false;
+  }
+
   public void setVariable(String variableName, Object value) {
+    if (getVariables().containsKey(variableName)) {
+      setVariableLocally(variableName, value);
+      return;
+    }
+    if (parent!=null) {
+      parent.setVariable(variableName, value);
+      return;
+    }
+    setVariableLocally(variableName, value);
+  }
+
+  public void setVariableLocally(String variableName, Object value) {
     if (variables==null) {
       variables = new HashMap<String, Object>();
     }
@@ -96,20 +119,28 @@ public class ScopeInstanceImpl {
   }
 
   public Object getVariable(String variableName) {
-    if (variables==null) {
-      return null;
+    if (getVariables().containsKey(variableName)) {
+      return variables.get(variableName);
+    }
+    if (parent!=null) {
+      return parent.hasVariable(variableName);
     }
     return variables.get(variableName);
   }
 
-  @SuppressWarnings("unchecked")
   public Map<String, Object> getVariables() {
-    if (variables==null) {
-      return Collections.EMPTY_MAP;
-    }
-    return variables;
+    Map<String, Object> variableCollector = new HashMap<String, Object>();
+    collectVariables(variableCollector);
+    return variableCollector;
   }
   
+  protected void collectVariables(Map<String, Object> variableCollector) {
+    variableCollector.putAll(getVariables());
+    if (parent!=null) {
+      parent.collectVariables(variableCollector);
+    }
+  }
+
   public void setVariables(Map<String, Object> variables) {
     if (variables!=null) {
       for (String variableName: variables.keySet()) {
@@ -147,5 +178,14 @@ public class ScopeInstanceImpl {
   
   public void setProcessDefinition(ProcessDefinitionImpl processDefinition) {
     this.processDefinition = processDefinition;
+  }
+
+  public ScopeInstanceImpl getParent() {
+    return parent;
+  }
+
+  
+  public void setParent(ScopeInstanceImpl parent) {
+    this.parent = parent;
   }
 }

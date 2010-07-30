@@ -12,11 +12,13 @@
  */
 package org.activiti.pvm;
 
+import org.activiti.pvm.activity.ActivityContext;
+
 
 /**
  * @author Tom Baeyens
  */
 public interface Condition {
 
-  boolean evaluate(ActivityExecution execution);
+  boolean evaluate(ActivityContext activityContext);
 }

@@ -17,7 +17,9 @@ import javax.el.MethodExpression;
 import javax.el.MethodNotFoundException;
 
 import org.activiti.engine.ActivitiException;
-import org.activiti.impl.execution.ExecutionImpl;
+import org.activiti.pvm.activity.ActivityContext;
+import org.activiti.pvm.impl.runtime.ExecutionContextImpl;
+import org.activiti.pvm.impl.runtime.ScopeInstanceImpl;
 
 
 /**
@@ -26,16 +28,20 @@ import org.activiti.impl.execution.ExecutionImpl;
  */
 public class ActivitiMethodExpression {
 
-  MethodExpression methodExpression;
-  ExpressionManager expressionManager;
+  protected MethodExpression methodExpression;
+  protected ExpressionManager expressionManager;
 
   public ActivitiMethodExpression(MethodExpression methodExpression, ExpressionManager expressionManager) {
     this.methodExpression = methodExpression;
     this.expressionManager = expressionManager;
   }
 
-  public Object invoke(ExecutionImpl execution) {
-    ELContext elContext = expressionManager.getElContext(execution);
+  public Object invoke(ActivityContext activityContext) {
+    return invoke(((ExecutionContextImpl)activityContext).getScopeInstance());
+  }
+
+  public Object invoke(ScopeInstanceImpl scopeInstance) {
+    ELContext elContext = expressionManager.getElContext(scopeInstance);
     try {
       return methodExpression.invoke(elContext, null);
     } catch (MethodNotFoundException e) {

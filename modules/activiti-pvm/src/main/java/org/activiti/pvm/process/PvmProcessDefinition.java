@@ -23,4 +23,6 @@ public interface PvmProcessDefinition {
 
   PvmProcessInstance createProcessInstance();
 
+  Object getProperty(String name);
+
 }

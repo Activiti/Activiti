@@ -21,7 +21,7 @@ package org.activiti.engine.impl.bpmn;
  * 
  * @author Joram Barrez
  */
-public class NoneStartEventActivity extends BpmnActivity {
+public class NoneStartEventActivity extends AbstractBpmnActivity {
 
   // Nothing to see here.
   // The default behaviour of the BpmnActivity is exactly what

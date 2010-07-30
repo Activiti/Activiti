@@ -18,7 +18,7 @@ package org.activiti.engine.impl.bpmn;
  * 
  * @author Joram Barrez
  */
-public abstract class GatewayActivity extends BpmnActivity {
+public abstract class GatewayActivity extends AbstractBpmnActivity {
   
   // TODO: implement diverging/converging 
 

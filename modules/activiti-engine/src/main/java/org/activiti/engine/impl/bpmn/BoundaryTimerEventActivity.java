@@ -21,7 +21,7 @@ import org.activiti.pvm.activity.ActivityContext;
  * 
  * @author Joram Barrez
  */
-public class BoundaryTimerEventActivity extends BpmnActivity {
+public class BoundaryTimerEventActivity extends AbstractBpmnActivity {
   
   protected boolean interrupting;
     

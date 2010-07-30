@@ -23,7 +23,6 @@ import org.activiti.pvm.runtime.PvmActivityInstance;
 public class ActivityInstanceImpl extends ScopeInstanceImpl implements PvmActivityInstance {
 
   protected ActivityImpl activity;
-  protected ScopeInstanceImpl parent;
   protected ExecutionContextImpl executionContext;
   
   public ActivityInstanceImpl(ActivityImpl activity, ScopeInstanceImpl parent) {
@@ -46,17 +45,6 @@ public class ActivityInstanceImpl extends ScopeInstanceImpl implements PvmActivi
     this.activity = activity;
   }
 
-  
-  public ScopeInstanceImpl getParent() {
-    return parent;
-  }
-
-  
-  public void setParent(ScopeInstanceImpl parent) {
-    this.parent = parent;
-  }
-
-  
   public ExecutionContextImpl getExecutionContext() {
     return executionContext;
   }

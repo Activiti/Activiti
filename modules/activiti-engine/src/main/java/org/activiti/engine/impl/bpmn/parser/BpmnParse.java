@@ -41,9 +41,11 @@ import org.activiti.engine.impl.bpmn.UserTaskActivity;
 import org.activiti.engine.impl.calendar.BusinessCalendar;
 import org.activiti.engine.impl.calendar.BusinessCalendarManager;
 import org.activiti.engine.impl.calendar.DurationBusinessCalendar;
+import org.activiti.engine.impl.el.ActivitiValueExpression;
 import org.activiti.engine.impl.el.ExpressionManager;
 import org.activiti.engine.impl.el.UelMethodExpressionCondition;
 import org.activiti.engine.impl.el.UelValueExpressionCondition;
+import org.activiti.engine.impl.jobexecutor.TimerDeclarationImpl;
 import org.activiti.engine.impl.jobexecutor.TimerExecuteNestedActivityJobHandler;
 import org.activiti.engine.impl.persistence.repository.ProcessDefinitionEntity;
 import org.activiti.engine.impl.persistence.task.TaskDefinition;
@@ -51,15 +53,10 @@ import org.activiti.engine.impl.scripting.ScriptingEngines;
 import org.activiti.engine.impl.util.xml.Element;
 import org.activiti.engine.impl.util.xml.Parse;
 import org.activiti.engine.impl.util.xml.Parser;
-import org.activiti.engine.impl.variable.VariableDestroyWithExpression;
-import org.activiti.engine.impl.variable.VariableDestroyWithVariable;
-import org.activiti.engine.impl.variable.VariableInitializeWithExpression;
-import org.activiti.engine.impl.variable.VariableInitializeWithVariable;
+import org.activiti.engine.impl.variable.VariableDeclarationImpl;
 import org.activiti.impl.definition.FormReference;
-import org.activiti.impl.timer.TimerDeclarationImpl;
 import org.activiti.pvm.ActivityBehavior;
 import org.activiti.pvm.Condition;
-import org.activiti.pvm.Listener;
 import org.activiti.pvm.impl.process.ActivityImpl;
 import org.activiti.pvm.impl.process.ProcessDefinitionImpl;
 import org.activiti.pvm.impl.process.ScopeImpl;
@@ -73,6 +70,12 @@ import org.activiti.pvm.impl.process.TransitionImpl;
  * @author Joram Barrez
  */
 public class BpmnParse extends Parse {
+
+  public static final String PROPERTYNAME_CONDITION = "condition";
+
+  public static final String PROPERTYNAME_VARIABLE_DECLARATIONS = "variableDeclarations";
+
+  public static final String PROPERTYNAME_TIMER_DECLARATION = "timerDeclarations";
 
   private static final Logger LOG = Logger.getLogger(BpmnParse.class.getName());
 
@@ -426,7 +429,7 @@ public class BpmnParse extends Parse {
       }
     }
     
-    activity.setActivityBehavior(new ScriptTaskActivity(scriptingEngines, script, language));
+    activity.setActivityBehavior(new ScriptTaskActivity(script, language));
   }
 
   /**
@@ -513,15 +516,12 @@ public class BpmnParse extends Parse {
     String form = userTaskElement.attributeNS(BpmnParser.BPMN_EXTENSIONS_NS, "form");
     String formLanguage = userTaskElement.attributeNS(BpmnParser.BPMN_EXTENSIONS_NS, "form-language", ScriptingEngines.DEFAULT_SCRIPTING_LANGUAGE);
     if (form != null) {
-      activity.setFormReference(new FormReference(form, formLanguage));
+      activity.setProperty("formReference", new FormReference(form, formLanguage));
     }
 
     activity.setActivityBehavior(userTaskActivity);
 
-    // TODO: needs to be generalized for every activity.
-    if (parseProperties(userTaskElement, activity)) {
-      activity.setScope(true);
-    }
+    parseProperties(userTaskElement, activity);
   }
 
   public TaskDefinition parseTaskDefinition(Element taskElement) {
@@ -655,8 +655,9 @@ public class BpmnParse extends Parse {
       String id = endEventElement.attribute("id");
       String name = endEventElement.attribute("name");
 
-      ActivityImpl activity = scopeElement.createActivity(id);
-      activity.setName(name);
+      ActivityImpl activity = scopeElement.createActivity();
+      activity.setId(id);
+      activity.setProperty("name", name);
 
       // Only none end events are currently supported
       activity.setActivityBehavior(new NoneEndEventActivity());
@@ -700,8 +701,9 @@ public class BpmnParse extends Parse {
         throw new ActivitiException("Invalid reference in boundary event: " + attachedToRef
               + " Make sure that the referenced activity is defined in the same scope as the boundary event");
       }
-      ActivityImpl nestedActivity = parentActivity.createActivity(id);
-      nestedActivity.setName(boundaryEventElement.attribute("name"));
+      ActivityImpl nestedActivity = parentActivity.createActivity();
+      nestedActivity.setId(id);
+      nestedActivity.setProperty("name", boundaryEventElement.attribute("name"));
 
       String cancelActivity = boundaryEventElement.attribute("cancelActivity", "true");
       boolean interrupting = cancelActivity.equals("true") ? true : false;
@@ -748,11 +750,33 @@ public class BpmnParse extends Parse {
 
     BusinessCalendar businessCalendar = businessCalendarManager.getBusinessCalendar(DurationBusinessCalendar.NAME);
 
-    // TODO: check if any is given
-    TimerDeclarationImpl timerDeclaration = timerActivity.getParent().createTimerDeclaration(businessCalendar, timeDurationText,
-            TimerExecuteNestedActivityJobHandler.TYPE);
+    // Parse the timer declaration
+    // TODO move the timer declaration into the bpmn activity or next to the TimerSession
+    TimerDeclarationImpl timerDeclaration = new TimerDeclarationImpl(businessCalendar, timeDurationText, TimerExecuteNestedActivityJobHandler.TYPE);
     timerDeclaration.setJobHandlerConfiguration(timerActivity.getId());
+    addTimerDeclaration(timerActivity.getParent(), timerDeclaration);
+    
     timerActivity.setActivityBehavior(boundaryTimerEventActivity);
+  }
+
+  @SuppressWarnings("unchecked")
+  protected void addTimerDeclaration(ScopeImpl scope, TimerDeclarationImpl timerDeclaration) {
+    List<TimerDeclarationImpl> timerDeclarations = (List<TimerDeclarationImpl>) scope.getProperty(PROPERTYNAME_TIMER_DECLARATION);
+    if (timerDeclarations==null) {
+      timerDeclarations = new ArrayList<TimerDeclarationImpl>();
+      scope.setProperty(PROPERTYNAME_TIMER_DECLARATION, timerDeclarations);
+    }
+    timerDeclarations.add(timerDeclaration);
+  }
+  
+  @SuppressWarnings("unchecked")
+  protected void addVariableDeclaration(ScopeImpl scope, VariableDeclarationImpl variableDeclaration) {
+    List<VariableDeclarationImpl> variableDeclarations = (List<VariableDeclarationImpl>) scope.getProperty(PROPERTYNAME_VARIABLE_DECLARATIONS);
+    if (variableDeclarations==null) {
+      variableDeclarations = new ArrayList<VariableDeclarationImpl>();
+      scope.setProperty(PROPERTYNAME_VARIABLE_DECLARATIONS, variableDeclarations);
+    }
+    variableDeclarations.add(variableDeclaration);
   }
   
   /**
@@ -764,7 +788,6 @@ public class BpmnParse extends Parse {
    */
   public void parseSubProcess(Element subProcessElement, ScopeImpl scopeElement) {
     ActivityImpl activity = parseAndCreateActivityOnScopeElement(subProcessElement, scopeElement);
-    activity.setScope(true);
     activity.setActivityBehavior(new SubProcessActivity());
     parseScope(subProcessElement, activity);
   }
@@ -796,12 +819,11 @@ public class BpmnParse extends Parse {
    * @param activity
    *          The activity where the property declaration is done.
    */
-  public boolean parseProperties(Element element, ActivityImpl activity) {
+  public void parseProperties(Element element, ActivityImpl activity) {
     List<Element> propertyElements = element.elements("property");
     for (Element propertyElement : propertyElements) {
       parseProperty(propertyElement, activity);
     }
-    return !propertyElements.isEmpty();
   }
 
   /**
@@ -857,39 +879,40 @@ public class BpmnParse extends Parse {
       propertyType = type != null ? type : "string"; // default is string
     }
 
-    activity.createVariableDeclaration(propertyName, propertyType);
+    VariableDeclarationImpl variableDeclaration = new VariableDeclarationImpl(propertyName, propertyType);
+    addVariableDeclaration(activity, variableDeclaration);
 
     String src = propertyElement.attributeNS(BpmnParser.BPMN_EXTENSIONS_NS, "src");
     if (src != null) {
-      activity.addEventListener(Listener.EVENTNAME_START, new VariableInitializeWithVariable(src, propertyName));
+      variableDeclaration.setSourceVariableName(src);
     }
 
     String srcExpr = propertyElement.attributeNS(BpmnParser.BPMN_EXTENSIONS_NS, "srcExpr");
     if (srcExpr != null) {
-      activity.addEventListener(Listener.EVENTNAME_START, new VariableInitializeWithExpression(scriptingEngines, propertyName, srcExpr, "juel"));
+      ActivitiValueExpression sourceValueExpression = expressionManager.createValueExpression(srcExpr);
+      variableDeclaration.setSourceValueExpression(sourceValueExpression);
     }
 
     String dst = propertyElement.attributeNS(BpmnParser.BPMN_EXTENSIONS_NS, "dst");
     if (dst != null) {
-      activity.addEventListener(Listener.EVENTNAME_END, new VariableDestroyWithVariable(propertyName, dst));
+      variableDeclaration.setDestinationVariableName(dst);
     }
 
     String destExpr = propertyElement.attributeNS(BpmnParser.BPMN_EXTENSIONS_NS, "dstExpr");
     if (destExpr != null) {
-      activity.addEventListener(Listener.EVENTNAME_END, new VariableDestroyWithExpression(scriptingEngines, propertyName, destExpr, "juel"));
+      ActivitiValueExpression destinationValueExpression = expressionManager.createValueExpression(destExpr);
+      variableDeclaration.setDestinationValueExpression(destinationValueExpression);
     }
 
     String link = propertyElement.attributeNS(BpmnParser.BPMN_EXTENSIONS_NS, "link");
     if (link != null) {
-      activity.addEventListener(Listener.EVENTNAME_START, new VariableInitializeWithVariable(link, propertyName));
-      activity.addEventListener(Listener.EVENTNAME_END, new VariableDestroyWithVariable(propertyName, link));
+      variableDeclaration.setLink(link);
     }
 
     String linkExpr = propertyElement.attributeNS(BpmnParser.BPMN_EXTENSIONS_NS, "linkExpr");
     if (linkExpr != null) {
-      expressionManager.createValueExpression(linkExpr);
-      activity.addEventListener(Listener.EVENTNAME_START, new VariableInitializeWithExpression(scriptingEngines, linkExpr, propertyName, "juel"));
-      activity.addEventListener(Listener.EVENTNAME_END, new VariableDestroyWithExpression(scriptingEngines, propertyName, linkExpr, "juel"));
+      ActivitiValueExpression linkValueExpression = expressionManager.createValueExpression(linkExpr);
+      variableDeclaration.setLinkValueExpression(linkValueExpression);
     }
   }
 
@@ -919,9 +942,9 @@ public class BpmnParse extends Parse {
         throw new ActivitiException("Invalid destination of sequence flow '" + id + "'");
       }
 
-      TransitionImpl transition = sourceActivity.createTransition();
+      TransitionImpl transition = sourceActivity.createOutgoingTransition();
       transition.setId(id);
-      transition.setName(sequenceFlowElement.attribute("name"));
+      transition.setProperty("name", sequenceFlowElement.attribute("name"));
       transition.setDestination(destinationActivity);
       parseSequenceFlowConditionExpression(sequenceFlowElement, transition);
     }
@@ -959,7 +982,7 @@ public class BpmnParse extends Parse {
       } else {
         throw new ActivitiException("Unknown language for condition: " + language);
       }
-      seqFlow.setCondition(condition);
+      seqFlow.setProperty(PROPERTYNAME_CONDITION, condition);
     }
   }
 

@@ -24,7 +24,7 @@ import org.activiti.pvm.process.PvmActivity;
  * 
  * @author Joram Barrez
  */
-public class SubProcessActivity extends BpmnActivity {
+public class SubProcessActivity extends AbstractBpmnActivity {
   
   public void start(ActivityContext activityContext) throws Exception {
     PvmActivity activity = activityContext.getActivity();

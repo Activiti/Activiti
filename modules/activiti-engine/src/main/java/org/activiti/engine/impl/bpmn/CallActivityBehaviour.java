@@ -25,7 +25,7 @@ import org.activiti.pvm.activity.ActivityContext;
  * 
  * @author Joram Barrez
  */
-public class CallActivityBehaviour extends BpmnActivity {
+public class CallActivityBehaviour extends AbstractBpmnActivity {
   
   protected String processDefinitonKey;
   

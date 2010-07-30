@@ -16,7 +16,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.activiti.engine.impl.calendar.BusinessCalendar;
-import org.activiti.impl.timer.TimerDeclarationImpl;
+import org.activiti.engine.impl.jobexecutor.TimerDeclarationImpl;
+import org.activiti.engine.impl.variable.VariableDeclarationImpl;
 import org.activiti.pvm.Activity;
 import org.activiti.pvm.ActivityBehavior;
 

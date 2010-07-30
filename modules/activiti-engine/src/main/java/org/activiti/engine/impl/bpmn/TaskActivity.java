@@ -20,6 +20,6 @@ package org.activiti.engine.impl.bpmn;
  * 
  * @author Joram Barrez
  */
-public class TaskActivity extends BpmnActivity {
+public class TaskActivity extends AbstractBpmnActivity {
 
 }
