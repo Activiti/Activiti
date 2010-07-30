@@ -14,7 +14,7 @@
 package org.activiti.engine.impl.bpmn;
 
 import org.activiti.engine.ProcessService;
-import org.activiti.pvm.ActivityExecution;
+import org.activiti.pvm.activity.ActivityContext;
 
 
 /**
@@ -27,12 +27,12 @@ import org.activiti.pvm.ActivityExecution;
  */
 public class ReceiveTaskActivity extends TaskActivity {
 
-  public void execute(ActivityExecution execution) throws Exception {
+  public void start(ActivityContext activityContext) throws Exception {
     // Do nothing: waitstate behavior
   }
   
-  public void event(ActivityExecution execution, Object event) throws Exception {
-    leave(execution);
+  public void signal(ActivityContext activityContext, String signalName, Object data) throws Exception {
+    leave(activityContext);
   }
   
 }

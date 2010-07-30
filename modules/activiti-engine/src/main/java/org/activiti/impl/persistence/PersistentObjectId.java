@@ -14,6 +14,8 @@ package org.activiti.impl.persistence;
 
 import java.io.Serializable;
 
+import org.activiti.engine.impl.persistence.PersistentObject;
+
 
 /**
  * @author Tom Baeyens

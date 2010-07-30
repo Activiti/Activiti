@@ -24,13 +24,14 @@ import org.activiti.engine.TableMetaData;
 import org.activiti.engine.TablePage;
 import org.activiti.engine.Task;
 import org.activiti.engine.impl.interceptor.Session;
+import org.activiti.engine.impl.persistence.PersistentObject;
 import org.activiti.engine.impl.persistence.db.IdBlock;
 import org.activiti.engine.impl.persistence.identity.GroupImpl;
 import org.activiti.engine.impl.persistence.identity.UserImpl;
 import org.activiti.engine.impl.persistence.runtime.ByteArrayImpl;
 import org.activiti.engine.impl.persistence.runtime.JobImpl;
 import org.activiti.engine.impl.persistence.runtime.TimerImpl;
-import org.activiti.engine.impl.persistence.task.TaskImpl;
+import org.activiti.engine.impl.persistence.task.TaskEntity;
 import org.activiti.engine.impl.persistence.task.TaskInvolvement;
 import org.activiti.engine.impl.variable.VariableInstance;
 import org.activiti.impl.db.execution.DbExecutionImpl;
@@ -70,8 +71,8 @@ public interface PersistenceSession extends Session {
   void addDeserializedObject(Object deserializedObject, byte[] bytes, VariableInstance variableInstance);
 
   /* Task */
-  TaskImpl findTask(String taskId);
-  List<TaskImpl> findTasksByExecution(String executionId);
+  TaskEntity findTask(String taskId);
+  List<TaskEntity> findTasksByExecution(String executionId);
   List<Task> findTasksByAssignee(String assignee);
   List<Task> findCandidateTasks(String userId, List<String> groupIds);
   

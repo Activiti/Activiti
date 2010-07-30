@@ -10,7 +10,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.activiti.impl.persistence;
+package org.activiti.engine.impl.persistence;
 
 import java.util.ArrayList;
 import java.util.HashMap;

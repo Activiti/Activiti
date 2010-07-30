@@ -18,6 +18,7 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.activiti.pvm.PvmException;
 import org.activiti.pvm.activity.ActivityBehavior;
 import org.activiti.pvm.activity.ActivityContext;
 import org.activiti.pvm.activity.SignallableActivityBehaviour;
@@ -82,7 +83,10 @@ public class ExecutionContextImpl implements EventContext, ActivityContext {
     this.transition = (TransitionImpl) transition;
     fireEvent(activityInstance.activity, Event.ACTIVITY_END, TRANSITION_ACTIVITY_END);
   }
-  
+
+  public void end() {
+    throw new UnsupportedOperationException("implement me");
+  }
 
   private void fireEvent(ProcessElementImpl eventDispatcher, String event, AtomicOperation eventPostOperation) {
     eventListeners = eventDispatcher.getEventListeners().get(event);
@@ -128,7 +132,6 @@ public class ExecutionContextImpl implements EventContext, ActivityContext {
 
       } else {
         executionContext.eventListenerIndex = 0;
-        executionContext.eventPostOperation = null;
         AtomicOperation operation = executionContext.eventPostOperation;
         executionContext.eventPostOperation = null;
         executionContext.perform(operation);
@@ -149,9 +152,27 @@ public class ExecutionContextImpl implements EventContext, ActivityContext {
     public void perform(ExecutionContextImpl executionContext) {
       ActivityInstanceImpl activityInstance = executionContext.activityInstance;
       activityInstance.setExecutionContext(executionContext);
-      ActivityBehavior activityBehaviour = activityInstance.getActivity().getActivityBehaviour();
-      activityBehaviour.start(executionContext);
+      ActivityImpl activity = activityInstance.getActivity();
+      String activityId = activity.getId();
+      ActivityBehavior activityBehaviour = activity.getActivityBehavior();
+      if (activityBehaviour==null) {
+        throw new PvmException("no activity behaviour specified in activty '"+activityId+"'");
+      }
+      try {
+        activityBehaviour.start(executionContext);
+      } catch (RuntimeException e) {
+        log.log(Level.SEVERE, getDelegationExceptionMessage(activity, "start", e), e);
+        throw e;
+      } catch (Exception e) {
+        String delegationExceptionMessage = getDelegationExceptionMessage(activity, "start", e);
+        log.log(Level.SEVERE, delegationExceptionMessage, e);
+        throw new PvmException(delegationExceptionMessage, e);
+      }
     }
+  }
+
+  private static String getDelegationExceptionMessage(ActivityImpl activity, String methodName, Exception e) {
+    return "exception during "+methodName+" of activity '"+activity.getId()+"', behavior '"+activity.getActivityBehavior().getClass().getName()+"': "+e;
   }
 
   private static class TransitionActivityEnd implements AtomicOperation {
@@ -182,8 +203,18 @@ public class ExecutionContextImpl implements EventContext, ActivityContext {
   private static class ActivitySignal implements AtomicOperation {
     public void perform(ExecutionContextImpl executionContext) {
       ActivityInstanceImpl activityInstance = executionContext.activityInstance;
-      SignallableActivityBehaviour signallableActivityBehaviour = (SignallableActivityBehaviour) activityInstance.getActivity().getActivityBehaviour();
-      signallableActivityBehaviour.signal(executionContext, executionContext.signalName, executionContext.data);
+      ActivityImpl activity = activityInstance.getActivity();
+      SignallableActivityBehaviour signallableActivityBehaviour = (SignallableActivityBehaviour) activity.getActivityBehavior();
+      try {
+        signallableActivityBehaviour.signal(executionContext, executionContext.signalName, executionContext.data);
+      } catch (RuntimeException e) {
+        log.log(Level.SEVERE, getDelegationExceptionMessage(activity, "signal", e), e);
+        throw e;
+      } catch (Exception e) {
+        String delegationExceptionMessage = getDelegationExceptionMessage(activity, "signal", e);
+        log.log(Level.SEVERE, delegationExceptionMessage, e);
+        throw new PvmException(delegationExceptionMessage, e);
+      }
     }
   }
 
@@ -203,6 +234,22 @@ public class ExecutionContextImpl implements EventContext, ActivityContext {
   
   // activity execution context methods ///////////////////////////////////////
   
+  public PvmActivity getActivity() {
+    return activityInstance.getActivity();
+  }
+  
+  public ProcessInstanceImpl getProcessInstance() {
+    return processInstance;
+  }
+  
+  public ActivityInstanceImpl getActivityInstance() {
+    return activityInstance;
+  }
+  
+  public ScopeInstanceImpl getScopeInstance() {
+    return scopeInstance;
+  }
+
   @SuppressWarnings("unchecked")
   public List<PvmTransition> getOutgoingTransitions() {
     return (List) activityInstance.getActivity().getOutgoingTransitions();

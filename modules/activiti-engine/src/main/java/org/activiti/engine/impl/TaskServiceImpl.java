@@ -28,7 +28,7 @@ import org.activiti.engine.impl.cmd.GetFormCmd;
 import org.activiti.engine.impl.cmd.SaveTaskCmd;
 import org.activiti.engine.impl.cmd.SetTaskPriorityCmd;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
-import org.activiti.engine.impl.persistence.task.TaskImpl;
+import org.activiti.engine.impl.persistence.task.TaskEntity;
 import org.activiti.engine.impl.persistence.task.TaskInvolvementType;
 
 
@@ -39,11 +39,11 @@ import org.activiti.engine.impl.persistence.task.TaskInvolvementType;
 public class TaskServiceImpl extends ServiceImpl implements TaskService {
 
   public Task newTask() {
-    return new TaskImpl(null);
+    return new TaskEntity(null);
   }
   
   public Task newTask(String taskId) {
-    return new TaskImpl(taskId);
+    return new TaskEntity(taskId);
   }
   
   public void saveTask(Task task) {

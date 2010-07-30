@@ -12,8 +12,9 @@
  */
 package org.activiti.engine.impl.bpmn;
 
-import org.activiti.pvm.ActivityExecution;
-import org.activiti.pvm.EventActivityBehavior;
+import org.activiti.engine.ActivitiException;
+import org.activiti.pvm.activity.ActivityContext;
+import org.activiti.pvm.activity.SignallableActivityBehaviour;
 
 
 /**
@@ -24,31 +25,32 @@ import org.activiti.pvm.EventActivityBehavior;
  * 
  * @author Joram Barrez
  */
-public abstract class BpmnActivity implements EventActivityBehavior {
+public abstract class BpmnActivity implements SignallableActivityBehaviour {
   
   protected BpmnActivityBehavior bpmnActivityBehavior = new BpmnActivityBehavior();
   
   /**
    * Default behaviour: just leave the activity with no extra functionality.
    */
-  public void execute(ActivityExecution execution) throws Exception {
-    leave(execution);
+  public void start(ActivityContext activityContext) throws Exception {
+    leave(activityContext);
   }
   
   /**
    * Default way of leaving a BPMN 2.0 activity: evaluate the conditions on the
    * outgoing sequence flow and take those that evaluate to true.
    */
-  protected void leave(ActivityExecution execution) {
-    bpmnActivityBehavior.performDefaultOutgoingBehavior(execution);
+  protected void leave(ActivityContext activityContext) {
+    bpmnActivityBehavior.performDefaultOutgoingBehavior(activityContext);
   }
   
-  protected void leaveIgnoreConditions(ActivityExecution execution) {
-    bpmnActivityBehavior.performIgnoreConditionsOutgoingBehavior(execution);
+  protected void leaveIgnoreConditions(ActivityContext activityContext) {
+    bpmnActivityBehavior.performIgnoreConditionsOutgoingBehavior(activityContext);
   }
 
-  public void event(ActivityExecution execution, Object event) throws Exception {
-    // Default behaviour: do nothing
+  public void signal(ActivityContext activityContext, String signalName, Object signalData) throws Exception {
+    // concrete activity behaviours that do accept signals should override this method;
+    throw new ActivitiException("this activity doesn't accept signals");
   }
 
 }

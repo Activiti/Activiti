@@ -16,7 +16,7 @@ import java.util.Map;
 
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.interceptor.CommandContext;
-import org.activiti.engine.impl.persistence.task.TaskImpl;
+import org.activiti.engine.impl.persistence.task.TaskEntity;
 import org.activiti.impl.execution.ExecutionImpl;
 import org.activiti.impl.persistence.PersistenceSession;
 
@@ -37,7 +37,7 @@ public class CompleteTaskCmd extends CmdVoid {
   public void executeVoid(CommandContext commandContext) {
     PersistenceSession persistenceSession = commandContext.getPersistenceSession();
     
-    TaskImpl task = persistenceSession.findTask(taskId);
+    TaskEntity task = persistenceSession.findTask(taskId);
     if (variables!=null) {
       task.setExecutionVariables(variables);
     }
@@ -47,7 +47,7 @@ public class CompleteTaskCmd extends CmdVoid {
     }
     task.delete();
     
-    ExecutionImpl execution = task.getExecution();
+    ExecutionImpl execution = task.getActivityInstance();
     if (execution != null) {
       execution.event(null);
     }

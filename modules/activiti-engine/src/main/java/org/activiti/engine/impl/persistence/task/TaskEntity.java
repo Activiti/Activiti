@@ -22,21 +22,20 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.activiti.engine.ProcessInstance;
 import org.activiti.engine.Task;
 import org.activiti.engine.impl.interceptor.CommandContext;
+import org.activiti.engine.impl.persistence.PersistentObject;
+import org.activiti.engine.impl.persistence.runtime.ActivityInstanceEntity;
+import org.activiti.engine.impl.persistence.runtime.ProcessInstanceEntity;
 import org.activiti.engine.impl.util.ClockUtil;
-import org.activiti.impl.db.execution.DbExecutionImpl;
-import org.activiti.impl.execution.ExecutionImpl;
 import org.activiti.impl.execution.VariableMap;
-import org.activiti.impl.persistence.PersistentObject;
-import org.activiti.pvm.ActivityExecution;
+import org.activiti.pvm.runtime.PvmActivityInstance;
 
 /**
  * @author Tom Baeyens
  * @author Joram Barrez
  */ 
-public class TaskImpl implements Task, Serializable, PersistentObject {
+public class TaskEntity implements Task, Serializable, PersistentObject {
 
   private static final long serialVersionUID = 1L;
 
@@ -65,25 +64,25 @@ public class TaskImpl implements Task, Serializable, PersistentObject {
   protected boolean isTaskInvolvementsInitialized = false;
   protected List<TaskInvolvement> taskInvolvements = new ArrayList<TaskInvolvement>(); 
   
-  protected String executionId;
-  protected DbExecutionImpl execution;
+  protected String activityInstanceId;
+  protected ActivityInstanceEntity activityInstance;
   
   protected String processInstanceId;
-  protected ProcessInstance processInstance;
+  protected ProcessInstanceEntity processInstance;
   
   protected String processDefinitionId;
   
-  public TaskImpl() {
+  public TaskEntity() {
   }
 
-  public TaskImpl(String taskId) {
+  public TaskEntity(String taskId) {
     this.id = taskId;
     this.isNew = true;
   }
   
   /** creates and initializes a new persistent task. */
-  public static TaskImpl createAndInsert() {
-    TaskImpl task = create();
+  public static TaskEntity createAndInsert() {
+    TaskEntity task = create();
     CommandContext
         .getCurrent()
         .getPersistenceSession()
@@ -98,8 +97,8 @@ public class TaskImpl implements Task, Serializable, PersistentObject {
    *     .getPersistenceSession()
    *     .insert(task);
    */
-  public static TaskImpl create() {
-    TaskImpl task = new TaskImpl();
+  public static TaskEntity create() {
+    TaskEntity task = new TaskEntity();
     task.isTaskInvolvementsInitialized = true;
     task.createTime = ClockUtil.getCurrentTime();
     return task;
@@ -193,29 +192,29 @@ public class TaskImpl implements Task, Serializable, PersistentObject {
     this.completionDeadline = completionDeadline;
   }
 	
-	public String getExecutionId() {
-	  return executionId;
+	public String getActivityInstanceId() {
+	  return activityInstanceId;
 	}
   
-  public ExecutionImpl getExecution() {
-    if ( (execution==null) && (executionId!=null) ) {
-      this.execution = CommandContext
+  public ActivityInstanceEntity getActivityInstance() {
+    if ( (activityInstance==null) && (activityInstanceId!=null) ) {
+      this.activityInstance = CommandContext
         .getCurrent()
         .getPersistenceSession()
-        .findExecution(executionId);
+        .findExecution(activityInstanceId);
     }
-    return execution;
+    return activityInstance;
   }
   
-  public void setExecution(ActivityExecution execution) {
-    if (execution!=null) {
-      this.execution = (DbExecutionImpl) execution;
-      this.executionId = this.execution.getId();
-      this.processInstanceId = this.execution.getProcessInstanceId();
-      this.processDefinitionId = this.execution.getProcessDefinitionId();
+  public void setActivityInstance(PvmActivityInstance activityInstance) {
+    if (activityInstance!=null) {
+      this.activityInstance = (ActivityInstanceEntity) activityInstance;
+      this.activityInstanceId = this.activityInstance.getId();
+      this.processInstanceId = this.activityInstance.getProcessInstanceId();
+      this.processDefinitionId = this.activityInstance.getProcessDefinitionId();
     } else {
-      this.execution = null;
-      this.executionId = null;
+      this.activityInstance = null;
+      this.activityInstanceId = null;
       this.processInstanceId = null;
       this.processDefinitionId = null;
     }
@@ -300,14 +299,14 @@ public class TaskImpl implements Task, Serializable, PersistentObject {
   }
 
   public Map<String, Object> getExecutionVariables() {
-    if (execution!=null) {
-      return execution.getVariables();
+    if (activityInstance!=null) {
+      return activityInstance.getVariables();
     }
     return Collections.EMPTY_MAP;
   }
   public void setExecutionVariables(Map<String, Object> parameters) {
-    if (getExecution()!=null) {
-      execution.setVariables(parameters);
+    if (getActivityInstance()!=null) {
+      activityInstance.setVariables(parameters);
     }
   }
 }

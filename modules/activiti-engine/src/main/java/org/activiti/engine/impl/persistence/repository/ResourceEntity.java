@@ -15,7 +15,7 @@ package org.activiti.engine.impl.persistence.repository;
 
 import java.io.Serializable;
 
-import org.activiti.impl.persistence.PersistentObject;
+import org.activiti.engine.impl.persistence.PersistentObject;
 
 
 /**

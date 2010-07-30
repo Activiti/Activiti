@@ -13,14 +13,13 @@
 
 package org.activiti.engine.impl.bpmn;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.activiti.impl.execution.ConcurrencyController;
 import org.activiti.pvm.ActivityExecution;
-import org.activiti.pvm.Transition;
+import org.activiti.pvm.activity.ActivityContext;
+import org.activiti.pvm.process.PvmTransition;
 
 /**
  * helper class for implementing BPMN 2.0 activities, offering convience methods
@@ -43,8 +42,8 @@ public class BpmnActivityBehavior {
    * of the process instance. If multiple sequencer flow are selected, 
    * multiple, parallel paths of executions are created.
    */
-  public void performDefaultOutgoingBehavior(ActivityExecution execution) {
-    performOutgoingBehavior(execution, true);
+  public void performDefaultOutgoingBehavior(ActivityContext activityContext) {
+    performOutgoingBehavior(activityContext, true);
   }
   
   /**
@@ -57,49 +56,50 @@ public class BpmnActivityBehavior {
    * multiple outgoing sequence flow, multiple parallel paths of executions will
    * be created.
    */
-  public void performIgnoreConditionsOutgoingBehavior(ActivityExecution execution) {
-    performOutgoingBehavior(execution, false);
+  public void performIgnoreConditionsOutgoingBehavior(ActivityContext activityContext) {
+    performOutgoingBehavior(activityContext, false);
   }
   
   /**
    * Actual implementation of leaving an activity.
    */
-  protected void performOutgoingBehavior(ActivityExecution execution, boolean checkConditions) {
+  protected void performOutgoingBehavior(ActivityContext activityContext, boolean checkConditions) {
 
     if (log.isLoggable(Level.FINE)) {
-        log.fine("Leaving activity '" + execution.getActivity().getId() + "'");
+        log.fine("Leaving activity '" + activityContext.getActivity().getId() + "'");
       }
       
-      List<Transition> outgoingTransitions = execution.getOutgoingTransitions();   
+      List<PvmTransition> outgoingTransitions = activityContext.getOutgoingTransitions();   
       if (outgoingTransitions.size() == 1) {
-        execution.take(outgoingTransitions.get(0));
+        activityContext.take(outgoingTransitions.get(0));
         
       } else if (outgoingTransitions.size() > 1) {
-        ConcurrencyController concurrencyController = new ConcurrencyController(execution);
-        concurrencyController.inactivate();
-        
-        List<ActivityExecution> joinedExecutions = new ArrayList<ActivityExecution>();
-        joinedExecutions.add(execution);
-        
-        List<Transition> transitionsToTake = new ArrayList<Transition>();
-        
-        for (Transition outgoingTransition: outgoingTransitions) {
-          if (outgoingTransition.getCondition() == null 
-                  || !checkConditions 
-                  || outgoingTransition.getCondition().evaluate(execution)) {
-            transitionsToTake.add(outgoingTransition);
-          }
-        }
-        
-        concurrencyController.takeAll(transitionsToTake, joinedExecutions);
+// TODO review (also javadocs)
+//        ConcurrencyController concurrencyController = new ConcurrencyController(activityContext);
+//        concurrencyController.inactivate();
+//        
+//        List<ActivityExecution> joinedExecutions = new ArrayList<ActivityExecution>();
+//        joinedExecutions.add(activityContext);
+//        
+//        List<Transition> transitionsToTake = new ArrayList<Transition>();
+//        
+//        for (Transition outgoingTransition: outgoingTransitions) {
+//          if (outgoingTransition.getCondition() == null 
+//                  || !checkConditions 
+//                  || outgoingTransition.getCondition().evaluate(activityContext)) {
+//            transitionsToTake.add(outgoingTransition);
+//          }
+//        }
+//        
+//        concurrencyController.takeAll(transitionsToTake, joinedExecutions);
         
       } else {
         
         if (log.isLoggable(Level.FINE)) {
-          log.fine("No outgoing sequence flow found for " + execution.getActivity().getId() 
+          log.fine("No outgoing sequence flow found for " + activityContext.getActivity().getId() 
                   + ". Ending execution.");
         }
-        execution.end();
+        activityContext.end();
         
       }
   }

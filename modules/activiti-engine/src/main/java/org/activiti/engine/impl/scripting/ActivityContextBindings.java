@@ -22,6 +22,7 @@ import javax.script.Bindings;
 
 import org.activiti.engine.ActivitiException;
 import org.activiti.impl.execution.ExecutionImpl;
+import org.activiti.pvm.activity.ActivityContext;
 
 
 /**
@@ -30,7 +31,7 @@ import org.activiti.impl.execution.ExecutionImpl;
  * @author Tom Baeyens
  * @author Joram Barrez
  */
-public class ExecutionBindings implements Bindings {
+public class ActivityContextBindings implements Bindings {
 
   protected static final String EXECUTION_KEY = "execution";
   
@@ -43,49 +44,49 @@ public class ExecutionBindings implements Bindings {
   protected static final Set<String> UNSTORED_KEYS = 
     new HashSet<String>(Arrays.asList("out", "out:print", "lang:import", "context", "elcontext"));
   
-  protected ExecutionImpl execution;
+  protected ActivityContext activityContext;
   
-  public ExecutionBindings(ExecutionImpl execution) {
-    if (execution==null) {
+  public ActivityContextBindings(ActivityContext activityContext) {
+    if (activityContext==null) {
       throw new ActivitiException("execution cannot be null");
     }
-    this.execution = execution;
+    this.activityContext = activityContext;
   }
 
   public boolean containsKey(Object key) {
-    return execution.hasVariable((String) key) || EXECUTION_KEY.equals(key);
+    return EXECUTION_KEY.equals(key) || activityContext.getVariables().containsKey((String) key);
   }
 
   public Object get(Object key) {
     if (EXECUTION_KEY.equals(key)) {
-      return execution;
+      return activityContext;
     }
-    return execution.getVariable((String) key);
+    return activityContext.getVariable((String) key);
   }
 
   public Object put(String name, Object value) {
     Object oldValue = null;
     if (!UNSTORED_KEYS.contains(name)) {
-      oldValue = execution.getVariable(name);
-      execution.setVariable(name, value);
+      oldValue = activityContext.getVariable(name);
+      activityContext.setVariable(name, value);
     }
     return oldValue;
   }
 
   public Set<java.util.Map.Entry<String, Object>> entrySet() {
-    return execution.getVariables().entrySet();
+    return activityContext.getVariables().entrySet();
   }
 
   public Set<String> keySet() {
-    return execution.getVariables().keySet();
+    return activityContext.getVariables().keySet();
   }
 
   public int size() {
-    return execution.getVariables().size();
+    return activityContext.getVariables().size();
   }
 
   public Collection<Object> values() {
-    return execution.getVariables().values();
+    return activityContext.getVariables().values();
   }
 
   public void putAll(Map< ? extends String, ? extends Object> toMerge) {

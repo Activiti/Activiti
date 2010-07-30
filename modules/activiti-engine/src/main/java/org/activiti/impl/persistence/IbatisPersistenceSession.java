@@ -35,6 +35,7 @@ import org.activiti.engine.TableMetaData;
 import org.activiti.engine.TablePage;
 import org.activiti.engine.Task;
 import org.activiti.engine.impl.cfg.IdGenerator;
+import org.activiti.engine.impl.persistence.PersistentObject;
 import org.activiti.engine.impl.persistence.db.IdBlock;
 import org.activiti.engine.impl.persistence.identity.GroupImpl;
 import org.activiti.engine.impl.persistence.identity.UserImpl;
@@ -43,7 +44,7 @@ import org.activiti.engine.impl.persistence.runtime.ByteArrayImpl;
 import org.activiti.engine.impl.persistence.runtime.JobImpl;
 import org.activiti.engine.impl.persistence.runtime.MessageImpl;
 import org.activiti.engine.impl.persistence.runtime.TimerImpl;
-import org.activiti.engine.impl.persistence.task.TaskImpl;
+import org.activiti.engine.impl.persistence.task.TaskEntity;
 import org.activiti.engine.impl.persistence.task.TaskInvolvement;
 import org.activiti.engine.impl.util.ClockUtil;
 import org.activiti.engine.impl.variable.DeserializedObject;
@@ -212,10 +213,10 @@ public class IbatisPersistenceSession implements PersistenceSession {
 
   // tasks ////////////////////////////////////////////////////////////////////
 
-  public TaskImpl findTask(String id) {
-    TaskImpl task = (TaskImpl) sqlSession.selectOne(statement("selectTask"), id);
+  public TaskEntity findTask(String id) {
+    TaskEntity task = (TaskEntity) sqlSession.selectOne(statement("selectTask"), id);
     if (task!=null) {
-      task = (TaskImpl) loaded.add(task);
+      task = (TaskEntity) loaded.add(task);
     }
     return task;
   }
@@ -227,7 +228,7 @@ public class IbatisPersistenceSession implements PersistenceSession {
   }
 
   @SuppressWarnings("unchecked")
-  public List<TaskImpl> findTasksByExecution(String executionId) {
+  public List<TaskEntity> findTasksByExecution(String executionId) {
     List tasks = sqlSession.selectList(statement("selectTaskByExecution"), executionId);
     return loaded.add(tasks);
   }
@@ -598,7 +599,7 @@ public class IbatisPersistenceSession implements PersistenceSession {
     protected static Map<Class<?>,String> updateStatementIds = new HashMap<Class<?>, String>();
     static {
       updateStatementIds.put(DbExecutionImpl.class, "updateExecution");
-      updateStatementIds.put(TaskImpl.class, "updateTask");
+      updateStatementIds.put(TaskEntity.class, "updateTask");
       updateStatementIds.put(TaskInvolvement.class, "updateTaskInvolvement");
       updateStatementIds.put(VariableInstance.class, "updateVariableInstance");
       updateStatementIds.put(ByteArrayImpl.class, "updateByteArray");
@@ -693,7 +694,7 @@ public class IbatisPersistenceSession implements PersistenceSession {
     static {
       insertStatementIds.put(DbExecutionImpl.class, "insertExecution");
       insertStatementIds.put(JobImpl.class, "insertJob");
-      insertStatementIds.put(TaskImpl.class, "insertTask");
+      insertStatementIds.put(TaskEntity.class, "insertTask");
       insertStatementIds.put(TaskInvolvement.class, "insertTaskInvolvement");
       insertStatementIds.put(VariableInstance.class, "insertVariableInstance");
       insertStatementIds.put(ByteArrayImpl.class, "insertByteArray");
@@ -756,7 +757,7 @@ public class IbatisPersistenceSession implements PersistenceSession {
     protected static Map<Class<?>,String> deleteStatementIds = new HashMap<Class<?>, String>();
     static {
       deleteStatementIds.put(DbExecutionImpl.class, "deleteExecution");
-      deleteStatementIds.put(TaskImpl.class, "deleteTask");
+      deleteStatementIds.put(TaskEntity.class, "deleteTask");
       deleteStatementIds.put(TaskInvolvement.class, "deleteTaskInvolvement");
       deleteStatementIds.put(VariableInstance.class, "deleteVariableInstance");
       deleteStatementIds.put(ByteArrayImpl.class, "deleteByteArray");

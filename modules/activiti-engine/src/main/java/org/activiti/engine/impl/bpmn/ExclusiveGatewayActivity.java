@@ -17,9 +17,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.activiti.engine.ActivitiException;
-import org.activiti.pvm.ActivityExecution;
-import org.activiti.pvm.Condition;
-import org.activiti.pvm.Transition;
+import org.activiti.pvm.activity.ActivityContext;
+import org.activiti.pvm.process.PvmTransition;
 
 
 /**
@@ -43,32 +42,34 @@ public class ExclusiveGatewayActivity extends GatewayActivity {
    * sequence flow. 
    */
   @Override
-  protected void leave(ActivityExecution execution) {
+  protected void leave(ActivityContext activityContext) {
     
     if (log.isLoggable(Level.FINE)) {
-      log.fine("Leaving activity '" + execution.getActivity().getId() + "'");
+      log.fine("Leaving activity '" + activityContext.getActivity().getId() + "'");
     }
     
-    Transition outgoingSeqFlow = null;
-    Iterator<Transition> seqFlowIterator = execution.getOutgoingTransitions().iterator();
-    while (outgoingSeqFlow == null && seqFlowIterator.hasNext()) {
-      Transition seqFlow = seqFlowIterator.next();
-      Condition condition = seqFlow.getCondition();
-      if ( condition==null || condition.evaluate(execution) ) {
-        if (log.isLoggable(Level.FINE)) {
-          log.fine("Sequence flow '" + seqFlow.getId() + " '"
-                  + "selected as outgoing sequence flow.");
-        }
-        outgoingSeqFlow = seqFlow;
-      }
+    PvmTransition outgoingSeqFlow = null;
+    Iterator<PvmTransition> transitionIterator = activityContext.getOutgoingTransitions().iterator();
+    while (outgoingSeqFlow == null && transitionIterator.hasNext()) {
+      PvmTransition seqFlow = transitionIterator.next();
+      
+// TODO conditions should go into the activity behaviour configuration (probably base BpmnActivity as all activities need conditions)
+//      Condition condition = seqFlow.getCondition();
+//      if ( condition==null || condition.evaluate(activityContext) ) {
+//        if (log.isLoggable(Level.FINE)) {
+//          log.fine("Sequence flow '" + seqFlow.getId() + " '"
+//                  + "selected as outgoing sequence flow.");
+//        }
+//        outgoingSeqFlow = seqFlow;
+//      }
     }
     
     if (outgoingSeqFlow != null) {
-      execution.take(outgoingSeqFlow);
+      activityContext.take(outgoingSeqFlow);
     } else {
       //No sequence flow could be found
       throw new ActivitiException("No outgoing sequence flow of the exclusive gateway '"
-            + execution.getActivity().getId() + "' could be selected for continuing the process");
+              + activityContext.getActivity().getId() + "' could be selected for continuing the process");
     }
   }
 

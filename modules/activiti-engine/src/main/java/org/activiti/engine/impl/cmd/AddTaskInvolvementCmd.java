@@ -14,7 +14,7 @@ package org.activiti.engine.impl.cmd;
 
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.interceptor.CommandContext;
-import org.activiti.engine.impl.persistence.task.TaskImpl;
+import org.activiti.engine.impl.persistence.task.TaskEntity;
 import org.activiti.engine.impl.persistence.task.TaskInvolvement;
 import org.activiti.engine.impl.persistence.task.TaskInvolvementType;
 import org.activiti.impl.persistence.PersistenceSession;
@@ -69,7 +69,7 @@ public class AddTaskInvolvementCmd extends CmdVoid {
   
   public void executeVoid(CommandContext commandContext) {
     PersistenceSession persistenceSession = commandContext.getPersistenceSession();
-    TaskImpl task = persistenceSession.findTask(taskId);
+    TaskEntity task = persistenceSession.findTask(taskId);
     
     if (task == null) {
       throw new ActivitiException("Cannot find task with id " + taskId);
@@ -89,7 +89,7 @@ public class AddTaskInvolvementCmd extends CmdVoid {
     }  
   }
   
-  protected void addTaskInvolvement(TaskImpl task, String userId, String groupId) {
+  protected void addTaskInvolvement(TaskEntity task, String userId, String groupId) {
     TaskInvolvement taskInvolvement = task.createTaskInvolvement();
     taskInvolvement.setType(type);
     if (userId != null) {

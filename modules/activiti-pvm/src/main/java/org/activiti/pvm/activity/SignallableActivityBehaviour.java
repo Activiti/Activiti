@@ -20,5 +20,5 @@ package org.activiti.pvm.activity;
  */
 public interface SignallableActivityBehaviour extends ActivityBehavior {
 
-  void signal(ActivityContext activityContext, String signalName, Object signalData);
+  void signal(ActivityContext activityContext, String signalName, Object signalData) throws Exception;
 }

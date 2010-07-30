@@ -13,6 +13,8 @@
 
 package org.activiti.pvm.impl.process;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -28,27 +30,59 @@ import org.activiti.pvm.event.EventListener;
 public class ProcessElementImpl {
 
   protected String id;
-  protected Map<String, List<EventListener>> eventListeners = new HashMap<String, List<EventListener>>();
-
-  protected void setEventListeners(Map<String, List<EventListener>> eventListeners) {
-    this.eventListeners = eventListeners;
-  }
+  protected Map<String, List<EventListener>> eventListeners;
+  protected Map<String, Object> properties;
 
   public void addEventListener(String eventName, EventListener eventListener) {
-    // TODO
+    if (eventListeners==null) {
+      eventListeners = new HashMap<String, List<EventListener>>();
+    }
+    List<EventListener> listeners = eventListeners.get(eventName);
+    if (listeners==null) {
+      listeners = new ArrayList<EventListener>();
+      eventListeners.put(eventName, listeners);
+    }
+    listeners.add(eventListener);
   }
   
+  public void setProperty(String name, Object value) {
+    if (properties==null) {
+      properties = new HashMap<String, Object>();
+    }
+    properties.put(name, value);
+  }
+  
+  @SuppressWarnings("unchecked")
+  public Map<String, Object> getProperties() {
+    if (properties==null) {
+      return Collections.EMPTY_MAP;
+    }
+    return properties;
+  }
+  
+  @SuppressWarnings("unchecked")
   public Map<String, List<EventListener>> getEventListeners() {
+    if (eventListeners==null) {
+      return Collections.EMPTY_MAP;
+    }
     return eventListeners;
   }
-
+  
+  // getters and setters //////////////////////////////////////////////////////
   
   public String getId() {
     return id;
   }
-
   
   public void setId(String id) {
     this.id = id;
+  }
+  
+  protected void setEventListeners(Map<String, List<EventListener>> eventListeners) {
+    this.eventListeners = eventListeners;
+  }
+
+  public void setProperties(Map<String, Object> properties) {
+    this.properties = properties;
   }
 }

@@ -20,5 +20,5 @@ package org.activiti.pvm.activity;
  */
 public interface ActivityBehavior {
 
-  void start(ActivityContext activityExecutionContext);
+  void start(ActivityContext activityExecutionContext) throws Exception;
 }

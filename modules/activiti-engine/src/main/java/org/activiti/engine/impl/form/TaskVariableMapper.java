@@ -15,7 +15,7 @@ package org.activiti.engine.impl.form;
 import javax.el.ValueExpression;
 import javax.el.VariableMapper;
 
-import org.activiti.engine.impl.persistence.task.TaskImpl;
+import org.activiti.engine.impl.persistence.task.TaskEntity;
 
 
 /**
@@ -23,7 +23,7 @@ import org.activiti.engine.impl.persistence.task.TaskImpl;
  */
 public class TaskVariableMapper extends VariableMapper {
 
-  public TaskVariableMapper(TaskImpl task) {
+  public TaskVariableMapper(TaskEntity task) {
   }
 
   @Override

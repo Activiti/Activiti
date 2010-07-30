@@ -12,12 +12,10 @@
  */
 package org.activiti.engine.impl.persistence.repository;
 
-import org.activiti.engine.impl.variable.DefaultVariableTypes;
-import org.activiti.engine.impl.variable.VariableTypes;
-import org.activiti.impl.db.execution.DbExecutionImpl;
-import org.activiti.impl.definition.ProcessDefinitionImpl;
-import org.activiti.impl.execution.ExecutionImpl;
-import org.activiti.impl.persistence.PersistentObject;
+import org.activiti.engine.impl.persistence.PersistentObject;
+import org.activiti.engine.impl.persistence.runtime.ProcessInstanceEntity;
+import org.activiti.pvm.impl.process.ProcessDefinitionImpl;
+import org.activiti.pvm.impl.runtime.ProcessInstanceImpl;
 
 
 /**
@@ -27,20 +25,32 @@ public class ProcessDefinitionEntity extends ProcessDefinitionImpl implements Pe
 
   private static final long serialVersionUID = 1L;
   
-  public ProcessDefinitionEntity() {
-    this(new DefaultVariableTypes());
+  protected String key;
+  protected String name;
+  
+  public ProcessInstanceImpl createProcessInstance() {
+    return new ProcessInstanceEntity(this);
   }
 
-  public ProcessDefinitionEntity(VariableTypes variableTypes) {
-    super(variableTypes);
-  }
-
-  public ExecutionImpl createProcessInstance() {
-    DbExecutionImpl execution = new DbExecutionImpl(this);
-    return execution;
-  }
-
+  // getters and setters //////////////////////////////////////////////////////
+  
   public Object getPersistentState() {
     return ProcessDefinitionEntity.class;
+  }
+  
+  public String getKey() {
+    return key;
+  }
+
+  public void setKey(String key) {
+    this.key = key;
+  }
+
+  public String getName() {
+    return name;
+  }
+  
+  public void setName(String name) {
+    this.name = name;
   }
 }

@@ -18,8 +18,9 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.activiti.impl.execution.ConcurrencyController;
-import org.activiti.pvm.Activity;
 import org.activiti.pvm.ActivityExecution;
+import org.activiti.pvm.activity.ActivityContext;
+import org.activiti.pvm.process.PvmActivity;
 
 /**
  * Implementation of the Parallel Gateway/AND gateway as definined in the BPMN
@@ -47,23 +48,24 @@ public class ParallelGatewayActivity extends GatewayActivity {
   
   private static Logger log = Logger.getLogger(ParallelGatewayActivity.class.getName());
 
-  public void execute(ActivityExecution execution) throws Exception { 
-    Activity activity = execution.getActivity();
+  public void start(ActivityContext activityContext) throws Exception { 
+    PvmActivity activity = activityContext.getActivity();
 
-    ConcurrencyController concurrencyController = new ConcurrencyController(execution);
-    concurrencyController.inactivate();
-    
-    List<ActivityExecution> joinedExecutions = concurrencyController.findInactiveConcurrentExecutions(activity);
-    
-    int nbrOfExecutionsToJoin = execution.getIncomingTransitions().size();
-    int nbrOfExecutionsJoined = joinedExecutions.size();
-    
-    if (nbrOfExecutionsJoined==nbrOfExecutionsToJoin) {
-      log.fine("parallel gateway '"+activity.getId()+"' activates: "+nbrOfExecutionsJoined+" of "+nbrOfExecutionsToJoin+" joined");
-      concurrencyController.takeAll(execution.getOutgoingTransitions(), joinedExecutions);
-      
-    } else if (log.isLoggable(Level.FINE)){
-      log.fine("parallel gateway '"+activity.getId()+"' does not activate: "+nbrOfExecutionsJoined+" of "+nbrOfExecutionsToJoin+" joined");
-    }
+    throw new UnsupportedOperationException("please implement me");
+//    ConcurrencyController concurrencyController = new ConcurrencyController(activityContext);
+//    concurrencyController.inactivate();
+//    
+//    List<ActivityExecution> joinedExecutions = concurrencyController.findInactiveConcurrentExecutions(activity);
+//    
+//    int nbrOfExecutionsToJoin = activityContext.getIncomingTransitions().size();
+//    int nbrOfExecutionsJoined = joinedExecutions.size();
+//    
+//    if (nbrOfExecutionsJoined==nbrOfExecutionsToJoin) {
+//      log.fine("parallel gateway '"+activity.getId()+"' activates: "+nbrOfExecutionsJoined+" of "+nbrOfExecutionsToJoin+" joined");
+//      concurrencyController.takeAll(activityContext.getOutgoingTransitions(), joinedExecutions);
+//      
+//    } else if (log.isLoggable(Level.FINE)){
+//      log.fine("parallel gateway '"+activity.getId()+"' does not activate: "+nbrOfExecutionsJoined+" of "+nbrOfExecutionsToJoin+" joined");
+//    }
   }
 }

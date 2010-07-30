@@ -20,8 +20,8 @@ import java.util.Map;
 import org.activiti.engine.Job;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.jobexecutor.JobHandler;
+import org.activiti.engine.impl.persistence.PersistentObject;
 import org.activiti.impl.execution.ExecutionImpl;
-import org.activiti.impl.persistence.PersistentObject;
 
 /**
  * Stub of the common parts of a Job. You will normally work with a subclass of

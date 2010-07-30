@@ -16,7 +16,7 @@ import java.io.Serializable;
 
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.interceptor.CommandContext;
-import org.activiti.impl.persistence.PersistentObject;
+import org.activiti.engine.impl.persistence.PersistentObject;
 
 
 /**
@@ -35,7 +35,7 @@ public class TaskInvolvement implements Serializable, PersistentObject {
   protected String groupId;
   
   protected String taskId;
-  protected TaskImpl task;
+  protected TaskEntity task;
 
   public Object getPersistentState() {
     return this.type;
@@ -113,7 +113,7 @@ public class TaskInvolvement implements Serializable, PersistentObject {
     this.taskId = taskId;
   }
   
-  public TaskImpl getTask() {
+  public TaskEntity getTask() {
     if ( (task==null) && (taskId!=null) ) {
       this.task = CommandContext
           .getCurrent()
@@ -123,7 +123,7 @@ public class TaskInvolvement implements Serializable, PersistentObject {
     return task;
   }
 
-  public void setTask(TaskImpl task) {
+  public void setTask(TaskEntity task) {
     this.task = task;
     this.taskId = task.getId();
   }

@@ -14,8 +14,8 @@
 package org.activiti.engine.impl.bpmn;
 
 import org.activiti.impl.definition.ActivityImpl;
-import org.activiti.pvm.Activity;
-import org.activiti.pvm.ActivityExecution;
+import org.activiti.pvm.activity.ActivityContext;
+import org.activiti.pvm.process.PvmActivity;
 
 
 /**
@@ -26,12 +26,13 @@ import org.activiti.pvm.ActivityExecution;
  */
 public class SubProcessActivity extends BpmnActivity {
   
-  public void execute(ActivityExecution execution) throws Exception {
-    Activity activity = execution.getActivity();
+  public void start(ActivityContext activityContext) throws Exception {
+    PvmActivity activity = activityContext.getActivity();
     ActivityImpl initialActivity = ((ActivityImpl) activity).getInitial();
-    
-    execution.setActivity(initialActivity);
-    initialActivity.getActivityBehavior().execute(execution);
+
+    throw new UnsupportedOperationException("please implement me");
+//    activityContext.setActivity(initialActivity);
+//    initialActivity.getActivityBehavior().execute(activityContext);
   }
   
 }

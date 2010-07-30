@@ -20,13 +20,13 @@ import java.util.Map;
 import java.util.Set;
 
 import org.activiti.engine.impl.interceptor.CommandContext;
+import org.activiti.engine.impl.persistence.PersistentObject;
 import org.activiti.engine.impl.persistence.repository.ProcessDefinitionEntity;
-import org.activiti.engine.impl.persistence.task.TaskImpl;
+import org.activiti.engine.impl.persistence.task.TaskEntity;
 import org.activiti.impl.definition.ActivityImpl;
 import org.activiti.impl.definition.ProcessDefinitionImpl;
 import org.activiti.impl.execution.ExecutionImpl;
 import org.activiti.impl.persistence.PersistenceSession;
-import org.activiti.impl.persistence.PersistentObject;
 
 /**
  * @author Tom Baeyens
@@ -84,7 +84,7 @@ public class DbExecutionImpl extends ExecutionImpl implements PersistentObject {
   protected boolean isNew = false;
   protected boolean isExecutionsInitialized = false;
 
-  transient protected List<TaskImpl> tasks = null;
+  transient protected List<TaskEntity> tasks = null;
 
   DbExecutionImpl() {
   }
@@ -251,8 +251,8 @@ public class DbExecutionImpl extends ExecutionImpl implements PersistentObject {
       variableMap.deleteVariable(variableName);
     }
 
-    List<TaskImpl> tasks = persistenceSession.findTasksByExecution(id);
-    for (TaskImpl task : tasks) {
+    List<TaskEntity> tasks = persistenceSession.findTasksByExecution(id);
+    for (TaskEntity task : tasks) {
       task.delete();
     }
 

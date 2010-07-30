@@ -16,7 +16,7 @@ import java.io.Reader;
 
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.Task;
-import org.activiti.engine.impl.persistence.task.TaskImpl;
+import org.activiti.engine.impl.persistence.task.TaskEntity;
 import org.activiti.engine.impl.util.json.JSONObject;
 
 
@@ -30,7 +30,7 @@ public class JsonTaskConverter extends JsonObjectConverter<Task> {
   }
 
   public JSONObject toJsonObject(Task task) {
-    TaskImpl taskImpl = (TaskImpl) task;
+    TaskEntity taskImpl = (TaskEntity) task;
     JSONObject jsonObject = new JSONObject();
     jsonObject.put("id", taskImpl.getId());
     jsonObject.put("dbversion", taskImpl.getRevision());
@@ -45,8 +45,8 @@ public class JsonTaskConverter extends JsonObjectConverter<Task> {
     if (taskImpl.getCompletionDeadline()!=null) {
       jsonObject.put("completionDeadline", taskImpl.getCompletionDeadline());
     }
-    if (taskImpl.getExecutionId()!=null) {
-      jsonObject.put("execution", taskImpl.getExecutionId());
+    if (taskImpl.getActivityInstanceId()!=null) {
+      jsonObject.put("execution", taskImpl.getActivityInstanceId());
     }
     if (taskImpl.getProcessDefinitionId()!=null) {
       jsonObject.put("processDefinition", taskImpl.getProcessDefinitionId());

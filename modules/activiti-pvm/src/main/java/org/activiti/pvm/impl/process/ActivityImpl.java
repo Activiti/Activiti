@@ -28,7 +28,7 @@ public class ActivityImpl extends ScopeImpl implements PvmActivity {
 
   protected List<TransitionImpl> outgoingTransitions = new ArrayList<TransitionImpl>();
   protected List<TransitionImpl> incomingTransitions = new ArrayList<TransitionImpl>();
-  protected ActivityBehavior activityBehaviour;
+  protected ActivityBehavior activityBehavior;
   protected ScopeImpl parent;
   
   public TransitionImpl createOutgoingTransition() {
@@ -58,12 +58,12 @@ public class ActivityImpl extends ScopeImpl implements PvmActivity {
     return outgoingTransitions;
   }
 
-  public ActivityBehavior getActivityBehaviour() {
-    return activityBehaviour;
+  public ActivityBehavior getActivityBehavior() {
+    return activityBehavior;
   }
 
-  public void setActivityBehaviour(ActivityBehavior activityBehaviour) {
-    this.activityBehaviour = activityBehaviour;
+  public void setActivityBehavior(ActivityBehavior activityBehavior) {
+    this.activityBehavior = activityBehavior;
   }
 
   public ScopeImpl getParent() {

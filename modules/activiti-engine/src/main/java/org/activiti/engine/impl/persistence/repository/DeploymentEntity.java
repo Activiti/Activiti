@@ -22,7 +22,7 @@ import java.util.Map;
 import org.activiti.engine.Deployment;
 import org.activiti.engine.impl.cfg.RepositorySession;
 import org.activiti.engine.impl.interceptor.CommandContext;
-import org.activiti.impl.persistence.PersistentObject;
+import org.activiti.engine.impl.persistence.PersistentObject;
 
 
 /**
@@ -48,15 +48,7 @@ public class DeploymentEntity implements Serializable, Deployment, PersistentObj
     resources.put(resource.getName(), resource);
   }
 
-  public Object getPersistentState() {
-    // properties of this entity are immutable
-    // so always the same value is returned
-    // so never will an update be issued for a DeploymentEntity
-    return DeploymentEntity.class;
-  }
-
   // lazy loading /////////////////////////////////////////////////////////////
-  
   public Map<String, ResourceEntity> getResources() {
     if (resources==null && id!=null) {
       RepositorySession repositorySession = CommandContext.getCurrentSession(RepositorySession.class);
@@ -67,6 +59,13 @@ public class DeploymentEntity implements Serializable, Deployment, PersistentObj
       }
     }
     return resources;
+  }
+
+  public Object getPersistentState() {
+    // properties of this entity are immutable
+    // so always the same value is returned
+    // so never will an update be issued for a DeploymentEntity
+    return DeploymentEntity.class;
   }
 
   // getters and setters //////////////////////////////////////////////////////

@@ -14,9 +14,9 @@ package org.activiti.engine.impl.bpmn;
 
 import org.activiti.engine.impl.el.ExpressionManager;
 import org.activiti.engine.impl.persistence.task.TaskDefinition;
-import org.activiti.engine.impl.persistence.task.TaskImpl;
-import org.activiti.impl.execution.ExecutionImpl;
-import org.activiti.pvm.ActivityExecution;
+import org.activiti.engine.impl.persistence.task.TaskEntity;
+import org.activiti.pvm.activity.ActivityContext;
+import org.activiti.pvm.impl.runtime.ExecutionContextImpl;
 
 /**
  * activity implementation for the user task.
@@ -33,48 +33,48 @@ public class UserTaskActivity extends TaskActivity {
     this.taskDefinition = taskDefinition;
   }
 
-  public void execute(ActivityExecution execution) throws Exception {
-    TaskImpl task = TaskImpl.createAndInsert();
-    task.setExecution(execution);
+  public void start(ActivityContext activityContext) throws Exception {
+    TaskEntity task = TaskEntity.createAndInsert();
+    task.setActivityInstance(activityContext.getActivityInstance());
 
     if (taskDefinition.getName() != null) {
-      String name = evaluateExpression(taskDefinition.getName(), execution);
+      String name = evaluateExpression(taskDefinition.getName(), activityContext);
       task.setName(name);
     }
 
     if (taskDefinition.getDescription() != null) {
-      String description = evaluateExpression(taskDefinition.getDescription(), execution);
+      String description = evaluateExpression(taskDefinition.getDescription(), activityContext);
       task.setDescription(description);
     }
 
-    handleAssignments(task, execution);
+    handleAssignments(task, activityContext);
   }
 
-  public void event(ActivityExecution execution, Object event) throws Exception {
-    leave(execution);
+  public void event(ActivityContext activityContext, Object event) throws Exception {
+    leave(activityContext);
   }
 
-  protected void handleAssignments(TaskImpl task, ActivityExecution execution) {
+  protected void handleAssignments(TaskEntity task, ActivityContext activityContext) {
     if (taskDefinition.getAssignee() != null) {
-      task.setAssignee(evaluateExpression(taskDefinition.getAssignee(), execution));
+      task.setAssignee(evaluateExpression(taskDefinition.getAssignee(), activityContext));
     }
 
     if (!taskDefinition.getCandidateGroupIds().isEmpty()) {
       for (String groupId : taskDefinition.getCandidateGroupIds()) {
-        task.addCandidateGroup(evaluateExpression(groupId, execution));
+        task.addCandidateGroup(evaluateExpression(groupId, activityContext));
       }
     }
 
     if (!taskDefinition.getCandidateUserIds().isEmpty()) {
       for (String userId : taskDefinition.getCandidateUserIds()) {
-        task.addCandidateUser(evaluateExpression(userId, execution));
+        task.addCandidateUser(evaluateExpression(userId, activityContext));
       }
     }
   }
 
-  protected String evaluateExpression(String expr, ActivityExecution execution) {
-    // FIXME: downcast
-    return (String) expressionManager.createValueExpression(expr).getValue((ExecutionImpl) execution);
+  protected String evaluateExpression(String expr, ActivityContext activityContext) {
+    // TODO move parsing of value expression to bpmn parser and only keep evaluation here
+    return (String) expressionManager.createValueExpression(expr).getValue(activityContext);
   }
 
 }

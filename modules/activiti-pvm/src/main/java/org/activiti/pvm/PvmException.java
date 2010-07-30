@@ -10,27 +10,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.activiti.engine.impl.form;
 
-import javax.el.VariableMapper;
-
-import org.activiti.engine.impl.persistence.task.TaskEntity;
-
-import de.odysseus.el.util.SimpleContext;
+package org.activiti.pvm;
 
 
 /**
  * @author Tom Baeyens
  */
-public class TaskElContext extends SimpleContext {
-  
-  TaskVariableMapper taskVariableMapper;
-  
-  public TaskElContext(TaskEntity task) {
-    this.taskVariableMapper = new TaskVariableMapper(task);
+public class PvmException extends RuntimeException {
+
+  private static final long serialVersionUID = 1L;
+
+  public PvmException(String message, Throwable cause) {
+    super(message, cause);
   }
 
-  public VariableMapper getVariableMapper() {
-    return taskVariableMapper;
+  public PvmException(String message) {
+    super(message);
   }
 }

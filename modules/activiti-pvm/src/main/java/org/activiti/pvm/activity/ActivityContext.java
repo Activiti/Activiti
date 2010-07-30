@@ -18,6 +18,7 @@ import java.util.Map;
 
 import org.activiti.pvm.process.PvmActivity;
 import org.activiti.pvm.process.PvmTransition;
+import org.activiti.pvm.runtime.PvmActivityInstance;
 
 
 /**
@@ -26,6 +27,8 @@ import org.activiti.pvm.process.PvmTransition;
 public interface ActivityContext {
 
   void take(PvmTransition transition);
+
+  void end();
 
   List<PvmTransition> getOutgoingTransitions();
 
@@ -38,4 +41,8 @@ public interface ActivityContext {
   Object getVariable(String variableName);
 
   Map<String, Object> getVariables();
+
+  PvmActivity getActivity();
+
+  PvmActivityInstance getActivityInstance();
 }

@@ -12,6 +12,8 @@
  */
 package org.activiti.impl.persistence;
 
+import org.activiti.engine.impl.persistence.PersistentObject;
+
 
 /**
  * @author Tom Baeyens

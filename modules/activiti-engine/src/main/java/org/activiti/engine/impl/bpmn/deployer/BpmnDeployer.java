@@ -62,8 +62,8 @@ public class BpmnDeployer implements Deployer, ProcessEngineConfigurationAware {
         ByteArrayInputStream inputStream = new ByteArrayInputStream(bytes);
         BpmnParse bpmnParse = new BpmnParser(expressionManager, scriptingEngines, businessCalendarManager)
           .createParse()
-          .processDefinitionClass(ProcessDefinitionEntity.class)
           .sourceInputStream(inputStream)
+          .name(resourceName)
           .execute();
         
         processDefinitions.addAll(bpmnParse.getProcessDefinitions());

@@ -22,10 +22,10 @@ import java.util.logging.Logger;
 
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.interceptor.Session;
+import org.activiti.engine.impl.persistence.PersistentObject;
 import org.activiti.engine.impl.util.ClassNameUtil;
 import org.activiti.engine.impl.variable.DeserializedObject;
 import org.activiti.engine.impl.variable.VariableInstance;
-import org.activiti.impl.persistence.PersistentObject;
 import org.apache.ibatis.session.SqlSession;
 
 

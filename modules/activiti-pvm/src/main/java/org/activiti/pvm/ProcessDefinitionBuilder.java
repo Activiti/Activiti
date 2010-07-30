@@ -93,7 +93,7 @@ public class ProcessDefinitionBuilder {
   }
 
   public ProcessDefinitionBuilder behavior(ActivityBehavior activityBehaviour) {
-    getActivity().setActivityBehaviour(activityBehaviour);
+    getActivity().setActivityBehavior(activityBehaviour);
     return this;
   }
 

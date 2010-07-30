@@ -14,7 +14,7 @@ package org.activiti.engine.impl.cmd;
 
 import org.activiti.engine.Task;
 import org.activiti.engine.impl.interceptor.CommandContext;
-import org.activiti.engine.impl.persistence.task.TaskImpl;
+import org.activiti.engine.impl.persistence.task.TaskEntity;
 import org.activiti.impl.persistence.PersistenceSession;
 
 /**
@@ -30,7 +30,7 @@ public class SaveTaskCmd extends CmdVoid {
 	
 	public void executeVoid(CommandContext commandContext) {
     PersistenceSession persistenceSession = commandContext.getPersistenceSession();
-    persistenceSession.insert((TaskImpl)task);
+    persistenceSession.insert((TaskEntity)task);
 	}
 
 }

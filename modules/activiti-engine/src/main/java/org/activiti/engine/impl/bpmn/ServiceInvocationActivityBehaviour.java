@@ -16,9 +16,8 @@ package org.activiti.engine.impl.bpmn;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.el.ActivitiValueExpression;
 import org.activiti.engine.impl.util.ReflectUtil;
-import org.activiti.impl.execution.ExecutionImpl;
-import org.activiti.pvm.ActivityBehavior;
-import org.activiti.pvm.ActivityExecution;
+import org.activiti.pvm.activity.ActivityBehavior;
+import org.activiti.pvm.activity.ActivityContext;
 
 /**
  * @author dsyer
@@ -31,10 +30,10 @@ public class ServiceInvocationActivityBehaviour implements ActivityBehavior {
     this.expression = expression;
   }
 
-  public void execute(ActivityExecution execution) throws Exception {
+  public void start(ActivityContext activityContext) throws Exception {
 
     // FIXME: downcast
-    Object object = expression.getValue((ExecutionImpl) execution);
+    Object object = expression.getValue(activityContext);
 
     if (object instanceof String) {
       String className = (String) object;
@@ -44,7 +43,7 @@ public class ServiceInvocationActivityBehaviour implements ActivityBehavior {
     }
 
     if (object instanceof ActivityBehavior) {
-      ((ActivityBehavior) object).execute(execution);
+      ((ActivityBehavior) object).start(activityContext);
     } else {
       throw new ActivitiException("Service " + object + " is used in a serviceTask, but does not" + " implement the "
               + ActivityBehavior.class.getCanonicalName() + " interface");

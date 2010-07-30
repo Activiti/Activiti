@@ -17,11 +17,11 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.activiti.engine.impl.interceptor.CommandContext;
+import org.activiti.engine.impl.persistence.PersistentObject;
 import org.activiti.engine.impl.persistence.runtime.ByteArrayImpl;
-import org.activiti.engine.impl.persistence.task.TaskImpl;
+import org.activiti.engine.impl.persistence.task.TaskEntity;
 import org.activiti.impl.db.execution.DbExecutionImpl;
 import org.activiti.impl.persistence.PersistenceSession;
-import org.activiti.impl.persistence.PersistentObject;
 
 /**
  * @author Tom Baeyens
@@ -70,7 +70,7 @@ public class VariableInstance implements Serializable, PersistentObject {
     }
   }
 
-  public void setTask(TaskImpl task) {
+  public void setTask(TaskEntity task) {
     if (task != null) {
       this.taskId = task.getId();
     } else {

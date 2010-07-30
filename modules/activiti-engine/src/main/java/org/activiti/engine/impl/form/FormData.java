@@ -16,7 +16,7 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
 
-import org.activiti.engine.impl.persistence.task.TaskImpl;
+import org.activiti.engine.impl.persistence.task.TaskEntity;
 
 
 /**
@@ -24,9 +24,9 @@ import org.activiti.engine.impl.persistence.task.TaskImpl;
  */
 public class FormData implements Map<String, Object> {
   
-  TaskImpl task;
+  TaskEntity task;
 
-  public FormData(TaskImpl task) {
+  public FormData(TaskEntity task) {
     this.task = task;
   }
 

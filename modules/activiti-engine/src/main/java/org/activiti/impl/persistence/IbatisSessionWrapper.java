@@ -21,6 +21,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.activiti.engine.impl.interceptor.Session;
+import org.activiti.engine.impl.persistence.PersistentObject;
 import org.apache.ibatis.session.SqlSession;
 
 

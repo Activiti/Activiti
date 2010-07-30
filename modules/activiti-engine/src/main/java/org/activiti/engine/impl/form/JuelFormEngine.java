@@ -18,7 +18,7 @@ import javax.el.ValueExpression;
 
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.persistence.runtime.ByteArrayImpl;
-import org.activiti.engine.impl.persistence.task.TaskImpl;
+import org.activiti.engine.impl.persistence.task.TaskEntity;
 import org.activiti.impl.repository.DeploymentImpl;
 
 import de.odysseus.el.ExpressionFactoryImpl;
@@ -30,7 +30,7 @@ public class JuelFormEngine implements FormEngine {
   
   ExpressionFactory expressionFactory = new ExpressionFactoryImpl();
 
-  public String render(DeploymentImpl deployment, String formReference, TaskImpl task) {
+  public String render(DeploymentImpl deployment, String formReference, TaskEntity task) {
     try {
       // get the template
       ByteArrayImpl formResourceByteArray = deployment.getResource(formReference);
@@ -49,7 +49,7 @@ public class JuelFormEngine implements FormEngine {
     }
   }
 
-  private Object createFormData(TaskImpl task) {
+  private Object createFormData(TaskEntity task) {
     if (task!=null) {
       return task.getExecutionVariables();
     }

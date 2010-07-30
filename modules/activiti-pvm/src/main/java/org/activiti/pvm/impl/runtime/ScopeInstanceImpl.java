@@ -110,6 +110,14 @@ public class ScopeInstanceImpl {
     return variables;
   }
   
+  public void setVariables(Map<String, Object> variables) {
+    if (variables!=null) {
+      for (String variableName: variables.keySet()) {
+        setVariable(variableName, variables.get(variableName));
+      }
+    }
+  }
+  
   // getters and setters //////////////////////////////////////////////////////
   
   public ScopeImpl getScope() {

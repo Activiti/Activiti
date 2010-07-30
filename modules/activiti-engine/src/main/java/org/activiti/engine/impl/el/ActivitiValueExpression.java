@@ -17,7 +17,10 @@ import javax.el.PropertyNotFoundException;
 import javax.el.ValueExpression;
 
 import org.activiti.engine.ActivitiException;
-import org.activiti.impl.execution.ExecutionImpl;
+import org.activiti.pvm.activity.ActivityContext;
+import org.activiti.pvm.event.EventContext;
+import org.activiti.pvm.impl.runtime.ExecutionContextImpl;
+import org.activiti.pvm.impl.runtime.ScopeInstanceImpl;
 
 
 /**
@@ -33,8 +36,16 @@ public class ActivitiValueExpression {
     this.expressionManager = expressionManager;
   }
 
-  public Object getValue(ExecutionImpl execution) {
-    ELContext elContext = expressionManager.getElContext(execution);
+  public Object getValue(ActivityContext activityContext) {
+    return getValue((ExecutionContextImpl) activityContext);
+  }
+  
+  public Object getValue(EventContext eventContext) {
+    return getValue((ExecutionContextImpl) eventContext);
+  }
+  
+  protected Object getValue(ExecutionContextImpl executionContext) {
+    ELContext elContext = expressionManager.getElContext(executionContext.getScopeInstance());
     try {
       return valueExpression.getValue(elContext);
     } catch (PropertyNotFoundException e) {
@@ -42,8 +53,8 @@ public class ActivitiValueExpression {
     }
   }
 
-  public void setValue(Object value, ExecutionImpl execution) {
-    ELContext elContext = expressionManager.getElContext(execution);
+  public void setValue(Object value, ScopeInstanceImpl scopeInstance) {
+    ELContext elContext = expressionManager.getElContext(scopeInstance);
     valueExpression.setValue(elContext, value);
   }
 }

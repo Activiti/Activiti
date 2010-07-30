@@ -18,7 +18,7 @@ import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.repository.DeploymentEntity;
 import org.activiti.engine.impl.persistence.repository.ResourceEntity;
-import org.activiti.engine.impl.persistence.task.TaskImpl;
+import org.activiti.engine.impl.persistence.task.TaskEntity;
 import org.activiti.engine.impl.scripting.ScriptingEngines;
 import org.activiti.impl.definition.FormReference;
 import org.activiti.impl.definition.ProcessDefinitionImpl;
@@ -46,7 +46,7 @@ public class GetFormCmd implements Command<Object> {
     PersistenceSession persistenceSession = commandContext.getPersistenceSession();
     RepositorySession repositorySession = commandContext.getRepositorySession();
     ProcessDefinitionImpl processDefinition = null;
-    TaskImpl task = null;
+    TaskEntity task = null;
     ExecutionImpl execution = null;
     FormReference formReference = null;
     
@@ -56,7 +56,7 @@ public class GetFormCmd implements Command<Object> {
       if (task == null) {
         throw new ActivitiException("No task found for id = '" + taskId + "'");
       }
-      execution = task.getExecution();
+      execution = task.getActivityInstance();
       processDefinition = repositorySession.findDeployedProcessDefinitionById(task.getProcessDefinitionId());
       formReference = execution.getActivity().getFormReference();
       

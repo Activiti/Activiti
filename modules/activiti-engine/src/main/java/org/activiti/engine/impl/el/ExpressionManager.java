@@ -21,6 +21,7 @@ import javax.el.ValueExpression;
 import org.activiti.engine.impl.cfg.ProcessEngineConfiguration;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationAware;
 import org.activiti.impl.execution.ExecutionImpl;
+import org.activiti.pvm.impl.runtime.ScopeInstanceImpl;
 
 /**
  * <p>
@@ -72,21 +73,22 @@ public class ExpressionManager implements ProcessEngineConfigurationAware {
     this.expressionFactory = expressionFactory;
   }
 
-  public ELContext getElContext(ExecutionImpl execution) {
+  public ELContext getElContext(ScopeInstanceImpl scopeInstance) {
     ELContext elContext = null;
-    synchronized (execution) {
-      elContext = (ELContext) execution.getCachedElContext();
-      if (elContext != null) {
-        return elContext;
-      }
-      elContext = createExecutionElContext(execution);
-      execution.setCachedElContext(elContext);
+    synchronized (scopeInstance) {
+// TODO fix expression caching
+//      elContext = (ELContext) scopeInstance.getCachedElContext();
+//      if (elContext != null) {
+//        return elContext;
+//      }
+      elContext = createExecutionElContext(scopeInstance);
+//      scopeInstance.setCachedElContext(elContext);
     }
     return elContext;
   }
 
-  protected ExecutionELContext createExecutionElContext(ExecutionImpl execution) {
-    return  new ExecutionELContext(execution, elResolver);
+  protected ScopeInstanceELContext createExecutionElContext(ScopeInstanceImpl scopeInstance) {
+    return  new ScopeInstanceELContext(scopeInstance, elResolver);
   }
 
   public void configurationCompleted(ProcessEngineConfiguration processEngineConfiguration) {

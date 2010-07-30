@@ -147,6 +147,10 @@ public class Parse extends DefaultHandler {
     problems.add(new Problem(e, name));
   }
   
+  public void addProblem(String errorMessage, Element element) {
+    problems.add(new Problem(errorMessage, name, element));
+  }
+  
   public void setSchemaResource(String schemaResource) {
     parser.getSaxParserFactory().setNamespaceAware(true);
     parser.getSaxParserFactory().setValidating(true);

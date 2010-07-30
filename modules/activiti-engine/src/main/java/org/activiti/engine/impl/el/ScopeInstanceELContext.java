@@ -23,25 +23,26 @@ import javax.el.MapELResolver;
 import javax.el.VariableMapper;
 
 import org.activiti.impl.execution.ExecutionImpl;
+import org.activiti.pvm.impl.runtime.ScopeInstanceImpl;
 
 
 /**
  * @author Tom Baeyens
  * @author Joram Barrez
  */
-public class ExecutionELContext extends ELContext {
+public class ScopeInstanceELContext extends ELContext {
   
-  private final ExecutionImpl execution;
+  protected ScopeInstanceImpl scopeInstance;
   private ELResolver elResolver;
 
-  public ExecutionELContext(ExecutionImpl execution, ELResolver elResolver) {
-    this.execution = execution;
+  public ScopeInstanceELContext(ScopeInstanceImpl scopeInstance, ELResolver elResolver) {
+    this.scopeInstance = scopeInstance;
     this.elResolver = elResolver;
   }
 
   public ELResolver getELResolver() {
     CompositeELResolver elResolver = new CompositeELResolver();
-    elResolver.add(new ExecutionVariableElResolver(execution));
+    elResolver.add(new ScopeInstanceVariableElResolver(scopeInstance));
     if (this.elResolver!=null) {
       elResolver.add(this.elResolver);
     }
