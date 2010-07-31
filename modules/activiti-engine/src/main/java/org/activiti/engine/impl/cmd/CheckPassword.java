@@ -15,7 +15,7 @@ package org.activiti.engine.impl.cmd;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.identity.UserImpl;
-import org.activiti.impl.persistence.PersistenceSession;
+import org.activiti.impl.persistence.RuntimeSession;
 
 
 /**
@@ -33,8 +33,8 @@ public class CheckPassword implements Command<Boolean> {
 
 
   public Boolean execute(CommandContext commandContext) {
-    PersistenceSession persistenceSession = commandContext.getPersistenceSession();
-    UserImpl user = persistenceSession.findUser(userId);
+    RuntimeSession runtimeSession = commandContext.getPersistenceSession();
+    UserImpl user = runtimeSession.findUser(userId);
     if ( (user!=null)
          && (password!=null)
          && (password.equals(user.getPassword()))

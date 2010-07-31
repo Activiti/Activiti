@@ -19,7 +19,7 @@ import java.util.List;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.runtime.JobImpl;
-import org.activiti.impl.persistence.PersistenceSession;
+import org.activiti.impl.persistence.RuntimeSession;
 
 
 /**
@@ -39,10 +39,10 @@ public class DeleteJobsCmd implements Command<Void> {
   }
 
   public Void execute(CommandContext commandContext) {
-    PersistenceSession persistenceSession = commandContext.getPersistenceSession();
+    RuntimeSession runtimeSession = commandContext.getPersistenceSession();
     for (String jobId: jobIds) {
-      JobImpl job = persistenceSession.findJobById(jobId);
-      persistenceSession.delete(job);
+      JobImpl job = runtimeSession.findJobById(jobId);
+      runtimeSession.delete(job);
     }
     return null;
   }

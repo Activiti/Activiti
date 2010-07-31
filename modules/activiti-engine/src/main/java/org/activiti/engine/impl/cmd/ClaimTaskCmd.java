@@ -15,7 +15,7 @@ package org.activiti.engine.impl.cmd;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.task.TaskEntity;
-import org.activiti.impl.persistence.PersistenceSession;
+import org.activiti.impl.persistence.RuntimeSession;
 
 
 /**
@@ -33,8 +33,8 @@ public class ClaimTaskCmd extends CmdVoid {
   }
   
   public void executeVoid(CommandContext commandContext) {
-    PersistenceSession persistenceSession = commandContext.getPersistenceSession();
-    TaskEntity task = persistenceSession.findTask(taskId);
+    RuntimeSession runtimeSession = commandContext.getPersistenceSession();
+    TaskEntity task = runtimeSession.findTask(taskId);
     
     if (task == null) {
       throw new ActivitiException("Cannot find task with id " + taskId);
@@ -43,7 +43,7 @@ public class ClaimTaskCmd extends CmdVoid {
     if (task.getAssignee() != null) {
       throw new ActivitiException("Task " + taskId + " is already claimed by someone else");
     } else {
-      if (persistenceSession.isValidUser(userId)) {
+      if (runtimeSession.isValidUser(userId)) {
         task.setAssignee(userId);
       } else {
         throw new ActivitiException("Cannot claim task " + taskId + ": user " 

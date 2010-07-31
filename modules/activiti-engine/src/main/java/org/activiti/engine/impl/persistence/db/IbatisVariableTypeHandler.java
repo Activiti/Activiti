@@ -11,7 +11,7 @@
  * limitations under the License.
  */
 
-package org.activiti.impl.persistence;
+package org.activiti.engine.impl.persistence.db;
 
 import java.sql.CallableStatement;
 import java.sql.PreparedStatement;

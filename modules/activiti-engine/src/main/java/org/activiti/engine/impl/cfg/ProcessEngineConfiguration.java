@@ -52,6 +52,7 @@ import org.activiti.engine.impl.jobexecutor.JobHandlers;
 import org.activiti.engine.impl.jobexecutor.TimerExecuteNestedActivityJobHandler;
 import org.activiti.engine.impl.persistence.db.DbIdGenerator;
 import org.activiti.engine.impl.persistence.db.DbRepositorySessionFactory;
+import org.activiti.engine.impl.persistence.db.DbRuntimeSessionFactory;
 import org.activiti.engine.impl.persistence.db.DbSqlSession;
 import org.activiti.engine.impl.persistence.db.DbSqlSessionFactory;
 import org.activiti.engine.impl.persistence.repository.Deployer;
@@ -60,9 +61,8 @@ import org.activiti.engine.impl.variable.DefaultVariableTypes;
 import org.activiti.engine.impl.variable.VariableTypes;
 import org.activiti.impl.event.DefaultProcessEventBus;
 import org.activiti.impl.history.HistoricDataServiceImpl;
-import org.activiti.impl.persistence.IbatisPersistenceSessionFactory;
-import org.activiti.impl.persistence.PersistenceSession;
-import org.activiti.impl.persistence.PersistenceSessionFactory;
+import org.activiti.impl.persistence.RuntimeSession;
+import org.activiti.impl.persistence.RuntimeSessionFactory;
 import org.activiti.impl.repository.DeployerManager;
 import org.activiti.pvm.event.ProcessEventBus;
 
@@ -142,7 +142,7 @@ public class ProcessEngineConfiguration {
 
     messageSessionFactory = new JobExecutorMessageSessionFactory();
     timerSessionFactory = new JobExecutorTimerSessionFactory();
-    persistenceSessionFactory = new IbatisPersistenceSessionFactory();
+    persistenceSessionFactory = new DbRuntimeSessionFactory();
     repositorySessionFactory = new DbRepositorySessionFactory();
     dbSqlSessionFactory = new DbSqlSessionFactory();
     
@@ -191,7 +191,7 @@ public class ProcessEngineConfiguration {
         sessionFactories.put(TimerSession.class, timerSessionFactory);
       }
       if (persistenceSessionFactory != null) {
-        sessionFactories.put(PersistenceSession.class, persistenceSessionFactory);
+        sessionFactories.put(RuntimeSession.class, persistenceSessionFactory);
       }
       if (repositorySessionFactory != null) {
         sessionFactories.put(RepositorySession.class, repositorySessionFactory);
@@ -257,8 +257,8 @@ public class ProcessEngineConfiguration {
     return persistenceSessionFactory;
   }
 
-  public void setPersistenceSessionFactory(PersistenceSessionFactory persistenceSessionFactory) {
-    this.persistenceSessionFactory = persistenceSessionFactory;
+  public void setPersistenceSessionFactory(RuntimeSessionFactory runtimeSessionFactory) {
+    this.persistenceSessionFactory = runtimeSessionFactory;
   }
 
   public String getProcessEngineName() {

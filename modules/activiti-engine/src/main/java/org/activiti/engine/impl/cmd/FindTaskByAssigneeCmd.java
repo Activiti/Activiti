@@ -18,7 +18,7 @@ import org.activiti.engine.Task;
 import org.activiti.engine.TaskQuery;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
-import org.activiti.impl.persistence.PersistenceSession;
+import org.activiti.impl.persistence.RuntimeSession;
 
 
 /**
@@ -34,8 +34,8 @@ public class FindTaskByAssigneeCmd implements Command<List<Task>> {
   }
   
   public List<Task> execute(CommandContext commandContext) {
-    PersistenceSession persistenceSession = commandContext.getPersistenceSession();
-    return persistenceSession.findTasksByAssignee(assignee);
+    RuntimeSession runtimeSession = commandContext.getPersistenceSession();
+    return runtimeSession.findTasksByAssignee(assignee);
   }
 
 }

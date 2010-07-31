@@ -16,7 +16,7 @@ import java.util.List;
 
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
-import org.activiti.impl.persistence.PersistenceSession;
+import org.activiti.impl.persistence.RuntimeSession;
 
 
 /**
@@ -33,13 +33,13 @@ public class FindGroupsByUserCmd implements Command<List> {
   }
 
   public List execute(CommandContext commandContext) {
-    PersistenceSession persistenceSession = commandContext.getPersistenceSession();
+    RuntimeSession runtimeSession = commandContext.getPersistenceSession();
     
     if (groupType==null) {
-      return persistenceSession
+      return runtimeSession
           .findGroupsByUser(userId);
     }
-    return persistenceSession
+    return runtimeSession
         .findGroupsByUserAndType(userId, groupType);
   }
 }

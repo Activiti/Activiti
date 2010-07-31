@@ -23,7 +23,7 @@ import org.activiti.engine.impl.cfg.TransactionListener;
 import org.activiti.engine.impl.cfg.TransactionState;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.db.DbSqlSession;
-import org.activiti.impl.persistence.PersistenceSession;
+import org.activiti.impl.persistence.RuntimeSession;
 
 
 /**
@@ -76,7 +76,7 @@ public class IbatisTransactionContext implements TransactionContext {
     }
   }
 
-  private PersistenceSession getPersistenceSession() {
+  private RuntimeSession getPersistenceSession() {
     return commandContext.getPersistenceSession();
   }
 

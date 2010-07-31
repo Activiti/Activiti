@@ -17,7 +17,7 @@ import org.activiti.engine.impl.cfg.TransactionState;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.runtime.JobImpl;
-import org.activiti.impl.persistence.PersistenceSession;
+import org.activiti.impl.persistence.RuntimeSession;
 
 /**
  * @author Tom Baeyens
@@ -35,8 +35,8 @@ public class DecrementJobRetriesCmd implements Command<Object> {
   }
 
   public Object execute(CommandContext commandContext) {
-    PersistenceSession persistenceSession = commandContext.getPersistenceSession();
-    JobImpl job = persistenceSession.findJobById(jobId);
+    RuntimeSession runtimeSession = commandContext.getPersistenceSession();
+    JobImpl job = runtimeSession.findJobById(jobId);
     job.setRetries(job.getRetries() - 1);
     job.setLockOwner(null);
     job.setLockExpirationTime(null);

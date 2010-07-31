@@ -10,22 +10,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.activiti.engine.impl.cmd;
 
-import org.activiti.engine.impl.cfg.RepositorySession;
-import org.activiti.engine.impl.interceptor.Command;
-import org.activiti.engine.impl.interceptor.CommandContext;
+package org.activiti.engine.impl.cfg;
+
+import java.util.Map;
+
+import org.activiti.engine.SortOrder;
+import org.activiti.engine.TableMetaData;
+import org.activiti.engine.TablePage;
 import org.activiti.engine.impl.persistence.db.IdBlock;
-import org.activiti.impl.persistence.RuntimeSession;
 
 
 /**
  * @author Tom Baeyens
  */
-public class GetNextIdBlockCmd implements Command<IdBlock> {
+public interface ManagementSession {
 
-  public IdBlock execute(CommandContext commandContext) {
-    RepositorySession repositorySession = commandContext.getRepositorySession();
-    return repositorySession.getNextDbidBlock();
-  }
+  /* Management */
+  Map<String, Long> getTableCount();
+  TablePage getTablePage(String tableName, int offset, int maxResults, String sortColumn, SortOrder sortOrder);
+  TableMetaData getTableMetaData(String tableName);
+
+  IdBlock getNextDbidBlock();
 }

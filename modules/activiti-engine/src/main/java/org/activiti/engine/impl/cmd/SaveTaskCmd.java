@@ -15,7 +15,7 @@ package org.activiti.engine.impl.cmd;
 import org.activiti.engine.Task;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.task.TaskEntity;
-import org.activiti.impl.persistence.PersistenceSession;
+import org.activiti.impl.persistence.RuntimeSession;
 
 /**
  * @author Joram Barrez
@@ -29,8 +29,8 @@ public class SaveTaskCmd extends CmdVoid {
 	}
 	
 	public void executeVoid(CommandContext commandContext) {
-    PersistenceSession persistenceSession = commandContext.getPersistenceSession();
-    persistenceSession.insert((TaskEntity)task);
+    RuntimeSession runtimeSession = commandContext.getPersistenceSession();
+    runtimeSession.insert((TaskEntity)task);
 	}
 
 }

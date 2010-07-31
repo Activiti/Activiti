@@ -44,17 +44,11 @@ import org.activiti.impl.history.HistoricProcessInstanceImpl;
  * @author Tom Baeyens
  * @author Joram Barrez
  */
-public interface PersistenceSession extends Session {
+public interface RuntimeSession extends Session {
   
-  void commit();
-  void rollback();
-
   byte[] getByteArrayBytes(String byteArrayId);
   ByteArrayImpl findByteArrayById(String byteArrayValueId);
   
-  void insert(PersistentObject persistentObject);
-  void delete(PersistentObject persistentObject);
-
   /* Execution */
   DbExecutionImpl findExecution(String executionId);
   List<DbExecutionImpl> findProcessInstancesByProcessDefintionId(String processDefinitionId);
@@ -70,18 +64,6 @@ public interface PersistenceSession extends Session {
   List<VariableInstance> findVariablesByTaskId(String id);
   void addDeserializedObject(Object deserializedObject, byte[] bytes, VariableInstance variableInstance);
 
-  /* Task */
-  TaskEntity findTask(String taskId);
-  List<TaskEntity> findTasksByExecution(String executionId);
-  List<Task> findTasksByAssignee(String assignee);
-  List<Task> findCandidateTasks(String userId, List<String> groupIds);
-  
-  List<Task> dynamicFindTasks(Map<String, Object> params, Page page);
-  long dynamicFindTaskCount(Map<String, Object> params);
-
-  /* TaskInvolvement */
-  List<TaskInvolvement> findTaskInvolvementsByTask(String taskId);
-  
   /* Job */
   JobImpl findJobById(String jobId);
   List<JobImpl> findJobs();
@@ -93,34 +75,4 @@ public interface PersistenceSession extends Session {
   List<Job> dynamicFindJobs(Map<String, Object> params, Page page);
   long dynamicJobCount(Map<String, Object> params);
 
-  /* User */
-  void saveUser(UserImpl user);
-  UserImpl findUser(String userId);
-  List<UserImpl> findUsersByGroup(String groupId);
-  void deleteUser(String userId);
-  boolean isValidUser(String userId);
-  
-  /* Group */
-  void saveGroup(GroupImpl group);
-  GroupImpl findGroup(String groupId);
-  List<GroupImpl> findGroupsByUser(String userId);
-  List<GroupImpl> findGroupsByUserAndType(String userId, String groupType);
-  void deleteGroup(String groupId);
-
-  /* Membership */
-  void createMembership(String userId, String groupId);
-  void deleteMembership(String userId, String groupId);
-
-  /* Management */
-  Map<String, Long> getTableCount();
-  TablePage getTablePage(String tableName, int offset, int maxResults, String sortColumn, SortOrder sortOrder);
-  TableMetaData getTableMetaData(String tableName);
-
-  /* History */
-  void saveHistoricProcessInstance(HistoricProcessInstanceImpl historicProcessInstance);
-  HistoricProcessInstanceImpl findHistoricProcessInstance(String processInstanceId);
-  void deleteHistoricProcessInstance(String processInstanceId);
-  void saveHistoricActivityInstance(HistoricActivityInstanceImpl historicActivityInstance);
-  HistoricActivityInstanceImpl findHistoricActivityInstance(String activityId, String processInstanceId);
-  void deleteHistoricActivityInstance(String activityId, String processInstanceId);
-  }
+}

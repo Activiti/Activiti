@@ -21,7 +21,7 @@ import org.activiti.engine.impl.persistence.PersistentObject;
 import org.activiti.engine.impl.persistence.runtime.ByteArrayImpl;
 import org.activiti.engine.impl.persistence.task.TaskEntity;
 import org.activiti.impl.db.execution.DbExecutionImpl;
-import org.activiti.impl.persistence.PersistenceSession;
+import org.activiti.impl.persistence.RuntimeSession;
 
 /**
  * @author Tom Baeyens
@@ -79,11 +79,11 @@ public class VariableInstance implements Serializable, PersistentObject {
   }
 
   public void delete() {
-    PersistenceSession persistenceSession = CommandContext.getCurrent().getPersistenceSession();
-    persistenceSession.delete(this);
+    RuntimeSession runtimeSession = CommandContext.getCurrent().getPersistenceSession();
+    runtimeSession.delete(this);
 
     if (byteArrayValueId != null) {
-      persistenceSession.delete(getByteArrayValue());
+      runtimeSession.delete(getByteArrayValue());
     }
   }
 

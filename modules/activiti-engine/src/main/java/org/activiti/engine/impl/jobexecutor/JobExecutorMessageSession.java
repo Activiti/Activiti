@@ -16,7 +16,7 @@ import org.activiti.engine.impl.cfg.MessageSession;
 import org.activiti.engine.impl.cfg.TransactionState;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.runtime.MessageImpl;
-import org.activiti.impl.persistence.PersistenceSession;
+import org.activiti.impl.persistence.RuntimeSession;
 
 
 /**
@@ -38,8 +38,8 @@ public class JobExecutorMessageSession implements MessageSession {
   }
 
   public void send(MessageImpl message) {
-    PersistenceSession persistenceSession = commandContext.getPersistenceSession();
-    persistenceSession.insert(message);
+    RuntimeSession runtimeSession = commandContext.getPersistenceSession();
+    runtimeSession.insert(message);
     
     commandContext
       .getTransactionContext()

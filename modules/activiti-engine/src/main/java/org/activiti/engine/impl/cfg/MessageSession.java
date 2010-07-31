@@ -12,14 +12,13 @@
  */
 package org.activiti.engine.impl.cfg;
 
-import org.activiti.engine.impl.interceptor.Session;
 import org.activiti.engine.impl.persistence.runtime.MessageImpl;
 
 
 /**
  * @author Tom Baeyens
  */
-public interface MessageSession extends Session {
+public interface MessageSession {
 
   void send(MessageImpl message);
 

@@ -18,7 +18,7 @@ import org.activiti.engine.impl.cfg.RepositorySession;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.repository.ProcessDefinitionEntity;
 import org.activiti.impl.db.execution.DbExecutionImpl;
-import org.activiti.impl.persistence.PersistenceSession;
+import org.activiti.impl.persistence.RuntimeSession;
 
 /**
  * @author Joram Barrez
@@ -33,11 +33,11 @@ public class DeleteDeploymentCmd extends CmdVoid {
 
   public void executeVoid(CommandContext commandContext) {
     RepositorySession repositorySession = commandContext.getRepositorySession();
-    PersistenceSession persistenceSession = commandContext.getPersistenceSession();
+    RuntimeSession runtimeSession = commandContext.getPersistenceSession();
     
     List<ProcessDefinitionEntity> processDefinitions = repositorySession.findProcessDefinitionsByDeploymentId(deploymentId);
     for (ProcessDefinitionEntity processDefinition : processDefinitions) {
-      List<DbExecutionImpl> executions = persistenceSession.findProcessInstancesByProcessDefintionId(processDefinition.getId());
+      List<DbExecutionImpl> executions = runtimeSession.findProcessInstancesByProcessDefintionId(processDefinition.getId());
       for (DbExecutionImpl execution : executions) {
         execution.end();
       }

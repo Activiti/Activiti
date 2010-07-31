@@ -23,7 +23,7 @@ import org.activiti.engine.impl.interceptor.Session;
 import org.activiti.engine.impl.persistence.runtime.TimerImpl;
 import org.activiti.engine.impl.util.ClockUtil;
 import org.activiti.impl.execution.ExecutionImpl;
-import org.activiti.impl.persistence.PersistenceSession;
+import org.activiti.impl.persistence.RuntimeSession;
 
 
 /**
@@ -62,10 +62,10 @@ public class JobExecutorTimerSession implements TimerSession, Session {
   }
 
   public void cancelTimers(ExecutionImpl execution) {
-    PersistenceSession persistenceSession = commandContext.getPersistenceSession();
-    List<TimerImpl> timers = persistenceSession.findTimersByExecutionId(execution.getId()); 
+    RuntimeSession runtimeSession = commandContext.getPersistenceSession();
+    List<TimerImpl> timers = runtimeSession.findTimersByExecutionId(execution.getId()); 
     for (TimerImpl timer: timers) {
-      persistenceSession.delete(timer);
+      runtimeSession.delete(timer);
     }
   }
 

@@ -44,12 +44,6 @@ public class DbRepositorySession implements Session, RepositorySession {
       .getSession(DbSqlSession.class);
   }
 
-  public void close() {
-  }
-
-  public void flush() {
-  }
-
   public void deployNew(DeploymentEntity deployment) {
     dbSqlSession.insert(deployment);
     for (ResourceEntity resource: deployment.getResources().values()) {
@@ -167,20 +161,9 @@ public class DbRepositorySession implements Session, RepositorySession {
     return processDefinition;
   }
   
-  public IdBlock getNextDbidBlock() {
-    String statement = dbSqlSession.dbSqlSessionFactory.mapStatement("selectProperty");
-    PropertyEntity property = (PropertyEntity) dbSqlSession.sqlSession.selectOne(statement, "next.dbid");
-    long oldValue = Long.parseLong(property.getValue());
-    long newValue = oldValue+dbRepositorySessionFactory.getIdBlockSize();
-    Map<String, Object> updateValues = new HashMap<String, Object>();
-    updateValues.put("name", property.getName());
-    updateValues.put("revision", property.getDbversion());
-    updateValues.put("newRevision", property.getDbversion()+1);
-    updateValues.put("value", Long.toString(newValue));
-    int rowsUpdated = dbSqlSession.sqlSession.update("updateProperty", updateValues);
-    if (rowsUpdated!=1) {
-      throw new ActivitiOptimisticLockingException("couldn't get next block of dbids");
-    }
-    return new IdBlock(oldValue, newValue-1);
+  public void close() {
+  }
+
+  public void flush() {
   }
 }

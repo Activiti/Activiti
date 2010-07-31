@@ -19,13 +19,16 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.impl.cfg.HistorySession;
+import org.activiti.engine.impl.cfg.IdentitySession;
+import org.activiti.engine.impl.cfg.ManagementSession;
 import org.activiti.engine.impl.cfg.MessageSession;
 import org.activiti.engine.impl.cfg.ProcessEngineConfiguration;
 import org.activiti.engine.impl.cfg.RepositorySession;
+import org.activiti.engine.impl.cfg.TaskSession;
 import org.activiti.engine.impl.cfg.TimerSession;
 import org.activiti.engine.impl.cfg.TransactionContext;
-import org.activiti.engine.impl.cfg.TransactionContextFactory;
-import org.activiti.impl.persistence.PersistenceSession;
+import org.activiti.impl.persistence.RuntimeSession;
 
 /**
  * @author Tom Baeyens
@@ -173,8 +176,14 @@ public class CommandContext {
     return (T) session;
   }
 
-  public PersistenceSession getPersistenceSession() {
-    return getSession(PersistenceSession.class);
+  public RepositorySession getRepositorySession() {
+    return getSession(RepositorySession.class);
+  }
+  public RuntimeSession getPersistenceSession() {
+    return getSession(RuntimeSession.class);
+  }
+  public IdentitySession getIdentitySession() {
+    return getSession(IdentitySession.class);
   }
   public MessageSession getMessageSession() {
     return getSession(MessageSession.class);
@@ -182,8 +191,14 @@ public class CommandContext {
   public TimerSession getTimerSession() {
     return getSession(TimerSession.class);
   }
-  public RepositorySession getRepositorySession() {
-    return getSession(RepositorySession.class);
+  public TaskSession getTaskSession() {
+    return getSession(TaskSession.class);
+  }
+  public HistorySession getHistorySession() {
+    return getSession(HistorySession.class);
+  }
+  public ManagementSession getManagementSession() {
+    return getSession(ManagementSession.class);
   }
 
   // getters and setters //////////////////////////////////////////////////////

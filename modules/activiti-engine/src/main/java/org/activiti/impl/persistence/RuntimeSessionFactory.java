@@ -10,22 +10,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.activiti.engine.impl.cmd;
+package org.activiti.impl.persistence;
 
-import org.activiti.engine.impl.cfg.RepositorySession;
-import org.activiti.engine.impl.interceptor.Command;
-import org.activiti.engine.impl.interceptor.CommandContext;
-import org.activiti.engine.impl.persistence.db.IdBlock;
-import org.activiti.impl.persistence.RuntimeSession;
+import org.activiti.engine.impl.interceptor.SessionFactory;
 
 
 /**
  * @author Tom Baeyens
  */
-public class GetNextIdBlockCmd implements Command<IdBlock> {
+public interface RuntimeSessionFactory extends SessionFactory {
 
-  public IdBlock execute(CommandContext commandContext) {
-    RepositorySession repositorySession = commandContext.getRepositorySession();
-    return repositorySession.getNextDbidBlock();
-  }
 }

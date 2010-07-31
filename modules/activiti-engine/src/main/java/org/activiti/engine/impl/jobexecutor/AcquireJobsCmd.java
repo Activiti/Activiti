@@ -21,7 +21,7 @@ import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.runtime.JobImpl;
 import org.activiti.engine.impl.util.ClockUtil;
-import org.activiti.impl.persistence.PersistenceSession;
+import org.activiti.impl.persistence.RuntimeSession;
 
 
 /**
@@ -36,7 +36,7 @@ public class AcquireJobsCmd implements Command<AcquiredJobs> {
   }
   
   public AcquiredJobs execute(CommandContext commandContext) {
-    PersistenceSession persistenceSession = commandContext.getPersistenceSession();
+    RuntimeSession runtimeSession = commandContext.getPersistenceSession();
     
     String lockOwner = jobExecutor.getLockOwner();
     int lockTimeInMillis = jobExecutor.getLockTimeInMillis();
@@ -44,7 +44,7 @@ public class AcquireJobsCmd implements Command<AcquiredJobs> {
     
     
     AcquiredJobs acquiredJobs = new AcquiredJobs();
-    List<JobImpl> jobs = persistenceSession.findNextJobsToExecute(maxJobsPerAcquisition);
+    List<JobImpl> jobs = runtimeSession.findNextJobsToExecute(maxJobsPerAcquisition);
     for (JobImpl job: jobs) {
       List<String> jobIds = new ArrayList<String>();
 

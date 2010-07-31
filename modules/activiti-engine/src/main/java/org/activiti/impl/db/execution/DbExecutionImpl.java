@@ -26,7 +26,7 @@ import org.activiti.engine.impl.persistence.task.TaskEntity;
 import org.activiti.impl.definition.ActivityImpl;
 import org.activiti.impl.definition.ProcessDefinitionImpl;
 import org.activiti.impl.execution.ExecutionImpl;
-import org.activiti.impl.persistence.PersistenceSession;
+import org.activiti.impl.persistence.RuntimeSession;
 
 /**
  * @author Tom Baeyens
@@ -244,20 +244,20 @@ public class DbExecutionImpl extends ExecutionImpl implements PersistentObject {
 
     ensureVariableMapInitialized();
 
-    PersistenceSession persistenceSession = CommandContext.getCurrent().getPersistenceSession();
+    RuntimeSession runtimeSession = CommandContext.getCurrent().getPersistenceSession();
 
     Set<String> variableNames = new HashSet<String>(variableMap.getVariableNames());
     for (String variableName : variableNames) {
       variableMap.deleteVariable(variableName);
     }
 
-    List<TaskEntity> tasks = persistenceSession.findTasksByExecution(id);
+    List<TaskEntity> tasks = runtimeSession.findTasksByExecution(id);
     for (TaskEntity task : tasks) {
       task.delete();
     }
 
     // then delete execution
-    persistenceSession.delete(this);
+    runtimeSession.delete(this);
   }
 
   // variables ////////////////////////////////////////////////////////////////

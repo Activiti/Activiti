@@ -15,7 +15,7 @@ package org.activiti.engine.impl.cmd;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.task.TaskEntity;
-import org.activiti.impl.persistence.PersistenceSession;
+import org.activiti.impl.persistence.RuntimeSession;
 
 
 /**
@@ -33,8 +33,8 @@ public class SetTaskPriorityCmd extends CmdVoid {
   }
   
   public void executeVoid(CommandContext commandContext) {
-    PersistenceSession persistenceSession = commandContext.getPersistenceSession();
-    TaskEntity task = persistenceSession.findTask(taskId);
+    RuntimeSession runtimeSession = commandContext.getPersistenceSession();
+    TaskEntity task = runtimeSession.findTask(taskId);
     
     if (task == null) {
       throw new ActivitiException("Cannot find task with id " + taskId);

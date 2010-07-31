@@ -25,7 +25,7 @@ import org.activiti.engine.impl.scripting.ScriptingEngines;
 import org.activiti.impl.definition.FormReference;
 import org.activiti.impl.definition.ProcessDefinitionImpl;
 import org.activiti.impl.execution.ExecutionImpl;
-import org.activiti.impl.persistence.PersistenceSession;
+import org.activiti.impl.persistence.RuntimeSession;
 import org.activiti.pvm.runtime.PvmActivityInstance;
 
 
@@ -46,7 +46,7 @@ public class GetFormCmd implements Command<Object> {
   }
 
   public Object execute(CommandContext commandContext) {
-    PersistenceSession persistenceSession = commandContext.getPersistenceSession();
+    RuntimeSession runtimeSession = commandContext.getPersistenceSession();
     RepositorySession repositorySession = commandContext.getRepositorySession();
     ProcessDefinitionEntity processDefinition = null;
     TaskEntity task = null;
@@ -55,7 +55,7 @@ public class GetFormCmd implements Command<Object> {
     
     if (taskId!=null) {
       
-      task = persistenceSession.findTask(taskId);
+      task = runtimeSession.findTask(taskId);
       if (task == null) {
         throw new ActivitiException("No task found for id = '" + taskId + "'");
       }

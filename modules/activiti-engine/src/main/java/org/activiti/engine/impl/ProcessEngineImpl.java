@@ -25,7 +25,7 @@ import org.activiti.engine.TaskService;
 import org.activiti.engine.impl.cfg.ProcessEngineConfiguration;
 import org.activiti.engine.impl.jobexecutor.JobExecutor;
 import org.activiti.engine.impl.persistence.db.DbSqlSessionFactory;
-import org.activiti.impl.persistence.PersistenceSessionFactory;
+import org.activiti.impl.persistence.RuntimeSessionFactory;
 
 /**
  * @author Tom Baeyens
@@ -44,7 +44,7 @@ public class ProcessEngineImpl implements ProcessEngine {
   protected ManagementService managementService;
   protected DbSchemaStrategy dbSchemaStrategy;
   protected JobExecutor jobExecutor;
-  protected PersistenceSessionFactory persistenceSessionFactory;
+  protected RuntimeSessionFactory runtimeSessionFactory;
 
   public ProcessEngineImpl(ProcessEngineConfiguration processEngineConfiguration) {
     this.processEngineConfiguration = processEngineConfiguration;
@@ -124,8 +124,8 @@ public class ProcessEngineImpl implements ProcessEngine {
   public DbSchemaStrategy getDbSchemaStrategy() {
     return dbSchemaStrategy;
   }
-  public PersistenceSessionFactory getPersistenceSessionFactory() {
-    return persistenceSessionFactory;
+  public RuntimeSessionFactory getPersistenceSessionFactory() {
+    return runtimeSessionFactory;
   }
   public ProcessEngineConfiguration getProcessEngineConfiguration() {
     return processEngineConfiguration;

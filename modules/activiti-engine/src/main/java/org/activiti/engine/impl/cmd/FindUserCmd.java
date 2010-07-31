@@ -15,7 +15,7 @@ package org.activiti.engine.impl.cmd;
 import org.activiti.engine.identity.User;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
-import org.activiti.impl.persistence.PersistenceSession;
+import org.activiti.impl.persistence.RuntimeSession;
 
 
 /**
@@ -30,7 +30,7 @@ public class FindUserCmd implements Command<User> {
   }
 
   public User execute(CommandContext commandContext) {
-    PersistenceSession persistenceSession = commandContext.getPersistenceSession();
-    return persistenceSession.findUser(userId);
+    RuntimeSession runtimeSession = commandContext.getPersistenceSession();
+    return runtimeSession.findUser(userId);
   }
 }

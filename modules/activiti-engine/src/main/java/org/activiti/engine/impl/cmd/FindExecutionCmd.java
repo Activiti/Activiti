@@ -15,7 +15,7 @@ package org.activiti.engine.impl.cmd;
 import org.activiti.engine.Execution;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
-import org.activiti.impl.persistence.PersistenceSession;
+import org.activiti.impl.persistence.RuntimeSession;
 
 
 /**
@@ -30,9 +30,9 @@ public class FindExecutionCmd implements Command<Execution> {
   }
   
   public Execution execute(CommandContext commandContext) {
-    PersistenceSession persistenceSession = 
+    RuntimeSession runtimeSession = 
       commandContext.getPersistenceSession();
-    return persistenceSession.findExecution(executionId);
+    return runtimeSession.findExecution(executionId);
   }
 
 }

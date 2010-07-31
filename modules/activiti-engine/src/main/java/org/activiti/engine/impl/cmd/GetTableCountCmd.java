@@ -16,7 +16,7 @@ import java.util.Map;
 
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
-import org.activiti.impl.persistence.PersistenceSession;
+import org.activiti.impl.persistence.RuntimeSession;
 
 
 /**
@@ -25,8 +25,8 @@ import org.activiti.impl.persistence.PersistenceSession;
 public class GetTableCountCmd implements Command<Map<String,Long>> {
 
   public Map<String,Long> execute(CommandContext commandContext) {
-    PersistenceSession persistenceSession = commandContext.getPersistenceSession();
-    return persistenceSession.getTableCount();
+    RuntimeSession runtimeSession = commandContext.getPersistenceSession();
+    return runtimeSession.getTableCount();
   }
 
 }

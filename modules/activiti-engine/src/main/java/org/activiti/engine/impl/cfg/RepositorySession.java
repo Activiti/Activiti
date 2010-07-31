@@ -14,7 +14,6 @@
 package org.activiti.engine.impl.cfg;
 
 import java.util.List;
-import java.util.Map;
 
 import org.activiti.engine.DeploymentBuilder;
 import org.activiti.engine.impl.persistence.db.IdBlock;
@@ -70,6 +69,4 @@ public interface RepositorySession {
 
   // TODO document that these process definitions are deployed
   ProcessDefinitionEntity findDeployedProcessDefinitionById(String processDefinitionId);
-
-  IdBlock getNextDbidBlock();
 }

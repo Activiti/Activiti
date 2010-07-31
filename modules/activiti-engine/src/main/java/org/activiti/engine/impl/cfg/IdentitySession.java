@@ -13,10 +13,34 @@
 
 package org.activiti.engine.impl.cfg;
 
+import java.util.List;
+
+import org.activiti.engine.impl.persistence.identity.GroupImpl;
+import org.activiti.engine.impl.persistence.identity.UserImpl;
+
 
 /**
  * @author Tom Baeyens
  */
 public interface IdentitySession {
+
+  /* User */
+  void saveUser(UserImpl user);
+  UserImpl findUser(String userId);
+  List<UserImpl> findUsersByGroup(String groupId);
+  void deleteUser(String userId);
+  boolean isValidUser(String userId);
+  
+  /* Group */
+  void saveGroup(GroupImpl group);
+  GroupImpl findGroup(String groupId);
+  List<GroupImpl> findGroupsByUser(String userId);
+  List<GroupImpl> findGroupsByUserAndType(String userId, String groupType);
+  void deleteGroup(String groupId);
+
+  /* Membership */
+  void createMembership(String userId, String groupId);
+  void deleteMembership(String userId, String groupId);
+
 
 }

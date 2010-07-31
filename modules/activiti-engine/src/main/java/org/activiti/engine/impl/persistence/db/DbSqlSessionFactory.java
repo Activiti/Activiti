@@ -34,7 +34,6 @@ import org.activiti.engine.impl.interceptor.SessionFactory;
 import org.activiti.engine.impl.persistence.PersistentObject;
 import org.activiti.engine.impl.util.ClassNameUtil;
 import org.activiti.engine.impl.util.IoUtil;
-import org.activiti.impl.persistence.IbatisPersistenceSessionFactory;
 import org.activiti.impl.persistence.LoadedObject;
 import org.apache.ibatis.session.ExecutorType;
 import org.apache.ibatis.session.SqlSession;
@@ -66,7 +65,7 @@ public class DbSqlSessionFactory implements SessionFactory, ProcessEngineConfigu
   
   public void configurationCompleted(ProcessEngineConfiguration processEngineConfiguration) {
     this.databaseName = processEngineConfiguration.getDatabaseName();
-    this.sqlSessionFactory = ((IbatisPersistenceSessionFactory)processEngineConfiguration.getPersistenceSessionFactory()).getSqlSessionFactory();
+    this.sqlSessionFactory = ((DbRuntimeSessionFactory)processEngineConfiguration.getPersistenceSessionFactory()).getSqlSessionFactory();
     this.idGenerator = processEngineConfiguration.getIdGenerator();
     this.statementMappings = databaseSpecificStatements.get(processEngineConfiguration.getDatabaseName());
   }

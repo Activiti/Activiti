@@ -10,14 +10,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.activiti.impl.persistence;
 
+package org.activiti.engine.impl.persistence.db;
+
+import org.activiti.engine.impl.interceptor.Session;
 import org.activiti.engine.impl.interceptor.SessionFactory;
 
 
 /**
  * @author Tom Baeyens
  */
-public interface PersistenceSessionFactory extends SessionFactory {
+public class DbTaskSessionFactory implements SessionFactory {
+
+  public Session openSession() {
+    return new DbTaskSession();
+  }
 
 }

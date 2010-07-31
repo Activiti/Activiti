@@ -13,7 +13,6 @@
 
 package org.activiti.engine.impl.cfg;
 
-import org.activiti.engine.impl.interceptor.Session;
 import org.activiti.engine.impl.persistence.runtime.ActivityInstanceEntity;
 import org.activiti.engine.impl.persistence.runtime.ProcessInstanceEntity;
 
@@ -21,11 +20,10 @@ import org.activiti.engine.impl.persistence.runtime.ProcessInstanceEntity;
 /**
  * @author Tom Baeyens
  */
-public interface RuntimeSession extends Session {
+public interface RuntimeSession {
   
-  void insert(ProcessInstanceEntity processInstance);
-  void delete(ProcessInstanceEntity processInstance);
+  void insertProcessInstance(ProcessInstanceEntity processInstance);
+  void deleteProcessInstance(ProcessInstanceEntity processInstance);
 
-  void insert(ActivityInstanceEntity activityInstance);
-  void delete(ActivityInstanceEntity activityInstance);
+  void insertActivityInstance(ActivityInstanceEntity activityInstance);
 }

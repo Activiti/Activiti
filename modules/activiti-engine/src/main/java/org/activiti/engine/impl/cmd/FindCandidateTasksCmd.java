@@ -20,7 +20,7 @@ import org.activiti.engine.TaskQuery;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.identity.GroupImpl;
-import org.activiti.impl.persistence.PersistenceSession;
+import org.activiti.impl.persistence.RuntimeSession;
 
 /**
  * @author Joram Barrez
@@ -35,15 +35,15 @@ public class FindCandidateTasksCmd implements Command<List<Task>> {
   }
 
   public List<Task> execute(CommandContext commandContext) {
-    PersistenceSession persistenceSession = commandContext.getPersistenceSession();
+    RuntimeSession runtimeSession = commandContext.getPersistenceSession();
     
     List<String> groupIds = new ArrayList<String>();
-    List<GroupImpl> groups = persistenceSession.findGroupsByUser(userId);
+    List<GroupImpl> groups = runtimeSession.findGroupsByUser(userId);
     for (GroupImpl group : groups) {
       groupIds.add(group.getId());
     }
     
-    return persistenceSession.findCandidateTasks(userId, groupIds);
+    return runtimeSession.findCandidateTasks(userId, groupIds);
   }
 
 }

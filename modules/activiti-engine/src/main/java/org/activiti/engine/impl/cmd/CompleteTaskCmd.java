@@ -18,7 +18,7 @@ import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.task.TaskEntity;
 import org.activiti.impl.execution.ExecutionImpl;
-import org.activiti.impl.persistence.PersistenceSession;
+import org.activiti.impl.persistence.RuntimeSession;
 import org.activiti.pvm.runtime.PvmActivityInstance;
 
 
@@ -36,9 +36,9 @@ public class CompleteTaskCmd extends CmdVoid {
   }
   
   public void executeVoid(CommandContext commandContext) {
-    PersistenceSession persistenceSession = commandContext.getPersistenceSession();
+    RuntimeSession runtimeSession = commandContext.getPersistenceSession();
     
-    TaskEntity task = persistenceSession.findTask(taskId);
+    TaskEntity task = runtimeSession.findTask(taskId);
     if (variables!=null) {
       task.setExecutionVariables(variables);
     }

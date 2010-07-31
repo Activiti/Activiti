@@ -17,7 +17,7 @@ import java.util.Map;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.impl.db.execution.DbExecutionImpl;
-import org.activiti.impl.persistence.PersistenceSession;
+import org.activiti.impl.persistence.RuntimeSession;
 
 
 /**
@@ -34,9 +34,9 @@ public class SetExecutionVariablesCmd implements Command<Object> {
   }
 
   public Object execute(CommandContext commandContext) {
-    PersistenceSession persistenceSession = commandContext
+    RuntimeSession runtimeSession = commandContext
       .getPersistenceSession();
-    DbExecutionImpl execution = persistenceSession
+    DbExecutionImpl execution = runtimeSession
       .findExecution(executionId);
     execution.setVariables(variables);
     return null;
