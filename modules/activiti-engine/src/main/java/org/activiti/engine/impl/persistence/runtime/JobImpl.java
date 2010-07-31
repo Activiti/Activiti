@@ -140,7 +140,7 @@ public abstract class JobImpl implements Serializable, Job, PersistentObject {
   public void execute(JobHandler jobHandler, CommandContext commandContext) {
     ExecutionImpl execution = null;
     if (executionId != null) {
-      execution = commandContext.getPersistenceSession().findExecution(executionId);
+      execution = commandContext.getRuntimeSession().findExecution(executionId);
     }
     jobHandler.execute(jobHandlerConfiguration, execution, commandContext);
   }

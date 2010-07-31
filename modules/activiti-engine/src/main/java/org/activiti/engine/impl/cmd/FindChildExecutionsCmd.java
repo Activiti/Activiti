@@ -33,7 +33,7 @@ public class FindChildExecutionsCmd implements Command<List>{
   
   public List execute(CommandContext commandContext) {
     RuntimeSession runtimeSession = 
-      commandContext.getPersistenceSession();
+      commandContext.getRuntimeSession();
     return runtimeSession.findChildExecutions(executionId);
   }
 

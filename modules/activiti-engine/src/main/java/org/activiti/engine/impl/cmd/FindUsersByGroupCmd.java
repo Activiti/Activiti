@@ -31,7 +31,7 @@ public class FindUsersByGroupCmd implements Command<List> {
   }
 
   public List execute(CommandContext commandContext) {
-    RuntimeSession runtimeSession = commandContext.getPersistenceSession();
+    RuntimeSession runtimeSession = commandContext.getRuntimeSession();
     return runtimeSession.findUsersByGroup(groupId);
   }
 }

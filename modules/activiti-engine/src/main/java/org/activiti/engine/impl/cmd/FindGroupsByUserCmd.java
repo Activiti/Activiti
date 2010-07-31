@@ -33,7 +33,7 @@ public class FindGroupsByUserCmd implements Command<List> {
   }
 
   public List execute(CommandContext commandContext) {
-    RuntimeSession runtimeSession = commandContext.getPersistenceSession();
+    RuntimeSession runtimeSession = commandContext.getRuntimeSession();
     
     if (groupType==null) {
       return runtimeSession

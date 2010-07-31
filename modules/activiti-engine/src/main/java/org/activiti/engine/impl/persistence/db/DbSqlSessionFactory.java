@@ -14,6 +14,8 @@
 package org.activiti.engine.impl.persistence.db;
 
 import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
 import java.sql.Connection;
 import java.sql.Statement;
 import java.util.Collections;
@@ -22,6 +24,8 @@ import java.util.Map;
 import java.util.StringTokenizer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import javax.sql.DataSource;
 
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiWrongDbException;
@@ -34,10 +38,20 @@ import org.activiti.engine.impl.interceptor.SessionFactory;
 import org.activiti.engine.impl.persistence.PersistentObject;
 import org.activiti.engine.impl.util.ClassNameUtil;
 import org.activiti.engine.impl.util.IoUtil;
+import org.activiti.engine.impl.variable.Type;
 import org.activiti.impl.persistence.LoadedObject;
+import org.apache.ibatis.builder.xml.XMLConfigBuilder;
+import org.apache.ibatis.datasource.pooled.PooledDataSource;
+import org.apache.ibatis.mapping.Environment;
+import org.apache.ibatis.session.Configuration;
 import org.apache.ibatis.session.ExecutorType;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
+import org.apache.ibatis.session.defaults.DefaultSqlSessionFactory;
+import org.apache.ibatis.transaction.TransactionFactory;
+import org.apache.ibatis.transaction.jdbc.JdbcTransactionFactory;
+import org.apache.ibatis.transaction.managed.ManagedTransactionFactory;
+import org.apache.ibatis.type.JdbcType;
 
 
 /**
@@ -65,10 +79,64 @@ public class DbSqlSessionFactory implements SessionFactory, ProcessEngineConfigu
   
   public void configurationCompleted(ProcessEngineConfiguration processEngineConfiguration) {
     this.databaseName = processEngineConfiguration.getDatabaseName();
-    this.sqlSessionFactory = ((DbRuntimeSessionFactory)processEngineConfiguration.getPersistenceSessionFactory()).getSqlSessionFactory();
+    this.sqlSessionFactory = ((DbRuntimeSessionFactory)processEngineConfiguration.getRuntimeSessionFactory()).getSqlSessionFactory();
     this.idGenerator = processEngineConfiguration.getIdGenerator();
     this.statementMappings = databaseSpecificStatements.get(processEngineConfiguration.getDatabaseName());
+
+    DataSource dataSource = processEngineConfiguration.getDataSource();
+    if (dataSource==null) {
+      
+      String jdbcDriver = processEngineConfiguration.getJdbcDriver(); 
+      String jdbcUrl = processEngineConfiguration.getJdbcUrl(); 
+      String jdbcUsername = processEngineConfiguration.getJdbcUsername();
+      String jdbcPassword = processEngineConfiguration.getJdbcPassword();
+
+      if ( (jdbcDriver==null)
+           || (jdbcUrl==null)
+           || (jdbcUsername==null)
+         ) {
+        throw new ActivitiException("DataSource or JDBC properties have to be specified in a process engine configuration");
+      }
+      
+      dataSource = new PooledDataSource(
+              Thread.currentThread().getContextClassLoader(), 
+              jdbcDriver, 
+              jdbcUrl, 
+              jdbcUsername,
+              jdbcPassword );
+    }
+    
+    TransactionFactory transactionFactory = null;
+    if (processEngineConfiguration.isLocalTransactions()) {
+      transactionFactory = new JdbcTransactionFactory();
+    } else {
+      transactionFactory = new ManagedTransactionFactory();
+    }
+    
+    sqlSessionFactory = createSessionFactory(dataSource, transactionFactory);
   }
+
+  protected SqlSessionFactory createSessionFactory(DataSource dataSource, TransactionFactory transactionFactory) {
+    try {
+      ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+      InputStream inputStream = classLoader.getResourceAsStream("org/activiti/db/ibatis/activiti.ibatis.mem.conf.xml");
+
+      // update the jdbc parameters to the configured ones...
+      Environment environment = new Environment("default", transactionFactory, dataSource);
+      Reader reader = new InputStreamReader(inputStream);
+      XMLConfigBuilder parser = new XMLConfigBuilder(reader);
+      Configuration configuration = parser.getConfiguration();
+      configuration.setEnvironment(environment);
+      configuration.getTypeHandlerRegistry().register(Type.class, JdbcType.VARCHAR, new IbatisVariableTypeHandler());
+      configuration = parser.parse();
+      
+      return new DefaultSqlSessionFactory(configuration);
+
+    } catch (Exception e) {
+      throw new ActivitiException("Error while building ibatis SqlSessionFactory: " + e.getMessage(), e);
+    }
+  }
+
 
   public Session openSession() {
     return new DbSqlSession(this);
@@ -77,24 +145,23 @@ public class DbSqlSessionFactory implements SessionFactory, ProcessEngineConfigu
   // insert, update and delete statements /////////////////////////////////////
   
   public String getInsertStatement(PersistentObject object) {
-    return getStatement(object, insertStatements, "insert");
+    return getStatement(object.getClass(), insertStatements, "insert");
   }
 
   public String getUpdateStatement(PersistentObject object) {
-    return getStatement(object, updateStatements, "update");
+    return getStatement(object.getClass(), updateStatements, "update");
   }
 
-  public String getDeleteStatement(PersistentObject object) {
-    return getStatement(object, deleteStatements, "delete");
+  public String getDeleteStatement(Class<?> persistentObjectClass) {
+    return getStatement(persistentObjectClass, deleteStatements, "delete");
   }
 
-  private String getStatement(PersistentObject object, Map<Class<?>,String> cachedStatements, String prefix) {
-    Class< ? extends PersistentObject> persistentObjectClass = object.getClass();
+  private String getStatement(Class<?> persistentObjectClass, Map<Class<?>,String> cachedStatements, String prefix) {
     String statement = cachedStatements.get(persistentObjectClass);
     if (statement!=null) {
       return statement;
     }
-    statement = prefix+ClassNameUtil.getClassNameWithoutPackage(object);
+    statement = prefix+ClassNameUtil.getClassNameWithoutPackage(persistentObjectClass);
     cachedStatements.put(persistentObjectClass, statement);
     return statement;
   }

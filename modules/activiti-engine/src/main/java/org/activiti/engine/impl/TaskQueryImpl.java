@@ -101,13 +101,13 @@ public class TaskQueryImpl extends AbstractListQuery<Task> implements TaskQuery 
   
   protected List<Task> executeList(CommandContext commandContext, Page page) {
     return commandContext
-      .getPersistenceSession()
+      .getTaskSession()
       .dynamicFindTasks(createParamMap(), page);
   }
   
   protected long executeCount(CommandContext commandContext) {
     return commandContext
-      .getPersistenceSession()
+      .getTaskSession()
       .dynamicFindTaskCount(createParamMap());
   }
   
@@ -145,7 +145,7 @@ public class TaskQueryImpl extends AbstractListQuery<Task> implements TaskQuery 
   protected List<String> getGroupsForCandidateUser(String candidateUser) {
     List<GroupImpl> groups = CommandContext
       .getCurrent()
-      .getPersistenceSession()
+      .getIdentitySession()
       .findGroupsByUser(candidateUser);
     List<String> groupIds = new ArrayList<String>();
     for (GroupImpl group : groups) {

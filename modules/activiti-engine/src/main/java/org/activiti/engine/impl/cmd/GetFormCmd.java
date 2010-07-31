@@ -46,7 +46,7 @@ public class GetFormCmd implements Command<Object> {
   }
 
   public Object execute(CommandContext commandContext) {
-    RuntimeSession runtimeSession = commandContext.getPersistenceSession();
+    RuntimeSession runtimeSession = commandContext.getRuntimeSession();
     RepositorySession repositorySession = commandContext.getRepositorySession();
     ProcessDefinitionEntity processDefinition = null;
     TaskEntity task = null;

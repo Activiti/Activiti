@@ -30,7 +30,7 @@ public class GetTableMetaDataCmd implements Command<TableMetaData> {
   }
   
   public TableMetaData execute(CommandContext commandContext) {
-    RuntimeSession runtimeSession = commandContext.getPersistenceSession();
+    RuntimeSession runtimeSession = commandContext.getRuntimeSession();
     return runtimeSession.getTableMetaData(tableName);
   }
 

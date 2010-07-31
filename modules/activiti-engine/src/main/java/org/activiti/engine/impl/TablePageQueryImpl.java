@@ -81,7 +81,7 @@ public class TablePageQueryImpl extends AbstractSingleResultQuery<TablePage> imp
       throw new ActivitiException("Table name, offset and maxResults are " +
       		"minimally needed to execute a TablePageQuery");
     }
-    return commandContext.getPersistenceSession()
+    return commandContext.getManagementSession()
       .getTablePage(tableName, start, maxRows, sortColumn, sortOrder);
   }
 

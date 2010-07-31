@@ -38,7 +38,7 @@ public class JobExecutorMessageSession implements MessageSession {
   }
 
   public void send(MessageImpl message) {
-    RuntimeSession runtimeSession = commandContext.getPersistenceSession();
+    RuntimeSession runtimeSession = commandContext.getRuntimeSession();
     runtimeSession.insert(message);
     
     commandContext

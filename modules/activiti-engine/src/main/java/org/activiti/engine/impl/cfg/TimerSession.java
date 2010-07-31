@@ -12,8 +12,8 @@
  */
 package org.activiti.engine.impl.cfg;
 
+import org.activiti.engine.impl.persistence.runtime.ActivityInstanceEntity;
 import org.activiti.engine.impl.persistence.runtime.TimerImpl;
-import org.activiti.impl.execution.ExecutionImpl;
 
 
 /**
@@ -22,6 +22,6 @@ import org.activiti.impl.execution.ExecutionImpl;
 public interface TimerSession {
 
   void schedule(TimerImpl timer);
-  void cancelTimers(ExecutionImpl executionImpl);
+  void cancelTimers(ActivityInstanceEntity activityInstance);
 
 }

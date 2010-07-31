@@ -19,46 +19,18 @@ import java.util.Map;
 import org.activiti.engine.impl.cfg.HistorySession;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.interceptor.Session;
-import org.activiti.impl.history.HistoricActivityInstanceImpl;
-import org.activiti.impl.history.HistoricProcessInstanceImpl;
+import org.activiti.engine.impl.persistence.history.HistoricActivityInstanceImpl;
+import org.activiti.engine.impl.persistence.history.HistoricProcessInstanceImpl;
 
 
 /**
  * @author Christian Stettler
  * @author Tom Baeyens
  */
-public class DbHistorySession implements HistorySession, Session {
-
-  protected DbSqlSession dbSqlSession;
-
-  public DbHistorySession() {
-    this.dbSqlSession = CommandContext.getCurrentSession(DbSqlSession.class);
-  }
-
-  public void saveHistoricProcessInstance(HistoricProcessInstanceImpl historicProcessInstance) {
-    if (historicProcessInstance.getId() == null) {
-      historicProcessInstance.setId(String.valueOf(idGenerator.getNextId()));
-      dbSqlSession.insert("insertHistoricProcessInstance", historicProcessInstance);
-    } else {
-      dbSqlSession.update("updateHistoricProcessInstance", historicProcessInstance);
-    }
-  }
+public class DbHistorySession extends AbstractDbSession implements HistorySession, Session {
 
   public HistoricProcessInstanceImpl findHistoricProcessInstance(String processInstanceId) {
     return (HistoricProcessInstanceImpl) dbSqlSession.selectOne("selectHistoricProcessInstance", processInstanceId);
-  }
-
-  public void deleteHistoricProcessInstance(String processInstanceId) {
-    dbSqlSession.delete("deleteHistoricProcessInstance", processInstanceId);
-  }
-
-  public void saveHistoricActivityInstance(HistoricActivityInstanceImpl historicActivityInstance) {
-    if (historicActivityInstance.getId() == null) {
-      historicActivityInstance.setId(String.valueOf(idGenerator.getNextId()));
-      dbSqlSession.insert("insertHistoricActivityInstance", historicActivityInstance);
-    } else {
-      dbSqlSession.update("updateHistoricActivityInstance", historicActivityInstance);
-    }
   }
 
   public HistoricActivityInstanceImpl findHistoricActivityInstance(String activityId, String processInstanceId) {
@@ -69,12 +41,20 @@ public class DbHistorySession implements HistorySession, Session {
     return (HistoricActivityInstanceImpl) dbSqlSession.selectOne("selectHistoricActivityInstance", parameters);
   }
 
-  public void deleteHistoricActivityInstance(String activityId, String processInstanceId) {
-    Map<String, String> parameters = new HashMap<String, String>();
-    parameters.put("activityId", activityId);
-    parameters.put("processInstanceId", processInstanceId);
+  public void insertHistoricProcessInstance(HistoricProcessInstanceImpl historicProcessInstance) {
+    dbSqlSession.insert(historicProcessInstance);
+  }
 
-    dbSqlSession.delete("deleteHistoricActivityInstance", parameters);
+  public void deleteHistoricProcessInstance(HistoricProcessInstanceImpl historicProcessInstance) {
+    dbSqlSession.delete(historicProcessInstance);
+  }
+
+  public void insertHistoricActivityInstance(HistoricActivityInstanceImpl historicActivityInstance) {
+    dbSqlSession.insert(historicActivityInstance);
+  }
+
+  public void deleteHistoricActivityInstance(HistoricActivityInstanceImpl historicActivityInstance) {
+    dbSqlSession.delete(historicActivityInstance);
   }
 
   public void close() {

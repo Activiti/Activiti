@@ -31,7 +31,7 @@ public class MessageImpl extends JobImpl {
   public void execute(JobHandler jobHandler, CommandContext commandContext) {
     super.execute(jobHandler, commandContext);
     commandContext
-      .getPersistenceSession()
+      .getRuntimeSession()
       .delete(this);
   }
 

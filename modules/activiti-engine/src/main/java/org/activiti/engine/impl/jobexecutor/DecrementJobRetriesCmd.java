@@ -35,7 +35,7 @@ public class DecrementJobRetriesCmd implements Command<Object> {
   }
 
   public Object execute(CommandContext commandContext) {
-    RuntimeSession runtimeSession = commandContext.getPersistenceSession();
+    RuntimeSession runtimeSession = commandContext.getRuntimeSession();
     JobImpl job = runtimeSession.findJobById(jobId);
     job.setRetries(job.getRetries() - 1);
     job.setLockOwner(null);

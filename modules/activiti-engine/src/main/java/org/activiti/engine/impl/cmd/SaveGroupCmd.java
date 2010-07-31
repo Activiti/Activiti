@@ -29,7 +29,7 @@ public class SaveGroupCmd extends CmdVoid {
   
   public void executeVoid(CommandContext commandContext) {
     commandContext
-        .getPersistenceSession()
+        .getRuntimeSession()
         .saveGroup(group);
   }
 

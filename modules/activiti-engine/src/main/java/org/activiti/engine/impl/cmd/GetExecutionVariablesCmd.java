@@ -32,7 +32,7 @@ public class GetExecutionVariablesCmd implements Command<Map<String, Object>> {
 
   public Map<String, Object> execute(CommandContext commandContext) {
     DbExecutionImpl execution = commandContext
-      .getPersistenceSession()
+      .getRuntimeSession()
       .findExecution(executionId);
     
     return execution.getVariables();

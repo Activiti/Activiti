@@ -33,7 +33,7 @@ public class DeleteDeploymentCmd extends CmdVoid {
 
   public void executeVoid(CommandContext commandContext) {
     RepositorySession repositorySession = commandContext.getRepositorySession();
-    RuntimeSession runtimeSession = commandContext.getPersistenceSession();
+    RuntimeSession runtimeSession = commandContext.getRuntimeSession();
     
     List<ProcessDefinitionEntity> processDefinitions = repositorySession.findProcessDefinitionsByDeploymentId(deploymentId);
     for (ProcessDefinitionEntity processDefinition : processDefinitions) {

@@ -29,6 +29,7 @@ import org.activiti.engine.ProcessEngines;
 import org.activiti.engine.ProcessService;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.TaskService;
+import org.activiti.engine.impl.HistoricDataServiceImpl;
 import org.activiti.engine.impl.IdentityServiceImpl;
 import org.activiti.engine.impl.ManagementServiceImpl;
 import org.activiti.engine.impl.ProcessEngineImpl;
@@ -39,7 +40,7 @@ import org.activiti.engine.impl.bpmn.deployer.BpmnDeployer;
 import org.activiti.engine.impl.calendar.BusinessCalendarManager;
 import org.activiti.engine.impl.calendar.DurationBusinessCalendar;
 import org.activiti.engine.impl.calendar.MapBusinessCalendarManager;
-import org.activiti.engine.impl.cfg.standalone.StandaloneTransactionContextFactory;
+import org.activiti.engine.impl.cfg.standalone.StandaloneIbatisTransactionContextFactory;
 import org.activiti.engine.impl.el.ExpressionManager;
 import org.activiti.engine.impl.interceptor.CommandContextFactory;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
@@ -51,19 +52,17 @@ import org.activiti.engine.impl.jobexecutor.JobExecutorTimerSessionFactory;
 import org.activiti.engine.impl.jobexecutor.JobHandlers;
 import org.activiti.engine.impl.jobexecutor.TimerExecuteNestedActivityJobHandler;
 import org.activiti.engine.impl.persistence.db.DbIdGenerator;
+import org.activiti.engine.impl.persistence.db.DbIdentitySessionFactory;
+import org.activiti.engine.impl.persistence.db.DbManagementSessionFactory;
 import org.activiti.engine.impl.persistence.db.DbRepositorySessionFactory;
-import org.activiti.engine.impl.persistence.db.DbRuntimeSessionFactory;
 import org.activiti.engine.impl.persistence.db.DbSqlSession;
 import org.activiti.engine.impl.persistence.db.DbSqlSessionFactory;
+import org.activiti.engine.impl.persistence.db.DbTaskSessionFactory;
 import org.activiti.engine.impl.persistence.repository.Deployer;
 import org.activiti.engine.impl.scripting.ScriptingEngines;
 import org.activiti.engine.impl.variable.DefaultVariableTypes;
 import org.activiti.engine.impl.variable.VariableTypes;
 import org.activiti.impl.event.DefaultProcessEventBus;
-import org.activiti.impl.history.HistoricDataServiceImpl;
-import org.activiti.impl.persistence.RuntimeSession;
-import org.activiti.impl.persistence.RuntimeSessionFactory;
-import org.activiti.impl.repository.DeployerManager;
 import org.activiti.pvm.event.ProcessEventBus;
 
 /**
@@ -90,12 +89,6 @@ public class ProcessEngineConfiguration {
   protected TaskService taskService;
   protected ManagementService managementService;
   
-  protected SessionFactory repositorySessionFactory;
-  protected SessionFactory persistenceSessionFactory;
-  protected SessionFactory messageSessionFactory;
-  protected SessionFactory timerSessionFactory;
-  protected DbSqlSessionFactory dbSqlSessionFactory;
-
   protected Map<Class<?>, SessionFactory> sessionFactories;
   protected List<Deployer> deployers;
 
@@ -123,15 +116,12 @@ public class ProcessEngineConfiguration {
   
   protected boolean isConfigurationCompleted = false;
 
-  // TODO remove
-  protected DeployerManager deployerManager;
-
   public ProcessEngineConfiguration() {
     processEngineName = ProcessEngines.NAME_DEFAULT;
 
     commandExecutor = new DefaultCommandExecutor();
     commandContextFactory = new CommandContextFactory(this);
-    transactionContextFactory = new StandaloneTransactionContextFactory();
+    transactionContextFactory = new StandaloneIbatisTransactionContextFactory();
 
     repositoryService = new RepositoryServiceImpl();
     processService = new ProcessServiceImpl();
@@ -140,13 +130,16 @@ public class ProcessEngineConfiguration {
     identityService = new IdentityServiceImpl();
     historicDataService = new HistoricDataServiceImpl();
 
-    messageSessionFactory = new JobExecutorMessageSessionFactory();
-    timerSessionFactory = new JobExecutorTimerSessionFactory();
-    persistenceSessionFactory = new DbRuntimeSessionFactory();
-    repositorySessionFactory = new DbRepositorySessionFactory();
-    dbSqlSessionFactory = new DbSqlSessionFactory();
-    
     sessionFactories = new HashMap<Class<?>, SessionFactory>();
+    sessionFactories.put(RepositorySession.class, new DbRepositorySessionFactory());
+    sessionFactories.put(RuntimeSession.class, new DbRepositorySessionFactory());
+    sessionFactories.put(TaskSession.class, new DbTaskSessionFactory());
+    sessionFactories.put(IdentitySession.class, new DbIdentitySessionFactory());
+    sessionFactories.put(ManagementSession.class, new DbManagementSessionFactory());
+    sessionFactories.put(MessageSession.class, new JobExecutorMessageSessionFactory());
+    sessionFactories.put(TimerSession.class, new JobExecutorTimerSessionFactory());
+    sessionFactories.put(DbSqlSession.class, new DbSqlSessionFactory());
+    
     deployers = new ArrayList<Deployer>();
     deployers.add(new BpmnDeployer());
 
@@ -184,21 +177,6 @@ public class ProcessEngineConfiguration {
 
   protected void configurationComplete() {
     if (!isConfigurationCompleted) {
-      if (messageSessionFactory != null) {
-        sessionFactories.put(MessageSession.class, messageSessionFactory);
-      }
-      if (timerSessionFactory != null) {
-        sessionFactories.put(TimerSession.class, timerSessionFactory);
-      }
-      if (persistenceSessionFactory != null) {
-        sessionFactories.put(RuntimeSession.class, persistenceSessionFactory);
-      }
-      if (repositorySessionFactory != null) {
-        sessionFactories.put(RepositorySession.class, repositorySessionFactory);
-      }
-      if (dbSqlSessionFactory != null) {
-        sessionFactories.put(DbSqlSession.class, dbSqlSessionFactory);
-      }
       notifyConfigurationComplete(commandExecutor);
       notifyConfigurationComplete(commandContextFactory);
       notifyConfigurationComplete(transactionContextFactory);
@@ -208,11 +186,9 @@ public class ProcessEngineConfiguration {
       notifyConfigurationComplete(managementService);
       notifyConfigurationComplete(identityService);
       notifyConfigurationComplete(historicDataService);
-      notifyConfigurationComplete(messageSessionFactory);
-      notifyConfigurationComplete(timerSessionFactory);
-      notifyConfigurationComplete(persistenceSessionFactory);
-      notifyConfigurationComplete(repositorySessionFactory);
-      notifyConfigurationComplete(dbSqlSessionFactory);
+      for (SessionFactory sessionFactory : sessionFactories.values()) {
+        notifyConfigurationComplete(sessionFactory);
+      }
       for (Deployer deployer : deployers) {
         notifyConfigurationComplete(deployer);
       }
@@ -239,27 +215,20 @@ public class ProcessEngineConfiguration {
 
   public void dbSchemaCreate() {
     configurationComplete();
-    dbSqlSessionFactory.dbSchemaCreate();
+    getDbSqlSessionFactory().dbSchemaCreate();
   }
 
   public void dbSchemaDrop() {
     configurationComplete();
-    dbSqlSessionFactory.dbSchemaDrop();
+    getDbSqlSessionFactory().dbSchemaDrop();
   }
+  
+  public DbSqlSessionFactory getDbSqlSessionFactory() {
+    return (DbSqlSessionFactory) sessionFactories.get(DbSqlSession.class);
+  }
+
 
   // getters and setters //////////////////////////////////////////////////////
-
-  public DeployerManager getDeployerManager() {
-    return deployerManager;
-  }
-
-  public SessionFactory getPersistenceSessionFactory() {
-    return persistenceSessionFactory;
-  }
-
-  public void setPersistenceSessionFactory(RuntimeSessionFactory runtimeSessionFactory) {
-    this.persistenceSessionFactory = runtimeSessionFactory;
-  }
 
   public String getProcessEngineName() {
     return processEngineName;
@@ -349,10 +318,6 @@ public class ProcessEngineConfiguration {
     this.managementService = managementService;
   }
   
-  public void setDeployerManager(DeployerManager deployerManager) {
-    this.deployerManager = deployerManager;
-  }
- 
   public void setVariableTypes(VariableTypes variableTypes) {
     this.variableTypes = variableTypes;
   }
@@ -507,46 +472,6 @@ public class ProcessEngineConfiguration {
   }
 
   
-  public SessionFactory getRepositorySessionFactory() {
-    return repositorySessionFactory;
-  }
-
-  
-  public void setRepositorySessionFactory(SessionFactory repositorySessionFactory) {
-    this.repositorySessionFactory = repositorySessionFactory;
-  }
-
-  
-  public SessionFactory getMessageSessionFactory() {
-    return messageSessionFactory;
-  }
-
-  
-  public void setMessageSessionFactory(SessionFactory messageSessionFactory) {
-    this.messageSessionFactory = messageSessionFactory;
-  }
-
-  
-  public SessionFactory getTimerSessionFactory() {
-    return timerSessionFactory;
-  }
-
-  
-  public void setTimerSessionFactory(SessionFactory timerSessionFactory) {
-    this.timerSessionFactory = timerSessionFactory;
-  }
-
-  
-  public DbSqlSessionFactory getDbSqlSessionFactory() {
-    return dbSqlSessionFactory;
-  }
-
-  
-  public void setDbSqlSessionFactory(DbSqlSessionFactory dbSqlSessionFactory) {
-    this.dbSqlSessionFactory = dbSqlSessionFactory;
-  }
-
-  
   public boolean isJobExecutorAutoActivate() {
     return jobExecutorAutoActivate;
   }
@@ -566,10 +491,6 @@ public class ProcessEngineConfiguration {
     this.localTransactions = localTransactions;
   }
   
-  public void setPersistenceSessionFactory(SessionFactory persistenceSessionFactory) {
-    this.persistenceSessionFactory = persistenceSessionFactory;
-  }
-  
   public List<Deployer> getDeployers() {
     return deployers;
   }
@@ -578,7 +499,6 @@ public class ProcessEngineConfiguration {
     this.deployers = deployers;
   }
 
-  
   public long getIdBlockSize() {
     return idBlockSize;
   }

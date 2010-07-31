@@ -25,10 +25,10 @@ import org.activiti.engine.impl.persistence.identity.UserImpl;
 public interface IdentitySession {
 
   /* User */
-  void saveUser(UserImpl user);
+  void insertUser(UserImpl user);
+  void deleteUser(String userId);
   UserImpl findUser(String userId);
   List<UserImpl> findUsersByGroup(String groupId);
-  void deleteUser(String userId);
   boolean isValidUser(String userId);
   
   /* Group */

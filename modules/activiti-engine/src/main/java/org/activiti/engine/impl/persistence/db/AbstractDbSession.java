@@ -11,19 +11,29 @@
  * limitations under the License.
  */
 
-package org.activiti.impl.persistence;
+package org.activiti.engine.impl.persistence.db;
 
+import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.interceptor.Session;
-import org.activiti.engine.impl.interceptor.SessionFactory;
+import org.activiti.engine.impl.persistence.PersistentObject;
 
 
 /**
  * @author Tom Baeyens
  */
-public class IbatisIdentitySessionFactory implements SessionFactory {
+public abstract class AbstractDbSession implements Session {
 
-  public Session openSession() {
-    return new IbatisIdentitySession();
+  protected DbSqlSession dbSqlSession;
+
+  public AbstractDbSession() {
+    this.dbSqlSession = CommandContext.getCurrentSession(DbSqlSession.class);
+  }
+  
+  public void insert(PersistentObject persistentObject) {
+    dbSqlSession.insert(persistentObject);
   }
 
+  public void delete(PersistentObject persistentObject) {
+    dbSqlSession.delete(persistentObject);
+  }
 }

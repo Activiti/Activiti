@@ -16,12 +16,11 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.activiti.engine.impl.cfg.RuntimeSession;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.PersistentObject;
 import org.activiti.engine.impl.persistence.runtime.ByteArrayImpl;
 import org.activiti.engine.impl.persistence.task.TaskEntity;
-import org.activiti.impl.db.execution.DbExecutionImpl;
-import org.activiti.impl.persistence.RuntimeSession;
 
 /**
  * @author Tom Baeyens
@@ -79,7 +78,7 @@ public class VariableInstance implements Serializable, PersistentObject {
   }
 
   public void delete() {
-    RuntimeSession runtimeSession = CommandContext.getCurrent().getPersistenceSession();
+    RuntimeSession runtimeSession = CommandContext.getCurrent().getRuntimeSession();
     runtimeSession.delete(this);
 
     if (byteArrayValueId != null) {
@@ -132,7 +131,7 @@ public class VariableInstance implements Serializable, PersistentObject {
 
   public ByteArrayImpl getByteArrayValue() {
     if ((byteArrayValue == null) && (byteArrayValueId != null)) {
-      byteArrayValue = CommandContext.getCurrent().getPersistenceSession().findByteArrayById(byteArrayValueId);
+      byteArrayValue = CommandContext.getCurrent().getRuntimeSession().findByteArrayById(byteArrayValueId);
     }
     return byteArrayValue;
   }

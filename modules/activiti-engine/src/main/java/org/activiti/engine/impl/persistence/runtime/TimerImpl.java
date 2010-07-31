@@ -42,7 +42,7 @@ public class TimerImpl extends JobImpl {
       }
       
       commandContext
-        .getPersistenceSession()
+        .getRuntimeSession()
         .delete(this);
 
     } else {

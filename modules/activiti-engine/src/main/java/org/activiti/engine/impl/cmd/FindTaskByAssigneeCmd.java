@@ -34,7 +34,7 @@ public class FindTaskByAssigneeCmd implements Command<List<Task>> {
   }
   
   public List<Task> execute(CommandContext commandContext) {
-    RuntimeSession runtimeSession = commandContext.getPersistenceSession();
+    RuntimeSession runtimeSession = commandContext.getRuntimeSession();
     return runtimeSession.findTasksByAssignee(assignee);
   }
 

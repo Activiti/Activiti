@@ -10,27 +10,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.activiti.impl.execution;
+package org.activiti.engine.impl.cfg.standalone;
 
-import java.io.Serializable;
-
-import org.activiti.impl.definition.TransitionImpl;
+import org.activiti.engine.impl.cfg.TransactionContext;
+import org.activiti.engine.impl.cfg.TransactionContextFactory;
+import org.activiti.engine.impl.interceptor.CommandContext;
 
 
 /**
  * @author Tom Baeyens
  */
-public class TransitionContext implements Serializable {
+public class StandaloneIbatisTransactionContextFactory implements TransactionContextFactory {
 
-  private static final long serialVersionUID = 1L;
-  
-  TransitionImpl transition;
- 
-  public TransitionContext(TransitionImpl transition) {
-    this.transition = transition;
-  }
- 
-  public TransitionImpl getTransition() {
-    return transition;
+  public TransactionContext openTransactionContext(CommandContext commandContext) {
+    return new StandaloneIbatisTransactionContext(commandContext);
   }
 }

@@ -15,14 +15,14 @@
 package org.activiti.impl.event;
 
 import org.activiti.engine.ProcessInstance;
-import org.activiti.pvm.Activity;
+import org.activiti.pvm.impl.process.ActivityImpl;
 
 /**
  * @author Christian Stettler
  */
-public class ActivityEndedEvent extends AbstractProcessInstanceEvent<Activity> {
+public class ActivityEndedEvent extends AbstractProcessInstanceEvent<ActivityImpl> {
 
-  public  ActivityEndedEvent(ProcessInstance processInstance, Activity activity) {
+  public  ActivityEndedEvent(ProcessInstance processInstance, ActivityImpl activity) {
     super(processInstance.getProcessDefinitionId(), processInstance.getId(), activity.getId(), null, activity);
   }
 

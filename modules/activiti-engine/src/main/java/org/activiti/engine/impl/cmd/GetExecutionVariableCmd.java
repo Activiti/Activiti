@@ -33,7 +33,7 @@ public class GetExecutionVariableCmd implements Command<Object> {
 
   public Object execute(CommandContext commandContext) {
     DbExecutionImpl execution = commandContext
-      .getPersistenceSession()
+      .getRuntimeSession()
       .findExecution(executionId);
     
     return execution.getVariable(variableName);

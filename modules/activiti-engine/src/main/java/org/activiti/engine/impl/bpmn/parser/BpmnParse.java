@@ -46,6 +46,7 @@ import org.activiti.engine.impl.el.ActivitiValueExpression;
 import org.activiti.engine.impl.el.ExpressionManager;
 import org.activiti.engine.impl.el.UelMethodExpressionCondition;
 import org.activiti.engine.impl.el.UelValueExpressionCondition;
+import org.activiti.engine.impl.form.FormReference;
 import org.activiti.engine.impl.jobexecutor.TimerDeclarationImpl;
 import org.activiti.engine.impl.jobexecutor.TimerExecuteNestedActivityJobHandler;
 import org.activiti.engine.impl.persistence.repository.ProcessDefinitionEntity;
@@ -55,7 +56,6 @@ import org.activiti.engine.impl.util.xml.Element;
 import org.activiti.engine.impl.util.xml.Parse;
 import org.activiti.engine.impl.util.xml.Parser;
 import org.activiti.engine.impl.variable.VariableDeclarationImpl;
-import org.activiti.impl.definition.FormReference;
 import org.activiti.pvm.activity.ActivityBehavior;
 import org.activiti.pvm.impl.process.ActivityImpl;
 import org.activiti.pvm.impl.process.ProcessDefinitionImpl;
@@ -75,9 +75,10 @@ public class BpmnParse extends Parse {
   public static final String PROPERTYNAME_CONDITION = "condition";
   public static final String PROPERTYNAME_VARIABLE_DECLARATIONS = "variableDeclarations";
   public static final String PROPERTYNAME_TIMER_DECLARATION = "timerDeclarations";
+  public static final String PROPERTYNAME_INITIAL = "initial";
 
   private static final Logger LOG = Logger.getLogger(BpmnParse.class.getName());
-
+  
   /**
    * The end result of the parsing: a list of process definition.
    */
@@ -303,6 +304,8 @@ public class BpmnParse extends Parse {
           addProblem("multiple startEvents in a process definition are not yet supported", startEventElement);
         }
         processDefinition.setInitial(activity);
+      } else {
+        scope.setProperty(PROPERTYNAME_INITIAL, activity);
       }
 
       String form = startEventElement.attributeNS(BpmnParser.BPMN_EXTENSIONS_NS, "form");

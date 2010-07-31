@@ -31,7 +31,7 @@ public class FindExecutionCmd implements Command<Execution> {
   
   public Execution execute(CommandContext commandContext) {
     RuntimeSession runtimeSession = 
-      commandContext.getPersistenceSession();
+      commandContext.getRuntimeSession();
     return runtimeSession.findExecution(executionId);
   }
 

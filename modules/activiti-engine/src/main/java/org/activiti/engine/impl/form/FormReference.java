@@ -10,31 +10,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.activiti.impl.execution;
+package org.activiti.engine.impl.form;
 
 
 /**
  * @author Tom Baeyens
  */
-public class ExeOpTransferOperationLoop implements ExeOp {
+public class FormReference {
 
-  ExecutionImpl otherExecution;
-  ExeOp nextOperation;
-  
-  public ExeOpTransferOperationLoop(ExecutionImpl otherExecution, ExeOp nextOperation) {
-    this.otherExecution = otherExecution;
-    this.nextOperation = nextOperation;
-  }
+  protected String form;
+  protected String language;
 
-  public void execute(ExecutionImpl execution) {
-    otherExecution.performOperation(nextOperation);
-  }
-
-  public boolean isAsync() {
-    return false;
+  public FormReference(String form, String language) {
+    this.form = form;
+    this.language = language;
   }
   
-  public String toString() {
-    return "TransferOperation["+nextOperation+"|"+otherExecution+"]";
+  public String getForm() {
+    return form;
+  }
+  public String getLanguage() {
+    return language;
   }
 }

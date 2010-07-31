@@ -46,7 +46,7 @@ public class JobExecutorTimerSession implements TimerSession, Session {
     }
     
     commandContext
-      .getPersistenceSession()
+      .getRuntimeSession()
       .insert(timer);
     
     // Check if this timer fires before the next time the job executor will check for new timers to fire.
@@ -62,7 +62,7 @@ public class JobExecutorTimerSession implements TimerSession, Session {
   }
 
   public void cancelTimers(ExecutionImpl execution) {
-    RuntimeSession runtimeSession = commandContext.getPersistenceSession();
+    RuntimeSession runtimeSession = commandContext.getRuntimeSession();
     List<TimerImpl> timers = runtimeSession.findTimersByExecutionId(execution.getId()); 
     for (TimerImpl timer: timers) {
       runtimeSession.delete(timer);

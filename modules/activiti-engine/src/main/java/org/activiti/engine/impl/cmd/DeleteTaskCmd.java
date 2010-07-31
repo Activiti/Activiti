@@ -30,7 +30,7 @@ public class DeleteTaskCmd extends CmdVoid {
   }
 
   public void executeVoid(CommandContext commandContext) {
-    RuntimeSession runtimeSession = commandContext.getPersistenceSession();
+    RuntimeSession runtimeSession = commandContext.getRuntimeSession();
     TaskEntity task = runtimeSession.findTask(taskId);
     if (task!=null) {
       task.delete();

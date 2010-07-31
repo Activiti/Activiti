@@ -33,7 +33,7 @@ public class CheckPassword implements Command<Boolean> {
 
 
   public Boolean execute(CommandContext commandContext) {
-    RuntimeSession runtimeSession = commandContext.getPersistenceSession();
+    RuntimeSession runtimeSession = commandContext.getRuntimeSession();
     UserImpl user = runtimeSession.findUser(userId);
     if ( (user!=null)
          && (password!=null)

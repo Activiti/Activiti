@@ -19,6 +19,8 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -37,6 +39,10 @@ import org.activiti.engine.ProcessService;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.TaskService;
 import org.activiti.engine.impl.ProcessEngineImpl;
+import org.activiti.engine.impl.interceptor.Command;
+import org.activiti.engine.impl.interceptor.CommandContext;
+import org.activiti.engine.impl.interceptor.CommandExecutor;
+import org.activiti.engine.impl.jobexecutor.JobExecutor;
 import org.activiti.engine.impl.util.ClassNameUtil;
 import org.activiti.engine.impl.util.ClockUtil;
 import org.activiti.engine.impl.util.LogUtil;
@@ -226,6 +232,60 @@ public class ProcessEngineTestCase extends TestCase {
     historicDataService = processEngine.getHistoricDataService();
     identityService = processEngine.getIdentityService();
     managementService = processEngine.getManagementService();
+  }
+  
+  public void waitForJobExecutorToProcessAllJobs(long maxMillisToWait, long intervalMillis) {
+    JobExecutor jobExecutor = ((ProcessEngineImpl)processEngine).getJobExecutor();
+    jobExecutor.start();
+
+    try {
+      Timer timer = new Timer();
+      InteruptTask task = new InteruptTask(Thread.currentThread());
+      timer.schedule(task, maxMillisToWait);
+      boolean areJobsAvailable = true;
+      try {
+        while (areJobsAvailable && !task.isTimeLimitExceeded()) {
+          Thread.sleep(intervalMillis);
+          areJobsAvailable = areJobsAvailable();
+        }
+      } catch (InterruptedException e) {
+      } finally {
+        timer.cancel();
+      }
+      if (areJobsAvailable) {
+        throw new ActivitiException("time limit of " + maxMillisToWait + " was exceeded");
+      }
+
+    } finally {
+      jobExecutor.shutdown();
+    }
+  }
+
+  protected boolean areJobsAvailable() {
+    CommandExecutor commandExecutor = ((ProcessEngineImpl)processEngine).getProcessEngineConfiguration().getCommandExecutor();
+    // Check jobs that are already locked, but not yet executed
+    Boolean areJobsAvailable = commandExecutor.execute(new Command<Boolean>() {
+      public Boolean execute(CommandContext commandContext) {
+        return !commandContext.getRuntimeSession().findLockedJobs().isEmpty();
+      }
+    });
+    log.info("Jobs available: "+areJobsAvailable);
+    return areJobsAvailable;
+  }
+
+  protected static class InteruptTask extends TimerTask {
+    protected boolean timeLimitExceeded = false;
+    protected Thread thread;
+    public InteruptTask(Thread thread) {
+      this.thread = thread;
+    }
+    public boolean isTimeLimitExceeded() {
+      return timeLimitExceeded;
+    }
+    public void run() {
+      timeLimitExceeded = true;
+      thread.interrupt();
+    }
   }
 
   public static void closeProcessEngines() {

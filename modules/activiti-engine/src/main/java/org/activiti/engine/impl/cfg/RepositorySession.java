@@ -16,11 +16,10 @@ package org.activiti.engine.impl.cfg;
 import java.util.List;
 
 import org.activiti.engine.DeploymentBuilder;
-import org.activiti.engine.impl.persistence.db.IdBlock;
 import org.activiti.engine.impl.persistence.repository.DeploymentEntity;
 import org.activiti.engine.impl.persistence.repository.ProcessDefinitionEntity;
 import org.activiti.engine.impl.persistence.repository.ResourceEntity;
-import org.activiti.impl.definition.ProcessDefinitionImpl;
+import org.activiti.pvm.impl.process.ProcessDefinitionImpl;
 
 
 /**

@@ -29,7 +29,7 @@ public class SaveTaskCmd extends CmdVoid {
 	}
 	
 	public void executeVoid(CommandContext commandContext) {
-    RuntimeSession runtimeSession = commandContext.getPersistenceSession();
+    RuntimeSession runtimeSession = commandContext.getRuntimeSession();
     runtimeSession.insert((TaskEntity)task);
 	}
 

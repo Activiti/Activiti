@@ -61,7 +61,7 @@ public class ProcessEngineInitializationTest {
 
     // then update the version to something that is different to the library
     // version
-    RuntimeSessionFactory runtimeSessionFactory = processEngine.getPersistenceSessionFactory();
+    RuntimeSessionFactory runtimeSessionFactory = processEngine.getRuntimeSessionFactory();
 //    if(persistenceSessionFactory instanceof CachingPersistenceSessionFactory){
 //      persistenceSessionFactory = ((CachingPersistenceSessionFactory) persistenceSessionFactory).getTargetPersistenceSessionFactory();
 //    }

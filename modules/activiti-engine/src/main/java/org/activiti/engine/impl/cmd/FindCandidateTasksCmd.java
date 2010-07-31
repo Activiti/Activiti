@@ -35,7 +35,7 @@ public class FindCandidateTasksCmd implements Command<List<Task>> {
   }
 
   public List<Task> execute(CommandContext commandContext) {
-    RuntimeSession runtimeSession = commandContext.getPersistenceSession();
+    RuntimeSession runtimeSession = commandContext.getRuntimeSession();
     
     List<String> groupIds = new ArrayList<String>();
     List<GroupImpl> groups = runtimeSession.findGroupsByUser(userId);

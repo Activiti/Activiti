@@ -30,8 +30,8 @@ public class SaveUserCmd extends CmdVoid {
   }
   
   public void executeVoid(CommandContext commandContext) {
-    RuntimeSession runtimeSession = commandContext.getPersistenceSession();
-    runtimeSession.saveUser((UserImpl) user);
+    RuntimeSession runtimeSession = commandContext.getRuntimeSession();
+    runtimeSession.insertUser((UserImpl) user);
   }
 
 }

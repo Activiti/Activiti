@@ -30,7 +30,7 @@ public class FindUserCmd implements Command<User> {
   }
 
   public User execute(CommandContext commandContext) {
-    RuntimeSession runtimeSession = commandContext.getPersistenceSession();
+    RuntimeSession runtimeSession = commandContext.getRuntimeSession();
     return runtimeSession.findUser(userId);
   }
 }

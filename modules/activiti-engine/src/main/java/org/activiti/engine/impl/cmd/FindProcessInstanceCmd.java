@@ -30,7 +30,7 @@ public class FindProcessInstanceCmd implements Command<ProcessInstance> {
   }
 
   public ProcessInstance execute(CommandContext commandContext) {
-    RuntimeSession runtimeSession = commandContext.getPersistenceSession();
+    RuntimeSession runtimeSession = commandContext.getRuntimeSession();
     return runtimeSession.findExecution(id);
   }
 

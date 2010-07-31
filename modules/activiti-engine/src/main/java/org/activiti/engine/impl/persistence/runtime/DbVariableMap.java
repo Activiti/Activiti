@@ -10,7 +10,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.activiti.impl.db.execution;
+package org.activiti.engine.impl.persistence.runtime;
 
 import java.io.Serializable;
 import java.util.HashMap;
@@ -22,6 +22,7 @@ import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.variable.Type;
 import org.activiti.engine.impl.variable.VariableInstance;
 import org.activiti.engine.impl.variable.VariableTypes;
+import org.activiti.impl.db.execution.DbExecutionImpl;
 import org.activiti.impl.execution.VariableMap;
 
 /**
@@ -98,13 +99,13 @@ public class DbVariableMap extends VariableMap implements Serializable {
   // variable instance methods ////////////////////////////////////////////////
 
   protected void insertVariableInstance(VariableInstance variableInstance) {
-    CommandContext.getCurrent().getPersistenceSession().insert(variableInstance);
+    CommandContext.getCurrent().getRuntimeSession().insert(variableInstance);
   }
 
   protected Map<String, VariableInstance> getInitializedVariableInstances() {
     if (variableInstances == null) {
       List<VariableInstance> variableInstanceList = null;
-      variableInstanceList = CommandContext.getCurrent().getPersistenceSession().findVariablesByExecutionId(execution.getId());
+      variableInstanceList = CommandContext.getCurrent().getRuntimeSession().findVariablesByExecutionId(execution.getId());
       variableInstances = new HashMap<String, VariableInstance>();
       for (VariableInstance variableInstance : variableInstanceList) {
         variableInstances.put(variableInstance.getName(), variableInstance);

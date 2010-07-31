@@ -55,6 +55,7 @@ public abstract class AbstractProcessEvent<T> implements ProcessEvent<T> {
     return headerAttributesMap;
   }
 
+  @SuppressWarnings("unchecked")
   public <A> A getHeaderAttribute(String key) {
     return (A) headerAttributesMap.get(key);
   }

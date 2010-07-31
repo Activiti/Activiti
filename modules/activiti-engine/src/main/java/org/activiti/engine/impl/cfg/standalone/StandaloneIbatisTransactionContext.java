@@ -23,22 +23,20 @@ import org.activiti.engine.impl.cfg.TransactionListener;
 import org.activiti.engine.impl.cfg.TransactionState;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.db.DbSqlSession;
-import org.activiti.impl.persistence.RuntimeSession;
 
 
 /**
  * @author Tom Baeyens
  */
-public class IbatisTransactionContext implements TransactionContext {
+public class StandaloneIbatisTransactionContext implements TransactionContext {
   
-  private static Logger log = Logger.getLogger(IbatisTransactionContext.class.getName());
+  private static Logger log = Logger.getLogger(StandaloneIbatisTransactionContext.class.getName());
 
-  CommandContext commandContext;
-  Map<TransactionState,List<TransactionListener>> stateTransactionListeners = null;
+  protected CommandContext commandContext;
+  protected Map<TransactionState,List<TransactionListener>> stateTransactionListeners = null;
   
-  public IbatisTransactionContext(CommandContext commandContext) {
+  public StandaloneIbatisTransactionContext(CommandContext commandContext) {
     this.commandContext = commandContext;
-    log.fine("created new ibatis transaction context");
   }
 
   public void addTransactionListener(TransactionState transactionState, TransactionListener transactionListener) {
@@ -57,7 +55,6 @@ public class IbatisTransactionContext implements TransactionContext {
     log.fine("firing event committing...");
     fireTransactionEvent(TransactionState.COMMITTING);
     log.fine("committing the ibatis sql session...");
-    getPersistenceSession().commit();
     getDbSqlSession().commit();
     log.fine("firing event committed...");
     fireTransactionEvent(TransactionState.COMMITTED);
@@ -76,10 +73,6 @@ public class IbatisTransactionContext implements TransactionContext {
     }
   }
 
-  private RuntimeSession getPersistenceSession() {
-    return commandContext.getPersistenceSession();
-  }
-
   private DbSqlSession getDbSqlSession() {
     return commandContext.getSession(DbSqlSession.class);
   }
@@ -95,7 +88,6 @@ public class IbatisTransactionContext implements TransactionContext {
         commandContext.exception(exception);
       } finally {
         log.fine("rolling back ibatis sql session...");
-        getPersistenceSession().rollback();
         getDbSqlSession().rollback();
       }
       

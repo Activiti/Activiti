@@ -33,7 +33,7 @@ public class SendEventCmd implements Command<Object> {
   }
 
   public Object execute(CommandContext commandContext) {
-    DbExecutionImpl execution = commandContext.getPersistenceSession().findExecution(executionId);
+    DbExecutionImpl execution = commandContext.getRuntimeSession().findExecution(executionId);
     if (execution==null) {
       throw new ActivitiException("execution "+executionId+" doesn't exist");
     }

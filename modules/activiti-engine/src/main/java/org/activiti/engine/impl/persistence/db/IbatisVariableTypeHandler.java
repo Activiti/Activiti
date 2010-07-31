@@ -18,6 +18,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.variable.Type;
 import org.activiti.engine.impl.variable.VariableTypes;
 import org.apache.ibatis.type.JdbcType;
@@ -29,20 +30,16 @@ import org.apache.ibatis.type.TypeHandler;
  */
 public class IbatisVariableTypeHandler implements TypeHandler {
 
-  private final VariableTypes variableTypes;
-
-  public IbatisVariableTypeHandler(VariableTypes variableTypes) {
-    this.variableTypes = variableTypes;
-  }
+  protected VariableTypes variableTypes;
 
   public Object getResult(ResultSet rs, String columnName) throws SQLException {
     String typeName = rs.getString(columnName);
-    return variableTypes.getVariableType(typeName);
+    return getVariableTypes().getVariableType(typeName);
   }
 
   public Object getResult(CallableStatement cs, int columnIndex) throws SQLException {
     String typeName = cs.getString(columnIndex);
-    return variableTypes.getVariableType(typeName);
+    return getVariableTypes().getVariableType(typeName);
   }
 
   public void setParameter(PreparedStatement ps, int i, Object parameter, JdbcType jdbcType) throws SQLException {
@@ -50,4 +47,13 @@ public class IbatisVariableTypeHandler implements TypeHandler {
     ps.setString(i, typeName);
   }
 
+  protected VariableTypes getVariableTypes() {
+    if (variableTypes==null) {
+      variableTypes = CommandContext
+        .getCurrent()
+        .getProcessEngineConfiguration()
+        .getVariableTypes();
+    }
+    return variableTypes;
+  }
 }

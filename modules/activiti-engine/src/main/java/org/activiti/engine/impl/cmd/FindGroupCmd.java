@@ -30,7 +30,7 @@ public class FindGroupCmd implements Command<Group> {
   }
 
   public Group execute(CommandContext commandContext) {
-    RuntimeSession runtimeSession = commandContext.getPersistenceSession();
+    RuntimeSession runtimeSession = commandContext.getRuntimeSession();
     return runtimeSession.findGroup(groupId);
   }
 }

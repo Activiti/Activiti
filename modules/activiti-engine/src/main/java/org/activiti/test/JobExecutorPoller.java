@@ -69,14 +69,14 @@ public class JobExecutorPoller {
     // Check jobs that are not yet locked by the jobexecutor
     Boolean areJobsAvailable = commandExecutor.execute(new Command<Boolean>() {
       public Boolean execute(CommandContext commandContext) {
-        return !commandContext.getPersistenceSession().findNextJobsToExecute(1).isEmpty();
+        return !commandContext.getRuntimeSession().findNextJobsToExecute(1).isEmpty();
       }
     });
     
     // Check jobs that are already locked, but not yet executed
     areJobsAvailable = commandExecutor.execute(new Command<Boolean>() {
       public Boolean execute(CommandContext commandContext) {
-        return !commandContext.getPersistenceSession().findLockedJobs().isEmpty();
+        return !commandContext.getRuntimeSession().findLockedJobs().isEmpty();
       }
     });
     

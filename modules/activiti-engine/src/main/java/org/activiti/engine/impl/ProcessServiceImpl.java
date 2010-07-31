@@ -28,7 +28,6 @@ import org.activiti.engine.impl.cmd.GetExecutionVariablesCmd;
 import org.activiti.engine.impl.cmd.SendEventCmd;
 import org.activiti.engine.impl.cmd.SetExecutionVariablesCmd;
 import org.activiti.engine.impl.cmd.StartProcessInstanceCmd;
-import org.activiti.impl.execution.ProcessInstanceQueryImpl;
 
 /**
  * @author Tom Baeyens

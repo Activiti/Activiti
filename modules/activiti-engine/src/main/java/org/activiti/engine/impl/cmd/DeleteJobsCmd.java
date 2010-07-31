@@ -39,7 +39,7 @@ public class DeleteJobsCmd implements Command<Void> {
   }
 
   public Void execute(CommandContext commandContext) {
-    RuntimeSession runtimeSession = commandContext.getPersistenceSession();
+    RuntimeSession runtimeSession = commandContext.getRuntimeSession();
     for (String jobId: jobIds) {
       JobImpl job = runtimeSession.findJobById(jobId);
       runtimeSession.delete(job);

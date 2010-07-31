@@ -76,7 +76,7 @@ public class HistoricDataServiceTest {
     } finally {
       deployer.getCommandExecutor().execute(new Command<Object>() {
         public Object execute(CommandContext commandContext) {
-          commandContext.getPersistenceSession().deleteHistoricProcessInstance(processInstance.getId());
+          commandContext.getRuntimeSession().deleteHistoricProcessInstance(processInstance.getId());
           return null;
         }
       });

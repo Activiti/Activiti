@@ -42,13 +42,13 @@ public class JobQueryImpl extends AbstractListQuery<Job> implements JobQuery {
 
   protected long executeCount(CommandContext commandContext) {
     return commandContext
-      .getPersistenceSession()
+      .getRuntimeSession()
       .dynamicJobCount(createParamMap());
   }
 
   protected List<Job> executeList(CommandContext commandContext, Page page) {
     return commandContext
-      .getPersistenceSession()
+      .getRuntimeSession()
       .dynamicFindJobs(createParamMap(), page);
   }
   

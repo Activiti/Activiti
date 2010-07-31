@@ -10,7 +10,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.activiti.impl.execution;
+package org.activiti.engine.impl;
 
 import java.util.HashMap;
 import java.util.List;
@@ -19,7 +19,6 @@ import java.util.Map;
 import org.activiti.engine.Page;
 import org.activiti.engine.ProcessInstance;
 import org.activiti.engine.ProcessInstanceQuery;
-import org.activiti.engine.impl.AbstractListQuery;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
 
@@ -44,13 +43,13 @@ public class ProcessInstanceQueryImpl extends AbstractListQuery<ProcessInstance>
   
   protected long executeCount(CommandContext commandContext) {
     return commandContext
-      .getPersistenceSession()
+      .getRuntimeSession()
       .findProcessInstanceCountByDynamicCriteria(createParamMap());
   }
 
   protected List<ProcessInstance> executeList(CommandContext commandContext, Page page) {
     return commandContext
-      .getPersistenceSession()
+      .getRuntimeSession()
       .findProcessInstancesByDynamicCriteria(createParamMap());
   }
   

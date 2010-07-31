@@ -13,8 +13,8 @@
 
 package org.activiti.engine.impl.cfg;
 
-import org.activiti.impl.history.HistoricActivityInstanceImpl;
-import org.activiti.impl.history.HistoricProcessInstanceImpl;
+import org.activiti.engine.impl.persistence.history.HistoricActivityInstanceImpl;
+import org.activiti.engine.impl.persistence.history.HistoricProcessInstanceImpl;
 
 
 /**
@@ -23,12 +23,12 @@ import org.activiti.impl.history.HistoricProcessInstanceImpl;
  */
 public interface HistorySession {
 
-  /* History */
-  void saveHistoricProcessInstance(HistoricProcessInstanceImpl historicProcessInstance);
+  void insertHistoricProcessInstance(HistoricProcessInstanceImpl historicProcessInstance);
+  void deleteHistoricProcessInstance(HistoricProcessInstanceImpl historicProcessInstance);
   HistoricProcessInstanceImpl findHistoricProcessInstance(String processInstanceId);
-  void deleteHistoricProcessInstance(String processInstanceId);
-  void saveHistoricActivityInstance(HistoricActivityInstanceImpl historicActivityInstance);
+
+  void insertHistoricActivityInstance(HistoricActivityInstanceImpl historicActivityInstance);
+  void deleteHistoricActivityInstance(HistoricActivityInstanceImpl historicActivityInstance);
   HistoricActivityInstanceImpl findHistoricActivityInstance(String activityId, String processInstanceId);
-  void deleteHistoricActivityInstance(String activityId, String processInstanceId);
 
 }

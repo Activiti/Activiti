@@ -13,8 +13,19 @@
 
 package org.activiti.engine.impl.cfg;
 
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+
+import org.activiti.engine.Job;
+import org.activiti.engine.Page;
+import org.activiti.engine.ProcessInstance;
 import org.activiti.engine.impl.persistence.runtime.ActivityInstanceEntity;
+import org.activiti.engine.impl.persistence.runtime.ByteArrayImpl;
+import org.activiti.engine.impl.persistence.runtime.JobImpl;
 import org.activiti.engine.impl.persistence.runtime.ProcessInstanceEntity;
+import org.activiti.engine.impl.persistence.runtime.TimerImpl;
+import org.activiti.engine.impl.variable.VariableInstance;
 
 
 /**
@@ -26,4 +37,26 @@ public interface RuntimeSession {
   void deleteProcessInstance(ProcessInstanceEntity processInstance);
 
   void insertActivityInstance(ActivityInstanceEntity activityInstance);
+  void deleteActivityInstance(ActivityInstanceEntity activityInstance);
+  
+//  DbExecutionEntity findExecution(String executionId);
+//  List<ExecutionImpl> findChildExecutions(String parentExecutionid);
+  List<ProcessInstanceEntity> findProcessInstancesByProcessDefintionId(String processDefinitionId);
+  ProcessInstanceEntity findSubProcessInstance(String superExecutionId);
+  long findProcessInstanceCountByDynamicCriteria(Map<String, Object> params);
+  List<ProcessInstance> findProcessInstancesByDynamicCriteria(Map<String, Object> params);
+  
+  List<VariableInstance> findVariablesByExecutionId(String executionId);
+  List<VariableInstance> findVariablesByTaskId(String taskId);
+  byte[] getByteArrayBytes(String byteArrayId);
+  ByteArrayImpl findByteArrayById(String byteArrayId);
+
+  JobImpl findJobById(String jobId);
+  List<JobImpl> findJobs();
+  List<JobImpl> findNextJobsToExecute(int maxNrOfJobs);
+  List<JobImpl> findLockedJobs();
+  List<TimerImpl> findUnlockedTimersByDuedate(Date duedate, int nrOfTimers);
+  List<TimerImpl> findTimersByExecutionId(String executionId);
+  List<Job> dynamicFindJobs(Map<String, Object> params, Page page);
+  long dynamicJobCount(Map<String, Object> params);
 }

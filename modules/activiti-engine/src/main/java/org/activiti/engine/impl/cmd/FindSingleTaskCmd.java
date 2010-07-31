@@ -30,7 +30,7 @@ public class FindSingleTaskCmd implements Command<Task> {
   }
   
   public Task execute(CommandContext commandContext) {
-    RuntimeSession runtimeSession = commandContext.getPersistenceSession();
+    RuntimeSession runtimeSession = commandContext.getRuntimeSession();
     return runtimeSession.findTask(taskId);
   }
 

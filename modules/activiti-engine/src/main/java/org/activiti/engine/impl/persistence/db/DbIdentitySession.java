@@ -35,7 +35,7 @@ public class DbIdentitySession implements IdentitySession, Session {
     this.dbSqlSession = CommandContext.getCurrentSession(DbSqlSession.class);
   }
 
-  public void saveUser(UserImpl user) {
+  public void insertUser(UserImpl user) {
     if (user.isNew()) {
       dbSqlSession.insert("insertUser", user);
     } else {

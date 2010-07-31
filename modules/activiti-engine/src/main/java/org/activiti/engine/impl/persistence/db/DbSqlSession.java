@@ -44,7 +44,7 @@ public class DbSqlSession implements Session {
   protected DbSqlSessionFactory dbSqlSessionFactory;
   protected List<PersistentObject> insertedObjects = new ArrayList<PersistentObject>();
   protected Map<Class<?>, Map<String, CachedObject>> cachedObjects = new HashMap<Class<?>, Map<String,CachedObject>>();
-  protected List<Object> deletedObjects = new ArrayList<Object>();
+  protected List<DeleteOperation> deletedObjects = new ArrayList<DeleteOperation>();
   protected List<DeserializedObject> deserializedObjects = new ArrayList<DeserializedObject>();
 
   public DbSqlSession(DbSqlSessionFactory dbSqlSessionFactory) {
@@ -68,20 +68,55 @@ public class DbSqlSession implements Session {
   // delete ///////////////////////////////////////////////////////////////////
   
   public void delete(PersistentObject persistentObject) {
-    deletedObjects.add(persistentObject);
+    deletedObjects.add(new DeleteById(persistentObject.getClass(), persistentObject.getId()));
     insertedObjects.remove(persistentObject);
   }
   
-  public void delete(String statement, Object parameter) {
-    deletedObjects.add(new BulkDeleteOperation(statement, parameter));
+  public void delete(Class<?> clazz, String id) {
+    deletedObjects.add(new DeleteById(clazz, id));
   }
   
-  public class BulkDeleteOperation {
+  public interface DeleteOperation {
+    void execute();
+  }
+
+  public class DeleteById implements DeleteOperation {
+    Class<?> persistenceObjectClass;
+    String persistentObjectId;
+    public DeleteById(Class< ? > clazz, String id) {
+      this.persistenceObjectClass = clazz;
+      this.persistentObjectId = id;
+    }
+    public void execute() {
+      String deleteStatement = dbSqlSessionFactory.getDeleteStatement(persistenceObjectClass);
+      deleteStatement = dbSqlSessionFactory.mapStatement(deleteStatement);
+      if (deleteStatement==null) {
+        throw new ActivitiException("no delete statement for "+persistenceObjectClass+" in the ibatis mapping files");
+      }
+      log.fine("deleting: "+persistenceObjectClass+"["+persistentObjectId+"]");
+      sqlSession.delete(deleteStatement, persistentObjectId);
+    }
+    public String toString() {
+      return "delete "+persistenceObjectClass.getName()+"["+persistentObjectId+"]";
+    }
+  }
+  
+  public void delete(String statement, Object parameter) {
+    deletedObjects.add(new DeleteBulk(statement, parameter));
+  }
+  
+  public class DeleteBulk implements DeleteOperation {
     String statement;
     Object parameter;
-    public BulkDeleteOperation(String statement, Object parameter) {
-      this.statement = statement;
+    public DeleteBulk(String statement, Object parameter) {
+      this.statement = dbSqlSessionFactory.mapStatement(statement);
       this.parameter = parameter;
+    }
+    public void execute() {
+      sqlSession.delete(statement, parameter);
+    }
+    public String toString() {
+      return "bulk delete: "+statement;
     }
   }
   
@@ -181,12 +216,8 @@ public class DbSqlSession implements Session {
       for (PersistentObject updatedObject: updatedObjects) {
         log.fine("  update "+toString(updatedObject));
       }
-      for (Object deletedObject: deletedObjects) {
-        if (deletedObject instanceof BulkDeleteOperation) {
-          log.fine("  bulk delete "+((BulkDeleteOperation)deletedObject).statement);
-        } else {
-          log.fine("  delete "+toString((PersistentObject)deletedObject));
-        }
+      for (Object deleteOperation: deletedObjects) {
+        log.fine("  "+deleteOperation);
       }
       log.fine("now executing flush...");
     }
@@ -250,23 +281,9 @@ public class DbSqlSession implements Session {
   }
 
   protected void flushDeletes() {
-    for (Object delete: deletedObjects) {
-      if (delete instanceof BulkDeleteOperation) {
-        BulkDeleteOperation bulkDeleteOperation = (BulkDeleteOperation) delete;
-        String bulkDeleteStatement = dbSqlSessionFactory.mapStatement(bulkDeleteOperation.statement);
-        log.fine("bulk deleting: "+bulkDeleteStatement);
-        sqlSession.delete(bulkDeleteStatement, bulkDeleteOperation.parameter);
-
-      } else {
-        PersistentObject persistentObject = (PersistentObject) delete;
-        String deleteStatement = dbSqlSessionFactory.getDeleteStatement(persistentObject);
-        deleteStatement = dbSqlSessionFactory.mapStatement(deleteStatement);
-        if (deleteStatement==null) {
-          throw new ActivitiException("no delete statement for "+delete.getClass()+" in the ibatis mapping files");
-        }
-        log.fine("deleting: "+toString(persistentObject));
-        sqlSession.delete(deleteStatement, persistentObject);
-      }
+    for (DeleteOperation delete: deletedObjects) {
+      log.fine("executing: "+delete);
+      delete.execute();
     }
     deletedObjects.clear();
   }

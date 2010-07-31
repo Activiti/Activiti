@@ -85,7 +85,7 @@ public class TaskEntity implements Task, Serializable, PersistentObject {
     TaskEntity task = create();
     CommandContext
         .getCurrent()
-        .getPersistenceSession()
+        .getRuntimeSession()
         .insert(task);
     return task;
   }
@@ -112,7 +112,7 @@ public class TaskEntity implements Task, Serializable, PersistentObject {
     
     CommandContext
         .getCurrent()
-        .getPersistenceSession()
+        .getRuntimeSession()
         .delete(this);
   }
 
@@ -200,7 +200,7 @@ public class TaskEntity implements Task, Serializable, PersistentObject {
     if ( (activityInstance==null) && (activityInstanceId!=null) ) {
       this.activityInstance = CommandContext
         .getCurrent()
-        .getPersistenceSession()
+        .getRuntimeSession()
         .findExecution(activityInstanceId);
     }
     return activityInstance;
@@ -274,7 +274,7 @@ public class TaskEntity implements Task, Serializable, PersistentObject {
     if (!isTaskInvolvementsInitialized) {
       taskInvolvements = CommandContext
           .getCurrent()
-          .getPersistenceSession()
+          .getRuntimeSession()
           .findTaskInvolvementsByTask(id);
       isTaskInvolvementsInitialized = true;
     }

@@ -36,7 +36,7 @@ public class AcquireJobsCmd implements Command<AcquiredJobs> {
   }
   
   public AcquiredJobs execute(CommandContext commandContext) {
-    RuntimeSession runtimeSession = commandContext.getPersistenceSession();
+    RuntimeSession runtimeSession = commandContext.getRuntimeSession();
     
     String lockOwner = jobExecutor.getLockOwner();
     int lockTimeInMillis = jobExecutor.getLockTimeInMillis();

@@ -31,7 +31,7 @@ public class CreateMembershipCmd implements Command<Object> {
 
   public Object execute(CommandContext commandContext) {
     commandContext
-      .getPersistenceSession()
+      .getRuntimeSession()
       .createMembership(userId, groupId);
     return null;
   }

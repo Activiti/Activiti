@@ -13,11 +13,11 @@
 package org.activiti.engine.impl.cmd;
 
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.impl.cfg.RuntimeSession;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.task.TaskEntity;
 import org.activiti.engine.impl.persistence.task.TaskInvolvement;
 import org.activiti.engine.impl.persistence.task.TaskInvolvementType;
-import org.activiti.impl.persistence.RuntimeSession;
 
 
 /**
@@ -68,7 +68,7 @@ public class AddTaskInvolvementCmd extends CmdVoid {
   }
   
   public void executeVoid(CommandContext commandContext) {
-    RuntimeSession runtimeSession = commandContext.getPersistenceSession();
+    RuntimeSession runtimeSession = commandContext.getRuntimeSession();
     TaskEntity task = runtimeSession.findTask(taskId);
     
     if (task == null) {

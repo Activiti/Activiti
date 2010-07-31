@@ -20,7 +20,10 @@ package org.activiti.engine.impl.util;
 public abstract class ClassNameUtil {
 
   public static String getClassNameWithoutPackage(Object object) {
-    String fullyQualifiedClassName = object.getClass().getName();
+    return getClassNameWithoutPackage(object.getClass());
+  }
+  public static String getClassNameWithoutPackage(Class<?> clazz) {
+    String fullyQualifiedClassName = clazz.getName();
     return fullyQualifiedClassName.substring(fullyQualifiedClassName.lastIndexOf('.')+1);
   }
 

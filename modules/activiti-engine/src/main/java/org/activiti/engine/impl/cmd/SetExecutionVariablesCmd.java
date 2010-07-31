@@ -35,7 +35,7 @@ public class SetExecutionVariablesCmd implements Command<Object> {
 
   public Object execute(CommandContext commandContext) {
     RuntimeSession runtimeSession = commandContext
-      .getPersistenceSession();
+      .getRuntimeSession();
     DbExecutionImpl execution = runtimeSession
       .findExecution(executionId);
     execution.setVariables(variables);

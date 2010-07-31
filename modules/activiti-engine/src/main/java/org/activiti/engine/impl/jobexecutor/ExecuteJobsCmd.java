@@ -40,7 +40,7 @@ public class ExecuteJobsCmd implements Command<Object> {
     if (log.isLoggable(Level.FINE)) {
       log.fine("Executing job " + jobId);
     }
-    JobImpl job = commandContext.getPersistenceSession().findJobById(jobId);
+    JobImpl job = commandContext.getRuntimeSession().findJobById(jobId);
     
     if (job == null) {
       throw new ActivitiException("No job found for jobId '" + jobId + "'");

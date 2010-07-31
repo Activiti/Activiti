@@ -27,7 +27,7 @@ public class DeleteProcessInstanceCmd extends CmdVoid {
   }
   
   public void executeVoid(CommandContext commandContext) { 
-    commandContext.getPersistenceSession().deleteExecution(processInstanceId);
+    commandContext.getRuntimeSession().deleteExecution(processInstanceId);
   }
 
 }

@@ -36,6 +36,6 @@ public class GetUnlockedTimersByDuedateCmd implements Command<List<TimerImpl>> {
   }
 
   public List<TimerImpl> execute(CommandContext commandContext) {
-    return commandContext.getPersistenceSession().findUnlockedTimersByDuedate(duedate, nrOfTimers);
+    return commandContext.getRuntimeSession().findUnlockedTimersByDuedate(duedate, nrOfTimers);
   }
 }
