@@ -32,19 +32,23 @@ import org.activiti.pvm.process.PvmProcessDefinition;
  */
 public class ProcessDefinitionBuilder {
 
-  protected ProcessDefinitionImpl processDefinition = new ProcessDefinitionImpl();
+  protected ProcessDefinitionImpl processDefinition;
   protected Stack<ScopeImpl> scopeStack = new Stack<ScopeImpl>();
   protected ProcessElementImpl processElement = processDefinition;
   protected TransitionImpl transition;
   protected List<Object[]> unresolvedTransitions = new ArrayList<Object[]>();
   
   public ProcessDefinitionBuilder() {
+    this(null);
+  }
+  
+  public ProcessDefinitionBuilder(String processDefinitionId) {
+    processDefinition = new ProcessDefinitionImpl(processDefinitionId);
     scopeStack.push(processDefinition);
   }
 
   public ProcessDefinitionBuilder createActivity(String id) {
-    ActivityImpl activity = scopeStack.peek().createActivity();
-    activity.setId(id);
+    ActivityImpl activity = scopeStack.peek().createActivity(id);
     scopeStack.push(activity);
     processElement = activity;
     
@@ -68,11 +72,17 @@ public class ProcessDefinitionBuilder {
   }
 
   public ProcessDefinitionBuilder startTransition(String destinationActivityId) {
+    return startTransition(destinationActivityId, null);
+  }
+  
+  public ProcessDefinitionBuilder startTransition(String destinationActivityId, String transitionId) {
+    if (destinationActivityId==null) {
+      throw new PvmException("destinationActivityId is null");
+    }
     ActivityImpl activity = getActivity();
-    transition = activity.createOutgoingTransition();
+    transition = activity.createOutgoingTransition(transitionId);
     unresolvedTransitions.add(new Object[]{transition, destinationActivityId});
     processElement = transition;
-
     return this;
   }
   
@@ -82,18 +92,22 @@ public class ProcessDefinitionBuilder {
   }
 
   public ProcessDefinitionBuilder transition(String destinationActivityId) {
-    startTransition(destinationActivityId);
-    endTransition();
-    return this;
+    return transition(destinationActivityId, null);
   }
-
-  public ProcessDefinitionBuilder id(String transitionId) {
-    transition.setId(transitionId);
+  
+  public ProcessDefinitionBuilder transition(String destinationActivityId, String transitionId) {
+    startTransition(destinationActivityId, transitionId);
+    endTransition();
     return this;
   }
 
   public ProcessDefinitionBuilder behavior(ActivityBehavior activityBehaviour) {
     getActivity().setActivityBehavior(activityBehaviour);
+    return this;
+  }
+  
+  public ProcessDefinitionBuilder property(String name, Object value) {
+    processElement.setProperty(name, value);
     return this;
   }
 

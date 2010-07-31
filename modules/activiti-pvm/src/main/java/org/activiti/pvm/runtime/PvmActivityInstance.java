@@ -13,23 +13,15 @@
 
 package org.activiti.pvm.runtime;
 
-import java.util.Map;
-
 import org.activiti.pvm.process.PvmActivity;
 
 
 /**
  * @author Tom Baeyens
  */
-public interface PvmActivityInstance {
+public interface PvmActivityInstance extends PvmScopeInstance {
 
   void signal(String signalName, Object signalData);
 
-  void setVariable(String variableName, Object value);
-  
-  Object getVariable(String variableName);
-
-  Map<String, Object> getVariables();
-  
   PvmActivity getActivity();
 }

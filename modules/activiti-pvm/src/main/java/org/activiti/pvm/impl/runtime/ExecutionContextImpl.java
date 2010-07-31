@@ -23,8 +23,8 @@ import org.activiti.pvm.activity.ActivityBehavior;
 import org.activiti.pvm.activity.ActivityContext;
 import org.activiti.pvm.activity.SignallableActivityBehaviour;
 import org.activiti.pvm.event.Event;
-import org.activiti.pvm.event.EventListener;
 import org.activiti.pvm.event.EventContext;
+import org.activiti.pvm.event.EventListener;
 import org.activiti.pvm.impl.process.ActivityImpl;
 import org.activiti.pvm.impl.process.ProcessElementImpl;
 import org.activiti.pvm.impl.process.TransitionImpl;
@@ -80,6 +80,9 @@ public class ExecutionContextImpl implements EventContext, ActivityContext {
   }
 
   public void take(PvmTransition transition) {
+    if (transition==null) {
+      throw new PvmException("transition is null");
+    }
     this.transition = (TransitionImpl) transition;
     fireEvent(activityInstance.activity, Event.ACTIVITY_END, TRANSITION_ACTIVITY_END);
   }
@@ -88,8 +91,11 @@ public class ExecutionContextImpl implements EventContext, ActivityContext {
     throw new UnsupportedOperationException("implement me");
   }
 
-  private void fireEvent(ProcessElementImpl eventDispatcher, String event, AtomicOperation eventPostOperation) {
-    eventListeners = eventDispatcher.getEventListeners().get(event);
+  private void fireEvent(ProcessElementImpl processElement, String event, AtomicOperation eventPostOperation) {
+    eventListeners = processElement
+      .getEventListeners()
+      .get(event);
+    
     if ( (eventListeners!=null)
          && (!eventListeners.isEmpty())
        ) {
@@ -218,7 +224,7 @@ public class ExecutionContextImpl implements EventContext, ActivityContext {
     }
   }
 
-  // execution context methods ////////////////////////////////////////////////
+  // event context methods ////////////////////////////////////////////////////
   
   public void setVariable(String variableName, Object value) {
     scopeInstance.setVariable(variableName, value);
@@ -232,7 +238,7 @@ public class ExecutionContextImpl implements EventContext, ActivityContext {
     return scopeInstance.getVariables();
   }
   
-  // activity execution context methods ///////////////////////////////////////
+  // activity context methods /////////////////////////////////////////////////
   
   public PvmActivity getActivity() {
     return activityInstance.getActivity();
@@ -253,6 +259,10 @@ public class ExecutionContextImpl implements EventContext, ActivityContext {
   @SuppressWarnings("unchecked")
   public List<PvmTransition> getOutgoingTransitions() {
     return (List) activityInstance.getActivity().getOutgoingTransitions();
+  }
+
+  public PvmTransition getOutgoingTransition(String transitionId) {
+    return activityInstance.getActivity().getOutgoingTransition(transitionId);
   }
 
   @SuppressWarnings("unchecked")

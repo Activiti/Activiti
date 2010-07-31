@@ -30,8 +30,14 @@ import org.activiti.pvm.event.EventListener;
 public class ProcessElementImpl {
 
   protected String id;
+  protected ProcessDefinitionImpl processDefinition;
   protected Map<String, List<EventListener>> eventListeners;
   protected Map<String, Object> properties;
+  
+  public ProcessElementImpl(String id, ProcessDefinitionImpl processDefinition) {
+    this.id = id;
+    this.processDefinition = processDefinition;
+  }
 
   public void addEventListener(String eventName, EventListener eventListener) {
     if (eventListeners==null) {
@@ -81,15 +87,11 @@ public class ProcessElementImpl {
     return id;
   }
   
-  public void setId(String id) {
-    this.id = id;
-  }
-  
-  protected void setEventListeners(Map<String, List<EventListener>> eventListeners) {
-    this.eventListeners = eventListeners;
-  }
-
   public void setProperties(Map<String, Object> properties) {
     this.properties = properties;
+  }
+
+  public ProcessDefinitionImpl getProcessDefinition() {
+    return processDefinition;
   }
 }

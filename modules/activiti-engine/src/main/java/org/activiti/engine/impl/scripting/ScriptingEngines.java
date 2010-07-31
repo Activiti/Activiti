@@ -22,8 +22,8 @@ import javax.script.ScriptException;
 import javax.script.SimpleBindings;
 
 import org.activiti.engine.ActivitiException;
-import org.activiti.impl.execution.ExecutionImpl;
-import org.activiti.pvm.activity.ActivityContext;
+import org.activiti.pvm.event.EventContext;
+import org.activiti.pvm.runtime.PvmScopeInstance;
 
 /**
  * @author Tom Baeyens
@@ -55,8 +55,12 @@ public class ScriptingEngines {
     }
   }
 
-  public Object evaluate(String script, String language, ActivityContext execution) {
-    Bindings bindings = createBindings(execution);
+  public Object evaluate(String script, String language, EventContext eventContext) {
+    return evaluate(script, language, eventContext.getScopeInstance());
+  }
+  
+  public Object evaluate(String script, String language, PvmScopeInstance scopeInstance) {
+    Bindings bindings = createBindings(scopeInstance);
     ScriptEngine scriptEngine = scriptEngineManager.getEngineByName(language);
 
     if (scriptEngine == null) {
@@ -71,9 +75,9 @@ public class ScriptingEngines {
   }
 
   /** override to build a spring aware ScriptingEngines */
-  protected Bindings createBindings(ActivityContext activityContext) {
-    if (activityContext != null) {
-      return new ActivityContextBindings(activityContext);
+  protected Bindings createBindings(PvmScopeInstance scopeInstance) {
+    if (scopeInstance != null) {
+      return new ActivityContextBindings(scopeInstance);
     }
     return new SimpleBindings();
   }

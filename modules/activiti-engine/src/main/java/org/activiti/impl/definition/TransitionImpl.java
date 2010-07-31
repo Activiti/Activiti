@@ -16,7 +16,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import org.activiti.pvm.Condition;
+import org.activiti.engine.impl.bpmn.Condition;
 import org.activiti.pvm.Listener;
 import org.activiti.pvm.Transition;
 

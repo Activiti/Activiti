@@ -14,7 +14,6 @@
 package org.activiti.pvm.impl.runtime;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -24,13 +23,14 @@ import java.util.Set;
 import org.activiti.pvm.impl.process.ActivityImpl;
 import org.activiti.pvm.impl.process.ProcessDefinitionImpl;
 import org.activiti.pvm.impl.process.ScopeImpl;
+import org.activiti.pvm.runtime.PvmScopeInstance;
 
 
 
 /**
  * @author Tom Baeyens
  */
-public class ScopeInstanceImpl {
+public class ScopeInstanceImpl implements PvmScopeInstance {
 
   protected ProcessDefinitionImpl processDefinition;
   protected ScopeImpl scope;
@@ -119,11 +119,13 @@ public class ScopeInstanceImpl {
   }
 
   public Object getVariable(String variableName) {
-    if (getVariables().containsKey(variableName)) {
+    if ( (variables!=null) 
+         && (variables.containsKey(variableName))
+       ) {
       return variables.get(variableName);
     }
     if (parent!=null) {
-      return parent.hasVariable(variableName);
+      return parent.getVariable(variableName);
     }
     return variables.get(variableName);
   }
@@ -135,7 +137,9 @@ public class ScopeInstanceImpl {
   }
   
   protected void collectVariables(Map<String, Object> variableCollector) {
-    variableCollector.putAll(getVariables());
+    if (variables!=null) {
+      variableCollector.putAll(variables);
+    }
     if (parent!=null) {
       parent.collectVariables(variableCollector);
     }

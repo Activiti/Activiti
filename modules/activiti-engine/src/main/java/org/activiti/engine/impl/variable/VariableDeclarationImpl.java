@@ -17,8 +17,7 @@ import java.io.Serializable;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.el.ActivitiValueExpression;
 import org.activiti.pvm.activity.ActivityContext;
-import org.activiti.pvm.impl.runtime.ExecutionContextImpl;
-import org.activiti.pvm.impl.runtime.ScopeInstanceImpl;
+import org.activiti.pvm.runtime.PvmScopeInstance;
 
 
 /**
@@ -38,10 +37,8 @@ public class VariableDeclarationImpl implements Serializable {
   protected ActivitiValueExpression linkValueExpression;
   
   public void create(ActivityContext activityContext) {
-    // TODO evaluate if super scope instance should be exposed on the activity context
-    // if that is exposed, make ActivitiValueExpression.getValue(ScopeInstanceImpl) protected again
-    ScopeInstanceImpl innerScope = ((ExecutionContextImpl) activityContext).getScopeInstance();
-    ScopeInstanceImpl outerScope = innerScope.getParent();
+    PvmScopeInstance innerScope = activityContext.getScopeInstance();
+    PvmScopeInstance outerScope = innerScope.getParent();
 
     if (sourceVariableName!=null) {
       if (outerScope.hasVariable(sourceVariableName)) {
@@ -77,10 +74,8 @@ public class VariableDeclarationImpl implements Serializable {
   }
   
   public void destroy(ActivityContext activityContext) {
-    // TODO evaluate if super scope instance should be exposed on the activity context
-    // if that is exposed, make ActivitiValueExpression.getValue(ScopeInstanceImpl) protected again
-    ScopeInstanceImpl innerScope = ((ExecutionContextImpl) activityContext).getScopeInstance();
-    ScopeInstanceImpl outerScope = innerScope.getParent();
+    PvmScopeInstance innerScope = activityContext.getScopeInstance();
+    PvmScopeInstance outerScope = innerScope.getParent();
     
     if (destinationVariableName!=null) {
       if (innerScope.hasVariable(sourceVariableName)) {

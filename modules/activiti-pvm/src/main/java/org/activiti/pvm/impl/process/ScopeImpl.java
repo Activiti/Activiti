@@ -14,7 +14,11 @@
 package org.activiti.pvm.impl.process;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
+import org.activiti.pvm.PvmException;
 
 
 /**
@@ -23,15 +27,19 @@ import java.util.List;
 public class ScopeImpl extends ProcessElementImpl {
 
   protected List<ActivityImpl> activities = new ArrayList<ActivityImpl>();
-  
-  public ActivityImpl findActivity(String activityName) {
-    for (ActivityImpl activity: activities) {
-      if (activityName.equals(activity.getId())) {
-        return activity;
-      }
+  protected Map<String, ActivityImpl> namedActivities = new HashMap<String, ActivityImpl>();
+
+  public ScopeImpl(String id, ProcessDefinitionImpl processDefinition) {
+    super(id, processDefinition);
+  }
+
+  public ActivityImpl findActivity(String activityId) {
+    ActivityImpl localActivity = namedActivities.get(activityId);
+    if (localActivity!=null) {
+      return localActivity;
     }
     for (ActivityImpl activity: activities) {
-      ActivityImpl nestedActivity = activity.findActivity(activityName);
+      ActivityImpl nestedActivity = activity.findActivity(activityId);
       if (nestedActivity!=null) {
         return nestedActivity;
       }
@@ -40,26 +48,24 @@ public class ScopeImpl extends ProcessElementImpl {
   }
 
   public ActivityImpl createActivity() {
-    ActivityImpl activity = new ActivityImpl();
+    return createActivity(null);
+  }
+
+  public ActivityImpl createActivity(String activityId) {
+    ActivityImpl activity = new ActivityImpl(activityId, processDefinition);
+    if (activityId!=null) {
+      if (processDefinition.findActivity(activityId) != null) {
+        throw new PvmException("duplicate activity id '" + activityId + "'");
+      }
+      namedActivities.put(activityId, activity);
+    }
     activity.setParent(this);
     activities.add(activity);
     return  activity;
   }
 
-  // restrictred setters //////////////////////////////////////////////////////
-  
-  protected void setActivities(List<ActivityImpl> activities) {
-    this.activities = activities;
-  }
-
   // getters and setters //////////////////////////////////////////////////////
   
-  public String getId() {
-    return id;
-  }
-  public void setId(String id) {
-    this.id = id;
-  }
   public List<ActivityImpl> getActivities() {
     return activities;
   }

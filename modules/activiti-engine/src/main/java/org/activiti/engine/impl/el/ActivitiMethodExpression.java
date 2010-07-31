@@ -17,9 +17,8 @@ import javax.el.MethodExpression;
 import javax.el.MethodNotFoundException;
 
 import org.activiti.engine.ActivitiException;
-import org.activiti.pvm.activity.ActivityContext;
-import org.activiti.pvm.impl.runtime.ExecutionContextImpl;
-import org.activiti.pvm.impl.runtime.ScopeInstanceImpl;
+import org.activiti.pvm.event.EventContext;
+import org.activiti.pvm.runtime.PvmScopeInstance;
 
 
 /**
@@ -36,11 +35,11 @@ public class ActivitiMethodExpression {
     this.expressionManager = expressionManager;
   }
 
-  public Object invoke(ActivityContext activityContext) {
-    return invoke(((ExecutionContextImpl)activityContext).getScopeInstance());
+  public Object invoke(EventContext eventContext) {
+    return invoke(eventContext.getScopeInstance());
   }
 
-  public Object invoke(ScopeInstanceImpl scopeInstance) {
+  public Object invoke(PvmScopeInstance scopeInstance) {
     ELContext elContext = expressionManager.getElContext(scopeInstance);
     try {
       return methodExpression.invoke(elContext, null);

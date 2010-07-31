@@ -14,13 +14,12 @@
 package org.activiti.pvm.runtime;
 
 import java.util.List;
-import java.util.Map;
 
 
 /**
  * @author Tom Baeyens
  */
-public interface PvmProcessInstance {
+public interface PvmProcessInstance extends PvmScopeInstance {
 
   void start();
 
@@ -28,9 +27,4 @@ public interface PvmProcessInstance {
 
   List<String> findActivityIds();
 
-  void setVariable(String variableName, Object value);
-  
-  Object getVariable(String variableName);
-
-  Map<String, Object> getVariables();
 }

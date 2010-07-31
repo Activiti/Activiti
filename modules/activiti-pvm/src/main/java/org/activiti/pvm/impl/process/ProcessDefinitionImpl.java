@@ -25,6 +25,11 @@ public class ProcessDefinitionImpl extends ScopeImpl implements PvmProcessDefini
   
   protected ActivityImpl initial;
 
+  public ProcessDefinitionImpl(String id) {
+    super(id, null);
+    processDefinition = this;
+  }
+
   public ProcessInstanceImpl createProcessInstance() {
     return new ProcessInstanceImpl(this);
   }

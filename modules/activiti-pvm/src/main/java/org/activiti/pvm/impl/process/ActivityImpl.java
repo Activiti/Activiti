@@ -14,10 +14,14 @@
 package org.activiti.pvm.impl.process;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import org.activiti.pvm.PvmException;
 import org.activiti.pvm.activity.ActivityBehavior;
 import org.activiti.pvm.process.PvmActivity;
+import org.activiti.pvm.process.PvmTransition;
 
 
 
@@ -27,15 +31,36 @@ import org.activiti.pvm.process.PvmActivity;
 public class ActivityImpl extends ScopeImpl implements PvmActivity {
 
   protected List<TransitionImpl> outgoingTransitions = new ArrayList<TransitionImpl>();
+  protected Map<String, TransitionImpl> namedOutgoingTransitions = new HashMap<String, TransitionImpl>();
   protected List<TransitionImpl> incomingTransitions = new ArrayList<TransitionImpl>();
   protected ActivityBehavior activityBehavior;
   protected ScopeImpl parent;
   
+  public ActivityImpl(String id, ProcessDefinitionImpl processDefinition) {
+    super(id, processDefinition);
+  }
+
   public TransitionImpl createOutgoingTransition() {
-    TransitionImpl transition = new TransitionImpl();
+    return createOutgoingTransition(null);
+  }
+
+  public TransitionImpl createOutgoingTransition(String transitionId) {
+    TransitionImpl transition = new TransitionImpl(transitionId, processDefinition);
     transition.setSource(this);
     outgoingTransitions.add(transition);
+    
+    if (transitionId!=null) {
+      if (namedOutgoingTransitions.containsKey(transitionId)) {
+        throw new PvmException("activity '"+id+" has duplicate transition '"+transitionId+"'");
+      }
+      namedOutgoingTransitions.put(transitionId, transition);
+    }
+    
     return transition;
+  }
+  
+  public PvmTransition getOutgoingTransition(String transitionId) {
+    return namedOutgoingTransitions.get(transitionId);
   }
 
   // restricted setters ///////////////////////////////////////////////////////

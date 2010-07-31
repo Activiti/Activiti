@@ -22,7 +22,7 @@ import javax.script.Bindings;
 
 import org.activiti.engine.ActivitiException;
 import org.activiti.impl.execution.ExecutionImpl;
-import org.activiti.pvm.activity.ActivityContext;
+import org.activiti.pvm.runtime.PvmScopeInstance;
 
 
 /**
@@ -44,49 +44,49 @@ public class ActivityContextBindings implements Bindings {
   protected static final Set<String> UNSTORED_KEYS = 
     new HashSet<String>(Arrays.asList("out", "out:print", "lang:import", "context", "elcontext"));
   
-  protected ActivityContext activityContext;
+  protected PvmScopeInstance scopeInstance;
   
-  public ActivityContextBindings(ActivityContext activityContext) {
-    if (activityContext==null) {
+  public ActivityContextBindings(PvmScopeInstance scopeInstance) {
+    if (scopeInstance==null) {
       throw new ActivitiException("execution cannot be null");
     }
-    this.activityContext = activityContext;
+    this.scopeInstance = scopeInstance;
   }
 
   public boolean containsKey(Object key) {
-    return EXECUTION_KEY.equals(key) || activityContext.getVariables().containsKey((String) key);
+    return EXECUTION_KEY.equals(key) || scopeInstance.hasVariable((String) key);
   }
 
   public Object get(Object key) {
     if (EXECUTION_KEY.equals(key)) {
-      return activityContext;
+      return scopeInstance;
     }
-    return activityContext.getVariable((String) key);
+    return scopeInstance.getVariable((String) key);
   }
 
   public Object put(String name, Object value) {
     Object oldValue = null;
     if (!UNSTORED_KEYS.contains(name)) {
-      oldValue = activityContext.getVariable(name);
-      activityContext.setVariable(name, value);
+      oldValue = scopeInstance.getVariable(name);
+      scopeInstance.setVariable(name, value);
     }
     return oldValue;
   }
 
   public Set<java.util.Map.Entry<String, Object>> entrySet() {
-    return activityContext.getVariables().entrySet();
+    return scopeInstance.getVariables().entrySet();
   }
 
   public Set<String> keySet() {
-    return activityContext.getVariables().keySet();
+    return scopeInstance.getVariables().keySet();
   }
 
   public int size() {
-    return activityContext.getVariables().size();
+    return scopeInstance.getVariables().size();
   }
 
   public Collection<Object> values() {
-    return activityContext.getVariables().values();
+    return scopeInstance.getVariables().values();
   }
 
   public void putAll(Map< ? extends String, ? extends Object> toMerge) {
@@ -94,7 +94,7 @@ public class ActivityContextBindings implements Bindings {
   }
 
   public Object remove(Object key) {
-   return null;
+    throw new UnsupportedOperationException();
   }
 
   public void clear() {

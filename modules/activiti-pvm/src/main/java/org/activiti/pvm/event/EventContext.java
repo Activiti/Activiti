@@ -15,6 +15,8 @@ package org.activiti.pvm.event;
 
 import java.util.Map;
 
+import org.activiti.pvm.runtime.PvmScopeInstance;
+
 
 /**
  * @author Tom Baeyens
@@ -26,4 +28,6 @@ public interface EventContext {
   Object getVariable(String variableName);
 
   Map<String, Object> getVariables();
+
+  PvmScopeInstance getScopeInstance();
 }

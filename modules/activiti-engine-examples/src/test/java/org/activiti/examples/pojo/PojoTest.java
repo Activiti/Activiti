@@ -12,13 +12,13 @@
  */
 package org.activiti.examples.pojo;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertNotNull;
 
-import org.activiti.engine.impl.scripting.ScriptCondition;
-import org.activiti.engine.impl.scripting.ScriptingEngines;
-import org.activiti.pvm.ObjectProcessDefinition;
-import org.activiti.pvm.ObjectProcessInstance;
+import org.activiti.engine.impl.el.ExpressionManager;
 import org.activiti.pvm.ProcessDefinitionBuilder;
+import org.activiti.pvm.process.PvmProcessDefinition;
+import org.activiti.pvm.runtime.PvmActivityInstance;
+import org.activiti.pvm.runtime.PvmProcessInstance;
 import org.junit.Test;
 
 /**
@@ -28,54 +28,104 @@ public class PojoTest {
 
   @Test
   public void testPojoWaitState() {
-    ObjectProcessDefinition processDefinition = ProcessDefinitionBuilder.createProcessDefinitionBuilder().createActivity("a").initial().behavior(new WaitState())
-            .transition("b").endActivity().createActivity("b").behavior(new WaitState()).transition("c").endActivity().createActivity("c").behavior(
-                    new WaitState()).endActivity().build();
+    PvmProcessDefinition processDefinition = new ProcessDefinitionBuilder()
+      .createActivity("a")
+        .initial()
+        .behavior(new WaitState())
+        .transition("b")
+      .endActivity()
+      .createActivity("b")
+        .behavior(new WaitState())
+        .transition("c")
+      .endActivity()
+      .createActivity("c")
+        .behavior(new WaitState())
+      .endActivity()
+    .buildProcessDefinition();
 
-    ObjectProcessInstance processInstance = processDefinition.createProcessInstance();
+    PvmProcessInstance processInstance = processDefinition.createProcessInstance();
     processInstance.start();
 
-    assertTrue(processInstance.isActive("a"));
+    PvmActivityInstance activityInstance = processInstance.findActivityInstance("a");
+    assertNotNull(activityInstance);
 
-    processInstance.event(null);
+    activityInstance.signal(null, null);
+    
+    activityInstance = processInstance.findActivityInstance("b");
+    assertNotNull(activityInstance);
 
-    assertTrue(processInstance.isActive("b"));
-
-    processInstance.event(null);
-
-    assertTrue(processInstance.isActive("c"));
+    activityInstance.signal(null, null);
+    
+    activityInstance = processInstance.findActivityInstance("c");
+    assertNotNull(activityInstance);
   }
 
   @Test
   public void testPojoAutomatic() {
-    ObjectProcessDefinition processDefinition = ProcessDefinitionBuilder.createProcessDefinitionBuilder().createActivity("a").initial().behavior(new Automatic())
-            .transition("b").endActivity().createActivity("b").behavior(new Automatic()).transition("c").endActivity().createActivity("c").behavior(
-                    new WaitState()).endActivity().build();
+    PvmProcessDefinition processDefinition = new ProcessDefinitionBuilder()
+      .createActivity("a")
+        .initial()
+        .behavior(new Automatic())
+        .transition("b")
+      .endActivity()
+      .createActivity("b")
+        .behavior(new Automatic())
+        .transition("c")
+      .endActivity()
+        .createActivity("c")
+        .behavior(new WaitState())
+      .endActivity()
+    .buildProcessDefinition();
 
-    ObjectProcessInstance processInstance = processDefinition.createProcessInstance();
+    PvmProcessInstance processInstance = processDefinition.createProcessInstance();
     processInstance.start();
 
-    assertTrue(processInstance.isActive("c"));
+    assertNotNull(processInstance.findActivityInstance("c"));
   }
 
   @Test
   public void testDecision() {
-    ScriptingEngines scriptingEngines = new ScriptingEngines();
-    ObjectProcessDefinition processDefinition = ProcessDefinitionBuilder.createProcessDefinitionBuilder().createActivity("start").initial().behavior(new Automatic())
-            .transition("checkCredit").endActivity().createActivity("checkCredit").behavior(new Decision()).transition("takeToGolf",
-                    new ScriptCondition("${creditRating=='Aaa-'}", ScriptingEngines.DEFAULT_SCRIPTING_LANGUAGE)).transition("askDaughterOut",
-                    new ScriptCondition("${creditRating=='AAA+'}", ScriptingEngines.DEFAULT_SCRIPTING_LANGUAGE)).transition("ignore").endActivity()
-            .createActivity("takeToGolf").behavior(new WaitState()).endActivity().createActivity("askDaughterOut").behavior(new WaitState()).endActivity()
-            .createActivity("ignore").behavior(new WaitState()).endActivity().build();
+    ExpressionManager expressionManager = new ExpressionManager();
+    PvmProcessDefinition processDefinition = new ProcessDefinitionBuilder()
+      .createActivity("start")
+        .initial()
+        .behavior(new Automatic())
+        .transition("checkCredit")
+      .endActivity()
+      .createActivity("checkCredit")
+        .behavior(new Decision())
+        .startTransition("takeToGolf")
+          .property(Decision.KEY_CONDITION, expressionManager.createValueExpression("${creditRating=='Aaa-'}"))
+        .endTransition()
+        .startTransition("askDaughterOut")
+          .property(Decision.KEY_CONDITION, expressionManager.createValueExpression("${creditRating=='AAA+'}"))
+        .endTransition()
+        .transition("ignore")
+      .endActivity()
+      .createActivity("takeToGolf")
+        .behavior(new WaitState())
+      .endActivity()
+      .createActivity("askDaughterOut")
+        .behavior(new WaitState())
+      .endActivity()
+      .createActivity("ignore")
+        .behavior(new WaitState())
+      .endActivity()
+    .buildProcessDefinition();
 
-    ObjectProcessInstance processInstance = processDefinition.createProcessInstance().variable("creditRating", "Aaa-").start();
-    assertTrue(processInstance.isActive("takeToGolf"));
+    PvmProcessInstance processInstance = processDefinition.createProcessInstance();
+    processInstance.setVariable("creditRating", "Aaa-");
+    processInstance.start();
+    assertNotNull(processInstance.findActivityInstance("takeToGolf"));
 
-    processInstance = processDefinition.createProcessInstance().variable("creditRating", "AAA+").start();
-    assertTrue(processInstance.isActive("askDaughterOut"));
-
-    processInstance = processDefinition.createProcessInstance().variable("creditRating", "bb-").start();
-    assertTrue(processInstance.isActive("ignore"));
-
+    processInstance = processDefinition.createProcessInstance();
+    processInstance.setVariable("creditRating", "AAA+");
+    processInstance.start();
+    assertNotNull(processInstance.findActivityInstance("askDaughterOut"));
+    
+    processInstance = processDefinition.createProcessInstance();
+    processInstance.setVariable("creditRating", "bb-");
+    processInstance.start();
+    assertNotNull(processInstance.findActivityInstance("ignore"));
   }
 }

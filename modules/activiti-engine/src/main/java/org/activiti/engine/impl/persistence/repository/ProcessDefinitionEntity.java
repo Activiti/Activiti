@@ -12,6 +12,7 @@
  */
 package org.activiti.engine.impl.persistence.repository;
 
+import org.activiti.engine.ProcessDefinition;
 import org.activiti.engine.impl.persistence.PersistentObject;
 import org.activiti.engine.impl.persistence.runtime.ProcessInstanceEntity;
 import org.activiti.pvm.impl.process.ProcessDefinitionImpl;
@@ -21,15 +22,19 @@ import org.activiti.pvm.impl.runtime.ProcessInstanceImpl;
 /**
  * @author Tom Baeyens
  */
-public class ProcessDefinitionEntity extends ProcessDefinitionImpl implements PersistentObject {
+public class ProcessDefinitionEntity extends ProcessDefinitionImpl implements ProcessDefinition, PersistentObject {
 
   private static final long serialVersionUID = 1L;
   
   protected String key;
   protected String name;
-  protected Integer version;
+  protected int version;
   protected String deploymentId;
   
+  public ProcessDefinitionEntity() {
+    super(null);
+  }
+
   public ProcessInstanceImpl createProcessInstance() {
     return new ProcessInstanceEntity(this);
   }
@@ -64,11 +69,15 @@ public class ProcessDefinitionEntity extends ProcessDefinitionImpl implements Pe
     this.deploymentId = deploymentId;
   }
   
-  public Integer getVersion() {
+  public int getVersion() {
     return version;
   }
   
-  public void setVersion(Integer version) {
+  public void setVersion(int version) {
     this.version = version;
+  }
+
+  public void setId(String id) {
+    this.id = id;
   }
 }

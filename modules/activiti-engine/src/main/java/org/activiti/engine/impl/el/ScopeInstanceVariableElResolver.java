@@ -20,6 +20,7 @@ import javax.el.ELContext;
 import javax.el.ELResolver;
 
 import org.activiti.pvm.impl.runtime.ScopeInstanceImpl;
+import org.activiti.pvm.runtime.PvmScopeInstance;
 
 
 /**
@@ -27,12 +28,13 @@ import org.activiti.pvm.impl.runtime.ScopeInstanceImpl;
  * with the process variables of a given {@link ScopeInstanceImpl} as context.
  * 
  * @author Joram Barrez
+ * @author Tom Baeyens
  */
 public class ScopeInstanceVariableElResolver extends ELResolver {
   
-  protected ScopeInstanceImpl scopeInstance;
+  protected PvmScopeInstance scopeInstance;
   
-  public ScopeInstanceVariableElResolver(ScopeInstanceImpl scopeInstance) {
+  public ScopeInstanceVariableElResolver(PvmScopeInstance scopeInstance) {
     this.scopeInstance = scopeInstance;
   }
 

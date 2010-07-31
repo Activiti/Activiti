@@ -17,10 +17,8 @@ import javax.el.PropertyNotFoundException;
 import javax.el.ValueExpression;
 
 import org.activiti.engine.ActivitiException;
-import org.activiti.pvm.activity.ActivityContext;
 import org.activiti.pvm.event.EventContext;
-import org.activiti.pvm.impl.runtime.ExecutionContextImpl;
-import org.activiti.pvm.impl.runtime.ScopeInstanceImpl;
+import org.activiti.pvm.runtime.PvmScopeInstance;
 
 
 /**
@@ -28,25 +26,19 @@ import org.activiti.pvm.impl.runtime.ScopeInstanceImpl;
  */
 public class ActivitiValueExpression {
 
-  ValueExpression valueExpression;
-  ExpressionManager expressionManager;
+  protected ValueExpression valueExpression;
+  protected ExpressionManager expressionManager;
 
   public ActivitiValueExpression(ValueExpression valueExpression, ExpressionManager expressionManager) {
     this.valueExpression = valueExpression;
     this.expressionManager = expressionManager;
   }
 
-  public Object getValue(ActivityContext activityContext) {
-    ScopeInstanceImpl scopeInstance = ((ExecutionContextImpl) activityContext).getScopeInstance();
-    return getValue(scopeInstance);
-  }
-  
   public Object getValue(EventContext eventContext) {
-    ScopeInstanceImpl scopeInstance = ((ExecutionContextImpl) eventContext).getScopeInstance();
-    return getValue(scopeInstance);
+    return getValue(eventContext.getScopeInstance());
   }
   
-  public Object getValue(ScopeInstanceImpl scopeInstance) {
+  public Object getValue(PvmScopeInstance scopeInstance) {
     ELContext elContext = expressionManager.getElContext(scopeInstance);
     try {
       return valueExpression.getValue(elContext);
@@ -55,7 +47,11 @@ public class ActivitiValueExpression {
     }
   }
 
-  public void setValue(Object value, ScopeInstanceImpl scopeInstance) {
+  public void setValue(Object value, EventContext eventContext) {
+    setValue(value, eventContext.getScopeInstance());
+  }
+  
+  public void setValue(Object value, PvmScopeInstance scopeInstance) {
     ELContext elContext = expressionManager.getElContext(scopeInstance);
     valueExpression.setValue(elContext, value);
   }

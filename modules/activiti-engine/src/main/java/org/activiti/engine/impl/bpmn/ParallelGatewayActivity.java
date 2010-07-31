@@ -13,12 +13,8 @@
 
 package org.activiti.engine.impl.bpmn;
 
-import java.util.List;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.activiti.impl.execution.ConcurrencyController;
-import org.activiti.pvm.ActivityExecution;
 import org.activiti.pvm.activity.ActivityContext;
 import org.activiti.pvm.process.PvmActivity;
 

@@ -16,6 +16,7 @@ package org.activiti.pvm.activity;
 import java.util.List;
 import java.util.Map;
 
+import org.activiti.pvm.event.EventContext;
 import org.activiti.pvm.process.PvmActivity;
 import org.activiti.pvm.process.PvmTransition;
 import org.activiti.pvm.runtime.PvmActivityInstance;
@@ -24,13 +25,15 @@ import org.activiti.pvm.runtime.PvmActivityInstance;
 /**
  * @author Tom Baeyens
  */
-public interface ActivityContext {
+public interface ActivityContext extends EventContext {
 
   void take(PvmTransition transition);
 
   void end();
 
   List<PvmTransition> getOutgoingTransitions();
+
+  PvmTransition getOutgoingTransition(String signalName);
 
   List<PvmTransition> getIncomingTransitions();
 

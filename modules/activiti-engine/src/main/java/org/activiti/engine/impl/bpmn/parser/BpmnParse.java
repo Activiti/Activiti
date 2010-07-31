@@ -26,6 +26,7 @@ import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.bpmn.BoundaryTimerEventActivity;
 import org.activiti.engine.impl.bpmn.BpmnInterface;
 import org.activiti.engine.impl.bpmn.CallActivityBehaviour;
+import org.activiti.engine.impl.bpmn.Condition;
 import org.activiti.engine.impl.bpmn.ExclusiveGatewayActivity;
 import org.activiti.engine.impl.bpmn.ManualTaskActivity;
 import org.activiti.engine.impl.bpmn.NoneEndEventActivity;
@@ -55,8 +56,7 @@ import org.activiti.engine.impl.util.xml.Parse;
 import org.activiti.engine.impl.util.xml.Parser;
 import org.activiti.engine.impl.variable.VariableDeclarationImpl;
 import org.activiti.impl.definition.FormReference;
-import org.activiti.pvm.ActivityBehavior;
-import org.activiti.pvm.Condition;
+import org.activiti.pvm.activity.ActivityBehavior;
 import org.activiti.pvm.impl.process.ActivityImpl;
 import org.activiti.pvm.impl.process.ProcessDefinitionImpl;
 import org.activiti.pvm.impl.process.ScopeImpl;
@@ -291,8 +291,7 @@ public class BpmnParse extends Parse {
       String id = startEventElement.attribute("id");
       String name = startEventElement.attribute("name");
 
-      ActivityImpl activity = scope.createActivity();
-      activity.setId(id);
+      ActivityImpl activity = scope.createActivity(id);
       activity.setProperty("name", name);
       
       if (scope instanceof ProcessDefinitionImpl) {
@@ -379,8 +378,7 @@ public class BpmnParse extends Parse {
     if (LOG.isLoggable(Level.FINE)) {
       LOG.fine("Parsing activity " + id);
     }
-    ActivityImpl activity = scopeElement.createActivity();
-    activity.setId(id);
+    ActivityImpl activity = scopeElement.createActivity(id);
     activity.setProperty("name", name);
     activity.setProperty("type", activityElement.getTagName());
     activity.setProperty("line", activityElement.getLine());
@@ -654,8 +652,7 @@ public class BpmnParse extends Parse {
       String id = endEventElement.attribute("id");
       String name = endEventElement.attribute("name");
 
-      ActivityImpl activity = scopeElement.createActivity();
-      activity.setId(id);
+      ActivityImpl activity = scopeElement.createActivity(id);
       activity.setProperty("name", name);
 
       // Only none end events are currently supported
@@ -700,8 +697,7 @@ public class BpmnParse extends Parse {
         throw new ActivitiException("Invalid reference in boundary event: " + attachedToRef
               + " Make sure that the referenced activity is defined in the same scope as the boundary event");
       }
-      ActivityImpl nestedActivity = parentActivity.createActivity();
-      nestedActivity.setId(id);
+      ActivityImpl nestedActivity = parentActivity.createActivity(id);
       nestedActivity.setProperty("name", boundaryEventElement.attribute("name"));
 
       String cancelActivity = boundaryEventElement.attribute("cancelActivity", "true");
@@ -941,8 +937,7 @@ public class BpmnParse extends Parse {
         throw new ActivitiException("Invalid destination of sequence flow '" + id + "'");
       }
 
-      TransitionImpl transition = sourceActivity.createOutgoingTransition();
-      transition.setId(id);
+      TransitionImpl transition = sourceActivity.createOutgoingTransition(id);
       transition.setProperty("name", sequenceFlowElement.attribute("name"));
       transition.setDestination(destinationActivity);
       parseSequenceFlowConditionExpression(sequenceFlowElement, transition);

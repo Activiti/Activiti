@@ -10,13 +10,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.activiti.pvm;
+
+package org.activiti.pvm.runtime;
+
+import java.util.Map;
 
 
 /**
  * @author Tom Baeyens
  */
-public interface ActivityBehavior {
+public interface PvmScopeInstance {
 
-  void execute(ActivityExecution execution) throws Exception;
+  boolean hasVariable(String variableName);
+
+  void setVariable(String variableName, Object value);
+  
+  Object getVariable(String variableName);
+
+  Map<String, Object> getVariables();
+
+  PvmScopeInstance getParent();
 }

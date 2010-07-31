@@ -18,7 +18,6 @@ import java.util.logging.Logger;
 
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.bpmn.parser.BpmnParse;
-import org.activiti.pvm.Condition;
 import org.activiti.pvm.activity.ActivityContext;
 import org.activiti.pvm.process.PvmTransition;
 

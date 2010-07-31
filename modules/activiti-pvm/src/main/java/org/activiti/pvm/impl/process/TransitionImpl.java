@@ -25,7 +25,11 @@ public class TransitionImpl extends ProcessElementImpl implements PvmTransition 
 
   protected ActivityImpl source;
   protected ActivityImpl destination;
-  
+
+  public TransitionImpl(String id, ProcessDefinitionImpl processDefinition) {
+    super(id, processDefinition);
+  }
+
   public ActivityImpl getSource() {
     return source;
   }

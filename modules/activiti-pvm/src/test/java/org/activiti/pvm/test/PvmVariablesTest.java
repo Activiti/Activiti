@@ -48,14 +48,14 @@ public class PvmVariablesTest {
     assertEquals("hello world", processInstance.getVariable("msg"));
 
     PvmActivityInstance activityInstance = processInstance.findActivityInstance("a");
-    assertNull(activityInstance.getVariable("amount"));
-    assertNull(activityInstance.getVariable("msg"));
+    assertEquals(500L, activityInstance.getVariable("amount"));
+    assertEquals("hello world", activityInstance.getVariable("msg"));
     
     Map<String, Object> expectedVariables = new HashMap<String, Object>();
-    assertEquals(expectedVariables, activityInstance.getVariables());
-
     expectedVariables.put("amount", 500L);
     expectedVariables.put("msg", "hello world");
+
+    assertEquals(expectedVariables, activityInstance.getVariables());
     assertEquals(expectedVariables, processInstance.getVariables());
   }
 }

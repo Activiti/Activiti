@@ -22,8 +22,7 @@ import javax.el.ListELResolver;
 import javax.el.MapELResolver;
 import javax.el.VariableMapper;
 
-import org.activiti.impl.execution.ExecutionImpl;
-import org.activiti.pvm.impl.runtime.ScopeInstanceImpl;
+import org.activiti.pvm.runtime.PvmScopeInstance;
 
 
 /**
@@ -32,10 +31,10 @@ import org.activiti.pvm.impl.runtime.ScopeInstanceImpl;
  */
 public class ScopeInstanceELContext extends ELContext {
   
-  protected ScopeInstanceImpl scopeInstance;
+  protected PvmScopeInstance scopeInstance;
   private ELResolver elResolver;
 
-  public ScopeInstanceELContext(ScopeInstanceImpl scopeInstance, ELResolver elResolver) {
+  public ScopeInstanceELContext(PvmScopeInstance scopeInstance, ELResolver elResolver) {
     this.scopeInstance = scopeInstance;
     this.elResolver = elResolver;
   }

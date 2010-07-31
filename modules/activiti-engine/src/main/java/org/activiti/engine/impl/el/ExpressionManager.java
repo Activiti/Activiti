@@ -20,8 +20,8 @@ import javax.el.ValueExpression;
 
 import org.activiti.engine.impl.cfg.ProcessEngineConfiguration;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationAware;
-import org.activiti.impl.execution.ExecutionImpl;
 import org.activiti.pvm.impl.runtime.ScopeInstanceImpl;
+import org.activiti.pvm.runtime.PvmScopeInstance;
 
 /**
  * <p>
@@ -73,7 +73,7 @@ public class ExpressionManager implements ProcessEngineConfigurationAware {
     this.expressionFactory = expressionFactory;
   }
 
-  public ELContext getElContext(ScopeInstanceImpl scopeInstance) {
+  public ELContext getElContext(PvmScopeInstance scopeInstance) {
     ELContext elContext = null;
     synchronized (scopeInstance) {
 // TODO fix expression caching
@@ -87,7 +87,7 @@ public class ExpressionManager implements ProcessEngineConfigurationAware {
     return elContext;
   }
 
-  protected ScopeInstanceELContext createExecutionElContext(ScopeInstanceImpl scopeInstance) {
+  protected ScopeInstanceELContext createExecutionElContext(PvmScopeInstance scopeInstance) {
     return  new ScopeInstanceELContext(scopeInstance, elResolver);
   }
 

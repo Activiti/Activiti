@@ -15,10 +15,11 @@ package org.activiti.examples.pojo;
 import java.util.List;
 
 import org.activiti.engine.ActivitiException;
-import org.activiti.pvm.ActivityBehavior;
-import org.activiti.pvm.ActivityExecution;
-import org.activiti.pvm.Condition;
-import org.activiti.pvm.Transition;
+import org.activiti.engine.impl.el.ActivitiMethodExpression;
+import org.activiti.engine.impl.el.ActivitiValueExpression;
+import org.activiti.pvm.activity.ActivityBehavior;
+import org.activiti.pvm.activity.ActivityContext;
+import org.activiti.pvm.process.PvmTransition;
 
 
 /**
@@ -26,18 +27,22 @@ import org.activiti.pvm.Transition;
  */
 public class Decision implements ActivityBehavior {
 
-  public void execute(ActivityExecution execution) throws Exception {
-    Transition transition = findOutgoingTransition(execution);
-    execution.take(transition);
+  public static final String KEY_CONDITION = "ConditionExpression";
+
+  public void start(ActivityContext activityContext) throws Exception {
+    PvmTransition transition = findOutgoingTransition(activityContext);
+    activityContext.take(transition);
   }
 
-  private Transition findOutgoingTransition(ActivityExecution execution) {
-    List<Transition> outgoingTransitions = execution.getOutgoingTransitions();
-    for (Transition transition: outgoingTransitions) {
-      Condition condition = transition.getCondition();
-      if ( (condition==null)
-           || (condition.evaluate(execution))
-         ) {
+  private PvmTransition findOutgoingTransition(ActivityContext activityContext) {
+    List<PvmTransition> outgoingTransitions = activityContext.getOutgoingTransitions();
+    for (PvmTransition transition: outgoingTransitions) {
+      ActivitiValueExpression activitiValueExpression = (ActivitiValueExpression) transition.getProperty(KEY_CONDITION);
+      if (activitiValueExpression==null) {
+        return transition;
+      }
+      Boolean result = (Boolean) activitiValueExpression.getValue(activityContext);
+      if (result) {
         return transition;
       }
     }

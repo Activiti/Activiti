@@ -12,16 +12,20 @@
  */
 package org.activiti.examples.pojo;
 
-import org.activiti.pvm.ActivityExecution;
-import org.activiti.pvm.EventActivityBehavior;
+import javax.management.RuntimeErrorException;
+
+import org.activiti.pvm.activity.ActivityContext;
+import org.activiti.pvm.activity.SignallableActivityBehaviour;
+import org.activiti.pvm.process.PvmTransition;
+
 
 
 /**
  * @author Tom Baeyens
  */
-public class WaitState implements EventActivityBehavior {
+public class WaitState implements SignallableActivityBehaviour {
 
-  public void execute(ActivityExecution execution) {
+  public void start(ActivityContext activityContext) {
     // By default, the execution will not propagate.
     // So if no method like take(Transition) is called on execution
     // then the activity will behave as a wait state.  The execution is currently 
@@ -31,7 +35,23 @@ public class WaitState implements EventActivityBehavior {
     // That method will delegate to the method below.  
   }
 
-  public void event(ActivityExecution execution, Object event) {
-    execution.take((String)event);
+  public void signal(ActivityContext activityContext, String signalName, Object event) {
+    PvmTransition transition = findTransition(activityContext, signalName);
+    activityContext.take(transition);
+  }
+
+  protected PvmTransition findTransition(ActivityContext activityContext, String signalName) {
+    for (PvmTransition transition: activityContext.getOutgoingTransitions()) {
+      if (signalName==null) {
+        if (transition.getId()==null) {
+          return transition;
+        }
+      } else {
+        if (signalName.equals(transition.getId())) {
+          return transition;
+        }
+      }
+    }
+    throw new RuntimeException("no transition for signalName '"+signalName+"' in WaitState '"+activityContext.getActivity().getId()+"'");
   }
 }
