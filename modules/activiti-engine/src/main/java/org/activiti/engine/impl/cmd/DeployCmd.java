@@ -72,7 +72,7 @@ public class DeployCmd<T> implements Command<Deployment> {
     return true;
   }
 
-//  private boolean resourcesDiffer(ByteArrayImpl value, ByteArrayImpl other) {
+//  private boolean resourcesDiffer(ByteArrayEntity value, ByteArrayEntity other) {
 //    if (value == null && other == null) {
 //      return false;
 //    }

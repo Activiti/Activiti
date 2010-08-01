@@ -15,6 +15,7 @@ package org.activiti.engine.impl.cmd;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.bpmn.parser.BpmnParse;
 import org.activiti.engine.impl.cfg.RepositorySession;
+import org.activiti.engine.impl.form.FormReference;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.repository.DeploymentEntity;
@@ -22,10 +23,6 @@ import org.activiti.engine.impl.persistence.repository.ProcessDefinitionEntity;
 import org.activiti.engine.impl.persistence.repository.ResourceEntity;
 import org.activiti.engine.impl.persistence.task.TaskEntity;
 import org.activiti.engine.impl.scripting.ScriptingEngines;
-import org.activiti.impl.definition.FormReference;
-import org.activiti.impl.definition.ProcessDefinitionImpl;
-import org.activiti.impl.execution.ExecutionImpl;
-import org.activiti.impl.persistence.RuntimeSession;
 import org.activiti.pvm.runtime.PvmActivityInstance;
 
 
@@ -35,9 +32,9 @@ import org.activiti.pvm.runtime.PvmActivityInstance;
  */
 public class GetFormCmd implements Command<Object> {
 
-  private final String processDefinitionId;
-  private final String processDefinitionKey;
-  private final String taskId;
+  protected String processDefinitionId;
+  protected String processDefinitionKey;
+  protected String taskId;
   
   public GetFormCmd(String processDefinitionId, String processDefinitionKey, String taskId) {
     this.processDefinitionId = processDefinitionId;
@@ -46,7 +43,6 @@ public class GetFormCmd implements Command<Object> {
   }
 
   public Object execute(CommandContext commandContext) {
-    RuntimeSession runtimeSession = commandContext.getRuntimeSession();
     RepositorySession repositorySession = commandContext.getRepositorySession();
     ProcessDefinitionEntity processDefinition = null;
     TaskEntity task = null;
@@ -54,8 +50,10 @@ public class GetFormCmd implements Command<Object> {
     FormReference formReference = null;
     
     if (taskId!=null) {
+      task = commandContext
+        .getTaskSession()
+        .findTaskById(taskId);
       
-      task = runtimeSession.findTask(taskId);
       if (task == null) {
         throw new ActivitiException("No task found for id = '" + taskId + "'");
       }

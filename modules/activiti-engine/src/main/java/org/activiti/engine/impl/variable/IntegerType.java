@@ -12,6 +12,8 @@
  */
 package org.activiti.engine.impl.variable;
 
+import org.activiti.engine.impl.persistence.runtime.VariableInstanceEntity;
+
 
 /**
  * @author Joram Barrez
@@ -24,16 +26,16 @@ public class IntegerType implements Type {
     return "integer";
   }
 
-  public Object getValue(VariableInstance variableInstance) {
-    return new Integer(variableInstance.getLongValue().intValue());
+  public Object getValue(VariableInstanceEntity variableInstanceEntity) {
+    return new Integer(variableInstanceEntity.getLongValue().intValue());
   }
 
-  public void setValue(Object value, VariableInstance variableInstance) {
-    variableInstance.setLongValue(((Integer) value).longValue());
+  public void setValue(Object value, VariableInstanceEntity variableInstanceEntity) {
+    variableInstanceEntity.setLongValue(((Integer) value).longValue());
     if (value!=null) {
-      variableInstance.setTextValue(value.toString());
+      variableInstanceEntity.setTextValue(value.toString());
     } else {
-      variableInstance.setTextValue(null);
+      variableInstanceEntity.setTextValue(null);
     }
   }
 

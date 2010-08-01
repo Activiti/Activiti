@@ -10,31 +10,32 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.activiti.engine.impl.cmd;
 
 import java.util.List;
 
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
-import org.activiti.impl.persistence.RuntimeSession;
 
 
 /**
- * @author Joram Barrez
+ * @author Tom Baeyens
  */
 @SuppressWarnings("unchecked")
-public class FindChildExecutionsCmd implements Command<List>{
-  
-  protected String executionId;
-  
-  public FindChildExecutionsCmd(String executionId) {
-    this.executionId = executionId;
-  }
-  
-  public List execute(CommandContext commandContext) {
-    RuntimeSession runtimeSession = 
-      commandContext.getRuntimeSession();
-    return runtimeSession.findChildExecutions(executionId);
+public class FindGroupsByUserIdAndGroupType implements Command<List> {
+
+  protected String userId;
+  protected String groupType;
+
+  public FindGroupsByUserIdAndGroupType(String userId, String groupType) {
+    this.userId = userId;
+    this.groupType = groupType;
   }
 
+  public List execute(CommandContext commandContext) {
+    return commandContext
+      .getIdentitySession()
+      .findGroupsByUserAndType(userId, groupType);
+  }
 }

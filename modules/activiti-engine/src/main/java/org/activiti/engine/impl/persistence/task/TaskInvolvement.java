@@ -118,7 +118,7 @@ public class TaskInvolvement implements Serializable, PersistentObject {
       this.task = CommandContext
           .getCurrent()
           .getRuntimeSession()
-          .findTask(taskId);
+          .findTaskById(taskId);
     }
     return task;
   }

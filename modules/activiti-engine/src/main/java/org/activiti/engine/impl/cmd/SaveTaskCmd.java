@@ -14,23 +14,36 @@ package org.activiti.engine.impl.cmd;
 
 import org.activiti.engine.Task;
 import org.activiti.engine.impl.interceptor.CommandContext;
+import org.activiti.engine.impl.persistence.identity.GroupEntity;
 import org.activiti.engine.impl.persistence.task.TaskEntity;
-import org.activiti.impl.persistence.RuntimeSession;
 
 /**
  * @author Joram Barrez
  */
 public class SaveTaskCmd extends CmdVoid {
 	
-	protected Task task;
+	protected TaskEntity task;
 	
 	public SaveTaskCmd(Task task) {
-		this.task = task;
+		this.task = (TaskEntity) task;
 	}
 	
 	public void executeVoid(CommandContext commandContext) {
-    RuntimeSession runtimeSession = commandContext.getRuntimeSession();
-    runtimeSession.insert((TaskEntity)task);
+    if (task.getId()==null) {
+      commandContext
+        .getTaskSession()
+        .insertTask(task);
+    } else {
+      TaskEntity persistentTask = commandContext
+        .getTaskSession()
+        .findTaskById(task.getId());
+      
+      persistentTask.update(task);
+      
+    }
+    commandContext
+      .getTaskSession()
+      .insertTask((TaskEntity)task);
 	}
 
 }

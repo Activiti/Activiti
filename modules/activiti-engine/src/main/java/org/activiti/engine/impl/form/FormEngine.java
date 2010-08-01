@@ -12,8 +12,8 @@
  */
 package org.activiti.engine.impl.form;
 
+import org.activiti.engine.impl.persistence.repository.DeploymentEntity;
 import org.activiti.engine.impl.persistence.task.TaskEntity;
-import org.activiti.impl.repository.DeploymentImpl;
 
 
 /**
@@ -21,6 +21,6 @@ import org.activiti.impl.repository.DeploymentImpl;
  */
 public interface FormEngine {
 
-  Object render(DeploymentImpl deployment, String formReference, TaskEntity taskImpl);
+  Object render(DeploymentEntity deployment, String formReference, TaskEntity taskImpl);
 
 }

@@ -13,14 +13,18 @@
 package org.activiti.engine.impl.persistence.identity;
 
 import java.io.Serializable;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.activiti.engine.identity.User;
+import org.activiti.engine.impl.cmd.SaveUserCmd;
+import org.activiti.engine.impl.persistence.PersistentObject;
 
 
 /**
  * @author Tom Baeyens
  */
-public class UserImpl implements User, Serializable {
+public class UserEntity implements User, Serializable, PersistentObject {
 
   private static final long serialVersionUID = 1L;
 
@@ -30,14 +34,29 @@ public class UserImpl implements User, Serializable {
   protected String email;
   protected String password;
   
-  protected boolean isNew = false;
-
-  public UserImpl() {
+  public UserEntity() {
   }
   
-  public UserImpl(String id) {
+  public UserEntity(String id) {
     this.id = id;
-    this.isNew = true;
+  }
+  
+  /** update this user by copying all the given user's data into this user.
+   * @see SaveUserCmd */
+  public void update(UserEntity user) {
+    this.firstName = user.getFirstName();
+    this.lastName = user.getLastName();
+    this.email = user.getEmail();
+    this.password = user.getPassword();
+  }
+  
+  public Object getPersistentState() {
+    Map<String, Object> persistentState = new HashMap<String, Object>();
+    persistentState.put("firstName", firstName);
+    persistentState.put("lastName", lastName);
+    persistentState.put("email", email);
+    persistentState.put("password", password);
+    return persistentState;
   }
 
   public String getId() {
@@ -69,8 +88,5 @@ public class UserImpl implements User, Serializable {
   }
   public void setPassword(String password) {
     this.password = password;
-  }
-  public boolean isNew() {
-    return isNew;
   }
 }

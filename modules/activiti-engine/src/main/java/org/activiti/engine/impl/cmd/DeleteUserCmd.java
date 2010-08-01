@@ -13,7 +13,6 @@
 package org.activiti.engine.impl.cmd;
 
 import org.activiti.engine.impl.interceptor.CommandContext;
-import org.activiti.impl.persistence.RuntimeSession;
 
 
 /**
@@ -28,8 +27,9 @@ public class DeleteUserCmd extends CmdVoid {
   }
 
   public void executeVoid(CommandContext commandContext) {
-    RuntimeSession runtimeSession = commandContext.getRuntimeSession();
-    runtimeSession.deleteUser(userId);
+    commandContext
+      .getIdentitySession()
+      .deleteUser(userId);
   }
 
 }

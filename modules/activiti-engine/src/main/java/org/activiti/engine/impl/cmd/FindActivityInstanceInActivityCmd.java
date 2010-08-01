@@ -13,32 +13,28 @@
 
 package org.activiti.engine.impl.cmd;
 
-import org.activiti.engine.ActivitiException;
+import org.activiti.engine.ActivityInstance;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
-import org.activiti.impl.db.execution.DbExecutionImpl;
 
 
 /**
- * @author Tom Baeyens
+ * @author Joram Barrez
  */
-public class SendEventCmd implements Command<Object> {
-
-  String executionId;
-  Object eventData;
+public class FindActivityInstanceInActivityCmd implements Command<ActivityInstance> {
   
-  public SendEventCmd(String executionId, Object eventData) {
-    this.executionId = executionId;
-    this.eventData = eventData;
+  protected String processInstanceId;
+  protected String activityId;
+  
+  public FindActivityInstanceInActivityCmd(String processInstanceId, String activityId) {
+    this.processInstanceId = processInstanceId;
+    this.activityId = activityId;
   }
 
-  public Object execute(CommandContext commandContext) {
-    DbExecutionImpl execution = commandContext.getRuntimeSession().findExecution(executionId);
-    if (execution==null) {
-      throw new ActivitiException("execution "+executionId+" doesn't exist");
-    }
-    execution.event(eventData);
-    return null;
+  public ActivityInstance execute(CommandContext commandContext) {
+    return commandContext
+      .getRuntimeSession()
+      .findActivityInstanceByProcessInstanceIdAndActivityId(processInstanceId, activityId);
   }
-
+  
 }

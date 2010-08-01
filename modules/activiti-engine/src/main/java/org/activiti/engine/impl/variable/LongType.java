@@ -12,6 +12,8 @@
  */
 package org.activiti.engine.impl.variable;
 
+import org.activiti.engine.impl.persistence.runtime.VariableInstanceEntity;
+
 
 /**
  * @author Tom Baeyens
@@ -24,16 +26,16 @@ public class LongType implements Type {
     return "long";
   }
 
-  public Object getValue(VariableInstance variableInstance) {
-    return variableInstance.getLongValue();
+  public Object getValue(VariableInstanceEntity variableInstanceEntity) {
+    return variableInstanceEntity.getLongValue();
   }
 
-  public void setValue(Object value, VariableInstance variableInstance) {
-    variableInstance.setLongValue((Long) value);
+  public void setValue(Object value, VariableInstanceEntity variableInstanceEntity) {
+    variableInstanceEntity.setLongValue((Long) value);
     if (value!=null) {
-      variableInstance.setTextValue(value.toString());
+      variableInstanceEntity.setTextValue(value.toString());
     } else {
-      variableInstance.setTextValue(null);
+      variableInstanceEntity.setTextValue(null);
     }
   }
 

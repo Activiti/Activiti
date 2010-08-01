@@ -20,8 +20,8 @@ import java.util.Map;
 import org.activiti.engine.impl.cfg.IdentitySession;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.interceptor.Session;
-import org.activiti.engine.impl.persistence.identity.GroupImpl;
-import org.activiti.engine.impl.persistence.identity.UserImpl;
+import org.activiti.engine.impl.persistence.identity.GroupEntity;
+import org.activiti.engine.impl.persistence.identity.UserEntity;
 
 
 /**
@@ -35,28 +35,26 @@ public class DbIdentitySession implements IdentitySession, Session {
     this.dbSqlSession = CommandContext.getCurrentSession(DbSqlSession.class);
   }
 
-  public void insertUser(UserImpl user) {
-    if (user.isNew()) {
-      dbSqlSession.insert("insertUser", user);
-    } else {
-      dbSqlSession.update("updateUser", user);
-    }
+  public void insertUser(UserEntity user) {
+    dbSqlSession.insert(user);
   }
 
-  public UserImpl findUser(String userId) {
-    return (UserImpl) dbSqlSession.selectOne("selectUser", userId);
+  public UserEntity findUserById(String userId) {
+    return (UserEntity) dbSqlSession.selectOne("selectUserById", userId);
   }
 
-  public List<UserImpl> findUsersByGroup(String groupId) {
-    return dbSqlSession.selectList("selectUsersByGroup", groupId);
+  @SuppressWarnings("unchecked")
+  public List<UserEntity> findUsersByGroupId(String groupId) {
+    return dbSqlSession.selectList("selectUsersByGroupId", groupId);
   }
 
-  public List<UserImpl> findUsers() {
+  @SuppressWarnings("unchecked")
+  public List<UserEntity> findUsers() {
     return dbSqlSession.selectList("selectUsers");
   }
 
   public boolean isValidUser(String userId) {
-    return findUser(userId) != null;
+    return findUserById(userId) != null;
   }
 
   public void deleteUser(String userId) {
@@ -64,30 +62,26 @@ public class DbIdentitySession implements IdentitySession, Session {
     dbSqlSession.delete("deleteUser", userId);
   }
 
-  public void saveGroup(GroupImpl group) {
-    if (group.isNew()) {
-      dbSqlSession.insert("insertGroup", group);
-    } else {
-      dbSqlSession.update("updateGroup", group);
-    }
+  public void insertGroup(GroupEntity group) {
+    dbSqlSession.insert(group);
   }
 
-  public GroupImpl findGroup(String groupId) {
-    return (GroupImpl) dbSqlSession.selectOne("selectGroup", groupId);
+  public GroupEntity findGroupById(String groupId) {
+    return (GroupEntity) dbSqlSession.selectOne("selectGroup", groupId);
   }
 
-  public List<GroupImpl> findGroupsByUser(String userId) {
+  public List<GroupEntity> findGroupsByUser(String userId) {
     return dbSqlSession.selectList("selectGroupsByUser", userId);
   }
 
-  public List<GroupImpl> findGroupsByUserAndType(String userId, String groupType) {
+  public List<GroupEntity> findGroupsByUserAndType(String userId, String groupType) {
     Map<String, Object> parameters = new HashMap<String, Object>();
     parameters.put("userId", userId);
     parameters.put("groupType", groupType);
     return dbSqlSession.selectList("selectGroupsByUserAndType", parameters);
   }
 
-  public List<GroupImpl> findGroups() {
+  public List<GroupEntity> findGroups() {
     return dbSqlSession.selectList("selectGroups");
   }
 
@@ -100,7 +94,7 @@ public class DbIdentitySession implements IdentitySession, Session {
     Map<String, Object> parameters = new HashMap<String, Object>();
     parameters.put("userId", userId);
     parameters.put("groupId", groupId);
-    dbSqlSession.insert("insertMembership", parameters);
+    dbSqlSession.getSqlSession().insert("insertMembership", parameters);
   }
 
   public void deleteMembership(String userId, String groupId) {

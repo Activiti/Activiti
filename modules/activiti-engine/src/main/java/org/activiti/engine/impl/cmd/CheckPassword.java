@@ -12,10 +12,10 @@
  */
 package org.activiti.engine.impl.cmd;
 
+import org.activiti.engine.impl.cfg.IdentitySession;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
-import org.activiti.engine.impl.persistence.identity.UserImpl;
-import org.activiti.impl.persistence.RuntimeSession;
+import org.activiti.engine.impl.persistence.identity.UserEntity;
 
 
 /**
@@ -33,8 +33,8 @@ public class CheckPassword implements Command<Boolean> {
 
 
   public Boolean execute(CommandContext commandContext) {
-    RuntimeSession runtimeSession = commandContext.getRuntimeSession();
-    UserImpl user = runtimeSession.findUser(userId);
+    IdentitySession identitySession = commandContext.getIdentitySession();
+    UserEntity user = identitySession.findUserById(userId);
     if ( (user!=null)
          && (password!=null)
          && (password.equals(user.getPassword()))

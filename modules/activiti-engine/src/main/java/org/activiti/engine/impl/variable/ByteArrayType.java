@@ -13,7 +13,8 @@
 package org.activiti.engine.impl.variable;
 
 import org.activiti.engine.impl.interceptor.CommandContext;
-import org.activiti.engine.impl.persistence.runtime.ByteArrayImpl;
+import org.activiti.engine.impl.persistence.runtime.ByteArrayEntity;
+import org.activiti.engine.impl.persistence.runtime.VariableInstanceEntity;
 
 /**
  * @author Tom Baeyens
@@ -26,23 +27,23 @@ public class ByteArrayType implements Type {
     return "bytes";
   }
 
-  public Object getValue(VariableInstance variableInstance) {
-    if (variableInstance.getByteArrayValueId()==null) {
+  public Object getValue(VariableInstanceEntity variableInstanceEntity) {
+    if (variableInstanceEntity.getByteArrayValueId()==null) {
       return null;
     }
-    return variableInstance.getByteArrayValue().getBytes();
+    return variableInstanceEntity.getByteArrayValue().getBytes();
   }
 
-  public void setValue(Object value, VariableInstance variableInstance) {
-    ByteArrayImpl byteArray = variableInstance.getByteArrayValue();
+  public void setValue(Object value, VariableInstanceEntity variableInstanceEntity) {
+    ByteArrayEntity byteArray = variableInstanceEntity.getByteArrayValue();
     byte[] bytes = (byte[]) value;
     if (byteArray==null) {
-      byteArray = new ByteArrayImpl(this, bytes);
+      byteArray = new ByteArrayEntity(this, bytes);
       CommandContext
         .getCurrent()
         .getRuntimeSession()
         .insert(byteArray);
-      variableInstance.setByteArrayValue(byteArray);
+      variableInstanceEntity.setByteArrayValue(byteArray);
     } else {
       byteArray.setBytes(bytes);
     }

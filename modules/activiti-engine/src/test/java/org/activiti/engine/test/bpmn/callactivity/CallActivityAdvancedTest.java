@@ -34,7 +34,7 @@ public class CallActivityAdvancedTest extends ProcessEngineImplTestCase {
     "org/activiti/engine/test/bpmn/callactivity/simpleSubProcess.bpmn20.xml" 
   })
   public void testCallSimpleSubProcess() {
-    ProcessInstance processInstance = processService.startProcessInstanceByKey("callSimpleSubProcess");
+    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("callSimpleSubProcess");
     
     // one task in the subprocess should be active after starting the process instance
     TaskQuery taskQuery = taskService.createTaskQuery();
@@ -62,7 +62,7 @@ public class CallActivityAdvancedTest extends ProcessEngineImplTestCase {
    */
   @Deployment(resources = {"CallActivity.testSubProcessEndsSuperProcess.bpmn20.xml", "simpleSubProcess.bpmn20.xml"})
   public void testSubProcessEndsSuperProcess() {
-    ProcessInstance processInstance = processService.startProcessInstanceByKey("subProcessEndsSuperProcess");
+    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("subProcessEndsSuperProcess");
     
     // one task in the subprocess should be active after starting the process instance
     TaskQuery taskQuery = taskService.createTaskQuery();
@@ -72,12 +72,12 @@ public class CallActivityAdvancedTest extends ProcessEngineImplTestCase {
     // Completing this task ends the subprocess which leads to the end of the whole process instance
     taskService.complete(taskBeforeSubProcess.getId());
     assertProcessEnded(processInstance.getId());
-    assertEquals(0, processService.createProcessInstanceQuery().list().size());
+    assertEquals(0, runtimeService.createProcessInstanceQuery().list().size());
   }
   
   @Deployment(resources = {"CallActivity.testCallParallelSubProcess.bpmn20.xml", "simpleParallelSubProcess.bpmn20.xml"})
   public void testCallParallelSubProcess() {
-    processService.startProcessInstanceByKey("callParallelSubProcess");
+    runtimeService.startProcessInstanceByKey("callParallelSubProcess");
   
     // The two tasks in the parallel subprocess should be active
     TaskQuery taskQuery = taskService
@@ -94,11 +94,11 @@ public class CallActivityAdvancedTest extends ProcessEngineImplTestCase {
     // Completing the first task should not end the subprocess
     taskService.complete(taskA.getId());
     assertEquals(1, taskQuery.list().size());
-    assertEquals(2, processService.createProcessInstanceQuery().list().size());
+    assertEquals(2, runtimeService.createProcessInstanceQuery().list().size());
     
     // Completing the second task should end the subprocess and end the whole process instance
     taskService.complete(taskB.getId());
-    assertEquals(0, processService.createProcessInstanceQuery().list().size());
+    assertEquals(0, runtimeService.createProcessInstanceQuery().list().size());
   }
   
   @Deployment(resources = {"CallActivity.testTimerOnCallActivity.bpmn20.xml", "simpleSubProcess.bpmn20.xml"})
@@ -106,7 +106,7 @@ public class CallActivityAdvancedTest extends ProcessEngineImplTestCase {
     Date startTime = ClockUtil.getCurrentTime();
     
     // After process start, the task in the subprocess should be active
-    processService.startProcessInstanceByKey("timerOnCallActivity");
+    runtimeService.startProcessInstanceByKey("timerOnCallActivity");
     TaskQuery taskQuery = taskService.createTaskQuery();
     Task taskInSubProcess = taskQuery.singleResult();
     assertEquals("Task in subprocess", taskInSubProcess.getName());
@@ -122,6 +122,6 @@ public class CallActivityAdvancedTest extends ProcessEngineImplTestCase {
     
     // Completing the task ends the complete process
     taskService.complete(escalatedTask.getId());
-    assertEquals(0, processService.createProcessInstanceQuery().list().size());
+    assertEquals(0, runtimeService.createProcessInstanceQuery().list().size());
   }
 }

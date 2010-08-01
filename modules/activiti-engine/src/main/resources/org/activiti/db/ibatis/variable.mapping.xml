@@ -82,18 +82,18 @@
 
   <!-- ByteArrayImpl -->
   
-  <resultMap id="byteArrayResultMap" type="org.activiti.engine.impl.persistence.runtime.ByteArrayImpl">
+  <resultMap id="byteArrayResultMap" type="org.activiti.engine.impl.persistence.runtime.ByteArrayEntity">
     <id property="id" column="ID_" jdbcType="VARCHAR" />
     <result property="name" column="NAME_" jdbcType="VARCHAR"/>
     <result property="bytes" column="BYTES_" jdbcType="BLOB"/>
   </resultMap>
 
-  <insert id="insertByteArray" parameterType="org.activiti.engine.impl.persistence.runtime.ByteArrayImpl">
+  <insert id="insertByteArray" parameterType="org.activiti.engine.impl.persistence.runtime.ByteArrayEntity">
     insert into ACT_BYTEARRAY(ID_, NAME_, BYTES_, DEPLOYMENT_ID_)
     values (#{id, jdbcType=VARCHAR}, #{name, jdbcType=VARCHAR}, #{bytes, jdbcType=BLOB}, #{deploymentId, jdbcType=VARCHAR})  
   </insert>
   
-  <update id="updateByteArray" parameterType="org.activiti.engine.impl.persistence.runtime.ByteArrayImpl">
+  <update id="updateByteArray" parameterType="org.activiti.engine.impl.persistence.runtime.ByteArrayEntity">
     update ACT_BYTEARRAY 
     set
       BYTES_ = #{bytes, jdbcType=BLOB}

@@ -19,7 +19,7 @@ import org.activiti.engine.HistoricDataService;
 import org.activiti.engine.IdentityService;
 import org.activiti.engine.ManagementService;
 import org.activiti.engine.ProcessEngine;
-import org.activiti.engine.ProcessService;
+import org.activiti.engine.RuntimeService;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.TaskService;
 import org.activiti.engine.impl.cfg.ProcessEngineConfiguration;
@@ -36,7 +36,7 @@ public class ProcessEngineImpl implements ProcessEngine {
   protected ProcessEngineConfiguration processEngineConfiguration;
   protected String name;
   protected RepositoryService repositoryService;
-  protected ProcessService processService;
+  protected RuntimeService runtimeService;
   protected HistoricDataService historicDataService;
   protected IdentityService identityService;
   protected TaskService taskService;
@@ -48,7 +48,7 @@ public class ProcessEngineImpl implements ProcessEngine {
     this.processEngineConfiguration = processEngineConfiguration;
     this.name = processEngineConfiguration.getProcessEngineName();
     this.repositoryService = processEngineConfiguration.getRepositoryService();
-    this.processService = processEngineConfiguration.getProcessService();
+    this.runtimeService = processEngineConfiguration.getProcessService();
     this.historicDataService = processEngineConfiguration.getHistoricDataService();
     this.identityService = processEngineConfiguration.getIdentityService();
     this.taskService = processEngineConfiguration.getTaskService();
@@ -116,8 +116,8 @@ public class ProcessEngineImpl implements ProcessEngine {
     return historicDataService;
   }
 
-  public ProcessService getProcessService() {
-    return processService;
+  public RuntimeService getRuntimeService() {
+    return runtimeService;
   }
   public DbSchemaStrategy getDbSchemaStrategy() {
     return dbSchemaStrategy;

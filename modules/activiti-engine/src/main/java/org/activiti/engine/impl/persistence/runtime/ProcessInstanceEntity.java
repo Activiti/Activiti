@@ -13,10 +13,12 @@
 
 package org.activiti.engine.impl.persistence.runtime;
 
-import java.util.HashMap;
-import java.util.Map;
+import javax.el.VariableMapper;
 
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.ProcessInstance;
+import org.activiti.engine.impl.cfg.RuntimeSession;
+import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.PersistentObject;
 import org.activiti.pvm.impl.process.ProcessDefinitionImpl;
 import org.activiti.pvm.impl.runtime.ProcessInstanceImpl;
@@ -25,18 +27,50 @@ import org.activiti.pvm.impl.runtime.ProcessInstanceImpl;
 /**
  * @author Tom Baeyens
  */
-public class ProcessInstanceEntity extends ProcessInstanceImpl implements PersistentObject {
+public class ProcessInstanceEntity extends ProcessInstanceImpl implements ProcessInstance, PersistentObject {
   
   protected String id;
   protected int revision;
+  protected String processDefinitionId;
+  protected VariableInstanceMap variableInstanceMap;
 
-  public ProcessInstanceEntity(ProcessDefinitionImpl processDefinition) {
+  public ProcessInstanceEntity() {
+  }
+  
+  protected ProcessInstanceEntity(ProcessDefinitionImpl processDefinition) {
     super(processDefinition);
   }
-
-
+  
+  public static ProcessInstanceEntity createAndInsert(ProcessDefinitionImpl processDefinition) {
+    ProcessInstanceEntity processInstance = new ProcessInstanceEntity(processDefinition);
+    
+    CommandContext
+      .getCurrentSession(RuntimeSession.class)
+      .insertProcessInstance(processInstance);
+    
+    processInstance.variableInstanceMap = new VariableInstanceMap();
+    
+    return processInstance;
+  }
+  
+  public void delete() {
+    for (ActivityInstanceEntity activityInstance: getActivityInstances()) {
+      activityInstance.delete();
+    }
+    for (VariableInstanceEntity variableInstance: ) {
+      
+    }
+  }
+  
   public Object getPersistentState() {
     throw new ActivitiException("not yet implemented");
+  }
+  
+  public VariableMap getVariableMap() {
+    if (variableMap==null) {
+      variableMap = new VariableInstanceMap();
+      
+    }
   }
   
   // getters and setters //////////////////////////////////////////////////////
@@ -55,5 +89,13 @@ public class ProcessInstanceEntity extends ProcessInstanceImpl implements Persis
 
   public void setRevision(int revision) {
     this.revision = revision;
+  }
+
+  public String getProcessDefinitionId() {
+    return processDefinitionId;
+  }
+
+  public void setProcessDefinitionId(String processDefinitionId) {
+    this.processDefinitionId = processDefinitionId;
   }
 }

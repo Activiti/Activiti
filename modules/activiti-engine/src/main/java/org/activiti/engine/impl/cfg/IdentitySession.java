@@ -15,8 +15,8 @@ package org.activiti.engine.impl.cfg;
 
 import java.util.List;
 
-import org.activiti.engine.impl.persistence.identity.GroupImpl;
-import org.activiti.engine.impl.persistence.identity.UserImpl;
+import org.activiti.engine.impl.persistence.identity.GroupEntity;
+import org.activiti.engine.impl.persistence.identity.UserEntity;
 
 
 /**
@@ -25,17 +25,17 @@ import org.activiti.engine.impl.persistence.identity.UserImpl;
 public interface IdentitySession {
 
   /* User */
-  void insertUser(UserImpl user);
+  void insertUser(UserEntity user);
   void deleteUser(String userId);
-  UserImpl findUser(String userId);
-  List<UserImpl> findUsersByGroup(String groupId);
+  UserEntity findUserById(String userId);
+  List<UserEntity> findUsersByGroupId(String groupId);
   boolean isValidUser(String userId);
   
   /* Group */
-  void saveGroup(GroupImpl group);
-  GroupImpl findGroup(String groupId);
-  List<GroupImpl> findGroupsByUser(String userId);
-  List<GroupImpl> findGroupsByUserAndType(String userId, String groupType);
+  void insertGroup(GroupEntity group);
+  GroupEntity findGroupById(String groupId);
+  List<GroupEntity> findGroupsByUser(String userId);
+  List<GroupEntity> findGroupsByUserAndType(String userId, String groupType);
   void deleteGroup(String groupId);
 
   /* Membership */

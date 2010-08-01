@@ -13,7 +13,7 @@
 
 package org.activiti.engine.impl.bpmn;
 
-import org.activiti.engine.ProcessService;
+import org.activiti.engine.RuntimeService;
 import org.activiti.pvm.activity.ActivityContext;
 
 
@@ -21,7 +21,7 @@ import org.activiti.pvm.activity.ActivityContext;
  * A receive task is a wait state that waits for the receival of some message.
  * 
  * Currently, the only message that is supported is the external trigger,
- * given by calling the {@link ProcessService#sendEvent(String)} operation.
+ * given by calling the {@link RuntimeService#signal(String)} operation.
  * 
  * @author Joram Barrez
  */

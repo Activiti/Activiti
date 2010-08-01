@@ -15,7 +15,6 @@ package org.activiti.engine.impl.cmd;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.repository.ProcessDefinitionEntity;
-import org.activiti.impl.definition.ProcessDefinitionImpl;
 
 
 /**

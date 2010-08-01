@@ -35,7 +35,7 @@ import org.activiti.engine.ManagementService;
 import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.ProcessEngineBuilder;
 import org.activiti.engine.ProcessInstance;
-import org.activiti.engine.ProcessService;
+import org.activiti.engine.RuntimeService;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.TaskService;
 import org.activiti.engine.impl.ProcessEngineImpl;
@@ -79,7 +79,7 @@ public class ProcessEngineTestCase extends TestCase {
 
   protected ProcessEngine processEngine;
   protected RepositoryService repositoryService;
-  protected ProcessService processService;
+  protected RuntimeService runtimeService;
   protected TaskService taskService;
   protected HistoricDataService historicDataService;
   protected IdentityService identityService;
@@ -112,7 +112,7 @@ public class ProcessEngineTestCase extends TestCase {
   
   public void assertProcessEnded(final String processInstanceId) {
     ProcessInstance processInstance = processEngine
-      .getProcessService()
+      .getRuntimeService()
       .findProcessInstanceById(processInstanceId);
     
     if (processInstance!=null) {
@@ -227,7 +227,7 @@ public class ProcessEngineTestCase extends TestCase {
 
   void initializeServices() {
     repositoryService = processEngine.getRepositoryService();
-    processService = processEngine.getProcessService();
+    runtimeService = processEngine.getRuntimeService();
     taskService = processEngine.getTaskService();
     historicDataService = processEngine.getHistoricDataService();
     identityService = processEngine.getIdentityService();

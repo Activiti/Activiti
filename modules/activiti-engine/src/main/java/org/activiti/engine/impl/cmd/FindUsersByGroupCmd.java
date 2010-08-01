@@ -16,22 +16,23 @@ import java.util.List;
 
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
-import org.activiti.impl.persistence.RuntimeSession;
 
 
 /**
  * @author Tom Baeyens
  */
+@SuppressWarnings("unchecked")
 public class FindUsersByGroupCmd implements Command<List> {
 
-  String groupId;
+  protected String groupId;
   
   public FindUsersByGroupCmd(String groupId) {
     this.groupId = groupId;
   }
 
   public List execute(CommandContext commandContext) {
-    RuntimeSession runtimeSession = commandContext.getRuntimeSession();
-    return runtimeSession.findUsersByGroup(groupId);
+    return commandContext
+      .getIdentitySession()
+      .findUsersByGroupId(groupId);
   }
 }

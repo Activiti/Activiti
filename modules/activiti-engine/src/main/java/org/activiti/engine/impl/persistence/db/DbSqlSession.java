@@ -23,9 +23,9 @@ import java.util.logging.Logger;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.interceptor.Session;
 import org.activiti.engine.impl.persistence.PersistentObject;
+import org.activiti.engine.impl.persistence.runtime.VariableInstanceEntity;
 import org.activiti.engine.impl.util.ClassNameUtil;
 import org.activiti.engine.impl.variable.DeserializedObject;
-import org.activiti.engine.impl.variable.VariableInstance;
 import org.apache.ibatis.session.SqlSession;
 
 
@@ -198,8 +198,8 @@ public class DbSqlSession implements Session {
 
   // deserialized objects /////////////////////////////////////////////////////
   
-  public void addDeserializedObject(Object deserializedObject, byte[] serializedBytes, VariableInstance variableInstance) {
-    deserializedObjects.add(new DeserializedObject(deserializedObject, serializedBytes, variableInstance));
+  public void addDeserializedObject(Object deserializedObject, byte[] serializedBytes, VariableInstanceEntity variableInstanceEntity) {
+    deserializedObjects.add(new DeserializedObject(deserializedObject, serializedBytes, variableInstanceEntity));
   }
 
   // flush ////////////////////////////////////////////////////////////////////
@@ -305,5 +305,14 @@ public class DbSqlSession implements Session {
       return "null";
     }
     return ClassNameUtil.getClassNameWithoutPackage(persistentObject)+"["+persistentObject.getId()+"]";
+  }
+
+  // getters and setters //////////////////////////////////////////////////////
+  
+  public SqlSession getSqlSession() {
+    return sqlSession;
+  }
+  public DbSqlSessionFactory getDbSqlSessionFactory() {
+    return dbSqlSessionFactory;
   }
 }

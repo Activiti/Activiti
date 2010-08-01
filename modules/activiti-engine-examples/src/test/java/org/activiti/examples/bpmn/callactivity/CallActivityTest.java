@@ -30,7 +30,7 @@ public class CallActivityTest extends ProcessEngineTestCase {
   })
   public void testOrderProcessWithCallActivity() {
     // After the process has started, the 'verify credit history' task should be active
-    processService.startProcessInstanceByKey("orderProcess");
+    runtimeService.startProcessInstanceByKey("orderProcess");
     TaskQuery taskQuery = taskService.createTaskQuery();
     Task verifyCreditTask = taskQuery.singleResult();
     assertEquals("Verify credit history", verifyCreditTask.getName());

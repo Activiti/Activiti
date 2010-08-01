@@ -69,13 +69,13 @@ public class EngineRebootProcessDefinitionCacheTest extends TestCase {
      assertEquals(1, processDefinitions.size());
      
      // Start a new Process instance
-     ProcessInstance processInstance = processEngine.getProcessService().startProcessInstanceById(processDefinitions.get(0).getId());
+     ProcessInstance processInstance = processEngine.getRuntimeService().startProcessInstanceById(processDefinitions.get(0).getId());
      String processInstanceId = processInstance.getId();
      assertNotNull(processInstance);
         
      // Close the process engine
      processEngine.close();
-     assertNotNull(processEngine.getProcessService());
+     assertNotNull(processEngine.getRuntimeService());
      
      // Reboot the process engine
      processEngine = new ProcessEngineBuilder()
@@ -85,7 +85,7 @@ public class EngineRebootProcessDefinitionCacheTest extends TestCase {
        .buildProcessEngine();
      
      // Check if the existing process instance is still alive
-     processInstance = processEngine.getProcessService().findProcessInstanceById(processInstanceId);
+     processInstance = processEngine.getRuntimeService().findProcessInstanceById(processInstanceId);
      assertNotNull(processInstance);
      
      // Complete the task.  That will end the process instance
@@ -98,11 +98,11 @@ public class EngineRebootProcessDefinitionCacheTest extends TestCase {
      
      // Check if the process instance has really ended.  This means that the process definition has 
      // re-loaded into the process definition cache
-     processInstance = processEngine.getProcessService().findProcessInstanceById(processInstanceId);
+     processInstance = processEngine.getRuntimeService().findProcessInstanceById(processInstanceId);
      assertNull(processInstance);
      
      // Extra check to see if a new process instance can be started as well
-     processInstance = processEngine.getProcessService().startProcessInstanceById(processDefinitions.get(0).getId());
+     processInstance = processEngine.getRuntimeService().startProcessInstanceById(processDefinitions.get(0).getId());
      assertNotNull(processInstance);
 
      // close the process engine

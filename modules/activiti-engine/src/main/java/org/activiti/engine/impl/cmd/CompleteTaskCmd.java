@@ -15,10 +15,9 @@ package org.activiti.engine.impl.cmd;
 import java.util.Map;
 
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.impl.cfg.TaskSession;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.task.TaskEntity;
-import org.activiti.impl.execution.ExecutionImpl;
-import org.activiti.impl.persistence.RuntimeSession;
 import org.activiti.pvm.runtime.PvmActivityInstance;
 
 
@@ -36,11 +35,11 @@ public class CompleteTaskCmd extends CmdVoid {
   }
   
   public void executeVoid(CommandContext commandContext) {
-    RuntimeSession runtimeSession = commandContext.getRuntimeSession();
+    TaskSession taskSession = commandContext.getTaskSession();
     
-    TaskEntity task = runtimeSession.findTask(taskId);
+    TaskEntity task = taskSession.findTaskById(taskId);
     if (variables!=null) {
-      task.setExecutionVariables(variables);
+      task.setActivityInstanceVariables(variables);
     }
 
     if (task == null) {

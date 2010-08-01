@@ -12,6 +12,8 @@
  */
 package org.activiti.engine.impl.variable;
 
+import org.activiti.engine.impl.persistence.runtime.VariableInstanceEntity;
+
 
 /**
  * @author Joram Barrez
@@ -24,16 +26,16 @@ public class ShortType implements Type {
     return "short";
   }
 
-  public Object getValue(VariableInstance variableInstance) {
-    return new Short(variableInstance.getLongValue().shortValue());
+  public Object getValue(VariableInstanceEntity variableInstanceEntity) {
+    return new Short(variableInstanceEntity.getLongValue().shortValue());
   }
 
-  public void setValue(Object value, VariableInstance variableInstance) {
-    variableInstance.setLongValue(((Short) value).longValue());
+  public void setValue(Object value, VariableInstanceEntity variableInstanceEntity) {
+    variableInstanceEntity.setLongValue(((Short) value).longValue());
     if (value!=null) {
-      variableInstance.setTextValue(value.toString());
+      variableInstanceEntity.setTextValue(value.toString());
     } else {
-      variableInstance.setTextValue(null);
+      variableInstanceEntity.setTextValue(null);
     }
   }
 

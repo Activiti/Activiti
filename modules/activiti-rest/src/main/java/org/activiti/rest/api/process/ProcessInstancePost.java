@@ -43,7 +43,7 @@ public class ProcessInstancePost extends ActivitiWebScript
     String processDefinitionId = getMandatoryString(body, "processDefinitionId");
     Map<String, Object> variables = getFormVariables(body);
     variables.remove("processDefinitionId");
-    model.put("instance", getProcessService().startProcessInstanceById(processDefinitionId, variables));
+    model.put("instance", getRuntimeService().startProcessInstanceById(processDefinitionId, variables));
   }
 
 }

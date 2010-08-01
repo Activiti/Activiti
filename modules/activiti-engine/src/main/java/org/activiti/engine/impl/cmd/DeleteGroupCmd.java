@@ -28,7 +28,7 @@ public class DeleteGroupCmd extends CmdVoid {
   
   public void executeVoid(CommandContext commandContext) {
     commandContext
-      .getRuntimeSession()
+      .getIdentitySession()
       .deleteGroup(groupId);
   }
 

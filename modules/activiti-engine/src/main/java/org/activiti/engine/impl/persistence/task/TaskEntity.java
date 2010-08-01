@@ -28,7 +28,6 @@ import org.activiti.engine.impl.persistence.PersistentObject;
 import org.activiti.engine.impl.persistence.runtime.ActivityInstanceEntity;
 import org.activiti.engine.impl.persistence.runtime.ProcessInstanceEntity;
 import org.activiti.engine.impl.util.ClockUtil;
-import org.activiti.impl.execution.VariableMap;
 import org.activiti.pvm.runtime.PvmActivityInstance;
 
 /**
@@ -44,23 +43,13 @@ public class TaskEntity implements Task, Serializable, PersistentObject {
   protected boolean isNew = false;
 
   protected String assignee;
-
   protected String name;
-  
   protected String description;
-
   protected int priority = Priority.NORMAL;
-
   protected Date createTime; // The time when the task has been created
-
   protected Date startDeadline; // The time when the task should have been started
-
   protected Date completionDeadline; // The time when the task should have been completed
-  
   protected boolean skippable;
-  
-  protected VariableMap variableMap = null;
-
   protected boolean isTaskInvolvementsInitialized = false;
   protected List<TaskInvolvement> taskInvolvements = new ArrayList<TaskInvolvement>(); 
   
@@ -85,11 +74,42 @@ public class TaskEntity implements Task, Serializable, PersistentObject {
     TaskEntity task = create();
     CommandContext
         .getCurrent()
-        .getRuntimeSession()
-        .insert(task);
+        .getTaskSession()
+        .insertTask(task);
     return task;
   }
   
+  public void update(TaskEntity task) {
+    this.assignee = task.getAssignee();
+    this.name = task.getName();
+    this.priority = task.getPriority();
+    this.createTime = task.getCreateTime();
+    this.startDeadline = task.getStartDeadline();
+    this.completionDeadline = task.getCompletionDeadline();
+    this.skippable = task.isSkippable();
+  }
+
+  public Object getPersistentState() {
+    Map<String, Object> persistentState = new  HashMap<String, Object>();
+    persistentState.put("assignee", this.assignee);
+    persistentState.put("name", this.name);
+    persistentState.put("priority", this.priority);
+    if (createTime!=null) {
+      persistentState.put("createTime", this.createTime);
+    }
+    if (startDeadline!=null) {
+      persistentState.put("startDeadline", this.startDeadline);
+    }
+    if (completionDeadline!=null) {
+      persistentState.put("completionDeadline", this.completionDeadline);
+    }
+    if (skippable) {
+      persistentState.put("skippable", Boolean.TRUE);
+    }
+    return persistentState;
+  }
+
+
   /** new task.  Embedded state and create time will be initialized.
    * But this task still will have to be persisted with 
    * TransactionContext
@@ -112,28 +132,8 @@ public class TaskEntity implements Task, Serializable, PersistentObject {
     
     CommandContext
         .getCurrent()
-        .getRuntimeSession()
-        .delete(this);
-  }
-
-  public Object getPersistentState() {
-    Map<String, Object> persistentState = new  HashMap<String, Object>();
-    persistentState.put("assignee", this.assignee);
-    persistentState.put("name", this.name);
-    persistentState.put("priority", this.priority);
-    if (createTime!=null) {
-      persistentState.put("createTime", this.createTime);
-    }
-    if (startDeadline!=null) {
-      persistentState.put("startDeadline", this.startDeadline);
-    }
-    if (completionDeadline!=null) {
-      persistentState.put("completionDeadline", this.completionDeadline);
-    }
-    if (skippable) {
-      persistentState.put("skippable", Boolean.TRUE);
-    }
-    return persistentState;
+        .getTaskSession()
+        .deleteTask(id);
   }
 
   public String getName() {
@@ -201,7 +201,7 @@ public class TaskEntity implements Task, Serializable, PersistentObject {
       this.activityInstance = CommandContext
         .getCurrent()
         .getRuntimeSession()
-        .findExecution(activityInstanceId);
+        .findActivityInstanceById(activityInstanceId);
     }
     return activityInstance;
   }
@@ -274,8 +274,8 @@ public class TaskEntity implements Task, Serializable, PersistentObject {
     if (!isTaskInvolvementsInitialized) {
       taskInvolvements = CommandContext
           .getCurrent()
-          .getRuntimeSession()
-          .findTaskInvolvementsByTask(id);
+          .getTaskSession()
+          .findTaskInvolvementsByTaskId(id);
       isTaskInvolvementsInitialized = true;
     }
     return taskInvolvements;
@@ -298,13 +298,13 @@ public class TaskEntity implements Task, Serializable, PersistentObject {
     this.revision = revision;
   }
 
-  public Map<String, Object> getExecutionVariables() {
+  public Map<String, Object> getActivityInstanceVariables() {
     if (activityInstance!=null) {
       return activityInstance.getVariables();
     }
     return Collections.EMPTY_MAP;
   }
-  public void setExecutionVariables(Map<String, Object> parameters) {
+  public void setActivityInstanceVariables(Map<String, Object> parameters) {
     if (getActivityInstance()!=null) {
       activityInstance.setVariables(parameters);
     }

@@ -16,30 +16,23 @@ import java.util.Map;
 
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
-import org.activiti.impl.db.execution.DbExecutionImpl;
-import org.activiti.impl.persistence.RuntimeSession;
+import org.activiti.pvm.impl.runtime.ScopeInstanceImpl;
 
 
 /**
  * @author Tom Baeyens
  */
-public class SetExecutionVariablesCmd implements Command<Object> {
+public class GetVariablesCmd implements Command<Map<String, Object>> {
 
-  String executionId;
-  Map<String, Object> variables;
-  
-  public SetExecutionVariablesCmd(String executionId, Map<String, Object> variables) {
-    this.executionId = executionId;
-    this.variables = variables;
+  protected String scopeInstanceId;
+
+  public GetVariablesCmd(String scopeInstanceId) {
+    this.scopeInstanceId = scopeInstanceId;
   }
 
-  public Object execute(CommandContext commandContext) {
-    RuntimeSession runtimeSession = commandContext
-      .getRuntimeSession();
-    DbExecutionImpl execution = runtimeSession
-      .findExecution(executionId);
-    execution.setVariables(variables);
-    return null;
+  public Map<String, Object> execute(CommandContext commandContext) {
+    ScopeInstanceImpl scopeInstance = GetVariableCmd.findScopeInstance(commandContext, scopeInstanceId);
+    return scopeInstance.getVariables();
   }
+
 }
-

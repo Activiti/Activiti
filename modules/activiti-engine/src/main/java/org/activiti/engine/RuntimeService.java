@@ -12,7 +12,6 @@
  */
 package org.activiti.engine;
 
-import java.util.List;
 import java.util.Map;
 
 
@@ -22,7 +21,7 @@ import java.util.Map;
  * @author Tom Baeyens
  * @author Joram Barrez
  */
-public interface ProcessService {
+public interface RuntimeService {
   
   /** starts a new process instance in the latest version of the process definition with the given key */
   ProcessInstance startProcessInstanceByKey(String processDefinitionKey);
@@ -47,29 +46,29 @@ public interface ProcessService {
    * that can be used to dynamically query the process instances. */
   ProcessInstanceQuery createProcessInstanceQuery();
 
-  /** gets the details of an execution
-   * @return the execution or null if no execution could be found with the given id. */
-  Execution findExecutionById(String executionId);
+  /** gets the details of an activity instance.
+   * @return the activity instance or null if not found. */
+  ActivityInstance findActivityInstanceById(String activityInstanceId);
   
   /** returns the execution that currently is waiting at the given activityId,
    * or null if none exists. */
-  Execution findExecutionInActivity(String processInstanceId, String activityId);
+  ActivityInstance findActivityInstanceByProcessInstanceIdAndActivityId(String processInstanceId, String activityId);
 
-  /** sends an external trigger to an execution that is waiting. */
-  void sendEvent(String executionId);
+  /** sends an external trigger to an activity instance that is waiting. */
+  void signal(String activityInstanceId);
   
-  /** sends an external trigger to an execution that is waiting. */
-  void sendEvent(String executionId, Object eventData);
+  /** sends an external trigger to an activity instance that is waiting. */
+  void signal(String activityInstanceId, String signalName, Object signalData);
   
-  /** variables for the given execution. */
-  Map<String, Object> getVariables(String executionId);
+  /** variables for a process instance or an activity instance. */
+  Map<String, Object> getVariables(String scopeInstanceId);
   
-  /** retrieve a specific variable from an execution */
-  Object getVariable(String executionId, String variableName);
+  /** retrieve a specific variable for a process instance or an activity instance */
+  Object getVariable(String scopeInstanceId, String variableName);
 
-  /** update or create a variable */
-  void setVariable(String executionId, String variableName, Object value);
+  /** update or create a variable for a process instance or an activity instance */
+  void setVariable(String scopeInstance, String variableName, Object value);
 
-  /** update or create given variables */
-  void setVariables(String executionId, Map<String, Object> variables);
+  /** update or create given variables for a process instance or an activity instance */
+  void setVariables(String scopeInstance, Map<String, Object> variables);
 }

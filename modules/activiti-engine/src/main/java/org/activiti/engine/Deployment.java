@@ -19,7 +19,7 @@ import java.util.Date;
  * 
  * A deployment is a container for resources such as process definitions, images, forms, etc.
  * 
- * When a deployment is 'deployed' through the {@link org.activiti.engine.ProcessService}, 
+ * When a deployment is 'deployed' through the {@link org.activiti.engine.RuntimeService}, 
  * the Activiti engine will recognize certain of such resource types and act upon 
  * them (eg process definitions will be parsed to an executable Java artifact).
  * 

@@ -14,8 +14,7 @@ package org.activiti.engine.impl.cmd;
 
 import org.activiti.engine.identity.User;
 import org.activiti.engine.impl.interceptor.CommandContext;
-import org.activiti.engine.impl.persistence.identity.UserImpl;
-import org.activiti.impl.persistence.RuntimeSession;
+import org.activiti.engine.impl.persistence.identity.UserEntity;
 
 
 /**
@@ -23,15 +22,23 @@ import org.activiti.impl.persistence.RuntimeSession;
  */
 public class SaveUserCmd extends CmdVoid {
   
-  protected User user;
+  protected UserEntity user;
   
   public SaveUserCmd(User user) {
-    this.user = user;
+    this.user = (UserEntity) user;
   }
   
   public void executeVoid(CommandContext commandContext) {
-    RuntimeSession runtimeSession = commandContext.getRuntimeSession();
-    runtimeSession.insertUser((UserImpl) user);
+    if (user.getId()==null) {
+      commandContext
+        .getIdentitySession()
+        .insertUser(user);
+    } else {
+      UserEntity persistentUser = commandContext
+        .getIdentitySession()
+        .findUserById(user.getId());
+      
+      persistentUser.update(user);
+    }
   }
-
 }

@@ -12,8 +12,8 @@
  */
 package org.activiti.engine.impl.cmd;
 
+import org.activiti.engine.impl.cfg.IdentitySession;
 import org.activiti.engine.impl.interceptor.CommandContext;
-import org.activiti.impl.persistence.RuntimeSession;
 
 
 /**
@@ -30,8 +30,8 @@ public class DeleteMembershipCmd extends CmdVoid {
   }
   
   public void executeVoid(CommandContext commandContext) {
-    RuntimeSession runtimeSession = commandContext.getRuntimeSession();
-    runtimeSession.deleteMembership(userId, groupId);    
+    IdentitySession identitySession = commandContext.getIdentitySession();
+    identitySession.deleteMembership(userId, groupId);    
   }
 
 }

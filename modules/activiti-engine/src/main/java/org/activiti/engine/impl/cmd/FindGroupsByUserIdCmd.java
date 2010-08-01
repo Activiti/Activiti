@@ -12,27 +12,29 @@
  */
 package org.activiti.engine.impl.cmd;
 
-import org.activiti.engine.Execution;
+import java.util.List;
+
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
-import org.activiti.impl.persistence.RuntimeSession;
 
 
 /**
- * @author Joram Barrez
+ * @author Tom Baeyens
  */
-public class FindExecutionCmd implements Command<Execution> {
+@SuppressWarnings("unchecked")
+public class FindGroupsByUserIdCmd implements Command<List> {
 
-  protected String executionId;
-  
-  public FindExecutionCmd(String executionId) {
-    this.executionId = executionId;
-  }
-  
-  public Execution execute(CommandContext commandContext) {
-    RuntimeSession runtimeSession = 
-      commandContext.getRuntimeSession();
-    return runtimeSession.findExecution(executionId);
+  protected String userId;
+  protected String groupType;
+
+  public FindGroupsByUserIdCmd(String userId, String groupType) {
+    this.userId = userId;
+    this.groupType = groupType;
   }
 
+  public List execute(CommandContext commandContext) {
+    return commandContext
+      .getIdentitySession()
+      .findGroupsByUser(userId);
+  }
 }

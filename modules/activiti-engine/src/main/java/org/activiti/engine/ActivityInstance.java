@@ -10,32 +10,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.activiti.engine.impl.persistence.identity;
 
-import java.io.Serializable;
+package org.activiti.engine;
 
 
 /**
  * @author Tom Baeyens
  */
-public class MembershipImpl implements Serializable {
+public interface ActivityInstance {
 
-  private static final long serialVersionUID = 1L;
-
-  protected UserImpl user;
-  
-  protected GroupImpl group;
-  
-  public UserImpl getUser() {
-    return user;
-  }
-  public void setUser(UserImpl user) {
-    this.user = user;
-  }
-  public GroupImpl getGroup() {
-    return group;
-  }
-  public void setGroup(GroupImpl group) {
-    this.group = group;
-  }
+  String getId();
 }

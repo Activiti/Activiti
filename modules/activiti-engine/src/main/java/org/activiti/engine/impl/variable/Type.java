@@ -12,6 +12,8 @@
  */
 package org.activiti.engine.impl.variable;
 
+import org.activiti.engine.impl.persistence.runtime.VariableInstanceEntity;
+
 
 /**
  * @author Tom Baeyens
@@ -20,7 +22,7 @@ public interface Type {
 
   String getTypeName();
   boolean isAbleToStore(Object value);
-  void setValue(Object value, VariableInstance variableInstance);
-  Object getValue(VariableInstance variableInstance);
+  void setValue(Object value, VariableInstanceEntity variableInstanceEntity);
+  Object getValue(VariableInstanceEntity variableInstanceEntity);
 
 }

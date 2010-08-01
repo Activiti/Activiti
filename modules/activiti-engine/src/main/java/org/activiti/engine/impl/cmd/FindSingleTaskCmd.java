@@ -15,7 +15,6 @@ package org.activiti.engine.impl.cmd;
 import org.activiti.engine.Task;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
-import org.activiti.impl.persistence.RuntimeSession;
 
 
 /**
@@ -30,8 +29,9 @@ public class FindSingleTaskCmd implements Command<Task> {
   }
   
   public Task execute(CommandContext commandContext) {
-    RuntimeSession runtimeSession = commandContext.getRuntimeSession();
-    return runtimeSession.findTask(taskId);
+    return commandContext
+      .getTaskSession()
+      .findTaskById(taskId);
   }
 
 }

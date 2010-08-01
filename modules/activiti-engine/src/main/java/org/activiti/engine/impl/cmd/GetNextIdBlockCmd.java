@@ -12,11 +12,9 @@
  */
 package org.activiti.engine.impl.cmd;
 
-import org.activiti.engine.impl.cfg.RepositorySession;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.db.IdBlock;
-import org.activiti.impl.persistence.RuntimeSession;
 
 
 /**
@@ -25,7 +23,8 @@ import org.activiti.impl.persistence.RuntimeSession;
 public class GetNextIdBlockCmd implements Command<IdBlock> {
 
   public IdBlock execute(CommandContext commandContext) {
-    RepositorySession repositorySession = commandContext.getRepositorySession();
-    return repositorySession.getNextDbidBlock();
+    return commandContext
+      .getManagementSession()
+      .getNextIdBlock();
   }
 }

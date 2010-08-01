@@ -23,14 +23,14 @@ import org.activiti.engine.impl.cmd.DeleteGroupCmd;
 import org.activiti.engine.impl.cmd.DeleteMembershipCmd;
 import org.activiti.engine.impl.cmd.DeleteUserCmd;
 import org.activiti.engine.impl.cmd.FindGroupCmd;
-import org.activiti.engine.impl.cmd.FindGroupsByUserCmd;
+import org.activiti.engine.impl.cmd.FindGroupsByUserIdCmd;
 import org.activiti.engine.impl.cmd.FindUserCmd;
 import org.activiti.engine.impl.cmd.FindUsersByGroupCmd;
 import org.activiti.engine.impl.cmd.SaveGroupCmd;
 import org.activiti.engine.impl.cmd.SaveUserCmd;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
-import org.activiti.engine.impl.persistence.identity.GroupImpl;
-import org.activiti.engine.impl.persistence.identity.UserImpl;
+import org.activiti.engine.impl.persistence.identity.GroupEntity;
+import org.activiti.engine.impl.persistence.identity.UserEntity;
 
 
 /**
@@ -39,15 +39,15 @@ import org.activiti.engine.impl.persistence.identity.UserImpl;
 public class IdentityServiceImpl extends ServiceImpl implements IdentityService {
   
   public Group newGroup(String groupId) {
-    return new GroupImpl(groupId);
+    return new GroupEntity(groupId);
   }
 
   public User newUser(String userId) {
-    return new UserImpl(userId);
+    return new UserEntity(userId);
   }
 
   public void saveGroup(Group group) {
-    commandExecutor.execute(new SaveGroupCmd((GroupImpl) group));
+    commandExecutor.execute(new SaveGroupCmd((GroupEntity) group));
   }
 
   public void saveUser(User user) {
@@ -68,12 +68,12 @@ public class IdentityServiceImpl extends ServiceImpl implements IdentityService 
 
   @SuppressWarnings("unchecked")
   public List<Group> findGroupsByUser(String userId) {
-    return commandExecutor.execute(new FindGroupsByUserCmd(userId, null));
+    return commandExecutor.execute(new FindGroupsByUserIdCmd(userId, null));
   }
 
   @SuppressWarnings("unchecked")
   public List<Group> findGroupsByUserAndType(String userId, String groupType) {
-    return commandExecutor.execute(new FindGroupsByUserCmd(userId, groupType));
+    return commandExecutor.execute(new FindGroupsByUserIdCmd(userId, groupType));
   }
 
   @SuppressWarnings("unchecked")

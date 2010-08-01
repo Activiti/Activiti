@@ -46,7 +46,7 @@ public class JsonTaskConverter extends JsonObjectConverter<Task> {
       jsonObject.put("completionDeadline", taskImpl.getCompletionDeadline());
     }
     if (taskImpl.getActivityInstanceId()!=null) {
-      jsonObject.put("execution", taskImpl.getActivityInstanceId());
+      jsonObject.put("activityInstance", taskImpl.getActivityInstanceId());
     }
     if (taskImpl.getProcessDefinitionId()!=null) {
       jsonObject.put("processDefinition", taskImpl.getProcessDefinitionId());

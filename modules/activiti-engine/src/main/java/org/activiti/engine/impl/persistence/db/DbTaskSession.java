@@ -40,7 +40,7 @@ public class DbTaskSession implements TaskSession, Session {
 
   // tasks ////////////////////////////////////////////////////////////////////
 
-  public TaskEntity findTask(String id) {
+  public TaskEntity findTaskById(String id) {
     TaskEntity task = (TaskEntity) dbSqlSession.selectOne("selectTask", id);
     if (task!=null) {
       task = (TaskEntity) loaded.add(task);
@@ -49,7 +49,7 @@ public class DbTaskSession implements TaskSession, Session {
   }
 
   @SuppressWarnings("unchecked")
-  public List<TaskInvolvement> findTaskInvolvementsByTask(String taskId) {
+  public List<TaskInvolvement> findTaskInvolvementsByTaskId(String taskId) {
     List taskInvolvements = dbSqlSession.selectList("selectTaskInvolvementsByTask", taskId);
     return loaded.add(taskInvolvements);
   }

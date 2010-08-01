@@ -36,7 +36,7 @@ public interface Task {
 	
 	String getAssignee();
 	
-	String getExecutionId();
+	String getActivityInstanceId();
 	
 	String getProcessDefinitionId();
 }

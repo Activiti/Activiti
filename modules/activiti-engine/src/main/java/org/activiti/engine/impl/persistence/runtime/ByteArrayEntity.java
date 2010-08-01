@@ -20,7 +20,7 @@ import org.activiti.engine.impl.variable.ByteArrayType;
 /**
  * @author Tom Baeyens
  */
-public class ByteArrayImpl implements Serializable, PersistentObject {
+public class ByteArrayEntity implements Serializable, PersistentObject {
 
   private static final long serialVersionUID = 1L;
 
@@ -36,15 +36,15 @@ public class ByteArrayImpl implements Serializable, PersistentObject {
 
   protected ByteArrayType variable;
 
-  public ByteArrayImpl() {
+  public ByteArrayEntity() {
   }
 
-  public ByteArrayImpl(String name, byte[] bytes) {
+  public ByteArrayEntity(String name, byte[] bytes) {
     this.name = name;
     this.bytes = bytes;
   }
 
-  public ByteArrayImpl(ByteArrayType variable, byte[] bytes) {
+  public ByteArrayEntity(ByteArrayType variable, byte[] bytes) {
     this.variable = variable;
     this.bytes = bytes;
   }

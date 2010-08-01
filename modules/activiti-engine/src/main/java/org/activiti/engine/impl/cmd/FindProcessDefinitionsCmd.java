@@ -16,7 +16,7 @@ import java.util.List;
 
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
-import org.activiti.impl.definition.ProcessDefinitionImpl;
+import org.activiti.engine.impl.persistence.repository.ProcessDefinitionEntity;
 
 
 /**
@@ -25,7 +25,7 @@ import org.activiti.impl.definition.ProcessDefinitionImpl;
 @SuppressWarnings("unchecked")
 public class FindProcessDefinitionsCmd implements Command<List> {
 
-  public List<ProcessDefinitionImpl> execute(CommandContext commandContext) {
+  public List<ProcessDefinitionEntity> execute(CommandContext commandContext) {
     return commandContext
       .getRepositorySession()
       .findProcessDefinitions();

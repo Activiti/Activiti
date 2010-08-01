@@ -13,7 +13,7 @@
 package org.activiti.engine.impl.cmd;
 
 import org.activiti.engine.ActivitiException;
-import org.activiti.engine.impl.cfg.RuntimeSession;
+import org.activiti.engine.impl.cfg.TaskSession;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.task.TaskEntity;
 import org.activiti.engine.impl.persistence.task.TaskInvolvement;
@@ -68,8 +68,8 @@ public class AddTaskInvolvementCmd extends CmdVoid {
   }
   
   public void executeVoid(CommandContext commandContext) {
-    RuntimeSession runtimeSession = commandContext.getRuntimeSession();
-    TaskEntity task = runtimeSession.findTask(taskId);
+    TaskSession taskSession = commandContext.getTaskSession();
+    TaskEntity task = taskSession.findTaskById(taskId);
     
     if (task == null) {
       throw new ActivitiException("Cannot find task with id " + taskId);

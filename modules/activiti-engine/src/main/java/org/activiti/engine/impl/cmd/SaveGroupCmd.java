@@ -13,7 +13,8 @@
 package org.activiti.engine.impl.cmd;
 
 import org.activiti.engine.impl.interceptor.CommandContext;
-import org.activiti.engine.impl.persistence.identity.GroupImpl;
+import org.activiti.engine.impl.persistence.identity.GroupEntity;
+import org.activiti.engine.impl.persistence.identity.UserEntity;
 
 
 /**
@@ -21,16 +22,25 @@ import org.activiti.engine.impl.persistence.identity.GroupImpl;
  */
 public class SaveGroupCmd extends CmdVoid {
   
-  protected GroupImpl group;
+  protected GroupEntity group;
   
-  public SaveGroupCmd(GroupImpl group) {
+  public SaveGroupCmd(GroupEntity group) {
     this.group = group;
   }
   
   public void executeVoid(CommandContext commandContext) {
-    commandContext
-        .getRuntimeSession()
-        .saveGroup(group);
+    if (group.getId()==null) {
+      commandContext
+        .getIdentitySession()
+        .insertGroup(group);
+    } else {
+      GroupEntity persistentGroup = commandContext
+        .getIdentitySession()
+        .findGroupById(group.getId());
+      
+      persistentGroup.update(group);
+      
+    }
   }
 
 }

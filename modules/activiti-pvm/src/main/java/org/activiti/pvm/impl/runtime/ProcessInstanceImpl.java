@@ -25,6 +25,9 @@ import org.activiti.pvm.runtime.PvmProcessInstance;
  */
 public class ProcessInstanceImpl extends ScopeInstanceImpl implements PvmProcessInstance {
   
+  protected ProcessInstanceImpl() {
+  }
+  
   public ProcessInstanceImpl(ProcessDefinitionImpl processDefinition) {
     super(processDefinition, processDefinition);
   }

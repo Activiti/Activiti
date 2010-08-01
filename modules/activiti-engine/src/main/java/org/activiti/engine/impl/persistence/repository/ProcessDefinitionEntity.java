@@ -35,8 +35,8 @@ public class ProcessDefinitionEntity extends ProcessDefinitionImpl implements Pr
     super(null);
   }
 
-  public ProcessInstanceImpl createProcessInstance() {
-    return new ProcessInstanceEntity(this);
+  public ProcessInstanceEntity createProcessInstance() {
+    return ProcessInstanceEntity.createAndInsert(this);
   }
 
   // getters and setters //////////////////////////////////////////////////////

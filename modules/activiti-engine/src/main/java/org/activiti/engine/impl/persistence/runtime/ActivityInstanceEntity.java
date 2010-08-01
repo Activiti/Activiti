@@ -13,8 +13,7 @@
 
 package org.activiti.engine.impl.persistence.runtime;
 
-import java.util.Map;
-
+import org.activiti.engine.ActivityInstance;
 import org.activiti.engine.impl.persistence.PersistentObject;
 import org.activiti.pvm.impl.process.ActivityImpl;
 import org.activiti.pvm.impl.runtime.ActivityInstanceImpl;
@@ -24,7 +23,7 @@ import org.activiti.pvm.impl.runtime.ScopeInstanceImpl;
 /**
  * @author Tom Baeyens
  */
-public class ActivityInstanceEntity extends ActivityInstanceImpl implements PersistentObject {
+public class ActivityInstanceEntity extends ActivityInstanceImpl implements ActivityInstance, PersistentObject {
 
   protected String id;
   protected String parentId;

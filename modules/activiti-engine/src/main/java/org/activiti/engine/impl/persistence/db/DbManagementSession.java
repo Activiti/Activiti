@@ -113,8 +113,8 @@ public class DbManagementSession implements ManagementSession, Session {
   }
 
   public IdBlock getNextDbidBlock() {
-    String statement = dbdbSqlSession.dbdbSqlSessionFactory.map"selectProperty";
-    PropertyEntity property = (PropertyEntity) dbdbSqlSession.dbSqlSession.selectOne(statement, "next.dbid");
+    String statement = dbSqlSession.getDbSqlSessionFactory().mapStatement("selectProperty");
+    PropertyEntity property = (PropertyEntity) dbSqlSession.selectOne(statement, "next.dbid");
     long oldValue = Long.parseLong(property.getValue());
     long newValue = oldValue+dbRepositorySessionFactory.getIdBlockSize();
     Map<String, Object> updateValues = new HashMap<String, Object>();
@@ -122,7 +122,7 @@ public class DbManagementSession implements ManagementSession, Session {
     updateValues.put("revision", property.getDbversion());
     updateValues.put("newRevision", property.getDbversion()+1);
     updateValues.put("value", Long.toString(newValue));
-    int rowsUpdated = dbdbSqlSession.dbSqlSession.update("updateProperty", updateValues);
+    int rowsUpdated = dbSqlSession.dbSqlSession.update("updateProperty", updateValues);
     if (rowsUpdated!=1) {
       throw new ActivitiOptimisticLockingException("couldn't get next block of dbids");
     }

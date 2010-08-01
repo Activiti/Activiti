@@ -26,7 +26,7 @@ import org.activiti.engine.IdentityService;
 import org.activiti.engine.ManagementService;
 import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.ProcessEngines;
-import org.activiti.engine.ProcessService;
+import org.activiti.engine.RuntimeService;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.TaskService;
 import org.activiti.engine.impl.HistoricDataServiceImpl;
@@ -83,7 +83,7 @@ public class ProcessEngineConfiguration {
   protected TransactionContextFactory transactionContextFactory;
 
   protected RepositoryService repositoryService;
-  protected ProcessService processService;
+  protected RuntimeService runtimeService;
   protected HistoricDataService historicDataService;
   protected IdentityService identityService;
   protected TaskService taskService;
@@ -124,7 +124,7 @@ public class ProcessEngineConfiguration {
     transactionContextFactory = new StandaloneIbatisTransactionContextFactory();
 
     repositoryService = new RepositoryServiceImpl();
-    processService = new ProcessServiceImpl();
+    runtimeService = new ProcessServiceImpl();
     taskService = new TaskServiceImpl();
     managementService = new ManagementServiceImpl();
     identityService = new IdentityServiceImpl();
@@ -181,7 +181,7 @@ public class ProcessEngineConfiguration {
       notifyConfigurationComplete(commandContextFactory);
       notifyConfigurationComplete(transactionContextFactory);
       notifyConfigurationComplete(repositoryService);
-      notifyConfigurationComplete(processService);
+      notifyConfigurationComplete(runtimeService);
       notifyConfigurationComplete(taskService);
       notifyConfigurationComplete(managementService);
       notifyConfigurationComplete(identityService);
@@ -258,8 +258,8 @@ public class ProcessEngineConfiguration {
     this.dbSchemaStrategy = dbSchemaStrategy;
   }
 
-  public ProcessService getProcessService() {
-    return processService;
+  public RuntimeService getProcessService() {
+    return runtimeService;
   }
 
   public void setHistoricDataService(HistoricDataService historicDataService) {
@@ -302,8 +302,8 @@ public class ProcessEngineConfiguration {
     return jobHandlers;
   }
 
-  public void setProcessService(ProcessService processService) {
-    this.processService = processService;
+  public void setProcessService(RuntimeService runtimeService) {
+    this.runtimeService = runtimeService;
   }
 
   public void setIdentityService(IdentityService identityService) {

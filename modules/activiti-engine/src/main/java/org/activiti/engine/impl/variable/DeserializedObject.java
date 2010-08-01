@@ -14,6 +14,8 @@ package org.activiti.engine.impl.variable;
 
 import java.util.Arrays;
 
+import org.activiti.engine.impl.persistence.runtime.VariableInstanceEntity;
+
 
 /**
  * @author Tom Baeyens
@@ -22,20 +24,20 @@ public class DeserializedObject {
 
   Object deserializedObject;
   byte[] originalBytes;
-  VariableInstance variableInstance;
+  VariableInstanceEntity variableInstanceEntity;
   
-  public DeserializedObject(Object deserializedObject, byte[] serializedBytes, VariableInstance variableInstance) {
+  public DeserializedObject(Object deserializedObject, byte[] serializedBytes, VariableInstanceEntity variableInstanceEntity) {
     this.deserializedObject = deserializedObject;
     this.originalBytes = serializedBytes;
-    this.variableInstance = variableInstance;
+    this.variableInstanceEntity = variableInstanceEntity;
   }
 
   public void flush() {
     // this first check verifies if the variable value was not overwritten with another object
-    if (deserializedObject==variableInstance.getCachedValue()) {
-      byte[] bytes = SerializableType.serialize(deserializedObject, variableInstance);
+    if (deserializedObject==variableInstanceEntity.getCachedValue()) {
+      byte[] bytes = SerializableType.serialize(deserializedObject, variableInstanceEntity);
       if (!Arrays.equals(originalBytes, bytes)) {
-        variableInstance
+        variableInstanceEntity
           .getByteArrayValue()
           .setBytes(bytes);
       }

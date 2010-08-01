@@ -29,8 +29,8 @@ public interface ProcessInstance extends Execution {
   String getProcessDefinitionId();
   
   /**
-   * the names of the activities that currently are active.
+   * the ids of the activities that currently are active.
    */
-  List<String> getActivityNames();
+  List<String> findActivityIds();
   
 }

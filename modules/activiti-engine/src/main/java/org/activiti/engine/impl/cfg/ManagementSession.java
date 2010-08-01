@@ -31,5 +31,5 @@ public interface ManagementSession {
   TablePage getTablePage(String tableName, int offset, int maxResults, String sortColumn, SortOrder sortOrder);
   TableMetaData getTableMetaData(String tableName);
 
-  IdBlock getNextDbidBlock();
+  IdBlock getNextIdBlock();
 }

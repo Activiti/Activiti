@@ -10,33 +10,39 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.activiti.engine.impl.cmd;
 
+import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
-import org.activiti.impl.db.execution.DbExecutionImpl;
+import org.activiti.engine.impl.persistence.runtime.ActivityInstanceEntity;
 
 
 /**
  * @author Tom Baeyens
  */
-public class GetExecutionVariableCmd implements Command<Object> {
+public class SignalCmd implements Command<Object> {
 
-  protected String executionId;
+  protected String activityInstanceId;
+  protected String signalName;
+  protected Object signalData;
   
-  protected String variableName;
-
-  public GetExecutionVariableCmd(String executionId, String variableName) {
-    this.executionId = executionId;
-    this.variableName = variableName;
+  public SignalCmd(String activityInstanceId, String signalName, Object signalData) {
+    this.activityInstanceId = activityInstanceId;
+    this.signalName = signalName;
+    this.signalData = signalData;
   }
 
   public Object execute(CommandContext commandContext) {
-    DbExecutionImpl execution = commandContext
+    ActivityInstanceEntity activityInstance = commandContext
       .getRuntimeSession()
-      .findExecution(executionId);
-    
-    return execution.getVariable(variableName);
+      .findActivityInstanceById(activityInstanceId);
+    if (activityInstance==null) {
+      throw new ActivitiException("activity instance "+activityInstance+" doesn't exist");
+    }
+    activityInstance.signal(signalName, signalData);
+    return null;
   }
 
 }

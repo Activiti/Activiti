@@ -37,6 +37,10 @@ public class ScopeInstanceImpl implements PvmScopeInstance {
   protected ScopeInstanceImpl parent;
   protected Set<ActivityInstanceImpl> activityInstances = new HashSet<ActivityInstanceImpl>();
   protected Map<String, Object> variables;
+  protected boolean isEnded;
+  
+  protected ScopeInstanceImpl() {    
+  }
 
   public ScopeInstanceImpl(ProcessDefinitionImpl processDefinition, ScopeImpl scope) {
     this.processDefinition = processDefinition;
@@ -153,6 +157,12 @@ public class ScopeInstanceImpl implements PvmScopeInstance {
     }
   }
   
+  // end //////////////////////////////////////////////////////////////////////
+  
+  public void end() {
+    isEnded = true;
+  }
+  
   // getters and setters //////////////////////////////////////////////////////
   
   public ScopeImpl getScope() {
@@ -191,5 +201,13 @@ public class ScopeInstanceImpl implements PvmScopeInstance {
   
   public void setParent(ScopeInstanceImpl parent) {
     this.parent = parent;
+  }
+
+  public boolean isEnded() {
+    return isEnded;
+  }
+
+  public void setEnded(boolean isEnded) {
+    this.isEnded = isEnded;
   }
 }

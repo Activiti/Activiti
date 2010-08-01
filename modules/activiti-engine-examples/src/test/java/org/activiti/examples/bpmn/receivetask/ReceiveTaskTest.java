@@ -38,10 +38,10 @@ public class ReceiveTaskTest {
   @Deployment
   public void testWaitStateBehavior() {
     ProcessInstance pi = deployer.getProcessService().startProcessInstanceByKey("receiveTask");
-    Execution execution = deployer.getProcessService().findExecutionInActivity(pi.getId(), "waitState");
+    Execution execution = deployer.getProcessService().findActivityInstanceByProcessInstanceIdAndActivityId(pi.getId(), "waitState");
     assertNotNull(execution);
     
-    deployer.getProcessService().sendEvent(execution.getId());
+    deployer.getProcessService().signal(execution.getId());
     deployer.assertProcessEnded(pi.getId());
   }
 

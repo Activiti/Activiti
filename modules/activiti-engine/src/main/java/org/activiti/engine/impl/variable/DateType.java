@@ -14,6 +14,8 @@ package org.activiti.engine.impl.variable;
 
 import java.util.Date;
 
+import org.activiti.engine.impl.persistence.runtime.VariableInstanceEntity;
+
 
 /**
  * @author Tom Baeyens
@@ -31,19 +33,19 @@ public class DateType implements Type {
     return Date.class.isAssignableFrom(value.getClass());
   }
 
-  public Object getValue(VariableInstance variableInstance) {
-    Long longValue = variableInstance.getLongValue();
+  public Object getValue(VariableInstanceEntity variableInstanceEntity) {
+    Long longValue = variableInstanceEntity.getLongValue();
     if (longValue!=null) {
       return new Date(longValue);
     }
     return null;
   }
 
-  public void setValue(Object value, VariableInstance variableInstance) {
+  public void setValue(Object value, VariableInstanceEntity variableInstanceEntity) {
     if (value!=null) {
-      variableInstance.setLongValue(((Date)value).getTime());
+      variableInstanceEntity.setLongValue(((Date)value).getTime());
     } else {
-      variableInstance.setLongValue(null);
+      variableInstanceEntity.setLongValue(null);
     }
   }
 }

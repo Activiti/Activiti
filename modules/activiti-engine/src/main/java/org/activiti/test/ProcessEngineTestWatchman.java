@@ -27,7 +27,7 @@ import org.activiti.engine.IdentityService;
 import org.activiti.engine.ManagementService;
 import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.ProcessEngineBuilder;
-import org.activiti.engine.ProcessService;
+import org.activiti.engine.RuntimeService;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.TaskService;
 import org.activiti.engine.impl.ProcessEngineImpl;
@@ -77,8 +77,8 @@ public class ProcessEngineTestWatchman extends TestWatchman {
     return processEngine == null ? null : processEngine.getRepositoryService();
   }
 
-  public ProcessService getProcessService() {
-    return processEngine == null ? null : processEngine.getProcessService();
+  public RuntimeService getProcessService() {
+    return processEngine == null ? null : processEngine.getRuntimeService();
   }
 
   public HistoricDataService getHistoricDataService() {
@@ -134,7 +134,7 @@ public class ProcessEngineTestWatchman extends TestWatchman {
 
   public void assertProcessEnded(final String processInstanceId) {
     assertThat("An active execution with id " + processInstanceId + " was found when expecting none (it should have ended and been removed).", processEngine
-            .getProcessService().findProcessInstanceById(processInstanceId), nullValue());
+            .getRuntimeService().findProcessInstanceById(processInstanceId), nullValue());
   }
 
   /**

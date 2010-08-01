@@ -25,7 +25,7 @@ import org.activiti.engine.Task;
 import org.activiti.engine.TaskQuery;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
-import org.activiti.engine.impl.persistence.identity.GroupImpl;
+import org.activiti.engine.impl.persistence.identity.GroupEntity;
 
 /**
  * @author Joram Barrez
@@ -143,12 +143,12 @@ public class TaskQueryImpl extends AbstractListQuery<Task> implements TaskQuery 
   }
   
   protected List<String> getGroupsForCandidateUser(String candidateUser) {
-    List<GroupImpl> groups = CommandContext
+    List<GroupEntity> groups = CommandContext
       .getCurrent()
       .getIdentitySession()
       .findGroupsByUser(candidateUser);
     List<String> groupIds = new ArrayList<String>();
-    for (GroupImpl group : groups) {
+    for (GroupEntity group : groups) {
       groupIds.add(group.getId());
     }
     return groupIds;

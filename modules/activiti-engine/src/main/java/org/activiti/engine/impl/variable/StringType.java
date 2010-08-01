@@ -12,6 +12,8 @@
  */
 package org.activiti.engine.impl.variable;
 
+import org.activiti.engine.impl.persistence.runtime.VariableInstanceEntity;
+
 
 /**
  * @author Tom Baeyens
@@ -24,12 +26,12 @@ public class StringType implements Type {
     return "string";
   }
 
-  public Object getValue(VariableInstance variableInstance) {
-    return variableInstance.getTextValue();
+  public Object getValue(VariableInstanceEntity variableInstanceEntity) {
+    return variableInstanceEntity.getTextValue();
   }
 
-  public void setValue(Object value, VariableInstance variableInstance) {
-    variableInstance.setTextValue((String) value);
+  public void setValue(Object value, VariableInstanceEntity variableInstanceEntity) {
+    variableInstanceEntity.setTextValue((String) value);
   }
 
   public boolean isAbleToStore(Object value) {

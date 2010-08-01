@@ -15,27 +15,27 @@ package org.activiti.engine.impl;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.activiti.engine.Execution;
+import org.activiti.engine.ActivityInstance;
 import org.activiti.engine.ProcessInstance;
 import org.activiti.engine.ProcessInstanceQuery;
-import org.activiti.engine.ProcessService;
+import org.activiti.engine.RuntimeService;
 import org.activiti.engine.impl.cmd.DeleteProcessInstanceCmd;
-import org.activiti.engine.impl.cmd.FindExecutionCmd;
-import org.activiti.engine.impl.cmd.FindExecutionInActivityCmd;
+import org.activiti.engine.impl.cmd.FindActivitiyInstanceCmd;
+import org.activiti.engine.impl.cmd.FindActivityInstanceInActivityCmd;
 import org.activiti.engine.impl.cmd.FindProcessInstanceCmd;
-import org.activiti.engine.impl.cmd.GetExecutionVariableCmd;
-import org.activiti.engine.impl.cmd.GetExecutionVariablesCmd;
-import org.activiti.engine.impl.cmd.SendEventCmd;
-import org.activiti.engine.impl.cmd.SetExecutionVariablesCmd;
+import org.activiti.engine.impl.cmd.GetVariableCmd;
+import org.activiti.engine.impl.cmd.GetVariablesCmd;
+import org.activiti.engine.impl.cmd.SetVariablesCmd;
+import org.activiti.engine.impl.cmd.SignalCmd;
 import org.activiti.engine.impl.cmd.StartProcessInstanceCmd;
 
 /**
  * @author Tom Baeyens
  */
-public class ProcessServiceImpl extends ServiceImpl implements ProcessService {
+public class ProcessServiceImpl extends ServiceImpl implements RuntimeService {
 
-  public Execution findExecutionById(String id) {
-    return commandExecutor.execute(new FindExecutionCmd(id));
+  public ActivityInstance findActivityInstanceById(String activityInstanceId) {
+    return commandExecutor.execute(new FindActivitiyInstanceCmd(activityInstanceId));
   }
 
   public void deleteProcessInstance(String processInstanceId) {
@@ -58,8 +58,8 @@ public class ProcessServiceImpl extends ServiceImpl implements ProcessService {
     return commandExecutor.execute(new StartProcessInstanceCmd<ProcessInstance>(null, processDefinitionId, variables));
   }
 
-  public ProcessInstance findProcessInstanceById(String id) {
-    return commandExecutor.execute(new FindProcessInstanceCmd(id));
+  public ProcessInstance findProcessInstanceById(String processInstanceId) {
+    return commandExecutor.execute(new FindProcessInstanceCmd(processInstanceId));
   }
 
   public ProcessInstanceQuery createProcessInstanceQuery() {
@@ -67,32 +67,32 @@ public class ProcessServiceImpl extends ServiceImpl implements ProcessService {
   }
 
   public Map<String, Object> getVariables(String executionId) {
-    return commandExecutor.execute(new GetExecutionVariablesCmd(executionId));
+    return commandExecutor.execute(new GetVariablesCmd(executionId));
   }
 
   public Object getVariable(String executionId, String variableName) {
-    return commandExecutor.execute(new GetExecutionVariableCmd(executionId, variableName));
+    return commandExecutor.execute(new GetVariableCmd(executionId, variableName));
   }
 
   public void setVariable(String executionId, String variableName, Object value) {
     Map<String, Object> variables = new HashMap<String, Object>();
     variables.put(variableName, value);
-    commandExecutor.execute(new SetExecutionVariablesCmd(executionId, variables));
+    commandExecutor.execute(new SetVariablesCmd(executionId, variables));
   }
 
   public void setVariables(String executionId, Map<String, Object> variables) {
-    commandExecutor.execute(new SetExecutionVariablesCmd(executionId, variables));
+    commandExecutor.execute(new SetVariablesCmd(executionId, variables));
   }
 
-  public void sendEvent(String executionId) {
-    commandExecutor.execute(new SendEventCmd(executionId, null));
+  public void signal(String activityInstanceId) {
+    commandExecutor.execute(new SignalCmd(activityInstanceId, null, null));
   }
 
-  public void sendEvent(String executionId, Object eventData) {
-    commandExecutor.execute(new SendEventCmd(executionId, eventData));
+  public void signal(String activityInstanceId, String sigalName, Object signalData) {
+    commandExecutor.execute(new SignalCmd(activityInstanceId, sigalName, signalData));
   }
 
-  public Execution findExecutionInActivity(String processInstanceId, String activityId) {
-    return commandExecutor.execute(new FindExecutionInActivityCmd(processInstanceId, activityId));
+  public ActivityInstance findActivityInstanceByProcessInstanceIdAndActivityId(String processInstanceId, String activityId) {
+    return commandExecutor.execute(new FindActivityInstanceInActivityCmd(processInstanceId, activityId));
   }
 }

@@ -16,7 +16,7 @@ package org.activiti.examples.bpmn.expression;
 import static org.junit.Assert.assertEquals;
 
 import org.activiti.engine.ProcessInstance;
-import org.activiti.engine.ProcessService;
+import org.activiti.engine.RuntimeService;
 import org.activiti.engine.Task;
 import org.activiti.engine.TaskService;
 import org.activiti.engine.impl.util.CollectionUtil;
@@ -40,19 +40,19 @@ public class UelExpressionTest {
   @Test
   @Deployment
   public void testValueAndMethodExpression() {
-    ProcessService processService = deployer.getProcessService();
+    RuntimeService runtimeService = deployer.getProcessService();
     TaskService taskService = deployer.getTaskService();
     
     // An order of price 150 is a standard order (goes through an UEL value expression)
     UelExpressionTestOrder order = new UelExpressionTestOrder(150);
-    ProcessInstance processInstance = processService.startProcessInstanceByKey("uelExpressions", 
+    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("uelExpressions", 
             CollectionUtil.singletonMap("order",  order));
     Task task = taskService.createTaskQuery().processInstance(processInstance.getId()).singleResult();
     assertEquals("Standard service", task.getName());
     
     // While an order of 300, gives us a premium service (goes through an UEL method expression)
     order = new UelExpressionTestOrder(300);
-    processInstance = processService.startProcessInstanceByKey("uelExpressions",
+    processInstance = runtimeService.startProcessInstanceByKey("uelExpressions",
             CollectionUtil.singletonMap("order",  order));
     task = taskService.createTaskQuery().processInstance(processInstance.getId()).singleResult();
     assertEquals("Premium service", task.getName());

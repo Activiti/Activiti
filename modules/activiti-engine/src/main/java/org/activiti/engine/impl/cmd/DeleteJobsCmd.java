@@ -16,10 +16,9 @@ package org.activiti.engine.impl.cmd;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.activiti.engine.impl.cfg.RuntimeSession;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
-import org.activiti.engine.impl.persistence.runtime.JobImpl;
-import org.activiti.impl.persistence.RuntimeSession;
 
 
 /**
@@ -41,8 +40,7 @@ public class DeleteJobsCmd implements Command<Void> {
   public Void execute(CommandContext commandContext) {
     RuntimeSession runtimeSession = commandContext.getRuntimeSession();
     for (String jobId: jobIds) {
-      JobImpl job = runtimeSession.findJobById(jobId);
-      runtimeSession.delete(job);
+      runtimeSession.deleteJob(jobId);
     }
     return null;
   }

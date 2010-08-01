@@ -10,32 +10,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.activiti.engine.impl.cmd;
 
-import org.activiti.engine.Execution;
+import org.activiti.engine.ActivityInstance;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
-import org.activiti.impl.execution.ExecutionImpl;
 
 
 /**
  * @author Joram Barrez
  */
-public class FindExecutionInActivityCmd implements Command<Execution> {
+public class FindActivitiyInstanceCmd implements Command<ActivityInstance> {
+
+  protected String activityInstanceId;
   
-  protected String processInstanceId;
+  public FindActivitiyInstanceCmd(String activityInstanceId) {
+    this.activityInstanceId = activityInstanceId;
+  }
   
-  protected String activityId;
-  
-  public FindExecutionInActivityCmd(String processInstanceId, String activityId) {
-    this.processInstanceId = processInstanceId;
-    this.activityId = activityId;
+  public ActivityInstance execute(CommandContext commandContext) {
+    return commandContext
+      .getRuntimeSession()
+      .findActivityInstanceById(activityInstanceId);
   }
 
-  public Execution execute(CommandContext commandContext) {
-    ExecutionImpl execution = commandContext.getRuntimeSession().findExecution(processInstanceId);
-    return execution.findExecution(activityId);
-  }
-  
 }

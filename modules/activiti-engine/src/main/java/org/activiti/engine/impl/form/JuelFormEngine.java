@@ -17,9 +17,9 @@ import javax.el.ExpressionFactory;
 import javax.el.ValueExpression;
 
 import org.activiti.engine.ActivitiException;
-import org.activiti.engine.impl.persistence.runtime.ByteArrayImpl;
+import org.activiti.engine.impl.persistence.repository.DeploymentEntity;
+import org.activiti.engine.impl.persistence.repository.ResourceEntity;
 import org.activiti.engine.impl.persistence.task.TaskEntity;
-import org.activiti.impl.repository.DeploymentImpl;
 
 import de.odysseus.el.ExpressionFactoryImpl;
 
@@ -30,14 +30,14 @@ public class JuelFormEngine implements FormEngine {
   
   ExpressionFactory expressionFactory = new ExpressionFactoryImpl();
 
-  public String render(DeploymentImpl deployment, String formReference, TaskEntity task) {
+  public String render(DeploymentEntity deployment, String formReference, TaskEntity task) {
     try {
       // get the template
-      ByteArrayImpl formResourceByteArray = deployment.getResource(formReference);
-      if (formResourceByteArray==null) {
+      ResourceEntity formResourceEntity = deployment.getResource(formReference);
+      if (formResourceEntity==null) {
         throw new ActivitiException("form '"+formReference+"' not available in "+deployment);
       }
-      byte[] formResourceBytes = formResourceByteArray.getBytes();
+      byte[] formResourceBytes = formResourceEntity.getBytes();
       String formString = new String(formResourceBytes);
       
       ELContext elContext = new TaskElContext(task);
@@ -51,7 +51,7 @@ public class JuelFormEngine implements FormEngine {
 
   private Object createFormData(TaskEntity task) {
     if (task!=null) {
-      return task.getExecutionVariables();
+      return task.getActivityInstanceVariables();
     }
     return null;
   }

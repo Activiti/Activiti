@@ -12,10 +12,7 @@
  */
 package org.activiti.engine.impl.cmd;
 
-import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.interceptor.CommandContext;
-import org.activiti.engine.impl.persistence.task.TaskEntity;
-import org.activiti.impl.persistence.RuntimeSession;
 
 
 /**
@@ -30,12 +27,8 @@ public class DeleteTaskCmd extends CmdVoid {
   }
 
   public void executeVoid(CommandContext commandContext) {
-    RuntimeSession runtimeSession = commandContext.getRuntimeSession();
-    TaskEntity task = runtimeSession.findTask(taskId);
-    if (task!=null) {
-      task.delete();
-    } else {
-      throw new ActivitiException("Cannot find task with id " + taskId);
-    }
+    commandContext
+      .getTaskSession()
+      .deleteTask(taskId);
   }
 }

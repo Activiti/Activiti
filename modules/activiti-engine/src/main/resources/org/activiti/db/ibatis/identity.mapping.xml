@@ -6,7 +6,7 @@
 
   <!-- RESULTMAP -->
 
-  <resultMap id="userResultMap" type="org.activiti.engine.impl.persistence.identity.UserImpl">
+  <resultMap id="userResultMap" type="org.activiti.engine.impl.persistence.identity.UserEntity">
     <id property="id" column="ID_" jdbcType="VARCHAR" />
     <result property="firstName" column="FIRST_" jdbcType="VARCHAR" />
     <result property="lastName" column="LAST_" jdbcType="VARCHAR" />
@@ -14,7 +14,7 @@
     <result property="password" column="PWD_" jdbcType="VARCHAR" />
   </resultMap>
   
-  <resultMap id="groupResultMap" type="org.activiti.engine.impl.persistence.identity.GroupImpl">
+  <resultMap id="groupResultMap" type="org.activiti.engine.impl.persistence.identity.GroupEntity">
     <id property="id" column="ID_" jdbcType="VARCHAR" />
     <result property="name" column="NAME_" jdbcType="VARCHAR" />
     <result property="type" column="TYPE_" jdbcType="VARCHAR" />
@@ -64,7 +64,7 @@
   
   <!-- INSERT -->
   
-  <insert id="insertUser" parameterType="org.activiti.engine.impl.persistence.identity.UserImpl">
+  <insert id="insertUser" parameterType="org.activiti.engine.impl.persistence.identity.UserEntity">
     insert into ACT_ID_USER (ID_, FIRST_, LAST_, EMAIL_, PWD_)
     values (
       #{id ,jdbcType=VARCHAR},
@@ -75,7 +75,7 @@
     )
   </insert>
   
-  <insert id="insertGroup" parameterType="org.activiti.engine.impl.persistence.identity.GroupImpl">
+  <insert id="insertGroup" parameterType="org.activiti.engine.impl.persistence.identity.GroupEntity">
     insert into ACT_ID_GROUP (ID_, NAME_, TYPE_)
     values (
       #{id ,jdbcType=VARCHAR},
@@ -95,7 +95,7 @@
   
   <!-- UPDATE -->
 
-  <update id="updateUser" parameterType="org.activiti.engine.impl.persistence.identity.UserImpl">
+  <update id="updateUser" parameterType="org.activiti.engine.impl.persistence.identity.UserEntity">
     update ACT_ID_USER set
       FIRST_ = #{firstName ,jdbcType=VARCHAR},
       LAST_ = #{lastName ,jdbcType=VARCHAR},
@@ -104,7 +104,7 @@
     where ID_ = #{id}
   </update>
   
-  <update id="updateGroup" parameterType="org.activiti.engine.impl.persistence.identity.GroupImpl">
+  <update id="updateGroup" parameterType="org.activiti.engine.impl.persistence.identity.GroupEntity">
     update ACT_ID_GROUP set
       NAME_ = #{name ,jdbcType=VARCHAR},
       TYPE_ = #{type ,jdbcType=VARCHAR}

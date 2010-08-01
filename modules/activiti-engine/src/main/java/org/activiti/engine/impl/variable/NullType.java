@@ -12,6 +12,8 @@
  */
 package org.activiti.engine.impl.variable;
 
+import org.activiti.engine.impl.persistence.runtime.VariableInstanceEntity;
+
 
 /**
  * @author Tom Baeyens
@@ -24,7 +26,7 @@ public class NullType implements Type {
     return "null";
   }
 
-  public Object getValue(VariableInstance variableInstance) {
+  public Object getValue(VariableInstanceEntity variableInstanceEntity) {
     return null;
   }
 
@@ -32,6 +34,6 @@ public class NullType implements Type {
     return (value==null);
   }
 
-  public void setValue(Object value, VariableInstance variableInstance) {
+  public void setValue(Object value, VariableInstanceEntity variableInstanceEntity) {
   }
 }

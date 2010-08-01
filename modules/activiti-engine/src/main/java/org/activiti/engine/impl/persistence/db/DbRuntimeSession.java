@@ -24,12 +24,12 @@ import org.activiti.engine.impl.cfg.RuntimeSession;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.interceptor.Session;
 import org.activiti.engine.impl.persistence.runtime.ActivityInstanceEntity;
-import org.activiti.engine.impl.persistence.runtime.ByteArrayImpl;
+import org.activiti.engine.impl.persistence.runtime.ByteArrayEntity;
 import org.activiti.engine.impl.persistence.runtime.JobImpl;
 import org.activiti.engine.impl.persistence.runtime.ProcessInstanceEntity;
 import org.activiti.engine.impl.persistence.runtime.TimerImpl;
+import org.activiti.engine.impl.persistence.runtime.VariableInstanceEntity;
 import org.activiti.engine.impl.util.ClockUtil;
-import org.activiti.engine.impl.variable.VariableInstance;
 import org.activiti.pvm.impl.process.ProcessDefinitionImpl;
 import org.apache.ibatis.session.RowBounds;
 
@@ -63,20 +63,14 @@ public class DbRuntimeSession implements Session, RuntimeSession {
 
   // executions ///////////////////////////////////////////////////////////////
 
-//  public DbExecutionImpl findExecution(String executionId) {
-//    return (DbExecutionImpl) dbSqlSession.selectOne("selectExecution", executionId);
-//  }
-//
-//  @SuppressWarnings("unchecked")
-//  public List<ExecutionImpl> findChildExecutions(String parentExecutionid) {
-//    List executions = dbSqlSession.selectList("selectChildExecutions", parentExecutionid);
-//    return loaded.add(executions);
-//  }
-//  public void deleteExecution(String executionId) {
-//    ExecutionImpl execution = findExecution(executionId);
-//    execution.end(); // TODO replace with real delete instead of end(), since this will create history traces
-//  }
+  public ActivityInstanceEntity findActivityInstanceById(String activityInstanceId) {
+    return (ActivityInstanceEntity) dbSqlSession.selectOne("selectActivityInsatnceById", activityInstanceId);
+  }
 
+  @SuppressWarnings("unchecked")
+  public List<ActivityInstanceEntity> findActivityInstancesByParentActivityInstanceId(String parentActivityInstanceId) {
+    return dbSqlSession.selectList("ActivityInstancesByParentActivityInstanceId", parentActivityInstanceId);
+  }
 
   @SuppressWarnings("unchecked")
   public List<ProcessInstanceEntity> findProcessInstancesByProcessDefintionId(String processDefinitionId) {
@@ -98,11 +92,11 @@ public class DbRuntimeSession implements Session, RuntimeSession {
 
   // variables ////////////////////////////////////////////////////////////////
 
-  public List<VariableInstance> findVariablesByExecutionId(String executionId) {
+  public List<VariableInstanceEntity> findVariableInstancessByExecutionId(String executionId) {
     return dbSqlSession.selectList("selectVariablesByExecutionId", executionId);
   }
 
-  public List<VariableInstance> findVariablesByTaskId(String taskId) {
+  public List<VariableInstanceEntity> findVariablesByTaskId(String taskId) {
     return dbSqlSession.selectList("selectVariablesByTaskId", taskId);
   }
   
@@ -112,8 +106,8 @@ public class DbRuntimeSession implements Session, RuntimeSession {
    return (byte[]) temp.get("BYTES_");
   }
 
-  public ByteArrayImpl findByteArrayById(String byteArrayId) {
-    return (ByteArrayImpl) dbSqlSession.selectOne("selectByteArrayById", byteArrayId);
+  public ByteArrayEntity findByteArrayById(String byteArrayId) {
+    return (ByteArrayEntity) dbSqlSession.selectOne("selectByteArrayById", byteArrayId);
   }
 
 

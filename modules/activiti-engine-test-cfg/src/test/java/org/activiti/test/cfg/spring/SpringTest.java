@@ -21,7 +21,7 @@ import org.activiti.engine.Deployment;
 import org.activiti.engine.Execution;
 import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.ProcessInstance;
-import org.activiti.engine.ProcessService;
+import org.activiti.engine.RuntimeService;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.Task;
 import org.activiti.engine.impl.persistence.task.TaskDefinition;
@@ -74,25 +74,25 @@ public class SpringTest {
   public void testProcessExecutionWithTaskAssignedFromExpression() {
 
     int before = processEngine.getTaskService().findAssignedTasks("kermit").size();
-    ProcessInstance execution = processEngine.getProcessService().startProcessInstanceByKey("taskAssigneeExpressionProcess");
-    assertEquals("[theTask]", execution.getActivityNames().toString());
+    ProcessInstance execution = processEngine.getRuntimeService().startProcessInstanceByKey("taskAssigneeExpressionProcess");
+    assertEquals("[theTask]", execution.findActivityIds().toString());
     assertEquals("${user}", ((TaskDefinition) ReflectionTestUtils.getField(((ActivityImpl) ((ExecutionImpl) execution).getActivity()).getActivityBehavior(),
             "taskDefinition")).getAssignee());
     List<Task> tasks = processEngine.getTaskService().findAssignedTasks("kermit");
     assertEquals(before + 1, tasks.size());
 
-    processEngine.getProcessService().deleteProcessInstance(execution.getId());
+    processEngine.getRuntimeService().deleteProcessInstance(execution.getId());
     
   }
 
   @Test
   public void testJavaServiceDelegation() {
-    ProcessService processService = processEngine.getProcessService();
-    ProcessInstance pi = processService.startProcessInstanceByKey("javaServiceDelegation", 
+    RuntimeService runtimeService = processEngine.getRuntimeService();
+    ProcessInstance pi = runtimeService.startProcessInstanceByKey("javaServiceDelegation", 
             CollectionUtil.singletonMap("input", "Activiti BPM Engine"));
-    Execution execution = processService.findExecutionInActivity(pi.getId(), "waitState");
-    assertEquals("ACTIVITI BPM ENGINE", processService.getVariable(execution.getId(), "input"));
-    processEngine.getProcessService().deleteProcessInstance(execution.getId());
+    Execution execution = runtimeService.findActivityInstanceByProcessInstanceIdAndActivityId(pi.getId(), "waitState");
+    assertEquals("ACTIVITI BPM ENGINE", runtimeService.getVariable(execution.getId(), "input"));
+    processEngine.getRuntimeService().deleteProcessInstance(execution.getId());
   }
 
   @Test

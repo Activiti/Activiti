@@ -10,7 +10,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.activiti.engine.impl.variable;
+package org.activiti.engine.impl.persistence.runtime;
 
 import java.io.Serializable;
 import java.util.HashMap;
@@ -19,54 +19,61 @@ import java.util.Map;
 import org.activiti.engine.impl.cfg.RuntimeSession;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.PersistentObject;
-import org.activiti.engine.impl.persistence.runtime.ByteArrayImpl;
 import org.activiti.engine.impl.persistence.task.TaskEntity;
+import org.activiti.engine.impl.variable.Type;
 
 /**
  * @author Tom Baeyens
  */
-public class VariableInstance implements Serializable, PersistentObject {
+public class VariableInstanceEntity implements Serializable, PersistentObject {
 
   private static final long serialVersionUID = 1L;
 
-  private String id;
-  private int revision;
+  protected String id;
+  protected int revision;
 
-  private String name;
+  protected String name;
 
-  private String processInstanceId;
-  private String executionId;
-  private String taskId;
+  protected String processInstanceId;
+  protected String activityInstanceId;
+  protected String taskId;
 
-  private Long longValue;
-  private Double doubleValue;
-  private String textValue;
+  protected Long longValue;
+  protected Double doubleValue; 
+  protected String textValue;
 
-  private ByteArrayImpl byteArrayValue;
-  private String byteArrayValueId;
+  protected ByteArrayEntity byteArrayValue;
+  protected String byteArrayValueId;
 
-  private Object cachedValue;
+  protected Object cachedValue;
 
-  private Type type;
+  protected Type type;
   
   // Default constructor for SQL mapping
-  VariableInstance() {
+  VariableInstanceEntity() {
   }
 
-  public VariableInstance(Type type, String name, Object value) {
-    this.type = type;
-    this.name = name;
-    setValue(value);
+  public static VariableInstanceEntity createAndInsert(String name, Type type, Object value) {
+    VariableInstanceEntity variableInstance = new VariableInstanceEntity();
+    
+    CommandContext
+      .getCurrent()
+      .getRuntimeSession()
+      .insertVariableInstance(variableInstance);
+    
+    variableInstance.name = name;
+    variableInstance.type = type;
+    variableInstance.setValue(value);
+    
+    return variableInstance;
   }
 
-  public void setExecution(DbExecutionImpl execution) {
-    if (execution == null) {
-      this.executionId = null;
-      this.processInstanceId = null;
-    } else {
-      this.executionId = execution.getId();
-      this.processInstanceId = execution.getProcessInstanceId();
-    }
+  public void setProcessInstance(ProcessInstanceEntity processInstance) {
+    this.processInstanceId = processInstance.getId();
+  }
+  
+  public void setActivityInstanceId(ActivityInstanceEntity activityInstance) {
+    this.activityInstanceId = activityInstance.getId();
   }
 
   public void setTask(TaskEntity task) {
@@ -78,15 +85,19 @@ public class VariableInstance implements Serializable, PersistentObject {
   }
 
   public void delete() {
-    RuntimeSession runtimeSession = CommandContext.getCurrent().getRuntimeSession();
-    runtimeSession.delete(this);
+    RuntimeSession runtimeSession = CommandContext
+      .getCurrent()
+      .getRuntimeSession();
+
+    runtimeSession.deleteVariableInstance(id);
 
     if (byteArrayValueId != null) {
-      runtimeSession.delete(getByteArrayValue());
+      ByteArrayEntity byteArrayValue = getByteArrayValue();
+      runtimeSession.deleteByteArray(byteArrayValue.getId());
     }
   }
 
-  public void setByteArrayValue(ByteArrayImpl byteArrayValue) {
+  public void setByteArrayValue(ByteArrayEntity byteArrayValue) {
     this.byteArrayValue = byteArrayValue;
     if (byteArrayValue != null) {
       this.byteArrayValueId = byteArrayValue.getId();
@@ -117,8 +128,8 @@ public class VariableInstance implements Serializable, PersistentObject {
   public void setProcessInstanceId(String processInstanceId) {
     this.processInstanceId = processInstanceId;
   }
-  public void setExecutionId(String executionId) {
-    this.executionId = executionId;
+  public void setActivityInstanceId(String executionId) {
+    this.activityInstanceId = executionId;
   }
   public void setTaskId(String taskId) {
     this.taskId = taskId;
@@ -129,7 +140,7 @@ public class VariableInstance implements Serializable, PersistentObject {
     this.byteArrayValue = null;
   }
 
-  public ByteArrayImpl getByteArrayValue() {
+  public ByteArrayEntity getByteArrayValue() {
     if ((byteArrayValue == null) && (byteArrayValueId != null)) {
       byteArrayValue = CommandContext.getCurrent().getRuntimeSession().findByteArrayById(byteArrayValueId);
     }
@@ -163,8 +174,8 @@ public class VariableInstance implements Serializable, PersistentObject {
   public String getProcessInstanceId() {
     return processInstanceId;
   }
-  public String getExecutionId() {
-    return executionId;
+  public String getActivityInstanceId() {
+    return activityInstanceId;
   }
   public String getTaskId() {
     return taskId;

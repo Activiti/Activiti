@@ -13,14 +13,17 @@
 package org.activiti.engine.impl.persistence.identity;
 
 import java.io.Serializable;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.activiti.engine.identity.Group;
+import org.activiti.engine.impl.persistence.PersistentObject;
 
 
 /**
  * @author Tom Baeyens
  */
-public class GroupImpl implements Group, Serializable {
+public class GroupEntity implements Group, Serializable, PersistentObject {
 
   private static final long serialVersionUID = 1L;
 
@@ -30,14 +33,26 @@ public class GroupImpl implements Group, Serializable {
   
   protected boolean isNew = false;
 
-  public GroupImpl() {
+  public GroupEntity() {
   }
   
-  public GroupImpl(String id) {
+  public GroupEntity(String id) {
     this.id = id;
     this.isNew = true;
   }
   
+  public void update(GroupEntity group) {
+    this.name = group.getName();
+    this.type = group.getType();
+  }
+  
+  public Object getPersistentState() {
+    Map<String, Object> persistentState = new HashMap<String, Object>();
+    persistentState.put("name", name);
+    persistentState.put("type", type);
+    return persistentState;
+  }
+
   public String getId() {
     return id;
   }

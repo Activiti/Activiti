@@ -12,26 +12,26 @@
  */
 package org.activiti.engine.impl.cmd;
 
-import org.activiti.engine.ProcessInstance;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
-import org.activiti.impl.persistence.RuntimeSession;
+import org.activiti.engine.impl.persistence.runtime.ProcessInstanceEntity;
 
 
 /**
  * @author Joram Barrez
  */
-public class FindProcessInstanceCmd implements Command<ProcessInstance> {
+public class FindProcessInstanceCmd implements Command<ProcessInstanceEntity> {
   
-  protected String id;
+  protected String processInstanceId;
   
-  public FindProcessInstanceCmd(String id) {
-    this.id = id;
+  public FindProcessInstanceCmd(String processInstanceId) {
+    this.processInstanceId = processInstanceId;
   }
 
-  public ProcessInstance execute(CommandContext commandContext) {
-    RuntimeSession runtimeSession = commandContext.getRuntimeSession();
-    return runtimeSession.findExecution(id);
+  public ProcessInstanceEntity execute(CommandContext commandContext) {
+    return commandContext
+      .getRuntimeSession()
+      .findProcessInstanceById(processInstanceId);
   }
 
 }

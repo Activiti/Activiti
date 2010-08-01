@@ -17,7 +17,7 @@ package org.activiti.engine;
  * 
  * <ul>
  * <li>
- * <b>{@link org.activiti.engine.ProcessService}: </b> Allows the creation of
+ * <b>{@link org.activiti.engine.RuntimeService}: </b> Allows the creation of
  * {@link org.activiti.engine.Deployment}s and the starting of and searching on
  * {@link org.activiti.engine.ProcessInstance}s.</li>
  * <li>
@@ -54,7 +54,7 @@ public interface ProcessEngine {
   String getName();
 
   RepositoryService getRepositoryService();
-  ProcessService getProcessService();
+  RuntimeService getRuntimeService();
   TaskService getTaskService();
   HistoricDataService getHistoricDataService();
   IdentityService getIdentityService();

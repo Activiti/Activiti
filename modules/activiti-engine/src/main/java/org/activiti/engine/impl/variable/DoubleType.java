@@ -12,6 +12,8 @@
  */
 package org.activiti.engine.impl.variable;
 
+import org.activiti.engine.impl.persistence.runtime.VariableInstanceEntity;
+
 
 /**
  * @author Tom Baeyens
@@ -24,12 +26,12 @@ public class DoubleType implements Type {
     return "double";
   }
 
-  public Object getValue(VariableInstance variableInstance) {
-    return variableInstance.getDoubleValue();
+  public Object getValue(VariableInstanceEntity variableInstanceEntity) {
+    return variableInstanceEntity.getDoubleValue();
   }
 
-  public void setValue(Object value, VariableInstance variableInstance) {
-    variableInstance.setDoubleValue( (Double) value );
+  public void setValue(Object value, VariableInstanceEntity variableInstanceEntity) {
+    variableInstanceEntity.setDoubleValue( (Double) value );
   }
 
   public boolean isAbleToStore(Object value) {

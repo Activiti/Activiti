@@ -15,7 +15,6 @@ package org.activiti.engine.impl.cmd;
 import org.activiti.engine.TableMetaData;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
-import org.activiti.impl.persistence.RuntimeSession;
 
 
 /**
@@ -30,8 +29,9 @@ public class GetTableMetaDataCmd implements Command<TableMetaData> {
   }
   
   public TableMetaData execute(CommandContext commandContext) {
-    RuntimeSession runtimeSession = commandContext.getRuntimeSession();
-    return runtimeSession.getTableMetaData(tableName);
+    return commandContext
+      .getManagementSession()
+      .getTableMetaData(tableName);
   }
 
 }
