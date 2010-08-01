@@ -29,6 +29,7 @@ import org.activiti.engine.impl.cfg.RuntimeSession;
 import org.activiti.engine.impl.cfg.TaskSession;
 import org.activiti.engine.impl.cfg.TimerSession;
 import org.activiti.engine.impl.cfg.TransactionContext;
+import org.activiti.engine.impl.persistence.db.DbSqlSession;
 
 /**
  * @author Tom Baeyens
@@ -199,6 +200,9 @@ public class CommandContext {
   }
   public ManagementSession getManagementSession() {
     return getSession(ManagementSession.class);
+  }
+  public DbSqlSession getDbSqlSession() {
+    return getSession(DbSqlSession.class);
   }
 
   // getters and setters //////////////////////////////////////////////////////

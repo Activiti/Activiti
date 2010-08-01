@@ -21,8 +21,8 @@ import org.activiti.engine.DbSchemaStrategy;
 import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.ProcessEngineBuilder;
 import org.activiti.engine.impl.ProcessEngineImpl;
-import org.activiti.impl.persistence.DbRuntimeSessionFactory;
-import org.activiti.impl.persistence.RuntimeSessionFactory;
+import org.activiti.engine.impl.persistence.db.DbSqlSession;
+import org.activiti.engine.impl.persistence.db.DbSqlSessionFactory;
 import org.activiti.test.LogInitializer;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
@@ -61,12 +61,8 @@ public class ProcessEngineInitializationTest {
 
     // then update the version to something that is different to the library
     // version
-    RuntimeSessionFactory runtimeSessionFactory = processEngine.getRuntimeSessionFactory();
-//    if(persistenceSessionFactory instanceof CachingPersistenceSessionFactory){
-//      persistenceSessionFactory = ((CachingPersistenceSessionFactory) persistenceSessionFactory).getTargetPersistenceSessionFactory();
-//    }
-
-    SqlSessionFactory sqlSessionFactory = ((DbRuntimeSessionFactory) runtimeSessionFactory).getSqlSessionFactory();
+    DbSqlSessionFactory dbSqlSessionFactory = (DbSqlSessionFactory) processEngine.getProcessEngineConfiguration().getSessionFactories().get(DbSqlSession.class);
+    SqlSessionFactory sqlSessionFactory = dbSqlSessionFactory.getSqlSessionFactory();
     SqlSession sqlSession = sqlSessionFactory.openSession();
     boolean success = false;
     try {

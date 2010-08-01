@@ -51,7 +51,7 @@ public class TaskEntity implements Task, Serializable, PersistentObject {
   protected Date completionDeadline; // The time when the task should have been completed
   protected boolean skippable;
   protected boolean isTaskInvolvementsInitialized = false;
-  protected List<TaskInvolvement> taskInvolvements = new ArrayList<TaskInvolvement>(); 
+  protected List<TaskInvolvementEntity> taskInvolvementEntities = new ArrayList<TaskInvolvementEntity>(); 
   
   protected String activityInstanceId;
   protected ActivityInstanceEntity activityInstance;
@@ -126,8 +126,8 @@ public class TaskEntity implements Task, Serializable, PersistentObject {
 
   public void delete() {
     // cascade deletion to task assignments
-    for (TaskInvolvement taskInvolvements: getTaskInvolvements()) {
-      taskInvolvements.delete();
+    for (TaskInvolvementEntity taskInvolvementEntities: getTaskInvolvements()) {
+      taskInvolvementEntities.delete();
     }
     
     CommandContext
@@ -241,44 +241,44 @@ public class TaskEntity implements Task, Serializable, PersistentObject {
     this.assignee = assignee;
   }
   
-  public TaskInvolvement createTaskInvolvement() {
-    TaskInvolvement taskInvolvement = TaskInvolvement.createAndInsert();
-    getTaskInvolvements().add(taskInvolvement);
-    taskInvolvement.setTask(this);
-    return taskInvolvement;
+  public TaskInvolvementEntity createTaskInvolvement() {
+    TaskInvolvementEntity taskInvolvementEntity = TaskInvolvementEntity.createAndInsert();
+    getTaskInvolvements().add(taskInvolvementEntity);
+    taskInvolvementEntity.setTask(this);
+    return taskInvolvementEntity;
   }
   
-  public Set<TaskInvolvement> getCandidates() {
-    Set<TaskInvolvement> potentialOwners = new HashSet<TaskInvolvement>();
-    for (TaskInvolvement taskInvolvement : getTaskInvolvements()) {
-      if (TaskInvolvementType.CANDIDATE.equals(taskInvolvement.getType())) {
-        potentialOwners.add(taskInvolvement);
+  public Set<TaskInvolvementEntity> getCandidates() {
+    Set<TaskInvolvementEntity> potentialOwners = new HashSet<TaskInvolvementEntity>();
+    for (TaskInvolvementEntity taskInvolvementEntity : getTaskInvolvements()) {
+      if (TaskInvolvementType.CANDIDATE.equals(taskInvolvementEntity.getType())) {
+        potentialOwners.add(taskInvolvementEntity);
       }
     }
     return potentialOwners;
   }
   
   public void addCandidateUser(String userId) {
-    TaskInvolvement involvement = createTaskInvolvement();
+    TaskInvolvementEntity involvement = createTaskInvolvement();
     involvement.setUserId(userId);
     involvement.setType(TaskInvolvementType.CANDIDATE);
   }
   
   public void addCandidateGroup(String groupId) {
-    TaskInvolvement involvement = createTaskInvolvement();
+    TaskInvolvementEntity involvement = createTaskInvolvement();
     involvement.setGroupId(groupId);
     involvement.setType(TaskInvolvementType.CANDIDATE);
   }
   
-  public List<TaskInvolvement> getTaskInvolvements() {
+  public List<TaskInvolvementEntity> getTaskInvolvements() {
     if (!isTaskInvolvementsInitialized) {
-      taskInvolvements = CommandContext
+      taskInvolvementEntities = CommandContext
           .getCurrent()
           .getTaskSession()
           .findTaskInvolvementsByTaskId(id);
       isTaskInvolvementsInitialized = true;
     }
-    return taskInvolvements;
+    return taskInvolvementEntities;
   }
 
   public boolean isNew() {

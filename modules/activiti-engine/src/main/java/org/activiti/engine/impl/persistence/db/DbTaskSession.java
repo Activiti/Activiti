@@ -23,8 +23,7 @@ import org.activiti.engine.impl.cfg.TaskSession;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.interceptor.Session;
 import org.activiti.engine.impl.persistence.task.TaskEntity;
-import org.activiti.engine.impl.persistence.task.TaskInvolvement;
-import org.apache.ibatis.session.RowBounds;
+import org.activiti.engine.impl.persistence.task.TaskInvolvementEntity;
 
 
 /**
@@ -38,26 +37,26 @@ public class DbTaskSession implements TaskSession, Session {
     this.dbSqlSession = CommandContext.getCurrentSession(DbSqlSession.class);
   }
 
-  // tasks ////////////////////////////////////////////////////////////////////
+  public void deleteTask(String taskId) {
+    dbSqlSession.delete(TaskEntity.class, taskId);
+  }
+
+  public void insertTask(TaskEntity taskEntity) {
+    dbSqlSession.insert(taskEntity);
+  }
 
   public TaskEntity findTaskById(String id) {
-    TaskEntity task = (TaskEntity) dbSqlSession.selectOne("selectTask", id);
-    if (task!=null) {
-      task = (TaskEntity) loaded.add(task);
-    }
-    return task;
+    return (TaskEntity) dbSqlSession.selectOne("selectTask", id);
   }
 
   @SuppressWarnings("unchecked")
-  public List<TaskInvolvement> findTaskInvolvementsByTaskId(String taskId) {
-    List taskInvolvements = dbSqlSession.selectList("selectTaskInvolvementsByTask", taskId);
-    return loaded.add(taskInvolvements);
+  public List<TaskInvolvementEntity> findTaskInvolvementsByTaskId(String taskId) {
+    return dbSqlSession.selectList("selectTaskInvolvementsByTask", taskId);
   }
 
   @SuppressWarnings("unchecked")
   public List<TaskEntity> findTasksByExecution(String executionId) {
-    List tasks = dbSqlSession.selectList("selectTaskByExecution", executionId);
-    return loaded.add(tasks);
+    return dbSqlSession.selectList("selectTaskByExecution", executionId);
   }
 
   @SuppressWarnings("unchecked")
@@ -65,8 +64,7 @@ public class DbTaskSession implements TaskSession, Session {
     Map<String, Object> params = new HashMap<String, Object>();
     params.put("userId", userId);
     params.put("groupIds", groupIds);
-    List tasks = (List) dbSqlSession.selectList("selectCandidateTasks", params);
-    return loaded.add(tasks);
+    return dbSqlSession.selectList("selectCandidateTasks", params);
   }
 
   @SuppressWarnings("unchecked")
@@ -80,7 +78,7 @@ public class DbTaskSession implements TaskSession, Session {
     if (page == null) {
       return dbSqlSession.selectList(query, params);
     } else {
-      return dbSqlSession.selectList(query, params, new RowBounds(page.getOffset(), page.getMaxResults()));
+      return dbSqlSession.selectList(query, params, page.getOffset(), page.getMaxResults());
     }
   }
 

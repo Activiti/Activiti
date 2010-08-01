@@ -32,11 +32,9 @@ public class DbRepositorySessionFactory implements SessionFactory, ProcessEngine
   
   protected Map<String, ProcessDefinitionEntity> processDefinitionCache = new HashMap<String, ProcessDefinitionEntity>(); 
   protected List<Deployer> deployers;
-  protected long idBlockSize;
 
   public void configurationCompleted(ProcessEngineConfiguration processEngineConfiguration) {
     deployers = processEngineConfiguration.getDeployers();
-    idBlockSize = processEngineConfiguration.getIdBlockSize();
   }
 
   public Session openSession() {
@@ -59,13 +57,5 @@ public class DbRepositorySessionFactory implements SessionFactory, ProcessEngine
   
   public void setDeployers(List<Deployer> deployers) {
     this.deployers = deployers;
-  }
-  
-  public long getIdBlockSize() {
-    return idBlockSize;
-  }
-
-  public void setIdBlockSize(long idBlockSize) {
-    this.idBlockSize = idBlockSize;
   }
 }

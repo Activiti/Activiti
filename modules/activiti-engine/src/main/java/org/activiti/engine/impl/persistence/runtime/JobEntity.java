@@ -21,17 +21,16 @@ import org.activiti.engine.Job;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.jobexecutor.JobHandler;
 import org.activiti.engine.impl.persistence.PersistentObject;
-import org.activiti.impl.execution.ExecutionImpl;
 
 /**
  * Stub of the common parts of a Job. You will normally work with a subclass of
- * JobImpl, such as {@link TimerImpl} or {@link MessageImpl}.
+ * JobEntity, such as {@link TimerEntity} or {@link MessageEntity}.
  *
  * @author Tom Baeyens
  * @author Nick Burch
  * @author Dave Syer
  */
-public abstract class JobImpl implements Serializable, Job, PersistentObject {
+public abstract class JobEntity implements Serializable, Job, PersistentObject {
 
   public static final boolean DEFAULT_EXCLUSIVE = false;
   public static final int DEFAULT_RETRIES = 3;

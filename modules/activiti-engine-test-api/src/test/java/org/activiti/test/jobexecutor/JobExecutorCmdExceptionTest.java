@@ -8,7 +8,7 @@ import org.activiti.engine.impl.cmd.DeleteJobsCmd;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
-import org.activiti.engine.impl.persistence.runtime.MessageImpl;
+import org.activiti.engine.impl.persistence.runtime.MessageEntity;
 import org.activiti.test.JobExecutorPoller;
 import org.activiti.test.LogInitializer;
 import org.activiti.test.ProcessDeployer;
@@ -51,7 +51,7 @@ public class JobExecutorCmdExceptionTest {
     commandExecutor.execute(new Command<String>() {
 
       public String execute(CommandContext commandContext) {
-        MessageImpl message = createTweetExceptionMessage();
+        MessageEntity message = createTweetExceptionMessage();
         commandContext.getMessageSession().send(message);
         return message.getId();
       }
@@ -68,7 +68,7 @@ public class JobExecutorCmdExceptionTest {
     String jobId = commandExecutor.execute(new Command<String>() {
 
       public String execute(CommandContext commandContext) {
-        MessageImpl message = createTweetExceptionMessage();
+        MessageEntity message = createTweetExceptionMessage();
         commandContext.getMessageSession().send(message);
         return message.getId();
       }
@@ -81,8 +81,8 @@ public class JobExecutorCmdExceptionTest {
     commandExecutor.execute(new DeleteJobsCmd(jobId));
   }
 
-  protected MessageImpl createTweetExceptionMessage() {
-    MessageImpl message = new MessageImpl();
+  protected MessageEntity createTweetExceptionMessage() {
+    MessageEntity message = new MessageEntity();
     message.setJobHandlerType("tweet-exception");
     return message;
   }

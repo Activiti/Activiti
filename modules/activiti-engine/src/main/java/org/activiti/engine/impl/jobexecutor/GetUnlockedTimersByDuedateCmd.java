@@ -17,14 +17,14 @@ import java.util.List;
 
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
-import org.activiti.engine.impl.persistence.runtime.TimerImpl;
+import org.activiti.engine.impl.persistence.runtime.TimerEntity;
 
 
 /**
  * @author Tom Baeyens
  * @author Joram Barrez
  */
-public class GetUnlockedTimersByDuedateCmd implements Command<List<TimerImpl>> {
+public class GetUnlockedTimersByDuedateCmd implements Command<List<TimerEntity>> {
 
   protected Date duedate;
   
@@ -35,7 +35,7 @@ public class GetUnlockedTimersByDuedateCmd implements Command<List<TimerImpl>> {
 	  this.nrOfTimers = nrOfTimers;
   }
 
-  public List<TimerImpl> execute(CommandContext commandContext) {
+  public List<TimerEntity> execute(CommandContext commandContext) {
     return commandContext.getRuntimeSession().findUnlockedTimersByDuedate(duedate, nrOfTimers);
   }
 }

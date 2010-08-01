@@ -19,7 +19,7 @@ import java.util.Map;
 import org.activiti.engine.Page;
 import org.activiti.engine.Task;
 import org.activiti.engine.impl.persistence.task.TaskEntity;
-import org.activiti.engine.impl.persistence.task.TaskInvolvement;
+import org.activiti.engine.impl.persistence.task.TaskInvolvementEntity;
 
 
 /**
@@ -38,6 +38,9 @@ public interface TaskSession {
   List<Task> dynamicFindTasks(Map<String, Object> params, Page page);
   long dynamicFindTaskCount(Map<String, Object> params);
 
-  /* TaskInvolvement */
-  List<TaskInvolvement> findTaskInvolvementsByTaskId(String taskId);
+  /* TaskInvolvementEntity */
+  void deleteTaskInvolvement(TaskInvolvementEntity taskInvolvement);
+  void insertTaskInvolvement(TaskInvolvementEntity taskInvolvement);
+
+  List<TaskInvolvementEntity> findTaskInvolvementsByTaskId(String taskId);
 }

@@ -15,8 +15,8 @@ package org.activiti.test.jobexecutor;
 import java.util.Date;
 
 import org.activiti.engine.impl.ProcessEngineImpl;
-import org.activiti.engine.impl.persistence.runtime.MessageImpl;
-import org.activiti.engine.impl.persistence.runtime.TimerImpl;
+import org.activiti.engine.impl.persistence.runtime.MessageEntity;
+import org.activiti.engine.impl.persistence.runtime.TimerEntity;
 import org.activiti.test.LogInitializer;
 import org.activiti.test.ProcessDeployer;
 import org.junit.After;
@@ -46,15 +46,15 @@ public class JobExecutorTestCase {
     processEngineImpl.getProcessEngineConfiguration().getJobHandlers().removeJobHandler(tweetHandler);
   }
 
-  protected MessageImpl createTweetMessage(String msg) {
-    MessageImpl message = new MessageImpl();
+  protected MessageEntity createTweetMessage(String msg) {
+    MessageEntity message = new MessageEntity();
     message.setJobHandlerType("tweet");
     message.setJobHandlerConfiguration(msg);
     return message;
   }
 
-  protected TimerImpl createTweetTimer(String msg, Date duedate) {
-    TimerImpl timer = new TimerImpl();
+  protected TimerEntity createTweetTimer(String msg, Date duedate) {
+    TimerEntity timer = new TimerEntity();
     timer.setJobHandlerType("tweet");
     timer.setJobHandlerConfiguration(msg);
     timer.setDuedate(duedate);

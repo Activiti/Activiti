@@ -48,7 +48,7 @@ public class ProcessInstanceEntity extends ProcessInstanceImpl implements Proces
       .getCurrentSession(RuntimeSession.class)
       .insertProcessInstance(processInstance);
     
-    processInstance.variableInstanceMap = new VariableInstanceMap();
+    processInstance.variableInstanceMap = new ProcessInstanceVariableMap(processInstance);
     
     return processInstance;
   }

@@ -17,16 +17,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.activiti.engine.ActivitiOptimisticLockingException;
 import org.activiti.engine.impl.cfg.RepositorySession;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.interceptor.Session;
 import org.activiti.engine.impl.persistence.repository.Deployer;
 import org.activiti.engine.impl.persistence.repository.DeploymentEntity;
 import org.activiti.engine.impl.persistence.repository.ProcessDefinitionEntity;
-import org.activiti.engine.impl.persistence.repository.PropertyEntity;
 import org.activiti.engine.impl.persistence.repository.ResourceEntity;
-import org.activiti.impl.definition.ProcessDefinitionImpl;
 
 
 /**
@@ -117,7 +114,7 @@ public class DbRepositorySession implements Session, RepositorySession {
   }
 
   @SuppressWarnings("unchecked")
-  public List<ProcessDefinitionImpl> findProcessDefinitions() {
+  public List<ProcessDefinitionEntity> findProcessDefinitions() {
     return dbSqlSession.selectList("selectProcessDefinitions");
   }
 

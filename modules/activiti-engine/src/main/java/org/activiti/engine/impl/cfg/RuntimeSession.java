@@ -22,10 +22,11 @@ import org.activiti.engine.Page;
 import org.activiti.engine.ProcessInstance;
 import org.activiti.engine.impl.persistence.runtime.ActivityInstanceEntity;
 import org.activiti.engine.impl.persistence.runtime.ByteArrayEntity;
-import org.activiti.engine.impl.persistence.runtime.JobImpl;
+import org.activiti.engine.impl.persistence.runtime.JobEntity;
 import org.activiti.engine.impl.persistence.runtime.ProcessInstanceEntity;
-import org.activiti.engine.impl.persistence.runtime.TimerImpl;
+import org.activiti.engine.impl.persistence.runtime.TimerEntity;
 import org.activiti.engine.impl.persistence.runtime.VariableInstanceEntity;
+import org.activiti.engine.impl.persistence.task.TaskInvolvementEntity;
 
 
 /**
@@ -56,12 +57,12 @@ public interface RuntimeSession {
   byte[] getByteArrayBytes(String byteArrayId);
   ByteArrayEntity findByteArrayById(String byteArrayId);
 
-  JobImpl findJobById(String jobId);
-  List<JobImpl> findJobs();
-  List<JobImpl> findNextJobsToExecute(int maxNrOfJobs);
-  List<JobImpl> findLockedJobs();
-  List<TimerImpl> findUnlockedTimersByDuedate(Date duedate, int nrOfTimers);
-  List<TimerImpl> findTimersByExecutionId(String executionId);
+  JobEntity findJobById(String jobId);
+  List<JobEntity> findJobs();
+  List<JobEntity> findNextJobsToExecute(int maxNrOfJobs);
+  List<JobEntity> findLockedJobs();
+  List<TimerEntity> findUnlockedTimersByDuedate(Date duedate, int nrOfTimers);
+  List<TimerEntity> findTimersByExecutionId(String executionId);
   List<Job> dynamicFindJobs(Map<String, Object> params, Page page);
   long dynamicJobCount(Map<String, Object> params);
   void deleteJob(String jobId);

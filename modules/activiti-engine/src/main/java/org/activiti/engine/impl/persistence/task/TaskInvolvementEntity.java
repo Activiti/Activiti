@@ -22,7 +22,7 @@ import org.activiti.engine.impl.persistence.PersistentObject;
 /**
  * @author Joram Barrez
  */
-public class TaskInvolvement implements Serializable, PersistentObject {
+public class TaskInvolvementEntity implements Serializable, PersistentObject {
   
   private static final long serialVersionUID = 1L;
   
@@ -41,20 +41,20 @@ public class TaskInvolvement implements Serializable, PersistentObject {
     return this.type;
   }
 
-  public static TaskInvolvement createAndInsert() {
-    TaskInvolvement taskInvolvement = new TaskInvolvement();
+  public static TaskInvolvementEntity createAndInsert() {
+    TaskInvolvementEntity taskInvolvementEntity = new TaskInvolvementEntity();
     CommandContext
         .getCurrent()
-        .getRuntimeSession()
-        .insert(taskInvolvement);
-    return taskInvolvement;
+        .getTaskSession()
+        .insertTaskInvolvement(taskInvolvementEntity);
+    return taskInvolvementEntity;
   }
   
   public void delete() {
     CommandContext
         .getCurrent()
-        .getRuntimeSession()
-        .delete(this);
+        .getTaskSession()
+        .deleteTaskInvolvement(this);
     
     // TODO remove this task assignment from the task
   }
@@ -117,7 +117,7 @@ public class TaskInvolvement implements Serializable, PersistentObject {
     if ( (task==null) && (taskId!=null) ) {
       this.task = CommandContext
           .getCurrent()
-          .getRuntimeSession()
+          .getTaskSession()
           .findTaskById(taskId);
     }
     return task;

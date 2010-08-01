@@ -17,11 +17,11 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.List;
 
+import org.activiti.engine.impl.cfg.RuntimeSession;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
-import org.activiti.engine.impl.persistence.runtime.JobImpl;
+import org.activiti.engine.impl.persistence.runtime.JobEntity;
 import org.activiti.engine.impl.util.ClockUtil;
-import org.activiti.impl.persistence.RuntimeSession;
 
 
 /**
@@ -44,8 +44,8 @@ public class AcquireJobsCmd implements Command<AcquiredJobs> {
     
     
     AcquiredJobs acquiredJobs = new AcquiredJobs();
-    List<JobImpl> jobs = runtimeSession.findNextJobsToExecute(maxJobsPerAcquisition);
-    for (JobImpl job: jobs) {
+    List<JobEntity> jobs = runtimeSession.findNextJobsToExecute(maxJobsPerAcquisition);
+    for (JobEntity job: jobs) {
       List<String> jobIds = new ArrayList<String>();
 
       if (job != null) {

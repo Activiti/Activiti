@@ -13,10 +13,10 @@
 package org.activiti.engine.impl.jobexecutor;
 
 import org.activiti.engine.impl.cfg.MessageSession;
+import org.activiti.engine.impl.cfg.RuntimeSession;
 import org.activiti.engine.impl.cfg.TransactionState;
 import org.activiti.engine.impl.interceptor.CommandContext;
-import org.activiti.engine.impl.persistence.runtime.MessageImpl;
-import org.activiti.impl.persistence.RuntimeSession;
+import org.activiti.engine.impl.persistence.runtime.MessageEntity;
 
 
 /**
@@ -37,7 +37,7 @@ public class JobExecutorMessageSession implements MessageSession {
     this.jobExecutor = commandContext.getProcessEngineConfiguration().getJobExecutor();
   }
 
-  public void send(MessageImpl message) {
+  public void send(MessageEntity message) {
     RuntimeSession runtimeSession = commandContext.getRuntimeSession();
     runtimeSession.insert(message);
     

@@ -16,7 +16,7 @@ import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.cfg.TaskSession;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.task.TaskEntity;
-import org.activiti.engine.impl.persistence.task.TaskInvolvement;
+import org.activiti.engine.impl.persistence.task.TaskInvolvementEntity;
 import org.activiti.engine.impl.persistence.task.TaskInvolvementType;
 
 
@@ -90,12 +90,12 @@ public class AddTaskInvolvementCmd extends CmdVoid {
   }
   
   protected void addTaskInvolvement(TaskEntity task, String userId, String groupId) {
-    TaskInvolvement taskInvolvement = task.createTaskInvolvement();
-    taskInvolvement.setType(type);
+    TaskInvolvementEntity taskInvolvementEntity = task.createTaskInvolvement();
+    taskInvolvementEntity.setType(type);
     if (userId != null) {
-      taskInvolvement.setUserId(userId);      
+      taskInvolvementEntity.setUserId(userId);      
     } else {
-      taskInvolvement.setGroupId(groupId);
+      taskInvolvementEntity.setGroupId(groupId);
     }
   }
 

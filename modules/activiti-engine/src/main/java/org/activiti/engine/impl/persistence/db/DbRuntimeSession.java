@@ -25,13 +25,12 @@ import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.interceptor.Session;
 import org.activiti.engine.impl.persistence.runtime.ActivityInstanceEntity;
 import org.activiti.engine.impl.persistence.runtime.ByteArrayEntity;
-import org.activiti.engine.impl.persistence.runtime.JobImpl;
+import org.activiti.engine.impl.persistence.runtime.JobEntity;
 import org.activiti.engine.impl.persistence.runtime.ProcessInstanceEntity;
-import org.activiti.engine.impl.persistence.runtime.TimerImpl;
+import org.activiti.engine.impl.persistence.runtime.TimerEntity;
 import org.activiti.engine.impl.persistence.runtime.VariableInstanceEntity;
 import org.activiti.engine.impl.util.ClockUtil;
 import org.activiti.pvm.impl.process.ProcessDefinitionImpl;
-import org.apache.ibatis.session.RowBounds;
 
 /**
  * @author Joram Barrez
@@ -92,10 +91,12 @@ public class DbRuntimeSession implements Session, RuntimeSession {
 
   // variables ////////////////////////////////////////////////////////////////
 
+  @SuppressWarnings("unchecked")
   public List<VariableInstanceEntity> findVariableInstancessByExecutionId(String executionId) {
     return dbSqlSession.selectList("selectVariablesByExecutionId", executionId);
   }
 
+  @SuppressWarnings("unchecked")
   public List<VariableInstanceEntity> findVariablesByTaskId(String taskId) {
     return dbSqlSession.selectList("selectVariablesByTaskId", taskId);
   }
@@ -121,38 +122,38 @@ public class DbRuntimeSession implements Session, RuntimeSession {
 
   // job /////////////////////////////////////////////////////////////////////
 
-  public JobImpl findJobById(String jobId) {
-    return (JobImpl) dbSqlSession.selectOne("selectJob", jobId);
-  }
-
-  public List<JobImpl> findJobs() {
-    return dbSqlSession.selectList("selectJobs");
-  }
-  
-  public List<JobImpl> findNextJobsToExecute(int maxNrOfJobs) {
-    Date now = ClockUtil.getCurrentTime();
-    RowBounds rowBounds = new RowBounds(0, maxNrOfJobs);
-    return dbSqlSession.selectList("selectNextJobsToExecute", now, rowBounds);
+  public JobEntity findJobById(String jobId) {
+    return (JobEntity) dbSqlSession.selectOne("selectJob", jobId);
   }
 
   @SuppressWarnings("unchecked")
-  public List<JobImpl> findLockedJobs() {
+  public List<JobEntity> findJobs() {
+    return dbSqlSession.selectList("selectJobs");
+  }
+  
+  @SuppressWarnings("unchecked")
+  public List<JobEntity> findNextJobsToExecute(int maxNrOfJobs) {
+    Date now = ClockUtil.getCurrentTime();
+    return dbSqlSession.selectList("selectNextJobsToExecute", now, 0, maxNrOfJobs);
+  }
+
+  @SuppressWarnings("unchecked")
+  public List<JobEntity> findLockedJobs() {
     return dbSqlSession.selectList("selectLockedJobs");
   }
   
   @SuppressWarnings("unchecked")
-  public List<TimerImpl> findUnlockedTimersByDuedate(Date duedate, int nrOfTimers) {
+  public List<TimerEntity> findUnlockedTimersByDuedate(Date duedate, int nrOfTimers) {
 	final String query = "selectUnlockedTimersByDuedate";
 	if (nrOfTimers > 0) {
-		RowBounds rowBounds = new RowBounds(0,nrOfTimers);
-		return dbSqlSession.selectList(statement(query), duedate, rowBounds);
+		return dbSqlSession.selectList(query, duedate, 0, nrOfTimers);
 	} else {
-		return dbSqlSession.selectList(statement(query), duedate);
+		return dbSqlSession.selectList(query, duedate);
 	}
   }
 
   @SuppressWarnings("unchecked")
-  public List<TimerImpl> findTimersByExecutionId(String executionId) {
+  public List<TimerEntity> findTimersByExecutionId(String executionId) {
     return dbSqlSession.selectList("selectTimersByExecutionId", executionId);
   }
 
@@ -162,7 +163,7 @@ public class DbRuntimeSession implements Session, RuntimeSession {
     if (page == null) {
       return dbSqlSession.selectList(query, params);
     } else {
-      return dbSqlSession.selectList(query, params, new RowBounds(page.getOffset(), page.getMaxResults()));
+      return dbSqlSession.selectList(query, params, page.getOffset(), page.getMaxResults());
     }
   }
 
@@ -176,4 +177,39 @@ public class DbRuntimeSession implements Session, RuntimeSession {
   public void flush() {
   }
 
+  public ActivityInstanceEntity findActivityInstanceByProcessInstanceIdAndActivityId(String processInstanceId, String activityId) {
+    throw new UnsupportedOperationException("please implement me");
+  }
+
+  public ProcessInstanceEntity findProcessInstanceById(String processInstanceId) {
+    throw new UnsupportedOperationException("please implement me");
+  }
+
+  public void deleteActivityInstance(String activityInstanceId) {
+    dbSqlSession.delete(ActivityInstanceEntity.class, activityInstanceId);
+  }
+
+  public void deleteByteArray(String byteArrayId) {
+    dbSqlSession.delete(ByteArrayEntity.class, byteArrayId);
+  }
+
+  public void deleteJob(String jobId) {
+    dbSqlSession.delete(JobEntity.class, jobId);
+  }
+
+  public void deleteProcessInstance(String processInstanceId) {
+    dbSqlSession.delete(ProcessInstanceEntity.class, processInstanceId);
+  }
+
+  public void deleteVariableInstance(String variableInstanceId) {
+    dbSqlSession.delete(VariableInstanceEntity.class, variableInstanceId);
+  }
+
+  public void insertByteArray(ByteArrayEntity byteArrayEntity) {
+    dbSqlSession.insert(byteArrayEntity);
+  }
+
+  public void insertVariableInstance(VariableInstanceEntity variableInstanceEntity) {
+    dbSqlSession.insert(variableInstanceEntity);
+  }
 }

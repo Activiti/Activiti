@@ -26,6 +26,7 @@ import org.activiti.engine.impl.persistence.PersistentObject;
 import org.activiti.engine.impl.persistence.runtime.VariableInstanceEntity;
 import org.activiti.engine.impl.util.ClassNameUtil;
 import org.activiti.engine.impl.variable.DeserializedObject;
+import org.apache.ibatis.session.RowBounds;
 import org.apache.ibatis.session.SqlSession;
 
 
@@ -133,6 +134,14 @@ public class DbSqlSession implements Session {
     List loadedObjects = sqlSession.selectList(statement, parameter);
     return filterLoadedObjects(loadedObjects);
   }
+  
+  @SuppressWarnings("unchecked")
+  public List selectList(String statement, Object parameter, int offset, int maxResults) {
+    statement = dbSqlSessionFactory.mapStatement(statement);
+    List loadedObjects = sqlSession.selectList(statement, parameter, new RowBounds(offset, maxResults));
+    return filterLoadedObjects(loadedObjects);
+  }
+
 
   public Object selectOne(String statement, Object parameter) {
     statement = dbSqlSessionFactory.mapStatement(statement);
@@ -315,4 +324,5 @@ public class DbSqlSession implements Session {
   public DbSqlSessionFactory getDbSqlSessionFactory() {
     return dbSqlSessionFactory;
   }
+
 }

@@ -26,8 +26,8 @@ import org.activiti.engine.impl.jobexecutor.AcquiredJobs;
 import org.activiti.engine.impl.jobexecutor.ExecuteJobsCmd;
 import org.activiti.engine.impl.jobexecutor.JobExecutor;
 import org.activiti.engine.impl.jobexecutor.JobHandlers;
-import org.activiti.engine.impl.persistence.runtime.MessageImpl;
-import org.activiti.engine.impl.persistence.runtime.TimerImpl;
+import org.activiti.engine.impl.persistence.runtime.MessageEntity;
+import org.activiti.engine.impl.persistence.runtime.TimerEntity;
 import org.activiti.engine.impl.util.ClockUtil;
 import org.junit.Test;
 
@@ -44,7 +44,7 @@ public class JobExecutorCmdHappyTest extends JobExecutorTestCase {
     String jobId = commandExecutor.execute(new Command<String>() {
 
       public String execute(CommandContext commandContext) {
-        MessageImpl message = createTweetMessage("i'm coding a test");
+        MessageEntity message = createTweetMessage("i'm coding a test");
         commandContext.getMessageSession().send(message);
         return message.getId();
       }
@@ -83,7 +83,7 @@ public class JobExecutorCmdHappyTest extends JobExecutorTestCase {
     String jobId = commandExecutor.execute(new Command<String>() {
 
       public String execute(CommandContext commandContext) {
-        TimerImpl timer = createTweetTimer("i'm coding a test", new Date(SOME_TIME + (10 * SECOND)));
+        TimerEntity timer = createTweetTimer("i'm coding a test", new Date(SOME_TIME + (10 * SECOND)));
         commandContext.getTimerSession().schedule(timer);
         return timer.getId();
       }

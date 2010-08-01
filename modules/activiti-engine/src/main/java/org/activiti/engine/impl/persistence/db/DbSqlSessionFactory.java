@@ -39,7 +39,6 @@ import org.activiti.engine.impl.persistence.PersistentObject;
 import org.activiti.engine.impl.util.ClassNameUtil;
 import org.activiti.engine.impl.util.IoUtil;
 import org.activiti.engine.impl.variable.Type;
-import org.activiti.impl.persistence.LoadedObject;
 import org.apache.ibatis.builder.xml.XMLConfigBuilder;
 import org.apache.ibatis.datasource.pooled.PooledDataSource;
 import org.apache.ibatis.mapping.Environment;
@@ -62,8 +61,6 @@ public class DbSqlSessionFactory implements SessionFactory, ProcessEngineConfigu
   private static Logger log = Logger.getLogger(DbSqlSessionFactory.class.getName());
   protected static final Map<String, Map<String, String>> databaseSpecificStatements = new HashMap<String, Map<String,String>>();
 
-  protected Map<Object, LoadedObject> loadedObjects = new HashMap<Object, LoadedObject>();
-
   static {
     addDatabaseSpecificStatement("mysql", "selectTaskByDynamicCriteria", "selectTaskByDynamicCriteria_mysql");
     addDatabaseSpecificStatement("mysql", "selectNextJobsToExecute", "selectNextJobsToExecute_mysql");
@@ -79,7 +76,6 @@ public class DbSqlSessionFactory implements SessionFactory, ProcessEngineConfigu
   
   public void configurationCompleted(ProcessEngineConfiguration processEngineConfiguration) {
     this.databaseName = processEngineConfiguration.getDatabaseName();
-    this.sqlSessionFactory = ((DbRuntimeSessionFactory)processEngineConfiguration.getRuntimeSessionFactory()).getSqlSessionFactory();
     this.idGenerator = processEngineConfiguration.getIdGenerator();
     this.statementMappings = databaseSpecificStatements.get(processEngineConfiguration.getDatabaseName());
 
@@ -113,7 +109,7 @@ public class DbSqlSessionFactory implements SessionFactory, ProcessEngineConfigu
       transactionFactory = new ManagedTransactionFactory();
     }
     
-    sqlSessionFactory = createSessionFactory(dataSource, transactionFactory);
+    this.sqlSessionFactory = createSessionFactory(dataSource, transactionFactory);
   }
 
   protected SqlSessionFactory createSessionFactory(DataSource dataSource, TransactionFactory transactionFactory) {
@@ -305,13 +301,5 @@ public class DbSqlSessionFactory implements SessionFactory, ProcessEngineConfigu
   
   public void setIdGenerator(IdGenerator idGenerator) {
     this.idGenerator = idGenerator;
-  }
-  
-  public Map<Object, LoadedObject> getLoadedObjects() {
-    return loadedObjects;
-  }
-  
-  public void setLoadedObjects(Map<Object, LoadedObject> loadedObjects) {
-    this.loadedObjects = loadedObjects;
   }
 }

@@ -12,8 +12,7 @@
  */
 package org.activiti.engine.impl.persistence.runtime;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.util.Map;
 
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.jobexecutor.JobHandler;
@@ -22,37 +21,26 @@ import org.activiti.engine.impl.jobexecutor.JobHandler;
 /**
  * @author Tom Baeyens
  */
-public class TimerImpl extends JobImpl {
+public class MessageEntity extends JobEntity {
 
   private static final long serialVersionUID = 1L;
-  
-  private static Logger log = Logger.getLogger(TimerImpl.class.getName());
-  
-  protected String repeat;
+
+  private String repeat = null;
   
   @Override
   public void execute(JobHandler jobHandler, CommandContext commandContext) {
-
     super.execute(jobHandler, commandContext);
-
-    if (repeat==null){
-
-      if (log.isLoggable(Level.FINE)) {
-        log.fine("Timer " + getId() + " fired. Deleting timer.");
-      }
-      
-      commandContext
-        .getRuntimeSession()
-        .delete(this);
-
-    } else {
-
-      // TODO calculate repeat
-      throw new UnsupportedOperationException("repeat not yet supported");
-    }
-    
+    commandContext
+      .getRuntimeSession()
+      .delete(this);
   }
 
+  public Object getPersistentState() {
+    Map<String, Object> persistentState = (Map<String, Object>) super.getPersistentState();
+    persistentState.put("duedate", getDuedate());
+    return persistentState;
+  }
+  
   public String getRepeat() {
     return repeat;
   }

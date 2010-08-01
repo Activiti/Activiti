@@ -21,7 +21,6 @@ import java.util.Set;
 import javax.script.Bindings;
 
 import org.activiti.engine.ActivitiException;
-import org.activiti.impl.execution.ExecutionImpl;
 import org.activiti.pvm.runtime.PvmScopeInstance;
 
 

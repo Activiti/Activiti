@@ -12,7 +12,7 @@
  */
 package org.activiti.engine.impl.cfg;
 
-import org.activiti.engine.impl.persistence.runtime.MessageImpl;
+import org.activiti.engine.impl.persistence.runtime.MessageEntity;
 
 
 /**
@@ -20,6 +20,6 @@ import org.activiti.engine.impl.persistence.runtime.MessageImpl;
  */
 public interface MessageSession {
 
-  void send(MessageImpl message);
+  void send(MessageEntity message);
 
 }

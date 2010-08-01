@@ -20,6 +20,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Logger;
 
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiOptimisticLockingException;
@@ -30,13 +31,32 @@ import org.activiti.engine.impl.cfg.ManagementSession;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.interceptor.Session;
 import org.activiti.engine.impl.persistence.repository.PropertyEntity;
-import org.apache.ibatis.session.RowBounds;
 
 
 /**
  * @author Tom Baeyens
  */
 public class DbManagementSession implements ManagementSession, Session {
+  
+  private static Logger log = Logger.getLogger(DbManagementSession.class.getName());
+
+  protected static String[] tableNames = new String[]{
+    "ACT_PROPERTY",
+    "ACT_BYTEARRAY",
+    "ACT_DEPLOYMENT",
+    "ACT_EXECUTION",
+    "ACT_ID_GROUP",
+    "ACT_ID_MEMBERSHIP",
+    "ACT_ID_USER",
+    "ACT_JOB",
+    "ACT_PROCESSDEFINITION",
+    "ACT_TASK",
+    "ACT_TASKINVOLVEMENT",
+    "ACT_VARIABLE",
+    "ACT_H_PROCINST",
+    "ACT_H_ACTINST"
+  };
+
 
   protected DbSqlSession dbSqlSession;
 
@@ -83,9 +103,8 @@ public class DbManagementSession implements ManagementSession, Session {
       tablePage.setOrder(sortOrder);
     }
 
-    List<Map<String, Object>> tableData = (List<Map<String, Object>>) dbSqlSession.selectList(
-      "selectTableData", params, new RowBounds(offset, maxResults)
-    );
+    List<Map<String, Object>> tableData = 
+        (List<Map<String, Object>>) dbSqlSession.selectList("selectTableData", params, offset, maxResults);
 
     tablePage.setTableName(tableName);
     tablePage.setStart(offset);
@@ -98,7 +117,10 @@ public class DbManagementSession implements ManagementSession, Session {
     TableMetaData result = new TableMetaData();
     try {
       result.setTableName(tableName);
-      DatabaseMetaData metaData = dbSqlSession.getConnection().getMetaData();
+      DatabaseMetaData metaData = dbSqlSession
+        .getSqlSession()
+        .getConnection()
+        .getMetaData();
       ResultSet resultSet = metaData.getColumns(null, null, tableName, null);
       while(resultSet.next()) {
         String name = resultSet.getString("COLUMN_NAME");
@@ -112,17 +134,23 @@ public class DbManagementSession implements ManagementSession, Session {
     return result;
   }
 
-  public IdBlock getNextDbidBlock() {
+  public IdBlock getNextIdBlock() {
     String statement = dbSqlSession.getDbSqlSessionFactory().mapStatement("selectProperty");
     PropertyEntity property = (PropertyEntity) dbSqlSession.selectOne(statement, "next.dbid");
     long oldValue = Long.parseLong(property.getValue());
-    long newValue = oldValue+dbRepositorySessionFactory.getIdBlockSize();
+    
+    long idBlockSize = CommandContext
+      .getCurrent()
+      .getProcessEngineConfiguration()
+      .getIdBlockSize();
+    
+    long newValue = oldValue+idBlockSize;
     Map<String, Object> updateValues = new HashMap<String, Object>();
     updateValues.put("name", property.getName());
     updateValues.put("revision", property.getDbversion());
     updateValues.put("newRevision", property.getDbversion()+1);
     updateValues.put("value", Long.toString(newValue));
-    int rowsUpdated = dbSqlSession.dbSqlSession.update("updateProperty", updateValues);
+    int rowsUpdated = dbSqlSession.getSqlSession().update("updateProperty", updateValues);
     if (rowsUpdated!=1) {
       throw new ActivitiOptimisticLockingException("couldn't get next block of dbids");
     }

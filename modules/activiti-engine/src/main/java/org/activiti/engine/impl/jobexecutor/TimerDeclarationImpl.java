@@ -16,7 +16,7 @@ import java.io.Serializable;
 import java.util.Date;
 
 import org.activiti.engine.impl.calendar.BusinessCalendar;
-import org.activiti.engine.impl.persistence.runtime.TimerImpl;
+import org.activiti.engine.impl.persistence.runtime.TimerEntity;
 
 
 /**
@@ -31,8 +31,8 @@ public class TimerDeclarationImpl implements Serializable {
   private final String jobHandlerType;
   private String jobHandlerConfiguration = null;
   private String repeat;
-  private boolean exclusive = TimerImpl.DEFAULT_EXCLUSIVE;
-  private int retries = TimerImpl.DEFAULT_RETRIES;
+  private boolean exclusive = TimerEntity.DEFAULT_EXCLUSIVE;
+  private int retries = TimerEntity.DEFAULT_RETRIES;
 
   
   public TimerDeclarationImpl(BusinessCalendar calendar, String duedateDeclaration, String jobHandlerType) {

@@ -48,7 +48,7 @@ public class SerializableType extends ByteArrayType {
       
       CommandContext
         .getCurrent()
-        .getDbS
+        .getDbSqlSession()
         .addDeserializedObject(deserializedObject, bytes, variableInstanceEntity);
       
     } catch (Exception e) {

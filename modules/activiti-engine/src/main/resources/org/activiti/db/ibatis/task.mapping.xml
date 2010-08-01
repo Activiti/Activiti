@@ -20,7 +20,7 @@
     <result property="processDefinitionId" column="PROC_DEF_ID_" jdbcType="VARCHAR"/>
   </resultMap>
   
-  <resultMap id="taskInvolvementResultMap" type="org.activiti.engine.impl.persistence.task.TaskInvolvement">
+  <resultMap id="taskInvolvementResultMap" type="org.activiti.engine.impl.persistence.task.TaskInvolvementEntity">
     <id property="id" column="ID_" jdbcType="VARCHAR" />
     <result property="type" column="TYPE_" jdbcType="VARCHAR" />
     <result property="userId" column="USER_ID_" jdbcType="VARCHAR" />
@@ -149,7 +149,7 @@
              )
   </insert>
   
-  <insert id="insertTaskInvolvement" parameterType="org.activiti.engine.impl.persistence.task.TaskInvolvement">
+  <insert id="insertTaskInvolvement" parameterType="org.activiti.engine.impl.persistence.task.TaskInvolvementEntity">
     insert into ACT_TASKINVOLVEMENT (ID_, TYPE_, USER_ID_, GROUP_ID_, TASK_ID_)
     values (#{id, jdbcType=VARCHAR},
             #{type, jdbcType=VARCHAR},
@@ -177,7 +177,7 @@
     where ID_= #{id, jdbcType=VARCHAR}
   </update>
   
-  <update id="updateTaskInvolvement" parameterType="org.activiti.engine.impl.persistence.task.TaskInvolvement">
+  <update id="updateTaskInvolvement" parameterType="org.activiti.engine.impl.persistence.task.TaskInvolvementEntity">
     update ACT_TASKINVOLVEMENT
     <set>
       TYPE_ = #{type, jdbcType=VARCHAR},

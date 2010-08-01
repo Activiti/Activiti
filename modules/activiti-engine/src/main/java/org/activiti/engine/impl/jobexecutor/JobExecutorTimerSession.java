@@ -16,14 +16,13 @@ import java.util.Date;
 import java.util.List;
 
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.impl.cfg.RuntimeSession;
 import org.activiti.engine.impl.cfg.TimerSession;
 import org.activiti.engine.impl.cfg.TransactionState;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.interceptor.Session;
-import org.activiti.engine.impl.persistence.runtime.TimerImpl;
+import org.activiti.engine.impl.persistence.runtime.TimerEntity;
 import org.activiti.engine.impl.util.ClockUtil;
-import org.activiti.impl.execution.ExecutionImpl;
-import org.activiti.impl.persistence.RuntimeSession;
 
 
 /**
@@ -39,7 +38,7 @@ public class JobExecutorTimerSession implements TimerSession, Session {
     this.jobExecutor = commandContext.getProcessEngineConfiguration().getJobExecutor();
   }
 
-  public void schedule(TimerImpl timer) {
+  public void schedule(TimerEntity timer) {
     Date duedate = timer.getDuedate();
     if (duedate==null) {
       throw new ActivitiException("duedate is null");
@@ -63,8 +62,8 @@ public class JobExecutorTimerSession implements TimerSession, Session {
 
   public void cancelTimers(ExecutionImpl execution) {
     RuntimeSession runtimeSession = commandContext.getRuntimeSession();
-    List<TimerImpl> timers = runtimeSession.findTimersByExecutionId(execution.getId()); 
-    for (TimerImpl timer: timers) {
+    List<TimerEntity> timers = runtimeSession.findTimersByExecutionId(execution.getId()); 
+    for (TimerEntity timer: timers) {
       runtimeSession.delete(timer);
     }
   }
