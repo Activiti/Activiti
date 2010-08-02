@@ -32,9 +32,10 @@ public class MessageEntity extends JobEntity {
     super.execute(jobHandler, commandContext);
     commandContext
       .getRuntimeSession()
-      .delete(this);
+      .deleteJob(id);
   }
 
+  @SuppressWarnings("unchecked")
   public Object getPersistentState() {
     Map<String, Object> persistentState = (Map<String, Object>) super.getPersistentState();
     persistentState.put("duedate", getDuedate());

@@ -27,17 +27,22 @@ create table ACT_DEPLOYMENT (
     primary key (ID_)
 );
 
-create table ACT_EXECUTION (
+create table ACT_RNT_PROCESSINSTANCE (
     ID_ varchar(255),
     REV_ integer,
-    PROC_INST_ID_ varchar(255),
-    PARENT_ID_ varchar(255),
     PROC_DEF_ID_ varchar(255),
-    SUPER_EXEC_ varchar(255),
+    SUPER_ACT_INST_ varchar(255),
+    primary key (ID_)
+);
+
+create table ACT_RNT_ACTIVITYINSTANCE (
+    ID_ varchar(255),
+    REV_ integer,
+    PROC_DEF_ID_ varchar(255),
+    PROC_INST_ID_ varchar(255),
+    SUB_PROC_INST_ varchar(255),
     ACTIVITY_ID_ varchar(255),
     IS_ACTIVE_ bit,
-    IS_CONCURRENT_ bit,
-    IS_SCOPE_ bit,
     primary key (ID_)
 );
 

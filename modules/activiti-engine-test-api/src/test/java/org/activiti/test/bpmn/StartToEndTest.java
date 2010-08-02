@@ -12,31 +12,20 @@
  */
 package org.activiti.test.bpmn;
 
-import static org.junit.Assert.assertTrue;
-
 import org.activiti.engine.ProcessInstance;
 import org.activiti.engine.test.Deployment;
-import org.activiti.test.LogInitializer;
-import org.activiti.test.ProcessDeployer;
-import org.junit.Rule;
-import org.junit.Test;
+import org.activiti.engine.test.ProcessEngineTestCase;
 
 /**
  * @author Joram Barrez
  */
-public class StartToEndTest {
+public class StartToEndTest extends ProcessEngineTestCase {
 
-  @Rule
-  public LogInitializer logSetup = new LogInitializer();
-  @Rule
-  public ProcessDeployer deployer = new ProcessDeployer();
-
-  @Test
   @Deployment
   public void testStartToEnd() {
-    ProcessInstance processInstance = deployer.getProcessService().startProcessInstanceByKey("startToEnd");
-    deployer.assertProcessEnded(processInstance.getId());
+    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("startToEnd");
+    assertProcessEnded(processInstance.getId());
     assertTrue(processInstance.isEnded());
   }
-
+  
 }

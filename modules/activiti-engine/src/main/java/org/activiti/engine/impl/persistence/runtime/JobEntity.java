@@ -18,6 +18,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.activiti.engine.Job;
+import org.activiti.engine.impl.cfg.RuntimeSession;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.jobexecutor.JobHandler;
 import org.activiti.engine.impl.persistence.PersistentObject;
@@ -37,23 +38,35 @@ public abstract class JobEntity implements Serializable, Job, PersistentObject {
 
   private static final long serialVersionUID = 1L;
 
-  private String id;
+  protected String id;
 
-  private Date duedate;
+  protected Date duedate;
 
-  private String lockOwner = null;
-  private Date lockExpirationTime = null;
+  protected String lockOwner = null;
+  protected Date lockExpirationTime = null;
 
-  private String executionId = null;
-  private String processInstanceId = null;
+  protected String activityInstanceId = null;
+  protected String processInstanceId = null;
 
-  private boolean exclusive = DEFAULT_EXCLUSIVE;
+  protected boolean exclusive = DEFAULT_EXCLUSIVE;
 
-  private int retries = DEFAULT_RETRIES;
-  private String exception = null;
+  protected int retries = DEFAULT_RETRIES;
+  protected String exception = null;
 
-  private String jobHandlerType = null;
-  private String jobHandlerConfiguration = null;
+  protected String jobHandlerType = null;
+  protected String jobHandlerConfiguration = null;
+
+  public void execute(JobHandler jobHandler, CommandContext commandContext) {
+    RuntimeSession runtimeSession = commandContext.getRuntimeSession();
+    ActivityInstanceEntity activityInstance = null;
+    if (activityInstanceId != null) {
+      activityInstance = runtimeSession.findActivityInstanceById(activityInstanceId);
+    }
+    ProcessInstanceEntity processInstance = null;
+    processInstance = runtimeSession.findProcessInstanceById(processInstanceId); 
+    
+    jobHandler.execute(jobHandlerConfiguration, processInstance, activityInstance, commandContext);
+  }
 
   public Object getPersistentState() {
     Map<String, Object> persistentState = new HashMap<String, Object>();
@@ -64,16 +77,21 @@ public abstract class JobEntity implements Serializable, Job, PersistentObject {
     return persistentState;
   }
 
-  public void setExecution(ExecutionImpl execution) {
-    executionId = execution.getId();
-    processInstanceId = execution.getProcessInstance().getId();
+  public void setActivityInstance(ActivityInstanceEntity activityInstance) {
+    activityInstanceId = activityInstance.getId();
   }
 
-  public String getExecutionId() {
-    return executionId;
+  public void setProcessInstance(ProcessInstanceEntity processInstance) {
+    processInstanceId = processInstance.getId();
   }
-  public void setExecutionId(String executionId) {
-    this.executionId = executionId;
+  
+  // getters and setters //////////////////////////////////////////////////////
+
+  public String getActivityInstanceId() {
+    return activityInstanceId;
+  }
+  public void setActivityInstanceId(String executionId) {
+    this.activityInstanceId = executionId;
   }
   public int getRetries() {
     return retries;
@@ -134,13 +152,5 @@ public abstract class JobEntity implements Serializable, Job, PersistentObject {
   }
   public void setJobHandlerConfiguration(String jobHandlerConfiguration) {
     this.jobHandlerConfiguration = jobHandlerConfiguration;
-  }
-
-  public void execute(JobHandler jobHandler, CommandContext commandContext) {
-    ExecutionImpl execution = null;
-    if (executionId != null) {
-      execution = commandContext.getRuntimeSession().findExecution(executionId);
-    }
-    jobHandler.execute(jobHandlerConfiguration, execution, commandContext);
   }
 }

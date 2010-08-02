@@ -22,20 +22,20 @@ import org.activiti.engine.impl.variable.Type;
 /**
  * @author Tom Baeyens
  */
-public class ProcessInstanceVariableMap extends VariableInstanceMap {
-  
+public class ActivityInstanceVariableMap extends VariableInstanceMap {
+
   private static final long serialVersionUID = 1L;
   
-  protected ProcessInstanceEntity processInstance;
+  protected ActivityInstanceEntity activityInstance;
   
-  public ProcessInstanceVariableMap(ProcessInstanceEntity processInstance) {
-    this.processInstance = processInstance;
+  public ActivityInstanceVariableMap(ActivityInstanceEntity activityInstance) {
+    this.activityInstance = activityInstance;
   }
 
   @Override
   protected VariableInstanceEntity createVariableInstance(String variableName, Type type, Object value) {
     VariableInstanceEntity variableInstance = VariableInstanceEntity.createAndInsert(variableName, type, value);
-    variableInstance.setProcessInstance(processInstance);
+    variableInstance.setActivityInstance(activityInstance);
     return variableInstance;
   }
 
@@ -44,7 +44,7 @@ public class ProcessInstanceVariableMap extends VariableInstanceMap {
     return CommandContext
       .getCurrent()
       .getRuntimeSession()
-      .findVariableInstancessByProcessInstanceId(processInstance.getId());
+      .findVariableInstancessByActivityInstanceId(activityInstance.getId());
   }
 
 }

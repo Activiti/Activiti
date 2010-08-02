@@ -50,21 +50,8 @@ public class DbTaskSession implements TaskSession, Session {
   }
 
   @SuppressWarnings("unchecked")
-  public List<TaskInvolvementEntity> findTaskInvolvementsByTaskId(String taskId) {
-    return dbSqlSession.selectList("selectTaskInvolvementsByTask", taskId);
-  }
-
-  @SuppressWarnings("unchecked")
   public List<TaskEntity> findTasksByExecution(String executionId) {
     return dbSqlSession.selectList("selectTaskByExecution", executionId);
-  }
-
-  @SuppressWarnings("unchecked")
-  public List<Task> findCandidateTasks(String userId, List<String> groupIds) {
-    Map<String, Object> params = new HashMap<String, Object>();
-    params.put("userId", userId);
-    params.put("groupIds", groupIds);
-    return dbSqlSession.selectList("selectCandidateTasks", params);
   }
 
   @SuppressWarnings("unchecked")
@@ -84,6 +71,28 @@ public class DbTaskSession implements TaskSession, Session {
 
   public long dynamicFindTaskCount(Map<String, Object> params) {
     return (Long) dbSqlSession.selectOne("selectTaskCountByDynamicCriteria", params);
+  }
+  
+  public void insertTaskInvolvement(TaskInvolvementEntity taskInvolvement) {
+    dbSqlSession.insert(taskInvolvement);
+  }
+
+  public void deleteTaskInvolvement(TaskInvolvementEntity taskInvolvement) {
+    dbSqlSession.delete(TaskInvolvementEntity.class, taskInvolvement.getId());
+  }
+
+
+  @SuppressWarnings("unchecked")
+  public List<TaskInvolvementEntity> findTaskInvolvementsByTaskId(String taskId) {
+    return dbSqlSession.selectList("selectTaskInvolvementsByTask", taskId);
+  }
+
+  @SuppressWarnings("unchecked")
+  public List<Task> findCandidateTasks(String userId, List<String> groupIds) {
+    Map<String, Object> params = new HashMap<String, Object>();
+    params.put("userId", userId);
+    params.put("groupIds", groupIds);
+    return dbSqlSession.selectList("selectCandidateTasks", params);
   }
 
   public void close() {

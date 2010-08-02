@@ -15,7 +15,7 @@ package org.activiti.examples.bpmn.receivetask;
 
 import static org.junit.Assert.assertNotNull;
 
-import org.activiti.engine.Execution;
+import org.activiti.engine.ActivityInstance;
 import org.activiti.engine.ProcessInstance;
 import org.activiti.engine.test.Deployment;
 import org.activiti.test.LogInitializer;
@@ -38,10 +38,10 @@ public class ReceiveTaskTest {
   @Deployment
   public void testWaitStateBehavior() {
     ProcessInstance pi = deployer.getProcessService().startProcessInstanceByKey("receiveTask");
-    Execution execution = deployer.getProcessService().findActivityInstanceByProcessInstanceIdAndActivityId(pi.getId(), "waitState");
-    assertNotNull(execution);
+    ActivityInstance activityInstance = deployer.getProcessService().findActivityInstanceByProcessInstanceIdAndActivityId(pi.getId(), "waitState");
+    assertNotNull(activityInstance);
     
-    deployer.getProcessService().signal(execution.getId());
+    deployer.getProcessService().signal(activityInstance.getId());
     deployer.assertProcessEnded(pi.getId());
   }
 

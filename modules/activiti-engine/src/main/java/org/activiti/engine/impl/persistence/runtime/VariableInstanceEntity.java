@@ -72,7 +72,7 @@ public class VariableInstanceEntity implements Serializable, PersistentObject {
     this.processInstanceId = processInstance.getId();
   }
   
-  public void setActivityInstanceId(ActivityInstanceEntity activityInstance) {
+  public void setActivityInstance(ActivityInstanceEntity activityInstance) {
     this.activityInstanceId = activityInstance.getId();
   }
 

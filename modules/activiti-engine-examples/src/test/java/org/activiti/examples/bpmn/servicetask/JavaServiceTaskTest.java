@@ -12,7 +12,7 @@
  */
 package org.activiti.examples.bpmn.servicetask;
 
-import org.activiti.engine.Execution;
+import org.activiti.engine.ActivityInstance;
 import org.activiti.engine.ProcessInstance;
 import org.activiti.engine.impl.util.CollectionUtil;
 import org.activiti.engine.test.Deployment;
@@ -27,8 +27,8 @@ public class JavaServiceTaskTest extends ProcessEngineTestCase {
   public void testJavaServiceDelegation() {
     ProcessInstance pi = runtimeService.startProcessInstanceByKey("javaServiceDelegation", 
             CollectionUtil.singletonMap("input", "Activiti BPM Engine"));
-    Execution execution = runtimeService.findActivityInstanceByProcessInstanceIdAndActivityId(pi.getId(), "waitState");
-    assertEquals("ACTIVITI BPM ENGINE", runtimeService.getVariable(execution.getId(), "input"));
+    ActivityInstance activitiyInstance = runtimeService.findActivityInstanceByProcessInstanceIdAndActivityId(pi.getId(), "waitState");
+    assertEquals("ACTIVITI BPM ENGINE", runtimeService.getVariable(activitiyInstance.getId(), "input"));
   }
 
 }

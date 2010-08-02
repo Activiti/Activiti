@@ -6,18 +6,29 @@
   
   <!-- RESULTMAP -->
   
-  <resultMap id="executionResultMap" type="org.activiti.impl.db.execution.DbExecutionImpl">
+  <resultMap id="processInstanceResultMap" type="org.activiti.engine.impl.persistence.runtime.ProcessInstanceEntity">
+    <id property="id" column="ID_" jdbcType="VARCHAR" />
+    <result property="processInstanceId" column="PROC_INST_ID_" jdbcType="VARCHAR" />
+    <result property="processDefinitionId" column="PROC_DEF_ID_" jdbcType="VARCHAR" />
+  </resultMap>
+
+  <select id="selectProcessInstanceById" parameterType="string" resultMap="processInstanceResultMap">
+    select * from ACT_EXECUTION where ID_ = #{id}
+  </select>
+  
+  <resultMap id="activityInstanceResultMap" type="org.activiti.engine.impl.persistence.runtime.ActivityInstanceEntity">
     <id property="id" column="ID_" jdbcType="VARCHAR" />
     <result property="processInstanceId" column="PROC_INST_ID_" jdbcType="VARCHAR" />
     <result property="processDefinitionId" column="PROC_DEF_ID_" jdbcType="VARCHAR" />
     <result property="activityId" column="ACTIVITY_ID_" jdbcType="VARCHAR" />
-    <result property="isActive" column="IS_ACTIVE_" jdbcType="BOOLEAN" />
-    <result property="isConcurrent" column="IS_CONCURRENT_" jdbcType="BOOLEAN" />
-    <result property="isScope" column="IS_SCOPE_" jdbcType="BOOLEAN" />
-    <result property="parentId" column="PARENT_ID_" jdbcType="VARCHAR" />
     <result property="superExecutionId" column="SUPER_EXEC_" jdbcType="VARCHAR" />
   </resultMap>
-  
+
+  <!-- ====================================================================================================== -->  
+  <!-- ====================================================================================================== -->  
+  <!-- ====================================================================================================== -->  
+  <!-- ====================================================================================================== -->  
+
   <!-- SELECT -->
   
   <select id="selectExecution" parameterType="string" resultMap="executionResultMap">

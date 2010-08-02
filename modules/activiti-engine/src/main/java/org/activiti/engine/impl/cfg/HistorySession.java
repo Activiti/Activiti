@@ -24,11 +24,10 @@ import org.activiti.engine.impl.persistence.history.HistoricProcessInstanceImpl;
 public interface HistorySession {
 
   void insertHistoricProcessInstance(HistoricProcessInstanceImpl historicProcessInstance);
-  void deleteHistoricProcessInstance(HistoricProcessInstanceImpl historicProcessInstance);
+  void deleteHistoricProcessInstance(String historicProcessInstanceId);
   HistoricProcessInstanceImpl findHistoricProcessInstance(String processInstanceId);
 
   void insertHistoricActivityInstance(HistoricActivityInstanceImpl historicActivityInstance);
-  void deleteHistoricActivityInstance(HistoricActivityInstanceImpl historicActivityInstance);
+  void deleteHistoricActivityInstance(String historicActivityInstanceId);
   HistoricActivityInstanceImpl findHistoricActivityInstance(String activityId, String processInstanceId);
-
 }

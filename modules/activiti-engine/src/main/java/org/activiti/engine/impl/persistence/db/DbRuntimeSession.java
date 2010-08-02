@@ -48,27 +48,12 @@ public class DbRuntimeSession implements Session, RuntimeSession {
     dbSqlSession.insert(processInstance);
   }
 
-  public void deleteProcessInstance(ProcessInstanceEntity processInstance) {
-    dbSqlSession.delete(processInstance);
+  public void deleteProcessInstance(String processInstanceId) {
+    dbSqlSession.delete(ProcessInstanceEntity.class, processInstanceId);
   }
 
-  public void insertActivityInstance(ActivityInstanceEntity activityInstance) {
-    dbSqlSession.insert(activityInstance);
-  }
-
-  public void deleteActivityInstance(ActivityInstanceEntity activityInstance) {
-    dbSqlSession.delete(activityInstance);
-  }
-
-  // executions ///////////////////////////////////////////////////////////////
-
-  public ActivityInstanceEntity findActivityInstanceById(String activityInstanceId) {
-    return (ActivityInstanceEntity) dbSqlSession.selectOne("selectActivityInsatnceById", activityInstanceId);
-  }
-
-  @SuppressWarnings("unchecked")
-  public List<ActivityInstanceEntity> findActivityInstancesByParentActivityInstanceId(String parentActivityInstanceId) {
-    return dbSqlSession.selectList("ActivityInstancesByParentActivityInstanceId", parentActivityInstanceId);
+  public ProcessInstanceEntity findProcessInstanceById(String processInstanceId) {
+    throw new UnsupportedOperationException("please implement me");
   }
 
   @SuppressWarnings("unchecked")
@@ -79,7 +64,7 @@ public class DbRuntimeSession implements Session, RuntimeSession {
   public ProcessInstanceEntity findSubProcessInstance(String superExecutionId) {
     return (ProcessInstanceEntity) dbSqlSession.selectOne("selectSubProcessInstanceBySuperExecutionId", superExecutionId);
   }
-  
+
   public long findProcessInstanceCountByDynamicCriteria(Map<String, Object> params) {
     return (Long) dbSqlSession.selectOne("selectProcessInstanceCountByDynamicCriteria", params);
   }
@@ -89,10 +74,41 @@ public class DbRuntimeSession implements Session, RuntimeSession {
     return dbSqlSession.selectList("selectProcessInstanceByDynamicCriteria", params);
   }
 
-  // variables ////////////////////////////////////////////////////////////////
+  public void insertActivityInstance(ActivityInstanceEntity activityInstance) {
+    dbSqlSession.insert(activityInstance);
+  }
+
+  public void deleteActivityInstance(String activityInstanceId) {
+    dbSqlSession.delete(ActivityInstanceEntity.class, activityInstanceId);
+  }
+
+  public ActivityInstanceEntity findActivityInstanceById(String activityInstanceId) {
+    return (ActivityInstanceEntity) dbSqlSession.selectOne("selectActivityInsatnceById", activityInstanceId);
+  }
 
   @SuppressWarnings("unchecked")
-  public List<VariableInstanceEntity> findVariableInstancessByExecutionId(String executionId) {
+  public List<ActivityInstanceEntity> findActivityInstancesByParentActivityInstanceId(String parentActivityInstanceId) {
+    return dbSqlSession.selectList("ActivityInstancesByParentActivityInstanceId", parentActivityInstanceId);
+  }
+
+  public ActivityInstanceEntity findActivityInstanceByProcessInstanceIdAndActivityId(String processInstanceId, String activityId) {
+    throw new UnsupportedOperationException("please implement me");
+  }
+
+  public void insertVariableInstance(VariableInstanceEntity variableInstanceEntity) {
+    dbSqlSession.insert(variableInstanceEntity);
+  }
+
+  public void deleteVariableInstance(String variableInstanceId) {
+    dbSqlSession.delete(VariableInstanceEntity.class, variableInstanceId);
+  }
+
+  public List<VariableInstanceEntity> findVariableInstancessByProcessInstanceId(String processInstanceId) {
+    return null;
+  }
+
+  @SuppressWarnings("unchecked")
+  public List<VariableInstanceEntity> findVariableInstancessByActivityInstanceId(String executionId) {
     return dbSqlSession.selectList("selectVariablesByExecutionId", executionId);
   }
 
@@ -101,6 +117,14 @@ public class DbRuntimeSession implements Session, RuntimeSession {
     return dbSqlSession.selectList("selectVariablesByTaskId", taskId);
   }
   
+  public void insertByteArray(ByteArrayEntity byteArrayEntity) {
+    dbSqlSession.insert(byteArrayEntity);
+  }
+
+  public void deleteByteArray(String byteArrayId) {
+    dbSqlSession.delete(ByteArrayEntity.class, byteArrayId);
+  }
+
   @SuppressWarnings("unchecked")
   public byte[] getByteArrayBytes(String byteArrayId) {
    Map<String, Object> temp = (Map) dbSqlSession.selectOne("selectBytesOfByteArray", byteArrayId);
@@ -111,16 +135,13 @@ public class DbRuntimeSession implements Session, RuntimeSession {
     return (ByteArrayEntity) dbSqlSession.selectOne("selectByteArrayById", byteArrayId);
   }
 
-
-  public ProcessDefinitionImpl findProcessDefinitionByDeploymentAndKey(String deploymentId, String processDefinitionKey) {
-    Map<String, Object> parameters = new HashMap<String, Object>();
-    parameters.put("deploymentId", deploymentId);
-    parameters.put("processDefinitionKey", processDefinitionKey);
-    return (ProcessDefinitionImpl) dbSqlSession.selectOne("selectProcessDefinitionByDeploymentAndKey", parameters);
+  public void insertJob(JobEntity job) {
+    dbSqlSession.insert(job);
   }
 
-
-  // job /////////////////////////////////////////////////////////////////////
+  public void deleteJob(String jobId) {
+    dbSqlSession.delete(JobEntity.class, jobId);
+  }
 
   public JobEntity findJobById(String jobId) {
     return (JobEntity) dbSqlSession.selectOne("selectJob", jobId);
@@ -153,8 +174,8 @@ public class DbRuntimeSession implements Session, RuntimeSession {
   }
 
   @SuppressWarnings("unchecked")
-  public List<TimerEntity> findTimersByExecutionId(String executionId) {
-    return dbSqlSession.selectList("selectTimersByExecutionId", executionId);
+  public List<TimerEntity> findTimersByActivityInstanceId(String activityInstanceId) {
+    return dbSqlSession.selectList("selectTimersByActivityInstanceId", activityInstanceId);
   }
 
   @SuppressWarnings("unchecked")
@@ -175,41 +196,5 @@ public class DbRuntimeSession implements Session, RuntimeSession {
   }
 
   public void flush() {
-  }
-
-  public ActivityInstanceEntity findActivityInstanceByProcessInstanceIdAndActivityId(String processInstanceId, String activityId) {
-    throw new UnsupportedOperationException("please implement me");
-  }
-
-  public ProcessInstanceEntity findProcessInstanceById(String processInstanceId) {
-    throw new UnsupportedOperationException("please implement me");
-  }
-
-  public void deleteActivityInstance(String activityInstanceId) {
-    dbSqlSession.delete(ActivityInstanceEntity.class, activityInstanceId);
-  }
-
-  public void deleteByteArray(String byteArrayId) {
-    dbSqlSession.delete(ByteArrayEntity.class, byteArrayId);
-  }
-
-  public void deleteJob(String jobId) {
-    dbSqlSession.delete(JobEntity.class, jobId);
-  }
-
-  public void deleteProcessInstance(String processInstanceId) {
-    dbSqlSession.delete(ProcessInstanceEntity.class, processInstanceId);
-  }
-
-  public void deleteVariableInstance(String variableInstanceId) {
-    dbSqlSession.delete(VariableInstanceEntity.class, variableInstanceId);
-  }
-
-  public void insertByteArray(ByteArrayEntity byteArrayEntity) {
-    dbSqlSession.insert(byteArrayEntity);
-  }
-
-  public void insertVariableInstance(VariableInstanceEntity variableInstanceEntity) {
-    dbSqlSession.insert(variableInstanceEntity);
   }
 }

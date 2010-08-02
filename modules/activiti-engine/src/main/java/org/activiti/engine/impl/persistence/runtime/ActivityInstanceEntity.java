@@ -34,6 +34,9 @@ public class ActivityInstanceEntity extends ActivityInstanceImpl implements Acti
     super(activity, parent);
   }
   
+  public void delete() {
+  }
+  
   public Object getPersistentState() {
     throw new UnsupportedOperationException("please implement me");
   }
@@ -77,4 +80,5 @@ public class ActivityInstanceEntity extends ActivityInstanceImpl implements Acti
   public void setProcessDefinitionId(String processDefinitionId) {
     this.processDefinitionId = processDefinitionId;
   }
+
 }

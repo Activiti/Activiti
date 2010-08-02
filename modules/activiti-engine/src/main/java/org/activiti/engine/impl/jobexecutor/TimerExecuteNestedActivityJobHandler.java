@@ -14,8 +14,10 @@ package org.activiti.engine.impl.jobexecutor;
 
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.interceptor.CommandContext;
-import org.activiti.impl.definition.ActivityImpl;
-import org.activiti.impl.execution.ExecutionImpl;
+import org.activiti.engine.impl.persistence.runtime.ActivityInstanceEntity;
+import org.activiti.engine.impl.persistence.runtime.ProcessInstanceEntity;
+import org.activiti.pvm.impl.process.ActivityImpl;
+import org.activiti.pvm.impl.runtime.ExecutionContextImpl;
 
 
 /**
@@ -29,40 +31,15 @@ public class TimerExecuteNestedActivityJobHandler implements JobHandler {
     return TYPE;
   }
 
-  public void execute(String configuration, ExecutionImpl execution, CommandContext commandContext) {
-    ActivityImpl activity = execution.getActivity();
-    ActivityImpl borderEventActivity = findBorderEventActivity(activity, configuration);
+  public void execute(String configuration, ProcessInstanceEntity processInstance, ActivityInstanceEntity activityInstance, CommandContext commandContext) {
+    ActivityImpl activity = activityInstance.getActivity();
+    ActivityImpl borderEventActivity = activity.getProcessDefinition().findActivity(configuration);
 
     if (borderEventActivity == null) {
       throw new ActivitiException("Error while firing timer: activity " + configuration + " not found");
     }
     
-    // TODO in case of concurrency inside the timed scope, 
-    // more execution juggling needs to be implemented here. 
-    
-    execution.executeActivity(borderEventActivity);
+    new ExecutionContextImpl()
+      .executeTimerNestedActivity(borderEventActivity);
   }
-  
-  /**
-   * Looks for a nested activity with a given name, starting at the
-   * 'currentActivity', traversing its parents until the activity is found or
-   * the top-level is reached without result.
-   * 
-   * @param currentActivity
-   *          The activity to start the search from
-   * @param eventActivityName
-   *          The name of the nested activity that is searched
-   */
-  protected ActivityImpl findBorderEventActivity(ActivityImpl currentActivity, String eventActivityName) {
-    ActivityImpl borderEventActivity = currentActivity.getActivity(eventActivityName);
-    if (borderEventActivity == null) {
-      ActivityImpl parentActivity = currentActivity.getParentActivity();
-      while (parentActivity != null && borderEventActivity == null) {
-        borderEventActivity = parentActivity.findActivity(eventActivityName);
-        parentActivity = parentActivity.getParentActivity();
-      }
-    }
-    return borderEventActivity;
-  }
-  
 }

@@ -13,14 +13,13 @@
 
 package org.activiti.engine.impl.persistence.runtime;
 
-import javax.el.VariableMapper;
-
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ProcessInstance;
 import org.activiti.engine.impl.cfg.RuntimeSession;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.PersistentObject;
 import org.activiti.pvm.impl.process.ProcessDefinitionImpl;
+import org.activiti.pvm.impl.runtime.ActivityInstanceImpl;
 import org.activiti.pvm.impl.runtime.ProcessInstanceImpl;
 
 
@@ -54,23 +53,24 @@ public class ProcessInstanceEntity extends ProcessInstanceImpl implements Proces
   }
   
   public void delete() {
-    for (ActivityInstanceEntity activityInstance: getActivityInstances()) {
-      activityInstance.delete();
+    for (ActivityInstanceImpl activityInstance: getActivityInstances()) {
+      ((ActivityInstanceEntity)activityInstance).delete();
     }
-    for (VariableInstanceEntity variableInstance: ) {
-      
+    for (VariableInstanceEntity variableInstance: getVariableInstanceMap().getVariableInstances().values()) {
+      variableInstance.delete();
     }
   }
   
+  public VariableInstanceMap getVariableInstanceMap() {
+    if (variableInstanceMap==null) {
+      variableInstanceMap = new ProcessInstanceVariableMap(this);
+    }
+    return variableInstanceMap;
+  }
+  
+
   public Object getPersistentState() {
     throw new ActivitiException("not yet implemented");
-  }
-  
-  public VariableMap getVariableMap() {
-    if (variableMap==null) {
-      variableMap = new VariableInstanceMap();
-      
-    }
   }
   
   // getters and setters //////////////////////////////////////////////////////

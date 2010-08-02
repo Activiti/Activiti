@@ -114,4 +114,8 @@ public abstract class VariableInstanceMap implements Serializable {
     
     return createVariableInstance(variableName, type, value);
   }
+  
+  public Map<String, VariableInstanceEntity> getVariableInstances() {
+    return variableInstances;
+  }
 }

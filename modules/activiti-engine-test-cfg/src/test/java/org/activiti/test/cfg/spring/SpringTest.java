@@ -17,18 +17,19 @@ import static org.junit.Assert.assertEquals;
 import java.util.List;
 
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.ActivityInstance;
 import org.activiti.engine.Deployment;
-import org.activiti.engine.Execution;
 import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.ProcessInstance;
-import org.activiti.engine.RuntimeService;
 import org.activiti.engine.RepositoryService;
+import org.activiti.engine.RuntimeService;
 import org.activiti.engine.Task;
+import org.activiti.engine.impl.persistence.runtime.ProcessInstanceEntity;
 import org.activiti.engine.impl.persistence.task.TaskDefinition;
 import org.activiti.engine.impl.util.CollectionUtil;
 import org.activiti.engine.impl.util.LogUtil;
-import org.activiti.impl.definition.ActivityImpl;
-import org.activiti.impl.execution.ExecutionImpl;
+import org.activiti.pvm.impl.process.ActivityImpl;
+import org.activiti.pvm.impl.runtime.ActivityInstanceImpl;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -74,14 +75,16 @@ public class SpringTest {
   public void testProcessExecutionWithTaskAssignedFromExpression() {
 
     int before = processEngine.getTaskService().findAssignedTasks("kermit").size();
-    ProcessInstance execution = processEngine.getRuntimeService().startProcessInstanceByKey("taskAssigneeExpressionProcess");
-    assertEquals("[theTask]", execution.findActivityIds().toString());
-    assertEquals("${user}", ((TaskDefinition) ReflectionTestUtils.getField(((ActivityImpl) ((ExecutionImpl) execution).getActivity()).getActivityBehavior(),
+    ProcessInstance processInstance = processEngine.getRuntimeService().startProcessInstanceByKey("taskAssigneeExpressionProcess");
+    assertEquals("[theTask]", processInstance.findActivityIds().toString());
+    ProcessInstanceEntity processInstanceEntity = (ProcessInstanceEntity) processInstance;
+    ActivityInstanceImpl activityInstance = processInstanceEntity.getActivityInstances().iterator().next();
+    assertEquals("${user}", ((TaskDefinition) ReflectionTestUtils.getField(((ActivityImpl) activityInstance.getActivity()).getActivityBehavior(),
             "taskDefinition")).getAssignee());
     List<Task> tasks = processEngine.getTaskService().findAssignedTasks("kermit");
     assertEquals(before + 1, tasks.size());
 
-    processEngine.getRuntimeService().deleteProcessInstance(execution.getId());
+    processEngine.getRuntimeService().deleteProcessInstance(processInstance.getId());
     
   }
 
@@ -90,9 +93,9 @@ public class SpringTest {
     RuntimeService runtimeService = processEngine.getRuntimeService();
     ProcessInstance pi = runtimeService.startProcessInstanceByKey("javaServiceDelegation", 
             CollectionUtil.singletonMap("input", "Activiti BPM Engine"));
-    Execution execution = runtimeService.findActivityInstanceByProcessInstanceIdAndActivityId(pi.getId(), "waitState");
-    assertEquals("ACTIVITI BPM ENGINE", runtimeService.getVariable(execution.getId(), "input"));
-    processEngine.getRuntimeService().deleteProcessInstance(execution.getId());
+    ActivityInstance activityInstance = runtimeService.findActivityInstanceByProcessInstanceIdAndActivityId(pi.getId(), "waitState");
+    assertEquals("ACTIVITI BPM ENGINE", runtimeService.getVariable(activityInstance.getId(), "input"));
+    processEngine.getRuntimeService().deleteProcessInstance(activityInstance.getId());
   }
 
   @Test

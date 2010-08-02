@@ -21,6 +21,7 @@ import org.activiti.engine.impl.cfg.TimerSession;
 import org.activiti.engine.impl.cfg.TransactionState;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.interceptor.Session;
+import org.activiti.engine.impl.persistence.runtime.ActivityInstanceEntity;
 import org.activiti.engine.impl.persistence.runtime.TimerEntity;
 import org.activiti.engine.impl.util.ClockUtil;
 
@@ -46,7 +47,7 @@ public class JobExecutorTimerSession implements TimerSession, Session {
     
     commandContext
       .getRuntimeSession()
-      .insert(timer);
+      .insertJob(timer);
     
     // Check if this timer fires before the next time the job executor will check for new timers to fire.
     // This is highly unlikely because normally waitTimeInMillis is 5000 (5 seconds)
@@ -60,11 +61,11 @@ public class JobExecutorTimerSession implements TimerSession, Session {
     }
   }
 
-  public void cancelTimers(ExecutionImpl execution) {
+  public void cancelTimers(ActivityInstanceEntity activityInstance) {
     RuntimeSession runtimeSession = commandContext.getRuntimeSession();
-    List<TimerEntity> timers = runtimeSession.findTimersByExecutionId(execution.getId()); 
+    List<TimerEntity> timers = runtimeSession.findTimersByActivityInstanceId(null); 
     for (TimerEntity timer: timers) {
-      runtimeSession.delete(timer);
+      runtimeSession.deleteJob(timer.getId());
     }
   }
 

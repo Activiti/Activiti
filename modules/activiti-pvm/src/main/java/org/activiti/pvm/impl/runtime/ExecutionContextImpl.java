@@ -91,6 +91,10 @@ public class ExecutionContextImpl implements EventContext, ActivityContext {
     throw new UnsupportedOperationException("implement me");
   }
 
+  public void executeTimerNestedActivity(ActivityImpl borderEventActivity) {
+    throw new UnsupportedOperationException("please implement me");
+  }
+
   private void fireEvent(ProcessElementImpl processElement, String event, AtomicOperation eventPostOperation) {
     eventListeners = processElement
       .getEventListeners()

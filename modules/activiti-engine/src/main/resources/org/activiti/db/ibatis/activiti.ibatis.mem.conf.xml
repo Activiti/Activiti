@@ -10,7 +10,7 @@
 		<mapper resource="org/activiti/db/ibatis/engine.mapping.xml" />
 		<mapper resource="org/activiti/db/ibatis/repository.mapping.xml" />
 		<mapper resource="org/activiti/db/ibatis/processdefinition.mapping.xml" />
-		<mapper resource="org/activiti/db/ibatis/execution.mapping.xml" />
+		<mapper resource="org/activiti/db/ibatis/runtime.mapping.xml" />
 		<mapper resource="org/activiti/db/ibatis/history.mapping.xml" />
 		<mapper resource="org/activiti/db/ibatis/job.mapping.xml" />
 		<mapper resource="org/activiti/db/ibatis/task.mapping.xml" />
