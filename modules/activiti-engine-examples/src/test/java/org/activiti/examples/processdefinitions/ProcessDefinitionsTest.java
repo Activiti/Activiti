@@ -12,41 +12,32 @@
  */
 package org.activiti.examples.processdefinitions;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import org.activiti.engine.ProcessDefinition;
-import org.activiti.test.LogInitializer;
-import org.activiti.test.ProcessDeployer;
-import org.junit.Rule;
-import org.junit.Test;
+import org.activiti.engine.impl.bpmn.deployer.BpmnDeployer;
+import org.activiti.engine.test.ProcessEngineTestCase;
 
 /**
  * @author Tom Baeyens
  */
-public class ProcessDefinitionsTest {
+public class ProcessDefinitionsTest extends ProcessEngineTestCase {
 
   private static final String NAMESPACE = "xmlns='http://www.omg.org/spec/BPMN/20100524/MODEL'";
 
   private static final String TARGET_NAMESPACE = "targetNamespace='http://activiti.org/BPMN20'";
 
-  @Rule
-  public LogInitializer logSetup = new LogInitializer();
-
-  @Rule
-  public ProcessDeployer deployer = new ProcessDeployer();
-
-  @Test
   public void testGetProcessDefinitions() {
-    deployer.deployProcessString(("<definitions " + NAMESPACE + " " + TARGET_NAMESPACE + ">" + "  <process id='IDR' name='Insurance Damage Report 1' />" + "</definitions>"));
-    deployer.deployProcessString(("<definitions " + NAMESPACE + " " + TARGET_NAMESPACE + ">" + "  <process id='IDR' name='Insurance Damage Report 2' />" + "</definitions>"));
-    deployer.deployProcessString(("<definitions " + NAMESPACE + " " + TARGET_NAMESPACE + ">" + "  <process id='IDR' name='Insurance Damage Report 3' />" + "</definitions>"));
-    deployer.deployProcessString(("<definitions " + NAMESPACE + " " + TARGET_NAMESPACE + ">" + "  <process id='EN' name='Expense Note 1' />" + "</definitions>"));
-    deployer.deployProcessString(("<definitions " + NAMESPACE + " " + TARGET_NAMESPACE + ">" + "  <process id='EN' name='Expense Note 2' />" + "</definitions>"));
+    List<String> deploymentIds = new ArrayList<String>();
+    deploymentIds.add(deployProcessString(("<definitions " + NAMESPACE + " " + TARGET_NAMESPACE + ">" + "  <process id='IDR' name='Insurance Damage Report 1' />" + "</definitions>")));
+    deploymentIds.add(deployProcessString(("<definitions " + NAMESPACE + " " + TARGET_NAMESPACE + ">" + "  <process id='IDR' name='Insurance Damage Report 2' />" + "</definitions>")));
+    deploymentIds.add(deployProcessString(("<definitions " + NAMESPACE + " " + TARGET_NAMESPACE + ">" + "  <process id='IDR' name='Insurance Damage Report 3' />" + "</definitions>")));
+    deploymentIds.add(deployProcessString(("<definitions " + NAMESPACE + " " + TARGET_NAMESPACE + ">" + "  <process id='EN' name='Expense Note 1' />" + "</definitions>")));
+    deploymentIds.add(deployProcessString(("<definitions " + NAMESPACE + " " + TARGET_NAMESPACE + ">" + "  <process id='EN' name='Expense Note 2' />" + "</definitions>")));
 
-    List<ProcessDefinition> processDefinitions = deployer.getRepositoryService().findProcessDefinitions();
+    List<ProcessDefinition> processDefinitions = repositoryService.findProcessDefinitions();
     assertNotNull(processDefinitions);
 
     assertEquals(5, processDefinitions.size());
@@ -81,14 +72,15 @@ public class ProcessDefinitionsTest {
     assertEquals("IDR:1", processDefinition.getId());
     assertEquals(1, processDefinition.getVersion());
 
+    deleteDeployments(deploymentIds);
   }
 
-  @Test
   public void testDeployIdenticalProcessDefinitions() {
-    deployer.deployProcessString(("<definitions " + NAMESPACE + " " + TARGET_NAMESPACE + ">" + "  <process id='IDR' name='Insurance Damage Report' />" + "</definitions>"));
-    deployer.deployProcessString(("<definitions " + NAMESPACE + " " + TARGET_NAMESPACE + ">" + "  <process id='IDR' name='Insurance Damage Report' />" + "</definitions>"));
+    List<String> deploymentIds = new ArrayList<String>();
+    deploymentIds.add(deployProcessString(("<definitions " + NAMESPACE + " " + TARGET_NAMESPACE + ">" + "  <process id='IDR' name='Insurance Damage Report' />" + "</definitions>")));
+    deploymentIds.add(deployProcessString(("<definitions " + NAMESPACE + " " + TARGET_NAMESPACE + ">" + "  <process id='IDR' name='Insurance Damage Report' />" + "</definitions>")));
 
-    List<ProcessDefinition> processDefinitions = deployer.getRepositoryService().findProcessDefinitions();
+    List<ProcessDefinition> processDefinitions = repositoryService.findProcessDefinitions();
     assertNotNull(processDefinitions);
     assertEquals(1, processDefinitions.size());
 
@@ -98,5 +90,19 @@ public class ProcessDefinitionsTest {
     assertEquals("IDR:1", processDefinition.getId());
     assertEquals(1, processDefinition.getVersion());
 
+    deleteDeployments(deploymentIds);
   }
+  
+  private String deployProcessString(String processString) {
+    String resourceName = "xmlString." + BpmnDeployer.BPMN_RESOURCE_SUFFIX;
+    return repositoryService.createDeployment().addString(resourceName, processString).deploy().getId();
+  }
+  
+  private void deleteDeployments(Collection<String> deploymentIds) {
+    for (String deploymentId : deploymentIds) {
+      repositoryService.deleteDeployment(deploymentId);
+    }
+  }
+  
+  
 }

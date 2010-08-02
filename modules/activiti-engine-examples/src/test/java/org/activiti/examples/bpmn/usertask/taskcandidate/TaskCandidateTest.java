@@ -12,43 +12,25 @@
  */
 package org.activiti.examples.bpmn.usertask.taskcandidate;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
 import java.util.List;
 
-import org.activiti.engine.IdentityService;
 import org.activiti.engine.ProcessInstance;
 import org.activiti.engine.Task;
-import org.activiti.engine.TaskService;
 import org.activiti.engine.identity.Group;
 import org.activiti.engine.identity.User;
 import org.activiti.engine.test.Deployment;
-import org.activiti.test.LogInitializer;
-import org.activiti.test.ProcessDeployer;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
+import org.activiti.engine.test.ProcessEngineTestCase;
 
 /**
  * @author Joram Barrez
  */
-public class TaskCandidateTest {
+public class TaskCandidateTest extends ProcessEngineTestCase {
 
   private static final String KERMIT = "kermit";
 
   private static final String GONZO = "gonzo";
 
-  @Rule
-  public LogInitializer logSetup = new LogInitializer();
-
-  @Rule
-  public ProcessDeployer deployer = new ProcessDeployer();
-
-  @Before
   public void setUp() throws Exception {
-    IdentityService identityService = deployer.getIdentityService();
     Group accountants = identityService.newGroup("accountancy");
     identityService.saveGroup(accountants);
     Group managers = identityService.newGroup("management");
@@ -67,9 +49,7 @@ public class TaskCandidateTest {
     identityService.createMembership(GONZO, "sales");
   }
 
-  @After
   public void tearDown() throws Exception {
-    IdentityService identityService = deployer.getIdentityService();
     identityService.deleteUser(KERMIT);
     identityService.deleteUser(GONZO);
     identityService.deleteGroup("sales");
@@ -77,15 +57,13 @@ public class TaskCandidateTest {
     identityService.deleteGroup("management");
   }
 
-  @Test
   @Deployment
   public void testSingleCandidateGroup() {
 
     // Deploy and start process
-    ProcessInstance processInstance = deployer.getProcessService().startProcessInstanceByKey("singleCandidateGroup");
+    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("singleCandidateGroup");
 
     // Task should not yet be assigned to kermit
-    TaskService taskService = deployer.getTaskService();
     List<Task> tasks = taskService.findAssignedTasks(KERMIT);
     assertTrue(tasks.isEmpty());
 
@@ -110,18 +88,16 @@ public class TaskCandidateTest {
     // Completing the task ends the process
     taskService.complete(task.getId());
 
-    deployer.assertProcessEnded(processInstance.getId());
+    assertProcessEnded(processInstance.getId());
   }
 
-  @Test
   @Deployment
   public void testMultipleCandidateGroups() {
 
     // Deploy and start process
-    ProcessInstance processInstance = deployer.getProcessService().startProcessInstanceByKey("multipleCandidatesGroup");
+    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("multipleCandidatesGroup");
 
     // Task should not yet be assigned to anyone
-    TaskService taskService = deployer.getTaskService();
     List<Task> tasks = taskService.findAssignedTasks(KERMIT);
     assertTrue(tasks.isEmpty());
     tasks = taskService.findAssignedTasks(GONZO);
@@ -155,25 +131,23 @@ public class TaskCandidateTest {
     // Completing the task ends the process
     taskService.complete(task.getId());
 
-    deployer.assertProcessEnded(processInstance.getId());
+    assertProcessEnded(processInstance.getId());
   }
 
-  @Test
   @Deployment
   public void testMultipleCandidateUsers() {
-    deployer.getProcessService().startProcessInstanceByKey("multipleCandidateUsers");
+    runtimeService.startProcessInstanceByKey("multipleCandidateUsers");
 
-    assertEquals(1, deployer.getTaskService().findUnassignedTasks(GONZO).size());
-    assertEquals(1, deployer.getTaskService().findUnassignedTasks(KERMIT).size());
+    assertEquals(1, taskService.findUnassignedTasks(GONZO).size());
+    assertEquals(1, taskService.findUnassignedTasks(KERMIT).size());
   }
 
-  @Test
   @Deployment
   public void testMixedCandidateUserAndGroup() {
-    deployer.getProcessService().startProcessInstanceByKey("mixedCandidateUserAndGroup");
+    runtimeService.startProcessInstanceByKey("mixedCandidateUserAndGroup");
 
-    assertEquals(1, deployer.getTaskService().findUnassignedTasks(GONZO).size());
-    assertEquals(1, deployer.getTaskService().findUnassignedTasks(KERMIT).size());
+    assertEquals(1, taskService.findUnassignedTasks(GONZO).size());
+    assertEquals(1, taskService.findUnassignedTasks(KERMIT).size());
   }
 
 }

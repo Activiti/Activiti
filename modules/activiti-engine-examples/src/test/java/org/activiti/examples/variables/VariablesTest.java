@@ -12,9 +12,6 @@
  */
 package org.activiti.examples.variables;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -24,22 +21,13 @@ import java.util.Map;
 
 import org.activiti.engine.ProcessInstance;
 import org.activiti.engine.test.Deployment;
-import org.activiti.test.LogInitializer;
-import org.activiti.test.ProcessDeployer;
-import org.junit.Rule;
-import org.junit.Test;
+import org.activiti.engine.test.ProcessEngineTestCase;
 
 /**
  * @author Tom Baeyens
  */
-public class VariablesTest {
+public class VariablesTest extends ProcessEngineTestCase {
 
-  @Rule
-  public LogInitializer logSetup = new LogInitializer();
-  @Rule
-  public ProcessDeployer deployer = new ProcessDeployer();
-
-  @Test
   @Deployment
   public void testBasicVariableOperations() {
  
@@ -59,9 +47,9 @@ public class VariablesTest {
     variables.put("nihil", null);
     variables.put("numbers", serializable);
     variables.put("manybits", bytes);
-    ProcessInstance processInstance = deployer.getProcessService().startProcessInstanceByKey("taskAssigneeProcess", variables);
+    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("taskAssigneeProcess", variables);
 
-    variables = deployer.getProcessService().getVariables(processInstance.getId());
+    variables = runtimeService.getVariables(processInstance.getId());
     assertEquals(928374L, variables.get("cost center"));
     assertEquals("coca-cola", variables.get("customer"));
     assertEquals("<xml />", variables.get("message"));
@@ -71,15 +59,15 @@ public class VariablesTest {
     assertTrue(Arrays.equals(bytes, (byte[]) variables.get("manybits")));
     assertEquals(7, variables.size());
 
-    deployer.getProcessService().setVariable(processInstance.getId(), "cost center", null);
-    deployer.getProcessService().setVariable(processInstance.getId(), "customer", null);
-    deployer.getProcessService().setVariable(processInstance.getId(), "message", null);
-    deployer.getProcessService().setVariable(processInstance.getId(), "start date", null);
-    deployer.getProcessService().setVariable(processInstance.getId(), "nihil", null);
-    deployer.getProcessService().setVariable(processInstance.getId(), "numbers", null);
-    deployer.getProcessService().setVariable(processInstance.getId(), "manybits", null);
+    runtimeService.setVariable(processInstance.getId(), "cost center", null);
+    runtimeService.setVariable(processInstance.getId(), "customer", null);
+    runtimeService.setVariable(processInstance.getId(), "message", null);
+    runtimeService.setVariable(processInstance.getId(), "start date", null);
+    runtimeService.setVariable(processInstance.getId(), "nihil", null);
+    runtimeService.setVariable(processInstance.getId(), "numbers", null);
+    runtimeService.setVariable(processInstance.getId(), "manybits", null);
 
-    variables = deployer.getProcessService().getVariables(processInstance.getId());
+    variables = runtimeService.getVariables(processInstance.getId());
     assertEquals(null, variables.get("cost center"));
     assertEquals(null, variables.get("customer"));
     assertEquals(null, variables.get("message"));
@@ -89,15 +77,15 @@ public class VariablesTest {
     assertEquals(null, variables.get("manybits"));
     assertEquals(7, variables.size());
 
-    deployer.getProcessService().setVariable(processInstance.getId(), "new var", "hi");
-    deployer.getProcessService().setVariable(processInstance.getId(), "cost center", 9987L);
-    deployer.getProcessService().setVariable(processInstance.getId(), "customer", "colgate");
-    deployer.getProcessService().setVariable(processInstance.getId(), "message", "{json}");
-    deployer.getProcessService().setVariable(processInstance.getId(), "start date", now);
-    deployer.getProcessService().setVariable(processInstance.getId(), "numbers", serializable);
-    deployer.getProcessService().setVariable(processInstance.getId(), "manybits", bytes);
+    runtimeService.setVariable(processInstance.getId(), "new var", "hi");
+    runtimeService.setVariable(processInstance.getId(), "cost center", 9987L);
+    runtimeService.setVariable(processInstance.getId(), "customer", "colgate");
+    runtimeService.setVariable(processInstance.getId(), "message", "{json}");
+    runtimeService.setVariable(processInstance.getId(), "start date", now);
+    runtimeService.setVariable(processInstance.getId(), "numbers", serializable);
+    runtimeService.setVariable(processInstance.getId(), "manybits", bytes);
 
-    variables = deployer.getProcessService().getVariables(processInstance.getId());
+    variables = runtimeService.getVariables(processInstance.getId());
     assertEquals("hi", variables.get("new var"));
     assertEquals(9987L, variables.get("cost center"));
     assertEquals("colgate", variables.get("customer"));

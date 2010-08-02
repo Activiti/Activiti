@@ -13,36 +13,21 @@
 
 package org.activiti.examples.bpmn.subprocess;
 
-import static org.junit.Assert.assertEquals;
-
 import java.util.List;
 
 import org.activiti.engine.Deployment;
 import org.activiti.engine.ProcessInstance;
-import org.activiti.engine.RepositoryService;
 import org.activiti.engine.Task;
 import org.activiti.engine.TaskQuery;
-import org.activiti.engine.TaskService;
-import org.activiti.test.LogInitializer;
-import org.activiti.test.ProcessDeployer;
-import org.junit.Rule;
-import org.junit.Test;
+import org.activiti.engine.test.ProcessEngineTestCase;
 
 
 /**
  * @author Joram Barrez
  */
-public class SubProcessTest {
+public class SubProcessTest extends ProcessEngineTestCase {
   
-  @Rule
-  public LogInitializer logSetup = new LogInitializer();
-  @Rule
-  public ProcessDeployer deployer = new ProcessDeployer();
-  
-  @Test
   public void testSimpleSubProcess() {
-    RepositoryService repositoryService = deployer.getRepositoryService();
-    TaskService taskService = deployer.getTaskService();
     
     Deployment deployment = 
       repositoryService.createDeployment()
@@ -50,7 +35,7 @@ public class SubProcessTest {
                   .deploy();
     
     // After staring the process, both tasks in the subprocess should be active
-    ProcessInstance pi = deployer.getProcessService().startProcessInstanceByKey("fixSystemFailure");
+    ProcessInstance pi = runtimeService.startProcessInstanceByKey("fixSystemFailure");
     List<Task> tasks = taskService.createTaskQuery()
                                   .processInstance(pi.getId())
                                   .orderAsc(TaskQuery.PROPERTY_NAME)

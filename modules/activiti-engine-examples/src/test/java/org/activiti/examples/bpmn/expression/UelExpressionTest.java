@@ -13,36 +13,20 @@
 
 package org.activiti.examples.bpmn.expression;
 
-import static org.junit.Assert.assertEquals;
-
 import org.activiti.engine.ProcessInstance;
-import org.activiti.engine.RuntimeService;
 import org.activiti.engine.Task;
-import org.activiti.engine.TaskService;
 import org.activiti.engine.impl.util.CollectionUtil;
 import org.activiti.engine.test.Deployment;
-import org.activiti.test.LogInitializer;
-import org.activiti.test.ProcessDeployer;
-import org.junit.Rule;
-import org.junit.Test;
+import org.activiti.engine.test.ProcessEngineTestCase;
 
 
 /**
  * @author Joram Barrez
  */
-public class UelExpressionTest {
+public class UelExpressionTest extends ProcessEngineTestCase {
 
-  @Rule
-  public LogInitializer logSetup = new LogInitializer();
-  @Rule
-  public ProcessDeployer deployer = new ProcessDeployer();
-  
-  @Test
   @Deployment
   public void testValueAndMethodExpression() {
-    RuntimeService runtimeService = deployer.getProcessService();
-    TaskService taskService = deployer.getTaskService();
-    
     // An order of price 150 is a standard order (goes through an UEL value expression)
     UelExpressionTestOrder order = new UelExpressionTestOrder(150);
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("uelExpressions", 

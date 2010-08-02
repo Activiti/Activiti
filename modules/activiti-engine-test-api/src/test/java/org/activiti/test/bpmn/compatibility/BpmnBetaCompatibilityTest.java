@@ -13,18 +13,13 @@
 
 package org.activiti.test.bpmn.compatibility;
 
-import static org.junit.Assert.*;
-
 import java.util.Arrays;
 
 import org.activiti.engine.ProcessInstance;
 import org.activiti.engine.Task;
 import org.activiti.engine.impl.util.CollectionUtil;
 import org.activiti.engine.test.Deployment;
-import org.activiti.test.LogInitializer;
-import org.activiti.test.ProcessDeployer;
-import org.junit.Rule;
-import org.junit.Test;
+import org.activiti.engine.test.ProcessEngineTestCase;
 
 /**
  * Test cases for checking if process models created with the Activiti Modeler,
@@ -35,17 +30,11 @@ import org.junit.Test;
  * 
  * @author Joram Barrez
  */
-public class BpmnBetaCompatibilityTest {
+public class BpmnBetaCompatibilityTest extends ProcessEngineTestCase {
   
-  @Rule
-  public LogInitializer logSetup = new LogInitializer();
-  @Rule
-  public ProcessDeployer deployer = new ProcessDeployer();
-  
-  @Test
   @Deployment
   public void testStartToEndProcess() {
-    ProcessInstance processInstance = deployer.getProcessService().startProcessInstanceByKey("startToEnd");
+    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("startToEnd");
     assertTrue(processInstance.isEnded());
   }
   
@@ -53,18 +42,17 @@ public class BpmnBetaCompatibilityTest {
    * One of the changes from beta->final was the scriptLanguage->scriptFormat change
    * This test verifies that the parsing is done correctly.
    */
-  @Test
   @Deployment
   public void testScriptTask() {
-    ProcessInstance processInstance = deployer.getProcessService()
+    ProcessInstance processInstance = runtimeService
       .startProcessInstanceByKey("scriptTask", CollectionUtil.singletonMap("numbers", Arrays.asList(1,2,3)));
 
-    Task task = deployer.getTaskService().createTaskQuery()
+    Task task = taskService.createTaskQuery()
       .processInstance(processInstance.getId())
       .singleResult();
     assertEquals("Human task", task.getName());
     
-    Integer sum = (Integer) deployer.getProcessService().getVariable(processInstance.getId(), "sum"); 
+    Integer sum = (Integer) runtimeService.getVariable(processInstance.getId(), "sum"); 
     assertEquals(6, sum.intValue());
   }
 

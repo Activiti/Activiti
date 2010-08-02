@@ -12,9 +12,6 @@
  */
 package org.activiti.test.bpmn.gateway;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,39 +20,27 @@ import org.activiti.engine.ProcessInstance;
 import org.activiti.engine.Task;
 import org.activiti.engine.impl.util.CollectionUtil;
 import org.activiti.engine.test.Deployment;
-import org.activiti.test.LogInitializer;
-import org.activiti.test.ProcessDeployer;
-import org.junit.Rule;
+import org.activiti.engine.test.ProcessEngineTestCase;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
 
 /**
  * @author Joram Barrez
  */
-public class ExclusiveGatewayTest {
+public class ExclusiveGatewayTest extends ProcessEngineTestCase {
 
-  @Rule
-  public ExpectedException exception = ExpectedException.none();
-  @Rule
-  public LogInitializer logSetup = new LogInitializer();
-  @Rule
-  public ProcessDeployer deployer = new ProcessDeployer();
-
-  @Test
   @Deployment
   public void testDivergingExclusiveGateway() {
     for (int i = 1; i <= 3; i++) {
-      ProcessInstance pi = deployer.getProcessService().startProcessInstanceByKey("exclusiveGwDiverging", CollectionUtil.singletonMap("input", i));
-      assertEquals("Task " + i, deployer.getTaskService().createTaskQuery().singleResult().getName());
-      deployer.getProcessService().deleteProcessInstance(pi.getId());
+      ProcessInstance pi = runtimeService.startProcessInstanceByKey("exclusiveGwDiverging", CollectionUtil.singletonMap("input", i));
+      assertEquals("Task " + i, taskService.createTaskQuery().singleResult().getName());
+      runtimeService.deleteProcessInstance(pi.getId());
     }
   }
 
-  @Test
   @Deployment
   public void testMergingExclusiveGateway() {
-    deployer.getProcessService().startProcessInstanceByKey("exclusiveGwMerging");
-    assertEquals(3, deployer.getTaskService().createTaskQuery().count());
+    runtimeService.startProcessInstanceByKey("exclusiveGwMerging");
+    assertEquals(3, taskService.createTaskQuery().count());
   }
 
   // If there are multiple outgoing seqFlow with valid conditions, the first
@@ -63,51 +48,52 @@ public class ExclusiveGatewayTest {
   @Test
   @Deployment
   public void testMultipleValidConditions() {
-    deployer.getProcessService().startProcessInstanceByKey("exclusiveGwMultipleValidConditions", CollectionUtil.singletonMap("input", 5));
-    assertEquals("Task 2", deployer.getTaskService().createTaskQuery().singleResult().getName());
+    runtimeService.startProcessInstanceByKey("exclusiveGwMultipleValidConditions", CollectionUtil.singletonMap("input", 5));
+    assertEquals("Task 2", taskService.createTaskQuery().singleResult().getName());
   }
 
-  @Test
   @Deployment
   public void testNoSequenceFlowSelected() {
-    exception.expect(ActivitiException.class);
-    exception.expectMessage("No outgoing sequence flow of the exclusive gateway " + "'exclusiveGw' could be selected for continuing the process");
-    deployer.getProcessService().startProcessInstanceByKey("exclusiveGwNoSeqFlowSelected", CollectionUtil.singletonMap("input", 4));
+    try {
+      runtimeService.startProcessInstanceByKey("exclusiveGwNoSeqFlowSelected", CollectionUtil.singletonMap("input", 4));
+      fail();
+    } catch (ActivitiException e) {
+      assertTextPresent("No outgoing sequence flow of the exclusive gateway " + "'exclusiveGw' could be selected for continuing the process", e.getMessage());
+    }
   }
   
   /**
    * Test for bug ACT-10: whitespaces/newlines in expressions lead to exceptions 
    */
-  @Test
   @Deployment
   public void testWhitespaceInExpression() {
     // Starting a process instance will lead to an exception if whitespace are incorrectly handled
-    deployer.getProcessService().startProcessInstanceByKey("whiteSpaceInExpression",
+    runtimeService.startProcessInstanceByKey("whiteSpaceInExpression",
             CollectionUtil.singletonMap("input", 1));
   }
   
-  @Test
   @Deployment(resources = {"/org/activiti/test/bpmn/gateway/ExclusiveGatewayTest.testDivergingExclusiveGateway.bpmn20.xml"})
   public void testUnknownVariableInExpression() {
     // Instead of 'input' we're starting a process instance with the name 'iinput' (ie. a typo)
-    exception.expect(ActivitiException.class);
-    exception.expectMessage("Unknown property used in expression");
-    deployer.getProcessService().startProcessInstanceByKey(
+    try {
+      runtimeService.startProcessInstanceByKey(
             "exclusiveGwDiverging", CollectionUtil.singletonMap("iinput", 1));
+      fail();
+    } catch (ActivitiException e) {
+      assertTextPresent("Unknown property used in expression", e.getMessage());
+    }
   }
   
-  @Test
   @Deployment
   public void testDecideBasedOnBeanProperty() {
-    deployer.getProcessService().startProcessInstanceByKey("decisionBasedOnBeanProperty", 
+    runtimeService.startProcessInstanceByKey("decisionBasedOnBeanProperty", 
             CollectionUtil.singletonMap("order", new ExclusiveGatewayTestOrder(150)));
     
-    Task task = deployer.getTaskService().createTaskQuery().singleResult();
+    Task task = taskService.createTaskQuery().singleResult();
     assertNotNull(task);
     assertEquals("Standard service", task.getName());
   }
   
-  @Test
   @Deployment
   public void testDecideBasedOnListOrArrayOfBeans() {
     List<ExclusiveGatewayTestOrder> orders = new ArrayList<ExclusiveGatewayTestOrder>();
@@ -115,10 +101,10 @@ public class ExclusiveGatewayTest {
     orders.add(new ExclusiveGatewayTestOrder(300));
     orders.add(new ExclusiveGatewayTestOrder(175));
     
-    ProcessInstance pi = deployer.getProcessService().startProcessInstanceByKey(
+    ProcessInstance pi = runtimeService.startProcessInstanceByKey(
             "decisionBasedOnListOrArrayOfBeans", CollectionUtil.singletonMap("orders", orders));
     
-    Task task = deployer.getTaskService().createTaskQuery().processInstance(pi.getId()).singleResult();
+    Task task = taskService.createTaskQuery().processInstance(pi.getId()).singleResult();
     assertNotNull(task);
     assertEquals("Gold Member service", task.getName());
     
@@ -126,32 +112,33 @@ public class ExclusiveGatewayTest {
     // Arrays are usable in exactly the same way
     ExclusiveGatewayTestOrder[] orderArray = orders.toArray(new ExclusiveGatewayTestOrder[orders.size()]);
     orderArray[1].setPrice(10);
-    pi = deployer.getProcessService().startProcessInstanceByKey(
+    pi = runtimeService.startProcessInstanceByKey(
             "decisionBasedOnListOrArrayOfBeans", CollectionUtil.singletonMap("orders", orderArray));
     
-    task = deployer.getTaskService().createTaskQuery().processInstance(pi.getId()).singleResult();
+    task = taskService.createTaskQuery().processInstance(pi.getId()).singleResult();
     assertNotNull(task);
     assertEquals("Basic service", task.getName());
   }
   
-  @Test
   @Deployment
   public void testDecideBasedOnBeanMethod() {
-    deployer.getProcessService().startProcessInstanceByKey("decisionBasedOnBeanMethod", 
+    runtimeService.startProcessInstanceByKey("decisionBasedOnBeanMethod", 
             CollectionUtil.singletonMap("order", new ExclusiveGatewayTestOrder(300)));
     
-    Task task = deployer.getTaskService().createTaskQuery().singleResult();
+    Task task = taskService.createTaskQuery().singleResult();
     assertNotNull(task);
     assertEquals("Gold Member service", task.getName());
   }
   
-  @Test
   @Deployment
   public void testInvalidMethodExpression() {
-    exception.expect(ActivitiException.class);
-    exception.expectMessage("Unknown method used in expression");
-    deployer.getProcessService().startProcessInstanceByKey("invalidMethodExpression", 
+    try {
+      runtimeService.startProcessInstanceByKey("invalidMethodExpression", 
             CollectionUtil.singletonMap("order", new ExclusiveGatewayTestOrder(50)));
+      fail();
+    } catch (ActivitiException e) {
+      assertTextPresent("Unknown method used in expression", e.getMessage());
+    }
   }
   
 }

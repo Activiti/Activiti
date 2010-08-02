@@ -13,35 +13,24 @@
 
 package org.activiti.examples.bpmn.gateway;
 
-import static org.junit.Assert.assertEquals;
-
 import java.util.List;
 
 import org.activiti.engine.ProcessInstance;
 import org.activiti.engine.Task;
 import org.activiti.engine.TaskQuery;
 import org.activiti.engine.test.Deployment;
-import org.activiti.test.LogInitializer;
-import org.activiti.test.ProcessDeployer;
-import org.junit.Rule;
-import org.junit.Test;
+import org.activiti.engine.test.ProcessEngineTestCase;
 
 /**
  * @author Joram Barrez
  */
-public class ParallelGatewayTest {
+public class ParallelGatewayTest extends ProcessEngineTestCase {
   
-  @Rule
-  public LogInitializer logSetup = new LogInitializer();
-  @Rule
-  public ProcessDeployer deployer = new ProcessDeployer();
-  
-  @Test
   @Deployment
   public void testForkJoin() {
 
-    ProcessInstance pi = deployer.getProcessService().startProcessInstanceByKey("forkJoin");
-    TaskQuery query = deployer.getTaskService()
+    ProcessInstance pi = runtimeService.startProcessInstanceByKey("forkJoin");
+    TaskQuery query = taskService
                         .createTaskQuery()
                         .processInstance(pi.getId())
                         .orderAsc(TaskQuery.PROPERTY_NAME);
@@ -55,20 +44,19 @@ public class ParallelGatewayTest {
     assertEquals("Ship Order", task2.getName());
     
     // Completing both tasks will join the concurrent executions
-    deployer.getTaskService().complete(tasks.get(0).getId());
-    deployer.getTaskService().complete(tasks.get(1).getId());
+    taskService.complete(tasks.get(0).getId());
+    taskService.complete(tasks.get(1).getId());
     
     tasks = query.list();
     assertEquals(1, tasks.size());
     assertEquals("Archive Order", tasks.get(0).getName());
   }
 
-  @Test
   @Deployment
   public void testUnbalancedForkJoin() {
     
-    ProcessInstance pi = deployer.getProcessService().startProcessInstanceByKey("UnbalancedForkJoin");
-    TaskQuery query = deployer.getTaskService().createTaskQuery()
+    ProcessInstance pi = runtimeService.startProcessInstanceByKey("UnbalancedForkJoin");
+    TaskQuery query = taskService.createTaskQuery()
                                  .processInstance(pi.getId())
                                  .orderAsc(TaskQuery.PROPERTY_NAME);
     
@@ -81,10 +69,10 @@ public class ParallelGatewayTest {
     assertEquals("Task 2", task2.getName());
     
     // Completing the first task should *not* trigger the join
-    deployer.getTaskService().complete(task1.getId());
+    taskService.complete(task1.getId());
     
     // Completing the second task should trigger the first join
-    deployer.getTaskService().complete(task2.getId());
+    taskService.complete(task2.getId());
     
     tasks = query.list();
     Task task3 = tasks.get(0);
@@ -94,10 +82,10 @@ public class ParallelGatewayTest {
     assertEquals("Task 4", task4.getName());
     
     // Completing the remaing tasks should trigger the second join and end the process
-    deployer.getTaskService().complete(task3.getId());
-    deployer.getTaskService().complete(task4.getId());
+    taskService.complete(task3.getId());
+    taskService.complete(task4.getId());
     
-    deployer.assertProcessEnded(pi.getId());
+    assertProcessEnded(pi.getId());
   }
   
 }

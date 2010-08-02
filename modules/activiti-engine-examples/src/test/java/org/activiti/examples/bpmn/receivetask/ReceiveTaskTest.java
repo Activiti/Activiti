@@ -13,36 +13,25 @@
 
 package org.activiti.examples.bpmn.receivetask;
 
-import static org.junit.Assert.assertNotNull;
-
 import org.activiti.engine.ActivityInstance;
 import org.activiti.engine.ProcessInstance;
 import org.activiti.engine.test.Deployment;
-import org.activiti.test.LogInitializer;
-import org.activiti.test.ProcessDeployer;
-import org.junit.Rule;
-import org.junit.Test;
+import org.activiti.engine.test.ProcessEngineTestCase;
 
 
 /**
  * @author Joram Barrez
  */
-public class ReceiveTaskTest {
-  
-  @Rule
-  public LogInitializer logSetup = new LogInitializer();
-  @Rule
-  public ProcessDeployer deployer = new ProcessDeployer();
-  
-  @Test
+public class ReceiveTaskTest extends ProcessEngineTestCase {
+
   @Deployment
   public void testWaitStateBehavior() {
-    ProcessInstance pi = deployer.getProcessService().startProcessInstanceByKey("receiveTask");
-    ActivityInstance activityInstance = deployer.getProcessService().findActivityInstanceByProcessInstanceIdAndActivityId(pi.getId(), "waitState");
+    ProcessInstance pi = runtimeService.startProcessInstanceByKey("receiveTask");
+    ActivityInstance activityInstance = runtimeService.findActivityInstanceByProcessInstanceIdAndActivityId(pi.getId(), "waitState");
     assertNotNull(activityInstance);
     
-    deployer.getProcessService().signal(activityInstance.getId());
-    deployer.assertProcessEnded(pi.getId());
+    runtimeService.signal(activityInstance.getId());
+    assertProcessEnded(pi.getId());
   }
 
 }

@@ -13,8 +13,6 @@
 
 package org.activiti.test.bpmn.event.timer;
 
-import static org.junit.Assert.assertEquals;
-
 import java.util.Date;
 import java.util.List;
 
@@ -23,24 +21,14 @@ import org.activiti.engine.JobQuery;
 import org.activiti.engine.ProcessInstance;
 import org.activiti.engine.Task;
 import org.activiti.engine.impl.util.ClockUtil;
-import org.activiti.engine.impl.util.LogUtil.ThreadLogMode;
 import org.activiti.engine.test.Deployment;
-import org.activiti.test.JobExecutorPoller;
-import org.activiti.test.LogInitializer;
-import org.activiti.test.ProcessDeployer;
-import org.junit.Rule;
-import org.junit.Test;
+import org.activiti.engine.test.ProcessEngineTestCase;
 
 /**
- * @author jbarrez
+ * @author Joram Barrez
  */
-public class BoundaryTimerEventTest {
+public class BoundaryTimerEventTest extends ProcessEngineTestCase {
   
-  @Rule
-  public LogInitializer logSetup = new LogInitializer(ThreadLogMode.PRINT_ID);
-  @Rule
-  public ProcessDeployer deployer = new ProcessDeployer();
-
   /*
    * Test for when multiple boundary timer events are defined on the same user
    * task
@@ -50,7 +38,6 @@ public class BoundaryTimerEventTest {
    * 
    * See process image next to the process xml resource
    */
-  @Test
   @Deployment
   public void testMultipleTimersOnUserTask() {
 
@@ -58,18 +45,18 @@ public class BoundaryTimerEventTest {
     Date startTime = new Date();
 
     // After process start, there should be 3 timers created
-    ProcessInstance pi = deployer.getProcessService().startProcessInstanceByKey("multipleTimersOnUserTask");
-    JobQuery jobQuery = deployer.getManagementService().createJobQuery().processInstanceId(pi.getId());
+    ProcessInstance pi = runtimeService.startProcessInstanceByKey("multipleTimersOnUserTask");
+    JobQuery jobQuery = managementService.createJobQuery().processInstanceId(pi.getId());
     List<Job> jobs = jobQuery.list();
     assertEquals(3, jobs.size());
 
     // After setting the clock to time '1 hour and 5 seconds', the second timer should fire
     ClockUtil.setCurrentTime(new Date(startTime.getTime() + ((60 * 60 * 1000) + 5000)));
-    new JobExecutorPoller(deployer.getJobExecutor(), deployer.getCommandExecutor()).waitForJobExecutorToProcessAllJobs(5000L, 25L);
+    waitForJobExecutorToProcessAllJobs(5000L, 25L);
     assertEquals(0L, jobQuery.count());
 
     // which means that the third task is reached
-    Task task = deployer.getTaskService().createTaskQuery().singleResult();
+    Task task = taskService.createTaskQuery().singleResult();
     assertEquals("Third Task", task.getName());
   }
 

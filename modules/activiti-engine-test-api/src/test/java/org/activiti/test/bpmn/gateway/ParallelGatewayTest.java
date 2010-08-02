@@ -13,69 +13,53 @@
 
 package org.activiti.test.bpmn.gateway;
 
-import static org.junit.Assert.assertTrue;
-
 import org.activiti.engine.ProcessInstance;
 import org.activiti.engine.test.Deployment;
-import org.activiti.test.LogInitializer;
-import org.activiti.test.ProcessDeployer;
-import org.junit.Rule;
-import org.junit.Test;
+import org.activiti.engine.test.ProcessEngineTestCase;
 
 /**
  * @author Joram Barrez
  */
-public class ParallelGatewayTest {
-
-  @Rule
-  public LogInitializer logSetup = new LogInitializer();
-  @Rule
-  public ProcessDeployer deployer = new ProcessDeployer();
+public class ParallelGatewayTest extends ProcessEngineTestCase {
 
   /**
    * Case where there is a parallel gateway that splits into 3 paths of
    * execution, that are immediately joined, without any wait states in between.
    * In the end, no executions should be in the database.
    */
-  @Test
   @Deployment
   public void testSplitMergeNoWaitstates() {
     ProcessInstance processInstance = 
-      deployer.getProcessService().startProcessInstanceByKey("forkJoinNoWaitStates");
+      runtimeService.startProcessInstanceByKey("forkJoinNoWaitStates");
     assertTrue(processInstance.isEnded());
   }
   
-  @Test
   @Deployment
   public void testUnstructuredConcurrencyTwoForks() {
     ProcessInstance processInstance = 
-      deployer.getProcessService().startProcessInstanceByKey("unstructuredConcurrencyTwoForks");
+      runtimeService.startProcessInstanceByKey("unstructuredConcurrencyTwoForks");
     assertTrue(processInstance.isEnded());
   }
   
-  @Test
   @Deployment
   public void testUnstructuredConcurrencyTwoJoins() {
     ProcessInstance processInstance = 
-      deployer.getProcessService().startProcessInstanceByKey("unstructuredConcurrencyTwoJoins");
+      runtimeService.startProcessInstanceByKey("unstructuredConcurrencyTwoJoins");
     assertTrue(processInstance.isEnded());
   }
   
-  @Test
   @Deployment
   public void testForkFollowedByOnlyEndEvents() {
     ProcessInstance processInstance = 
-      deployer.getProcessService().startProcessInstanceByKey("forkFollowedByEndEvents");
+      runtimeService.startProcessInstanceByKey("forkFollowedByEndEvents");
     assertTrue(processInstance.isEnded());
   }
   
-  @Test
   @Deployment
   public void testNestedForksFollowedByEndEvents() {
     ProcessInstance processInstance = 
-      deployer.getProcessService().startProcessInstanceByKey("nestedForksFollowedByEndEvents");
+      runtimeService.startProcessInstanceByKey("nestedForksFollowedByEndEvents");
     assertTrue(processInstance.isEnded());
   }
   
-
 }

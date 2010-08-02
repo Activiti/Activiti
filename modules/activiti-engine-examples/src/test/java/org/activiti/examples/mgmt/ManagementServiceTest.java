@@ -12,16 +12,11 @@
  */
 package org.activiti.examples.mgmt;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
 import java.util.Map;
 
 import org.activiti.engine.ManagementService;
 import org.activiti.engine.TableMetaData;
-import org.activiti.test.LogInitializer;
-import org.activiti.test.ProcessDeployer;
-import org.junit.Rule;
+import org.activiti.engine.test.ProcessEngineTestCase;
 import org.junit.Test;
 
 /**
@@ -30,16 +25,10 @@ import org.junit.Test;
  * @author Tom Baeyens
  * @author Joram Barrez
  */
-public class ManagementServiceTest {
+public class ManagementServiceTest extends ProcessEngineTestCase {
 
-  @Rule
-  public LogInitializer logSetup = new LogInitializer();
-  @Rule
-  public ProcessDeployer deployer = new ProcessDeployer();
-
-  @Test
   public void testTableCount() {
-    Map<String, Long> tableCount = deployer.getManagementService().getTableCount();
+    Map<String, Long> tableCount = managementService.getTableCount();
 
     assertEquals(new Long(2), tableCount.get("ACT_PROPERTY"));
     assertEquals(new Long(0), tableCount.get("ACT_BYTEARRAY"));
@@ -56,7 +45,7 @@ public class ManagementServiceTest {
 
   @Test
   public void testGetTableMetaData() {
-    TableMetaData tableMetaData = deployer.getManagementService().getTableMetaData("ACT_TASK");
+    TableMetaData tableMetaData = managementService.getTableMetaData("ACT_TASK");
     assertEquals(tableMetaData.getColumnNames().size(), tableMetaData.getColumnTypes().size());
     assertEquals(13, tableMetaData.getColumnNames().size());
 

@@ -13,10 +13,9 @@
 package org.activiti.test.bpmn.parse;
 
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.test.ProcessEngineTestCase;
 import org.activiti.test.ProcessDeployer;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
 
 /**
  * Test case for verifying if the parser throws validation exceptions when a
@@ -24,20 +23,17 @@ import org.junit.rules.ExpectedException;
  * 
  * @author Joram Barrez
  */
-public class InvalidProcessTest {
-
-  @Rule
-  public ExpectedException exception = ExpectedException.none();
-  
-  @Rule
-  public ProcessDeployer deployer = new ProcessDeployer();
+public class InvalidProcessTest extends ProcessEngineTestCase {
 
   @Test
   public void testInvalidProcessDefinition() {
-    exception.expect(ActivitiException.class);
-    exception.expectMessage("Attribute 'invalidAttribute' is not allowed to appear in element 'process'");
-    String resource = ProcessDeployer.getBpmnProcessDefinitionResource(getClass(), "testInvalidProcessDefinition");
-    deployer.createDeployment().name(resource).addClasspathResource(resource).deploy();
+    try {
+      String resource = ProcessDeployer.getBpmnProcessDefinitionResource(getClass(), "testInvalidProcessDefinition");
+      repositoryService.createDeployment().name(resource).addClasspathResource(resource).deploy();
+      fail();
+    } catch (ActivitiException e) {
+      assertTextPresent("Attribute 'invalidAttribute' is not allowed to appear in element 'process'", e.getMessage());
+    }
   }
 
 }

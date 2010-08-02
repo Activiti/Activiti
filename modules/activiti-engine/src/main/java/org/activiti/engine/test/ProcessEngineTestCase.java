@@ -35,13 +35,10 @@ import org.activiti.engine.ManagementService;
 import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.ProcessEngineBuilder;
 import org.activiti.engine.ProcessInstance;
-import org.activiti.engine.RuntimeService;
 import org.activiti.engine.RepositoryService;
+import org.activiti.engine.RuntimeService;
 import org.activiti.engine.TaskService;
 import org.activiti.engine.impl.ProcessEngineImpl;
-import org.activiti.engine.impl.interceptor.Command;
-import org.activiti.engine.impl.interceptor.CommandContext;
-import org.activiti.engine.impl.interceptor.CommandExecutor;
 import org.activiti.engine.impl.jobexecutor.JobExecutor;
 import org.activiti.engine.impl.util.ClassNameUtil;
 import org.activiti.engine.impl.util.ClockUtil;
@@ -262,15 +259,7 @@ public class ProcessEngineTestCase extends TestCase {
   }
 
   protected boolean areJobsAvailable() {
-    CommandExecutor commandExecutor = ((ProcessEngineImpl)processEngine).getProcessEngineConfiguration().getCommandExecutor();
-    // Check jobs that are already locked, but not yet executed
-    Boolean areJobsAvailable = commandExecutor.execute(new Command<Boolean>() {
-      public Boolean execute(CommandContext commandContext) {
-        return !commandContext.getRuntimeSession().findLockedJobs().isEmpty();
-      }
-    });
-    log.info("Jobs available: "+areJobsAvailable);
-    return areJobsAvailable;
+    return !managementService.createJobQuery().list().isEmpty();
   }
 
   protected static class InteruptTask extends TimerTask {

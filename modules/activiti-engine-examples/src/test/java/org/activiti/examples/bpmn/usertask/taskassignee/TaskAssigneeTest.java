@@ -12,17 +12,12 @@
  */
 package org.activiti.examples.bpmn.usertask.taskassignee;
 
-import static org.junit.Assert.assertEquals;
-
 import java.util.List;
 
 import org.activiti.engine.ProcessInstance;
 import org.activiti.engine.Task;
 import org.activiti.engine.test.Deployment;
-import org.activiti.test.LogInitializer;
-import org.activiti.test.ProcessDeployer;
-import org.junit.Rule;
-import org.junit.Test;
+import org.activiti.engine.test.ProcessEngineTestCase;
 
 
 /**
@@ -30,32 +25,25 @@ import org.junit.Test;
  * 
  * @author Joram Barrez 
  */
-public class TaskAssigneeTest {
+public class TaskAssigneeTest extends ProcessEngineTestCase {
 
-  @Rule
-  public LogInitializer logSetup = new LogInitializer();
-
-  @Rule
-  public ProcessDeployer deployer = new ProcessDeployer();
-
-  @Test
   @Deployment
   public void testTaskAssignee() {    
     
     // Start process instance
-    ProcessInstance processInstance = deployer.getProcessService().startProcessInstanceByKey("taskAssigneeProcess");
+    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("taskAssigneeProcess");
 
     // Get task list
-    List<Task> tasks = deployer.getTaskService().findAssignedTasks("kermit");
+    List<Task> tasks = taskService.findAssignedTasks("kermit");
     assertEquals(1, tasks.size());
     Task myTask = tasks.get(0);
     assertEquals("Schedule meeting", myTask.getName());
     assertEquals("Schedule an engineering meeting for next week with the new hire.", myTask.getDescription());
 
     // Complete task. Process is now finished
-    deployer.getTaskService().complete(myTask.getId());
+    taskService.complete(myTask.getId());
     // assert if the process instance completed
-    deployer.assertProcessEnded(processInstance.getId());
+    assertProcessEnded(processInstance.getId());
   }
 
 }

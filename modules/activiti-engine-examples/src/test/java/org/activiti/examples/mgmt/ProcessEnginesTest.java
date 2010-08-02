@@ -12,35 +12,30 @@
  */
 package org.activiti.examples.mgmt;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-
 import java.util.List;
+
+import junit.framework.TestCase;
 
 import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.ProcessEngineInfo;
 import org.activiti.engine.ProcessEngines;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
 
 /**
  * @author Tom Baeyens
  */
-public class ProcessEnginesTest {
-
-  @Before
-  public void open() throws Exception {
+public class ProcessEnginesTest extends TestCase {
+  
+  @Override
+  protected void setUp() throws Exception {
+    super.setUp();
     ProcessEngines.init();
   }
-
-  @After
-  public void close() throws Exception {
+  
+  protected void tearDown() throws Exception {
     ProcessEngines.destroy();
+    super.tearDown();
   }
 
-  @Test
   public void testProcessEngineInfo() {
 
     List<ProcessEngineInfo> processEngineInfos = ProcessEngines.getProcessEngineInfos();

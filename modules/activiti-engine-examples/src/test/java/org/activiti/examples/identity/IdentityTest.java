@@ -12,38 +12,19 @@
  */
 package org.activiti.examples.identity;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.activiti.engine.IdentityService;
 import org.activiti.engine.identity.Group;
 import org.activiti.engine.identity.User;
-import org.activiti.test.ProcessEngineTestWatchman;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
+import org.activiti.engine.test.ProcessEngineTestCase;
 
 /**
  * @author Tom Baeyens
  */
-public class IdentityTest {
+public class IdentityTest extends ProcessEngineTestCase {
 
-  private IdentityService identityService;
-
-  @Rule
-  public ProcessEngineTestWatchman processEngineBuilder = new ProcessEngineTestWatchman();
-
-  @Before
-  public void init() {
-    identityService = processEngineBuilder.getProcessEngine().getIdentityService();
-  }
-
-  @Test
   public void testAuthentication() {
     User user = identityService.newUser("johndoe");
     user.setPassword("xxx");
@@ -55,7 +36,6 @@ public class IdentityTest {
     identityService.deleteUser("johndoe");
   }
 
-  @Test
   public void testFindGroupsByUserAndType() {
     Group sales = identityService.newGroup("sales");
     sales.setType("hierarchy");
@@ -113,7 +93,6 @@ public class IdentityTest {
     identityService.deleteUser("jackblack");
   }
 
-  @Test
   public void testUser() {
     User user = identityService.newUser("johndoe");
     user.setFirstName("John");
@@ -130,7 +109,6 @@ public class IdentityTest {
     identityService.deleteUser("johndoe");
   }
 
-  @Test
   public void testGroup() {
     Group group = identityService.newGroup("sales");
     group.setName("Sales division");
@@ -143,7 +121,6 @@ public class IdentityTest {
     identityService.deleteGroup("sales");
   }
 
-  @Test
   public void testMembership() {
     Group sales = identityService.newGroup("sales");
     identityService.saveGroup(sales);

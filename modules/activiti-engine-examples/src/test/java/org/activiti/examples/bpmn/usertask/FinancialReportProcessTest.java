@@ -1,71 +1,56 @@
 package org.activiti.examples.bpmn.usertask;
 
-import static org.junit.Assert.assertEquals;
-
 import java.util.List;
 
 import org.activiti.engine.ProcessInstance;
 import org.activiti.engine.Task;
 import org.activiti.engine.test.Deployment;
-import org.activiti.test.LogInitializer;
-import org.activiti.test.ProcessDeployer;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
+import org.activiti.engine.test.ProcessEngineTestCase;
 
 
-public class FinancialReportProcessTest {
+public class FinancialReportProcessTest extends ProcessEngineTestCase {
   
-  @Rule
-  public LogInitializer logSetup = new LogInitializer();
-  @Rule
-  public ProcessDeployer deployer = new ProcessDeployer();
-
-  @Before
   public void setUp() throws Exception {
-    deployer.getIdentityService().saveUser(deployer.getIdentityService().newUser("fozzie"));
-    deployer.getIdentityService().saveUser(deployer.getIdentityService().newUser("kermit"));
+    identityService.saveUser(identityService.newUser("fozzie"));
+    identityService.saveUser(identityService.newUser("kermit"));
     
-    deployer.getIdentityService().saveGroup(deployer.getIdentityService().newGroup("accountancy"));
-    deployer.getIdentityService().saveGroup(deployer.getIdentityService().newGroup("management"));
+    identityService.saveGroup(identityService.newGroup("accountancy"));
+    identityService.saveGroup(identityService.newGroup("management"));
     
-    deployer.getIdentityService().createMembership("fozzie", "accountancy");
-    deployer.getIdentityService().createMembership("kermit", "management");
+    identityService.createMembership("fozzie", "accountancy");
+    identityService.createMembership("kermit", "management");
   }
   
-  @After
   public void tearDown() throws Exception {
-    deployer.getIdentityService().deleteUser("fozzie");
-    deployer.getIdentityService().deleteUser("kermit");
-    deployer.getIdentityService().deleteGroup("accountancy");
-    deployer.getIdentityService().deleteGroup("management");
+    identityService.deleteUser("fozzie");
+    identityService.deleteUser("kermit");
+    identityService.deleteGroup("accountancy");
+    identityService.deleteGroup("management");
   }
   
-  @Test
   @Deployment(resources={"FinancialReportProcess.bpmn20.xml"})
   public void testProcess() {
     
-    ProcessInstance processInstance = deployer.getProcessService().startProcessInstanceByKey("financialReport");
+    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("financialReport");
     
-    List<Task> tasks = deployer.getTaskService().findUnassignedTasks("fozzie");
+    List<Task> tasks = taskService.findUnassignedTasks("fozzie");
     assertEquals(1, tasks.size());
     Task task = tasks.get(0);
     assertEquals("Write monthly financial report", task.getName());
     
-    deployer.getTaskService().claim(task.getId(), "fozzie");
-    tasks = deployer.getTaskService().findAssignedTasks("fozzie");
+    taskService.claim(task.getId(), "fozzie");
+    tasks = taskService.findAssignedTasks("fozzie");
     assertEquals(1, tasks.size());
-    deployer.getTaskService().complete(task.getId());
+    taskService.complete(task.getId());
 
-    tasks = deployer.getTaskService().findUnassignedTasks("fozzie");
+    tasks = taskService.findUnassignedTasks("fozzie");
     assertEquals(0, tasks.size());
-    tasks = deployer.getTaskService().findUnassignedTasks("kermit");
+    tasks = taskService.findUnassignedTasks("kermit");
     assertEquals(1, tasks.size());
     assertEquals("Verify monthly financial report", tasks.get(0).getName());
-    deployer.getTaskService().complete(tasks.get(0).getId());
+    taskService.complete(tasks.get(0).getId());
 
-    deployer.assertProcessEnded(processInstance.getId());
+    assertProcessEnded(processInstance.getId());
   }
 
 }

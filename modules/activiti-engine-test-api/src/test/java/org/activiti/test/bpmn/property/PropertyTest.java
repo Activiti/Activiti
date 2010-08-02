@@ -13,26 +13,21 @@
 package org.activiti.test.bpmn.property;
 
 import org.activiti.engine.test.Deployment;
-import org.activiti.test.LogInitializer;
-import org.activiti.test.ProcessDeployer;
-import org.junit.Ignore;
-import org.junit.Rule;
+import org.activiti.engine.test.ProcessEngineTestCase;
 import org.junit.Test;
 
 /**
  * @author Joram Barrez
  */
-public class PropertyTest {
+public class PropertyTest extends ProcessEngineTestCase {
 
-  @Rule
-  public LogInitializer logSetup = new LogInitializer();
-  @Rule
-  public ProcessDeployer deployer = new ProcessDeployer();
 
-  @Test
   @Deployment
   public void testUserTaskSrcProperty() {
 
+    // DO NOT DELETE: WILL BE REACTIVATED SOON!
+    
+    
 //    // Start the process -> waits in usertask
 //    Map<String, Object> vars = new HashMap<String, Object>();
 //    vars.put("inputVar", "test");
@@ -67,7 +62,6 @@ public class PropertyTest {
 //    }
   }
 
-  @Test
   @Deployment
   public void testUserTaskSrcExprProperty() {
 
@@ -117,9 +111,7 @@ public class PropertyTest {
 //    assertTrue(vars.containsKey("processVar"));
   }
 
-  @Test
   @Deployment
-  @Ignore // NOT YET IMPLEMENTED
   public void testUserTaskDstExprProperty() {
 
 //    Order order = new Order();
@@ -151,7 +143,6 @@ public class PropertyTest {
 //    assertEquals("testAddress", orderAfterComplete.getAddress());
   }
 
-  @Test
   @Deployment
   public void testUserTaskLinkProperty() {
 
