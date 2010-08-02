@@ -33,7 +33,7 @@ import org.activiti.engine.impl.HistoricDataServiceImpl;
 import org.activiti.engine.impl.IdentityServiceImpl;
 import org.activiti.engine.impl.ManagementServiceImpl;
 import org.activiti.engine.impl.ProcessEngineImpl;
-import org.activiti.engine.impl.ProcessServiceImpl;
+import org.activiti.engine.impl.RuntimeServiceImpl;
 import org.activiti.engine.impl.RepositoryServiceImpl;
 import org.activiti.engine.impl.TaskServiceImpl;
 import org.activiti.engine.impl.bpmn.deployer.BpmnDeployer;
@@ -125,7 +125,7 @@ public class ProcessEngineConfiguration {
     transactionContextFactory = new StandaloneIbatisTransactionContextFactory();
 
     repositoryService = new RepositoryServiceImpl();
-    runtimeService = new ProcessServiceImpl();
+    runtimeService = new RuntimeServiceImpl();
     taskService = new TaskServiceImpl();
     managementService = new ManagementServiceImpl();
     identityService = new IdentityServiceImpl();

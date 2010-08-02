@@ -6,7 +6,7 @@
   
   <!-- PROCESS INSTANCE -->
   
-  <insert id="insertProcessInstanceEntity" parameterType="org.activiti.engine.impl.persistence.runtime.ProcessInstanceEntity">
+  <insert id="insertProcessInstance" parameterType="org.activiti.engine.impl.persistence.runtime.ProcessInstanceEntity">
     insert into ACT_RNT_PROCESSINSTANCE (ID_, REV_, PROC_DEF_ID_)
     values (
       #{id ,jdbcType=VARCHAR},
@@ -15,7 +15,7 @@
     )
   </insert>
 
-  <update id="updateProcessInstanceEntity" parameterType="org.activiti.engine.impl.persistence.runtime.ProcessInstanceEntity">
+  <update id="updateProcessInstance" parameterType="org.activiti.engine.impl.persistence.runtime.ProcessInstanceEntity">
     update ACT_RNT_PROCESSINSTANCE set
       REV_ = #{revisionNext, jdbcType=INTEGER},
       SUPER_ACT_INST_ID_ = #{superActivityInstanceId, jdbcType=VARCHAR}
@@ -23,7 +23,7 @@
       and REV_ = #{revision, jdbcType=INTEGER}
   </update>
 
-  <delete id="deleteProcessInstanceEntity" parameterType="string">
+  <delete id="deleteProcessInstance" parameterType="string">
     delete from ACT_RNT_PROCESSINSTANCE where ID_ = #{id}
   </delete>
  
@@ -36,12 +36,12 @@
     select * from ACT_RNT_PROCESSINSTANCE where ID_ = #{id}
   </select>
   
-  <select id="selectProcessInstanceByDynamicCriteria" parameterType="map" resultMap="processInstanceResultMap">
+  <select id="selectProcessInstanceByDynamicCriteria" parameterType="org.activiti.engine.impl.ProcessInstanceQueryImpl" resultMap="processInstanceResultMap">
     select *
     <include refid="selectProcessInstanceByDynamicCriteriaSql"/>
   </select>
   
-  <select id="selectProcessInstanceCountByDynamicCriteria" parameterType="map" resultType="long">
+  <select id="selectProcessInstanceCountByDynamicCriteria" parameterType="org.activiti.engine.impl.ProcessInstanceQueryImpl" resultType="long">
     select count(*)
     <include refid="selectProcessInstanceByDynamicCriteriaSql"/>
   </select>
@@ -52,6 +52,9 @@
       inner join ACT_PROCESSDEFINITION P on PI.PROC_DEF_ID_ = PD.ID_
     </if>
     <where>
+      <if test="processInstanceId != null">
+        and PI.ID_ = #{processInstanceId}
+      </if>
       <if test="processDefinitionKey != null">
         and PD.KEY_ = #{processDefinitionKey}
       </if>
@@ -60,7 +63,7 @@
 
   <!-- ACTIVITY INSTANCE -->
   
-  <insert id="insertActivityInstanceEntity" parameterType="org.activiti.engine.impl.persistence.runtime.ActivityInstanceEntity">
+  <insert id="insertActivityInstance" parameterType="org.activiti.engine.impl.persistence.runtime.ActivityInstanceEntity">
     insert into ACT_RNT_ACTIVITYINSTANCE (ID_, REV_, PROC_DEF_ID_, PROC_INST_ID_, ACTIVITY_, IS_ACTIVE_)
     values (
       #{id ,jdbcType=VARCHAR},
@@ -72,7 +75,7 @@
     )
   </insert>
 
-  <update id="updateActivityInstanceEntity" parameterType="org.activiti.engine.impl.persistence.runtime.ActivityInstanceEntity">
+  <update id="updateActivityInstance" parameterType="org.activiti.engine.impl.persistence.runtime.ActivityInstanceEntity">
     update ACT_RNT_ACTIVITYINSTANCE set
       REV_ = #{revisionNext, jdbcType=INTEGER},
       ACTIVITY_ = #{activityId, jdbcType=VARCHAR}
@@ -81,7 +84,7 @@
       and REV_ = #{revision, jdbcType=INTEGER}
   </update>
 
-  <delete id="deleteActivityInstanceEntity" parameterType="string">
+  <delete id="deleteActivityInstance" parameterType="string">
     delete from ACT_RNT_ACTIVITYINSTANCE where ID_ = #{id}
   </delete>
  

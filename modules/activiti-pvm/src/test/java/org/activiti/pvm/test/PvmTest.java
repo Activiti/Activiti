@@ -1,8 +1,6 @@
 package org.activiti.pvm.test;
 import java.util.ArrayList;
 
-import junit.framework.TestCase;
-
 import org.activiti.pvm.ProcessDefinitionBuilder;
 import org.activiti.pvm.process.PvmProcessDefinition;
 import org.activiti.pvm.runtime.PvmActivityInstance;
@@ -28,7 +26,7 @@ import org.activiti.test.pvm.activities.WaitState;
 /**
  * @author Tom Baeyens
  */
-public class PvmTest extends TestCase {
+public class PvmTest extends PvmTestCase {
 
   public void testBasicLinearActivities() {
     PvmProcessDefinition processDefinition = new ProcessDefinitionBuilder()

@@ -189,11 +189,6 @@ public class ScopeInstanceImpl implements PvmScopeInstance {
     return processDefinition;
   }
 
-  
-  public void setProcessDefinition(ProcessDefinitionImpl processDefinition) {
-    this.processDefinition = processDefinition;
-  }
-
   public ScopeInstanceImpl getParent() {
     return parent;
   }

@@ -32,7 +32,7 @@ import org.activiti.engine.impl.cmd.StartProcessInstanceCmd;
 /**
  * @author Tom Baeyens
  */
-public class ProcessServiceImpl extends ServiceImpl implements RuntimeService {
+public class RuntimeServiceImpl extends ServiceImpl implements RuntimeService {
 
   public ActivityInstance findActivityInstanceById(String activityInstanceId) {
     return commandExecutor.execute(new FindActivitiyInstanceCmd(activityInstanceId));

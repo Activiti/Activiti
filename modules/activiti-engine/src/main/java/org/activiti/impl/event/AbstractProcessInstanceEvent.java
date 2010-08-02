@@ -35,7 +35,7 @@ public abstract class AbstractProcessInstanceEvent<T> extends AbstractProcessEve
    * Standard constructor used to create a new process event based on the given
    * relations.
    *
-   * @param processDefinitionId the id of the process definition this event is
+   * @param processInstanceId the id of the process definition this event is
    * related to (must not be <code>null</code>)
    * @param processInstanceId the id of the process instance this event is
    * related to (must not be <code>null</code>)

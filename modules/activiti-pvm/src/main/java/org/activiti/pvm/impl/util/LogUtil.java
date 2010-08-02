@@ -10,7 +10,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.activiti.engine.impl.util;
+package org.activiti.pvm.impl.util;
 
 import java.io.InputStream;
 import java.io.PrintWriter;
@@ -25,7 +25,7 @@ import java.util.logging.Level;
 import java.util.logging.LogManager;
 import java.util.logging.LogRecord;
 
-import org.activiti.engine.ActivitiException;
+import org.activiti.pvm.PvmException;
 
 /**
  * @author Tom Baeyens
@@ -65,7 +65,7 @@ public class LogUtil {
         inputStream.close();
       }
     } catch (Exception e) {
-      throw new ActivitiException("couldn't initialize logging properly", e);
+      throw new PvmException("couldn't initialize logging properly", e);
     }
   }
 

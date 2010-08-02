@@ -11,20 +11,12 @@
  * limitations under the License.
  */
 
-package org.activiti.engine.impl.util;
+package org.activiti.engine;
 
 
 /**
  * @author Tom Baeyens
  */
-public abstract class ClassNameUtil {
-
-  public static String getClassNameWithoutPackage(Object object) {
-    return getClassNameWithoutPackage(object.getClass());
-  }
-  public static String getClassNameWithoutPackage(Class<?> clazz) {
-    String fullyQualifiedClassName = clazz.getName();
-    return fullyQualifiedClassName.substring(fullyQualifiedClassName.lastIndexOf('.')+1);
-  }
+public interface ProcessDefinitionQuery {
 
 }

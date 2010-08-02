@@ -12,8 +12,6 @@
  */
 package org.activiti.pvm.test;
 
-import static org.junit.Assert.*;
-
 import java.util.HashMap;
 import java.util.Map;
 
@@ -28,7 +26,7 @@ import org.junit.Test;
 /**
  * @author Tom Baeyens
  */
-public class PvmVariablesTest {
+public class PvmVariablesTest extends PvmTestCase {
 
   @Test
   public void testVariables() {

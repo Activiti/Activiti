@@ -19,6 +19,7 @@ import java.util.Map;
 import org.activiti.engine.ActivityInstance;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.PersistentObject;
+import org.activiti.engine.impl.persistence.repository.ProcessDefinitionEntity;
 import org.activiti.pvm.impl.process.ActivityImpl;
 import org.activiti.pvm.impl.runtime.ActivityInstanceImpl;
 import org.activiti.pvm.impl.runtime.ScopeInstanceImpl;
@@ -36,17 +37,41 @@ public class ActivityInstanceEntity extends ActivityInstanceImpl implements Acti
   protected String processDefinitionId;
   protected String activityId;
   
-  public ActivityInstanceEntity(ActivityImpl activity, ScopeInstanceImpl parent) {
+  public ActivityInstanceEntity() {
+  }
+
+  ActivityInstanceEntity(ActivityImpl activity, ScopeInstanceImpl parent) {
     super(activity, parent);
   }
   
-  @Override
-  protected ActivityInstanceImpl createActivityInstance(ActivityImpl activity) {
-    ActivityInstanceEntity activityInstance = new ActivityInstanceEntity(activity, this);
+  public static ActivityInstanceEntity createAndInsert(ActivityImpl activity, ActivityInstanceEntity parent) {
+    ActivityInstanceEntity activityInstance = new ActivityInstanceEntity(activity, parent);
+    activityInstance.setProcessDefinitionId(parent.getProcessDefinitionId());
+    activityInstance.setProcessInstanceId(parent.getProcessInstanceId());
+    activityInstance.setActivityId(activity.getId());
+    insert(activityInstance);
+    return activityInstance;
+  }
+
+  public static ActivityInstanceEntity createAndInsert(ActivityImpl activity, ProcessInstanceEntity parent) {
+    ActivityInstanceEntity activityInstance = new ActivityInstanceEntity(activity, parent);
+    activityInstance.setProcessDefinitionId(parent.getProcessDefinitionId());
+    activityInstance.setProcessInstanceId(parent.getId());
+    activityInstance.setActivityId(activity.getId());
+    insert(activityInstance);
+    return activityInstance;
+  }
+
+  private static void insert(ActivityInstanceEntity activityInstance) {
     CommandContext
       .getCurrent()
       .getRuntimeSession()
       .insertActivityInstance(activityInstance);
+  }
+  
+  @Override
+  protected ActivityInstanceEntity createActivityInstance(ActivityImpl activity) {
+    ActivityInstanceEntity activityInstance = createAndInsert(activity, this);
     activityInstances.add(activityInstance);
     return activityInstance;
   }
@@ -73,6 +98,36 @@ public class ActivityInstanceEntity extends ActivityInstanceImpl implements Acti
   
   public int getRevisionNext() {
     return revision+1;
+  }
+  
+  public ProcessDefinitionEntity getProcessDefinition() {
+    if (processDefinitionId!=null && processDefinition==null) {
+      processDefinition = CommandContext
+        .getCurrent()
+        .getRepositorySession()
+        .findDeployedProcessDefinitionById(processDefinitionId);
+    }
+    return (ProcessDefinitionEntity) processDefinition;
+  }
+  
+  public ActivityImpl getActivity() {
+    if (activityId!=null && activity==null) {
+      activity = getProcessDefinition().findActivity(activityId);
+    }
+    return activity;
+  }
+  
+  public void setActivity(ActivityImpl activity) {
+    this.activity = activity;
+    if (activity!=null) {
+      this.activityId = activity.getId();
+    } else {
+      this.activityId = null;
+    }
+  }
+  
+  public String toString() {
+    return "ActivityInstanceEntity["+id+"]";
   }
   
   // getters and setters //////////////////////////////////////////////////////

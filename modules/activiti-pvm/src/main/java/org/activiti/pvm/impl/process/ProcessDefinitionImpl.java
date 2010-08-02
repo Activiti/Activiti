@@ -41,4 +41,8 @@ public class ProcessDefinitionImpl extends ScopeImpl implements PvmProcessDefini
   public void setInitial(ActivityImpl initial) {
     this.initial = initial;
   }
+  
+  public String toString() {
+    return "ProcessDefinitionImpl["+System.identityHashCode(this)+"]";
+  }
 }

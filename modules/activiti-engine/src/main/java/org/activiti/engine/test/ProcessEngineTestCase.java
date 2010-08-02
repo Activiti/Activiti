@@ -25,7 +25,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import junit.framework.AssertionFailedError;
-import junit.framework.TestCase;
 
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.DeploymentBuilder;
@@ -40,10 +39,11 @@ import org.activiti.engine.RuntimeService;
 import org.activiti.engine.TaskService;
 import org.activiti.engine.impl.ProcessEngineImpl;
 import org.activiti.engine.impl.jobexecutor.JobExecutor;
-import org.activiti.engine.impl.util.ClassNameUtil;
+import org.activiti.engine.impl.persistence.db.DbSqlSessionFactory;
 import org.activiti.engine.impl.util.ClockUtil;
-import org.activiti.engine.impl.util.LogUtil;
-import org.activiti.engine.impl.util.LogUtil.ThreadLogMode;
+import org.activiti.pvm.impl.util.ClassNameUtil;
+import org.activiti.pvm.impl.util.LogUtil.ThreadLogMode;
+import org.activiti.pvm.test.PvmTestCase;
 import org.activiti.test.ProcessDeployer;
 import org.junit.Assert;
 
@@ -52,21 +52,14 @@ import org.junit.Assert;
  * 
  * @author Tom Baeyens
  */
-public class ProcessEngineTestCase extends TestCase {
+public class ProcessEngineTestCase extends PvmTestCase {
 
-  private static final String EMPTY_LINE = "                                                                                           ";
-
-  static {
-    LogUtil.readJavaUtilLoggingConfigFromClasspath();
-  }
-  
   private static Logger log = Logger.getLogger(ProcessEngineTestCase.class.getName());
 
   private static final List<String> TABLENAMES_EXCLUDED_FROM_DB_CLEAN_CHECK = Arrays.asList(
     "ACT_PROPERTY"
   );
 
-  private static final ThreadLogMode DEFAULT_THREAD_LOG_MODE = ThreadLogMode.INDENT;
   private static final String DEFAULT_CONFIGURATION_RESOURCE = "activiti.properties";
   private static Map<String, ProcessEngine> processEngines = new HashMap<String, ProcessEngine>(); 
   
@@ -95,22 +88,17 @@ public class ProcessEngineTestCase extends TestCase {
   }
   
   public ProcessEngineTestCase(String configurationResource, ThreadLogMode threadRenderingMode) {
+    super(threadRenderingMode);
     this.configurationResource = configurationResource;
-    this.threadRenderingMode = threadRenderingMode;
-  }
-  
-  public void assertTextPresent(String expected, String actual) {
-    if ( (actual==null)
-         || (actual.indexOf(expected)==-1)
-       ) {
-      throw new AssertionFailedError("expected presence of ["+expected+"], but was ["+actual+"]");
-    }
+    this.isEmptyLinesEnabled = false;
   }
   
   public void assertProcessEnded(final String processInstanceId) {
     ProcessInstance processInstance = processEngine
       .getRuntimeService()
-      .findProcessInstanceById(processInstanceId);
+      .createProcessInstanceQuery()
+      .processInstanceId(processInstanceId)
+      .singleResult();
     
     if (processInstance!=null) {
       throw new AssertionFailedError("expected finished process instance '"+processInstanceId+"' but it was still in the db"); 
@@ -119,9 +107,6 @@ public class ProcessEngineTestCase extends TestCase {
 
   @Override
   protected void runTest() throws Throwable {
-    LogUtil.resetThreadIndents();
-    ThreadLogMode oldThreadRenderingMode = LogUtil.setThreadLogMode(threadRenderingMode);
-    
     if (processEngine==null) {
       processEngine = processEngines.get(configurationResource);
       if (processEngine==null) {
@@ -135,12 +120,11 @@ public class ProcessEngineTestCase extends TestCase {
       initializeServices();
     }
 
-    log.fine(EMPTY_LINE);
-    log.fine("#### START "+ClassNameUtil.getClassNameWithoutPackage(this)+"."+getName()+" ###########################################################");
+    log.severe(EMPTY_LINE);
 
     try {
       
-      processDeploymentAnnotation();
+      annotationDeploymentBefore();
       
       super.runTest();
 
@@ -155,13 +139,9 @@ public class ProcessEngineTestCase extends TestCase {
       throw e;
       
     } finally {
-      for (String deploymentId: deploymentsToDeleteAfterTestMethod) {
-        repositoryService.deleteDeployment(deploymentId);
-      }
+      annotationDeploymentAfter();
       assertAndEnsureCleanDb();
       ClockUtil.reset();
-      log.fine("#### END "+ClassNameUtil.getClassNameWithoutPackage(this)+"."+getName()+" #############################################################");
-      LogUtil.setThreadLogMode(oldThreadRenderingMode);
     }
   }
 
@@ -170,6 +150,7 @@ public class ProcessEngineTestCase extends TestCase {
    * It throws AssertionFailed in case the DB is not clean.
    * If the DB is not clean, it is cleaned by performing a create a drop.   */
   protected void assertAndEnsureCleanDb() {
+    log.fine("verifying that db is clean after test");
     Map<String, Long> tableCounts = processEngine.getManagementService().getTableCount();
     StringBuilder outputMessage = new StringBuilder();
     for (String tableName : tableCounts.keySet()) {
@@ -185,15 +166,19 @@ public class ProcessEngineTestCase extends TestCase {
       log.severe(EMPTY_LINE);
       log.severe(outputMessage.toString());
       
-      ((ProcessEngineImpl)processEngine)
+      log.info("dropping and recreating db");
+      
+      DbSqlSessionFactory dbSqlSessionFactory = ((ProcessEngineImpl)processEngine)
         .getProcessEngineConfiguration()
         .getDbSqlSessionFactory();
+      dbSqlSessionFactory.dbSchemaDrop();
+      dbSqlSessionFactory.dbSchemaCreate();
       
       Assert.fail(outputMessage.toString());
     }
   }
 
-  void processDeploymentAnnotation() {
+  void annotationDeploymentBefore() {
     Method method = null;
     try {
       method = getClass().getDeclaredMethod(getName(), (Class<?>[])null);
@@ -202,6 +187,7 @@ public class ProcessEngineTestCase extends TestCase {
     }
     Deployment deploymentAnnotation = method.getAnnotation(Deployment.class);
     if (deploymentAnnotation != null) {
+      log.fine("annotation @Deployment creates deployment for "+ClassNameUtil.getClassNameWithoutPackage(this)+"."+getName());
       String[] resources = deploymentAnnotation.resources();
       if (resources.length == 0) {
         String name = method.getName();
@@ -221,6 +207,14 @@ public class ProcessEngineTestCase extends TestCase {
       deploymentsToDeleteAfterTestMethod.add(deploymentId);
     }
   }
+
+  protected void annotationDeploymentAfter() {
+    for (String deploymentId: deploymentsToDeleteAfterTestMethod) {
+      log.fine("annotation @Deployment deletes deployment for "+ClassNameUtil.getClassNameWithoutPackage(this)+"."+getName());
+      repositoryService.deleteDeployment(deploymentId);
+    }
+  }
+
 
   void initializeServices() {
     repositoryService = processEngine.getRepositoryService();

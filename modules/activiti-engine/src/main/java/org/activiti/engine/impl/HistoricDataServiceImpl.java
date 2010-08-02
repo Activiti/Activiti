@@ -76,10 +76,10 @@ public class HistoricDataServiceImpl extends ServiceImpl implements HistoricData
 //      ensureCommandContextAvailable();
 //
 //      String processInstanceId = event.getProcessInstanceId();
-//      String processDefinitionId = event.getProcessDefinitionId();
+//      String processInstanceId = event.getProcessDefinitionId();
 //      Date startTime = ClockUtil.getCurrentTime();
 //
-//      HistoricProcessInstanceEntity historicProcessInstance = new HistoricProcessInstanceEntity(processInstanceId, processDefinitionId, startTime);
+//      HistoricProcessInstanceEntity historicProcessInstance = new HistoricProcessInstanceEntity(processInstanceId, processInstanceId, startTime);
 //
 //      CommandContext.getCurrent().getPersistenceSession().insertHistoricProcessInstance(historicProcessInstance);
 //    }
@@ -93,9 +93,9 @@ public class HistoricDataServiceImpl extends ServiceImpl implements HistoricData
 //
 //      if (historicProcessInstance == null) {
 //        String processInstanceId = event.getProcessInstanceId();
-//        String processDefinitionId = event.getProcessDefinitionId();
+//        String processInstanceId = event.getProcessDefinitionId();
 //        Date startTime = ClockUtil.getCurrentTime();
-//        historicProcessInstance = new HistoricProcessInstanceEntity(processInstanceId, processDefinitionId, startTime);
+//        historicProcessInstance = new HistoricProcessInstanceEntity(processInstanceId, processInstanceId, startTime);
 //
 //        // throw new IllegalArgumentException("No historic process instance found for process instance id '" + event.getProcessInstanceId() + "'");
 //      }
@@ -116,10 +116,10 @@ public class HistoricDataServiceImpl extends ServiceImpl implements HistoricData
 //      String activityName = event.getPayload().getName();
 //      String activityType = event.getPayload().getType();
 //      String processInstanceId = event.getProcessInstanceId();
-//      String processDefinitionId = event.getProcessDefinitionId();
+//      String processInstanceId = event.getProcessDefinitionId();
 //      Date startTime = ClockUtil.getCurrentTime();
 //
-//      HistoricActivityInstanceEntity historicActivityInstance = new HistoricActivityInstanceEntity(activityId, activityName, activityType, processInstanceId, processDefinitionId, startTime);
+//      HistoricActivityInstanceEntity historicActivityInstance = new HistoricActivityInstanceEntity(activityId, activityName, activityType, processInstanceId, processInstanceId, startTime);
 //
 //      CommandContext.getCurrent().getPersistenceSession().insertHistoricActivityInstance(historicActivityInstance);
 //    }
@@ -136,10 +136,10 @@ public class HistoricDataServiceImpl extends ServiceImpl implements HistoricData
 //        String activityName = event.getPayload().getName();
 //        String activityType = event.getPayload().getType();
 //        String processInstanceId = event.getProcessInstanceId();
-//        String processDefinitionId = event.getProcessDefinitionId();
+//        String processInstanceId = event.getProcessDefinitionId();
 //        Date startTime = ClockUtil.getCurrentTime();
 //
-//        historicActivityInstance = new HistoricActivityInstanceEntity(activityId, activityName, activityType, processInstanceId, processDefinitionId, startTime);
+//        historicActivityInstance = new HistoricActivityInstanceEntity(activityId, activityName, activityType, processInstanceId, processInstanceId, startTime);
 //
 //        // throw new IllegalArgumentException("No historic activity instance found for activity id '" + event.getActivityId() + "' and process instance id '" + event.getProcessInstanceId() + "'");
 //      }

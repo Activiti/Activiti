@@ -6,12 +6,12 @@
 
   <!-- DEPLOYMENT -->
   
-  <insert id="insertDeploymentEntity" parameterType="org.activiti.engine.impl.persistence.repository.DeploymentEntity">
+  <insert id="insertDeployment" parameterType="org.activiti.engine.impl.persistence.repository.DeploymentEntity">
     insert into ACT_DEPLOYMENT(ID_, NAME_, DEPLOY_TIME_)
     values(#{id, jdbcType=VARCHAR}, #{name, jdbcType=VARCHAR}, #{deploymentTime, jdbcType=TIMESTAMP})
   </insert>
   
-  <delete id="deleteDeploymentById" parameterType="string">
+  <delete id="deleteDeployment" parameterType="string">
     delete from ACT_DEPLOYMENT where ID_ = #{id}
   </delete>
 
@@ -41,7 +41,7 @@
   
   <!-- RESOURCE -->
 
-  <insert id="insertResourceEntity" parameterType="org.activiti.engine.impl.persistence.repository.ResourceEntity">
+  <insert id="insertResource" parameterType="org.activiti.engine.impl.persistence.repository.ResourceEntity">
     insert into ACT_BYTEARRAY(ID_, NAME_, BYTES_, DEPLOYMENT_ID_)
     values (#{id, jdbcType=VARCHAR}, #{name, jdbcType=VARCHAR}, #{bytes, jdbcType=BLOB}, #{deploymentId, jdbcType=VARCHAR})  
   </insert>
@@ -73,7 +73,7 @@
     
   <!-- PROCESSDEFINITION -->
 
-  <insert id="insertProcessDefinitionEntity" parameterType="org.activiti.engine.impl.persistence.repository.ProcessDefinitionEntity">
+  <insert id="insertProcessDefinition" parameterType="org.activiti.engine.impl.persistence.repository.ProcessDefinitionEntity">
     insert into ACT_PROCESSDEFINITION(ID_, NAME_, KEY_, VERSION_, DEPLOYMENT_ID_)
     values (#{id, jdbcType=VARCHAR},
             #{name, jdbcType=VARCHAR},

@@ -15,7 +15,7 @@ package org.activiti.engine.test;
 
 import org.activiti.engine.impl.ProcessEngineImpl;
 import org.activiti.engine.impl.cfg.ProcessEngineConfiguration;
-import org.activiti.engine.impl.util.LogUtil.ThreadLogMode;
+import org.activiti.pvm.impl.util.LogUtil.ThreadLogMode;
 
 
 /** JUnit 3 style base class that also exposes selected implementation 

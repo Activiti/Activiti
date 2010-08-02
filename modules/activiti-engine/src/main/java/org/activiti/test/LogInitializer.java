@@ -18,8 +18,8 @@ import java.util.logging.Logger;
 import junit.framework.AssertionFailedError;
 
 import org.activiti.engine.impl.util.ClockUtil;
-import org.activiti.engine.impl.util.LogUtil;
-import org.activiti.engine.impl.util.LogUtil.ThreadLogMode;
+import org.activiti.pvm.impl.util.LogUtil;
+import org.activiti.pvm.impl.util.LogUtil.ThreadLogMode;
 import org.junit.rules.MethodRule;
 import org.junit.runners.model.FrameworkMethod;
 import org.junit.runners.model.Statement;

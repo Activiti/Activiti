@@ -79,6 +79,32 @@ public class TaskEntity implements Task, Serializable, PersistentObject {
     return task;
   }
   
+  /** new task.  Embedded state and create time will be initialized.
+   * But this task still will have to be persisted with 
+   * TransactionContext
+   *     .getCurrent()
+   *     .getPersistenceSession()
+   *     .insert(task);
+   */
+  public static TaskEntity create() {
+    TaskEntity task = new TaskEntity();
+    task.isTaskInvolvementsInitialized = true;
+    task.createTime = ClockUtil.getCurrentTime();
+    return task;
+  }
+
+  public void delete() {
+    // cascade deletion to task assignments
+    for (TaskInvolvementEntity taskInvolvementEntities: getTaskInvolvements()) {
+      taskInvolvementEntities.delete();
+    }
+    
+    CommandContext
+        .getCurrent()
+        .getTaskSession()
+        .deleteTask(id);
+  }
+
   public void update(TaskEntity task) {
     this.assignee = task.getAssignee();
     this.name = task.getName();
@@ -109,32 +135,6 @@ public class TaskEntity implements Task, Serializable, PersistentObject {
     return persistentState;
   }
 
-
-  /** new task.  Embedded state and create time will be initialized.
-   * But this task still will have to be persisted with 
-   * TransactionContext
-   *     .getCurrent()
-   *     .getPersistenceSession()
-   *     .insert(task);
-   */
-  public static TaskEntity create() {
-    TaskEntity task = new TaskEntity();
-    task.isTaskInvolvementsInitialized = true;
-    task.createTime = ClockUtil.getCurrentTime();
-    return task;
-  }
-
-  public void delete() {
-    // cascade deletion to task assignments
-    for (TaskInvolvementEntity taskInvolvementEntities: getTaskInvolvements()) {
-      taskInvolvementEntities.delete();
-    }
-    
-    CommandContext
-        .getCurrent()
-        .getTaskSession()
-        .deleteTask(id);
-  }
 
   public String getName() {
     return name;

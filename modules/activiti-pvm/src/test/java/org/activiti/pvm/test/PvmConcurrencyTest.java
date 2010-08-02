@@ -12,9 +12,6 @@
  */
 package org.activiti.pvm.test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -32,9 +29,8 @@ import org.junit.Test;
 /**
  * @author Tom Baeyens
  */
-public class PvmConcurrencyTest {
+public class PvmConcurrencyTest extends PvmTestCase {
 
-  @Test
   public void testSimpleAutmaticConcurrency() {
     PvmProcessDefinition processDefinition = new ProcessDefinitionBuilder()
       .createActivity("start")

@@ -62,6 +62,10 @@ public class ActivityImpl extends ScopeImpl implements PvmActivity {
   public PvmTransition getOutgoingTransition(String transitionId) {
     return namedOutgoingTransitions.get(transitionId);
   }
+  
+  public String toString() {
+    return "ActivityImpl["+id+"]";
+  }
 
   // restricted setters ///////////////////////////////////////////////////////
   

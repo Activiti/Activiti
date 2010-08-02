@@ -38,6 +38,11 @@ public class ProcessDefinitionEntity extends ProcessDefinitionImpl implements Pr
   public ProcessInstanceEntity createProcessInstance() {
     return ProcessInstanceEntity.createAndInsert(this);
   }
+  
+  public String toString() {
+    return "ProcessDefinitionEntity["+id+"]";
+  }
+
 
   // getters and setters //////////////////////////////////////////////////////
   

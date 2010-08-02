@@ -13,13 +13,13 @@
 package org.activiti.engine.impl.persistence.db;
 
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.activiti.engine.Job;
 import org.activiti.engine.Page;
 import org.activiti.engine.ProcessInstance;
+import org.activiti.engine.impl.ProcessInstanceQueryImpl;
 import org.activiti.engine.impl.cfg.RuntimeSession;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.interceptor.Session;
@@ -30,7 +30,6 @@ import org.activiti.engine.impl.persistence.runtime.ProcessInstanceEntity;
 import org.activiti.engine.impl.persistence.runtime.TimerEntity;
 import org.activiti.engine.impl.persistence.runtime.VariableInstanceEntity;
 import org.activiti.engine.impl.util.ClockUtil;
-import org.activiti.pvm.impl.process.ProcessDefinitionImpl;
 
 /**
  * @author Joram Barrez
@@ -44,12 +43,9 @@ public class DbRuntimeSession implements Session, RuntimeSession {
     this.dbSqlSession = CommandContext.getCurrentSession(DbSqlSession.class);
   }
 
-  public void insertProcessInstance(ProcessInstanceEntity processInstance) {
-    dbSqlSession.insert(processInstance);
-  }
-
   public void deleteProcessInstance(String processInstanceId) {
-    dbSqlSession.delete(ProcessInstanceEntity.class, processInstanceId);
+    findProcessInstanceById(processInstanceId)
+      .delete();
   }
 
   public ProcessInstanceEntity findProcessInstanceById(String processInstanceId) {
@@ -65,13 +61,13 @@ public class DbRuntimeSession implements Session, RuntimeSession {
     return (ProcessInstanceEntity) dbSqlSession.selectOne("selectSubProcessInstanceBySuperExecutionId", superExecutionId);
   }
 
-  public long findProcessInstanceCountByDynamicCriteria(Map<String, Object> params) {
-    return (Long) dbSqlSession.selectOne("selectProcessInstanceCountByDynamicCriteria", params);
+  public long findProcessInstanceCountByDynamicCriteria(ProcessInstanceQueryImpl processInstanceQuery) {
+    return (Long) dbSqlSession.selectOne("selectProcessInstanceCountByDynamicCriteria", processInstanceQuery);
   }
 
   @SuppressWarnings("unchecked")
-  public List<ProcessInstance> findProcessInstancesByDynamicCriteria(Map<String, Object> params) {
-    return dbSqlSession.selectList("selectProcessInstanceByDynamicCriteria", params);
+  public List<ProcessInstance> findProcessInstancesByDynamicCriteria(ProcessInstanceQueryImpl processInstanceQuery) {
+    return dbSqlSession.selectList("selectProcessInstanceByDynamicCriteria", processInstanceQuery);
   }
 
   public void insertActivityInstance(ActivityInstanceEntity activityInstance) {
@@ -83,7 +79,7 @@ public class DbRuntimeSession implements Session, RuntimeSession {
   }
 
   public ActivityInstanceEntity findActivityInstanceById(String activityInstanceId) {
-    return (ActivityInstanceEntity) dbSqlSession.selectOne("selectActivityInsatnceById", activityInstanceId);
+    return (ActivityInstanceEntity) dbSqlSession.selectOne("selectActivityInstanceById", activityInstanceId);
   }
 
   @SuppressWarnings("unchecked")

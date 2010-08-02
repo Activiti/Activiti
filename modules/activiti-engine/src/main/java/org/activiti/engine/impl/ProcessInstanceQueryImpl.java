@@ -12,9 +12,7 @@
  */
 package org.activiti.engine.impl;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.activiti.engine.Page;
 import org.activiti.engine.ProcessInstance;
@@ -26,39 +24,53 @@ import org.activiti.engine.impl.interceptor.CommandExecutor;
 /**
  * @author Joram Barrez
  */
-public class ProcessInstanceQueryImpl extends AbstractListQuery<ProcessInstance> implements ProcessInstanceQuery {
+public class ProcessInstanceQueryImpl extends AbstractQuery<ProcessInstance> implements ProcessInstanceQuery {
 
+  protected String processDefinitionId;
   protected String processDefinitionKey;
+  protected String processInstanceId;
   
   protected CommandExecutor commandExecutor;
+  
+  public ProcessInstanceQueryImpl() {
+  }
   
   public ProcessInstanceQueryImpl(CommandExecutor commandExecutor) {
     super(commandExecutor);
   }
-  
+
+  public ProcessInstanceQueryImpl processDefinitionId(String processDefinitionId) {
+    this.processDefinitionId = processDefinitionId;
+    return this;
+  }
+
   public ProcessInstanceQuery processDefinitionKey(String processDefinitionKey) {
     this.processDefinitionKey = processDefinitionKey;
     return this;
   }
   
-  protected long executeCount(CommandContext commandContext) {
-    return commandContext
-      .getRuntimeSession()
-      .findProcessInstanceCountByDynamicCriteria(createParamMap());
-  }
-
-  protected List<ProcessInstance> executeList(CommandContext commandContext, Page page) {
-    return commandContext
-      .getRuntimeSession()
-      .findProcessInstancesByDynamicCriteria(createParamMap());
+  public ProcessInstanceQuery processInstanceId(String processInstanceId) {
+    this.processInstanceId = processInstanceId;
+    return this;
   }
   
-  protected Map<String, Object> createParamMap() {
-    Map<String, Object> params = new HashMap<String, Object>();
-    if (processDefinitionKey != null) {
-      params.put("processDefinitionKey", processDefinitionKey);
-    }
-    return params;
+  public long executeCount(CommandContext commandContext) {
+    return commandContext
+      .getRuntimeSession()
+      .findProcessInstanceCountByDynamicCriteria(this);
   }
 
+  public List<ProcessInstance> executeList(CommandContext commandContext, Page page) {
+    return commandContext
+      .getRuntimeSession()
+      .findProcessInstancesByDynamicCriteria(this);
+  }
+  
+  public String getProcessDefinitionKey() {
+    return processDefinitionKey;
+  }
+  
+  public String getProcessInstanceId() {
+    return processInstanceId;
+  }
 }

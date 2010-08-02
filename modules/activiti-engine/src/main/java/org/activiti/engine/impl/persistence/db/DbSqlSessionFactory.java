@@ -36,9 +36,9 @@ import org.activiti.engine.impl.cfg.ProcessEngineConfigurationAware;
 import org.activiti.engine.impl.interceptor.Session;
 import org.activiti.engine.impl.interceptor.SessionFactory;
 import org.activiti.engine.impl.persistence.PersistentObject;
-import org.activiti.engine.impl.util.ClassNameUtil;
 import org.activiti.engine.impl.util.IoUtil;
 import org.activiti.engine.impl.variable.Type;
+import org.activiti.pvm.impl.util.ClassNameUtil;
 import org.apache.ibatis.builder.xml.XMLConfigBuilder;
 import org.apache.ibatis.datasource.pooled.PooledDataSource;
 import org.apache.ibatis.mapping.Environment;
@@ -158,6 +158,7 @@ public class DbSqlSessionFactory implements SessionFactory, ProcessEngineConfigu
       return statement;
     }
     statement = prefix+ClassNameUtil.getClassNameWithoutPackage(persistentObjectClass);
+    statement = statement.substring(0, statement.length()-6);
     cachedStatements.put(persistentObjectClass, statement);
     return statement;
   }
@@ -252,7 +253,7 @@ public class DbSqlSessionFactory implements SessionFactory, ProcessEngineConfigu
         if (!ddlStatement.startsWith("#")) {
           Statement jdbcStatement = connection.createStatement();
           try {
-            log.fine("\n" + ddlStatement);
+            log.finest("\n" + ddlStatement);
             jdbcStatement.execute(ddlStatement);
             jdbcStatement.close();
           } catch (Exception e) {

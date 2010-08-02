@@ -30,7 +30,7 @@ import org.activiti.engine.impl.persistence.identity.GroupEntity;
 /**
  * @author Joram Barrez
  */
-public class TaskQueryImpl extends AbstractListQuery<Task> implements TaskQuery {
+public class TaskQueryImpl extends AbstractQuery<Task> implements TaskQuery {
   
   protected String name;
   
@@ -99,13 +99,13 @@ public class TaskQueryImpl extends AbstractListQuery<Task> implements TaskQuery 
     return this;
   }
   
-  protected List<Task> executeList(CommandContext commandContext, Page page) {
+  public List<Task> executeList(CommandContext commandContext, Page page) {
     return commandContext
       .getTaskSession()
       .dynamicFindTasks(createParamMap(), page);
   }
   
-  protected long executeCount(CommandContext commandContext) {
+  public long executeCount(CommandContext commandContext) {
     return commandContext
       .getTaskSession()
       .dynamicFindTaskCount(createParamMap());

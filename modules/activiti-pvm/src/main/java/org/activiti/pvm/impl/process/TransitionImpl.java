@@ -46,4 +46,8 @@ public class TransitionImpl extends ProcessElementImpl implements PvmTransition 
   public ActivityImpl getDestination() {
     return destination;
   }
+  
+  public String toString() {
+    return "("+source.getId()+")--"+(id!=null?id+"-->(":">(")+destination.getId()+")";
+  }
 }

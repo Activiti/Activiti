@@ -20,14 +20,16 @@ import org.activiti.engine.impl.interceptor.CommandContext;
 public class DeleteDeploymentCmd extends CmdVoid {
 
   protected String deploymentId;
+  protected boolean cascade;
 
-  public DeleteDeploymentCmd(String deploymentId) {
+  public DeleteDeploymentCmd(String deploymentId, boolean cascade) {
     this.deploymentId = deploymentId;
+    this.cascade = cascade;
   }
 
   public void executeVoid(CommandContext commandContext) {
     commandContext
       .getRepositorySession()
-      .deleteDeployment(deploymentId);
+      .deleteDeployment(deploymentId, cascade);
   }
 }

@@ -45,7 +45,11 @@ public class RepositoryServiceImpl extends ServiceImpl implements RepositoryServ
   }
 
   public void deleteDeployment(String deploymentId) {
-    commandExecutor.execute(new DeleteDeploymentCmd(deploymentId));
+    commandExecutor.execute(new DeleteDeploymentCmd(deploymentId, false));
+  }
+
+  public void deleteDeploymentCascade(String deploymentId) {
+    commandExecutor.execute(new DeleteDeploymentCmd(deploymentId, true));
   }
 
   @SuppressWarnings("unchecked")

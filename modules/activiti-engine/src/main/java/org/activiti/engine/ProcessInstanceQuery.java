@@ -22,6 +22,7 @@ import java.util.List;
  */
 public interface ProcessInstanceQuery {
   
+  ProcessInstanceQuery processInstanceId(String processInstanceId);
   ProcessInstanceQuery processDefinitionKey(String processDefinitionKey);
   
   long count();
@@ -31,5 +32,4 @@ public interface ProcessInstanceQuery {
   List<ProcessInstance> paginatedList(int start, int maxResults);
   
   ProcessInstance singleResult();
-
 }

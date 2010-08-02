@@ -40,9 +40,9 @@ public class ProcessInstancePost extends ActivitiWebScript
   protected void executeWebScript(WebScriptRequest req, Status status, Cache cache, Map<String, Object> model)
   {
     ActivitiWebScriptBody body = getBody(req);
-    String processDefinitionId = getMandatoryString(body, "processDefinitionId");
+    String processDefinitionId = getMandatoryString(body, "processInstanceId");
     Map<String, Object> variables = getFormVariables(body);
-    variables.remove("processDefinitionId");
+    variables.remove("processInstanceId");
     model.put("instance", getRuntimeService().startProcessInstanceById(processDefinitionId, variables));
   }
 

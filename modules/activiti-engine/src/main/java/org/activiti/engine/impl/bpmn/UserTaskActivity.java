@@ -50,7 +50,7 @@ public class UserTaskActivity extends TaskActivity {
     handleAssignments(task, activityContext);
   }
 
-  public void event(ActivityContext activityContext, Object event) throws Exception {
+  public void signal(ActivityContext activityContext, String signalName, Object signalData) throws Exception {
     leave(activityContext);
   }
 

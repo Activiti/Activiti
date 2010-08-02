@@ -68,6 +68,7 @@ public class ExecutionContextImpl implements EventContext, ActivityContext {
   protected boolean isOperating;
 
   public static void startProcessInstance(ProcessInstanceImpl processInstance) {
+    log.fine("starting new process instance for "+processInstance.getProcessDefinition());
     ExecutionContextImpl executionContext = new ExecutionContextImpl();
     executionContext.processInstance = processInstance;
     executionContext.scopeInstance = processInstance;
@@ -75,6 +76,7 @@ public class ExecutionContextImpl implements EventContext, ActivityContext {
   }
 
   public static void signal(ActivityInstanceImpl activityInstance, String signalName, Object data) {
+    log.fine("receiving signal '"+signalName+"' on "+activityInstance);
     ExecutionContextImpl executionContext = new ExecutionContextImpl();
     executionContext.activityInstance = activityInstance;
     executionContext.scopeInstance = activityInstance;
@@ -87,11 +89,13 @@ public class ExecutionContextImpl implements EventContext, ActivityContext {
     if (transition==null) {
       throw new PvmException("transition is null");
     }
+    log.fine("taking transition "+transition);
     this.transition = (TransitionImpl) transition;
     fireEvent(activityInstance.activity, Event.ACTIVITY_END, TRANSITION_ACTIVITY_END);
   }
 
   public void end() {
+    log.fine("ending "+activityInstance);
     fireEvent(activityInstance.activity, Event.ACTIVITY_END, ACTIVITY_END);
   }
 
@@ -99,7 +103,7 @@ public class ExecutionContextImpl implements EventContext, ActivityContext {
     throw new UnsupportedOperationException("please implement me");
   }
 
-  private void fireEvent(ProcessElementImpl processElement, String event, AtomicOperation eventPostOperation) {
+  protected void fireEvent(ProcessElementImpl processElement, String event, AtomicOperation eventPostOperation) {
     eventListeners = processElement
       .getEventListeners()
       .get(event);
@@ -116,7 +120,7 @@ public class ExecutionContextImpl implements EventContext, ActivityContext {
     }
   }
   
-  private void perform(AtomicOperation atomicOperation) {
+  protected void perform(AtomicOperation atomicOperation) {
     this.nextAtomicOperation = atomicOperation;
     if (!isOperating) {
       isOperating = true;
@@ -132,11 +136,11 @@ public class ExecutionContextImpl implements EventContext, ActivityContext {
     }
   }
 
-  private interface AtomicOperation {
+  protected interface AtomicOperation {
     void perform(ExecutionContextImpl executionContext);
   }
   
-  private static class EventListenerInvoke implements AtomicOperation {
+  protected static class EventListenerInvoke implements AtomicOperation {
     public void perform(ExecutionContextImpl executionContext) {
       if (executionContext.eventListenerIndex<executionContext.eventListeners.size()) {
         EventListener eventListener = executionContext.eventListeners.get(executionContext.eventListenerIndex);
@@ -153,7 +157,7 @@ public class ExecutionContextImpl implements EventContext, ActivityContext {
     }
   }
   
-  private static class ProcessStart implements AtomicOperation {
+  protected static class ProcessStart implements AtomicOperation {
     public void perform(ExecutionContextImpl executionContext) {
       ProcessInstanceImpl processInstance = executionContext.processInstance;
       ActivityImpl initial = processInstance.getProcessDefinition().getInitial();
@@ -162,7 +166,7 @@ public class ExecutionContextImpl implements EventContext, ActivityContext {
     }
   }
 
-  private static class ActivityStart implements AtomicOperation {
+  protected static class ActivityStart implements AtomicOperation {
     public void perform(ExecutionContextImpl executionContext) {
       ActivityInstanceImpl activityInstance = executionContext.activityInstance;
       activityInstance.setExecutionContext(executionContext);
@@ -185,11 +189,11 @@ public class ExecutionContextImpl implements EventContext, ActivityContext {
     }
   }
 
-  private static String getDelegationExceptionMessage(ActivityImpl activity, String methodName, Exception e) {
+  protected static String getDelegationExceptionMessage(ActivityImpl activity, String methodName, Exception e) {
     return "exception during "+methodName+" of activity '"+activity.getId()+"', behavior '"+activity.getActivityBehavior().getClass().getName()+"': "+e;
   }
 
-  private static class TransitionActivityEnd implements AtomicOperation {
+  protected static class TransitionActivityEnd implements AtomicOperation {
     public void perform(ExecutionContextImpl executionContext) {
       ActivityInstanceImpl activityInstance = executionContext.activityInstance;
       ScopeInstanceImpl parent = activityInstance.getParent();
@@ -199,7 +203,7 @@ public class ExecutionContextImpl implements EventContext, ActivityContext {
     }
   }
 
-  private static class TransitionTake implements AtomicOperation {
+  protected static class TransitionTake implements AtomicOperation {
     public void perform(ExecutionContextImpl executionContext) {
       ScopeInstanceImpl parentScopeInstance = executionContext.activityInstance.getParent();
       parentScopeInstance.removeActivityInstance(executionContext.activityInstance);
@@ -208,16 +212,17 @@ public class ExecutionContextImpl implements EventContext, ActivityContext {
     }
   }
 
-  private static class TransitionActivityStart implements AtomicOperation {
+  protected static class TransitionActivityStart implements AtomicOperation {
     public void perform(ExecutionContextImpl executionContext) {
       ActivityImpl destination = executionContext.transition.getDestination();
       executionContext.activityInstance = executionContext.scopeInstance.createActivityInstance(destination);
       executionContext.scopeInstance = executionContext.activityInstance;
+      log.fine("starting "+destination);
       executionContext.fireEvent(destination, Event.ACTIVITY_START, ACTIVITY_START);
     }
   }
 
-  private static class ActivitySignal implements AtomicOperation {
+  protected static class ActivitySignal implements AtomicOperation {
     public void perform(ExecutionContextImpl executionContext) {
       ActivityInstanceImpl activityInstance = executionContext.activityInstance;
       ActivityImpl activity = activityInstance.getActivity();
@@ -238,7 +243,7 @@ public class ExecutionContextImpl implements EventContext, ActivityContext {
     }
   }
 
-  private static class ActivityEnd implements AtomicOperation {
+  protected static class ActivityEnd implements AtomicOperation {
     public void perform(ExecutionContextImpl executionContext) {
       executionContext.activityInstance.setEnded(true);
       ScopeInstanceImpl parent = executionContext.activityInstance.getParent();
@@ -257,7 +262,7 @@ public class ExecutionContextImpl implements EventContext, ActivityContext {
     }
   }
 
-  private static class ProcessEnd implements AtomicOperation {
+  protected static class ProcessEnd implements AtomicOperation {
     public void perform(ExecutionContextImpl executionContext) {
       ProcessInstanceImpl processInstance = (ProcessInstanceImpl) executionContext.scopeInstance;
       processInstance.setEnded(true);

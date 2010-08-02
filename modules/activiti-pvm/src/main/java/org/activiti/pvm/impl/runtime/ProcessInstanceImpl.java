@@ -44,4 +44,8 @@ public class ProcessInstanceImpl extends ScopeInstanceImpl implements PvmProcess
     collectActivityIds(activityIds);
     return activityIds;
   }
+  
+  public String toString() {
+    return "ProcessInstanceImpl["+System.identityHashCode(this)+"]";
+  }
 }

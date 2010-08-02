@@ -20,6 +20,7 @@ import java.util.Map;
 import org.activiti.engine.Job;
 import org.activiti.engine.Page;
 import org.activiti.engine.ProcessInstance;
+import org.activiti.engine.impl.ProcessInstanceQueryImpl;
 import org.activiti.engine.impl.persistence.runtime.ActivityInstanceEntity;
 import org.activiti.engine.impl.persistence.runtime.ByteArrayEntity;
 import org.activiti.engine.impl.persistence.runtime.JobEntity;
@@ -33,13 +34,12 @@ import org.activiti.engine.impl.persistence.runtime.VariableInstanceEntity;
  */
 public interface RuntimeSession {
   
-  void insertProcessInstance(ProcessInstanceEntity processInstance);
   void deleteProcessInstance(String processInstanceId);
   ProcessInstanceEntity findProcessInstanceById(String processInstanceId);
   List<ProcessInstanceEntity> findProcessInstancesByProcessDefintionId(String processDefinitionId);
   ProcessInstanceEntity findSubProcessInstance(String superExecutionId);
-  long findProcessInstanceCountByDynamicCriteria(Map<String, Object> params);
-  List<ProcessInstance> findProcessInstancesByDynamicCriteria(Map<String, Object> params);
+  long findProcessInstanceCountByDynamicCriteria(ProcessInstanceQueryImpl processInstanceQuery);
+  List<ProcessInstance> findProcessInstancesByDynamicCriteria(ProcessInstanceQueryImpl processInstanceQuery);
 
   void insertActivityInstance(ActivityInstanceEntity activityInstance);
   void deleteActivityInstance(String activityInstanceId);

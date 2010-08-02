@@ -27,7 +27,7 @@ import org.activiti.engine.impl.interceptor.CommandExecutor;
 /**
  * @author jbarrez
  */
-public class JobQueryImpl extends AbstractListQuery<Job> implements JobQuery {
+public class JobQueryImpl extends AbstractQuery<Job> implements JobQuery {
   
   protected String processInstanceId;
   
@@ -40,13 +40,13 @@ public class JobQueryImpl extends AbstractListQuery<Job> implements JobQuery {
     super(commandExecutor);
   }
 
-  protected long executeCount(CommandContext commandContext) {
+  public long executeCount(CommandContext commandContext) {
     return commandContext
       .getRuntimeSession()
       .dynamicJobCount(createParamMap());
   }
 
-  protected List<Job> executeList(CommandContext commandContext, Page page) {
+  public List<Job> executeList(CommandContext commandContext, Page page) {
     return commandContext
       .getRuntimeSession()
       .dynamicFindJobs(createParamMap(), page);

@@ -44,7 +44,7 @@ public class HistoricDataServiceImplTest {
 //    try {
 //      final ProcessInstance processInstance = mock(ProcessInstance.class);
 //      when(processInstance.getId()).thenReturn("processInstanceId");
-//      when(processInstance.getProcessDefinitionId()).thenReturn("processDefinitionId");
+//      when(processInstance.getProcessDefinitionId()).thenReturn("processInstanceId");
 //
 //      Date startTime = new Date();
 //      ClockUtil.setCurrentTime(startTime);
@@ -55,7 +55,7 @@ public class HistoricDataServiceImplTest {
 //
 //      assertNotNull(historicProcessInstance);
 //      assertEquals("processInstanceId", historicProcessInstance.getProcessInstanceId());
-//      assertEquals("processDefinitionId", historicProcessInstance.getProcessDefinitionId());
+//      assertEquals("processInstanceId", historicProcessInstance.getProcessDefinitionId());
 //      assertEquals(startTime, historicProcessInstance.getStartTime());
 //      assertNull(historicProcessInstance.getEndTime());
 //      assertNull(historicProcessInstance.getDurationInMillis());
@@ -69,7 +69,7 @@ public class HistoricDataServiceImplTest {
 //      historicProcessInstance = historicDataService.findHistoricProcessInstance("processInstanceId");
 //
 //      assertEquals("processInstanceId", historicProcessInstance.getProcessInstanceId());
-//      assertEquals("processDefinitionId", historicProcessInstance.getProcessDefinitionId());
+//      assertEquals("processInstanceId", historicProcessInstance.getProcessDefinitionId());
 //      assertEquals(startTime, historicProcessInstance.getStartTime());
 //      assertEquals(endTime, historicProcessInstance.getEndTime());
 //      assertEquals(Long.valueOf(1000L), historicProcessInstance.getDurationInMillis());
@@ -92,7 +92,7 @@ public class HistoricDataServiceImplTest {
 //  public void testUniqueConstraintsOnHistoricProcessInstance() {
 //    try {
 //      ProcessInstance processInstance = mock(ProcessInstance.class);
-//      when(processInstance.getProcessDefinitionId()).thenReturn("processDefinitionId");
+//      when(processInstance.getProcessDefinitionId()).thenReturn("processInstanceId");
 //
 //      when(processInstance.getId()).thenReturn("processInstanceIdOne");
 //      fireProcessInstanceStartedEvent(processInstance);
@@ -121,7 +121,7 @@ public class HistoricDataServiceImplTest {
 //
 //      ProcessInstance processInstance = mock(ProcessInstance.class);
 //      when(processInstance.getId()).thenReturn("processInstanceId");
-//      when(processInstance.getProcessDefinitionId()).thenReturn("processDefinitionId");
+//      when(processInstance.getProcessDefinitionId()).thenReturn("processInstanceId");
 //
 //      HistoricDataService historicDataService = new HistoricDataServiceImpl();
 //      // initialization hack :-)
@@ -139,7 +139,7 @@ public class HistoricDataServiceImplTest {
 //      assertEquals("activityName", historicActivityInstance.getActivityName());
 //      assertEquals("activityType", historicActivityInstance.getActivityType());
 //      assertEquals("processInstanceId", historicActivityInstance.getProcessInstanceId());
-//      assertEquals("processDefinitionId", historicActivityInstance.getProcessDefinitionId());
+//      assertEquals("processInstanceId", historicActivityInstance.getProcessDefinitionId());
 //      assertEquals(startTime, historicActivityInstance.getStartTime());
 //      assertNull(historicActivityInstance.getEndTime());
 //      assertNull(historicActivityInstance.getDurationInMillis());
@@ -155,7 +155,7 @@ public class HistoricDataServiceImplTest {
 //      assertEquals("activityName", historicActivityInstance.getActivityName());
 //      assertEquals("activityType", historicActivityInstance.getActivityType());
 //      assertEquals("processInstanceId", historicActivityInstance.getProcessInstanceId());
-//      assertEquals("processDefinitionId", historicActivityInstance.getProcessDefinitionId());
+//      assertEquals("processInstanceId", historicActivityInstance.getProcessDefinitionId());
 //      assertEquals(startTime, historicActivityInstance.getStartTime());
 //      assertEquals(endTime, historicActivityInstance.getEndTime());
 //      assertEquals(Long.valueOf(1000L), historicActivityInstance.getDurationInMillis());
@@ -184,7 +184,7 @@ public class HistoricDataServiceImplTest {
 //      when(activity.getType()).thenReturn("activityType");
 //
 //      ProcessInstance processInstance = mock(ProcessInstance.class);
-//      when(processInstance.getProcessDefinitionId()).thenReturn("processDefinitionId");
+//      when(processInstance.getProcessDefinitionId()).thenReturn("processInstanceId");
 //
 //      when(activity.getId()).thenReturn("activityIdOne");
 //      when(processInstance.getId()).thenReturn("processInstanceIdOne");

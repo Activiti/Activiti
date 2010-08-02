@@ -26,8 +26,12 @@ public interface RepositoryService {
   /** starts creating a new deployment */
   DeploymentBuilder createDeployment();
   
-  /** deletes the given deployment and cascade deletion to process instances and jobs */
+  /** deletes the given deployment and throws an exception if there are 
+   * still runtime or history process instances */
   void deleteDeployment(String deploymentId);
+  
+  /** deletes the given deployment and cascade deletion to process instances and jobs */
+  void deleteDeploymentCascade(String deploymentId);
   
   /** 
    * lists all deployments, ordered by deployment date (ascending).

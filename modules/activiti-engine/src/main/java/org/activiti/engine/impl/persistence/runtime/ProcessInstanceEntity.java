@@ -19,6 +19,7 @@ import java.util.Map;
 import org.activiti.engine.ProcessInstance;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.PersistentObject;
+import org.activiti.engine.impl.persistence.repository.ProcessDefinitionEntity;
 import org.activiti.pvm.impl.process.ActivityImpl;
 import org.activiti.pvm.impl.process.ProcessDefinitionImpl;
 import org.activiti.pvm.impl.runtime.ActivityInstanceImpl;
@@ -45,11 +46,12 @@ public class ProcessInstanceEntity extends ProcessInstanceImpl implements Proces
   
   public static ProcessInstanceEntity createAndInsert(ProcessDefinitionImpl processDefinition) {
     ProcessInstanceEntity processInstance = new ProcessInstanceEntity(processDefinition);
+    processInstance.setProcessDefinitionId(processDefinition.getId());
     
     CommandContext
       .getCurrent()
-      .getRuntimeSession()
-      .insertProcessInstance(processInstance);
+      .getDbSqlSession()
+      .insert(processInstance);
     
     processInstance.variableInstanceMap = new ProcessInstanceVariableMap(processInstance);
     
@@ -58,11 +60,7 @@ public class ProcessInstanceEntity extends ProcessInstanceImpl implements Proces
   
   @Override
   protected ActivityInstanceImpl createActivityInstance(ActivityImpl activity) {
-    ActivityInstanceEntity activityInstance = new ActivityInstanceEntity(activity, this);
-    CommandContext
-      .getCurrent()
-      .getRuntimeSession()
-      .insertActivityInstance(activityInstance);
+    ActivityInstanceEntity activityInstance = ActivityInstanceEntity.createAndInsert(activity, this);
     activityInstances.add(activityInstance);
     return activityInstance;
   }
@@ -81,8 +79,8 @@ public class ProcessInstanceEntity extends ProcessInstanceImpl implements Proces
   public void delete() {
     CommandContext
       .getCurrent()
-      .getRuntimeSession()
-      .deleteProcessInstance(id);
+      .getDbSqlSession()
+      .delete(ProcessInstanceEntity.class, id);
   }
   
   public VariableInstanceMap getVariableInstanceMap() {
@@ -101,6 +99,20 @@ public class ProcessInstanceEntity extends ProcessInstanceImpl implements Proces
   
   public int getRevisionNext() {
     return revision+1;
+  }
+  
+  public ProcessDefinitionEntity getProcessDefinition() {
+    if (processDefinitionId!=null && processDefinition==null) {
+      processDefinition = CommandContext
+        .getCurrent()
+        .getRepositorySession()
+        .findProcessDefinitionById(processDefinitionId);
+    }
+    return (ProcessDefinitionEntity) processDefinition;
+  }
+  
+  public String toString() {
+    return "ProcessInstanceEntity["+id+"]";
   }
   
   // getters and setters //////////////////////////////////////////////////////

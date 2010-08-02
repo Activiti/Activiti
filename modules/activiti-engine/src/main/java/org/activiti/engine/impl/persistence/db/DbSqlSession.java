@@ -24,8 +24,8 @@ import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.interceptor.Session;
 import org.activiti.engine.impl.persistence.PersistentObject;
 import org.activiti.engine.impl.persistence.runtime.VariableInstanceEntity;
-import org.activiti.engine.impl.util.ClassNameUtil;
 import org.activiti.engine.impl.variable.DeserializedObject;
+import org.activiti.pvm.impl.util.ClassNameUtil;
 import org.apache.ibatis.session.RowBounds;
 import org.apache.ibatis.session.SqlSession;
 

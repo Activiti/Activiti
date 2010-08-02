@@ -34,7 +34,7 @@ public interface RepositorySession {
   
   /** deletes the deployment and cascades deletion to the contained resources
    * and process definitions */
-  void deleteDeployment(String deploymentId);
+  void deleteDeployment(String deploymentId, boolean cascade);
   
   // TODO replace with query api
   List<DeploymentEntity> findDeployments();

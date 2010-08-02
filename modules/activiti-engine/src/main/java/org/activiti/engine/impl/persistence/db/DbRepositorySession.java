@@ -17,6 +17,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.activiti.engine.ProcessDefinition;
+import org.activiti.engine.ProcessInstance;
+import org.activiti.engine.impl.ProcessDefinitionQueryImpl;
+import org.activiti.engine.impl.ProcessInstanceQueryImpl;
 import org.activiti.engine.impl.cfg.RepositorySession;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.interceptor.Session;
@@ -77,10 +81,28 @@ public class DbRepositorySession implements Session, RepositorySession {
     processDefinitionCache.put(processDefinitionId, processDefinition);
   }
 
-  public void deleteDeployment(String deploymentId) {
+  public void deleteDeployment(String deploymentId, boolean cascade) {
+    if (cascade) {
+      CommandContext commandContext = CommandContext.getCurrent();
+      List<ProcessDefinition> processDefinitions = new ProcessDefinitionQueryImpl()
+        .deploymentId(deploymentId)
+        .executeList(commandContext, null);
+      
+      for (ProcessDefinition processDefinition: processDefinitions) {
+        List<ProcessInstance> processInstances = new ProcessInstanceQueryImpl()
+          .processDefinitionId(processDefinition.getId())
+          .executeList(commandContext, null);
+        
+        for (ProcessInstance processInstance: processInstances) {
+          commandContext
+            .getRuntimeSession()
+            .deleteProcessInstance(processInstance.getId());
+        }
+      }
+    }
     dbSqlSession.delete("deleteProcessDefinitionsByDeploymentId", deploymentId);
     dbSqlSession.delete("deleteResourcesByDeploymentId", deploymentId);
-    dbSqlSession.delete("deleteDeploymentById", deploymentId);
+    dbSqlSession.delete("deleteDeployment", deploymentId);
   }
   
   public DeploymentEntity findDeploymentById(String deploymentId) {

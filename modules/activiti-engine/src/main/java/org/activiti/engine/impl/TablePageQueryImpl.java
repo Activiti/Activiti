@@ -16,7 +16,7 @@ import org.activiti.engine.ActivitiException;
 import org.activiti.engine.SortOrder;
 import org.activiti.engine.TablePage;
 import org.activiti.engine.TablePageQuery;
-import org.activiti.engine.impl.AbstractSingleResultQuery;
+import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
 
@@ -25,22 +25,18 @@ import org.activiti.engine.impl.interceptor.CommandExecutor;
  * 
  * @author Joram Barrez
  */
-public class TablePageQueryImpl extends AbstractSingleResultQuery<TablePage> implements TablePageQuery {
+public class TablePageQueryImpl implements TablePageQuery {
   
   protected CommandExecutor commandExecutor;
-  
+
   protected String tableName;
-  
   protected int start = -1;
-  
   protected int maxRows = -1;
-  
   protected String sortColumn;
-  
   protected SortOrder sortOrder;
 
   public TablePageQueryImpl(CommandExecutor commandExecutor) {
-    super(commandExecutor);
+    this.commandExecutor = commandExecutor;
   }
   
   public TablePageQuery tableName(String tableName) {
@@ -76,13 +72,16 @@ public class TablePageQueryImpl extends AbstractSingleResultQuery<TablePage> imp
     return this;
   }
   
-  protected TablePage executeSingleResultQuery(CommandContext commandContext) {
-    if (tableName == null || start == -1 || maxRows == -1) {
-      throw new ActivitiException("Table name, offset and maxResults are " +
-      		"minimally needed to execute a TablePageQuery");
-    }
-    return commandContext.getManagementSession()
-      .getTablePage(tableName, start, maxRows, sortColumn, sortOrder);
+  public TablePage singleResult() {
+    return commandExecutor.execute(new Command<TablePage>() {
+      public TablePage execute(CommandContext commandContext) {
+        if (tableName == null || start == -1 || maxRows == -1) {
+          throw new ActivitiException("Table name, offset and maxResults are " +
+              "minimally needed to execute a TablePageQuery");
+        }
+        return commandContext.getManagementSession()
+          .getTablePage(tableName, start, maxRows, sortColumn, sortOrder);
+      };
+    });
   }
-
 }
