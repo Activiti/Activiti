@@ -13,7 +13,6 @@
 package org.activiti.examples.mgmt;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
@@ -52,7 +51,7 @@ public class TablePageQueryTest extends ProcessEngineTestCase {
     assertEquals(6, tablePage.getRows().size());
     assertEquals(20, tablePage.getTotal());
 
-    deleteTasks(taskIds);
+    taskService.deleteTasks(taskIds);
   }
   
   public void testGetSortedTablePage() {
@@ -78,7 +77,7 @@ public class TablePageQueryTest extends ProcessEngineTestCase {
     expectedTaskNames = new String[] {"I", "H", "G", "F", "E", "D", "C", "B"} ;
     verifyTaskNames(expectedTaskNames, tablePage.getRows());
     
-    deleteTasks(taskIds);
+    taskService.deleteTasks(taskIds);
   }
   
   private void verifyTaskNames(String[] expectedTaskNames, List<Map<String, Object>> rowData) {
@@ -98,11 +97,5 @@ public class TablePageQueryTest extends ProcessEngineTestCase {
     }
     return taskIds;
   } 
-  
-  private void deleteTasks(Collection<String> taskIds) {
-    for (String taskId : taskIds) {
-      taskService.deleteTask(taskId);
-    }
-  }
 
 }

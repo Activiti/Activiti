@@ -14,8 +14,6 @@
 
 package org.activiti.test.service;
 
-import static org.junit.Assert.*;
-
 import java.util.List;
 
 import org.activiti.engine.ProcessInstance;
@@ -24,29 +22,19 @@ import org.activiti.engine.history.HistoricProcessInstance;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.test.Deployment;
-import org.activiti.test.LogInitializer;
-import org.activiti.test.ProcessDeployer;
-import org.junit.Rule;
-import org.junit.Test;
+import org.activiti.engine.test.ProcessEngineImplTestCase;
 
 /**
  * @author Christian Stettler
  */
-public class HistoricDataServiceTest {
+public class HistoricDataServiceTest extends ProcessEngineImplTestCase {
 
-  @Rule
-  public LogInitializer logSetup = new LogInitializer();
-
-  @Rule
-  public ProcessDeployer deployer = new ProcessDeployer();
-
-  @Test
   @Deployment(resources = {"oneTaskProcess.bpmn20.xml"})
   public void testHistoricDataCreatedForProcessExecution() {
-    final ProcessInstance processInstance = deployer.getProcessService().startProcessInstanceByKey("oneTaskProcess");
+    final ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("oneTaskProcess");
 
     try {
-      HistoricProcessInstance historicProcessInstance = deployer.getHistoricDataService().findHistoricProcessInstance(processInstance.getId());
+      HistoricProcessInstance historicProcessInstance = historicDataService.findHistoricProcessInstance(processInstance.getId());
 
       assertNotNull(historicProcessInstance);
       assertEquals(processInstance.getId(), historicProcessInstance.getProcessInstanceId());
@@ -57,13 +45,13 @@ public class HistoricDataServiceTest {
 
       // TODO: check for HistoricActivityInstance created once events get fired
 
-      List<Task> tasks = deployer.getTaskService().createTaskQuery().processInstance(processInstance.getId()).list();
+      List<Task> tasks = taskService.createTaskQuery().processInstance(processInstance.getId()).list();
 
       assertEquals(1, tasks.size());
 
-      deployer.getTaskService().complete(tasks.get(0).getId());
+      taskService.complete(tasks.get(0).getId());
 
-      historicProcessInstance = deployer.getHistoricDataService().findHistoricProcessInstance(processInstance.getId());
+      historicProcessInstance = historicDataService.findHistoricProcessInstance(processInstance.getId());
 
       assertNotNull(historicProcessInstance);
       assertEquals(processInstance.getId(), historicProcessInstance.getProcessInstanceId());
@@ -74,7 +62,7 @@ public class HistoricDataServiceTest {
 
       // TODO: check for HistoricActivityInstance updated once events get fired
     } finally {
-      deployer.getCommandExecutor().execute(new Command<Object>() {
+      processEngineConfiguration.getCommandExecutor().execute(new Command<Object>() {
         public Object execute(CommandContext commandContext) {
           commandContext.getHistorySession().deleteHistoricProcessInstance(processInstance.getId());
           return null;

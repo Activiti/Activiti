@@ -86,7 +86,6 @@ public class PropertyTest extends ProcessEngineTestCase {
 //    assertNotNull(deployer.getProcessService().getVariable(pi.getId(), "order"));
   }
 
-  @Test
   @Deployment
   public void testUserTaskDstProperty() {
 

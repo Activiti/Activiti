@@ -12,41 +12,24 @@
  */
 package org.activiti.test.task;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.fail;
-
 import java.util.ArrayList;
 import java.util.List;
 
 import org.activiti.engine.ActivitiException;
-import org.activiti.engine.IdentityService;
 import org.activiti.engine.Task;
 import org.activiti.engine.TaskQuery;
-import org.activiti.test.LogInitializer;
-import org.activiti.test.ProcessDeployer;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
+import org.activiti.engine.test.ProcessEngineTestCase;
 
 /**
  * @author Joram Barrez
  */
-public class TaskQueryTest {
+public class TaskQueryTest extends ProcessEngineTestCase {
 
   private List<String> taskIds;
-  @Rule
-  public LogInitializer logSetup = new LogInitializer();
-  @Rule
-  public ProcessDeployer deployer = new ProcessDeployer();
 
-  @Before
   public void setUp() throws Exception {
     taskIds = generateTestTasks();
 
-    IdentityService identityService = deployer.getIdentityService();
     identityService.saveUser(identityService.newUser("kermit"));
     identityService.saveUser(identityService.newUser("gonzo"));
     identityService.saveUser(identityService.newUser("fozzie"));
@@ -59,20 +42,17 @@ public class TaskQueryTest {
     identityService.createMembership("fozzie", "management");
   }
 
-  @After
   public void tearDown() throws Exception {
-    IdentityService identityService = deployer.getIdentityService();
     identityService.deleteGroup("accountancy");
     identityService.deleteGroup("management");
     identityService.deleteUser("fozzie");
     identityService.deleteUser("gonzo");
     identityService.deleteUser("kermit");
-    deployer.deleteTasks(taskIds);
+    taskService.deleteTasks(taskIds);
   }
 
-  @Test
   public void testQueryNoSpecifics() {
-    TaskQuery query = deployer.getTaskService().createTaskQuery();
+    TaskQuery query = taskService.createTaskQuery();
     assertEquals(12, query.count());
     assertEquals(12, query.list().size());
     try {
@@ -82,22 +62,20 @@ public class TaskQueryTest {
     }
   }
 
-  @Test
   public void testQueryByAssignee() {
-    TaskQuery query = deployer.getTaskService().createTaskQuery().assignee("gonzo");
+    TaskQuery query = taskService.createTaskQuery().assignee("gonzo");
     assertEquals(1, query.count());
     assertEquals(1, query.list().size());
     assertNotNull(query.singleResult());
 
-    query = deployer.getTaskService().createTaskQuery().assignee("kermit");
+    query = taskService.createTaskQuery().assignee("kermit");
     assertEquals(0, query.count());
     assertEquals(0, query.list().size());
     assertNull(query.singleResult());
   }
 
-  @Test
   public void testQueryByCandidate() {
-    TaskQuery query = deployer.getTaskService().createTaskQuery().candidateUser("kermit");
+    TaskQuery query = taskService.createTaskQuery().candidateUser("kermit");
     assertEquals(11, query.count());
     assertEquals(11, query.list().size());
     try {
@@ -106,7 +84,7 @@ public class TaskQueryTest {
     } catch (ActivitiException e) {
     }
 
-    query = deployer.getTaskService().createTaskQuery().candidateUser("fozzie");
+    query = taskService.createTaskQuery().candidateUser("fozzie");
     assertEquals(3, query.count());
     assertEquals(3, query.list().size());
     try {
@@ -116,9 +94,8 @@ public class TaskQueryTest {
     }
   }
 
-  @Test
   public void testQueryByCandidateGroup() {
-    TaskQuery query = deployer.getTaskService().createTaskQuery().candidateGroup("management");
+    TaskQuery query = taskService.createTaskQuery().candidateGroup("management");
     assertEquals(3, query.count());
     assertEquals(3, query.list().size());
     try {
@@ -127,14 +104,13 @@ public class TaskQueryTest {
     } catch (ActivitiException e) {
     }
 
-    query = deployer.getTaskService().createTaskQuery().candidateGroup("sales");
+    query = taskService.createTaskQuery().candidateGroup("sales");
     assertEquals(0, query.count());
     assertEquals(0, query.list().size());
   }
 
-  @Test
   public void testQueryPagedList() {
-    TaskQuery query = deployer.getTaskService().createTaskQuery().candidateUser("kermit");
+    TaskQuery query = taskService.createTaskQuery().candidateUser("kermit");
 
     // Verifying the un-paged results
     assertEquals(11, query.count());
@@ -166,40 +142,40 @@ public class TaskQueryTest {
 
     // 6 tasks for kermit
     for (int i = 0; i < 6; i++) {
-      Task task = deployer.getTaskService().newTask();
+      Task task = taskService.newTask();
       task.setName("testTask");
-      deployer.getTaskService().saveTask(task);
+      taskService.saveTask(task);
       ids.add(task.getId());
-      deployer.getTaskService().addCandidateUser(task.getId(), "kermit");
+      taskService.addCandidateUser(task.getId(), "kermit");
     }
 
     // 1 task for gonzo
-    Task task = deployer.getTaskService().newTask();
-    deployer.getTaskService().saveTask(task);
-    deployer.getTaskService().setAssignee(task.getId(), "gonzo");
+    Task task = taskService.newTask();
+    taskService.saveTask(task);
+    taskService.setAssignee(task.getId(), "gonzo");
     ids.add(task.getId());
 
     // 2 tasks for management group
     for (int i = 0; i < 2; i++) {
-      task = deployer.getTaskService().newTask();
-      deployer.getTaskService().saveTask(task);
-      deployer.getTaskService().addCandidateGroup(task.getId(), "management");
+      task = taskService.newTask();
+      taskService.saveTask(task);
+      taskService.addCandidateGroup(task.getId(), "management");
       ids.add(task.getId());
     }
 
     // 2 tasks for accountancy group
     for (int i = 0; i < 2; i++) {
-      task = deployer.getTaskService().newTask();
-      deployer.getTaskService().saveTask(task);
-      deployer.getTaskService().addCandidateGroup(task.getId(), "accountancy");
+      task = taskService.newTask();
+      taskService.saveTask(task);
+      taskService.addCandidateGroup(task.getId(), "accountancy");
       ids.add(task.getId());
     }
 
     // 1 task assigned to management and accountancy group
-    task = deployer.getTaskService().newTask();
-    deployer.getTaskService().saveTask(task);
-    deployer.getTaskService().addCandidateGroup(task.getId(), "management");
-    deployer.getTaskService().addCandidateGroup(task.getId(), "accountancy");
+    task = taskService.newTask();
+    taskService.saveTask(task);
+    taskService.addCandidateGroup(task.getId(), "management");
+    taskService.addCandidateGroup(task.getId(), "accountancy");
     ids.add(task.getId());
 
     return ids;

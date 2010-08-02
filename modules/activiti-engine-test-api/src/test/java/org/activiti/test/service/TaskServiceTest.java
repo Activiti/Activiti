@@ -12,49 +12,38 @@
  */
 package org.activiti.test.service;
 
-import static org.junit.Assert.assertEquals;
-
 import java.util.HashMap;
 import java.util.Map;
 
 import org.activiti.engine.ProcessInstance;
 import org.activiti.engine.Task;
 import org.activiti.engine.test.Deployment;
-import org.activiti.test.LogInitializer;
-import org.activiti.test.ProcessDeployer;
-import org.junit.Rule;
-import org.junit.Test;
+import org.activiti.engine.test.ProcessEngineTestCase;
 
 /**
  * @author Joram Barrez
  */
-public class TaskServiceTest {
+public class TaskServiceTest extends ProcessEngineTestCase {
   
-  @Rule
-  public LogInitializer logSetup = new LogInitializer();
-  @Rule
-  public ProcessDeployer deployer = new ProcessDeployer();
-
-  @Test
   @Deployment(resources={"twoTasksProcess.bpmn20.xml"})
   public void testCompleteWithParametersTask() {
-    ProcessInstance processInstance = deployer.getProcessService().startProcessInstanceByKey("twoTasksProcess");
+    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("twoTasksProcess");
     
     // Fetch first task
-    Task task = deployer.getTaskService().createTaskQuery().singleResult();
+    Task task = taskService.createTaskQuery().singleResult();
     assertEquals("First task", task.getName());
     
     // Complete first task
     Map<String, Object> taskParams = new HashMap<String, Object>();
     taskParams.put("myParam", "myValue");
-    deployer.getTaskService().complete(task.getId(), taskParams);
+    taskService.complete(task.getId(), taskParams);
     
     // Fetch second task
-    task = deployer.getTaskService().createTaskQuery().singleResult();
+    task = taskService.createTaskQuery().singleResult();
     assertEquals("Second task", task.getName());
     
     // Verify task parameters set on execution
-    Map<String, Object> variables = deployer.getProcessService().getVariables(processInstance.getId());
+    Map<String, Object> variables = runtimeService.getVariables(processInstance.getId());
     assertEquals(1, variables.size());
     assertEquals("myValue", variables.get("myParam"));
   }

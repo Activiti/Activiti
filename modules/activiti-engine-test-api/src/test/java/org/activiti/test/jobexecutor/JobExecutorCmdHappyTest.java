@@ -12,8 +12,6 @@
  */
 package org.activiti.test.jobexecutor;
 
-import static org.junit.Assert.assertEquals;
-
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -29,18 +27,16 @@ import org.activiti.engine.impl.jobexecutor.JobHandlers;
 import org.activiti.engine.impl.persistence.runtime.MessageEntity;
 import org.activiti.engine.impl.persistence.runtime.TimerEntity;
 import org.activiti.engine.impl.util.ClockUtil;
-import org.junit.Test;
 
 /**
  * @author Tom Baeyens
  */
 public class JobExecutorCmdHappyTest extends JobExecutorTestCase {
 
-  @Test
   public void testJobCommandsWithMessage() {
-    CommandExecutor commandExecutor = deployer.getCommandExecutor();
-    JobHandlers jobHandlers = deployer.getJobHandlers();
-    JobExecutor jobExecutor = deployer.getJobExecutor();
+    CommandExecutor commandExecutor = processEngineConfiguration.getCommandExecutor();
+    JobHandlers jobHandlers = processEngineConfiguration.getJobHandlers();
+    JobExecutor jobExecutor = processEngineConfiguration.getJobExecutor();
     String jobId = commandExecutor.execute(new Command<String>() {
 
       public String execute(CommandContext commandContext) {
@@ -71,14 +67,13 @@ public class JobExecutorCmdHappyTest extends JobExecutorTestCase {
   static final long SOME_TIME = 928374923546L;
   static final long SECOND = 1000;
 
-  @Test
   public void testJobCommandsWithTimer() {
     // clock gets automatically reset in LogTestCase.runTest
     ClockUtil.setCurrentTime(new Date(SOME_TIME));
 
-    CommandExecutor commandExecutor = deployer.getCommandExecutor();
-    JobHandlers jobHandlers = deployer.getJobHandlers();
-    JobExecutor jobExecutor = deployer.getJobExecutor();
+    CommandExecutor commandExecutor = processEngineConfiguration.getCommandExecutor();
+    JobHandlers jobHandlers = processEngineConfiguration.getJobHandlers();
+    JobExecutor jobExecutor = processEngineConfiguration.getJobExecutor();
 
     String jobId = commandExecutor.execute(new Command<String>() {
 

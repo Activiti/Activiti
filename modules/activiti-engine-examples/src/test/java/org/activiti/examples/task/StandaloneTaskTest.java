@@ -16,7 +16,6 @@ import java.util.List;
 
 import org.activiti.engine.Task;
 import org.activiti.engine.test.ProcessEngineTestCase;
-import org.junit.Test;
 
 /**
  * @author Joram Barrez
@@ -33,7 +32,6 @@ public class StandaloneTaskTest extends ProcessEngineTestCase {
     identityService.deleteUser("gonzo");
   }
 
-  @Test
   public void testCreateToComplete() {
 
     // Create and save task

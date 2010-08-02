@@ -12,6 +12,7 @@
  */
 package org.activiti.engine.impl;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
@@ -52,6 +53,10 @@ public class TaskServiceImpl extends ServiceImpl implements TaskService {
   
   public void deleteTask(String taskId) {
     commandExecutor.execute(new DeleteTaskCmd(taskId));
+  }
+  
+  public void deleteTasks(Collection<String> taskIds) {
+    commandExecutor.execute(new DeleteTaskCmd(taskIds));
   }
   
   public Task findTask(String taskId) {

@@ -12,43 +12,23 @@
  */
 package org.activiti.test.bpmn.usertask;
 
-import static org.junit.Assert.*;
-
 import java.util.List;
 
 import org.activiti.engine.ActivitiException;
-import org.activiti.engine.IdentityService;
 import org.activiti.engine.Task;
 import org.activiti.engine.TaskQuery;
-import org.activiti.engine.TaskService;
 import org.activiti.engine.test.Deployment;
-import org.activiti.test.LogInitializer;
+import org.activiti.engine.test.ProcessEngineTestCase;
 import org.activiti.test.ProcessDeployer;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.ExpectedException;
 
 /**
  * Testcase for the non-spec extensions to the task candidate use case.
  * 
  * @author Joram Barrez
  */
-public class TaskAssignmentExtensionsTest {
+public class TaskAssignmentExtensionsTest extends ProcessEngineTestCase {
 
-  @Rule
-  public ExpectedException exception = ExpectedException.none();
-
-  @Rule
-  public LogInitializer logSetup = new LogInitializer();
-
-  @Rule
-  public ProcessDeployer deployer = new ProcessDeployer();
-
-  @Before
   public void setUp() throws Exception {
-    IdentityService identityService = deployer.getIdentityService();
     identityService.saveUser(identityService.newUser("kermit"));
     identityService.saveUser(identityService.newUser("gonzo"));
     identityService.saveUser(identityService.newUser("fozzie"));
@@ -61,9 +41,7 @@ public class TaskAssignmentExtensionsTest {
     identityService.createMembership("fozzie", "management");
   }
 
-  @After
   public void tearDown() throws Exception {
-    IdentityService identityService = deployer.getIdentityService();
     identityService.deleteGroup("accountancy");
     identityService.deleteGroup("management");
     identityService.deleteUser("fozzie");
@@ -71,44 +49,39 @@ public class TaskAssignmentExtensionsTest {
     identityService.deleteUser("kermit");
   }
 
-  @Test
   @Deployment
   public void testAssigneeExtension() {
-    deployer.getProcessService().startProcessInstanceByKey("assigneeExtension");
-    List<Task> tasks = deployer.getTaskService().findAssignedTasks("kermit");
+    runtimeService.startProcessInstanceByKey("assigneeExtension");
+    List<Task> tasks = taskService.findAssignedTasks("kermit");
     assertEquals(1, tasks.size());
     assertEquals("my task", tasks.get(0).getName());
   }
 
-  @Test
   public void testDuplicateAssigneeDeclaration() {
     try {
       String resource = ProcessDeployer.getBpmnProcessDefinitionResource(getClass(), "testDuplicateAssigneeDeclaration");
-      deployer.getRepositoryService().createDeployment().addClasspathResource(resource).deploy();
+      repositoryService.createDeployment().addClasspathResource(resource).deploy();
       fail("Invalid BPMN 2.0 process should not parse, but it gets parsed sucessfully");
     } catch (ActivitiException e) {
       // Exception is to be expected
     }
   }
 
-  @Test
   @Deployment
   public void testCandidateUsersExtension() {
-    deployer.getProcessService().startProcessInstanceByKey("candidateUsersExtension");
-    List<Task> tasks = deployer.getTaskService().findUnassignedTasks("kermit");
+    runtimeService.startProcessInstanceByKey("candidateUsersExtension");
+    List<Task> tasks = taskService.findUnassignedTasks("kermit");
     assertEquals(1, tasks.size());
-    tasks = deployer.getTaskService().findUnassignedTasks("gonzo");
+    tasks = taskService.findUnassignedTasks("gonzo");
     assertEquals(1, tasks.size());
   }
 
-  @Test
   @Deployment
   public void testCandidateGroupsExtension() {
-    deployer.getProcessService().startProcessInstanceByKey("candidateGroupsExtension");
+    runtimeService.startProcessInstanceByKey("candidateGroupsExtension");
 
     // Bugfix check: potentially the query could return 2 tasks since
     // kermit is a member of the two candidate groups
-    TaskService taskService = deployer.getTaskService();
     List<Task> tasks = taskService.findUnassignedTasks("kermit");
     assertEquals(1, tasks.size());
     assertEquals("make profit", tasks.get(0).getName());
@@ -125,12 +98,10 @@ public class TaskAssignmentExtensionsTest {
 
   // Test where the candidate user extension is used together
   // with the spec way of defining candidate users
-  @Test
   @Deployment
   public void testMixedCandidateUserDefinition() {
-    deployer.getProcessService().startProcessInstanceByKey("mixedCandidateUser");
+    runtimeService.startProcessInstanceByKey("mixedCandidateUser");
 
-    TaskService taskService = deployer.getTaskService();
     List<Task> tasks = taskService.findUnassignedTasks("kermit");
     assertEquals(1, tasks.size());
 

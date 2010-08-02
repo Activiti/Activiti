@@ -21,7 +21,6 @@ import org.activiti.engine.Task;
 import org.activiti.engine.impl.util.CollectionUtil;
 import org.activiti.engine.test.Deployment;
 import org.activiti.engine.test.ProcessEngineTestCase;
-import org.junit.Test;
 
 /**
  * @author Joram Barrez
@@ -45,7 +44,6 @@ public class ExclusiveGatewayTest extends ProcessEngineTestCase {
 
   // If there are multiple outgoing seqFlow with valid conditions, the first
   // defined one should be chosen.
-  @Test
   @Deployment
   public void testMultipleValidConditions() {
     runtimeService.startProcessInstanceByKey("exclusiveGwMultipleValidConditions", CollectionUtil.singletonMap("input", 5));

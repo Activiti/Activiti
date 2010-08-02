@@ -3,51 +3,33 @@
  */
 package org.activiti.test.jobexecutor;
 
-import org.activiti.engine.impl.ProcessEngineImpl;
 import org.activiti.engine.impl.cmd.DeleteJobsCmd;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
 import org.activiti.engine.impl.persistence.runtime.MessageEntity;
-import org.activiti.test.JobExecutorPoller;
-import org.activiti.test.LogInitializer;
-import org.activiti.test.ProcessDeployer;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Rule;
+import org.activiti.engine.test.ProcessEngineImplTestCase;
 import org.junit.Test;
 
 /**
- * @author tombaeyens
- * 
+ * @author Tom Baeyens
  */
-public class JobExecutorCmdExceptionTest {
+public class JobExecutorCmdExceptionTest extends ProcessEngineImplTestCase {
 
   protected TweetExceptionHandler tweetExceptionHandler = new TweetExceptionHandler();
 
-  private ProcessEngineImpl processEngineImpl;
+  private CommandExecutor commandExecutor;
 
-  @Rule
-  public LogInitializer logSetup = new LogInitializer();
-
-  @Rule
-  public ProcessDeployer deployer = new ProcessDeployer();
-
-  @Before
   public void setUp() throws Exception {
-    // FIXME: downcast
-    processEngineImpl = (ProcessEngineImpl) deployer.getProcessEngine();
-    processEngineImpl.getProcessEngineConfiguration().getJobHandlers().addJobHandler(tweetExceptionHandler);
+    processEngineConfiguration.getJobHandlers().addJobHandler(tweetExceptionHandler);
+    this.commandExecutor = processEngineConfiguration.getCommandExecutor();
   }
 
-  @After
   public void tearDown() throws Exception {
-    processEngineImpl.getProcessEngineConfiguration().getJobHandlers().removeJobHandler(tweetExceptionHandler);
+    processEngineConfiguration.getJobHandlers().removeJobHandler(tweetExceptionHandler);
   }
 
-  @Test
   public void testJobCommandsWith2Exceptions() {
-    CommandExecutor commandExecutor = deployer.getCommandExecutor();
     commandExecutor.execute(new Command<String>() {
 
       public String execute(CommandContext commandContext) {
@@ -57,14 +39,12 @@ public class JobExecutorCmdExceptionTest {
       }
     });
 
-    new JobExecutorPoller(deployer.getJobExecutor(), deployer.getCommandExecutor()).waitForJobExecutorToProcessAllJobs(8000, 250);
+    waitForJobExecutorToProcessAllJobs(5000L, 50L);
   }
 
-  @Test
   public void testJobCommandsWith3Exceptions() {
     tweetExceptionHandler.setExceptionsRemaining(3);
 
-    CommandExecutor commandExecutor = deployer.getCommandExecutor();
     String jobId = commandExecutor.execute(new Command<String>() {
 
       public String execute(CommandContext commandContext) {
@@ -74,7 +54,7 @@ public class JobExecutorCmdExceptionTest {
       }
     });
 
-    new JobExecutorPoller(deployer.getJobExecutor(), deployer.getCommandExecutor()).waitForJobExecutorToProcessAllJobs(8000, 250);
+    waitForJobExecutorToProcessAllJobs(5000L, 50L);
 
     // TODO check if there is a failed job in the DLQ
 

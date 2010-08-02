@@ -16,7 +16,6 @@ import org.activiti.engine.ProcessInstance;
 import org.activiti.engine.impl.util.CollectionUtil;
 import org.activiti.engine.test.Deployment;
 import org.activiti.engine.test.ProcessEngineTestCase;
-import org.junit.Test;
 
 /**
  * @author Joram Barrez
@@ -32,7 +31,6 @@ public class ScriptTaskTest extends ProcessEngineTestCase {
     assertEquals(15, result.intValue());
   }
 
-  @Test
   @Deployment
   public void testSetVariableThroughExecutionInScript() {
     ProcessInstance pi = runtimeService.startProcessInstanceByKey("setScriptVariableThroughExecution");

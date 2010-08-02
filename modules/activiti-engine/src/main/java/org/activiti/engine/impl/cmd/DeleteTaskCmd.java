@@ -12,6 +12,8 @@
  */
 package org.activiti.engine.impl.cmd;
 
+import java.util.Collection;
+
 import org.activiti.engine.impl.interceptor.CommandContext;
 
 
@@ -22,13 +24,29 @@ public class DeleteTaskCmd extends CmdVoid {
   
   protected String taskId;
   
+  protected Collection<String> taskIds;
+  
   public DeleteTaskCmd(String taskId) {
     this.taskId = taskId;
   }
+  
+  public DeleteTaskCmd(Collection<String> taskIds) {
+    this.taskIds = taskIds;
+  }
 
   public void executeVoid(CommandContext commandContext) {
-    commandContext
-      .getTaskSession()
-      .deleteTask(taskId);
+    if (taskId != null) {
+      commandContext
+        .getTaskSession()
+        .deleteTask(taskId);
+    } 
+    
+    if (taskIds != null) {
+      for (String taskId : taskIds) {
+        commandContext
+          .getTaskSession()
+          .deleteTask(taskId);
+      }
+    }
   }
 }

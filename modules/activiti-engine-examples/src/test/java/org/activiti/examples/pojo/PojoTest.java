@@ -12,21 +12,19 @@
  */
 package org.activiti.examples.pojo;
 
-import static org.junit.Assert.assertNotNull;
+import junit.framework.TestCase;
 
 import org.activiti.engine.impl.el.ExpressionManager;
 import org.activiti.pvm.ProcessDefinitionBuilder;
 import org.activiti.pvm.process.PvmProcessDefinition;
 import org.activiti.pvm.runtime.PvmActivityInstance;
 import org.activiti.pvm.runtime.PvmProcessInstance;
-import org.junit.Test;
 
 /**
  * @author Tom Baeyens
  */
-public class PojoTest {
+public class PojoTest extends TestCase {
 
-  @Test
   public void testPojoWaitState() {
     PvmProcessDefinition processDefinition = new ProcessDefinitionBuilder()
       .createActivity("a")
@@ -60,7 +58,6 @@ public class PojoTest {
     assertNotNull(activityInstance);
   }
 
-  @Test
   public void testPojoAutomatic() {
     PvmProcessDefinition processDefinition = new ProcessDefinitionBuilder()
       .createActivity("a")
@@ -83,7 +80,6 @@ public class PojoTest {
     assertNotNull(processInstance.findActivityInstance("c"));
   }
 
-  @Test
   public void testDecision() {
     ExpressionManager expressionManager = new ExpressionManager();
     PvmProcessDefinition processDefinition = new ProcessDefinitionBuilder()

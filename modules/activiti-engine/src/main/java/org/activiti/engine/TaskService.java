@@ -12,6 +12,7 @@
  */
 package org.activiti.engine;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
@@ -46,9 +47,15 @@ public interface TaskService {
 	
 	/**
 	 * Deletes the given task.
-	 * @param taskId The task id.
+	 * @param taskId The id of the task that will be deleted.
 	 */
 	void deleteTask(String taskId);
+	
+	/**
+	 * Deletes all tasks of the given collection.
+	 * @param taskIds The ids of the tasks that will be deleted.
+	 */
+	void deleteTasks(Collection<String> taskIds);
 	
 	/**
    * Retrieves the list of tasks that are directly assigned to the given user.

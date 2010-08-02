@@ -12,41 +12,30 @@
  */
 package org.activiti.test.db;
 
-import static org.junit.Assert.assertNotNull;
-
+import org.activiti.engine.ActivitiException;
 import org.activiti.engine.Deployment;
-import org.activiti.test.ProcessEngineTestWatchman;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.ExpectedException;
+import org.activiti.engine.test.ProcessEngineTestCase;
 
 /**
  * @author Joram Barrez
  * @author Dave Syer
  */
-public class DbNotCleanTest {
+public class DbNotCleanTest extends ProcessEngineTestCase {
 
-  @Rule
-  public ProcessEngineTestWatchman processEngineBuilder = new ProcessEngineTestWatchman();
-
-  @Rule
-  public ExpectedException exception = ExpectedException.none();
-
-  @Test
   public void testDbNotCleanAfterTest() {
 
-    Deployment deployment = processEngineBuilder.getProcessEngine().getRepositoryService().createDeployment().addString("test.bpmn20.xml",
+    Deployment deployment = repositoryService.createDeployment().addString("test.bpmn20.xml",
             "<definitions xmlns='http://www.omg.org/spec/BPMN/20100524/MODEL' " + "targetNamespace='http://www.activiti.org/bpmn2.0' />").deploy();
     assertNotNull(deployment);
 
-    exception.expect(AssertionError.class);
-    exception.expectMessage("Database not clean");
-
     try {
       // Manually call the check on db cleaning check
-      processEngineBuilder.assertDatabaseIsClean();
+      assertAndEnsureCleanDb();
+      fail();
+    } catch(ActivitiException e) {
+      assertTextPresent("Database not clean", e.getMessage());
     } finally {
-      processEngineBuilder.getProcessEngine().getRepositoryService().deleteDeployment(deployment.getId());
+      repositoryService.deleteDeployment(deployment.getId());
     }
 
   }

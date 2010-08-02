@@ -14,36 +14,23 @@ package org.activiti.test.jobexecutor;
 
 import java.util.Date;
 
-import org.activiti.engine.impl.ProcessEngineImpl;
 import org.activiti.engine.impl.persistence.runtime.MessageEntity;
 import org.activiti.engine.impl.persistence.runtime.TimerEntity;
-import org.activiti.test.LogInitializer;
-import org.activiti.test.ProcessDeployer;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Rule;
+import org.activiti.engine.test.ProcessEngineImplTestCase;
 
 /**
  * @author Tom Baeyens
  */
-public class JobExecutorTestCase {
+public class JobExecutorTestCase extends ProcessEngineImplTestCase {
 
   protected TweetHandler tweetHandler = new TweetHandler();
-  @Rule
-  public LogInitializer logSetup = new LogInitializer();
-  @Rule
-  public ProcessDeployer deployer = new ProcessDeployer();
 
-  @Before
   public void setUp() throws Exception {
-    ProcessEngineImpl processEngineImpl = (ProcessEngineImpl) deployer.getProcessEngine();
-    processEngineImpl.getProcessEngineConfiguration().getJobHandlers().addJobHandler(tweetHandler);
+    processEngineConfiguration.getJobHandlers().addJobHandler(tweetHandler);
   }
 
-  @After
   public void tearDown() throws Exception {
-    ProcessEngineImpl processEngineImpl = (ProcessEngineImpl) deployer.getProcessEngine();
-    processEngineImpl.getProcessEngineConfiguration().getJobHandlers().removeJobHandler(tweetHandler);
+    processEngineConfiguration.getJobHandlers().removeJobHandler(tweetHandler);
   }
 
   protected MessageEntity createTweetMessage(String msg) {

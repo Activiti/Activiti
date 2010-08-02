@@ -17,30 +17,19 @@ import org.activiti.engine.ProcessInstance;
 import org.activiti.engine.Task;
 import org.activiti.engine.impl.util.CollectionUtil;
 import org.activiti.engine.test.Deployment;
-import org.activiti.test.LogInitializer;
-import org.activiti.test.ProcessDeployer;
-import org.junit.Rule;
-import org.junit.Test;
-
-import static org.junit.Assert.*;
+import org.activiti.engine.test.ProcessEngineTestCase;
 
 
 /**
  * @author Joram Barrez
  */
-public class ConditionalSequenceFlowTest {
+public class ConditionalSequenceFlowTest extends ProcessEngineTestCase {
   
-  @Rule
-  public LogInitializer logSetup = new LogInitializer();
-  @Rule
-  public ProcessDeployer deployer = new ProcessDeployer();
-  
-  @Test
   @Deployment
   public void testUelValueExpression() {
-    ProcessInstance pi = deployer.getProcessService().startProcessInstanceByKey(
+    ProcessInstance pi = runtimeService.startProcessInstanceByKey(
             "condSeqFlowUelValueExpr", CollectionUtil.singletonMap("input", "right"));
-    Task task = deployer.getTaskService().createTaskQuery().processInstance(pi.getId()).singleResult();
+    Task task = taskService.createTaskQuery().processInstance(pi.getId()).singleResult();
     assertEquals("task right", task.getName());
   }
   

@@ -17,7 +17,6 @@ import java.util.Map;
 import org.activiti.engine.ManagementService;
 import org.activiti.engine.TableMetaData;
 import org.activiti.engine.test.ProcessEngineTestCase;
-import org.junit.Test;
 
 /**
  * Test case for the various operations of the {@link ManagementService}
@@ -43,7 +42,6 @@ public class ManagementServiceTest extends ProcessEngineTestCase {
     ;
   }
 
-  @Test
   public void testGetTableMetaData() {
     TableMetaData tableMetaData = managementService.getTableMetaData("ACT_TASK");
     assertEquals(tableMetaData.getColumnNames().size(), tableMetaData.getColumnTypes().size());

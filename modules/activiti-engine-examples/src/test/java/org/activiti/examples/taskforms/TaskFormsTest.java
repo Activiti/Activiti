@@ -18,7 +18,6 @@ import java.util.Map;
 import org.activiti.engine.Task;
 import org.activiti.engine.test.Deployment;
 import org.activiti.engine.test.ProcessEngineTestCase;
-import org.junit.Test;
 
 /**
  * @author Tom Baeyens
@@ -37,7 +36,6 @@ public class TaskFormsTest extends ProcessEngineTestCase {
     identityService.deleteUser("fozzie");
   }
 
-  @Test
   @Deployment(resources = { "VacationRequest.bpmn20.xml", "approve.form", "request.form", "adjustRequest.form" })
   public void testTaskFormsWithVacationRequestProcess() {
 

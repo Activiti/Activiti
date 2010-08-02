@@ -12,12 +12,15 @@
  */
 package org.activiti.test.json;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import org.activiti.engine.ProcessDefinition;
 import org.activiti.engine.RuntimeService;
 import org.activiti.engine.json.JsonListConverter;
 import org.activiti.engine.json.JsonProcessDefinitionConverter;
+import org.activiti.engine.test.ProcessEngineTestCase;
 import org.activiti.test.LogInitializer;
 import org.activiti.test.ProcessDeployer;
 import org.junit.Rule;
@@ -27,40 +30,56 @@ import org.junit.Test;
 /**
  * @author Tom Baeyens
  */
-public class JsonTest {
+public class JsonTest extends ProcessEngineTestCase {
 
-  @Rule
-  public LogInitializer logSetup = new LogInitializer();
-  @Rule
-  public ProcessDeployer deployer = new ProcessDeployer();
-
-  @Test
   public void testJson() {
-    deployer.deployProcessString(("<definitions xmlns='http://www.omg.org/spec/BPMN/20100524/MODEL'" +
-    "             targetNamespace='http://www.activiti.org/bpmn2.0'>" +
-    "  <process id='LoanProcess' >" +
-    "    <startEvent id='theStart' />" +
-    "    <sequenceFlow id='flow1' sourceRef='theStart' targetRef='theTask' />" +
-    "    <userTask id='theTask' name='my task' />" +
-    "    <sequenceFlow id='flow2' sourceRef='theTask' targetRef='theEnd' />" +
-    "    <endEvent id='theEnd' />" +
-    "  </process>" +
-    "</definitions>"));
     
-    deployer.deployProcessString(("<definitions xmlns='http://www.omg.org/spec/BPMN/20100524/MODEL'" +
-    "             targetNamespace='http://www.activiti.org/bpmn2.0'>" +
-    "  <process id='ExpenseNoteProcess' >" +
-    "    <startEvent id='theStart' />" +
-    "    <sequenceFlow id='flow1' sourceRef='theStart' targetRef='theTask' />" +
-    "    <userTask id='theTask' name='my task' />" +
-    "    <sequenceFlow id='flow2' sourceRef='theTask' targetRef='theEnd' />" +
-    "    <endEvent id='theEnd' />" +
-    "  </process>" +
-    "</definitions>"));
+    List<String> deploymentIds = new ArrayList<String>();
+    
+    deploymentIds.add(
+            deployProcessString(("<definitions xmlns='http://www.omg.org/spec/BPMN/20100524/MODEL'" +
+                    "             targetNamespace='http://www.activiti.org/bpmn2.0'>" +
+                    "  <process id='LoanProcess' >" +
+                    "    <startEvent id='theStart' />" +
+                    "    <sequenceFlow id='flow1' sourceRef='theStart' targetRef='theTask' />" +
+                    "    <userTask id='theTask' name='my task' />" +
+                    "    <sequenceFlow id='flow2' sourceRef='theTask' targetRef='theEnd' />" +
+                    "    <endEvent id='theEnd' />" +
+                    "  </process>" +
+                    " </definitions>"))
+     );
+    
+    deploymentIds.add(
+            deployProcessString(("<definitions xmlns='http://www.omg.org/spec/BPMN/20100524/MODEL'" +
+                    "             targetNamespace='http://www.activiti.org/bpmn2.0'>" +
+                    "  <process id='ExpenseNoteProcess' >" +
+                    "    <startEvent id='theStart' />" +
+                    "    <sequenceFlow id='flow1' sourceRef='theStart' targetRef='theTask' />" +
+                    "    <userTask id='theTask' name='my task' />" +
+                    "    <sequenceFlow id='flow2' sourceRef='theTask' targetRef='theEnd' />" +
+                    "    <endEvent id='theEnd' />" +
+                    "  </process>" +
+                    "</definitions>"))
+    );
           
-    List<ProcessDefinition> processDefinitions = deployer.getRepositoryService().findProcessDefinitions();
+    List<ProcessDefinition> processDefinitions = repositoryService.findProcessDefinitions();
     
     JsonListConverter<ProcessDefinition> jsonListConverter = new JsonListConverter<ProcessDefinition>(new JsonProcessDefinitionConverter());
+    
+    // TODO: remove system.out!
     System.out.println(jsonListConverter.toJson(processDefinitions, 2));
+    
+    deleteDeployments(deploymentIds);
   }
+  
+  private String deployProcessString(String processString) {
+    return repositoryService.createDeployment().addString("test.bpmn20.xml", processString).deploy().getId();
+  }
+  
+  private void deleteDeployments(Collection<String> deploymentIds) {
+    for (String deploymentId : deploymentIds) {
+      repositoryService.deleteDeployment(deploymentId);
+    }
+  }
+  
 }

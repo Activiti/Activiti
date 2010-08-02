@@ -169,7 +169,7 @@ public class ProcessEngineTestCase extends TestCase {
    * After a test method executed, this method scans all tables to see if the DB is completely clean. 
    * It throws AssertionFailed in case the DB is not clean.
    * If the DB is not clean, it is cleaned by performing a create a drop.   */
-  void assertAndEnsureCleanDb() {
+  protected void assertAndEnsureCleanDb() {
     Map<String, Long> tableCounts = processEngine.getManagementService().getTableCount();
     StringBuilder outputMessage = new StringBuilder();
     for (String tableName : tableCounts.keySet()) {

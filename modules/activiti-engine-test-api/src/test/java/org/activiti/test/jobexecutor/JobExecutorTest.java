@@ -12,8 +12,6 @@
  */
 package org.activiti.test.jobexecutor;
 
-import static org.junit.Assert.assertEquals;
-
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
@@ -23,7 +21,6 @@ import org.activiti.engine.impl.cfg.TimerSession;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
-import org.activiti.test.JobExecutorPoller;
 import org.junit.Test;
 
 
@@ -33,9 +30,8 @@ import org.junit.Test;
  */
 public class JobExecutorTest extends JobExecutorTestCase {
 
-  @Test
   public void testBasicJobExecutorOperation() throws Exception {
-    CommandExecutor commandExecutor = deployer.getCommandExecutor();
+    CommandExecutor commandExecutor = processEngineConfiguration.getCommandExecutor();
     commandExecutor.execute(new Command<Void>() {
       public Void execute(CommandContext commandContext) {
         MessageSession messageSession = commandContext.getMessageSession();
@@ -51,7 +47,7 @@ public class JobExecutorTest extends JobExecutorTestCase {
       }
     });
     
-    new JobExecutorPoller(deployer.getJobExecutor(), commandExecutor).waitForJobExecutorToProcessAllJobs(8000, 200);
+    waitForJobExecutorToProcessAllJobs(8000L, 200L);
     
     Set<String> messages = new HashSet<String>(tweetHandler.getMessages());
     Set<String> expectedMessages = new HashSet<String>();
