@@ -22,15 +22,15 @@ import org.activiti.engine.history.HistoricProcessInstance;
 /**
  * @author Christian Stettler
  */
-public class HistoricProcessInstanceImpl extends HistoricScopeInstanceImpl implements HistoricProcessInstance {
+public class HistoricProcessInstanceEntity extends HistoricScopeInstanceEntity implements HistoricProcessInstance {
 
   private String endStateName;
 
-  protected HistoricProcessInstanceImpl() {
+  protected HistoricProcessInstanceEntity() {
     // for ibatis
   }
 
-  public HistoricProcessInstanceImpl(String processInstanceId, String processDefinitionId, Date startTime) {
+  public HistoricProcessInstanceEntity(String processInstanceId, String processDefinitionId, Date startTime) {
     super(processInstanceId, processDefinitionId, startTime);
   }
 

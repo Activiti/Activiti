@@ -6,7 +6,7 @@
 
   <!-- RESULTMAP -->
   
-  <resultMap id="taskResultMap" type="org.activiti.engine.impl.persistence.task.TaskImpl">
+  <resultMap id="taskResultMap" type="org.activiti.engine.impl.persistence.task.TaskEntity">
     <id property="id" column="ID_" jdbcType="VARCHAR"/>
     <result property="name" column="NAME_" jdbcType="VARCHAR"/>
     <result property="description" column="DESCRIPTION_" jdbcType="VARCHAR"/>
@@ -130,7 +130,7 @@
   
   <!-- INSERT -->
   
-  <insert id="insertTask" parameterType="org.activiti.engine.impl.persistence.task.TaskImpl">
+  <insert id="insertTask" parameterType="org.activiti.engine.impl.persistence.task.TaskEntity">
     insert into ACT_TASK (ID_, NAME_, DESCRIPTION_, PRIORITY_, CREATE_TIME_, SKIPPABLE_,
                       START_DEADLINE_, COMPLETION_DEADLINE_, ASSIGNEE_,
                       EXECUTION_ID_, PROC_INST_ID_, PROC_DEF_ID_)
@@ -160,7 +160,7 @@
   
   <!-- UPDATE -->
   
-   <update id="updateTask" parameterType="org.activiti.engine.impl.persistence.task.TaskImpl">
+   <update id="updateTask" parameterType="org.activiti.engine.impl.persistence.task.TaskEntity">
     update ACT_TASK
     <set>
       NAME_ = #{name, jdbcType=VARCHAR},

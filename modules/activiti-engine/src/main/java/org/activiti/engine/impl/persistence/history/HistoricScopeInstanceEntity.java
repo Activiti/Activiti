@@ -23,7 +23,7 @@ import org.activiti.engine.impl.persistence.PersistentObject;
 /**
  * @author Christian Stettler
  */
-public abstract class HistoricScopeInstanceImpl implements PersistentObject {
+public abstract class HistoricScopeInstanceEntity implements PersistentObject {
 
   private String id;
   protected String processInstanceId;
@@ -32,11 +32,11 @@ public abstract class HistoricScopeInstanceImpl implements PersistentObject {
   protected Date endTime;
   protected Long durationInMillis;
 
-  protected HistoricScopeInstanceImpl() {
+  protected HistoricScopeInstanceEntity() {
     // for ibatis
   }
 
-  protected HistoricScopeInstanceImpl(String processInstanceId, String processDefinitionId, Date startTime) {
+  protected HistoricScopeInstanceEntity(String processInstanceId, String processDefinitionId, Date startTime) {
     if (processInstanceId == null) {
       throw new IllegalArgumentException("Process instance id must not be null");
     }

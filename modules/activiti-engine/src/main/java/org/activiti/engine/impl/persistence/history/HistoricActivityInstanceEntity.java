@@ -21,17 +21,17 @@ import org.activiti.engine.history.HistoricActivityInstance;
 /**
  * @author Christian Stettler
  */
-public class HistoricActivityInstanceImpl extends HistoricScopeInstanceImpl implements HistoricActivityInstance {
+public class HistoricActivityInstanceEntity extends HistoricScopeInstanceEntity implements HistoricActivityInstance {
 
   private String activityId;
   private String activityName;
   private String activityType;
 
-  protected HistoricActivityInstanceImpl() {
+  protected HistoricActivityInstanceEntity() {
     // for ibatis
   }
 
-  public HistoricActivityInstanceImpl(String activityId, String activityName, String activityType, String processInstanceId, String processDefinitionId, Date startTime) {
+  public HistoricActivityInstanceEntity(String activityId, String activityName, String activityType, String processInstanceId, String processDefinitionId, Date startTime) {
     super(processInstanceId, processDefinitionId, startTime);
 
     if (activityId == null) {

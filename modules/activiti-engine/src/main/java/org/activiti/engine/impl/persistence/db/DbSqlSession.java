@@ -145,8 +145,12 @@ public class DbSqlSession implements Session {
 
   public Object selectOne(String statement, Object parameter) {
     statement = dbSqlSessionFactory.mapStatement(statement);
-    PersistentObject loadedObject = (PersistentObject) sqlSession.selectOne(statement, parameter);
-    return cacheGet(loadedObject);
+    Object result = sqlSession.selectOne(statement, parameter);
+    if (result instanceof PersistentObject) {
+      PersistentObject loadedObject = (PersistentObject) result;
+      result = cacheGet(loadedObject);
+    }
+    return result;
   }
 
   // internal session cache ///////////////////////////////////////////////////

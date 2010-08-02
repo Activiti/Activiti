@@ -13,9 +13,10 @@
 
 package org.activiti.engine.impl.persistence.runtime;
 
-import org.activiti.engine.ActivitiException;
+import java.util.HashMap;
+import java.util.Map;
+
 import org.activiti.engine.ProcessInstance;
-import org.activiti.engine.impl.cfg.RuntimeSession;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.PersistentObject;
 import org.activiti.pvm.impl.process.ProcessDefinitionImpl;
@@ -32,6 +33,7 @@ public class ProcessInstanceEntity extends ProcessInstanceImpl implements Proces
   protected int revision;
   protected String processDefinitionId;
   protected VariableInstanceMap variableInstanceMap;
+  protected String superActivityInstanceId;
 
   public ProcessInstanceEntity() {
   }
@@ -44,7 +46,8 @@ public class ProcessInstanceEntity extends ProcessInstanceImpl implements Proces
     ProcessInstanceEntity processInstance = new ProcessInstanceEntity(processDefinition);
     
     CommandContext
-      .getCurrentSession(RuntimeSession.class)
+      .getCurrent()
+      .getRuntimeSession()
       .insertProcessInstance(processInstance);
     
     processInstance.variableInstanceMap = new ProcessInstanceVariableMap(processInstance);
@@ -70,7 +73,13 @@ public class ProcessInstanceEntity extends ProcessInstanceImpl implements Proces
   
 
   public Object getPersistentState() {
-    throw new ActivitiException("not yet implemented");
+    Map<String, Object> persistentState = new HashMap<String, Object>();
+    persistentState.put("superActivityInstanceId", superActivityInstanceId);
+    return persistentState;
+  }
+  
+  public int getRevisionNext() {
+    return revision+1;
   }
   
   // getters and setters //////////////////////////////////////////////////////
@@ -97,5 +106,13 @@ public class ProcessInstanceEntity extends ProcessInstanceImpl implements Proces
 
   public void setProcessDefinitionId(String processDefinitionId) {
     this.processDefinitionId = processDefinitionId;
+  }
+
+  public String getSuperActivityInstanceId() {
+    return superActivityInstanceId;
+  }
+
+  public void setSuperActivityInstanceId(String superActivityInstanceId) {
+    this.superActivityInstanceId = superActivityInstanceId;
   }
 }

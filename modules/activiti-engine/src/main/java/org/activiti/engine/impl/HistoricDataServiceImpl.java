@@ -79,7 +79,7 @@ public class HistoricDataServiceImpl extends ServiceImpl implements HistoricData
 //      String processDefinitionId = event.getProcessDefinitionId();
 //      Date startTime = ClockUtil.getCurrentTime();
 //
-//      HistoricProcessInstanceImpl historicProcessInstance = new HistoricProcessInstanceImpl(processInstanceId, processDefinitionId, startTime);
+//      HistoricProcessInstanceEntity historicProcessInstance = new HistoricProcessInstanceEntity(processInstanceId, processDefinitionId, startTime);
 //
 //      CommandContext.getCurrent().getPersistenceSession().insertHistoricProcessInstance(historicProcessInstance);
 //    }
@@ -89,13 +89,13 @@ public class HistoricDataServiceImpl extends ServiceImpl implements HistoricData
 //    public void consumeEvent(ProcessInstanceEndedEvent event) {
 //      ensureCommandContextAvailable();
 //
-//      HistoricProcessInstanceImpl historicProcessInstance = CommandContext.getCurrent().getPersistenceSession().findHistoricProcessInstance(event.getProcessInstanceId());
+//      HistoricProcessInstanceEntity historicProcessInstance = CommandContext.getCurrent().getPersistenceSession().findHistoricProcessInstance(event.getProcessInstanceId());
 //
 //      if (historicProcessInstance == null) {
 //        String processInstanceId = event.getProcessInstanceId();
 //        String processDefinitionId = event.getProcessDefinitionId();
 //        Date startTime = ClockUtil.getCurrentTime();
-//        historicProcessInstance = new HistoricProcessInstanceImpl(processInstanceId, processDefinitionId, startTime);
+//        historicProcessInstance = new HistoricProcessInstanceEntity(processInstanceId, processDefinitionId, startTime);
 //
 //        // throw new IllegalArgumentException("No historic process instance found for process instance id '" + event.getProcessInstanceId() + "'");
 //      }
@@ -119,7 +119,7 @@ public class HistoricDataServiceImpl extends ServiceImpl implements HistoricData
 //      String processDefinitionId = event.getProcessDefinitionId();
 //      Date startTime = ClockUtil.getCurrentTime();
 //
-//      HistoricActivityInstanceImpl historicActivityInstance = new HistoricActivityInstanceImpl(activityId, activityName, activityType, processInstanceId, processDefinitionId, startTime);
+//      HistoricActivityInstanceEntity historicActivityInstance = new HistoricActivityInstanceEntity(activityId, activityName, activityType, processInstanceId, processDefinitionId, startTime);
 //
 //      CommandContext.getCurrent().getPersistenceSession().insertHistoricActivityInstance(historicActivityInstance);
 //    }
@@ -129,7 +129,7 @@ public class HistoricDataServiceImpl extends ServiceImpl implements HistoricData
 //    public void consumeEvent(ActivityEndedEvent event) {
 //      ensureCommandContextAvailable();
 //
-//      HistoricActivityInstanceImpl historicActivityInstance = CommandContext.getCurrent().getPersistenceSession().findHistoricActivityInstance(event.getActivityId(), event.getProcessInstanceId());
+//      HistoricActivityInstanceEntity historicActivityInstance = CommandContext.getCurrent().getPersistenceSession().findHistoricActivityInstance(event.getActivityId(), event.getProcessInstanceId());
 //
 //      if (historicActivityInstance == null) {
 //        String activityId = event.getActivityId();
@@ -139,7 +139,7 @@ public class HistoricDataServiceImpl extends ServiceImpl implements HistoricData
 //        String processDefinitionId = event.getProcessDefinitionId();
 //        Date startTime = ClockUtil.getCurrentTime();
 //
-//        historicActivityInstance = new HistoricActivityInstanceImpl(activityId, activityName, activityType, processInstanceId, processDefinitionId, startTime);
+//        historicActivityInstance = new HistoricActivityInstanceEntity(activityId, activityName, activityType, processInstanceId, processDefinitionId, startTime);
 //
 //        // throw new IllegalArgumentException("No historic activity instance found for activity id '" + event.getActivityId() + "' and process instance id '" + event.getProcessInstanceId() + "'");
 //      }

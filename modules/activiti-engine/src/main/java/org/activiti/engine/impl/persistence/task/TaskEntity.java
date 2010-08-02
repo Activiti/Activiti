@@ -298,6 +298,7 @@ public class TaskEntity implements Task, Serializable, PersistentObject {
     this.revision = revision;
   }
 
+  @SuppressWarnings("unchecked")
   public Map<String, Object> getActivityInstanceVariables() {
     if (activityInstance!=null) {
       return activityInstance.getVariables();

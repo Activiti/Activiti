@@ -18,7 +18,7 @@
 
 <mapper namespace="org.activiti.persistence">
 
-    <resultMap id="historicProcessInstanceResultMap" type="org.activiti.impl.history.HistoricProcessInstanceImpl">
+    <resultMap id="historicProcessInstanceResultMap" type="org.activiti.engine.impl.persistence.history.HistoricProcessInstanceEntity">
       <id property="id" column="ID_" jdbcType="VARCHAR" />
       <result property="processInstanceId" column="PROC_INST_ID_" jdbcType="VARCHAR" />
       <result property="processDefinitionId" column="PROC_DEF_ID_" jdbcType="VARCHAR" />
@@ -28,7 +28,7 @@
       <result property="endStateName" column="END_STATE_NAME_" jdbcType="VARCHAR" />
     </resultMap>
 
-    <resultMap id="historicActivityInstanceResultMap" type="org.activiti.impl.history.HistoricActivityInstanceImpl">
+    <resultMap id="historicActivityInstanceResultMap" type="org.activiti.engine.impl.persistence.history.HistoricActivityInstanceEntity">
       <id property="id" column="ID_" jdbcType="VARCHAR" />
       <result property="activityId" column="ACT_ID_" jdbcType="VARCHAR" />
       <result property="activityName" column="ACT_NAME_" jdbcType="VARCHAR" />
@@ -40,7 +40,7 @@
       <result property="durationInMillis" column="DURATION_IN_MILLIS_" jdbcType="BIGINT" />
     </resultMap>
 
-    <insert id="insertHistoricProcessInstance" parameterType="org.activiti.impl.history.HistoricProcessInstanceImpl">
+    <insert id="insertHistoricProcessInstance" parameterType="org.activiti.engine.impl.persistence.history.HistoricProcessInstanceEntity">
         insert into ACT_H_PROCINST (
           ID_,
           PROC_INST_ID_,
@@ -60,7 +60,7 @@
         )
     </insert>
 
-    <insert id="insertHistoricActivityInstance" parameterType="org.activiti.impl.history.HistoricActivityInstanceImpl">
+    <insert id="insertHistoricActivityInstance" parameterType="org.activiti.engine.impl.persistence.history.HistoricActivityInstanceEntity">
         insert into ACT_H_ACTINST (
           ID_,
           ACT_ID_,
@@ -84,7 +84,7 @@
         )
     </insert>
 
-    <update id="updateHistoricProcessInstance" parameterType="org.activiti.impl.history.HistoricProcessInstanceImpl">
+    <update id="updateHistoricProcessInstance" parameterType="org.activiti.engine.impl.persistence.history.HistoricProcessInstanceEntity">
       update ACT_H_PROCINST set
         PROC_INST_ID_ = #{processInstanceId, jdbcType=VARCHAR},
         PROC_DEF_ID_ = #{processDefinitionId, jdbcType=VARCHAR},
@@ -95,7 +95,7 @@
       where ID_ = #{id}
     </update>
 
-    <update id="updateHistoricActivityInstance" parameterType="org.activiti.impl.history.HistoricActivityInstanceImpl">
+    <update id="updateHistoricActivityInstance" parameterType="org.activiti.engine.impl.persistence.history.HistoricActivityInstanceEntity">
       update ACT_H_ACTINST set
         ACT_ID_ = #{activityId, jdbcType=VARCHAR},
         ACT_NAME_ = #{activityName, jdbcType=VARCHAR},

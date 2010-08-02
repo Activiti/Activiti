@@ -18,7 +18,7 @@ import static org.junit.Assert.*;
 
 import java.util.Date;
 
-import org.activiti.engine.impl.persistence.history.HistoricProcessInstanceImpl;
+import org.activiti.engine.impl.persistence.history.HistoricProcessInstanceEntity;
 import org.junit.Test;
 
 /**
@@ -30,7 +30,7 @@ public class HistoricProcessInstanceImplTest {
   public void testInitializeHistoricProcessInstance() {
     Date startTime = new Date();
 
-    HistoricProcessInstanceImpl historicProcessInstance = new HistoricProcessInstanceImpl("processInstanceId", "processDefinitionId", startTime);
+    HistoricProcessInstanceEntity historicProcessInstance = new HistoricProcessInstanceEntity("processInstanceId", "processDefinitionId", startTime);
 
     assertEquals("processInstanceId", historicProcessInstance.getProcessInstanceId());
     assertEquals("processDefinitionId", historicProcessInstance.getProcessDefinitionId());
@@ -46,7 +46,7 @@ public class HistoricProcessInstanceImplTest {
     Date startTime = new Date();
     Date endTime = new Date(startTime.getTime() + 1234);
 
-    HistoricProcessInstanceImpl historicProcessInstance = new HistoricProcessInstanceImpl("processInstanceId", "processDefinitionId", startTime);
+    HistoricProcessInstanceEntity historicProcessInstance = new HistoricProcessInstanceEntity("processInstanceId", "processDefinitionId", startTime);
     historicProcessInstance.markEnded(endTime, "endState");
 
     assertEquals(endTime, historicProcessInstance.getEndTime());
@@ -58,19 +58,19 @@ public class HistoricProcessInstanceImplTest {
   public void testMandatoryStateForHistoricProcessInstanceInitialization() {
     assertIllegalArgumentException("process instance id", new Runnable() {
       public void run() {
-        new HistoricProcessInstanceImpl(null, "processDefinitionId", new Date());
+        new HistoricProcessInstanceEntity(null, "processDefinitionId", new Date());
       }
     });
 
     assertIllegalArgumentException("process definition id", new Runnable() {
       public void run() {
-        new HistoricProcessInstanceImpl("processInstanceId", null, new Date());
+        new HistoricProcessInstanceEntity("processInstanceId", null, new Date());
       }
     });
 
     assertIllegalArgumentException("start time", new Runnable() {
       public void run() {
-        new HistoricProcessInstanceImpl("processInstanceId", "processDefinitionId", null);
+        new HistoricProcessInstanceEntity("processInstanceId", "processDefinitionId", null);
       }
     });
   }
@@ -79,14 +79,14 @@ public class HistoricProcessInstanceImplTest {
   public void testMandatoryStateForMarkHistoricProcessInstanceEnded() {
     assertIllegalArgumentException("end time", new Runnable() {
       public void run() {
-        HistoricProcessInstanceImpl historicProcessInstance = new HistoricProcessInstanceImpl("processInstanceId", "processDefinitionId", new Date());
+        HistoricProcessInstanceEntity historicProcessInstance = new HistoricProcessInstanceEntity("processInstanceId", "processDefinitionId", new Date());
         historicProcessInstance.markEnded(null, "endStateName");
       }
     });
 
     assertIllegalArgumentException("end state name", new Runnable() {
       public void run() {
-        HistoricProcessInstanceImpl historicProcessInstance = new HistoricProcessInstanceImpl("processInstanceId", "processDefinitionId", new Date());
+        HistoricProcessInstanceEntity historicProcessInstance = new HistoricProcessInstanceEntity("processInstanceId", "processDefinitionId", new Date());
         historicProcessInstance.markEnded(new Date(), null);
       }
     });
@@ -99,7 +99,7 @@ public class HistoricProcessInstanceImplTest {
         Date startTime = new Date();
         Date endTime = new Date(startTime.getTime() - 1000);
 
-        HistoricProcessInstanceImpl historicProcessInstance = new HistoricProcessInstanceImpl("processInstanceId", "processDefinitionId", startTime);
+        HistoricProcessInstanceEntity historicProcessInstance = new HistoricProcessInstanceEntity("processInstanceId", "processDefinitionId", startTime);
         historicProcessInstance.markEnded(endTime, "endStateName");
       }
     });

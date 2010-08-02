@@ -55,6 +55,7 @@ import org.activiti.engine.impl.persistence.db.DbIdGenerator;
 import org.activiti.engine.impl.persistence.db.DbIdentitySessionFactory;
 import org.activiti.engine.impl.persistence.db.DbManagementSessionFactory;
 import org.activiti.engine.impl.persistence.db.DbRepositorySessionFactory;
+import org.activiti.engine.impl.persistence.db.DbRuntimeSessionFactory;
 import org.activiti.engine.impl.persistence.db.DbSqlSession;
 import org.activiti.engine.impl.persistence.db.DbSqlSessionFactory;
 import org.activiti.engine.impl.persistence.db.DbTaskSessionFactory;
@@ -132,7 +133,7 @@ public class ProcessEngineConfiguration {
 
     sessionFactories = new HashMap<Class<?>, SessionFactory>();
     sessionFactories.put(RepositorySession.class, new DbRepositorySessionFactory());
-    sessionFactories.put(RuntimeSession.class, new DbRepositorySessionFactory());
+    sessionFactories.put(RuntimeSession.class, new DbRuntimeSessionFactory());
     sessionFactories.put(TaskSession.class, new DbTaskSessionFactory());
     sessionFactories.put(IdentitySession.class, new DbIdentitySessionFactory());
     sessionFactories.put(ManagementSession.class, new DbManagementSessionFactory());
