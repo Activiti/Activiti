@@ -22,7 +22,7 @@ import org.activiti.engine.history.HistoricProcessInstance;
  * @author Tom Baeyens
  * @author Christian Stettler
  */
-// TODO: define/implement semantics of historic data: only completed processes vs. also ongoing ones
+// TODO: define/implement semantics of historic signalData: only completed processes vs. also ongoing ones
 public class HistoricDataServiceImpl extends ServiceImpl implements HistoricDataService {
 
   public HistoricActivityInstance findHistoricActivityInstance(String activityId, String processInstanceId) {
@@ -41,7 +41,7 @@ public class HistoricDataServiceImpl extends ServiceImpl implements HistoricData
 //  }
 //
 //  public void registerEventConsumers(ProcessEventBus processEventBus) {
-//    // TODO: where/how to register historic data service with event bus?
+//    // TODO: where/how to register historic signalData service with event bus?
 //    
 //    processEventBus.subscribe(new ProcessInstanceStartedEventConsumer(), ProcessInstanceStartedEvent.class);
 //    processEventBus.subscribe(new ProcessInstanceEndedEventConsumer(), ProcessInstanceEndedEvent.class);

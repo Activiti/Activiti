@@ -21,7 +21,7 @@ import org.springframework.extensions.webscripts.WebScriptRequest;
 import java.util.Map;
 
 /**
- * Returns data, metadata and paging info about a table.
+ * Returns signalData, metadata and paging info about a table.
  *
  * @author Erik Winl�f
  */
@@ -29,7 +29,7 @@ public class TableDataGet extends ActivitiWebScript
 {
 
   /**
-   * Prepares data, metadata and paging info about a table for the webscript template.
+   * Prepares signalData, metadata and paging info about a table for the webscript template.
    *
    * @param req The webscripts request
    * @param status The webscripts status

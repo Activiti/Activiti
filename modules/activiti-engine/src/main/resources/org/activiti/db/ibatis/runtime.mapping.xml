@@ -76,7 +76,7 @@
     update ACT_RNT_ACTIVITYINSTANCE set
       REV_ = #{revisionNext, jdbcType=INTEGER},
       ACTIVITY_ = #{activityId, jdbcType=VARCHAR}
-      ID_ACTIVE_ = #{isActive, jdbcType=BOOLEAN}
+      IS_ACTIVE_ = #{isActive, jdbcType=BOOLEAN}
     where ID_ = #{id}
       and REV_ = #{revision, jdbcType=INTEGER}
   </update>

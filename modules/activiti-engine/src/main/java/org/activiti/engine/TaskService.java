@@ -36,7 +36,7 @@ public interface TaskService {
   Task newTask(String taskId);
 	
 	/**
-	 * Saves the given task to the persistent data store.
+	 * Saves the given task to the persistent signalData store.
 	 */
 	void saveTask(Task task);
 	

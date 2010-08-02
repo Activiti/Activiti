@@ -41,7 +41,7 @@ public class UserEntity implements User, Serializable, PersistentObject {
     this.id = id;
   }
   
-  /** update this user by copying all the given user's data into this user.
+  /** update this user by copying all the given user's signalData into this user.
    * @see SaveUserCmd */
   public void update(UserEntity user) {
     this.firstName = user.getFirstName();

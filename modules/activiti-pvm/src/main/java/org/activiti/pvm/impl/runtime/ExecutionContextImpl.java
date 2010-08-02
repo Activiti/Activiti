@@ -46,6 +46,9 @@ public class ExecutionContextImpl implements EventContext, ActivityContext {
   private static final AtomicOperation TRANSITION_TAKE = new TransitionTake();
   private static final AtomicOperation TRANSITION_ACTIVITY_START = new TransitionActivityStart();
   private static final AtomicOperation ACTIVITY_SIGNAL = new ActivitySignal();
+  private static final AtomicOperation ACTIVITY_END = new ActivityEnd();
+  private static final AtomicOperation PROCESS_END = new ProcessEnd();
+  
   
   protected ProcessInstanceImpl processInstance;
   protected ActivityInstanceImpl activityInstance;
@@ -57,26 +60,27 @@ public class ExecutionContextImpl implements EventContext, ActivityContext {
   protected AtomicOperation eventPostOperation;
   
   protected String signalName;
-  protected Object data;
+  protected Object signalData;
   
   protected TransitionImpl transition;
   
   protected AtomicOperation nextAtomicOperation = null;
   protected boolean isOperating;
 
-  public void startProcessInstance(ProcessInstanceImpl processInstance) {
-    this.processInstance = processInstance;
-    this.scopeInstance = processInstance;
-    fireEvent(processInstance.getProcessDefinition(), Event.PROCESS_START, PROCESS_START);
+  public static void startProcessInstance(ProcessInstanceImpl processInstance) {
+    ExecutionContextImpl executionContext = new ExecutionContextImpl();
+    executionContext.processInstance = processInstance;
+    executionContext.scopeInstance = processInstance;
+    executionContext.fireEvent(processInstance.getProcessDefinition(), Event.PROCESS_START, PROCESS_START);
   }
 
-  public void signal(ActivityInstanceImpl activityInstance, String signalName, Object data) {
-    this.activityInstance = activityInstance;
-    this.scopeInstance = activityInstance;
-    this.signalName = signalName;
-    this.data = data;
-    
-    perform(ACTIVITY_SIGNAL);
+  public static void signal(ActivityInstanceImpl activityInstance, String signalName, Object data) {
+    ExecutionContextImpl executionContext = new ExecutionContextImpl();
+    executionContext.activityInstance = activityInstance;
+    executionContext.scopeInstance = activityInstance;
+    executionContext.signalName = signalName;
+    executionContext.signalData = data;
+    executionContext.perform(ACTIVITY_SIGNAL);
   }
 
   public void take(PvmTransition transition) {
@@ -88,7 +92,7 @@ public class ExecutionContextImpl implements EventContext, ActivityContext {
   }
 
   public void end() {
-    throw new UnsupportedOperationException("implement me");
+    fireEvent(activityInstance.activity, Event.ACTIVITY_END, ACTIVITY_END);
   }
 
   public void executeTimerNestedActivity(ActivityImpl borderEventActivity) {
@@ -188,16 +192,18 @@ public class ExecutionContextImpl implements EventContext, ActivityContext {
   private static class TransitionActivityEnd implements AtomicOperation {
     public void perform(ExecutionContextImpl executionContext) {
       ActivityInstanceImpl activityInstance = executionContext.activityInstance;
-      TransitionImpl transition = executionContext.transition;
       ScopeInstanceImpl parent = activityInstance.getParent();
       executionContext.scopeInstance = parent;
-      parent.removeActivityInstance(activityInstance);
-      executionContext.fireEvent(transition, Event.TRANSITION_TAKE, TRANSITION_TAKE);
+      activityInstance.setEnded(true);
+      executionContext.fireEvent(activityInstance.getScope(), Event.ACTIVITY_END, TRANSITION_TAKE);
     }
   }
 
   private static class TransitionTake implements AtomicOperation {
     public void perform(ExecutionContextImpl executionContext) {
+      ScopeInstanceImpl parentScopeInstance = executionContext.activityInstance.getParent();
+      parentScopeInstance.removeActivityInstance(executionContext.activityInstance);
+      executionContext.activityInstance = null;
       executionContext.fireEvent(executionContext.transition, Event.TRANSITION_TAKE, TRANSITION_ACTIVITY_START);
     }
   }
@@ -206,6 +212,7 @@ public class ExecutionContextImpl implements EventContext, ActivityContext {
     public void perform(ExecutionContextImpl executionContext) {
       ActivityImpl destination = executionContext.transition.getDestination();
       executionContext.activityInstance = executionContext.scopeInstance.createActivityInstance(destination);
+      executionContext.scopeInstance = executionContext.activityInstance;
       executionContext.fireEvent(destination, Event.ACTIVITY_START, ACTIVITY_START);
     }
   }
@@ -216,7 +223,7 @@ public class ExecutionContextImpl implements EventContext, ActivityContext {
       ActivityImpl activity = activityInstance.getActivity();
       SignallableActivityBehaviour signallableActivityBehaviour = (SignallableActivityBehaviour) activity.getActivityBehavior();
       try {
-        signallableActivityBehaviour.signal(executionContext, executionContext.signalName, executionContext.data);
+        signallableActivityBehaviour.signal(executionContext, executionContext.signalName, executionContext.signalData);
       } catch (RuntimeException e) {
         log.log(Level.SEVERE, getDelegationExceptionMessage(activity, "signal", e), e);
         throw e;
@@ -224,7 +231,37 @@ public class ExecutionContextImpl implements EventContext, ActivityContext {
         String delegationExceptionMessage = getDelegationExceptionMessage(activity, "signal", e);
         log.log(Level.SEVERE, delegationExceptionMessage, e);
         throw new PvmException(delegationExceptionMessage, e);
+      } finally {
+        executionContext.signalName = null;
+        executionContext.signalData = null;
       }
+    }
+  }
+
+  private static class ActivityEnd implements AtomicOperation {
+    public void perform(ExecutionContextImpl executionContext) {
+      executionContext.activityInstance.setEnded(true);
+      ScopeInstanceImpl parent = executionContext.activityInstance.getParent();
+      parent.removeActivityInstance(executionContext.activityInstance);
+      executionContext.scopeInstance = parent;
+      
+      if (parent.getActivityInstances().isEmpty()) {
+        if (parent instanceof ProcessInstanceImpl) {
+          executionContext.activityInstance = null;
+          executionContext.fireEvent(parent.getScope(), Event.PROCESS_END, PROCESS_END);
+        } else {
+          executionContext.activityInstance = (ActivityInstanceImpl) parent;
+          executionContext.end();
+        }
+      }
+    }
+  }
+
+  private static class ProcessEnd implements AtomicOperation {
+    public void perform(ExecutionContextImpl executionContext) {
+      ProcessInstanceImpl processInstance = (ProcessInstanceImpl) executionContext.scopeInstance;
+      processInstance.setEnded(true);
+      processInstance.remove();
     }
   }
 

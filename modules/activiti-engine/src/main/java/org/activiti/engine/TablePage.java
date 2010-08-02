@@ -40,7 +40,7 @@ public class TablePage {
   protected long start;
   
   /**
-   * Indicates the key or column on which the data is sorted.
+   * Indicates the key or column on which the signalData is sorted.
    */
   protected String sort;
   

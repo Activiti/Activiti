@@ -57,7 +57,7 @@ public class ScopeInstanceImpl implements PvmScopeInstance {
     activityInstances.remove(activityInstance);
     activityInstance.setParent(null);
   }
-  
+
   public List<ActivityInstanceImpl> findActivityInstances(String activityId) {
     List<ActivityInstanceImpl> foundActivityInstances = new ArrayList<ActivityInstanceImpl>();
     collectActivityInstances(foundActivityInstances, activityId);
@@ -210,4 +210,5 @@ public class ScopeInstanceImpl implements PvmScopeInstance {
   public void setEnded(boolean isEnded) {
     this.isEnded = isEnded;
   }
+
 }

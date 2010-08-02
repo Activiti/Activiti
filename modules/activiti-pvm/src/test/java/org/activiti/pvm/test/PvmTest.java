@@ -1,4 +1,6 @@
 package org.activiti.pvm.test;
+import java.util.ArrayList;
+
 import junit.framework.TestCase;
 
 import org.activiti.pvm.ProcessDefinitionBuilder;
@@ -6,6 +8,7 @@ import org.activiti.pvm.process.PvmProcessDefinition;
 import org.activiti.pvm.runtime.PvmActivityInstance;
 import org.activiti.pvm.runtime.PvmProcessInstance;
 import org.activiti.test.pvm.activities.Automatic;
+import org.activiti.test.pvm.activities.End;
 import org.activiti.test.pvm.activities.WaitState;
 
 
@@ -43,7 +46,7 @@ public class PvmTest extends TestCase {
         .transition("three")
       .endActivity()
       .createActivity("three")
-        .behavior(new WaitState())
+        .behavior(new End())
       .endActivity()
     .buildProcessDefinition();
     
@@ -55,7 +58,7 @@ public class PvmTest extends TestCase {
     
     activityInstance.signal(null, null);
 
-    activityInstance = processInstance.findActivityInstance("three");
-    assertNotNull(activityInstance);
+    assertEquals(new ArrayList<String>(), processInstance.findActivityIds());
+    assertTrue(processInstance.isEnded());
   }
 }

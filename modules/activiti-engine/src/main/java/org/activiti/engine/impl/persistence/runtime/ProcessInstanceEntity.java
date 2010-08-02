@@ -19,6 +19,7 @@ import java.util.Map;
 import org.activiti.engine.ProcessInstance;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.PersistentObject;
+import org.activiti.pvm.impl.process.ActivityImpl;
 import org.activiti.pvm.impl.process.ProcessDefinitionImpl;
 import org.activiti.pvm.impl.runtime.ActivityInstanceImpl;
 import org.activiti.pvm.impl.runtime.ProcessInstanceImpl;
@@ -55,13 +56,33 @@ public class ProcessInstanceEntity extends ProcessInstanceImpl implements Proces
     return processInstance;
   }
   
+  @Override
+  protected ActivityInstanceImpl createActivityInstance(ActivityImpl activity) {
+    ActivityInstanceEntity activityInstance = new ActivityInstanceEntity(activity, this);
+    CommandContext
+      .getCurrent()
+      .getRuntimeSession()
+      .insertActivityInstance(activityInstance);
+    activityInstances.add(activityInstance);
+    return activityInstance;
+  }
+
+  @Override
+  public void removeActivityInstance(ActivityInstanceImpl activityInstance) {
+    super.removeActivityInstance(activityInstance);
+    ((ActivityInstanceEntity)activityInstance).delete();
+  }
+
+  @Override
+  public void remove() {
+    delete();
+  }
+  
   public void delete() {
-    for (ActivityInstanceImpl activityInstance: getActivityInstances()) {
-      ((ActivityInstanceEntity)activityInstance).delete();
-    }
-    for (VariableInstanceEntity variableInstance: getVariableInstanceMap().getVariableInstances().values()) {
-      variableInstance.delete();
-    }
+    CommandContext
+      .getCurrent()
+      .getRuntimeSession()
+      .deleteProcessInstance(id);
   }
   
   public VariableInstanceMap getVariableInstanceMap() {

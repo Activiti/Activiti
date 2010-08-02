@@ -166,7 +166,7 @@ public class ProcessDeployer extends ProcessEngineTestWatchman {
   }
 
   /**
-   * Registers the given deployment for post-test clean up. All the related data
+   * Registers the given deployment for post-test clean up. All the related signalData
    * such as process instances, tasks, etc will be deleted when the test case
    * has run.
    */

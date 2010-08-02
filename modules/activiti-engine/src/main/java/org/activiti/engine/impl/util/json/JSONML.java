@@ -235,7 +235,7 @@ public class JSONML {
      * JSONArrays will represent the child tags.
      * Comments, prologs, DTDs, and <code>&lt;[ [ ]]></code> are ignored.
      * @param string The source string.
-     * @return A JSONArray containing the structured data from the XML string.
+     * @return A JSONArray containing the structured signalData from the XML string.
      * @throws JSONException
      */
     public static JSONArray toJSONArray(String string) throws JSONException {
@@ -252,7 +252,7 @@ public class JSONML {
      * JSONArrays will represent the child content and tags.
      * Comments, prologs, DTDs, and <code>&lt;[ [ ]]></code> are ignored.
      * @param x An XMLTokener.
-     * @return A JSONArray containing the structured data from the XML string.
+     * @return A JSONArray containing the structured signalData from the XML string.
      * @throws JSONException
      */
     public static JSONArray toJSONArray(XMLTokener x) throws JSONException {
@@ -271,7 +271,7 @@ public class JSONML {
 
      * Comments, prologs, DTDs, and <code>&lt;[ [ ]]></code> are ignored.
      * @param x An XMLTokener of the XML source text.
-     * @return A JSONObject containing the structured data from the XML string.
+     * @return A JSONObject containing the structured signalData from the XML string.
      * @throws JSONException
      */
     public static JSONObject toJSONObject(XMLTokener x) throws JSONException {
@@ -287,7 +287,7 @@ public class JSONML {
 
      * Comments, prologs, DTDs, and <code>&lt;[ [ ]]></code> are ignored.
      * @param string The XML source text.
-     * @return A JSONObject containing the structured data from the XML string.
+     * @return A JSONObject containing the structured signalData from the XML string.
      * @throws JSONException
      */
     public static JSONObject toJSONObject(String string) throws JSONException {

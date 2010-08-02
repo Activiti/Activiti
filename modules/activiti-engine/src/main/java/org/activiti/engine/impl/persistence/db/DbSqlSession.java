@@ -74,6 +74,14 @@ public class DbSqlSession implements Session {
   }
   
   public void delete(Class<?> clazz, String id) {
+    for (PersistentObject insertedObject: insertedObjects) {
+      if ( (clazz==insertedObject.getClass())
+           && (id.equals(insertedObject.getId()))
+         ) {
+        insertedObjects.remove(insertedObject);
+        return;
+      }
+    }
     deletedObjects.add(new DeleteById(clazz, id));
   }
   

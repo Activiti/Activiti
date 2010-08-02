@@ -1280,7 +1280,7 @@ public class JSONObject {
      * is added. If this would not result in a syntactically correct JSON text,
      * then null will be returned instead.
      * <p>
-     * Warning: This method assumes that the data structure is acyclical.
+     * Warning: This method assumes that the signalData structure is acyclical.
      *
      * @return a printable, displayable, portable, transmittable
      *  representation of the object, beginning
@@ -1312,7 +1312,7 @@ public class JSONObject {
     /**
      * Make a prettyprinted JSON text of this JSONObject.
      * <p>
-     * Warning: This method assumes that the data structure is acyclical.
+     * Warning: This method assumes that the signalData structure is acyclical.
      * @param indentFactor The number of spaces to add to each level of
      *  indentation.
      * @return a printable, displayable, portable, transmittable
@@ -1329,7 +1329,7 @@ public class JSONObject {
     /**
      * Make a prettyprinted JSON text of this JSONObject.
      * <p>
-     * Warning: This method assumes that the data structure is acyclical.
+     * Warning: This method assumes that the signalData structure is acyclical.
      * @param indentFactor The number of spaces to add to each level of
      *  indentation.
      * @param indent The indentation of the top level.
@@ -1396,7 +1396,7 @@ public class JSONObject {
      * value's toString method will be called, and the result will be quoted.
      *
      * <p>
-     * Warning: This method assumes that the data structure is acyclical.
+     * Warning: This method assumes that the signalData structure is acyclical.
      * @param value The value to be serialized.
      * @return a printable, displayable, transmittable
      *  representation of the object, beginning
@@ -1443,7 +1443,7 @@ public class JSONObject {
     /**
      * Make a prettyprinted JSON text of an object value.
      * <p>
-     * Warning: This method assumes that the data structure is acyclical.
+     * Warning: This method assumes that the signalData structure is acyclical.
      * @param value The value to be serialized.
      * @param indentFactor The number of spaces to add to each level of
      *  indentation.
@@ -1546,7 +1546,7 @@ public class JSONObject {
       * Write the contents of the JSONObject as JSON text to a writer.
       * For compactness, no whitespace is added.
       * <p>
-      * Warning: This method assumes that the data structure is acyclical.
+      * Warning: This method assumes that the signalData structure is acyclical.
       *
       * @return The writer.
       * @throws JSONException

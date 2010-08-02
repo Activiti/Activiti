@@ -24,23 +24,22 @@ public class ActivityInstanceImpl extends ScopeInstanceImpl implements PvmActivi
 
   protected ActivityImpl activity;
   protected ExecutionContextImpl executionContext;
+  protected boolean isActive;
   
   public ActivityInstanceImpl(ActivityImpl activity, ScopeInstanceImpl parent) {
     super(parent.getProcessDefinition(), activity);
     this.activity = activity;
     this.parent = parent;
   }
-
+  
   public void signal(String signalName, Object signalData) {
-    new ExecutionContextImpl().signal(this, signalName, signalData);
+    ExecutionContextImpl.signal(this, signalName, signalData);
   }
 
-  
   public ActivityImpl getActivity() {
     return activity;
   }
 
-  
   public void setActivity(ActivityImpl activity) {
     this.activity = activity;
   }
@@ -49,8 +48,15 @@ public class ActivityInstanceImpl extends ScopeInstanceImpl implements PvmActivi
     return executionContext;
   }
 
-  
   public void setExecutionContext(ExecutionContextImpl executionContext) {
     this.executionContext = executionContext;
+  }
+  
+  public boolean isActive() {
+    return isActive;
+  }
+
+  public void setActive(boolean isActive) {
+    this.isActive = isActive;
   }
 }

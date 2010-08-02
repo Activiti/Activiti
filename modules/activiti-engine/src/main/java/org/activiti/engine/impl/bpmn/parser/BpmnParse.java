@@ -216,7 +216,7 @@ public class BpmnParse extends Parse {
    *          The root element of the XML file.
    */
   public void parseProcessDefinitions(Element definitionsElement) {
-    // TODO: parse specific definitions data (id, imports, etc)
+    // TODO: parse specific definitions signalData (id, imports, etc)
     for (Element processElement : definitionsElement.elements("process")) {
       processDefinitions.add(parseProcess(processElement));
     }

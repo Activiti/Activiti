@@ -40,7 +40,7 @@ create table ACT_RNT_ACTIVITYINSTANCE (
     REV_ integer,
     PROC_DEF_ID_ varchar(255),
     PROC_INST_ID_ varchar(255),
-    ACTIVITY_ID_ varchar(255),
+    ACTIVITY_ varchar(255),
     IS_ACTIVE_ bit,
     primary key (ID_)
 );

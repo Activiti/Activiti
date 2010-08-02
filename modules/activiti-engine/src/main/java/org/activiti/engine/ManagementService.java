@@ -40,7 +40,7 @@ public interface ManagementService {
  
   /**
    * creates a {@link TablePageQuery} that can be used to fetch {@link TablePage}
-   * containing specific sections of table row data.
+   * containing specific sections of table row signalData.
    */
   TablePageQuery createTablePageQuery();
   

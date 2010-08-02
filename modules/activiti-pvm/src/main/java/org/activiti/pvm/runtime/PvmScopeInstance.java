@@ -30,4 +30,6 @@ public interface PvmScopeInstance {
   Map<String, Object> getVariables();
 
   PvmScopeInstance getParent();
+  
+  boolean isEnded();
 }

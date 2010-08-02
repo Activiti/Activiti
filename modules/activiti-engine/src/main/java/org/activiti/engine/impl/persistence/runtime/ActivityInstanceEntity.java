@@ -13,7 +13,11 @@
 
 package org.activiti.engine.impl.persistence.runtime;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.activiti.engine.ActivityInstance;
+import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.PersistentObject;
 import org.activiti.pvm.impl.process.ActivityImpl;
 import org.activiti.pvm.impl.runtime.ActivityInstanceImpl;
@@ -26,21 +30,51 @@ import org.activiti.pvm.impl.runtime.ScopeInstanceImpl;
 public class ActivityInstanceEntity extends ActivityInstanceImpl implements ActivityInstance, PersistentObject {
 
   protected String id;
+  protected int revision;
   protected String parentId;
   protected String processInstanceId;
   protected String processDefinitionId;
+  protected String activityId;
   
   public ActivityInstanceEntity(ActivityImpl activity, ScopeInstanceImpl parent) {
     super(activity, parent);
   }
   
+  @Override
+  protected ActivityInstanceImpl createActivityInstance(ActivityImpl activity) {
+    ActivityInstanceEntity activityInstance = new ActivityInstanceEntity(activity, this);
+    CommandContext
+      .getCurrent()
+      .getRuntimeSession()
+      .insertActivityInstance(activityInstance);
+    activityInstances.add(activityInstance);
+    return activityInstance;
+  }
+
+  @Override
+  public void removeActivityInstance(ActivityInstanceImpl activityInstance) {
+    super.removeActivityInstance(activityInstance);
+    ((ActivityInstanceEntity)activityInstance).delete();
+  }
+
   public void delete() {
+    CommandContext
+      .getCurrent()
+      .getRuntimeSession()
+      .deleteActivityInstance(id);
   }
   
   public Object getPersistentState() {
-    throw new UnsupportedOperationException("please implement me");
+    Map<String, Object> persistentState = new HashMap<String, Object>();
+    persistentState.put("activityId", activityId);
+    persistentState.put("isActive", isActive);
+    return persistentState;
   }
-
+  
+  public int getRevisionNext() {
+    return revision+1;
+  }
+  
   // getters and setters //////////////////////////////////////////////////////
   
   public String getId() {
@@ -50,35 +84,44 @@ public class ActivityInstanceEntity extends ActivityInstanceImpl implements Acti
   public void setId(String id) {
     this.id = id;
   }
-
   
   public String getParentId() {
     return parentId;
   }
-
   
   public void setParentId(String parentId) {
     this.parentId = parentId;
   }
-
   
   public String getProcessInstanceId() {
     return processInstanceId;
   }
-
   
   public void setProcessInstanceId(String processInstanceId) {
     this.processInstanceId = processInstanceId;
   }
-
   
   public String getProcessDefinitionId() {
     return processDefinitionId;
   }
-
   
   public void setProcessDefinitionId(String processDefinitionId) {
     this.processDefinitionId = processDefinitionId;
   }
+  
+  public int getRevision() {
+    return revision;
+  }
 
+  public void setRevision(int revision) {
+    this.revision = revision;
+  }
+
+  public String getActivityId() {
+    return activityId;
+  }
+  
+  public void setActivityId(String activityId) {
+    this.activityId = activityId;
+  }
 }

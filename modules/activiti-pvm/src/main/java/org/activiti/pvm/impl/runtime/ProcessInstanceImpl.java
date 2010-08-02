@@ -33,7 +33,10 @@ public class ProcessInstanceImpl extends ScopeInstanceImpl implements PvmProcess
   }
   
   public void start() {
-    new ExecutionContextImpl().startProcessInstance(this);
+    ExecutionContextImpl.startProcessInstance(this);
+  }
+  
+  public void remove() {
   }
 
   public List<String> findActivityIds() {

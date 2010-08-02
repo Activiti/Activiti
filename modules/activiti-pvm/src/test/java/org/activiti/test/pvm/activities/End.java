@@ -10,22 +10,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.activiti.engine;
+
+package org.activiti.test.pvm.activities;
+
+import org.activiti.pvm.activity.ActivityBehavior;
+import org.activiti.pvm.activity.ActivityContext;
 
 
 /**
- * is thrown when an optimistic locking occurs in the datastore 
- * caused by concurrent access of the same signalData entry. 
- * 
  * @author Tom Baeyens
- * @author Joram Barrez
  */
-public class ActivitiOptimisticLockingException extends ActivitiException {
+public class End implements ActivityBehavior {
 
-  private static final long serialVersionUID = 1L;
-
-  public ActivitiOptimisticLockingException(String message) {
-    super(message);
+  public void start(ActivityContext activityContext) throws Exception {
+    activityContext.end();
   }
 
 }

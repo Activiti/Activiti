@@ -23,7 +23,7 @@ import org.activiti.pvm.process.PvmTransition;
 
 
 /**
- * implementation of the Exclusive Gateway/XOR gateway/exclusive data=based gateway
+ * implementation of the Exclusive Gateway/XOR gateway/exclusive signalData=based gateway
  * as defined in the BPMN specification.
  * 
  * @author Joram Barrez
