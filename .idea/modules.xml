@@ -5,7 +5,6 @@
       <module fileurl="file://$PROJECT_DIR$/modules/activiti-engine/activiti-engine.iml" filepath="$PROJECT_DIR$/modules/activiti-engine/activiti-engine.iml" group="activiti-root and modules" />
       <module fileurl="file://$PROJECT_DIR$/modules/activiti-engine-examples/activiti-engine-examples.iml" filepath="$PROJECT_DIR$/modules/activiti-engine-examples/activiti-engine-examples.iml" />
       <module fileurl="file://$PROJECT_DIR$/modules/activiti-engine-init/activiti-engine-init.iml" filepath="$PROJECT_DIR$/modules/activiti-engine-init/activiti-engine-init.iml" />
-      <module fileurl="file://$PROJECT_DIR$/modules/activiti-engine-test-api/activiti-engine-test-api.iml" filepath="$PROJECT_DIR$/modules/activiti-engine-test-api/activiti-engine-test-api.iml" />
       <module fileurl="file://$PROJECT_DIR$/modules/activiti-engine-test-cfg/activiti-engine-test-cfg.iml" filepath="$PROJECT_DIR$/modules/activiti-engine-test-cfg/activiti-engine-test-cfg.iml" />
       <module fileurl="file://$PROJECT_DIR$/modules/activiti-explorer/activiti-explorer.iml" filepath="$PROJECT_DIR$/modules/activiti-explorer/activiti-explorer.iml" />
       <module fileurl="file://$PROJECT_DIR$/modules/activiti-probe/activiti-probe.iml" filepath="$PROJECT_DIR$/modules/activiti-probe/activiti-probe.iml" />
