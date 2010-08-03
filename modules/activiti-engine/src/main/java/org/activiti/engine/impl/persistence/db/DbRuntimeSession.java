@@ -44,12 +44,11 @@ public class DbRuntimeSession implements Session, RuntimeSession {
   }
 
   public void deleteProcessInstance(String processInstanceId) {
-    findProcessInstanceById(processInstanceId)
-      .delete();
+    findProcessInstanceById(processInstanceId).delete();
   }
 
   public ProcessInstanceEntity findProcessInstanceById(String processInstanceId) {
-    throw new UnsupportedOperationException("please implement me");
+    return (ProcessInstanceEntity) dbSqlSession.selectOne("selectProcessInstanceById", processInstanceId);
   }
 
   @SuppressWarnings("unchecked")
