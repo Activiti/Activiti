@@ -20,6 +20,7 @@ import org.activiti.pvm.process.PvmProcessDefinition;
 import org.activiti.pvm.runtime.PvmActivityInstance;
 import org.activiti.pvm.runtime.PvmProcessInstance;
 import org.activiti.test.pvm.activities.Automatic;
+import org.activiti.test.pvm.activities.End;
 import org.activiti.test.pvm.activities.ParallelGateway;
 import org.activiti.test.pvm.activities.WaitState;
 import org.junit.Test;
@@ -56,14 +57,14 @@ public class PvmConcurrencyTest extends PvmTestCase {
         .transition("end")
       .endActivity()
       .createActivity("end")
-        .behavior(new WaitState())
+        .behavior(new End())
       .endActivity()
     .buildProcessDefinition();
     
     PvmProcessInstance processInstance = processDefinition.createProcessInstance(); 
     processInstance.start();
     
-    assertNotNull(processInstance.findActivityInstance("end"));
+    assertTrue(processInstance.isEnded());
   }
 
   @Test

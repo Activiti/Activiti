@@ -19,7 +19,7 @@ import org.activiti.engine.ActivityInstance;
 import org.activiti.engine.ProcessInstance;
 import org.activiti.engine.ProcessInstanceQuery;
 import org.activiti.engine.RuntimeService;
-import org.activiti.engine.impl.cmd.DeleteProcessInstanceCmd;
+import org.activiti.engine.impl.cmd.EndProcessInstanceCmd;
 import org.activiti.engine.impl.cmd.FindActivitiyInstanceCmd;
 import org.activiti.engine.impl.cmd.FindActivityInstanceInActivityCmd;
 import org.activiti.engine.impl.cmd.FindProcessInstanceCmd;
@@ -38,8 +38,8 @@ public class RuntimeServiceImpl extends ServiceImpl implements RuntimeService {
     return commandExecutor.execute(new FindActivitiyInstanceCmd(activityInstanceId));
   }
 
-  public void deleteProcessInstance(String processInstanceId) {
-    commandExecutor.execute(new DeleteProcessInstanceCmd(processInstanceId));
+  public void endProcessInstance(String processInstanceId, String nonCompletionReason) {
+    commandExecutor.execute(new EndProcessInstanceCmd(processInstanceId, nonCompletionReason));
   }
 
   public ProcessInstance startProcessInstanceByKey(String processDefinitionKey) {

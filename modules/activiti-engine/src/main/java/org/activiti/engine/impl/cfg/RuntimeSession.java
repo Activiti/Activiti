@@ -34,7 +34,7 @@ import org.activiti.engine.impl.persistence.runtime.VariableInstanceEntity;
  */
 public interface RuntimeSession {
   
-  void deleteProcessInstance(String processInstanceId);
+  void endProcessInstance(String processInstanceId, String nonCompletionReason);
   ProcessInstanceEntity findProcessInstanceById(String processInstanceId);
   List<ProcessInstanceEntity> findProcessInstancesByProcessDefintionId(String processDefinitionId);
   ProcessInstanceEntity findSubProcessInstance(String superExecutionId);

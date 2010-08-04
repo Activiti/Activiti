@@ -21,6 +21,7 @@ import java.util.logging.Logger;
 import org.activiti.pvm.PvmException;
 import org.activiti.pvm.activity.ActivityBehavior;
 import org.activiti.pvm.activity.ActivityContext;
+import org.activiti.pvm.activity.CompositeActivityBehavior;
 import org.activiti.pvm.activity.SignallableActivityBehaviour;
 import org.activiti.pvm.event.Event;
 import org.activiti.pvm.event.EventContext;
@@ -29,7 +30,9 @@ import org.activiti.pvm.impl.process.ActivityImpl;
 import org.activiti.pvm.impl.process.ProcessElementImpl;
 import org.activiti.pvm.impl.process.TransitionImpl;
 import org.activiti.pvm.process.PvmActivity;
+import org.activiti.pvm.process.PvmProcessDefinition;
 import org.activiti.pvm.process.PvmTransition;
+import org.activiti.pvm.runtime.PvmProcessInstance;
 
 
 /**
@@ -49,6 +52,7 @@ public class ExecutionContextImpl implements EventContext, ActivityContext {
   private static final AtomicOperation ACTIVITY_END = new ActivityEnd();
   private static final AtomicOperation PROCESS_END = new ProcessEnd();
   
+  protected ActivityImpl activity;
   
   protected ProcessInstanceImpl processInstance;
   protected ActivityInstanceImpl activityInstance;
@@ -61,6 +65,8 @@ public class ExecutionContextImpl implements EventContext, ActivityContext {
   
   protected String signalName;
   protected Object signalData;
+  
+  protected String endReason;
   
   protected TransitionImpl transition;
   
@@ -85,6 +91,12 @@ public class ExecutionContextImpl implements EventContext, ActivityContext {
     executionContext.perform(ACTIVITY_SIGNAL);
   }
 
+  public static void endProcessInstance(ProcessInstanceImpl processInstance, String endReason) {
+    log.fine("ending "+processInstance+" because "+endReason);
+    ExecutionContextImpl executionContext = new ExecutionContextImpl();
+    executionContext.scopeInstance = processInstance;
+  }
+
   public void take(PvmTransition transition) {
     if (transition==null) {
       throw new PvmException("transition is null");
@@ -94,9 +106,14 @@ public class ExecutionContextImpl implements EventContext, ActivityContext {
     fireEvent(activityInstance.activity, Event.ACTIVITY_END, TRANSITION_ACTIVITY_END);
   }
 
-  public void end() {
+  public void endActivityInstance() {
     log.fine("ending "+activityInstance);
     fireEvent(activityInstance.activity, Event.ACTIVITY_END, ACTIVITY_END);
+  }
+  
+  public void endProcessInstance() {
+    log.fine("ending "+processInstance);
+    fireEvent(processInstance.getProcessDefinition(), Event.PROCESS_END, PROCESS_END);
   }
 
   public void executeTimerNestedActivity(ActivityImpl borderEventActivity) {
@@ -245,18 +262,33 @@ public class ExecutionContextImpl implements EventContext, ActivityContext {
 
   protected static class ActivityEnd implements AtomicOperation {
     public void perform(ExecutionContextImpl executionContext) {
-      executionContext.activityInstance.setEnded(true);
-      ScopeInstanceImpl parent = executionContext.activityInstance.getParent();
-      parent.removeActivityInstance(executionContext.activityInstance);
+      ActivityInstanceImpl activityInstance = executionContext.activityInstance;
+      activityInstance.setEnded(true);
+      ScopeInstanceImpl parent = activityInstance.getParent();
+      activityInstance.destroy();
+      parent.removeActivityInstance(activityInstance);
       executionContext.scopeInstance = parent;
-      
-      if (parent.getActivityInstances().isEmpty()) {
-        if (parent instanceof ProcessInstanceImpl) {
+
+      if (parent instanceof ProcessInstanceImpl) {
+        if (parent.getActivityInstances().isEmpty()) {
           executionContext.activityInstance = null;
           executionContext.fireEvent(parent.getScope(), Event.PROCESS_END, PROCESS_END);
-        } else {
-          executionContext.activityInstance = (ActivityInstanceImpl) parent;
-          executionContext.end();
+        }
+      } else {
+        executionContext.activityInstance = (ActivityInstanceImpl) parent;
+        ActivityImpl activity = activityInstance.getActivity();
+        ActivityBehavior activityBehavior = activity.getActivityBehavior();
+        if (activityBehavior instanceof CompositeActivityBehavior) {
+          try {
+            ((CompositeActivityBehavior)activityBehavior).activityInstanceEnded(executionContext);
+          } catch (RuntimeException e) {
+            log.log(Level.SEVERE, getDelegationExceptionMessage(activity, "activityInstanceEnded", e), e);
+            throw e;
+          } catch (Exception e) {
+            String delegationExceptionMessage = getDelegationExceptionMessage(activity, "activityInstanceEnded", e);
+            log.log(Level.SEVERE, delegationExceptionMessage, e);
+            throw new PvmException(delegationExceptionMessage, e);
+          } 
         }
       }
     }
@@ -265,12 +297,21 @@ public class ExecutionContextImpl implements EventContext, ActivityContext {
   protected static class ProcessEnd implements AtomicOperation {
     public void perform(ExecutionContextImpl executionContext) {
       ProcessInstanceImpl processInstance = (ProcessInstanceImpl) executionContext.scopeInstance;
+      for (ActivityInstanceImpl activityInstance: processInstance.getActivityInstances()) {
+        destroyActivityInstance(activityInstance);
+      }
       processInstance.setEnded(true);
-      processInstance.remove();
+      processInstance.destroy();
+    }
+    private void destroyActivityInstance(ActivityInstanceImpl activityInstance) {
+      for (ActivityInstanceImpl nestedActivityInstance: activityInstance.getActivityInstances()) {
+        destroyActivityInstance(nestedActivityInstance);
+      }
+      activityInstance.destroy();
     }
   }
 
-  // event context methods ////////////////////////////////////////////////////
+  // user variables ///////////////////////////////////////////////////////////
   
   public void setVariable(String variableName, Object value) {
     scopeInstance.setVariable(variableName, value);
@@ -283,6 +324,16 @@ public class ExecutionContextImpl implements EventContext, ActivityContext {
   public Map<String, Object> getVariables() {
     return scopeInstance.getVariables();
   }
+  
+  // system variables /////////////////////////////////////////////////////////
+  
+  public void setSystemVariable(String variableName, Object value) {
+    scopeInstance.setSystemVariable(activity, variableName, value);
+  }
+  public Object getSystemVariable(String variableName) {
+    return scopeInstance.getSystemVariable(activity, variableName);
+  }
+
   
   // activity context methods /////////////////////////////////////////////////
   
@@ -320,4 +371,15 @@ public class ExecutionContextImpl implements EventContext, ActivityContext {
   public List<PvmActivity> getActivities() {
     return (List) activityInstance.getActivity().getActivities();
   }
+
+  public PvmProcessInstance createSubProcessInstance(PvmProcessDefinition processDefinition) {
+    return null;
+  }
+
+  public void executeActivity(PvmActivity startActivity) {
+  }
+
+  public void keepAlive() {
+  }
+
 }

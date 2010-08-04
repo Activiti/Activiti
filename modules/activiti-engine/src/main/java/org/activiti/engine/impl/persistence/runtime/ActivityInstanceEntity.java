@@ -70,19 +70,11 @@ public class ActivityInstanceEntity extends ActivityInstanceImpl implements Acti
   }
   
   @Override
-  protected ActivityInstanceEntity createActivityInstance(ActivityImpl activity) {
-    ActivityInstanceEntity activityInstance = createAndInsert(activity, this);
-    activityInstances.add(activityInstance);
-    return activityInstance;
+  protected ActivityInstanceEntity newActivityInstance(ActivityImpl activity) {
+    return createAndInsert(activity, this);
   }
 
-  @Override
-  public void removeActivityInstance(ActivityInstanceImpl activityInstance) {
-    super.removeActivityInstance(activityInstance);
-    ((ActivityInstanceEntity)activityInstance).delete();
-  }
-
-  public void delete() {
+  public void destroy() {
     CommandContext
       .getCurrent()
       .getRuntimeSession()

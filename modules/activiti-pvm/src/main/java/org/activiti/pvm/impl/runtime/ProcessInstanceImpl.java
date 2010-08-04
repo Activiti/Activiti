@@ -25,6 +25,8 @@ import org.activiti.pvm.runtime.PvmProcessInstance;
  */
 public class ProcessInstanceImpl extends ScopeInstanceImpl implements PvmProcessInstance {
   
+  private static final long serialVersionUID = 1L;
+
   protected ProcessInstanceImpl() {
   }
   
@@ -36,7 +38,7 @@ public class ProcessInstanceImpl extends ScopeInstanceImpl implements PvmProcess
     ExecutionContextImpl.startProcessInstance(this);
   }
   
-  public void remove() {
+  public void destroy() {
   }
 
   public List<String> findActivityIds() {

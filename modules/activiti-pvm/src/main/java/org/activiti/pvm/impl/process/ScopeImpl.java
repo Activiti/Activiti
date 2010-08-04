@@ -19,20 +19,23 @@ import java.util.List;
 import java.util.Map;
 
 import org.activiti.pvm.PvmException;
+import org.activiti.pvm.process.PvmScope;
 
 
 /**
  * @author Tom Baeyens
  */
-public class ScopeImpl extends ProcessElementImpl {
+public abstract class ScopeImpl extends ProcessElementImpl implements PvmScope {
 
+  private static final long serialVersionUID = 1L;
+  
   protected List<ActivityImpl> activities = new ArrayList<ActivityImpl>();
   protected Map<String, ActivityImpl> namedActivities = new HashMap<String, ActivityImpl>();
 
   public ScopeImpl(String id, ProcessDefinitionImpl processDefinition) {
     super(id, processDefinition);
   }
-
+  
   public ActivityImpl findActivity(String activityId) {
     ActivityImpl localActivity = namedActivities.get(activityId);
     if (localActivity!=null) {

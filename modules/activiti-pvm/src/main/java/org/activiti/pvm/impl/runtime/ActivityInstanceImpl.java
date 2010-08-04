@@ -13,6 +13,7 @@
 
 package org.activiti.pvm.impl.runtime;
 
+import org.activiti.pvm.activity.DelegateActivityInstance;
 import org.activiti.pvm.impl.process.ActivityImpl;
 import org.activiti.pvm.runtime.PvmActivityInstance;
 
@@ -20,8 +21,10 @@ import org.activiti.pvm.runtime.PvmActivityInstance;
 /**
  * @author Tom Baeyens
  */
-public class ActivityInstanceImpl extends ScopeInstanceImpl implements PvmActivityInstance {
+public class ActivityInstanceImpl extends ScopeInstanceImpl implements PvmActivityInstance, DelegateActivityInstance {
 
+  private static final long serialVersionUID = 1L;
+  
   protected ActivityImpl activity;
   protected ExecutionContextImpl executionContext;
   protected boolean isActive;
@@ -35,6 +38,12 @@ public class ActivityInstanceImpl extends ScopeInstanceImpl implements PvmActivi
     this.parent = parent;
   }
   
+  public void create() {
+  }
+
+  public void destroy() {
+  }
+
   public void signal(String signalName, Object signalData) {
     ExecutionContextImpl.signal(this, signalName, signalData);
   }

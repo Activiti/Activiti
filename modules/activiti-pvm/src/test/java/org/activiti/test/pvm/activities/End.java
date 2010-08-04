@@ -23,7 +23,7 @@ import org.activiti.pvm.activity.ActivityContext;
 public class End implements ActivityBehavior {
 
   public void start(ActivityContext activityContext) throws Exception {
-    activityContext.end();
+    activityContext.endActivityInstance();
   }
 
 }

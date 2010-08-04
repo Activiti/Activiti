@@ -22,7 +22,7 @@ public class NoneEndEventActivity extends AbstractBpmnActivity {
   
   public void start(ActivityContext activityContext) throws Exception {
     
-    activityContext.end();
+    activityContext.endActivityInstance();
     
 //    // TODO: needs cleanup!
 //    ActivityImpl currentActivity = (ActivityImpl) activityContext.getActivity();

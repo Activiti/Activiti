@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.activiti.pvm.event.EventListener;
+import org.activiti.pvm.process.PvmProcessElement;
 
 
 /** common properties for process definition, activity and transition 
@@ -27,8 +28,10 @@ import org.activiti.pvm.event.EventListener;
  * 
  * @author Tom Baeyens
  */
-public class ProcessElementImpl {
+public class ProcessElementImpl implements PvmProcessElement {
 
+  private static final long serialVersionUID = 1L;
+  
   protected String id;
   protected ProcessDefinitionImpl processDefinition;
   protected Map<String, List<EventListener>> eventListeners;

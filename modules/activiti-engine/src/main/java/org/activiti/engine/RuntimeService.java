@@ -36,7 +36,7 @@ public interface RuntimeService {
   ProcessInstance startProcessInstanceById(String processDefinitionId, Map<String, Object> variables);
   
   /** delete an existing runtime process instance */
-  void deleteProcessInstance(String processInstanceId);
+  void endProcessInstance(String processInstanceId, String nonCompletionReason);
   
   /** gets the details of a process instance 
    * @return the process instance or null if no process instance could be found with the given id. */

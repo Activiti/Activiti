@@ -27,7 +27,7 @@ public class WaitState implements SignallableActivityBehaviour {
   }
   
   public void signal(ActivityContext activityExecutionContext, String signal, Object signalData) {
-    PvmTransition transition = activityExecutionContext.getOutgoingTransitions().get(0);
+    PvmTransition transition = activityExecutionContext.getActivity().getOutgoingTransitions().get(0);
     activityExecutionContext.take(transition);
   }
 }

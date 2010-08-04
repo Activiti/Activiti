@@ -14,12 +14,13 @@
 package org.activiti.pvm.process;
 
 
+
 /**
  * @author Tom Baeyens
  */
-public interface PvmTransition {
+public interface PvmTransition extends PvmProcessElement {
 
-  public String getId();
-  
-  Object getProperty(String name);
+  PvmActivity getSource();
+
+  PvmActivity getDestination();
 }

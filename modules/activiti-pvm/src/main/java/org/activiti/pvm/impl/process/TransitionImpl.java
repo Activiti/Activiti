@@ -23,6 +23,8 @@ import org.activiti.pvm.process.PvmTransition;
  */
 public class TransitionImpl extends ProcessElementImpl implements PvmTransition {
 
+  private static final long serialVersionUID = 1L;
+  
   protected ActivityImpl source;
   protected ActivityImpl destination;
 

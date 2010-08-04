@@ -11,26 +11,16 @@
  * limitations under the License.
  */
 
-package org.activiti.pvm.runtime;
+package org.activiti.pvm.activity;
 
 import java.io.Serializable;
-import java.util.Map;
+import java.util.Set;
 
 
 /**
  * @author Tom Baeyens
  */
-public interface PvmScopeInstance extends Serializable {
+public interface DelegateActivityInstance extends Serializable {
 
-  boolean hasVariable(String variableName);
-
-  void setVariable(String variableName, Object value);
-  
-  Object getVariable(String variableName);
-
-  Map<String, Object> getVariables();
-
-  PvmScopeInstance getParent();
-  
-  boolean isEnded();
+  Set<? extends DelegateActivityInstance> getActivityInstances();
 }

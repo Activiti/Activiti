@@ -70,12 +70,18 @@ public class ProcessInstanceEntity extends ProcessInstanceImpl implements Proces
     super.removeActivityInstance(activityInstance);
     ((ActivityInstanceEntity)activityInstance).delete();
   }
-
+  
+  /** normal end */
   @Override
-  public void remove() {
+  public void end() {
+    end(null);
+  }
+
+  /** abnormal end of a process instance */
+  public void end(String nonCompletionReason) {
     delete();
   }
-  
+
   public void delete() {
     CommandContext
       .getCurrent()

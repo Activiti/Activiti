@@ -32,11 +32,14 @@ import org.activiti.pvm.runtime.PvmScopeInstance;
  */
 public class ScopeInstanceImpl implements PvmScopeInstance {
 
+  private static final long serialVersionUID = 1L;
+  
   protected ProcessDefinitionImpl processDefinition;
   protected ScopeImpl scope;
   protected ScopeInstanceImpl parent;
   protected Set<ActivityInstanceImpl> activityInstances = new HashSet<ActivityInstanceImpl>();
   protected Map<String, Object> variables;
+  protected Map<String, Object> systemVariables;
   protected boolean isEnded;
   
   protected ScopeInstanceImpl() {    
@@ -48,12 +51,17 @@ public class ScopeInstanceImpl implements PvmScopeInstance {
   }
 
   protected ActivityInstanceImpl createActivityInstance(ActivityImpl activity) {
-    ActivityInstanceImpl activityInstance = new ActivityInstanceImpl(activity, this);
+    ActivityInstanceImpl activityInstance = newActivityInstance(activity);
     activityInstances.add(activityInstance);
     return activityInstance;
   }
 
+  protected ActivityInstanceImpl newActivityInstance(ActivityImpl activity) {
+    return new ActivityInstanceImpl(activity, this);
+  }
+
   public void removeActivityInstance(ActivityInstanceImpl activityInstance) {
+    activityInstance.destroy();
     activityInstances.remove(activityInstance);
     activityInstance.setParent(null);
   }
@@ -91,7 +99,7 @@ public class ScopeInstanceImpl implements PvmScopeInstance {
   }
 
   
-  // variables ////////////////////////////////////////////////////////////////
+  // user variables ///////////////////////////////////////////////////////////
   
   public boolean hasVariable(String variableName) {
     if (getVariables().containsKey(variableName)) {
@@ -157,6 +165,28 @@ public class ScopeInstanceImpl implements PvmScopeInstance {
     }
   }
   
+  // system variables /////////////////////////////////////////////////////////
+  
+  public void setSystemVariable(ActivityImpl activity, String variableName, Object value) {
+    if (systemVariables==null) {
+      systemVariables = new HashMap<String, Object>();
+    }
+    String systemVariableKey = getSystemVariableKey(activity, variableName);
+    systemVariables.put(systemVariableKey, value);
+  }
+  
+  public Object getSystemVariable(ActivityImpl activity, String variableName) {
+    if (systemVariables==null) {
+      return null;
+    }
+    String systemVariableKey = getSystemVariableKey(activity, variableName);
+    return systemVariables.get(systemVariableKey);
+  }
+
+  protected String getSystemVariableKey(ActivityImpl activity, String variableName) {
+    return "["+activity.getId()+"|"+variableName+"]";
+  }
+
   // end //////////////////////////////////////////////////////////////////////
   
   public void end() {

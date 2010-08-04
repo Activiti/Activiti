@@ -12,32 +12,26 @@
  */
 package org.activiti.engine.impl.cmd;
 
-import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.interceptor.CommandContext;
-import org.activiti.engine.impl.persistence.runtime.ProcessInstanceEntity;
 
 
 /**
  * @author Joram Barrez
  */
-public class DeleteProcessInstanceCmd extends CmdVoid {
+public class EndProcessInstanceCmd extends CmdVoid {
   
   protected String processInstanceId;
-  
-  public DeleteProcessInstanceCmd(String processInstanceId) {
-    this.processInstanceId = processInstanceId; 
+  protected String nonCompletionReason;
+
+  public EndProcessInstanceCmd(String processInstanceId, String nonCompletionReason) {
+    this.processInstanceId = processInstanceId;
+    this.nonCompletionReason = nonCompletionReason;
   }
-  
+
   public void executeVoid(CommandContext commandContext) { 
-    ProcessInstanceEntity processInstance = commandContext
+    commandContext
       .getRuntimeSession()
-      .findProcessInstanceById(processInstanceId);
-    
-    if (processInstance==null) {
-      throw new ActivitiException("process instance "+processInstanceId+" does not exist");
-    }
-    
-    processInstance.delete();
+      .endProcessInstance(processInstanceId, nonCompletionReason);
   }
 
 }

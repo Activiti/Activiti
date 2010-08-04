@@ -11,26 +11,15 @@
  * limitations under the License.
  */
 
-package org.activiti.pvm.runtime;
+package org.activiti.pvm.activity;
 
-import java.io.Serializable;
-import java.util.Map;
 
 
 /**
  * @author Tom Baeyens
  */
-public interface PvmScopeInstance extends Serializable {
+public interface CompositeActivityBehavior extends ActivityBehavior {
 
-  boolean hasVariable(String variableName);
+  void activityInstanceEnded(ActivityContext activityContext) throws Exception;
 
-  void setVariable(String variableName, Object value);
-  
-  Object getVariable(String variableName);
-
-  Map<String, Object> getVariables();
-
-  PvmScopeInstance getParent();
-  
-  boolean isEnded();
 }

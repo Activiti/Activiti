@@ -43,8 +43,8 @@ public class DbRuntimeSession implements Session, RuntimeSession {
     this.dbSqlSession = CommandContext.getCurrentSession(DbSqlSession.class);
   }
 
-  public void deleteProcessInstance(String processInstanceId) {
-    findProcessInstanceById(processInstanceId).delete();
+  public void endProcessInstance(String processInstanceId, String nonCompletionReason) {
+    findProcessInstanceById(processInstanceId).end();
   }
 
   public ProcessInstanceEntity findProcessInstanceById(String processInstanceId) {

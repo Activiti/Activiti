@@ -98,7 +98,7 @@ public class BpmnActivityBehavior {
           log.fine("No outgoing sequence flow found for " + activityContext.getActivity().getId() 
                   + ". Ending execution.");
         }
-        activityContext.end();
+        activityContext.endActivityInstance();
         
       }
   }

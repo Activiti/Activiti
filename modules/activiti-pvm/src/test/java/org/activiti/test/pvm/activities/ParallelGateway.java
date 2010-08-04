@@ -12,39 +12,37 @@
  */
 package org.activiti.test.pvm.activities;
 
-import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 import org.activiti.pvm.activity.ActivityBehavior;
 import org.activiti.pvm.activity.ActivityContext;
+import org.activiti.pvm.process.PvmTransition;
 
 /**
  * @author Tom Baeyens
  */
 public class ParallelGateway implements ActivityBehavior {
   
-  private static Logger log = Logger.getLogger(ParallelGateway.class.getName());
+  public void start(ActivityContext activityContext) {
+    int incomingTransitionsSize = activityContext.getActivity().getIncomingTransitions().size();
+    if (incomingTransitionsSize==1) {
+      activate(activityContext);
+      
+    } else { //incomingTransitionsSize > 1
+      
+      Integer joinCount = (Integer) activityContext.getSystemVariable("joinCount");
+      if (joinCount==null) {
+        activityContext.setSystemVariable("joinCount", new Integer(1));
+      } else {
+        joinCount = joinCount + 1;
+        if (joinCount==incomingTransitionsSize) {
+          activate(activityContext);
+        }
+      }
+    }
+  }
 
-  public void start(ActivityContext activityExecutionContext) {
-//    Activity activity = execution.getActivity();
-//
-//    List<Transition> outgoingTransitions = execution.getOutgoingTransitions();
-//    
-//    ConcurrencyController concurrencyController = new ConcurrencyController(execution);
-//    concurrencyController.inactivate();
-//    
-//    List<ActivityExecution> joinedExecutions = concurrencyController.findInactiveConcurrentExecutions(activity);
-//    
-//    int nbrOfExecutionsToJoin = execution.getIncomingTransitions().size();
-//    int nbrOfExecutionsJoined = joinedExecutions.size();
-//    
-//    if (nbrOfExecutionsJoined==nbrOfExecutionsToJoin) {
-//      log.fine("parallel gateway '"+activity.getId()+"' activates: "+nbrOfExecutionsJoined+" of "+nbrOfExecutionsToJoin+" joined");
-//      concurrencyController.takeAll(outgoingTransitions, joinedExecutions);
-//      
-//    } else if (log.isLoggable(Level.FINE)){
-//      log.fine("parallel gateway '"+activity.getId()+"' does not activate: "+nbrOfExecutionsJoined+" of "+nbrOfExecutionsToJoin+" joined");
-//    }
+  protected void activate(ActivityContext activityContext) {
+    for (PvmTransition transition: activityContext.getActivity().getOutgoingTransitions()) {
+      activityContext.take(transition);
+    }
   }
 }

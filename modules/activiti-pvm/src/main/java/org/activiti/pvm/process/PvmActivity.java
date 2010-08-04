@@ -13,14 +13,17 @@
 
 package org.activiti.pvm.process;
 
+import java.util.List;
+
 
 /**
  * @author Tom Baeyens
  */
-public interface PvmActivity {
+public interface PvmActivity extends PvmScope {
 
-  public String getId();
-  
-  Object getProperty(String name);
+  PvmScope getParent();
 
+  List<? extends PvmTransition> getIncomingTransitions();
+
+  List<? extends PvmTransition> getOutgoingTransitions();
 }

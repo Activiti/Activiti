@@ -19,10 +19,10 @@ import org.activiti.pvm.runtime.PvmProcessInstance;
 /**
  * @author Tom Baeyens
  */
-public interface PvmProcessDefinition {
+public interface PvmProcessDefinition extends PvmScope {
 
   PvmProcessInstance createProcessInstance();
 
-  Object getProperty(String name);
+  PvmActivity getInitial();
 
 }

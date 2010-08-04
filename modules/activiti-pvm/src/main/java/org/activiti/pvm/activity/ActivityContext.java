@@ -13,39 +13,40 @@
 
 package org.activiti.pvm.activity;
 
-import java.util.List;
 import java.util.Map;
 
 import org.activiti.pvm.event.EventContext;
 import org.activiti.pvm.process.PvmActivity;
+import org.activiti.pvm.process.PvmProcessDefinition;
 import org.activiti.pvm.process.PvmTransition;
-import org.activiti.pvm.runtime.PvmActivityInstance;
+import org.activiti.pvm.runtime.PvmProcessInstance;
 
 
 /**
  * @author Tom Baeyens
  */
 public interface ActivityContext extends EventContext {
+  
+  // runtime structure methods
+  DelegateActivityInstance getActivityInstance();
 
+  // execution operations
   void take(PvmTransition transition);
+  void executeActivity(PvmActivity startActivity);
+  void endActivityInstance();
+  void endProcessInstance();
+  void keepAlive();
+  PvmProcessInstance createSubProcessInstance(PvmProcessDefinition processDefinition);
 
-  void end();
-
-  List<PvmTransition> getOutgoingTransitions();
-
-  PvmTransition getOutgoingTransition(String signalName);
-
-  List<PvmTransition> getIncomingTransitions();
-
-  List<PvmActivity> getActivities();
-  
+  // user variables
   void setVariable(String variableName, Object value);
-  
   Object getVariable(String variableName);
-
   Map<String, Object> getVariables();
 
-  PvmActivity getActivity();
+  // scoped activity variables
+  Object getSystemVariable(String variableName);
+  void setSystemVariable(String variableName, Object value);
 
-  PvmActivityInstance getActivityInstance();
+  // activity and whole process definition model
+  PvmActivity getActivity();
 }

@@ -30,6 +30,7 @@ import org.activiti.pvm.process.PvmTransition;
  */
 public class ActivityImpl extends ScopeImpl implements PvmActivity {
 
+  private static final long serialVersionUID = 1L;
   protected List<TransitionImpl> outgoingTransitions = new ArrayList<TransitionImpl>();
   protected Map<String, TransitionImpl> namedOutgoingTransitions = new HashMap<String, TransitionImpl>();
   protected List<TransitionImpl> incomingTransitions = new ArrayList<TransitionImpl>();

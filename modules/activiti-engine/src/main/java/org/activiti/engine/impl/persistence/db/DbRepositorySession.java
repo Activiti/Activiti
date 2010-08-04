@@ -96,7 +96,7 @@ public class DbRepositorySession implements Session, RepositorySession {
         for (ProcessInstance processInstance: processInstances) {
           commandContext
             .getRuntimeSession()
-            .deleteProcessInstance(processInstance.getId());
+            .endProcessInstance(processInstance.getId());
         }
       }
     }

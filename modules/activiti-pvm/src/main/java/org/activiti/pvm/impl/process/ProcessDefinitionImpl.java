@@ -23,6 +23,8 @@ import org.activiti.pvm.process.PvmProcessDefinition;
  */
 public class ProcessDefinitionImpl extends ScopeImpl implements PvmProcessDefinition {
   
+  private static final long serialVersionUID = 1L;
+  
   protected ActivityImpl initial;
 
   public ProcessDefinitionImpl(String id) {
@@ -34,6 +36,8 @@ public class ProcessDefinitionImpl extends ScopeImpl implements PvmProcessDefini
     return new ProcessInstanceImpl(this);
   }
 
+  // getters and setters //////////////////////////////////////////////////////
+  
   public ActivityImpl getInitial() {
     return initial;
   }

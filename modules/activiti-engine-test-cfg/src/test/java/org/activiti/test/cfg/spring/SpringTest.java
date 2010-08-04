@@ -84,7 +84,7 @@ public class SpringTest {
     List<Task> tasks = processEngine.getTaskService().findAssignedTasks("kermit");
     assertEquals(before + 1, tasks.size());
 
-    processEngine.getRuntimeService().deleteProcessInstance(processInstance.getId());
+    processEngine.getRuntimeService().endProcessInstance(processInstance.getId());
     
   }
 
@@ -95,7 +95,7 @@ public class SpringTest {
             CollectionUtil.singletonMap("input", "Activiti BPM Engine"));
     ActivityInstance activityInstance = runtimeService.findActivityInstanceByProcessInstanceIdAndActivityId(pi.getId(), "waitState");
     assertEquals("ACTIVITI BPM ENGINE", runtimeService.getVariable(activityInstance.getId(), "input"));
-    processEngine.getRuntimeService().deleteProcessInstance(activityInstance.getId());
+    processEngine.getRuntimeService().endProcessInstance(activityInstance.getId());
   }
 
   @Test
