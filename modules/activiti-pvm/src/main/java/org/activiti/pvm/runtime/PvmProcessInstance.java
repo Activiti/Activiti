@@ -19,12 +19,14 @@ import java.util.List;
 /**
  * @author Tom Baeyens
  */
-public interface PvmProcessInstance extends PvmScopeInstance {
+public interface PvmProcessInstance extends PvmExecution {
 
   void start();
 
-  PvmActivityInstance findActivityInstance(String activityId);
+  PvmExecution findExecution(String activityId);
 
-  List<String> findActivityIds();
+  List<String> findActiveActivityIds();
+  
+  boolean isEnded();
 
 }

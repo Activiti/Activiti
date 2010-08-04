@@ -10,17 +10,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.activiti.pvm.impl.runtime;
 
-package org.activiti.pvm.activity;
-
-import java.io.Serializable;
-import java.util.Set;
 
 
 /**
  * @author Tom Baeyens
  */
-public interface DelegateActivityInstance extends Serializable {
+public interface ExeOp {
+  
+  ExeOp EXECUTE_CURRENT_ACTIVITY = new ExeOpExecuteCurrentActivity();
+  ExeOp TRANSITION_NOTIFY_LISTENER_END = new ExeOpTransitionNotifyListenerEnd();
+  ExeOp TRANSITION_DESTROY_SCOPE = new ExeOpTransitionDestroyScope();
+  ExeOp TRANSITION_NOTIFY_LISTENER_TAKE = new ExeOpTransitionNotifyListenerTake();
+  ExeOp TRANSITION_CREATE_SCOPE = new ExeOpTransitionCreateScope();
+  ExeOp TRANSITION_NOTIFY_LISTENER_START = new ExeOpTransitionNotifyListenerStart();
+  
+  void execute(ExecutionImpl execution);
 
-  Set<? extends DelegateActivityInstance> getActivityInstances();
+  boolean isAsync();
 }

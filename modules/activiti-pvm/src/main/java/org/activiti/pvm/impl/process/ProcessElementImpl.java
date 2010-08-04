@@ -34,7 +34,6 @@ public class ProcessElementImpl implements PvmProcessElement {
   
   protected String id;
   protected ProcessDefinitionImpl processDefinition;
-  protected Map<String, List<EventListener>> eventListeners;
   protected Map<String, Object> properties;
   
   public ProcessElementImpl(String id, ProcessDefinitionImpl processDefinition) {
@@ -42,18 +41,6 @@ public class ProcessElementImpl implements PvmProcessElement {
     this.processDefinition = processDefinition;
   }
 
-  public void addEventListener(String eventName, EventListener eventListener) {
-    if (eventListeners==null) {
-      eventListeners = new HashMap<String, List<EventListener>>();
-    }
-    List<EventListener> listeners = eventListeners.get(eventName);
-    if (listeners==null) {
-      listeners = new ArrayList<EventListener>();
-      eventListeners.put(eventName, listeners);
-    }
-    listeners.add(eventListener);
-  }
-  
   public void setProperty(String name, Object value) {
     if (properties==null) {
       properties = new HashMap<String, Object>();
@@ -74,14 +61,6 @@ public class ProcessElementImpl implements PvmProcessElement {
       return Collections.EMPTY_MAP;
     }
     return properties;
-  }
-  
-  @SuppressWarnings("unchecked")
-  public Map<String, List<EventListener>> getEventListeners() {
-    if (eventListeners==null) {
-      return Collections.EMPTY_MAP;
-    }
-    return eventListeners;
   }
   
   // getters and setters //////////////////////////////////////////////////////

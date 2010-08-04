@@ -10,9 +10,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.activiti.pvm.activity;
-
 
 
 /**
@@ -20,5 +18,5 @@ package org.activiti.pvm.activity;
  */
 public interface ActivityBehavior {
 
-  void start(ActivityContext activityContext) throws Exception;
+  void execute(ActivityExecution execution) throws Exception;
 }

@@ -16,7 +16,6 @@ import java.io.Serializable;
 
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.el.ActivitiValueExpression;
-import org.activiti.pvm.activity.ActivityContext;
 import org.activiti.pvm.runtime.PvmScopeInstance;
 
 

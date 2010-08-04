@@ -14,50 +14,48 @@
 package org.activiti.test.pvm.activities;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
-import org.activiti.pvm.activity.ActivityContext;
-import org.activiti.pvm.activity.CompositeActivityBehavior;
-import org.activiti.pvm.activity.SignallableActivityBehaviour;
+import org.activiti.pvm.activity.ActivityBehavior;
+import org.activiti.pvm.activity.ActivityExecution;
 import org.activiti.pvm.process.PvmActivity;
-import org.activiti.pvm.process.PvmTransition;
 
 
 /**
  * @author Tom Baeyens
  */
-public class EmbeddedSubProcess implements CompositeActivityBehavior, SignallableActivityBehaviour {
+public class EmbeddedSubProcess implements ActivityBehavior {
 
-  public void start(ActivityContext activityContext) throws Exception {
+  public void execute(ActivityExecution execution) throws Exception {
     List<PvmActivity> startActivities = new ArrayList<PvmActivity>();
-    for (PvmActivity activity: activityContext.getActivity().getActivities()) {
+    for (PvmActivity activity: execution.getActivity().getActivities()) {
       if (activity.getIncomingTransitions().isEmpty()) {
         startActivities.add(activity);
       }
     }
     
     for (PvmActivity startActivity: startActivities) {
-      activityContext.executeActivity(startActivity);
-    }
-  }
-
-  public void activityInstanceEnded(ActivityContext activityContext) throws Exception {
-    if (activityContext.getActivityInstance().getActivityInstances().isEmpty()) {
-      for (PvmTransition transition: activityContext.getActivity().getOutgoingTransitions()) {
-        activityContext.take(transition);
-      }
+      execution.executeActivity(startActivity);
     }
   }
 
   // used by timers
-  public void signal(ActivityContext activityContext, String signalName, Object signalData) throws Exception {
-    PvmActivity timerActivity = activityContext.getActivity().findActivity(signalName);
+  @SuppressWarnings("unchecked")
+  public void timerFires(ActivityExecution execution, String signalName, Object signalData) throws Exception {
+    PvmActivity timerActivity = execution.getActivity();
     boolean isInterrupting = (Boolean) timerActivity.getProperty("isInterrupting");
-    if (!isInterrupting) {
-      activityContext.keepAlive();
+    List<ActivityExecution> recyclableExecutions = null;
+    if (isInterrupting) {
+      recyclableExecutions = removeAllExecutions(execution);
+    } else {
+      recyclableExecutions = Collections.EMPTY_LIST;
     }
-    for (PvmTransition transition: timerActivity.getOutgoingTransitions()) {
-      activityContext.take(transition);
-    }
+    execution.takeAll(timerActivity.getOutgoingTransitions(), recyclableExecutions);
   }
+
+  private List<ActivityExecution> removeAllExecutions(ActivityExecution execution) {
+    return null;
+  }
+
 }

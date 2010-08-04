@@ -13,8 +13,9 @@
 
 package org.activiti.pvm.impl.process;
 
-import org.activiti.pvm.impl.runtime.ProcessInstanceImpl;
+import org.activiti.pvm.impl.runtime.ExecutionImpl;
 import org.activiti.pvm.process.PvmProcessDefinition;
+import org.activiti.pvm.runtime.PvmProcessInstance;
 
 
 
@@ -32,8 +33,8 @@ public class ProcessDefinitionImpl extends ScopeImpl implements PvmProcessDefini
     processDefinition = this;
   }
 
-  public ProcessInstanceImpl createProcessInstance() {
-    return new ProcessInstanceImpl(this);
+  public PvmProcessInstance createProcessInstance() {
+    return new ExecutionImpl(this);
   }
 
   // getters and setters //////////////////////////////////////////////////////

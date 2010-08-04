@@ -17,7 +17,7 @@ import java.util.List;
 
 import org.activiti.pvm.ProcessDefinitionBuilder;
 import org.activiti.pvm.process.PvmProcessDefinition;
-import org.activiti.pvm.runtime.PvmActivityInstance;
+import org.activiti.pvm.runtime.PvmExecution;
 import org.activiti.pvm.runtime.PvmProcessInstance;
 import org.activiti.test.pvm.activities.Automatic;
 import org.activiti.test.pvm.activities.End;
@@ -100,16 +100,16 @@ public class PvmConcurrencyTest extends PvmTestCase {
     PvmProcessInstance processInstance = processDefinition.createProcessInstance(); 
     processInstance.start();
     
-    PvmActivityInstance activityInstanceC1 = processInstance.findActivityInstance("c1");
+    PvmExecution activityInstanceC1 = processInstance.findExecution("c1");
     assertNotNull(activityInstanceC1);
     
-    PvmActivityInstance activityInstanceC2 = processInstance.findActivityInstance("c2");
+    PvmExecution activityInstanceC2 = processInstance.findExecution("c2");
     assertNotNull(activityInstanceC2);
     
     activityInstanceC1.signal(null, null);
     activityInstanceC2.signal(null, null);
     
-    List<String> activityNames = processInstance.findActivityIds();
+    List<String> activityNames = processInstance.findActiveActivityIds();
     List<String> expectedActivityNames = new ArrayList<String>();
     expectedActivityNames.add("end");
     
@@ -162,7 +162,7 @@ public class PvmConcurrencyTest extends PvmTestCase {
     PvmProcessInstance processInstance = processDefinition.createProcessInstance(); 
     processInstance.start();
     
-    assertNotNull(processInstance.findActivityInstance("end"));
+    assertNotNull(processInstance.findExecution("end"));
   }
 
   @Test
@@ -212,7 +212,7 @@ public class PvmConcurrencyTest extends PvmTestCase {
     PvmProcessInstance processInstance = processDefinition.createProcessInstance(); 
     processInstance.start();
     
-    assertNotNull(processInstance.findActivityInstance("end"));
+    assertNotNull(processInstance.findExecution("end"));
   }
 
   @Test
@@ -271,7 +271,7 @@ public class PvmConcurrencyTest extends PvmTestCase {
     PvmProcessInstance processInstance = processDefinition.createProcessInstance(); 
     processInstance.start();
     
-    assertNotNull(processInstance.findActivityInstance("end"));
+    assertNotNull(processInstance.findExecution("end"));
   }
 
 }

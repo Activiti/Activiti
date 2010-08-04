@@ -13,8 +13,10 @@
 
 package org.activiti.test.pvm.activities;
 
-import org.activiti.pvm.activity.ActivityContext;
-import org.activiti.pvm.activity.SubProcessActivityBehavior;
+import java.util.List;
+
+import org.activiti.pvm.activity.ActivityBehavior;
+import org.activiti.pvm.activity.ActivityExecution;
 import org.activiti.pvm.process.PvmProcessDefinition;
 import org.activiti.pvm.process.PvmTransition;
 import org.activiti.pvm.runtime.PvmProcessInstance;
@@ -23,28 +25,26 @@ import org.activiti.pvm.runtime.PvmProcessInstance;
 /**
  * @author Tom Baeyens
  */
-public class ReusableSubProcess implements SubProcessActivityBehavior {
+public class ReusableSubProcess implements ActivityBehavior {
 
-  public void start(ActivityContext activityContext) throws Exception {
+  public void execute(ActivityExecution execution) throws Exception {
     PvmProcessDefinition processDefinition = null;
-    PvmProcessInstance subProcessInstance = activityContext.createSubProcessInstance(processDefinition);
+    PvmProcessInstance subProcessInstance = execution.createSubProcessInstance(processDefinition);
     
-    // inject information from the super process into the subprocess
-//    for (variableDeclarations) {
-//      subProcessInstance.setVariable(null, null);
-//    }
+    // TODO set variables
     
     subProcessInstance.start();
   }
 
-  public void subProcessEnded(ActivityContext activityContext) throws Exception {
+  public void subProcessEnded(ActivityExecution execution) throws Exception {
     // extract information from the subprocess and inject it into the superprocess
 //    for (variableDeclarations) {
 //      subProcessInstance.setVariable(null, null);
 //    }
     
     // take default transition
-    PvmTransition transition = activityContext.getActivity().getOutgoingTransitions().get(0);
-    activityContext.take(transition);
+    List<PvmTransition> outgoingTransitions = execution.getActivity().getOutgoingTransitions();
+    execution.takeAll(outgoingTransitions, null);
   }
+
 }

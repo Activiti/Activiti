@@ -28,7 +28,7 @@ import org.activiti.engine.impl.persistence.PersistentObject;
 import org.activiti.engine.impl.persistence.runtime.ActivityInstanceEntity;
 import org.activiti.engine.impl.persistence.runtime.ProcessInstanceEntity;
 import org.activiti.engine.impl.util.ClockUtil;
-import org.activiti.pvm.runtime.PvmActivityInstance;
+import org.activiti.pvm.runtime.PvmExecution;
 
 /**
  * @author Tom Baeyens
@@ -206,7 +206,7 @@ public class TaskEntity implements Task, Serializable, PersistentObject {
     return activityInstance;
   }
   
-  public void setActivityInstance(PvmActivityInstance activityInstance) {
+  public void setActivityInstance(PvmExecution activityInstance) {
     if (activityInstance!=null) {
       this.activityInstance = (ActivityInstanceEntity) activityInstance;
       this.activityInstanceId = this.activityInstance.getId();

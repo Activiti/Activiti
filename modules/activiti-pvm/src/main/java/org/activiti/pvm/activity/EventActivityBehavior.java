@@ -10,24 +10,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-package org.activiti.pvm.event;
-
-import java.util.Map;
-
-import org.activiti.pvm.runtime.PvmScopeInstance;
+package org.activiti.pvm.activity;
 
 
 /**
  * @author Tom Baeyens
  */
-public interface EventContext {
+public interface EventActivityBehavior extends ActivityBehavior {
 
-  void setVariable(String variableName, Object value);
+  void signal(ActivityExecution execution, String signalEvent, Object signalData) throws Exception;
   
-  Object getVariable(String variableName);
-
-  Map<String, Object> getVariables();
-
-  PvmScopeInstance getScopeInstance();
 }

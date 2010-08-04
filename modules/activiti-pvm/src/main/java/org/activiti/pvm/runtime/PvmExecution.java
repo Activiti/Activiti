@@ -11,15 +11,25 @@
  * limitations under the License.
  */
 
-package org.activiti.pvm.activity;
+package org.activiti.pvm.runtime;
 
+import java.util.Map;
+
+import org.activiti.pvm.process.PvmActivity;
 
 
 /**
  * @author Tom Baeyens
  */
-public interface CompositeActivityBehavior extends ActivityBehavior {
+public interface PvmExecution {
 
-  void activityInstanceEnded(ActivityContext activityContext) throws Exception;
+  void signal(String signalName, Object signalData);
+
+  PvmActivity getActivity();
+  
+  void setVariable(String variableName, Object value);
+  Object getVariable(String variableName);
+  Map<String, Object> getVariables();
+
 
 }

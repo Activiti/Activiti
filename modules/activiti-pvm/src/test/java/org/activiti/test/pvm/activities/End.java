@@ -14,7 +14,7 @@
 package org.activiti.test.pvm.activities;
 
 import org.activiti.pvm.activity.ActivityBehavior;
-import org.activiti.pvm.activity.ActivityContext;
+import org.activiti.pvm.activity.ActivityExecution;
 
 
 /**
@@ -22,8 +22,8 @@ import org.activiti.pvm.activity.ActivityContext;
  */
 public class End implements ActivityBehavior {
 
-  public void start(ActivityContext activityContext) throws Exception {
-    activityContext.endActivityInstance();
+  public void execute(ActivityExecution execution) throws Exception {
+    execution.end();
   }
 
 }

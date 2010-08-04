@@ -11,21 +11,30 @@
  * limitations under the License.
  */
 
-package org.activiti.test.pvm.activities;
+package org.activiti.pvm.impl.runtime;
 
-import org.activiti.pvm.activity.ActivityBehavior;
 import org.activiti.pvm.activity.ActivityExecution;
 import org.activiti.pvm.process.PvmTransition;
 
-
 /**
+ * 
  * @author Tom Baeyens
  */
-public class Automatic implements ActivityBehavior {
+public class OutgoingExecution {
+  
+  protected ActivityExecution outgoingExecution;
+  protected PvmTransition outgoingTransition;
+  protected boolean isNew;
 
-  public void execute(ActivityExecution execution) throws Exception {
-    PvmTransition transition = execution.getActivity().getOutgoingTransitions().get(0);
-    execution.take(transition);
+  public OutgoingExecution(ActivityExecution outgoingExecution, PvmTransition outgoingTransition, boolean isNew) {
+    this.outgoingExecution = outgoingExecution;
+    this.outgoingTransition = outgoingTransition;
+    this.isNew = isNew;
   }
-
+  
+  public void take() {
+    outgoingExecution.setActive(true);
+    outgoingExecution.setConcurrent(true);
+    outgoingExecution.take(outgoingTransition);
+  }
 }

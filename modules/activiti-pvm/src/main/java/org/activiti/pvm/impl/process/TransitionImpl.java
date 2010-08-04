@@ -13,6 +13,11 @@
 
 package org.activiti.pvm.impl.process;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+import org.activiti.pvm.event.EventListener;
 import org.activiti.pvm.process.PvmTransition;
 
 
@@ -27,6 +32,7 @@ public class TransitionImpl extends ProcessElementImpl implements PvmTransition 
   
   protected ActivityImpl source;
   protected ActivityImpl destination;
+  protected List<EventListener> eventListeners;
 
   public TransitionImpl(String id, ProcessDefinitionImpl processDefinition) {
     super(id, processDefinition);
@@ -41,6 +47,27 @@ public class TransitionImpl extends ProcessElementImpl implements PvmTransition 
     destination.getIncomingTransitions().add(this);
   }
   
+  public void addEventListener(EventListener eventListener) {
+    if (eventListeners==null) {
+      eventListeners = new ArrayList<EventListener>();
+    }
+    eventListeners.add(eventListener);
+  }
+
+  public String toString() {
+    return "("+source.getId()+")--"+(id!=null?id+"-->(":">(")+destination.getId()+")";
+  }
+
+  @SuppressWarnings("unchecked")
+  public List<EventListener> getEventListeners() {
+    if (eventListeners==null) {
+      return Collections.EMPTY_LIST;
+    }
+    return eventListeners;
+  }
+
+  // getters and setters //////////////////////////////////////////////////////
+
   protected void setSource(ActivityImpl source) {
     this.source = source;
   }
@@ -49,7 +76,7 @@ public class TransitionImpl extends ProcessElementImpl implements PvmTransition 
     return destination;
   }
   
-  public String toString() {
-    return "("+source.getId()+")--"+(id!=null?id+"-->(":">(")+destination.getId()+")";
+  public void setEventListeners(List<EventListener> eventListeners) {
+    this.eventListeners = eventListeners;
   }
 }

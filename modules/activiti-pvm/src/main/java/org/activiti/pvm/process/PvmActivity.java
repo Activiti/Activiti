@@ -23,7 +23,9 @@ public interface PvmActivity extends PvmScope {
 
   PvmScope getParent();
 
-  List<? extends PvmTransition> getIncomingTransitions();
+  List<PvmTransition> getIncomingTransitions();
 
-  List<? extends PvmTransition> getOutgoingTransitions();
+  List<PvmTransition> getOutgoingTransitions();
+  
+  PvmTransition findOutgoingTransition(String transitionId);
 }

@@ -20,9 +20,9 @@ import java.util.Map;
 
 import org.activiti.pvm.PvmException;
 import org.activiti.pvm.activity.ActivityBehavior;
+import org.activiti.pvm.event.EventListener;
 import org.activiti.pvm.process.PvmActivity;
 import org.activiti.pvm.process.PvmTransition;
-
 
 
 /**
@@ -36,6 +36,7 @@ public class ActivityImpl extends ScopeImpl implements PvmActivity {
   protected List<TransitionImpl> incomingTransitions = new ArrayList<TransitionImpl>();
   protected ActivityBehavior activityBehavior;
   protected ScopeImpl parent;
+  protected boolean isScope;
   
   public ActivityImpl(String id, ProcessDefinitionImpl processDefinition) {
     super(id, processDefinition);
@@ -60,7 +61,7 @@ public class ActivityImpl extends ScopeImpl implements PvmActivity {
     return transition;
   }
   
-  public PvmTransition getOutgoingTransition(String transitionId) {
+  public TransitionImpl findOutgoingTransition(String transitionId) {
     return namedOutgoingTransitions.get(transitionId);
   }
   
@@ -84,8 +85,9 @@ public class ActivityImpl extends ScopeImpl implements PvmActivity {
 
   // getters and setters //////////////////////////////////////////////////////
 
-  public List<TransitionImpl> getOutgoingTransitions() {
-    return outgoingTransitions;
+  @SuppressWarnings("unchecked")
+  public List<PvmTransition> getOutgoingTransitions() {
+    return (List) outgoingTransitions;
   }
 
   public ActivityBehavior getActivityBehavior() {
@@ -100,7 +102,16 @@ public class ActivityImpl extends ScopeImpl implements PvmActivity {
     return parent;
   }
 
-  public List<TransitionImpl> getIncomingTransitions() {
-    return incomingTransitions;
+  @SuppressWarnings("unchecked")
+  public List<PvmTransition> getIncomingTransitions() {
+    return (List) incomingTransitions;
+  }
+
+  public boolean isScope() {
+    return isScope;
+  }
+
+  public void setScope(boolean isScope) {
+    this.isScope = isScope;
   }
 }

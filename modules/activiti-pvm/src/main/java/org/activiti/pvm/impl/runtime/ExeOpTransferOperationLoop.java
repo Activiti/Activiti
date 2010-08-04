@@ -10,15 +10,31 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-package org.activiti.pvm.activity;
-
+package org.activiti.pvm.impl.runtime;
 
 
 /**
  * @author Tom Baeyens
  */
-public interface SignallableActivityBehaviour extends ActivityBehavior {
+public class ExeOpTransferOperationLoop implements ExeOp {
 
-  void signal(ActivityContext activityContext, String signalName, Object signalData) throws Exception;
+  ExecutionImpl otherExecution;
+  ExeOp nextOperation;
+  
+  public ExeOpTransferOperationLoop(ExecutionImpl otherExecution, ExeOp nextOperation) {
+    this.otherExecution = otherExecution;
+    this.nextOperation = nextOperation;
+  }
+
+  public void execute(ExecutionImpl execution) {
+    otherExecution.performOperation(nextOperation);
+  }
+
+  public boolean isAsync() {
+    return false;
+  }
+  
+  public String toString() {
+    return "TransferOperation["+nextOperation+"|"+otherExecution+"]";
+  }
 }

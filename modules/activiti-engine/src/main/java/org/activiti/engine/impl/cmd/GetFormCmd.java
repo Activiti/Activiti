@@ -23,7 +23,7 @@ import org.activiti.engine.impl.persistence.repository.ProcessDefinitionEntity;
 import org.activiti.engine.impl.persistence.repository.ResourceEntity;
 import org.activiti.engine.impl.persistence.task.TaskEntity;
 import org.activiti.engine.impl.scripting.ScriptingEngines;
-import org.activiti.pvm.runtime.PvmActivityInstance;
+import org.activiti.pvm.runtime.PvmExecution;
 
 
 /**
@@ -46,7 +46,7 @@ public class GetFormCmd implements Command<Object> {
     RepositorySession repositorySession = commandContext.getRepositorySession();
     ProcessDefinitionEntity processDefinition = null;
     TaskEntity task = null;
-    PvmActivityInstance activityInstance = null;
+    PvmExecution activityInstance = null;
     FormReference formReference = null;
     
     if (taskId!=null) {

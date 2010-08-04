@@ -14,11 +14,13 @@
 package org.activiti.pvm.impl.process;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.activiti.pvm.PvmException;
+import org.activiti.pvm.event.EventListener;
 import org.activiti.pvm.process.PvmScope;
 
 
@@ -31,6 +33,7 @@ public abstract class ScopeImpl extends ProcessElementImpl implements PvmScope {
   
   protected List<ActivityImpl> activities = new ArrayList<ActivityImpl>();
   protected Map<String, ActivityImpl> namedActivities = new HashMap<String, ActivityImpl>();
+  protected Map<String, List<EventListener>> eventListeners;
 
   public ScopeImpl(String id, ProcessDefinitionImpl processDefinition) {
     super(id, processDefinition);
@@ -67,6 +70,48 @@ public abstract class ScopeImpl extends ProcessElementImpl implements PvmScope {
     return  activity;
   }
 
+  public boolean contains(ActivityImpl destination) {
+    if (namedActivities.containsKey(destination.getId())) {
+      return true;
+    }
+    for (ActivityImpl nestedActivity : activities) {
+      if (nestedActivity.contains(destination)) {
+        return true;
+      }
+    }
+    return false;
+  }
+  
+  // event listeners //////////////////////////////////////////////////////////
+  
+  public List<EventListener> getEventListeners(String eventName) {
+    List<EventListener> eventListenerList = getEventListeners().get(eventName);
+    if (eventListenerList!=null) {
+      return eventListenerList;
+    }
+    return Collections.EMPTY_LIST;
+  }
+  
+  public void addEventListener(String eventName, EventListener eventListener) {
+    if (eventListeners==null) {
+      eventListeners = new HashMap<String, List<EventListener>>();
+    }
+    List<EventListener> listeners = eventListeners.get(eventName);
+    if (listeners==null) {
+      listeners = new ArrayList<EventListener>();
+      eventListeners.put(eventName, listeners);
+    }
+    listeners.add(eventListener);
+  }
+  
+  @SuppressWarnings("unchecked")
+  public Map<String, List<EventListener>> getEventListeners() {
+    if (eventListeners==null) {
+      return Collections.EMPTY_MAP;
+    }
+    return eventListeners;
+  }
+  
   // getters and setters //////////////////////////////////////////////////////
   
   public List<ActivityImpl> getActivities() {

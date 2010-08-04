@@ -17,7 +17,7 @@ import java.util.Map;
 
 import org.activiti.pvm.ProcessDefinitionBuilder;
 import org.activiti.pvm.process.PvmProcessDefinition;
-import org.activiti.pvm.runtime.PvmActivityInstance;
+import org.activiti.pvm.runtime.PvmExecution;
 import org.activiti.pvm.runtime.PvmProcessInstance;
 import org.activiti.test.pvm.activities.WaitState;
 import org.junit.Test;
@@ -45,7 +45,7 @@ public class PvmVariablesTest extends PvmTestCase {
     assertEquals(500L, processInstance.getVariable("amount"));
     assertEquals("hello world", processInstance.getVariable("msg"));
 
-    PvmActivityInstance activityInstance = processInstance.findActivityInstance("a");
+    PvmExecution activityInstance = processInstance.findExecution("a");
     assertEquals(500L, activityInstance.getVariable("amount"));
     assertEquals("hello world", activityInstance.getVariable("msg"));
     

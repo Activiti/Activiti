@@ -13,21 +13,21 @@
 
 package org.activiti.test.pvm.activities;
 
-import org.activiti.pvm.activity.ActivityContext;
-import org.activiti.pvm.activity.SignallableActivityBehaviour;
+import org.activiti.pvm.activity.ActivityExecution;
+import org.activiti.pvm.activity.EventActivityBehavior;
 import org.activiti.pvm.process.PvmTransition;
 
 
 /**
  * @author Tom Baeyens
  */
-public class WaitState implements SignallableActivityBehaviour {
+public class WaitState implements EventActivityBehavior {
 
-  public void start(ActivityContext activityExecutionContext) {
+  public void execute(ActivityExecution execution) throws Exception {
   }
-  
-  public void signal(ActivityContext activityExecutionContext, String signal, Object signalData) {
-    PvmTransition transition = activityExecutionContext.getActivity().getOutgoingTransitions().get(0);
-    activityExecutionContext.take(transition);
+
+  public void signal(ActivityExecution execution, String signalName, Object signalData) throws Exception {
+    PvmTransition transition = execution.getActivity().getOutgoingTransitions().get(0);
+    execution.take(transition);
   }
 }

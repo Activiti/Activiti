@@ -18,7 +18,7 @@ import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.cfg.TaskSession;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.task.TaskEntity;
-import org.activiti.pvm.runtime.PvmActivityInstance;
+import org.activiti.pvm.runtime.PvmExecution;
 
 
 /**
@@ -47,7 +47,7 @@ public class CompleteTaskCmd extends CmdVoid {
     }
     task.delete();
     
-    PvmActivityInstance activityInstance = task.getActivityInstance();
+    PvmExecution activityInstance = task.getActivityInstance();
     if (activityInstance != null) {
       activityInstance.signal(null, null);
     }

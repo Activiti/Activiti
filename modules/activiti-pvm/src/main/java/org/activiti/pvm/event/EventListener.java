@@ -10,9 +10,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.activiti.pvm.event;
-
 
 
 /**
@@ -20,5 +18,8 @@ package org.activiti.pvm.event;
  */
 public interface EventListener {
 
-  void event(EventContext executionContext);
+  String EVENTNAME_START = "start";
+  String EVENTNAME_END = "end";
+  
+  void notify(EventListenerExecution execution);
 }

@@ -3,7 +3,7 @@ import java.util.ArrayList;
 
 import org.activiti.pvm.ProcessDefinitionBuilder;
 import org.activiti.pvm.process.PvmProcessDefinition;
-import org.activiti.pvm.runtime.PvmActivityInstance;
+import org.activiti.pvm.runtime.PvmExecution;
 import org.activiti.pvm.runtime.PvmProcessInstance;
 import org.activiti.test.pvm.activities.Automatic;
 import org.activiti.test.pvm.activities.End;
@@ -51,12 +51,12 @@ public class PvmTest extends PvmTestCase {
     PvmProcessInstance processInstance = processDefinition.createProcessInstance();
     processInstance.start();
     
-    PvmActivityInstance activityInstance = processInstance.findActivityInstance("one");
+    PvmExecution activityInstance = processInstance.findExecution("one");
     assertNotNull(activityInstance);
     
     activityInstance.signal(null, null);
 
-    assertEquals(new ArrayList<String>(), processInstance.findActivityIds());
+    assertEquals(new ArrayList<String>(), processInstance.findActiveActivityIds());
     assertTrue(processInstance.isEnded());
   }
 }
