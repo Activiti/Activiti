@@ -98,12 +98,12 @@ public class DbRuntimeSession implements Session, RuntimeSession {
     dbSqlSession.delete(VariableInstanceEntity.class, variableInstanceId);
   }
 
-  public List<VariableInstanceEntity> findVariableInstancessByProcessInstanceId(String processInstanceId) {
+  public List<VariableInstanceEntity> findVariableInstancesByExecutionId(String processInstanceId) {
     return null;
   }
 
   @SuppressWarnings("unchecked")
-  public List<VariableInstanceEntity> findVariableInstancessByActivityInstanceId(String executionId) {
+  public List<VariableInstanceEntity> findVariableInstancesByExecutionId(String executionId) {
     return dbSqlSession.selectList("selectVariablesByExecutionId", executionId);
   }
 

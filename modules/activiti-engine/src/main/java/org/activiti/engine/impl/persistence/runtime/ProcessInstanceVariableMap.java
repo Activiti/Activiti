@@ -44,7 +44,7 @@ public class ProcessInstanceVariableMap extends VariableInstanceMap {
     return CommandContext
       .getCurrent()
       .getRuntimeSession()
-      .findVariableInstancessByProcessInstanceId(processInstance.getId());
+      .findVariableInstancesByExecutionId(processInstance.getId());
   }
 
 }

@@ -35,7 +35,7 @@ public class VariableInstanceEntity implements Serializable, PersistentObject {
   protected String name;
 
   protected String processInstanceId;
-  protected String activityInstanceId;
+  protected String executionId;
   protected String taskId;
 
   protected Long longValue;
@@ -68,12 +68,9 @@ public class VariableInstanceEntity implements Serializable, PersistentObject {
     return variableInstance;
   }
 
-  public void setProcessInstance(ProcessInstanceEntity processInstance) {
-    this.processInstanceId = processInstance.getId();
-  }
-  
-  public void setActivityInstance(ActivityInstanceEntity activityInstance) {
-    this.activityInstanceId = activityInstance.getId();
+  public void setExecution(ExecutionEntity execution) {
+    this.executionId = execution.getId();
+    this.processInstanceId = execution.getProcessInstanceId();
   }
 
   public void setTask(TaskEntity task) {
@@ -128,8 +125,8 @@ public class VariableInstanceEntity implements Serializable, PersistentObject {
   public void setProcessInstanceId(String processInstanceId) {
     this.processInstanceId = processInstanceId;
   }
-  public void setActivityInstanceId(String executionId) {
-    this.activityInstanceId = executionId;
+  public void setExecutionId(String executionId) {
+    this.executionId = executionId;
   }
   public void setTaskId(String taskId) {
     this.taskId = taskId;
@@ -174,8 +171,8 @@ public class VariableInstanceEntity implements Serializable, PersistentObject {
   public String getProcessInstanceId() {
     return processInstanceId;
   }
-  public String getActivityInstanceId() {
-    return activityInstanceId;
+  public String getExecutionId() {
+    return executionId;
   }
   public String getTaskId() {
     return taskId;

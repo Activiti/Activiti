@@ -27,7 +27,6 @@ import org.activiti.engine.impl.persistence.runtime.JobEntity;
 import org.activiti.engine.impl.persistence.runtime.ProcessInstanceEntity;
 import org.activiti.engine.impl.persistence.runtime.TimerEntity;
 import org.activiti.engine.impl.persistence.runtime.VariableInstanceEntity;
-org.activiti.engine.impl.persistence.runtime.VariableInstanceEntity;
 
 
 /**
@@ -47,8 +46,7 @@ public interface RuntimeSession {
   
   void insertVariableInstance(VariableInstanceEntity variableInstanceEntity);
   void deleteVariableInstance(String variableInstanceId);
-  List<VariableInstanceEntity> findVariableInstancessByActivityInstanceId(String activityInstanceId);
-  List<VariableInstanceEntity> findVariableInstancessByProcessInstanceId(String processInstanceId);
+  List<VariableInstanceEntity> findVariableInstancesByExecutionId(String executionId);
   List<VariableInstanceEntity> findVariablesByTaskId(String taskId);
 
   void insertByteArray(ByteArrayEntity byteArrayEntity);

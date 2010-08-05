@@ -35,7 +35,7 @@ public class UserTaskActivity extends TaskActivity {
 
   public void start(ActivityContext activityContext) throws Exception {
     TaskEntity task = TaskEntity.createAndInsert();
-    task.setActivityInstance(activityContext.getExecution());
+    task.setExecution(activityContext.getExecution());
 
     if (taskDefinition.getName() != null) {
       String name = evaluateExpression(taskDefinition.getName(), activityContext);

@@ -25,7 +25,6 @@ import java.util.Set;
 import org.activiti.engine.Task;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.PersistentObject;
-import org.activiti.engine.impl.persistence.runtime.ActivityInstanceEntity;
 import org.activiti.engine.impl.persistence.runtime.ExecutionEntity;
 import org.activiti.engine.impl.util.ClockUtil;
 import org.activiti.pvm.runtime.PvmExecution;
@@ -196,7 +195,7 @@ public class TaskEntity implements Task, Serializable, PersistentObject {
 	  return executionId;
 	}
   
-  public ActivityInstanceEntity getExecution() {
+  public ExecutionEntity getExecution() {
     if ( (execution==null) && (executionId!=null) ) {
       this.execution = CommandContext
         .getCurrent()
@@ -206,9 +205,9 @@ public class TaskEntity implements Task, Serializable, PersistentObject {
     return execution;
   }
   
-  public void setActivityInstance(PvmExecution activityInstance) {
-    if (activityInstance!=null) {
-      this.execution = (ActivityInstanceEntity) activityInstance;
+  public void setExecution(PvmExecution execution) {
+    if (execution!=null) {
+      this.execution = (ExecutionEntity) execution;
       this.executionId = this.execution.getId();
       this.processInstanceId = this.execution.getProcessInstanceId();
       this.processDefinitionId = this.execution.getProcessDefinitionId();

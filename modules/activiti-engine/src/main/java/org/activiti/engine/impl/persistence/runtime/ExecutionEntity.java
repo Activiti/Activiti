@@ -13,16 +13,21 @@
 
 package org.activiti.engine.impl.persistence.runtime;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
+import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.PersistentObject;
+import org.activiti.engine.impl.persistence.db.DbSqlSession;
+import org.activiti.engine.impl.persistence.repository.ProcessDefinitionEntity;
+import org.activiti.engine.impl.persistence.task.TaskEntity;
+import org.activiti.pvm.impl.process.ActivityImpl;
+import org.activiti.pvm.impl.process.ProcessDefinitionImpl;
 import org.activiti.pvm.impl.runtime.ExecutionImpl;
-import org.activiti.pvm.impl.runtime.TimerDeclarationImpl;
-import org.activiti.pvm.impl.runtime.TimerImpl;
-import org.activiti.pvm.process.PvmProcessDefinition;
-import org.activiti.pvm.process.PvmTransition;
-import org.activiti.pvm.runtime.PvmExecution;
-import org.activiti.pvm.runtime.PvmProcessInstance;
 
 
 /**
@@ -30,31 +35,312 @@ import org.activiti.pvm.runtime.PvmProcessInstance;
  */
 public class ExecutionEntity extends ExecutionImpl implements PersistentObject {
 
-  protected Object cachedElContext = null;
+  private static final long serialVersionUID = 1L;
 
-  public Object getCachedElContext() {
-    return cachedElContext;
+  protected String id = null;
+  protected int revision = 1;
+
+  /**
+   * persisted reference to the processDefinition.
+   * 
+   * @see #processDefinition
+   * @see #setProcessDefinition(ProcessDefinitionImpl)
+   * @see #getProcessDefinition()
+   */
+  protected String processDefinitionId;
+
+  /**
+   * persisted reference to the current position in the diagram within the
+   * {@link #processDefinition}.
+   * 
+   * @see #activity
+   * @see #setActivity(ActivityImpl)
+   * @see #getActivity()
+   */
+  protected String activityId;
+
+  /**
+   * persisted reference to the process instance.
+   * 
+   * @see #getProcessInstance()
+   */
+  protected String processInstanceId;
+
+  /**
+   * persisted reference to the parent of this execution.
+   * 
+   * @see #getParent()
+   * @see #setParent(ExecutionImpl)
+   */
+  protected String parentId;
+  
+  /**
+   * persisted reference to the super execution of this execution
+   * 
+   * @See {@link #getSuperExecution()}
+   * @see #setSuperExecution(ExecutionImpl)
+   */
+  protected String superExecutionId;
+  
+  protected boolean isNew = false;
+  protected boolean isExecutionsInitialized = false;
+
+  transient protected List<TaskEntity> tasks = null;
+
+  ExecutionEntity() {
   }
-  public void setCachedElContext(Object cachedElContext) {
-    this.cachedElContext = cachedElContext;
-  }
 
-  // timers ///////////////////////////////////////////////////////////////////
+  public ExecutionEntity(ProcessDefinitionEntity processDefinition) {
+    super(processDefinition);
+    this.isNew = true;
+    this.executions = new ArrayList<ExecutionImpl>();
+    this.isExecutionsInitialized = true;
+    // Do not initialize variable map (let it happen lazily)
 
-  public void createTimer(TimerDeclarationImpl timerDeclaration) {
-    TimerImpl timer = new TimerImpl();
-    timer.setExecution(this);
-    timer.setDuedate( timerDeclaration.getDuedate() );
-    timer.setJobHandlerType( timerDeclaration.getJobHandlerType() );
-    timer.setJobHandlerConfiguration( timerDeclaration.getJobHandlerConfiguration() );
-    timer.setExclusive(timerDeclaration.isExclusive());
-    timer.setRepeat(timerDeclaration.getRepeat());
-    timer.setRetries(timerDeclaration.getRetries());
-    
     CommandContext
       .getCurrent()
-      .getTimerSession()
-      .schedule(timer);
+      .getDbSqlSession()
+      .insert(this);
+
+    // reset the process instance in order to have the db-generated process instance id available
+    setProcessInstance(this);
   }
 
+  @Override
+  protected ExecutionImpl newExecution() {
+    ExecutionEntity newExecution = new ExecutionEntity();
+    newExecution.isNew = true;
+    newExecution.executions = new ArrayList<ExecutionImpl>();
+    newExecution.isExecutionsInitialized = true;
+    // Do not initialize variable map (let it happen lazily)
+
+    CommandContext
+      .getCurrent()
+      .getDbSqlSession()
+      .insert(newExecution);
+
+    return newExecution;
+  }
+    
+  // process definition ///////////////////////////////////////////////////////
+
+  @Override
+  protected void ensureProcessDefinitionInitialized() {
+    if ((processDefinition == null) && (processDefinitionId != null)) {
+      setProcessDefinition(CommandContext.getCurrent().getRepositorySession().findDeployedProcessDefinitionById(processDefinitionId));
+    }
+  }
+
+  @Override
+  public void setProcessDefinition(ProcessDefinitionImpl processDefinition) {
+    super.setProcessDefinition(processDefinition);
+    this.processDefinitionId = processDefinition.getId();
+  }
+
+  // process instance /////////////////////////////////////////////////////////
+
+  @Override
+  protected void ensureProcessInstanceInitialized() {
+    if ((processInstance == null) && (processInstanceId != null)) {
+      processInstance = CommandContext
+        .getCurrent()
+        .getDbSqlSession()
+        .findProcessInstanceById(processInstanceId);
+    }
+  }
+
+  @Override
+  public void setProcessInstance(ExecutionImpl processInstance) {
+    super.setProcessInstance(processInstance);
+    if (processInstance != null) {
+      this.processInstanceId = ((ExecutionEntity)processInstance).getId();
+    }
+  }
+  
+  @Override
+  public boolean isProcessInstance() {
+    return parentId == null;
+  }
+
+  // activity /////////////////////////////////////////////////////////////////
+
+  @Override
+  protected void ensureActivityInitialized() {
+    if ((activity == null) && (activityId != null)) {
+      activity = getProcessDefinition().findActivity(activityId);
+    }
+  }
+
+  @Override
+  public void setActivity(ActivityImpl activity) {
+    super.setActivity(activity);
+    if (activity != null) {
+      this.activityId = activity.getId();
+    } else {
+      this.activityId = null;
+    }
+  }
+  
+  // executions ///////////////////////////////////////////////////////////////
+  
+  @Override
+  protected void ensureExecutionsInitialized() {
+    // If the execution is new, then the child execution objects are already
+    // fetched
+    if (!isExecutionsInitialized) {
+      this.executions = CommandContext
+        .getCurrent()
+        .getDbSqlSession()
+        .findChildExecutionsByParentExecutionId(id);
+      this.isExecutionsInitialized = true;
+    }
+  }
+
+  // parent ///////////////////////////////////////////////////////////////////
+  
+  @Override
+  protected void ensureParentInitialized() {
+    if (parent == null && parentId != null) {
+      parent = CommandContext
+        .getCurrent()
+        .getDbSqlSession()
+        .findExecutionById(parentId);
+    }
+  }
+
+  @Override
+  public void setParent(ExecutionImpl parent) {
+    super.setParent(parent);
+
+    if (parent != null) {
+      this.parentId = ((ExecutionEntity)parent).getId();
+    } else {
+      this.parentId = null;
+    }
+  }
+  
+  // super- and subprocess executions /////////////////////////////////////////
+  
+  @Override
+  protected void ensureSuperExecutionInitialized() {
+    if (superExecution == null && superExecutionId != null) {
+      superExecution = CommandContext
+        .getCurrent()
+        .getDbSqlSession()
+        .findExecutionById(superExecutionId);
+    }
+  }
+  
+  @Override
+  public void setSuperExecution(ExecutionImpl superExecution) {
+    super.setSuperExecution(superExecution);
+    
+    if (superExecution != null) {
+      this.superExecutionId = ((ExecutionEntity)superExecution).getId();
+    } else {
+      this.superExecutionId = null;
+    }
+  }
+  
+  @Override
+  protected void ensureSubProcessInstanceInitialized() {
+    if (subProcessInstance == null) {
+      subProcessInstance = CommandContext
+        .getCurrent()
+        .getDbSqlSession()
+        .findSubProcessInstanceByParentExecutionId(this.getId());
+    }
+  }
+  
+  // customized persistence behaviour /////////////////////////////////////////
+
+  @Override
+  public void end() {
+    super.end();
+
+    ensureVariableMapInitialized();
+
+    DbSqlSession dbSqlSession = CommandContext
+      .getCurrent()
+      .getDbSqlSession();
+
+    Set<String> variableNames = new HashSet<String>(variableMap.getVariableNames());
+    for (String variableName : variableNames) {
+      variableMap.deleteVariable(variableName);
+    }
+    
+    // TODO add cancellation of timers
+
+    List<TaskEntity> tasks = dbSqlSession.findTasksByExecution(id);
+    for (TaskEntity task : tasks) {
+      task.delete();
+    }
+
+    // then delete execution
+    dbSqlSession.delete(this);
+  }
+
+  // variables ////////////////////////////////////////////////////////////////
+  
+  @Override
+  protected void ensureVariableMapInitialized() {
+    if (variableMap==null) {
+      ensureProcessDefinitionInitialized();
+      this.variableMap = new DbVariableMap(this);
+    }
+  }
+  
+  // persistent state /////////////////////////////////////////////////////////
+
+  public Object getPersistentState() {
+    Map<String, Object> persistentState = new HashMap<String, Object>();
+    persistentState.put("processDefinitionId", this.processDefinitionId);
+    persistentState.put("activitiId", this.activityId);
+    persistentState.put("isActive", this.isActive);
+    persistentState.put("isConcurrent", this.isConcurrent);
+    persistentState.put("isScope", this.isScope);
+    persistentState.put("parentId", parentId);
+    persistentState.put("superExecution", this.superExecutionId);
+    return persistentState;
+  }
+
+  // toString customization ///////////////////////////////////////////////////
+  
+  @Override
+  protected String getIdForToString() {
+    return id;
+  }
+
+  // getters and setters //////////////////////////////////////////////////////
+
+  public String getProcessInstanceId() {
+    return processInstanceId;
+  }
+  public String getParentId() {
+    return parentId;
+  }
+  public void setParentId(String parentId) {
+    this.parentId = parentId;
+  }
+  public String getId() {
+    return id;
+  }
+  public void setId(String id) {
+    this.id = id;
+  }
+  public int getRevision() {
+    return revision;
+  }
+  public void setRevision(int revision) {
+    this.revision = revision;
+  }
+  public boolean isNew() {
+    return isNew;
+  }
+  public String getProcessDefinitionId() {
+    return processDefinitionId;
+  }
+  public void setProcessDefinitionId(String processDefinitionId) {
+    this.processDefinitionId = processDefinitionId;
+  }
 }
