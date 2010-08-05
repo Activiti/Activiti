@@ -16,7 +16,7 @@ import java.io.Serializable;
 
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.el.ActivitiValueExpression;
-import org.activiti.pvm.runtime.PvmScopeInstance;
+import org.activiti.pvm.impl.runtime.ExecutionImpl;
 
 
 /**
@@ -35,10 +35,7 @@ public class VariableDeclarationImpl implements Serializable {
   protected String link;
   protected ActivitiValueExpression linkValueExpression;
   
-  public void create(ActivityContext activityContext) {
-    PvmScopeInstance innerScope = activityContext.getScopeInstance();
-    PvmScopeInstance outerScope = innerScope.getParent();
-
+  public void create(ExecutionImpl innerScope, ExecutionImpl outerScope) {
     if (sourceVariableName!=null) {
       if (outerScope.hasVariable(sourceVariableName)) {
         Object value = outerScope.getVariable(sourceVariableName);
@@ -72,9 +69,7 @@ public class VariableDeclarationImpl implements Serializable {
 
   }
   
-  public void destroy(ActivityContext activityContext) {
-    PvmScopeInstance innerScope = activityContext.getScopeInstance();
-    PvmScopeInstance outerScope = innerScope.getParent();
+  public void destroy(ExecutionImpl innerScope, ExecutionImpl outerScope) {
     
     if (destinationVariableName!=null) {
       if (innerScope.hasVariable(sourceVariableName)) {

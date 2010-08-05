@@ -10,7 +10,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.activiti.engine.impl.el;
 
 import java.beans.FeatureDescriptor;
@@ -19,33 +18,31 @@ import java.util.Iterator;
 import javax.el.ELContext;
 import javax.el.ELResolver;
 
-import org.activiti.pvm.impl.runtime.ScopeInstanceImpl;
-import org.activiti.pvm.runtime.PvmScopeInstance;
+import org.activiti.pvm.impl.runtime.ExecutionImpl;
 
 
 /**
  * Implementation of an {@link ELResolver} that resolves expressions 
- * with the process variables of a given {@link ScopeInstanceImpl} as context.
+ * with the process variables of a given {@link ExecutionImpl} as context.
  * 
  * @author Joram Barrez
- * @author Tom Baeyens
  */
-public class ScopeInstanceVariableElResolver extends ELResolver {
+public class ExecutionVariableElResolver extends ELResolver {
   
-  protected PvmScopeInstance scopeInstance;
+  protected ExecutionImpl execution;
   
-  public ScopeInstanceVariableElResolver(PvmScopeInstance scopeInstance) {
-    this.scopeInstance = scopeInstance;
+  public ExecutionVariableElResolver(ExecutionImpl execution) {
+    this.execution = execution;
   }
 
   public Object getValue(ELContext context, Object base, Object property)  {
     
     // Variable resolution
     if (base == null) {
-      String variableName = (String) property; // according to javadoc, can only be a String
-      if (scopeInstance.hasVariable(variableName)) {
+      String variable = (String) property; // according to javadoc, can only be a String
+      if (execution.hasVariable(variable)) {
         context.setPropertyResolved(true); // if not set, the next elResolver in the CompositeElResolver will be called
-        return scopeInstance.getVariable(variableName);
+        return execution.getVariable(variable);
       }
     }
     
@@ -57,17 +54,17 @@ public class ScopeInstanceVariableElResolver extends ELResolver {
 
   public boolean isReadOnly(ELContext context, Object base, Object property) {
     if (base == null) {
-      String variableName = (String) property;
-      return !scopeInstance.hasVariable(variableName);
+      String variable = (String) property;
+      return !execution.hasVariable(variable);
     }
     return true;
   }
 
   public void setValue(ELContext context, Object base, Object property, Object value) {
     if (base == null) {
-      String variableName = (String) property;
-      if (scopeInstance.hasVariable(variableName)) {
-        scopeInstance.setVariable(variableName, value);
+      String variable = (String) property;
+      if (execution.hasVariable(variable)) {
+        execution.setVariable(variable, value);
       }
     }
   }

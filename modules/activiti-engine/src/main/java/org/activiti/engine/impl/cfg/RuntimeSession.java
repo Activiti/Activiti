@@ -21,12 +21,13 @@ import org.activiti.engine.Job;
 import org.activiti.engine.Page;
 import org.activiti.engine.ProcessInstance;
 import org.activiti.engine.impl.ProcessInstanceQueryImpl;
-import org.activiti.engine.impl.persistence.runtime.ActivityInstanceEntity;
 import org.activiti.engine.impl.persistence.runtime.ByteArrayEntity;
+import org.activiti.engine.impl.persistence.runtime.ExecutionEntity;
 import org.activiti.engine.impl.persistence.runtime.JobEntity;
 import org.activiti.engine.impl.persistence.runtime.ProcessInstanceEntity;
 import org.activiti.engine.impl.persistence.runtime.TimerEntity;
 import org.activiti.engine.impl.persistence.runtime.VariableInstanceEntity;
+org.activiti.engine.impl.persistence.runtime.VariableInstanceEntity;
 
 
 /**
@@ -41,10 +42,8 @@ public interface RuntimeSession {
   long findProcessInstanceCountByDynamicCriteria(ProcessInstanceQueryImpl processInstanceQuery);
   List<ProcessInstance> findProcessInstancesByDynamicCriteria(ProcessInstanceQueryImpl processInstanceQuery);
 
-  void insertActivityInstance(ActivityInstanceEntity activityInstance);
-  void deleteActivityInstance(String activityInstanceId);
-  ActivityInstanceEntity findActivityInstanceById(String activityInstanceId);
-  ActivityInstanceEntity findActivityInstanceByProcessInstanceIdAndActivityId(String processInstanceId, String activityId);
+  ExecutionEntity findExecutionById(String activityInstanceId);
+  ExecutionEntity findActivityInstanceByProcessInstanceIdAndActivityId(String processInstanceId, String activityId);
   
   void insertVariableInstance(VariableInstanceEntity variableInstanceEntity);
   void deleteVariableInstance(String variableInstanceId);

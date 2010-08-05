@@ -40,6 +40,8 @@ public interface ActivityExecution {
   
   /* Variables */
   
+  boolean hasVariable(String variableName);
+
   /**
    * returns the value of the given variable.
    */

@@ -17,15 +17,16 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import org.activiti.pvm.activity.ActivityBehavior;
 import org.activiti.pvm.activity.ActivityExecution;
+import org.activiti.pvm.activity.CompositeActivityBehavior;
 import org.activiti.pvm.process.PvmActivity;
+import org.activiti.pvm.process.PvmTransition;
 
 
 /**
  * @author Tom Baeyens
  */
-public class EmbeddedSubProcess implements ActivityBehavior {
+public class EmbeddedSubProcess implements CompositeActivityBehavior {
 
   public void execute(ActivityExecution execution) throws Exception {
     List<PvmActivity> startActivities = new ArrayList<PvmActivity>();
@@ -39,6 +40,14 @@ public class EmbeddedSubProcess implements ActivityBehavior {
       execution.executeActivity(startActivity);
     }
   }
+
+  public void lastExecutionEnded(ActivityExecution execution, PvmActivity scope, ActivityExecution nestedExecution) {
+    List<PvmTransition> outgoingTransitions = scope.getOutgoingTransitions();
+    List<ActivityExecution> recyclableExecutions = new ArrayList<ActivityExecution>();
+    recyclableExecutions.add(nestedExecution);
+    execution.takeAll(outgoingTransitions, recyclableExecutions);
+  }
+
 
   // used by timers
   @SuppressWarnings("unchecked")

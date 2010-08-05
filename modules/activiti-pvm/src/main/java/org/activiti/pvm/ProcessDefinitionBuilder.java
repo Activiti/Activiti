@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.Stack;
 
 import org.activiti.pvm.activity.ActivityBehavior;
+import org.activiti.pvm.activity.CompositeActivityBehavior;
 import org.activiti.pvm.impl.process.ActivityImpl;
 import org.activiti.pvm.impl.process.ProcessDefinitionImpl;
 import org.activiti.pvm.impl.process.ProcessElementImpl;
@@ -103,6 +104,9 @@ public class ProcessDefinitionBuilder {
 
   public ProcessDefinitionBuilder behavior(ActivityBehavior activityBehaviour) {
     getActivity().setActivityBehavior(activityBehaviour);
+    if (activityBehaviour instanceof CompositeActivityBehavior) {
+      getActivity().setScope(true);
+    }
     return this;
   }
   

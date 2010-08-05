@@ -12,7 +12,8 @@
  */
 package org.activiti.engine.impl.bpmn;
 
-import org.activiti.pvm.activity.ActivityContext;
+import org.activiti.pvm.impl.runtime.ExecutionImpl;
+
 
 
 /**
@@ -20,5 +21,5 @@ import org.activiti.pvm.activity.ActivityContext;
  */
 public interface Condition {
 
-  boolean evaluate(ActivityContext activityContext);
+  boolean evaluate(ExecutionImpl execution);
 }

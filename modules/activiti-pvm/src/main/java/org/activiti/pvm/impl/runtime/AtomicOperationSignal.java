@@ -12,41 +12,41 @@
  */
 package org.activiti.pvm.impl.runtime;
 
-import java.util.logging.Logger;
-
 import org.activiti.pvm.PvmException;
-import org.activiti.pvm.activity.ActivityBehavior;
+import org.activiti.pvm.activity.EventActivityBehavior;
 import org.activiti.pvm.impl.process.ActivityImpl;
 
 
 /**
  * @author Tom Baeyens
  */
-public class ExeOpExecuteCurrentActivity implements ExeOp {
-  
-  private static Logger log = Logger.getLogger(ExeOpExecuteCurrentActivity.class.getName());
-  
-  public void execute(ExecutionImpl execution) {
-    ActivityImpl activity = execution.getActivity();
-    
-    ActivityBehavior activityBehavior = activity.getActivityBehavior();
+public class AtomicOperationSignal implements AtomicOperation {
 
-    log.fine("executing "+activity+": "+activityBehavior.getClass().getName());
-    
-    try {
-      activityBehavior.execute(execution);
-    } catch (RuntimeException e) {
-      throw e;
-    } catch (Exception e) {
-      throw new PvmException("couldn't start activity '"+activity.getId()+"': "+e.getMessage(), e);
-    }
+  protected String signalName;
+  protected Object signalData;
+
+  public AtomicOperationSignal(String signalName, Object signalData) {
+    this.signalName = signalName;
+    this.signalData = signalData;
   }
 
   public boolean isAsync() {
     return false;
   }
+
+  public void execute(ExecutionImpl execution) {
+    ActivityImpl activity = execution.getActivity();
+    EventActivityBehavior activityBehavior = (EventActivityBehavior) activity.getActivityBehavior();
+    try {
+      activityBehavior.signal(execution, signalName, signalData);
+    } catch (RuntimeException e) {
+      throw e;
+    } catch (Exception e) {
+      throw new PvmException("couldn't process signal '"+signalName+"' on activity '"+activity.getId()+"': "+e.getMessage(), e);
+    }
+  }
   
   public String toString() {
-    return "ExecuteCurrentActivity";
+    return "Signal["+signalName+"]";
   }
 }

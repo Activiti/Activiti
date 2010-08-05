@@ -68,6 +68,14 @@ public class ActivityImpl extends ScopeImpl implements PvmActivity {
   public String toString() {
     return "ActivityImpl["+id+"]";
   }
+  
+  public ActivityImpl getParentActivity() {
+    if (parent instanceof ActivityImpl) {
+      return (ActivityImpl) parent;
+    }
+    return null;
+  }
+
 
   // restricted setters ///////////////////////////////////////////////////////
   

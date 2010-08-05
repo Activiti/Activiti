@@ -57,7 +57,7 @@ public class GetFormCmd implements Command<Object> {
       if (task == null) {
         throw new ActivitiException("No task found for id = '" + taskId + "'");
       }
-      activityInstance = task.getActivityInstance();
+      activityInstance = task.getExecution();
       processDefinition = repositorySession.findDeployedProcessDefinitionById(task.getProcessDefinitionId());
       formReference = (FormReference) activityInstance.getActivity().getProperty(BpmnParse.PROPERTYNAME_FORM_REFERENCE);
       

@@ -18,10 +18,8 @@ import javax.el.ExpressionFactory;
 import javax.el.MethodExpression;
 import javax.el.ValueExpression;
 
-import org.activiti.engine.impl.cfg.ProcessEngineConfiguration;
-import org.activiti.engine.impl.cfg.ProcessEngineConfigurationAware;
-import org.activiti.pvm.impl.runtime.ScopeInstanceImpl;
-import org.activiti.pvm.runtime.PvmScopeInstance;
+import org.activiti.engine.impl.persistence.runtime.ExecutionEntity;
+import org.activiti.pvm.impl.runtime.ExecutionImpl;
 
 /**
  * <p>
@@ -46,7 +44,7 @@ import org.activiti.pvm.runtime.PvmScopeInstance;
  * @author Tom Baeyens
  * @author Dave Syer
  */
-public class ExpressionManager implements ProcessEngineConfigurationAware {
+public class ExpressionManager {
 
   public static final String UEL_VALUE = "uel-value";
   public static final String UEL_METHOD = "uel-method";
@@ -56,6 +54,17 @@ public class ExpressionManager implements ProcessEngineConfigurationAware {
   // Default implementation (does nothing)
   private ELContext parsingElContext = new ParsingElContext();
   private ELResolver elResolver;
+
+  /**
+   * A custom variable resolver for expressions in process definitions. It will
+   * have second highest priority after the native Activiti resolver based on
+   * process instance variables. Could be used, for instance, to resolve a set
+   * of global variables in a static engine wide scope. Defaults to null (so no
+   * custom variables).
+   */
+  public void setElResolver(ELResolver elResolver) {
+    this.elResolver = elResolver;
+  }
 
   public ActivitiValueExpression createValueExpression(String expression) {
     ValueExpression valueExpression = expressionFactory.createValueExpression(parsingElContext, expression, Object.class);
@@ -73,25 +82,24 @@ public class ExpressionManager implements ProcessEngineConfigurationAware {
     this.expressionFactory = expressionFactory;
   }
 
-  public ELContext getElContext(PvmScopeInstance scopeInstance) {
+  public ELContext getElContext(ExecutionEntity execution) {
     ELContext elContext = null;
-    synchronized (scopeInstance) {
-// TODO fix expression caching
-//      elContext = (ELContext) scopeInstance.getCachedElContext();
-//      if (elContext != null) {
-//        return elContext;
-//      }
-      elContext = createExecutionElContext(scopeInstance);
-//      scopeInstance.setCachedElContext(elContext);
+    synchronized (execution) {
+      elContext = (ELContext) execution.getCachedElContext();
+      if (elContext != null) {
+        return elContext;
+      }
+      elContext = createExecutionElContext(execution);
+      execution.setCachedElContext(elContext);
     }
     return elContext;
   }
 
-  protected ScopeInstanceELContext createExecutionElContext(PvmScopeInstance scopeInstance) {
-    return  new ScopeInstanceELContext(scopeInstance, elResolver);
+  protected ExecutionELContext createExecutionElContext(ExecutionImpl execution) {
+    ExecutionELContext context = new ExecutionELContext(execution);
+    if (elResolver != null) {
+      context.setElResolver(elResolver);
+    }
+    return context;
   }
-
-  public void configurationCompleted(ProcessEngineConfiguration processEngineConfiguration) {
-    this.elResolver = processEngineConfiguration.getElResolver();
-  } 
 }

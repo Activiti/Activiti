@@ -31,7 +31,7 @@ public class FindActivitiyInstanceCmd implements Command<ActivityInstance> {
   public ActivityInstance execute(CommandContext commandContext) {
     return commandContext
       .getRuntimeSession()
-      .findActivityInstanceById(activityInstanceId);
+      .findExecutionById(activityInstanceId);
   }
 
 }

@@ -21,7 +21,7 @@ import java.util.Set;
 import javax.script.Bindings;
 
 import org.activiti.engine.ActivitiException;
-import org.activiti.pvm.runtime.PvmScopeInstance;
+import org.activiti.pvm.impl.runtime.ExecutionImpl;
 
 
 /**
@@ -43,49 +43,49 @@ public class ActivityContextBindings implements Bindings {
   protected static final Set<String> UNSTORED_KEYS = 
     new HashSet<String>(Arrays.asList("out", "out:print", "lang:import", "context", "elcontext"));
   
-  protected PvmScopeInstance scopeInstance;
+  protected ExecutionImpl execution;
   
-  public ActivityContextBindings(PvmScopeInstance scopeInstance) {
-    if (scopeInstance==null) {
+  public ActivityContextBindings(ExecutionImpl execution) {
+    if (execution==null) {
       throw new ActivitiException("execution cannot be null");
     }
-    this.scopeInstance = scopeInstance;
+    this.execution = execution;
   }
 
   public boolean containsKey(Object key) {
-    return EXECUTION_KEY.equals(key) || scopeInstance.hasVariable((String) key);
+    return EXECUTION_KEY.equals(key) || execution.hasVariable((String) key);
   }
 
   public Object get(Object key) {
     if (EXECUTION_KEY.equals(key)) {
-      return scopeInstance;
+      return execution;
     }
-    return scopeInstance.getVariable((String) key);
+    return execution.getVariable((String) key);
   }
 
   public Object put(String name, Object value) {
     Object oldValue = null;
     if (!UNSTORED_KEYS.contains(name)) {
-      oldValue = scopeInstance.getVariable(name);
-      scopeInstance.setVariable(name, value);
+      oldValue = execution.getVariable(name);
+      execution.setVariable(name, value);
     }
     return oldValue;
   }
 
   public Set<java.util.Map.Entry<String, Object>> entrySet() {
-    return scopeInstance.getVariables().entrySet();
+    return execution.getVariables().entrySet();
   }
 
   public Set<String> keySet() {
-    return scopeInstance.getVariables().keySet();
+    return execution.getVariables().keySet();
   }
 
   public int size() {
-    return scopeInstance.getVariables().size();
+    return execution.getVariables().size();
   }
 
   public Collection<Object> values() {
-    return scopeInstance.getVariables().values();
+    return execution.getVariables().values();
   }
 
   public void putAll(Map< ? extends String, ? extends Object> toMerge) {

@@ -13,27 +13,20 @@
 package org.activiti.pvm.impl.runtime;
 
 import java.util.List;
-import java.util.logging.Logger;
 
 import org.activiti.pvm.event.EventListener;
 import org.activiti.pvm.impl.process.ActivityImpl;
-import org.activiti.pvm.impl.process.ScopeImpl;
 import org.activiti.pvm.impl.process.TransitionImpl;
 
 
 /**
  * @author Tom Baeyens
  */
-public class ExeOpTransitionNotifyListenerTake implements ExeOp {
-  
-  private static Logger log = Logger.getLogger(ExeOpTransitionNotifyListenerTake.class.getName());
+public class AtomicOperationTransitionNotifyListenerStart implements AtomicOperation {
 
   public void execute(ExecutionImpl execution) {
-    TransitionImpl transition = execution.getTransition();
-    
-    log.fine("taking transition "+transition);
-    
-    List<EventListener> eventListeners = transition.getEventListeners();
+    ActivityImpl activity = execution.getActivity();
+    List<EventListener> eventListeners = activity.getEventListeners(EventListener.EVENTNAME_START);
     int eventListenerIndex = execution.getEventListenerIndex();
     
     if (eventListeners.size()>eventListenerIndex) {
@@ -44,22 +37,19 @@ public class ExeOpTransitionNotifyListenerTake implements ExeOp {
 
     } else {
       execution.setEventListenerIndex(0);
-      ActivityImpl activity = execution.getActivity();
-      ActivityImpl nextScope = findNextScope(activity.getParent(), transition.getDestination());
-      execution.setActivity(nextScope);
-      execution.performOperation(TRANSITION_CREATE_SCOPE);
-    }
-  }
 
-  /** finds the next scope to enter.  the most outer scope is found first */
-  public static ActivityImpl findNextScope(ScopeImpl outerScopeElement, ActivityImpl destination) {
-    ActivityImpl nextScope = destination;
-    while( (nextScope.getParent() instanceof ActivityImpl)
-           && (nextScope.getParent() != outerScopeElement)
-         ) {
-      nextScope = (ActivityImpl) nextScope.getParent();
+      TransitionImpl transition = execution.getTransition();
+      ActivityImpl destination = transition.getDestination();
+      if (execution.getActivity()!=destination) {
+        ActivityImpl nextScope = AtomicOperationTransitionNotifyListenerTake.findNextScope(activity, destination);
+        execution.setActivity(nextScope);
+        execution.performOperation(TRANSITION_CREATE_SCOPE);
+      } else {
+        execution.setTransition(null);
+        execution.setActivity(destination);
+        execution.performOperation(EXECUTE_CURRENT_ACTIVITY);
+      }
     }
-    return nextScope;
   }
 
   public boolean isAsync() {
@@ -67,6 +57,6 @@ public class ExeOpTransitionNotifyListenerTake implements ExeOp {
   }
 
   public String toString() {
-    return "TransitionNotifyListenerTake";
+    return "TransitionNotifyListenerStart";
   }
 }

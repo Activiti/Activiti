@@ -47,7 +47,7 @@ public class CompleteTaskCmd extends CmdVoid {
     }
     task.delete();
     
-    PvmExecution activityInstance = task.getActivityInstance();
+    PvmExecution activityInstance = task.getExecution();
     if (activityInstance != null) {
       activityInstance.signal(null, null);
     }

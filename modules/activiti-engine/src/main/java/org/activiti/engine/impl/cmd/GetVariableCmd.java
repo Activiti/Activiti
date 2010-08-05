@@ -45,7 +45,7 @@ public class GetVariableCmd implements Command<Object> {
     if (processInstance!=null) {
       return processInstance;
     }
-    ActivityInstanceEntity activityInstance = runtimeSession.findActivityInstanceById(scopeInstanceId);
+    ActivityInstanceEntity activityInstance = runtimeSession.findExecutionById(scopeInstanceId);
     if (activityInstance==null) {
       throw new ActivitiException("scope instance "+scopeInstanceId+" doesn't exist");
     }

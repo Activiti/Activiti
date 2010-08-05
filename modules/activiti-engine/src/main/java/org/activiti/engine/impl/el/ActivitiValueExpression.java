@@ -17,8 +17,8 @@ import javax.el.PropertyNotFoundException;
 import javax.el.ValueExpression;
 
 import org.activiti.engine.ActivitiException;
-import org.activiti.pvm.event.EventContext;
-import org.activiti.pvm.runtime.PvmScopeInstance;
+import org.activiti.engine.impl.persistence.runtime.ExecutionEntity;
+import org.activiti.pvm.impl.runtime.ExecutionImpl;
 
 
 /**
@@ -26,20 +26,16 @@ import org.activiti.pvm.runtime.PvmScopeInstance;
  */
 public class ActivitiValueExpression {
 
-  protected ValueExpression valueExpression;
-  protected ExpressionManager expressionManager;
+  ValueExpression valueExpression;
+  ExpressionManager expressionManager;
 
   public ActivitiValueExpression(ValueExpression valueExpression, ExpressionManager expressionManager) {
     this.valueExpression = valueExpression;
     this.expressionManager = expressionManager;
   }
 
-  public Object getValue(EventContext eventContext) {
-    return getValue(eventContext.getScopeInstance());
-  }
-  
-  public Object getValue(PvmScopeInstance scopeInstance) {
-    ELContext elContext = expressionManager.getElContext(scopeInstance);
+  public Object getValue(ExecutionImpl execution) {
+    ELContext elContext = expressionManager.getElContext((ExecutionEntity) execution);
     try {
       return valueExpression.getValue(elContext);
     } catch (PropertyNotFoundException e) {
@@ -47,12 +43,8 @@ public class ActivitiValueExpression {
     }
   }
 
-  public void setValue(Object value, EventContext eventContext) {
-    setValue(value, eventContext.getScopeInstance());
-  }
-  
-  public void setValue(Object value, PvmScopeInstance scopeInstance) {
-    ELContext elContext = expressionManager.getElContext(scopeInstance);
+  public void setValue(Object value, ExecutionImpl execution) {
+    ELContext elContext = expressionManager.getElContext((ExecutionEntity) execution);
     valueExpression.setValue(elContext, value);
   }
 }

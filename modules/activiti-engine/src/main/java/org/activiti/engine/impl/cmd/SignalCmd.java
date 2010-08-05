@@ -37,7 +37,7 @@ public class SignalCmd implements Command<Object> {
   public Object execute(CommandContext commandContext) {
     ActivityInstanceEntity activityInstance = commandContext
       .getRuntimeSession()
-      .findActivityInstanceById(activityInstanceId);
+      .findExecutionById(activityInstanceId);
     if (activityInstance==null) {
       throw new ActivitiException("activity instance "+activityInstance+" doesn't exist");
     }

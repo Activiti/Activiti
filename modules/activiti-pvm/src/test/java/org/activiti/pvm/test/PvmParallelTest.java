@@ -30,7 +30,7 @@ import org.junit.Test;
 /**
  * @author Tom Baeyens
  */
-public class PvmConcurrencyTest extends PvmTestCase {
+public class PvmParallelTest extends PvmTestCase {
 
   public void testSimpleAutmaticConcurrency() {
     PvmProcessDefinition processDefinition = new ProcessDefinitionBuilder()

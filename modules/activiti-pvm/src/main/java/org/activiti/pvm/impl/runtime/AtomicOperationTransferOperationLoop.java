@@ -13,20 +13,28 @@
 package org.activiti.pvm.impl.runtime;
 
 
-
 /**
  * @author Tom Baeyens
  */
-public interface ExeOp {
-  
-  ExeOp EXECUTE_CURRENT_ACTIVITY = new ExeOpExecuteCurrentActivity();
-  ExeOp TRANSITION_NOTIFY_LISTENER_END = new ExeOpTransitionNotifyListenerEnd();
-  ExeOp TRANSITION_DESTROY_SCOPE = new ExeOpTransitionDestroyScope();
-  ExeOp TRANSITION_NOTIFY_LISTENER_TAKE = new ExeOpTransitionNotifyListenerTake();
-  ExeOp TRANSITION_CREATE_SCOPE = new ExeOpTransitionCreateScope();
-  ExeOp TRANSITION_NOTIFY_LISTENER_START = new ExeOpTransitionNotifyListenerStart();
-  
-  void execute(ExecutionImpl execution);
+public class AtomicOperationTransferOperationLoop implements AtomicOperation {
 
-  boolean isAsync();
+  ExecutionImpl otherExecution;
+  AtomicOperation nextOperation;
+  
+  public AtomicOperationTransferOperationLoop(ExecutionImpl otherExecution, AtomicOperation nextOperation) {
+    this.otherExecution = otherExecution;
+    this.nextOperation = nextOperation;
+  }
+
+  public void execute(ExecutionImpl execution) {
+    otherExecution.performOperation(nextOperation);
+  }
+
+  public boolean isAsync() {
+    return false;
+  }
+  
+  public String toString() {
+    return "TransferOperation["+nextOperation+"|"+otherExecution+"]";
+  }
 }

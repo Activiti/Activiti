@@ -26,7 +26,7 @@ import org.activiti.test.pvm.activities.WaitState;
 /**
  * @author Tom Baeyens
  */
-public class PvmTest extends PvmTestCase {
+public class PvmBasicActivitiesTest extends PvmTestCase {
 
   public void testBasicLinearActivities() {
     PvmProcessDefinition processDefinition = new ProcessDefinitionBuilder()

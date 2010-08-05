@@ -15,7 +15,7 @@ package org.activiti.engine.impl.el;
 
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.bpmn.Condition;
-import org.activiti.pvm.activity.ActivityContext;
+import org.activiti.pvm.impl.runtime.ExecutionImpl;
 
 
 /**
@@ -31,14 +31,14 @@ public class UelMethodExpressionCondition implements Condition {
     this.methodExpression = methodExpression;
   }
 
-  public boolean evaluate(ActivityContext activityContext) {
-    Object result = methodExpression.invoke(activityContext);
+  public boolean evaluate(ExecutionImpl execution) {
+    Object result = methodExpression.invoke((ExecutionImpl)execution);
     
     if (result==null) {
-      throw new ActivitiException("condition expression '"+methodExpression+"' returns null");
+      throw new ActivitiException("condition expression returns null");
     }
     if (! (result instanceof Boolean)) {
-      throw new ActivitiException("condition expression '"+methodExpression+"' returns non-Boolean: "+result+" ("+result.getClass().getName()+")");
+      throw new ActivitiException("condition expression returns non-Boolean: "+result+" ("+result.getClass().getName()+")");
     }
     return (Boolean) result;
   }

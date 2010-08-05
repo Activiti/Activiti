@@ -60,7 +60,7 @@ public abstract class JobEntity implements Serializable, Job, PersistentObject {
     RuntimeSession runtimeSession = commandContext.getRuntimeSession();
     ActivityInstanceEntity activityInstance = null;
     if (activityInstanceId != null) {
-      activityInstance = runtimeSession.findActivityInstanceById(activityInstanceId);
+      activityInstance = runtimeSession.findExecutionById(activityInstanceId);
     }
     ProcessInstanceEntity processInstance = null;
     processInstance = runtimeSession.findProcessInstanceById(processInstanceId); 

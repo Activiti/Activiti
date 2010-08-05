@@ -10,31 +10,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.activiti.pvm.impl.runtime;
+
+package org.activiti.pvm.activity;
+
+import org.activiti.pvm.process.PvmActivity;
 
 
 /**
  * @author Tom Baeyens
  */
-public class ExeOpTransferOperationLoop implements ExeOp {
+public interface CompositeActivityBehavior extends ActivityBehavior {
 
-  ExecutionImpl otherExecution;
-  ExeOp nextOperation;
-  
-  public ExeOpTransferOperationLoop(ExecutionImpl otherExecution, ExeOp nextOperation) {
-    this.otherExecution = otherExecution;
-    this.nextOperation = nextOperation;
-  }
-
-  public void execute(ExecutionImpl execution) {
-    otherExecution.performOperation(nextOperation);
-  }
-
-  public boolean isAsync() {
-    return false;
-  }
-  
-  public String toString() {
-    return "TransferOperation["+nextOperation+"|"+otherExecution+"]";
-  }
+  void lastExecutionEnded(ActivityExecution execution, PvmActivity scope, ActivityExecution nestedExecution);
 }

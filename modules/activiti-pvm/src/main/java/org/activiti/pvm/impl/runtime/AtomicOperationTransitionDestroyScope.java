@@ -20,7 +20,7 @@ import org.activiti.pvm.impl.process.TransitionImpl;
 /**
  * @author Tom Baeyens
  */
-public class ExeOpTransitionDestroyScope implements ExeOp {
+public class AtomicOperationTransitionDestroyScope implements AtomicOperation {
 
   public void execute(ExecutionImpl execution) {
     ExecutionImpl propagatingExecution = null;

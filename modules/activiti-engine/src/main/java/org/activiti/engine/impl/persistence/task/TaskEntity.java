@@ -26,7 +26,7 @@ import org.activiti.engine.Task;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.PersistentObject;
 import org.activiti.engine.impl.persistence.runtime.ActivityInstanceEntity;
-import org.activiti.engine.impl.persistence.runtime.ProcessInstanceEntity;
+import org.activiti.engine.impl.persistence.runtime.ExecutionEntity;
 import org.activiti.engine.impl.util.ClockUtil;
 import org.activiti.pvm.runtime.PvmExecution;
 
@@ -53,11 +53,11 @@ public class TaskEntity implements Task, Serializable, PersistentObject {
   protected boolean isTaskInvolvementsInitialized = false;
   protected List<TaskInvolvementEntity> taskInvolvementEntities = new ArrayList<TaskInvolvementEntity>(); 
   
-  protected String activityInstanceId;
-  protected ActivityInstanceEntity activityInstance;
+  protected String executionId;
+  protected ExecutionEntity execution;
   
   protected String processInstanceId;
-  protected ProcessInstanceEntity processInstance;
+  protected ExecutionEntity processInstance;
   
   protected String processDefinitionId;
   
@@ -192,29 +192,29 @@ public class TaskEntity implements Task, Serializable, PersistentObject {
     this.completionDeadline = completionDeadline;
   }
 	
-	public String getActivityInstanceId() {
-	  return activityInstanceId;
+	public String getExecutionId() {
+	  return executionId;
 	}
   
-  public ActivityInstanceEntity getActivityInstance() {
-    if ( (activityInstance==null) && (activityInstanceId!=null) ) {
-      this.activityInstance = CommandContext
+  public ActivityInstanceEntity getExecution() {
+    if ( (execution==null) && (executionId!=null) ) {
+      this.execution = CommandContext
         .getCurrent()
         .getRuntimeSession()
-        .findActivityInstanceById(activityInstanceId);
+        .findExecutionById(executionId);
     }
-    return activityInstance;
+    return execution;
   }
   
   public void setActivityInstance(PvmExecution activityInstance) {
     if (activityInstance!=null) {
-      this.activityInstance = (ActivityInstanceEntity) activityInstance;
-      this.activityInstanceId = this.activityInstance.getId();
-      this.processInstanceId = this.activityInstance.getProcessInstanceId();
-      this.processDefinitionId = this.activityInstance.getProcessDefinitionId();
+      this.execution = (ActivityInstanceEntity) activityInstance;
+      this.executionId = this.execution.getId();
+      this.processInstanceId = this.execution.getProcessInstanceId();
+      this.processDefinitionId = this.execution.getProcessDefinitionId();
     } else {
-      this.activityInstance = null;
-      this.activityInstanceId = null;
+      this.execution = null;
+      this.executionId = null;
       this.processInstanceId = null;
       this.processDefinitionId = null;
     }
@@ -300,14 +300,14 @@ public class TaskEntity implements Task, Serializable, PersistentObject {
 
   @SuppressWarnings("unchecked")
   public Map<String, Object> getActivityInstanceVariables() {
-    if (activityInstance!=null) {
-      return activityInstance.getVariables();
+    if (execution!=null) {
+      return execution.getVariables();
     }
     return Collections.EMPTY_MAP;
   }
   public void setActivityInstanceVariables(Map<String, Object> parameters) {
-    if (getActivityInstance()!=null) {
-      activityInstance.setVariables(parameters);
+    if (getExecution()!=null) {
+      execution.setVariables(parameters);
     }
   }
 }

@@ -12,32 +12,35 @@
  */
 package org.activiti.pvm.impl.runtime;
 
-import java.util.List;
-
-import org.activiti.pvm.event.EventListener;
 import org.activiti.pvm.impl.process.ActivityImpl;
+import org.activiti.pvm.impl.process.ScopeImpl;
+import org.activiti.pvm.process.PvmActivity;
 
 
 /**
  * @author Tom Baeyens
  */
-public class ExeOpTransitionNotifyListenerEnd implements ExeOp {
+public class AtomicOperationTransitionCreateScope implements AtomicOperation {
 
   public void execute(ExecutionImpl execution) {
+    ExecutionImpl propagatingExecution = null;
     ActivityImpl activity = execution.getActivity();
-    List<EventListener> eventListeners = activity.getEventListeners(EventListener.EVENTNAME_END);
-    int eventListenerIndex = execution.getEventListenerIndex();
-    
-    if (eventListeners.size()>eventListenerIndex) {
-      EventListener listener = eventListeners.get(eventListenerIndex);
-      listener.notify(execution);
-      execution.setEventListenerIndex(eventListenerIndex+1);
-      execution.performOperation(this);
+    if (activity.isScope()) {
+      propagatingExecution = (ExecutionImpl) execution.createScope();
+
+      // set the pointer of the scope-execution to its scope: the activity 
+      // if it is an activity or null if it is the process definition
+      ScopeImpl parentScope = activity.getParent();
+      if (parentScope instanceof PvmActivity) {
+        execution.setActivity((ActivityImpl) parentScope);
+      } else {
+        execution.setActivity(null);
+      }
 
     } else {
-      execution.setEventListenerIndex(0);
-      execution.performOperation(TRANSITION_DESTROY_SCOPE);
+      propagatingExecution = execution;
     }
+    propagatingExecution.performOperation(AtomicOperation.TRANSITION_NOTIFY_LISTENER_START);
   }
 
   public boolean isAsync() {
@@ -45,6 +48,6 @@ public class ExeOpTransitionNotifyListenerEnd implements ExeOp {
   }
   
   public String toString() {
-    return "TransitionNotifyListenerEnd";
+    return "TransitionCreateScope";
   }
 }

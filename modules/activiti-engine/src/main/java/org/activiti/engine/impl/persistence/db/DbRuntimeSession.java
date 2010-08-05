@@ -77,7 +77,7 @@ public class DbRuntimeSession implements Session, RuntimeSession {
     dbSqlSession.delete(ActivityInstanceEntity.class, activityInstanceId);
   }
 
-  public ActivityInstanceEntity findActivityInstanceById(String activityInstanceId) {
+  public ActivityInstanceEntity findExecutionById(String activityInstanceId) {
     return (ActivityInstanceEntity) dbSqlSession.selectOne("selectActivityInstanceById", activityInstanceId);
   }
 

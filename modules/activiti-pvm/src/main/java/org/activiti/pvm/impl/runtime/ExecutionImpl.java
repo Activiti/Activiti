@@ -21,7 +21,9 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.activiti.pvm.PvmException;
+import org.activiti.pvm.activity.ActivityBehavior;
 import org.activiti.pvm.activity.ActivityExecution;
+import org.activiti.pvm.activity.CompositeActivityBehavior;
 import org.activiti.pvm.event.EventListenerExecution;
 import org.activiti.pvm.impl.process.ActivityImpl;
 import org.activiti.pvm.impl.process.ProcessDefinitionImpl;
@@ -46,6 +48,16 @@ public class ExecutionImpl implements
   private static final long serialVersionUID = 1L;
   
   private static Logger log = Logger.getLogger(ExecutionImpl.class.getName());
+  
+  // current position /////////////////////////////////////////////////////////
+  
+  protected ProcessDefinitionImpl processDefinition;
+
+  /** current activity */
+  protected ActivityImpl activity;
+  
+  /** current transition.  is null when there is no transition being taken. */
+  protected TransitionImpl transition = null;
 
   /** the process instance.  this is the root of the execution tree.  
    * the processInstance of a process instance is a self reference. */
@@ -55,7 +67,7 @@ public class ExecutionImpl implements
   protected ExecutionImpl parent;
   
   /** nested executions representing scopes or concurrent paths */
-  protected List<ExecutionImpl> executions = new ArrayList<ExecutionImpl>();
+  protected List<ExecutionImpl> executions;
   
   /** super execution, not-null if this execution is part of a subprocess */
   protected ExecutionImpl superExecution;
@@ -63,54 +75,39 @@ public class ExecutionImpl implements
   /** reference to a subprocessinstance, not-null if currently subprocess is started from this execution */
   protected ExecutionImpl subProcessInstance;
   
+  // state/type of execution ////////////////////////////////////////////////// 
+  
   /** indicates if this execution represents an active path of execution.
    * Executions are made inactive in the following situations:
    * <ul>
    *   <li>an execution enters a nested scope</li>
    *   <li>an execution is split up into multiple concurrent executions, then the parent is made inactive.</li>
    *   <li>an execution has arrived in a parallel gateway or join and that join has not yet activated/fired.</li>
+   *   <li>an execution is ended.</li>
    * </ul>*/ 
   protected boolean isActive = true;
   
   protected boolean isConcurrent = false;
   
   protected boolean isScope = false;
-  
+
+  protected boolean isEnded = false;
+
   protected Map<String, Object> variableMap = null;
   
   // non persisted fields /////////////////////////////////////////////////////////
 
   /** indicates that this execution is taking a transition */
-  transient protected TransitionImpl transition = null;
   transient protected int eventListenerIndex = 0;
 
   /** next operation.  process execution is in fact runtime interpretation of the process model.
    * each operation is a logical unit of interpretation of the process.  so sequentially processing 
    * the operations drives the interpretation or execution of a process. 
-   * @see ExeOp
-   * @see #performOperation(ExeOp) */
-  transient protected ExeOp nextOperation;
+   * @see AtomicOperation
+   * @see #performOperation(AtomicOperation) */
+  transient protected AtomicOperation nextOperation;
   transient protected boolean isOperating = false;
   
-  /** non-persisted pointer to the process definition.
-   * @see #getProcessDefinition()
-   * @see #setProcessDefinition(ProcessDefinitionImpl) */
-  transient protected ProcessDefinitionImpl processDefinition;
-
-  /** non-persisted pointer to the current position in the diagram.
-   * @see #activity
-   * @see #getActivity() 
-   * @see #setActivity(ActivityImpl) */
-  transient protected ActivityImpl activity;
-  
-  /** non-persisted indicator that this execution has ended (ie. end() has been
-   * called). This is only usable in the case that a process instance reference
-   * is kept, but the process instance actually is already deleted (which also
-   * means it can't be fetched from the database and also that there is a need
-   * to store this boolean).
-   */
-  transient boolean isEnded = false;
-
   /* Default constructor for ibatis/jpa/etc. */
   protected ExecutionImpl() {
   }
@@ -213,17 +210,22 @@ public class ExecutionImpl implements
    * if there is a parent, this method removes the bidirectional relation 
    * between parent and this execution. */
   public void end() {
-    setActivity(null);
+    isActive = false;
+    isEnded = true;
+
     // first end the nested executions
     ensureExecutionsInitialized();
-    // Create simple copy of children to avoid concurrentModificationExceptions
-    // (since calling end() on the child will cause a remove in the same collection)
-    List<ExecutionImpl> childExecutions = new ArrayList<ExecutionImpl>(executions);
-    for (ExecutionImpl childExecution : childExecutions) {
-      childExecution.end();
+    
+    if (!executions.isEmpty()) {
+      // Create simple copy of children to avoid concurrentModificationExceptions
+      // (since calling end() on the child will cause a remove in the same collection)
+      List<ExecutionImpl> childExecutions = new ArrayList<ExecutionImpl>(executions);
+      for (ExecutionImpl childExecution : childExecutions) {
+        childExecution.end();
+      }
     }
     
-    // If there is a subprocess instance
+    // Cascade end to sub process instance
     ensureSubProcessInstanceInitialized();
     if (subProcessInstance != null) {
       subProcessInstance.setSuperExecution(null);
@@ -233,8 +235,23 @@ public class ExecutionImpl implements
     // if there is a parent 
     ensureParentInitialized();
     if (parent!=null) {
+      ActivityImpl parentScopeActivity = activity.getParentActivity();
+      while(parentScopeActivity!=null && !parentScopeActivity.isScope()) {
+        parentScopeActivity = parentScopeActivity.getParentActivity();
+      }
+      
+      ExecutionImpl parent = this.parent;
+
       // remove the bidirectional relation
-      parent.removeExecution(this);
+      this.parent.removeExecution(this);
+      
+      if (parentScopeActivity!=null && parent.getExecutions().isEmpty()) {
+        ActivityBehavior activityBehavior = parentScopeActivity.getActivityBehavior();
+        if (activityBehavior instanceof CompositeActivityBehavior) {
+          ((CompositeActivityBehavior) activityBehavior).lastExecutionEnded(parent, parentScopeActivity, this);
+        }
+      }
+      
     } else { // this execution is a process instance
       
       // If there is a super execution
@@ -245,9 +262,6 @@ public class ExecutionImpl implements
         setSuperExecution(null);
         superExecutionCopy.signal("continue process", null);
       }
-      
-      // ending this execution
-      isEnded = true;
     }
   }
   
@@ -382,13 +396,13 @@ public class ExecutionImpl implements
   public void start() {
     ActivityImpl initial = getProcessDefinition().getInitial();
     setActivity(initial);
-    performOperation(ExeOp.EXECUTE_CURRENT_ACTIVITY);
+    performOperation(AtomicOperation.EXECUTE_CURRENT_ACTIVITY);
   }
   
   // methods that translate to operations /////////////////////////////////////
 
   public void signal(String signalName, Object signalData) {
-    performOperation(new ExeOpSignal(signalName, signalData));
+    performOperation(new AtomicOperationSignal(signalName, signalData));
   }
   
   public void take(PvmTransition transition) {
@@ -396,12 +410,12 @@ public class ExecutionImpl implements
       throw new PvmException("already taking a transition");
     }
     setTransition((TransitionImpl) transition);
-    performOperation(ExeOp.TRANSITION_NOTIFY_LISTENER_END);
+    performOperation(AtomicOperation.TRANSITION_NOTIFY_LISTENER_END);
   }
   
   public void executeActivity(ActivityImpl activity) {
     setActivity(activity);
-    performOperation(ExeOp.EXECUTE_CURRENT_ACTIVITY);
+    performOperation(AtomicOperation.EXECUTE_CURRENT_ACTIVITY);
   }
 
   public List<ActivityExecution> findInactiveConcurrentExecutions(PvmActivity activity) {
@@ -495,22 +509,28 @@ public class ExecutionImpl implements
     }
   }
   
-  protected void performOperation(ExeOp executionOperation) {
+  public void executeActivity(PvmActivity activity) {
+    setActivity((ActivityImpl) activity);
+    performOperation(AtomicOperation.EXECUTE_CURRENT_ACTIVITY);
+  }
+
+  
+  protected void performOperation(AtomicOperation executionOperation) {
     if (executionOperation.isAsync()) {
       throw new UnsupportedOperationException("async continuations not yet supported");
     } else {
       performOperationSync(executionOperation);
     }
   }
-  protected void performOperationSync(ExeOp executionOperation) {
+  protected void performOperationSync(AtomicOperation executionOperation) {
     this.nextOperation = executionOperation;
     if (!isOperating) {
       isOperating = true;
       while (nextOperation!=null) {
-        ExeOp currentOperation = this.nextOperation;
+        AtomicOperation currentOperation = this.nextOperation;
         this.nextOperation = null;
         if (log.isLoggable(Level.FINEST)) {
-          log.finest("ExeOp: " + currentOperation + " on " + this);
+          log.finest("AtomicOperation: " + currentOperation + " on " + this);
         }
         currentOperation.execute(this);
       }
@@ -600,6 +620,10 @@ public class ExecutionImpl implements
     return parent==null;
   }
   
+  public void inactivate() {
+    this.isActive = false;
+  }
+  
   // getters and setters //////////////////////////////////////////////////////
 
   public TransitionImpl getTransition() {
@@ -637,13 +661,5 @@ public class ExecutionImpl implements
   }
   protected void setProcessDefinition(ProcessDefinitionImpl processDefinition) {
     this.processDefinition = processDefinition;
-  }
-
-  public void executeActivity(PvmActivity startActivity) {
-    throw new UnsupportedOperationException("please implement me");
-  }
-
-  public void inactivate() {
-    throw new UnsupportedOperationException("please implement me");
   }
 }
