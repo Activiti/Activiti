@@ -13,7 +13,6 @@
 
 package org.activiti.pvm.activity;
 
-import org.activiti.pvm.process.PvmActivity;
 
 
 /**
@@ -21,5 +20,5 @@ import org.activiti.pvm.process.PvmActivity;
  */
 public interface CompositeActivityBehavior extends ActivityBehavior {
 
-  void lastExecutionEnded(ActivityExecution execution, PvmActivity scope, ActivityExecution nestedExecution);
+  void lastExecutionEnded(ActivityExecution execution);
 }

@@ -41,11 +41,9 @@ public class EmbeddedSubProcess implements CompositeActivityBehavior {
     }
   }
 
-  public void lastExecutionEnded(ActivityExecution execution, PvmActivity scope, ActivityExecution nestedExecution) {
-    List<PvmTransition> outgoingTransitions = scope.getOutgoingTransitions();
-    List<ActivityExecution> recyclableExecutions = new ArrayList<ActivityExecution>();
-    recyclableExecutions.add(nestedExecution);
-    execution.takeAll(outgoingTransitions, recyclableExecutions);
+  public void lastExecutionEnded(ActivityExecution execution) {
+    List<PvmTransition> outgoingTransitions = execution.getActivity().getOutgoingTransitions();
+    execution.takeAll(outgoingTransitions, new ArrayList<ActivityExecution>());
   }
 
 

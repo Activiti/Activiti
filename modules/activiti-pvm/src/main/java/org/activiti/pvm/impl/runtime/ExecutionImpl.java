@@ -140,7 +140,7 @@ public class ExecutionImpl implements
   // executions ///////////////////////////////////////////////////////////////  
 
   /** ensures initialization and returns the non-null executions list */
-  public List<? extends ExecutionImpl> getExecutions() {
+  public List<ExecutionImpl> getExecutions() {
     ensureExecutionsInitialized();
     return executions;
   }
@@ -235,21 +235,21 @@ public class ExecutionImpl implements
     // if there is a parent 
     ensureParentInitialized();
     if (parent!=null) {
-      ActivityImpl parentScopeActivity = activity.getParentActivity();
-      while(parentScopeActivity!=null && !parentScopeActivity.isScope()) {
-        parentScopeActivity = parentScopeActivity.getParentActivity();
+      activity = activity.getParentActivity();
+      while(activity!=null && !activity.isScope()) {
+        // TODO add destroy scope if activity is scope
+        activity = activity.getParentActivity();
       }
       
-      ExecutionImpl parent = this.parent;
-
-      // remove the bidirectional relation
-      this.parent.removeExecution(this);
-      
-      if (parentScopeActivity!=null && parent.getExecutions().isEmpty()) {
-        ActivityBehavior activityBehavior = parentScopeActivity.getActivityBehavior();
+      if (activity!=null && parent.getExecutions().size()==1) {
+        ActivityBehavior activityBehavior = activity.getActivityBehavior();
         if (activityBehavior instanceof CompositeActivityBehavior) {
-          ((CompositeActivityBehavior) activityBehavior).lastExecutionEnded(parent, parentScopeActivity, this);
+          ((CompositeActivityBehavior) activityBehavior).lastExecutionEnded(this);
+        } else {
+          end();
         }
+      } else {
+        this.parent.removeExecution(this);
       }
       
     } else { // this execution is a process instance
@@ -288,9 +288,11 @@ public class ExecutionImpl implements
   }
 
   protected void collectActiveActivityIds(List<String> activeActivityIds) {
+    ensureActivityInitialized();
     if (isActive && activity!=null) {
       activeActivityIds.add(activity.getId());
     }
+    ensureExecutionsInitialized();
     for (ExecutionImpl execution: executions) {
       execution.collectActiveActivityIds(activeActivityIds);
     }
@@ -305,7 +307,9 @@ public class ExecutionImpl implements
   protected void removeExecution(ExecutionImpl execution) {
     ensureExecutionsInitialized();
     executions.remove(execution);
-    execution.setParent(null);
+    // we don't remove the parent as that would make it a process instance
+    // and there is no need for setting the parent to null 
+    // execution.setParent(null);
   }
 
   /** must be called before memberfield executions is used. 
@@ -375,6 +379,7 @@ public class ExecutionImpl implements
   
   public ExecutionImpl createScope() {
     ExecutionImpl scopeExecution = createExecution();
+    scopeExecution.setScope(true);
     scopeExecution.setTransition(getTransition());
     setTransition(null);
     setActive(false);
@@ -382,13 +387,14 @@ public class ExecutionImpl implements
     return scopeExecution;
   }
 
-  public void destroyScope() {
+  public ExecutionImpl destroyScope() {
     log.fine("destroy scope: scoped "+this+" continues as parent scope "+getParent());
     parent.setActivity(getActivity());
     parent.setTransition(getTransition());
     parent.setActive(true);
     parent.removeExecution(this);
     end();
+    return parent;
   }
   
   // process instance start implementation ////////////////////////////////////
@@ -447,25 +453,37 @@ public class ExecutionImpl implements
     return inactiveConcurrentExecutionsInActivity;
   }
 
-  public void takeAll(List<PvmTransition> transitions, List<ActivityExecution> joinedExecutions) {
+  @SuppressWarnings("unchecked")
+  public void takeAll(List<PvmTransition> transitions, List<ActivityExecution> recyclableExecutions) {
     transitions = new ArrayList<PvmTransition>(transitions);
-    joinedExecutions = new ArrayList<ActivityExecution>(joinedExecutions);
+    recyclableExecutions = new ArrayList<ActivityExecution>(recyclableExecutions);
     
     ExecutionImpl concurrentRoot = (isConcurrent() ? getParent() : this);
-    List< ? extends ActivityExecution> concurrentExecutions = concurrentRoot.getExecutions();
+    List<ExecutionImpl> concurrentActiveExecutions = new ArrayList<ExecutionImpl>();
+    for (ExecutionImpl execution: concurrentRoot.getExecutions()) {
+      if (execution.isActive()) {
+        concurrentActiveExecutions.add(execution);
+      }
+    }
 
     if (log.isLoggable(Level.FINE)) {
       log.fine("transitions to take concurrent: " + transitions);
-      log.fine("existing concurrent executions: " + concurrentExecutions);
+      log.fine("active concurrent executions: " + concurrentActiveExecutions);
     }
 
     if ( (transitions.size()==1)
-         && (joinedExecutions.size()==concurrentExecutions.size())
+         && (concurrentActiveExecutions.isEmpty())
        ) {
 
-      for (ActivityExecution prunedExecution: joinedExecutions) {
-        log.info("pruning execution "+prunedExecution);
-        prunedExecution.end();
+      List<ExecutionImpl> recyclableExecutionImpls = (List) recyclableExecutions;
+      for (ExecutionImpl prunedExecution: recyclableExecutionImpls) {
+        // End the pruned executions if necessary.
+        // Some recyclable executions are inactivated (joined executions)
+        // Others are already ended (end activities)
+        if (!prunedExecution.isEnded()) {
+          log.info("pruning execution " + prunedExecution);
+          prunedExecution.getParent().removeExecution(prunedExecution);
+        }
       }
 
       log.info("activating the concurrent root execution as the single path of execution going forward");
@@ -477,27 +495,28 @@ public class ExecutionImpl implements
     } else {
       
       List<OutgoingExecution> outgoingExecutions = new ArrayList<OutgoingExecution>();
-      
-      joinedExecutions.remove(concurrentRoot);
-      log.fine("joined executions to be reused: " + joinedExecutions);
+
+      recyclableExecutions.remove(concurrentRoot);
+  
+      log.fine("recyclable executions for reused: " + recyclableExecutions);
       
       // first create the concurrent executions
       while (!transitions.isEmpty()) {
         PvmTransition outgoingTransition = transitions.remove(0);
 
-        if (joinedExecutions.isEmpty()) {
+        if (recyclableExecutions.isEmpty()) {
           ActivityExecution outgoingExecution = concurrentRoot.createExecution();
           outgoingExecutions.add(new OutgoingExecution(outgoingExecution, outgoingTransition, true));
           log.fine("new "+outgoingExecution+" created to take transition "+outgoingTransition);
         } else {
-          ActivityExecution outgoingExecution = joinedExecutions.remove(0);
+          ActivityExecution outgoingExecution = recyclableExecutions.remove(0);
           outgoingExecutions.add(new OutgoingExecution(outgoingExecution, outgoingTransition, true));
           log.fine("recycled "+outgoingExecution+" to take transition "+outgoingTransition);
         }
       }
 
       // prune the executions that are not recycled 
-      for (ActivityExecution prunedExecution: joinedExecutions) {
+      for (ActivityExecution prunedExecution: recyclableExecutions) {
         log.info("pruning execution "+prunedExecution);
         prunedExecution.end();
       }
@@ -578,6 +597,7 @@ public class ExecutionImpl implements
 
   public void setVariable(String variableName, Object value) {
     ensureVariableMapInitialized();
+    log.fine("setting variable '"+variableName+"' to value '"+value+"'");
     variableMap.put(variableName, value);
   }
   
@@ -595,20 +615,13 @@ public class ExecutionImpl implements
   // toString /////////////////////////////////////////////////////////////////
   
   public String toString() {
-    return toString(new StringBuilder()); 
+    if (isProcessInstance()) {
+      return "ProcessInstance["+System.identityHashCode(this)+"]";
+    } else {
+      return "Execution["+System.identityHashCode(this)+"]";
+    }
   }
   
-  public String toString(StringBuilder text) {
-    if (isProcessInstance()) {
-      text.append("ProcessInstance");
-    } else {
-      text.append("Execution");
-    }
-    text.append("-");
-    text.append(getIdForToString());
-    return text.toString();
-  }
-
   protected String getIdForToString() {
     return Integer.toString(System.identityHashCode(this));
   }

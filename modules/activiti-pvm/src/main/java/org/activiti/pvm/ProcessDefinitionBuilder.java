@@ -104,9 +104,6 @@ public class ProcessDefinitionBuilder {
 
   public ProcessDefinitionBuilder behavior(ActivityBehavior activityBehaviour) {
     getActivity().setActivityBehavior(activityBehaviour);
-    if (activityBehaviour instanceof CompositeActivityBehavior) {
-      getActivity().setScope(true);
-    }
     return this;
   }
   
@@ -130,5 +127,10 @@ public class ProcessDefinitionBuilder {
   
   protected ActivityImpl getActivity() {
     return (ActivityImpl) scopeStack.peek(); 
+  }
+
+  public ProcessDefinitionBuilder scope() {
+    getActivity().setScope(true);
+    return this;
   }
 }
