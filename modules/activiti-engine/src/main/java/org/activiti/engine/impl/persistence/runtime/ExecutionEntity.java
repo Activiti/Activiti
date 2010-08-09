@@ -311,6 +311,10 @@ public class ExecutionEntity extends ExecutionImpl implements PersistentObject, 
   protected String getIdForToString() {
     return id;
   }
+  
+  public int getRevisionNext() {
+    return revision+1;
+  }
 
   // getters and setters //////////////////////////////////////////////////////
 
