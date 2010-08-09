@@ -31,19 +31,22 @@ public class AtomicOperationTransitionNotifyListenerTake implements AtomicOperat
   public void execute(ExecutionImpl execution) {
     TransitionImpl transition = execution.getTransition();
     
-    log.fine("taking transition "+transition);
-    
     List<EventListener> eventListeners = transition.getEventListeners();
     int eventListenerIndex = execution.getEventListenerIndex();
     
     if (eventListeners.size()>eventListenerIndex) {
+      execution.setEventName(EventListener.EVENTNAME_TAKE);
+      execution.setEventSource(transition);
       EventListener listener = eventListeners.get(eventListenerIndex);
       listener.notify(execution);
       execution.setEventListenerIndex(eventListenerIndex+1);
       execution.performOperation(this);
 
     } else {
+      log.fine("taking transition "+transition);
       execution.setEventListenerIndex(0);
+      execution.setEventName(null);
+      execution.setEventSource(null);
       ActivityImpl activity = execution.getActivity();
       ActivityImpl nextScope = findNextScope(activity.getParent(), transition.getDestination());
       execution.setActivity(nextScope);

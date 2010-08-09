@@ -30,6 +30,8 @@ public class AtomicOperationTransitionNotifyListenerStart implements AtomicOpera
     int eventListenerIndex = execution.getEventListenerIndex();
     
     if (eventListeners.size()>eventListenerIndex) {
+      execution.setEventName(EventListener.EVENTNAME_START);
+      execution.setEventSource(activity);
       EventListener listener = eventListeners.get(eventListenerIndex);
       listener.notify(execution);
       execution.setEventListenerIndex(eventListenerIndex+1);
@@ -37,6 +39,8 @@ public class AtomicOperationTransitionNotifyListenerStart implements AtomicOpera
 
     } else {
       execution.setEventListenerIndex(0);
+      execution.setEventName(null);
+      execution.setEventSource(null);
 
       TransitionImpl transition = execution.getTransition();
       ActivityImpl destination = transition.getDestination();

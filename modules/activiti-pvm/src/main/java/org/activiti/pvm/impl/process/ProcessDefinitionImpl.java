@@ -48,6 +48,6 @@ public class ProcessDefinitionImpl extends ScopeImpl implements PvmProcessDefini
   }
   
   public String toString() {
-    return "ProcessDefinitionImpl["+System.identityHashCode(this)+"]";
+    return "ProcessDefinition("+id+")";
   }
 }

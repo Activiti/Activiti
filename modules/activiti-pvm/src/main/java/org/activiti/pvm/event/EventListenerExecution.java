@@ -12,6 +12,8 @@
  */
 package org.activiti.pvm.event;
 
+import org.activiti.pvm.process.PvmProcessElement;
+
 
 /**
  * @author Tom Baeyens
@@ -20,5 +22,7 @@ public interface EventListenerExecution {
   
   Object getVariable(String variableName);
   void setVariable(String variableName, Object value);
+  String getEventName();
+  PvmProcessElement getEventSource();
 
 }

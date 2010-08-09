@@ -30,6 +30,9 @@ public class AtomicOperationExecuteCurrentActivity implements AtomicOperation {
     ActivityImpl activity = execution.getActivity();
     
     ActivityBehavior activityBehavior = activity.getActivityBehavior();
+    if (activityBehavior==null) {
+      throw new PvmException("no behavior specified in "+activity);
+    }
 
     log.fine("executing "+activity+": "+activityBehavior.getClass().getName());
     

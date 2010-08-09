@@ -150,7 +150,7 @@ public class PvmBasicLinearExecutionTest extends PvmTestCase {
         .transition("loop")
       .endActivity()
       .createActivity("loop")
-        .behavior(new While("count", 0, 1000))
+        .behavior(new While("count", 0, 500))
         .transition("one", "more")
         .transition("end", "done")
       .endActivity()

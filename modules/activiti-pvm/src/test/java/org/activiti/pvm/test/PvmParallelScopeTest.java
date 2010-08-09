@@ -20,7 +20,6 @@ import org.activiti.pvm.ProcessDefinitionBuilder;
 import org.activiti.pvm.process.PvmProcessDefinition;
 import org.activiti.pvm.runtime.PvmProcessInstance;
 import org.activiti.test.pvm.activities.Automatic;
-import org.activiti.test.pvm.activities.End;
 import org.activiti.test.pvm.activities.ParallelGateway;
 import org.activiti.test.pvm.activities.WaitState;
 
@@ -43,12 +42,16 @@ public class PvmParallelScopeTest extends PvmTestCase {
           .behavior(new ParallelGateway())
           .transition("c1")
           .transition("c2")
+          .transition("c3")
         .endActivity()
       .endActivity()
       .createActivity("c1")
         .behavior(new WaitState())
       .endActivity()
       .createActivity("c2")
+        .behavior(new WaitState())
+      .endActivity()
+      .createActivity("c3")
         .behavior(new WaitState())
       .endActivity()
     .buildProcessDefinition();
@@ -60,8 +63,41 @@ public class PvmParallelScopeTest extends PvmTestCase {
     List<String> expectedActiveActivityIds = new ArrayList<String>();
     expectedActiveActivityIds.add("c1");
     expectedActiveActivityIds.add("c2");
+    expectedActiveActivityIds.add("c3");
     
     assertEquals(expectedActiveActivityIds, activeActivityIds);
   }
-  
+
+  public void testConcurrentPathsGoingIntoScope() {
+    PvmProcessDefinition processDefinition = new ProcessDefinitionBuilder()
+      .createActivity("start")
+        .initial()
+        .behavior(new Automatic())
+        .transition("parallel")
+      .endActivity()
+      .createActivity("parallel")
+        .behavior(new ParallelGateway())
+        .transition("inside")
+        .transition("inside")
+        .transition("inside")
+      .endActivity()
+      .createActivity("scope")
+        .scope()
+        .createActivity("inside")
+          .behavior(new WaitState())
+        .endActivity()
+      .endActivity()
+    .buildProcessDefinition();
+    
+    PvmProcessInstance processInstance = processDefinition.createProcessInstance(); 
+    processInstance.start();
+    
+    List<String> activeActivityIds = processInstance.findActiveActivityIds();
+    List<String> expectedActiveActivityIds = new ArrayList<String>();
+    expectedActiveActivityIds.add("inside");
+    expectedActiveActivityIds.add("inside");
+    expectedActiveActivityIds.add("inside");
+    
+    assertEquals(expectedActiveActivityIds, activeActivityIds);
+  }
 }

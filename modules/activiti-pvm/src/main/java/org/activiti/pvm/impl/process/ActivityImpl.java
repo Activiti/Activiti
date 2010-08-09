@@ -20,7 +20,6 @@ import java.util.Map;
 
 import org.activiti.pvm.PvmException;
 import org.activiti.pvm.activity.ActivityBehavior;
-import org.activiti.pvm.event.EventListener;
 import org.activiti.pvm.process.PvmActivity;
 import org.activiti.pvm.process.PvmTransition;
 
@@ -66,7 +65,7 @@ public class ActivityImpl extends ScopeImpl implements PvmActivity {
   }
   
   public String toString() {
-    return "ActivityImpl["+id+"]";
+    return "Activity("+id+")";
   }
   
   public ActivityImpl getParentActivity() {

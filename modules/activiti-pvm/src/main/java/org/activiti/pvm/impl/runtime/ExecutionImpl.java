@@ -30,6 +30,7 @@ import org.activiti.pvm.impl.process.ProcessDefinitionImpl;
 import org.activiti.pvm.impl.process.TransitionImpl;
 import org.activiti.pvm.process.PvmActivity;
 import org.activiti.pvm.process.PvmProcessDefinition;
+import org.activiti.pvm.process.PvmProcessElement;
 import org.activiti.pvm.process.PvmTransition;
 import org.activiti.pvm.runtime.PvmExecution;
 import org.activiti.pvm.runtime.PvmProcessInstance;
@@ -86,27 +87,27 @@ public class ExecutionImpl implements
    *   <li>an execution is ended.</li>
    * </ul>*/ 
   protected boolean isActive = true;
-  
   protected boolean isConcurrent = false;
-  
   protected boolean isScope = false;
-
   protected boolean isEnded = false;
 
   protected Map<String, Object> variableMap = null;
   
-  // non persisted fields /////////////////////////////////////////////////////////
-
-  /** indicates that this execution is taking a transition */
-  transient protected int eventListenerIndex = 0;
+  // events ///////////////////////////////////////////////////////////////////
+  
+  protected String eventName;
+  protected PvmProcessElement eventSource;
+  protected int eventListenerIndex = 0;
+  
+  // actomic operations ///////////////////////////////////////////////////////
 
   /** next operation.  process execution is in fact runtime interpretation of the process model.
    * each operation is a logical unit of interpretation of the process.  so sequentially processing 
    * the operations drives the interpretation or execution of a process. 
    * @see AtomicOperation
    * @see #performOperation(AtomicOperation) */
-  transient protected AtomicOperation nextOperation;
-  transient protected boolean isOperating = false;
+  protected AtomicOperation nextOperation;
+  protected boolean isOperating = false;
   
   /* Default constructor for ibatis/jpa/etc. */
   protected ExecutionImpl() {
@@ -262,6 +263,8 @@ public class ExecutionImpl implements
         setSuperExecution(null);
         superExecutionCopy.signal("continue process", null);
       }
+      
+      performOperation(AtomicOperation.PROCESS_END);
     }
   }
   
@@ -402,7 +405,7 @@ public class ExecutionImpl implements
   public void start() {
     ActivityImpl initial = getProcessDefinition().getInitial();
     setActivity(initial);
-    performOperation(AtomicOperation.EXECUTE_CURRENT_ACTIVITY);
+    performOperation(AtomicOperation.PROCESS_START);
   }
   
   // methods that translate to operations /////////////////////////////////////
@@ -674,5 +677,17 @@ public class ExecutionImpl implements
   }
   protected void setProcessDefinition(ProcessDefinitionImpl processDefinition) {
     this.processDefinition = processDefinition;
+  }
+  public String getEventName() {
+    return eventName;
+  }
+  public void setEventName(String eventName) {
+    this.eventName = eventName;
+  }
+  public PvmProcessElement getEventSource() {
+    return eventSource;
+  }
+  public void setEventSource(PvmProcessElement eventSource) {
+    this.eventSource = eventSource;
   }
 }

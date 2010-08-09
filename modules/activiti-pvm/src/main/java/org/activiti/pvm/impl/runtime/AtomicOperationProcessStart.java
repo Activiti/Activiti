@@ -10,28 +10,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.activiti.pvm.impl.runtime;
 
 import java.util.List;
 
 import org.activiti.pvm.event.EventListener;
-import org.activiti.pvm.impl.process.ActivityImpl;
-import org.activiti.pvm.process.PvmProcessElement;
+import org.activiti.pvm.impl.process.ProcessDefinitionImpl;
 
 
 /**
  * @author Tom Baeyens
  */
-public class AtomicOperationTransitionNotifyListenerEnd implements AtomicOperation {
+public class AtomicOperationProcessStart implements AtomicOperation {
 
   public void execute(ExecutionImpl execution) {
-    ActivityImpl activity = execution.getActivity();
-    List<EventListener> eventListeners = activity.getEventListeners(EventListener.EVENTNAME_END);
+    ProcessDefinitionImpl processDefinition = execution.getProcessDefinition();
+    List<EventListener> eventListeners = processDefinition.getEventListeners(EventListener.EVENTNAME_START);
     int eventListenerIndex = execution.getEventListenerIndex();
     
     if (eventListeners.size()>eventListenerIndex) {
-      execution.setEventName(EventListener.EVENTNAME_END);
-      execution.setEventSource(activity);
+      execution.setEventName(EventListener.EVENTNAME_START);
+      execution.setEventSource(processDefinition);
       EventListener listener = eventListeners.get(eventListenerIndex);
       listener.notify(execution);
       execution.setEventListenerIndex(eventListenerIndex+1);
@@ -41,15 +41,12 @@ public class AtomicOperationTransitionNotifyListenerEnd implements AtomicOperati
       execution.setEventListenerIndex(0);
       execution.setEventName(null);
       execution.setEventSource(null);
-      execution.performOperation(TRANSITION_DESTROY_SCOPE);
+      execution.performOperation(EXECUTE_CURRENT_ACTIVITY);
     }
   }
 
   public boolean isAsync() {
     return false;
   }
-  
-  public String toString() {
-    return "TransitionNotifyListenerEnd";
-  }
+
 }

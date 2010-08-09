@@ -10,17 +10,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.activiti.pvm.event;
+
+package org.activiti.pvm.test;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.activiti.pvm.event.EventListener;
+import org.activiti.pvm.event.EventListenerExecution;
 
 
 /**
  * @author Tom Baeyens
  */
-public interface EventListener {
-
-  String EVENTNAME_START = "start";
-  String EVENTNAME_END = "end";
-  String EVENTNAME_TAKE = "take";
+public class EventCollector implements EventListener {
   
-  void notify(EventListenerExecution execution);
+  public List<String> events = new ArrayList<String>(); 
+
+  public void notify(EventListenerExecution execution) {
+    events.add(execution.getEventName()+" on "+execution.getEventSource());
+  }
 }

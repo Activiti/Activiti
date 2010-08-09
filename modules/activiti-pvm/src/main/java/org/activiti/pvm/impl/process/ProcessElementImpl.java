@@ -13,13 +13,10 @@
 
 package org.activiti.pvm.impl.process;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
-import org.activiti.pvm.event.EventListener;
 import org.activiti.pvm.process.PvmProcessElement;
 
 

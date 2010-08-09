@@ -18,7 +18,7 @@ import java.util.List;
 import java.util.Stack;
 
 import org.activiti.pvm.activity.ActivityBehavior;
-import org.activiti.pvm.activity.CompositeActivityBehavior;
+import org.activiti.pvm.event.EventListener;
 import org.activiti.pvm.impl.process.ActivityImpl;
 import org.activiti.pvm.impl.process.ProcessDefinitionImpl;
 import org.activiti.pvm.impl.process.ProcessElementImpl;
@@ -89,6 +89,7 @@ public class ProcessDefinitionBuilder {
   
   public ProcessDefinitionBuilder endTransition() {
     processElement = scopeStack.peek();
+    transition = null;
     return this;
   }
 
@@ -131,6 +132,24 @@ public class ProcessDefinitionBuilder {
 
   public ProcessDefinitionBuilder scope() {
     getActivity().setScope(true);
+    return this;
+  }
+
+  public ProcessDefinitionBuilder eventListener(EventListener eventListener) {
+    if (transition!=null) {
+      transition.addEventListener(eventListener);
+    } else {
+      throw new PvmException("not in a transition scope");
+    }
+    return this;
+  }
+  
+  public ProcessDefinitionBuilder eventListener(String eventName, EventListener eventListener) {
+    if (transition==null) {
+      scopeStack.peek().addEventListener(eventName, eventListener);
+    } else {
+      throw new PvmException("not in an activity- or process definition scope. (but in a transition scope)");
+    }
     return this;
   }
 }

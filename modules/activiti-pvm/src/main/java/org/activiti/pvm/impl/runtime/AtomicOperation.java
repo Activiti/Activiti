@@ -19,6 +19,8 @@ package org.activiti.pvm.impl.runtime;
  */
 public interface AtomicOperation {
   
+  AtomicOperation PROCESS_START = new AtomicOperationProcessStart();
+  AtomicOperation PROCESS_END = new AtomicOperationProcessEnd();
   AtomicOperation EXECUTE_CURRENT_ACTIVITY = new AtomicOperationExecuteCurrentActivity();
   AtomicOperation TRANSITION_NOTIFY_LISTENER_END = new AtomicOperationTransitionNotifyListenerEnd();
   AtomicOperation TRANSITION_DESTROY_SCOPE = new AtomicOperationTransitionDestroyScope();

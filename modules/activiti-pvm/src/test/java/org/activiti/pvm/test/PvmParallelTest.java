@@ -67,7 +67,6 @@ public class PvmParallelTest extends PvmTestCase {
     assertTrue(processInstance.isEnded());
   }
 
-  @Test
   public void testSimpleWaitStateConcurrency() {
     PvmProcessDefinition processDefinition = new ProcessDefinitionBuilder()
       .createActivity("start")
@@ -116,7 +115,6 @@ public class PvmParallelTest extends PvmTestCase {
     assertEquals(expectedActivityNames, activityNames);
   }
 
-  @Test
   public void testUnstructuredConcurrencyTwoJoins() {
     PvmProcessDefinition processDefinition = new ProcessDefinitionBuilder()
       .createActivity("start")
@@ -165,7 +163,6 @@ public class PvmParallelTest extends PvmTestCase {
     assertNotNull(processInstance.findExecution("end"));
   }
 
-  @Test
   public void testUnstructuredConcurrencyTwoForks() {
     PvmProcessDefinition processDefinition = new ProcessDefinitionBuilder()
       .createActivity("start")
@@ -215,7 +212,6 @@ public class PvmParallelTest extends PvmTestCase {
     assertNotNull(processInstance.findExecution("end"));
   }
 
-  @Test
   public void testJoinForkCombinedInOneParallelGateway() {
     PvmProcessDefinition processDefinition = new ProcessDefinitionBuilder()
       .createActivity("start")
@@ -273,5 +269,4 @@ public class PvmParallelTest extends PvmTestCase {
     
     assertNotNull(processInstance.findExecution("end"));
   }
-
 }
