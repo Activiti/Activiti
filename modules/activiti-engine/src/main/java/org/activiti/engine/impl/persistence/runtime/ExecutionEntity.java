@@ -15,14 +15,15 @@ package org.activiti.engine.impl.persistence.runtime;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
+import javax.el.ELContext;
+
+import org.activiti.engine.Execution;
+import org.activiti.engine.ProcessInstance;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.PersistentObject;
-import org.activiti.engine.impl.persistence.db.DbSqlSession;
 import org.activiti.engine.impl.persistence.repository.ProcessDefinitionEntity;
 import org.activiti.engine.impl.persistence.task.TaskEntity;
 import org.activiti.pvm.impl.process.ActivityImpl;
@@ -33,7 +34,7 @@ import org.activiti.pvm.impl.runtime.ExecutionImpl;
 /**
  * @author Tom Baeyens
  */
-public class ExecutionEntity extends ExecutionImpl implements PersistentObject {
+public class ExecutionEntity extends ExecutionImpl implements PersistentObject, Execution, ProcessInstance {
 
   private static final long serialVersionUID = 1L;
 
@@ -85,7 +86,7 @@ public class ExecutionEntity extends ExecutionImpl implements PersistentObject {
   protected boolean isNew = false;
   protected boolean isExecutionsInitialized = false;
 
-  transient protected List<TaskEntity> tasks = null;
+  protected ELContext cachedElContext;
 
   ExecutionEntity() {
   }
@@ -144,8 +145,8 @@ public class ExecutionEntity extends ExecutionImpl implements PersistentObject {
     if ((processInstance == null) && (processInstanceId != null)) {
       processInstance = CommandContext
         .getCurrent()
-        .getDbSqlSession()
-        .findProcessInstanceById(processInstanceId);
+        .getRuntimeSession()
+        .findExecutionById(processInstanceId);
     }
   }
 
@@ -183,14 +184,15 @@ public class ExecutionEntity extends ExecutionImpl implements PersistentObject {
   
   // executions ///////////////////////////////////////////////////////////////
   
+  @SuppressWarnings("unchecked")
   @Override
   protected void ensureExecutionsInitialized() {
     // If the execution is new, then the child execution objects are already
     // fetched
     if (!isExecutionsInitialized) {
-      this.executions = CommandContext
+      this.executions = (List) CommandContext
         .getCurrent()
-        .getDbSqlSession()
+        .getRuntimeSession()
         .findChildExecutionsByParentExecutionId(id);
       this.isExecutionsInitialized = true;
     }
@@ -203,7 +205,7 @@ public class ExecutionEntity extends ExecutionImpl implements PersistentObject {
     if (parent == null && parentId != null) {
       parent = CommandContext
         .getCurrent()
-        .getDbSqlSession()
+        .getRuntimeSession()
         .findExecutionById(parentId);
     }
   }
@@ -226,7 +228,7 @@ public class ExecutionEntity extends ExecutionImpl implements PersistentObject {
     if (superExecution == null && superExecutionId != null) {
       superExecution = CommandContext
         .getCurrent()
-        .getDbSqlSession()
+        .getRuntimeSession()
         .findExecutionById(superExecutionId);
     }
   }
@@ -247,8 +249,8 @@ public class ExecutionEntity extends ExecutionImpl implements PersistentObject {
     if (subProcessInstance == null) {
       subProcessInstance = CommandContext
         .getCurrent()
-        .getDbSqlSession()
-        .findSubProcessInstanceByParentExecutionId(this.getId());
+        .getRuntimeSession()
+        .findSubProcessInstanceBySuperExecutionId(id);
     }
   }
   
@@ -258,35 +260,34 @@ public class ExecutionEntity extends ExecutionImpl implements PersistentObject {
   public void end() {
     super.end();
 
-    ensureVariableMapInitialized();
+    ensureVariablesInitialized();
 
-    DbSqlSession dbSqlSession = CommandContext
-      .getCurrent()
-      .getDbSqlSession();
-
-    Set<String> variableNames = new HashSet<String>(variableMap.getVariableNames());
-    for (String variableName : variableNames) {
-      variableMap.deleteVariable(variableName);
-    }
+    variables.clear();
     
     // TODO add cancellation of timers
 
-    List<TaskEntity> tasks = dbSqlSession.findTasksByExecution(id);
+    List<TaskEntity> tasks = CommandContext
+      .getCurrent()
+      .getTaskSession()
+      .findTasksByExecutionId(id);
+    
     for (TaskEntity task : tasks) {
       task.delete();
     }
 
     // then delete execution
-    dbSqlSession.delete(this);
+    CommandContext
+      .getCurrent()
+      .getDbSqlSession()
+      .delete(this);
   }
 
   // variables ////////////////////////////////////////////////////////////////
   
   @Override
-  protected void ensureVariableMapInitialized() {
-    if (variableMap==null) {
-      ensureProcessDefinitionInitialized();
-      this.variableMap = new DbVariableMap(this);
+  protected void ensureVariablesInitialized() {
+    if (variables==null) {
+      this.variables = new VariableMap(id, processInstanceId);
     }
   }
   
@@ -342,5 +343,11 @@ public class ExecutionEntity extends ExecutionImpl implements PersistentObject {
   }
   public void setProcessDefinitionId(String processDefinitionId) {
     this.processDefinitionId = processDefinitionId;
+  }
+  public ELContext getCachedElContext() {
+    return cachedElContext;
+  }
+  public void setCachedElContext(ELContext cachedElContext) {
+    this.cachedElContext = cachedElContext;
   }
 }

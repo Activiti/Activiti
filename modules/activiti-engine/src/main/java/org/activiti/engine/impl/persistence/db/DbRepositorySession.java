@@ -17,10 +17,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.activiti.engine.Execution;
 import org.activiti.engine.ProcessDefinition;
-import org.activiti.engine.ProcessInstance;
+import org.activiti.engine.impl.ExecutionQueryImpl;
 import org.activiti.engine.impl.ProcessDefinitionQueryImpl;
-import org.activiti.engine.impl.ProcessInstanceQueryImpl;
 import org.activiti.engine.impl.cfg.RepositorySession;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.interceptor.Session;
@@ -89,14 +89,15 @@ public class DbRepositorySession implements Session, RepositorySession {
         .executeList(commandContext, null);
       
       for (ProcessDefinition processDefinition: processDefinitions) {
-        List<ProcessInstance> processInstances = new ProcessInstanceQueryImpl()
+        List<Execution> processInstances = new ExecutionQueryImpl()
+          .onlyProcessInstances()
           .processDefinitionId(processDefinition.getId())
           .executeList(commandContext, null);
         
-        for (ProcessInstance processInstance: processInstances) {
+        for (Execution processInstance: processInstances) {
           commandContext
             .getRuntimeSession()
-            .endProcessInstance(processInstance.getId());
+            .endProcessInstance(processInstance.getId(), "deleted deployment");
         }
       }
     }

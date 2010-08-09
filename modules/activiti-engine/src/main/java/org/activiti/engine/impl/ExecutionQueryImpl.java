@@ -14,9 +14,9 @@ package org.activiti.engine.impl;
 
 import java.util.List;
 
+import org.activiti.engine.Execution;
+import org.activiti.engine.ExecutionQuery;
 import org.activiti.engine.Page;
-import org.activiti.engine.ProcessInstance;
-import org.activiti.engine.ProcessInstanceQuery;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
 
@@ -24,46 +24,58 @@ import org.activiti.engine.impl.interceptor.CommandExecutor;
 /**
  * @author Joram Barrez
  */
-public class ProcessInstanceQueryImpl extends AbstractQuery<ProcessInstance> implements ProcessInstanceQuery {
+public class ExecutionQueryImpl extends AbstractQuery<Execution> implements ExecutionQuery {
 
+  protected boolean isProcessInstancesOnly = false;
   protected String processDefinitionId;
   protected String processDefinitionKey;
   protected String processInstanceId;
+  protected String activityId;
   
   protected CommandExecutor commandExecutor;
   
-  public ProcessInstanceQueryImpl() {
+  public ExecutionQueryImpl() {
   }
   
-  public ProcessInstanceQueryImpl(CommandExecutor commandExecutor) {
+  public ExecutionQueryImpl(CommandExecutor commandExecutor) {
     super(commandExecutor);
   }
 
-  public ProcessInstanceQueryImpl processDefinitionId(String processDefinitionId) {
+  public ExecutionQueryImpl processDefinitionId(String processDefinitionId) {
     this.processDefinitionId = processDefinitionId;
     return this;
   }
 
-  public ProcessInstanceQuery processDefinitionKey(String processDefinitionKey) {
+  public ExecutionQueryImpl processDefinitionKey(String processDefinitionKey) {
     this.processDefinitionKey = processDefinitionKey;
     return this;
   }
   
-  public ProcessInstanceQuery processInstanceId(String processInstanceId) {
+  public ExecutionQueryImpl onlyProcessInstances() {
+    isProcessInstancesOnly = true;
+    return this;
+  }
+  
+  public ExecutionQueryImpl processInstanceId(String processInstanceId) {
     this.processInstanceId = processInstanceId;
+    return this;
+  }
+  
+  public ExecutionQueryImpl activityId(String activityId) {
+    this.activityId = activityId;
     return this;
   }
   
   public long executeCount(CommandContext commandContext) {
     return commandContext
       .getRuntimeSession()
-      .findProcessInstanceCountByDynamicCriteria(this);
+      .findExecutionCountByDynamicCriteria(this);
   }
 
-  public List<ProcessInstance> executeList(CommandContext commandContext, Page page) {
+  public List<Execution> executeList(CommandContext commandContext, Page page) {
     return commandContext
       .getRuntimeSession()
-      .findProcessInstancesByDynamicCriteria(this);
+      .findExecutionsByDynamicCriteria(this);
   }
   
   public String getProcessDefinitionKey() {
@@ -72,5 +84,15 @@ public class ProcessInstanceQueryImpl extends AbstractQuery<ProcessInstance> imp
   
   public String getProcessInstanceId() {
     return processInstanceId;
+  }
+
+  
+  public boolean isProcessInstancesOnly() {
+    return isProcessInstancesOnly;
+  }
+
+  
+  public String getProcessDefinitionId() {
+    return processDefinitionId;
   }
 }

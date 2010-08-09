@@ -85,7 +85,12 @@ public class EngineRebootProcessDefinitionCacheTest extends TestCase {
        .buildProcessEngine();
      
      // Check if the existing process instance is still alive
-     processInstance = processEngine.getRuntimeService().findProcessInstanceById(processInstanceId);
+     processInstance = processEngine
+       .getRuntimeService()
+       .createProcessInstanceQuery()
+       .processInstanceId(processInstanceId)
+       .singleResult();
+     
      assertNotNull(processInstance);
      
      // Complete the task.  That will end the process instance
@@ -98,7 +103,12 @@ public class EngineRebootProcessDefinitionCacheTest extends TestCase {
      
      // Check if the process instance has really ended.  This means that the process definition has 
      // re-loaded into the process definition cache
-     processInstance = processEngine.getRuntimeService().findProcessInstanceById(processInstanceId);
+     processInstance = processEngine
+       .getRuntimeService()
+       .createProcessInstanceQuery()
+       .processInstanceId(processInstanceId)
+       .singleResult();
+
      assertNull(processInstance);
      
      // Extra check to see if a new process instance can be started as well

@@ -13,8 +13,7 @@
 package org.activiti.engine.impl.jobexecutor;
 
 import org.activiti.engine.impl.interceptor.CommandContext;
-import org.activiti.engine.impl.persistence.runtime.ActivityInstanceEntity;
-import org.activiti.engine.impl.persistence.runtime.ProcessInstanceEntity;
+import org.activiti.engine.impl.persistence.runtime.ExecutionEntity;
 
 
 /**
@@ -23,5 +22,5 @@ import org.activiti.engine.impl.persistence.runtime.ProcessInstanceEntity;
 public interface JobHandler {
 
   String getType();
-  void execute(String configuration, ProcessInstanceEntity processInstance, ActivityInstanceEntity activityInstance, CommandContext commandContext);
+  void execute(String configuration, ExecutionEntity execution, CommandContext commandContext);
 }

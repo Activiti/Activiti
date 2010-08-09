@@ -42,8 +42,8 @@ public class TimerEntity extends JobEntity {
       }
       
       commandContext
-        .getRuntimeSession()
-        .deleteJob(id);
+        .getDbSqlSession()
+        .delete(JobEntity.class, id);
 
     } else {
 

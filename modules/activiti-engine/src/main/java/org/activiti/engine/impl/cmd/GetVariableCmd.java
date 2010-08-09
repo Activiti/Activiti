@@ -13,12 +13,9 @@
 package org.activiti.engine.impl.cmd;
 
 import org.activiti.engine.ActivitiException;
-import org.activiti.engine.impl.cfg.RuntimeSession;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
-import org.activiti.engine.impl.persistence.runtime.ActivityInstanceEntity;
-import org.activiti.engine.impl.persistence.runtime.ProcessInstanceEntity;
-import org.activiti.pvm.impl.runtime.ScopeInstanceImpl;
+import org.activiti.engine.impl.persistence.runtime.ExecutionEntity;
 
 
 /**
@@ -26,30 +23,23 @@ import org.activiti.pvm.impl.runtime.ScopeInstanceImpl;
  */
 public class GetVariableCmd implements Command<Object> {
 
-  protected String scopeInstanceId;
+  protected String executionId;
   protected String variableName;
 
-  public GetVariableCmd(String scopeInstanceId, String variableName) {
-    this.scopeInstanceId = scopeInstanceId;
+  public GetVariableCmd(String executionId, String variableName) {
+    this.executionId = executionId;
     this.variableName = variableName;
   }
 
   public Object execute(CommandContext commandContext) {
-    ScopeInstanceImpl scopeInstance = findScopeInstance(commandContext, scopeInstanceId);
-    return scopeInstance.getVariable(variableName);
-  }
-
-  public static ScopeInstanceImpl findScopeInstance(CommandContext commandContext, String scopeInstanceId) {
-    RuntimeSession runtimeSession = commandContext.getRuntimeSession();
-    ProcessInstanceEntity processInstance = runtimeSession.findProcessInstanceById(scopeInstanceId);
-    if (processInstance!=null) {
-      return processInstance;
+    ExecutionEntity execution = commandContext
+      .getRuntimeSession()
+      .findExecutionById(executionId);
+    
+    if (execution==null) {
+      throw new ActivitiException("execution "+executionId+" doesn't exist");
     }
-    ActivityInstanceEntity activityInstance = runtimeSession.findExecutionById(scopeInstanceId);
-    if (activityInstance==null) {
-      throw new ActivitiException("scope instance "+scopeInstanceId+" doesn't exist");
-    }
-    return activityInstance;
+    
+    return execution.getVariable(variableName);
   }
-
 }

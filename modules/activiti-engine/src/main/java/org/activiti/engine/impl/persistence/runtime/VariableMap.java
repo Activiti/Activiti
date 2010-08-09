@@ -13,50 +13,142 @@
 package org.activiti.engine.impl.persistence.runtime;
 
 import java.io.Serializable;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
+import org.activiti.engine.impl.cfg.RuntimeSession;
+import org.activiti.engine.impl.interceptor.CommandContext;
+import org.activiti.engine.impl.variable.Type;
+import org.activiti.engine.impl.variable.VariableTypes;
 
 
 
 /**
  * @author Tom Baeyens
  */
-public class VariableMap implements Serializable {
+public class VariableMap implements Map<String, Object> , Serializable {
   
   private static final long serialVersionUID = 1L;
   
-  protected Map<String, Object> variableObjects = new HashMap<String, Object>();
+  protected Map<String, VariableInstanceEntity> variableInstances = null;
 
-  public Object getVariable(String variableName) {
-    return variableObjects.get(variableName);
+  protected String executionId;
+  protected String processInstanceId;
+
+  public VariableMap(String executionId, String processInstanceId) {
+    this.executionId = executionId;
+    this.processInstanceId = processInstanceId;
   }
 
-  public void setVariables(Map<String, Object> variables) {
-    variableObjects.putAll(variables);
+  protected void ensureInitialized() {
+    variableInstances = new HashMap<String, VariableInstanceEntity>();
+    
+    List<VariableInstanceEntity> variableInstancesList = CommandContext
+      .getCurrentSession(RuntimeSession.class)
+      .findVariableInstancesByExecutionId(executionId);
+    
+    for (VariableInstanceEntity variableInstance: variableInstancesList) {
+      variableInstances.put(variableInstance.getName(), variableInstance);
+    }
   }
 
-  public void setVariable(String variableName, Object value) {
-    variableObjects.put(variableName, value);
+  public Object get(Object key) {
+    ensureInitialized();
+    VariableInstanceEntity variableInstance = variableInstances.get(key);
+    if (variableInstance==null) {
+      return null;
+    }
+    return variableInstance.getValue();
+  }
+  
+
+  public boolean isEmpty() {
+    ensureInitialized();
+    return variableInstances.isEmpty();
   }
 
-  public void deleteVariable(String variableName) {
-    variableObjects.remove(variableName);
+  public boolean containsKey(Object key) {
+    ensureInitialized();
+    return variableInstances.containsKey(key);
   }
 
-  public Set<String> getVariableNames() {
-    return variableObjects.keySet();
+  public Set<String> keySet() {
+    ensureInitialized();
+    return variableInstances.keySet();
   }
 
-  public Map<String, Object> getVariables() {
-    return variableObjects;
+  public Object put(String key, Object value) {
+    ensureInitialized();
+    VariableInstanceEntity variableInstance = variableInstances.get(key);
+    if ((variableInstance != null) && (!variableInstance.getType().isAbleToStore(value))) {
+      // delete variable
+      remove(key);
+      variableInstance = null;
+    }
+    if (variableInstance == null) {
+      VariableTypes variableTypes = CommandContext
+        .getCurrent()
+        .getProcessEngineConfiguration()
+        .getVariableTypes();
+      
+      Type type = variableTypes.findVariableType(value);
+  
+      variableInstance = VariableInstanceEntity.createAndInsert(key, type, value);
+      variableInstance.setExecutionId(executionId);
+      variableInstance.setProcessInstanceId(processInstanceId);
+    }
+    
+    variableInstance.setValue(value);
+    return null;
   }
 
-  public boolean hasVariable(String variableName) {
-    return variableObjects.containsKey(variableName);
+  public Object remove(Object key) {
+    ensureInitialized();
+    VariableInstanceEntity variableInstance = variableInstances.remove(key);
+    if (variableInstance != null) {
+      // delete variable
+      CommandContext
+        .getCurrent()
+        .getDbSqlSession()
+        .delete(VariableInstanceEntity.class, variableInstance.getId());
+    }
+    return null;
   }
 
-  public void createVariable(String name, String type) {
-    variableObjects.put(name, null);
+  public void putAll(Map< ? extends String, ? extends Object> m) {
+    for (String key: m.keySet()) {
+      put(key, m.get(key));
+    }
+  }
+
+  public int size() {
+    ensureInitialized();
+    return variableInstances.size();
+  }
+
+  public void clear() {
+    ensureInitialized();
+    Set<String> keys = new HashSet<String>(variableInstances.keySet());
+    for (String key: keys) {
+      remove(key);
+    }
+  }
+
+  // unsupported map operations ///////////////////////////////////////////////
+  
+  public boolean containsValue(Object value) {
+    throw new UnsupportedOperationException("please implement me");
+  }
+
+  public Set<java.util.Map.Entry<String, Object>> entrySet() {
+    throw new UnsupportedOperationException("please implement me");
+  }
+
+  public Collection<Object> values() {
+    throw new UnsupportedOperationException("please implement me");
   }
 }

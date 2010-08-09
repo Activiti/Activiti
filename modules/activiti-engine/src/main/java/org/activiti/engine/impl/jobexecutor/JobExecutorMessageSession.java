@@ -13,7 +13,6 @@
 package org.activiti.engine.impl.jobexecutor;
 
 import org.activiti.engine.impl.cfg.MessageSession;
-import org.activiti.engine.impl.cfg.RuntimeSession;
 import org.activiti.engine.impl.cfg.TransactionState;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.interceptor.Session;
@@ -39,8 +38,9 @@ public class JobExecutorMessageSession implements Session, MessageSession {
   }
 
   public void send(MessageEntity message) {
-    RuntimeSession runtimeSession = commandContext.getRuntimeSession();
-    runtimeSession.insertJob(message);
+    commandContext
+      .getDbSqlSession()
+      .insert(message);
     
     commandContext
       .getTransactionContext()

@@ -13,7 +13,6 @@
 package org.activiti.engine.impl.cmd;
 
 import java.util.Map;
-import java.util.concurrent.ExecutionException;
 
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ProcessInstance;
@@ -21,7 +20,7 @@ import org.activiti.engine.impl.cfg.RepositorySession;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.repository.ProcessDefinitionEntity;
-import org.activiti.engine.impl.persistence.runtime.ProcessInstanceEntity;
+import org.activiti.engine.impl.persistence.runtime.ExecutionEntity;
 
 
 /**
@@ -54,7 +53,7 @@ public class StartProcessInstanceCmd<T> implements Command<ProcessInstance> {
       }
     }
     
-    ProcessInstanceEntity processInstance = processDefinition.createProcessInstance();
+    ExecutionEntity processInstance = processDefinition.createProcessInstance();
     
     if (variables!=null) {
       processInstance.setVariables(variables);

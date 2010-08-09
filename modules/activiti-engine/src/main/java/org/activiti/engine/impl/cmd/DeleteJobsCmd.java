@@ -16,9 +16,10 @@ package org.activiti.engine.impl.cmd;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.activiti.engine.impl.cfg.RuntimeSession;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
+import org.activiti.engine.impl.persistence.db.DbSqlSession;
+import org.activiti.engine.impl.persistence.runtime.JobEntity;
 
 
 /**
@@ -38,9 +39,9 @@ public class DeleteJobsCmd implements Command<Void> {
   }
 
   public Void execute(CommandContext commandContext) {
-    RuntimeSession runtimeSession = commandContext.getRuntimeSession();
+    DbSqlSession dbSqlSession = commandContext.getDbSqlSession();
     for (String jobId: jobIds) {
-      runtimeSession.deleteJob(jobId);
+      dbSqlSession.delete(JobEntity.class, jobId);
     }
     return null;
   }

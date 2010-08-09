@@ -16,9 +16,9 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.activiti.engine.impl.cfg.RuntimeSession;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.PersistentObject;
+import org.activiti.engine.impl.persistence.db.DbSqlSession;
 import org.activiti.engine.impl.persistence.task.TaskEntity;
 import org.activiti.engine.impl.variable.Type;
 
@@ -58,8 +58,8 @@ public class VariableInstanceEntity implements Serializable, PersistentObject {
     
     CommandContext
       .getCurrent()
-      .getRuntimeSession()
-      .insertVariableInstance(variableInstance);
+      .getDbSqlSession()
+      .insert(variableInstance);
     
     variableInstance.name = name;
     variableInstance.type = type;
@@ -82,15 +82,15 @@ public class VariableInstanceEntity implements Serializable, PersistentObject {
   }
 
   public void delete() {
-    RuntimeSession runtimeSession = CommandContext
+    DbSqlSession dbSqlSession = CommandContext
       .getCurrent()
-      .getRuntimeSession();
+      .getDbSqlSession();
 
-    runtimeSession.deleteVariableInstance(id);
+    dbSqlSession.delete(VariableInstanceEntity.class, id);
 
     if (byteArrayValueId != null) {
       ByteArrayEntity byteArrayValue = getByteArrayValue();
-      runtimeSession.deleteByteArray(byteArrayValue.getId());
+      dbSqlSession.delete(ByteArrayEntity.class, byteArrayValue.getId());
     }
   }
 

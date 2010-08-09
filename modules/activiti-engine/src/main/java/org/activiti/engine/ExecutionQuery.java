@@ -16,21 +16,20 @@ import java.util.List;
 
 
 
-/** represents one execution of a  {@link ProcessDefinition}.
+/** builds dynamic search queries for process instances.
  * 
- * @author Tom Baeyens
  * @author Joram Barrez
  */
-public interface ProcessInstance extends Execution {
+public interface ExecutionQuery {
   
-  /**
-   * the id of the process definition of the process instance.
-   */
-  String getProcessDefinitionId();
+  ExecutionQuery onlyProcessInstances();
+  ExecutionQuery processInstanceId(String processInstanceId);
+  ExecutionQuery activityId(String activityId);
+  ExecutionQuery processDefinitionKey(String processDefinitionKey);
+  ExecutionQuery processDefinitionId(String processDefinitionId);
   
-  /**
-   * the ids of the activities that currently are active.
-   */
-  List<String> findActiveActivityIds();
-  
+  List<Execution> list();
+  List<Execution> paginatedList(int start, int maxResults);
+  Execution singleResult();
+  long count();
 }

@@ -16,12 +16,13 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.activiti.engine.ActivityInstance;
+import org.activiti.engine.Execution;
+import org.activiti.engine.ExecutionQuery;
 import org.activiti.engine.ProcessInstance;
-import org.activiti.engine.ProcessInstanceQuery;
 import org.activiti.engine.RuntimeService;
 import org.activiti.engine.impl.cmd.EndProcessInstanceCmd;
 import org.activiti.engine.impl.cmd.FindActivitiyInstanceCmd;
-import org.activiti.engine.impl.cmd.FindActivityInstanceInActivityCmd;
+import org.activiti.engine.impl.cmd.FindExecutionInActivityCmd;
 import org.activiti.engine.impl.cmd.FindProcessInstanceCmd;
 import org.activiti.engine.impl.cmd.GetVariableCmd;
 import org.activiti.engine.impl.cmd.GetVariablesCmd;
@@ -33,10 +34,6 @@ import org.activiti.engine.impl.cmd.StartProcessInstanceCmd;
  * @author Tom Baeyens
  */
 public class RuntimeServiceImpl extends ServiceImpl implements RuntimeService {
-
-  public ActivityInstance findActivityInstanceById(String activityInstanceId) {
-    return commandExecutor.execute(new FindActivitiyInstanceCmd(activityInstanceId));
-  }
 
   public void endProcessInstance(String processInstanceId, String nonCompletionReason) {
     commandExecutor.execute(new EndProcessInstanceCmd(processInstanceId, nonCompletionReason));
@@ -58,12 +55,8 @@ public class RuntimeServiceImpl extends ServiceImpl implements RuntimeService {
     return commandExecutor.execute(new StartProcessInstanceCmd<ProcessInstance>(null, processDefinitionId, variables));
   }
 
-  public ProcessInstance findProcessInstanceById(String processInstanceId) {
-    return commandExecutor.execute(new FindProcessInstanceCmd(processInstanceId));
-  }
-
-  public ProcessInstanceQuery createProcessInstanceQuery() {
-    return new ProcessInstanceQueryImpl(commandExecutor);
+  public ExecutionQuery createExecutionQuery() {
+    return new ExecutionQueryImpl(commandExecutor);
   }
 
   public Map<String, Object> getVariables(String executionId) {
@@ -90,9 +83,5 @@ public class RuntimeServiceImpl extends ServiceImpl implements RuntimeService {
 
   public void signal(String activityInstanceId, String sigalName, Object signalData) {
     commandExecutor.execute(new SignalCmd(activityInstanceId, sigalName, signalData));
-  }
-
-  public ActivityInstance findActivityInstanceByProcessInstanceIdAndActivityId(String processInstanceId, String activityId) {
-    return commandExecutor.execute(new FindActivityInstanceInActivityCmd(processInstanceId, activityId));
   }
 }

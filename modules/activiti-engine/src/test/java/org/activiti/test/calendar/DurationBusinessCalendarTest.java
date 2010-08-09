@@ -13,26 +13,18 @@
 
 package org.activiti.test.calendar;
 
-import static org.junit.Assert.assertEquals;
-
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import org.activiti.engine.impl.calendar.DurationBusinessCalendar;
 import org.activiti.engine.impl.util.ClockUtil;
-import org.activiti.test.LogInitializer;
-import org.junit.Rule;
-import org.junit.Test;
+import org.activiti.pvm.test.PvmTestCase;
 
 /**
  * @author Tom Baeyens
  */
-public class DurationBusinessCalendarTest {
+public class DurationBusinessCalendarTest extends PvmTestCase {
 
-  @Rule
-  public LogInitializer logInitializer = new LogInitializer();
-
-  @Test
   public void testSimpleDuration() throws Exception {
     DurationBusinessCalendar businessCalendar = new DurationBusinessCalendar();
 

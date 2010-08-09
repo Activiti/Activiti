@@ -17,14 +17,13 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import org.activiti.engine.Execution;
 import org.activiti.engine.Job;
 import org.activiti.engine.Page;
-import org.activiti.engine.ProcessInstance;
-import org.activiti.engine.impl.ProcessInstanceQueryImpl;
+import org.activiti.engine.impl.ExecutionQueryImpl;
 import org.activiti.engine.impl.persistence.runtime.ByteArrayEntity;
 import org.activiti.engine.impl.persistence.runtime.ExecutionEntity;
 import org.activiti.engine.impl.persistence.runtime.JobEntity;
-import org.activiti.engine.impl.persistence.runtime.ProcessInstanceEntity;
 import org.activiti.engine.impl.persistence.runtime.TimerEntity;
 import org.activiti.engine.impl.persistence.runtime.VariableInstanceEntity;
 
@@ -35,33 +34,24 @@ import org.activiti.engine.impl.persistence.runtime.VariableInstanceEntity;
 public interface RuntimeSession {
   
   void endProcessInstance(String processInstanceId, String nonCompletionReason);
-  ProcessInstanceEntity findProcessInstanceById(String processInstanceId);
-  List<ProcessInstanceEntity> findProcessInstancesByProcessDefintionId(String processDefinitionId);
-  ProcessInstanceEntity findSubProcessInstance(String superExecutionId);
-  long findProcessInstanceCountByDynamicCriteria(ProcessInstanceQueryImpl processInstanceQuery);
-  List<ProcessInstance> findProcessInstancesByDynamicCriteria(ProcessInstanceQueryImpl processInstanceQuery);
-
+  ExecutionEntity findSubProcessInstanceBySuperExecutionId(String superExecutionId);
+  long findExecutionCountByDynamicCriteria(ExecutionQueryImpl executionQuery);
+  List<Execution> findExecutionsByDynamicCriteria(ExecutionQueryImpl executionQuery);
+  List<ExecutionEntity> findChildExecutionsByParentExecutionId(String executionId);
   ExecutionEntity findExecutionById(String activityInstanceId);
-  ExecutionEntity findActivityInstanceByProcessInstanceIdAndActivityId(String processInstanceId, String activityId);
   
-  void insertVariableInstance(VariableInstanceEntity variableInstanceEntity);
-  void deleteVariableInstance(String variableInstanceId);
   List<VariableInstanceEntity> findVariableInstancesByExecutionId(String executionId);
   List<VariableInstanceEntity> findVariablesByTaskId(String taskId);
 
-  void insertByteArray(ByteArrayEntity byteArrayEntity);
-  void deleteByteArray(String byteArrayId);
   byte[] getByteArrayBytes(String byteArrayId);
   ByteArrayEntity findByteArrayById(String byteArrayId);
 
-  void insertJob(JobEntity job);
-  void deleteJob(String jobId);
   JobEntity findJobById(String jobId);
   List<JobEntity> findJobs();
   List<JobEntity> findNextJobsToExecute(int maxNrOfJobs);
   List<JobEntity> findLockedJobs();
   List<TimerEntity> findUnlockedTimersByDuedate(Date duedate, int nrOfTimers);
-  List<TimerEntity> findTimersByActivityInstanceId(String activitiyInstanceId);
+  List<TimerEntity> findTimersByExecutionId(String executionId);
   List<Job> dynamicFindJobs(Map<String, Object> params, Page page);
   long dynamicJobCount(Map<String, Object> params);
 }

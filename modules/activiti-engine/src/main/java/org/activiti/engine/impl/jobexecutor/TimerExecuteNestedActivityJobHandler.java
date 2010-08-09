@@ -14,10 +14,8 @@ package org.activiti.engine.impl.jobexecutor;
 
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.interceptor.CommandContext;
-import org.activiti.engine.impl.persistence.runtime.ActivityInstanceEntity;
-import org.activiti.engine.impl.persistence.runtime.ProcessInstanceEntity;
+import org.activiti.engine.impl.persistence.runtime.ExecutionEntity;
 import org.activiti.pvm.impl.process.ActivityImpl;
-import org.activiti.pvm.impl.runtime.ExecutionContextImpl;
 
 
 /**
@@ -31,15 +29,16 @@ public class TimerExecuteNestedActivityJobHandler implements JobHandler {
     return TYPE;
   }
 
-  public void execute(String configuration, ProcessInstanceEntity processInstance, ActivityInstanceEntity activityInstance, CommandContext commandContext) {
-    ActivityImpl activity = activityInstance.getActivity();
+  public void execute(String configuration, ExecutionEntity execution, CommandContext commandContext) {
+    ActivityImpl activity = execution.getActivity();
     ActivityImpl borderEventActivity = activity.getProcessDefinition().findActivity(configuration);
 
     if (borderEventActivity == null) {
       throw new ActivitiException("Error while firing timer: activity " + configuration + " not found");
     }
-    
-    new ExecutionContextImpl()
-      .executeTimerNestedActivity(borderEventActivity);
+
+//    new ExecutionContextImpl()
+//      .executeTimerNestedActivity(borderEventActivity);
+    throw new UnsupportedOperationException("please implement me");
   }
 }

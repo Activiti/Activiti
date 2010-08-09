@@ -38,21 +38,11 @@ public interface RuntimeService {
   /** delete an existing runtime process instance */
   void endProcessInstance(String processInstanceId, String nonCompletionReason);
   
-  /** gets the details of a process instance 
-   * @return the process instance or null if no process instance could be found with the given id. */
-  ProcessInstance findProcessInstanceById(String processInstanceId);
+  /** creates a new {@link ExecutionQuery} instance, 
+   * that can be used to query the executions and process instances. */
+  ExecutionQuery createExecutionQuery();
 
-  /** creates a new {@link ProcessInstanceQuery} instance, 
-   * that can be used to dynamically query the process instances. */
   ProcessInstanceQuery createProcessInstanceQuery();
-
-  /** gets the details of an activity instance.
-   * @return the activity instance or null if not found. */
-  ActivityInstance findActivityInstanceById(String activityInstanceId);
-  
-  /** returns the execution that currently is waiting at the given activityId,
-   * or null if none exists. */
-  ActivityInstance findActivityInstanceByProcessInstanceIdAndActivityId(String processInstanceId, String activityId);
 
   /** sends an external trigger to an activity instance that is waiting. */
   void signal(String activityInstanceId);
@@ -71,4 +61,5 @@ public interface RuntimeService {
 
   /** update or create given variables for a process instance or an activity instance */
   void setVariables(String scopeInstance, Map<String, Object> variables);
+
 }

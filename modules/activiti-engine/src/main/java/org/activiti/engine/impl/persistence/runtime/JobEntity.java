@@ -45,7 +45,7 @@ public abstract class JobEntity implements Serializable, Job, PersistentObject {
   protected String lockOwner = null;
   protected Date lockExpirationTime = null;
 
-  protected String activityInstanceId = null;
+  protected String executionId = null;
   protected String processInstanceId = null;
 
   protected boolean exclusive = DEFAULT_EXCLUSIVE;
@@ -58,14 +58,11 @@ public abstract class JobEntity implements Serializable, Job, PersistentObject {
 
   public void execute(JobHandler jobHandler, CommandContext commandContext) {
     RuntimeSession runtimeSession = commandContext.getRuntimeSession();
-    ActivityInstanceEntity activityInstance = null;
-    if (activityInstanceId != null) {
-      activityInstance = runtimeSession.findExecutionById(activityInstanceId);
+    ExecutionEntity execution = null;
+    if (executionId != null) {
+      execution = runtimeSession.findExecutionById(executionId);
     }
-    ProcessInstanceEntity processInstance = null;
-    processInstance = runtimeSession.findProcessInstanceById(processInstanceId); 
-    
-    jobHandler.execute(jobHandlerConfiguration, processInstance, activityInstance, commandContext);
+    jobHandler.execute(jobHandlerConfiguration, execution, commandContext);
   }
 
   public Object getPersistentState() {
@@ -77,21 +74,18 @@ public abstract class JobEntity implements Serializable, Job, PersistentObject {
     return persistentState;
   }
 
-  public void setActivityInstance(ActivityInstanceEntity activityInstance) {
-    activityInstanceId = activityInstance.getId();
+  public void setActivityInstance(ExecutionEntity execution) {
+    executionId = execution.getId();
+    processInstanceId = execution.getProcessInstanceId();
   }
 
-  public void setProcessInstance(ProcessInstanceEntity processInstance) {
-    processInstanceId = processInstance.getId();
-  }
-  
   // getters and setters //////////////////////////////////////////////////////
 
-  public String getActivityInstanceId() {
-    return activityInstanceId;
+  public String getExecutionId() {
+    return executionId;
   }
-  public void setActivityInstanceId(String executionId) {
-    this.activityInstanceId = executionId;
+  public void setExecutionId(String executionId) {
+    this.executionId = executionId;
   }
   public int getRetries() {
     return retries;

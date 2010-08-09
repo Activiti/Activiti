@@ -31,7 +31,7 @@ public interface TaskSession {
   void deleteTask(String taskId);
 
   TaskEntity findTaskById(String taskId);
-  List<TaskEntity> findTasksByExecution(String executionId);
+  List<TaskEntity> findTasksByExecutionId(String executionId);
   List<Task> findTasksByAssignee(String assignee);
   List<Task> findCandidateTasks(String userId, List<String> groupIds);
   

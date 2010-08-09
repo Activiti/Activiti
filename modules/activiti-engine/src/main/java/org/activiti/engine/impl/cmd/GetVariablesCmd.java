@@ -14,9 +14,10 @@ package org.activiti.engine.impl.cmd;
 
 import java.util.Map;
 
+import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
-import org.activiti.pvm.impl.runtime.ScopeInstanceImpl;
+import org.activiti.engine.impl.persistence.runtime.ExecutionEntity;
 
 
 /**
@@ -24,15 +25,22 @@ import org.activiti.pvm.impl.runtime.ScopeInstanceImpl;
  */
 public class GetVariablesCmd implements Command<Map<String, Object>> {
 
-  protected String scopeInstanceId;
+  protected String executionId;
 
-  public GetVariablesCmd(String scopeInstanceId) {
-    this.scopeInstanceId = scopeInstanceId;
+  public GetVariablesCmd(String executionId) {
+    this.executionId = executionId;
   }
 
   public Map<String, Object> execute(CommandContext commandContext) {
-    ScopeInstanceImpl scopeInstance = GetVariableCmd.findScopeInstance(commandContext, scopeInstanceId);
-    return scopeInstance.getVariables();
+    ExecutionEntity execution = commandContext
+      .getRuntimeSession()
+      .findExecutionById(executionId);
+    
+    if (execution==null) {
+      throw new ActivitiException("execution "+executionId+" doesn't exist");
+    }
+    
+    return execution.getVariables();
   }
 
 }

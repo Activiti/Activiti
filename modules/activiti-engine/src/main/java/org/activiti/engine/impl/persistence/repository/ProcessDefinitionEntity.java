@@ -14,9 +14,8 @@ package org.activiti.engine.impl.persistence.repository;
 
 import org.activiti.engine.ProcessDefinition;
 import org.activiti.engine.impl.persistence.PersistentObject;
-import org.activiti.engine.impl.persistence.runtime.ProcessInstanceEntity;
+import org.activiti.engine.impl.persistence.runtime.ExecutionEntity;
 import org.activiti.pvm.impl.process.ProcessDefinitionImpl;
-import org.activiti.pvm.impl.runtime.ProcessInstanceImpl;
 
 
 /**
@@ -35,8 +34,8 @@ public class ProcessDefinitionEntity extends ProcessDefinitionImpl implements Pr
     super(null);
   }
 
-  public ProcessInstanceEntity createProcessInstance() {
-    return ProcessInstanceEntity.createAndInsert(this);
+  public ExecutionEntity createProcessInstance() {
+    return new ExecutionEntity(this);
   }
   
   public String toString() {

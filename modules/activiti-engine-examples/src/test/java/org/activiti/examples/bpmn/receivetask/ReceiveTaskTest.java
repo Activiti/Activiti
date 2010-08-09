@@ -27,7 +27,7 @@ public class ReceiveTaskTest extends ProcessEngineTestCase {
   @Deployment
   public void testWaitStateBehavior() {
     ProcessInstance pi = runtimeService.startProcessInstanceByKey("receiveTask");
-    ActivityInstance activityInstance = runtimeService.findActivityInstanceByProcessInstanceIdAndActivityId(pi.getId(), "waitState");
+    ActivityInstance activityInstance = runtimeService.findExecutionByProcessInstanceIdAndActivityId(pi.getId(), "waitState");
     assertNotNull(activityInstance);
     
     runtimeService.signal(activityInstance.getId());

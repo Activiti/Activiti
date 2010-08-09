@@ -23,7 +23,6 @@ import org.activiti.test.pvm.activities.Automatic;
 import org.activiti.test.pvm.activities.End;
 import org.activiti.test.pvm.activities.ParallelGateway;
 import org.activiti.test.pvm.activities.WaitState;
-import org.junit.Test;
 
 
 

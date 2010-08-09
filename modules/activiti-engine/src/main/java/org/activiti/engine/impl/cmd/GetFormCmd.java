@@ -21,9 +21,9 @@ import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.repository.DeploymentEntity;
 import org.activiti.engine.impl.persistence.repository.ProcessDefinitionEntity;
 import org.activiti.engine.impl.persistence.repository.ResourceEntity;
+import org.activiti.engine.impl.persistence.runtime.ExecutionEntity;
 import org.activiti.engine.impl.persistence.task.TaskEntity;
 import org.activiti.engine.impl.scripting.ScriptingEngines;
-import org.activiti.pvm.runtime.PvmExecution;
 
 
 /**
@@ -46,7 +46,7 @@ public class GetFormCmd implements Command<Object> {
     RepositorySession repositorySession = commandContext.getRepositorySession();
     ProcessDefinitionEntity processDefinition = null;
     TaskEntity task = null;
-    PvmExecution activityInstance = null;
+    ExecutionEntity execution = null;
     FormReference formReference = null;
     
     if (taskId!=null) {
@@ -57,9 +57,9 @@ public class GetFormCmd implements Command<Object> {
       if (task == null) {
         throw new ActivitiException("No task found for id = '" + taskId + "'");
       }
-      activityInstance = task.getExecution();
+      execution = task.getExecution();
       processDefinition = repositorySession.findDeployedProcessDefinitionById(task.getProcessDefinitionId());
-      formReference = (FormReference) activityInstance.getActivity().getProperty(BpmnParse.PROPERTYNAME_FORM_REFERENCE);
+      formReference = (FormReference) execution.getActivity().getProperty(BpmnParse.PROPERTYNAME_FORM_REFERENCE);
       
     } else if (processDefinitionId!=null) {
       
@@ -88,7 +88,7 @@ public class GetFormCmd implements Command<Object> {
       String formTemplateString = getFormTemplateString(form, deployment);      
       
       ScriptingEngines scriptingEngines = commandContext.getProcessEngineConfiguration().getScriptingEngines();
-      result = scriptingEngines.evaluate(formTemplateString, formLanguage, activityInstance);
+      result = scriptingEngines.evaluate(formTemplateString, formLanguage, execution);
     }
 
     return result;

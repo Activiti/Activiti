@@ -22,7 +22,6 @@ import org.activiti.engine.TaskQuery;
 import org.activiti.engine.impl.util.ClockUtil;
 import org.activiti.engine.test.Deployment;
 import org.activiti.engine.test.ProcessEngineImplTestCase;
-import org.activiti.test.JobExecutorPoller;
 
 /**
  * @author Joram Barrez
@@ -72,7 +71,7 @@ public class CallActivityAdvancedTest extends ProcessEngineImplTestCase {
     // Completing this task ends the subprocess which leads to the end of the whole process instance
     taskService.complete(taskBeforeSubProcess.getId());
     assertProcessEnded(processInstance.getId());
-    assertEquals(0, runtimeService.createProcessInstanceQuery().list().size());
+    assertEquals(0, runtimeService.createExecutionQuery().list().size());
   }
   
   @Deployment(resources = {"CallActivity.testCallParallelSubProcess.bpmn20.xml", "simpleParallelSubProcess.bpmn20.xml"})
@@ -94,11 +93,11 @@ public class CallActivityAdvancedTest extends ProcessEngineImplTestCase {
     // Completing the first task should not end the subprocess
     taskService.complete(taskA.getId());
     assertEquals(1, taskQuery.list().size());
-    assertEquals(2, runtimeService.createProcessInstanceQuery().list().size());
+    assertEquals(2, runtimeService.createExecutionQuery().list().size());
     
     // Completing the second task should end the subprocess and end the whole process instance
     taskService.complete(taskB.getId());
-    assertEquals(0, runtimeService.createProcessInstanceQuery().list().size());
+    assertEquals(0, runtimeService.createExecutionQuery().list().size());
   }
   
   @Deployment(resources = {"CallActivity.testTimerOnCallActivity.bpmn20.xml", "simpleSubProcess.bpmn20.xml"})
@@ -113,15 +112,13 @@ public class CallActivityAdvancedTest extends ProcessEngineImplTestCase {
     
     // When the timer on the subprocess is fired, the complete subprocess is destroyed
     ClockUtil.setCurrentTime(new Date(startTime.getTime() + (6 * 60 * 1000))); // + 6 minutes, timer fires on 5 minutes
-    new JobExecutorPoller(processEngineConfiguration.getJobExecutor(), 
-                          processEngineConfiguration.getCommandExecutor()
-                         ).waitForJobExecutorToProcessAllJobs(5000L, 25L);
+    waitForJobExecutorToProcessAllJobs(10000, 100);
     
     Task escalatedTask = taskQuery.singleResult();
     assertEquals("Escalated Task", escalatedTask.getName());
     
     // Completing the task ends the complete process
     taskService.complete(escalatedTask.getId());
-    assertEquals(0, runtimeService.createProcessInstanceQuery().list().size());
+    assertEquals(0, runtimeService.createExecutionQuery().list().size());
   }
 }

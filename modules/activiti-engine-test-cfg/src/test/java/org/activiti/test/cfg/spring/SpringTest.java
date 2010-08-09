@@ -93,7 +93,7 @@ public class SpringTest {
     RuntimeService runtimeService = processEngine.getRuntimeService();
     ProcessInstance pi = runtimeService.startProcessInstanceByKey("javaServiceDelegation", 
             CollectionUtil.singletonMap("input", "Activiti BPM Engine"));
-    ActivityInstance activityInstance = runtimeService.findActivityInstanceByProcessInstanceIdAndActivityId(pi.getId(), "waitState");
+    ActivityInstance activityInstance = runtimeService.findExecutionByProcessInstanceIdAndActivityId(pi.getId(), "waitState");
     assertEquals("ACTIVITI BPM ENGINE", runtimeService.getVariable(activityInstance.getId(), "input"));
     processEngine.getRuntimeService().endProcessInstance(activityInstance.getId());
   }

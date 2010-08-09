@@ -91,7 +91,7 @@ public class ExecutionImpl implements
   protected boolean isScope = false;
   protected boolean isEnded = false;
 
-  protected Map<String, Object> variableMap = null;
+  protected Map<String, Object> variables = null;
   
   // events ///////////////////////////////////////////////////////////////////
   
@@ -568,10 +568,10 @@ public class ExecutionImpl implements
   // variables ////////////////////////////////////////////////////////////////
 
   public Object getVariable(String variableName) {
-    ensureVariableMapInitialized();
+    ensureVariablesInitialized();
     
     // If value is found in this scope, return it
-    Object value = variableMap.get(variableName);
+    Object value = variables.get(variableName);
     if (value != null) {
       return value;
     }
@@ -586,11 +586,12 @@ public class ExecutionImpl implements
   }
 
   public Map<String, Object> getVariables() {
-    return variableMap;
+    ensureVariablesInitialized();
+    return variables;
   }
   
   public void setVariables(Map<String, Object> variables) {
-    ensureVariableMapInitialized();
+    ensureVariablesInitialized();
     if (variables!=null) {
       for (Map.Entry<String, Object> entry: variables.entrySet()) {
         setVariable(entry.getKey(), entry.getValue());
@@ -599,19 +600,19 @@ public class ExecutionImpl implements
   }
 
   public void setVariable(String variableName, Object value) {
-    ensureVariableMapInitialized();
+    ensureVariablesInitialized();
     log.fine("setting variable '"+variableName+"' to value '"+value+"'");
-    variableMap.put(variableName, value);
+    variables.put(variableName, value);
   }
   
   public boolean hasVariable(String variableName) {
-    ensureVariableMapInitialized();
-    return variableMap.containsKey(variableName);
+    ensureVariablesInitialized();
+    return variables.containsKey(variableName);
   }
 
-  protected void ensureVariableMapInitialized() {
-    if (variableMap==null) {
-      variableMap = new HashMap<String, Object>();
+  protected void ensureVariablesInitialized() {
+    if (variables==null) {
+      variables = new HashMap<String, Object>();
     }
   }
   

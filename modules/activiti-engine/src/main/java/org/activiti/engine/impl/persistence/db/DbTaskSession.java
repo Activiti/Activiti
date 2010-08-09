@@ -50,7 +50,7 @@ public class DbTaskSession implements TaskSession, Session {
   }
 
   @SuppressWarnings("unchecked")
-  public List<TaskEntity> findTasksByExecution(String executionId) {
+  public List<TaskEntity> findTasksByExecutionId(String executionId) {
     return dbSqlSession.selectList("selectTaskByExecution", executionId);
   }
 

@@ -16,7 +16,6 @@ import java.util.List;
 
 import org.activiti.pvm.event.EventListener;
 import org.activiti.pvm.impl.process.ActivityImpl;
-import org.activiti.pvm.process.PvmProcessElement;
 
 
 /**

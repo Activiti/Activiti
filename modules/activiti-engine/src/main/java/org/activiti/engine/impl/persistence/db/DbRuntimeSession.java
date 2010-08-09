@@ -16,17 +16,16 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import org.activiti.engine.Execution;
 import org.activiti.engine.Job;
 import org.activiti.engine.Page;
-import org.activiti.engine.ProcessInstance;
-import org.activiti.engine.impl.ProcessInstanceQueryImpl;
+import org.activiti.engine.impl.ExecutionQueryImpl;
 import org.activiti.engine.impl.cfg.RuntimeSession;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.interceptor.Session;
-import org.activiti.engine.impl.persistence.runtime.ActivityInstanceEntity;
 import org.activiti.engine.impl.persistence.runtime.ByteArrayEntity;
+import org.activiti.engine.impl.persistence.runtime.ExecutionEntity;
 import org.activiti.engine.impl.persistence.runtime.JobEntity;
-import org.activiti.engine.impl.persistence.runtime.ProcessInstanceEntity;
 import org.activiti.engine.impl.persistence.runtime.TimerEntity;
 import org.activiti.engine.impl.persistence.runtime.VariableInstanceEntity;
 import org.activiti.engine.impl.util.ClockUtil;
@@ -44,62 +43,30 @@ public class DbRuntimeSession implements Session, RuntimeSession {
   }
 
   public void endProcessInstance(String processInstanceId, String nonCompletionReason) {
-    findProcessInstanceById(processInstanceId).end();
+    ExecutionEntity execution = findExecutionById(processInstanceId);
+    execution.end();
   }
 
-  public ProcessInstanceEntity findProcessInstanceById(String processInstanceId) {
-    return (ProcessInstanceEntity) dbSqlSession.selectOne("selectProcessInstanceById", processInstanceId);
+  public ExecutionEntity findSubProcessInstanceBySuperExecutionId(String superExecutionId) {
+    return (ExecutionEntity) dbSqlSession.selectOne("selectSubProcessInstanceBySuperExecutionId", superExecutionId);
   }
 
-  @SuppressWarnings("unchecked")
-  public List<ProcessInstanceEntity> findProcessInstancesByProcessDefintionId(String processDefinitionId) {
-    return dbSqlSession.selectList("selectRootExecutionsForProcessDefinition", processDefinitionId);
-  }
-
-  public ProcessInstanceEntity findSubProcessInstance(String superExecutionId) {
-    return (ProcessInstanceEntity) dbSqlSession.selectOne("selectSubProcessInstanceBySuperExecutionId", superExecutionId);
-  }
-
-  public long findProcessInstanceCountByDynamicCriteria(ProcessInstanceQueryImpl processInstanceQuery) {
+  public long findExecutionCountByDynamicCriteria(ExecutionQueryImpl processInstanceQuery) {
     return (Long) dbSqlSession.selectOne("selectProcessInstanceCountByDynamicCriteria", processInstanceQuery);
   }
 
   @SuppressWarnings("unchecked")
-  public List<ProcessInstance> findProcessInstancesByDynamicCriteria(ProcessInstanceQueryImpl processInstanceQuery) {
+  public List<Execution> findExecutionsByDynamicCriteria(ExecutionQueryImpl processInstanceQuery) {
     return dbSqlSession.selectList("selectProcessInstanceByDynamicCriteria", processInstanceQuery);
   }
 
-  public void insertActivityInstance(ActivityInstanceEntity activityInstance) {
-    dbSqlSession.insert(activityInstance);
-  }
-
-  public void deleteActivityInstance(String activityInstanceId) {
-    dbSqlSession.delete(ActivityInstanceEntity.class, activityInstanceId);
-  }
-
-  public ActivityInstanceEntity findExecutionById(String activityInstanceId) {
-    return (ActivityInstanceEntity) dbSqlSession.selectOne("selectActivityInstanceById", activityInstanceId);
+  public ExecutionEntity findExecutionById(String executionId) {
+    return (ExecutionEntity) dbSqlSession.selectOne("selectExecutionById", executionId);
   }
 
   @SuppressWarnings("unchecked")
-  public List<ActivityInstanceEntity> findActivityInstancesByParentActivityInstanceId(String parentActivityInstanceId) {
-    return dbSqlSession.selectList("ActivityInstancesByParentActivityInstanceId", parentActivityInstanceId);
-  }
-
-  public ActivityInstanceEntity findActivityInstanceByProcessInstanceIdAndActivityId(String processInstanceId, String activityId) {
-    throw new UnsupportedOperationException("please implement me");
-  }
-
-  public void insertVariableInstance(VariableInstanceEntity variableInstanceEntity) {
-    dbSqlSession.insert(variableInstanceEntity);
-  }
-
-  public void deleteVariableInstance(String variableInstanceId) {
-    dbSqlSession.delete(VariableInstanceEntity.class, variableInstanceId);
-  }
-
-  public List<VariableInstanceEntity> findVariableInstancesByExecutionId(String processInstanceId) {
-    return null;
+  public List<ExecutionEntity> findChildExecutionsByParentExecutionId(String parentExecutionId) {
+    return dbSqlSession.selectList("selectExecutionsByParentExecutionId", parentExecutionId);
   }
 
   @SuppressWarnings("unchecked")
@@ -128,14 +95,6 @@ public class DbRuntimeSession implements Session, RuntimeSession {
 
   public ByteArrayEntity findByteArrayById(String byteArrayId) {
     return (ByteArrayEntity) dbSqlSession.selectOne("selectByteArrayById", byteArrayId);
-  }
-
-  public void insertJob(JobEntity job) {
-    dbSqlSession.insert(job);
-  }
-
-  public void deleteJob(String jobId) {
-    dbSqlSession.delete(JobEntity.class, jobId);
   }
 
   public JobEntity findJobById(String jobId) {
@@ -169,7 +128,7 @@ public class DbRuntimeSession implements Session, RuntimeSession {
   }
 
   @SuppressWarnings("unchecked")
-  public List<TimerEntity> findTimersByActivityInstanceId(String activityInstanceId) {
+  public List<TimerEntity> findTimersByExecutionId(String activityInstanceId) {
     return dbSqlSession.selectList("selectTimersByActivityInstanceId", activityInstanceId);
   }
 

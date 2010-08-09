@@ -16,7 +16,7 @@ package org.activiti.engine.impl.cmd;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
-import org.activiti.engine.impl.persistence.runtime.ActivityInstanceEntity;
+import org.activiti.engine.impl.persistence.runtime.ExecutionEntity;
 
 
 /**
@@ -24,24 +24,26 @@ import org.activiti.engine.impl.persistence.runtime.ActivityInstanceEntity;
  */
 public class SignalCmd implements Command<Object> {
 
-  protected String activityInstanceId;
+  protected String executionId;
   protected String signalName;
   protected Object signalData;
   
-  public SignalCmd(String activityInstanceId, String signalName, Object signalData) {
-    this.activityInstanceId = activityInstanceId;
+  public SignalCmd(String executionId, String signalName, Object signalData) {
+    this.executionId = executionId;
     this.signalName = signalName;
     this.signalData = signalData;
   }
 
   public Object execute(CommandContext commandContext) {
-    ActivityInstanceEntity activityInstance = commandContext
+    ExecutionEntity execution = commandContext
       .getRuntimeSession()
-      .findExecutionById(activityInstanceId);
-    if (activityInstance==null) {
-      throw new ActivitiException("activity instance "+activityInstance+" doesn't exist");
+      .findExecutionById(executionId);
+    
+    if (execution==null) {
+      throw new ActivitiException("execution "+execution+" doesn't exist");
     }
-    activityInstance.signal(signalName, signalData);
+    
+    execution.signal(signalName, signalData);
     return null;
   }
 

@@ -13,30 +13,19 @@
 
 package org.activiti.impl.interceptor;
 
-import static org.junit.Assert.*;
-
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
-import org.activiti.test.LogInitializer;
-import org.activiti.test.ProcessDeployer;
-import org.junit.Rule;
-import org.junit.Test;
+import org.activiti.engine.test.ProcessEngineImplTestCase;
 
 
 /**
  * @author Tom Baeyens
  */
-public class CommandContextTest {
+public class CommandContextTest extends ProcessEngineImplTestCase {
 
-  @Rule
-  public LogInitializer logSetup = new LogInitializer();
-  @Rule
-  public ProcessDeployer deployer = new ProcessDeployer();
-
-  @Test
   public void testOne() {
     try {
-      deployer.getCommandExecutor().execute(new Command<Object>() {
+      processEngineConfiguration.getCommandExecutor().execute(new Command<Object>() {
         public Object execute(CommandContext commandContext) {
           throw new IllegalStateException("here i come!");
         }

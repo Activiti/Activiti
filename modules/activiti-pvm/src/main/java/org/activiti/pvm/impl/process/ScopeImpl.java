@@ -84,6 +84,7 @@ public abstract class ScopeImpl extends ProcessElementImpl implements PvmScope {
   
   // event listeners //////////////////////////////////////////////////////////
   
+  @SuppressWarnings("unchecked")
   public List<EventListener> getEventListeners(String eventName) {
     List<EventListener> eventListenerList = getEventListeners().get(eventName);
     if (eventListenerList!=null) {

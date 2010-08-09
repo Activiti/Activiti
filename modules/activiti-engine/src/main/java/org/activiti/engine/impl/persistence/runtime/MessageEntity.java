@@ -31,8 +31,8 @@ public class MessageEntity extends JobEntity {
   public void execute(JobHandler jobHandler, CommandContext commandContext) {
     super.execute(jobHandler, commandContext);
     commandContext
-      .getRuntimeSession()
-      .deleteJob(id);
+      .getDbSqlSession()
+      .delete(JobEntity.class, id);
   }
 
   @SuppressWarnings("unchecked")

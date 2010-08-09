@@ -27,7 +27,7 @@ public class JavaServiceTaskTest extends ProcessEngineTestCase {
   public void testJavaServiceDelegation() {
     ProcessInstance pi = runtimeService.startProcessInstanceByKey("javaServiceDelegation", 
             CollectionUtil.singletonMap("input", "Activiti BPM Engine"));
-    ActivityInstance activitiyInstance = runtimeService.findActivityInstanceByProcessInstanceIdAndActivityId(pi.getId(), "waitState");
+    ActivityInstance activitiyInstance = runtimeService.findExecutionByProcessInstanceIdAndActivityId(pi.getId(), "waitState");
     assertEquals("ACTIVITI BPM ENGINE", runtimeService.getVariable(activitiyInstance.getId(), "input"));
   }
 

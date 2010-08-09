@@ -38,13 +38,13 @@ import org.activiti.engine.RepositoryService;
 import org.activiti.engine.RuntimeService;
 import org.activiti.engine.TaskService;
 import org.activiti.engine.impl.ProcessEngineImpl;
+import org.activiti.engine.impl.bpmn.deployer.BpmnDeployer;
 import org.activiti.engine.impl.jobexecutor.JobExecutor;
 import org.activiti.engine.impl.persistence.db.DbSqlSessionFactory;
 import org.activiti.engine.impl.util.ClockUtil;
 import org.activiti.pvm.impl.util.ClassNameUtil;
 import org.activiti.pvm.impl.util.LogUtil.ThreadLogMode;
 import org.activiti.pvm.test.PvmTestCase;
-import org.activiti.test.ProcessDeployer;
 import org.junit.Assert;
 
 
@@ -191,7 +191,7 @@ public class ProcessEngineTestCase extends PvmTestCase {
       String[] resources = deploymentAnnotation.resources();
       if (resources.length == 0) {
         String name = method.getName();
-        String resource = ProcessDeployer.getBpmnProcessDefinitionResource(getClass(), name);
+        String resource = getBpmnProcessDefinitionResource(getClass(), name);
         resources = new String[]{resource};
       }
       
@@ -206,6 +206,16 @@ public class ProcessEngineTestCase extends PvmTestCase {
       String deploymentId = deploymentBuilder.deploy().getId();
       deploymentsToDeleteAfterTestMethod.add(deploymentId);
     }
+  }
+  
+  /**
+   * get a resource location by convention based on a class (type) and a
+   * relative resource name. The return value will be the full classpath
+   * location of the type, plus a suffix built from the name parameter:
+   * <code>.&lt;name&gt;.bpmn20.xml</code>.
+   */
+  public static String getBpmnProcessDefinitionResource(Class< ? > type, String name) {
+    return type.getName().replace('.', '/') + "." + name + "." + BpmnDeployer.BPMN_RESOURCE_SUFFIX;
   }
 
   protected void annotationDeploymentAfter() {

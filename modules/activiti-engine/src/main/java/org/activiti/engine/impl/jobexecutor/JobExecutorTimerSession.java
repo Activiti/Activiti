@@ -16,12 +16,13 @@ import java.util.Date;
 import java.util.List;
 
 import org.activiti.engine.ActivitiException;
-import org.activiti.engine.impl.cfg.RuntimeSession;
 import org.activiti.engine.impl.cfg.TimerSession;
 import org.activiti.engine.impl.cfg.TransactionState;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.interceptor.Session;
-import org.activiti.engine.impl.persistence.runtime.ActivityInstanceEntity;
+import org.activiti.engine.impl.persistence.db.DbSqlSession;
+import org.activiti.engine.impl.persistence.runtime.ExecutionEntity;
+import org.activiti.engine.impl.persistence.runtime.JobEntity;
 import org.activiti.engine.impl.persistence.runtime.TimerEntity;
 import org.activiti.engine.impl.util.ClockUtil;
 
@@ -46,8 +47,8 @@ public class JobExecutorTimerSession implements TimerSession, Session {
     }
     
     commandContext
-      .getRuntimeSession()
-      .insertJob(timer);
+      .getDbSqlSession()
+      .insert(timer);
     
     // Check if this timer fires before the next time the job executor will check for new timers to fire.
     // This is highly unlikely because normally waitTimeInMillis is 5000 (5 seconds)
@@ -61,11 +62,11 @@ public class JobExecutorTimerSession implements TimerSession, Session {
     }
   }
 
-  public void cancelTimers(ActivityInstanceEntity activityInstance) {
-    RuntimeSession runtimeSession = commandContext.getRuntimeSession();
-    List<TimerEntity> timers = runtimeSession.findTimersByActivityInstanceId(null); 
+  public void cancelTimers(ExecutionEntity execution) {
+    DbSqlSession dbSqlSession = commandContext.getDbSqlSession();
+    List<TimerEntity> timers = commandContext.getRuntimeSession().findTimersByExecutionId(execution.getId()); 
     for (TimerEntity timer: timers) {
-      runtimeSession.deleteJob(timer.getId());
+      dbSqlSession.delete(JobEntity.class,timer.getId());
     }
   }
 

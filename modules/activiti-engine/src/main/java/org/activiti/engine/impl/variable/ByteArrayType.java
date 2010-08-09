@@ -41,8 +41,8 @@ public class ByteArrayType implements Type {
       byteArray = new ByteArrayEntity(this, bytes);
       CommandContext
         .getCurrent()
-        .getRuntimeSession()
-        .insertByteArray(byteArray);
+        .getDbSqlSession()
+        .insert(byteArray);
       variableInstanceEntity.setByteArrayValue(byteArray);
     } else {
       byteArray.setBytes(bytes);
