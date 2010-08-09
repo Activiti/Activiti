@@ -12,7 +12,7 @@
  */
 package org.activiti.engine.impl.bpmn;
 
-import org.activiti.pvm.activity.ActivityContext;
+import org.activiti.pvm.activity.ActivityExecution;
 
 
 /**
@@ -20,41 +20,9 @@ import org.activiti.pvm.activity.ActivityContext;
  */
 public class NoneEndEventActivity extends AbstractBpmnActivity {
   
-  public void start(ActivityContext activityContext) throws Exception {
+  public void execute(ActivityExecution execution) throws Exception {
     
-    activityContext.endActivityInstance();
-    
-//    // TODO: needs cleanup!
-//    ActivityImpl currentActivity = (ActivityImpl) activityContext.getActivity();
-//    ActivityImpl parentActivity = (ActivityImpl) currentActivity.getParentActivity();
-//    
-//    if (parentActivity != null &&
-//            parentActivity.getActivityBehavior() instanceof SubProcessActivity) {
-//      
-//      // No need to end the execution, see ExecutionImpl.destroyScope
-//      activityContext.setActivity(parentActivity);
-//      leave(activityContext);
-//      
-//    } else {
-//      
-//      // Need to locally store the parent, since end() will remove the child-parent relation
-//      ActivityExecution parent = activityContext.getParent();
-//
-//      activityContext.end();
-//      
-//      // Special case for BPMN 2.0: when the parent is a process instance, 
-//      // but is not more active and has no children anymore
-//      // Then the process instance cannot continue anymore:
-//      //
-//      // eg. start -> fork -> task1 -> end1
-//      //                   -> task2 -> end2
-//      if (parent != null
-//              && parent.isProcessInstance() 
-//              && parent.getExecutions().isEmpty()
-//              && !parent.isActive()) {
-//        parent.end();
-//      }
-//    }
+    execution.end();
     
   }
 

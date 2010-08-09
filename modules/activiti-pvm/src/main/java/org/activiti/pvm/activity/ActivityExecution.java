@@ -14,6 +14,7 @@ package org.activiti.pvm.activity;
 
 import java.util.List;
 
+import org.activiti.pvm.delegate.DelegateExecution;
 import org.activiti.pvm.process.PvmActivity;
 import org.activiti.pvm.process.PvmProcessDefinition;
 import org.activiti.pvm.process.PvmTransition;
@@ -23,7 +24,7 @@ import org.activiti.pvm.runtime.PvmProcessInstance;
  * @author Tom Baeyens
  * @author Joram Barrez
  */
-public interface ActivityExecution {
+public interface ActivityExecution extends DelegateExecution {
   
   /* Process instance/activity/transition retrieval */
 
@@ -36,21 +37,6 @@ public interface ActivityExecution {
    * leaves the current activity by taking the given transition.
    */
   void take(PvmTransition transition);
-  
-  
-  /* Variables */
-  
-  boolean hasVariable(String variableName);
-
-  /**
-   * returns the value of the given variable.
-   */
-  Object getVariable(String variableName);
-  
-  /**
-   * sets or changes the value of the given variable.
-   */
-  void setVariable(String variableName, Object value);
   
   
   /* Execution management */
@@ -118,5 +104,5 @@ public interface ActivityExecution {
 
   void takeAll(List<PvmTransition> outgoingTransitions, List<ActivityExecution> joinedExecutions);
 
-  void executeActivity(PvmActivity startActivity);
+  void executeActivity(PvmActivity activity);
 }

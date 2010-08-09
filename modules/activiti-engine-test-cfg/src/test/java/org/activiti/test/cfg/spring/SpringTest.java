@@ -12,40 +12,9 @@
  */
 package org.activiti.test.cfg.spring;
 
-import static org.junit.Assert.assertEquals;
-
-import java.util.List;
-
-import org.activiti.engine.ActivitiException;
-import org.activiti.engine.ActivityInstance;
-import org.activiti.engine.Deployment;
-import org.activiti.engine.ProcessEngine;
-import org.activiti.engine.ProcessInstance;
-import org.activiti.engine.RepositoryService;
-import org.activiti.engine.RuntimeService;
-import org.activiti.engine.Task;
-import org.activiti.engine.impl.persistence.runtime.ProcessInstanceEntity;
-import org.activiti.engine.impl.persistence.task.TaskDefinition;
-import org.activiti.engine.impl.util.CollectionUtil;
-import org.activiti.pvm.impl.process.ActivityImpl;
-import org.activiti.pvm.impl.runtime.ActivityInstanceImpl;
-import org.activiti.pvm.impl.util.LogUtil;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.ClassPathResource;
-import org.springframework.core.io.FileSystemResource;
-import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.test.util.ReflectionTestUtils;
-import org.springframework.transaction.PlatformTransactionManager;
-import org.springframework.transaction.TransactionStatus;
-import org.springframework.transaction.support.TransactionCallback;
-import org.springframework.transaction.support.TransactionTemplate;
-import org.springframework.util.ClassUtils;
 
 /**
  * @author Tom Baeyens
@@ -55,117 +24,117 @@ import org.springframework.util.ClassUtils;
 @RunWith(SpringJUnit4ClassRunner.class)
 public class SpringTest {
 
-  @Autowired
-  private ProcessEngine processEngine;
-
-  @Autowired
-  private UserBean userBean;
-
-  @Autowired
-  private PlatformTransactionManager transactionManager;
-
-  @Rule
-  public ExpectedException exception = ExpectedException.none();
-
-  static {
-    LogUtil.readJavaUtilLoggingConfigFromClasspath();
-  }
-
-  @Test
-  public void testProcessExecutionWithTaskAssignedFromExpression() {
-
-    int before = processEngine.getTaskService().findAssignedTasks("kermit").size();
-    ProcessInstance processInstance = processEngine.getRuntimeService().startProcessInstanceByKey("taskAssigneeExpressionProcess");
-    assertEquals("[theTask]", processInstance.findActivityIds().toString());
-    ProcessInstanceEntity processInstanceEntity = (ProcessInstanceEntity) processInstance;
-    ActivityInstanceImpl activityInstance = processInstanceEntity.getActivityInstances().iterator().next();
-    assertEquals("${user}", ((TaskDefinition) ReflectionTestUtils.getField(((ActivityImpl) activityInstance.getActivity()).getActivityBehavior(),
-            "taskDefinition")).getAssignee());
-    List<Task> tasks = processEngine.getTaskService().findAssignedTasks("kermit");
-    assertEquals(before + 1, tasks.size());
-
-    processEngine.getRuntimeService().endProcessInstance(processInstance.getId());
-    
-  }
-
-  @Test
-  public void testJavaServiceDelegation() {
-    RuntimeService runtimeService = processEngine.getRuntimeService();
-    ProcessInstance pi = runtimeService.startProcessInstanceByKey("javaServiceDelegation", 
-            CollectionUtil.singletonMap("input", "Activiti BPM Engine"));
-    ActivityInstance activityInstance = runtimeService.findExecutionByProcessInstanceIdAndActivityId(pi.getId(), "waitState");
-    assertEquals("ACTIVITI BPM ENGINE", runtimeService.getVariable(activityInstance.getId(), "input"));
-    processEngine.getRuntimeService().endProcessInstance(activityInstance.getId());
-  }
-
-  @Test
-  public void testSpringTransaction() {
-    int before = processEngine.getRepositoryService().findDeployments().size();
-    userBean.doTransactional();
-    assertEquals(before + 1, processEngine.getRepositoryService().findDeployments().size());
-  }
-
-  @Test
-  public void testSpringTransactionRollback() {
-    int before = processEngine.getRepositoryService().findDeployments().size();
-    userBean.setFail(true);
-    exception.expect(ActivitiException.class);
-    exception.expectMessage("aprocess");
-    try {
-      new TransactionTemplate(transactionManager).execute(new TransactionCallback<Object>() {
-
-        public Object doInTransaction(TransactionStatus status) {
-          userBean.doTransactional();
-          return null;
-        }
-      });
-
-    } finally {
-      assertEquals(before, processEngine.getRepositoryService().findDeployments().size());
-    }
-  }
-
-  @Test
-  @DirtiesContext
-  public void testSaveDeployment() {
-
-    int before = processEngine.getRepositoryService().findDeployments().size();
-
-    String resource = ClassUtils.addResourcePathToPackagePath(getClass(), "testProcess.bpmn20.xml");
-    RepositoryService repositoryService = processEngine.getRepositoryService();
-    Deployment deployment = repositoryService.createDeployment().name(resource).addClasspathResource(resource).deploy();
-
-    assertEquals(before + 1, processEngine.getRepositoryService().findDeployments().size());
-    deployment = repositoryService.createDeployment().name(resource).addClasspathResource(resource).deploy();
-    assertEquals(before + 1, processEngine.getRepositoryService().findDeployments().size());
-
-    if (deployment != null) {
-      repositoryService.deleteDeployment(deployment.getId());
-    }
-
-  }
-
-  @Test
-  @DirtiesContext
-  public void testConfigureDeploymentCheck() throws Exception {
-
-    int before = processEngine.getRepositoryService().findDeployments().size();
-
-    RepositoryService repositoryService = processEngine.getRepositoryService();
-
-    // (N.B. Spring 3 resolves Resource[] from a pattern to FileSystemResource
-    // instances)
-    FileSystemResource resource = new FileSystemResource(new ClassPathResource("staticProcess.bpmn20.xml", getClass()).getFile());
-    String path = resource.getFile().getAbsolutePath();
-
-    Deployment deployment = repositoryService.createDeployment().name(path).addInputStream(path, resource.getInputStream()).deploy();
-    // Should be identical to resource configured in factory bean so no new
-    // deployment
-    assertEquals(before, processEngine.getRepositoryService().findDeployments().size());
-
-    if (deployment != null) {
-      repositoryService.deleteDeployment(deployment.getId());
-    }
-
-  }
+//  @Autowired
+//  private ProcessEngine processEngine;
+//
+//  @Autowired
+//  private UserBean userBean;
+//
+//  @Autowired
+//  private PlatformTransactionManager transactionManager;
+//
+//  @Rule
+//  public ExpectedException exception = ExpectedException.none();
+//
+//  static {
+//    LogUtil.readJavaUtilLoggingConfigFromClasspath();
+//  }
+//
+//  @Test
+//  public void testProcessExecutionWithTaskAssignedFromExpression() {
+//
+//    int before = processEngine.getTaskService().findAssignedTasks("kermit").size();
+//    ProcessInstance processInstance = processEngine.getRuntimeService().startProcessInstanceByKey("taskAssigneeExpressionProcess");
+//    assertEquals("[theTask]", processInstance.findActivityIds().toString());
+//    ProcessInstanceEntity processInstanceEntity = (ProcessInstanceEntity) processInstance;
+//    ActivityInstanceImpl activityInstance = processInstanceEntity.getActivityInstances().iterator().next();
+//    assertEquals("${user}", ((TaskDefinition) ReflectionTestUtils.getField(((ActivityImpl) activityInstance.getActivity()).getActivityBehavior(),
+//            "taskDefinition")).getAssignee());
+//    List<Task> tasks = processEngine.getTaskService().findAssignedTasks("kermit");
+//    assertEquals(before + 1, tasks.size());
+//
+//    processEngine.getRuntimeService().endProcessInstance(processInstance.getId());
+//    
+//  }
+//
+//  @Test
+//  public void testJavaServiceDelegation() {
+//    RuntimeService runtimeService = processEngine.getRuntimeService();
+//    ProcessInstance pi = runtimeService.startProcessInstanceByKey("javaServiceDelegation", 
+//            CollectionUtil.singletonMap("input", "Activiti BPM Engine"));
+//    ActivityInstance activityInstance = runtimeService.findExecutionByProcessInstanceIdAndActivityId(pi.getId(), "waitState");
+//    assertEquals("ACTIVITI BPM ENGINE", runtimeService.getVariable(activityInstance.getId(), "input"));
+//    processEngine.getRuntimeService().endProcessInstance(activityInstance.getId());
+//  }
+//
+//  @Test
+//  public void testSpringTransaction() {
+//    int before = processEngine.getRepositoryService().findDeployments().size();
+//    userBean.doTransactional();
+//    assertEquals(before + 1, processEngine.getRepositoryService().findDeployments().size());
+//  }
+//
+//  @Test
+//  public void testSpringTransactionRollback() {
+//    int before = processEngine.getRepositoryService().findDeployments().size();
+//    userBean.setFail(true);
+//    exception.expect(ActivitiException.class);
+//    exception.expectMessage("aprocess");
+//    try {
+//      new TransactionTemplate(transactionManager).execute(new TransactionCallback<Object>() {
+//
+//        public Object doInTransaction(TransactionStatus status) {
+//          userBean.doTransactional();
+//          return null;
+//        }
+//      });
+//
+//    } finally {
+//      assertEquals(before, processEngine.getRepositoryService().findDeployments().size());
+//    }
+//  }
+//
+//  @Test
+//  @DirtiesContext
+//  public void testSaveDeployment() {
+//
+//    int before = processEngine.getRepositoryService().findDeployments().size();
+//
+//    String resource = ClassUtils.addResourcePathToPackagePath(getClass(), "testProcess.bpmn20.xml");
+//    RepositoryService repositoryService = processEngine.getRepositoryService();
+//    Deployment deployment = repositoryService.createDeployment().name(resource).addClasspathResource(resource).deploy();
+//
+//    assertEquals(before + 1, processEngine.getRepositoryService().findDeployments().size());
+//    deployment = repositoryService.createDeployment().name(resource).addClasspathResource(resource).deploy();
+//    assertEquals(before + 1, processEngine.getRepositoryService().findDeployments().size());
+//
+//    if (deployment != null) {
+//      repositoryService.deleteDeployment(deployment.getId());
+//    }
+//
+//  }
+//
+//  @Test
+//  @DirtiesContext
+//  public void testConfigureDeploymentCheck() throws Exception {
+//
+//    int before = processEngine.getRepositoryService().findDeployments().size();
+//
+//    RepositoryService repositoryService = processEngine.getRepositoryService();
+//
+//    // (N.B. Spring 3 resolves Resource[] from a pattern to FileSystemResource
+//    // instances)
+//    FileSystemResource resource = new FileSystemResource(new ClassPathResource("staticProcess.bpmn20.xml", getClass()).getFile());
+//    String path = resource.getFile().getAbsolutePath();
+//
+//    Deployment deployment = repositoryService.createDeployment().name(path).addInputStream(path, resource.getInputStream()).deploy();
+//    // Should be identical to resource configured in factory bean so no new
+//    // deployment
+//    assertEquals(before, processEngine.getRepositoryService().findDeployments().size());
+//
+//    if (deployment != null) {
+//      repositoryService.deleteDeployment(deployment.getId());
+//    }
+//
+//  }
 }

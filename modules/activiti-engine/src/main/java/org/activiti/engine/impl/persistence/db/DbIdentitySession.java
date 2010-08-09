@@ -70,10 +70,12 @@ public class DbIdentitySession implements IdentitySession, Session {
     return (GroupEntity) dbSqlSession.selectOne("selectGroup", groupId);
   }
 
+  @SuppressWarnings("unchecked")
   public List<GroupEntity> findGroupsByUser(String userId) {
     return dbSqlSession.selectList("selectGroupsByUser", userId);
   }
 
+  @SuppressWarnings("unchecked")
   public List<GroupEntity> findGroupsByUserAndType(String userId, String groupType) {
     Map<String, Object> parameters = new HashMap<String, Object>();
     parameters.put("userId", userId);
@@ -81,6 +83,7 @@ public class DbIdentitySession implements IdentitySession, Session {
     return dbSqlSession.selectList("selectGroupsByUserAndType", parameters);
   }
 
+  @SuppressWarnings("unchecked")
   public List<GroupEntity> findGroups() {
     return dbSqlSession.selectList("selectGroups");
   }

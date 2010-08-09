@@ -13,7 +13,7 @@
 package org.activiti.pvm.impl.runtime;
 
 import org.activiti.pvm.PvmException;
-import org.activiti.pvm.activity.EventActivityBehavior;
+import org.activiti.pvm.activity.SignallableActivityBehavior;
 import org.activiti.pvm.impl.process.ActivityImpl;
 
 
@@ -36,7 +36,7 @@ public class AtomicOperationSignal implements AtomicOperation {
 
   public void execute(ExecutionImpl execution) {
     ActivityImpl activity = execution.getActivity();
-    EventActivityBehavior activityBehavior = (EventActivityBehavior) activity.getActivityBehavior();
+    SignallableActivityBehavior activityBehavior = (SignallableActivityBehavior) activity.getActivityBehavior();
     try {
       activityBehavior.signal(execution, signalName, signalData);
     } catch (RuntimeException e) {

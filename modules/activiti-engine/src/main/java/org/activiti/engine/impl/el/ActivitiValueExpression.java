@@ -18,6 +18,7 @@ import javax.el.ValueExpression;
 
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.persistence.runtime.ExecutionEntity;
+import org.activiti.pvm.delegate.DelegateExecution;
 import org.activiti.pvm.impl.runtime.ExecutionImpl;
 
 
@@ -34,8 +35,8 @@ public class ActivitiValueExpression {
     this.expressionManager = expressionManager;
   }
 
-  public Object getValue(ExecutionImpl execution) {
-    ELContext elContext = expressionManager.getElContext((ExecutionEntity) execution);
+  public Object getValue(DelegateExecution execution) {
+    ELContext elContext = expressionManager.getElContext((ExecutionImpl) execution);
     try {
       return valueExpression.getValue(elContext);
     } catch (PropertyNotFoundException e) {
@@ -43,8 +44,8 @@ public class ActivitiValueExpression {
     }
   }
 
-  public void setValue(Object value, ExecutionImpl execution) {
-    ELContext elContext = expressionManager.getElContext((ExecutionEntity) execution);
+  public void setValue(Object value, DelegateExecution execution) {
+    ELContext elContext = expressionManager.getElContext((ExecutionImpl) execution);
     valueExpression.setValue(elContext, value);
   }
 }

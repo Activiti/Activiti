@@ -14,7 +14,7 @@
 package org.activiti.engine.impl.bpmn;
 
 import org.activiti.engine.impl.bpmn.parser.BpmnParse;
-import org.activiti.pvm.activity.ActivityContext;
+import org.activiti.pvm.activity.ActivityExecution;
 import org.activiti.pvm.impl.process.ActivityImpl;
 import org.activiti.pvm.process.PvmActivity;
 
@@ -27,13 +27,11 @@ import org.activiti.pvm.process.PvmActivity;
  */
 public class SubProcessActivity extends AbstractBpmnActivity {
   
-  public void start(ActivityContext activityContext) throws Exception {
-    PvmActivity activity = activityContext.getActivity();
+  public void execute(ActivityExecution execution) throws Exception {
+    PvmActivity activity = execution.getActivity();
     ActivityImpl initialActivity = (ActivityImpl) activity.getProperty(BpmnParse.PROPERTYNAME_INITIAL);
 
-    throw new UnsupportedOperationException("please implement me");
-//    activityContext.setActivity(initialActivity);
-//    initialActivity.getActivityBehavior().execute(activityContext);
+    execution.executeActivity(initialActivity);
   }
   
 }

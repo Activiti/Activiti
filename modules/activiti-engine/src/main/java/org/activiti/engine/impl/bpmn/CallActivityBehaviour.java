@@ -13,10 +13,10 @@
 
 package org.activiti.engine.impl.bpmn;
 
-import org.activiti.engine.impl.cfg.RepositorySession;
 import org.activiti.engine.impl.interceptor.CommandContext;
-import org.activiti.engine.impl.persistence.repository.ProcessDefinitionEntity;
-import org.activiti.pvm.activity.ActivityContext;
+import org.activiti.pvm.activity.ActivityExecution;
+import org.activiti.pvm.impl.process.ProcessDefinitionImpl;
+import org.activiti.pvm.runtime.PvmProcessInstance;
 
 
 /**
@@ -33,17 +33,18 @@ public class CallActivityBehaviour extends AbstractBpmnActivity {
     this.processDefinitonKey = processDefinitionKey;
   }
   
-  public void start(ActivityContext activityContext) throws Exception {
-    RepositorySession repositorySession = CommandContext.getCurrent().getRepositorySession();
-    ProcessDefinitionEntity processDefinition =  repositorySession.findDeployedLatestProcessDefinitionByKey(processDefinitonKey);
-
-    throw new UnsupportedOperationException("please implement me");
-//    ObjectProcessInstance processInstance = execution.createSubProcessInstance(processDefinition);
-//    processInstance.start();
+  public void execute(ActivityExecution execution) throws Exception {
+    ProcessDefinitionImpl processDefinition = 
+      CommandContext
+        .getCurrent()
+        .getRepositorySession()
+        .findDeployedLatestProcessDefinitionByKey(processDefinitonKey);
+    
+    PvmProcessInstance processInstance = execution.createSubProcessInstance(processDefinition);
+    processInstance.start();
   }
   
-  public void signal(ActivityContext activityContext, String signalName, Object signalData) throws Exception {
-    leave(activityContext);
+  public void event(ActivityExecution execution, String signalEvent, Object signalData) throws Exception {
+    leave(execution);
   }
-
 }

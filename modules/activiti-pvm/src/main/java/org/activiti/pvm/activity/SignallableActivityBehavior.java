@@ -16,7 +16,7 @@ package org.activiti.pvm.activity;
 /**
  * @author Tom Baeyens
  */
-public interface EventActivityBehavior extends ActivityBehavior {
+public interface SignallableActivityBehavior extends ActivityBehavior {
 
   void signal(ActivityExecution execution, String signalEvent, Object signalData) throws Exception;
   

@@ -12,10 +12,8 @@
  */
 package org.activiti.examples.pojo;
 
-import javax.management.RuntimeErrorException;
-
-import org.activiti.pvm.activity.ActivityContext;
-import org.activiti.pvm.activity.SignallableActivityBehaviour;
+import org.activiti.pvm.activity.ActivityExecution;
+import org.activiti.pvm.activity.SignallableActivityBehavior;
 import org.activiti.pvm.process.PvmTransition;
 
 
@@ -23,9 +21,9 @@ import org.activiti.pvm.process.PvmTransition;
 /**
  * @author Tom Baeyens
  */
-public class WaitState implements SignallableActivityBehaviour {
+public class WaitState implements SignallableActivityBehavior {
 
-  public void start(ActivityContext activityContext) {
+  public void execute(ActivityExecution execution) {
     // By default, the execution will not propagate.
     // So if no method like take(Transition) is called on execution
     // then the activity will behave as a wait state.  The execution is currently 
@@ -35,13 +33,13 @@ public class WaitState implements SignallableActivityBehaviour {
     // That method will delegate to the method below.  
   }
 
-  public void signal(ActivityContext activityContext, String signalName, Object event) {
-    PvmTransition transition = findTransition(activityContext, signalName);
-    activityContext.take(transition);
+  public void signal(ActivityExecution execution, String signalName, Object event) {
+    PvmTransition transition = findTransition(execution, signalName);
+    execution.take(transition);
   }
 
-  protected PvmTransition findTransition(ActivityContext activityContext, String signalName) {
-    for (PvmTransition transition: activityContext.getOutgoingTransitions()) {
+  protected PvmTransition findTransition(ActivityExecution execution, String signalName) {
+    for (PvmTransition transition: execution.getActivity().getOutgoingTransitions()) {
       if (signalName==null) {
         if (transition.getId()==null) {
           return transition;
@@ -52,6 +50,6 @@ public class WaitState implements SignallableActivityBehaviour {
         }
       }
     }
-    throw new RuntimeException("no transition for signalName '"+signalName+"' in WaitState '"+activityContext.getActivity().getId()+"'");
+    throw new RuntimeException("no transition for signalName '"+signalName+"' in WaitState '"+execution.getActivity().getId()+"'");
   }
 }

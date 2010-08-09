@@ -22,7 +22,6 @@ import java.util.List;
  */
 public interface ExecutionQuery {
   
-  ExecutionQuery onlyProcessInstances();
   ExecutionQuery processInstanceId(String processInstanceId);
   ExecutionQuery activityId(String activityId);
   ExecutionQuery processDefinitionKey(String processDefinitionKey);

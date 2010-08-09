@@ -15,6 +15,7 @@ package org.activiti.engine.impl.el;
 
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.bpmn.Condition;
+import org.activiti.pvm.delegate.DelegateExecution;
 import org.activiti.pvm.impl.runtime.ExecutionImpl;
 
 
@@ -31,7 +32,7 @@ public class UelValueExpressionCondition implements Condition {
     this.valueExpression = valueExpression;
   }
   
-  public boolean evaluate(ExecutionImpl execution) {
+  public boolean evaluate(DelegateExecution execution) {
     Object result = valueExpression.getValue((ExecutionImpl)execution);
     
     if (result==null) {

@@ -12,7 +12,7 @@
  */
 package org.activiti.engine.impl.bpmn;
 
-import org.activiti.pvm.impl.runtime.ExecutionImpl;
+import org.activiti.pvm.delegate.DelegateExecution;
 
 
 
@@ -21,5 +21,5 @@ import org.activiti.pvm.impl.runtime.ExecutionImpl;
  */
 public interface Condition {
 
-  boolean evaluate(ExecutionImpl execution);
+  boolean evaluate(DelegateExecution execution);
 }

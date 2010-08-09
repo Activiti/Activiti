@@ -13,11 +13,13 @@
 
 package org.activiti.engine.impl.bpmn;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.activiti.pvm.activity.ActivityContext;
+import org.activiti.engine.impl.bpmn.parser.BpmnParse;
+import org.activiti.pvm.activity.ActivityExecution;
 import org.activiti.pvm.process.PvmTransition;
 
 /**
@@ -41,7 +43,7 @@ public class BpmnActivityBehavior {
    * of the process instance. If multiple sequencer flow are selected, 
    * multiple, parallel paths of executions are created.
    */
-  public void performDefaultOutgoingBehavior(ActivityContext activityContext) {
+  public void performDefaultOutgoingBehavior(ActivityExecution activityContext) {
     performOutgoingBehavior(activityContext, true);
   }
   
@@ -55,50 +57,49 @@ public class BpmnActivityBehavior {
    * multiple outgoing sequence flow, multiple parallel paths of executions will
    * be created.
    */
-  public void performIgnoreConditionsOutgoingBehavior(ActivityContext activityContext) {
+  public void performIgnoreConditionsOutgoingBehavior(ActivityExecution activityContext) {
     performOutgoingBehavior(activityContext, false);
   }
   
   /**
    * Actual implementation of leaving an activity.
    */
-  protected void performOutgoingBehavior(ActivityContext activityContext, boolean checkConditions) {
+  protected void performOutgoingBehavior(ActivityExecution execution, boolean checkConditions) {
 
     if (log.isLoggable(Level.FINE)) {
-        log.fine("Leaving activity '" + activityContext.getActivity().getId() + "'");
+        log.fine("Leaving activity '" + execution.getActivity().getId() + "'");
       }
       
-      List<PvmTransition> outgoingTransitions = activityContext.getOutgoingTransitions();   
+      List<PvmTransition> outgoingTransitions = execution.getActivity().getOutgoingTransitions();   
       if (outgoingTransitions.size() == 1) {
-        activityContext.take(outgoingTransitions.get(0));
+        execution.take(outgoingTransitions.get(0));
         
       } else if (outgoingTransitions.size() > 1) {
-// TODO review (also javadocs)
-//        ConcurrencyController concurrencyController = new ConcurrencyController(activityContext);
-//        concurrencyController.inactivate();
-//        
-//        List<ActivityExecution> joinedExecutions = new ArrayList<ActivityExecution>();
-//        joinedExecutions.add(activityContext);
-//        
-//        List<Transition> transitionsToTake = new ArrayList<Transition>();
-//        
-//        for (Transition outgoingTransition: outgoingTransitions) {
-//          if (outgoingTransition.getCondition() == null 
-//                  || !checkConditions 
-//                  || outgoingTransition.getCondition().evaluate(activityContext)) {
-//            transitionsToTake.add(outgoingTransition);
-//          }
-//        }
-//        
-//        concurrencyController.takeAll(transitionsToTake, joinedExecutions);
+        execution.inactivate();
+        
+        List<ActivityExecution> joinedExecutions = new ArrayList<ActivityExecution>();
+        joinedExecutions.add(execution);
+        
+        List<PvmTransition> transitionsToTake = new ArrayList<PvmTransition>();
+        
+        for (PvmTransition outgoingTransition: outgoingTransitions) {
+          Condition condition = (Condition) outgoingTransition.getProperty(BpmnParse.PROPERTYNAME_CONDITION);
+          if (condition == null 
+                  || !checkConditions 
+                  || condition.evaluate(execution)) {
+            transitionsToTake.add(outgoingTransition);
+          }
+        }
+        
+        execution.takeAll(transitionsToTake, joinedExecutions);
         
       } else {
         
         if (log.isLoggable(Level.FINE)) {
-          log.fine("No outgoing sequence flow found for " + activityContext.getActivity().getId() 
+          log.fine("No outgoing sequence flow found for " + execution.getActivity().getId() 
                   + ". Ending execution.");
         }
-        activityContext.endActivityInstance();
+        execution.end();
         
       }
   }

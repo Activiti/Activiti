@@ -13,7 +13,7 @@
 package org.activiti.engine.impl.bpmn;
 
 import org.activiti.engine.ActivitiException;
-import org.activiti.pvm.activity.ActivityContext;
+import org.activiti.pvm.activity.ActivityExecution;
 
 
 /**
@@ -25,10 +25,10 @@ public class BoundaryTimerEventActivity extends AbstractBpmnActivity {
   
   protected boolean interrupting;
     
-  public void start(ActivityContext activityContext) throws Exception {
+  public void execute(ActivityExecution execution) throws Exception {
     
     if (interrupting) {
-      leave(activityContext);
+      leave(execution);
     } else {
       throw new ActivitiException("Non-interrupting boundary timer event not yet implemented");
     }

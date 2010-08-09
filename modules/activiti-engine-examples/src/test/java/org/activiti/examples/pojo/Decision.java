@@ -15,10 +15,9 @@ package org.activiti.examples.pojo;
 import java.util.List;
 
 import org.activiti.engine.ActivitiException;
-import org.activiti.engine.impl.el.ActivitiMethodExpression;
 import org.activiti.engine.impl.el.ActivitiValueExpression;
 import org.activiti.pvm.activity.ActivityBehavior;
-import org.activiti.pvm.activity.ActivityContext;
+import org.activiti.pvm.activity.ActivityExecution;
 import org.activiti.pvm.process.PvmTransition;
 
 
@@ -29,19 +28,19 @@ public class Decision implements ActivityBehavior {
 
   public static final String KEY_CONDITION = "ConditionExpression";
 
-  public void start(ActivityContext activityContext) throws Exception {
-    PvmTransition transition = findOutgoingTransition(activityContext);
-    activityContext.take(transition);
+  public void execute(ActivityExecution execution) throws Exception {
+    PvmTransition transition = findOutgoingTransition(execution);
+    execution.take(transition);
   }
 
-  private PvmTransition findOutgoingTransition(ActivityContext activityContext) {
-    List<PvmTransition> outgoingTransitions = activityContext.getOutgoingTransitions();
+  private PvmTransition findOutgoingTransition(ActivityExecution execution) {
+    List<PvmTransition> outgoingTransitions = execution.getActivity().getOutgoingTransitions();
     for (PvmTransition transition: outgoingTransitions) {
       ActivitiValueExpression activitiValueExpression = (ActivitiValueExpression) transition.getProperty(KEY_CONDITION);
       if (activitiValueExpression==null) {
         return transition;
       }
-      Boolean result = (Boolean) activitiValueExpression.getValue(activityContext);
+      Boolean result = (Boolean) activitiValueExpression.getValue(execution);
       if (result) {
         return transition;
       }

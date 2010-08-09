@@ -25,11 +25,8 @@ public interface ProcessInstanceQuery {
   ProcessInstanceQuery processInstanceId(String processInstanceId);
   ProcessInstanceQuery processDefinitionKey(String processDefinitionKey);
   
-  long count();
-  
   List<ProcessInstance> list();
-  
   List<ProcessInstance> paginatedList(int start, int maxResults);
-  
   ProcessInstance singleResult();
+  long count();
 }

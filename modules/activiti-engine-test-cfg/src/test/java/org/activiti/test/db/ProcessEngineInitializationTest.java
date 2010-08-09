@@ -23,37 +23,28 @@ import org.activiti.engine.ProcessEngineBuilder;
 import org.activiti.engine.impl.ProcessEngineImpl;
 import org.activiti.engine.impl.persistence.db.DbSqlSession;
 import org.activiti.engine.impl.persistence.db.DbSqlSessionFactory;
-import org.activiti.test.LogInitializer;
+import org.activiti.pvm.test.PvmTestCase;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
-import org.hamcrest.Description;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.internal.matchers.TypeSafeMatcher;
-import org.junit.rules.ExpectedException;
 
 /**
  * @author Tom Baeyens
  */
-public class ProcessEngineInitializationTest {
+public class ProcessEngineInitializationTest extends PvmTestCase {
 
-  @Rule
-  public ExpectedException exception = ExpectedException.none();
-
-  @Rule
-  public LogInitializer logInitializer = new LogInitializer();
-
-  @Test
   public void testNoTables() {
-
-    exception.expect(ActivitiException.class);
-    exception.expectMessage("no activiti tables in db.  set property db.schema.strategy=create-drop in activiti.properties for automatic schema creation");
-
-    new ProcessEngineBuilder().configureFromPropertiesResource("org/activiti/test/db/activiti.properties").buildProcessEngine();
+    try {
+      new ProcessEngineBuilder()
+        .configureFromPropertiesResource("org/activiti/test/db/activiti.properties")
+        .buildProcessEngine();
+      fail("expected exception");
+    } catch (Exception e) {
+      // OK
+      assertTextPresent("no activiti tables in db.  set property db.schema.strategy=create-drop in activiti.properties for automatic schema creation", e.getMessage());
+    }
 
   }
 
-  @Test
   public void testVersionMismatch() {
     // first create the schema
     ProcessEngineImpl processEngine = (ProcessEngineImpl) new ProcessEngineBuilder().configureFromPropertiesResource(
@@ -84,22 +75,20 @@ public class ProcessEngineInitializationTest {
       sqlSession.close();
     }
 
-    exception.expect(ActivitiWrongDbException.class);
-    exception.expect(new TypeSafeMatcher<ActivitiWrongDbException>() {
-
-      @Override
-      public boolean matchesSafely(ActivitiWrongDbException e) {
-        return e.getMessage().contains("version mismatch") && "25.7".equals(e.getDbVersion()) && ProcessEngine.VERSION == e.getLibraryVersion();
-      }
-      public void describeTo(Description description) {
-        description.appendText("'version mismatch' with dbVersion=25.7 and libraryVersion=").appendValue(ProcessEngine.VERSION);
-      }
-    });
-
-    // now we can see what happens if when a process engine is being
-    // build with a version mismatch between library and db tables
-    new ProcessEngineBuilder().configureFromPropertiesResource("org/activiti/test/db/activiti.properties")
-            .setDbSchemaStrategy(DbSchemaStrategy.CHECK_VERSION).buildProcessEngine();
+    try {
+      // now we can see what happens if when a process engine is being
+      // build with a version mismatch between library and db tables
+      new ProcessEngineBuilder()
+        .configureFromPropertiesResource("org/activiti/test/db/activiti.properties")
+        .setDbSchemaStrategy(DbSchemaStrategy.CHECK_VERSION)
+        .buildProcessEngine();
+      
+      fail("expected exception");
+    } catch (ActivitiWrongDbException e) {
+      assertTextPresent("version mismatch", e.getMessage());
+      assertEquals(25.7, e.getDbVersion());
+      assertEquals(ProcessEngine.VERSION, e.getLibraryVersion());
+    }
 
     // closing the original process engine to drop the db tables
     processEngine.close();

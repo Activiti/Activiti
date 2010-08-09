@@ -20,7 +20,6 @@ import java.util.Map;
 import org.activiti.engine.Execution;
 import org.activiti.engine.Job;
 import org.activiti.engine.Page;
-import org.activiti.engine.impl.ExecutionQueryImpl;
 import org.activiti.engine.impl.persistence.runtime.ByteArrayEntity;
 import org.activiti.engine.impl.persistence.runtime.ExecutionEntity;
 import org.activiti.engine.impl.persistence.runtime.JobEntity;
@@ -35,8 +34,8 @@ public interface RuntimeSession {
   
   void endProcessInstance(String processInstanceId, String nonCompletionReason);
   ExecutionEntity findSubProcessInstanceBySuperExecutionId(String superExecutionId);
-  long findExecutionCountByDynamicCriteria(ExecutionQueryImpl executionQuery);
-  List<Execution> findExecutionsByDynamicCriteria(ExecutionQueryImpl executionQuery);
+  long findExecutionCountByDynamicCriteria(Object executionQuery);
+  List<ExecutionEntity> findExecutionsByDynamicCriteria(Object executionQuery);
   List<ExecutionEntity> findChildExecutionsByParentExecutionId(String executionId);
   ExecutionEntity findExecutionById(String activityInstanceId);
   

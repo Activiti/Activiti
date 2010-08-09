@@ -44,17 +44,17 @@ public class PojoTest extends TestCase {
     PvmProcessInstance processInstance = processDefinition.createProcessInstance();
     processInstance.start();
 
-    PvmExecution activityInstance = processInstance.findActiveExecution("a");
+    PvmExecution activityInstance = processInstance.findExecution("a");
     assertNotNull(activityInstance);
 
     activityInstance.signal(null, null);
     
-    activityInstance = processInstance.findActiveExecution("b");
+    activityInstance = processInstance.findExecution("b");
     assertNotNull(activityInstance);
 
     activityInstance.signal(null, null);
     
-    activityInstance = processInstance.findActiveExecution("c");
+    activityInstance = processInstance.findExecution("c");
     assertNotNull(activityInstance);
   }
 
@@ -77,7 +77,7 @@ public class PojoTest extends TestCase {
     PvmProcessInstance processInstance = processDefinition.createProcessInstance();
     processInstance.start();
 
-    assertNotNull(processInstance.findActiveExecution("c"));
+    assertNotNull(processInstance.findExecution("c"));
   }
 
   public void testDecision() {
@@ -112,16 +112,16 @@ public class PojoTest extends TestCase {
     PvmProcessInstance processInstance = processDefinition.createProcessInstance();
     processInstance.setVariable("creditRating", "Aaa-");
     processInstance.start();
-    assertNotNull(processInstance.findActiveExecution("takeToGolf"));
+    assertNotNull(processInstance.findExecution("takeToGolf"));
 
     processInstance = processDefinition.createProcessInstance();
     processInstance.setVariable("creditRating", "AAA+");
     processInstance.start();
-    assertNotNull(processInstance.findActiveExecution("askDaughterOut"));
+    assertNotNull(processInstance.findExecution("askDaughterOut"));
     
     processInstance = processDefinition.createProcessInstance();
     processInstance.setVariable("creditRating", "bb-");
     processInstance.start();
-    assertNotNull(processInstance.findActiveExecution("ignore"));
+    assertNotNull(processInstance.findExecution("ignore"));
   }
 }

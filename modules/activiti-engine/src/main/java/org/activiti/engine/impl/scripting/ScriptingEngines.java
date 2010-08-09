@@ -22,6 +22,7 @@ import javax.script.ScriptException;
 import javax.script.SimpleBindings;
 
 import org.activiti.engine.ActivitiException;
+import org.activiti.pvm.delegate.DelegateExecution;
 import org.activiti.pvm.impl.runtime.ExecutionImpl;
 
 /**
@@ -54,7 +55,7 @@ public class ScriptingEngines {
     }
   }
 
-  public Object evaluate(String script, String language, ExecutionImpl execution) {
+  public Object evaluate(String script, String language, DelegateExecution execution) {
     Bindings bindings = createBindings(execution);
     ScriptEngine scriptEngine = scriptEngineManager.getEngineByName(language);
 
@@ -70,9 +71,9 @@ public class ScriptingEngines {
   }
 
   /** override to build a spring aware ScriptingEngines */
-  protected Bindings createBindings(ExecutionImpl execution) {
+  protected Bindings createBindings(DelegateExecution execution) {
     if (execution != null) {
-      return new ActivityContextBindings(execution);
+      return new ActivityContextBindings((ExecutionImpl) execution);
     }
     return new SimpleBindings();
   }

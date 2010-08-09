@@ -12,17 +12,17 @@
  */
 package org.activiti.pvm.event;
 
+import org.activiti.pvm.delegate.DelegateExecution;
 import org.activiti.pvm.process.PvmProcessElement;
 
 
 /**
  * @author Tom Baeyens
  */
-public interface EventListenerExecution {
+public interface EventListenerExecution extends DelegateExecution {
   
-  Object getVariable(String variableName);
-  void setVariable(String variableName, Object value);
   String getEventName();
+
   PvmProcessElement getEventSource();
 
 }

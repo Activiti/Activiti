@@ -18,7 +18,6 @@ import java.util.List;
 import org.activiti.engine.Page;
 import org.activiti.engine.ProcessDefinition;
 import org.activiti.engine.ProcessDefinitionQuery;
-import org.activiti.engine.ProcessInstance;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
 

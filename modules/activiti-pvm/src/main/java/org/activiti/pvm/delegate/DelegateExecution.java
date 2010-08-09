@@ -11,24 +11,19 @@
  * limitations under the License.
  */
 
-package org.activiti.pvm.runtime;
+package org.activiti.pvm.delegate;
 
 import java.util.Map;
-
-import org.activiti.pvm.process.PvmActivity;
 
 
 /**
  * @author Tom Baeyens
  */
-public interface PvmExecution {
+public interface DelegateExecution {
 
-  void signal(String signalName, Object signalData);
-
-  PvmActivity getActivity();
-  
   boolean hasVariable(String variableName);
   void setVariable(String variableName, Object value);
   Object getVariable(String variableName);
   Map<String, Object> getVariables();
+
 }

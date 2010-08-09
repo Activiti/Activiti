@@ -82,15 +82,19 @@ public class ExpressionManager {
     this.expressionFactory = expressionFactory;
   }
 
-  public ELContext getElContext(ExecutionEntity execution) {
+  public ELContext getElContext(ExecutionImpl execution) {
+    if (! (execution instanceof ExecutionEntity)) {
+      return createExecutionElContext(execution);
+    }
+    ExecutionEntity executionEntity = (ExecutionEntity) execution;
     ELContext elContext = null;
     synchronized (execution) {
-      elContext = (ELContext) execution.getCachedElContext();
+      elContext = (ELContext) executionEntity.getCachedElContext();
       if (elContext != null) {
         return elContext;
       }
       elContext = createExecutionElContext(execution);
-      execution.setCachedElContext(elContext);
+      executionEntity.setCachedElContext(elContext);
     }
     return elContext;
   }

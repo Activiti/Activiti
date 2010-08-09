@@ -14,14 +14,14 @@
 package org.activiti.test.pvm.activities;
 
 import org.activiti.pvm.activity.ActivityExecution;
-import org.activiti.pvm.activity.EventActivityBehavior;
+import org.activiti.pvm.activity.SignallableActivityBehavior;
 import org.activiti.pvm.process.PvmTransition;
 
 
 /**
  * @author Tom Baeyens
  */
-public class WaitState implements EventActivityBehavior {
+public class WaitState implements SignallableActivityBehavior {
 
   public void execute(ActivityExecution execution) throws Exception {
   }

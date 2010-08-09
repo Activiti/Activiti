@@ -13,7 +13,7 @@
 
 package org.activiti.examples.bpmn.receivetask;
 
-import org.activiti.engine.ActivityInstance;
+import org.activiti.engine.Execution;
 import org.activiti.engine.ProcessInstance;
 import org.activiti.engine.test.Deployment;
 import org.activiti.engine.test.ProcessEngineTestCase;
@@ -27,10 +27,13 @@ public class ReceiveTaskTest extends ProcessEngineTestCase {
   @Deployment
   public void testWaitStateBehavior() {
     ProcessInstance pi = runtimeService.startProcessInstanceByKey("receiveTask");
-    ActivityInstance activityInstance = runtimeService.findExecutionByProcessInstanceIdAndActivityId(pi.getId(), "waitState");
-    assertNotNull(activityInstance);
+    Execution execution = runtimeService.createExecutionQuery()
+      .processInstanceId(pi.getId())
+      .activityId("waitState")
+      .singleResult();
+    assertNotNull(execution);
     
-    runtimeService.signal(activityInstance.getId());
+    runtimeService.signal(execution.getId());
     assertProcessEnded(pi.getId());
   }
 

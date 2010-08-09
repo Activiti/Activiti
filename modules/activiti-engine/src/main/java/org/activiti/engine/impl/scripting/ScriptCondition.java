@@ -15,6 +15,7 @@ package org.activiti.engine.impl.scripting;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.bpmn.Condition;
 import org.activiti.engine.impl.interceptor.CommandContext;
+import org.activiti.pvm.delegate.DelegateExecution;
 import org.activiti.pvm.impl.runtime.ExecutionImpl;
 
 /**
@@ -30,13 +31,13 @@ public class ScriptCondition implements Condition {
     this.language = language;
   }
 
-  public boolean evaluate(ExecutionImpl activityContext) {
+  public boolean evaluate(DelegateExecution execution) {
     ScriptingEngines scriptingEngines = CommandContext
       .getCurrent()
       .getProcessEngineConfiguration()
       .getScriptingEngines();
     
-    Object result = scriptingEngines.evaluate(expression, language, activityContext);
+    Object result = scriptingEngines.evaluate(expression, language, execution);
     if (result == null) {
       throw new ActivitiException("condition script returns null: " + expression);
     }

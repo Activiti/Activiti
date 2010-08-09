@@ -13,10 +13,13 @@
 
 package org.activiti.engine.impl.bpmn;
 
+import java.util.List;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.activiti.pvm.activity.ActivityContext;
+import org.activiti.pvm.activity.ActivityExecution;
 import org.activiti.pvm.process.PvmActivity;
+import org.activiti.pvm.process.PvmTransition;
 
 /**
  * Implementation of the Parallel Gateway/AND gateway as definined in the BPMN
@@ -44,24 +47,24 @@ public class ParallelGatewayActivity extends GatewayActivity {
   
   private static Logger log = Logger.getLogger(ParallelGatewayActivity.class.getName());
 
-  public void start(ActivityContext activityContext) throws Exception { 
-    PvmActivity activity = activityContext.getActivity();
+  public void execute(ActivityExecution execution) throws Exception { 
+    PvmActivity activity = execution.getActivity();
 
-    throw new UnsupportedOperationException("please implement me");
-//    ConcurrencyController concurrencyController = new ConcurrencyController(activityContext);
-//    concurrencyController.inactivate();
-//    
-//    List<ActivityExecution> joinedExecutions = concurrencyController.findInactiveConcurrentExecutions(activity);
-//    
-//    int nbrOfExecutionsToJoin = activityContext.getIncomingTransitions().size();
-//    int nbrOfExecutionsJoined = joinedExecutions.size();
-//    
-//    if (nbrOfExecutionsJoined==nbrOfExecutionsToJoin) {
-//      log.fine("parallel gateway '"+activity.getId()+"' activates: "+nbrOfExecutionsJoined+" of "+nbrOfExecutionsToJoin+" joined");
-//      concurrencyController.takeAll(activityContext.getOutgoingTransitions(), joinedExecutions);
-//      
-//    } else if (log.isLoggable(Level.FINE)){
-//      log.fine("parallel gateway '"+activity.getId()+"' does not activate: "+nbrOfExecutionsJoined+" of "+nbrOfExecutionsToJoin+" joined");
-//    }
+    List<PvmTransition> outgoingTransitions = execution.getActivity().getOutgoingTransitions();
+    
+    execution.inactivate();
+    
+    List<ActivityExecution> joinedExecutions = execution.findInactiveConcurrentExecutions(activity);
+    
+    int nbrOfExecutionsToJoin = execution.getActivity().getIncomingTransitions().size();
+    int nbrOfExecutionsJoined = joinedExecutions.size();
+    
+    if (nbrOfExecutionsJoined==nbrOfExecutionsToJoin) {
+      log.fine("parallel gateway '"+activity.getId()+"' activates: "+nbrOfExecutionsJoined+" of "+nbrOfExecutionsToJoin+" joined");
+      execution.takeAll(outgoingTransitions, joinedExecutions);
+      
+    } else if (log.isLoggable(Level.FINE)){
+      log.fine("parallel gateway '"+activity.getId()+"' does not activate: "+nbrOfExecutionsJoined+" of "+nbrOfExecutionsToJoin+" joined");
+    }
   }
 }

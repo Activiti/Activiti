@@ -27,7 +27,7 @@ import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.PersistentObject;
 import org.activiti.engine.impl.persistence.runtime.ExecutionEntity;
 import org.activiti.engine.impl.util.ClockUtil;
-import org.activiti.pvm.runtime.PvmExecution;
+import org.activiti.pvm.delegate.DelegateExecution;
 
 /**
  * @author Tom Baeyens
@@ -205,7 +205,7 @@ public class TaskEntity implements Task, Serializable, PersistentObject {
     return execution;
   }
   
-  public void setExecution(PvmExecution execution) {
+  public void setExecution(DelegateExecution execution) {
     if (execution!=null) {
       this.execution = (ExecutionEntity) execution;
       this.executionId = this.execution.getId();

@@ -16,10 +16,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-import org.activiti.engine.Execution;
 import org.activiti.engine.Job;
 import org.activiti.engine.Page;
-import org.activiti.engine.impl.ExecutionQueryImpl;
 import org.activiti.engine.impl.cfg.RuntimeSession;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.interceptor.Session;
@@ -51,13 +49,13 @@ public class DbRuntimeSession implements Session, RuntimeSession {
     return (ExecutionEntity) dbSqlSession.selectOne("selectSubProcessInstanceBySuperExecutionId", superExecutionId);
   }
 
-  public long findExecutionCountByDynamicCriteria(ExecutionQueryImpl processInstanceQuery) {
-    return (Long) dbSqlSession.selectOne("selectProcessInstanceCountByDynamicCriteria", processInstanceQuery);
+  public long findExecutionCountByDynamicCriteria(Object executionQuery) {
+    return (Long) dbSqlSession.selectOne("selectExecutionCountByDynamicCriteria", executionQuery);
   }
 
   @SuppressWarnings("unchecked")
-  public List<Execution> findExecutionsByDynamicCriteria(ExecutionQueryImpl processInstanceQuery) {
-    return dbSqlSession.selectList("selectProcessInstanceByDynamicCriteria", processInstanceQuery);
+  public List<ExecutionEntity> findExecutionsByDynamicCriteria(Object executionQuery) {
+    return dbSqlSession.selectList("selectExecutionsByDynamicCriteria", executionQuery);
   }
 
   public ExecutionEntity findExecutionById(String executionId) {

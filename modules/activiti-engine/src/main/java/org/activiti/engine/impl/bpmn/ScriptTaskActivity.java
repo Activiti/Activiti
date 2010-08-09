@@ -14,7 +14,7 @@ package org.activiti.engine.impl.bpmn;
 
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.scripting.ScriptingEngines;
-import org.activiti.pvm.activity.ActivityContext;
+import org.activiti.pvm.activity.ActivityExecution;
 
 
 /**
@@ -33,14 +33,14 @@ public class ScriptTaskActivity extends TaskActivity {
     this.language = language;
   }
   
-  public void start(ActivityContext activityContext) throws Exception {
+  public void execute(ActivityExecution execution) throws Exception {
     ScriptingEngines scriptingEngines = CommandContext
       .getCurrent()
       .getProcessEngineConfiguration()
       .getScriptingEngines();
     
-    scriptingEngines.evaluate(script, language, activityContext);
-    leave(activityContext);
+    scriptingEngines.evaluate(script, language, execution);
+    leave(execution);
   }
   
 }

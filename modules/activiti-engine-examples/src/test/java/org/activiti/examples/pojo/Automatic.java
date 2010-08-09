@@ -13,7 +13,7 @@
 package org.activiti.examples.pojo;
 
 import org.activiti.pvm.activity.ActivityBehavior;
-import org.activiti.pvm.activity.ActivityContext;
+import org.activiti.pvm.activity.ActivityExecution;
 import org.activiti.pvm.process.PvmTransition;
 
 
@@ -22,8 +22,8 @@ import org.activiti.pvm.process.PvmTransition;
  */
 public class Automatic implements ActivityBehavior {
 
-  public void start(ActivityContext activityContext) throws Exception {
-    PvmTransition defaultOutgoingTransition = activityContext.getOutgoingTransitions().get(0);
+  public void execute(ActivityExecution activityContext) throws Exception {
+    PvmTransition defaultOutgoingTransition = activityContext.getActivity().getOutgoingTransitions().get(0);
     activityContext.take(defaultOutgoingTransition);
   }
 }

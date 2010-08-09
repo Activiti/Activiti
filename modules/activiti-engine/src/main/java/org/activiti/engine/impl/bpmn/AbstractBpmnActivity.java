@@ -13,8 +13,8 @@
 package org.activiti.engine.impl.bpmn;
 
 import org.activiti.engine.ActivitiException;
-import org.activiti.pvm.activity.ActivityContext;
-import org.activiti.pvm.activity.SignallableActivityBehaviour;
+import org.activiti.pvm.activity.ActivityExecution;
+import org.activiti.pvm.activity.SignallableActivityBehavior;
 
 
 /**
@@ -25,30 +25,30 @@ import org.activiti.pvm.activity.SignallableActivityBehaviour;
  * 
  * @author Joram Barrez
  */
-public abstract class AbstractBpmnActivity implements SignallableActivityBehaviour {
+public abstract class AbstractBpmnActivity implements SignallableActivityBehavior {
   
   protected BpmnActivityBehavior bpmnActivityBehavior = new BpmnActivityBehavior();
   
   /**
    * Default behaviour: just leave the activity with no extra functionality.
    */
-  public void start(ActivityContext activityContext) throws Exception {
-    leave(activityContext);
+  public void execute(ActivityExecution execution) throws Exception {
+    leave(execution);
   }
   
   /**
    * Default way of leaving a BPMN 2.0 activity: evaluate the conditions on the
    * outgoing sequence flow and take those that evaluate to true.
    */
-  protected void leave(ActivityContext activityContext) {
-    bpmnActivityBehavior.performDefaultOutgoingBehavior(activityContext);
+  protected void leave(ActivityExecution execution) {
+    bpmnActivityBehavior.performDefaultOutgoingBehavior(execution);
   }
   
-  protected void leaveIgnoreConditions(ActivityContext activityContext) {
+  protected void leaveIgnoreConditions(ActivityExecution activityContext) {
     bpmnActivityBehavior.performIgnoreConditionsOutgoingBehavior(activityContext);
   }
 
-  public void signal(ActivityContext activityContext, String signalName, Object signalData) throws Exception {
+  public void signal(ActivityExecution execution, String signalName, Object signalData) throws Exception {
     // concrete activity behaviours that do accept signals should override this method;
     throw new ActivitiException("this activity doesn't accept signals");
   }

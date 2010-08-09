@@ -14,7 +14,7 @@ package org.activiti.test.cfg.spring;
 
 import org.activiti.engine.impl.bpmn.BpmnActivityBehavior;
 import org.activiti.pvm.activity.ActivityBehavior;
-import org.activiti.pvm.activity.ActivityContext;
+import org.activiti.pvm.activity.ActivityExecution;
 
 
 /**
@@ -24,12 +24,12 @@ public class ToUppercaseActivityBehavior extends BpmnActivityBehavior implements
   
   private static final String VARIABLE_NAME = "input";
   
-  public void start(ActivityContext activityContext) throws Exception {
-    String var = (String) activityContext.getVariable(VARIABLE_NAME);
+  public void execute(ActivityExecution execution) throws Exception {
+    String var = (String) execution.getVariable(VARIABLE_NAME);
     var = var.toUpperCase();
-    activityContext.setVariable(VARIABLE_NAME, var);
+    execution.setVariable(VARIABLE_NAME, var);
     
-    performDefaultOutgoingBehavior(activityContext);
+    performDefaultOutgoingBehavior(execution);
   }
   
 }

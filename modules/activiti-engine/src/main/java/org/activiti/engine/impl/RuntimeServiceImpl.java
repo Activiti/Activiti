@@ -15,15 +15,11 @@ package org.activiti.engine.impl;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.activiti.engine.ActivityInstance;
-import org.activiti.engine.Execution;
 import org.activiti.engine.ExecutionQuery;
 import org.activiti.engine.ProcessInstance;
+import org.activiti.engine.ProcessInstanceQuery;
 import org.activiti.engine.RuntimeService;
 import org.activiti.engine.impl.cmd.EndProcessInstanceCmd;
-import org.activiti.engine.impl.cmd.FindActivitiyInstanceCmd;
-import org.activiti.engine.impl.cmd.FindExecutionInActivityCmd;
-import org.activiti.engine.impl.cmd.FindProcessInstanceCmd;
 import org.activiti.engine.impl.cmd.GetVariableCmd;
 import org.activiti.engine.impl.cmd.GetVariablesCmd;
 import org.activiti.engine.impl.cmd.SetVariablesCmd;
@@ -83,5 +79,9 @@ public class RuntimeServiceImpl extends ServiceImpl implements RuntimeService {
 
   public void signal(String activityInstanceId, String sigalName, Object signalData) {
     commandExecutor.execute(new SignalCmd(activityInstanceId, sigalName, signalData));
+  }
+
+  public ProcessInstanceQuery createProcessInstanceQuery() {
+    return new ProcessInstanceQueryImpl(commandExecutor);
   }
 }
