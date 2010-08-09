@@ -27,21 +27,17 @@ create table ACT_DEPLOYMENT (
     primary key (ID_)
 );
 
-create table ACT_RNT_PROCESSINSTANCE (
+create table ACT_EXECUTION (
     ID_ varchar(255),
     REV_ integer,
-    PROC_DEF_ID_ varchar(255),
-    SUPER_ACT_INST_ID_ varchar(255),
-    primary key (ID_)
-);
-
-create table ACT_RNT_ACTIVITYINSTANCE (
-    ID_ varchar(255),
-    REV_ integer,
-    PROC_DEF_ID_ varchar(255),
     PROC_INST_ID_ varchar(255),
-    ACTIVITY_ varchar(255),
+    PARENT_ID_ varchar(255),
+    PROC_DEF_ID_ varchar(255),
+    SUPER_EXEC_ varchar(255),
+    ACTIVITY_ID_ varchar(255),
     IS_ACTIVE_ bit,
+    IS_CONCURRENT_ bit,
+    IS_SCOPE_ bit,
     primary key (ID_)
 );
 
@@ -98,9 +94,9 @@ create table ACT_PROCESSDEFINITION (
 create table ACT_TASK (
     ID_ varchar(255),
     REV_ integer,
-    PROC_DEF_ID_ varchar(255),
+    EXECUTION_ID_ varchar(255),
     PROC_INST_ID_ varchar(255),
-    ACT_INST_ID_ varchar(255),
+    PROC_DEF_ID_ varchar(255),
     NAME_ varchar(255),
     DESCRIPTION_ varchar(255),
     ASSIGNEE_ varchar(255),
@@ -127,8 +123,8 @@ create table ACT_VARIABLE (
     REV_ integer,
     TYPE_ varchar(255) not null,
     NAME_ varchar(255) not null,
+    EXECUTION_ID_ varchar(255),
     PROC_INST_ID_ varchar(255),
-    ACT_INST_ID_ varchar(255),
     TASK_ID_ varchar(255),
     BYTEARRAY_ID_ varchar(255),
     DATE_ timestamp,
@@ -170,25 +166,20 @@ alter table ACT_BYTEARRAY
     foreign key (DEPLOYMENT_ID_)
     references ACT_DEPLOYMENT;
 
-alter table ACT_RNT_PROCESSINSTANCE
-    add constraint FK_RNTPROCINST_PROCDEF
-    foreign key (PROC_DEF_ID_)
-    references ACT_PROCESSDEFINITION;
-
-alter table ACT_RNT_PROCESSINSTANCE
-    add constraint FK_RNTPROCINST_RNTACTINST
-    foreign key (SUPER_ACT_INST_ID_)
-    references ACT_RNT_ACTIVITYINSTANCE;
-    
-alter table ACT_RNT_ACTIVITYINSTANCE
-    add constraint FK_RNTACTINST_PROCDEF
-    foreign key (PROC_DEF_ID_)
-    references ACT_PROCESSDEFINITION;
-
-alter table ACT_RNT_ACTIVITYINSTANCE
-    add constraint FK_RNTACTINST_RNTPROCINST
+alter table ACT_EXECUTION
+    add constraint FK_EXE_PROCINST
     foreign key (PROC_INST_ID_)
-    references ACT_RNT_PROCESSINSTANCE;
+    references ACT_EXECUTION;
+
+alter table ACT_EXECUTION
+    add constraint FK_EXE_PARENT
+    foreign key (PARENT_ID_)
+    references ACT_EXECUTION;
+    
+alter table ACT_EXECUTION
+    add constraint FK_EXE_SUPER 
+    foreign key (SUPER_EXEC_) 
+    references ACT_EXECUTION;
 
 alter table ACT_ID_MEMBERSHIP
     add constraint FK_MEMB_GROUP
@@ -206,14 +197,14 @@ alter table ACT_TASKINVOLVEMENT
     references ACT_TASK;
 
 alter table ACT_TASK
-    add constraint FK_TASK_RNTACTINST
-    foreign key (ACT_INST_ID_)
-    references ACT_RNT_ACTIVITYINSTANCE;
+    add constraint FK_TASK_EXEC
+    foreign key (EXECUTION_ID_)
+    references ACT_EXECUTION;
 
 alter table ACT_TASK
-    add constraint FK_TASK_RNTPROCINST
+    add constraint FK_TASK_PROCINST
     foreign key (PROC_INST_ID_)
-    references ACT_RNT_PROCESSINSTANCE;
+    references ACT_EXECUTION;
 
 alter table ACT_TASK
   add constraint FK_TASK_PROCDEF
@@ -226,14 +217,14 @@ alter table ACT_VARIABLE
     references ACT_TASK;
 
 alter table ACT_VARIABLE
-    add constraint FK_VAR_RNTPROCINST
-    foreign key (PROC_INST_ID_)
-    references ACT_RNT_PROCESSINSTANCE;
+    add constraint FK_VAR_EXE
+    foreign key (EXECUTION_ID_)
+    references ACT_EXECUTION;
 
 alter table ACT_VARIABLE
-    add constraint FK_VAR_RNTACTINST
-    foreign key (ACT_INST_ID_)
-    references ACT_RNT_ACTIVITYINSTANCE;
+    add constraint FK_VAR_PROCINST
+    foreign key (PROC_INST_ID_)
+    references ACT_EXECUTION;
 
 alter table ACT_VARIABLE
     add constraint FK_VAR_BYTEARRAY

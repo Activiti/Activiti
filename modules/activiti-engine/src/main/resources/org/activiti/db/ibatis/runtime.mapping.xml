@@ -4,9 +4,9 @@
   
 <mapper namespace="org.activiti.persistence">
 
-  <!-- EXECUTION -->
+  <!-- EXECUTION INSERT -->
 
-  <insert id="insertExecution" parameterType="oorg.activiti.engine.impl.persistence.runtime.ExecutionEntity">
+  <insert id="insertExecution" parameterType="org.activiti.engine.impl.persistence.runtime.ExecutionEntity">
     insert into ACT_EXECUTION (ID_, REV_, PROC_INST_ID_, PROC_DEF_ID_, ACTIVITY_ID_, IS_ACTIVE_, IS_CONCURRENT_, IS_SCOPE_, PARENT_ID_, SUPER_EXEC_)
     values (
       #{id ,jdbcType=VARCHAR},
@@ -21,11 +21,28 @@
       #{superExecutionId, jdbcType=VARCHAR}
     )
   </insert>
+
+  <!-- EXECUTION UPDATE -->
   
+  <update id="updateExecution" parameterType="org.activiti.engine.impl.persistence.runtime.ExecutionEntity">
+    update ACT_EXECUTION set
+      PROC_DEF_ID_ = #{processDefinitionId, jdbcType=VARCHAR},
+      ACTIVITY_ID_ = #{activityId, jdbcType=VARCHAR},
+      IS_ACTIVE_ = #{isActive, jdbcType=VARCHAR},
+      IS_CONCURRENT_ = #{isConcurrent, jdbcType=VARCHAR},
+      IS_SCOPE_ = #{isScope, jdbcType=VARCHAR},
+      PARENT_ID_ = #{parentId, jdbcType=VARCHAR},
+      SUPER_EXEC_ = #{superExecutionId, jdbcType=VARCHAR}
+    where ID_ = #{id}
+  </update>
   
-  <!-- RESULTMAP -->
+  <!-- EXECUTION DELETE -->
+  <delete id="deleteExecution" parameterType="string">
+    delete from ACT_EXECUTION where ID_ = #{id}
+  </delete>
   
-  <resultMap id="executionResultMap" type="org.activiti.impl.db.execution.DbExecutionImpl">
+  <!-- EXECUTION RESULTMAP -->
+  <resultMap id="executionResultMap" type="org.activiti.engine.impl.persistence.runtime.ExecutionEntity">
     <id property="id" column="ID_" jdbcType="VARCHAR" />
     <result property="processInstanceId" column="PROC_INST_ID_" jdbcType="VARCHAR" />
     <result property="processDefinitionId" column="PROC_DEF_ID_" jdbcType="VARCHAR" />
@@ -37,34 +54,28 @@
     <result property="superExecutionId" column="SUPER_EXEC_" jdbcType="VARCHAR" />
   </resultMap>
   
-  <!-- SELECT -->
+  <!-- EXECUTION SELECTS -->
   
-  <select id="selectExecution" parameterType="string" resultMap="executionResultMap">
+  <select id="selectExecutionById" parameterType="string" resultMap="executionResultMap">
     select * from ACT_EXECUTION where ID_ = #{id}
   </select>
   
-  <select id="selectRootExecutionsForProcessDefinition" parameterType="string" resultMap="executionResultMap">
-    select * from ACT_EXECUTION 
-    where PROC_DEF_ID_ = #{processDefinitionId}
-    and PARENT_ID_ is null 
-  </select>
-  
-  <select id="selectChildExecutions" parameterType="string" resultMap="executionResultMap">
+  <select id="selectChildExecutionsByParentExecutionId" parameterType="string" resultMap="executionResultMap">
     select * from ACT_EXECUTION
-    where PARENT_ID_ = #{parentId}
+    where PARENT_ID_ = #{parentExecutionId}
   </select>
   
-   <select id="selectProcessInstanceByDynamicCriteria" parameterType="map" resultMap="executionResultMap">
+   <select id="selectExecutionsByDynamicCriteria" parameterType="org.activiti.engine.impl.ExecutionQueryImpl" resultMap="executionResultMap">
     select *
-    <include refid="selectProcessInstanceByDynamicCriteriaSql"/>
+    <include refid="selectPExecutionsByDynamicCriteriaSql"/>
   </select>
   
-  <select id="selectProcessInstanceCountByDynamicCriteria" parameterType="map" resultType="long">
+  <select id="selectExecutionsCountByDynamicCriteria" parameterType="map" resultType="long">
     select count(*)
-    <include refid="selectProcessInstanceByDynamicCriteriaSql"/>
+    <include refid="selectPExecutionsByDynamicCriteriaSql"/>
   </select>
   
-  <sql id="selectProcessInstanceByDynamicCriteriaSql">
+  <sql id="selectPExecutionsByDynamicCriteriaSql">
     from ACT_EXECUTION E
     <if test="processDefinitionKey != null">
       inner join ACT_PROCESSDEFINITION P on E.PROC_DEF_ID_ = P.ID_
@@ -83,27 +94,4 @@
     where SUPER_EXEC_ = #{superExecutionId}
   </select>
   
-  <!-- INSERT -->
-  
-  <!-- UPDATE -->
-  
-  <update id="updateExecution" parameterType="org.activiti.impl.db.execution.DbExecutionImpl">
-    update ACT_EXECUTION set
-      PROC_DEF_ID_ = #{processDefinitionId, jdbcType=VARCHAR},
-      ACTIVITY_ID_ = #{activityId, jdbcType=VARCHAR},
-      IS_ACTIVE_ = #{isActive, jdbcType=VARCHAR},
-      IS_CONCURRENT_ = #{isConcurrent, jdbcType=VARCHAR},
-      IS_SCOPE_ = #{isScope, jdbcType=VARCHAR},
-      PARENT_ID_ = #{parentId, jdbcType=VARCHAR},
-      SUPER_EXEC_ = #{superExecutionId, jdbcType=VARCHAR}
-    where ID_ = #{id}
-  </update>
-  
-  <!-- DELETE -->
-  
-  <delete id="deleteExecution" parameterType="string">
-    delete from ACT_EXECUTION where ID_ = #{id}
-  </delete>
-  
-
 </mapper>
