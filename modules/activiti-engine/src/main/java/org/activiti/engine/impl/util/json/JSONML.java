@@ -383,7 +383,8 @@ public class JSONML {
      * @return An XML string.
      * @throws JSONException
      */
-	public static String toString(JSONObject jo) throws JSONException {
+	@SuppressWarnings("unchecked")
+  public static String toString(JSONObject jo) throws JSONException {
 	    StringBuffer sb = new StringBuffer();
 	    Object		 e;
 	    int          i;

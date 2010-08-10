@@ -17,7 +17,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-import org.activiti.engine.Execution;
 import org.activiti.engine.Job;
 import org.activiti.engine.Page;
 import org.activiti.engine.impl.persistence.runtime.ByteArrayEntity;

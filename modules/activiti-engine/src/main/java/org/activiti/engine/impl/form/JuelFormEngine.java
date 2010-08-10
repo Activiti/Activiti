@@ -49,10 +49,10 @@ public class JuelFormEngine implements FormEngine {
     }
   }
 
-  private Object createFormData(TaskEntity task) {
-    if (task!=null) {
-      return task.getActivityInstanceVariables();
-    }
-    return null;
-  }
+//  private Object createFormData(TaskEntity task) {
+//    if (task!=null) {
+//      return task.getActivityInstanceVariables();
+//    }
+//    return null;
+//  }
 }

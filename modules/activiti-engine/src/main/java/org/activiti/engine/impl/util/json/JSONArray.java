@@ -86,12 +86,14 @@ public class JSONArray {
     /**
      * The arrayList where the JSONArray's properties are kept.
      */
+    @SuppressWarnings("unchecked")
     private ArrayList myArrayList;
 
 
     /**
      * Construct an empty JSONArray.
      */
+    @SuppressWarnings("unchecked")
     public JSONArray() {
         this.myArrayList = new ArrayList();
     }
@@ -101,6 +103,7 @@ public class JSONArray {
      * @param x A JSONTokener
      * @throws JSONException If there is a syntax error.
      */
+    @SuppressWarnings("unchecked")
     public JSONArray(JSONTokener x) throws JSONException {
         this();
         char c = x.nextClean();
@@ -162,6 +165,7 @@ public class JSONArray {
      * Construct a JSONArray from a Collection.
      * @param collection     A Collection.
      */
+    @SuppressWarnings("unchecked")
     public JSONArray(Collection collection) {
 		this.myArrayList = new ArrayList();
 		if (collection != null) {

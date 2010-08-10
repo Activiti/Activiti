@@ -14,7 +14,6 @@ package org.activiti.engine.impl.cmd;
 
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.identity.GroupEntity;
-import org.activiti.engine.impl.persistence.identity.UserEntity;
 
 
 /**
