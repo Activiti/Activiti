@@ -4,23 +4,31 @@
   
 <mapper namespace="org.activiti.persistence">
 
-  <!-- DEPLOYMENT -->
+  <!-- DEPLOYMENT INSERT -->
   
   <insert id="insertDeployment" parameterType="org.activiti.engine.impl.persistence.repository.DeploymentEntity">
     insert into ACT_DEPLOYMENT(ID_, NAME_, DEPLOY_TIME_)
     values(#{id, jdbcType=VARCHAR}, #{name, jdbcType=VARCHAR}, #{deploymentTime, jdbcType=TIMESTAMP})
   </insert>
   
+  <!-- DEPLOYMENT UPDATE -->
+  
+  <!-- DEPLOYMENT DELETE -->
+  
   <delete id="deleteDeployment" parameterType="string">
     delete from ACT_DEPLOYMENT where ID_ = #{id}
   </delete>
 
+  <!-- DEPLOYMENT RESULTMAP -->
+  
   <resultMap id="deploymentResultMap" type="org.activiti.engine.impl.persistence.repository.DeploymentEntity">
     <id property="id" column="ID_" jdbcType="VARCHAR" />
     <result property="name" column="NAME_" jdbcType="VARCHAR" />
     <result property="deploymentTime" column="DEPLOY_TIME_" jdbcType="TIMESTAMP"/>
   </resultMap>
 
+  <!-- DEPLOYMENT SELECT -->
+  
   <select id="selectDeployments" resultMap="deploymentResultMap">
     select * from ACT_DEPLOYMENT D order by D.DEPLOY_TIME_ asc
   </select>
@@ -39,23 +47,31 @@
       (select P.DEPLOYMENT_ID_ from ACT_PROCESSDEFINITION P where P.ID_ = #{processDefinitionId})
   </select>
   
-  <!-- RESOURCE -->
+  <!-- RESOURCE INSERT -->
 
   <insert id="insertResource" parameterType="org.activiti.engine.impl.persistence.repository.ResourceEntity">
     insert into ACT_BYTEARRAY(ID_, NAME_, BYTES_, DEPLOYMENT_ID_)
     values (#{id, jdbcType=VARCHAR}, #{name, jdbcType=VARCHAR}, #{bytes, jdbcType=BLOB}, #{deploymentId, jdbcType=VARCHAR})  
   </insert>
   
+  <!-- RESOURCE UPDATE -->
+
+  <!-- RESOURCE DELETE -->
+
   <delete id="deleteResourcesByDeploymentId" parameterType="string">
     delete from ACT_BYTEARRAY where DEPLOYMENT_ID_ = #{id}
   </delete>
   
+  <!-- RESOURCE RESULTMAP -->
+
   <resultMap id="resourceResultMap" type="org.activiti.engine.impl.persistence.repository.ResourceEntity">
     <id property="id" column="ID_" jdbcType="VARCHAR" />
     <result property="name" column="NAME_" jdbcType="VARCHAR"/>
     <result property="bytes" column="BYTES_" jdbcType="BLOB"/>
   </resultMap>
   
+  <!-- RESOURCE SELECT -->
+
   <select id="selectResourceNamesByDeploymentId" parameterType="string" resultType="string">
     select NAME_ from ACT_BYTEARRAY where DEPLOYMENT_ID_ = #{deploymentId} order by NAME_ asc
   </select>
@@ -70,8 +86,8 @@
     select * from ACT_BYTEARRAY where DEPLOYMENT_ID_ = #{deploymentId} order by NAME_ asc
   </select>  
 
-    
-  <!-- PROCESSDEFINITION -->
+
+  <!-- PROCESSDEFINITION INSERT -->
 
   <insert id="insertProcessDefinition" parameterType="org.activiti.engine.impl.persistence.repository.ProcessDefinitionEntity">
     insert into ACT_PROCESSDEFINITION(ID_, NAME_, KEY_, VERSION_, DEPLOYMENT_ID_)
@@ -82,10 +98,16 @@
             #{deploymentId, jdbcType=VARCHAR})
   </insert>
   
+  <!-- PROCESSDEFINITION UPDATE -->
+
+  <!-- PROCESSDEFINITION DELETE -->
+
   <delete id="deleteProcessDefinitionsByDeploymentId" parameterType="string">
     delete from ACT_PROCESSDEFINITION where DEPLOYMENT_ID_ = #{deploymenId} 
   </delete>
   
+  <!-- PROCESSDEFINITION RESULTMAP -->
+
   <resultMap id="processDefinitionResultMap" type="org.activiti.engine.impl.persistence.repository.ProcessDefinitionEntity">
     <id property="id" column="ID_" jdbcType="VARCHAR" />
     <result property="name" column="NAME_" />
@@ -93,6 +115,8 @@
     <result property="version" column="VERSION_" jdbcType="INTEGER"/>
     <result property="deploymentId" column="DEPLOYMENT_ID_" jdbcType="VARCHAR"/>
   </resultMap>
+  
+  <!-- PROCESSDEFINITION SELECT -->
   
   <select id="selectProcessDefinitions" resultMap="processDefinitionResultMap">
     select * from ACT_PROCESSDEFINITION

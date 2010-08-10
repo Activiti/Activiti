@@ -37,11 +37,13 @@
   </update>
   
   <!-- EXECUTION DELETE -->
+  
   <delete id="deleteExecution" parameterType="string">
     delete from ACT_EXECUTION where ID_ = #{id}
   </delete>
   
   <!-- EXECUTION RESULTMAP -->
+  
   <resultMap id="executionResultMap" type="org.activiti.engine.impl.persistence.runtime.ExecutionEntity">
     <id property="id" column="ID_" jdbcType="VARCHAR" />
     <result property="processInstanceId" column="PROC_INST_ID_" jdbcType="VARCHAR" />
@@ -54,13 +56,13 @@
     <result property="superExecutionId" column="SUPER_EXEC_" jdbcType="VARCHAR" />
   </resultMap>
   
-  <!-- EXECUTION SELECTS -->
+  <!-- EXECUTION SELECT -->
   
   <select id="selectExecutionById" parameterType="string" resultMap="executionResultMap">
     select * from ACT_EXECUTION where ID_ = #{id}
   </select>
   
-  <select id="selectChildExecutionsByParentExecutionId" parameterType="string" resultMap="executionResultMap">
+  <select id="selectExecutionsByParentExecutionId" parameterType="string" resultMap="executionResultMap">
     select * from ACT_EXECUTION
     where PARENT_ID_ = #{parentExecutionId}
   </select>

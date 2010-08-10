@@ -22,6 +22,7 @@ import javax.el.ELContext;
 
 import org.activiti.engine.Execution;
 import org.activiti.engine.ProcessInstance;
+import org.activiti.engine.impl.TaskQueryImpl;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.PersistentObject;
 import org.activiti.engine.impl.persistence.repository.ProcessDefinitionEntity;
@@ -256,21 +257,22 @@ public class ExecutionEntity extends ExecutionImpl implements PersistentObject, 
   
   // customized persistence behaviour /////////////////////////////////////////
 
+  @SuppressWarnings("unchecked")
   @Override
   public void end() {
     super.end();
 
     ensureVariablesInitialized();
 
+    // delete all the variable instances
     variables.clear();
     
     // TODO add cancellation of timers
 
-    List<TaskEntity> tasks = CommandContext
-      .getCurrent()
-      .getTaskSession()
-      .findTasksByExecutionId(id);
-    
+    // delete all the tasks
+    List<TaskEntity> tasks = (List) new TaskQueryImpl()
+      .executionId(id)
+      .executeList(CommandContext.getCurrent(), null);
     for (TaskEntity task : tasks) {
       task.delete();
     }

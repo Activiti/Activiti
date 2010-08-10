@@ -34,7 +34,7 @@ public class BoundaryTimerEventTest extends ProcessEngineTestCase {
     ProcessInstance pi = runtimeService.startProcessInstanceByKey("interruptingBoundaryTimer");
 
     // There should be one task, with a timer : first line support
-    Task task = taskService.createTaskQuery().processInstance(pi.getId()).singleResult();
+    Task task = taskService.createTaskQuery().processInstanceId(pi.getId()).singleResult();
     assertEquals("First line support", task.getName());
 
     // Set clock to the future such that the timer can fire
@@ -42,7 +42,7 @@ public class BoundaryTimerEventTest extends ProcessEngineTestCase {
     waitForJobExecutorToProcessAllJobs(10000L, 250L);
 
     // The timer has fired, and the second task (secondlinesupport) now exists
-    task = taskService.createTaskQuery().processInstance(pi.getId()).singleResult();
+    task = taskService.createTaskQuery().processInstanceId(pi.getId()).singleResult();
     assertEquals("Second line support", task.getName());
   }
 

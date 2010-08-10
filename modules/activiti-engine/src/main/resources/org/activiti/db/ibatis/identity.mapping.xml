@@ -4,7 +4,37 @@
   
 <mapper namespace="org.activiti.persistence">
 
-  <!-- RESULTMAP -->
+  <!-- USER INSERT -->
+
+  <insert id="insertUser" parameterType="org.activiti.engine.impl.persistence.identity.UserEntity">
+    insert into ACT_ID_USER (ID_, FIRST_, LAST_, EMAIL_, PWD_)
+    values (
+      #{id ,jdbcType=VARCHAR},
+      #{firstName ,jdbcType=VARCHAR},
+      #{lastName ,jdbcType=VARCHAR},
+      #{email ,jdbcType=VARCHAR},
+      #{password ,jdbcType=VARCHAR}
+    )
+  </insert>
+
+  <!-- USER UPDATE -->
+
+  <update id="updateUser" parameterType="org.activiti.engine.impl.persistence.identity.UserEntity">
+    update ACT_ID_USER set
+      FIRST_ = #{firstName ,jdbcType=VARCHAR},
+      LAST_ = #{lastName ,jdbcType=VARCHAR},
+      EMAIL_ = #{email ,jdbcType=VARCHAR},
+      PWD_ = #{password ,jdbcType=VARCHAR}
+    where ID_ = #{id}
+  </update>
+  
+  <!-- USER DELETE -->
+
+  <delete id="deleteUser" parameterType="string">
+    delete from ACT_ID_USER where ID_ = #{userId} 
+  </delete>
+
+  <!-- USER RESULTMAP -->
 
   <resultMap id="userResultMap" type="org.activiti.engine.impl.persistence.identity.UserEntity">
     <id property="id" column="ID_" jdbcType="VARCHAR" />
@@ -14,15 +44,8 @@
     <result property="password" column="PWD_" jdbcType="VARCHAR" />
   </resultMap>
   
-  <resultMap id="groupResultMap" type="org.activiti.engine.impl.persistence.identity.GroupEntity">
-    <id property="id" column="ID_" jdbcType="VARCHAR" />
-    <result property="name" column="NAME_" jdbcType="VARCHAR" />
-    <result property="type" column="TYPE_" jdbcType="VARCHAR" />
-  </resultMap>
-  
+  <!-- USER SELECT -->
 
-  <!-- SELECT -->
-  
   <select id="selectUser" parameterType="string" resultMap="userResultMap">
     select * from ACT_ID_USER where ID_ = #{id}
   </select>
@@ -38,6 +61,43 @@
       and membership.GROUP_ID_ = #{groupId}
   </select>
   
+
+  <!-- GROUP INSERT -->
+
+  <insert id="insertGroup" parameterType="org.activiti.engine.impl.persistence.identity.GroupEntity">
+    insert into ACT_ID_GROUP (ID_, NAME_, TYPE_)
+    values (
+      #{id ,jdbcType=VARCHAR},
+      #{name ,jdbcType=VARCHAR},
+      #{type ,jdbcType=VARCHAR}
+    )
+  </insert>
+
+  <!-- GROUP UPDATE -->
+  
+  <update id="updateGroup" parameterType="org.activiti.engine.impl.persistence.identity.GroupEntity">
+    update ACT_ID_GROUP set
+      NAME_ = #{name ,jdbcType=VARCHAR},
+      TYPE_ = #{type ,jdbcType=VARCHAR}
+    where ID_ = #{id}
+  </update>
+  
+  <!-- GROUP DELETE -->
+
+  <delete id="deleteGroup" parameterType="string">
+    delete from ACT_ID_GROUP where ID_ = #{groupId} 
+  </delete>
+
+  <!-- GROUP RESULTMAP -->
+
+  <resultMap id="groupResultMap" type="org.activiti.engine.impl.persistence.identity.GroupEntity">
+    <id property="id" column="ID_" jdbcType="VARCHAR" />
+    <result property="name" column="NAME_" jdbcType="VARCHAR" />
+    <result property="type" column="TYPE_" jdbcType="VARCHAR" />
+  </resultMap>
+  
+  <!-- GROUP SELECT -->
+
   <select id="selectGroup" parameterType="string" resultMap="groupResultMap">
     select * from ACT_ID_GROUP where ID_ = #{id}
   </select>
@@ -61,29 +121,9 @@
       and g.TYPE_ = #{groupType}
   </select>
   
-  
-  <!-- INSERT -->
-  
-  <insert id="insertUser" parameterType="org.activiti.engine.impl.persistence.identity.UserEntity">
-    insert into ACT_ID_USER (ID_, FIRST_, LAST_, EMAIL_, PWD_)
-    values (
-      #{id ,jdbcType=VARCHAR},
-      #{firstName ,jdbcType=VARCHAR},
-      #{lastName ,jdbcType=VARCHAR},
-      #{email ,jdbcType=VARCHAR},
-      #{password ,jdbcType=VARCHAR}
-    )
-  </insert>
-  
-  <insert id="insertGroup" parameterType="org.activiti.engine.impl.persistence.identity.GroupEntity">
-    insert into ACT_ID_GROUP (ID_, NAME_, TYPE_)
-    values (
-      #{id ,jdbcType=VARCHAR},
-      #{name ,jdbcType=VARCHAR},
-      #{type ,jdbcType=VARCHAR}
-    )
-  </insert>
-  
+
+  <!-- MEMBERSHIP INSERT -->
+
   <insert id="insertMembership" parameterType="map">
     insert into ACT_ID_MEMBERSHIP (USER_ID_, GROUP_ID_)
     values (
@@ -92,40 +132,9 @@
     )
   </insert>
   
+  <!-- MEMBERSHIP UPDATE -->
   
-  <!-- UPDATE -->
-
-  <update id="updateUser" parameterType="org.activiti.engine.impl.persistence.identity.UserEntity">
-    update ACT_ID_USER set
-      FIRST_ = #{firstName ,jdbcType=VARCHAR},
-      LAST_ = #{lastName ,jdbcType=VARCHAR},
-      EMAIL_ = #{email ,jdbcType=VARCHAR},
-      PWD_ = #{password ,jdbcType=VARCHAR}
-    where ID_ = #{id}
-  </update>
-  
-  <update id="updateGroup" parameterType="org.activiti.engine.impl.persistence.identity.GroupEntity">
-    update ACT_ID_GROUP set
-      NAME_ = #{name ,jdbcType=VARCHAR},
-      TYPE_ = #{type ,jdbcType=VARCHAR}
-    where ID_ = #{id}
-  </update>
-  
-  
-  <!-- DELETE -->
- 
-  <delete id="deleteUser" parameterType="string">
-    delete from ACT_ID_USER where ID_ = #{userId} 
-  </delete>
-
-  <delete id="deleteGroup" parameterType="string">
-    delete from ACT_ID_GROUP where ID_ = #{groupId} 
-  </delete>
-
-  <delete id="deleteMembershipsForGroup" parameterType="string">
-    delete from ACT_ID_MEMBERSHIP 
-    where GROUP_ID_ = #{groupId} 
-  </delete>
+  <!-- MEMBERSHIP DELETE -->
 
   <delete id="deleteMembershipsForUser" parameterType="string">
     delete from ACT_ID_MEMBERSHIP 
@@ -136,6 +145,15 @@
     delete from ACT_ID_MEMBERSHIP 
     where USER_ID_ = #{userId}
       and GROUP_ID_ = #{groupId} 
+  </delete>
+
+  <!-- MEMBERSHIP RESULTMAP -->
+  
+  <!-- MEMBERSHIP SELECT -->
+
+  <delete id="deleteMembershipsForGroup" parameterType="string">
+    delete from ACT_ID_MEMBERSHIP 
+    where GROUP_ID_ = #{groupId} 
   </delete>
   
 </mapper>

@@ -32,7 +32,9 @@ public interface TaskQuery {
   
   TaskQuery candidateGroup(String candidateGroup);
   
-  TaskQuery processInstance(String processInstanceId);
+  TaskQuery processInstanceId(String processInstanceId);
+  
+  TaskQuery executionId(String executionId);
   
   TaskQuery orderAsc(String property);
   

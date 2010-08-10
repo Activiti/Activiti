@@ -42,25 +42,30 @@ public class TaskQueryImpl extends AbstractQuery<Task> implements TaskQuery {
   
   protected String processInstanceId;
   
+  protected String executionId;
+  
   protected String sortColumn;
   
   protected SortOrder sortOrder;
+  
+  public TaskQueryImpl() {
+  }
   
   public TaskQueryImpl(CommandExecutor commandExecutor) {
     super(commandExecutor);
   }
   
-  public TaskQuery name(String name) {
+  public TaskQueryImpl name(String name) {
     this.name = name;
     return this;
   }
 
-  public TaskQuery assignee(String assignee) {
+  public TaskQueryImpl assignee(String assignee) {
     this.assignee = assignee;
     return this;
   }
 
-  public TaskQuery candidateUser(String candidateUser) {
+  public TaskQueryImpl candidateUser(String candidateUser) {
     if (candidateGroup != null) {
       throw new ActivitiException("Invalid query usage: cannot set both candidateUser and candidateGroup");
     }
@@ -68,7 +73,7 @@ public class TaskQueryImpl extends AbstractQuery<Task> implements TaskQuery {
     return this;
   }
   
-  public TaskQuery candidateGroup(String candidateGroup) {
+  public TaskQueryImpl candidateGroup(String candidateGroup) {
     if (candidateUser != null) {
       throw new ActivitiException("Invalid query usage: cannot set both candidateUser and candidateGroup");
     }
@@ -76,12 +81,17 @@ public class TaskQueryImpl extends AbstractQuery<Task> implements TaskQuery {
     return this;
   }
   
-  public TaskQuery processInstance(String processInstanceId) {
+  public TaskQueryImpl processInstanceId(String processInstanceId) {
     this.processInstanceId = processInstanceId;
     return this;
   }
   
-  public TaskQuery orderAsc(String column) {
+  public TaskQueryImpl executionId(String executionId) {
+    this.executionId = executionId;
+    return this;
+  }
+  
+  public TaskQueryImpl orderAsc(String column) {
     if (sortColumn != null) {
       throw new ActivitiException("Invalid usage: cannot use both orderAsc and orderDesc in same query");
     }
@@ -90,7 +100,7 @@ public class TaskQueryImpl extends AbstractQuery<Task> implements TaskQuery {
     return this;
   }
   
-  public TaskQuery orderDesc(String column) {
+  public TaskQueryImpl orderDesc(String column) {
     if (sortColumn != null) {
       throw new ActivitiException("Invalid usage: cannot use both orderAsc and orderDesc in same query");
     }

@@ -32,7 +32,7 @@ public class ParallelGatewayTest extends ProcessEngineTestCase {
     ProcessInstance pi = runtimeService.startProcessInstanceByKey("forkJoin");
     TaskQuery query = taskService
                         .createTaskQuery()
-                        .processInstance(pi.getId())
+                        .processInstanceId(pi.getId())
                         .orderAsc(TaskQuery.PROPERTY_NAME);
 
     List<Task> tasks = query.list();
@@ -57,7 +57,7 @@ public class ParallelGatewayTest extends ProcessEngineTestCase {
     
     ProcessInstance pi = runtimeService.startProcessInstanceByKey("UnbalancedForkJoin");
     TaskQuery query = taskService.createTaskQuery()
-                                 .processInstance(pi.getId())
+                                 .processInstanceId(pi.getId())
                                  .orderAsc(TaskQuery.PROPERTY_NAME);
     
     List<Task> tasks = query.list(); 

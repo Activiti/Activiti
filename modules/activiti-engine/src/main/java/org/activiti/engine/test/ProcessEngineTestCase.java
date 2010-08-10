@@ -66,6 +66,7 @@ public class ProcessEngineTestCase extends PvmTestCase {
   protected ThreadLogMode threadRenderingMode;
   protected String configurationResource;
   protected List<String> deploymentsToDeleteAfterTestMethod = new ArrayList<String>();
+  protected Throwable exception;
 
   protected ProcessEngine processEngine;
   protected RepositoryService repositoryService;
@@ -131,11 +132,13 @@ public class ProcessEngineTestCase extends PvmTestCase {
     }  catch (AssertionFailedError e) {
       log.severe(EMPTY_LINE);
       log.log(Level.SEVERE, "ASSERTION FAILED: "+e, e);
+      exception = e;
       throw e;
       
     } catch (Throwable e) {
       log.severe(EMPTY_LINE);
       log.log(Level.SEVERE, "EXCEPTION: "+e, e);
+      exception = e;
       throw e;
       
     } finally {
@@ -148,8 +151,8 @@ public class ProcessEngineTestCase extends PvmTestCase {
   /** Each test is assumed to clean up all DB content it entered.
    * After a test method executed, this method scans all tables to see if the DB is completely clean. 
    * It throws AssertionFailed in case the DB is not clean.
-   * If the DB is not clean, it is cleaned by performing a create a drop.   */
-  protected void assertAndEnsureCleanDb() {
+   * If the DB is not clean, it is cleaned by performing a create a drop. */
+  protected void assertAndEnsureCleanDb() throws Throwable {
     log.fine("verifying that db is clean after test");
     Map<String, Long> tableCounts = processEngine.getManagementService().getTableCount();
     StringBuilder outputMessage = new StringBuilder();
@@ -168,13 +171,15 @@ public class ProcessEngineTestCase extends PvmTestCase {
       
       log.info("dropping and recreating db");
       
-      DbSqlSessionFactory dbSqlSessionFactory = ((ProcessEngineImpl)processEngine)
-        .getProcessEngineConfiguration()
-        .getDbSqlSessionFactory();
-      dbSqlSessionFactory.dbSchemaDrop();
-      dbSqlSessionFactory.dbSchemaCreate();
-      
-      Assert.fail(outputMessage.toString());
+      processEngine.close();
+      processEngine = null;
+      processEngines.remove(configurationResource);
+
+      if (exception!=null) {
+        throw exception;
+      } else {
+        Assert.fail(outputMessage.toString());
+      }
     }
   }
 

@@ -37,7 +37,7 @@ public class SubProcessTest extends ProcessEngineTestCase {
     // After staring the process, both tasks in the subprocess should be active
     ProcessInstance pi = runtimeService.startProcessInstanceByKey("fixSystemFailure");
     List<Task> tasks = taskService.createTaskQuery()
-                                  .processInstance(pi.getId())
+                                  .processInstanceId(pi.getId())
                                   .orderAsc(TaskQuery.PROPERTY_NAME)
                                   .list();
 
@@ -50,7 +50,7 @@ public class SubProcessTest extends ProcessEngineTestCase {
     // Completing boith the tasks finishes the subprocess and enables the task after the subprocess
     taskService.complete(investigateHardwareTask.getId());
     taskService.complete(investigateSoftwareTask.getId());
-    Task writeReportTask = taskService.createTaskQuery().processInstance(pi.getId()).singleResult();
+    Task writeReportTask = taskService.createTaskQuery().processInstanceId(pi.getId()).singleResult();
     assertEquals("Write report", writeReportTask.getName());
     
     // Clean up
