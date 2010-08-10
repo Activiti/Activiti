@@ -17,6 +17,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.activiti.engine.Page;
 import org.activiti.engine.ProcessDefinition;
 import org.activiti.engine.ProcessInstance;
 import org.activiti.engine.impl.ProcessDefinitionQueryImpl;
@@ -185,4 +186,19 @@ public class DbRepositorySession implements Session, RepositorySession {
 
   public void flush() {
   }
+
+  @SuppressWarnings("unchecked")
+  public List<ProcessDefinition> findProcessDefinitionsByQueryCriteria(ProcessDefinitionQueryImpl processDefinitionQuery, Page page) {
+    final String query = "selectProcessDefinitionsByQueryCriteria";
+    if (page == null) {
+      return dbSqlSession.selectList(query, processDefinitionQuery);
+    } else {
+      return dbSqlSession.selectList(query, processDefinitionQuery, page.getOffset(), page.getMaxResults());
+    }
+  }
+
+  public long findProcessDefinitionCountByQueryCriteria(ProcessDefinitionQueryImpl processDefinitionQuery) {
+    return (Long) dbSqlSession.selectOne("selectProcessDefinitionCountByQueryCriteria", processDefinitionQuery);
+  }
+  
 }

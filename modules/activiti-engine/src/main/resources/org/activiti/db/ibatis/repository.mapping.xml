@@ -118,13 +118,38 @@
   
   <!-- PROCESSDEFINITION SELECT -->
   
+  <select id="selectProcessDefinitionById" parameterType="string" resultMap="processDefinitionResultMap">
+    select * from ACT_PROCESSDEFINITION where ID_ = #{processDefinitionId}
+  </select>
+
+  <select id="selectProcessDefinitionsByQueryCriteria" parameterType="map" resultMap="processDefinitionResultMap">
+    select distinct(PD.*)
+    <include refid="selectProcessDefinitionsByQueryCriteriaSql"/>
+     <if test="sortColumn != null">
+      order by PD.${sortColumn} ${sortOrder}
+    </if>
+    <if test="sortColumn == null">
+      order by PD.ID_
+    </if>
+  </select>
+
+  <select id="selectProcessDefinitionCountByQueryCriteria" parameterType="org.activiti.engine.impl.ProcessDefinitionQueryImpl" resultType="long">
+    select count(distinct PD.ID_)
+    <include refid="selectProcessDefinitionsByQueryCriteriaSql"/>
+  </select>
+  
+  <sql id="selectProcessDefinitionsByQueryCriteriaSql">  
+    from ACT_PROCESSDEFINITION PD
+    <where>
+      <if test="deploymentId != null">
+        PD.DEPLOYMENT_ID_ = #{deploymentId}
+      </if>
+    </where>
+  </sql>
+  
   <select id="selectProcessDefinitions" resultMap="processDefinitionResultMap">
     select * from ACT_PROCESSDEFINITION
     order by KEY_ ASC, VERSION_ DESC
-  </select>
-  
-  <select id="selectProcessDefinitionById" parameterType="string" resultMap="processDefinitionResultMap">
-    select * from ACT_PROCESSDEFINITION where ID_ = #{processDefinitionId}
   </select>
   
   <select id="selectProcessDefinitionByDeployment" parameterType="string" resultMap="processDefinitionResultMap">

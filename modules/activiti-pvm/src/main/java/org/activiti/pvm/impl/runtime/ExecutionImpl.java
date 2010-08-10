@@ -236,6 +236,7 @@ public class ExecutionImpl implements
     // if there is a parent 
     ensureParentInitialized();
     if (parent!=null) {
+      ensureActivityInitialized();
       activity = activity.getParentActivity();
       while(activity!=null && !activity.isScope()) {
         // TODO add destroy scope if activity is scope

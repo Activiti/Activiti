@@ -58,19 +58,19 @@ public class DbSqlSession implements Session {
   // insert ///////////////////////////////////////////////////////////////////
   
   public void insert(PersistentObject persistentObject) {
-    long nextDbid = dbSqlSessionFactory.getIdGenerator().getNextId();
-    String id = Long.toString(nextDbid);
-    persistentObject.setId(id);
+    if (persistentObject.getId()==null) {
+      long nextDbid = dbSqlSessionFactory.getIdGenerator().getNextId();
+      String id = Long.toString(nextDbid);
+      persistentObject.setId(id);
+    }
     insertedObjects.add(persistentObject);
-    deletedObjects.remove(persistentObject);
-    cachePut(persistentObject);
+    cachePut(persistentObject, false);
   }
   
   // delete ///////////////////////////////////////////////////////////////////
   
   public void delete(PersistentObject persistentObject) {
     deletedObjects.add(new DeleteById(persistentObject.getClass(), persistentObject.getId()));
-    insertedObjects.remove(persistentObject);
   }
   
   public void delete(Class<?> clazz, String id) {
@@ -173,13 +173,13 @@ public class DbSqlSession implements Session {
     return filteredObjects;
   }
 
-  protected CachedObject cachePut(PersistentObject persistentObject) {
+  protected CachedObject cachePut(PersistentObject persistentObject, boolean storeState) {
     Map<String, CachedObject> classCache = cachedObjects.get(persistentObject.getClass());
     if (classCache==null) {
       classCache = new HashMap<String, CachedObject>();
       cachedObjects.put(persistentObject.getClass(), classCache);
     }
-    CachedObject cachedObject = new CachedObject(persistentObject);
+    CachedObject cachedObject = new CachedObject(persistentObject, storeState);
     classCache.put(persistentObject.getId(), cachedObject);
     return cachedObject;
   }
@@ -194,18 +194,28 @@ public class DbSqlSession implements Session {
       cachedObject = classCache.get(persistentObject.getId());
     }
     if (cachedObject==null) {
-      cachedObject = cachePut(persistentObject);
+      cachedObject = cachePut(persistentObject, true);
     }
     return cachedObject.getPersistentObject();
   }
   
+  protected void cacheRemove(Class<?> persistentObjectClass, String persistentObjectId) {
+    Map<String, CachedObject> classCache = cachedObjects.get(persistentObjectClass);
+    if (classCache==null) {
+      return;
+    }
+    classCache.remove(persistentObjectId);
+  }
+
   public static class CachedObject {
     protected PersistentObject persistentObject;
     protected Object persistentObjectState;
     
-    public CachedObject(PersistentObject persistentObject) {
+    public CachedObject(PersistentObject persistentObject, boolean storeState) {
       this.persistentObject = persistentObject;
-      this.persistentObjectState = persistentObject.getPersistentState();
+      if (storeState) {
+        this.persistentObjectState = persistentObject.getPersistentState();
+      }
     }
 
     public PersistentObject getPersistentObject() {
@@ -226,6 +236,7 @@ public class DbSqlSession implements Session {
   // flush ////////////////////////////////////////////////////////////////////
 
   public void flush() {
+    removeUnnecessaryOperations();
     flushDeserializedObjects();
     List<PersistentObject> updatedObjects = getUpdatedObjects();
     
@@ -246,6 +257,39 @@ public class DbSqlSession implements Session {
     flushInserts();
     flushUpdates(updatedObjects);
     flushDeletes();
+  }
+
+  protected void removeUnnecessaryOperations() {
+    List<DeleteOperation> deletedObjectsCopy = new ArrayList<DeleteOperation>(deletedObjects);
+    // for all deleted objects
+    for (DeleteOperation deleteOperation: deletedObjectsCopy) {
+      if (deleteOperation instanceof DeleteById) {
+        DeleteById deleteById = (DeleteById) deleteOperation;
+        PersistentObject insertedObject = findInsertedObject(deleteById.persistenceObjectClass, deleteById.persistentObjectId);
+        // if the deleted object is inserted,
+        if (insertedObject!=null) {
+          // remove the insert and the delete
+          insertedObjects.remove(insertedObject);
+          deletedObjects.remove(deleteOperation);
+        }
+        // in any case, remove the deleted object from the cache
+        cacheRemove(deleteById.persistenceObjectClass, deleteById.persistentObjectId);
+      }
+    }
+    for (PersistentObject insertedObject: insertedObjects) {
+      cacheRemove(insertedObject.getClass(), insertedObject.getId());
+    }
+  }
+
+  protected PersistentObject findInsertedObject(Class< ? > persistenceObjectClass, String persistentObjectId) {
+    for (PersistentObject insertedObject: insertedObjects) {
+      if ( insertedObject.getClass().equals(persistenceObjectClass)
+           && insertedObject.getId().equals(persistentObjectId)
+         ) {
+        return insertedObject;
+      }
+    }
+    return null;
   }
 
   protected void flushDeserializedObjects() {

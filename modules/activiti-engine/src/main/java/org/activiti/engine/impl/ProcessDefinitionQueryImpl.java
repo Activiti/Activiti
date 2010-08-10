@@ -26,6 +26,8 @@ import org.activiti.engine.impl.interceptor.CommandExecutor;
  * @author Tom Baeyens
  */
 public class ProcessDefinitionQueryImpl extends AbstractQuery<ProcessDefinition> implements ProcessDefinitionQuery {
+  
+  protected String deploymentId;
 
   public ProcessDefinitionQueryImpl() {
   }
@@ -34,18 +36,27 @@ public class ProcessDefinitionQueryImpl extends AbstractQuery<ProcessDefinition>
     super(commandExecutor);
   }
 
+  public ProcessDefinitionQueryImpl deploymentId(String deploymentId) {
+    this.deploymentId = deploymentId;
+    return this;
+  }
+
   @Override
   public long executeCount(CommandContext commandContext) {
-    return 0;
+    return commandContext
+      .getRepositorySession()
+      .findProcessDefinitionCountByQueryCriteria(this);
   }
 
+  @SuppressWarnings("unchecked")
   @Override
   public List<ProcessDefinition> executeList(CommandContext commandContext, Page page) {
-    return null;
+    return (List) commandContext
+      .getRepositorySession()
+      .findProcessDefinitionsByQueryCriteria(this, page);
   }
-
-  public ProcessDefinitionQueryImpl deploymentId(String deploymentId) {
-    return null;
+  
+  public String getDeploymentId() {
+    return deploymentId;
   }
-
 }

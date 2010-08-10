@@ -28,7 +28,7 @@ public class SaveGroupCmd extends CmdVoid {
   }
   
   public void executeVoid(CommandContext commandContext) {
-    if (group.getId()==null) {
+    if (group.getRevision()==0) {
       commandContext
         .getIdentitySession()
         .insertGroup(group);

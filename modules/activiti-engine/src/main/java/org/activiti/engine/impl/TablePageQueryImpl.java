@@ -58,7 +58,7 @@ public class TablePageQueryImpl implements TablePageQuery {
     if (sortColumn != null) {
       throw new ActivitiException("Invalid usage: cannot use both orderAsc and orderDesc in same query");
     }
-    this.sortOrder = SortOrder.ASCENDING;
+    this.sortOrder = SortOrder.ASC;
     this.sortColumn = column;
     return this;
   }
@@ -67,7 +67,7 @@ public class TablePageQueryImpl implements TablePageQuery {
     if (sortColumn != null) {
       throw new ActivitiException("Invalid usage: cannot use both orderAsc and orderDesc in same query");
     }
-    this.sortOrder = SortOrder.DESCENDING;
+    this.sortOrder = SortOrder.DESC;
     this.sortColumn = column;
     return this;
   }

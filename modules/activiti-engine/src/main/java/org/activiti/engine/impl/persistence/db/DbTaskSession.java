@@ -19,6 +19,7 @@ import java.util.Map;
 
 import org.activiti.engine.Page;
 import org.activiti.engine.Task;
+import org.activiti.engine.impl.TaskQueryImpl;
 import org.activiti.engine.impl.cfg.TaskSession;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.interceptor.Session;
@@ -60,17 +61,17 @@ public class DbTaskSession implements TaskSession, Session {
   }
 
   @SuppressWarnings("unchecked")
-  public List<Task> dynamicFindTasks(Map<String, Object> params, Page page) {
-    final String query = "selectTaskByDynamicCriteria";
+  public List<Task> findTasksByQueryCriteria(TaskQueryImpl taskQuery, Page page) {
+    final String query = "selectTaskByQueryCriteria";
     if (page == null) {
-      return dbSqlSession.selectList(query, params);
+      return dbSqlSession.selectList(query, taskQuery);
     } else {
-      return dbSqlSession.selectList(query, params, page.getOffset(), page.getMaxResults());
+      return dbSqlSession.selectList(query, taskQuery, page.getOffset(), page.getMaxResults());
     }
   }
 
-  public long dynamicFindTaskCount(Map<String, Object> params) {
-    return (Long) dbSqlSession.selectOne("selectTaskCountByDynamicCriteria", params);
+  public long findTaskCountByQueryCriteria(TaskQueryImpl taskQuery) {
+    return (Long) dbSqlSession.selectOne("selectTaskCountByQueryCriteria", taskQuery);
   }
   
   public void insertTaskInvolvement(TaskInvolvementEntity taskInvolvement) {

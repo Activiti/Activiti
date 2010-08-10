@@ -58,7 +58,7 @@ public class DbIdentitySession implements IdentitySession, Session {
   }
 
   public void deleteUser(String userId) {
-    dbSqlSession.delete("deleteMembershipsForUser", userId);
+    dbSqlSession.delete("deleteMembershipsByUserId", userId);
     dbSqlSession.delete("deleteUser", userId);
   }
 
@@ -67,12 +67,12 @@ public class DbIdentitySession implements IdentitySession, Session {
   }
 
   public GroupEntity findGroupById(String groupId) {
-    return (GroupEntity) dbSqlSession.selectOne("selectGroup", groupId);
+    return (GroupEntity) dbSqlSession.selectOne("selectGroupById", groupId);
   }
 
   @SuppressWarnings("unchecked")
   public List<GroupEntity> findGroupsByUser(String userId) {
-    return dbSqlSession.selectList("selectGroupsByUser", userId);
+    return dbSqlSession.selectList("selectGroupsByUserId", userId);
   }
 
   @SuppressWarnings("unchecked")
@@ -80,7 +80,7 @@ public class DbIdentitySession implements IdentitySession, Session {
     Map<String, Object> parameters = new HashMap<String, Object>();
     parameters.put("userId", userId);
     parameters.put("groupType", groupType);
-    return dbSqlSession.selectList("selectGroupsByUserAndType", parameters);
+    return dbSqlSession.selectList("selectGroupsByUserIdAndGroupType", parameters);
   }
 
   @SuppressWarnings("unchecked")
@@ -89,7 +89,7 @@ public class DbIdentitySession implements IdentitySession, Session {
   }
 
   public void deleteGroup(String groupId) {
-    dbSqlSession.delete("deleteMembershipsForGroup", groupId);
+    dbSqlSession.delete("deleteMembershipsByGroupId", groupId);
     dbSqlSession.delete("deleteGroup", groupId);
   }
 

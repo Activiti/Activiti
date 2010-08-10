@@ -16,6 +16,7 @@ import java.util.List;
 
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.Page;
+import org.activiti.engine.SortOrder;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
@@ -26,9 +27,19 @@ import org.activiti.engine.impl.interceptor.CommandExecutor;
  *  
  * @author Joram Barrez
  */
-public abstract class AbstractQuery<T> {
+public abstract class AbstractQuery<T> implements Command<Object>{
+  
+  private static enum ResultType {
+    LIST, PAGINATED_LIST, SINGLE_RESULT, COUNT
+  }
     
   protected CommandExecutor commandExecutor;
+  protected String sortColumn;
+  protected SortOrder sortOrder;
+  
+  protected int start;
+  protected int size;
+  protected ResultType resultType;
  
   protected AbstractQuery() {
   }
@@ -37,44 +48,41 @@ public abstract class AbstractQuery<T> {
     this.commandExecutor = commandExecutor;
   }
 
+  @SuppressWarnings("unchecked")
   public T singleResult() {
-    return commandExecutor.execute(new Command<T>() {
-      
-      public T execute(CommandContext commandContext) {
-        return executeSingleResult(commandContext);
-      };
-    
-    });
+    this.resultType = ResultType.SINGLE_RESULT;
+    return (T) commandExecutor.execute(this);
   }
 
+  @SuppressWarnings("unchecked")
   public List<T> list() {
-    return commandExecutor.execute(new Command<List<T>>() {
-      
-      public List<T> execute(CommandContext commandContext) {
-        return executeList(commandContext, null);
-      };
-    
-    });
+    this.resultType = ResultType.LIST;
+    return (List) commandExecutor.execute(this);
   }
   
-  public List<T> paginatedList(final int start, final int size) {
-    return commandExecutor.execute(new Command<List<T>>() {
-      
-      public List<T> execute(CommandContext commandContext) {
-        return executeList(commandContext, new Page(start, size));
-      };
-    
-    });
+  @SuppressWarnings("unchecked")
+  public List<T> paginatedList(int start, int size) {
+    this.start = start;
+    this.size = size;
+    this.resultType = ResultType.PAGINATED_LIST;
+    return (List) commandExecutor.execute(this);
   }
   
   public long count() {
-    return commandExecutor.execute(new Command<Long>() {
-      
-      public Long execute(CommandContext commandContext) {
-        return executeCount(commandContext);
-      };
-    
-    });
+    this.resultType = ResultType.COUNT;
+    return (Long) commandExecutor.execute(this);
+  }
+  
+  public Object execute(CommandContext commandContext) {
+    if (resultType==ResultType.LIST) {
+      return executeList(commandContext, null);
+    } else if (resultType==ResultType.SINGLE_RESULT) {
+      return executeSingleResult(commandContext);
+    } else if (resultType==ResultType.PAGINATED_LIST) {
+      return executeList(commandContext, new Page(start, size));
+    } else {
+      return executeCount(commandContext);
+    }
   }
 
   public abstract long executeCount(CommandContext commandContext);
@@ -93,5 +101,30 @@ public abstract class AbstractQuery<T> {
      throw new ActivitiException("Query return "+results.size()+" results instead of max 1");
     } 
     return null;
+  }
+
+
+  protected void orderAscToBeOverridden(String column) {
+    if (sortColumn != null) {
+      throw new ActivitiException("Invalid usage: cannot use both orderAsc and orderDesc in same query");
+    }
+    this.sortOrder = SortOrder.ASC;
+    this.sortColumn = column;
+  }
+  
+  public void orderDescToBeOverridden(String column) {
+    if (sortColumn != null) {
+      throw new ActivitiException("Invalid usage: cannot use both orderAsc and orderDesc in same query");
+    }
+    this.sortOrder = SortOrder.DESC;
+    this.sortColumn = column;
+  }
+  
+  public String getSortColumn() {
+    return sortColumn;
+  }
+
+  public SortOrder getSortOrder() {
+    return sortOrder;
   }
 }

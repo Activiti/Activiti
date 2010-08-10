@@ -29,6 +29,7 @@ public class UserEntity implements User, Serializable, PersistentObject {
   private static final long serialVersionUID = 1L;
 
   protected String id;
+  protected int revision;
   protected String firstName;
   protected String lastName;
   protected String email;
@@ -57,6 +58,10 @@ public class UserEntity implements User, Serializable, PersistentObject {
     persistentState.put("email", email);
     persistentState.put("password", password);
     return persistentState;
+  }
+  
+  public int getRevisionNext() {
+    return revision+1;
   }
 
   public String getId() {
@@ -88,5 +93,11 @@ public class UserEntity implements User, Serializable, PersistentObject {
   }
   public void setPassword(String password) {
     this.password = password;
+  }
+  public int getRevision() {
+    return revision;
+  }
+  public void setRevision(int revision) {
+    this.revision = revision;
   }
 }

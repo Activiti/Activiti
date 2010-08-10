@@ -93,7 +93,7 @@ public class DbManagementSession implements ManagementSession, Session {
     params.put("tableName", tableName);
     if (sortColumn != null) {
       params.put("sortColumn", sortColumn);
-      if (sortOrder.equals(SortOrder.ASCENDING)) {
+      if (sortOrder.equals(SortOrder.ASC)) {
         params.put("sortOrder", "asc");
       } else {
         params.put("sortOrder", "desc");

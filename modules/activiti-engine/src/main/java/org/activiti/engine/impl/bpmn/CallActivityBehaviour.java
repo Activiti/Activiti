@@ -44,7 +44,7 @@ public class CallActivityBehaviour extends AbstractBpmnActivity {
     processInstance.start();
   }
   
-  public void event(ActivityExecution execution, String signalEvent, Object signalData) throws Exception {
+  public void signal(ActivityExecution execution, String signalEvent, Object signalData) throws Exception {
     leave(execution);
   }
 }

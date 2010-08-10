@@ -40,7 +40,6 @@ import org.activiti.engine.TaskService;
 import org.activiti.engine.impl.ProcessEngineImpl;
 import org.activiti.engine.impl.bpmn.deployer.BpmnDeployer;
 import org.activiti.engine.impl.jobexecutor.JobExecutor;
-import org.activiti.engine.impl.persistence.db.DbSqlSessionFactory;
 import org.activiti.engine.impl.util.ClockUtil;
 import org.activiti.pvm.impl.util.ClassNameUtil;
 import org.activiti.pvm.impl.util.LogUtil.ThreadLogMode;
@@ -226,7 +225,7 @@ public class ProcessEngineTestCase extends PvmTestCase {
   protected void annotationDeploymentAfter() {
     for (String deploymentId: deploymentsToDeleteAfterTestMethod) {
       log.fine("annotation @Deployment deletes deployment for "+ClassNameUtil.getClassNameWithoutPackage(this)+"."+getName());
-      repositoryService.deleteDeployment(deploymentId);
+      repositoryService.deleteDeploymentCascade(deploymentId);
     }
   }
 

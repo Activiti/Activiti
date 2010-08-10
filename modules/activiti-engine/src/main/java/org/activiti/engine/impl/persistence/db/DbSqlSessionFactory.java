@@ -62,7 +62,7 @@ public class DbSqlSessionFactory implements SessionFactory, ProcessEngineConfigu
   protected static final Map<String, Map<String, String>> databaseSpecificStatements = new HashMap<String, Map<String,String>>();
 
   static {
-    addDatabaseSpecificStatement("mysql", "selectTaskByDynamicCriteria", "selectTaskByDynamicCriteria_mysql");
+    addDatabaseSpecificStatement("mysql", "selectTaskByQueryCriteria", "selectTaskByQueryCriteria_mysql");
     addDatabaseSpecificStatement("mysql", "selectNextJobsToExecute", "selectNextJobsToExecute_mysql");
   }
   

@@ -7,9 +7,10 @@
   <!-- USER INSERT -->
 
   <insert id="insertUser" parameterType="org.activiti.engine.impl.persistence.identity.UserEntity">
-    insert into ACT_ID_USER (ID_, FIRST_, LAST_, EMAIL_, PWD_)
+    insert into ACT_ID_USER (ID_, REV_, FIRST_, LAST_, EMAIL_, PWD_)
     values (
       #{id ,jdbcType=VARCHAR},
+      1,
       #{firstName ,jdbcType=VARCHAR},
       #{lastName ,jdbcType=VARCHAR},
       #{email ,jdbcType=VARCHAR},
@@ -21,11 +22,13 @@
 
   <update id="updateUser" parameterType="org.activiti.engine.impl.persistence.identity.UserEntity">
     update ACT_ID_USER set
+      REV_ = #{revisionNext ,jdbcType=INTEGER},
       FIRST_ = #{firstName ,jdbcType=VARCHAR},
       LAST_ = #{lastName ,jdbcType=VARCHAR},
       EMAIL_ = #{email ,jdbcType=VARCHAR},
       PWD_ = #{password ,jdbcType=VARCHAR}
     where ID_ = #{id}
+      and REV_ = #{revision}
   </update>
   
   <!-- USER DELETE -->
@@ -46,7 +49,7 @@
   
   <!-- USER SELECT -->
 
-  <select id="selectUser" parameterType="string" resultMap="userResultMap">
+  <select id="selectUserById" parameterType="string" resultMap="userResultMap">
     select * from ACT_ID_USER where ID_ = #{id}
   </select>
   
@@ -54,7 +57,7 @@
     select * from ACT_ID_USER
   </select>
   
-  <select id="selectUsersByGroup" parameterType="string" resultMap="userResultMap">
+  <select id="selectUsersByGroupId" parameterType="string" resultMap="userResultMap">
     select user.*
     from ACT_ID_USER user, ACT_ID_MEMBERSHIP membership
     where user.ID_ = membership.USER_ID_
@@ -65,9 +68,10 @@
   <!-- GROUP INSERT -->
 
   <insert id="insertGroup" parameterType="org.activiti.engine.impl.persistence.identity.GroupEntity">
-    insert into ACT_ID_GROUP (ID_, NAME_, TYPE_)
+    insert into ACT_ID_GROUP (ID_, REV_, NAME_, TYPE_)
     values (
       #{id ,jdbcType=VARCHAR},
+      1, 
       #{name ,jdbcType=VARCHAR},
       #{type ,jdbcType=VARCHAR}
     )
@@ -77,9 +81,11 @@
   
   <update id="updateGroup" parameterType="org.activiti.engine.impl.persistence.identity.GroupEntity">
     update ACT_ID_GROUP set
+      REV_ = #{revisionNext ,jdbcType=INTEGER},
       NAME_ = #{name ,jdbcType=VARCHAR},
       TYPE_ = #{type ,jdbcType=VARCHAR}
     where ID_ = #{id}
+          REV_ = #{revision}
   </update>
   
   <!-- GROUP DELETE -->
@@ -98,7 +104,7 @@
   
   <!-- GROUP SELECT -->
 
-  <select id="selectGroup" parameterType="string" resultMap="groupResultMap">
+  <select id="selectGroupById" parameterType="string" resultMap="groupResultMap">
     select * from ACT_ID_GROUP where ID_ = #{id}
   </select>
   
@@ -106,14 +112,14 @@
     select * from ACT_ID_GROUP
   </select>
   
-  <select id="selectGroupsByUser" parameterType="string" resultMap="groupResultMap">
+  <select id="selectGroupsByUserId" parameterType="string" resultMap="groupResultMap">
     select g.*
     from ACT_ID_GROUP g, ACT_ID_MEMBERSHIP membership
     where g.ID_ = membership.GROUP_ID_
       and membership.USER_ID_ = #{userId}
   </select>
 
-  <select id="selectGroupsByUserAndType" parameterType="map" resultMap="groupResultMap">
+  <select id="selectGroupsByUserIdAndGroupType" parameterType="map" resultMap="groupResultMap">
     select g.*
     from ACT_ID_GROUP g, ACT_ID_MEMBERSHIP membership
     where g.ID_ = membership.GROUP_ID_
@@ -136,7 +142,7 @@
   
   <!-- MEMBERSHIP DELETE -->
 
-  <delete id="deleteMembershipsForUser" parameterType="string">
+  <delete id="deleteMembershipsByUserId" parameterType="string">
     delete from ACT_ID_MEMBERSHIP 
     where USER_ID_ = #{userId} 
   </delete>
@@ -151,7 +157,7 @@
   
   <!-- MEMBERSHIP SELECT -->
 
-  <delete id="deleteMembershipsForGroup" parameterType="string">
+  <delete id="deleteMembershipsByGroupId" parameterType="string">
     delete from ACT_ID_MEMBERSHIP 
     where GROUP_ID_ = #{groupId} 
   </delete>

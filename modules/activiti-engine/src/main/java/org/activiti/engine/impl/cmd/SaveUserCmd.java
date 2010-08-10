@@ -29,7 +29,7 @@ public class SaveUserCmd extends CmdVoid {
   }
   
   public void executeVoid(CommandContext commandContext) {
-    if (user.getId()==null) {
+    if (user.getRevision()==0) {
       commandContext
         .getIdentitySession()
         .insertUser(user);

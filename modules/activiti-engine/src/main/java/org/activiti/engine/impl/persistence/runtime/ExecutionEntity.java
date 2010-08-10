@@ -106,6 +106,8 @@ public class ExecutionEntity extends ExecutionImpl implements PersistentObject, 
 
     // reset the process instance in order to have the db-generated process instance id available
     setProcessInstance(this);
+    
+    this.variables = VariableMap.createNewInitialized(id, processInstanceId);
   }
 
   @Override

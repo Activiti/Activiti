@@ -18,7 +18,7 @@ package org.activiti.engine;
  */
 public enum SortOrder {
 
-  ASCENDING,
-  DESCENDING;
+  ASC,
+  DESC;
   
 }

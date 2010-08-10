@@ -14,10 +14,10 @@
 package org.activiti.engine.impl.cfg;
 
 import java.util.List;
-import java.util.Map;
 
 import org.activiti.engine.Page;
 import org.activiti.engine.Task;
+import org.activiti.engine.impl.TaskQueryImpl;
 import org.activiti.engine.impl.persistence.task.TaskEntity;
 import org.activiti.engine.impl.persistence.task.TaskInvolvementEntity;
 
@@ -35,8 +35,8 @@ public interface TaskSession {
   List<Task> findTasksByAssignee(String assignee);
   List<Task> findCandidateTasks(String userId, List<String> groupIds);
   
-  List<Task> dynamicFindTasks(Map<String, Object> params, Page page);
-  long dynamicFindTaskCount(Map<String, Object> params);
+  List<Task> findTasksByQueryCriteria(TaskQueryImpl taskQuery, Page page);
+  long findTaskCountByQueryCriteria(TaskQueryImpl taskQuery);
 
   /* TaskInvolvementEntity */
   void deleteTaskInvolvement(TaskInvolvementEntity taskInvolvement);

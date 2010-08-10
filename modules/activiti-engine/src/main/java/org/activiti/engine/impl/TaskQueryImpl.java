@@ -14,9 +14,7 @@ package org.activiti.engine.impl;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.Page;
@@ -29,24 +27,16 @@ import org.activiti.engine.impl.persistence.identity.GroupEntity;
 
 /**
  * @author Joram Barrez
+ * @author Tom Baeyens
  */
 public class TaskQueryImpl extends AbstractQuery<Task> implements TaskQuery {
   
   protected String name;
-  
   protected String assignee;
-  
   protected String candidateUser;
-  
   protected String candidateGroup;
-  
   protected String processInstanceId;
-  
   protected String executionId;
-  
-  protected String sortColumn;
-  
-  protected SortOrder sortOrder;
   
   public TaskQueryImpl() {
   }
@@ -92,64 +82,34 @@ public class TaskQueryImpl extends AbstractQuery<Task> implements TaskQuery {
   }
   
   public TaskQueryImpl orderAsc(String column) {
-    if (sortColumn != null) {
-      throw new ActivitiException("Invalid usage: cannot use both orderAsc and orderDesc in same query");
-    }
-    this.sortOrder = SortOrder.ASCENDING;
-    this.sortColumn = column;
+    super.orderAscToBeOverridden(column);
     return this;
   }
   
   public TaskQueryImpl orderDesc(String column) {
-    if (sortColumn != null) {
-      throw new ActivitiException("Invalid usage: cannot use both orderAsc and orderDesc in same query");
-    }
-    this.sortOrder = SortOrder.DESCENDING;
-    this.sortColumn = column;
+    super.orderDescToBeOverridden(column);
     return this;
   }
   
   public List<Task> executeList(CommandContext commandContext, Page page) {
     return commandContext
       .getTaskSession()
-      .dynamicFindTasks(createParamMap(), page);
+      .findTasksByQueryCriteria(this, page);
   }
   
   public long executeCount(CommandContext commandContext) {
     return commandContext
       .getTaskSession()
-      .dynamicFindTaskCount(createParamMap());
+      .findTaskCountByQueryCriteria(this);
   }
   
-  protected Map<String, Object> createParamMap() {
-    Map<String, Object> params = new HashMap<String, Object>();
-    if (name != null) {
-      params.put("name", name);
+  public List<String> getCandidateGroups() {
+    if (candidateGroup!=null) {
+      return Collections.singletonList(candidateGroup);
+    } else if (candidateUser != null) {
+      return getGroupsForCandidateUser(candidateUser);
     }
-    if (assignee != null) {
-      params.put("assignee", assignee);
-    }
-    if (candidateUser != null) {
-      params.put("candidateUser", candidateUser);
-      if (candidateGroup == null) {
-        params.put("candidateGroups", getGroupsForCandidateUser(candidateUser));        
-      } 
-    }
-    if (candidateGroup != null) {
-      params.put("candidateGroups", Collections.singletonList(candidateGroup));
-    }
-    if (processInstanceId != null) {
-      params.put("processInstanceId", processInstanceId);
-    }
-    if (sortColumn != null) {
-      params.put("sortColumn", sortColumn);
-      if (sortOrder.equals(SortOrder.ASCENDING)) {
-        params.put("sortOrder", "asc");        
-      } else {
-        params.put("sortOrder", "desc");
-      }
-    } 
-    return params;
+    return null;
   }
   
   protected List<String> getGroupsForCandidateUser(String candidateUser) {
@@ -164,4 +124,43 @@ public class TaskQueryImpl extends AbstractQuery<Task> implements TaskQuery {
     return groupIds;
   }
 
+  
+  public String getName() {
+    return name;
+  }
+
+  
+  public String getAssignee() {
+    return assignee;
+  }
+
+  
+  public String getCandidateUser() {
+    return candidateUser;
+  }
+
+  
+  public String getCandidateGroup() {
+    return candidateGroup;
+  }
+
+  
+  public String getProcessInstanceId() {
+    return processInstanceId;
+  }
+
+  
+  public String getExecutionId() {
+    return executionId;
+  }
+
+  
+  public String getSortColumn() {
+    return sortColumn;
+  }
+
+  
+  public SortOrder getSortOrder() {
+    return sortOrder;
+  }
 }

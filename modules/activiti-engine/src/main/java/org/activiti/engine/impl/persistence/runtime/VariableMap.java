@@ -20,8 +20,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.activiti.engine.impl.cfg.RuntimeSession;
+import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.interceptor.CommandContext;
+import org.activiti.engine.impl.persistence.db.DbSqlSession;
 import org.activiti.engine.impl.variable.Type;
 import org.activiti.engine.impl.variable.VariableTypes;
 
@@ -34,25 +35,33 @@ public class VariableMap implements Map<String, Object> , Serializable {
   
   private static final long serialVersionUID = 1L;
   
-  protected Map<String, VariableInstanceEntity> variableInstances = null;
-
   protected String executionId;
   protected String processInstanceId;
+  protected Map<String, VariableInstanceEntity> variableInstances = null;
 
   public VariableMap(String executionId, String processInstanceId) {
     this.executionId = executionId;
     this.processInstanceId = processInstanceId;
   }
+  
+  /** returns an initialized empty variable map */
+  public static VariableMap createNewInitialized(String executionId, String processInstanceId) {
+    VariableMap variableMap = new VariableMap(executionId, processInstanceId);
+    variableMap.variableInstances = new HashMap<String, VariableInstanceEntity>();
+    return variableMap;
+  }
 
   protected void ensureInitialized() {
-    variableInstances = new HashMap<String, VariableInstanceEntity>();
-    
-    List<VariableInstanceEntity> variableInstancesList = CommandContext
-      .getCurrentSession(RuntimeSession.class)
-      .findVariableInstancesByExecutionId(executionId);
-    
-    for (VariableInstanceEntity variableInstance: variableInstancesList) {
-      variableInstances.put(variableInstance.getName(), variableInstance);
+    if (variableInstances==null) {
+      variableInstances = new HashMap<String, VariableInstanceEntity>();
+      CommandContext commandContext = CommandContext.getCurrent();
+      if (commandContext == null) {
+        throw new ActivitiException("lazy loading outside command context");
+      }
+      List<VariableInstanceEntity> variableInstancesList = commandContext.getRuntimeSession().findVariableInstancesByExecutionId(executionId);
+      for (VariableInstanceEntity variableInstance : variableInstancesList) {
+        variableInstances.put(variableInstance.getName(), variableInstance);
+      }
     }
   }
 
@@ -103,6 +112,7 @@ public class VariableMap implements Map<String, Object> , Serializable {
     }
     
     variableInstance.setValue(value);
+    variableInstances.put(key, variableInstance);
     return null;
   }
 
@@ -111,10 +121,15 @@ public class VariableMap implements Map<String, Object> , Serializable {
     VariableInstanceEntity variableInstance = variableInstances.remove(key);
     if (variableInstance != null) {
       // delete variable
-      CommandContext
+      DbSqlSession dbSqlSession = CommandContext
         .getCurrent()
-        .getDbSqlSession()
-        .delete(VariableInstanceEntity.class, variableInstance.getId());
+        .getDbSqlSession();
+      
+      dbSqlSession.delete(VariableInstanceEntity.class, variableInstance.getId());
+      
+      if (variableInstance.getByteArrayValueId()!=null) {
+        dbSqlSession.delete(ByteArrayEntity.class, variableInstance.getByteArrayValueId());
+      }
     }
     return null;
   }

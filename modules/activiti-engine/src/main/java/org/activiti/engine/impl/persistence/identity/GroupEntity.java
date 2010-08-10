@@ -28,17 +28,15 @@ public class GroupEntity implements Group, Serializable, PersistentObject {
   private static final long serialVersionUID = 1L;
 
   protected String id;
+  protected int revision;
   protected String name;
   protected String type;
   
-  protected boolean isNew = false;
-
   public GroupEntity() {
   }
   
   public GroupEntity(String id) {
     this.id = id;
-    this.isNew = true;
   }
   
   public void update(GroupEntity group) {
@@ -51,6 +49,10 @@ public class GroupEntity implements Group, Serializable, PersistentObject {
     persistentState.put("name", name);
     persistentState.put("type", type);
     return persistentState;
+  }
+  
+  public int getRevisionNext() {
+    return revision+1;
   }
 
   public String getId() {
@@ -71,7 +73,10 @@ public class GroupEntity implements Group, Serializable, PersistentObject {
   public void setType(String type) {
     this.type = type;
   }
-  public boolean isNew() {
-    return isNew;
-  }  
+  public int getRevision() {
+    return revision;
+  }
+  public void setRevision(int revision) {
+    this.revision = revision;
+  }
 }

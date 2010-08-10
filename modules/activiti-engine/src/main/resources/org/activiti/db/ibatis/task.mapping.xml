@@ -95,9 +95,9 @@
     select * from ACT_TASK where ASSIGNEE_ = #{assignee}
   </select>
   
-  <select id="selectTaskByDynamicCriteria" parameterType="map" resultMap="taskResultMap">
+  <select id="selectTaskByQueryCriteria" parameterType="map" resultMap="taskResultMap">
     select distinct(T.*)
-    <include refid="selectTaskByDynamicCriteriaSql"/>
+    <include refid="selectTaskByQueryCriteriaSql"/>
      <if test="sortColumn != null">
       order by T.${sortColumn} ${sortOrder}
     </if>
@@ -106,12 +106,12 @@
     </if>
   </select>
 
-  <select id="selectTaskCountByDynamicCriteria" parameterType="map" resultType="long">
+  <select id="selectTaskCountByQueryCriteria" parameterType="map" resultType="long">
     select count(distinct T.ID_)
-    <include refid="selectTaskByDynamicCriteriaSql"/>
+    <include refid="selectTaskByQueryCriteriaSql"/>
   </select>
   
-  <sql id="selectTaskByDynamicCriteriaSql">  
+  <sql id="selectTaskByQueryCriteriaSql">  
     from ACT_TASK T
     <if test="candidateUser != null || candidateGroups != null">
       inner join ACT_TASKINVOLVEMENT I on I.TASK_ID_ = T.ID_
@@ -152,9 +152,9 @@
     </where>
   </sql>
   
-  <select id="selectTaskByDynamicCriteria_mysql" parameterType="map" resultMap="taskResultMap">
+  <select id="selectTaskByQueryCriteria_mysql" parameterType="map" resultMap="taskResultMap">
     select distinct T.*
-    <include refid="selectTaskByDynamicCriteriaSql"/>
+    <include refid="selectTaskByQueryCriteriaSql"/>
      <if test="sortColumn != null">
       order by T.${sortColumn} ${sortOrder}
     </if>
