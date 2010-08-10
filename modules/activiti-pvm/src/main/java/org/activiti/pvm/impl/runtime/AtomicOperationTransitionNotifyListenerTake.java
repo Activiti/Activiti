@@ -43,7 +43,7 @@ public class AtomicOperationTransitionNotifyListenerTake implements AtomicOperat
       execution.performOperation(this);
 
     } else {
-      log.fine("taking transition "+transition);
+      log.fine(execution+" takes transition "+transition);
       execution.setEventListenerIndex(0);
       execution.setEventName(null);
       execution.setEventSource(null);
