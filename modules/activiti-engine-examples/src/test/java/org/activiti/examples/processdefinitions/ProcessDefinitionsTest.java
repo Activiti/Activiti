@@ -17,6 +17,7 @@ import java.util.Collection;
 import java.util.List;
 
 import org.activiti.engine.ProcessDefinition;
+import org.activiti.engine.ProcessDefinitionQuery;
 import org.activiti.engine.impl.bpmn.deployer.BpmnDeployer;
 import org.activiti.engine.test.ProcessEngineTestCase;
 
@@ -37,7 +38,12 @@ public class ProcessDefinitionsTest extends ProcessEngineTestCase {
     deploymentIds.add(deployProcessString(("<definitions " + NAMESPACE + " " + TARGET_NAMESPACE + ">" + "  <process id='EN' name='Expense Note 1' />" + "</definitions>")));
     deploymentIds.add(deployProcessString(("<definitions " + NAMESPACE + " " + TARGET_NAMESPACE + ">" + "  <process id='EN' name='Expense Note 2' />" + "</definitions>")));
 
-    List<ProcessDefinition> processDefinitions = repositoryService.findProcessDefinitions();
+    List<ProcessDefinition> processDefinitions = repositoryService
+      .createProcessDefinitionQuery()
+      .orderAsc(ProcessDefinitionQuery.PROPERTY_KEY)
+      .orderDesc(ProcessDefinitionQuery.PROPERTY_VERSION)
+      .list();
+
     assertNotNull(processDefinitions);
 
     assertEquals(5, processDefinitions.size());
@@ -80,7 +86,12 @@ public class ProcessDefinitionsTest extends ProcessEngineTestCase {
     deploymentIds.add(deployProcessString(("<definitions " + NAMESPACE + " " + TARGET_NAMESPACE + ">" + "  <process id='IDR' name='Insurance Damage Report' />" + "</definitions>")));
     deploymentIds.add(deployProcessString(("<definitions " + NAMESPACE + " " + TARGET_NAMESPACE + ">" + "  <process id='IDR' name='Insurance Damage Report' />" + "</definitions>")));
 
-    List<ProcessDefinition> processDefinitions = repositoryService.findProcessDefinitions();
+    List<ProcessDefinition> processDefinitions = repositoryService
+      .createProcessDefinitionQuery()
+      .orderAsc(ProcessDefinitionQuery.PROPERTY_KEY)
+      .orderDesc(ProcessDefinitionQuery.PROPERTY_VERSION)
+      .list();
+
     assertNotNull(processDefinitions);
     assertEquals(1, processDefinitions.size());
 

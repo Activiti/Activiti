@@ -82,12 +82,12 @@ public class TaskQueryImpl extends AbstractQuery<Task> implements TaskQuery {
   }
   
   public TaskQueryImpl orderAsc(String column) {
-    super.orderAscToBeOverridden(column);
+    super.addOrder(column, SORTORDER_ASC);
     return this;
   }
   
   public TaskQueryImpl orderDesc(String column) {
-    super.orderDescToBeOverridden(column);
+    super.addOrder(column, SORTORDER_DESC);
     return this;
   }
   
@@ -154,13 +154,4 @@ public class TaskQueryImpl extends AbstractQuery<Task> implements TaskQuery {
     return executionId;
   }
 
-  
-  public String getSortColumn() {
-    return sortColumn;
-  }
-
-  
-  public SortOrder getSortOrder() {
-    return sortOrder;
-  }
 }

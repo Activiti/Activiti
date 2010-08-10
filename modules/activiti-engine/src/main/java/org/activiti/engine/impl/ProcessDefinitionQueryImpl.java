@@ -41,6 +41,16 @@ public class ProcessDefinitionQueryImpl extends AbstractQuery<ProcessDefinition>
     return this;
   }
 
+  public ProcessDefinitionQueryImpl orderAsc(String column) {
+    super.addOrder(column, SORTORDER_ASC);
+    return this;
+  }
+  
+  public ProcessDefinitionQueryImpl orderDesc(String column) {
+    super.addOrder(column, SORTORDER_DESC);
+    return this;
+  }
+  
   @Override
   public long executeCount(CommandContext commandContext) {
     return commandContext

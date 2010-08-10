@@ -12,6 +12,7 @@
  */
 package org.activiti.rest.api.process;
 
+import org.activiti.engine.ProcessDefinitionQuery;
 import org.activiti.rest.util.ActivitiWebScript;
 import org.springframework.extensions.webscripts.Cache;
 import org.springframework.extensions.webscripts.Status;
@@ -38,7 +39,10 @@ public class ProcessDefinitionsGet extends ActivitiWebScript
   @Override
   protected void executeWebScript(WebScriptRequest req, Status status, Cache cache, Map<String, Object> model)
   {
-    model.put("processDefinitions", getRepositoryService().findProcessDefinitions());
+    model.put("processDefinitions", getRepositoryService()
+            .createProcessDefinitionQuery()
+            .orderAsc(ProcessDefinitionQuery.PROPERTY_ID)
+            .list());
   }
 
 }

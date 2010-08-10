@@ -39,7 +39,6 @@ public class TaskEntity implements Task, Serializable, PersistentObject {
 
   protected String id;
   protected int revision;
-  protected boolean isNew = false;
 
   protected String assignee;
   protected String name;
@@ -65,7 +64,6 @@ public class TaskEntity implements Task, Serializable, PersistentObject {
 
   public TaskEntity(String taskId) {
     this.id = taskId;
-    this.isNew = true;
   }
   
   /** creates and initializes a new persistent task. */
@@ -133,7 +131,117 @@ public class TaskEntity implements Task, Serializable, PersistentObject {
     }
     return persistentState;
   }
+  
+  public int getRevisionNext() {
+    return revision+1;
+  }
 
+
+  public ExecutionEntity getExecution() {
+    if ( (execution==null) && (executionId!=null) ) {
+      this.execution = CommandContext
+        .getCurrent()
+        .getRuntimeSession()
+        .findExecutionById(executionId);
+    }
+    return execution;
+  }
+  
+  public void setExecution(DelegateExecution execution) {
+    if (execution!=null) {
+      this.execution = (ExecutionEntity) execution;
+      this.executionId = this.execution.getId();
+      this.processInstanceId = this.execution.getProcessInstanceId();
+      this.processDefinitionId = this.execution.getProcessDefinitionId();
+    } else {
+      this.execution = null;
+      this.executionId = null;
+      this.processInstanceId = null;
+      this.processDefinitionId = null;
+    }
+  }
+    
+
+  /*
+   * TASK ASSIGNMENT
+   */
+
+
+  public TaskInvolvementEntity createTaskInvolvement() {
+    TaskInvolvementEntity taskInvolvementEntity = TaskInvolvementEntity.createAndInsert();
+    getTaskInvolvements().add(taskInvolvementEntity);
+    taskInvolvementEntity.setTask(this);
+    return taskInvolvementEntity;
+  }
+  
+  public Set<TaskInvolvementEntity> getCandidates() {
+    Set<TaskInvolvementEntity> potentialOwners = new HashSet<TaskInvolvementEntity>();
+    for (TaskInvolvementEntity taskInvolvementEntity : getTaskInvolvements()) {
+      if (TaskInvolvementType.CANDIDATE.equals(taskInvolvementEntity.getType())) {
+        potentialOwners.add(taskInvolvementEntity);
+      }
+    }
+    return potentialOwners;
+  }
+  
+  public void addCandidateUser(String userId) {
+    TaskInvolvementEntity involvement = createTaskInvolvement();
+    involvement.setUserId(userId);
+    involvement.setType(TaskInvolvementType.CANDIDATE);
+  }
+  
+  public void addCandidateGroup(String groupId) {
+    TaskInvolvementEntity involvement = createTaskInvolvement();
+    involvement.setGroupId(groupId);
+    involvement.setType(TaskInvolvementType.CANDIDATE);
+  }
+  
+  public List<TaskInvolvementEntity> getTaskInvolvements() {
+    if (!isTaskInvolvementsInitialized) {
+      taskInvolvementEntities = CommandContext
+          .getCurrent()
+          .getTaskSession()
+          .findTaskInvolvementsByTaskId(id);
+      isTaskInvolvementsInitialized = true;
+    }
+    return taskInvolvementEntities;
+  }
+
+  @SuppressWarnings("unchecked")
+  public Map<String, Object> getActivityInstanceVariables() {
+    if (execution!=null) {
+      return execution.getVariables();
+    }
+    return Collections.EMPTY_MAP;
+  }
+  
+  public void setActivityInstanceVariables(Map<String, Object> parameters) {
+    if (getExecution()!=null) {
+      execution.setVariables(parameters);
+    }
+  }
+  
+  public String toString() {
+    return "Task["+id+"]";
+  }
+  
+  // getters and setters //////////////////////////////////////////////////////
+
+  public String getId() {
+    return id;
+  }
+  
+  public void setId(String id) {
+    this.id = id;
+  }
+  
+  public int getRevision() {
+    return revision;
+  }
+
+  public void setRevision(int revision) {
+    this.revision = revision;
+  }
 
   public String getName() {
     return name;
@@ -190,35 +298,11 @@ public class TaskEntity implements Task, Serializable, PersistentObject {
   public void setCompletionDeadline(Date completionDeadline) {
     this.completionDeadline = completionDeadline;
   }
-	
-	public String getExecutionId() {
-	  return executionId;
-	}
   
-  public ExecutionEntity getExecution() {
-    if ( (execution==null) && (executionId!=null) ) {
-      this.execution = CommandContext
-        .getCurrent()
-        .getRuntimeSession()
-        .findExecutionById(executionId);
-    }
-    return execution;
+  public String getExecutionId() {
+    return executionId;
   }
-  
-  public void setExecution(DelegateExecution execution) {
-    if (execution!=null) {
-      this.execution = (ExecutionEntity) execution;
-      this.executionId = this.execution.getId();
-      this.processInstanceId = this.execution.getProcessInstanceId();
-      this.processDefinitionId = this.execution.getProcessDefinitionId();
-    } else {
-      this.execution = null;
-      this.executionId = null;
-      this.processInstanceId = null;
-      this.processDefinitionId = null;
-    }
-  }
-    
+
   public String getProcessDefinitionId() {
     return processDefinitionId;
   }
@@ -226,11 +310,6 @@ public class TaskEntity implements Task, Serializable, PersistentObject {
   public void setProcessDefinitionId(String processDefinitionId) {
     this.processDefinitionId = processDefinitionId;
   }  
-  
-  /*
-   * TASK ASSIGNMENT
-   */
-
 
   public String getAssignee() {
     return assignee;
@@ -240,73 +319,4 @@ public class TaskEntity implements Task, Serializable, PersistentObject {
     this.assignee = assignee;
   }
   
-  public TaskInvolvementEntity createTaskInvolvement() {
-    TaskInvolvementEntity taskInvolvementEntity = TaskInvolvementEntity.createAndInsert();
-    getTaskInvolvements().add(taskInvolvementEntity);
-    taskInvolvementEntity.setTask(this);
-    return taskInvolvementEntity;
-  }
-  
-  public Set<TaskInvolvementEntity> getCandidates() {
-    Set<TaskInvolvementEntity> potentialOwners = new HashSet<TaskInvolvementEntity>();
-    for (TaskInvolvementEntity taskInvolvementEntity : getTaskInvolvements()) {
-      if (TaskInvolvementType.CANDIDATE.equals(taskInvolvementEntity.getType())) {
-        potentialOwners.add(taskInvolvementEntity);
-      }
-    }
-    return potentialOwners;
-  }
-  
-  public void addCandidateUser(String userId) {
-    TaskInvolvementEntity involvement = createTaskInvolvement();
-    involvement.setUserId(userId);
-    involvement.setType(TaskInvolvementType.CANDIDATE);
-  }
-  
-  public void addCandidateGroup(String groupId) {
-    TaskInvolvementEntity involvement = createTaskInvolvement();
-    involvement.setGroupId(groupId);
-    involvement.setType(TaskInvolvementType.CANDIDATE);
-  }
-  
-  public List<TaskInvolvementEntity> getTaskInvolvements() {
-    if (!isTaskInvolvementsInitialized) {
-      taskInvolvementEntities = CommandContext
-          .getCurrent()
-          .getTaskSession()
-          .findTaskInvolvementsByTaskId(id);
-      isTaskInvolvementsInitialized = true;
-    }
-    return taskInvolvementEntities;
-  }
-
-  public boolean isNew() {
-    return isNew;
-  }
-
-  public String getId() {
-    return id;
-  }
-  public void setId(String id) {
-    this.id = id;
-  }
-  public int getRevision() {
-    return revision;
-  }
-  public void setRevision(int revision) {
-    this.revision = revision;
-  }
-
-  @SuppressWarnings("unchecked")
-  public Map<String, Object> getActivityInstanceVariables() {
-    if (execution!=null) {
-      return execution.getVariables();
-    }
-    return Collections.EMPTY_MAP;
-  }
-  public void setActivityInstanceVariables(Map<String, Object> parameters) {
-    if (getExecution()!=null) {
-      execution.setVariables(parameters);
-    }
-  }
 }

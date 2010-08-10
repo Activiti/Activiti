@@ -64,6 +64,16 @@ public class ExecutionQueryImpl extends AbstractQuery<Execution> implements Exec
     return this;
   }
   
+  public ExecutionQueryImpl orderAsc(String column) {
+    super.addOrder(column, SORTORDER_ASC);
+    return this;
+  }
+  
+  public ExecutionQueryImpl orderDesc(String column) {
+    super.addOrder(column, SORTORDER_DESC);
+    return this;
+  }
+  
   public long executeCount(CommandContext commandContext) {
     return commandContext
       .getRuntimeSession()

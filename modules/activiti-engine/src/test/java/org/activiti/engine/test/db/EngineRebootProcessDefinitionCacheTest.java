@@ -65,7 +65,11 @@ public class EngineRebootProcessDefinitionCacheTest extends TestCase {
        .deploy();
   
      // verify existance of process definiton
-     List<ProcessDefinition> processDefinitions = processEngine.getRepositoryService().findProcessDefinitions();
+     List<ProcessDefinition> processDefinitions = processEngine
+       .getRepositoryService()
+       .createProcessDefinitionQuery()
+       .list();
+     
      assertEquals(1, processDefinitions.size());
      
      // Start a new Process instance

@@ -105,8 +105,9 @@ public class ProcessEngineTestCase extends PvmTestCase {
     }
   }
 
+  
   @Override
-  protected void runTest() throws Throwable {
+  public void runBare() throws Throwable {
     if (processEngine==null) {
       processEngine = processEngines.get(configurationResource);
       if (processEngine==null) {
@@ -126,7 +127,7 @@ public class ProcessEngineTestCase extends PvmTestCase {
       
       annotationDeploymentBefore();
       
-      super.runTest();
+      super.runBare();
 
     }  catch (AssertionFailedError e) {
       log.severe(EMPTY_LINE);

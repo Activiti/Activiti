@@ -13,10 +13,29 @@
 
 package org.activiti.engine;
 
+import java.util.List;
+
 
 /**
  * @author Tom Baeyens
  */
 public interface ProcessDefinitionQuery {
+  
+  String PROPERTY_ID = "ID_";
+  String PROPERTY_KEY = "KEY_";
+  String PROPERTY_VERSION = "VERSION_";
 
+  ProcessDefinitionQuery deploymentId(String deploymentId);
+  
+  ProcessDefinitionQuery orderAsc(String property);
+  
+  ProcessDefinitionQuery orderDesc(String property);
+
+  long count();
+  
+  ProcessDefinition singleResult();
+  
+  List<ProcessDefinition> list();
+  
+  List<ProcessDefinition> paginatedList(int start, int size);
 }

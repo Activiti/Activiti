@@ -55,8 +55,7 @@ public interface RepositoryService {
    * gives access to a deployment resource through a stream of bytes.
    */
   InputStream getResourceAsStream(String deploymentId, String resourceName);
-  
-  
+
   /** get a rendered startform, for collecting parameters from a user to start 
    * a new process instance */ 
   Object getStartFormByKey(String processDefinitionKey);
@@ -66,11 +65,8 @@ public interface RepositoryService {
   Object getStartFormById(String processDefinitionId);
 
   
-  /** 
-   * lists all versions of all process definitions ordered by 
-   * key (asc) and version (desc). 
-   */
-  List<ProcessDefinition> findProcessDefinitions();
+  /** query process definitions. */
+  ProcessDefinitionQuery createProcessDefinitionQuery();
   
   /**
    * returns the {@link ProcessDefinition} with the given id, 

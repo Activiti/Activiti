@@ -122,14 +122,11 @@
     select * from ACT_PROCESSDEFINITION where ID_ = #{processDefinitionId}
   </select>
 
-  <select id="selectProcessDefinitionsByQueryCriteria" parameterType="map" resultMap="processDefinitionResultMap">
+  <select id="selectProcessDefinitionsByQueryCriteria" parameterType="org.activiti.engine.impl.ProcessDefinitionQueryImpl" resultMap="processDefinitionResultMap">
     select distinct(PD.*)
     <include refid="selectProcessDefinitionsByQueryCriteriaSql"/>
-     <if test="sortColumn != null">
-      order by PD.${sortColumn} ${sortOrder}
-    </if>
-    <if test="sortColumn == null">
-      order by PD.ID_
+    <if test="orderBy != null">
+      order by ${orderBy}
     </if>
   </select>
 

@@ -31,13 +31,23 @@ public class JobQueryImpl extends AbstractQuery<Job> implements JobQuery {
   
   protected String processInstanceId;
   
-  public JobQuery processInstanceId(String processInstanceId) {
+  public JobQueryImpl processInstanceId(String processInstanceId) {
     this.processInstanceId = processInstanceId;
     return this;
   }
   
   public JobQueryImpl(CommandExecutor commandExecutor) {
     super(commandExecutor);
+  }
+
+  public JobQueryImpl orderAsc(String column) {
+    super.addOrder(column, SORTORDER_ASC);
+    return this;
+  }
+  
+  public JobQueryImpl orderDesc(String column) {
+    super.addOrder(column, SORTORDER_DESC);
+    return this;
   }
 
   public long executeCount(CommandContext commandContext) {
@@ -59,5 +69,4 @@ public class JobQueryImpl extends AbstractQuery<Job> implements JobQuery {
     }
     return params;
   }
-
 }

@@ -23,6 +23,7 @@ import org.activiti.engine.test.ProcessEngineTestCase;
 public class StandaloneTaskTest extends ProcessEngineTestCase {
 
   public void setUp() throws Exception {
+    super.setUp();
     identityService.saveUser(identityService.newUser("kermit"));
     identityService.saveUser(identityService.newUser("gonzo"));
   }
@@ -30,6 +31,7 @@ public class StandaloneTaskTest extends ProcessEngineTestCase {
   public void tearDown() throws Exception {
     identityService.deleteUser("kermit");
     identityService.deleteUser("gonzo");
+    super.tearDown();
   }
 
   public void testCreateToComplete() {

@@ -28,7 +28,7 @@ public class SaveTaskCmd extends CmdVoid {
 	}
 	
 	public void executeVoid(CommandContext commandContext) {
-    if (task.getId()==null) {
+    if (task.getRevision()==0) {
       commandContext
         .getDbSqlSession()
         .insert(task);
@@ -40,9 +40,6 @@ public class SaveTaskCmd extends CmdVoid {
       persistentTask.update(task);
       
     }
-    commandContext
-      .getDbSqlSession()
-      .insert((TaskEntity)task);
 	}
 
 }

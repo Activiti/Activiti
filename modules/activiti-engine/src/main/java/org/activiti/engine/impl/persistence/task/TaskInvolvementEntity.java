@@ -40,7 +40,7 @@ public class TaskInvolvementEntity implements Serializable, PersistentObject {
   public Object getPersistentState() {
     return this.type;
   }
-
+  
   public static TaskInvolvementEntity createAndInsert() {
     TaskInvolvementEntity taskInvolvementEntity = new TaskInvolvementEntity();
     CommandContext

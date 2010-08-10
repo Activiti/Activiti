@@ -7,22 +7,18 @@
   <!-- VARIABLE INSTANCE INSERT -->
   
   <insert id="insertVariableInstance" parameterType="org.activiti.engine.impl.persistence.runtime.VariableInstanceEntity">
-    insert into ACT_VARIABLE (ID_, REV_, TYPE_, NAME_,
-    EXECUTION_ID_, TASK_ID_,
-    BYTEARRAY_ID_, DOUBLE_, LONG_ , TEXT_)
+    insert into ACT_VARIABLE (ID_, REV_, TYPE_, NAME_, EXECUTION_ID_, TASK_ID_, BYTEARRAY_ID_, DOUBLE_, LONG_ , TEXT_)
     values (
-    #{id, jdbcType=VARCHAR},
-    #{revision,
-    jdbcType=INTEGER},
-    #{type, jdbcType=VARCHAR },
-    #{name, jdbcType=VARCHAR},
-    #{executionId, jdbcType=VARCHAR},
-    #{taskId,
-    jdbcType=VARCHAR},
-    #{byteArrayValueId, jdbcType=VARCHAR},
-    #{doubleValue, jdbcType=DOUBLE},
-    #{longValue, jdbcType=BIGINT},
-    #{textValue, jdbcType=VARCHAR}
+	    #{id, jdbcType=VARCHAR},
+	    1,
+	    #{type, jdbcType=VARCHAR },
+	    #{name, jdbcType=VARCHAR},
+	    #{executionId, jdbcType=VARCHAR},
+	    #{taskId, jdbcType=VARCHAR},
+	    #{byteArrayValueId, jdbcType=VARCHAR},
+	    #{doubleValue, jdbcType=DOUBLE},
+	    #{longValue, jdbcType=BIGINT},
+	    #{textValue, jdbcType=VARCHAR}
     )
   </insert>
   
@@ -30,14 +26,14 @@
   
   <update id="updateVariableInstance" parameterType="org.activiti.engine.impl.persistence.runtime.VariableInstanceEntity">
     update ACT_VARIABLE
-    set BYTEARRAY_ID_ = #{byteArrayValueId,
-    jdbcType=VARCHAR},
-    DOUBLE_ = #{doubleValue, jdbcType=DOUBLE},
-    LONG_ = #{longValue, jdbcType=BIGINT},
-    TEXT_ = #{textValue,
-    jdbcType=VARCHAR}
+    set 
+      REV_ = #{revisionNext, jdbcType=INTEGER}
+	    BYTEARRAY_ID_ = #{byteArrayValueId, jdbcType=VARCHAR},
+	    DOUBLE_ = #{doubleValue, jdbcType=DOUBLE},
+	    LONG_ = #{longValue, jdbcType=BIGINT},
+	    TEXT_ = #{textValue, jdbcType=VARCHAR}
     where ID_ = #{id, jdbcType=VARCHAR}
-    and REV_ = #{revision, jdbcType=INTEGER}
+      and REV_ = #{revision, jdbcType=INTEGER}
   </update>
 
   <!-- VARIABLE INSTANCE DELETE -->
@@ -50,6 +46,7 @@
 
 	<resultMap id="variableInstanceResultMap" type="org.activiti.engine.impl.persistence.runtime.VariableInstanceEntity">
 		<id property="id" column="ID_" jdbcType="VARCHAR" />
+    <result property="revision" column="REV_" jdbcType="INTEGER"/>
 		<result property="type" column="TYPE_" javaType="org.activiti.engine.impl.variable.Type" jdbcType="VARCHAR"/>
 		<result property="name" column="NAME_" javaType="String" jdbcType="VARCHAR" />
 		<result property="processDefinitionId" column="PROC_DEF_ID_" jdbcType="VARCHAR" />
@@ -84,8 +81,14 @@
   <!-- BYTE ARRAY INSERT -->
 
   <insert id="insertByteArray" parameterType="org.activiti.engine.impl.persistence.runtime.ByteArrayEntity">
-    insert into ACT_BYTEARRAY(ID_, NAME_, BYTES_, DEPLOYMENT_ID_)
-    values (#{id, jdbcType=VARCHAR}, #{name, jdbcType=VARCHAR}, #{bytes, jdbcType=BLOB}, #{deploymentId, jdbcType=VARCHAR})  
+    insert into ACT_BYTEARRAY(ID_, REV_, NAME_, BYTES_, DEPLOYMENT_ID_)
+    values (
+      #{id, jdbcType=VARCHAR},
+      1, 
+      #{name, jdbcType=VARCHAR}, 
+      #{bytes, jdbcType=BLOB}, 
+      #{deploymentId, jdbcType=VARCHAR}
+    )  
   </insert>
   
   <!-- BYTE ARRAY UPDATE -->
@@ -93,8 +96,10 @@
   <update id="updateByteArray" parameterType="org.activiti.engine.impl.persistence.runtime.ByteArrayEntity">
     update ACT_BYTEARRAY 
     set
+      REV_ = #{revisionNext, jdbcType=INTEGER}
       BYTES_ = #{bytes, jdbcType=BLOB}
     where ID_ = #{id}
+      and REV_ = #{revision, jdbcType=INTEGER}
   </update>
   
   <!-- BYTE ARRAY DELETE -->
@@ -115,6 +120,7 @@
   
   <resultMap id="byteArrayResultMap" type="org.activiti.engine.impl.persistence.runtime.ByteArrayEntity">
     <id property="id" column="ID_" jdbcType="VARCHAR" />
+    <result property="revision" column="REV_" jdbcType="INTEGER"/>
     <result property="name" column="NAME_" jdbcType="VARCHAR"/>
     <result property="bytes" column="BYTES_" jdbcType="BLOB"/>
   </resultMap>

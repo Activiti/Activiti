@@ -19,6 +19,7 @@ import java.util.List;
 import org.activiti.engine.Deployment;
 import org.activiti.engine.DeploymentBuilder;
 import org.activiti.engine.ProcessDefinition;
+import org.activiti.engine.ProcessDefinitionQuery;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.impl.cmd.DeleteDeploymentCmd;
 import org.activiti.engine.impl.cmd.DeployCmd;
@@ -52,9 +53,8 @@ public class RepositoryServiceImpl extends ServiceImpl implements RepositoryServ
     commandExecutor.execute(new DeleteDeploymentCmd(deploymentId, true));
   }
 
-  @SuppressWarnings("unchecked")
-  public List<ProcessDefinition> findProcessDefinitions() {
-    return commandExecutor.execute(new FindProcessDefinitionsCmd());
+  public ProcessDefinitionQuery createProcessDefinitionQuery() {
+    return new ProcessDefinitionQueryImpl(commandExecutor);
   }
 
   public ProcessDefinition findProcessDefinitionById(String processDefinitionId) {
@@ -82,5 +82,6 @@ public class RepositoryServiceImpl extends ServiceImpl implements RepositoryServ
   public Object getStartFormByKey(String processDefinitionKey) {
     return commandExecutor.execute(new GetFormCmd(null, processDefinitionKey, null));
   }
+
 }
 

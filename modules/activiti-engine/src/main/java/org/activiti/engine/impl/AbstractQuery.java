@@ -29,13 +29,15 @@ import org.activiti.engine.impl.interceptor.CommandExecutor;
  */
 public abstract class AbstractQuery<T> implements Command<Object>{
   
+  protected static final String SORTORDER_ASC = "asc";
+  protected static final String SORTORDER_DESC = "desc";
+  
   private static enum ResultType {
     LIST, PAGINATED_LIST, SINGLE_RESULT, COUNT
   }
     
   protected CommandExecutor commandExecutor;
-  protected String sortColumn;
-  protected SortOrder sortOrder;
+  protected String orderBy;
   
   protected int start;
   protected int size;
@@ -103,28 +105,16 @@ public abstract class AbstractQuery<T> implements Command<Object>{
     return null;
   }
 
-
-  protected void orderAscToBeOverridden(String column) {
-    if (sortColumn != null) {
-      throw new ActivitiException("Invalid usage: cannot use both orderAsc and orderDesc in same query");
+  protected void addOrder(String column, String sortOrder) {
+    if (orderBy==null) {
+      orderBy = "";
+    } else {
+      orderBy = orderBy+", ";
     }
-    this.sortOrder = SortOrder.ASC;
-    this.sortColumn = column;
-  }
-  
-  public void orderDescToBeOverridden(String column) {
-    if (sortColumn != null) {
-      throw new ActivitiException("Invalid usage: cannot use both orderAsc and orderDesc in same query");
-    }
-    this.sortOrder = SortOrder.DESC;
-    this.sortColumn = column;
-  }
-  
-  public String getSortColumn() {
-    return sortColumn;
+    orderBy += orderBy+column+" "+sortOrder;
   }
 
-  public SortOrder getSortOrder() {
-    return sortOrder;
+  public String getOrderBy() {
+    return orderBy;
   }
 }

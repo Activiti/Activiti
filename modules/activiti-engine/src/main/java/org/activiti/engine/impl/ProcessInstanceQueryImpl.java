@@ -64,6 +64,16 @@ public class ProcessInstanceQueryImpl extends AbstractQuery<ProcessInstance> imp
     this.activityId = activityId;
     return this;
   }
+
+  public ProcessInstanceQueryImpl orderAsc(String column) {
+    super.addOrder(column, SORTORDER_ASC);
+    return this;
+  }
+  
+  public ProcessInstanceQueryImpl orderDesc(String column) {
+    super.addOrder(column, SORTORDER_DESC);
+    return this;
+  }
   
   public long executeCount(CommandContext commandContext) {
     return commandContext

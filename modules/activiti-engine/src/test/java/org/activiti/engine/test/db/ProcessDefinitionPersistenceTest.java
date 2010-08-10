@@ -32,7 +32,10 @@ public class ProcessDefinitionPersistenceTest extends ProcessEngineTestCase {
       .deploy()
       .getId();
   
-    List<ProcessDefinition> processDefinitions = repositoryService.findProcessDefinitions();
+    List<ProcessDefinition> processDefinitions = repositoryService
+      .createProcessDefinitionQuery()
+      .list();
+    
     assertEquals(2, processDefinitions.size());
     
     repositoryService.deleteDeployment(deploymentId);

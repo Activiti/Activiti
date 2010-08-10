@@ -7,10 +7,11 @@
   <!-- TASK INSERT -->
   
   <insert id="insertTask" parameterType="org.activiti.engine.impl.persistence.task.TaskEntity">
-    insert into ACT_TASK (ID_, NAME_, DESCRIPTION_, PRIORITY_, CREATE_TIME_, SKIPPABLE_,
+    insert into ACT_TASK (ID_, REV_, NAME_, DESCRIPTION_, PRIORITY_, CREATE_TIME_, SKIPPABLE_,
                       START_DEADLINE_, COMPLETION_DEADLINE_, ASSIGNEE_,
                       EXECUTION_ID_, PROC_INST_ID_, PROC_DEF_ID_)
     values (#{id, jdbcType=VARCHAR},
+            1,
             #{name, jdbcType=VARCHAR},
             #{description, jdbcType=VARCHAR},
             #{priority, jdbcType=INTEGER},
@@ -30,6 +31,7 @@
   <update id="updateTask" parameterType="org.activiti.engine.impl.persistence.task.TaskEntity">
     update ACT_TASK
     <set>
+      REV_ = #{revisionNext, jdbcType=INTEGER},
       NAME_ = #{name, jdbcType=VARCHAR},
       PRIORITY_ = #{priority, jdbcType=INTEGER},
       CREATE_TIME_ = #{createTime, jdbcType=TIMESTAMP},
@@ -42,6 +44,7 @@
       PROC_DEF_ID_ = #{processDefinitionId, jdbcType=VARCHAR}
     </set>
     where ID_= #{id, jdbcType=VARCHAR}
+      and REV_ = #{revision, jdbcType=INTEGER}
   </update>
   
   <!-- TASK DELETE -->
@@ -53,6 +56,7 @@
   
   <resultMap id="taskResultMap" type="org.activiti.engine.impl.persistence.task.TaskEntity">
     <id property="id" column="ID_" jdbcType="VARCHAR"/>
+    <result property="revision" column="REV_" jdbcType="INTEGER"/>
     <result property="name" column="NAME_" jdbcType="VARCHAR"/>
     <result property="description" column="DESCRIPTION_" jdbcType="VARCHAR"/>
     <result property="priority" column="PRIORITY_" jdbcType="INTEGER"/>
@@ -98,11 +102,8 @@
   <select id="selectTaskByQueryCriteria" parameterType="map" resultMap="taskResultMap">
     select distinct(T.*)
     <include refid="selectTaskByQueryCriteriaSql"/>
-     <if test="sortColumn != null">
-      order by T.${sortColumn} ${sortOrder}
-    </if>
-    <if test="sortColumn == null">
-      order by T.ID_
+    <if test="orderBy != null">
+      order by #{orderBy}
     </if>
   </select>
 
@@ -166,8 +167,9 @@
   <!-- INSERT TASK INVOLVEMENT -->
   
   <insert id="insertTaskInvolvement" parameterType="org.activiti.engine.impl.persistence.task.TaskInvolvementEntity">
-    insert into ACT_TASKINVOLVEMENT (ID_, TYPE_, USER_ID_, GROUP_ID_, TASK_ID_)
+    insert into ACT_TASKINVOLVEMENT (ID_, REV_, TYPE_, USER_ID_, GROUP_ID_, TASK_ID_)
     values (#{id, jdbcType=VARCHAR},
+            1,
             #{type, jdbcType=VARCHAR},
             #{userId, jdbcType=VARCHAR},
             #{groupId, jdbcType=VARCHAR},
@@ -175,17 +177,6 @@
   </insert>
   
   <!-- TASK INVOLVEMENT INSERT -->
-
-  <update id="updateTaskInvolvement" parameterType="org.activiti.engine.impl.persistence.task.TaskInvolvementEntity">
-    update ACT_TASKINVOLVEMENT
-    <set>
-      TYPE_ = #{type, jdbcType=VARCHAR},
-      USER_ID_ = #{userId, jdbcType=VARCHAR},
-      GROUP_ID_ = #{groupId, jdbcType=VARCHAR},
-      TASK_ID_ = #{taskId, jdbcType=VARCHAR}
-    </set>
-    where ID_ = #{id, jdbcType=VARCHAR}
-  </update>
 
   <!-- TASK INVOLVEMENT DELETE -->
   
