@@ -59,7 +59,9 @@ public class CallActivityAdvancedTest extends ProcessEngineImplTestCase {
    * Test case for a possible tricky case: reaching the end event
    * of the subprocess leads to an end event in the super process instance.
    */
-  @Deployment(resources = {"CallActivity.testSubProcessEndsSuperProcess.bpmn20.xml", "simpleSubProcess.bpmn20.xml"})
+  @Deployment(resources = {
+    "org/activiti/engine/test/bpmn/callactivity/CallActivity.testSubProcessEndsSuperProcess.bpmn20.xml", 
+    "org/activiti/engine/test/bpmn/callactivity/simpleSubProcess.bpmn20.xml" })
   public void testSubProcessEndsSuperProcess() {
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("subProcessEndsSuperProcess");
     
@@ -74,7 +76,9 @@ public class CallActivityAdvancedTest extends ProcessEngineImplTestCase {
     assertEquals(0, runtimeService.createExecutionQuery().list().size());
   }
   
-  @Deployment(resources = {"CallActivity.testCallParallelSubProcess.bpmn20.xml", "simpleParallelSubProcess.bpmn20.xml"})
+  @Deployment(resources = {
+    "org/activiti/engine/test/bpmn/callactivity/CallActivity.testCallParallelSubProcess.bpmn20.xml", 
+    "org/activiti/engine/test/bpmn/callactivity/simpleParallelSubProcess.bpmn20.xml"})
   public void testCallParallelSubProcess() {
     runtimeService.startProcessInstanceByKey("callParallelSubProcess");
   
@@ -93,14 +97,16 @@ public class CallActivityAdvancedTest extends ProcessEngineImplTestCase {
     // Completing the first task should not end the subprocess
     taskService.complete(taskA.getId());
     assertEquals(1, taskQuery.list().size());
-    assertEquals(2, runtimeService.createExecutionQuery().list().size());
+    assertEquals(2, runtimeService.createExecutionQuery().count());
     
     // Completing the second task should end the subprocess and end the whole process instance
     taskService.complete(taskB.getId());
-    assertEquals(0, runtimeService.createExecutionQuery().list().size());
+    assertEquals(0, runtimeService.createExecutionQuery().count());
   }
   
-  @Deployment(resources = {"CallActivity.testTimerOnCallActivity.bpmn20.xml", "simpleSubProcess.bpmn20.xml"})
+  @Deployment(resources = {
+    "org/activiti/engine/test/bpmn/callactivity/CallActivity.testTimerOnCallActivity.bpmn20.xml",
+    "org/activiti/engine/test/bpmn/callactivity/simpleSubProcess.bpmn20.xml"})
   public void testTimerOnCallActivity() {
     Date startTime = ClockUtil.getCurrentTime();
     

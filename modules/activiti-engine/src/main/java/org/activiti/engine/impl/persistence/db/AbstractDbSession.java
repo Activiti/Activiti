@@ -15,7 +15,6 @@ package org.activiti.engine.impl.persistence.db;
 
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.interceptor.Session;
-import org.activiti.engine.impl.persistence.PersistentObject;
 
 
 /**
@@ -29,11 +28,4 @@ public abstract class AbstractDbSession implements Session {
     this.dbSqlSession = CommandContext.getCurrentSession(DbSqlSession.class);
   }
   
-  public void insert(PersistentObject persistentObject) {
-    dbSqlSession.insert(persistentObject);
-  }
-
-  public void delete(PersistentObject persistentObject) {
-    dbSqlSession.delete(persistentObject);
-  }
 }

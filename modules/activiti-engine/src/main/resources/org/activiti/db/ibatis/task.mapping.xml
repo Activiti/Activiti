@@ -49,10 +49,6 @@
     delete from ACT_TASK where ID_ = #{id}
   </delete>
   
-  <select id="selectTask" parameterType="string" resultMap="taskResultMap">
-   select * from ACT_TASK where ID_ = #{id}
-  </select>
-  
   <!-- TASK RESULTMAP -->
   
   <resultMap id="taskResultMap" type="org.activiti.engine.impl.persistence.task.TaskEntity">
@@ -71,6 +67,10 @@
 
   <!-- TASK SELECT -->  
 
+  <select id="selectTask" parameterType="string" resultMap="taskResultMap">
+   select * from ACT_TASK where ID_ = #{id}
+  </select>
+  
   <select id="selectCandidateTasks" parameterType="map" resultMap="taskResultMap">
     select T.* from ACT_TASK T inner join ACT_TASKINVOLVEMENT I ON T.ID_ = I.TASK_ID_
     where T.ASSIGNEE_ IS NULL

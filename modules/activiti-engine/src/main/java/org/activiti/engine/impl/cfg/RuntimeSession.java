@@ -33,8 +33,8 @@ public interface RuntimeSession {
   
   void endProcessInstance(String processInstanceId, String nonCompletionReason);
   ExecutionEntity findSubProcessInstanceBySuperExecutionId(String superExecutionId);
-  long findExecutionCountByDynamicCriteria(Object executionQuery);
-  List<ExecutionEntity> findExecutionsByDynamicCriteria(Object executionQuery);
+  long findExecutionCountByQueryCriteria(Object executionQuery);
+  List<ExecutionEntity> findExecutionsByQueryCriteria(Object executionQuery);
   List<ExecutionEntity> findChildExecutionsByParentExecutionId(String executionId);
   ExecutionEntity findExecutionById(String activityInstanceId);
   

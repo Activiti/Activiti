@@ -41,7 +41,7 @@ public class AtomicOperationTransitionDestroyScope implements AtomicOperation {
         parentScopeInstance = execution.getParent().getParent();
 
         log.fine("moving concurrent "+execution+" one scope up under "+parentScopeInstance);
-        concurrentRoot.removeExecution(execution);
+        concurrentRoot.getExecutions().remove(execution);
         parentScopeInstance.getExecutions().add(execution);
         execution.setParent(parentScopeInstance);
         execution.setActivity(activity);

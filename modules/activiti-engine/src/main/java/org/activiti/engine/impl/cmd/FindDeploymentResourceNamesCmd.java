@@ -23,11 +23,11 @@ import org.activiti.engine.impl.interceptor.CommandContext;
  * @author Joram Barrez
  */
 @SuppressWarnings("unchecked")
-public class FindDeploymentResourcesCmd implements Command<List> {
+public class FindDeploymentResourceNamesCmd implements Command<List> {
   
   protected String deploymentId;
   
-  public FindDeploymentResourcesCmd(String deploymentId) {
+  public FindDeploymentResourceNamesCmd(String deploymentId) {
     this.deploymentId = deploymentId;
   }
   

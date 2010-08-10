@@ -22,7 +22,7 @@ import org.activiti.engine.ProcessDefinition;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.impl.cmd.DeleteDeploymentCmd;
 import org.activiti.engine.impl.cmd.DeployCmd;
-import org.activiti.engine.impl.cmd.FindDeploymentResourcesCmd;
+import org.activiti.engine.impl.cmd.FindDeploymentResourceNamesCmd;
 import org.activiti.engine.impl.cmd.FindDeploymentsCmd;
 import org.activiti.engine.impl.cmd.FindProcessDefinitionCmd;
 import org.activiti.engine.impl.cmd.FindProcessDefinitionsCmd;
@@ -68,7 +68,7 @@ public class RepositoryServiceImpl extends ServiceImpl implements RepositoryServ
 
   @SuppressWarnings("unchecked")
   public List<String> findDeploymentResourceNames(String deploymentId) {
-    return commandExecutor.execute(new FindDeploymentResourcesCmd(deploymentId));
+    return commandExecutor.execute(new FindDeploymentResourceNamesCmd(deploymentId));
   }
 
   public InputStream getResourceAsStream(String deploymentId, String resourceName) {

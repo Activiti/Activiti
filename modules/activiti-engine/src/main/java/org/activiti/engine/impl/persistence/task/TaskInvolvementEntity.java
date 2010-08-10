@@ -45,16 +45,16 @@ public class TaskInvolvementEntity implements Serializable, PersistentObject {
     TaskInvolvementEntity taskInvolvementEntity = new TaskInvolvementEntity();
     CommandContext
         .getCurrent()
-        .getTaskSession()
-        .insertTaskInvolvement(taskInvolvementEntity);
+        .getDbSqlSession()
+        .insert(taskInvolvementEntity);
     return taskInvolvementEntity;
   }
   
   public void delete() {
     CommandContext
         .getCurrent()
-        .getTaskSession()
-        .deleteTaskInvolvement(this);
+        .getDbSqlSession()
+        .delete(TaskInvolvementEntity.class, id);
     
     // TODO remove this task assignment from the task
   }

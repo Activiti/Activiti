@@ -261,12 +261,11 @@ public class ExecutionEntity extends ExecutionImpl implements PersistentObject, 
 
   @SuppressWarnings("unchecked")
   @Override
-  public void end() {
-    super.end();
-
-    ensureVariablesInitialized();
+  public void remove() {
+    super.remove();
 
     // delete all the variable instances
+    ensureVariablesInitialized();
     variables.clear();
     
     // TODO add cancellation of timers
@@ -283,7 +282,7 @@ public class ExecutionEntity extends ExecutionImpl implements PersistentObject, 
     CommandContext
       .getCurrent()
       .getDbSqlSession()
-      .delete(this);
+      .delete(ExecutionEntity.class, id);
   }
 
   // variables ////////////////////////////////////////////////////////////////
@@ -309,17 +308,20 @@ public class ExecutionEntity extends ExecutionImpl implements PersistentObject, 
     return persistentState;
   }
 
-  // toString customization ///////////////////////////////////////////////////
-  
-  @Override
-  protected String getIdForToString() {
-    return id;
-  }
-  
   public int getRevisionNext() {
     return revision+1;
   }
 
+  // toString customization ///////////////////////////////////////////////////
+  
+  public String toString() {
+    if (isProcessInstance()) {
+      return "ProcessInstance["+id+"]";
+    } else {
+      return "Execution["+id+"]";
+    }
+  }
+  
   // getters and setters //////////////////////////////////////////////////////
 
   public String getProcessInstanceId() {

@@ -67,17 +67,17 @@
     where PARENT_ID_ = #{parentExecutionId}
   </select>
   
-   <select id="selectExecutionsByDynamicCriteria" parameterType="org.activiti.engine.impl.ExecutionQueryImpl" resultMap="executionResultMap">
+   <select id="selectExecutionsByQueryCriteria" parameterType="org.activiti.engine.impl.ExecutionQueryImpl" resultMap="executionResultMap">
     select *
-    <include refid="selectPExecutionsByDynamicCriteriaSql"/>
+    <include refid="selectExecutionsByQueryCriteriaSql"/>
   </select>
   
-  <select id="selectExecutionsCountByDynamicCriteria" parameterType="map" resultType="long">
+  <select id="selectExecutionCountByQueryCriteria" parameterType="map" resultType="long">
     select count(*)
-    <include refid="selectPExecutionsByDynamicCriteriaSql"/>
+    <include refid="selectExecutionsByQueryCriteriaSql"/>
   </select>
   
-  <sql id="selectPExecutionsByDynamicCriteriaSql">
+  <sql id="selectExecutionsByQueryCriteriaSql">
     from ACT_EXECUTION E
     <if test="processDefinitionKey != null">
       inner join ACT_PROCESSDEFINITION P on E.PROC_DEF_ID_ = P.ID_

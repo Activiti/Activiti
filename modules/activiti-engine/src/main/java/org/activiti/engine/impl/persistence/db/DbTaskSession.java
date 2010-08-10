@@ -38,14 +38,6 @@ public class DbTaskSession implements TaskSession, Session {
     this.dbSqlSession = CommandContext.getCurrentSession(DbSqlSession.class);
   }
 
-  public void deleteTask(String taskId) {
-    dbSqlSession.delete(TaskEntity.class, taskId);
-  }
-
-  public void insertTask(TaskEntity taskEntity) {
-    dbSqlSession.insert(taskEntity);
-  }
-
   public TaskEntity findTaskById(String id) {
     return (TaskEntity) dbSqlSession.selectOne("selectTask", id);
   }
@@ -74,15 +66,6 @@ public class DbTaskSession implements TaskSession, Session {
     return (Long) dbSqlSession.selectOne("selectTaskCountByQueryCriteria", taskQuery);
   }
   
-  public void insertTaskInvolvement(TaskInvolvementEntity taskInvolvement) {
-    dbSqlSession.insert(taskInvolvement);
-  }
-
-  public void deleteTaskInvolvement(TaskInvolvementEntity taskInvolvement) {
-    dbSqlSession.delete(TaskInvolvementEntity.class, taskInvolvement.getId());
-  }
-
-
   @SuppressWarnings("unchecked")
   public List<TaskInvolvementEntity> findTaskInvolvementsByTaskId(String taskId) {
     return dbSqlSession.selectList("selectTaskInvolvementsByTask", taskId);
@@ -101,4 +84,5 @@ public class DbTaskSession implements TaskSession, Session {
 
   public void flush() {
   }
+
 }

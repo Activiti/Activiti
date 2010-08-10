@@ -49,13 +49,13 @@ public class DbRuntimeSession implements Session, RuntimeSession {
     return (ExecutionEntity) dbSqlSession.selectOne("selectSubProcessInstanceBySuperExecutionId", superExecutionId);
   }
 
-  public long findExecutionCountByDynamicCriteria(Object executionQuery) {
-    return (Long) dbSqlSession.selectOne("selectExecutionCountByDynamicCriteria", executionQuery);
+  public long findExecutionCountByQueryCriteria(Object executionQuery) {
+    return (Long) dbSqlSession.selectOne("selectExecutionCountByQueryCriteria", executionQuery);
   }
 
   @SuppressWarnings("unchecked")
-  public List<ExecutionEntity> findExecutionsByDynamicCriteria(Object executionQuery) {
-    return dbSqlSession.selectList("selectExecutionsByDynamicCriteria", executionQuery);
+  public List<ExecutionEntity> findExecutionsByQueryCriteria(Object executionQuery) {
+    return dbSqlSession.selectList("selectExecutionsByQueryCriteria", executionQuery);
   }
 
   public ExecutionEntity findExecutionById(String executionId) {

@@ -27,9 +27,6 @@ import org.activiti.engine.impl.persistence.task.TaskInvolvementEntity;
  */
 public interface TaskSession {
 
-  void insertTask(TaskEntity taskEntity);
-  void deleteTask(String taskId);
-
   TaskEntity findTaskById(String taskId);
   List<TaskEntity> findTasksByExecutionId(String executionId);
   List<Task> findTasksByAssignee(String assignee);
@@ -39,8 +36,5 @@ public interface TaskSession {
   long findTaskCountByQueryCriteria(TaskQueryImpl taskQuery);
 
   /* TaskInvolvementEntity */
-  void deleteTaskInvolvement(TaskInvolvementEntity taskInvolvement);
-  void insertTaskInvolvement(TaskInvolvementEntity taskInvolvement);
-
   List<TaskInvolvementEntity> findTaskInvolvementsByTaskId(String taskId);
 }

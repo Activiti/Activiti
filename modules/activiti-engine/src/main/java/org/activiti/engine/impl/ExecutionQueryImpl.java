@@ -67,14 +67,14 @@ public class ExecutionQueryImpl extends AbstractQuery<Execution> implements Exec
   public long executeCount(CommandContext commandContext) {
     return commandContext
       .getRuntimeSession()
-      .findExecutionCountByDynamicCriteria(this);
+      .findExecutionCountByQueryCriteria(this);
   }
 
   @SuppressWarnings("unchecked")
   public List<Execution> executeList(CommandContext commandContext, Page page) {
     return (List) commandContext
       .getRuntimeSession()
-      .findExecutionsByDynamicCriteria(this);
+      .findExecutionsByQueryCriteria(this);
   }
   
   public String getProcessDefinitionKey() {

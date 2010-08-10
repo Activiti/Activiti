@@ -289,5 +289,6 @@ public class ProcessEngineTestCase extends PvmTestCase {
     for (ProcessEngine processEngine: processEngines.values()) {
       processEngine.close();
     }
+    processEngines.clear();
   }
 }

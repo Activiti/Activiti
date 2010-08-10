@@ -41,6 +41,7 @@ public class AtomicOperationProcessEnd implements AtomicOperation {
       execution.setEventListenerIndex(0);
       execution.setEventName(null);
       execution.setEventSource(null);
+      execution.remove();
     }
   }
 

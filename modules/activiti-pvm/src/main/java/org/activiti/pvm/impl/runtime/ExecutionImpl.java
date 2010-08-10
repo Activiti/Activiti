@@ -251,7 +251,7 @@ public class ExecutionImpl implements
           end();
         }
       } else {
-        this.parent.removeExecution(this);
+        remove();
       }
       
     } else { // this execution is a process instance
@@ -266,6 +266,12 @@ public class ExecutionImpl implements
       }
       
       performOperation(AtomicOperation.PROCESS_END);
+    }
+  }
+
+  protected void remove() {
+    if (parent!=null) {
+      parent.removeExecution(this);
     }
   }
   
@@ -396,7 +402,6 @@ public class ExecutionImpl implements
     parent.setActivity(getActivity());
     parent.setTransition(getTransition());
     parent.setActive(true);
-    parent.removeExecution(this);
     end();
     return parent;
   }
@@ -485,12 +490,12 @@ public class ExecutionImpl implements
         // Some recyclable executions are inactivated (joined executions)
         // Others are already ended (end activities)
         if (!prunedExecution.isEnded()) {
-          log.info("pruning execution " + prunedExecution);
-          prunedExecution.getParent().removeExecution(prunedExecution);
+          log.fine("pruning execution " + prunedExecution);
+          prunedExecution.remove();
         }
       }
 
-      log.info("activating the concurrent root execution as the single path of execution going forward");
+      log.fine("activating the concurrent root "+concurrentRoot+" as the single path of execution going forward");
       concurrentRoot.setActive(true);
       concurrentRoot.setActivity(activity);
       concurrentRoot.setConcurrent(false);
@@ -625,10 +630,6 @@ public class ExecutionImpl implements
     } else {
       return "Execution["+System.identityHashCode(this)+"]";
     }
-  }
-  
-  protected String getIdForToString() {
-    return Integer.toString(System.identityHashCode(this));
   }
   
   // customized getters and setters ///////////////////////////////////////////

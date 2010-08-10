@@ -73,8 +73,8 @@ public class TaskEntity implements Task, Serializable, PersistentObject {
     TaskEntity task = create();
     CommandContext
         .getCurrent()
-        .getTaskSession()
-        .insertTask(task);
+        .getDbSqlSession()
+        .insert(task);
     return task;
   }
   
@@ -100,8 +100,8 @@ public class TaskEntity implements Task, Serializable, PersistentObject {
     
     CommandContext
         .getCurrent()
-        .getTaskSession()
-        .deleteTask(id);
+        .getDbSqlSession()
+        .delete(TaskEntity.class, id);
   }
 
   public void update(TaskEntity task) {

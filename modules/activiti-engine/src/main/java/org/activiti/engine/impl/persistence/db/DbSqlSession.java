@@ -69,20 +69,19 @@ public class DbSqlSession implements Session {
   
   // delete ///////////////////////////////////////////////////////////////////
   
-  public void delete(PersistentObject persistentObject) {
-    deletedObjects.add(new DeleteById(persistentObject.getClass(), persistentObject.getId()));
-  }
-  
-  public void delete(Class<?> clazz, String id) {
-    for (PersistentObject insertedObject: insertedObjects) {
-      if ( (clazz==insertedObject.getClass())
-           && (id.equals(insertedObject.getId()))
-         ) {
-        insertedObjects.remove(insertedObject);
-        return;
+  public void delete(Class<?> persistentObjectClass, String persistentObjectId) {
+    for (DeleteOperation deleteOperation: deletedObjects) {
+      if (deleteOperation instanceof DeleteById) {
+        DeleteById deleteById = (DeleteById) deleteOperation;
+        if ( persistentObjectClass.equals(deleteById.persistenceObjectClass)
+             && persistentObjectId.equals(deleteById.persistentObjectId)
+           ) {
+          // skip this delete
+          return;
+        }
       }
     }
-    deletedObjects.add(new DeleteById(clazz, id));
+    deletedObjects.add(new DeleteById(persistentObjectClass, persistentObjectId));
   }
   
   public interface DeleteOperation {
@@ -102,11 +101,11 @@ public class DbSqlSession implements Session {
       if (deleteStatement==null) {
         throw new ActivitiException("no delete statement for "+persistenceObjectClass+" in the ibatis mapping files");
       }
-      log.fine("deleting: "+persistenceObjectClass+"["+persistentObjectId+"]");
+      log.fine("deleting: "+ClassNameUtil.getClassNameWithoutPackage(persistenceObjectClass)+"["+persistentObjectId+"]");
       sqlSession.delete(deleteStatement, persistentObjectId);
     }
     public String toString() {
-      return "delete "+persistenceObjectClass.getName()+"["+persistentObjectId+"]";
+      return "delete "+ClassNameUtil.getClassNameWithoutPackage(persistenceObjectClass)+"["+persistentObjectId+"]";
     }
   }
   
