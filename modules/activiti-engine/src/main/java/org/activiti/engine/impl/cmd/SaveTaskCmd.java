@@ -13,13 +13,14 @@
 package org.activiti.engine.impl.cmd;
 
 import org.activiti.engine.Task;
+import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.task.TaskEntity;
 
 /**
  * @author Joram Barrez
  */
-public class SaveTaskCmd extends CmdVoid {
+public class SaveTaskCmd implements Command<Void> {
 	
 	protected TaskEntity task;
 	
@@ -27,7 +28,7 @@ public class SaveTaskCmd extends CmdVoid {
 		this.task = (TaskEntity) task;
 	}
 	
-	public void executeVoid(CommandContext commandContext) {
+	public Void execute(CommandContext commandContext) {
     if (task.getRevision()==0) {
       commandContext
         .getDbSqlSession()
@@ -38,8 +39,9 @@ public class SaveTaskCmd extends CmdVoid {
         .findTaskById(task.getId());
       
       persistentTask.update(task);
-      
     }
+
+    return null;
 	}
 
 }

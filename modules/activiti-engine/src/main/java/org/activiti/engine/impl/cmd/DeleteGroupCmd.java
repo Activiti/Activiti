@@ -12,13 +12,14 @@
  */
 package org.activiti.engine.impl.cmd;
 
+import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 
 
 /**
  * @author Tom Baeyens
  */
-public class DeleteGroupCmd extends CmdVoid {
+public class DeleteGroupCmd implements Command<Void>  {
 
   String groupId;
   
@@ -26,10 +27,12 @@ public class DeleteGroupCmd extends CmdVoid {
     this.groupId = groupId;
   }
   
-  public void executeVoid(CommandContext commandContext) {
+  public Void execute(CommandContext commandContext) {
     commandContext
       .getIdentitySession()
       .deleteGroup(groupId);
+    
+    return null;
   }
 
 }

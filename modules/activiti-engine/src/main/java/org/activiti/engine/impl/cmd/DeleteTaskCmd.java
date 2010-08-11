@@ -14,6 +14,7 @@ package org.activiti.engine.impl.cmd;
 
 import java.util.Collection;
 
+import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.task.TaskEntity;
 
@@ -21,7 +22,7 @@ import org.activiti.engine.impl.persistence.task.TaskEntity;
 /**
  * @author Joram Barrez
  */
-public class DeleteTaskCmd extends CmdVoid {
+public class DeleteTaskCmd implements Command<Void> {
   
   protected String taskId;
   
@@ -35,7 +36,7 @@ public class DeleteTaskCmd extends CmdVoid {
     this.taskIds = taskIds;
   }
 
-  public void executeVoid(CommandContext commandContext) {
+  public Void execute(CommandContext commandContext) {
     if (taskId != null) {
       commandContext
         .getDbSqlSession()
@@ -49,5 +50,7 @@ public class DeleteTaskCmd extends CmdVoid {
           .delete(TaskEntity.class, taskId);
       }
     }
+    
+    return null;
   }
 }

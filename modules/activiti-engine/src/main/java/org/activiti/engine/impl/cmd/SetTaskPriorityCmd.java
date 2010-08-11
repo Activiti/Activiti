@@ -13,6 +13,7 @@
 package org.activiti.engine.impl.cmd;
 
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.task.TaskEntity;
 
@@ -20,7 +21,7 @@ import org.activiti.engine.impl.persistence.task.TaskEntity;
 /**
  * @author Joram Barrez
  */
-public class SetTaskPriorityCmd extends CmdVoid {
+public class SetTaskPriorityCmd implements Command<Void> {
   
   protected String taskId;
   
@@ -31,7 +32,7 @@ public class SetTaskPriorityCmd extends CmdVoid {
     this.priority = priority;
   }
   
-  public void executeVoid(CommandContext commandContext) {
+  public Void execute(CommandContext commandContext) {
     TaskEntity task = commandContext
       .getTaskSession()
       .findTaskById(taskId);
@@ -41,6 +42,8 @@ public class SetTaskPriorityCmd extends CmdVoid {
     }
     
     task.setPriority(priority);
+    
+    return null;
   }
 
 }

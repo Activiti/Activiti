@@ -12,12 +12,13 @@
  */
 package org.activiti.engine.impl.cmd;
 
+import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 
 /**
  * @author Joram Barrez
  */
-public class DeleteDeploymentCmd extends CmdVoid {
+public class DeleteDeploymentCmd implements Command<Void> {
 
   protected String deploymentId;
   protected boolean cascade;
@@ -27,9 +28,11 @@ public class DeleteDeploymentCmd extends CmdVoid {
     this.cascade = cascade;
   }
 
-  public void executeVoid(CommandContext commandContext) {
+  public Void execute(CommandContext commandContext) {
     commandContext
       .getRepositorySession()
       .deleteDeployment(deploymentId, cascade);
+    
+    return null;
   }
 }

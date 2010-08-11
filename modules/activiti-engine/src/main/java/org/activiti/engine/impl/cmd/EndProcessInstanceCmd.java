@@ -12,13 +12,14 @@
  */
 package org.activiti.engine.impl.cmd;
 
+import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 
 
 /**
  * @author Joram Barrez
  */
-public class EndProcessInstanceCmd extends CmdVoid {
+public class EndProcessInstanceCmd implements Command<Void> {
   
   protected String processInstanceId;
   protected String nonCompletionReason;
@@ -28,10 +29,11 @@ public class EndProcessInstanceCmd extends CmdVoid {
     this.nonCompletionReason = nonCompletionReason;
   }
 
-  public void executeVoid(CommandContext commandContext) { 
+  public Void execute(CommandContext commandContext) { 
     commandContext
       .getRuntimeSession()
       .endProcessInstance(processInstanceId, nonCompletionReason);
+    return null;
   }
 
 }

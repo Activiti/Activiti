@@ -13,13 +13,14 @@
 package org.activiti.engine.impl.cmd;
 
 import org.activiti.engine.impl.cfg.IdentitySession;
+import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 
 
 /**
  * @author Tom Baeyens
  */
-public class DeleteMembershipCmd extends CmdVoid {
+public class DeleteMembershipCmd implements Command<Void> {
 
   String userId;
   String groupId;
@@ -29,9 +30,11 @@ public class DeleteMembershipCmd extends CmdVoid {
     this.groupId = groupId;
   }
   
-  public void executeVoid(CommandContext commandContext) {
+  public Void execute(CommandContext commandContext) {
     IdentitySession identitySession = commandContext.getIdentitySession();
-    identitySession.deleteMembership(userId, groupId);    
+    identitySession.deleteMembership(userId, groupId);
+    
+    return null;    
   }
 
 }

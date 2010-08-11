@@ -13,6 +13,7 @@
 package org.activiti.engine.impl.cmd;
 
 import org.activiti.engine.identity.User;
+import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.identity.UserEntity;
 
@@ -20,7 +21,7 @@ import org.activiti.engine.impl.persistence.identity.UserEntity;
 /**
  * @author Joram Barrez
  */
-public class SaveUserCmd extends CmdVoid {
+public class SaveUserCmd implements Command<Void> {
   
   protected UserEntity user;
   
@@ -28,7 +29,7 @@ public class SaveUserCmd extends CmdVoid {
     this.user = (UserEntity) user;
   }
   
-  public void executeVoid(CommandContext commandContext) {
+  public Void execute(CommandContext commandContext) {
     if (user.getRevision()==0) {
       commandContext
         .getIdentitySession()
@@ -40,5 +41,7 @@ public class SaveUserCmd extends CmdVoid {
       
       persistentUser.update(user);
     }
+    
+    return null;
   }
 }

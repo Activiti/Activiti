@@ -15,6 +15,7 @@ package org.activiti.engine.impl.cmd;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.cfg.IdentitySession;
 import org.activiti.engine.impl.cfg.TaskSession;
+import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.task.TaskEntity;
 
@@ -22,7 +23,7 @@ import org.activiti.engine.impl.persistence.task.TaskEntity;
 /**
  * @author Joram Barrez
  */
-public class ClaimTaskCmd extends CmdVoid {
+public class ClaimTaskCmd implements Command<Void> {
   
   protected String taskId;
   
@@ -33,7 +34,7 @@ public class ClaimTaskCmd extends CmdVoid {
     this.userId = userId;
   }
   
-  public void executeVoid(CommandContext commandContext) {
+  public Void execute(CommandContext commandContext) {
     TaskSession taskSession = commandContext.getTaskSession();
     IdentitySession identitySession = commandContext.getIdentitySession();
     TaskEntity task = taskSession.findTaskById(taskId);
@@ -52,7 +53,8 @@ public class ClaimTaskCmd extends CmdVoid {
                 + userId + " unknown.");
       }
     }
-    
+
+    return null;
   }
 
 }
