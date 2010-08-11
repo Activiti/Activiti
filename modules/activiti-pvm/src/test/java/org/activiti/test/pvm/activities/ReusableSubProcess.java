@@ -15,8 +15,9 @@ package org.activiti.test.pvm.activities;
 
 import java.util.List;
 
-import org.activiti.pvm.activity.ActivityBehavior;
 import org.activiti.pvm.activity.ActivityExecution;
+import org.activiti.pvm.activity.SubProcessActivityBehavior;
+import org.activiti.pvm.delegate.DelegateExecution;
 import org.activiti.pvm.process.PvmProcessDefinition;
 import org.activiti.pvm.process.PvmTransition;
 import org.activiti.pvm.runtime.PvmProcessInstance;
@@ -25,10 +26,15 @@ import org.activiti.pvm.runtime.PvmProcessInstance;
 /**
  * @author Tom Baeyens
  */
-public class ReusableSubProcess implements ActivityBehavior {
+public class ReusableSubProcess implements SubProcessActivityBehavior {
+
+  PvmProcessDefinition processDefinition;
+  
+  public ReusableSubProcess(PvmProcessDefinition processDefinition) {
+    this.processDefinition = processDefinition;
+  }
 
   public void execute(ActivityExecution execution) throws Exception {
-    PvmProcessDefinition processDefinition = null;
     PvmProcessInstance subProcessInstance = execution.createSubProcessInstance(processDefinition);
     
     // TODO set variables
@@ -36,15 +42,12 @@ public class ReusableSubProcess implements ActivityBehavior {
     subProcessInstance.start();
   }
 
-  public void subProcessEnded(ActivityExecution execution) throws Exception {
-    // extract information from the subprocess and inject it into the superprocess
-//    for (variableDeclarations) {
-//      subProcessInstance.setVariable(null, null);
-//    }
-    
-    // take default transition
+  public void completing(DelegateExecution execution, DelegateExecution subProcessInstance) throws Exception {
+    // TODO extract information from the subprocess and inject it into the superprocess
+  }
+
+  public void completed(ActivityExecution execution) throws Exception {
     List<PvmTransition> outgoingTransitions = execution.getActivity().getOutgoingTransitions();
     execution.takeAll(outgoingTransitions, null);
   }
-
 }

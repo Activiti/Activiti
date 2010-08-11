@@ -15,6 +15,7 @@ package org.activiti.pvm.impl.runtime;
 
 import java.util.List;
 
+import org.activiti.pvm.activity.SubProcessActivityBehavior;
 import org.activiti.pvm.event.EventListener;
 import org.activiti.pvm.impl.process.ProcessDefinitionImpl;
 
@@ -42,6 +43,17 @@ public class AtomicOperationProcessEnd implements AtomicOperation {
       execution.setEventName(null);
       execution.setEventSource(null);
       execution.remove();
+
+      ExecutionImpl superExecution = execution.getSuperExecution();
+      if (superExecution!=null) {
+        superExecution.setSubProcessInstance(null);
+        SubProcessActivityBehavior subProcessActivityBehavior = (SubProcessActivityBehavior) superExecution.getActivity().getActivityBehavior();
+        try {
+          subProcessActivityBehavior.completed(superExecution);
+        } catch (Exception e) {
+          e.printStackTrace();
+        }
+      }
     }
   }
 

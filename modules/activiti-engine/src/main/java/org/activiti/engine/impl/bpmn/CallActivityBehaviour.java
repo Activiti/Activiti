@@ -15,6 +15,8 @@ package org.activiti.engine.impl.bpmn;
 
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.pvm.activity.ActivityExecution;
+import org.activiti.pvm.activity.SubProcessActivityBehavior;
+import org.activiti.pvm.delegate.DelegateExecution;
 import org.activiti.pvm.impl.process.ProcessDefinitionImpl;
 import org.activiti.pvm.runtime.PvmProcessInstance;
 
@@ -25,7 +27,7 @@ import org.activiti.pvm.runtime.PvmProcessInstance;
  * 
  * @author Joram Barrez
  */
-public class CallActivityBehaviour extends AbstractBpmnActivity {
+public class CallActivityBehaviour extends AbstractBpmnActivity implements SubProcessActivityBehavior {
   
   protected String processDefinitonKey;
   
@@ -44,7 +46,12 @@ public class CallActivityBehaviour extends AbstractBpmnActivity {
     processInstance.start();
   }
   
-  public void signal(ActivityExecution execution, String signalEvent, Object signalData) throws Exception {
+  public void completing(DelegateExecution execution, DelegateExecution subProcessInstance) throws Exception {
+    // only data.  no control flow available on this execution.
+  }
+
+  public void completed(ActivityExecution execution) throws Exception {
+    // only control flow.  no sub process instance data available
     leave(execution);
   }
 }

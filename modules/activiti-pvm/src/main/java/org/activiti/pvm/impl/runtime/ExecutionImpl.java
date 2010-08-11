@@ -24,6 +24,7 @@ import org.activiti.pvm.PvmException;
 import org.activiti.pvm.activity.ActivityBehavior;
 import org.activiti.pvm.activity.ActivityExecution;
 import org.activiti.pvm.activity.CompositeActivityBehavior;
+import org.activiti.pvm.activity.SubProcessActivityBehavior;
 import org.activiti.pvm.event.EventListenerExecution;
 import org.activiti.pvm.impl.process.ActivityImpl;
 import org.activiti.pvm.impl.process.ProcessDefinitionImpl;
@@ -259,10 +260,12 @@ public class ExecutionImpl implements
       // If there is a super execution
       ensureSuperExecutionInitialized();
       if (superExecution != null) {
-        ExecutionImpl superExecutionCopy = superExecution; // local copy, since we need to set it to null and still call event() on it
-        superExecution.setSubProcessInstance(null);
-        setSuperExecution(null);
-        superExecutionCopy.signal("continue process", null);
+        SubProcessActivityBehavior subProcessActivityBehavior = (SubProcessActivityBehavior) superExecution.getActivity().getActivityBehavior();
+        try {
+          subProcessActivityBehavior.completing(this, superExecution);
+        } catch (Exception e) {
+          e.printStackTrace();
+        }
       }
       
       performOperation(AtomicOperation.PROCESS_END);
@@ -465,7 +468,7 @@ public class ExecutionImpl implements
   @SuppressWarnings("unchecked")
   public void takeAll(List<PvmTransition> transitions, List<ActivityExecution> recyclableExecutions) {
     transitions = new ArrayList<PvmTransition>(transitions);
-    recyclableExecutions = new ArrayList<ActivityExecution>(recyclableExecutions);
+    recyclableExecutions = (recyclableExecutions!=null ? new ArrayList<ActivityExecution>(recyclableExecutions) : new ArrayList<ActivityExecution>());
     
     ExecutionImpl concurrentRoot = (isConcurrent() ? getParent() : this);
     List<ExecutionImpl> concurrentActiveExecutions = new ArrayList<ExecutionImpl>();

@@ -103,7 +103,7 @@
     select distinct(T.*)
     <include refid="selectTaskByQueryCriteriaSql"/>
     <if test="orderBy != null">
-      order by #{orderBy}
+      order by ${orderBy}
     </if>
   </select>
 
