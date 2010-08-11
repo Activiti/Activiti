@@ -15,24 +15,32 @@ package org.activiti.pvm.impl.runtime;
 
 import java.util.List;
 
-import org.activiti.pvm.activity.SubProcessActivityBehavior;
 import org.activiti.pvm.event.EventListener;
-import org.activiti.pvm.impl.process.ProcessDefinitionImpl;
+import org.activiti.pvm.impl.process.ActivityImpl;
+import org.activiti.pvm.impl.process.ScopeImpl;
 
 
 /**
  * @author Tom Baeyens
  */
-public class AtomicOperationProcessEnd implements AtomicOperation {
+public class AtomicOperationDeleteCascadeFireActivityEnd implements AtomicOperation {
 
   public void execute(ExecutionImpl execution) {
-    ProcessDefinitionImpl processDefinition = execution.getProcessDefinition();
-    List<EventListener> eventListeners = processDefinition.getEventListeners(EventListener.EVENTNAME_END);
+    ActivityImpl activity = execution.getActivity();
+    ScopeImpl scope = null;
+
+    if (activity!=null) {
+      scope = activity;
+    } else {
+      scope = execution.getProcessDefinition();
+    }
+    
+    List<EventListener> eventListeners = scope.getEventListeners(EventListener.EVENTNAME_END);
     int eventListenerIndex = execution.getEventListenerIndex();
     
     if (eventListeners.size()>eventListenerIndex) {
       execution.setEventName(EventListener.EVENTNAME_END);
-      execution.setEventSource(processDefinition);
+      execution.setEventSource(scope);
       EventListener listener = eventListeners.get(eventListenerIndex);
       listener.notify(execution);
       execution.setEventListenerIndex(eventListenerIndex+1);
@@ -42,16 +50,25 @@ public class AtomicOperationProcessEnd implements AtomicOperation {
       execution.setEventListenerIndex(0);
       execution.setEventName(null);
       execution.setEventSource(null);
-      execution.remove();
+      
+      if ( (execution.isScope())
+           && (activity!=null)
+           && (!activity.isScope())
+         )  {
+        execution.setActivity(activity.getParentActivity());
+        execution.performOperation(AtomicOperation.DELETE_CASCADE_FIRE_ACTIVITY_END);
+        
+      } else {
+        ExecutionImpl parent = execution.getParent();
+        
+        if (execution.isScope()) {
+          execution.destroyScope();
+        }
 
-      ExecutionImpl superExecution = execution.getSuperExecution();
-      if (superExecution!=null) {
-        superExecution.setSubProcessInstance(null);
-        SubProcessActivityBehavior subProcessActivityBehavior = (SubProcessActivityBehavior) superExecution.getActivity().getActivityBehavior();
-        try {
-          subProcessActivityBehavior.completed(superExecution);
-        } catch (Exception e) {
-          e.printStackTrace();
+        execution.remove();
+        
+        if (parent!=null) {
+          parent.performOperation(AtomicOperation.DELETE_CASCADE);
         }
       }
     }

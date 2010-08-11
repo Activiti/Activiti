@@ -55,12 +55,4 @@ public class AtomicOperationTransitionNotifyListenerStart implements AtomicOpera
       }
     }
   }
-
-  public boolean isAsync() {
-    return false;
-  }
-
-  public String toString() {
-    return "TransitionNotifyListenerStart";
-  }
 }

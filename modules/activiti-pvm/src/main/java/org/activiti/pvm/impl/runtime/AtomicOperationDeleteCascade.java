@@ -10,31 +10,32 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.activiti.pvm.impl.runtime;
+
+import java.util.List;
 
 
 /**
  * @author Tom Baeyens
  */
-public class AtomicOperationTransferOperationLoop implements AtomicOperation {
-
-  ExecutionImpl otherExecution;
-  AtomicOperation nextOperation;
-  
-  public AtomicOperationTransferOperationLoop(ExecutionImpl otherExecution, AtomicOperation nextOperation) {
-    this.otherExecution = otherExecution;
-    this.nextOperation = nextOperation;
-  }
+public class AtomicOperationDeleteCascade implements AtomicOperation {
 
   public void execute(ExecutionImpl execution) {
-    otherExecution.performOperation(nextOperation);
+    ExecutionImpl firstLeaf = findFirstLeaf(execution);
+    
+    if (firstLeaf.getSubProcessInstance()!=null) {
+      firstLeaf.getSubProcessInstance().deleteCascade(execution.getDeleteReason());
+    }
+
+    firstLeaf.performOperation(AtomicOperation.DELETE_CASCADE_FIRE_ACTIVITY_END);
   }
 
-  public boolean isAsync() {
-    return false;
-  }
-  
-  public String toString() {
-    return "TransferOperation["+nextOperation+"|"+otherExecution+"]";
+  protected ExecutionImpl findFirstLeaf(ExecutionImpl execution) {
+    List<ExecutionImpl> executions = execution.getExecutions();
+    if (executions.size()>0) {
+      return findFirstLeaf(executions.get(0));
+    }
+    return execution;
   }
 }

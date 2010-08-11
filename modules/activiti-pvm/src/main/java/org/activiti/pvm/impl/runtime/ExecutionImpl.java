@@ -99,8 +99,9 @@ public class ExecutionImpl implements
   protected String eventName;
   protected PvmProcessElement eventSource;
   protected int eventListenerIndex = 0;
-  
-  // actomic operations ///////////////////////////////////////////////////////
+  protected String deleteReason;
+
+  // atomic operations ////////////////////////////////////////////////////////
 
   /** next operation.  process execution is in fact runtime interpretation of the process model.
    * each operation is a logical unit of interpretation of the process.  so sequentially processing 
@@ -109,7 +110,7 @@ public class ExecutionImpl implements
    * @see #performOperation(AtomicOperation) */
   protected AtomicOperation nextOperation;
   protected boolean isOperating = false;
-  
+
   /* Default constructor for ibatis/jpa/etc. */
   protected ExecutionImpl() {
   }
@@ -206,6 +207,11 @@ public class ExecutionImpl implements
     subProcessInstance.setProcessInstance(subProcessInstance);
 
     return subProcessInstance;
+  }
+  
+  public void deleteCascade(String deleteReason) {
+    this.deleteReason = deleteReason;
+    performOperation(AtomicOperation.DELETE_CASCADE);
   }
   
   /** removes an execution. if there are nested executions, those will be ended recursively.
@@ -547,13 +553,6 @@ public class ExecutionImpl implements
 
   
   protected void performOperation(AtomicOperation executionOperation) {
-    if (executionOperation.isAsync()) {
-      throw new UnsupportedOperationException("async continuations not yet supported");
-    } else {
-      performOperationSync(executionOperation);
-    }
-  }
-  protected void performOperationSync(AtomicOperation executionOperation) {
     this.nextOperation = executionOperation;
     if (!isOperating) {
       isOperating = true;
@@ -695,5 +694,11 @@ public class ExecutionImpl implements
   }
   public void setEventSource(PvmProcessElement eventSource) {
     this.eventSource = eventSource;
+  }
+  public String getDeleteReason() {
+    return deleteReason;
+  }
+  public void setDeleteReason(String deleteReason) {
+    this.deleteReason = deleteReason;
   }
 }

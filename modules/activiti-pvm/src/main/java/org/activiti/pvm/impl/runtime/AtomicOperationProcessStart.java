@@ -44,9 +44,4 @@ public class AtomicOperationProcessStart implements AtomicOperation {
       execution.performOperation(EXECUTE_CURRENT_ACTIVITY);
     }
   }
-
-  public boolean isAsync() {
-    return false;
-  }
-
 }

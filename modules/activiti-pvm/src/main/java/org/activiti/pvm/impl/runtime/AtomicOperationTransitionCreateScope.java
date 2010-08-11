@@ -42,12 +42,4 @@ public class AtomicOperationTransitionCreateScope implements AtomicOperation {
     }
     propagatingExecution.performOperation(AtomicOperation.TRANSITION_NOTIFY_LISTENER_START);
   }
-
-  public boolean isAsync() {
-    return false;
-  }
-  
-  public String toString() {
-    return "TransitionCreateScope";
-  }
 }

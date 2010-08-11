@@ -27,8 +27,9 @@ public interface AtomicOperation {
   AtomicOperation TRANSITION_NOTIFY_LISTENER_TAKE = new AtomicOperationTransitionNotifyListenerTake();
   AtomicOperation TRANSITION_CREATE_SCOPE = new AtomicOperationTransitionCreateScope();
   AtomicOperation TRANSITION_NOTIFY_LISTENER_START = new AtomicOperationTransitionNotifyListenerStart();
-  
-  void execute(ExecutionImpl execution);
 
-  boolean isAsync();
+  AtomicOperation DELETE_CASCADE = new AtomicOperationDeleteCascade();
+  AtomicOperation DELETE_CASCADE_FIRE_ACTIVITY_END = new AtomicOperationDeleteCascadeFireActivityEnd();
+
+  void execute(ExecutionImpl execution);
 }

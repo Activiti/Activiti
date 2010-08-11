@@ -19,20 +19,20 @@ import org.activiti.engine.impl.interceptor.CommandContext;
 /**
  * @author Joram Barrez
  */
-public class EndProcessInstanceCmd implements Command<Void> {
+public class DeleteProcessInstanceCmd implements Command<Void> {
   
   protected String processInstanceId;
-  protected String nonCompletionReason;
+  protected String deleteReason;
 
-  public EndProcessInstanceCmd(String processInstanceId, String nonCompletionReason) {
+  public DeleteProcessInstanceCmd(String processInstanceId, String deleteReason) {
     this.processInstanceId = processInstanceId;
-    this.nonCompletionReason = nonCompletionReason;
+    this.deleteReason = deleteReason;
   }
 
   public Void execute(CommandContext commandContext) { 
     commandContext
       .getRuntimeSession()
-      .endProcessInstance(processInstanceId, nonCompletionReason);
+      .deleteProcessInstance(processInstanceId, deleteReason);
     return null;
   }
 

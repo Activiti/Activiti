@@ -25,4 +25,5 @@ public interface EventListenerExecution extends DelegateExecution {
 
   PvmProcessElement getEventSource();
 
+  String getDeleteReason();
 }

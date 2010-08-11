@@ -44,12 +44,4 @@ public class AtomicOperationExecuteCurrentActivity implements AtomicOperation {
       throw new PvmException("couldn't start activity '"+activity.getId()+"': "+e.getMessage(), e);
     }
   }
-
-  public boolean isAsync() {
-    return false;
-  }
-  
-  public String toString() {
-    return "AtomicOperationExecuteCurrentActivity";
-  }
 }

@@ -64,12 +64,4 @@ public class AtomicOperationTransitionNotifyListenerTake implements AtomicOperat
     }
     return nextScope;
   }
-
-  public boolean isAsync() {
-    return false;
-  }
-
-  public String toString() {
-    return "TransitionNotifyListenerTake";
-  }
 }

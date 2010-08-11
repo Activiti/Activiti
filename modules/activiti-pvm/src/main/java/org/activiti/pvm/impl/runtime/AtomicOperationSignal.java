@@ -30,10 +30,6 @@ public class AtomicOperationSignal implements AtomicOperation {
     this.signalData = signalData;
   }
 
-  public boolean isAsync() {
-    return false;
-  }
-
   public void execute(ExecutionImpl execution) {
     ActivityImpl activity = execution.getActivity();
     SignallableActivityBehavior activityBehavior = (SignallableActivityBehavior) activity.getActivityBehavior();
@@ -44,9 +40,5 @@ public class AtomicOperationSignal implements AtomicOperation {
     } catch (Exception e) {
       throw new PvmException("couldn't process signal '"+signalName+"' on activity '"+activity.getId()+"': "+e.getMessage(), e);
     }
-  }
-  
-  public String toString() {
-    return "Signal["+signalName+"]";
   }
 }

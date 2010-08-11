@@ -95,12 +95,4 @@ public class AtomicOperationTransitionDestroyScope implements AtomicOperation {
   protected boolean transitionLeavesNextOuterScope(ScopeImpl nextScopeElement, ActivityImpl destination) {
     return !nextScopeElement.contains(destination);
   }
-
-  public boolean isAsync() {
-    return false;
-  }
-  
-  public String toString() {
-    return "TransitionDestroyScope";
-  }
 }

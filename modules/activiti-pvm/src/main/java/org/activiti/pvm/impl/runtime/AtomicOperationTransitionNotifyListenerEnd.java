@@ -43,12 +43,4 @@ public class AtomicOperationTransitionNotifyListenerEnd implements AtomicOperati
       execution.performOperation(TRANSITION_DESTROY_SCOPE);
     }
   }
-
-  public boolean isAsync() {
-    return false;
-  }
-  
-  public String toString() {
-    return "TransitionNotifyListenerEnd";
-  }
 }
