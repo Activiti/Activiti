@@ -35,7 +35,7 @@ public class ProcessDefinitionEntity extends ProcessDefinitionImpl implements Pr
   }
 
   public ExecutionEntity createProcessInstance() {
-    return new ExecutionEntity(this);
+    return ExecutionEntity.createProcessInstance(this);
   }
   
   public String toString() {

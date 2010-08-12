@@ -12,34 +12,41 @@
  */
 package org.activiti.pvm.impl.runtime;
 
+import java.util.logging.Logger;
+
 import org.activiti.pvm.impl.process.ActivityImpl;
-import org.activiti.pvm.impl.process.ScopeImpl;
-import org.activiti.pvm.process.PvmActivity;
 
 
 /**
  * @author Tom Baeyens
  */
 public class AtomicOperationTransitionCreateScope implements AtomicOperation {
+  
+  private static Logger log = Logger.getLogger(AtomicOperationTransitionCreateScope.class.getName());
 
   public void execute(ExecutionImpl execution) {
     ExecutionImpl propagatingExecution = null;
     ActivityImpl activity = execution.getActivity();
     if (activity.isScope()) {
-      propagatingExecution = (ExecutionImpl) execution.createScope();
-
-      // set the pointer of the scope-execution to its scope: the activity 
-      // if it is an activity or null if it is the process definition
-      ScopeImpl parentScope = activity.getParent();
-      if (parentScope instanceof PvmActivity) {
-        execution.setActivity((ActivityImpl) parentScope);
+      if (execution.isScope()) {
+        propagatingExecution = (ExecutionImpl) execution.createExecution();
+        propagatingExecution.setActivity(activity);
+        propagatingExecution.setTransition(execution.getTransition());
+        execution.setTransition(null);
+        execution.setActive(false);
+        log.fine("create scope: parent scope "+execution+" continues as scoped execution "+propagatingExecution);
       } else {
-        execution.setActivity(null);
+        log.fine("create scope: concurrent, non scope execution "+execution+" continues as scoped execution");
+        propagatingExecution = execution;
       }
+      
+      propagatingExecution.setScope(activity);
+      propagatingExecution.initialize();
 
     } else {
       propagatingExecution = execution;
     }
+
     propagatingExecution.performOperation(AtomicOperation.TRANSITION_NOTIFY_LISTENER_START);
   }
 }

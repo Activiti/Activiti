@@ -165,10 +165,6 @@ public class PvmEventTest extends PvmTestCase {
     PvmProcessInstance processInstance = processDefinition.createProcessInstance(); 
     processInstance.start();
 
-    for (String event: eventCollector.events) {
-      System.err.println(event);
-    }
-    
     List<String> expectedEvents = new ArrayList<String>();
     expectedEvents.add("end on Activity(start)");
     expectedEvents.add("start on Activity(embeddedsubprocess)");

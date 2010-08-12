@@ -15,6 +15,7 @@ package org.activiti.pvm.test;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
 import org.activiti.pvm.event.EventListener;
 import org.activiti.pvm.event.EventListenerExecution;
@@ -25,9 +26,22 @@ import org.activiti.pvm.event.EventListenerExecution;
  */
 public class EventCollector implements EventListener {
   
+  private static Logger log = Logger.getLogger(EventCollector.class.getName());
+  
   public List<String> events = new ArrayList<String>(); 
 
   public void notify(EventListenerExecution execution) {
+    log.fine("collecting event: "+execution.getEventName()+" on "+execution.getEventSource());
     events.add(execution.getEventName()+" on "+execution.getEventSource());
+  }
+  
+  public String toString() {
+    StringBuilder text = new StringBuilder();
+    for (String event: events) {
+      text.append(event);
+      text.append("\n");
+    }
+    return text.toString();
+
   }
 }

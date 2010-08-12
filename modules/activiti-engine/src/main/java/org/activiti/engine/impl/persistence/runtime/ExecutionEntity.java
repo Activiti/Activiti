@@ -60,6 +60,9 @@ public class ExecutionEntity extends ExecutionImpl implements PersistentObject, 
    * @see #getActivity()
    */
   protected String activityId;
+  
+  /** used to persist the scope field.  value of null indicates the process definition. */
+  protected String scopeActivityId;
 
   /**
    * persisted reference to the process instance.
@@ -84,7 +87,6 @@ public class ExecutionEntity extends ExecutionImpl implements PersistentObject, 
    */
   protected String superExecutionId;
   
-  protected boolean isNew = false;
   protected boolean isExecutionsInitialized = false;
 
   protected ELContext cachedElContext;
@@ -92,28 +94,27 @@ public class ExecutionEntity extends ExecutionImpl implements PersistentObject, 
   ExecutionEntity() {
   }
 
-  public ExecutionEntity(ProcessDefinitionEntity processDefinition) {
-    super(processDefinition);
-    this.isNew = true;
-    this.executions = new ArrayList<ExecutionImpl>();
-    this.isExecutionsInitialized = true;
+  public static ExecutionEntity createProcessInstance(ProcessDefinitionEntity processDefinition) {
+    ExecutionEntity processInstance = new ExecutionEntity();
+    processInstance.executions = new ArrayList<ExecutionImpl>();
+    processInstance.isExecutionsInitialized = true;
     // Do not initialize variable map (let it happen lazily)
 
     CommandContext
       .getCurrent()
       .getDbSqlSession()
-      .insert(this);
+      .insert(processInstance);
 
     // reset the process instance in order to have the db-generated process instance id available
-    setProcessInstance(this);
+    processInstance.setProcessInstance(processInstance);
     
-    this.variables = VariableMap.createNewInitialized(id, processInstanceId);
+    processInstance.variables = VariableMap.createNewInitialized(processInstance.getId(), processInstance.getId());
+    return processInstance;
   }
 
   @Override
   protected ExecutionImpl newExecution() {
     ExecutionEntity newExecution = new ExecutionEntity();
-    newExecution.isNew = true;
     newExecution.executions = new ArrayList<ExecutionImpl>();
     newExecution.isExecutionsInitialized = true;
     // Do not initialize variable map (let it happen lazily)
@@ -302,7 +303,7 @@ public class ExecutionEntity extends ExecutionImpl implements PersistentObject, 
     persistentState.put("activitiId", this.activityId);
     persistentState.put("isActive", this.isActive);
     persistentState.put("isConcurrent", this.isConcurrent);
-    persistentState.put("isScope", this.isScope);
+    persistentState.put("scopeActivityId", this.scopeActivityId);
     persistentState.put("parentId", parentId);
     persistentState.put("superExecution", this.superExecutionId);
     return persistentState;
@@ -345,9 +346,6 @@ public class ExecutionEntity extends ExecutionImpl implements PersistentObject, 
   public void setRevision(int revision) {
     this.revision = revision;
   }
-  public boolean isNew() {
-    return isNew;
-  }
   public String getProcessDefinitionId() {
     return processDefinitionId;
   }
@@ -359,5 +357,11 @@ public class ExecutionEntity extends ExecutionImpl implements PersistentObject, 
   }
   public void setCachedElContext(ELContext cachedElContext) {
     this.cachedElContext = cachedElContext;
+  }
+  public String getScopeActivityId() {
+    return scopeActivityId;
+  }
+  public void setScopeActivityId(String scopeActivityId) {
+    this.scopeActivityId = scopeActivityId;
   }
 }

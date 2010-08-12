@@ -11,23 +11,15 @@
  * limitations under the License.
  */
 
-package org.activiti.pvm.runtime;
+package org.activiti.pvm.impl.process;
 
-import java.util.List;
-
+import org.activiti.pvm.impl.runtime.ExecutionImpl;
 
 /**
  * @author Tom Baeyens
  */
-public interface PvmProcessInstance extends PvmExecution {
+public interface VariableDeclaration {
 
-  void start();
+  void initialize(ExecutionImpl execution);
 
-  PvmExecution findExecution(String activityId);
-
-  List<String> findActiveActivityIds();
-  
-  boolean isEnded();
-
-  void deleteCascade(String deleteReason);
 }

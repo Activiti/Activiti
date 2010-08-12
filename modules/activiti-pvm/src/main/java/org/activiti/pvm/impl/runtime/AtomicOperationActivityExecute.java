@@ -22,9 +22,9 @@ import org.activiti.pvm.impl.process.ActivityImpl;
 /**
  * @author Tom Baeyens
  */
-public class AtomicOperationExecuteCurrentActivity implements AtomicOperation {
+public class AtomicOperationActivityExecute implements AtomicOperation {
   
-  private static Logger log = Logger.getLogger(AtomicOperationExecuteCurrentActivity.class.getName());
+  private static Logger log = Logger.getLogger(AtomicOperationActivityExecute.class.getName());
   
   public void execute(ExecutionImpl execution) {
     ActivityImpl activity = execution.getActivity();

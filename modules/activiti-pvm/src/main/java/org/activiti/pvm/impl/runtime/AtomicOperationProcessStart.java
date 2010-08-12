@@ -16,32 +16,53 @@ package org.activiti.pvm.impl.runtime;
 import java.util.List;
 
 import org.activiti.pvm.event.EventListener;
+import org.activiti.pvm.impl.process.ActivityImpl;
 import org.activiti.pvm.impl.process.ProcessDefinitionImpl;
+import org.activiti.pvm.impl.process.ScopeImpl;
 
 
 /**
  * @author Tom Baeyens
  */
-public class AtomicOperationProcessStart implements AtomicOperation {
+public class AtomicOperationProcessStart extends AbstractEventAtomicOperation {
 
-  public void execute(ExecutionImpl execution) {
+  @Override
+  protected ScopeImpl getScope(ExecutionImpl execution) {
+    if (execution.getActivity()!=null) {
+      return execution.getActivity();
+    }
+    return execution.getScope();
+  }
+
+  @Override
+  protected String getEventName() {
+    return EventListener.EVENTNAME_START;
+  }
+
+  @Override
+  protected void eventNotificationsCompleted(ExecutionImpl execution) {
+    ActivityImpl activity = execution.getActivity();
     ProcessDefinitionImpl processDefinition = execution.getProcessDefinition();
-    List<EventListener> eventListeners = processDefinition.getEventListeners(EventListener.EVENTNAME_START);
-    int eventListenerIndex = execution.getEventListenerIndex();
-    
-    if (eventListeners.size()>eventListenerIndex) {
-      execution.setEventName(EventListener.EVENTNAME_START);
-      execution.setEventSource(processDefinition);
-      EventListener listener = eventListeners.get(eventListenerIndex);
-      listener.notify(execution);
-      execution.setEventListenerIndex(eventListenerIndex+1);
-      execution.performOperation(this);
+    if (activity==processDefinition.getInitial()) {
+      execution.performOperation(ACTIVITY_EXECUTE);
 
     } else {
-      execution.setEventListenerIndex(0);
-      execution.setEventName(null);
-      execution.setEventSource(null);
-      execution.performOperation(EXECUTE_CURRENT_ACTIVITY);
+      List<ActivityImpl> initialActivityStack = processDefinition.getInitialActivityStack();
+      if (activity==null) {
+        activity = initialActivityStack.get(0);
+      } else {
+        int index = initialActivityStack.indexOf(activity);
+        activity = initialActivityStack.get(index+1);
+      }
+
+      ExecutionImpl executionToUse = null;
+      if (activity.isScope()) {
+        executionToUse = execution.getExecutions().get(0);
+      } else {
+        executionToUse = execution;
+      }
+      executionToUse.setActivity(activity);
+      executionToUse.performOperation(PROCESS_START);
     }
   }
 }

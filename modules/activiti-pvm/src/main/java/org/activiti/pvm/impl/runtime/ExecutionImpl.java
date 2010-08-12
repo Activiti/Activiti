@@ -28,7 +28,9 @@ import org.activiti.pvm.activity.SubProcessActivityBehavior;
 import org.activiti.pvm.event.EventListenerExecution;
 import org.activiti.pvm.impl.process.ActivityImpl;
 import org.activiti.pvm.impl.process.ProcessDefinitionImpl;
+import org.activiti.pvm.impl.process.ScopeImpl;
 import org.activiti.pvm.impl.process.TransitionImpl;
+import org.activiti.pvm.impl.process.VariableDeclaration;
 import org.activiti.pvm.process.PvmActivity;
 import org.activiti.pvm.process.PvmProcessDefinition;
 import org.activiti.pvm.process.PvmProcessElement;
@@ -57,6 +59,9 @@ public class ExecutionImpl implements
 
   /** current activity */
   protected ActivityImpl activity;
+  
+  /** current activity */
+  protected ScopeImpl scope;
   
   /** current transition.  is null when there is no transition being taken. */
   protected TransitionImpl transition = null;
@@ -89,7 +94,6 @@ public class ExecutionImpl implements
    * </ul>*/ 
   protected boolean isActive = true;
   protected boolean isConcurrent = false;
-  protected boolean isScope = false;
   protected boolean isEnded = false;
 
   protected Map<String, Object> variables = null;
@@ -112,14 +116,66 @@ public class ExecutionImpl implements
   protected boolean isOperating = false;
 
   /* Default constructor for ibatis/jpa/etc. */
-  protected ExecutionImpl() {
+  public ExecutionImpl() {
   }
   
-  /** constructor for new process instances.
-   * @see ProcessDefinitionImpl#createProcessInstance() */
-  public ExecutionImpl(ProcessDefinitionImpl processDefinition) {
-    setProcessDefinition(processDefinition);
-    setProcessInstance(this);
+  // lifecycle methods ////////////////////////////////////////////////////////
+  
+  /** creates a new execution. properties processDefinition, processInstance and activity will be initialized. */  
+  public ExecutionImpl createExecution() {
+    // create the new child execution
+    ExecutionImpl createdExecution = newExecution();
+
+    // manage the bidirectional parent-child relation
+    ensureExecutionsInitialized();
+    executions.add(createdExecution); 
+    createdExecution.setParent(this);
+    
+    // initialize the new execution
+    createdExecution.setProcessDefinition(getProcessDefinition());
+    createdExecution.setProcessInstance(getProcessInstance());
+    createdExecution.setActivity(getActivity());
+    
+    return createdExecution;
+  }
+  
+  /** instantiates a new execution.  can be overridden by subclasses */
+  protected ExecutionImpl newExecution() {
+    return new ExecutionImpl();
+  }
+
+  public PvmProcessInstance createSubProcessInstance(PvmProcessDefinition processDefinition) {
+    ExecutionImpl subProcessInstance = newExecution();
+    
+    // manage bidirectional super-subprocess relation
+    subProcessInstance.setSuperExecution(this);
+    this.setSubProcessInstance(subProcessInstance);
+    
+    // Initialize the new execution
+    subProcessInstance.setProcessDefinition((ProcessDefinitionImpl) processDefinition);
+    subProcessInstance.setProcessInstance(subProcessInstance);
+
+    return subProcessInstance;
+  }
+  
+  public void initialize() {
+    if (isScope()) {
+      log.fine("initializing "+this);
+      for (VariableDeclaration variableDeclaration: getScope().getVariableDeclarations()) {
+        variableDeclaration.initialize(this);
+      }
+    }
+  }
+  
+  public void destroy() {
+    log.fine("destroying "+this);
+  }
+  
+  public void remove() {
+    if (parent!=null) {
+      parent.ensureExecutionsInitialized();
+      parent.executions.remove(this);
+    }
   }
   
   // parent ///////////////////////////////////////////////////////////////////
@@ -177,38 +233,6 @@ public class ExecutionImpl implements
   protected void ensureSubProcessInstanceInitialized() {
   }
 
-  /** creates a new execution. properties processDefinition, processInstance and activity will be initialized. */  
-  public ExecutionImpl createExecution() {
-    // create the new child execution
-    ExecutionImpl createdExecution = newExecution();
-
-    // manage the bidirectional parent-child relation
-    ensureExecutionsInitialized();
-    executions.add(createdExecution); 
-    createdExecution.setParent(this);
-    
-    // initialize the new execution
-    createdExecution.setProcessDefinition(getProcessDefinition());
-    createdExecution.setProcessInstance(getProcessInstance());
-    createdExecution.setActivity(getActivity());
-    
-    return createdExecution;
-  }
-  
-  public PvmProcessInstance createSubProcessInstance(PvmProcessDefinition processDefinition) {
-    ExecutionImpl subProcessInstance = newExecution();
-    
-    // manage bidirectional super-subprocess relation
-    subProcessInstance.setSuperExecution(this);
-    this.setSubProcessInstance(subProcessInstance);
-    
-    // Initialize the new execution
-    subProcessInstance.setProcessDefinition((ProcessDefinitionImpl) processDefinition);
-    subProcessInstance.setProcessInstance(subProcessInstance);
-
-    return subProcessInstance;
-  }
-  
   public void deleteCascade(String deleteReason) {
     this.deleteReason = deleteReason;
     performOperation(AtomicOperation.DELETE_CASCADE);
@@ -220,70 +244,48 @@ public class ExecutionImpl implements
   public void end() {
     isActive = false;
     isEnded = true;
+    
+    performOperation(AtomicOperation.ACTIVITY_END);
+    
 
-    // first end the nested executions
-    ensureExecutionsInitialized();
-    
-    if (!executions.isEmpty()) {
-      // Create simple copy of children to avoid concurrentModificationExceptions
-      // (since calling end() on the child will cause a remove in the same collection)
-      List<ExecutionImpl> childExecutions = new ArrayList<ExecutionImpl>(executions);
-      for (ExecutionImpl childExecution : childExecutions) {
-        childExecution.end();
-      }
-    }
-    
-    // Cascade end to sub process instance
-    ensureSubProcessInstanceInitialized();
-    if (subProcessInstance != null) {
-      subProcessInstance.setSuperExecution(null);
-      subProcessInstance.end();
-    }
-    
-    // if there is a parent 
-    ensureParentInitialized();
-    if (parent!=null) {
-      ensureActivityInitialized();
-      activity = activity.getParentActivity();
-      while(activity!=null && !activity.isScope()) {
-        // TODO add destroy scope if activity is scope
-        activity = activity.getParentActivity();
-      }
-      
-      if (activity!=null && parent.getExecutions().size()==1) {
-        ActivityBehavior activityBehavior = activity.getActivityBehavior();
-        if (activityBehavior instanceof CompositeActivityBehavior) {
-          ((CompositeActivityBehavior) activityBehavior).lastExecutionEnded(this);
-        } else {
-          end();
-        }
-      } else {
-        remove();
-      }
-      
-    } else { // this execution is a process instance
-      
-      // If there is a super execution
-      ensureSuperExecutionInitialized();
-      if (superExecution != null) {
-        SubProcessActivityBehavior subProcessActivityBehavior = (SubProcessActivityBehavior) superExecution.getActivity().getActivityBehavior();
-        try {
-          subProcessActivityBehavior.completing(this, superExecution);
-        } catch (Exception e) {
-          e.printStackTrace();
-        }
-      }
-      
-      performOperation(AtomicOperation.PROCESS_END);
-    }
+//    // if there is a parent 
+//    ensureParentInitialized();
+//    if (parent!=null) {
+//      ensureActivityInitialized();
+//      activity = activity.getParentActivity();
+//      while(activity!=null && !activity.isScope()) {
+//        // TODO add destroy scope if activity is scope
+//        activity = activity.getParentActivity();
+//      }
+//      
+//      if (activity!=null && parent.getExecutions().size()==1) {
+//        ActivityBehavior activityBehavior = activity.getActivityBehavior();
+//        if (activityBehavior instanceof CompositeActivityBehavior) {
+//          ((CompositeActivityBehavior) activityBehavior).lastExecutionEnded(this);
+//        } else {
+//          end();
+//        }
+//      } else {
+//        remove();
+//      }
+//      
+//    } else { // this execution is a process instance
+//      
+//      // If there is a super execution
+//      ensureSuperExecutionInitialized();
+//      if (superExecution != null) {
+//        SubProcessActivityBehavior subProcessActivityBehavior = (SubProcessActivityBehavior) superExecution.getActivity().getActivityBehavior();
+//        try {
+//          subProcessActivityBehavior.completing(this, superExecution);
+//        } catch (Exception e) {
+//          e.printStackTrace();
+//        }
+//      }
+//      
+//      performOperation(AtomicOperation.PROCESS_END);
+//    }
   }
 
-  protected void remove() {
-    if (parent!=null) {
-      parent.removeExecution(this);
-    }
-  }
-  
   /** searches for an execution positioned in the given activity */
   public ExecutionImpl findExecution(String activityId) {
     if ( (getActivity()!=null)
@@ -315,20 +317,6 @@ public class ExecutionImpl implements
     for (ExecutionImpl execution: executions) {
       execution.collectActiveActivityIds(activeActivityIds);
     }
-  }
-
-  /** instantiates a new execution.  can be overridden by subclasses */
-  protected ExecutionImpl newExecution() {
-    return new ExecutionImpl();
-  }
-
-  /** disconnects an execution */ 
-  protected void removeExecution(ExecutionImpl execution) {
-    ensureExecutionsInitialized();
-    executions.remove(execution);
-    // we don't remove the parent as that would make it a process instance
-    // and there is no need for setting the parent to null 
-    // execution.setParent(null);
   }
 
   /** must be called before memberfield executions is used. 
@@ -367,7 +355,7 @@ public class ExecutionImpl implements
   }
   
   /** for setting the process instance, this setter must be used as subclasses can override */  
-  protected void setProcessInstance(ExecutionImpl processInstance) {
+  public void setProcessInstance(ExecutionImpl processInstance) {
     this.processInstance = processInstance;
   }
 
@@ -396,30 +384,28 @@ public class ExecutionImpl implements
   
   // scopes ///////////////////////////////////////////////////////////////////
   
-  public ExecutionImpl createScope() {
-    ExecutionImpl scopeExecution = createExecution();
-    scopeExecution.setScope(true);
-    scopeExecution.setTransition(getTransition());
-    setTransition(null);
-    setActive(false);
-    log.fine("create scope: parent scope "+this+" continues as scoped execution "+scopeExecution);
-    return scopeExecution;
+  protected void ensureScopeInitialized() {
+  }
+  
+  public ScopeImpl getScope() {
+    if (isProcessInstance()) {
+      return processDefinition;
+    }
+    ensureScopeInitialized();
+    return scope;
   }
 
-  public ExecutionImpl destroyScope() {
-    log.fine("destroy scope: scoped "+this+" continues as parent scope "+getParent());
-    parent.setActivity(getActivity());
-    parent.setTransition(getTransition());
-    parent.setActive(true);
-    end();
-    return parent;
+  public boolean isScope() {
+    if (isProcessInstance()) {
+      return true;
+    }
+    ensureScopeInitialized();
+    return scope!=null;
   }
   
   // process instance start implementation ////////////////////////////////////
 
   public void start() {
-    ActivityImpl initial = getProcessDefinition().getInitial();
-    setActivity(initial);
     performOperation(AtomicOperation.PROCESS_START);
   }
   
@@ -439,7 +425,7 @@ public class ExecutionImpl implements
   
   public void executeActivity(ActivityImpl activity) {
     setActivity(activity);
-    performOperation(AtomicOperation.EXECUTE_CURRENT_ACTIVITY);
+    performOperation(AtomicOperation.ACTIVITY_EXECUTE);
   }
 
   public List<ActivityExecution> findInactiveConcurrentExecutions(PvmActivity activity) {
@@ -548,7 +534,7 @@ public class ExecutionImpl implements
   
   public void executeActivity(PvmActivity activity) {
     setActivity((ActivityImpl) activity);
-    performOperation(AtomicOperation.EXECUTE_CURRENT_ACTIVITY);
+    performOperation(AtomicOperation.ACTIVITY_EXECUTE);
   }
 
   
@@ -579,14 +565,14 @@ public class ExecutionImpl implements
     ensureVariablesInitialized();
     
     // If value is found in this scope, return it
-    Object value = variables.get(variableName);
-    if (value != null) {
-      return value;
+    if (variables.containsKey(variableName)) {
+      return variables.get(variableName);
     }
     
     // If value not found in this scope, check the parent scope
-    if (getParent() != null) {
-      return getParent().getVariable(variableName);        
+    ensureParentInitialized();
+    if (parent != null) {
+      return parent.getVariable(variableName);        
     }
     
     // Variable is nowhere to be found
@@ -594,10 +580,20 @@ public class ExecutionImpl implements
   }
 
   public Map<String, Object> getVariables() {
-    ensureVariablesInitialized();
-    return variables;
+    Map<String, Object> collectedVariables = new HashMap<String, Object>();
+    collectVariables(collectedVariables);
+    return collectedVariables;
   }
   
+  protected void collectVariables(Map<String, Object> collectedVariables) {
+    ensureParentInitialized();
+    if (parent!=null) {
+      parent.collectVariables(collectedVariables);
+    }
+    ensureVariablesInitialized();
+    collectedVariables.putAll(variables);
+  }
+
   public void setVariables(Map<String, Object> variables) {
     ensureVariablesInitialized();
     if (variables!=null) {
@@ -609,13 +605,33 @@ public class ExecutionImpl implements
 
   public void setVariable(String variableName, Object value) {
     ensureVariablesInitialized();
-    log.fine("setting variable '"+variableName+"' to value '"+value+"'");
+    if (variables.containsKey(variableName)) {
+      setVariableLocally(variableName, value);
+    } else {
+      ensureParentInitialized();
+      if (parent!=null) {
+        parent.setVariable(variableName, value);
+      } else {
+        setVariableLocally(variableName, value);
+      }
+    }
+  }
+
+  protected void setVariableLocally(String variableName, Object value) {
+    log.fine("setting variable '"+variableName+"' to value '"+value+"' on "+this);
     variables.put(variableName, value);
   }
   
   public boolean hasVariable(String variableName) {
     ensureVariablesInitialized();
-    return variables.containsKey(variableName);
+    if (variables.containsKey(variableName)) {
+      return true;
+    }
+    ensureParentInitialized();
+    if (parent!=null) {
+      return parent.hasVariable(variableName);
+    }
+    return false;
   }
 
   protected void ensureVariablesInitialized() {
@@ -630,7 +646,7 @@ public class ExecutionImpl implements
     if (isProcessInstance()) {
       return "ProcessInstance["+System.identityHashCode(this)+"]";
     } else {
-      return "Execution["+System.identityHashCode(this)+"]";
+      return (isConcurrent? "Concurrent" : "")+(isScope() ? "Scope" : "")+"Execution["+System.identityHashCode(this)+"]";
     }
   }
   
@@ -665,12 +681,6 @@ public class ExecutionImpl implements
   public void setConcurrent(boolean isConcurrent) {
     this.isConcurrent = isConcurrent;
   }
-  public boolean isScope() {
-    return isScope;
-  }
-  public void setScope(boolean isScope) {
-    this.isScope = isScope;
-  }
   public boolean isActive() {
     return isActive;
   }
@@ -680,7 +690,7 @@ public class ExecutionImpl implements
   public boolean isEnded() {
     return isEnded;
   }
-  protected void setProcessDefinition(ProcessDefinitionImpl processDefinition) {
+  public void setProcessDefinition(ProcessDefinitionImpl processDefinition) {
     this.processDefinition = processDefinition;
   }
   public String getEventName() {
@@ -700,5 +710,8 @@ public class ExecutionImpl implements
   }
   public void setDeleteReason(String deleteReason) {
     this.deleteReason = deleteReason;
+  }
+  public void setScope(ScopeImpl scope) {
+    this.scope = scope;
   }
 }

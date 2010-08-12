@@ -62,18 +62,30 @@ public class AtomicOperationTransitionDestroyScope implements AtomicOperation {
           parentScopeInstance.getExecutions().add(lastConcurrent);
           lastConcurrent.setParent(parentScopeInstance);
           lastConcurrent.setActive(true);
-          lastConcurrent.setScope(true);
+          
+          // TODO!
+          lastConcurrent.setScope(null);
           
           // TODO extract common, overridable destroy method
         }
 
       } else if (execution.isConcurrent() && execution.isScope()) {
         log.fine("scoped concurrent "+execution+" becomes concurrent and remains under "+execution.getParent());
-        execution.setScope(false);
+
+        // TODO!
+        execution.setScope(null);
         propagatingExecution = execution;
         
       } else {
-        propagatingExecution = execution.destroyScope();
+        ExecutionImpl parentExecution = execution.getParent();
+        execution.destroy();
+        execution.remove();
+
+        propagatingExecution = parentExecution;
+        parentExecution.setActivity(execution.getActivity());
+        parentExecution.setTransition(execution.getTransition());
+        parentExecution.setActive(true);
+        log.fine("destroy scope: scoped "+execution+" continues as parent scope "+execution.getParent());
       }
       
     } else {

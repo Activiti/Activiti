@@ -51,7 +51,7 @@ public class AtomicOperationTransitionNotifyListenerStart implements AtomicOpera
       } else {
         execution.setTransition(null);
         execution.setActivity(destination);
-        execution.performOperation(EXECUTE_CURRENT_ACTIVITY);
+        execution.performOperation(ACTIVITY_EXECUTE);
       }
     }
   }

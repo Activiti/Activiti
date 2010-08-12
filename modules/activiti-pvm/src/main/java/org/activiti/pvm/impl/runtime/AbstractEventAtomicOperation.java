@@ -16,30 +16,21 @@ package org.activiti.pvm.impl.runtime;
 import java.util.List;
 
 import org.activiti.pvm.event.EventListener;
-import org.activiti.pvm.impl.process.ActivityImpl;
 import org.activiti.pvm.impl.process.ScopeImpl;
 
 
 /**
  * @author Tom Baeyens
  */
-public class AtomicOperationDeleteCascadeFireActivityEnd implements AtomicOperation {
+public abstract class AbstractEventAtomicOperation implements AtomicOperation {
 
   public void execute(ExecutionImpl execution) {
-    ActivityImpl activity = execution.getActivity();
-    ScopeImpl scope = null;
-
-    if (activity!=null) {
-      scope = activity;
-    } else {
-      scope = execution.getProcessDefinition();
-    }
-    
-    List<EventListener> eventListeners = scope.getEventListeners(EventListener.EVENTNAME_END);
+    ScopeImpl scope = getScope(execution);
+    List<EventListener> eventListeners = scope.getEventListeners(getEventName());
     int eventListenerIndex = execution.getEventListenerIndex();
     
     if (eventListeners.size()>eventListenerIndex) {
-      execution.setEventName(EventListener.EVENTNAME_END);
+      execution.setEventName(getEventName());
       execution.setEventSource(scope);
       EventListener listener = eventListeners.get(eventListenerIndex);
       listener.notify(execution);
@@ -51,26 +42,11 @@ public class AtomicOperationDeleteCascadeFireActivityEnd implements AtomicOperat
       execution.setEventName(null);
       execution.setEventSource(null);
       
-      if ( (execution.isScope())
-           && (activity!=null)
-           && (!activity.isScope())
-         )  {
-        execution.setActivity(activity.getParentActivity());
-        execution.performOperation(AtomicOperation.DELETE_CASCADE_FIRE_ACTIVITY_END);
-        
-      } else {
-        ExecutionImpl parent = execution.getParent();
-        
-        if (execution.isScope()) {
-          execution.destroy();
-        }
-
-        execution.remove();
-        
-        if (parent!=null) {
-          parent.performOperation(AtomicOperation.DELETE_CASCADE);
-        }
-      }
+      eventNotificationsCompleted(execution);
     }
   }
+
+  protected abstract ScopeImpl getScope(ExecutionImpl execution);
+  protected abstract String getEventName();
+  protected abstract void eventNotificationsCompleted(ExecutionImpl execution);
 }

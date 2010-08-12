@@ -13,6 +13,9 @@
 
 package org.activiti.pvm.impl.process;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.activiti.pvm.impl.runtime.ExecutionImpl;
 import org.activiti.pvm.process.PvmProcessDefinition;
 import org.activiti.pvm.runtime.PvmProcessInstance;
@@ -27,6 +30,7 @@ public class ProcessDefinitionImpl extends ScopeImpl implements PvmProcessDefini
   private static final long serialVersionUID = 1L;
   
   protected ActivityImpl initial;
+  protected List<ActivityImpl> initialActivityStack;
 
   public ProcessDefinitionImpl(String id) {
     super(id, null);
@@ -34,7 +38,41 @@ public class ProcessDefinitionImpl extends ScopeImpl implements PvmProcessDefini
   }
 
   public PvmProcessInstance createProcessInstance() {
-    return new ExecutionImpl(this);
+    ExecutionImpl processInstance = newProcessInstance();
+    processInstance.setProcessDefinition(this);
+    processInstance.setProcessInstance(processInstance);
+    processInstance.setScope(processDefinition);
+    processInstance.initialize();
+
+    ExecutionImpl scopeInstance = processInstance;
+    List<ActivityImpl> initialActivities = getInitialActivityStack();
+    for (ActivityImpl initialActivity: initialActivities) {
+      if (initialActivity.isScope()) {
+        scopeInstance = scopeInstance.createExecution();
+        scopeInstance.setScope(initialActivity);
+        scopeInstance.initialize();
+      }
+    }
+    
+    scopeInstance.setActivity(initial);
+
+    return processInstance;
+  }
+
+  public synchronized List<ActivityImpl> getInitialActivityStack() {
+    if (initialActivityStack==null) {
+      initialActivityStack = new ArrayList<ActivityImpl>();
+      ActivityImpl activity = initial;
+      while (activity!=null) {
+        initialActivityStack.add(0, activity);
+        activity = activity.getParentActivity();
+      }
+    }
+    return initialActivityStack;
+  }
+
+  protected ExecutionImpl newProcessInstance() {
+    return new ExecutionImpl();
   }
 
   // getters and setters //////////////////////////////////////////////////////
