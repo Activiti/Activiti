@@ -29,6 +29,11 @@ import org.activiti.test.pvm.activities.While;
  */
 public class PvmBasicLinearExecutionTest extends PvmTestCase {
 
+  /**
+   * +-------+   +-----+
+   * | start |-->| end |
+   * +-------+   +-----+
+   */
   public void testStartEnd() {
     PvmProcessDefinition processDefinition = new ProcessDefinitionBuilder()
       .createActivity("start")
@@ -48,6 +53,11 @@ public class PvmBasicLinearExecutionTest extends PvmTestCase {
     assertTrue(processInstance.isEnded());
   }
 
+  /**
+   * +-----+   +-----+   +-------+
+   * | one |-->| two |-->| three |
+   * +-----+   +-----+   +-------+
+   */
   public void testSingleAutomatic() {
     PvmProcessDefinition processDefinition = new ProcessDefinitionBuilder()
       .createActivity("one")
@@ -71,6 +81,11 @@ public class PvmBasicLinearExecutionTest extends PvmTestCase {
     assertTrue(processInstance.isEnded());
   }
 
+  /**
+   * +-----+   +-----+   +-------+
+   * | one |-->| two |-->| three |
+   * +-----+   +-----+   +-------+
+   */
   public void testSingleWaitState() {
     PvmProcessDefinition processDefinition = new ProcessDefinitionBuilder()
       .createActivity("one")
@@ -99,6 +114,11 @@ public class PvmBasicLinearExecutionTest extends PvmTestCase {
     assertTrue(processInstance.isEnded());
   }
 
+  /**
+   * +-----+   +-----+   +-------+   +------+    +------+
+   * | one |-->| two |-->| three |-->| four |--> | five |
+   * +-----+   +-----+   +-------+   +------+    +------+
+   */
   public void testCombinationOfWaitStatesAndAutomatics() {
     PvmProcessDefinition processDefinition = new ProcessDefinitionBuilder()
       .createActivity("start")
@@ -142,6 +162,17 @@ public class PvmBasicLinearExecutionTest extends PvmTestCase {
     assertTrue(processInstance.isEnded());
   }
 
+  /**
+   *                  +----------------------------+
+   *                  v                            |
+   * +-------+   +------+   +-----+   +-----+    +-------+
+   * | start |-->| loop |-->| one |-->| two |--> | three |
+   * +-------+   +------+   +-----+   +-----+    +-------+
+   *                  |
+   *                  |   +-----+
+   *                  +-->| end |
+   *                      +-----+
+   */
   public void testWhileLoop() {
     PvmProcessDefinition processDefinition = new ProcessDefinitionBuilder()
       .createActivity("start")

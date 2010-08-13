@@ -12,6 +12,7 @@
  */
 package org.activiti.pvm.impl.runtime;
 
+import java.util.List;
 import java.util.logging.Logger;
 
 import org.activiti.pvm.impl.process.ActivityImpl;
@@ -41,8 +42,16 @@ public class AtomicOperationTransitionDestroyScope implements AtomicOperation {
         parentScopeInstance = execution.getParent().getParent();
 
         log.fine("moving concurrent "+execution+" one scope up under "+parentScopeInstance);
-        concurrentRoot.getExecutions().remove(execution);
-        parentScopeInstance.getExecutions().add(execution);
+        List<ExecutionImpl> parentScopeInstanceExecutions = parentScopeInstance.getExecutions();
+        List<ExecutionImpl> concurrentRootExecutions = concurrentRoot.getExecutions();
+        // if the parent scope had only one single scope child
+        if (parentScopeInstanceExecutions.size()==1) {
+          // it now becomes a concurrent execution
+          parentScopeInstanceExecutions.get(0).setConcurrent(true);
+        }
+        
+        concurrentRootExecutions.remove(execution);
+        parentScopeInstanceExecutions.add(execution);
         execution.setParent(parentScopeInstance);
         execution.setActivity(activity);
         propagatingExecution = execution;
@@ -51,41 +60,40 @@ public class AtomicOperationTransitionDestroyScope implements AtomicOperation {
         // in the concurrent root, auto-prune it.  meaning, the 
         // last concurrent child execution data should be cloned into
         // the concurrent root.   
-        if (concurrentRoot.getExecutions().size()==1) {
-          ExecutionImpl lastConcurrent = concurrentRoot.getExecutions().get(0);
-          log.fine("replacing concurrent root "+concurrentRoot+" with last concurrent "+lastConcurrent);
-          
-          // We can't just merge the data of the lastConcurrent into the concurrentRoot.
-          // This is because the concurrent root might be in a takeAll-loop.  So the 
-          // concurrent execution is the one that will be receiveing the take
-          parentScopeInstance.getExecutions().remove(concurrentRoot);
-          parentScopeInstance.getExecutions().add(lastConcurrent);
-          lastConcurrent.setParent(parentScopeInstance);
-          lastConcurrent.setActive(true);
-          
-          // TODO!
-          lastConcurrent.setScope(null);
-          
-          // TODO extract common, overridable destroy method
+        if (concurrentRootExecutions.size()==1) {
+          ExecutionImpl lastConcurrent = concurrentRootExecutions.get(0);
+          if (lastConcurrent.isScope()) {
+            lastConcurrent.setConcurrent(false);
+            
+          } else {
+            log.fine("replacing concurrent root "+concurrentRoot+" with last concurrent "+lastConcurrent);
+            
+            // We can't just merge the data of the lastConcurrent into the concurrentRoot.
+            // This is because the concurrent root might be in a takeAll-loop.  So the 
+            // concurrent execution is the one that will be receiveing the take
+            concurrentRoot.remove();
+            parentScopeInstanceExecutions.add(lastConcurrent);
+            lastConcurrent.setParent(parentScopeInstance);
+            lastConcurrent.setActive(true);
+            lastConcurrent.migrateScope(concurrentRoot);
+          }
         }
 
       } else if (execution.isConcurrent() && execution.isScope()) {
         log.fine("scoped concurrent "+execution+" becomes concurrent and remains under "+execution.getParent());
 
         // TODO!
-        execution.setScope(null);
+        execution.destroy();
         propagatingExecution = execution;
         
       } else {
-        ExecutionImpl parentExecution = execution.getParent();
+        propagatingExecution = execution.getParent();
+        propagatingExecution.setActivity(execution.getActivity());
+        propagatingExecution.setTransition(execution.getTransition());
+        propagatingExecution.setActive(true);
+        log.fine("destroy scope: scoped "+execution+" continues as parent scope "+propagatingExecution);
         execution.destroy();
         execution.remove();
-
-        propagatingExecution = parentExecution;
-        parentExecution.setActivity(execution.getActivity());
-        parentExecution.setTransition(execution.getTransition());
-        parentExecution.setActive(true);
-        log.fine("destroy scope: scoped "+execution+" continues as parent scope "+execution.getParent());
       }
       
     } else {
@@ -94,7 +102,7 @@ public class AtomicOperationTransitionDestroyScope implements AtomicOperation {
     
     // if there is another scope element that is ended
     ScopeImpl nextOuterScopeElement = activity.getParent();
-    TransitionImpl transition = execution.getTransition();
+    TransitionImpl transition = propagatingExecution.getTransition();
     ActivityImpl destination = transition.getDestination();
     if (transitionLeavesNextOuterScope(nextOuterScopeElement, destination)) {
       propagatingExecution.setActivity((ActivityImpl) nextOuterScopeElement);
@@ -104,7 +112,7 @@ public class AtomicOperationTransitionDestroyScope implements AtomicOperation {
     }
   }
 
-  protected boolean transitionLeavesNextOuterScope(ScopeImpl nextScopeElement, ActivityImpl destination) {
+  public boolean transitionLeavesNextOuterScope(ScopeImpl nextScopeElement, ActivityImpl destination) {
     return !nextScopeElement.contains(destination);
   }
 }

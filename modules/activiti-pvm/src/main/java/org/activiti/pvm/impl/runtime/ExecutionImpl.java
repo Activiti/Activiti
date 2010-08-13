@@ -21,10 +21,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.activiti.pvm.PvmException;
-import org.activiti.pvm.activity.ActivityBehavior;
 import org.activiti.pvm.activity.ActivityExecution;
-import org.activiti.pvm.activity.CompositeActivityBehavior;
-import org.activiti.pvm.activity.SubProcessActivityBehavior;
 import org.activiti.pvm.event.EventListenerExecution;
 import org.activiti.pvm.impl.process.ActivityImpl;
 import org.activiti.pvm.impl.process.ProcessDefinitionImpl;
@@ -95,7 +92,7 @@ public class ExecutionImpl implements
   protected boolean isActive = true;
   protected boolean isConcurrent = false;
   protected boolean isEnded = false;
-
+  
   protected Map<String, Object> variables = null;
   
   // events ///////////////////////////////////////////////////////////////////
@@ -169,6 +166,8 @@ public class ExecutionImpl implements
   
   public void destroy() {
     log.fine("destroying "+this);
+    setScope(null);
+    variables = null;
   }
   
   public void remove() {
@@ -176,6 +175,11 @@ public class ExecutionImpl implements
       parent.ensureExecutionsInitialized();
       parent.executions.remove(this);
     }
+  }
+  
+  public void migrateScope(ExecutionImpl other) {
+    setScope(other.getScope());
+    setVariables(other.getVariables());
   }
   
   // parent ///////////////////////////////////////////////////////////////////
@@ -244,46 +248,7 @@ public class ExecutionImpl implements
   public void end() {
     isActive = false;
     isEnded = true;
-    
     performOperation(AtomicOperation.ACTIVITY_END);
-    
-
-//    // if there is a parent 
-//    ensureParentInitialized();
-//    if (parent!=null) {
-//      ensureActivityInitialized();
-//      activity = activity.getParentActivity();
-//      while(activity!=null && !activity.isScope()) {
-//        // TODO add destroy scope if activity is scope
-//        activity = activity.getParentActivity();
-//      }
-//      
-//      if (activity!=null && parent.getExecutions().size()==1) {
-//        ActivityBehavior activityBehavior = activity.getActivityBehavior();
-//        if (activityBehavior instanceof CompositeActivityBehavior) {
-//          ((CompositeActivityBehavior) activityBehavior).lastExecutionEnded(this);
-//        } else {
-//          end();
-//        }
-//      } else {
-//        remove();
-//      }
-//      
-//    } else { // this execution is a process instance
-//      
-//      // If there is a super execution
-//      ensureSuperExecutionInitialized();
-//      if (superExecution != null) {
-//        SubProcessActivityBehavior subProcessActivityBehavior = (SubProcessActivityBehavior) superExecution.getActivity().getActivityBehavior();
-//        try {
-//          subProcessActivityBehavior.completing(this, superExecution);
-//        } catch (Exception e) {
-//          e.printStackTrace();
-//        }
-//      }
-//      
-//      performOperation(AtomicOperation.PROCESS_END);
-//    }
   }
 
   /** searches for an execution positioned in the given activity */
@@ -459,6 +424,14 @@ public class ExecutionImpl implements
 
   @SuppressWarnings("unchecked")
   public void takeAll(List<PvmTransition> transitions, List<ActivityExecution> recyclableExecutions) {
+    if (recyclableExecutions.size()>1) {
+      for (ActivityExecution recyclableExecution: recyclableExecutions) {
+        if (((ExecutionImpl)recyclableExecution).isScope()) {
+          throw new PvmException("joining scope executions is not allowed");
+        }
+      }
+    }
+
     transitions = new ArrayList<PvmTransition>(transitions);
     recyclableExecutions = (recyclableExecutions!=null ? new ArrayList<ActivityExecution>(recyclableExecutions) : new ArrayList<ActivityExecution>());
     
@@ -510,10 +483,14 @@ public class ExecutionImpl implements
 
         if (recyclableExecutions.isEmpty()) {
           ActivityExecution outgoingExecution = concurrentRoot.createExecution();
+          outgoingExecution.setActive(true);
+          outgoingExecution.setConcurrent(true);
           outgoingExecutions.add(new OutgoingExecution(outgoingExecution, outgoingTransition, true));
           log.fine("new "+outgoingExecution+" created to take transition "+outgoingTransition);
         } else {
           ActivityExecution outgoingExecution = recyclableExecutions.remove(0);
+          outgoingExecution.setActive(true);
+          outgoingExecution.setConcurrent(true);
           outgoingExecutions.add(new OutgoingExecution(outgoingExecution, outgoingTransition, true));
           log.fine("recycled "+outgoingExecution+" to take transition "+outgoingTransition);
         }

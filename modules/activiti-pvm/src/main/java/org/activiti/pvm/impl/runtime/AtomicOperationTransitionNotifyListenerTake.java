@@ -47,6 +47,7 @@ public class AtomicOperationTransitionNotifyListenerTake implements AtomicOperat
       execution.setEventListenerIndex(0);
       execution.setEventName(null);
       execution.setEventSource(null);
+
       ActivityImpl activity = execution.getActivity();
       ActivityImpl nextScope = findNextScope(activity.getParent(), transition.getDestination());
       execution.setActivity(nextScope);

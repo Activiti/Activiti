@@ -43,4 +43,23 @@ public class AtomicOperationTransitionNotifyListenerEnd implements AtomicOperati
       execution.performOperation(TRANSITION_DESTROY_SCOPE);
     }
   }
+
+  protected boolean thereAreConcurrentExecutionsInSameScope(ExecutionImpl execution) {
+    if (execution.isScope()) {
+      return false;
+    }
+    ExecutionImpl parent = execution.getParent();
+    if (parent==null) {
+      return false;
+    }
+    for (ExecutionImpl concurrentExecution: parent.getExecutions()) {
+      if ( concurrentExecution.isConcurrent() 
+           && (!concurrentExecution.isScope())
+           && (parent.getScope()==execution.getActivity())
+         ) {
+        return true;
+      }
+    }
+    return false;
+  }
 }

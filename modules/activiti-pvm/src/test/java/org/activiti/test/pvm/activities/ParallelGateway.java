@@ -18,6 +18,7 @@ import java.util.logging.Logger;
 
 import org.activiti.pvm.activity.ActivityBehavior;
 import org.activiti.pvm.activity.ActivityExecution;
+import org.activiti.pvm.impl.runtime.ExecutionImpl;
 import org.activiti.pvm.process.PvmActivity;
 import org.activiti.pvm.process.PvmTransition;
 

@@ -33,8 +33,6 @@ public class OutgoingExecution {
   }
   
   public void take() {
-    outgoingExecution.setActive(true);
-    outgoingExecution.setConcurrent(true);
     outgoingExecution.take(outgoingTransition);
   }
 }
