@@ -30,6 +30,14 @@ import org.activiti.test.pvm.activities.WaitState;
  */
 public class PvmEmbeddedSubProcessTest extends PvmTestCase {
 
+  /** 
+   *           +------------------------------+
+   *           | embedded subprocess          |
+   * +-----+   |  +-----------+   +---------+ |   +---+
+   * |start|-->|  |startInside|-->|endInside| |-->|end|
+   * +-----+   |  +-----------+   +---------+ |   +---+
+   *           +------------------------------+
+   */
   public void testEmbeddedSubProcess() {
     PvmProcessDefinition processDefinition = new ProcessDefinitionBuilder()
       .createActivity("start")

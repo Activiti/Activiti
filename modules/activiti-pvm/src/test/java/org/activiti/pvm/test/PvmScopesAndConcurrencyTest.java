@@ -99,6 +99,7 @@ public class PvmScopesAndConcurrencyTest extends PvmTestCase {
     processInstance.start();
     
     List<String> expectedEvents = new ArrayList<String>();
+    expectedEvents.add("start on ProcessDefinition(scopes and concurrency)");
     expectedEvents.add("start on Activity(start)");
     expectedEvents.add("end on Activity(start)");
     expectedEvents.add("start on Activity(fork)");
@@ -208,6 +209,7 @@ public class PvmScopesAndConcurrencyTest extends PvmTestCase {
     processInstance.start();
     
     List<String> expectedEvents = new ArrayList<String>();
+    expectedEvents.add("start on ProcessDefinition(scopes and concurrency)");
     expectedEvents.add("start on Activity(start)");
     expectedEvents.add("end on Activity(start)");
     expectedEvents.add("start on Activity(fork)");
@@ -317,6 +319,7 @@ public class PvmScopesAndConcurrencyTest extends PvmTestCase {
     processInstance.start();
     
     List<String> expectedEvents = new ArrayList<String>();
+    expectedEvents.add("start on ProcessDefinition(scopes and concurrency)");
     expectedEvents.add("start on Activity(start)");
     expectedEvents.add("end on Activity(start)");
     expectedEvents.add("start on Activity(scope)");
@@ -425,6 +428,7 @@ public class PvmScopesAndConcurrencyTest extends PvmTestCase {
     processInstance.start();
     
     List<String> expectedEvents = new ArrayList<String>();
+    expectedEvents.add("start on ProcessDefinition(scopes and concurrency)");
     expectedEvents.add("start on Activity(start)");
     expectedEvents.add("end on Activity(start)");
     expectedEvents.add("start on Activity(fork)");

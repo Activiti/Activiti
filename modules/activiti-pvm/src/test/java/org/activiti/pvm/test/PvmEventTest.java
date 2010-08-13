@@ -33,6 +33,11 @@ import org.activiti.test.pvm.activities.WaitState;
  */
 public class PvmEventTest extends PvmTestCase {
 
+  /**
+   * +-------+   +-----+
+   * | start |-->| end |
+   * +-------+   +-----+
+   */
   public void testStartEndEvents() {
     EventCollector eventCollector = new EventCollector();
     
@@ -60,14 +65,17 @@ public class PvmEventTest extends PvmTestCase {
 
     List<String> expectedEvents = new ArrayList<String>();
     expectedEvents.add("start on ProcessDefinition(events)");
+    expectedEvents.add("start on Activity(start)");
     expectedEvents.add("end on Activity(start)");
     expectedEvents.add("take on (start)-->(end)");
     expectedEvents.add("start on Activity(end)");
+    expectedEvents.add("end on Activity(end)");
     expectedEvents.add("end on ProcessDefinition(events)");
 
-    assertEquals(expectedEvents, eventCollector.events);
+    assertEquals("expected "+expectedEvents+", but was \n"+eventCollector+"\n", expectedEvents, eventCollector.events);
   }
 
+  
   public void testNestedActivitiesEventsOnTransitionEvents() {
     EventCollector eventCollector = new EventCollector();
     
@@ -108,13 +116,14 @@ public class PvmEventTest extends PvmTestCase {
     
     List<String> expectedEvents = new ArrayList<String>();
     expectedEvents.add("start on ProcessDefinition(events)");
+    expectedEvents.add("start on Activity(start)");
     expectedEvents.add("end on Activity(start)");
     expectedEvents.add("take on (start)-->(wait)");
     expectedEvents.add("start on Activity(outerscope)");
     expectedEvents.add("start on Activity(innerscope)");
     expectedEvents.add("start on Activity(wait)");
 
-    assertEquals(expectedEvents, eventCollector.events);
+    assertEquals("expected "+expectedEvents+", but was \n"+eventCollector+"\n", expectedEvents, eventCollector.events);
 
     PvmExecution execution = processInstance.findExecution("wait");
     execution.signal(null, null);
@@ -123,7 +132,7 @@ public class PvmEventTest extends PvmTestCase {
     expectedEvents.add("end on Activity(innerscope)");
     expectedEvents.add("end on Activity(outerscope)");
 
-    assertEquals(expectedEvents, eventCollector.events);
+    assertEquals("expected "+expectedEvents+", but was \n"+eventCollector+"\n", expectedEvents, eventCollector.events); 
   }
 
   public void testEmbeddedSubProcessEvents() {
@@ -173,7 +182,7 @@ public class PvmEventTest extends PvmTestCase {
     expectedEvents.add("end on Activity(embeddedsubprocess)");
     expectedEvents.add("start on Activity(end)");
     
-    assertEquals(expectedEvents, eventCollector.events);
+    assertEquals("expected "+expectedEvents+", but was \n"+eventCollector+"\n", expectedEvents, eventCollector.events); 
   }
   
   public void testSimpleAutmaticConcurrencyEvents() {
@@ -223,6 +232,7 @@ public class PvmEventTest extends PvmTestCase {
     processInstance.start();
     
     List<String> expectedEvents = new ArrayList<String>();
+    expectedEvents.add("start on Activity(start)");
     expectedEvents.add("end on Activity(start)");
     expectedEvents.add("start on Activity(fork)");
     expectedEvents.add("end on Activity(fork)");
@@ -235,7 +245,8 @@ public class PvmEventTest extends PvmTestCase {
     expectedEvents.add("start on Activity(join)");
     expectedEvents.add("end on Activity(join)");
     expectedEvents.add("start on Activity(end)");
+    expectedEvents.add("end on Activity(end)");
     
-    assertEquals(expectedEvents, eventCollector.events);
+    assertEquals("expected "+expectedEvents+", but was \n"+eventCollector+"\n", expectedEvents, eventCollector.events); 
   }
 }

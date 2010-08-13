@@ -71,12 +71,12 @@ public abstract class ScopeImpl extends ProcessElementImpl implements PvmScope {
     return  activity;
   }
 
-  public boolean contains(ActivityImpl destination) {
-    if (namedActivities.containsKey(destination.getId())) {
+  public boolean contains(ActivityImpl activity) {
+    if (namedActivities.containsKey(activity.getId())) {
       return true;
     }
     for (ActivityImpl nestedActivity : activities) {
-      if (nestedActivity.contains(destination)) {
+      if (nestedActivity.contains(activity)) {
         return true;
       }
     }
