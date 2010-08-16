@@ -18,11 +18,14 @@ import org.activiti.engine.impl.el.ActivitiValueExpression;
 import org.activiti.engine.impl.util.ReflectUtil;
 import org.activiti.pvm.activity.ActivityBehavior;
 import org.activiti.pvm.activity.ActivityExecution;
+import org.activiti.pvm.activity.SignallableActivityBehavior;
 
 /**
  * @author dsyer
+ * @author Josh Long
+ * @author Tom Baeyens
  */
-public class ServiceInvocationActivityBehaviour implements ActivityBehavior {
+public class ServiceInvocationActivityBehaviour implements SignallableActivityBehavior {
 
   private final ActivitiValueExpression expression;
 
@@ -31,7 +34,6 @@ public class ServiceInvocationActivityBehaviour implements ActivityBehavior {
   }
 
   public void execute(ActivityExecution execution) throws Exception {
-    // FIXME: downcast
     Object object = expression.getValue(execution);
 
     if (object instanceof String) {
@@ -49,5 +51,25 @@ public class ServiceInvocationActivityBehaviour implements ActivityBehavior {
     }
 
   }
+
+  public void signal(ActivityExecution execution, String signalName, Object signalData) throws Exception {
+    Object object = expression.getValue(execution);
+
+    if (object instanceof String) {
+      String className = (String) object;
+
+      if (className != null) {
+        object = ReflectUtil.instantiate(className);
+      }
+    }
+
+    if (object instanceof SignallableActivityBehavior) {
+      ((SignallableActivityBehavior) object).signal(execution, signalName, signalData);
+    } else {
+      throw new ActivitiException("Service " + object + " is used in a serviceTask, but does not" + " implement the "
+              + SignallableActivityBehavior.class.getCanonicalName() + " interface");
+    }
+}
+
 
 }
