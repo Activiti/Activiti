@@ -99,8 +99,8 @@ public class AtomicOperationActivityEnd extends AbstractEventAtomicOperation {
         if (concurrentRoot.getExecutions().size()==1) {
           ExecutionImpl lastConcurrent = concurrentRoot.getExecutions().get(0);
           concurrentRoot.setActivity(lastConcurrent.getActivity());
-          lastConcurrent.remove();
           lastConcurrent.setReplacedBy(concurrentRoot);
+          lastConcurrent.remove();
         
         } else if (concurrentRoot.getExecutions().isEmpty()) {
           ActivityBehavior parentActivityBehavior = parentActivity.getActivityBehavior();

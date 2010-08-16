@@ -183,6 +183,7 @@ public class ExecutionImpl implements
   }
   
   public void remove() {
+    ensureParentInitialized();
     if (parent!=null) {
       parent.ensureExecutionsInitialized();
       parent.executions.remove(this);
@@ -375,6 +376,7 @@ public class ExecutionImpl implements
   // methods that translate to operations /////////////////////////////////////
 
   public void signal(String signalName, Object signalData) {
+    ensureActivityInitialized();
     SignallableActivityBehavior activityBehavior = (SignallableActivityBehavior) activity.getActivityBehavior();
     try {
       activityBehavior.signal(this, signalName, signalData);

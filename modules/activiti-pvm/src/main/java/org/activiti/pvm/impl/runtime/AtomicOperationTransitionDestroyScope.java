@@ -66,7 +66,7 @@ public class AtomicOperationTransitionDestroyScope implements AtomicOperation {
             lastConcurrent.setConcurrent(false);
             
           } else {
-            log.fine("replacing concurrent root "+concurrentRoot+" with last concurrent "+lastConcurrent);
+            log.fine("merging last concurrent "+lastConcurrent+" into concurrent root "+concurrentRoot);
             
             // We can't just merge the data of the lastConcurrent into the concurrentRoot.
             // This is because the concurrent root might be in a takeAll-loop.  So the 

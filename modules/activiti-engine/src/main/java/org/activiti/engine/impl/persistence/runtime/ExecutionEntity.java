@@ -61,9 +61,6 @@ public class ExecutionEntity extends ExecutionImpl implements PersistentObject, 
    */
   protected String activityId;
   
-  /** used to persist the scope field.  value of null indicates the process definition. */
-  protected String scopeActivityId;
-
   /**
    * persisted reference to the process instance.
    * 
@@ -277,7 +274,11 @@ public class ExecutionEntity extends ExecutionImpl implements PersistentObject, 
       .executionId(id)
       .executeList(CommandContext.getCurrent(), null);
     for (TaskEntity task : tasks) {
-      task.delete();
+      if (replacedBy!=null) {
+        task.setExecution(replacedBy);
+      } else {
+        task.delete();
+      }
     }
 
     // then delete execution
@@ -304,7 +305,7 @@ public class ExecutionEntity extends ExecutionImpl implements PersistentObject, 
     persistentState.put("activitiId", this.activityId);
     persistentState.put("isActive", this.isActive);
     persistentState.put("isConcurrent", this.isConcurrent);
-    persistentState.put("scopeActivityId", this.scopeActivityId);
+    persistentState.put("isScope", this.isScope);
     persistentState.put("parentId", parentId);
     persistentState.put("superExecution", this.superExecutionId);
     return persistentState;
@@ -358,11 +359,5 @@ public class ExecutionEntity extends ExecutionImpl implements PersistentObject, 
   }
   public void setCachedElContext(ELContext cachedElContext) {
     this.cachedElContext = cachedElContext;
-  }
-  public String getScopeActivityId() {
-    return scopeActivityId;
-  }
-  public void setScopeActivityId(String scopeActivityId) {
-    this.scopeActivityId = scopeActivityId;
   }
 }

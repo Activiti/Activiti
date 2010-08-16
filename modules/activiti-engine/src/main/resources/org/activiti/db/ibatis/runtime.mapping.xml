@@ -28,9 +28,9 @@
     update ACT_EXECUTION set
       PROC_DEF_ID_ = #{processDefinitionId, jdbcType=VARCHAR},
       ACTIVITY_ID_ = #{activityId, jdbcType=VARCHAR},
-      IS_ACTIVE_ = #{isActive, jdbcType=VARCHAR},
-      IS_CONCURRENT_ = #{isConcurrent, jdbcType=VARCHAR},
-      IS_SCOPE_ = #{isScope, jdbcType=VARCHAR},
+      IS_ACTIVE_ = #{isActive, jdbcType=BOOLEAN},
+      IS_CONCURRENT_ = #{isConcurrent, jdbcType=BOOLEAN},
+      IS_SCOPE_ = #{isScope, jdbcType=BOOLEAN},
       PARENT_ID_ = #{parentId, jdbcType=VARCHAR},
       SUPER_EXEC_ = #{superExecutionId, jdbcType=VARCHAR}
     where ID_ = #{id}

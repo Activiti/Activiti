@@ -93,7 +93,7 @@ public class CallActivityAdvancedTest extends ProcessEngineImplTestCase {
     Task taskB = tasks.get(1);
     assertEquals("Task A", taskA.getName());
     assertEquals("Task B", taskB.getName());
-    
+
     // Completing the first task should not end the subprocess
     taskService.complete(taskA.getId());
     assertEquals(1, taskQuery.list().size());

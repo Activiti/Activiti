@@ -117,6 +117,9 @@ public class TaskEntity implements Task, Serializable, PersistentObject {
     persistentState.put("assignee", this.assignee);
     persistentState.put("name", this.name);
     persistentState.put("priority", this.priority);
+    if (executionId!=null) {
+      persistentState.put("executionId", this.executionId);
+    }
     if (createTime!=null) {
       persistentState.put("createTime", this.createTime);
     }
