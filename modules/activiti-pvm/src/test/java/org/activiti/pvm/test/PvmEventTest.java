@@ -75,7 +75,17 @@ public class PvmEventTest extends PvmTestCase {
     assertEquals("expected "+expectedEvents+", but was \n"+eventCollector+"\n", expectedEvents, eventCollector.events);
   }
 
-  
+  /**
+   *         +--------------+
+   *         |outerscope    |
+   *         | +----------+ |
+   *         | |innerscope| |
+   * +-----+ | | +----+   | | +---+
+   * |start|---->|wait|------>|end|
+   * +-----+ | | +----+   | | +---+
+   *         | +----------+ |
+   *         +--------------+
+   */
   public void testNestedActivitiesEventsOnTransitionEvents() {
     EventCollector eventCollector = new EventCollector();
     
@@ -135,10 +145,19 @@ public class PvmEventTest extends PvmTestCase {
     assertEquals("expected "+expectedEvents+", but was \n"+eventCollector+"\n", expectedEvents, eventCollector.events); 
   }
 
+  /**
+   *           +------------------------------+
+   * +-----+   | +-----------+   +----------+ |   +---+
+   * |start|-->| |startInside|-->|endInsdide| |-->|end|
+   * +-----+   | +-----------+   +----------+ |   +---+
+   *           +------------------------------+
+   */
   public void testEmbeddedSubProcessEvents() {
     EventCollector eventCollector = new EventCollector();
     
-    PvmProcessDefinition processDefinition = new ProcessDefinitionBuilder()
+    PvmProcessDefinition processDefinition = new ProcessDefinitionBuilder("events")
+      .eventListener(EventListener.EVENTNAME_START, eventCollector)
+      .eventListener(EventListener.EVENTNAME_END, eventCollector)
       .createActivity("start")
         .initial()
         .behavior(new Automatic())
@@ -165,7 +184,7 @@ public class PvmEventTest extends PvmTestCase {
         .transition("end")
       .endActivity()
       .createActivity("end")
-        .behavior(new WaitState())
+        .behavior(new End())
         .eventListener(EventListener.EVENTNAME_START, eventCollector)
         .eventListener(EventListener.EVENTNAME_END, eventCollector)
       .endActivity()
@@ -175,20 +194,41 @@ public class PvmEventTest extends PvmTestCase {
     processInstance.start();
 
     List<String> expectedEvents = new ArrayList<String>();
+    expectedEvents.add("start on ProcessDefinition(events)");
+    expectedEvents.add("start on Activity(start)");
     expectedEvents.add("end on Activity(start)");
     expectedEvents.add("start on Activity(embeddedsubprocess)");
+    expectedEvents.add("start on Activity(startInside)");
     expectedEvents.add("end on Activity(startInside)");
     expectedEvents.add("start on Activity(endInside)");
+    expectedEvents.add("end on Activity(endInside)");
     expectedEvents.add("end on Activity(embeddedsubprocess)");
     expectedEvents.add("start on Activity(end)");
+    expectedEvents.add("end on Activity(end)");
+    expectedEvents.add("end on ProcessDefinition(events)");
     
     assertEquals("expected "+expectedEvents+", but was \n"+eventCollector+"\n", expectedEvents, eventCollector.events); 
   }
   
+  /**
+   *                   +--+
+   *              +--->|c1|---+
+   *              |    +--+   |
+   *              |           v
+   * +-----+   +----+       +----+   +---+
+   * |start|-->|fork|       |join|-->|end|
+   * +-----+   +----+       +----+   +---+
+   *              |           ^
+   *              |    +--+   |
+   *              +--->|c2|---+
+   *                   +--+
+   */
   public void testSimpleAutmaticConcurrencyEvents() {
     EventCollector eventCollector = new EventCollector();
     
-    PvmProcessDefinition processDefinition = new ProcessDefinitionBuilder()
+    PvmProcessDefinition processDefinition = new ProcessDefinitionBuilder("events")
+      .eventListener(EventListener.EVENTNAME_START, eventCollector)
+      .eventListener(EventListener.EVENTNAME_END, eventCollector)
       .createActivity("start")
         .initial()
         .behavior(new Automatic())
@@ -232,6 +272,7 @@ public class PvmEventTest extends PvmTestCase {
     processInstance.start();
     
     List<String> expectedEvents = new ArrayList<String>();
+    expectedEvents.add("start on ProcessDefinition(events)");
     expectedEvents.add("start on Activity(start)");
     expectedEvents.add("end on Activity(start)");
     expectedEvents.add("start on Activity(fork)");
@@ -246,6 +287,7 @@ public class PvmEventTest extends PvmTestCase {
     expectedEvents.add("end on Activity(join)");
     expectedEvents.add("start on Activity(end)");
     expectedEvents.add("end on Activity(end)");
+    expectedEvents.add("end on ProcessDefinition(events)");
     
     assertEquals("expected "+expectedEvents+", but was \n"+eventCollector+"\n", expectedEvents, eventCollector.events); 
   }

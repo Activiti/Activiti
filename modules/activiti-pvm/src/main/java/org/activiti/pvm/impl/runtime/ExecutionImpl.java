@@ -388,9 +388,9 @@ public class ExecutionImpl implements
     performOperation(AtomicOperation.TRANSITION_NOTIFY_LISTENER_END);
   }
   
-  public void executeActivity(ActivityImpl activity) {
-    setActivity(activity);
-    performOperation(AtomicOperation.ACTIVITY_EXECUTE);
+  public void executeActivity(PvmActivity activity) {
+    setActivity((ActivityImpl) activity);
+    performOperation(AtomicOperation.ACTIVITY_START);
   }
 
   public List<ActivityExecution> findInactiveConcurrentExecutions(PvmActivity activity) {
@@ -508,12 +508,6 @@ public class ExecutionImpl implements
       }
     }
   }
-  
-  public void executeActivity(PvmActivity activity) {
-    setActivity((ActivityImpl) activity);
-    performOperation(AtomicOperation.ACTIVITY_EXECUTE);
-  }
-
   
   protected void performOperation(AtomicOperation executionOperation) {
     this.nextOperation = executionOperation;

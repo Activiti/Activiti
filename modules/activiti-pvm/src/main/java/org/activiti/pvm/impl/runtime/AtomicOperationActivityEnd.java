@@ -13,6 +13,8 @@
 
 package org.activiti.pvm.impl.runtime;
 
+import org.activiti.pvm.activity.ActivityBehavior;
+import org.activiti.pvm.activity.CompositeActivityBehavior;
 import org.activiti.pvm.event.EventListener;
 import org.activiti.pvm.impl.process.ActivityImpl;
 import org.activiti.pvm.impl.process.ScopeImpl;
@@ -38,28 +40,33 @@ public class AtomicOperationActivityEnd extends AbstractEventAtomicOperation {
     ActivityImpl activity = execution.getActivity();
     ActivityImpl parentActivity = activity.getParentActivity();
 
+    // if the execution is a single path of execution inside the process definition scope
     if (execution.isProcessInstance()) {
       execution.performOperation(PROCESS_END);
       
     } else if (!execution.isConcurrent()) {
 
-      if (!activity.isScope()) {
+      if (parentActivity.isScope()) {
+        ActivityBehavior parentActivityBehavior = parentActivity.getActivityBehavior();
+        if (parentActivityBehavior instanceof CompositeActivityBehavior) {
+          execution.setActivity(parentActivity);
+          CompositeActivityBehavior compositeActivityBehavior = (CompositeActivityBehavior) parentActivityBehavior;
+          compositeActivityBehavior.lastExecutionEnded(execution);
+
+        } else {
+          // default destroy scope behavior
+          ExecutionImpl parentScopeExecution = execution.getParent();
+          execution.destroy();
+          execution.remove();
+          parentScopeExecution.performOperation(ACTIVITY_END);
+        }
+        
+      } else {
         execution.setActivity(parentActivity);
         execution.performOperation(ACTIVITY_END);
-
-      } else {
-        ExecutionImpl parent = execution.getParent();
-        execution.destroy();
-        execution.remove();
         
-        if (parentActivity!=null) {
-          parent.setActivity(parentActivity);
-          parent.performOperation(ACTIVITY_END);
-        } else {
-          parent.performOperation(PROCESS_END);
-        }
       }
-      
+            
     } else if (execution.isScope() && !activity.isScope()) {
       execution.setActivity(parentActivity);
       execution.performOperation(ACTIVITY_END);
@@ -68,6 +75,7 @@ public class AtomicOperationActivityEnd extends AbstractEventAtomicOperation {
       if (execution.isScope()) {
         execution.destroy();
       }
+      
       
       if ( parentActivity!=null 
            && !parentActivity.isScope()
@@ -85,15 +93,22 @@ public class AtomicOperationActivityEnd extends AbstractEventAtomicOperation {
           ExecutionImpl lastConcurrent = concurrentRoot.getExecutions().get(0);
           concurrentRoot.setActivity(lastConcurrent.getActivity());
           lastConcurrent.remove();
+        
+        } else if (concurrentRoot.getExecutions().isEmpty()) {
+          ActivityBehavior parentActivityBehavior = parentActivity.getActivityBehavior();
+          if (parentActivityBehavior instanceof CompositeActivityBehavior) {
+            CompositeActivityBehavior compositeActivityBehavior = (CompositeActivityBehavior) parentActivityBehavior;
+            compositeActivityBehavior.lastExecutionEnded(execution);
+          }
         }
       }
     }
   }
 
   protected boolean isExecutionAloneInParent(ExecutionImpl execution) {
-    ScopeImpl parentActivity = execution.getActivity().getParent();
+    ScopeImpl parentScope = execution.getActivity().getParent();
     for (ExecutionImpl other: execution.getParent().getExecutions()) {
-      if (other!=execution && parentActivity.contains(other.getActivity())) {
+      if (other!=execution && parentScope.contains(other.getActivity())) {
         return false;
       }
     }
