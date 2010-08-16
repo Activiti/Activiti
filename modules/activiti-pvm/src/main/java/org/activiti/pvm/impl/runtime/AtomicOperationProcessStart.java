@@ -38,6 +38,9 @@ public class AtomicOperationProcessStart extends AbstractEventAtomicOperation {
 
   @Override
   protected void eventNotificationsCompleted(ExecutionImpl execution) {
+    ProcessDefinitionImpl processDefinition = execution.getProcessDefinition();
+    List<ActivityImpl> initialActivityStack = processDefinition.getInitialActivityStack();
+    execution.setActivity(initialActivityStack.get(0));
     execution.performOperation(PROCESS_START_INITIAL);
   }
 }

@@ -123,7 +123,7 @@ public class PvmScopeAndEventsTest extends PvmTestCase {
     expectedEvents.add("end on Activity(start)");
     expectedEvents.add("start on Activity(waitInFirst)");
 
-    assertEquals(expectedEvents, eventCollector.events);
+    assertEquals("expected "+expectedEvents+", but was \n"+eventCollector+"\n", expectedEvents, eventCollector.events); 
     eventCollector.events.clear();
     
     PvmExecution execution = processInstance.findExecution("waitInFirst");
@@ -136,7 +136,8 @@ public class PvmScopeAndEventsTest extends PvmTestCase {
     expectedEvents.add("start on Activity(secondInnerScope)");
     expectedEvents.add("start on Activity(secondMostInnerNestedActivity)");
     expectedEvents.add("start on Activity(waitInSecond)");
-    assertEquals(expectedEvents, eventCollector.events);
+
+    assertEquals("expected "+expectedEvents+", but was \n"+eventCollector+"\n", expectedEvents, eventCollector.events); 
     eventCollector.events.clear();
     
     execution = processInstance.findExecution("waitInSecond");
@@ -151,7 +152,8 @@ public class PvmScopeAndEventsTest extends PvmTestCase {
     expectedEvents.add("end on Activity(outerScope)");
     expectedEvents.add("end on Activity(mostOuterNestedActivity)");
     expectedEvents.add("end on ProcessDefinition(scopes and events)");
-    assertEquals(expectedEvents, eventCollector.events);
+    
+    assertEquals("expected "+expectedEvents+", but was \n"+eventCollector+"\n", expectedEvents, eventCollector.events); 
     eventCollector.events.clear();
   }
 }

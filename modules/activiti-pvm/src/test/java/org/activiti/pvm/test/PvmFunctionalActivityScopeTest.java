@@ -29,6 +29,11 @@ import org.activiti.test.pvm.activities.WaitState;
  */
 public class PvmFunctionalActivityScopeTest extends PvmTestCase {
 
+  /**
+   * +-----+   +----------+   +---+
+   * |start|-->|scopedWait|-->|end|
+   * +-----+   +----------+   +---+
+   */
   public void testWaitStateScope() {
     PvmProcessDefinition processDefinition = new ProcessDefinitionBuilder()
       .createActivity("start")
@@ -49,10 +54,10 @@ public class PvmFunctionalActivityScopeTest extends PvmTestCase {
     PvmProcessInstance processInstance = processDefinition.createProcessInstance();
     processInstance.start();
     
-    PvmExecution activityInstance = processInstance.findExecution("scopedWait");
-    assertNotNull(activityInstance);
+    PvmExecution execution = processInstance.findExecution("scopedWait");
+    assertNotNull(execution);
     
-    activityInstance.signal(null, null);
+    execution.signal(null, null);
   
     assertEquals(new ArrayList<String>(), processInstance.findActiveActivityIds());
     assertTrue(processInstance.isEnded());

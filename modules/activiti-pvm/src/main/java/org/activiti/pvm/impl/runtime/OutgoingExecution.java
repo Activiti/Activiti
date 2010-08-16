@@ -13,7 +13,6 @@
 
 package org.activiti.pvm.impl.runtime;
 
-import org.activiti.pvm.activity.ActivityExecution;
 import org.activiti.pvm.process.PvmTransition;
 
 /**
@@ -22,17 +21,20 @@ import org.activiti.pvm.process.PvmTransition;
  */
 public class OutgoingExecution {
   
-  protected ActivityExecution outgoingExecution;
+  protected ExecutionImpl outgoingExecution;
   protected PvmTransition outgoingTransition;
   protected boolean isNew;
 
-  public OutgoingExecution(ActivityExecution outgoingExecution, PvmTransition outgoingTransition, boolean isNew) {
+  public OutgoingExecution(ExecutionImpl outgoingExecution, PvmTransition outgoingTransition, boolean isNew) {
     this.outgoingExecution = outgoingExecution;
     this.outgoingTransition = outgoingTransition;
     this.isNew = isNew;
   }
   
   public void take() {
+    if (outgoingExecution.getReplacedBy()!=null) {
+      outgoingExecution = outgoingExecution.getReplacedBy();
+    }
     outgoingExecution.take(outgoingTransition);
   }
 }

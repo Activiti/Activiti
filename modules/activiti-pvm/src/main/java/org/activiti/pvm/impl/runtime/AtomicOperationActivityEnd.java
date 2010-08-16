@@ -42,7 +42,13 @@ public class AtomicOperationActivityEnd extends AbstractEventAtomicOperation {
 
     // if the execution is a single path of execution inside the process definition scope
     if (execution.isProcessInstance()) {
-      execution.performOperation(PROCESS_END);
+      if (parentActivity!=null) {
+        execution.setActivity(parentActivity);
+        execution.performOperation(ACTIVITY_END);
+        
+      } else {
+        execution.performOperation(PROCESS_END);
+      }
       
     } else if (!execution.isConcurrent()) {
 
@@ -58,6 +64,7 @@ public class AtomicOperationActivityEnd extends AbstractEventAtomicOperation {
           ExecutionImpl parentScopeExecution = execution.getParent();
           execution.destroy();
           execution.remove();
+          parentScopeExecution.setActivity(parentActivity);
           parentScopeExecution.performOperation(ACTIVITY_END);
         }
         
@@ -93,6 +100,7 @@ public class AtomicOperationActivityEnd extends AbstractEventAtomicOperation {
           ExecutionImpl lastConcurrent = concurrentRoot.getExecutions().get(0);
           concurrentRoot.setActivity(lastConcurrent.getActivity());
           lastConcurrent.remove();
+          lastConcurrent.setReplacedBy(concurrentRoot);
         
         } else if (concurrentRoot.getExecutions().isEmpty()) {
           ActivityBehavior parentActivityBehavior = parentActivity.getActivityBehavior();

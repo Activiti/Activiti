@@ -22,6 +22,7 @@ import java.util.logging.Logger;
 
 import org.activiti.pvm.PvmException;
 import org.activiti.pvm.activity.ActivityExecution;
+import org.activiti.pvm.activity.SignallableActivityBehavior;
 import org.activiti.pvm.event.EventListenerExecution;
 import org.activiti.pvm.impl.process.ActivityImpl;
 import org.activiti.pvm.impl.process.ProcessDefinitionImpl;
@@ -101,7 +102,14 @@ public class ExecutionImpl implements
   protected PvmProcessElement eventSource;
   protected int eventListenerIndex = 0;
   protected String deleteReason;
-
+  
+  // replaced by //////////////////////////////////////////////////////////////
+  
+  /** when execution structure is pruned during a takeAll, then 
+   * the original execution has to be resolved to the replaced execution.
+   * @see {@link #takeAll(List, List)} {@link OutgoingExecution} */
+  protected ExecutionImpl replacedBy;
+  
   // atomic operations ////////////////////////////////////////////////////////
 
   /** next operation.  process execution is in fact runtime interpretation of the process model.
@@ -377,7 +385,14 @@ public class ExecutionImpl implements
   // methods that translate to operations /////////////////////////////////////
 
   public void signal(String signalName, Object signalData) {
-    performOperation(new AtomicOperationSignal(signalName, signalData));
+    SignallableActivityBehavior activityBehavior = (SignallableActivityBehavior) activity.getActivityBehavior();
+    try {
+      activityBehavior.signal(this, signalName, signalData);
+    } catch (RuntimeException e) {
+      throw e;
+    } catch (Exception e) {
+      throw new PvmException("couldn't process signal '"+signalName+"' on activity '"+activity.getId()+"': "+e.getMessage(), e);
+    }
   }
   
   public void take(PvmTransition transition) {
@@ -424,6 +439,9 @@ public class ExecutionImpl implements
 
   @SuppressWarnings("unchecked")
   public void takeAll(List<PvmTransition> transitions, List<ActivityExecution> recyclableExecutions) {
+    transitions = new ArrayList<PvmTransition>(transitions);
+    recyclableExecutions = (recyclableExecutions!=null ? new ArrayList<ActivityExecution>(recyclableExecutions) : new ArrayList<ActivityExecution>());
+    
     if (recyclableExecutions.size()>1) {
       for (ActivityExecution recyclableExecution: recyclableExecutions) {
         if (((ExecutionImpl)recyclableExecution).isScope()) {
@@ -432,9 +450,6 @@ public class ExecutionImpl implements
       }
     }
 
-    transitions = new ArrayList<PvmTransition>(transitions);
-    recyclableExecutions = (recyclableExecutions!=null ? new ArrayList<ActivityExecution>(recyclableExecutions) : new ArrayList<ActivityExecution>());
-    
     ExecutionImpl concurrentRoot = (isConcurrent() ? getParent() : this);
     List<ExecutionImpl> concurrentActiveExecutions = new ArrayList<ExecutionImpl>();
     for (ExecutionImpl execution: concurrentRoot.getExecutions()) {
@@ -482,13 +497,13 @@ public class ExecutionImpl implements
         PvmTransition outgoingTransition = transitions.remove(0);
 
         if (recyclableExecutions.isEmpty()) {
-          ActivityExecution outgoingExecution = concurrentRoot.createExecution();
+          ExecutionImpl outgoingExecution = concurrentRoot.createExecution();
           outgoingExecution.setActive(true);
           outgoingExecution.setConcurrent(true);
           outgoingExecutions.add(new OutgoingExecution(outgoingExecution, outgoingTransition, true));
           log.fine("new "+outgoingExecution+" created to take transition "+outgoingTransition);
         } else {
-          ActivityExecution outgoingExecution = recyclableExecutions.remove(0);
+          ExecutionImpl outgoingExecution = (ExecutionImpl) recyclableExecutions.remove(0);
           outgoingExecution.setActive(true);
           outgoingExecution.setConcurrent(true);
           outgoingExecutions.add(new OutgoingExecution(outgoingExecution, outgoingTransition, true));
@@ -684,5 +699,11 @@ public class ExecutionImpl implements
   }
   public void setScope(ScopeImpl scope) {
     this.scope = scope;
+  }
+  public ExecutionImpl getReplacedBy() {
+    return replacedBy;
+  }
+  public void setReplacedBy(ExecutionImpl replacedBy) {
+    this.replacedBy = replacedBy;
   }
 }

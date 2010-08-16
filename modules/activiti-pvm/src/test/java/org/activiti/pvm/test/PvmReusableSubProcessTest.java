@@ -18,7 +18,6 @@ import org.activiti.pvm.process.PvmProcessDefinition;
 import org.activiti.pvm.runtime.PvmProcessInstance;
 import org.activiti.test.pvm.activities.Automatic;
 import org.activiti.test.pvm.activities.End;
-import org.activiti.test.pvm.activities.ParallelGateway;
 import org.activiti.test.pvm.activities.ReusableSubProcess;
 
 
@@ -32,9 +31,9 @@ public class PvmReusableSubProcessTest extends PvmTestCase {
       .createActivity("start")
         .initial()
         .behavior(new Automatic())
-        .transition("end")
+        .transition("subEnd")
       .endActivity()
-      .createActivity("end")
+      .createActivity("subEnd")
         .behavior(new End())
       .endActivity()
     .buildProcessDefinition();
@@ -47,9 +46,9 @@ public class PvmReusableSubProcessTest extends PvmTestCase {
       .endActivity()
       .createActivity("subprocess")
         .behavior(new ReusableSubProcess(subProcessDefinition))
-        .transition("end")
+        .transition("superEnd")
       .endActivity()
-      .createActivity("end")
+      .createActivity("superEnd")
         .behavior(new End())
       .endActivity()
     .buildProcessDefinition();

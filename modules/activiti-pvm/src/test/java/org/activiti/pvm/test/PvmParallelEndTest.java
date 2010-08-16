@@ -26,6 +26,19 @@ import org.activiti.test.pvm.activities.ParallelGateway;
  */
 public class PvmParallelEndTest extends PvmTestCase {
 
+  /**
+   *                   +----+
+   *              +--->|end1|
+   *              |    +----+
+   *              |        
+   * +-----+   +----+      
+   * |start|-->|fork|      
+   * +-----+   +----+      
+   *              |        
+   *              |    +----+
+   *              +--->|end2|
+   *                   +----+
+   */
   public void testParallelEnd() {
     PvmProcessDefinition processDefinition = new ProcessDefinitionBuilder()
       .createActivity("start")

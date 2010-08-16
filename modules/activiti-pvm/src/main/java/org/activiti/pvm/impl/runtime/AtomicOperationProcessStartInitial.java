@@ -45,12 +45,8 @@ public class AtomicOperationProcessStartInitial extends AbstractEventAtomicOpera
 
     } else {
       List<ActivityImpl> initialActivityStack = processDefinition.getInitialActivityStack();
-      if (activity==null) {
-        activity = initialActivityStack.get(0);
-      } else {
-        int index = initialActivityStack.indexOf(activity);
-        activity = initialActivityStack.get(index+1);
-      }
+      int index = initialActivityStack.indexOf(activity);
+      activity = initialActivityStack.get(index+1);
 
       ExecutionImpl executionToUse = null;
       if (activity.isScope()) {
@@ -59,7 +55,7 @@ public class AtomicOperationProcessStartInitial extends AbstractEventAtomicOpera
         executionToUse = execution;
       }
       executionToUse.setActivity(activity);
-      executionToUse.performOperation(PROCESS_START);
+      executionToUse.performOperation(PROCESS_START_INITIAL);
     }
   }
 }
