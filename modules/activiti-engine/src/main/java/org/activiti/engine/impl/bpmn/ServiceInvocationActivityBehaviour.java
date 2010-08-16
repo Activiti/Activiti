@@ -69,7 +69,5 @@ public class ServiceInvocationActivityBehaviour implements SignallableActivityBe
       throw new ActivitiException("Service " + object + " is used in a serviceTask, but does not" + " implement the "
               + SignallableActivityBehavior.class.getCanonicalName() + " interface");
     }
-}
-
-
+  }
 }
