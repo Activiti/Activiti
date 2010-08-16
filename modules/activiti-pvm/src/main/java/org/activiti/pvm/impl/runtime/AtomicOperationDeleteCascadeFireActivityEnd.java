@@ -13,8 +13,6 @@
 
 package org.activiti.pvm.impl.runtime;
 
-import java.util.List;
-
 import org.activiti.pvm.event.EventListener;
 import org.activiti.pvm.impl.process.ActivityImpl;
 import org.activiti.pvm.impl.process.ScopeImpl;
@@ -23,53 +21,45 @@ import org.activiti.pvm.impl.process.ScopeImpl;
 /**
  * @author Tom Baeyens
  */
-public class AtomicOperationDeleteCascadeFireActivityEnd implements AtomicOperation {
+public class AtomicOperationDeleteCascadeFireActivityEnd extends AbstractEventAtomicOperation {
 
-  public void execute(ExecutionImpl execution) {
+  @Override
+  protected ScopeImpl getScope(ExecutionImpl execution) {
     ActivityImpl activity = execution.getActivity();
-    ScopeImpl scope = null;
 
     if (activity!=null) {
-      scope = activity;
+      return activity;
     } else {
-      scope = execution.getProcessDefinition();
+      return execution.getProcessDefinition();
     }
-    
-    List<EventListener> eventListeners = scope.getEventListeners(EventListener.EVENTNAME_END);
-    int eventListenerIndex = execution.getEventListenerIndex();
-    
-    if (eventListeners.size()>eventListenerIndex) {
-      execution.setEventName(EventListener.EVENTNAME_END);
-      execution.setEventSource(scope);
-      EventListener listener = eventListeners.get(eventListenerIndex);
-      listener.notify(execution);
-      execution.setEventListenerIndex(eventListenerIndex+1);
-      execution.performOperation(this);
+  }
 
-    } else {
-      execution.setEventListenerIndex(0);
-      execution.setEventName(null);
-      execution.setEventSource(null);
+  @Override
+  protected String getEventName() {
+    return EventListener.EVENTNAME_END;
+  }
+
+  @Override
+  protected void eventNotificationsCompleted(ExecutionImpl execution) {
+    ActivityImpl activity = execution.getActivity();
+    if ( (execution.isScope())
+            && (activity!=null)
+            && (!activity.isScope())
+          )  {
+      execution.setActivity(activity.getParentActivity());
+      execution.performOperation(AtomicOperation.DELETE_CASCADE_FIRE_ACTIVITY_END);
       
-      if ( (execution.isScope())
-           && (activity!=null)
-           && (!activity.isScope())
-         )  {
-        execution.setActivity(activity.getParentActivity());
-        execution.performOperation(AtomicOperation.DELETE_CASCADE_FIRE_ACTIVITY_END);
-        
-      } else {
-        ExecutionImpl parent = execution.getParent();
-        
-        if (execution.isScope()) {
-          execution.destroy();
-        }
-
-        execution.remove();
-        
-        if (parent!=null) {
-          parent.performOperation(AtomicOperation.DELETE_CASCADE);
-        }
+    } else {
+      ExecutionImpl parent = execution.getParent();
+      
+      if (execution.isScope()) {
+        execution.destroy();
+      }
+ 
+      execution.remove();
+      
+      if (parent!=null) {
+        parent.performOperation(AtomicOperation.DELETE_CASCADE);
       }
     }
   }

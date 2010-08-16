@@ -13,48 +13,39 @@
 
 package org.activiti.pvm.impl.runtime;
 
-import java.util.List;
-
 import org.activiti.pvm.activity.SubProcessActivityBehavior;
 import org.activiti.pvm.event.EventListener;
-import org.activiti.pvm.impl.process.ProcessDefinitionImpl;
+import org.activiti.pvm.impl.process.ScopeImpl;
 
 
 /**
  * @author Tom Baeyens
  */
-public class AtomicOperationProcessEnd implements AtomicOperation {
+public class AtomicOperationProcessEnd extends AbstractEventAtomicOperation {
 
-  public void execute(ExecutionImpl execution) {
-    ProcessDefinitionImpl processDefinition = execution.getProcessDefinition();
-    List<EventListener> eventListeners = processDefinition.getEventListeners(EventListener.EVENTNAME_END);
-    int eventListenerIndex = execution.getEventListenerIndex();
-    
-    if (eventListeners.size()>eventListenerIndex) {
-      execution.setEventName(EventListener.EVENTNAME_END);
-      execution.setEventSource(processDefinition);
-      EventListener listener = eventListeners.get(eventListenerIndex);
-      listener.notify(execution);
-      execution.setEventListenerIndex(eventListenerIndex+1);
-      execution.performOperation(this);
+  @Override
+  protected ScopeImpl getScope(ExecutionImpl execution) {
+    return execution.getProcessDefinition();
+  }
 
-    } else {
-      execution.setEventListenerIndex(0);
-      execution.setEventName(null);
-      execution.setEventSource(null);
-      
-      execution.destroy();
-      execution.remove();
+  @Override
+  protected String getEventName() {
+    return EventListener.EVENTNAME_END;
+  }
 
-      ExecutionImpl superExecution = execution.getSuperExecution();
-      if (superExecution!=null) {
-        superExecution.setSubProcessInstance(null);
-        SubProcessActivityBehavior subProcessActivityBehavior = (SubProcessActivityBehavior) superExecution.getActivity().getActivityBehavior();
-        try {
-          subProcessActivityBehavior.completed(superExecution);
-        } catch (Exception e) {
-          e.printStackTrace();
-        }
+  @Override
+  protected void eventNotificationsCompleted(ExecutionImpl execution) {
+    execution.destroy();
+    execution.remove();
+
+    ExecutionImpl superExecution = execution.getSuperExecution();
+    if (superExecution!=null) {
+      superExecution.setSubProcessInstance(null);
+      SubProcessActivityBehavior subProcessActivityBehavior = (SubProcessActivityBehavior) superExecution.getActivity().getActivityBehavior();
+      try {
+        subProcessActivityBehavior.completed(superExecution);
+      } catch (Exception e) {
+        e.printStackTrace();
       }
     }
   }

@@ -34,6 +34,106 @@ import org.activiti.test.pvm.activities.WaitState;
 public class PvmScopesAndConcurrencyTest extends PvmTestCase {
 
   /**
+   *         +---------+ 
+   *         |scope    |  +--+
+   *         |      +---->|c1|
+   *         |      |  |  +--+
+   *         |      |  |
+   * +-----+ |  +----+ |  +--+ 
+   * |start|--->|fork|--->|c2|
+   * +-----+ |  +----+ |  +--+
+   *         |      |  |
+   *         |      |  |  +--+
+   *         |      +---->|c3|
+   *         |         |  +--+
+   *         +---------+
+   */
+  public void testConcurrentPathsComingOutOfScope() {
+    PvmProcessDefinition processDefinition = new ProcessDefinitionBuilder()
+      .createActivity("start")
+        .initial()
+        .behavior(new Automatic())
+        .transition("fork")
+      .endActivity()
+      .createActivity("scope")
+        .scope()
+        .createActivity("fork")
+          .behavior(new ParallelGateway())
+          .transition("c1")
+          .transition("c2")
+          .transition("c3")
+        .endActivity()
+      .endActivity()
+      .createActivity("c1")
+        .behavior(new WaitState())
+      .endActivity()
+      .createActivity("c2")
+        .behavior(new WaitState())
+      .endActivity()
+      .createActivity("c3")
+        .behavior(new WaitState())
+      .endActivity()
+    .buildProcessDefinition();
+    
+    PvmProcessInstance processInstance = processDefinition.createProcessInstance(); 
+    processInstance.start();
+    
+    List<String> activeActivityIds = processInstance.findActiveActivityIds();
+    List<String> expectedActiveActivityIds = new ArrayList<String>();
+    expectedActiveActivityIds.add("c3");
+    expectedActiveActivityIds.add("c1");
+    expectedActiveActivityIds.add("c2");
+    
+    assertEquals(expectedActiveActivityIds, activeActivityIds);
+  }
+
+  /**
+   *                      +------------+
+   *                      |scope       |
+   *                  +----------+     |
+   *                  |   |      v     |
+   * +-----+   +--------+ |   +------+ | 
+   * |start|-->|parallel|---->|inside| |
+   * +-----+   +--------+ |   +------+ |
+   *                  |   |      ^     |
+   *                  +----------+     |
+   *                      |            |
+   *                      +------------+
+   */
+  public void testConcurrentPathsGoingIntoScope() {
+    PvmProcessDefinition processDefinition = new ProcessDefinitionBuilder()
+      .createActivity("start")
+        .initial()
+        .behavior(new Automatic())
+        .transition("parallel")
+      .endActivity()
+      .createActivity("parallel")
+        .behavior(new ParallelGateway())
+        .transition("inside")
+        .transition("inside")
+        .transition("inside")
+      .endActivity()
+      .createActivity("scope")
+        .scope()
+        .createActivity("inside")
+          .behavior(new WaitState())
+        .endActivity()
+      .endActivity()
+    .buildProcessDefinition();
+    
+    PvmProcessInstance processInstance = processDefinition.createProcessInstance(); 
+    processInstance.start();
+    
+    List<String> activeActivityIds = processInstance.findActiveActivityIds();
+    List<String> expectedActiveActivityIds = new ArrayList<String>();
+    expectedActiveActivityIds.add("inside");
+    expectedActiveActivityIds.add("inside");
+    expectedActiveActivityIds.add("inside");
+    
+    assertEquals(expectedActiveActivityIds, activeActivityIds);
+  }
+
+  /**
    *                      +---------+
    *                      | +----+  |
    *                  +---->| c1 |------+
@@ -374,7 +474,7 @@ public class PvmScopesAndConcurrencyTest extends PvmTestCase {
    *                      | +----+             |
    *                      +--------------------+
    */
-  public void testConcurrentPathsGoingIntoScope() {
+  public void testConcurrentPathsJoiningInsideScope() {
     EventCollector eventCollector = new EventCollector();
     
     PvmProcessDefinition processDefinition = new ProcessDefinitionBuilder("scopes and concurrency")

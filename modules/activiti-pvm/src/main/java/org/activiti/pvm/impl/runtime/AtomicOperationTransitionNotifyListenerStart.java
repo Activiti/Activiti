@@ -12,47 +12,40 @@
  */
 package org.activiti.pvm.impl.runtime;
 
-import java.util.List;
-
 import org.activiti.pvm.event.EventListener;
 import org.activiti.pvm.impl.process.ActivityImpl;
+import org.activiti.pvm.impl.process.ScopeImpl;
 import org.activiti.pvm.impl.process.TransitionImpl;
 
 
 /**
  * @author Tom Baeyens
  */
-public class AtomicOperationTransitionNotifyListenerStart implements AtomicOperation {
+public class AtomicOperationTransitionNotifyListenerStart extends AbstractEventAtomicOperation {
 
-  public void execute(ExecutionImpl execution) {
+  @Override
+  protected ScopeImpl getScope(ExecutionImpl execution) {
+    return execution.getActivity();
+  }
+
+  @Override
+  protected String getEventName() {
+    return EventListener.EVENTNAME_START;
+  }
+
+  @Override
+  protected void eventNotificationsCompleted(ExecutionImpl execution) {
+    TransitionImpl transition = execution.getTransition();
+    ActivityImpl destination = transition.getDestination();
     ActivityImpl activity = execution.getActivity();
-    List<EventListener> eventListeners = activity.getEventListeners(EventListener.EVENTNAME_START);
-    int eventListenerIndex = execution.getEventListenerIndex();
-    
-    if (eventListeners.size()>eventListenerIndex) {
-      execution.setEventName(EventListener.EVENTNAME_START);
-      execution.setEventSource(activity);
-      EventListener listener = eventListeners.get(eventListenerIndex);
-      listener.notify(execution);
-      execution.setEventListenerIndex(eventListenerIndex+1);
-      execution.performOperation(this);
-
+    if (activity!=destination) {
+      ActivityImpl nextScope = AtomicOperationTransitionNotifyListenerTake.findNextScope(activity, destination);
+      execution.setActivity(nextScope);
+      execution.performOperation(TRANSITION_CREATE_SCOPE);
     } else {
-      execution.setEventListenerIndex(0);
-      execution.setEventName(null);
-      execution.setEventSource(null);
-
-      TransitionImpl transition = execution.getTransition();
-      ActivityImpl destination = transition.getDestination();
-      if (execution.getActivity()!=destination) {
-        ActivityImpl nextScope = AtomicOperationTransitionNotifyListenerTake.findNextScope(activity, destination);
-        execution.setActivity(nextScope);
-        execution.performOperation(TRANSITION_CREATE_SCOPE);
-      } else {
-        execution.setTransition(null);
-        execution.setActivity(destination);
-        execution.performOperation(ACTIVITY_EXECUTE);
-      }
+      execution.setTransition(null);
+      execution.setActivity(destination);
+      execution.performOperation(ACTIVITY_EXECUTE);
     }
   }
 }

@@ -18,10 +18,12 @@ import java.util.List;
 
 import org.activiti.pvm.ProcessDefinitionBuilder;
 import org.activiti.pvm.process.PvmProcessDefinition;
+import org.activiti.pvm.runtime.PvmExecution;
 import org.activiti.pvm.runtime.PvmProcessInstance;
 import org.activiti.test.pvm.activities.Automatic;
 import org.activiti.test.pvm.activities.EmbeddedSubProcess;
 import org.activiti.test.pvm.activities.End;
+import org.activiti.test.pvm.activities.ParallelGateway;
 import org.activiti.test.pvm.activities.WaitState;
 
 
@@ -69,5 +71,127 @@ public class PvmEmbeddedSubProcessTest extends PvmTestCase {
     expectedActiveActivityIds.add("end");
       
     assertEquals(expectedActiveActivityIds, processInstance.findActiveActivityIds());
+  }
+
+  /** 
+   *           +----------------------------------------+
+   *           | embeddedsubprocess        +----------+ |
+   *           |                     +---->|endInside1| |
+   *           |                     |     +----------+ |
+   *           |                     |                  |
+   * +-----+   |  +-----------+   +----+   +----------+ |   +---+
+   * |start|-->|  |startInside|-->|fork|-->|endInside2| |-->|end|
+   * +-----+   |  +-----------+   +----+   +----------+ |   +---+
+   *           |                     |                  |
+   *           |                     |     +----------+ |
+   *           |                     +---->|endInside3| |
+   *           |                           +----------+ |
+   *           +----------------------------------------+
+   */
+  public void testMultipleConcurrentEndsInsideEmbeddedSubProcess() {
+    PvmProcessDefinition processDefinition = new ProcessDefinitionBuilder()
+      .createActivity("start")
+        .initial()
+        .behavior(new Automatic())
+        .transition("embeddedsubprocess")
+      .endActivity()
+      .createActivity("embeddedsubprocess")
+        .scope()
+        .behavior(new EmbeddedSubProcess())
+        .createActivity("startInside")
+          .behavior(new Automatic())
+          .transition("fork")
+        .endActivity()
+        .createActivity("fork")
+          .behavior(new ParallelGateway())
+          .transition("endInside1")
+          .transition("endInside2")
+          .transition("endInside3")
+        .endActivity()
+        .createActivity("endInside1")
+          .behavior(new End())
+        .endActivity()
+        .createActivity("endInside2")
+          .behavior(new End())
+        .endActivity()
+        .createActivity("endInside3")
+          .behavior(new End())
+        .endActivity()
+        .transition("end")
+      .endActivity()
+      .createActivity("end")
+        .behavior(new End())
+      .endActivity()
+    .buildProcessDefinition();
+    
+    PvmProcessInstance processInstance = processDefinition.createProcessInstance(); 
+    processInstance.start();
+    
+    assertTrue(processInstance.isEnded());
+  }
+
+  /** 
+   *           +-------------------------------------------------+
+   *           | embeddedsubprocess        +----------+          |
+   *           |                     +---->|endInside1|          |
+   *           |                     |     +----------+          |
+   *           |                     |                           |
+   * +-----+   |  +-----------+   +----+   +----+   +----------+ |   +---+
+   * |start|-->|  |startInside|-->|fork|-->|wait|-->|endInside2| |-->|end|
+   * +-----+   |  +-----------+   +----+   +----+   +----------+ |   +---+
+   *           |                     |                           |
+   *           |                     |     +----------+          |
+   *           |                     +---->|endInside3|          |
+   *           |                           +----------+          |
+   *           +-------------------------------------------------+
+   */
+  public void testMultipleConcurrentEndsInsideEmbeddedSubProcessWithWaitState() {
+    PvmProcessDefinition processDefinition = new ProcessDefinitionBuilder()
+      .createActivity("start")
+        .initial()
+        .behavior(new Automatic())
+        .transition("embeddedsubprocess")
+      .endActivity()
+      .createActivity("embeddedsubprocess")
+        .scope()
+        .behavior(new EmbeddedSubProcess())
+        .createActivity("startInside")
+          .behavior(new Automatic())
+          .transition("fork")
+        .endActivity()
+        .createActivity("fork")
+          .behavior(new ParallelGateway())
+          .transition("endInside1")
+          .transition("wait")
+          .transition("endInside3")
+        .endActivity()
+        .createActivity("endInside1")
+          .behavior(new End())
+        .endActivity()
+        .createActivity("wait")
+          .behavior(new WaitState())
+          .transition("endInside2")
+        .endActivity()
+        .createActivity("endInside2")
+          .behavior(new End())
+        .endActivity()
+        .createActivity("endInside3")
+          .behavior(new End())
+        .endActivity()
+        .transition("end")
+      .endActivity()
+      .createActivity("end")
+        .behavior(new End())
+      .endActivity()
+    .buildProcessDefinition();
+    
+    PvmProcessInstance processInstance = processDefinition.createProcessInstance(); 
+    processInstance.start();
+    
+    assertFalse(processInstance.isEnded());
+    PvmExecution execution = processInstance.findExecution("wait");
+    execution.signal(null, null);
+    
+    assertTrue(processInstance.isEnded());
   }
 }

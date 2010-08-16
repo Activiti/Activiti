@@ -27,7 +27,7 @@ import org.activiti.test.pvm.activities.WaitState;
 /**
  * @author Tom Baeyens
  */
-public class PvmFunctionalActivityScopeTest extends PvmTestCase {
+public class PvmScopeWaitStateTest extends PvmTestCase {
 
   /**
    * +-----+   +----------+   +---+
@@ -63,6 +63,14 @@ public class PvmFunctionalActivityScopeTest extends PvmTestCase {
     assertTrue(processInstance.isEnded());
   }
 
+  /**
+   *          +--------------+ 
+   *          | outerScope   |
+   * +-----+  | +----------+ |  +---+
+   * |start|--->|scopedWait|--->|end|
+   * +-----+  | +----------+ |  +---+
+   *          +--------------+ 
+   */
   public void testNestedScope() {
     PvmProcessDefinition processDefinition = new ProcessDefinitionBuilder()
       .createActivity("start")
@@ -70,15 +78,13 @@ public class PvmFunctionalActivityScopeTest extends PvmTestCase {
         .behavior(new Automatic())
         .transition("scopedWait")
       .endActivity()
-      .createActivity("outerOne")
+      .createActivity("outerScope")
         .scope()
-        .behavior(new WaitState())
-        .transition("end")
-      .endActivity()
-      .createActivity("scopedWait")
-        .scope()
-        .behavior(new WaitState())
-        .transition("end")
+        .createActivity("scopedWait")
+          .scope()
+          .behavior(new WaitState())
+          .transition("end")
+        .endActivity()
       .endActivity()
       .createActivity("end")
         .behavior(new End())

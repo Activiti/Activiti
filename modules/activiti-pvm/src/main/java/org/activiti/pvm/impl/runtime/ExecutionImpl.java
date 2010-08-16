@@ -58,9 +58,6 @@ public class ExecutionImpl implements
   /** current activity */
   protected ActivityImpl activity;
   
-  /** current activity */
-  protected ScopeImpl scope;
-  
   /** current transition.  is null when there is no transition being taken. */
   protected TransitionImpl transition = null;
 
@@ -91,6 +88,7 @@ public class ExecutionImpl implements
    *   <li>an execution is ended.</li>
    * </ul>*/ 
   protected boolean isActive = true;
+  protected boolean isScope = true;
   protected boolean isConcurrent = false;
   protected boolean isEnded = false;
   
@@ -166,7 +164,13 @@ public class ExecutionImpl implements
   public void initialize() {
     if (isScope()) {
       log.fine("initializing "+this);
-      for (VariableDeclaration variableDeclaration: getScope().getVariableDeclarations()) {
+      ScopeImpl scope = null;
+      if (isProcessInstance()) {
+        scope = getProcessDefinition();
+      } else {
+        scope = getActivity();
+      }
+      for (VariableDeclaration variableDeclaration: scope.getVariableDeclarations()) {
         variableDeclaration.initialize(this);
       }
     }
@@ -174,7 +178,7 @@ public class ExecutionImpl implements
   
   public void destroy() {
     log.fine("destroying "+this);
-    setScope(null);
+    setScope(false);
     variables = null;
   }
   
@@ -183,11 +187,6 @@ public class ExecutionImpl implements
       parent.ensureExecutionsInitialized();
       parent.executions.remove(this);
     }
-  }
-  
-  public void migrateScope(ExecutionImpl other) {
-    setScope(other.getScope());
-    setVariables(other.getVariables());
   }
   
   // parent ///////////////////////////////////////////////////////////////////
@@ -360,20 +359,11 @@ public class ExecutionImpl implements
   protected void ensureScopeInitialized() {
   }
   
-  public ScopeImpl getScope() {
-    if (isProcessInstance()) {
-      return processDefinition;
-    }
-    ensureScopeInitialized();
-    return scope;
-  }
-
   public boolean isScope() {
-    if (isProcessInstance()) {
-      return true;
-    }
-    ensureScopeInitialized();
-    return scope!=null;
+    return isScope;
+  }
+  public void setScope(boolean isScope) {
+    this.isScope = isScope;
   }
   
   // process instance start implementation ////////////////////////////////////
@@ -499,6 +489,7 @@ public class ExecutionImpl implements
         if (recyclableExecutions.isEmpty()) {
           ExecutionImpl outgoingExecution = concurrentRoot.createExecution();
           outgoingExecution.setActive(true);
+          outgoingExecution.setScope(false);
           outgoingExecution.setConcurrent(true);
           outgoingExecutions.add(new OutgoingExecution(outgoingExecution, outgoingTransition, true));
           log.fine("new "+outgoingExecution+" created to take transition "+outgoingTransition);
@@ -506,6 +497,7 @@ public class ExecutionImpl implements
           ExecutionImpl outgoingExecution = (ExecutionImpl) recyclableExecutions.remove(0);
           outgoingExecution.setActive(true);
           outgoingExecution.setConcurrent(true);
+          outgoingExecution.setScope(false);
           outgoingExecutions.add(new OutgoingExecution(outgoingExecution, outgoingTransition, true));
           log.fine("recycled "+outgoingExecution+" to take transition "+outgoingTransition);
         }
@@ -696,9 +688,6 @@ public class ExecutionImpl implements
   }
   public void setDeleteReason(String deleteReason) {
     this.deleteReason = deleteReason;
-  }
-  public void setScope(ScopeImpl scope) {
-    this.scope = scope;
   }
   public ExecutionImpl getReplacedBy() {
     return replacedBy;

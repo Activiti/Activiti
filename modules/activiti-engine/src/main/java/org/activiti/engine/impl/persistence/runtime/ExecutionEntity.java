@@ -97,6 +97,7 @@ public class ExecutionEntity extends ExecutionImpl implements PersistentObject, 
   public static ExecutionEntity createProcessInstance(ProcessDefinitionEntity processDefinition) {
     ExecutionEntity processInstance = new ExecutionEntity();
     processInstance.executions = new ArrayList<ExecutionImpl>();
+    processInstance.setProcessDefinition(processDefinition);
     processInstance.isExecutionsInitialized = true;
     // Do not initialize variable map (let it happen lazily)
 

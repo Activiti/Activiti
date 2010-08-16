@@ -12,54 +12,27 @@
  */
 package org.activiti.pvm.impl.runtime;
 
-import java.util.List;
-
 import org.activiti.pvm.event.EventListener;
-import org.activiti.pvm.impl.process.ActivityImpl;
+import org.activiti.pvm.impl.process.ScopeImpl;
 
 
 /**
  * @author Tom Baeyens
  */
-public class AtomicOperationTransitionNotifyListenerEnd implements AtomicOperation {
+public class AtomicOperationTransitionNotifyListenerEnd extends AbstractEventAtomicOperation {
 
-  public void execute(ExecutionImpl execution) {
-    ActivityImpl activity = execution.getActivity();
-    List<EventListener> eventListeners = activity.getEventListeners(EventListener.EVENTNAME_END);
-    int eventListenerIndex = execution.getEventListenerIndex();
-    
-    if (eventListeners.size()>eventListenerIndex) {
-      execution.setEventName(EventListener.EVENTNAME_END);
-      execution.setEventSource(activity);
-      EventListener listener = eventListeners.get(eventListenerIndex);
-      listener.notify(execution);
-      execution.setEventListenerIndex(eventListenerIndex+1);
-      execution.performOperation(this);
-
-    } else {
-      execution.setEventListenerIndex(0);
-      execution.setEventName(null);
-      execution.setEventSource(null);
-      execution.performOperation(TRANSITION_DESTROY_SCOPE);
-    }
+  @Override
+  protected ScopeImpl getScope(ExecutionImpl execution) {
+    return execution.getActivity();
   }
 
-  protected boolean thereAreConcurrentExecutionsInSameScope(ExecutionImpl execution) {
-    if (execution.isScope()) {
-      return false;
-    }
-    ExecutionImpl parent = execution.getParent();
-    if (parent==null) {
-      return false;
-    }
-    for (ExecutionImpl concurrentExecution: parent.getExecutions()) {
-      if ( concurrentExecution.isConcurrent() 
-           && (!concurrentExecution.isScope())
-           && (parent.getScope()==execution.getActivity())
-         ) {
-        return true;
-      }
-    }
-    return false;
+  @Override
+  protected String getEventName() {
+    return EventListener.EVENTNAME_END;
+  }
+
+  @Override
+  protected void eventNotificationsCompleted(ExecutionImpl execution) {
+    execution.performOperation(TRANSITION_DESTROY_SCOPE);
   }
 }
