@@ -93,6 +93,9 @@ public class ActivityContextBindings implements Bindings {
   }
 
   public Object remove(Object key) {
+    if (UNSTORED_KEYS.contains(key)) {
+      return null;
+    }
     throw new UnsupportedOperationException();
   }
 

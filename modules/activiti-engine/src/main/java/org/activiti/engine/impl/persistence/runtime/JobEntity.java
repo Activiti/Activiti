@@ -39,6 +39,7 @@ public abstract class JobEntity implements Serializable, Job, PersistentObject {
   private static final long serialVersionUID = 1L;
 
   protected String id;
+  protected int revision;
 
   protected Date duedate;
 
@@ -72,6 +73,10 @@ public abstract class JobEntity implements Serializable, Job, PersistentObject {
     persistentState.put("retries", retries);
     persistentState.put("exception", exception);
     return persistentState;
+  }
+  
+  public int getRevisionNext() {
+    return revision+1;
   }
 
   public void setExecution(ExecutionEntity execution) {
@@ -146,5 +151,11 @@ public abstract class JobEntity implements Serializable, Job, PersistentObject {
   }
   public void setJobHandlerConfiguration(String jobHandlerConfiguration) {
     this.jobHandlerConfiguration = jobHandlerConfiguration;
+  }
+  public int getRevision() {
+    return revision;
+  }
+  public void setRevision(int revision) {
+    this.revision = revision;
   }
 }

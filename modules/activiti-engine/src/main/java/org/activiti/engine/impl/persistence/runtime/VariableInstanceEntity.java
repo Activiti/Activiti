@@ -119,6 +119,10 @@ public class VariableInstanceEntity implements Serializable, PersistentObject {
     }
     return persistentState;
   }
+  
+  public int getRevisionNext() {
+    return revision+1;
+  }
 
   // lazy initialized relations ///////////////////////////////////////////////
 

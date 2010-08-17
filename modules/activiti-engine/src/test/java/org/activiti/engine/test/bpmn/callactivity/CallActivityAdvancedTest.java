@@ -37,17 +37,17 @@ public class CallActivityAdvancedTest extends ProcessEngineImplTestCase {
     
     // one task in the subprocess should be active after starting the process instance
     TaskQuery taskQuery = taskService.createTaskQuery();
-    Task taskBeforeSubProcess = taskQuery.singleResult();
+    Task taskBeforeSubProcess = taskQuery.listPage();
     assertEquals("Task before subprocess", taskBeforeSubProcess.getName());
     
     // Completing the task continues the process which leads to calling the subprocess
     taskService.complete(taskBeforeSubProcess.getId());
-    Task taskInSubProcess = taskQuery.singleResult();
+    Task taskInSubProcess = taskQuery.listPage();
     assertEquals("Task in subprocess", taskInSubProcess.getName());
     
     // Completing the task in the subprocess, finishes the subprocess
     taskService.complete(taskInSubProcess.getId());
-    Task taskAfterSubProcess = taskQuery.singleResult();
+    Task taskAfterSubProcess = taskQuery.listPage();
     assertEquals("Task after subprocess", taskAfterSubProcess.getName());
     
     // Completing this task end the process instance
@@ -67,7 +67,7 @@ public class CallActivityAdvancedTest extends ProcessEngineImplTestCase {
     
     // one task in the subprocess should be active after starting the process instance
     TaskQuery taskQuery = taskService.createTaskQuery();
-    Task taskBeforeSubProcess = taskQuery.singleResult();
+    Task taskBeforeSubProcess = taskQuery.listPage();
     assertEquals("Task in subprocess", taskBeforeSubProcess.getName());
     
     // Completing this task ends the subprocess which leads to the end of the whole process instance
@@ -113,14 +113,14 @@ public class CallActivityAdvancedTest extends ProcessEngineImplTestCase {
     // After process start, the task in the subprocess should be active
     runtimeService.startProcessInstanceByKey("timerOnCallActivity");
     TaskQuery taskQuery = taskService.createTaskQuery();
-    Task taskInSubProcess = taskQuery.singleResult();
+    Task taskInSubProcess = taskQuery.listPage();
     assertEquals("Task in subprocess", taskInSubProcess.getName());
     
     // When the timer on the subprocess is fired, the complete subprocess is destroyed
     ClockUtil.setCurrentTime(new Date(startTime.getTime() + (6 * 60 * 1000))); // + 6 minutes, timer fires on 5 minutes
-    waitForJobExecutorToProcessAllJobs(10000000, 1000000);
+    waitForJobExecutorToProcessAllJobs(10000, 100);
     
-    Task escalatedTask = taskQuery.singleResult();
+    Task escalatedTask = taskQuery.listPage();
     assertEquals("Escalated Task", escalatedTask.getName());
     
     // Completing the task ends the complete process

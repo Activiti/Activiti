@@ -10,7 +10,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.activiti.examples.mgmt;
+package org.activiti.test.processengines;
 
 import java.util.List;
 
@@ -19,6 +19,7 @@ import junit.framework.TestCase;
 import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.ProcessEngineInfo;
 import org.activiti.engine.ProcessEngines;
+import org.activiti.engine.test.ProcessEngineTestCase;
 
 /**
  * @author Tom Baeyens
@@ -28,6 +29,7 @@ public class ProcessEnginesTest extends TestCase {
   @Override
   protected void setUp() throws Exception {
     super.setUp();
+    ProcessEngineTestCase.closeProcessEngines();
     ProcessEngines.init();
   }
   

@@ -25,17 +25,6 @@ public interface TablePageQuery {
   TablePageQuery tableName(String tableName);
   
   /**
-   * the record number of the first element of the page.
-   * Note that this is zero-based (ie. the first element has index '0')
-   */
-  TablePageQuery start(int start);
-  
-  /**
-   * the number of elements that the page maximum can contain
-   */
-  TablePageQuery size(int size);
-  
-  /**
    * orders the resulting table page rows by the given column in ascending order. 
    */
   TablePageQuery orderAsc(String column);
@@ -48,6 +37,5 @@ public interface TablePageQuery {
   /**
    * executes the query and returns the {@link TablePage}. 
    */
-  TablePage singleResult();
-
+  TablePage listPage(int firstResult, int maxResults);
 }

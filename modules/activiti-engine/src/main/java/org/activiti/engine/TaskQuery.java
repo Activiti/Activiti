@@ -42,10 +42,10 @@ public interface TaskQuery {
   
   long count();
   
-  Task singleResult();
+  Task listPage();
   
   List<Task> list();
   
-  List<Task> paginatedList(int start, int size);
+  List<Task> listPage(int start, int size);
 
 }

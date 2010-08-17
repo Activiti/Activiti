@@ -28,7 +28,7 @@ public interface ExecutionQuery {
   ExecutionQuery processDefinitionId(String processDefinitionId);
   
   List<Execution> list();
-  List<Execution> paginatedList(int start, int maxResults);
-  Execution singleResult();
+  List<Execution> listPage(int start, int maxResults);
+  Execution listPage();
   long count();
 }

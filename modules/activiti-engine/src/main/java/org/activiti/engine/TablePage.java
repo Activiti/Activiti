@@ -37,7 +37,7 @@ public class TablePage {
    * For example in a paginated database table, this value identifies the record number of
    * the result on the first row.
    */
-  protected long start;
+  protected long firstResult;
   
   /**
    * Indicates the key or column on which the signalData is sorted.
@@ -62,13 +62,6 @@ public class TablePage {
     
   }
   
-  public TablePage(String tableName, long start, long total, List<Map<String, Object>> rowData) {
-    this.tableName = tableName;
-    this.start = start;
-    this.total = total;
-    this.rowData = rowData;
-  }
-  
   public String getTableName() {
     return tableName;
   }
@@ -81,12 +74,12 @@ public class TablePage {
    * @return the start index of this page 
    *         (ie the index of the first element in the page)
    */
-  public long getStart() {
-    return start;
+  public long getFirstResult() {
+    return firstResult;
   }
   
-  public void setStart(long start) {
-    this.start = start;
+  public void setFirstResult(long firstResult) {
+    this.firstResult = firstResult;
   }
 
   public void setRows(List<Map<String, Object>> rowData) {

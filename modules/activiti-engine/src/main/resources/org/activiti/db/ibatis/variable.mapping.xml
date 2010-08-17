@@ -27,7 +27,7 @@
   <update id="updateVariableInstance" parameterType="org.activiti.engine.impl.persistence.runtime.VariableInstanceEntity">
     update ACT_VARIABLE
     set 
-      REV_ = #{revisionNext, jdbcType=INTEGER}
+      REV_ = #{revisionNext, jdbcType=INTEGER},
 	    BYTEARRAY_ID_ = #{byteArrayValueId, jdbcType=VARCHAR},
 	    DOUBLE_ = #{doubleValue, jdbcType=DOUBLE},
 	    LONG_ = #{longValue, jdbcType=BIGINT},
@@ -96,7 +96,7 @@
   <update id="updateByteArray" parameterType="org.activiti.engine.impl.persistence.runtime.ByteArrayEntity">
     update ACT_BYTEARRAY 
     set
-      REV_ = #{revisionNext, jdbcType=INTEGER}
+      REV_ = #{revisionNext, jdbcType=INTEGER},
       BYTES_ = #{bytes, jdbcType=BLOB}
     where ID_ = #{id}
       and REV_ = #{revision, jdbcType=INTEGER}

@@ -24,13 +24,14 @@ import java.util.logging.Logger;
 
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiOptimisticLockingException;
-import org.activiti.engine.SortOrder;
 import org.activiti.engine.TableMetaData;
 import org.activiti.engine.TablePage;
+import org.activiti.engine.impl.TablePageQueryImpl;
 import org.activiti.engine.impl.cfg.ManagementSession;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.interceptor.Session;
 import org.activiti.engine.impl.persistence.repository.PropertyEntity;
+import org.apache.ibatis.session.RowBounds;
 
 
 /**
@@ -84,32 +85,19 @@ public class DbManagementSession implements ManagementSession, Session {
   }
 
   @SuppressWarnings("unchecked")
- public TablePage getTablePage(String tableName, int offset, int maxResults,
-         String sortColumn, SortOrder sortOrder) {
+ public TablePage getTablePage(TablePageQueryImpl tablePageQuery, int firstResult, int maxResults) {
 
     TablePage tablePage = new TablePage();
 
-    Map<String, String> params = new HashMap<String, String>();
-    params.put("tableName", tableName);
-    if (sortColumn != null) {
-      params.put("sortColumn", sortColumn);
-      if (sortOrder.equals(SortOrder.ASC)) {
-        params.put("sortOrder", "asc");
-      } else {
-        params.put("sortOrder", "desc");
-      }
+    List<Map<String, Object>> tableData = (List<Map<String, Object>>) dbSqlSession
+      .getSqlSession()
+      .selectList("selectTableData", tablePageQuery, new RowBounds(firstResult, maxResults));
 
-      tablePage.setSort(sortColumn);
-      tablePage.setOrder(sortOrder);
-    }
-
-    List<Map<String, Object>> tableData = 
-        (List<Map<String, Object>>) dbSqlSession.selectList("selectTableData", params, offset, maxResults);
-
-    tablePage.setTableName(tableName);
-    tablePage.setStart(offset);
-    tablePage.setTotal(getTableCount(tableName));
+    tablePage.setTableName(tablePageQuery.getTableName());
+    tablePage.setTotal(getTableCount(tablePageQuery.getTableName()));
     tablePage.setRows(tableData);
+    tablePage.setFirstResult(firstResult);
+    
     return tablePage;
   }
 
@@ -162,5 +150,4 @@ public class DbManagementSession implements ManagementSession, Session {
 
   public void flush() {
   }
-
 }

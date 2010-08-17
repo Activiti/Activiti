@@ -15,6 +15,7 @@ package org.activiti.engine.impl.jobexecutor;
 import java.util.Date;
 import java.util.List;
 
+import org.activiti.engine.Page;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.runtime.TimerEntity;
@@ -27,15 +28,14 @@ import org.activiti.engine.impl.persistence.runtime.TimerEntity;
 public class GetUnlockedTimersByDuedateCmd implements Command<List<TimerEntity>> {
 
   protected Date duedate;
+  protected Page page;
   
-  protected int nrOfTimers = -1;
-  
-  public GetUnlockedTimersByDuedateCmd(Date duedate, int nrOfTimers) {
+  public GetUnlockedTimersByDuedateCmd(Date duedate, Page page) {
 	  this.duedate = duedate;
-	  this.nrOfTimers = nrOfTimers;
+	  this.page = page;
   }
 
   public List<TimerEntity> execute(CommandContext commandContext) {
-    return commandContext.getRuntimeSession().findUnlockedTimersByDuedate(duedate, nrOfTimers);
+    return commandContext.getRuntimeSession().findUnlockedTimersByDuedate(duedate, page);
   }
 }

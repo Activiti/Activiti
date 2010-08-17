@@ -17,6 +17,7 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.List;
 
+import org.activiti.engine.Page;
 import org.activiti.engine.impl.cfg.RuntimeSession;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
@@ -44,7 +45,7 @@ public class AcquireJobsCmd implements Command<AcquiredJobs> {
     
     
     AcquiredJobs acquiredJobs = new AcquiredJobs();
-    List<JobEntity> jobs = runtimeSession.findNextJobsToExecute(maxJobsPerAcquisition);
+    List<JobEntity> jobs = runtimeSession.findNextJobsToExecute(new Page(0, maxJobsPerAcquisition));
     for (JobEntity job: jobs) {
       List<String> jobIds = new ArrayList<String>();
 

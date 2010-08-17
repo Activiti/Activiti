@@ -41,10 +41,13 @@ public class TableDataGet extends ActivitiWebScript
   {
     String tableName = getMandatoryPathParameter(req, "tableName");
     int size = getInt(req, "size", 10);
-    TablePageQuery query = getManagementService().createTablePageQuery()
-        .tableName(tableName)
-        .start(getInt(req, "start", 10))
-        .size(size);
+    int firstResult = getInt(req, "start", 10);
+    int maxResults = size;
+    
+    TablePageQuery query = getManagementService()
+      .createTablePageQuery()
+      .tableName(tableName);
+    
     String sort = getString(req, "sort");
     if (sort != null && !sort.trim().equals("")) {
       String order = getString(req, "order", "asc");
@@ -55,8 +58,9 @@ public class TableDataGet extends ActivitiWebScript
         query.orderDesc(sort);
       }
     }
-    model.put("size", size);
-    model.put("tablePage", query.singleResult());
+    
+    model.put("size", maxResults);
+    model.put("tablePage", query.listPage(firstResult, maxResults));
   }
 
 }

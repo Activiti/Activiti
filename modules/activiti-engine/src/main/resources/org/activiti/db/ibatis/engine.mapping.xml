@@ -33,14 +33,14 @@
   <!-- TABLE DATA -->
   
   <!-- The property passing doesn't seem to work with parameterType='string', so we are forced to use a map here -->
-  <select id="selectTableCount" parameterType="map" resultType="long" >
+  <select id="selectTableCount" parameterType="org.activiti.engine.impl.TablePageQueryImpl" resultType="long" >
     select count(*) from ${tableName}
   </select>
   
-  <select id="selectTableData" parameterType="map" resultType="map">
+  <select id="selectTableData" parameterType="org.activiti.engine.impl.TablePageQueryImpl" resultType="map">
     select * from ${tableName}
-    <if test="sortColumn != null">
-      order by ${sortColumn} ${sortOrder}
+    <if test="orderBy != null">
+      order by ${orderBy}
     </if>
   </select>
 </mapper>

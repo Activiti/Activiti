@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.activiti.engine.Page;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
 import org.activiti.engine.impl.persistence.runtime.TimerEntity;
 import org.activiti.engine.impl.util.ClockUtil;
@@ -73,7 +74,7 @@ public class JobAcquisitionThread extends Thread {
           
           // check if the next timer should fire before the normal sleep time is over
           Date duedate = new Date(ClockUtil.getCurrentTime().getTime() + millisToWait);
-          List<TimerEntity> nextTimers = commandExecutor.execute(new GetUnlockedTimersByDuedateCmd(duedate, 1));
+          List<TimerEntity> nextTimers = commandExecutor.execute(new GetUnlockedTimersByDuedateCmd(duedate, new Page(0, 1)));
           
           if (!nextTimers.isEmpty()) {
         	long millisTillNextTimer = nextTimers.get(0).getDuedate().getTime() - ClockUtil.getCurrentTime().getTime();

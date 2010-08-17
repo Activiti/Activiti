@@ -29,7 +29,7 @@ public class JavaServiceTaskTest extends ProcessEngineTestCase {
     Execution execution = runtimeService.createExecutionQuery()
       .processInstanceId(pi.getId())
       .activityId("waitState")
-      .singleResult();
+      .listPage();
     assertEquals("ACTIVITI BPM ENGINE", runtimeService.getVariable(execution.getId(), "input"));
   }
 

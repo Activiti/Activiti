@@ -16,7 +16,6 @@ import java.util.List;
 
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.Page;
-import org.activiti.engine.SortOrder;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
@@ -33,14 +32,14 @@ public abstract class AbstractQuery<T> implements Command<Object>{
   protected static final String SORTORDER_DESC = "desc";
   
   private static enum ResultType {
-    LIST, PAGINATED_LIST, SINGLE_RESULT, COUNT
+    LIST, LIST_PAGE, SINGLE_RESULT, COUNT
   }
     
   protected CommandExecutor commandExecutor;
   protected String orderBy;
   
-  protected int start;
-  protected int size;
+  protected int firstResult;
+  protected int maxResults;
   protected ResultType resultType;
  
   protected AbstractQuery() {
@@ -51,7 +50,7 @@ public abstract class AbstractQuery<T> implements Command<Object>{
   }
 
   @SuppressWarnings("unchecked")
-  public T singleResult() {
+  public T listPage() {
     this.resultType = ResultType.SINGLE_RESULT;
     return (T) commandExecutor.execute(this);
   }
@@ -63,10 +62,10 @@ public abstract class AbstractQuery<T> implements Command<Object>{
   }
   
   @SuppressWarnings("unchecked")
-  public List<T> paginatedList(int start, int size) {
-    this.start = start;
-    this.size = size;
-    this.resultType = ResultType.PAGINATED_LIST;
+  public List<T> listPage(int firstResult, int maxResults) {
+    this.firstResult = firstResult;
+    this.maxResults = maxResults;
+    this.resultType = ResultType.LIST_PAGE;
     return (List) commandExecutor.execute(this);
   }
   
@@ -80,8 +79,8 @@ public abstract class AbstractQuery<T> implements Command<Object>{
       return executeList(commandContext, null);
     } else if (resultType==ResultType.SINGLE_RESULT) {
       return executeSingleResult(commandContext);
-    } else if (resultType==ResultType.PAGINATED_LIST) {
-      return executeList(commandContext, new Page(start, size));
+    } else if (resultType==ResultType.LIST_PAGE) {
+      return executeList(commandContext, new Page(firstResult, maxResults));
     } else {
       return executeCount(commandContext);
     }
@@ -111,7 +110,7 @@ public abstract class AbstractQuery<T> implements Command<Object>{
     } else {
       orderBy = orderBy+", ";
     }
-    orderBy += orderBy+column+" "+sortOrder;
+    orderBy = orderBy+column+" "+sortOrder;
   }
 
   public String getOrderBy() {

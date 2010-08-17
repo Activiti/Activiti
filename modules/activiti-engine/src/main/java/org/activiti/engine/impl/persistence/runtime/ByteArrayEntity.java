@@ -27,13 +27,10 @@ public class ByteArrayEntity implements Serializable, PersistentObject {
   private static final Object PERSISTENTSTATE_NULL = new Object();
 
   protected String id;
-
+  protected int revision;
   protected String name;
-
   protected byte[] bytes;
-
   protected String deploymentId;
-
   protected ByteArrayType variable;
 
   public ByteArrayEntity() {
@@ -50,18 +47,15 @@ public class ByteArrayEntity implements Serializable, PersistentObject {
   }
 
   public byte[] getBytes() {
-    // // the bytes are lazy initialized
-    // if (bytes == null) {
-    // bytes = CommandContext
-    // .getCurrent()
-    // .getPersistenceSession()
-    // .getByteArrayBytes(id);
-    // }
     return bytes;
   }
 
   public Object getPersistentState() {
     return (bytes != null ? bytes : PERSISTENTSTATE_NULL);
+  }
+  
+  public int getRevisionNext() {
+    return revision+1;
   }
 
   // getters and setters //////////////////////////////////////////////////////
@@ -84,5 +78,10 @@ public class ByteArrayEntity implements Serializable, PersistentObject {
   public void setBytes(byte[] bytes) {
     this.bytes = bytes;
   }
-
+  public int getRevision() {
+    return revision;
+  }
+  public void setRevision(int revision) {
+    this.revision = revision;
+  }
 }

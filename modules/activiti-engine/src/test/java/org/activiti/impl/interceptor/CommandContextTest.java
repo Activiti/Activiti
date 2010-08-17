@@ -23,7 +23,7 @@ import org.activiti.engine.test.ProcessEngineImplTestCase;
  */
 public class CommandContextTest extends ProcessEngineImplTestCase {
 
-  public void testOne() {
+  public void testCommandContextGetCurrentAfterException() {
     try {
       processEngineConfiguration.getCommandExecutor().execute(new Command<Object>() {
         public Object execute(CommandContext commandContext) {

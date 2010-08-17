@@ -560,7 +560,9 @@ public class ExecutionImpl implements
       parent.collectVariables(collectedVariables);
     }
     ensureVariablesInitialized();
-    collectedVariables.putAll(variables);
+    for (String variableName: variables.keySet()) {
+      collectedVariables.put(variableName, variables.get(variableName));
+    }
   }
 
   public void setVariables(Map<String, Object> variables) {

@@ -55,11 +55,7 @@ public class DbTaskSession implements TaskSession, Session {
   @SuppressWarnings("unchecked")
   public List<Task> findTasksByQueryCriteria(TaskQueryImpl taskQuery, Page page) {
     final String query = "selectTaskByQueryCriteria";
-    if (page == null) {
-      return dbSqlSession.selectList(query, taskQuery);
-    } else {
-      return dbSqlSession.selectList(query, taskQuery, page.getOffset(), page.getMaxResults());
-    }
+    return dbSqlSession.selectList(query, taskQuery, page);
   }
 
   public long findTaskCountByQueryCriteria(TaskQueryImpl taskQuery) {

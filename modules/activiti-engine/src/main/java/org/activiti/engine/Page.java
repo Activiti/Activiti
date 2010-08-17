@@ -17,24 +17,23 @@ package org.activiti.engine;
  * holds the parameters of a page (partial result) for a query. 
  * 
  * @author Joram Barrez
+ * @author Tom Baeyens
  */
 public class Page {
   
-  protected int offset;
-  
+  protected int firstResult;
   protected int maxResults;
   
-  public Page(int offset, int maxResults) {
-    this.offset = offset;
+  public Page(int firstResult, int maxResults) {
+    this.firstResult = firstResult;
     this.maxResults = maxResults;
   }
   
-  public int getOffset() {
-    return offset;
+  public int getFirstResult() {
+    return firstResult;
   }
 
   public int getMaxResults() {
     return maxResults;
   }
-
 }

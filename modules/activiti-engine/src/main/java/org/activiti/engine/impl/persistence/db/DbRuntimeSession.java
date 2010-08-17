@@ -55,8 +55,8 @@ public class DbRuntimeSession implements Session, RuntimeSession {
   }
 
   @SuppressWarnings("unchecked")
-  public List<ExecutionEntity> findExecutionsByQueryCriteria(Object executionQuery) {
-    return dbSqlSession.selectList("selectExecutionsByQueryCriteria", executionQuery);
+  public List<ExecutionEntity> findExecutionsByQueryCriteria(Object executionQuery, Page page) {
+    return dbSqlSession.selectList("selectExecutionsByQueryCriteria", executionQuery, page);
   }
 
   public ExecutionEntity findExecutionById(String executionId) {
@@ -106,9 +106,9 @@ public class DbRuntimeSession implements Session, RuntimeSession {
   }
   
   @SuppressWarnings("unchecked")
-  public List<JobEntity> findNextJobsToExecute(int maxNrOfJobs) {
+  public List<JobEntity> findNextJobsToExecute(Page page) {
     Date now = ClockUtil.getCurrentTime();
-    return dbSqlSession.selectList("selectNextJobsToExecute", now, 0, maxNrOfJobs);
+    return dbSqlSession.selectList("selectNextJobsToExecute", now, page);
   }
 
   @SuppressWarnings("unchecked")
@@ -117,13 +117,9 @@ public class DbRuntimeSession implements Session, RuntimeSession {
   }
   
   @SuppressWarnings("unchecked")
-  public List<TimerEntity> findUnlockedTimersByDuedate(Date duedate, int nrOfTimers) {
-	final String query = "selectUnlockedTimersByDuedate";
-	if (nrOfTimers > 0) {
-		return dbSqlSession.selectList(query, duedate, 0, nrOfTimers);
-	} else {
-		return dbSqlSession.selectList(query, duedate);
-	}
+  public List<TimerEntity> findUnlockedTimersByDuedate(Date duedate, Page page) {
+  	final String query = "selectUnlockedTimersByDuedate";
+    return dbSqlSession.selectList(query, duedate, page);
   }
 
   @SuppressWarnings("unchecked")
@@ -134,11 +130,7 @@ public class DbRuntimeSession implements Session, RuntimeSession {
   @SuppressWarnings("unchecked")
   public List<Job> findJobsByQueryCriteria(JobQueryImpl jobQuery, Page page) {
     final String query = "org.activiti.persistence.selectJobByQueryCriteria";
-    if (page == null) {
-      return dbSqlSession.selectList(query, jobQuery);
-    } else {
-      return dbSqlSession.selectList(query, jobQuery, page.getOffset(), page.getMaxResults());
-    }
+    return dbSqlSession.selectList(query, jobQuery, page);
   }
 
   public long findJobCountByQueryCriteria(JobQueryImpl jobQuery) {

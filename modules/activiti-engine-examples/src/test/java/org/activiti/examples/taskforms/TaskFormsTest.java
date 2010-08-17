@@ -51,7 +51,7 @@ public class TaskFormsTest extends ProcessEngineTestCase {
     runtimeService.startProcessInstanceByKey("vacationRequest", parameters);
 
     // Management should now have a task assigned to them
-    Task task = taskService.createTaskQuery().candidateGroup("management").singleResult();
+    Task task = taskService.createTaskQuery().candidateGroup("management").listPage();
     assertEquals("Vacation request by kermit", task.getDescription());
     Object taskForm = taskService.getTaskForm(task.getId());
     assertNotNull(taskForm);
@@ -63,7 +63,7 @@ public class TaskFormsTest extends ProcessEngineTestCase {
     assertNull(repositoryService.getStartFormByKey("noStartOrTaskForm"));
 
     runtimeService.startProcessInstanceByKey("noStartOrTaskForm");
-    Task task = taskService.createTaskQuery().singleResult();
+    Task task = taskService.createTaskQuery().listPage();
     assertNull(taskService.getTaskForm(task.getId()));
   }
 

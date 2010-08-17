@@ -55,7 +55,19 @@ public class DbRepositorySession implements Session, RepositorySession {
     for (Deployer deployer: dbRepositorySessionFactory.getDeployers()) {
       List<ProcessDefinitionEntity> processDefinitions = deployer.deploy(deployment);
       for (ProcessDefinitionEntity processDefinition : processDefinitions) {
+        int processDefinitionVersion;
+
+        ProcessDefinitionEntity latestProcessDefinition = findLatestProcessDefinitionByKey(processDefinition.getKey());
+        if (latestProcessDefinition!=null) {
+          processDefinitionVersion = latestProcessDefinition.getVersion()+1;
+        } else {
+          processDefinitionVersion = 1;
+        }
+
+        processDefinition.setVersion(processDefinitionVersion);
         processDefinition.setDeploymentId(deployment.getId());
+        processDefinition.setId(processDefinition.getKey()+":"+processDefinition.getVersion());
+
         dbSqlSession.insert(processDefinition);
         addToProcessDefinitionCache(processDefinition);
       }
@@ -157,6 +169,10 @@ public class DbRepositorySession implements Session, RepositorySession {
     return (ProcessDefinitionEntity) dbSqlSession.selectOne("selectProcessDefinitionById", processDefinitionId);
   }
 
+  protected ProcessDefinitionEntity findLatestProcessDefinitionByKey(String processDefinitionKey) {
+    return (ProcessDefinitionEntity) dbSqlSession.selectOne("selectLatestProcessDefinitionByKey", processDefinitionKey);
+  }
+
   public ProcessDefinitionEntity findDeployedLatestProcessDefinitionByKey(String processDefinitionKey) {
     ProcessDefinitionEntity processDefinition = (ProcessDefinitionEntity) dbSqlSession.selectOne("selectLatestProcessDefinitionByKey", processDefinitionKey);
     processDefinition = resolveProcessDefinition(processDefinition);
@@ -190,11 +206,7 @@ public class DbRepositorySession implements Session, RepositorySession {
   @SuppressWarnings("unchecked")
   public List<ProcessDefinition> findProcessDefinitionsByQueryCriteria(ProcessDefinitionQueryImpl processDefinitionQuery, Page page) {
     final String query = "selectProcessDefinitionsByQueryCriteria";
-    if (page == null) {
-      return dbSqlSession.selectList(query, processDefinitionQuery);
-    } else {
-      return dbSqlSession.selectList(query, processDefinitionQuery, page.getOffset(), page.getMaxResults());
-    }
+    return dbSqlSession.selectList(query, processDefinitionQuery, page);
   }
 
   public long findProcessDefinitionCountByQueryCriteria(ProcessDefinitionQueryImpl processDefinitionQuery) {

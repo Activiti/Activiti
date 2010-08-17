@@ -33,9 +33,9 @@ public interface ProcessDefinitionQuery {
 
   long count();
   
-  ProcessDefinition singleResult();
+  ProcessDefinition listPage();
   
   List<ProcessDefinition> list();
   
-  List<ProcessDefinition> paginatedList(int start, int size);
+  List<ProcessDefinition> listPage(int start, int size);
 }

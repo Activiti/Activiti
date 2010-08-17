@@ -34,7 +34,7 @@ public interface RuntimeSession {
   void deleteProcessInstance(String processInstanceId, String deleteReason);
   ExecutionEntity findSubProcessInstanceBySuperExecutionId(String superExecutionId);
   long findExecutionCountByQueryCriteria(Object executionQuery);
-  List<ExecutionEntity> findExecutionsByQueryCriteria(Object executionQuery);
+  List<ExecutionEntity> findExecutionsByQueryCriteria(Object executionQuery, Page page);
   List<ExecutionEntity> findChildExecutionsByParentExecutionId(String executionId);
   ExecutionEntity findExecutionById(String activityInstanceId);
   
@@ -46,9 +46,9 @@ public interface RuntimeSession {
 
   JobEntity findJobById(String jobId);
   List<JobEntity> findJobs();
-  List<JobEntity> findNextJobsToExecute(int maxNrOfJobs);
+  List<JobEntity> findNextJobsToExecute(Page page);
   List<JobEntity> findLockedJobs();
-  List<TimerEntity> findUnlockedTimersByDuedate(Date duedate, int nrOfTimers);
+  List<TimerEntity> findUnlockedTimersByDuedate(Date duedate, Page page);
   List<TimerEntity> findTimersByExecutionId(String executionId);
   List<Job> findJobsByQueryCriteria(JobQueryImpl jobQuery, Page page);
   long findJobCountByQueryCriteria(JobQueryImpl jobQuery);

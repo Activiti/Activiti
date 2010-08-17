@@ -50,7 +50,7 @@ public class SubProcessTest extends ProcessEngineTestCase {
     // Completing boith the tasks finishes the subprocess and enables the task after the subprocess
     taskService.complete(investigateHardwareTask.getId());
     taskService.complete(investigateSoftwareTask.getId());
-    Task writeReportTask = taskService.createTaskQuery().processInstanceId(pi.getId()).singleResult();
+    Task writeReportTask = taskService.createTaskQuery().processInstanceId(pi.getId()).listPage();
     assertEquals("Write report", writeReportTask.getName());
     
     // Clean up

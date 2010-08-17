@@ -100,6 +100,7 @@
   <insert id="insertTimer" parameterType="org.activiti.engine.impl.persistence.runtime.TimerEntity">
     insert into ACT_JOB (
             ID_, 
+            REV_,
             TYPE_,
             LOCK_OWNER_, 
             LOCK_EXP_TIME_,
@@ -113,6 +114,7 @@
             HANDLER_TYPE_,
             HANDLER_CFG_ )
     values (#{id, jdbcType=VARCHAR},
+            1,
             'timer',
             #{lockOwner, jdbcType=VARCHAR},
             #{lockExpirationTime, jdbcType=TIMESTAMP},
@@ -133,6 +135,7 @@
   <update id="updateTimer" parameterType="org.activiti.engine.impl.persistence.runtime.TimerEntity">
     update ACT_JOB
     <set>
+       REV=  #{revisionNext, jdbcType=INTEGER},
        LOCK_EXP_TIME_ = #{lockExpirationTime, jdbcType=TIMESTAMP},
        LOCK_OWNER_ = #{lockOwner, jdbcType=VARCHAR},
        RETRIES_ = #{retries, jdbcType=INTEGER},
@@ -140,6 +143,7 @@
        DUEDATE_ = #{duedate, jdbcType=TIMESTAMP}
     </set>
     where ID_= #{id, jdbcType=VARCHAR}
+      and REV = #{revision, jdbcType=INTEGER}
   </update>
   
   <!-- TIMER SELECT -->
@@ -169,6 +173,7 @@
   <insert id="insertMessage" parameterType="org.activiti.engine.impl.persistence.runtime.MessageEntity">
     insert into ACT_JOB (
             ID_, 
+            REV_, 
             TYPE_,
             LOCK_OWNER_, 
             LOCK_EXP_TIME_,
@@ -180,6 +185,7 @@
             HANDLER_TYPE_,
             HANDLER_CFG_)
     values (#{id, jdbcType=VARCHAR},
+            1,
             'message',
             #{lockOwner, jdbcType=VARCHAR},
             #{lockExpirationTime, jdbcType=TIMESTAMP},
@@ -198,12 +204,14 @@
   <update id="updateMessage" parameterType="org.activiti.engine.impl.persistence.runtime.MessageEntity">
     update ACT_JOB
     <set>
+       REV_ =  #{revisionNext, jdbcType=INTEGER},
        LOCK_EXP_TIME_ = #{lockExpirationTime, jdbcType=TIMESTAMP},
        LOCK_OWNER_ = #{lockOwner, jdbcType=VARCHAR},
        RETRIES_ = #{retries, jdbcType=INTEGER},
        EXCEPTION_ = #{exception, jdbcType=VARCHAR}
     </set>
     where ID_= #{id, jdbcType=VARCHAR}
+      and REV = #{revision, jdbcType=INTEGER}
   </update>
 
 </mapper>

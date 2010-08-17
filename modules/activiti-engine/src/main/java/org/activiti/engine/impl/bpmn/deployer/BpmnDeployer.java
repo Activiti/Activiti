@@ -38,9 +38,11 @@ public class BpmnDeployer implements Deployer, ProcessEngineConfigurationAware {
   public static final String BPMN_RESOURCE_SUFFIX = "bpmn20.xml";
 
   protected ExpressionManager expressionManager;
+  protected BpmnParser bpmnParser;
 
   public void configurationCompleted(ProcessEngineConfiguration processEngineConfiguration) {
     this.expressionManager = processEngineConfiguration.getExpressionManager();
+    this.bpmnParser = new BpmnParser(expressionManager);
   }
 
   public List<ProcessDefinitionEntity> deploy(DeploymentEntity deployment) {
@@ -54,7 +56,7 @@ public class BpmnDeployer implements Deployer, ProcessEngineConfigurationAware {
         ResourceEntity resource = resources.get(resourceName);
         byte[] bytes = resource.getBytes();
         ByteArrayInputStream inputStream = new ByteArrayInputStream(bytes);
-        BpmnParse bpmnParse = new BpmnParser(expressionManager)
+        BpmnParse bpmnParse = bpmnParser
           .createParse()
           .sourceInputStream(inputStream)
           .name(resourceName)

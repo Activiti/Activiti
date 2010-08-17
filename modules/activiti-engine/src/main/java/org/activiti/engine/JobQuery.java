@@ -31,10 +31,10 @@ public interface JobQuery {
   
   long count();
   
-  Job singleResult();
+  Job listPage();
   
   List<Job> list();
   
-  List<Job> paginatedList(int start, int size);
+  List<Job> listPage(int start, int size);
 
 }

@@ -55,7 +55,7 @@ public class TasksGet extends ActivitiWebScript
     else {
       throw new WebScriptException(Status.STATUS_BAD_REQUEST, "Tasks must be filtered with 'assignee', 'candidate' or 'candidate-group'");
     }
-    model.put("tasks", tq.paginatedList(start, size));
+    model.put("tasks", tq.listPage(start, size));
     model.put("start", start);
     model.put("total", tq.count());
     model.put("size", size);

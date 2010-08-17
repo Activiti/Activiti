@@ -31,22 +31,18 @@ public class TablePageQueryTest extends ProcessEngineTestCase {
     
     TablePage tablePage = managementService.createTablePageQuery()
       .tableName("ACT_TASK")
-      .start(0)
-      .size(5)
-      .singleResult();
+      .listPage(0, 5);
     
-    assertEquals(0, tablePage.getStart());
+    assertEquals(0, tablePage.getFirstResult());
     assertEquals(5, tablePage.getSize());
     assertEquals(5, tablePage.getRows().size());
     assertEquals(20, tablePage.getTotal());
     
     tablePage = managementService.createTablePageQuery()
       .tableName("ACT_TASK")
-      .start(14)
-      .size(10)
-      .singleResult();
+      .listPage(14, 10);
     
-    assertEquals(14, tablePage.getStart());
+    assertEquals(14, tablePage.getFirstResult());
     assertEquals(6, tablePage.getSize());
     assertEquals(6, tablePage.getRows().size());
     assertEquals(20, tablePage.getTotal());
@@ -60,20 +56,16 @@ public class TablePageQueryTest extends ProcessEngineTestCase {
     // With an ascending sort
     TablePage tablePage = managementService.createTablePageQuery()
       .tableName("ACT_TASK")
-      .start(1)
-      .size(7)
       .orderAsc("NAME_")
-      .singleResult();
+      .listPage(1, 7);
     String[] expectedTaskNames = new String[] {"B", "C", "D", "E", "F", "G", "H"};
     verifyTaskNames(expectedTaskNames, tablePage.getRows());
     
     // With a descending sort
     tablePage = managementService.createTablePageQuery()
       .tableName("ACT_TASK")
-      .start(6)
-      .size(8)
       .orderDesc("NAME_")
-      .singleResult();
+      .listPage(6, 8);
     expectedTaskNames = new String[] {"I", "H", "G", "F", "E", "D", "C", "B"} ;
     verifyTaskNames(expectedTaskNames, tablePage.getRows());
     

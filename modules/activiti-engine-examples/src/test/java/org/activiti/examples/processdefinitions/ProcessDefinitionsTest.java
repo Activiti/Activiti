@@ -93,14 +93,20 @@ public class ProcessDefinitionsTest extends ProcessEngineTestCase {
       .list();
 
     assertNotNull(processDefinitions);
-    assertEquals(1, processDefinitions.size());
+    assertEquals(2, processDefinitions.size());
 
     ProcessDefinition processDefinition = processDefinitions.get(0);
     assertEquals("IDR", processDefinition.getKey());
     assertEquals("Insurance Damage Report", processDefinition.getName());
+    assertEquals("IDR:2", processDefinition.getId());
+    assertEquals(2, processDefinition.getVersion());
+
+    processDefinition = processDefinitions.get(1);
+    assertEquals("IDR", processDefinition.getKey());
+    assertEquals("Insurance Damage Report", processDefinition.getName());
     assertEquals("IDR:1", processDefinition.getId());
     assertEquals(1, processDefinition.getVersion());
-
+    
     deleteDeployments(deploymentIds);
   }
   
@@ -114,6 +120,4 @@ public class ProcessDefinitionsTest extends ProcessEngineTestCase {
       repositoryService.deleteDeployment(deploymentId);
     }
   }
-  
-  
 }

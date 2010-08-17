@@ -85,7 +85,7 @@ public class ProcessInstanceQueryImpl extends AbstractQuery<ProcessInstance> imp
   public List<ProcessInstance> executeList(CommandContext commandContext, Page page) {
     return (List) commandContext
       .getRuntimeSession()
-      .findExecutionsByQueryCriteria(this);
+      .findExecutionsByQueryCriteria(this, page);
   }
   
   public String getProcessDefinitionKey() {

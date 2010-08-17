@@ -12,8 +12,6 @@
  */
 package org.activiti.engine.impl;
 
-import org.activiti.engine.ActivitiException;
-import org.activiti.engine.SortOrder;
 import org.activiti.engine.TablePage;
 import org.activiti.engine.TablePageQuery;
 import org.activiti.engine.impl.interceptor.Command;
@@ -25,63 +23,59 @@ import org.activiti.engine.impl.interceptor.CommandExecutor;
  * 
  * @author Joram Barrez
  */
-public class TablePageQueryImpl implements TablePageQuery {
+public class TablePageQueryImpl implements TablePageQuery, Command<TablePage> {
   
-  protected CommandExecutor commandExecutor;
-
+  CommandExecutor commandExecutor;
+  
   protected String tableName;
-  protected int start = -1;
-  protected int maxRows = -1;
-  protected String sortColumn;
-  protected SortOrder sortOrder;
+  protected String orderBy;
+  protected int firstResult;
+  protected int maxResults;
 
+  public TablePageQueryImpl() {
+  }
+  
   public TablePageQueryImpl(CommandExecutor commandExecutor) {
     this.commandExecutor = commandExecutor;
   }
   
-  public TablePageQuery tableName(String tableName) {
+  public TablePageQueryImpl tableName(String tableName) {
     this.tableName = tableName;
     return this;
   }
   
-  public TablePageQuery start(int start) {
-    this.start = start;
+  public TablePageQueryImpl orderAsc(String column) {
+    addOrder(column, AbstractQuery.SORTORDER_ASC);
     return this;
   }
   
-  public TablePageQuery size(int size) {
-    this.maxRows = size;
+  public TablePageQueryImpl orderDesc(String column) {
+    addOrder(column, AbstractQuery.SORTORDER_DESC);
     return this;
   }
   
-  public TablePageQuery orderAsc(String column) {
-    if (sortColumn != null) {
-      throw new ActivitiException("Invalid usage: cannot use both orderAsc and orderDesc in same query");
+  public String getTableName() {
+    return tableName;
+  }
+
+  protected void addOrder(String column, String sortOrder) {
+    if (orderBy==null) {
+      orderBy = "";
+    } else {
+      orderBy = orderBy+", ";
     }
-    this.sortOrder = SortOrder.ASC;
-    this.sortColumn = column;
-    return this;
+    orderBy = orderBy+column+" "+sortOrder;
   }
-  
-  public TablePageQuery orderDesc(String column) {
-    if (sortColumn != null) {
-      throw new ActivitiException("Invalid usage: cannot use both orderAsc and orderDesc in same query");
-    }
-    this.sortOrder = SortOrder.DESC;
-    this.sortColumn = column;
-    return this;
+
+  public TablePage listPage(int firstResult, int maxResults) {
+    this.firstResult = firstResult;
+    this.maxResults = maxResults;
+    return commandExecutor.execute(this);
   }
-  
-  public TablePage singleResult() {
-    return commandExecutor.execute(new Command<TablePage>() {
-      public TablePage execute(CommandContext commandContext) {
-        if (tableName == null || start == -1 || maxRows == -1) {
-          throw new ActivitiException("Table name, offset and maxResults are " +
-              "minimally needed to execute a TablePageQuery");
-        }
-        return commandContext.getManagementSession()
-          .getTablePage(tableName, start, maxRows, sortColumn, sortOrder);
-      };
-    });
+
+  public TablePage execute(CommandContext commandContext) {
+    return commandContext
+      .getManagementSession()
+      .getTablePage(this, firstResult, maxResults);
   }
 }

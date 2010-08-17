@@ -70,7 +70,7 @@ public class TaskServiceImpl extends ServiceImpl implements TaskService {
   public List<Task> findAssignedTasks(String assignee, Page page) {
     TaskQuery query = createTaskQuery().assignee(assignee);
     if (page != null) {
-      return query.paginatedList(page.getOffset(), page.getMaxResults());
+      return query.listPage(page.getFirstResult(), page.getMaxResults());
     } else {
       return query.list();
     }
@@ -83,7 +83,7 @@ public class TaskServiceImpl extends ServiceImpl implements TaskService {
   public List<Task> findUnassignedTasks(String userId, Page page) {
     TaskQuery query = createTaskQuery().candidateUser(userId);
     if (page != null) {
-      return query.paginatedList(page.getOffset(), page.getMaxResults());
+      return query.listPage(page.getFirstResult(), page.getMaxResults());
     } else {
       return query.list();
     }

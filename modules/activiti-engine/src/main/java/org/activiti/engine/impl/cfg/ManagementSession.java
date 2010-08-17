@@ -15,9 +15,9 @@ package org.activiti.engine.impl.cfg;
 
 import java.util.Map;
 
-import org.activiti.engine.SortOrder;
 import org.activiti.engine.TableMetaData;
 import org.activiti.engine.TablePage;
+import org.activiti.engine.impl.TablePageQueryImpl;
 import org.activiti.engine.impl.persistence.db.IdBlock;
 
 
@@ -28,7 +28,7 @@ public interface ManagementSession {
 
   /* Management */
   Map<String, Long> getTableCount();
-  TablePage getTablePage(String tableName, int offset, int maxResults, String sortColumn, SortOrder sortOrder);
+  TablePage getTablePage(TablePageQueryImpl tablePageQuery, int firstResult, int maxResults);
   TableMetaData getTableMetaData(String tableName);
 
   IdBlock getNextIdBlock();

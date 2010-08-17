@@ -84,7 +84,7 @@ public class ExecutionQueryImpl extends AbstractQuery<Execution> implements Exec
   public List<Execution> executeList(CommandContext commandContext, Page page) {
     return (List) commandContext
       .getRuntimeSession()
-      .findExecutionsByQueryCriteria(this);
+      .findExecutionsByQueryCriteria(this, page);
   }
   
   public String getProcessDefinitionKey() {

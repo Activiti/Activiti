@@ -21,6 +21,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.Page;
 import org.activiti.engine.impl.interceptor.Session;
 import org.activiti.engine.impl.persistence.PersistentObject;
 import org.activiti.engine.impl.persistence.runtime.VariableInstanceEntity;
@@ -143,9 +144,14 @@ public class DbSqlSession implements Session {
   }
   
   @SuppressWarnings("unchecked")
-  public List selectList(String statement, Object parameter, int offset, int maxResults) {
+  public List selectList(String statement, Object parameter, Page page) {
     statement = dbSqlSessionFactory.mapStatement(statement);
-    List loadedObjects = sqlSession.selectList(statement, parameter, new RowBounds(offset, maxResults));
+    List loadedObjects;
+    if (page!=null) {
+      loadedObjects = sqlSession.selectList(statement, parameter, new RowBounds(page.getFirstResult(), page.getMaxResults()));
+    } else {
+      loadedObjects = sqlSession.selectList(statement, parameter);
+    }
     return filterLoadedObjects(loadedObjects);
   }
 
