@@ -22,7 +22,7 @@ import org.activiti.pvm.impl.runtime.ExecutionImpl;
 /**
  * @author Tom Baeyens
  */
-public class VariableDeclarationImpl implements Serializable {
+public class VariableDeclaration implements Serializable {
 
   private static final long serialVersionUID = 1L;
   
@@ -35,11 +35,12 @@ public class VariableDeclarationImpl implements Serializable {
   protected String link;
   protected ActivitiValueExpression linkValueExpression;
   
-  public void create(ExecutionImpl innerScope, ExecutionImpl outerScope) {
+
+  public void initialize(ExecutionImpl innerScopeInstance, ExecutionImpl outerScopeInstance) {
     if (sourceVariableName!=null) {
-      if (outerScope.hasVariable(sourceVariableName)) {
-        Object value = outerScope.getVariable(sourceVariableName);
-        innerScope.setVariable(destinationVariableName, value);      
+      if (outerScopeInstance.hasVariable(sourceVariableName)) {
+        Object value = outerScopeInstance.getVariable(sourceVariableName);
+        innerScopeInstance.setVariable(destinationVariableName, value);      
       } else {
         throw new ActivitiException("Couldn't create variable '" 
                 + destinationVariableName + "', since the source variable '"
@@ -48,14 +49,14 @@ public class VariableDeclarationImpl implements Serializable {
     }
     
     if (sourceValueExpression!=null) {
-      Object value = sourceValueExpression.getValue(outerScope);
-      innerScope.setVariable(destinationVariableName, value);
+      Object value = sourceValueExpression.getValue(outerScopeInstance);
+      innerScopeInstance.setVariable(destinationVariableName, value);
     }
     
     if (link!=null) {
-      if (outerScope.hasVariable(sourceVariableName)) {
-        Object value = outerScope.getVariable(sourceVariableName);
-        innerScope.setVariable(destinationVariableName, value);
+      if (outerScopeInstance.hasVariable(sourceVariableName)) {
+        Object value = outerScopeInstance.getVariable(sourceVariableName);
+        innerScopeInstance.setVariable(destinationVariableName, value);
       } else {
         throw new ActivitiException("Couldn't create variable '" + destinationVariableName + "', since the source variable '" + sourceVariableName
                 + "does not exist");
@@ -63,44 +64,44 @@ public class VariableDeclarationImpl implements Serializable {
     }
 
     if (linkValueExpression!=null) {
-      Object value = sourceValueExpression.getValue(outerScope);
-      innerScope.setVariable(destinationVariableName, value);
+      Object value = sourceValueExpression.getValue(outerScopeInstance);
+      innerScopeInstance.setVariable(destinationVariableName, value);
     }
 
   }
   
-  public void destroy(ExecutionImpl innerScope, ExecutionImpl outerScope) {
+  public void destroy(ExecutionImpl innerScopeInstance, ExecutionImpl outerScopeInstance) {
     
     if (destinationVariableName!=null) {
-      if (innerScope.hasVariable(sourceVariableName)) {
-        Object value = innerScope.getVariable(sourceVariableName);
-        outerScope.setVariable(destinationVariableName, value);
+      if (innerScopeInstance.hasVariable(sourceVariableName)) {
+        Object value = innerScopeInstance.getVariable(sourceVariableName);
+        outerScopeInstance.setVariable(destinationVariableName, value);
       } else {
         throw new ActivitiException("Couldn't destroy variable " + sourceVariableName + ", since it does not exist");
       }
     }
 
     if (destinationValueExpression!=null) {
-      Object value = destinationValueExpression.getValue(innerScope);
-      outerScope.setVariable(destinationVariableName, value);
+      Object value = destinationValueExpression.getValue(innerScopeInstance);
+      outerScopeInstance.setVariable(destinationVariableName, value);
     }
     
     if (link!=null) {
-      if (innerScope.hasVariable(sourceVariableName)) {
-        Object value = innerScope.getVariable(sourceVariableName);
-        outerScope.setVariable(destinationVariableName, value);
+      if (innerScopeInstance.hasVariable(sourceVariableName)) {
+        Object value = innerScopeInstance.getVariable(sourceVariableName);
+        outerScopeInstance.setVariable(destinationVariableName, value);
       } else {
         throw new ActivitiException("Couldn't destroy variable " + sourceVariableName + ", since it does not exist");
       }
     }
 
     if (linkValueExpression!=null) {
-      Object value = sourceValueExpression.getValue(innerScope);
-      outerScope.setVariable(destinationVariableName, value);
+      Object value = sourceValueExpression.getValue(innerScopeInstance);
+      outerScopeInstance.setVariable(destinationVariableName, value);
     }
   }
   
-  public VariableDeclarationImpl(String name, String type) {
+  public VariableDeclaration(String name, String type) {
     this.name = name;
     this.type = type;
   }

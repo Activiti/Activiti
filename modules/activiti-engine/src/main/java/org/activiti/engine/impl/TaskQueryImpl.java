@@ -18,7 +18,6 @@ import java.util.List;
 
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.Page;
-import org.activiti.engine.SortOrder;
 import org.activiti.engine.Task;
 import org.activiti.engine.TaskQuery;
 import org.activiti.engine.impl.interceptor.CommandContext;
@@ -43,6 +42,18 @@ public class TaskQueryImpl extends AbstractQuery<Task> implements TaskQuery {
   
   public TaskQueryImpl(CommandExecutor commandExecutor) {
     super(commandExecutor);
+  }
+  
+  public List<Task> executeList(CommandContext commandContext, Page page) {
+    return commandContext
+      .getTaskSession()
+      .findTasksByQueryCriteria(this, page);
+  }
+  
+  public long executeCount(CommandContext commandContext) {
+    return commandContext
+      .getTaskSession()
+      .findTaskCountByQueryCriteria(this);
   }
   
   public TaskQueryImpl name(String name) {
@@ -89,18 +100,6 @@ public class TaskQueryImpl extends AbstractQuery<Task> implements TaskQuery {
   public TaskQueryImpl orderDesc(String column) {
     super.addOrder(column, SORTORDER_DESC);
     return this;
-  }
-  
-  public List<Task> executeList(CommandContext commandContext, Page page) {
-    return commandContext
-      .getTaskSession()
-      .findTasksByQueryCriteria(this, page);
-  }
-  
-  public long executeCount(CommandContext commandContext) {
-    return commandContext
-      .getTaskSession()
-      .findTaskCountByQueryCriteria(this);
   }
   
   public List<String> getCandidateGroups() {

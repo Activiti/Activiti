@@ -15,10 +15,10 @@ package org.activiti.engine.impl.cfg;
 
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
 import org.activiti.engine.Job;
 import org.activiti.engine.Page;
+import org.activiti.engine.impl.JobQueryImpl;
 import org.activiti.engine.impl.persistence.runtime.ByteArrayEntity;
 import org.activiti.engine.impl.persistence.runtime.ExecutionEntity;
 import org.activiti.engine.impl.persistence.runtime.JobEntity;
@@ -50,6 +50,6 @@ public interface RuntimeSession {
   List<JobEntity> findLockedJobs();
   List<TimerEntity> findUnlockedTimersByDuedate(Date duedate, int nrOfTimers);
   List<TimerEntity> findTimersByExecutionId(String executionId);
-  List<Job> dynamicFindJobs(Map<String, Object> params, Page page);
-  long dynamicJobCount(Map<String, Object> params);
+  List<Job> findJobsByQueryCriteria(JobQueryImpl jobQuery, Page page);
+  long findJobCountByQueryCriteria(JobQueryImpl jobQuery);
 }

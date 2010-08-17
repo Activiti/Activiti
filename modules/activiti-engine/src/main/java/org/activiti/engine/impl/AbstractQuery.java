@@ -96,7 +96,7 @@ public abstract class AbstractQuery<T> implements Command<Object>{
   public abstract List<T> executeList(CommandContext commandContext, Page page);
   
   public T executeSingleResult(CommandContext commandContext) {
-    List<T> results = list();
+    List<T> results = executeList(commandContext, null);
     if (results.size() == 1) {
       return results.get(0);
     } else if (results.size() > 1) {

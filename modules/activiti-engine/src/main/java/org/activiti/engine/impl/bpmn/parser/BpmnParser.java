@@ -12,9 +12,7 @@
  */
 package org.activiti.engine.impl.bpmn.parser;
 
-import org.activiti.engine.impl.calendar.BusinessCalendarManager;
 import org.activiti.engine.impl.el.ExpressionManager;
-import org.activiti.engine.impl.scripting.ScriptingEngines;
 import org.activiti.engine.impl.util.xml.Parser;
 
 
@@ -53,16 +51,9 @@ public class BpmnParser extends Parser {
   public static final String XSI_NS = "http://www.w3.org/2001/XMLSchema-instance";
 
   protected ExpressionManager expressionManager;
-
-  protected ScriptingEngines scriptingEngines;
-
-  protected BusinessCalendarManager businessCalendarManager;
   
-  public BpmnParser(ExpressionManager expressionManager, ScriptingEngines scriptingEngines,
-          BusinessCalendarManager businessCalendarManager) {
+  public BpmnParser(ExpressionManager expressionManager) {
     this.expressionManager = expressionManager;
-    this.scriptingEngines = scriptingEngines;
-    this.businessCalendarManager = businessCalendarManager;
   }
   
   /**
@@ -70,7 +61,7 @@ public class BpmnParser extends Parser {
    * to parse only one BPMN 2.0 process definition.
    */
   public BpmnParse createParse() {
-    return new BpmnParse(this, expressionManager, scriptingEngines, businessCalendarManager);
+    return new BpmnParse(this, expressionManager);
   }
   
 }

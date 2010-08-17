@@ -34,7 +34,6 @@ public abstract class ScopeImpl extends ProcessElementImpl implements PvmScope {
   protected List<ActivityImpl> activities = new ArrayList<ActivityImpl>();
   protected Map<String, ActivityImpl> namedActivities = new HashMap<String, ActivityImpl>();
   protected Map<String, List<EventListener>> eventListeners = new HashMap<String, List<EventListener>>();
-  protected List<VariableDeclaration> variableDeclarations = new ArrayList<VariableDeclaration>();
 
   public ScopeImpl(String id, ProcessDefinitionImpl processDefinition) {
     super(id, processDefinition);
@@ -112,9 +111,5 @@ public abstract class ScopeImpl extends ProcessElementImpl implements PvmScope {
   
   public List<ActivityImpl> getActivities() {
     return activities;
-  }
-
-  public List<VariableDeclaration> getVariableDeclarations() {
-    return variableDeclarations;
   }
 }

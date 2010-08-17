@@ -12,8 +12,11 @@
  */
 package org.activiti.engine.impl.bpmn;
 
-import org.activiti.engine.ActivitiException;
+import java.util.List;
+
 import org.activiti.pvm.activity.ActivityExecution;
+import org.activiti.pvm.impl.runtime.ExecutionImpl;
+import org.activiti.pvm.process.PvmTransition;
 
 
 /**
@@ -25,13 +28,24 @@ public class BoundaryTimerEventActivity extends AbstractBpmnActivity {
   
   protected boolean interrupting;
     
+  @SuppressWarnings("unchecked")
   public void execute(ActivityExecution execution) throws Exception {
+    List<PvmTransition> outgoingTransitions = execution.getActivity().getOutgoingTransitions();
+    List<ExecutionImpl> interruptedExecutions = null;
     
     if (interrupting) {
-      leave(execution);
-    } else {
-      throw new ActivitiException("Non-interrupting boundary timer event not yet implemented");
+      ExecutionImpl executionImpl = (ExecutionImpl) execution;
+      if (executionImpl.getSubProcessInstance()!=null) {
+        executionImpl.getSubProcessInstance().deleteCascade(executionImpl.getDeleteReason());
+      }
+      
+      interruptedExecutions = executionImpl.getExecutions();
+      for (ExecutionImpl interruptedExecution: interruptedExecutions) {
+        interruptedExecution.deleteCascade("interrupting timer event '"+execution.getActivity().getId()+"' fired");
+      }
     }
+
+    execution.takeAll(outgoingTransitions, (List) interruptedExecutions);
   }
 
   public boolean isInterrupting() {

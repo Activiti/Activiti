@@ -18,6 +18,7 @@ import java.util.Map;
 
 import org.activiti.engine.Job;
 import org.activiti.engine.Page;
+import org.activiti.engine.impl.JobQueryImpl;
 import org.activiti.engine.impl.cfg.RuntimeSession;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.interceptor.Session;
@@ -126,22 +127,22 @@ public class DbRuntimeSession implements Session, RuntimeSession {
   }
 
   @SuppressWarnings("unchecked")
-  public List<TimerEntity> findTimersByExecutionId(String activityInstanceId) {
-    return dbSqlSession.selectList("selectTimersByActivityInstanceId", activityInstanceId);
+  public List<TimerEntity> findTimersByExecutionId(String executionId) {
+    return dbSqlSession.selectList("selectTimersByExecutionId", executionId);
   }
 
   @SuppressWarnings("unchecked")
-  public List<Job> dynamicFindJobs(Map<String, Object> params, Page page) {
-    final String query = "org.activiti.persistence.selectJobByDynamicCriteria";
+  public List<Job> findJobsByQueryCriteria(JobQueryImpl jobQuery, Page page) {
+    final String query = "org.activiti.persistence.selectJobByQueryCriteria";
     if (page == null) {
-      return dbSqlSession.selectList(query, params);
+      return dbSqlSession.selectList(query, jobQuery);
     } else {
-      return dbSqlSession.selectList(query, params, page.getOffset(), page.getMaxResults());
+      return dbSqlSession.selectList(query, jobQuery, page.getOffset(), page.getMaxResults());
     }
   }
 
-  public long dynamicJobCount(Map<String, Object> params) {
-    return (Long) dbSqlSession.selectOne("org.activiti.persistence.selectJobCountByDynamicCriteria", params);
+  public long findJobCountByQueryCriteria(JobQueryImpl jobQuery) {
+    return (Long) dbSqlSession.selectOne("org.activiti.persistence.selectJobCountByQueryCriteria", jobQuery);
   }
 
   public void close() {

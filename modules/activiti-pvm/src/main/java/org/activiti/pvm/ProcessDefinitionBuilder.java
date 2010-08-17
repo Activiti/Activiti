@@ -24,7 +24,6 @@ import org.activiti.pvm.impl.process.ProcessDefinitionImpl;
 import org.activiti.pvm.impl.process.ProcessElementImpl;
 import org.activiti.pvm.impl.process.ScopeImpl;
 import org.activiti.pvm.impl.process.TransitionImpl;
-import org.activiti.pvm.impl.process.VariableDeclarationImpl;
 import org.activiti.pvm.process.PvmProcessDefinition;
 
 
@@ -151,18 +150,6 @@ public class ProcessDefinitionBuilder {
     } else {
       throw new PvmException("not in an activity- or process definition scope. (but in a transition scope)");
     }
-    return this;
-  }
-
-  public ProcessDefinitionBuilder variable(String variableName, Object value) {
-    if (scopeStack.size()>1) {
-      getActivity().setScope(true);
-    }
-    VariableDeclarationImpl variableDeclaration = new VariableDeclarationImpl(variableName, value);
-    scopeStack
-      .peek()
-      .getVariableDeclarations()
-      .add(variableDeclaration);
     return this;
   }
 }

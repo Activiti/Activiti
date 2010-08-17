@@ -14,21 +14,30 @@
 package org.activiti.engine.impl.persistence.runtime;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Logger;
 
 import javax.el.ELContext;
 
 import org.activiti.engine.Execution;
+import org.activiti.engine.Job;
 import org.activiti.engine.ProcessInstance;
+import org.activiti.engine.impl.JobQueryImpl;
 import org.activiti.engine.impl.TaskQueryImpl;
+import org.activiti.engine.impl.bpmn.parser.BpmnParse;
+import org.activiti.engine.impl.calendar.BusinessCalendar;
+import org.activiti.engine.impl.calendar.DurationBusinessCalendar;
 import org.activiti.engine.impl.interceptor.CommandContext;
+import org.activiti.engine.impl.jobexecutor.TimerDeclarationImpl;
 import org.activiti.engine.impl.persistence.PersistentObject;
-import org.activiti.engine.impl.persistence.repository.ProcessDefinitionEntity;
 import org.activiti.engine.impl.persistence.task.TaskEntity;
+import org.activiti.engine.impl.variable.VariableDeclaration;
 import org.activiti.pvm.impl.process.ActivityImpl;
 import org.activiti.pvm.impl.process.ProcessDefinitionImpl;
+import org.activiti.pvm.impl.process.ScopeImpl;
 import org.activiti.pvm.impl.runtime.ExecutionImpl;
 
 
@@ -38,6 +47,8 @@ import org.activiti.pvm.impl.runtime.ExecutionImpl;
 public class ExecutionEntity extends ExecutionImpl implements PersistentObject, Execution, ProcessInstance {
 
   private static final long serialVersionUID = 1L;
+  
+  private static Logger log = Logger.getLogger(ExecutionEntity.class.getName());
 
   protected String id = null;
   protected int revision = 1;
@@ -84,38 +95,15 @@ public class ExecutionEntity extends ExecutionImpl implements PersistentObject, 
    */
   protected String superExecutionId;
   
-  protected boolean isExecutionsInitialized = false;
-
   protected ELContext cachedElContext;
 
-  ExecutionEntity() {
-  }
-
-  public static ExecutionEntity createProcessInstance(ProcessDefinitionEntity processDefinition) {
-    ExecutionEntity processInstance = new ExecutionEntity();
-    processInstance.executions = new ArrayList<ExecutionImpl>();
-    processInstance.setProcessDefinition(processDefinition);
-    processInstance.isExecutionsInitialized = true;
-    // Do not initialize variable map (let it happen lazily)
-
-    CommandContext
-      .getCurrent()
-      .getDbSqlSession()
-      .insert(processInstance);
-
-    // reset the process instance in order to have the db-generated process instance id available
-    processInstance.setProcessInstance(processInstance);
-    
-    processInstance.variables = VariableMap.createNewInitialized(processInstance.getId(), processInstance.getId());
-    return processInstance;
+  public ExecutionEntity() {
   }
 
   @Override
   protected ExecutionImpl newExecution() {
     ExecutionEntity newExecution = new ExecutionEntity();
     newExecution.executions = new ArrayList<ExecutionImpl>();
-    newExecution.isExecutionsInitialized = true;
-    // Do not initialize variable map (let it happen lazily)
 
     CommandContext
       .getCurrent()
@@ -124,7 +112,80 @@ public class ExecutionEntity extends ExecutionImpl implements PersistentObject, 
 
     return newExecution;
   }
+  
+  // scopes ///////////////////////////////////////////////////////////////////
+
+  @SuppressWarnings("unchecked")
+  @Override
+  public void initialize() {
+    log.fine("initializing "+this);
+
+    ScopeImpl scope = getScope();
+    ensureParentInitialized();
+
+    List<VariableDeclaration> variableDeclarations = (List<VariableDeclaration>) scope.getProperty(BpmnParse.PROPERTYNAME_VARIABLE_DECLARATIONS);
+    if (variableDeclarations!=null) {
+      for (VariableDeclaration variableDeclaration : variableDeclarations) {
+        variableDeclaration.initialize(this, parent);
+      }
+    }
     
+    List<TimerDeclarationImpl> timerDeclarations = (List<TimerDeclarationImpl>) scope.getProperty(BpmnParse.PROPERTYNAME_TIMER_DECLARATION);
+    if (timerDeclarations!=null) {
+      for (TimerDeclarationImpl timerDeclaration : timerDeclarations) {
+        BusinessCalendar businessCalendar = CommandContext.getCurrent().getProcessEngineConfiguration().getBusinessCalendarManager().getBusinessCalendar(
+                DurationBusinessCalendar.NAME);
+        Date duedate = businessCalendar.resolveDuedate(timerDeclaration.getDuedateDescription());
+
+        TimerEntity timer = new TimerEntity(timerDeclaration);
+        timer.setDuedate(duedate);
+        timer.setExecution(this);
+
+        CommandContext.getCurrent().getTimerSession().schedule(timer);
+      }
+    }
+  }
+
+  @SuppressWarnings("unchecked")
+  @Override
+  public void destroy() {
+    log.fine("destroying "+this);
+    
+    ScopeImpl scope = getScope();
+    ensureParentInitialized();
+
+    List<VariableDeclaration> variableDeclarations = (List<VariableDeclaration>) scope.getProperty(BpmnParse.PROPERTYNAME_VARIABLE_DECLARATIONS);
+    if (variableDeclarations!=null) {
+      for (VariableDeclaration variableDeclaration: variableDeclarations) {
+        variableDeclaration.destroy(this, parent);
+      }
+    }
+
+    if (variables!=null) {
+      variables.clear();
+    }
+
+    List<TimerDeclarationImpl> timerDeclarations = (List<TimerDeclarationImpl>) scope.getProperty(BpmnParse.PROPERTYNAME_TIMER_DECLARATION);
+    if (timerDeclarations!=null) {
+      CommandContext
+        .getCurrent()
+        .getTimerSession()
+        .cancelTimers(this);
+    }
+    
+    setScope(false);
+  }
+
+  protected ScopeImpl getScope() {
+    ScopeImpl scope = null;
+    if (isProcessInstance()) {
+      scope = getProcessDefinition();
+    } else {
+      scope = getActivity();
+    }
+    return scope;
+  }
+
   // process definition ///////////////////////////////////////////////////////
 
   @Override
@@ -189,14 +250,11 @@ public class ExecutionEntity extends ExecutionImpl implements PersistentObject, 
   @SuppressWarnings("unchecked")
   @Override
   protected void ensureExecutionsInitialized() {
-    // If the execution is new, then the child execution objects are already
-    // fetched
-    if (!isExecutionsInitialized) {
+    if (executions==null) {
       this.executions = (List) CommandContext
         .getCurrent()
         .getRuntimeSession()
         .findChildExecutionsByParentExecutionId(id);
-      this.isExecutionsInitialized = true;
     }
   }
 
@@ -270,9 +328,10 @@ public class ExecutionEntity extends ExecutionImpl implements PersistentObject, 
     // TODO add cancellation of timers
 
     // delete all the tasks
+    CommandContext commandContext = CommandContext.getCurrent();
     List<TaskEntity> tasks = (List) new TaskQueryImpl()
       .executionId(id)
-      .executeList(CommandContext.getCurrent(), null);
+      .executeList(commandContext, null);
     for (TaskEntity task : tasks) {
       if (replacedBy!=null) {
         task.setExecution(replacedBy);
@@ -281,9 +340,21 @@ public class ExecutionEntity extends ExecutionImpl implements PersistentObject, 
       }
     }
 
+    List<Job> jobs = new JobQueryImpl()
+      .executionId(id)
+      .executeList(commandContext, null);
+    for (Job job: jobs) {
+      if (replacedBy!=null) {
+        ((JobEntity)job).setExecution((ExecutionEntity) replacedBy);
+      } else {
+        commandContext
+          .getDbSqlSession()
+          .delete(JobEntity.class, job.getId());
+      }
+    }
+
     // then delete execution
-    CommandContext
-      .getCurrent()
+    commandContext
       .getDbSqlSession()
       .delete(ExecutionEntity.class, id);
   }

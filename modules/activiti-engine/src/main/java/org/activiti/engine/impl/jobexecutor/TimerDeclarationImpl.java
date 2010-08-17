@@ -13,9 +13,7 @@
 package org.activiti.engine.impl.jobexecutor;
 
 import java.io.Serializable;
-import java.util.Date;
 
-import org.activiti.engine.impl.calendar.BusinessCalendar;
 import org.activiti.engine.impl.persistence.runtime.TimerEntity;
 
 
@@ -26,58 +24,52 @@ public class TimerDeclarationImpl implements Serializable {
 
   private static final long serialVersionUID = 1L;
 
-  private final BusinessCalendar calendar;
-  private final String duedateDeclaration;
-  private final String jobHandlerType;
-  private String jobHandlerConfiguration = null;
-  private String repeat;
-  private boolean exclusive = TimerEntity.DEFAULT_EXCLUSIVE;
-  private int retries = TimerEntity.DEFAULT_RETRIES;
+  protected String duedateDescription;
+  protected String jobHandlerType;
+  protected String jobHandlerConfiguration = null;
+  protected String repeat;
+  protected boolean exclusive = TimerEntity.DEFAULT_EXCLUSIVE;
+  protected int retries = TimerEntity.DEFAULT_RETRIES;
 
-  
-  public TimerDeclarationImpl(BusinessCalendar calendar, String duedateDeclaration, String jobHandlerType) {
-    this.calendar = calendar;
-    this.duedateDeclaration = duedateDeclaration;
+  public TimerDeclarationImpl(String duedateDescription, String jobHandlerType) {
+    this.duedateDescription = duedateDescription;
     this.jobHandlerType = jobHandlerType;
   }
-  
+
   public String getJobHandlerType() {
     return jobHandlerType;
   }
-
   public String getJobHandlerConfiguration() {
     return jobHandlerConfiguration;
   }
-  
   public void setJobHandlerConfiguration(String jobHandlerConfiguration) {
     this.jobHandlerConfiguration = jobHandlerConfiguration;
   }
-  
-  public Date getDuedate() {
-    return calendar.resolveDuedate(duedateDeclaration);
-  }
-
   public String getRepeat() {
     return repeat;
   }
-  
   public void setRepeat(String repeat) {
     this.repeat = repeat;
   }
-  
   public boolean isExclusive() {
     return exclusive;
   }
-  
   public void setExclusive(boolean exclusive) {
     this.exclusive = exclusive;
   }
-  
   public int getRetries() {
     return retries;
   }
-  
   public void setRetries(int retries) {
     this.retries = retries;
+  }
+  public String getDuedateDescription() {
+    return duedateDescription;
+  }
+  public void setDuedateDescription(String duedateDescription) {
+    this.duedateDescription = duedateDescription;
+  }
+  public void setJobHandlerType(String jobHandlerType) {
+    this.jobHandlerType = jobHandlerType;
   }
 }

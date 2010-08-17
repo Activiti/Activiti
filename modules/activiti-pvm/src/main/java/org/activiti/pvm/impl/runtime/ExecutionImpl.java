@@ -26,9 +26,7 @@ import org.activiti.pvm.activity.SignallableActivityBehavior;
 import org.activiti.pvm.event.EventListenerExecution;
 import org.activiti.pvm.impl.process.ActivityImpl;
 import org.activiti.pvm.impl.process.ProcessDefinitionImpl;
-import org.activiti.pvm.impl.process.ScopeImpl;
 import org.activiti.pvm.impl.process.TransitionImpl;
-import org.activiti.pvm.impl.process.VariableDeclaration;
 import org.activiti.pvm.process.PvmActivity;
 import org.activiti.pvm.process.PvmProcessDefinition;
 import org.activiti.pvm.process.PvmProcessElement;
@@ -99,6 +97,10 @@ public class ExecutionImpl implements
   protected String eventName;
   protected PvmProcessElement eventSource;
   protected int eventListenerIndex = 0;
+  
+  // cascade deletion ////////////////////////////////////////////////////////
+  
+  protected boolean deleteRoot;
   protected String deleteReason;
   
   // replaced by //////////////////////////////////////////////////////////////
@@ -162,24 +164,10 @@ public class ExecutionImpl implements
   }
   
   public void initialize() {
-    if (isScope()) {
-      log.fine("initializing "+this);
-      ScopeImpl scope = null;
-      if (isProcessInstance()) {
-        scope = getProcessDefinition();
-      } else {
-        scope = getActivity();
-      }
-      for (VariableDeclaration variableDeclaration: scope.getVariableDeclarations()) {
-        variableDeclaration.initialize(this);
-      }
-    }
   }
   
   public void destroy() {
-    log.fine("destroying "+this);
     setScope(false);
-    variables = null;
   }
   
   public void remove() {
@@ -247,6 +235,7 @@ public class ExecutionImpl implements
 
   public void deleteCascade(String deleteReason) {
     this.deleteReason = deleteReason;
+    this.deleteRoot = true;
     performOperation(AtomicOperation.DELETE_CASCADE);
   }
   
@@ -577,8 +566,8 @@ public class ExecutionImpl implements
   public void setVariables(Map<String, Object> variables) {
     ensureVariablesInitialized();
     if (variables!=null) {
-      for (Map.Entry<String, Object> entry: variables.entrySet()) {
-        setVariable(entry.getKey(), entry.getValue());
+      for (String variableName: variables.keySet()) {
+        setVariable(variableName, variables.get(variableName));
       }
     }
   }
@@ -696,5 +685,8 @@ public class ExecutionImpl implements
   }
   public void setReplacedBy(ExecutionImpl replacedBy) {
     this.replacedBy = replacedBy;
+  }
+  public void setExecutions(List<ExecutionImpl> executions) {
+    this.executions = executions;
   }
 }

@@ -48,7 +48,7 @@ public abstract class JobEntity implements Serializable, Job, PersistentObject {
   protected String executionId = null;
   protected String processInstanceId = null;
 
-  protected boolean exclusive = DEFAULT_EXCLUSIVE;
+  protected boolean isExclusive = DEFAULT_EXCLUSIVE;
 
   protected int retries = DEFAULT_RETRIES;
   protected String exception = null;
@@ -74,7 +74,7 @@ public abstract class JobEntity implements Serializable, Job, PersistentObject {
     return persistentState;
   }
 
-  public void setActivityInstance(ExecutionEntity execution) {
+  public void setExecution(ExecutionEntity execution) {
     executionId = execution.getId();
     processInstanceId = execution.getProcessInstanceId();
   }
@@ -115,10 +115,10 @@ public abstract class JobEntity implements Serializable, Job, PersistentObject {
     this.processInstanceId = processInstanceId;
   }
   public boolean isExclusive() {
-    return exclusive;
+    return isExclusive;
   }
-  public void setExclusive(boolean exclusive) {
-    this.exclusive = exclusive;
+  public void setExclusive(boolean isExclusive) {
+    this.isExclusive = isExclusive;
   }
   public String getId() {
     return id;

@@ -13,9 +13,7 @@
 
 package org.activiti.engine.impl;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.activiti.engine.Job;
 import org.activiti.engine.JobQuery;
@@ -25,21 +23,31 @@ import org.activiti.engine.impl.interceptor.CommandExecutor;
 
 
 /**
- * @author jbarrez
+ * @author Joram Barrez
+ * @author Tom Baeyens
  */
 public class JobQueryImpl extends AbstractQuery<Job> implements JobQuery {
   
   protected String processInstanceId;
+  protected String executionId;
   
+  public JobQueryImpl() {
+  }
+
+  public JobQueryImpl(CommandExecutor commandExecutor) {
+    super(commandExecutor);
+  }
+
   public JobQueryImpl processInstanceId(String processInstanceId) {
     this.processInstanceId = processInstanceId;
     return this;
   }
   
-  public JobQueryImpl(CommandExecutor commandExecutor) {
-    super(commandExecutor);
+  public JobQueryImpl executionId(String executionId) {
+    this.executionId = executionId;
+    return this;
   }
-
+  
   public JobQueryImpl orderAsc(String column) {
     super.addOrder(column, SORTORDER_ASC);
     return this;
@@ -53,20 +61,20 @@ public class JobQueryImpl extends AbstractQuery<Job> implements JobQuery {
   public long executeCount(CommandContext commandContext) {
     return commandContext
       .getRuntimeSession()
-      .dynamicJobCount(createParamMap());
+      .findJobCountByQueryCriteria(this);
   }
 
   public List<Job> executeList(CommandContext commandContext, Page page) {
     return commandContext
       .getRuntimeSession()
-      .dynamicFindJobs(createParamMap(), page);
+      .findJobsByQueryCriteria(this, page);
   }
   
-  protected Map<String, Object> createParamMap() {
-    Map<String, Object> params = new HashMap<String, Object>();
-    if (processInstanceId != null) {
-      params.put("processInstanceId", processInstanceId);
-    }
-    return params;
+  public String getProcessInstanceId() {
+    return processInstanceId;
+  }
+
+  public String getExecutionId() {
+    return executionId;
   }
 }

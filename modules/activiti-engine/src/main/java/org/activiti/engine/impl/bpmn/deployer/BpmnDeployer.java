@@ -20,7 +20,6 @@ import java.util.logging.Logger;
 
 import org.activiti.engine.impl.bpmn.parser.BpmnParse;
 import org.activiti.engine.impl.bpmn.parser.BpmnParser;
-import org.activiti.engine.impl.calendar.BusinessCalendarManager;
 import org.activiti.engine.impl.cfg.ProcessEngineConfiguration;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationAware;
 import org.activiti.engine.impl.el.ExpressionManager;
@@ -28,7 +27,6 @@ import org.activiti.engine.impl.persistence.repository.Deployer;
 import org.activiti.engine.impl.persistence.repository.DeploymentEntity;
 import org.activiti.engine.impl.persistence.repository.ProcessDefinitionEntity;
 import org.activiti.engine.impl.persistence.repository.ResourceEntity;
-import org.activiti.engine.impl.scripting.ScriptingEngines;
 
 /**
  * @author Tom Baeyens
@@ -40,13 +38,9 @@ public class BpmnDeployer implements Deployer, ProcessEngineConfigurationAware {
   public static final String BPMN_RESOURCE_SUFFIX = "bpmn20.xml";
 
   protected ExpressionManager expressionManager;
-  protected ScriptingEngines scriptingEngines;
-  protected BusinessCalendarManager businessCalendarManager;
 
   public void configurationCompleted(ProcessEngineConfiguration processEngineConfiguration) {
     this.expressionManager = processEngineConfiguration.getExpressionManager();
-    this.scriptingEngines = processEngineConfiguration.getScriptingEngines();
-    this.businessCalendarManager = processEngineConfiguration.getBusinessCalendarManager();
   }
 
   public List<ProcessDefinitionEntity> deploy(DeploymentEntity deployment) {
@@ -60,7 +54,7 @@ public class BpmnDeployer implements Deployer, ProcessEngineConfigurationAware {
         ResourceEntity resource = resources.get(resourceName);
         byte[] bytes = resource.getBytes();
         ByteArrayInputStream inputStream = new ByteArrayInputStream(bytes);
-        BpmnParse bpmnParse = new BpmnParser(expressionManager, scriptingEngines, businessCalendarManager)
+        BpmnParse bpmnParse = new BpmnParser(expressionManager)
           .createParse()
           .sourceInputStream(inputStream)
           .name(resourceName)

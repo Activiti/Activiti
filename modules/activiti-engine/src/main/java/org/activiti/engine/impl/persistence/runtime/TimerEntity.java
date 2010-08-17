@@ -17,6 +17,7 @@ import java.util.logging.Logger;
 
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.jobexecutor.JobHandler;
+import org.activiti.engine.impl.jobexecutor.TimerDeclarationImpl;
 
 
 /**
@@ -29,7 +30,18 @@ public class TimerEntity extends JobEntity {
   private static Logger log = Logger.getLogger(TimerEntity.class.getName());
   
   protected String repeat;
-  
+
+  public TimerEntity() {
+  }
+
+  public TimerEntity(TimerDeclarationImpl timerDeclaration) {
+    jobHandlerType = timerDeclaration.getJobHandlerType();
+    jobHandlerConfiguration = timerDeclaration.getJobHandlerConfiguration();
+    isExclusive = timerDeclaration.isExclusive();
+    repeat = timerDeclaration.getRepeat();
+    retries = timerDeclaration.getRetries();
+  }
+
   @Override
   public void execute(JobHandler jobHandler, CommandContext commandContext) {
 

@@ -4,7 +4,13 @@
   
 <mapper namespace="org.activiti.persistence">
 
-  <!-- RESULTMAP -->
+  <!-- JOB DELETE (FOR TIMER AND MESSAGE) -->
+
+  <delete id="deleteJob" parameterType="string">
+    delete from ACT_JOB where ID_ = #{id}
+  </delete>
+  
+  <!-- JOB RESULTMAP (FOR TIMER AND MESSAGE) -->
 
   <resultMap id="jobResultMap" type="org.activiti.engine.impl.persistence.runtime.JobEntity">
     <id property="id" column="ID_" jdbcType="VARCHAR" />
@@ -30,8 +36,7 @@
     <result property="repeat" column="REPEAT_" jdbcType="VARCHAR" />
   </resultMap>
 
-  <!-- SELECT -->
-  
+  <!-- JOB SELECT (FOR TIMER AND MESSAGE) -->  
   <select id="selectJobs" resultMap="jobResultMap">
     select * from ACT_JOB
   </select>
@@ -46,6 +51,7 @@
     where (RETRIES_ &gt; 0)
       and (DUEDATE_ is null or DUEDATE_ &lt; #{now, jdbcType=TIMESTAMP})
       and (LOCK_OWNER_ is null or LOCK_EXP_TIME_ &lt; #{now, jdbcType=TIMESTAMP})
+      and (RETRIES_ &gt; 0)
   </select>
   
   <select id="selectLockedJobs" resultMap="jobResultMap">
@@ -55,45 +61,30 @@
       and (LOCK_OWNER_ is not null)
   </select>
 
-  <select id="selectUnlockedTimersByDuedate" parameterType="date" resultMap="jobResultMap">
+  <select id="selectJobByQueryCriteria" parameterType="org.activiti.engine.impl.JobQueryImpl" resultMap="jobResultMap">
     select *
-    from ACT_JOB
-    where (TYPE_ = 'timer')
-      and (DUEDATE_ is not null)
-      and (DUEDATE_ &lt; #{duedate, jdbcType=TIMESTAMP})
-      and (LOCK_OWNER_ is null or LOCK_EXP_TIME_ &lt; #{duedate, jdbcType=TIMESTAMP})
-    order by DUEDATE_
-  </select>
-
-  <select id="selectTimersByExecutionId" parameterType="string" resultMap="jobResultMap">
-    select * 
-    from ACT_JOB 
-    where (RETRIES_ &gt; 0)
-      and (TYPE_ = 'timer')
-      and (EXECUTION_ID_ = #{executionId})
-  </select>
-  
-  <select id="selectJobByDynamicCriteria" parameterType="map" resultMap="jobResultMap">
-    select *
-    <include refid="selectJobByDynamicCriteriaSql"/>
+    <include refid="selectJobByQueryCriteriaSql"/>
     order by ID_
   </select>
 
-  <select id="selectJobCountByDynamicCriteria" parameterType="map" resultType="long">
+  <select id="selectJobCountByQueryCriteria" parameterType="org.activiti.engine.impl.JobQueryImpl" resultType="long">
     select count(distinct ID_)
-    <include refid="selectJobByDynamicCriteriaSql"/>
+    <include refid="selectJobByQueryCriteriaSql"/>
   </select>
   
-  <sql id="selectJobByDynamicCriteriaSql">
+  <sql id="selectJobByQueryCriteriaSql">
     from ACT_JOB
     <where>
       <if test="processInstanceId != null">
         PROCESS_INSTANCE_ID_ = #{processInstanceId}
       </if>
+      <if test="executionId != null">
+        EXECUTION_ID_ = #{executionId}
+      </if>
     </where>
   </sql>
 
-  <!--  SELECT DEPENDENT -->	
+  <!--  SELECT DEPENDENT -->  
    <select id="selectNextJobsToExecute_mysql" parameterType="string" resultMap="jobResultMap">
     select * 
     from ACT_JOB 
@@ -103,7 +94,8 @@
   </select>
   
 
-  <!-- INSERT -->
+
+  <!-- TIMER INSERT -->
   
   <insert id="insertTimer" parameterType="org.activiti.engine.impl.persistence.runtime.TimerEntity">
     insert into ACT_JOB (
@@ -136,6 +128,44 @@
     )
   </insert>
 
+  <!-- TIMER UPDATE -->
+
+  <update id="updateTimer" parameterType="org.activiti.engine.impl.persistence.runtime.TimerEntity">
+    update ACT_JOB
+    <set>
+       LOCK_EXP_TIME_ = #{lockExpirationTime, jdbcType=TIMESTAMP},
+       LOCK_OWNER_ = #{lockOwner, jdbcType=VARCHAR},
+       RETRIES_ = #{retries, jdbcType=INTEGER},
+       EXCEPTION_ = #{exception, jdbcType=VARCHAR},
+       DUEDATE_ = #{duedate, jdbcType=TIMESTAMP}
+    </set>
+    where ID_= #{id, jdbcType=VARCHAR}
+  </update>
+  
+  <!-- TIMER SELECT -->
+  
+  <select id="selectUnlockedTimersByDuedate" parameterType="date" resultMap="jobResultMap">
+    select *
+    from ACT_JOB
+    where (TYPE_ = 'timer')
+      and (DUEDATE_ is not null)
+      and (DUEDATE_ &lt; #{duedate, jdbcType=TIMESTAMP})
+      and (LOCK_OWNER_ is null or LOCK_EXP_TIME_ &lt; #{duedate, jdbcType=TIMESTAMP})
+      and (RETRIES_  &gt; 0)
+    order by DUEDATE_
+  </select>
+
+  <select id="selectTimersByExecutionId" parameterType="string" resultMap="jobResultMap">
+    select * 
+    from ACT_JOB 
+    where (RETRIES_ &gt; 0)
+      and (TYPE_ = 'timer')
+      and (EXECUTION_ID_ = #{executionId})
+  </select>
+  
+
+  <!-- MESSAGE INSERT -->
+
   <insert id="insertMessage" parameterType="org.activiti.engine.impl.persistence.runtime.MessageEntity">
     insert into ACT_JOB (
             ID_, 
@@ -163,7 +193,7 @@
     )
   </insert>
   
-  <!-- UPDATE -->
+  <!-- MESSAGE UPDATE -->
   
   <update id="updateMessage" parameterType="org.activiti.engine.impl.persistence.runtime.MessageEntity">
     update ACT_JOB
@@ -176,22 +206,4 @@
     where ID_= #{id, jdbcType=VARCHAR}
   </update>
 
-  <update id="updateTimer" parameterType="org.activiti.engine.impl.persistence.runtime.TimerEntity">
-    update ACT_JOB
-    <set>
-       LOCK_EXP_TIME_ = #{lockExpirationTime, jdbcType=TIMESTAMP},
-       LOCK_OWNER_ = #{lockOwner, jdbcType=VARCHAR},
-       RETRIES_ = #{retries, jdbcType=INTEGER},
-       EXCEPTION_ = #{exception, jdbcType=VARCHAR},
-       DUEDATE_ = #{duedate, jdbcType=TIMESTAMP}
-    </set>
-    where ID_= #{id, jdbcType=VARCHAR}
-  </update>
-
-  <!-- DELETE -->
-  
-  <delete id="deleteJob" parameterType="string">
-    delete from ACT_JOB where ID_ = #{id}
-  </delete>
-  
 </mapper>

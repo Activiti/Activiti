@@ -12,10 +12,15 @@
  */
 package org.activiti.engine.impl.persistence.repository;
 
+import java.util.ArrayList;
+
 import org.activiti.engine.ProcessDefinition;
+import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.PersistentObject;
 import org.activiti.engine.impl.persistence.runtime.ExecutionEntity;
+import org.activiti.engine.impl.persistence.runtime.VariableMap;
 import org.activiti.pvm.impl.process.ProcessDefinitionImpl;
+import org.activiti.pvm.impl.runtime.ExecutionImpl;
 
 
 /**
@@ -35,9 +40,32 @@ public class ProcessDefinitionEntity extends ProcessDefinitionImpl implements Pr
   }
 
   public ExecutionEntity createProcessInstance() {
-    return ExecutionEntity.createProcessInstance(this);
+    ExecutionEntity processInstance = (ExecutionEntity) super.createProcessInstance();
+    processInstance.setExecutions(new ArrayList<ExecutionImpl>());
+    processInstance.setProcessDefinition(processDefinition);
+    // Do not initialize variable map (let it happen lazily)
+
+    // reset the process instance in order to have the db-generated process instance id available
+    processInstance.setProcessInstance(processInstance);
+    
+    VariableMap variableMap = VariableMap.createNewInitialized(processInstance.getId(), processInstance.getId());
+    processInstance.setVariables(variableMap);
+    
+    return processInstance;
   }
   
+  @Override
+  protected ExecutionImpl newProcessInstance() {
+    ExecutionEntity processInstance = new ExecutionEntity();
+
+    CommandContext
+      .getCurrent()
+      .getDbSqlSession()
+      .insert(processInstance);
+
+    return processInstance;
+  }
+
   public String toString() {
     return "ProcessDefinitionEntity["+id+"]";
   }

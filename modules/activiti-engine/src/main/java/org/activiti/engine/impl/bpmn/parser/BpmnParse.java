@@ -39,9 +39,6 @@ import org.activiti.engine.impl.bpmn.ServiceInvocationActivityBehaviour;
 import org.activiti.engine.impl.bpmn.SubProcessActivity;
 import org.activiti.engine.impl.bpmn.TaskActivity;
 import org.activiti.engine.impl.bpmn.UserTaskActivity;
-import org.activiti.engine.impl.calendar.BusinessCalendar;
-import org.activiti.engine.impl.calendar.BusinessCalendarManager;
-import org.activiti.engine.impl.calendar.DurationBusinessCalendar;
 import org.activiti.engine.impl.el.ActivitiValueExpression;
 import org.activiti.engine.impl.el.ExpressionManager;
 import org.activiti.engine.impl.el.UelMethodExpressionCondition;
@@ -55,7 +52,7 @@ import org.activiti.engine.impl.scripting.ScriptingEngines;
 import org.activiti.engine.impl.util.xml.Element;
 import org.activiti.engine.impl.util.xml.Parse;
 import org.activiti.engine.impl.util.xml.Parser;
-import org.activiti.engine.impl.variable.VariableDeclarationImpl;
+import org.activiti.engine.impl.variable.VariableDeclaration;
 import org.activiti.pvm.activity.ActivityBehavior;
 import org.activiti.pvm.impl.process.ActivityImpl;
 import org.activiti.pvm.impl.process.ProcessDefinitionImpl;
@@ -114,22 +111,15 @@ public class BpmnParse extends Parse {
 
   protected ExpressionManager expressionManager;
 
-  protected ScriptingEngines scriptingEngines;
-
-  protected BusinessCalendarManager businessCalendarManager;
-  
   /**
    * Constructor to be called by the {@link BpmnParser}.
    * 
    * Note the package modifier here: only the {@link BpmnParser} is allowed to
    * create instances.
    */
-  BpmnParse(Parser parser, ExpressionManager expressionManager, ScriptingEngines scriptingEngines,
-          BusinessCalendarManager businessCalendarManager) {
+  BpmnParse(Parser parser, ExpressionManager expressionManager) {
     super(parser);
     this.expressionManager = expressionManager;
-    this.scriptingEngines = scriptingEngines;
-    this.businessCalendarManager = businessCalendarManager;
     setSchemaResource(BpmnParser.SCHEMA_RESOURCE);
   }
 
@@ -746,13 +736,14 @@ public class BpmnParse extends Parse {
       timeDurationText = timeDuration.getText();
     }
 
-    BusinessCalendar businessCalendar = businessCalendarManager.getBusinessCalendar(DurationBusinessCalendar.NAME);
-
     // Parse the timer declaration
     // TODO move the timer declaration into the bpmn activity or next to the TimerSession
-    TimerDeclarationImpl timerDeclaration = new TimerDeclarationImpl(businessCalendar, timeDurationText, TimerExecuteNestedActivityJobHandler.TYPE);
+    TimerDeclarationImpl timerDeclaration = new TimerDeclarationImpl(timeDurationText, TimerExecuteNestedActivityJobHandler.TYPE);
     timerDeclaration.setJobHandlerConfiguration(timerActivity.getId());
     addTimerDeclaration(timerActivity.getParent(), timerDeclaration);
+    if (timerActivity.getParent() instanceof ActivityImpl) {
+      ((ActivityImpl)timerActivity.getParent()).setScope(true);
+    }
     
     timerActivity.setActivityBehavior(boundaryTimerEventActivity);
   }
@@ -768,10 +759,10 @@ public class BpmnParse extends Parse {
   }
   
   @SuppressWarnings("unchecked")
-  protected void addVariableDeclaration(ScopeImpl scope, VariableDeclarationImpl variableDeclaration) {
-    List<VariableDeclarationImpl> variableDeclarations = (List<VariableDeclarationImpl>) scope.getProperty(PROPERTYNAME_VARIABLE_DECLARATIONS);
+  protected void addVariableDeclaration(ScopeImpl scope, VariableDeclaration variableDeclaration) {
+    List<VariableDeclaration> variableDeclarations = (List<VariableDeclaration>) scope.getProperty(PROPERTYNAME_VARIABLE_DECLARATIONS);
     if (variableDeclarations==null) {
-      variableDeclarations = new ArrayList<VariableDeclarationImpl>();
+      variableDeclarations = new ArrayList<VariableDeclaration>();
       scope.setProperty(PROPERTYNAME_VARIABLE_DECLARATIONS, variableDeclarations);
     }
     variableDeclarations.add(variableDeclaration);
@@ -877,8 +868,9 @@ public class BpmnParse extends Parse {
       propertyType = type != null ? type : "string"; // default is string
     }
 
-    VariableDeclarationImpl variableDeclaration = new VariableDeclarationImpl(propertyName, propertyType);
+    VariableDeclaration variableDeclaration = new VariableDeclaration(propertyName, propertyType);
     addVariableDeclaration(activity, variableDeclaration);
+    activity.setScope(true);
 
     String src = propertyElement.attributeNS(BpmnParser.BPMN_EXTENSIONS_NS, "src");
     if (src != null) {
