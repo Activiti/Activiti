@@ -50,7 +50,7 @@ public abstract class AbstractQuery<T> implements Command<Object>{
   }
 
   @SuppressWarnings("unchecked")
-  public T listPage() {
+  public T singleResult() {
     this.resultType = ResultType.SINGLE_RESULT;
     return (T) commandExecutor.execute(this);
   }

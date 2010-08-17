@@ -13,10 +13,15 @@
 
 package org.activiti.engine.impl.bpmn;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.activiti.engine.impl.bpmn.parser.BpmnParse;
 import org.activiti.pvm.activity.ActivityExecution;
+import org.activiti.pvm.activity.CompositeActivityBehavior;
 import org.activiti.pvm.impl.process.ActivityImpl;
 import org.activiti.pvm.process.PvmActivity;
+import org.activiti.pvm.process.PvmTransition;
 
 
 /**
@@ -25,7 +30,7 @@ import org.activiti.pvm.process.PvmActivity;
  * 
  * @author Joram Barrez
  */
-public class SubProcessActivity extends AbstractBpmnActivity {
+public class SubProcessActivity extends AbstractBpmnActivity implements CompositeActivityBehavior {
   
   public void execute(ActivityExecution execution) throws Exception {
     PvmActivity activity = execution.getActivity();
@@ -34,4 +39,9 @@ public class SubProcessActivity extends AbstractBpmnActivity {
     execution.executeActivity(initialActivity);
   }
   
+  public void lastExecutionEnded(ActivityExecution execution) {
+    List<PvmTransition> outgoingTransitions = execution.getActivity().getOutgoingTransitions();
+    execution.takeAll(outgoingTransitions, new ArrayList<ActivityExecution>());
+  }
+
 }

@@ -42,7 +42,7 @@ public interface TaskQuery {
   
   long count();
   
-  Task listPage();
+  Task singleResult();
   
   List<Task> list();
   

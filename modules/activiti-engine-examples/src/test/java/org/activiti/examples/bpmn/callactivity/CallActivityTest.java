@@ -32,12 +32,12 @@ public class CallActivityTest extends ProcessEngineTestCase {
     // After the process has started, the 'verify credit history' task should be active
     runtimeService.startProcessInstanceByKey("orderProcess");
     TaskQuery taskQuery = taskService.createTaskQuery();
-    Task verifyCreditTask = taskQuery.listPage();
+    Task verifyCreditTask = taskQuery.singleResult();
     assertEquals("Verify credit history", verifyCreditTask.getName());
     
     // Completing the task with approval, will end the subprocess and continue the original process
     taskService.complete(verifyCreditTask.getId(), CollectionUtil.singletonMap("creditApproved", true));
-    Task prepareAndShipTask = taskQuery.listPage();
+    Task prepareAndShipTask = taskQuery.singleResult();
     assertEquals("Prepare and Ship", prepareAndShipTask.getName());
   }
 }

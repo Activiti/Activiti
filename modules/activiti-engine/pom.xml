@@ -91,12 +91,8 @@
         <artifactId>maven-surefire-plugin</artifactId>
         <configuration>
           <excludes>
-            <exclude>**/JobExecutorStartupShutdownTest.java</exclude>
-            <exclude>**/JobExecutorInMemoryTest.java</exclude>
-            <exclude>**/JobExecutorInMemoryParallelTest.java</exclude>
-            <exclude>**/FindNextJobCmdPersistentTest.java</exclude>
-            <exclude>**/JobExecutorPersistentTest.java</exclude>
-            <exclude>**/JobExecutorPersistentStartupShutdownTest.java</exclude>
+            <exclude>**/HistoricDataServiceImplTest.java</exclude>
+            <exclude>**/CallActivityAdvancedTest.java</exclude>
           </excludes>
         </configuration>
       </plugin>

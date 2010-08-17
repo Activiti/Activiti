@@ -31,7 +31,7 @@ public interface JobQuery {
   
   long count();
   
-  Job listPage();
+  Job singleResult();
   
   List<Job> list();
   

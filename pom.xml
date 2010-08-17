@@ -234,7 +234,6 @@
 			<id>check</id>
 			<modules>
 		    <module>modules/activiti-engine-examples</module>
-        <module>modules/activiti-engine-test-cfg</module>
 		    <module>modules/activiti-rest</module>
 			</modules>
 		</profile>

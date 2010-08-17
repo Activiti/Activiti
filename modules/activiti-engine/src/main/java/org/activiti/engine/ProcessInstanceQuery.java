@@ -27,6 +27,6 @@ public interface ProcessInstanceQuery {
   
   List<ProcessInstance> list();
   List<ProcessInstance> listPage(int start, int maxResults);
-  ProcessInstance listPage();
+  ProcessInstance singleResult();
   long count();
 }

@@ -615,10 +615,14 @@ public class ExecutionImpl implements
   
   public String toString() {
     if (isProcessInstance()) {
-      return "ProcessInstance["+System.identityHashCode(this)+"]";
+      return "ProcessInstance["+getToStringIdentity()+"]";
     } else {
-      return (isConcurrent? "Concurrent" : "")+(isScope() ? "Scope" : "")+"Execution["+System.identityHashCode(this)+"]";
+      return (isConcurrent? "Concurrent" : "")+(isScope() ? "Scope" : "")+"Execution["+getToStringIdentity()+"]";
     }
+  }
+
+  protected String getToStringIdentity() {
+    return Integer.toString(System.identityHashCode(this));
   }
   
   // customized getters and setters ///////////////////////////////////////////

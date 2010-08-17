@@ -29,6 +29,6 @@ public interface ExecutionQuery {
   
   List<Execution> list();
   List<Execution> listPage(int start, int maxResults);
-  Execution listPage();
+  Execution singleResult();
   long count();
 }

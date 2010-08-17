@@ -30,7 +30,7 @@ public class ReceiveTaskTest extends ProcessEngineTestCase {
     Execution execution = runtimeService.createExecutionQuery()
       .processInstanceId(pi.getId())
       .activityId("waitState")
-      .listPage();
+      .singleResult();
     assertNotNull(execution);
     
     runtimeService.signal(execution.getId());

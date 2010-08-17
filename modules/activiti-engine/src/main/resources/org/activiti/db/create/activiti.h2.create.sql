@@ -43,6 +43,7 @@ create table ACT_EXECUTION (
 
 create table ACT_JOB (
     ID_ varchar(255) NOT NULL,
+    REV_ integer,
     TYPE_ varchar(255) NOT NULL,
     LOCK_EXP_TIME_ timestamp,
     LOCK_OWNER_ varchar(255),

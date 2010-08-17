@@ -33,7 +33,7 @@ public interface ProcessDefinitionQuery {
 
   long count();
   
-  ProcessDefinition listPage();
+  ProcessDefinition singleResult();
   
   List<ProcessDefinition> list();
   

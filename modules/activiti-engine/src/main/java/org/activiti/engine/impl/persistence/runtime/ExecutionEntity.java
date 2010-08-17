@@ -388,12 +388,8 @@ public class ExecutionEntity extends ExecutionImpl implements PersistentObject, 
 
   // toString customization ///////////////////////////////////////////////////
   
-  public String toString() {
-    if (isProcessInstance()) {
-      return "ProcessInstance["+id+"]";
-    } else {
-      return "Execution["+id+"]";
-    }
+  public String getToStringIdentity() {
+    return id;
   }
   
   // getters and setters //////////////////////////////////////////////////////

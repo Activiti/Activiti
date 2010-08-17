@@ -47,14 +47,18 @@ public class SubProcessTest extends ProcessEngineTestCase {
     assertEquals("Investigate hardware", investigateHardwareTask.getName());
     assertEquals("Investigate software", investigateSoftwareTask.getName());
     
-    // Completing boith the tasks finishes the subprocess and enables the task after the subprocess
+    // Completing both the tasks finishes the subprocess and enables the task after the subprocess
     taskService.complete(investigateHardwareTask.getId());
     taskService.complete(investigateSoftwareTask.getId());
-    Task writeReportTask = taskService.createTaskQuery().processInstanceId(pi.getId()).listPage();
+    
+    Task writeReportTask = taskService
+      .createTaskQuery()
+      .processInstanceId(pi.getId())
+      .singleResult();
     assertEquals("Write report", writeReportTask.getName());
     
     // Clean up
-    repositoryService.deleteDeployment(deployment.getId());
+    repositoryService.deleteDeploymentCascade(deployment.getId());
   }
 
 }

@@ -31,14 +31,14 @@ public class UelExpressionTest extends ProcessEngineTestCase {
     UelExpressionTestOrder order = new UelExpressionTestOrder(150);
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("uelExpressions", 
             CollectionUtil.singletonMap("order",  order));
-    Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).listPage();
+    Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
     assertEquals("Standard service", task.getName());
     
     // While an order of 300, gives us a premium service (goes through an UEL method expression)
     order = new UelExpressionTestOrder(300);
     processInstance = runtimeService.startProcessInstanceByKey("uelExpressions",
             CollectionUtil.singletonMap("order",  order));
-    task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).listPage();
+    task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
     assertEquals("Premium service", task.getName());
     
   }

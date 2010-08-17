@@ -18,7 +18,9 @@ import java.util.Map;
 
 import org.activiti.engine.Job;
 import org.activiti.engine.Page;
+import org.activiti.engine.Task;
 import org.activiti.engine.impl.JobQueryImpl;
+import org.activiti.engine.impl.TaskQueryImpl;
 import org.activiti.engine.impl.cfg.RuntimeSession;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.interceptor.Session;
@@ -27,6 +29,7 @@ import org.activiti.engine.impl.persistence.runtime.ExecutionEntity;
 import org.activiti.engine.impl.persistence.runtime.JobEntity;
 import org.activiti.engine.impl.persistence.runtime.TimerEntity;
 import org.activiti.engine.impl.persistence.runtime.VariableInstanceEntity;
+import org.activiti.engine.impl.persistence.task.TaskEntity;
 import org.activiti.engine.impl.util.ClockUtil;
 
 /**
@@ -38,11 +41,19 @@ public class DbRuntimeSession implements Session, RuntimeSession {
   protected DbSqlSession dbSqlSession;
 
   public DbRuntimeSession() {
-    this.dbSqlSession = CommandContext.getCurrentSession(DbSqlSession.class);
+    this.dbSqlSession = CommandContext.getCurrent().getDbSqlSession();
   }
 
   public void deleteProcessInstance(String processInstanceId, String deleteReason) {
     ExecutionEntity execution = findExecutionById(processInstanceId);
+    
+    List<Task> tasks = new TaskQueryImpl()
+      .processInstanceId(processInstanceId)
+      .executeList(CommandContext.getCurrent(), null);
+    for (Task task: tasks) {
+      dbSqlSession.delete(TaskEntity.class, task.getId());
+    }
+    
     execution.deleteCascade(deleteReason);
   }
 

@@ -93,7 +93,7 @@ public class EngineRebootProcessDefinitionCacheTest extends TestCase {
        .getRuntimeService()
        .createProcessInstanceQuery()
        .processInstanceId(processInstanceId)
-       .listPage();
+       .singleResult();
      
      assertNotNull(processInstance);
      
@@ -111,7 +111,7 @@ public class EngineRebootProcessDefinitionCacheTest extends TestCase {
        .getRuntimeService()
        .createProcessInstanceQuery()
        .processInstanceId(processInstanceId)
-       .listPage();
+       .singleResult();
 
      assertNull(processInstance);
      
