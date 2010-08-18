@@ -29,7 +29,7 @@ public class ProcessInstanceQueryImpl extends AbstractQuery<ProcessInstance> imp
 
   protected String processDefinitionId;
   protected String processDefinitionKey;
-  protected String processInstanceId;
+  protected String executionId;
   protected String activityId;
   
   protected CommandExecutor commandExecutor;
@@ -56,7 +56,7 @@ public class ProcessInstanceQueryImpl extends AbstractQuery<ProcessInstance> imp
   }
   
   public ProcessInstanceQueryImpl processInstanceId(String processInstanceId) {
-    this.processInstanceId = processInstanceId;
+    this.executionId = processInstanceId;
     return this;
   }
   
@@ -88,16 +88,19 @@ public class ProcessInstanceQueryImpl extends AbstractQuery<ProcessInstance> imp
       .findExecutionsByQueryCriteria(this, page);
   }
   
+  public boolean getOnlyProcessInstances() {
+    return true;
+  }
+  
   public String getProcessDefinitionKey() {
     return processDefinitionKey;
   }
   
-  public String getProcessInstanceId() {
-    return processInstanceId;
+  public String getExecutionId() {
+    return executionId;
   }
 
   public String getProcessDefinitionId() {
     return processDefinitionId;
   }
-
 }

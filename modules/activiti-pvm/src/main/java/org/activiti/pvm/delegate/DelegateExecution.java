@@ -21,6 +21,8 @@ import java.util.Map;
  */
 public interface DelegateExecution {
 
+  String getId();
+  
   boolean hasVariable(String variableName);
   void setVariable(String variableName, Object value);
   Object getVariable(String variableName);

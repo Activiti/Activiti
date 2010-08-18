@@ -83,13 +83,24 @@
   
   <sql id="selectExecutionsByQueryCriteriaSql">
     from ACT_EXECUTION E
-    <if test="processDefinitionKey != null">
+    <if test="processDefinitionKey != null or processDefinitionId != null">
       inner join ACT_PROCESSDEFINITION P on E.PROC_DEF_ID_ = P.ID_
     </if>
     <where>
-      E.PARENT_ID_ is null
+      <if test="onlyProcessInstances">
+        E.PARENT_ID_ is null
+      </if>
+      <if test="processDefinitionId != null">
+        and P.ID_ = #{processDefinitionId}
+      </if>
       <if test="processDefinitionKey != null">
         and P.KEY_ = #{processDefinitionKey}
+      </if>
+      <if test="executionId != null">
+        and E.ID_ = #{executionId}
+      </if>
+      <if test="activityId != null">
+        and E.ACTIVITY_ID_ = #{activityId}
       </if>
     </where>
   </sql>

@@ -26,10 +26,11 @@ import org.activiti.engine.impl.interceptor.CommandExecutor;
  */
 public class ExecutionQueryImpl extends AbstractQuery<Execution> implements ExecutionQuery {
 
+  protected boolean onlyProcessInstances;
   protected String processDefinitionId;
   protected String processDefinitionKey;
-  protected String processInstanceId;
   protected String activityId;
+  protected String executionId;
   
   protected CommandExecutor commandExecutor;
   
@@ -55,7 +56,13 @@ public class ExecutionQueryImpl extends AbstractQuery<Execution> implements Exec
   }
   
   public ExecutionQueryImpl processInstanceId(String processInstanceId) {
-    this.processInstanceId = processInstanceId;
+    this.executionId = processInstanceId;
+    this.onlyProcessInstances = true;
+    return this;
+  }
+  
+  public ExecutionQueryImpl executionId(String executionId) {
+    this.executionId = executionId;
     return this;
   }
   
@@ -86,16 +93,21 @@ public class ExecutionQueryImpl extends AbstractQuery<Execution> implements Exec
       .getRuntimeSession()
       .findExecutionsByQueryCriteria(this, page);
   }
+
+  public boolean getOnlyProcessInstances() {
+    return onlyProcessInstances;
+  }
   
   public String getProcessDefinitionKey() {
     return processDefinitionKey;
   }
   
-  public String getProcessInstanceId() {
-    return processInstanceId;
-  }
-
   public String getProcessDefinitionId() {
     return processDefinitionId;
   }
+  
+  public String getExecutionId() {
+    return executionId;
+  }
+  
 }

@@ -636,6 +636,12 @@ public class ExecutionImpl implements
     this.isActive = false;
   }
   
+  // allow for subclasses to expose a real id /////////////////////////////////
+  
+  public String getId() {
+    return null;
+  }
+  
   // getters and setters //////////////////////////////////////////////////////
 
   public TransitionImpl getTransition() {

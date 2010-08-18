@@ -41,6 +41,8 @@ public interface RuntimeService {
   /** creates a new {@link ExecutionQuery} instance, 
    * that can be used to query the executions and process instances. */
   ExecutionQuery createExecutionQuery();
+  
+  Execution findExecutionById(String executionId);
 
   ProcessInstanceQuery createProcessInstanceQuery();
 

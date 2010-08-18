@@ -22,10 +22,11 @@ import java.util.List;
  */
 public interface ExecutionQuery {
   
-  ExecutionQuery processInstanceId(String processInstanceId);
-  ExecutionQuery activityId(String activityId);
   ExecutionQuery processDefinitionKey(String processDefinitionKey);
   ExecutionQuery processDefinitionId(String processDefinitionId);
+  ExecutionQuery processInstanceId(String processInstanceId);
+  ExecutionQuery executionId(String executionId);
+  ExecutionQuery activityId(String activityId);
   
   List<Execution> list();
   List<Execution> listPage(int start, int maxResults);

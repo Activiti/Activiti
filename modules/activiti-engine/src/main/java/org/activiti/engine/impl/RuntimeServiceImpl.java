@@ -15,6 +15,7 @@ package org.activiti.engine.impl;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.activiti.engine.Execution;
 import org.activiti.engine.ExecutionQuery;
 import org.activiti.engine.ProcessInstance;
 import org.activiti.engine.ProcessInstanceQuery;
@@ -83,5 +84,11 @@ public class RuntimeServiceImpl extends ServiceImpl implements RuntimeService {
 
   public ProcessInstanceQuery createProcessInstanceQuery() {
     return new ProcessInstanceQueryImpl(commandExecutor);
+  }
+
+  public Execution findExecutionById(String executionId) {
+    return new ExecutionQueryImpl(commandExecutor)
+      .executionId(executionId)
+      .singleResult();
   }
 }
