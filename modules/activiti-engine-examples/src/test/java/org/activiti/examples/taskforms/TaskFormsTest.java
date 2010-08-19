@@ -36,7 +36,11 @@ public class TaskFormsTest extends ProcessEngineTestCase {
     identityService.deleteUser("fozzie");
   }
 
-  @Deployment(resources = { "VacationRequest.bpmn20.xml", "approve.form", "request.form", "adjustRequest.form" })
+  @Deployment(resources = { 
+    "org/activiti/examples/taskforms/VacationRequest.bpmn20.xml", 
+    "org/activiti/examples/taskforms/approve.form", 
+    "org/activiti/examples/taskforms/request.form", 
+    "org/activiti/examples/taskforms/adjustRequest.form" })
   public void testTaskFormsWithVacationRequestProcess() {
 
     // Get start form

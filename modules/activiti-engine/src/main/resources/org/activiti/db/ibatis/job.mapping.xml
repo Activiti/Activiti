@@ -14,6 +14,7 @@
 
   <resultMap id="jobResultMap" type="org.activiti.engine.impl.persistence.runtime.JobEntity">
     <id property="id" column="ID_" jdbcType="VARCHAR" />
+    <result property="revision" column="REV_" jdbcType="INTEGER" />
     <result property="lockOwner" column="LOCK_OWNER_" jdbcType="VARCHAR" />
     <result property="lockExpirationTime" column="LOCK_EXP_TIME_" jdbcType="TIMESTAMP" />
     <result property="exclusive" column="EXCLUSIVE_" jdbcType="BOOLEAN" />
@@ -135,7 +136,7 @@
   <update id="updateTimer" parameterType="org.activiti.engine.impl.persistence.runtime.TimerEntity">
     update ACT_JOB
     <set>
-       REV=  #{revisionNext, jdbcType=INTEGER},
+       REV_ =  #{revisionNext, jdbcType=INTEGER},
        LOCK_EXP_TIME_ = #{lockExpirationTime, jdbcType=TIMESTAMP},
        LOCK_OWNER_ = #{lockOwner, jdbcType=VARCHAR},
        RETRIES_ = #{retries, jdbcType=INTEGER},
@@ -143,7 +144,7 @@
        DUEDATE_ = #{duedate, jdbcType=TIMESTAMP}
     </set>
     where ID_= #{id, jdbcType=VARCHAR}
-      and REV = #{revision, jdbcType=INTEGER}
+      and REV_ = #{revision, jdbcType=INTEGER}
   </update>
   
   <!-- TIMER SELECT -->
@@ -211,7 +212,7 @@
        EXCEPTION_ = #{exception, jdbcType=VARCHAR}
     </set>
     where ID_= #{id, jdbcType=VARCHAR}
-      and REV = #{revision, jdbcType=INTEGER}
+      and REV_ = #{revision, jdbcType=INTEGER}
   </update>
 
 </mapper>

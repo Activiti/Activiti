@@ -69,7 +69,7 @@
   </select>
   
    <select id="selectExecutionsByQueryCriteria" parameterType="org.activiti.engine.impl.ExecutionQueryImpl" resultMap="executionResultMap">
-    select *
+    select E.*
     <include refid="selectExecutionsByQueryCriteriaSql"/>
     <if test="orderBy != null">
       order by #{orderBy}

@@ -92,7 +92,6 @@
         <configuration>
           <excludes>
             <exclude>**/HistoricDataServiceImplTest.java</exclude>
-            <exclude>**/CallActivityAdvancedTest.java</exclude>
           </excludes>
         </configuration>
       </plugin>

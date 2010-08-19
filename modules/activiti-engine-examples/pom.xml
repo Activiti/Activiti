@@ -42,9 +42,6 @@
         <artifactId>maven-surefire-plugin</artifactId>
         <configuration>
           <excludes>
-            <exclude>**/BoundaryTimerEventTest.java</exclude>
-            <exclude>**/TaskFormsTest.java</exclude>
-            <exclude>**/TaskCandidateTest.java</exclude>
             <exclude>**/FinancialReportProcessTest.java</exclude>
           </excludes>
         </configuration>

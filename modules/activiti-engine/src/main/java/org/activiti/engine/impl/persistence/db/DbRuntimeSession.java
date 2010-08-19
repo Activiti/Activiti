@@ -44,14 +44,15 @@ public class DbRuntimeSession implements Session, RuntimeSession {
     this.dbSqlSession = CommandContext.getCurrent().getDbSqlSession();
   }
 
+  @SuppressWarnings("unchecked")
   public void deleteProcessInstance(String processInstanceId, String deleteReason) {
     ExecutionEntity execution = findExecutionById(processInstanceId);
     
-    List<Task> tasks = new TaskQueryImpl()
+    List<TaskEntity> tasks = (List) new TaskQueryImpl()
       .processInstanceId(processInstanceId)
       .executeList(CommandContext.getCurrent(), null);
-    for (Task task: tasks) {
-      dbSqlSession.delete(TaskEntity.class, task.getId());
+    for (TaskEntity task: tasks) {
+      task.delete();
     }
     
     execution.deleteCascade(deleteReason);

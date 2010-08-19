@@ -345,7 +345,10 @@ public class DbSqlSession implements Session {
         throw new ActivitiException("no update statement for "+updatedObject.getClass()+" in the ibatis mapping files");
       }
       log.fine("updating: "+toString(updatedObject)+"]");
-      sqlSession.update(updateStatement, updatedObject);
+      int updatedRecords = sqlSession.update(updateStatement, updatedObject);
+      if (updatedRecords!=1) {
+        throw new OptimisticLockingException(toString(updatedObject)+" was updated by another transaction concurrently");
+      }
     }
     updatedObjects.clear();
   }
