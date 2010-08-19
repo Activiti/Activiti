@@ -39,6 +39,7 @@ import org.activiti.engine.RuntimeService;
 import org.activiti.engine.TaskService;
 import org.activiti.engine.impl.ProcessEngineImpl;
 import org.activiti.engine.impl.bpmn.deployer.BpmnDeployer;
+import org.activiti.engine.impl.cfg.ProcessEngineConfiguration;
 import org.activiti.engine.impl.jobexecutor.JobExecutor;
 import org.activiti.engine.impl.util.ClockUtil;
 import org.activiti.pvm.impl.util.ClassNameUtil;
@@ -64,9 +65,14 @@ public class ProcessEngineTestCase extends PvmTestCase {
   
   protected ThreadLogMode threadRenderingMode;
   protected String configurationResource;
+  protected String springApplicationContextConfigurationResource;
+  // detyped storage of the application context is done to prevent a hard dependency of spring classes 
+  // on the classpath in case spring is not actually used.
+  protected Object springApplicationContext;
   protected List<String> deploymentsToDeleteAfterTestMethod = new ArrayList<String>();
   protected Throwable exception;
 
+  protected ProcessEngineConfiguration processEngineConfiguration;
   protected ProcessEngine processEngine;
   protected RepositoryService repositoryService;
   protected RuntimeService runtimeService;
@@ -111,11 +117,7 @@ public class ProcessEngineTestCase extends PvmTestCase {
     if (processEngine==null) {
       processEngine = processEngines.get(configurationResource);
       if (processEngine==null) {
-        log.fine("==== BUILDING PROCESS ENGINE ========================================================================");
-        processEngine = new ProcessEngineBuilder()
-          .configureFromPropertiesResource(configurationResource)
-          .buildProcessEngine();
-        log.fine("==== PROCESS ENGINE CREATED =========================================================================");
+        initializeProcessEngine();
         processEngines.put(configurationResource, processEngine);
       }
       initializeServices();
@@ -148,11 +150,19 @@ public class ProcessEngineTestCase extends PvmTestCase {
     }
   }
 
+  private void initializeProcessEngine() {
+    log.fine("==== BUILDING PROCESS ENGINE ========================================================================");
+    processEngine = new ProcessEngineBuilder()
+      .configureFromPropertiesResource(configurationResource)
+      .buildProcessEngine();
+    log.fine("==== PROCESS ENGINE CREATED =========================================================================");
+  }
+  
   /** Each test is assumed to clean up all DB content it entered.
    * After a test method executed, this method scans all tables to see if the DB is completely clean. 
    * It throws AssertionFailed in case the DB is not clean.
    * If the DB is not clean, it is cleaned by performing a create a drop. */
-  protected void assertAndEnsureCleanDb() throws Throwable {
+  private void assertAndEnsureCleanDb() throws Throwable {
     log.fine("verifying that db is clean after test");
     Map<String, Long> tableCounts = processEngine.getManagementService().getTableCount();
     StringBuilder outputMessage = new StringBuilder();
@@ -183,7 +193,7 @@ public class ProcessEngineTestCase extends PvmTestCase {
     }
   }
 
-  void annotationDeploymentBefore() {
+  private void annotationDeploymentBefore() {
     Method method = null;
     try {
       method = getClass().getDeclaredMethod(getName(), (Class<?>[])null);
@@ -223,7 +233,7 @@ public class ProcessEngineTestCase extends PvmTestCase {
     return type.getName().replace('.', '/') + "." + name + "." + BpmnDeployer.BPMN_RESOURCE_SUFFIX;
   }
 
-  protected void annotationDeploymentAfter() {
+  private void annotationDeploymentAfter() {
     for (String deploymentId: deploymentsToDeleteAfterTestMethod) {
       log.fine("annotation @Deployment deletes deployment for "+ClassNameUtil.getClassNameWithoutPackage(this)+"."+getName());
       repositoryService.deleteDeploymentCascade(deploymentId);
@@ -231,7 +241,8 @@ public class ProcessEngineTestCase extends PvmTestCase {
   }
 
 
-  void initializeServices() {
+  private void initializeServices() {
+    processEngineConfiguration = ((ProcessEngineImpl) processEngine).getProcessEngineConfiguration();
     repositoryService = processEngine.getRepositoryService();
     runtimeService = processEngine.getRuntimeService();
     taskService = processEngine.getTaskService();
@@ -267,11 +278,11 @@ public class ProcessEngineTestCase extends PvmTestCase {
     }
   }
 
-  protected boolean areJobsAvailable() {
+  public boolean areJobsAvailable() {
     return !managementService.createJobQuery().list().isEmpty();
   }
 
-  protected static class InteruptTask extends TimerTask {
+  private static class InteruptTask extends TimerTask {
     protected boolean timeLimitExceeded = false;
     protected Thread thread;
     public InteruptTask(Thread thread) {
@@ -291,5 +302,9 @@ public class ProcessEngineTestCase extends PvmTestCase {
       processEngine.close();
     }
     processEngines.clear();
+  }
+  
+  public void setSpringApplicationContextConfigurationResource(String springApplicationContextConfigurationResource) {
+    this.springApplicationContextConfigurationResource = springApplicationContextConfigurationResource;
   }
 }

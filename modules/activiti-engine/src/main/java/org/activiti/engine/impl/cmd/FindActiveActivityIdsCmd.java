@@ -11,31 +11,36 @@
  * limitations under the License.
  */
 
-package org.activiti.impl.interceptor;
+package org.activiti.engine.impl.cmd;
 
+import java.util.List;
+
+import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
-import org.activiti.engine.test.ProcessEngineTestCase;
+import org.activiti.engine.impl.persistence.runtime.ExecutionEntity;
 
 
 /**
  * @author Tom Baeyens
  */
-public class CommandContextTest extends ProcessEngineTestCase {
+public class FindActiveActivityIdsCmd implements Command<List<String>> {
 
-  public void testCommandContextGetCurrentAfterException() {
-    try {
-      processEngineConfiguration.getCommandExecutor().execute(new Command<Object>() {
-        public Object execute(CommandContext commandContext) {
-          throw new IllegalStateException("here i come!");
-        }
-      });
-   
-      fail("expected exception");
-    } catch (IllegalStateException e) {
-      // OK
+  protected String executionId;
+  
+  public FindActiveActivityIdsCmd(String executionId) {
+    this.executionId = executionId;
+  }
+
+  public List<String> execute(CommandContext commandContext) {
+    ExecutionEntity execution = commandContext
+      .getRuntimeSession()
+      .findExecutionById(executionId);
+    
+    if (execution==null) {
+      throw new ActivitiException("execution with id "+executionId+" was not found");
     }
     
-    assertNull(CommandContext.getCurrent());
+    return execution.findActiveActivityIds();
   }
 }

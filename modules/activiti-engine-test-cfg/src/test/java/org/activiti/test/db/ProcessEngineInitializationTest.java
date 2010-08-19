@@ -86,7 +86,7 @@ public class ProcessEngineInitializationTest extends PvmTestCase {
       fail("expected exception");
     } catch (ActivitiWrongDbException e) {
       assertTextPresent("version mismatch", e.getMessage());
-      assertEquals(25.7, e.getDbVersion());
+      assertEquals("25.7", e.getDbVersion());
       assertEquals(ProcessEngine.VERSION, e.getLibraryVersion());
     }
 

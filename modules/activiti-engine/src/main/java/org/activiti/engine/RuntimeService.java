@@ -12,6 +12,7 @@
  */
 package org.activiti.engine;
 
+import java.util.List;
 import java.util.Map;
 
 
@@ -43,6 +44,10 @@ public interface RuntimeService {
   ExecutionQuery createExecutionQuery();
   
   Execution findExecutionById(String executionId);
+  
+  /** the activity ids for all executions that are waiting in activities. 
+   * This is a list because a single activity can be active multiple times.*/
+  List<String> findActiveActivityIds(String executionId);
 
   ProcessInstanceQuery createProcessInstanceQuery();
 

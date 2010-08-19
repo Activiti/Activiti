@@ -34,6 +34,7 @@ public class ProcessDefinitionEntity extends ProcessDefinitionImpl implements Pr
   protected String name;
   protected int version;
   protected String deploymentId;
+  protected String resourceName;
   
   public ProcessDefinitionEntity() {
     super(null);
@@ -111,5 +112,13 @@ public class ProcessDefinitionEntity extends ProcessDefinitionImpl implements Pr
 
   public void setId(String id) {
     this.id = id;
+  }
+  
+  public String getResourceName() {
+    return resourceName;
+  }
+
+  public void setResourceName(String resourceName) {
+    this.resourceName = resourceName;
   }
 }

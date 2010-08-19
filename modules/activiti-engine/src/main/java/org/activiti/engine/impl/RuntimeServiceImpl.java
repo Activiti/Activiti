@@ -13,6 +13,7 @@
 package org.activiti.engine.impl;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.activiti.engine.Execution;
@@ -21,6 +22,7 @@ import org.activiti.engine.ProcessInstance;
 import org.activiti.engine.ProcessInstanceQuery;
 import org.activiti.engine.RuntimeService;
 import org.activiti.engine.impl.cmd.DeleteProcessInstanceCmd;
+import org.activiti.engine.impl.cmd.FindActiveActivityIdsCmd;
 import org.activiti.engine.impl.cmd.GetVariableCmd;
 import org.activiti.engine.impl.cmd.GetVariablesCmd;
 import org.activiti.engine.impl.cmd.SetVariablesCmd;
@@ -90,5 +92,9 @@ public class RuntimeServiceImpl extends ServiceImpl implements RuntimeService {
     return new ExecutionQueryImpl(commandExecutor)
       .executionId(executionId)
       .singleResult();
+  }
+
+  public List<String> findActiveActivityIds(String executionId) {
+    return commandExecutor.execute(new FindActiveActivityIdsCmd(executionId));
   }
 }

@@ -144,8 +144,13 @@ public class DbRepositorySession implements Session, RepositorySession {
     return (List<DeploymentEntity>) dbSqlSession.selectList("selectDeployments");
   };
 
+  @SuppressWarnings("unchecked")
   public DeploymentEntity findLatestDeploymentByName(String deploymentName) {
-    return (DeploymentEntity) dbSqlSession.selectOne("selectLatestDeploymentByName", deploymentName);
+    List list = dbSqlSession.selectList("selectDeploymentsByName", deploymentName, new Page(0, 1));
+    if (list!=null && !list.isEmpty()) {
+      return (DeploymentEntity) list.get(0);
+    }
+    return null;
   }
 
   @SuppressWarnings("unchecked")

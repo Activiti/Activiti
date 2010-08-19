@@ -89,6 +89,7 @@ create table ACT_PROCESSDEFINITION (
     KEY_ varchar(255),
     VERSION_ integer,
     DEPLOYMENT_ID_ varchar(255),
+    RESOURCE_NAME_ varchar(255),
     primary key (ID_)
 );
 

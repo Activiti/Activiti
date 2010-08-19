@@ -12,51 +12,36 @@
  */
 package org.activiti.test.cfg.spring;
 
-import org.junit.runner.RunWith;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import java.util.List;
+
+import org.activiti.engine.ProcessInstance;
+import org.activiti.engine.Task;
+import org.activiti.engine.test.ProcessEngineTestCase;
 
 /**
  * @author Tom Baeyens
  * @author Dave Syer
  */
-@ContextConfiguration
-@RunWith(SpringJUnit4ClassRunner.class)
-public class SpringTest {
+public class SpringTest extends ProcessEngineTestCase {
+  
+  public SpringTest() {
+    setSpringApplicationContextConfigurationResource("org/activiti/test/cfg/spring/SpringTest-context.xml");
+  }
 
-//  @Autowired
-//  private ProcessEngine processEngine;
-//
-//  @Autowired
-//  private UserBean userBean;
-//
-//  @Autowired
-//  private PlatformTransactionManager transactionManager;
-//
-//  @Rule
-//  public ExpectedException exception = ExpectedException.none();
-//
-//  static {
-//    LogUtil.readJavaUtilLoggingConfigFromClasspath();
-//  }
-//
-//  @Test
-//  public void testProcessExecutionWithTaskAssignedFromExpression() {
-//
-//    int before = processEngine.getTaskService().findAssignedTasks("kermit").size();
-//    ProcessInstance processInstance = processEngine.getRuntimeService().startProcessInstanceByKey("taskAssigneeExpressionProcess");
-//    assertEquals("[theTask]", processInstance.findActivityIds().toString());
-//    ProcessInstanceEntity processInstanceEntity = (ProcessInstanceEntity) processInstance;
-//    ActivityInstanceImpl activityInstance = processInstanceEntity.getActivityInstances().iterator().next();
-//    assertEquals("${user}", ((TaskDefinition) ReflectionTestUtils.getField(((ActivityImpl) activityInstance.getActivity()).getActivityBehavior(),
-//            "taskDefinition")).getAssignee());
-//    List<Task> tasks = processEngine.getTaskService().findAssignedTasks("kermit");
-//    assertEquals(before + 1, tasks.size());
-//
-//    processEngine.getRuntimeService().endProcessInstance(processInstance.getId());
-//    
-//  }
-//
+  public void testProcessExecutionWithTaskAssignedFromExpression() {
+    // UserBean userBean = (UserBean) getSpringBean("userBean");
+    
+    int before = processEngine.getTaskService().findAssignedTasks("kermit").size();
+    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("taskAssigneeExpressionProcess");
+    
+    List<String> activeActivityIds = runtimeService.findActiveActivityIds(processInstance.getId());
+    
+    assertEquals("[theTask]", activeActivityIds.toString());
+
+    List<Task> tasks = processEngine.getTaskService().findAssignedTasks("kermit");
+    assertEquals(1, tasks.size());
+  }
+
 //  @Test
 //  public void testJavaServiceDelegation() {
 //    RuntimeService runtimeService = processEngine.getRuntimeService();

@@ -21,12 +21,12 @@ import org.activiti.engine.Task;
 import org.activiti.engine.TaskQuery;
 import org.activiti.engine.impl.util.ClockUtil;
 import org.activiti.engine.test.Deployment;
-import org.activiti.engine.test.ProcessEngineImplTestCase;
+import org.activiti.engine.test.ProcessEngineTestCase;
 
 /**
  * @author Joram Barrez
  */
-public class CallActivityAdvancedTest extends ProcessEngineImplTestCase {
+public class CallActivityAdvancedTest extends ProcessEngineTestCase {
 
   @Deployment(resources = {
     "org/activiti/engine/test/bpmn/callactivity/CallActivity.testCallSimpleSubProcess.bpmn20.xml", 

@@ -72,7 +72,7 @@ public class UserTaskActivity extends TaskActivity {
   }
 
   protected String evaluateExpression(String expr, ActivityExecution execution) {
-    // TODO move parsing of value expression to bpmn parser and only keep evaluation here
+    // TODO http://jira.codehaus.org/browse/ACT-84 move parsing of value expression to bpmn parser and only keep evaluation here
     return (String) expressionManager.createValueExpression(expr).getValue(execution);
   }
 

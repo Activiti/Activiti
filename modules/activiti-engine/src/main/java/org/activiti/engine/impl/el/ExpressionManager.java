@@ -18,6 +18,8 @@ import javax.el.ExpressionFactory;
 import javax.el.MethodExpression;
 import javax.el.ValueExpression;
 
+import org.activiti.engine.impl.cfg.ProcessEngineConfiguration;
+import org.activiti.engine.impl.cfg.ProcessEngineConfigurationAware;
 import org.activiti.engine.impl.persistence.runtime.ExecutionEntity;
 import org.activiti.pvm.impl.runtime.ExecutionImpl;
 
@@ -34,9 +36,6 @@ import org.activiti.pvm.impl.runtime.ExecutionImpl;
  * expressions.
  * </p>
  * <p>
- * The main extension point is the {@link #setElResolver(ELResolver)}.
- * </p>
- * <p>
  * Using this class, also the runtime engine doesn't create a hard dependency on
  * the javax.el library as long as you don't use expressions.
  * </p>
@@ -44,7 +43,7 @@ import org.activiti.pvm.impl.runtime.ExecutionImpl;
  * @author Tom Baeyens
  * @author Dave Syer
  */
-public class ExpressionManager {
+public class ExpressionManager implements ProcessEngineConfigurationAware {
 
   public static final String UEL_VALUE = "uel-value";
   public static final String UEL_METHOD = "uel-method";
@@ -62,8 +61,9 @@ public class ExpressionManager {
    * of global variables in a static engine wide scope. Defaults to null (so no
    * custom variables).
    */
-  public void setElResolver(ELResolver elResolver) {
-    this.elResolver = elResolver;
+
+  public void configurationCompleted(ProcessEngineConfiguration processEngineConfiguration) {
+    this.elResolver = processEngineConfiguration.getElResolver();
   }
 
   public ActivitiValueExpression createValueExpression(String expression) {

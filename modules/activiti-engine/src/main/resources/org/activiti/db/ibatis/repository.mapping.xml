@@ -90,12 +90,13 @@
   <!-- PROCESSDEFINITION INSERT -->
 
   <insert id="insertProcessDefinition" parameterType="org.activiti.engine.impl.persistence.repository.ProcessDefinitionEntity">
-    insert into ACT_PROCESSDEFINITION(ID_, NAME_, KEY_, VERSION_, DEPLOYMENT_ID_)
+    insert into ACT_PROCESSDEFINITION(ID_, NAME_, KEY_, VERSION_, DEPLOYMENT_ID_, RESOURCE_NAME_)
     values (#{id, jdbcType=VARCHAR},
             #{name, jdbcType=VARCHAR},
             #{key, jdbcType=VARCHAR}, 
             #{version, jdbcType=INTEGER},
-            #{deploymentId, jdbcType=VARCHAR})
+            #{deploymentId, jdbcType=VARCHAR},
+            #{resourceName, jdbcType=VARCHAR})
   </insert>
   
   <!-- PROCESSDEFINITION UPDATE -->
@@ -114,6 +115,7 @@
     <result property="key" column="KEY_" jdbcType="VARCHAR" />
     <result property="version" column="VERSION_" jdbcType="INTEGER"/>
     <result property="deploymentId" column="DEPLOYMENT_ID_" jdbcType="VARCHAR"/>
+    <result property="resourceName" column="RESOURCE_NAME_" jdbcType="VARCHAR"/>
   </resultMap>
   
   <!-- PROCESSDEFINITION SELECT -->
