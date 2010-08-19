@@ -48,7 +48,7 @@ public class BpmnBetaCompatibilityTest extends ProcessEngineTestCase {
       .startProcessInstanceByKey("scriptTask", CollectionUtil.singletonMap("numbers", Arrays.asList(1,2,3)));
 
     Task task = taskService.createTaskQuery()
-      .processInstance(processInstance.getId())
+      .processInstanceId(processInstance.getId())
       .singleResult();
     assertEquals("Human task", task.getName());
     

@@ -16,8 +16,7 @@ import java.util.logging.Logger;
 
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.jobexecutor.JobHandler;
-import org.activiti.engine.impl.persistence.runtime.ActivityInstanceEntity;
-import org.activiti.engine.impl.persistence.runtime.ProcessInstanceEntity;
+import org.activiti.engine.impl.persistence.runtime.ExecutionEntity;
 
 
 /**
@@ -33,7 +32,7 @@ public class TweetExceptionHandler implements JobHandler {
     return "tweet-exception";
   }
 
-  public void execute(String configuration, ProcessInstanceEntity processInstance, ActivityInstanceEntity activityInstance, CommandContext commandContext) {
+  public void execute(String configuration, ExecutionEntity execution, CommandContext commandContext) {
     if (exceptionsRemaining>0) {
       exceptionsRemaining--;
       throw new RuntimeException("exception remaining: "+exceptionsRemaining);

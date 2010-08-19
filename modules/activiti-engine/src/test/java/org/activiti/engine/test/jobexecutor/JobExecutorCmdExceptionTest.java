@@ -8,13 +8,12 @@ import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
 import org.activiti.engine.impl.persistence.runtime.MessageEntity;
-import org.activiti.engine.test.ProcessEngineImplTestCase;
-import org.junit.Test;
+import org.activiti.engine.test.ProcessEngineTestCase;
 
 /**
  * @author Tom Baeyens
  */
-public class JobExecutorCmdExceptionTest extends ProcessEngineImplTestCase {
+public class JobExecutorCmdExceptionTest extends ProcessEngineTestCase {
 
   protected TweetExceptionHandler tweetExceptionHandler = new TweetExceptionHandler();
 

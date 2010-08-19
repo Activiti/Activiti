@@ -17,14 +17,9 @@ import java.util.Collection;
 import java.util.List;
 
 import org.activiti.engine.ProcessDefinition;
-import org.activiti.engine.RuntimeService;
 import org.activiti.engine.json.JsonListConverter;
 import org.activiti.engine.json.JsonProcessDefinitionConverter;
 import org.activiti.engine.test.ProcessEngineTestCase;
-import org.activiti.test.LogInitializer;
-import org.activiti.test.ProcessDeployer;
-import org.junit.Rule;
-import org.junit.Test;
 
 
 /**
@@ -62,7 +57,7 @@ public class JsonTest extends ProcessEngineTestCase {
                     "</definitions>"))
     );
           
-    List<ProcessDefinition> processDefinitions = repositoryService.findProcessDefinitions();
+    List<ProcessDefinition> processDefinitions = repositoryService.createProcessDefinitionQuery().list();
     
     JsonListConverter<ProcessDefinition> jsonListConverter = new JsonListConverter<ProcessDefinition>(new JsonProcessDefinitionConverter());
     

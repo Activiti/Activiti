@@ -17,8 +17,7 @@ import java.util.List;
 
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.jobexecutor.JobHandler;
-import org.activiti.engine.impl.persistence.runtime.ActivityInstanceEntity;
-import org.activiti.engine.impl.persistence.runtime.ProcessInstanceEntity;
+import org.activiti.engine.impl.persistence.runtime.ExecutionEntity;
 import org.junit.Assert;
 
 public class TweetHandler implements JobHandler {
@@ -29,7 +28,7 @@ public class TweetHandler implements JobHandler {
     return "tweet";
   }
 
-  public void execute(String configuration, ProcessInstanceEntity processInstance, ActivityInstanceEntity activityInstance, CommandContext commandContext) {
+  public void execute(String configuration, ExecutionEntity execution, CommandContext commandContext) {
     messages.add(configuration);
     Assert.assertNotNull(commandContext);
   }

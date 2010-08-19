@@ -19,7 +19,6 @@ import org.activiti.engine.ProcessDefinition;
 import org.activiti.engine.ProcessInstance;
 import org.activiti.engine.test.Deployment;
 import org.activiti.engine.test.ProcessEngineTestCase;
-import org.junit.Test;
 
 /**
  * @author Joram Barrez
@@ -28,7 +27,7 @@ public class ProcessServiceTest extends ProcessEngineTestCase {
 
   @Deployment(resources = {"oneTaskProcess.bpmn20.xml"})
   public void testStartProcessInstanceById() {
-    List<ProcessDefinition> processDefinitions = repositoryService.findProcessDefinitions();
+    List<ProcessDefinition> processDefinitions = repositoryService.createProcessDefinitionQuery().list();
     assertEquals(1, processDefinitions.size());
 
     ProcessDefinition processDefinition = processDefinitions.get(0);
@@ -42,7 +41,7 @@ public class ProcessServiceTest extends ProcessEngineTestCase {
 
   @Deployment(resources={"oneTaskProcess.bpmn20.xml"})
   public void testFindProcessDefinitionById() {
-    List<ProcessDefinition> definitions = repositoryService.findProcessDefinitions();
+    List<ProcessDefinition> definitions = repositoryService.createProcessDefinitionQuery().list();
     assertEquals(1, definitions.size());
 
     ProcessDefinition processDefinition = repositoryService.findProcessDefinitionById(definitions.get(0).getId());

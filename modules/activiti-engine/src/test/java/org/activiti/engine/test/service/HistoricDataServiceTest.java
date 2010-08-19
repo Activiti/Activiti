@@ -22,12 +22,12 @@ import org.activiti.engine.history.HistoricProcessInstance;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.test.Deployment;
-import org.activiti.engine.test.ProcessEngineImplTestCase;
+import org.activiti.engine.test.ProcessEngineTestCase;
 
 /**
  * @author Christian Stettler
  */
-public class HistoricDataServiceTest extends ProcessEngineImplTestCase {
+public class HistoricDataServiceTest extends ProcessEngineTestCase {
 
   @Deployment(resources = {"oneTaskProcess.bpmn20.xml"})
   public void testHistoricDataCreatedForProcessExecution() {
@@ -45,7 +45,7 @@ public class HistoricDataServiceTest extends ProcessEngineImplTestCase {
 
       // TODO: check for HistoricActivityInstance created once events get fired
 
-      List<Task> tasks = taskService.createTaskQuery().processInstance(processInstance.getId()).list();
+      List<Task> tasks = taskService.createTaskQuery().processInstanceId(processInstance.getId()).list();
 
       assertEquals(1, tasks.size());
 

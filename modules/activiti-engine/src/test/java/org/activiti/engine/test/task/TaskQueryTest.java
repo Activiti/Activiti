@@ -117,17 +117,17 @@ public class TaskQueryTest extends ProcessEngineTestCase {
     assertEquals(11, query.list().size());
 
     // Verifying paged results
-    assertEquals(2, query.paginatedList(0, 2).size());
-    assertEquals(2, query.paginatedList(2, 2).size());
-    assertEquals(3, query.paginatedList(4, 3).size());
-    assertEquals(1, query.paginatedList(10, 3).size());
-    assertEquals(1, query.paginatedList(10, 1).size());
+    assertEquals(2, query.listPage(0, 2).size());
+    assertEquals(2, query.listPage(2, 2).size());
+    assertEquals(3, query.listPage(4, 3).size());
+    assertEquals(1, query.listPage(10, 3).size());
+    assertEquals(1, query.listPage(10, 1).size());
 
     // Verifying odd usages
-    assertEquals(0, query.paginatedList(-1, -1).size());
-    assertEquals(0, query.paginatedList(11, 2).size()); // 10 is the last index
+    assertEquals(0, query.listPage(-1, -1).size());
+    assertEquals(0, query.listPage(11, 2).size()); // 10 is the last index
                                                         // with a result
-    assertEquals(11, query.paginatedList(0, 15).size()); // there are only 11
+    assertEquals(11, query.listPage(0, 15).size()); // there are only 11
                                                          // tasks
   }
 

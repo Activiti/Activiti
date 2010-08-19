@@ -162,7 +162,7 @@ public class ProcessEngineTestCase extends PvmTestCase {
    * After a test method executed, this method scans all tables to see if the DB is completely clean. 
    * It throws AssertionFailed in case the DB is not clean.
    * If the DB is not clean, it is cleaned by performing a create a drop. */
-  private void assertAndEnsureCleanDb() throws Throwable {
+  protected void assertAndEnsureCleanDb() throws Throwable {
     log.fine("verifying that db is clean after test");
     Map<String, Long> tableCounts = processEngine.getManagementService().getTableCount();
     StringBuilder outputMessage = new StringBuilder();

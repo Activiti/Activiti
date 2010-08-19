@@ -29,7 +29,7 @@ public class ConditionalSequenceFlowTest extends ProcessEngineTestCase {
   public void testUelValueExpression() {
     ProcessInstance pi = runtimeService.startProcessInstanceByKey(
             "condSeqFlowUelValueExpr", CollectionUtil.singletonMap("input", "right"));
-    Task task = taskService.createTaskQuery().processInstance(pi.getId()).singleResult();
+    Task task = taskService.createTaskQuery().processInstanceId(pi.getId()).singleResult();
     assertEquals("task right", task.getName());
   }
   

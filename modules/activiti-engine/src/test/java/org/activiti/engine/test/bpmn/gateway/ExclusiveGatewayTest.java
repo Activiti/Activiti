@@ -32,7 +32,7 @@ public class ExclusiveGatewayTest extends ProcessEngineTestCase {
     for (int i = 1; i <= 3; i++) {
       ProcessInstance pi = runtimeService.startProcessInstanceByKey("exclusiveGwDiverging", CollectionUtil.singletonMap("input", i));
       assertEquals("Task " + i, taskService.createTaskQuery().singleResult().getName());
-      runtimeService.deleteProcessInstance(pi.getId());
+      runtimeService.deleteProcessInstance(pi.getId(), "testing deletion");
     }
   }
 
@@ -102,7 +102,7 @@ public class ExclusiveGatewayTest extends ProcessEngineTestCase {
     ProcessInstance pi = runtimeService.startProcessInstanceByKey(
             "decisionBasedOnListOrArrayOfBeans", CollectionUtil.singletonMap("orders", orders));
     
-    Task task = taskService.createTaskQuery().processInstance(pi.getId()).singleResult();
+    Task task = taskService.createTaskQuery().processInstanceId(pi.getId()).singleResult();
     assertNotNull(task);
     assertEquals("Gold Member service", task.getName());
     
@@ -113,7 +113,7 @@ public class ExclusiveGatewayTest extends ProcessEngineTestCase {
     pi = runtimeService.startProcessInstanceByKey(
             "decisionBasedOnListOrArrayOfBeans", CollectionUtil.singletonMap("orders", orderArray));
     
-    task = taskService.createTaskQuery().processInstance(pi.getId()).singleResult();
+    task = taskService.createTaskQuery().processInstanceId(pi.getId()).singleResult();
     assertNotNull(task);
     assertEquals("Basic service", task.getName());
   }

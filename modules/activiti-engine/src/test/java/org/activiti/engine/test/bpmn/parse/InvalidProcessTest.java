@@ -14,7 +14,6 @@ package org.activiti.engine.test.bpmn.parse;
 
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.test.ProcessEngineTestCase;
-import org.activiti.test.ProcessDeployer;
 
 /**
  * Test case for verifying if the parser throws validation exceptions when a
@@ -26,7 +25,7 @@ public class InvalidProcessTest extends ProcessEngineTestCase {
 
   public void testInvalidProcessDefinition() {
     try {
-      String resource = ProcessDeployer.getBpmnProcessDefinitionResource(getClass(), "testInvalidProcessDefinition");
+      String resource = getBpmnProcessDefinitionResource(getClass(), "testInvalidProcessDefinition");
       repositoryService.createDeployment().name(resource).addClasspathResource(resource).deploy();
       fail();
     } catch (ActivitiException e) {

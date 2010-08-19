@@ -19,7 +19,6 @@ import org.activiti.engine.Task;
 import org.activiti.engine.TaskQuery;
 import org.activiti.engine.test.Deployment;
 import org.activiti.engine.test.ProcessEngineTestCase;
-import org.activiti.test.ProcessDeployer;
 
 /**
  * Testcase for the non-spec extensions to the task candidate use case.
@@ -59,7 +58,7 @@ public class TaskAssignmentExtensionsTest extends ProcessEngineTestCase {
 
   public void testDuplicateAssigneeDeclaration() {
     try {
-      String resource = ProcessDeployer.getBpmnProcessDefinitionResource(getClass(), "testDuplicateAssigneeDeclaration");
+      String resource = getBpmnProcessDefinitionResource(getClass(), "testDuplicateAssigneeDeclaration");
       repositoryService.createDeployment().addClasspathResource(resource).deploy();
       fail("Invalid BPMN 2.0 process should not parse, but it gets parsed sucessfully");
     } catch (ActivitiException e) {
