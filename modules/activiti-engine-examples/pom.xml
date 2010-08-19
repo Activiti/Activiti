@@ -42,7 +42,6 @@
         <artifactId>maven-surefire-plugin</artifactId>
         <configuration>
           <excludes>
-            <exclude>**/FinancialReportProcessTest.java</exclude>
           </excludes>
         </configuration>
       </plugin>

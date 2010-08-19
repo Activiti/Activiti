@@ -34,6 +34,9 @@
     	<fileset dir="../modules/activiti-engine/target">
     		<include name="activiti-engine-*.jar"/>
     	</fileset>
+      <fileset dir="../modules/activiti-pvm/target">
+        <include name="activiti-pvm-*.jar"/>
+      </fileset>
     </copy>
   	
     <mkdir dir="${target.distro.root}/setup/files/webapps/activiti-probe.war" />

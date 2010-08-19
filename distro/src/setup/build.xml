@@ -141,6 +141,7 @@ JAVA_OPTS="-Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=8787
 	<target name="deploy.activiti.engine.into.tomcat" depends="cfg.create">
     <copy todir="${tomcat.home}/lib">
     	<fileset dir="${activiti.home}/lib">
+        <include name="activiti-pvm-${activiti.version}.jar"/>
         <include name="activiti-engine-${activiti.version}.jar"/>
         <include name="mybatis-*.jar"/>
         <include name="h2-*.jar"/>
@@ -184,6 +185,7 @@ JAVA_OPTS="-Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=8787
           <include name="activiti-cfg.jar"/>
   			</fileset>
         <fileset dir="${activiti.home}/lib">
+          <include name="activiti-pvm-${activiti.version}.jar"/>
           <include name="activiti-engine-${activiti.version}.jar"/>
           <include name="mybatis-*.jar"/>
           <include name="h2-*.jar"/>

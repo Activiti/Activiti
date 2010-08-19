@@ -28,7 +28,8 @@ public class FinancialReportProcessTest extends ProcessEngineTestCase {
     identityService.deleteGroup("management");
   }
   
-  @Deployment(resources={"FinancialReportProcess.bpmn20.xml"})
+  @Deployment(resources={
+    "org/activiti/examples/bpmn/usertask/FinancialReportProcess.bpmn20.xml"})
   public void testProcess() {
     
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("financialReport");
