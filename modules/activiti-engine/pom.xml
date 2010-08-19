@@ -91,7 +91,19 @@
         <artifactId>maven-surefire-plugin</artifactId>
         <configuration>
           <excludes>
+            <exclude>**/*TestCase.java</exclude>
             <exclude>**/HistoricDataServiceImplTest.java</exclude>
+            <exclude>**/HistoricDataServiceTest.java</exclude>
+            <exclude>**/DeploymentTest.java</exclude>
+            <exclude>**/ProcessServiceTest.java</exclude>
+            <exclude>**/ProcessInstanceQueryTest.java</exclude>
+            <exclude>**/ProcessServiceTest.java</exclude>
+            <exclude>**/TaskQueryTest.java</exclude>
+            <exclude>**/TaskServiceTest.java</exclude>
+            <exclude>**/JobExecutorCmdExceptionTest.java</exclude>
+            <exclude>**/SubProcessTest.java</exclude>
+            <exclude>**/ConditionalSequenceFlowTest.java</exclude>
+            <exclude>**/ExclusiveGatewayTest.java</exclude>
           </excludes>
         </configuration>
       </plugin>
