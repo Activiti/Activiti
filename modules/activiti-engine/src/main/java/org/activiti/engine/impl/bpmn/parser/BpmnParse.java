@@ -777,6 +777,7 @@ public class BpmnParse extends Parse {
    */
   public void parseSubProcess(Element subProcessElement, ScopeImpl scopeElement) {
     ActivityImpl activity = parseAndCreateActivityOnScopeElement(subProcessElement, scopeElement);
+    activity.setScope(true);
     activity.setActivityBehavior(new SubProcessActivity());
     parseScope(subProcessElement, activity);
   }

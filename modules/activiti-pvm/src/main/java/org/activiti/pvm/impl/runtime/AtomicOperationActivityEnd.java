@@ -43,8 +43,17 @@ public class AtomicOperationActivityEnd extends AbstractEventAtomicOperation {
     // if the execution is a single path of execution inside the process definition scope
     if (execution.isProcessInstance()) {
       if (parentActivity!=null) {
-        execution.setActivity(parentActivity);
-        execution.performOperation(ACTIVITY_END);
+        if (parentActivity.isScope()) {
+          ActivityBehavior parentActivityBehavior = parentActivity.getActivityBehavior();
+          if (parentActivityBehavior instanceof CompositeActivityBehavior) {
+            CompositeActivityBehavior compositeActivityBehavior = (CompositeActivityBehavior) parentActivityBehavior;
+            compositeActivityBehavior.lastExecutionEnded(execution);
+          }
+
+        } else {
+          execution.setActivity(parentActivity);
+          execution.performOperation(ACTIVITY_END);
+        }
         
       } else {
         execution.performOperation(PROCESS_END);
