@@ -13,6 +13,7 @@
 
 package org.activiti.engine.impl;
 
+import java.util.Date;
 import java.util.List;
 
 import org.activiti.engine.Job;
@@ -20,6 +21,7 @@ import org.activiti.engine.JobQuery;
 import org.activiti.engine.Page;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
+import org.activiti.engine.impl.util.ClockUtil;
 
 
 /**
@@ -30,6 +32,8 @@ public class JobQueryImpl extends AbstractQuery<Job> implements JobQuery {
   
   protected String processInstanceId;
   protected String executionId;
+  protected boolean retriesLeft;
+  protected boolean executable;
   
   public JobQueryImpl() {
   }
@@ -47,7 +51,17 @@ public class JobQueryImpl extends AbstractQuery<Job> implements JobQuery {
     this.executionId = executionId;
     return this;
   }
-  
+
+  public JobQuery withRetriesLeft() {
+    retriesLeft = true;
+    return this;
+  }
+
+  public JobQuery executable() {
+    executable = true;
+    return this;
+  }
+
   public JobQueryImpl orderAsc(String column) {
     super.addOrder(column, SORTORDER_ASC);
     return this;
@@ -76,5 +90,17 @@ public class JobQueryImpl extends AbstractQuery<Job> implements JobQuery {
 
   public String getExecutionId() {
     return executionId;
+  }
+  
+  public boolean getRetriesLeft() {
+    return retriesLeft;
+  }
+
+  public boolean getExecutable() {
+    return executable;
+  }
+  
+  public Date getNow() {
+    return ClockUtil.getCurrentTime();
   }
 }

@@ -70,7 +70,7 @@ public class ExclusiveGatewayTest extends ProcessEngineTestCase {
             CollectionUtil.singletonMap("input", 1));
   }
   
-  @Deployment(resources = {"/org/activiti/test/bpmn/gateway/ExclusiveGatewayTest.testDivergingExclusiveGateway.bpmn20.xml"})
+  @Deployment(resources = {"org/activiti/engine/test/bpmn/gateway/ExclusiveGatewayTest.testDivergingExclusiveGateway.bpmn20.xml"})
   public void testUnknownVariableInExpression() {
     // Instead of 'input' we're starting a process instance with the name 'iinput' (ie. a typo)
     try {

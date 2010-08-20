@@ -16,16 +16,16 @@ import java.util.List;
 
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ProcessDefinition;
-import org.activiti.engine.ProcessInstance;
 import org.activiti.engine.test.Deployment;
 import org.activiti.engine.test.ProcessEngineTestCase;
 
 /**
  * @author Joram Barrez
  */
-public class ProcessServiceTest extends ProcessEngineTestCase {
+public class RepositoryServiceTest extends ProcessEngineTestCase {
 
-  @Deployment(resources = {"oneTaskProcess.bpmn20.xml"})
+  @Deployment(resources = {
+    "org/activiti/engine/test/service/oneTaskProcess.bpmn20.xml"})
   public void testStartProcessInstanceById() {
     List<ProcessDefinition> processDefinitions = repositoryService.createProcessDefinitionQuery().list();
     assertEquals(1, processDefinitions.size());
@@ -33,13 +33,10 @@ public class ProcessServiceTest extends ProcessEngineTestCase {
     ProcessDefinition processDefinition = processDefinitions.get(0);
     assertEquals("oneTaskProcess", processDefinition.getKey());
     assertNotNull(processDefinition.getId());
-
-    ProcessInstance processInstance = runtimeService.startProcessInstanceById(processDefinition.getId());
-    assertNotNull(processInstance);
-    assertNotNull(taskService.createTaskQuery().singleResult());
   }
 
-  @Deployment(resources={"oneTaskProcess.bpmn20.xml"})
+  @Deployment(resources={
+    "org/activiti/engine/test/service/oneTaskProcess.bpmn20.xml"})
   public void testFindProcessDefinitionById() {
     List<ProcessDefinition> definitions = repositoryService.createProcessDefinitionQuery().list();
     assertEquals(1, definitions.size());
@@ -55,7 +52,7 @@ public class ProcessServiceTest extends ProcessEngineTestCase {
       repositoryService.findProcessDefinitionById(null);
       fail();
     } catch (ActivitiException e) {
-      assertTextPresent("Couldn't find process definiton", e.getMessage());
+      assertTextPresent("processDefinitionId is null", e.getMessage());
     }
   }
 }

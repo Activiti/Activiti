@@ -38,19 +38,24 @@ public class DeleteTaskCmd implements Command<Void> {
 
   public Void execute(CommandContext commandContext) {
     if (taskId != null) {
-      commandContext
-        .getDbSqlSession()
-        .delete(TaskEntity.class, taskId);
+      deleteTask(commandContext, taskId);
     } 
     
     if (taskIds != null) {
       for (String taskId : taskIds) {
-        commandContext
-          .getDbSqlSession()
-          .delete(TaskEntity.class, taskId);
+        deleteTask(commandContext, taskId);
       }
     }
     
     return null;
+  }
+
+  protected void deleteTask(CommandContext commandContext, String taskId) {
+    TaskEntity task = commandContext
+      .getTaskSession()
+      .findTaskById(taskId);
+    if (task!=null) {
+      task.delete();
+    }
   }
 }

@@ -279,7 +279,11 @@ public class ProcessEngineTestCase extends PvmTestCase {
   }
 
   public boolean areJobsAvailable() {
-    return !managementService.createJobQuery().list().isEmpty();
+    return !managementService
+      .createJobQuery()
+      .executable()
+      .list()
+      .isEmpty();
   }
 
   private static class InteruptTask extends TimerTask {

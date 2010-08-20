@@ -70,38 +70,33 @@ public class BpmnActivityBehavior {
         log.fine("Leaving activity '" + execution.getActivity().getId() + "'");
       }
       
+      List<PvmTransition> transitionsToTake = new ArrayList<PvmTransition>();
+
       List<PvmTransition> outgoingTransitions = execution.getActivity().getOutgoingTransitions();   
-      if (outgoingTransitions.size() == 1) {
-        execution.take(outgoingTransitions.get(0));
+      for (PvmTransition outgoingTransition: outgoingTransitions) {
+        Condition condition = (Condition) outgoingTransition.getProperty(BpmnParse.PROPERTYNAME_CONDITION);
+        if (condition == null 
+                || !checkConditions 
+                || condition.evaluate(execution)) {
+          transitionsToTake.add(outgoingTransition);
+        }
+      }
+      
+      if (transitionsToTake.size() == 1) {
+        execution.take(transitionsToTake.get(0));
         
-      } else if (outgoingTransitions.size() > 1) {
+      } else if (transitionsToTake.size() >= 1)  {
         execution.inactivate();
         
         List<ActivityExecution> joinedExecutions = new ArrayList<ActivityExecution>();
         joinedExecutions.add(execution);
         
-        List<PvmTransition> transitionsToTake = new ArrayList<PvmTransition>();
-        
-        for (PvmTransition outgoingTransition: outgoingTransitions) {
-          Condition condition = (Condition) outgoingTransition.getProperty(BpmnParse.PROPERTYNAME_CONDITION);
-          if (condition == null 
-                  || !checkConditions 
-                  || condition.evaluate(execution)) {
-            transitionsToTake.add(outgoingTransition);
-          }
-        }
-        
         execution.takeAll(transitionsToTake, joinedExecutions);
-        
-      } else {
-        
-        if (log.isLoggable(Level.FINE)) {
-          log.fine("No outgoing sequence flow found for " + execution.getActivity().getId() 
+          
+      } else if (log.isLoggable(Level.FINE)) {
+        log.fine("No outgoing sequence flow found for " + execution.getActivity().getId() 
                   + ". Ending execution.");
-        }
         execution.end();
-        
       }
-  }
-  
+   }
 }

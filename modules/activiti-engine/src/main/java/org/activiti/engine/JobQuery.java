@@ -24,10 +24,14 @@ import java.util.List;
 public interface JobQuery {
   
   JobQuery processInstanceId(String processInstanceId);
-  
+
+  JobQuery withRetriesLeft();
+
+  JobQuery executable();
+
   //JobQuery timers();
   
-  // JobQuery messages();
+  //JobQuery messages();
   
   long count();
   

@@ -13,6 +13,8 @@
 
 package org.activiti.engine.test.bpmn.sequenceflow;
 
+import java.util.Map;
+
 import org.activiti.engine.ProcessInstance;
 import org.activiti.engine.Task;
 import org.activiti.engine.impl.util.CollectionUtil;
@@ -27,11 +29,14 @@ public class ConditionalSequenceFlowTest extends ProcessEngineTestCase {
   
   @Deployment
   public void testUelValueExpression() {
-    ProcessInstance pi = runtimeService.startProcessInstanceByKey(
-            "condSeqFlowUelValueExpr", CollectionUtil.singletonMap("input", "right"));
-    Task task = taskService.createTaskQuery().processInstanceId(pi.getId()).singleResult();
+    Map<String, Object> variables = CollectionUtil.singletonMap("input", "right");
+    ProcessInstance pi = runtimeService.startProcessInstanceByKey("condSeqFlowUelValueExpr", variables);
+    
+    Task task = taskService
+      .createTaskQuery()
+      .processInstanceId(pi.getId())
+      .singleResult();
+    
     assertEquals("task right", task.getName());
   }
-  
-
 }

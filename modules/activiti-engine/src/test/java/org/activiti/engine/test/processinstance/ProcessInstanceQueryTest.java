@@ -22,14 +22,13 @@ import org.activiti.engine.test.ProcessEngineTestCase;
 public class ProcessInstanceQueryTest extends ProcessEngineTestCase {
 
   private static String PROCESS_KEY = "oneTaskProcess";
-
   private static String PROCESS_KEY_2 = "oneTaskProcess2";
 
   protected void setUp() throws Exception {
     super.setUp();
     repositoryService.createDeployment()
-      .addClasspathResource("oneTaskProcess.bpmn20.xml")
-      .addClasspathResource("oneTaskProcess2.bpmn20.xml")
+      .addClasspathResource("org/activiti/engine/test/processinstance/oneTaskProcess.bpmn20.xml")
+      .addClasspathResource("org/activiti/engine/test/processinstance/oneTaskProcess2.bpmn20.xml")
       .deploy();
     
     for (int i = 0; i < 4; i++) {
@@ -37,10 +36,10 @@ public class ProcessInstanceQueryTest extends ProcessEngineTestCase {
     }
     runtimeService.startProcessInstanceByKey(PROCESS_KEY_2);
   }
-  
+
   protected void tearDown() throws Exception {
     for (org.activiti.engine.Deployment deployment : repositoryService.findDeployments()) {
-      repositoryService.deleteDeployment(deployment.getId());
+      repositoryService.deleteDeploymentCascade(deployment.getId());
     }
     super.tearDown();
   }

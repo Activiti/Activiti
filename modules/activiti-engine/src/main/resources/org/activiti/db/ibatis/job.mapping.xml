@@ -82,6 +82,13 @@
       <if test="executionId != null">
         EXECUTION_ID_ = #{executionId}
       </if>
+      <if test="retriesLeft">
+        RETRIES_ &gt; 0
+      </if>
+      <if test="executable">
+        (RETRIES_ &gt; 0)
+        and (DUEDATE_ is null or DUEDATE_ &lt;= #{now, jdbcType=TIMESTAMP})
+      </if>
     </where>
   </sql>
 

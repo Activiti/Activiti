@@ -25,7 +25,8 @@ import org.activiti.engine.test.ProcessEngineTestCase;
  */
 public class TaskServiceTest extends ProcessEngineTestCase {
   
-  @Deployment(resources={"twoTasksProcess.bpmn20.xml"})
+  @Deployment(resources={
+    "org/activiti/engine/test/service/twoTasksProcess.bpmn20.xml"})
   public void testCompleteWithParametersTask() {
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("twoTasksProcess");
     

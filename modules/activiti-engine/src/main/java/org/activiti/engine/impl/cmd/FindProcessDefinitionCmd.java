@@ -12,6 +12,7 @@
  */
 package org.activiti.engine.impl.cmd;
 
+import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.repository.ProcessDefinitionEntity;
@@ -29,6 +30,9 @@ public class FindProcessDefinitionCmd implements Command<ProcessDefinitionEntity
   }
   
   public ProcessDefinitionEntity execute(CommandContext commandContext) {
+    if (processDefinitionId==null) {
+      throw new ActivitiException("processDefinitionId is null");
+    }
     return commandContext
       .getRepositorySession()
       .findProcessDefinitionById(processDefinitionId);

@@ -18,7 +18,6 @@ import java.util.Map;
 
 import org.activiti.engine.Job;
 import org.activiti.engine.Page;
-import org.activiti.engine.Task;
 import org.activiti.engine.impl.JobQueryImpl;
 import org.activiti.engine.impl.TaskQueryImpl;
 import org.activiti.engine.impl.cfg.RuntimeSession;
