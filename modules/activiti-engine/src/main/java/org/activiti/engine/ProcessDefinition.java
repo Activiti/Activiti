@@ -39,5 +39,7 @@ public interface ProcessDefinition {
 
   /** label used for display purposes */
   String getName();
+  
+  String getResourceName();
 
 }
