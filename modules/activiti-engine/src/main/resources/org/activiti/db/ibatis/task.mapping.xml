@@ -150,15 +150,12 @@
       </if>
     </where>
   </sql>
-  
+
   <select id="selectTaskByQueryCriteria_mysql" parameterType="map" resultMap="taskResultMap">
     select distinct T.*
     <include refid="selectTaskByQueryCriteriaSql"/>
-     <if test="sortColumn != null">
-      order by T.${sortColumn} ${sortOrder}
-    </if>
-    <if test="sortColumn == null">
-      order by T.ID_
+     <if test="orderBy != null">
+      order by ${orderBy}
     </if>
   </select>
 

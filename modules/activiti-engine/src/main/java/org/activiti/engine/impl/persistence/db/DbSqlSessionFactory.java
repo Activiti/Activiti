@@ -64,6 +64,9 @@ public class DbSqlSessionFactory implements SessionFactory, ProcessEngineConfigu
   static {
     addDatabaseSpecificStatement("mysql", "selectTaskByQueryCriteria", "selectTaskByQueryCriteria_mysql");
     addDatabaseSpecificStatement("mysql", "selectNextJobsToExecute", "selectNextJobsToExecute_mysql");
+    addDatabaseSpecificStatement("mysql", "selectProcessDefinitionsByQueryCriteria", "selectProcessDefinitionsByQueryCriteria_mysql");
+    addDatabaseSpecificStatement("mysql", "selectProcessDefinitionCountByQueryCriteria", "selectProcessDefinitionCountByQueryCriteria_mysql");
+    
   }
   
   protected String databaseName;

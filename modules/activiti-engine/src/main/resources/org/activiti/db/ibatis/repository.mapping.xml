@@ -173,4 +173,19 @@
           VERSION_ = (select max(VERSION_) from ACT_PROCESSDEFINITION where KEY_ = #{processDefinitionKey})
   </select>
 
+<!-- mysql specific sql -->
+  <select id="selectProcessDefinitionsByQueryCriteria_mysql" parameterType="org.activiti.engine.impl.ProcessDefinitionQueryImpl" resultMap="processDefinitionResultMap">
+    select distinct PD.*
+    <include refid="selectProcessDefinitionsByQueryCriteriaSql"/>
+    <if test="orderBy != null">
+      order by ${orderBy}
+    </if>
+  </select>
+
+  <select id="selectProcessDefinitionCountByQueryCriteria_mysql" parameterType="org.activiti.engine.impl.ProcessDefinitionQueryImpl" resultType="long">
+    select distinct count(PD.ID_)
+    <include refid="selectProcessDefinitionsByQueryCriteriaSql"/>
+  </select>
+
+
 </mapper>

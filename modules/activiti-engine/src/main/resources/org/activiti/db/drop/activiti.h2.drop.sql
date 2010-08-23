@@ -6,6 +6,9 @@ alter table ACT_EXECUTION
 
 alter table ACT_EXECUTION 
     drop constraint FK_EXE_PARENT;
+
+alter table ACT_EXECUTION 
+    drop constraint FK_EXE_SUPER;
     
 alter table ACT_ID_MEMBERSHIP 
     drop constraint FK_MEMB_GROUP;
@@ -15,12 +18,24 @@ alter table ACT_ID_MEMBERSHIP
     
 alter table ACT_TASKINVOLVEMENT
     drop constraint FK_TSKASS_TASK;
-    
+ 
+alter table ACT_TASK
+	drop constraint FK_TASK_EXEC;
+
+alter table ACT_TASK
+	drop constraint FK_TASK_PROCINST;
+	
+alter table ACT_TASK
+	drop constraint FK_TASK_PROCDEF;
+	
 alter table ACT_VARIABLE
     drop constraint FK_VAR_EXE;
     
 alter table ACT_VARIABLE
     drop constraint FK_VAR_TASK;
+
+alter table ACT_VARIABLE
+    drop constraint FK_VAR_PROCINST;
     
 alter table ACT_VARIABLE
     drop constraint FK_VAR_BYTEARRAY;

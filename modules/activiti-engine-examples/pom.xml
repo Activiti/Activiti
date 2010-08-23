@@ -63,6 +63,11 @@
 					<version>5.1.6</version>
 					<scope>test</scope>
 				</dependency>
+				<dependency>
+  <groupId>postgresql</groupId>
+  <artifactId>postgresql</artifactId>
+  <version>8.4-701.jdbc4</version>
+</dependency>
 			</dependencies>
 			<build>
 				<plugins>
