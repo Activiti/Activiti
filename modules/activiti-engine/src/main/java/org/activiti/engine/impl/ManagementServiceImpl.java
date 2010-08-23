@@ -14,7 +14,6 @@ package org.activiti.engine.impl;
 
 import java.util.Map;
 
-import org.activiti.engine.Job;
 import org.activiti.engine.JobQuery;
 import org.activiti.engine.ManagementService;
 import org.activiti.engine.TableMetaData;
@@ -22,7 +21,6 @@ import org.activiti.engine.TablePageQuery;
 import org.activiti.engine.impl.cmd.ExecuteJobCmd;
 import org.activiti.engine.impl.cmd.GetTableCountCmd;
 import org.activiti.engine.impl.cmd.GetTableMetaDataCmd;
-import org.activiti.engine.impl.interceptor.CommandExecutor;
 
 
 /**

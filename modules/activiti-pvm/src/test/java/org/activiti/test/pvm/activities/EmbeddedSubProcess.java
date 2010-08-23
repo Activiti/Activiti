@@ -41,9 +41,10 @@ public class EmbeddedSubProcess implements CompositeActivityBehavior {
     }
   }
 
+  @SuppressWarnings("unchecked")
   public void lastExecutionEnded(ActivityExecution execution) {
     List<PvmTransition> outgoingTransitions = execution.getActivity().getOutgoingTransitions();
-    execution.takeAll(outgoingTransitions, new ArrayList<ActivityExecution>());
+    execution.takeAll(outgoingTransitions, Collections.EMPTY_LIST);
   }
 
 

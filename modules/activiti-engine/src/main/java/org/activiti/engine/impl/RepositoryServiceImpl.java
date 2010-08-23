@@ -26,7 +26,6 @@ import org.activiti.engine.impl.cmd.DeployCmd;
 import org.activiti.engine.impl.cmd.FindDeploymentResourceNamesCmd;
 import org.activiti.engine.impl.cmd.FindDeploymentsCmd;
 import org.activiti.engine.impl.cmd.FindProcessDefinitionCmd;
-import org.activiti.engine.impl.cmd.FindProcessDefinitionsCmd;
 import org.activiti.engine.impl.cmd.GetDeploymentResourceCmd;
 import org.activiti.engine.impl.cmd.GetFormCmd;
 import org.activiti.engine.impl.persistence.repository.DeploymentBuilderImpl;

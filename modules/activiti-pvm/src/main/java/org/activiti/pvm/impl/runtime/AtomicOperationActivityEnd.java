@@ -41,85 +41,47 @@ public class AtomicOperationActivityEnd extends AbstractEventAtomicOperation {
     ActivityImpl parentActivity = activity.getParentActivity();
 
     // if the execution is a single path of execution inside the process definition scope
-    if (execution.isProcessInstance()) {
-      if (parentActivity!=null) {
-        if (parentActivity.isScope()) {
-          ActivityBehavior parentActivityBehavior = parentActivity.getActivityBehavior();
-          if (parentActivityBehavior instanceof CompositeActivityBehavior) {
-            CompositeActivityBehavior compositeActivityBehavior = (CompositeActivityBehavior) parentActivityBehavior;
-            compositeActivityBehavior.lastExecutionEnded(execution);
-          }
-
-        } else {
-          execution.setActivity(parentActivity);
-          execution.performOperation(ACTIVITY_END);
-        }
-        
-      } else {
-        execution.performOperation(PROCESS_END);
-      }
-      
-    } else if (!execution.isConcurrent()) {
-
-      if (parentActivity.isScope()) {
-        ActivityBehavior parentActivityBehavior = parentActivity.getActivityBehavior();
-        if (parentActivityBehavior instanceof CompositeActivityBehavior) {
-          execution.setActivity(parentActivity);
-          CompositeActivityBehavior compositeActivityBehavior = (CompositeActivityBehavior) parentActivityBehavior;
-          compositeActivityBehavior.lastExecutionEnded(execution);
-
-        } else {
-          // default destroy scope behavior
-          ExecutionImpl parentScopeExecution = execution.getParent();
-          execution.destroy();
-          execution.remove();
-          parentScopeExecution.setActivity(parentActivity);
-          parentScopeExecution.performOperation(ACTIVITY_END);
-        }
-        
-      } else {
-        execution.setActivity(parentActivity);
-        execution.performOperation(ACTIVITY_END);
-        
-      }
-            
-    } else if (execution.isScope() && !activity.isScope()) {
+    if ( (parentActivity!=null)
+         &&(!parentActivity.isScope())
+          ) {
       execution.setActivity(parentActivity);
       execution.performOperation(ACTIVITY_END);
       
-    } else {
-      if (execution.isScope()) {
-        execution.destroy();
-      }
-      
-      if ( parentActivity!=null 
-           && !parentActivity.isScope()
-           && (isExecutionAloneInParent(execution))
-         ) {
-        execution.setActivity(parentActivity);
-        execution.performOperation(ACTIVITY_END);
-        
-      } else {
-        execution.remove();
+    } else if (execution.isProcessInstance()) {
+      execution.performOperation(PROCESS_END);
+    
+    } else if (execution.isScope()) {
 
-        ExecutionImpl concurrentRoot = execution.getParent();
-        // if there is now only 1 concurrent execution left
-        if (concurrentRoot.getExecutions().size()==1) {
-          ExecutionImpl lastConcurrent = concurrentRoot.getExecutions().get(0);
-          if (!lastConcurrent.isScope()) {
-            concurrentRoot.setActivity(lastConcurrent.getActivity());
-            lastConcurrent.setReplacedBy(concurrentRoot);
-            lastConcurrent.remove();
-          }
-        } else if ( concurrentRoot.getExecutions().isEmpty()
-                    && (parentActivity!=null)
-                  ) {
-          ActivityBehavior parentActivityBehavior = parentActivity.getActivityBehavior();
-          if (parentActivityBehavior instanceof CompositeActivityBehavior) {
-            CompositeActivityBehavior compositeActivityBehavior = (CompositeActivityBehavior) parentActivityBehavior;
-            compositeActivityBehavior.lastExecutionEnded(execution);
-          }
-        } 
+      ActivityBehavior parentActivityBehavior = (parentActivity!=null ? parentActivity.getActivityBehavior() : null);
+      if (parentActivityBehavior instanceof CompositeActivityBehavior) {
+        CompositeActivityBehavior compositeActivityBehavior = (CompositeActivityBehavior) parentActivity.getActivityBehavior();
+        execution.setActivity(parentActivity);
+        compositeActivityBehavior.lastExecutionEnded(execution);
+      } else {
+        // default destroy scope behavior
+        ExecutionImpl parentScopeExecution = execution.getParent();
+        execution.destroy();
+        execution.remove();
+        parentScopeExecution.setActivity(parentActivity);
+        parentScopeExecution.performOperation(ACTIVITY_END);
+        // TODO prune if necessary
+      }
+
+    } else { // execution.isConcurrent() && !execution.isScope()
+      
+      execution.remove();
+
+      // prune if necessary
+      ExecutionImpl concurrentRoot = execution.getParent();
+      if (concurrentRoot.getExecutions().size()==1) {
+        ExecutionImpl lastConcurrent = concurrentRoot.getExecutions().get(0);
+        if (!lastConcurrent.isScope()) {
+          concurrentRoot.setActivity(lastConcurrent.getActivity());
+          lastConcurrent.setReplacedBy(concurrentRoot);
+          lastConcurrent.remove();
+        } else {
+          lastConcurrent.setConcurrent(false);
+        }
       }
     }
   }

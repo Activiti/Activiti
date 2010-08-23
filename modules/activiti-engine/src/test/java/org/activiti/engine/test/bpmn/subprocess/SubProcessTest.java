@@ -234,25 +234,27 @@ public class SubProcessTest extends ProcessEngineTestCase {
     List<Task> tasks = taskQuery.list();
     
     // After process start, both tasks in the subprocesses should be active
-    Task taskA = tasks.get(0);
-    Task taskB = tasks.get(1);
-    assertEquals("Task in subprocess A", taskA.getName());
-    assertEquals("Task in subprocess B", taskB.getName());
+    assertEquals("Task in subprocess A", tasks.get(0).getName());
+    assertEquals("Task in subprocess B", tasks.get(1).getName());
     
     // Completing both tasks should active the tasks outside the subprocesses
-    taskService.complete(taskA.getId());
+    taskService.complete(tasks.get(0).getId());
+    
+    tasks = taskQuery.list();
+    assertEquals("Task after subprocess A", tasks.get(0).getName());
+    assertEquals("Task in subprocess B", tasks.get(1).getName());
 
-    taskService.complete(taskB.getId());
+    taskService.complete(tasks.get(1).getId());
+
     tasks = taskQuery.list();
     
-    taskA = tasks.get(0);
-    taskB = tasks.get(1);
-    assertEquals("Task after subprocess A", taskA.getName());
-    assertEquals("Task after subprocess B", taskB.getName());
+    assertEquals("Task after subprocess A", tasks.get(0).getName());
+    assertEquals("Task after subprocess B", tasks.get(1).getName());
     
     // Completing these tasks should end the process
-    taskService.complete(taskA.getId());
-    taskService.complete(taskB.getId());
+    taskService.complete(tasks.get(0).getId());
+    taskService.complete(tasks.get(1).getId());
+    
     assertProcessEnded(pi.getId());
   }
   
