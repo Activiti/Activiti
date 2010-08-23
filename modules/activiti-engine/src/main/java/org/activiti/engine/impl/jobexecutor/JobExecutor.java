@@ -39,7 +39,6 @@ public class JobExecutor implements ProcessEngineConfigurationAware {
   private static Logger log = Logger.getLogger(JobExecutor.class.getName());
 
   protected CommandExecutor commandExecutor;
-  protected JobHandlers jobHandlers;
   protected boolean isAutoActivate = false;
 
   protected int maxJobsPerAcquisition = 3;
@@ -57,7 +56,6 @@ public class JobExecutor implements ProcessEngineConfigurationAware {
 
   public void configurationCompleted(ProcessEngineConfiguration processEngineConfiguration) {
     this.commandExecutor = processEngineConfiguration.getCommandExecutor();
-    this.jobHandlers = processEngineConfiguration.getJobHandlers();
     this.isAutoActivate = processEngineConfiguration.isJobExecutorAutoActivate();
   }
 
@@ -132,7 +130,7 @@ public class JobExecutor implements ProcessEngineConfigurationAware {
   
   public void executeJobs(List<String> jobIds) {
     // TODO: RejectedExecutionException handling!
-    threadPoolExecutor.execute(new ExecuteJobsRunnable(commandExecutor, jobIds, jobHandlers, this));
+    threadPoolExecutor.execute(new ExecuteJobsRunnable(commandExecutor, jobIds, this));
   }
 
   // getters and setters ////////////////////////////////////////////////////// 

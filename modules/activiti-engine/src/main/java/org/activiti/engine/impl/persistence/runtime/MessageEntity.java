@@ -15,7 +15,6 @@ package org.activiti.engine.impl.persistence.runtime;
 import java.util.Map;
 
 import org.activiti.engine.impl.interceptor.CommandContext;
-import org.activiti.engine.impl.jobexecutor.JobHandler;
 
 
 /**
@@ -28,8 +27,8 @@ public class MessageEntity extends JobEntity {
   private String repeat = null;
   
   @Override
-  public void execute(JobHandler jobHandler, CommandContext commandContext) {
-    super.execute(jobHandler, commandContext);
+  public void execute(CommandContext commandContext) {
+    super.execute(commandContext);
     commandContext
       .getDbSqlSession()
       .delete(JobEntity.class, id);

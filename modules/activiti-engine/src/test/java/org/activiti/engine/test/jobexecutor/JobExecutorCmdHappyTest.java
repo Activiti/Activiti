@@ -35,7 +35,6 @@ public class JobExecutorCmdHappyTest extends JobExecutorTestCase {
 
   public void testJobCommandsWithMessage() {
     CommandExecutor commandExecutor = processEngineConfiguration.getCommandExecutor();
-    JobHandlers jobHandlers = processEngineConfiguration.getJobHandlers();
     JobExecutor jobExecutor = processEngineConfiguration.getJobExecutor();
     String jobId = commandExecutor.execute(new Command<String>() {
 
@@ -58,7 +57,7 @@ public class JobExecutorCmdHappyTest extends JobExecutorTestCase {
     assertEquals(expectedJobIds, new ArrayList<String>(jobIds));
     assertEquals(0, tweetHandler.getMessages().size());
 
-    commandExecutor.execute(new ExecuteJobsCmd(jobHandlers, jobId));
+    commandExecutor.execute(new ExecuteJobsCmd(jobId));
 
     assertEquals("i'm coding a test", tweetHandler.getMessages().get(0));
     assertEquals(1, tweetHandler.getMessages().size());
@@ -72,7 +71,6 @@ public class JobExecutorCmdHappyTest extends JobExecutorTestCase {
     ClockUtil.setCurrentTime(new Date(SOME_TIME));
 
     CommandExecutor commandExecutor = processEngineConfiguration.getCommandExecutor();
-    JobHandlers jobHandlers = processEngineConfiguration.getJobHandlers();
     JobExecutor jobExecutor = processEngineConfiguration.getJobExecutor();
 
     String jobId = commandExecutor.execute(new Command<String>() {
@@ -103,7 +101,7 @@ public class JobExecutorCmdHappyTest extends JobExecutorTestCase {
 
     assertEquals(0, tweetHandler.getMessages().size());
 
-    commandExecutor.execute(new ExecuteJobsCmd(jobHandlers, jobId));
+    commandExecutor.execute(new ExecuteJobsCmd(jobId));
 
     assertEquals("i'm coding a test", tweetHandler.getMessages().get(0));
     assertEquals(1, tweetHandler.getMessages().size());

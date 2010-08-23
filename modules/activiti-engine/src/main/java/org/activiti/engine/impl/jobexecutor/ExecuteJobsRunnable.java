@@ -24,20 +24,18 @@ public class ExecuteJobsRunnable implements Runnable {
 
   private final CommandExecutor commandExecutor;
   private final List<String> jobIds;
-  private final JobHandlers jobHandlers;
   private final JobExecutor jobExecutor;
   
-  public ExecuteJobsRunnable(CommandExecutor commandExecutor, List<String> jobIds, JobHandlers jobHandlers, JobExecutor jobExecutor) {
+  public ExecuteJobsRunnable(CommandExecutor commandExecutor, List<String> jobIds, JobExecutor jobExecutor) {
     this.commandExecutor = commandExecutor;
     this.jobIds = jobIds;
-    this.jobHandlers = jobHandlers;
     this.jobExecutor = jobExecutor;
   }
 
   public void run() {
     for (String jobId: jobIds) {
       try {
-        commandExecutor.execute(new ExecuteJobsCmd(jobHandlers, jobId));
+        commandExecutor.execute(new ExecuteJobsCmd(jobId));
       } catch (Throwable exception) {
         commandExecutor.execute(new DecrementJobRetriesCmd(jobExecutor, jobId, exception));
       }

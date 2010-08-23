@@ -16,6 +16,7 @@ package org.activiti.engine.test.bpmn.subprocess;
 import java.util.Date;
 import java.util.List;
 
+import org.activiti.engine.Job;
 import org.activiti.engine.ProcessInstance;
 import org.activiti.engine.Task;
 import org.activiti.engine.TaskQuery;
@@ -197,29 +198,30 @@ public class SubProcessTest extends ProcessEngineTestCase {
   @Deployment
   public void testSimpleParallelSubProcessWithTimer() {
     
-    Date startTime = new Date();
-    
     // After staring the process, the tasks in the subprocess should be active
-    ProcessInstance pi = runtimeService.startProcessInstanceByKey("simpleParallelSubProcessWithTimer");
-    List<Task> subProcessTasks = taskService.createTaskQuery().processInstanceId(pi.getId()).orderAsc(TaskQuery.PROPERTY_NAME).list();
+    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("simpleParallelSubProcessWithTimer");
+    List<Task> subProcessTasks = taskService.createTaskQuery().processInstanceId(processInstance.getId()).orderAsc(TaskQuery.PROPERTY_NAME).list();
     
     // Tasks are ordered by name (see query)
     Task taskA = subProcessTasks.get(0);
     Task taskB = subProcessTasks.get(1);
     assertEquals("Task A", taskA.getName());
     assertEquals("Task B", taskB.getName());
+
+    Job job = managementService
+      .createJobQuery()
+      .processInstanceId(processInstance.getId())
+      .singleResult();
     
-    // Setting the clock forward 1 hour 1 second (timer fires in 1 hour) and fire up the job executor 
-    ClockUtil.setCurrentTime(new Date(startTime.getTime() + ( 60 * 60 * 1000 ) + 1000));
-    waitForJobExecutorToProcessAllJobs(5000L, 5L);
+    managementService.executeJob(job.getId());
 
     // The inner subprocess should be destoyed, and the tsk after the timer should be active
-    Task taskAfterTimer = taskService.createTaskQuery().processInstanceId(pi.getId()).singleResult();
+    Task taskAfterTimer = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
     assertEquals("Task after timer", taskAfterTimer.getName());
 
     // Completing the task after the timer ends the process instance
     taskService.complete(taskAfterTimer.getId());
-    assertProcessEnded(pi.getId());
+    assertProcessEnded(processInstance.getId());
   }
   
   @Deployment
@@ -239,6 +241,7 @@ public class SubProcessTest extends ProcessEngineTestCase {
     
     // Completing both tasks should active the tasks outside the subprocesses
     taskService.complete(taskA.getId());
+
     taskService.complete(taskB.getId());
     tasks = taskQuery.list();
     

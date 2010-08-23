@@ -10,41 +10,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.activiti.engine.impl.jobexecutor;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
+package org.activiti.engine.impl.cmd;
 
-import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
-import org.activiti.engine.impl.persistence.runtime.JobEntity;
 
 
 /**
  * @author Tom Baeyens
  */
-public class ExecuteJobsCmd implements Command<Object> {
-
-  private static Logger log = Logger.getLogger(ExecuteJobsCmd.class.getName());
+public class ExecuteJobCmd implements Command<Object> {
   
   protected String jobId;
-
-  public ExecuteJobsCmd(String jobId) {
+  
+  public ExecuteJobCmd(String jobId) {
     this.jobId = jobId;
-  }
+ }
 
   public Object execute(CommandContext commandContext) {
-    if (log.isLoggable(Level.FINE)) {
-      log.fine("Executing job " + jobId);
-    }
-    JobEntity job = commandContext.getRuntimeSession().findJobById(jobId);
-    
-    if (job == null) {
-      throw new ActivitiException("No job found for jobId '" + jobId + "'");
-    }
-    
-    job.execute(commandContext);
+    commandContext
+      .getRuntimeSession()
+      .findJobById(jobId)
+      .execute(commandContext);
     return null;
   }
 }

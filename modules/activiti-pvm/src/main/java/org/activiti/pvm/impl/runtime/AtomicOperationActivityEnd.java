@@ -92,7 +92,6 @@ public class AtomicOperationActivityEnd extends AbstractEventAtomicOperation {
         execution.destroy();
       }
       
-      
       if ( parentActivity!=null 
            && !parentActivity.isScope()
            && (isExecutionAloneInParent(execution))
@@ -107,17 +106,20 @@ public class AtomicOperationActivityEnd extends AbstractEventAtomicOperation {
         // if there is now only 1 concurrent execution left
         if (concurrentRoot.getExecutions().size()==1) {
           ExecutionImpl lastConcurrent = concurrentRoot.getExecutions().get(0);
-          concurrentRoot.setActivity(lastConcurrent.getActivity());
-          lastConcurrent.setReplacedBy(concurrentRoot);
-          lastConcurrent.remove();
-        
-        } else if (concurrentRoot.getExecutions().isEmpty()) {
+          if (!lastConcurrent.isScope()) {
+            concurrentRoot.setActivity(lastConcurrent.getActivity());
+            lastConcurrent.setReplacedBy(concurrentRoot);
+            lastConcurrent.remove();
+          }
+        } else if ( concurrentRoot.getExecutions().isEmpty()
+                    && (parentActivity!=null)
+                  ) {
           ActivityBehavior parentActivityBehavior = parentActivity.getActivityBehavior();
           if (parentActivityBehavior instanceof CompositeActivityBehavior) {
             CompositeActivityBehavior compositeActivityBehavior = (CompositeActivityBehavior) parentActivityBehavior;
             compositeActivityBehavior.lastExecutionEnded(execution);
           }
-        }
+        } 
       }
     }
   }

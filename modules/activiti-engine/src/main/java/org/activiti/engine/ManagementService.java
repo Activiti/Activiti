@@ -50,4 +50,7 @@ public interface ManagementService {
    */
   JobQuery createJobQuery();
   
+  /** forced synchronous execution of a job for testing purposes. */
+  void executeJob(String jobId);
+  
 }

@@ -12,6 +12,7 @@
  */
 package org.activiti.engine.impl.bpmn;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.activiti.pvm.activity.ActivityExecution;
@@ -39,7 +40,7 @@ public class BoundaryTimerEventActivity extends AbstractBpmnActivity {
         executionImpl.getSubProcessInstance().deleteCascade(executionImpl.getDeleteReason());
       }
       
-      interruptedExecutions = executionImpl.getExecutions();
+      interruptedExecutions = new ArrayList<ExecutionImpl>(executionImpl.getExecutions());
       for (ExecutionImpl interruptedExecution: interruptedExecutions) {
         interruptedExecution.deleteCascade("interrupting timer event '"+execution.getActivity().getId()+"' fired");
       }

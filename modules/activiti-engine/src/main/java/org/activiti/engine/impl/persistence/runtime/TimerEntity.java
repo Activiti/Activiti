@@ -43,9 +43,9 @@ public class TimerEntity extends JobEntity {
   }
 
   @Override
-  public void execute(JobHandler jobHandler, CommandContext commandContext) {
+  public void execute(CommandContext commandContext) {
 
-    super.execute(jobHandler, commandContext);
+    super.execute(commandContext);
 
     if (repeat==null){
 
