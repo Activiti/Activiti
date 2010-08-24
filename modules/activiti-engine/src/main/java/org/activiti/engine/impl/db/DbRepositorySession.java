@@ -17,6 +17,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.activiti.engine.ActivitiException;
 import org.activiti.engine.Page;
 import org.activiti.engine.ProcessDefinition;
 import org.activiti.engine.ProcessInstance;
@@ -180,6 +181,9 @@ public class DbRepositorySession implements Session, RepositorySession {
 
   public ProcessDefinitionEntity findDeployedLatestProcessDefinitionByKey(String processDefinitionKey) {
     ProcessDefinitionEntity processDefinition = (ProcessDefinitionEntity) dbSqlSession.selectOne("selectLatestProcessDefinitionByKey", processDefinitionKey);
+    if (processDefinition==null) {
+      throw new ActivitiException("no processes deployed with key '"+processDefinitionKey+"'");
+    }
     processDefinition = resolveProcessDefinition(processDefinition);
     return processDefinition;
   }

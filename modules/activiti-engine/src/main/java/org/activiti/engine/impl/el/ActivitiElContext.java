@@ -12,52 +12,32 @@
  */
 package org.activiti.engine.impl.el;
 
-import javax.el.ArrayELResolver;
-import javax.el.BeanELResolver;
-import javax.el.CompositeELResolver;
 import javax.el.ELContext;
 import javax.el.ELResolver;
 import javax.el.FunctionMapper;
-import javax.el.ListELResolver;
-import javax.el.MapELResolver;
 import javax.el.VariableMapper;
-
-import org.activiti.pvm.impl.runtime.ExecutionImpl;
 
 
 /**
  * @author Tom Baeyens
  * @author Joram Barrez
  */
-public class ExecutionELContext extends ELContext {
+public class ActivitiElContext extends ELContext {
   
-  private final ExecutionImpl execution;
-  private ELResolver elResolver;
+  protected ELResolver elResolver;
     
-  public ExecutionELContext(ExecutionImpl execution) {
-    this.execution = execution;
-  }
-  
-  public void setElResolver(ELResolver elResolver) {
+  public ActivitiElContext(ELResolver elResolver) {
     this.elResolver = elResolver;
   }
 
   public ELResolver getELResolver() {
-    CompositeELResolver elResolver = new CompositeELResolver();
-    elResolver.add(new ExecutionVariableElResolver(execution));
-    if (this.elResolver!=null) {
-      elResolver.add(this.elResolver);
-    }
-    elResolver.add(new ArrayELResolver());
-    elResolver.add(new ListELResolver());
-    elResolver.add(new MapELResolver());
-    elResolver.add(new BeanELResolver());
     return elResolver;
   }
   
   public FunctionMapper getFunctionMapper() {
     return new ActivitiFunctionMapper();
   }
+  
   public VariableMapper getVariableMapper() {
     return null;
   }

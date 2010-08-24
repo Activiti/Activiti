@@ -13,6 +13,16 @@
 
 package org.activiti.engine.test;
 
+import java.io.InputStream;
+import java.util.Map;
+import java.util.logging.Logger;
+
+import org.activiti.engine.ActivitiException;
+import org.activiti.engine.ProcessEngine;
+import org.activiti.pvm.impl.util.LogUtil.ThreadLogMode;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
+
 
 
 
@@ -21,27 +31,44 @@ package org.activiti.engine.test;
  */
 public class SpringProcessEngineTestCase extends ProcessEngineTestCase {
 
-//  private void initializeProcessEngineFromSpringConfigurationResource() {
-//    log.fine("==== BUILDING SPRING APPLICATION CONTEXT AND PROCESS ENGINE =========================================");
-//    
-//    ApplicationContext applicationContext = new ClassPathXmlApplicationContext(springApplicationContextConfigurationResource);
-//    Map<String, ProcessEngine> beansOfType = applicationContext.getBeansOfType(ProcessEngine.class);
-//    if ( (beansOfType==null)
-//         || (beansOfType.isEmpty())
-//       ) {
-//      throw new ActivitiException("no "+ProcessEngine.class.getName()+" defined in the application context "+springApplicationContextConfigurationResource);
-//    }
-//    
-//    this.springApplicationContext = applicationContext;
-//    
-//    processEngine = beansOfType.values().iterator().next();
-//    log.fine("==== SPRING PROCESS ENGINE CREATED ==================================================================");
-//  }
-//  protected Object getSpringBean(String springBeanName) {
-//    // detyped storage of the application context and casting here is done to prevent a hard dependency of spring classes 
-//    // on the classpath in case spring is not actually used.
-//    return ((ApplicationContext)springApplicationContext).getBean(springBeanName);
-//  }
+  private static Logger log = Logger.getLogger(SpringProcessEngineTestCase.class.getName());
+  
+  protected String springApplicationContextConfigurationResource;
 
+  protected ApplicationContext applicationContext;
 
+  public SpringProcessEngineTestCase() {
+    if (getResourceAsStream("applicationContext.xml")!=null) {
+      this.springApplicationContextConfigurationResource = "applicationContext.xml";
+      this.configurationResource = null;
+    }
+  }
+
+  public SpringProcessEngineTestCase(String springApplicationContextConfigurationResource) {
+    this.springApplicationContextConfigurationResource = springApplicationContextConfigurationResource;
+    this.configurationResource = null;
+  }
+
+  InputStream getResourceAsStream(String resourceName) {
+    return Thread.currentThread().getContextClassLoader().getResourceAsStream(resourceName);
+  }
+
+  void initializeProcessEngine() {
+    if (configurationResource!=null) {
+      super.initializeProcessEngine();
+    } else if (springApplicationContextConfigurationResource!=null) {
+      log.fine("==== BUILDING SPRING APPLICATION CONTEXT AND PROCESS ENGINE =========================================");
+      
+      this.applicationContext = new ClassPathXmlApplicationContext(springApplicationContextConfigurationResource);
+      Map<String, ProcessEngine> beansOfType = applicationContext.getBeansOfType(ProcessEngine.class);
+      if ( (beansOfType==null)
+           || (beansOfType.isEmpty())
+         ) {
+        throw new ActivitiException("no "+ProcessEngine.class.getName()+" defined in the application context "+springApplicationContextConfigurationResource);
+      }
+      
+      processEngine = beansOfType.values().iterator().next();
+      log.fine("==== SPRING PROCESS ENGINE CREATED ==================================================================");
+    }
+  }
 }

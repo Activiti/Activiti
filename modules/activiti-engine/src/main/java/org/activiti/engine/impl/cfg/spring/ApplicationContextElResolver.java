@@ -10,50 +10,37 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.activiti.engine.impl.el;
+
+package org.activiti.engine.impl.cfg.spring;
 
 import java.beans.FeatureDescriptor;
-import java.util.Collections;
 import java.util.Iterator;
-import java.util.Map;
 
 import javax.el.ELContext;
 import javax.el.ELResolver;
 
+import org.springframework.context.ApplicationContext;
+
+
 /**
- * Implementation of an {@link ELResolver} that resolves expressions with the a
- * constant map as context.
- * 
- * @author Dave Syer
+ * @author Tom Baeyens
  */
-public class StaticElResolver extends ELResolver {
+public class ApplicationContextElResolver extends ELResolver {
 
-  private String prefix = "static:";
-
-  private Map<String, Object> map = Collections.emptyMap();
+  protected ApplicationContext applicationContext;
   
-  public void setMap(Map<String, Object> map) {
-    this.map = map;
-  }
-
-  public void setPrefix(String prefix) {
-    if (!prefix.endsWith(":")) {
-      prefix = prefix + ":";
-    }
-    this.prefix = prefix;
+  public ApplicationContextElResolver(ApplicationContext applicationContext) {
+    this.applicationContext = applicationContext;
   }
 
   public Object getValue(ELContext context, Object base, Object property) {
-
     if (base == null) {
       // according to javadoc, can only be a String
-      String variable = (String) property;
-      if (variable.startsWith(prefix)) {
-        variable = variable.substring(prefix.length());
-      }
-      if (map.containsKey(variable)) {
+      String key = (String) property;
+
+      if (applicationContext.containsBean(key)) {
         context.setPropertyResolved(true);
-        return map.get(variable);
+        return applicationContext.getBean(key);
       }
     }
 
@@ -78,5 +65,4 @@ public class StaticElResolver extends ELResolver {
   public Class< ? > getType(ELContext context, Object arg1, Object arg2) {
     return Object.class;
   }
-
 }

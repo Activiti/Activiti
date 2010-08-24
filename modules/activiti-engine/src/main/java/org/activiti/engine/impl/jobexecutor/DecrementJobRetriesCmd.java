@@ -24,9 +24,9 @@ import org.activiti.engine.impl.runtime.JobEntity;
  */
 public class DecrementJobRetriesCmd implements Command<Object> {
 
-  private final String jobId;
-  private final Throwable exception;
-  private final JobExecutor jobExecutor;
+  protected String jobId;
+  protected Throwable exception;
+  protected JobExecutor jobExecutor;
 
   public DecrementJobRetriesCmd(JobExecutor jobExecutor, String jobId, Throwable exception) {
     this.jobExecutor = jobExecutor;
@@ -43,7 +43,7 @@ public class DecrementJobRetriesCmd implements Command<Object> {
 
     commandContext.getTransactionContext().addTransactionListener(TransactionState.COMMITTED, new MessageAddedNotification(jobExecutor));
 
-    // TODO store the exception in a byte array
+    // TODO http://jira.codehaus.org/browse/ACT-87 store the exception in a byte array 
     // StringWriter stringWriter = new StringWriter();
     // exception.printStackTrace(new PrintWriter(stringWriter));
     // byte[] exceptionBytes = stringWriter.toString().getBytes();

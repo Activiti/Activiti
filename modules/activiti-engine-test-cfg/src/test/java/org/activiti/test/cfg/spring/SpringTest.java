@@ -16,22 +16,21 @@ import java.util.List;
 
 import org.activiti.engine.ProcessInstance;
 import org.activiti.engine.Task;
-import org.activiti.engine.test.ProcessEngineTestCase;
+import org.activiti.engine.test.SpringProcessEngineTestCase;
 
 /**
  * @author Tom Baeyens
  * @author Dave Syer
  */
-public class SpringTest extends ProcessEngineTestCase {
+public class SpringTest extends SpringProcessEngineTestCase {
   
   public SpringTest() {
-    setSpringApplicationContextConfigurationResource("org/activiti/test/cfg/spring/SpringTest-context.xml");
+    super("org/activiti/test/cfg/spring/SpringTest-context.xml");
   }
 
   public void testProcessExecutionWithTaskAssignedFromExpression() {
     // UserBean userBean = (UserBean) getSpringBean("userBean");
     
-    int before = processEngine.getTaskService().findAssignedTasks("kermit").size();
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("taskAssigneeExpressionProcess");
     
     List<String> activeActivityIds = runtimeService.findActiveActivityIds(processInstance.getId());

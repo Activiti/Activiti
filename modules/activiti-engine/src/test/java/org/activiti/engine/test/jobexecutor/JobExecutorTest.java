@@ -21,7 +21,6 @@ import org.activiti.engine.impl.cfg.TimerSession;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
-import org.junit.Test;
 
 
 

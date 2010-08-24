@@ -16,7 +16,6 @@ package org.activiti.engine.impl.cfg.spring;
 import java.io.IOException;
 import java.util.zip.ZipInputStream;
 
-import javax.el.ELResolver;
 import javax.sql.DataSource;
 
 import org.activiti.engine.DbSchemaStrategy;
@@ -34,8 +33,11 @@ import org.activiti.engine.impl.interceptor.CommandInterceptor;
 import org.activiti.engine.impl.interceptor.DefaultCommandExecutor;
 import org.activiti.engine.impl.jobexecutor.JobExecutor;
 import org.activiti.engine.impl.variable.VariableTypes;
+import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.FactoryBean;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.ContextResource;
 import org.springframework.core.io.Resource;
@@ -49,15 +51,17 @@ import org.springframework.transaction.support.TransactionTemplate;
  * @author Christian Stettler
  * @author Tom Baeyens
  */
-public class ProcessEngineFactoryBean implements FactoryBean<ProcessEngine>, DisposableBean {
+public class ProcessEngineFactoryBean implements FactoryBean<ProcessEngine>, DisposableBean, ApplicationContextAware {
 
-  private ProcessEngineConfiguration processEngineConfiguration = new ProcessEngineConfiguration();
+  protected ProcessEngineConfiguration processEngineConfiguration = new ProcessEngineConfiguration();
 
-  private PlatformTransactionManager transactionManager;
+  protected PlatformTransactionManager transactionManager;
+  
+  protected ApplicationContext applicationContext;
 
-  private Resource[] processResources = new Resource[0];
+  protected Resource[] processResources = new Resource[0];
 
-  private ProcessEngineImpl processEngine;
+  protected ProcessEngineImpl processEngine;
 
   public void destroy() throws Exception {
     if (processEngine != null) {
@@ -65,8 +69,23 @@ public class ProcessEngineFactoryBean implements FactoryBean<ProcessEngine>, Dis
     }
   }
 
-  public ProcessEngine getObject() throws Exception {
+  public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+    this.applicationContext = applicationContext;
+  }
 
+  public ProcessEngine getObject() throws Exception {
+    initializeSpringTransactionInterceptor();
+    initializeExpressionManager();
+
+    processEngine = (ProcessEngineImpl) processEngineConfiguration.buildProcessEngine();
+
+    deployResources();
+    
+    return processEngine;
+
+  }
+
+  private void initializeSpringTransactionInterceptor() {
     processEngineConfiguration.setLocalTransactions(transactionManager == null);
 
     if (transactionManager != null) {
@@ -87,12 +106,12 @@ public class ProcessEngineFactoryBean implements FactoryBean<ProcessEngine>, Dis
       });
       processEngineConfiguration.setCommandExecutor(commandExecutor);
     }
-
-    processEngine = (ProcessEngineImpl) processEngineConfiguration.buildProcessEngine();
-    refreshProcessResources(processEngine.getRepositoryService(), processResources);
-    return processEngine;
-
   }
+
+  protected void initializeExpressionManager() {
+    processEngineConfiguration.setExpressionManager(new SpringExpressionManager(applicationContext));
+  }
+  
   public Class< ? > getObjectType() {
     return ProcessEngine.class;
   }
@@ -101,14 +120,16 @@ public class ProcessEngineFactoryBean implements FactoryBean<ProcessEngine>, Dis
     return true;
   }
 
-  protected void refreshProcessResources(RepositoryService repositoryService, Resource[] processResources) throws IOException {
+  protected void deployResources() throws IOException {
+    RepositoryService repositoryService = processEngine.getRepositoryService();
+    
     for (Resource resource : processResources) {
-      String name = getResourceName(resource);
+      String resourceName = getResourceName(resource);
       DeploymentBuilder deploymentBuilder = repositoryService
         .createDeployment()
         .enableDuplicateFiltering()
-        .name(name);
-      deploy(deploymentBuilder, resource, name);
+        .name(resourceName);
+      deploy(deploymentBuilder, resource, resourceName);
     }
   }
 
@@ -188,9 +209,4 @@ public class ProcessEngineFactoryBean implements FactoryBean<ProcessEngine>, Dis
   public void setVariableTypes(VariableTypes variableTypes) {
     processEngineConfiguration.setVariableTypes(variableTypes);
   }
-
-  public void setElResolver(ELResolver elResolver) {
-    processEngineConfiguration.setElResolver(elResolver);
-  }
-
 }

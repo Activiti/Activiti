@@ -26,6 +26,7 @@ public class PropertyTest extends ProcessEngineTestCase {
   public void testUserTaskSrcProperty() {
 
     // DO NOT DELETE: WILL BE REACTIVATED SOON!
+    // http://jira.codehaus.org/browse/ACT-88
     
     
 //    // Start the process -> waits in usertask

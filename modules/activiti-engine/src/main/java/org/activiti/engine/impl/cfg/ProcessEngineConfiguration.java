@@ -17,7 +17,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.el.ELResolver;
 import javax.sql.DataSource;
 
 import org.activiti.engine.DbSchemaStrategy;
@@ -109,7 +108,6 @@ public class ProcessEngineConfiguration {
   protected ScriptingEngines scriptingEngines;
   protected VariableTypes variableTypes;
   protected ExpressionManager expressionManager;
-  protected ELResolver elResolver;
   protected BusinessCalendarManager businessCalendarManager;
   
   protected boolean isConfigurationCompleted = false;
@@ -160,7 +158,6 @@ public class ProcessEngineConfiguration {
     scriptingEngines = new ScriptingEngines();
     variableTypes = new DefaultVariableTypes();
     expressionManager = new ExpressionManager();
-    elResolver = null;
     MapBusinessCalendarManager mapBusinessCalendarManager = new MapBusinessCalendarManager();
     mapBusinessCalendarManager.addBusinessCalendar(DurationBusinessCalendar.NAME, new DurationBusinessCalendar());
     businessCalendarManager = mapBusinessCalendarManager;
@@ -196,7 +193,6 @@ public class ProcessEngineConfiguration {
       notifyConfigurationComplete(scriptingEngines);
       notifyConfigurationComplete(variableTypes);
       notifyConfigurationComplete(expressionManager);
-      notifyConfigurationComplete(elResolver);
       notifyConfigurationComplete(businessCalendarManager);
       
       isConfigurationCompleted = true;
@@ -362,22 +358,6 @@ public class ProcessEngineConfiguration {
   
   public void setExpressionManager(ExpressionManager expressionManager) {
     this.expressionManager = expressionManager;
-  }
-
-  
-  public ELResolver getElResolver() {
-    return elResolver;
-  }
-
-  /**
-   * A custom variable resolver for expressions in process definitions. It will
-   * have second highest priority after the native Activiti resolver based on
-   * process instance variables. Could be used, for instance, to resolve a set
-   * of global variables in a static engine wide scope. Defaults to null (so no
-   * custom variables).
-   */
-  public void setElResolver(ELResolver elResolver) {
-    this.elResolver = elResolver;
   }
 
   

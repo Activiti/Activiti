@@ -12,14 +12,17 @@
  */
 package org.activiti.engine.impl.el;
 
+import javax.el.ArrayELResolver;
+import javax.el.BeanELResolver;
+import javax.el.CompositeELResolver;
 import javax.el.ELContext;
 import javax.el.ELResolver;
 import javax.el.ExpressionFactory;
+import javax.el.ListELResolver;
+import javax.el.MapELResolver;
 import javax.el.MethodExpression;
 import javax.el.ValueExpression;
 
-import org.activiti.engine.impl.cfg.ProcessEngineConfiguration;
-import org.activiti.engine.impl.cfg.ProcessEngineConfigurationAware;
 import org.activiti.engine.impl.runtime.ExecutionEntity;
 import org.activiti.pvm.impl.runtime.ExecutionImpl;
 
@@ -43,28 +46,15 @@ import org.activiti.pvm.impl.runtime.ExecutionImpl;
  * @author Tom Baeyens
  * @author Dave Syer
  */
-public class ExpressionManager implements ProcessEngineConfigurationAware {
+public class ExpressionManager {
 
   public static final String UEL_VALUE = "uel-value";
   public static final String UEL_METHOD = "uel-method";
   public static final String DEFAULT_EXPRESSION_LANGUAGE = UEL_VALUE;
 
-  private ExpressionFactory expressionFactory = ExpressionFactory.newInstance();
+  protected ExpressionFactory expressionFactory = ExpressionFactory.newInstance();
   // Default implementation (does nothing)
-  private ELContext parsingElContext = new ParsingElContext();
-  private ELResolver elResolver;
-
-  /**
-   * A custom variable resolver for expressions in process definitions. It will
-   * have second highest priority after the native Activiti resolver based on
-   * process instance variables. Could be used, for instance, to resolve a set
-   * of global variables in a static engine wide scope. Defaults to null (so no
-   * custom variables).
-   */
-
-  public void configurationCompleted(ProcessEngineConfiguration processEngineConfiguration) {
-    this.elResolver = processEngineConfiguration.getElResolver();
-  }
+  protected ELContext parsingElContext = new ParsingElContext();
 
   public ActivitiValueExpression createValueExpression(String expression) {
     ValueExpression valueExpression = expressionFactory.createValueExpression(parsingElContext, expression, Object.class);
@@ -84,7 +74,7 @@ public class ExpressionManager implements ProcessEngineConfigurationAware {
 
   public ELContext getElContext(ExecutionImpl execution) {
     if (! (execution instanceof ExecutionEntity)) {
-      return createExecutionElContext(execution);
+      return createElContext(execution);
     }
     ExecutionEntity executionEntity = (ExecutionEntity) execution;
     ELContext elContext = null;
@@ -93,17 +83,24 @@ public class ExpressionManager implements ProcessEngineConfigurationAware {
       if (elContext != null) {
         return elContext;
       }
-      elContext = createExecutionElContext(execution);
+      elContext = createElContext(execution);
       executionEntity.setCachedElContext(elContext);
     }
     return elContext;
   }
 
-  protected ExecutionELContext createExecutionElContext(ExecutionImpl execution) {
-    ExecutionELContext context = new ExecutionELContext(execution);
-    if (elResolver != null) {
-      context.setElResolver(elResolver);
-    }
-    return context;
+  protected ActivitiElContext createElContext(ExecutionImpl execution) {
+    ELResolver elResolver = createElResolver(execution);
+    return new ActivitiElContext(elResolver);
+  }
+
+  protected ELResolver createElResolver(ExecutionImpl execution) {
+    CompositeELResolver elResolver = new CompositeELResolver();
+    elResolver.add(new ExecutionVariableElResolver(execution));
+    elResolver.add(new ArrayELResolver());
+    elResolver.add(new ListELResolver());
+    elResolver.add(new MapELResolver());
+    elResolver.add(new BeanELResolver());
+    return elResolver;
   }
 }

@@ -21,7 +21,6 @@
 		<property name="dataSource" ref="dataSource" />
 		<property name="transactionManager" ref="transactionManager" />
 		<property name="dbSchemaStrategy" value="${db.schema.strategy}" />
-		<property name="elResolver" ref="elResolver" />
 		<property name="processResources" value="classpath*:/org/activiti/test/cfg/spring/static*.xml" />
 	</bean>
 
@@ -31,15 +30,10 @@
 	
 	<bean id="upperCaser" class="org.activiti.test.cfg.spring.ToUppercaseActivityBehavior"/>
 
-	<bean id="elResolver" class="org.activiti.engine.impl.el.StaticElResolver">
-		<property name="map">
-			<map>
-				<entry key="user" value="kermit" />
-				<entry key="service" value-ref="upperCaser" />
-			</map>
-		</property>
+	<bean id="user" class="java.lang.String">
+	  <constructor-arg type="String" value="kermit"/>
 	</bean>
-
+  
 	<bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
 		<property name="dataSource" ref="dataSource" />
 	</bean>

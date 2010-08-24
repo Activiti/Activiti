@@ -12,6 +12,9 @@
  */
 package org.activiti.engine.impl.bpmn.parser;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.activiti.engine.impl.el.ExpressionManager;
 import org.activiti.engine.impl.util.xml.Parser;
 
@@ -51,6 +54,7 @@ public class BpmnParser extends Parser {
   public static final String XSI_NS = "http://www.w3.org/2001/XMLSchema-instance";
 
   protected ExpressionManager expressionManager;
+  protected List<BpmnParseListener> parseListeners = new ArrayList<BpmnParseListener>();
   
   public BpmnParser(ExpressionManager expressionManager) {
     this.expressionManager = expressionManager;
@@ -61,7 +65,22 @@ public class BpmnParser extends Parser {
    * to parse only one BPMN 2.0 process definition.
    */
   public BpmnParse createParse() {
-    return new BpmnParse(this, expressionManager);
+    return new BpmnParse(this);
+  }
+
+  public ExpressionManager getExpressionManager() {
+    return expressionManager;
+  }
+
+  public void setExpressionManager(ExpressionManager expressionManager) {
+    this.expressionManager = expressionManager;
+  }
+
+  public List<BpmnParseListener> getParseListeners() {
+    return parseListeners;
   }
   
+  public void setParseListeners(List<BpmnParseListener> parseListeners) {
+    this.parseListeners = parseListeners;
+  }
 }

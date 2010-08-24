@@ -60,15 +60,11 @@ public class ProcessEngineTestCase extends PvmTestCase {
     "ACT_PROPERTY"
   );
 
-  private static final String DEFAULT_CONFIGURATION_RESOURCE = "activiti.properties";
-  private static Map<String, ProcessEngine> processEngines = new HashMap<String, ProcessEngine>(); 
+  static final String DEFAULT_CONFIGURATION_RESOURCE = "activiti.properties";
+  static Map<String, ProcessEngine> processEngines = new HashMap<String, ProcessEngine>(); 
   
-  protected ThreadLogMode threadRenderingMode;
-  protected String configurationResource;
-  protected String springApplicationContextConfigurationResource;
-  // detyped storage of the application context is done to prevent a hard dependency of spring classes 
-  // on the classpath in case spring is not actually used.
-  protected Object springApplicationContext;
+  protected ThreadLogMode threadRenderingMode = DEFAULT_THREAD_LOG_MODE;
+  protected String configurationResource = DEFAULT_CONFIGURATION_RESOURCE;
   protected List<String> deploymentsToDeleteAfterTestMethod = new ArrayList<String>();
   protected Throwable exception;
 
@@ -82,15 +78,10 @@ public class ProcessEngineTestCase extends PvmTestCase {
   protected ManagementService managementService;
 
   public ProcessEngineTestCase() {
-    this(DEFAULT_CONFIGURATION_RESOURCE, DEFAULT_THREAD_LOG_MODE);
   }
   
   public ProcessEngineTestCase(String configurationResource) {
-    this(configurationResource, DEFAULT_THREAD_LOG_MODE);
-  }
-  
-  public ProcessEngineTestCase(ThreadLogMode threadRenderingMode) {
-    this(DEFAULT_CONFIGURATION_RESOURCE, threadRenderingMode);
+    this.configurationResource = configurationResource;
   }
   
   public ProcessEngineTestCase(String configurationResource, ThreadLogMode threadRenderingMode) {
@@ -150,7 +141,7 @@ public class ProcessEngineTestCase extends PvmTestCase {
     }
   }
 
-  private void initializeProcessEngine() {
+  void initializeProcessEngine() {
     log.fine("==== BUILDING PROCESS ENGINE ========================================================================");
     processEngine = new ProcessEngineBuilder()
       .configureFromPropertiesResource(configurationResource)
@@ -306,9 +297,5 @@ public class ProcessEngineTestCase extends PvmTestCase {
       processEngine.close();
     }
     processEngines.clear();
-  }
-  
-  public void setSpringApplicationContextConfigurationResource(String springApplicationContextConfigurationResource) {
-    this.springApplicationContextConfigurationResource = springApplicationContextConfigurationResource;
   }
 }

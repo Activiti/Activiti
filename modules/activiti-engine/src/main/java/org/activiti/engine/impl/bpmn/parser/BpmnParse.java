@@ -51,7 +51,6 @@ import org.activiti.engine.impl.scripting.ScriptingEngines;
 import org.activiti.engine.impl.task.TaskDefinition;
 import org.activiti.engine.impl.util.xml.Element;
 import org.activiti.engine.impl.util.xml.Parse;
-import org.activiti.engine.impl.util.xml.Parser;
 import org.activiti.engine.impl.variable.VariableDeclaration;
 import org.activiti.pvm.activity.ActivityBehavior;
 import org.activiti.pvm.impl.process.ActivityImpl;
@@ -79,7 +78,7 @@ public class BpmnParse extends Parse {
   /**
    * The end result of the parsing: a list of process definition.
    */
-  private final List<ProcessDefinitionEntity> processDefinitions = new ArrayList<ProcessDefinitionEntity>();
+  protected List<ProcessDefinitionEntity> processDefinitions = new ArrayList<ProcessDefinitionEntity>();
 
   /**
    * Map containing the BPMN 2.0 item definitions, stored during the first phase
@@ -110,6 +109,8 @@ public class BpmnParse extends Parse {
   protected Map<String, Operation> operations = new HashMap<String, Operation>();
 
   protected ExpressionManager expressionManager;
+  
+  protected List<BpmnParseListener> parseListeners;
 
   /**
    * Constructor to be called by the {@link BpmnParser}.
@@ -117,9 +118,10 @@ public class BpmnParse extends Parse {
    * Note the package modifier here: only the {@link BpmnParser} is allowed to
    * create instances.
    */
-  BpmnParse(Parser parser, ExpressionManager expressionManager) {
+  BpmnParse(BpmnParser parser) {
     super(parser);
-    this.expressionManager = expressionManager;
+    this.expressionManager = parser.getExpressionManager();
+    this.parseListeners = parser.getParseListeners();
     setSchemaResource(BpmnParser.SCHEMA_RESOURCE);
   }
 
@@ -236,6 +238,10 @@ public class BpmnParse extends Parse {
     }
 
     parseScope(processElement, processDefinition);
+    
+    for (BpmnParseListener parseListener: parseListeners) {
+      parseListener.parseProcess(processElement, processDefinition);
+    }
      
     return processDefinition;
   }
