@@ -36,17 +36,17 @@
 		</dependency>
 	</dependencies>
 
-  <build>
-    <plugins>
-      <plugin>
-        <artifactId>maven-surefire-plugin</artifactId>
-        <configuration>
-          <excludes>
-          </excludes>
-        </configuration>
-      </plugin>
-    </plugins>
-  </build>
+	<build>
+		<plugins>
+			<plugin>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<configuration>
+					<excludes>
+					</excludes>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
 
 	<profiles>
 		<profile>
@@ -64,10 +64,10 @@
 					<scope>test</scope>
 				</dependency>
 				<dependency>
-  <groupId>postgresql</groupId>
-  <artifactId>postgresql</artifactId>
-  <version>8.4-701.jdbc4</version>
-</dependency>
+					<groupId>postgresql</groupId>
+					<artifactId>postgresql</artifactId>
+					<version>8.4-701.jdbc4</version>
+				</dependency>
 			</dependencies>
 			<build>
 				<plugins>
@@ -95,8 +95,9 @@
 											<property name="database" value="${database}" />
 										</ant>
 										<ant antfile="${basedir}/../../qa/db/build.xml" target="create.activiti.prop">
-											<property name="database" value="${database}"/>
-										</ant>									</tasks>
+											<property name="database" value="${database}" />
+										</ant>
+									</tasks>
 								</configuration>
 							</execution>
 							<execution>

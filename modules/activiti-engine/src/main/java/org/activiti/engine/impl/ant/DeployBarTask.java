@@ -21,6 +21,7 @@ import java.util.zip.ZipInputStream;
 
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ProcessEngine;
+import org.activiti.engine.ProcessEngineInfo;
 import org.activiti.engine.ProcessEngines;
 import org.activiti.engine.RepositoryService;
 import org.activiti.pvm.impl.util.LogUtil;
@@ -70,7 +71,21 @@ public class DeployBarTask extends Task {
       ProcessEngines.init();
       ProcessEngine processEngine = ProcessEngines.getProcessEngine(processEngineName);
       if (processEngine == null) {
-        throw new ActivitiException("Could not find a process engine with name '" + processEngineName + "'");
+        List<ProcessEngineInfo> processEngineInfos = ProcessEngines.getProcessEngineInfos();
+        if( processEngineInfos != null && processEngineInfos.size() > 0 )
+        {
+        	ProcessEngineInfo engineInfo = processEngineInfos.get(0);
+        
+            if(engineInfo.getException().indexOf("driver on UnpooledDataSource") != -1)
+            {
+                throw new ActivitiException("Exception while initializing process engine! Database or database driver might not have been configured correctly." +
+                		"Please consult the user guide for supported database environments or build.properties. Exception: " + engineInfo.getException());          	  
+            }
+            else
+            	throw new ActivitiException("Process engine '" + processEngineName + "' can not be initialized! " + engineInfo.getException());
+        }
+        else
+        	throw new ActivitiException("Could not find a process engine with name '" + processEngineName + "'");
       }
       RepositoryService repositoryService = processEngine.getRepositoryService();
 
