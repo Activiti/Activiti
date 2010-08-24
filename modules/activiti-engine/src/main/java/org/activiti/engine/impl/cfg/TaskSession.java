@@ -18,8 +18,8 @@ import java.util.List;
 import org.activiti.engine.Page;
 import org.activiti.engine.Task;
 import org.activiti.engine.impl.TaskQueryImpl;
-import org.activiti.engine.impl.persistence.task.TaskEntity;
-import org.activiti.engine.impl.persistence.task.TaskInvolvementEntity;
+import org.activiti.engine.impl.task.TaskEntity;
+import org.activiti.engine.impl.task.TaskInvolvementEntity;
 
 
 /**

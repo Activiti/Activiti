@@ -23,8 +23,8 @@ import org.activiti.engine.RuntimeService;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.TaskService;
 import org.activiti.engine.impl.cfg.ProcessEngineConfiguration;
+import org.activiti.engine.impl.db.DbSqlSessionFactory;
 import org.activiti.engine.impl.jobexecutor.JobExecutor;
-import org.activiti.engine.impl.persistence.db.DbSqlSessionFactory;
 
 /**
  * @author Tom Baeyens

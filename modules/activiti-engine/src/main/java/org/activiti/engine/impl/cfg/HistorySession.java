@@ -13,8 +13,8 @@
 
 package org.activiti.engine.impl.cfg;
 
-import org.activiti.engine.impl.persistence.history.HistoricActivityInstanceEntity;
-import org.activiti.engine.impl.persistence.history.HistoricProcessInstanceEntity;
+import org.activiti.engine.impl.history.HistoricActivityInstanceEntity;
+import org.activiti.engine.impl.history.HistoricProcessInstanceEntity;
 
 
 /**

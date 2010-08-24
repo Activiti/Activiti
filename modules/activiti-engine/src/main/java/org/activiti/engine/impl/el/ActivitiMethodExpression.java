@@ -17,7 +17,7 @@ import javax.el.MethodExpression;
 import javax.el.MethodNotFoundException;
 
 import org.activiti.engine.ActivitiException;
-import org.activiti.engine.impl.persistence.runtime.ExecutionEntity;
+import org.activiti.engine.impl.runtime.ExecutionEntity;
 import org.activiti.pvm.impl.runtime.ExecutionImpl;
 
 

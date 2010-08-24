@@ -19,9 +19,9 @@ import org.activiti.engine.Deployment;
 import org.activiti.engine.impl.cfg.RepositorySession;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
-import org.activiti.engine.impl.persistence.repository.DeploymentBuilderImpl;
-import org.activiti.engine.impl.persistence.repository.DeploymentEntity;
-import org.activiti.engine.impl.persistence.repository.ResourceEntity;
+import org.activiti.engine.impl.repository.DeploymentBuilderImpl;
+import org.activiti.engine.impl.repository.DeploymentEntity;
+import org.activiti.engine.impl.repository.ResourceEntity;
 import org.activiti.engine.impl.util.ClockUtil;
 
 /**

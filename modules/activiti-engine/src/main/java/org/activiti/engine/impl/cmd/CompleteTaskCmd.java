@@ -18,7 +18,7 @@ import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.cfg.TaskSession;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
-import org.activiti.engine.impl.persistence.task.TaskEntity;
+import org.activiti.engine.impl.task.TaskEntity;
 import org.activiti.pvm.runtime.PvmExecution;
 
 

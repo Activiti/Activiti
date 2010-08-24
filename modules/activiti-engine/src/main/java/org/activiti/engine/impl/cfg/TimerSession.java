@@ -12,8 +12,8 @@
  */
 package org.activiti.engine.impl.cfg;
 
-import org.activiti.engine.impl.persistence.runtime.ExecutionEntity;
-import org.activiti.engine.impl.persistence.runtime.TimerEntity;
+import org.activiti.engine.impl.runtime.ExecutionEntity;
+import org.activiti.engine.impl.runtime.TimerEntity;
 
 
 /**

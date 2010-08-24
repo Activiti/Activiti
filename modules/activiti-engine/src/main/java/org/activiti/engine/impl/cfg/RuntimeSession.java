@@ -19,11 +19,11 @@ import java.util.List;
 import org.activiti.engine.Job;
 import org.activiti.engine.Page;
 import org.activiti.engine.impl.JobQueryImpl;
-import org.activiti.engine.impl.persistence.runtime.ByteArrayEntity;
-import org.activiti.engine.impl.persistence.runtime.ExecutionEntity;
-import org.activiti.engine.impl.persistence.runtime.JobEntity;
-import org.activiti.engine.impl.persistence.runtime.TimerEntity;
-import org.activiti.engine.impl.persistence.runtime.VariableInstanceEntity;
+import org.activiti.engine.impl.runtime.ByteArrayEntity;
+import org.activiti.engine.impl.runtime.ExecutionEntity;
+import org.activiti.engine.impl.runtime.JobEntity;
+import org.activiti.engine.impl.runtime.TimerEntity;
+import org.activiti.engine.impl.runtime.VariableInstanceEntity;
 
 
 /**

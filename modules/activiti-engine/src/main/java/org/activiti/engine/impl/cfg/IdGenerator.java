@@ -12,7 +12,7 @@
  */
 package org.activiti.engine.impl.cfg;
 
-import org.activiti.engine.impl.persistence.db.IdBlock;
+import org.activiti.engine.impl.db.IdBlock;
 
 
 /**

@@ -17,7 +17,7 @@ import java.util.List;
 
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.jobexecutor.JobHandler;
-import org.activiti.engine.impl.persistence.runtime.ExecutionEntity;
+import org.activiti.engine.impl.runtime.ExecutionEntity;
 import org.junit.Assert;
 
 public class TweetHandler implements JobHandler {

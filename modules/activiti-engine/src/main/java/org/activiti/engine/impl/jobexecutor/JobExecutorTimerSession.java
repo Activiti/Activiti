@@ -18,12 +18,12 @@ import java.util.List;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.cfg.TimerSession;
 import org.activiti.engine.impl.cfg.TransactionState;
+import org.activiti.engine.impl.db.DbSqlSession;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.interceptor.Session;
-import org.activiti.engine.impl.persistence.db.DbSqlSession;
-import org.activiti.engine.impl.persistence.runtime.ExecutionEntity;
-import org.activiti.engine.impl.persistence.runtime.JobEntity;
-import org.activiti.engine.impl.persistence.runtime.TimerEntity;
+import org.activiti.engine.impl.runtime.ExecutionEntity;
+import org.activiti.engine.impl.runtime.JobEntity;
+import org.activiti.engine.impl.runtime.TimerEntity;
 import org.activiti.engine.impl.util.ClockUtil;
 
 

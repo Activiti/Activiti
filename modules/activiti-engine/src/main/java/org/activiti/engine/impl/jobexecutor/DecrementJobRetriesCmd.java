@@ -17,7 +17,7 @@ import org.activiti.engine.impl.cfg.RuntimeSession;
 import org.activiti.engine.impl.cfg.TransactionState;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
-import org.activiti.engine.impl.persistence.runtime.JobEntity;
+import org.activiti.engine.impl.runtime.JobEntity;
 
 /**
  * @author Tom Baeyens

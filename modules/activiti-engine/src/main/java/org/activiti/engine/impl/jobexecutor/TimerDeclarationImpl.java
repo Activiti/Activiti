@@ -14,7 +14,7 @@ package org.activiti.engine.impl.jobexecutor;
 
 import java.io.Serializable;
 
-import org.activiti.engine.impl.persistence.runtime.TimerEntity;
+import org.activiti.engine.impl.runtime.TimerEntity;
 
 
 /**

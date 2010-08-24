@@ -18,12 +18,12 @@ import org.activiti.engine.impl.cfg.RepositorySession;
 import org.activiti.engine.impl.form.FormReference;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
-import org.activiti.engine.impl.persistence.repository.DeploymentEntity;
-import org.activiti.engine.impl.persistence.repository.ProcessDefinitionEntity;
-import org.activiti.engine.impl.persistence.repository.ResourceEntity;
-import org.activiti.engine.impl.persistence.runtime.ExecutionEntity;
-import org.activiti.engine.impl.persistence.task.TaskEntity;
+import org.activiti.engine.impl.repository.DeploymentEntity;
+import org.activiti.engine.impl.repository.ProcessDefinitionEntity;
+import org.activiti.engine.impl.repository.ResourceEntity;
+import org.activiti.engine.impl.runtime.ExecutionEntity;
 import org.activiti.engine.impl.scripting.ScriptingEngines;
+import org.activiti.engine.impl.task.TaskEntity;
 
 
 /**

@@ -18,7 +18,7 @@ import java.util.List;
 import org.activiti.engine.Page;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
-import org.activiti.engine.impl.persistence.runtime.TimerEntity;
+import org.activiti.engine.impl.runtime.TimerEntity;
 
 
 /**

@@ -14,7 +14,7 @@ package org.activiti.engine.impl.variable;
 
 import java.util.Date;
 
-import org.activiti.engine.impl.persistence.runtime.VariableInstanceEntity;
+import org.activiti.engine.impl.runtime.VariableInstanceEntity;
 
 
 /**

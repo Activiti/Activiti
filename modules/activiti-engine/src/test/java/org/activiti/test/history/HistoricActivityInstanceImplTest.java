@@ -18,7 +18,7 @@ import static org.junit.Assert.*;
 
 import java.util.Date;
 
-import org.activiti.engine.impl.persistence.history.HistoricActivityInstanceEntity;
+import org.activiti.engine.impl.history.HistoricActivityInstanceEntity;
 import org.junit.Test;
 
 /**

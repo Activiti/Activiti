@@ -16,7 +16,7 @@ import java.io.Reader;
 
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.Task;
-import org.activiti.engine.impl.persistence.task.TaskEntity;
+import org.activiti.engine.impl.task.TaskEntity;
 import org.activiti.engine.impl.util.json.JSONObject;
 
 

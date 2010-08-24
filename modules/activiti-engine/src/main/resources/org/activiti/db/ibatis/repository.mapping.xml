@@ -6,7 +6,7 @@
 
   <!-- DEPLOYMENT INSERT -->
   
-  <insert id="insertDeployment" parameterType="org.activiti.engine.impl.persistence.repository.DeploymentEntity">
+  <insert id="insertDeployment" parameterType="org.activiti.engine.impl.repository.DeploymentEntity">
     insert into ACT_DEPLOYMENT(ID_, NAME_, DEPLOY_TIME_)
     values(#{id, jdbcType=VARCHAR}, #{name, jdbcType=VARCHAR}, #{deploymentTime, jdbcType=TIMESTAMP})
   </insert>
@@ -21,7 +21,7 @@
 
   <!-- DEPLOYMENT RESULTMAP -->
   
-  <resultMap id="deploymentResultMap" type="org.activiti.engine.impl.persistence.repository.DeploymentEntity">
+  <resultMap id="deploymentResultMap" type="org.activiti.engine.impl.repository.DeploymentEntity">
     <id property="id" column="ID_" jdbcType="VARCHAR" />
     <result property="name" column="NAME_" jdbcType="VARCHAR" />
     <result property="deploymentTime" column="DEPLOY_TIME_" jdbcType="TIMESTAMP"/>
@@ -49,7 +49,7 @@
   
   <!-- RESOURCE INSERT -->
 
-  <insert id="insertResource" parameterType="org.activiti.engine.impl.persistence.repository.ResourceEntity">
+  <insert id="insertResource" parameterType="org.activiti.engine.impl.repository.ResourceEntity">
     insert into ACT_BYTEARRAY(ID_, NAME_, BYTES_, DEPLOYMENT_ID_)
     values (#{id, jdbcType=VARCHAR}, #{name, jdbcType=VARCHAR}, #{bytes, jdbcType=BLOB}, #{deploymentId, jdbcType=VARCHAR})  
   </insert>
@@ -64,7 +64,7 @@
   
   <!-- RESOURCE RESULTMAP -->
 
-  <resultMap id="resourceResultMap" type="org.activiti.engine.impl.persistence.repository.ResourceEntity">
+  <resultMap id="resourceResultMap" type="org.activiti.engine.impl.repository.ResourceEntity">
     <id property="id" column="ID_" jdbcType="VARCHAR" />
     <result property="name" column="NAME_" jdbcType="VARCHAR"/>
     <result property="bytes" column="BYTES_" jdbcType="BLOB"/>
@@ -89,7 +89,7 @@
 
   <!-- PROCESSDEFINITION INSERT -->
 
-  <insert id="insertProcessDefinition" parameterType="org.activiti.engine.impl.persistence.repository.ProcessDefinitionEntity">
+  <insert id="insertProcessDefinition" parameterType="org.activiti.engine.impl.repository.ProcessDefinitionEntity">
     insert into ACT_PROCESSDEFINITION(ID_, NAME_, KEY_, VERSION_, DEPLOYMENT_ID_, RESOURCE_NAME_)
     values (#{id, jdbcType=VARCHAR},
             #{name, jdbcType=VARCHAR},
@@ -109,7 +109,7 @@
   
   <!-- PROCESSDEFINITION RESULTMAP -->
 
-  <resultMap id="processDefinitionResultMap" type="org.activiti.engine.impl.persistence.repository.ProcessDefinitionEntity">
+  <resultMap id="processDefinitionResultMap" type="org.activiti.engine.impl.repository.ProcessDefinitionEntity">
     <id property="id" column="ID_" jdbcType="VARCHAR" />
     <result property="name" column="NAME_" />
     <result property="key" column="KEY_" jdbcType="VARCHAR" />

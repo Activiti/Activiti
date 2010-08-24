@@ -20,7 +20,7 @@ import javax.el.ValueExpression;
 
 import org.activiti.engine.impl.cfg.ProcessEngineConfiguration;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationAware;
-import org.activiti.engine.impl.persistence.runtime.ExecutionEntity;
+import org.activiti.engine.impl.runtime.ExecutionEntity;
 import org.activiti.pvm.impl.runtime.ExecutionImpl;
 
 /**

@@ -14,7 +14,7 @@ package org.activiti.engine.impl.form;
 
 import javax.el.VariableMapper;
 
-import org.activiti.engine.impl.persistence.task.TaskEntity;
+import org.activiti.engine.impl.task.TaskEntity;
 
 import de.odysseus.el.util.SimpleContext;
 

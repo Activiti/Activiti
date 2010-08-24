@@ -19,8 +19,8 @@ import org.activiti.engine.ProcessInstance;
 import org.activiti.engine.impl.cfg.RepositorySession;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
-import org.activiti.engine.impl.persistence.repository.ProcessDefinitionEntity;
-import org.activiti.engine.impl.persistence.runtime.ExecutionEntity;
+import org.activiti.engine.impl.repository.ProcessDefinitionEntity;
+import org.activiti.engine.impl.runtime.ExecutionEntity;
 
 
 /**

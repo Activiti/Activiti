@@ -20,7 +20,7 @@ import java.io.Serializable;
 
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.interceptor.CommandContext;
-import org.activiti.engine.impl.persistence.runtime.VariableInstanceEntity;
+import org.activiti.engine.impl.runtime.VariableInstanceEntity;
 
 /**
  * @author Tom Baeyens

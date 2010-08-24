@@ -16,7 +16,7 @@ import java.util.List;
 
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
-import org.activiti.engine.impl.persistence.repository.ProcessDefinitionEntity;
+import org.activiti.engine.impl.repository.ProcessDefinitionEntity;
 
 
 /**

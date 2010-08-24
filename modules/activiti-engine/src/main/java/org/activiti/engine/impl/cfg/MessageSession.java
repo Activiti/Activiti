@@ -12,7 +12,7 @@
  */
 package org.activiti.engine.impl.cfg;
 
-import org.activiti.engine.impl.persistence.runtime.MessageEntity;
+import org.activiti.engine.impl.runtime.MessageEntity;
 
 
 /**

@@ -29,7 +29,7 @@ import org.activiti.engine.impl.cfg.RuntimeSession;
 import org.activiti.engine.impl.cfg.TaskSession;
 import org.activiti.engine.impl.cfg.TimerSession;
 import org.activiti.engine.impl.cfg.TransactionContext;
-import org.activiti.engine.impl.persistence.db.DbSqlSession;
+import org.activiti.engine.impl.db.DbSqlSession;
 
 /**
  * @author Tom Baeyens

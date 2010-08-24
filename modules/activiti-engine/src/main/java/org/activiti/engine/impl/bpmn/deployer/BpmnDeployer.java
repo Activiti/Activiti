@@ -23,10 +23,10 @@ import org.activiti.engine.impl.bpmn.parser.BpmnParser;
 import org.activiti.engine.impl.cfg.ProcessEngineConfiguration;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationAware;
 import org.activiti.engine.impl.el.ExpressionManager;
-import org.activiti.engine.impl.persistence.repository.Deployer;
-import org.activiti.engine.impl.persistence.repository.DeploymentEntity;
-import org.activiti.engine.impl.persistence.repository.ProcessDefinitionEntity;
-import org.activiti.engine.impl.persistence.repository.ResourceEntity;
+import org.activiti.engine.impl.repository.Deployer;
+import org.activiti.engine.impl.repository.DeploymentEntity;
+import org.activiti.engine.impl.repository.ProcessDefinitionEntity;
+import org.activiti.engine.impl.repository.ResourceEntity;
 
 /**
  * @author Tom Baeyens

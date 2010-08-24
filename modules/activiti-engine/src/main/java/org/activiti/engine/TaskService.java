@@ -16,7 +16,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
-import org.activiti.engine.impl.persistence.task.TaskInvolvementType;
+import org.activiti.engine.impl.task.TaskInvolvementType;
 
 /** provides access to {@link Task} related operations.
  * 

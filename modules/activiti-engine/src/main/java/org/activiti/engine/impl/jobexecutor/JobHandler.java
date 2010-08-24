@@ -13,7 +13,7 @@
 package org.activiti.engine.impl.jobexecutor;
 
 import org.activiti.engine.impl.interceptor.CommandContext;
-import org.activiti.engine.impl.persistence.runtime.ExecutionEntity;
+import org.activiti.engine.impl.runtime.ExecutionEntity;
 
 
 /**

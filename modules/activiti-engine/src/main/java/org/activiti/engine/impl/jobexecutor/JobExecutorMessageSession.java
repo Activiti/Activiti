@@ -16,7 +16,7 @@ import org.activiti.engine.impl.cfg.MessageSession;
 import org.activiti.engine.impl.cfg.TransactionState;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.interceptor.Session;
-import org.activiti.engine.impl.persistence.runtime.MessageEntity;
+import org.activiti.engine.impl.runtime.MessageEntity;
 
 
 /**

@@ -17,9 +17,9 @@ import javax.el.ExpressionFactory;
 import javax.el.ValueExpression;
 
 import org.activiti.engine.ActivitiException;
-import org.activiti.engine.impl.persistence.repository.DeploymentEntity;
-import org.activiti.engine.impl.persistence.repository.ResourceEntity;
-import org.activiti.engine.impl.persistence.task.TaskEntity;
+import org.activiti.engine.impl.repository.DeploymentEntity;
+import org.activiti.engine.impl.repository.ResourceEntity;
+import org.activiti.engine.impl.task.TaskEntity;
 
 import de.odysseus.el.ExpressionFactoryImpl;
 

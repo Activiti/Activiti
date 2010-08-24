@@ -16,7 +16,7 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
 
-import org.activiti.engine.impl.persistence.task.TaskEntity;
+import org.activiti.engine.impl.task.TaskEntity;
 
 
 /**

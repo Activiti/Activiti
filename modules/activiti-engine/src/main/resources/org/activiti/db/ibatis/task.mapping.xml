@@ -6,7 +6,7 @@
 
   <!-- TASK INSERT -->
   
-  <insert id="insertTask" parameterType="org.activiti.engine.impl.persistence.task.TaskEntity">
+  <insert id="insertTask" parameterType="org.activiti.engine.impl.task.TaskEntity">
     insert into ACT_TASK (ID_, REV_, NAME_, DESCRIPTION_, PRIORITY_, CREATE_TIME_, SKIPPABLE_,
                       START_DEADLINE_, COMPLETION_DEADLINE_, ASSIGNEE_,
                       EXECUTION_ID_, PROC_INST_ID_, PROC_DEF_ID_)
@@ -28,7 +28,7 @@
   
   <!-- TASK UPDATE -->
   
-  <update id="updateTask" parameterType="org.activiti.engine.impl.persistence.task.TaskEntity">
+  <update id="updateTask" parameterType="org.activiti.engine.impl.task.TaskEntity">
     update ACT_TASK
     <set>
       REV_ = #{revisionNext, jdbcType=INTEGER},
@@ -52,7 +52,7 @@
   
   <!-- TASK RESULTMAP -->
   
-  <resultMap id="taskResultMap" type="org.activiti.engine.impl.persistence.task.TaskEntity">
+  <resultMap id="taskResultMap" type="org.activiti.engine.impl.task.TaskEntity">
     <id property="id" column="ID_" jdbcType="VARCHAR"/>
     <result property="revision" column="REV_" jdbcType="INTEGER"/>
     <result property="name" column="NAME_" jdbcType="VARCHAR"/>
@@ -161,7 +161,7 @@
 
   <!-- INSERT TASK INVOLVEMENT -->
   
-  <insert id="insertTaskInvolvement" parameterType="org.activiti.engine.impl.persistence.task.TaskInvolvementEntity">
+  <insert id="insertTaskInvolvement" parameterType="org.activiti.engine.impl.task.TaskInvolvementEntity">
     insert into ACT_TASKINVOLVEMENT (ID_, REV_, TYPE_, USER_ID_, GROUP_ID_, TASK_ID_)
     values (#{id, jdbcType=VARCHAR},
             1,
@@ -181,7 +181,7 @@
 
   <!-- TASK INVOLVEMENT RESULTMAP -->
 
-  <resultMap id="taskInvolvementResultMap" type="org.activiti.engine.impl.persistence.task.TaskInvolvementEntity">
+  <resultMap id="taskInvolvementResultMap" type="org.activiti.engine.impl.task.TaskInvolvementEntity">
     <id property="id" column="ID_" jdbcType="VARCHAR" />
     <result property="type" column="TYPE_" jdbcType="VARCHAR" />
     <result property="userId" column="USER_ID_" jdbcType="VARCHAR" />

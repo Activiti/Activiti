@@ -13,8 +13,8 @@
 package org.activiti.engine.impl.variable;
 
 import org.activiti.engine.impl.interceptor.CommandContext;
-import org.activiti.engine.impl.persistence.runtime.ByteArrayEntity;
-import org.activiti.engine.impl.persistence.runtime.VariableInstanceEntity;
+import org.activiti.engine.impl.runtime.ByteArrayEntity;
+import org.activiti.engine.impl.runtime.VariableInstanceEntity;
 
 /**
  * @author Tom Baeyens

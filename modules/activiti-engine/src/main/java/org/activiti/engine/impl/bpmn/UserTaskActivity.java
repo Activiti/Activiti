@@ -13,8 +13,8 @@
 package org.activiti.engine.impl.bpmn;
 
 import org.activiti.engine.impl.el.ExpressionManager;
-import org.activiti.engine.impl.persistence.task.TaskDefinition;
-import org.activiti.engine.impl.persistence.task.TaskEntity;
+import org.activiti.engine.impl.task.TaskDefinition;
+import org.activiti.engine.impl.task.TaskEntity;
 import org.activiti.pvm.activity.ActivityExecution;
 
 /**

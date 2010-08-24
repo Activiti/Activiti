@@ -15,8 +15,8 @@ package org.activiti.engine.impl.cfg;
 
 import java.util.List;
 
-import org.activiti.engine.impl.persistence.identity.GroupEntity;
-import org.activiti.engine.impl.persistence.identity.UserEntity;
+import org.activiti.engine.impl.identity.GroupEntity;
+import org.activiti.engine.impl.identity.UserEntity;
 
 
 /**

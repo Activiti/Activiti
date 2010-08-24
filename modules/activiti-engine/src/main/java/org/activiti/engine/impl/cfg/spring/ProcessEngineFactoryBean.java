@@ -34,7 +34,6 @@ import org.activiti.engine.impl.interceptor.CommandInterceptor;
 import org.activiti.engine.impl.interceptor.DefaultCommandExecutor;
 import org.activiti.engine.impl.jobexecutor.JobExecutor;
 import org.activiti.engine.impl.variable.VariableTypes;
-import org.activiti.pvm.event.ProcessEventBus;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.FactoryBean;
 import org.springframework.core.io.ByteArrayResource;
@@ -146,10 +145,6 @@ public class ProcessEngineFactoryBean implements FactoryBean<ProcessEngine>, Dis
     this.processResources = processResources;
   }
 
-  public void setProcessEventBus(ProcessEventBus processEventBus) {
-    processEngineConfiguration.setProcessEventBus(processEventBus);
-  }
-  
   public void setCommandExecutor(CommandExecutor commandExecutor) {
     processEngineConfiguration.setCommandExecutor(commandExecutor);
   }

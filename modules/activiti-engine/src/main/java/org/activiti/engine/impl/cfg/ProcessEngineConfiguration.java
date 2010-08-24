@@ -26,21 +26,29 @@ import org.activiti.engine.IdentityService;
 import org.activiti.engine.ManagementService;
 import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.ProcessEngines;
-import org.activiti.engine.RuntimeService;
 import org.activiti.engine.RepositoryService;
+import org.activiti.engine.RuntimeService;
 import org.activiti.engine.TaskService;
 import org.activiti.engine.impl.HistoricDataServiceImpl;
 import org.activiti.engine.impl.IdentityServiceImpl;
 import org.activiti.engine.impl.ManagementServiceImpl;
 import org.activiti.engine.impl.ProcessEngineImpl;
-import org.activiti.engine.impl.RuntimeServiceImpl;
 import org.activiti.engine.impl.RepositoryServiceImpl;
+import org.activiti.engine.impl.RuntimeServiceImpl;
 import org.activiti.engine.impl.TaskServiceImpl;
 import org.activiti.engine.impl.bpmn.deployer.BpmnDeployer;
 import org.activiti.engine.impl.calendar.BusinessCalendarManager;
 import org.activiti.engine.impl.calendar.DurationBusinessCalendar;
 import org.activiti.engine.impl.calendar.MapBusinessCalendarManager;
 import org.activiti.engine.impl.cfg.standalone.StandaloneIbatisTransactionContextFactory;
+import org.activiti.engine.impl.db.DbIdGenerator;
+import org.activiti.engine.impl.db.DbIdentitySessionFactory;
+import org.activiti.engine.impl.db.DbManagementSessionFactory;
+import org.activiti.engine.impl.db.DbRepositorySessionFactory;
+import org.activiti.engine.impl.db.DbRuntimeSessionFactory;
+import org.activiti.engine.impl.db.DbSqlSession;
+import org.activiti.engine.impl.db.DbSqlSessionFactory;
+import org.activiti.engine.impl.db.DbTaskSessionFactory;
 import org.activiti.engine.impl.el.ExpressionManager;
 import org.activiti.engine.impl.interceptor.CommandContextFactory;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
@@ -51,20 +59,10 @@ import org.activiti.engine.impl.jobexecutor.JobExecutorMessageSessionFactory;
 import org.activiti.engine.impl.jobexecutor.JobExecutorTimerSessionFactory;
 import org.activiti.engine.impl.jobexecutor.JobHandlers;
 import org.activiti.engine.impl.jobexecutor.TimerExecuteNestedActivityJobHandler;
-import org.activiti.engine.impl.persistence.db.DbIdGenerator;
-import org.activiti.engine.impl.persistence.db.DbIdentitySessionFactory;
-import org.activiti.engine.impl.persistence.db.DbManagementSessionFactory;
-import org.activiti.engine.impl.persistence.db.DbRepositorySessionFactory;
-import org.activiti.engine.impl.persistence.db.DbRuntimeSessionFactory;
-import org.activiti.engine.impl.persistence.db.DbSqlSession;
-import org.activiti.engine.impl.persistence.db.DbSqlSessionFactory;
-import org.activiti.engine.impl.persistence.db.DbTaskSessionFactory;
-import org.activiti.engine.impl.persistence.repository.Deployer;
+import org.activiti.engine.impl.repository.Deployer;
 import org.activiti.engine.impl.scripting.ScriptingEngines;
 import org.activiti.engine.impl.variable.DefaultVariableTypes;
 import org.activiti.engine.impl.variable.VariableTypes;
-import org.activiti.impl.event.DefaultProcessEventBus;
-import org.activiti.pvm.event.ProcessEventBus;
 
 /**
  * @author Tom Baeyens
@@ -113,7 +111,6 @@ public class ProcessEngineConfiguration {
   protected ExpressionManager expressionManager;
   protected ELResolver elResolver;
   protected BusinessCalendarManager businessCalendarManager;
-  protected ProcessEventBus processEventBus;
   
   protected boolean isConfigurationCompleted = false;
 
@@ -167,7 +164,6 @@ public class ProcessEngineConfiguration {
     MapBusinessCalendarManager mapBusinessCalendarManager = new MapBusinessCalendarManager();
     mapBusinessCalendarManager.addBusinessCalendar(DurationBusinessCalendar.NAME, new DurationBusinessCalendar());
     businessCalendarManager = mapBusinessCalendarManager;
-    processEventBus = new DefaultProcessEventBus();
   }
   
   public ProcessEngine buildProcessEngine() {
@@ -202,7 +198,6 @@ public class ProcessEngineConfiguration {
       notifyConfigurationComplete(expressionManager);
       notifyConfigurationComplete(elResolver);
       notifyConfigurationComplete(businessCalendarManager);
-      notifyConfigurationComplete(processEventBus);
       
       isConfigurationCompleted = true;
     }
@@ -237,14 +232,6 @@ public class ProcessEngineConfiguration {
 
   public void setProcessEngineName(String processEngineName) {
     this.processEngineName = processEngineName;
-  }
-
-  public ProcessEventBus getProcessEventBus() {
-    return processEventBus;
-  }
-
-  public void setProcessEventBus(ProcessEventBus processEventBus) {
-    this.processEventBus = processEventBus;
   }
 
   public JobExecutor getJobExecutor() {

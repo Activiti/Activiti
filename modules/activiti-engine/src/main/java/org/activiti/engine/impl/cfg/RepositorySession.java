@@ -19,9 +19,9 @@ import org.activiti.engine.DeploymentBuilder;
 import org.activiti.engine.Page;
 import org.activiti.engine.ProcessDefinition;
 import org.activiti.engine.impl.ProcessDefinitionQueryImpl;
-import org.activiti.engine.impl.persistence.repository.DeploymentEntity;
-import org.activiti.engine.impl.persistence.repository.ProcessDefinitionEntity;
-import org.activiti.engine.impl.persistence.repository.ResourceEntity;
+import org.activiti.engine.impl.repository.DeploymentEntity;
+import org.activiti.engine.impl.repository.ProcessDefinitionEntity;
+import org.activiti.engine.impl.repository.ResourceEntity;
 import org.activiti.pvm.impl.process.ProcessDefinitionImpl;
 
 
