@@ -431,7 +431,7 @@ public class ExecutionImpl implements
       }
     }
 
-    ExecutionImpl concurrentRoot = (isConcurrent() ? getParent() : this);
+    ExecutionImpl concurrentRoot = ((isConcurrent && !isScope) ? getParent() : this);
     List<ExecutionImpl> concurrentActiveExecutions = new ArrayList<ExecutionImpl>();
     for (ExecutionImpl execution: concurrentRoot.getExecutions()) {
       if (execution.isActive()) {

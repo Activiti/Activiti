@@ -553,12 +553,8 @@ public class PvmScopesAndConcurrencyTest extends PvmTestCase {
     eventCollector.events.clear();
     
     execution = processInstance.findExecution("c2");
-    try {
-      execution.signal(null, null);
-      fail("expected exception");
-    } catch (PvmException e) {
-      // OK
-      assertTextPresent("joining scope executions is not allowed", e.getMessage());
-    }
+    
+    // this process gets blocked in the join
+    execution.signal(null, null);
   }
 }

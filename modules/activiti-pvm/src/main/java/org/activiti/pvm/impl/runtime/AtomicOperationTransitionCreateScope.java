@@ -28,23 +28,14 @@ public class AtomicOperationTransitionCreateScope implements AtomicOperation {
     ExecutionImpl propagatingExecution = null;
     ActivityImpl activity = execution.getActivity();
     if (activity.isScope()) {
-      if (execution.isScope()) {
-        propagatingExecution = (ExecutionImpl) execution.createExecution();
-        propagatingExecution.setActivity(activity);
-        propagatingExecution.setTransition(execution.getTransition());
-        execution.setTransition(null);
-        execution.setActivity(null);
-        execution.setActive(false);
-        log.fine("create scope: parent "+execution+" continues as execution "+propagatingExecution);
-        propagatingExecution.initialize();
-
-      } else {
-        log.fine("create scope: concurrent, non scope execution "+execution+" continues as scoped execution");
-        propagatingExecution = execution;
-        propagatingExecution.setScope(true);
-        propagatingExecution.setActivity(activity);
-        propagatingExecution.initialize();
-      }
+      propagatingExecution = (ExecutionImpl) execution.createExecution();
+      propagatingExecution.setActivity(activity);
+      propagatingExecution.setTransition(execution.getTransition());
+      execution.setTransition(null);
+      execution.setActivity(null);
+      execution.setActive(false);
+      log.fine("create scope: parent "+execution+" continues as execution "+propagatingExecution);
+      propagatingExecution.initialize();
 
     } else {
       propagatingExecution = execution;
