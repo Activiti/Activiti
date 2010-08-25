@@ -170,7 +170,6 @@
   <modules>
     <module>modules/activiti-pvm</module>
     <module>modules/activiti-engine</module>
-    <module>modules/activiti-cycle</module>
   </modules>
 
 	<repositories>
@@ -231,17 +230,27 @@
 	<profiles>
 		<profile>
 			<id>nofail</id>
-  <properties>
-    <maven.test.failure.ignore>true</maven.test.failure.ignore>
-  </properties>
-        </profile>
+			  <properties>
+			    <maven.test.failure.ignore>true</maven.test.failure.ignore>
+			  </properties>
+    </profile>
 		<profile>
 			<id>check</id>
 			<modules>
 		    <module>modules/activiti-engine-examples</module>
+        <module>modules/activiti-engine-test-cfg</module>
 		    <module>modules/activiti-rest</module>
 			</modules>
 		</profile>
+    <profile>
+      <id>checkcycle</id>
+      <modules>
+        <module>modules/activiti-engine-examples</module>
+        <module>modules/activiti-engine-test-cfg</module>
+        <module>modules/activiti-rest</module>
+        <module>modules/activiti-cycle</module>
+      </modules>
+    </profile>
 		<profile>
 			<id>distro</id>
 			<modules>
