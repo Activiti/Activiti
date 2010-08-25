@@ -20,7 +20,7 @@ import java.util.Map;
 import javax.sql.DataSource;
 
 import org.activiti.engine.DbSchemaStrategy;
-import org.activiti.engine.HistoricDataService;
+import org.activiti.engine.HistoryService;
 import org.activiti.engine.IdentityService;
 import org.activiti.engine.ManagementService;
 import org.activiti.engine.ProcessEngine;
@@ -82,7 +82,7 @@ public class ProcessEngineConfiguration {
 
   protected RepositoryService repositoryService;
   protected RuntimeService runtimeService;
-  protected HistoricDataService historicDataService;
+  protected HistoryService historicDataService;
   protected IdentityService identityService;
   protected TaskService taskService;
   protected ManagementService managementService;
@@ -246,11 +246,11 @@ public class ProcessEngineConfiguration {
     return runtimeService;
   }
 
-  public void setHistoricDataService(HistoricDataService historicDataService) {
+  public void setHistoricDataService(HistoryService historicDataService) {
     this.historicDataService = historicDataService;
   }
 
-  public HistoricDataService getHistoricDataService() {
+  public HistoryService getHistoricDataService() {
     return historicDataService;
   }
 

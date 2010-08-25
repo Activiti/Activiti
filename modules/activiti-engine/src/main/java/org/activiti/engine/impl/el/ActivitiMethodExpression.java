@@ -18,7 +18,7 @@ import javax.el.MethodNotFoundException;
 
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.runtime.ExecutionEntity;
-import org.activiti.pvm.impl.runtime.ExecutionImpl;
+import org.activiti.pvm.delegate.DelegateExecution;
 
 
 /**
@@ -27,20 +27,20 @@ import org.activiti.pvm.impl.runtime.ExecutionImpl;
  */
 public class ActivitiMethodExpression {
 
-  MethodExpression methodExpression;
-  ExpressionManager expressionManager;
+  protected MethodExpression methodExpression;
+  protected ExpressionManager expressionManager;
 
   public ActivitiMethodExpression(MethodExpression methodExpression, ExpressionManager expressionManager) {
     this.methodExpression = methodExpression;
     this.expressionManager = expressionManager;
   }
 
-  public Object invoke(ExecutionImpl execution) {
+  public Object invoke(DelegateExecution execution) {
     ELContext elContext = expressionManager.getElContext((ExecutionEntity) execution);
     try {
       return methodExpression.invoke(elContext, null);
     } catch (MethodNotFoundException e) {
-      throw new ActivitiException("Unknown method used in expression", e);
+      throw new ActivitiException("Unknown method used in expression '"+methodExpression+"'", e);
     }
   }
 }

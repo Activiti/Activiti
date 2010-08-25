@@ -15,7 +15,7 @@ package org.activiti.engine.impl;
 import java.util.logging.Logger;
 
 import org.activiti.engine.DbSchemaStrategy;
-import org.activiti.engine.HistoricDataService;
+import org.activiti.engine.HistoryService;
 import org.activiti.engine.IdentityService;
 import org.activiti.engine.ManagementService;
 import org.activiti.engine.ProcessEngine;
@@ -24,6 +24,9 @@ import org.activiti.engine.RepositoryService;
 import org.activiti.engine.TaskService;
 import org.activiti.engine.impl.cfg.ProcessEngineConfiguration;
 import org.activiti.engine.impl.db.DbSqlSessionFactory;
+import org.activiti.engine.impl.interceptor.Command;
+import org.activiti.engine.impl.interceptor.CommandContext;
+import org.activiti.engine.impl.interceptor.CommandExecutor;
 import org.activiti.engine.impl.jobexecutor.JobExecutor;
 
 /**
@@ -37,12 +40,13 @@ public class ProcessEngineImpl implements ProcessEngine {
   protected String name;
   protected RepositoryService repositoryService;
   protected RuntimeService runtimeService;
-  protected HistoricDataService historicDataService;
+  protected HistoryService historicDataService;
   protected IdentityService identityService;
   protected TaskService taskService;
   protected ManagementService managementService;
   protected DbSchemaStrategy dbSchemaStrategy;
   protected JobExecutor jobExecutor;
+  protected CommandExecutor commandExecutor;
 
   public ProcessEngineImpl(ProcessEngineConfiguration processEngineConfiguration) {
     this.processEngineConfiguration = processEngineConfiguration;
@@ -55,7 +59,27 @@ public class ProcessEngineImpl implements ProcessEngine {
     this.managementService = processEngineConfiguration.getManagementService();
     this.dbSchemaStrategy = processEngineConfiguration.getDbSchemaStrategy();
     this.jobExecutor = processEngineConfiguration.getJobExecutor();
+    this.commandExecutor = processEngineConfiguration.getCommandExecutor();
     
+    commandExecutor.execute(new Command<Object>() {
+      public Object execute(CommandContext commandContext) {
+        performSchemaOperationsCreate();
+        return null;
+      }
+    });
+
+    if (name == null) {
+      log.info("default activiti ProcessEngine created");
+    } else {
+      log.info("ProcessEngine " + name + " created");
+    }
+
+    if ((jobExecutor != null) && (jobExecutor.isAutoActivate())) {
+      jobExecutor.start();
+    }
+  }
+
+  protected void performSchemaOperationsCreate() {
     DbSqlSessionFactory dbSqlSessionFactory = processEngineConfiguration.getDbSqlSessionFactory();
     if (DbSchemaStrategy.DROP_CREATE == dbSchemaStrategy) {
       try {
@@ -69,16 +93,6 @@ public class ProcessEngineImpl implements ProcessEngine {
     } else if (DbSchemaStrategy.CHECK_VERSION == dbSchemaStrategy) {
       dbSqlSessionFactory.dbSchemaCheckVersion();
     }
-
-    if (name == null) {
-      log.info("default activiti ProcessEngine created");
-    } else {
-      log.info("ProcessEngine " + name + " created");
-    }
-
-    if ((jobExecutor != null) && (jobExecutor.isAutoActivate())) {
-      jobExecutor.start();
-    }
   }
 
   public void close() {
@@ -86,6 +100,15 @@ public class ProcessEngineImpl implements ProcessEngine {
       jobExecutor.shutdown();
     }
 
+    commandExecutor.execute(new Command<Object>() {
+      public Object execute(CommandContext commandContext) {
+        performSchemaOperationsClose();
+        return null;
+      }
+    });
+  }
+
+  private void performSchemaOperationsClose() {
     if (DbSchemaStrategy.CREATE_DROP == dbSchemaStrategy) {
       DbSqlSessionFactory dbSqlSessionFactory = processEngineConfiguration.getDbSqlSessionFactory();
       dbSqlSessionFactory.dbSchemaDrop();
@@ -112,7 +135,7 @@ public class ProcessEngineImpl implements ProcessEngine {
     return taskService;
   }
 
-  public HistoricDataService getHistoricDataService() {
+  public HistoryService getHistoryService() {
     return historicDataService;
   }
 

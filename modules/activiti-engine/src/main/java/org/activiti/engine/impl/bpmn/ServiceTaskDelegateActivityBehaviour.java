@@ -25,11 +25,11 @@ import org.activiti.pvm.activity.SignallableActivityBehavior;
  * @author Josh Long
  * @author Tom Baeyens
  */
-public class ServiceInvocationActivityBehaviour implements SignallableActivityBehavior {
+public class ServiceTaskDelegateActivityBehaviour implements SignallableActivityBehavior {
 
   private final ActivitiValueExpression expression;
 
-  public ServiceInvocationActivityBehaviour(ActivitiValueExpression expression) {
+  public ServiceTaskDelegateActivityBehaviour(ActivitiValueExpression expression) {
     this.expression = expression;
   }
 

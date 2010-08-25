@@ -20,7 +20,7 @@ import org.activiti.engine.history.HistoricProcessInstance;
 /**
  * @author Christian Stettler
  */
-public interface HistoricDataService {
+public interface HistoryService {
 
   HistoricProcessInstance findHistoricProcessInstance(String processInstanceId);
 

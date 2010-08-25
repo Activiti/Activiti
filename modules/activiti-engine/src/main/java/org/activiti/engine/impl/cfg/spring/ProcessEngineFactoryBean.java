@@ -20,7 +20,7 @@ import javax.sql.DataSource;
 
 import org.activiti.engine.DbSchemaStrategy;
 import org.activiti.engine.DeploymentBuilder;
-import org.activiti.engine.HistoricDataService;
+import org.activiti.engine.HistoryService;
 import org.activiti.engine.IdentityService;
 import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.RepositoryService;
@@ -182,7 +182,7 @@ public class ProcessEngineFactoryBean implements FactoryBean<ProcessEngine>, Dis
     processEngineConfiguration.setDbSchemaStrategy(dbSchemaStrategy);
   }
 
-  public void setHistoricDataService(HistoricDataService historicDataService) {
+  public void setHistoricDataService(HistoryService historicDataService) {
     processEngineConfiguration.setHistoricDataService(historicDataService);
   }
 

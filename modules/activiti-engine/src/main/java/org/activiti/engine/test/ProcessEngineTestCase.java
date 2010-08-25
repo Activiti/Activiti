@@ -28,7 +28,7 @@ import junit.framework.AssertionFailedError;
 
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.DeploymentBuilder;
-import org.activiti.engine.HistoricDataService;
+import org.activiti.engine.HistoryService;
 import org.activiti.engine.IdentityService;
 import org.activiti.engine.ManagementService;
 import org.activiti.engine.ProcessEngine;
@@ -73,7 +73,7 @@ public class ProcessEngineTestCase extends PvmTestCase {
   protected RepositoryService repositoryService;
   protected RuntimeService runtimeService;
   protected TaskService taskService;
-  protected HistoricDataService historicDataService;
+  protected HistoryService historicDataService;
   protected IdentityService identityService;
   protected ManagementService managementService;
 
@@ -237,7 +237,7 @@ public class ProcessEngineTestCase extends PvmTestCase {
     repositoryService = processEngine.getRepositoryService();
     runtimeService = processEngine.getRuntimeService();
     taskService = processEngine.getTaskService();
-    historicDataService = processEngine.getHistoricDataService();
+    historicDataService = processEngine.getHistoryService();
     identityService = processEngine.getIdentityService();
     managementService = processEngine.getManagementService();
   }

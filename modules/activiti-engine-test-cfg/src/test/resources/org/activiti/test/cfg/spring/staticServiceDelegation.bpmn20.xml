@@ -7,14 +7,13 @@
   expressionLanguage="http://www.w3.org/1999/XPath" 
   targetNamespace="http://www.activiti.org/bpmn2.0">
   
-  <process id="javaServiceDelegation">
+  <process id="hello">
   
-    <startEvent id="theStart" />
+    <startEvent id="start" />
     
-    <sequenceFlow id="flow1" sourceRef="theStart" targetRef="javaService" />
+    <sequenceFlow id="flow1" sourceRef="start" targetRef="invokeUserBean" />
     
-    <serviceTask id="javaService" 
-                 name="Java service invocation" 
+    <serviceTask id="invokeUserBean" 
                  activiti:class="#{upperCaser}" />
     
     <sequenceFlow id="flow2" sourceRef="javaService" targetRef="waitState" />

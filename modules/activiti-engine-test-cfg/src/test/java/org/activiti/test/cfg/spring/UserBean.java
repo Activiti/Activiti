@@ -13,6 +13,7 @@
 package org.activiti.test.cfg.spring;
 
 import org.activiti.engine.ProcessEngine;
+import org.activiti.engine.RuntimeService;
 
 /**
  * @author Tom Baeyens
@@ -21,6 +22,9 @@ public class UserBean {
 
   /** injected by spring */
   private ProcessEngine processEngine;
+
+  /** injected by spring */
+  private RuntimeService runtimeService;
 
   private boolean fail = false;
 
@@ -43,5 +47,9 @@ public class UserBean {
 
   public void setFail(boolean fail) {
     this.fail = fail;
+  }
+
+  public void setRuntimeService(RuntimeService runtimeService) {
+    this.runtimeService = runtimeService;
   }
 }

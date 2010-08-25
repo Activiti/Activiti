@@ -56,7 +56,7 @@ public interface ProcessEngine {
   RepositoryService getRepositoryService();
   RuntimeService getRuntimeService();
   TaskService getTaskService();
-  HistoricDataService getHistoricDataService();
+  HistoryService getHistoryService();
   IdentityService getIdentityService();
   ManagementService getManagementService();
 

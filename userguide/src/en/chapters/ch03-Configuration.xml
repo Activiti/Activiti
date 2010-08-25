@@ -13,8 +13,51 @@
   not recommended.  
   </para>  
   
+  <section id="supporteddatabases">
+    <title>Supported databases</title>
+    <para>Following are the names (case sensitive!) that Activiti uses to refer to databases.</para>
+    <table>
+      <title>Supported databases</title>
+      <tgroup cols='3'>
+        <thead>
+          <row>
+            <entry>Activiti database name</entry>
+            <entry>Versions tested</entry>
+            <entry>Notes</entry>
+          </row>
+        </thead>
+        <tbody>
+          <row>
+            <entry>h2</entry>
+            <entry>1.2.132</entry>
+            <entry></entry>
+          </row>
+          <row>
+            <entry>mysql</entry>
+            <entry></entry>
+            <entry></entry>
+          </row>
+          <row>
+            <entry>oracle</entry>
+            <entry></entry>
+            <entry>not yet supported (coming soon)</entry>
+          </row>
+          <row>
+            <entry>postgresql</entry>
+            <entry></entry>
+            <entry>not yet supported (coming soon)</entry>
+          </row>
+          <row>
+            <entry>db2</entry>
+            <entry></entry>
+            <entry>not yet supported (coming soon)</entry>
+          </row>
+        </tbody>
+      </tgroup>
+    </table>
+  </section>
+    
   <section>
-  
     <title>Changing the database</title>
     
     <para>

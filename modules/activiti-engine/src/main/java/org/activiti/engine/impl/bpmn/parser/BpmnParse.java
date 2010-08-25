@@ -35,7 +35,9 @@ import org.activiti.engine.impl.bpmn.Operation;
 import org.activiti.engine.impl.bpmn.ParallelGatewayActivity;
 import org.activiti.engine.impl.bpmn.ReceiveTaskActivity;
 import org.activiti.engine.impl.bpmn.ScriptTaskActivity;
-import org.activiti.engine.impl.bpmn.ServiceInvocationActivityBehaviour;
+import org.activiti.engine.impl.bpmn.ServiceTaskDelegateActivityBehaviour;
+import org.activiti.engine.impl.bpmn.ServiceTaskMethodExpressionActivityBehavior;
+import org.activiti.engine.impl.bpmn.ServiceTaskValueExpressionActivityBehavior;
 import org.activiti.engine.impl.bpmn.SubProcessActivity;
 import org.activiti.engine.impl.bpmn.TaskActivity;
 import org.activiti.engine.impl.bpmn.UserTaskActivity;
@@ -434,11 +436,21 @@ public class BpmnParse extends Parse {
   public void parseServiceTask(Element serviceTaskElement, ScopeImpl scopeElement) {
     ActivityImpl activity = parseAndCreateActivityOnScopeElement(serviceTaskElement, scopeElement);
 
-    String expression = serviceTaskElement.attributeNS(BpmnParser.BPMN_EXTENSIONS_NS, "class");
-    if (expression != null && expression.trim().length() > 0) {
-      activity.setActivityBehavior(new ServiceInvocationActivityBehaviour(expressionManager.createValueExpression(expression)));
+    String className = serviceTaskElement.attributeNS(BpmnParser.BPMN_EXTENSIONS_NS, "class");
+    String methodExpr = serviceTaskElement.attributeNS(BpmnParser.BPMN_EXTENSIONS_NS, "method-expr");
+    String valueExpr = serviceTaskElement.attributeNS(BpmnParser.BPMN_EXTENSIONS_NS, "value-expr");
+    
+    if (className != null && className.trim().length() > 0) {
+      activity.setActivityBehavior(new ServiceTaskDelegateActivityBehaviour(expressionManager.createValueExpression(className)));
+      
+    } else if (methodExpr != null && methodExpr.trim().length() > 0) {
+      activity.setActivityBehavior(new ServiceTaskMethodExpressionActivityBehavior(expressionManager.createMethodExpression(methodExpr)));
+      
+    } else if (valueExpr != null && valueExpr.trim().length() > 0) {
+      activity.setActivityBehavior(new ServiceTaskValueExpressionActivityBehavior(expressionManager.createValueExpression(valueExpr)));
+      
     } else {
-      throw new ActivitiException("java attribute is mandatory on serviceTask");
+      throw new ActivitiException("'class' or 'expr' attribute is mandatory on serviceTask");
     }
 
     // OLD implementation with BPMN interfaces/operations/etc

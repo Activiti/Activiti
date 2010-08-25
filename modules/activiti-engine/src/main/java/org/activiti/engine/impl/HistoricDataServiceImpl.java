@@ -14,7 +14,7 @@
 
 package org.activiti.engine.impl;
 
-import org.activiti.engine.HistoricDataService;
+import org.activiti.engine.HistoryService;
 import org.activiti.engine.history.HistoricActivityInstance;
 import org.activiti.engine.history.HistoricProcessInstance;
 
@@ -23,7 +23,7 @@ import org.activiti.engine.history.HistoricProcessInstance;
  * @author Christian Stettler
  */
 // TODO: define/implement semantics of historic signalData: only completed processes vs. also ongoing ones
-public class HistoricDataServiceImpl extends ServiceImpl implements HistoricDataService {
+public class HistoricDataServiceImpl extends ServiceImpl implements HistoryService {
 
   public HistoricActivityInstance findHistoricActivityInstance(String activityId, String processInstanceId) {
     return null;

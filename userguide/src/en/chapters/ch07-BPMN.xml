@@ -1415,7 +1415,17 @@ List&lt;Task&gt; tasks = taskService.createTaskQuery().assignee(&quot;kermit&quo
        <title>XML representation</title>
        
        <para>
-         To call a Java pojo during process execution, the fully qualified classname 
+         There are 3 ways of declaring how to invoke Java logic:
+       </para>
+       
+       <itemizedlist>
+         <listitem><para>specifying a class that implements ActivityBehvior</para></listitem>
+         <listitem><para>method expression</para></listitem>
+         <listitem><para>value expression</para></listitem>
+       </itemizedlist>
+       
+       <para>
+         To specify an implementation of ActivityBehavior, the fully qualified classname 
          needs to be provided by the <emphasis role="bold">'activiti:java'</emphasis>
          attribute.
 <programlisting>
@@ -1423,6 +1433,34 @@ List&lt;Task&gt; tasks = taskService.createTaskQuery().assignee(&quot;kermit&quo
              name=&quot;My Java Service Task&quot; 
              activiti:class=&quot;org.activiti.MyActivityBehavior&quot; /&gt;
 </programlisting>
+       </para>
+       
+       <para>
+         To specify a UEL method expression that should be evaluated, use 
+         attribute <emphasis role="bold">activiti:method-expr</emphasis>.
+<programlisting>
+&lt;serviceTask id=&quot;javaService&quot; 
+             name=&quot;My Java Service Task&quot; 
+             activiti:method-expr=&quot;#{printer.printMessage}&quot; /&gt;
+</programlisting>
+         Method <literal>printMessage</literal> (without parameters) will 
+         be called on the named object called <literal>printer</literal>.
+         The named objects are resolved in the execution's process variables and 
+         (if applicable) in the Spring context.
+       </para>
+       
+       <para>
+         To specify a UEL value expression that should be evaluated, use 
+         attribute <emphasis role="bold">activiti:value-expr</emphasis>.
+<programlisting>
+&lt;serviceTask id=&quot;javaService&quot; 
+             name=&quot;My Java Service Task&quot; 
+             activiti:value-expr=&quot;#{split.ready}&quot; /&gt;
+</programlisting>
+         Method <literal>getReady</literal> (without parameters) will 
+         be called on the named bean called <literal>split</literal>.
+         The named objects are resolved in the execution's process variables and 
+         (if applicable) in the Spring context.
        </para>
        
      </section> 

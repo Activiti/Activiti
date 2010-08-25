@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE chapter PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN" "../../../target/docbook-tool-1.0/docbook-xml/docbookx.dtd">
+
+<chapter>
+  <title>Spring integration</title>
+
+  <para>While you can use Activiti without Spring, we've provided some very nice integration features
+  that are explained in this chapter.  
+  </para>
+
+  <section>
+    <title>ProcessEngineFactoryBean</title>
+    <para>The starting point of the integration is the class
+	  <literal>org.activiti.engine.impl.cfg.spring.ProcessEngineFactoryBean</literal>.  That bean
+	  implements <literal>ProcessEngine</literal> and takes care of building the process 
+	  engine whenever Spring instantiates it.</para>
+    <programlisting>
+&lt;bean id=&quot;processEngine&quot; class=&quot;org.activiti.engine.impl.cfg.spring.ProcessEngineFactoryBean&quot;&gt;
+  ...
+&lt;/bean&gt;</programlisting>
+  </section>
+  
+  <section>
+    <title>Transactions</title>
+    <para>We'll explain the <literal>SpringTransactionIntegrationTest</literal> here step by step.  
+    Here is the spring configuration file that we use in this example 
+    (located in SpringTransactionIntegrationTest-context.xml).  The quoted section 
+    contains the dataSource, transactionManager, processEngine and the Activiti
+    Engine services.
+    </para>
+    <programlisting>&lt;beans 
+       xmlns=&quot;http://www.springframework.org/schema/beans&quot; 
+       xmlns:context=&quot;http://www.springframework.org/schema/context&quot;
+       xmlns:tx=&quot;http://www.springframework.org/schema/tx&quot;
+       xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;
+       xsi:schemaLocation=&quot;http://www.springframework.org/schema/beans   
+                           http://www.springframework.org/schema/beans/spring-beans.xsd
+                           http://www.springframework.org/schema/context 
+                           http://www.springframework.org/schema/context/spring-context-2.5.xsd
+                           http://www.springframework.org/schema/tx      
+                           http://www.springframework.org/schema/tx/spring-tx-3.0.xsd&quot;&gt;
+
+  &lt;bean id=&quot;dataSource&quot; class=&quot;org.springframework.jdbc.datasource.TransactionAwareDataSourceProxy&quot;&gt;
+    &lt;property name=&quot;targetDataSource&quot;&gt;
+      &lt;bean class=&quot;org.springframework.jdbc.datasource.SimpleDriverDataSource&quot;&gt;
+        &lt;property name=&quot;driverClass&quot; value=&quot;org.h2.Driver&quot; /&gt;
+        &lt;property name=&quot;url&quot; value=&quot;jdbc:h2:mem:activiti;DB_CLOSE_DELAY=1000&quot; /&gt;
+        &lt;property name=&quot;username&quot; value=&quot;sa&quot; /&gt;
+        &lt;property name=&quot;password&quot; value=&quot;&quot; /&gt;
+      &lt;/bean&gt;
+    &lt;/property&gt;
+  &lt;/bean&gt;
+
+  &lt;bean id=&quot;transactionManager&quot; class=&quot;org.springframework.jdbc.datasource.DataSourceTransactionManager&quot;&gt;
+    &lt;property name=&quot;dataSource&quot; ref=&quot;dataSource&quot; /&gt;
+  &lt;/bean&gt;
+  
+  &lt;bean id=&quot;processEngine&quot; class=&quot;org.activiti.engine.impl.cfg.spring.ProcessEngineFactoryBean&quot;&gt;
+    &lt;property name=&quot;dataBaseName&quot; value=&quot;h2&quot; /&gt;
+    &lt;property name=&quot;dataSource&quot; ref=&quot;dataSource&quot; /&gt;
+    &lt;property name=&quot;transactionManager&quot; ref=&quot;transactionManager&quot; /&gt;
+    &lt;property name=&quot;dbSchemaStrategy&quot; value=&quot;DROP_CREATE&quot; /&gt;
+  &lt;/bean&gt;
+  
+  &lt;bean id=&quot;repositoryService&quot; factory-bean=&quot;processEngine&quot; factory-method=&quot;getRepositoryService&quot; /&gt;
+  &lt;bean id=&quot;runtimeService&quot; factory-bean=&quot;processEngine&quot; factory-method=&quot;getRuntimeService&quot; /&gt;
+  &lt;bean id=&quot;taskService&quot; factory-bean=&quot;processEngine&quot; factory-method=&quot;getTaskService&quot; /&gt;
+  &lt;bean id=&quot;historyService&quot; factory-bean=&quot;processEngine&quot; factory-method=&quot;getHistoryService&quot; /&gt;
+  &lt;bean id=&quot;managementService&quot; factory-bean=&quot;processEngine&quot; factory-method=&quot;getManagementService&quot; /&gt;
+  
+  ...</programlisting>
+  <para>The remainder of that spring configuration file contains the beans and configuration that we'll use in this particular
+  example:</para>
+  <programlisting>
+  ...
+  
+  &lt;tx:annotation-driven transaction-manager=&quot;transactionManager&quot;/&gt;
+
+  &lt;bean id=&quot;userBean&quot; class=&quot;org.activiti.examples.spring.UserBean&quot;&gt;
+    &lt;property name=&quot;runtimeService&quot; ref=&quot;runtimeService&quot; /&gt;
+  &lt;/bean&gt;
+
+  &lt;bean id=&quot;printer&quot; class=&quot;org.activiti.examples.spring.Printer&quot; /&gt;
+
+&lt;/beans&gt;</programlisting>
+    <para>First the application context is created with any of the Spring ways to do that.  In this 
+    example we're using a classpath XML resource to configure our Spring application context:
+    </para>
+    <programlisting>ClassPathXmlApplicationContext applicationContext = 
+    new ClassPathXmlApplicationContext(&quot;org/activiti/examples/spring/SpringTransactionIntegrationTest-context.xml&quot;);</programlisting>
+    <para>Then we can get the service beans and invoke methods on them.  The ProcessEngineFactoryBean will have 
+    added an extra interceptor to the services that applies Propagation.REQUIRED transaction semantics on 
+    the Activiti service methods.  So we can use for example the repositoryService to deploy
+    a process like this:  
+    </para>
+    <programlisting>RepositoryService repositoryService = (RepositoryService) applicationContext.getBean(&quot;repositoryService&quot;);
+String deploymentId = repositoryService
+  .createDeployment()
+  .addClasspathResource(&quot;org/activiti/examples/spring/hello.bpmn20.xml&quot;)
+  .deploy()
+  .getId();
+    </programlisting>
+    <para>The next section shows how invocation of the userBean.  In this case, the Spring transaction will 
+    be around the userBean.hello() method and the Activiti service method invocation will join that 
+    same transaction. 
+    </para>
+    <programlisting>UserBean userBean = (UserBean) applicationContext.getBean(&quot;userBean&quot;);
+userBean.hello();</programlisting>
+    <para>The UserBean looks like this.  Remember from above in the Spring bean configuration we injected the 
+    repositoryService into the userBean.</para>
+    <programlisting>public class UserBean {
+
+  /** injected by Spring */
+  private RuntimeService runtimeService;
+
+  @Transactional
+  public void hello() {
+    // here you can do transactional stuff in your domain model
+    // and it will be combined in the same transaction as 
+    // the startProcessInstanceByKey to the Activiti RuntimeService
+    runtimeService.startProcessInstanceByKey(&quot;helloProcess&quot;);
+  }
+  
+  public void setRuntimeService(RuntimeService runtimeService) {
+    this.runtimeService = runtimeService;
+  }
+}</programlisting>
+  </section>
+
+  <section>
+    <title>Expressions</title>
+    <para>TODO</para>
+  </section>
+
+  <section>
+    <title>Automatic resource deployment</title>
+    <para>TODO</para>
+  </section>
+
+  <section>
+    <title>Limiting bean visibility</title>
+    <para>TODO</para>
+  </section>
+
+</chapter>
