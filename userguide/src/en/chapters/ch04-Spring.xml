@@ -28,8 +28,7 @@
     contains the dataSource, transactionManager, processEngine and the Activiti
     Engine services.
     </para>
-    <programlisting>&lt;beans 
-       xmlns=&quot;http://www.springframework.org/schema/beans&quot; 
+    <programlisting>&lt;beans xmlns=&quot;http://www.springframework.org/schema/beans&quot; 
        xmlns:context=&quot;http://www.springframework.org/schema/context&quot;
        xmlns:tx=&quot;http://www.springframework.org/schema/tx&quot;
        xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;
@@ -67,13 +66,11 @@
   &lt;bean id=&quot;taskService&quot; factory-bean=&quot;processEngine&quot; factory-method=&quot;getTaskService&quot; /&gt;
   &lt;bean id=&quot;historyService&quot; factory-bean=&quot;processEngine&quot; factory-method=&quot;getHistoryService&quot; /&gt;
   &lt;bean id=&quot;managementService&quot; factory-bean=&quot;processEngine&quot; factory-method=&quot;getManagementService&quot; /&gt;
-  
   ...</programlisting>
   <para>The remainder of that spring configuration file contains the beans and configuration that we'll use in this particular
   example:</para>
   <programlisting>
   ...
-  
   &lt;tx:annotation-driven transaction-manager=&quot;transactionManager&quot;/&gt;
 
   &lt;bean id=&quot;userBean&quot; class=&quot;org.activiti.examples.spring.UserBean&quot;&gt;
@@ -129,17 +126,58 @@ userBean.hello();</programlisting>
 
   <section>
     <title>Expressions</title>
-    <para>TODO</para>
+    <para>When using the ProcessEngineFactoryBean, by default, all expressions in the BPMN processes
+    will also 'see' the Spring beans.  For example, the SpringTransactionIntegrationTest <literal>hello.bpmn20.xml</literal>
+    shows how a method on a Spring bean can be invoked using a UEL method expression:
+    </para>
+    <programlisting>&lt;definitions id=&quot;definitions&quot; ...>
+  
+  &lt;process id=&quot;helloProcess&quot;&gt;
+  
+    &lt;startEvent id=&quot;start&quot; /&gt;
+    &lt;sequenceFlow id=&quot;flow1&quot; sourceRef=&quot;start&quot; targetRef=&quot;print&quot; /&gt;
+    
+    &lt;serviceTask id=&quot;print&quot; 
+                 <emphasis role="bold">activiti:method-expr=&quot;#{printer.printMessage}&quot;</emphasis> /&gt;
+    &lt;sequenceFlow id=&quot;flow2&quot; sourceRef=&quot;print&quot; targetRef=&quot;end&quot; /&gt;
+    
+    &lt;endEvent id=&quot;end&quot; /&gt;
+    
+  &lt;/process&gt;
+
+&lt;/definitions&gt;</programlisting>
+    <para>Where <literal>Printer</literal> looks like this:</para>
+    <programlisting>public class Printer {
+
+  public void printMessage() {
+    System.out.println(&quot;hello world&quot;);
+  }
+}</programlisting>
+    <para>And the Spring bean configuration (also shown above) looks like this:</para>
+    <programlisting>&lt;beans ...>
+  ...
+
+  &lt;bean id=&quot;printer&quot; class=&quot;org.activiti.examples.spring.Printer&quot; /&gt;
+
+&lt;/beans&gt;</programlisting>
   </section>
 
   <section>
     <title>Automatic resource deployment</title>
-    <para>TODO</para>
-  </section>
+    <para>Spring integration also has a special feature for deploying resources.  In the configuration
+    of the ProcessEngineFactoryBean, you can specify a set of resources.  When the ProcessEngineFactoryBean
+    is initialized, all those resources will be scanned and deployed.  There is filtering
+    in place that prevents duplicate deployments.  Only when the resources actually have changed, 
+    will new deployments be deployed to the Activiti DB.   
+    </para>
+    <para>Here's an example</para>
+    <programlisting>&lt;beans ...&gt;
+  ...
+  &lt;bean id=&quot;processEngine&quot; class=&quot;org.activiti.engine.impl.cfg.spring.ProcessEngineFactoryBean&quot;&gt;
+    ...
+    &lt;property name=&quot;deploymentResources&quot; value=&quot;classpath*:/org/activiti/examples/spring/autodeploy.*.bpmn20.xml&quot; /&gt;
+  &lt;/bean&gt;
 
-  <section>
-    <title>Limiting bean visibility</title>
-    <para>TODO</para>
+&lt;/beans&gt;</programlisting>
   </section>
-
 </chapter>

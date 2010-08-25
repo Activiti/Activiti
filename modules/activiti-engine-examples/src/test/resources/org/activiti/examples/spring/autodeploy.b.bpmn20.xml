@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
+
 <definitions id="definitions" 
   xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -7,14 +8,10 @@
   expressionLanguage="http://www.w3.org/1999/XPath" 
   targetNamespace="http://www.activiti.org/bpmn2.0">
   
-  <process id="helloProcess">
+  <process id="b">
   
     <startEvent id="start" />
-    <sequenceFlow id="flow1" sourceRef="start" targetRef="print" />
-    
-    <serviceTask id="print" 
-                 activiti:method-expr="#{printer.printMessage}" />
-    <sequenceFlow id="flow2" sourceRef="print" targetRef="end" />
+    <sequenceFlow id="flow1" sourceRef="start" targetRef="end" />
     
     <endEvent id="end" />
     

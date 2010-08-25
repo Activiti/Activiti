@@ -13,21 +13,15 @@
 
 package org.activiti.examples.spring;
 
-import junit.framework.TestCase;
-
 import org.activiti.engine.RepositoryService;
-import org.activiti.pvm.impl.util.LogUtil;
+import org.activiti.pvm.test.PvmTestCase;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 
 /**
  * @author Tom Baeyens
  */
-public class SpringTransactionIntegrationTest extends TestCase {
-  
-  static {
-    LogUtil.readJavaUtilLoggingConfigFromClasspath();
-  }
+public class SpringTransactionIntegrationTest extends PvmTestCase {
 
   public void testBasicActivitiSpringIntegration() {
     ClassPathXmlApplicationContext applicationContext = new ClassPathXmlApplicationContext("org/activiti/examples/spring/SpringTransactionIntegrationTest-context.xml");

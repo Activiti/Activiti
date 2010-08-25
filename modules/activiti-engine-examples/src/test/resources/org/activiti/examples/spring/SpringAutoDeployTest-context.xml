@@ -28,20 +28,13 @@
     <property name="dataSource" ref="dataSource" />
     <property name="transactionManager" ref="transactionManager" />
     <property name="dbSchemaStrategy" value="DROP_CREATE" />
+    <property name="deploymentResources" value="classpath*:/org/activiti/examples/spring/autodeploy.*.bpmn20.xml" />
   </bean>
-  
+
   <bean id="repositoryService" factory-bean="processEngine" factory-method="getRepositoryService" />
   <bean id="runtimeService" factory-bean="processEngine" factory-method="getRuntimeService" />
   <bean id="taskService" factory-bean="processEngine" factory-method="getTaskService" />
   <bean id="historyService" factory-bean="processEngine" factory-method="getHistoryService" />
   <bean id="managementService" factory-bean="processEngine" factory-method="getManagementService" />
-
-  <tx:annotation-driven transaction-manager="transactionManager"/>
-
-  <bean id="userBean" class="org.activiti.examples.spring.UserBean">
-    <property name="runtimeService" ref="runtimeService" />
-  </bean>
-
-  <bean id="printer" class="org.activiti.examples.spring.Printer" />
 
 </beans>

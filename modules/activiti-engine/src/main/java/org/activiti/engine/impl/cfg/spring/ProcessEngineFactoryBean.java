@@ -27,9 +27,7 @@ import org.activiti.engine.RepositoryService;
 import org.activiti.engine.impl.ProcessEngineImpl;
 import org.activiti.engine.impl.cfg.IdGenerator;
 import org.activiti.engine.impl.cfg.ProcessEngineConfiguration;
-import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
-import org.activiti.engine.impl.interceptor.CommandInterceptor;
 import org.activiti.engine.impl.interceptor.DefaultCommandExecutor;
 import org.activiti.engine.impl.jobexecutor.JobExecutor;
 import org.activiti.engine.impl.variable.VariableTypes;
@@ -42,9 +40,6 @@ import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.ContextResource;
 import org.springframework.core.io.Resource;
 import org.springframework.transaction.PlatformTransactionManager;
-import org.springframework.transaction.TransactionStatus;
-import org.springframework.transaction.support.TransactionCallback;
-import org.springframework.transaction.support.TransactionTemplate;
 
 /**
  * @author Dave Syer
@@ -54,13 +49,10 @@ import org.springframework.transaction.support.TransactionTemplate;
 public class ProcessEngineFactoryBean implements FactoryBean<ProcessEngine>, DisposableBean, ApplicationContextAware {
 
   protected ProcessEngineConfiguration processEngineConfiguration = new ProcessEngineConfiguration();
-
   protected PlatformTransactionManager transactionManager;
-  
   protected ApplicationContext applicationContext;
-
-  protected Resource[] processResources = new Resource[0];
-
+  protected String deploymentName = "SpringAutoDeployment";
+  protected Resource[] deploymentResources = new Resource[0];
   protected ProcessEngineImpl processEngine;
 
   public void destroy() throws Exception {
@@ -79,7 +71,9 @@ public class ProcessEngineFactoryBean implements FactoryBean<ProcessEngine>, Dis
 
     processEngine = (ProcessEngineImpl) processEngineConfiguration.buildProcessEngine();
 
-    deployResources();
+    if (deploymentResources.length > 0) {
+      autoDeployResources();
+    }
     
     return processEngine;
 
@@ -90,20 +84,7 @@ public class ProcessEngineFactoryBean implements FactoryBean<ProcessEngine>, Dis
 
     if (transactionManager != null) {
       DefaultCommandExecutor commandExecutor = (DefaultCommandExecutor) processEngineConfiguration.getCommandExecutor();
-      commandExecutor.addCommandInterceptor(new CommandInterceptor() {
-
-        public <T> T invoke(final CommandExecutor next, final Command<T> command) {
-          // TODO: Add transaction attributes
-          @SuppressWarnings("unchecked")
-          T result = (T) new TransactionTemplate(transactionManager).execute(new TransactionCallback() {
-
-            public Object doInTransaction(TransactionStatus status) {
-              return next.execute(command);
-            }
-          });
-          return result;
-        }
-      });
+      commandExecutor.addCommandInterceptor(new SpringTransactionInterceptor(transactionManager));
       processEngineConfiguration.setCommandExecutor(commandExecutor);
     }
   }
@@ -120,50 +101,55 @@ public class ProcessEngineFactoryBean implements FactoryBean<ProcessEngine>, Dis
     return true;
   }
 
-  protected void deployResources() throws IOException {
+  protected void autoDeployResources() throws IOException {
     RepositoryService repositoryService = processEngine.getRepositoryService();
     
-    for (Resource resource : processResources) {
-      String resourceName = getResourceName(resource);
-      DeploymentBuilder deploymentBuilder = repositoryService
-        .createDeployment()
-        .enableDuplicateFiltering()
-        .name(resourceName);
-      deploy(deploymentBuilder, resource, resourceName);
+    DeploymentBuilder deploymentBuilder = repositoryService
+      .createDeployment()
+      .enableDuplicateFiltering()
+      .name(deploymentName);
+    
+    for (Resource resource : deploymentResources) {
+      String resourceName = null;
+      
+      if (resource instanceof ContextResource) {
+        resourceName = ((ContextResource) resource).getPathWithinContext();
+        
+      } else if (resource instanceof ByteArrayResource) {
+        resourceName = resource.getDescription();
+        
+      } else {
+        try {
+          resourceName = resource.getFile().getAbsolutePath();
+        } catch (IOException e) {
+          resourceName = resource.getFilename();
+        }
+      }
+      
+      if ( resourceName.endsWith(".bar")
+           || resourceName.endsWith(".zip")
+           || resourceName.endsWith(".jar") ) {
+        deploymentBuilder.addZipInputStream(new ZipInputStream(resource.getInputStream()));
+      } else {
+        deploymentBuilder.addInputStream(resourceName, resource.getInputStream());
+      }
     }
-  }
-
-  private void deploy(DeploymentBuilder deploymentBuilder, Resource resource, String name) throws IOException {
-    if (name.endsWith(".zip") || name.endsWith(".jar")) {
-      deploymentBuilder.addZipInputStream(new ZipInputStream(resource.getInputStream()));
-    } else {
-      deploymentBuilder.addInputStream(name, resource.getInputStream());
-    }
+    
     deploymentBuilder.deploy();
   }
 
-  private String getResourceName(Resource resource) {
-    String name;
-    if (resource instanceof ContextResource) {
-      name = ((ContextResource) resource).getPathWithinContext();
-    } else if (resource instanceof ByteArrayResource) {
-      name = resource.getDescription();
-    } else {
-      try {
-        name = resource.getFile().getAbsolutePath();
-      } catch (IOException e) {
-        name = resource.getFilename();
-      }
-    }
-    return name;
-  }
-
+  // getters and setters //////////////////////////////////////////////////////
+  
   public void setTransactionManager(PlatformTransactionManager transactionManager) {
     this.transactionManager = transactionManager;
   }
+  
+  public void setDeploymentName(String deploymentName) {
+    this.deploymentName = deploymentName;
+  }
 
-  public void setProcessResources(Resource[] processResources) {
-    this.processResources = processResources;
+  public void setDeploymentResources(Resource[] deploymentResources) {
+    this.deploymentResources = deploymentResources;
   }
 
   public void setCommandExecutor(CommandExecutor commandExecutor) {
