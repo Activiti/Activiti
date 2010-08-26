@@ -48,11 +48,11 @@ public class TaskFormsTest extends ProcessEngineTestCase {
     assertNotNull(startForm);
 
     // Define variables that would be filled in through the form
-    Map<String, Object> parameters = new HashMap<String, Object>();
-    parameters.put("employeeName", "kermit");
-    parameters.put("numberOfDays", "4");
-    parameters.put("vacationMotivation", "I'm tired");
-    runtimeService.startProcessInstanceByKey("vacationRequest", parameters);
+    Map<String, Object> variables = new HashMap<String, Object>();
+    variables.put("employeeName", "kermit");
+    variables.put("numberOfDays", "4");
+    variables.put("vacationMotivation", "I'm tired");
+    runtimeService.startProcessInstanceByKey("vacationRequest", variables);
 
     // Management should now have a task assigned to them
     Task task = taskService.createTaskQuery().candidateGroup("management").singleResult();

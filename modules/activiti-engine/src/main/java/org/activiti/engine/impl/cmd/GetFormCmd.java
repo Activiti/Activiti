@@ -13,9 +13,7 @@
 package org.activiti.engine.impl.cmd;
 
 import org.activiti.engine.ActivitiException;
-import org.activiti.engine.impl.bpmn.parser.BpmnParse;
 import org.activiti.engine.impl.cfg.RepositorySession;
-import org.activiti.engine.impl.form.FormReference;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.repository.DeploymentEntity;
@@ -47,19 +45,20 @@ public class GetFormCmd implements Command<Object> {
     ProcessDefinitionEntity processDefinition = null;
     TaskEntity task = null;
     ExecutionEntity execution = null;
-    FormReference formReference = null;
+    String formResourceKey = null;
     
     if (taskId!=null) {
       task = commandContext
         .getTaskSession()
         .findTaskById(taskId);
       
+      execution = task.getExecution();
+      processDefinition = (ProcessDefinitionEntity) execution.getProcessDefinition();
+      
       if (task == null) {
         throw new ActivitiException("No task found for id = '" + taskId + "'");
       }
-      execution = task.getExecution();
-      processDefinition = repositorySession.findDeployedProcessDefinitionById(task.getProcessDefinitionId());
-      formReference = (FormReference) execution.getActivity().getProperty(BpmnParse.PROPERTYNAME_FORM_REFERENCE);
+      formResourceKey = task.getFormResourceKey();
       
     } else if (processDefinitionId!=null) {
       
@@ -67,7 +66,8 @@ public class GetFormCmd implements Command<Object> {
       if (processDefinition == null) {
         throw new ActivitiException("No process definition found for id = '" + processDefinitionId + "'");
       }
-      formReference = (FormReference) processDefinition.getInitial().getProperty(BpmnParse.PROPERTYNAME_FORM_REFERENCE);
+      formResourceKey = processDefinition.getStartFormResourceKey();
+      
       
     } else if (processDefinitionKey!=null) {
       
@@ -75,20 +75,18 @@ public class GetFormCmd implements Command<Object> {
       if (processDefinition == null) {
         throw new ActivitiException("No process definition found for key '" + processDefinitionKey +"'");
       }
-      formReference = (FormReference) processDefinition.getInitial().getProperty(BpmnParse.PROPERTYNAME_FORM_REFERENCE);
+      formResourceKey = processDefinition.getStartFormResourceKey();
     } 
 
     String deploymentId = processDefinition.getDeploymentId();
     DeploymentEntity deployment = repositorySession.findDeploymentById(deploymentId);
     
     Object result = null;
-    if (formReference != null) {
-      String formLanguage = formReference.getLanguage();
-      String form = formReference.getForm();
-      String formTemplateString = getFormTemplateString(form, deployment);      
+    if (formResourceKey != null) {
+      String formTemplateString = getFormTemplateString(formResourceKey, deployment);      
       
       ScriptingEngines scriptingEngines = commandContext.getProcessEngineConfiguration().getScriptingEngines();
-      result = scriptingEngines.evaluate(formTemplateString, formLanguage, execution);
+      result = scriptingEngines.evaluate(formTemplateString, ScriptingEngines.DEFAULT_SCRIPTING_LANGUAGE, execution);
     }
 
     return result;
@@ -98,7 +96,7 @@ public class GetFormCmd implements Command<Object> {
     // get the template
     ResourceEntity formResource = deployment.getResource(formResourceName);
     if (formResource==null) {
-      throw new ActivitiException("form '"+formResource+"' not available in "+deployment);
+      throw new ActivitiException("form '"+formResourceName+"' not available in "+deployment);
     }
     byte[] formResourceBytes = formResource.getBytes();
     return new String(formResourceBytes);

@@ -39,4 +39,6 @@ public interface Task {
 	String getExecutionId();
 	
 	String getProcessDefinitionId();
+	
+	String getFormResourceKey();
 }

@@ -69,7 +69,6 @@ import org.activiti.pvm.impl.process.TransitionImpl;
  */
 public class BpmnParse extends Parse {
 
-  public static final String PROPERTYNAME_FORM_REFERENCE = "formReference";
   public static final String PROPERTYNAME_CONDITION = "condition";
   public static final String PROPERTYNAME_VARIABLE_DECLARATIONS = "variableDeclarations";
   public static final String PROPERTYNAME_TIMER_DECLARATION = "timerDeclarations";
@@ -293,8 +292,8 @@ public class BpmnParse extends Parse {
       ActivityImpl activity = scope.createActivity(id);
       activity.setProperty("name", name);
       
-      if (scope instanceof ProcessDefinitionImpl) {
-        ProcessDefinitionImpl processDefinition = (ProcessDefinitionImpl) scope;
+      if (scope instanceof ProcessDefinitionEntity) {
+        ProcessDefinitionEntity processDefinition = (ProcessDefinitionEntity) scope;
         if (processDefinition.getInitial()!=null) {
           // in order to support this, the initial should here be replaced with 
           // a kind of hidden decision activity that has pvm transitions to all 
@@ -302,14 +301,14 @@ public class BpmnParse extends Parse {
           addProblem("multiple startEvents in a process definition are not yet supported", startEventElement);
         }
         processDefinition.setInitial(activity);
+
+        String startFormResourceKey = startEventElement.attributeNS(BpmnParser.BPMN_EXTENSIONS_NS, "form");
+        if (startFormResourceKey != null) {
+          processDefinition.setStartFormResourceKey(startFormResourceKey);
+        }
+
       } else {
         scope.setProperty(PROPERTYNAME_INITIAL, activity);
-      }
-
-      String form = startEventElement.attributeNS(BpmnParser.BPMN_EXTENSIONS_NS, "form");
-      String formLanguage = startEventElement.attributeNS(BpmnParser.BPMN_EXTENSIONS_NS, "form-language", ScriptingEngines.DEFAULT_SCRIPTING_LANGUAGE);
-      if (form != null) {
-        activity.setProperty(PROPERTYNAME_FORM_REFERENCE, new FormReference(form, formLanguage));
       }
 
       // Currently only none start events supported
@@ -519,13 +518,11 @@ public class BpmnParse extends Parse {
    */
   public void parseUserTask(Element userTaskElement, ScopeImpl scopeElement) {
     ActivityImpl activity = parseAndCreateActivityOnScopeElement(userTaskElement, scopeElement);
-    UserTaskActivity userTaskActivity = new UserTaskActivity(expressionManager, parseTaskDefinition(userTaskElement));
+    TaskDefinition taskDefinition = parseTaskDefinition(userTaskElement);
+    UserTaskActivity userTaskActivity = new UserTaskActivity(expressionManager, taskDefinition);
 
-    String form = userTaskElement.attributeNS(BpmnParser.BPMN_EXTENSIONS_NS, "form");
-    String formLanguage = userTaskElement.attributeNS(BpmnParser.BPMN_EXTENSIONS_NS, "form-language", ScriptingEngines.DEFAULT_SCRIPTING_LANGUAGE);
-    if (form != null) {
-      activity.setProperty(PROPERTYNAME_FORM_REFERENCE, new FormReference(form, formLanguage));
-    }
+    String formResourceKey = userTaskElement.attributeNS(BpmnParser.BPMN_EXTENSIONS_NS, "form");
+    taskDefinition.setFormResourceKey(formResourceKey);
 
     activity.setActivityBehavior(userTaskActivity);
 

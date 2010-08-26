@@ -30,7 +30,7 @@ import org.activiti.pvm.impl.runtime.ExecutionImpl;
  * @author Tom Baeyens
  * @author Joram Barrez
  */
-public class ActivityContextBindings implements Bindings {
+public class ExecutionBindings implements Bindings {
 
   protected static final String EXECUTION_KEY = "execution";
   
@@ -45,7 +45,7 @@ public class ActivityContextBindings implements Bindings {
   
   protected ExecutionImpl execution;
   
-  public ActivityContextBindings(ExecutionImpl execution) {
+  public ExecutionBindings(ExecutionImpl execution) {
     if (execution==null) {
       throw new ActivitiException("execution cannot be null");
     }

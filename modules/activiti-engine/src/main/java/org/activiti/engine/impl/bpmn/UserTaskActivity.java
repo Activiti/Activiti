@@ -24,8 +24,8 @@ import org.activiti.pvm.activity.ActivityExecution;
  */
 public class UserTaskActivity extends TaskActivity {
 
-  private final TaskDefinition taskDefinition;
-  private final ExpressionManager expressionManager;
+  protected TaskDefinition taskDefinition;
+  protected ExpressionManager expressionManager;
 
   public UserTaskActivity(ExpressionManager expressionManager, TaskDefinition taskDefinition) {
     this.expressionManager = expressionManager;
@@ -35,6 +35,7 @@ public class UserTaskActivity extends TaskActivity {
   public void execute(ActivityExecution execution) throws Exception {
     TaskEntity task = TaskEntity.createAndInsert();
     task.setExecution(execution);
+    task.setFormResourceKey(taskDefinition.getFormResourceKey());
 
     if (taskDefinition.getName() != null) {
       String name = evaluateExpression(taskDefinition.getName(), execution);
@@ -74,6 +75,17 @@ public class UserTaskActivity extends TaskActivity {
   protected String evaluateExpression(String expr, ActivityExecution execution) {
     // TODO http://jira.codehaus.org/browse/ACT-84 move parsing of value expression to bpmn parser and only keep evaluation here
     return (String) expressionManager.createValueExpression(expr).getValue(execution);
+  }
+
+  
+  // getters and setters //////////////////////////////////////////////////////
+  
+  public TaskDefinition getTaskDefinition() {
+    return taskDefinition;
+  }
+  
+  public ExpressionManager getExpressionManager() {
+    return expressionManager;
   }
 
 }

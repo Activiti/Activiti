@@ -43,6 +43,7 @@ public class TaskEntity implements Task, Serializable, PersistentObject {
   protected String assignee;
   protected String name;
   protected String description;
+  protected String formResourceKey;
   protected int priority = Priority.NORMAL;
   protected Date createTime; // The time when the task has been created
   protected Date startDeadline; // The time when the task should have been started
@@ -321,5 +322,12 @@ public class TaskEntity implements Task, Serializable, PersistentObject {
   public void setAssignee(String assignee) {
     this.assignee = assignee;
   }
-  
+
+  public String getFormResourceKey() {
+    return formResourceKey;
+  }
+
+  public void setFormResourceKey(String formResourceKey) {
+    this.formResourceKey = formResourceKey;
+  }
 }

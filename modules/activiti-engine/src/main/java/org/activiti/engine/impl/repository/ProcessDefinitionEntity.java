@@ -35,6 +35,7 @@ public class ProcessDefinitionEntity extends ProcessDefinitionImpl implements Pr
   protected int version;
   protected String deploymentId;
   protected String resourceName;
+  protected String startFormResourceKey;
   
   public ProcessDefinitionEntity() {
     super(null);
@@ -120,5 +121,13 @@ public class ProcessDefinitionEntity extends ProcessDefinitionImpl implements Pr
 
   public void setResourceName(String resourceName) {
     this.resourceName = resourceName;
+  }
+
+  public String getStartFormResourceKey() {
+    return startFormResourceKey;
+  }
+
+  public void setStartFormResourceKey(String startFormResourceKey) {
+    this.startFormResourceKey = startFormResourceKey;
   }
 }

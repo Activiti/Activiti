@@ -24,14 +24,13 @@ import java.util.Set;
 public class TaskDefinition {
   
   protected String name;
-  
   protected String description;
-  
   protected String assignee;
-  
   protected Set<String> candidateUserIds = new HashSet<String>();
-  
   protected Set<String> candidateGroupIds = new HashSet<String>();
+  protected String formResourceKey;
+  
+  // getters and setters //////////////////////////////////////////////////////
 
   public String getName() {
     return name;
@@ -72,5 +71,12 @@ public class TaskDefinition {
   public Set<String> getCandidateUserIds() {
     return candidateUserIds;
   }
-  
+
+  public String getFormResourceKey() {
+    return formResourceKey;
+  }
+
+  public void setFormResourceKey(String formResourceKey) {
+    this.formResourceKey = formResourceKey;
+  }
 }

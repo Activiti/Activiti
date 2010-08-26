@@ -101,6 +101,7 @@ create table ACT_TASK (
     PROC_DEF_ID_ varchar(255),
     NAME_ varchar(255),
     DESCRIPTION_ varchar(255),
+    FORM_ varchar(255),
     ASSIGNEE_ varchar(255),
     PRIORITY_ integer,
     CREATE_TIME_ timestamp,
