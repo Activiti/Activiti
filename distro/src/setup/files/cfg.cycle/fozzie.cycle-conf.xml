@@ -2,13 +2,13 @@
   <name>fozzie</name>
   <linkedConnectors>
     <org.activiti.cycle.impl.connector.signavio.SignavioConnectorConfiguration>
-      <name>signavio</name>
+      <name>Activiti Modeler</name>
       <credentialsSaved>false</credentialsSaved>
       <signavioBaseUrl>@activiti.modeler.base.url@</signavioBaseUrl>
       <loginRequired>false</loginRequired>
     </org.activiti.cycle.impl.connector.signavio.SignavioConnectorConfiguration>
     <org.activiti.cycle.impl.connector.fs.FileSystemConnectorConfiguration>
-      <name>files</name>
+      <name>Files</name>
       <baseFilePath>@cycle.base.file.path@</baseFilePath>
     </org.activiti.cycle.impl.connector.fs.FileSystemConnectorConfiguration>
   </linkedConnectors>
