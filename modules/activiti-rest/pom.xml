@@ -51,6 +51,7 @@
 			<artifactId>activiti-engine</artifactId>
 			<scope>provided</scope>
 		</dependency>
+
     <dependency>
       <groupId>org.activiti</groupId>
       <artifactId>activiti-cycle</artifactId>
@@ -77,13 +78,6 @@
 			<groupId>org.springframework.extensions.surf</groupId>
 			<artifactId>spring-surf</artifactId>
 			<version>1.0.0.M3</version>
-		</dependency>
-		
-		<dependency>
-			<groupId>org.activiti</groupId>
-			<artifactId>activiti-cycle</artifactId>
-			<version>5.0.cycle-SNAPSHOT</version>
-			<scope>compile</scope>
 		</dependency>
 	</dependencies>
 
