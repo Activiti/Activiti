@@ -35,6 +35,8 @@
   <para>Every self respecting developer should have read 
   <ulink url="http://www.catb.org/~esr/faqs/smart-questions.html">How to ask questions the smart way</ulink> 
   </para>
+  <para>After you've done that you can post questions and comments on <ulink url="http://forums.activiti.org/en/viewforum.php?f=3">the Users forum</ulink> and 
+  create issues in <ulink url="http://jira.codehaus.org/browse/ACT">our Jira issue tracker</ulink> </para>
   
 </section>
 
