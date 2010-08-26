@@ -52,10 +52,10 @@
 			<scope>provided</scope>
 		</dependency>
 
+	<!-- scope not "provided" to preserve transitive dependencies in activiti-rest etc. -->
     <dependency>
       <groupId>org.activiti</groupId>
       <artifactId>activiti-cycle</artifactId>
-      <scope>provided</scope>
     </dependency>
 
 		<dependency>
