@@ -75,6 +75,7 @@ public class DbSqlSessionFactory implements SessionFactory, ProcessEngineConfigu
   protected Map<Class<?>,String>  insertStatements = Collections.synchronizedMap(new HashMap<Class<?>, String>());
   protected Map<Class<?>,String>  updateStatements = Collections.synchronizedMap(new HashMap<Class<?>, String>());
   protected Map<Class<?>,String>  deleteStatements = Collections.synchronizedMap(new HashMap<Class<?>, String>());
+  protected Map<Class<?>,String>  selectStatements = Collections.synchronizedMap(new HashMap<Class<?>, String>());
   
   public void configurationCompleted(ProcessEngineConfiguration processEngineConfiguration) {
     this.databaseName = processEngineConfiguration.getDatabaseName();
@@ -154,6 +155,10 @@ public class DbSqlSessionFactory implements SessionFactory, ProcessEngineConfigu
     return getStatement(persistentObjectClass, deleteStatements, "delete");
   }
 
+  public String getSelectStatement(Class<?> persistentObjectClass) {
+    return getStatement(persistentObjectClass, selectStatements, "select");
+  }
+
   private String getStatement(Class<?> persistentObjectClass, Map<Class<?>,String> cachedStatements, String prefix) {
     String statement = cachedStatements.get(persistentObjectClass);
     if (statement!=null) {
@@ -164,7 +169,7 @@ public class DbSqlSessionFactory implements SessionFactory, ProcessEngineConfigu
     cachedStatements.put(persistentObjectClass, statement);
     return statement;
   }
-  
+
   // db specific mappings /////////////////////////////////////////////////////
   
   protected static void addDatabaseSpecificStatement(String databaseName, String activitiStatement, String ibatisStatement) {

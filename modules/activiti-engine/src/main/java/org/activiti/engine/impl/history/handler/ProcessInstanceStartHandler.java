@@ -29,7 +29,8 @@ public class ProcessInstanceStartHandler implements EventListener {
   public void notify(EventListenerExecution execution) {
     ExecutionEntity executionEntity = (ExecutionEntity) execution;
     
-    HistoricProcessInstanceEntity historicProcessInstance = new HistoricProcessInstanceEntity(executionEntity.getId(), executionEntity.getProcessDefinitionId(), ClockUtil.getCurrentTime());
+    String processInstanceId = executionEntity.getId();
+    HistoricProcessInstanceEntity historicProcessInstance = new HistoricProcessInstanceEntity(processInstanceId, executionEntity.getProcessDefinitionId(), ClockUtil.getCurrentTime());
     
     CommandContext
       .getCurrent()

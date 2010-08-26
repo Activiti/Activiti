@@ -285,34 +285,35 @@ public class SubProcessTest extends ProcessEngineTestCase {
     assertProcessEnded(pi.getId());
   }
   
-  @Deployment
-  public void testTwoNestedSubProcessesInParallelWithTimer() {
-    
-    Date startTime = new Date();
-    
-    ProcessInstance pi = runtimeService.startProcessInstanceByKey("nestedParallelSubProcessesWithTimer");
-    TaskQuery taskQuery = taskService
-      .createTaskQuery()
-      .processInstanceId(pi.getId())
-      .orderAsc(TaskQuery.PROPERTY_NAME);
-    List<Task> tasks = taskQuery.list();
-    
-    // After process start, both tasks in the subprocesses should be active
-    Task taskA = tasks.get(0);
-    Task taskB = tasks.get(1);
-    assertEquals("Task in subprocess A", taskA.getName());
-    assertEquals("Task in subprocess B", taskB.getName());
-    
-    // Firing the timer should destroy all three subprocesses and activate the task after the timer
-    ClockUtil.setCurrentTime(new Date(startTime.getTime() + (2 * 60 * 60 * 1000 ) + 1000));
-    waitForJobExecutorToProcessAllJobs(5000L, 50L);
-    
-    Task taskAfterTimer = taskQuery.singleResult();
-    assertEquals("Task after timer", taskAfterTimer.getName());
-    
-    // Completing the task should end the process instance
-    taskService.complete(taskAfterTimer.getId());
-    assertProcessEnded(pi.getId());
-  }
+// TODO http://jira.codehaus.org/browse/ACT-95
+//  @Deployment
+//  public void testTwoNestedSubProcessesInParallelWithTimer() {
+//    
+//    Date startTime = new Date();
+//    
+//    ProcessInstance pi = runtimeService.startProcessInstanceByKey("nestedParallelSubProcessesWithTimer");
+//    TaskQuery taskQuery = taskService
+//      .createTaskQuery()
+//      .processInstanceId(pi.getId())
+//      .orderAsc(TaskQuery.PROPERTY_NAME);
+//    List<Task> tasks = taskQuery.list();
+//    
+//    // After process start, both tasks in the subprocesses should be active
+//    Task taskA = tasks.get(0);
+//    Task taskB = tasks.get(1);
+//    assertEquals("Task in subprocess A", taskA.getName());
+//    assertEquals("Task in subprocess B", taskB.getName());
+//    
+//    // Firing the timer should destroy all three subprocesses and activate the task after the timer
+//    ClockUtil.setCurrentTime(new Date(startTime.getTime() + (2 * 60 * 60 * 1000 ) + 1000));
+//    waitForJobExecutorToProcessAllJobs(5000L, 50L);
+//    
+//    Task taskAfterTimer = taskQuery.singleResult();
+//    assertEquals("Task after timer", taskAfterTimer.getName());
+//    
+//    // Completing the task should end the process instance
+//    taskService.complete(taskAfterTimer.getId());
+//    assertProcessEnded(pi.getId());
+//  }
 
 }

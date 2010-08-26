@@ -40,6 +40,7 @@ import org.activiti.engine.impl.calendar.BusinessCalendarManager;
 import org.activiti.engine.impl.calendar.DurationBusinessCalendar;
 import org.activiti.engine.impl.calendar.MapBusinessCalendarManager;
 import org.activiti.engine.impl.cfg.standalone.StandaloneIbatisTransactionContextFactory;
+import org.activiti.engine.impl.db.DbHistorySessionFactory;
 import org.activiti.engine.impl.db.DbIdGenerator;
 import org.activiti.engine.impl.db.DbIdentitySessionFactory;
 import org.activiti.engine.impl.db.DbManagementSessionFactory;
@@ -110,6 +111,8 @@ public class ProcessEngineConfiguration {
   protected ExpressionManager expressionManager;
   protected BusinessCalendarManager businessCalendarManager;
   
+  protected boolean isHistoryEnabled = true;
+  
   protected boolean isConfigurationCompleted = false;
 
   public ProcessEngineConfiguration() {
@@ -135,6 +138,7 @@ public class ProcessEngineConfiguration {
     sessionFactories.put(MessageSession.class, new JobExecutorMessageSessionFactory());
     sessionFactories.put(TimerSession.class, new JobExecutorTimerSessionFactory());
     sessionFactories.put(DbSqlSession.class, new DbSqlSessionFactory());
+    sessionFactories.put(HistorySession.class, new DbHistorySessionFactory());
     
     deployers = new ArrayList<Deployer>();
     deployers.add(new BpmnDeployer());
@@ -473,5 +477,13 @@ public class ProcessEngineConfiguration {
 
   public void setIdBlockSize(long idBlockSize) {
     this.idBlockSize = idBlockSize;
+  }
+
+  public boolean isHistoryEnabled() {
+    return isHistoryEnabled;
+  }
+
+  public void setHistoryEnabled(boolean isHistoryEnabled) {
+    this.isHistoryEnabled = isHistoryEnabled;
   }
 }

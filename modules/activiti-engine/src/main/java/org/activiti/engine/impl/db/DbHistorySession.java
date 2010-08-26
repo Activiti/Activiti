@@ -14,8 +14,12 @@
 package org.activiti.engine.impl.db;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
+import org.activiti.engine.Page;
+import org.activiti.engine.history.HistoricProcessInstance;
+import org.activiti.engine.impl.HistoricProcessInstanceQueryImpl;
 import org.activiti.engine.impl.cfg.HistorySession;
 import org.activiti.engine.impl.history.HistoricActivityInstanceEntity;
 import org.activiti.engine.impl.history.HistoricProcessInstanceEntity;
@@ -37,7 +41,7 @@ public class DbHistorySession extends AbstractDbSession implements HistorySessio
   }
 
   public HistoricProcessInstanceEntity findHistoricProcessInstance(String processInstanceId) {
-    return (HistoricProcessInstanceEntity) dbSqlSession.selectOne("selectHistoricProcessInstance", processInstanceId);
+    return (HistoricProcessInstanceEntity) dbSqlSession.selectById(HistoricProcessInstanceEntity.class, processInstanceId);
   }
 
   public void insertHistoricActivityInstance(HistoricActivityInstanceEntity historicActivityInstance) {
@@ -54,6 +58,15 @@ public class DbHistorySession extends AbstractDbSession implements HistorySessio
     parameters.put("processInstanceId", processInstanceId);
   
     return (HistoricActivityInstanceEntity) dbSqlSession.selectOne("selectHistoricActivityInstance", parameters);
+  }
+
+  public long findHistoricProcessInstanceCountByQueryCriteria(HistoricProcessInstanceQueryImpl historicProcessInstanceQuery) {
+    return (Long) dbSqlSession.selectOne("selectHistoricProcessInstanceCountByQueryCriteria", historicProcessInstanceQuery);
+  }
+
+  @SuppressWarnings("unchecked")
+  public List<HistoricProcessInstance> findHistoricProcessInstancesByQueryCriteria(HistoricProcessInstanceQueryImpl historicProcessInstanceQuery, Page page) {
+    return dbSqlSession.selectList("selectHistoricProcessInstancesByQueryCriteria", historicProcessInstanceQuery, page);
   }
 
   public void close() {

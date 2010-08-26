@@ -76,7 +76,7 @@
     </if>
   </select>
   
-  <select id="selectExecutionCountByQueryCriteria" parameterType="map" resultType="long">
+  <select id="selectExecutionCountByQueryCriteria" parameterType="org.activiti.engine.impl.ExecutionQueryImpl" resultType="long">
     select count(*)
     <include refid="selectExecutionsByQueryCriteriaSql"/>
   </select>

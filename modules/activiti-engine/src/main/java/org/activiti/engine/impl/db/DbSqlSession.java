@@ -59,8 +59,8 @@ public class DbSqlSession implements Session {
   
   public void insert(PersistentObject persistentObject) {
     if (persistentObject.getId()==null) {
-      long nextDbid = dbSqlSessionFactory.getIdGenerator().getNextId();
-      String id = Long.toString(nextDbid);
+      long nextId = dbSqlSessionFactory.getIdGenerator().getNextId();
+      String id = Long.toString(nextId);
       persistentObject.setId(id);
     }
     insertedObjects.add(persistentObject);
@@ -160,9 +160,22 @@ public class DbSqlSession implements Session {
     Object result = sqlSession.selectOne(statement, parameter);
     if (result instanceof PersistentObject) {
       PersistentObject loadedObject = (PersistentObject) result;
-      result = cacheGet(loadedObject);
+      result = cacheFilter(loadedObject);
     }
     return result;
+  }
+  
+  @SuppressWarnings("unchecked")
+  public <T extends PersistentObject> T selectById(Class<T> entityClass, String id) {
+    T persistentObject = cacheGet(entityClass, id);
+    if (persistentObject!=null) {
+      return persistentObject;
+    }
+    String selectStatement = dbSqlSessionFactory.getSelectStatement(entityClass);
+    selectStatement = dbSqlSessionFactory.mapStatement(selectStatement);
+    persistentObject = (T) sqlSession.selectOne(selectStatement, id);
+    cachePut(persistentObject, true);
+    return persistentObject;
   }
 
   // internal session cache ///////////////////////////////////////////////////
@@ -171,7 +184,7 @@ public class DbSqlSession implements Session {
   protected List filterLoadedObjects(List<PersistentObject> loadedObjects) {
     List<PersistentObject> filteredObjects = new ArrayList<PersistentObject>(loadedObjects.size());
     for (PersistentObject loadedObject: loadedObjects) {
-      PersistentObject cachedPersistentObject = cacheGet(loadedObject);
+      PersistentObject cachedPersistentObject = cacheFilter(loadedObject);
       filteredObjects.add(cachedPersistentObject);
     }
     return filteredObjects;
@@ -191,16 +204,26 @@ public class DbSqlSession implements Session {
   /** returns the object in the cache.  if this object was loaded before, 
    * then the original object is returned.  if this is the first time 
    * this object is loaded, then the loadedObject is added to the cache. */
-  protected PersistentObject cacheGet(PersistentObject persistentObject) {
+  protected PersistentObject cacheFilter(PersistentObject persistentObject) {
+    PersistentObject cachedPersistentObject = cacheGet(persistentObject.getClass(), persistentObject.getId());
+    if (cachedPersistentObject!=null) {
+      return cachedPersistentObject;
+    }
+    cachePut(persistentObject, true);
+    return persistentObject;
+  }
+
+  @SuppressWarnings("unchecked")
+  protected <T> T cacheGet(Class<T> entityClass, String id) {
     CachedObject cachedObject = null;
-    Map<String, CachedObject> classCache = cachedObjects.get(persistentObject.getClass());
+    Map<String, CachedObject> classCache = cachedObjects.get(entityClass);
     if (classCache!=null) {
-      cachedObject = classCache.get(persistentObject.getId());
+      cachedObject = classCache.get(id);
     }
-    if (cachedObject==null) {
-      cachedObject = cachePut(persistentObject, true);
+    if (cachedObject!=null) {
+      return (T) cachedObject.getPersistentObject();
     }
-    return cachedObject.getPersistentObject();
+    return null;
   }
   
   protected void cacheRemove(Class<?> persistentObjectClass, String persistentObjectId) {
@@ -387,5 +410,4 @@ public class DbSqlSession implements Session {
   public DbSqlSessionFactory getDbSqlSessionFactory() {
     return dbSqlSessionFactory;
   }
-
 }

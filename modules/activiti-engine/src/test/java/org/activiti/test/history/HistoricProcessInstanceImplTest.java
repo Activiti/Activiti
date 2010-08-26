@@ -76,23 +76,6 @@ public class HistoricProcessInstanceImplTest {
   }
 
   @Test
-  public void testMandatoryStateForMarkHistoricProcessInstanceEnded() {
-    assertIllegalArgumentException("end time", new Runnable() {
-      public void run() {
-        HistoricProcessInstanceEntity historicProcessInstance = new HistoricProcessInstanceEntity("processInstanceId", "processInstanceId", new Date());
-        historicProcessInstance.markEnded(null, "endStateName");
-      }
-    });
-
-    assertIllegalArgumentException("end state name", new Runnable() {
-      public void run() {
-        HistoricProcessInstanceEntity historicProcessInstance = new HistoricProcessInstanceEntity("processInstanceId", "processInstanceId", new Date());
-        historicProcessInstance.markEnded(new Date(), null);
-      }
-    });
-  }
-
-  @Test
   public void testEndTimeMustBeAfterStartTime() {
     assertIllegalArgumentException("before start time", new Runnable() {
       public void run() {

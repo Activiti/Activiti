@@ -23,6 +23,7 @@ import org.activiti.engine.impl.bpmn.parser.BpmnParser;
 import org.activiti.engine.impl.cfg.ProcessEngineConfiguration;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationAware;
 import org.activiti.engine.impl.el.ExpressionManager;
+import org.activiti.engine.impl.history.handler.HistoryParseListener;
 import org.activiti.engine.impl.repository.Deployer;
 import org.activiti.engine.impl.repository.DeploymentEntity;
 import org.activiti.engine.impl.repository.ProcessDefinitionEntity;
@@ -43,6 +44,9 @@ public class BpmnDeployer implements Deployer, ProcessEngineConfigurationAware {
   public void configurationCompleted(ProcessEngineConfiguration processEngineConfiguration) {
     this.expressionManager = processEngineConfiguration.getExpressionManager();
     this.bpmnParser = new BpmnParser(expressionManager);
+    if (processEngineConfiguration.isHistoryEnabled()) {
+      bpmnParser.getParseListeners().add(new HistoryParseListener());
+    }
   }
 
   public List<ProcessDefinitionEntity> deploy(DeploymentEntity deployment) {

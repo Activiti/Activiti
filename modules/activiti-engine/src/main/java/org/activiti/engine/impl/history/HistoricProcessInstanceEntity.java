@@ -31,14 +31,11 @@ public class HistoricProcessInstanceEntity extends HistoricScopeInstanceEntity i
 
   public HistoricProcessInstanceEntity(String processInstanceId, String processDefinitionId, Date startTime) {
     super(processInstanceId, processDefinitionId, startTime);
+    this.id = processInstanceId;
   }
 
   public void markEnded(Date endTime, String endStateName) {
     internalMarkEnded(endTime);
-
-    if (endStateName == null) {
-      throw new IllegalArgumentException("End state name must not be null");
-    }
 
     this.endStateName = endStateName;
   }

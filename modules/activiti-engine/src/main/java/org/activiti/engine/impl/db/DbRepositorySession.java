@@ -21,6 +21,8 @@ import org.activiti.engine.ActivitiException;
 import org.activiti.engine.Page;
 import org.activiti.engine.ProcessDefinition;
 import org.activiti.engine.ProcessInstance;
+import org.activiti.engine.history.HistoricProcessInstance;
+import org.activiti.engine.impl.HistoricProcessInstanceQueryImpl;
 import org.activiti.engine.impl.ProcessDefinitionQueryImpl;
 import org.activiti.engine.impl.ProcessInstanceQueryImpl;
 import org.activiti.engine.impl.cfg.RepositorySession;
@@ -102,21 +104,42 @@ public class DbRepositorySession implements Session, RepositorySession {
         .deploymentId(deploymentId)
         .executeList(commandContext, null);
       
+      boolean isHistoryEnabled = commandContext.getProcessEngineConfiguration().isHistoryEnabled();
+      
       for (ProcessDefinition processDefinition: processDefinitions) {
-        List<ProcessInstance> processInstances = new ProcessInstanceQueryImpl()
-          .processDefinitionId(processDefinition.getId())
-          .executeList(commandContext, null);
-        
-        for (ProcessInstance processInstance: processInstances) {
-          commandContext
-            .getRuntimeSession()
-            .deleteProcessInstance(processInstance.getId(), "deleted deployment");
+        if (isHistoryEnabled) {
+          deleteHistoricProcessInstances(commandContext, processDefinition);
         }
+        deleteProcessInstances(commandContext, processDefinition);
       }
     }
     dbSqlSession.delete("deleteProcessDefinitionsByDeploymentId", deploymentId);
     dbSqlSession.delete("deleteResourcesByDeploymentId", deploymentId);
     dbSqlSession.delete("deleteDeployment", deploymentId);
+  }
+
+  private void deleteProcessInstances(CommandContext commandContext, ProcessDefinition processDefinition) {
+    List<ProcessInstance> processInstances = new ProcessInstanceQueryImpl()
+        .processDefinitionId(processDefinition.getId())
+        .executeList(commandContext, null);
+      
+      for (ProcessInstance processInstance: processInstances) {
+        commandContext
+          .getRuntimeSession()
+          .deleteProcessInstance(processInstance.getId(), "deleted deployment");
+      }
+  }
+
+  private void deleteHistoricProcessInstances(CommandContext commandContext, ProcessDefinition processDefinition) {
+    List<HistoricProcessInstance> historicProcessInstances = new HistoricProcessInstanceQueryImpl()
+      .processDefinitionId(processDefinition.getId())
+      .executeList(commandContext, null);
+    
+    for (HistoricProcessInstance historicProcessInstance: historicProcessInstances) {
+      commandContext
+        .getHistorySession()
+        .deleteHistoricProcessInstance(historicProcessInstance.getId());
+    }
   }
   
   public DeploymentEntity findDeploymentById(String deploymentId) {

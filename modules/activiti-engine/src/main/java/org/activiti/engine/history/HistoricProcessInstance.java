@@ -21,6 +21,8 @@ import java.util.Date;
  */
 public interface HistoricProcessInstance {
   
+  String getId();
+  
   String getProcessInstanceId();
 
   String getProcessDefinitionId();
