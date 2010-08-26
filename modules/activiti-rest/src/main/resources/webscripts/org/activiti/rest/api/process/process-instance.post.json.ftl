@@ -2,7 +2,7 @@
 {
   "id": "${instance.id}",
   "processDefinitionId": "${instance.processDefinitionId}",
-  "activityNames": [<#list instance.activityNames as name>"${name}"<#if name_has_next>, </#if></#list>],
+  "activityNames": [<#list instance.findActiveActivityIds() as name>"${name}"<#if name_has_next>, </#if></#list>],
   "ended": ${instance.ended?string}
 }
 </#escape>
