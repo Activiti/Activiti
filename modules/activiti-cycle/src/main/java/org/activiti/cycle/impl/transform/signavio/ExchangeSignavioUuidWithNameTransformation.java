@@ -1,8 +1,8 @@
 package org.activiti.cycle.impl.transform.signavio;
 
-import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
+import java.util.Set;
 
 import org.oryxeditor.server.diagram.Diagram;
 import org.oryxeditor.server.diagram.Shape;
@@ -19,35 +19,41 @@ public class ExchangeSignavioUuidWithNameTransformation extends OryxTransformati
 
   @Override
   public Diagram transform(Diagram diagram) {
-    Map<String, String> nameMapping = new HashMap<String, String>();
+    Set<String> existingNames = new HashSet<String>();
 
-    adjustShapeNames(diagram.getShapes(), nameMapping);
+    adjustShapeNames(diagram.getShapes(), existingNames);
 
     return diagram;
   }
 
-  private void adjustShapeNames(List<Shape> shapes, Map<String, String> nameMapping) {
+  private void adjustShapeNames(List<Shape> shapes, Set<String> existingNames) {
     for (Shape shape : shapes) {      
       // TODO: Check which exact stencil sets we need to change
+      String name = null;
+      
       if (shape.getProperty("name") != null && shape.getProperty("name").length() > 0) {
         // shape.getStencil()!= null &&/
         // TASK_NAME.equals(shape.getStencil().getId())
-        String taskName = shape.getProperty("name");
-        String id = shape.getResourceId();
-        String newName = adjustNamesForEngine(taskName);
+        name = shape.getProperty("name");
 
-        if (nameMapping.containsKey(newName)) {
-          int counter = 1;
-          while (nameMapping.containsKey(newName + "_" + counter)) {
-            counter++;
-          }
-          newName = newName + "_" + counter;
-        }
-
-        nameMapping.put(taskName, newName);
-        shape.setResourceId(newName);
+      } else {
+        name = shape.getStencilId();
       }
-      adjustShapeNames(shape.getChildShapes(), nameMapping);
+
+      String newName = adjustNamesForEngine(name);
+
+      if (existingNames.contains(newName)) {
+        int counter = 1;
+        while (existingNames.contains(newName + "_" + counter)) {
+          counter++;
+        }
+        newName = newName + "_" + counter;
+      }
+
+      existingNames.add(newName);
+      shape.setResourceId(newName);
+      
+      adjustShapeNames(shape.getChildShapes(), existingNames);
     }
   }
 
