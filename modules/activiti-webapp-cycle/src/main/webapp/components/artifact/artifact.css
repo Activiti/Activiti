@@ -12,3 +12,11 @@
 .yui-skin-sam .yui-navset .yui-content {
 	background: none repeat scroll 0 0 #F9F9F9;
 }
+
+#artifact-image, #artifact-source {
+	overflow: auto;
+}
+
+#artifact-source {
+	margin: 1.2em;
+}

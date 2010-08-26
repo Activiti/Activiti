@@ -829,7 +829,7 @@ Activiti.service.Ajax = function() {
         else if (YAHOO.lang.isFunction(this.callbackHandler["on" + suffix])) {
           result = this.callbackHandler["on" + suffix].call(this.callbackHandler, response, obj.responseObj);
         }
-        Activiti.service.Ajax.displaySuccessMessage(this.name + "." + obj.methodName + suffix, response);
+ 				Activiti.service.Ajax["display" + suffix + "Message"].call(Activiti.service.Ajax, this.name + "." + obj.methodName + suffix, response);
       }
       if (result == false) {
         // The callback explicitly told the service NOT to dispatch an event
@@ -1226,6 +1226,8 @@ Activiti.service.Ajax = function() {
  */
 (function()
 {
+	var that = this;
+	
   /**
    * RepositoryService constructor.
    *
@@ -1235,8 +1237,9 @@ Activiti.service.Ajax = function() {
    */
   Activiti.service.RepositoryService = function RepositoryService_constructor(callbackHandler)
   {
-    Activiti.service.RepositoryService.superclass.constructor.call(this, "Activiti.service.RepositoryService", callbackHandler);
-    return this;
+		Activiti.service.RepositoryService.superclass.constructor.call(this, "Activiti.service.RepositoryService", callbackHandler);
+    that = this;
+		return this;
   };
 
   /**
@@ -1271,7 +1274,29 @@ Activiti.service.Ajax = function() {
      */
     loadTreeURL: function RepositoryService_loadTreeURL()
     {
-      return Activiti.service.REST_PROXY_URI_RELATIVE + "repo-tree";
+      return Activiti.service.REST_PROXY_URI_RELATIVE + "repo-tree?id=/&folder=true";
+    },
+
+		/**
+		 * TODO: document it.. Also see dynamicLoad in repo-tree.js
+		 *
+		 */
+		loadNodeData: function RepositoryService_loadNodeData(node, fnLoadComplete)
+		{
+			var obj = [node, fnLoadComplete];
+			this.jsonGet(this.loadNodeURL(node.data.id, node.data.folder), obj, "loadNodeData");
+	  },
+
+		/**
+		 * TODO: doc
+     * Creates the GET url used to load the tree
+     *
+     * @method loadTreeURL
+     * @return {string} The url
+     */
+    loadNodeURL: function RepositoryService_loadNodeURL(nodeid, folder)
+    {
+      return Activiti.service.REST_PROXY_URI_RELATIVE + "repo-tree?id=" + encodeURIComponent(nodeid) + "&folder=" + folder;
     },
 
 		/**
@@ -1296,7 +1321,29 @@ Activiti.service.Ajax = function() {
     loadArtifactURL: function RepositoryService_loadArtifactURL(artifactid)
     {
       return Activiti.service.REST_PROXY_URI_RELATIVE + "artifact?artifactId=" + encodeURIComponent(artifactid);
-    }
+    },
+
+		// TODO: doc
+    loadArtifactActionForm: function RepositoryService_loadArtifactActionForm(artifactId, artifactActionName, obj)
+    {
+		  this.jsonGet(this.loadArtifactActionFormURL(artifactId, artifactActionName), obj, "loadArtifactActionForm");
+    },
+
+		// TODO: doc
+    loadArtifactActionFormURL: function RepositoryService_loadArtifactActionFormURL(artifactId, artifactActionName)
+    {
+			return Activiti.service.REST_PROXY_URI_RELATIVE + "artifact-action-form?artifactId=" + encodeURIComponent(artifactId) + "&actionName=" + encodeURIComponent(artifactActionName);
+    },
+
+		executeArtifactAction: function RepositoryService_executeArtifactAction(artifactId, artifactActionName, variables, obj)
+		{
+			this.jsonPut(this.executeArtifactFormURL(artifactId, artifactActionName), variables, obj, "executeArtifactAction");
+		},
+		
+		executeArtifactFormURL: function RepositoryService_executeArtifactFormURL(artifactId, artifactActionName)
+		{
+			return Activiti.service.REST_PROXY_URI_RELATIVE + "artifact-action?artifactId=" + encodeURIComponent(artifactId) + "&actionName=" + encodeURIComponent(artifactActionName);
+		}
 
   });
 })();

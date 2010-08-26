@@ -1,0 +1,7 @@
+<webscript>
+  <shortname>Execute an action</shortname>
+  <description>Executes an action for an artifact</description>
+  <url>/artifact-action?artifactId={artifactId}&amp;actionName={artifactActionName}</url>
+  <authentication>user</authentication>
+  <format default="json">argument</format>
+</webscript>

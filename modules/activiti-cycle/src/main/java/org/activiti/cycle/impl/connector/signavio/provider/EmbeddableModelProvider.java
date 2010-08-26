@@ -1,8 +1,21 @@
+/* Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package org.activiti.cycle.impl.connector.signavio.provider;
 
 import java.io.IOException;
 
-import org.activiti.cycle.ContentRepresentationType;
+import org.activiti.cycle.Content;
+import org.activiti.cycle.ContentType;
 import org.activiti.cycle.RepositoryArtifact;
 import org.activiti.cycle.RepositoryException;
 import org.json.JSONArray;
@@ -25,16 +38,15 @@ import org.restlet.resource.Representation;
 public class EmbeddableModelProvider extends SignavioContentRepresentationProvider {
 
   public EmbeddableModelProvider() {
-    super("Embedded", ContentRepresentationType.HTML);
+    super("Embedded", ContentType.HTML, false);
   }
 
   @Override
-  public byte[] getContent(RepositoryArtifact artifact) {
+  public void addValueToContent(Content content, RepositoryArtifact artifact) {
     try {
       JSONArray embeddedModel = getEmbeddedModel(artifact);
       String hmtlSnippet = getHmtlSnippet(artifact, embeddedModel);
-      
-      return toBytes(hmtlSnippet);
+      content.setValue(hmtlSnippet);
     } catch (Exception ex) {
       throw new RepositoryException("Exception while retrieving embeddedModel from Signavio", ex);
     }
@@ -43,7 +55,7 @@ public class EmbeddableModelProvider extends SignavioContentRepresentationProvid
   public JSONArray getEmbeddedModel(RepositoryArtifact artifact) throws IOException, JSONException {
     Client client = getConnector(artifact).initClient();
 
-    Reference embeddedModelRef = new Reference(getConnector(artifact).getSignavioConfiguration().getSignavioUrl() + "purl");
+    Reference embeddedModelRef = new Reference(getConnector(artifact).getConfiguration().getSignavioUrl() + "purl");
 
     // Create POST parameters
     Form embeddedModelForm = new Form();
@@ -152,7 +164,7 @@ public class EmbeddableModelProvider extends SignavioContentRepresentationProvid
 
     return jsonArray;
   }
-  
+
   public String getHmtlSnippet(RepositoryArtifact artifact, JSONArray embeddedModelJSONArray) throws JSONException {
 
     // String htmlSnippet =
@@ -161,7 +173,7 @@ public class EmbeddableModelProvider extends SignavioContentRepresentationProvid
     // Creating the JSON Object for the Snippet
     JSONObject resultJsonObject = new JSONObject();
 
-    resultJsonObject.put("url", getConnector(artifact).getSignavioConfiguration().getModelUrl() + artifact.getId());
+    resultJsonObject.put("url", getConnector(artifact).getConfiguration().getModelUrl(artifact.getId()));
     resultJsonObject.put("overflowX", "fit");
     resultJsonObject.put("overflowY", "fit");
     resultJsonObject.put("zoomSlider", true);
@@ -177,17 +189,16 @@ public class EmbeddableModelProvider extends SignavioContentRepresentationProvid
       String tempRepType = tempJsonObject.getString("type");
 
       // Getting the authKey we need
-      if (tempRepType.equals("png"))
+      if (tempRepType.equals("png")) {
         authKey_png = tempJsonObject.getString("authkey");
-
-      else if (tempRepType.equals("json"))
+      } else if (tempRepType.equals("json")) {
         authKey_json = tempJsonObject.getString("authkey");
-
-      else if (tempRepType.equals("stencilset"))
+      } else if (tempRepType.equals("stencilset")) {
         authKey_stencilset = tempJsonObject.getString("authkey");
+      }
     }
 
-  authToken = authKey_png + "_" + authKey_json + "_" + authKey_stencilset;
+    authToken = authKey_png + "_" + authKey_json + "_" + authKey_stencilset;
 
     // An alternative algorithm for creating the authToken, if the order of
     // the JsonArray is static and doesn't change.
@@ -213,7 +224,7 @@ public class EmbeddableModelProvider extends SignavioContentRepresentationProvid
     // 2) + "mashup/signavio.js";
     // Letzteres um das 'p' in SERVER_URL wegzukriegen
 
-    String firstScriptTag = "<script type=\"text/javascript\" src=\"" + getConnector(artifact).getSignavioConfiguration().getMashupUrl() + "signavio.js"
+    String firstScriptTag = "<script type=\"text/javascript\" src=\"" + getConnector(artifact).getConfiguration().getMashupUrl() + "signavio.js"
             + "\"></script>";
     String secondScriptTag = "<script type=\"text/plain\">" + resultJsonObject.toString() + "</script>";
 
@@ -221,15 +232,14 @@ public class EmbeddableModelProvider extends SignavioContentRepresentationProvid
 
     return resultHtmlSnippet;
   }
-  
   /**
-   * When is this method used?
+   * Use this method to cancel the sharing of the embedded model
    */
   public void deleteEmbeddedModel(RepositoryArtifact artifact) {
     try {
       Client client = getConnector(artifact).initClient();
 
-      Reference embeddedModelRef = new Reference(getConnector(artifact).getSignavioConfiguration().getSignavioUrl() + "purl/" + artifact.getId() + "/info/");
+      Reference embeddedModelRef = new Reference(getConnector(artifact).getConfiguration().getSignavioUrl() + "purl/" + artifact.getId() + "/info/");
 
       Request embeddedModelRequest = new Request(Method.DELETE, embeddedModelRef);
 

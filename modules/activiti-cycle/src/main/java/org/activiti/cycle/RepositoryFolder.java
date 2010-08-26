@@ -22,6 +22,8 @@ import java.util.List;
  */
 public class RepositoryFolder extends RepositoryNode {
 
+  private static final long serialVersionUID = 1L;
+
   private List<RepositoryNode> children = null;
 
   public RepositoryFolder() {
@@ -30,48 +32,50 @@ public class RepositoryFolder extends RepositoryNode {
   public RepositoryFolder(RepositoryConnector connector) {
     super(connector);
   }
-  
+
   /**
    * returns all sub folders, which are resolved by a call to the
-   * {@link RepositoryConnector} this {@link RepositoryNode} is conntected to!
+   * {@link RepositoryConnector} this {@link RepositoryNode} is connected to!
    * Please note, that this may result in an exception if the connector is not
    * linked or the repository not reachable
    */
   public List<RepositoryFolder> getSubFolders() {
     ArrayList<RepositoryFolder> list = new ArrayList<RepositoryFolder>();
     for (RepositoryNode node : getChildren()) {
-      if (node instanceof RepositoryFolder)
-        list.add((RepositoryFolder)node);
+      if (node instanceof RepositoryFolder) {
+        list.add((RepositoryFolder) node);
+      }
     }
     return list;
   }
 
   /**
    * returns all artifacts, which are resolved by a call to the
-   * {@link RepositoryConnector} this {@link RepositoryNode} is conntected to!
+   * {@link RepositoryConnector} this {@link RepositoryNode} is connected to!
    * Please note, that this may result in an exception if the connector is not
    * linked or the repository not reachable
    */
   public List<RepositoryArtifact> getArtifacts() {
     ArrayList<RepositoryArtifact> list = new ArrayList<RepositoryArtifact>();
     for (RepositoryNode node : getChildren()) {
-      if (node instanceof RepositoryArtifact)
+      if (node instanceof RepositoryArtifact) {
         list.add((RepositoryArtifact) node);
+      }
     }
     return list;
   }
 
   /**
    * returns all children, which are resolved by a call to the
-   * {@link RepositoryConnector} this {@link RepositoryNode} is conntected to!
+   * {@link RepositoryConnector} this {@link RepositoryNode} is connected to!
    * Please note, that this may result in an exception if the connector is not
    * linked or the repository not reachable
    */
   public List<RepositoryNode> getChildren() {
-     // skip cache for now
+    // skip cache for now
     // if (children == null) {
-      // TODO: Think about if we really want to cache here, since that raises
-      // additional problems as well!
+    // TODO: Think about if we really want to cache here, since that raises
+    // additional problems as well!
     children = getConnector().getChildNodes(getId());
     // }
     return children;
@@ -80,8 +84,8 @@ public class RepositoryFolder extends RepositoryNode {
   /**
    * create and add a new file to this folder
    */
-  public void createFile(RepositoryArtifact file) {
-    getConnector().createNewFile(getId(), file);
+  public void createArtifact(RepositoryArtifact artifact, Content content) {
+    getConnector().createNewArtifact(getId(), artifact, content);
     // getFiles().add(file);
   }
 

@@ -1169,3 +1169,48 @@ Activiti.widget.PopupManager = function()
   });
 
 })();
+
+/**
+ * Activiti ExecuteArtifactActionForm.
+ *
+ * @namespace Activiti.widget
+ * @class Activiti.widget.ExecuteArtifactActionForm
+ */
+(function()
+{
+
+  /**
+   * ExecuteArtifactActionForm constructor.
+   *
+	 * @param id {string} The components id
+   * @parameter handler {object} The response handler object
+   * @return {Activiti.widget.ExecuteArtifactActionForm} The new Activiti.widget.ExecuteArtifactActionForm instance
+   * @constructor
+   */
+  Activiti.widget.ExecuteArtifactActionForm = function ExecuteArtifactActionForm_constructor(id, artifactId, artifactActionName)
+  {
+    Activiti.widget.ExecuteArtifactActionForm.superclass.constructor.call(this, id);
+    this.artifactId = artifactId;
+		this.artifactActionName = artifactActionName;
+    this.service = new Activiti.service.RepositoryService(this);
+    this.service.setCallback("loadArtifactActionForm", { fn: this.onLoadFormSuccess, scope: this }, {fn: this.onLoadFormFailure, scope: this });
+    this.service.loadArtifactActionForm(this.artifactId, this.artifactActionName);
+    return this;
+  };
+
+  YAHOO.extend(Activiti.widget.ExecuteArtifactActionForm, Activiti.widget.Form,
+  {
+
+     /**
+     * Start a process instance
+     *
+     * @method doSubmit
+     */
+    doSubmit: function ExecuteArtifactActionForm__doSubmit(variables)
+    {
+      this.service.executeArtifactAction(this.artifactId, this.artifactActionName, variables);
+    }
+
+  });
+
+})();

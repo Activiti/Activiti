@@ -14,13 +14,13 @@ package org.activiti.cycle;
 
 import java.util.List;
 
-import org.activiti.cycle.impl.RepositoryRegistry;
+import org.activiti.cycle.impl.plugin.ActivitiCyclePluginRegistry;
 
 /**
  * The type specifies the type of an artifact, e.g. Signavio model, jpdl process
  * model, text file, word document, ...
  * 
- * Linked to this type {@link ContentRepresentation}s for the GUI and
+ * Linked to this type {@link ContentRepresentationDefinition}s for the GUI and
  * {@link ArtifactAction}s are defined.
  * 
  * TODO: Think about hierarchy
@@ -48,11 +48,11 @@ public class ArtifactType {
   }
 
   public List<Class< ? extends ArtifactAction>> getRegisteredActions() {
-    return RepositoryRegistry.getArtifactAction(getTypeIdentifier());
+    return ActivitiCyclePluginRegistry.getArtifactAction(getTypeIdentifier());
   }
 
   public List<Class< ? extends ContentRepresentationProvider>> getContentRepresentationProviders() {
-    return RepositoryRegistry.getContentRepresentationProviders(getTypeIdentifier());
+    return ActivitiCyclePluginRegistry.getContentRepresentationProviders(getTypeIdentifier());
   }
 
   public String getName() {

@@ -45,7 +45,6 @@
       <groupId>org.activiti</groupId>
       <artifactId>activiti-webapp</artifactId>
       <type>war</type>      
-      <version>5.0.beta1-SNAPSHOT</version>
       <scope>runtime</scope>
     </dependency> 
   </dependencies>

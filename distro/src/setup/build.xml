@@ -5,6 +5,8 @@
 	<property file="${user.home}/.activiti/build.properties" />
   <property file="build.properties" />
   <property file="build.${db}.properties" />
+  <!-- TODO: move that to the standalone profile? -->
+	<property file="files/cfg.cycle/cycle.properties" />
 
   <property name="activiti.home" value=".." /> 
 	<property name="activiti.version" value="5.0.beta1-SNAPSHOT" />	  
@@ -17,8 +19,13 @@
   <property name="tomcat.filename" value="apache-tomcat-${tomcat.version}.zip" /> 
   <property name="tomcat.download.url" value="${apache.mirror.url}tomcat/tomcat-6/v${tomcat.version}/bin/${tomcat.filename}" />    
 
+<!--
+  Use as long the beta1 is not released:
+	<property name="activiti.modeler.download.url" value="http://activiti.org/downloads/activiti-modeler-5.0.alpha4.war" />
+	-->
 	<property name="activiti.modeler.download.url" value="http://activiti.org/downloads/activiti-modeler-${activiti.version}.war" />
   <available property="is.activiti.modeler.available" file="${activiti.home}/setup/build/activiti-modeler-${activiti.version}.war" />
+  <property name="activiti.modeler.repository.home" value="${activiti.home}/apps/activiti-model-repository" />
 	
   <target name="demo.setup" depends="h2.install, h2.start, 
   	                                 db.create, 
@@ -27,6 +34,7 @@
   	                                 db.demo.data,
   	                                 deploy.activiti.rest.into.tomcat, 
                                      deploy.activiti.explorer.and.probe.into.tomcat,
+  									 deploy.activiti.cycle.into.tomcat,
   	                                 tomcat.start,
                                      deploy.activiti.modeler.into.tomcat "/>
   
@@ -247,9 +255,30 @@ JAVA_OPTS="-Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=8787
     <unzip dest="${tomcat.home}/webapps/activiti-cycle" src="${activiti.home}/setup/build/activiti-cycle.war" />
   </target>
 
+	<target name="deploy.activiti.cycle.into.tomcat" depends="build.webapp.activiti.cycle">		
+		<mkdir dir="${tomcat.home}/webapps/activiti-cycle" />
+  	<unzip dest="${tomcat.home}/webapps/activiti-cycle" src="${activiti.home}/setup/build/activiti-cycle.war" />
+		
+		<!-- unzip bpmn 20 example models into activiti-modeler dir -->
+		<unzip dest="${activiti.modeler.repository.home}" src="files/examples/modeler-examples.zip" />
+		
+		<!-- unzip eclipse  example models into workspace dir -->
+		<property name="cycle.workspace" location="${activiti.home}/apps/${cycle.workspace.file.path}"/>
+		<mkdir dir="${cycle.workspace}" />
+		<unzip dest="${cycle.workspace}" src="files/examples/eclipse-projects.zip" />
+
+		<copy todir="${tomcat.home}/bin" overwrite="true">
+		   <fileset dir="files/cfg.cycle" includes="*.cycle-conf.xml" />
+		</copy>
+		<replace dir="${tomcat.home}/bin" includes="*.cycle-conf.xml">
+			<replacefilter token="@activiti.modeler.base.url@" value="${activiti.modeler.base.url}" />
+			<replacefilter token="@cycle.base.file.path@" value="${cycle.workspace}" />
+		</replace>
+	</target>
+	
 	<target name="deploy.activiti.modeler.into.tomcat" unless="skip.deploy.activiti.modeler">
 		<antcall target="internal.download.activiti.modeler" /> <!-- Can't use depends for this, due to http://ant.apache.org/faq.html#stop-dependency-->
-    <mkdir dir="${activiti.home}/apps/activiti-model-repository"/>
+    <mkdir dir="${activiti.modeler.repository.home}"/>
 		<copy file="${activiti.home}/setup/build/activiti-modeler-${activiti.version}.war"
 		      tofile="${tomcat.home}/webapps/activiti-modeler.war"/>
 	</target>

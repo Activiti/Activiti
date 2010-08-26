@@ -1,8 +1,19 @@
+/* Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package org.activiti.cycle.impl.connector.signavio.provider;
 
 import java.io.IOException;
 import java.io.StringWriter;
-import java.util.logging.Logger;
 
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Transformer;
@@ -20,24 +31,22 @@ import org.restlet.resource.DomRepresentation;
 
 public abstract class SignavioContentRepresentationProvider extends ContentRepresentationProvider {
 
-  protected Logger log = Logger.getLogger(this.getClass().getName());
-
-  public SignavioContentRepresentationProvider(String name, String type) {
-    super(name, type);
+  public SignavioContentRepresentationProvider(String name, String type, boolean downloadable) {
+    super(name, type, downloadable);
   }
 
   public SignavioConnector getConnector(RepositoryArtifact artifact) {
-    return (SignavioConnector) artifact.getConnector();
+    return (SignavioConnector) artifact.getOriginalConnector();
   }
-  
-  public Response getJsonResponse(RepositoryArtifact artifact, String urlSuffix) {
+
+  public Response getJsonResponse(RepositoryArtifact artifact, String urlSuffix) throws IOException {
     SignavioConnector connector = getConnector(artifact);
     String url = connector.getModelUrl(artifact) + urlSuffix;
     return connector.getJsonResponse(url);
   }
 
-  public String getXmlAsString(DomRepresentation xmlData) throws TransformerFactoryConfigurationError, TransformerConfigurationException,
-          TransformerException, IOException {
+  public String getXmlAsString(DomRepresentation xmlData) throws TransformerFactoryConfigurationError, TransformerConfigurationException, TransformerException,
+          IOException {
     StringWriter stringWriter = new StringWriter();
     StreamResult streamResult = new StreamResult(stringWriter);
     TransformerFactory transformerFactory = TransformerFactory.newInstance();

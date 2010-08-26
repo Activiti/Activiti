@@ -1,45 +1,57 @@
 package org.activiti.cycle;
 
-import org.activiti.cycle.impl.RepositoryRegistry;
+import java.util.logging.Logger;
+
+import org.activiti.cycle.impl.plugin.ActivitiCyclePluginRegistry;
 
 /**
  * A {@link ContentRepresentationProvider} is responsible to create
- * {@link ContentRepresentation} objects for certain {@link RepositoryArtifact}
- * s. It is registered via the {@link RepositoryRegistry} and new providers can
- * be added on the fly.
+ * {@link ContentRepresentationDefinition} objects for certain
+ * {@link RepositoryArtifact} s. It is registered via the
+ * {@link ActivitiCyclePluginRegistry} and new providers can be added on the fly.
  * 
- * @author ruecker
+ * @author bernd.ruecker
  */
 public abstract class ContentRepresentationProvider {
 
-  private String contentRepresentationName;
-  private String contentRepresentationType;
-  
-  public ContentRepresentationProvider(String contentRepresentationName, String contentRepresentationType) {
+  protected Logger log = Logger.getLogger(this.getClass().getName());
+
+  private final String contentRepresentationName;
+  private final String contentRepresentationType;
+  private final boolean downloadable;
+
+  public ContentRepresentationProvider(String contentRepresentationName, String contentRepresentationType, boolean contentDownloadable) {
     this.contentRepresentationName = contentRepresentationName;
     this.contentRepresentationType = contentRepresentationType;
+    this.downloadable = contentDownloadable;
   }
-  
+
   /**
-   * creates the {@link ContentRepresentation} object for the given artifact
+   * creates the {@link ContentRepresentationDefinition} object for the given
+   * artifact
    */
-  public ContentRepresentation createContentRepresentation(RepositoryArtifact artifact, boolean includeBinaryContent) {
-    ContentRepresentation contentRepresentation = new ContentRepresentation();
-    contentRepresentation.setArtifact(artifact);
+  public ContentRepresentationDefinition createContentRepresentationDefinition(RepositoryArtifact artifact) {
+    ContentRepresentationDefinition contentRepresentation = new ContentRepresentationDefinition();
+    // contentRepresentation.setArtifact(artifact);
     contentRepresentation.setName(contentRepresentationName);
     contentRepresentation.setType(contentRepresentationType);
-    if (includeBinaryContent) {
-      contentRepresentation.setContent(getContent(artifact));
-      contentRepresentation.setContentFetched(true);
-    }
+    contentRepresentation.setDownloadable(downloadable);
     return contentRepresentation;
   }
-  
-  public byte[] toBytes(String result) {
-    return result.getBytes();
-  }  
-    
-  public abstract byte[] getContent(RepositoryArtifact artifact);
+
+  public abstract void addValueToContent(Content content, RepositoryArtifact artifact);
+
+  public Content createContent(RepositoryArtifact artifact) {
+    Content c = new Content();
+
+    addValueToContent(c, artifact);
+    if (c.isNull()) {
+      throw new RepositoryException("No content created for artifact " + artifact.getId() + " ' from provider '" + getContentRepresentationName()
+              + "' (was null). Please check provider or artifact.");
+    }
+
+    return c;
+  }
 
   /**
    * key for name in properties for GUI
@@ -52,5 +64,9 @@ public abstract class ContentRepresentationProvider {
 
   public String getContentRepresentationType() {
     return contentRepresentationType;
+  }
+  
+  public boolean isContentDownloadable() {
+    return downloadable;
   }
 }

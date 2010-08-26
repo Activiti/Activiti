@@ -1,12 +1,11 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <modelVersion>4.0.0</modelVersion>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
 
-  <name>Activiti - Rest</name>
-  <groupId>org.activiti</groupId>
-  <artifactId>activiti-rest</artifactId>
-  <packaging>war</packaging>
+	<name>Activiti - Rest</name>
+	<groupId>org.activiti</groupId>
+	<artifactId>activiti-rest</artifactId>
+	<packaging>war</packaging>
 
   <parent>
     <groupId>org.activiti</groupId>
@@ -15,68 +14,77 @@
     <version>5.0.beta1-SNAPSHOT</version>
   </parent>
 
-  <build>
-    <plugins>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-war-plugin</artifactId>
-        <configuration>
-          <!--
-             <overlays>
-                <overlay>
-                <groupId>org.springframework.extensions.surf</groupId>
-                <artifactId>spring-surf-application</artifactId>
-                <type>war</type>
-              </overlay>
-            </overlays>
-          -->
-        </configuration>
-      </plugin>
-      <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>tomcat-maven-plugin</artifactId>
-        <configuration>
-          <url>http://localhost:8080/manager</url>
-        </configuration>
-      </plugin>
-    </plugins>
-  </build>
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-war-plugin</artifactId>
+				<configuration>
+					<!--
+						<overlays> <overlay>
+						<groupId>org.springframework.extensions.surf</groupId>
+						<artifactId>spring-surf-application</artifactId> <type>war</type>
+						</overlay> </overlays>
+					-->
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>tomcat-maven-plugin</artifactId>
+				<configuration>
+					<url>http://localhost:8080/manager</url>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
 
-  <dependencies>
+	<dependencies>
 
-    <dependency>
-      <groupId>javax.servlet</groupId>
-      <artifactId>servlet-api</artifactId>
-      <scope>provided</scope>
-    </dependency>
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>servlet-api</artifactId>
+			<scope>provided</scope>
+		</dependency>
 
-    <dependency>
-      <groupId>org.activiti</groupId>
-      <artifactId>activiti-engine</artifactId>
-      <scope>provided</scope>
-    </dependency>
+		<dependency>
+			<groupId>org.activiti</groupId>
+			<artifactId>activiti-engine</artifactId>
+			<scope>provided</scope>
+		</dependency>
     <dependency>
       <groupId>org.activiti</groupId>
       <artifactId>activiti-cycle</artifactId>
       <scope>provided</scope>
     </dependency>
 
-    <dependency>
-      <groupId>org.springframework</groupId>
-      <artifactId>spring-core</artifactId>
-      <version>3.0.1.RELEASE</version>
-    </dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-core</artifactId>
+			<version>3.0.1.RELEASE</version>
+		</dependency>
 
-    <dependency>
+		<dependency>
 			<groupId>org.springframework.extensions.surf</groupId>
 			<artifactId>spring-webscripts</artifactId>
 		</dependency>
-
-    <dependency>
+		
+		<dependency>
 			<groupId>org.springframework.extensions.surf</groupId>
 			<artifactId>spring-webscripts-api</artifactId>
 		</dependency>
-    
-  </dependencies>
+		
+		<dependency>
+			<groupId>org.springframework.extensions.surf</groupId>
+			<artifactId>spring-surf</artifactId>
+			<version>1.0.0.M3</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.activiti</groupId>
+			<artifactId>activiti-cycle</artifactId>
+			<version>5.0.cycle-SNAPSHOT</version>
+			<scope>compile</scope>
+		</dependency>
+	</dependencies>
 
 </project>

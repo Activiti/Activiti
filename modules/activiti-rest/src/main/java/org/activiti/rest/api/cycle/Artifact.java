@@ -18,19 +18,19 @@ package org.activiti.rest.api.cycle;
 @Deprecated
 public class Artifact {
 
-  private Long id;
+  private String id;
   private String url;
 
-  public Artifact(Long id, String url) {
+  public Artifact(String id, String url) {
     this.id = id;
     this.url = url;
   }
 
-  public void setId(Long id) {
+  public void setId(String id) {
     this.id = id;
   }
 
-  public Long getId() {
+  public String getId() {
     return id;
   }
 

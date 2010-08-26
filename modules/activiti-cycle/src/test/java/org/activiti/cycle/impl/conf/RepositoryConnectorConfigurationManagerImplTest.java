@@ -1,0 +1,145 @@
+package org.activiti.cycle.impl.conf;
+
+import static org.junit.Assert.assertEquals;
+
+import java.io.File;
+import java.util.List;
+
+import org.activiti.cycle.RepositoryConnector;
+import org.activiti.cycle.impl.connector.fs.FileSystemConnectorConfiguration;
+import org.activiti.cycle.impl.connector.signavio.SignavioConnectorConfiguration;
+import org.activiti.cycle.impl.connector.view.CustomizedViewConfiguration;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+
+/**
+ * TODO: Remove sysouts
+ * 
+ * @author christian.lipphardt
+ */
+public class RepositoryConnectorConfigurationManagerImplTest {
+
+  private CycleConfigurationService configurationService;
+
+  @Before
+  public void setUp() throws Exception {
+    configurationService = new SimpleXstreamRepositoryConnectorConfigurationManager();
+  }
+
+  @After
+  public void tearDown() throws Exception {
+    configurationService = null;
+  }
+  
+  @Test
+  public void testAPI() {
+    ConfigurationContainer enterpriseConfiguration = new ConfigurationContainer("camunda");
+    // This one is for all, so don't save a password, the GUI should query it!
+    RepositoryConnectorConfiguration conf1 = new SignavioConnectorConfiguration("Activiti Modeler", "http://localhost:8080/activiti-modeler/");
+    enterpriseConfiguration.addRepositoryConnectorConfiguration(conf1);
+
+    ConfigurationContainer userConfiguration = new ConfigurationContainer("bernd");
+    userConfiguration.addParent(enterpriseConfiguration);
+    RepositoryConnectorConfiguration conf2 = new FileSystemConnectorConfiguration("Hard Drive", new File("c:"));
+    userConfiguration.addRepositoryConnectorConfiguration(conf2);
+    // This one ist just for me, I save the password
+    RepositoryConnectorConfiguration conf3 = new SignavioConnectorConfiguration("Signavio SAAS", "http://editor.signavio.com/", null,
+            "bernd.ruecker@camunda.com", "xxx");
+    userConfiguration.addRepositoryConnectorConfiguration(conf3);
+    
+    // now we have a config for the user containing 2 repository configs
+
+    configurationService.saveConfiguration(enterpriseConfiguration);
+    configurationService.saveConfiguration(userConfiguration);
+    
+    ConfigurationContainer loadedConf = configurationService.getConfiguration("bernd");
+
+    // ConfigurationContainer configuration =
+    // configurationService.getConfiguration("bernd");
+    List<RepositoryConnectorConfiguration> connectors = loadedConf.getConnectorConfigurations();
+    assertEquals(3, connectors.size());
+    assertEquals("Hard Drive", connectors.get(0).getName());
+    assertEquals("Signavio SAAS", connectors.get(1).getName());
+    assertEquals("Activiti Modeler", connectors.get(2).getName());
+
+    RepositoryConnector connector = new CustomizedViewConfiguration("http://localhost:8080/activiti-cycle/", loadedConf).createConnector();
+  }
+  //  
+  //
+  // @Test
+  // public void testPersistRepositoryConfiguration() {
+  // SignavioConnectorConfiguration sigConf = new
+  // SignavioConnectorConfiguration();
+  // repoConfManager.persistRepositoryConfiguration(sigConf);
+  //
+  // DemoConnectorConfiguration demoConf = new DemoConnectorConfiguration();
+  // repoConfManager.persistRepositoryConfiguration(demoConf);
+  //
+  // FileSystemConnectorConfiguration fileConf = new
+  // FileSystemConnectorConfiguration();
+  // repoConfManager.persistRepositoryConfiguration(fileConf);
+  // }
+  //
+  // @Test
+  // public void testCreateRepositoryConfiguration() {
+  // // repoConfManager.registerRepositoryConnector(DemoConnector.class);
+  // // repoConfManager.registerRepositoryConnector(SignavioConnector.class);
+  // // repoConfManager.registerRepositoryConnector(FileSystemConnector.class);
+  //
+  // RepositoryConnectorConfiguration config = new
+  // SignavioConnectorConfiguration("Local Signavio", "http://localhost:8080",
+  // null, "christian.lipphardt", "xxx");
+  // System.out.println(config);
+  //
+  // repoConfManager.persistRepositoryConfiguration(config);
+  // }
+  //
+  // @Test
+  // public void testRepoConfigUsage() {
+  // // register connectors
+  // // repoConfManager.registerRepositoryConnector(DemoConnector.class);
+  // // repoConfManager.registerRepositoryConnector(SignavioConnector.class);
+  // // repoConfManager.registerRepositoryConnector(FileSystemConnector.class);
+  //
+  // // create configurations
+  // repoConfManager.persistRepositoryConfiguration(new
+  // SignavioConnectorConfiguration("Activiti Modeler",
+  // "http://localhost:8080/activiti-modeler/", null,
+  // "christian.lipphardt", "xxx"));
+  // repoConfManager.persistRepositoryConfiguration(new
+  // FileSystemConnectorConfiguration("Hard Drive", new File("c:")));
+  //
+  // // // create connector instances based on configs
+  // // List<RepositoryConnector> connectors =
+  // // repoConfManager.createRepositoryConnectorsFromConfigurations();
+  // //
+  // // // use connectors
+  // // for (RepositoryConnector repositoryConnector : connectors) {
+  // // List<RepositoryNode> nodes = repositoryConnector.getChildNodes("");
+  // // System.out.println(repositoryConnector.getClass().getName() + ": " +
+  // // nodes);
+  // // }
+  // }
+  //
+  // @Test
+  // public void testLoadRepoConfig() {
+  // // register connectors
+  // // config for demo connector does not exists, what to do?
+  // // repoConfManager.registerRepositoryConnector(DemoConnector.class);
+  // CycleConfigurationService repoConfManager1 = new
+  // SimpleXstreamRepositoryConnectorConfigurationManager();
+  // // repoConfManager1.registerRepositoryConnector(SignavioConnector.class);
+  // // repoConfManager1.registerRepositoryConnector(FileSystemConnector.class);
+  //
+  // // get configs from filesystem
+  // List< ? extends RepositoryConnectorConfiguration> configs =
+  // repoConfManager1.findAllRepositoryConfigurations();
+  // for (RepositoryConnectorConfiguration config : configs) {
+  // System.out.println(config);
+  // RepositoryConnector connector = config.createConnector();
+  // List<RepositoryNode> nodes = connector.getChildNodes("");
+  // System.out.println(connector.getClass().getName() + ": " + nodes);
+  // }
+  // }
+}

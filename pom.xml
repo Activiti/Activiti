@@ -55,16 +55,22 @@
 				<artifactId>activiti-engine</artifactId>
 				<version>${version}</version>
 			</dependency>
-      <dependency>
-        <groupId>org.activiti</groupId>
-        <artifactId>activiti-pvm</artifactId>
-        <version>${version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.activiti</groupId>
-        <artifactId>activiti-cycle</artifactId>
-        <version>${version}</version>
-      </dependency>
+	     	<dependency>
+	        	<groupId>org.activiti</groupId>
+	        	<artifactId>activiti-pvm</artifactId>
+	        	<version>${version}</version>
+	      	</dependency>
+	      	<dependency>
+	        	<groupId>org.activiti</groupId>
+	        	<artifactId>activiti-cycle</artifactId>
+	        	<version>${version}</version>
+	     	</dependency>
+			<dependency>
+				<groupId>org.activiti</groupId>
+				<artifactId>activiti-webapp</artifactId>
+				<type>war</type>
+				<version>${version}</version>
+			</dependency> 
 			<dependency>
 				<groupId>org.apache.ant</groupId>
 				<artifactId>ant</artifactId>
@@ -164,6 +170,30 @@
 		  <artifactId>commons-logging</artifactId>
 		  <version>1.1.1</version>
 		</dependency>
+		<!-- required for Activiti Cycle file system connector -->
+		<dependency>
+			<groupId>com.thoughtworks.xstream</groupId>
+			<artifactId>xstream</artifactId>
+			<version>1.3.1</version>
+		</dependency>
+		<!-- required for Activiti Cycle file system connector -->
+		<dependency>
+		    <groupId>eu.medsea.mimeutil</groupId>
+		    <artifactId>mime-util</artifactId>
+		    <version>2.1.3</version>
+		</dependency>
+		<dependency>
+		  <groupId>org.slf4j</groupId>
+		  <artifactId>slf4j-jdk14</artifactId>
+		  <version>1.6.1</version>
+		</dependency>		
+		<dependency>
+			<!-- required for Activiti Cycle Plugin Scanning -->
+		    <groupId>org.scannotation</groupId>
+		    <artifactId>scannotation</artifactId>
+		    <version>1.0.2</version>
+		</dependency>
+		
     </dependencies>
   </dependencyManagement>
 
@@ -238,8 +268,9 @@
 			<id>check</id>
 			<modules>
 		    <module>modules/activiti-engine-examples</module>
-        <module>modules/activiti-engine-test-cfg</module>
+	        <module>modules/activiti-engine-test-cfg</module>
 		    <module>modules/activiti-rest</module>
+		    <module>modules/activiti-cycle</module>
 			</modules>
 		</profile>
     <profile>
@@ -261,6 +292,7 @@
 				<module>modules/activiti-rest</module>
 				<module>modules/activiti-probe</module>
 				<module>modules/activiti-explorer</module>
+				<module>modules/activiti-cycle</module>
 				<module>modules/activiti-webapp-cycle</module>
 			</modules>
 		</profile>

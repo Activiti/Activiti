@@ -143,7 +143,7 @@
         class="org.activiti.rest.api.management.TableDataGet"
         parent="activitiWebScript">
   </bean>
-
+  
   <bean id="webscript.org.activiti.rest.api.cycle.tree.get"
         class="org.activiti.rest.api.cycle.TreeGet"
         parent="activitiWebScript">
@@ -153,5 +153,20 @@
         class="org.activiti.rest.api.cycle.ArtifactGet"
         parent="activitiWebScript">
   </bean>
-  
+
+  <bean id="webscript.org.activiti.rest.api.cycle.content.get"
+        class="org.activiti.rest.api.cycle.ContentGet"
+        parent="webscript">
+  </bean>
+
+  <bean id="webscript.org.activiti.rest.api.cycle.artifact-action-form.get"
+        class="org.activiti.rest.api.cycle.ArtifactActionFormGet"
+        parent="activitiWebScript">
+  </bean>
+
+  <bean id="webscript.org.activiti.rest.api.cycle.action-execution.put"
+        class="org.activiti.rest.api.cycle.ActionExecutionPut"
+        parent="activitiWebScript">
+  </bean>
+
 </beans>

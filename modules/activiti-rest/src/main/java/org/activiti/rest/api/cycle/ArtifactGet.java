@@ -12,12 +12,26 @@
  */
 package org.activiti.rest.api.cycle;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpSession;
+
+import org.activiti.cycle.ContentRepresentationDefinition;
+import org.activiti.cycle.ContentType;
+import org.activiti.cycle.DownloadContentAction;
+import org.activiti.cycle.RepositoryArtifact;
+import org.activiti.cycle.RepositoryConnector;
+import org.activiti.rest.api.cycle.dto.ContentView;
+import org.activiti.rest.api.cycle.dto.DownloadActionView;
 import org.activiti.rest.util.ActivitiWebScript;
 import org.springframework.extensions.webscripts.Cache;
 import org.springframework.extensions.webscripts.Status;
 import org.springframework.extensions.webscripts.WebScriptRequest;
+import org.springframework.extensions.webscripts.servlet.WebScriptServletRequest;
 
 /**
  * @author Nils Preusker
@@ -26,12 +40,56 @@ public class ArtifactGet extends ActivitiWebScript {
 
   @Override
   protected void executeWebScript(WebScriptRequest req, Status status, Cache cache, Map<String, Object> model) {
+    // Retrieve the artifactId from the request
     String artifactId = getString(req, "artifactId");
-    // TODO: add service to retrieve artifacts by id
 
-    long id = Long.parseLong(artifactId);
+    // Retrieve session and repo connector
+    String cuid = getCurrentUserId(req);
 
-    model.put("artifact", new Artifact(id, id == 1 ? "http://jorambarrez.be/files/blog/bpmn2_sneakpeek/vacationRequest.png"
-            : "http://www.jorambarrez.be/files/blog/jbpm_43_released/jbpm_evolution.png"));
+    HttpSession session = ((WebScriptServletRequest) req).getHttpServletRequest().getSession(true);
+    RepositoryConnector conn = SessionUtil.getRepositoryConnector(cuid, session);
+
+    // Retrieve the artifact from the repository
+    RepositoryArtifact artifact = conn.getRepositoryArtifact(artifactId);
+
+    List<ContentView> contentViews = new ArrayList<ContentView>();
+    for (ContentRepresentationDefinition representation : artifact.getContentRepresentationDefinitions()) {
+      try {
+        if (representation.getType().equals(ContentType.TEXT) || representation.getType().equals(ContentType.XML) || representation.getType().equals(ContentType.HTML)) {
+          String content = conn.getContent(artifactId, representation.getName()).asString();
+          contentViews.add(new ContentView(representation.getType(), representation.getName(), content));
+        } else if (representation.getType().startsWith("image/")) {
+          String url = req.getServerPath() + req.getContextPath() + "/service/content?artifactId=" + URLEncoder.encode(artifactId, "UTF-8") + "&content-type=" + URLEncoder.encode(representation.getType(), "UTF-8");
+          contentViews.add(new ContentView(representation.getType(), representation.getName(), url));
+        }
+      } catch (UnsupportedEncodingException e) {
+        // should never be reached as long as we use UTF-8, which is valid in
+        // java on all platforms
+        throw new RuntimeException(e);
+      }
+    }
+
+    model.put("actions", artifact.getParametrizedActions()); // label, name
+
+    // Create downloadContentView DTOs
+    List<DownloadActionView> downloads = new ArrayList<DownloadActionView>();
+    for (DownloadContentAction action : artifact.getDownloadContentActions()) {
+      try {
+        String url = req.getServerPath() + req.getContextPath() + "/service/content?artifactId=" + URLEncoder.encode(artifactId, "UTF-8") + "&content-type="
+                + URLEncoder.encode(action.getDefiniton().getType(), "UTF-8");
+        downloads.add(new DownloadActionView(action.getLabel(), url, action.getDefiniton().getType()));
+      } catch (UnsupportedEncodingException e) {
+        // should never be reached as long as we use UTF-8, which is valid in
+        // java on all platforms
+        throw new RuntimeException(e);
+      }
+    }
+    model.put("downloads", downloads);
+
+    model.put("links", artifact.getOpenUrlActions()); // label, name, url
+
+    model.put("artifactId", artifact.getId());
+    model.put("contentViews", contentViews);
+
   }
 }

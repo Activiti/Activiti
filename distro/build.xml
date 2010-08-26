@@ -3,6 +3,7 @@
 <project name="activiti.distro" default="distro">
   
   <property file="${user.home}/.activiti/build.properties" />
+
   <property name="activiti.version" value="5.0.beta1-SNAPSHOT" /> 
   <property name="target.distro.root" value="target/activiti-${activiti.version}" />
 	<property name="activiti.website" value="../../activiti-website" />
@@ -10,6 +11,10 @@
   <condition property="mvn.executable" value="mvn.bat" else="mvn">
      <os family="windows"/>
   </condition>
+
+   <condition property="mvn.executable" value="mvn.bat" else="mvn">
+     <os family="windows"/>
+   </condition>
 
   <target name="clean">
   	<delete dir="target" />
@@ -41,7 +46,7 @@
         <include name="activiti-pvm-*.jar"/>
       </fileset>
     </copy>
-  	
+      	
     <mkdir dir="${target.distro.root}/setup/files/webapps/activiti-probe.war" />
     <unzip dest="${target.distro.root}/setup/files/webapps/activiti-probe.war" 
            src="../modules/activiti-probe/target/activiti-probe-${activiti.version}.war"/>
@@ -71,6 +76,25 @@
   		<fileset dir="${target.distro.root}/setup/files/webapps/activiti-rest.war/WEB-INF/lib" />
   	</delete>
 
+    <!-- Copy activiti-cycle, spring-surf and xstream jars to lib directory of activiti-rest -->
+    <copy todir="${target.distro.root}/setup/files/webapps/activiti-rest.war/WEB-INF/lib">
+    	<fileset dir="../modules/activiti-cycle/target">
+    		<include name="activiti-cycle-*.jar"/>
+    		<include name="spring-surf-*.jar"/>
+    	</fileset>
+    	<fileset dir="../modules/activiti-rest/target/activiti-rest-${activiti.version}/WEB-INF/lib/">
+    		<include name="xstream-*.jar"/>
+    		<include name="xpp3_min-*.jar"/>
+    		<include name="com.noelios.restlet*.jar"/>
+    		<include name="org.restlet*.jar"/>
+    		<include name="mime-util-*.jar"/>
+    		<include name="slf4j-api-*.jar"/>
+    		<include name="slf4j-jdk14-*.jar"/>
+    		<include name="scannotation-*.jar"/>
+    		<include name="javassist-*.jar"/>
+    	</fileset>
+    </copy>
+
     <mkdir dir="${target.distro.root}/setup/files/webapps/activiti-engine-init.war" />
     <unzip dest="${target.distro.root}/setup/files/webapps/activiti-engine-init.war" 
            src="../modules/activiti-engine-init/target/activiti-engine-init-${activiti.version}.war"/>
@@ -93,7 +117,7 @@
     </exec>
   </target>
   
-  <target name="build.userguide" unless="nodocs">
+  <target name="build.userguide" unless="nodocs" >
     <ant antfile="../userguide/build.xml" inheritall="false" />
     <mkdir dir="${target.distro.root}/docs/userguide" />
   	<copy todir="${target.distro.root}/docs/userguide">

@@ -15,7 +15,6 @@
      <os family="windows"/>
   </condition>
 
-  
   <target name="pre.commit.check">
     <exec executable="${mvn.executable}" dir="..">
       <arg line="-Pcheck clean install" />
@@ -131,7 +130,7 @@ Then run test.demo.setup to make it get placed inside your tomcat server." unles
             username="activiti"
             password="activiti"
             path="/activiti-${webapp.redeploy.module}"
-            war="file://${basedir}/../modules/activiti-${webapp.redeploy.module}/target/activiti-${webapp.redeploy.module}-${activiti.version}.war"/>
+            war="${basedir}/../modules/activiti-webapp-${webapp.redeploy.module}/target/activiti-webapp-${webapp.redeploy.module}-${activiti.version}.war"/>
   </target>
 
 
@@ -164,7 +163,7 @@ Then run test.demo.setup to make it get placed inside your tomcat server." unles
       <fileset dir="../modules/activiti-webapp/src/main/webapp/" excludes="WEB-INF/web.xml" />
     </copy>
     <copy todir="${tomcat.home}/webapps/activiti-${webapp.redeploy.module}" verbose="true">
-      <fileset dir="../modules/activiti-${webapp.redeploy.module}/src/main/webapp/" excludes="WEB-INF/web.xml" />
+      <fileset dir="../modules/activiti-webapp-${webapp.redeploy.module}/src/main/webapp/" excludes="WEB-INF/web.xml" />
     </copy>
   </target>
 
