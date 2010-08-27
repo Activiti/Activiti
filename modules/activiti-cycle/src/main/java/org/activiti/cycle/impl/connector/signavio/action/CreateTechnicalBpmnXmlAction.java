@@ -70,7 +70,7 @@ public class CreateTechnicalBpmnXmlAction extends ParametrizedFreemakerTemplateA
     String sourceJson = getBpmn20Json();
     String transformedJson = applyJsonTransformations(sourceJson);
     String bpmnXml = transformToBpmn20(transformedJson);
-    createTargetArtifact(targetFolder, targetName + ".bpmn.xml", bpmnXml, SignavioConnector.BPMN_2_0_XML);
+    createTargetArtifact(targetFolder, targetName + ".bpmn20.xml", bpmnXml, SignavioConnector.BPMN_2_0_XML);
 
     // TODO: Think about that more, does it make sense like this?
     targetFolder.getConnector().commitPendingChanges(comment);
