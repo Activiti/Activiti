@@ -7,6 +7,7 @@ import org.activiti.cycle.ArtifactType;
 import org.activiti.cycle.ContentRepresentationProvider;
 import org.activiti.cycle.impl.connector.signavio.action.CreateTechnicalBpmnXmlAction;
 import org.activiti.cycle.impl.connector.signavio.action.OpenModelerAction;
+import org.activiti.cycle.impl.connector.signavio.action.ValidateActivitiDeployment;
 import org.activiti.cycle.impl.connector.signavio.provider.ActivitiCompliantBpmn20Provider;
 import org.activiti.cycle.impl.connector.signavio.provider.Bpmn20Provider;
 import org.activiti.cycle.impl.connector.signavio.provider.Jpdl4Provider;
@@ -63,9 +64,11 @@ public class SignavioPluginDefinition implements ActivitiCyclePluginDefinition {
   public void addArtifactActionToMap(List<DefinitionEntry<Class< ? extends ArtifactAction>>> actionMap) {
     actionMap.add(new DefinitionEntry<Class< ? extends ArtifactAction>>(SignavioConnector.SIGNAVIO_NAMESPACE_FOR_BPMN_2_0, OpenModelerAction.class));
     actionMap.add(new DefinitionEntry<Class< ? extends ArtifactAction>>(SignavioConnector.SIGNAVIO_NAMESPACE_FOR_BPMN_2_0, CreateTechnicalBpmnXmlAction.class));
+    actionMap.add(new DefinitionEntry<Class< ? extends ArtifactAction>>(SignavioConnector.SIGNAVIO_NAMESPACE_FOR_BPMN_2_0, ValidateActivitiDeployment.class));
 
     actionMap.add(new DefinitionEntry<Class< ? extends ArtifactAction>>(SignavioConnector.ORYX_TYPE_ATTRIBUTE_FOR_BPMN_20, OpenModelerAction.class));
     actionMap.add(new DefinitionEntry<Class< ? extends ArtifactAction>>(SignavioConnector.ORYX_TYPE_ATTRIBUTE_FOR_BPMN_20, CreateTechnicalBpmnXmlAction.class));
+    actionMap.add(new DefinitionEntry<Class< ? extends ArtifactAction>>(SignavioConnector.ORYX_TYPE_ATTRIBUTE_FOR_BPMN_20, ValidateActivitiDeployment.class));
 
     actionMap.add(new DefinitionEntry<Class< ? extends ArtifactAction>>(SignavioConnector.SIGNAVIO_NAMESPACE_FOR_BPMN_JBPM4, OpenModelerAction.class));
 

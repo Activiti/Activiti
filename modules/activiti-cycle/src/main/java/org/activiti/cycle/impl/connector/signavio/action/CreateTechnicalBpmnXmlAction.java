@@ -68,9 +68,8 @@ public class CreateTechnicalBpmnXmlAction extends ParametrizedFreemakerTemplateA
     String comment = (String) getParameter(parameters, PARAM_COMMENT, false, null, String.class);
     
     String sourceJson = getBpmn20Json();
-    String transformedJson = applyJsonTranfsormations(sourceJson);
+    String transformedJson = applyJsonTransformations(sourceJson);
     String bpmnXml = transformToBpmn20(transformedJson);
-    bpmnXml = new RemedyTemporarySignavioIncompatibilityTransformation().transformBpmn20Xml(bpmnXml);    
     createTargetArtifact(targetFolder, targetName + ".bpmn.xml", bpmnXml, SignavioConnector.BPMN_2_0_XML);
 
     // TODO: Think about that more, does it make sense like this?
@@ -81,7 +80,7 @@ public class CreateTechnicalBpmnXmlAction extends ParametrizedFreemakerTemplateA
     return getArtifact().getConnector().getContent(getArtifact().getId(), JsonProvider.NAME).asString();
   }
 
-  private String applyJsonTranfsormations(String sourceJson) {
+  protected String applyJsonTransformations(String sourceJson) {
     try {
       JSONObject jsonObject = new JSONObject(sourceJson);
 
@@ -95,8 +94,10 @@ public class CreateTechnicalBpmnXmlAction extends ParametrizedFreemakerTemplateA
     }
   }
 
-  private String transformToBpmn20(String transformedJson) {
-    return getSignavioConnector().transformJsonToBpmn20Xml(transformedJson);    
+  protected String transformToBpmn20(String transformedJson) {
+    String bpmnXml = getSignavioConnector().transformJsonToBpmn20Xml(transformedJson);
+    bpmnXml = new RemedyTemporarySignavioIncompatibilityTransformation().transformBpmn20Xml(bpmnXml);
+    return bpmnXml;
   }
 
   public void createTargetArtifact(RepositoryFolder targetFolder, String artifactId, String bpmnXml, String artifactTypeIdentifier) {

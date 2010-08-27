@@ -27,6 +27,12 @@
 	</build>	
 
 	<dependencies>
+		<dependency>
+			<groupId>org.activiti</groupId>
+			<artifactId>activiti-engine</artifactId>
+			<scope>provided</scope>
+		</dependency>
+	
 		<!--
 			<dependency> <groupId>org.activiti</groupId>
 			<artifactId>activiti-pvm</artifactId> </dependency> <dependency>
