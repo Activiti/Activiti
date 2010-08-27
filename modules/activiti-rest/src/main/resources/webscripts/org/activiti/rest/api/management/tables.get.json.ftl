@@ -1,7 +1,7 @@
 <#escape x as jsonUtils.encodeJSONString(x)>
 {
   "data": [
-    <#list tables?keys as tableName>
+    <#list tableNames as tableName>
     {
       "tableName": "${tableName}",
       "total": ${tables[tableName]}

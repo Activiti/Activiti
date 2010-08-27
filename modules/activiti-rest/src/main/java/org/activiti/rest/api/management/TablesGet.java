@@ -12,6 +12,8 @@
  */
 package org.activiti.rest.api.management;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Map;
 
 import org.activiti.rest.util.ActivitiWebScript;
@@ -36,7 +38,11 @@ public class TablesGet extends ActivitiWebScript
   @Override
   protected void executeWebScript(WebScriptRequest req, Status status, Cache cache, Map<String, Object> model)
   {
-    model.put("tables", getManagementService().getTableCount());
+    Map<String, Long> tableCounts = getManagementService().getTableCount();
+    ArrayList<String> tableNames = new ArrayList<String>(tableCounts.keySet());
+    Collections.sort(tableNames);
+    model.put("tableNames", tableNames);
+    model.put("tables", tableCounts);
   }
 
 }
