@@ -13,15 +13,15 @@
   </resultMap>
   
   <select id="selectDbSchemaVersion" resultType="string">
-    select VALUE_ from ACT_PROPERTY where NAME_ = 'schema.version'
+    select VALUE_ from ACT_GE_PROPERTY where NAME_ = 'schema.version'
   </select>
 
   <select id="selectProperty" parameterType="string" resultMap="propertyResultMap">
-    select * from ACT_PROPERTY where NAME_ = #{name}
+    select * from ACT_GE_PROPERTY where NAME_ = #{name}
   </select>
   
   <update id="updateProperty" parameterType="org.activiti.engine.impl.repository.PropertyEntity">
-    update ACT_PROPERTY
+    update ACT_GE_PROPERTY
     <set>
       REV_ = #{newRevision, jdbcType=INTEGER},
       VALUE_ = #{value, jdbcType=VARCHAR},

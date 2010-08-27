@@ -29,21 +29,21 @@ public class ManagementServiceTest extends ProcessEngineTestCase {
   public void testTableCount() {
     Map<String, Long> tableCount = managementService.getTableCount();
 
-    assertEquals(new Long(2), tableCount.get("ACT_PROPERTY"));
-    assertEquals(new Long(0), tableCount.get("ACT_BYTEARRAY"));
-    assertEquals(new Long(0), tableCount.get("ACT_DEPLOYMENT"));
-    assertEquals(new Long(0), tableCount.get("ACT_EXECUTION"));
+    assertEquals(new Long(2), tableCount.get("ACT_GE_PROPERTY"));
+    assertEquals(new Long(0), tableCount.get("ACT_GE_BYTEARRAY"));
+    assertEquals(new Long(0), tableCount.get("ACT_RE_DEPLOYMENT"));
+    assertEquals(new Long(0), tableCount.get("ACT_RU_EXECUTION"));
     assertEquals(new Long(0), tableCount.get("ACT_ID_GROUP"));
     assertEquals(new Long(0), tableCount.get("ACT_ID_MEMBERSHIP"));
     assertEquals(new Long(0), tableCount.get("ACT_ID_USER"));
-    assertEquals(new Long(0), tableCount.get("ACT_PROCESSDEFINITION"));
-    assertEquals(new Long(0), tableCount.get("ACT_TASK"));
-    assertEquals(new Long(0), tableCount.get("ACT_TASKINVOLVEMENT"));
+    assertEquals(new Long(0), tableCount.get("ACT_RE_PROC_DEF"));
+    assertEquals(new Long(0), tableCount.get("ACT_RU_TASK"));
+    assertEquals(new Long(0), tableCount.get("ACT_RU_TASKINVOLVEMENT"));
     ;
   }
 
   public void testGetTableMetaData() {
-    TableMetaData tableMetaData = managementService.getTableMetaData("ACT_TASK");
+    TableMetaData tableMetaData = managementService.getTableMetaData("ACT_RU_TASK");
     assertEquals(tableMetaData.getColumnNames().size(), tableMetaData.getColumnTypes().size());
     assertEquals(14, tableMetaData.getColumnNames().size());
 

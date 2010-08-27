@@ -30,7 +30,7 @@ public class TablePage {
   /**
    * The total number of rows in the table.
    */
-  protected long total = -1;;
+  protected long total = -1;
   
   /**
    * Identifies the index of the first result stored in this TablePage. 
@@ -40,7 +40,7 @@ public class TablePage {
   protected long firstResult;
   
   /**
-   * Indicates the key or column on which the signalData is sorted.
+   * Indicates the key or column on which the rows are sorted.
    */
   protected String sort;
   

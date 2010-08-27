@@ -650,7 +650,7 @@
 {
   "data": [
     {
-      "tableName": "ACT_PROPERTY",
+      "tableName": "ACT_GE_PROPERTY",
       "noOfResults": 2
     }
   ]
@@ -681,7 +681,7 @@
             <para><emphasis role="bold">Response:</emphasis>
               <programlisting>
 {
-  "tableName": "ACT_PROPERTY",
+  "tableName": "ACT_GE_PROPERTY",
   "columnNames": ["REV_","NAME_","VALUE_"],
   "columnNames": ["class java.lang.Integer","class java.lang.String","class java.lang.String"]
 }</programlisting>

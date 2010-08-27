@@ -24,6 +24,6 @@ insert into ACT_ID_MEMBERSHIP values ('gonzo', 'management');
 insert into ACT_ID_MEMBERSHIP values ('gonzo', 'accountancy');
 insert into ACT_ID_MEMBERSHIP values ('gonzo', 'sales');
 
-update ACT_PROPERTY
+update ACT_GE_PROPERTY
 set VALUE_ = '10'
 where NAME_ = 'next.dbid';

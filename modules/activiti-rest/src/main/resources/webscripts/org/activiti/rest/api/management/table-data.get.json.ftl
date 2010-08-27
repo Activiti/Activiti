@@ -9,8 +9,8 @@
     </#list>
   ],
   "total": ${tablePage.total?c},
-  "start": ${tablePage.start?c},
+  "start": ${tablePage.firstResult?c},
   "size": ${size?c},
-  "sort": "${tablePage.sort}",
+  "sort": "${tablePage.sort!"ID_"}",
   "order": "<#if tablePage.order == "DESCENDING">desc<#else>asc</#if>"
 }

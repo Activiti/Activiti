@@ -1,17 +1,17 @@
-create table ACT_PROPERTY (
+create table ACT_GE_PROPERTY (
     NAME_ varchar(300),
     VALUE_ varchar(300),
     REV_ integer,
     primary key (NAME_)
 ) TYPE=InnoDB;
 
-insert into ACT_PROPERTY
+insert into ACT_GE_PROPERTY
 values ('schema.version', '5.0.beta1-SNAPSHOT', 1);
 
-insert into ACT_PROPERTY
+insert into ACT_GE_PROPERTY
 values ('next.dbid', '1', 1);
 
-create table ACT_BYTEARRAY (
+create table ACT_GE_BYTEARRAY (
     ID_ varchar(255),
     REV_ integer,
     NAME_ varchar(255),
@@ -20,14 +20,14 @@ create table ACT_BYTEARRAY (
     primary key (ID_)
 ) TYPE=InnoDB;
 
-create table ACT_DEPLOYMENT (
+create table ACT_RE_DEPLOYMENT (
     ID_ varchar(255),
     NAME_ varchar(255),
     DEPLOY_TIME_ timestamp,
     primary key (ID_)
 ) TYPE=InnoDB;
 
-create table ACT_EXECUTION (
+create table ACT_RU_EXECUTION (
     ID_ varchar(255),
     REV_ integer,
     PROC_INST_ID_ varchar(255),
@@ -41,7 +41,7 @@ create table ACT_EXECUTION (
     primary key (ID_)
 ) TYPE=InnoDB;
 
-create table ACT_JOB (
+create table ACT_RU_JOB (
     ID_ varchar(255) NOT NULL,
 	REV_ integer,
     TYPE_ varchar(255) NOT NULL,
@@ -83,7 +83,7 @@ create table ACT_ID_USER (
     primary key (ID_)
 ) TYPE=InnoDB;
 
-create table ACT_PROCESSDEFINITION (
+create table ACT_RE_PROC_DEF (
     ID_ varchar(255),
     NAME_ varchar(255),
     KEY_ varchar(255),
@@ -93,7 +93,7 @@ create table ACT_PROCESSDEFINITION (
     primary key (ID_)
 ) TYPE=InnoDB;
 
-create table ACT_TASK (
+create table ACT_RU_TASK (
     ID_ varchar(255),
     REV_ integer,
     EXECUTION_ID_ varchar(255),
@@ -111,7 +111,7 @@ create table ACT_TASK (
     primary key (ID_)
 ) TYPE=InnoDB;
 
-create table ACT_TASKINVOLVEMENT (
+create table ACT_RU_TASKINVOLVEMENT (
     ID_ varchar(255),
     REV_ integer,
     GROUP_ID_ varchar(255),
@@ -121,7 +121,7 @@ create table ACT_TASKINVOLVEMENT (
     primary key (ID_)
 ) TYPE=InnoDB;
 
-create table ACT_VARIABLE (
+create table ACT_RU_VARIABLE (
     ID_ varchar(300) not null,
     REV_ integer,
     TYPE_ varchar(255) not null,
@@ -137,7 +137,7 @@ create table ACT_VARIABLE (
     primary key (ID_)
 ) TYPE=InnoDB;
 
-create table ACT_H_PROCINST (
+create table ACT_HI_PROC_INST (
     ID_ varchar(255) not null,
     PROC_INST_ID_ varchar(255) not null,
     PROC_DEF_ID_ varchar(255) not null,
@@ -150,7 +150,7 @@ create table ACT_H_PROCINST (
     unique (PROC_INST_ID_)
 ) TYPE=InnoDB;
 
-create table ACT_H_ACTINST (
+create table ACT_HI_ACT_INST (
     ID_ varchar(255) not null,
     ACT_ID_ varchar(255) not null,
     ACT_NAME_ varchar(255),
@@ -164,25 +164,25 @@ create table ACT_H_ACTINST (
     unique (ACT_ID_, PROC_INST_ID_)
 ) TYPE=InnoDB;
 
-alter table ACT_BYTEARRAY
+alter table ACT_GE_BYTEARRAY
     add constraint FK_BYTEARR_DEPL 
     foreign key (DEPLOYMENT_ID_) 
-    references ACT_DEPLOYMENT (ID_);
+    references ACT_RE_DEPLOYMENT (ID_);
 
-alter table ACT_EXECUTION
+alter table ACT_RU_EXECUTION
     add constraint FK_EXE_PROCINST 
     foreign key (PROC_INST_ID_) 
-    references ACT_EXECUTION (ID_) on delete cascade on update cascade;
+    references ACT_RU_EXECUTION (ID_) on delete cascade on update cascade;
 
-alter table ACT_EXECUTION
+alter table ACT_RU_EXECUTION
     add constraint FK_EXE_PARENT 
     foreign key (PARENT_ID_) 
-    references ACT_EXECUTION (ID_);
+    references ACT_RU_EXECUTION (ID_);
     
-alter table ACT_EXECUTION
+alter table ACT_RU_EXECUTION
     add constraint FK_EXE_SUPER 
     foreign key (SUPER_EXEC_) 
-    references ACT_EXECUTION (ID_);
+    references ACT_RU_EXECUTION (ID_);
     
 alter table ACT_ID_MEMBERSHIP 
     add constraint FK_MEMB_GROUP 
@@ -194,42 +194,42 @@ alter table ACT_ID_MEMBERSHIP
     foreign key (USER_ID_) 
     references ACT_ID_USER (ID_);
 
-alter table ACT_TASKINVOLVEMENT
+alter table ACT_RU_TASKINVOLVEMENT
     add constraint FK_TSKASS_TASK 
     foreign key (TASK_ID_) 
-    references ACT_TASK (ID_);
+    references ACT_RU_TASK (ID_);
     
-alter table ACT_TASK
+alter table ACT_RU_TASK
     add constraint FK_TASK_EXEC
     foreign key (EXECUTION_ID_)
-    references ACT_EXECUTION (ID_);
+    references ACT_RU_EXECUTION (ID_);
     
-alter table ACT_TASK
+alter table ACT_RU_TASK
     add constraint FK_TASK_PROCINST
     foreign key (PROC_INST_ID_)
-    references ACT_EXECUTION (ID_);
+    references ACT_RU_EXECUTION (ID_);
     
-alter table ACT_TASK
+alter table ACT_RU_TASK
   add constraint FK_TASK_PROCDEF
   foreign key (PROC_DEF_ID_)
-  references ACT_PROCESSDEFINITION (ID_);
+  references ACT_RE_PROC_DEF (ID_);
   
-alter table ACT_VARIABLE 
+alter table ACT_RU_VARIABLE 
     add constraint FK_VAR_TASK 
     foreign key (TASK_ID_) 
-    references ACT_TASK (ID_);
+    references ACT_RU_TASK (ID_);
 
-alter table ACT_VARIABLE 
+alter table ACT_RU_VARIABLE 
     add constraint FK_VAR_EXE 
     foreign key (EXECUTION_ID_) 
-    references ACT_EXECUTION (ID_);
+    references ACT_RU_EXECUTION (ID_);
 
-alter table ACT_VARIABLE
+alter table ACT_RU_VARIABLE
     add constraint FK_VAR_PROCINST
     foreign key (PROC_INST_ID_)
-    references ACT_EXECUTION(ID_);
+    references ACT_RU_EXECUTION(ID_);
 
-alter table ACT_VARIABLE 
+alter table ACT_RU_VARIABLE 
     add constraint FK_VAR_BYTEARRAY 
     foreign key (BYTEARRAY_ID_) 
-    references ACT_BYTEARRAY (ID_);
+    references ACT_GE_BYTEARRAY (ID_);

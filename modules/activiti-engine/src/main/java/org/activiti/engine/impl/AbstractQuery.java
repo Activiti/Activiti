@@ -28,8 +28,8 @@ import org.activiti.engine.impl.interceptor.CommandExecutor;
  */
 public abstract class AbstractQuery<T> implements Command<Object>{
   
-  protected static final String SORTORDER_ASC = "asc";
-  protected static final String SORTORDER_DESC = "desc";
+  public static final String SORTORDER_ASC = "asc";
+  public static final String SORTORDER_DESC = "desc";
   
   private static enum ResultType {
     LIST, LIST_PAGE, SINGLE_RESULT, COUNT

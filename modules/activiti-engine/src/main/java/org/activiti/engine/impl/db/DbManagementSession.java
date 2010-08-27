@@ -24,8 +24,10 @@ import java.util.logging.Logger;
 
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiOptimisticLockingException;
+import org.activiti.engine.SortOrder;
 import org.activiti.engine.TableMetaData;
 import org.activiti.engine.TablePage;
+import org.activiti.engine.impl.AbstractQuery;
 import org.activiti.engine.impl.TablePageQueryImpl;
 import org.activiti.engine.impl.cfg.ManagementSession;
 import org.activiti.engine.impl.interceptor.CommandContext;
@@ -42,20 +44,20 @@ public class DbManagementSession implements ManagementSession, Session {
   private static Logger log = Logger.getLogger(DbManagementSession.class.getName());
 
   protected static String[] tableNames = new String[]{
-    "ACT_PROPERTY",
-    "ACT_BYTEARRAY",
-    "ACT_DEPLOYMENT",
-    "ACT_EXECUTION",
+    "ACT_GE_PROPERTY",
+    "ACT_GE_BYTEARRAY",
+    "ACT_RE_DEPLOYMENT",
+    "ACT_RU_EXECUTION",
     "ACT_ID_GROUP",
     "ACT_ID_MEMBERSHIP",
     "ACT_ID_USER",
-    "ACT_JOB",
-    "ACT_PROCESSDEFINITION",
-    "ACT_TASK",
-    "ACT_TASKINVOLVEMENT",
-    "ACT_VARIABLE",
-    "ACT_H_PROCINST",
-    "ACT_H_ACTINST"
+    "ACT_RU_JOB",
+    "ACT_RE_PROC_DEF",
+    "ACT_RU_TASK",
+    "ACT_RU_TASKINVOLVEMENT",
+    "ACT_RU_VARIABLE",
+    "ACT_HI_PROC_INST",
+    "ACT_HI_ACT_INST"
   };
 
 
@@ -97,6 +99,13 @@ public class DbManagementSession implements ManagementSession, Session {
     tablePage.setTotal(getTableCount(tablePageQuery.getTableName()));
     tablePage.setRows(tableData);
     tablePage.setFirstResult(firstResult);
+    tablePage.setSort(tablePageQuery.getSortColumn());
+    String sortOrderString = tablePageQuery.getSortOrder();
+    if (AbstractQuery.SORTORDER_ASC.equals(sortOrderString)) {
+      tablePage.setOrder(SortOrder.ASC);
+    } else if (AbstractQuery.SORTORDER_DESC.equals(sortOrderString)) {
+      tablePage.setOrder(SortOrder.DESC);
+    }
     
     return tablePage;
   }

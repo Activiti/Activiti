@@ -57,7 +57,7 @@ public class ProcessEngineTestCase extends PvmTestCase {
   private static Logger log = Logger.getLogger(ProcessEngineTestCase.class.getName());
 
   private static final List<String> TABLENAMES_EXCLUDED_FROM_DB_CLEAN_CHECK = Arrays.asList(
-    "ACT_PROPERTY"
+    "ACT_GE_PROPERTY"
   );
 
   static final String DEFAULT_CONFIGURATION_RESOURCE = "activiti.properties";
