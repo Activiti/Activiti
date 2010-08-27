@@ -1049,8 +1049,7 @@ assertEquals(2, tasks.size());
 Task task1 = tasks.get(0);
 assertEquals("Receive Payment", task1.getName());
 Task task2 = tasks.get(1);
-assertEquals("Ship Order", task2.getName());
-          </programlisting>
+assertEquals("Ship Order", task2.getName());</programlisting>
           When these two tasks are completed, the second parallel gateway will join the two
           executions and since there is only one outgoing sequence flow, no concurrent paths
           of execution will be created, and only the <emphasis>Archive Order</emphasis>
