@@ -102,7 +102,9 @@ public class SimpleXstreamRepositoryConnectorConfigurationManager implements Cyc
   public void saveObjectToFile(String name, Object o) {
     String configFileName = getFileName(name);
     try {
-      getXStream().toXML(o, new FileWriter(configFileName));
+      FileWriter fileWriter = new FileWriter(configFileName);
+      getXStream().toXML(o, fileWriter);
+      fileWriter.close();
     } catch (IOException ioe) {
       throw new RepositoryException("Unable to persist '" + name + "' as XML in the file system sd file '" + configFileName + "'", ioe);
     }
@@ -115,7 +117,10 @@ public class SimpleXstreamRepositoryConnectorConfigurationManager implements Cyc
   public Object loadFromFile(String name) {
     String configFileName = getFileName(name);
     try {
-      return getXStream().fromXML(new FileReader(configFileName));
+      FileReader fileReader = new FileReader(configFileName);
+      Object config = getXStream().fromXML(fileReader);
+      fileReader.close();
+      return config;
     } catch (IOException ioe) {
       throw new RepositoryException("Unable to load '" + name + "' as XML in the file system sd file '" + configFileName + "'", ioe);
     }

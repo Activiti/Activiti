@@ -1,6 +1,7 @@
 package org.activiti.cycle.impl.conf;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.util.List;
@@ -34,36 +35,47 @@ public class RepositoryConnectorConfigurationManagerImplTest {
   
   @Test
   public void testAPI() {
-    ConfigurationContainer enterpriseConfiguration = new ConfigurationContainer("camunda");
-    // This one is for all, so don't save a password, the GUI should query it!
-    RepositoryConnectorConfiguration conf1 = new SignavioConnectorConfiguration("Activiti Modeler", "http://localhost:8080/activiti-modeler/");
-    enterpriseConfiguration.addRepositoryConnectorConfiguration(conf1);
+    try {
+      ConfigurationContainer enterpriseConfiguration = new ConfigurationContainer("camunda");
+      // This one is for all, so don't save a password, the GUI should query it!
+      RepositoryConnectorConfiguration conf1 = new SignavioConnectorConfiguration("Activiti Modeler", "http://localhost:8080/activiti-modeler/");
+      enterpriseConfiguration.addRepositoryConnectorConfiguration(conf1);
 
-    ConfigurationContainer userConfiguration = new ConfigurationContainer("bernd");
-    userConfiguration.addParent(enterpriseConfiguration);
-    RepositoryConnectorConfiguration conf2 = new FileSystemConnectorConfiguration("Hard Drive", new File("c:"));
-    userConfiguration.addRepositoryConnectorConfiguration(conf2);
-    // This one ist just for me, I save the password
-    RepositoryConnectorConfiguration conf3 = new SignavioConnectorConfiguration("Signavio SAAS", "http://editor.signavio.com/", null,
-            "bernd.ruecker@camunda.com", "xxx");
-    userConfiguration.addRepositoryConnectorConfiguration(conf3);
-    
-    // now we have a config for the user containing 2 repository configs
+      ConfigurationContainer userConfiguration = new ConfigurationContainer("bernd");
+      userConfiguration.addParent(enterpriseConfiguration);
+      RepositoryConnectorConfiguration conf2 = new FileSystemConnectorConfiguration("Hard Drive", new File("c:"));
+      userConfiguration.addRepositoryConnectorConfiguration(conf2);
+      // This one ist just for me, I save the password
+      RepositoryConnectorConfiguration conf3 = new SignavioConnectorConfiguration("Signavio SAAS", "http://editor.signavio.com/", null,
+              "bernd.ruecker@camunda.com", "xxx");
+      userConfiguration.addRepositoryConnectorConfiguration(conf3);
 
-    configurationService.saveConfiguration(enterpriseConfiguration);
-    configurationService.saveConfiguration(userConfiguration);
-    
-    ConfigurationContainer loadedConf = configurationService.getConfiguration("bernd");
+      // now we have a config for the user containing 2 repository configs
 
-    // ConfigurationContainer configuration =
-    // configurationService.getConfiguration("bernd");
-    List<RepositoryConnectorConfiguration> connectors = loadedConf.getConnectorConfigurations();
-    assertEquals(3, connectors.size());
-    assertEquals("Hard Drive", connectors.get(0).getName());
-    assertEquals("Signavio SAAS", connectors.get(1).getName());
-    assertEquals("Activiti Modeler", connectors.get(2).getName());
+      configurationService.saveConfiguration(enterpriseConfiguration);
+      configurationService.saveConfiguration(userConfiguration);
 
-    RepositoryConnector connector = new CustomizedViewConfiguration("http://localhost:8080/activiti-cycle/", loadedConf).createConnector();
+      ConfigurationContainer loadedConf = configurationService.getConfiguration("bernd");
+
+      // ConfigurationContainer configuration =
+      // configurationService.getConfiguration("bernd");
+      List<RepositoryConnectorConfiguration> connectors = loadedConf.getConnectorConfigurations();
+      assertEquals(3, connectors.size());
+      assertEquals("Hard Drive", connectors.get(0).getName());
+      assertEquals("Signavio SAAS", connectors.get(1).getName());
+      assertEquals("Activiti Modeler", connectors.get(2).getName());
+
+      RepositoryConnector connector = new CustomizedViewConfiguration("http://localhost:8080/activiti-cycle/", loadedConf).createConnector();
+      
+      // check that files were created
+      assertTrue(new File("bernd.cycle-conf.xml").delete());
+      assertTrue(new File("camunda.cycle-conf.xml").delete());
+    } finally {
+      // clean up to delete created configs, do it in the finally again to make
+      // sure they are deleted
+      new File("bernd.cycle-conf.xml").delete();
+      new File("camunda.cycle-conf.xml").delete();
+    }
   }
   //  
   //
