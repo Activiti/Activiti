@@ -19,12 +19,12 @@
   <property name="tomcat.filename" value="apache-tomcat-${tomcat.version}.zip" /> 
   <property name="tomcat.download.url" value="${apache.mirror.url}tomcat/tomcat-6/v${tomcat.version}/bin/${tomcat.filename}" />    
 
-<!--
-  Use as long the beta1 is not released:
-	<property name="activiti.modeler.download.url" value="http://activiti.org/downloads/activiti-modeler-5.0.alpha4.war" />
-	-->
+	<!-- 
+	to work with Activiti Modeler or Activiti Cycle on trunk, set property activiti.modeler.download.url
+	in your ${user.home}/.activiti/build.properties
+	-->  
 	<property name="activiti.modeler.download.url" value="http://activiti.org/downloads/activiti-modeler-${activiti.version}.war" />
-  <available property="is.activiti.modeler.available" file="${activiti.home}/setup/build/activiti-modeler-${activiti.version}.war" />
+  <available property="is.activiti.modeler.available" file="${downloads.dir}/activiti-modeler-${activiti.version}.war" />
   <property name="activiti.modeler.repository.home" value="${activiti.home}/apps/activiti-model-repository" />
 	
   <target name="demo.setup" depends="h2.install, h2.start, 
@@ -279,14 +279,14 @@ JAVA_OPTS="-Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=8787
 	<target name="deploy.activiti.modeler.into.tomcat" unless="skip.deploy.activiti.modeler">
 		<antcall target="internal.download.activiti.modeler" /> <!-- Can't use depends for this, due to http://ant.apache.org/faq.html#stop-dependency-->
     <mkdir dir="${activiti.modeler.repository.home}"/>
-		<copy file="${activiti.home}/setup/build/activiti-modeler-${activiti.version}.war"
+		<copy file="${downloads.dir}/activiti-modeler-${activiti.version}.war"
 		      tofile="${tomcat.home}/webapps/activiti-modeler.war"/>
 	</target>
 	
 	<target name="internal.download.activiti.modeler" unless="is.activiti.modeler.available">
 		<echo message="This could take a while. Set the 'skip.deploy.activiti.modeler' property in user.home/.activiti/build.properties to skip this step" />
-	  <mkdir dir="${activiti.home}/setup/build"/>
-		<get src="${activiti.modeler.download.url}" dest="${activiti.home}/setup/build/activiti-modeler-${activiti.version}.war"/>
+	  <mkdir dir="${downloads.dir}"/>
+		<get src="${activiti.modeler.download.url}" dest="${downloads.dir}/activiti-modeler-${activiti.version}.war"/>
 	</target>
 
   <target name="internal.download.tomcat" unless="is.tomcat.available">
