@@ -85,8 +85,7 @@
 		        <emphasis>startProcessInstanceByKey</emphasis> method on the <emphasis>ProcessService</emphasis>.
 		        This method will always take the <emphasis role="bold">latest deployed version</emphasis>
 		        of the process definition.
-		        <programlisting>
-ProcessInstance processInstance = processService.startProcessInstanceByKey(&quot;<emphasis role="bold">myProcess</emphasis>&quot;);</programlisting>
+		        <programlisting>ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("myProcess");</programlisting>
 		        Important to note here is that this is not the same as calling the 
 		        <emphasis>startProcessInstanceById</emphasis> method. This method expects the String id 
 		        that was generated at deploy time by the Activiti engine, and can be retrieved by calling the
@@ -131,7 +130,7 @@ ProcessInstance processInstance = processService.startProcessInstanceByKey(&quot
       <para>
         All files and code snippets used through the next sections can be found
         in the <link linkend="examples">examples</link> shipped with the Activiti distribution.
-        Look for the package <emphasis>org.activiti.examples.bpmn.task</emphasis>.
+        Look for the package <emphasis>org.activiti.examples.bpmn.usertask</emphasis>.
       </para>   
     
     </section>
@@ -159,7 +158,7 @@ ProcessInstance processInstance = processService.startProcessInstanceByKey(&quot
       <title>XML representation</title>
       
       <para>
-        The XML version of this business process (<emphasis>financial_report_process.bpmn20.xml</emphasis>) looks as shown below.
+        The XML version of this business process (<emphasis>FinancialReportProcess.bpmn20.xml</emphasis>) looks as shown below.
         It's easy to recognize the main elements of our process (click on the links
         for going to the detailed section of that BPMN 2.0 construct):
         <itemizedlist>
@@ -265,9 +264,8 @@ ProcessInstance processInstance = processService.startProcessInstanceByKey(&quot
       <para>
         As described <link linkend="chDeployment">in that section</link>, deployment can happen in several
         ways. One way is through the API as follows:
-        <programlisting>
-Deployment deployment = processService.newDeployment()
-  .addClasspathResource(&quot;org/activiti/examples/bpmn/task/financial_report_process.bpmn20.xml&quot;)
+        <programlisting>Deployment deployment = repositoryService.createDeployment()
+  .addClasspathResource("org/activiti/examples/bpmn/usertask/FinancialReportProcess.bpmn20.xml")
   .deploy();</programlisting>
       </para>
       
@@ -276,7 +274,7 @@ Deployment deployment = processService.newDeployment()
         the <emphasis>id</emphasis> we defined in the process definition (see first line of the XML).
         Note that this <emphasis>id</emphasis> in Activiti terminology
         is called the <emphasis role="bold">key</emphasis>.
-        <programlisting>ProcessInstance processInstance = processService.startProcessInstanceByKey(&quot;financialReport&quot;);</programlisting>
+        <programlisting>ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("financialReport");</programlisting>
         This will create a runtime execution that
         will go first through the start event. After the start event, it follows all the outgoing
         sequence flow (only one in this case) and the first task ('write monthly financial report')
@@ -490,7 +488,7 @@ Deployment deployment = processService.newDeployment()
 	    </para>
 	    
 	    <para>
-	      Altough the BPMN 2.0 specification clearly states that it was made for custom extension,
+	      Although the BPMN 2.0 specification clearly states that it was made for custom extension,
 	      we make sure that:
 	      <itemizedlist>
 	        <listitem>
@@ -595,7 +593,7 @@ Deployment deployment = processService.newDeployment()
           be started. The none start event is used when the process instance is started through the API
           by calling one of the <emphasis>startProcessInstanceByXXX</emphasis> methods.
           <programlisting>
-ProcessInstance processInstance = processService.startProcessInstanceByXXX();</programlisting>
+ProcessInstance processInstance = runtimeService.startProcessInstanceByXXX();</programlisting>
         </para>
         
         <para>
@@ -1040,20 +1038,18 @@ ProcessInstance processInstance = processService.startProcessInstanceByXXX();</p
         
         <para>
           In the above example, after the process is started, two tasks will be created:
-          <programlisting>
-  ProcessInstance pi = processService.startProcessInstanceByKey(&quot;forkJoin&quot;);
-  TaskQuery query = deployer.getTaskService()
-                           .createTaskQuery()
-                           .processInstance(pi.getId())
-                           .orderAsc(TaskQuery.PROPERTY_NAME);
+          <programlisting>ProcessInstance pi = runtimeService.startProcessInstanceByKey("forkJoin");
+TaskQuery query = taskService.createTaskQuery()
+                         .processInstanceId(pi.getId())
+                         .orderAsc(TaskQuery.PROPERTY_NAME);
 
-  List&lt;Task&gt; tasks = query.list();
-  assertEquals(2, tasks.size());
-  
-  Task task1 = tasks.get(0);
-  assertEquals(&quot;Receive Payment&quot;, task1.getName());
-  Task task2 = tasks.get(1);
-  assertEquals(&quot;Ship Order&quot;, task2.getName());
+List&lt;Task&gt; tasks = query.list();
+assertEquals(2, tasks.size());
+
+Task task1 = tasks.get(0);
+assertEquals("Receive Payment", task1.getName());
+Task task2 = tasks.get(1);
+assertEquals("Ship Order", task2.getName());
           </programlisting>
           When these two tasks are completed, the second parallel gateway will join the two
           executions and since there is only one outgoing sequence flow, no concurrent paths
@@ -1426,7 +1422,7 @@ List&lt;Task&gt; tasks = taskService.createTaskQuery().assignee(&quot;kermit&quo
        
        <para>
          To specify an implementation of ActivityBehavior, the fully qualified classname 
-         needs to be provided by the <emphasis role="bold">'activiti:java'</emphasis>
+         needs to be provided by the <emphasis role="bold">'activiti:class'</emphasis>
          attribute.
 <programlisting>
 &lt;serviceTask id=&quot;javaService&quot; 
@@ -1471,7 +1467,7 @@ List&lt;Task&gt; tasks = taskService.createTaskQuery().assignee(&quot;kermit&quo
       
       <para>
         To implement a class that can be called during process execution, this class needs to
-        implement the <emphasis>org.activiti.pvm.ActivityBehavior</emphasis> interface.
+        implement the <emphasis>org.activiti.pvm.activity.ActivityBehavior</emphasis> interface.
       </para>
       
       <para>
@@ -1535,8 +1531,8 @@ public class ToUppercaseActivityBehavior extends BpmnActivityBehavior implements
 		      A <emphasis>Manual Task</emphasis> defines a task that is external to the BPM engine.
 		      It is used to model work that is done by somebody, which the engine
 		      does not need to know of, nor is there a system of UI interface.
-		      For the engine, a manual task is handled as a <emphasis role="bold">pass-though activity</emphasis>,
-		      ,automatically continuing the process from the moment process execution arrives into it. 
+		      For the engine, a manual task is handled as a <emphasis role="bold">pass-through activity</emphasis>,
+		      automatically continuing the process from the moment process execution arrives into it.
 		    </para>
 		  
 		  </section>
@@ -1672,7 +1668,7 @@ public class ToUppercaseActivityBehavior extends BpmnActivityBehavior implements
           <emphasis role="bold">Note:</emphasis> boundary timer events are only fired when 
           the job executor is enabled (ie. <emphasis>job.executor.auto.activate=off</emphasis>
           needs to be removed from the <emphasis>activiti.properties</emphasis>, since the job
-          executor is otherwise enabled by default). 
+          executor is disabled by default). 
         </para>
       
       </section>
