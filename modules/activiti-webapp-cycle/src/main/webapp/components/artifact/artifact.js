@@ -48,10 +48,13 @@
 				// do nothing... the same node was clicked twice
 			} else {
 				var tabView = YAHOO.util.Selector.query('div', 'artifact-div', true);
-				// check whether an artifact was selected before. If yes, remove the tabView
+				// check whether an artifact was selected before. If yes, remove tabView and actions
 				if(tabView) {
 					var artifactDiv = document.getElementById('artifact-div');
 					artifactDiv.removeChild(tabView);
+					var optionsDiv = document.getElementById('options-div');
+					optionsDiv.innerHTML = "";
+					optionsDiv.removeAttribute("class");
 				}
 				// Check whether the selected node is a file node. If so, 
 				// we can load its data
@@ -98,7 +101,7 @@
 			tabView.appendTo('artifact-div');
 	   	prettyPrint();
 
-			var tabView = YAHOO.util.Selector.query('div', 'artifact-div', true);
+			var optionsDiv = document.getElementById("options-div");//YAHOO.util.Selector.query('div', 'artifact-div', true);
 
 			// Add a dropdown for the actions			
 			if(artifactJson.actions.length > 0) {
@@ -107,6 +110,11 @@
 				actionsDiv.appendChild(document.createTextNode("Actions: "));
 				var actionsDropdown = document.createElement("select");
 				actionsDropdown.setAttribute('name', "Actions");
+				
+				var option = document.createElement("option");
+				option.appendChild(document.createTextNode("choose an action..."));
+	  		actionsDropdown.appendChild(option);
+				
 				for(var i = 0; i<artifactJson.actions.length; i++) {
 					option = document.createElement("option");
 					option.setAttribute('value', artifactJson.id + "#TOKEN#" + artifactJson.actions[i].name);
@@ -115,7 +123,7 @@
 					YAHOO.util.Event.addListener(option, "click", this.onExecuteActionClick);
 				}
 				actionsDiv.appendChild(actionsDropdown);
-				tabView.appendChild(actionsDiv);
+				optionsDiv.appendChild(actionsDiv);
 			}
 			if(artifactJson.links.length > 0) {
 				var linksDiv = document.createElement("div");
@@ -128,11 +136,11 @@
 					link.setAttribute('target', "blank");
 					link.appendChild(document.createTextNode(artifactJson.links[i].label));
 					linksDiv.appendChild(link);
-					if(i > artifactJson.links.length) {
+					if(i < (artifactJson.links.length - 1)) {
 						linksDiv.appendChild(document.createTextNode(" | "));
 					}
 				}
-				tabView.appendChild(linksDiv);
+				optionsDiv.appendChild(linksDiv);
 			}
 			// Add download links if available
 			if(artifactJson.downloads.length > 0) {
@@ -142,16 +150,20 @@
 				for(var i=0; i<artifactJson.downloads.length; i++) {
 					var link = document.createElement("a");
 					link.setAttribute('href', artifactJson.downloads[i].url);
-					link.setAttribute('title', artifactJson.downloads[i].label + " (" + artifactJson.downloads[i].type + ")");
+					link.setAttribute('title', artifactJson.downloads[i].name + " (" + artifactJson.downloads[i].type + ")");
 					link.setAttribute('target', "blank");
-					link.appendChild(document.createTextNode(artifactJson.downloads[i].label + " (" + artifactJson.downloads[i].type + ")"));
+					link.appendChild(document.createTextNode(artifactJson.downloads[i].name));
 					downloadsDiv.appendChild(link);
-					if(i > artifactJson.downloads.length) {
+					if(i < (artifactJson.downloads.length -1)) {
 						downloadsDiv.appendChild(document.createTextNode(" | "));
 					}
 				}
-				tabView.appendChild(downloadsDiv);
+				optionsDiv.appendChild(downloadsDiv);
 			}
+			var clearDiv = document.createElement('div');
+			clearDiv.setAttribute('style', 'clear: both');
+			optionsDiv.appendChild(clearDiv);
+			optionsDiv.setAttribute('class', 'active');
     },
 
 		onExecuteActionClick: function Artifact_onExecuteActionClick(e)

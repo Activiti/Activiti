@@ -24,7 +24,8 @@
     {
       "label": "${download.label}",
       "url": "${download.url}",
-      "type": "${download.type}"
+      "type": "${download.type}",
+      "name": "${download.name}"
     }
     <#if download_has_next>,</#if>
   </#list>

@@ -20,12 +20,14 @@ public class DownloadActionView {
   private String label;
   private String url;
   private String type;
+  private String name;
 
-  public DownloadActionView(String label, String url, String type) {
+  public DownloadActionView(String label, String url, String type, String name) {
     super();
     this.label = label;
     this.url = url;
     this.type = type;
+    this.name = name;
   }
 
   public String getLabel() {
@@ -52,4 +54,11 @@ public class DownloadActionView {
     this.type = type;
   }
 
+  public String getName() {
+	return name;
+  }
+  
+  public void setName(String name) {
+	this.name = name;
+  }
 }

@@ -20,3 +20,17 @@
 #artifact-source {
 	margin: 1.2em;
 }
+
+#options-div.active {
+	border-bottom: 1px dotted #EEEEEE;
+	border-top: 1px dotted #EEEEEE;
+	padding: 5px;
+	margin-bottom: 15px;
+	background-color: #FFFFF9;
+}
+
+#artifact-actions, #artifact-links, #artifact-downloads {
+	float: left;
+	margin-right: 15px;
+}
+
