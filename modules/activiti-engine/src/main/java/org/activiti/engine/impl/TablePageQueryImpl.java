@@ -61,8 +61,11 @@ public class TablePageQueryImpl implements TablePageQuery, Command<TablePage> {
   }
 
   protected void addOrder(String column, String sortOrder) {
+    
+    // TODO fix the sort ordering http://jira.codehaus.org/browse/ACT-100
     this.sortColumn = column;
     this.sortOrder = sortOrder;
+    
     if (orderBy==null) {
       orderBy = "";
     } else {

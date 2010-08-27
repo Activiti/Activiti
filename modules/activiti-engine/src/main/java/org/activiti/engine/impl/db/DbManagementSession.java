@@ -100,6 +100,8 @@ public class DbManagementSession implements ManagementSession, Session {
     tablePage.setRows(tableData);
     tablePage.setFirstResult(firstResult);
     tablePage.setSort(tablePageQuery.getSortColumn());
+
+    // TODO fix the sort ordering http://jira.codehaus.org/browse/ACT-100
     String sortOrderString = tablePageQuery.getSortOrder();
     if (AbstractQuery.SORTORDER_ASC.equals(sortOrderString)) {
       tablePage.setOrder(SortOrder.ASC);

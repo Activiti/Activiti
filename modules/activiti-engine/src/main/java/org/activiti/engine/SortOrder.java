@@ -18,6 +18,8 @@ package org.activiti.engine;
  */
 public enum SortOrder {
 
+  // TODO fix the sort ordering http://jira.codehaus.org/browse/ACT-100
+
   ASC,
   DESC;
   
