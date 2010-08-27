@@ -11,7 +11,7 @@
     BPMN 2.0 processes, task forms, rules, java classes and any other type of file.  In general, a business archive 
     contains a collection of named resources.  
     </para>
-    <para>When a business archive is deployed, it is scanned for BPMN files with a <literal>.bpmn.xml</literal> extension.
+    <para>When a business archive is deployed, it is scanned for BPMN files with a <literal>.bpmn20.xml</literal> extension.
     Each of those will be parsed and potentially contains multiple process definitions.  
     </para>
   </section>
@@ -20,14 +20,14 @@
     <title>Deploying programmatically</title>
     <para>Deploying a business archive from a zip file can be done like this: 
     </para>
-    <programlisting>String barFileName = &quot;/processes/examples.bar&quot;
-InputStream fileInputStream = new FileInputStream(barFileName);
-processService
-    .newDeployment()
-    .name(barFileName)
-    .addZipInputStream(new ZipInputStream(inputStream))
+    <programlisting>String barFileName = "path/to/process-one.bar";
+ZipInputStream inputStream = new ZipInputStream(new FileInputStream(barFileName));
+    
+repositoryService.createDeployment()
+    .name("process-one.bar")
+    .addZipInputStream(inputStream)
     .deploy();
-    </programlisting>
+</programlisting>
     <para>It's also possible to build a deployment from individual resources. 
     See javadocs for more details.</para>
   </section>
