@@ -14,7 +14,7 @@
 	<para>
 	 The Activiti task forms are a way to attach such data input forms to 
 	 <emphasis role="bold">start events and user tasks</emphasis>. When using the Activiti Explorer
-	 webapplication and the form format as described below, these forms will automatically
+	 web application and the form format as described below, these forms will automatically
 	 be visualized so that user input can be captured for process continuation.
 	</para>
 	
@@ -89,18 +89,19 @@ Motivation:&lt;br/&gt;
     <para>
       Forms are to be deployed together with the processes that reference them.
       This is done through the <emphasis>DeploymentBuilder</emphasis>
-      <programlisting>Deployment deployment = processService.newDeployment()
-  .addClasspathResource(&quot;org/activiti/examples/taskforms/VacationRequest.bpmn20.xml&quot;)
-  .addClasspathResource(&quot;org/activiti/examples/taskforms/approve.form&quot;)
-  .addClasspathResource(&quot;org/activiti/examples/taskforms/request.form&quot;)
-  .addClasspathResource(&quot;org/activiti/examples/taskforms/adjustRequest.form&quot;)
-  .deploy();</programlisting>
+      <programlisting>Deployment deployment = repositoryService.createDeployment()
+  .addClasspathResource("org/activiti/examples/taskforms/VacationRequest.bpmn20.xml")
+  .addClasspathResource("org/activiti/examples/taskforms/approve.form")
+  .addClasspathResource("org/activiti/examples/taskforms/request.form")
+  .addClasspathResource("org/activiti/examples/taskforms/adjustRequest.form")
+  .deploy();
+</programlisting>
     </para>
     
     <para>
       When deployed, Activiti Explorer can now use these forms. When you click to a process definition name
       to start a certain process instance, the startform is first retrieved: 
-      <programlisting>Object startForm = processService.getStartFormByKey("vacationRequest");</programlisting>
+      <programlisting>Object startForm = repositoryService.getStartFormByKey("vacationRequest");</programlisting>
       (Note that the return value is an <emphasis>object</emphasis>, such that people can plug in their own form types
       into the Activiti engine.)
    </para>
@@ -108,14 +109,16 @@ Motivation:&lt;br/&gt;
    <para>   
      If the startForm return value is not null, it is displayed <emphasis role="bold">before a process instance is created</emphasis>.
      When the form is submitted, all the data inputs are gathered and stored as a process variable when starting the process instance:
-     <programlisting>processService.startProcessInstanceByKey(&quot;vacationRequest&quot;, Map&lt;String, Object&gt;);</programlisting>
+     <programlisting>Map&lt;String, Object&gt; variables = new HashMap&lt;String, Object&gt;();
+runtimeService.startProcessInstanceByKey("vacationRequest", variables);</programlisting>
      <mediaobject><imageobject><imagedata align="center" fileref="images/taskform.example.png"/></imageobject></mediaobject>
       The mechanism for defining forms on user task is exactly the same.
       <programlisting>Object taskForm = taskService.getTaskForm(task.getId());</programlisting>
       Activiti Explorer will display these forms when the <emphasis>Complete</emphasis>
       button is clicked. The variables in the form will be stored as process variables 
       during the completion of the task:
-      <programlisting>taskService.complete(String taskId, Map&lt;String, Object&gt; variables);</programlisting>
+      <programlisting>Map&lt;String, Object&gt; variables = new HashMap&lt;String, Object&gt;();
+taskService.complete("taskId", variables);</programlisting>
     </para>
     
     <para>
