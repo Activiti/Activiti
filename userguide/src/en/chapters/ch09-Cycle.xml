@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE chapter PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN" "../../../target/docbook-tool-1.0/docbook-xml/docbookx.dtd">
+
+<chapter>
+
+  <title>Activiti Cycle</title>
+  
+  <para>
+    Activiti Cycle is a web application that aims to provide a collaborative platform for business stakeholders, developers and IT operations people. It combines different artifacts in one view, which makes it easy to browse different modeling repositories, file systems or source code repositories. In addition, it provides the means to move artifacts between repositories and even transform them into different formats. Below is a screen shot of Cycle with the standard configuration as pre-configured in the demo setup.
+  </para>
+  
+  <mediaobject><imageobject><imagedata align="center" fileref="images/activiti.cycle.png"/></imageobject></mediaobject>
+  
+  <section>
+    <title>Overview</title>  
+    <para>
+      Brief overview of the functionality of Activiti Cycle. 
+    </para>
+  </section>
+
+  <section>
+    <title>Repositories</title>
+    <mediaobject><imageobject><imagedata align="center" fileref="images/activiti.cycle.repositories.png"/></imageobject></mediaobject>
+    <para>
+      The above image shows the Activiti Cycle repository tree. By default it provides access to the repository of the Activiti Modeler and a demo Eclipse workspace which is located at <literal>${activiti.home}/apps/eclipse-workspace</literal> in your local file system. The repositories are plugged in as repository connectors which are currently configured via an xml file which is placed in the <literal>bin</literal> directory of the tomcat installation. Here is the default configuration file for the user kermit:
+    </para>
+    
+    <programlisting>
+      &lt;?xml version=&quot;1.0&quot;?&gt;
+      &lt;org.activiti.cycle.impl.conf.ConfigurationContainer&gt;
+        &lt;name&gt;kermit&lt;/name&gt;
+        &lt;linkedConnectors&gt;
+
+          &lt;org.activiti.cycle.impl.connector.signavio.SignavioConnectorConfiguration&gt;
+            &lt;name&gt;Activiti Modeler&lt;/name&gt;
+            &lt;credentialsSaved&gt;false&lt;/credentialsSaved&gt;
+            &lt;signavioBaseUrl&gt;http://localhost:8080/activiti-modeler/&lt;/signavioBaseUrl&gt;
+            &lt;loginRequired&gt;false&lt;/loginRequired&gt;
+          &lt;/org.activiti.cycle.impl.connector.signavio.SignavioConnectorConfiguration&gt;
+
+          &lt;org.activiti.cycle.impl.connector.fs.FileSystemConnectorConfiguration&gt;
+            &lt;name&gt;Files&lt;/name&gt;
+            &lt;baseFilePath&gt;/path-to-activiti-home/activiti-5.0.beta1/apps/eclipse-workspace&lt;/baseFilePath&gt;
+          &lt;/org.activiti.cycle.impl.connector.fs.FileSystemConnectorConfiguration&gt;
+
+        &lt;/linkedConnectors&gt;
+        &lt;parentContainers/&gt;
+      &lt;/org.activiti.cycle.impl.conf.ConfigurationContainer&gt;
+    </programlisting>
+    
+    <para>
+      Now if e.g. you want to add an enterprise Signavio Process Modeler repository, you can simply do this by adding a connector configuration to the xml file. IN case you are interested in trying this, you can register for a free trial account at the <ulink url="http://www.signavio.com">Signavio web site</ulink>. Here is an example configuration:
+    </para>
+    
+    <programlisting>
+      ...
+      &lt;org.activiti.cycle.impl.connector.signavio.SignavioConnectorConfiguration&gt;
+        &lt;name&gt;Signavio&lt;/name&gt;
+        &lt;credentialsSaved&gt;true&lt;/credentialsSaved&gt;
+        &lt;user&gt;your user name&lt;/user&gt;
+        &lt;password&gt;secret&lt;/password&gt;
+        &lt;loginRequired&gt;true&lt;/loginRequired&gt;
+        &lt;signavioBaseUrl&gt;https://editor.signavio.com/&lt;/signavioBaseUrl&gt;
+      &lt;/org.activiti.cycle.impl.connector.signavio.SignavioConnectorConfiguration&gt;
+      ...
+    </programlisting>
+    
+  </section>
+  
+  <section>
+    <title>Artifacts and Actions</title>
+    <para>
+      Brief introduction to artifacts and actions and the related plugin infrastructure.
+    </para>
+  </section>
+  
+</chapter>

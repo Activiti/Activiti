@@ -38,7 +38,7 @@
       <listitem><para>Start tomcat</para></listitem>
     </itemizedlist>
     <para>After running this target H2 and Tomcat will be running in the background.  To stop those 
-    processes run <literal>ant demo.teardown</literal> </para>
+    processes run <literal>ant demo.teardown</literal>. Note that if you start Tomcat manually with the <literal>startup</literal> and <literal>shutdown</literal> scripts in tomcats <literal>bin</literal> directory, on some platforms activiti cycle will currently store configuration files in the working directory (which is the directory you start the script in).</para>
     <para>The other targets in that build script can also be called individually and they will take the 
     configurable properties into account. Run <literal>ant -p</literal> for more details.
     </para>
@@ -97,6 +97,12 @@
             <entry><ulink url="http://localhost:8080/activiti-explorer">http://localhost:8080/activiti-explorer</ulink> </entry>
             <entry>The process engine user console.  Use this tool to view your personal and candidate task lists and to 
             complete tasks.
+            </entry>
+          </row>
+          <row>
+            <entry>Activiti Cycle</entry>
+            <entry><ulink url="http://localhost:8080/activiti-cycle">http://localhost:8080/activiti-cycle</ulink> </entry>
+            <entry>The process cycle layer. Use this to browse repositories, execute transformations between model formats.
             </entry>
           </row>
           <row>
