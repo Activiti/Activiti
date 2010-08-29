@@ -39,7 +39,7 @@ public class ActivitiCompliantBpmn20Provider extends SignavioContentRepresentati
       Response jsonResponse = getJsonResponse(artifact, "/json");
       JSONObject jsonData = new JSONObject(jsonResponse.getEntity().getText());
 
-      jsonData = new BpmnPoolExtraction("Engine Pool").transform(jsonData);
+      jsonData = new BpmnPoolExtraction("Process Engine").transform(jsonData);
       jsonData = new AdjustShapeNamesTransformation().transform(jsonData);
       jsonData = new ExchangeSignavioUuidWithNameTransformation().transform(jsonData);
 

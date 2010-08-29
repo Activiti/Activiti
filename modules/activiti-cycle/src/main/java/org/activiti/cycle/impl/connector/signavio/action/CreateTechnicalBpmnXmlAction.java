@@ -45,7 +45,7 @@ public class CreateTechnicalBpmnXmlAction extends ParametrizedFreemakerTemplateA
      // TODO: How to register JSON-Transformations
 
     // example with cutting out just the Engine Pool
-    addTransformation(new BpmnPoolExtraction("Engine Pool"));
+    addTransformation(new BpmnPoolExtraction("Process Engine"));
     addTransformation(new ExchangeSignavioUuidWithNameTransformation());
     addTransformation(new AdjustShapeNamesTransformation());
   }

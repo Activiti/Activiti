@@ -40,18 +40,20 @@ public class ExchangeSignavioUuidWithNameTransformation extends OryxTransformati
         name = shape.getStencilId();
       }
 
-      String newName = adjustNamesForEngine(name);
+      if (name != null) {
+        String newName = adjustNamesForEngine(name);
 
-      if (existingNames.contains(newName)) {
-        int counter = 1;
-        while (existingNames.contains(newName + "_" + counter)) {
-          counter++;
+        if (existingNames.contains(newName)) {
+          int counter = 1;
+          while (existingNames.contains(newName + "_" + counter)) {
+            counter++;
+          }
+          newName = newName + "_" + counter;
         }
-        newName = newName + "_" + counter;
+  
+        existingNames.add(newName);
+        shape.setResourceId(newName);
       }
-
-      existingNames.add(newName);
-      shape.setResourceId(newName);
       
       adjustShapeNames(shape.getChildShapes(), existingNames);
     }
@@ -64,6 +66,9 @@ public class ExchangeSignavioUuidWithNameTransformation extends OryxTransformati
    * TODO: Should we have this as own pattern?
    */
   public static String adjustNamesForEngine(String name) {
+    if (name == null) {
+      return null;
+    }
     return name.replaceAll("\n", " ").replaceAll("'", "").replaceAll("\"", "");
   } 
 }
