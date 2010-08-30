@@ -17,8 +17,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.activiti.engine.Page;
-import org.activiti.engine.Task;
-import org.activiti.engine.TaskQuery;
 import org.activiti.engine.TaskService;
 import org.activiti.engine.impl.cmd.AddTaskInvolvementCmd;
 import org.activiti.engine.impl.cmd.ClaimTaskCmd;
@@ -31,6 +29,8 @@ import org.activiti.engine.impl.cmd.SetTaskPriorityCmd;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
 import org.activiti.engine.impl.task.TaskEntity;
 import org.activiti.engine.impl.task.TaskInvolvementType;
+import org.activiti.engine.task.Task;
+import org.activiti.engine.task.TaskQuery;
 
 
 /**

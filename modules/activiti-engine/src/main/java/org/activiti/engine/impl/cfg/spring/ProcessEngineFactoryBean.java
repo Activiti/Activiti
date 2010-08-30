@@ -19,7 +19,6 @@ import java.util.zip.ZipInputStream;
 import javax.sql.DataSource;
 
 import org.activiti.engine.DbSchemaStrategy;
-import org.activiti.engine.DeploymentBuilder;
 import org.activiti.engine.HistoryService;
 import org.activiti.engine.IdentityService;
 import org.activiti.engine.ProcessEngine;
@@ -31,6 +30,7 @@ import org.activiti.engine.impl.interceptor.CommandExecutor;
 import org.activiti.engine.impl.interceptor.DefaultCommandExecutor;
 import org.activiti.engine.impl.jobexecutor.JobExecutor;
 import org.activiti.engine.impl.variable.VariableTypes;
+import org.activiti.engine.repository.DeploymentBuilder;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.FactoryBean;

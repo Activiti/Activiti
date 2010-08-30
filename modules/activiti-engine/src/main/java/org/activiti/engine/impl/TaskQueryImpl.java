@@ -18,11 +18,11 @@ import java.util.List;
 
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.Page;
-import org.activiti.engine.Task;
-import org.activiti.engine.TaskQuery;
 import org.activiti.engine.impl.identity.GroupEntity;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
+import org.activiti.engine.task.Task;
+import org.activiti.engine.task.TaskQuery;
 
 /**
  * @author Joram Barrez

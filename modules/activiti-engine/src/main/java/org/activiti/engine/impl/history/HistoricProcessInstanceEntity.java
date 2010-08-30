@@ -50,7 +50,7 @@ public class HistoricProcessInstanceEntity extends HistoricScopeInstanceEntity i
 
   // getters and setters //////////////////////////////////////////////////////
 
-  public String getEndStateName() {
+  public String getEndActivityId() {
     return endStateName;
   }
 }

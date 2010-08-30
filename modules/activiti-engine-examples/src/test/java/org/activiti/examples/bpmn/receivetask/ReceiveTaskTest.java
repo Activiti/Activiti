@@ -13,8 +13,8 @@
 
 package org.activiti.examples.bpmn.receivetask;
 
-import org.activiti.engine.Execution;
-import org.activiti.engine.ProcessInstance;
+import org.activiti.engine.runtime.Execution;
+import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.test.Deployment;
 import org.activiti.engine.test.ProcessEngineTestCase;
 

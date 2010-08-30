@@ -16,8 +16,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.activiti.engine.ActivitiException;
-import org.activiti.engine.Task;
-import org.activiti.engine.TaskQuery;
+import org.activiti.engine.task.Task;
+import org.activiti.engine.task.TaskQuery;
 import org.activiti.engine.test.ProcessEngineTestCase;
 
 /**

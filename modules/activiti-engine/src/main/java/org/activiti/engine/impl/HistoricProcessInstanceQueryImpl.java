@@ -17,6 +17,7 @@ import java.util.List;
 
 import org.activiti.engine.Page;
 import org.activiti.engine.history.HistoricProcessInstance;
+import org.activiti.engine.history.HistoricProcessInstanceQuery;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
 
@@ -24,8 +25,9 @@ import org.activiti.engine.impl.interceptor.CommandExecutor;
 /**
  * @author Tom Baeyens
  */
-public class HistoricProcessInstanceQueryImpl extends AbstractQuery<HistoricProcessInstance> {
+public class HistoricProcessInstanceQueryImpl extends AbstractQuery<HistoricProcessInstance> implements HistoricProcessInstanceQuery {
 
+  protected String processInstanceId;
   protected String processDefinitionId;
   protected String processDefinitionKey;
   
@@ -36,6 +38,11 @@ public class HistoricProcessInstanceQueryImpl extends AbstractQuery<HistoricProc
   
   public HistoricProcessInstanceQueryImpl(CommandExecutor commandExecutor) {
     super(commandExecutor);
+  }
+
+  public HistoricProcessInstanceQueryImpl processInstanceId(String processInstanceId) {
+    this.processInstanceId = processInstanceId;
+    return this;
   }
 
   public HistoricProcessInstanceQueryImpl processDefinitionId(String processDefinitionId) {
@@ -77,5 +84,9 @@ public class HistoricProcessInstanceQueryImpl extends AbstractQuery<HistoricProc
   
   public String getProcessDefinitionId() {
     return processDefinitionId;
+  }
+
+  public String getProcessInstanceId() {
+    return processInstanceId;
   }
 }

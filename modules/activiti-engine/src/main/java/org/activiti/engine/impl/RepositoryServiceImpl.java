@@ -16,10 +16,6 @@ package org.activiti.engine.impl;
 import java.io.InputStream;
 import java.util.List;
 
-import org.activiti.engine.Deployment;
-import org.activiti.engine.DeploymentBuilder;
-import org.activiti.engine.ProcessDefinition;
-import org.activiti.engine.ProcessDefinitionQuery;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.impl.cmd.DeleteDeploymentCmd;
 import org.activiti.engine.impl.cmd.DeployCmd;
@@ -29,6 +25,10 @@ import org.activiti.engine.impl.cmd.FindProcessDefinitionCmd;
 import org.activiti.engine.impl.cmd.GetDeploymentResourceCmd;
 import org.activiti.engine.impl.cmd.GetFormCmd;
 import org.activiti.engine.impl.repository.DeploymentBuilderImpl;
+import org.activiti.engine.repository.Deployment;
+import org.activiti.engine.repository.DeploymentBuilder;
+import org.activiti.engine.repository.ProcessDefinition;
+import org.activiti.engine.repository.ProcessDefinitionQuery;
 
 
 /**

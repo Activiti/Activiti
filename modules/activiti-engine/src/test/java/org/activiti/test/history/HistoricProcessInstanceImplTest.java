@@ -38,7 +38,7 @@ public class HistoricProcessInstanceImplTest {
 
     assertNull(historicProcessInstance.getEndTime());
     assertNull(historicProcessInstance.getDurationInMillis());
-    assertNull(historicProcessInstance.getEndStateName());
+    assertNull(historicProcessInstance.getEndActivityId());
   }
 
   @Test
@@ -51,7 +51,7 @@ public class HistoricProcessInstanceImplTest {
 
     assertEquals(endTime, historicProcessInstance.getEndTime());
     assertEquals(Long.valueOf(1234), historicProcessInstance.getDurationInMillis());
-    assertEquals("endState", historicProcessInstance.getEndStateName());
+    assertEquals("endState", historicProcessInstance.getEndActivityId());
   }
 
   @Test

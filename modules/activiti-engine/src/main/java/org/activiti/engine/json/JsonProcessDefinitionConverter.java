@@ -14,9 +14,9 @@ package org.activiti.engine.json;
 
 import java.io.Reader;
 
-import org.activiti.engine.ProcessDefinition;
 import org.activiti.engine.impl.repository.ProcessDefinitionEntity;
 import org.activiti.engine.impl.util.json.JSONObject;
+import org.activiti.engine.repository.ProcessDefinition;
 
 
 /**

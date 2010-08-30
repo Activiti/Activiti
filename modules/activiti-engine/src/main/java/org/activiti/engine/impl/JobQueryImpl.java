@@ -16,12 +16,12 @@ package org.activiti.engine.impl;
 import java.util.Date;
 import java.util.List;
 
-import org.activiti.engine.Job;
-import org.activiti.engine.JobQuery;
 import org.activiti.engine.Page;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
 import org.activiti.engine.impl.util.ClockUtil;
+import org.activiti.engine.runtime.Job;
+import org.activiti.engine.runtime.JobQuery;
 
 
 /**

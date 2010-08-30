@@ -18,13 +18,13 @@ import java.util.List;
 import junit.framework.TestCase;
 
 import org.activiti.engine.DbSchemaStrategy;
-import org.activiti.engine.ProcessDefinition;
 import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.ProcessEngineBuilder;
-import org.activiti.engine.ProcessInstance;
-import org.activiti.engine.Task;
 import org.activiti.engine.TaskService;
 import org.activiti.engine.impl.cfg.ProcessEngineConfiguration;
+import org.activiti.engine.repository.ProcessDefinition;
+import org.activiti.engine.runtime.ProcessInstance;
+import org.activiti.engine.task.Task;
 import org.activiti.engine.test.ProcessEngineTestCase;
 
 

@@ -36,5 +36,4 @@ public interface HistoricActivityInstance {
   Date getEndTime();
 
   Long getDurationInMillis();
-
 }

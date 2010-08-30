@@ -37,7 +37,7 @@ public class GroupUsersGet extends ActivitiWebScript
   protected void executeWebScript(WebScriptRequest req, Status status, Cache cache, Map<String, Object> model)
   {
     String groupId = getMandatoryPathParameter(req, "groupId");
-    model.put("users", getIdentityService().findUsersByGroup(groupId));
+    model.put("users", getIdentityService().findUsersByGroupId(groupId));
   }
 
 }

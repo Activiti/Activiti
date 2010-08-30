@@ -16,7 +16,7 @@ package org.activiti.engine.history;
 
 import java.util.Date;
 
-/**
+/** one execution of a whole process definition that is stored permanent.
  * @author Christian Stettler
  */
 public interface HistoricProcessInstance {
@@ -33,6 +33,5 @@ public interface HistoricProcessInstance {
 
   Long getDurationInMillis();
 
-  String getEndStateName();
-
+  String getEndActivityId();
 }

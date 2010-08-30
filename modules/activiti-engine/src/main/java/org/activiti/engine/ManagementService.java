@@ -14,6 +14,11 @@ package org.activiti.engine;
 
 import java.util.Map;
 
+import org.activiti.engine.management.TableMetaData;
+import org.activiti.engine.management.TablePage;
+import org.activiti.engine.management.TablePageQuery;
+import org.activiti.engine.runtime.JobQuery;
+
 
 
 /**

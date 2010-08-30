@@ -10,14 +10,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.activiti.engine.runtime;
 
-package org.activiti.engine;
+import java.util.List;
+
+import org.activiti.engine.repository.ProcessDefinition;
 
 
-/**
+
+/** represents one execution of a  {@link ProcessDefinition}.
+ * 
  * @author Tom Baeyens
+ * @author Joram Barrez
  */
-public interface ActivityInstance {
-
-  String getId();
+public interface ProcessInstance extends Execution {
+  
+  /**
+   * the id of the process definition of the process instance.
+   */
+  String getProcessDefinitionId();
+  
+  /**
+   * the ids of the activities that currently are active.
+   */
+  List<String> findActiveActivityIds();
+  
 }

@@ -16,10 +16,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.activiti.engine.Execution;
-import org.activiti.engine.ExecutionQuery;
-import org.activiti.engine.ProcessInstance;
-import org.activiti.engine.ProcessInstanceQuery;
 import org.activiti.engine.RuntimeService;
 import org.activiti.engine.impl.cmd.DeleteProcessInstanceCmd;
 import org.activiti.engine.impl.cmd.FindActiveActivityIdsCmd;
@@ -28,6 +24,10 @@ import org.activiti.engine.impl.cmd.GetVariablesCmd;
 import org.activiti.engine.impl.cmd.SetVariablesCmd;
 import org.activiti.engine.impl.cmd.SignalCmd;
 import org.activiti.engine.impl.cmd.StartProcessInstanceCmd;
+import org.activiti.engine.runtime.Execution;
+import org.activiti.engine.runtime.ExecutionQuery;
+import org.activiti.engine.runtime.ProcessInstance;
+import org.activiti.engine.runtime.ProcessInstanceQuery;
 
 /**
  * @author Tom Baeyens

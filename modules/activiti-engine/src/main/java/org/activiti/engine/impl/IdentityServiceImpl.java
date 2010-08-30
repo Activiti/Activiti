@@ -58,7 +58,7 @@ public class IdentityServiceImpl extends ServiceImpl implements IdentityService 
     return commandExecutor.execute(new FindUserCmd(userId));
   }
 
-  public Group findGroup(String groupId) {
+  public Group findGroupById(String groupId) {
     return commandExecutor.execute(new FindGroupCmd(groupId));
   }
 
@@ -67,17 +67,17 @@ public class IdentityServiceImpl extends ServiceImpl implements IdentityService 
   }
 
   @SuppressWarnings("unchecked")
-  public List<Group> findGroupsByUser(String userId) {
+  public List<Group> findGroupsByUserId(String userId) {
     return commandExecutor.execute(new FindGroupsByUserIdCmd(userId, null));
   }
 
   @SuppressWarnings("unchecked")
-  public List<Group> findGroupsByUserAndType(String userId, String groupType) {
+  public List<Group> findGroupsByUserIdAndGroupType(String userId, String groupType) {
     return commandExecutor.execute(new FindGroupsByUserIdCmd(userId, groupType));
   }
 
   @SuppressWarnings("unchecked")
-  public List<User> findUsersByGroup(String groupId) {
+  public List<User> findUsersByGroupId(String groupId) {
     return commandExecutor.execute(new FindUsersByGroupCmd(groupId));
   }
 

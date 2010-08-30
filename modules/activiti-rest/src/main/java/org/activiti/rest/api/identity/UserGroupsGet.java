@@ -40,11 +40,11 @@ public class UserGroupsGet extends ActivitiWebScript
     String groupType = getString(req, "type");
     if (groupType != null && !groupType.trim().equals(""))
     {
-      model.put("groups", getIdentityService().findGroupsByUserAndType(userId, groupType));
+      model.put("groups", getIdentityService().findGroupsByUserIdAndGroupType(userId, groupType));
     }
     else
     {
-      model.put("groups", getIdentityService().findGroupsByUser(userId));
+      model.put("groups", getIdentityService().findGroupsByUserId(userId));
     }
 
   }

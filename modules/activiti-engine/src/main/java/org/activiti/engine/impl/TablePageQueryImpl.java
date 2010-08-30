@@ -12,11 +12,11 @@
  */
 package org.activiti.engine.impl;
 
-import org.activiti.engine.TablePage;
-import org.activiti.engine.TablePageQuery;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
+import org.activiti.engine.management.TablePage;
+import org.activiti.engine.management.TablePageQuery;
 
 
 /**

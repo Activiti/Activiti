@@ -14,10 +14,10 @@ package org.activiti.examples.bpmn.usertask.taskcandidate;
 
 import java.util.List;
 
-import org.activiti.engine.ProcessInstance;
-import org.activiti.engine.Task;
 import org.activiti.engine.identity.Group;
 import org.activiti.engine.identity.User;
+import org.activiti.engine.runtime.ProcessInstance;
+import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
 import org.activiti.engine.test.ProcessEngineTestCase;
 

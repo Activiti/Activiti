@@ -10,27 +10,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.activiti.engine;
+package org.activiti.engine.runtime;
 
 import java.util.List;
 
 
 
-/** represents one execution of a  {@link ProcessDefinition}.
+/** builds dynamic search queries for process instances.
  * 
- * @author Tom Baeyens
  * @author Joram Barrez
  */
-public interface ProcessInstance extends Execution {
+public interface ProcessInstanceQuery {
   
-  /**
-   * the id of the process definition of the process instance.
-   */
-  String getProcessDefinitionId();
+  ProcessInstanceQuery processInstanceId(String processInstanceId);
+  ProcessInstanceQuery processDefinitionKey(String processDefinitionKey);
   
-  /**
-   * the ids of the activities that currently are active.
-   */
-  List<String> findActiveActivityIds();
-  
+  List<ProcessInstance> list();
+  List<ProcessInstance> listPage(int start, int maxResults);
+  ProcessInstance singleResult();
+  long count();
 }

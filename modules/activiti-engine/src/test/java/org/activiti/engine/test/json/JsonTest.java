@@ -16,9 +16,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import org.activiti.engine.ProcessDefinition;
 import org.activiti.engine.json.JsonListConverter;
 import org.activiti.engine.json.JsonProcessDefinitionConverter;
+import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.test.ProcessEngineTestCase;
 
 

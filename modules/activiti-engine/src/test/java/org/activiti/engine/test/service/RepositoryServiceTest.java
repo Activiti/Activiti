@@ -15,7 +15,7 @@ package org.activiti.engine.test.service;
 import java.util.List;
 
 import org.activiti.engine.ActivitiException;
-import org.activiti.engine.ProcessDefinition;
+import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.test.Deployment;
 import org.activiti.engine.test.ProcessEngineTestCase;
 

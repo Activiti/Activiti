@@ -15,10 +15,10 @@ package org.activiti.engine.impl.cfg;
 
 import java.util.Map;
 
-import org.activiti.engine.TableMetaData;
-import org.activiti.engine.TablePage;
 import org.activiti.engine.impl.TablePageQueryImpl;
 import org.activiti.engine.impl.db.IdBlock;
+import org.activiti.engine.management.TableMetaData;
+import org.activiti.engine.management.TablePage;
 
 
 /**

@@ -19,10 +19,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.activiti.engine.Deployment;
 import org.activiti.engine.impl.cfg.RepositorySession;
 import org.activiti.engine.impl.db.PersistentObject;
 import org.activiti.engine.impl.interceptor.CommandContext;
+import org.activiti.engine.repository.Deployment;
 
 
 /**

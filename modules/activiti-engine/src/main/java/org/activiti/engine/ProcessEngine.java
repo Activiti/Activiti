@@ -18,11 +18,11 @@ package org.activiti.engine;
  * <ul>
  * <li>
  * <b>{@link org.activiti.engine.RuntimeService}: </b> Allows the creation of
- * {@link org.activiti.engine.Deployment}s and the starting of and searching on
- * {@link org.activiti.engine.ProcessInstance}s.</li>
+ * {@link org.activiti.engine.repository.Deployment}s and the starting of and searching on
+ * {@link org.activiti.engine.runtime.ProcessInstance}s.</li>
  * <li>
  * <b>{@link org.activiti.engine.TaskService}: </b> Exposes operations to manage human
- * (standalone) {@link org.activiti.engine.Task}s, such as claiming, completing and
+ * (standalone) {@link org.activiti.engine.task.Task}s, such as claiming, completing and
  * assigning tasks</li>
  * <li>
  * <b>{@link org.activiti.engine.IdentityService}: </b> Used for managing

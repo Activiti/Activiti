@@ -16,6 +16,11 @@ package org.activiti.engine;
 import java.io.InputStream;
 import java.util.List;
 
+import org.activiti.engine.repository.Deployment;
+import org.activiti.engine.repository.DeploymentBuilder;
+import org.activiti.engine.repository.ProcessDefinition;
+import org.activiti.engine.repository.ProcessDefinitionQuery;
+
 
 /** provides access to the repository of process definitions and deployments.
  * 
@@ -56,11 +61,11 @@ public interface RepositoryService {
    */
   InputStream getResourceAsStream(String deploymentId, String resourceName);
 
-  /** get a rendered startform, for collecting parameters from a user to start 
+  /** [might be impacted by <a href="http://jira.codehaus.org/browse/ACT-66">ACT-66</a>] get a rendered startform, for collecting parameters from a user to start 
    * a new process instance */ 
   Object getStartFormByKey(String processDefinitionKey);
   
-  /** get a rendered startform, for collecting parameters from a user to start 
+  /** [might be impacted by <a href="http://jira.codehaus.org/browse/ACT-66">ACT-66</a>] get a rendered startform, for collecting parameters from a user to start 
    * a new process instance */ 
   Object getStartFormById(String processDefinitionId);
 

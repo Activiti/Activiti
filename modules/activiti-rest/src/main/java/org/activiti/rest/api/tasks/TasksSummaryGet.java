@@ -43,7 +43,7 @@ public class TasksSummaryGet extends ActivitiWebScript {
   {
     String user = getMandatoryString(req, "user");
     TaskService ts = getTaskService();
-    List<Group> groups = getIdentityService().findGroupsByUserAndType(user, config.getAssignmentGroupTypeId());
+    List<Group> groups = getIdentityService().findGroupsByUserIdAndGroupType(user, config.getAssignmentGroupTypeId());
     Map<String, Long> unassignedByGroup = new HashMap<String, Long>();
     long tasksInGroup;
     for (Group group : groups)

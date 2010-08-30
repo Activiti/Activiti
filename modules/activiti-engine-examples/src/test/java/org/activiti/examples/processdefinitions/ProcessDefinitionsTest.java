@@ -16,9 +16,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import org.activiti.engine.ProcessDefinition;
-import org.activiti.engine.ProcessDefinitionQuery;
 import org.activiti.engine.impl.bpmn.deployer.BpmnDeployer;
+import org.activiti.engine.repository.ProcessDefinition;
+import org.activiti.engine.repository.ProcessDefinitionQuery;
 import org.activiti.engine.test.ProcessEngineTestCase;
 
 /**

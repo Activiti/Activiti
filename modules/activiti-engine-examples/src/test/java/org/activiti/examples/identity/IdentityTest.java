@@ -68,7 +68,7 @@ public class IdentityTest extends ProcessEngineTestCase {
 
     identityService.createMembership("joesmoe", "user");
 
-    List<Group> groups = identityService.findGroupsByUserAndType("johndoe", "security-role");
+    List<Group> groups = identityService.findGroupsByUserIdAndGroupType("johndoe", "security-role");
     Set<String> groupIds = getGroupIds(groups);
     Set<String> expectedGroupIds = new HashSet<String>();
     expectedGroupIds.add("sales");
@@ -76,13 +76,13 @@ public class IdentityTest extends ProcessEngineTestCase {
     expectedGroupIds.add("admin");
     assertEquals(expectedGroupIds, groupIds);
 
-    groups = identityService.findGroupsByUserAndType("joesmoe", "security-role");
+    groups = identityService.findGroupsByUserIdAndGroupType("joesmoe", "security-role");
     groupIds = getGroupIds(groups);
     expectedGroupIds = new HashSet<String>();
     expectedGroupIds.add("user");
     assertEquals(expectedGroupIds, groupIds);
 
-    groups = identityService.findGroupsByUserAndType("jackblack", "security-role");
+    groups = identityService.findGroupsByUserIdAndGroupType("jackblack", "security-role");
     assertTrue(groups.isEmpty());
 
     identityService.deleteGroup("sales");
@@ -115,7 +115,7 @@ public class IdentityTest extends ProcessEngineTestCase {
     group.setName("Sales division");
     identityService.saveGroup(group);
 
-    group = identityService.findGroup("sales");
+    group = identityService.findGroupById("sales");
     assertEquals("sales", group.getId());
     assertEquals("Sales division", group.getName());
 
@@ -144,19 +144,19 @@ public class IdentityTest extends ProcessEngineTestCase {
     identityService.createMembership("joesmoe", "development");
     identityService.createMembership("jackblack", "development");
 
-    List<Group> groups = identityService.findGroupsByUser("johndoe");
+    List<Group> groups = identityService.findGroupsByUserId("johndoe");
     assertEquals(createStringSet("sales"), getGroupIds(groups));
 
-    groups = identityService.findGroupsByUser("joesmoe");
+    groups = identityService.findGroupsByUserId("joesmoe");
     assertEquals(createStringSet("sales", "development"), getGroupIds(groups));
 
-    groups = identityService.findGroupsByUser("jackblack");
+    groups = identityService.findGroupsByUserId("jackblack");
     assertEquals(createStringSet("development"), getGroupIds(groups));
 
-    List<User> users = identityService.findUsersByGroup("sales");
+    List<User> users = identityService.findUsersByGroupId("sales");
     assertEquals(createStringSet("johndoe", "joesmoe"), getUserIds(users));
 
-    users = identityService.findUsersByGroup("development");
+    users = identityService.findUsersByGroupId("development");
     assertEquals(createStringSet("joesmoe", "jackblack"), getUserIds(users));
 
     identityService.deleteGroup("sales");

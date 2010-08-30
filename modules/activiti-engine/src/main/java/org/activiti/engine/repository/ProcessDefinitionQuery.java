@@ -10,26 +10,32 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.activiti.engine;
+
+package org.activiti.engine.repository;
 
 import java.util.List;
 
 
-
-/** builds dynamic search queries for process instances.
- * 
- * @author Joram Barrez
+/**
+ * @author Tom Baeyens
  */
-public interface ExecutionQuery {
+public interface ProcessDefinitionQuery {
   
-  ExecutionQuery processDefinitionKey(String processDefinitionKey);
-  ExecutionQuery processDefinitionId(String processDefinitionId);
-  ExecutionQuery processInstanceId(String processInstanceId);
-  ExecutionQuery executionId(String executionId);
-  ExecutionQuery activityId(String activityId);
+  String PROPERTY_ID = "ID_";
+  String PROPERTY_KEY = "KEY_";
+  String PROPERTY_VERSION = "VERSION_";
+
+  ProcessDefinitionQuery deploymentId(String deploymentId);
   
-  List<Execution> list();
-  List<Execution> listPage(int start, int maxResults);
-  Execution singleResult();
+  ProcessDefinitionQuery orderAsc(String property);
+  
+  ProcessDefinitionQuery orderDesc(String property);
+
   long count();
+  
+  ProcessDefinition singleResult();
+  
+  List<ProcessDefinition> list();
+  
+  List<ProcessDefinition> listPage(int start, int size);
 }

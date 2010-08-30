@@ -27,8 +27,8 @@
         PROC_DEF_ID_,
         START_TIME_,
         END_TIME_,
-        DURATION_IN_MILLIS_,
-        END_STATE_NAME_
+        DURATION_,
+        END_ACT_ID_
       ) values (
         #{id ,jdbcType=VARCHAR},
         #{processInstanceId, jdbcType=VARCHAR},
@@ -48,8 +48,8 @@
       PROC_DEF_ID_ = #{processDefinitionId, jdbcType=VARCHAR},
       START_TIME_ = #{startTime, jdbcType=TIMESTAMP},
       END_TIME_ = #{endTime, jdbcType=TIMESTAMP},
-      DURATION_IN_MILLIS_ = #{durationInMillis ,jdbcType=BIGINT},
-      END_STATE_NAME_ = #{endStateName, jdbcType=VARCHAR}        
+      DURATION_ = #{durationInMillis ,jdbcType=BIGINT},
+      END_ACT_ID_ = #{endStateName, jdbcType=VARCHAR}        
     where ID_ = #{id}
   </update>
 
@@ -67,8 +67,8 @@
     <result property="processDefinitionId" column="PROC_DEF_ID_" jdbcType="VARCHAR" />
     <result property="startTime" column="START_TIME_" jdbcType="TIMESTAMP" />
     <result property="endTime" column="END_TIME_" jdbcType="TIMESTAMP" />
-    <result property="durationInMillis" column="DURATION_IN_MILLIS_" jdbcType="BIGINT" />
-    <result property="endStateName" column="END_STATE_NAME_" jdbcType="VARCHAR" />
+    <result property="durationInMillis" column="DURATION_" jdbcType="BIGINT" />
+    <result property="endStateName" column="END_ACT_ID_" jdbcType="VARCHAR" />
   </resultMap>
 
   <!-- HISTORIC PROCESS INSTANCE SELECT -->
@@ -81,7 +81,7 @@
     select *
     <include refid="selectHistoricProcessInstancesByQueryCriteriaSql"/>
     <if test="orderBy != null">
-      order by #{orderBy}
+      order by ${orderBy}
     </if>
   </select>
   
@@ -111,7 +111,7 @@
         PROC_DEF_ID_,
         START_TIME_,
         END_TIME_,
-        DURATION_IN_MILLIS_
+        DURATION_
       ) values (
         #{id ,jdbcType=VARCHAR},
         #{activityId ,jdbcType=VARCHAR},
@@ -136,7 +136,7 @@
       PROC_DEF_ID_ = #{processDefinitionId, jdbcType=VARCHAR},
       START_TIME_ = #{startTime, jdbcType=TIMESTAMP},
       END_TIME_ = #{endTime, jdbcType=TIMESTAMP},
-      DURATION_IN_MILLIS_ = #{durationInMillis ,jdbcType=BIGINT}
+      DURATION_ = #{durationInMillis ,jdbcType=BIGINT}
     where ID_ = #{id}
   </update>
 
@@ -157,7 +157,7 @@
     <result property="processDefinitionId" column="PROC_DEF_ID_" jdbcType="VARCHAR" />
     <result property="startTime" column="START_TIME_" jdbcType="TIMESTAMP" />
     <result property="endTime" column="END_TIME_" jdbcType="TIMESTAMP" />
-    <result property="durationInMillis" column="DURATION_IN_MILLIS_" jdbcType="BIGINT" />
+    <result property="durationInMillis" column="DURATION_" jdbcType="BIGINT" />
   </resultMap>
 
   <!-- HISTORIC ACTIVITY INSTANCE SELECT -->

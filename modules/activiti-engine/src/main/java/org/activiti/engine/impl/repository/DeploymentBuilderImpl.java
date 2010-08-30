@@ -17,10 +17,10 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
 import org.activiti.engine.ActivitiException;
-import org.activiti.engine.Deployment;
-import org.activiti.engine.DeploymentBuilder;
 import org.activiti.engine.impl.RepositoryServiceImpl;
 import org.activiti.engine.impl.util.IoUtil;
+import org.activiti.engine.repository.Deployment;
+import org.activiti.engine.repository.DeploymentBuilder;
 
 /**
  * @author Tom Baeyens

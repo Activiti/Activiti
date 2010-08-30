@@ -86,7 +86,7 @@ public class ActivitiBasicHttpAuthenticatorFactory extends AbstractBasicHttpAuth
     }
     else {
       // Certain group membership is required user
-      List<Group> userGroups = ProcessEngines.getProcessEngine(config.getEngine()).getIdentityService().findGroupsByUserAndType(username, config.getSecurityRoleGroupTypeId());
+      List<Group> userGroups = ProcessEngines.getProcessEngine(config.getEngine()).getIdentityService().findGroupsByUserIdAndGroupType(username, config.getSecurityRoleGroupTypeId());
       for (Group group : userGroups)
       {
         for (String grantedGroupId : grantedGroupIds) {

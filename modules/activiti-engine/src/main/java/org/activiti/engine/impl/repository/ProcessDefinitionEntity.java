@@ -14,11 +14,11 @@ package org.activiti.engine.impl.repository;
 
 import java.util.ArrayList;
 
-import org.activiti.engine.ProcessDefinition;
 import org.activiti.engine.impl.db.PersistentObject;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.runtime.ExecutionEntity;
 import org.activiti.engine.impl.runtime.VariableMap;
+import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.pvm.impl.process.ProcessDefinitionImpl;
 import org.activiti.pvm.impl.runtime.ExecutionImpl;
 

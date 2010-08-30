@@ -17,8 +17,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.activiti.engine.ProcessDefinition;
 import org.activiti.engine.RepositoryService;
+import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.pvm.test.PvmTestCase;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 

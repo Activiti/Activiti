@@ -10,27 +10,35 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-package org.activiti.engine;
-
-import java.util.Date;
+package org.activiti.engine.task;
 
 
-/**
- * represents one job (timer, message, etc.).
+
+/** represents one task for a human user.
  * 
  * @author Joram Barrez
  */
-public interface Job {
-  
-  /**
-   * Returns the unique identifier for this job.
-   */
-  String getId();
-  
-  /**
-   * Returns the date on which this job is supposed to be processed.
-   */
-  Date getDuedate();
+public interface Task {
+	
+	String getId();
+	
+	String getName();
 
+	void setName(String name);
+	
+	String getDescription();
+	
+	void setDescription(String description);
+	
+	int getPriority();
+	
+	void setPriority(int priority);
+	
+	String getAssignee();
+	
+	String getExecutionId();
+	
+	String getProcessDefinitionId();
+	
+	String getFormResourceKey();
 }

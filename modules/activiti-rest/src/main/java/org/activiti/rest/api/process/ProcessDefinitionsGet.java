@@ -12,7 +12,7 @@
  */
 package org.activiti.rest.api.process;
 
-import org.activiti.engine.ProcessDefinitionQuery;
+import org.activiti.engine.repository.ProcessDefinitionQuery;
 import org.activiti.rest.util.ActivitiWebScript;
 import org.springframework.extensions.webscripts.Cache;
 import org.springframework.extensions.webscripts.Status;

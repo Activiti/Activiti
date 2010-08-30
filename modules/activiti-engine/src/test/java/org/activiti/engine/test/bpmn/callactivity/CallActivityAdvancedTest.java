@@ -16,10 +16,10 @@ package org.activiti.engine.test.bpmn.callactivity;
 import java.util.Date;
 import java.util.List;
 
-import org.activiti.engine.ProcessInstance;
-import org.activiti.engine.Task;
-import org.activiti.engine.TaskQuery;
 import org.activiti.engine.impl.util.ClockUtil;
+import org.activiti.engine.runtime.ProcessInstance;
+import org.activiti.engine.task.Task;
+import org.activiti.engine.task.TaskQuery;
 import org.activiti.engine.test.Deployment;
 import org.activiti.engine.test.ProcessEngineTestCase;
 

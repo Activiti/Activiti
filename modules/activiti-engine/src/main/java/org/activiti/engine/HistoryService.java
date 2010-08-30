@@ -14,16 +14,24 @@
 
 package org.activiti.engine;
 
-import org.activiti.engine.history.HistoricActivityInstance;
 import org.activiti.engine.history.HistoricProcessInstance;
+import org.activiti.engine.history.HistoricProcessInstanceQuery;
 
-/**
+/** information about ongoing and past process instances.  This is different
+ * from the runtime information in the sense that this runtime information only contains 
+ * the actual runtime state at any given moment and it is optimized for runtime 
+ * process execution performance.  The history information is optimized for easy 
+ * querying and remains permanent in the persistent storage.
+ * 
  * @author Christian Stettler
+ * @author Tom Baeyens
  */
 public interface HistoryService {
 
-  HistoricProcessInstance findHistoricProcessInstance(String processInstanceId);
+  /** the {@link HistoricProcessInstance} or null if the given process instance 
+   * does not exists. */
+  HistoricProcessInstance findHistoricProcessInstanceById(String processInstanceId);
 
-  HistoricActivityInstance findHistoricActivityInstance(String activityId, String processInstanceId);
-  
+  /** creates a new programmatic query to search for {@link HistoricProcessInstance}s. */
+  HistoricProcessInstanceQuery createHistoricProcessInstanceQuery();
 }

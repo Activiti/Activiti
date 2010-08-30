@@ -28,14 +28,14 @@ public interface IdentityService {
   User newUser(String userId);
   void saveUser(User user);
   User findUser(String userId);
-  List<User> findUsersByGroup(String groupId);
+  List<User> findUsersByGroupId(String groupId);
   void deleteUser(String userId);
 
   Group newGroup(String groupId);
   void saveGroup(Group group);
-  Group findGroup(String groupId);
-  List<Group> findGroupsByUser(String userId);
-  List<Group> findGroupsByUserAndType(String userId, String groupType);
+  Group findGroupById(String groupId);
+  List<Group> findGroupsByUserId(String userId);
+  List<Group> findGroupsByUserIdAndGroupType(String userId, String groupType);
   void deleteGroup(String groupId);
 
   void createMembership(String userId, String groupId);

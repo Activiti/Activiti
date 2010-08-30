@@ -14,7 +14,7 @@ package org.activiti.rest.api.tasks;
 
 import java.util.Map;
 
-import org.activiti.engine.TaskQuery;
+import org.activiti.engine.task.TaskQuery;
 import org.activiti.rest.util.ActivitiWebScript;
 import org.springframework.extensions.webscripts.*;
 

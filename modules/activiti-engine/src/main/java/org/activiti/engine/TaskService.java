@@ -17,6 +17,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.activiti.engine.impl.task.TaskInvolvementType;
+import org.activiti.engine.task.Task;
+import org.activiti.engine.task.TaskQuery;
 
 /** provides access to {@link Task} related operations.
  * 

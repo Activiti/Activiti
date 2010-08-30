@@ -10,23 +10,42 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.activiti.engine;
+package org.activiti.engine.task;
 
 import java.util.List;
 
 
-
-/** builds dynamic search queries for process instances.
+/**
+ * builds dynamic search queries for tasks.
  * 
  * @author Joram Barrez
  */
-public interface ProcessInstanceQuery {
+public interface TaskQuery {
   
-  ProcessInstanceQuery processInstanceId(String processInstanceId);
-  ProcessInstanceQuery processDefinitionKey(String processDefinitionKey);
+  final String PROPERTY_NAME = "NAME_";
   
-  List<ProcessInstance> list();
-  List<ProcessInstance> listPage(int start, int maxResults);
-  ProcessInstance singleResult();
+  TaskQuery name(String name);
+  
+  TaskQuery assignee(String assignee);
+  
+  TaskQuery candidateUser(String candidateUser);
+  
+  TaskQuery candidateGroup(String candidateGroup);
+  
+  TaskQuery processInstanceId(String processInstanceId);
+  
+  TaskQuery executionId(String executionId);
+  
+  TaskQuery orderAsc(String property);
+  
+  TaskQuery orderDesc(String property);
+  
   long count();
+  
+  Task singleResult();
+  
+  List<Task> list();
+  
+  List<Task> listPage(int start, int size);
+
 }

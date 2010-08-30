@@ -10,28 +10,35 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.activiti.engine;
 
+package org.activiti.engine.runtime;
+
+import java.util.List;
 
 
 /**
- * represent a 'path of execution' in a process instance.
+ * builds dynamic queries for Jobs.
  * 
- * Note that a {@link ProcessInstance} also is an execution.
- * 
- * @author Joram Barrez
+ * @author jbarrez
  */
-public interface Execution {
+public interface JobQuery {
   
-  /**
-   * the unique identifier of the process instance.
-   */
-  String getId();
+  JobQuery processInstanceId(String processInstanceId);
+
+  JobQuery withRetriesLeft();
+
+  JobQuery executable();
+
+  //JobQuery timers();
   
-  /**
-   * indicates if the process instance is ended.
-   * @return
-   */
-  boolean isEnded();
+  //JobQuery messages();
+  
+  long count();
+  
+  Job singleResult();
+  
+  List<Job> list();
+  
+  List<Job> listPage(int start, int size);
 
 }

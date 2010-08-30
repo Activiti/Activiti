@@ -14,9 +14,9 @@ package org.activiti.examples.bpmn.event.timer;
 
 import java.util.Date;
 
-import org.activiti.engine.ProcessInstance;
-import org.activiti.engine.Task;
 import org.activiti.engine.impl.util.ClockUtil;
+import org.activiti.engine.runtime.ProcessInstance;
+import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
 import org.activiti.engine.test.ProcessEngineTestCase;
 

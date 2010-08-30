@@ -14,11 +14,11 @@ package org.activiti.engine.impl;
 
 import java.util.List;
 
-import org.activiti.engine.Execution;
-import org.activiti.engine.ExecutionQuery;
 import org.activiti.engine.Page;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
+import org.activiti.engine.runtime.Execution;
+import org.activiti.engine.runtime.ExecutionQuery;
 
 
 /**

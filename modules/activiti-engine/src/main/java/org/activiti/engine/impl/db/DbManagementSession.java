@@ -25,14 +25,14 @@ import java.util.logging.Logger;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiOptimisticLockingException;
 import org.activiti.engine.SortOrder;
-import org.activiti.engine.TableMetaData;
-import org.activiti.engine.TablePage;
 import org.activiti.engine.impl.AbstractQuery;
 import org.activiti.engine.impl.TablePageQueryImpl;
 import org.activiti.engine.impl.cfg.ManagementSession;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.interceptor.Session;
 import org.activiti.engine.impl.repository.PropertyEntity;
+import org.activiti.engine.management.TableMetaData;
+import org.activiti.engine.management.TablePage;
 import org.apache.ibatis.session.RowBounds;
 
 

@@ -143,9 +143,9 @@ create table ACT_HI_PROC_INST (
     PROC_DEF_ID_ varchar(255) not null,
     START_TIME_ datetime not null,
     END_TIME_ datetime,
-    DURATION_IN_MILLIS_ bigint,
+    DURATION_ bigint,
     -- TODO: check endStateName length
-    END_STATE_NAME_ varchar(255),
+    END_ACT_ID_ varchar(255),
     primary key (ID_),
     unique (PROC_INST_ID_)
 ) TYPE=InnoDB;
@@ -159,7 +159,7 @@ create table ACT_HI_ACT_INST (
     PROC_DEF_ID_ varchar(255) not null,
     START_TIME_ datetime not null,
     END_TIME_ datetime,
-    DURATION_IN_MILLIS_ bigint,
+    DURATION_ bigint,
     primary key (ID_),
     unique (ACT_ID_, PROC_INST_ID_)
 ) TYPE=InnoDB;

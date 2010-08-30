@@ -17,12 +17,12 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.activiti.engine.Job;
 import org.activiti.engine.impl.cfg.RuntimeSession;
 import org.activiti.engine.impl.db.PersistentObject;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.jobexecutor.JobHandler;
 import org.activiti.engine.impl.jobexecutor.JobHandlers;
+import org.activiti.engine.runtime.Job;
 
 /**
  * Stub of the common parts of a Job. You will normally work with a subclass of

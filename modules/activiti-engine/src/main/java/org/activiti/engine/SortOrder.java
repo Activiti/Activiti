@@ -13,12 +13,11 @@
 package org.activiti.engine;
 
 
-/**
+/** [might be impacted by <a href="http://jira.codehaus.org/browse/ACT-78">ACT-78</a>]
+ *  
  * @author Joram Barrez
  */
 public enum SortOrder {
-
-  // TODO fix the sort ordering http://jira.codehaus.org/browse/ACT-100
 
   ASC,
   DESC;

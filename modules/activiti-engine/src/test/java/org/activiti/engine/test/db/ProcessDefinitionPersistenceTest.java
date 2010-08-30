@@ -15,7 +15,7 @@ package org.activiti.engine.test.db;
 
 import java.util.List;
 
-import org.activiti.engine.ProcessDefinition;
+import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.test.ProcessEngineTestCase;
 
 

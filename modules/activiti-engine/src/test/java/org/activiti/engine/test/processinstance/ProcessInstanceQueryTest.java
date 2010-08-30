@@ -13,7 +13,7 @@
 package org.activiti.engine.test.processinstance;
 
 import org.activiti.engine.ActivitiException;
-import org.activiti.engine.ProcessInstanceQuery;
+import org.activiti.engine.runtime.ProcessInstanceQuery;
 import org.activiti.engine.test.ProcessEngineTestCase;
 
 /**
@@ -38,7 +38,7 @@ public class ProcessInstanceQueryTest extends ProcessEngineTestCase {
   }
 
   protected void tearDown() throws Exception {
-    for (org.activiti.engine.Deployment deployment : repositoryService.findDeployments()) {
+    for (org.activiti.engine.repository.Deployment deployment : repositoryService.findDeployments()) {
       repositoryService.deleteDeploymentCascade(deployment.getId());
     }
     super.tearDown();

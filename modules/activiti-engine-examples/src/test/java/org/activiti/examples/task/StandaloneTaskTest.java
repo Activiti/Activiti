@@ -14,7 +14,7 @@ package org.activiti.examples.task;
 
 import java.util.List;
 
-import org.activiti.engine.Task;
+import org.activiti.engine.task.Task;
 import org.activiti.engine.test.ProcessEngineTestCase;
 
 /**

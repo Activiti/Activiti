@@ -15,7 +15,6 @@ package org.activiti.engine.impl.cmd;
 import java.util.Arrays;
 import java.util.Map;
 
-import org.activiti.engine.Deployment;
 import org.activiti.engine.impl.cfg.RepositorySession;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
@@ -23,6 +22,7 @@ import org.activiti.engine.impl.repository.DeploymentBuilderImpl;
 import org.activiti.engine.impl.repository.DeploymentEntity;
 import org.activiti.engine.impl.repository.ResourceEntity;
 import org.activiti.engine.impl.util.ClockUtil;
+import org.activiti.engine.repository.Deployment;
 
 /**
  * @author Tom Baeyens

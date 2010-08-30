@@ -16,8 +16,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import org.activiti.engine.TablePage;
-import org.activiti.engine.Task;
+import org.activiti.engine.management.TablePage;
+import org.activiti.engine.task.Task;
 import org.activiti.engine.test.ProcessEngineTestCase;
 
 

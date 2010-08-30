@@ -15,7 +15,7 @@ package org.activiti.examples.mgmt;
 import java.util.Map;
 
 import org.activiti.engine.ManagementService;
-import org.activiti.engine.TableMetaData;
+import org.activiti.engine.management.TableMetaData;
 import org.activiti.engine.test.ProcessEngineTestCase;
 
 /**

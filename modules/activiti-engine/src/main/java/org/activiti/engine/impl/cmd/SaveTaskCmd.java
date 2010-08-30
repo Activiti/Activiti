@@ -12,10 +12,10 @@
  */
 package org.activiti.engine.impl.cmd;
 
-import org.activiti.engine.Task;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.task.TaskEntity;
+import org.activiti.engine.task.Task;
 
 /**
  * @author Joram Barrez

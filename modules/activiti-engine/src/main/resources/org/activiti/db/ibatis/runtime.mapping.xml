@@ -72,7 +72,7 @@
     select E.*
     <include refid="selectExecutionsByQueryCriteriaSql"/>
     <if test="orderBy != null">
-      order by #{orderBy}
+      order by ${orderBy}
     </if>
   </select>
   

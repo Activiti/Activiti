@@ -16,7 +16,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-import org.activiti.engine.Job;
 import org.activiti.engine.Page;
 import org.activiti.engine.impl.JobQueryImpl;
 import org.activiti.engine.impl.TaskQueryImpl;
@@ -30,6 +29,7 @@ import org.activiti.engine.impl.runtime.TimerEntity;
 import org.activiti.engine.impl.runtime.VariableInstanceEntity;
 import org.activiti.engine.impl.task.TaskEntity;
 import org.activiti.engine.impl.util.ClockUtil;
+import org.activiti.engine.runtime.Job;
 
 /**
  * @author Joram Barrez

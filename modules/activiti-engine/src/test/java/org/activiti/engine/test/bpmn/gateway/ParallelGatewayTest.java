@@ -13,7 +13,7 @@
 
 package org.activiti.engine.test.bpmn.gateway;
 
-import org.activiti.engine.ProcessInstance;
+import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.test.Deployment;
 import org.activiti.engine.test.ProcessEngineTestCase;
 

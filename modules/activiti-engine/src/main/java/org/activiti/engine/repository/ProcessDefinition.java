@@ -10,7 +10,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.activiti.engine;
+package org.activiti.engine.repository;
+
+import org.activiti.engine.runtime.ProcessInstance;
 
 /** is an object structure representing an executable process composed of 
  * activities and transitions.
