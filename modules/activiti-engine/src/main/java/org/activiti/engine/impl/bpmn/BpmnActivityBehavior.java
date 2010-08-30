@@ -93,9 +93,11 @@ public class BpmnActivityBehavior {
         
         execution.takeAll(transitionsToTake, joinedExecutions);
           
-      } else if (log.isLoggable(Level.FINE)) {
-        log.fine("No outgoing sequence flow found for " + execution.getActivity().getId() 
+      } else {
+        if (log.isLoggable(Level.FINE)) {
+          log.fine("No outgoing sequence flow found for " + execution.getActivity().getId() 
                   + ". Ending execution.");
+        }
         execution.end();
       }
    }
