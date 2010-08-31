@@ -1,0 +1,7 @@
+<webscript>
+  <shortname>Tables</shortname>
+  <description>Returns the name and no of rows in the database tables in the process engine</description>
+  <url>/management/tables</url>
+  <authentication>admin</authentication>
+  <format default="json">argument</format>
+</webscript>

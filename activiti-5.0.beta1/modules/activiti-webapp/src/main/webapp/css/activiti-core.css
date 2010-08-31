@@ -1,0 +1,492 @@
+/** BASIC STYLING */
+
+body {
+  background-color: #ffffff;
+  font-family: arial,verdana,helvetica,arial,sans;
+  font-size: 80%;
+  margin: 0 0 2em;
+  padding: 0;
+  text-align: left;
+}
+
+a {
+	outline:none;
+}
+
+body,
+#Activiti a,
+#Activiti a:visited,
+#Activiti a:active {
+  text-decoration: none;
+  color: #333333;
+  border: none;
+}
+
+#Activiti a:hover {
+  text-decoration: underline;
+}
+
+h1, h2, h3 {
+  font-family: arial,'trebuchet ms',sans;
+  letter-spacing :-0.02em;
+  font-weight: normal;
+  margin: 0;
+}
+
+h1 {
+  font-size: 1.75em;
+  line-height: 1em;
+  padding-bottom: 1.5em;
+}
+
+h2 {
+  font-size: 1.4em;
+  margin-bottom: 0.5em;
+}
+
+h3 {
+  font-size: 1.2em;
+}
+
+th, td
+{
+  border: none;
+  padding: 0.25em 0.75em;
+  text-align: left;
+}
+
+ul, ol {
+  margin: 0;
+  padding-left: 0;
+}
+
+ul li {
+  margin-left: 0.75em;
+  list-style-type: none;
+}
+
+em {
+  font-style:normal;
+  font-weight:bold;
+}
+
+label,
+.label {
+  color: #787878;
+  padding-right: 0.25em;
+}
+
+.hidden {
+  display: none;
+}
+
+/* LOGIN */
+
+#login label {
+  float: left;
+  min-width: 6em;
+}
+
+/* PROMPT DIALOG */
+
+#Activiti #prompt .hd {
+  background-image: url(../images/navigation-bg.png);
+  background-position: left top;
+}
+
+#Activiti #prompt .error {
+  background: no-repeat url(../images/error-icon.png);
+}
+
+#Activiti #message .bd {
+  background-color: #ffffb3;
+}
+
+/* STICKY */
+
+*
+{
+   margin: 0;
+}
+
+html, body
+{
+   height: 100%;
+}
+
+#sticky-wrapper {
+  height:auto !important;
+  margin:0 auto -35px;
+  min-height:100%;
+}
+
+#sticky-body {
+  margin: auto 0;
+  width: auto;
+}
+
+#sticky-footer,
+#sticky-push {
+  height: 35px;
+}
+  
+/* HEADER SECTION */
+
+#header {
+  background: repeat-x left url(../images/header-bg.png);
+  height: 3.4em;
+}
+
+#header,
+#Activiti #header a {
+  color: #ffffff;
+}
+
+#header .activiti-component {
+  background: top right no-repeat url(../images/header-right-bg.png);
+  height: 3.4em;
+}
+
+#header .application-info {
+  float: left;
+  padding-left: 2em;
+  padding-top: 0.6em;
+}
+
+#header .user-info {
+  float: right;
+  padding-right: 2em;
+  padding-top: 1.1em;
+}
+
+#header .user-info .user {
+  background: left no-repeat url(../images/user-icon.png);
+  padding-left: 2.2em;
+}
+
+#header .user-info .separator {
+  background: center no-repeat url(../images/divider-white.png);
+  padding-left: 0.75em;
+  padding-right: 0.75em;
+}
+
+
+/* NAVIGATION SECTION */
+
+#navigation {
+  clear: both;
+  padding:0 0.5em;
+  background: left repeat-x url("../images/navigation-bg.png")
+}
+
+#navigation ul.activiti-menu.pages {
+  list-style-type: none;
+  margin-top: 0;
+  overflow: hidden;
+}
+
+#navigation ul.activiti-menu.pages li {
+  float: left;
+  margin: 0;
+}
+
+#navigation ul.activiti-menu.pages li a {
+  font-size: 87%;
+  font-weight: bold;
+  text-transform: uppercase;
+  background: right no-repeat url(../images/divider-grey.png);
+  display: block;
+  padding: 1em 1.5em;
+}
+
+#navigation ul.activiti-menu.pages li a.last {
+  background: none;
+}
+
+/* CONTENT SECTION */
+
+#content {
+  font-size: 1em;
+  line-height: 1.7em;
+  padding: 2.5em 1.5em;
+  background: top left repeat-x url(../images/content-bg.png);
+}
+
+
+/* MAIN:LEFT SECTION */
+
+#content #left .activiti-component li a {
+  background-color: #f9f9f9;
+  padding: 0.25em 0.5em;
+}
+
+#content #left .activiti-component {
+  background-color: #f9f9f9;
+  border: 1px solid #e1dfdf;
+  padding: 1em;
+}
+
+.yui-gf div.yui-u {
+  width: 78%;
+}
+
+.yui-gf div.yui-u.first {
+  width: 20%;
+}
+
+
+/* FOOTER SECTION */
+
+#footer {
+  background-color: #f9f9f9;
+  border-top: 1px solid #ececec;
+  padding: 0.75em 0 1em;
+  text-align: center;
+}
+
+.license {
+  display: block;
+  font-size: 0.8em;
+  font-weight: bold;
+}
+
+/* SECTION */
+
+
+.section {
+  padding-bottom: 1em;
+}
+
+.section .status-error {
+  color: #ce2700;
+  padding-left: 2em;
+  background: no-repeat url(../images/error-icon.png);
+}
+
+.section .status-ok {
+  color: #579f02;
+  padding-left: 2em;
+  background: no-repeat url(../images/success-icon.png);
+}
+
+.section ul li {
+  list-style-position: inside;
+  list-style-type: inherit;
+}
+
+.section table,
+.section table td,
+.section table th {
+  border: 1px solid #e3e3e3;
+}
+
+.section table thead {
+  background: repeat-x url(../images/table-header-bg.png);
+}
+
+.section table td.number {
+  text-align: center;
+}
+
+.section table th,
+.section table td {
+  border-top: none;
+  padding: 0.45em 1em;
+}
+
+.section table td {
+  border-bottom: none;
+}
+
+.section table th {
+  font-size: 108%;
+}
+
+.section table tr.even {
+  background-color: #f9f9f9;
+}
+
+/* ACTIVITI DATA TABLE */
+
+.yui-dt.activiti-datatable table {
+  width: 100%;
+}
+
+/* ACTIVITI TASK LIST */
+
+.task-list .yui-dt.activiti-datatable table,
+.task-list .yui-dt.activiti-datatable table tbody tr {
+  border: none;
+}
+
+.task-list .yui-dt.activiti-datatable table thead {
+  display: none;
+}
+
+.task-list .yui-dt.activiti-datatable table tbody tr
+{
+  height: 4.5em;  
+}
+
+.task-list .yui-dt.activiti-datatable table tbody tr td,
+.task-list .yui-dt.activiti-datatable table tbody tr tdyui-dt-asc,
+.task-list .yui-dt.activiti-datatable table tbody tr td.yui-dt-desc
+{
+  background-color: #ffffff;
+  border: none;
+}
+
+.task-list .yui-dt.activiti-datatable table tbody tr td,
+.task-list .yui-dt.activiti-datatable table tbody tr.yui-dt-first td
+{
+  border-top: 1px solid #d4d4d4;
+}
+
+/* ACTIVITI FORMS */
+
+#Activiti .mask {
+  opacity:0.15;
+}
+
+#Activiti .yui-panel-container.shadow .underlay {
+  bottom: -5px;
+  left: -5px;
+  right: -5px;
+  top: -5px;
+}
+
+#Activiti .yui-panel
+{
+  border: none;
+}
+
+#Activiti .yui-panel .hd
+{
+  display: none;
+}
+
+#Activiti .yui-panel .bd,
+#Activiti .yui-panel .ft
+{
+  border: none;
+  background-color: #F9F9F9;
+}
+
+#Activiti .yui-panel .bd h1,
+#Activiti .yui-panel .bd h2,
+#Activiti .yui-panel .bd h3
+{
+  margin: 0.5em 0.25em 0em 0.25em;
+}
+
+#Activiti .bd .activiti-form div,
+#Activiti .bd .activiti-form span,  
+#Activiti .bd .activiti-form p,
+#Activiti .bd .activiti-form input,
+#Activiti .bd .activiti-form select,
+#Activiti .bd .activiti-form label,
+#Activiti .bd .activiti-form textarea
+{
+  margin: 0.25em;
+}
+
+#Activiti .bd .activiti-form textarea
+{
+  width: 30em;
+  height: 10em;
+}
+
+#Activiti .yui-panel .bd p
+{
+  margin-bottom: 0.75em
+}
+
+#Activiti .bd .activiti-form input,
+#Activiti .bd .activiti-form select,
+#Activiti .bd .activiti-form textarea
+{
+  background-color: #ffffff;
+  border: 1px solid #cccccc;
+  padding: 0.25em;
+}
+
+#Activiti .bd .activiti-form input.required,
+#Activiti .bd .activiti-form select.required,
+#Activiti .bd .activiti-form textarea.required
+{
+  background-color: #ffffb3;
+}
+
+#Activiti .bd .activiti-form input.error,
+#Activiti .bd .activiti-form select.error,
+#Activiti .bd .activiti-form textarea.error,
+#Activiti .bd .activiti-form input.required.error,
+#Activiti .bd .activiti-form select.required.error,
+#Activiti .bd .activiti-form textarea.required.error
+{
+  background-color: #ffaaaa;
+}
+
+#Activiti .yui-panel .ft .button-group
+{
+  text-align: center;
+}
+
+#Activiti a.datePicker {
+   text-indent: -1000em;
+   background: url(../images/datePicker.png) no-repeat;
+   display:block;
+   width:16px;
+   height:16px;
+	position:absolute;
+	top:2em;
+	left:13em;
+}
+
+#Activiti div.datePickerPopup {
+	display:none;
+	position:absolute;
+	width:150px;
+	left:13em;
+	z-index:999;
+}
+
+#Activiti label.date {
+	position:relative;
+}
+
+/* Re-enable margins specified in YUI skin (and overridden by the general margin on line 378 */
+
+#Activiti.yui-skin-sam .yui-calcontainer span.calclose {
+	margin: 0;
+}
+
+#Activiti.yui-skin-sam .yui-calcontainer div.title {
+	margin: 0 -10px 10px;
+}
+
+/* Activiti Data Table */
+
+.yui-skin-sam tr.yui-dt-odd { 
+   background-color:#E4FFE0;
+}
+
+.yui-skin-sam tr.yui-dt-even td.yui-dt-asc, 
+.yui-skin-sam tr.yui-dt-even td.yui-dt-desc {
+   background-color:#E4FFE0;
+}
+
+.yui-skin-sam tr.yui-dt-odd td.yui-dt-asc, 
+.yui-skin-sam tr.yui-dt-odd td.yui-dt-desc {
+   background-color:#CFE7CB;
+}
+
+.startProcess {
+	text-indent: -1000em;
+	background: url("../images/process-start-icon.png") no-repeat;
+   display:block;
+   float:left;
+   height:16px;
+   text-indent:-1000em;
+   width:16px;
+}

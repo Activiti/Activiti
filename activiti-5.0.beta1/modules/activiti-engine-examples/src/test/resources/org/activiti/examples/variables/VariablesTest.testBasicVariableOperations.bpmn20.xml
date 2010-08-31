@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions id="taskAssigneeExample" 
+  xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	typeLanguage="http://www.w3.org/2001/XMLSchema"
+	expressionLanguage="http://www.w3.org/1999/XPath" 
+	targetNamespace="http://www.activiti.org/bpmn2.0">
+	
+	<process id='taskAssigneeProcess' name="Task Assignee example">
+	
+		<startEvent id='theStart' />
+		
+		<sequenceFlow id='flow1' sourceRef='theStart' targetRef='theTask' />
+
+		<userTask id='theTask' name='Schedule meeting' >
+		  <documentation>
+		    Schedule an engineering meeting for next week with the new hire.
+		  </documentation>
+		  <humanPerformer>
+		    <resourceAssignmentExpression>
+		      <formalExpression>kermit</formalExpression>
+		    </resourceAssignmentExpression>
+		  </humanPerformer>
+		</userTask>
+		
+		<sequenceFlow id='flow2' sourceRef='theTask' targetRef='theEnd' />
+		
+		<endEvent id='theEnd' />
+		
+	</process>
+
+</definitions>

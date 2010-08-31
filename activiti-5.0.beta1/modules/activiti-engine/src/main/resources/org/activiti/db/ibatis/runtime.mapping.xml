@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
+  
+<mapper namespace="org.activiti.persistence">
+
+  <!-- EXECUTION INSERT -->
+
+  <insert id="insertExecution" parameterType="org.activiti.engine.impl.runtime.ExecutionEntity">
+    insert into ACT_RU_EXECUTION (ID_, REV_, PROC_INST_ID_, PROC_DEF_ID_, ACTIVITY_ID_, IS_ACTIVE_, IS_CONCURRENT_, IS_SCOPE_, PARENT_ID_, SUPER_EXEC_)
+    values (
+      #{id ,jdbcType=VARCHAR},
+      1,
+      #{processInstanceId, jdbcType=VARCHAR},
+      #{processDefinitionId ,jdbcType=VARCHAR},
+      #{activityId ,jdbcType=VARCHAR},
+      #{isActive ,jdbcType=BOOLEAN},
+      #{isConcurrent ,jdbcType=BOOLEAN},
+      #{isScope ,jdbcType=BOOLEAN},
+      #{parentId, jdbcType=VARCHAR},
+      #{superExecutionId, jdbcType=VARCHAR}
+    )
+  </insert>
+
+  <!-- EXECUTION UPDATE -->
+  
+  <update id="updateExecution" parameterType="org.activiti.engine.impl.runtime.ExecutionEntity">
+    update ACT_RU_EXECUTION set
+      PROC_DEF_ID_ = #{processDefinitionId, jdbcType=VARCHAR},
+      ACTIVITY_ID_ = #{activityId, jdbcType=VARCHAR},
+      IS_ACTIVE_ = #{isActive, jdbcType=BOOLEAN},
+      IS_CONCURRENT_ = #{isConcurrent, jdbcType=BOOLEAN},
+      IS_SCOPE_ = #{isScope, jdbcType=BOOLEAN},
+      PARENT_ID_ = #{parentId, jdbcType=VARCHAR},
+      SUPER_EXEC_ = #{superExecutionId, jdbcType=VARCHAR}
+    where ID_ = #{id}
+  </update>
+  
+  <!-- EXECUTION DELETE -->
+  
+  <delete id="deleteExecution" parameterType="string">
+    delete from ACT_RU_EXECUTION where ID_ = #{id}
+  </delete>
+  
+  <!-- EXECUTION RESULTMAP -->
+  
+  <resultMap id="executionResultMap" type="org.activiti.engine.impl.runtime.ExecutionEntity">
+    <id property="id" column="ID_" jdbcType="VARCHAR" />
+    <result property="revision" column="REV_" jdbcType="INTEGER" />
+    <result property="processInstanceId" column="PROC_INST_ID_" jdbcType="VARCHAR" />
+    <result property="processDefinitionId" column="PROC_DEF_ID_" jdbcType="VARCHAR" />
+    <result property="activityId" column="ACTIVITY_ID_" jdbcType="VARCHAR" />
+    <result property="isActive" column="IS_ACTIVE_" jdbcType="BOOLEAN" />
+    <result property="isConcurrent" column="IS_CONCURRENT_" jdbcType="BOOLEAN" />
+    <result property="isScope" column="IS_SCOPE_" jdbcType="BOOLEAN" />
+    <result property="parentId" column="PARENT_ID_" jdbcType="VARCHAR" />
+    <result property="superExecutionId" column="SUPER_EXEC_" jdbcType="VARCHAR" />
+  </resultMap>
+  
+  <!-- EXECUTION SELECT -->
+  
+  <select id="selectExecutionById" parameterType="string" resultMap="executionResultMap">
+    select * from ACT_RU_EXECUTION where ID_ = #{id}
+  </select>
+  
+  <select id="selectExecutionsByParentExecutionId" parameterType="string" resultMap="executionResultMap">
+    select * from ACT_RU_EXECUTION
+    where PARENT_ID_ = #{parentExecutionId}
+  </select>
+  
+   <select id="selectExecutionsByQueryCriteria" parameterType="org.activiti.engine.impl.ExecutionQueryImpl" resultMap="executionResultMap">
+    select E.*
+    <include refid="selectExecutionsByQueryCriteriaSql"/>
+    <if test="orderBy != null">
+      order by ${orderBy}
+    </if>
+  </select>
+  
+  <select id="selectExecutionCountByQueryCriteria" parameterType="org.activiti.engine.impl.ExecutionQueryImpl" resultType="long">
+    select count(*)
+    <include refid="selectExecutionsByQueryCriteriaSql"/>
+  </select>
+  
+  <sql id="selectExecutionsByQueryCriteriaSql">
+    from ACT_RU_EXECUTION E
+    <if test="processDefinitionKey != null or processDefinitionId != null">
+      inner join ACT_RE_PROC_DEF P on E.PROC_DEF_ID_ = P.ID_
+    </if>
+    <where>
+      <if test="onlyProcessInstances">
+        E.PARENT_ID_ is null
+      </if>
+      <if test="processDefinitionId != null">
+        and P.ID_ = #{processDefinitionId}
+      </if>
+      <if test="processDefinitionKey != null">
+        and P.KEY_ = #{processDefinitionKey}
+      </if>
+      <if test="executionId != null">
+        and E.ID_ = #{executionId}
+      </if>
+      <if test="activityId != null">
+        and E.ACTIVITY_ID_ = #{activityId}
+      </if>
+    </where>
+  </sql>
+  
+  <select id="selectSubProcessInstanceBySuperExecutionId" parameterType="string" resultMap="executionResultMap">
+    select *
+    from ACT_RU_EXECUTION
+    where SUPER_EXEC_ = #{superExecutionId}
+  </select>
+  
+</mapper>

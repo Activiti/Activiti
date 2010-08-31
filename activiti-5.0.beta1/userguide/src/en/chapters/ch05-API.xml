@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE chapter PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN" "../../../target/docbook-tool-1.0/docbook-xml/docbookx.dtd">
+
+<chapter>
+  <title>API</title>
+
+  <section>
+    <title>Persistent API</title>
+    <para>The persistent API is by far the most common way of interacting with
+    Activiti.  You need a configuration file to get started.  Then you can
+    create a <literal>Configuration</literal> and feed in the file as
+    a resource or as an input stream.  Then you build a <literal>ProcessEngine</literal>
+    from the configuration.  From the ProcessEngine, you can obtain the
+    various <literal>XxxxServices</literal> that contain the workflow/BPM
+    methods.  ProcessEngine and the services objects are thread safe.
+    So you can keep a reference to 1 of those for a whole server.
+    </para>
+    <mediaobject><imageobject><imagedata align="center" fileref="images/api.services.png"/></imageobject></mediaobject>
+    <programlisting>ProcessEngine processEngine = new ProcessEngineBuilder()
+  .configureFromPropertiesResource(configurationResource)
+  .buildProcessEngine();
+
+RuntimeService runtimeService = processEngine.getRuntimeService();
+RepositoryService repositoryService = processEngine.getRepositoryService();
+TaskService taskService = processEngine.getTaskService();
+ManagementService managementService = processEngine.getManagementService();
+IdentityService identityService = processEngine.getIdentityService();
+HistoryService historyService = processEngine.getHistoryService();</programlisting>
+    <para>For more docs on the persistent API, see <ulink url="../javadocs/index.html">the javadocs</ulink>
+    and the BPMN examples in this userguide.
+    </para>
+  </section>
+
+  <section>
+    <title>The activiti-engine-init.war</title>
+    <para>The activiti-engine-init.war can be used to easily manage process engine
+    initialization and proper shutdown.  This war is automatically added to tomcat in
+    the setup scripts when deploying activiti to tomcat.</para>
+    <para>The war contains a single
+    servlet that has an <literal>init</literal> and a <literal>deploy</literal> method.
+    The init will delegate to <literal>ProcessEngines.init()</literal>.  That will
+    look for all <literal>activiti.properties</literal> resource files on the classpath.
+    For each configuration file found, it will create a ProcessEngine.</para>
+    <para>The default process engine name is <literal>default</literal>. </para>
+    <para>If you have multiple such resource files on the classpath, make sure they all
+    have different values for property <literal>process.engine.name</literal> </para>
+    <para>The initialized ProcessEngines can be accessed with <literal>ProcessEngines.getProcessEngine(String processEngineName)</literal>
+    </para>
+    <para>The destroy of the servlet delegates to <literal>ProcessEngines.destroy()</literal>.
+    That will properly close all initialized process engines.
+    </para>
+  </section>
+
+  <section>
+    <title>Process Virtual Machine API</title>
+    <para>The Process Virtual Machine API exposes the POJO core of the Process Virtual Machine.
+    Reading and playing with it is interesting for education purposes to understand
+    the internal workings of Activiti.  And the POJO API can also be used to build
+    new process languages.
+    </para>
+    <para>For example:</para>
+    <programlisting>PvmProcessDefinition processDefinition = new ProcessDefinitionBuilder()
+  .createActivity("a")
+    .initial()
+    .behavior(new WaitState())
+    .transition("b")
+  .endActivity()
+  .createActivity("b")
+    .behavior(new WaitState())
+    .transition("c")
+  .endActivity()
+  .createActivity("c")
+    .behavior(new WaitState())
+  .endActivity()
+  .buildProcessDefinition();
+
+PvmProcessInstance processInstance = processDefinition.createProcessInstance();
+processInstance.start();
+
+PvmExecution activityInstance = processInstance.findExecution("a");
+assertNotNull(activityInstance);
+
+activityInstance.signal(null, null);
+
+activityInstance = processInstance.findExecution("b");
+assertNotNull(activityInstance);
+
+activityInstance.signal(null, null);
+
+activityInstance = processInstance.findExecution("c");
+assertNotNull(activityInstance);</programlisting>
+  </section>
+
+</chapter>

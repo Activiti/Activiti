@@ -1,0 +1,7 @@
+.ygtvlabel, .ygtvlabel:link, .ygtvlabel:visited, .ygtvlabel:hover {
+	background: none;
+}
+
+#content #left .activiti-component {
+	overflow: auto;
+}

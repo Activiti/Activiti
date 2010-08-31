@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE chapter PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN" "../../../target/docbook-tool-1.0/docbook-xml/docbookx.dtd">
+
+<chapter>
+<title>Introduction</title>
+
+<section id="license">
+  <title>License</title>
+  <para>Activiti is distributed under <ulink url="../../license.txt">the Apache V2 license</ulink>.</para>
+</section>
+  
+<section id="download">
+  <title>Download</title>
+  <para><ulink url="http://activiti.org/download.html">http://activiti.org/download.html</ulink></para>
+</section>
+
+<section id="sources">
+  <title>Sources</title>
+  <para>The distribution contains most of the sources as jar files. 
+  To find and build the full source codebase, please read the  
+  <ulink url="http://docs.codehaus.org/display/ACT/Developers+Guide#DevelopersGuide-Buildingthedistribution">'Building the distribution' wiki page</ulink> 
+  </para>
+</section>
+
+<section id="required.software">
+  <title>Required software</title>
+  <itemizedlist>
+    <listitem><para>JVM 5+ (Known Limitation: Currently Activiti only runs on JDK 6! Also see <ulink url="http://jira.codehaus.org/browse/ACT-49">ACT-49: make activiti compatible with jdk 5</ulink> )</para></listitem>
+    <listitem><para>Ant 1.7.1+</para></listitem>
+  </itemizedlist>
+</section>
+
+<section id="reporting.problems">
+  <title>Reporting problems</title>
+  <para>Every self respecting developer should have read 
+  <ulink url="http://www.catb.org/~esr/faqs/smart-questions.html">How to ask questions the smart way</ulink> 
+  </para>
+  <para>After you've done that you can post questions and comments on <ulink url="http://forums.activiti.org/en/viewforum.php?f=3">the Users forum</ulink> and 
+  create issues in <ulink url="http://jira.codehaus.org/browse/ACT">our Jira issue tracker</ulink> </para>
+  
+</section>
+
+</chapter>

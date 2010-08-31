@@ -1,0 +1,204 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
+  
+<mapper namespace="org.activiti.persistence">
+
+  <!-- TASK INSERT -->
+  
+  <insert id="insertTask" parameterType="org.activiti.engine.impl.task.TaskEntity">
+    insert into ACT_RU_TASK (ID_, REV_, NAME_, DESCRIPTION_, FORM_, PRIORITY_, CREATE_TIME_, SKIPPABLE_,
+                      START_DEADLINE_, COMPLETION_DEADLINE_, ASSIGNEE_,
+                      EXECUTION_ID_, PROC_INST_ID_, PROC_DEF_ID_)
+    values (#{id, jdbcType=VARCHAR},
+            1,
+            #{name, jdbcType=VARCHAR},
+            #{description, jdbcType=VARCHAR},
+            #{formResourceKey, jdbcType=VARCHAR},
+            #{priority, jdbcType=INTEGER},
+            #{createTime, jdbcType=TIMESTAMP},
+            #{skippable, jdbcType=BOOLEAN},
+            #{startDeadline, jdbcType=TIMESTAMP},
+            #{completionDeadline, jdbcType=TIMESTAMP},
+            #{assignee, jdbcType=VARCHAR},
+            #{executionId, jdbcType=VARCHAR},
+            #{processInstanceId, jdbcType=VARCHAR},
+            #{processDefinitionId, jdbcType=VARCHAR}
+           )
+  </insert>
+  
+  <!-- TASK UPDATE -->
+  
+  <update id="updateTask" parameterType="org.activiti.engine.impl.task.TaskEntity">
+    update ACT_RU_TASK
+    <set>
+      REV_ = #{revisionNext, jdbcType=INTEGER},
+      NAME_ = #{name, jdbcType=VARCHAR},
+      PRIORITY_ = #{priority, jdbcType=INTEGER},
+      CREATE_TIME_ = #{createTime, jdbcType=TIMESTAMP},
+      SKIPPABLE_ = #{skippable, jdbcType=BOOLEAN},
+      START_DEADLINE_ = #{startDeadline, jdbcType=TIMESTAMP},
+      COMPLETION_DEADLINE_ = #{completionDeadline, jdbcType=TIMESTAMP},
+      ASSIGNEE_ = #{assignee, jdbcType=VARCHAR},
+      EXECUTION_ID_ = #{executionId, jdbcType=VARCHAR},
+    </set>
+    where ID_= #{id, jdbcType=VARCHAR}
+      and REV_ = #{revision, jdbcType=INTEGER}
+  </update>
+  
+  <!-- TASK DELETE -->
+  <delete id="deleteTask" parameterType="string">
+    delete from ACT_RU_TASK where ID_ = #{id}
+  </delete>
+  
+  <!-- TASK RESULTMAP -->
+  
+  <resultMap id="taskResultMap" type="org.activiti.engine.impl.task.TaskEntity">
+    <id property="id" column="ID_" jdbcType="VARCHAR"/>
+    <result property="revision" column="REV_" jdbcType="INTEGER"/>
+    <result property="name" column="NAME_" jdbcType="VARCHAR"/>
+    <result property="description" column="DESCRIPTION_" jdbcType="VARCHAR"/>
+    <result property="formResourceKey" column="FORM_" jdbcType="VARCHAR"/>
+    <result property="priority" column="PRIORITY_" jdbcType="INTEGER"/>
+    <result property="createTime" column="CREATE_TIME_" jdbcType="TIMESTAMP" />
+    <result property="startDeadline" column="START_DEADLINE_" jdbcType="TIMESTAMP" />
+    <result property="completionDeadline" column="COMPLETION_DEADLINE_" jdbcType="TIMESTAMP" />
+    <result property="skippable" column="SKIPPABLE_" jdbcType="BOOLEAN"/>
+    <result property="assignee" column="ASSIGNEE_" jdbcType="VARCHAR"/>
+    <result property="executionId" column="EXECUTION_ID_" jdbcType="VARCHAR" />
+    <result property="processDefinitionId" column="PROC_DEF_ID_" jdbcType="VARCHAR"/>
+  </resultMap>
+
+  <!-- TASK SELECT -->  
+
+  <select id="selectTask" parameterType="string" resultMap="taskResultMap">
+   select * from ACT_RU_TASK where ID_ = #{id}
+  </select>
+  
+  <select id="selectCandidateTasks" parameterType="map" resultMap="taskResultMap">
+    select T.* from ACT_RU_TASK T inner join ACT_RU_TASKINVOLVEMENT I ON T.ID_ = I.TASK_ID_
+    where T.ASSIGNEE_ IS NULL
+          AND I.TYPE_ = 'candidate'
+    <choose>
+      <when test="userId != null">
+        AND (I.USER_ID_ = #{userId, jdbcType=VARCHAR}
+      </when>
+      <otherwise>
+        (
+      </otherwise>
+    </choose>       
+    <if test="groupIds != null">
+      <foreach collection="groupIds" index="index" item="groupId">
+         OR I.GROUP_ID_ = #{groupId, jdbcType=VARCHAR}  
+      </foreach>
+    </if>
+    )
+  </select>
+  
+  <select id="selectTasksByAssignee" parameterType="string" resultMap="taskResultMap">
+    select * from ACT_RU_TASK where ASSIGNEE_ = #{assignee}
+  </select>
+  
+  <select id="selectTaskByQueryCriteria" parameterType="map" resultMap="taskResultMap">
+    select distinct(T.*)
+    <include refid="selectTaskByQueryCriteriaSql"/>
+    <if test="orderBy != null">
+      order by ${orderBy}
+    </if>
+  </select>
+
+  <select id="selectTaskCountByQueryCriteria" parameterType="map" resultType="long">
+    select count(distinct T.ID_)
+    <include refid="selectTaskByQueryCriteriaSql"/>
+  </select>
+  
+  <sql id="selectTaskByQueryCriteriaSql">  
+    from ACT_RU_TASK T
+    <if test="candidateUser != null || candidateGroups != null">
+      inner join ACT_RU_TASKINVOLVEMENT I on I.TASK_ID_ = T.ID_
+    </if>
+    <where>
+      <if test="name != null">
+        T.NAME_ = #{name}
+      </if>
+      <if test="assignee != null">
+        and T.ASSIGNEE_ = #{assignee}
+      </if>
+      <if test="processInstanceId != null">
+        and T.PROC_INST_ID_ = #{processInstanceId}
+      </if>
+      <if test="executionId != null">
+        and T.EXECUTION_ID_ = #{executionId}
+      </if>
+      <if test="candidateUser != null || candidateGroups != null">
+        and T.ASSIGNEE_ is null
+        and I.TYPE_ = 'candidate'
+        and 
+        ( 
+          <if test="candidateUser != null">
+            I.USER_ID_ = #{candidateUser}          
+          </if>
+          <if test="candidateUser != null &amp;&amp; candidateGroups != null &amp;&amp; candidateGroups.size() &gt; 0">
+            or
+          </if>
+          <if test="candidateGroups != null &amp;&amp; candidateGroups.size() &gt; 0">
+            I.GROUP_ID_ IN
+            <foreach item="group" index="index" collection="candidateGroups" 
+                     open="(" separator="," close=")">
+              #{group}
+            </foreach>
+          </if>
+        )
+      </if>
+    </where>
+  </sql>
+
+  <select id="selectTaskByQueryCriteria_mysql" parameterType="map" resultMap="taskResultMap">
+    select distinct T.*
+    <include refid="selectTaskByQueryCriteriaSql"/>
+     <if test="orderBy != null">
+      order by ${orderBy}
+    </if>
+  </select>
+
+  <!-- INSERT TASK INVOLVEMENT -->
+  
+  <insert id="insertTaskInvolvement" parameterType="org.activiti.engine.impl.task.TaskInvolvementEntity">
+    insert into ACT_RU_TASKINVOLVEMENT (ID_, REV_, TYPE_, USER_ID_, GROUP_ID_, TASK_ID_)
+    values (#{id, jdbcType=VARCHAR},
+            1,
+            #{type, jdbcType=VARCHAR},
+            #{userId, jdbcType=VARCHAR},
+            #{groupId, jdbcType=VARCHAR},
+            #{taskId, jdbcType=VARCHAR})
+  </insert>
+  
+  <!-- TASK INVOLVEMENT INSERT -->
+
+  <!-- TASK INVOLVEMENT DELETE -->
+  
+  <delete id="deleteTaskInvolvement" parameterType="string">
+    delete from ACT_RU_TASKINVOLVEMENT where ID_ = #{id}
+  </delete>
+
+  <!-- TASK INVOLVEMENT RESULTMAP -->
+
+  <resultMap id="taskInvolvementResultMap" type="org.activiti.engine.impl.task.TaskInvolvementEntity">
+    <id property="id" column="ID_" jdbcType="VARCHAR" />
+    <result property="type" column="TYPE_" jdbcType="VARCHAR" />
+    <result property="userId" column="USER_ID_" jdbcType="VARCHAR" />
+    <result property="groupId" column="GROUP_ID_" jdbcType="VARCHAR" />
+    <result property="taskId" column="TASK_ID_" jdbcType="VARCHAR" />
+  </resultMap>
+
+  <!-- TASK INVOLVEMENT SELECT -->
+
+  <select id="selectTaskInvolvement" parameterType="string" resultMap="taskInvolvementResultMap">
+    select * from ACT_RU_TASKINVOLVEMENT where ID_ = #{id}
+  </select>
+  
+  <select id="selectTaskInvolvementsByTask" parameterType="string" resultMap="taskInvolvementResultMap">
+    select * from ACT_RU_TASKINVOLVEMENT where TASK_ID_ = #{taskId}
+  </select>
+
+</mapper>
