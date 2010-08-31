@@ -32,7 +32,7 @@
   	                                 db.demo.data,
   	                                 deploy.activiti.rest.into.tomcat, 
                                      deploy.activiti.explorer.and.probe.into.tomcat,
-  									 deploy.activiti.cycle.into.tomcat,
+                                     deploy.activiti.cycle.into.tomcat,
   	                                 tomcat.start,
                                      deploy.activiti.modeler.into.tomcat "/>
   
