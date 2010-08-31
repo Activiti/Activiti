@@ -26,7 +26,67 @@
 
   <h1>Activiti Release Notes</h1>
 
-    <h3>5.0.beta1-SNAPSHOT</h3>
+    <h3>5.0.beta1 (September 1, 2010)</h3>
+
+    <h4>Known limitations</h4>
+    <ul>
+    <li>Optimistic locking isn't tested yet [<a href='http://jira.codehaus.org/browse/ACT-106'>ACT-106</a>]</li>
+    <li>History only contains HistoricProcessInstances, no HistoricActivityInstances yet [<a href='http://jira.codehaus.org/browse/ACT-30'>ACT-30</a>]</li>
+    <li>Some API changes are still expected [<a href='http://jira.codehaus.org/browse/ACT-104'>ACT-104</a>]</li>
+    </ul>
+    <h4>New Features</h4>
+    <ul>
+    <li>[<a href='http://jira.codehaus.org/browse/ACT-55'>ACT-55</a>] -         Introduce first version of Activiti-Cycle
+    <li>[<a href='http://jira.codehaus.org/browse/ACT-91'>ACT-91</a>] -         Expand serviceTask with method and value expressions
+    </li>
+    </ul>
+		<h4>Bugs</h4>
+		<ul>
+		<li>[<a href='http://jira.codehaus.org/browse/ACT-39'>ACT-39</a>] -         fix ProcessEngineInitializationTest
+		</li>
+		<li>[<a href='http://jira.codehaus.org/browse/ACT-98'>ACT-98</a>] -         REST API errors
+		</li>
+		<li>[<a href='http://jira.codehaus.org/browse/ACT-99'>ACT-99</a>] -         Table records don&#39;t show
+		</li>
+		</ul>
+		<h4>Improvements</h4>
+		<ul>
+		<li>[<a href='http://jira.codehaus.org/browse/ACT-2'>ACT-2</a>] -         Clean up API
+		</li>
+		<li>[<a href='http://jira.codehaus.org/browse/ACT-6'>ACT-6</a>] -         Rename DbProcessEngineBuilder to ProcessEngineBuilder
+		</li>
+		<li>[<a href='http://jira.codehaus.org/browse/ACT-60'>ACT-60</a>] -         pvm refactoring
+		</li>
+		<li>[<a href='http://jira.codehaus.org/browse/ACT-79'>ACT-79</a>] -         Please add a ELResolver that automatically resolves any bean in the Spring BeanFactory in which the ELResolver resides
+		</li>
+		<li>[<a href='http://jira.codehaus.org/browse/ACT-80'>ACT-80</a>] -         Extend service task to SignallableActivityBehavior
+		</li>
+		<li>[<a href='http://jira.codehaus.org/browse/ACT-82'>ACT-82</a>] -         Expose form attribute from Task object
+		</li>
+		</ul>
+		<h4>Tasks</h4>
+		<ul>
+		<li>[<a href='http://jira.codehaus.org/browse/ACT-48'>ACT-48</a>] -         Add Grails plugin link to docs or website
+		</li>
+		<li>[<a href='http://jira.codehaus.org/browse/ACT-59'>ACT-59</a>] -         define table/column naming strategy
+		</li>
+		<li>[<a href='http://jira.codehaus.org/browse/ACT-61'>ACT-61</a>] -         Introduce query API for deployments and resources
+		</li>
+		<li>[<a href='http://jira.codehaus.org/browse/ACT-75'>ACT-75</a>] -         document maven repo in the website community page
+		</li>
+		<li>[<a href='http://jira.codehaus.org/browse/ACT-85'>ACT-85</a>] -         Improve error message when db driver is not found
+		</li>
+		<li>[<a href='http://jira.codehaus.org/browse/ACT-86'>ACT-86</a>] -         Fix classpath in setup script for other dbs
+		</li>
+		<li>[<a href='http://jira.codehaus.org/browse/ACT-90'>ACT-90</a>] -         Add Spring integration examples and documentation
+		</li>
+		<li>[<a href='http://jira.codehaus.org/browse/ACT-96'>ACT-96</a>] -         Cycle demo build creates 2 files in codebase
+		</li>
+		<li>[<a href='http://jira.codehaus.org/browse/ACT-101'>ACT-101</a>] -         Add sorting of the table names in Probe
+		</li>
+		</ul>
+
+    <h3>5.0.alpha4 (August 1, 2010)</h3>
     <h4>Improvements</h4>
     <ul>
       <li>MySQL support</li>
@@ -55,7 +115,7 @@
       <li>Expression cannot have whitespaces</li>
     </ul>
 
-    <h3>5.0.alpha3</h3>
+    <h3>5.0.alpha3 (July 1, 2010)</h3>
     <h4>Improvements</h4>
     <ul>
       <li>Switch from iBatis to MyBatis</li>
@@ -67,7 +127,7 @@
       <li>Switched JUnit usage from 3-style inheritance to 4-style annotations</li>
     </ul>
 
-    <h3>5.0.alpha2</h3>
+    <h3>5.0.alpha2 (June 1, 2010)</h3>
     <h4>Improvements</h4>
     <ul>
       <li>Task forms in Activiti Explorer</li>
@@ -83,7 +143,7 @@
       <li>Only one tx demarcation tech: standalone JDBC</li>
       <li>No process concurrency</li>
     </ul>
-		<h3>5.0.alpha1</h3>
+		<h3>5.0.alpha1 (May 17, 2010)</h3>
 		<h4>Known limitations</h4>
 		<ul>
       <li>No history in Activiti Engine</li>
