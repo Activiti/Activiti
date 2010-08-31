@@ -5,19 +5,17 @@
 	<property file="${user.home}/.activiti/build.properties" />
   <property file="build.properties" />
   <property file="build.${db}.properties" />
-  <!-- TODO: move that to the standalone profile? -->
+
+	<!-- TODO: move that to the standalone profile? -->
 	<property file="files/cfg.cycle/cycle.properties" />
 
   <property name="activiti.home" value=".." /> 
 	<property name="activiti.version" value="5.0.beta1-SNAPSHOT" />	  
-	
-	<echo message="Activiti home = ${activiti.home}" />
-	<echo message="Activiti version = ${activiti.version}" />
-
   <property name="apache.mirror.url" value="http://mirrors.enquira.co.uk/apache/" />
   <property name="tomcat.home" value="${activiti.home}/apps/apache-tomcat-${tomcat.version}" /> 
   <property name="tomcat.filename" value="apache-tomcat-${tomcat.version}.zip" /> 
   <property name="tomcat.download.url" value="${apache.mirror.url}tomcat/tomcat-6/v${tomcat.version}/bin/${tomcat.filename}" />    
+  <property name="tomcat.max.perm.size" value="256M" />    
 
 	<!-- 
 	to work with Activiti Modeler or Activiti Cycle on trunk, set property activiti.modeler.download.url
@@ -99,6 +97,14 @@
 		<available file="${user.home}/.activiti/tomcat-users.xml" property="tomcat.users.available" />
     <antcall target="tomcat.copy.users" />
 		<antcall target="tomcat.enable.debug" />
+	  <replace file="${tomcat.home}/bin/catalina.sh">
+	    <replacetoken><![CDATA[#!/bin/sh]]></replacetoken>
+	    <replacevalue><![CDATA[#!/bin/sh
+
+JAVA_OPTS=-XX:MaxPermSize=@tomcat.max.perm.size@
+]]></replacevalue>
+	  </replace>
+    <replace file="${tomcat.home}/bin/catalina.sh" token="@tomcat.max.perm.size@" value="${tomcat.max.perm.size}" />
     <chmod perm="a+x" os="Linux, Mac OS X">
       <fileset dir="${tomcat.home}/bin">
         <include name="*.sh" />
@@ -122,7 +128,7 @@ JAVA_OPTS="-Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=8787
 # Licensed to the Apache Software Foundation (ASF) under one or more]]></replacevalue>
 	  </replace>
 	</target>
-
+	
   <target name="tomcat.start" depends="internal.taskdef.launch">
     <launch dir="${activiti.home}/apps/apache-tomcat-${tomcat.version}/bin"
             script="startup"
