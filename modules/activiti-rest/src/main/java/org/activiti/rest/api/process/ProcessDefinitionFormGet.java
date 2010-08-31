@@ -33,11 +33,11 @@ public class ProcessDefinitionFormGet extends ActivitiWebScript {
         model.put("form", processDefinitionForm);
       }
       else {
-        throw new WebScriptException(Status.STATUS_NOT_IMPLEMENTED, "The form for process definitionForm '" + processDefinitionForm + "' cannot be rendered using the rest api.");
+        throw new WebScriptException(Status.STATUS_NOT_IMPLEMENTED, "The form for process definition '" + processDefinitionId + "' cannot be rendered using the rest api.");
       }
     }
     else {
-      throw new WebScriptException(Status.STATUS_NOT_FOUND, "There is no form for process definitionForm '" + processDefinitionForm + "'.");
+      throw new WebScriptException(Status.STATUS_NOT_FOUND, "There is no form for process definition '" + processDefinitionId + "'.");
     }
   }
 }
