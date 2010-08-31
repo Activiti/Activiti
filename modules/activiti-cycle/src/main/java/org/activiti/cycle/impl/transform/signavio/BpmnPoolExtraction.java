@@ -33,7 +33,9 @@ public class BpmnPoolExtraction extends OryxTransformation {
 					extractedChildShapes.add(childShape);
 				}
 			}
+			deleteAllOutgoingReferencesNotContainedInShape(pool, null);
 			diagram.setChildShapes(extractedChildShapes);
+			
 		} else {
 			// throw new BpmnPoolNotFoundException(poolName);
 		}
@@ -64,5 +66,31 @@ public class BpmnPoolExtraction extends OryxTransformation {
 			return shapeIsContainedIn(parentOfChild, parent);
 		}
 	}
-
+	
+	private void deleteAllOutgoingReferencesNotContainedInShape(Shape sourceShape, Shape childShape) {
+	  // for first invoke
+	  if (childShape == null) {
+	    childShape = sourceShape;
+	  }
+	  if (childShape.getChildShapes().isEmpty()) {
+	    return;
+    }
+	  for (Shape child : childShape.getChildShapes()) {
+      ArrayList<Shape> outgoings = child.getOutgoings();
+      ArrayList<Shape> removeOutgoings = new ArrayList<Shape>();
+      if (!outgoings.isEmpty()) {
+        for (Shape outgoing : outgoings) {
+          Shape target = outgoing.getTarget();
+          if (!(shapeIsContainedIn(target, sourceShape))) {
+            removeOutgoings.add(outgoing);
+          }
+        }
+        outgoings.removeAll(removeOutgoings);
+        child.setOutgoings(outgoings);
+      } else {
+        // recursion to iterate through all children of sourceShape
+        deleteAllOutgoingReferencesNotContainedInShape(sourceShape, child);
+      }
+    }
+	}
 }

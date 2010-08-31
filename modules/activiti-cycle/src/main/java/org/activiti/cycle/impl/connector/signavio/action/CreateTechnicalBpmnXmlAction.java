@@ -85,7 +85,7 @@ public class CreateTechnicalBpmnXmlAction extends ParametrizedFreemakerTemplateA
       JSONObject jsonObject = new JSONObject(sourceJson);
 
       for (JsonTransformation trafo : registeredTransformations) {
-        trafo.transform(jsonObject);
+        jsonObject = trafo.transform(jsonObject);
       }
 
       return jsonObject.toString();
