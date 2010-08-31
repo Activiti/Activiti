@@ -8,7 +8,7 @@
 	<artifactId>activiti-root</artifactId>
 
 	<packaging>pom</packaging>
-	<version>5.0.beta1-SNAPSHOT</version>
+	<version>5.0.beta1</version>
   <properties>
     <spring.framework.version>3.0.3.RELEASE</spring.framework.version>
   </properties>
