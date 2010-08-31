@@ -4,7 +4,7 @@
   
   <property file="${user.home}/.activiti/build.properties" />
 
-  <property name="activiti.version" value="5.0.beta1-SNAPSHOT" /> 
+  <property name="activiti.version" value="5.0.beta1" /> 
   <property name="target.distro.root" value="target/activiti-${activiti.version}" />
 	<property name="activiti.website" value="../../activiti-website" />
 

@@ -6,7 +6,7 @@ create table ACT_GE_PROPERTY (
 ) TYPE=InnoDB;
 
 insert into ACT_GE_PROPERTY
-values ('schema.version', '5.0.beta1-SNAPSHOT', 1);
+values ('schema.version', '5.0.beta1', 1);
 
 insert into ACT_GE_PROPERTY
 values ('next.dbid', '1', 1);
