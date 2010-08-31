@@ -20,6 +20,7 @@ import java.util.Map;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.Page;
 import org.activiti.engine.history.HistoricProcessInstance;
+import org.activiti.engine.impl.DeploymentQueryImpl;
 import org.activiti.engine.impl.HistoricProcessInstanceQueryImpl;
 import org.activiti.engine.impl.ProcessDefinitionQueryImpl;
 import org.activiti.engine.impl.ProcessInstanceQueryImpl;
@@ -30,6 +31,7 @@ import org.activiti.engine.impl.repository.Deployer;
 import org.activiti.engine.impl.repository.DeploymentEntity;
 import org.activiti.engine.impl.repository.ProcessDefinitionEntity;
 import org.activiti.engine.impl.repository.ResourceEntity;
+import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.runtime.ProcessInstance;
 
@@ -243,6 +245,16 @@ public class DbRepositorySession implements Session, RepositorySession {
 
   public long findProcessDefinitionCountByQueryCriteria(ProcessDefinitionQueryImpl processDefinitionQuery) {
     return (Long) dbSqlSession.selectOne("selectProcessDefinitionCountByQueryCriteria", processDefinitionQuery);
+  }
+
+  public long findDeploymentCountByQueryCriteria(DeploymentQueryImpl deploymentQuery) {
+    return (Long) dbSqlSession.selectOne("selectDeploymentCountByQueryCriteria", deploymentQuery);
+  }
+
+  @SuppressWarnings("unchecked")
+  public List<Deployment> findDeploymentsByQueryCriteria(DeploymentQueryImpl deploymentQuery, Page page) {
+    final String query = "selectDeploymentsByQueryCriteria";
+    return dbSqlSession.selectList(query, deploymentQuery, page);
   }
   
 }

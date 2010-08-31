@@ -37,5 +37,5 @@ public interface ProcessDefinitionQuery {
   
   List<ProcessDefinition> list();
   
-  List<ProcessDefinition> listPage(int start, int size);
+  List<ProcessDefinition> listPage(int firstResult, int maxResults);
 }

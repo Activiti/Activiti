@@ -46,6 +46,6 @@ public interface TaskQuery {
   
   List<Task> list();
   
-  List<Task> listPage(int start, int size);
+  List<Task> listPage(int firstResult, int maxResults);
 
 }

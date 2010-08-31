@@ -18,6 +18,7 @@ import java.util.List;
 
 import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.repository.DeploymentBuilder;
+import org.activiti.engine.repository.DeploymentQuery;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.repository.ProcessDefinitionQuery;
 
@@ -72,6 +73,9 @@ public interface RepositoryService {
   
   /** query process definitions. */
   ProcessDefinitionQuery createProcessDefinitionQuery();
+  
+  /** query process definitions. */
+  DeploymentQuery createDeploymentQuery();
   
   /**
    * returns the {@link ProcessDefinition} with the given id, 

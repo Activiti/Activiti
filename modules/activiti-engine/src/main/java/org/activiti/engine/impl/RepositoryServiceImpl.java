@@ -27,6 +27,7 @@ import org.activiti.engine.impl.cmd.GetFormCmd;
 import org.activiti.engine.impl.repository.DeploymentBuilderImpl;
 import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.repository.DeploymentBuilder;
+import org.activiti.engine.repository.DeploymentQuery;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.repository.ProcessDefinitionQuery;
 
@@ -82,5 +83,8 @@ public class RepositoryServiceImpl extends ServiceImpl implements RepositoryServ
     return commandExecutor.execute(new GetFormCmd(null, processDefinitionKey, null));
   }
 
+  public DeploymentQuery createDeploymentQuery() {
+    return new DeploymentQueryImpl(commandExecutor);
+  }
 }
 

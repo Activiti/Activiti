@@ -29,7 +29,7 @@ public interface ExecutionQuery {
   ExecutionQuery activityId(String activityId);
   
   List<Execution> list();
-  List<Execution> listPage(int start, int maxResults);
+  List<Execution> listPage(int firstResult, int maxResults);
   Execution singleResult();
   long count();
 }

@@ -28,6 +28,31 @@
   </resultMap>
 
   <!-- DEPLOYMENT SELECT -->
+
+  <select id="selectDeploymentsByQueryCriteria" parameterType="org.activiti.engine.impl.DeploymentQueryImpl" resultMap="deploymentResultMap">
+    select distinct(D.*)
+    <include refid="selectDeploymentsByQueryCriteriaSql"/>
+    <if test="orderBy != null">
+      order by ${orderBy}
+    </if>
+  </select>
+
+  <select id="selectDeploymentCountByQueryCriteria" parameterType="org.activiti.engine.impl.DeploymentQueryImpl" resultType="long">
+    select count(distinct D.ID_)
+    <include refid="selectDeploymentsByQueryCriteriaSql"/>
+  </select>
+  
+  <sql id="selectDeploymentsByQueryCriteriaSql">  
+    from ACT_RE_DEPLOYMENT D
+    <where>
+      <if test="deploymentId != null">
+        D.ID_ = #{deploymentId}
+      </if>
+      <if test="nameLike != null">
+        D.NAME_ like #{nameLike}
+      </if>
+    </where>
+  </sql>
   
   <select id="selectDeployments" resultMap="deploymentResultMap">
     select * from ACT_RE_DEPLOYMENT D order by D.DEPLOY_TIME_ asc

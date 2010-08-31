@@ -48,7 +48,7 @@ public interface HistoricProcessInstanceQuery {
   List<HistoricProcessInstance> list();
   
   /** executes the query and get a page of {@link HistoricProcessInstance}s as the result. */
-  List<HistoricProcessInstance> listPage(int start, int maxResults);
+  List<HistoricProcessInstance> listPage(int firstResult, int maxResults);
   
   /** executes the query and get the single expected result. */
   HistoricProcessInstance singleResult();

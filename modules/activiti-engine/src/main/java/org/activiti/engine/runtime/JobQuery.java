@@ -39,6 +39,6 @@ public interface JobQuery {
   
   List<Job> list();
   
-  List<Job> listPage(int start, int size);
+  List<Job> listPage(int firstResult, int maxResults);
 
 }
