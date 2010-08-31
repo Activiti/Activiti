@@ -75,8 +75,8 @@
   <!-- RESOURCE INSERT -->
 
   <insert id="insertResource" parameterType="org.activiti.engine.impl.repository.ResourceEntity">
-    insert into ACT_GE_BYTEARRAY(ID_, NAME_, BYTES_, DEPLOYMENT_ID_)
-    values (#{id, jdbcType=VARCHAR}, #{name, jdbcType=VARCHAR}, #{bytes, jdbcType=BLOB}, #{deploymentId, jdbcType=VARCHAR})  
+    insert into ACT_GE_BYTEARRAY(ID_, REV_, NAME_, BYTES_, DEPLOYMENT_ID_)
+    values (#{id, jdbcType=VARCHAR}, 1, #{name, jdbcType=VARCHAR}, #{bytes, jdbcType=BLOB}, #{deploymentId, jdbcType=VARCHAR})  
   </insert>
   
   <!-- RESOURCE UPDATE -->
