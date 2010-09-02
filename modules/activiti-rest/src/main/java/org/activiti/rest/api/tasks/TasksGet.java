@@ -21,7 +21,7 @@ import org.springframework.extensions.webscripts.*;
 /**
  * Returns info about a list of tasks depending on the search filters.
  *
- * @author Erik Winl�f
+ * @author Erik Winlof
  */
 public class TasksGet extends ActivitiWebScript
 {

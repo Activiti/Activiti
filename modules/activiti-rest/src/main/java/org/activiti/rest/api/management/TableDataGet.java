@@ -23,7 +23,7 @@ import java.util.Map;
 /**
  * Returns signalData, metadata and paging info about a table.
  *
- * @author Erik Winl�f
+ * @author Erik Winlof
  */
 public class TableDataGet extends ActivitiWebScript
 {

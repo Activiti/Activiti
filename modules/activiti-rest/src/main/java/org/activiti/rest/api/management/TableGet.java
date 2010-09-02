@@ -22,7 +22,7 @@ import org.springframework.extensions.webscripts.WebScriptRequest;
 /**
  * Returns signalData, metadata and paging info about a table.
  *
- * @author Erik Winl�f
+ * @author Erik Winlof
  */
 public class TableGet extends ActivitiWebScript
 {

@@ -23,7 +23,7 @@ import java.util.Map;
 /**
  * Performs a given action on a task.
  *
- * @author Erik Winl�f
+ * @author Erik Winlof
  */
 public class TaskOperationPut extends ActivitiWebScript
 {
