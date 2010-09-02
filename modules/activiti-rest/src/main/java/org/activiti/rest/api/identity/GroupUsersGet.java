@@ -20,7 +20,7 @@ import org.springframework.extensions.webscripts.*;
 /**
  * Returns info about a groups's users.
  *
- * @author Erik Winlöf
+ * @author Erik Winlof
  */
 public class GroupUsersGet extends ActivitiWebScript
 {
@@ -39,5 +39,4 @@ public class GroupUsersGet extends ActivitiWebScript
     String groupId = getMandatoryPathParameter(req, "groupId");
     model.put("users", getIdentityService().findUsersByGroupId(groupId));
   }
-
 }

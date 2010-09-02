@@ -40,7 +40,7 @@ import org.springframework.extensions.webscripts.WebScriptRequest;
 /**
  * Helper class for all activiti webscripts.
  * 
- * @author Erik Winlöf
+ * @author Erik Winlof
  */
 public class ActivitiWebScript extends DeclarativeWebScript {
 

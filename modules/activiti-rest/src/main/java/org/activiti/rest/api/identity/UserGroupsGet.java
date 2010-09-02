@@ -20,7 +20,7 @@ import org.springframework.extensions.webscripts.*;
 /**
  * Returns details about a user's groups.
  *
- * @author Erik Winlöf
+ * @author Erik Winlof
  */
 public class UserGroupsGet extends ActivitiWebScript
 {

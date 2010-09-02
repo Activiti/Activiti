@@ -32,7 +32,7 @@ import org.springframework.extensions.webscripts.servlet.WebScriptServletRespons
  * Extend this class and implement doAuthenticate and doAuthorize to authenticate and authorize against a specific
  * user store.
  *
- * @author Erik Winlöf
+ * @author Erik Winlof
  */
 public abstract class AbstractBasicHttpAuthenticatorFactory implements ServletAuthenticatorFactory
 {
@@ -73,7 +73,7 @@ public abstract class AbstractBasicHttpAuthenticatorFactory implements ServletAu
   /**
    * HTTP Basic Authentication
    *
-   * @author Erik Winlöf
+   * @author Erik Winlof
    */
   public class BasicHttpAuthenticator implements Authenticator {
 

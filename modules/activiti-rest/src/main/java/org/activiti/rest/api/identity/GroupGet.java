@@ -20,7 +20,7 @@ import org.springframework.extensions.webscripts.*;
 /**
  * Returns details about a user.
  *
- * @author Erik Winlöf
+ * @author Erik Winlof
  */
 public class GroupGet extends ActivitiWebScript
 {

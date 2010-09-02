@@ -21,7 +21,7 @@ import org.springframework.extensions.webscripts.*;
 /**
  * Returns details about the process engine.
  *
- * @author Erik Winlöf
+ * @author Erik Winlof
  */
 public class ProcessEngineGet extends ActivitiWebScript
 {

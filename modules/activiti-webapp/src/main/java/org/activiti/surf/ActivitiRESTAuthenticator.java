@@ -20,7 +20,7 @@ import org.springframework.extensions.webscripts.connector.*;
 /**
  * Connects to a activiti rest endpoint's login webscript using json format.
  *
- * @author Erik Winlöf
+ * @author Erik Winlof
  */
 public class ActivitiRESTAuthenticator extends AbstractAuthenticator
 {

@@ -26,7 +26,7 @@ import java.util.Map;
 /**
  * Creates a summary of a users tasks.
  *
- * @author Erik Winlöf
+ * @author Erik Winlof
  */
 public class TasksSummaryGet extends ActivitiWebScript {
 

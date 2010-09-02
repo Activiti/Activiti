@@ -11,7 +11,7 @@ import java.util.Map;
 /**
  * Returns a task's form.
  *
- * @author Erik Winlöf
+ * @author Erik Winlof
  */
 public class TaskFormGet extends ActivitiWebScript {
 

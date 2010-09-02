@@ -10,7 +10,7 @@ import java.util.Map;
 /**
  * Returns info about a task.
  *
- * @author Erik Winlöf
+ * @author Erik Winlof
  */
 public class TaskGet extends ActivitiWebScript {
 

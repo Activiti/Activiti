@@ -22,7 +22,7 @@ import org.springframework.extensions.webscripts.*;
 /**
  * Returns details about all of the process engine's database tables.
  *
- * @author Erik Winlöf
+ * @author Erik Winlof
  */
 public class TablesGet extends ActivitiWebScript
 {

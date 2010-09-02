@@ -13,7 +13,7 @@
 package org.activiti.rest.auth;
 
 /**
- * @author Erik Winlöf
+ * @author Erik Winlof
  */
 public class AuthenticationException extends RuntimeException {
 

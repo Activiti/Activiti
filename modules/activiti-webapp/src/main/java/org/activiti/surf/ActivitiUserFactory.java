@@ -34,7 +34,7 @@ import org.springframework.extensions.webscripts.connector.*;
  * The user is stored in the request context and can be fetched using context.getUser().
  * The user is also available in the root of the a script component context as 'user'.
  *
- * @author Erik Winlöf
+ * @author Erik Winlof
  */
 public class ActivitiUserFactory extends AbstractUserFactory
 {

@@ -21,7 +21,7 @@ import java.util.Map;
  * The Activiti user object that, besides the base user info, contains the users
  * security role groups and assignment groups.
  *
- * @author Erik Winlöf
+ * @author Erik Winlof
  */
 public class ActivitiUser extends User {
 

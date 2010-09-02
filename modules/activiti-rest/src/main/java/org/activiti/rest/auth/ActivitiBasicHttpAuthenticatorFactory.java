@@ -24,7 +24,7 @@ import java.util.List;
  * This class performs the authentication and authorization to make sure that the user that accesses the webscripts
  * has the right to do so.
  *
- * @author Erik Winlöf
+ * @author Erik Winlof
  */
 public class ActivitiBasicHttpAuthenticatorFactory extends AbstractBasicHttpAuthenticatorFactory {
 
