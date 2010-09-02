@@ -28,8 +28,8 @@ import org.activiti.engine.impl.cmd.SaveTaskCmd;
 import org.activiti.engine.impl.cmd.SetTaskPriorityCmd;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
 import org.activiti.engine.impl.task.TaskEntity;
-import org.activiti.engine.impl.task.TaskInvolvementType;
 import org.activiti.engine.task.Task;
+import org.activiti.engine.task.TaskInvolvementType;
 import org.activiti.engine.task.TaskQuery;
 
 

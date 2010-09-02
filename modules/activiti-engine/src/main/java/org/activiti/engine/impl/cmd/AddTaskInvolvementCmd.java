@@ -18,7 +18,7 @@ import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.task.TaskEntity;
 import org.activiti.engine.impl.task.TaskInvolvementEntity;
-import org.activiti.engine.impl.task.TaskInvolvementType;
+import org.activiti.engine.task.TaskInvolvementType;
 
 
 /**

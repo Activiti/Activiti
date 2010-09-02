@@ -24,25 +24,27 @@ import org.activiti.engine.impl.cfg.ProcessEngineConfiguration;
  * To build a ProcessEngine that's using a h2 database over a TCP connection:
  * 
  * <pre>
- * 
- * 
- * 
- * 
- * 
- * ProcessEngine processEngine = DbProcessEngineBuilder.setDatabaseName(&quot;h2&quot;).setJdbcDriver(&quot;org.h2.Driver&quot;).setJdbcUrl(&quot;jdbc:h2:tcp://localhost/activiti&quot;)
- *         .setJdbcUsername(&quot;sa&quot;).setJdbcPassword(&quot;&quot;).setDbSchemaStrategy(DbSchemaStrategy.CHECK_VERSION).buildProcessEngine();
+ * ProcessEngine processEngine = DbProcessEngineBuilder
+ *   .setDatabaseName(&quot;h2&quot;)
+ *   .setJdbcDriver(&quot;org.h2.Driver&quot;)
+ *   .setJdbcUrl(&quot;jdbc:h2:tcp://localhost/activiti&quot;)
+ *   .setJdbcUsername(&quot;sa&quot;)
+ *   .setJdbcPassword(&quot;&quot;)
+ *   .setDbSchemaStrategy(DbSchemaStrategy.CHECK_VERSION)
+ *   .buildProcessEngine();
  * </pre>
  * 
  * To build a ProcessEngine that's using a h2 in memory database:
  * 
  * <pre>
- * 
- * 
- * 
- * 
- * 
- * ProcessEngine processEngine = DbProcessEngineBuilder.setDatabaseName(&quot;h2&quot;).setJdbcDriver(&quot;org.h2.Driver&quot;).setJdbcUrl(&quot;jdbc:h2:mem:activiti&quot;).setJdbcUsername(
- *         &quot;sa&quot;).setJdbcPassword(&quot;&quot;).setDbSchemaStrategy(DbSchemaStrategy.CREATE_DROP).buildProcessEngine();
+ * ProcessEngine processEngine = DbProcessEngineBuilder
+ *   .setDatabaseName(&quot;h2&quot;)
+ *   .setJdbcDriver(&quot;org.h2.Driver&quot;)
+ *   .setJdbcUrl(&quot;jdbc:h2:mem:activiti&quot;)
+ *   .setJdbcUsername(&quot;sa&quot;)
+ *   .setJdbcPassword(&quot;&quot;)
+ *   .setDbSchemaStrategy(DbSchemaStrategy.CREATE_DROP)
+ *   .buildProcessEngine();
  * </pre>
  * 
  * @see ProcessEngines

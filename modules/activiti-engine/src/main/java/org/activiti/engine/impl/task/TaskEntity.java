@@ -27,6 +27,7 @@ import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.runtime.ExecutionEntity;
 import org.activiti.engine.impl.util.ClockUtil;
 import org.activiti.engine.task.Task;
+import org.activiti.engine.task.TaskInvolvementType;
 import org.activiti.pvm.delegate.DelegateExecution;
 
 /**
