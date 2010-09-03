@@ -10,7 +10,6 @@
   <!ENTITY ch08 SYSTEM "chapters/ch08-TaskForms.xml">
   <!ENTITY ch09 SYSTEM "chapters/ch09-Cycle.xml">
   <!ENTITY ch10 SYSTEM "chapters/ch10-REST.xml">
-  <!ENTITY ch11 SYSTEM "chapters/ch11-QA.xml">
 ]>
 
 <book>
@@ -29,6 +28,5 @@
 &ch08;
 &ch09;
 &ch10;
-&ch11;
   
 </book>
