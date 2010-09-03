@@ -16,6 +16,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
+import org.activiti.engine.impl.Page;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.task.TaskInvolvementType;
 import org.activiti.engine.task.TaskQuery;

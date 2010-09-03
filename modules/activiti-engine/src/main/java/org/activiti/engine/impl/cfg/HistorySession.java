@@ -15,9 +15,9 @@ package org.activiti.engine.impl.cfg;
 
 import java.util.List;
 
-import org.activiti.engine.Page;
 import org.activiti.engine.history.HistoricProcessInstance;
 import org.activiti.engine.impl.HistoricProcessInstanceQueryImpl;
+import org.activiti.engine.impl.Page;
 import org.activiti.engine.impl.history.HistoricActivityInstanceEntity;
 import org.activiti.engine.impl.history.HistoricProcessInstanceEntity;
 

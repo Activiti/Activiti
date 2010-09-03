@@ -15,7 +15,6 @@ package org.activiti.engine.impl;
 
 import java.util.List;
 
-import org.activiti.engine.Page;
 import org.activiti.engine.history.HistoricProcessInstance;
 import org.activiti.engine.history.HistoricProcessInstanceQuery;
 import org.activiti.engine.impl.interceptor.CommandContext;

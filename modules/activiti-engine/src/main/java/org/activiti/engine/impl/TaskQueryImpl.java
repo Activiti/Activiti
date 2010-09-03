@@ -17,7 +17,6 @@ import java.util.Collections;
 import java.util.List;
 
 import org.activiti.engine.ActivitiException;
-import org.activiti.engine.Page;
 import org.activiti.engine.impl.identity.GroupEntity;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.interceptor.CommandExecutor;

@@ -16,7 +16,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
-import org.activiti.engine.Page;
 import org.activiti.engine.TaskService;
 import org.activiti.engine.impl.cmd.AddTaskInvolvementCmd;
 import org.activiti.engine.impl.cmd.ClaimTaskCmd;

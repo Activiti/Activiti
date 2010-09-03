@@ -21,7 +21,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.activiti.engine.ActivitiException;
-import org.activiti.engine.Page;
+import org.activiti.engine.impl.Page;
 import org.activiti.engine.impl.interceptor.Session;
 import org.activiti.engine.impl.runtime.VariableInstanceEntity;
 import org.activiti.engine.impl.variable.DeserializedObject;
