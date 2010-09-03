@@ -64,7 +64,10 @@ public class TaskCandidateTest extends ProcessEngineTestCase {
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("singleCandidateGroup");
 
     // Task should not yet be assigned to kermit
-    List<Task> tasks = taskService.findAssignedTasks(KERMIT);
+    List<Task> tasks = taskService
+      .createTaskQuery()
+      .assignee(KERMIT)
+      .list();
     assertTrue(tasks.isEmpty());
 
     // The task should be visible in the candidate task list
@@ -81,7 +84,10 @@ public class TaskCandidateTest extends ProcessEngineTestCase {
     assertTrue(tasks.isEmpty());
 
     // The task will be visible on the personal task list
-    tasks = taskService.findAssignedTasks(KERMIT);
+    tasks = taskService
+      .createTaskQuery()
+      .assignee(KERMIT)
+      .list();
     assertEquals(1, tasks.size());
     assertEquals("Pay out expenses", task.getName());
 
@@ -98,9 +104,17 @@ public class TaskCandidateTest extends ProcessEngineTestCase {
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("multipleCandidatesGroup");
 
     // Task should not yet be assigned to anyone
-    List<Task> tasks = taskService.findAssignedTasks(KERMIT);
+    List<Task> tasks = taskService
+      .createTaskQuery()
+      .assignee(KERMIT)
+      .list();
+    
     assertTrue(tasks.isEmpty());
-    tasks = taskService.findAssignedTasks(GONZO);
+    tasks = taskService
+      .createTaskQuery()
+      .assignee(GONZO)
+      .list();
+    
     assertTrue(tasks.isEmpty());
 
     // The task should be visible in the candidate task list of Gonzo and Kermit
@@ -123,10 +137,13 @@ public class TaskCandidateTest extends ProcessEngineTestCase {
     assertEquals(0, taskService.createTaskQuery().candidateGroup("management").count());
 
     // The task will be visible on the personal task list of Gonzo
-    assertEquals(1, taskService.findAssignedTasks(GONZO).size());
+    assertEquals(1, taskService
+      .createTaskQuery()
+      .assignee(GONZO)
+      .count());
 
     // But not on the personal task list of (for example) Kermit
-    assertTrue(taskService.findAssignedTasks(KERMIT).isEmpty());
+    assertEquals(0, taskService.createTaskQuery().assignee(KERMIT).count());
 
     // Completing the task ends the process
     taskService.complete(task.getId());

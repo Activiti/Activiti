@@ -60,18 +60,6 @@ public interface TaskService {
 	void deleteTasks(Collection<String> taskIds);
 	
 	/**
-   * Retrieves the list of tasks that are directly assigned to the given user.
-   */
-	List<Task> findAssignedTasks(String assignee);
-	
-	/**
-	 * Retrieves the list of tasks that are directly assigned to the given user.
-	 * @param page allows to retrieve only a part of the results. 
-	 *             if null, no paging will be applied.
-	 */
-	List<Task> findAssignedTasks(String assignee, Page page);
-	
-	/**
    * Retrieves the list of tasks that potentially can be done by the given user.
    * 
    * This means that the returned tasks are not yet directly assigned to the user,

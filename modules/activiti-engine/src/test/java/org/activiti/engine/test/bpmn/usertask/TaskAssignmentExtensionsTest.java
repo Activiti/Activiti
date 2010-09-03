@@ -51,7 +51,10 @@ public class TaskAssignmentExtensionsTest extends ProcessEngineTestCase {
   @Deployment
   public void testAssigneeExtension() {
     runtimeService.startProcessInstanceByKey("assigneeExtension");
-    List<Task> tasks = taskService.findAssignedTasks("kermit");
+    List<Task> tasks = taskService
+      .createTaskQuery()
+      .assignee("kermit")
+      .list();
     assertEquals(1, tasks.size());
     assertEquals("my task", tasks.get(0).getName());
   }

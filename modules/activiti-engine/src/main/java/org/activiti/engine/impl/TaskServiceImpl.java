@@ -63,19 +63,6 @@ public class TaskServiceImpl extends ServiceImpl implements TaskService {
     return commandExecutor.execute(new FindSingleTaskCmd(taskId));
   }
   
-  public List<Task> findAssignedTasks(String assignee) {
-    return findAssignedTasks(assignee, null);
-  }
-  
-  public List<Task> findAssignedTasks(String assignee, Page page) {
-    TaskQuery query = createTaskQuery().assignee(assignee);
-    if (page != null) {
-      return query.listPage(page.getFirstResult(), page.getMaxResults());
-    } else {
-      return query.list();
-    }
-  }
-  
   public List<Task> findUnassignedTasks(String userId) {
     return findUnassignedTasks(userId, null);
   }

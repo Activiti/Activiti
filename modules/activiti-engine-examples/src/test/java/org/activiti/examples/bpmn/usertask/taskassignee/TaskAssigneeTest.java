@@ -34,7 +34,10 @@ public class TaskAssigneeTest extends ProcessEngineTestCase {
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("taskAssigneeProcess");
 
     // Get task list
-    List<Task> tasks = taskService.findAssignedTasks("kermit");
+    List<Task> tasks = taskService
+      .createTaskQuery()
+      .assignee("kermit")
+      .list();
     assertEquals(1, tasks.size());
     Task myTask = tasks.get(0);
     assertEquals("Schedule meeting", myTask.getName());

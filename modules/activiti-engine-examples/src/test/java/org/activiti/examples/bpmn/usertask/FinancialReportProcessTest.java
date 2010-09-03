@@ -40,7 +40,11 @@ public class FinancialReportProcessTest extends ProcessEngineTestCase {
     assertEquals("Write monthly financial report", task.getName());
     
     taskService.claim(task.getId(), "fozzie");
-    tasks = taskService.findAssignedTasks("fozzie");
+    tasks = taskService
+      .createTaskQuery()
+      .assignee("fozzie")
+      .list();
+    
     assertEquals(1, tasks.size());
     taskService.complete(task.getId());
 
