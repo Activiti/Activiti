@@ -58,31 +58,10 @@
 			<groupId>org.mybatis</groupId>
 			<artifactId>mybatis</artifactId>
 		</dependency>
-        <dependency>
-                <groupId>org.mockito</groupId>
-                <artifactId>mockito-core</artifactId>
-        </dependency>
-		<dependency>
-			<groupId>org.restlet</groupId>
-			<artifactId>org.restlet</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.restlet</groupId>
-			<artifactId>org.restlet.ext.json</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>com.noelios.restlet</groupId>
-			<artifactId>com.noelios.restlet</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>com.noelios.restlet</groupId>
-			<artifactId>com.noelios.restlet.ext.httpclient</artifactId>
-		</dependency>
-		<!-- required by Apache commons httpclient, required by restlet -->
-		<dependency>
-		  <groupId>commons-logging</groupId>
-		  <artifactId>commons-logging</artifactId>
-		</dependency>
+    <dependency>
+      <groupId>org.mockito</groupId>
+      <artifactId>mockito-core</artifactId>
+    </dependency>
 	</dependencies>
 	
 	<build>
