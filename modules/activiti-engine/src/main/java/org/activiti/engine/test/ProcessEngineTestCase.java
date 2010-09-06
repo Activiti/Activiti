@@ -141,7 +141,7 @@ public class ProcessEngineTestCase extends PvmTestCase {
     }
   }
 
-  void initializeProcessEngine() {
+  protected void initializeProcessEngine() {
     log.fine("==== BUILDING PROCESS ENGINE ========================================================================");
     processEngine = new ProcessEngineBuilder()
       .configureFromPropertiesResource(configurationResource)

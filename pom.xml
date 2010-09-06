@@ -267,8 +267,8 @@
 		<profile>
 			<id>check</id>
 			<modules>
-		    <module>modules/activiti-engine-examples</module>
-	        <module>modules/activiti-engine-test-cfg</module>
+        <module>modules/activiti-spring</module>
+        <module>modules/activiti-engine-test-cfg</module>
 		    <module>modules/activiti-rest</module>
 		    <module>modules/activiti-cycle</module>
 			</modules>
@@ -276,7 +276,6 @@
     <profile>
       <id>checkcycle</id>
       <modules>
-        <module>modules/activiti-engine-examples</module>
         <module>modules/activiti-engine-test-cfg</module>
         <module>modules/activiti-rest</module>
         <module>modules/activiti-cycle</module>
@@ -285,7 +284,6 @@
 		<profile>
 			<id>distro</id>
 			<modules>
-        <module>modules/activiti-engine-examples</module>
         <module>modules/activiti-rest</module>
         <module>modules/activiti-webapp</module>
 				<module>modules/activiti-engine-init</module>
