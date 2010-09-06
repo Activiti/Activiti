@@ -47,4 +47,12 @@ public class ActivitiValueExpression {
     ELContext elContext = expressionManager.getElContext((ExecutionImpl) execution);
     valueExpression.setValue(elContext, value);
   }
+  
+  @Override
+  public String toString() {
+    if(valueExpression != null) {
+      return valueExpression.getExpressionString();
+    }
+    return super.toString();
+  }
 }

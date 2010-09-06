@@ -25,9 +25,10 @@ public class FileSystemConnectorTest {
   @Before
   public void initialize() throws IOException {
     userConfiguration = new ConfigurationContainer("christian");
-    userConfiguration.addRepositoryConnectorConfiguration(new FileSystemConnectorConfiguration("filesystem", File.listRoots()[0]));
+    userConfiguration.addRepositoryConnectorConfiguration(new FileSystemConnectorConfiguration("filesystem", new File(".")));
     conn = userConfiguration.getConnector("filesystem");
   }
+  
   @After
   public void cleanUp() {
     userConfiguration = null;

@@ -15,6 +15,7 @@ package org.activiti.engine.impl.task;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.activiti.engine.impl.el.ActivitiValueExpression;
 
 /**
  * Container for task definition information gathered at parsing time.
@@ -22,54 +23,54 @@ import java.util.Set;
  * @author Joram Barrez
  */
 public class TaskDefinition {
-  
-  protected String name;
-  protected String description;
-  protected String assignee;
-  protected Set<String> candidateUserIds = new HashSet<String>();
-  protected Set<String> candidateGroupIds = new HashSet<String>();
+
+  protected ActivitiValueExpression nameValueExpression;
+  protected ActivitiValueExpression descriptionValueExpression;
+  protected ActivitiValueExpression assigneeValueExpression;
+  protected Set<ActivitiValueExpression> candidateUserIdValueExpressions = new HashSet<ActivitiValueExpression>();
+  protected Set<ActivitiValueExpression> candidateGroupIdValueExpressions = new HashSet<ActivitiValueExpression>();
   protected String formResourceKey;
-  
+
   // getters and setters //////////////////////////////////////////////////////
 
-  public String getName() {
-    return name;
+  public ActivitiValueExpression getNameValueExpression() {
+    return nameValueExpression;
   }
 
-  public void setName(String name) {
-    this.name = name;
-  }
-  
-  public String getDescription() {
-    return description;
-  }
-  
-  public void setDescription(String description) {
-    this.description = description;
-  }
-  
-  public String getAssignee() {
-    return assignee;
+  public void setNameValueExpression(ActivitiValueExpression nameValueExpression) {
+    this.nameValueExpression = nameValueExpression;
   }
 
-  public void setAssignee(String assignee) {
-    this.assignee = assignee;
-  }
-  
-  public void addCandidateGroupId(String groupId) {
-    candidateGroupIds.add(groupId);
+  public ActivitiValueExpression getDescriptionValueExpression() {
+    return descriptionValueExpression;
   }
 
-  public Set<String> getCandidateGroupIds() {
-    return candidateGroupIds;
+  public void setDescriptionValueExpression(ActivitiValueExpression descriptionValueExpression) {
+    this.descriptionValueExpression = descriptionValueExpression;
   }
-  
-  public void addCandidateUserId(String userId) {
-    candidateUserIds.add(userId);
+
+  public ActivitiValueExpression getAssigneeValueExpression() {
+    return assigneeValueExpression;
   }
-  
-  public Set<String> getCandidateUserIds() {
-    return candidateUserIds;
+
+  public void setAssigneeValueExpression(ActivitiValueExpression assigneeValueExpression) {
+    this.assigneeValueExpression = assigneeValueExpression;
+  }
+
+  public Set<ActivitiValueExpression> getCandidateUserIdValueExpressions() {
+    return candidateUserIdValueExpressions;
+  }
+
+  public void addCandidateUserIdValueExpression(ActivitiValueExpression userId) {
+    candidateUserIdValueExpressions.add(userId);
+  }
+
+  public Set<ActivitiValueExpression> getCandidateGroupIdValueExpressions() {
+    return candidateGroupIdValueExpressions;
+  }
+
+  public void addCandidateGroupIdValueExpression(ActivitiValueExpression groupId) {
+    candidateGroupIdValueExpressions.add(groupId);
   }
 
   public String getFormResourceKey() {
@@ -79,4 +80,5 @@ public class TaskDefinition {
   public void setFormResourceKey(String formResourceKey) {
     this.formResourceKey = formResourceKey;
   }
+
 }

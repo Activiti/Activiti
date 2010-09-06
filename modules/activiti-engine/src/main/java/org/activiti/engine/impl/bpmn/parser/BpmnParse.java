@@ -45,7 +45,6 @@ import org.activiti.engine.impl.el.ActivitiValueExpression;
 import org.activiti.engine.impl.el.ExpressionManager;
 import org.activiti.engine.impl.el.UelMethodExpressionCondition;
 import org.activiti.engine.impl.el.UelValueExpressionCondition;
-import org.activiti.engine.impl.form.FormReference;
 import org.activiti.engine.impl.jobexecutor.TimerDeclarationImpl;
 import org.activiti.engine.impl.jobexecutor.TimerExecuteNestedActivityJobHandler;
 import org.activiti.engine.impl.repository.ProcessDefinitionEntity;
@@ -534,10 +533,14 @@ public class BpmnParse extends Parse {
 
     String name = taskElement.attribute("name");
     if (name != null) {
-      taskDefinition.setName(name);
+      taskDefinition.setNameValueExpression(expressionManager.createValueExpression(name));
     }
-
-    taskDefinition.setDescription(parseDocumentation(taskElement));
+    
+    String descriptionStr = parseDocumentation(taskElement);
+    if(descriptionStr != null) {
+      taskDefinition.setDescriptionValueExpression(expressionManager.createValueExpression(descriptionStr));      
+    }
+    
     parseHumanPerformer(taskElement, taskDefinition);
     parsePotentialOwner(taskElement, taskDefinition);
 
@@ -555,7 +558,7 @@ public class BpmnParse extends Parse {
     List<Element> humanPerformerElements = taskElement.elements(HUMAN_PERFORMER);
 
     if (humanPerformerElements.size() > 1) {
-      throw new ActivitiException("Invalid task definition: multiple " + HUMAN_PERFORMER + " sub elements defined for " + taskDefinition.getName());
+      throw new ActivitiException("Invalid task definition: multiple " + HUMAN_PERFORMER + " sub elements defined for " + taskDefinition.getNameValueExpression());
     } else if (humanPerformerElements.size() == 1) {
       Element humanPerformerElement = humanPerformerElements.get(0);
       if (humanPerformerElement != null) {
@@ -577,7 +580,7 @@ public class BpmnParse extends Parse {
     if (raeElement != null) {
       Element feElement = raeElement.element(FORMAL_EXPRESSION);
       if (feElement != null) {
-        taskDefinition.setAssignee(feElement.getText());
+        taskDefinition.setAssigneeValueExpression(expressionManager.createValueExpression(feElement.getText()));
       }
     }
   }
@@ -591,11 +594,13 @@ public class BpmnParse extends Parse {
         for (String assignmentExpression : assignmentExpressions) {
           assignmentExpression = assignmentExpression.trim();
           if (assignmentExpression.startsWith(USER_PREFIX)) {
-            taskDefinition.addCandidateUserId(getAssignmentId(assignmentExpression, USER_PREFIX));
+            String userAssignementId = getAssignmentId(assignmentExpression, USER_PREFIX);
+            taskDefinition.addCandidateUserIdValueExpression(expressionManager.createValueExpression(userAssignementId));
           } else if (assignmentExpression.startsWith(GROUP_PREFIX)) {
-            taskDefinition.addCandidateGroupId(getAssignmentId(assignmentExpression, GROUP_PREFIX));
+            String groupAssignementId = getAssignmentId(assignmentExpression, GROUP_PREFIX);
+            taskDefinition.addCandidateGroupIdValueExpression(expressionManager.createValueExpression(groupAssignementId));
           } else { // default: given string is a goupId, as-is.
-            taskDefinition.addCandidateGroupId(assignmentExpression);
+            taskDefinition.addCandidateGroupIdValueExpression(expressionManager.createValueExpression(assignmentExpression));
           }
         }
       }
@@ -618,10 +623,10 @@ public class BpmnParse extends Parse {
     // assignee
     String assignee = taskElement.attributeNS(BpmnParser.BPMN_EXTENSIONS_NS, ASSIGNEE_EXTENSION);
     if (assignee != null) {
-      if (taskDefinition.getAssignee() == null) {
-        taskDefinition.setAssignee(assignee);
+      if (taskDefinition.getAssigneeValueExpression() == null) {
+        taskDefinition.setAssigneeValueExpression(expressionManager.createValueExpression(assignee));
       } else {
-        throw new ActivitiException("Invalid usage: duplicate assignee declaration for task " + taskDefinition.getName());
+        throw new ActivitiException("Invalid usage: duplicate assignee declaration for task " + taskDefinition.getNameValueExpression());
       }
     }
 
@@ -630,7 +635,7 @@ public class BpmnParse extends Parse {
     if (candidateUsersString != null) {
       String[] candidateUsers = candidateUsersString.split(",");
       for (String candidateUser : candidateUsers) {
-        taskDefinition.addCandidateUserId(candidateUser.trim());
+        taskDefinition.addCandidateUserIdValueExpression(expressionManager.createValueExpression(candidateUser.trim()));
       }
     }
 
@@ -639,7 +644,7 @@ public class BpmnParse extends Parse {
     if (candidateGroupsString != null) {
       String[] candidateGroups = candidateGroupsString.split(",");
       for (String candidateGroup : candidateGroups) {
-        taskDefinition.addCandidateGroupId(candidateGroup.trim());
+        taskDefinition.addCandidateGroupIdValueExpression(expressionManager.createValueExpression(candidateGroup.trim()));
       }
     }
   }

@@ -12,6 +12,7 @@
  */
 package org.activiti.engine.impl.bpmn;
 
+import org.activiti.engine.impl.el.ActivitiValueExpression;
 import org.activiti.engine.impl.el.ExpressionManager;
 import org.activiti.engine.impl.task.TaskDefinition;
 import org.activiti.engine.impl.task.TaskEntity;
@@ -37,13 +38,13 @@ public class UserTaskActivity extends TaskActivity {
     task.setExecution(execution);
     task.setFormResourceKey(taskDefinition.getFormResourceKey());
 
-    if (taskDefinition.getName() != null) {
-      String name = evaluateExpression(taskDefinition.getName(), execution);
+    if (taskDefinition.getNameValueExpression() != null) {
+      String name = (String) taskDefinition.getNameValueExpression().getValue(execution);
       task.setName(name);
     }
 
-    if (taskDefinition.getDescription() != null) {
-      String description = evaluateExpression(taskDefinition.getDescription(), execution);
+    if (taskDefinition.getDescriptionValueExpression() != null) {
+      String description = (String) taskDefinition.getDescriptionValueExpression().getValue(execution);
       task.setDescription(description);
     }
 
@@ -55,27 +56,23 @@ public class UserTaskActivity extends TaskActivity {
   }
 
   protected void handleAssignments(TaskEntity task, ActivityExecution execution) {
-    if (taskDefinition.getAssignee() != null) {
-      task.setAssignee(evaluateExpression(taskDefinition.getAssignee(), execution));
+    if (taskDefinition.getAssigneeValueExpression() != null) {
+      task.setAssignee((String) taskDefinition.getAssigneeValueExpression().getValue(execution));
     }
 
-    if (!taskDefinition.getCandidateGroupIds().isEmpty()) {
-      for (String groupId : taskDefinition.getCandidateGroupIds()) {
-        task.addCandidateGroup(evaluateExpression(groupId, execution));
+    if (!taskDefinition.getCandidateGroupIdValueExpressions().isEmpty()) {
+      for (ActivitiValueExpression groupIdExpr : taskDefinition.getCandidateGroupIdValueExpressions()) {
+        task.addCandidateGroup((String) groupIdExpr.getValue(execution));
       }
     }
 
-    if (!taskDefinition.getCandidateUserIds().isEmpty()) {
-      for (String userId : taskDefinition.getCandidateUserIds()) {
-        task.addCandidateUser(evaluateExpression(userId, execution));
+    if (!taskDefinition.getCandidateUserIdValueExpressions().isEmpty()) {
+      for (ActivitiValueExpression userIdExpr : taskDefinition.getCandidateUserIdValueExpressions()) {
+        task.addCandidateUser((String) userIdExpr.getValue(execution));
       }
     }
   }
 
-  protected String evaluateExpression(String expr, ActivityExecution execution) {
-    // TODO http://jira.codehaus.org/browse/ACT-84 move parsing of value expression to bpmn parser and only keep evaluation here
-    return (String) expressionManager.createValueExpression(expr).getValue(execution);
-  }
 
   
   // getters and setters //////////////////////////////////////////////////////
