@@ -380,6 +380,9 @@ public class ExecutionImpl implements
     if (this.transition!=null) {
       throw new PvmException("already taking a transition");
     }
+    if (transition==null) {
+      throw new PvmException("transition is null");
+    }
     setTransition((TransitionImpl) transition);
     performOperation(AtomicOperation.TRANSITION_NOTIFY_LISTENER_END);
   }
