@@ -26,50 +26,28 @@
       <fileset dir="src" />
     </copy>
  
-    <mkdir dir="${target.distro.root}/examples/pvm" />
-    <copy todir="${target.distro.root}/examples/pvm">
+    <mkdir dir="${target.distro.root}/examples/activiti-pvm-examples" />
+    <copy todir="${target.distro.root}/examples/activiti-pvm-examples">
       <fileset dir="../modules/activiti-pvm">
-        <include name="pom.xml" />
         <include name="src/test/java/org/activiti/examples/**" />
     	</fileset>
     </copy>
-  	<replace file="${target.distro.root}/examples/pvm/pom.xml">
-  		<replacetoken><![CDATA[<name>Activiti - PVM</name>
-  <groupId>org.activiti</groupId>
-  <artifactId>activiti-pvm</artifactId>]]></replacetoken>
-  		<replacevalue><![CDATA[<name>Activiti - PVM - Examples</name>
-  <groupId>org.activiti</groupId>
-  <artifactId>activiti-pvm-examples</artifactId>]]></replacevalue>
-  	</replace>
-    <replace file="${target.distro.root}/examples/pvm/pom.xml">
-      <replacetoken><![CDATA[<dependencies>]]></replacetoken>
-      <replacevalue><![CDATA[<dependencies>
-    <dependency>
-      <groupId>org.activiti</groupId>
-      <artifactId>activiti-pvm</artifactId>
-    </dependency>]]></replacevalue>
-    </replace>
 
-    <mkdir dir="${target.distro.root}/examples/engine" />
-    <copy todir="${target.distro.root}/examples/engine">
+  	<mkdir dir="${target.distro.root}/examples/activiti-engine-examples" />
+    <copy todir="${target.distro.root}/examples/activiti-engine-examples">
       <fileset dir="../modules/activiti-engine">
-        <include name="pom.xml" />
         <include name="src/test/java/org/activiti/examples/**" />
         <include name="src/test/resources/org/activiti/examples/**" />
       </fileset>
     </copy>
-    <replace file="${target.distro.root}/examples/engine/pom.xml">
-      <replacetoken><![CDATA[<name>Activiti - Engine</name>
-  <groupId>org.activiti</groupId>
-  <artifactId>activiti-engine</artifactId>]]></replacetoken>
-      <replacevalue><![CDATA[<name>Activiti - Engine - Examples</name>
-  <groupId>org.activiti</groupId>
-  <artifactId>activiti-engine-examples</artifactId>]]></replacevalue>
-    </replace>
-    <replace file="${target.distro.root}/examples/engine/pom.xml">
-      <replacetoken><![CDATA[<artifactId>activiti-pvm</artifactId>]]></replacetoken>
-      <replacevalue><![CDATA[<artifactId>activiti-engine</artifactId>]]></replacevalue>
-    </replace>
+
+    <copy todir="${target.distro.root}/setup/files/examples">
+      <fileset dir="..">
+        <include name="pom.xml" />
+        <include name="modules/activiti-pvm/pom.xml" />
+        <include name="modules/activiti-engine/pom.xml" />
+      </fileset>
+    </copy>
   
     <copy todir="${target.distro.root}/docs/xsd">
       <fileset dir="../modules/activiti-engine/src/main/resources/org/activiti/impl/bpmn/parser">

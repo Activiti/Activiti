@@ -67,6 +67,13 @@
     </dependency>
   </dependencies>
   
+  <repositories>
+    <repository>
+      <id>alfresco</id>
+      <url>http://maven.alfresco.com/nexus/content/groups/public</url>
+    </repository>
+  </repositories>
+  
   <build>
     <plugins>
       <plugin>
