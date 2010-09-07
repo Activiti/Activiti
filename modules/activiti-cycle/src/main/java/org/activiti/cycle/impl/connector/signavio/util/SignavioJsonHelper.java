@@ -7,6 +7,9 @@ import org.json.JSONObject;
 
 public class SignavioJsonHelper {
 
+  /**
+   * @deprecated use JSONObject.optString(String key) instead
+   */
   public static String getValueIfExists(JSONObject json, String name) throws JSONException {
     if (json.has(name)) {
       return json.getString("name");
