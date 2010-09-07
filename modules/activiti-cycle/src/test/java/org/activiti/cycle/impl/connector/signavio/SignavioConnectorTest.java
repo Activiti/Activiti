@@ -100,4 +100,13 @@ public class SignavioConnectorTest {
 	  String processEngineBpmnXml = connector.transformJsonToBpmn20Xml(jsonObj.toString());
 	  System.out.println("ProcessEngineBpmnXml:\n" + processEngineBpmnXml);
   }
+  
+  @Ignore
+  @Test
+  public void testOryx() {
+    // create signavio conf + connector
+    SignavioConnectorConfiguration conf = new SignavioConnectorConfiguration("http://oryx-project.org/backend/poem/");
+    SignavioConnector connector = new SignavioConnector(conf);
+    connector.getChildNodes("/");
+  }
 }

@@ -44,6 +44,7 @@ public class SignavioConnectorConfiguration extends PasswordEnabledRepositoryCon
   public static String MODEL_URL_SUFFIX = "model";
   public static String DIRECTORY_URL_SUFFIX = "directory";
   public static String MASHUP_URL_SUFFIX = "mashup/";
+  public static String MODEL_INFO_URL_SUFFIX = "info";
 
   public static String BPMN_20_EXPORT_SERVLET = "editor/bpmn2_0serialization";
   public static String BPMN_20_IMPORT_SERVLET = "editor/bpmn2_0deserialization";
@@ -195,5 +196,9 @@ public class SignavioConnectorConfiguration extends PasswordEnabledRepositoryCon
 
   public void setLoginRequired(boolean loginRequired) {
     this.loginRequired = loginRequired;
+  }
+
+  public String getModelInfoUrl(String modelId) {
+    return getModelUrl(modelId) + "/" + MODEL_INFO_URL_SUFFIX;
   }
 }

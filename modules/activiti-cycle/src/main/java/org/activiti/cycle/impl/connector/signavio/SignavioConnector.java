@@ -225,13 +225,17 @@ public class SignavioConnector extends AbstractRepositoryConnector<SignavioConne
     RepositoryArtifact fileInfo = new RepositoryArtifact(this);
     fileInfo.setId(id);
 
-    fileInfo.getMetadata().setName(SignavioJsonHelper.getValueIfExists(json, "name"));
+    if (json.has("name")) {
+      fileInfo.getMetadata().setName(json.optString("name"));
+    } else {
+      fileInfo.getMetadata().setName(json.optString("title"));
+    }
     // TODO: This seems not to work 100% correctly
-    fileInfo.getMetadata().setVersion(SignavioJsonHelper.getValueIfExists(json, "rev"));
+    fileInfo.getMetadata().setVersion(json.optString("rev"));
 
     // TODO: Check if that is really last author and if we can get the original
     // author
-    fileInfo.getMetadata().setLastAuthor(SignavioJsonHelper.getValueIfExists(json, "author"));
+    fileInfo.getMetadata().setLastAuthor(json.optString("author"));
     fileInfo.getMetadata().setCreated(SignavioJsonHelper.getDateValueIfExists(json, "created"));
     fileInfo.getMetadata().setLastChanged(SignavioJsonHelper.getDateValueIfExists(json, "updated"));
 
@@ -257,30 +261,51 @@ public class SignavioConnector extends AbstractRepositoryConnector<SignavioConne
 
   public List<RepositoryNode> getChildNodes(String parentId) {
     try {
-      Response directoryResponse = getJsonResponse(getConfiguration().getDirectoryUrl(parentId));
-      JsonRepresentation jsonData = new JsonRepresentation(directoryResponse.getEntity());
-      JSONArray relJsonArray = jsonData.toJsonArray();
-
-      if (log.isLoggable(Level.FINEST)) {
-        SignavioLogHelper.logJSONArray(log, Level.FINEST, relJsonArray);
-      }
-
-      ArrayList<RepositoryNode> nodes = new ArrayList<RepositoryNode>();
-      for (int i = 0; i < relJsonArray.length(); i++) {
-        JSONObject relObject = relJsonArray.getJSONObject(i);
-
-        if ("dir".equals(relObject.getString("rel"))) {
-          RepositoryFolder folderInfo = getFolderInfo(relObject);
-          nodes.add(folderInfo);
-        } else if ("mod".equals(relObject.getString("rel"))) {
-          RepositoryArtifact fileInfo = getArtifactInfoFromFolderLink(relObject);
-          nodes.add(fileInfo);
+      ArrayList<RepositoryNode> nodes;
+      try {
+        nodes = new ArrayList<RepositoryNode>();
+        Response directoryResponse = getJsonResponse(getConfiguration().getDirectoryUrl(parentId));
+        JsonRepresentation jsonData = new JsonRepresentation(directoryResponse.getEntity());
+        JSONArray relJsonArray = jsonData.toJsonArray();
+  
+        if (log.isLoggable(Level.FINEST)) {
+          SignavioLogHelper.logJSONArray(log, Level.FINEST, relJsonArray);
         }
+  
+        for (int i = 0; i < relJsonArray.length(); i++) {
+          JSONObject relObject = relJsonArray.getJSONObject(i);
+  
+          if ("dir".equals(relObject.getString("rel"))) {
+            RepositoryFolder folderInfo = getFolderInfo(relObject);
+            nodes.add(folderInfo);
+          } else if ("mod".equals(relObject.getString("rel"))) {
+            RepositoryArtifact fileInfo = getArtifactInfoFromFolderLink(relObject);
+            nodes.add(fileInfo);
+          }
+        }
+      } catch (RepositoryException e) {
+        nodes = getModelsFromOryxBackend();
       }
       return nodes;
     } catch (Exception ex) {
       throw new RepositoryNodeNotFoundException(getConfiguration().getName(), RepositoryFolder.class, parentId, ex);
     }
+  }
+
+  private ArrayList<RepositoryNode> getModelsFromOryxBackend() throws IOException, JSONException {
+    ArrayList<RepositoryNode> nodes = new ArrayList<RepositoryNode>();
+    Response filterResponse = getJsonResponse(getConfiguration().getSignavioBackendUrl() + "filter?sort=rating");
+    JsonRepresentation jsonRepresentation = new JsonRepresentation(filterResponse.getEntity());
+    JSONArray modelRefs = jsonRepresentation.toJsonArray();
+    for (int i = 0; i < modelRefs.length(); i++) {
+      String modelRef = modelRefs.getString(i);
+      String modelId = getConfiguration().getModelIdFromUrl(modelRef);
+      Response infoResponse = getJsonResponse(getConfiguration().getModelInfoUrl(modelId));
+      jsonRepresentation = new JsonRepresentation(infoResponse.getEntity());
+      RepositoryArtifact fileInfo = getArtifactInfoFromFile(modelId, jsonRepresentation.toJsonObject());
+      nodes.add(fileInfo);
+    }
+    return nodes;
   }
 
   public Content getContent(String nodeId, String representationName) {
