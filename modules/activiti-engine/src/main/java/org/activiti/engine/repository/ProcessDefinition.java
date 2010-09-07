@@ -44,4 +44,7 @@ public interface ProcessDefinition {
   
   String getResourceName();
 
+  String getDeploymentId();
+  
+  String getStartFormResourceKey();
 }
