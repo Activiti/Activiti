@@ -34,7 +34,7 @@
           &lt;org.activiti.cycle.impl.connector.signavio.SignavioConnectorConfiguration&gt;
             &lt;name&gt;Activiti Modeler&lt;/name&gt;
             &lt;credentialsSaved&gt;false&lt;/credentialsSaved&gt;
-            &lt;signavioBaseUrl&gt;http://localhost:8080/activiti-modeler/p/&lt;/signavioBaseUrl&gt;
+            &lt;signavioBaseUrl&gt;http://localhost:8080/activiti-modeler/&lt;/signavioBaseUrl&gt;
             &lt;loginRequired&gt;false&lt;/loginRequired&gt;
           &lt;/org.activiti.cycle.impl.connector.signavio.SignavioConnectorConfiguration&gt;
 

@@ -38,7 +38,7 @@ public class RepositoryConnectorConfigurationManagerImplTest {
     try {
       ConfigurationContainer enterpriseConfiguration = new ConfigurationContainer("camunda");
       // This one is for all, so don't save a password, the GUI should query it!
-      RepositoryConnectorConfiguration conf1 = new SignavioConnectorConfiguration("Activiti Modeler", "http://localhost:8080/activiti-modeler/p/");
+      RepositoryConnectorConfiguration conf1 = new SignavioConnectorConfiguration("Activiti Modeler", "http://localhost:8080/activiti-modeler/");
       enterpriseConfiguration.addRepositoryConnectorConfiguration(conf1);
 
       ConfigurationContainer userConfiguration = new ConfigurationContainer("bernd");
@@ -117,7 +117,7 @@ public class RepositoryConnectorConfigurationManagerImplTest {
   // // create configurations
   // repoConfManager.persistRepositoryConfiguration(new
   // SignavioConnectorConfiguration("Activiti Modeler",
-  // "http://localhost:8080/activiti-modeler/p/", null,
+  // "http://localhost:8080/activiti-modeler/", null,
   // "christian.lipphardt", "xxx"));
   // repoConfManager.persistRepositoryConfiguration(new
   // FileSystemConnectorConfiguration("Hard Drive", new File("c:")));

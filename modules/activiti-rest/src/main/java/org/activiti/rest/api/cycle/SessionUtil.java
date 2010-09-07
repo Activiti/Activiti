@@ -85,7 +85,7 @@ public class SessionUtil {
   public static ConfigurationContainer createDefaultDemoConfiguration(String currentUserId) {
     ConfigurationContainer configuration = new ConfigurationContainer(currentUserId);
     configuration.addRepositoryConnectorConfiguration(new DemoConnectorConfiguration("demo"));
-    configuration.addRepositoryConnectorConfiguration(new SignavioConnectorConfiguration("signavio", "http://localhost:8080/activiti-modeler/p/"));
+    configuration.addRepositoryConnectorConfiguration(new SignavioConnectorConfiguration("signavio", "http://localhost:8080/activiti-modeler/"));
     configuration.addRepositoryConnectorConfiguration(new FileSystemConnectorConfiguration("files", fsBaseDir));
     return configuration;
   }
