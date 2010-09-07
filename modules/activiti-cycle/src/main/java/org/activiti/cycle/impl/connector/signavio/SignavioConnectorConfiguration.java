@@ -36,9 +36,10 @@ public class SignavioConnectorConfiguration extends PasswordEnabledRepositoryCon
    * OSS version (where trying to login leads to an exception)
    */
   private boolean loginRequired = false;
-  //
 
-  public static String SIGNAVIO_BACKEND_URL_SUFFIX = "p/";
+  // these values differ between Oryx and Signavio
+  protected String REPOSITORY_BACKEND_URL_SUFFIX = "p/";
+  protected String EDITOR_BACKEND_URL_SUFFIX = "editor/";
 
   public static String REGISTRATION_URL_SUFFIX = "register/";
   public static String LOGIN_URL_SUFFIX = "login/";
@@ -49,8 +50,8 @@ public class SignavioConnectorConfiguration extends PasswordEnabledRepositoryCon
   public static String MASHUP_URL_SUFFIX = "mashup/";
   public static String MODEL_INFO_URL_SUFFIX = "info";
 
-  public static String BPMN_20_EXPORT_SERVLET = "editor/bpmn2_0serialization";
-  public static String BPMN_20_IMPORT_SERVLET = "editor/bpmn2_0deserialization";
+  public static String BPMN_20_EXPORT_SERVLET = "bpmn2_0serialization";
+  public static String BPMN_20_IMPORT_SERVLET = "bpmn2_0deserialization";
 
   public SignavioConnectorConfiguration() {
     signavioBaseUrl = "http://127.0.0.1:8080/";
@@ -84,8 +85,12 @@ public class SignavioConnectorConfiguration extends PasswordEnabledRepositoryCon
     this.signavioBaseUrl = path;
   }
 
-  public String getSignavioBackendUrl() {
-    return getSignavioUrl() + SIGNAVIO_BACKEND_URL_SUFFIX;
+  public String getRepositoryBackendUrl() {
+    return getSignavioUrl() + REPOSITORY_BACKEND_URL_SUFFIX;
+  }
+
+  public String getEditorBackendUrl() {
+    return getSignavioUrl() + EDITOR_BACKEND_URL_SUFFIX;
   }
 
   public String getDirectoryIdFromUrl(String href) {
@@ -108,10 +113,10 @@ public class SignavioConnectorConfiguration extends PasswordEnabledRepositoryCon
   public String getModelUrl(String id) {
     if (id.startsWith("/")) {
       // this is how it should be now
-      return getSignavioBackendUrl() + MODEL_URL_SUFFIX + id;
+      return getRepositoryBackendUrl() + MODEL_URL_SUFFIX + id;
     } else {
       // this is how it was in ancient times
-      return getSignavioBackendUrl() + MODEL_URL_SUFFIX + "/" + id;
+      return getRepositoryBackendUrl() + MODEL_URL_SUFFIX + "/" + id;
     }
   }
   
@@ -135,56 +140,56 @@ public class SignavioConnectorConfiguration extends PasswordEnabledRepositoryCon
   public String getDirectoryUrl(String id) {
     if (id.startsWith("/")) {
       // this is how it should be now
-      return getSignavioBackendUrl() + DIRECTORY_URL_SUFFIX + id;
+      return getRepositoryBackendUrl() + DIRECTORY_URL_SUFFIX + id;
     } else {
       // this is how it was in ancient times
-      return getSignavioBackendUrl() + DIRECTORY_URL_SUFFIX + "/" + id;
+      return getRepositoryBackendUrl() + DIRECTORY_URL_SUFFIX + "/" + id;
     }
   }
 
   public String getRegistrationUrl() {
-    return getSignavioBackendUrl() + REGISTRATION_URL_SUFFIX;
+    return getRepositoryBackendUrl() + REGISTRATION_URL_SUFFIX;
   }
 
   public String getLoginUrl() {
-    return getSignavioBackendUrl() + LOGIN_URL_SUFFIX;
+    return getRepositoryBackendUrl() + LOGIN_URL_SUFFIX;
   }
 
   public String getEditorUrl(String id) {
     if (id.startsWith("/")) {
       // this is how it should be now
-      return getSignavioBackendUrl() + EDITOR_URL_SUFFIX + id.substring(1);
+      return getRepositoryBackendUrl() + EDITOR_URL_SUFFIX + id.substring(1);
     } else {
       // this is how it was in ancient times
-      return getSignavioBackendUrl() + EDITOR_URL_SUFFIX + id;
+      return getRepositoryBackendUrl() + EDITOR_URL_SUFFIX + id;
     }
   }
 
   public String getExplorerUrl() {
-    return getSignavioBackendUrl() + EXPLORER_URL_SUFFIX;
+    return getRepositoryBackendUrl() + EXPLORER_URL_SUFFIX;
   }
 
   /**
    * TODO: Rename?
    */
   public String getModelRootUrl() {
-    return getSignavioBackendUrl() + MODEL_URL_SUFFIX + "/";
+    return getRepositoryBackendUrl() + MODEL_URL_SUFFIX + "/";
   }
 
   public String getDirectoryRootUrl() {
-    return getSignavioBackendUrl() + DIRECTORY_URL_SUFFIX + "/";
+    return getRepositoryBackendUrl() + DIRECTORY_URL_SUFFIX + "/";
   }
 
   public String getMashupUrl() {
-    return getSignavioBackendUrl() + MASHUP_URL_SUFFIX;
+    return getRepositoryBackendUrl() + MASHUP_URL_SUFFIX;
   }
 
   public String getBpmn20XmlExportServletUrl() {
-    return getSignavioUrl() + BPMN_20_EXPORT_SERVLET;
+    return getEditorBackendUrl() + BPMN_20_EXPORT_SERVLET;
   }
 
   public String getBpmn20XmlImportServletUrl() {
-    return getSignavioUrl() + BPMN_20_IMPORT_SERVLET;
+    return getEditorBackendUrl() + BPMN_20_IMPORT_SERVLET;
   }
 
   @Override

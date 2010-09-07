@@ -1,6 +1,7 @@
 package org.activiti.cycle.impl.connector.signavio;
 
-import java.io.BufferedInputStream;
+import static org.junit.Assert.*;
+
 import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -13,7 +14,7 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
-import org.activiti.cycle.impl.connector.signavio.action.CreateTechnicalBpmnXmlAction;
+import org.activiti.cycle.RepositoryNode;
 import org.activiti.cycle.impl.transform.JsonTransformation;
 import org.activiti.cycle.impl.transform.signavio.AdjustShapeNamesTransformation;
 import org.activiti.cycle.impl.transform.signavio.BpmnPoolExtraction;
@@ -104,9 +105,9 @@ public class SignavioConnectorTest {
   @Ignore
   @Test
   public void testOryx() {
-    // create signavio conf + connector
-    SignavioConnectorConfiguration conf = new SignavioConnectorConfiguration("http://oryx-project.org/backend/poem/");
+    SignavioConnectorConfiguration conf = new OryxConnectorConfiguration("http://oryx-project.org/");
     SignavioConnector connector = new SignavioConnector(conf);
-    connector.getChildNodes("/");
+    List<RepositoryNode> childNodes = connector.getChildNodes("/");
+    assertTrue(childNodes.size() > 0);
   }
 }

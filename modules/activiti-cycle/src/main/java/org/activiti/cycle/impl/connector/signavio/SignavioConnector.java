@@ -61,7 +61,7 @@ public class SignavioConnector extends AbstractRepositoryConnector<SignavioConne
   public static final String SIGNAVIO_NAMESPACE_FOR_BPMN_2_0 = "http://b3mn.org/stencilset/bpmn2.0#";
   public static final String SIGNAVIO_NAMESPACE_FOR_BPMN_JBPM4 = "http://b3mn.org/stencilset/jbpm4#";
 
-  public static final String BPMN_2_0_XML = "bpm2.0";
+  public static final String BPMN_2_0_XML = "bpm2.0"; // FIXME looks like typo
   public static final String ORYX_TYPE_ATTRIBUTE_FOR_BPMN_20 = "BPMN 2.0";
 
   /**
@@ -294,7 +294,7 @@ public class SignavioConnector extends AbstractRepositoryConnector<SignavioConne
 
   private ArrayList<RepositoryNode> getModelsFromOryxBackend() throws IOException, JSONException {
     ArrayList<RepositoryNode> nodes = new ArrayList<RepositoryNode>();
-    Response filterResponse = getJsonResponse(getConfiguration().getSignavioBackendUrl() + "filter?sort=rating");
+    Response filterResponse = getJsonResponse(getConfiguration().getRepositoryBackendUrl() + "filter?sort=rating");
     JsonRepresentation jsonRepresentation = new JsonRepresentation(filterResponse.getEntity());
     JSONArray modelRefs = jsonRepresentation.toJsonArray();
     for (int i = 0; i < modelRefs.length(); i++) {
