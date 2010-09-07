@@ -110,4 +110,16 @@ public class SignavioConnectorTest {
     List<RepositoryNode> childNodes = connector.getChildNodes("/");
     assertTrue(childNodes.size() > 0);
   }
+  
+  @Ignore
+  @Test
+  public void testSignavioLogin() {
+    SignavioConnectorConfiguration conf = new SignavioConnectorConfiguration("https://editor.signavio.com/");
+    conf.setLoginRequired(true);
+    SignavioConnector connector = new SignavioConnector(conf);
+    connector.login("falko.menge@camunda.com", "not.my.password");
+    List<RepositoryNode> childNodes = connector.getChildNodes("/");
+    assertTrue(childNodes.size() > 0);
+  }
+
 }
