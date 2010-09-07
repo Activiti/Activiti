@@ -38,8 +38,8 @@ public class SignavioConnectorConfiguration extends PasswordEnabledRepositoryCon
   private boolean loginRequired = false;
 
   // these values differ between Oryx and Signavio
-  protected String REPOSITORY_BACKEND_URL_SUFFIX = "p/";
-  protected String EDITOR_BACKEND_URL_SUFFIX = "editor/";
+  protected String REPOSITORY_BACKEND_URL_SUFFIX;
+  protected String EDITOR_BACKEND_URL_SUFFIX;
 
   public static String REGISTRATION_URL_SUFFIX = "register/";
   public static String LOGIN_URL_SUFFIX = "login/";
@@ -55,10 +55,17 @@ public class SignavioConnectorConfiguration extends PasswordEnabledRepositoryCon
 
   public SignavioConnectorConfiguration() {
     signavioBaseUrl = "http://127.0.0.1:8080/";
+    init();
+  }
+
+  private void init() {
+    REPOSITORY_BACKEND_URL_SUFFIX = "p/";
+    EDITOR_BACKEND_URL_SUFFIX = "editor/";
   }
 
   public SignavioConnectorConfiguration(String signavioUrl) {
     signavioBaseUrl = signavioUrl;
+    init();
   }
 
   public SignavioConnectorConfiguration(String name, String signavioBaseUrl, String folderRootUrl, String password, String user) {
@@ -67,11 +74,13 @@ public class SignavioConnectorConfiguration extends PasswordEnabledRepositoryCon
     this.folderRootUrl = folderRootUrl;
     setPassword(password);
     setUser(user);
+    init();
   }
 
   public SignavioConnectorConfiguration(String name, String signavioBaseUrl) {
     setName(name);
     this.signavioBaseUrl = signavioBaseUrl;
+    init();
   }
 
   public String getSignavioUrl() {
