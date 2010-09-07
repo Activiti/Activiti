@@ -1,20 +1,20 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
-	<modelVersion>4.0.0</modelVersion>
+  <modelVersion>4.0.0</modelVersion>
 
-	<name>Activiti - Engine</name>
-	<groupId>org.activiti</groupId>
-	<artifactId>activiti-engine</artifactId>
+  <name>Activiti - Engine</name>
+  <groupId>org.activiti</groupId>
+  <artifactId>activiti-engine</artifactId>
 
-	<parent>
-		<groupId>org.activiti</groupId>
-		<artifactId>activiti-root</artifactId>
-		<relativePath>../..</relativePath>
-		<version>5.0.beta2-SNAPSHOT</version>
-	</parent>
+  <parent>
+    <groupId>org.activiti</groupId>
+    <artifactId>activiti-root</artifactId>
+    <relativePath>../..</relativePath>
+    <version>5.0.beta2-SNAPSHOT</version>
+  </parent>
 
-	<dependencies>
+  <dependencies>
     <dependency>
       <groupId>org.activiti</groupId>
       <artifactId>activiti-pvm</artifactId>
@@ -45,30 +45,30 @@
       <artifactId>ant</artifactId>
       <scope>provided</scope>
     </dependency>
-		<dependency>
-			<groupId>com.h2database</groupId>
-			<artifactId>h2</artifactId>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-context</artifactId>
-			<optional>true</optional>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-tx</artifactId>
-			<optional>true</optional>
-		</dependency>
+    <dependency>
+      <groupId>com.h2database</groupId>
+      <artifactId>h2</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-context</artifactId>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-tx</artifactId>
+      <optional>true</optional>
+    </dependency>
     <dependency>
       <groupId>org.mockito</groupId>
       <artifactId>mockito-core</artifactId>
       <scope>test</scope>
     </dependency>
-	</dependencies>
-	
-	<build>
-	  <plugins>
+  </dependencies>
+  
+  <build>
+    <plugins>
       <plugin>
         <artifactId>maven-surefire-plugin</artifactId>
         <configuration>
@@ -79,119 +79,119 @@
           </excludes>
         </configuration>
       </plugin>
-	  </plugins>
-	</build>
+    </plugins>
+  </build>
 
-	<profiles>
-		<profile>
-			<id>distro</id>
-			<build>
-				<plugins>
-					<plugin>
-						<groupId>org.apache.maven.plugins</groupId>
-						<artifactId>maven-source-plugin</artifactId>
-						<version>2.1.1</version>
-						<executions>
-							<execution>
-								<id>attach-sources</id>
-								<phase>package</phase>
-								<goals>
-									<goal>jar-no-fork</goal>
-								</goals>
-							</execution>
-						</executions>
-					</plugin>
-				</plugins>
-			</build>
-		</profile>
-		
-		<!--  database qa profile -->	
-		<profile>
-			<id>database</id>
-			<activation>
-				<property>
-					<name>database</name>
-				</property>
-			</activation>
-			<dependencies>
-				<dependency>
-					<groupId>mysql</groupId>
-					<artifactId>mysql-connector-java</artifactId>
-					<version>5.1.6</version>
-					<scope>test</scope>
-				</dependency>
-				<dependency>
-					<groupId>postgresql</groupId>
-					<artifactId>postgresql</artifactId>
-					<version>8.4-701.jdbc4</version>
-				</dependency>
-			</dependencies>
-			<build>
-				<plugins>
-					<plugin>
-						<artifactId>maven-antrun-plugin</artifactId>
-						<!--
-							only worked with this version, there might be a bug with antrun
-							see http://jira.codehaus.org/browse/MANTRUN-109
-						-->
-						<version>1.4</version>
-						<executions>
-							<execution>
-								<id>database-test-create-schema</id>
-								<phase>process-test-classes</phase>
-								<goals>
-									<goal>run</goal>
-								</goals>
-								<configuration>
-									<tasks>
-										<echo
-											message="CREATING SCHEMA AND UPDATING PROPERTIES ${database} #{database} @{database} " />
-										<ant antfile="${basedir}/../../qa/db/build.xml" target="create.db.schema"
-											inheritAll="false">
-											<property name="test_classpath" refid="maven.test.classpath" />
-											<property name="database" value="${database}" />
-										</ant>
-										<ant antfile="${basedir}/../../qa/db/build.xml" target="create.activiti.prop">
-											<property name="database" value="${database}" />
-										</ant>
-									</tasks>
-								</configuration>
-							</execution>
-							<execution>
-								<id>database-test-drop-schema</id>
-								<phase>prepare-package</phase>
-								<goals>
-									<goal>run</goal>
-								</goals>
-								<configuration>
-									<tasks>
-										<echo message="DROPPING SCHEMA ${database} #{database} @{database} " />
-										<ant antfile="${basedir}/../../qa/db/build.xml" target="drop.db.schema"
-											inheritAll="false">
-											<property name="test_classpath" refid="maven.test.classpath" />
-											<property name="database" value="${database}" />
-										</ant>
-									</tasks>
-								</configuration>
-							</execution>
-						</executions>
-					</plugin>
-				</plugins>
-			</build>
-		</profile>
-		
-	</profiles>
+  <profiles>
+    <profile>
+      <id>distro</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-source-plugin</artifactId>
+            <version>2.1.1</version>
+            <executions>
+              <execution>
+                <id>attach-sources</id>
+                <phase>package</phase>
+                <goals>
+                  <goal>jar-no-fork</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+    
+    <!--  database qa profile -->  
+    <profile>
+      <id>database</id>
+      <activation>
+        <property>
+          <name>database</name>
+        </property>
+      </activation>
+      <dependencies>
+        <dependency>
+          <groupId>mysql</groupId>
+          <artifactId>mysql-connector-java</artifactId>
+          <version>5.1.6</version>
+          <scope>test</scope>
+        </dependency>
+        <dependency>
+          <groupId>postgresql</groupId>
+          <artifactId>postgresql</artifactId>
+          <version>8.4-701.jdbc4</version>
+        </dependency>
+      </dependencies>
+      <build>
+        <plugins>
+          <plugin>
+            <artifactId>maven-antrun-plugin</artifactId>
+            <!--
+              only worked with this version, there might be a bug with antrun
+              see http://jira.codehaus.org/browse/MANTRUN-109
+            -->
+            <version>1.4</version>
+            <executions>
+              <execution>
+                <id>database-test-create-schema</id>
+                <phase>process-test-classes</phase>
+                <goals>
+                  <goal>run</goal>
+                </goals>
+                <configuration>
+                  <tasks>
+                    <echo
+                      message="CREATING SCHEMA AND UPDATING PROPERTIES ${database} #{database} @{database} " />
+                    <ant antfile="${basedir}/../../qa/db/build.xml" target="create.db.schema"
+                      inheritAll="false">
+                      <property name="test_classpath" refid="maven.test.classpath" />
+                      <property name="database" value="${database}" />
+                    </ant>
+                    <ant antfile="${basedir}/../../qa/db/build.xml" target="create.activiti.prop">
+                      <property name="database" value="${database}" />
+                    </ant>
+                  </tasks>
+                </configuration>
+              </execution>
+              <execution>
+                <id>database-test-drop-schema</id>
+                <phase>prepare-package</phase>
+                <goals>
+                  <goal>run</goal>
+                </goals>
+                <configuration>
+                  <tasks>
+                    <echo message="DROPPING SCHEMA ${database} #{database} @{database} " />
+                    <ant antfile="${basedir}/../../qa/db/build.xml" target="drop.db.schema"
+                      inheritAll="false">
+                      <property name="test_classpath" refid="maven.test.classpath" />
+                      <property name="database" value="${database}" />
+                    </ant>
+                  </tasks>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+    
+  </profiles>
 
-	<reporting>
-		<plugins>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-javadoc-plugin</artifactId>
-				<configuration>
-					<excludePackageNames>org.activiti.impl*,org.activiti.engine.impl*</excludePackageNames>
-				</configuration>
-			</plugin>
-		</plugins>
-	</reporting>
+  <reporting>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-javadoc-plugin</artifactId>
+        <configuration>
+          <excludePackageNames>org.activiti.impl*,org.activiti.engine.impl*</excludePackageNames>
+        </configuration>
+      </plugin>
+    </plugins>
+  </reporting>
 
 </project>
