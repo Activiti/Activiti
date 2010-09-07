@@ -80,7 +80,7 @@ public class SignavioConnectorTest {
 	  System.out.println("SourceJSON:\n" + sourceJson);
     
 	  // create signavio conf + connector
-	  SignavioConnectorConfiguration conf = new SignavioConnectorConfiguration("http://localhost:8080/activiti-modeler/");
+	  SignavioConnectorConfiguration conf = new SignavioConnectorConfiguration("http://localhost:8080/activiti-modeler/p/");
     SignavioConnector connector = new SignavioConnector(conf);
 	  
     // test pre-transformation json to bpmn20 xml

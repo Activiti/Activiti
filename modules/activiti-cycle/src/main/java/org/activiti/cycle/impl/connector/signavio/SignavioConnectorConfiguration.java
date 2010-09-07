@@ -36,9 +36,6 @@ public class SignavioConnectorConfiguration extends PasswordEnabledRepositoryCon
    * OSS version (where trying to login leads to an exception)
    */
   private boolean loginRequired = false;
-  //
-
-  public static String SIGNAVIO_BACKEND_URL_SUFFIX = "p/";
 
   public static String REGISTRATION_URL_SUFFIX = "register/";
   public static String LOGIN_URL_SUFFIX = "login/";
@@ -52,7 +49,8 @@ public class SignavioConnectorConfiguration extends PasswordEnabledRepositoryCon
   public static String BPMN_20_IMPORT_SERVLET = "editor/bpmn2_0deserialization";
 
   public SignavioConnectorConfiguration() {
-    signavioBaseUrl = "http://127.0.0.1:8080/";
+    // '.../p/' is not standard for all Signavio/Oryx configurations
+    signavioBaseUrl = "http://127.0.0.1:8080/p/";  
   }
 
   public SignavioConnectorConfiguration(String signavioUrl) {
@@ -84,7 +82,7 @@ public class SignavioConnectorConfiguration extends PasswordEnabledRepositoryCon
   }
 
   public String getSignavioBackendUrl() {
-    return getSignavioUrl() + SIGNAVIO_BACKEND_URL_SUFFIX;
+    return getSignavioUrl();
   }
 
   public String getDirectoryIdFromUrl(String href) {

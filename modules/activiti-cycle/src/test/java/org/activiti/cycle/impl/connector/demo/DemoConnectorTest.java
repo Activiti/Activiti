@@ -105,7 +105,7 @@ public class DemoConnectorTest {
 
     ConfigurationContainer configuration = new ConfigurationContainer("bernd");
     configuration.addRepositoryConnectorConfiguration(new DemoConnectorConfiguration("demo"));
-    configuration.addRepositoryConnectorConfiguration(new SignavioConnectorConfiguration("signavio", "http://localhost:8080/activiti-modeler/"));
+    configuration.addRepositoryConnectorConfiguration(new SignavioConnectorConfiguration("signavio", "http://localhost:8080/activiti-modeler/p/"));
     configuration.addRepositoryConnectorConfiguration(new FileSystemConnectorConfiguration("files", new File("C:/temp")));
     
     RepositoryConnector conn = new CustomizedViewConfiguration("http://localhost:8080/activiti-cycle/", configuration).createConnector();
