@@ -250,7 +250,7 @@ JAVA_OPTS="-Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=8787
          classpathref="classpath.libs" 
          src="files/demo/${db}.data.sql"/>
     <zip destfile="${activiti.home}/setup/build/activiti-examples.bar">
-      <fileset dir="${activiti.home}/examples/activiti-engine-examples/src/test/resources">
+      <fileset dir="${activiti.home}/examples/activiti-engine-examples/src">
         <include name="org/activiti/examples/bpmn/usertask/taskassignee/TaskAssigneeTest.testTaskAssignee.bpmn20.xml"/>
         <include name="org/activiti/examples/bpmn/usertask/taskcandidate/TaskCandidateTest.testMixedCandidateUserAndGroup.bpmn20.xml"/>
         <include name="org/activiti/examples/bpmn/usertask/taskcandidate/TaskCandidateTest.testMultipleCandidateGroups.bpmn20.xml"/>
