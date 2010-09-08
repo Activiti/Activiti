@@ -30,12 +30,14 @@
   <property name="maven.download.destination" value="${downloads.dir}/apache-maven-${maven.version}.zip" />
   <available property="is.maven.downloaded" file="${maven.download.destination}" />
   <property name="maven.download.url" value="http://www.apache.org/dist/maven/binaries/apache-maven-${maven.version}-bin.zip" />
-  <condition property="maven.executable" value="mvn.bat" >
+	<condition property="mvn.executable" value="mvn.bat" else="mvn">
     <os family="windows"/>
   </condition>
-  <property name="maven.executable" value="mvn" />
+  <property name="maven.path" value="apps/apache-maven-${maven.version}/bin/${mvn.executable}" />
 
-  <target name="demo.setup" depends="h2.install, h2.start, 
+  <target name="demo.setup" depends="examples.get.libs.all,
+  	                                 h2.install, 
+  	                                 h2.start, 
                                      db.create, 
                                      tomcat.install, 
                                      deploy.activiti.engine.into.tomcat, 
@@ -48,29 +50,57 @@
   
   <target name="demo.teardown" depends="tomcat.stop, db.drop, h2.stop" />
   
-  <target name="examples.get.dependencies" depends="maven.install">
-    <property name="mvn.path" value="apps/apache-maven-${maven.version}/bin/${maven.executable}" />
-    <exec dir="${activiti.home}/lib" executable="../${mvn.path}">
+  <target name="examples.get.libs.all" 
+  	      depends="examples.get.libs.pvm,
+  	               examples.get.libs.engine,
+  	               examples.get.libs.spring" 
+  	      description="retrieves the libs for all the examples" />
+
+  <available property="is.examples.pvm.libs.fetched" file="${activiti.home}/examples/activiti-pvm-examples/libs-runtime" />
+  <target name="examples.get.libs.pvm" depends="maven.install, internal.install.activiti.libs" unless="is.examples.pvm.libs.fetched">
+    <get-module-libs module="pvm" />
+  </target>
+
+  <available property="is.examples.engine.libs.fetched" file="${activiti.home}/examples/activiti-engine-examples/libs-runtime" />
+  <target name="examples.get.libs.engine" depends="maven.install, internal.install.activiti.libs" unless="is.examples.engine.libs.fetched">
+    <get-module-libs module="engine" />
+  </target>
+
+  <available property="is.examples.spring.libs.fetched" file="${activiti.home}/examples/activiti-spring-examples/libs-runtime" />
+  <target name="examples.get.libs.spring" depends="maven.install, internal.install.activiti.libs" unless="is.examples.spring.libs.fetched">
+  	<get-module-libs module="spring" />
+  </target>
+	
+	<macrodef name="get-module-libs">
+		<attribute name="module" />
+		<sequential>
+	    <mkdir dir="${activiti.home}/examples/activiti-@{module}-examples/libs-runtime" />
+	    <exec dir="files/examples/modules/activiti-@{module}" executable="../../../../../${maven.path}">
+	      <arg line="dependency:copy-dependencies -DincludeScope=runtime -DoutputDirectory=../../../../../examples/activiti-@{module}-examples/libs-runtime"/>
+	    </exec>
+      <mkdir dir="${activiti.home}/examples/activiti-@{module}-examples/libs-test" />
+      <exec dir="files/examples/modules/activiti-@{module}" executable="../../../../../${maven.path}">
+        <arg line="dependency:copy-dependencies -DexcludeScope=runtime -DoutputDirectory=../../../../../examples/activiti-@{module}-examples/libs-test"/>
+      </exec>
+	    <copy file="${activiti.home}/lib/activiti-@{module}-${activiti.version}.jar" todir="${activiti.home}/examples/activiti-@{module}-examples/libs-runtime" />
+		</sequential>
+	</macrodef>
+  
+  <target name="internal.install.activiti.libs">
+    <exec dir="${activiti.home}/lib" executable="../${maven.path}">
       <arg line="install:install-file -Dfile=activiti-pvm-${activiti.version}.jar -DgroupId=org.activiti -DartifactId=activiti-pvm -Dpackaging=jar -Dversion=${activiti.version}"/>
     </exec>
-    <exec dir="${activiti.home}/lib" executable="../${mvn.path}">
+    <exec dir="${activiti.home}/lib" executable="../${maven.path}">
       <arg line="install:install-file -Dfile=activiti-engine-${activiti.version}.jar -DgroupId=org.activiti -DartifactId=activiti-engine -Dpackaging=jar -Dversion=${activiti.version}"/>
     </exec>
-    <mkdir dir="${activiti.home}/examples/activiti-pvm-examples/lib" />
-    <exec dir="files/examples/modules/activiti-pvm" executable="../../../../../${mvn.path}">
-      <arg line="dependency:copy-dependencies -DoutputDirectory=../../../../../examples/activiti-pvm-examples/lib"/>
+    <exec dir="${activiti.home}/lib" executable="../${maven.path}">
+      <arg line="install:install-file -Dfile=activiti-spring-${activiti.version}.jar -DgroupId=org.activiti -DartifactId=activiti-spring -Dpackaging=jar -Dversion=${activiti.version}"/>
     </exec>
-    <copy file="${activiti.home}/lib/activiti-pvm-${activiti.version}.jar" todir="${activiti.home}/examples/activiti-pvm-examples/lib" />
-    <mkdir dir="${activiti.home}/examples/activiti-engine-examples/lib" />
-    <exec dir="files/examples/modules/activiti-engine" executable="../../../../../${mvn.path}">
-      <arg line="dependency:copy-dependencies -DoutputDirectory=../../../../../examples/activiti-engine-examples/lib"/>
-    </exec>
-    <copy file="${activiti.home}/lib/activiti-engine-${activiti.version}.jar" todir="${activiti.home}/examples/activiti-engine-examples/lib" />
   </target>
-  
+
   <target name="maven.install" depends="maven.download" unless="is.maven.installed">
     <unzip src="${maven.download.destination}" dest="${activiti.home}/apps" />
-    <chmod perm="a+x" file="${activiti.home}/apps/apache-maven-${maven.version}/bin/${maven.executable}" />
+    <chmod perm="a+x" file="${activiti.home}/apps/apache-maven-${maven.version}/bin/${mvn.executable}" />
   </target>
 
   <target name="maven.download" unless="is.maven.downloaded">
@@ -78,10 +108,10 @@
     <get src="${maven.download.url}" dest="${maven.download.destination}" />
   </target>
 
-  <target name="h2.install">
+  <target name="h2.install" depends="examples.get.libs.engine">
     <mkdir dir="${activiti.home}/apps/h2" />
     <copy todir="${activiti.home}/apps/h2">
-      <fileset dir="${activiti.home}/lib">
+      <fileset dir="${activiti.home}/examples/activiti-engine-examples/libs-test">
         <include name="h2*.jar"/>
       </fileset>
       <fileset dir="files/h2" />
@@ -192,15 +222,16 @@ JAVA_OPTS="-Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=8787
     </jar>
   </target>
 
-  <target name="deploy.activiti.engine.into.tomcat" depends="cfg.create">
+  <target name="deploy.activiti.engine.into.tomcat" depends="cfg.create, examples.get.libs.engine">
     <copy todir="${tomcat.home}/lib">
-      <fileset dir="${activiti.home}/lib">
+      <fileset dir="${activiti.home}/examples/activiti-engine-examples/libs-runtime">
         <include name="activiti-pvm-${activiti.version}.jar"/>
         <include name="activiti-engine-${activiti.version}.jar"/>
         <include name="mybatis-*.jar"/>
-        <include name="h2-*.jar"/>
-        <include name="freemarker-*.jar" />
         <include name="juel*.jar" />
+      </fileset>
+      <fileset dir="${activiti.home}/examples/activiti-engine-examples/libs-test">
+        <include name="h2-*.jar"/>
       </fileset>
       <fileset dir="build">
         <include name="activiti-cfg.jar"/>
@@ -219,7 +250,7 @@ JAVA_OPTS="-Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=8787
          classpathref="classpath.libs" 
          src="files/demo/${db}.data.sql"/>
     <zip destfile="${activiti.home}/setup/build/activiti-examples.bar">
-      <fileset dir="${activiti.home}/docs/examples/src">
+      <fileset dir="${activiti.home}/examples/activiti-engine-examples/src/test/resources">
         <include name="org/activiti/examples/bpmn/usertask/taskassignee/TaskAssigneeTest.testTaskAssignee.bpmn20.xml"/>
         <include name="org/activiti/examples/bpmn/usertask/taskcandidate/TaskCandidateTest.testMixedCandidateUserAndGroup.bpmn20.xml"/>
         <include name="org/activiti/examples/bpmn/usertask/taskcandidate/TaskCandidateTest.testMultipleCandidateGroups.bpmn20.xml"/>
@@ -238,14 +269,8 @@ JAVA_OPTS="-Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=8787
         <fileset dir="build">
           <include name="activiti-cfg.jar"/>
         </fileset>
-        <fileset dir="${activiti.home}/lib">
-          <include name="activiti-pvm-${activiti.version}.jar"/>
-          <include name="activiti-engine-${activiti.version}.jar"/>
-          <include name="mybatis-*.jar"/>
-          <include name="h2-*.jar"/>
-          <include name="freemarker-*.jar" />
-          <include name="juel*.jar" />
-        </fileset>
+        <fileset dir="${activiti.home}/examples/activiti-engine-examples/libs-runtime" />
+        <fileset dir="${activiti.home}/examples/activiti-engine-examples/libs-test" />
       </classpath>
     </taskdef>
     <deploy-bar file="${activiti.home}/setup/build/activiti-examples.bar" />
@@ -344,9 +369,12 @@ JAVA_OPTS="-Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=8787
     <taskdef name="launch" classname="org.activiti.engine.impl.ant.LaunchTask" classpathref="classpath.libs" />
   </target>
   
-  <target name="internal.classpath.libs">
+  <target name="internal.classpath.libs" depends="examples.get.libs.engine">
     <path id="classpath.libs">
-      <fileset dir="${activiti.home}/lib">
+      <fileset dir="${activiti.home}/examples/activiti-engine-examples/libs-runtime">
+        <include name="*.jar" />
+      </fileset>
+      <fileset dir="${activiti.home}/examples/activiti-engine-examples/libs-test">
         <include name="*.jar" />
       </fileset>
     </path>

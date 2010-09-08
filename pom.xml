@@ -284,6 +284,7 @@
 		<profile>
 			<id>distro</id>
 			<modules>
+        <module>modules/activiti-spring</module>
         <module>modules/activiti-rest</module>
         <module>modules/activiti-webapp</module>
 				<module>modules/activiti-engine-init</module>

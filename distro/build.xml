@@ -12,10 +12,6 @@
      <os family="windows"/>
   </condition>
 
-   <condition property="mvn.executable" value="mvn.bat" else="mvn">
-     <os family="windows"/>
-   </condition>
-
   <target name="clean">
   	<delete dir="target" />
   </target>
@@ -26,18 +22,32 @@
       <fileset dir="src" />
     </copy>
  
-    <mkdir dir="${target.distro.root}/examples/activiti-pvm-examples" />
-    <copy todir="${target.distro.root}/examples/activiti-pvm-examples">
-      <fileset dir="../modules/activiti-pvm">
-        <include name="src/test/java/org/activiti/examples/**" />
+    <mkdir dir="${target.distro.root}/examples/activiti-pvm-examples/src" />
+    <copy todir="${target.distro.root}/examples/activiti-pvm-examples/src">
+      <fileset dir="../modules/activiti-pvm/src/test/java">
+        <include name="org/activiti/examples/**" />
     	</fileset>
     </copy>
 
-  	<mkdir dir="${target.distro.root}/examples/activiti-engine-examples" />
-    <copy todir="${target.distro.root}/examples/activiti-engine-examples">
-      <fileset dir="../modules/activiti-engine">
-        <include name="src/test/java/org/activiti/examples/**" />
-        <include name="src/test/resources/org/activiti/examples/**" />
+  	<mkdir dir="${target.distro.root}/examples/activiti-engine-examples/src" />
+    <copy todir="${target.distro.root}/examples/activiti-engine-examples/src">
+      <fileset dir="../modules/activiti-engine/src/test/java">
+        <include name="org/activiti/examples/**" />
+      </fileset>
+      <fileset dir="../modules/activiti-engine/src/test/resources">
+        <include name="org/activiti/examples/**" />
+        <include name="activiti.properties" />
+        <include name="logging.properties" />
+      </fileset>
+    </copy>
+
+    <mkdir dir="${target.distro.root}/examples/activiti-spring-examples/src" />
+    <copy todir="${target.distro.root}/examples/activiti-spring-examples/src">
+      <fileset dir="../modules/activiti-spring/src/test/java">
+        <include name="org/activiti/examples/**" />
+      </fileset>
+      <fileset dir="../modules/activiti-spring/src/test/resources">
+        <include name="org/activiti/examples/**" />
       </fileset>
     </copy>
 
@@ -46,6 +56,7 @@
         <include name="pom.xml" />
         <include name="modules/activiti-pvm/pom.xml" />
         <include name="modules/activiti-engine/pom.xml" />
+        <include name="modules/activiti-spring/pom.xml" />
       </fileset>
     </copy>
   
@@ -62,6 +73,9 @@
     	</fileset>
       <fileset dir="../modules/activiti-pvm/target">
         <include name="activiti-pvm-*.jar"/>
+      </fileset>
+      <fileset dir="../modules/activiti-spring/target">
+        <include name="activiti-spring-*.jar"/>
       </fileset>
     </copy>
       	
@@ -124,9 +138,9 @@
   
   <target name="get.libs">
     <mkdir dir="${target.distro.root}/lib" />
-    <exec executable="${mvn.executable}" dir="../modules/activiti-engine">
+    <!-- exec executable="${mvn.executable}" dir="../modules/activiti-engine">
       <arg line="-DoutputDirectory=../../distro/${target.distro.root}/lib dependency:copy-dependencies" />
-    </exec>
+    </exec -->
   </target>
   
   <target name="build.modules">

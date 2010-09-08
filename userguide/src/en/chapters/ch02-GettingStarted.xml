@@ -23,6 +23,7 @@
     <para>The easiest target to get started is <literal>demo.setup</literal>. That target will 
     </para>
     <itemizedlist>
+      <listitem><para>Fetch the library dependencies for the examples</para></listitem>
       <listitem><para>Install the H2 in ${activiti.home}/apps/h2</para></listitem>
       <listitem><para>Start the H2 database</para></listitem>
       <listitem><para>Create the Activiti tables in the database</para></listitem>
@@ -117,44 +118,96 @@
   </section>
   
   <section id="examples">
-    <title>Examples Eclipse setup</title>
-    <para>The <literal>docs/examples</literal> show each feature.  That directory can be imported as an eclipse project.</para>
-    <para>First define a <literal>User Library</literal> called <literal>Activiti Libraries</literal> like this</para>
-    <para><literal>Preferences --> Java --> Build Path --> User Libraries</literal> and then click <literal>New...</literal> </para>
-    <mediaobject><imageobject><imagedata align="center" fileref="images/create.user.libraries.png"/></imageobject></mediaobject>
-    <para>Enter name <literal>Activiti Libraries</literal> <emphasis role="bold">(case sensitive!)</emphasis> and then select
-    all the libs in the <literal>lib</literal> directory except those with -sources in it. 
+    <title>Examples</title>
+    <para>The distribution contains example source code that show different types of 
+    usages of Activiti and their library dependencies. The examples are grouped according 
+    to their dependencies.
     </para>
-    <para>Then expand the activiti-engine jar, select <literal>Source attachement</literal>, Click Edit... and select the 
-      activiti-engine-${version}-sources.jar in the <literal>${activiti.home}/lib</literal> directory
+    <para>The distribution doesn't contain the library dependencies out-of-the-box, 
+    but <link linkend="librarydependencies">the next section</link> shows how the setup script can automatically 
+    download and organise the library dependencies.
+    The <literal>examples</literal> directory in the root of the distribution
+    contains these types of examples:
     </para>
-    <para><literal>File --> Import --> General --> Existing Projects into Workspace</literal></para>
-    <para>Then select the docs/examples directory and complete the import of the examples project.</para>
-    <para>
-      To get BPMN 2.0 XML auto-completion and validation while typing, you need to add the BPMN 2.0
+    <itemizedlist>
+      <listitem><para><emphasis role="bold">activiti-engine</emphasis>: This set of 
+      examples show the most common usage of Activiti: BPMN process definitions 
+      and process executions are stored in a DB and the examples make use of 
+      the persistent API.</para></listitem>
+      <listitem><para><emphasis role="bold">activiti-spring</emphasis>: These examples
+      show how you can use the Activiti Engine in a Spring environment.    
+      </para></listitem>
+      <listitem><para><emphasis role="bold">activiti-pvm</emphasis> These examples 
+      show the bare bones Process Virtual Machine.  No persistence, no process 
+      language.  This is the basis for building your own process language and engine.
+      </para></listitem>
+    </itemizedlist>
+  </section>
+  
+  <section id="librarydependencies">
+    <title>Library dependencies</title>
+    <para>Activiti takes great care in minimizing library dependencies.  
+    The 3rd party library dependencies are not included in the Activiti 
+    download to reduce the download size, but the setup script can download 
+    and organise the library dependencies for <link linkend="examples">those examples</link> 
+    that you want to explore.      
+    </para>
+    <para>Fetching the library dependencies is included in the 
+    <literal>demo.setup</literal></para>
+    <para>To download the library dependencies, use one of these targets
+    in the ant <literal>setup/build.xml</literal> file:
+    </para>
+    <itemizedlist>
+      <listitem><para>examples.get.libs.all</para></listitem>
+      <listitem><para>examples.get.libs.engine</para></listitem>
+      <listitem><para>examples.get.libs.spring</para></listitem>
+      <listitem><para>examples.get.libs.pvm</para></listitem>
+    </itemizedlist>
+    <para>Those targets will create following directories in the
+    respective example modules and put the libraries in there:
+    </para>
+    <itemizedlist>
+      <listitem><para>examples/activiti-engine-examples/libs-runtime</para></listitem>
+      <listitem><para>examples/activiti-engine-examples/libs-test</para></listitem>
+    </itemizedlist>
+    <itemizedlist>
+      <listitem><para>examples/activiti-spring-examples/libs-runtime</para></listitem>
+      <listitem><para>examples/activiti-spring-examples/libs-test</para></listitem>
+    </itemizedlist>
+    <itemizedlist>
+      <listitem><para>examples/activiti-pvm-examples/libs-runtime</para></listitem>
+      <listitem><para>examples/activiti-pvm-examples/libs-test</para></listitem>
+    </itemizedlist>
+    <para>That gives a clear indication of which libraries you need at runtime and 
+    which extra libraries that are needed to run the example tests.
+    </para>
+  </section>
+  
+  <section id="eclipsesetup">
+    <title>Eclipse setup</title>
+    <para>To run the examples in your eclipse, follow these simple instructions.
+    We'll start with creating the <literal>activiti-engine-examples</literal></para>
+    <para>First, make sure that you have downloaded the library dependencies as 
+    explained in <xref linkend="librarydependencies"/>.  
+    </para>
+    <para>Create a new Java project</para>
+    <mediaobject><imageobject><imagedata align="center" fileref="images/eclipsesetup.create.new.java.project.png"/></imageobject></mediaobject>
+    <para>Select <literal>Create project from existing source</literal> and click <literal>Browse</literal> </para>
+    <mediaobject><imageobject><imagedata align="center" fileref="images/eclipsesetup.browse.for.sources.png"/></imageobject></mediaobject>
+    <para>Then select the directory <literal>${activiti.home}/examples/activiti-engine-examples</literal> </para>
+    <mediaobject><imageobject><imagedata align="center" fileref="images/eclipsesetup.select.directory.png"/></imageobject></mediaobject>
+    <para>Then you can click <literal>Finish</literal> in the New Java Project dialog and you're all set.</para>
+    <para>Repeat this for the other projects <literal>${activiti.home}/examples/activiti-spring-examples</literal> and 
+    <literal>${activiti.home}/examples/activiti-pvm-examples</literal></para>
+    <para>If you want to browse the Activiti source code, then you can attach the sources 
+    (e.g. <literal>${activiti.home}/lib/activiti-engine-5.0.beta2-sources.jar</literal>) to the library 
+    in your project <literal>Java Build Path</literal> confiugration.
+    </para>
+    <para>If you want BPMN 2.0 XML auto-completion and validation while typing, you can add the BPMN 2.0
       XSD to the XML catalog. Go to <literal>Preferences --> XML --> XML Catalog --> Add</literal>, 
       and select the XSD from the fileSystem in the folder <emphasis>docs/xsd/BPMN20.xsd</emphasis>.
       <mediaobject><imageobject><imagedata align="center" fileref="images/eclipse.setup.xml.catalog.png"/></imageobject></mediaobject>
     </para>
   </section>
 
-  <section id="organising.your.project">
-    <title>Organising your project</title>
-    <para>This section explains how to create an executable BPMN 2.0 process inside an Eclipse Java project.</para>
-    <para>Start with creating a new Java project in Eclipse.</para>
-    <para>Add the Activiti Libraries to the project's classpath:</para>
-    <para><literal>Project properties --> Java Build Path --> Libraries --> Add Library... --> User Library</literal> </para>
-    <mediaobject><imageobject><imagedata align="center" fileref="images/add.user.libraries.png"/></imageobject></mediaobject>
-    <para>Then select <literal>Activiti Libraries</literal> </para> 
-    <para>Then generate an activiti configuration jar with the setup utility.  To do that, first make sure
-    the properties of the setup script are set to match your project configuration. Check the properties files in the setup 
-    directory for more information on configurable properties and potential values.
-    </para>
-    <para><literal>ant cfg.create</literal> </para>
-    <para>The generated activiti configuration files will now be in directory <literal>${activiti.home}/setup/build/activiti-cfg</literal> 
-    and jarred as  <literal>${activiti.home}/setup/build/activiti-cfg.jar</literal> </para>
-    <para>Put the configuration files or the jar in your project's classpath.</para>
-    <para>TODO: give recommendation on how people should use with a src, process, test and cfg directories</para>
-    <para>TODO: give recommendation on how people people can write an ant build.xml to deploy their process to staging or production</para>
-  </section>
 </chapter>
