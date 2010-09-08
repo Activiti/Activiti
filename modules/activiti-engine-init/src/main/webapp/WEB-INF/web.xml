@@ -4,15 +4,7 @@
 
 <web-app>
   <display-name>Activiti Engine Initializer</display-name>
-  
-  <servlet>
-    <servlet-name>ProcessEnginesServlet</servlet-name>
-    <servlet-class>org.activiti.impl.servlet.ProcessEnginesServlet</servlet-class>
-    <load-on-startup>1</load-on-startup>
-  </servlet>
-  <servlet-mapping>
-    <servlet-name>ProcessEnginesServlet</servlet-name>
-    <url-pattern>/processengines</url-pattern>
-  </servlet-mapping>
-  
+  <listener>
+    <listener-class>org.activiti.impl.servlet.listener.ProcessEnginesServletContextListener</listener-class>
+  </listener>
 </web-app>

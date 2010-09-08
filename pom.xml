@@ -378,6 +378,11 @@
 		   <organization>Alfresco</organization>
 		   <url>http://alfresco.com</url> 
 		</developer>
+		<developer>
+		   <name>Frederik Heremans</name>
+		   <organization>Alfresco</organization>
+		   <url>http://alfresco.com</url> 
+		</developer>
 	</developers>
 	<issueManagement>
 		<system>TODO</system>

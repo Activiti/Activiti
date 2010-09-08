@@ -31,13 +31,17 @@ import org.activiti.engine.impl.ProcessEngineInfoImpl;
 
 
 /** helper for initializing and closing process engines in server environments.
- * 
+ * <br>
  * The activiti-engine-init webapp will
  * call the {@link #init()} method when the webapp is deployed and it will call the 
- * {@link #destroy()} method when the webapp is destroyed.  That way, 
- * All applications can just use the {@link #getProcessEngines()} to 
- * obtain pre-initialized and cached process engines.
- * 
+ * {@link #destroy()} method when the webapp is destroyed, using a context-listener 
+ * (<code>org.activiti.impl.servlet.listener.ProcessEnginesServletContextListener</code>).  That way, 
+ * all applications can just use the {@link #getProcessEngines()} to 
+ * obtain pre-initialized and cached process engines. <br>
+ * <br>
+ * Please note that there is <b>no lazy initialization</b> of process engines, so make sure the 
+ * context-listener is configured.<br>
+ * <br>
  * The {@link #init()} method will try to build one {@link ProcessEngine} for 
  * each activiti.properties file found on the classpath.  If you have more then one,
  * make sure you specify different process.engine.name values.

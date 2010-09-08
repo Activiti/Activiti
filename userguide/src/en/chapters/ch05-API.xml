@@ -36,9 +36,9 @@ HistoryService historyService = processEngine.getHistoryService();</programlisti
     <para>The activiti-engine-init.war can be used to easily manage process engine
     initialization and proper shutdown.  This war is automatically added to tomcat in
     the setup scripts when deploying activiti to tomcat.</para>
-    <para>The war contains a single
-    servlet that has an <literal>init</literal> and a <literal>deploy</literal> method.
-    The init will delegate to <literal>ProcessEngines.init()</literal>.  That will
+    <para>The war contains a single 
+    <literal>ServletContextListener</literal> that has a <literal>contextInitialized</literal> and a <literal>contextDestroyed</literal> method.
+    The contextInitialized will delegate to <literal>ProcessEngines.init()</literal>.  That will
     look for all <literal>activiti.properties</literal> resource files on the classpath.
     For each configuration file found, it will create a ProcessEngine.</para>
     <para>The default process engine name is <literal>default</literal>. </para>
@@ -46,7 +46,7 @@ HistoryService historyService = processEngine.getHistoryService();</programlisti
     have different values for property <literal>process.engine.name</literal> </para>
     <para>The initialized ProcessEngines can be accessed with <literal>ProcessEngines.getProcessEngine(String processEngineName)</literal>
     </para>
-    <para>The destroy of the servlet delegates to <literal>ProcessEngines.destroy()</literal>.
+    <para>The contextDestroyed of the context-listener delegates to <literal>ProcessEngines.destroy()</literal>.
     That will properly close all initialized process engines.
     </para>
   </section>
