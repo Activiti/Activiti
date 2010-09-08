@@ -15,40 +15,24 @@ package org.activiti.cycle.impl.connector.signavio.action;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-import org.activiti.cycle.OpenUrlAction;
 import org.activiti.cycle.RepositoryArtifact;
+import org.activiti.cycle.RepositoryConnector;
 import org.activiti.cycle.RepositoryException;
-import org.activiti.cycle.impl.connector.signavio.SignavioConnectorConfiguration;
+import org.activiti.cycle.impl.CreateUrlActionImpl;
+import org.activiti.cycle.impl.connector.signavio.SignavioConnector;
 
 /**
  * Action to open the signavio modeler
  * 
  * @author bernd.ruecker@camunda.com
  */
-public class OpenModelerAction extends OpenUrlAction {
+public class OpenModelerAction extends CreateUrlActionImpl {
 
-  private String modelUrl;
+  private static final long serialVersionUID = 1L;
 
-  @Override
-  public String getLabel() {
-    return "open modeler";
-  }
-  
-  @Override
-  public void setArtifact(RepositoryArtifact artifact) {
-    super.setArtifact(artifact);
-    
-    // save model URL immediately to have the original artifact id, not the
-    // maybe changed one.
-    // Now it is really time to rethink the Action creation and id overwriting
-    // mechanism
-    modelUrl = ((SignavioConnectorConfiguration) artifact.getOriginalConnector().getConfiguration()).getEditorUrl(artifact.getId());
-  }
-
-  @Override
-  public URL getUrl() {
+  public URL getUrl(RepositoryConnector connector, RepositoryArtifact artifact) {
     try {
-      return new URL(modelUrl);
+      return new URL(((SignavioConnector) connector).getConfiguration().getEditorUrl(artifact.getId()));
     } catch (MalformedURLException ex) {
       throw new RepositoryException("Error while creating URL for opening Signavio modeler", ex);
     }

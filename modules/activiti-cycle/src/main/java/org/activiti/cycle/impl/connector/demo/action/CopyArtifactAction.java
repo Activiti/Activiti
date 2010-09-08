@@ -2,9 +2,10 @@ package org.activiti.cycle.impl.connector.demo.action;
 
 import java.util.Map;
 
-import org.activiti.cycle.ParametrizedFreemakerTemplateAction;
+import org.activiti.cycle.Content;
 import org.activiti.cycle.RepositoryArtifact;
-import org.activiti.cycle.impl.connector.demo.DemoConnector;
+import org.activiti.cycle.RepositoryConnector;
+import org.activiti.cycle.impl.ParameterizedHtmlFormTemplateAction;
 
 /**
  * Demo action which just copies the artifact (maybe multiple times) to
@@ -12,44 +13,38 @@ import org.activiti.cycle.impl.connector.demo.DemoConnector;
  * 
  * @author ruecker
  */
-public class CopyArtifactAction extends ParametrizedFreemakerTemplateAction {
+public class CopyArtifactAction extends ParameterizedHtmlFormTemplateAction {
+
+  private static final long serialVersionUID = 1L;
 
   @Override
   public String getFormResourceName() {
     return "/org/activiti/cycle/impl/connector/demo/action/CopyArtifactAction.html";
   }
 
-  @Override
-  public void execute(Map<String, Object> parameters) throws Exception {
+  public void execute(RepositoryConnector connector, RepositoryArtifact artifact, Map<String, Object> parameters) throws Exception {
     int count = (Integer) getParameter(parameters, "copyCount", true, null, Integer.class);
     String targetName = (String) getParameter(parameters, "targetName", true, null, String.class);
 
     if (count==1) {
-      copyArtifact(targetName);
+      copyArtifact(connector, artifact, targetName);
     }
     for (int i = 0; i < count; i++) {
-      copyArtifact(targetName + i);
+      copyArtifact(connector, artifact, targetName + i);
     }
   }
   
-  private void copyArtifact(String targetName) {    
-    String path = getArtifact().getId().substring(0, getArtifact().getId().lastIndexOf("/"));    
-    RepositoryArtifact copy = DemoConnector.clone(getArtifact());
-    if (targetName.startsWith("/")) {
-      copy.setId(getArtifact().getMetadata().getPath() + targetName);
-    } else {
-      copy.setId(getArtifact().getMetadata().getPath() + "/" + targetName);
-    }
-    copy.getMetadata().setName(targetName);
-    copy.overwriteConnector(getArtifact().getOriginalConnector());
+  private void copyArtifact(RepositoryConnector connector, RepositoryArtifact artifact, String targetName) {    
+    String path = artifact.getId().substring(0, artifact.getId().lastIndexOf("/"));
+
+    // if (targetName.startsWith("/")) {
+    // targetName = artifact.getMetadata().setParentFolderId() + targetName;
+    // } else {
+    // targetName = artifact.getMetadata().setParentFolderId() + "/" +
+    // targetName;
+    // }
     
-    String representatioName = getArtifact().getContentRepresentationProviders().iterator().next().getContentRepresentationName();
-    getArtifact().getConnector().createNewArtifact(path, copy, getArtifact().getConnector().getContent(getArtifact().getId(), representatioName));
+    Content content = connector.getContent(artifact.getId(), artifact.getArtifactType().getDefaultContentRepresentation().getId());
+    connector.createArtifact(path, targetName, artifact.getArtifactType().getId(), content);
   }
-
-  @Override
-  public String getLabel() {
-    return "Copy";
-  }
-
 }

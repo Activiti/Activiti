@@ -1,6 +1,8 @@
-package org.activiti.cycle;
+package org.activiti.cycle.impl;
 
 import java.io.Serializable;
+
+import org.activiti.cycle.ContentRepresentation;
 
 /**
  * Data structure for link to content, including the URL to the content, the
@@ -15,7 +17,7 @@ import java.io.Serializable;
  * 
  * @author bernd.ruecker@camunda.com
  */
-public class ContentRepresentationDefinition implements Serializable {
+public class ContentRepresentationImpl implements ContentRepresentation, Serializable {
 	
 	private static final long serialVersionUID = 1L;
 
@@ -31,44 +33,19 @@ public class ContentRepresentationDefinition implements Serializable {
    * correct representation and may be used by the client to show a list of
    * possible {@link ContentRepresentationDefinition}s
    */
-	private String name;
-	
-	private String clientUrl;
+	private String id;
 
-  private boolean downloadable;
-
-  public ContentRepresentationDefinition() {
+  public ContentRepresentationImpl(String id, String mimeType) {
+    super();
+    this.id = id;
+    this.mimeType = mimeType;
   }
   
-  public String getType() {
+  public String getId() {
+    return id;
+  }
+
+  public String getMimeType() {
     return mimeType;
-  }
-
-  public void setType(String type) {
-    this.mimeType = type;
-  }
-
-  public String getName() {
-    return name;
-  }
-
-  public void setName(String name) {
-    this.name = name;
-  }
-
-  public String getClientUrl() {
-    return clientUrl;
-  }
-
-  public void setClientUrl(String clientUrl) {
-    this.clientUrl = clientUrl;
-  }
-
-  public void setDownloadable(boolean downloadable) {
-    this.downloadable = downloadable;
-  }
-  
-  public boolean isDownloadable() {
-    return downloadable;
   }
 }

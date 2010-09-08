@@ -2,43 +2,55 @@ package org.activiti.cycle.impl.connector.demo;
 
 import java.util.List;
 
-import org.activiti.cycle.ArtifactAction;
 import org.activiti.cycle.ArtifactType;
-import org.activiti.cycle.ContentRepresentationProvider;
+import org.activiti.cycle.ContentType;
+import org.activiti.cycle.impl.ArtifactTypeImpl;
+import org.activiti.cycle.impl.ContentRepresentationImpl;
+import org.activiti.cycle.impl.conf.RepositoryConnectorConfiguration;
 import org.activiti.cycle.impl.connector.demo.action.CopyArtifactAction;
 import org.activiti.cycle.impl.connector.demo.action.OpenActivitiAction;
-import org.activiti.cycle.impl.connector.demo.provider.DemoImageProvider;
-import org.activiti.cycle.impl.connector.demo.provider.DemoTextProvider;
-import org.activiti.cycle.impl.connector.demo.provider.DemoXmlProvider;
+import org.activiti.cycle.impl.connector.demo.provider.DemoProvider;
 import org.activiti.cycle.impl.plugin.ActivitiCyclePlugin;
 import org.activiti.cycle.impl.plugin.ActivitiCyclePluginDefinition;
-import org.activiti.cycle.impl.plugin.DefinitionEntry;
 
 @ActivitiCyclePlugin
 public class DemoConnectorPluginDefinition implements ActivitiCyclePluginDefinition {
+  
+  public static final String ARTIFACT_TYPE_TEXT = "ARTIFACT_TYPE_TEXT";
+  public static final String ARTIFACT_TYPE_MINDMAP = "ARTIFACT_TYPE_MINDMAP";
+  public static final String ARTIFACT_TYPE_BPMN_20 = "ARTIFACT_TYPE_BPMN_20";
 
-  public void addDefinedArtifactTypeToList(List<ArtifactType> list) {
-    list.add(new ArtifactType(DemoConnector.ARTIFACT_TYPE_TEXT, DemoConnector.ARTIFACT_TYPE_TEXT));
-    list.add(new ArtifactType(DemoConnector.ARTIFACT_TYPE_MINDMAP, DemoConnector.ARTIFACT_TYPE_MINDMAP));
-    list.add(new ArtifactType(DemoConnector.ARTIFACT_TYPE_BPMN_20, DemoConnector.ARTIFACT_TYPE_BPMN_20));
+  public static final String CONTENT_REPRESENTATION_ID_TEXT = "TEXT";
+  public static final String CONTENT_REPRESENTATION_ID_PNG = "PNG";
+  public static final String CONTENT_REPRESENTATION_ID_XML = "XML";
+
+  public void addArtifactTypes(List<ArtifactType> types) {
+    ArtifactTypeImpl artifactType1 = new ArtifactTypeImpl(ARTIFACT_TYPE_TEXT);
+    artifactType1.addDefaultContentRepresentation(new ContentRepresentationImpl(CONTENT_REPRESENTATION_ID_TEXT, ContentType.TEXT), new DemoProvider(
+            CONTENT_REPRESENTATION_ID_TEXT));
+    artifactType1.addParameterizedAction(new CopyArtifactAction());
+    artifactType1.addOpenUrlAction(new OpenActivitiAction());
+    artifactType1.addDownloadContentAction(CONTENT_REPRESENTATION_ID_TEXT);
+    types.add(artifactType1);
+
+    ArtifactTypeImpl artifactType2 = new ArtifactTypeImpl(ARTIFACT_TYPE_MINDMAP);
+    artifactType2.addDefaultContentRepresentation(new ContentRepresentationImpl(CONTENT_REPRESENTATION_ID_TEXT, ContentType.TEXT), new DemoProvider(
+            CONTENT_REPRESENTATION_ID_TEXT));
+    artifactType2.addContentRepresentation(new ContentRepresentationImpl(CONTENT_REPRESENTATION_ID_PNG, ContentType.PNG), new DemoProvider(
+            CONTENT_REPRESENTATION_ID_PNG));
+    types.add(artifactType2);
+
+    ArtifactTypeImpl artifactType3 = new ArtifactTypeImpl(ARTIFACT_TYPE_BPMN_20);
+    artifactType3.addDefaultContentRepresentation(new ContentRepresentationImpl(CONTENT_REPRESENTATION_ID_XML, ContentType.TEXT), new DemoProvider(
+            CONTENT_REPRESENTATION_ID_XML));
+    artifactType3.addParameterizedAction(new CopyArtifactAction());
+    artifactType3.addOpenUrlAction(new OpenActivitiAction());
+    artifactType3.addContentRepresentation(new ContentRepresentationImpl(CONTENT_REPRESENTATION_ID_PNG, ContentType.PNG), new DemoProvider(
+            CONTENT_REPRESENTATION_ID_PNG));
+    types.add(artifactType3);
   }
 
-  @SuppressWarnings("unchecked")
-  public void addContentRepresentationProviderToMap(List<DefinitionEntry<Class< ? extends ContentRepresentationProvider>>> contentProviderMap) {
-    contentProviderMap.add(new DefinitionEntry(DemoConnector.ARTIFACT_TYPE_TEXT, DemoTextProvider.class));
-    contentProviderMap.add(new DefinitionEntry(DemoConnector.ARTIFACT_TYPE_MINDMAP, DemoImageProvider.class));
-    contentProviderMap.add(new DefinitionEntry(DemoConnector.ARTIFACT_TYPE_BPMN_20, DemoImageProvider.class));
-    contentProviderMap.add(new DefinitionEntry(DemoConnector.ARTIFACT_TYPE_BPMN_20, DemoXmlProvider.class));
-  }
-  public void addArtifactActionToMap(List<DefinitionEntry<Class< ? extends ArtifactAction>>> actionMap) {
-    // and register demo actions (skip Mindmap to see a difference)
-    actionMap.add(new DefinitionEntry<Class< ? extends ArtifactAction>>(DemoConnector.ARTIFACT_TYPE_TEXT, CopyArtifactAction.class));
-    actionMap.add(new DefinitionEntry<Class< ? extends ArtifactAction>>(DemoConnector.ARTIFACT_TYPE_TEXT, OpenActivitiAction.class));
-    // RepositoryRegistry.registerArtifactAction(DemoConnector.ARTIFACT_TYPE_MINDMAP,
-    // CopyArtifactAction.class);
-    // RepositoryRegistry.registerArtifactAction(DemoConnector.ARTIFACT_TYPE_MINDMAP,
-    // OpenActivitiAction.class);
-    actionMap.add(new DefinitionEntry<Class< ? extends ArtifactAction>>(DemoConnector.ARTIFACT_TYPE_BPMN_20, CopyArtifactAction.class));
-    actionMap.add(new DefinitionEntry<Class< ? extends ArtifactAction>>(DemoConnector.ARTIFACT_TYPE_BPMN_20, OpenActivitiAction.class));
-  }
+  public Class< ? extends RepositoryConnectorConfiguration> getRepositoryConnectorConfigurationType() {
+    return DemoConnectorConfiguration.class;
+  }  
 }

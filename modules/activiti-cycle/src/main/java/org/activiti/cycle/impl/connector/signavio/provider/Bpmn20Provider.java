@@ -13,9 +13,9 @@
 package org.activiti.cycle.impl.connector.signavio.provider;
 
 import org.activiti.cycle.Content;
-import org.activiti.cycle.ContentType;
 import org.activiti.cycle.RepositoryArtifact;
 import org.activiti.cycle.RepositoryException;
+import org.activiti.cycle.impl.connector.signavio.SignavioConnector;
 import org.json.JSONObject;
 import org.restlet.data.Response;
 
@@ -23,18 +23,14 @@ public class Bpmn20Provider extends SignavioContentRepresentationProvider {
 
   public static final String NAME = "Raw BPMN 2.0";
 
-  public Bpmn20Provider() {
-    super(NAME, ContentType.XML, true);
-  }
-
-  public void addValueToContent(Content content, RepositoryArtifact artifact) {
+  public void addValueToContent(Content content, SignavioConnector connector, RepositoryArtifact artifact) {
     try {
       // use the bpmn2_0_serialization export servlet to provide bpmn20 xml
       // by doing this, we can support different signavio versions instead of
       // the commercial Signavio only
-      Response jsonResponse = getJsonResponse(artifact, "/json");
+      Response jsonResponse = getJsonResponse(connector, artifact, "/json");
       JSONObject jsonData = new JSONObject(jsonResponse.getEntity().getText());
-      String result = getConnector(artifact).transformJsonToBpmn20Xml(jsonData.toString());
+      String result = connector.transformJsonToBpmn20Xml(jsonData.toString());
       
       // This would have been the alternative that works only for signavio but
       // not for activiti-modeler:

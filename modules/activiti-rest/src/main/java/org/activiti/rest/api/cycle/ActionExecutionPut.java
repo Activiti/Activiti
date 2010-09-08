@@ -4,7 +4,6 @@ import java.util.Map;
 
 import javax.servlet.http.HttpSession;
 
-import org.activiti.cycle.RepositoryArtifact;
 import org.activiti.cycle.RepositoryConnector;
 import org.activiti.rest.util.ActivitiWebScript;
 import org.springframework.extensions.webscripts.Cache;
@@ -18,7 +17,7 @@ public class ActionExecutionPut extends ActivitiWebScript {
   protected void executeWebScript(WebScriptRequest req, Status status, Cache cache, Map<String, Object> model) {
 
     String artifactId = getMandatoryString(req, "artifactId");
-    String actionName = getMandatoryString(req, "actionName");
+    String actionId = getMandatoryString(req, "actionName");
     
     String cuid = getCurrentUserId(req);
     
@@ -26,13 +25,10 @@ public class ActionExecutionPut extends ActivitiWebScript {
     RepositoryConnector conn = SessionUtil.getRepositoryConnector(cuid, session);
     
     ActivitiWebScriptBody body = getBody(req);
-    Map<String, Object> variables = getFormVariables(body, conn);
+    Map<String, Object> parameters = getFormVariables(body);
     
-    // Retrieve the artifact from the repository
-    RepositoryArtifact artifact = conn.getRepositoryArtifact(artifactId);
-
     try {
-      artifact.executeAction(actionName, variables);
+      conn.executeParameterizedAction(artifactId, actionId, parameters);
       model.put("result", true);
     } catch (Exception e) {
       // TODO: see whether this makes sense, probably either exception or negative result.

@@ -20,7 +20,7 @@ import java.util.Map;
 
 import javax.servlet.http.HttpSession;
 
-import org.activiti.cycle.ContentRepresentationDefinition;
+import org.activiti.cycle.ContentRepresentation;
 import org.activiti.cycle.ContentType;
 import org.activiti.cycle.DownloadContentAction;
 import org.activiti.cycle.RepositoryArtifact;
@@ -53,14 +53,16 @@ public class ArtifactGet extends ActivitiWebScript {
     RepositoryArtifact artifact = conn.getRepositoryArtifact(artifactId);
 
     List<ContentView> contentViews = new ArrayList<ContentView>();
-    for (ContentRepresentationDefinition representation : artifact.getContentRepresentationDefinitions()) {
+    for (ContentRepresentation representation : artifact.getArtifactType().getContentRepresentations()) {
       try {
-        if (representation.getType().equals(ContentType.TEXT) || representation.getType().equals(ContentType.XML) || representation.getType().equals(ContentType.HTML)) {
-          String content = conn.getContent(artifactId, representation.getName()).asString();
-          contentViews.add(new ContentView(representation.getType(), representation.getName(), content));
-        } else if (representation.getType().startsWith("image/")) {
-          String url = req.getServerPath() + req.getContextPath() + "/service/content?artifactId=" + URLEncoder.encode(artifactId, "UTF-8") + "&content-type=" + URLEncoder.encode(representation.getType(), "UTF-8");
-          contentViews.add(new ContentView(representation.getType(), representation.getName(), url));
+        if (representation.getMimeType().equals(ContentType.TEXT) || representation.getMimeType().equals(ContentType.XML)
+                || representation.getMimeType().equals(ContentType.HTML)) {
+          String content = conn.getContent(artifactId, representation.getId()).asString();
+          contentViews.add(new ContentView(representation.getMimeType(), representation.getMimeType(), content));
+        } else if (representation.getMimeType().startsWith("image/")) {
+          String url = req.getServerPath() + req.getContextPath() + "/service/content?artifactId=" + URLEncoder.encode(artifactId, "UTF-8") + "&content-type="
+                  + URLEncoder.encode(representation.getMimeType(), "UTF-8");
+          contentViews.add(new ContentView(representation.getMimeType(), representation.getId(), url));
         }
       } catch (UnsupportedEncodingException e) {
         // should never be reached as long as we use UTF-8, which is valid in
@@ -69,15 +71,15 @@ public class ArtifactGet extends ActivitiWebScript {
       }
     }
 
-    model.put("actions", artifact.getParametrizedActions()); // label, name
-
+    model.put("actions", artifact.getArtifactType().getParameterizedActions());
+    
     // Create downloadContentView DTOs
     List<DownloadActionView> downloads = new ArrayList<DownloadActionView>();
-    for (DownloadContentAction action : artifact.getDownloadContentActions()) {
+    for (DownloadContentAction action : artifact.getArtifactType().getDownloadContentActions()) {
       try {
         String url = req.getServerPath() + req.getContextPath() + "/service/content?artifactId=" + URLEncoder.encode(artifactId, "UTF-8") + "&content-type="
-                + URLEncoder.encode(action.getDefiniton().getType(), "UTF-8");
-        downloads.add(new DownloadActionView(action.getLabel(), url, action.getDefiniton().getType(), action.getDefiniton().getName()));
+                + URLEncoder.encode(action.getContentRepresentation().getMimeType(), "UTF-8");
+        downloads.add(new DownloadActionView(action.getId(), url, action.getContentRepresentation().getMimeType(), action.getContentRepresentation().getId()));
       } catch (UnsupportedEncodingException e) {
         // should never be reached as long as we use UTF-8, which is valid in
         // java on all platforms
@@ -86,7 +88,7 @@ public class ArtifactGet extends ActivitiWebScript {
     }
     model.put("downloads", downloads);
 
-    model.put("links", artifact.getOpenUrlActions()); // label, name, url
+    model.put("links", artifact.getOutgoingLinks());
 
     model.put("artifactId", artifact.getId());
     model.put("contentViews", contentViews);

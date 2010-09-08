@@ -10,8 +10,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.activiti.cycle;
+package org.activiti.cycle.impl;
 
+import java.io.Serializable;
+import java.util.Map;
+import java.util.logging.Logger;
+
+import org.activiti.cycle.RepositoryNode;
+import org.activiti.cycle.RepositoryNodeMetadata;
 
 /**
  * Superclass for the composite of folders and files. Holds a reference to the
@@ -20,7 +26,11 @@ package org.activiti.cycle;
  * 
  * @author bernd.ruecker@camunda.com
  */
-public interface RepositoryNode {
+public class RepositoryNodeImpl implements RepositoryNode, Serializable {
+
+  private static final long serialVersionUID = 1L;
+
+  protected Logger log = Logger.getLogger(this.getClass().getName());
 
   /**
    * local part of the URL for node. This is the one and only used unique
@@ -32,18 +42,34 @@ public interface RepositoryNode {
    * this is the "local" part of the absolute path of the file WITHOUT the
    * configured root folder of the FileSystem connector. For other repos this
    * may be whatever it needs to be, the client shouldn't really care.
-   * 
-   * TODO: When thinking about Metadata-Persietnce, maybe introduce an UUID?
-   * TODO: Maybe use BASE 64 Encoding for GUI, where do we put that?
    */
-  public String getId();  
+  private String id;
+  
+  private final RepositoryNodeMetadata metadata = new RepositoryNodeMetadataImpl();
 
-//  public String get
+  public RepositoryNodeImpl(String id) {
+    this.id = id;
+  }
 
-  // /**
-  // * The url used in the client (e.g. GUI) for this artifact
-  // */
-  // public String getClientUrl();
+  @Override
+  public String toString() {
+    return this.getClass().getSimpleName() + " [id=" + id + ";metadata=" + metadata + "]";
+  }
 
-  public RepositoryNodeMetadata getMetadata();
+  public RepositoryNodeMetadata getMetadata() {
+    return metadata;
+  }
+
+  public Map<String, String> getMetadataAsMap() {
+    return metadata.getAsStringMap();
+  }
+
+  public String getId() {
+    return id;
+  }
+
+  public void setId(String id) {
+    this.id = id;
+  }
+
 }

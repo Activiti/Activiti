@@ -14,8 +14,6 @@ package org.activiti.cycle;
 
 import java.util.List;
 
-import org.activiti.cycle.impl.plugin.ActivitiCyclePluginRegistry;
-
 /**
  * The type specifies the type of an artifact, e.g. Signavio model, jpdl process
  * model, text file, word document, ...
@@ -27,44 +25,27 @@ import org.activiti.cycle.impl.plugin.ActivitiCyclePluginRegistry;
  * 
  * @author bernd.ruecker@camunda.com
  */
-public class ArtifactType {
+public interface ArtifactType {
+
+  public String getId();
 
   /**
-   * Human readable name of type
+   * list of {@link ContentRepresentation} in the configured order
    */
-  private String name;
+  public List<ContentRepresentation> getContentRepresentations();
 
-  /**
-   * the unique identifier for this file (e.g. file extension for files, namespace for Signavio, ...)
-   */
-  private String typeIdentifier;
+  // public ContentRepresentation getContentRepresentation(String id);
 
-  public ArtifactType() {
-  }
+  public ContentRepresentation getDefaultContentRepresentation();  
 
-  public ArtifactType(String name, String typeIdentifier) {
-    this.name = name;
-    this.typeIdentifier = typeIdentifier;
-  }
+  public ContentProvider getContentProvider(String contentRepresentationId);
 
-  public List<Class< ? extends ArtifactAction>> getRegisteredActions() {
-    return ActivitiCyclePluginRegistry.getArtifactAction(getTypeIdentifier());
-  }
+  public List<ParameterizedAction> getParameterizedActions();
+  
+  public ParameterizedAction getParameterizedAction(String name);
 
-  public List<Class< ? extends ContentRepresentationProvider>> getContentRepresentationProviders() {
-    return ActivitiCyclePluginRegistry.getContentRepresentationProviders(getTypeIdentifier());
-  }
+  public List<RepositoryArtifactOutgoingLink> createLinks(RepositoryConnector connector, RepositoryArtifact artifact);
 
-  public String getName() {
-    return name;
-  }
-
-  public void setName(String name) {
-    this.name = name;
-  }
-
-  public String getTypeIdentifier() {
-    return typeIdentifier;
-  }
-
+  public List<DownloadContentAction> getDownloadContentActions();
+  
 }

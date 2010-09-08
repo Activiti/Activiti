@@ -17,8 +17,10 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.activiti.cycle.RepositoryArtifact;
+import org.activiti.cycle.RepositoryConnector;
 import org.activiti.cycle.RepositoryFolder;
 import org.activiti.cycle.RepositoryNode;
+import org.activiti.cycle.RepositoryNodeCollection;
 
 /**
  * 
@@ -28,37 +30,37 @@ public class RepositoryLogHelper {
 
   private static Logger log = Logger.getLogger(RepositoryLogHelper.class.getName());
 
-  public static void logFolder(RepositoryFolder folder) {
-    printFolder("", folder);
+  public static void logFolder(RepositoryConnector connector, RepositoryNodeCollection folder) {
+    printFolder(connector, "", folder);
   }
 
-  public static void printFolder(RepositoryFolder folder) {
-    printFolder("", folder);
+  public static void printFolder(RepositoryConnector connector, RepositoryNodeCollection folder) {
+    printFolder(connector, "", folder);
   }
   
-  public static void printNodes(List<RepositoryNode> nodes) {
-    printNodes("", nodes);
+  public static void printNodes(RepositoryConnector connector, List<RepositoryNode> nodes) {
+    printNodes(connector, "", nodes);
   }
   
-  public static void logFolder(String intend, RepositoryFolder folder) {
+  public static void logFolder(RepositoryConnector connector, String intend, RepositoryNodeCollection folder) {
     log.log(Level.INFO, intend + folder);
-    for (RepositoryFolder subFolder : folder.getSubFolders()) {
-      printFolder(intend + "   ", subFolder);
+    for (RepositoryFolder subFolder : folder.getFolderList()) {
+      printFolder(connector, intend + "   ", connector.getChildren(subFolder.getId()));
     }
-    for (RepositoryArtifact file : folder.getArtifacts()) {
+    for (RepositoryArtifact file : folder.getArtifactList()) {
       log.log(Level.INFO, intend + "-" + file);
     }
   }  
 
-  public static void printFolder(String intend, RepositoryFolder folder) {
+  public static void printFolder(RepositoryConnector connector, String intend, RepositoryNodeCollection folder) {
     System.out.println(intend + "+" + folder);
-    printNodes(folder.getChildren());
+    printNodes(connector, folder.asList());
   }
   
-  public static void printNodes(String intend, List<RepositoryNode> nodes) {    
+  public static void printNodes(RepositoryConnector connector, String intend, List<RepositoryNode> nodes) {    
     for (RepositoryNode node : nodes) {
       if (node instanceof RepositoryFolder) {
-        printFolder(intend + "   ", (RepositoryFolder) node);
+        printFolder(connector, intend + "   ", connector.getChildren(node.getId()));
       } else {
         printArtifact(intend, (RepositoryArtifact) node);
       }

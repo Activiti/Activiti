@@ -13,28 +13,18 @@
 package org.activiti.cycle.impl.connector.signavio.provider;
 
 import org.activiti.cycle.Content;
-import org.activiti.cycle.ContentType;
 import org.activiti.cycle.RepositoryArtifact;
 import org.activiti.cycle.RepositoryException;
+import org.activiti.cycle.impl.connector.signavio.SignavioConnector;
 import org.json.JSONObject;
 import org.restlet.data.Response;
 
 public class JsonProvider extends SignavioContentRepresentationProvider {
-
-  /**
-   * TODO: Think about the names and if we want to store them here or manage
-   * them centrally?
-   */
-  public static final String NAME = "json";
-
-  public JsonProvider() {
-    super(NAME, ContentType.TEXT, false);
-  }
-
+  
   @Override
-  public void addValueToContent(Content content, RepositoryArtifact artifact) {
+  public void addValueToContent(Content content, SignavioConnector connector, RepositoryArtifact artifact) {
     try {
-      Response jsonResponse = getJsonResponse(artifact, "/json");
+      Response jsonResponse = getJsonResponse(connector, artifact, "/json");
       
       String jsonString = jsonResponse.getEntity().getText();
       JSONObject jsonObj = new JSONObject(jsonString);

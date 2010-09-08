@@ -1,12 +1,18 @@
 package org.activiti.cycle.impl.conf;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 
+import org.activiti.cycle.ArtifactType;
 import org.activiti.cycle.RepositoryConnector;
+import org.activiti.cycle.RepositoryException;
+import org.activiti.cycle.impl.plugin.ActivitiCyclePluginDefinition;
 
 /**
  * 
- * @author christian.lipphardt
  */
 public abstract class RepositoryConnectorConfiguration {
 
@@ -32,11 +38,58 @@ public abstract class RepositoryConnectorConfiguration {
    * Can be - Global - Department X - User Y
    */
   private String configurationScope;
+  
+  private static Map<Class< ? extends RepositoryConnectorConfiguration>, List<ArtifactType>> registeredArtifactTypesPerConnector = new HashMap<Class< ? extends RepositoryConnectorConfiguration>, List<ArtifactType>>();  
 
   /**
    * TODO: Decide if we want to keep that here
    */
   public abstract RepositoryConnector createConnector();
+    
+  public static void addPluginDefinition(ActivitiCyclePluginDefinition definition) {
+    List<ArtifactType> registeredArtifactTypes = new ArrayList<ArtifactType>();
+    definition.addArtifactTypes(registeredArtifactTypes);
+    registeredArtifactTypesPerConnector.put(definition.getRepositoryConnectorConfigurationType(), registeredArtifactTypes);
+  }
+  
+  public List<ArtifactType> getArtifactTypes() {
+    return getArtifactType(this.getClass());
+  }
+  
+  private List<ArtifactType> getArtifactType(Class confClass) {
+    List<ArtifactType> list = registeredArtifactTypesPerConnector.get(confClass);
+    if (list == null && RepositoryConnectorConfiguration.class.isAssignableFrom(confClass.getSuperclass())) {
+      return getArtifactType(confClass.getSuperclass());
+    } else if (list == null) {
+      return new ArrayList<ArtifactType>();
+    } else {
+      return list;
+    }
+  }
+
+  public ArtifactType getArtifactType(String id) {
+    for (ArtifactType type : getArtifactTypes()) {
+      if (type.getId().equals(id)) {
+        return type;
+      }
+    }
+    // check if we have a default
+    if (getDefaultArtifactType() != null) {
+      return getDefaultArtifactType();
+    }
+    // otherwise throw exception
+    throw new RepositoryException("ArtifactType with id '" + id + "' doesn't exist. Possible types: " + getArtifactTypes());
+  }
+
+  /**
+   * TODO: THink about that a bit more when refactoring the ARtifactTypes /
+   * MimeTypes
+   * 
+   * Overwrite to set defaulot ArtifactType
+   */
+  public ArtifactType getDefaultArtifactType() {
+    return null;
+  }
 
   public Properties getProperties() {
     Properties properties = new Properties();

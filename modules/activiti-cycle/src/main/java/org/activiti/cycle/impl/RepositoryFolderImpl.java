@@ -10,14 +10,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.activiti.cycle;
+package org.activiti.cycle.impl;
 
+import org.activiti.cycle.RepositoryFolder;
 
 /**
  * A folder in the repository
  * 
  * @author bernd.ruecker@camunda.com
  */
-public interface RepositoryFolder extends RepositoryNode {
+public class RepositoryFolderImpl extends RepositoryNodeImpl implements RepositoryFolder {
+
+  private static final long serialVersionUID = 1L;
+
+  public RepositoryFolderImpl(String id) {
+    super(id);
+  }
 
 }

@@ -10,9 +10,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.activiti.cycle;
+package org.activiti.cycle.impl;
 
+import java.io.Serializable;
 import java.util.logging.Logger;
+
+import org.activiti.cycle.ArtifactType;
 
 /**
  * The file action defines an action you can execute upon a file / artifact
@@ -25,33 +28,23 @@ import java.util.logging.Logger;
  * 
  * @author bernd.ruecker@camunda.com
  */
-public abstract class ArtifactAction {
+public abstract class AbstractArtifactActionImpl implements Serializable {
 
-  protected static Logger log = Logger.getLogger(ArtifactAction.class.getName());
+  private static final long serialVersionUID = 1L;
 
-  private RepositoryArtifact artifact;
+  protected Logger log = Logger.getLogger(this.getClass().getName());
 
-  private final String name = this.getClass().getName();
+  private String id = this.getClass().getName();
 
-  public ArtifactAction() {
+  public AbstractArtifactActionImpl() {
   }
 
-  public ArtifactAction(RepositoryArtifact artifact) {    
-    setArtifact(artifact);
+  public AbstractArtifactActionImpl(String id) {
+    this.id = id;
   }
 
-  public abstract String getLabel();
-
-   public RepositoryArtifact getArtifact() {
-    return artifact;
-  }
-  
-  public void setArtifact(RepositoryArtifact artifact) {
-    this.artifact = artifact;
-  }
-  
-  public String getName() {
-    return name;
+  public String getId() {
+    return id;
   }
 
 }

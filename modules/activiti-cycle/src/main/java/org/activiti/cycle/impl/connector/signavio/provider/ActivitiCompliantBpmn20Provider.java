@@ -13,9 +13,9 @@
 package org.activiti.cycle.impl.connector.signavio.provider;
 
 import org.activiti.cycle.Content;
-import org.activiti.cycle.ContentType;
 import org.activiti.cycle.RepositoryArtifact;
 import org.activiti.cycle.RepositoryException;
+import org.activiti.cycle.impl.connector.signavio.SignavioConnector;
 import org.activiti.cycle.impl.transform.signavio.AdjustShapeNamesTransformation;
 import org.activiti.cycle.impl.transform.signavio.BpmnPoolExtraction;
 import org.activiti.cycle.impl.transform.signavio.ExchangeSignavioUuidWithNameTransformation;
@@ -27,23 +27,19 @@ public class ActivitiCompliantBpmn20Provider extends SignavioContentRepresentati
 
   public static final String NAME = "Developer Friendly BPMN 2.0";
 
-  public ActivitiCompliantBpmn20Provider() {
-    super(NAME, ContentType.XML, true);
-  }
-
-  public void addValueToContent(Content content, RepositoryArtifact artifact) {
+  public void addValueToContent(Content content, SignavioConnector connector, RepositoryArtifact artifact) {
     try {
       // use the bpmn2_0_serialization export servlet to provide bpmn20 xml
       // by doing this, we can support different signavio versions instead of
       // the commercial Signavio only
-      Response jsonResponse = getJsonResponse(artifact, "/json");
+      Response jsonResponse = getJsonResponse(connector, artifact, "/json");
       JSONObject jsonData = new JSONObject(jsonResponse.getEntity().getText());
 
       jsonData = new BpmnPoolExtraction("Process Engine").transform(jsonData);
       jsonData = new AdjustShapeNamesTransformation().transform(jsonData);
       jsonData = new ExchangeSignavioUuidWithNameTransformation().transform(jsonData);
 
-      String bpmnXml = getConnector(artifact).transformJsonToBpmn20Xml(jsonData.toString());
+      String bpmnXml = connector.transformJsonToBpmn20Xml(jsonData.toString());
       
       bpmnXml = new RemedyTemporarySignavioIncompatibilityTransformation().transformBpmn20Xml(bpmnXml);
 

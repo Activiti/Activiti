@@ -2,9 +2,8 @@ package org.activiti.cycle.impl.plugin;
 
 import java.util.List;
 
-import org.activiti.cycle.ArtifactAction;
 import org.activiti.cycle.ArtifactType;
-import org.activiti.cycle.ContentRepresentationProvider;
+import org.activiti.cycle.impl.conf.RepositoryConnectorConfiguration;
 
 /**
  * Interface for any plugin provider. Each plugin needs a definition class
@@ -14,9 +13,11 @@ import org.activiti.cycle.ContentRepresentationProvider;
  */
 public interface ActivitiCyclePluginDefinition {
   
-  public void addDefinedArtifactTypeToList(List<ArtifactType> list);
-
-  public void addContentRepresentationProviderToMap(List<DefinitionEntry<Class< ? extends ContentRepresentationProvider>>> contentProviderMap);
-
-  public void addArtifactActionToMap(List<DefinitionEntry<Class< ? extends ArtifactAction>>> actionMap);
+  public void addArtifactTypes(List<ArtifactType> types);
+  
+  /**
+   * TODO: Move to annotation?
+   */
+  public Class< ? extends RepositoryConnectorConfiguration> getRepositoryConnectorConfigurationType();
+  
 }

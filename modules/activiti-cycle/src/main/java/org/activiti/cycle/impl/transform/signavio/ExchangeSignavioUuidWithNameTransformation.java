@@ -49,6 +49,8 @@ public class ExchangeSignavioUuidWithNameTransformation extends OryxTransformati
             counter++;
           }
           newName = newName + "_" + counter;
+        } else {
+          System.out.println(shape);
         }
   
         existingNames.add(newName);

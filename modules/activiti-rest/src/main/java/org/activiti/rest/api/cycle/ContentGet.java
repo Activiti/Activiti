@@ -20,7 +20,7 @@ import java.util.Date;
 
 import javax.servlet.http.HttpSession;
 
-import org.activiti.cycle.ContentRepresentationDefinition;
+import org.activiti.cycle.ContentRepresentation;
 import org.activiti.cycle.ContentType;
 import org.activiti.cycle.RepositoryArtifact;
 import org.activiti.cycle.RepositoryConnector;
@@ -57,9 +57,9 @@ public class ContentGet extends AbstractWebScript {
     // Retrieve the artifact from the repository
     RepositoryArtifact artifact = conn.getRepositoryArtifact(artifactId);
 
-    Collection<ContentRepresentationDefinition> representations = artifact.getContentRepresentationDefinitions();
-    for (ContentRepresentationDefinition representation : representations) {
-      if (representation.getType().equals(contentType)) {
+    Collection<ContentRepresentation> representations = artifact.getArtifactType().getContentRepresentations();
+    for (ContentRepresentation representation : representations) {
+      if (representation.getMimeType().equals(contentType)) {
 
         // assuming we want to create an attachment for binary data...
         boolean attach = contentType.startsWith("application/") ? true : false;
@@ -88,7 +88,7 @@ public class ContentGet extends AbstractWebScript {
         }
         
         // TODO: what is a good way to determine the etag? Using a fake one...
-        streamContentImpl(req, res, conn.getContent(artifact.getId(), representation.getName()).asInputStream(), attach, new Date(0),
+        streamContentImpl(req, res, conn.getContent(artifact.getId(), representation.getId()).asInputStream(), attach, new Date(0),
                 "W/\"647-1281077702000\"", attachmentFileName, contentType);
       }
     }

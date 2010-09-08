@@ -4,28 +4,21 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.logging.Level;
 
 import org.activiti.cycle.Content;
 import org.activiti.cycle.RepositoryArtifact;
+import org.activiti.cycle.RepositoryConnector;
 import org.activiti.cycle.RepositoryException;
+import org.activiti.cycle.impl.ContentProviderImpl;
+import org.activiti.cycle.impl.connector.fs.FileSystemConnector;
 import org.activiti.cycle.impl.util.IoUtils;
 
-/**
- * TODO: This is a bit unhandy, think about refactoring that stuff to not need
- * different classes for it
- * 
- * @author ruecker
- */
-public class FileSystemBinaryProvider extends FileSystemContentRepresentationProvider {
-
-  public FileSystemBinaryProvider(String name, String mimeType) {
-    super(name, mimeType, true);
-  }
-
+public class FileBinaryContentProvider extends ContentProviderImpl {
   @Override
-  public void addValueToContent(Content content, RepositoryArtifact artifact) {
-
-    File file = new File(getConnector(artifact).getConfiguration().getBasePath() + artifact.getId());
+  public void addValueToContent(Content content, RepositoryConnector connector, RepositoryArtifact artifact) {
+    String fileName = ((FileSystemConnector) connector).getConfiguration().getBasePath() + artifact.getId();
+    File file = new File(fileName);
     FileInputStream fis = null;
 
     try {
@@ -40,11 +33,11 @@ public class FileSystemBinaryProvider extends FileSystemContentRepresentationPro
       if (fis != null) {
         try {
           fis.close();
-        } catch (IOException e) {
-          // ignore
+        } catch (IOException ex) {
+          // log but ignore exception on closing
+          log.log(Level.WARNING, "Couldn't close file '" + fileName + "'. Ignoring.", ex);
         }
       }
     }
   }
-
 }

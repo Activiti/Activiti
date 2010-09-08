@@ -13,6 +13,7 @@
 package org.activiti.cycle;
 
 import java.util.List;
+import java.util.Map;
 
 import org.activiti.cycle.impl.conf.RepositoryConnectorConfiguration;
 
@@ -21,7 +22,6 @@ import org.activiti.cycle.impl.conf.RepositoryConnectorConfiguration;
  * @author bernd.ruecker@camunda.com
  */
 public interface RepositoryConnector {
-
   
   public RepositoryConnectorConfiguration getConfiguration();
 
@@ -32,10 +32,19 @@ public interface RepositoryConnector {
   public boolean login(String username, String password);
 
   /**
-   * get all child nodes of a node with the given url, independent if the
-   * children are folders or artifacts. No details are prefetched as default.
+   * Some connectors support commit (like SVN), so all pending changes must be
+   * committed correctly. If the connector doesn't support committing, this
+   * method just does nothing. This means, there is no rollback and you
+   * shouldn't rely on a transaction behavior.
    */
-  public List<RepositoryNode> getChildNodes(String parentId) throws RepositoryNodeNotFoundException;
+  public void commitPendingChanges(String comment);
+
+  // /**
+  // * get all child nodes of a node with the given url, independent if the
+  // * children are folders or artifacts.
+  // */
+  // public List<RepositoryNode> getChildNodes(String parentId) throws
+  // RepositoryNodeNotFoundException;
   
   /**
    * load the {@link RepositoryArtifact} including details
@@ -43,6 +52,11 @@ public interface RepositoryConnector {
   public RepositoryArtifact getRepositoryArtifact(String id) throws RepositoryNodeNotFoundException;
 
   public RepositoryFolder getRepositoryFolder(String id) throws RepositoryNodeNotFoundException;
+
+  /**
+   * gets all elements
+   */
+  public RepositoryNodeCollection getChildren(String id) throws RepositoryNodeNotFoundException;
 
   // TODO: Think about getRepositoryNode method which returns the node
   // independent of the type, but currentlyx this is a problem with the Signavio
@@ -55,14 +69,39 @@ public interface RepositoryConnector {
   // public RepositoryNode getRepositoryNode(String id) throws
   // RepositoryNodeNotFoundException;
 
-  public Content getContent(String nodeId, String representationName) throws RepositoryNodeNotFoundException;
+  /**
+   * return the list of supported {@link ArtifactType}s of this
+   * {@link RepositoryConnector} for the given folder. Most conenctors doesn't
+   * make any difference between the folders, but some may do.
+   */
+  public List<ArtifactType> getSupportedArtifactTypes(String folderId);
 
   /**
-   * create a new file in the given folder
+   * create a new file in the given folder with the default
+   * {@link ContentRepresentation}
+   * 
+   * @param artifactId
    */
-  public void createNewArtifact(String containingFolderId, RepositoryArtifact artifact, Content artifactContent) throws RepositoryNodeNotFoundException;
+  public RepositoryArtifact createArtifact(String containingFolderId, String artifactName, String artifactType, Content artifactContent)
+          throws RepositoryNodeNotFoundException;
 
-  public void modifyArtifact(RepositoryArtifact artifact, ContentRepresentationDefinition artifactContent) throws RepositoryNodeNotFoundException;
+  public RepositoryArtifact createArtifactFromContentRepresentation(String containingFolderId, String artifactName, String artifactType,
+          String contentRepresentationName,
+          Content artifactContent) throws RepositoryNodeNotFoundException;
+  
+  /**
+   * create a new subfolder in the given folder
+   */
+  public RepositoryFolder createFolder(String parentFolderId, String name) throws RepositoryNodeNotFoundException;
+  
+  public Content getContent(String artifactId, String representationName) throws RepositoryNodeNotFoundException;
+
+  /**
+   * update artifact content with default {@link ContentRepresentation}
+   */
+  public void updateContent(String artifactId, Content content) throws RepositoryNodeNotFoundException;
+  
+  public void updateContent(String artifactId, String contentRepresentationName, Content content) throws RepositoryNodeNotFoundException;
 
   /**
    * deletes the given file from the folder
@@ -70,22 +109,14 @@ public interface RepositoryConnector {
   public void deleteArtifact(String artifactId) throws RepositoryNodeNotFoundException;
 
   /**
-   * create a new subfolder in the given folder
-   */
-  public void createNewSubFolder(String parentFolderId, RepositoryFolder subFolder) throws RepositoryNodeNotFoundException;
-
-  /**
    * deletes the given subfolder of the parent folder.
    * 
    * TODO: Think about if we need the parent folder as argument of this API
    */
-  public void deleteSubFolder(String subFolderId) throws RepositoryNodeNotFoundException;
+  public void deleteFolder(String folderId) throws RepositoryNodeNotFoundException;
 
   /**
-   * Some connectors support commit (like SVN), so all pending changes must be
-   * committed correctly. If the connector doesn't support committing, this
-   * method just does nothing. This means, there is no rollback and you
-   * shouldn't rely on a transaction behavior.
+   * TODO double check the signature
    */
-  public void commitPendingChanges(String comment);
+  public void executeParameterizedAction(String artifactId, String actionId, Map<String, Object> parameters) throws Exception;
 }

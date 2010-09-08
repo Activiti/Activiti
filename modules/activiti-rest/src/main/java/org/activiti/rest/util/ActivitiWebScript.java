@@ -18,7 +18,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import org.activiti.cycle.RepositoryConnector;
 import org.activiti.engine.IdentityService;
 import org.activiti.engine.ManagementService;
 import org.activiti.engine.ProcessEngine;
@@ -331,21 +330,6 @@ public class ActivitiWebScript extends DeclarativeWebScript {
   }
 
   /**
-   * Gets a parameter as Map
-   * 
-   * @param body
-   *          The activiti webscript request body
-   * @param connector
-   *          The repository connector to retrieve nodes from a repository
-   * @return The value of the string body parameter
-   * @throws WebScriptException
-   *           if string body parameter isn't present
-   */
-  protected Map<String, Object> getFormVariables(ActivitiWebScriptBody body, RepositoryConnector connector) {
-    return body.getFormVariables(connector);
-  }
-
-  /**
    * Throws and exception if the parameter value is null or empty and mandatory
    * is true
    * 
@@ -504,7 +488,7 @@ public class ActivitiWebScript extends DeclarativeWebScript {
      * 
      * @return The body as a map
      */
-    Map<String, Object> getFormVariables(RepositoryConnector conn) {
+    Map<String, Object> getFormVariables() {
       Map<String, Object> map = new HashMap<String, Object>();
       Iterator keys = jsonBody.keys();
       String key, typeKey, type;
@@ -528,12 +512,16 @@ public class ActivitiWebScript extends DeclarativeWebScript {
             } else if (type.equals("String")) {
               value = jsonBody.getString(key);
             } else if (type.equals("RepositoryFolder")) {
-              if (conn != null) {
-                value = conn.getRepositoryFolder(jsonBody.getString(key));
-              } else {
-                throw new WebScriptException(Status.STATUS_BAD_REQUEST, "Parameter '" + keyPair[0] + "' of type '" + type
-                        + "' requested without providing a repository connector");
-              }
+              // TODO: Check implementation in CustomizedViewConnector, but
+              // should be moved there
+              value = jsonBody.getString(key);
+              // if (conn != null) {
+              // value = conn.getRepositoryFolder(jsonBody.getString(key));
+              // } else {
+              // throw new WebScriptException(Status.STATUS_BAD_REQUEST,
+              // "Parameter '" + keyPair[0] + "' of type '" + type
+              // + "' requested without providing a repository connector");
+              // }
             } else {
               throw new WebScriptException(Status.STATUS_BAD_REQUEST, "Parameter '" + keyPair[0] + "' is of unknown type '" + type + "'");
             }
@@ -550,15 +538,6 @@ public class ActivitiWebScript extends DeclarativeWebScript {
         }
       }
       return map;
-    }
-
-    /**
-     * Gets the body as a map.
-     * 
-     * @return The body as a map
-     */
-    Map<String, Object> getFormVariables() {
-      return getFormVariables(null);
     }
 
   }

@@ -13,7 +13,7 @@
   "actions": [
   <#list actions as action>
     {
-      "name": "${action.name}",
+      "name": "${action.id}",
       "label": "${action.label}"
     }
     <#if action_has_next>,</#if>
@@ -22,10 +22,10 @@
   "downloads": [
   <#list downloads as download>
     {
-      "label": "${download.label}",
+      "label": "${download.id}",
       "url": "${download.url}",
-      "type": "${download.type}",
-      "name": "${download.name}"
+      "type": "${download.contentRepresentation.mimeType}",
+      "name": "${download.id}"
     }
     <#if download_has_next>,</#if>
   </#list>
@@ -33,8 +33,8 @@
   "links": [
   <#list links as link>
     {
-      "name": "${link.name}",
-      "label": "${link.label}",
+      "name": "${link.id}",
+      "label": "${link.id}",
       "url": "${link.url}"
     }
     <#if link_has_next>,</#if>

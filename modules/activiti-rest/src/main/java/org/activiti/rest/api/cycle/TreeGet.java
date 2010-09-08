@@ -13,7 +13,6 @@
 package org.activiti.rest.api.cycle;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -24,11 +23,10 @@ import org.activiti.cycle.RepositoryArtifact;
 import org.activiti.cycle.RepositoryConnector;
 import org.activiti.cycle.RepositoryException;
 import org.activiti.cycle.RepositoryFolder;
-import org.activiti.cycle.RepositoryNode;
+import org.activiti.cycle.RepositoryNodeCollection;
 import org.activiti.rest.util.ActivitiWebScript;
 import org.springframework.extensions.webscripts.Cache;
 import org.springframework.extensions.webscripts.Status;
-import org.springframework.extensions.webscripts.WebScriptException;
 import org.springframework.extensions.webscripts.WebScriptRequest;
 import org.springframework.extensions.webscripts.servlet.WebScriptServletRequest;
 
@@ -48,32 +46,26 @@ public class TreeGet extends ActivitiWebScript {
     RepositoryConnector conn = SessionUtil.getRepositoryConnector(cuid, session);
 
     String id = getString(req, "id");
-    boolean folder = Boolean.parseBoolean(getString(req, "folder"));
-    List<RepositoryNode> subtree = new ArrayList<RepositoryNode>();
+    boolean folder = Boolean.parseBoolean(getString(req, "folder"));    
     if (folder) {
       try {
-        subtree = conn.getChildNodes(id);
+        RepositoryNodeCollection children = conn.getChildren(id);
+
+        model.put("files", children.getArtifactList());
+        model.put("folders", children.getFolderList());
+
       } catch (RepositoryException e) {
-        log.log(Level.SEVERE, e.getMessage(), e);
+        log.log(Level.SEVERE, "Cannot load children for id '" + id + "'", e);
         // TODO: how can we let the user know what went wrong without breaking the tree?
         // throwing a HTTP 500 here will cause the tree to load the node for ever. 
         // throw new WebScriptException(Status.STATUS_INTERNAL_SERVER_ERROR,
         // "exception.message");
+
       }
     }
 
-    List<RepositoryArtifact> files = new ArrayList<RepositoryArtifact>();
-    List<RepositoryFolder> folders = new ArrayList<RepositoryFolder>();
-
-    for (RepositoryNode node : subtree) {
-      if (node.getClass().isAssignableFrom(RepositoryArtifact.class)) {
-        files.add((RepositoryArtifact) node);
-      } else if (node.getClass().isAssignableFrom(RepositoryFolder.class)) {
-        folders.add((RepositoryFolder) node);
-      }
-    }
-
-    model.put("files", files);
-    model.put("folders", folders);
+    // provide empty list as default
+    model.put("files", new ArrayList<RepositoryArtifact>());
+    model.put("folders", new ArrayList<RepositoryFolder>());
   }
 }

@@ -145,7 +145,7 @@ public class SignavioConnectorTest {
   public void testOryx() {
     SignavioConnectorConfiguration conf = new OryxConnectorConfiguration("http://oryx-project.org/");
     SignavioConnector connector = new SignavioConnector(conf);
-    List<RepositoryNode> childNodes = connector.getChildNodes("/");
+    List<RepositoryNode> childNodes = connector.getChildren("/").asList();
     assertTrue(childNodes.size() > 0);
   }
   
@@ -156,7 +156,7 @@ public class SignavioConnectorTest {
     conf.setLoginRequired(true);
     SignavioConnector connector = new SignavioConnector(conf);
     connector.login("falko.menge@camunda.com", "not.my.password");
-    List<RepositoryNode> childNodes = connector.getChildNodes("/");
+    List<RepositoryNode> childNodes = connector.getChildren("/").asList();
     assertTrue(childNodes.size() > 0);
   }
 

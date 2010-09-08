@@ -4,7 +4,7 @@ import java.util.Map;
 
 import javax.servlet.http.HttpSession;
 
-import org.activiti.cycle.ParametrizedAction;
+import org.activiti.cycle.ParameterizedAction;
 import org.activiti.cycle.RepositoryArtifact;
 import org.activiti.cycle.RepositoryConnector;
 import org.activiti.rest.util.ActivitiWebScript;
@@ -28,7 +28,7 @@ public class ArtifactActionFormGet extends ActivitiWebScript {
   protected void executeWebScript(WebScriptRequest req, Status status, Cache cache, Map<String, Object> model) {
     // Retrieve the artifactId from the request
     String artifactId = getMandatoryString(req, "artifactId");
-    String actionName = getMandatoryString(req, "actionName");
+    String actionId = getMandatoryString(req, "actionName");
     
     // Retrieve session and repo connector
     String cuid = getCurrentUserId(req);
@@ -45,8 +45,8 @@ public class ArtifactActionFormGet extends ActivitiWebScript {
     
     // Retrieve the action and its form
     String form = null;
-    for (ParametrizedAction action : artifact.getParametrizedActions()) {
-      if (action.getName().equals(actionName)) {
+    for (ParameterizedAction action : artifact.getArtifactType().getParameterizedActions()) {
+      if (action.getId().equals(actionId)) {
         form = action.getFormAsHtml();
         break;
       }
@@ -56,7 +56,7 @@ public class ArtifactActionFormGet extends ActivitiWebScript {
     if (form != null) {
       model.put("form", form);
     } else {
-      throw new WebScriptException(Status.STATUS_NOT_FOUND, "There is no form for action '" + actionName + "'.");
+      throw new WebScriptException(Status.STATUS_NOT_FOUND, "There is no form for action '" + actionId + "'.");
     }
   }
 }

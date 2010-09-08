@@ -9,6 +9,7 @@ import java.util.logging.Logger;
 
 import javax.servlet.ServletContext;
 
+import org.activiti.cycle.impl.conf.RepositoryConnectorConfiguration;
 import org.activiti.cycle.impl.connector.demo.DemoConnectorPluginDefinition;
 import org.activiti.cycle.impl.connector.fs.FileSystemPluginDefinition;
 import org.activiti.cycle.impl.connector.signavio.SignavioPluginDefinition;
@@ -32,6 +33,23 @@ public class PluginFinder {
    */
   private static ServletContext servletContext = null;
 
+  private static Boolean initialized = Boolean.FALSE;
+
+  /**
+   * current place to load plugins, should be moved to a correct bootstrapping
+   * later
+   */
+  public static void checkPluginInitialization() {
+    if (!initialized) {
+      synchronized (initialized) {
+        if (!initialized) {
+          new PluginFinder().publishAllPluginsToRegistry();
+          initialized = Boolean.TRUE;
+        }
+      }
+    }
+  }
+  
   /**
    * main method to find all existing plugins in the classpath and register them
    * in the {@link ActivitiCyclePluginRegistry}
@@ -118,7 +136,7 @@ public class PluginFinder {
     for (Class< ? extends ActivitiCyclePluginDefinition> pluginDefinitionClass : definitions) {
       try {
         ActivitiCyclePluginDefinition pluginDefinition = pluginDefinitionClass.newInstance();
-        ActivitiCyclePluginRegistry.addPluginDefinition(pluginDefinition);
+        RepositoryConnectorConfiguration.addPluginDefinition(pluginDefinition);
       } catch (Exception e) {
         logger.log(Level.SEVERE, "Error while reading plugin configuration from class " + pluginDefinitionClass, e);
       }

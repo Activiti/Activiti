@@ -1,6 +1,9 @@
-package org.activiti.cycle;
+package org.activiti.cycle.impl;
 
 import java.util.Map;
+
+import org.activiti.cycle.ParameterizedAction;
+import org.activiti.cycle.RepositoryException;
 
 /**
  * Base class for actions requiring paremeters which must be displayed in an own
@@ -15,13 +18,15 @@ import java.util.Map;
  * 
  * @author ruecker
  */
-public abstract class ParametrizedAction extends ArtifactAction {
+public abstract class ParameterizedActionImpl extends AbstractArtifactActionImpl implements ParameterizedAction {
 
-  public ParametrizedAction() {
+  private static final long serialVersionUID = 1L;
+
+  public ParameterizedActionImpl() {
   }
   
-  public ParametrizedAction(RepositoryArtifact artifact) {
-    super(artifact);
+  public ParameterizedActionImpl(String actionId) {
+    super(actionId);
   }
 
   /**
@@ -33,20 +38,18 @@ public abstract class ParametrizedAction extends ArtifactAction {
    */
   public abstract String getFormAsHtml();
 
-  public abstract void execute(Map<String, Object> parameter) throws Exception;
-  
   public Object getParameter(Map<String, Object> parameters, String name, boolean required, Object defaultValue, Class expectedClass) {
     Object value = parameters.get(name);
     if (value == null || (value instanceof String && ((String) value).length() == 0)) {
       if (required) {
-        throw new RepositoryException("Required parameter '" + name + "' not set while executing action '" + getName() + "'");
+        throw new RepositoryException("Required parameter '" + name + "' not set while executing action '" + getId() + "'");
       } else {
         return defaultValue;
       }
     }
     if (expectedClass != null && !expectedClass.isAssignableFrom(value.getClass())) {
       throw new RepositoryException("Parameter '" + name + "' with value '" + value + "' has wrong type " + value.getClass() + " instead of " + expectedClass
-              + " not set while executing action '" + getName() + "'");
+              + " not set while executing action '" + getId() + "'");
     }
     return value;
   }

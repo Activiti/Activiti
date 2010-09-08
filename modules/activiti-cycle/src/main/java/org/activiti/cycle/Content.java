@@ -36,6 +36,7 @@ public class Content {
         }
         byteStream.write(buf, 0, len);
       }
+      inputStream.close();
       byteStream.close();
       return byteStream.toByteArray();
 
@@ -92,6 +93,9 @@ public class Content {
     this.contentAsByteArray = content;
   }
 
+  /**
+   * TODO: When can we close that stream? How do we now we are done?
+   */
   public void setValue(InputStream stream) {
     this.contentAsInputStream = stream;
   }

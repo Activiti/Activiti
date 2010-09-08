@@ -7,22 +7,19 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.transform.dom.DOMSource;
 
 import org.activiti.cycle.Content;
-import org.activiti.cycle.ContentType;
 import org.activiti.cycle.RepositoryArtifact;
+import org.activiti.cycle.RepositoryConnector;
 import org.activiti.cycle.RepositoryException;
+import org.activiti.cycle.impl.ContentProviderImpl;
+import org.activiti.cycle.impl.connector.fs.FileSystemConnector;
 import org.w3c.dom.Document;
 
-public class FileSystemXmlProvider extends FileSystemContentRepresentationProvider {
-
-  public static final String NAME = "Xml";
-
-  public FileSystemXmlProvider() {
-    super(NAME, ContentType.XML, true);
-  }
+public class XmlFileContentProvider extends ContentProviderImpl {
 
   @Override
-  public void addValueToContent(Content content, RepositoryArtifact artifact) {
-    File file = new File(getConnector(artifact).getConfiguration().getBasePath() + artifact.getId());
+  public void addValueToContent(Content content, RepositoryConnector connector, RepositoryArtifact artifact) {
+    String fileName = ((FileSystemConnector) connector).getConfiguration().getBasePath() + artifact.getId();
+    File file = new File(fileName);
 
     try {
       DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();

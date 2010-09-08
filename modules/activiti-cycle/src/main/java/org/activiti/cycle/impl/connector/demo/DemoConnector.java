@@ -7,18 +7,20 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.activiti.cycle.Content;
-import org.activiti.cycle.ContentRepresentationDefinition;
+import org.activiti.cycle.ContentRepresentation;
 import org.activiti.cycle.RepositoryArtifact;
+import org.activiti.cycle.RepositoryException;
 import org.activiti.cycle.RepositoryFolder;
 import org.activiti.cycle.RepositoryNode;
+import org.activiti.cycle.RepositoryNodeCollection;
 import org.activiti.cycle.RepositoryNodeNotFoundException;
-import org.activiti.cycle.UnsupportedRepositoryOpperation;
+import org.activiti.cycle.impl.RepositoryArtifactImpl;
+import org.activiti.cycle.impl.RepositoryFolderImpl;
+import org.activiti.cycle.impl.RepositoryNodeCollectionImpl;
 import org.activiti.cycle.impl.connector.AbstractRepositoryConnector;
-import org.activiti.cycle.impl.plugin.ActivitiCyclePluginRegistry;
 
 public class DemoConnector extends AbstractRepositoryConnector<DemoConnectorConfiguration> {
 
@@ -41,42 +43,36 @@ public class DemoConnector extends AbstractRepositoryConnector<DemoConnectorConf
 
   private static Logger log = Logger.getLogger(DemoConnector.class.getName());
 
-  public static final String ARTIFACT_TYPE_TEXT = "ARTIFACT_TYPE_TEXT";
-  public static final String ARTIFACT_TYPE_MINDMAP = "ARTIFACT_TYPE_MINDMAP";
-  public static final String ARTIFACT_TYPE_BPMN_20 = "ARTIFACT_TYPE_BPMN_20";
-
   public void createDemoData() {
     // Folder minutes
-    RepositoryFolder folder1 = createFolder("/minutes", "Meeting Minutes", "/");
+    RepositoryFolder folder1 = createFolder("/", "minutes");
 
-    RepositoryArtifact file1 = createArtifact("/minutes/20100701-KickOffMeeting.txt", ARTIFACT_TYPE_TEXT, "20100701-KickOffMeeting", "/minutes");
-    addContentRepresentation(file1, "Text", "/org/activiti/cycle/impl/connector/demo/demo-minutes.txt"); // was
-    // http://www.apache.org/foundation/records/minutes/2008/board_minutes_2008_10_15.txt
+    RepositoryArtifact file1 = createArtifact("/minutes", "20100701-KickOffMeeting.txt", DemoConnectorPluginDefinition.ARTIFACT_TYPE_TEXT,
+            createContent("/org/activiti/cycle/impl/connector/demo/demo-minutes.txt"));
 
-    RepositoryArtifact file2 = createArtifact("/minutes/InitialMindmap.mm", ARTIFACT_TYPE_MINDMAP, "InitialMindmap", "/minutes");
-    addContentRepresentation(file2, "Image", "/org/activiti/cycle/impl/connector/demo/mindmap.jpg"); // http://www.buzan.com.au/images/EnergyMindMap_big.jpg
-    addContentRepresentation(file2, "Text", "/org/activiti/cycle/impl/connector/demo/mindmap.html"); // http://en.wikipedia.org/wiki/Energy
+    RepositoryArtifact file2 = createArtifact("/minutes", "InitialMindmap.mm", DemoConnectorPluginDefinition.ARTIFACT_TYPE_MINDMAP,
+            createContent("/org/activiti/cycle/impl/connector/demo/mindmap.html"));
+    addContentToInternalMap(file2.getId(), DemoConnectorPluginDefinition.CONTENT_REPRESENTATION_ID_PNG,
+            createContent(
+            "/org/activiti/cycle/impl/connector/demo/mindmap.jpg").asByteArray());
 
     rootNodes.add(folder1);
-    nodes.add(folder1);
-    nodes.add(file1);
-    nodes.add(file2);
 
     // Folder BPMN
 
-    RepositoryFolder folder2 = createFolder("/BPMN", "BPMN", "/");
-    RepositoryFolder folder3 = createFolder("/BPMN/Level3", "Level3", "/BPMN");
+    RepositoryFolder folder2 = createFolder("/", "BPMN");
+    RepositoryFolder folder3 = createFolder("/BPMN", "Level3");
 
-    RepositoryArtifact file3 = createArtifact("/BPMN/Level3/789237892374239", ARTIFACT_TYPE_BPMN_20, "InitialBpmnModel", "/BPMN/Level3");
-    addContentRepresentation(file3, "Image", "/org/activiti/cycle/impl/connector/demo/bpmn.png");
-    // "http://www.bpm-guide.de/wp-content/uploads/2010/07/Incident-Management-collab.png");
-    addContentRepresentation(file3, "XML", "/org/activiti/cycle/impl/connector/demo/engine-pool.xml");
-    // "http://www.bpm-guide.de/wp-content/uploads/2010/07/engine-pool.xml");
+    RepositoryArtifact file3 = createArtifactFromContentRepresentation("/BPMN/Level3", "InitialBpmnModel", DemoConnectorPluginDefinition.ARTIFACT_TYPE_BPMN_20,
+            DemoConnectorPluginDefinition.CONTENT_REPRESENTATION_ID_XML,
+            createContent("/org/activiti/cycle/impl/connector/demo/engine-pool.xml"));
+    addContentToInternalMap(file3.getId(), DemoConnectorPluginDefinition.CONTENT_REPRESENTATION_ID_PNG, createContent(
+            "/org/activiti/cycle/impl/connector/demo/bpmn.png").asByteArray());
 
     rootNodes.add(folder2);
-    nodes.add(folder2);
-    nodes.add(folder3);
-    nodes.add(file3);
+    // nodes.add(folder2);
+    // nodes.add(folder3);
+    // nodes.add(file3);
   }
 
   private RepositoryNode clone(RepositoryNode node) {
@@ -87,39 +83,16 @@ public class DemoConnector extends AbstractRepositoryConnector<DemoConnectorConf
     }
   }
 
-  private RepositoryFolder createFolder(String id, String name, String parentPath) {
-    if (!id.startsWith("/")) {
-      id = "/" + id;
-    }
-    RepositoryFolder newFolder = new RepositoryFolder(this);
-    newFolder.setId(id);
-    newFolder.getMetadata().setName(name);
-    newFolder.getMetadata().setPath(parentPath);
-    return newFolder;
-  }
-
-  private RepositoryArtifact createArtifact(String id, String artifactTypeIdentifier, String name, String parentPath) {
-    if (!id.startsWith("/")) {
-      id = "/" + id;
-    }
-    RepositoryArtifact newArtifact = new RepositoryArtifact(this);
-    newArtifact.setArtifactType(ActivitiCyclePluginRegistry.getArtifactTypeByIdentifier(artifactTypeIdentifier));
-    newArtifact.setId(id);
-    newArtifact.getMetadata().setName(name);
-    newArtifact.getMetadata().setPath(parentPath);
-    return newArtifact;
-  }
-
   public void copyArtifact(RepositoryArtifact artifact, String targetName) {
-    RepositoryArtifact copy = clone(artifact);
-    copy.setId(targetName);
+    RepositoryArtifact copy = new RepositoryArtifactImpl(targetName, artifact.getArtifactType(), this);
+    
     nodes.add(copy);
     
-    Collection<ContentRepresentationDefinition> contentRepresentationDefinitions = artifact.getContentRepresentationDefinitions();
-    for (ContentRepresentationDefinition def : contentRepresentationDefinitions) {
-      def.getName();
-      Content cont = artifact.loadContent(def.getName());
-      addContentRepresentation(copy, def.getType(), cont.asByteArray());
+    Collection<ContentRepresentation> contentRepresentationDefinitions = artifact.getArtifactType().getContentRepresentations();
+    for (ContentRepresentation def : contentRepresentationDefinitions) {
+      def.getId();
+      Content cont = getContent(artifact.getId(), def.getId());
+      addContentToInternalMap(copy.getId(), def.getId(), cont.asByteArray());
     }
   }
 
@@ -131,11 +104,12 @@ public class DemoConnector extends AbstractRepositoryConnector<DemoConnectorConf
    * trouble. Can we avoid cloning in the other connectors because
    * {@link RepositoryNode} objects are considered one time only data containes?
    */
-  public static RepositoryFolder clone(RepositoryFolder folder) {
-    RepositoryFolder newFolder = new RepositoryFolder(folder.getConnector());
-    newFolder.setId(folder.getId());
+  public static RepositoryFolderImpl clone(RepositoryFolder folder) {
+    // TODO: Maybe make deep copy?
+    RepositoryFolderImpl newFolder = new RepositoryFolderImpl(folder.getId());
+    
     newFolder.getMetadata().setName(folder.getMetadata().getName());
-    newFolder.getMetadata().setPath(folder.getMetadata().getPath());
+    newFolder.getMetadata().setParentFolderId(folder.getMetadata().setParentFolderId());
     return newFolder;
   }
 
@@ -143,27 +117,36 @@ public class DemoConnector extends AbstractRepositoryConnector<DemoConnectorConf
    * In the demo connector we need to clone the objects, because we change ids
    * later
    */
-  public static RepositoryArtifact clone(RepositoryArtifact artifact) {
-    RepositoryArtifact newArtifact = new RepositoryArtifact(artifact.getConnector());
-    newArtifact.setArtifactType(artifact.getArtifactType());
-    newArtifact.setId(artifact.getId());
+  public RepositoryArtifactImpl clone(RepositoryArtifact artifact) {
+    RepositoryArtifactImpl newArtifact = new RepositoryArtifactImpl(artifact.getId(), artifact.getArtifactType(), this);
+
     newArtifact.getMetadata().setName(artifact.getMetadata().getName());
-    newArtifact.getMetadata().setPath(artifact.getMetadata().getPath());
+    newArtifact.getMetadata().setParentFolderId(artifact.getMetadata().setParentFolderId());
+    
     return newArtifact;
   }
   
 
-  private void addContentRepresentation(RepositoryArtifact artifact, String name, byte[] byteArray) {
-    Map<String, byte[]> map = content.get(artifact.getId());
+  private void addContentToInternalMap(String artifactId, String name, byte[] byteArray) {
+    Map<String, byte[]> map = content.get(artifactId);
     if (map == null) {
       map = new HashMap<String, byte[]>();
-      content.put(artifact.getId(), map);
+      content.put(artifactId, map);
     }
 
     map.put(name, byteArray);
   }
   
-  private void addContentRepresentation(RepositoryArtifact artifact, String name, String contentSourceUrl) {
+  public Content getContent(String artifactId, String representationName) throws RepositoryNodeNotFoundException {
+    Map<String, byte[]> map = content.get(artifactId);
+    byte[] bs = map.get(representationName);
+    Content c = new Content();
+    c.setValue(bs);
+    return c;
+  }  
+  
+  private Content createContent(String contentSourceUrl) {
+    Content result = new Content();
     try {
       ByteArrayOutputStream byteStream = new ByteArrayOutputStream();
 
@@ -183,27 +166,14 @@ public class DemoConnector extends AbstractRepositoryConnector<DemoConnectorConf
         byteStream.write(buf, 0, len);
       }
       byteStream.close();
-      
-      addContentRepresentation(artifact, name, byteStream.toByteArray());
-
+      result.setValue(byteStream.toByteArray());
     } catch (Exception ex) {
-      log.log(Level.SEVERE, "couldn't load content for artifact " + artifact + " from URL " + contentSourceUrl, ex);
+      throw new RepositoryException("couldn't create content from URL " + contentSourceUrl, ex);
     }
+    return result;      
   }  
-
-  public void createNewSubFolder(String parentFolderUrl, RepositoryFolder subFolder) {
-    throw new UnsupportedRepositoryOpperation("unsupported by demo connector");
-  }
-
-  public void deleteArtifact(String artifactUrl) {
-    throw new UnsupportedRepositoryOpperation("unsupported by demo connector");
-  }
-
-  public void deleteSubFolder(String subFolderUrl) {
-    throw new UnsupportedRepositoryOpperation("unsupported by demo connector");
-  }
-
-  public List<RepositoryNode> getChildNodes(String parentUrl) {
+  
+  public RepositoryNodeCollection getChildren(String parentUrl) throws RepositoryNodeNotFoundException {
     ArrayList<RepositoryNode> list = new ArrayList<RepositoryNode>();
     if ("/".equals(parentUrl)) {
       for (RepositoryNode node : rootNodes) {
@@ -226,11 +196,7 @@ public class DemoConnector extends AbstractRepositoryConnector<DemoConnectorConf
                 RepositoryFolder.class, parentUrl));
       }
     }
-    return list;
-  }
-
-  public List<RepositoryNode> getChildNodes(String parentUrl, boolean fetchDetails) {
-    return getChildNodes(parentUrl);
+    return new RepositoryNodeCollectionImpl(list);
   }
 
   public RepositoryArtifact getRepositoryArtifact(String id) {
@@ -256,20 +222,73 @@ public class DemoConnector extends AbstractRepositoryConnector<DemoConnectorConf
     loggedInUser = username;
     return true;
   }
-
-  public Content getContent(String nodeId, String representationName) {
-    return getRepositoryArtifact(nodeId).loadContent(representationName);
-  }
-
+  
   public void commitPendingChanges(String comment) {
   }
 
-  public void createNewArtifact(String containingFolderId, RepositoryArtifact artifact, Content artifactContent) {
-    nodes.add(artifact);
-    // TODO: How do we now what we get?
-    addContentRepresentation(artifact, ARTIFACT_TYPE_TEXT, artifactContent.asByteArray());
+  public RepositoryArtifact createArtifact(String containingFolderId, String artifactName, String artifactType, Content artifactContent)
+          throws RepositoryNodeNotFoundException {
+    return createArtifactFromContentRepresentation(containingFolderId, artifactName, artifactType, getArtifactType(artifactType)
+            .getDefaultContentRepresentation().getId(),
+            artifactContent);
   }
 
-  public void modifyArtifact(RepositoryArtifact artifact, ContentRepresentationDefinition artifactContent) {
+  public RepositoryArtifact createArtifactFromContentRepresentation(String containingFolderId, String artifactName, String artifactType,
+          String contentRepresentationName, Content artifactContent) throws RepositoryNodeNotFoundException {
+    String id = containingFolderId;
+    if (!id.startsWith("/")) {
+      id = "/" + id;
+    }
+    if (id.length()>1) {
+      // all but root folder
+      id = id + "/";
+    }
+    id = id + artifactName;
+    
+    RepositoryArtifact newArtifact = new RepositoryArtifactImpl(id, getArtifactType(artifactType), this);
+    newArtifact.getMetadata().setName(artifactName);
+    newArtifact.getMetadata().setParentFolderId(containingFolderId);
+    nodes.add(newArtifact);
+
+    addContentToInternalMap(id, contentRepresentationName, artifactContent.asByteArray());
+    return newArtifact;
+  }
+
+  public void updateContent(String artifactId, Content artifactContent) {
+    updateContent(artifactId, getRepositoryArtifact(artifactId).getArtifactType().getDefaultContentRepresentation().getId(), artifactContent);
+  }
+
+  public void updateContent(String artifactId, String contentRepresentationId, Content artifactContent) {
+    addContentToInternalMap(artifactId, contentRepresentationId, artifactContent.asByteArray());
+  }  
+  
+  public RepositoryFolder createFolder(String parentFolderId, String name) throws RepositoryNodeNotFoundException {
+    String id = parentFolderId;
+    if (!id.startsWith("/")) {
+      id = "/" + id;
+    }
+    if (id.length() > 1) {
+      // all but root folder
+      id = id + "/";
+    }
+    id = id + name;
+    RepositoryFolderImpl newFolder = new RepositoryFolderImpl(id);
+
+    newFolder.getMetadata().setName(name);
+    newFolder.getMetadata().setParentFolderId(parentFolderId);
+    nodes.add(newFolder);
+
+    return newFolder;
+  }
+
+  public void deleteArtifact(String artifactId) throws RepositoryNodeNotFoundException {
+    throw new RepositoryException("Not implemented in DemoConnector");
+  }
+
+  public void deleteFolder(String folderId) throws RepositoryNodeNotFoundException {
+    throw new RepositoryException("Not implemented in DemoConnector");
+  }
+
+  public void exceuteAction(String artifactId, String actionId, Map<String, Object> parameters) {
   }
 }

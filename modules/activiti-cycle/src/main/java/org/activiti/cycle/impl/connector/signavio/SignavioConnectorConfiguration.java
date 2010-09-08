@@ -165,6 +165,10 @@ public class SignavioConnectorConfiguration extends PasswordEnabledRepositoryCon
     }
   }
 
+  public String getPngUrl(String id, String securityToken) {
+    return getModelUrl(id) + "/png?token=" + securityToken;
+  }
+
   public String getExplorerUrl() {
     return getRepositoryBackendUrl() + EXPLORER_URL_SUFFIX;
   }
@@ -203,6 +207,13 @@ public class SignavioConnectorConfiguration extends PasswordEnabledRepositoryCon
 
   public void setLoginRequired(boolean loginRequired) {
     this.loginRequired = loginRequired;
+  }
+
+  /**
+   * TODO: What is that and why it is needed?
+   */
+  public String getPurl() {
+    return getSignavioUrl() + "purl";
   }
 
   public String getModelInfoUrl(String modelId) {

@@ -2,43 +2,82 @@ package org.activiti.cycle.impl.connector.fs;
 
 import java.util.List;
 
-import org.activiti.cycle.ArtifactAction;
 import org.activiti.cycle.ArtifactType;
-import org.activiti.cycle.ContentRepresentationProvider;
-import org.activiti.cycle.impl.connector.fs.provider.FileSystemPowerpointProvider;
-import org.activiti.cycle.impl.connector.fs.provider.FileSystemTextProvider;
-import org.activiti.cycle.impl.connector.fs.provider.FileSystemWordProvider;
-import org.activiti.cycle.impl.connector.fs.provider.FileSystemXmlProvider;
+import org.activiti.cycle.ContentType;
+import org.activiti.cycle.impl.ArtifactTypeImpl;
+import org.activiti.cycle.impl.ContentRepresentationImpl;
+import org.activiti.cycle.impl.conf.RepositoryConnectorConfiguration;
+import org.activiti.cycle.impl.connector.fs.provider.FileBinaryContentProvider;
+import org.activiti.cycle.impl.connector.fs.provider.XmlFileContentProvider;
 import org.activiti.cycle.impl.plugin.ActivitiCyclePlugin;
 import org.activiti.cycle.impl.plugin.ActivitiCyclePluginDefinition;
-import org.activiti.cycle.impl.plugin.DefinitionEntry;
 
 @ActivitiCyclePlugin
 public class FileSystemPluginDefinition implements ActivitiCyclePluginDefinition {
-
-  public void addDefinedArtifactTypeToList(List<ArtifactType> list) {
-    list.add(new ArtifactType("Bpmn 2.0 Xml", FileSystemConnector.BPMN_20_XML));
-    list.add(new ArtifactType("Xml", FileSystemConnector.XML));
-    list.add(new ArtifactType("Text", FileSystemConnector.TEXT));
-    list.add(new ArtifactType("Ms Word", FileSystemConnector.MS_WORD));
-    list.add(new ArtifactType("Ms Word X", FileSystemConnector.MS_WORD_X));
-    list.add(new ArtifactType("Ms Powerpoint", FileSystemConnector.MS_PP));
-    list.add(new ArtifactType("Ms Powerpoint X", FileSystemConnector.MS_PP_X));    
-  }
   
-  public void addContentRepresentationProviderToMap(List<DefinitionEntry<Class< ? extends ContentRepresentationProvider>>> contentProviderMap) {
-    contentProviderMap.add(new DefinitionEntry<Class< ? extends ContentRepresentationProvider>>(FileSystemConnector.BPMN_20_XML, FileSystemXmlProvider.class));
-    contentProviderMap.add(new DefinitionEntry<Class< ? extends ContentRepresentationProvider>>(FileSystemConnector.XML, FileSystemXmlProvider.class));
-    contentProviderMap.add(new DefinitionEntry<Class< ? extends ContentRepresentationProvider>>(FileSystemConnector.TEXT, FileSystemTextProvider.class));
-    contentProviderMap.add(new DefinitionEntry<Class< ? extends ContentRepresentationProvider>>(FileSystemConnector.MS_WORD, FileSystemWordProvider.class));
-    contentProviderMap.add(new DefinitionEntry<Class< ? extends ContentRepresentationProvider>>(FileSystemConnector.MS_WORD_X, FileSystemWordProvider.class));
-    contentProviderMap.add(new DefinitionEntry<Class< ? extends ContentRepresentationProvider>>(FileSystemConnector.MS_PP, FileSystemPowerpointProvider.class));
-    // TODO: Own mimetype ?
-    contentProviderMap
-            .add(new DefinitionEntry<Class< ? extends ContentRepresentationProvider>>(FileSystemConnector.MS_PP_X, FileSystemPowerpointProvider.class));
+  public static final String ARTIFACT_TYPE_BPMN_20_XML = "bpmn20.xml";
+  public static final String ARTIFACT_TYPE_ORYX_XML = "oryx.xml";
+  public static final String ARTIFACT_TYPE_TEXT = "txt";
+  public static final String ARTIFACT_TYPE_XML = "xml";
+  public static final String ARTIFACT_TYPE_MS_WORD = "doc";
+  public static final String ARTIFACT_TYPE_MS_PP = "ppt";
+  public static final String ARTIFACT_TYPE_PDF = "pdf";
+
+  public static final String ARTIFACT_TYPE_DEFAULT = "default";
+
+  public static final String CONTENT_REPRESENTATION_ID_XML = "XML";
+  public static final String CONTENT_REPRESENTATION_ID_TEXT = "Text";
+  public static final String CONTENT_REPRESENTATION_ID_BINARY = "Binary";
+
+  // public static final String CONTENT_REPRESENTATION_ID_MS_WORD_X = "docx";
+  // public static final String CONTENT_REPRESENTATION_ID_MS_PP = "ppt";
+  // public static final String CONTENT_REPRESENTATION_ID_MS_PP_X = "pptx";
+  // public static final String CONTENT_REPRESENTATION_ID_PDF = "pdf";
+  
+  public void addArtifactTypes(List<ArtifactType> types) {    
+    ArtifactTypeImpl artifactTypeDefault = new ArtifactTypeImpl(ARTIFACT_TYPE_DEFAULT);
+    artifactTypeDefault.addDefaultContentRepresentation(new ContentRepresentationImpl(CONTENT_REPRESENTATION_ID_BINARY, ContentType.BINARY),
+            new FileBinaryContentProvider());
+    artifactTypeDefault.addDownloadContentAction(CONTENT_REPRESENTATION_ID_BINARY);
+    types.add(artifactTypeDefault);    
+    
+    ArtifactTypeImpl artifactType1 = new ArtifactTypeImpl(ARTIFACT_TYPE_BPMN_20_XML);
+    artifactType1.addDefaultContentRepresentation(new ContentRepresentationImpl(CONTENT_REPRESENTATION_ID_XML, ContentType.XML), new XmlFileContentProvider());
+    artifactType1.addDownloadContentAction(CONTENT_REPRESENTATION_ID_XML);
+    types.add(artifactType1);
+
+    ArtifactTypeImpl artifactType2 = new ArtifactTypeImpl(ARTIFACT_TYPE_ORYX_XML);
+    artifactType2.addDefaultContentRepresentation(new ContentRepresentationImpl(CONTENT_REPRESENTATION_ID_XML, ContentType.XML), new XmlFileContentProvider());
+    artifactType2.addDownloadContentAction(CONTENT_REPRESENTATION_ID_XML);
+    types.add(artifactType2);
+
+    ArtifactTypeImpl artifactType3 = new ArtifactTypeImpl(ARTIFACT_TYPE_TEXT);
+    artifactType3
+            .addDefaultContentRepresentation(new ContentRepresentationImpl(CONTENT_REPRESENTATION_ID_TEXT, ContentType.TEXT), new XmlFileContentProvider());
+    artifactType3.addDownloadContentAction(CONTENT_REPRESENTATION_ID_TEXT);
+    types.add(artifactType3);
+
+    ArtifactTypeImpl artifactType4 = new ArtifactTypeImpl(ARTIFACT_TYPE_MS_WORD);
+    artifactType4.addDefaultContentRepresentation(new ContentRepresentationImpl(CONTENT_REPRESENTATION_ID_BINARY, ContentType.MS_WORD),
+            new FileBinaryContentProvider());
+    artifactType4.addDownloadContentAction(CONTENT_REPRESENTATION_ID_BINARY);
+    types.add(artifactType4);
+
+    ArtifactTypeImpl artifactType5 = new ArtifactTypeImpl(ARTIFACT_TYPE_MS_PP);
+    artifactType5.addDefaultContentRepresentation(new ContentRepresentationImpl(CONTENT_REPRESENTATION_ID_BINARY, ContentType.MS_POWERPOINT),
+            new FileBinaryContentProvider());
+    artifactType5.addDownloadContentAction(CONTENT_REPRESENTATION_ID_BINARY);
+    types.add(artifactType5);
+
+    ArtifactTypeImpl artifactType6 = new ArtifactTypeImpl(ARTIFACT_TYPE_PDF);
+    artifactType6.addDefaultContentRepresentation(new ContentRepresentationImpl(CONTENT_REPRESENTATION_ID_BINARY, ContentType.PDF),
+            new FileBinaryContentProvider());
+    artifactType6.addDownloadContentAction(CONTENT_REPRESENTATION_ID_BINARY);
+    types.add(artifactType6);
+
   }
 
-  public void addArtifactActionToMap(List<DefinitionEntry<Class< ? extends ArtifactAction>>> actionMap) {
-
+  public Class< ? extends RepositoryConnectorConfiguration> getRepositoryConnectorConfigurationType() {
+    return FileSystemConnectorConfiguration.class;
   }
 }

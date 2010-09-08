@@ -14,21 +14,23 @@ package org.activiti.cycle.impl.connector.signavio;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.activiti.cycle.ArtifactType;
 import org.activiti.cycle.Content;
-import org.activiti.cycle.ContentRepresentationDefinition;
 import org.activiti.cycle.RepositoryArtifact;
 import org.activiti.cycle.RepositoryException;
 import org.activiti.cycle.RepositoryFolder;
 import org.activiti.cycle.RepositoryNode;
+import org.activiti.cycle.RepositoryNodeCollection;
 import org.activiti.cycle.RepositoryNodeNotFoundException;
+import org.activiti.cycle.impl.RepositoryArtifactImpl;
+import org.activiti.cycle.impl.RepositoryFolderImpl;
+import org.activiti.cycle.impl.RepositoryNodeCollectionImpl;
 import org.activiti.cycle.impl.connector.AbstractRepositoryConnector;
 import org.activiti.cycle.impl.connector.signavio.util.SignavioJsonHelper;
 import org.activiti.cycle.impl.connector.signavio.util.SignavioLogHelper;
-import org.activiti.cycle.impl.plugin.ActivitiCyclePluginRegistry;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -56,13 +58,6 @@ import org.restlet.resource.Representation;
 public class SignavioConnector extends AbstractRepositoryConnector<SignavioConnectorConfiguration> {
 
   private static Logger log = Logger.getLogger(SignavioConnector.class.getName());
-
-  // register Signavio stencilsets to identify file types
-  public static final String SIGNAVIO_NAMESPACE_FOR_BPMN_2_0 = "http://b3mn.org/stencilset/bpmn2.0#";
-  public static final String SIGNAVIO_NAMESPACE_FOR_BPMN_JBPM4 = "http://b3mn.org/stencilset/jbpm4#";
-
-  public static final String BPMN_2_0_XML = "bpm2.0"; // FIXME looks like typo
-  public static final String ORYX_TYPE_ATTRIBUTE_FOR_BPMN_20 = "BPMN 2.0";
 
   /**
    * Captcha ID for REST access to Signavio
@@ -204,10 +199,10 @@ public class SignavioConnector extends AbstractRepositoryConnector<SignavioConne
     // + ")");
     // }
 
-    RepositoryFolder folderInfo = new RepositoryFolder(this);
     // folderInfo.setId( directoryId );
     // TODO: Check where we get the real ID from!
-    folderInfo.setId(getConfiguration().getDirectoryIdFromUrl(href));
+    String id = getConfiguration().getDirectoryIdFromUrl(href);
+    RepositoryFolderImpl folderInfo = new RepositoryFolderImpl(id);
 
     folderInfo.getMetadata().setName(directoryName);
     // TODO: Where do we get the path from?
@@ -222,8 +217,8 @@ public class SignavioConnector extends AbstractRepositoryConnector<SignavioConne
   }
 
   private RepositoryArtifact getArtifactInfoFromFile(String id, JSONObject json) throws JSONException {
-    RepositoryArtifact fileInfo = new RepositoryArtifact(this);
-    fileInfo.setId(id);
+    ArtifactType artifactType = getArtifactTypeForSignavioArtifact(json);
+    RepositoryArtifactImpl fileInfo = new RepositoryArtifactImpl(id, artifactType, this);
 
     if (json.has("name")) {
       fileInfo.getMetadata().setName(json.optString("name"));
@@ -239,16 +234,6 @@ public class SignavioConnector extends AbstractRepositoryConnector<SignavioConne
     fileInfo.getMetadata().setCreated(SignavioJsonHelper.getDateValueIfExists(json, "created"));
     fileInfo.getMetadata().setLastChanged(SignavioJsonHelper.getDateValueIfExists(json, "updated"));
 
-    if (json.has("namespace")) {
-      // Commercial Signavio way of doing it
-      String fileTypeIdentifier = json.getString("namespace");
-      fileInfo.setArtifactType(ActivitiCyclePluginRegistry.getArtifactTypeByIdentifier(fileTypeIdentifier));
-    } else {
-      // Oryx/Signavio OSS = Activiti Modeler way of doing it
-      String fileTypeIdentifier = json.getString("type");
-      fileInfo.setArtifactType(ActivitiCyclePluginRegistry.getArtifactTypeByIdentifier(fileTypeIdentifier));
-    }
-
     // relObject.getJSONObject("rep").getString("revision"); --> UUID of
     // revision
     // relObject.getJSONObject("rep").getString("description");
@@ -259,12 +244,31 @@ public class SignavioConnector extends AbstractRepositoryConnector<SignavioConne
     // factory which produces the concrete actions?
   }
 
-  public List<RepositoryNode> getChildNodes(String parentId) {
+  private ArtifactType getArtifactTypeForSignavioArtifact(JSONObject json) throws JSONException {
+    String artifactTypeID = null;
+    if (json.has("namespace")) {
+      // Commercial Signavio way of doing it
+      String namespace = json.getString("namespace");
+      if (SignavioPluginDefinition.SIGNAVIO_NAMESPACE_FOR_BPMN_2_0.equals(namespace)) {
+        artifactTypeID = SignavioPluginDefinition.ARTIFACT_TYPE_BPMN_20;
+      } else if (SignavioPluginDefinition.SIGNAVIO_NAMESPACE_FOR_BPMN_JBPM4.equals(namespace)) {
+        artifactTypeID = SignavioPluginDefinition.ARTIFACT_TYPE_BPMN_FOR_JPDL4;
+      }
+    } else {
+      // Oryx/Signavio OSS = Activiti Modeler way of doing it
+      String type = json.getString("type");
+      if (SignavioPluginDefinition.ORYX_TYPE_ATTRIBUTE_FOR_BPMN_20.equals(type)) {
+        artifactTypeID = SignavioPluginDefinition.ARTIFACT_TYPE_BPMN_20;
+      }
+    }
+    return getConfiguration().getArtifactType(artifactTypeID);
+  }
+
+  public RepositoryNodeCollection getChildren(String id) throws RepositoryNodeNotFoundException {
     try {
-      ArrayList<RepositoryNode> nodes;
+      ArrayList<RepositoryNode> nodes = new ArrayList<RepositoryNode>();
       try {
-        nodes = new ArrayList<RepositoryNode>();
-        Response directoryResponse = getJsonResponse(getConfiguration().getDirectoryUrl(parentId));
+        Response directoryResponse = getJsonResponse(getConfiguration().getDirectoryUrl(id));
         JsonRepresentation jsonData = new JsonRepresentation(directoryResponse.getEntity());
         JSONArray relJsonArray = jsonData.toJsonArray();
   
@@ -282,13 +286,13 @@ public class SignavioConnector extends AbstractRepositoryConnector<SignavioConne
             RepositoryArtifact fileInfo = getArtifactInfoFromFolderLink(relObject);
             nodes.add(fileInfo);
           }
-        }
+        }    
       } catch (RepositoryException e) {
         nodes = getModelsFromOryxBackend();
       }
-      return nodes;
+      return new RepositoryNodeCollectionImpl(nodes);
     } catch (Exception ex) {
-      throw new RepositoryNodeNotFoundException(getConfiguration().getName(), RepositoryFolder.class, parentId, ex);
+      throw new RepositoryNodeNotFoundException(getConfiguration().getName(), RepositoryFolder.class, id, ex);
     }
   }
 
@@ -307,11 +311,6 @@ public class SignavioConnector extends AbstractRepositoryConnector<SignavioConne
       nodes.add(fileInfo);
     }
     return nodes;
-  }
-
-  public Content getContent(String nodeId, String representationName) {
-    RepositoryArtifact artifact = getRepositoryArtifact(nodeId);
-    return artifact.loadContent(representationName);
   }
 
   public RepositoryFolder getRepositoryFolder(String id) {
@@ -350,10 +349,10 @@ public class SignavioConnector extends AbstractRepositoryConnector<SignavioConne
     this.securityToken = securityToken;
   }
 
-  public void createNewSubFolder(String parentFolderId, RepositoryFolder subFolder) {
+  public RepositoryFolder createFolder(String parentFolderId, String name) throws RepositoryNodeNotFoundException {
     try {
       Form createFolderForm = new Form();
-      createFolderForm.add("name", subFolder.getMetadata().getName());
+      createFolderForm.add("name", name);
       createFolderForm.add("description", ""); // TODO: what should we use here?
       createFolderForm.add("parent", "/directory/" + parentFolderId);
       Representation createFolderRep = createFolderForm.getWebRepresentation();
@@ -361,11 +360,15 @@ public class SignavioConnector extends AbstractRepositoryConnector<SignavioConne
       Request jsonRequest = new Request(Method.POST, new Reference(getConfiguration().getDirectoryRootUrl()), createFolderRep);
       jsonRequest.getClientInfo().getAcceptedMediaTypes().add(new Preference<MediaType>(MediaType.APPLICATION_JSON));
       sendRequest(jsonRequest);
+
+      // TODO: create response object which contains the ID or maybe skip the
+      // whole artifact returning?
+      return null;
     } catch (Exception ex) {
       // throw new RepositoryNodeNotFoundException(getConfiguration().getName(),
       // RepositoryArtifact.class, id);
 
-      throw new RepositoryException("Unable to create subFolder '" + subFolder + "' in parent folder '" + parentFolderId + "'");
+      throw new RepositoryException("Unable to create subFolder '" + name + "' in parent folder '" + parentFolderId + "'");
     }
   }
 
@@ -382,7 +385,7 @@ public class SignavioConnector extends AbstractRepositoryConnector<SignavioConne
     }
   }
 
-  public void deleteSubFolder(String subFolderId) {
+  public void deleteFolder(String subFolderId) {
     try {
       Request jsonRequest = new Request(Method.DELETE, new Reference(getConfiguration().getDirectoryUrl(subFolderId)));
       jsonRequest.getClientInfo().getAcceptedMediaTypes().add(new Preference<MediaType>(MediaType.APPLICATION_JSON));
@@ -434,20 +437,31 @@ public class SignavioConnector extends AbstractRepositoryConnector<SignavioConne
     }
   }
 
-  public void createNewArtifact(String folderId, RepositoryArtifact artifact, Content content) {
-    // TODO: Should we have a check for the content type? Is it possible to
-    // create an artifact by different types?
-    try {
-      createNewModel(folderId, artifact.getMetadata().getName(), content.asString(), null, null);
-    } catch (Exception e) {
-      throw new RepositoryException("Unable to create new model '" + artifact.getMetadata().getName() + "' in folder '" + folderId + "'", e);
-    }
+  public RepositoryArtifact createArtifact(String containingFolderId, String artifactName, String artifactType, Content artifactContent)
+          throws RepositoryNodeNotFoundException {
+    // TODO: Add handling of different artifact types!
+    return createArtifactFromJSON(containingFolderId, artifactName, artifactType, artifactContent.asString());
   }
 
-  public void createNewModel(String parentFolderId, String name, String jsonData, String revisionComment, String description) throws IOException {
+  public RepositoryArtifact createArtifactFromContentRepresentation(String containingFolderId, String artifactName, String artifactType,
+          String contentRepresentationName, Content artifactContent) throws RepositoryNodeNotFoundException {
+    // TODO: Add handling of different content representations, e.g. BPMN 2.0
+    // Import
+    return createArtifactFromJSON(containingFolderId, artifactName, artifactType, artifactContent.asString());
+  }
+
+  public RepositoryArtifact createArtifactFromJSON(String containingFolderId, String artifactName, String artifactType, String jsonContent)
+          throws RepositoryNodeNotFoundException {
+
+    String revisionComment = null;
+    String description = null;
+    
+    // public void createNewModel(String parentFolderId, String name, String
+    // jsonData, String revisionComment, String description) throws IOException
+    // {
     try {
       // do this to check if jsonString is valid
-      JSONObject jsonModel = new JSONObject(jsonData);
+      JSONObject jsonModel = new JSONObject(jsonContent);
 
       Form modelForm = new Form();
       // TODO: Check if this is correct, maybe we need to include an empty
@@ -462,9 +476,11 @@ public class SignavioConnector extends AbstractRepositoryConnector<SignavioConne
       // signavio generates a new id for POSTed models
       // modelForm.add("id", null);
       modelForm.add("json_xml", jsonModel.toString());
-      modelForm.add("name", name);
+      modelForm.add("name", artifactName);
+      
+      // TODO: Check ArtifactType here correctly
       modelForm.add("namespace", "http://b3mn.org/stencilset/bpmn2.0#");
-      modelForm.add("parent", "/directory/" + parentFolderId);
+      modelForm.add("parent", "/directory/" + containingFolderId);
       // we have to provide a SVG (even if don't have the correct one) because
       // otherwise Signavio throws an exception in its GUI
       modelForm
@@ -478,8 +494,11 @@ public class SignavioConnector extends AbstractRepositoryConnector<SignavioConne
       Request jsonRequest = new Request(Method.POST, new Reference(getConfiguration().getModelRootUrl()), modelRep);
       jsonRequest.getClientInfo().getAcceptedMediaTypes().add(new Preference<MediaType>(MediaType.APPLICATION_JSON));
       sendRequest(jsonRequest);
+      
+      // TODO: return the object
+      return null;
     } catch (Exception je) {
-      throw new RepositoryException("Unable to create model '" + name + "' in parent folder '" + parentFolderId + "'", je);
+      throw new RepositoryException("Unable to create model '" + artifactName + "' in parent folder '" + containingFolderId + "'", je);
     }
   }
 
@@ -497,9 +516,6 @@ public class SignavioConnector extends AbstractRepositoryConnector<SignavioConne
     } catch (Exception je) {
       throw new RepositoryException("Unable to restore revision '" + revisionId + "' of model '" + modelId + "' in directory '" + parentFolderId + "'", je);
     }
-  }
-
-  public void modifyArtifact(RepositoryArtifact artifact, ContentRepresentationDefinition artifactContent) {
   }
 
   public String transformJsonToBpmn20Xml(String jsonData) {
@@ -540,5 +556,13 @@ public class SignavioConnector extends AbstractRepositoryConnector<SignavioConne
     } catch (Exception ex) {
       throw new RepositoryException("Error while transforming BPMN2_0_XML to BPMN2_0_JSON", ex);
     }
+  }
+
+  public void updateContent(String artifactId, Content content) throws RepositoryNodeNotFoundException {
+    throw new RepositoryException("Moving artifacts is not (yet) supported by the Signavio Connector");
+  }
+
+  public void updateContent(String artifactId, String contentRepresentationName, Content content) throws RepositoryNodeNotFoundException {
+    throw new RepositoryException("Moving artifacts is not (yet) supported by the Signavio Connector");
   }
 }

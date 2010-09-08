@@ -5,13 +5,14 @@ import java.util.List;
 import java.util.Map;
 
 import org.activiti.cycle.Content;
-import org.activiti.cycle.ParametrizedFreemakerTemplateAction;
 import org.activiti.cycle.RepositoryArtifact;
+import org.activiti.cycle.RepositoryConnector;
 import org.activiti.cycle.RepositoryException;
 import org.activiti.cycle.RepositoryFolder;
+import org.activiti.cycle.impl.ParameterizedHtmlFormTemplateAction;
+import org.activiti.cycle.impl.connector.fs.FileSystemPluginDefinition;
 import org.activiti.cycle.impl.connector.signavio.SignavioConnector;
-import org.activiti.cycle.impl.connector.signavio.provider.JsonProvider;
-import org.activiti.cycle.impl.plugin.ActivitiCyclePluginRegistry;
+import org.activiti.cycle.impl.connector.signavio.SignavioPluginDefinition;
 import org.activiti.cycle.impl.transform.JsonTransformation;
 import org.activiti.cycle.impl.transform.signavio.AdjustShapeNamesTransformation;
 import org.activiti.cycle.impl.transform.signavio.BpmnPoolExtraction;
@@ -28,9 +29,10 @@ import org.json.JSONObject;
  * 
  * @author bernd.ruecker@camunda.com
  */
-public class CreateTechnicalBpmnXmlAction extends ParametrizedFreemakerTemplateAction {
+public class CreateTechnicalBpmnXmlAction extends ParameterizedHtmlFormTemplateAction {
 
   public static final String PARAM_TARGET_FOLDER = "targetFolder";
+  public static final String PARAM_TARGET_CONNECTOR = "targetFolderConnector";
   public static final String PARAM_TARGET_NAME = "targetName";
   public static final String PARAM_COMMENT = "comment";
 
@@ -54,30 +56,25 @@ public class CreateTechnicalBpmnXmlAction extends ParametrizedFreemakerTemplateA
     registeredTransformations.add(transformation);
   }
 
-  @Override
-  public String getFormResourceName() {
-    return getDefaultFormName();
-  }  
-
-  @Override
-  public void execute(Map<String, Object> parameters) throws Exception {
+  public void execute(RepositoryConnector connector, RepositoryArtifact artifact, Map<String, Object> parameters) throws Exception {
     // TODO: Check with Nils that we get the object instead of the string in
     // here!
-    RepositoryFolder targetFolder = (RepositoryFolder) getParameter(parameters, PARAM_TARGET_FOLDER, true, null, RepositoryFolder.class);
-    String targetName = (String) getParameter(parameters, PARAM_TARGET_NAME, false, getProcessName(), String.class);
+    String targetFolderId = (String) getParameter(parameters, PARAM_TARGET_FOLDER, true, null, String.class);
+    String targetName = (String) getParameter(parameters, PARAM_TARGET_NAME, false, getProcessName(artifact), String.class);
     String comment = (String) getParameter(parameters, PARAM_COMMENT, false, null, String.class);
+    RepositoryConnector targetConnector = (RepositoryConnector) getParameter(parameters, PARAM_TARGET_CONNECTOR, true, null, RepositoryConnector.class);
     
-    String sourceJson = getBpmn20Json();
+    String sourceJson = getBpmn20Json((SignavioConnector) connector, artifact);
     String transformedJson = applyJsonTransformations(sourceJson);
-    String bpmnXml = transformToBpmn20(transformedJson);
-    createTargetArtifact(targetFolder, targetName + ".bpmn20.xml", bpmnXml, SignavioConnector.BPMN_2_0_XML);
+    String bpmnXml = transformToBpmn20((SignavioConnector) connector, transformedJson);
+    createTargetArtifact(targetConnector, targetFolderId, targetName + ".bpmn20.xml", bpmnXml);
 
     // TODO: Think about that more, does it make sense like this?
-    targetFolder.getConnector().commitPendingChanges(comment);
+    targetConnector.commitPendingChanges(comment);
   }
 
-  protected String getBpmn20Json() {
-    return getArtifact().getConnector().getContent(getArtifact().getId(), JsonProvider.NAME).asString();
+  protected String getBpmn20Json(RepositoryConnector connector, RepositoryArtifact artifact) {
+    return connector.getContent(artifact.getId(), SignavioPluginDefinition.CONTENT_REPRESENTATION_ID_JSON).asString();
   }
 
   protected String applyJsonTransformations(String sourceJson) {
@@ -94,37 +91,25 @@ public class CreateTechnicalBpmnXmlAction extends ParametrizedFreemakerTemplateA
     }
   }
 
-  protected String transformToBpmn20(String transformedJson) {
-    String bpmnXml = getSignavioConnector().transformJsonToBpmn20Xml(transformedJson);
+  protected String transformToBpmn20(SignavioConnector connector, String transformedJson) {
+    String bpmnXml = connector.transformJsonToBpmn20Xml(transformedJson);
     bpmnXml = new RemedyTemporarySignavioIncompatibilityTransformation().transformBpmn20Xml(bpmnXml);
     return bpmnXml;
   }
 
-  public void createTargetArtifact(RepositoryFolder targetFolder, String artifactId, String bpmnXml, String artifactTypeIdentifier) {
-    RepositoryArtifact targetArtifact = new RepositoryArtifact(targetFolder.getConnector());
-    
-    // TODO: Check naming policy
-    targetArtifact.setId(artifactId);
-    // TODO: Check artifac types / registry
-    targetArtifact.setArtifactType(ActivitiCyclePluginRegistry.getArtifactTypeByIdentifier(artifactTypeIdentifier));
-
+  public void createTargetArtifact(RepositoryConnector targetConnector, String targetFolderId, String artifactId, String bpmnXml) {
     Content content = new Content();
     content.setValue(bpmnXml);
-
-    targetFolder.getConnector().createNewArtifact(targetFolder.getId(), targetArtifact, content);
+    targetConnector.createArtifact(targetFolderId, artifactId, FileSystemPluginDefinition.ARTIFACT_TYPE_BPMN_20_XML, content);
   }
   
-  public String getProcessName() {
-    return getArtifact().getMetadata().getName();
+  public String getProcessName(RepositoryArtifact artifact) {
+    return artifact.getMetadata().getName();
   }
 
-  public SignavioConnector getSignavioConnector() {
-    return (SignavioConnector) getArtifact().getOriginalConnector();
-  }
-  
   @Override
-  public String getLabel() {
-    return "create technical model";
+  public String getFormResourceName() {
+    return getDefaultFormName();
   }
-
+  
 }

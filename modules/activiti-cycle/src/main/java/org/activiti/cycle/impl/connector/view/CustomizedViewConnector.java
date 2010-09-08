@@ -1,18 +1,23 @@
 package org.activiti.cycle.impl.connector.view;
 
 import java.util.ArrayList;
-import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
+import org.activiti.cycle.ArtifactType;
 import org.activiti.cycle.Content;
-import org.activiti.cycle.ContentRepresentationDefinition;
 import org.activiti.cycle.RepositoryArtifact;
 import org.activiti.cycle.RepositoryConnector;
 import org.activiti.cycle.RepositoryException;
 import org.activiti.cycle.RepositoryFolder;
 import org.activiti.cycle.RepositoryNode;
-import org.activiti.cycle.impl.connector.AbstractRepositoryConnector;
+import org.activiti.cycle.RepositoryNodeCollection;
+import org.activiti.cycle.RepositoryNodeNotFoundException;
+import org.activiti.cycle.impl.RepositoryFolderImpl;
+import org.activiti.cycle.impl.RepositoryNodeCollectionImpl;
+import org.activiti.cycle.impl.RepositoryNodeImpl;
 
 /**
  * Connector to represent customized view for a user of cycle to hide all the
@@ -21,15 +26,20 @@ import org.activiti.cycle.impl.connector.AbstractRepositoryConnector;
  * 
  * @author bernd.ruecker@camunda.com
  */
-public class CustomizedViewConnector extends AbstractRepositoryConnector<CustomizedViewConfiguration> {
+public class CustomizedViewConnector implements RepositoryConnector {
 
   private List<RepositoryConnector> repositoryConnectors;
-  private Map<String, RepositoryConnector> repositoryConnectorMap;
+  
+  private CustomizedViewConfiguration configuration;
 
   public CustomizedViewConnector(CustomizedViewConfiguration customizedViewConfiguration) {
-    super(customizedViewConfiguration);
+    configuration = customizedViewConfiguration;
   }
 
+  public CustomizedViewConfiguration getConfiguration() {
+    return configuration;
+  }
+  
   /**
    * Get a map with all {@link RepositoryConnector}s created lazily and the name
    * of the connector as key for the map.
@@ -75,19 +85,11 @@ public class CustomizedViewConnector extends AbstractRepositoryConnector<Customi
   }
 
   /**
-   * get the client URL added to all {@link RepositoryNode}s for the client
-   * (based on the configured base url)
-   */
-  private String getClientUrl(RepositoryNode repositoryNode) {
-    return getConfiguration().getBaseUrl() + repositoryNode.getId(); 
-  }
-
-  /**
    * construct a unique id for an {@link RepositoryNode} by adding the connector
    * name (since this connector maintains different repos)
    */
-  private String getIdWithRepoName(RepositoryNode repositoryNode) {
-    String repositoryName = repositoryNode.getConnector().getConfiguration().getName();
+  private String getIdWithRepoName(RepositoryConnector connector, RepositoryNode repositoryNode) {
+    String repositoryName = connector.getConfiguration().getName();
     if (!repositoryNode.getId().startsWith("/")) {
       throw new RepositoryException("RepositoryNode id doesn't start with a slash, which is copnsidered invalid: '" + repositoryNode.getId()
               + "' in repository '" + repositoryName + "'");
@@ -104,41 +106,11 @@ public class CustomizedViewConnector extends AbstractRepositoryConnector<Customi
   }
 
   /**
-   * create client URL for a {@link ContentRepresentationDefinition}
-   */
-  private String getClientUrl(RepositoryArtifact artifact, ContentRepresentationDefinition contentRepresentationDefinition) {
-    return artifact.getClientUrl() + "/content/" + contentRepresentationDefinition.getName();
-  }
-
-
-  /**
    * add repository name in config to URL
    */
-  private RepositoryNode adjust(RepositoryNode repositoryNode) {
-    if (repositoryNode instanceof RepositoryArtifact) { 
-      RepositoryArtifact artifact = (RepositoryArtifact) repositoryNode;
-
-      // TODO: This is a bit hacky to set the right connector on the actions
-      // BEFORE the connector is changed
-      // Now is the time to rethink the action generation mechanism!
-      artifact.initializeActions();
-    }
-    
-    repositoryNode.setId(getIdWithRepoName(repositoryNode));
-    repositoryNode.setClientUrl(getClientUrl(repositoryNode));
-    if (repositoryNode instanceof RepositoryArtifact) {       
-      RepositoryArtifact artifact = (RepositoryArtifact) repositoryNode;
-      
-      Collection<ContentRepresentationDefinition> contentRepresentationDefinitions = artifact.getContentRepresentationDefinitions();
-      for (ContentRepresentationDefinition contentRepresentationDefinition : contentRepresentationDefinitions) {
-        contentRepresentationDefinition.setClientUrl(
-                getClientUrl(artifact, contentRepresentationDefinition));
-      }
-    }
-
-    // and change the connector (last operation to not influence id generating)
-    repositoryNode.overwriteConnector(this);
-
+  private RepositoryNode adjust(RepositoryConnector connector, RepositoryNode node) {
+    RepositoryNodeImpl repositoryNode = ((RepositoryNodeImpl) node);
+    repositoryNode.setId(getIdWithRepoName(connector, repositoryNode));
     return repositoryNode;
   }
 
@@ -175,7 +147,7 @@ public class CustomizedViewConnector extends AbstractRepositoryConnector<Customi
     }
   }
 
-  public List<RepositoryNode> getChildNodes(String parentUrl) {
+  public RepositoryNodeCollection getChildren(String parentUrl) {
     // special handling for root
     if ("/".equals(parentUrl)) {
       return getRepoRootFolders();
@@ -187,76 +159,107 @@ public class CustomizedViewConnector extends AbstractRepositoryConnector<Customi
     parentUrl = getRepositoryPartOfUrl(parentUrl);
 
       // now make the query
-    List<RepositoryNode> childNodes = connector.getChildNodes(parentUrl);
+    RepositoryNodeCollection children = connector.getChildren(parentUrl);
    
     // and adjust the result to include repo name
-    for (RepositoryNode repositoryNode : childNodes) {
-       adjust(repositoryNode);
+    for (RepositoryNode repositoryNode : children.asList()) {
+       adjust(connector, repositoryNode);
     }
-    return childNodes;
+    return children;
   }
 
-  public List<RepositoryNode> getRepoRootFolders() {
+  public RepositoryNodeCollection getRepoRootFolders() {
     ArrayList<RepositoryNode> nodes = new ArrayList<RepositoryNode>();
     for (RepositoryConnector connector : getRepositoryConnectors()) {
       String repoName = connector.getConfiguration().getName();
-      RepositoryFolder folder = new RepositoryFolder(this);
+      RepositoryFolderImpl folder = new RepositoryFolderImpl(repoName);
       folder.getMetadata().setName(repoName);
-      folder.getMetadata().setPath("/" + repoName);
-      folder.setId(repoName);
-      folder.setClientUrl(getClientUrl(folder));
+      folder.getMetadata().setParentFolderId("/");
       nodes.add(folder);
     }
-    return nodes;
+    return new RepositoryNodeCollectionImpl(nodes);
   }
 
   public RepositoryArtifact getRepositoryArtifact(String id) {
-    RepositoryArtifact repositoryArtifact = getConnectorFromUrl(id).getRepositoryArtifact(
+    RepositoryConnector connector = getConnectorFromUrl(id);
+    RepositoryArtifact repositoryArtifact = connector.getRepositoryArtifact(
             getRepositoryPartOfUrl(id));
-    adjust(repositoryArtifact);
+    adjust(connector, repositoryArtifact);
     return repositoryArtifact;
   }
 
   public RepositoryFolder getRepositoryFolder(String id) {
-    RepositoryFolder repositoryFolder = getConnectorFromUrl(id).getRepositoryFolder(getRepositoryPartOfUrl(id));
-    adjust(repositoryFolder);
+    RepositoryConnector connector = getConnectorFromUrl(id);
+    RepositoryFolder repositoryFolder = connector.getRepositoryFolder(getRepositoryPartOfUrl(id));
+    adjust(connector, repositoryFolder);
     return repositoryFolder;
   }
-
-  // public RepositoryNode getRepositoryNode(String id) {
-  // RepositoryNode repositoryNode =
-  // getConnectorFromUrl(id).getRepositoryNode(getRepositoryPartOfUrl(id));
-  // adjust(repositoryNode);
-  // return repositoryNode;
-  // }
-
-  public void createNewArtifact(String containingFolderId, RepositoryArtifact artifact, Content artifactContent) {
-    // TODO: Do we have to change artifact id? I think yes
-    // artifact.setId(getRepositoryPartOfUrl(artifact.getId()));
-    getConnectorFromUrl(containingFolderId).createNewArtifact(getRepositoryPartOfUrl(containingFolderId), artifact, artifactContent);
+  
+  public RepositoryArtifact createArtifact(String containingFolderId, String artifactName, String artifactType, Content artifactContent)
+          throws RepositoryNodeNotFoundException {
+    return getConnectorFromUrl(containingFolderId).createArtifact(getRepositoryPartOfUrl(containingFolderId), artifactName, artifactType, artifactContent);
   }
 
-  public void modifyArtifact(RepositoryArtifact artifact, ContentRepresentationDefinition artifactContent) {
-    RepositoryConnector connector = getConnectorFromUrl(artifact.getId());
-    artifact.setId(getRepositoryPartOfUrl(artifact.getId()));    
-    connector.modifyArtifact(artifact, artifactContent);
+  public RepositoryArtifact createArtifactFromContentRepresentation(String containingFolderId, String artifactName, String artifactType,
+          String contentRepresentationName, Content artifactContent) throws RepositoryNodeNotFoundException {
+    return getConnectorFromUrl(containingFolderId).createArtifactFromContentRepresentation(getRepositoryPartOfUrl(containingFolderId), artifactName,
+            artifactType, contentRepresentationName, artifactContent);
   }
 
-  public void createNewSubFolder(String parentFolderUrl, RepositoryFolder subFolder) {
-    // TODO: Do we have to change subFolder id?
-    getConnectorFromUrl(parentFolderUrl).createNewSubFolder(getRepositoryPartOfUrl(parentFolderUrl), subFolder);
+  
+  public void updateContent(String artifactId, Content content) throws RepositoryNodeNotFoundException {
+    RepositoryConnector connector = getConnectorFromUrl(artifactId);
+    connector.updateContent(getRepositoryPartOfUrl(artifactId), content);
+  }
+
+  public void updateContent(String artifactId, String contentRepresentationName, Content content) throws RepositoryNodeNotFoundException {
+    RepositoryConnector connector = getConnectorFromUrl(artifactId);
+    connector.updateContent(getRepositoryPartOfUrl(artifactId), contentRepresentationName, content);
+  }
+
+  public RepositoryFolder createFolder(String parentFolderId, String name) throws RepositoryNodeNotFoundException {
+    return getConnectorFromUrl(parentFolderId).createFolder(getRepositoryPartOfUrl(parentFolderId), name);
   }
 
   public void deleteArtifact(String artifactUrl) {
     getConnectorFromUrl(artifactUrl).deleteArtifact(getRepositoryPartOfUrl(artifactUrl));
   }
 
-  public void deleteSubFolder(String subFolderUrl) {
-    getConnectorFromUrl(subFolderUrl).deleteSubFolder(getRepositoryPartOfUrl(subFolderUrl));
+  public void deleteFolder(String subFolderUrl) {
+    getConnectorFromUrl(subFolderUrl).deleteFolder(getRepositoryPartOfUrl(subFolderUrl));
   }
 
-  public Content getContent(String nodeId, String representationName) {
-    return getConnectorFromUrl(nodeId).getContent(getRepositoryPartOfUrl(nodeId), representationName);
+  public Content getContent(String artifactId, String representationName) throws RepositoryNodeNotFoundException {
+    return getConnectorFromUrl(artifactId).getContent(getRepositoryPartOfUrl(artifactId), representationName);
+  }
+
+  public void executeParameterizedAction(String artifactId, String actionId, Map<String, Object> parameters) throws Exception {
+    RepositoryConnector connector = getConnectorFromUrl(artifactId);
+    String repoPartOfId = getRepositoryPartOfUrl(artifactId);
+    for (Entry<String, Object> parameter : new HashSet<Entry<String, Object>>(parameters.entrySet())) {
+      // TODO: Think about that a bit more, a bit hacky to depend on naming
+      // conventions, or?
+      // The GUI currently has types, maybe we should transport them to here?
+      if (parameter.getKey().equals("targetFolder")) {
+        if (parameter.getValue() instanceof String) {
+          // folder id, I think the best for the moment.
+          String targetFolderId = (String) parameter.getValue();
+          parameters.put("targetFolderConnector", getConnectorFromUrl(targetFolderId));
+          
+        } else if (parameter.getValue() instanceof RepositoryFolder) {
+          throw new IllegalStateException("TArget Folder shouldn't be resolved by GUI any more");
+        }
+      }
+    }
+    connector.executeParameterizedAction(repoPartOfId, actionId, parameters);
+  }
+
+  public List<ArtifactType> getSupportedArtifactTypes(String folderId) {
+    if (folderId == null || folderId.length() <= 1) {
+      // "virtual" root folder doesn't support any artifact types
+      return new ArrayList<ArtifactType>();
+    }
+    return getConnectorFromUrl(folderId).getSupportedArtifactTypes(getRepositoryPartOfUrl(folderId));
   }
 
 }

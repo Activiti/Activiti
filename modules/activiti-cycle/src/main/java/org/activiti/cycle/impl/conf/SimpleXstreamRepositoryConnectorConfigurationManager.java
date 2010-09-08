@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.activiti.cycle.RepositoryException;
+import org.activiti.cycle.impl.plugin.PluginFinder;
 
 import com.thoughtworks.xstream.XStream;
 
@@ -25,6 +26,7 @@ public class SimpleXstreamRepositoryConnectorConfigurationManager implements Cyc
   private static final String FILE_EXT = ".cycle-conf.xml";
   
   private XStream xStream = new XStream();
+  
 
   // private List<Class< ? extends RepositoryConnector>>
   // registeredRepositoryConnnectors = new ArrayList<Class< ? extends
@@ -35,12 +37,15 @@ public class SimpleXstreamRepositoryConnectorConfigurationManager implements Cyc
   // = new ArrayList<RepositoryConnectorConfiguration>();
 
   public SimpleXstreamRepositoryConnectorConfigurationManager() {
+    PluginFinder.checkPluginInitialization();
   }
   
   public SimpleXstreamRepositoryConnectorConfigurationManager(File baseDir) {
-    // TODO: Do something with it!
+    // TODO: Do something with the base dir
+
+    PluginFinder.checkPluginInitialization();
   }
-  
+
   public XStream getXStream() {
     return xStream;
   }

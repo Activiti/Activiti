@@ -5,21 +5,18 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 
 import org.activiti.cycle.Content;
-import org.activiti.cycle.ContentType;
 import org.activiti.cycle.RepositoryArtifact;
+import org.activiti.cycle.RepositoryConnector;
 import org.activiti.cycle.RepositoryException;
+import org.activiti.cycle.impl.ContentProviderImpl;
+import org.activiti.cycle.impl.connector.fs.FileSystemConnector;
 
-public class FileSystemTextProvider extends FileSystemContentRepresentationProvider {
-
-  public static final String NAME = "Text";
-
-  public FileSystemTextProvider() {
-    super(NAME, ContentType.TEXT, true);
-  }
+public class TextFileContentProvider extends ContentProviderImpl {
 
   @Override
-  public void addValueToContent(Content content, RepositoryArtifact artifact) {
-    File file = new File(getConnector(artifact).getConfiguration().getBasePath() + artifact.getId());
+  public void addValueToContent(Content content, RepositoryConnector connector, RepositoryArtifact artifact) {
+    String fileName = ((FileSystemConnector) connector).getConfiguration().getBasePath() + artifact.getId();
+    File file = new File(fileName);
     try{
     	content.setValue(new FileInputStream(file));
   	} catch (FileNotFoundException fnfe) {

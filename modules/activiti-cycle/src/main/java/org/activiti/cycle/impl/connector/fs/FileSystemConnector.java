@@ -8,15 +8,18 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.activiti.cycle.ArtifactType;
 import org.activiti.cycle.Content;
-import org.activiti.cycle.ContentRepresentationDefinition;
 import org.activiti.cycle.RepositoryArtifact;
 import org.activiti.cycle.RepositoryException;
 import org.activiti.cycle.RepositoryFolder;
 import org.activiti.cycle.RepositoryNode;
+import org.activiti.cycle.RepositoryNodeCollection;
 import org.activiti.cycle.RepositoryNodeNotFoundException;
+import org.activiti.cycle.impl.RepositoryArtifactImpl;
+import org.activiti.cycle.impl.RepositoryFolderImpl;
+import org.activiti.cycle.impl.RepositoryNodeCollectionImpl;
 import org.activiti.cycle.impl.connector.AbstractRepositoryConnector;
-import org.activiti.cycle.impl.plugin.ActivitiCyclePluginRegistry;
 
 import eu.medsea.mimeutil.MimeUtil;
 
@@ -26,16 +29,6 @@ import eu.medsea.mimeutil.MimeUtil;
  * @author ruecker
  */
 public class FileSystemConnector extends AbstractRepositoryConnector<FileSystemConnectorConfiguration> {
-
-  public static final String BPMN_20_XML = "bpmn20.xml";
-  public static final String ORYX_XML = "oryx.xml";
-  public static final String TEXT = "txt";
-  public static final String XML = "xml";
-  public static final String MS_WORD = "doc";
-  public static final String MS_WORD_X = "docx";
-  public static final String MS_PP = "ppt";
-  public static final String MS_PP_X = "pptx";
-  public static final String PDF = "pdf";
   
   public FileSystemConnector(FileSystemConnectorConfiguration conf) {
     super(conf);
@@ -47,7 +40,7 @@ public class FileSystemConnector extends AbstractRepositoryConnector<FileSystemC
     return true;
   }
 
-  public List<RepositoryNode> getChildNodes(String parentId) {
+  public RepositoryNodeCollection getChildren(String parentId) throws RepositoryNodeNotFoundException {
     File[] children = null;
     String path = "";
 
@@ -78,7 +71,7 @@ public class FileSystemConnector extends AbstractRepositoryConnector<FileSystemC
       throw new RepositoryNodeNotFoundException(getConfiguration().getName(), RepositoryFolder.class, parentId, ex);
     }
 
-    return childNodes;
+    return new RepositoryNodeCollectionImpl(childNodes);
   }
 
   public RepositoryArtifact getRepositoryArtifact(String id) {
@@ -101,12 +94,7 @@ public class FileSystemConnector extends AbstractRepositoryConnector<FileSystemC
     return new File(getConfiguration().getBasePath() + id);
   }
 
-  public Content getContent(String nodeId, String representationName) {
-    RepositoryArtifact artifact = getRepositoryArtifact(nodeId);
-    return artifact.loadContent(representationName);
-  }
-
-  public void deleteArtifact(String artifactId) {
+  public void deleteArtifact(String artifactId) throws RepositoryNodeNotFoundException {
     File fileToDelete = getFileFromId(artifactId);
     if (deleteFile(fileToDelete)) {
       return;
@@ -115,15 +103,26 @@ public class FileSystemConnector extends AbstractRepositoryConnector<FileSystemC
     throw new RepositoryException("Unable to delete file " + fileToDelete);
   }
 
-  public void createNewSubFolder(String parentFolderId, RepositoryFolder subFolder) {
-    File newSubFolder = new File(getFileFromId(parentFolderId), subFolder.getId());
+  public RepositoryFolder createFolder(String parentFolderId, String name) throws RepositoryNodeNotFoundException {
+    File newSubFolder = new File(getFileFromId(parentFolderId), parentFolderId);
     if (!newSubFolder.mkdir()) {
-      throw new RepositoryException("Unable to create subfolder " + subFolder.getId() + " in parentfolder " + parentFolderId);
+      throw new RepositoryException("Unable to create subfolder " + parentFolderId + " in parentfolder " + parentFolderId);
+    }
+    
+    return getRepositoryFolder(getRepositoryNodeId(parentFolderId, name));
+  }
+
+  private String getRepositoryNodeId(String parentFolderId, String name) {
+    if (parentFolderId.endsWith("/")) {
+      // required for root folder
+      return parentFolderId + name;
+    } else {
+      return parentFolderId + "/" + name;
     }
   }
 
-  public void deleteSubFolder(String subFolderId) {
-    File subFolderToDelete = getFileFromId(subFolderId);
+  public void deleteFolder(String folderId) throws RepositoryNodeNotFoundException {
+    File subFolderToDelete = getFileFromId(folderId);
     if (deleteFile(subFolderToDelete)) {
       return;
     }
@@ -151,18 +150,23 @@ public class FileSystemConnector extends AbstractRepositoryConnector<FileSystemC
   }
 
   private RepositoryArtifact getArtifactInfo(File file) throws IOException {
-    RepositoryArtifact artifact = new RepositoryArtifact(this);
+    String id = getLocalPath(file.getCanonicalPath());
 
-    artifact.setId(getLocalPath(file.getCanonicalPath()));
-    artifact.getMetadata().setName(file.getName());
-    artifact.getMetadata().setPath(getConfiguration().getBasePath() + artifact.getId());
-    artifact.getMetadata().setLastChanged(new Date(file.lastModified()));
-
-    // FIXME: Better way to check for mimetypes or file extensions.
+    // TODO: Better way to check for mimetypes or file extensions.
     // See http://www.rgagnon.com/javadetails/java-0487.html or Alfresco Remote
     // Api (org.alfresco.repo.content.MimetypeMap)
-    artifact.setArtifactType(ActivitiCyclePluginRegistry.getArtifactTypeByIdentifier(getMimeType(file)));
+    String mimeType = getMimeType(file);
+    
+    // TODO: We should have an extension to ArtifactType mapping somewhere
+    ArtifactType artifactType = getConfiguration().getArtifactType(mimeType);
 
+    RepositoryArtifactImpl artifact = new RepositoryArtifactImpl(id, artifactType, this);
+    artifact.getMetadata().setName(file.getName());
+        
+    // TODO: CHECK Implementation
+    artifact.getMetadata().setParentFolderId(getLocalPath(file.getParent()));
+    
+    artifact.getMetadata().setLastChanged(new Date(file.lastModified()));
     return artifact;
   }
 
@@ -191,23 +195,25 @@ public class FileSystemConnector extends AbstractRepositoryConnector<FileSystemC
   }
 
   private RepositoryFolder getFolderInfo(File file) throws IOException {
-    RepositoryFolder folder = new RepositoryFolder(this);
 
     String id = getLocalPath(file.getCanonicalPath());
     if ("".equals(id)) {
       // root folder is again a special case
       id = "/";
     }
-    folder.setId(id);
+    RepositoryFolderImpl folder = new RepositoryFolderImpl(id);
     folder.getMetadata().setName(file.getName());
-    folder.getMetadata().setPath(getConfiguration().getBasePath() + folder.getId());
+    // TODO: Implement
+    // folder.getMetadata().setParentFolderId();
+    
     folder.getMetadata().setLastChanged(new Date(file.lastModified()));
 
     return folder;
   }
 
-  public void createNewArtifact(String containingFolderId, RepositoryArtifact artifact, Content artifactContent) {
-    File newFile = new File(getFileFromId(containingFolderId), artifact.getId());
+  public RepositoryArtifact createArtifact(String containingFolderId, String artifactName, String artifactType, Content artifactContent)
+          throws RepositoryNodeNotFoundException {
+    File newFile = new File(getFileFromId(containingFolderId), artifactName);
     BufferedOutputStream bos = null;
 
     try {
@@ -216,20 +222,31 @@ public class FileSystemConnector extends AbstractRepositoryConnector<FileSystemC
         bos.write(artifactContent.asByteArray());
       }
     } catch (IOException ioe) {
-      throw new RepositoryException("Unable to create file " + artifact + " in folder " + containingFolderId);
+      throw new RepositoryException("Unable to create file '" + artifactName + " in folder " + containingFolderId);
     } finally {
       if (bos != null) {
         try {
           bos.close();
         } catch (IOException e) {
-          throw new RepositoryException("Unable to create file " + artifact + " in folder " + containingFolderId);
+          throw new RepositoryException("Unable to create file " + artifactName + " in folder " + containingFolderId);
         }
       }
     }
+    
+    return getRepositoryArtifact(getRepositoryNodeId(containingFolderId, artifactName));
   }
 
-  public void modifyArtifact(RepositoryArtifact artifact, ContentRepresentationDefinition artifactContent) {
+  public RepositoryArtifact createArtifactFromContentRepresentation(String containingFolderId, String artifactName, String artifactType,
+          String contentRepresentationName, Content artifactContent) throws RepositoryNodeNotFoundException {
+    return createArtifact(containingFolderId, artifactName, artifactType, artifactContent);
+  }
+
+  public void updateContent(String artifactId, Content content) throws RepositoryNodeNotFoundException {
     throw new UnsupportedOperationException("FileSystemConnector does not support modifying files!");
+  }
+
+  public void updateContent(String artifactId, String contentRepresentationName, Content content) throws RepositoryNodeNotFoundException {
+    throw new UnsupportedOperationException("FileSystemConnector does not support modifying files!");   
   }
 
   private String getLocalPath(String path) {    

@@ -15,6 +15,7 @@ package org.activiti.cycle.impl.connector.fs;
 import java.io.File;
 import java.io.IOException;
 
+import org.activiti.cycle.ArtifactType;
 import org.activiti.cycle.RepositoryConnector;
 import org.activiti.cycle.RepositoryException;
 import org.activiti.cycle.impl.conf.RepositoryConnectorConfiguration;
@@ -44,7 +45,15 @@ public class FileSystemConnectorConfiguration extends RepositoryConnectorConfigu
   public FileSystemConnectorConfiguration(String basePath) {
     setBasePath(basePath);
   }
-
+  
+  /**
+   * TODO: Think about a real concept to handle this
+   */
+  @Override
+  public ArtifactType getDefaultArtifactType() {
+    return getArtifactType(FileSystemPluginDefinition.ARTIFACT_TYPE_DEFAULT);
+  }
+  
   /**
    * return configured base path for file system connector. The path is ALWAYS
    * without a trailing "/". Be aware that this may make problems on the root

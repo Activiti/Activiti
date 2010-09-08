@@ -16,35 +16,21 @@ import java.io.InputStream;
 import java.net.URL;
 
 import org.activiti.cycle.Content;
-import org.activiti.cycle.ContentType;
 import org.activiti.cycle.RepositoryArtifact;
 import org.activiti.cycle.RepositoryException;
+import org.activiti.cycle.impl.connector.signavio.SignavioConnector;
 
 public class PngProvider extends SignavioContentRepresentationProvider {
 
-  public static final String NAME = "PNG";
-
-  public PngProvider() {
-    super(NAME, ContentType.PNG, false);
-  }
-
   @Override
-  public void addValueToContent(Content content, RepositoryArtifact artifact) {
+  public void addValueToContent(Content content, SignavioConnector connector, RepositoryArtifact artifact) {
     try {
-      String modelAsPngUrl = getModelAsPngUrl(artifact);
+      String modelAsPngUrl = connector.getConfiguration().getPngUrl(artifact.getId(), connector.getSecurityToken());
       InputStream is = new URL(modelAsPngUrl).openStream();
-
       content.setValue(is);
     } catch (Exception ex) {
       throw new RepositoryException("Exception while accessing Signavio repository", ex);
     }
-  }
-
-  /**
-   * for documentation (even if do not use it at the moment)
-   */
-  public String getModelAsPngUrl(RepositoryArtifact fileInfo) {
-    return getConnector(fileInfo).getConfiguration().getModelUrl(fileInfo.getId()) + "/png?token=" + getConnector(fileInfo).getSecurityToken();
   }
 
 }
