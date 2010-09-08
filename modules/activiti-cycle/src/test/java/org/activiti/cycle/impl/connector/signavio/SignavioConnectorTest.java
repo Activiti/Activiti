@@ -1,6 +1,6 @@
 package org.activiti.cycle.impl.connector.signavio;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertTrue;
 
 import java.io.BufferedReader;
 import java.io.FileInputStream;
@@ -100,6 +100,44 @@ public class SignavioConnectorTest {
 	  // transform transformed json to bpmn20 xml
 	  String processEngineBpmnXml = connector.transformJsonToBpmn20Xml(jsonObj.toString());
 	  System.out.println("ProcessEngineBpmnXml:\n" + processEngineBpmnXml);
+  }
+  
+  @Ignore
+  @Test
+  public void testActivitiCompliantBpmn20() throws Exception {
+    // define transformations
+    List<JsonTransformation> transformations = new ArrayList<JsonTransformation>();
+    transformations.add(new BpmnPoolExtraction("Process Engine"));
+    transformations.add(new AdjustShapeNamesTransformation());
+//    transformations.add(new ExchangeSignavioUuidWithNameTransformation());
+    
+    // create signavio conf + connector
+    SignavioConnectorConfiguration conf = new SignavioConnectorConfiguration("editor-url with ending slash");
+    conf.setLoginRequired(true);
+    conf.setUser("user");
+    conf.setPassword("xxx");
+    SignavioConnector connector = (SignavioConnector) conf.createConnector();
+    connector.login(conf.getUser(), conf.getPassword());
+    String sourceJson = connector.getJsonResponse(conf.getModelUrl("modelId/json")).getEntity().getText();
+    
+    System.out.println(sourceJson);
+    
+    // test pre-transformation json to bpmn20 xml
+    String jsonXmlBeforeTransformation = connector.transformJsonToBpmn20Xml(sourceJson);
+    System.out.println("JSONXmlBeforeTransformation:\n" + jsonXmlBeforeTransformation);
+
+    // execute working transformation loop on json
+    JSONObject jsonObj = new JSONObject(sourceJson);
+    for (JsonTransformation trafo : transformations) {
+      jsonObj = trafo.transform(jsonObj);
+      System.out.println("Transformation(" + trafo.getClass().getSimpleName() + "):\n" + jsonObj);
+    }
+    
+    System.out.println("After working transformations:\n" + jsonObj.toString());
+    
+    // transform transformed json to bpmn20 xml
+    String processEngineBpmnXml = connector.transformJsonToBpmn20Xml(jsonObj.toString());
+    System.out.println("ProcessEngineBpmnXml:\n" + processEngineBpmnXml);
   }
   
   @Ignore

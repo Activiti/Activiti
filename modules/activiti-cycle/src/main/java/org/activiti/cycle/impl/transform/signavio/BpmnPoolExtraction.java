@@ -20,7 +20,7 @@ public class BpmnPoolExtraction extends OryxTransformation {
 		Shape pool = null;
 		for (Shape childShape : childShapes) {
 			if ("Pool".equals(childShape.getStencil().getId())
-					&& poolName.equals(childShape.getProperty("name"))) {
+					&& (childShape.getProperty("name").contains(poolName))) {
 				extractedChildShapes.add(childShape);
 				pool = childShape;
 				break;
@@ -33,7 +33,7 @@ public class BpmnPoolExtraction extends OryxTransformation {
 					extractedChildShapes.add(childShape);
 				}
 			}
-			deleteAllOutgoingReferencesNotContainedInShape(pool, null);
+			doCleanupOnShapes(pool, null);
 			diagram.setChildShapes(extractedChildShapes);
 			
 		} else {
@@ -67,30 +67,69 @@ public class BpmnPoolExtraction extends OryxTransformation {
 		}
 	}
 	
-	private void deleteAllOutgoingReferencesNotContainedInShape(Shape sourceShape, Shape childShape) {
-	  // for first invoke
-	  if (childShape == null) {
-	    childShape = sourceShape;
-	  }
-	  if (childShape.getChildShapes().isEmpty()) {
-	    return;
+	private void deleteAllIncomingReferencesNotContainedInShape(Shape sourceShape, Shape shapeToClean) {  
+    ArrayList<Shape> incomings = shapeToClean.getIncomings();
+    if (incomings != null && incomings.size() > 0) {
+      ArrayList<Shape> removeIncomings = new ArrayList<Shape>();
+      for (Shape incoming : incomings) {
+        // TODO: Christian: Find a better way to determine the difference between the incoming sources 
+        // can be flowElements or activities in case of attached elements
+        Shape incomingSource = incoming.getIncomings().get(0);
+        if (incomingSource.getStencilId().equals("MessageFlow") || incomingSource.getStencilId().equals("SequenceFlow")) {
+          incomingSource = incoming;
+        }
+        if (!shapeIsContainedIn(incomingSource, sourceShape)) {
+          removeIncomings.add(incoming);
+        }
+      }
+//      if (removeIncomings.size() > 0) {
+//        System.out.println("Deleting Incomings for shape: " + shapeToClean.getProperty("name") + ", " + shapeToClean.getStencilId());
+//        for (Shape shape2 : removeIncomings) {
+//          System.out.println("Delete Shape: " + shape2.getStencilId() + ", " + shape2.getResourceId() + " coming from " + ((Shape) shape2.getIncomings().get(0)).getProperty("name") + "(" + ((Shape) shape2.getIncomings().get(0)).getStencilId() + ")");
+//        }
+//      }
+      incomings.removeAll(removeIncomings);
+      shapeToClean.setIncomings(incomings);
     }
-	  for (Shape child : childShape.getChildShapes()) {
-      ArrayList<Shape> outgoings = child.getOutgoings();
+	}
+	
+	private void deleteAllOutgoingReferencesNotContainedInShape(Shape sourceShape, Shape shapeToClean) {
+    ArrayList<Shape> outgoings = shapeToClean.getOutgoings();
+    if (outgoings != null && outgoings.size() > 0) {
       ArrayList<Shape> removeOutgoings = new ArrayList<Shape>();
-      if (!outgoings.isEmpty()) {
-        for (Shape outgoing : outgoings) {
-          Shape target = outgoing.getTarget();
+      for (Shape outgoing : outgoings) {
+        Shape target = outgoing.getTarget();
+        if (target != null) {
           if (!(shapeIsContainedIn(target, sourceShape))) {
             removeOutgoings.add(outgoing);
           }
         }
-        outgoings.removeAll(removeOutgoings);
-        child.setOutgoings(outgoings);
-      } else {
-        // recursion to iterate through all children of sourceShape
-        deleteAllOutgoingReferencesNotContainedInShape(sourceShape, child);
       }
+//      if (removeOutgoings.size() > 0) {
+//        System.out.println("Deleting outgoings for shape: " + shapeToClean.getProperty("name") + ", " + shapeToClean.getStencilId());
+//        for (Shape shape2 : removeOutgoings) {
+//          System.out.println("Delete Shape: " + shape2.getStencilId() + ", " + shape2.getResourceId() + " targeting " + shape2.getTarget().getProperty("name") + "(" + shape2.getStencilId() + ")");
+//        }
+//      }
+      outgoings.removeAll(removeOutgoings);
+      shapeToClean.setOutgoings(outgoings);
+    }
+	}
+	
+	private void doCleanupOnShapes(Shape sourceShape, Shape shape) {
+	  // for first invoke
+	  if (shape == null) {
+	    shape = sourceShape;
+	  }
+	  deleteAllIncomingReferencesNotContainedInShape(sourceShape, shape);
+	  deleteAllOutgoingReferencesNotContainedInShape(sourceShape, shape);
+//	  System.out.println("");
+	  if (shape.getChildShapes().size() == 0) {
+	    return;
+	  }
+	  for (Shape child : shape.getChildShapes()) {
+        // recursion to iterate through all children of sourceShape
+	    doCleanupOnShapes(sourceShape, child);
     }
 	}
 }

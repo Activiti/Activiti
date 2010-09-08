@@ -439,8 +439,8 @@ public class SignavioConnector extends AbstractRepositoryConnector<SignavioConne
     // create an artifact by different types?
     try {
       createNewModel(folderId, artifact.getMetadata().getName(), content.asString(), null, null);
-    } catch (IOException ioe) {
-      throw new RepositoryException("Unable to create new model '" + artifact.getMetadata().getName() + "' in folder '" + folderId + "'", ioe);
+    } catch (Exception e) {
+      throw new RepositoryException("Unable to create new model '" + artifact.getMetadata().getName() + "' in folder '" + folderId + "'", e);
     }
   }
 
