@@ -22,10 +22,12 @@ public class OryxConnectorConfiguration extends SignavioConnectorConfiguration {
     super(name, signavioBaseUrl);
   }
 
-  public static String getRepositoryBackendUrlSuffix() {
+  @Override
+  public String getRepositoryBackendUrlSuffix() {
     return REPOSITORY_BACKEND_URL_SUFFIX;
   }
 
+  @Override
   public String getEditorBackendUrlSuffix() {
     return EDITOR_BACKEND_URL_SUFFIX;
   }

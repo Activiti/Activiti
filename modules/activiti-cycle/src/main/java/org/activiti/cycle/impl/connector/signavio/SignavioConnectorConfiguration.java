@@ -209,7 +209,7 @@ public class SignavioConnectorConfiguration extends PasswordEnabledRepositoryCon
     return getModelUrl(modelId) + "/" + MODEL_INFO_URL_SUFFIX;
   }
 
-  public static String getRepositoryBackendUrlSuffix() {
+  public String getRepositoryBackendUrlSuffix() {
     return REPOSITORY_BACKEND_URL_SUFFIX;
   }
 
