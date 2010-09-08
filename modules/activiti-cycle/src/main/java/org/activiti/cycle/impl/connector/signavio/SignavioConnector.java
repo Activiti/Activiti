@@ -294,7 +294,8 @@ public class SignavioConnector extends AbstractRepositoryConnector<SignavioConne
 
   private ArrayList<RepositoryNode> getModelsFromOryxBackend() throws IOException, JSONException {
     ArrayList<RepositoryNode> nodes = new ArrayList<RepositoryNode>();
-    Response filterResponse = getJsonResponse(getConfiguration().getRepositoryBackendUrl() + "filter?sort=rating");
+    // extracts only BPMN 2.0 models, since everything else is more or less unsupported
+    Response filterResponse = getJsonResponse(getConfiguration().getRepositoryBackendUrl() + "filter?type=http%3A%2F%2Fb3mn.org%2Fstencilset%2Fbpmn2.0%23&sort=rating");
     JsonRepresentation jsonRepresentation = new JsonRepresentation(filterResponse.getEntity());
     JSONArray modelRefs = jsonRepresentation.toJsonArray();
     for (int i = 0; i < modelRefs.length(); i++) {

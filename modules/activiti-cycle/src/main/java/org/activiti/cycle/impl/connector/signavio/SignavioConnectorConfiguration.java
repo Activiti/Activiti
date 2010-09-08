@@ -38,12 +38,12 @@ public class SignavioConnectorConfiguration extends PasswordEnabledRepositoryCon
   private boolean loginRequired = false;
 
   // these values differ between Oryx and Signavio
-  private static String REPOSITORY_BACKEND_URL_SUFFIX = "p/";
+  protected static String REPOSITORY_BACKEND_URL_SUFFIX = "p/";
   protected static String EDITOR_BACKEND_URL_SUFFIX = "editor/";
+  protected static String EDITOR_URL_SUFFIX = "editor?id=";
 
   public static String REGISTRATION_URL_SUFFIX = "register/";
   public static String LOGIN_URL_SUFFIX = "login/";
-  public static String EDITOR_URL_SUFFIX = "editor?id=";
   public static String EXPLORER_URL_SUFFIX = "explorer/";
   public static String MODEL_URL_SUFFIX = "model";
   public static String DIRECTORY_URL_SUFFIX = "directory";
