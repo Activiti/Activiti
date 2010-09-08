@@ -303,7 +303,7 @@
         </property>
       </activation>
       <modules>
-        <module>modules/activiti-engine-examples</module>
+        <module>modules/activiti-engine</module>
       </modules>
     </profile>
 	</profiles>
