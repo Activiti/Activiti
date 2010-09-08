@@ -67,7 +67,7 @@ public class CreateTechnicalBpmnXmlAction extends ParameterizedHtmlFormTemplateA
     String sourceJson = getBpmn20Json((SignavioConnector) connector, artifact);
     String transformedJson = applyJsonTransformations(sourceJson);
     String bpmnXml = transformToBpmn20((SignavioConnector) connector, transformedJson);
-    createTargetArtifact(targetConnector, targetFolderId, targetName + ".bpmn20.xml", bpmnXml);
+    createTargetArtifact(targetConnector, targetFolderId, targetName + ".bpmn20.xml", bpmnXml, FileSystemPluginDefinition.ARTIFACT_TYPE_BPMN_20_XML);
 
     // TODO: Think about that more, does it make sense like this?
     targetConnector.commitPendingChanges(comment);
@@ -97,10 +97,10 @@ public class CreateTechnicalBpmnXmlAction extends ParameterizedHtmlFormTemplateA
     return bpmnXml;
   }
 
-  public void createTargetArtifact(RepositoryConnector targetConnector, String targetFolderId, String artifactId, String bpmnXml) {
+  public void createTargetArtifact(RepositoryConnector targetConnector, String targetFolderId, String artifactId, String bpmnXml, String artifactTypeId) {
     Content content = new Content();
     content.setValue(bpmnXml);
-    targetConnector.createArtifact(targetFolderId, artifactId, FileSystemPluginDefinition.ARTIFACT_TYPE_BPMN_20_XML, content);
+    targetConnector.createArtifact(targetFolderId, artifactId, artifactTypeId, content);
   }
   
   public String getProcessName(RepositoryArtifact artifact) {
