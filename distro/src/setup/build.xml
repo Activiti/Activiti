@@ -30,9 +30,14 @@
   <property name="maven.download.destination" value="${downloads.dir}/apache-maven-${maven.version}.zip" />
   <available property="is.maven.downloaded" file="${maven.download.destination}" />
   <property name="maven.download.url" value="http://www.apache.org/dist/maven/binaries/apache-maven-${maven.version}-bin.zip" />
-	<condition property="mvn.executable" value="mvn.bat" else="mvn">
+  <condition property="mvn.executable" value="mvn.bat" else="mvn">
     <os family="windows"/>
   </condition>
+  <!-- fix to get relative urls working with exec-task under windows (especially maven)-->
+  <condition property="vmlauncher" value="false" else="true">
+	<os family="windows"/>
+  </condition>
+	
   <property name="maven.path" value="apps/apache-maven-${maven.version}/bin/${mvn.executable}" />
 
   <target name="demo.setup" depends="examples.get.libs.all,
@@ -75,11 +80,11 @@
 		<attribute name="module" />
 		<sequential>
 	    <mkdir dir="${activiti.home}/examples/activiti-@{module}-examples/libs-runtime" />
-	    <exec dir="files/examples/modules/activiti-@{module}" executable="../../../../../${maven.path}">
+	    <exec dir="files/examples/modules/activiti-@{module}" executable="../../../../../${maven.path}" vmlauncher="${vmlauncher}">
 	      <arg line="dependency:copy-dependencies -DincludeScope=runtime -DoutputDirectory=../../../../../examples/activiti-@{module}-examples/libs-runtime"/>
 	    </exec>
       <mkdir dir="${activiti.home}/examples/activiti-@{module}-examples/libs-test" />
-      <exec dir="files/examples/modules/activiti-@{module}" executable="../../../../../${maven.path}">
+      <exec dir="files/examples/modules/activiti-@{module}" executable="../../../../../${maven.path}" vmlauncher="${vmlauncher}">
         <arg line="dependency:copy-dependencies -DexcludeScope=runtime -DoutputDirectory=../../../../../examples/activiti-@{module}-examples/libs-test"/>
       </exec>
 	    <copy file="${activiti.home}/lib/activiti-@{module}-${activiti.version}.jar" todir="${activiti.home}/examples/activiti-@{module}-examples/libs-runtime" />
@@ -87,13 +92,13 @@
 	</macrodef>
   
   <target name="internal.install.activiti.libs">
-    <exec dir="${activiti.home}/lib" executable="../${maven.path}">
+    <exec dir="${activiti.home}/lib" executable="../${maven.path}" vmlauncher="${vmlauncher}">
       <arg line="install:install-file -Dfile=activiti-pvm-${activiti.version}.jar -DgroupId=org.activiti -DartifactId=activiti-pvm -Dpackaging=jar -Dversion=${activiti.version}"/>
     </exec>
-    <exec dir="${activiti.home}/lib" executable="../${maven.path}">
+    <exec dir="${activiti.home}/lib" executable="../${maven.path}" vmlauncher="${vmlauncher}">
       <arg line="install:install-file -Dfile=activiti-engine-${activiti.version}.jar -DgroupId=org.activiti -DartifactId=activiti-engine -Dpackaging=jar -Dversion=${activiti.version}"/>
     </exec>
-    <exec dir="${activiti.home}/lib" executable="../${maven.path}">
+    <exec dir="${activiti.home}/lib" executable="../${maven.path}" vmlauncher="${vmlauncher}">
       <arg line="install:install-file -Dfile=activiti-spring-${activiti.version}.jar -DgroupId=org.activiti -DartifactId=activiti-spring -Dpackaging=jar -Dversion=${activiti.version}"/>
     </exec>
   </target>
