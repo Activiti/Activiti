@@ -12,10 +12,6 @@
  */
 package org.activiti.engine.impl.bpmn;
 
-import java.util.ArrayList;
-import java.util.List;
-
-
 /**
  * An Operation is part of an {@link BpmnInterface} and it defines Messages that are consumed and
  * (optionally) produced when the Operation is called.
@@ -28,9 +24,9 @@ public class Operation {
   
   protected String name;
   
-  protected List<String> inArguments;
+  protected Message inMessage;
   
-  protected List<String> outArguments;
+  protected Message outMessage;
   
   /**
    * The interface to which this operations belongs
@@ -41,39 +37,13 @@ public class Operation {
     
   }
   
-  public Operation(String id, String name, BpmnInterface bpmnInterface) {
-    this.inArguments = new ArrayList<String>();
-    this.outArguments = new ArrayList<String>();
-	    
+  public Operation(String id, String name, BpmnInterface bpmnInterface, Message inMessage) {
     setId(id);
     setName(name);
     setInterface(bpmnInterface);
+    setInMessage(inMessage);
   }
   
-	public void addInArgument(String argument) {
-		this.inArguments.add(argument);
-	}
-
-	public void addOutArgument(String argument) {
-		this.outArguments.add(argument);
-	}
-
-	public int getInArgumentsSize() {
-		return this.inArguments.size();
-	}
-
-	public int getOutArgumentsSize() {
-		return this.outArguments.size();
-	}
-
-	public String getInArgument(int index) {
-		return this.inArguments.get(index);
-	}
-
-	public String getOutArgument(int index) {
-		return this.outArguments.get(index);
-	}
-
   public String getId() {
     return id;
   }
@@ -97,5 +67,20 @@ public class Operation {
   public void setInterface(BpmnInterface bpmnInterface) {
     this.bpmnInterface = bpmnInterface;
   }
-  
+
+  public Message getInMessage() {
+    return inMessage;
+  }
+
+  public void setInMessage(Message inMessage) {
+    this.inMessage = inMessage;
+  }
+
+  public Message getOutMessage() {
+    return outMessage;
+  }
+
+  public void setOutMessage(Message outMessage) {
+    this.outMessage = outMessage;
+  }
 }

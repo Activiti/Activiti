@@ -38,13 +38,13 @@
   <interface name="Counter Interface" implementationRef="counter:Counter">
     <!-- Operation: implementationRef = QName of WSDL Operation -->
     <operation id="incOperation" name="Increase Operation" implementationRef="counter:inc">
-      <inMessageRef>tns:incRequestMessage</inMessageRef>
-      <outMessageRef>tns:incResponseMessage</outMessageRef>
+      <inMessageRef>incRequestMessage</inMessageRef>
+      <outMessageRef>incResponseMessage</outMessageRef>
     </operation>
   </interface>
   
-  <message id="incRequestMessage" itemRef="tns:incRequestItem" />
-  <message id="incResponseMessage" itemRef="tns:incResponseItem" />
+  <message id="incRequestMessage" itemRef="incRequestItem" />
+  <message id="incResponseMessage" itemRef="incResponseItem" />
   
   <itemDefinition id="incRequestItem" structureRef="counter:inc" /><!-- QName of input element -->
   <itemDefinition id="incResponseItem" structureRef="counter:incResponse" /><!-- QName of output element -->

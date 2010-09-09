@@ -19,29 +19,36 @@ import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.transformer.Identity;
 import org.activiti.engine.impl.transformer.Transformer;
 import org.activiti.engine.impl.webservice.SyncWebServiceClient;
+import org.activiti.pvm.activity.ActivityBehavior;
 import org.activiti.pvm.activity.ActivityExecution;
 
 
 /**
- * An activity that allows calling Web services
+ * An activity behavior that allows calling Web services
  * 
  * @author Esteban Robles Luna
  */
-public class WebServiceActivity extends BpmnActivityBehavior {
+public class WebServiceActivityBehavior implements ActivityBehavior {
 
   protected Operation operation;
   
   protected SyncWebServiceClient client;
   
+  protected List<String> inVariableNames;
+  
+  protected List<String> outVariableNames;
+  
   protected List<Transformer> inTransformers;
   
   protected List<Transformer> outTransformers;
   
-  public WebServiceActivity(SyncWebServiceClient client, Operation operation) {
+  public WebServiceActivityBehavior(SyncWebServiceClient client, Operation operation) {
     this.client = client;
     this.operation = operation;
     this.inTransformers = new ArrayList<Transformer>();
     this.outTransformers = new ArrayList<Transformer>();
+    this.inVariableNames = new ArrayList<String>();
+    this.outVariableNames = new ArrayList<String>();
   }
   
   /**
@@ -54,19 +61,23 @@ public class WebServiceActivity extends BpmnActivityBehavior {
     Object[] arguments = this.getArguments(execution);
     Object[] transformedArguments = this.transform(arguments);
     Object[] results = this.send(transformedArguments);
+    
+    this.verifyResultsAccordingToOutMessage(results);
+    
     Object[] transformedResults = this.transformResults(results);
     this.store(transformedResults, execution);
   }
   
   private void fillTransformersIfEmpty() {
-    if (this.inTransformers.isEmpty() && this.operation.getInArgumentsSize() > 0) {
-      for (int i = 0; i < this.operation.getInArgumentsSize(); i++) {
+    if (this.inTransformers.isEmpty() && this.getInStructure().getFieldSize() > 0) {
+      for (int i = 0; i < this.getInStructure().getFieldSize(); i++) {
         this.inTransformers.add(Identity.getInstance());
       }
     }
 
-    if (this.outTransformers.isEmpty() && this.operation.getOutArgumentsSize() > 0) {
-      for (int i = 0; i < this.operation.getOutArgumentsSize(); i++) {
+    if (this.getOutStructure() != null && this.outTransformers.isEmpty() 
+            && this.getOutStructure().getFieldSize() > 0) {
+      for (int i = 0; i < this.getOutStructure().getFieldSize(); i++) {
         this.outTransformers.add(Identity.getInstance());
       }
     }
@@ -80,20 +91,34 @@ public class WebServiceActivity extends BpmnActivityBehavior {
     this.outTransformers.add(transformer);
   }
   
+  public void addInVariable(String variableName) {
+    this.inVariableNames.add(variableName);
+  }
+
+  public void addOutVariable(String variableName) {
+    this.outVariableNames.add(variableName);
+  }
+
   private void verifySameSizeOfTransformersAndArguments() {
-    if (this.operation.getInArgumentsSize() != this.inTransformers.size()) {
+    if (this.getInStructure().getFieldSize() != this.inTransformers.size()) {
       throw new ActivitiException("The size of IN arguments and transformers does not match");
     }
     
-    if (this.operation.getOutArgumentsSize() != this.outTransformers.size()) {
+    if (this.getOutStructure() != null && this.getOutStructure().getFieldSize() != this.outTransformers.size()) {
       throw new ActivitiException("The size of OUT arguments and transformers does not match");
+    }
+  }
+  
+  private void verifyResultsAccordingToOutMessage(Object[] results) {
+    if (this.getOutStructure() != null && results.length != this.getOutStructure().getFieldSize()) {
+      throw new ActivitiException("The result of the Web service call has different size according to the expected message");
     }
   }
 
   private void store(Object[] transformedResults, ActivityExecution execution) {
     for (int i = 0; i < transformedResults.length; i++) {
       Object transformedResult = transformedResults[i];
-      String outVariable = this.operation.getOutArgument(i);
+      String outVariable = this.outVariableNames.get(i);
       execution.setVariable(outVariable, transformedResult);
     }
   }
@@ -121,11 +146,21 @@ public class WebServiceActivity extends BpmnActivityBehavior {
   }
 
   private Object[] getArguments(ActivityExecution execution) {
-    Object[] arguments = new Object[this.operation.getInArgumentsSize()];
+    Object[] arguments = new Object[this.getInStructure().getFieldSize()];
     for (int i = 0; i < arguments.length; i++) {
-      String inVariable = this.operation.getInArgument(i);
+      String inVariable = this.inVariableNames.get(i);
       arguments[i] = execution.getVariable(inVariable);
     }
     return arguments;
+  }
+  
+  private Structure getInStructure() {
+    return this.operation.getInMessage().getStructure();
+  }
+
+  private Structure getOutStructure() {
+    return this.operation.getOutMessage() == null
+      ? null
+      : this.operation.getOutMessage().getStructure();
   }
 }

@@ -18,8 +18,11 @@ import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.impl.bpmn.ItemDefinition;
+import org.activiti.engine.impl.bpmn.Message;
 import org.activiti.engine.impl.bpmn.Operation;
-import org.activiti.engine.impl.bpmn.WebServiceActivity;
+import org.activiti.engine.impl.bpmn.SimpleStructure;
+import org.activiti.engine.impl.bpmn.WebServiceActivityBehavior;
 import org.activiti.engine.impl.transformer.Transformer;
 import org.activiti.engine.impl.webservice.SyncWebServiceClient;
 import org.activiti.pvm.activity.ActivityExecution;
@@ -33,14 +36,18 @@ import org.junit.Test;
  * 
  * @author Esteban Robles Luna
  */
-public class WebServiceActivityTest {
+public class WebServiceActivityBehaviorTest {
 
   private SyncWebServiceClient client;
   private ActivityExecution execution;
   private Transformer inTransformer;
   private Transformer outTransformer;
   private Operation operation;
-  private WebServiceActivity activity;
+  private WebServiceActivityBehavior activity;
+  private SimpleStructure inStructure;
+  private Message inMessage;
+  private SimpleStructure outStructure;
+  private Message outMessage;
 
   @Before
   public void setUp() {
@@ -48,8 +55,17 @@ public class WebServiceActivityTest {
     execution = mock(ActivityExecution.class);
     inTransformer = mock(Transformer.class);
     outTransformer = mock(Transformer.class);
-    operation = new Operation("idSetTo", "setTo", null);
-    activity = new WebServiceActivity(client, operation);
+    
+    inStructure = new SimpleStructure("id");
+    ItemDefinition inItemDefinition = new ItemDefinition("id", inStructure);
+    inMessage = new Message("id", inItemDefinition);
+    
+    outStructure = new SimpleStructure("id");
+    ItemDefinition outItemDefinition = new ItemDefinition("id", outStructure);
+    outMessage = new Message("id", outItemDefinition);
+    
+    operation = new Operation("idSetTo", "setTo", null, inMessage);
+    activity = new WebServiceActivityBehavior(client, operation);
   }
   
   @After
@@ -62,9 +78,13 @@ public class WebServiceActivityTest {
   
   @Test
   public void testWebServiceCallWithNeitherInNorOutTransformers() throws Exception {
-    operation.addInArgument("valueToSet");
-    operation.addOutArgument("resultOfCall");
-
+    activity.addInVariable("valueToSet");
+    activity.addOutVariable("resultOfCall");
+    
+    inStructure.setFieldName(0, "f1");
+    outStructure.setFieldName(0, "fo1");
+    operation.setOutMessage(outMessage);
+    
     when(execution.getVariable("valueToSet")).thenReturn("11");
     when(client.send("setTo", new Object[] { "11" })).thenReturn(new Object[] { 33 });
     
@@ -77,8 +97,12 @@ public class WebServiceActivityTest {
   
   @Test
   public void testWebServiceCallWithNoOutTransformers() throws Exception {
-    operation.addInArgument("valueToSet");
-    operation.addOutArgument("resultOfCall");
+    activity.addInVariable("valueToSet");
+    activity.addOutVariable("resultOfCall");
+
+    inStructure.setFieldName(0, "f1");
+    outStructure.setFieldName(0, "fo1");
+    operation.setOutMessage(outMessage);
 
     activity.addInTransformer(inTransformer);
     
@@ -96,8 +120,12 @@ public class WebServiceActivityTest {
   
   @Test
   public void testWebServiceCallWithNoInTransformers() throws Exception {
-    operation.addInArgument("valueToSet");
-    operation.addOutArgument("resultOfCall");
+    activity.addInVariable("valueToSet");
+    activity.addOutVariable("resultOfCall");
+
+    inStructure.setFieldName(0, "f1");
+    outStructure.setFieldName(0, "fo1");
+    operation.setOutMessage(outMessage);
 
     activity.addOutTransformer(outTransformer);
     
@@ -115,8 +143,12 @@ public class WebServiceActivityTest {
   
   @Test
   public void testWebServiceCallWithInAndOutTransformers() throws Exception {
-    operation.addInArgument("valueToSet");
-    operation.addOutArgument("resultOfCall");
+    activity.addInVariable("valueToSet");
+    activity.addOutVariable("resultOfCall");
+
+    inStructure.setFieldName(0, "f1");
+    outStructure.setFieldName(0, "fo1");
+    operation.setOutMessage(outMessage);
 
     activity.addInTransformer(inTransformer);
     activity.addOutTransformer(outTransformer);
@@ -138,10 +170,15 @@ public class WebServiceActivityTest {
   
   @Test
   public void testInArgumentsSizeDoesNotMatch() {
-    operation.addInArgument("valueToSet");
-    operation.addInArgument("valueToSet2");
-    operation.addOutArgument("resultOfCall");
-    
+    activity.addInVariable("valueToSet");
+    activity.addInVariable("valueToSet2");
+    activity.addOutVariable("resultOfCall");
+
+    inStructure.setFieldName(0, "f1");
+    inStructure.setFieldName(1, "f2");
+    outStructure.setFieldName(0, "fo1");
+    operation.setOutMessage(outMessage);
+
     activity.addInTransformer(inTransformer);
 
     try {
@@ -156,9 +193,14 @@ public class WebServiceActivityTest {
 
   @Test
   public void testOutArgumentsSizeDoesNotMatch() {
-    operation.addInArgument("valueToSet");
-    operation.addOutArgument("resultOfCall");
-    operation.addOutArgument("resultOfCall2");
+    activity.addInVariable("valueToSet");
+    activity.addOutVariable("resultOfCall");
+    activity.addOutVariable("resultOfCall2");
+
+    inStructure.setFieldName(0, "f1");
+    outStructure.setFieldName(0, "fo1");
+    outStructure.setFieldName(1, "fo2");
+    operation.setOutMessage(outMessage);
 
     activity.addOutTransformer(outTransformer);
     

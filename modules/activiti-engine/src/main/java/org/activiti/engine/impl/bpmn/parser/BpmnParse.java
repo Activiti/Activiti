@@ -26,9 +26,13 @@ import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.bpmn.BoundaryTimerEventActivity;
 import org.activiti.engine.impl.bpmn.BpmnInterface;
 import org.activiti.engine.impl.bpmn.CallActivityBehaviour;
+import org.activiti.engine.impl.bpmn.ClassStructure;
 import org.activiti.engine.impl.bpmn.Condition;
 import org.activiti.engine.impl.bpmn.ExclusiveGatewayActivity;
+import org.activiti.engine.impl.bpmn.ItemDefinition;
+import org.activiti.engine.impl.bpmn.ItemKind;
 import org.activiti.engine.impl.bpmn.ManualTaskActivity;
+import org.activiti.engine.impl.bpmn.Message;
 import org.activiti.engine.impl.bpmn.NoneEndEventActivity;
 import org.activiti.engine.impl.bpmn.NoneStartEventActivity;
 import org.activiti.engine.impl.bpmn.Operation;
@@ -38,9 +42,12 @@ import org.activiti.engine.impl.bpmn.ScriptTaskActivity;
 import org.activiti.engine.impl.bpmn.ServiceTaskDelegateActivityBehaviour;
 import org.activiti.engine.impl.bpmn.ServiceTaskMethodExpressionActivityBehavior;
 import org.activiti.engine.impl.bpmn.ServiceTaskValueExpressionActivityBehavior;
+import org.activiti.engine.impl.bpmn.SoapStructure;
+import org.activiti.engine.impl.bpmn.Structure;
 import org.activiti.engine.impl.bpmn.SubProcessActivity;
 import org.activiti.engine.impl.bpmn.TaskActivity;
 import org.activiti.engine.impl.bpmn.UserTaskActivity;
+import org.activiti.engine.impl.bpmn.WebServiceActivityBehavior;
 import org.activiti.engine.impl.el.ActivitiValueExpression;
 import org.activiti.engine.impl.el.ExpressionManager;
 import org.activiti.engine.impl.el.UelMethodExpressionCondition;
@@ -81,6 +88,16 @@ public class BpmnParse extends Parse {
   protected List<ProcessDefinitionEntity> processDefinitions = new ArrayList<ProcessDefinitionEntity>();
 
   /**
+   * Map containing the BPMN 2.0 messages, stored during the first phase
+   * of parsing since other elements can reference these messages.
+   * 
+   * Messages are defined outside the process definition(s), which means
+   * that this map doesn't need to be re-initialized for each new process
+   * definition.
+   */
+  protected Map<String, Message> messages = new HashMap<String, Message>();
+
+  /**
    * Map containing the BPMN 2.0 item definitions, stored during the first phase
    * of parsing since other elements can reference these item definitions.
    * 
@@ -88,7 +105,7 @@ public class BpmnParse extends Parse {
    * that this map doesn't need to be re-initialized for each new process
    * definition.
    */
-  protected Map<String, Element> itemDefinitions = new HashMap<String, Element>();
+  protected Map<String, ItemDefinition> itemDefinitions = new HashMap<String, ItemDefinition>();
 
   /**
    * Map containing the the {@link BpmnInterface}s defined in the XML file. The
@@ -147,6 +164,7 @@ public class BpmnParse extends Parse {
     // Item definitions and interfaces/operations are not part of any process definition
     // They need to be parsed before the process definitions since they will refer to them
     parseItemDefinitions(rootElement);
+    parseMessages(rootElement);
     parseInterfaces(rootElement);
 
     parseProcessDefinitions(rootElement);
@@ -163,7 +181,49 @@ public class BpmnParse extends Parse {
    */
   public void parseItemDefinitions(Element definitionsElement) {
     for (Element itemDefinitionElement : definitionsElement.elements("itemDefinition")) {
-      itemDefinitions.put(itemDefinitionElement.attribute("id"), itemDefinitionElement);
+      String id = itemDefinitionElement.attribute("id");
+      String structureRef = itemDefinitionElement.attribute("structureRef");
+      String itemKind = itemDefinitionElement.attribute("itemKind");
+      Structure structure = null;
+      
+      try {
+        //it is a class
+        Class<?> classStructure = this.getClass().getClassLoader().loadClass(structureRef);
+        structure = new ClassStructure(classStructure);
+      } catch (ClassNotFoundException e) {
+        //it is a reference to a different structure
+        //TODO
+        structure = new SoapStructure(id);
+      }
+      
+      ItemDefinition itemDefinition = new ItemDefinition(id, structure);
+      if (itemKind != null) {
+        itemDefinition.setItemKind(ItemKind.valueOf(itemKind));
+      }
+      itemDefinitions.put(id, itemDefinition);
+    }
+  }
+  
+  /**
+   * Parses the messages of the given definitions file. Messages
+   * are not contained within a process element, but they can be referenced from
+   * inner process elements.
+   * 
+   * @param definitionsElement
+   *          The root element of the XML file/
+   */
+  public void parseMessages(Element definitionsElement) {
+    for (Element messageElement : definitionsElement.elements("message")) {
+      String id = messageElement.attribute("id");
+      String itemRef = messageElement.attribute("itemRef");
+      
+      if (!this.itemDefinitions.containsKey(itemRef)) {
+        addProblem(itemRef + " does not exist", messageElement);
+      } else {
+        ItemDefinition itemDefinition = this.itemDefinitions.get(itemRef);
+        Message message = new Message(id, itemDefinition);
+        this.messages.put(id, message);
+      }
     }
   }
 
@@ -192,12 +252,26 @@ public class BpmnParse extends Parse {
   }
 
   public Operation parseOperation(Element operationElement, BpmnInterface bpmnInterface) {
-    String id = operationElement.attribute("id");
-    String name = operationElement.attribute("name");
-    Operation operation = new Operation(id, name, bpmnInterface);
+    Element inMessageRefElement = operationElement.element("inMessageRef");
 
-    operations.put(id, operation);
-    return operation;
+    if (!this.messages.containsKey(inMessageRefElement.getText())) {
+      addProblem(inMessageRefElement.getText() + " does not exist", inMessageRefElement);
+      return null;
+    } else {
+      Message inMessage = this.messages.get(inMessageRefElement.getText());
+      String id = operationElement.attribute("id");
+      String name = operationElement.attribute("name");
+      Operation operation = new Operation(id, name, bpmnInterface, inMessage);
+
+      Element outMessageRefElement = operationElement.element("outMessageRef");
+      if (this.messages.containsKey(outMessageRefElement.getText())) {
+        Message outMessage = this.messages.get(outMessageRefElement.getText());
+        operation.setOutMessage(outMessage);
+      }
+      
+      operations.put(id, operation);
+      return operation;
+    }
   }
 
   /**
@@ -437,6 +511,8 @@ public class BpmnParse extends Parse {
     String className = serviceTaskElement.attributeNS(BpmnParser.BPMN_EXTENSIONS_NS, "class");
     String methodExpr = serviceTaskElement.attributeNS(BpmnParser.BPMN_EXTENSIONS_NS, "method-expr");
     String valueExpr = serviceTaskElement.attributeNS(BpmnParser.BPMN_EXTENSIONS_NS, "value-expr");
+    String implementation = serviceTaskElement.attribute("implementation");
+    String operationRef = serviceTaskElement.attribute("operationRef");
     
     if (className != null && className.trim().length() > 0) {
       activity.setActivityBehavior(new ServiceTaskDelegateActivityBehaviour(expressionManager.createValueExpression(className)));
@@ -447,6 +523,13 @@ public class BpmnParse extends Parse {
     } else if (valueExpr != null && valueExpr.trim().length() > 0) {
       activity.setActivityBehavior(new ServiceTaskValueExpressionActivityBehavior(expressionManager.createValueExpression(valueExpr)));
       
+    } else if (implementation != null && operationRef != null && implementation.equalsIgnoreCase("##WebService")) {
+      if (!this.operations.containsKey(operationRef)) {
+        addProblem(operationRef + " does not exist" , serviceTaskElement);
+      } else {
+        Operation operation = this.operations.get(operationRef);
+        activity.setActivityBehavior(new WebServiceActivityBehavior(null, operation));
+      }
     } else {
       throw new ActivitiException("'class' or 'expr' attribute is mandatory on serviceTask");
     }
@@ -859,9 +942,10 @@ public class BpmnParse extends Parse {
     String itemSubjectRef = propertyElement.attribute("itemSubjectRef");
     String type = null;
     if (itemSubjectRef != null) {
-      Element itemDefinitionRef = itemDefinitions.get(itemSubjectRef);
-      if (itemDefinitionRef != null) {
-        type = itemDefinitionRef.attribute("structureRef");
+      ItemDefinition itemDefinition = itemDefinitions.get(itemSubjectRef);
+      if (itemDefinition != null) {
+        Structure structure = itemDefinition.getStructure();
+        type = structure.getId();
       } else {
         throw new ActivitiException("Invalid itemDefinition reference: " + itemSubjectRef + " not found");
       }
