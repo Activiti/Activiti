@@ -180,6 +180,7 @@ JAVA_OPTS=-XX:MaxPermSize=@tomcat.max.perm.size@
         <include name="*.sh" />
       </fileset>
     </chmod>
+  	<copy file="${activiti.home}/setup/files/tomcat/logging.properties" todir="${tomcat.home}/conf" overwrite="true" /> 
   </target>
 
   <target name="tomcat.copy.users" if="tomcat.users.available">
