@@ -41,6 +41,7 @@
 
   <resultMap id="userResultMap" type="org.activiti.engine.impl.identity.UserEntity">
     <id property="id" column="ID_" jdbcType="VARCHAR" />
+    <result property="revision" column="REV_" jdbcType="INTEGER" />
     <result property="firstName" column="FIRST_" jdbcType="VARCHAR" />
     <result property="lastName" column="LAST_" jdbcType="VARCHAR" />
     <result property="email" column="EMAIL_" jdbcType="VARCHAR" />
@@ -85,7 +86,7 @@
       NAME_ = #{name ,jdbcType=VARCHAR},
       TYPE_ = #{type ,jdbcType=VARCHAR}
     where ID_ = #{id}
-          REV_ = #{revision}
+       and REV_ = #{revision}
   </update>
   
   <!-- GROUP DELETE -->
@@ -98,6 +99,7 @@
 
   <resultMap id="groupResultMap" type="org.activiti.engine.impl.identity.GroupEntity">
     <id property="id" column="ID_" jdbcType="VARCHAR" />
+    <result property="revision" column="REV_" jdbcType="INTEGER" />
     <result property="name" column="NAME_" jdbcType="VARCHAR" />
     <result property="type" column="TYPE_" jdbcType="VARCHAR" />
   </resultMap>
