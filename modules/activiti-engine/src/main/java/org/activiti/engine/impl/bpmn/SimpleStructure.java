@@ -32,12 +32,10 @@ public class SimpleStructure implements Structure {
     this.fieldNames = new ArrayList<String>();
   }
   
-  @Override
   public int getFieldSize() {
     return this.fieldNames.size();
   }
 
-  @Override
   public String getId() {
     return this.id;
   }

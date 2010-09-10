@@ -25,12 +25,10 @@ public class SoapStructure implements Structure {
     this.id = id;
   }
   
-  @Override
   public String getId() {
     return this.id;
   }
 
-  @Override
   public int getFieldSize() {
     //TODO
     return 0;

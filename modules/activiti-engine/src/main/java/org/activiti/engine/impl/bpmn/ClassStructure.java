@@ -25,12 +25,10 @@ public class ClassStructure implements Structure {
     this.classStructure = classStructure;
   }
 
-  @Override
   public String getId() {
     return this.classStructure.getName();
   }
 
-  @Override
   public int getFieldSize() {
     //TODO
     return 0;
