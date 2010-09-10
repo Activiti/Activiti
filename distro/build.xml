@@ -16,8 +16,8 @@
   	<delete dir="target" />
   </target>
 
-  <target name="distro" depends="build.modules, get.libs, build.userguide, build.javadocs">
-    <mkdir dir="${target.distro.root}" />
+  <target name="distro" depends="build.modules, build.userguide, build.javadocs">
+    <mkdir dir="${target.distro.root}/lib" />
     <copy todir="${target.distro.root}">
       <fileset dir="src" />
     </copy>
@@ -134,13 +134,6 @@
   	<zip destfile="${target.distro.root}.zip">
   		<fileset dir="${target.distro.root}" />
   	</zip>
-  </target>
-  
-  <target name="get.libs">
-    <mkdir dir="${target.distro.root}/lib" />
-    <!-- exec executable="${mvn.executable}" dir="../modules/activiti-engine">
-      <arg line="-DoutputDirectory=../../distro/${target.distro.root}/lib dependency:copy-dependencies" />
-    </exec -->
   </target>
   
   <target name="build.modules">
