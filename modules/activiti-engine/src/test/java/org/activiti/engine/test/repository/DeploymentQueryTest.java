@@ -15,15 +15,15 @@ package org.activiti.engine.test.repository;
 
 import java.util.List;
 
+import org.activiti.engine.impl.test.ActivitiInternalTestCase;
 import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.repository.DeploymentQuery;
-import org.activiti.engine.test.ProcessEngineTestCase;
 
 
 /**
  * @author Tom Baeyens
  */
-public class DeploymentQueryTest extends ProcessEngineTestCase {
+public class DeploymentQueryTest extends ActivitiInternalTestCase {
 
   public void testDeploymentQueries() {
     String deploymentOneId = repositoryService

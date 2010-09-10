@@ -15,14 +15,14 @@ package org.activiti.engine.test.service;
 import java.util.List;
 
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.impl.test.ActivitiInternalTestCase;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.test.Deployment;
-import org.activiti.engine.test.ProcessEngineTestCase;
 
 /**
  * @author Joram Barrez
  */
-public class RepositoryServiceTest extends ProcessEngineTestCase {
+public class RepositoryServiceTest extends ActivitiInternalTestCase {
 
   @Deployment(resources = {
     "org/activiti/engine/test/service/oneTaskProcess.bpmn20.xml"})

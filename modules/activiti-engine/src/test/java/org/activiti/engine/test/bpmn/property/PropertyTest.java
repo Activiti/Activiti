@@ -12,14 +12,14 @@
  */
 package org.activiti.engine.test.bpmn.property;
 
+import org.activiti.engine.impl.test.ActivitiInternalTestCase;
 import org.activiti.engine.test.Deployment;
-import org.activiti.engine.test.ProcessEngineTestCase;
 import org.junit.Test;
 
 /**
  * @author Joram Barrez
  */
-public class PropertyTest extends ProcessEngineTestCase {
+public class PropertyTest extends ActivitiInternalTestCase {
 
 
   @Deployment

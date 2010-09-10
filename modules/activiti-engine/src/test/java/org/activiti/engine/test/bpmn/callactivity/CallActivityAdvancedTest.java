@@ -16,17 +16,17 @@ package org.activiti.engine.test.bpmn.callactivity;
 import java.util.Date;
 import java.util.List;
 
+import org.activiti.engine.impl.test.ActivitiInternalTestCase;
 import org.activiti.engine.impl.util.ClockUtil;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.task.TaskQuery;
 import org.activiti.engine.test.Deployment;
-import org.activiti.engine.test.ProcessEngineTestCase;
 
 /**
  * @author Joram Barrez
  */
-public class CallActivityAdvancedTest extends ProcessEngineTestCase {
+public class CallActivityAdvancedTest extends ActivitiInternalTestCase {
 
   @Deployment(resources = {
     "org/activiti/engine/test/bpmn/callactivity/CallActivity.testCallSimpleSubProcess.bpmn20.xml", 

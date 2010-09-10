@@ -15,15 +15,15 @@ package org.activiti.engine.test.service;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.activiti.engine.impl.test.ActivitiInternalTestCase;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
-import org.activiti.engine.test.ProcessEngineTestCase;
 
 /**
  * @author Joram Barrez
  */
-public class TaskServiceTest extends ProcessEngineTestCase {
+public class TaskServiceTest extends ActivitiInternalTestCase {
   
   @Deployment(resources={
     "org/activiti/engine/test/service/twoTasksProcess.bpmn20.xml"})

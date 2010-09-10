@@ -16,15 +16,15 @@ import java.util.List;
 
 import org.activiti.engine.identity.Group;
 import org.activiti.engine.identity.User;
+import org.activiti.engine.impl.test.ActivitiInternalTestCase;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
-import org.activiti.engine.test.ProcessEngineTestCase;
 
 /**
  * @author Joram Barrez
  */
-public class TaskCandidateTest extends ProcessEngineTestCase {
+public class TaskCandidateTest extends ActivitiInternalTestCase {
 
   private static final String KERMIT = "kermit";
 

@@ -19,7 +19,7 @@ import junit.framework.TestCase;
 import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.ProcessEngineInfo;
 import org.activiti.engine.ProcessEngines;
-import org.activiti.engine.test.ProcessEngineTestCase;
+import org.activiti.engine.impl.test.ActivitiInternalTestCase;
 
 /**
  * @author Tom Baeyens
@@ -29,7 +29,7 @@ public class ProcessEnginesTest extends TestCase {
   @Override
   protected void setUp() throws Exception {
     super.setUp();
-    ProcessEngineTestCase.closeProcessEngine();
+    ActivitiInternalTestCase.closeProcessEngine();
     ProcessEngines.init();
   }
   

@@ -11,7 +11,7 @@
  * limitations under the License.
  */
 
-package org.activiti.engine.test;
+package org.activiti.engine.impl.test;
 
 import java.util.Arrays;
 import java.util.List;
@@ -35,8 +35,6 @@ import org.activiti.engine.TaskService;
 import org.activiti.engine.impl.ProcessEngineImpl;
 import org.activiti.engine.impl.cfg.ProcessEngineConfiguration;
 import org.activiti.engine.impl.jobexecutor.JobExecutor;
-import org.activiti.engine.impl.test.ProcessEngineInitializer;
-import org.activiti.engine.impl.test.TestHelper;
 import org.activiti.engine.impl.util.ClockUtil;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.pvm.impl.util.LogUtil.ThreadLogMode;
@@ -44,13 +42,20 @@ import org.activiti.pvm.test.PvmTestCase;
 import org.junit.Assert;
 
 
-/** TODO move this to into our implementation org.activiti.engine.impl.test
+/** Base class for the activiti test cases.
+ * 
+ * The main reason not to use our own test support classes is that we need to 
+ * run our test suite with various configurations, e.g. with and without spring,
+ * standalone or on a server etc.  Those requirements create some complications 
+ * so we think it's best to use a separate base class.  That way it is much easier 
+ * for us to maintain our own codebase and at the same time provide stability 
+ * on the test support classes that we offer as part of our api (in org.activiti.engine.test).
  * 
  * @author Tom Baeyens
  */
-public class ProcessEngineTestCase extends PvmTestCase {
+public class ActivitiInternalTestCase extends PvmTestCase {
 
-  private static Logger log = Logger.getLogger(ProcessEngineTestCase.class.getName());
+  private static Logger log = Logger.getLogger(ActivitiInternalTestCase.class.getName());
 
   private static final List<String> TABLENAMES_EXCLUDED_FROM_DB_CLEAN_CHECK = Arrays.asList(
     "ACT_GE_PROPERTY"

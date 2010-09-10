@@ -16,12 +16,12 @@ import java.util.Date;
 
 import org.activiti.engine.impl.runtime.MessageEntity;
 import org.activiti.engine.impl.runtime.TimerEntity;
-import org.activiti.engine.test.ProcessEngineTestCase;
+import org.activiti.engine.impl.test.ActivitiInternalTestCase;
 
 /**
  * @author Tom Baeyens
  */
-public class JobExecutorTestCase extends ProcessEngineTestCase {
+public class JobExecutorTestCase extends ActivitiInternalTestCase {
 
   protected TweetHandler tweetHandler = new TweetHandler();
 

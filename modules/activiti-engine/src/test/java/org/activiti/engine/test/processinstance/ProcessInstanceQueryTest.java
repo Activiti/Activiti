@@ -13,13 +13,13 @@
 package org.activiti.engine.test.processinstance;
 
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.impl.test.ActivitiInternalTestCase;
 import org.activiti.engine.runtime.ProcessInstanceQuery;
-import org.activiti.engine.test.ProcessEngineTestCase;
 
 /**
  * @author Joram Barrez
  */
-public class ProcessInstanceQueryTest extends ProcessEngineTestCase {
+public class ProcessInstanceQueryTest extends ActivitiInternalTestCase {
 
   private static String PROCESS_KEY = "oneTaskProcess";
   private static String PROCESS_KEY_2 = "oneTaskProcess2";

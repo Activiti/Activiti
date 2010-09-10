@@ -18,12 +18,12 @@ import java.util.Set;
 
 import org.activiti.engine.identity.Group;
 import org.activiti.engine.identity.User;
-import org.activiti.engine.test.ProcessEngineTestCase;
+import org.activiti.engine.impl.test.ActivitiInternalTestCase;
 
 /**
  * @author Tom Baeyens
  */
-public class IdentityTest extends ProcessEngineTestCase {
+public class IdentityTest extends ActivitiInternalTestCase {
 
   public void testAuthentication() {
     User user = identityService.newUser("johndoe");

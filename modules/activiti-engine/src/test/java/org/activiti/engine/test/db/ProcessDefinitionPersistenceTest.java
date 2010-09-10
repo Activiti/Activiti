@@ -15,14 +15,14 @@ package org.activiti.engine.test.db;
 
 import java.util.List;
 
+import org.activiti.engine.impl.test.ActivitiInternalTestCase;
 import org.activiti.engine.repository.ProcessDefinition;
-import org.activiti.engine.test.ProcessEngineTestCase;
 
 
 /**
  * @author Tom Baeyens
  */
-public class ProcessDefinitionPersistenceTest extends ProcessEngineTestCase {
+public class ProcessDefinitionPersistenceTest extends ActivitiInternalTestCase {
 
   public void testProcessDefinitionPersistence() {
     String deploymentId = repositoryService

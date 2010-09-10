@@ -13,16 +13,16 @@
 
 package org.activiti.examples.bpmn.callactivity;
 
+import org.activiti.engine.impl.test.ActivitiInternalTestCase;
 import org.activiti.engine.impl.util.CollectionUtil;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.task.TaskQuery;
 import org.activiti.engine.test.Deployment;
-import org.activiti.engine.test.ProcessEngineTestCase;
 
 /**
  * @author Joram Barrez
  */
-public class CallActivityTest extends ProcessEngineTestCase {
+public class CallActivityTest extends ActivitiInternalTestCase {
 
   @Deployment(resources={
     "org/activiti/examples/bpmn/callactivity/orderProcess.bpmn20.xml",

@@ -17,14 +17,14 @@ import java.util.Collection;
 import java.util.List;
 
 import org.activiti.engine.impl.bpmn.deployer.BpmnDeployer;
+import org.activiti.engine.impl.test.ActivitiInternalTestCase;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.repository.ProcessDefinitionQuery;
-import org.activiti.engine.test.ProcessEngineTestCase;
 
 /**
  * @author Tom Baeyens
  */
-public class ProcessDefinitionsTest extends ProcessEngineTestCase {
+public class ProcessDefinitionsTest extends ActivitiInternalTestCase {
 
   private static final String NAMESPACE = "xmlns='http://www.omg.org/spec/BPMN/20100524/MODEL'";
 

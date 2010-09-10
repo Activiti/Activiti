@@ -19,16 +19,16 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.activiti.engine.impl.test.ActivitiInternalTestCase;
 import org.activiti.engine.impl.util.IoUtil;
 import org.activiti.engine.repository.Deployment;
-import org.activiti.engine.test.ProcessEngineTestCase;
 
 
 
 /**
  * @author Tom Baeyens
  */
-public class DeploymentPersistenceTest extends ProcessEngineTestCase {
+public class DeploymentPersistenceTest extends ActivitiInternalTestCase {
 
   public void testDeploymentPersistence() {
     Deployment deployment = repositoryService

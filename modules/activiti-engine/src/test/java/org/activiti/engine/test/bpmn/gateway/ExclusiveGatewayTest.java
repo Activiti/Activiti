@@ -16,16 +16,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.impl.test.ActivitiInternalTestCase;
 import org.activiti.engine.impl.util.CollectionUtil;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
-import org.activiti.engine.test.ProcessEngineTestCase;
 
 /**
  * @author Joram Barrez
  */
-public class ExclusiveGatewayTest extends ProcessEngineTestCase {
+public class ExclusiveGatewayTest extends ActivitiInternalTestCase {
 
   @Deployment
   public void testDivergingExclusiveGateway() {

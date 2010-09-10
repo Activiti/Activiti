@@ -18,14 +18,14 @@ import java.util.List;
 
 import org.activiti.engine.impl.json.JsonListConverter;
 import org.activiti.engine.impl.json.JsonProcessDefinitionConverter;
+import org.activiti.engine.impl.test.ActivitiInternalTestCase;
 import org.activiti.engine.repository.ProcessDefinition;
-import org.activiti.engine.test.ProcessEngineTestCase;
 
 
 /**
  * @author Tom Baeyens
  */
-public class JsonTest extends ProcessEngineTestCase {
+public class JsonTest extends ActivitiInternalTestCase {
 
   public void testJson() {
     

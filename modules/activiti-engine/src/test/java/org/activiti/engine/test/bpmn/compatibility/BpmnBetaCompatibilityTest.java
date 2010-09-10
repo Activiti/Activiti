@@ -15,11 +15,11 @@ package org.activiti.engine.test.bpmn.compatibility;
 
 import java.util.Arrays;
 
+import org.activiti.engine.impl.test.ActivitiInternalTestCase;
 import org.activiti.engine.impl.util.CollectionUtil;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
-import org.activiti.engine.test.ProcessEngineTestCase;
 
 /**
  * Test cases for checking if process models created with the Activiti Modeler,
@@ -30,7 +30,7 @@ import org.activiti.engine.test.ProcessEngineTestCase;
  * 
  * @author Joram Barrez
  */
-public class BpmnBetaCompatibilityTest extends ProcessEngineTestCase {
+public class BpmnBetaCompatibilityTest extends ActivitiInternalTestCase {
   
   @Deployment
   public void testStartToEndProcess() {

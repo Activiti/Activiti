@@ -12,14 +12,14 @@
  */
 package org.activiti.engine.test.bpmn.servicetask;
 
+import org.activiti.engine.impl.test.ActivitiInternalTestCase;
 import org.activiti.engine.test.Deployment;
-import org.activiti.engine.test.ProcessEngineTestCase;
 
 
 /**
  * @author Esteban Robles Luna
  */
-public class WebServiceTaskTest extends ProcessEngineTestCase {
+public class WebServiceTaskTest extends ActivitiInternalTestCase {
 
   @Deployment
   public void testWebServiceInvocationWithoutDataFlow() {

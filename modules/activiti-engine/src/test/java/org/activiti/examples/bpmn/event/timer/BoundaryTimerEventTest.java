@@ -14,16 +14,16 @@ package org.activiti.examples.bpmn.event.timer;
 
 import java.util.Date;
 
+import org.activiti.engine.impl.test.ActivitiInternalTestCase;
 import org.activiti.engine.impl.util.ClockUtil;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
-import org.activiti.engine.test.ProcessEngineTestCase;
 
 /**
  * @author Joram Barrez
  */
-public class BoundaryTimerEventTest extends ProcessEngineTestCase {
+public class BoundaryTimerEventTest extends ActivitiInternalTestCase {
 
   @Deployment
   public void testInterruptingTimerDuration() {

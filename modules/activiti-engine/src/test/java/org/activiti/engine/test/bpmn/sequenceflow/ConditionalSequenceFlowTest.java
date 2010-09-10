@@ -15,17 +15,17 @@ package org.activiti.engine.test.bpmn.sequenceflow;
 
 import java.util.Map;
 
+import org.activiti.engine.impl.test.ActivitiInternalTestCase;
 import org.activiti.engine.impl.util.CollectionUtil;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
-import org.activiti.engine.test.ProcessEngineTestCase;
 
 
 /**
  * @author Joram Barrez
  */
-public class ConditionalSequenceFlowTest extends ProcessEngineTestCase {
+public class ConditionalSequenceFlowTest extends ActivitiInternalTestCase {
   
   @Deployment
   public void testUelValueExpression() {

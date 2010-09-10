@@ -13,17 +13,17 @@
 
 package org.activiti.examples.bpmn.expression;
 
+import org.activiti.engine.impl.test.ActivitiInternalTestCase;
 import org.activiti.engine.impl.util.CollectionUtil;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
-import org.activiti.engine.test.ProcessEngineTestCase;
 
 
 /**
  * @author Joram Barrez
  */
-public class UelExpressionTest extends ProcessEngineTestCase {
+public class UelExpressionTest extends ActivitiInternalTestCase {
 
   @Deployment
   public void testValueAndMethodExpression() {

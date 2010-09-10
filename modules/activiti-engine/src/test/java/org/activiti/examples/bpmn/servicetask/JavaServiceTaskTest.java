@@ -12,16 +12,16 @@
  */
 package org.activiti.examples.bpmn.servicetask;
 
+import org.activiti.engine.impl.test.ActivitiInternalTestCase;
 import org.activiti.engine.impl.util.CollectionUtil;
 import org.activiti.engine.runtime.Execution;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.test.Deployment;
-import org.activiti.engine.test.ProcessEngineTestCase;
 
 /**
  * @author Joram Barrez
  */
-public class JavaServiceTaskTest extends ProcessEngineTestCase {
+public class JavaServiceTaskTest extends ActivitiInternalTestCase {
 
   @Deployment
   public void testJavaServiceDelegation() {

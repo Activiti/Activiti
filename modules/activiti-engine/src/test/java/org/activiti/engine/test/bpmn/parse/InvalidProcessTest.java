@@ -13,8 +13,8 @@
 package org.activiti.engine.test.bpmn.parse;
 
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.impl.test.ActivitiInternalTestCase;
 import org.activiti.engine.impl.test.TestHelper;
-import org.activiti.engine.test.ProcessEngineTestCase;
 
 /**
  * Test case for verifying if the parser throws validation exceptions when a
@@ -22,7 +22,7 @@ import org.activiti.engine.test.ProcessEngineTestCase;
  * 
  * @author Joram Barrez
  */
-public class InvalidProcessTest extends ProcessEngineTestCase {
+public class InvalidProcessTest extends ActivitiInternalTestCase {
 
   public void testInvalidProcessDefinition() {
     try {

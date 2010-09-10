@@ -15,16 +15,16 @@ package org.activiti.examples.bpmn.gateway;
 
 import java.util.List;
 
+import org.activiti.engine.impl.test.ActivitiInternalTestCase;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.task.TaskQuery;
 import org.activiti.engine.test.Deployment;
-import org.activiti.engine.test.ProcessEngineTestCase;
 
 /**
  * @author Joram Barrez
  */
-public class ParallelGatewayTest extends ProcessEngineTestCase {
+public class ParallelGatewayTest extends ActivitiInternalTestCase {
   
   @Deployment
   public void testForkJoin() {

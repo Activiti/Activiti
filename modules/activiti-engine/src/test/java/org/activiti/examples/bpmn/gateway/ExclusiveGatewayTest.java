@@ -16,17 +16,17 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.impl.test.ActivitiInternalTestCase;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
-import org.activiti.engine.test.ProcessEngineTestCase;
 
 /**
  * Example of using the exclusive gateway.
  * 
  * @author Joram Barrez
  */
-public class ExclusiveGatewayTest extends ProcessEngineTestCase {
+public class ExclusiveGatewayTest extends ActivitiInternalTestCase {
 
   /**
    * The test process has an XOR gateway where, the 'input' variable is used to

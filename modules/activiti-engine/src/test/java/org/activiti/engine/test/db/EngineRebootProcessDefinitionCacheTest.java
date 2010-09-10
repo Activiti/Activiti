@@ -22,10 +22,10 @@ import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.ProcessEngineBuilder;
 import org.activiti.engine.TaskService;
 import org.activiti.engine.impl.cfg.ProcessEngineConfiguration;
+import org.activiti.engine.impl.test.ActivitiInternalTestCase;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
-import org.activiti.engine.test.ProcessEngineTestCase;
 
 
 /**
@@ -45,7 +45,7 @@ public class EngineRebootProcessDefinitionCacheTest extends TestCase {
     // have been initialized and cached.  First we close the 
     // existing process engines to make sure that the db is clean
     // and that there are no existing process engines involved.
-    ProcessEngineTestCase.closeProcessEngine();
+    ActivitiInternalTestCase.closeProcessEngine();
 
     // Creating the DB schema (without building a process engine)
     ProcessEngineConfiguration processEngineConfiguration = new ProcessEngineConfiguration();

@@ -16,14 +16,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.impl.test.ActivitiInternalTestCase;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.task.TaskQuery;
-import org.activiti.engine.test.ProcessEngineTestCase;
 
 /**
  * @author Joram Barrez
  */
-public class TaskQueryTest extends ProcessEngineTestCase {
+public class TaskQueryTest extends ActivitiInternalTestCase {
 
   private List<String> taskIds;
 

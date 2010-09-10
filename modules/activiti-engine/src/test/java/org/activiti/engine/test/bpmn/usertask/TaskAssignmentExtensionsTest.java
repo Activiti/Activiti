@@ -15,18 +15,18 @@ package org.activiti.engine.test.bpmn.usertask;
 import java.util.List;
 
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.impl.test.ActivitiInternalTestCase;
 import org.activiti.engine.impl.test.TestHelper;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.task.TaskQuery;
 import org.activiti.engine.test.Deployment;
-import org.activiti.engine.test.ProcessEngineTestCase;
 
 /**
  * Testcase for the non-spec extensions to the task candidate use case.
  * 
  * @author Joram Barrez
  */
-public class TaskAssignmentExtensionsTest extends ProcessEngineTestCase {
+public class TaskAssignmentExtensionsTest extends ActivitiInternalTestCase {
 
   public void setUp() throws Exception {
     identityService.saveUser(identityService.newUser("kermit"));

@@ -15,13 +15,13 @@ package org.activiti.impl.interceptor;
 
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
-import org.activiti.engine.test.ProcessEngineTestCase;
+import org.activiti.engine.impl.test.ActivitiInternalTestCase;
 
 
 /**
  * @author Tom Baeyens
  */
-public class CommandContextTest extends ProcessEngineTestCase {
+public class CommandContextTest extends ActivitiInternalTestCase {
 
   public void testCommandContextGetCurrentAfterException() {
     try {

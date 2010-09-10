@@ -15,15 +15,15 @@ package org.activiti.examples.taskforms;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.activiti.engine.impl.test.ActivitiInternalTestCase;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
-import org.activiti.engine.test.ProcessEngineTestCase;
 
 /**
  * @author Tom Baeyens
  * @author Joram Barrez
  */
-public class TaskFormsTest extends ProcessEngineTestCase {
+public class TaskFormsTest extends ActivitiInternalTestCase {
 
   public void setUp() throws Exception {
     identityService.saveUser(identityService.newUser("fozzie"));

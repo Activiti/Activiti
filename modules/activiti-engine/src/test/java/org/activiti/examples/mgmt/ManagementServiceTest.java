@@ -15,8 +15,8 @@ package org.activiti.examples.mgmt;
 import java.util.Map;
 
 import org.activiti.engine.ManagementService;
+import org.activiti.engine.impl.test.ActivitiInternalTestCase;
 import org.activiti.engine.management.TableMetaData;
-import org.activiti.engine.test.ProcessEngineTestCase;
 
 /**
  * Test case for the various operations of the {@link ManagementService}
@@ -24,7 +24,7 @@ import org.activiti.engine.test.ProcessEngineTestCase;
  * @author Tom Baeyens
  * @author Joram Barrez
  */
-public class ManagementServiceTest extends ProcessEngineTestCase {
+public class ManagementServiceTest extends ActivitiInternalTestCase {
 
   public void testTableCount() {
     Map<String, Long> tableCount = managementService.getTableCount();
