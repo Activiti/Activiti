@@ -45,7 +45,7 @@ public class EngineRebootProcessDefinitionCacheTest extends TestCase {
     // have been initialized and cached.  First we close the 
     // existing process engines to make sure that the db is clean
     // and that there are no existing process engines involved.
-    ProcessEngineTestCase.closeProcessEngines();
+    ProcessEngineTestCase.closeProcessEngine();
 
     // Creating the DB schema (without building a process engine)
     ProcessEngineConfiguration processEngineConfiguration = new ProcessEngineConfiguration();

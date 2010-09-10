@@ -13,10 +13,7 @@
 
 package org.activiti.engine.test;
 
-import java.lang.reflect.Method;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Timer;
@@ -36,19 +33,18 @@ import org.activiti.engine.RepositoryService;
 import org.activiti.engine.RuntimeService;
 import org.activiti.engine.TaskService;
 import org.activiti.engine.impl.ProcessEngineImpl;
-import org.activiti.engine.impl.bpmn.deployer.BpmnDeployer;
 import org.activiti.engine.impl.cfg.ProcessEngineConfiguration;
 import org.activiti.engine.impl.jobexecutor.JobExecutor;
+import org.activiti.engine.impl.test.ProcessEngineInitializer;
+import org.activiti.engine.impl.test.TestHelper;
 import org.activiti.engine.impl.util.ClockUtil;
-import org.activiti.engine.repository.DeploymentBuilder;
 import org.activiti.engine.runtime.ProcessInstance;
-import org.activiti.pvm.impl.util.ClassNameUtil;
 import org.activiti.pvm.impl.util.LogUtil.ThreadLogMode;
 import org.activiti.pvm.test.PvmTestCase;
 import org.junit.Assert;
 
 
-/** JUnit 3 style base class that only exposes the public API services. 
+/** TODO move this to into our implementation org.activiti.engine.impl.test
  * 
  * @author Tom Baeyens
  */
@@ -60,16 +56,13 @@ public class ProcessEngineTestCase extends PvmTestCase {
     "ACT_GE_PROPERTY"
   );
 
-  static final String DEFAULT_CONFIGURATION_RESOURCE = "activiti.properties";
-  static Map<String, ProcessEngine> processEngines = new HashMap<String, ProcessEngine>(); 
+  protected static ProcessEngine processEngine; 
   
   protected ThreadLogMode threadRenderingMode = DEFAULT_THREAD_LOG_MODE;
-  protected String configurationResource = DEFAULT_CONFIGURATION_RESOURCE;
-  protected List<String> deploymentsToDeleteAfterTestMethod = new ArrayList<String>();
+  protected String deploymentId;
   protected Throwable exception;
 
   protected ProcessEngineConfiguration processEngineConfiguration;
-  protected ProcessEngine processEngine;
   protected RepositoryService repositoryService;
   protected RuntimeService runtimeService;
   protected TaskService taskService;
@@ -77,19 +70,6 @@ public class ProcessEngineTestCase extends PvmTestCase {
   protected IdentityService identityService;
   protected ManagementService managementService;
 
-  public ProcessEngineTestCase() {
-  }
-  
-  public ProcessEngineTestCase(String configurationResource) {
-    this.configurationResource = configurationResource;
-  }
-  
-  public ProcessEngineTestCase(String configurationResource, ThreadLogMode threadRenderingMode) {
-    super(threadRenderingMode);
-    this.configurationResource = configurationResource;
-    this.isEmptyLinesEnabled = false;
-  }
-  
   public void assertProcessEnded(final String processInstanceId) {
     ProcessInstance processInstance = processEngine
       .getRuntimeService()
@@ -106,11 +86,9 @@ public class ProcessEngineTestCase extends PvmTestCase {
   @Override
   public void runBare() throws Throwable {
     if (processEngine==null) {
-      processEngine = processEngines.get(configurationResource);
-      if (processEngine==null) {
-        initializeProcessEngine();
-        processEngines.put(configurationResource, processEngine);
-      }
+      initializeProcessEngine();
+    }
+    if (repositoryService==null) {
       initializeServices();
     }
 
@@ -118,7 +96,7 @@ public class ProcessEngineTestCase extends PvmTestCase {
 
     try {
       
-      annotationDeploymentBefore();
+      deploymentId = TestHelper.annotationDeploymentSetUp(processEngine, getClass(), getName());
       
       super.runBare();
 
@@ -135,18 +113,30 @@ public class ProcessEngineTestCase extends PvmTestCase {
       throw e;
       
     } finally {
-      annotationDeploymentAfter();
+      TestHelper.annotationDeploymentTearDown(processEngine, deploymentId, getClass(), getName());
       assertAndEnsureCleanDb();
       ClockUtil.reset();
     }
   }
 
   protected void initializeProcessEngine() {
-    log.fine("==== BUILDING PROCESS ENGINE ========================================================================");
-    processEngine = new ProcessEngineBuilder()
-      .configureFromPropertiesResource(configurationResource)
-      .buildProcessEngine();
-    log.fine("==== PROCESS ENGINE CREATED =========================================================================");
+    String processEngineInitializerClassName = System.getProperty("process.engine.nitializer");
+    if (processEngineInitializerClassName==null) {
+      log.fine("==== BUILDING PROCESS ENGINE ========================================================================");
+      processEngine = new ProcessEngineBuilder()
+        .configureFromPropertiesResource("activiti.properties")
+        .buildProcessEngine();
+      log.fine("==== PROCESS ENGINE CREATED =========================================================================");
+    } else {
+      try {
+        ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+        Class< ? > processEngineInitializerClass = Class.forName(processEngineInitializerClassName, true, classLoader);
+        ProcessEngineInitializer processEngineInitializer = (ProcessEngineInitializer) processEngineInitializerClass.newInstance();
+        processEngine = processEngineInitializer.getProcessEngine();
+      } catch (Exception e) {
+        throw new RuntimeException("couldn't instantiate process engine initializer "+processEngineInitializerClassName+": "+e, e);
+      }
+    }
   }
   
   /** Each test is assumed to clean up all DB content it entered.
@@ -155,7 +145,7 @@ public class ProcessEngineTestCase extends PvmTestCase {
    * If the DB is not clean, it is cleaned by performing a create a drop. */
   protected void assertAndEnsureCleanDb() throws Throwable {
     log.fine("verifying that db is clean after test");
-    Map<String, Long> tableCounts = processEngine.getManagementService().getTableCount();
+    Map<String, Long> tableCounts = managementService.getTableCount();
     StringBuilder outputMessage = new StringBuilder();
     for (String tableName : tableCounts.keySet()) {
       if (!TABLENAMES_EXCLUDED_FROM_DB_CLEAN_CHECK.contains(tableName)) {
@@ -174,60 +164,14 @@ public class ProcessEngineTestCase extends PvmTestCase {
       
       processEngine.close();
       processEngine = null;
-      processEngines.remove(configurationResource);
 
       if (exception!=null) {
         throw exception;
       } else {
         Assert.fail(outputMessage.toString());
       }
-    }
-  }
-
-  private void annotationDeploymentBefore() {
-    Method method = null;
-    try {
-      method = getClass().getDeclaredMethod(getName(), (Class<?>[])null);
-    } catch (Exception e) {
-      throw new ActivitiException("can't get method by reflection", e);
-    }
-    Deployment deploymentAnnotation = method.getAnnotation(Deployment.class);
-    if (deploymentAnnotation != null) {
-      log.fine("annotation @Deployment creates deployment for "+ClassNameUtil.getClassNameWithoutPackage(this)+"."+getName());
-      String[] resources = deploymentAnnotation.resources();
-      if (resources.length == 0) {
-        String name = method.getName();
-        String resource = getBpmnProcessDefinitionResource(getClass(), name);
-        resources = new String[]{resource};
-      }
-      
-      DeploymentBuilder deploymentBuilder = repositoryService
-        .createDeployment()
-        .name(ClassNameUtil.getClassNameWithoutPackage(this)+"."+getName());
-      
-      for (String resource: resources) {
-        deploymentBuilder.addClasspathResource(resource);
-      }
-      
-      String deploymentId = deploymentBuilder.deploy().getId();
-      deploymentsToDeleteAfterTestMethod.add(deploymentId);
-    }
-  }
-  
-  /**
-   * get a resource location by convention based on a class (type) and a
-   * relative resource name. The return value will be the full classpath
-   * location of the type, plus a suffix built from the name parameter:
-   * <code>.&lt;name&gt;.bpmn20.xml</code>.
-   */
-  public static String getBpmnProcessDefinitionResource(Class< ? > type, String name) {
-    return type.getName().replace('.', '/') + "." + name + "." + BpmnDeployer.BPMN_RESOURCE_SUFFIX;
-  }
-
-  private void annotationDeploymentAfter() {
-    for (String deploymentId: deploymentsToDeleteAfterTestMethod) {
-      log.fine("annotation @Deployment deletes deployment for "+ClassNameUtil.getClassNameWithoutPackage(this)+"."+getName());
-      repositoryService.deleteDeploymentCascade(deploymentId);
+    } else {
+      log.info("database was clean");
     }
   }
 
@@ -292,10 +236,10 @@ public class ProcessEngineTestCase extends PvmTestCase {
     }
   }
 
-  public static void closeProcessEngines() {
-    for (ProcessEngine processEngine: processEngines.values()) {
+  public static void closeProcessEngine() {
+    if (processEngine!=null) {
       processEngine.close();
+      processEngine = null;
     }
-    processEngines.clear();
   }
 }

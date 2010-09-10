@@ -31,6 +31,8 @@ public class TaskCandidateTest extends ProcessEngineTestCase {
   private static final String GONZO = "gonzo";
 
   public void setUp() throws Exception {
+    super.setUp();
+    
     Group accountants = identityService.newGroup("accountancy");
     identityService.saveGroup(accountants);
     Group managers = identityService.newGroup("management");
@@ -55,6 +57,8 @@ public class TaskCandidateTest extends ProcessEngineTestCase {
     identityService.deleteGroup("sales");
     identityService.deleteGroup("accountancy");
     identityService.deleteGroup("management");
+    
+    super.tearDown();
   }
 
   @Deployment

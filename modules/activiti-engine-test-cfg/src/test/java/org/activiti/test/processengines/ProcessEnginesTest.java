@@ -29,7 +29,7 @@ public class ProcessEnginesTest extends TestCase {
   @Override
   protected void setUp() throws Exception {
     super.setUp();
-    ProcessEngineTestCase.closeProcessEngines();
+    ProcessEngineTestCase.closeProcessEngine();
     ProcessEngines.init();
   }
   

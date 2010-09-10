@@ -17,12 +17,33 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
 /**
- * test method annotation which asserts that there is a BPMN 2.0 XML process
- * definition for this method. If no arguments are given, the definition should
- * be in a single file accessible through the classpath, in the same package as
- * the test case and with a file name
- * <code>&lt;methodName&gt;.bpmn20.xml.</code> Resources to load can be
- * explicitly specified using either resources or value attributes.
+ * Annotation for a test method to create and delete a deployment around a test method.
+ * 
+ * <p>Usage:</p>
+ * <pre>
+ * package org.example;
+ * 
+ * ...
+ * 
+ * public class ExampleTest {
+ * 
+ *   &#64;Test
+ *   &#64;Deployment
+ *   public void testForADeploymentWithASingleResource() {
+ *     // a deployment will be available in the engine repository
+ *     // containing the single resource <b>org/example/ExampleTest.testForADeploymentWithASingleResource.bpmn20.xml</b>
+ *   }
+ * 
+ *   &#64;Test
+ *   &#64;Deployment(resources = { 
+ *     "org/example/processOne.bpmn20.xml",
+ *     "org/example/processTwo.bpmn20.xml",
+ *     "org/example/some.other.resource" }
+ *   public void testForADeploymentWithASingleResource() {
+ *     // a deployment will be available in the engine repository
+ *     // containing the three resources
+ *   }
+ * </pre>
  * 
  * @author Dave Syer
  * @author Tom Baeyens
@@ -30,19 +51,7 @@ import java.lang.annotation.RetentionPolicy;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Deployment {
 
-  /**
-   * Specify resources that make up the process definition. A resource can be
-   * "absolute" (in the root of the classpath) if it starts with "/", or it can
-   * be relative to the package of the declaring test case.  E.g.
-   * 
-   * <pre>
-   * &#64;Test
-   * &#64;ProcessDeclared(resources = { "VacationRequest.bpmn20.xml", "approve.form", "request.form" })
-   * public void testFormsWithVacationRequestProcess() {
-   *  ...
-   * }
-   * </pre>
-   */
+  /** Specify resources that make up the process definition. */
   public String[] resources() default {};
 
 }

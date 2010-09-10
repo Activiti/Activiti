@@ -13,6 +13,7 @@
 package org.activiti.engine.test.bpmn.parse;
 
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.impl.test.TestHelper;
 import org.activiti.engine.test.ProcessEngineTestCase;
 
 /**
@@ -25,7 +26,7 @@ public class InvalidProcessTest extends ProcessEngineTestCase {
 
   public void testInvalidProcessDefinition() {
     try {
-      String resource = getBpmnProcessDefinitionResource(getClass(), "testInvalidProcessDefinition");
+      String resource = TestHelper.getBpmnProcessDefinitionResource(getClass(), "testInvalidProcessDefinition");
       repositoryService.createDeployment().name(resource).addClasspathResource(resource).deploy();
       fail();
     } catch (ActivitiException e) {
