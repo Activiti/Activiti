@@ -201,7 +201,7 @@ public abstract class TestHelper {
       log.fine("==== PROCESS ENGINE CREATED =========================================================================");
       processEngines.put(configurationResource, processEngine);
     }
-    return null;
+    return processEngine;
   }
 
   public static void closeProcessEngines() {

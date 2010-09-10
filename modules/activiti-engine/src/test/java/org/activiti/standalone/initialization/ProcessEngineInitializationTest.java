@@ -10,7 +10,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.activiti.test.db;
+package org.activiti.standalone.initialization;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -23,6 +23,8 @@ import org.activiti.engine.ProcessEngineBuilder;
 import org.activiti.engine.impl.ProcessEngineImpl;
 import org.activiti.engine.impl.db.DbSqlSession;
 import org.activiti.engine.impl.db.DbSqlSessionFactory;
+import org.activiti.engine.impl.test.ActivitiInternalTestCase;
+import org.activiti.engine.impl.test.TestHelper;
 import org.activiti.pvm.test.PvmTestCase;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
@@ -33,9 +35,12 @@ import org.apache.ibatis.session.SqlSessionFactory;
 public class ProcessEngineInitializationTest extends PvmTestCase {
 
   public void testNoTables() {
+    TestHelper.closeProcessEngines();
+    ActivitiInternalTestCase.closeProcessEngine();
+    
     try {
       new ProcessEngineBuilder()
-        .configureFromPropertiesResource("org/activiti/test/db/activiti.properties")
+        .configureFromPropertiesResource("org/activiti/standalone/initialization/notables.activiti.properties")
         .buildProcessEngine();
       fail("expected exception");
     } catch (Exception e) {
@@ -47,8 +52,10 @@ public class ProcessEngineInitializationTest extends PvmTestCase {
 
   public void testVersionMismatch() {
     // first create the schema
-    ProcessEngineImpl processEngine = (ProcessEngineImpl) new ProcessEngineBuilder().configureFromPropertiesResource(
-            "org/activiti/test/db/activiti.properties").setDbSchemaStrategy(DbSchemaStrategy.CREATE_DROP).buildProcessEngine();
+    ProcessEngineImpl processEngine = (ProcessEngineImpl) new ProcessEngineBuilder()
+      .configureFromPropertiesResource("org/activiti/standalone/initialization/notables.activiti.properties")
+      .setDbSchemaStrategy(DbSchemaStrategy.CREATE_DROP)
+      .buildProcessEngine();
 
     // then update the version to something that is different to the library
     // version
@@ -79,7 +86,7 @@ public class ProcessEngineInitializationTest extends PvmTestCase {
       // now we can see what happens if when a process engine is being
       // build with a version mismatch between library and db tables
       new ProcessEngineBuilder()
-        .configureFromPropertiesResource("org/activiti/test/db/activiti.properties")
+        .configureFromPropertiesResource("org/activiti/standalone/initialization/notables.activiti.properties")
         .setDbSchemaStrategy(DbSchemaStrategy.CHECK_VERSION)
         .buildProcessEngine();
       

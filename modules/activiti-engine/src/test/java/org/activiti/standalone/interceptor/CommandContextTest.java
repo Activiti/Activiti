@@ -11,7 +11,7 @@
  * limitations under the License.
  */
 
-package org.activiti.impl.interceptor;
+package org.activiti.standalone.interceptor;
 
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;

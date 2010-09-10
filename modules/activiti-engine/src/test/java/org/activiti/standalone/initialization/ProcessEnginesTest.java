@@ -10,23 +10,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.activiti.test.processengines;
+package org.activiti.standalone.initialization;
 
 import java.util.List;
-
-import junit.framework.TestCase;
 
 import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.ProcessEngineInfo;
 import org.activiti.engine.ProcessEngines;
 import org.activiti.engine.impl.test.ActivitiInternalTestCase;
+import org.activiti.pvm.test.PvmTestCase;
 
 /**
  * @author Tom Baeyens
  */
-public class ProcessEnginesTest extends TestCase {
+public class ProcessEnginesTest extends PvmTestCase {
   
-  @Override
   protected void setUp() throws Exception {
     super.setUp();
     ActivitiInternalTestCase.closeProcessEngine();
@@ -50,7 +48,6 @@ public class ProcessEnginesTest extends TestCase {
 
     ProcessEngine processEngine = ProcessEngines.getProcessEngine(ProcessEngines.NAME_DEFAULT);
     assertNotNull(processEngine);
-
   }
 
 }

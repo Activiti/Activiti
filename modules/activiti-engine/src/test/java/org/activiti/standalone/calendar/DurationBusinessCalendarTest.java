@@ -11,7 +11,7 @@
  * limitations under the License.
  */
 
-package org.activiti.test.calendar;
+package org.activiti.standalone.calendar;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
