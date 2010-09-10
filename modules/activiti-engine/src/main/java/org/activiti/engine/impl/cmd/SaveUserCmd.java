@@ -12,6 +12,7 @@
  */
 package org.activiti.engine.impl.cmd;
 
+import org.activiti.engine.ActivitiException;
 import org.activiti.engine.identity.User;
 import org.activiti.engine.impl.identity.UserEntity;
 import org.activiti.engine.impl.interceptor.Command;
@@ -30,6 +31,9 @@ public class SaveUserCmd implements Command<Void> {
   }
   
   public Void execute(CommandContext commandContext) {
+    if(user == null) {
+      throw new ActivitiException("user is null");
+    }
     if (user.getRevision()==0) {
       commandContext
         .getIdentitySession()

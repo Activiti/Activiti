@@ -12,6 +12,7 @@
  */
 package org.activiti.engine.impl.cmd;
 
+import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 
@@ -28,6 +29,9 @@ public class DeleteGroupCmd implements Command<Void>  {
   }
   
   public Void execute(CommandContext commandContext) {
+    if(groupId == null) {
+      throw new ActivitiException("groupId is null");
+    }
     commandContext
       .getIdentitySession()
       .deleteGroup(groupId);

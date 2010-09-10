@@ -39,7 +39,8 @@ public interface ManagementService {
   Map<String, Long> getTableCount();
   
   /**
-   * @return The metadata (column names, column types, etc.) of a certain table
+   * @return The metadata (column names, column types, etc.) of a certain table. 
+   * Returns an empty TableMetaData object when the table does not exist.
    */
   TableMetaData getTableMetaData(String tableName);
  

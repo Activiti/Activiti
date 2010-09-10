@@ -12,6 +12,7 @@
  */
 package org.activiti.engine.impl.cmd;
 
+import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.identity.GroupEntity;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
@@ -29,6 +30,9 @@ public class SaveGroupCmd implements Command<Void> {
   }
   
   public Void execute(CommandContext commandContext) {
+    if(group == null) {
+      throw new ActivitiException("group is null");
+    }
     if (group.getRevision()==0) {
       commandContext
         .getIdentitySession()

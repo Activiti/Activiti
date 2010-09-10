@@ -73,6 +73,7 @@
             <exclude>**/*TestCase.java</exclude>
             <exclude>**/HistoricDataServiceImplTest.java</exclude>
             <exclude>**/HistoricDataServiceTest.java</exclude>
+            <exclude>**/IdentityServiceTest.java</exclude>
           </excludes>
         </configuration>
       </plugin>

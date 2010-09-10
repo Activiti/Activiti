@@ -12,6 +12,7 @@
  */
 package org.activiti.engine.impl.cmd;
 
+import org.activiti.engine.ActivitiException;
 import org.activiti.engine.identity.User;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
@@ -29,6 +30,9 @@ public class FindUserCmd implements Command<User> {
   }
 
   public User execute(CommandContext commandContext) {
+    if(userId == null) {
+      throw new ActivitiException("userId is null");
+    }
     return commandContext
       .getIdentitySession()
       .findUserById(userId);

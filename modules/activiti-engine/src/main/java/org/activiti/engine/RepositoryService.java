@@ -32,7 +32,8 @@ public interface RepositoryService {
   /** starts creating a new deployment */
   DeploymentBuilder createDeployment();
   
-  /** deletes the given deployment and throws an exception if there are 
+  /** deletes the given deployment 
+   * @throwns RuntimeException if there are 
    * still runtime or history process instances */
   void deleteDeployment(String deploymentId);
   
@@ -67,7 +68,7 @@ public interface RepositoryService {
   Object getStartFormByKey(String processDefinitionKey);
   
   /** [might be impacted by <a href="http://jira.codehaus.org/browse/ACT-66">ACT-66</a>] get a rendered startform, for collecting parameters from a user to start 
-   * a new process instance */ 
+   * a new process instance. Returns null if the processdefinition doesn't have a start form. */ 
   Object getStartFormById(String processDefinitionId);
 
   

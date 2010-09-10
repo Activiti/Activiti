@@ -14,6 +14,7 @@
 
 package org.activiti.engine.impl;
 
+import org.activiti.engine.ActivitiException;
 import org.activiti.engine.HistoryService;
 import org.activiti.engine.history.HistoricProcessInstance;
 import org.activiti.engine.history.HistoricProcessInstanceQuery;
@@ -25,6 +26,9 @@ import org.activiti.engine.history.HistoricProcessInstanceQuery;
 public class HistoricDataServiceImpl extends ServiceImpl implements HistoryService {
 
   public HistoricProcessInstance findHistoricProcessInstanceById(final String processInstanceId) {
+    if(processInstanceId == null) {
+        throw new ActivitiException("processInstanceId is null");
+    }
     return createHistoricProcessInstanceQuery()
       .processInstanceId(processInstanceId)
       .singleResult();
