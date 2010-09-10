@@ -10,7 +10,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.activiti.engine.json;
+package org.activiti.engine.impl.json;
 
 import java.io.Reader;
 
