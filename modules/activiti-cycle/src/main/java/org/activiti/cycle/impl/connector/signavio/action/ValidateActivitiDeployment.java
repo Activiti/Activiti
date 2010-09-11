@@ -16,6 +16,11 @@ public class ValidateActivitiDeployment extends CreateTechnicalBpmnXmlAction {
 
   private static final long serialVersionUID = 1L;
 
+  public ValidateActivitiDeployment() {
+    // TODO: remove when real labels are introduced in the GUI
+    super("Validate for Activiti");
+  }
+
   public void execute(RepositoryConnector connector, RepositoryArtifact artifact, Map<String, Object> parameters) throws Exception {    
     // TODO: Okay, this needs more serious thiniking where we get the engine
     // from!

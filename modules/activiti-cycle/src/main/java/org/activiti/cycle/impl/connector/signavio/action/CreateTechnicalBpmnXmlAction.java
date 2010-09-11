@@ -31,6 +31,8 @@ import org.json.JSONObject;
  */
 public class CreateTechnicalBpmnXmlAction extends ParameterizedHtmlFormTemplateAction {
 
+  private static final long serialVersionUID = 1L;
+  
   public static final String PARAM_TARGET_FOLDER = "targetFolder";
   public static final String PARAM_TARGET_CONNECTOR = "targetFolderConnector";
   public static final String PARAM_TARGET_NAME = "targetName";
@@ -50,6 +52,16 @@ public class CreateTechnicalBpmnXmlAction extends ParameterizedHtmlFormTemplateA
     addTransformation(new BpmnPoolExtraction("Process Engine"));
     addTransformation(new ExchangeSignavioUuidWithNameTransformation());
     addTransformation(new AdjustShapeNamesTransformation());
+  }
+
+  public CreateTechnicalBpmnXmlAction() {
+    // TODO: remove when real labels are introduced in the GUI
+    super("Create technical model");
+  }  
+
+  public CreateTechnicalBpmnXmlAction(String name) {
+    // TODO: remove when real labels are introduced in the GUI
+    super(name);
   }
 
   public static void addTransformation(JsonTransformation transformation) {

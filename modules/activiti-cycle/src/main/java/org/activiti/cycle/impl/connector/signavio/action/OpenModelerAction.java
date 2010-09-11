@@ -29,6 +29,11 @@ import org.activiti.cycle.impl.connector.signavio.SignavioConnector;
 public class OpenModelerAction extends CreateUrlActionImpl {
 
   private static final long serialVersionUID = 1L;
+  
+  public OpenModelerAction() {
+    // TODO: remove when real labels are introduced in the GUI
+    super("Open modeler action");
+  }
 
   public URL getUrl(RepositoryConnector connector, RepositoryArtifact artifact) {
     try {

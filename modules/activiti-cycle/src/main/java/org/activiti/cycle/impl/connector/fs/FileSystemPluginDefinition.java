@@ -8,6 +8,7 @@ import org.activiti.cycle.impl.ArtifactTypeImpl;
 import org.activiti.cycle.impl.ContentRepresentationImpl;
 import org.activiti.cycle.impl.conf.RepositoryConnectorConfiguration;
 import org.activiti.cycle.impl.connector.fs.provider.FileBinaryContentProvider;
+import org.activiti.cycle.impl.connector.fs.provider.TextFileContentProvider;
 import org.activiti.cycle.impl.connector.fs.provider.XmlFileContentProvider;
 import org.activiti.cycle.impl.plugin.ActivitiCyclePlugin;
 import org.activiti.cycle.impl.plugin.ActivitiCyclePluginDefinition;
@@ -53,9 +54,16 @@ public class FileSystemPluginDefinition implements ActivitiCyclePluginDefinition
 
     ArtifactTypeImpl artifactType3 = new ArtifactTypeImpl(ARTIFACT_TYPE_TEXT);
     artifactType3
-            .addDefaultContentRepresentation(new ContentRepresentationImpl(CONTENT_REPRESENTATION_ID_TEXT, ContentType.TEXT), new XmlFileContentProvider());
+            .addDefaultContentRepresentation(new ContentRepresentationImpl(CONTENT_REPRESENTATION_ID_TEXT, ContentType.TEXT),
+            new TextFileContentProvider());
     artifactType3.addDownloadContentAction(CONTENT_REPRESENTATION_ID_TEXT);
     types.add(artifactType3);
+
+    ArtifactTypeImpl artifactTypeXml = new ArtifactTypeImpl(ARTIFACT_TYPE_XML);
+    artifactTypeXml
+            .addDefaultContentRepresentation(new ContentRepresentationImpl(CONTENT_REPRESENTATION_ID_XML, ContentType.XML), new XmlFileContentProvider());
+    artifactTypeXml.addDownloadContentAction(CONTENT_REPRESENTATION_ID_XML);
+    types.add(artifactTypeXml);
 
     ArtifactTypeImpl artifactType4 = new ArtifactTypeImpl(ARTIFACT_TYPE_MS_WORD);
     artifactType4.addDefaultContentRepresentation(new ContentRepresentationImpl(CONTENT_REPRESENTATION_ID_BINARY, ContentType.MS_WORD),

@@ -180,6 +180,7 @@ public class FileSystemConnector extends AbstractRepositoryConnector<FileSystemC
     String extension = MimeUtil.getExtension(file);
     
     // so we overwrite it with a temporary hack
+    // But this cannot recognize *.bpmn20.xml :-/
     String name = file.getName();
     if (name.indexOf(".") > 0) {
       return name.substring(name.lastIndexOf(".") + 1);

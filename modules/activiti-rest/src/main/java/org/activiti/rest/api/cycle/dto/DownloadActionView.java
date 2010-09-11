@@ -19,14 +19,14 @@ public class DownloadActionView {
 
   private String label;
   private String url;
-  private String type;
+  private String mimeType;
   private String name;
 
-  public DownloadActionView(String label, String url, String type, String name) {
+  public DownloadActionView(String label, String url, String mimeType, String name) {
     super();
     this.label = label;
     this.url = url;
-    this.type = type;
+    this.mimeType = mimeType;
     this.name = name;
   }
 
@@ -46,12 +46,12 @@ public class DownloadActionView {
     this.url = url;
   }
 
-  public String getType() {
-    return type;
+  public String getMimeType() {
+    return mimeType;
   }
 
-  public void setType(String type) {
-    this.type = type;
+  public void setMimeType(String type) {
+    this.mimeType = type;
   }
 
   public String getName() {

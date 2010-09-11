@@ -53,6 +53,7 @@ public class TreeGet extends ActivitiWebScript {
 
         model.put("files", children.getArtifactList());
         model.put("folders", children.getFolderList());
+        return;
 
       } catch (RepositoryException e) {
         log.log(Level.SEVERE, "Cannot load children for id '" + id + "'", e);

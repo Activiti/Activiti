@@ -58,7 +58,7 @@ public class ArtifactGet extends ActivitiWebScript {
         if (representation.getMimeType().equals(ContentType.TEXT) || representation.getMimeType().equals(ContentType.XML)
                 || representation.getMimeType().equals(ContentType.HTML)) {
           String content = conn.getContent(artifactId, representation.getId()).asString();
-          contentViews.add(new ContentView(representation.getMimeType(), representation.getMimeType(), content));
+          contentViews.add(new ContentView(representation.getMimeType(), representation.getId(), content));
         } else if (representation.getMimeType().startsWith("image/")) {
           String url = req.getServerPath() + req.getContextPath() + "/service/content?artifactId=" + URLEncoder.encode(artifactId, "UTF-8") + "&content-type="
                   + URLEncoder.encode(representation.getMimeType(), "UTF-8");
