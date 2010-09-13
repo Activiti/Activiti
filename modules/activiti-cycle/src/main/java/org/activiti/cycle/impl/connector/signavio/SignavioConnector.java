@@ -260,6 +260,9 @@ public class SignavioConnector extends AbstractRepositoryConnector<SignavioConne
       if (SignavioPluginDefinition.ORYX_TYPE_ATTRIBUTE_FOR_BPMN_20.equals(type)) {
         artifactTypeID = SignavioPluginDefinition.ARTIFACT_TYPE_BPMN_20;
       }
+      else if (SignavioPluginDefinition.SIGNAVIO_NAMESPACE_FOR_BPMN_2_0.equals(type)) {
+        artifactTypeID = SignavioPluginDefinition.ARTIFACT_TYPE_BPMN_20;
+      }
     }
     return getConfiguration().getArtifactType(artifactTypeID);
   }
