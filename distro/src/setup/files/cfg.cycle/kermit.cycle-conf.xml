@@ -11,12 +11,14 @@
       <name>Eclipse Workspace (File System)</name>
       <baseFilePath>@cycle.base.file.path@</baseFilePath>
     </org.activiti.cycle.impl.connector.fs.FileSystemConnectorConfiguration>
+    <!-- uncomment to include free samples on oryx-project.org    
     <org.activiti.cycle.impl.connector.signavio.OryxConnectorConfiguration>
       <name>oryx-project.org</name>
       <credentialsSaved>false</credentialsSaved>
       <signavioBaseUrl>http://oryx-project.org/</signavioBaseUrl>
       <loginRequired>false</loginRequired>
     </org.activiti.cycle.impl.connector.signavio.OryxConnectorConfiguration>
+    -->
   </linkedConnectors>
   <parentContainers/>
 </org.activiti.cycle.impl.conf.ConfigurationContainer>
