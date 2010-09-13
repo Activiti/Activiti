@@ -92,4 +92,9 @@ public interface IdentityService {
   void deleteMembership(String userId, String groupId);
 
   boolean checkPassword(String userId, String password);
+
+  /** passes the authenticated user id for this partucular thread.
+   * All service method (from any service) invocations done by the same
+   * thread will have access to this authenticatedUserId. */
+  void setAuthenticatedUserId(String authenticatedUserId);
 }

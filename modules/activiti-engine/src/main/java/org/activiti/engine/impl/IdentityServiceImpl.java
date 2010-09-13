@@ -28,6 +28,7 @@ import org.activiti.engine.impl.cmd.FindUserCmd;
 import org.activiti.engine.impl.cmd.FindUsersByGroupCmd;
 import org.activiti.engine.impl.cmd.SaveGroupCmd;
 import org.activiti.engine.impl.cmd.SaveUserCmd;
+import org.activiti.engine.impl.identity.Authentication;
 import org.activiti.engine.impl.identity.GroupEntity;
 import org.activiti.engine.impl.identity.UserEntity;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
@@ -95,6 +96,10 @@ public class IdentityServiceImpl extends ServiceImpl implements IdentityService 
 
   public void deleteUser(String userId) {
     commandExecutor.execute(new DeleteUserCmd(userId));
+  }
+
+  public void setAuthenticatedUserId(String authenticatedUserId) {
+    Authentication.setAuthenticatedUserId(authenticatedUserId);
   }
 
   // getters and setters //////////////////////////////////////////////////////
