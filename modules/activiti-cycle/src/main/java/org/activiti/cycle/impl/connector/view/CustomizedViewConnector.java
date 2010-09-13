@@ -245,6 +245,7 @@ public class CustomizedViewConnector implements RepositoryConnector {
           // folder id, I think the best for the moment.
           String targetFolderId = (String) parameter.getValue();
           parameters.put("targetFolderConnector", getConnectorFromUrl(targetFolderId));
+          parameters.put("targetFolder", getRepositoryPartOfUrl(targetFolderId));
           
         } else if (parameter.getValue() instanceof RepositoryFolder) {
           throw new IllegalStateException("TArget Folder shouldn't be resolved by GUI any more");
