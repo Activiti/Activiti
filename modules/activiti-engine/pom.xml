@@ -55,6 +55,11 @@
       <artifactId>mockito-core</artifactId>
       <scope>test</scope>
     </dependency>
+    <!-- required for building with JDK 5 -->
+    <dependency>
+      <groupId>org.livetribe</groupId>
+      <artifactId>livetribe-jsr223</artifactId>
+    </dependency>
   </dependencies>
   
   <repositories>
