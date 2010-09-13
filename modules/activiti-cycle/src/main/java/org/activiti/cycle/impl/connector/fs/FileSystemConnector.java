@@ -223,13 +223,13 @@ public class FileSystemConnector extends AbstractRepositoryConnector<FileSystemC
         bos.write(artifactContent.asByteArray());
       }
     } catch (IOException ioe) {
-      throw new RepositoryException("Unable to create file '" + artifactName + " in folder " + containingFolderId);
+      throw new RepositoryException("Unable to create file '" + artifactName + " in folder " + containingFolderId, ioe);
     } finally {
       if (bos != null) {
         try {
           bos.close();
         } catch (IOException e) {
-          throw new RepositoryException("Unable to create file " + artifactName + " in folder " + containingFolderId);
+          throw new RepositoryException("Unable to create file " + artifactName + " in folder " + containingFolderId, e);
         }
       }
     }
