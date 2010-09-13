@@ -13,9 +13,12 @@
 
 package org.activiti.engine.impl.test;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.logging.Level;
@@ -56,6 +59,8 @@ import org.junit.Assert;
 public class ActivitiInternalTestCase extends PvmTestCase {
 
   private static Logger log = Logger.getLogger(ActivitiInternalTestCase.class.getName());
+  
+  private static final ProcessEngineInitializer processEngineInitializer = getProcessEngineInitializer();
 
   private static final List<String> TABLENAMES_EXCLUDED_FROM_DB_CLEAN_CHECK = Arrays.asList(
     "ACT_GE_PROPERTY"
@@ -74,6 +79,27 @@ public class ActivitiInternalTestCase extends PvmTestCase {
   protected HistoryService historicDataService;
   protected IdentityService identityService;
   protected ManagementService managementService;
+  
+  private static ProcessEngineInitializer getProcessEngineInitializer() {
+    String processEngineInitializerClassName = null;
+    ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+    InputStream initializersInputStream = classLoader.getResourceAsStream("activiti.initializer.properties");
+    if (initializersInputStream!=null) {
+      Properties properties = new Properties();
+      try {
+        properties.load(initializersInputStream);
+        processEngineInitializerClassName = properties.getProperty("process.engine.initializer");
+        if (processEngineInitializerClassName!=null) {
+          Class< ? > processEngineInitializerClass = Class.forName(processEngineInitializerClassName, true, classLoader);
+          return (ProcessEngineInitializer) processEngineInitializerClass.newInstance();
+        }
+    
+      } catch (Exception e) {
+        throw new RuntimeException("couldn't instantiate process engine initializer "+properties+": "+e, e);
+      }
+    }
+    return new DefaultProcessEngineInitializer();
+  }
 
   public void assertProcessEnded(final String processInstanceId) {
     ProcessInstance processInstance = processEngine
@@ -87,7 +113,6 @@ public class ActivitiInternalTestCase extends PvmTestCase {
     }
   }
 
-  
   @Override
   public void runBare() throws Throwable {
     if (processEngine==null) {
@@ -125,23 +150,7 @@ public class ActivitiInternalTestCase extends PvmTestCase {
   }
 
   protected void initializeProcessEngine() {
-    String processEngineInitializerClassName = System.getProperty("process.engine.nitializer");
-    if (processEngineInitializerClassName==null) {
-      log.fine("==== BUILDING PROCESS ENGINE ========================================================================");
-      processEngine = new ProcessEngineBuilder()
-        .configureFromPropertiesResource("activiti.properties")
-        .buildProcessEngine();
-      log.fine("==== PROCESS ENGINE CREATED =========================================================================");
-    } else {
-      try {
-        ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
-        Class< ? > processEngineInitializerClass = Class.forName(processEngineInitializerClassName, true, classLoader);
-        ProcessEngineInitializer processEngineInitializer = (ProcessEngineInitializer) processEngineInitializerClass.newInstance();
-        processEngine = processEngineInitializer.getProcessEngine();
-      } catch (Exception e) {
-        throw new RuntimeException("couldn't instantiate process engine initializer "+processEngineInitializerClassName+": "+e, e);
-      }
-    }
+    processEngine = processEngineInitializer.getProcessEngine();
   }
   
   /** Each test is assumed to clean up all DB content it entered.

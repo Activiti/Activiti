@@ -11,7 +11,7 @@
  * limitations under the License.
  */
 
-package org.activiti.examples.spring;
+package org.activiti.spring.test;
 
 import java.util.HashSet;
 import java.util.List;
@@ -29,7 +29,7 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 public class SpringAutoDeployTest extends PvmTestCase {
   
   public void testBasicActivitiSpringIntegration() {
-    ClassPathXmlApplicationContext applicationContext = new ClassPathXmlApplicationContext("org/activiti/examples/spring/SpringAutoDeployTest-context.xml");
+    ClassPathXmlApplicationContext applicationContext = new ClassPathXmlApplicationContext("org/activiti/spring/test/SpringAutoDeployTest-context.xml");
     
     RepositoryService repositoryService = (RepositoryService) applicationContext.getBean("repositoryService");
     List<ProcessDefinition> processDefinitions = repositoryService

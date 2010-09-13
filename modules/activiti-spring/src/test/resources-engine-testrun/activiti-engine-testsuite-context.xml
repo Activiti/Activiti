@@ -36,12 +36,4 @@
   <bean id="historyService" factory-bean="processEngine" factory-method="getHistoryService" />
   <bean id="managementService" factory-bean="processEngine" factory-method="getManagementService" />
 
-  <tx:annotation-driven transaction-manager="transactionManager"/>
-
-  <bean id="userBean" class="org.activiti.examples.spring.UserBean">
-    <property name="runtimeService" ref="runtimeService" />
-  </bean>
-
-  <bean id="printer" class="org.activiti.examples.spring.Printer" />
-
 </beans>

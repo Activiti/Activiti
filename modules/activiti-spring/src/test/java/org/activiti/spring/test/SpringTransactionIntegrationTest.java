@@ -11,7 +11,7 @@
  * limitations under the License.
  */
 
-package org.activiti.examples.spring;
+package org.activiti.spring.test;
 
 import org.activiti.engine.RepositoryService;
 import org.activiti.pvm.test.PvmTestCase;
@@ -24,12 +24,12 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 public class SpringTransactionIntegrationTest extends PvmTestCase {
 
   public void testBasicActivitiSpringIntegration() {
-    ClassPathXmlApplicationContext applicationContext = new ClassPathXmlApplicationContext("org/activiti/examples/spring/SpringTransactionIntegrationTest-context.xml");
+    ClassPathXmlApplicationContext applicationContext = new ClassPathXmlApplicationContext("org/activiti/spring/test/SpringTransactionIntegrationTest-context.xml");
     
     RepositoryService repositoryService = (RepositoryService) applicationContext.getBean("repositoryService");
     String deploymentId = repositoryService
       .createDeployment()
-      .addClasspathResource("org/activiti/examples/spring/hello.bpmn20.xml")
+      .addClasspathResource("org/activiti/spring/test/hello.bpmn20.xml")
       .deploy()
       .getId();
 

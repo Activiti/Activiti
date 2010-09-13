@@ -314,6 +314,12 @@
         <module>modules/activiti-cycle</module>
       </modules>
     </profile>
+    <profile>
+      <id>checkspring</id>
+      <modules>
+        <module>modules/activiti-spring</module>
+      </modules>
+    </profile>    
 		<profile>
 			<id>distro</id>
 			<modules>

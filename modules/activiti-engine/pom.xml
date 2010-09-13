@@ -86,6 +86,12 @@
 
   <profiles>
     <profile>
+      <id>checkspring</id>
+      <properties>
+        <skipTests>true</skipTests>
+      </properties>
+    </profile>
+    <profile>
       <id>distro</id>
       <build>
         <plugins>

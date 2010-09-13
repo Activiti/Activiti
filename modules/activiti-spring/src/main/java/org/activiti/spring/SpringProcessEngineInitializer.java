@@ -34,7 +34,7 @@ public class SpringProcessEngineInitializer implements ProcessEngineInitializer 
   public ProcessEngine getProcessEngine() {
     log.fine("==== BUILDING SPRING APPLICATION CONTEXT AND PROCESS ENGINE =========================================");
     
-    ApplicationContext applicationContext = new ClassPathXmlApplicationContext("activiti-context.xml");
+    ApplicationContext applicationContext = new ClassPathXmlApplicationContext("activiti-engine-testsuite-context.xml");
     Map<String, ProcessEngine> beansOfType = applicationContext.getBeansOfType(ProcessEngine.class);
     if ( (beansOfType==null)
          || (beansOfType.isEmpty())

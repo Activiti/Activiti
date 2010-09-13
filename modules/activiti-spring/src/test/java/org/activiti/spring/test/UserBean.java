@@ -11,7 +11,7 @@
  * limitations under the License.
  */
 
-package org.activiti.examples.spring;
+package org.activiti.spring.test;
 
 import org.activiti.engine.RuntimeService;
 import org.springframework.transaction.annotation.Transactional;

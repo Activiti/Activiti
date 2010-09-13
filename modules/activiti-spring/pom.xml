@@ -50,6 +50,11 @@
       <artifactId>h2</artifactId>
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <groupId>org.mockito</groupId>
+      <artifactId>mockito-core</artifactId>
+      <scope>test</scope>
+    </dependency>
 	</dependencies>
 
 	<!-- build>
@@ -65,6 +70,51 @@
 	</build -->
 
   <profiles>
+    <profile>
+      <id>checkspring</id>
+      <build>
+		    <plugins>
+          <plugin>
+		        <artifactId>maven-antrun-plugin</artifactId>
+		        <executions>
+		          <execution>
+		            <phase>generate-sources</phase>
+		            <configuration>
+		              <tasks>
+                    <copy todir="src/test/java" overwrite="true">
+                      <fileset dir="../activiti-engine/src/test/java" />
+                    </copy>
+                    <copy todir="src/test/resources" overwrite="true">
+                      <fileset dir="../activiti-engine/src/test/resources" />
+                    </copy>
+		                <copy todir="target/test-classes" overwrite="true">
+		                  <fileset dir="src/test/resources-engine-testrun" />
+		                </copy>
+		              </tasks>
+		            </configuration>
+		            <goals>
+		              <goal>run</goal>
+		            </goals>
+		          </execution>
+		        </executions>
+		      </plugin>          
+		      <plugin>
+            <artifactId>maven-surefire-plugin</artifactId>
+            <configuration>
+              <systemProperties>
+                <property><name>process.engine.initializer</name><value>org.activiti.spring.SpringProcessEngineInitializer</value></property>
+              </systemProperties>
+              <excludes>
+                <exclude>org/activiti/standalone/**</exclude>
+                <exclude>**/*TestCase.java</exclude>
+		            <exclude>**/HistoricDataServiceImplTest.java</exclude>
+		            <exclude>**/HistoricDataServiceTest.java</exclude>
+              </excludes>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
     <profile>
       <id>distro</id>
       <build>
@@ -89,6 +139,7 @@
   </profiles>   
   
   <repositories>
+    <!-- This repo declaration is here for as this will be part of the distro -->
     <repository>
       <id>alfresco</id>
       <url>http://maven.alfresco.com/nexus/content/groups/public</url>
