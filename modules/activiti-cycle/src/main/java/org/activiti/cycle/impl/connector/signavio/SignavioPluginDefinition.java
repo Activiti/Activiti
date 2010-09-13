@@ -25,11 +25,20 @@ public class SignavioPluginDefinition implements ActivitiCyclePluginDefinition {
   public static final String SIGNAVIO_NAMESPACE_FOR_BPMN_2_0 = "http://b3mn.org/stencilset/bpmn2.0#";
   public static final String SIGNAVIO_NAMESPACE_FOR_BPMN_JBPM4 = "http://b3mn.org/stencilset/jbpm4#";
 
+  /**
+   * Information for process landscape:
+   * 
+   * "type": "Prozesslandkarte"
+   * 
+   * "namespace": "http://www.signavio.com/stencilsets/processmap#"
+   */
+
   public static final String BPMN_2_0_XML = "bpm2.0";
   public static final String ORYX_TYPE_ATTRIBUTE_FOR_BPMN_20 = "BPMN 2.0";
 
   public static final String ARTIFACT_TYPE_BPMN_20 = "BPMN 2.0";
   public static final String ARTIFACT_TYPE_BPMN_FOR_JPDL4 = "jPDL 4";
+  public static final String ARTIFACT_TYPE_DEFAULT = "DEFAULT";
   
   public static final String CONTENT_REPRESENTATION_ID_PNG = "PNG";
   public static final String CONTENT_REPRESENTATION_ID_JSON = "JSON";
@@ -79,6 +88,10 @@ public class SignavioPluginDefinition implements ActivitiCyclePluginDefinition {
     // TODO: Retrieve model through modellink (without /info) and dynamically
     // initialize RepositoryRegistry with supported formats?
 
+    // TODO: Check if really any artifact in Signavio has a PNG?
+    ArtifactTypeImpl artifactTypeDefault = new ArtifactTypeImpl(ARTIFACT_TYPE_DEFAULT);
+    artifactTypeDefault.addDefaultContentRepresentation(new ContentRepresentationImpl(CONTENT_REPRESENTATION_ID_PNG, ContentType.PNG), new PngProvider());
+    types.add(artifactTypeDefault);
   }
 
   public Class< ? extends RepositoryConnectorConfiguration> getRepositoryConnectorConfigurationType() {

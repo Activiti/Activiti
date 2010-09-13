@@ -12,6 +12,7 @@
  */
 package org.activiti.cycle.impl.connector.signavio;
 
+import org.activiti.cycle.ArtifactType;
 import org.activiti.cycle.RepositoryConnector;
 import org.activiti.cycle.impl.conf.PasswordEnabledRepositoryConnectorConfiguration;
 
@@ -72,6 +73,14 @@ public class SignavioConnectorConfiguration extends PasswordEnabledRepositoryCon
   public SignavioConnectorConfiguration(String name, String signavioBaseUrl) {
     setName(name);
     this.signavioBaseUrl = signavioBaseUrl;
+  }
+
+  /**
+   * TODO: Think about a better concept to handle this
+   */
+  @Override
+  public ArtifactType getDefaultArtifactType() {
+    return getArtifactType(SignavioPluginDefinition.ARTIFACT_TYPE_DEFAULT);
   }
 
   public String getSignavioUrl() {
