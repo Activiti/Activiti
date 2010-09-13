@@ -12,11 +12,15 @@
  */
 package org.activiti.rest.api.cycle;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.servlet.http.HttpSession;
 
@@ -35,8 +39,11 @@ import org.springframework.extensions.webscripts.servlet.WebScriptServletRequest
 
 /**
  * @author Nils Preusker
+ * @author ruecker
  */
 public class ArtifactGet extends ActivitiWebScript {
+
+  private static Logger log = Logger.getLogger(TreeGet.class.getName());
 
   @Override
   protected void executeWebScript(WebScriptRequest req, Status status, Cache cache, Map<String, Object> model) {
@@ -64,10 +71,18 @@ public class ArtifactGet extends ActivitiWebScript {
                   + URLEncoder.encode(representation.getMimeType(), "UTF-8");
           contentViews.add(new ContentView(representation.getMimeType(), representation.getId(), url));
         }
-      } catch (UnsupportedEncodingException e) {
-        // should never be reached as long as we use UTF-8, which is valid in
-        // java on all platforms
-        throw new RuntimeException(e);
+      } catch (Exception ex) {
+        // we had a problem with a content representation
+        // log and go on, that this will not prevent other representations to be
+        // shown
+        log.log(Level.WARNING, "Exception while loading content representation", ex);
+
+        // TODO:Better concept how this is handled in the GUI
+        StringWriter sw = new StringWriter();
+        ex.printStackTrace(new PrintWriter(sw));
+        String stackTrace = "Exception while accessing content. Details:\n\n" + sw.toString();
+
+        contentViews.add(new ContentView(ContentType.TEXT, representation.getId(), stackTrace));
       }
     }
 

@@ -1,5 +1,7 @@
 package org.activiti.cycle.impl.transform.signavio;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -63,12 +65,25 @@ public class ExchangeSignavioUuidWithNameTransformation extends OryxTransformati
    * adjust name from Signavio (remove new lines, ' and maybe add more in
    * future) See https://app.camunda.com/jira/browse/HEMERA-164.
    * 
+   * Since that makes problems (see
+   * http://forums.activiti.org/en/viewtopic.php?f=4&t=259&p=917) we changed to
+   * proper encoding, even if that is less developer friendly.
+   * 
+   * TODO: Improve encoding / readability
+   * 
    * TODO: Should we have this as own pattern?
    */
   public static String adjustNamesForEngine(String name) {
     if (name == null) {
       return null;
     }
-    return name.replaceAll("\n", " ").replaceAll("'", "").replaceAll("\"", "");
+    try {
+      return URLEncoder.encode(name, "UTF-8");
+    } catch (UnsupportedEncodingException e) {
+      // Should never happen :-)
+      throw new IllegalStateException("Wired, platform couldn't encode UTF-8", e);
+    }
+    // return name.replaceAll("\n", " ").replaceAll("'", "").replaceAll("\"",
+    // "");
   } 
 }
