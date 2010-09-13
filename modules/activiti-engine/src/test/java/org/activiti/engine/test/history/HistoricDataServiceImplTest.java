@@ -12,7 +12,7 @@
  * limitations under the License.
  */
 
-package org.activiti.test.history;
+package org.activiti.engine.test.history;
 
 
 /**
