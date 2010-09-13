@@ -20,6 +20,11 @@ public class ValidateActivitiDeployment extends CreateTechnicalBpmnXmlAction {
     // TODO: remove when real labels are introduced in the GUI
     super("Validate for Activiti");
   }
+  
+  public String getFormResourceName() {
+    // we donn't need any form here
+    return null;
+  }
 
   public void execute(RepositoryConnector connector, RepositoryArtifact artifact, Map<String, Object> parameters) throws Exception {    
     // TODO: Okay, this needs more serious thiniking where we get the engine
