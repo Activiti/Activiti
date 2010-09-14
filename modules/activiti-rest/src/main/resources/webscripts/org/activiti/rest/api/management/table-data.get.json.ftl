@@ -11,6 +11,6 @@
   "total": ${tablePage.total?c},
   "start": ${tablePage.firstResult?c},
   "size": ${size?c},
-  "sort": "${tablePage.sort!"ID_"}",
-  "order": "<#if tablePage.order == "DESCENDING">desc<#else>asc</#if>"
+  "sort": "${sortColumn!"ID_"}",
+  "order": "<#if sortOrder == "DESCENDING">desc<#else>asc</#if>"
 }

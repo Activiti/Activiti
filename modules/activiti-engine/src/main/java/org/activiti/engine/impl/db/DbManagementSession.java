@@ -24,8 +24,6 @@ import java.util.logging.Logger;
 
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiOptimisticLockingException;
-import org.activiti.engine.SortOrder;
-import org.activiti.engine.impl.AbstractQuery;
 import org.activiti.engine.impl.TablePageQueryImpl;
 import org.activiti.engine.impl.cfg.ManagementSession;
 import org.activiti.engine.impl.interceptor.CommandContext;
@@ -99,15 +97,6 @@ public class DbManagementSession implements ManagementSession, Session {
     tablePage.setTotal(getTableCount(tablePageQuery.getTableName()));
     tablePage.setRows(tableData);
     tablePage.setFirstResult(firstResult);
-    tablePage.setSort(tablePageQuery.getSortColumn());
-
-    // TODO fix the sort ordering http://jira.codehaus.org/browse/ACT-100
-    String sortOrderString = tablePageQuery.getSortOrder();
-    if (AbstractQuery.SORTORDER_ASC.equals(sortOrderString)) {
-      tablePage.setOrder(SortOrder.ASC);
-    } else if (AbstractQuery.SORTORDER_DESC.equals(sortOrderString)) {
-      tablePage.setOrder(SortOrder.DESC);
-    }
     
     return tablePage;
   }

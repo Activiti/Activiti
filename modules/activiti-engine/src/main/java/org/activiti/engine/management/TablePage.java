@@ -15,8 +15,6 @@ package org.activiti.engine.management;
 import java.util.List;
 import java.util.Map;
 
-import org.activiti.engine.SortOrder;
-
 
 
 /**
@@ -40,16 +38,6 @@ public class TablePage {
    * the result on the first row.
    */
   protected long firstResult;
-  
-  /**
-   * Indicates the key or column on which the rows are sorted.
-   */
-  protected String sort;
-  
-  /**
-   * The order on which the sortkey/column is sorted (asc/desc)
-   */
-  protected SortOrder order;
   
   /**
    * The actual content of the database table, stored as a list of mappings of
@@ -112,21 +100,4 @@ public class TablePage {
   public long getSize() {
     return rowData.size();
   }
-
-  public String getSort() {
-    return sort;
-  }
-
-  public void setSort(String sort) {
-    this.sort = sort;
-  }
-
-  public SortOrder getOrder() {
-    return order;
-  }
-
-  public void setOrder(SortOrder order) {
-    this.order = order;
-  }
-
 }

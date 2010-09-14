@@ -50,7 +50,9 @@ public class TableDataGet extends ActivitiWebScript
     
     String sort = getString(req, "sort");
     if (sort != null && !sort.trim().equals("")) {
+      model.put("sortColumn", sort);
       String order = getString(req, "order", "asc");
+      model.put("sortOrder", order);
       if (order.equals("asc")) {
         query.orderAsc(sort);
       }
