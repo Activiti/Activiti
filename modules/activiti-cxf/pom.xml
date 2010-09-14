@@ -28,19 +28,24 @@
 
 	<dependencies>
 		<dependency>
-			<groupId>org.activiti</groupId>
-			<artifactId>activiti-engine</artifactId>
-			<scope>provided</scope>
+		  <groupId>org.activiti</groupId>
+		  <artifactId>activiti-engine</artifactId>
+		  <scope>provided</scope>
 		</dependency>
 		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<scope>test</scope>
+		  <groupId>junit</groupId>
+		  <artifactId>junit</artifactId>
+		  <scope>test</scope>
 		</dependency>
 		<dependency>
 		  <groupId>org.apache.cxf</groupId>
     	  <artifactId>cxf-rt-frontend-jaxws</artifactId>
 		</dependency>
+		<dependency>
+      	  <groupId>com.h2database</groupId>
+      	  <artifactId>h2</artifactId>
+      	  <scope>test</scope>
+    	</dependency>
 	</dependencies>
 			
 	<profiles>
