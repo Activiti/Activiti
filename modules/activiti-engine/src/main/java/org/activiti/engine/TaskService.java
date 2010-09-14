@@ -16,7 +16,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
-import org.activiti.engine.impl.Page;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.task.TaskInvolvementType;
 import org.activiti.engine.task.TaskQuery;
@@ -77,7 +76,7 @@ public interface TaskService {
 	 * @param page allows to retrieve only a part of the results. 
    *             if null, no paging will be applied.
 	 */
-	List<Task> findUnassignedTasks(String userId, Page page);
+	List<Task> findUnassignedTasks(String userId, int firstResult, int maxResults);
 	
 	 /**
    * Claim responsibility for a task: the given user is made assignee for the task.
