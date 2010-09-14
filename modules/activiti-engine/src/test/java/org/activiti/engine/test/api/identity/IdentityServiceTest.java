@@ -207,6 +207,33 @@ public class IdentityServiceTest extends ActivitiInternalTestCase {
       assertTextPresent("userId is null", ae.getMessage());
     }
   }
+  
+  public void testFindGroupsByUserIdAndTypeNullGroupType() {
+    // Create user and add to 2 groups with a different type
+    User johndoe = identityService.newUser("johndoe");
+    identityService.saveUser(johndoe);
+    
+    Group sales = identityService.newGroup("sales");
+    sales.setType("type1");
+    identityService.saveGroup(sales);
+    
+    Group admin = identityService.newGroup("admin");
+    admin.setType("type2");
+    identityService.saveGroup(admin);
+    
+    identityService.createMembership(johndoe.getId(), sales.getId());
+    identityService.createMembership(johndoe.getId(), admin.getId());
+    
+    // When null is passed as groupTypes, groups of all types should be returned
+    List<Group> groups = identityService.findGroupsByUserIdAndGroupType(johndoe.getId(), null);
+    Assert.assertNotNull(groups);
+    Assert.assertEquals(2, groups.size());
+    
+    identityService.deleteUser(johndoe.getId());
+    identityService.deleteGroup(sales.getId());
+    identityService.deleteGroup(admin.getId());
+    
+  }
 
   public void testFindUsersByGroupIdNullArguments() {
     try {
@@ -267,6 +294,7 @@ public class IdentityServiceTest extends ActivitiInternalTestCase {
     identityService.deleteGroup("sales");
     identityService.deleteUser("johndoe");
   }
+  
   public void testDeleteMembershipUnexistingGroup() {
     User johndoe = identityService.newUser("johndoe");
     identityService.saveUser(johndoe);

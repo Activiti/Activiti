@@ -71,7 +71,6 @@ public class IdentityTest extends ActivitiInternalTestCase {
     List<Group> groups = identityService.findGroupsByUserIdAndGroupType("johndoe", "security-role");
     Set<String> groupIds = getGroupIds(groups);
     Set<String> expectedGroupIds = new HashSet<String>();
-    expectedGroupIds.add("sales");
     expectedGroupIds.add("user");
     expectedGroupIds.add("admin");
     assertEquals(expectedGroupIds, groupIds);

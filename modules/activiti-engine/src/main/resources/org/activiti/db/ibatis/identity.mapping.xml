@@ -126,7 +126,9 @@
     from ACT_ID_GROUP g, ACT_ID_MEMBERSHIP membership
     where g.ID_ = membership.GROUP_ID_
       and membership.USER_ID_ = #{userId}
-      and g.TYPE_ = #{groupType}
+      <if test="groupType != null">
+         and g.TYPE_ = #{groupType}
+      </if>
   </select>
   
 

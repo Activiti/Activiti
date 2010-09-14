@@ -16,6 +16,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.activiti.engine.ActivitiException;
 import org.activiti.engine.RuntimeService;
 import org.activiti.engine.impl.cmd.DeleteProcessInstanceCmd;
 import org.activiti.engine.impl.cmd.FindActiveActivityIdsCmd;
@@ -67,6 +68,9 @@ public class RuntimeServiceImpl extends ServiceImpl implements RuntimeService {
   }
 
   public void setVariable(String executionId, String variableName, Object value) {
+    if(variableName == null) {
+      throw new ActivitiException("variableName is null");
+    }
     Map<String, Object> variables = new HashMap<String, Object>();
     variables.put(variableName, value);
     commandExecutor.execute(new SetVariablesCmd(executionId, variables));
@@ -89,6 +93,10 @@ public class RuntimeServiceImpl extends ServiceImpl implements RuntimeService {
   }
 
   public Execution findExecutionById(String executionId) {
+    if(executionId == null) {
+      throw new ActivitiException("executionId is null");
+    }
+    
     return new ExecutionQueryImpl(commandExecutor)
       .executionId(executionId)
       .singleResult();

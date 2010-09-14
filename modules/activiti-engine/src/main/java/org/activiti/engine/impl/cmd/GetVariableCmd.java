@@ -32,6 +32,13 @@ public class GetVariableCmd implements Command<Object> {
   }
 
   public Object execute(CommandContext commandContext) {
+    if(executionId == null) {
+      throw new ActivitiException("executionId is null");
+    }
+    if(executionId == null) {
+      throw new ActivitiException("variableName is null");
+    }
+    
     ExecutionEntity execution = commandContext
       .getRuntimeSession()
       .findExecutionById(executionId);

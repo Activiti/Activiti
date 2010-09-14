@@ -31,44 +31,66 @@ import org.activiti.engine.runtime.ProcessInstanceQuery;
  */
 public interface RuntimeService {
   
-  /** starts a new process instance in the latest version of the process definition with the given key */
+  /** starts a new process instance in the latest version of the process definition with the given key.
+   *  @throws ActivitiException when no process definition is deployed with the given key.
+   */
   ProcessInstance startProcessInstanceByKey(String processDefinitionKey);
 
-  /** starts a new process instance in the latest version of the process definition with the given key */
+  /** starts a new process instance in the latest version of the process definition with the given key 
+   *  @throws ActivitiException when no process definition is deployed with the given key. 
+   */
   ProcessInstance startProcessInstanceByKey(String processDefinitionKey, Map<String, Object> variables);
 
-  /** starts a new process instance in the exactly specified version of the process definition with the given id */
+  /** starts a new process instance in the exactly specified version of the process definition with the given id
+   *  @throws ActivitiException when no process definition is deployed with the given key. 
+   */
   ProcessInstance startProcessInstanceById(String processDefinitionId);
   
-  /** starts a new process instance in the exactly specified version of the process definition with the given id */
+  /** starts a new process instance in the exactly specified version of the process definition with the given id 
+   *  @throws ActivitiException when no process definition is deployed with the given key. 
+   */
   ProcessInstance startProcessInstanceById(String processDefinitionId, Map<String, Object> variables);
   
-  /** delete an existing runtime process instance */
+  /** delete an existing runtime process instance. The reason for deletion can be null.
+   *  @throws ActivitiException when no process instance is found with the given id.
+   */
   void deleteProcessInstance(String processInstanceId, String deleteReason);
   
   /** creates a new {@link ExecutionQuery} instance, 
    * that can be used to query the executions and process instances. */
   ExecutionQuery createExecutionQuery();
   
+  /** return the execution for the given id. Returns null if no execution is found. */
   Execution findExecutionById(String executionId);
   
   /** the activity ids for all executions that are waiting in activities. 
-   * This is a list because a single activity can be active multiple times.*/
+   * This is a list because a single activity can be active multiple times.
+   * @throws ActivitiException when no execution exists with the given executionId. 
+   */
   List<String> findActiveActivityIds(String executionId);
 
   ProcessInstanceQuery createProcessInstanceQuery();
 
-  /** sends an external trigger to an activity instance that is waiting. */
-  void signal(String activityInstanceId);
+  /** sends an external trigger to an activity instance that is waiting inside the given execution. 
+   *  @throws ActivitiException when no execution is found for the given executionId. 
+   */
+  void signal(String executionId);
   
-  /** sends an external trigger to an activity instance that is waiting. */
-  void signal(String activityInstanceId, String signalName, Object signalData);
+  /** sends an external trigger to an activity instance that is waiting inside the given execution. 
+   *  @throws ActivitiException when no execution is found for the given executionId.  
+   */
+  void signal(String executionId, String signalName, Object signalData);
   
-  /** variables for a process instance or an activity instance. */
-  Map<String, Object> getVariables(String scopeInstanceId);
+  /** variables for an execution. 
+   *  @throws ActivitiException when no execution is found for the given executionId.   
+   */
+  Map<String, Object> getVariables(String executionId);
   
-  /** retrieve a specific variable for a process instance or an activity instance */
-  Object getVariable(String scopeInstanceId, String variableName);
+  /** retrieve a specific variable for an execution. Returns null when the variable is set 
+   *  for the execution.
+   *  @throws ActivitiException when no execution is found for the given executionId.   
+   */
+  Object getVariable(String executionId, String variableName);
 
   /** update or create a variable for a process instance or an activity instance */
   void setVariable(String scopeInstance, String variableName, Object value);

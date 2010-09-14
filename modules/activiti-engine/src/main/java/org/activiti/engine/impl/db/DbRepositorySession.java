@@ -215,6 +215,9 @@ public class DbRepositorySession implements Session, RepositorySession {
 
   public ProcessDefinitionEntity findDeployedProcessDefinitionById(String processDefinitionId) {
     ProcessDefinitionEntity processDefinition = (ProcessDefinitionEntity) dbSqlSession.selectOne("selectProcessDefinitionById", processDefinitionId);
+    if(processDefinition == null) {
+      throw new ActivitiException("no deployed process definition found with id '" + processDefinitionId + "'");
+    }
     processDefinition = resolveProcessDefinition(processDefinition);
     return processDefinition;
   }

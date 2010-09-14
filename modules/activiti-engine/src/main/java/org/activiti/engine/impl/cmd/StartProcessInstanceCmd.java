@@ -46,11 +46,13 @@ public class StartProcessInstanceCmd<T> implements Command<ProcessInstance> {
       if (processDefinition == null) {
         throw new ActivitiException("No process definition found for id = '" + processDefinitionId + "'");
       }
-    } else {
+    } else if(processDefinitionKey != null){
       processDefinition = repositorySession.findDeployedLatestProcessDefinitionByKey(processDefinitionKey);
       if (processDefinition == null) {
         throw new ActivitiException("No process definition found for key '" + processDefinitionKey +"'");
       }
+    } else {
+      throw new ActivitiException("processDefinitionKey and processDefinitionId are null");
     }
     
     ExecutionEntity processInstance = processDefinition.createProcessInstance();

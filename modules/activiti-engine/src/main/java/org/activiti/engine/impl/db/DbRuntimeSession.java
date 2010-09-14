@@ -16,6 +16,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.JobQueryImpl;
 import org.activiti.engine.impl.Page;
 import org.activiti.engine.impl.TaskQueryImpl;
@@ -46,6 +47,10 @@ public class DbRuntimeSession implements Session, RuntimeSession {
   @SuppressWarnings("unchecked")
   public void deleteProcessInstance(String processInstanceId, String deleteReason) {
     ExecutionEntity execution = findExecutionById(processInstanceId);
+    
+    if(execution == null) {
+      throw new ActivitiException("No process instance found for id '" + processInstanceId + "'");
+    }
     
     List<TaskEntity> tasks = (List) new TaskQueryImpl()
       .processInstanceId(processInstanceId)

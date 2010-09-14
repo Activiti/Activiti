@@ -12,6 +12,7 @@
  */
 package org.activiti.engine.impl.cmd;
 
+import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.management.TableMetaData;
@@ -29,6 +30,9 @@ public class GetTableMetaDataCmd implements Command<TableMetaData> {
   }
   
   public TableMetaData execute(CommandContext commandContext) {
+    if(tableName == null) {
+      throw new ActivitiException("tableName is null");
+    }
     return commandContext
       .getManagementSession()
       .getTableMetaData(tableName);

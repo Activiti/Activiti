@@ -33,6 +33,10 @@ public class GetVariablesCmd implements Command<Map<String, Object>> {
   }
 
   public Map<String, Object> execute(CommandContext commandContext) {
+    if(executionId == null) {
+      throw new ActivitiException("executionId is null");
+    }
+    
     ExecutionEntity execution = commandContext
       .getRuntimeSession()
       .findExecutionById(executionId);

@@ -34,13 +34,17 @@ public class SignalCmd implements Command<Object> {
     this.signalData = signalData;
   }
 
-  public Object execute(CommandContext commandContext) {
+  public Object execute(CommandContext commandContext) { 
+    if(executionId == null) {
+      throw new ActivitiException("executionId is null");
+    }
+    
     ExecutionEntity execution = commandContext
       .getRuntimeSession()
       .findExecutionById(executionId);
     
     if (execution==null) {
-      throw new ActivitiException("execution "+execution+" doesn't exist");
+      throw new ActivitiException("execution "+executionId+" doesn't exist");
     }
     
     execution.signal(signalName, signalData);

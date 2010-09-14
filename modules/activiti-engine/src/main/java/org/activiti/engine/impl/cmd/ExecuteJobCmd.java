@@ -13,8 +13,10 @@
 
 package org.activiti.engine.impl.cmd;
 
+import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
+import org.activiti.engine.impl.runtime.JobEntity;
 
 
 /**
@@ -29,10 +31,19 @@ public class ExecuteJobCmd implements Command<Object> {
  }
 
   public Object execute(CommandContext commandContext) {
-    commandContext
-      .getRuntimeSession()
-      .findJobById(jobId)
-      .execute(commandContext);
+    if(jobId == null) {
+      throw new ActivitiException("jobId is null");
+    }
+    
+    JobEntity job =  commandContext
+    .getRuntimeSession()
+    .findJobById(jobId);
+    
+    if(job == null) {
+      throw new ActivitiException("Cannot execute job, no job found with id '" + jobId + "'");
+    }
+    job.execute(commandContext);
+  
     return null;
   }
 }

@@ -28,6 +28,38 @@ import org.activiti.engine.test.Deployment;
  */
 public class ReposityServiceTest extends ActivitiInternalTestCase {
 
+  @Deployment(resources = {
+  "org/activiti/engine/test/api/oneTaskProcess.bpmn20.xml"})
+  public void testStartProcessInstanceById() {
+    List<ProcessDefinition> processDefinitions = repositoryService.createProcessDefinitionQuery().list();
+    assertEquals(1, processDefinitions.size());
+  
+    ProcessDefinition processDefinition = processDefinitions.get(0);
+    assertEquals("oneTaskProcess", processDefinition.getKey());
+    assertNotNull(processDefinition.getId());
+  }
+
+  @Deployment(resources={
+    "org/activiti/engine/test/api/oneTaskProcess.bpmn20.xml"})
+  public void testFindProcessDefinitionById() {
+    List<ProcessDefinition> definitions = repositoryService.createProcessDefinitionQuery().list();
+    assertEquals(1, definitions.size());
+  
+    ProcessDefinition processDefinition = repositoryService.findProcessDefinitionById(definitions.get(0).getId());
+    assertNotNull(processDefinition);
+    assertEquals("oneTaskProcess", processDefinition.getKey());
+    assertEquals("The One Task Process", processDefinition.getName());
+  }
+  
+  public void testFindProcessDefinitionByNullId() {
+    try {
+      repositoryService.findProcessDefinitionById(null);
+      fail();
+    } catch (ActivitiException e) {
+      assertTextPresent("processDefinitionId is null", e.getMessage());
+    }
+  }
+  
   @Deployment(resources = { "org/activiti/engine/test/api/oneTaskProcess.bpmn20.xml" })
   public void testDeleteDeploymentWithRunningInstances() {
     List<ProcessDefinition> processDefinitions = repositoryService.createProcessDefinitionQuery().list();
@@ -39,9 +71,27 @@ public class ReposityServiceTest extends ActivitiInternalTestCase {
     // Try to delete the deployment
     try {
       repositoryService.deleteDeployment(processDefinition.getDeploymentId());
-      fail("ActivitiException expected");
+      fail("Exception expected");
     } catch (RuntimeException ae) {
       // Exception expected when deleting deployment with running process
+    }
+  }
+  
+  public void testDeleteDeploymentNullDeploymentId() {
+    try {
+      repositoryService.deleteDeployment(null);    
+      fail("ActivitiException expected");
+    } catch (ActivitiException ae) {
+      assertTextPresent("deploymentId is null", ae.getMessage());
+    }
+  }
+  
+  public void testDeleteDeploymentCascadeNullDeploymentId() {
+    try {
+      repositoryService.deleteDeploymentCascade(null);    
+      fail("ActivitiException expected");
+    } catch (ActivitiException ae) {
+      assertTextPresent("deploymentId is null", ae.getMessage());
     }
   }
 
@@ -81,35 +131,92 @@ public class ReposityServiceTest extends ActivitiInternalTestCase {
     Assert.assertNull(startForm);
   }
   
-  @Deployment(resources = {
-  "org/activiti/engine/test/api/oneTaskProcess.bpmn20.xml"})
-public void testStartProcessInstanceById() {
-  List<ProcessDefinition> processDefinitions = repositoryService.createProcessDefinitionQuery().list();
-  assertEquals(1, processDefinitions.size());
-
-  ProcessDefinition processDefinition = processDefinitions.get(0);
-  assertEquals("oneTaskProcess", processDefinition.getKey());
-  assertNotNull(processDefinition.getId());
-}
-
-@Deployment(resources={
-  "org/activiti/engine/test/api/oneTaskProcess.bpmn20.xml"})
-public void testFindProcessDefinitionById() {
-  List<ProcessDefinition> definitions = repositoryService.createProcessDefinitionQuery().list();
-  assertEquals(1, definitions.size());
-
-  ProcessDefinition processDefinition = repositoryService.findProcessDefinitionById(definitions.get(0).getId());
-  assertNotNull(processDefinition);
-  assertEquals("oneTaskProcess", processDefinition.getKey());
-  assertEquals("The One Task Process", processDefinition.getName());
-}
-
-public void testFindProcessDefinitionByNullId() {
-  try {
-    repositoryService.findProcessDefinitionById(null);
-    fail();
-  } catch (ActivitiException e) {
-    assertTextPresent("processDefinitionId is null", e.getMessage());
+  public void testGetStartFormByKeyNullKey() {
+    try {
+      repositoryService.getStartFormByKey(null);    
+      fail("ActivitiException expected");
+    } catch (ActivitiException ae) {
+      // Exception expected
+    }
   }
-}
+  
+  public void testGetStartFormByKeyUnexistingProcessDefinitionKey() {
+    try {
+      repositoryService.getStartFormByKey("unexisting");    
+      fail("ActivitiException expected");
+    } catch (ActivitiException ae) {
+      assertTextPresent("no processes deployed with key", ae.getMessage());
+    }
+  }
+  
+  public void testGetStartFormByIdNullId() {
+    try {
+      repositoryService.getStartFormById(null);    
+      fail("ActivitiException expected");
+    } catch (ActivitiException ae) {
+      // Exception expected
+    }
+  }
+  
+  public void testGetStartFormByIdUnexistingProcessDefinitionId() {
+    try {
+      repositoryService.getStartFormById("unexistingId");    
+      fail("ActivitiException expected");
+    } catch (ActivitiException ae) {
+      assertTextPresent("no deployed process definition found with id", ae.getMessage());
+    }
+  }
+  
+  
+  
+  public void testFindDeploymentResourceNamesNullDeploymentId() {
+    try {
+      repositoryService.findDeploymentResourceNames(null);    
+      fail("ActivitiException expected");
+    } catch (ActivitiException ae) {
+      assertTextPresent("deploymentId is null", ae.getMessage());
+    }
+  }
+  
+  @Deployment(resources = { "org/activiti/engine/test/api/oneTaskProcess.bpmn20.xml" })
+  public void testGetResourceAsStreamUnexistingResourceInExistingDeployment() {
+    // Get hold of the deployment id
+    org.activiti.engine.repository.Deployment deployment = repositoryService.createDeploymentQuery().singleResult();
+    
+    try {
+      repositoryService.getResourceAsStream(deployment.getId(), "org/activiti/engine/test/api/unexistingProcess.bpmn.xml");
+      fail("ActivitiException expected");
+    } catch (ActivitiException ae) {
+      assertTextPresent("no resource found with name", ae.getMessage());
+    }
+  }
+  
+  @Deployment(resources = { "org/activiti/engine/test/api/oneTaskProcess.bpmn20.xml" })
+  public void testGetResourceAsStreamUnexistingDeployment() {
+    
+    try {
+      repositoryService.getResourceAsStream("unexistingdeployment", "org/activiti/engine/test/api/unexistingProcess.bpmn.xml");
+      fail("ActivitiException expected");
+    } catch (ActivitiException ae) {
+      assertTextPresent("no resource found with name", ae.getMessage());
+    }
+  }
+  
+  
+  public void testGetResourceAsStreamNullArguments() {
+    try {
+      repositoryService.getResourceAsStream(null, "resource");    
+      fail("ActivitiException expected");
+    } catch (ActivitiException ae) {
+      assertTextPresent("deploymentId is null", ae.getMessage());
+    }
+    
+    try {
+      repositoryService.getResourceAsStream("deployment", null);    
+      fail("ActivitiException expected");
+    } catch (ActivitiException ae) {
+      assertTextPresent("resourceName is null", ae.getMessage());
+    }
+  }
+ 
 }

@@ -39,6 +39,6 @@ public class FindGroupsByUserIdCmd implements Command<List> {
     }
     return commandContext
       .getIdentitySession()
-      .findGroupsByUser(userId);
+      .findGroupsByUserAndType(userId, groupType);
   }
 }

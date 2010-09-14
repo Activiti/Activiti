@@ -14,6 +14,7 @@ package org.activiti.engine.impl.cmd;
 
 import java.util.List;
 
+import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.cfg.RepositorySession;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
@@ -32,6 +33,9 @@ public class FindDeploymentResourceNamesCmd implements Command<List> {
   }
   
   public List execute(CommandContext commandContext) {
+    if (deploymentId == null) {
+      throw new ActivitiException("deploymentId is null");
+    }
     RepositorySession repositorySession = commandContext.getRepositorySession();
     return repositorySession.findDeploymentResourceNames(deploymentId);
   }

@@ -15,6 +15,7 @@ package org.activiti.engine.impl.cmd;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 
+import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.repository.ResourceEntity;
@@ -34,9 +35,19 @@ public class GetDeploymentResourceCmd implements Command<InputStream> {
   }
 
   public InputStream execute(CommandContext commandContext) {
+    if (deploymentId == null) {
+      throw new ActivitiException("deploymentId is null");
+    }
+    if(resourceName == null) {
+      throw new ActivitiException("resourceName is null");
+    }
+    
     ResourceEntity resource = commandContext
       .getRepositorySession()
       .findResourceByDeploymentIdAndResourceName(deploymentId, resourceName);
+    if(resource == null) {
+      throw new ActivitiException("no resource found with name '" + resourceName + "' in deployment '" + deploymentId + "'");
+    }
     return new ByteArrayInputStream(resource.getBytes());
   }
   

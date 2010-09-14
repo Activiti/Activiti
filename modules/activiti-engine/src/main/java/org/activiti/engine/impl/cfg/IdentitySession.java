@@ -35,6 +35,9 @@ public interface IdentitySession {
   void insertGroup(GroupEntity group);
   GroupEntity findGroupById(String groupId);
   List<GroupEntity> findGroupsByUser(String userId);
+  /**
+   * When groupType is null, groups of all types are returned.
+   */
   List<GroupEntity> findGroupsByUserAndType(String userId, String groupType);
   void deleteGroup(String groupId);
 

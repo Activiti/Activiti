@@ -12,6 +12,7 @@
  */
 package org.activiti.engine.impl.cmd;
 
+import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 
@@ -30,6 +31,10 @@ public class DeleteProcessInstanceCmd implements Command<Void> {
   }
 
   public Void execute(CommandContext commandContext) { 
+    if(processInstanceId == null) {
+      throw new ActivitiException("processInstanceId is null");
+    }
+    
     commandContext
       .getRuntimeSession()
       .deleteProcessInstance(processInstanceId, deleteReason);

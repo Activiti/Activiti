@@ -15,6 +15,7 @@ package org.activiti.engine.test.api.mgmt;
 
 import junit.framework.Assert;
 
+import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.test.ActivitiInternalTestCase;
 import org.activiti.engine.management.TableMetaData;
 
@@ -30,5 +31,32 @@ public class ManagementServiceTest extends ActivitiInternalTestCase {
       Assert.assertNotNull(metaData);
       Assert.assertTrue(metaData.getColumnNames().isEmpty());
       Assert.assertTrue(metaData.getColumnTypes().isEmpty());
+  }
+  
+  public void testGetMetaDataNullTableName() {
+    try {
+      managementService.getTableMetaData(null);
+      fail("Exception expected");
+    } catch (ActivitiException re) {
+      assertTextPresent("tableName is null", re.getMessage());
+    }
+  }
+  
+  public void testExecuteJobNullJobId() {
+    try {
+      managementService.executeJob(null);
+      fail("Exception expected");
+    } catch (ActivitiException re) {
+      assertTextPresent("jobId is null", re.getMessage());
+    }
+  }
+  
+  public void testExecuteJobUnexistingJob() {
+    try {
+      managementService.executeJob("unexistingjob");
+      fail("ActivitiException expected");
+    } catch (ActivitiException ae) {
+      assertTextPresent("no job found with id", ae.getMessage());
+    }
   }
 }

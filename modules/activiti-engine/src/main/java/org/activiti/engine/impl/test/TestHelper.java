@@ -98,7 +98,9 @@ public abstract class TestHelper {
   
   public static void annotationDeploymentTearDown(ProcessEngine processEngine, String deploymentId, Class<?> testClass, String methodName) {
     log.fine("annotation @Deployment deletes deployment for "+ClassNameUtil.getClassNameWithoutPackage(testClass)+"."+methodName);
-    processEngine.getRepositoryService().deleteDeploymentCascade(deploymentId);
+    if(deploymentId != null) {
+      processEngine.getRepositoryService().deleteDeploymentCascade(deploymentId);      
+    }
   }
 
   /**

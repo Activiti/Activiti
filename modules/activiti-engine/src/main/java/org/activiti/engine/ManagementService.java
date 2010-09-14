@@ -56,7 +56,9 @@ public interface ManagementService {
    */
   JobQuery createJobQuery();
   
-  /** forced synchronous execution of a job for testing purposes. */
+  /** forced synchronous execution of a job for testing purposes. 
+   * @throws ActivitiException when there is no job with the given id. 
+   */
   void executeJob(String jobId);
   
 }

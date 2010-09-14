@@ -33,12 +33,16 @@ public class FindActiveActivityIdsCmd implements Command<List<String>> {
   }
 
   public List<String> execute(CommandContext commandContext) {
+    if(executionId == null) {
+      throw new ActivitiException("executionId is null");
+    }
+    
     ExecutionEntity execution = commandContext
       .getRuntimeSession()
       .findExecutionById(executionId);
     
     if (execution==null) {
-      throw new ActivitiException("execution with id "+executionId+" was not found");
+      throw new ActivitiException("execution "+executionId+" doesn't exist");
     }
     
     return execution.findActiveActivityIds();

@@ -12,6 +12,7 @@
  */
 package org.activiti.engine.impl.cmd;
 
+import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 
@@ -29,6 +30,9 @@ public class DeleteDeploymentCmd implements Command<Void> {
   }
 
   public Void execute(CommandContext commandContext) {
+    if(deploymentId == null) {
+      throw new ActivitiException("deploymentId is null");
+    }
     commandContext
       .getRepositorySession()
       .deleteDeployment(deploymentId, cascade);

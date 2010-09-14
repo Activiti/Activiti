@@ -52,12 +52,13 @@ public class GetFormCmd implements Command<Object> {
         .getTaskSession()
         .findTaskById(taskId);
       
-      execution = task.getExecution();
-      processDefinition = (ProcessDefinitionEntity) execution.getProcessDefinition();
-      
       if (task == null) {
         throw new ActivitiException("No task found for id = '" + taskId + "'");
       }
+      
+      execution = task.getExecution();
+      processDefinition = (ProcessDefinitionEntity) execution.getProcessDefinition();
+      
       formResourceKey = task.getFormResourceKey();
       
     } else if (processDefinitionId!=null) {
@@ -76,7 +77,9 @@ public class GetFormCmd implements Command<Object> {
         throw new ActivitiException("No process definition found for key '" + processDefinitionKey +"'");
       }
       formResourceKey = processDefinition.getStartFormResourceKey();
-    } 
+    } else {
+      throw new ActivitiException("processDefinitionKey, processDefinitionId and taskId are null");
+    }
 
     String deploymentId = processDefinition.getDeploymentId();
     DeploymentEntity deployment = repositorySession.findDeploymentById(deploymentId);

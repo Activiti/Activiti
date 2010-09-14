@@ -68,6 +68,7 @@ public interface IdentityService {
   
   /**
    * @return all groups the user is a member of which are of the given type. 
+   * When groupType is null, groups of any type will be returned.
    * Returns an empty list the user is not a member of a matching group.
    * 
    */
