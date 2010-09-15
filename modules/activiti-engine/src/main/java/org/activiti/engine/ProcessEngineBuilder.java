@@ -24,7 +24,7 @@ import org.activiti.engine.impl.cfg.ProcessEngineConfiguration;
  * To build a ProcessEngine that's using a h2 database over a TCP connection:
  * 
  * <pre>
- * ProcessEngine processEngine = DbProcessEngineBuilder
+ * ProcessEngine processEngine = ProcessEngineBuilder
  *   .setDatabaseName(&quot;h2&quot;)
  *   .setJdbcDriver(&quot;org.h2.Driver&quot;)
  *   .setJdbcUrl(&quot;jdbc:h2:tcp://localhost/activiti&quot;)
@@ -37,7 +37,7 @@ import org.activiti.engine.impl.cfg.ProcessEngineConfiguration;
  * To build a ProcessEngine that's using a h2 in memory database:
  * 
  * <pre>
- * ProcessEngine processEngine = DbProcessEngineBuilder
+ * ProcessEngine processEngine = ProcessEngineBuilder
  *   .setDatabaseName(&quot;h2&quot;)
  *   .setJdbcDriver(&quot;org.h2.Driver&quot;)
  *   .setJdbcUrl(&quot;jdbc:h2:mem:activiti&quot;)

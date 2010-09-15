@@ -30,6 +30,10 @@ public class AtomicOperationDeleteCascadeFireActivityEnd extends AbstractEventAt
     if (activity!=null) {
       return activity;
     } else {
+      ExecutionImpl parent = execution.getParent();
+      if (parent != null) {
+        return getScope(execution.getParent());
+      }
       return execution.getProcessDefinition();
     }
   }

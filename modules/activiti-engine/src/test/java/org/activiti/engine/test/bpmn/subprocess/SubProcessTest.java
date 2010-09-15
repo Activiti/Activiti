@@ -84,7 +84,7 @@ public class SubProcessTest extends ActivitiInternalTestCase {
    * where 2 concurrent paths are defined when the timer fires.
    */
   @Deployment
-  public void IGNORED_testSimpleSubProcessWithConcurrentTimer() {
+  public void IGNORE_testSimpleSubProcessWithConcurrentTimer() {
     
     Date startTime = new Date();
     
@@ -99,8 +99,8 @@ public class SubProcessTest extends ActivitiInternalTestCase {
     assertEquals("Task in subprocess", subProcessTask.getName());
     
     // When the timer is fired (after 2 hours), two concurrent paths should be created
-    ClockUtil.setCurrentTime(new Date(startTime.getTime() + (2 * 60 * 60 * 1000 ) + 1000));
-    waitForJobExecutorToProcessAllJobs(5000L, 50L);
+    Job job = managementService.createJobQuery().singleResult();
+    managementService.executeJob(job.getId());
     
     List<Task> tasksAfterTimer = taskQuery.list();
     assertEquals(2, tasksAfterTimer.size());
@@ -285,35 +285,36 @@ public class SubProcessTest extends ActivitiInternalTestCase {
     assertProcessEnded(pi.getId());
   }
   
-// TODO http://jira.codehaus.org/browse/ACT-95
-//  @Deployment
-//  public void testTwoNestedSubProcessesInParallelWithTimer() {
-//    
-//    Date startTime = new Date();
-//    
-//    ProcessInstance pi = runtimeService.startProcessInstanceByKey("nestedParallelSubProcessesWithTimer");
-//    TaskQuery taskQuery = taskService
-//      .createTaskQuery()
-//      .processInstanceId(pi.getId())
-//      .orderAsc(TaskQuery.PROPERTY_NAME);
-//    List<Task> tasks = taskQuery.list();
-//    
-//    // After process start, both tasks in the subprocesses should be active
-//    Task taskA = tasks.get(0);
-//    Task taskB = tasks.get(1);
-//    assertEquals("Task in subprocess A", taskA.getName());
-//    assertEquals("Task in subprocess B", taskB.getName());
-//    
-//    // Firing the timer should destroy all three subprocesses and activate the task after the timer
+  @Deployment
+  public void testTwoNestedSubProcessesInParallelWithTimer() {
+    
+    Date startTime = new Date();
+    
+    ProcessInstance pi = runtimeService.startProcessInstanceByKey("nestedParallelSubProcessesWithTimer");
+    TaskQuery taskQuery = taskService
+      .createTaskQuery()
+      .processInstanceId(pi.getId())
+      .orderAsc(TaskQuery.PROPERTY_NAME);
+    List<Task> tasks = taskQuery.list();
+    
+    // After process start, both tasks in the subprocesses should be active
+    Task taskA = tasks.get(0);
+    Task taskB = tasks.get(1);
+    assertEquals("Task in subprocess A", taskA.getName());
+    assertEquals("Task in subprocess B", taskB.getName());
+    
+    // Firing the timer should destroy all three subprocesses and activate the task after the timer
 //    ClockUtil.setCurrentTime(new Date(startTime.getTime() + (2 * 60 * 60 * 1000 ) + 1000));
 //    waitForJobExecutorToProcessAllJobs(5000L, 50L);
-//    
-//    Task taskAfterTimer = taskQuery.singleResult();
-//    assertEquals("Task after timer", taskAfterTimer.getName());
-//    
-//    // Completing the task should end the process instance
-//    taskService.complete(taskAfterTimer.getId());
-//    assertProcessEnded(pi.getId());
-//  }
+    Job job = managementService.createJobQuery().singleResult();
+    managementService.executeJob(job.getId());
+    
+    Task taskAfterTimer = taskQuery.singleResult();
+    assertEquals("Task after timer", taskAfterTimer.getName());
+    
+    // Completing the task should end the process instance
+    taskService.complete(taskAfterTimer.getId());
+    assertProcessEnded(pi.getId());
+  }
 
 }
