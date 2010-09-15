@@ -47,7 +47,7 @@
 		
 		<para>
 		  The root element of the BPMN 2.0 schema is the <emphasis role="bold">definitions</emphasis> element.
-		  Within this element, multiple process definitions can be defined (altough we advise to have only one
+		  Within this element, multiple process definitions can be defined (although we advise to have only one
 		  process definition in each file, since this simplifies maintenance later in the development process).
 		  An empty process definition looks as follows. Note that the minimal definitions element
 		  only needs the <emphasis>xmlns</emphasis> and <emphasis>targetNamespace</emphasis> declaration.
@@ -68,7 +68,7 @@
 		</para>
 		
 		<para>
-		  Note at the xml namespace that we are using the latest beta version of the 
+		  Note at the XML namespace that we are using the latest beta version of the 
 		  BPMN 2.0 specification, released on 
 		  <ulink url="http://www.omgwiki.org/bpmn2.0-ftf/doku.php?id=public:report">May 2010</ulink>.
 		</para>
@@ -144,9 +144,9 @@
 				using the Activiti Modeler. The end result, in BPMN 2.0 notation, looks
 				like this:
 			  <mediaobject><imageobject><imagedata align="center" fileref="images/financial.report.example.diagram.png"/></imageobject></mediaobject>
-        There is nothing spectaular here. What we see is a <link linkend="bpmnNoneStartEvent">none start event</link> (circle on the left),
+        There is nothing spectacular here. What we see is a <link linkend="bpmnNoneStartEvent">none start event</link> (circle on the left),
         followed by two <link linkend="bpmnUserTask">user tasks</link>:
-        <emphasis>'Write monthly financialreport'</emphasis> and 
+        <emphasis>'Write monthly financial report'</emphasis> and 
         <emphasis>'Verify monthly financial report'</emphasis>, ending in
         a <link linkend="bpmnNoneEndEvent">none end event</link> (circle with thick border on the right).
       </para>
@@ -208,7 +208,7 @@
       
   &lt;userTask id=&quot;verifyReportTask&quot; name=&quot;Verify monthly financial report&quot; &gt;
     &lt;documentation&gt;
-      Verify monthly financial report composed by the accountancy departement.
+      Verify monthly financial report composed by the accountancy department.
       This financial report is going to be sent to all the company shareholders.  
     &lt;/documentation&gt;
     &lt;potentialOwner&gt;
@@ -258,7 +258,7 @@
             </para>
           </listitem>
         </itemizedlist>
-        More informaton on deployment can be found <link linkend="chDeployment">in the dedicated deployment section</link>.
+        More information on deployment can be found <link linkend="chDeployment">in the dedicated deployment section</link>.
       </para>
       
       <para>
@@ -342,7 +342,7 @@
       <para>
         An accountant now needs to <emphasis role="bold">claim the task</emphasis>. By claiming the
         task, the specific user will become the <emphasis role="bold">assignee</emphasis> of the task
-        and the task will dissapear from every task list of the other members of the accountancy group.
+        and the task will disappear from every task list of the other members of the accountancy group.
         Claiming a task is programmatically done as follows:
         <programlisting>taskService.claim(task.getId(), &quot;fozzie&quot;);</programlisting>
         The task is now in the <emphasis role="bold">personal task list of the one
@@ -374,7 +374,7 @@
       <para>
         For the Activiti engine, this is an external signal that the process instance execution
         must be continued. The single outgoing transition out of the task is followed, bringing
-        the execution in the second task (<emphasis>'verifcation of the report'</emphasis>). 
+        the execution in the second task (<emphasis>'verification of the report'</emphasis>). 
         The same mechanism as described for the first task will now
         happen, with the small difference that the task will be assigned to the 
         <emphasis>management</emphasis> group.
@@ -416,7 +416,7 @@
       <title>Future enhancements</title>
       
       <para>
-        It's easy to see that this business process is too simple to be useable in reality.
+        It's easy to see that this business process is too simple to be usable in reality.
         However, as you are going through the BPMN 2.0 constructs available in Activiti, 
         you will be able to enhance the business process by 
         
@@ -494,7 +494,7 @@
 	        <listitem>
 	          <para>
 	            The prerequisite of such a custom extension is that there 
-	            <emphasis role="bold">always</emphasis> must be a simple tranformation to
+	            <emphasis role="bold">always</emphasis> must be a simple transformation to
 	            the <emphasis role="bold">standard way of doing things</emphasis>.
 	            So when you decide to use a custom extension, you don't have to be afraid 
 	            that there is no way back.
@@ -544,7 +544,7 @@
              <emphasis role="bold">Catching: </emphasis>when process execution arrives in the event,
              it will wait for a trigger to happen. The type of trigger is defined by the inner icon
              or the type declaration in the XML. Catching events are visually differentiated from a 
-             throwing event by the inner icon that is not filled (ie. it is white).
+             throwing event by the inner icon that is not filled (i.e. it is white).
            </para>
          </listitem>
          <listitem>
@@ -566,10 +566,10 @@
 	   <title>Start events</title>
 	  
 	   <para>
-	     A start event indicates where a process starts. The type of start event (process starts on receival of 
+	     A start event indicates where a process starts. The type of start event (process starts on arrival of 
 	     message, on specific time intervals, etc.), defining <emphasis>how</emphasis> the process is
 	     started is shown as a small icon in the visual representation of the event. In the XML representation,
-	     the type is given by the declaration of a subelement.
+	     the type is given by the declaration of a sub-element.
 	   </para>
 	   
 	   <para>
@@ -608,7 +608,7 @@ ProcessInstance processInstance = runtimeService.startProcessInstanceByXXX();</p
 			  <title>Graphical notation</title>
 			  
 			  <para>
-			    A none start event is visualized as a circle with no inner icon (ie. no trigger type). 
+			    A none start event is visualized as a circle with no inner icon (i.e. no trigger type). 
 			    <mediaobject><imageobject><imagedata align="center" fileref="images/bpmn.none.start.event.png"/></imageobject></mediaobject>
 			  </para>
 			 
@@ -620,8 +620,8 @@ ProcessInstance processInstance = runtimeService.startProcessInstanceByXXX();</p
         
         <para>
           The XML representation of a none start event is the normal
-          start event declaration, without any subElement (other start event types
-          all have a subElement declaring the type).
+          start event declaration, without any sub-element (other start event types
+          all have a sub-element declaring the type).
           <programlisting>
 &lt;startEvent id=&quot;start&quot; name=&quot;my start event&quot; /&gt;</programlisting>
         </para>
@@ -639,7 +639,7 @@ ProcessInstance processInstance = runtimeService.startProcessInstanceByXXX();</p
 		    <emphasis role="bold">always throwing</emphasis>. This means that when process execution
 		    arrives in the end event, a <emphasis>result</emphasis> is thrown. The type of result 
 		    is depicted by the inner black icon of the event. In the XML representation,
-		    the type is given by the declaration of a subelement.
+		    the type is given by the declaration of a sub-element.
 		  </para>
 		
 		</section>
@@ -677,8 +677,8 @@ ProcessInstance processInstance = runtimeService.startProcessInstanceByXXX();</p
         
         <para>
           The XML representation of a none end event is the normal
-          end event declaration, without any subElement (other end event types
-          all have a subElement declaring the type).
+          end event declaration, without any sub-element (other end event types
+          all have a sub-element declaring the type).
           <programlisting>
 &lt;endEvent id=&quot;end&quot; name=&quot;my end event&quot; /&gt;</programlisting>
         </para>
@@ -869,7 +869,7 @@ ProcessInstance processInstance = runtimeService.startProcessInstanceByXXX();</p
         <para>
           An exclusive gateway (also called the <emphasis>XOR gateway</emphasis> 
           or more technical the <emphasis>exclusive data-based gateway</emphasis>),
-          is used to model a <emphasis role="bold">decision</emphasis> in the proces.
+          is used to model a <emphasis role="bold">decision</emphasis> in the process.
           When the execution arrives at this gateway, all outgoing sequence flow are
           evaluated in the order in which they are defined. The sequence flow
           which condition evaluates to true (or which doesn't have a condition set, 
@@ -894,7 +894,7 @@ ProcessInstance processInstance = runtimeService.startProcessInstanceByXXX();</p
         <title>Graphical notation</title>
         
         <para>
-          An exclusive gateway is visualized as a typical gateway (ie. a diamond shape)
+          An exclusive gateway is visualized as a typical gateway (i.e. a diamond shape)
           with an 'X' icon inside, referring to the <emphasis>XOR</emphasis> semantics.
           Note that a gateway without an icon inside defaults to an exclusive gateway.
           The BPMN 2.0 specification does not allow mixing the diamond with and without an X
@@ -955,7 +955,7 @@ ProcessInstance processInstance = runtimeService.startProcessInstanceByXXX();</p
         </para>
         
         <para>
-          The funtionality of the parallel gateway is based on the incoming and outgoing sequence flow:
+          The functionality of the parallel gateway is based on the incoming and outgoing sequence flow:
           <itemizedlist>
             <listitem>
               <para>
@@ -1057,7 +1057,7 @@ assertEquals("Ship Order", task2.getName());</programlisting>
         </para>
         
         <para>
-          Note that a parallel gateway does not need to be 'balanced' (ie. a matching number
+          Note that a parallel gateway does not need to be 'balanced' (i.e. a matching number
           of incoming/outgoing sequence flow for corresponding parallel gateways). 
           A parallel gateway will simply wait for all incoming sequence flow and create 
           a concurrent path of execution for each outgoing sequence flow, not influenced by
@@ -1197,9 +1197,9 @@ List&lt;Task&gt; tasks = taskService.createTaskQuery().assignee(&quot;kermit&quo
  List&lt;Task&gt; tasks = taskService.findUnassignedTasks(&quot;kermit&quot;);</programlisting>
           
           This will retrieve all tasks where kermit is a <emphasis role="bold">candidate user</emphasis>,
-          ie. the formal expression contains <emphasis>user(kermit)</emphasis>. This will also
+          i.e. the formal expression contains <emphasis>user(kermit)</emphasis>. This will also
           retrieve all tasks that are <emphasis role="bold">assigned to a group where kermit is
-          a member of</emphasis> (eg <emphasis>group(management)</emphasis>, if kermit is a member of that group).
+          a member of</emphasis> (e.g. <emphasis>group(management)</emphasis>, if kermit is a member of that group).
           Note that the groups of the user are resolved at runtime and these can be 
           managed through the <emphasis>IdentityService</emphasis>.
         </para>
@@ -1217,7 +1217,7 @@ List&lt;Task&gt; tasks = taskService.createTaskQuery().assignee(&quot;kermit&quo
           <title>Custom extension for simple task assignments</title>
           
           <para>
-            It is clear that user and group assigmnents are quite cumbersome
+            It is clear that user and group assignments are quite cumbersome
             for use cases where the assignment is not complex. 
             To avoid these complexities, <link linkend="bpmnCustomExtensions">custom extensions</link>
             on the user task are possible.
@@ -1299,7 +1299,7 @@ List&lt;Task&gt; tasks = taskService.createTaskQuery().assignee(&quot;kermit&quo
 		    <title>Graphical Notation</title>
 		    
 		    <para>
-		      A script task is visualized as a typical BPMN 2.0 task (roundend rectangle),
+		      A script task is visualized as a typical BPMN 2.0 task (rounded rectangle),
 		      with a small 'script' icon in the top-left corner of the rectangle.
 		      <mediaobject><imageobject><imagedata align="center" fileref="images/bpmn.scripttask.png"/></imageobject></mediaobject>
 		    </para>
@@ -1330,7 +1330,7 @@ List&lt;Task&gt; tasks = taskService.createTaskQuery().assignee(&quot;kermit&quo
 		      (scripting for the Java platform). The Groovy jar is shipped by default with the
 		      Activiti distribution. If you want to use another (JSR-223 compatible) scripting
 		      engine, it is sufficient to add the corresponding jar to the classpath and use
-		      the appropiate name.
+		      the appropriate name.
 		    </para>
 		    
 		  </section>
@@ -1492,7 +1492,7 @@ public class ToUppercaseActivityBehavior extends BpmnActivityBehavior implements
 }
 </programlisting>
         Also note that here we're extending from the <emphasis>org.activiti.impl.bpmn.BpmnActivityBehavior</emphasis> class.
-        This allows us to convience methods such as 
+        This allows us to convenience methods such as 
         <itemizedlist>
           <listitem>
             <para>
@@ -1506,7 +1506,7 @@ public class ToUppercaseActivityBehavior extends BpmnActivityBehavior implements
             <para>
               <emphasis>performIgnoreConditionsOutgoingBehavior</emphasis>, which
               takes all outgoing sequence flow in parallel, regardless of having a condition
-              defined on it (eg. this is the behavior of the
+              defined on it (e.g. this is the behavior of the
               <link linkend="bpmnParallelGateway">parallel gateway</link>).
             </para>
           </listitem>          
@@ -1568,7 +1568,7 @@ public class ToUppercaseActivityBehavior extends BpmnActivityBehavior implements
 		    Boundary events are <emphasis>catching</emphasis> events that are attached to an activity
 		    (a boundary event can never be throwing). This means that while the activity is
 		    running, the event is <emphasis>listening</emphasis> for a certain type of trigger. 
-		    When the event is <emphasis>catched</emphasis>, the activity is interrupted and the 
+		    When the event is <emphasis>caught</emphasis>, the activity is interrupted and the 
 		    sequence flow going out of the event are followed.
 		  </para>
 		  
@@ -1594,13 +1594,13 @@ public class ToUppercaseActivityBehavior extends BpmnActivityBehavior implements
 		          <emphasis role="bold">attachedToRef</emphasis> attribute.
 		          Note that a boundary event is defined on the same level as the activities
 		          to which they are attached
-		          (ie. no inclusion of the boundary event inside the activity).
+		          (i.e. no inclusion of the boundary event inside the activity).
 		        </para>
 		      </listitem>
 		      <listitem>
 		        <para>
-		          An XML subelement of the form <emphasis>XXXEventDefinition</emphasis> 
-		          (eg. <emphasis>TimerEventDefinition</emphasis>, <emphasis>ErrorEventDefinition</emphasis>, etc.)
+		          An XML sub-element of the form <emphasis>XXXEventDefinition</emphasis> 
+		          (e.g. <emphasis>TimerEventDefinition</emphasis>, <emphasis>ErrorEventDefinition</emphasis>, etc.)
 		          defining the type of the boundary event. See the specific boundary event types
 		          for more details.
 		        </para>
@@ -1621,7 +1621,7 @@ public class ToUppercaseActivityBehavior extends BpmnActivityBehavior implements
         <para>
           A timer boundary event acts as a stopwatch and alarm clock. When an execution arrives
           in the activity where the boundary event is attached to, a timer is started.
-          When the timer fires (eg. after a specified interval), the activity is interrupted
+          When the timer fires (e.g. after a specified interval), the activity is interrupted
           and the sequence flow going out of the timer boundary event are followed.
         </para>
         
@@ -1632,7 +1632,7 @@ public class ToUppercaseActivityBehavior extends BpmnActivityBehavior implements
         <title>Graphical Notation</title>
           
         <para>
-          A timer boundary event is visualized as a typical boundary event (ie. circle
+          A timer boundary event is visualized as a typical boundary event (i.e. circle
           on the border), with the timer icon on the inside.
           <mediaobject><imageobject><imagedata align="center" fileref="images/bpmn.boundary.timer.event.png"/></imageobject></mediaobject>
         </para>
@@ -1645,7 +1645,7 @@ public class ToUppercaseActivityBehavior extends BpmnActivityBehavior implements
         
         <para>
           A timer boundary event is defined as a <link linkend="bpmnBoundaryEvent">regular boundary event</link>.
-          The specific type subelement is in this case a <emphasis role="bold">timerEventDefinition</emphasis>
+          The specific type sub-element is in this case a <emphasis role="bold">timerEventDefinition</emphasis>
           element.
 <programlisting>
 &lt;boundaryEvent id=&quot;escalationTimer&quot; cancelActivity=&quot;true&quot; attachedToRef=&quot;firstLineSupport&quot;&gt;
@@ -1658,14 +1658,14 @@ public class ToUppercaseActivityBehavior extends BpmnActivityBehavior implements
         
         <para>
           To specify how long the timer should run before it is fired, a <emphasis>timeDuration</emphasis>
-          can be specified as subelement of <emphasis>timerEventDefinition</emphasis>. The format
+          can be specified as sub-element of <emphasis>timerEventDefinition</emphasis>. The format
           used is the <ulink url="http://en.wikipedia.org/wiki/ISO_8601#Durations">ISO 8601</ulink>
           format (as required by the BPMN 2.0 specification).
         </para>
         
         <para>
           <emphasis role="bold">Note:</emphasis> boundary timer events are only fired when 
-          the job executor is enabled (ie. <emphasis>job.executor.auto.activate=off</emphasis>
+          the job executor is enabled (i.e. <emphasis>job.executor.auto.activate=off</emphasis>
           needs to be removed from the <emphasis>activiti.properties</emphasis>, since the job
           executor is disabled by default). 
         </para>
@@ -1679,7 +1679,7 @@ public class ToUppercaseActivityBehavior extends BpmnActivityBehavior implements
       <para>
         There is a known issue regarding concurrency when using boundary events of any type.
         Currently, it is not possible to have multiple outgoing sequence flow attached to 
-        a boundary even (see issue <ulink url="http://jira.codehaus.org/browse/ACT-47">ACT-47</ulink>).
+        a boundary event (see issue <ulink url="http://jira.codehaus.org/browse/ACT-47">ACT-47</ulink>).
         A solution to this problem is to use one outgoing sequence flow that goes to a parallel gateway.
         <mediaobject><imageobject><imagedata align="center" fileref="images/bpmn.known.issue.boundary.event.png"/></imageobject></mediaobject>
       </para>
@@ -1717,7 +1717,7 @@ public class ToUppercaseActivityBehavior extends BpmnActivityBehavior implements
 		        <listitem>
 		          <para>
 		            A subprocess creates a new <emphasis role="bold">scope for events</emphasis>.
-		            Events that are thrown during execution of the subprocess, can be catched by
+		            Events that are thrown during execution of the subprocess, can be caught by
 		            <link linkend="bpmnBoundaryEvent">a boundary event</link> on the boundary 
 		            of the subprocess, thus creating a scope for that event limited to the subprocess.
 		          </para>
@@ -1733,7 +1733,7 @@ public class ToUppercaseActivityBehavior extends BpmnActivityBehavior implements
 		            A subprocess can only have <emphasis role="bold">one none start event</emphasis>, no other
 		            start event types are allowed. A subprocess must <emphasis role="bold">
 		            at least have one end event</emphasis>. Note that the BPMN 2.0 specification
-		            allows to ommit the start and end events in a sbprocess, but the current
+		            allows to omit the start and end events in a subprocess, but the current
 		            Activiti implementation does not support this.
 		          </para>
 		        </listitem>
@@ -1752,7 +1752,7 @@ public class ToUppercaseActivityBehavior extends BpmnActivityBehavior implements
         <title>Graphical Notation</title>
         
         <para>
-          A subprocess is visualized as a typical activity, ie. a rounded rectangle.
+          A subprocess is visualized as a typical activity, i.e. a rounded rectangle.
           In case the subprocess is <emphasis>collapsed</emphasis>, only the name and a plus-sign are displayed,
           giving a high-level overview of the process:
           <mediaobject><imageobject><imagedata align="center" fileref="images/bpmn.collapsed.subprocess.png"/></imageobject></mediaobject>
@@ -1769,7 +1769,7 @@ public class ToUppercaseActivityBehavior extends BpmnActivityBehavior implements
           The following process model shows this: both the <emphasis>investigate software/investigate hardware</emphasis>
           tasks need to be done in parallel, but both tasks need to be done within a certain time,
           before <emphasis>Level 2 support</emphasis> is consulted.
-          Here, the scope of the timer (ie. which activities must be done in time) is constrained by the subprocess. 
+          Here, the scope of the timer (i.e. which activities must be done in time) is constrained by the subprocess. 
           <mediaobject><imageobject><imagedata align="center" fileref="images/bpmn.subprocess.with.boundary.timer.png"/></imageobject></mediaobject>
         </para>
       

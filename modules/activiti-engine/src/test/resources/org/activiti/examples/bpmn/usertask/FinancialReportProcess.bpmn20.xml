@@ -26,7 +26,7 @@
 			
 		<userTask id="verifyReportTask" name="Verify monthly financial report" >
 		  <documentation>
-        Verify monthly financial report composed by the accountancy departement.
+        Verify monthly financial report composed by the accountancy department.
         This financial report is going to be sent to all the company shareholders.  
       </documentation>
       <potentialOwner>
