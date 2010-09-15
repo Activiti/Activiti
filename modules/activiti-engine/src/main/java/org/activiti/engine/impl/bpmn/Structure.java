@@ -32,4 +32,20 @@ public interface Structure {
    * @return the number of fields that this structure has
    */
   int getFieldSize();
+  
+  /**
+   * Obtains the name of the field in the index position
+   *
+   * @param index the position of the field
+   * @return the name of the field
+   */
+  String getFieldNameAt(int index);
+  
+  /**
+   * Obtains the type of the field in the index position
+   *
+   * @param index the position of the field
+   * @return the type of the field
+   */
+  Class<?> getFieldTypeAt(int index);
 }

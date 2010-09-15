@@ -10,27 +10,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.activiti.engine.impl.bpmn;
+package org.activiti.engine.impl.bpmn.parser;
+
+import org.activiti.engine.impl.util.xml.Element;
 
 /**
- * Represents a Soap structure
+ * A XML importer
  * 
  * @author Esteban Robles Luna
  */
-public class SoapStructure implements Structure {
+public interface XMLImporter {
 
-  protected String id;
-  
-  public SoapStructure(String id) {
-    this.id = id;
-  }
-  
-  public String getId() {
-    return this.id;
-  }
-
-  public int getFieldSize() {
-    //TODO
-    return 0;
-  }
+  /**
+   * Imports the definitions in the XML declared in element
+   * 
+   * @param element the declarations to be imported
+   * @param parse the parse who called this importer
+   */
+  void importFrom(Element element, BpmnParse parse);
 }

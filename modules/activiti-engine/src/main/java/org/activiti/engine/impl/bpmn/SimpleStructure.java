@@ -25,10 +25,13 @@ public class SimpleStructure implements Structure {
   protected String id;
   
   protected List<String> fieldNames;
-  
+
+  protected List<Class<?>> fieldTypes;
+
   public SimpleStructure(String id) {
     this.id = id;
     this.fieldNames = new ArrayList<String>();
+    this.fieldTypes = new ArrayList<Class<?>>();
   }
   
   public int getFieldSize() {
@@ -39,16 +42,28 @@ public class SimpleStructure implements Structure {
     return this.id;
   }
   
-  public void setFieldName(int index, String fieldName) {
-    this.growFieldNamesToContain(index);
+  public void setFieldName(int index, String fieldName, Class<?> type) {
+    this.growListToContain(index, this.fieldNames);
+    this.growListToContain(index, this.fieldTypes);
     this.fieldNames.set(index, fieldName);
+    this.fieldTypes.set(index, type);
   }
 
-  private void growFieldNamesToContain(int index) {
-    if (!(this.fieldNames.size() - 1 >= index)) {
-      for (int i = this.fieldNames.size(); i <= index; i++) {
-        this.fieldNames.add(null);
+  private void growListToContain(int index, List<?> list) {
+    if (!(list.size() - 1 >= index)) {
+      for (int i = list.size(); i <= index; i++) {
+        list.add(null);
       }
     }
+  }
+
+  @Override
+  public String getFieldNameAt(int index) {
+    return this.fieldNames.get(index);
+  }
+
+  @Override
+  public Class<?> getFieldTypeAt(int index) {
+    return this.fieldTypes.get(index);
   }
 }

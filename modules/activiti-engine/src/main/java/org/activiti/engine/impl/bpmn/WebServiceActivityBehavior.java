@@ -32,8 +32,6 @@ public class WebServiceActivityBehavior implements ActivityBehavior {
 
   protected Operation operation;
   
-  protected SyncWebServiceClient client;
-  
   protected List<String> inVariableNames;
   
   protected List<String> outVariableNames;
@@ -42,8 +40,7 @@ public class WebServiceActivityBehavior implements ActivityBehavior {
   
   protected List<Transformer> outTransformers;
   
-  public WebServiceActivityBehavior(SyncWebServiceClient client, Operation operation) {
-    this.client = client;
+  public WebServiceActivityBehavior(Operation operation) {
     this.operation = operation;
     this.inTransformers = new ArrayList<Transformer>();
     this.outTransformers = new ArrayList<Transformer>();
@@ -60,7 +57,7 @@ public class WebServiceActivityBehavior implements ActivityBehavior {
     
     Object[] arguments = this.getArguments(execution);
     Object[] transformedArguments = this.transform(arguments);
-    Object[] results = this.send(transformedArguments);
+    Object[] results = this.execute(transformedArguments);
     
     this.verifyResultsAccordingToOutMessage(results);
     
@@ -132,8 +129,8 @@ public class WebServiceActivityBehavior implements ActivityBehavior {
     return transformedResults;
   }
 
-  private Object[] send(Object[] transformedArguments) throws Exception {
-    return this.client.send(this.operation.getName(), transformedArguments);
+  private Object[] execute(Object[] transformedArguments) throws Exception {
+    return this.operation.execute(transformedArguments);
   }
 
   private Object[] transform(Object[] arguments) {

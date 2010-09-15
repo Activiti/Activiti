@@ -28,6 +28,8 @@ public class Operation {
   
   protected Message outMessage;
   
+  protected OperationImplementation implementation;
+  
   /**
    * The interface to which this operations belongs
    */
@@ -42,6 +44,10 @@ public class Operation {
     setName(name);
     setInterface(bpmnInterface);
     setInMessage(inMessage);
+  }
+  
+  public Object[] execute(Object[] arguments) throws Exception {
+    return this.implementation.execute(arguments);
   }
   
   public String getId() {
@@ -82,5 +88,13 @@ public class Operation {
 
   public void setOutMessage(Message outMessage) {
     this.outMessage = outMessage;
+  }
+
+  public OperationImplementation getImplementation() {
+    return implementation;
+  }
+
+  public void setImplementation(OperationImplementation implementation) {
+    this.implementation = implementation;
   }
 }

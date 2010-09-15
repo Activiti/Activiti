@@ -13,34 +13,14 @@
 package org.activiti.engine.impl.bpmn;
 
 /**
- * Represents a structure encapsulated in a class
+ * Represents an implementation of a {@link BpmnInterface}
  * 
  * @author Esteban Robles Luna
  */
-public class ClassStructure implements Structure {
+public interface BpmnInterfaceImplementation {
 
-  protected Class<?> classStructure;
-
-  public ClassStructure(Class<?> classStructure) {
-    this.classStructure = classStructure;
-  }
-
-  public String getId() {
-    return this.classStructure.getName();
-  }
-
-  public int getFieldSize() {
-    //TODO
-    return 0;
-  }
-
-  @Override
-  public String getFieldNameAt(int index) {
-    return null;
-  }
-
-  @Override
-  public Class< ? > getFieldTypeAt(int index) {
-    return null;
-  }
+  /**
+   * @return the name of this implementation
+   */
+  String getName();
 }

@@ -28,6 +28,8 @@ public class BpmnInterface {
   
   protected String name;
   
+  protected BpmnInterfaceImplementation implementation;
+  
   /**
    * Mapping of the operations of this interface.
    * The key of the map is the id of the operation, for easy retrieval.
@@ -71,4 +73,11 @@ public class BpmnInterface {
     return operations.values();
   }
 
+  public BpmnInterfaceImplementation getImplementation() {
+    return implementation;
+  }
+
+  public void setImplementation(BpmnInterfaceImplementation implementation) {
+    this.implementation = implementation;
+  }
 }

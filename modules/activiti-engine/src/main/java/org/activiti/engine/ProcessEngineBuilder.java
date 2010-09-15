@@ -59,6 +59,7 @@ public class ProcessEngineBuilder {
   protected String jdbcUrl = ProcessEngineConfiguration.DEFAULT_JDBC_URL;
   protected String jdbcUsername = ProcessEngineConfiguration.DEFAULT_JDBC_USERNAME;
   protected String jdbcPassword = ProcessEngineConfiguration.DEFAULT_JDBC_PASSWORD;
+  protected String wsSyncFactoryClassName = ProcessEngineConfiguration.DEFAULT_WS_SYNC_FACTORY;
   protected DbSchemaStrategy dbSchemaStrategy = DbSchemaStrategy.CHECK_VERSION;
   protected boolean jobExecutorAutoActivate = true;
   protected boolean localTransactions = true;
@@ -149,6 +150,11 @@ public class ProcessEngineBuilder {
             && (("false".equals(jobExecutorAutoActivate)) || ("disabled".equals(jobExecutorAutoActivate)) || ("off".equals(jobExecutorAutoActivate)))) {
       this.jobExecutorAutoActivate = false;
     }
+    
+    String wsSyncFactory = configurationProperties.getProperty("ws.sync.factory");
+    if (wsSyncFactory != null) {
+      this.wsSyncFactoryClassName = wsSyncFactory;
+    }
 
     return this;
   }
@@ -197,6 +203,7 @@ public class ProcessEngineBuilder {
     processEngineConfiguration.setJdbcPassword(jdbcPassword);
     processEngineConfiguration.setDatabaseName(databaseName);
     processEngineConfiguration.setLocalTransactions(localTransactions);
+    processEngineConfiguration.setWsSyncFactoryClassName(wsSyncFactoryClassName);
 
     return processEngineConfiguration.buildProcessEngine();
   }

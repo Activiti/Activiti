@@ -25,6 +25,8 @@ import org.activiti.engine.impl.bpmn.SimpleStructure;
 import org.activiti.engine.impl.bpmn.WebServiceActivityBehavior;
 import org.activiti.engine.impl.transformer.Transformer;
 import org.activiti.engine.impl.webservice.SyncWebServiceClient;
+import org.activiti.engine.impl.webservice.WSOperation;
+import org.activiti.engine.impl.webservice.WSService;
 import org.activiti.pvm.activity.ActivityExecution;
 import org.junit.After;
 import org.junit.Assert;
@@ -65,7 +67,9 @@ public class WebServiceActivityBehaviorTest {
     outMessage = new Message("id", outItemDefinition);
     
     operation = new Operation("idSetTo", "setTo", null, inMessage);
-    activity = new WebServiceActivityBehavior(client, operation);
+    WSService service = new WSService("counter", "http://counter.example", client);
+    operation.setImplementation(new WSOperation("setTo", service));
+    activity = new WebServiceActivityBehavior(operation);
   }
   
   @After
@@ -81,8 +85,8 @@ public class WebServiceActivityBehaviorTest {
     activity.addInVariable("valueToSet");
     activity.addOutVariable("resultOfCall");
     
-    inStructure.setFieldName(0, "f1");
-    outStructure.setFieldName(0, "fo1");
+    inStructure.setFieldName(0, "f1", String.class);
+    outStructure.setFieldName(0, "fo1", String.class);
     operation.setOutMessage(outMessage);
     
     when(execution.getVariable("valueToSet")).thenReturn("11");
@@ -100,8 +104,8 @@ public class WebServiceActivityBehaviorTest {
     activity.addInVariable("valueToSet");
     activity.addOutVariable("resultOfCall");
 
-    inStructure.setFieldName(0, "f1");
-    outStructure.setFieldName(0, "fo1");
+    inStructure.setFieldName(0, "f1", String.class);
+    outStructure.setFieldName(0, "fo1", String.class);
     operation.setOutMessage(outMessage);
 
     activity.addInTransformer(inTransformer);
@@ -123,8 +127,8 @@ public class WebServiceActivityBehaviorTest {
     activity.addInVariable("valueToSet");
     activity.addOutVariable("resultOfCall");
 
-    inStructure.setFieldName(0, "f1");
-    outStructure.setFieldName(0, "fo1");
+    inStructure.setFieldName(0, "f1", String.class);
+    outStructure.setFieldName(0, "fo1", String.class);
     operation.setOutMessage(outMessage);
 
     activity.addOutTransformer(outTransformer);
@@ -146,8 +150,8 @@ public class WebServiceActivityBehaviorTest {
     activity.addInVariable("valueToSet");
     activity.addOutVariable("resultOfCall");
 
-    inStructure.setFieldName(0, "f1");
-    outStructure.setFieldName(0, "fo1");
+    inStructure.setFieldName(0, "f1", String.class);
+    outStructure.setFieldName(0, "fo1", String.class);
     operation.setOutMessage(outMessage);
 
     activity.addInTransformer(inTransformer);
@@ -174,9 +178,9 @@ public class WebServiceActivityBehaviorTest {
     activity.addInVariable("valueToSet2");
     activity.addOutVariable("resultOfCall");
 
-    inStructure.setFieldName(0, "f1");
-    inStructure.setFieldName(1, "f2");
-    outStructure.setFieldName(0, "fo1");
+    inStructure.setFieldName(0, "f1", String.class);
+    inStructure.setFieldName(1, "f2", String.class);
+    outStructure.setFieldName(0, "fo1", String.class);
     operation.setOutMessage(outMessage);
 
     activity.addInTransformer(inTransformer);
@@ -197,9 +201,9 @@ public class WebServiceActivityBehaviorTest {
     activity.addOutVariable("resultOfCall");
     activity.addOutVariable("resultOfCall2");
 
-    inStructure.setFieldName(0, "f1");
-    outStructure.setFieldName(0, "fo1");
-    outStructure.setFieldName(1, "fo2");
+    inStructure.setFieldName(0, "f1", String.class);
+    outStructure.setFieldName(0, "fo1", String.class);
+    outStructure.setFieldName(1, "fo2", String.class);
     operation.setOutMessage(outMessage);
 
     activity.addOutTransformer(outTransformer);

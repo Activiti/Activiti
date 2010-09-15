@@ -22,7 +22,7 @@
     <serviceTask id="webService" 
                  name="Web service invocation"
                  implementation="##WebService"
-                 operationRef="tns:incOperation" />
+                 operationRef="incOperation" />
     
     <sequenceFlow id="flow2" sourceRef="webService" targetRef="waitState" />
     
@@ -35,9 +35,9 @@
   </process>
 
   <!-- Interface: implementationRef = QName of WSDL Port Type -->
-  <interface name="Counter Interface" implementationRef="counter:Counter">
+  <interface name="Counter Interface"> <!-- NEEDED FOR THE PORT -->
     <!-- Operation: implementationRef = QName of WSDL Operation -->
-    <operation id="incOperation" name="Increase Operation" implementationRef="counter:inc">
+    <operation id="incOperation" name="Increase Operation" implementationRef="inc"> <!-- NEEDED FOR THE OPERATION NAME -->
       <inMessageRef>incRequestMessage</inMessageRef>
       <outMessageRef>incResponseMessage</outMessageRef>
     </operation>
@@ -46,7 +46,7 @@
   <message id="incRequestMessage" itemRef="incRequestItem" />
   <message id="incResponseMessage" itemRef="incResponseItem" />
   
-  <itemDefinition id="incRequestItem" structureRef="counter:inc" /><!-- QName of input element -->
-  <itemDefinition id="incResponseItem" structureRef="counter:incResponse" /><!-- QName of output element -->
+  <itemDefinition id="incRequestItem" structureRef="inc" /><!-- QName of input element --> <!-- NEEDED FOR THE ARGUMENTS -->
+  <itemDefinition id="incResponseItem" structureRef="incResponse" /><!-- QName of output element -->
   
 </definitions>

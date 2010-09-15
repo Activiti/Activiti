@@ -10,19 +10,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.activiti.engine.test.bpmn.servicetask;
-
-import org.activiti.engine.impl.test.ActivitiInternalTestCase;
-import org.activiti.engine.test.Deployment;
-
+package org.activiti.engine.impl.webservice;
 
 /**
+ * A factory for {@link SyncWebServiceClient}
+ * 
  * @author Esteban Robles Luna
  */
-public class WebServiceTaskTest extends ActivitiInternalTestCase {
+public interface SyncWebServiceClientFactory {
 
-  @Deployment
-  public void testWebServiceInvocationWithoutDataFlow() {
-    //TODO start process
-  }
+  /**
+   * Creates a {@link SyncWebServiceClient} from a WSDL
+   * 
+   * @param wsdl the WSDL to be used in the {@link SyncWebServiceClient}
+   * @return the new instance of {@link SyncWebServiceClient}
+   */
+  SyncWebServiceClient create(String wsdl);
 }

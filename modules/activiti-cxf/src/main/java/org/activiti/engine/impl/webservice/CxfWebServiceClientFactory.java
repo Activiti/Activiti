@@ -10,37 +10,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.activiti.engine.impl.bpmn;
+package org.activiti.engine.impl.webservice;
 
 /**
- * Represents a structure encapsulated in a class
- * 
+ * A CXF factory for {@link SyncWebServiceClient}
+ *
  * @author Esteban Robles Luna
  */
-public class ClassStructure implements Structure {
+public class CxfWebServiceClientFactory implements SyncWebServiceClientFactory {
 
-  protected Class<?> classStructure;
-
-  public ClassStructure(Class<?> classStructure) {
-    this.classStructure = classStructure;
-  }
-
-  public String getId() {
-    return this.classStructure.getName();
-  }
-
-  public int getFieldSize() {
-    //TODO
-    return 0;
-  }
-
+  
+  /**
+   * {@inheritDoc}
+   */
   @Override
-  public String getFieldNameAt(int index) {
-    return null;
-  }
-
-  @Override
-  public Class< ? > getFieldTypeAt(int index) {
-    return null;
+  public SyncWebServiceClient create(String wsdl) {
+    return new CxfWebServiceClient(wsdl);
   }
 }

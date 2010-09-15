@@ -74,6 +74,7 @@ public class ProcessEngineConfiguration {
   public static final String DEFAULT_JDBC_URL = "jdbc:h2:mem:activiti";
   public static final String DEFAULT_JDBC_USERNAME = "sa";
   public static final String DEFAULT_JDBC_PASSWORD = "";
+  public static final String DEFAULT_WS_SYNC_FACTORY = "org.activiti.engine.impl.webservice.CxfWebServiceClientFactory";
 
   protected String processEngineName;
 
@@ -114,6 +115,8 @@ public class ProcessEngineConfiguration {
   protected boolean isHistoryEnabled = true;
   
   protected boolean isConfigurationCompleted = false;
+  
+  protected String wsSyncFactoryClassName;
 
   public ProcessEngineConfiguration() {
     processEngineName = ProcessEngines.NAME_DEFAULT;
@@ -354,52 +357,42 @@ public class ProcessEngineConfiguration {
     this.scriptingEngines = scriptingEngines;
   }
 
-  
   public ExpressionManager getExpressionManager() {
     return expressionManager;
   }
 
-  
   public void setExpressionManager(ExpressionManager expressionManager) {
     this.expressionManager = expressionManager;
   }
 
-  
   public BusinessCalendarManager getBusinessCalendarManager() {
     return businessCalendarManager;
   }
-
   
   public void setBusinessCalendarManager(BusinessCalendarManager businessCalendarManager) {
     this.businessCalendarManager = businessCalendarManager;
   }
 
-  
   public TransactionContextFactory getTransactionContextFactory() {
     return transactionContextFactory;
   }
 
-  
   public void setTransactionContextFactory(TransactionContextFactory transactionContextFactory) {
     this.transactionContextFactory = transactionContextFactory;
   }
 
-  
   public String getDatabaseName() {
     return databaseName;
   }
 
-  
   public void setDatabaseName(String databaseName) {
     this.databaseName = databaseName;
   }
 
-  
   public DataSource getDataSource() {
     return dataSource;
   }
 
-  
   public void setDataSource(DataSource dataSource) {
     this.dataSource = dataSource;
   }
@@ -408,57 +401,46 @@ public class ProcessEngineConfiguration {
     return jdbcDriver;
   }
 
-  
   public void setJdbcDriver(String jdbcDriver) {
     this.jdbcDriver = jdbcDriver;
   }
 
-  
   public String getJdbcUrl() {
     return jdbcUrl;
   }
 
-  
   public void setJdbcUrl(String jdbcUrl) {
     this.jdbcUrl = jdbcUrl;
   }
 
-  
   public String getJdbcUsername() {
     return jdbcUsername;
   }
 
-  
   public void setJdbcUsername(String jdbcUsername) {
     this.jdbcUsername = jdbcUsername;
   }
 
-  
   public String getJdbcPassword() {
     return jdbcPassword;
   }
 
-  
   public void setJdbcPassword(String jdbcPassword) {
     this.jdbcPassword = jdbcPassword;
   }
 
-  
   public boolean isJobExecutorAutoActivate() {
     return jobExecutorAutoActivate;
   }
 
-  
   public void setJobExecutorAutoActivate(boolean jobExecutorAutoActivate) {
     this.jobExecutorAutoActivate = jobExecutorAutoActivate;
   }
 
-  
   public boolean isLocalTransactions() {
     return localTransactions;
   }
 
-  
   public void setLocalTransactions(boolean localTransactions) {
     this.localTransactions = localTransactions;
   }
@@ -485,5 +467,13 @@ public class ProcessEngineConfiguration {
 
   public void setHistoryEnabled(boolean isHistoryEnabled) {
     this.isHistoryEnabled = isHistoryEnabled;
+  }
+
+  public String getWsSyncFactoryClassName() {
+    return wsSyncFactoryClassName;
+  }
+
+  public void setWsSyncFactoryClassName(String wsSyncFactoryClassName) {
+    this.wsSyncFactoryClassName = wsSyncFactoryClassName;
   }
 }

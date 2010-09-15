@@ -14,6 +14,7 @@ package org.activiti.engine.impl.bpmn.parser;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -25,6 +26,7 @@ import java.util.logging.Logger;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.bpmn.BoundaryTimerEventActivity;
 import org.activiti.engine.impl.bpmn.BpmnInterface;
+import org.activiti.engine.impl.bpmn.BpmnInterfaceImplementation;
 import org.activiti.engine.impl.bpmn.CallActivityBehaviour;
 import org.activiti.engine.impl.bpmn.ClassStructure;
 import org.activiti.engine.impl.bpmn.Condition;
@@ -36,18 +38,19 @@ import org.activiti.engine.impl.bpmn.Message;
 import org.activiti.engine.impl.bpmn.NoneEndEventActivity;
 import org.activiti.engine.impl.bpmn.NoneStartEventActivity;
 import org.activiti.engine.impl.bpmn.Operation;
+import org.activiti.engine.impl.bpmn.OperationImplementation;
 import org.activiti.engine.impl.bpmn.ParallelGatewayActivity;
 import org.activiti.engine.impl.bpmn.ReceiveTaskActivity;
 import org.activiti.engine.impl.bpmn.ScriptTaskActivity;
 import org.activiti.engine.impl.bpmn.ServiceTaskDelegateActivityBehaviour;
 import org.activiti.engine.impl.bpmn.ServiceTaskMethodExpressionActivityBehavior;
 import org.activiti.engine.impl.bpmn.ServiceTaskValueExpressionActivityBehavior;
-import org.activiti.engine.impl.bpmn.SoapStructure;
 import org.activiti.engine.impl.bpmn.Structure;
 import org.activiti.engine.impl.bpmn.SubProcessActivity;
 import org.activiti.engine.impl.bpmn.TaskActivity;
 import org.activiti.engine.impl.bpmn.UserTaskActivity;
 import org.activiti.engine.impl.bpmn.WebServiceActivityBehavior;
+import org.activiti.engine.impl.cfg.ProcessEngineConfiguration;
 import org.activiti.engine.impl.el.ActivitiValueExpression;
 import org.activiti.engine.impl.el.ExpressionManager;
 import org.activiti.engine.impl.el.UelMethodExpressionCondition;
@@ -60,6 +63,9 @@ import org.activiti.engine.impl.task.TaskDefinition;
 import org.activiti.engine.impl.util.xml.Element;
 import org.activiti.engine.impl.util.xml.Parse;
 import org.activiti.engine.impl.variable.VariableDeclaration;
+import org.activiti.engine.impl.webservice.SyncWebServiceClient;
+import org.activiti.engine.impl.webservice.SyncWebServiceClientFactory;
+import org.activiti.engine.impl.webservice.WSDLImporter;
 import org.activiti.pvm.activity.ActivityBehavior;
 import org.activiti.pvm.impl.process.ActivityImpl;
 import org.activiti.pvm.impl.process.ProcessDefinitionImpl;
@@ -96,6 +102,21 @@ public class BpmnParse extends Parse {
    * definition.
    */
   protected Map<String, Message> messages = new HashMap<String, Message>();
+  
+  /**
+   * Map that contains the {@link Structure}
+   */
+  protected Map<String, Structure> structures = new HashMap<String, Structure>();
+
+  /**
+   * Map that contains the {@link BpmnInterfaceImplementation}
+   */
+  protected Map<String, BpmnInterfaceImplementation> interfaceImplementations = new HashMap<String, BpmnInterfaceImplementation>();
+
+  /**
+   * Map that contains the {@link OperationImplementation}
+   */
+  protected Map<String, OperationImplementation> operationImplementations = new HashMap<String, OperationImplementation>();
 
   /**
    * Map containing the BPMN 2.0 item definitions, stored during the first phase
@@ -128,6 +149,8 @@ public class BpmnParse extends Parse {
   protected ExpressionManager expressionManager;
   
   protected List<BpmnParseListener> parseListeners;
+  
+  protected Map<String, XMLImporter> importers = new HashMap<String, XMLImporter>();
 
   /**
    * Constructor to be called by the {@link BpmnParser}.
@@ -140,6 +163,8 @@ public class BpmnParse extends Parse {
     this.expressionManager = parser.getExpressionManager();
     this.parseListeners = parser.getParseListeners();
     setSchemaResource(BpmnParser.SCHEMA_RESOURCE);
+    
+    this.importers.put("http://schemas.xmlsoap.org/wsdl/", new WSDLImporter());
   }
 
   @Override
@@ -163,12 +188,32 @@ public class BpmnParse extends Parse {
 
     // Item definitions and interfaces/operations are not part of any process definition
     // They need to be parsed before the process definitions since they will refer to them
+    parseImports(rootElement);
     parseItemDefinitions(rootElement);
     parseMessages(rootElement);
     parseInterfaces(rootElement);
     parseProcessDefinitions(rootElement);
     
     return this;
+  }
+
+  /**
+   * Parses the rootElement importing structures
+   * 
+   * @param rootElement
+   *          The root element of the XML file.
+   */
+  private void parseImports(Element rootElement) {
+    List<Element> imports = rootElement.elements("import");
+    for (Element theImport : imports) {
+      String importType = theImport.attribute("importType");
+      XMLImporter importer = this.importers.get(importType);
+      if (importer == null) {
+        addProblem("Could not import item of type " + importType, theImport);
+      } else {
+        importer.importFrom(theImport, this);
+      }
+    }
   }
 
   /**
@@ -192,8 +237,7 @@ public class BpmnParse extends Parse {
         structure = new ClassStructure(classStructure);
       } catch (ClassNotFoundException e) {
         //it is a reference to a different structure
-        //TODO
-        structure = new SoapStructure(id);
+        structure = this.structures.get(structureRef);
       }
       
       ItemDefinition itemDefinition = new ItemDefinition(id, structure);
@@ -239,7 +283,9 @@ public class BpmnParse extends Parse {
       // Create the interface
       String id = interfaceElement.attribute("id");
       String name = interfaceElement.attribute("name");
+      String implementationRef = interfaceElement.attribute("implementationRef");
       BpmnInterface bpmnInterface = new BpmnInterface(id, name);
+      bpmnInterface.setImplementation(this.interfaceImplementations.get(implementationRef));
 
       // Handle all its operations
       for (Element operationElement : interfaceElement.elements("operation")) {
@@ -261,7 +307,9 @@ public class BpmnParse extends Parse {
       Message inMessage = this.messages.get(inMessageRefElement.getText());
       String id = operationElement.attribute("id");
       String name = operationElement.attribute("name");
+      String implementationRef = operationElement.attribute("implementationRef");
       Operation operation = new Operation(id, name, bpmnInterface, inMessage);
+      operation.setImplementation(this.operationImplementations.get(implementationRef));
 
       Element outMessageRefElement = operationElement.element("outMessageRef");
       if (this.messages.containsKey(outMessageRefElement.getText())) {
@@ -544,7 +592,7 @@ public class BpmnParse extends Parse {
         addProblem(operationRef + " does not exist" , serviceTaskElement);
       } else {
         Operation operation = this.operations.get(operationRef);
-        activity.setActivityBehavior(new WebServiceActivityBehavior(null, operation));
+        activity.setActivityBehavior(new WebServiceActivityBehavior(operation));
       }
     } else {
       throw new ActivitiException("'class' or 'expr' attribute is mandatory on serviceTask");
@@ -1161,5 +1209,17 @@ public class BpmnParse extends Parse {
   public BpmnParse sourceUrl(URL url) {
     super.sourceUrl(url);
     return this;
+  }
+
+  public void addStructure(Structure structure) {
+    this.structures.put(structure.getId(), structure);
+  }
+
+  public void addService(BpmnInterfaceImplementation bpmnInterfaceImplementation) {
+    this.interfaceImplementations.put(bpmnInterfaceImplementation.getName(), bpmnInterfaceImplementation);
+  }
+
+  public void addOperation(OperationImplementation operationImplementation) {
+    this.operationImplementations.put(operationImplementation.getName(), operationImplementation);
   }
 }
