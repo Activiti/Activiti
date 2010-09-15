@@ -17,7 +17,7 @@ import java.util.List;
 
 
 /**
- * signalData structure containing meta signalData (column names, column types, etc.) 
+ * structure containing meta data (column names, column types, etc.) 
  * about a certain database table.
  * 
  * @author Joram Barrez

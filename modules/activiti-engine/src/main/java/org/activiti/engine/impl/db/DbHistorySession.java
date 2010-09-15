@@ -17,7 +17,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.activiti.engine.history.HistoricActivityInstance;
 import org.activiti.engine.history.HistoricProcessInstance;
+import org.activiti.engine.impl.HistoricActivityInstanceQueryImpl;
 import org.activiti.engine.impl.HistoricProcessInstanceQueryImpl;
 import org.activiti.engine.impl.Page;
 import org.activiti.engine.impl.cfg.HistorySession;
@@ -73,5 +75,14 @@ public class DbHistorySession extends AbstractDbSession implements HistorySessio
   }
 
   public void flush() {
+  }
+
+  public long findHistoricActivityInstanceCountByQueryCriteria(HistoricActivityInstanceQueryImpl historicActivityInstanceQuery) {
+    return (Long) dbSqlSession.selectOne("selectHistoricActivityInstanceCountByQueryCriteria", historicActivityInstanceQuery);
+  }
+
+  @SuppressWarnings("unchecked")
+  public List<HistoricActivityInstance> findHistoricActivityInstancesByQueryCriteria(HistoricActivityInstanceQueryImpl historicActivityInstanceQuery, Page page) {
+    return dbSqlSession.selectList("selectHistoricActivityInstancesByQueryCriteria", historicActivityInstanceQuery, page);
   }
 }

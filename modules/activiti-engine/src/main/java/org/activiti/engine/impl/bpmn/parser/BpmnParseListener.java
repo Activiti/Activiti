@@ -15,6 +15,10 @@ package org.activiti.engine.impl.bpmn.parser;
 
 import org.activiti.engine.impl.repository.ProcessDefinitionEntity;
 import org.activiti.engine.impl.util.xml.Element;
+import org.activiti.engine.impl.variable.VariableDeclaration;
+import org.activiti.pvm.impl.process.ActivityImpl;
+import org.activiti.pvm.impl.process.ScopeImpl;
+import org.activiti.pvm.impl.process.TransitionImpl;
 
 
 /**
@@ -23,5 +27,19 @@ import org.activiti.engine.impl.util.xml.Element;
 public interface BpmnParseListener {
 
   void parseProcess(Element processElement, ProcessDefinitionEntity processDefinition);
+  void parseStartEvent(Element startEventElement, ScopeImpl scope, ActivityImpl startEventActivity);
+  void parseExclusiveGateway(Element exclusiveGwElement, ScopeImpl scope, ActivityImpl activity);
+  void parseParallelGateway(Element parallelGwElement, ScopeImpl scope, ActivityImpl activity);
+  void parseScript(Element scriptTaskElement, ScopeImpl scope, ActivityImpl activity);
+  void parseServiceTask(Element serviceTaskElement, ScopeImpl scope, ActivityImpl activity);
+  void parseTask(Element taskElement, ScopeImpl scope, ActivityImpl activity);
+  void parseManualTask(Element manualTaskElement, ScopeImpl scope, ActivityImpl activity);
+  void parseUserTask(Element userTaskElement, ScopeImpl scope, ActivityImpl activity);
+  void parseEndEvent(Element endEventElement, ScopeImpl scope, ActivityImpl activity);
+  void parseBoundaryTimerEventDefinition(Element timerEventDefinition, boolean interrupting, ActivityImpl timerActivity);
+  void parseSubProcess(Element subProcessElement, ScopeImpl scope, ActivityImpl activity);
+  void parseCallActivity(Element callActivityElement, ScopeImpl scope, ActivityImpl activity);
+  void parseProperty(Element propertyElement, VariableDeclaration variableDeclaration, ActivityImpl activity);
+  void parseSequenceFlow(Element sequenceFlowElement, ScopeImpl scopeElement, TransitionImpl transition);
 
 }

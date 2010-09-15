@@ -15,7 +15,9 @@ package org.activiti.engine.impl.cfg;
 
 import java.util.List;
 
+import org.activiti.engine.history.HistoricActivityInstance;
 import org.activiti.engine.history.HistoricProcessInstance;
+import org.activiti.engine.impl.HistoricActivityInstanceQueryImpl;
 import org.activiti.engine.impl.HistoricProcessInstanceQueryImpl;
 import org.activiti.engine.impl.Page;
 import org.activiti.engine.impl.history.HistoricActivityInstanceEntity;
@@ -28,14 +30,15 @@ import org.activiti.engine.impl.history.HistoricProcessInstanceEntity;
  */
 public interface HistorySession {
 
-  void insertHistoricProcessInstance(HistoricProcessInstanceEntity historicProcessInstance);
   void deleteHistoricProcessInstance(String historicProcessInstanceId);
   HistoricProcessInstanceEntity findHistoricProcessInstance(String processInstanceId);
 
-  void insertHistoricActivityInstance(HistoricActivityInstanceEntity historicActivityInstance);
   void deleteHistoricActivityInstance(String historicActivityInstanceId);
   HistoricActivityInstanceEntity findHistoricActivityInstance(String activityId, String processInstanceId);
   
   long findHistoricProcessInstanceCountByQueryCriteria(HistoricProcessInstanceQueryImpl historicProcessInstanceQueryImpl);
   List<HistoricProcessInstance> findHistoricProcessInstancesByQueryCriteria(HistoricProcessInstanceQueryImpl historicProcessInstanceQueryImpl, Page page);
+
+  long findHistoricActivityInstanceCountByQueryCriteria(HistoricActivityInstanceQueryImpl historicActivityInstanceQueryImpl);
+  List<HistoricActivityInstance> findHistoricActivityInstancesByQueryCriteria(HistoricActivityInstanceQueryImpl historicActivityInstanceQueryImpl, Page page);
 }

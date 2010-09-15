@@ -13,10 +13,8 @@
 
 package org.activiti.engine.impl.history.handler;
 
-import org.activiti.engine.impl.history.HistoricProcessInstanceEntity;
-import org.activiti.engine.impl.interceptor.CommandContext;
+import org.activiti.engine.impl.history.HistoricActivityInstanceEntity;
 import org.activiti.engine.impl.runtime.ExecutionEntity;
-import org.activiti.engine.impl.util.ClockUtil;
 import org.activiti.pvm.event.EventListener;
 import org.activiti.pvm.event.EventListenerExecution;
 
@@ -24,22 +22,25 @@ import org.activiti.pvm.event.EventListenerExecution;
 /**
  * @author Tom Baeyens
  */
-public class ProcessInstanceStartHandler implements EventListener {
+public class ActivityInstanceEndHandler implements EventListener {
 
   public void notify(EventListenerExecution execution) {
     ExecutionEntity executionEntity = (ExecutionEntity) execution;
-    String processInstanceId = executionEntity.getId();
-    String processDefinitionId = executionEntity.getProcessDefinitionId();
+//    HistoricActivityInstanceEntity historicActivityInstance = findActivityInstance(executionEntity);
+//
+//    Date endTime = ClockUtil.getCurrentTime();
+//    long durationInMillis = endTime.getTime() - historicActivityInstance.getStartTime().getTime();
+//    historicActivityInstance.setEndTime(endTime);
+//    historicActivityInstance.setDurationInMillis(durationInMillis);
+  }
 
-    HistoricProcessInstanceEntity historicProcessInstance = new HistoricProcessInstanceEntity();
-    historicProcessInstance.setId(processInstanceId);
-    historicProcessInstance.setProcessInstanceId(processInstanceId);
-    historicProcessInstance.setProcessDefinitionId(processDefinitionId);
-    historicProcessInstance.setStartTime(ClockUtil.getCurrentTime());
-    
-    CommandContext
-      .getCurrent()
-      .getDbSqlSession()
-      .insert(historicProcessInstance);
+  public HistoricActivityInstanceEntity findActivityInstance(ExecutionEntity execution) {
+//    CommandContext commandContext = CommandContext.getCurrent();
+//    HistoricProcessInstanceEntity historicProcessInstance = new HistoricActivityInstanceQueryImpl(commandContext)
+//      .executionId(execution.getId())
+//      .activityId(execution.getActivityId())
+//      .listPage(0, 1);
+//    
+    return null;
   }
 }

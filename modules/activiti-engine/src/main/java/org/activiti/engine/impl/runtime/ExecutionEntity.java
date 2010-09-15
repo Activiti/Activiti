@@ -30,7 +30,6 @@ import org.activiti.engine.impl.calendar.DurationBusinessCalendar;
 import org.activiti.engine.impl.db.PersistentObject;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.jobexecutor.TimerDeclarationImpl;
-import org.activiti.engine.impl.repository.ProcessDefinitionEntity;
 import org.activiti.engine.impl.task.TaskEntity;
 import org.activiti.engine.impl.variable.VariableDeclaration;
 import org.activiti.engine.runtime.Execution;

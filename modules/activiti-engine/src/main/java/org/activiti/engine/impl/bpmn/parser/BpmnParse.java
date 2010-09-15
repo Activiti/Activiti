@@ -166,8 +166,8 @@ public class BpmnParse extends Parse {
     parseItemDefinitions(rootElement);
     parseMessages(rootElement);
     parseInterfaces(rootElement);
-
     parseProcessDefinitions(rootElement);
+    
     return this;
   }
 
@@ -362,8 +362,8 @@ public class BpmnParse extends Parse {
       String id = startEventElement.attribute("id");
       String name = startEventElement.attribute("name");
 
-      ActivityImpl activity = scope.createActivity(id);
-      activity.setProperty("name", name);
+      ActivityImpl startEventActivity = scope.createActivity(id);
+      startEventActivity.setProperty("name", name);
       
       if (scope instanceof ProcessDefinitionEntity) {
         ProcessDefinitionEntity processDefinition = (ProcessDefinitionEntity) scope;
@@ -373,7 +373,7 @@ public class BpmnParse extends Parse {
           // of the visible bpmn start events
           addProblem("multiple startEvents in a process definition are not yet supported", startEventElement);
         }
-        processDefinition.setInitial(activity);
+        processDefinition.setInitial(startEventActivity);
 
         String startFormResourceKey = startEventElement.attributeNS(BpmnParser.BPMN_EXTENSIONS_NS, "form");
         if (startFormResourceKey != null) {
@@ -381,13 +381,17 @@ public class BpmnParse extends Parse {
         }
 
       } else {
-        scope.setProperty(PROPERTYNAME_INITIAL, activity);
+        scope.setProperty(PROPERTYNAME_INITIAL, startEventActivity);
       }
 
       // Currently only none start events supported
       
       // TODO: a subprocess is only allowed to have a none start event 
-      activity.setActivityBehavior(new NoneStartEventActivity());
+      startEventActivity.setActivityBehavior(new NoneStartEventActivity());
+      
+      for (BpmnParseListener parseListener: parseListeners) {
+        parseListener.parseStartEvent(startEventElement, scope, startEventActivity);
+      }
     }
   }
 
@@ -461,24 +465,32 @@ public class BpmnParse extends Parse {
   /**
    * Parses an exclusive gateway declaration.
    */
-  public void parseExclusiveGateway(Element exclusiveGwElement, ScopeImpl scopeElement) {
-    ActivityImpl activity = parseAndCreateActivityOnScopeElement(exclusiveGwElement, scopeElement);
+  public void parseExclusiveGateway(Element exclusiveGwElement, ScopeImpl scope) {
+    ActivityImpl activity = parseAndCreateActivityOnScopeElement(exclusiveGwElement, scope);
     activity.setActivityBehavior(new ExclusiveGatewayActivity());
+    
+    for (BpmnParseListener parseListener: parseListeners) {
+      parseListener.parseExclusiveGateway(exclusiveGwElement, scope, activity);
+    }
   }
 
   /**
    * Parses a parallel gateway declaration.
    */
-  public void parseParallelGateway(Element parallelGwElement, ScopeImpl scopeElement) {
-    ActivityImpl activity = parseAndCreateActivityOnScopeElement(parallelGwElement, scopeElement);
+  public void parseParallelGateway(Element parallelGwElement, ScopeImpl scope) {
+    ActivityImpl activity = parseAndCreateActivityOnScopeElement(parallelGwElement, scope);
     activity.setActivityBehavior(new ParallelGatewayActivity());
+    
+    for (BpmnParseListener parseListener: parseListeners) {
+      parseListener.parseParallelGateway(parallelGwElement, scope, activity);
+    }
   }
 
   /**
    * Parses a scriptTask declaration.
    */
-  public void parseScriptTask(Element scriptTaskElement, ScopeImpl scopeElement) {
-    ActivityImpl activity = parseAndCreateActivityOnScopeElement(scriptTaskElement, scopeElement);
+  public void parseScriptTask(Element scriptTaskElement, ScopeImpl scope) {
+    ActivityImpl activity = parseAndCreateActivityOnScopeElement(scriptTaskElement, scope);
     String script = null;
     String language = null;
 
@@ -500,13 +512,17 @@ public class BpmnParse extends Parse {
     }
     
     activity.setActivityBehavior(new ScriptTaskActivity(script, language));
+
+    for (BpmnParseListener parseListener: parseListeners) {
+      parseListener.parseScript(scriptTaskElement, scope, activity);
+    }
   }
 
   /**
    * Parses a serviceTask declaration.
    */
-  public void parseServiceTask(Element serviceTaskElement, ScopeImpl scopeElement) {
-    ActivityImpl activity = parseAndCreateActivityOnScopeElement(serviceTaskElement, scopeElement);
+  public void parseServiceTask(Element serviceTaskElement, ScopeImpl scope) {
+    ActivityImpl activity = parseAndCreateActivityOnScopeElement(serviceTaskElement, scope);
 
     String className = serviceTaskElement.attributeNS(BpmnParser.BPMN_EXTENSIONS_NS, "class");
     String methodExpr = serviceTaskElement.attributeNS(BpmnParser.BPMN_EXTENSIONS_NS, "method-expr");
@@ -534,50 +550,45 @@ public class BpmnParse extends Parse {
       throw new ActivitiException("'class' or 'expr' attribute is mandatory on serviceTask");
     }
 
-    // OLD implementation with BPMN interfaces/operations/etc
-    // String operationRef = serviceTaskElement.attribute("operationRef");
-    // if (operationRef != null) {
-    // Operation operation = getOperation(operationRef);
-    // if (operation != null) {
-    //        
-    // BpmnInterface bpmnInterface = operation.getInterface();
-    // String className = bpmnInterface.getName();
-    // String method = operation.getName();
-    // activity.setActivityBehavior(new JavaServiceTaskActivity(className));
-    //        
-    // } else {
-    // throw new ActivitiException("Invalid operationReference on line " +
-    // serviceTaskElement.getLine()
-    // + ": operation '" + operationRef + "' not found");
-    // }
-    // } else {
-    // throw new ActivitiException("Line " + serviceTaskElement.getLine()
-    // + ": The attribute operationRef on a serviceTask is required");
-    // }
+    for (BpmnParseListener parseListener: parseListeners) {
+      parseListener.parseServiceTask(serviceTaskElement, scope, activity);
+    }
   }
 
   /**
    * Parses a task with no specific type (behaves as passthrough).
    */
-  public void parseTask(Element taskElement, ScopeImpl scopeElement) {
-    ActivityImpl activity = parseAndCreateActivityOnScopeElement(taskElement, scopeElement);
+  public void parseTask(Element taskElement, ScopeImpl scope) {
+    ActivityImpl activity = parseAndCreateActivityOnScopeElement(taskElement, scope);
     activity.setActivityBehavior(new TaskActivity());
+
+    for (BpmnParseListener parseListener: parseListeners) {
+      parseListener.parseTask(taskElement, scope, activity);
+    }
   }
 
   /**
    * Parses a manual task.
    */
-  public void parseManualTask(Element manualTaskElement, ScopeImpl scopeElement) {
-    ActivityImpl activity = parseAndCreateActivityOnScopeElement(manualTaskElement, scopeElement);
+  public void parseManualTask(Element manualTaskElement, ScopeImpl scope) {
+    ActivityImpl activity = parseAndCreateActivityOnScopeElement(manualTaskElement, scope);
     activity.setActivityBehavior(new ManualTaskActivity());
+
+    for (BpmnParseListener parseListener: parseListeners) {
+      parseListener.parseManualTask(manualTaskElement, scope, activity);
+    }
   }
 
   /**
    * Parses a receive task.
    */
-  public void parseReceiveTask(Element receiveTaskElement, ScopeImpl scopeElement) {
-    ActivityImpl activity = parseAndCreateActivityOnScopeElement(receiveTaskElement, scopeElement);
+  public void parseReceiveTask(Element receiveTaskElement, ScopeImpl scope) {
+    ActivityImpl activity = parseAndCreateActivityOnScopeElement(receiveTaskElement, scope);
     activity.setActivityBehavior(new ReceiveTaskActivity());
+
+    for (BpmnParseListener parseListener: parseListeners) {
+      parseListener.parseManualTask(receiveTaskElement, scope, activity);
+    }
   }
 
   /* userTask specific finals */
@@ -598,8 +609,8 @@ public class BpmnParse extends Parse {
   /**
    * Parses a userTask declaration.
    */
-  public void parseUserTask(Element userTaskElement, ScopeImpl scopeElement) {
-    ActivityImpl activity = parseAndCreateActivityOnScopeElement(userTaskElement, scopeElement);
+  public void parseUserTask(Element userTaskElement, ScopeImpl scope) {
+    ActivityImpl activity = parseAndCreateActivityOnScopeElement(userTaskElement, scope);
     TaskDefinition taskDefinition = parseTaskDefinition(userTaskElement);
     UserTaskActivity userTaskActivity = new UserTaskActivity(expressionManager, taskDefinition);
 
@@ -609,6 +620,10 @@ public class BpmnParse extends Parse {
     activity.setActivityBehavior(userTaskActivity);
 
     parseProperties(userTaskElement, activity);
+
+    for (BpmnParseListener parseListener: parseListeners) {
+      parseListener.parseUserTask(userTaskElement, scope, activity);
+    }
   }
 
   public TaskDefinition parseTaskDefinition(Element taskElement) {
@@ -633,10 +648,6 @@ public class BpmnParse extends Parse {
     return taskDefinition;
   }
 
-  protected void parseName(Element taskElement, TaskDefinition taskDefinition) {
-
-  }
-
   protected void parseHumanPerformer(Element taskElement, TaskDefinition taskDefinition) {
     List<Element> humanPerformerElements = taskElement.elements(HUMAN_PERFORMER);
 
@@ -648,7 +659,6 @@ public class BpmnParse extends Parse {
         parseHumanPerformerResourceAssignment(humanPerformerElement, taskDefinition);
       }
     }
-
   }
 
   protected void parsePotentialOwner(Element taskElement, TaskDefinition taskDefinition) {
@@ -739,20 +749,24 @@ public class BpmnParse extends Parse {
    * @param parentElement
    *          The 'parent' element that contains the end events (process,
    *          subprocess).
-   * @param scopeElement
+   * @param scope
    *          The {@link ScopeImpl} to which the end events must be
    *          added.
    */
-  public void parseEndEvents(Element parentElement, ScopeImpl scopeElement) {
+  public void parseEndEvents(Element parentElement, ScopeImpl scope) {
     for (Element endEventElement : parentElement.elements("endEvent")) {
       String id = endEventElement.attribute("id");
       String name = endEventElement.attribute("name");
 
-      ActivityImpl activity = scopeElement.createActivity(id);
+      ActivityImpl activity = scope.createActivity(id);
       activity.setProperty("name", name);
 
       // Only none end events are currently supported
       activity.setActivityBehavior(new NoneEndEventActivity());
+
+      for (BpmnParseListener parseListener: parseListeners) {
+        parseListener.parseEndEvent(endEventElement, scope, activity);
+      }
     }
   }
 
@@ -849,6 +863,10 @@ public class BpmnParse extends Parse {
     }
     
     timerActivity.setActivityBehavior(boundaryTimerEventActivity);
+    
+    for (BpmnParseListener parseListener: parseListeners) {
+      parseListener.parseBoundaryTimerEventDefinition(timerEventDefinition, interrupting, timerActivity);
+    }
   }
 
   @SuppressWarnings("unchecked")
@@ -876,29 +894,37 @@ public class BpmnParse extends Parse {
    * defined withing another process definition.
    * 
    * @param subProcessElement The XML element corresponding with the subprocess definition
-   * @param scopeElement The current scope on which the subprocess is defined.
+   * @param scope The current scope on which the subprocess is defined.
    */
-  public void parseSubProcess(Element subProcessElement, ScopeImpl scopeElement) {
-    ActivityImpl activity = parseAndCreateActivityOnScopeElement(subProcessElement, scopeElement);
+  public void parseSubProcess(Element subProcessElement, ScopeImpl scope) {
+    ActivityImpl activity = parseAndCreateActivityOnScopeElement(subProcessElement, scope);
     activity.setScope(true);
     activity.setActivityBehavior(new SubProcessActivity());
     parseScope(subProcessElement, activity);
+
+    for (BpmnParseListener parseListener: parseListeners) {
+      parseListener.parseSubProcess(subProcessElement, scope, activity);
+    }
   }
   
   /**
    * Parses a call activity (currenly only supporting calling subprocesses).
    * 
    * @param callActivityElement The XML element defining the call activity
-   * @param scopeElement The current scope on which the call activity is defined.
+   * @param scope The current scope on which the call activity is defined.
    */
-  public void parseCallActivity(Element callActivityElement, ScopeImpl scopeElement) {
-    ActivityImpl activity = parseAndCreateActivityOnScopeElement(callActivityElement, scopeElement);
+  public void parseCallActivity(Element callActivityElement, ScopeImpl scope) {
+    ActivityImpl activity = parseAndCreateActivityOnScopeElement(callActivityElement, scope);
     String calledElement = callActivityElement.attribute("calledElement");
     if (calledElement == null) {
       throw new ActivitiException("Missing attribute 'calledElement' on callActivity (line " +
               + callActivityElement.getLine() + ")");
     }
     activity.setActivityBehavior(new CallActivityBehaviour(calledElement));
+
+    for (BpmnParseListener parseListener: parseListeners) {
+      parseListener.parseCallActivity(callActivityElement, scope, activity);
+    }
   }
 
   /**
@@ -1009,6 +1035,10 @@ public class BpmnParse extends Parse {
       ActivitiValueExpression linkValueExpression = expressionManager.createValueExpression(linkExpr);
       variableDeclaration.setLinkValueExpression(linkValueExpression);
     }
+    
+    for (BpmnParseListener parseListener: parseListeners) {
+      parseListener.parseProperty(propertyElement, variableDeclaration, activity);
+    }
   }
 
   /**
@@ -1016,10 +1046,10 @@ public class BpmnParse extends Parse {
    * 
    * @param processElement
    *          The 'process' element wherein the sequence flow are defined.
-   * @param scopeElement
+   * @param scope
    *          The scope to which the sequence flow must be added.
    */
-  public void parseSequenceFlow(Element processElement, ScopeImpl scopeElement) {
+  public void parseSequenceFlow(Element processElement, ScopeImpl scope) {
     for (Element sequenceFlowElement : processElement.elements("sequenceFlow")) {
 
       String id = sequenceFlowElement.attribute("id");
@@ -1027,8 +1057,8 @@ public class BpmnParse extends Parse {
       String destinationRef = sequenceFlowElement.attribute("targetRef");
       
       // Implicit check: sequence flow cannot cross (sub) process boundaries: we don't do a processDefinition.findActivity here
-      ActivityImpl sourceActivity = scopeElement.findActivity(sourceRef);
-      ActivityImpl destinationActivity = scopeElement.findActivity(destinationRef);
+      ActivityImpl sourceActivity = scope.findActivity(sourceRef);
+      ActivityImpl destinationActivity = scope.findActivity(destinationRef);
 
       if (sourceActivity == null) {
         throw new ActivitiException("Invalid source of sequence flow '" + id + "'");
@@ -1041,6 +1071,10 @@ public class BpmnParse extends Parse {
       transition.setProperty("name", sequenceFlowElement.attribute("name"));
       transition.setDestination(destinationActivity);
       parseSequenceFlowConditionExpression(sequenceFlowElement, transition);
+
+      for (BpmnParseListener parseListener: parseListeners) {
+        parseListener.parseSequenceFlow(sequenceFlowElement, scope, transition);
+      }
     }
   }
 

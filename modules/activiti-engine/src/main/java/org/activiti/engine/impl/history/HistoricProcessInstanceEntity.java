@@ -14,7 +14,6 @@
 
 package org.activiti.engine.impl.history;
 
-import java.util.Date;
 import java.util.Map;
 
 import org.activiti.engine.history.HistoricProcessInstance;
@@ -24,33 +23,24 @@ import org.activiti.engine.history.HistoricProcessInstance;
  */
 public class HistoricProcessInstanceEntity extends HistoricScopeInstanceEntity implements HistoricProcessInstance {
 
-  protected String endStateName;
+  protected String endActivityId;
 
-  protected HistoricProcessInstanceEntity() {
-  }
-
-  public HistoricProcessInstanceEntity(String processInstanceId, String processDefinitionId, Date startTime) {
-    super(processInstanceId, processDefinitionId, startTime);
-    this.id = processInstanceId;
-  }
-
-  public void markEnded(Date endTime, String endStateName) {
-    internalMarkEnded(endTime);
-
-    this.endStateName = endStateName;
-  }
-  
   @SuppressWarnings("unchecked")
   @Override
   public Object getPersistentState() {
     Map<String, Object> persistentState = (Map<String, Object>) super.getPersistentState();
-    persistentState.put("endStateName", endStateName);
+    persistentState.put("endStateName", endActivityId);
     return persistentState;
   }
 
   // getters and setters //////////////////////////////////////////////////////
 
   public String getEndActivityId() {
-    return endStateName;
+    return endActivityId;
+  }
+
+  
+  public void setEndActivityId(String endActivityId) {
+    this.endActivityId = endActivityId;
   }
 }

@@ -54,3 +54,5 @@ drop table ACT_RU_TASKINVOLVEMENT if exists;
 drop table ACT_RU_VARIABLE if exists;
 drop table ACT_HI_PROC_INST if exists;
 drop table ACT_HI_ACT_INST if exists;
+drop table ACT_HI_TASK_INST if exists;
+drop table ACT_HI_DETAIL if exists;

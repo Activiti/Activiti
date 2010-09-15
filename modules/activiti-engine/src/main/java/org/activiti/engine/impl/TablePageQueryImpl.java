@@ -31,8 +31,6 @@ public class TablePageQueryImpl implements TablePageQuery, Command<TablePage> {
   protected String orderBy;
   protected int firstResult;
   protected int maxResults;
-  protected String sortColumn;
-  protected String sortOrder;
 
   public TablePageQueryImpl() {
   }
@@ -61,11 +59,6 @@ public class TablePageQueryImpl implements TablePageQuery, Command<TablePage> {
   }
 
   protected void addOrder(String column, String sortOrder) {
-    
-    // TODO fix the sort ordering http://jira.codehaus.org/browse/ACT-100
-    this.sortColumn = column;
-    this.sortOrder = sortOrder;
-    
     if (orderBy==null) {
       orderBy = "";
     } else {
@@ -85,16 +78,4 @@ public class TablePageQueryImpl implements TablePageQuery, Command<TablePage> {
       .getManagementSession()
       .getTablePage(this, firstResult, maxResults);
   }
-
-  
-  public String getSortColumn() {
-    return sortColumn;
-  }
-
-  
-  public String getSortOrder() {
-    return sortOrder;
-  }
-  
-  
 }

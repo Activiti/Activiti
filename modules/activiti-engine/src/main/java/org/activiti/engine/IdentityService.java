@@ -94,7 +94,7 @@ public interface IdentityService {
 
   boolean checkPassword(String userId, String password);
 
-  /** passes the authenticated user id for this partucular thread.
+  /** passes the authenticated user id for this particular thread.
    * All service method (from any service) invocations done by the same
    * thread will have access to this authenticatedUserId. */
   void setAuthenticatedUserId(String authenticatedUserId);

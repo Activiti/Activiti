@@ -14,8 +14,6 @@
 
 package org.activiti.engine.impl.history;
 
-import java.util.Date;
-
 import org.activiti.engine.history.HistoricActivityInstance;
 
 /**
@@ -26,25 +24,7 @@ public class HistoricActivityInstanceEntity extends HistoricScopeInstanceEntity 
   protected String activityId;
   protected String activityName;
   protected String activityType;
-
-  protected HistoricActivityInstanceEntity() {
-    // for ibatis
-  }
-
-  public HistoricActivityInstanceEntity(String activityId, String activityName, String activityType, String processInstanceId, String processDefinitionId, Date startTime) {
-    super(processInstanceId, processDefinitionId, startTime);
-
-    if (activityId == null) {
-      throw new IllegalArgumentException("Activity id must not be null");
-    }
-    if (activityType == null) {
-      throw new IllegalArgumentException("Activity type must not be null");
-    }
-
-    this.activityId = activityId;
-    this.activityName = activityName;
-    this.activityType = activityType;
-  }
+  protected String executionId;
 
   // getters and setters //////////////////////////////////////////////////////
   
@@ -58,8 +38,24 @@ public class HistoricActivityInstanceEntity extends HistoricScopeInstanceEntity 
   public String getActivityType() {
     return activityType;
   }
-
-  public void markEnded(Date endTime) {
-    internalMarkEnded(endTime);
+  
+  public String getExecutionId() {
+    return executionId;
+  }
+  
+  public void setExecutionId(String executionId) {
+    this.executionId = executionId;
+  }
+  
+  public void setActivityId(String activityId) {
+    this.activityId = activityId;
+  }
+  
+  public void setActivityName(String activityName) {
+    this.activityName = activityName;
+  }
+  
+  public void setActivityType(String activityType) {
+    this.activityType = activityType;
   }
 }

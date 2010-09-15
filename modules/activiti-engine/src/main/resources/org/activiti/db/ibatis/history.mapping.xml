@@ -36,7 +36,7 @@
         #{startTime, jdbcType=TIMESTAMP},
         #{endTime, jdbcType=TIMESTAMP},
         #{durationInMillis ,jdbcType=BIGINT},
-        #{endStateName, jdbcType=VARCHAR}
+        #{endActivityId, jdbcType=VARCHAR}
       )
   </insert>
 
@@ -49,7 +49,7 @@
       START_TIME_ = #{startTime, jdbcType=TIMESTAMP},
       END_TIME_ = #{endTime, jdbcType=TIMESTAMP},
       DURATION_ = #{durationInMillis ,jdbcType=BIGINT},
-      END_ACT_ID_ = #{endStateName, jdbcType=VARCHAR}        
+      END_ACT_ID_ = #{endActivityId, jdbcType=VARCHAR}        
     where ID_ = #{id}
   </update>
 
@@ -68,7 +68,7 @@
     <result property="startTime" column="START_TIME_" jdbcType="TIMESTAMP" />
     <result property="endTime" column="END_TIME_" jdbcType="TIMESTAMP" />
     <result property="durationInMillis" column="DURATION_" jdbcType="BIGINT" />
-    <result property="endStateName" column="END_ACT_ID_" jdbcType="VARCHAR" />
+    <result property="endActivityId" column="END_ACT_ID_" jdbcType="VARCHAR" />
   </resultMap>
 
   <!-- HISTORIC PROCESS INSTANCE SELECT -->

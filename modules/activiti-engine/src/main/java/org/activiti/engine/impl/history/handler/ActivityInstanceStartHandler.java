@@ -13,11 +13,6 @@
 
 package org.activiti.engine.impl.history.handler;
 
-import java.util.Date;
-
-import org.activiti.engine.impl.history.HistoricProcessInstanceEntity;
-import org.activiti.engine.impl.interceptor.CommandContext;
-import org.activiti.engine.impl.util.ClockUtil;
 import org.activiti.pvm.event.EventListener;
 import org.activiti.pvm.event.EventListenerExecution;
 
@@ -25,17 +20,14 @@ import org.activiti.pvm.event.EventListenerExecution;
 /**
  * @author Tom Baeyens
  */
-public class ProcessInstanceEndHandler implements EventListener {
+public class ActivityInstanceStartHandler implements EventListener {
+
+  protected String activityType;
+  
+  public ActivityInstanceStartHandler(String activityType) {
+    this.activityType = activityType;
+  }
 
   public void notify(EventListenerExecution execution) {
-    HistoricProcessInstanceEntity historicProcessInstance = CommandContext
-      .getCurrent()
-      .getHistorySession()
-      .findHistoricProcessInstance(execution.getId());
-    
-    Date endTime = ClockUtil.getCurrentTime();
-    long durationInMillis = endTime.getTime() - historicProcessInstance.getStartTime().getTime();
-    historicProcessInstance.setEndTime(endTime);
-    historicProcessInstance.setDurationInMillis(durationInMillis);
   }
 }

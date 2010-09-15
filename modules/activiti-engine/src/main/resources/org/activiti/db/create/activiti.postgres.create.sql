@@ -160,8 +160,7 @@ create table ACT_HI_ACT_INST (
     START_TIME_ timestamp not null,
     END_TIME_ timestamp,
     DURATION_ bigint,
-    primary key (ID_),
-    unique (ACT_ID_, PROC_INST_ID_)
+    primary key (ID_)
 );
 
 alter table ACT_GE_BYTEARRAY 

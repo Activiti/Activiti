@@ -32,26 +32,6 @@ public abstract class HistoricScopeInstanceEntity implements PersistentObject {
   protected Date endTime;
   protected Long durationInMillis;
 
-  protected HistoricScopeInstanceEntity() {
-    // for ibatis
-  }
-
-  protected HistoricScopeInstanceEntity(String processInstanceId, String processDefinitionId, Date startTime) {
-    if (processInstanceId == null) {
-      throw new IllegalArgumentException("Process instance id must not be null");
-    }
-    if (processDefinitionId == null) {
-      throw new IllegalArgumentException("Process definition id must not be null");
-    }
-    if (startTime == null) {
-      throw new IllegalArgumentException("Start time must not be null");
-    }
-
-    this.processInstanceId = processInstanceId;
-    this.processDefinitionId = processDefinitionId;
-    this.startTime = startTime;
-  }
-  
   public Object getPersistentState() {
     Map<String, Object> persistentState = new HashMap<String, Object>();
     persistentState.put("endTime", endTime);
@@ -68,7 +48,6 @@ public abstract class HistoricScopeInstanceEntity implements PersistentObject {
     }
 
     this.endTime = endTime;
-
     durationInMillis = endTime.getTime() - startTime.getTime();
   }
   
@@ -77,28 +56,37 @@ public abstract class HistoricScopeInstanceEntity implements PersistentObject {
   public String getProcessInstanceId() {
     return processInstanceId;
   }
-
   public String getProcessDefinitionId() {
     return processDefinitionId;
   }
-
   public Date getStartTime() {
     return startTime;
   }
-
   public Date getEndTime() {
     return endTime;
   }
-
   public Long getDurationInMillis() {
     return durationInMillis;
   }
-
   public String getId() {
     return id;
   }
-
   public void setId(String id) {
     this.id = id;
+  }
+  public void setProcessInstanceId(String processInstanceId) {
+    this.processInstanceId = processInstanceId;
+  }
+  public void setProcessDefinitionId(String processDefinitionId) {
+    this.processDefinitionId = processDefinitionId;
+  }
+  public void setStartTime(Date startTime) {
+    this.startTime = startTime;
+  }
+  public void setEndTime(Date endTime) {
+    this.endTime = endTime;
+  }
+  public void setDurationInMillis(Long durationInMillis) {
+    this.durationInMillis = durationInMillis;
   }
 }
