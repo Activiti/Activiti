@@ -30,9 +30,9 @@ public interface Task {
 	
 	void setDescription(String description);
 	
-	int getPriority();
+	Integer getPriority();
 	
-	void setPriority(int priority);
+	void setPriority(Integer priority);
 	
 	String getAssignee();
 	

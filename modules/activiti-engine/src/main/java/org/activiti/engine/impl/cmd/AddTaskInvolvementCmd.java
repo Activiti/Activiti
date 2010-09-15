@@ -35,14 +35,18 @@ public class AddTaskInvolvementCmd implements Command<Void> {
   protected String type;
   
   public AddTaskInvolvementCmd(String taskId, String userId, String groupId, String type) {
-    validateParams(userId, groupId, type);
+    validateParams(userId, groupId, type, taskId);
     this.taskId = taskId;
     this.userId = userId;
     this.groupId = groupId;
     this.type = type;
   }
   
-  protected void validateParams(String userId, String groupId, String type) {
+  protected void validateParams(String userId, String groupId, String type, String taskId) {
+    if(taskId == null) {
+      throw new ActivitiException("taskId is null");
+    }
+    
     if (userId != null && groupId != null) {
       throw new ActivitiException("userId and groupId cannot both be given.");      
     }
@@ -76,14 +80,20 @@ public class AddTaskInvolvementCmd implements Command<Void> {
       throw new ActivitiException("Cannot find task with id " + taskId);
     }
     
+    if(userId != null && commandContext.getIdentitySession().findUserById(userId) == null) {
+       throw new ActivitiException("Cannot find user with id " + userId);
+    }
+    
     // Special treatment for assignee
     if (TaskInvolvementType.ASSIGNEE.equals(type)) {
       task.setAssignee(userId);
     } else {
-      
       if (userId != null) {
         addTaskInvolvement(task, userId, null);
       } else {
+        if (commandContext.getIdentitySession().findGroupById(groupId) == null) {
+          throw new ActivitiException("Cannot find group with id " + groupId);
+        } 
         addTaskInvolvement(task, null, groupId);
       }
       

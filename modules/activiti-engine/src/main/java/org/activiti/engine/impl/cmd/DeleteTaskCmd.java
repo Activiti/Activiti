@@ -14,6 +14,7 @@ package org.activiti.engine.impl.cmd;
 
 import java.util.Collection;
 
+import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.task.TaskEntity;
@@ -39,13 +40,14 @@ public class DeleteTaskCmd implements Command<Void> {
   public Void execute(CommandContext commandContext) {
     if (taskId != null) {
       deleteTask(commandContext, taskId);
-    } 
-    
-    if (taskIds != null) {
-      for (String taskId : taskIds) {
-        deleteTask(commandContext, taskId);
-      }
+    } else if (taskIds != null) {
+        for (String taskId : taskIds) {
+          deleteTask(commandContext, taskId);
+        }   
+    } else {
+      throw new ActivitiException("taskId and taskIds are null");
     }
+    
     
     return null;
   }

@@ -41,6 +41,7 @@
       COMPLETION_DEADLINE_ = #{completionDeadline, jdbcType=TIMESTAMP},
       ASSIGNEE_ = #{assignee, jdbcType=VARCHAR},
       EXECUTION_ID_ = #{executionId, jdbcType=VARCHAR},
+      DESCRIPTION_ = #{description, jdbcType=VARCHAR}
     </set>
     where ID_= #{id, jdbcType=VARCHAR}
       and REV_ = #{revision, jdbcType=INTEGER}

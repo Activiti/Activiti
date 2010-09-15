@@ -99,10 +99,6 @@ public class TaskServiceImpl extends ServiceImpl implements TaskService {
     ClaimTaskCmd cmd = new ClaimTaskCmd(taskId, userId);
     commandExecutor.execute(cmd);
   }
-  
-  public void revoke(String taskId) {
-    throw new UnsupportedOperationException();
-  }
 
   public void complete(String taskId) {
     commandExecutor.execute(new CompleteTaskCmd(taskId, null));

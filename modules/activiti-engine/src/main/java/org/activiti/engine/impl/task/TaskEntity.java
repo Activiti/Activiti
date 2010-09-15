@@ -45,7 +45,7 @@ public class TaskEntity implements Task, Serializable, PersistentObject {
   protected String name;
   protected String description;
   protected String formResourceKey;
-  protected int priority = Priority.NORMAL;
+  protected Integer priority;
   protected Date createTime; // The time when the task has been created
   protected Date startDeadline; // The time when the task should have been started
   protected Date completionDeadline; // The time when the task should have been completed
@@ -112,6 +112,7 @@ public class TaskEntity implements Task, Serializable, PersistentObject {
     this.startDeadline = task.getStartDeadline();
     this.completionDeadline = task.getCompletionDeadline();
     this.skippable = task.isSkippable();
+    this.description = task.getDescription();
   }
 
   public Object getPersistentState() {
@@ -133,6 +134,9 @@ public class TaskEntity implements Task, Serializable, PersistentObject {
     }
     if (skippable) {
       persistentState.put("skippable", Boolean.TRUE);
+    }
+    if(description != null) {
+      persistentState.put("description", this.description);
     }
     return persistentState;
   }
@@ -264,11 +268,11 @@ public class TaskEntity implements Task, Serializable, PersistentObject {
     this.description = description;
   }
 
-  public int getPriority() {
+  public Integer getPriority() {
     return priority;
   }
 
-  public void setPriority(int priority) {
+  public void setPriority(Integer priority) {
     this.priority = priority;
   }
 

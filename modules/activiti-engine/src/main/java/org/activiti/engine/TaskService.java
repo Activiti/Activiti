@@ -38,24 +38,29 @@ public interface TaskService {
   Task newTask(String taskId);
 	
 	/**
-	 * Saves the given task to the persistent signalData store.
+	 * Saves the given task to the persistent data store. If the task is already
+	 * present in the persistent store, it is updated.
+	 * @param task the task, cannot be null.
 	 */
 	void saveTask(Task task);
 	
 	/**
-   * Returns the task with given id.
+   * Returns the task with given id. Returns null when no task with the given id is found.
+   * @param taskId the id of the task, cannot be null.
    */
   Task findTask(String taskId);
 	
 	/**
 	 * Deletes the given task.
-	 * @param taskId The id of the task that will be deleted.
+	 * @param taskId The id of the task that will be deleted, cannot be null. If no task
+	 * exists with the given taskId, the operation is ignored.
 	 */
 	void deleteTask(String taskId);
 	
 	/**
 	 * Deletes all tasks of the given collection.
-	 * @param taskIds The ids of the tasks that will be deleted.
+	 * @param taskIds The id's of the tasks that will be deleted, cannot be null. All
+	 * id's in the list that don't have an existing task will be ignored.
 	 */
 	void deleteTasks(Collection<String> taskIds);
 	
@@ -67,6 +72,8 @@ public interface TaskService {
    * 
    * To move a task from the 'candidate' task list to the 'personal' task list,
    * call the <i>claim()</i> operation.
+   * 
+   * @param userId
    */
   List<Task> findUnassignedTasks(String userId);
 	
@@ -80,57 +87,79 @@ public interface TaskService {
 	
 	 /**
    * Claim responsibility for a task: the given user is made assignee for the task.
+   * When the task is already assigned to the given user, this operation does nothing.
+   * @param taskId task to claim, cannot be null.
+   * @param userId user that claims the task, cannot be null.
+   * @throws ActivitiException when the user or task doesn't exist or when the task
+   * is already claimed by another user.
    */
   void claim(String taskId, String userId);
   
-  /**
-   * Releases (revokes) the given task. Opposite operation of <i>claim</i>
-   * 
-   * Only usable when the task is in the 'in progress' or 'reserved' state.
-   * The task state will be put back to 'ready', without an actual owner.
-   */
-  void revoke(String taskId);
   
   /**
-   * Retrieves the rendered task form for the given task. 
+   * Retrieves the rendered task form for the given task.
+   * @param taskId the id of the task to render the form for, cannot be null.
+   * @return rendered task form. Returns null when the given task has no task form.
    */
   Object getTaskForm(String taskId);
   
   /**
    * Called when the task is successfully executed.
+   * @param taskId the id of the task to complete, cannot be null.
+   * @throws ActivitiException when no task exists with the given id.
    */
   void complete(String taskId);
   
   /**
    * Called when the task is successfully executed, 
    * and the required task parameters are given by the end-user.
+   * @param taskId the id of the task to complete, cannot be null.
+   * @param variables task parameters. May be null or empty.
+   * @throws ActivitiException when no task exists with the given id.
    */
   void complete(String taskId, Map<String, Object> variables);
 
   /**
    * Changes the assignee of the given task to the given userId.
+   * @param taskId id of the task, cannot be null.
+   * @param userId id of the user to use as assignee, cannot be null.
+   * @throws ActivitiException when the task or user doesn't exist.
    */
   void setAssignee(String taskId, String userId);
   
   /**
-   * Convience shorthand for addUserInvolvement(taskId, userId, {@link TaskInvolvementType}.CANDIDATE
+   * Convenience shorthand for addUserInvolvement(taskId, userId, {@link TaskInvolvementType}.CANDIDATE
+   * @param taskId id of the task, cannot be null.
+   * @param userId id of the user to use as candidate, cannot be null.
+   * @throws ActivitiException when the task or user doesn't exist.
    */
   void addCandidateUser(String taskId, String userId);
   
   /**
-   * Convience shorthand for addUserInvolvement(taskId, groupId, {@link TaskInvolvementType}.CANDIDATE
+   * Convenience shorthand for addUserInvolvement(taskId, groupId, {@link TaskInvolvementType}.CANDIDATE
+   * @param taskId id of the task, cannot be null.
+   * @param groupId id of the group to use as candidate, cannot be null.
+   * @throws ActivitiException when the task or group doesn't exist.
    */
   void addCandidateGroup(String taskId, String groupId);
   
   /**
    * Involves a user with a task. The type of involvement is defined by the
-   * given involvementType (@see {@link TaskInvolvementType})
+   * given involvementType.
+   * @param taskId id of the task, cannot be null.
+   * @param userId id of the user involve, cannot be null.
+   * @param involvmentType type of involvement, cannot be null (@see {@link TaskInvolvementType}).
+   * @throws ActivitiException when the task or user doesn't exist.
    */
   void addUserInvolvement(String taskId, String userId, String involvementType);
   
   /**
    * Involves a group with a task. The type of involvement is defined by the
-   * given involvementType (@see {@link TaskInvolvementType})
+   * given involvementType.
+   * @param taskId id of the task, cannot be null.
+   * @param groupId id of the group to involve, cannot be null.
+   * @param involvmentType type of involvement, cannot be null (@see {@link TaskInvolvementType}).
+   * @throws ActivitiException when the task or group doesn't exist.
    */
   void addGroupInvolvement(String taskId, String groupId, String involvementType);
   
@@ -138,6 +167,10 @@ public interface TaskService {
    * Changes the priority of the task.
    * 
    * Authorization: actual owner / business admin
+   * 
+   * @param taskId id of the task, cannot be null.
+   * @param priority the new priority for the task.
+   * @throws ActivitiException when the task doesn't exist.
    */
   void setPriority(String taskId, int priority);
   

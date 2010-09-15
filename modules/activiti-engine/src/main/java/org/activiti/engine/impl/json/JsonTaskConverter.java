@@ -36,7 +36,9 @@ public class JsonTaskConverter extends JsonObjectConverter<Task> {
     jsonObject.put("dbversion", taskImpl.getRevision());
     jsonObject.put("assignee", taskImpl.getAssignee());
     jsonObject.put("name", taskImpl.getName());
-    jsonObject.put("priority", taskImpl.getPriority());
+    if(taskImpl.getPriority() != null) {
+      jsonObject.put("priority", taskImpl.getPriority());      
+    }
     jsonObject.put("createTime", taskImpl.getCreateTime());
     jsonObject.put("skippable", taskImpl.isSkippable());
     if (taskImpl.getStartDeadline()!=null) {

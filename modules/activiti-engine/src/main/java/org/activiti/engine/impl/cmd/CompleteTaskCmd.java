@@ -36,6 +36,10 @@ public class CompleteTaskCmd implements Command<Void> {
   }
   
   public Void execute(CommandContext commandContext) {
+    if(taskId == null) {
+      throw new ActivitiException("taskId is null");
+    }
+    
     TaskSession taskSession = commandContext.getTaskSession();
     
     TaskEntity task = taskSession.findTaskById(taskId);

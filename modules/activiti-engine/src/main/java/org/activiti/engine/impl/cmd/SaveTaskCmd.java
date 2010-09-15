@@ -12,6 +12,7 @@
  */
 package org.activiti.engine.impl.cmd;
 
+import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.task.TaskEntity;
@@ -29,6 +30,10 @@ public class SaveTaskCmd implements Command<Void> {
 	}
 	
 	public Void execute(CommandContext commandContext) {
+	  if(task == null) {
+	    throw new ActivitiException("task is null");
+	  }
+	  
     if (task.getRevision()==0) {
       commandContext
         .getDbSqlSession()

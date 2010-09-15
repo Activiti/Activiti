@@ -33,6 +33,10 @@ public class SetTaskPriorityCmd implements Command<Void> {
   }
   
   public Void execute(CommandContext commandContext) {
+    if(taskId == null) {
+      throw new ActivitiException("taskId is null");
+    }
+    
     TaskEntity task = commandContext
       .getTaskSession()
       .findTaskById(taskId);

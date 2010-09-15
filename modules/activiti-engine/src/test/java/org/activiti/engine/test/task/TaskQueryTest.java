@@ -28,7 +28,6 @@ public class TaskQueryTest extends ActivitiInternalTestCase {
   private List<String> taskIds;
 
   public void setUp() throws Exception {
-    taskIds = generateTestTasks();
 
     identityService.saveUser(identityService.newUser("kermit"));
     identityService.saveUser(identityService.newUser("gonzo"));
@@ -40,6 +39,8 @@ public class TaskQueryTest extends ActivitiInternalTestCase {
     identityService.createMembership("kermit", "management");
     identityService.createMembership("kermit", "accountancy");
     identityService.createMembership("fozzie", "management");
+
+    taskIds = generateTestTasks();
   }
 
   public void tearDown() throws Exception {
