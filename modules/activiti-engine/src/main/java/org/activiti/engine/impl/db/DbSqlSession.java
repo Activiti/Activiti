@@ -14,6 +14,7 @@
 package org.activiti.engine.impl.db;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -233,6 +234,19 @@ public class DbSqlSession implements Session {
       return;
     }
     classCache.remove(persistentObjectId);
+  }
+  
+  @SuppressWarnings("unchecked")
+  public <T> List<T> findInCache(Class<T> entityClass) {
+    Map<String, CachedObject> classCache = cachedObjects.get(entityClass);
+    if (classCache!=null) {
+      ArrayList<T> entities = new ArrayList<T>(classCache.size());
+      for (CachedObject cachedObject: classCache.values()) {
+        entities.add((T) cachedObject.getPersistentObject());
+      }
+      return entities;
+    }
+    return Collections.emptyList();
   }
 
   public static class CachedObject {

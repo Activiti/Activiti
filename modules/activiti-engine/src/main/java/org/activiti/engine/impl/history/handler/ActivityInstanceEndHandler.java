@@ -13,8 +13,18 @@
 
 package org.activiti.engine.impl.history.handler;
 
+import java.util.Date;
+import java.util.List;
+
+import org.activiti.engine.ActivitiException;
+import org.activiti.engine.history.HistoricActivityInstance;
+import org.activiti.engine.impl.HistoricActivityInstanceQueryImpl;
+import org.activiti.engine.impl.Page;
+import org.activiti.engine.impl.db.DbSqlSession;
 import org.activiti.engine.impl.history.HistoricActivityInstanceEntity;
+import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.runtime.ExecutionEntity;
+import org.activiti.engine.impl.util.ClockUtil;
 import org.activiti.pvm.event.EventListener;
 import org.activiti.pvm.event.EventListenerExecution;
 
@@ -26,21 +36,46 @@ public class ActivityInstanceEndHandler implements EventListener {
 
   public void notify(EventListenerExecution execution) {
     ExecutionEntity executionEntity = (ExecutionEntity) execution;
-//    HistoricActivityInstanceEntity historicActivityInstance = findActivityInstance(executionEntity);
-//
-//    Date endTime = ClockUtil.getCurrentTime();
-//    long durationInMillis = endTime.getTime() - historicActivityInstance.getStartTime().getTime();
-//    historicActivityInstance.setEndTime(endTime);
-//    historicActivityInstance.setDurationInMillis(durationInMillis);
+    HistoricActivityInstanceEntity historicActivityInstance = findActivityInstance(executionEntity);
+
+    Date endTime = ClockUtil.getCurrentTime();
+    long durationInMillis = endTime.getTime() - historicActivityInstance.getStartTime().getTime();
+    historicActivityInstance.setEndTime(endTime);
+    historicActivityInstance.setDurationInMillis(durationInMillis);
   }
 
   public HistoricActivityInstanceEntity findActivityInstance(ExecutionEntity execution) {
-//    CommandContext commandContext = CommandContext.getCurrent();
-//    HistoricProcessInstanceEntity historicProcessInstance = new HistoricActivityInstanceQueryImpl(commandContext)
-//      .executionId(execution.getId())
-//      .activityId(execution.getActivityId())
-//      .listPage(0, 1);
-//    
-    return null;
+    CommandContext commandContext = CommandContext.getCurrent();
+
+    String executionId = execution.getId();
+    String activityId = execution.getActivityId();
+
+    // TODO search for the historic activity instance in the dbsqlsession cache
+    DbSqlSession dbSqlSession = commandContext.getDbSqlSession();
+    List<HistoricActivityInstanceEntity> cachedHistoricActivityInstances = dbSqlSession.findInCache(HistoricActivityInstanceEntity.class);
+    for (HistoricActivityInstanceEntity cachedHistoricActivityInstance: cachedHistoricActivityInstances) {
+      if ( executionId.equals(cachedHistoricActivityInstance.getExecutionId())
+           && (activityId.equals(cachedHistoricActivityInstance.getActivityId()))
+           && (cachedHistoricActivityInstance.getEndTime()==null)
+         ) {
+        return cachedHistoricActivityInstance;
+      }
+    }
+    
+    List<HistoricActivityInstance> historicActivityInstances = new HistoricActivityInstanceQueryImpl()
+      .executionId(executionId)
+      .activityId(activityId)
+      .onlyOpen()
+      .executeList(commandContext, new Page(0, 1));
+    
+    if (!historicActivityInstances.isEmpty()) {
+      return (HistoricActivityInstanceEntity) historicActivityInstances.get(0);
+    }
+    
+    if (execution.getParentId()!=null) {
+      return findActivityInstance((ExecutionEntity) execution.getParent());
+    }
+    
+    throw new ActivitiException("no existing history activity entity found for execution "+executionId+" in activity "+activityId);
   }
 }

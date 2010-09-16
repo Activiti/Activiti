@@ -33,40 +33,46 @@ public class HistoryParseListener implements BpmnParseListener {
     processDefinition.addEventListener(EventListener.EVENTNAME_END, new ProcessInstanceEndHandler());
   }
 
+  public void parseExclusiveGateway(Element exclusiveGwElement, ScopeImpl scope, ActivityImpl activity) {
+    addActivityHandlers(exclusiveGwElement, activity);
+  }
+
+  public void parseCallActivity(Element callActivityElement, ScopeImpl scope, ActivityImpl activity) {
+    addActivityHandlers(callActivityElement, activity);
+  }
+
+  public void parseManualTask(Element manualTaskElement, ScopeImpl scope, ActivityImpl activity) {
+    addActivityHandlers(manualTaskElement, activity);
+  }
+
+  public void parseScript(Element scriptTaskElement, ScopeImpl scope, ActivityImpl activity) {
+    addActivityHandlers(scriptTaskElement, activity);
+  }
+
+  public void parseTask(Element taskElement, ScopeImpl scope, ActivityImpl activity) {
+    addActivityHandlers(taskElement, activity);
+  }
+
+  public void parseUserTask(Element userTaskElement, ScopeImpl scope, ActivityImpl activity) {
+    addActivityHandlers(userTaskElement, activity);
+  }
+
+  public void parseServiceTask(Element serviceTaskElement, ScopeImpl scope, ActivityImpl activity) {
+    addActivityHandlers(serviceTaskElement, activity);
+  }
+
+  public void parseSubProcess(Element subProcessElement, ScopeImpl scope, ActivityImpl activity) {
+    addActivityHandlers(subProcessElement, activity);
+  }
+
   public void parseStartEvent(Element startEventElement, ScopeImpl scope, ActivityImpl startEventActivity) {
   }
 
   public void parseEndEvent(Element endEventElement, ScopeImpl scope, ActivityImpl activity) {
   }
 
-  public void parseExclusiveGateway(Element exclusiveGwElement, ScopeImpl scope, ActivityImpl activity) {
-    addActivityHandlers(exclusiveGwElement, activity);
-  }
-
   public void parseParallelGateway(Element parallelGwElement, ScopeImpl scope, ActivityImpl activity) {
   }
-
-  public void parseCallActivity(Element callActivityElement, ScopeImpl scope, ActivityImpl activity) {
-  }
-
-  public void parseManualTask(Element manualTaskElement, ScopeImpl scope, ActivityImpl activity) {
-  }
-
-  public void parseScript(Element scriptTaskElement, ScopeImpl scope, ActivityImpl activity) {
-  }
-
-  public void parseTask(Element taskElement, ScopeImpl scope, ActivityImpl activity) {
-  }
-
-  public void parseUserTask(Element userTaskElement, ScopeImpl scope, ActivityImpl activity) {
-  }
-
-  public void parseServiceTask(Element serviceTaskElement, ScopeImpl scope, ActivityImpl activity) {
-  }
-
-  public void parseSubProcess(Element subProcessElement, ScopeImpl scope, ActivityImpl activity) {
-  }
-
 
   public void parseBoundaryTimerEventDefinition(Element timerEventDefinition, boolean interrupting, ActivityImpl timerActivity) {
   }

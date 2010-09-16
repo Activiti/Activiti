@@ -13,6 +13,11 @@
 
 package org.activiti.engine.impl.history.handler;
 
+import org.activiti.engine.impl.cfg.IdGenerator;
+import org.activiti.engine.impl.history.HistoricActivityInstanceEntity;
+import org.activiti.engine.impl.interceptor.CommandContext;
+import org.activiti.engine.impl.runtime.ExecutionEntity;
+import org.activiti.engine.impl.util.ClockUtil;
 import org.activiti.pvm.event.EventListener;
 import org.activiti.pvm.event.EventListenerExecution;
 
@@ -29,5 +34,25 @@ public class ActivityInstanceStartHandler implements EventListener {
   }
 
   public void notify(EventListenerExecution execution) {
+    CommandContext commandContext = CommandContext.getCurrent();
+    IdGenerator idGenerator = commandContext.getProcessEngineConfiguration().getIdGenerator();
+    
+    ExecutionEntity executionEntity = (ExecutionEntity) execution;
+    String processDefinitionId = executionEntity.getProcessDefinitionId();
+    String processInstanceId = executionEntity.getProcessInstanceId();
+    String executionId = execution.getId();
+
+    HistoricActivityInstanceEntity historicActivityInstance = new HistoricActivityInstanceEntity();
+    historicActivityInstance.setId(Long.toString(idGenerator.getNextId()));
+    historicActivityInstance.setProcessDefinitionId(processDefinitionId);
+    historicActivityInstance.setProcessInstanceId(processInstanceId);
+    historicActivityInstance.setExecutionId(executionId);
+    historicActivityInstance.setActivityId(executionEntity.getActivityId());
+    historicActivityInstance.setActivityType((String) executionEntity.getActivity().getProperty("type"));
+    historicActivityInstance.setStartTime(ClockUtil.getCurrentTime());
+    
+    commandContext
+      .getDbSqlSession()
+      .insert(historicActivityInstance);
   }
 }

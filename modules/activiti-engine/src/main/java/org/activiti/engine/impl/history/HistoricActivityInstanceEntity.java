@@ -14,6 +14,8 @@
 
 package org.activiti.engine.impl.history;
 
+import java.util.Map;
+
 import org.activiti.engine.history.HistoricActivityInstance;
 
 /**
@@ -25,6 +27,13 @@ public class HistoricActivityInstanceEntity extends HistoricScopeInstanceEntity 
   protected String activityName;
   protected String activityType;
   protected String executionId;
+  
+  @SuppressWarnings("unchecked")
+  public Object getPersistentState() {
+    Map<String, Object> persistentState = (Map<String, Object>) super.getPersistentState();
+    persistentState.put("executionId", executionId);
+    return persistentState;
+  }
 
   // getters and setters //////////////////////////////////////////////////////
   

@@ -22,12 +22,16 @@ import java.util.logging.Logger;
 
 import javax.el.ELContext;
 
+import org.activiti.engine.history.HistoricActivityInstance;
+import org.activiti.engine.impl.HistoricActivityInstanceQueryImpl;
 import org.activiti.engine.impl.JobQueryImpl;
 import org.activiti.engine.impl.TaskQueryImpl;
 import org.activiti.engine.impl.bpmn.parser.BpmnParse;
 import org.activiti.engine.impl.calendar.BusinessCalendar;
 import org.activiti.engine.impl.calendar.DurationBusinessCalendar;
+import org.activiti.engine.impl.db.DbSqlSession;
 import org.activiti.engine.impl.db.PersistentObject;
+import org.activiti.engine.impl.history.HistoricActivityInstanceEntity;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.jobexecutor.TimerDeclarationImpl;
 import org.activiti.engine.impl.task.TaskEntity;
@@ -358,9 +362,36 @@ public class ExecutionEntity extends ExecutionImpl implements PersistentObject, 
       .getDbSqlSession()
       .delete(ExecutionEntity.class, id);
   }
+  
+  @SuppressWarnings("unchecked")
+  @Override
+  public void setReplacedBy(ExecutionImpl replacedBy) {
+    super.setReplacedBy(replacedBy);
+    
+    // update the cached historic activity instances that are open
+    CommandContext commandContext = CommandContext.getCurrent();
+    DbSqlSession dbSqlSession = commandContext.getDbSqlSession();
+    List<HistoricActivityInstanceEntity> cachedHistoricActivityInstances = dbSqlSession.findInCache(HistoricActivityInstanceEntity.class);
+    for (HistoricActivityInstanceEntity cachedHistoricActivityInstance: cachedHistoricActivityInstances) {
+      if ( (cachedHistoricActivityInstance.getEndTime()==null)
+           && (id.equals(cachedHistoricActivityInstance.getExecutionId())) 
+         ) {
+        cachedHistoricActivityInstance.setExecutionId(replacedBy.getId());
+      }
+    }
+    
+    // update the persisted historic activity instances that are open
+    List<HistoricActivityInstanceEntity> historicActivityInstances = (List) new HistoricActivityInstanceQueryImpl()
+      .executionId(id)
+      .onlyOpen()
+      .executeList(commandContext, null);
+    for (HistoricActivityInstanceEntity historicActivityInstance: historicActivityInstances) {
+      historicActivityInstance.setExecutionId(replacedBy.getId());
+    }
+  }
 
   // variables ////////////////////////////////////////////////////////////////
-  
+
   @Override
   protected void ensureVariablesInitialized() {
     if (variables==null) {

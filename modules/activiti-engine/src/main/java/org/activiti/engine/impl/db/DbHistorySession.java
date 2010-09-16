@@ -39,6 +39,7 @@ public class DbHistorySession extends AbstractDbSession implements HistorySessio
   }
 
   public void deleteHistoricProcessInstance(String historicProcessInstanceId) {
+    dbSqlSession.delete("deleteHistoricActivityInstancesByProcessInstanceId", historicProcessInstanceId);
     dbSqlSession.delete(HistoricProcessInstanceEntity.class, historicProcessInstanceId);
   }
 

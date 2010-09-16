@@ -30,8 +30,6 @@ public class HistoricProcessInstanceQueryImpl extends AbstractQuery<HistoricProc
   protected String processDefinitionId;
   protected String processDefinitionKey;
   
-  protected CommandExecutor commandExecutor;
-  
   public HistoricProcessInstanceQueryImpl() {
   }
   

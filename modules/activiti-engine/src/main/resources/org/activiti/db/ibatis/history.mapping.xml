@@ -85,7 +85,7 @@
     </if>
   </select>
   
-  <select id="selectHistoricProcessInstanceCountByQueryCriteria" parameterType="org.activiti.engine.impl.ExecutionQueryImpl" resultType="long">
+  <select id="selectHistoricProcessInstanceCountByQueryCriteria" parameterType="org.activiti.engine.impl.HistoricProcessInstanceQueryImpl" resultType="long">
     select count(*)
     <include refid="selectHistoricProcessInstancesByQueryCriteriaSql"/>
   </select>
@@ -104,21 +104,23 @@
   <insert id="insertHistoricActivityInstance" parameterType="org.activiti.engine.impl.history.HistoricActivityInstanceEntity">
       insert into ACT_HI_ACT_INST (
         ID_,
+        PROC_DEF_ID_,
+        PROC_INST_ID_,
+        EXECUTION_ID_,
         ACT_ID_,
         ACT_NAME_,
         ACT_TYPE_,
-        PROC_INST_ID_,
-        PROC_DEF_ID_,
         START_TIME_,
         END_TIME_,
         DURATION_
       ) values (
         #{id ,jdbcType=VARCHAR},
+        #{processDefinitionId, jdbcType=VARCHAR},
+        #{processInstanceId, jdbcType=VARCHAR},
+        #{executionId, jdbcType=VARCHAR},
         #{activityId ,jdbcType=VARCHAR},
         #{activityName ,jdbcType=VARCHAR},
         #{activityType ,jdbcType=VARCHAR},
-        #{processInstanceId, jdbcType=VARCHAR},
-        #{processDefinitionId, jdbcType=VARCHAR},
         #{startTime, jdbcType=TIMESTAMP},
         #{endTime, jdbcType=TIMESTAMP},
         #{durationInMillis ,jdbcType=BIGINT}
@@ -129,12 +131,7 @@
   
   <update id="updateHistoricActivityInstance" parameterType="org.activiti.engine.impl.history.HistoricActivityInstanceEntity">
     update ACT_HI_ACT_INST set
-      ACT_ID_ = #{activityId, jdbcType=VARCHAR},
-      ACT_NAME_ = #{activityName, jdbcType=VARCHAR},
-      ACT_TYPE_ = #{activityType, jdbcType=VARCHAR},
-      PROC_INST_ID_ = #{processInstanceId, jdbcType=VARCHAR},
-      PROC_DEF_ID_ = #{processDefinitionId, jdbcType=VARCHAR},
-      START_TIME_ = #{startTime, jdbcType=TIMESTAMP},
+      EXECUTION_ID_ = #{executionId, jdbcType=VARCHAR},
       END_TIME_ = #{endTime, jdbcType=TIMESTAMP},
       DURATION_ = #{durationInMillis ,jdbcType=BIGINT}
     where ID_ = #{id}
@@ -142,19 +139,20 @@
 
   <!-- HISTORIC ACTIVITY INSTANCE DELETE -->
   
-  <delete id="deleteHistoricActivityInstance">
-    delete from ACT_HI_ACT_INST where ACT_ID_ = #{activityId} and PROC_INST_ID_ = #{processInstanceId}
+  <delete id="deleteHistoricActivityInstancesByProcessInstanceId">
+    delete from ACT_HI_ACT_INST where PROC_INST_ID_ = #{processInstanceId}
   </delete>
 
   <!-- HISTORIC ACTIVITY INSTANCE RESULT MAP -->
 
   <resultMap id="historicActivityInstanceResultMap" type="org.activiti.engine.impl.history.HistoricActivityInstanceEntity">
     <id property="id" column="ID_" jdbcType="VARCHAR" />
+    <result property="processDefinitionId" column="PROC_DEF_ID_" jdbcType="VARCHAR" />
+    <result property="processInstanceId" column="PROC_INST_ID_" jdbcType="VARCHAR" />
+    <result property="executionId" column="EXECUTION_ID_" jdbcType="VARCHAR" />
     <result property="activityId" column="ACT_ID_" jdbcType="VARCHAR" />
     <result property="activityName" column="ACT_NAME_" jdbcType="VARCHAR" />
     <result property="activityType" column="ACT_TYPE_" jdbcType="VARCHAR" />
-    <result property="processInstanceId" column="PROC_INST_ID_" jdbcType="VARCHAR" />
-    <result property="processDefinitionId" column="PROC_DEF_ID_" jdbcType="VARCHAR" />
     <result property="startTime" column="START_TIME_" jdbcType="TIMESTAMP" />
     <result property="endTime" column="END_TIME_" jdbcType="TIMESTAMP" />
     <result property="durationInMillis" column="DURATION_" jdbcType="BIGINT" />
@@ -166,4 +164,44 @@
     select * from ACT_HI_ACT_INST where ACT_ID_ = #{activityId} and PROC_INST_ID_ = #{processInstanceId}
   </select>
 
+  <select id="selectHistoricActivityInstancesByQueryCriteria" parameterType="org.activiti.engine.impl.HistoricActivityInstanceQueryImpl" resultMap="historicActivityInstanceResultMap">
+    select *
+    <include refid="selectHistoricActivityInstancesByQueryCriteriaSql"/>
+    <if test="orderBy != null">
+      order by ${orderBy}
+    </if>
+  </select>
+  
+  <select id="selectHistoricActivityInstanceCountByQueryCriteria" parameterType="org.activiti.engine.impl.HistoricActivityInstanceQueryImpl" resultType="long">
+    select count(*)
+    <include refid="selectHistoricActivityInstancesByQueryCriteriaSql"/>
+  </select>
+  
+  <sql id="selectHistoricActivityInstancesByQueryCriteriaSql">
+    from ACT_HI_ACT_INST HAI
+    <where>
+      <if test="processInstanceId != null">
+        HAI.PROC_INST_ID_ = #{processInstanceId}
+      </if>
+      <if test="executionId != null">
+        and HAI.EXECUTION_ID_ = #{executionId}
+      </if>
+      <if test="processDefinitionId != null">
+        and HAI.PROC_DEF_ID_ = #{processDefinitionId}
+      </if>
+      <if test="activityId != null">
+        and HAI.ACT_ID_ = #{activityId}
+      </if>
+      <if test="activityName != null">
+        and HAI.ACT_NAME_ = #{activityName}
+      </if>
+      <if test="activityType != null">
+        and HAI.ACT_TYPE_ = #{activityType}
+      </if>
+      <if test="onlyOpen">
+        and HAI.END_TIME_ is null
+      </if>
+    </where>
+  </sql>
+  
 </mapper>
