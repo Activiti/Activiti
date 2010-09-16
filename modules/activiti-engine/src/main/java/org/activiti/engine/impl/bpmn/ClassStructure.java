@@ -34,12 +34,10 @@ public class ClassStructure implements Structure {
     return 0;
   }
 
-  @Override
   public String getFieldNameAt(int index) {
     return null;
   }
 
-  @Override
   public Class< ? > getFieldTypeAt(int index) {
     return null;
   }

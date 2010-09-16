@@ -49,7 +49,6 @@ public class WSDLImporter implements XMLImporter {
   
   protected String wsdlLocation;
 
-  @Override
   public void importFrom(Element element, BpmnParse parse) {
     this.wsdlLocation = element.attribute("location");
 

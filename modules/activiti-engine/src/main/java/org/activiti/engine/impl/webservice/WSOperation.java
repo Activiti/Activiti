@@ -34,7 +34,6 @@ public class WSOperation implements OperationImplementation {
   /**
    * {@inheritDoc}
    */
-  @Override
   public String getName() {
     return this.name;
   }
@@ -42,7 +41,6 @@ public class WSOperation implements OperationImplementation {
   /**
    * {@inheritDoc}
    */
-  @Override
   public Object[] execute(Object[] arguments) throws Exception {
     Object[] results = this.service.getClient().send(this.name, arguments);
     if (results == null) {

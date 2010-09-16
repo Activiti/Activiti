@@ -57,12 +57,10 @@ public class SimpleStructure implements Structure {
     }
   }
 
-  @Override
   public String getFieldNameAt(int index) {
     return this.fieldNames.get(index);
   }
 
-  @Override
   public Class<?> getFieldTypeAt(int index) {
     return this.fieldTypes.get(index);
   }
