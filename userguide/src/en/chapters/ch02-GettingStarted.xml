@@ -108,7 +108,7 @@
           </row>
           <row>
             <entry>Activiti Modeler powered by Signavio</entry>
-            <entry><ulink url="http://localhost:8080/activiti-modeler/p/explorer">http://localhost:8080/activiti-modeler/p/explorer</ulink></entry>
+            <entry><ulink url="http://localhost:8080/activiti-modeler">http://localhost:8080/activiti-modeler</ulink></entry>
             <entry>The web based process designer tool.  Use this tool to graphically author BPMN 2.0 compliant process definitions 
             files.</entry>
           </row>
