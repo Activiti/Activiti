@@ -1839,10 +1839,11 @@ public class ToUppercaseActivityBehavior extends BpmnActivityBehavior implements
         <title>Graphical Notation</title>
         
         <para>
-          A call activity is visualized exactly the same as a <link linkend="bpmnSubProcessGraphicalNotation">subprocess</link>.
+          A call activity is visualized the same as a <link linkend="bpmnSubProcessGraphicalNotation">subprocess</link>,
+          however with a thick border (collapsed and expanded).
           Depending on the modeling tool, a call activity can also be expanded, but the default
           visualization is the collapsed subprocess representation.
-          <mediaobject><imageobject><imagedata align="center" fileref="images/bpmn.collapsed.subprocess.png"/></imageobject></mediaobject>
+          <mediaobject><imageobject><imagedata align="center" fileref="images/bpmn.collapsed.call.activity.png"/></imageobject></mediaobject>
         </para>
         
       </section>
