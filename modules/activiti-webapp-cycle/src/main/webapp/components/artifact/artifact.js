@@ -80,6 +80,7 @@
 			// Retrieve rest api response
       var artifactJson = response.json;
       var firstTab = true;
+      var moviApi;
 			// Add a tab for each content representation from the JSON response
 			for(var i = 0; i<artifactJson.contentViews.length; i++) {
 				if(artifactJson.contentViews[i].type.indexOf("image") != -1) {
@@ -89,7 +90,23 @@
 						active: firstTab
 					}));
 					firstTab = false;
-				}	else {
+				} else if(artifactJson.contentViews[i].type.indexOf("javascript") != -1) {
+					tabView.addTab ( new YAHOO.widget.Tab({
+						label: artifactJson.contentViews[i].name,
+						content: '<div id="modelviewer" style="height:500px;"></div><div id="modelnavigator"></div>',		
+					}));
+					firstTab = false;
+					moviApi = { content: artifactJson.contentViews[i].content };
+					//alert("Javascript content: " + artifactJson.contentViews[i].content);
+					//YAHOO.plugin.Dispatcher.delegate(
+					//new YAHOO.widget.Tab({
+					//label: artifactJson.contentViews[i].name,
+					//content: artifactJson.contentViews[i].content,
+					//dataSrc: 'res/test/test.html'
+					//active: firstTab
+					//}), tabView);
+					//firstTab = false;
+				} else {
 					tabView.addTab( new YAHOO.widget.Tab({
 						label: artifactJson.contentViews[i].name,
 						content: "<div id=\"artifact-source\">\n<pre class=\"prettyprint lang-" + artifactJson.contentViews[i].type + "\" >\n" + artifactJson.contentViews[i].content + "\n</pre></div>",
@@ -99,6 +116,55 @@
 				}			
 			}
 			tabView.appendTo('artifact-div');
+			
+			console.log(artifactJson.id);
+			
+			console.log("MoviApi.content: " + moviApi.content);
+			// start MOVI API
+			
+			var modelviewer;
+			var modelnavigator;
+
+			MOVI.init(
+					function() {
+						modelviewer = new MOVI.widget.ModelViewer("modelviewer");
+						//modelviewer.loadModel("http://oryx-project.org/backend/poem/model/8842",
+						modelviewer.loadModel("http://localhost:8080/activiti-modeler/p/model/" + artifactJson.id.substr("/Activiti Modeler/".length),
+								{ onSuccess: init, onStencilSetLoadFailure: console.log("Error while loading stencilSet") });
+					},
+					"res/movi",
+					undefined,
+					undefined
+			);
+			
+			function init() {
+				setUpUi();
+				doSomeStuff();
+			}
+			
+			function setUpUi() {
+				modelnavigator = new MOVI.widget.ModelNavigator("modelnavigator", modelviewer);
+			}
+			
+			function doSomeStuff() {
+				// set a marker
+				var marker = new MOVI.util.Marker(
+						modelviewer.canvas.getShape("oryx_E585F693-2947-4735-A3B8-E8A3416BE4D8"),
+						{"border": "2px solid red"}
+				);
+				console.log("Marker: " + marker);
+				
+				// attach an annotation to the marker
+				var annotation = new MOVI.util.Annotation(
+						marker, 
+						"&lt;p&gt;This is an annotation.&lt;/p&gt;"
+				);
+				console.log("Annotation: " + annotation);
+				annotation.show();
+			}
+			console.log("modelviewer: " + modelviewer);			          
+			  
+			// end MOVI API
 	   	prettyPrint();
 
 			var optionsDiv = document.getElementById("options-div");//YAHOO.util.Selector.query('div', 'artifact-div', true);

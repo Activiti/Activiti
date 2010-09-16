@@ -63,7 +63,7 @@ public class ArtifactGet extends ActivitiWebScript {
     for (ContentRepresentation representation : artifact.getArtifactType().getContentRepresentations()) {
       try {
         if (representation.getMimeType().equals(ContentType.TEXT) || representation.getMimeType().equals(ContentType.XML)
-                || representation.getMimeType().equals(ContentType.HTML)) {
+                || representation.getMimeType().equals(ContentType.HTML) || representation.getMimeType().equals(ContentType.JAVASCRIPT)) {
           String content = conn.getContent(artifactId, representation.getId()).asString();
           contentViews.add(new ContentView(representation.getMimeType(), representation.getId(), content));
         } else if (representation.getMimeType().startsWith("image/")) {
