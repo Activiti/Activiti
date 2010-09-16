@@ -4,43 +4,31 @@
   
 <mapper namespace="org.activiti.cycle.persistence">
 
-  <!-- PROPERTY -->
+   <!-- CYCLE CONFIG RESULT MAP -->	
   
-  <resultMap id="propertyResultMap" type="org.activiti.cycle.impl.conf.ConfigEntity">
-    <id property="userId" column="USER_" jdbcType="VARCHAR" />
-    <result property="xmlConfig" column="VALUE_" jdbcType="VARCHAR" />
+  <resultMap id="propertyResultMap" type="org.activiti.cycle.impl.conf.CycleConfigEntity">
+    <id property="id" column="ID_" jdbcType="VARCHAR" />
+    <result property="user" column="USER_" jdbcType="VARCHAR" />
+    <result property="configXML" column="VALUE_" jdbcType="VARCHAR" />
     <result property="revision" column="REV_" jdbcType="INTEGER" />
   </resultMap>
-  
-  <select id="selectDbSchemaVersion" resultType="string">
-    select VALUE_ from ACT_GE_PROPERTY where NAME_ = 'schema.version'
-  </select>
 
+  <!-- CYCLE CONFIG SELECT -->
+  
   <select id="selectProperty" parameterType="string" resultMap="propertyResultMap">
-    select * from ACT_CY_CONFIG where USER_ = #{userId}
+    select * from ACT_CY_CONFIG where USER_ = #{user}
   </select>
   
-  <update id="updateProperty" parameterType="org.activiti.engine.impl.repository.PropertyEntity">
-    update ACT_GE_PROPERTY
-    <set>
-      REV_ = #{newRevision, jdbcType=INTEGER},
-      VALUE_ = #{value, jdbcType=VARCHAR},
-    </set>
-    where NAME_ = #{name, jdbcType=VARCHAR}
-      and REV_ = #{revision, jdbcType=INTEGER}
-  </update>
+    <!-- CYCLE CONFIG INSERT -->
+  
+  <insert id="insertCycleConfig" parameterType="org.activiti.cycle.impl.conf.CycleConfigEntity">
+    insert into ACT_CY_CONFIG (ID_, USER_, VALUE_, REV_)
+    values (
+    	#{id ,jdbcType=VARCHAR},
+	    #{user, jdbcType=VARCHAR},
+	    #{configXML, jdbcType=VARCHAR},
+	    1
+    )
+  </insert>
 
-  <!-- TABLE DATA -->
-  
-  <!-- The property passing doesn't seem to work with parameterType='string', so we are forced to use a map here -->
-  <select id="selectTableCount" parameterType="org.activiti.engine.impl.TablePageQueryImpl" resultType="long" >
-    select count(*) from ${tableName}
-  </select>
-  
-  <select id="selectTableData" parameterType="org.activiti.engine.impl.TablePageQueryImpl" resultType="map">
-    select * from ${tableName}
-    <if test="orderBy != null">
-      order by ${orderBy}
-    </if>
-  </select>
 </mapper>
