@@ -148,6 +148,15 @@
       <javaresource name="org/activiti/db/create/activiti.${db}.create.sql" 
                     classpathref="classpath.libs" /> 
     </sql>
+  	    <!--added to create ACT_CY_CONFIG table-->
+        <sql driver="${jdbc.driver}" 
+             password="${jdbc.password}" 
+             url="${jdbc.url}" 
+             userid="${jdbc.username}"
+             classpathref="classpath.libs">
+          <javaresource name="org/activiti/cycle/impl/db/create/activiti.${db}.create.sql" 
+                        classpathref="classpath.libs" /> 
+        </sql>
   </target>
   
   <target name="db.drop" depends="internal.classpath.libs">
@@ -159,6 +168,17 @@
       <transaction>
         <javaresource name="org/activiti/db/drop/activiti.${db}.drop.sql"
                       classpathref="classpath.libs"/> 
+      </transaction>
+    </sql>
+	    <!--added to drop ACT_CY_CONFIG table-->
+    <sql driver="${jdbc.driver}" 
+         password="${jdbc.password}" 
+         url="${jdbc.url}" 
+         userid="${jdbc.username}"
+         classpathref="classpath.libs">
+      <transaction>	
+         <javaresource name="org/activiti/cycle/impl/db/drop/activiti.${db}.drop.sql" 
+                    classpathref="classpath.libs" /> 
       </transaction>
     </sql>
   </target>
@@ -383,6 +403,11 @@ JAVA_OPTS="-Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=8787
       <fileset dir="${activiti.home}/examples/activiti-engine-examples/libs-test">
         <include name="*.jar" />
       </fileset>
+    	<!--TODO: not really sure if this a good solution. Maybe create an own target for the activiti.cycle classpath-->  
+    	<!--added for testing-->
+        <fileset dir="${activiti.home}/lib">
+          <include name="activiti-cycle-${activiti.version}.jar" />
+        </fileset>
     </path>
   </target>
 
