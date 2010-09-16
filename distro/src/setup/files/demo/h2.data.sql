@@ -1,3 +1,70 @@
+insert into ACT_CY_CONFIG values ('kermit', '<org.activiti.cycle.impl.conf.ConfigurationContainer>
+  <name>kermit</name>
+  <linkedConnectors>
+    <org.activiti.cycle.impl.connector.signavio.SignavioConnectorConfiguration>
+      <name>Activiti Modeler</name>
+      <credentialsSaved>false</credentialsSaved>
+      <signavioBaseUrl>http://localhost:8080/activiti-modeler/</signavioBaseUrl>
+      <loginRequired>false</loginRequired>
+    </org.activiti.cycle.impl.connector.signavio.SignavioConnectorConfiguration>
+    <org.activiti.cycle.impl.connector.fs.FileSystemConnectorConfiguration>
+      <name>Eclipse Workspace (File System)</name>
+      <baseFilePath>C:\Dokumente+und+Einstellungen\polenz\workspace\activiti\distro\target\activiti-5.0.beta2-SNAPSHOT\apps\eclipse-workspace</baseFilePath>
+    </org.activiti.cycle.impl.connector.fs.FileSystemConnectorConfiguration>
+    <org.activiti.cycle.impl.connector.signavio.OryxConnectorConfiguration>
+      <name>oryx-project.org</name>
+      <credentialsSaved>false</credentialsSaved>
+      <signavioBaseUrl>http://oryx-project.org/</signavioBaseUrl>
+      <loginRequired>false</loginRequired>
+    </org.activiti.cycle.impl.connector.signavio.OryxConnectorConfiguration>
+  </linkedConnectors>
+  <parentContainers/>
+</org.activiti.cycle.impl.conf.ConfigurationContainer>', 1);
+insert into ACT_CY_CONFIG values ('fozzie', '<org.activiti.cycle.impl.conf.ConfigurationContainer>
+  <name>fozzie</name>
+  <linkedConnectors>
+    <org.activiti.cycle.impl.connector.signavio.SignavioConnectorConfiguration>
+      <name>Activiti Modeler</name>
+      <credentialsSaved>false</credentialsSaved>
+      <signavioBaseUrl>http://localhost:8080/activiti-modeler/</signavioBaseUrl>
+      <loginRequired>false</loginRequired>
+    </org.activiti.cycle.impl.connector.signavio.SignavioConnectorConfiguration>
+    <org.activiti.cycle.impl.connector.fs.FileSystemConnectorConfiguration>
+      <name>Eclipse Workspace (File System)</name>
+      <baseFilePath>C:\Dokumente+und+Einstellungen\polenz\workspace\activiti\distro\target\activiti-5.0.beta2-SNAPSHOT\apps\eclipse-workspace</baseFilePath>
+    </org.activiti.cycle.impl.connector.fs.FileSystemConnectorConfiguration>
+    <org.activiti.cycle.impl.connector.signavio.OryxConnectorConfiguration>
+      <name>oryx-project.org</name>
+      <credentialsSaved>false</credentialsSaved>
+      <signavioBaseUrl>http://oryx-project.org/</signavioBaseUrl>
+      <loginRequired>false</loginRequired>
+    </org.activiti.cycle.impl.connector.signavio.OryxConnectorConfiguration>
+  </linkedConnectors>
+  <parentContainers/>
+</org.activiti.cycle.impl.conf.ConfigurationContainer>', 1);
+insert into ACT_CY_CONFIG values ('gonzo', '<org.activiti.cycle.impl.conf.ConfigurationContainer>
+  <name>gonzo</name>
+  <linkedConnectors>
+    <org.activiti.cycle.impl.connector.signavio.SignavioConnectorConfiguration>
+      <name>Activiti Modeler</name>
+      <credentialsSaved>false</credentialsSaved>
+      <signavioBaseUrl>http://localhost:8080/activiti-modeler/</signavioBaseUrl>
+      <loginRequired>false</loginRequired>
+    </org.activiti.cycle.impl.connector.signavio.SignavioConnectorConfiguration>
+    <org.activiti.cycle.impl.connector.fs.FileSystemConnectorConfiguration>
+      <name>Eclipse Workspace (File System)</name>
+      <baseFilePath>C:\Dokumente+und+Einstellungen\polenz\workspace\activiti\distro\target\activiti-5.0.beta2-SNAPSHOT\apps\eclipse-workspace</baseFilePath>
+    </org.activiti.cycle.impl.connector.fs.FileSystemConnectorConfiguration>
+    <org.activiti.cycle.impl.connector.signavio.OryxConnectorConfiguration>
+      <name>oryx-project.org</name>
+      <credentialsSaved>false</credentialsSaved>
+      <signavioBaseUrl>http://oryx-project.org/</signavioBaseUrl>
+      <loginRequired>false</loginRequired>
+    </org.activiti.cycle.impl.connector.signavio.OryxConnectorConfiguration>
+  </linkedConnectors>
+  <parentContainers/>
+</org.activiti.cycle.impl.conf.ConfigurationContainer>', 1);
+
 insert into ACT_ID_GROUP values ('admin',       1, 'System administrator', 'security-role');
 insert into ACT_ID_GROUP values ('user',        1, 'User', 'security-role');
 insert into ACT_ID_GROUP values ('manager',     1, 'Manager', 'security-role');
