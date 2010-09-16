@@ -30,7 +30,7 @@ import java.util.logging.Logger;
 import org.activiti.engine.impl.ProcessEngineInfoImpl;
 
 
-/** helper for initializing and closing process engines in server environments.
+/** Helper for initializing and closing process engines in server environments.
  * <br>
  * The activiti-engine-init webapp will
  * call the {@link #init()} method when the webapp is deployed and it will call the 

@@ -20,7 +20,7 @@ import org.activiti.engine.task.Task;
 import org.activiti.engine.task.TaskInvolvementType;
 import org.activiti.engine.task.TaskQuery;
 
-/** provides access to {@link Task} related operations.
+/** Service which provides access to {@link Task} related operations.
  * 
  * @author Tom Baeyens
  * @author Joram Barrez

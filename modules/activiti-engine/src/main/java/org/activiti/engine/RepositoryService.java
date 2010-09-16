@@ -23,25 +23,31 @@ import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.repository.ProcessDefinitionQuery;
 
 
-/** provides access to the repository of process definitions and deployments.
+/** Service providing access to the repository of process definitions and deployments.
  * 
  * @author Tom Baeyens
  */
 public interface RepositoryService {
 
-  /** starts creating a new deployment */
+  /** Starts creating a new deployment */
   DeploymentBuilder createDeployment();
   
-  /** deletes the given deployment 
-   * @throwns RuntimeException if there are 
-   * still runtime or history process instances */
+  /** Deletes the given deployment.
+   * @param deploymentId id of the deployment, cannot be null.
+   * @throwns RuntimeException if there are still runtime or history process 
+   * instances or jobs. 
+   */
   void deleteDeployment(String deploymentId);
   
-  /** deletes the given deployment and cascade deletion to process instances and jobs */
+  /**
+   * Deletes the given deployment and cascade deletion to process instances, 
+   * history process instances and jobs.
+   * @param deploymentId id of the deployment, cannot be null.
+   */
   void deleteDeploymentCascade(String deploymentId);
   
   /** 
-   * lists all deployments, ordered by deployment date (ascending).
+   * Lists all deployments, ordered by deployment date (ascending).
    * 
    * Note that it is impossible to retrieve the deployment resources
    * through the results of this operation, since that would cause a 
@@ -53,40 +59,46 @@ public interface RepositoryService {
   List<Deployment> findDeployments();
 
   /**
-   * retrieves a list of deployment resources for the given deployment, 
+   * Retrieves a list of deployment resources for the given deployment, 
    * ordered alphabetically.
+   * @param deploymentId id of the deployment, cannot be null.
    */
   List<String> findDeploymentResourceNames(String deploymentId);
   
   /**
-   * gives access to a deployment resource through a stream of bytes.
+   * Gives access to a deployment resource through a stream of bytes.
+   * @param deploymentId id of the deployment, cannot be null.
+   * @param resourceName name of the resource, cannot be null.
    * @throws ActivitiException when the resource doesn't exist in the given deployment or when no deployment exists
    * for the given deploymentId.
    */
   InputStream getResourceAsStream(String deploymentId, String resourceName);
 
-  /** [might be impacted by <a href="http://jira.codehaus.org/browse/ACT-66">ACT-66</a>] get a rendered startform, for collecting parameters from a user to start 
+  /** [might be impacted by <a href="http://jira.codehaus.org/browse/ACT-66">ACT-66</a>] Get a rendered startform, for collecting parameters from a user to start 
    * a new process instance. Returns null if the processdefinition doesn't have a start form.
+   * @param processDefinitionKey process definition key, cannot be null.
    * @throws ActivitiException when no deployed process exists with the given key. 
    */ 
   Object getStartFormByKey(String processDefinitionKey);
   
-  /** [might be impacted by <a href="http://jira.codehaus.org/browse/ACT-66">ACT-66</a>] get a rendered startform, for collecting parameters from a user to start 
+  /** [might be impacted by <a href="http://jira.codehaus.org/browse/ACT-66">ACT-66</a>] Get a rendered startform, for collecting parameters from a user to start 
    * a new process instance. Returns null if the processdefinition doesn't have a start form. 
+   * @param processDefinitionId process definition id, cannot be null.
    * @throws ActivitiException when no deployed process exists with the given key. 
    */ 
   Object getStartFormById(String processDefinitionId);
 
   
-  /** query process definitions. */
+  /** Query process definitions. */
   ProcessDefinitionQuery createProcessDefinitionQuery();
   
-  /** query process definitions. */
+  /** Query process definitions. */
   DeploymentQuery createDeploymentQuery();
   
   /**
-   * returns the {@link ProcessDefinition} with the given id, 
+   * Returns the {@link ProcessDefinition} with the given id, 
    * or null if none is found.
+   * @param processDefinitionId id, cannot be null.
    */
   ProcessDefinition findProcessDefinitionById(String processDefinitionId);
   

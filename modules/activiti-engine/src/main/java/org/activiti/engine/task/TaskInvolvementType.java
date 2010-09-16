@@ -12,8 +12,16 @@
  */
 package org.activiti.engine.task;
 
+import org.activiti.engine.TaskService;
+
 
 /**
+ * Contains constants for all types of involvement that can be used to involve a 
+ * user or group with a certain task. 
+ * 
+ * @see TaskService#addUserInvolvement(String, String, String)
+ * @see TaskService#addGroupInvolvement(String, String, String)
+ * 
  * @author Joram Barrez
  */
 public class TaskInvolvementType {

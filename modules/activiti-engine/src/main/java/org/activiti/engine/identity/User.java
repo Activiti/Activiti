@@ -14,8 +14,11 @@ package org.activiti.engine.identity;
 
 import java.io.Serializable;
 
+import org.activiti.engine.IdentityService;
+
 
 /**
+ * Represents a user, used in {@link IdentityService}.
  * @author Tom Baeyens
  */
 public interface User extends Serializable {

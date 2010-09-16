@@ -17,7 +17,7 @@ import java.util.List;
 
 
 /**
- * structure containing meta data (column names, column types, etc.) 
+ * Structure containing meta data (column names, column types, etc.) 
  * about a certain database table.
  * 
  * @author Joram Barrez

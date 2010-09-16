@@ -15,30 +15,43 @@ package org.activiti.engine.runtime;
 
 import java.util.List;
 
+import org.activiti.engine.ActivitiException;
+
 
 /**
- * builds dynamic queries for Jobs.
+ * Allows programmatic querying of {@link Job}s.
  * 
- * @author jbarrez
+ * @author Joram Barrez
  */
 public interface JobQuery {
   
+  /** Only select jobs which exists for the given process instance id. **/
   JobQuery processInstanceId(String processInstanceId);
 
+  /** Only select jobs which have retries left */
   JobQuery withRetriesLeft();
 
+  /** Only select jobs which are executable **/
   JobQuery executable();
 
   //JobQuery timers();
   
   //JobQuery messages();
   
+  /** Executes the query and returns the number of results */
   long count();
   
+  /**
+   * Executes the query and returns the {@link Job}.
+   * @throws ActivitiException when the query results in more 
+   * than one job. 
+   */
   Job singleResult();
   
+  /** Executes the query and get a list of {@link Job}s as the result. */
   List<Job> list();
   
+  /** Executes the query and get a list of {@link Job}s as the result. */
   List<Job> listPage(int firstResult, int maxResults);
 
 }

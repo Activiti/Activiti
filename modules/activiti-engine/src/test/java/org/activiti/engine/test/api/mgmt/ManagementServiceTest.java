@@ -13,8 +13,6 @@
 
 package org.activiti.engine.test.api.mgmt;
 
-import junit.framework.Assert;
-
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.test.ActivitiInternalTestCase;
 import org.activiti.engine.management.TableMetaData;
@@ -26,11 +24,8 @@ import org.activiti.engine.management.TableMetaData;
 public class ManagementServiceTest extends ActivitiInternalTestCase {
 
   public void testGetMetaDataForUnexistingTable() {
-    
-      TableMetaData metaData = managementService.getTableMetaData("unexistingtable");
-      Assert.assertNotNull(metaData);
-      Assert.assertTrue(metaData.getColumnNames().isEmpty());
-      Assert.assertTrue(metaData.getColumnTypes().isEmpty());
+    TableMetaData metaData = managementService.getTableMetaData("unexistingtable");
+    assertNull(metaData);
   }
   
   public void testGetMetaDataNullTableName() {

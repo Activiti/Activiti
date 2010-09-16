@@ -13,9 +13,10 @@
 
 package org.activiti.engine.test.api.runtime;
 
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
-
-import junit.framework.Assert;
+import java.util.Map;
 
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.test.ActivitiInternalTestCase;
@@ -69,28 +70,28 @@ public class RuntimeServiceTest extends ActivitiInternalTestCase {
     "org/activiti/engine/test/api/oneTaskProcess.bpmn20.xml"})
   public void testStartProcessInstanceByIdNullVariables() {
     runtimeService.startProcessInstanceByKey("oneTaskProcess", null);
-    Assert.assertEquals(1, runtimeService.createProcessInstanceQuery().processDefinitionKey("oneTaskProcess").count());
+    assertEquals(1, runtimeService.createProcessInstanceQuery().processDefinitionKey("oneTaskProcess").count());
   }
   
   @Deployment(resources={
     "org/activiti/engine/test/api/oneTaskProcess.bpmn20.xml"})
   public void testDeleteProcessInstance() {
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("oneTaskProcess");
-    Assert.assertEquals(1, runtimeService.createProcessInstanceQuery().processDefinitionKey("oneTaskProcess").count());
+    assertEquals(1, runtimeService.createProcessInstanceQuery().processDefinitionKey("oneTaskProcess").count());
     
     runtimeService.deleteProcessInstance(processInstance.getId(), "testing instance deletion");
-    Assert.assertEquals(0, runtimeService.createProcessInstanceQuery().processDefinitionKey("oneTaskProcess").count());
+    assertEquals(0, runtimeService.createProcessInstanceQuery().processDefinitionKey("oneTaskProcess").count());
   }
   
   @Deployment(resources={
     "org/activiti/engine/test/api/oneTaskProcess.bpmn20.xml"})
   public void testDeleteProcessInstanceNullReason() {
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("oneTaskProcess");
-    Assert.assertEquals(1, runtimeService.createProcessInstanceQuery().processDefinitionKey("oneTaskProcess").count());
+    assertEquals(1, runtimeService.createProcessInstanceQuery().processDefinitionKey("oneTaskProcess").count());
     
     // Deleting without a reason should be possible
     runtimeService.deleteProcessInstance(processInstance.getId(), null);
-    Assert.assertEquals(0, runtimeService.createProcessInstanceQuery().processDefinitionKey("oneTaskProcess").count());
+    assertEquals(0, runtimeService.createProcessInstanceQuery().processDefinitionKey("oneTaskProcess").count());
   }
   
   public void testDeleteProcessInstanceUnexistingId() {
@@ -118,12 +119,12 @@ public class RuntimeServiceTest extends ActivitiInternalTestCase {
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("oneTaskProcess");
     
     Execution execution = runtimeService.findExecutionById(processInstance.getId());
-    Assert.assertNotNull(execution);
+    assertNotNull(execution);
   }
   
   public void testFindExecutionByIdUnexistingId() {
     Execution execution = runtimeService.findExecutionById("unexisting");
-    Assert.assertNull(execution);
+    assertNull(execution);
   }
   
   public void testFindExecutionByIdNullId() {
@@ -141,8 +142,8 @@ public class RuntimeServiceTest extends ActivitiInternalTestCase {
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("oneTaskProcess");
     
     List<String> activities = runtimeService.findActiveActivityIds(processInstance.getId());
-    Assert.assertNotNull(activities);
-    Assert.assertEquals(1, activities.size());
+    assertNotNull(activities);
+    assertEquals(1, activities.size());
   }
   
   public void testFindActiveActivityIdsUnexistingExecututionId() {
@@ -222,7 +223,7 @@ public class RuntimeServiceTest extends ActivitiInternalTestCase {
   public void testGetVariableUnexistingVariableName() {
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("oneTaskProcess");
     Object variableValue = runtimeService.getVariable(processInstance.getId(), "unexistingVariable");
-    Assert.assertNull(variableValue);
+    assertNull(variableValue);
   }
   
   public void testSetVariableUnexistingExecutionId() {
@@ -252,6 +253,40 @@ public class RuntimeServiceTest extends ActivitiInternalTestCase {
       fail("ActivitiException expected");
     } catch (ActivitiException ae) {
       assertTextPresent("variableName is null", ae.getMessage());
+    }
+  }
+  
+  @Deployment(resources={
+  "org/activiti/engine/test/api/oneTaskProcess.bpmn20.xml"})
+  public void testSetVariables() {
+    Map<String, Object> vars = new HashMap<String, Object>();
+    vars.put("variable1", "value1");
+    vars.put("variable2", "value2");
+    
+    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("oneTaskProcess");
+    runtimeService.setVariables(processInstance.getId(), vars);
+    
+    assertEquals("value1", runtimeService.getVariable(processInstance.getId(), "variable1"));
+    assertEquals("value2", runtimeService.getVariable(processInstance.getId(), "variable2"));
+  }
+  
+  @SuppressWarnings("unchecked")
+  public void testSetVariablesUnexistingExecutionId() {
+    try {
+      runtimeService.setVariables("unexistingexecution", Collections.EMPTY_MAP);
+      fail("ActivitiException expected");
+    } catch (ActivitiException ae) {
+      assertTextPresent("execution unexistingexecution doesn't exist", ae.getMessage());
+    }
+  }
+  
+  @SuppressWarnings("unchecked")
+  public void testSetVariablesNullExecutionId() {
+    try {
+      runtimeService.setVariables(null, Collections.EMPTY_MAP);
+      fail("ActivitiException expected");
+    } catch (ActivitiException ae) {
+      assertTextPresent("executionId is null", ae.getMessage());
     }
   }
 }

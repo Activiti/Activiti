@@ -17,7 +17,7 @@ import java.util.Date;
 
 
 /**
- * represents one job (timer, message, etc.).
+ * Represents one job (timer, message, etc.).
  * 
  * @author Joram Barrez
  */

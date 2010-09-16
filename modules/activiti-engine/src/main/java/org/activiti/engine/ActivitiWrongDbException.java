@@ -14,7 +14,7 @@ package org.activiti.engine;
 
 
 /**
- * is thrown when the Activiti engine discovers a mismatch between the 
+ * Exception that is thrown when the Activiti engine discovers a mismatch between the 
  * database schema version and the engine version.
  * 
  * The check is done when the engine is created in {@link ProcessEngineBuilder#buildProcessEngine()}.
@@ -34,9 +34,16 @@ public class ActivitiWrongDbException extends ActivitiException {
     this.dbVersion = dbVersion;
   }
 
+  /**
+   * The version of the Activiti library used.
+   */
   public String getLibraryVersion() {
     return libraryVersion;
   }
+  
+  /**
+   * The version of the Activiti library that was used to create the database schema.
+   */
   public String getDbVersion() {
     return dbVersion;
   }

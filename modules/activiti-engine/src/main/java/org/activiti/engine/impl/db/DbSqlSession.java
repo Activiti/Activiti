@@ -21,6 +21,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.ActivitiOptimisticLockingException;
 import org.activiti.engine.impl.Page;
 import org.activiti.engine.impl.interceptor.Session;
 import org.activiti.engine.impl.runtime.VariableInstanceEntity;
@@ -369,7 +370,7 @@ public class DbSqlSession implements Session {
       log.fine("updating: "+toString(updatedObject)+"]");
       int updatedRecords = sqlSession.update(updateStatement, updatedObject);
       if (updatedRecords!=1) {
-        throw new OptimisticLockingException(toString(updatedObject)+" was updated by another transaction concurrently");
+        throw new ActivitiOptimisticLockingException(toString(updatedObject)+" was updated by another transaction concurrently");
       }
     }
     updatedObjects.clear();

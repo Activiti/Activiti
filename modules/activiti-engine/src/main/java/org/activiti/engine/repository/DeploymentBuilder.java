@@ -15,10 +15,8 @@ package org.activiti.engine.repository;
 import java.io.InputStream;
 import java.util.zip.ZipInputStream;
 
-import org.activiti.engine.RuntimeService;
-
 /**
- * builder for creating new deployments.
+ * Builder for creating new deployments.
  * 
  * A builder instance can be obtained through {@link org.activiti.engine.RuntimeService#createDeployment()}.
  * 

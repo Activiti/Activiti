@@ -16,7 +16,8 @@ package org.activiti.engine.history;
 
 import java.util.Date;
 
-/** one execution of a whole process definition that is stored permanent.
+/** A single execution of a whole process definition that is stored permanently.
+ * 
  * @author Christian Stettler
  */
 public interface HistoricProcessInstance {

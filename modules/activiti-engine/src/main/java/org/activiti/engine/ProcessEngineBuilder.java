@@ -19,7 +19,7 @@ import java.util.Properties;
 import org.activiti.engine.impl.cfg.ProcessEngineConfiguration;
 
 /**
- * builds a process engine based on a couple of simple properties.
+ * Builds a process engine based on a couple of simple properties.
  * 
  * To build a ProcessEngine that's using a h2 database over a TCP connection:
  * 

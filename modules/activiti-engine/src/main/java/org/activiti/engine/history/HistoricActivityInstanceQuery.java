@@ -15,17 +15,21 @@ package org.activiti.engine.history;
 
 import java.util.List;
 
+import org.activiti.engine.ActivitiException;
+
 
 /**
+ * Allows programmatic querying of {@link HistoricActivityInstance}s.
+ * 
  * @author Tom Baeyens
  */
 public interface HistoricActivityInstanceQuery {
 
-  /** only select historic process instances with the given process instance.
+  /** Only select historic process instances with the given process instance.
    * {@link ProcessInstance) ids and {@link HistoricProcessInstance} ids match. */
   HistoricActivityInstanceQuery processInstanceId(String processInstanceId);
   
-  /** only select historic process instances for the given process definition */
+  /** Only select historic process instances for the given process definition */
   HistoricActivityInstanceQuery processDefinitionId(String processDefinitionId);
   
   HistoricActivityInstanceQuery orderById();
@@ -38,27 +42,30 @@ public interface HistoricActivityInstanceQuery {
   
   HistoricActivityInstanceQuery orderBy(HistoricActivityInstanceQueryProperty property);
 
-  /** order the results ascending on the given property as
+  /** Order the results ascending on the given property as
    * defined in this class. */
   HistoricActivityInstanceQuery asc();
 
-  /** order the results descending on the given property as
+  /** Order the results descending on the given property as
    * defined in this class. */
   HistoricActivityInstanceQuery desc();
 
-  /** order the results according to the given direction. */
+  /** Order the results according to the given direction. */
   HistoricActivityInstanceQuery direction(Direction direction);
   
-  /** executes the query and get a list of {@link HistoricProcessInstance}s as the result. */
+  /** Executes the query and get a list of {@link HistoricProcessInstance}s as the result. */
   List<HistoricActivityInstance> list();
   
-  /** executes the query and get a page of {@link HistoricProcessInstance}s as the result. */
+  /** Executes the query and get a page of {@link HistoricProcessInstance}s as the result. */
   List<HistoricActivityInstance> listPage(int firstResult, int maxResults);
   
-  /** executes the query and get the single expected result. */
+  /** Executes the query and get the single expected result. 
+   * @throws ActivitiException when the query results in more 
+   * than one historic activity instance.  
+   */
   HistoricActivityInstance singleResult();
 
-  /** executes the query and get number of results. */
+  /** Executes the query and get number of results. */
   long count();
 
 }

@@ -119,6 +119,10 @@ public class DbManagementSession implements ManagementSession, Session {
       throw new ActivitiException("Could not retrieve database metadata: " + e.getMessage());
     }
 
+    if(result.getColumnNames().size() == 0) {
+      // According to API, when a table doesn't exist, null should be returned
+      result = null;
+    }
     return result;
   }
 

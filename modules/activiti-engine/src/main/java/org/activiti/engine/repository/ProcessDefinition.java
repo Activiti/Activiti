@@ -14,7 +14,7 @@ package org.activiti.engine.repository;
 
 import org.activiti.engine.runtime.ProcessInstance;
 
-/** is an object structure representing an executable process composed of 
+/** Is an object structure representing an executable process composed of 
  * activities and transitions.
  * 
  * Business processes are often created with graphical editors that store the

@@ -17,6 +17,8 @@ package org.activiti.engine.history;
 import java.util.Date;
 
 /**
+ * Represents a historic activity instance that is stored permanently.
+ * 
  * @author Christian Stettler
  */
 public interface HistoricActivityInstance {

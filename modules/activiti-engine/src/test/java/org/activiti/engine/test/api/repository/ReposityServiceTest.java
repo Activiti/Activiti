@@ -15,8 +15,6 @@ package org.activiti.engine.test.api.repository;
 
 import java.util.List;
 
-import junit.framework.Assert;
-
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.test.ActivitiInternalTestCase;
 import org.activiti.engine.repository.ProcessDefinition;
@@ -118,7 +116,7 @@ public class ReposityServiceTest extends ActivitiInternalTestCase {
     ProcessDefinition processDefinition = processDefinitions.get(0);
     
     Object startForm = repositoryService.getStartFormById(processDefinition.getId());
-    Assert.assertNotNull(startForm);
+    assertNotNull(startForm);
   }
   
   @Deployment(resources = { "org/activiti/engine/test/api/oneTaskProcess.bpmn20.xml" })
@@ -128,7 +126,7 @@ public class ReposityServiceTest extends ActivitiInternalTestCase {
     ProcessDefinition processDefinition = processDefinitions.get(0);
     
     Object startForm = repositoryService.getStartFormById(processDefinition.getId());
-    Assert.assertNull(startForm);
+    assertNull(startForm);
   }
   
   public void testGetStartFormByKeyNullKey() {

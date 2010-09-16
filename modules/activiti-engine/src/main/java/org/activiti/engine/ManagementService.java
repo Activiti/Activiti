@@ -22,7 +22,7 @@ import org.activiti.engine.runtime.JobQuery;
 
 
 /**
- * is a service for admin and maintenance operations on the process engine.
+ * Service for admin and maintenance operations on the process engine.
  * 
  * These operations will typically not be used in a workflow driven application,
  * but are used in for example the operational console.
@@ -33,19 +33,19 @@ import org.activiti.engine.runtime.JobQuery;
 public interface ManagementService {
 
   /**
-   * @return The mapping containing {table name, row count} entries of the
-   *         Activiti database schema.
+   * Get he mapping containing {table name, row count} entries of the
+   * Activiti database schema.
    */
   Map<String, Long> getTableCount();
   
   /**
-   * @return The metadata (column names, column types, etc.) of a certain table. 
-   * Returns an empty TableMetaData object when the table does not exist.
+   * Gets the metadata (column names, column types, etc.) of a certain table. 
+   * Returns null when no table exists with the given name.
    */
   TableMetaData getTableMetaData(String tableName);
  
   /**
-   * creates a {@link TablePageQuery} that can be used to fetch {@link TablePage}
+   * Creates a {@link TablePageQuery} that can be used to fetch {@link TablePage}
    * containing specific sections of table row signalData.
    */
   TablePageQuery createTablePageQuery();
@@ -56,7 +56,9 @@ public interface ManagementService {
    */
   JobQuery createJobQuery();
   
-  /** forced synchronous execution of a job for testing purposes. 
+  /** 
+   * Forced synchronous execution of a job for testing purposes.
+   * @param jobId id of the job to execute, cannot be null.
    * @throws ActivitiException when there is no job with the given id. 
    */
   void executeJob(String jobId);

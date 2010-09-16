@@ -13,7 +13,7 @@
 package org.activiti.engine;
 
 /**
- * provides access to all the services that expose the BPM and workflow operations.
+ * Provides access to all the services that expose the BPM and workflow operations.
  * 
  * <ul>
  * <li>
@@ -31,6 +31,9 @@ package org.activiti.engine;
  * <li>
  * <b>{@link org.activiti.engine.ManagementService}: </b> Exposes engine admin and
  * maintenance operations</li>
+ *  <li>
+ * <b>{@link org.activiti.engine.HistoryService}: </b> Service exposing information about 
+ * ongoing and past process instances.</li>
  * </ul>
  * 
  * Typically, there will be only one central ProcessEngine instance needed in a

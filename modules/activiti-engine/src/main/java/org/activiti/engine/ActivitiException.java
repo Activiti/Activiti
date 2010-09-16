@@ -14,7 +14,7 @@ package org.activiti.engine;
 
 
 /**
- * runtime exception that is the superclass of all Activiti exceptions.
+ * Runtime exception that is the superclass of all Activiti exceptions.
  * 
  * @author Tom Baeyens
  */

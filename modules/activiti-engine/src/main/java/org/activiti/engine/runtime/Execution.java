@@ -15,7 +15,7 @@ package org.activiti.engine.runtime;
 
 
 /**
- * represent a 'path of execution' in a process instance.
+ * Represent a 'path of execution' in a process instance.
  * 
  * Note that a {@link ProcessInstance} also is an execution.
  * 
@@ -24,13 +24,12 @@ package org.activiti.engine.runtime;
 public interface Execution {
   
   /**
-   * the unique identifier of the process instance.
+   * The unique identifier of the process instance.
    */
   String getId();
   
   /**
-   * indicates if the process instance is ended.
-   * @return
+   * Indicates if the process instance is ended.
    */
   boolean isEnded();
 

@@ -14,7 +14,7 @@ package org.activiti.engine.task;
 
 
 
-/** represents one task for a human user.
+/** Represents one task for a human user.
  * 
  * @author Joram Barrez
  */

@@ -18,7 +18,7 @@ import org.activiti.engine.repository.ProcessDefinition;
 
 
 
-/** represents one execution of a  {@link ProcessDefinition}.
+/** Represents one execution of a  {@link ProcessDefinition}.
  * 
  * @author Tom Baeyens
  * @author Joram Barrez
@@ -26,12 +26,12 @@ import org.activiti.engine.repository.ProcessDefinition;
 public interface ProcessInstance extends Execution {
   
   /**
-   * the id of the process definition of the process instance.
+   * The id of the process definition of the process instance.
    */
   String getProcessDefinitionId();
   
   /**
-   * the ids of the activities that currently are active.
+   * The ids of the activities that currently are active.
    */
   List<String> findActiveActivityIds();
   

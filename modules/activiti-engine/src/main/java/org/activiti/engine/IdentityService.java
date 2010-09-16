@@ -19,15 +19,22 @@ import org.activiti.engine.identity.User;
 
 
 /**
- * is the service to manage {@link User}s and {@link Group}s.
+ * Service to manage {@link User}s and {@link Group}s.
  * 
  * @author Tom Baeyens
  */
 public interface IdentityService {
 
+  /**
+   * Creates a new user. The user is transient and must be saved using 
+   * {@link #saveUser(User)}.
+   * @param userId id for the new user, cannot be null.
+   */
   User newUser(String userId);
   
   /**
+   * Saves the user. If the user already existed, the user is updated.
+   * @param user user to save, cannot be null.
    * @throws RuntimeException when a user with the same name already exists.
    */
   void saveUser(User user);
@@ -44,19 +51,28 @@ public interface IdentityService {
   List<User> findUsersByGroupId(String groupId);
   
   /**
-   * @throws RuntimeException when no user is found with the given userId.
+   * @param userId id of user to delete, cannot be null. When an id is passed
+   * for an unexisting user, this operation is ignored.
    */
   void deleteUser(String userId);
   
+  /**
+   * Creates a new group. The group is transient and must be saved using 
+   * {@link #saveGroup(Group)}.
+   * @param groupId id for the new group, cannot be null.
+   */
   Group newGroup(String groupId);
   
   /**
+   * Saves the group. If the group already existed, the group is updated.
+   * @param group group to save. Cannot be null.
    * @throws RuntimeException when a group with the same name already exists.
    */
   void saveGroup(Group group);
   
   /**
-   * @return the group with the given id. Returns null if no group is found.
+   * Finds the group with the given id. Returns null if no group is found.
+   * @param groupId id of the group, cannot be null.
    */
   Group findGroupById(String groupId);
   
@@ -75,11 +91,15 @@ public interface IdentityService {
   List<Group> findGroupsByUserIdAndGroupType(String userId, String groupType);
   
   /**
-   * @throws RuntimeException when there is no group with the given id.
+   * Deletes the group. When no group exists with the given id, this operation
+   * is ignored.
+   * @param groupId id of the group that should be deleted, cannot be null.
    */
   void deleteGroup(String groupId);
 
   /**
+   * @param userId the userId, cannot be null.
+   * @param groupId the groupId, cannot be null.
    * @throws RuntimeException when the given user or group doesn't exist or when the user
    * is already member of the group.
    */
@@ -87,15 +107,23 @@ public interface IdentityService {
   
   
   /**
-   * When the group or user don't exist or when the user is not a member of the group, 
-   * this operation is ignored.
+   * Delete the membership of the user in the group. When the group or user don't exist 
+   * or when the user is not a member of the group, this operation is ignored.
+   * @param userId the user's id, cannot be null.
+   * @param groupId the group's id, cannot be null.
    */
   void deleteMembership(String userId, String groupId);
 
+  /**
+   * Checks if the password is valid for the given user. Arguments userId
+   * and password are nullsafe.
+   */
   boolean checkPassword(String userId, String password);
 
-  /** passes the authenticated user id for this particular thread.
+  /** 
+   * Passes the authenticated user id for this particular thread.
    * All service method (from any service) invocations done by the same
-   * thread will have access to this authenticatedUserId. */
+   * thread will have access to this authenticatedUserId. 
+   */
   void setAuthenticatedUserId(String authenticatedUserId);
 }

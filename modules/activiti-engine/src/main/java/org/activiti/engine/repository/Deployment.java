@@ -14,10 +14,8 @@ package org.activiti.engine.repository;
 
 import java.util.Date;
 
-import org.activiti.engine.RuntimeService;
-
 /**
- * represents a deployment that is already present in the process repository.
+ * Represents a deployment that is already present in the process repository.
  * 
  * A deployment is a container for resources such as process definitions, images, forms, etc.
  * 

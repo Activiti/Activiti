@@ -15,8 +15,6 @@ package org.activiti.engine.test.api.identity;
 
 import java.util.List;
 
-import junit.framework.Assert;
-
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.identity.Group;
 import org.activiti.engine.identity.User;
@@ -74,19 +72,19 @@ public class IdentityServiceTest extends ActivitiInternalTestCase {
     identityService.saveGroup(group);
 
     group = identityService.findGroupById("sales");
-    Assert.assertEquals("Updated", group.getName());
+    assertEquals("Updated", group.getName());
 
     identityService.deleteGroup(group.getId());
   }
 
   public void findUserByUnexistingId() {
     User user = identityService.findUser("unexistinguser");
-    Assert.assertNull(user);
+    assertNull(user);
   }
 
   public void findGroupByUnexistingId() {
     Group group = identityService.findGroupById("unexistinggroup");
-    Assert.assertNull(group);
+    assertNull(group);
   }
 
 
@@ -226,8 +224,8 @@ public class IdentityServiceTest extends ActivitiInternalTestCase {
     
     // When null is passed as groupTypes, groups of all types should be returned
     List<Group> groups = identityService.findGroupsByUserIdAndGroupType(johndoe.getId(), null);
-    Assert.assertNotNull(groups);
-    Assert.assertEquals(2, groups.size());
+    assertNotNull(groups);
+    assertEquals(2, groups.size());
     
     identityService.deleteUser(johndoe.getId());
     identityService.deleteGroup(sales.getId());
@@ -246,8 +244,8 @@ public class IdentityServiceTest extends ActivitiInternalTestCase {
 
   public void testFindUsersByGroupUnexistingGroup() {
     List<User> users = identityService.findUsersByGroupId("unexistinggroup");
-    Assert.assertNotNull(users);
-    Assert.assertTrue(users.isEmpty());
+    assertNotNull(users);
+    assertTrue(users.isEmpty());
   }
 
   public void testDeleteGroupNullArguments() {
@@ -269,13 +267,13 @@ public class IdentityServiceTest extends ActivitiInternalTestCase {
     identityService.createMembership(johndoe.getId(), sales.getId());
 
     List<Group> groups = identityService.findGroupsByUserId(johndoe.getId());
-    Assert.assertTrue(groups.size() == 1);
-    Assert.assertEquals("sales", groups.get(0).getId());
+    assertTrue(groups.size() == 1);
+    assertEquals("sales", groups.get(0).getId());
 
     // Delete the membership and check members of sales group
     identityService.deleteMembership(johndoe.getId(), sales.getId());
     groups = identityService.findGroupsByUserId(johndoe.getId());
-    Assert.assertTrue(groups.size() == 0);
+    assertTrue(groups.size() == 0);
 
     identityService.deleteGroup("sales");
     identityService.deleteUser("johndoe");
@@ -335,10 +333,16 @@ public class IdentityServiceTest extends ActivitiInternalTestCase {
       assertTextPresent("userId is null", ae.getMessage());
     }
   }
+  
+  public void testDeleteUserUnexistingUserId() {
+    // No exception should be thrown. Deleting an unexisting user should
+    // be ignored silently
+     identityService.deleteUser("unexistinguser");
+  }
 
   public void testCheckPasswordNullSafe() {
-    Assert.assertFalse(identityService.checkPassword("userId", null));
-    Assert.assertFalse(identityService.checkPassword(null, "passwd"));
-    Assert.assertFalse(identityService.checkPassword(null, null));
+    assertFalse(identityService.checkPassword("userId", null));
+    assertFalse(identityService.checkPassword(null, "passwd"));
+    assertFalse(identityService.checkPassword(null, null));
   }
 }
