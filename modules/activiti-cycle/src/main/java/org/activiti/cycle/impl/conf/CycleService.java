@@ -21,7 +21,7 @@ import java.util.List;
  * 
  * @author christian.lipphardt@camunda.com
  */
-public interface CycleConfigurationService {
+public interface CycleService {
   
   // TODO: Add this here?
   // public RepositoryConnector createRepositoryConnector(String

@@ -19,7 +19,7 @@ import com.thoughtworks.xstream.XStream;
  * This is just used temporary until real persistence is implemented. The API
  * <b>and the resulting XML</b> should NOT be seen as stable in the meantime.
  */
-public class SimpleXstreamRepositoryConnectorConfigurationManager implements CycleConfigurationService {
+public class CycleServiceXStreamImpl implements CycleService {
 
   // TODO: Set a config dir for xstream?
   // private static final String CONFIG_DIR = "";
@@ -36,11 +36,11 @@ public class SimpleXstreamRepositoryConnectorConfigurationManager implements Cyc
   // private List<RepositoryConnectorConfiguration> repoConnectorConfigurations
   // = new ArrayList<RepositoryConnectorConfiguration>();
 
-  public SimpleXstreamRepositoryConnectorConfigurationManager() {
+  public CycleServiceXStreamImpl() {
     PluginFinder.checkPluginInitialization();
   }
   
-  public SimpleXstreamRepositoryConnectorConfigurationManager(File baseDir) {
+  public CycleServiceXStreamImpl(File baseDir) {
     // TODO: Do something with the base dir
 
     PluginFinder.checkPluginInitialization();

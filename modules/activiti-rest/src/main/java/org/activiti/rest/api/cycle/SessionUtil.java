@@ -19,8 +19,8 @@ import javax.servlet.http.HttpSession;
 import org.activiti.cycle.RepositoryConnector;
 import org.activiti.cycle.RepositoryException;
 import org.activiti.cycle.impl.conf.ConfigurationContainer;
-import org.activiti.cycle.impl.conf.CycleConfigurationService;
-import org.activiti.cycle.impl.conf.SimpleXstreamRepositoryConnectorConfigurationManager;
+import org.activiti.cycle.impl.conf.CycleService;
+import org.activiti.cycle.impl.conf.CycleServiceXStreamImpl;
 import org.activiti.cycle.impl.connector.demo.DemoConnectorConfiguration;
 import org.activiti.cycle.impl.connector.fs.FileSystemConnectorConfiguration;
 import org.activiti.cycle.impl.connector.signavio.SignavioConnectorConfiguration;
@@ -70,7 +70,7 @@ public class SessionUtil {
    * stuff
    */
   public static ConfigurationContainer loadUserConfiguration(String currentUserId) {
-    CycleConfigurationService cycleConfigurationService = new SimpleXstreamRepositoryConnectorConfigurationManager(configBaseDir);
+    CycleService cycleConfigurationService = new CycleServiceXStreamImpl(configBaseDir);
 
     ConfigurationContainer configuration;
     try{

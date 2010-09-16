@@ -21,11 +21,11 @@ import org.junit.Test;
  */
 public class RepositoryConnectorConfigurationManagerImplTest {
 
-  private CycleConfigurationService configurationService;
+  private CycleService configurationService;
 
   @Before
   public void setUp() throws Exception {
-    configurationService = new SimpleXstreamRepositoryConnectorConfigurationManager();
+    configurationService = new CycleServiceXStreamImpl();
   }
 
   @After
