@@ -44,7 +44,7 @@ public class ActivityInstanceEndHandler implements EventListener {
     historicActivityInstance.setDurationInMillis(durationInMillis);
   }
 
-  public HistoricActivityInstanceEntity findActivityInstance(ExecutionEntity execution) {
+  public static HistoricActivityInstanceEntity findActivityInstance(ExecutionEntity execution) {
     CommandContext commandContext = CommandContext.getCurrent();
 
     String executionId = execution.getId();

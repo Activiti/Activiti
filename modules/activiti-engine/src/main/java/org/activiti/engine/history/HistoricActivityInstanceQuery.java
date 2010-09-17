@@ -16,6 +16,7 @@ package org.activiti.engine.history;
 import java.util.List;
 
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.impl.HistoricActivityInstanceQueryImpl;
 
 
 /**
@@ -25,32 +26,67 @@ import org.activiti.engine.ActivitiException;
  */
 public interface HistoricActivityInstanceQuery {
 
-  /** Only select historic process instances with the given process instance.
+  /** Only select historic activity instances with the given process instance.
    * {@link ProcessInstance) ids and {@link HistoricProcessInstance} ids match. */
   HistoricActivityInstanceQuery processInstanceId(String processInstanceId);
   
-  /** Only select historic process instances for the given process definition */
+  /** Only select historic activity instances for the given process definition */
   HistoricActivityInstanceQuery processDefinitionId(String processDefinitionId);
+
+  /** Only select historic activity instances for the given execution */
+  HistoricActivityInstanceQueryImpl executionId(String executionId);
+
+  /** Only select historic activity instances for the given activiti */
+  HistoricActivityInstanceQueryImpl activityId(String activityId);
+
+  /** Only select historic activity instances for activities with the given name */
+  HistoricActivityInstanceQueryImpl activityName(String activityName);
+
+  /** Only select historic activity instances for activities with the given activity type */
+  HistoricActivityInstanceQueryImpl activityType(String activityType);
+
+  /** Only select historic activity instances for activities assigned to the given user */
+  HistoricActivityInstanceQueryImpl assignee(String userId);
+
+  /** Only select historic activity instances that are not finished yet. */
+  HistoricActivityInstanceQueryImpl onlyOpen();
+
+  // ordering /////////////////////////////////////////////////////////////////
   
+  /** Order by id (needs to be followed by {@link #asc()} or {@link #desc()}). */
   HistoricActivityInstanceQuery orderById();
+
+  /** Order by start (needs to be followed by {@link #asc()} or {@link #desc()}). */
   HistoricActivityInstanceQuery orderByStart();
+  
+  /** Order by end (needs to be followed by {@link #asc()} or {@link #desc()}). */
   HistoricActivityInstanceQuery orderByEnd();
+  
+  /** Order by duration (needs to be followed by {@link #asc()} or {@link #desc()}). */
   HistoricActivityInstanceQuery orderByDuration();
+  
+  /** Order by executionId (needs to be followed by {@link #asc()} or {@link #desc()}). */
   HistoricActivityInstanceQuery orderByExecutionId();
+  
+  /** Order by processDefinitionId (needs to be followed by {@link #asc()} or {@link #desc()}). */
   HistoricActivityInstanceQuery orderByProcessDefinitionId();
+  
+  /** Order by processInstanceId (needs to be followed by {@link #asc()} or {@link #desc()}). */
   HistoricActivityInstanceQuery orderByProcessInstanceId();
   
+  /** Order by the given property (needs to be followed by {@link #asc()} or {@link #desc()}). */
   HistoricActivityInstanceQuery orderBy(HistoricActivityInstanceQueryProperty property);
 
   /** Order the results ascending on the given property as
-   * defined in this class. */
+   * defined in this class (needs to come after a call to one of the orderByXxxx methods). */
   HistoricActivityInstanceQuery asc();
 
   /** Order the results descending on the given property as
-   * defined in this class. */
+   * defined in this class (needs to come after a call to one of the orderByXxxx methods). */
   HistoricActivityInstanceQuery desc();
 
-  /** Order the results according to the given direction. */
+  /** Order the results according to the given direction
+   * (needs to come after a call to one of the orderByXxxx methods). */
   HistoricActivityInstanceQuery direction(Direction direction);
   
   /** Executes the query and get a list of {@link HistoricProcessInstance}s as the result. */
@@ -67,5 +103,4 @@ public interface HistoricActivityInstanceQuery {
 
   /** Executes the query and get number of results. */
   long count();
-
 }

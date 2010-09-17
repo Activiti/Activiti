@@ -35,6 +35,7 @@ public class HistoricActivityInstanceQueryImpl extends AbstractQuery<HistoricAct
   protected String activityId;
   protected String activityName;
   protected String activityType;
+  protected String assignee;
   protected boolean onlyOpen;
   protected HistoricActivityInstanceQueryProperty orderProperty;
   protected String orderBy;
@@ -88,6 +89,11 @@ public class HistoricActivityInstanceQueryImpl extends AbstractQuery<HistoricAct
 
   public HistoricActivityInstanceQueryImpl activityType(String activityType) {
     this.activityType = activityType;
+    return this;
+  }
+  
+  public HistoricActivityInstanceQueryImpl assignee(String assignee) {
+    this.assignee = assignee;
     return this;
   }
   
@@ -181,5 +187,8 @@ public class HistoricActivityInstanceQueryImpl extends AbstractQuery<HistoricAct
   }
   public boolean isOnlyOpen() {
     return onlyOpen;
+  }
+  public String getAssignee() {
+    return assignee;
   }
 }

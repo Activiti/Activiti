@@ -152,28 +152,17 @@ create table ACT_HI_PROC_INST (
 
 create table ACT_HI_ACT_INST (
     ID_ varchar not null,
+    PROC_DEF_ID_ varchar(255) not null,
     PROC_INST_ID_ varchar(255) not null,
     EXECUTION_ID_ varchar(255) not null,
     ACT_ID_ varchar(255) not null,
     ACT_NAME_ varchar(255),
     ACT_TYPE_ varchar(255) not null,
-    PROC_DEF_ID_ varchar(255) not null,
+    ASSIGNEE_ varchar(255),
     START_TIME_ timestamp not null,
     END_TIME_ timestamp,
     DURATION_ bigint,
     primary key (ID_)
-);
-
-create table ACT_HI_TASK_INST (
-    ID_ varchar not null,
-    NAME_ varchar(255),
-    ASSIGNEE_ varchar(255),
-    PROC_INST_ID_ varchar(255) not null,
-    PROC_ACT_INST_ID_ varchar(255) not null,
-    START_TIME_ timestamp not null,
-    END_TIME_ timestamp,
-    DURATION_ bigint,
-    primary key (ID_),
 );
 
 create table ACT_HI_DETAIL (
@@ -181,14 +170,11 @@ create table ACT_HI_DETAIL (
     TYPE_ varchar(255) not null,
     PROC_INST_ID_ varchar(255),
     ACT_INST_ID_ varchar(255),
-    TASK_INST_ID_ varchar(255),
     TIME_ timestamp,
     TEXTVALUE1_ varchar(255),
     TEXTVALUE2_ varchar(255),
-    TEXTVALUE3_ varchar(255),
     LONGVALUE1_ bigint,
     LONGVALUE2_ bigint,
-    LONGVALUE3_ bigint,
     primary key (ID_),
 );
 

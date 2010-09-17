@@ -27,11 +27,13 @@ public class HistoricActivityInstanceEntity extends HistoricScopeInstanceEntity 
   protected String activityName;
   protected String activityType;
   protected String executionId;
+  protected String assignee;
   
   @SuppressWarnings("unchecked")
   public Object getPersistentState() {
     Map<String, Object> persistentState = (Map<String, Object>) super.getPersistentState();
     persistentState.put("executionId", executionId);
+    persistentState.put("assignee", assignee);
     return persistentState;
   }
 
@@ -66,5 +68,13 @@ public class HistoricActivityInstanceEntity extends HistoricScopeInstanceEntity 
   
   public void setActivityType(String activityType) {
     this.activityType = activityType;
+  }
+
+  public String getAssignee() {
+    return assignee;
+  }
+
+  public void setAssignee(String assignee) {
+    this.assignee = assignee;
   }
 }

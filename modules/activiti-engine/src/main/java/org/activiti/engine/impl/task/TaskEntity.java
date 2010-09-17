@@ -234,6 +234,29 @@ public class TaskEntity implements Task, Serializable, PersistentObject {
     return "Task["+id+"]";
   }
   
+  // methods with event notification dispatching //////////////////////////////
+  
+  public void setAssignee(String assignee) {
+    this.assignee = assignee;
+    fireEvent(TaskListener.EVENTNAME_ASSIGNMENT);
+  }
+
+  public void fireEvent(String taskEventName) {
+    Map<String, List<TaskListener>> taskListeners = CommandContext
+      .getCurrent()
+      .getProcessEngineConfiguration()
+      .getTaskListeners();
+    
+    if (taskListeners!=null) {
+      List<TaskListener> taskAssignmentListeners = taskListeners.get(taskEventName);
+      if (taskAssignmentListeners!=null) {
+        for (TaskListener taskListener: taskAssignmentListeners) {
+          taskListener.notify(this);
+        }
+      }
+    }
+  }
+
   // getters and setters //////////////////////////////////////////////////////
 
   public String getId() {
@@ -324,10 +347,6 @@ public class TaskEntity implements Task, Serializable, PersistentObject {
     return assignee;
   }
   
-  public void setAssignee(String assignee) {
-    this.assignee = assignee;
-  }
-
   public String getFormResourceKey() {
     return formResourceKey;
   }
@@ -335,4 +354,5 @@ public class TaskEntity implements Task, Serializable, PersistentObject {
   public void setFormResourceKey(String formResourceKey) {
     this.formResourceKey = formResourceKey;
   }
+  
 }

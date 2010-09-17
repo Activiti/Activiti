@@ -28,13 +28,13 @@ import org.activiti.engine.test.Deployment;
 public class HistoryServiceTest extends ActivitiInternalTestCase {
   
   public void testFindHistoricProcessInstanceByUnexistingId() {
-    HistoricProcessInstance historicProcessInstance = historicDataService.findHistoricProcessInstanceById("unexisting");
+    HistoricProcessInstance historicProcessInstance = historyService.findHistoricProcessInstanceById("unexisting");
     assertNull(historicProcessInstance);
   }
   
   public void testFindHistoricProcessInstanceNullArgument() {
     try {
-      historicDataService.findHistoricProcessInstanceById(null);
+      historyService.findHistoricProcessInstanceById(null);
       fail("ActivitiException expected");
     } catch(ActivitiException ae) {
       assertTextPresent("processInstanceId is null", ae.getMessage());
@@ -45,15 +45,15 @@ public class HistoryServiceTest extends ActivitiInternalTestCase {
   @Deployment(resources = {"org/activiti/engine/test/api/oneTaskProcess.bpmn20.xml"})
   public void testHistoricProcessInstanceQuery() {
     // With a clean ProcessEngine, no instances should be available
-    assertTrue(historicDataService.createHistoricProcessInstanceQuery().count() == 0);
+    assertTrue(historyService.createHistoricProcessInstanceQuery().count() == 0);
     final ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("oneTaskProcess");
-    assertTrue(historicDataService.createHistoricProcessInstanceQuery().count() == 1);
+    assertTrue(historyService.createHistoricProcessInstanceQuery().count() == 1);
     
     // Complete the task and check if the size is count 1
     List<Task> tasks = taskService.createTaskQuery().processInstanceId(processInstance.getId()).list();
     assertEquals(1, tasks.size());
     taskService.complete(tasks.get(0).getId());
-    assertTrue(historicDataService.createHistoricProcessInstanceQuery().count() == 1);
+    assertTrue(historyService.createHistoricProcessInstanceQuery().count() == 1);
         
   }
 }

@@ -14,6 +14,8 @@
 
 package org.activiti.engine;
 
+import org.activiti.engine.history.HistoricActivityInstance;
+import org.activiti.engine.history.HistoricActivityInstanceQuery;
 import org.activiti.engine.history.HistoricProcessInstance;
 import org.activiti.engine.history.HistoricProcessInstanceQuery;
 
@@ -38,4 +40,7 @@ public interface HistoryService {
 
   /** Creates a new programmatic query to search for {@link HistoricProcessInstance}s. */
   HistoricProcessInstanceQuery createHistoricProcessInstanceQuery();
+
+  /** Creates a new programmatic query to search for {@link HistoricActivityInstance}s. */
+  HistoricActivityInstanceQuery createHistoricActivityInstanceQuery();
 }

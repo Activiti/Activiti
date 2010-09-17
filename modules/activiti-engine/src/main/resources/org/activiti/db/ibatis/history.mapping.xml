@@ -110,6 +110,7 @@
         ACT_ID_,
         ACT_NAME_,
         ACT_TYPE_,
+        ASSIGNEE_,
         START_TIME_,
         END_TIME_,
         DURATION_
@@ -121,6 +122,7 @@
         #{activityId ,jdbcType=VARCHAR},
         #{activityName ,jdbcType=VARCHAR},
         #{activityType ,jdbcType=VARCHAR},
+        #{assignee ,jdbcType=VARCHAR},
         #{startTime, jdbcType=TIMESTAMP},
         #{endTime, jdbcType=TIMESTAMP},
         #{durationInMillis ,jdbcType=BIGINT}
@@ -132,6 +134,7 @@
   <update id="updateHistoricActivityInstance" parameterType="org.activiti.engine.impl.history.HistoricActivityInstanceEntity">
     update ACT_HI_ACT_INST set
       EXECUTION_ID_ = #{executionId, jdbcType=VARCHAR},
+      ASSIGNEE_ = #{assignee, jdbcType=VARCHAR},
       END_TIME_ = #{endTime, jdbcType=TIMESTAMP},
       DURATION_ = #{durationInMillis ,jdbcType=BIGINT}
     where ID_ = #{id}
@@ -153,6 +156,7 @@
     <result property="activityId" column="ACT_ID_" jdbcType="VARCHAR" />
     <result property="activityName" column="ACT_NAME_" jdbcType="VARCHAR" />
     <result property="activityType" column="ACT_TYPE_" jdbcType="VARCHAR" />
+    <result property="assignee" column="ASSIGNEE_" jdbcType="VARCHAR" />
     <result property="startTime" column="START_TIME_" jdbcType="TIMESTAMP" />
     <result property="endTime" column="END_TIME_" jdbcType="TIMESTAMP" />
     <result property="durationInMillis" column="DURATION_" jdbcType="BIGINT" />
@@ -197,6 +201,9 @@
       </if>
       <if test="activityType != null">
         and HAI.ACT_TYPE_ = #{activityType}
+      </if>
+      <if test="assignee != null">
+        and HAI.ASSIGNEE_ = #{assignee}
       </if>
       <if test="onlyOpen">
         and HAI.END_TIME_ is null

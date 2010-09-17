@@ -16,6 +16,7 @@ package org.activiti.engine.impl;
 
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.HistoryService;
+import org.activiti.engine.history.HistoricActivityInstanceQuery;
 import org.activiti.engine.history.HistoricProcessInstance;
 import org.activiti.engine.history.HistoricProcessInstanceQuery;
 
@@ -23,7 +24,7 @@ import org.activiti.engine.history.HistoricProcessInstanceQuery;
  * @author Tom Baeyens
  * @author Christian Stettler
  */
-public class HistoricDataServiceImpl extends ServiceImpl implements HistoryService {
+public class HistoryServiceImpl extends ServiceImpl implements HistoryService {
 
   public HistoricProcessInstance findHistoricProcessInstanceById(final String processInstanceId) {
     if(processInstanceId == null) {
@@ -36,5 +37,9 @@ public class HistoricDataServiceImpl extends ServiceImpl implements HistoryServi
 
   public HistoricProcessInstanceQuery createHistoricProcessInstanceQuery() {
     return new HistoricProcessInstanceQueryImpl(commandExecutor);
+  }
+
+  public HistoricActivityInstanceQuery createHistoricActivityInstanceQuery() {
+    return new HistoricActivityInstanceQueryImpl(commandExecutor);
   }
 }

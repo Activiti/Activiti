@@ -74,7 +74,7 @@ public class ActivitiInternalTestCase extends PvmTestCase {
   protected RepositoryService repositoryService;
   protected RuntimeService runtimeService;
   protected TaskService taskService;
-  protected HistoryService historicDataService;
+  protected HistoryService historyService;
   protected IdentityService identityService;
   protected ManagementService managementService;
   
@@ -193,7 +193,7 @@ public class ActivitiInternalTestCase extends PvmTestCase {
     repositoryService = processEngine.getRepositoryService();
     runtimeService = processEngine.getRuntimeService();
     taskService = processEngine.getTaskService();
-    historicDataService = processEngine.getHistoryService();
+    historyService = processEngine.getHistoryService();
     identityService = processEngine.getIdentityService();
     managementService = processEngine.getManagementService();
   }

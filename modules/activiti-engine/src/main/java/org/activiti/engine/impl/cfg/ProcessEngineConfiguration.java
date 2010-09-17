@@ -28,7 +28,7 @@ import org.activiti.engine.ProcessEngines;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.RuntimeService;
 import org.activiti.engine.TaskService;
-import org.activiti.engine.impl.HistoricDataServiceImpl;
+import org.activiti.engine.impl.HistoryServiceImpl;
 import org.activiti.engine.impl.IdentityServiceImpl;
 import org.activiti.engine.impl.ManagementServiceImpl;
 import org.activiti.engine.impl.ProcessEngineImpl;
@@ -50,6 +50,7 @@ import org.activiti.engine.impl.db.DbSqlSession;
 import org.activiti.engine.impl.db.DbSqlSessionFactory;
 import org.activiti.engine.impl.db.DbTaskSessionFactory;
 import org.activiti.engine.impl.el.ExpressionManager;
+import org.activiti.engine.impl.history.handler.HistoryTaskAssignmentHandler;
 import org.activiti.engine.impl.interceptor.CommandContextFactory;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
 import org.activiti.engine.impl.interceptor.DefaultCommandExecutor;
@@ -61,6 +62,7 @@ import org.activiti.engine.impl.jobexecutor.JobHandlers;
 import org.activiti.engine.impl.jobexecutor.TimerExecuteNestedActivityJobHandler;
 import org.activiti.engine.impl.repository.Deployer;
 import org.activiti.engine.impl.scripting.ScriptingEngines;
+import org.activiti.engine.impl.task.TaskListener;
 import org.activiti.engine.impl.variable.DefaultVariableTypes;
 import org.activiti.engine.impl.variable.VariableTypes;
 
@@ -113,6 +115,7 @@ public class ProcessEngineConfiguration {
   protected BusinessCalendarManager businessCalendarManager;
   
   protected boolean isHistoryEnabled = true;
+  protected Map<String, List<TaskListener>> taskListeners;
   
   protected boolean isConfigurationCompleted = false;
   
@@ -130,7 +133,7 @@ public class ProcessEngineConfiguration {
     taskService = new TaskServiceImpl();
     managementService = new ManagementServiceImpl();
     identityService = new IdentityServiceImpl();
-    historicDataService = new HistoricDataServiceImpl();
+    historicDataService = new HistoryServiceImpl();
 
     sessionFactories = new HashMap<Class<?>, SessionFactory>();
     sessionFactories.put(RepositorySession.class, new DbRepositorySessionFactory());
@@ -201,11 +204,27 @@ public class ProcessEngineConfiguration {
       notifyConfigurationComplete(variableTypes);
       notifyConfigurationComplete(expressionManager);
       notifyConfigurationComplete(businessCalendarManager);
+
+      if (isHistoryEnabled) {
+        addTaskListener(TaskListener.EVENTNAME_ASSIGNMENT, new HistoryTaskAssignmentHandler());
+      }
       
       isConfigurationCompleted = true;
     }
   }
   
+  public void addTaskListener(String taskEventName, TaskListener taskListener) {
+    if (taskListeners==null) {
+      taskListeners = new HashMap<String, List<TaskListener>>();
+    }
+    List<TaskListener> taskEventListeners = taskListeners.get(taskEventName);
+    if (taskEventListeners==null) {
+      taskEventListeners = new ArrayList<TaskListener>();
+      taskListeners.put(taskEventName, taskEventListeners);
+    }
+    taskEventListeners.add(taskListener);
+  }
+
   protected void notifyConfigurationComplete(Object object) {
     if (object instanceof ProcessEngineConfigurationAware) {
       ((ProcessEngineConfigurationAware)object).configurationCompleted(this);
@@ -475,5 +494,13 @@ public class ProcessEngineConfiguration {
 
   public void setWsSyncFactoryClassName(String wsSyncFactoryClassName) {
     this.wsSyncFactoryClassName = wsSyncFactoryClassName;
+  }
+
+  public Map<String, List<TaskListener>> getTaskListeners() {
+    return taskListeners;
+  }
+  
+  public void setTaskListeners(Map<String, List<TaskListener>> taskListeners) {
+    this.taskListeners = taskListeners;
   }
 }
