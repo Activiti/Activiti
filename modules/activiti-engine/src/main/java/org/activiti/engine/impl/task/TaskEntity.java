@@ -47,9 +47,6 @@ public class TaskEntity implements Task, Serializable, PersistentObject {
   protected String formResourceKey;
   protected Integer priority;
   protected Date createTime; // The time when the task has been created
-  protected Date startDeadline; // The time when the task should have been started
-  protected Date completionDeadline; // The time when the task should have been completed
-  protected boolean skippable;
   protected boolean isTaskInvolvementsInitialized = false;
   protected List<TaskInvolvementEntity> taskInvolvementEntities = new ArrayList<TaskInvolvementEntity>(); 
   
@@ -109,9 +106,6 @@ public class TaskEntity implements Task, Serializable, PersistentObject {
     this.name = task.getName();
     this.priority = task.getPriority();
     this.createTime = task.getCreateTime();
-    this.startDeadline = task.getStartDeadline();
-    this.completionDeadline = task.getCompletionDeadline();
-    this.skippable = task.isSkippable();
     this.description = task.getDescription();
   }
 
@@ -125,15 +119,6 @@ public class TaskEntity implements Task, Serializable, PersistentObject {
     }
     if (createTime!=null) {
       persistentState.put("createTime", this.createTime);
-    }
-    if (startDeadline!=null) {
-      persistentState.put("startDeadline", this.startDeadline);
-    }
-    if (completionDeadline!=null) {
-      persistentState.put("completionDeadline", this.completionDeadline);
-    }
-    if (skippable) {
-      persistentState.put("skippable", Boolean.TRUE);
     }
     if(description != null) {
       persistentState.put("description", this.description);
@@ -307,30 +292,6 @@ public class TaskEntity implements Task, Serializable, PersistentObject {
     this.createTime = createTime;
   }
 
-  public boolean isSkippable() {
-    return skippable;
-  }
-
-  public void setSkippable(boolean skippable) {
-    this.skippable = skippable;
-  }
-
-  public Date getStartDeadline() {
-    return startDeadline;
-  }
-
-  public void setStartDeadline(Date startDeadline) {
-    this.startDeadline = startDeadline;
-  }
-
-  public Date getCompletionDeadline() {
-    return completionDeadline;
-  }
-
-  public void setCompletionDeadline(Date completionDeadline) {
-    this.completionDeadline = completionDeadline;
-  }
-  
   public String getExecutionId() {
     return executionId;
   }

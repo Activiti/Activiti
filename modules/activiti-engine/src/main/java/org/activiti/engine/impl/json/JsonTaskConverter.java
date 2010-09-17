@@ -40,13 +40,6 @@ public class JsonTaskConverter extends JsonObjectConverter<Task> {
       jsonObject.put("priority", taskImpl.getPriority());      
     }
     jsonObject.put("createTime", taskImpl.getCreateTime());
-    jsonObject.put("skippable", taskImpl.isSkippable());
-    if (taskImpl.getStartDeadline()!=null) {
-      jsonObject.put("startDeadline", taskImpl.getStartDeadline());
-    }
-    if (taskImpl.getCompletionDeadline()!=null) {
-      jsonObject.put("completionDeadline", taskImpl.getCompletionDeadline());
-    }
     if (taskImpl.getExecutionId()!=null) {
       jsonObject.put("activityInstance", taskImpl.getExecutionId());
     }
