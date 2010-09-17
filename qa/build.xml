@@ -107,7 +107,7 @@ Then run test.demo.setup to make it get placed inside your tomcat server." unles
     <exec executable="${mvn.executable}" dir="../modules/activiti-webapp">
       <arg line="clean install" />
     </exec>
-    <exec executable="${mvn.executable}" dir="../modules/activiti-${webapp.redeploy.module}">
+    <exec executable="${mvn.executable}" dir="../modules/activiti-webapp-${webapp.redeploy.module}">
       <arg line="clean package" />
     </exec>
     <taskdef name="undeploy" classname="org.apache.catalina.ant.UndeployTask">
@@ -120,7 +120,7 @@ Then run test.demo.setup to make it get placed inside your tomcat server." unles
     <undeploy url="http://localhost:8080/manager"
             username="activiti"
             password="activiti"
-            path="/activiti-${webapp.redeploy.module}"
+            path="/activiti-webapp-${webapp.redeploy.module}"
             failonerror="false"/>
     <taskdef name="deploy" classname="org.apache.catalina.ant.DeployTask">
       <classpath>
@@ -132,8 +132,8 @@ Then run test.demo.setup to make it get placed inside your tomcat server." unles
     <deploy url="http://localhost:8080/manager"
             username="activiti"
             password="activiti"
-            path="/activiti-${webapp.redeploy.module}"
-            war="${basedir}/../modules/activiti-${webapp.redeploy.module}/target/activiti-${webapp.redeploy.module}-${activiti.version}.war"/>
+            path="/activiti-webapp-${webapp.redeploy.module}"
+            war="${basedir}/../modules/activiti-webapp-${webapp.redeploy.module}/target/activiti-webapp-${webapp.redeploy.module}-${activiti.version}.war"/>
   </target>
 
 
@@ -156,7 +156,11 @@ Then run test.demo.setup to make it get placed inside your tomcat server." unles
     <antcall target="webapp.redeploy.resources"/>
   </target>
 
-  <!-- The cycle webapp mvn module is called activiti-webapp-cycle, whereas the deployment in 
+  <!-- 
+  NOTE: the below applies to all webapps. (probe and explorer are now prefixed "activti-webapp-", 
+  but still deployed with prefix "activiti-" )
+  
+  The cycle webapp mvn module is called activiti-webapp-cycle, whereas the deployment in 
   the server is called activiti-cycle, so the standard deployment with the module name doesn't 
   work... Temporarily added a separate, non-generic target "webapp.cycle.redeploy.resources"
   <target name="webapp.cycle.redeploy.resources">
@@ -179,7 +183,7 @@ Then run test.demo.setup to make it get placed inside your tomcat server." unles
       <fileset dir="../modules/activiti-webapp/src/main/webapp/" excludes="WEB-INF/web.xml" />
     </copy>
     <copy todir="${tomcat.home}/webapps/activiti-${webapp.redeploy.module}" verbose="true">
-      <fileset dir="../modules/activiti-${webapp.redeploy.module}/src/main/webapp/" excludes="WEB-INF/web.xml" />
+      <fileset dir="../modules/activiti-webapp-${webapp.redeploy.module}/src/main/webapp/" excludes="WEB-INF/web.xml" />
     </copy>
   </target>
 
