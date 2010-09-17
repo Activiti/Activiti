@@ -209,5 +209,21 @@
       <mediaobject><imageobject><imagedata align="center" fileref="images/eclipse.setup.xml.catalog.png"/></imageobject></mediaobject>
     </para>
   </section>
+  
+  <section id="checking.database">
+    <title>Checking the database</title>
+    <para>
+      To check out the database while trying out the demo setup, run the following ant target 
+      in the <emphasis>setup</emphasis> folder:
+      <programlisting>ant h2.console.start</programlisting>
+      This will boot the H2 web console. Note that the ant task doesn't return, so a <emphasis>'ctrl + c'</emphasis>
+      is required to shutdown the console.
+      Fill in the following URL in the <emphasis>JDBC URL</emphasis> field
+      and click connect:
+      <programlisting>jdbc:h2:tcp://localhost/activiti</programlisting>
+      <mediaobject><imageobject><imagedata align="center" fileref="images/h2.console.login.png"/></imageobject></mediaobject>
+      You are now able to browse the Activiti database schema and check the content of the tables.
+    </para>
+  </section>
 
 </chapter>

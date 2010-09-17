@@ -138,6 +138,13 @@
     <launch dir="${activiti.home}/apps/h2"
             script="h2.stop"/>
   </target>
+	
+	<target name="h2.console.start" depends="internal.taskdef.launch">
+	  <launch dir="${activiti.home}/apps/h2"
+	          script="h2.console.start" /> <!-- Not using a launch complete msg, since there is no way
+	                                            of stopping the h2 console later on,
+	                                            so we don't want to let the ant task return--> 
+	</target>
   
   <target name="db.create" depends="internal.classpath.libs">
     <sql driver="${jdbc.driver}" 
