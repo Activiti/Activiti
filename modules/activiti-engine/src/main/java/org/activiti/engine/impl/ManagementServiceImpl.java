@@ -15,7 +15,8 @@ package org.activiti.engine.impl;
 import java.util.Map;
 
 import org.activiti.engine.ManagementService;
-import org.activiti.engine.impl.cmd.ExecuteJobCmd;
+import org.activiti.engine.impl.cmd.ExecuteJobsCmd;
+import org.activiti.engine.impl.cmd.GetJobExceptionStacktraceCmd;
 import org.activiti.engine.impl.cmd.GetTableCountCmd;
 import org.activiti.engine.impl.cmd.GetTableMetaDataCmd;
 import org.activiti.engine.management.TableMetaData;
@@ -38,7 +39,7 @@ public class ManagementServiceImpl extends ServiceImpl implements ManagementServ
   }
 
   public void executeJob(String jobId) {
-    commandExecutor.execute(new ExecuteJobCmd(jobId));
+    commandExecutor.execute(new ExecuteJobsCmd(jobId));
   }
 
   public TablePageQuery createTablePageQuery() {
@@ -47,5 +48,9 @@ public class ManagementServiceImpl extends ServiceImpl implements ManagementServ
   
   public JobQuery createJobQuery() {
     return new JobQueryImpl(commandExecutor);
+  }
+
+  public String getJobExceptionStacktrace(String jobId) {
+    return commandExecutor.execute(new GetJobExceptionStacktraceCmd(jobId));
   }
 }

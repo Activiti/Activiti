@@ -18,11 +18,9 @@ import java.util.List;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.cfg.TimerSession;
 import org.activiti.engine.impl.cfg.TransactionState;
-import org.activiti.engine.impl.db.DbSqlSession;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.interceptor.Session;
 import org.activiti.engine.impl.runtime.ExecutionEntity;
-import org.activiti.engine.impl.runtime.JobEntity;
 import org.activiti.engine.impl.runtime.TimerEntity;
 import org.activiti.engine.impl.util.ClockUtil;
 
@@ -63,10 +61,9 @@ public class JobExecutorTimerSession implements TimerSession, Session {
   }
 
   public void cancelTimers(ExecutionEntity execution) {
-    DbSqlSession dbSqlSession = commandContext.getDbSqlSession();
     List<TimerEntity> timers = commandContext.getRuntimeSession().findTimersByExecutionId(execution.getId()); 
     for (TimerEntity timer: timers) {
-      dbSqlSession.delete(JobEntity.class,timer.getId());
+      timer.delete();
     }
   }
 

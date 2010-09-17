@@ -14,6 +14,7 @@ package org.activiti.engine.impl.jobexecutor;
 
 import java.util.List;
 
+import org.activiti.engine.impl.cmd.ExecuteJobsCmd;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
 
 
@@ -24,21 +25,15 @@ public class ExecuteJobsRunnable implements Runnable {
 
   private final CommandExecutor commandExecutor;
   private final List<String> jobIds;
-  private final JobExecutor jobExecutor;
   
-  public ExecuteJobsRunnable(CommandExecutor commandExecutor, List<String> jobIds, JobExecutor jobExecutor) {
+  public ExecuteJobsRunnable(CommandExecutor commandExecutor, List<String> jobIds) {
     this.commandExecutor = commandExecutor;
     this.jobIds = jobIds;
-    this.jobExecutor = jobExecutor;
   }
 
   public void run() {
     for (String jobId: jobIds) {
-      try {
-        commandExecutor.execute(new ExecuteJobsCmd(jobId));
-      } catch (Throwable exception) {
-        commandExecutor.execute(new DecrementJobRetriesCmd(jobExecutor, jobId, exception));
-      }
+      commandExecutor.execute(new ExecuteJobsCmd(jobId));
     }
   }
 }

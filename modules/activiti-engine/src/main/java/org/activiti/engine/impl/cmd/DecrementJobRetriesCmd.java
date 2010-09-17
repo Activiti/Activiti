@@ -11,12 +11,16 @@
  * limitations under the License.
  */
 
-package org.activiti.engine.impl.jobexecutor;
+package org.activiti.engine.impl.cmd;
+
+import java.io.PrintWriter;
+import java.io.StringWriter;
 
 import org.activiti.engine.impl.cfg.RuntimeSession;
 import org.activiti.engine.impl.cfg.TransactionState;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
+import org.activiti.engine.impl.jobexecutor.MessageAddedNotification;
 import org.activiti.engine.impl.runtime.JobEntity;
 
 /**
@@ -26,10 +30,8 @@ public class DecrementJobRetriesCmd implements Command<Object> {
 
   protected String jobId;
   protected Throwable exception;
-  protected JobExecutor jobExecutor;
 
-  public DecrementJobRetriesCmd(JobExecutor jobExecutor, String jobId, Throwable exception) {
-    this.jobExecutor = jobExecutor;
+  public DecrementJobRetriesCmd(String jobId, Throwable exception) {
     this.jobId = jobId;
     this.exception = exception;
   }
@@ -40,14 +42,22 @@ public class DecrementJobRetriesCmd implements Command<Object> {
     job.setRetries(job.getRetries() - 1);
     job.setLockOwner(null);
     job.setLockExpirationTime(null);
-
-    commandContext.getTransactionContext().addTransactionListener(TransactionState.COMMITTED, new MessageAddedNotification(jobExecutor));
-
-    // TODO http://jira.codehaus.org/browse/ACT-87 store the exception in a byte array 
-    // StringWriter stringWriter = new StringWriter();
-    // exception.printStackTrace(new PrintWriter(stringWriter));
-    // byte[] exceptionBytes = stringWriter.toString().getBytes();
-
+    
+    if(exception != null) {
+      job.setExceptionMessage(exception.getMessage());
+      job.setExceptionStacktrace(getExceptionStacktrace());
+    }
+    
+    commandContext.getTransactionContext().addTransactionListener(
+            TransactionState.COMMITTED, 
+            new MessageAddedNotification(commandContext.getProcessEngineConfiguration().getJobExecutor()));
+    
     return null;
+  }
+  
+  private String getExceptionStacktrace() {
+    StringWriter stringWriter = new StringWriter();
+    exception.printStackTrace(new PrintWriter(stringWriter));
+    return stringWriter.toString();
   }
 }

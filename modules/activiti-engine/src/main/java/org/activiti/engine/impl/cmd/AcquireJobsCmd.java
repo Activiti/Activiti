@@ -10,7 +10,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.activiti.engine.impl.jobexecutor;
+package org.activiti.engine.impl.cmd;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -20,6 +20,8 @@ import java.util.List;
 import org.activiti.engine.impl.Page;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
+import org.activiti.engine.impl.jobexecutor.AcquiredJobs;
+import org.activiti.engine.impl.jobexecutor.JobExecutor;
 import org.activiti.engine.impl.runtime.JobEntity;
 import org.activiti.engine.impl.util.ClockUtil;
 

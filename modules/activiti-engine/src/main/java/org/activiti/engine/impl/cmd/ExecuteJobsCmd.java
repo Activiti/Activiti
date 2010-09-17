@@ -10,40 +10,57 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.activiti.engine.impl.cmd;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.impl.cfg.TransactionState;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
+import org.activiti.engine.impl.jobexecutor.DecrementJobRetriesListener;
 import org.activiti.engine.impl.runtime.JobEntity;
 
 
 /**
  * @author Tom Baeyens
  */
-public class ExecuteJobCmd implements Command<Object> {
+public class ExecuteJobsCmd implements Command<Object> {
+
+  private static Logger log = Logger.getLogger(ExecuteJobsCmd.class.getName());
   
   protected String jobId;
-  
-  public ExecuteJobCmd(String jobId) {
+
+  public ExecuteJobsCmd(String jobId) {
     this.jobId = jobId;
- }
+  }
 
   public Object execute(CommandContext commandContext) {
     if(jobId == null) {
       throw new ActivitiException("jobId is null");
     }
     
-    JobEntity job =  commandContext
-    .getRuntimeSession()
-    .findJobById(jobId);
-    
-    if(job == null) {
-      throw new ActivitiException("Cannot execute job, no job found with id '" + jobId + "'");
+    if (log.isLoggable(Level.FINE)) {
+      log.fine("Executing job " + jobId);
     }
-    job.execute(commandContext);
-  
+    JobEntity job = commandContext.getRuntimeSession().findJobById(jobId);
+    
+    if (job == null) {
+      throw new ActivitiException("No job found with id '" + jobId + "'");
+    }
+    
+    try { 
+      job.execute(commandContext);
+    } catch (RuntimeException exception) {
+      // When transaction is rolled back, decrement retries
+      commandContext.getTransactionContext().addTransactionListener(
+        TransactionState.ROLLED_BACK, 
+        new DecrementJobRetriesListener(jobId, exception));
+       
+      // throw the original exception to indicate the ExecuteJobCmd failed
+      throw exception;
+    }
     return null;
   }
 }

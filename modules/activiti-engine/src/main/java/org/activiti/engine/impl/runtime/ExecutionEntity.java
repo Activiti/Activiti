@@ -22,7 +22,6 @@ import java.util.logging.Logger;
 
 import javax.el.ELContext;
 
-import org.activiti.engine.history.HistoricActivityInstance;
 import org.activiti.engine.impl.HistoricActivityInstanceQueryImpl;
 import org.activiti.engine.impl.JobQueryImpl;
 import org.activiti.engine.impl.TaskQueryImpl;
@@ -351,9 +350,7 @@ public class ExecutionEntity extends ExecutionImpl implements PersistentObject, 
       if (replacedBy!=null) {
         ((JobEntity)job).setExecution((ExecutionEntity) replacedBy);
       } else {
-        commandContext
-          .getDbSqlSession()
-          .delete(JobEntity.class, job.getId());
+        ((JobEntity)job).delete();
       }
     }
 

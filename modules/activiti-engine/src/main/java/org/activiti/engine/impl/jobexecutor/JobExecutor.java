@@ -130,7 +130,7 @@ public class JobExecutor implements ProcessEngineConfigurationAware {
   
   public void executeJobs(List<String> jobIds) {
     // TODO: RejectedExecutionException handling!
-    threadPoolExecutor.execute(new ExecuteJobsRunnable(commandExecutor, jobIds, this));
+    threadPoolExecutor.execute(new ExecuteJobsRunnable(commandExecutor, jobIds));
   }
 
   // getters and setters ////////////////////////////////////////////////////// 

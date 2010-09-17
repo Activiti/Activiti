@@ -16,12 +16,12 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.activiti.engine.impl.cmd.AcquireJobsCmd;
+import org.activiti.engine.impl.cmd.ExecuteJobsCmd;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
-import org.activiti.engine.impl.jobexecutor.AcquireJobsCmd;
 import org.activiti.engine.impl.jobexecutor.AcquiredJobs;
-import org.activiti.engine.impl.jobexecutor.ExecuteJobsCmd;
 import org.activiti.engine.impl.jobexecutor.JobExecutor;
 import org.activiti.engine.impl.runtime.MessageEntity;
 import org.activiti.engine.impl.runtime.TimerEntity;

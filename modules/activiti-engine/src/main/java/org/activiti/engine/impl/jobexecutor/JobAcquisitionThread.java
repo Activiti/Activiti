@@ -18,6 +18,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.activiti.engine.impl.Page;
+import org.activiti.engine.impl.cmd.AcquireJobsCmd;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
 import org.activiti.engine.impl.runtime.TimerEntity;
 import org.activiti.engine.impl.util.ClockUtil;

@@ -10,10 +10,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.activiti.engine.impl.jobexecutor;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
+package org.activiti.engine.impl.cmd;
 
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.interceptor.Command;
@@ -22,29 +20,29 @@ import org.activiti.engine.impl.runtime.JobEntity;
 
 
 /**
- * @author Tom Baeyens
+ * @author Frederik Heremans
  */
-public class ExecuteJobsCmd implements Command<Object> {
+public class GetJobExceptionStacktraceCmd implements Command<String>{
 
-  private static Logger log = Logger.getLogger(ExecuteJobsCmd.class.getName());
-  
-  protected String jobId;
-
-  public ExecuteJobsCmd(String jobId) {
+  private String jobId;
+    
+  public GetJobExceptionStacktraceCmd(String jobId) {
     this.jobId = jobId;
   }
 
-  public Object execute(CommandContext commandContext) {
-    if (log.isLoggable(Level.FINE)) {
-      log.fine("Executing job " + jobId);
+
+  public String execute(CommandContext commandContext) {
+    if(jobId == null) {
+      throw new ActivitiException("jobId is null");
     }
+    
     JobEntity job = commandContext.getRuntimeSession().findJobById(jobId);
-    
-    if (job == null) {
-      throw new ActivitiException("No job found for jobId '" + jobId + "'");
+    if(job == null) {
+      throw new ActivitiException("No job found with id " + jobId);
     }
     
-    job.execute(commandContext);
-    return null;
+    return job.getExceptionStacktrace();
   }
+
+  
 }

@@ -10,39 +10,32 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.activiti.engine.impl.runtime;
 
-import java.util.Map;
+package org.activiti.engine.impl.jobexecutor;
 
+import org.activiti.engine.impl.cfg.TransactionListener;
+import org.activiti.engine.impl.cmd.DecrementJobRetriesCmd;
 import org.activiti.engine.impl.interceptor.CommandContext;
 
 
 /**
- * @author Tom Baeyens
+ * @author Frederik Heremans
  */
-public class MessageEntity extends JobEntity {
+public class DecrementJobRetriesListener implements TransactionListener {
 
-  private static final long serialVersionUID = 1L;
+  protected String jobId;
+  protected Throwable exception;
 
-  private String repeat = null;
+  public DecrementJobRetriesListener(String jobId, Throwable exception) {
+    this.jobId = jobId;
+    this.exception = exception;
+  }
   
-  @Override
   public void execute(CommandContext commandContext) {
-    super.execute(commandContext);
-    delete();
+    // TODO http://jira.codehaus.org/browse/ACT-45 use a separate 'requiresNew' command executor
+    commandContext.getProcessEngineConfiguration()
+      .getCommandExecutor()
+      .execute(new DecrementJobRetriesCmd(jobId, exception));
   }
 
-  @SuppressWarnings("unchecked")
-  public Object getPersistentState() {
-    Map<String, Object> persistentState = (Map<String, Object>) super.getPersistentState();
-    persistentState.put("duedate", getDuedate());
-    return persistentState;
-  }
-  
-  public String getRepeat() {
-    return repeat;
-  }
-  public void setRepeat(String repeat) {
-    this.repeat = repeat;
-  }
 }

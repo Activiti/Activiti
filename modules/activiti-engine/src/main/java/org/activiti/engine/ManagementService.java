@@ -63,4 +63,13 @@ public interface ManagementService {
    */
   void executeJob(String jobId);
   
+  /**
+   * Returns the full stacktrace of the exception that occures when the job
+   * with the given id was last executed. Returns null when the job has no
+   * exception stacktrace.
+   * @param jobId id of the job, cannot be null.
+   * @throws ActivitiException when no job exists with the given id.
+   */
+  String getJobExceptionStacktrace(String jobId);
+  
 }

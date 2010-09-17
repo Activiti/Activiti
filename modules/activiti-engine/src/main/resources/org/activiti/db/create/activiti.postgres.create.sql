@@ -51,7 +51,8 @@ create table ACT_RU_JOB (
     EXECUTION_ID_ varchar(255),
     PROCESS_INSTANCE_ID_ varchar(255),
     RETRIES_ integer,
-    EXCEPTION_ varchar(255),
+    EXCEPTION_STACK_ID_ varchar(255),
+    EXCEPTION_MSG_ varchar(255),
     DUEDATE_ timestamp,
     REPEAT_ varchar(255),
     HANDLER_TYPE_ varchar(255),
@@ -231,4 +232,9 @@ alter table ACT_RU_VARIABLE
 alter table ACT_RU_VARIABLE 
     add constraint FK_VAR_BYTEARRAY 
     foreign key (BYTEARRAY_ID_) 
+    references ACT_GE_BYTEARRAY (ID_);
+    
+alter table ACT_RU_JOB 
+    add constraint FK_JOB_EXCEPTION 
+    foreign key (EXCEPTION_STACK_ID_) 
     references ACT_GE_BYTEARRAY (ID_);

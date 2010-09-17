@@ -51,11 +51,7 @@ public class TimerEntity extends JobEntity {
       if (log.isLoggable(Level.FINE)) {
         log.fine("Timer " + getId() + " fired. Deleting timer.");
       }
-      
-      commandContext
-        .getDbSqlSession()
-        .delete(JobEntity.class, id);
-
+      delete();
     } else {
 
       // TODO calculate repeat

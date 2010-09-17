@@ -15,6 +15,8 @@ package org.activiti.engine.runtime;
 
 import java.util.Date;
 
+import org.activiti.engine.ManagementService;
+
 
 /**
  * Represents one job (timer, message, etc.).
@@ -32,5 +34,14 @@ public interface Job {
    * Returns the date on which this job is supposed to be processed.
    */
   Date getDuedate();
+  
+  /**
+   * Returns the message of the exception that occurred, the last time the job was
+   * executed. Returns null when no exception occurred.
+   * 
+   * To get the full exception stacktrace, 
+   * use {@link ManagementService#getJobExceptionStacktrace(String)}
+   */
+  String getExceptionMessage();
 
 }
