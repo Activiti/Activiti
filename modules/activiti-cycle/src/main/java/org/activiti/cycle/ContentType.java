@@ -23,6 +23,7 @@ public class ContentType {
   public static final String MS_WORD = "application/msword";
   public static final String MS_POWERPOINT = "application/powerpoint";
   public static final String MS_EXCEL = "application/excel";
+  public static final String JAVASCRIPT = "application/javascript";
   
   // TODO: Hmm?
   public static final String BINARY = "unknown";
