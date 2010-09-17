@@ -230,10 +230,16 @@ html, body
   width: 78%;
 }
 
+
+/* minimum width & nowrap to prevent task list collapsing on itself */
 .yui-gf div.yui-u.first {
   width: 20%;
+  min-width:13em;
 }
 
+li.filter {
+	white-space:nowrap;
+}
 
 /* FOOTER SECTION */
 
@@ -481,12 +487,15 @@ html, body
    background-color:#CFE7CB;
 }
 
+.processAction {
+	display:block;
+	padding-left:20px;
+} 
+
 .startProcess {
-	text-indent: -1000em;
-	background: url("../images/process-start-icon.png") no-repeat;
-   display:block;
-   float:left;
-   height:16px;
-   text-indent:-1000em;
-   width:16px;
+	background: url("../images/process-start-icon.png") no-repeat 0 3px;
+}
+.viewProcess, 
+.viewXML {
+   background: url("../images/process-view-icon.png") no-repeat 0 3px;
 }
