@@ -29,9 +29,13 @@ public interface HistoricActivityInstance {
 
   String getActivityType();
 
+  String getProcessDefinitionId();
+
   String getProcessInstanceId();
 
-  String getProcessDefinitionId();
+  String getExecutionId();
+
+  String getAssignee();
 
   Date getStartTime();
 

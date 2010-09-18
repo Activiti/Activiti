@@ -31,7 +31,6 @@ public class ProcessDefinitionEntity extends ProcessDefinitionImpl implements Pr
   private static final long serialVersionUID = 1L;
   
   protected String key;
-  protected String name;
   protected int version;
   protected String deploymentId;
   protected String resourceName;
@@ -85,14 +84,6 @@ public class ProcessDefinitionEntity extends ProcessDefinitionImpl implements Pr
 
   public void setKey(String key) {
     this.key = key;
-  }
-
-  public String getName() {
-    return name;
-  }
-  
-  public void setName(String name) {
-    this.name = name;
   }
 
   public String getDeploymentId() {

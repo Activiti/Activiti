@@ -8,15 +8,15 @@
   expressionLanguage="http://www.w3.org/1999/XPath" 
   targetNamespace="http://www.activiti.org/bpmn2.0">
 
-  <process id='singleAutomaticActivity'>
+  <process id="noopProcess">
   
-    <startEvent id='start' />
-    <sequenceFlow id='flow1' sourceRef='start' targetRef='noop' />
+    <startEvent id="start" />
+    <sequenceFlow id="flow1" sourceRef="start" targetRef="noop" />
     
-    <serviceTask id='noop' activiti:class="org.activiti.engine.test.history.Noop" />    
-    <sequenceFlow id='flow2' sourceRef='noop' targetRef='end' />
+    <serviceTask id="noop" name="No operation" activiti:class="org.activiti.engine.test.history.Noop" />    
+    <sequenceFlow id="flow2" sourceRef="noop" targetRef="end" />
     
-    <endEvent id='end' />
+    <endEvent id="end" />
     
   </process>
 

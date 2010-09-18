@@ -14,7 +14,6 @@ package org.activiti.engine.impl.bpmn.parser;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -50,7 +49,6 @@ import org.activiti.engine.impl.bpmn.SubProcessActivity;
 import org.activiti.engine.impl.bpmn.TaskActivity;
 import org.activiti.engine.impl.bpmn.UserTaskActivity;
 import org.activiti.engine.impl.bpmn.WebServiceActivityBehavior;
-import org.activiti.engine.impl.cfg.ProcessEngineConfiguration;
 import org.activiti.engine.impl.el.ActivitiValueExpression;
 import org.activiti.engine.impl.el.ExpressionManager;
 import org.activiti.engine.impl.el.UelMethodExpressionCondition;
@@ -63,8 +61,6 @@ import org.activiti.engine.impl.task.TaskDefinition;
 import org.activiti.engine.impl.util.xml.Element;
 import org.activiti.engine.impl.util.xml.Parse;
 import org.activiti.engine.impl.variable.VariableDeclaration;
-import org.activiti.engine.impl.webservice.SyncWebServiceClient;
-import org.activiti.engine.impl.webservice.SyncWebServiceClientFactory;
 import org.activiti.engine.impl.webservice.WSDLImporter;
 import org.activiti.pvm.activity.ActivityBehavior;
 import org.activiti.pvm.impl.process.ActivityImpl;
@@ -504,7 +500,7 @@ public class BpmnParse extends Parse {
       LOG.fine("Parsing activity " + id);
     }
     ActivityImpl activity = scopeElement.createActivity(id);
-    activity.setProperty("name", name);
+    activity.setName(name);
     activity.setProperty("type", activityElement.getTagName());
     activity.setProperty("line", activityElement.getLine());
     return activity;

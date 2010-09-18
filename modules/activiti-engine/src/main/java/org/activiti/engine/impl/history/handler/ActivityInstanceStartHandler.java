@@ -48,6 +48,7 @@ public class ActivityInstanceStartHandler implements EventListener {
     historicActivityInstance.setProcessInstanceId(processInstanceId);
     historicActivityInstance.setExecutionId(executionId);
     historicActivityInstance.setActivityId(executionEntity.getActivityId());
+    historicActivityInstance.setActivityName(executionEntity.getActivity().getName());
     historicActivityInstance.setActivityType((String) executionEntity.getActivity().getProperty("type"));
     historicActivityInstance.setStartTime(ClockUtil.getCurrentTime());
     

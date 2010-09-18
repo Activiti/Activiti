@@ -15,6 +15,7 @@ package org.activiti.engine.test.history;
 
 import org.activiti.pvm.activity.ActivityBehavior;
 import org.activiti.pvm.activity.ActivityExecution;
+import org.activiti.pvm.process.PvmTransition;
 
 
 /**
@@ -23,6 +24,8 @@ import org.activiti.pvm.activity.ActivityExecution;
 public class Noop implements ActivityBehavior {
 
   public void execute(ActivityExecution execution) throws Exception {
+    PvmTransition transition = execution.getActivity().getOutgoingTransitions().get(0);
+    execution.take(transition);
   }
 
 }
