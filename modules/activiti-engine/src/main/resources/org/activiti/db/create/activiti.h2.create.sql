@@ -165,19 +165,6 @@ create table ACT_HI_ACT_INST (
     primary key (ID_)
 );
 
-create table ACT_HI_DETAIL (
-    ID_ varchar not null,
-    TYPE_ varchar(255) not null,
-    PROC_INST_ID_ varchar(255),
-    ACT_INST_ID_ varchar(255),
-    TIME_ timestamp,
-    TEXTVALUE1_ varchar(255),
-    TEXTVALUE2_ varchar(255),
-    LONGVALUE1_ bigint,
-    LONGVALUE2_ bigint,
-    primary key (ID_),
-);
-
 alter table ACT_GE_BYTEARRAY
     add constraint FK_BYTEARR_DEPL
     foreign key (DEPLOYMENT_ID_)

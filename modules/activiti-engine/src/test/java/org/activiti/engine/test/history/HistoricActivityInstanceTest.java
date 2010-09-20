@@ -13,9 +13,12 @@
 
 package org.activiti.engine.test.history;
 
+import java.util.List;
+
 import org.activiti.engine.history.HistoricActivityInstance;
 import org.activiti.engine.impl.test.ActivitiInternalTestCase;
 import org.activiti.engine.runtime.ProcessInstance;
+import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
 
 
@@ -98,5 +101,18 @@ public class HistoricActivityInstanceTest extends ActivitiInternalTestCase {
 
     assertEquals(0, historyService.createHistoricActivityInstanceQuery().processDefinitionId("nonExistingProcessDefinitionId").list().size());
     assertEquals(1, historyService.createHistoricActivityInstanceQuery().processDefinitionId(processInstance.getProcessDefinitionId()).list().size());
+  }
+  
+  @Deployment
+  public void testHistoricActivityInstanceAssignee() {    
+    // Start process instance
+    runtimeService.startProcessInstanceByKey("taskAssigneeProcess");
+
+    // Get task list
+    HistoricActivityInstance historicActivityInstance = historyService
+      .createHistoricActivityInstanceQuery()
+      .singleResult();
+    
+    assertEquals("kermit", historicActivityInstance.getAssignee());
   }
 }

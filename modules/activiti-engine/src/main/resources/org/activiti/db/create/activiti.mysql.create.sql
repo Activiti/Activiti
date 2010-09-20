@@ -145,7 +145,6 @@ create table ACT_HI_PROC_INST (
     START_TIME_ datetime not null,
     END_TIME_ datetime,
     DURATION_ bigint,
-    -- TODO: check endStateName length
     END_ACT_ID_ varchar(255),
     primary key (ID_),
     unique (PROC_INST_ID_)
@@ -153,11 +152,13 @@ create table ACT_HI_PROC_INST (
 
 create table ACT_HI_ACT_INST (
     ID_ varchar(255) not null,
+    PROC_DEF_ID_ varchar(255) not null,
+    PROC_INST_ID_ varchar(255) not null,
+    EXECUTION_ID_ varchar(255) not null,
     ACT_ID_ varchar(255) not null,
     ACT_NAME_ varchar(255),
     ACT_TYPE_ varchar(255) not null,
-    PROC_INST_ID_ varchar(255) not null,
-    PROC_DEF_ID_ varchar(255) not null,
+    ASSIGNEE_ varchar(255),
     START_TIME_ datetime not null,
     END_TIME_ datetime,
     DURATION_ bigint,
