@@ -68,10 +68,7 @@ public interface RuntimeService {
   /** Creates a new {@link ExecutionQuery} instance, 
    * that can be used to query the executions and process instances. */
   ExecutionQuery createExecutionQuery();
-  
-  /** Return the execution for the given id. Returns null if no execution is found. */
-  Execution findExecutionById(String executionId);
-  
+    
   /** Finds the activity ids for all executions that are waiting in activities. 
    * This is a list because a single activity can be active multiple times.
    * @param executionId id of the execution, cannot be null.

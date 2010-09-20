@@ -34,7 +34,7 @@ public class FinancialReportProcessTest extends ActivitiInternalTestCase {
     
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("financialReport");
     
-    List<Task> tasks = taskService.findUnassignedTasks("fozzie");
+    List<Task> tasks = taskService.createTaskQuery().candidateUser("fozzie").list();
     assertEquals(1, tasks.size());
     Task task = tasks.get(0);
     assertEquals("Write monthly financial report", task.getName());
@@ -48,9 +48,9 @@ public class FinancialReportProcessTest extends ActivitiInternalTestCase {
     assertEquals(1, tasks.size());
     taskService.complete(task.getId());
 
-    tasks = taskService.findUnassignedTasks("fozzie");
+    tasks = taskService.createTaskQuery().candidateUser("fozzie").list();
     assertEquals(0, tasks.size());
-    tasks = taskService.findUnassignedTasks("kermit");
+    tasks = taskService.createTaskQuery().candidateUser("kermit").list();
     assertEquals(1, tasks.size());
     assertEquals("Verify monthly financial report", tasks.get(0).getName());
     taskService.complete(tasks.get(0).getId());

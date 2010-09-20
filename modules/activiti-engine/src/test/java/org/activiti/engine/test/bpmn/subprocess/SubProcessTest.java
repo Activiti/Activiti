@@ -43,7 +43,7 @@ public class SubProcessTest extends ActivitiInternalTestCase {
     // After completing the task in the subprocess, 
     // the subprocess scope is destroyed and the complete process ends
     taskService.complete(subProcessTask.getId());
-    assertNull(runtimeService.findExecutionById(pi.getId()));
+    assertNull(runtimeService.createProcessInstanceQuery().processInstanceId(pi.getId()).singleResult());
   }
   
   /**
@@ -93,7 +93,8 @@ public class SubProcessTest extends ActivitiInternalTestCase {
     TaskQuery taskQuery = taskService
       .createTaskQuery()
       .processInstanceId(pi.getId())
-      .orderAsc(TaskQuery.PROPERTY_NAME);
+      .orderByName()
+      .asc();
     
     Task subProcessTask = taskQuery.singleResult();
     assertEquals("Task in subprocess", subProcessTask.getName());
@@ -180,7 +181,7 @@ public class SubProcessTest extends ActivitiInternalTestCase {
     
     // After starting the process, the two task in the subprocess should be active
     ProcessInstance pi = runtimeService.startProcessInstanceByKey("simpleParallelSubProcess");
-    List<Task> subProcessTasks = taskService.createTaskQuery().processInstanceId(pi.getId()).orderAsc(TaskQuery.PROPERTY_NAME).list();
+    List<Task> subProcessTasks = taskService.createTaskQuery().processInstanceId(pi.getId()).orderByName().asc().list();
     
     // Tasks are ordered by name (see query)
     Task taskA = subProcessTasks.get(0);
@@ -200,7 +201,7 @@ public class SubProcessTest extends ActivitiInternalTestCase {
     
     // After staring the process, the tasks in the subprocess should be active
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("simpleParallelSubProcessWithTimer");
-    List<Task> subProcessTasks = taskService.createTaskQuery().processInstanceId(processInstance.getId()).orderAsc(TaskQuery.PROPERTY_NAME).list();
+    List<Task> subProcessTasks = taskService.createTaskQuery().processInstanceId(processInstance.getId()).orderByName().asc().list();
     
     // Tasks are ordered by name (see query)
     Task taskA = subProcessTasks.get(0);
@@ -230,7 +231,8 @@ public class SubProcessTest extends ActivitiInternalTestCase {
     TaskQuery taskQuery = taskService
       .createTaskQuery()
       .processInstanceId(pi.getId())
-      .orderAsc(TaskQuery.PROPERTY_NAME);
+      .orderByName()
+      .asc();
     List<Task> tasks = taskQuery.list();
     
     // After process start, both tasks in the subprocesses should be active
@@ -264,7 +266,8 @@ public class SubProcessTest extends ActivitiInternalTestCase {
     TaskQuery taskQuery = taskService
       .createTaskQuery()
       .processInstanceId(pi.getId())
-      .orderAsc(TaskQuery.PROPERTY_NAME);
+      .orderByName()
+      .asc();
     List<Task> tasks = taskQuery.list();
     
     // After process start, both tasks in the subprocesses should be active
@@ -294,7 +297,8 @@ public class SubProcessTest extends ActivitiInternalTestCase {
     TaskQuery taskQuery = taskService
       .createTaskQuery()
       .processInstanceId(pi.getId())
-      .orderAsc(TaskQuery.PROPERTY_NAME);
+      .orderByName()
+      .asc();
     List<Task> tasks = taskQuery.list();
     
     // After process start, both tasks in the subprocesses should be active

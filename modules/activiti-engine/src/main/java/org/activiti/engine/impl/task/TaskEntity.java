@@ -295,6 +295,10 @@ public class TaskEntity implements Task, Serializable, PersistentObject {
   public String getExecutionId() {
     return executionId;
   }
+  
+  public String getProcessInstanceId() {
+    return processInstanceId;
+  }
 
   public String getProcessDefinitionId() {
     return processDefinitionId;

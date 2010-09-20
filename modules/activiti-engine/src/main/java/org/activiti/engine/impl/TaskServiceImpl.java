@@ -13,7 +13,6 @@
 package org.activiti.engine.impl;
 
 import java.util.Collection;
-import java.util.List;
 import java.util.Map;
 
 import org.activiti.engine.TaskService;
@@ -21,7 +20,6 @@ import org.activiti.engine.impl.cmd.AddTaskInvolvementCmd;
 import org.activiti.engine.impl.cmd.ClaimTaskCmd;
 import org.activiti.engine.impl.cmd.CompleteTaskCmd;
 import org.activiti.engine.impl.cmd.DeleteTaskCmd;
-import org.activiti.engine.impl.cmd.FindSingleTaskCmd;
 import org.activiti.engine.impl.cmd.GetFormCmd;
 import org.activiti.engine.impl.cmd.SaveTaskCmd;
 import org.activiti.engine.impl.cmd.SetTaskPriorityCmd;
@@ -56,20 +54,6 @@ public class TaskServiceImpl extends ServiceImpl implements TaskService {
   
   public void deleteTasks(Collection<String> taskIds) {
     commandExecutor.execute(new DeleteTaskCmd(taskIds));
-  }
-  
-  public Task findTask(String taskId) {
-    return commandExecutor.execute(new FindSingleTaskCmd(taskId));
-  }
-  
-  public List<Task> findUnassignedTasks(String userId) {
-    TaskQuery query = createTaskQuery().candidateUser(userId);
-    return query.list();
-  }
-  
-  public List<Task> findUnassignedTasks(String userId, int firstResult, int maxResults) {
-    TaskQuery query = createTaskQuery().candidateUser(userId);
-    return query.listPage(firstResult, maxResults);
   }
   
   public void setAssignee(String taskId, String userId) {

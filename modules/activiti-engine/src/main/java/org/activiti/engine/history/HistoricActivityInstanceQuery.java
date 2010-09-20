@@ -84,10 +84,6 @@ public interface HistoricActivityInstanceQuery {
   /** Order the results descending on the given property as
    * defined in this class (needs to come after a call to one of the orderByXxxx methods). */
   HistoricActivityInstanceQuery desc();
-
-  /** Order the results according to the given direction
-   * (needs to come after a call to one of the orderByXxxx methods). */
-  HistoricActivityInstanceQuery direction(Direction direction);
   
   /** Executes the query and get a list of {@link HistoricProcessInstance}s as the result. */
   List<HistoricActivityInstance> list();

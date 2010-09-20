@@ -68,7 +68,7 @@
     where PARENT_ID_ = #{parentExecutionId}
   </select>
   
-   <select id="selectExecutionsByQueryCriteria" parameterType="org.activiti.engine.impl.ExecutionQueryImpl" resultMap="executionResultMap">
+  <select id="selectExecutionsByQueryCriteria" parameterType="org.activiti.engine.impl.ExecutionQueryImpl" resultMap="executionResultMap">
     select E.*
     <include refid="selectExecutionsByQueryCriteriaSql"/>
     <if test="orderBy != null">
@@ -81,11 +81,23 @@
     <include refid="selectExecutionsByQueryCriteriaSql"/>
   </select>
   
+  <!--  same as selectExecutionByQueryCriteria, but with different parameterType -->
+  <select id="selectProcessInstanceByQueryCriteria" parameterType="org.activiti.engine.impl.ProcessInstanceQueryImpl" resultMap="executionResultMap">
+    select E.*
+    <include refid="selectExecutionsByQueryCriteriaSql"/>
+    <if test="orderBy != null">
+      order by ${orderBy}
+    </if>
+  </select>
+  
+  <select id="selectProcessInstanceCountByQueryCriteria" parameterType="org.activiti.engine.impl.ProcessInstanceQueryImpl" resultType="long">
+    select count(*)
+    <include refid="selectExecutionsByQueryCriteriaSql"/>
+  </select>
+  
   <sql id="selectExecutionsByQueryCriteriaSql">
     from ACT_RU_EXECUTION E
-    <if test="processDefinitionKey != null or processDefinitionId != null">
-      inner join ACT_RE_PROC_DEF P on E.PROC_DEF_ID_ = P.ID_
-    </if>
+    inner join ACT_RE_PROC_DEF P on E.PROC_DEF_ID_ = P.ID_
     <where>
       <if test="onlyProcessInstances">
         E.PARENT_ID_ is null
@@ -99,8 +111,19 @@
       <if test="executionId != null">
         and E.ID_ = #{executionId}
       </if>
+      <if test="processInstanceId != null">
+        and E.PROC_INST_ID_ = #{processInstanceId}
+      </if>
       <if test="activityId != null">
         and E.ACTIVITY_ID_ = #{activityId}
+      </if>
+      <if test="superProcessInstanceId != null">
+        <!-- A sub process instance is stored under a certain execution, potentially nested.
+             A sub process instance is NOT stored under the process instanc, hence the following: -->
+        and E.SUPER_EXEC_ IN (select ID_ from ACT_RU_EXECUTION where PROC_INST_ID_ = #{superProcessInstanceId})
+      </if>
+      <if test="subProcessInstanceId != null">
+        and E.ID_ = (select PROC_INST_ID_ from ACT_RU_EXECUTION where ID_ = (select SUPER_EXEC_ from ACT_RU_EXECUTION where ID_ = #{subProcessInstanceId}))
       </if>
     </where>
   </sql>

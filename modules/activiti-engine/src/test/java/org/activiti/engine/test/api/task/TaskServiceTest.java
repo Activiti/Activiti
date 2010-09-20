@@ -40,7 +40,7 @@ public class TaskServiceTest extends ActivitiInternalTestCase {
     taskService.saveTask(task);
 
     // Fetch the task again and update
-    task = taskService.findTask(task.getId());
+    task = taskService.createTaskQuery().taskId(task.getId()).singleResult();
     assertEquals("description", task.getDescription());
     assertEquals("taskname", task.getName());
     assertEquals(0, task.getPriority().intValue());
@@ -50,7 +50,7 @@ public class TaskServiceTest extends ActivitiInternalTestCase {
     task.setPriority(1);
     taskService.saveTask(task);
 
-    task = taskService.findTask(task.getId());
+    task = taskService.createTaskQuery().taskId(task.getId()).singleResult();
     assertEquals("updateddescription", task.getDescription());
     assertEquals("updatedtaskname", task.getName());
     assertEquals(1, task.getPriority().intValue());
@@ -100,7 +100,7 @@ public class TaskServiceTest extends ActivitiInternalTestCase {
     // have been deleted.
     taskService.deleteTasks(Arrays.asList("unexistingtaskid1", existingTask.getId()));
 
-    existingTask = taskService.findTask(existingTask.getId());
+    existingTask = taskService.createTaskQuery().taskId(existingTask.getId()).singleResult();
     assertNull(existingTask);
   }
 
@@ -180,7 +180,7 @@ public class TaskServiceTest extends ActivitiInternalTestCase {
     
     // Claim task the first time
     taskService.claim(task.getId(), user.getId());
-    task = taskService.findTask(task.getId());
+    task = taskService.createTaskQuery().taskId(task.getId()).singleResult();
     
     // Claim the task again with the same user. No exception should be thrown
     taskService.claim(task.getId(), user.getId());
@@ -250,7 +250,7 @@ public class TaskServiceTest extends ActivitiInternalTestCase {
     taskService.complete(task.getId(), null);
     
     // Fetch the task again
-    task = taskService.findTask(task.getId());
+    task = taskService.createTaskQuery().taskId(task.getId()).singleResult();
     assertNull(task);
   }
   
@@ -262,7 +262,7 @@ public class TaskServiceTest extends ActivitiInternalTestCase {
     taskService.complete(task.getId(), Collections.EMPTY_MAP);
     
     // Fetch the task again
-    task = taskService.findTask(task.getId());
+    task = taskService.createTaskQuery().taskId(task.getId()).singleResult();
     assertNull(task);
   }
   
@@ -305,7 +305,7 @@ public class TaskServiceTest extends ActivitiInternalTestCase {
     taskService.setAssignee(task.getId(), user.getId());
     
     // Fetch task again
-    task = taskService.findTask(task.getId());
+    task = taskService.createTaskQuery().taskId(task.getId()).singleResult();
     assertEquals(user.getId(), task.getAssignee());
     
     identityService.deleteUser(user.getId());
@@ -564,7 +564,7 @@ public class TaskServiceTest extends ActivitiInternalTestCase {
     taskService.setPriority(task.getId(), 12345);
     
     // Fetch task again to check if the priority is set
-    task = taskService.findTask(task.getId());
+    task = taskService.createTaskQuery().taskId(task.getId()).singleResult();
     assertEquals(12345, task.getPriority().intValue());
     
     taskService.deleteTask(task.getId());

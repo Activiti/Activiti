@@ -27,6 +27,6 @@ public class TaskGet extends ActivitiWebScript {
   protected void executeWebScript(WebScriptRequest req, Status status, Cache cache, Map<String, Object> model)
   {
     String taskId = getMandatoryPathParameter(req, "taskId");
-    model.put("task", getTaskService().findTask(taskId));
+    model.put("task", getTaskService().createTaskQuery().taskId(taskId));
   }
 }

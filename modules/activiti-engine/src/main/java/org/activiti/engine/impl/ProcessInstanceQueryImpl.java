@@ -15,21 +15,29 @@ package org.activiti.engine.impl;
 
 import java.util.List;
 
+import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
+import org.activiti.engine.impl.runtime.ProcessInstanceQueryProperty;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.runtime.ProcessInstanceQuery;
 
 
 /**
  * @author Tom Baeyens
+ * @author Joram Barrez
  */
 public class ProcessInstanceQueryImpl extends AbstractQuery<ProcessInstance> implements ProcessInstanceQuery {
 
+  protected String executionId;
   protected String processDefinitionId;
   protected String processDefinitionKey;
-  protected String executionId;
-  protected String activityId;
+  protected ProcessInstanceQueryProperty orderProperty;
+  protected String superProcessInstanceId;
+  protected String subProcessInstanceId;
+  
+  // Unused, see dynamic query
+  protected String activityId; 
   
   protected CommandExecutor commandExecutor;
   
@@ -40,66 +48,130 @@ public class ProcessInstanceQueryImpl extends AbstractQuery<ProcessInstance> imp
     super(commandExecutor);
   }
 
-  public boolean isProcessInstancesOnly() {
-    return true;
+  public ProcessInstanceQueryImpl processInstanceId(String processInstanceId) {
+    if (processInstanceId == null) {
+      throw new ActivitiException("Process instance id is null");
+    }
+    this.executionId = processInstanceId;
+    return this;
   }
-
+  
   public ProcessInstanceQueryImpl processDefinitionId(String processDefinitionId) {
+    if (processDefinitionId == null) {
+      throw new ActivitiException("Process definition id is null");
+    }
     this.processDefinitionId = processDefinitionId;
     return this;
   }
 
   public ProcessInstanceQueryImpl processDefinitionKey(String processDefinitionKey) {
+    if (processDefinitionKey == null) {
+      throw new ActivitiException("Process definition key is null");
+    }
     this.processDefinitionKey = processDefinitionKey;
     return this;
   }
   
-  public ProcessInstanceQueryImpl processInstanceId(String processInstanceId) {
-    this.executionId = processInstanceId;
+  public ProcessInstanceQuery superProcessInstance(String superProcessInstanceId) {
+    if (superProcessInstanceId == null) {
+      throw new ActivitiException("Super process instance id is null");
+    }
+    this.superProcessInstanceId = superProcessInstanceId;
     return this;
   }
   
-  public ProcessInstanceQueryImpl activityId(String activityId) {
-    this.activityId = activityId;
+  public ProcessInstanceQuery subProcessInstance(String subProcessInstanceId) {
+    if (subProcessInstanceId == null) {
+      throw new ActivitiException("Sub process instance id is null");
+    }
+    this.subProcessInstanceId = subProcessInstanceId;
     return this;
   }
 
-  public ProcessInstanceQueryImpl orderAsc(String column) {
-    super.addOrder(column, SORTORDER_ASC);
+  //ordering //////////////////////////////////////////////
+
+  public ProcessInstanceQuery orderByProcessInstanceId() {
+    this.orderProperty = ProcessInstanceQueryProperty.PROCESS_INSTANCE_ID;
     return this;
   }
   
-  public ProcessInstanceQueryImpl orderDesc(String column) {
-    super.addOrder(column, SORTORDER_DESC);
+  public ProcessInstanceQuery orderByProcessDefinitionId() {
+    this.orderProperty = ProcessInstanceQueryProperty.PROCESS_DEFINITION_ID;
     return this;
   }
+  
+  public ProcessInstanceQuery orderByProcessDefinitionKey() {
+    this.orderProperty = ProcessInstanceQueryProperty.PROCESS_DEFINITION_KEY;
+    return this;
+  }
+  
+  public ProcessInstanceQuery orderBy(ProcessInstanceQueryProperty property) {
+    this.orderProperty = property;
+    return this;
+  }
+  
+  public ProcessInstanceQuery asc() {
+    return direction(Direction.ASCENDING);
+  }
+  
+  public ProcessInstanceQuery desc() {
+    return direction(Direction.DESCENDING);
+  }
+  
+  public ProcessInstanceQuery direction(Direction direction) {
+    if (orderProperty==null) {
+      throw new ActivitiException("You should call any of the orderBy methods first before specifying a direction");
+    }
+    addOrder(orderProperty.getName(), direction.getName());
+    orderProperty = null;
+    return this;
+  }
+  
+  //results /////////////////////////////////////////////////////////////////
   
   public long executeCount(CommandContext commandContext) {
+    checkQueryOk();
     return commandContext
       .getRuntimeSession()
-      .findExecutionCountByQueryCriteria(this);
+      .findProcessInstanceCountByQueryCriteria(this);
   }
 
-  @SuppressWarnings("unchecked")
   public List<ProcessInstance> executeList(CommandContext commandContext, Page page) {
-    return (List) commandContext
+    checkQueryOk();
+    return commandContext
       .getRuntimeSession()
-      .findExecutionsByQueryCriteria(this, page);
+      .findProcessInstanceByQueryCriteria(this, page);
   }
+  
+  protected void checkQueryOk() {
+    if (orderProperty != null) {
+      throw new ActivitiException("Invalid query: please call asc() or desc() after using orderByXX()");
+    }
+  }
+
+  
+  //getters /////////////////////////////////////////////////////////////////
   
   public boolean getOnlyProcessInstances() {
-    return true;
+    return true; // See dynamic query in runtime.mapping.xml
   }
-  
-  public String getProcessDefinitionKey() {
-    return processDefinitionKey;
-  }
-  
-  public String getExecutionId() {
+  public String getProcessInstanceId() {
     return executionId;
   }
-
   public String getProcessDefinitionId() {
     return processDefinitionId;
   }
+  public String getProcessDefinitionKey() {
+    return processDefinitionKey;
+  }
+  public String getActivityId() {
+    return null; // Unused, see dynamic query
+  }
+  public String getSuperProcessInstanceId() {
+    return superProcessInstanceId;
+  }
+  public String getSubProcessInstanceId() {
+    return subProcessInstanceId;
+  }
+  
 }

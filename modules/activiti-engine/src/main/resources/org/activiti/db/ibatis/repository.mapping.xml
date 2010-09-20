@@ -48,6 +48,9 @@
       <if test="deploymentId != null">
         D.ID_ = #{deploymentId}
       </if>
+      <if test="name != null">
+        D.NAME_ = #{name}
+      </if>
       <if test="nameLike != null">
         D.NAME_ like #{nameLike}
       </if>

@@ -24,6 +24,7 @@ import org.activiti.engine.impl.runtime.JobEntity;
 import org.activiti.engine.impl.runtime.TimerEntity;
 import org.activiti.engine.impl.runtime.VariableInstanceEntity;
 import org.activiti.engine.runtime.Job;
+import org.activiti.engine.runtime.ProcessInstance;
 
 
 /**
@@ -35,6 +36,8 @@ public interface RuntimeSession {
   ExecutionEntity findSubProcessInstanceBySuperExecutionId(String superExecutionId);
   long findExecutionCountByQueryCriteria(Object executionQuery);
   List<ExecutionEntity> findExecutionsByQueryCriteria(Object executionQuery, Page page);
+  long findProcessInstanceCountByQueryCriteria(Object executionQuery);
+  List<ProcessInstance> findProcessInstanceByQueryCriteria(Object executionQuery, Page page);
   List<ExecutionEntity> findChildExecutionsByParentExecutionId(String executionId);
   ExecutionEntity findExecutionById(String activityInstanceId);
   

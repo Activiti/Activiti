@@ -15,19 +15,24 @@ package org.activiti.engine.impl;
 
 import java.util.List;
 
+import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
+import org.activiti.engine.impl.repository.DeploymentQueryProperty;
 import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.repository.DeploymentQuery;
 
 
 /**
  * @author Tom Baeyens
+ * @author Joram Barrez
  */
 public class DeploymentQueryImpl extends AbstractQuery<Deployment> implements DeploymentQuery {
 
   protected String deploymentId;
+  protected String name;
   protected String nameLike;
+  protected DeploymentQueryProperty orderProperty;
 
   public DeploymentQueryImpl() {
   }
@@ -37,42 +42,97 @@ public class DeploymentQueryImpl extends AbstractQuery<Deployment> implements De
   }
 
   public DeploymentQueryImpl deploymentId(String deploymentId) {
+    if (deploymentId == null) {
+      throw new ActivitiException("Deployment id is null");
+    }
     this.deploymentId = deploymentId;
+    return this;
+  }
+  
+  public DeploymentQuery name(String name) {
+    if (name == null) {
+      throw new ActivitiException("Deployment name is null");
+    }
+    this.name = name;
     return this;
   }
 
   public DeploymentQueryImpl nameLike(String nameLike) {
+    if (nameLike == null) {
+      throw new ActivitiException("Namelike is null");
+    }
     this.nameLike = nameLike;
     return this;
   }
-
-  public DeploymentQueryImpl orderAsc(String column) {
-    super.addOrder(column, SORTORDER_ASC);
+  
+  //sorting ////////////////////////////////////////////////////////
+  
+  public DeploymentQueryImpl orderByDeploymentId() {
+    return orderBy(DeploymentQueryProperty.DEPLOYMENT_ID_);
+  }
+  
+  public DeploymentQuery orderByDeploymenTime() {
+    return orderBy(DeploymentQueryProperty.DEPLOY_TIME);
+  }
+  
+  public DeploymentQuery orderByDeploymentName() {
+    return orderBy(DeploymentQueryProperty.NAME);
+  }
+  
+  public DeploymentQueryImpl orderBy(DeploymentQueryProperty property) {
+    this.orderProperty = property;
     return this;
   }
   
-  public DeploymentQueryImpl orderDesc(String column) {
-    super.addOrder(column, SORTORDER_DESC);
+  public DeploymentQuery asc() {
+    return direction(Direction.ASCENDING);
+  }
+  
+  public DeploymentQuery desc() {
+    return direction(Direction.DESCENDING);
+  }
+  
+  public DeploymentQuery direction(Direction direction) {
+    if (orderProperty==null) {
+      throw new ActivitiException("You should call any of the orderBy methods first before specifying a direction");
+    }
+    addOrder(orderProperty.getName(), direction.getName());
+    orderProperty = null;
     return this;
   }
+  
+  //results ////////////////////////////////////////////////////////
   
   @Override
   public long executeCount(CommandContext commandContext) {
+    checkQueryOk();
     return commandContext
       .getRepositorySession()
       .findDeploymentCountByQueryCriteria(this);
   }
 
-  @SuppressWarnings("unchecked")
   @Override
   public List<Deployment> executeList(CommandContext commandContext, Page page) {
-    return (List) commandContext
+    checkQueryOk();
+    return commandContext
       .getRepositorySession()
       .findDeploymentsByQueryCriteria(this, page);
   }
   
+  protected void checkQueryOk() {
+    if (orderProperty != null) {
+      throw new ActivitiException("Invalid query: please call asc() or desc() after using orderByXX()");
+    }
+  }
+  
+  //getters ////////////////////////////////////////////////////////
+  
   public String getDeploymentId() {
     return deploymentId;
+  }
+  
+  public String getName() {
+    return name;
   }
 
   public String getNameLike() {

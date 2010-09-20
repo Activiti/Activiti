@@ -73,9 +73,9 @@ public class TaskAssignmentExtensionsTest extends ActivitiInternalTestCase {
   @Deployment
   public void testCandidateUsersExtension() {
     runtimeService.startProcessInstanceByKey("candidateUsersExtension");
-    List<Task> tasks = taskService.findUnassignedTasks("kermit");
+    List<Task> tasks = taskService.createTaskQuery().candidateUser("kermit").list();
     assertEquals(1, tasks.size());
-    tasks = taskService.findUnassignedTasks("gonzo");
+    tasks = taskService.createTaskQuery().candidateUser("gonzo").list();
     assertEquals(1, tasks.size());
   }
 
@@ -85,11 +85,11 @@ public class TaskAssignmentExtensionsTest extends ActivitiInternalTestCase {
 
     // Bugfix check: potentially the query could return 2 tasks since
     // kermit is a member of the two candidate groups
-    List<Task> tasks = taskService.findUnassignedTasks("kermit");
+    List<Task> tasks = taskService.createTaskQuery().candidateUser("kermit").list();
     assertEquals(1, tasks.size());
     assertEquals("make profit", tasks.get(0).getName());
 
-    tasks = taskService.findUnassignedTasks("fozzie");
+    tasks = taskService.createTaskQuery().candidateUser("fozzie").list();
     assertEquals(1, tasks.size());
     assertEquals("make profit", tasks.get(0).getName());
 
@@ -105,16 +105,16 @@ public class TaskAssignmentExtensionsTest extends ActivitiInternalTestCase {
   public void testMixedCandidateUserDefinition() {
     runtimeService.startProcessInstanceByKey("mixedCandidateUser");
 
-    List<Task> tasks = taskService.findUnassignedTasks("kermit");
+    List<Task> tasks = taskService.createTaskQuery().candidateUser("kermit").list();
     assertEquals(1, tasks.size());
 
-    tasks = taskService.findUnassignedTasks("fozzie");
+    tasks = taskService.createTaskQuery().candidateUser("fozzie").list();
     assertEquals(1, tasks.size());
 
-    tasks = taskService.findUnassignedTasks("gonzo");
+    tasks = taskService.createTaskQuery().candidateUser("gonzo").list();
     assertEquals(1, tasks.size());
 
-    tasks = taskService.findUnassignedTasks("mispiggy");
+    tasks = taskService.createTaskQuery().candidateUser("mispiggy").list();
     assertEquals(0, tasks.size());
   }
 

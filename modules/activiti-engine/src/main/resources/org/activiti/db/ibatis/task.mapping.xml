@@ -90,7 +90,7 @@
     select * from ACT_RU_TASK where ASSIGNEE_ = #{assignee}
   </select>
   
-  <select id="selectTaskByQueryCriteria" parameterType="map" resultMap="taskResultMap">
+  <select id="selectTaskByQueryCriteria" parameterType="org.activiti.engine.impl.TaskQueryImpl" resultMap="taskResultMap">
     select distinct(T.*)
     <include refid="selectTaskByQueryCriteriaSql"/>
     <if test="orderBy != null">
@@ -98,7 +98,7 @@
     </if>
   </select>
 
-  <select id="selectTaskCountByQueryCriteria" parameterType="map" resultType="long">
+  <select id="selectTaskCountByQueryCriteria" parameterType="org.activiti.engine.impl.TaskQueryImpl" resultType="long">
     select count(distinct T.ID_)
     <include refid="selectTaskByQueryCriteriaSql"/>
   </select>
@@ -109,9 +109,24 @@
       inner join ACT_RU_TASKINVOLVEMENT I on I.TASK_ID_ = T.ID_
     </if>
     <where>
-      <if test="name != null">
-        T.NAME_ = #{name}
+      <if test="taskId != null">
+        T.ID_ = #{taskId}
       </if>
+      <if test="name != null">
+        and T.NAME_ = #{name}
+      </if>
+      <if test="nameLike != null">
+        and T.NAME_ like #{nameLike}
+      </if>
+       <if test="description != null">
+        and T.DESCRIPTION_ = #{description}
+      </if>
+      <if test="descriptionLike != null">
+        and T.DESCRIPTION_ like #{descriptionLike}
+      </if>
+      <if test="priority != null">
+        and T.PRIORITY_ = #{priority}
+      </if> 
       <if test="assignee != null">
         and T.ASSIGNEE_ = #{assignee}
       </if>

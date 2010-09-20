@@ -15,6 +15,7 @@ package org.activiti.examples.bpmn.callactivity;
 
 import org.activiti.engine.impl.test.ActivitiInternalTestCase;
 import org.activiti.engine.impl.util.CollectionUtil;
+import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.task.TaskQuery;
 import org.activiti.engine.test.Deployment;
@@ -30,10 +31,15 @@ public class CallActivityTest extends ActivitiInternalTestCase {
   })
   public void testOrderProcessWithCallActivity() {
     // After the process has started, the 'verify credit history' task should be active
-    runtimeService.startProcessInstanceByKey("orderProcess");
+    ProcessInstance pi = runtimeService.startProcessInstanceByKey("orderProcess");
     TaskQuery taskQuery = taskService.createTaskQuery();
     Task verifyCreditTask = taskQuery.singleResult();
     assertEquals("Verify credit history", verifyCreditTask.getName());
+    
+    // Verify with Query API
+    ProcessInstance subProcessInstance = runtimeService.createProcessInstanceQuery().superProcessInstance(pi.getId()).singleResult();
+    assertNotNull(subProcessInstance);
+    assertEquals(pi.getId(), runtimeService.createProcessInstanceQuery().subProcessInstance(subProcessInstance.getId()).singleResult().getId());
     
     // Completing the task with approval, will end the subprocess and continue the original process
     taskService.complete(verifyCreditTask.getId(), CollectionUtil.singletonMap("creditApproved", true));

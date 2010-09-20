@@ -13,7 +13,6 @@
 package org.activiti.engine;
 
 import java.util.Collection;
-import java.util.List;
 import java.util.Map;
 
 import org.activiti.engine.task.Task;
@@ -45,12 +44,6 @@ public interface TaskService {
 	void saveTask(Task task);
 	
 	/**
-   * Returns the task with given id. Returns null when no task with the given id is found.
-   * @param taskId the id of the task, cannot be null.
-   */
-  Task findTask(String taskId);
-	
-	/**
 	 * Deletes the given task.
 	 * @param taskId The id of the task that will be deleted, cannot be null. If no task
 	 * exists with the given taskId, the operation is ignored.
@@ -63,27 +56,6 @@ public interface TaskService {
 	 * id's in the list that don't have an existing task will be ignored.
 	 */
 	void deleteTasks(Collection<String> taskIds);
-	
-	/**
-   * Retrieves the list of tasks that potentially can be done by the given user.
-   * 
-   * This means that the returned tasks are not yet directly assigned to the user,
-   * but rather to a certain role or group.
-   * 
-   * To move a task from the 'candidate' task list to the 'personal' task list,
-   * call the <i>claim()</i> operation.
-   * 
-   * @param userId
-   */
-  List<Task> findUnassignedTasks(String userId);
-	
-	/**
-	 * Same as <i>findUnassignedTasks</i>, but paged.
-	 * 
-	 * @param page allows to retrieve only a part of the results. 
-   *             if null, no paging will be applied.
-	 */
-	List<Task> findUnassignedTasks(String userId, int firstResult, int maxResults);
 	
 	 /**
    * Claim responsibility for a task: the given user is made assignee for the task.

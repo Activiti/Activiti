@@ -16,6 +16,7 @@ package org.activiti.engine.repository;
 import java.util.List;
 
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.impl.repository.DeploymentQueryProperty;
 
 
 /**
@@ -24,25 +25,40 @@ import org.activiti.engine.ActivitiException;
  * @author Tom Baeyens
  */
 public interface DeploymentQuery {
-
-  String PROPERTY_ID = "ID_";
-  String PROPERTY_NAME = "NAME_";
-  String PROPERTY_DEPLOY_TIME = "DEPLOY_TIME_";
   
   /** Only select deployments with the given deployment id. */
   DeploymentQuery deploymentId(String deploymentId);
   
+  /** Only select deployments with the given name. */
+  DeploymentQuery name(String name);
+  
   /** Only select deployments with a name like the given string. */
   DeploymentQuery nameLike(String nameLike);
   
-  /** Order the results ascending on the given property as
-   * defined in this class. */
-  DeploymentQuery orderAsc(String property);
+  //sorting ////////////////////////////////////////////////////////
   
-  /** Order the results descending on the given property as
-   * defined in this class. */
-  DeploymentQuery orderDesc(String property);
+  /** Order by deployment id (needs to be followed by {@link #asc()} or {@link #desc()}). */
+  DeploymentQuery orderByDeploymentId();
+  
+  /** Order by deployment name (needs to be followed by {@link #asc()} or {@link #desc()}). */
+  DeploymentQuery orderByDeploymentName();
+  
+  /** Order by deployment time (needs to be followed by {@link #asc()} or {@link #desc()}). */
+  DeploymentQuery orderByDeploymenTime();
+  
+  /** Order by the given property (needs to be followed by {@link #asc()} or {@link #desc()}). */
+  DeploymentQuery orderBy(DeploymentQueryProperty property);
+  
+  /** Order the results ascending on the given property as
+   * defined in this class (needs to come after a call to one of the orderByXxxx methods). */
+  DeploymentQuery asc();
 
+  /** Order the results descending on the given property as
+   * defined in this class (needs to come after a call to one of the orderByXxxx methods). */
+  DeploymentQuery desc();
+
+  //results ////////////////////////////////////////////////////////
+  
   /** Executes the query and counts number of {@link Deployment}s in the result. */
   long count();
   

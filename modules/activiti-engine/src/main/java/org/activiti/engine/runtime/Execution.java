@@ -24,12 +24,12 @@ package org.activiti.engine.runtime;
 public interface Execution {
   
   /**
-   * The unique identifier of the process instance.
+   * The unique identifier of the execution.
    */
   String getId();
   
   /**
-   * Indicates if the process instance is ended.
+   * Indicates if the execution is ended.
    */
   boolean isEnded();
 

@@ -15,6 +15,7 @@ package org.activiti.engine.runtime;
 import java.util.List;
 
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.impl.runtime.ExecutionQueryProperty;
 
 
 
@@ -38,6 +39,31 @@ public interface ExecutionQuery {
   
   /** Only select executions which contain an activity with the given id. **/
   ExecutionQuery activityId(String activityId);
+
+  //ordering //////////////////////////////////////////////////////////////
+  
+  /** Order by id (needs to be followed by {@link #asc()} or {@link #desc()}). */
+  ExecutionQuery orderByProcessInstanceId();
+  
+  /** Order by process definition key (needs to be followed by {@link #asc()} or {@link #desc()}). */
+  ExecutionQuery orderByProcessDefinitionKey();
+  
+  /** Order by process definition id (needs to be followed by {@link #asc()} or {@link #desc()}). */
+  ExecutionQuery orderByProcessDefinitionId();
+  
+  /** Order by the given property (needs to be followed by {@link #asc()} or {@link #desc()}). */
+  ExecutionQuery orderBy(ExecutionQueryProperty property);
+  
+  /** Order the results ascending on the given property as
+   * defined in this class (needs to come after a call to one of the orderByXxxx methods). */
+  ExecutionQuery asc();
+
+  /** Order the results descending on the given property as
+   * defined in this class (needs to come after a call to one of the orderByXxxx methods). */
+  ExecutionQuery desc();
+
+  
+  //results //////////////////////////////////////////////////////////////
   
   /** Executes the query and get a list of {@link Execution}s as the result. */
   List<Execution> list();

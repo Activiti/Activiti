@@ -47,12 +47,12 @@ public class StandaloneTaskTest extends ActivitiInternalTestCase {
     taskService.addCandidateUser(taskId, "gonzo");
 
     // Retrieve task list for jbarrez
-    List<Task> tasks = taskService.findUnassignedTasks("kermit");
+    List<Task> tasks = taskService.createTaskQuery().candidateUser("kermit").list();
     assertEquals(1, tasks.size());
     assertEquals("testTask", tasks.get(0).getName());
 
     // Retrieve task list for tbaeyens
-    tasks = taskService.findUnassignedTasks("gonzo");
+    tasks = taskService.createTaskQuery().candidateUser("gonzo").list();
     assertEquals(1, tasks.size());
     assertEquals("testTask", tasks.get(0).getName());
 
@@ -60,15 +60,15 @@ public class StandaloneTaskTest extends ActivitiInternalTestCase {
     taskService.claim(taskId, "kermit");
 
     // Tasks shouldn't appear in the candidate tasklists anymore
-    assertTrue(taskService.findUnassignedTasks("kermit").isEmpty());
-    assertTrue(taskService.findUnassignedTasks("gonzo").isEmpty());
+    assertTrue(taskService.createTaskQuery().candidateUser("kermit").list().isEmpty());
+    assertTrue(taskService.createTaskQuery().candidateUser("gonzo").list().isEmpty());
 
     // Complete task
     taskService.complete(taskId);
 
     // Task should be removed from runtime data
     // TODO: check for historic data when implemented!
-    assertNull(taskService.findTask(taskId));
+    assertNull(taskService.createTaskQuery().taskId(taskId).singleResult());
   }
 
 }

@@ -31,6 +31,7 @@ import org.activiti.engine.impl.runtime.VariableInstanceEntity;
 import org.activiti.engine.impl.task.TaskEntity;
 import org.activiti.engine.impl.util.ClockUtil;
 import org.activiti.engine.runtime.Job;
+import org.activiti.engine.runtime.ProcessInstance;
 
 /**
  * @author Joram Barrez
@@ -73,6 +74,15 @@ public class DbRuntimeSession implements Session, RuntimeSession {
   @SuppressWarnings("unchecked")
   public List<ExecutionEntity> findExecutionsByQueryCriteria(Object executionQuery, Page page) {
     return dbSqlSession.selectList("selectExecutionsByQueryCriteria", executionQuery, page);
+  }
+  
+  public long findProcessInstanceCountByQueryCriteria(Object executionQuery) {
+    return (Long) dbSqlSession.selectOne("selectProcessInstanceCountByQueryCriteria", executionQuery);
+  }
+  
+  @SuppressWarnings("unchecked")
+  public List<ProcessInstance> findProcessInstanceByQueryCriteria(Object executionQuery, Page page) {
+    return dbSqlSession.selectList("selectProcessInstanceByQueryCriteria", executionQuery, page);
   }
 
   public ExecutionEntity findExecutionById(String executionId) {

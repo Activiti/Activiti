@@ -115,29 +115,6 @@ public class RuntimeServiceTest extends ActivitiInternalTestCase {
   
   @Deployment(resources={
     "org/activiti/engine/test/api/oneTaskProcess.bpmn20.xml"})
-  public void testFindExecutionById() {
-    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("oneTaskProcess");
-    
-    Execution execution = runtimeService.findExecutionById(processInstance.getId());
-    assertNotNull(execution);
-  }
-  
-  public void testFindExecutionByIdUnexistingId() {
-    Execution execution = runtimeService.findExecutionById("unexisting");
-    assertNull(execution);
-  }
-  
-  public void testFindExecutionByIdNullId() {
-    try {
-      runtimeService.findExecutionById(null);      
-      fail("ActivitiException expected");
-    } catch (ActivitiException ae) {
-      assertTextPresent("executionId is null", ae.getMessage());
-    }
-  }
-  
-  @Deployment(resources={
-    "org/activiti/engine/test/api/oneTaskProcess.bpmn20.xml"})
   public void testFindActiveActivityIds() {
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("oneTaskProcess");
     

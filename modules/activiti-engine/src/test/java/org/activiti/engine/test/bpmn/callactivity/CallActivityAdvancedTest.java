@@ -85,7 +85,8 @@ public class CallActivityAdvancedTest extends ActivitiInternalTestCase {
     // The two tasks in the parallel subprocess should be active
     TaskQuery taskQuery = taskService
       .createTaskQuery()
-      .orderAsc(TaskQuery.PROPERTY_NAME);
+      .orderByName()
+      .asc();
     List<Task> tasks = taskQuery.list();
     assertEquals(2, tasks.size());
     

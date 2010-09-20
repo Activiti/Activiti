@@ -88,16 +88,6 @@ public class RuntimeServiceImpl extends ServiceImpl implements RuntimeService {
     return new ProcessInstanceQueryImpl(commandExecutor);
   }
 
-  public Execution findExecutionById(String executionId) {
-    if(executionId == null) {
-      throw new ActivitiException("executionId is null");
-    }
-    
-    return new ExecutionQueryImpl(commandExecutor)
-      .executionId(executionId)
-      .singleResult();
-  }
-
   public List<String> findActiveActivityIds(String executionId) {
     return commandExecutor.execute(new FindActiveActivityIdsCmd(executionId));
   }

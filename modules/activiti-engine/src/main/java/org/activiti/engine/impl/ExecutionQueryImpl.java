@@ -14,8 +14,10 @@ package org.activiti.engine.impl;
 
 import java.util.List;
 
+import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
+import org.activiti.engine.impl.runtime.ExecutionQueryProperty;
 import org.activiti.engine.runtime.Execution;
 import org.activiti.engine.runtime.ExecutionQuery;
 
@@ -25,11 +27,16 @@ import org.activiti.engine.runtime.ExecutionQuery;
  */
 public class ExecutionQueryImpl extends AbstractQuery<Execution> implements ExecutionQuery {
 
-  protected boolean onlyProcessInstances;
   protected String processDefinitionId;
   protected String processDefinitionKey;
   protected String activityId;
   protected String executionId;
+  protected String processInstanceId;
+  protected ExecutionQueryProperty orderProperty;
+  
+  // Not used by end-users, but needed for dynamic ibatis query
+  protected String superProcessInstanceId;
+  protected String subProcessInstanceId;
   
   protected CommandExecutor commandExecutor;
   
@@ -41,46 +48,93 @@ public class ExecutionQueryImpl extends AbstractQuery<Execution> implements Exec
   }
 
   public boolean isProcessInstancesOnly() {
-    return false;
+    return false; // see dynamic query
   }
 
   public ExecutionQueryImpl processDefinitionId(String processDefinitionId) {
+    if (processDefinitionId == null) {
+      throw new ActivitiException("Process definition id is null");
+    }
     this.processDefinitionId = processDefinitionId;
     return this;
   }
 
   public ExecutionQueryImpl processDefinitionKey(String processDefinitionKey) {
+    if (processDefinitionKey == null) {
+      throw new ActivitiException("Process definition key is null");
+    }
     this.processDefinitionKey = processDefinitionKey;
     return this;
   }
   
   public ExecutionQueryImpl processInstanceId(String processInstanceId) {
-    this.executionId = processInstanceId;
-    this.onlyProcessInstances = true;
+    if (processInstanceId == null) {
+      throw new ActivitiException("Process instance id is null");
+    }
+    this.processInstanceId = processInstanceId;
     return this;
   }
   
   public ExecutionQueryImpl executionId(String executionId) {
+    if (executionId == null) {
+      throw new ActivitiException("Execution id is null");
+    }
     this.executionId = executionId;
     return this;
   }
   
   public ExecutionQueryImpl activityId(String activityId) {
+    if (activityId == null) {
+      throw new ActivitiException("Activity id is null");
+    }
     this.activityId = activityId;
     return this;
   }
   
-  public ExecutionQueryImpl orderAsc(String column) {
-    super.addOrder(column, SORTORDER_ASC);
+  
+  //ordering ////////////////////////////////////////////////////
+  
+  public ExecutionQueryImpl orderByProcessInstanceId() {
+    this.orderProperty = ExecutionQueryProperty.PROCESS_INSTANCE_ID;
     return this;
   }
   
-  public ExecutionQueryImpl orderDesc(String column) {
-    super.addOrder(column, SORTORDER_DESC);
+  public ExecutionQueryImpl orderByProcessDefinitionId() {
+    this.orderProperty = ExecutionQueryProperty.PROCESS_DEFINITION_ID;
     return this;
   }
+  
+  public ExecutionQueryImpl orderByProcessDefinitionKey() {
+    this.orderProperty = ExecutionQueryProperty.PROCESS_DEFINITION_KEY;
+    return this;
+  }
+  
+  public ExecutionQueryImpl orderBy(ExecutionQueryProperty property) {
+    this.orderProperty = property;
+    return this;
+  }
+  
+  public ExecutionQueryImpl asc() {
+    return direction(Direction.ASCENDING);
+  }
+  
+  public ExecutionQueryImpl desc() {
+    return direction(Direction.DESCENDING);
+  }
+  
+  public ExecutionQueryImpl direction(Direction direction) {
+    if (orderProperty==null) {
+      throw new ActivitiException("You should call any of the orderBy methods first before specifying a direction");
+    }
+    addOrder(orderProperty.getName(), direction.getName());
+    orderProperty = null;
+    return this;
+  }
+  
+  //results ////////////////////////////////////////////////////
   
   public long executeCount(CommandContext commandContext) {
+    checkQueryOk();
     return commandContext
       .getRuntimeSession()
       .findExecutionCountByQueryCriteria(this);
@@ -88,13 +142,22 @@ public class ExecutionQueryImpl extends AbstractQuery<Execution> implements Exec
 
   @SuppressWarnings("unchecked")
   public List<Execution> executeList(CommandContext commandContext, Page page) {
+    checkQueryOk();
     return (List) commandContext
       .getRuntimeSession()
       .findExecutionsByQueryCriteria(this, page);
   }
+  
+  protected void checkQueryOk() {
+    if (orderProperty != null) {
+      throw new ActivitiException("Invalid query: please call asc() or desc() after using orderByXX()");
+    }
+  }
+  
+  //getters ////////////////////////////////////////////////////
 
   public boolean getOnlyProcessInstances() {
-    return onlyProcessInstances;
+    return false;
   }
   
   public String getProcessDefinitionKey() {
@@ -105,8 +168,24 @@ public class ExecutionQueryImpl extends AbstractQuery<Execution> implements Exec
     return processDefinitionId;
   }
   
+  public String getActivityId() {
+    return activityId;
+  }
+  
+  public String getProcessInstanceId() {
+    return processInstanceId;
+  }
+  
   public String getExecutionId() {
     return executionId;
+  }
+
+  public String getSuperProcessInstanceId() {
+    return superProcessInstanceId;
+  }
+
+  public String getSubProcessInstanceId() {
+    return subProcessInstanceId;
   }
   
 }

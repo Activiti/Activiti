@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions id="definitions" 
+  xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:activiti="http://activiti.org/bpmn-extensions"
+  typeLanguage="http://www.w3.org/2001/XMLSchema"
+  expressionLanguage="http://www.w3.org/1999/XPath" 
+  targetNamespace="http://www.activiti.org/bpmn2.0">
+  
+  <process id="concurrent">
+  
+    <startEvent id="theStart" />
+    <sequenceFlow id="flow1" sourceRef="theStart" targetRef="fork" />
+    
+    <parallelGateway id="fork" />
+    <sequenceFlow sourceRef="fork" targetRef="receivePayment" />
+    <sequenceFlow sourceRef="fork" targetRef="shipOrder" />
+    
+    <userTask id="receivePayment" name="Receive Payment" />  
+    <sequenceFlow sourceRef="receivePayment" targetRef="join" />
+    
+    <userTask id="shipOrder" name="Ship Order" /> 
+    <sequenceFlow sourceRef="shipOrder" targetRef="join" />
+    
+    <parallelGateway id="join" />
+    <sequenceFlow sourceRef="join" targetRef="archiveOrder" />
+    
+    <userTask id="archiveOrder" name="Archive Order" /> 
+    <sequenceFlow sourceRef="archiveOrder" targetRef="theEnd" />
+    
+    <endEvent id="theEnd" />
+    
+    
+  </process>
+
+</definitions>
