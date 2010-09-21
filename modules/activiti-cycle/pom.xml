@@ -38,9 +38,9 @@
             </goals>
             <configuration>
               <sources>
-                <source>external/diagram/java</source>
-                <source>external/syntaxchecker/java</source>
-                <source>external/bpmn2_0/java</source>
+                <source>src/external/diagram/java</source>
+                <source>src/external/syntaxchecker/java</source>
+                <source>src/external/bpmn2_0/java</source>
               </sources>
             </configuration>
           </execution>
