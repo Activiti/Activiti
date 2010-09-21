@@ -23,25 +23,53 @@ import junit.framework.Assert;
 import org.activiti.engine.impl.bpmn.SimpleStructure;
 import org.activiti.engine.impl.bpmn.Structure;
 import org.activiti.engine.impl.webservice.WSDLImporter;
+import org.activiti.engine.impl.webservice.WSOperation;
+import org.activiti.engine.impl.webservice.WSService;
 import org.junit.Test;
 
 /**
  * @author Esteban Robles Luna
  */
-public class WSDLImporterTestCase {
+public class WSDLImporterTest {
 
   @Test
   public void testImport() throws Exception {
     WSDLImporter importer = new WSDLImporter();
-    URL url = Thread.currentThread().getContextClassLoader().getResource("org/activiti/engine/test/bpmn/servicetask/counter.wsdl");
-    importer.importFrom(url, null);
+    URL url = Thread.currentThread().getContextClassLoader().getResource("org/activiti/engine/impl/webservice/counter.wsdl");
+    importer.importFrom(url.toString());
+    
+    List<WSService> services = new ArrayList<WSService>(importer.getServices());
+    Assert.assertEquals(1, services.size());
+    WSService service = services.get(0);
+    
+    Assert.assertEquals("Counter", service.getName());
+    Assert.assertEquals("http://localhost:63081/counter", service.getLocation());
     
     List<Structure> structures = new ArrayList<Structure>(importer.getStructures());
     Collections.sort(structures, new Comparator<Structure>() {
+      @Override
       public int compare(Structure o1, Structure o2) {
         return o1.getId().compareTo(o2.getId());
       }
     });
+
+    
+    List<WSOperation> operations = new ArrayList<WSOperation>(importer.getOperations());
+    Collections.sort(operations, new Comparator<WSOperation>() {
+      @Override
+      public int compare(WSOperation o1, WSOperation o2) {
+        return o1.getName().compareTo(o2.getName());
+      }
+    });
+
+    Assert.assertEquals(5, operations.size());
+
+    this.assertOperation(operations.get(0), "getCount", service);
+    this.assertOperation(operations.get(1), "inc", service);
+    this.assertOperation(operations.get(2), "prettyPrintCount", service);
+    this.assertOperation(operations.get(3), "reset", service);
+    this.assertOperation(operations.get(4), "setTo", service);
+    
 
     Assert.assertEquals(10, structures.size());
     
@@ -55,6 +83,11 @@ public class WSDLImporterTestCase {
     this.assertStructure(structures.get(7), "resetResponse", new String[] {}, new Class<?>[] {});
     this.assertStructure(structures.get(8), "setTo", new String[] {"value"}, new Class<?>[] {Integer.class});
     this.assertStructure(structures.get(9), "setToResponse", new String[] {}, new Class<?>[] {});
+  }
+
+  private void assertOperation(WSOperation wsOperation, String name, WSService service) {
+    Assert.assertEquals(name, wsOperation.getName());
+    Assert.assertEquals(service, wsOperation.getService());
   }
 
   private void assertStructure(Structure structure, String structureId, String[] parameters, Class<?>[] classes) {

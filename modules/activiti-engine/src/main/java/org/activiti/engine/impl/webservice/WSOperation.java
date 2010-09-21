@@ -48,4 +48,8 @@ public class WSOperation implements OperationImplementation {
     }
     return results;
   }
+
+  public WSService getService() {
+    return this.service;
+  }
 }

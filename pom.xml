@@ -233,6 +233,26 @@
           <artifactId>spring-beans</artifactId>
           <version>${spring.framework.version}</version>
 		</dependency>
+		<dependency>
+      	  <groupId>com.sun.xml.bind</groupId>
+          <artifactId>jaxb-impl</artifactId>
+          <version>2.1.7</version>
+        </dependency>
+      <dependency>
+        <groupId>wsdl4j</groupId>
+        <artifactId>wsdl4j</artifactId>
+        <version>1.6.2</version>
+      </dependency>
+      <dependency>
+        <groupId>javax.xml</groupId>
+        <artifactId>jaxb-api</artifactId>
+        <version>2.1</version>
+      </dependency>
+      <dependency>
+        <groupId>com.sun.xml.bind</groupId>
+        <artifactId>jaxb-xjc</artifactId>
+        <version>2.1.7</version>
+      </dependency>
     </dependencies>
   </dependencyManagement>
 

@@ -78,4 +78,8 @@ public class WSService implements BpmnInterfaceImplementation {
   public String getName() {
     return this.name;
   }
+  
+  public String getLocation() {
+    return this.location;
+  }
 }
