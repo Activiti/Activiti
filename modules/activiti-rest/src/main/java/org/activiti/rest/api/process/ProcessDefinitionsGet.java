@@ -12,13 +12,12 @@
  */
 package org.activiti.rest.api.process;
 
-import org.activiti.engine.repository.ProcessDefinitionQuery;
+import java.util.Map;
+
 import org.activiti.rest.util.ActivitiWebScript;
 import org.springframework.extensions.webscripts.Cache;
 import org.springframework.extensions.webscripts.Status;
 import org.springframework.extensions.webscripts.WebScriptRequest;
-
-import java.util.Map;
 
 /**
  * Returns details about the process definitions.
@@ -41,7 +40,8 @@ public class ProcessDefinitionsGet extends ActivitiWebScript
   {
     model.put("processDefinitions", getRepositoryService()
             .createProcessDefinitionQuery()
-            .orderAsc(ProcessDefinitionQuery.PROPERTY_ID)
+            .orderById()
+            .asc()
             .list());
   }
 

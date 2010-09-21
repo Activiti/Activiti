@@ -235,7 +235,7 @@ public class TaskQueryImpl extends AbstractQuery<Task> implements TaskQuery {
   
   protected void checkQuery() {
     if (orderProperty != null) {
-      throw new ActivitiException("You should call any of the orderBy methods first before specifying a direction");
+      throw new ActivitiException("Invalid query: call asc() or desc() after using orderByXX()");
     }
   }
   

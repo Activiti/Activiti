@@ -15,18 +15,29 @@ package org.activiti.engine.impl;
 
 import java.util.List;
 
+import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
+import org.activiti.engine.impl.repository.ProcessDefinitionQueryProperty;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.repository.ProcessDefinitionQuery;
 
 
 /**
  * @author Tom Baeyens
+ * @author Joram Barrez
  */
 public class ProcessDefinitionQueryImpl extends AbstractQuery<ProcessDefinition> implements ProcessDefinitionQuery {
   
+  protected String id;
+  protected String name;
+  protected String nameLike;
   protected String deploymentId;
+  protected String key;
+  protected String keyLike;
+  protected Integer version;
+  protected boolean latest = false;
+  protected ProcessDefinitionQueryProperty orderProperty;
 
   public ProcessDefinitionQueryImpl() {
   }
@@ -34,38 +45,159 @@ public class ProcessDefinitionQueryImpl extends AbstractQuery<ProcessDefinition>
   public ProcessDefinitionQueryImpl(CommandExecutor commandExecutor) {
     super(commandExecutor);
   }
+  
+  public ProcessDefinitionQuery id(String processDefinitionId) {
+    this.id = processDefinitionId;
+    return this;
+  }
+  
+  public ProcessDefinitionQuery name(String name) {
+    if (name == null) {
+      throw new ActivitiException("name is null");
+    }
+    this.name = name;
+    return this;
+  }
+  
+  public ProcessDefinitionQuery nameLike(String nameLike) {
+    if (nameLike == null) {
+      throw new ActivitiException("nameLike is null");
+    }
+    this.nameLike = nameLike;
+    return this;
+  }
 
   public ProcessDefinitionQueryImpl deploymentId(String deploymentId) {
+    if (deploymentId == null) {
+      throw new ActivitiException("id is null");
+    }
     this.deploymentId = deploymentId;
     return this;
   }
 
-  public ProcessDefinitionQueryImpl orderAsc(String column) {
-    super.addOrder(column, SORTORDER_ASC);
+  public ProcessDefinitionQuery key(String key) {
+    if (key == null) {
+      throw new ActivitiException("key is null");
+    }
+    this.key = key;
     return this;
   }
   
-  public ProcessDefinitionQueryImpl orderDesc(String column) {
-    super.addOrder(column, SORTORDER_DESC);
+  public ProcessDefinitionQuery keyLike(String keyLike) {
+    if (keyLike == null) {
+      throw new ActivitiException("keyLike is null");
+    }
+    this.keyLike = keyLike;
     return this;
   }
   
-  @Override
+  public ProcessDefinitionQuery version(Integer version) {
+    if (version == null) {
+      throw new ActivitiException("version is null");
+    } else if (version <= 0) {
+      throw new ActivitiException("version must be positive");
+    }
+    this.version = version;
+    return this;
+  }
+  
+  public ProcessDefinitionQuery latest() {
+    this.latest = true;
+    return this;
+  }
+  
+  //sorting ////////////////////////////////////////////
+  
+  public ProcessDefinitionQuery orderByDeploymentId() {
+    return orderBy(ProcessDefinitionQueryProperty.DEPLOYMENT_ID);
+  }
+  
+  public ProcessDefinitionQuery orderById() {
+    return orderBy(ProcessDefinitionQueryProperty.ID);
+  }
+  
+  public ProcessDefinitionQuery orderByKey() {
+    return orderBy(ProcessDefinitionQueryProperty.KEY);
+  }
+  
+  public ProcessDefinitionQuery orderByVersion() {
+    return orderBy(ProcessDefinitionQueryProperty.VERSION);
+  }
+  
+  public ProcessDefinitionQuery orderBy(ProcessDefinitionQueryProperty property) {
+    this.orderProperty = property;
+    return this;
+  }
+  
+  public ProcessDefinitionQuery asc() {
+    return direction(Direction.ASCENDING);
+  }
+  
+  public ProcessDefinitionQuery desc() {
+    return direction(Direction.DESCENDING);
+  }
+  
+  public ProcessDefinitionQuery direction(Direction direction) {
+    if (orderProperty==null) {
+      throw new ActivitiException("You should call any of the orderBy methods first before specifying a direction");
+    }
+    addOrder(orderProperty.getName(), direction.getName());
+    orderProperty = null;
+    return this;
+  }
+  
+  
+  //results ////////////////////////////////////////////
+  
   public long executeCount(CommandContext commandContext) {
+    checkQueryOk();
     return commandContext
       .getRepositorySession()
       .findProcessDefinitionCountByQueryCriteria(this);
   }
 
-  @SuppressWarnings("unchecked")
-  @Override
   public List<ProcessDefinition> executeList(CommandContext commandContext, Page page) {
-    return (List) commandContext
+    checkQueryOk();
+    return commandContext
       .getRepositorySession()
       .findProcessDefinitionsByQueryCriteria(this, page);
   }
   
+  public void checkQueryOk() {
+    if (orderProperty != null) {
+      throw new ActivitiException("Invalid query: call asc() or desc() after using orderByXX()");
+    }
+    
+    // latest() makes only sense when used with key() or keyLike()
+    if (latest && ( (id != null) || (name != null) || (nameLike != null) || (version != null) || (deploymentId != null) ) ){
+      throw new ActivitiException("Calling latest() can only be used in combination with key(String) and keyLike(String)");
+    }
+  }
+  
+  //getters ////////////////////////////////////////////
+  
   public String getDeploymentId() {
     return deploymentId;
+  }
+  public String getId() {
+    return id;
+  }
+  public String getName() {
+    return name;
+  }
+  public String getNameLike() {
+    return nameLike;
+  }
+  public String getKey() {
+    return key;
+  }
+  public String getKeyLike() {
+    return keyLike;
+  }
+  public Integer getVersion() {
+    return version;
+  }
+  public boolean isLatest() {
+    return latest;
   }
 }

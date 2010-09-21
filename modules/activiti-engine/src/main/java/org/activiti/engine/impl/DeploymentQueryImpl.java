@@ -68,7 +68,7 @@ public class DeploymentQueryImpl extends AbstractQuery<Deployment> implements De
   //sorting ////////////////////////////////////////////////////////
   
   public DeploymentQueryImpl orderByDeploymentId() {
-    return orderBy(DeploymentQueryProperty.DEPLOYMENT_ID_);
+    return orderBy(DeploymentQueryProperty.DEPLOYMENT_ID);
   }
   
   public DeploymentQuery orderByDeploymenTime() {
@@ -121,7 +121,7 @@ public class DeploymentQueryImpl extends AbstractQuery<Deployment> implements De
   
   protected void checkQueryOk() {
     if (orderProperty != null) {
-      throw new ActivitiException("Invalid query: please call asc() or desc() after using orderByXX()");
+      throw new ActivitiException("Invalid query: call asc() or desc() after using orderByXX()");
     }
   }
   

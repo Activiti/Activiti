@@ -37,7 +37,7 @@ public class DeploymentQueryProperty {
 
   private static final Map<String, DeploymentQueryProperty> properties = new HashMap<String, DeploymentQueryProperty>();
 
-  public static final DeploymentQueryProperty DEPLOYMENT_ID_ = new DeploymentQueryProperty("D.ID_");
+  public static final DeploymentQueryProperty DEPLOYMENT_ID = new DeploymentQueryProperty("D.ID_");
   public static final DeploymentQueryProperty NAME = new DeploymentQueryProperty("D.NAME_");
   public static final DeploymentQueryProperty DEPLOY_TIME = new DeploymentQueryProperty("D.DEPLOY_TIME_");
   

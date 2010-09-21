@@ -145,7 +145,7 @@ public class ProcessInstanceQueryImpl extends AbstractQuery<ProcessInstance> imp
   
   protected void checkQueryOk() {
     if (orderProperty != null) {
-      throw new ActivitiException("Invalid query: please call asc() or desc() after using orderByXX()");
+      throw new ActivitiException("Invalid query: call asc() or desc() after using orderByXX()");
     }
   }
 

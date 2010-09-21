@@ -19,7 +19,6 @@ import java.util.List;
 import org.activiti.engine.impl.bpmn.deployer.BpmnDeployer;
 import org.activiti.engine.impl.test.ActivitiInternalTestCase;
 import org.activiti.engine.repository.ProcessDefinition;
-import org.activiti.engine.repository.ProcessDefinitionQuery;
 
 /**
  * @author Tom Baeyens
@@ -40,8 +39,10 @@ public class ProcessDefinitionsTest extends ActivitiInternalTestCase {
 
     List<ProcessDefinition> processDefinitions = repositoryService
       .createProcessDefinitionQuery()
-      .orderAsc(ProcessDefinitionQuery.PROPERTY_KEY)
-      .orderDesc(ProcessDefinitionQuery.PROPERTY_VERSION)
+      .orderByKey()
+      .asc()
+      .orderByVersion()
+      .desc()
       .list();
 
     assertNotNull(processDefinitions);
@@ -88,8 +89,10 @@ public class ProcessDefinitionsTest extends ActivitiInternalTestCase {
 
     List<ProcessDefinition> processDefinitions = repositoryService
       .createProcessDefinitionQuery()
-      .orderAsc(ProcessDefinitionQuery.PROPERTY_KEY)
-      .orderDesc(ProcessDefinitionQuery.PROPERTY_VERSION)
+      .orderByKey()
+      .asc()
+      .orderByVersion()
+      .desc()
       .list();
 
     assertNotNull(processDefinitions);
