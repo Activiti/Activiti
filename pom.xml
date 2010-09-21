@@ -328,7 +328,7 @@
 			<modules>
         <module>modules/activiti-spring</module>
 		    <module>modules/activiti-rest</module>
-		    <!-- module>modules/activiti-cycle</module -->
+		    <module>modules/activiti-cycle</module>
 		    <module>modules/activiti-cxf</module>
 			</modules>
 		</profile>
