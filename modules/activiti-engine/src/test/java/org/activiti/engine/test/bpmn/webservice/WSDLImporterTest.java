@@ -47,7 +47,6 @@ public class WSDLImporterTest {
     
     List<Structure> structures = new ArrayList<Structure>(importer.getStructures());
     Collections.sort(structures, new Comparator<Structure>() {
-      @Override
       public int compare(Structure o1, Structure o2) {
         return o1.getId().compareTo(o2.getId());
       }
@@ -56,7 +55,6 @@ public class WSDLImporterTest {
     
     List<WSOperation> operations = new ArrayList<WSOperation>(importer.getOperations());
     Collections.sort(operations, new Comparator<WSOperation>() {
-      @Override
       public int compare(WSOperation o1, WSOperation o2) {
         return o1.getName().compareTo(o2.getName());
       }
