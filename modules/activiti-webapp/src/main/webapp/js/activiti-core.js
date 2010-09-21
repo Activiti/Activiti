@@ -335,6 +335,84 @@ Activiti.util.encodeURIPath = function(text)
 };
 
 /**
+ * Returns the value of the specified query string parameter.
+ *
+ * @method getQueryStringParameter
+ * @param {string} paramName Name of the parameter we want to look up.
+ * @param {string} queryString Optional URL to look at. If not specified,
+ *     this method uses the URL in the address bar.
+ * @return {string} The value of the specified parameter, or null.
+ * @static
+ */
+Activiti.util.getQueryStringParameter = function(paramName, url)
+{
+    var params = this.getQueryStringParameters(url);
+    
+    if (paramName in params)
+    {
+       return params[paramName];
+    }
+
+    return null;
+};
+
+/**
+ * Returns the query string parameters as an object literal.
+ * Parameters appearing more than once are returned an an array.
+ * This method has been extracted from the YUI Browser History Manager.
+ * It can be used here without the overhead of the History JavaScript include.
+ *
+ * @method getQueryStringParameters
+ * @param queryString {string} Optional URL to look at. If not specified,
+ *     this method uses the URL in the address bar.
+ * @return {object} Object literal containing QueryString parameters as name/value pairs
+ * @static
+ */
+Activiti.util.getQueryStringParameters = function(url)
+{
+   var i, len, idx, queryString, params, tokens, name, value, objParams;
+
+   url = url || window.location.href;
+
+   idx = url.indexOf("?");
+   queryString = idx >= 0 ? url.substr(idx + 1) : url;
+
+   // Remove the hash if any
+   idx = queryString.lastIndexOf("#");
+   queryString = idx >= 0 ? queryString.substr(0, idx) : queryString;
+
+   params = queryString.split("&");
+
+   objParams = {};
+
+   for (i = 0, len = params.length; i < len; i++)
+   {
+      tokens = params[i].split("=");
+      if (tokens.length >= 2)
+      {
+         name = tokens[0];
+         value = decodeURIComponent(tokens[1]);
+         switch (typeof objParams[name])
+         {
+            case "undefined":
+               objParams[name] = value;
+               break;
+
+            case "string":
+               objParams[name] = [objParams[name]].concat(value);
+               break;
+
+            case "object":
+               objParams[name] = objParams[name].concat(value);
+               break;
+         }
+      }
+   }
+
+   return objParams;
+};
+
+/**
  * Returns a unique DOM ID for dynamically-created content. Optionally applies the new ID to an element.
  *
  * @method Activiti.util.generateDomId

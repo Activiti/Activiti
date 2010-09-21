@@ -83,6 +83,11 @@
           { key:"priority", label: "Select", sortable: false, width: 200 }
         ]
       );
+		var taskId = Activiti.util.getQueryStringParameter("taskId");
+		if (taskId != null) 
+		{
+			new Activiti.widget.CompleteTaskForm(this.id + "-completeTaskForm", taskId, null);
+		}
     },
 
     /**
@@ -227,7 +232,7 @@
      * @param obj The callback object with task information
      */
     onTaskActionClick: function TaskList_onTaskActionClick(e, obj) {
-      if (obj.action == "complete") {
+		if (obj.action == "complete") {
         new Activiti.widget.CompleteTaskForm(this.id + "-completeTaskForm", obj.taskId, obj.button);
       }
       else if (obj.action == "claim") {
