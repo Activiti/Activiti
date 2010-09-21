@@ -24,6 +24,16 @@
 				</includes>
 			</resource>
 		</resources>
+    <plugins>
+      <plugin>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <configuration>
+          <excludes>
+            <exclude>**/RepositoryConnectorConfigurationManagerImplTest.java</exclude>
+          </excludes>
+        </configuration>
+      </plugin>
+    </plugins>
 	</build>	
 
 	<dependencies>
