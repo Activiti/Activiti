@@ -16,16 +16,17 @@ package org.activiti.engine.test.concurrency;
 import java.util.logging.Logger;
 
 import org.activiti.engine.ActivitiOptimisticLockingException;
-import org.activiti.engine.impl.cmd.AcquireJobsCmd;
-import org.activiti.engine.impl.jobexecutor.JobExecutor;
+import org.activiti.engine.impl.cmd.SignalCmd;
 import org.activiti.engine.impl.test.ActivitiInternalTestCase;
+import org.activiti.engine.runtime.Execution;
+import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.test.Deployment;
 
 
 /**
  * @author Tom Baeyens
  */
-public class CompetingJobAcquisitionTest extends ActivitiInternalTestCase {
+public class CompetingJoinTest extends ActivitiInternalTestCase {
 
   private static Logger log = Logger.getLogger(CompetingSignalsTest.class.getName());
   
@@ -33,19 +34,21 @@ public class CompetingJobAcquisitionTest extends ActivitiInternalTestCase {
   static ControllableThread activeThread;
   static String jobId;
   
-  public class JobAcquisitionThread extends ControllableThread {
+  public class SignalThread extends ControllableThread {
+    String executionId;
     ActivitiOptimisticLockingException exception;
-    @Override
+    public SignalThread(String executionId) {
+      this.executionId = executionId;
+    }
     public synchronized void startAndWaitUntilControlIsReturned() {
       activeThread = this;
       super.startAndWaitUntilControlIsReturned();
     }
     public void run() {
       try {
-        JobExecutor jobExecutor = processEngineConfiguration.getJobExecutor();
         processEngineConfiguration
           .getCommandExecutor()
-          .execute(new ControlledCommand(activeThread, new AcquireJobsCmd(jobExecutor)));
+          .execute(new ControlledCommand(activeThread, new SignalCmd(executionId, null, null)));
 
       } catch (ActivitiOptimisticLockingException e) {
         this.exception = e;
@@ -55,15 +58,26 @@ public class CompetingJobAcquisitionTest extends ActivitiInternalTestCase {
   }
   
   @Deployment
-  public void testCompetingJobAcquisitions() throws Exception {
-    runtimeService.startProcessInstanceByKey("CompetingJobAcquisitionProcess");
+  public void testCompetingJoins() throws Exception {
+    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("CompetingJoinsProcess");
+    Execution execution1 = runtimeService
+      .createExecutionQuery()
+      .processInstanceId(processInstance.getId())
+      .activityId("wait1")
+      .singleResult();
+
+    Execution execution2 = runtimeService
+      .createExecutionQuery()
+      .processInstanceId(processInstance.getId())
+      .activityId("wait2")
+      .singleResult();
 
     log.fine("test thread starts thread one");
-    JobAcquisitionThread threadOne = new JobAcquisitionThread();
+    SignalThread threadOne = new SignalThread(execution1.getId());
     threadOne.startAndWaitUntilControlIsReturned();
     
     log.fine("test thread continues to start thread two");
-    JobAcquisitionThread threadTwo = new JobAcquisitionThread();
+    SignalThread threadTwo = new SignalThread(execution2.getId());
     threadTwo.startAndWaitUntilControlIsReturned();
 
     log.fine("test thread notifies thread 1");

@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.activiti.engine.impl.runtime.ExecutionEntity;
 import org.activiti.pvm.activity.ActivityExecution;
 import org.activiti.pvm.process.PvmActivity;
 import org.activiti.pvm.process.PvmTransition;
@@ -54,6 +55,8 @@ public class ParallelGatewayActivity extends GatewayActivity {
     
     execution.inactivate();
     
+    lockConcurrentRoot(execution);
+    
     List<ActivityExecution> joinedExecutions = execution.findInactiveConcurrentExecutions(activity);
     
     int nbrOfExecutionsToJoin = execution.getActivity().getIncomingTransitions().size();
@@ -66,5 +69,16 @@ public class ParallelGatewayActivity extends GatewayActivity {
     } else if (log.isLoggable(Level.FINE)){
       log.fine("parallel gateway '"+activity.getId()+"' does not activate: "+nbrOfExecutionsJoined+" of "+nbrOfExecutionsToJoin+" joined");
     }
+  }
+
+  protected void lockConcurrentRoot(ActivityExecution execution) {
+    ExecutionEntity concurrentRoot = null; 
+    ExecutionEntity executionEntity = (ExecutionEntity)execution;
+    if (executionEntity.isConcurrent()) {
+      concurrentRoot = (ExecutionEntity) executionEntity.getParent();
+    } else {
+      concurrentRoot = executionEntity;
+    }
+    concurrentRoot.forceUpdate();
   }
 }

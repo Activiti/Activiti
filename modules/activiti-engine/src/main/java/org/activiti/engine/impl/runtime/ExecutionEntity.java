@@ -99,6 +99,8 @@ public class ExecutionEntity extends ExecutionImpl implements PersistentObject, 
   protected String superExecutionId;
   
   protected ELContext cachedElContext;
+  
+  protected boolean forcedUpdate;
 
   public ExecutionEntity() {
   }
@@ -407,11 +409,18 @@ public class ExecutionEntity extends ExecutionImpl implements PersistentObject, 
     persistentState.put("isScope", this.isScope);
     persistentState.put("parentId", parentId);
     persistentState.put("superExecution", this.superExecutionId);
+    if (forcedUpdate) {
+      persistentState.put("forcedUpdate", Boolean.TRUE);
+    }
     return persistentState;
   }
 
   public int getRevisionNext() {
     return revision+1;
+  }
+  
+  public void forceUpdate() {
+    this.forcedUpdate = true;
   }
 
   // toString customization ///////////////////////////////////////////////////

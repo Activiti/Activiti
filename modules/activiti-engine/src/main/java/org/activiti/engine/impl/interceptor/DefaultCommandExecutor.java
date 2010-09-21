@@ -51,7 +51,7 @@ public class DefaultCommandExecutor implements CommandExecutor, ProcessEngineCon
 
   public <T> T execute(Command<T> command) {
     log.fine("                                                                                                    ");
-    log.fine("--- starting command " + ClassNameUtil.getClassNameWithoutPackage(command) + " --------------------------------------------------------");
+    log.fine("--- starting " + ClassNameUtil.getClassNameWithoutPackage(command) + " --------------------------------------------------------");
     try {
 
       return new InternalCommandInterceptorChain(interceptors, contextAwareInterceptors, commandContextFactory).execute(command);
@@ -66,7 +66,7 @@ public class DefaultCommandExecutor implements CommandExecutor, ProcessEngineCon
       throw new ActivitiException("Command failed with unknown exception.", exception);
 
     } finally {
-      log.fine("--- command " + ClassNameUtil.getClassNameWithoutPackage(command) + " finished --------------------------------------------------------");
+      log.fine("--- " + ClassNameUtil.getClassNameWithoutPackage(command) + " finished --------------------------------------------------------");
       log.fine("                                                                                                    ");
     }
   }
