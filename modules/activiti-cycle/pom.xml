@@ -57,7 +57,7 @@
     </plugins>
 	</build>	
 
-	<dependencies>
+  <dependencies>
 		<dependency>
 			<groupId>org.activiti</groupId>
 			<artifactId>activiti-engine</artifactId>
@@ -126,7 +126,20 @@
 	      <artifactId>h2</artifactId>
 	      <scope>test</scope>
 	    </dependency>
-	</dependencies>
+    <!-- required for src/external/bpmn2_0 and src/external/syntaxchecker -->
+    <dependency>
+      <groupId>javax.xml</groupId>
+      <artifactId>jaxb-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.sun.xml.bind</groupId>
+      <artifactId>jaxb-impl</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.sun.xml.bind</groupId>
+      <artifactId>jaxb-xjc</artifactId>
+    </dependency>
+  </dependencies>
 			
 	<profiles>
 		<profile>
