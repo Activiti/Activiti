@@ -19,6 +19,8 @@ package org.activiti.engine.task;
  * @author Joram Barrez
  */
 public interface Task {
+  
+  int PRIORITY_NORMAL = 50; 
 	
 	String getId();
 	
@@ -30,9 +32,17 @@ public interface Task {
 	
 	void setDescription(String description);
 	
-	Integer getPriority();
+	/** indication of how important/urgent this task is with a number between 
+	 * 0 and 100 where higher values mean a higher priority and lower values mean 
+	 * lower priority: [0..19] lowest, [20..39] low, [40..59] normal, [60..79] high 
+	 * [80..100] highest */
+	int getPriority();
 	
-	void setPriority(Integer priority);
+  /** indication of how important/urgent this task is with a number between 
+   * 0 and 100 where higher values mean a higher priority and lower values mean 
+   * lower priority: [0..19] lowest, [20..39] low, [40..59] normal, [60..79] high 
+   * [80..100] highest */
+	void setPriority(int priority);
 	
 	String getAssignee();
 	

@@ -30,21 +30,19 @@ public class JsonTaskConverter extends JsonObjectConverter<Task> {
   }
 
   public JSONObject toJsonObject(Task task) {
-    TaskEntity taskImpl = (TaskEntity) task;
+    TaskEntity taskEntity = (TaskEntity) task;
     JSONObject jsonObject = new JSONObject();
-    jsonObject.put("id", taskImpl.getId());
-    jsonObject.put("dbversion", taskImpl.getRevision());
-    jsonObject.put("assignee", taskImpl.getAssignee());
-    jsonObject.put("name", taskImpl.getName());
-    if(taskImpl.getPriority() != null) {
-      jsonObject.put("priority", taskImpl.getPriority());      
+    jsonObject.put("id", taskEntity.getId());
+    jsonObject.put("dbversion", taskEntity.getRevision());
+    jsonObject.put("assignee", taskEntity.getAssignee());
+    jsonObject.put("name", taskEntity.getName());
+    jsonObject.put("priority", taskEntity.getPriority());      
+    jsonObject.put("createTime", taskEntity.getCreateTime());
+    if (taskEntity.getExecutionId()!=null) {
+      jsonObject.put("activityInstance", taskEntity.getExecutionId());
     }
-    jsonObject.put("createTime", taskImpl.getCreateTime());
-    if (taskImpl.getExecutionId()!=null) {
-      jsonObject.put("activityInstance", taskImpl.getExecutionId());
-    }
-    if (taskImpl.getProcessDefinitionId()!=null) {
-      jsonObject.put("processDefinition", taskImpl.getProcessDefinitionId());
+    if (taskEntity.getProcessDefinitionId()!=null) {
+      jsonObject.put("processDefinition", taskEntity.getProcessDefinitionId());
     }
     return jsonObject;
   }

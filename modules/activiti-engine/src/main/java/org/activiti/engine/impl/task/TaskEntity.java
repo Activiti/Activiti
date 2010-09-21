@@ -45,7 +45,7 @@ public class TaskEntity implements Task, Serializable, PersistentObject {
   protected String name;
   protected String description;
   protected String formResourceKey;
-  protected Integer priority;
+  protected int priority = Task.PRIORITY_NORMAL;
   protected Date createTime; // The time when the task has been created
   protected boolean isTaskInvolvementsInitialized = false;
   protected List<TaskInvolvementEntity> taskInvolvementEntities = new ArrayList<TaskInvolvementEntity>(); 
@@ -276,11 +276,11 @@ public class TaskEntity implements Task, Serializable, PersistentObject {
     this.description = description;
   }
 
-  public Integer getPriority() {
+  public int getPriority() {
     return priority;
   }
 
-  public void setPriority(Integer priority) {
+  public void setPriority(int priority) {
     this.priority = priority;
   }
 

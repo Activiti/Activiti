@@ -16,6 +16,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.activiti.engine.impl.test.ActivitiInternalTestCase;
+import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
 
@@ -46,6 +47,9 @@ public class TaskFormsTest extends ActivitiInternalTestCase {
     // Get start form
     Object startForm = repositoryService.getStartFormByKey("vacationRequest");
     assertNotNull(startForm);
+    
+    ProcessDefinition processDefinition = repositoryService.createProcessDefinitionQuery().singleResult();
+    assertEquals("org/activiti/examples/taskforms/request.form", processDefinition.getStartFormResourceKey());
 
     // Define variables that would be filled in through the form
     Map<String, Object> variables = new HashMap<String, Object>();

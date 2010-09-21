@@ -43,7 +43,7 @@ public class TaskServiceTest extends ActivitiInternalTestCase {
     task = taskService.createTaskQuery().taskId(task.getId()).singleResult();
     assertEquals("description", task.getDescription());
     assertEquals("taskname", task.getName());
-    assertEquals(0, task.getPriority().intValue());
+    assertEquals(0, task.getPriority());
 
     task.setDescription("updateddescription");
     task.setName("updatedtaskname");
@@ -53,7 +53,7 @@ public class TaskServiceTest extends ActivitiInternalTestCase {
     task = taskService.createTaskQuery().taskId(task.getId()).singleResult();
     assertEquals("updateddescription", task.getDescription());
     assertEquals("updatedtaskname", task.getName());
-    assertEquals(1, task.getPriority().intValue());
+    assertEquals(1, task.getPriority());
 
     // Finally, delete task
     taskService.deleteTask(task.getId());
@@ -565,7 +565,7 @@ public class TaskServiceTest extends ActivitiInternalTestCase {
     
     // Fetch task again to check if the priority is set
     task = taskService.createTaskQuery().taskId(task.getId()).singleResult();
-    assertEquals(12345, task.getPriority().intValue());
+    assertEquals(12345, task.getPriority());
     
     taskService.deleteTask(task.getId());
   }
