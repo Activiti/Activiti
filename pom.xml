@@ -451,14 +451,14 @@
 		   <url>http://alfresco.com</url> 
 		</developer>
 	</developers>
-	<issueManagement>
-		<system>TODO</system>
-		<url>TODO</url>
-	</issueManagement>
-	<ciManagement>
-		<system>Bamboo</system>
-		<url>TODO</url>
-	</ciManagement>
+    <issueManagement>
+        <system>JIRA</system>
+        <url>http://jira.codehaus.org/browse/ACT</url>
+    </issueManagement>
+    <ciManagement>
+        <system>Bamboo</system>
+        <url>http://bamboo.ci.codehaus.org/browse/ACT</url>
+    </ciManagement>
 	<scm>
 	</scm>
 
