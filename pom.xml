@@ -327,16 +327,16 @@
 			<id>check</id>
 			<modules>
         <module>modules/activiti-spring</module>
-		    <module>modules/activiti-rest</module>
             <module>modules/activiti-cycle</module>
+		    <module>modules/activiti-rest</module>
 		    <module>modules/activiti-cxf</module>
 			</modules>
 		</profile>
     <profile>
       <id>checkcycle</id>
       <modules>
-        <module>modules/activiti-rest</module>
         <module>modules/activiti-cycle</module>
+        <module>modules/activiti-rest</module>
       </modules>
     </profile>
     <profile>
@@ -352,10 +352,10 @@
         <module>modules/activiti-rest</module>
         <module>modules/activiti-webapp</module>
 				<module>modules/activiti-engine-init</module>
+				<module>modules/activiti-cycle</module>
 				<module>modules/activiti-rest</module>
 				<module>modules/activiti-webapp-probe</module>
 				<module>modules/activiti-webapp-explorer</module>
-				<module>modules/activiti-cycle</module>
 				<module>modules/activiti-webapp-cycle</module>
 		    <module>modules/activiti-cxf</module>
 		    <module>modules/activiti-mule</module>
