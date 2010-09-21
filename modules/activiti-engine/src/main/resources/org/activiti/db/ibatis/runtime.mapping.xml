@@ -26,6 +26,7 @@
   
   <update id="updateExecution" parameterType="org.activiti.engine.impl.runtime.ExecutionEntity">
     update ACT_RU_EXECUTION set
+      REV_ = #{revisionNext, jdbcType=INTEGER},
       PROC_DEF_ID_ = #{processDefinitionId, jdbcType=VARCHAR},
       ACTIVITY_ID_ = #{activityId, jdbcType=VARCHAR},
       IS_ACTIVE_ = #{isActive, jdbcType=BOOLEAN},
@@ -33,7 +34,8 @@
       IS_SCOPE_ = #{isScope, jdbcType=BOOLEAN},
       PARENT_ID_ = #{parentId, jdbcType=VARCHAR},
       SUPER_EXEC_ = #{superExecutionId, jdbcType=VARCHAR}
-    where ID_ = #{id}
+    where ID_ = #{id, jdbcType=VARCHAR}
+      and REV_ = #{revision, jdbcType=INTEGER}
   </update>
   
   <!-- EXECUTION DELETE -->
