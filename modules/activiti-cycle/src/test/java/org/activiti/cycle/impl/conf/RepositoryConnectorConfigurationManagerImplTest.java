@@ -10,6 +10,7 @@ import org.activiti.cycle.RepositoryConnector;
 import org.activiti.cycle.impl.connector.fs.FileSystemConnectorConfiguration;
 import org.activiti.cycle.impl.connector.signavio.SignavioConnectorConfiguration;
 import org.activiti.cycle.impl.connector.view.CustomizedViewConfiguration;
+import org.activiti.engine.impl.cfg.ProcessEngineConfiguration;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -80,7 +81,6 @@ public class RepositoryConnectorConfigurationManagerImplTest {
   
   @Test
   public void testInsertCycleConfiguration() {
-    CycleServiceXStreamImpl cycleServiceImpl = new CycleServiceXStreamImpl();
     String id = "kristin";
     String configXML = "<org.activiti.cycle.impl.conf.ConfigurationContainer>"
                        + " <name>kristin</name>"
@@ -104,14 +104,13 @@ public class RepositoryConnectorConfigurationManagerImplTest {
                        + "</linkedConnectors>"
                        + "<parentContainers/>"
                        + "</org.activiti.cycle.impl.conf.ConfigurationContainer>";
-    cycleServiceImpl.createAndInsert(configXML, id);
+    configurationService.createAndInsert(configXML, id);
     
   }
   
   @Test
   public void testSelectById() {
-    CycleServiceXStreamImpl cycleServiceImpl = new CycleServiceXStreamImpl();
-    CycleConfigEntity cycleConfig = cycleServiceImpl.selectById("kristin");
+    CycleConfigEntity cycleConfig = configurationService.selectById("kristin");
     if (cycleConfig != null)
         System.out.println("Cycle Config XML: " + cycleConfig.getConfigXML());
     
@@ -142,13 +141,12 @@ public class RepositoryConnectorConfigurationManagerImplTest {
     cycleConfig.setConfigXML(configXML);
     cycleConfig.setRevision(cycleConfig.getRevision()+1);
     
-    cycleServiceImpl.updateById(cycleConfig);
+    configurationService.updateById(cycleConfig);
   }
   
   @Test
-  public void deleteById() {
-    CycleServiceXStreamImpl cycleServiceImpl = new CycleServiceXStreamImpl();
-    cycleServiceImpl.deleteById("kristin");
+  public void testDeleteById() {
+    configurationService.deleteById("kristin");
   }
   
   //  
