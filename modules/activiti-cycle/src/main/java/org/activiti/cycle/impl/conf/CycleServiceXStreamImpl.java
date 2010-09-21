@@ -4,11 +4,23 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.Reader;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.activiti.cycle.RepositoryException;
 import org.activiti.cycle.impl.plugin.PluginFinder;
+import org.activiti.engine.ProcessEngines;
+import org.activiti.engine.impl.ProcessEngineImpl;
+import org.activiti.engine.impl.cfg.ProcessEngineConfiguration;
+import org.activiti.engine.impl.interceptor.CommandContext;
+import org.activiti.engine.impl.interceptor.CommandContextFactory;
+import org.apache.ibatis.io.Resources;
+import org.apache.ibatis.mapping.Environment;
+import org.apache.ibatis.session.ResultHandler;
+import org.apache.ibatis.session.SqlSession;
+import org.apache.ibatis.session.SqlSessionFactory;
+import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 
 import com.thoughtworks.xstream.XStream;
 
@@ -27,6 +39,8 @@ public class CycleServiceXStreamImpl implements CycleService {
   
   private XStream xStream = new XStream();
   
+  private static String processEngineName = null;
+  
 
   // private List<Class< ? extends RepositoryConnector>>
   // registeredRepositoryConnnectors = new ArrayList<Class< ? extends
@@ -36,6 +50,10 @@ public class CycleServiceXStreamImpl implements CycleService {
   // private List<RepositoryConnectorConfiguration> repoConnectorConfigurations
   // = new ArrayList<RepositoryConnectorConfiguration>();
 
+  public CycleServiceXStreamImpl(String processEngineName) {
+    this.processEngineName = processEngineName;
+  }
+  
   public CycleServiceXStreamImpl() {
     PluginFinder.checkPluginInitialization();
   }
@@ -137,6 +155,101 @@ public class CycleServiceXStreamImpl implements CycleService {
 
   public ConfigurationContainer getConfiguration(String name) {
     return (ConfigurationContainer) loadFromFile(name);
+  }
+
+  //----- start implementation for cycle persistence -----
+  
+  protected static ProcessEngineConfiguration getProcessEngineConfiguration() {
+    ProcessEngineConfiguration processEngineConfiguration = null;
+    if (processEngineName == null) {
+      processEngineConfiguration = ((ProcessEngineImpl) ProcessEngines.getDefaultProcessEngine()).getProcessEngineConfiguration();
+    } else {
+      processEngineConfiguration = ((ProcessEngineImpl) ProcessEngines.getProcessEngine(processEngineName)).getProcessEngineConfiguration();
+    }
+    return processEngineConfiguration;
+  }
+  
+  public CycleConfigEntity selectById(String id) {
+    SqlSessionFactory sqlMapper = getIbatisConfig();
+    
+    SqlSession session = sqlMapper.openSession();
+    CycleConfigEntity cycleConfig = null;
+    try {
+      cycleConfig = (CycleConfigEntity) session.selectOne(
+              "org.activiti.cycle.impl.conf.CycleConfigEntity.selectCycleConfigById", id);
+
+    } finally {
+      session.close();
+    }
+    
+    return cycleConfig;
+  }
+  
+  public void createAndInsert(String configXML, String id) {
+    //ProcessEngineConfiguration processEngineConfiguration = getProcessEngineConfiguration();
+    //System.out.println("PROCESSENGINECONFIGURATION: " + processEngineConfiguration.getJdbcUrl());
+    CycleConfigEntity cycleConfig = new CycleConfigEntity();
+    cycleConfig.setId(id);
+    cycleConfig.setConfigXML(configXML);
+//    
+//    CommandContext
+//    .getCurrent()
+//    .getDbSqlSession()
+//    .insert(cycleConfig);
+    
+    SqlSessionFactory sqlMapper = getIbatisConfig();
+    
+    SqlSession session = sqlMapper.openSession();
+    session.insert(
+            "org.activiti.cycle.impl.conf.CycleConfigEntity.insertCycleConfig", cycleConfig);
+    
+    session.commit();
+    session.close();
+
+  }
+  
+  public void updateById(CycleConfigEntity cycleConfig) {
+    SqlSessionFactory sqlMapper = getIbatisConfig();
+    
+    SqlSession session = sqlMapper.openSession();
+    try {
+      session.update(
+              "org.activiti.cycle.impl.conf.CycleConfigEntity.updateCycleConfigById", cycleConfig);
+
+    } finally {
+      session.commit();
+      session.close();
+    }
+
+  }
+  
+  public void deleteById(String id) {
+    SqlSessionFactory sqlMapper = getIbatisConfig();
+    
+    SqlSession session = sqlMapper.openSession();
+    try {
+      session.delete(
+              "org.activiti.cycle.impl.conf.CycleConfigEntity.deleteCycleConfigById", id);
+
+    } finally {
+      session.commit();
+      session.close();
+    }
+
+  }
+  
+  private SqlSessionFactory getIbatisConfig() {
+    Reader reader = null;
+    //config.mapping.xml
+    String resource = "org/activiti/cycle/impl/db/ibatis/activiti.ibatis.mem.conf.xml";
+    try {
+      reader = Resources.getResourceAsReader(resource);
+    } catch (IOException e) {
+        e.printStackTrace();
+    }
+
+    SqlSessionFactory sqlMapper = new SqlSessionFactoryBuilder().build(reader);
+    return sqlMapper;
   }
 
   // public void persistAllRepositoryConfigurations() {

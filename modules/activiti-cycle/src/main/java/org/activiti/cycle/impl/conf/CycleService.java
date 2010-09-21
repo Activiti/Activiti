@@ -14,6 +14,8 @@ package org.activiti.cycle.impl.conf;
 
 import java.util.List;
 
+import org.activiti.engine.impl.cfg.ProcessEngineConfiguration;
+
 
 /**
  * This interface provides the methods to read, write and manage configuration
@@ -67,4 +69,15 @@ public interface CycleService {
   // public RepositoryConnector
   // createRepositoryConnectorFromConfiguration(RepositoryConnectorConfiguration
   // repositoryConfig);
+  
+  //----- start method declaration for cycle persistence -----
+  
+  public void createAndInsert(String configXML, String id);
+  
+  public CycleConfigEntity selectById(String id);
+  
+  public void deleteById(String id);
+  
+  public void updateById(CycleConfigEntity cycleConfig);
+  
 }
