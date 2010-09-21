@@ -7,8 +7,11 @@
 <#macro printProcessDefinition processDefinition>
 {
   "id": "${processDefinition.id}",
-  "key": "${processDefinition.key}",
+  "key": "${processDefinition.key?js_string}",
   "version": ${processDefinition.version?string},
-  "name": <#if processDefinition.name??>"${processDefinition.name}"<#else>null</#if>
+  "name": <#if processDefinition.name??>"${processDefinition.name?js_string}"<#else>null</#if>,
+  "resourceName": "${processDefinition.resourceName?js_string}",
+  "deploymentId": "${processDefinition.deploymentId?js_string}",
+  "startFormResourceKey": <#if processDefinition.startFormResourceKey??>"${processDefinition.startFormResourceKey?js_string}"<#else>null</#if>
 }
 </#macro>
