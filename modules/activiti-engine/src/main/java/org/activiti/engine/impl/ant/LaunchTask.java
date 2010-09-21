@@ -46,21 +46,21 @@ public class LaunchTask extends Task {
     String os = System.getProperty("os.name").toLowerCase();
     String dirPath = dir.getAbsolutePath();
     String base = dirPath+FILESEPARATOR+script;
-    if (isExecutable(base)) {
+    if (exists(base)) {
       return base;
     }
     
     if (os.indexOf("windows")!=-1) {
-      if (isExecutable(base+".exe")) {
+      if (exists(base+".exe")) {
         return base+".exe";
       }
-      if (isExecutable(base+".bat")) {
+      if (exists(base+".bat")) {
         return base+".bat";
       }
     }
       
     if (os.indexOf("linux")!=-1 || os.indexOf("mac")!=-1) {
-      if (isExecutable(base+".sh")) {
+      if (exists(base+".sh")) {
         return base+".sh";
       }
     }
@@ -68,9 +68,9 @@ public class LaunchTask extends Task {
     throw new BuildException("couldn't find executable for script "+base);
   }
 
-  public boolean isExecutable(String path) {
+  public boolean exists(String path) {
     File file = new File(path);
-    return (file.exists() && file.canExecute());
+    return (file.exists());
   }
 
   public void setDir(File dir) {

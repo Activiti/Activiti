@@ -23,7 +23,6 @@ public class CxfWebServiceClientFactory implements SyncWebServiceClientFactory {
   /**
    * {@inheritDoc}
    */
-  @Override
   public SyncWebServiceClient create(String wsdl) {
     return new CxfWebServiceClient(wsdl);
   }

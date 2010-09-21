@@ -13,11 +13,12 @@
 package org.activiti.engine.impl.runtime;
 
 import java.io.Serializable;
-import java.nio.charset.Charset;
+import java.io.UnsupportedEncodingException;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.cfg.RuntimeSession;
 import org.activiti.engine.impl.db.DbSqlSession;
 import org.activiti.engine.impl.db.PersistentObject;
@@ -131,7 +132,11 @@ public abstract class JobEntity implements Serializable, Job, PersistentObject {
     String exception = null;
     ByteArrayEntity byteArray = getExceptionByteArray();
     if(byteArray != null) {
-      exception = new String(byteArray.getBytes(), Charset.forName("UTF-8"));
+      try {
+        exception = new String(byteArray.getBytes(), "UTF-8");
+      } catch (UnsupportedEncodingException e) {
+        throw new ActivitiException("UTF-8 is not a supported encoding");
+      }
     }
     return exception;
   }
@@ -178,7 +183,12 @@ public abstract class JobEntity implements Serializable, Job, PersistentObject {
     if(exception == null) {
       exceptionBytes = null;      
     } else {
-      exceptionBytes = exception.getBytes(Charset.forName("UTF-8"));
+      
+      try {
+        exceptionBytes = exception.getBytes("UTF-8");
+      } catch (UnsupportedEncodingException e) {
+        throw new ActivitiException("UTF-8 is not a supported encoding");
+      }
     }   
     
     ByteArrayEntity byteArray = getExceptionByteArray();

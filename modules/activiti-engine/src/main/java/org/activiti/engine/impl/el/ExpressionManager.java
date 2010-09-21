@@ -38,10 +38,6 @@ import org.activiti.pvm.impl.runtime.ExecutionImpl;
  * Then also this class is used as an entry point for runtime evaluation of the
  * expressions.
  * </p>
- * <p>
- * Using this class, also the runtime engine doesn't create a hard dependency on
- * the javax.el library as long as you don't use expressions.
- * </p>
  * 
  * @author Tom Baeyens
  * @author Dave Syer
@@ -52,9 +48,15 @@ public class ExpressionManager {
   public static final String UEL_METHOD = "uel-method";
   public static final String DEFAULT_EXPRESSION_LANGUAGE = UEL_VALUE;
 
-  protected ExpressionFactory expressionFactory = ExpressionFactory.newInstance();
+  protected ExpressionFactory expressionFactory;
   // Default implementation (does nothing)
   protected ELContext parsingElContext = new ParsingElContext();
+  
+  
+  public ExpressionManager() {
+    // Used to be able to run in environments which use old javex.el API
+    expressionFactory = ExpressionFactoryResolver.resolveExpressionFactory();
+  }
 
   public ActivitiValueExpression createValueExpression(String expression) {
     ValueExpression valueExpression = expressionFactory.createValueExpression(parsingElContext, expression, Object.class);

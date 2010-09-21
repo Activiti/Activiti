@@ -30,7 +30,6 @@ public class SpringProcessEngineInitializer implements ProcessEngineInitializer 
 
   private static Logger log = Logger.getLogger(SpringProcessEngineInitializer.class.getName());
   
-  @Override
   public ProcessEngine getProcessEngine() {
     log.fine("==== BUILDING SPRING APPLICATION CONTEXT AND PROCESS ENGINE =========================================");
     
