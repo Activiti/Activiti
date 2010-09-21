@@ -88,7 +88,13 @@
 			<groupId>javax.servlet</groupId>
 			<artifactId>servlet-api</artifactId>
 			<scope>provided</scope>
-		</dependency>		
+		</dependency>
+		<!-- added h2.jar to support H2 database -->	
+	    <dependency>
+	      <groupId>com.h2database</groupId>
+	      <artifactId>h2</artifactId>
+	      <scope>test</scope>
+	    </dependency>
 	</dependencies>
 			
 	<profiles>

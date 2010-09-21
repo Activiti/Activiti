@@ -267,6 +267,10 @@ JAVA_OPTS="-Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=8787
       <fileset dir="${activiti.home}/examples/activiti-engine-examples/libs-test">
         <include name="h2-*.jar"/>
       </fileset>
+    	<!--added to copy activiti-cycle-*.jar-->
+        <fileset dir="${activiti.home}/lib">
+          <include name="activiti-cycle-${activiti.version}.jar"/>
+        </fileset>
       <fileset dir="build">
         <include name="activiti-cfg.jar"/>
       </fileset>

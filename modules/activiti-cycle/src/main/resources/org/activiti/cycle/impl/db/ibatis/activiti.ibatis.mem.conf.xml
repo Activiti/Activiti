@@ -6,14 +6,18 @@
 	<settings>
 		<setting name="lazyLoadingEnabled" value="false" />
 	</settings>
+	<environments default="development">
+		<environment id="development">
+		<transactionManager type="JDBC"/>
+		<dataSource type="POOLED">
+			<property name="driver" value="org.h2.Driver"/> <!-- ${driver} -->
+			<property name="url" value="jdbc:h2:tcp://localhost/activiti"/> <!-- ${url} TODO: try jdbc:h2:tcp://localhost/activiti | jdbc:h2:mem:activiti--> 
+			<property name="username" value="sa"/> <!-- ${user} -->
+			<property name="password" value=""/> <!-- ${password} -->
+		</dataSource>
+		</environment>
+	</environments>  	
 	<mappers>
-		<mapper resource="org/activiti/db/ibatis/config.mapping.xml" />
-<!--		<mapper resource="org/activiti/db/ibatis/repository.mapping.xml" />-->
-<!--		<mapper resource="org/activiti/db/ibatis/runtime.mapping.xml" />-->
-<!--		<mapper resource="org/activiti/db/ibatis/history.mapping.xml" />-->
-<!--		<mapper resource="org/activiti/db/ibatis/job.mapping.xml" />-->
-<!--		<mapper resource="org/activiti/db/ibatis/task.mapping.xml" />-->
-<!--		<mapper resource="org/activiti/db/ibatis/identity.mapping.xml" />-->
-<!--		<mapper resource="org/activiti/db/ibatis/variable.mapping.xml" />-->
+		<mapper resource="org/activiti/cycle/impl/db/ibatis/config.mapping.xml" />
 	</mappers>
 </configuration>

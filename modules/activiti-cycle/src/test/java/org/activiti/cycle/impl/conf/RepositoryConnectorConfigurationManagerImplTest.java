@@ -77,6 +77,80 @@ public class RepositoryConnectorConfigurationManagerImplTest {
       new File("camunda.cycle-conf.xml").delete();
     }
   }
+  
+//  @Test
+//  public void testInsertCycleConfiguration() {
+//    CycleServiceXStreamImpl cycleServiceImpl = new CycleServiceXStreamImpl();
+//    String id = "kristin";
+//    String configXML = "<org.activiti.cycle.impl.conf.ConfigurationContainer>"
+//                       + " <name>kristin</name>"
+//                       + " <linkedConnectors>"
+//                       + "<org.activiti.cycle.impl.connector.signavio.SignavioConnectorConfiguration>"
+//                       + "<name>Activiti Modeler</name>"
+//                       + "<credentialsSaved>false</credentialsSaved>"
+//                       + "<signavioBaseUrl>http://localhost:8080/activiti-modeler/</signavioBaseUrl>"
+//                       + "<loginRequired>false</loginRequired>"
+//                       + "</org.activiti.cycle.impl.connector.signavio.SignavioConnectorConfiguration>"
+//                       + "<org.activiti.cycle.impl.connector.fs.FileSystemConnectorConfiguration>"
+//                       + "<name>Eclipse Workspace (File System)</name>"
+//                       + "<baseFilePath>C:/Dokumente+und+Einstellungen/polenz/workspace/activiti/distro/target/activiti-5.0.beta2-SNAPSHOT/apps/eclipse-workspace</baseFilePath>"
+//                       + "</org.activiti.cycle.impl.connector.fs.FileSystemConnectorConfiguration>"
+//                       + "<org.activiti.cycle.impl.connector.signavio.OryxConnectorConfiguration>"
+//                       + "<name>oryx-project.org</name>"
+//                       + "<credentialsSaved>false</credentialsSaved>"
+//                       + "<signavioBaseUrl>http://oryx-project.org/</signavioBaseUrl>"
+//                       + "<loginRequired>false</loginRequired>"
+//                       + "</org.activiti.cycle.impl.connector.signavio.OryxConnectorConfiguration>"
+//                       + "</linkedConnectors>"
+//                       + "<parentContainers/>"
+//                       + "</org.activiti.cycle.impl.conf.ConfigurationContainer>";
+//    cycleServiceImpl.createAndInsert(configXML, id);
+//    
+//  }
+//  
+//  @Test
+//  public void testSelectById() {
+//    CycleServiceXStreamImpl cycleServiceImpl = new CycleServiceXStreamImpl();
+//    CycleConfigEntity cycleConfig = cycleServiceImpl.selectById("kristin");
+//    if (cycleConfig != null)
+//        System.out.println("Cycle Config XML: " + cycleConfig.getConfigXML());
+//    
+//    String configXML = "<org.activiti.cycle.impl.conf.ConfigurationContainer>"
+//      + " <name>kristinPolenz</name>"
+//      + " <linkedConnectors>"
+//      + "<org.activiti.cycle.impl.connector.signavio.SignavioConnectorConfiguration>"
+//      + "<name>Activiti Modeler</name>"
+//      + "<credentialsSaved>false</credentialsSaved>"
+//      + "<signavioBaseUrl>http://localhost:8080/activiti-modeler/</signavioBaseUrl>"
+//      + "<loginRequired>false</loginRequired>"
+//      + "</org.activiti.cycle.impl.connector.signavio.SignavioConnectorConfiguration>"
+//      + "<org.activiti.cycle.impl.connector.fs.FileSystemConnectorConfiguration>"
+//      + "<name>Eclipse Workspace (File System)</name>"
+//      + "<baseFilePath>C:/Dokumente+und+Einstellungen/polenz/workspace/activiti/distro/target/activiti-5.0.beta2-SNAPSHOT/apps/eclipse-workspace</baseFilePath>"
+//      + "</org.activiti.cycle.impl.connector.fs.FileSystemConnectorConfiguration>"
+//      + "<org.activiti.cycle.impl.connector.signavio.OryxConnectorConfiguration>"
+//      + "<name>oryx-project.org</name>"
+//      + "<credentialsSaved>false</credentialsSaved>"
+//      + "<signavioBaseUrl>http://oryx-project.org/</signavioBaseUrl>"
+//      + "<loginRequired>false</loginRequired>"
+//      + "</org.activiti.cycle.impl.connector.signavio.OryxConnectorConfiguration>"
+//      + "</linkedConnectors>"
+//      + "<parentContainers/>"
+//      + "</org.activiti.cycle.impl.conf.ConfigurationContainer>";
+//    
+//    //update by id
+//    cycleConfig.setConfigXML(configXML);
+//    cycleConfig.setRevision(cycleConfig.getRevision()+1);
+//    
+//    cycleServiceImpl.updateById(cycleConfig);
+//  }
+  
+  @Test
+  public void deleteById() {
+    CycleServiceXStreamImpl cycleServiceImpl = new CycleServiceXStreamImpl();
+    cycleServiceImpl.deleteById("kristin");
+  }
+  
   //  
   //
   // @Test

@@ -12,7 +12,6 @@ public class CycleConfigEntity implements Serializable, PersistentObject {
   private static final long serialVersionUID = -4985509539753978783L;
   
   protected String id;
-  protected String user;
   protected String configXML;
   protected int revision;
   
@@ -30,14 +29,6 @@ public class CycleConfigEntity implements Serializable, PersistentObject {
     this.id = id;
   }
 
-  public String getUser() {
-    return user;
-  }
-  
-  public void setUser(String user) {
-    this.user = user;
-  }
-  
   public String getConfigXML() {
     return configXML;
   }
@@ -56,7 +47,7 @@ public class CycleConfigEntity implements Serializable, PersistentObject {
 
   public Object getPersistentState() {
     Map<String, Object> persistentState = new HashMap<String, Object>();
-    persistentState.put("user", user);
+    persistentState.put("id", id);
     persistentState.put("configXML", configXML);
     return persistentState;
   }
