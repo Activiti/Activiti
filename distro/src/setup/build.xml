@@ -203,7 +203,7 @@
       <replacetoken><![CDATA[#!/bin/sh]]></replacetoken>
       <replacevalue><![CDATA[#!/bin/sh
 
-JAVA_OPTS=-XX:MaxPermSize=@tomcat.max.perm.size@
+JAVA_OPTS=$JAVA_OPTS" -XX:MaxPermSize=@tomcat.max.perm.size@"
 ]]></replacevalue>
     </replace>
     <replace file="${tomcat.home}/bin/catalina.sh" token="@tomcat.max.perm.size@" value="${tomcat.max.perm.size}" />
