@@ -66,7 +66,7 @@
   <select id="selectJobByQueryCriteria" parameterType="org.activiti.engine.impl.JobQueryImpl" resultMap="jobResultMap">
     select *
     <include refid="selectJobByQueryCriteriaSql"/>
-    order by ID_
+    order by ${orderBy}
   </select>
 
   <select id="selectJobCountByQueryCriteria" parameterType="org.activiti.engine.impl.JobQueryImpl" resultType="long">
@@ -75,20 +75,41 @@
   </select>
   
   <sql id="selectJobByQueryCriteriaSql">
-    from ACT_RU_JOB
+    from ACT_RU_JOB J
     <where>
+      <if test="id != null">
+        J.ID_ = #{id}
+      </if>
       <if test="processInstanceId != null">
-        PROCESS_INSTANCE_ID_ = #{processInstanceId}
+        and J.PROCESS_INSTANCE_ID_ = #{processInstanceId}
       </if>
       <if test="executionId != null">
-        EXECUTION_ID_ = #{executionId}
+        and J.EXECUTION_ID_ = #{executionId}
       </if>
       <if test="retriesLeft">
-        RETRIES_ &gt; 0
+        and J.RETRIES_ &gt; 0
       </if>
       <if test="executable">
-        (RETRIES_ &gt; 0)
-        and (DUEDATE_ is null or DUEDATE_ &lt;= #{now, jdbcType=TIMESTAMP})
+        (J.RETRIES_ &gt; 0)
+        and (J.DUEDATE_ is null or J.DUEDATE_ &lt;= #{now, jdbcType=TIMESTAMP})
+      </if>
+      <if test="onlyTimers">
+        and J.TYPE_ = 'timer'
+      </if>
+      <if test="onlyMessages">
+        and J.TYPE_ = 'message'
+      </if>
+      <if test="duedateHigherThen != null">
+        and J.DUEDATE_ &gt; #{duedateHigherThen}
+      </if>
+      <if test="duedateLowerThen != null">
+        and J.DUEDATE_ &lt; #{duedateLowerThen}
+      </if>
+      <if test="duedateHigherThenOrEqual != null">
+        and J.DUEDATE_ &gt;= #{duedateHigherThenOrEqual}
+      </if>
+      <if test="duedateLowerThenOrEqual != null">
+        and J.DUEDATE_ &lt;= #{duedateLowerThenOrEqual}
       </if>
     </where>
   </sql>

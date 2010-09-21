@@ -29,8 +29,12 @@ package org.activiti.engine.impl.task;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.activiti.engine.task.TaskQuery;
+
 
 /**
+ * Contains the possible properties that can be used in a {@link TaskQuery}.
+ * 
  * @author Joram Barrez
  */
 public class TaskQueryProperty {

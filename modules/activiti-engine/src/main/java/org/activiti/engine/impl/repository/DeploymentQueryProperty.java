@@ -29,8 +29,12 @@ package org.activiti.engine.impl.repository;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.activiti.engine.repository.DeploymentQuery;
+
 
 /**
+ * Contains the possible properties that can be used in a {@link DeploymentQuery}.
+ * 
  * @author Joram Barrez
  */
 public class DeploymentQueryProperty {

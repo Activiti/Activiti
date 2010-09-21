@@ -34,6 +34,7 @@ import org.activiti.engine.runtime.Job;
  * @author Tom Baeyens
  * @author Nick Burch
  * @author Dave Syer
+ * @author Frederik Heremans
  */
 public abstract class JobEntity implements Serializable, Job, PersistentObject {
 

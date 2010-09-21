@@ -16,22 +16,26 @@ package org.activiti.engine.impl.runtime;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.activiti.engine.runtime.JobQuery;
+
 /**
- * Contains the possible properties that can be used in a {@link ExecutionQueryt}.
+ * Contains the possible properties that can be used in a {@link JobQuery}.
  * 
  * @author Joram Barrez
  */
-public class ExecutionQueryProperty {
+public class JobQueryProperty {
   
-  private static final Map<String, ExecutionQueryProperty> properties = new HashMap<String, ExecutionQueryProperty>();
+  private static final Map<String, JobQueryProperty> properties = new HashMap<String, JobQueryProperty>();
 
-  public static final ExecutionQueryProperty PROCESS_INSTANCE_ID = new ExecutionQueryProperty("E.ID_");
-  public static final ExecutionQueryProperty PROCESS_DEFINITION_KEY = new ExecutionQueryProperty("P.KEY_");
-  public static final ExecutionQueryProperty PROCESS_DEFINITION_ID = new ExecutionQueryProperty("P.ID_");
-  
+  public static final JobQueryProperty ID = new JobQueryProperty("ID_");
+  public static final JobQueryProperty PROCESS_INSTANCE_ID = new JobQueryProperty("J.PROCESS_INSTANCE_ID_");
+  public static final JobQueryProperty EXECUTION_ID = new JobQueryProperty("J.EXECUTION_ID_");
+  public static final JobQueryProperty DUEDATE = new JobQueryProperty("J.DUEDATE_");
+  public static final JobQueryProperty RETRIES = new JobQueryProperty("J.RETRIES_");
+
   private String name;
 
-  public ExecutionQueryProperty(String name) {
+  public JobQueryProperty(String name) {
     this.name = name;
     properties.put(name, this);
   }
@@ -40,7 +44,7 @@ public class ExecutionQueryProperty {
     return name;
   }
   
-  public static ExecutionQueryProperty findByName(String propertyName) {
+  public static JobQueryProperty findByName(String propertyName) {
     return properties.get(propertyName);
   }
 

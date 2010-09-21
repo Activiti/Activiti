@@ -16,8 +16,10 @@ package org.activiti.engine.impl;
 import java.util.Date;
 import java.util.List;
 
+import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
+import org.activiti.engine.impl.runtime.JobQueryProperty;
 import org.activiti.engine.impl.util.ClockUtil;
 import org.activiti.engine.runtime.Job;
 import org.activiti.engine.runtime.JobQuery;
@@ -29,10 +31,18 @@ import org.activiti.engine.runtime.JobQuery;
  */
 public class JobQueryImpl extends AbstractQuery<Job> implements JobQuery {
   
+  protected String id;
   protected String processInstanceId;
   protected String executionId;
   protected boolean retriesLeft;
   protected boolean executable;
+  protected boolean onlyTimers;
+  protected boolean onlyMessages;
+  protected Date duedateHigherThen;
+  protected Date duedateLowerThen;
+  protected Date duedateHigherThenOrEqual;
+  protected Date duedateLowerThenOrEqual;
+  protected JobQueryProperty orderProperty;
   
   public JobQueryImpl() {
   }
@@ -40,13 +50,27 @@ public class JobQueryImpl extends AbstractQuery<Job> implements JobQuery {
   public JobQueryImpl(CommandExecutor commandExecutor) {
     super(commandExecutor);
   }
+  
+  public JobQuery id(String jobId) {
+    if (jobId == null) {
+      throw new ActivitiException("Supplied job id is null");
+    }
+    this.id = jobId;
+    return this;
+  }
 
   public JobQueryImpl processInstanceId(String processInstanceId) {
+    if (processInstanceId == null) {
+      throw new ActivitiException("Supplied process instance id is null");
+    }
     this.processInstanceId = processInstanceId;
     return this;
   }
   
   public JobQueryImpl executionId(String executionId) {
+    if (executionId == null) {
+      throw new ActivitiException("Supplied execution id is null");
+    }
     this.executionId = executionId;
     return this;
   }
@@ -60,45 +84,136 @@ public class JobQueryImpl extends AbstractQuery<Job> implements JobQuery {
     executable = true;
     return this;
   }
-
-  public JobQueryImpl orderAsc(String column) {
-    super.addOrder(column, SORTORDER_ASC);
+  
+  public JobQuery onlyTimers() {
+    if (onlyMessages) {
+      throw new ActivitiException("Cannot combine onlyTimers() with onlyMessages() in the same query");
+    }
+    this.onlyTimers = true;
     return this;
   }
   
-  public JobQueryImpl orderDesc(String column) {
-    super.addOrder(column, SORTORDER_DESC);
+  public JobQuery onlyMessages() {
+    if (onlyTimers) {
+      throw new ActivitiException("Cannot combine onlyTimers() with onlyMessages() in the same query");
+    }
+    this.onlyMessages = true;
     return this;
   }
+  
+  public JobQuery duedateHigherThen(Date date) {
+    if (date == null) {
+      throw new ActivitiException("Supplied date is null");
+    }
+    this.duedateHigherThen = date;
+    return this;
+  }
+  
+  public JobQuery duedateHigherThenOrEquals(Date date) {
+    if (date == null) {
+      throw new ActivitiException("Supplied date is null");
+    }
+    this.duedateHigherThenOrEqual = date;
+    return this;
+  }
+  
+  public JobQuery duedateLowerThen(Date date) {
+    if (date == null) {
+      throw new ActivitiException("Supplied date is null");
+    }
+    this.duedateLowerThen = date;
+    return this;
+  }
+  
+  public JobQuery duedateLowerThenOrEquals(Date date) {
+    if (date == null) {
+      throw new ActivitiException("Supplied date is null");
+    }
+    this.duedateLowerThenOrEqual = date;
+    return this;
+  }
+  
+  //sorting //////////////////////////////////////////
+  
+  public JobQuery orderByDuedate() {
+    return orderBy(JobQueryProperty.DUEDATE);
+  }
+  
+  public JobQuery orderByExecutionId() {
+    return orderBy(JobQueryProperty.EXECUTION_ID);
+  }
+  
+  public JobQuery orderById() {
+    return orderBy(JobQueryProperty.ID);
+  }
+  
+  public JobQuery orderByProcessInstanceId() {
+    return orderBy(JobQueryProperty.PROCESS_INSTANCE_ID);
+  }
+  
+  public JobQuery orderByRetries() {
+    return orderBy(JobQueryProperty.RETRIES);
+  }
+  
+  public JobQuery orderBy(JobQueryProperty property) {
+    this.orderProperty = property;
+    return this;
+  }
+  
+  public JobQuery asc() {
+    return direction(Direction.ASCENDING);
+  }
+  
+  public JobQuery desc() {
+    return direction(Direction.DESCENDING);
+  }
+  
+  public JobQuery direction(Direction direction) {
+    if (orderProperty==null) {
+      throw new ActivitiException("You should call any of the orderBy methods first before specifying a direction");
+    }
+    addOrder(orderProperty.getName(), direction.getName());
+    orderProperty = null;
+    return this;
+  }
+  
+  //results //////////////////////////////////////////
 
   public long executeCount(CommandContext commandContext) {
+    checkQueryOk();
     return commandContext
       .getRuntimeSession()
       .findJobCountByQueryCriteria(this);
   }
 
   public List<Job> executeList(CommandContext commandContext, Page page) {
+    checkQueryOk();
     return commandContext
       .getRuntimeSession()
       .findJobsByQueryCriteria(this, page);
   }
   
+  protected void checkQueryOk() {
+    if (orderProperty != null) {
+      throw new ActivitiException("Invalid query: call asc() or desc() after using orderByXX()");
+    }
+  }
+
+  
+  //getters //////////////////////////////////////////
+  
   public String getProcessInstanceId() {
     return processInstanceId;
   }
-
   public String getExecutionId() {
     return executionId;
   }
-  
   public boolean getRetriesLeft() {
     return retriesLeft;
   }
-
   public boolean getExecutable() {
     return executable;
   }
-  
   public Date getNow() {
     return ClockUtil.getCurrentTime();
   }
