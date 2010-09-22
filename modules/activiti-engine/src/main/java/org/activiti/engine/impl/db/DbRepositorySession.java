@@ -71,7 +71,14 @@ public class DbRepositorySession implements Session, RepositorySession {
 
         processDefinition.setVersion(processDefinitionVersion);
         processDefinition.setDeploymentId(deployment.getId());
-        processDefinition.setId(processDefinition.getKey()+":"+processDefinition.getVersion());
+        
+        String processDefinitionId = processDefinition.getKey()+":"+processDefinition.getVersion();
+        // ACT-115: maximum id length is 64 charcaters
+        if (processDefinitionId.length() > 64) {
+          throw new ActivitiException("Invalid process definition id: '" + processDefinitionId 
+                  + "': id can be maximum 64 characters");
+        }
+        processDefinition.setId(processDefinitionId);
 
         dbSqlSession.insert(processDefinition);
         addToProcessDefinitionCache(processDefinition);

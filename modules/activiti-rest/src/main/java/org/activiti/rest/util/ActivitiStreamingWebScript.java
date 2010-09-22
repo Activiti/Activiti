@@ -48,7 +48,6 @@ public class ActivitiStreamingWebScript extends AbstractWebScript {
     this.config = config;
   }
 
-  @Override
   public void execute(WebScriptRequest req, WebScriptResponse res) throws IOException {
     // TODO: set the current user context when the core api implements security checks
     // TODO: perform common functionality prepareing for the streaming
