@@ -6,7 +6,7 @@
     <div class="hidden">
       <span>${msg("label.hide-details")}</span>
       <div>
-        <pre>${engine.exception}</pre>
+        <pre>${engine.exception?html}</pre>
       </div>
     </div>
   <#else>
@@ -16,7 +16,7 @@
 
 <h2>${msg("header.information")}</h2>
 <div class="section">
-  <span class="label">${msg("label.name")}:</span>${engine.name}<br/>
-  <span class="label">${msg("label.version")}:</span>${engine.version}<br/>
-  <span class="label">${msg("label.resource-url")}:</span>${engine.resourceUrl}<br/>
+  <span class="label">${msg("label.name")}:</span>${engine.name?html}<br/>
+  <span class="label">${msg("label.version")}:</span>${engine.version?html}<br/>
+  <span class="label">${msg("label.resource-url")}:</span>${engine.resourceUrl?html}<br/>
 </div>

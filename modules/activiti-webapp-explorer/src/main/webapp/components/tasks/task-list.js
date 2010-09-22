@@ -122,7 +122,7 @@
       }
       else if (filter["candidate-group"]) {
         var groupName =  Activiti.constants.GROUPS.assignment[filter["candidate-group"]];
-        headerEl.innerHTML = this.msg("label.filter.candidate-group", groupName);
+        headerEl.innerHTML = this.msg("label.filter.candidate-group", $html(groupName));
       }
     },
 

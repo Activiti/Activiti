@@ -6,5 +6,5 @@
   </#list>
 </ul>
 <script type="text/javascript">//<![CDATA[
-   new Activiti.component.DatabaseTables("${args.htmlid}").setMessages(${messages});
+   new Activiti.component.DatabaseTables("${args.htmlid?js_string}").setMessages(${messages});
 //]]></script>

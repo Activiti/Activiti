@@ -388,20 +388,20 @@ Activiti.service.Ajax = function() {
       var config = serverResponse.argument.config;
 
       // Need to execute embedded "<script>" tags?
+      var scripts = [];
+      var script = null;
+      var regexp = /<script[^>]*>([\s\S]*?)<\/script>/gi;
+      while ((script = regexp.exec(serverResponse.responseText)))
+      {
+        scripts.push(script[1]);
+      }
+      scripts = scripts.join("\n");
+
+      // Remove the script from the responseText so it doesn't get executed twice
+      serverResponse.responseText = serverResponse.responseText.replace(regexp, "");
+
       if (config.execScripts)
       {
-        var scripts = [];
-        var script = null;
-        var regexp = /<script[^>]*>([\s\S]*?)<\/script>/gi;
-        while ((script = regexp.exec(serverResponse.responseText)))
-        {
-          scripts.push(script[1]);
-        }
-        scripts = scripts.join("\n");
-
-        // Remove the script from the responseText so it doesn't get executed twice
-        serverResponse.responseText = serverResponse.responseText.replace(regexp, "");
-
         // Use setTimeout to execute the script. Note scope will always be "window"
         window.setTimeout(scripts, 0);
 
@@ -748,7 +748,7 @@ Activiti.service.Ajax = function() {
      * @param eventName The base name of the service event
      */
     htmlRequest: function (method, url, dataObj, responseObj, methodName, eventName) {
-      this.request(method, url, dataObj, responseObj, methodName, eventName, Activiti.service.Ajax.HTML, this.htmlDispatcher);
+      this.request(method, url, dataObj, responseObj, methodName, eventName, Activiti.service.Ajax.HTML, this.htmlDispatcher, true);
     },
 
     /**
@@ -773,8 +773,9 @@ Activiti.service.Ajax = function() {
      * @param responseObj Object to pass to the callback (May be null for GET)
      * @param methodName The name of the service method
      * @param eventName The base name of the service event
+     * @param execScripts If set to true the script elements that an html response brings back will be executed.
      */
-    request: function (method, url, dataObj, responseObj, methodName, eventName, contentType, dispatcherMethod) {
+    request: function (method, url, dataObj, responseObj, methodName, eventName, contentType, dispatcherMethod, execScripts) {
       var config = {
         method: method,
         url: url,
@@ -794,7 +795,8 @@ Activiti.service.Ajax = function() {
             methodName: methodName,
             responseObj: responseObj
           }
-        }
+        },
+        execScripts: (execScripts == true)
       };
       config.requestContentType = contentType;
       config.responseContentType = contentType;
@@ -1218,132 +1220,3 @@ Activiti.service.Ajax = function() {
   });
 })();
 
-/**
- * Activiti RepositoryService.
- *
- * @namespace Activiti.service
- * @class Activiti.service.RepositoryService
- */
-(function()
-{
-	var that = this;
-	
-  /**
-   * RepositoryService constructor.
-   *
-   * @parameter handler {object} The response handler object
-   * @return {Activiti.service.RepositoryService} The new Activiti.service.RepositoryService instance
-   * @constructor
-   */
-  Activiti.service.RepositoryService = function RepositoryService_constructor(callbackHandler)
-  {
-		Activiti.service.RepositoryService.superclass.constructor.call(this, "Activiti.service.RepositoryService", callbackHandler);
-    that = this;
-		return this;
-  };
-
-  /**
-   * Event constants
-   */
-   YAHOO.lang.augmentObject(Activiti.service.ManagementService,
-   {
-     event: {
-       loadTree: "loadTree"
-     }
-   });
-
-  YAHOO.extend(Activiti.service.RepositoryService, Activiti.service.RestService,
-  {
-
-    /**
-     * Loads the repository tree
-     *
-     * @method loadTree
-     * @param obj {Object} Helper object to be sent to the callback
-     */
-    loadTree: function RepositoryService_loadTree(obj)
-    {
-      this.jsonGet(this.loadTreeURL(), obj, "loadTree");
-    },
-
-    /**
-     * Creates the GET url used to load the tree
-     *
-     * @method loadTreeURL
-     * @return {string} The url
-     */
-    loadTreeURL: function RepositoryService_loadTreeURL()
-    {
-      return Activiti.service.REST_PROXY_URI_RELATIVE + "repo-tree?id=/&folder=true";
-    },
-
-		/**
-		 * TODO: document it.. Also see dynamicLoad in repo-tree.js
-		 *
-		 */
-		loadNodeData: function RepositoryService_loadNodeData(node, fnLoadComplete)
-		{
-			var obj = [node, fnLoadComplete];
-			this.jsonGet(this.loadNodeURL(node.data.id, node.data.folder), obj, "loadNodeData");
-	  },
-
-		/**
-		 * TODO: doc
-     * Creates the GET url used to load the tree
-     *
-     * @method loadTreeURL
-     * @return {string} The url
-     */
-    loadNodeURL: function RepositoryService_loadNodeURL(nodeid, folder)
-    {
-      return Activiti.service.REST_PROXY_URI_RELATIVE + "repo-tree?id=" + encodeURIComponent(nodeid) + "&folder=" + folder;
-    },
-
-		/**
-     * Loads an artifact (id and url)
-     *
-     * @method loadArtifact
-     * @param artifactid {string} The id of the artifact to be loaded
-     * @param obj {Object} Helper object to be sent to the callback
-     */
-    loadArtifact: function RepositoryService_loadArtifact(artifactid, obj)
-    {
-      this.jsonGet(this.loadArtifactURL(artifactid), obj, "loadArtifact");
-    },
-
-    /**
-     * Creates the GET url used to load the artifact
-     *
-     * @method loadArtifactURL
-		 * @param artifactid {string} The id of the artifact
-     * @return {string} The url
-     */
-    loadArtifactURL: function RepositoryService_loadArtifactURL(artifactid)
-    {
-      return Activiti.service.REST_PROXY_URI_RELATIVE + "artifact?artifactId=" + encodeURIComponent(artifactid);
-    },
-
-		// TODO: doc
-    loadArtifactActionForm: function RepositoryService_loadArtifactActionForm(artifactId, artifactActionName, obj)
-    {
-		  this.jsonGet(this.loadArtifactActionFormURL(artifactId, artifactActionName), obj, "loadArtifactActionForm");
-    },
-
-		// TODO: doc
-    loadArtifactActionFormURL: function RepositoryService_loadArtifactActionFormURL(artifactId, artifactActionName)
-    {
-			return Activiti.service.REST_PROXY_URI_RELATIVE + "artifact-action-form?artifactId=" + encodeURIComponent(artifactId) + "&actionName=" + encodeURIComponent(artifactActionName);
-    },
-
-		executeArtifactAction: function RepositoryService_executeArtifactAction(artifactId, artifactActionName, variables, obj)
-		{
-			this.jsonPut(this.executeArtifactFormURL(artifactId, artifactActionName), variables, obj, "executeArtifactAction");
-		},
-		
-		executeArtifactFormURL: function RepositoryService_executeArtifactFormURL(artifactId, artifactActionName)
-		{
-			return Activiti.service.REST_PROXY_URI_RELATIVE + "artifact-action?artifactId=" + encodeURIComponent(artifactId) + "&actionName=" + encodeURIComponent(artifactActionName);
-		}
-
-  });
-})();
