@@ -15,7 +15,7 @@ create table ACT_GE_BYTEARRAY (
     ID_ varchar(64),
     REV_ integer,
     NAME_ varchar(255),
-    DEPLOYMENT_ID_ varchar(64),f
+    DEPLOYMENT_ID_ varchar(64),
     BYTES_ LONGBLOB,
     primary key (ID_)
 ) TYPE=InnoDB;
