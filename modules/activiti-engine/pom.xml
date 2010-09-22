@@ -96,8 +96,6 @@
         <configuration>
           <excludes>
             <exclude>**/*TestCase.java</exclude>
-            <exclude>**/HistoricDataServiceImplTest.java</exclude>
-            <exclude>**/HistoricDataServiceTest.java</exclude>
           </excludes>
         </configuration>
       </plugin>

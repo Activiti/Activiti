@@ -135,8 +135,6 @@
               <excludes>
                 <exclude>org/activiti/standalone/**</exclude>
                 <exclude>**/*TestCase.java</exclude>
-		            <exclude>**/HistoricDataServiceImplTest.java</exclude>
-		            <exclude>**/HistoricDataServiceTest.java</exclude>
               </excludes>
             </configuration>
           </plugin>
