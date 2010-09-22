@@ -81,12 +81,12 @@ public class GetFormCmd implements Command<Object> {
       throw new ActivitiException("processDefinitionKey, processDefinitionId and taskId are null");
     }
 
-    String deploymentId = processDefinition.getDeploymentId();
-    DeploymentEntity deployment = repositorySession.findDeploymentById(deploymentId);
-    
     Object result = null;
     if (formResourceKey != null) {
-      String formTemplateString = getFormTemplateString(formResourceKey, deployment);      
+      String deploymentId = processDefinition.getDeploymentId();
+      DeploymentEntity deployment = repositorySession.findDeploymentById(deploymentId);
+
+      String formTemplateString = getFormTemplateString(formResourceKey, deployment);
       
       ScriptingEngines scriptingEngines = commandContext.getProcessEngineConfiguration().getScriptingEngines();
       result = scriptingEngines.evaluate(formTemplateString, ScriptingEngines.DEFAULT_SCRIPTING_LANGUAGE, execution);

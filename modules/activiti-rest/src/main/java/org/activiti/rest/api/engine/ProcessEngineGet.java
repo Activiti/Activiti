@@ -15,6 +15,7 @@ package org.activiti.rest.api.engine;
 import java.util.Map;
 
 import org.activiti.engine.ProcessEngine;
+import org.activiti.rest.util.ActivitiRequest;
 import org.activiti.rest.util.ActivitiWebScript;
 import org.springframework.extensions.webscripts.*;
 
@@ -35,7 +36,7 @@ public class ProcessEngineGet extends ActivitiWebScript
    * @param model The webscripts template model
    */
   @Override
-  protected void executeWebScript(WebScriptRequest req, Status status, Cache cache, Map<String, Object> model)
+  protected void executeWebScript(ActivitiRequest req, Status status, Cache cache, Map<String, Object> model)
   {
     model.put("processEngineInfo", getProcessEngineInfo());
     model.put("version", ProcessEngine.VERSION);

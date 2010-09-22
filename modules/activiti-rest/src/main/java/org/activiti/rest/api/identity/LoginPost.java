@@ -15,6 +15,7 @@ package org.activiti.rest.api.identity;
 import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.ProcessEngineInfo;
 import org.activiti.engine.ProcessEngines;
+import org.activiti.rest.util.ActivitiRequest;
 import org.activiti.rest.util.ActivitiWebScript;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -48,10 +49,10 @@ public class LoginPost extends ActivitiWebScript
    * @param model The webscripts template model
    */
   @Override
-  protected void executeWebScript(WebScriptRequest req, Status status, Cache cache, Map<String, Object> model)
+  protected void executeWebScript(ActivitiRequest req, Status status, Cache cache, Map<String, Object> model)
   {
     // Extract user and password from JSON POST
-    Content c = req.getContent();
+    Content c = req.getWebScriptRequest().getContent();
     if (c == null)
     {
       throw new WebScriptException(Status.STATUS_BAD_REQUEST, "Missing POST body.");

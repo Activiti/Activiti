@@ -14,6 +14,7 @@ package org.activiti.rest.api.identity;
 
 import java.util.Map;
 
+import org.activiti.rest.util.ActivitiRequest;
 import org.activiti.engine.identity.GroupQuery;
 import org.activiti.rest.util.ActivitiWebScript;
 import org.springframework.extensions.webscripts.*;
@@ -35,10 +36,10 @@ public class UserGroupsGet extends ActivitiWebScript
    * @param model The webscripts template model
    */
   @Override
-  protected void executeWebScript(WebScriptRequest req, Status status, Cache cache, Map<String, Object> model)
+  protected void executeWebScript(ActivitiRequest req, Status status, Cache cache, Map<String, Object> model)
   {
-    String userId = getMandatoryPathParameter(req, "userId");
-    String groupType = getString(req, "type");
+    String userId = req.getMandatoryPathParameter("userId");
+    String groupType = req.getString("type");
     if (groupType != null && !groupType.trim().equals(""))
     {
       GroupQuery query = getIdentityService().createGroupQuery().member(userId);

@@ -13,8 +13,6 @@
 package org.activiti.rest.api.cycle;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.net.SocketException;
 import java.util.Collection;
 import java.util.Date;
 
@@ -24,34 +22,29 @@ import org.activiti.cycle.ContentRepresentation;
 import org.activiti.cycle.ContentType;
 import org.activiti.cycle.RepositoryArtifact;
 import org.activiti.cycle.RepositoryConnector;
-import org.springframework.extensions.surf.util.Base64;
-import org.springframework.extensions.webscripts.AbstractWebScript;
-import org.springframework.extensions.webscripts.Cache;
-import org.springframework.extensions.webscripts.WebScriptRequest;
+import org.activiti.rest.util.ActivitiRequest;
+import org.activiti.rest.util.ActivitiStreamingWebScript;
 import org.springframework.extensions.webscripts.WebScriptResponse;
-import org.springframework.extensions.webscripts.servlet.WebScriptServletRequest;
 
 /**
  * @author Nils Preusker
  */
-public class ContentGet extends AbstractWebScript {
+public class ContentGet extends ActivitiStreamingWebScript {
 
-  public void execute(WebScriptRequest req, WebScriptResponse res) throws IOException {
+  protected void executeStreamingWebScript(ActivitiRequest req, WebScriptResponse res) {
+    // Override to make something usefule
+  }
+
+  public void execute(ActivitiRequest req, WebScriptResponse res) throws IOException {
 
     // Retrieve the artifactId from the request
-    String artifactId = req.getParameter("artifactId");
-    if (artifactId == null || artifactId.length() == 0) {
-      throw new RuntimeException("Missing required parameter: artifactId");
-    }
-    String contentType = req.getParameter("content-type");
-    if (artifactId == null || artifactId.length() == 0) {
-      throw new RuntimeException("Missing required parameter: content-type");
-    }
+    String artifactId = req.getMandatoryString("artifactId");
+    String contentType = req.getMandatoryString("content-type");
     // TODO: add check for supported content types
 
     // Retrieve session and repo connector
-    String cuid = getCurrentUserId(req);
-    HttpSession session = ((WebScriptServletRequest) req).getHttpServletRequest().getSession(true);
+    String cuid = req.getCurrentUserId();
+    HttpSession session = req.getHttpSession();
     RepositoryConnector conn = SessionUtil.getRepositoryConnector(cuid, session);
 
     // Retrieve the artifact from the repository
@@ -63,7 +56,7 @@ public class ContentGet extends AbstractWebScript {
 
         // assuming we want to create an attachment for binary data...
         boolean attach = contentType.startsWith("application/") ? true : false;
-        
+
         // TODO: This code should become obsolete when the connectors store the file names properly with suffix.
         String attachmentFileName = null;
         if(attach) {
@@ -84,87 +77,15 @@ public class ContentGet extends AbstractWebScript {
           } else if(contentType.equals(ContentType.MS_WORD) && !attachmentFileName.endsWith(".doc")) {
             attachmentFileName += ".doc";
           }
-          
+
         }
-        
+
         // TODO: what is a good way to determine the etag? Using a fake one...
-        streamContentImpl(req, res, conn.getContent(artifact.getId(), representation.getId()).asInputStream(), attach, new Date(0),
-                "W/\"647-1281077702000\"", attachmentFileName, contentType);
+        streamResponse(res, conn.getContent(artifact.getId(), representation.getId()).asInputStream(), new Date(0),
+            "W/\"647-1281077702000\"", attach, attachmentFileName, contentType);
       }
     }
 
-  }
-  protected void streamContentImpl(WebScriptRequest req, WebScriptResponse res, InputStream in, boolean attach, Date modified, String eTag,
-          String attachFileName, String mimetype) throws IOException {
-    setAttachment(res, attach, attachFileName);
-
-    res.setContentType(mimetype);
-    // TODO: determine encoding and set it on the response
-    // res.setContentEncoding(...);
-
-    // TODO: determine the content length...
-    // res.setHeader("Content-Length", ...);
-
-    // set caching
-    Cache cache = new Cache();
-    cache.setNeverCache(false);
-    cache.setMustRevalidate(true);
-    cache.setMaxAge(0L);
-    cache.setLastModified(modified);
-    cache.setETag(eTag);
-    res.setCache(cache);
-
-    // get the content and stream directly to the response output stream
-    // assuming the repository is capable of streaming in chunks, this should
-    // allow large files
-    // to be streamed directly to the browser response stream.
-    try {
-      byte[] buffer = new byte[0xFFFF];
-      for (int len; (len = in.read(buffer)) != -1;)
-        res.getOutputStream().write(buffer, 0, len);
-    } catch (SocketException e) {
-      // TODO: client cut the connection, log the message?
-    }
-  }
-
-  /**
-   * Set attachment header
-   * 
-   * @param res
-   * @param attach
-   * @param attachFileName
-   */
-  protected void setAttachment(WebScriptResponse res, boolean attach, String attachFileName) {
-    if (attach == true) {
-      String headerValue = "attachment";
-      if (attachFileName != null && attachFileName.length() > 0) {
-
-        headerValue += "; filename=" + attachFileName;
-      }
-
-      // set header based on filename - will force a Save As from the browse if
-      // it doesn't recognize it
-      // this is better than the default response of the browser trying to
-      // display the contents
-      res.setHeader("Content-Disposition", headerValue);
-    }
-  }
-
-  /**
-   * Returns the username for the current user.
-   * 
-   * @param req The webscript request
-   * @return The username of the current user
-   */
-  protected String getCurrentUserId(WebScriptRequest req) {
-    String authorization = req.getHeader("Authorization");
-    if (authorization != null) {
-      String[] parts = authorization.split(" ");
-      if (parts.length == 2) {
-        return new String(Base64.decode(parts[1])).split(":")[0];
-      }
-    }
-    return null;
   }
 
 }

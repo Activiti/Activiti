@@ -13,6 +13,7 @@
 package org.activiti.rest.api.management;
 
 import org.activiti.engine.management.TablePageQuery;
+import org.activiti.rest.util.ActivitiRequest;
 import org.activiti.rest.util.ActivitiWebScript;
 import org.springframework.extensions.webscripts.Cache;
 import org.springframework.extensions.webscripts.Status;
@@ -37,21 +38,21 @@ public class TableDataGet extends ActivitiWebScript
    * @param model The webscripts template model
    */
   @Override
-  protected void executeWebScript(WebScriptRequest req, Status status, Cache cache, Map<String, Object> model)
+  protected void executeWebScript(ActivitiRequest req, Status status, Cache cache, Map<String, Object> model)
   {
-    String tableName = getMandatoryPathParameter(req, "tableName");
-    int size = getInt(req, "size", 10);
-    int firstResult = getInt(req, "start", 10);
+    String tableName = req.getMandatoryPathParameter("tableName");
+    int size = req.getInt("size", 10);
+    int firstResult = req.getInt("start", 10);
     int maxResults = size;
     
     TablePageQuery query = getManagementService()
       .createTablePageQuery()
       .tableName(tableName);
     
-    String sort = getString(req, "sort");
+    String sort = req.getString("sort");
     if (sort != null && !sort.trim().equals("")) {
       model.put("sortColumn", sort);
-      String order = getString(req, "order", "asc");
+      String order = req.getString("order", "asc");
       model.put("sortOrder", order);
       if (order.equals("asc")) {
         query.orderAsc(sort);

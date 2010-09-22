@@ -12,6 +12,12 @@
  */
 package org.activiti.rest;
 
+import eu.medsea.mimeutil.MimeType;
+import eu.medsea.mimeutil.MimeUtil;
+
+import java.io.InputStream;
+import java.util.Collection;
+
 /**
  * @author Erik Winlof
  */
@@ -23,6 +29,10 @@ public class Config {
   private String adminGroupId = "admin";
   private String securityRoleGroupTypeId = "security-role";
   private String assignmentGroupTypeId = "assignment";
+
+  public Config() {
+    MimeUtil.registerMimeDetector("eu.medsea.mimeutil.detector.MagicMimeMimeDetector");
+  }
 
   public String getEngine() {
     return engine;
@@ -80,5 +90,10 @@ public class Config {
   public void setAssignmentGroupTypeId(String assignmentGroupTypeId)
   {
     this.assignmentGroupTypeId = assignmentGroupTypeId;
+  }
+
+  public String getMimeType(InputStream inputStream) {
+    Collection<MimeType> mimeTypes = MimeUtil.getMimeTypes(inputStream);
+    return MimeUtil.getMostSpecificMimeType(mimeTypes).toString();
   }
 }

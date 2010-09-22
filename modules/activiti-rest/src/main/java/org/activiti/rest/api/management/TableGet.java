@@ -14,6 +14,7 @@ package org.activiti.rest.api.management;
 
 import java.util.Map;
 
+import org.activiti.rest.util.ActivitiRequest;
 import org.activiti.rest.util.ActivitiWebScript;
 import org.springframework.extensions.webscripts.Cache;
 import org.springframework.extensions.webscripts.Status;
@@ -36,9 +37,9 @@ public class TableGet extends ActivitiWebScript
    * @param model The webscripts template model
    */
   @Override
-  protected void executeWebScript(WebScriptRequest req, Status status, Cache cache, Map<String, Object> model)
+  protected void executeWebScript(ActivitiRequest req, Status status, Cache cache, Map<String, Object> model)
   {
-    String tableName = getMandatoryPathParameter(req, "tableName");
+    String tableName = req.getMandatoryPathParameter("tableName");
     model.put("tableMetaData", getManagementService().getTableMetaData(tableName));
   }
 

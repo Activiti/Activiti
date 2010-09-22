@@ -45,6 +45,13 @@
     <property name="config" ref="config"/>
   </bean>
 
+  <!-- Activiti streaming webscript base helper class -->
+  <bean id="activitiStreamingWebScript"
+        class="org.activiti.rest.util.ActivitiStreamingWebScript"
+        parent="webscript">
+    <property name="config" ref="config"/>
+  </bean>
+
   <!--
     Java backed webscripts needs to be registered.
     The id of each must start with "webscript" and shall match the webscript package + the webscript id.
@@ -77,6 +84,11 @@
   <bean id="webscript.org.activiti.rest.api.identity.group-users.get"
         class="org.activiti.rest.api.identity.GroupUsersGet"
         parent="activitiWebScript">
+  </bean>
+
+  <bean id="webscript.org.activiti.rest.api.deployment.deployment-resource.get"
+        class="org.activiti.rest.api.deployment.DeploymentResourceGet"
+        parent="activitiStreamingWebScript">
   </bean>
 
   <bean id="webscript.org.activiti.rest.api.engine.process-engine.get"
@@ -156,7 +168,7 @@
 
   <bean id="webscript.org.activiti.rest.api.cycle.content.get"
         class="org.activiti.rest.api.cycle.ContentGet"
-        parent="webscript">
+        parent="activitiStreamingWebScript">
   </bean>
 
   <bean id="webscript.org.activiti.rest.api.cycle.artifact-action-form.get"

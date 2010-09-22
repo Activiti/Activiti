@@ -7,6 +7,7 @@ import javax.servlet.http.HttpSession;
 import org.activiti.cycle.ParameterizedAction;
 import org.activiti.cycle.RepositoryArtifact;
 import org.activiti.cycle.RepositoryConnector;
+import org.activiti.rest.util.ActivitiRequest;
 import org.activiti.rest.util.ActivitiWebScript;
 import org.springframework.extensions.webscripts.Cache;
 import org.springframework.extensions.webscripts.Status;
@@ -25,15 +26,15 @@ public class ArtifactActionFormGet extends ActivitiWebScript {
    * @param model The webscripts template model
    */
   @Override
-  protected void executeWebScript(WebScriptRequest req, Status status, Cache cache, Map<String, Object> model) {
+  protected void executeWebScript(ActivitiRequest req, Status status, Cache cache, Map<String, Object> model) {
     // Retrieve the artifactId from the request
-    String artifactId = getMandatoryString(req, "artifactId");
-    String actionId = getMandatoryString(req, "actionName");
+    String artifactId = req.getMandatoryString("artifactId");
+    String actionId = req.getMandatoryString("actionName");
     
     // Retrieve session and repo connector
-    String cuid = getCurrentUserId(req);
+    String cuid = req.getCurrentUserId();
 
-    HttpSession session = ((WebScriptServletRequest) req).getHttpServletRequest().getSession(true);
+    HttpSession session = req.getHttpSession();
     RepositoryConnector conn = SessionUtil.getRepositoryConnector(cuid, session);
 
     // Retrieve the artifact from the repository

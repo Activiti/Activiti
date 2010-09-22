@@ -5,6 +5,7 @@ import java.util.Map;
 import javax.servlet.http.HttpSession;
 
 import org.activiti.cycle.RepositoryConnector;
+import org.activiti.rest.util.ActivitiRequest;
 import org.activiti.rest.util.ActivitiWebScript;
 import org.springframework.extensions.webscripts.Cache;
 import org.springframework.extensions.webscripts.Status;
@@ -14,18 +15,18 @@ import org.springframework.extensions.webscripts.servlet.WebScriptServletRequest
 public class ActionExecutionPut extends ActivitiWebScript {
 
   @Override
-  protected void executeWebScript(WebScriptRequest req, Status status, Cache cache, Map<String, Object> model) {
+  protected void executeWebScript(ActivitiRequest req, Status status, Cache cache, Map<String, Object> model) {
 
-    String artifactId = getMandatoryString(req, "artifactId");
-    String actionId = getMandatoryString(req, "actionName");
+    String artifactId = req.getMandatoryString("artifactId");
+    String actionId = req.getMandatoryString("actionName");
     
-    String cuid = getCurrentUserId(req);
+    String cuid = req.getCurrentUserId();
     
-    HttpSession session = ((WebScriptServletRequest) req).getHttpServletRequest().getSession(true);
+    HttpSession session = req.getHttpSession();
     RepositoryConnector conn = SessionUtil.getRepositoryConnector(cuid, session);
     
-    ActivitiWebScriptBody body = getBody(req);
-    Map<String, Object> parameters = getFormVariables(body);
+    ActivitiRequest.ActivitiWebScriptBody body = req.getBody();
+    Map<String, Object> parameters = req.getFormVariables(body);
     
     try {
       conn.executeParameterizedAction(artifactId, actionId, parameters);

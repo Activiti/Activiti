@@ -24,6 +24,7 @@ import org.activiti.cycle.RepositoryConnector;
 import org.activiti.cycle.RepositoryException;
 import org.activiti.cycle.RepositoryFolder;
 import org.activiti.cycle.RepositoryNodeCollection;
+import org.activiti.rest.util.ActivitiRequest;
 import org.activiti.rest.util.ActivitiWebScript;
 import org.springframework.extensions.webscripts.Cache;
 import org.springframework.extensions.webscripts.Status;
@@ -38,15 +39,15 @@ public class TreeGet extends ActivitiWebScript {
   private static Logger log = Logger.getLogger(TreeGet.class.getName());
 
   @Override
-  protected void executeWebScript(WebScriptRequest req, Status status, Cache cache, Map<String, Object> model) {
+  protected void executeWebScript(ActivitiRequest req, Status status, Cache cache, Map<String, Object> model) {
 
-    String cuid = getCurrentUserId(req);
+    String cuid = req.getCurrentUserId();
 
-    HttpSession session = ((WebScriptServletRequest) req).getHttpServletRequest().getSession(true);
+    HttpSession session = req.getHttpServletRequest().getSession(true);
     RepositoryConnector conn = SessionUtil.getRepositoryConnector(cuid, session);
 
-    String id = getString(req, "id");
-    boolean folder = Boolean.parseBoolean(getString(req, "folder"));    
+    String id = req.getString("id");
+    boolean folder = Boolean.parseBoolean(req.getString("folder"));
     if (folder) {
       try {
         RepositoryNodeCollection children = conn.getChildren(id);

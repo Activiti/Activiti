@@ -31,6 +31,7 @@ import org.activiti.cycle.RepositoryArtifact;
 import org.activiti.cycle.RepositoryConnector;
 import org.activiti.rest.api.cycle.dto.ContentView;
 import org.activiti.rest.api.cycle.dto.DownloadActionView;
+import org.activiti.rest.util.ActivitiRequest;
 import org.activiti.rest.util.ActivitiWebScript;
 import org.springframework.extensions.webscripts.Cache;
 import org.springframework.extensions.webscripts.Status;
@@ -46,14 +47,15 @@ public class ArtifactGet extends ActivitiWebScript {
   private static Logger log = Logger.getLogger(TreeGet.class.getName());
 
   @Override
-  protected void executeWebScript(WebScriptRequest req, Status status, Cache cache, Map<String, Object> model) {
+  protected void executeWebScript(ActivitiRequest req, Status status, Cache cache, Map<String, Object> model) {
     // Retrieve the artifactId from the request
-    String artifactId = getString(req, "artifactId");
+    String artifactId = req.getString("artifactId");
 
     // Retrieve session and repo connector
-    String cuid = getCurrentUserId(req);
+    String cuid = req.getCurrentUserId();
 
-    HttpSession session = ((WebScriptServletRequest) req).getHttpServletRequest().getSession(true);
+    WebScriptRequest wsReq = req.getWebScriptRequest();
+    HttpSession session = req.getHttpSession();
     RepositoryConnector conn = SessionUtil.getRepositoryConnector(cuid, session);
 
     // Retrieve the artifact from the repository
@@ -67,7 +69,7 @@ public class ArtifactGet extends ActivitiWebScript {
           String content = conn.getContent(artifactId, representation.getId()).asString();
           contentViews.add(new ContentView(representation.getMimeType(), representation.getId(), content));
         } else if (representation.getMimeType().startsWith("image/")) {
-          String url = req.getServerPath() + req.getContextPath() + "/service/content?artifactId=" + URLEncoder.encode(artifactId, "UTF-8") + "&content-type="
+          String url = wsReq.getServerPath() + wsReq.getContextPath() + "/service/content?artifactId=" + URLEncoder.encode(artifactId, "UTF-8") + "&content-type="
                   + URLEncoder.encode(representation.getMimeType(), "UTF-8");
           contentViews.add(new ContentView(representation.getMimeType(), representation.getId(), url));
         }
@@ -92,7 +94,7 @@ public class ArtifactGet extends ActivitiWebScript {
     List<DownloadActionView> downloads = new ArrayList<DownloadActionView>();
     for (DownloadContentAction action : artifact.getArtifactType().getDownloadContentActions()) {
       try {
-        String url = req.getServerPath() + req.getContextPath() + "/service/content?artifactId=" + URLEncoder.encode(artifactId, "UTF-8") + "&content-type="
+        String url = wsReq.getServerPath() + wsReq.getContextPath() + "/service/content?artifactId=" + URLEncoder.encode(artifactId, "UTF-8") + "&content-type="
                 + URLEncoder.encode(action.getContentRepresentation().getMimeType(), "UTF-8");
         downloads.add(new DownloadActionView(action.getId(), url, action.getContentRepresentation().getMimeType(), action.getContentRepresentation().getId()));
       } catch (UnsupportedEncodingException e) {

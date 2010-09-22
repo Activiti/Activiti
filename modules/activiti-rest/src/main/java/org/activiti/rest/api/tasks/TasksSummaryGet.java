@@ -14,6 +14,7 @@ package org.activiti.rest.api.tasks;
 
 import org.activiti.engine.TaskService;
 import org.activiti.engine.identity.Group;
+import org.activiti.rest.util.ActivitiRequest;
 import org.activiti.engine.identity.GroupQuery;
 import org.activiti.rest.util.ActivitiWebScript;
 import org.springframework.extensions.webscripts.Cache;
@@ -40,9 +41,9 @@ public class TasksSummaryGet extends ActivitiWebScript {
    * @param model The webscripts template model
    */
   @Override
-  protected void executeWebScript(WebScriptRequest req, Status status, Cache cache, Map<String, Object> model)
+  protected void executeWebScript(ActivitiRequest req, Status status, Cache cache, Map<String, Object> model)
   {
-    String user = getMandatoryString(req, "user");
+    String user = req.getMandatoryString("user");
     TaskService ts = getTaskService();
     
     GroupQuery query = getIdentityService()

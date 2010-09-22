@@ -1,5 +1,6 @@
 package org.activiti.rest.api.process;
 
+import org.activiti.rest.util.ActivitiRequest;
 import org.activiti.rest.util.ActivitiWebScript;
 import org.springframework.extensions.webscripts.Cache;
 import org.springframework.extensions.webscripts.Status;
@@ -24,9 +25,9 @@ public class ProcessDefinitionGet extends ActivitiWebScript
    * @param model The webscripts template model
    */
   @Override
-  protected void executeWebScript(WebScriptRequest req, Status status, Cache cache, Map<String, Object> model)
+  protected void executeWebScript(ActivitiRequest req, Status status, Cache cache, Map<String, Object> model)
   {
-    String processDefinitionId = getMandatoryPathParameter(req, "processDefinitionId");
+    String processDefinitionId = req.getMandatoryPathParameter("processDefinitionId");
     model.put("processDefinition", getRepositoryService().createProcessDefinitionQuery().id(processDefinitionId).singleResult());
   }
 

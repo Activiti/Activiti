@@ -14,6 +14,7 @@ package org.activiti.rest.api.identity;
 
 import java.util.Map;
 
+import org.activiti.rest.util.ActivitiRequest;
 import org.activiti.rest.util.ActivitiWebScript;
 import org.springframework.extensions.webscripts.*;
 
@@ -34,9 +35,9 @@ public class GroupUsersGet extends ActivitiWebScript
    * @param model The webscripts template model
    */
   @Override
-  protected void executeWebScript(WebScriptRequest req, Status status, Cache cache, Map<String, Object> model)
+  protected void executeWebScript(ActivitiRequest req, Status status, Cache cache, Map<String, Object> model)
   {
-    String groupId = getMandatoryPathParameter(req, "groupId");
+    String groupId = req.getMandatoryPathParameter("groupId");
     model.put("users", getIdentityService().createUserQuery().memberOfGroup(groupId).list());
   }
 }

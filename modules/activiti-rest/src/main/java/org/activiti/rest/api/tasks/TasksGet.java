@@ -15,6 +15,7 @@ package org.activiti.rest.api.tasks;
 import java.util.Map;
 
 import org.activiti.engine.task.TaskQuery;
+import org.activiti.rest.util.ActivitiRequest;
 import org.activiti.rest.util.ActivitiWebScript;
 import org.springframework.extensions.webscripts.*;
 
@@ -35,13 +36,13 @@ public class TasksGet extends ActivitiWebScript
    * @param model The webscripts template model
    */
   @Override
-  protected void executeWebScript(WebScriptRequest req, Status status, Cache cache, Map<String, Object> model)
+  protected void executeWebScript(ActivitiRequest req, Status status, Cache cache, Map<String, Object> model)
   {
-    String personalTaskUserId = getString(req, "assignee");
-    String candidateTaskUserId = getString(req, "candidate");
-    String candidateGroupId = getString(req, "candidate-group");
-    int start = getInt(req, "start", 0);
-    int size = getInt(req, "size", 10);
+    String personalTaskUserId = req.getString("assignee");
+    String candidateTaskUserId = req.getString("candidate");
+    String candidateGroupId = req.getString("candidate-group");
+    int start = req.getInt("start", 0);
+    int size = req.getInt("size", 10);
     TaskQuery tq = getTaskService().createTaskQuery();
     if (personalTaskUserId != null) {
       tq.assignee(personalTaskUserId);
