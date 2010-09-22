@@ -91,6 +91,7 @@ create table ACT_RE_PROC_DEF (
     VERSION_ integer,
     DEPLOYMENT_ID_ varchar(64),
 	RESOURCE_NAME_ varchar(255),
+	START_FORM_ varchar(255),
     primary key (ID_)
 ) TYPE=InnoDB;
 
