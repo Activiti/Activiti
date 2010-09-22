@@ -32,9 +32,11 @@ public class SpringTransactionInterceptor implements CommandInterceptor {
     this.transactionManager = transactionManager;
   }
   
+  @SuppressWarnings("unchecked")
   public <T> T invoke(final CommandExecutor next, final Command<T> command) {
-    @SuppressWarnings("unchecked")
-    T result = (T) new TransactionTemplate(transactionManager).execute(new TransactionCallback() {
+    TransactionTemplate transactionTemplate = new TransactionTemplate(transactionManager);
+    transactionTemplate.setPropagationBehavior(TransactionTemplate.PROPAGATION_REQUIRES_NEW);
+    T result = (T) transactionTemplate.execute(new TransactionCallback() {
       public Object doInTransaction(TransactionStatus status) {
         return next.execute(command);
       }
