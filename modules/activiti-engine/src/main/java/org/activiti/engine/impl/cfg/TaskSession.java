@@ -17,8 +17,8 @@ import java.util.List;
 
 import org.activiti.engine.impl.Page;
 import org.activiti.engine.impl.TaskQueryImpl;
+import org.activiti.engine.impl.task.IdentityLinkEntity;
 import org.activiti.engine.impl.task.TaskEntity;
-import org.activiti.engine.impl.task.TaskInvolvementEntity;
 import org.activiti.engine.task.Task;
 
 
@@ -32,6 +32,5 @@ public interface TaskSession {
   List<Task> findTasksByQueryCriteria(TaskQueryImpl taskQuery, Page page);
   long findTaskCountByQueryCriteria(TaskQueryImpl taskQuery);
 
-  /* TaskInvolvementEntity */
-  List<TaskInvolvementEntity> findTaskInvolvementsByTaskId(String taskId);
+  List<IdentityLinkEntity> findIdentityLinksByTaskId(String taskId);
 }

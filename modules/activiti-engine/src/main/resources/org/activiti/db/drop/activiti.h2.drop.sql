@@ -16,7 +16,7 @@ alter table ACT_ID_MEMBERSHIP
 alter table ACT_ID_MEMBERSHIP 
     drop constraint FK_MEMB_USER;
     
-alter table ACT_RU_TASKINVOLVEMENT
+alter table ACT_RU_IDENTITY_LINK
     drop constraint FK_TSKASS_TASK;
  
 alter table ACT_RU_TASK
@@ -50,7 +50,7 @@ drop table ACT_ID_USER if exists;
 drop table ACT_RU_JOB if exists;
 drop table ACT_RE_PROC_DEF if exists;
 drop table ACT_RU_TASK if exists;
-drop table ACT_RU_TASKINVOLVEMENT if exists;
+drop table ACT_RU_IDENTITY_LINK if exists;
 drop table ACT_RU_VARIABLE if exists;
 drop table ACT_HI_PROC_INST if exists;
 drop table ACT_HI_ACT_INST if exists;

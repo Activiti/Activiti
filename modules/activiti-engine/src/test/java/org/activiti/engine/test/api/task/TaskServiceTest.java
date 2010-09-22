@@ -16,6 +16,7 @@ package org.activiti.engine.test.api.task;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.activiti.engine.ActivitiException;
@@ -23,12 +24,14 @@ import org.activiti.engine.identity.Group;
 import org.activiti.engine.identity.User;
 import org.activiti.engine.impl.test.ActivitiInternalTestCase;
 import org.activiti.engine.runtime.ProcessInstance;
+import org.activiti.engine.task.IdentityLink;
 import org.activiti.engine.task.Task;
-import org.activiti.engine.task.TaskInvolvementType;
+import org.activiti.engine.task.IdentityLinkType;
 import org.activiti.engine.test.Deployment;
 
 /**
  * @author Frederik Heremans
+ * @author Joram Barrez
  */
 public class TaskServiceTest extends ActivitiInternalTestCase {
 
@@ -465,30 +468,30 @@ public class TaskServiceTest extends ActivitiInternalTestCase {
     taskService.deleteTask(task.getId());
   }
   
-  public void testAddGroupInvolvementNullTaskId() {
+  public void testAddGroupIdentityLinkNullTaskId() {
     try {
-      taskService.addGroupInvolvement(null, "groupId", TaskInvolvementType.CANDIDATE);
+      taskService.addGroupIdentityLink(null, "groupId", IdentityLinkType.CANDIDATE);
       fail("ActivitiException expected");
     } catch (ActivitiException ae) {
       assertTextPresent("taskId is null", ae.getMessage());
     }
   }
   
-  public void testAddGroupInvolvementNullUserId() {
+  public void testAddGroupIdentityLinkNullUserId() {
     try {
-      taskService.addGroupInvolvement("taskId", null, TaskInvolvementType.CANDIDATE);
+      taskService.addGroupIdentityLink("taskId", null, IdentityLinkType.CANDIDATE);
       fail("ActivitiException expected");
     } catch (ActivitiException ae) {
       assertTextPresent("userId and groupId cannot both be null", ae.getMessage());
     }
   }
   
-  public void testAddGroupInvolvementUnexistingTask() {
+  public void testAddGroupIdentityLinkUnexistingTask() {
     User user = identityService.newUser("user");
     identityService.saveUser(user);
     
     try {
-      taskService.addGroupInvolvement("unexistingTaskId", user.getId(), TaskInvolvementType.CANDIDATE);
+      taskService.addGroupIdentityLink("unexistingTaskId", user.getId(), IdentityLinkType.CANDIDATE);
       fail("ActivitiException expected");
     } catch (ActivitiException ae) {
       assertTextPresent("Cannot find task with id unexistingTaskId", ae.getMessage());
@@ -497,12 +500,12 @@ public class TaskServiceTest extends ActivitiInternalTestCase {
     identityService.deleteUser(user.getId());
   }
   
-  public void testAddGroupInvolvementUnexistingGroup() {    
+  public void testAddGroupIdentityLinkUnexistingGroup() {    
     Task task = taskService.newTask();
     taskService.saveTask(task);
     
     try {
-      taskService.addGroupInvolvement(task.getId(), "unexistinguser", TaskInvolvementType.CANDIDATE);
+      taskService.addGroupIdentityLink(task.getId(), "unexistinguser", IdentityLinkType.CANDIDATE);
       fail("ActivitiException expected");
     } catch (ActivitiException ae) {
       assertTextPresent("Cannot find group with id unexistinguser", ae.getMessage());
@@ -511,30 +514,30 @@ public class TaskServiceTest extends ActivitiInternalTestCase {
     taskService.deleteTask(task.getId());
   }
   
-  public void testAddUserInvolvementNullTaskId() {
+  public void testAddUserIdentityLinkNullTaskId() {
     try {
-      taskService.addUserInvolvement(null, "userId", TaskInvolvementType.CANDIDATE);
+      taskService.addUserIdentityLink(null, "userId", IdentityLinkType.CANDIDATE);
       fail("ActivitiException expected");
     } catch (ActivitiException ae) {
       assertTextPresent("taskId is null", ae.getMessage());
     }
   }
   
-  public void testAddUserInvolvementNullUserId() {
+  public void testAddUserIdentityLinkNullUserId() {
     try {
-      taskService.addUserInvolvement("taskId", null, TaskInvolvementType.CANDIDATE);
+      taskService.addUserIdentityLink("taskId", null, IdentityLinkType.CANDIDATE);
       fail("ActivitiException expected");
     } catch (ActivitiException ae) {
       assertTextPresent("userId and groupId cannot both be null", ae.getMessage());
     }
   }
   
-  public void testAddUserInvolvementUnexistingTask() {
+  public void testAddUserIdentityLinkUnexistingTask() {
     User user = identityService.newUser("user");
     identityService.saveUser(user);
     
     try {
-      taskService.addUserInvolvement("unexistingTaskId", user.getId(), TaskInvolvementType.CANDIDATE);
+      taskService.addUserIdentityLink("unexistingTaskId", user.getId(), IdentityLinkType.CANDIDATE);
       fail("ActivitiException expected");
     } catch (ActivitiException ae) {
       assertTextPresent("Cannot find task with id unexistingTaskId", ae.getMessage());
@@ -543,18 +546,75 @@ public class TaskServiceTest extends ActivitiInternalTestCase {
     identityService.deleteUser(user.getId());
   }
   
-  public void testAddUserInvolvementUnexistingUser() {    
+  public void testAddUserIdentityLinkUnexistingUser() {    
     Task task = taskService.newTask();
     taskService.saveTask(task);
     
     try {
-      taskService.addUserInvolvement(task.getId(), "unexistinguser", TaskInvolvementType.CANDIDATE);
+      taskService.addUserIdentityLink(task.getId(), "unexistinguser", IdentityLinkType.CANDIDATE);
       fail("ActivitiException expected");
     } catch (ActivitiException ae) {
       assertTextPresent("Cannot find user with id unexistinguser", ae.getMessage());
     }
     
     taskService.deleteTask(task.getId());
+  }
+  
+  public void testGetIdentityLinksWithCandidateUser() {
+    Task task = taskService.newTask();
+    taskService.saveTask(task);
+    String taskId = task.getId();
+    
+    identityService.saveUser(identityService.newUser("kermit"));
+    
+    taskService.addCandidateUser(taskId, "kermit");
+    List<IdentityLink> identityLinks = taskService.getIdentityLinksForTask(taskId);
+    assertEquals(1, identityLinks.size());
+    assertEquals("kermit", identityLinks.get(0).getUserId());
+    assertNull(identityLinks.get(0).getGroupId());
+    assertEquals(IdentityLinkType.CANDIDATE, identityLinks.get(0).getType());
+    
+    //cleanup
+    taskService.deleteTask(taskId);
+    identityService.deleteUser("kermit");
+  }
+  
+  public void testGetIdentityLinksWithCandidateGroup() {
+    Task task = taskService.newTask();
+    taskService.saveTask(task);
+    String taskId = task.getId();
+    
+    identityService.saveGroup(identityService.newGroup("muppets"));
+    
+    taskService.addCandidateGroup(taskId, "muppets");
+    List<IdentityLink> identityLinks = taskService.getIdentityLinksForTask(taskId);
+    assertEquals(1, identityLinks.size());
+    assertEquals("muppets", identityLinks.get(0).getGroupId());
+    assertNull(identityLinks.get(0).getUserId());
+    assertEquals(IdentityLinkType.CANDIDATE, identityLinks.get(0).getType());
+    
+    //cleanup
+    taskService.deleteTask(taskId);
+    identityService.deleteGroup("muppets");
+  }
+  
+  public void testGetIdentityLinksWithAssignee() {
+    Task task = taskService.newTask();
+    taskService.saveTask(task);
+    String taskId = task.getId();
+    
+    identityService.saveUser(identityService.newUser("kermit"));
+    
+    taskService.claim(taskId, "kermit");
+    List<IdentityLink> identityLinks = taskService.getIdentityLinksForTask(taskId);
+    assertEquals(1, identityLinks.size());
+    assertEquals("kermit", identityLinks.get(0).getUserId());
+    assertNull(identityLinks.get(0).getGroupId());
+    assertEquals(IdentityLinkType.ASSIGNEE, identityLinks.get(0).getType());
+    
+    //cleanup
+    taskService.deleteTask(taskId);
+    identityService.deleteUser("kermit");
   }
   
   public void testSetPriority() {

@@ -17,12 +17,13 @@ import java.io.Serializable;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.db.PersistentObject;
 import org.activiti.engine.impl.interceptor.CommandContext;
+import org.activiti.engine.task.IdentityLink;
 
 
 /**
  * @author Joram Barrez
  */
-public class TaskInvolvementEntity implements Serializable, PersistentObject {
+public class IdentityLinkEntity implements Serializable, IdentityLink, PersistentObject {
   
   private static final long serialVersionUID = 1L;
   
@@ -41,20 +42,20 @@ public class TaskInvolvementEntity implements Serializable, PersistentObject {
     return this.type;
   }
   
-  public static TaskInvolvementEntity createAndInsert() {
-    TaskInvolvementEntity taskInvolvementEntity = new TaskInvolvementEntity();
+  public static IdentityLinkEntity createAndInsert() {
+    IdentityLinkEntity identityLinkEntity = new IdentityLinkEntity();
     CommandContext
         .getCurrent()
         .getDbSqlSession()
-        .insert(taskInvolvementEntity);
-    return taskInvolvementEntity;
+        .insert(identityLinkEntity);
+    return identityLinkEntity;
   }
   
   public void delete() {
     CommandContext
         .getCurrent()
         .getDbSqlSession()
-        .delete(TaskInvolvementEntity.class, id);
+        .delete(IdentityLinkEntity.class, id);
     
     // TODO remove this task assignment from the task
   }
@@ -105,7 +106,7 @@ public class TaskInvolvementEntity implements Serializable, PersistentObject {
     this.groupId = groupId;
   }
   
-  String getTaskId() {
+  public String getTaskId() {
     return taskId;
   }
 

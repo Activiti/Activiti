@@ -17,14 +17,14 @@ import org.activiti.engine.impl.cfg.TaskSession;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.task.TaskEntity;
-import org.activiti.engine.impl.task.TaskInvolvementEntity;
-import org.activiti.engine.task.TaskInvolvementType;
+import org.activiti.engine.impl.task.IdentityLinkEntity;
+import org.activiti.engine.task.IdentityLinkType;
 
 
 /**
  * @author Joram Barrez
  */
-public class AddTaskInvolvementCmd implements Command<Void> {
+public class AddIdentityLinkCmd implements Command<Void> {
   
   protected String taskId;
   
@@ -34,7 +34,7 @@ public class AddTaskInvolvementCmd implements Command<Void> {
   
   protected String type;
   
-  public AddTaskInvolvementCmd(String taskId, String userId, String groupId, String type) {
+  public AddIdentityLinkCmd(String taskId, String userId, String groupId, String type) {
     validateParams(userId, groupId, type, taskId);
     this.taskId = taskId;
     this.userId = userId;
@@ -56,17 +56,17 @@ public class AddTaskInvolvementCmd implements Command<Void> {
     }
     
     if (type == null) {
-      throw new ActivitiException("Involvement type is required when adding a new task involvement");
+      throw new ActivitiException("type is required when adding a new task identity link");
     }
     
     // Special treatment for assignee
-    if (TaskInvolvementType.ASSIGNEE.equals(type)) {
+    if (IdentityLinkType.ASSIGNEE.equals(type)) {
       if (userId == null) {
         throw new ActivitiException("When involving an assignee, the userId should always" 
                 + " be provided (but null was given)");
       }
       if (groupId != null) {
-        throw new ActivitiException("Incompatible involvement: cannot use ASSIGNEE" 
+        throw new ActivitiException("Incompatible usage: cannot use ASSIGNEE" 
                 + " together with a groupId");
       }
     }
@@ -85,29 +85,29 @@ public class AddTaskInvolvementCmd implements Command<Void> {
     }
     
     // Special treatment for assignee
-    if (TaskInvolvementType.ASSIGNEE.equals(type)) {
+    if (IdentityLinkType.ASSIGNEE.equals(type)) {
       task.setAssignee(userId);
     } else {
       if (userId != null) {
-        addTaskInvolvement(task, userId, null);
+        addIdentityLink(task, userId, null);
       } else {
         if (commandContext.getIdentitySession().findGroupById(groupId) == null) {
           throw new ActivitiException("Cannot find group with id " + groupId);
         } 
-        addTaskInvolvement(task, null, groupId);
+        addIdentityLink(task, null, groupId);
       }
       
     }
     return null;  
   }
   
-  protected void addTaskInvolvement(TaskEntity task, String userId, String groupId) {
-    TaskInvolvementEntity taskInvolvementEntity = task.createTaskInvolvement();
-    taskInvolvementEntity.setType(type);
+  protected void addIdentityLink(TaskEntity task, String userId, String groupId) {
+    IdentityLinkEntity identityLinkEntity = task.createIdentityLink();
+    identityLinkEntity.setType(type);
     if (userId != null) {
-      taskInvolvementEntity.setUserId(userId);      
+      identityLinkEntity.setUserId(userId);      
     } else {
-      taskInvolvementEntity.setGroupId(groupId);
+      identityLinkEntity.setGroupId(groupId);
     }
   }
 

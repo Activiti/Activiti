@@ -13,20 +13,23 @@
 package org.activiti.engine.impl;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 
 import org.activiti.engine.TaskService;
-import org.activiti.engine.impl.cmd.AddTaskInvolvementCmd;
+import org.activiti.engine.impl.cmd.AddIdentityLinkCmd;
 import org.activiti.engine.impl.cmd.ClaimTaskCmd;
 import org.activiti.engine.impl.cmd.CompleteTaskCmd;
 import org.activiti.engine.impl.cmd.DeleteTaskCmd;
 import org.activiti.engine.impl.cmd.GetFormCmd;
+import org.activiti.engine.impl.cmd.GetIdentityLinksForTaskCmd;
 import org.activiti.engine.impl.cmd.SaveTaskCmd;
 import org.activiti.engine.impl.cmd.SetTaskPriorityCmd;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
 import org.activiti.engine.impl.task.TaskEntity;
+import org.activiti.engine.task.IdentityLink;
 import org.activiti.engine.task.Task;
-import org.activiti.engine.task.TaskInvolvementType;
+import org.activiti.engine.task.IdentityLinkType;
 import org.activiti.engine.task.TaskQuery;
 
 
@@ -57,26 +60,30 @@ public class TaskServiceImpl extends ServiceImpl implements TaskService {
   }
   
   public void setAssignee(String taskId, String userId) {
-    commandExecutor.execute(new AddTaskInvolvementCmd(taskId, userId, null, 
-            TaskInvolvementType.ASSIGNEE));
+    commandExecutor.execute(new AddIdentityLinkCmd(taskId, userId, null, 
+            IdentityLinkType.ASSIGNEE));
   }
   
   public void addCandidateUser(String taskId, String userId) {
-    commandExecutor.execute(new AddTaskInvolvementCmd(taskId, userId, null, 
-            TaskInvolvementType.CANDIDATE));
+    commandExecutor.execute(new AddIdentityLinkCmd(taskId, userId, null, 
+            IdentityLinkType.CANDIDATE));
   }
   
   public void addCandidateGroup(String taskId, String groupId) {
-    commandExecutor.execute(new AddTaskInvolvementCmd(taskId, null, groupId, 
-            TaskInvolvementType.CANDIDATE));
+    commandExecutor.execute(new AddIdentityLinkCmd(taskId, null, groupId, 
+            IdentityLinkType.CANDIDATE));
   }
   
-  public void addUserInvolvement(String taskId, String userId, String involvementType) {
-    commandExecutor.execute(new AddTaskInvolvementCmd(taskId, userId, null, involvementType));
+  public void addUserIdentityLink(String taskId, String userId, String identityLinkeType) {
+    commandExecutor.execute(new AddIdentityLinkCmd(taskId, userId, null, identityLinkeType));
   }
 
-  public void addGroupInvolvement(String taskId, String groupId, String involvementType) {
-    commandExecutor.execute(new AddTaskInvolvementCmd(taskId, null, groupId, involvementType));
+  public void addGroupIdentityLink(String taskId, String groupId, String identityLinkType) {
+    commandExecutor.execute(new AddIdentityLinkCmd(taskId, null, groupId, identityLinkType));
+  }
+  
+  public List<IdentityLink> getIdentityLinksForTask(String taskId) {
+    return commandExecutor.execute(new GetIdentityLinksForTaskCmd(taskId));
   }
   
   public void claim(String taskId, String userId) {

@@ -13,10 +13,12 @@
 package org.activiti.engine;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 
+import org.activiti.engine.task.IdentityLink;
 import org.activiti.engine.task.Task;
-import org.activiti.engine.task.TaskInvolvementType;
+import org.activiti.engine.task.IdentityLinkType;
 import org.activiti.engine.task.TaskQuery;
 
 /** Service which provides access to {@link Task} related operations.
@@ -59,7 +61,6 @@ public interface TaskService {
 	
 	 /**
    * Claim responsibility for a task: the given user is made assignee for the task.
-   * When the task is already assigned to the given user, this operation does nothing.
    * @param taskId task to claim, cannot be null.
    * @param userId user that claims the task, cannot be null.
    * @throws ActivitiException when the user or task doesn't exist or when the task
@@ -99,7 +100,14 @@ public interface TaskService {
   void setAssignee(String taskId, String userId);
   
   /**
-   * Convenience shorthand for addUserInvolvement(taskId, userId, {@link TaskInvolvementType}.CANDIDATE
+   * Retrieves the {@link IdentityLink}s associated with the given task.
+   * Such an {@link IdentityLink} informs how a certain identity (eg. group or user)
+   * is associated with a certain task (eg. as candidate, assignee, etc.)
+   */
+  List<IdentityLink> getIdentityLinksForTask(String taskId);
+  
+  /**
+   * Convenience shorthand for {@link #addUserIdentityLink(String, String, String)}; with type {@link IdentityLinkType#CANDIDATE}
    * @param taskId id of the task, cannot be null.
    * @param userId id of the user to use as candidate, cannot be null.
    * @throws ActivitiException when the task or user doesn't exist.
@@ -107,7 +115,7 @@ public interface TaskService {
   void addCandidateUser(String taskId, String userId);
   
   /**
-   * Convenience shorthand for addUserInvolvement(taskId, groupId, {@link TaskInvolvementType}.CANDIDATE
+   * Convenience shorthand for {@link #addGroupIdentityLink(String, String, String)}; with type {@link IdentityLinkType#CANDIDATE}
    * @param taskId id of the task, cannot be null.
    * @param groupId id of the group to use as candidate, cannot be null.
    * @throws ActivitiException when the task or group doesn't exist.
@@ -115,24 +123,24 @@ public interface TaskService {
   void addCandidateGroup(String taskId, String groupId);
   
   /**
-   * Involves a user with a task. The type of involvement is defined by the
-   * given involvementType.
+   * Involves a user with a task. The type of identity link is defined by the
+   * given identityLinkType.
    * @param taskId id of the task, cannot be null.
    * @param userId id of the user involve, cannot be null.
-   * @param involvmentType type of involvement, cannot be null (@see {@link TaskInvolvementType}).
+   * @param identityLinkType type of identityLink, cannot be null (@see {@link IdentityLinkType}).
    * @throws ActivitiException when the task or user doesn't exist.
    */
-  void addUserInvolvement(String taskId, String userId, String involvementType);
+  void addUserIdentityLink(String taskId, String userId, String identityLinkType);
   
   /**
-   * Involves a group with a task. The type of involvement is defined by the
-   * given involvementType.
+   * Involves a group with a task. The type of identityLink is defined by the
+   * given identityLink.
    * @param taskId id of the task, cannot be null.
    * @param groupId id of the group to involve, cannot be null.
-   * @param involvmentType type of involvement, cannot be null (@see {@link TaskInvolvementType}).
+   * @param identityLinkType type of identity, cannot be null (@see {@link IdentityLinkType}).
    * @throws ActivitiException when the task or group doesn't exist.
    */
-  void addGroupInvolvement(String taskId, String groupId, String involvementType);
+  void addGroupIdentityLink(String taskId, String groupId, String identityLinkType);
   
   /**
    * Changes the priority of the task.

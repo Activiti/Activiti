@@ -52,7 +52,7 @@ public class DbManagementSession implements ManagementSession, Session {
     "ACT_RU_JOB",
     "ACT_RE_PROC_DEF",
     "ACT_RU_TASK",
-    "ACT_RU_TASKINVOLVEMENT",
+    "ACT_RU_IDENTITY_LINK",
     "ACT_RU_VARIABLE",
     "ACT_HI_PROC_INST",
     "ACT_HI_ACT_INST"

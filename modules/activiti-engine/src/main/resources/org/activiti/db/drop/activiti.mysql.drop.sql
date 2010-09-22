@@ -16,7 +16,7 @@ alter table ACT_ID_MEMBERSHIP
 alter table ACT_ID_MEMBERSHIP 
     drop FOREIGN KEY FK_MEMB_USER;
     
-alter table ACT_RU_TASKINVOLVEMENT
+alter table ACT_RU_IDENTITY_LINK
     drop FOREIGN KEY FK_TSKASS_TASK;
 
 alter table ACT_RU_TASK
@@ -44,7 +44,7 @@ alter table ACT_RU_VARIABLE
  drop table if exists ACT_RU_VARIABLE;
  drop table if exists ACT_GE_BYTEARRAY;
  drop table if exists ACT_RE_DEPLOYMENT;
- drop table if exists ACT_RU_TASKINVOLVEMENT;
+ drop table if exists ACT_RU_IDENTITY_LINK;
  drop table if exists ACT_RU_TASK;
  drop table if exists ACT_RE_PROC_DEF;
  drop table if exists ACT_RU_EXECUTION;

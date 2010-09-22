@@ -26,8 +26,8 @@ import org.activiti.engine.impl.db.PersistentObject;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.runtime.ExecutionEntity;
 import org.activiti.engine.impl.util.ClockUtil;
+import org.activiti.engine.task.IdentityLinkType;
 import org.activiti.engine.task.Task;
-import org.activiti.engine.task.TaskInvolvementType;
 import org.activiti.pvm.delegate.DelegateExecution;
 
 /**
@@ -47,8 +47,8 @@ public class TaskEntity implements Task, Serializable, PersistentObject {
   protected String formResourceKey;
   protected int priority = Task.PRIORITY_NORMAL;
   protected Date createTime; // The time when the task has been created
-  protected boolean isTaskInvolvementsInitialized = false;
-  protected List<TaskInvolvementEntity> taskInvolvementEntities = new ArrayList<TaskInvolvementEntity>(); 
+  protected boolean isIdentityLinksInitialized = false;
+  protected List<IdentityLinkEntity> taskIdentityLinkEntities = new ArrayList<IdentityLinkEntity>(); 
   
   protected String executionId;
   protected ExecutionEntity execution;
@@ -84,15 +84,15 @@ public class TaskEntity implements Task, Serializable, PersistentObject {
    */
   public static TaskEntity create() {
     TaskEntity task = new TaskEntity();
-    task.isTaskInvolvementsInitialized = true;
+    task.isIdentityLinksInitialized = true;
     task.createTime = ClockUtil.getCurrentTime();
     return task;
   }
 
   public void delete() {
     // cascade deletion to task assignments
-    for (TaskInvolvementEntity taskInvolvementEntities: getTaskInvolvements()) {
-      taskInvolvementEntities.delete();
+    for (IdentityLinkEntity identityLinkEntities: getIdentityLinks()) {
+      identityLinkEntities.delete();
     }
     
     CommandContext
@@ -161,44 +161,45 @@ public class TaskEntity implements Task, Serializable, PersistentObject {
    */
 
 
-  public TaskInvolvementEntity createTaskInvolvement() {
-    TaskInvolvementEntity taskInvolvementEntity = TaskInvolvementEntity.createAndInsert();
-    getTaskInvolvements().add(taskInvolvementEntity);
-    taskInvolvementEntity.setTask(this);
-    return taskInvolvementEntity;
+  public IdentityLinkEntity createIdentityLink() {
+    IdentityLinkEntity identityLinkEntity = IdentityLinkEntity.createAndInsert();
+    getIdentityLinks().add(identityLinkEntity);
+    identityLinkEntity.setTask(this);
+    return identityLinkEntity;
   }
   
-  public Set<TaskInvolvementEntity> getCandidates() {
-    Set<TaskInvolvementEntity> potentialOwners = new HashSet<TaskInvolvementEntity>();
-    for (TaskInvolvementEntity taskInvolvementEntity : getTaskInvolvements()) {
-      if (TaskInvolvementType.CANDIDATE.equals(taskInvolvementEntity.getType())) {
-        potentialOwners.add(taskInvolvementEntity);
+  public Set<IdentityLinkEntity> getCandidates() {
+    Set<IdentityLinkEntity> potentialOwners = new HashSet<IdentityLinkEntity>();
+    for (IdentityLinkEntity identityLinkEntity : getIdentityLinks()) {
+      if (IdentityLinkType.CANDIDATE.equals(identityLinkEntity.getType())) {
+        potentialOwners.add(identityLinkEntity);
       }
     }
     return potentialOwners;
   }
   
   public void addCandidateUser(String userId) {
-    TaskInvolvementEntity involvement = createTaskInvolvement();
-    involvement.setUserId(userId);
-    involvement.setType(TaskInvolvementType.CANDIDATE);
+    IdentityLinkEntity identityLink = createIdentityLink();
+    identityLink.setUserId(userId);
+    identityLink.setType(IdentityLinkType.CANDIDATE);
   }
   
   public void addCandidateGroup(String groupId) {
-    TaskInvolvementEntity involvement = createTaskInvolvement();
-    involvement.setGroupId(groupId);
-    involvement.setType(TaskInvolvementType.CANDIDATE);
+    IdentityLinkEntity identityLink = createIdentityLink();
+    identityLink.setGroupId(groupId);
+    identityLink.setType(IdentityLinkType.CANDIDATE);
   }
   
-  public List<TaskInvolvementEntity> getTaskInvolvements() {
-    if (!isTaskInvolvementsInitialized) {
-      taskInvolvementEntities = CommandContext
+  public List<IdentityLinkEntity> getIdentityLinks() {
+    if (!isIdentityLinksInitialized) {
+      taskIdentityLinkEntities = CommandContext
           .getCurrent()
           .getTaskSession()
-          .findTaskInvolvementsByTaskId(id);
-      isTaskInvolvementsInitialized = true;
+          .findIdentityLinksByTaskId(id);
+      isIdentityLinksInitialized = true;
     }
-    return taskInvolvementEntities;
+    
+    return taskIdentityLinkEntities;
   }
 
   @SuppressWarnings("unchecked")

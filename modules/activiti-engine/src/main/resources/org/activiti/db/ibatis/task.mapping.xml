@@ -67,7 +67,7 @@
   </select>
   
   <select id="selectCandidateTasks" parameterType="map" resultMap="taskResultMap">
-    select T.* from ACT_RU_TASK T inner join ACT_RU_TASKINVOLVEMENT I ON T.ID_ = I.TASK_ID_
+    select T.* from ACT_RU_TASK T inner join ACT_RU_IDENTITY_LINK I ON T.ID_ = I.TASK_ID_
     where T.ASSIGNEE_ IS NULL
           AND I.TYPE_ = 'candidate'
     <choose>
@@ -106,7 +106,7 @@
   <sql id="selectTaskByQueryCriteriaSql">  
     from ACT_RU_TASK T
     <if test="candidateUser != null || candidateGroups != null">
-      inner join ACT_RU_TASKINVOLVEMENT I on I.TASK_ID_ = T.ID_
+      inner join ACT_RU_IDENTITY_LINK I on I.TASK_ID_ = T.ID_
     </if>
     <where>
       <if test="taskId != null">
@@ -167,10 +167,10 @@
     </if>
   </select>
 
-  <!-- INSERT TASK INVOLVEMENT -->
+  <!-- INSERT IDENTITY LINK -->
   
-  <insert id="insertTaskInvolvement" parameterType="org.activiti.engine.impl.task.TaskInvolvementEntity">
-    insert into ACT_RU_TASKINVOLVEMENT (ID_, REV_, TYPE_, USER_ID_, GROUP_ID_, TASK_ID_)
+  <insert id="insertIdentityLink" parameterType="org.activiti.engine.impl.task.IdentityLinkEntity">
+    insert into ACT_RU_IDENTITY_LINK (ID_, REV_, TYPE_, USER_ID_, GROUP_ID_, TASK_ID_)
     values (#{id, jdbcType=VARCHAR},
             1,
             #{type, jdbcType=VARCHAR},
@@ -179,17 +179,15 @@
             #{taskId, jdbcType=VARCHAR})
   </insert>
   
-  <!-- TASK INVOLVEMENT INSERT -->
-
-  <!-- TASK INVOLVEMENT DELETE -->
+  <!-- IDENTITY LINK DELETE -->
   
-  <delete id="deleteTaskInvolvement" parameterType="string">
-    delete from ACT_RU_TASKINVOLVEMENT where ID_ = #{id}
+  <delete id="deleteIdentityLink" parameterType="string">
+    delete from ACT_RU_IDENTITY_LINK where ID_ = #{id}
   </delete>
 
-  <!-- TASK INVOLVEMENT RESULTMAP -->
+  <!-- IDENTITY LINK RESULTMAP -->
 
-  <resultMap id="taskInvolvementResultMap" type="org.activiti.engine.impl.task.TaskInvolvementEntity">
+  <resultMap id="identityLinkResultMap" type="org.activiti.engine.impl.task.IdentityLinkEntity">
     <id property="id" column="ID_" jdbcType="VARCHAR" />
     <result property="type" column="TYPE_" jdbcType="VARCHAR" />
     <result property="userId" column="USER_ID_" jdbcType="VARCHAR" />
@@ -197,14 +195,14 @@
     <result property="taskId" column="TASK_ID_" jdbcType="VARCHAR" />
   </resultMap>
 
-  <!-- TASK INVOLVEMENT SELECT -->
+  <!-- IDENTITY LINK SELECT -->
 
-  <select id="selectTaskInvolvement" parameterType="string" resultMap="taskInvolvementResultMap">
-    select * from ACT_RU_TASKINVOLVEMENT where ID_ = #{id}
+  <select id="selectIdentityLink" parameterType="string" resultMap="identityLinkResultMap">
+    select * from ACT_RU_IDENTITY_LINK where ID_ = #{id}
   </select>
   
-  <select id="selectTaskInvolvementsByTask" parameterType="string" resultMap="taskInvolvementResultMap">
-    select * from ACT_RU_TASKINVOLVEMENT where TASK_ID_ = #{taskId}
+  <select id="selectIdentityLinksByTask" parameterType="string" resultMap="identityLinkResultMap">
+    select * from ACT_RU_IDENTITY_LINK where TASK_ID_ = #{taskId}
   </select>
 
 </mapper>

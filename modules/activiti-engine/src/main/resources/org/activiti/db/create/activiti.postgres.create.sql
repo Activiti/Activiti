@@ -113,7 +113,7 @@ create table ACT_RU_TASK (
     primary key (ID_)
 );
 
-create table ACT_RU_TASKINVOLVEMENT (
+create table ACT_RU_IDENTITY_LINK (
     ID_ varchar(64),
     REV_ integer,
     GROUP_ID_ varchar(64),
@@ -197,7 +197,7 @@ alter table ACT_ID_MEMBERSHIP
     foreign key (USER_ID_) 
     references ACT_ID_USER (ID_);
 
-alter table ACT_RU_TASKINVOLVEMENT
+alter table ACT_RU_IDENTITY_LINK
     add constraint FK_TSKASS_TASK 
     foreign key (TASK_ID_) 
     references ACT_RU_TASK (ID_);

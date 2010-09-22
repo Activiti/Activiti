@@ -16,15 +16,15 @@ import org.activiti.engine.TaskService;
 
 
 /**
- * Contains constants for all types of involvement that can be used to involve a 
+ * Contains constants for all types of identity links that can be used to involve a 
  * user or group with a certain task. 
  * 
- * @see TaskService#addUserInvolvement(String, String, String)
- * @see TaskService#addGroupInvolvement(String, String, String)
+ * @see TaskService#addUserIdentityLink(String, String, String)
+ * @see TaskService#addGroupIdentityLink(String, String, String)
  * 
  * @author Joram Barrez
  */
-public class TaskInvolvementType {
+public class IdentityLinkType {
   
   /* Activiti native roles */
   

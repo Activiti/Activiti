@@ -21,7 +21,7 @@ import org.activiti.engine.impl.cfg.TaskSession;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.interceptor.Session;
 import org.activiti.engine.impl.task.TaskEntity;
-import org.activiti.engine.impl.task.TaskInvolvementEntity;
+import org.activiti.engine.impl.task.IdentityLinkEntity;
 import org.activiti.engine.task.Task;
 
 
@@ -51,8 +51,8 @@ public class DbTaskSession implements TaskSession, Session {
   }
   
   @SuppressWarnings("unchecked")
-  public List<TaskInvolvementEntity> findTaskInvolvementsByTaskId(String taskId) {
-    return dbSqlSession.selectList("selectTaskInvolvementsByTask", taskId);
+  public List<IdentityLinkEntity> findIdentityLinksByTaskId(String taskId) {
+    return dbSqlSession.selectList("selectIdentityLinksByTask", taskId);
   }
 
   public void close() {
