@@ -28,9 +28,6 @@ import org.activiti.engine.task.Task;
 public interface TaskSession {
 
   TaskEntity findTaskById(String taskId);
-  List<TaskEntity> findTasksByExecutionId(String executionId);
-  List<Task> findTasksByAssignee(String assignee);
-  List<Task> findCandidateTasks(String userId, List<String> groupIds);
   
   List<Task> findTasksByQueryCriteria(TaskQueryImpl taskQuery, Page page);
   long findTaskCountByQueryCriteria(TaskQueryImpl taskQuery);

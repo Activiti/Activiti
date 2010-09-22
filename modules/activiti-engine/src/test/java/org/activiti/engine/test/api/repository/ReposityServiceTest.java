@@ -43,19 +43,10 @@ public class ReposityServiceTest extends ActivitiInternalTestCase {
     List<ProcessDefinition> definitions = repositoryService.createProcessDefinitionQuery().list();
     assertEquals(1, definitions.size());
   
-    ProcessDefinition processDefinition = repositoryService.findProcessDefinitionById(definitions.get(0).getId());
+    ProcessDefinition processDefinition = repositoryService.createProcessDefinitionQuery().id(definitions.get(0).getId()).singleResult();
     assertNotNull(processDefinition);
     assertEquals("oneTaskProcess", processDefinition.getKey());
     assertEquals("The One Task Process", processDefinition.getName());
-  }
-  
-  public void testFindProcessDefinitionByNullId() {
-    try {
-      repositoryService.findProcessDefinitionById(null);
-      fail();
-    } catch (ActivitiException e) {
-      assertTextPresent("processDefinitionId is null", e.getMessage());
-    }
   }
   
   @Deployment(resources = { "org/activiti/engine/test/api/oneTaskProcess.bpmn20.xml" })
@@ -169,7 +160,7 @@ public class ReposityServiceTest extends ActivitiInternalTestCase {
   
   public void testFindDeploymentResourceNamesNullDeploymentId() {
     try {
-      repositoryService.findDeploymentResourceNames(null);    
+      repositoryService.getDeploymentResourceNames(null);    
       fail("ActivitiException expected");
     } catch (ActivitiException ae) {
       assertTextPresent("deploymentId is null", ae.getMessage());

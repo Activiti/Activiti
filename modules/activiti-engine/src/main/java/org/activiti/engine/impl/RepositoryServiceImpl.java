@@ -19,16 +19,13 @@ import java.util.List;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.impl.cmd.DeleteDeploymentCmd;
 import org.activiti.engine.impl.cmd.DeployCmd;
-import org.activiti.engine.impl.cmd.FindDeploymentResourceNamesCmd;
-import org.activiti.engine.impl.cmd.FindDeploymentsCmd;
-import org.activiti.engine.impl.cmd.FindProcessDefinitionCmd;
 import org.activiti.engine.impl.cmd.GetDeploymentResourceCmd;
+import org.activiti.engine.impl.cmd.GetDeploymentResourceNamesCmd;
 import org.activiti.engine.impl.cmd.GetFormCmd;
 import org.activiti.engine.impl.repository.DeploymentBuilderImpl;
 import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.repository.DeploymentBuilder;
 import org.activiti.engine.repository.DeploymentQuery;
-import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.repository.ProcessDefinitionQuery;
 
 
@@ -57,18 +54,9 @@ public class RepositoryServiceImpl extends ServiceImpl implements RepositoryServ
     return new ProcessDefinitionQueryImpl(commandExecutor);
   }
 
-  public ProcessDefinition findProcessDefinitionById(String processDefinitionId) {
-    return commandExecutor.execute(new FindProcessDefinitionCmd(processDefinitionId));
-  }
-
   @SuppressWarnings("unchecked")
-  public List<Deployment> findDeployments() {
-    return commandExecutor.execute(new FindDeploymentsCmd());
-  }
-
-  @SuppressWarnings("unchecked")
-  public List<String> findDeploymentResourceNames(String deploymentId) {
-    return commandExecutor.execute(new FindDeploymentResourceNamesCmd(deploymentId));
+  public List<String> getDeploymentResourceNames(String deploymentId) {
+    return commandExecutor.execute(new GetDeploymentResourceNamesCmd(deploymentId));
   }
 
   public InputStream getResourceAsStream(String deploymentId, String resourceName) {

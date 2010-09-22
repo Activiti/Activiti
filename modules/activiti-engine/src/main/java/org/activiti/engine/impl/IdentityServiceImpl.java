@@ -12,20 +12,16 @@
  */
 package org.activiti.engine.impl;
 
-import java.util.List;
-
 import org.activiti.engine.IdentityService;
 import org.activiti.engine.identity.Group;
+import org.activiti.engine.identity.GroupQuery;
 import org.activiti.engine.identity.User;
+import org.activiti.engine.identity.UserQuery;
 import org.activiti.engine.impl.cmd.CheckPassword;
 import org.activiti.engine.impl.cmd.CreateMembershipCmd;
 import org.activiti.engine.impl.cmd.DeleteGroupCmd;
 import org.activiti.engine.impl.cmd.DeleteMembershipCmd;
 import org.activiti.engine.impl.cmd.DeleteUserCmd;
-import org.activiti.engine.impl.cmd.FindGroupCmd;
-import org.activiti.engine.impl.cmd.FindGroupsByUserIdCmd;
-import org.activiti.engine.impl.cmd.FindUserCmd;
-import org.activiti.engine.impl.cmd.FindUsersByGroupCmd;
 import org.activiti.engine.impl.cmd.SaveGroupCmd;
 import org.activiti.engine.impl.cmd.SaveUserCmd;
 import org.activiti.engine.impl.identity.Authentication;
@@ -54,32 +50,17 @@ public class IdentityServiceImpl extends ServiceImpl implements IdentityService 
   public void saveUser(User user) {
     commandExecutor.execute(new SaveUserCmd(user));
   }
-
-  public User findUser(String userId) {
-    return commandExecutor.execute(new FindUserCmd(userId));
+  
+  public UserQuery createUserQuery() {
+    return new UserQueryImpl(commandExecutor);
   }
-
-  public Group findGroupById(String groupId) {
-    return commandExecutor.execute(new FindGroupCmd(groupId));
+  
+  public GroupQuery createGroupQuery() {
+    return new GroupQueryImpl(commandExecutor);
   }
 
   public void createMembership(String userId, String groupId) {
     commandExecutor.execute(new CreateMembershipCmd(userId, groupId));
-  }
-
-  @SuppressWarnings("unchecked")
-  public List<Group> findGroupsByUserId(String userId) {
-    return commandExecutor.execute(new FindGroupsByUserIdCmd(userId, null));
-  }
-
-  @SuppressWarnings("unchecked")
-  public List<Group> findGroupsByUserIdAndGroupType(String userId, String groupType) {
-    return commandExecutor.execute(new FindGroupsByUserIdCmd(userId, groupType));
-  }
-
-  @SuppressWarnings("unchecked")
-  public List<User> findUsersByGroupId(String groupId) {
-    return commandExecutor.execute(new FindUsersByGroupCmd(groupId));
   }
 
   public void deleteGroup(String groupId) {

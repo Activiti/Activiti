@@ -37,7 +37,7 @@ public class GroupGet extends ActivitiWebScript
   protected void executeWebScript(WebScriptRequest req, Status status, Cache cache, Map<String, Object> model)
   {
     String groupId = req.getServiceMatch().getTemplateVars().get("groupId");
-    model.put("group", getIdentityService().findGroupById(groupId));
+    model.put("group", getIdentityService().createGroupQuery().id(groupId).singleResult());
   }
 
 }

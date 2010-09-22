@@ -48,9 +48,7 @@ public interface RuntimeSession {
   ByteArrayEntity findByteArrayById(String byteArrayId);
 
   JobEntity findJobById(String jobId);
-  List<JobEntity> findJobs();
   List<JobEntity> findNextJobsToExecute(Page page);
-  List<JobEntity> findLockedJobs();
   List<TimerEntity> findUnlockedTimersByDuedate(Date duedate, Page page);
   List<TimerEntity> findTimersByExecutionId(String executionId);
   List<Job> findJobsByQueryCriteria(JobQueryImpl jobQuery, Page page);

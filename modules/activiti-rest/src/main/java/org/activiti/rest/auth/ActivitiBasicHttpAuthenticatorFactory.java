@@ -14,6 +14,7 @@ package org.activiti.rest.auth;
 
 import org.activiti.engine.ProcessEngines;
 import org.activiti.engine.identity.Group;
+import org.activiti.engine.identity.GroupQuery;
 import org.activiti.rest.Config;
 import org.springframework.extensions.webscripts.Description;
 
@@ -86,7 +87,17 @@ public class ActivitiBasicHttpAuthenticatorFactory extends AbstractBasicHttpAuth
     }
     else {
       // Certain group membership is required user
-      List<Group> userGroups = ProcessEngines.getProcessEngine(config.getEngine()).getIdentityService().findGroupsByUserIdAndGroupType(username, config.getSecurityRoleGroupTypeId());
+      GroupQuery query = ProcessEngines.getProcessEngine(config.getEngine())
+        .getIdentityService()
+        .createGroupQuery()
+        .member(username);
+      
+      String securityRoleGroupTypeId = config.getSecurityRoleGroupTypeId();
+      if (securityRoleGroupTypeId != null) {
+        query.type(securityRoleGroupTypeId);
+      }
+        
+      List<Group> userGroups = query.list();
       for (Group group : userGroups)
       {
         for (String grantedGroupId : grantedGroupIds) {

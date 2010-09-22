@@ -48,13 +48,13 @@ public class IdentityServiceTest extends ActivitiInternalTestCase {
     identityService.saveUser(user);
 
     // Fetch and update the user
-    user = identityService.findUser("johndoe");
+    user = identityService.createUserQuery().id("johndoe").singleResult();
     user.setEmail("updated@alfresco.com");
     user.setFirstName("Jane");
     user.setLastName("Donnel");
     identityService.saveUser(user);
 
-    user = identityService.findUser("johndoe");
+    user = identityService.createUserQuery().id("johndoe").singleResult();
     assertEquals("Jane", user.getFirstName());
     assertEquals("Donnel", user.getLastName());
     assertEquals("updated@alfresco.com", user.getEmail());
@@ -67,23 +67,23 @@ public class IdentityServiceTest extends ActivitiInternalTestCase {
     group.setName("Sales");
     identityService.saveGroup(group);
 
-    group = identityService.findGroupById("sales");
+    group = identityService.createGroupQuery().id("sales").singleResult();
     group.setName("Updated");
     identityService.saveGroup(group);
 
-    group = identityService.findGroupById("sales");
+    group = identityService.createGroupQuery().id("sales").singleResult();
     assertEquals("Updated", group.getName());
 
     identityService.deleteGroup(group.getId());
   }
 
   public void findUserByUnexistingId() {
-    User user = identityService.findUser("unexistinguser");
+    User user = identityService.createUserQuery().id("unexistinguser").singleResult();
     assertNull(user);
   }
 
   public void findGroupByUnexistingId() {
-    Group group = identityService.findGroupById("unexistinggroup");
+    Group group = identityService.createGroupQuery().id("unexistinggroup").singleResult();
     assertNull(group);
   }
 
@@ -153,22 +153,13 @@ public class IdentityServiceTest extends ActivitiInternalTestCase {
       assertTextPresent("user is null", ae.getMessage());
     }
   }
-
-  public void testFindUserNullArgument() {
-    try {
-      identityService.findUser(null);
-      fail("ActivitiException expected");
-    } catch (ActivitiException ae) {
-      assertTextPresent("userId is null", ae.getMessage());
-    }
-  }
-
+  
   public void testFindGroupByIdNullArgument() {
     try {
-      identityService.findGroupById(null);
+      identityService.createGroupQuery().id(null).singleResult();
       fail("ActivitiException expected");
     } catch (ActivitiException ae) {
-      assertTextPresent("groupId is null", ae.getMessage());
+      assertTextPresent("id is null", ae.getMessage());
     }
   }
 
@@ -190,60 +181,15 @@ public class IdentityServiceTest extends ActivitiInternalTestCase {
 
   public void testFindGroupsByUserIdNullArguments() {
     try {
-      identityService.findGroupsByUserId(null);
+      identityService.createGroupQuery().member(null).singleResult();
       fail("ActivitiException expected");
     } catch (ActivitiException ae) {
       assertTextPresent("userId is null", ae.getMessage());
-    }
-  }
-
-  public void testFindGroupsByUserIdAndGroupTypeNullArguments() {
-    try {
-      identityService.findGroupsByUserIdAndGroupType(null, null);
-      fail("ActivitiException expected");
-    } catch (ActivitiException ae) {
-      assertTextPresent("userId is null", ae.getMessage());
-    }
-  }
-  
-  public void testFindGroupsByUserIdAndTypeNullGroupType() {
-    // Create user and add to 2 groups with a different type
-    User johndoe = identityService.newUser("johndoe");
-    identityService.saveUser(johndoe);
-    
-    Group sales = identityService.newGroup("sales");
-    sales.setType("type1");
-    identityService.saveGroup(sales);
-    
-    Group admin = identityService.newGroup("admin");
-    admin.setType("type2");
-    identityService.saveGroup(admin);
-    
-    identityService.createMembership(johndoe.getId(), sales.getId());
-    identityService.createMembership(johndoe.getId(), admin.getId());
-    
-    // When null is passed as groupTypes, groups of all types should be returned
-    List<Group> groups = identityService.findGroupsByUserIdAndGroupType(johndoe.getId(), null);
-    assertNotNull(groups);
-    assertEquals(2, groups.size());
-    
-    identityService.deleteUser(johndoe.getId());
-    identityService.deleteGroup(sales.getId());
-    identityService.deleteGroup(admin.getId());
-    
-  }
-
-  public void testFindUsersByGroupIdNullArguments() {
-    try {
-      identityService.findUsersByGroupId(null);
-      fail("ActivitiException expected");
-    } catch (ActivitiException ae) {
-      assertTextPresent("groupId is null", ae.getMessage());
     }
   }
 
   public void testFindUsersByGroupUnexistingGroup() {
-    List<User> users = identityService.findUsersByGroupId("unexistinggroup");
+    List<User> users = identityService.createUserQuery().memberOfGroup("unexistinggroup").list();
     assertNotNull(users);
     assertTrue(users.isEmpty());
   }
@@ -266,13 +212,13 @@ public class IdentityServiceTest extends ActivitiInternalTestCase {
     // Add membership
     identityService.createMembership(johndoe.getId(), sales.getId());
 
-    List<Group> groups = identityService.findGroupsByUserId(johndoe.getId());
+    List<Group> groups = identityService.createGroupQuery().member(johndoe.getId()).list();
     assertTrue(groups.size() == 1);
     assertEquals("sales", groups.get(0).getId());
 
     // Delete the membership and check members of sales group
     identityService.deleteMembership(johndoe.getId(), sales.getId());
-    groups = identityService.findGroupsByUserId(johndoe.getId());
+    groups = identityService.createGroupQuery().member(johndoe.getId()).list();
     assertTrue(groups.size() == 0);
 
     identityService.deleteGroup("sales");

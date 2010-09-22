@@ -37,7 +37,7 @@ public class UserGet extends ActivitiWebScript
   protected void executeWebScript(WebScriptRequest req, Status status, Cache cache, Map<String, Object> model)
   {
     String userId = req.getServiceMatch().getTemplateVars().get("userId");
-    model.put("user", getIdentityService().findUser(userId));
+    model.put("user", getIdentityService().createUserQuery().id(userId).singleResult());
   }
 
 }

@@ -16,13 +16,22 @@ package org.activiti.engine.repository;
 import java.util.List;
 
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.RepositoryService;
 import org.activiti.engine.impl.repository.DeploymentQueryProperty;
-
 
 /**
  * Allows programmatic querying of {@link Deployment}s.
  * 
+ * Note that it is impossible to retrieve the deployment resources through the
+ * results of this operation, since that would cause a huge transfer of
+ * (possibly) unneeded bytes over the wire.
+ * 
+ * To retrieve the actual bytes of a deployment resource use the operations on the
+ * {@link RepositoryService#getDeploymentResourceNames(String)} 
+ * and {@link RepositoryService#getResourceAsStream(String, String)}
+ * 
  * @author Tom Baeyens
+ * @author Joram Barrez
  */
 public interface DeploymentQuery {
   

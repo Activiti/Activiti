@@ -14,6 +14,7 @@ package org.activiti.rest.api.identity;
 
 import java.util.Map;
 
+import org.activiti.engine.identity.GroupQuery;
 import org.activiti.rest.util.ActivitiWebScript;
 import org.springframework.extensions.webscripts.*;
 
@@ -40,11 +41,15 @@ public class UserGroupsGet extends ActivitiWebScript
     String groupType = getString(req, "type");
     if (groupType != null && !groupType.trim().equals(""))
     {
-      model.put("groups", getIdentityService().findGroupsByUserIdAndGroupType(userId, groupType));
+      GroupQuery query = getIdentityService().createGroupQuery().member(userId);
+      if (groupType != null) {
+        query.type(groupType);
+      }
+      model.put("groups", query.list());
     }
     else
     {
-      model.put("groups", getIdentityService().findGroupsByUserId(userId));
+      model.put("groups", getIdentityService().createGroupQuery().member(userId).list());
     }
 
   }

@@ -17,6 +17,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.activiti.engine.identity.Group;
+import org.activiti.engine.identity.User;
+import org.activiti.engine.impl.Page;
 import org.activiti.engine.impl.cfg.IdentitySession;
 import org.activiti.engine.impl.identity.GroupEntity;
 import org.activiti.engine.impl.identity.UserEntity;
@@ -48,11 +51,6 @@ public class DbIdentitySession implements IdentitySession, Session {
     return dbSqlSession.selectList("selectUsersByGroupId", groupId);
   }
 
-  @SuppressWarnings("unchecked")
-  public List<UserEntity> findUsers() {
-    return dbSqlSession.selectList("selectUsers");
-  }
-
   public boolean isValidUser(String userId) {
     return findUserById(userId) != null;
   }
@@ -75,19 +73,6 @@ public class DbIdentitySession implements IdentitySession, Session {
     return dbSqlSession.selectList("selectGroupsByUserId", userId);
   }
 
-  @SuppressWarnings("unchecked")
-  public List<GroupEntity> findGroupsByUserAndType(String userId, String groupType) {
-    Map<String, Object> parameters = new HashMap<String, Object>();
-    parameters.put("userId", userId);
-    parameters.put("groupType", groupType);
-    return dbSqlSession.selectList("selectGroupsByUserIdAndGroupType", parameters);
-  }
-
-  @SuppressWarnings("unchecked")
-  public List<GroupEntity> findGroups() {
-    return dbSqlSession.selectList("selectGroups");
-  }
-
   public void deleteGroup(String groupId) {
     dbSqlSession.delete("deleteMembershipsByGroupId", groupId);
     dbSqlSession.delete("deleteGroup", groupId);
@@ -106,7 +91,24 @@ public class DbIdentitySession implements IdentitySession, Session {
     parameters.put("groupId", groupId);
     dbSqlSession.delete("deleteMembership", parameters);
   }
-
+  
+  @SuppressWarnings("unchecked")
+  public List<User> findUserByQueryCriteria(Object query, Page page) {
+    return dbSqlSession.selectList("selectUserByQueryCriteria", query, page);
+  }
+  
+  public long findUserCountByQueryCriteria(Object query) {
+    return (Long) dbSqlSession.selectOne("selectUserCountByQueryCriteria", query);
+  }
+  
+  @SuppressWarnings("unchecked")
+  public List<Group> findGroupByQueryCriteria(Object query, Page page) {
+    return dbSqlSession.selectList("selectGroupByQueryCriteria", query, page);
+  }
+  
+  public long findGroupCountByQueryCriteria(Object query) {
+    return (Long) dbSqlSession.selectOne("selectGroupCountByQueryCriteria", query);
+  }
 
   public void close() {
   }

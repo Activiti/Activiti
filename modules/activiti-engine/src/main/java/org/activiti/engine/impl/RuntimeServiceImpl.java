@@ -25,7 +25,6 @@ import org.activiti.engine.impl.cmd.GetVariablesCmd;
 import org.activiti.engine.impl.cmd.SetVariablesCmd;
 import org.activiti.engine.impl.cmd.SignalCmd;
 import org.activiti.engine.impl.cmd.StartProcessInstanceCmd;
-import org.activiti.engine.runtime.Execution;
 import org.activiti.engine.runtime.ExecutionQuery;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.runtime.ProcessInstanceQuery;
@@ -88,7 +87,7 @@ public class RuntimeServiceImpl extends ServiceImpl implements RuntimeService {
     return new ProcessInstanceQueryImpl(commandExecutor);
   }
 
-  public List<String> findActiveActivityIds(String executionId) {
+  public List<String> getActiveActivityIds(String executionId) {
     return commandExecutor.execute(new FindActiveActivityIdsCmd(executionId));
   }
 }

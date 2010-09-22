@@ -14,6 +14,7 @@ package org.activiti.rest.api.tasks;
 
 import org.activiti.engine.TaskService;
 import org.activiti.engine.identity.Group;
+import org.activiti.engine.identity.GroupQuery;
 import org.activiti.rest.util.ActivitiWebScript;
 import org.springframework.extensions.webscripts.Cache;
 import org.springframework.extensions.webscripts.Status;
@@ -43,7 +44,17 @@ public class TasksSummaryGet extends ActivitiWebScript {
   {
     String user = getMandatoryString(req, "user");
     TaskService ts = getTaskService();
-    List<Group> groups = getIdentityService().findGroupsByUserIdAndGroupType(user, config.getAssignmentGroupTypeId());
+    
+    GroupQuery query = getIdentityService()
+      .createGroupQuery()
+      .member(user);
+    
+    String assignmentGroupType = config.getAssignmentGroupTypeId();
+    if (assignmentGroupType != null) {
+      query.type(assignmentGroupType);
+    }
+    
+    List<Group> groups = query.list();
     Map<String, Long> unassignedByGroup = new HashMap<String, Long>();
     long tasksInGroup;
     for (Group group : groups)

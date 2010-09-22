@@ -17,7 +17,6 @@ import java.util.Map;
 
 import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.repository.ProcessDefinition;
-import org.activiti.engine.runtime.Execution;
 import org.activiti.engine.runtime.ExecutionQuery;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.runtime.ProcessInstanceQuery;
@@ -64,30 +63,19 @@ public interface RuntimeService {
    * @throws ActivitiException when no process instance is found with the given id.
    */
   void deleteProcessInstance(String processInstanceId, String deleteReason);
-  
-  /** Creates a new {@link ExecutionQuery} instance, 
-   * that can be used to query the executions and process instances. */
-  ExecutionQuery createExecutionQuery();
     
   /** Finds the activity ids for all executions that are waiting in activities. 
    * This is a list because a single activity can be active multiple times.
    * @param executionId id of the execution, cannot be null.
    * @throws ActivitiException when no execution exists with the given executionId. 
    */
-  List<String> findActiveActivityIds(String executionId);
-
-  /**
-   * Creates a new {@link ProcessInstanceQuery} instance, that can be used
-   * to query process instances.
-   */
-  ProcessInstanceQuery createProcessInstanceQuery();
+  List<String> getActiveActivityIds(String executionId);
 
   /** Sends an external trigger to an activity instance that is waiting inside the given execution.
    * @param executionId id of execution to signal, cannot be null.
    * @throws ActivitiException when no execution is found for the given executionId. 
    */
   void signal(String executionId);
-  
   
   /** Find variables for an execution. 
    * @param executionId id of execution, cannot be null.
@@ -117,5 +105,15 @@ public interface RuntimeService {
    * @throws ActivitiException when no execution is found for the given executionId. 
    */
   void setVariables(String executionId, Map<String, Object> variables);
+  
+  /** Creates a new {@link ExecutionQuery} instance, 
+   * that can be used to query the executions and process instances. */
+  ExecutionQuery createExecutionQuery();
+  
+  /**
+   * Creates a new {@link ProcessInstanceQuery} instance, that can be used
+   * to query process instances.
+   */
+  ProcessInstanceQuery createProcessInstanceQuery();
 
 }

@@ -13,9 +13,7 @@
 
 package org.activiti.engine.impl.db;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.activiti.engine.impl.Page;
 import org.activiti.engine.impl.TaskQueryImpl;
@@ -43,16 +41,6 @@ public class DbTaskSession implements TaskSession, Session {
   }
 
   @SuppressWarnings("unchecked")
-  public List<TaskEntity> findTasksByExecutionId(String executionId) {
-    return dbSqlSession.selectList("selectTasksByExecutionId", executionId);
-  }
-
-  @SuppressWarnings("unchecked")
-  public List<Task> findTasksByAssignee(String assignee) {
-    return dbSqlSession.selectList("selectTasksByAssignee", assignee);
-  }
-
-  @SuppressWarnings("unchecked")
   public List<Task> findTasksByQueryCriteria(TaskQueryImpl taskQuery, Page page) {
     final String query = "selectTaskByQueryCriteria";
     return dbSqlSession.selectList(query, taskQuery, page);
@@ -65,14 +53,6 @@ public class DbTaskSession implements TaskSession, Session {
   @SuppressWarnings("unchecked")
   public List<TaskInvolvementEntity> findTaskInvolvementsByTaskId(String taskId) {
     return dbSqlSession.selectList("selectTaskInvolvementsByTask", taskId);
-  }
-
-  @SuppressWarnings("unchecked")
-  public List<Task> findCandidateTasks(String userId, List<String> groupIds) {
-    Map<String, Object> params = new HashMap<String, Object>();
-    params.put("userId", userId);
-    params.put("groupIds", groupIds);
-    return dbSqlSession.selectList("selectCandidateTasks", params);
   }
 
   public void close() {

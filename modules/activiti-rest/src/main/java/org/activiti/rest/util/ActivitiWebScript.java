@@ -406,7 +406,7 @@ public class ActivitiWebScript extends DeclarativeWebScript {
    */
   protected boolean isUserInGroup(WebScriptRequest req, String userId, String groupId) {
     if (userId != null) {
-      List<Group> groups = getIdentityService().findGroupsByUserId(userId);
+      List<Group> groups = getIdentityService().createGroupQuery().member(userId).list();
       for (Group group : groups) {
         if (config.getAdminGroupId().equals(group.getId())) {
           return true;

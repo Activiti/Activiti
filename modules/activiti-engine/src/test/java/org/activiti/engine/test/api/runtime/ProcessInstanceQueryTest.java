@@ -51,7 +51,7 @@ public class ProcessInstanceQueryTest extends ActivitiInternalTestCase {
   }
 
   protected void tearDown() throws Exception {
-    for (org.activiti.engine.repository.Deployment deployment : repositoryService.findDeployments()) {
+    for (org.activiti.engine.repository.Deployment deployment : repositoryService.createDeploymentQuery().list()) {
       repositoryService.deleteDeploymentCascade(deployment.getId());
     }
     super.tearDown();

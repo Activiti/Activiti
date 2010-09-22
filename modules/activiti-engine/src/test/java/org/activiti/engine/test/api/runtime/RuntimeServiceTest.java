@@ -118,14 +118,14 @@ public class RuntimeServiceTest extends ActivitiInternalTestCase {
   public void testFindActiveActivityIds() {
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("oneTaskProcess");
     
-    List<String> activities = runtimeService.findActiveActivityIds(processInstance.getId());
+    List<String> activities = runtimeService.getActiveActivityIds(processInstance.getId());
     assertNotNull(activities);
     assertEquals(1, activities.size());
   }
   
   public void testFindActiveActivityIdsUnexistingExecututionId() {
     try {
-      runtimeService.findActiveActivityIds("unexistingExecutionId");      
+      runtimeService.getActiveActivityIds("unexistingExecutionId");      
       fail("ActivitiException expected");
     } catch (ActivitiException ae) {
       assertTextPresent("execution unexistingExecutionId doesn't exist", ae.getMessage());
@@ -134,7 +134,7 @@ public class RuntimeServiceTest extends ActivitiInternalTestCase {
   
   public void testFindActiveActivityIdsNullExecututionId() {
     try {
-      runtimeService.findActiveActivityIds(null);      
+      runtimeService.getActiveActivityIds(null);      
       fail("ActivitiException expected");
     } catch (ActivitiException ae) {
       assertTextPresent("executionId is null", ae.getMessage());

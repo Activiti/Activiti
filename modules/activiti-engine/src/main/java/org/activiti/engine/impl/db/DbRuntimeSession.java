@@ -125,11 +125,6 @@ public class DbRuntimeSession implements Session, RuntimeSession {
   public JobEntity findJobById(String jobId) {
     return (JobEntity) dbSqlSession.selectOne("selectJob", jobId);
   }
-
-  @SuppressWarnings("unchecked")
-  public List<JobEntity> findJobs() {
-    return dbSqlSession.selectList("selectJobs");
-  }
   
   @SuppressWarnings("unchecked")
   public List<JobEntity> findNextJobsToExecute(Page page) {
@@ -137,11 +132,6 @@ public class DbRuntimeSession implements Session, RuntimeSession {
     return dbSqlSession.selectList("selectNextJobsToExecute", now, page);
   }
 
-  @SuppressWarnings("unchecked")
-  public List<JobEntity> findLockedJobs() {
-    return dbSqlSession.selectList("selectLockedJobs");
-  }
-  
   @SuppressWarnings("unchecked")
   public List<TimerEntity> findUnlockedTimersByDuedate(Date duedate, Page page) {
   	final String query = "selectUnlockedTimersByDuedate";

@@ -16,10 +16,8 @@ package org.activiti.engine;
 import java.io.InputStream;
 import java.util.List;
 
-import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.repository.DeploymentBuilder;
 import org.activiti.engine.repository.DeploymentQuery;
-import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.repository.ProcessDefinitionQuery;
 
 
@@ -46,24 +44,12 @@ public interface RepositoryService {
    */
   void deleteDeploymentCascade(String deploymentId);
   
-  /** 
-   * Lists all deployments, ordered by deployment date (ascending).
-   * 
-   * Note that it is impossible to retrieve the deployment resources
-   * through the results of this operation, since that would cause a 
-   * huge transfer of (possibly) unneeded bytes over the wire.
-   * 
-   * To retrieve the actual bytes of a deployment resource use the
-   * operations <i>findDeploymentResources</i> and <i>getDeploymentResource</i>.
-   */
-  List<Deployment> findDeployments();
-
   /**
    * Retrieves a list of deployment resources for the given deployment, 
    * ordered alphabetically.
    * @param deploymentId id of the deployment, cannot be null.
    */
-  List<String> findDeploymentResourceNames(String deploymentId);
+  List<String> getDeploymentResourceNames(String deploymentId);
   
   /**
    * Gives access to a deployment resource through a stream of bytes.
@@ -88,18 +74,10 @@ public interface RepositoryService {
    */ 
   Object getStartFormById(String processDefinitionId);
 
-  
   /** Query process definitions. */
   ProcessDefinitionQuery createProcessDefinitionQuery();
   
   /** Query process definitions. */
   DeploymentQuery createDeploymentQuery();
-  
-  /**
-   * Returns the {@link ProcessDefinition} with the given id, 
-   * or null if none is found.
-   * @param processDefinitionId id, cannot be null.
-   */
-  ProcessDefinition findProcessDefinitionById(String processDefinitionId);
   
 }

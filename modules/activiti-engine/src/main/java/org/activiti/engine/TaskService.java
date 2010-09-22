@@ -67,7 +67,6 @@ public interface TaskService {
    */
   void claim(String taskId, String userId);
   
-  
   /**
    * Retrieves the rendered task form for the given task.
    * @param taskId the id of the task to render the form for, cannot be null.

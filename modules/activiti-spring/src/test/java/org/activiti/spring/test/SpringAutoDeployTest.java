@@ -49,7 +49,7 @@ public class SpringAutoDeployTest extends PvmTestCase {
     assertEquals(expectedProcessDefinitionKeys, processDefinitionKeys);
     
     // clean up the deployment, required for subsequent tests
-    String deploymentId = repositoryService.findDeployments().get(0).getId();
+    String deploymentId = repositoryService.createDeploymentQuery().list().get(0).getId();
     repositoryService.deleteDeploymentCascade(deploymentId);
     
     applicationContext.destroy();

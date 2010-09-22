@@ -12,10 +12,10 @@
  */
 package org.activiti.engine;
 
-import java.util.List;
-
 import org.activiti.engine.identity.Group;
+import org.activiti.engine.identity.GroupQuery;
 import org.activiti.engine.identity.User;
+import org.activiti.engine.identity.UserQuery;
 
 
 /**
@@ -40,15 +40,9 @@ public interface IdentityService {
   void saveUser(User user);
   
   /**
-   * @return the user for the given id. Returns null if no user is found.
+   * Creates a {@link UserQuery} that allows to programmatically query the users.
    */
-  User findUser(String userId);
-  
-  /**
-   * @return all users that are member of the given group. If no group exists with the 
-   * given id, an empty list is returned.
-   */
-  List<User> findUsersByGroupId(String groupId);
+  UserQuery createUserQuery();
   
   /**
    * @param userId id of user to delete, cannot be null. When an id is passed
@@ -64,31 +58,16 @@ public interface IdentityService {
   Group newGroup(String groupId);
   
   /**
+   * Creates a {@link GroupQuery} thats allows to programmatically query the groups.
+   */
+  GroupQuery createGroupQuery();
+  
+  /**
    * Saves the group. If the group already existed, the group is updated.
    * @param group group to save. Cannot be null.
    * @throws RuntimeException when a group with the same name already exists.
    */
   void saveGroup(Group group);
-  
-  /**
-   * Finds the group with the given id. Returns null if no group is found.
-   * @param groupId id of the group, cannot be null.
-   */
-  Group findGroupById(String groupId);
-  
-  /**
-   * @return all groups the user is a member of. 
-   * Returns an empty list if the user is not a member of any groups.
-   */
-  List<Group> findGroupsByUserId(String userId);
-  
-  /**
-   * @return all groups the user is a member of which are of the given type. 
-   * When groupType is null, groups of any type will be returned.
-   * Returns an empty list the user is not a member of a matching group.
-   * 
-   */
-  List<Group> findGroupsByUserIdAndGroupType(String userId, String groupType);
   
   /**
    * Deletes the group. When no group exists with the given id, this operation
@@ -104,7 +83,6 @@ public interface IdentityService {
    * is already member of the group.
    */
   void createMembership(String userId, String groupId);
-  
   
   /**
    * Delete the membership of the user in the group. When the group or user don't exist 

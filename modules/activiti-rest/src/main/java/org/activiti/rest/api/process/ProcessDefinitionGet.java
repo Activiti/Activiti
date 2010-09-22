@@ -27,7 +27,7 @@ public class ProcessDefinitionGet extends ActivitiWebScript
   protected void executeWebScript(WebScriptRequest req, Status status, Cache cache, Map<String, Object> model)
   {
     String processDefinitionId = getMandatoryPathParameter(req, "processDefinitionId");
-    model.put("processDefinition", getRepositoryService().findProcessDefinitionById(processDefinitionId));
+    model.put("processDefinition", getRepositoryService().createProcessDefinitionQuery().id(processDefinitionId).singleResult());
   }
 
 }

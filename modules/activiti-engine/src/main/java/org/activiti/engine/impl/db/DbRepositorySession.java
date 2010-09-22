@@ -161,7 +161,7 @@ public class DbRepositorySession implements Session, RepositorySession {
   }
   
   @SuppressWarnings("unchecked")
-  public List<String> findDeploymentResourceNames(String deploymentId) {
+  public List<String> getDeploymentResourceNames(String deploymentId) {
     return dbSqlSession.getSqlSession().selectList("selectResourceNamesByDeploymentId", deploymentId);
   }
 
@@ -170,7 +170,7 @@ public class DbRepositorySession implements Session, RepositorySession {
     return (List<DeploymentEntity>) dbSqlSession.selectList("selectDeployments");
   };
 
-  @SuppressWarnings("unchecked")
+  @SuppressWarnings("rawtypes")
   public DeploymentEntity findLatestDeploymentByName(String deploymentName) {
     List list = dbSqlSession.selectList("selectDeploymentsByName", deploymentName, new Page(0, 1));
     if (list!=null && !list.isEmpty()) {
@@ -179,25 +179,11 @@ public class DbRepositorySession implements Session, RepositorySession {
     return null;
   }
 
-  @SuppressWarnings("unchecked")
-  public List<ProcessDefinitionEntity> findProcessDefinitions() {
-    return dbSqlSession.selectList("selectProcessDefinitions");
-  }
-
-  public ProcessDefinitionEntity findProcessDefinitionByDeploymentAndKey(String deploymentId, String processDefinitionKey) {
+  protected ProcessDefinitionEntity findProcessDefinitionByDeploymentAndKey(String deploymentId, String processDefinitionKey) {
     Map<String, Object> parameters = new HashMap<String, Object>();
     parameters.put("deploymentId", deploymentId);
     parameters.put("processDefinitionKey", processDefinitionKey);
     return (ProcessDefinitionEntity) dbSqlSession.selectOne("selectProcessDefinitionByDeploymentAndKey", parameters);
-  }
-
-  @SuppressWarnings("unchecked")
-  public List<ProcessDefinitionEntity> findProcessDefinitionsByDeploymentId(String deploymentId) {
-    return dbSqlSession.selectList("selectProcessDefinitionsByDeploymentId", deploymentId);
-  }
-
-  public ProcessDefinitionEntity findProcessDefinitionById(String processDefinitionId) {
-    return (ProcessDefinitionEntity) dbSqlSession.selectOne("selectProcessDefinitionById", processDefinitionId);
   }
 
   protected ProcessDefinitionEntity findLatestProcessDefinitionByKey(String processDefinitionKey) {
@@ -234,12 +220,6 @@ public class DbRepositorySession implements Session, RepositorySession {
     return processDefinition;
   }
   
-  public void close() {
-  }
-
-  public void flush() {
-  }
-
   @SuppressWarnings("unchecked")
   public List<ProcessDefinition> findProcessDefinitionsByQueryCriteria(ProcessDefinitionQueryImpl processDefinitionQuery, Page page) {
     final String query = "selectProcessDefinitionsByQueryCriteria";
@@ -258,6 +238,12 @@ public class DbRepositorySession implements Session, RepositorySession {
   public List<Deployment> findDeploymentsByQueryCriteria(DeploymentQueryImpl deploymentQuery, Page page) {
     final String query = "selectDeploymentsByQueryCriteria";
     return dbSqlSession.selectList(query, deploymentQuery, page);
+  }
+  
+  public void close() {
+  }
+
+  public void flush() {
   }
   
 }

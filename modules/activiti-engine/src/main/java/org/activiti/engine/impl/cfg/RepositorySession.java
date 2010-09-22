@@ -41,12 +41,8 @@ public interface RepositorySession {
    * and process definitions */
   void deleteDeployment(String deploymentId, boolean cascade);
 
-  // TODO replace with query api
-  List<DeploymentEntity> findDeployments();
-
   DeploymentEntity findDeploymentById(String deploymentId);
 
-  // TODO replace with query api
   /** used when {@link DeploymentBuilder#enableDuplicateFiltering()} is called 
    * while building a deployment. */
   DeploymentEntity findLatestDeploymentByName(String deploymentName);
@@ -59,21 +55,11 @@ public interface RepositorySession {
 
   List<ProcessDefinition> findProcessDefinitionsByQueryCriteria(ProcessDefinitionQueryImpl processDefinitionQueryImpl, Page page);
   
-  // TODO replace with query api
-  // document that these process definitions might not be deployed
-  List<ProcessDefinitionEntity> findProcessDefinitionsByDeploymentId(String deploymentId);
-
-  List<ProcessDefinitionEntity> findProcessDefinitions();
-
-  // TODO document that these process definitions are not deployed and what that means
-  ProcessDefinitionEntity findProcessDefinitionById(String processDefinitionId);
-  
   // TODO document that these process definitions are deployed
   ProcessDefinitionEntity findDeployedLatestProcessDefinitionByKey(String processDefinitionKey);
 
   // TODO document that these process definitions are deployed
   ProcessDefinitionEntity findDeployedProcessDefinitionById(String processDefinitionId);
-
 
   // TODO replace with query api
   ResourceEntity findResourceByDeploymentIdAndResourceName(String deploymentId, String resourceName);
@@ -81,7 +67,7 @@ public interface RepositorySession {
   // TODO replace with query api
   List<ResourceEntity> findResourcesByDeploymentId(String deploymentId);
 
-  List<String> findDeploymentResourceNames(String deploymentId);
+  List<String> getDeploymentResourceNames(String deploymentId);
 
   
 }

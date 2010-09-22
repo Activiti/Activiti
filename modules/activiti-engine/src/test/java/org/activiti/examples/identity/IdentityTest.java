@@ -68,20 +68,20 @@ public class IdentityTest extends ActivitiInternalTestCase {
 
     identityService.createMembership("joesmoe", "user");
 
-    List<Group> groups = identityService.findGroupsByUserIdAndGroupType("johndoe", "security-role");
+    List<Group> groups = identityService.createGroupQuery().member("johndoe").type("security-role").list();
     Set<String> groupIds = getGroupIds(groups);
     Set<String> expectedGroupIds = new HashSet<String>();
     expectedGroupIds.add("user");
     expectedGroupIds.add("admin");
     assertEquals(expectedGroupIds, groupIds);
 
-    groups = identityService.findGroupsByUserIdAndGroupType("joesmoe", "security-role");
+    groups = identityService.createGroupQuery().member("joesmoe").type("security-role").list();
     groupIds = getGroupIds(groups);
     expectedGroupIds = new HashSet<String>();
     expectedGroupIds.add("user");
     assertEquals(expectedGroupIds, groupIds);
 
-    groups = identityService.findGroupsByUserIdAndGroupType("jackblack", "security-role");
+    groups = identityService.createGroupQuery().member("jackblack").type("security-role").list();
     assertTrue(groups.isEmpty());
 
     identityService.deleteGroup("sales");
@@ -100,7 +100,7 @@ public class IdentityTest extends ActivitiInternalTestCase {
     user.setEmail("johndoe@alfresco.com");
     identityService.saveUser(user);
 
-    user = identityService.findUser("johndoe");
+    user = identityService.createUserQuery().id("johndoe").singleResult();
     assertEquals("johndoe", user.getId());
     assertEquals("John", user.getFirstName());
     assertEquals("Doe", user.getLastName());
@@ -114,7 +114,7 @@ public class IdentityTest extends ActivitiInternalTestCase {
     group.setName("Sales division");
     identityService.saveGroup(group);
 
-    group = identityService.findGroupById("sales");
+    group = identityService.createGroupQuery().id("sales").singleResult();
     assertEquals("sales", group.getId());
     assertEquals("Sales division", group.getName());
 
@@ -143,19 +143,19 @@ public class IdentityTest extends ActivitiInternalTestCase {
     identityService.createMembership("joesmoe", "development");
     identityService.createMembership("jackblack", "development");
 
-    List<Group> groups = identityService.findGroupsByUserId("johndoe");
+    List<Group> groups = identityService.createGroupQuery().member("johndoe").list();
     assertEquals(createStringSet("sales"), getGroupIds(groups));
 
-    groups = identityService.findGroupsByUserId("joesmoe");
+    groups = identityService.createGroupQuery().member("joesmoe").list();
     assertEquals(createStringSet("sales", "development"), getGroupIds(groups));
 
-    groups = identityService.findGroupsByUserId("jackblack");
+    groups = identityService.createGroupQuery().member("jackblack").list();
     assertEquals(createStringSet("development"), getGroupIds(groups));
 
-    List<User> users = identityService.findUsersByGroupId("sales");
+    List<User> users = identityService.createUserQuery().memberOfGroup("sales").list();
     assertEquals(createStringSet("johndoe", "joesmoe"), getUserIds(users));
 
-    users = identityService.findUsersByGroupId("development");
+    users = identityService.createUserQuery().memberOfGroup("development").list();
     assertEquals(createStringSet("joesmoe", "jackblack"), getUserIds(users));
 
     identityService.deleteGroup("sales");

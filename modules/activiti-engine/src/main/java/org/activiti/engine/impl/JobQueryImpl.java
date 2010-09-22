@@ -53,7 +53,7 @@ public class JobQueryImpl extends AbstractQuery<Job> implements JobQuery {
   
   public JobQuery id(String jobId) {
     if (jobId == null) {
-      throw new ActivitiException("Supplied job id is null");
+      throw new ActivitiException("Provided job id is null");
     }
     this.id = jobId;
     return this;
@@ -61,7 +61,7 @@ public class JobQueryImpl extends AbstractQuery<Job> implements JobQuery {
 
   public JobQueryImpl processInstanceId(String processInstanceId) {
     if (processInstanceId == null) {
-      throw new ActivitiException("Supplied process instance id is null");
+      throw new ActivitiException("Provided process instance id is null");
     }
     this.processInstanceId = processInstanceId;
     return this;
@@ -69,7 +69,7 @@ public class JobQueryImpl extends AbstractQuery<Job> implements JobQuery {
   
   public JobQueryImpl executionId(String executionId) {
     if (executionId == null) {
-      throw new ActivitiException("Supplied execution id is null");
+      throw new ActivitiException("Provided execution id is null");
     }
     this.executionId = executionId;
     return this;
@@ -103,7 +103,7 @@ public class JobQueryImpl extends AbstractQuery<Job> implements JobQuery {
   
   public JobQuery duedateHigherThen(Date date) {
     if (date == null) {
-      throw new ActivitiException("Supplied date is null");
+      throw new ActivitiException("Provided date is null");
     }
     this.duedateHigherThen = date;
     return this;
@@ -111,7 +111,7 @@ public class JobQueryImpl extends AbstractQuery<Job> implements JobQuery {
   
   public JobQuery duedateHigherThenOrEquals(Date date) {
     if (date == null) {
-      throw new ActivitiException("Supplied date is null");
+      throw new ActivitiException("Provided date is null");
     }
     this.duedateHigherThenOrEqual = date;
     return this;
@@ -119,7 +119,7 @@ public class JobQueryImpl extends AbstractQuery<Job> implements JobQuery {
   
   public JobQuery duedateLowerThen(Date date) {
     if (date == null) {
-      throw new ActivitiException("Supplied date is null");
+      throw new ActivitiException("Provided date is null");
     }
     this.duedateLowerThen = date;
     return this;
@@ -127,7 +127,7 @@ public class JobQueryImpl extends AbstractQuery<Job> implements JobQuery {
   
   public JobQuery duedateLowerThenOrEquals(Date date) {
     if (date == null) {
-      throw new ActivitiException("Supplied date is null");
+      throw new ActivitiException("Provided date is null");
     }
     this.duedateLowerThenOrEqual = date;
     return this;
