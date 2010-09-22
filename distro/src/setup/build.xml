@@ -287,6 +287,9 @@ JAVA_OPTS="-Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=8787
         <include name="activiti-cfg.jar"/>
       </fileset>
     </copy>
+    
+    <!-- Need to remove el-api.jar since it has an older verson of javax.el.* than JUEL-->
+    <delete file="${tomcat.home}/lib/el-api.jar" />
   </target>
 
   <target name="db.demo.data" depends="internal.classpath.libs">
