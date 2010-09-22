@@ -10,15 +10,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.activiti.engine.impl.interceptor;
 
 
 /**
- * @author Dave Syer
+ * @author Tom Baeyens
  */
-public interface ContextAwareCommandInterceptor {
+public class CommandExecutorImpl extends CommandInterceptor {
 
-  <T> T invoke(CommandExecutor next, Command<T> command, CommandContext context);
-  
+  public <T> T execute(Command<T> command) {
+    return command.execute(CommandContext.getCurrent());
+  }
 }

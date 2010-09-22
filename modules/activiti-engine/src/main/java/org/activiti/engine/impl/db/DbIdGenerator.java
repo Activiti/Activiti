@@ -31,7 +31,7 @@ public class DbIdGenerator implements IdGenerator, ProcessEngineConfigurationAwa
   protected CommandExecutor commandExecutor;
   
   public void configurationCompleted(ProcessEngineConfiguration processEngineConfiguration) {
-    this.commandExecutor = processEngineConfiguration.getCommandExecutor();
+    this.commandExecutor = processEngineConfiguration.getCommandExecutorTxRequiresNew();
   }
 
   public synchronized long getNextId() {

@@ -33,7 +33,7 @@ import org.activiti.engine.impl.util.ClockUtil;
 public class JobExecutorCmdHappyTest extends JobExecutorTestCase {
 
   public void testJobCommandsWithMessage() {
-    CommandExecutor commandExecutor = processEngineConfiguration.getCommandExecutor();
+    CommandExecutor commandExecutor = processEngineConfiguration.getCommandExecutorTxRequired();
     JobExecutor jobExecutor = processEngineConfiguration.getJobExecutor();
     String jobId = commandExecutor.execute(new Command<String>() {
 
@@ -69,7 +69,7 @@ public class JobExecutorCmdHappyTest extends JobExecutorTestCase {
     // clock gets automatically reset in LogTestCase.runTest
     ClockUtil.setCurrentTime(new Date(SOME_TIME));
 
-    CommandExecutor commandExecutor = processEngineConfiguration.getCommandExecutor();
+    CommandExecutor commandExecutor = processEngineConfiguration.getCommandExecutorTxRequired();
     JobExecutor jobExecutor = processEngineConfiguration.getJobExecutor();
 
     String jobId = commandExecutor.execute(new Command<String>() {

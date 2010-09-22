@@ -22,6 +22,6 @@ package org.activiti.engine.impl.interceptor;
  */
 public interface CommandExecutor {
 
-  <T> T execute(Command<T> cmd);
+  <T> T execute(Command<T> command);
 
 }

@@ -30,7 +30,7 @@ import org.activiti.engine.impl.interceptor.CommandExecutor;
 public class JobExecutorTest extends JobExecutorTestCase {
 
   public void testBasicJobExecutorOperation() throws Exception {
-    CommandExecutor commandExecutor = processEngineConfiguration.getCommandExecutor();
+    CommandExecutor commandExecutor = processEngineConfiguration.getCommandExecutorTxRequired();
     commandExecutor.execute(new Command<Void>() {
       public Void execute(CommandContext commandContext) {
         MessageSession messageSession = commandContext.getMessageSession();

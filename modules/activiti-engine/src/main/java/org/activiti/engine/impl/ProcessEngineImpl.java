@@ -59,7 +59,7 @@ public class ProcessEngineImpl implements ProcessEngine {
     this.managementService = processEngineConfiguration.getManagementService();
     this.dbSchemaStrategy = processEngineConfiguration.getDbSchemaStrategy();
     this.jobExecutor = processEngineConfiguration.getJobExecutor();
-    this.commandExecutor = processEngineConfiguration.getCommandExecutor();
+    this.commandExecutor = processEngineConfiguration.getCommandExecutorTxRequired();
     
     commandExecutor.execute(new Command<Object>() {
       public Object execute(CommandContext commandContext) {

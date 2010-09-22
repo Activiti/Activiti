@@ -14,9 +14,15 @@ package org.activiti.engine;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Properties;
 
 import org.activiti.engine.impl.cfg.ProcessEngineConfiguration;
+import org.activiti.engine.impl.interceptor.CommandContextInterceptor;
+import org.activiti.engine.impl.interceptor.CommandExecutorImpl;
+import org.activiti.engine.impl.interceptor.CommandInterceptor;
+import org.activiti.engine.impl.interceptor.LogInterceptor;
 
 /**
  * Builds a process engine based on a couple of simple properties.

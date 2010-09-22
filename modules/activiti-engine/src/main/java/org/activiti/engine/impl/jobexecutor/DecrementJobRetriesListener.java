@@ -34,7 +34,7 @@ public class DecrementJobRetriesListener implements TransactionListener {
   public void execute(CommandContext commandContext) {
     // TODO http://jira.codehaus.org/browse/ACT-45 use a separate 'requiresNew' command executor
     commandContext.getProcessEngineConfiguration()
-      .getCommandExecutor()
+      .getCommandExecutorTxRequiresNew()
       .execute(new DecrementJobRetriesCmd(jobId, exception));
   }
 

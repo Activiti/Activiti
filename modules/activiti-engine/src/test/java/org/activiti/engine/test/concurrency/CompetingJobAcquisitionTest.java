@@ -44,7 +44,7 @@ public class CompetingJobAcquisitionTest extends ActivitiInternalTestCase {
       try {
         JobExecutor jobExecutor = processEngineConfiguration.getJobExecutor();
         processEngineConfiguration
-          .getCommandExecutor()
+          .getCommandExecutorTxRequired()
           .execute(new ControlledCommand(activeThread, new AcquireJobsCmd(jobExecutor)));
 
       } catch (ActivitiOptimisticLockingException e) {

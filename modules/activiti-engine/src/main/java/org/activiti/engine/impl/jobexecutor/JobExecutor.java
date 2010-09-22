@@ -55,7 +55,7 @@ public class JobExecutor implements ProcessEngineConfigurationAware {
   protected boolean isActive = false;
 
   public void configurationCompleted(ProcessEngineConfiguration processEngineConfiguration) {
-    this.commandExecutor = processEngineConfiguration.getCommandExecutor();
+    this.commandExecutor = processEngineConfiguration.getCommandExecutorTxRequired();
     this.isAutoActivate = processEngineConfiguration.isJobExecutorAutoActivate();
   }
 

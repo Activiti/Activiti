@@ -58,7 +58,7 @@ public class JobQueryTest extends ActivitiInternalTestCase {
   protected void setUp() throws Exception {
     super.setUp();
     
-    this.commandExecutor = processEngineConfiguration.getCommandExecutor();
+    this.commandExecutor = processEngineConfiguration.getCommandExecutorTxRequired();
     
     deploymentId = repositoryService.createDeployment()
         .addClasspathResource("org/activiti/engine/test/api/mgmt/timerOnTask.bpmn20.xml")

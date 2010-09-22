@@ -14,6 +14,8 @@
 package org.activiti.spring;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.zip.ZipInputStream;
 
 import javax.sql.DataSource;
@@ -26,8 +28,10 @@ import org.activiti.engine.RepositoryService;
 import org.activiti.engine.impl.ProcessEngineImpl;
 import org.activiti.engine.impl.cfg.IdGenerator;
 import org.activiti.engine.impl.cfg.ProcessEngineConfiguration;
-import org.activiti.engine.impl.interceptor.CommandExecutor;
-import org.activiti.engine.impl.interceptor.DefaultCommandExecutor;
+import org.activiti.engine.impl.interceptor.CommandContextInterceptor;
+import org.activiti.engine.impl.interceptor.CommandExecutorImpl;
+import org.activiti.engine.impl.interceptor.CommandInterceptor;
+import org.activiti.engine.impl.interceptor.LogInterceptor;
 import org.activiti.engine.impl.jobexecutor.JobExecutor;
 import org.activiti.engine.impl.variable.VariableTypes;
 import org.activiti.engine.repository.DeploymentBuilder;
@@ -40,6 +44,7 @@ import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.ContextResource;
 import org.springframework.core.io.Resource;
 import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.support.TransactionTemplate;
 
 /**
  * @author Dave Syer
@@ -83,9 +88,19 @@ public class ProcessEngineFactoryBean implements FactoryBean<ProcessEngine>, Dis
     processEngineConfiguration.setLocalTransactions(transactionManager == null);
 
     if (transactionManager != null) {
-      DefaultCommandExecutor commandExecutor = (DefaultCommandExecutor) processEngineConfiguration.getCommandExecutor();
-      commandExecutor.addCommandInterceptor(new SpringTransactionInterceptor(transactionManager));
-      processEngineConfiguration.setCommandExecutor(commandExecutor);
+      List<CommandInterceptor> commandInterceptorsTxRequired = new ArrayList<CommandInterceptor>();
+      commandInterceptorsTxRequired.add(new LogInterceptor());
+      commandInterceptorsTxRequired.add(new SpringTransactionInterceptor(transactionManager, TransactionTemplate.PROPAGATION_REQUIRED));
+      commandInterceptorsTxRequired.add(new CommandContextInterceptor());
+      commandInterceptorsTxRequired.add(new CommandExecutorImpl());
+      processEngineConfiguration.setCommandInterceptorsTxRequired(commandInterceptorsTxRequired);
+      
+      List<CommandInterceptor> commandInterceptorsTxRequiresNew = new ArrayList<CommandInterceptor>();
+      commandInterceptorsTxRequiresNew.add(new LogInterceptor());
+      commandInterceptorsTxRequiresNew.add(new SpringTransactionInterceptor(transactionManager, TransactionTemplate.PROPAGATION_REQUIRES_NEW));
+      commandInterceptorsTxRequiresNew.add(new CommandContextInterceptor());
+      commandInterceptorsTxRequiresNew.add(new CommandExecutorImpl());
+      processEngineConfiguration.setCommandInterceptorsTxRequiresNew(commandInterceptorsTxRequiresNew);
     }
   }
 
@@ -150,10 +165,6 @@ public class ProcessEngineFactoryBean implements FactoryBean<ProcessEngine>, Dis
 
   public void setDeploymentResources(Resource[] deploymentResources) {
     this.deploymentResources = deploymentResources;
-  }
-
-  public void setCommandExecutor(CommandExecutor commandExecutor) {
-    processEngineConfiguration.setCommandExecutor(commandExecutor);
   }
 
   public void setDataBaseName(String dataBaseName) {

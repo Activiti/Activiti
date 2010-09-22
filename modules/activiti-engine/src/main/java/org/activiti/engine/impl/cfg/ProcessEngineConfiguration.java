@@ -19,6 +19,7 @@ import java.util.Map;
 
 import javax.sql.DataSource;
 
+import org.activiti.engine.ActivitiException;
 import org.activiti.engine.DbSchemaStrategy;
 import org.activiti.engine.HistoryService;
 import org.activiti.engine.IdentityService;
@@ -52,8 +53,11 @@ import org.activiti.engine.impl.db.DbTaskSessionFactory;
 import org.activiti.engine.impl.el.ExpressionManager;
 import org.activiti.engine.impl.history.handler.HistoryTaskAssignmentHandler;
 import org.activiti.engine.impl.interceptor.CommandContextFactory;
+import org.activiti.engine.impl.interceptor.CommandContextInterceptor;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
-import org.activiti.engine.impl.interceptor.DefaultCommandExecutor;
+import org.activiti.engine.impl.interceptor.CommandInterceptor;
+import org.activiti.engine.impl.interceptor.CommandExecutorImpl;
+import org.activiti.engine.impl.interceptor.LogInterceptor;
 import org.activiti.engine.impl.interceptor.SessionFactory;
 import org.activiti.engine.impl.jobexecutor.JobExecutor;
 import org.activiti.engine.impl.jobexecutor.JobExecutorMessageSessionFactory;
@@ -80,7 +84,15 @@ public class ProcessEngineConfiguration {
 
   protected String processEngineName;
 
-  protected CommandExecutor commandExecutor;
+  /** the configurable list which will be {@link #initializeInterceptorChain(List, ProcessEngineConfiguration) processed} to build the {@link #commandExecutorTxRequired} */
+  protected List<CommandInterceptor> commandInterceptorsTxRequired;
+  /** this will be initialized during the configurationComplete() */
+  protected CommandExecutor commandExecutorTxRequired;
+  /** the configurable list which will be {@link #initializeInterceptorChain(List, ProcessEngineConfiguration) processed} to build the {@link #commandExecutorTxRequiresNew} */
+  protected List<CommandInterceptor> commandInterceptorsTxRequiresNew;
+  /** this will be initialized during the configurationComplete() */
+  protected CommandExecutor commandExecutorTxRequiresNew;
+
   protected CommandContextFactory commandContextFactory;
   protected TransactionContextFactory transactionContextFactory;
 
@@ -124,7 +136,12 @@ public class ProcessEngineConfiguration {
   public ProcessEngineConfiguration() {
     processEngineName = ProcessEngines.NAME_DEFAULT;
 
-    commandExecutor = new DefaultCommandExecutor();
+    commandInterceptorsTxRequired = new ArrayList<CommandInterceptor>();
+    commandInterceptorsTxRequired.add(new LogInterceptor());
+    commandInterceptorsTxRequired.add(new CommandContextInterceptor());
+    commandInterceptorsTxRequired.add(new CommandExecutorImpl());
+    commandInterceptorsTxRequiresNew = commandInterceptorsTxRequired;
+    
     commandContextFactory = new CommandContextFactory(this);
     transactionContextFactory = new StandaloneIbatisTransactionContextFactory();
 
@@ -181,7 +198,13 @@ public class ProcessEngineConfiguration {
 
   protected void configurationComplete() {
     if (!isConfigurationCompleted) {
-      notifyConfigurationComplete(commandExecutor);
+      commandExecutorTxRequired = initializeInterceptorChain(commandInterceptorsTxRequired);
+      if (commandInterceptorsTxRequiresNew!=commandInterceptorsTxRequired) {
+        commandExecutorTxRequiresNew = initializeInterceptorChain(commandInterceptorsTxRequiresNew);
+      } else {
+        commandExecutorTxRequiresNew = commandExecutorTxRequired;
+      }
+      
       notifyConfigurationComplete(commandContextFactory);
       notifyConfigurationComplete(transactionContextFactory);
       notifyConfigurationComplete(repositoryService);
@@ -190,12 +213,15 @@ public class ProcessEngineConfiguration {
       notifyConfigurationComplete(managementService);
       notifyConfigurationComplete(identityService);
       notifyConfigurationComplete(historicDataService);
+      
       for (SessionFactory sessionFactory : sessionFactories.values()) {
         notifyConfigurationComplete(sessionFactory);
       }
+      
       for (Deployer deployer : deployers) {
         notifyConfigurationComplete(deployer);
       }
+      
       notifyConfigurationComplete(jobHandlers);
       notifyConfigurationComplete(jobExecutor);
       notifyConfigurationComplete(idGenerator);
@@ -211,6 +237,22 @@ public class ProcessEngineConfiguration {
       
       isConfigurationCompleted = true;
     }
+  }
+  
+  protected CommandInterceptor initializeInterceptorChain(List<CommandInterceptor> chain) {
+    if (chain==null || chain.isEmpty()) {
+      throw new ActivitiException("invalid command interceptor chain configuration: "+chain);
+    }
+    for (int i = 0; i < chain.size()-1; i++) {
+      chain.get(i).setNext( chain.get(i+1) );
+    }
+    for (int i = 0; i < chain.size(); i++) {
+      CommandInterceptor commandExecutor = chain.get(i);
+      if (commandExecutor instanceof ProcessEngineConfigurationAware) {
+        ((ProcessEngineConfigurationAware)commandExecutor).configurationCompleted(this);
+      }
+    }
+    return chain.get(0);
   }
   
   public void addTaskListener(String taskEventName, TaskListener taskListener) {
@@ -245,6 +287,13 @@ public class ProcessEngineConfiguration {
     return (DbSqlSessionFactory) sessionFactories.get(DbSqlSession.class);
   }
 
+  public void addCommandInterceptorsTxRequired(CommandInterceptor commandInterceptor) {
+    commandInterceptorsTxRequired.add(commandInterceptor);
+  }
+
+  public void addCommandInterceptorsTxRequiresNew(CommandInterceptor commandInterceptor) {
+    commandInterceptorsTxRequiresNew.add(commandInterceptor);
+  }
 
   // getters and setters //////////////////////////////////////////////////////
 
@@ -304,8 +353,8 @@ public class ProcessEngineConfiguration {
     return idGenerator;
   }
 
-  public CommandExecutor getCommandExecutor() {
-    return commandExecutor;
+  public CommandExecutor getCommandExecutorTxRequired() {
+    return commandExecutorTxRequired;
   }
 
   public JobHandlers getJobHandlers() {
@@ -342,10 +391,6 @@ public class ProcessEngineConfiguration {
  
   public void setIdGenerator(IdGenerator idGenerator) {
     this.idGenerator = idGenerator;
-  }
-  
-  public void setCommandExecutor(CommandExecutor commandExecutor) {
-    this.commandExecutor = commandExecutor;
   }
   
   public void setCommandContextFactory(CommandContextFactory commandContextFactory) {
@@ -502,5 +547,30 @@ public class ProcessEngineConfiguration {
   
   public void setTaskListeners(Map<String, List<TaskListener>> taskListeners) {
     this.taskListeners = taskListeners;
+  }
+
+  
+  public List<CommandInterceptor> getCommandInterceptorsTxRequired() {
+    return commandInterceptorsTxRequired;
+  }
+
+  
+  public void setCommandInterceptorsTxRequired(List<CommandInterceptor> commandInterceptorsTxRequired) {
+    this.commandInterceptorsTxRequired = commandInterceptorsTxRequired;
+  }
+
+  
+  public List<CommandInterceptor> getCommandInterceptorsTxRequiresNew() {
+    return commandInterceptorsTxRequiresNew;
+  }
+
+  
+  public void setCommandInterceptorsTxRequiresNew(List<CommandInterceptor> commandInterceptorsTxRequiresNew) {
+    this.commandInterceptorsTxRequiresNew = commandInterceptorsTxRequiresNew;
+  }
+
+  
+  public CommandExecutor getCommandExecutorTxRequiresNew() {
+    return commandExecutorTxRequiresNew;
   }
 }

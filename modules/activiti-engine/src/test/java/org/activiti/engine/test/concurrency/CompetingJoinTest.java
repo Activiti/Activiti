@@ -47,7 +47,7 @@ public class CompetingJoinTest extends ActivitiInternalTestCase {
     public void run() {
       try {
         processEngineConfiguration
-          .getCommandExecutor()
+          .getCommandExecutorTxRequired()
           .execute(new ControlledCommand(activeThread, new SignalCmd(executionId, null, null)));
 
       } catch (ActivitiOptimisticLockingException e) {

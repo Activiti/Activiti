@@ -13,7 +13,6 @@
 package org.activiti.spring;
 
 import org.activiti.engine.impl.interceptor.Command;
-import org.activiti.engine.impl.interceptor.CommandExecutor;
 import org.activiti.engine.impl.interceptor.CommandInterceptor;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionStatus;
@@ -24,18 +23,20 @@ import org.springframework.transaction.support.TransactionTemplate;
  * @author Dave Syer
  * @author Tom Baeyens
  */
-public class SpringTransactionInterceptor implements CommandInterceptor {
+public class SpringTransactionInterceptor extends CommandInterceptor {
   
   protected PlatformTransactionManager transactionManager;
+  protected int transactionPropagation;
   
-  public SpringTransactionInterceptor(PlatformTransactionManager transactionManager) {
+  public SpringTransactionInterceptor(PlatformTransactionManager transactionManager, int transactionPropagation) {
     this.transactionManager = transactionManager;
+    this.transactionPropagation = transactionPropagation;
   }
   
   @SuppressWarnings("unchecked")
-  public <T> T invoke(final CommandExecutor next, final Command<T> command) {
+  public <T> T execute(final Command<T> command) {
     TransactionTemplate transactionTemplate = new TransactionTemplate(transactionManager);
-    transactionTemplate.setPropagationBehavior(TransactionTemplate.PROPAGATION_REQUIRES_NEW);
+    transactionTemplate.setPropagationBehavior(transactionPropagation);
     T result = (T) transactionTemplate.execute(new TransactionCallback() {
       public Object doInTransaction(TransactionStatus status) {
         return next.execute(command);

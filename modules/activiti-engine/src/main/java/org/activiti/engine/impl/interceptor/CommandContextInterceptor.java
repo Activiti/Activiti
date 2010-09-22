@@ -10,30 +10,42 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.activiti.engine.impl;
+
+package org.activiti.engine.impl.interceptor;
 
 import org.activiti.engine.impl.cfg.ProcessEngineConfiguration;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationAware;
-import org.activiti.engine.impl.interceptor.CommandExecutor;
-
 
 
 /**
  * @author Tom Baeyens
  */
-public class ServiceImpl implements ProcessEngineConfigurationAware {
+public class CommandContextInterceptor extends CommandInterceptor implements ProcessEngineConfigurationAware {
 
-  protected CommandExecutor commandExecutor;
-  
+  protected CommandContextFactory commandContextFactory;
+
   public void configurationCompleted(ProcessEngineConfiguration processEngineConfiguration) {
-    this.commandExecutor = processEngineConfiguration.getCommandExecutorTxRequired();
+    commandContextFactory = processEngineConfiguration.getCommandContextFactory();
   }
 
-  public CommandExecutor getCommandExecutor() {
-    return commandExecutor;
-  }
+  public <T> T execute(Command<T> command) {
+    CommandContext context = commandContextFactory.createCommandContext(command);
 
-  public void setCommandExecutor(CommandExecutor commandExecutor) {
-    this.commandExecutor = commandExecutor;
+    try {
+      CommandContext.setCurrentCommandContext(context);
+      return next.execute(command);
+      
+    } catch (Exception e) {
+      context.exception(e);
+      
+    } finally {
+      try {
+        context.close();
+      } finally {
+        CommandContext.removeCurrentCommandContext();
+      }
+    }
+    
+    return null;
   }
 }
