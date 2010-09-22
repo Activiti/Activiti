@@ -15,7 +15,11 @@
   <property name="tomcat.home" value="${activiti.home}/apps/apache-tomcat-${tomcat.version}" /> 
   <property name="tomcat.filename" value="apache-tomcat-${tomcat.version}.zip" /> 
   <property name="tomcat.download.url" value="${apache.mirror.url}tomcat/tomcat-6/v${tomcat.version}/bin/${tomcat.filename}" />    
-  <property name="tomcat.max.perm.size" value="256M" />    
+  <property name="tomcat.java.opts" value="-server -Xms128m -Xmx512m -XX:NewSize=64m -XX:MaxNewSize=64m -XX:PermSize=256m -XX:MaxPermSize=512m" /> 
+	
+  <property name="macos.browser" value="/usr/bin/open" />
+  <property name="windows.browser" value="C:/Program Files/Mozilla Firefox/firefox.exe" />
+  <property name="linux.browser" value="firefox" />
 
   <!-- 
   to work with Activiti Modeler or Activiti Cycle on trunk, set property activiti.modeler.download.url
@@ -51,7 +55,8 @@
                                      deploy.activiti.explorer.and.probe.into.tomcat,
                                      deploy.activiti.cycle.into.tomcat,
                                      tomcat.start,
-                                     deploy.activiti.modeler.into.tomcat "/>
+                                     deploy.activiti.modeler.into.tomcat, 
+                                     explorer.browser.open "/>
   
   <target name="demo.teardown" depends="tomcat.stop, db.drop, h2.stop" />
   
@@ -203,10 +208,10 @@
       <replacetoken><![CDATA[#!/bin/sh]]></replacetoken>
       <replacevalue><![CDATA[#!/bin/sh
 
-JAVA_OPTS=$JAVA_OPTS" -XX:MaxPermSize=@tomcat.max.perm.size@"
+JAVA_OPTS=$JAVA_OPTS" @tomcat.java.opts@"
 ]]></replacevalue>
     </replace>
-    <replace file="${tomcat.home}/bin/catalina.sh" token="@tomcat.max.perm.size@" value="${tomcat.max.perm.size}" />
+    <replace file="${tomcat.home}/bin/catalina.sh" token="@tomcat.java.opts@" value="${tomcat.java.opts}" />
     <chmod perm="a+x" os="Linux, Mac OS X">
       <fileset dir="${tomcat.home}/bin">
         <include name="*.sh" />
@@ -242,6 +247,13 @@ JAVA_OPTS="-Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=8787
     <launch dir="${activiti.home}/apps/apache-tomcat-${tomcat.version}/bin"
             script="shutdown"
             msg="Using CLASSPATH:"/>
+  </target>
+  
+  <target name="explorer.browser.open">
+  	<!-- Sleep for 5 second to be sure tomcat coyote http-connector is ready to accept connections -->
+  	<sleep seconds="5"/>
+  	<property name="url" value="http://localhost:8080/activiti-explorer" />
+  	<antcall target="open.html.page"/>
   </target>
 
   <target name="cfg.create">
@@ -418,6 +430,19 @@ JAVA_OPTS="-Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=8787
           <include name="activiti-cycle-${activiti.version}.jar" />
         </fileset>
     </path>
+  </target>
+
+  <target name="open.html.page">
+    <fail message="property url has to be specified to use this target" unless="url" />
+	  <exec executable="${macos.browser}" os="Mac OS X" failifexecutionfails="false" failonerror="false">
+	    <arg value="${url}" />
+	  </exec>
+	  <exec executable="cmd" os="Windows Vista, Windows XP,Windows 2000,Windows 98" failifexecutionfails="false" failonerror="false">
+	    <arg value="/C start &quot;${windows.browser}&quot; &quot;${url}&quot;" />
+	  </exec>
+  	  <exec executable="${linux.browser}" os="Linux" failifexecutionfails="false" failonerror="false">
+	    <arg value="${url}" />
+	  </exec>
   </target>
 
 </project>
