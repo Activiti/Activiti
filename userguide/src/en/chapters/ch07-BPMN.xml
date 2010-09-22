@@ -53,9 +53,9 @@
 		  only needs the <emphasis>xmlns</emphasis> and <emphasis>targetNamespace</emphasis> declaration.
 		  <programlisting>
 &lt;definitions 
-  xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;
   xmlns=&quot;http://www.omg.org/spec/BPMN/20100524/MODEL&quot;
-  xsi:schemaLocation=&quot;http://schema.omg.org/spec/BPMN/2.0 BPMN20.xsd&quot; 
+  xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;
+  xmlns:activiti=&quot;http://activiti.org/bpmn-extensions&quot;
   typeLanguage=&quot;http://www.w3.org/2001/XMLSchema&quot;
   expressionLanguage=&quot;http://www.w3.org/1999/XPath&quot; 
   targetNamespace=&quot;http://www.activiti.org/bpmn2.0&quot;&gt;
@@ -65,12 +65,6 @@
   &lt;/process&gt;
 
 &lt;/definitions&gt;</programlisting>
-		</para>
-		
-		<para>
-		  Note at the XML namespace that we are using the latest beta version of the 
-		  BPMN 2.0 specification, released on 
-		  <ulink url="http://www.omgwiki.org/bpmn2.0-ftf/doku.php?id=public:report">May 2010</ulink>.
 		</para>
 		
 		<para>
@@ -90,6 +84,10 @@
 		        <emphasis>startProcessInstanceById</emphasis> method. This method expects the String id 
 		        that was generated at deploy time by the Activiti engine, and can be retrieved by calling the
 		        <emphasis>processDefinition.getId()</emphasis> method.
+		        The format of the generated id is <emphasis role="bold">'key:version'</emphasis>, 
+		        and the length is <emphasis role="bold">constrained to 64 characters</emphasis>.
+		        If you get an <emphasis>ActivitiException</emphasis> stating that the generated id
+		        is too long, limit the text in the <emphasis>key</emphasis> field of the process.
 		      </para>
 		    </listitem>
 		    <listitem>
