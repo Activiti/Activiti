@@ -61,7 +61,6 @@ import org.activiti.engine.impl.task.TaskDefinition;
 import org.activiti.engine.impl.util.xml.Element;
 import org.activiti.engine.impl.util.xml.Parse;
 import org.activiti.engine.impl.variable.VariableDeclaration;
-import org.activiti.engine.impl.webservice.WSDLImporter;
 import org.activiti.pvm.activity.ActivityBehavior;
 import org.activiti.pvm.impl.process.ActivityImpl;
 import org.activiti.pvm.impl.process.ProcessDefinitionImpl;
@@ -160,7 +159,7 @@ public class BpmnParse extends Parse {
     this.parseListeners = parser.getParseListeners();
     setSchemaResource(BpmnParser.SCHEMA_RESOURCE);
     
-    this.importers.put("http://schemas.xmlsoap.org/wsdl/", new WSDLImporter());
+   // this.importers.put("http://schemas.xmlsoap.org/wsdl/", new WSDLImporter());
   }
 
   @Override
