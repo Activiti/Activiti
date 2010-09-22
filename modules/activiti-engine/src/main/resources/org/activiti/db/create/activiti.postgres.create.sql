@@ -1,5 +1,5 @@
 create table ACT_GE_PROPERTY (
-    NAME_ varchar(300),
+    NAME_ varchar(64),
     VALUE_ varchar(300),
     REV_ integer,
     primary key (NAME_)
@@ -12,29 +12,29 @@ insert into ACT_GE_PROPERTY
 values ('next.dbid', '1', 1);
 
 create table ACT_GE_BYTEARRAY (
-    ID_ varchar(255),
+    ID_ varchar(64),
     REV_ integer,
     NAME_ varchar(255),
-    DEPLOYMENT_ID_ varchar(255),
+    DEPLOYMENT_ID_ varchar(64),
     BYTES_ bytea,
     primary key (ID_)
 );
 
 create table ACT_RE_DEPLOYMENT (
-    ID_ varchar(255),
+    ID_ varchar(64),
     NAME_ varchar(255),
     DEPLOY_TIME_ timestamp,
     primary key (ID_)
 );
 
 create table ACT_RU_EXECUTION (
-    ID_ varchar(255),
+    ID_ varchar(64),
     REV_ integer,
-    PROC_INST_ID_ varchar(255),
-    PARENT_ID_ varchar(255),
-    PROC_DEF_ID_ varchar(255),
-	SUPER_EXEC_ varchar(255),
-    ACTIVITY_ID_ varchar(255),
+    PROC_INST_ID_ varchar(64),
+    PARENT_ID_ varchar(64),
+    PROC_DEF_ID_ varchar(64),
+	SUPER_EXEC_ varchar(64),
+    ACTIVITY_ID_ varchar(64),
     IS_ACTIVE_ smallint,
     IS_CONCURRENT_ smallint,
 	IS_SCOPE_ smallint,
@@ -42,16 +42,16 @@ create table ACT_RU_EXECUTION (
 );
 
 create table ACT_RU_JOB (
-    ID_ varchar(255) NOT NULL,
+    ID_ varchar(64) NOT NULL,
 	REV_ integer,
     TYPE_ varchar(255) NOT NULL,
     LOCK_EXP_TIME_ timestamp,
     LOCK_OWNER_ varchar(255),
     EXCLUSIVE_ boolean,
-    EXECUTION_ID_ varchar(255),
-    PROCESS_INSTANCE_ID_ varchar(255),
+    EXECUTION_ID_ varchar(64),
+    PROCESS_INSTANCE_ID_ varchar(64),
     RETRIES_ integer,
-    EXCEPTION_STACK_ID_ varchar(255),
+    EXCEPTION_STACK_ID_ varchar(64),
     EXCEPTION_MSG_ varchar(255),
     DUEDATE_ timestamp,
     REPEAT_ varchar(255),
@@ -61,7 +61,7 @@ create table ACT_RU_JOB (
 );
 
 create table ACT_ID_GROUP (
-    ID_ varchar(255),
+    ID_ varchar(64),
     REV_ integer,
     NAME_ varchar(255),
     TYPE_ varchar(255),
@@ -69,13 +69,13 @@ create table ACT_ID_GROUP (
 );
 
 create table ACT_ID_MEMBERSHIP (
-    USER_ID_ varchar(255),
-    GROUP_ID_ varchar(255),
+    USER_ID_ varchar(64),
+    GROUP_ID_ varchar(64),
     primary key (USER_ID_, GROUP_ID_)
 );
 
 create table ACT_ID_USER (
-    ID_ varchar(255),
+    ID_ varchar(64),
     REV_ integer,
     FIRST_ varchar(255),
     LAST_ varchar(255),
@@ -85,25 +85,25 @@ create table ACT_ID_USER (
 );
 
 create table ACT_RE_PROC_DEF (
-    ID_ varchar(255),
+    ID_ varchar(64),
     NAME_ varchar(255),
     KEY_ varchar(255),
     VERSION_ integer,
-    DEPLOYMENT_ID_ varchar(255),
+    DEPLOYMENT_ID_ varchar(64),
 	RESOURCE_NAME_ varchar(255),
     primary key (ID_)
 );
 
 create table ACT_RU_TASK (
-    ID_ varchar(255),
+    ID_ varchar(64),
     REV_ integer,
-    EXECUTION_ID_ varchar(255),
-    PROC_INST_ID_ varchar(255),
-    PROC_DEF_ID_ varchar(255),
+    EXECUTION_ID_ varchar(64),
+    PROC_INST_ID_ varchar(64),
+    PROC_DEF_ID_ varchar(64),
     NAME_ varchar(255),
     DESCRIPTION_ varchar(255),
     FORM_ varchar(255),
-    ASSIGNEE_ varchar(255),
+    ASSIGNEE_ varchar(64),
     PRIORITY_ integer,
     CREATE_TIME_ timestamp,
     START_DEADLINE_ timestamp,
@@ -113,24 +113,24 @@ create table ACT_RU_TASK (
 );
 
 create table ACT_RU_TASKINVOLVEMENT (
-    ID_ varchar(255),
+    ID_ varchar(64),
     REV_ integer,
-    GROUP_ID_ varchar(255),
+    GROUP_ID_ varchar(64),
     TYPE_ varchar(255),
-    USER_ID_ varchar(255),
-    TASK_ID_ varchar(255),
+    USER_ID_ varchar(64),
+    TASK_ID_ varchar(64),
     primary key (ID_)
 );
 
 create table ACT_RU_VARIABLE (
-    ID_ varchar(300) not null,
+    ID_ varchar(64) not null,
     REV_ integer,
     TYPE_ varchar(255) not null,
     NAME_ varchar(255) not null,
-    EXECUTION_ID_ varchar(255),
-	PROC_INST_ID_ varchar(255),
-    TASK_ID_ varchar(255),
-    BYTEARRAY_ID_ varchar(255),
+    EXECUTION_ID_ varchar(64),
+	PROC_INST_ID_ varchar(64),
+    TASK_ID_ varchar(64),
+    BYTEARRAY_ID_ varchar(64),
     DATE_ timestamp,
     DOUBLE_ double precision,
     LONG_ bigint,
@@ -139,27 +139,27 @@ create table ACT_RU_VARIABLE (
 );
 
 create table ACT_HI_PROC_INST (
-    ID_ varchar(300) not null,
-    PROC_INST_ID_ varchar(255) not null,
-    PROC_DEF_ID_ varchar(255) not null,
+    ID_ varchar(64) not null,
+    PROC_INST_ID_ varchar(64) not null,
+    PROC_DEF_ID_ varchar(64) not null,
     START_TIME_ timestamp not null,
     END_TIME_ timestamp,
     DURATION_ bigint,
     -- TODO: check endStateName length
-    END_ACT_ID_ varchar(255),
+    END_ACT_ID_ varchar(64),
     primary key (ID_),
     unique (PROC_INST_ID_)
 );
 
 create table ACT_HI_ACT_INST (
-    ID_ varchar(300) not null,
-    PROC_DEF_ID_ varchar(255) not null,
-    PROC_INST_ID_ varchar(255) not null,
-    EXECUTION_ID_ varchar(255) not null,
-    ACT_ID_ varchar(255) not null,
+    ID_ varchar(64) not null,
+    PROC_DEF_ID_ varchar(64) not null,
+    PROC_INST_ID_ varchar(64) not null,
+    EXECUTION_ID_ varchar(64) not null,
+    ACT_ID_ varchar(64) not null,
     ACT_NAME_ varchar(255),
     ACT_TYPE_ varchar(255) not null,
-    ASSIGNEE_ varchar(255),
+    ASSIGNEE_ varchar(64),
     START_TIME_ timestamp not null,
     END_TIME_ timestamp,
     DURATION_ bigint,
