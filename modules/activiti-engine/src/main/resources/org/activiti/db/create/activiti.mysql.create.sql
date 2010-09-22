@@ -107,8 +107,8 @@ create table ACT_RU_TASK (
     ASSIGNEE_ varchar(64),
     PRIORITY_ integer,
     CREATE_TIME_ timestamp,
-    START_DEADLINE_ timestamp,
-    COMPLETION_DEADLINE_ timestamp,
+    START_DEADLINE_ datetime,
+    COMPLETION_DEADLINE_ datetime,
     SKIPPABLE_ TINYINT,
     primary key (ID_)
 ) TYPE=InnoDB;

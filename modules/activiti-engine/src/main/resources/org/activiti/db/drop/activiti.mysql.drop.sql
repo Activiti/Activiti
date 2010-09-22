@@ -39,6 +39,9 @@ alter table ACT_RU_VARIABLE
 
 alter table ACT_RU_VARIABLE
     drop FOREIGN KEY FK_VAR_BYTEARRAY;
+
+alter table ACT_RU_JOB
+    drop FOREIGN KEY FK_JOB_EXCEPTION;
     
  drop table if exists ACT_GE_PROPERTY;
  drop table if exists ACT_RU_VARIABLE;
@@ -54,3 +57,4 @@ alter table ACT_RU_VARIABLE
  drop table if exists ACT_RU_JOB;
  drop table if exists ACT_HI_PROC_INST;
  drop table if exists ACT_HI_ACT_INST;
+ drop table if exists ACT_HI_DETAIL;

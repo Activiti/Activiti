@@ -35,9 +35,9 @@ create table ACT_RU_EXECUTION (
     PROC_DEF_ID_ varchar(64),
 	SUPER_EXEC_ varchar(64),
     ACTIVITY_ID_ varchar(64),
-    IS_ACTIVE_ smallint,
-    IS_CONCURRENT_ smallint,
-	IS_SCOPE_ smallint,
+    IS_ACTIVE_ boolean,
+    IS_CONCURRENT_ boolean,
+	IS_SCOPE_ boolean,
     primary key (ID_)
 );
 
