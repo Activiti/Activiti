@@ -46,14 +46,14 @@
           </execution>
         </executions>
       </plugin>
-      <plugin>
+      <!--plugin>
         <artifactId>maven-surefire-plugin</artifactId>
         <configuration>
           <excludes>
             <exclude>**/RepositoryConnectorConfigurationManagerImplTest.java</exclude>
           </excludes>
         </configuration>
-      </plugin>
+      </plugin-->
     </plugins>
 	</build>	
 
