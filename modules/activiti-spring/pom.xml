@@ -111,6 +111,12 @@
 		            <phase>generate-sources</phase>
 		            <configuration>
 		              <tasks>
+                    <delete dir="src/test/java/org/activiti/engine/test"/>
+                    <delete dir="src/test/resources/org/activiti/engine/test"/>
+                    <delete dir="src/test/java/org/activiti/examples"/>
+                    <delete dir="src/test/resources/org/activiti/examples"/>
+                    <delete dir="src/test/java/org/activiti/standalone"/>
+                    <delete dir="src/test/resources/org/activiti/standalone"/>
                     <copy todir="src/test/java" overwrite="true">
                       <fileset dir="../activiti-engine/src/test/java" />
                     </copy>
