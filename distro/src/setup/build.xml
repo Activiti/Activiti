@@ -187,7 +187,7 @@
              url="${jdbc.url}" 
              userid="${jdbc.username}"
              classpathref="classpath.libs">
-          <javaresource name="org/activiti/cycle/impl/db/create/activiti.${db}.create.sql" 
+          <javaresource name="org/activiti/db/cycle/create/activiti.${db}.create.sql" 
                         classpathref="classpath.libs" /> 
         </sql>
   </target>
@@ -210,7 +210,7 @@
          userid="${jdbc.username}"
          classpathref="classpath.libs">
       <transaction>	
-         <javaresource name="org/activiti/cycle/impl/db/drop/activiti.${db}.drop.sql" 
+         <javaresource name="org/activiti/db/cycle/drop/activiti.${db}.drop.sql" 
                     classpathref="classpath.libs" /> 
       </transaction>
     </sql>
