@@ -78,6 +78,7 @@
             <artifactId>maven-antrun-plugin</artifactId>
             <executions>
               <execution>
+                <id>delete-test-sources</id>
                 <phase>generate-sources</phase>
                 <configuration>
                   <tasks>
@@ -106,6 +107,7 @@
 		        <artifactId>maven-antrun-plugin</artifactId>
 		        <executions>
 		          <execution>
+                <id>copy-test-sources-from-engine</id>
 		            <phase>generate-sources</phase>
 		            <configuration>
 		              <tasks>
