@@ -101,7 +101,7 @@ Motivation:&lt;br/&gt;
     <para>
       When deployed, Activiti Explorer can now use these forms. When you click to a process definition name
       to start a certain process instance, the startform is first retrieved: 
-      <programlisting>Object startForm = repositoryService.getStartFormByKey("vacationRequest");</programlisting>
+      <programlisting>Object startForm = taskService.getRenderedStartFormByKey("vacationRequest");</programlisting>
       (Note that the return value is an <emphasis>object</emphasis>, such that people can plug in their own form types
       into the Activiti engine.)
    </para>
@@ -113,7 +113,7 @@ Motivation:&lt;br/&gt;
 runtimeService.startProcessInstanceByKey("vacationRequest", variables);</programlisting>
      <mediaobject><imageobject><imagedata align="center" fileref="images/taskform.example.png"/></imageobject></mediaobject>
       The mechanism for defining forms on user task is exactly the same.
-      <programlisting>Object taskForm = taskService.getTaskForm(task.getId());</programlisting>
+      <programlisting>Object taskForm = taskService.getRenderedTaskForm(task.getId());</programlisting>
       Activiti Explorer will display these forms when the <emphasis>Complete</emphasis>
       button is clicked. The variables in the form will be stored as process variables 
       during the completion of the task:
@@ -267,6 +267,34 @@ Motivation:&lt;br/&gt;
 ...</programlisting>
     </para>
   
+  </section>
+
+  <section id="externalRendering">
+  
+    <title>External rendering of forms</title>
+    
+    <para>Above we showed the build-in task form rendering.  But the API also allows for you to perform your 
+    own task form rendering outside of the Activiti Engine. These steps explain the hooks that you can use to
+    render your task forms yourself.  </para>
+    
+    <para>You can just stick any form template resource inside the business archives that you deploy (in case 
+    you want to store them versioned with the process).  It will be available as a resource in the deployment.
+    You can use the <literal>String ProcessDefinition.getDeploymentId()</literal> and 
+    <literal>InputStream RepositoryService.getResourceAsStream(String deploymentId, String resourceName);</literal>
+    to obtain the file that you included in the deployments.  That could be your form template definition file.  
+    </para>
+    
+    <para>Btw, you can use this capability of accessing the deployment resources beyond task forms for any other 
+    purposes as well. </para>
+    
+    <para>The attribute <literal>&lt;userTask activiti:form=&quot;...&quot;</literal> is exposed by the API through 
+    <literal>String Task.getFormResourceKey()</literal>. You could for instance store a generic key in the form 
+    attribute and apply an algorithm or transformation to get to the actual template that needs to be used.
+    This might be handy when you want to render different forms for different UI technologies like e.g. 
+    one form for usage in a web app of normal screen size, one form for mobile phone's small screens and 
+    maybe even a template for a IM form or an email form.
+    </para>
+
   </section>
 
 </chapter>

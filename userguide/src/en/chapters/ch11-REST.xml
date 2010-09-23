@@ -173,7 +173,7 @@
           <listitem>
             <para>
               <emphasis role="bold">API:</emphasis>
-              <literal>ProcessEngines.getProcessEngine(configuredProcessEngineName).getProcessService().getStartFormById(processDefinitionId)</literal>
+              <literal>ProcessEngines.getProcessEngine(configuredProcessEngineName).getTaskService().getRenderedStartFormById(processDefinitionId)</literal>
             </para>
           </listitem>
           <listitem>
@@ -396,7 +396,7 @@
           <listitem>
             <para>
               <emphasis role="bold">API:</emphasis>
-              <literal>ProcessEngines.getProcessEngine(configuredProcessEngineName).getTaskService().getTaskForm(taskId)</literal>
+              <literal>ProcessEngines.getProcessEngine(configuredProcessEngineName).getTaskService().getRenderedTaskForm(taskId)</literal>
             </para>
           </listitem>
           <listitem>

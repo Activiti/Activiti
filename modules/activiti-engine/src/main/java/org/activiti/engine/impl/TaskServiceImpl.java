@@ -21,7 +21,7 @@ import org.activiti.engine.impl.cmd.AddIdentityLinkCmd;
 import org.activiti.engine.impl.cmd.ClaimTaskCmd;
 import org.activiti.engine.impl.cmd.CompleteTaskCmd;
 import org.activiti.engine.impl.cmd.DeleteTaskCmd;
-import org.activiti.engine.impl.cmd.GetFormCmd;
+import org.activiti.engine.impl.cmd.GetRenderedFormCmd;
 import org.activiti.engine.impl.cmd.GetIdentityLinksForTaskCmd;
 import org.activiti.engine.impl.cmd.SaveTaskCmd;
 import org.activiti.engine.impl.cmd.SetTaskPriorityCmd;
@@ -107,8 +107,16 @@ public class TaskServiceImpl extends ServiceImpl implements TaskService {
     return new TaskQueryImpl(commandExecutor);
   }
 
-  public Object getTaskForm(String taskId) {
-    return commandExecutor.execute(new GetFormCmd(null, null, taskId));
+  public Object getRenderedStartFormById(String processDefinitionId) {
+    return commandExecutor.execute(new GetRenderedFormCmd(processDefinitionId, null, null));
+  }
+
+  public Object getRenderedStartFormByKey(String processDefinitionKey) {
+    return commandExecutor.execute(new GetRenderedFormCmd(null, processDefinitionKey, null));
+  }
+
+  public Object getRenderedTaskForm(String taskId) {
+    return commandExecutor.execute(new GetRenderedFormCmd(null, null, taskId));
   }
 
   // getters and setters //////////////////////////////////////////////////////

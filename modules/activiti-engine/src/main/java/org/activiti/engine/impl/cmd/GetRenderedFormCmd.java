@@ -28,13 +28,13 @@ import org.activiti.engine.impl.task.TaskEntity;
  * @author Tom Baeyens
  * @author Joram Barrez
  */
-public class GetFormCmd implements Command<Object> {
+public class GetRenderedFormCmd implements Command<Object> {
 
   protected String processDefinitionId;
   protected String processDefinitionKey;
   protected String taskId;
   
-  public GetFormCmd(String processDefinitionId, String processDefinitionKey, String taskId) {
+  public GetRenderedFormCmd(String processDefinitionId, String processDefinitionKey, String taskId) {
     this.processDefinitionId = processDefinitionId;
     this.processDefinitionKey = processDefinitionKey;
     this.taskId = taskId;

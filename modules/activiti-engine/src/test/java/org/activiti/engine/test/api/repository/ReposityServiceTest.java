@@ -106,7 +106,7 @@ public class ReposityServiceTest extends ActivitiInternalTestCase {
     assertEquals(1, processDefinitions.size());
     ProcessDefinition processDefinition = processDefinitions.get(0);
     
-    Object startForm = repositoryService.getStartFormById(processDefinition.getId());
+    Object startForm = taskService.getRenderedStartFormById(processDefinition.getId());
     assertNotNull(startForm);
   }
   
@@ -116,13 +116,13 @@ public class ReposityServiceTest extends ActivitiInternalTestCase {
     assertEquals(1, processDefinitions.size());
     ProcessDefinition processDefinition = processDefinitions.get(0);
     
-    Object startForm = repositoryService.getStartFormById(processDefinition.getId());
+    Object startForm = taskService.getRenderedStartFormById(processDefinition.getId());
     assertNull(startForm);
   }
   
   public void testGetStartFormByKeyNullKey() {
     try {
-      repositoryService.getStartFormByKey(null);    
+      taskService.getRenderedStartFormByKey(null);    
       fail("ActivitiException expected");
     } catch (ActivitiException ae) {
       // Exception expected
@@ -131,7 +131,7 @@ public class ReposityServiceTest extends ActivitiInternalTestCase {
   
   public void testGetStartFormByKeyUnexistingProcessDefinitionKey() {
     try {
-      repositoryService.getStartFormByKey("unexisting");    
+      taskService.getRenderedStartFormByKey("unexisting");    
       fail("ActivitiException expected");
     } catch (ActivitiException ae) {
       assertTextPresent("no processes deployed with key", ae.getMessage());
@@ -140,7 +140,7 @@ public class ReposityServiceTest extends ActivitiInternalTestCase {
   
   public void testGetStartFormByIdNullId() {
     try {
-      repositoryService.getStartFormById(null);    
+      taskService.getRenderedStartFormById(null);    
       fail("ActivitiException expected");
     } catch (ActivitiException ae) {
       // Exception expected
@@ -149,7 +149,7 @@ public class ReposityServiceTest extends ActivitiInternalTestCase {
   
   public void testGetStartFormByIdUnexistingProcessDefinitionId() {
     try {
-      repositoryService.getStartFormById("unexistingId");    
+      taskService.getRenderedStartFormById("unexistingId");    
       fail("ActivitiException expected");
     } catch (ActivitiException ae) {
       assertTextPresent("no deployed process definition found with id", ae.getMessage());

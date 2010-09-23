@@ -194,7 +194,7 @@ public class TaskServiceTest extends ActivitiInternalTestCase {
 
   public void testGetTaskFormNullTaskId() {
     try {
-      taskService.getTaskForm(null);
+      taskService.getRenderedTaskForm(null);
       fail("ActivitiException expected");
     } catch (ActivitiException ae) {
       // Expected Exception
@@ -203,7 +203,7 @@ public class TaskServiceTest extends ActivitiInternalTestCase {
   
   public void testGetTaskFormUnexistingTaskId() {
     try {
-      taskService.getTaskForm("unexistingtask");
+      taskService.getRenderedTaskForm("unexistingtask");
       fail("ActivitiException expected");
     } catch (ActivitiException ae) {
       assertTextPresent("No task found for id = 'unexistingtask'", ae.getMessage());

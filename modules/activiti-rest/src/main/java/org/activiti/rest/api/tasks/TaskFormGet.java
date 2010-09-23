@@ -28,7 +28,7 @@ public class TaskFormGet extends ActivitiWebScript {
   protected void executeWebScript(ActivitiRequest req, Status status, Cache cache, Map<String, Object> model)
   {
     String taskId = req.getMandatoryPathParameter("taskId");
-    Object taskForm = getTaskService().getTaskForm(taskId);
+    Object taskForm = getTaskService().getRenderedTaskForm(taskId);
     if (taskForm != null) {
       if (taskForm instanceof String) {
         model.put("form", taskForm);

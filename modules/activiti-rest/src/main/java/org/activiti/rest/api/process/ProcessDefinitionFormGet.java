@@ -28,7 +28,7 @@ public class ProcessDefinitionFormGet extends ActivitiWebScript {
   protected void executeWebScript(ActivitiRequest req, Status status, Cache cache, Map<String, Object> model)
   {
     String processDefinitionId = req.getMandatoryPathParameter("processDefinitionId");
-    Object processDefinitionForm = getRepositoryService().getStartFormById(processDefinitionId);
+    Object processDefinitionForm = getTaskService().getRenderedStartFormById(processDefinitionId);
     if (processDefinitionForm != null) {
       if (processDefinitionForm instanceof String) {
         model.put("form", processDefinitionForm);

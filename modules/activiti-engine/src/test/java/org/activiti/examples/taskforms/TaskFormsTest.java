@@ -45,7 +45,7 @@ public class TaskFormsTest extends ActivitiInternalTestCase {
   public void testTaskFormsWithVacationRequestProcess() {
 
     // Get start form
-    Object startForm = repositoryService.getStartFormByKey("vacationRequest");
+    Object startForm = taskService.getRenderedStartFormByKey("vacationRequest");
     assertNotNull(startForm);
     
     ProcessDefinition processDefinition = repositoryService.createProcessDefinitionQuery().singleResult();
@@ -61,18 +61,18 @@ public class TaskFormsTest extends ActivitiInternalTestCase {
     // Management should now have a task assigned to them
     Task task = taskService.createTaskQuery().candidateGroup("management").singleResult();
     assertEquals("Vacation request by kermit", task.getDescription());
-    Object taskForm = taskService.getTaskForm(task.getId());
+    Object taskForm = taskService.getRenderedTaskForm(task.getId());
     assertNotNull(taskForm);
 
   }
 
   @Deployment
   public void testTaskFormUnavailable() {
-    assertNull(repositoryService.getStartFormByKey("noStartOrTaskForm"));
+    assertNull(taskService.getRenderedStartFormByKey("noStartOrTaskForm"));
 
     runtimeService.startProcessInstanceByKey("noStartOrTaskForm");
     Task task = taskService.createTaskQuery().singleResult();
-    assertNull(taskService.getTaskForm(task.getId()));
+    assertNull(taskService.getRenderedTaskForm(task.getId()));
   }
 
 }

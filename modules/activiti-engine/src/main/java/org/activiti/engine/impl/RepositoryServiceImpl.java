@@ -21,7 +21,6 @@ import org.activiti.engine.impl.cmd.DeleteDeploymentCmd;
 import org.activiti.engine.impl.cmd.DeployCmd;
 import org.activiti.engine.impl.cmd.GetDeploymentResourceCmd;
 import org.activiti.engine.impl.cmd.GetDeploymentResourceNamesCmd;
-import org.activiti.engine.impl.cmd.GetFormCmd;
 import org.activiti.engine.impl.repository.DeploymentBuilderImpl;
 import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.repository.DeploymentBuilder;
@@ -61,14 +60,6 @@ public class RepositoryServiceImpl extends ServiceImpl implements RepositoryServ
 
   public InputStream getResourceAsStream(String deploymentId, String resourceName) {
     return commandExecutor.execute(new GetDeploymentResourceCmd(deploymentId, resourceName));
-  }
-
-  public Object getStartFormById(String processDefinitionId) {
-    return commandExecutor.execute(new GetFormCmd(processDefinitionId, null, null));
-  }
-
-  public Object getStartFormByKey(String processDefinitionKey) {
-    return commandExecutor.execute(new GetFormCmd(null, processDefinitionKey, null));
   }
 
   public DeploymentQuery createDeploymentQuery() {

@@ -60,20 +60,6 @@ public interface RepositoryService {
    */
   InputStream getResourceAsStream(String deploymentId, String resourceName);
 
-  /** [might be impacted by <a href="http://jira.codehaus.org/browse/ACT-66">ACT-66</a>] Get a rendered startform, for collecting parameters from a user to start 
-   * a new process instance. Returns null if the processdefinition doesn't have a start form.
-   * @param processDefinitionKey process definition key, cannot be null.
-   * @throws ActivitiException when no deployed process exists with the given key. 
-   */ 
-  Object getStartFormByKey(String processDefinitionKey);
-  
-  /** [might be impacted by <a href="http://jira.codehaus.org/browse/ACT-66">ACT-66</a>] Get a rendered startform, for collecting parameters from a user to start 
-   * a new process instance. Returns null if the processdefinition doesn't have a start form. 
-   * @param processDefinitionId process definition id, cannot be null.
-   * @throws ActivitiException when no deployed process exists with the given key. 
-   */ 
-  Object getStartFormById(String processDefinitionId);
-
   /** Query process definitions. */
   ProcessDefinitionQuery createProcessDefinitionQuery();
   
