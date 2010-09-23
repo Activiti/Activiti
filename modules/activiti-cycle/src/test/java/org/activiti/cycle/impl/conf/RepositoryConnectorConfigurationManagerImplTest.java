@@ -1,5 +1,6 @@
 package org.activiti.cycle.impl.conf;
 
+import static org.junit.Assert.*;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -10,6 +11,7 @@ import org.activiti.cycle.RepositoryConnector;
 import org.activiti.cycle.impl.connector.fs.FileSystemConnectorConfiguration;
 import org.activiti.cycle.impl.connector.signavio.SignavioConnectorConfiguration;
 import org.activiti.cycle.impl.connector.view.CustomizedViewConfiguration;
+import org.activiti.engine.ProcessEngines;
 import org.activiti.engine.impl.cfg.ProcessEngineConfiguration;
 import org.junit.After;
 import org.junit.Before;
@@ -26,6 +28,7 @@ public class RepositoryConnectorConfigurationManagerImplTest {
 
   @Before
   public void setUp() throws Exception {
+    ProcessEngines.init();
     configurationService = new CycleServiceXStreamImpl();
   }
 
@@ -80,6 +83,14 @@ public class RepositoryConnectorConfigurationManagerImplTest {
   }
   
   @Test
+  public void testGetProcessEngineConfiguration() {
+    ProcessEngineConfiguration processEngineConfiguration = configurationService.getProcessEngineConfiguration();
+    if (processEngineConfiguration == null) {
+      fail("config is null");
+    }
+  }
+  
+  @Test
   public void testInsertCycleConfiguration() {
     String id = "kristin";
     String configXML = "<org.activiti.cycle.impl.conf.ConfigurationContainer>"
@@ -111,8 +122,6 @@ public class RepositoryConnectorConfigurationManagerImplTest {
   @Test
   public void testSelectById() {
     CycleConfigEntity cycleConfig = configurationService.selectById("kristin");
-    if (cycleConfig != null)
-        System.out.println("Cycle Config XML: " + cycleConfig.getConfigXML());
     
     String configXML = "<org.activiti.cycle.impl.conf.ConfigurationContainer>"
       + " <name>kristinPolenz</name>"
@@ -137,17 +146,17 @@ public class RepositoryConnectorConfigurationManagerImplTest {
       + "<parentContainers/>"
       + "</org.activiti.cycle.impl.conf.ConfigurationContainer>";
     
-    //update by id
-    cycleConfig.setConfigXML(configXML);
-    cycleConfig.setRevision(cycleConfig.getRevision()+1);
-    
-    configurationService.updateById(cycleConfig);
-  }
+      //update by id
+      cycleConfig.setConfigXML(configXML);
+      cycleConfig.setRevision(cycleConfig.getRevision()+1);
+      
+      configurationService.updateById(cycleConfig);
+    }
   
-  @Test
-  public void testDeleteById() {
-    configurationService.deleteById("kristin");
-  }
+    @Test
+    public void testDeleteById() {
+      configurationService.deleteById("kristin");
+    }
   
   //  
   //
