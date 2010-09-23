@@ -70,6 +70,9 @@ public class CustomizedViewConnector implements RepositoryConnector {
    */
   public boolean login(String username, String password) {
     for (RepositoryConnector connector : getRepositoryConnectors()) {
+      // TODO: What if one repository failes? Try loading the other ones and
+      // remove the failing from the repo list? Example: Online SIgnavio when
+      // offile
       connector.login(username, password);
     }
     return true;
