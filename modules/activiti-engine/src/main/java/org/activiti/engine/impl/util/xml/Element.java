@@ -23,7 +23,7 @@ import org.xml.sax.Locator;
 
 
 /**
- * represents one XML element.
+ * Represents one XML element.
  * 
  * @author Tom Baeyens
  * @author Joram Barrez
@@ -47,7 +47,7 @@ public class Element {
   
   public Element(String uri, String localName, String qName, Attributes attributes, Locator locator) {
     this.uri = uri;
-    this.tagName = qName;
+    this.tagName = localName;
     
     if (attributes!=null) {
       for (int i=0; i<attributes.getLength(); i++) {

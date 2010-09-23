@@ -32,7 +32,7 @@ import org.activiti.engine.impl.bpmn.Condition;
 import org.activiti.engine.impl.bpmn.ExclusiveGatewayActivity;
 import org.activiti.engine.impl.bpmn.ItemDefinition;
 import org.activiti.engine.impl.bpmn.ItemKind;
-import org.activiti.engine.impl.bpmn.MailActivityBehavior;
+import org.activiti.engine.impl.bpmn.EmailActivityBehavior;
 import org.activiti.engine.impl.bpmn.ManualTaskActivity;
 import org.activiti.engine.impl.bpmn.Message;
 import org.activiti.engine.impl.bpmn.NoneEndEventActivity;
@@ -583,8 +583,7 @@ public class BpmnParse extends Parse {
 
     if (type != null) {
       if (type.equalsIgnoreCase("mail")) {
-        validateFieldDeclarationsForEmail(serviceTaskElement, fieldDeclarations);
-        activity.setActivityBehavior(new ServiceTaskDelegateActivityBehaviour(new MailActivityBehavior(), fieldDeclarations));
+        parseEmailServiceTask(activity, serviceTaskElement, fieldDeclarations);
       } else {
         addProblem("Invalid usage of type attribute: '" + type + "'", serviceTaskElement);
       }
@@ -613,48 +612,68 @@ public class BpmnParse extends Parse {
       parseListener.parseServiceTask(serviceTaskElement, scope, activity);
     }
   }
+
+  protected void parseEmailServiceTask(ActivityImpl activity, Element serviceTaskElement, List<FieldDeclaration> fieldDeclarations) {
+    validateFieldDeclarationsForEmail(serviceTaskElement, fieldDeclarations);
+    activity.setActivityBehavior(new ServiceTaskDelegateActivityBehaviour(new EmailActivityBehavior(), fieldDeclarations));
+  }
   
   public List<FieldDeclaration> parseFieldDeclarations(Element serviceTaskElement) {
-    List<Element> fieldDeclarationElements = serviceTaskElement.elementsNS(BpmnParser.BPMN_EXTENSIONS_NS, "field");
-    if (fieldDeclarationElements != null && !fieldDeclarationElements.isEmpty()) {
-      
-      List<FieldDeclaration> fieldDeclarations = new ArrayList<FieldDeclaration>();
-      for (Element fieldDeclarationElement : fieldDeclarationElements) {
-        String fieldName = fieldDeclarationElement.attributeNS(BpmnParser.BPMN_EXTENSIONS_NS, "name");
-        String type = "java.lang.String"; // only string is supported currently
+    List<FieldDeclaration> fieldDeclarations = new ArrayList<FieldDeclaration>();
+    Element extensionElement = serviceTaskElement.element("extensionElements");
+    if (extensionElement != null) {
+      List<Element> fieldDeclarationElements = extensionElement.elementsNS(BpmnParser.BPMN_EXTENSIONS_NS, "field");
+      if (fieldDeclarationElements != null && !fieldDeclarationElements.isEmpty()) {
         
-        ActivitiValueExpression valueExpression = null;
-        try {
-          Element stringElement = fieldDeclarationElement.elementNS(BpmnParser.BPMN_EXTENSIONS_NS, "string");
-          String value = stringElement.attributeNS(BpmnParser.BPMN_EXTENSIONS_NS, "value");
-          String text = stringElement.getText();
-          if (value != null && (text != null || text.length() == 0)) {
-            addProblem("Invalid: both value and a text are provided", stringElement);
-          }
-          valueExpression = expressionManager.createValueExpression(value != null ? value : text); 
-        } catch (ActivitiException e) {
-          addProblem("Invalid: multiple field declarations found", serviceTaskElement);
+        for (Element fieldDeclarationElement : fieldDeclarationElements) {
+          FieldDeclaration fieldDeclaration = parseFieldDeclaration(serviceTaskElement, fieldDeclarationElement);
+          fieldDeclarations.add(fieldDeclaration);
         }
-        FieldDeclaration fieldDeclaration = new FieldDeclaration(fieldName, type, valueExpression);
-        fieldDeclarations.add(fieldDeclaration);
       }
-      return fieldDeclarations;
-      
-    } else {
-      return null;
     }
+    return fieldDeclarations;
+  }
+
+  protected FieldDeclaration parseFieldDeclaration(Element serviceTaskElement, Element fieldDeclarationElement) {
+    String fieldName = fieldDeclarationElement.attributeNS(BpmnParser.BPMN_EXTENSIONS_NS, "name");
+    String type = "java.lang.String"; // only string is currently supported
+    
+    ActivitiValueExpression valueExpression = null;
+    try {
+      Element stringElement = fieldDeclarationElement.elementNS(BpmnParser.BPMN_EXTENSIONS_NS, "string");
+      String value = stringElement.attributeNS(BpmnParser.BPMN_EXTENSIONS_NS, "value");
+      String text = stringElement.getText();
+      if (value != null && (text != null || text.length() == 0)) {
+        addProblem("Invalid: both value and a text are provided", stringElement);
+      }
+      valueExpression = expressionManager.createValueExpression(value != null ? value : text); 
+    } catch (ActivitiException e) {
+      addProblem("Invalid: multiple field declarations found", serviceTaskElement);
+    }
+    FieldDeclaration fieldDeclaration = new FieldDeclaration(fieldName, type, valueExpression);
+    return fieldDeclaration;
   }
   
   protected void validateFieldDeclarationsForEmail(Element serviceTaskElement, List<FieldDeclaration> fieldDeclarations) {
     boolean toDefined = false;
+    boolean textOrHtmlDefined = false;
     for (FieldDeclaration fieldDeclaration : fieldDeclarations) {
       if (fieldDeclaration.getName().equals("to")) {
         toDefined = true;
+      }
+      if (fieldDeclaration.getName().equals("html")) {
+        textOrHtmlDefined = true;
+      }
+      if (fieldDeclaration.getName().equals("text")) {
+        textOrHtmlDefined = true;
       }
     }
     
     if (!toDefined) {
       addProblem("No recipient is defined on the mail activity", serviceTaskElement);
+    }
+    if (!textOrHtmlDefined) {
+      addProblem("Text or html field should be provided", serviceTaskElement);
     }
   }
 

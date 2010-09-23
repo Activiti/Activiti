@@ -27,7 +27,7 @@ import org.apache.commons.mail.SimpleEmail;
 /**
  * @author Joram Barrez
  */
-public class MailActivityBehavior extends BpmnJavaDelegation {
+public class EmailActivityBehavior extends BpmnJavaDelegation {
 
   private String to;
   private String from;

@@ -1,0 +1,36 @@
+<definitions 
+  xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:activiti="http://activiti.org/bpmn-extensions"
+  typeLanguage="http://www.w3.org/2001/XMLSchema"
+  expressionLanguage="http://www.w3.org/1999/XPath" 
+  targetNamespace="http://www.activiti.org/bpmn2.0">
+
+  <process id="textMailExpressions" >
+
+    <startEvent id="theStart" />
+    <sequenceFlow sourceRef="theStart" targetRef="sendMail" />
+    
+    <serviceTask id="sendMail" activiti:type="mail">
+      <extensionElements>
+        <activiti:field activiti:name="from">
+          <activiti:string>${sender}</activiti:string>
+        </activiti:field>
+        <activiti:field activiti:name="to">
+          <activiti:string>${recipient}</activiti:string>
+        </activiti:field>
+        <activiti:field activiti:name="subject">
+          <activiti:string>${subject}</activiti:string>
+        </activiti:field>
+        <activiti:field activiti:name="text">
+          <activiti:string>Hello ${recipientName}, this is an e-mail</activiti:string>
+        </activiti:field>      
+      </extensionElements>
+    </serviceTask>
+    <sequenceFlow sourceRef="sendMail" targetRef="theEnd" />
+    
+    <endEvent id="theEnd" />
+
+  </process>
+
+</definitions>

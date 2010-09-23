@@ -88,6 +88,7 @@ public abstract class ReflectUtil {
   
   public static void setField(Field field, Object object, Object value) {
     try {
+      field.setAccessible(true);
       field.set(object, value);
     } catch (IllegalArgumentException e) {
       throw new ActivitiException("Could not set field " + field.toString(), e);
