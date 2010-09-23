@@ -13,14 +13,66 @@
 
 package org.activiti.engine.test.bpmn.deployment;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.util.List;
+
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.test.ActivitiInternalTestCase;
+import org.activiti.engine.test.Deployment;
 
 
 /**
  * @author Joram Barrez
  */
 public class BpmnDeploymentTest extends ActivitiInternalTestCase {
+  
+  @Deployment
+  public void testGetBpmnXmlFileThroughService() {
+    String deploymentId = repositoryService.createDeploymentQuery().singleResult().getId();
+    List<String> deploymentResources = repositoryService.getDeploymentResourceNames(deploymentId);
+    
+    // verify bpmn file name
+    assertEquals(1, deploymentResources.size());
+    String bpmnResourceName = "org/activiti/engine/test/bpmn/deployment/BpmnDeploymentTest.testGetBpmnXmlFileThroughService.bpmn20.xml";
+    assertEquals(bpmnResourceName, deploymentResources.get(0));
+    
+    // verify content
+    InputStream deploymentInputStream = repositoryService.getResourceAsStream(deploymentId, bpmnResourceName);
+    String contentFromDeployment = readInputStreamToString(deploymentInputStream);
+    assertTrue(contentFromDeployment.length() > 0);
+    assertTrue(contentFromDeployment.contains("process id=\"emptyProcess\""));
+    
+    InputStream fileInputStream = this.getClass().getClassLoader().getResourceAsStream("org/activiti/engine/test/bpmn/deployment/BpmnDeploymentTest.testGetBpmnXmlFileThroughService.bpmn20.xml");
+    String contentFromFile = readInputStreamToString(fileInputStream);
+    assertEquals(contentFromFile, contentFromDeployment);
+  }
+  
+  private String readInputStreamToString(InputStream inputStream) {
+    assertNotNull("Provided inputstream is null", inputStream);
+    BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
+    StringBuilder strb = new StringBuilder();
+    try {
+      String line = reader.readLine();
+      while (line != null) {
+        strb.append(line);
+        line = reader.readLine();
+      }
+    } catch (IOException e) {
+      fail("Couldnt read from inputstream");
+    } finally {
+      if (reader != null) {
+        try {
+          reader.close();
+        } catch (IOException e) {
+          fail("Couldn't close reader");
+        }
+      }
+    }
+    return strb.toString();
+  }
   
   public void testViolateProcessDefinitionIdMaximumLength() {
     try {
