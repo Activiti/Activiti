@@ -18,6 +18,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.Properties;
 import java.util.logging.Logger;
 
@@ -43,19 +45,24 @@ import org.activiti.engine.ActivitiException;
  */
 public abstract class ExpressionFactoryResolver {
   
+  /**
+   * When using EL 1.0 and none of the resolving steps result in a classname, use JUEL factory.
+   */
+  private static final String DEFAULT_EXPRESSION_FACTORY_CLASSNAME = "de.odysseus.el.ExpressionFactoryImpl";
   private static final Logger LOG = Logger.getLogger(ExpressionFactoryResolver.class.getName());
   
   public static ExpressionFactory resolveExpressionFactory() {
-    ExpressionFactory expressionFactory = null;
-    try {
-      expressionFactory = ExpressionFactory.newInstance();
+    ExpressionFactory expressionFactory = getExpressionFactoryforEl11();
+    
+    if(expressionFactory != null) {
       LOG.fine("Resolving ExpressionFactory using EL 1.1");
-    } catch(NoSuchMethodError nsme) {
+    } else {
       // Since EL 1.1, newInstance method has been added. If the method doesn't exist, 
-      // we have EL 1.0.
-      LOG.fine("Resolving ExpressionFactory using EL 1.O");
-      expressionFactory = getExpressionFactoryInstance();
+      // we use EL 1.0.
+      LOG.fine("Resolving ExpressionFactory using EL 1.0");
+      expressionFactory = getExpressionFactoryInstance();      
     }
+    
     return expressionFactory;
   }
   
@@ -75,7 +82,8 @@ public abstract class ExpressionFactoryResolver {
     }
     
     if(implClassName == null) {
-      throw new ActivitiException("Failed to resolve an implementation class for javax.el.ExpressionFactory");
+      LOG.fine("No ExpressionFactory classname could be resolved, reverting to default: " + DEFAULT_EXPRESSION_FACTORY_CLASSNAME);
+      implClassName = DEFAULT_EXPRESSION_FACTORY_CLASSNAME;
     }
     
     return newInstance(implClassName, classLoader);
@@ -165,5 +173,22 @@ public abstract class ExpressionFactoryResolver {
       } catch (IllegalAccessException iae) {
         throw new ActivitiException("Failed to instantiate ExpressionFactory, illegal access: " + implClassName, iae);
       }
+  }
+  
+  private static ExpressionFactory getExpressionFactoryforEl11() {
+    try {
+      Method newInstanceMethod = ExpressionFactory.class.getMethod("newInstance", new Class<?>[0]);
+      return (ExpressionFactory) newInstanceMethod.invoke(null, new Object[0]);
+    } catch (SecurityException e) {
+      // Not allowed to use reflection, to be safe, we return null
+    } catch (NoSuchMethodException e) {
+    } catch (IllegalArgumentException e) {
+      // Since we look for a method with no params, this exception will never happen
+    } catch (IllegalAccessException e) {
+    } catch (InvocationTargetException e) {
+      // Wrap the exception that occurred while invoking in an ActivitiException.
+      throw new ActivitiException(e.getCause().getMessage(), e.getCause());
+    }
+    return null;
   }
 }

@@ -27,19 +27,14 @@
         <version>1.2.132</version>
       </dependency>
       <dependency>
-        <groupId>juel</groupId>
-        <artifactId>juel-api</artifactId>
-        <version>2.2.1</version>
+        <groupId>javax.el</groupId>
+        <artifactId>el-api</artifactId>
+        <version>1.0</version>
       </dependency>
       <dependency>
-        <groupId>juel</groupId>
+        <groupId>de.odysseus.juel</groupId>
         <artifactId>juel-impl</artifactId>
         <version>2.2.1</version>
-      </dependency>
-      <dependency>
-        <groupId>juel</groupId>
-        <artifactId>juel-engine</artifactId> <!-- Implementation of JSR-223 (Scripting) with JUEL -->
-        <version>2.1.0</version>
       </dependency>
       <dependency>
         <groupId>org.codehaus.groovy</groupId>
