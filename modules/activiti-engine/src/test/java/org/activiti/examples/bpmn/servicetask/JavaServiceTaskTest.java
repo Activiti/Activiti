@@ -12,6 +12,9 @@
  */
 package org.activiti.examples.bpmn.servicetask;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.activiti.engine.impl.test.ActivitiInternalTestCase;
 import org.activiti.engine.impl.util.CollectionUtil;
 import org.activiti.engine.runtime.Execution;
@@ -31,6 +34,29 @@ public class JavaServiceTaskTest extends ActivitiInternalTestCase {
       .activityId("waitState")
       .singleResult();
     assertEquals("ACTIVITI BPM ENGINE", runtimeService.getVariable(execution.getId(), "input"));
+  }
+  
+  @Deployment
+  public void testFieldInjection() {
+    ProcessInstance pi = runtimeService.startProcessInstanceByKey("fieldInjection");
+    Execution execution = runtimeService.createExecutionQuery()
+      .processInstanceId(pi.getId())
+      .activityId("waitState")
+      .singleResult();
+    assertEquals("HELLO WORLD", runtimeService.getVariable(execution.getId(), "var"));
+  }
+  
+  @Deployment
+  public void testExpressionFieldInjection() {
+    Map<String, Object> vars = new HashMap<String, Object>();
+    vars.put("name", "kermit");
+    vars.put("gender", "male");
+    ProcessInstance pi = runtimeService.startProcessInstanceByKey("expressionFieldInjection", vars);
+    Execution execution = runtimeService.createExecutionQuery()
+      .processInstanceId(pi.getId())
+      .activityId("waitState")
+      .singleResult();
+    assertEquals("HELLO MR. KERMIT", runtimeService.getVariable(execution.getId(), "var"));
   }
 
 }

@@ -1498,52 +1498,78 @@ List&lt;Task&gt; tasks = taskService.createTaskQuery().assignee(&quot;kermit&quo
       
       <para>
         To implement a class that can be called during process execution, this class needs to
-        implement the <emphasis>org.activiti.pvm.activity.ActivityBehavior</emphasis> interface.
+        extend the <emphasis>org.activiti.engine.bpmn.BpmnJavaDelegation</emphasis> class and provide the required
+        logic in the <emphasis>execute</emphasis> method. When process execution arrives
+        at this particular step, it will execute this logic defined in that method and leave 
+        the activity in the default BPMN 2.0 way.
+      </para>  
+      <para>
+        It is also possible to provide a class that implements the 
+        <emphasis>org.activiti.pvm.activity.ActivityBehavior</emphasis> interface.
+        Implementations have then access to the more powerful <emphasis>ActivityExecution</emphasis>
+        that for example also allows to influence the control flow of the process. Note however
+        that this is not a very good practice, and should be avoided as much as possible.
+        So, it is adviced to use the <emphasis>ActivityBehavior</emphasis> interface only for 
+        advanced use cases and if you know exactly what you're doing.
       </para>
       
       <para>
         Let's create for example a Java class that can be used to change a process variable String
-        to uppercase. This class needs to implement the <emphasis>ActivityBehavior</emphasis>
-        interface, which requires us to implement the <emphasis>execute(ActivityExecution)</emphasis>
+        to uppercase. This class needs to extend the <emphasis>org.activiti.engine.bpmn.BpmnJavaDelegation</emphasis>
+        class, which requires us to implement the <emphasis>execute(DelegateExecution)</emphasis>
         method. It's this operation that will be called by the engine and which needs to contain
-        the business logic. Process instance information such as process variables, executions, etc.
+        the business logic. Process instance information such as process variables  and other
         can be accessed and manipulated through the 
-        <ulink url="http://activiti.org/javadocs/org/activiti/pvm/ActivityExecution.html">ActivityExecution</ulink>
+        <ulink url="http://activiti.org/javadocs/org/activiti/pvm/delegate/DelegateExecution.html">DelegateExecution</ulink>
         interface (click on the link for a detailed Javadoc of its operations).
 <programlisting>
-public class ToUppercaseActivityBehavior extends BpmnActivityBehavior implements ActivityBehavior {
+public class ToUppercase extends BpmnJavaDelegation {
   
   public void execute(ActivityExecution execution) throws Exception {
     String var = (String) execution.getVariable(&quot;input&quot;);
     var = var.toUpperCase();
     execution.setVariable(&quot;input&quot;, var);
-    
-    performDefaultOutgoingBehavior(execution);
   }
   
 }
 </programlisting>
-        Also note that here we're extending from the <emphasis>org.activiti.impl.bpmn.BpmnActivityBehavior</emphasis> class.
-        This allows us to convenience methods such as 
-        <itemizedlist>
-          <listitem>
-            <para>
-              <emphasis>performDefaultOutgoingBehavior</emphasis>,
-              which will execute the default BPMN 2.0 outgoing behavior: all outgoing
-              sequence flow are taken in parallel and conditions on the sequence flow are evaluated
-              before the sequence flow is selected for leaving the current activity.  
-            </para>
-          </listitem>
-          <listitem>
-            <para>
-              <emphasis>performIgnoreConditionsOutgoingBehavior</emphasis>, which
-              takes all outgoing sequence flow in parallel, regardless of having a condition
-              defined on it (e.g. this is the behavior of the
-              <link linkend="bpmnParallelGateway">parallel gateway</link>).
-            </para>
-          </listitem>          
-        </itemizedlist>
-        Note that this class can be used by inheritance (as it is used here) or by composition.
+        </para>
+     
+     </section>
+     
+     <section id="serviceTaskFieldInjection">
+     
+      <title>Field injection</title>
+    
+      <para>
+        It's possible to inject values into the fields of the delegated classes.
+        Currently, only <emphasis>String</emphasis> injection is supported. The following
+        code snippet shows how to inject a constant value into a field. Field injection
+        is supported when using the <emphasis>'class''</emphasis> attribute.
+        Note that we need to <emphasis role="bold">declare a 'extensionElements' XML element
+        before the actual field injection declarations</emphasis>, which is a requirement of
+        the BPMN 2.0 XSD.
+        <programlisting>
+&lt;serviceTask id=&quot;javaService&quot; 
+    name=&quot;Java service invocation&quot; 
+    activiti:class=&quot;org.activiti.examples.bpmn.servicetask.ToUpperCaseFieldInjected&quot;&gt;
+  <emphasis role="bold">&lt;extensionElements&gt;
+    &lt;activiti:field activiti:name=&quot;text&quot;&gt;
+      &lt;activiti:string&gt;Hello World&lt;/activiti:string&gt;
+    &lt;/activiti:field&gt;
+  &lt;/extensionElements&gt;</emphasis>           
+&lt;/serviceTask&gt;        
+        </programlisting>
+      </para>
+      
+      <para>
+        To inject values that are dynamically resolved at runtime, expressions can be used.
+        Those expressions can use process variables, or Spring defined beans (if Spring is used):
+        <programlisting>
+&lt;activiti:field activiti:name=&quot;text&quot;&gt;
+  &lt;activiti:string&gt;Hello ${gender == 'male' ? 'Mr.' : 'Mrs.'} ${name}&lt;/activiti:string&gt;
+&lt;/activiti:field&gt;        
+</programlisting>
       </para>
      
      </section>
