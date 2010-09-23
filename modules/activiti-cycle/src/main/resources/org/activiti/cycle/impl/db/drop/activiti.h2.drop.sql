@@ -1,1 +1,0 @@
-drop table ACT_CY_CONFIG if exists;
