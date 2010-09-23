@@ -574,6 +574,40 @@
 	     Start events <emphasis role="bold">are always catching</emphasis>: conceptually
 	     the event is (at any time) waiting until a certain trigger happens.
 	   </para>
+	   
+	   <para>
+	     In a start event, following activiti-specific properties can be specified:
+	   </para>
+	   
+	   <itemizedlist>
+       <listitem>
+         <para>
+           <emphasis role="bold">form</emphasis>: references to a form template that users have to fill out to 
+           supply the information to start a new process instance.  More information can be found in 
+           <xref linkend="taskForms" />.  Example:
+           <programlisting>&lt;startEvent id=&quot;request&quot; activiti:form=&quot;org/activiti/examples/taskforms/request.form&quot; /&gt;</programlisting>
+         </para>
+       </listitem>
+       <listitem>
+         <para>
+           <emphasis role="bold">initiator</emphasis>: identifies the variable name in which the authenticated 
+           user id will be stored when the process is started.  Example:
+           <programlisting>&lt;startEvent id=&quot;request&quot; activiti:initiator=&quot;initiator&quot; /&gt;</programlisting>
+           The authenticated user must be set with the method <literal>IdentityService.setAuthenticatedUserId(String)</literal>
+           in a try-finally block like this:
+           <programlisting>try {
+  identityService.setAuthenticatedUserId(&quot;bono&quot;);
+  runtimeService.startProcessInstanceByKey(&quot;someProcessKey&quot;);
+} finally {
+  identityService.setAuthenticatedUserId(null);
+}
+</programlisting>
+           This code is baked into the Activiti Explorer application.  So it works in combination with 
+           <xref linkend="taskForms" />
+         </para>
+       </listitem>
+     </itemizedlist>
+	   
 	  
 	  </section>
 

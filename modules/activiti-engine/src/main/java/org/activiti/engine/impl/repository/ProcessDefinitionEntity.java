@@ -15,6 +15,7 @@ package org.activiti.engine.impl.repository;
 import java.util.ArrayList;
 
 import org.activiti.engine.impl.db.PersistentObject;
+import org.activiti.engine.impl.identity.Authentication;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.runtime.ExecutionEntity;
 import org.activiti.engine.impl.runtime.VariableMap;
@@ -48,6 +49,12 @@ public class ProcessDefinitionEntity extends ProcessDefinitionImpl implements Pr
 
     // reset the process instance in order to have the db-generated process instance id available
     processInstance.setProcessInstance(processInstance);
+    
+    String initiatorVariableName = (String) getProperty("initiatorVariableName");
+    if (initiatorVariableName!=null) {
+      String authenticatedUserId = Authentication.getAuthenticatedUserId();
+      processInstance.setVariable(initiatorVariableName, authenticatedUserId);
+    }
     
     VariableMap variableMap = VariableMap.createNewInitialized(processInstance.getId(), processInstance.getId());
     processInstance.setVariables(variableMap);

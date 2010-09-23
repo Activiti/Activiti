@@ -423,6 +423,11 @@ public class BpmnParse extends Parse {
           processDefinition.setStartFormResourceKey(startFormResourceKey);
         }
 
+        String initiatorVariableName = startEventElement.attributeNS(BpmnParser.BPMN_EXTENSIONS_NS, "initiator");
+        if (initiatorVariableName != null) {
+          processDefinition.setProperty("initiatorVariableName", initiatorVariableName);
+        }
+
       } else {
         scope.setProperty(PROPERTYNAME_INITIAL, startEventActivity);
       }
