@@ -32,7 +32,7 @@ import org.activiti.engine.impl.bpmn.Condition;
 import org.activiti.engine.impl.bpmn.ExclusiveGatewayActivity;
 import org.activiti.engine.impl.bpmn.ItemDefinition;
 import org.activiti.engine.impl.bpmn.ItemKind;
-import org.activiti.engine.impl.bpmn.EmailActivityBehavior;
+import org.activiti.engine.impl.bpmn.MailActivityBehavior;
 import org.activiti.engine.impl.bpmn.ManualTaskActivity;
 import org.activiti.engine.impl.bpmn.Message;
 import org.activiti.engine.impl.bpmn.NoneEndEventActivity;
@@ -615,7 +615,7 @@ public class BpmnParse extends Parse {
 
   protected void parseEmailServiceTask(ActivityImpl activity, Element serviceTaskElement, List<FieldDeclaration> fieldDeclarations) {
     validateFieldDeclarationsForEmail(serviceTaskElement, fieldDeclarations);
-    activity.setActivityBehavior(new ServiceTaskDelegateActivityBehaviour(new EmailActivityBehavior(), fieldDeclarations));
+    activity.setActivityBehavior(new ServiceTaskDelegateActivityBehaviour(new MailActivityBehavior(), fieldDeclarations));
   }
   
   public List<FieldDeclaration> parseFieldDeclarations(Element serviceTaskElement) {
