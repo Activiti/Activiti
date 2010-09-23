@@ -46,17 +46,6 @@
           </execution>
         </executions>
       </plugin>
-    <!-- FIXME: Java 1.6 required as src/external/bpmn2_0 is heavily using String.isEmpty() -->
-	<plugin>
-		<artifactId>maven-compiler-plugin</artifactId>
-		<configuration>
-			<source>1.6</source>
-			<target>1.6</target>
-			<showDeprecation>true</showDeprecation>
-			<showWarnings>true</showWarnings>
-			<optimize>true</optimize>
-		</configuration>
-	</plugin>
       <plugin>
         <artifactId>maven-surefire-plugin</artifactId>
         <configuration>
