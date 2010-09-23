@@ -14,15 +14,9 @@ package org.activiti.engine;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Properties;
 
 import org.activiti.engine.impl.cfg.ProcessEngineConfiguration;
-import org.activiti.engine.impl.interceptor.CommandContextInterceptor;
-import org.activiti.engine.impl.interceptor.CommandExecutorImpl;
-import org.activiti.engine.impl.interceptor.CommandInterceptor;
-import org.activiti.engine.impl.interceptor.LogInterceptor;
 
 /**
  * Builds a process engine based on a couple of simple properties.
@@ -69,6 +63,12 @@ public class ProcessEngineBuilder {
   protected DbSchemaStrategy dbSchemaStrategy = DbSchemaStrategy.CHECK_VERSION;
   protected boolean jobExecutorAutoActivate = true;
   protected boolean localTransactions = true;
+  
+  protected String mailServerSmtpHost;
+  protected String mailServerSmtpUserName;
+  protected String mailServerSmtpPassword;
+  protected int mailServerSmtpPort = ProcessEngineConfiguration.DEFAULT_MAIL_SERVER_SMTP_PORT;
+  protected String mailServerDefaultFrom = ProcessEngineConfiguration.DEFAULT_FROM_EMAIL_ADDRESS;
 
   public ProcessEngineBuilder setProcessEngineName(String processEngineName) {
     this.processEngineName = processEngineName;
@@ -109,6 +109,31 @@ public class ProcessEngineBuilder {
     this.dbSchemaStrategy = dbSchemaStrategy;
     return this;
   }
+  
+  public ProcessEngineBuilder setMailServerSmtpHost(String mailServerSmtpHost) {
+    this.mailServerSmtpHost = mailServerSmtpHost;
+    return this;
+  }
+  
+  public ProcessEngineBuilder setMailServerSmtpUserName(String mailServerSmtpUserName) {
+    this.mailServerSmtpUserName = mailServerSmtpUserName;
+    return this;
+  }
+  
+  public ProcessEngineBuilder setMailServerSmtpPassword(String mailServerSmtpPassword) {
+    this.mailServerSmtpPassword = mailServerSmtpPassword;
+    return this;
+  }
+  
+  public ProcessEngineBuilder setMailServerSmtpPort(int mailServerSmtpPort) {
+    this.mailServerSmtpPort = mailServerSmtpPort;
+    return this;
+  }
+  
+  public ProcessEngineBuilder setMailServerDefaultFrom(String mailServerDefaultFrom) {
+    this.mailServerDefaultFrom = mailServerDefaultFrom;
+    return this;
+  }
 
   public ProcessEngineBuilder configureFromProperties(Properties configurationProperties) {
     if (configurationProperties == null) {
@@ -119,6 +144,8 @@ public class ProcessEngineBuilder {
     if (processEngineName != null) {
       this.processEngineName = processEngineName;
     }
+    
+    // DATABASE
 
     String databaseName = configurationProperties.getProperty("database");
     if (databaseName != null) {
@@ -150,6 +177,8 @@ public class ProcessEngineBuilder {
       String strategy = dbSchemaStrategy.toUpperCase().replace("-", "_");
       this.dbSchemaStrategy = DbSchemaStrategy.valueOf(strategy);
     }
+    
+    // JOBEXECUTOR
 
     String jobExecutorAutoActivate = configurationProperties.getProperty("job.executor.auto.activate");
     if ((jobExecutorAutoActivate != null)
@@ -157,11 +186,44 @@ public class ProcessEngineBuilder {
       this.jobExecutorAutoActivate = false;
     }
     
+    // WEBSERVICE
+    
     String wsSyncFactory = configurationProperties.getProperty("ws.sync.factory");
     if (wsSyncFactory != null) {
       this.wsSyncFactoryClassName = wsSyncFactory;
     }
 
+    // EMAIL
+    
+    String mailServerSmtpHost = configurationProperties.getProperty("mail.smtp.host");
+    if (mailServerSmtpHost != null) {
+      this.mailServerSmtpHost = mailServerSmtpHost;
+    }
+    
+    String mailServerSmtpPort= configurationProperties.getProperty("mail.smtp.port");
+    if (mailServerSmtpPort != null) {
+      try {
+        this.mailServerSmtpPort = Integer.parseInt(mailServerSmtpPort);
+      } catch (NumberFormatException e) {
+        throw new ActivitiException("Invalid port number: " + mailServerSmtpPort, e);
+      }
+    }
+    
+    String mailServerSmtpUserName = configurationProperties.getProperty("mail.smtp.user");
+    if (mailServerSmtpUserName != null) {
+      this.mailServerSmtpUserName = mailServerSmtpUserName;
+    }
+    
+    String mailServerSmtpPassword= configurationProperties.getProperty("mail.smtp.password");
+    if (mailServerSmtpPassword != null) {
+      this.mailServerSmtpPassword = mailServerSmtpPassword;
+    }
+    
+    String mailServerDefaultFrom= configurationProperties.getProperty("mail.default.from");
+    if (mailServerDefaultFrom != null) {
+      this.mailServerDefaultFrom = mailServerDefaultFrom;
+    }
+    
     return this;
   }
 
@@ -201,16 +263,29 @@ public class ProcessEngineBuilder {
 
     ProcessEngineConfiguration processEngineConfiguration = new ProcessEngineConfiguration();
     processEngineConfiguration.setProcessEngineName(processEngineName);
-    processEngineConfiguration.setDbSchemaStrategy(dbSchemaStrategy);
+    
+    // JOBEXECUTOR
     processEngineConfiguration.setJobExecutorAutoActivate(jobExecutorAutoActivate);
+
+    // DATABASE
+    processEngineConfiguration.setDbSchemaStrategy(dbSchemaStrategy);
     processEngineConfiguration.setJdbcDriver(jdbcDriver);
     processEngineConfiguration.setJdbcUrl(jdbcUrl);
     processEngineConfiguration.setJdbcUsername(jdbcUsername);
     processEngineConfiguration.setJdbcPassword(jdbcPassword);
     processEngineConfiguration.setDatabaseName(databaseName);
     processEngineConfiguration.setLocalTransactions(localTransactions);
+    
+    // WEBSERVICE
     processEngineConfiguration.setWsSyncFactoryClassName(wsSyncFactoryClassName);
-
+    
+    // EMAIL
+    processEngineConfiguration.setMailServerSmtpHost(mailServerSmtpHost);
+    processEngineConfiguration.setMailServerSmtpPort(mailServerSmtpPort);
+    processEngineConfiguration.setMailServerSmtpUserName(mailServerSmtpUserName);
+    processEngineConfiguration.setMailServerSmtpPassword(mailServerSmtpPassword);
+    processEngineConfiguration.setMailServerDefaultFrom(mailServerDefaultFrom);
+      
     return processEngineConfiguration.buildProcessEngine();
   }
 }

@@ -32,6 +32,7 @@ import org.activiti.engine.impl.bpmn.Condition;
 import org.activiti.engine.impl.bpmn.ExclusiveGatewayActivity;
 import org.activiti.engine.impl.bpmn.ItemDefinition;
 import org.activiti.engine.impl.bpmn.ItemKind;
+import org.activiti.engine.impl.bpmn.MailActivityBehavior;
 import org.activiti.engine.impl.bpmn.ManualTaskActivity;
 import org.activiti.engine.impl.bpmn.Message;
 import org.activiti.engine.impl.bpmn.NoneEndEventActivity;
@@ -572,14 +573,24 @@ public class BpmnParse extends Parse {
   public void parseServiceTask(Element serviceTaskElement, ScopeImpl scope) {
     ActivityImpl activity = parseAndCreateActivityOnScopeElement(serviceTaskElement, scope);
 
+    String type = serviceTaskElement.attributeNS(BpmnParser.BPMN_EXTENSIONS_NS, "type");
     String className = serviceTaskElement.attributeNS(BpmnParser.BPMN_EXTENSIONS_NS, "class");
     String methodExpr = serviceTaskElement.attributeNS(BpmnParser.BPMN_EXTENSIONS_NS, "method-expr");
     String valueExpr = serviceTaskElement.attributeNS(BpmnParser.BPMN_EXTENSIONS_NS, "value-expr");
     String implementation = serviceTaskElement.attribute("implementation");
     String operationRef = serviceTaskElement.attribute("operationRef");
+    List<FieldDeclaration> fieldDeclarations = parseFieldDeclarations(serviceTaskElement);
+
+    if (type != null) {
+      if (type.equalsIgnoreCase("mail")) {
+        validateFieldDeclarationsForEmail(serviceTaskElement, fieldDeclarations);
+        activity.setActivityBehavior(new ServiceTaskDelegateActivityBehaviour(new MailActivityBehavior(), fieldDeclarations));
+      } else {
+        addProblem("Invalid usage of type attribute: '" + type + "'", serviceTaskElement);
+      }
     
-    if (className != null && className.trim().length() > 0) {
-      activity.setActivityBehavior(new ServiceTaskDelegateActivityBehaviour(expressionManager.createValueExpression(className)));
+    } else if (className != null && className.trim().length() > 0) {
+      activity.setActivityBehavior(new ServiceTaskDelegateActivityBehaviour(expressionManager.createValueExpression(className), fieldDeclarations));
       
     } else if (methodExpr != null && methodExpr.trim().length() > 0) {
       activity.setActivityBehavior(new ServiceTaskMethodExpressionActivityBehavior(expressionManager.createMethodExpression(methodExpr)));
@@ -600,6 +611,50 @@ public class BpmnParse extends Parse {
 
     for (BpmnParseListener parseListener: parseListeners) {
       parseListener.parseServiceTask(serviceTaskElement, scope, activity);
+    }
+  }
+  
+  public List<FieldDeclaration> parseFieldDeclarations(Element serviceTaskElement) {
+    List<Element> fieldDeclarationElements = serviceTaskElement.elementsNS(BpmnParser.BPMN_EXTENSIONS_NS, "field");
+    if (fieldDeclarationElements != null && !fieldDeclarationElements.isEmpty()) {
+      
+      List<FieldDeclaration> fieldDeclarations = new ArrayList<FieldDeclaration>();
+      for (Element fieldDeclarationElement : fieldDeclarationElements) {
+        String fieldName = fieldDeclarationElement.attributeNS(BpmnParser.BPMN_EXTENSIONS_NS, "name");
+        String type = "java.lang.String"; // only string is supported currently
+        
+        ActivitiValueExpression valueExpression = null;
+        try {
+          Element stringElement = fieldDeclarationElement.elementNS(BpmnParser.BPMN_EXTENSIONS_NS, "string");
+          String value = stringElement.attributeNS(BpmnParser.BPMN_EXTENSIONS_NS, "value");
+          String text = stringElement.getText();
+          if (value != null && (text != null || text.length() == 0)) {
+            addProblem("Invalid: both value and a text are provided", stringElement);
+          }
+          valueExpression = expressionManager.createValueExpression(value != null ? value : text); 
+        } catch (ActivitiException e) {
+          addProblem("Invalid: multiple field declarations found", serviceTaskElement);
+        }
+        FieldDeclaration fieldDeclaration = new FieldDeclaration(fieldName, type, valueExpression);
+        fieldDeclarations.add(fieldDeclaration);
+      }
+      return fieldDeclarations;
+      
+    } else {
+      return null;
+    }
+  }
+  
+  protected void validateFieldDeclarationsForEmail(Element serviceTaskElement, List<FieldDeclaration> fieldDeclarations) {
+    boolean toDefined = false;
+    for (FieldDeclaration fieldDeclaration : fieldDeclarations) {
+      if (fieldDeclaration.getName().equals("to")) {
+        toDefined = true;
+      }
+    }
+    
+    if (!toDefined) {
+      addProblem("No recipient is defined on the mail activity", serviceTaskElement);
     }
   }
 

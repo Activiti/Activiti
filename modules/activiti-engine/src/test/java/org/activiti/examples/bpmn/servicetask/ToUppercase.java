@@ -12,24 +12,21 @@
  */
 package org.activiti.examples.bpmn.servicetask;
 
-import org.activiti.engine.impl.bpmn.BpmnActivityBehavior;
-import org.activiti.pvm.activity.ActivityBehavior;
-import org.activiti.pvm.activity.ActivityExecution;
+import org.activiti.engine.bpmn.BpmnJavaDelegation;
+import org.activiti.pvm.delegate.DelegateExecution;
 
 
 /**
  * @author Joram Barrez
  */
-public class ToUppercaseActivityBehavior extends BpmnActivityBehavior implements ActivityBehavior {
+public class ToUppercase extends BpmnJavaDelegation {
   
   private static final String VARIABLE_NAME = "input";
   
-  public void execute(ActivityExecution execution) throws Exception {
+  public void execute(DelegateExecution execution) {
     String var = (String) execution.getVariable(VARIABLE_NAME);
     var = var.toUpperCase();
     execution.setVariable(VARIABLE_NAME, var);
-    
-    performDefaultOutgoingBehavior(execution);
   }
   
 }

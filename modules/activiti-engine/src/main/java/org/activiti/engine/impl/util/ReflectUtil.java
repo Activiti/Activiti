@@ -13,6 +13,7 @@
 package org.activiti.engine.impl.util;
 
 import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 
@@ -55,6 +56,43 @@ public abstract class ReflectUtil {
       method.invoke(target, args);
     } catch (Exception e) {
       throw new ActivitiException("couldn't invoke "+methodName+" on "+target, e);
+    }
+  }
+  
+  /**
+   * Returns the field of the given object or null if it doesnt exist.
+   */
+  public static Field getField(String fieldName, Object object) {
+    return getField(fieldName, object.getClass());
+  }
+  
+  /**
+   * Returns the field of the given class or null if it doesnt exist.
+   */
+  public static Field getField(String fieldName, Class<?> clazz) {
+    Field field = null;
+    try {
+      field = clazz.getDeclaredField(fieldName);
+    } catch (SecurityException e) {
+      throw new ActivitiException("not allowed to access field " + field + " on class " + clazz.getCanonicalName());
+    } catch (NoSuchFieldException e) {
+      // for some reason getDeclaredFields doesnt search superclasses
+      // (which getFields() does ... but that gives only public fields)
+      Class<?> superClass = clazz.getSuperclass();
+      if (superClass != null) {
+        return getField(fieldName, superClass);
+      }
+    }
+    return field;
+  }
+  
+  public static void setField(Field field, Object object, Object value) {
+    try {
+      field.set(object, value);
+    } catch (IllegalArgumentException e) {
+      throw new ActivitiException("Could not set field " + field.toString(), e);
+    } catch (IllegalAccessException e) {
+      throw new ActivitiException("Could not set field " + field.toString(), e);
     }
   }
 

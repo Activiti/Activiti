@@ -80,7 +80,11 @@ public class ProcessEngineConfiguration {
   public static final String DEFAULT_JDBC_URL = "jdbc:h2:mem:activiti";
   public static final String DEFAULT_JDBC_USERNAME = "sa";
   public static final String DEFAULT_JDBC_PASSWORD = "";
+  
   public static final String DEFAULT_WS_SYNC_FACTORY = "org.activiti.engine.impl.webservice.CxfWebServiceClientFactory";
+  
+  public static final String DEFAULT_FROM_EMAIL_ADDRESS = "noreply@activiti.org";
+  public static final int DEFAULT_MAIL_SERVER_SMTP_PORT = 25;
 
   protected String processEngineName;
 
@@ -132,6 +136,12 @@ public class ProcessEngineConfiguration {
   protected boolean isConfigurationCompleted = false;
   
   protected String wsSyncFactoryClassName;
+  
+  protected String mailServerSmtpHost;
+  protected String mailServerSmtpUserName;
+  protected String mailServerSmtpPassword;
+  protected int mailServerSmtpPort;
+  protected String mailServerDefaultFrom;
 
   public ProcessEngineConfiguration() {
     processEngineName = ProcessEngines.NAME_DEFAULT;
@@ -539,6 +549,47 @@ public class ProcessEngineConfiguration {
 
   public void setWsSyncFactoryClassName(String wsSyncFactoryClassName) {
     this.wsSyncFactoryClassName = wsSyncFactoryClassName;
+  }
+  
+  public String getMailServerSmtpHost() {
+    return mailServerSmtpHost;
+  }
+  
+  public void setMailServerSmtpHost(String mailServerSmtpHost) {
+    this.mailServerSmtpHost = mailServerSmtpHost;
+  }
+  
+  public String getMailServerSmtpUserName() {
+    return mailServerSmtpUserName;
+  }
+  
+  public void setMailServerSmtpUserName(String mailServerSmtpUserName) {
+    this.mailServerSmtpUserName = mailServerSmtpUserName;
+  }
+  
+  public String getMailServerSmtpPassword() {
+    return mailServerSmtpPassword;
+  }
+
+  public void setMailServerSmtpPassword(String mailServerSmtpPassword) {
+    this.mailServerSmtpPassword = mailServerSmtpPassword;
+  }
+  
+  public int getMailServerSmtpPort() {
+    return mailServerSmtpPort;
+  }
+  
+  public void setMailServerSmtpPort(int mailServerSmtpPort) {
+    this.mailServerSmtpPort = mailServerSmtpPort;
+  }
+  
+  public String getMailServerDefaultFrom() {
+    return mailServerDefaultFrom;
+  }
+
+  
+  public void setMailServerDefaultFrom(String mailServerDefaultFrom) {
+    this.mailServerDefaultFrom = mailServerDefaultFrom;
   }
 
   public Map<String, List<TaskListener>> getTaskListeners() {

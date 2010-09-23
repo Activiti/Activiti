@@ -248,6 +248,12 @@
         <artifactId>jaxb-xjc</artifactId>
         <version>2.1.7</version>
       </dependency>
+      <!-- EMAIL -->
+      <dependency>
+        <groupId>org.apache.commons</groupId>
+        <artifactId>commons-email</artifactId>
+        <version>1.2</version>
+        </dependency>
     </dependencies>
   </dependencyManagement>
 

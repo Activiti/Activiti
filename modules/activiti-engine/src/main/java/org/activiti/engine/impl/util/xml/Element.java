@@ -66,17 +66,28 @@ public class Element {
   }
 
   public List<Element> elements(String tagName) {
+    return elementsNS(null, tagName);
+  }
+  
+  public List<Element> elementsNS(String nameSpaceUri, String tagName) {
     List<Element> selectedElements = new ArrayList<Element>();
     for (Element element: elements) {
       if (tagName.equals(element.getTagName())) {
-        selectedElements.add(element);
+        if (nameSpaceUri == null 
+                || ( nameSpaceUri != null && nameSpaceUri.equals(element.getUri()) ) ) {
+          selectedElements.add(element);
+        }
       }
     }
     return selectedElements;
   }
   
   public Element element(String tagName) {
-    List<Element> elements = elements(tagName);
+    return elementNS(null, tagName);
+  }
+  
+  public Element elementNS(String nameSpaceUri, String tagName) {
+    List<Element> elements = elementsNS(nameSpaceUri, tagName);
     if (elements.size() == 0) {
       return null;
     } else if (elements.size() > 1) {      
