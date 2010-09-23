@@ -327,15 +327,15 @@ JAVA_OPTS="-Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=8787
   </target>
 
   <target name="deploy.activiti.rest.into.tomcat" depends="build.webapp.activiti.engine.init, build.webapp.activiti.rest">
-    <mkdir dir="${tomcat.home}/webapps/activiti-engine-init" />
-    <unzip dest="${tomcat.home}/webapps/activiti-engine-init" src="${activiti.home}/setup/build/activiti-engine-init.war" />
+    <mkdir dir="${tomcat.home}/webapps/activiti-webapp-init" />
+    <unzip dest="${tomcat.home}/webapps/activiti-webapp-init" src="${activiti.home}/setup/build/activiti-webapp-init.war" />
     <mkdir dir="${tomcat.home}/webapps/activiti-rest" />
     <unzip dest="${tomcat.home}/webapps/activiti-rest" src="${activiti.home}/setup/build/activiti-rest.war" />
   </target>
   
   <target name="build.webapp.activiti.engine.init">
-    <zip destfile="${activiti.home}/setup/build/activiti-engine-init.war">
-      <fileset dir="${activiti.home}/setup/files/webapps/activiti-engine-init.war"/>
+    <zip destfile="${activiti.home}/setup/build/activiti-webapp-init.war">
+      <fileset dir="${activiti.home}/setup/files/webapps/activiti-webapp-init.war"/>
     </zip>
   </target>
 

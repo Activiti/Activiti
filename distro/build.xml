@@ -131,9 +131,9 @@
     	</fileset>
     </copy>
 
-    <mkdir dir="${target.distro.root}/setup/files/webapps/activiti-engine-init.war" />
-    <unzip dest="${target.distro.root}/setup/files/webapps/activiti-engine-init.war" 
-           src="../modules/activiti-engine-init/target/activiti-engine-init-${activiti.version}.war"/>
+    <mkdir dir="${target.distro.root}/setup/files/webapps/activiti-webapp-init.war" />
+    <unzip dest="${target.distro.root}/setup/files/webapps/activiti-webapp-init.war" 
+           src="../modules/activiti-webapp-init/target/activiti-webapp-init-${activiti.version}.war"/>
 
   	<zip destfile="${target.distro.root}.zip">
   		<fileset dir="${target.distro.root}" />

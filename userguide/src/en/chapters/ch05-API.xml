@@ -66,8 +66,8 @@ HistoryService historyService = processEngine.getHistoryService();</programlisti
   </section>
 
   <section>
-    <title>The activiti-engine-init.war</title>
-    <para>The activiti-engine-init.war can be used to easily manage process engine
+    <title>The activiti-webapp-init.war</title>
+    <para>The activiti-webapp-init.war can be used to easily manage process engine
     initialization and proper shutdown.  This war is automatically added to tomcat in
     the setup scripts when deploying activiti to tomcat.</para>
     <para>The war contains a single 

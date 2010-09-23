@@ -32,7 +32,7 @@ import org.activiti.engine.impl.ProcessEngineInfoImpl;
 
 /** Helper for initializing and closing process engines in server environments.
  * <br>
- * The activiti-engine-init webapp will
+ * The activiti-webapp-init webapp will
  * call the {@link #init()} method when the webapp is deployed and it will call the 
  * {@link #destroy()} method when the webapp is destroyed, using a context-listener 
  * (<code>org.activiti.impl.servlet.listener.ProcessEnginesServletContextListener</code>).  That way, 
