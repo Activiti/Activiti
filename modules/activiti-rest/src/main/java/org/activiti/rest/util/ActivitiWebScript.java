@@ -65,12 +65,20 @@ public class ActivitiWebScript extends DeclarativeWebScript {
   protected Map<String, Object> executeImpl(WebScriptRequest req, Status status, Cache cache) {
     // Prepare model with process engine info
     Map<String, Object> model = new HashMap<String, Object>();
+    try {
+      // Create activiti request to add heler methods
+      ActivitiRequest ar = new ActivitiRequest(req);
 
-    // todo: set the current user context when the core api implements security checks
+      // Set logged in web user as current user in engine api
+      getIdentityService().setAuthenticatedUserId(ar.getCurrentUserId());
 
-    // Let implementing webscript do something useful
-    executeWebScript(new ActivitiRequest(req), status, cache, model);
-
+      // Let implementing webscript do something useful
+      executeWebScript(ar, status, cache, model);
+    }
+    finally {
+      // Reset the current engine api user
+      getIdentityService().setAuthenticatedUserId(null);
+    }
     // Return model
     return model;
   }

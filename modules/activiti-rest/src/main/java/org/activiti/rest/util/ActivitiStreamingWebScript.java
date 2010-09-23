@@ -49,11 +49,20 @@ public class ActivitiStreamingWebScript extends AbstractWebScript {
   }
 
   public void execute(WebScriptRequest req, WebScriptResponse res) throws IOException {
-    // TODO: set the current user context when the core api implements security checks
-    // TODO: perform common functionality prepareing for the streaming
+    try {
+      // Create activiti request to add heler methods
+      ActivitiRequest ar = new ActivitiRequest(req);
 
-    // Let implementing webscript do something useful
-    executeStreamingWebScript(new ActivitiRequest(req), res);
+      // Set logged in web user as current user in engine api
+      getIdentityService().setAuthenticatedUserId(ar.getCurrentUserId());
+
+      // Let implementing webscript do something useful
+      executeStreamingWebScript(new ActivitiRequest(req), res);
+    }
+    finally {
+      // Reset the current engine api user
+      getIdentityService().setAuthenticatedUserId(null);
+    }
   }
 
   /**
