@@ -40,6 +40,9 @@ alter table ACT_RU_VARIABLE
 alter table ACT_RU_VARIABLE
     drop constraint FK_VAR_BYTEARRAY;
     
+alter table ACT_RU_JOB
+    drop constraint FK_JOB_EXCEPTION;
+    
 drop table ACT_GE_PROPERTY;
 drop table ACT_GE_BYTEARRAY;
 drop table ACT_RE_DEPLOYMENT;

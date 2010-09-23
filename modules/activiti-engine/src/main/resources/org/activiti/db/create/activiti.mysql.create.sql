@@ -3,7 +3,7 @@ create table ACT_GE_PROPERTY (
     VALUE_ varchar(300),
     REV_ integer,
     primary key (NAME_)
-) TYPE=InnoDB;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE utf8_bin;
 
 insert into ACT_GE_PROPERTY
 values ('schema.version', '5.0.beta2-SNAPSHOT', 1);
@@ -18,14 +18,14 @@ create table ACT_GE_BYTEARRAY (
     DEPLOYMENT_ID_ varchar(64),
     BYTES_ LONGBLOB,
     primary key (ID_)
-) TYPE=InnoDB;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE utf8_bin;
 
 create table ACT_RE_DEPLOYMENT (
     ID_ varchar(64),
     NAME_ varchar(255),
     DEPLOY_TIME_ timestamp,
     primary key (ID_)
-) TYPE=InnoDB;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE utf8_bin;
 
 create table ACT_RU_EXECUTION (
     ID_ varchar(64),
@@ -39,7 +39,7 @@ create table ACT_RU_EXECUTION (
     IS_CONCURRENT_ TINYINT,
     IS_SCOPE_ TINYINT,
     primary key (ID_)
-) TYPE=InnoDB;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE utf8_bin;
 
 create table ACT_RU_JOB (
     ID_ varchar(64) NOT NULL,
@@ -58,7 +58,7 @@ create table ACT_RU_JOB (
     HANDLER_TYPE_ varchar(255),
     HANDLER_CFG_ varchar(255),
     primary key (ID_)
-) TYPE=InnoDB;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE utf8_bin;
 
 create table ACT_ID_GROUP (
     ID_ varchar(64),
@@ -66,13 +66,13 @@ create table ACT_ID_GROUP (
     NAME_ varchar(255),
     TYPE_ varchar(255),
     primary key (ID_)
-) TYPE=InnoDB;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE utf8_bin;
 
 create table ACT_ID_MEMBERSHIP (
     USER_ID_ varchar(64),
     GROUP_ID_ varchar(64),
     primary key (USER_ID_, GROUP_ID_)
-) TYPE=InnoDB;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE utf8_bin;
 
 create table ACT_ID_USER (
     ID_ varchar(64),
@@ -82,7 +82,7 @@ create table ACT_ID_USER (
     EMAIL_ varchar(255),
     PWD_ varchar(255),
     primary key (ID_)
-) TYPE=InnoDB;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE utf8_bin;
 
 create table ACT_RE_PROC_DEF (
     ID_ varchar(64),
@@ -93,7 +93,7 @@ create table ACT_RE_PROC_DEF (
 	RESOURCE_NAME_ varchar(255),
 	START_FORM_ varchar(255),
     primary key (ID_)
-) TYPE=InnoDB;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE utf8_bin;
 
 create table ACT_RU_TASK (
     ID_ varchar(64),
@@ -111,7 +111,7 @@ create table ACT_RU_TASK (
     COMPLETION_DEADLINE_ datetime,
     SKIPPABLE_ TINYINT,
     primary key (ID_)
-) TYPE=InnoDB;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE utf8_bin;
 
 create table ACT_RU_IDENTITY_LINK (
     ID_ varchar(64),
@@ -121,7 +121,7 @@ create table ACT_RU_IDENTITY_LINK (
     USER_ID_ varchar(64),
     TASK_ID_ varchar(64),
     primary key (ID_)
-) TYPE=InnoDB;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE utf8_bin;
 
 create table ACT_RU_VARIABLE (
     ID_ varchar(64) not null,
@@ -137,7 +137,7 @@ create table ACT_RU_VARIABLE (
     LONG_ bigint,
     TEXT_ varchar(255),
     primary key (ID_)
-) TYPE=InnoDB;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE utf8_bin;
 
 create table ACT_HI_PROC_INST (
     ID_ varchar(64) not null,
@@ -149,7 +149,7 @@ create table ACT_HI_PROC_INST (
     END_ACT_ID_ varchar(64),
     primary key (ID_),
     unique (PROC_INST_ID_)
-) TYPE=InnoDB;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE utf8_bin;
 
 create table ACT_HI_ACT_INST (
     ID_ varchar(64) not null,
@@ -164,7 +164,7 @@ create table ACT_HI_ACT_INST (
     END_TIME_ datetime,
     DURATION_ bigint,
     primary key (ID_)
-) TYPE=InnoDB;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE utf8_bin;
 
 alter table ACT_GE_BYTEARRAY
     add constraint FK_BYTEARR_DEPL 
