@@ -4,15 +4,26 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.Reader;
+import java.net.URL;
 import java.util.ArrayList;
+import java.util.Enumeration;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import org.activiti.cycle.RepositoryException;
 import org.activiti.cycle.impl.plugin.PluginFinder;
+import org.activiti.engine.ActivitiException;
+import org.activiti.engine.DbSchemaStrategy;
+import org.activiti.engine.ProcessEngine;
+import org.activiti.engine.ProcessEngineBuilder;
+import org.activiti.engine.ProcessEngineInfo;
 import org.activiti.engine.ProcessEngines;
 import org.activiti.engine.impl.ProcessEngineImpl;
 import org.activiti.engine.impl.cfg.ProcessEngineConfiguration;
+import org.activiti.engine.impl.db.DbSqlSessionFactory;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.interceptor.CommandContextFactory;
 import org.apache.ibatis.io.Resources;
@@ -159,8 +170,10 @@ public class CycleServiceXStreamImpl implements CycleService {
 
   //----- start implementation for cycle persistence -----
   
-  protected static ProcessEngineConfiguration getProcessEngineConfiguration() {
+  public ProcessEngineConfiguration getProcessEngineConfiguration() {
+
     ProcessEngineConfiguration processEngineConfiguration = null;
+
     if (processEngineName == null) {
       processEngineConfiguration = ((ProcessEngineImpl) ProcessEngines.getDefaultProcessEngine()).getProcessEngineConfiguration();
     } else {
@@ -186,16 +199,9 @@ public class CycleServiceXStreamImpl implements CycleService {
   }
   
   public void createAndInsert(String configXML, String id) {
-    //ProcessEngineConfiguration processEngineConfiguration = getProcessEngineConfiguration();
-    //System.out.println("PROCESSENGINECONFIGURATION: " + processEngineConfiguration.getJdbcUrl());
     CycleConfigEntity cycleConfig = new CycleConfigEntity();
     cycleConfig.setId(id);
     cycleConfig.setConfigXML(configXML);
-//    
-//    CommandContext
-//    .getCurrent()
-//    .getDbSqlSession()
-//    .insert(cycleConfig);
     
     SqlSessionFactory sqlMapper = getIbatisConfig();
     
@@ -239,17 +245,43 @@ public class CycleServiceXStreamImpl implements CycleService {
   }
   
   private SqlSessionFactory getIbatisConfig() {
-    Reader reader = null;
-    //config.mapping.xml
-    String resource = "org/activiti/cycle/impl/db/ibatis/activiti.ibatis.mem.conf.xml";
-    try {
-      reader = Resources.getResourceAsReader(resource);
-    } catch (IOException e) {
-        e.printStackTrace();
-    }
+//    Reader reader = null;
+//    //config.mapping.xml
+//    String resource = "org/activiti/cycle/impl/db/ibatis/activiti.ibatis.mem.conf.xml";
+//    try {
+//      reader = Resources.getResourceAsReader(resource);
+//    } catch (IOException e) {
+//        e.printStackTrace();
+//    }
+//
+//    SqlSessionFactory sqlMapper = new SqlSessionFactoryBuilder().build(reader);
+//    return sqlMapper;
+    
+    CycleDbSqlSessionFactory factory = new CycleDbSqlSessionFactory();
+    factory.configurationCompleted(getProcessEngineConfiguration());
+    
+    performDbSchemaCreation(factory, getProcessEngineConfiguration());
+    
+    return factory.getSqlSessionFactory();
+  }
 
-    SqlSessionFactory sqlMapper = new SqlSessionFactoryBuilder().build(reader);
-    return sqlMapper;
+  private void performDbSchemaCreation(CycleDbSqlSessionFactory dbSqlSessionFactory, ProcessEngineConfiguration processEngineConfiguration) {
+    
+    DbSchemaStrategy dbSchemaStrategy = processEngineConfiguration.getDbSchemaStrategy();
+    
+    if (DbSchemaStrategy.DROP_CREATE == dbSchemaStrategy) {
+      try {
+        dbSqlSessionFactory.dbSchemaDrop();
+      } catch (RuntimeException e) {
+        // ignore
+      }
+    }
+    if (DbSchemaStrategy.CREATE_DROP == dbSchemaStrategy || DbSchemaStrategy.DROP_CREATE == dbSchemaStrategy || DbSchemaStrategy.CREATE == dbSchemaStrategy) {
+      dbSqlSessionFactory.dbSchemaCreate();
+    } else if (DbSchemaStrategy.CHECK_VERSION == dbSchemaStrategy) {
+      dbSqlSessionFactory.dbSchemaCheckVersion();
+    }
+    
   }
 
   // public void persistAllRepositoryConfigurations() {

@@ -71,6 +71,7 @@ public interface CycleService {
   // repositoryConfig);
   
   //----- start method declaration for cycle persistence -----
+  public ProcessEngineConfiguration getProcessEngineConfiguration();
   
   public void createAndInsert(String configXML, String id);
   
