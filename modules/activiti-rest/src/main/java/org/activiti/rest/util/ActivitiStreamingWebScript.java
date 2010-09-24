@@ -71,7 +71,7 @@ public class ActivitiStreamingWebScript extends AbstractWebScript {
    * @param req The activiti request
    * @param res The webscript response
    */
-  protected void executeStreamingWebScript(ActivitiRequest req, WebScriptResponse res) {
+  protected void executeStreamingWebScript(ActivitiRequest req, WebScriptResponse res) throws IOException {
     // Override to make something useful
   }
 

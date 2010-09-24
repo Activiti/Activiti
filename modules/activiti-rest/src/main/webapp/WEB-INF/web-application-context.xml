@@ -180,5 +180,10 @@
         class="org.activiti.rest.api.cycle.ActionExecutionPut"
         parent="activitiWebScript">
   </bean>
+  
+  <bean id="webscript.org.activiti.rest.api.cycle.content-representation.get"
+        class="org.activiti.rest.api.cycle.ContentRepresentationGet"
+        parent="activitiWebScript">
+  </bean>
 
 </beans>

@@ -1,13 +1,10 @@
+<#escape x as jsonUtils.encodeJSONString(x)>
 {
   "id": "${artifactId}",
-  "contentViews": [
-  <#list contentViews as contentView>
-    {
-      "type": "${contentView.key}",
-      "name": "${contentView.name}",
-      "content": <#escape x as jsonUtils.encodeJSONString(x)> "${contentView.value?html}" </#escape>
-    }
-    <#if contentView_has_next>,</#if>
+  "contentRepresentations": [
+  <#list contentRepresentations as contentRepresentation>
+      "${contentRepresentation}"
+      <#if contentRepresentation_has_next>,</#if>
   </#list>
   ],
   "actions": [
@@ -41,3 +38,4 @@
   </#list>
   ]
 }
+</#escape>

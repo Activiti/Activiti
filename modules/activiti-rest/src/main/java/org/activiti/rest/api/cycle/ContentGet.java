@@ -31,12 +31,8 @@ import org.springframework.extensions.webscripts.WebScriptResponse;
  */
 public class ContentGet extends ActivitiStreamingWebScript {
 
-  protected void executeStreamingWebScript(ActivitiRequest req, WebScriptResponse res) {
-    // Override to make something usefule
-  }
-
-  public void execute(ActivitiRequest req, WebScriptResponse res) throws IOException {
-
+  @Override
+  protected void executeStreamingWebScript(ActivitiRequest req, WebScriptResponse res) throws IOException {
     // Retrieve the artifactId from the request
     String artifactId = req.getMandatoryString("artifactId");
     String contentType = req.getMandatoryString("content-type");

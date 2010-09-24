@@ -34,3 +34,7 @@
 	margin-right: 15px;
 }
 
+#artifact-div .yui-navset div.loading div {
+	background:url("/activiti-cycle/res/images/loading.gif") no-repeat scroll center center transparent;
+	height:8em;
+}

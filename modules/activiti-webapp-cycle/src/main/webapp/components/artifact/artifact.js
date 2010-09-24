@@ -76,30 +76,34 @@
      */
     onLoadArtifactSuccess: function RepoTree_RepositoryService_onLoadArtifactSuccess(response, obj)
     {
+	
 			var tabView = new YAHOO.widget.TabView(); 
+			
 			// Retrieve rest api response
       var artifactJson = response.json;
       var firstTab = true;
-			// Add a tab for each content representation from the JSON response
-			for(var i = 0; i<artifactJson.contentViews.length; i++) {
-				if(artifactJson.contentViews[i].type.indexOf("image") != -1) {
-					tabView.addTab( new YAHOO.widget.Tab({
-						label: 'Image',
-						content: "<div id=\"artifact-image\"><img id=\"" + artifactJson.id + "\" src=\"" + artifactJson.contentViews[i].content + "\" border=0></img></div>",
-						active: firstTab
-					}));
-					firstTab = false;
-				} else {
-					tabView.addTab( new YAHOO.widget.Tab({
-						label: artifactJson.contentViews[i].name,
-						content: "<div id=\"artifact-source\">\n<pre class=\"prettyprint lang-" + artifactJson.contentViews[i].type + "\" >\n" + artifactJson.contentViews[i].content + "\n</pre></div>",
-						active: firstTab
-					}));
-					firstTab = false;
-				}			
+			
+
+			// ---------- --------
+			
+			for(var i = 0; i<artifactJson.contentRepresentations.length; i++) {
+				var tab = new YAHOO.widget.Tab({ 
+					label: artifactJson.contentRepresentations[i], 
+					dataSrc: this.loadTabDataURL(artifactJson.id, artifactJson.contentRepresentations[i]), 
+					cacheData: true,
+					active: firstTab
+				});
+				tab.addListener("contentChange", this.onTabDataLoaded);				
+
+//				tab.loadHandler.success = this.onTabDataLoaded;
+
+				tabView.addTab(tab);
+				firstTab = false;
 			}
+
+			// ---------- --------
+			
 			tabView.appendTo('artifact-div');
-			prettyPrint();
 
 			var optionsDiv = document.getElementById("options-div");//YAHOO.util.Selector.query('div', 'artifact-div', true);
 
@@ -177,7 +181,17 @@
 			YAHOO.util.Event.preventDefault(e)
 			
 			
-		} 
+		},
+		
+		onTabDataLoaded: function Artifact_onTabDataLoaded(a,b,c,d,e)
+		{
+			prettyPrint();
+		},
+
+		loadTabDataURL: function Artifact_loadTabDataURL(artifactId, representationId)
+    {
+      return Activiti.service.REST_PROXY_URI_RELATIVE + "content-representation?artifactId=" + encodeURIComponent(artifactId) + "&representationId=" + encodeURIComponent(representationId);
+    }
 
 	});
 

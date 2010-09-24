@@ -12,31 +12,24 @@
  */
 package org.activiti.rest.api.cycle;
 
-import java.io.PrintWriter;
-import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import javax.servlet.http.HttpSession;
 
 import org.activiti.cycle.ContentRepresentation;
-import org.activiti.cycle.ContentType;
 import org.activiti.cycle.DownloadContentAction;
 import org.activiti.cycle.RepositoryArtifact;
 import org.activiti.cycle.RepositoryConnector;
-import org.activiti.rest.api.cycle.dto.ContentView;
 import org.activiti.rest.api.cycle.dto.DownloadActionView;
 import org.activiti.rest.util.ActivitiRequest;
 import org.activiti.rest.util.ActivitiWebScript;
 import org.springframework.extensions.webscripts.Cache;
 import org.springframework.extensions.webscripts.Status;
 import org.springframework.extensions.webscripts.WebScriptRequest;
-import org.springframework.extensions.webscripts.servlet.WebScriptServletRequest;
 
 /**
  * @author Nils Preusker
@@ -44,7 +37,7 @@ import org.springframework.extensions.webscripts.servlet.WebScriptServletRequest
  */
 public class ArtifactGet extends ActivitiWebScript {
 
-  private static Logger log = Logger.getLogger(TreeGet.class.getName());
+//  private static Logger log = Logger.getLogger(ArtifactGet.class.getName());
 
   @Override
   protected void executeWebScript(ActivitiRequest req, Status status, Cache cache, Map<String, Object> model) {
@@ -61,33 +54,13 @@ public class ArtifactGet extends ActivitiWebScript {
     // Retrieve the artifact from the repository
     RepositoryArtifact artifact = conn.getRepositoryArtifact(artifactId);
 
-    List<ContentView> contentViews = new ArrayList<ContentView>();
+    List<String> contentRepresentations = new ArrayList<String>();
     for (ContentRepresentation representation : artifact.getArtifactType().getContentRepresentations()) {
-      try {
-        if (representation.getMimeType().equals(ContentType.TEXT) || representation.getMimeType().equals(ContentType.XML)
-                || representation.getMimeType().equals(ContentType.HTML) || representation.getMimeType().equals(ContentType.JAVASCRIPT)) {
-          String content = conn.getContent(artifactId, representation.getId()).asString();
-          contentViews.add(new ContentView(representation.getMimeType(), representation.getId(), content));
-        } else if (representation.getMimeType().startsWith("image/")) {
-          String url = wsReq.getServerPath() + wsReq.getContextPath() + "/service/content?artifactId=" + URLEncoder.encode(artifactId, "UTF-8") + "&content-type="
-                  + URLEncoder.encode(representation.getMimeType(), "UTF-8");
-          contentViews.add(new ContentView(representation.getMimeType(), representation.getId(), url));
-        }
-      } catch (Exception ex) {
-        // we had a problem with a content representation
-        // log and go on, that this will not prevent other representations to be
-        // shown
-        log.log(Level.WARNING, "Exception while loading content representation", ex);
-
-        // TODO:Better concept how this is handled in the GUI
-        StringWriter sw = new StringWriter();
-        ex.printStackTrace(new PrintWriter(sw));
-        String stackTrace = "Exception while accessing content. Details:\n\n" + sw.toString();
-
-        contentViews.add(new ContentView(ContentType.TEXT, representation.getId(), stackTrace));
-      }
+    	contentRepresentations.add(representation.getId());
     }
 
+    model.put("contentRepresentations", contentRepresentations);
+    
     model.put("actions", artifact.getArtifactType().getParameterizedActions());
     
     // Create downloadContentView DTOs
@@ -108,7 +81,5 @@ public class ArtifactGet extends ActivitiWebScript {
     model.put("links", artifact.getOutgoingLinks());
 
     model.put("artifactId", artifact.getId());
-    model.put("contentViews", contentViews);
-
   }
 }

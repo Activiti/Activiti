@@ -15,6 +15,7 @@ package org.activiti.rest.api.cycle.dto;
 /**
  * @author Nils Preusker
  */
+@Deprecated
 public class ContentView {
 
   private String key;
