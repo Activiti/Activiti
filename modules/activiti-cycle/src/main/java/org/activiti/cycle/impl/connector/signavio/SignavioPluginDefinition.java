@@ -78,6 +78,7 @@ public class SignavioPluginDefinition implements ActivitiCyclePluginDefinition {
     ArtifactTypeImpl artifactType2 = new ArtifactTypeImpl(ARTIFACT_TYPE_BPMN_FOR_JPDL4);
     artifactType2.addDefaultContentRepresentation(new ContentRepresentationImpl(CONTENT_REPRESENTATION_ID_PNG, ContentType.PNG), new PngProvider());
     artifactType2.addContentRepresentation(new ContentRepresentationImpl(CONTENT_REPRESENTATION_ID_JPDL4, ContentType.XML), new Jpdl4Provider());
+    artifactType2.addContentRepresentation(new ContentRepresentationImpl(CONTENT_REPRESENTATION_ID_JSON, ContentType.XML), new JsonProvider());
 
     artifactType2.addOpenUrlAction(new OpenModelerAction());
     artifactType2.addDownloadContentAction(CONTENT_REPRESENTATION_ID_JPDL4);
