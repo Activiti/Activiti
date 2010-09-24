@@ -1409,7 +1409,27 @@ List&lt;Task&gt; tasks = taskService.createTaskQuery().assignee(&quot;kermit&quo
 		    </para>
 		  
 		  </section>
+
+		  <section id="bpmnScriptTaskResultValue">
+
+		    <title>Script results</title>
+
+		    <para>
+		      The return value of a script task can be assigned to an already existing or to a new process variable by
+              specifying the process variable name as a literal value for the <emphasis>'activiti:result-variable-name'</emphasis> attribute
+              of a script task definition. Any existing value for a specific process variable will be overwritten by the result
+              value of the script execution. When not specifying a result variable name, the script result value gets ignored.
+<programlisting>
+&lt;scriptTask id=&quot;theScriptTask&quot; name=&quot;Execute script&quot; scriptFormat=&quot;juel&quot; activiti:result-variable-name=&quot;myVar&quot;&gt;
+  &lt;script&gt;#{echo}&lt;/script&gt;
+&lt;/scriptTask&gt;</programlisting>
+
+              In the above example, the result of the script execution (the value of the resolved expression <emphasis>'#{echo}'</emphasis>) is set
+              to the process variable named <emphasis>'myVar'</emphasis> after the script completes.
+		    </para>
 		
+		  </section>
+
 		</section> 
 		
 		<section id="bpmnJavaServiceTask">

@@ -471,6 +471,11 @@
 		   <organization>Alfresco</organization>
 		   <url>http://alfresco.com</url> 
 		</developer>
+		<developer>
+		   <name>Christian Stettler</name>
+		   <organization>Mimacom</organization>
+		   <url>http://mimacom.com</url> 
+		</developer>
 	</developers>
     <issueManagement>
         <system>JIRA</system>

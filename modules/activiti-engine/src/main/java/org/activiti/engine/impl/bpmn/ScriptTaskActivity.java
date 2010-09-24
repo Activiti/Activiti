@@ -21,16 +21,19 @@ import org.activiti.pvm.activity.ActivityExecution;
  * activity implementation of the BPMN 2.0 script task.
  * 
  * @author Joram Barrez
+ * @author Christian Stettler
  */
 public class ScriptTaskActivity extends TaskActivity {
   
   private final String script;
   
   private final String language;
+  private final String resultVariableName;
 
-  public ScriptTaskActivity(String script, String language) {
+  public ScriptTaskActivity(String script, String language, String resultVariableName) {
     this.script = script;
     this.language = language;
+    this.resultVariableName = resultVariableName;
   }
   
   public void execute(ActivityExecution execution) throws Exception {
@@ -38,8 +41,13 @@ public class ScriptTaskActivity extends TaskActivity {
       .getCurrent()
       .getProcessEngineConfiguration()
       .getScriptingEngines();
-    
-    scriptingEngines.evaluate(script, language, execution);
+
+    Object result = scriptingEngines.evaluate(script, language, execution);
+
+    if (resultVariableName != null) {
+      execution.setVariable(resultVariableName, result);
+    }
+
     leave(execution);
   }
   

@@ -73,6 +73,7 @@ import org.activiti.pvm.impl.process.TransitionImpl;
  * 
  * @author Tom Baeyens
  * @author Joram Barrez
+ * @author Christian Stettler
  */
 public class BpmnParse extends Parse {
 
@@ -526,6 +527,7 @@ public class BpmnParse extends Parse {
     ActivityImpl activity = parseAndCreateActivityOnScopeElement(scriptTaskElement, scope);
     String script = null;
     String language = null;
+    String resultVariableName = null;
 
     Element scriptElement = scriptTaskElement.element("script");
     if (scriptElement != null) {
@@ -538,9 +540,11 @@ public class BpmnParse extends Parse {
       if (language == null) {
         language = ScriptingEngines.DEFAULT_SCRIPTING_LANGUAGE;
       }
+
+      resultVariableName = scriptTaskElement.attributeNS(BpmnParser.BPMN_EXTENSIONS_NS, "result-variable-name");
     }
     
-    activity.setActivityBehavior(new ScriptTaskActivity(script, language));
+    activity.setActivityBehavior(new ScriptTaskActivity(script, language, resultVariableName));
 
     for (BpmnParseListener parseListener: parseListeners) {
       parseListener.parseScript(scriptTaskElement, scope, activity);

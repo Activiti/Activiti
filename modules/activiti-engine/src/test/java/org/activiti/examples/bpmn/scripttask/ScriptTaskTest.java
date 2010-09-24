@@ -12,6 +12,9 @@
  */
 package org.activiti.examples.bpmn.scripttask;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.activiti.engine.impl.test.ActivitiInternalTestCase;
 import org.activiti.engine.impl.util.CollectionUtil;
 import org.activiti.engine.runtime.ProcessInstance;
@@ -19,12 +22,13 @@ import org.activiti.engine.test.Deployment;
 
 /**
  * @author Joram Barrez
+ * @author Christian Stettler
  */
 public class ScriptTaskTest extends ActivitiInternalTestCase {
 
   @Deployment
   public void testScriptExecution() {
-    int[] inputArray = new int[] { 1, 2, 3, 4, 5 };
+    int[] inputArray = new int[] {1, 2, 3, 4, 5};
     ProcessInstance pi = runtimeService.startProcessInstanceByKey("scriptExecution", CollectionUtil.singletonMap("inputArray", inputArray));
 
     Integer result = (Integer) runtimeService.getVariable(pi.getId(), "sum");
@@ -39,6 +43,18 @@ public class ScriptTaskTest extends ActivitiInternalTestCase {
     // and not automatically stored as a process variable.
     assertNull(runtimeService.getVariable(pi.getId(), "scriptVar"));
     assertEquals("test123", runtimeService.getVariable(pi.getId(), "myVar"));
+  }
+
+  @Deployment
+  public void testSetScriptResultToProcessVariable() {
+    Map<String, Object> variables = new HashMap<String, Object>();
+    variables.put("echo", "hello");
+    variables.put("existingProcessVariableName", "one");
+
+    ProcessInstance pi = runtimeService.startProcessInstanceByKey("setScriptResultToProcessVariable", variables);
+
+    assertEquals("hello", runtimeService.getVariable(pi.getId(), "existingProcessVariableName"));
+    assertEquals("hello", runtimeService.getVariable(pi.getId(), "newProcessVariableName"));
   }
 
 }
