@@ -80,7 +80,11 @@ public class SignavioConnectorConfiguration extends PasswordEnabledRepositoryCon
    */
   @Override
   public ArtifactType getDefaultArtifactType() {
-    return getArtifactType(SignavioPluginDefinition.ARTIFACT_TYPE_DEFAULT);
+    if (hasArtifactType(SignavioPluginDefinition.ARTIFACT_TYPE_DEFAULT)) {
+      return getArtifactType(SignavioPluginDefinition.ARTIFACT_TYPE_DEFAULT);
+    } else {
+      return null;
+    }
   }
 
   public String getSignavioUrl() {

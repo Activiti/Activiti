@@ -9,6 +9,7 @@ import java.util.Properties;
 import org.activiti.cycle.ArtifactType;
 import org.activiti.cycle.RepositoryConnector;
 import org.activiti.cycle.RepositoryException;
+import org.activiti.cycle.impl.connector.signavio.SignavioPluginDefinition;
 import org.activiti.cycle.impl.plugin.ActivitiCyclePluginDefinition;
 
 /**
@@ -66,7 +67,16 @@ public abstract class RepositoryConnectorConfiguration {
       return list;
     }
   }
-
+  
+  public boolean hasArtifactType(String id) {
+    for (ArtifactType type : getArtifactTypes()) {
+      if (type.getId().equals(id)) {
+        return true;
+      }
+    }
+    return false;
+  }
+  
   public ArtifactType getArtifactType(String id) {
     for (ArtifactType type : getArtifactTypes()) {
       if (type.getId().equals(id)) {
