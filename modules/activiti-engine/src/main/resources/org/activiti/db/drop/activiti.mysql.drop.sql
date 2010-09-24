@@ -57,4 +57,4 @@ alter table ACT_RU_JOB
  drop table if exists ACT_RU_JOB;
  drop table if exists ACT_HI_PROC_INST;
  drop table if exists ACT_HI_ACT_INST;
- drop table if exists ACT_HI_DETAIL;
+ 

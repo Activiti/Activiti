@@ -66,7 +66,9 @@
   <select id="selectJobByQueryCriteria" parameterType="org.activiti.engine.impl.JobQueryImpl" resultMap="jobResultMap">
     select *
     <include refid="selectJobByQueryCriteriaSql"/>
-    order by ${orderBy}
+    <if test="orderBy != null">
+    	order by ${orderBy}
+    </if>
   </select>
 
   <select id="selectJobCountByQueryCriteria" parameterType="org.activiti.engine.impl.JobQueryImpl" resultType="long">
