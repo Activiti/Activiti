@@ -14,3 +14,13 @@ function getProcessDefinitions(connector)
   }
   return null;
 }
+function getProcessDefinition(connector, processDefinitionId) 
+{
+	
+	var result = connector.get("/process-definition/"+processDefinitionId)
+	if (result.status == 200) 
+	{
+		return eval('(' + result + ')');
+	}
+	return null
+}

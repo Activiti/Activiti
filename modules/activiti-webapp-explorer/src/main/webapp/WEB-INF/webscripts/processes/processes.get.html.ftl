@@ -3,11 +3,10 @@
 	<table id="processesTable">
 	   <thead>
 	   	<tr>
-		      <th>Name</th>
-		      <th>ID</th>
-		      <th>Key</th>
-		      <th>Version</th>
-				<th>Actions</th>
+		      <th>${msg("processes.name")}</th>
+		      <th>${msg("processes.key")}</th>
+		      <th>${msg("processes.version")}</th>
+				<th>${msg("processes.actions")}</th>
 			</tr>
 	   </thead>
 	   
@@ -15,12 +14,16 @@
 	      <#list processDefinitions as processDefinition>
 	         <tr>
                 <td>${processDefinition.name}</td>
-                <td>${processDefinition.id}</td>
                 <td>${processDefinition.key}</td>
                 <td>${processDefinition.version}</td>
 					 <td>
-					 	<a href="#start?id=${processDefinition.id}" class="startProcess">Start</a> 
-					   <#-- <a href="#view?id=${processDefinition.id}" class="viewProcess">View</a> -->
+   				   <a href="#start?id=${processDefinition.id}" class="processAction startProcess">
+							<#if processDefinition.startFormResourceKey??>
+							  ${msg("processes.startForm")}
+							<#else>
+							  ${msg("processes.start")}
+							</#if>
+						</a>
 					 </td>
 	         </tr>
 	      </#list>

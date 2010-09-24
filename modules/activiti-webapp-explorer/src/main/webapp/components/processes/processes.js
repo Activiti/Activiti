@@ -52,19 +52,34 @@
        */      
 		onReady: function Processes_onReady()
       {
+
+// YOU ARE HERE: DATATABLE Upgrade
+
+/* New Code, not working yet
+        this.dataSource = new Activiti.widget.DataTable(this.id + "-task-list",
+        this,
+        [ { event: Activiti.event.selectTaskFilter, value: {} }],
+        this.id + "-datatable",
+        [ this.id + "-paginator" ],
+        [ "Name", "Key", "Version", "Action"],
+        [
+            {key:"Name",label:"Name",sortable:true},
+            {key:"Key",label:"Key",sortable:true},
+            {key:"Version",label:"Version",sortable:true},
+            {key:"Action",label:"Actions"}
+        ];
+      );
+*/
         var columnDefs = [
             {key:"Name",label:"Name",sortable:true},
-            {key:"ID",label:"ID", sortable:true},
             {key:"Key",label:"Key",sortable:true},
             {key:"Version",label:"Version",sortable:true},
 				{key:"Action",label:"Actions"}
         ];
-
         this.dataSource = new YAHOO.util.DataSource(YAHOO.util.Dom.get("processesTable"));
         this.dataSource.responseType = YAHOO.util.DataSource.TYPE_HTMLTABLE;
         this.dataSource.responseSchema = {
             fields: [{key:"Name"},
-                    {key:"ID"},
                     {key:"Key"},
                     {key:"Version"},
 						  {key:"Action"}

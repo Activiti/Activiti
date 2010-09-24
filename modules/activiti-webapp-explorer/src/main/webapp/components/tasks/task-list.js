@@ -75,7 +75,7 @@
         [ { event: Activiti.event.selectTaskFilter, value: {} }],
         this.id + "-datatable",
         [ this.id + "-paginator" ],
-        [ "id", "name", "description", "priority", "assignee", "executionId" ],
+        [ "id", "name", "description", "priority", "assignee", "executionId", "formResourceKey" ],
         [
           { key:"id", label: "Select", sortable: false, width: 30 },
           { key:"assignee", label: "Select", sortable: false, width: 30 },
@@ -211,9 +211,10 @@
      */
     onDataTableRenderCellPriority: function TaskList_onDataTableRenderCellPriority(dataTable, el, oRecord, oColumn, oData) {
       var task = oRecord.getData(),
-          action = (task.assignee == Activiti.constants.USERNAME ? "complete" : "claim");
+          action = (task.assignee == Activiti.constants.USERNAME ? "complete" : "claim"),
+			 labelString = (action === "complete" && task.formResourceKey !== null ? "completeForm" : action);
       var actionButton = new YAHOO.widget.Button({
-        label: this.msg("task.action." + action),
+        label: this.msg("task.action." + labelString),
         id: Activiti.util.generateDomId(),
         container: el
       });
