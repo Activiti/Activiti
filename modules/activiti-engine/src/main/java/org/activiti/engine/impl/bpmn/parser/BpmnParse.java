@@ -12,7 +12,6 @@
  */
 package org.activiti.engine.impl.bpmn.parser;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.ArrayList;
@@ -165,22 +164,7 @@ public class BpmnParse extends Parse {
 
   @Override
   public BpmnParse execute() {
-    try {
-      super.execute(); // schema validation
-    } catch (ActivitiException e) {
-      // Fall back to beta 1 XSD (see ACT-52)
-      if (e.getMessage().toLowerCase().contains("cannot find the declaration of element 'definitions'")) {
-        try {
-          streamSource.getInputStream().reset();
-          setSchemaResource(BpmnParser.BETA_SCHEMA_RESOURCE);
-          super.execute();
-        } catch (IOException ioe) {
-          throw e;
-        }
-      } else {
-        throw e;
-      }
-    }
+    super.execute(); // schema validation
 
     // Item definitions and interfaces/operations are not part of any process definition
     // They need to be parsed before the process definitions since they will refer to them
@@ -546,10 +530,6 @@ public class BpmnParse extends Parse {
     Element scriptElement = scriptTaskElement.element("script");
     if (scriptElement != null) {
       script = scriptElement.getText();
-      
-      // ACT-52: BPMN 2.0 Beta compatibility
-      language = scriptTaskElement.attribute("scriptLanguage");
-      // end compatibility
       
       if (language == null) {
         language = scriptTaskElement.attribute("scriptFormat");
