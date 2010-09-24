@@ -1,10 +1,10 @@
 package org.activiti.cycle.impl.conf;
 
-import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import org.activiti.cycle.CycleService;
@@ -34,7 +34,10 @@ public class CycleServiceDbXStreamImpl implements CycleService {
   
   private XStream xStream = new XStream();
   
-  private static String processEngineName = null;
+  private String processEngineName = null;
+  private static String DEFAULT_ENGINE = "DEFAULT_PROCESS_ENGINE";
+  
+  private static HashMap<String, CycleDbSqlSessionFactory> dbFactories = new HashMap<String, CycleDbSqlSessionFactory>();
   
 
   // private List<Class< ? extends RepositoryConnector>>
@@ -46,19 +49,33 @@ public class CycleServiceDbXStreamImpl implements CycleService {
   // = new ArrayList<RepositoryConnectorConfiguration>();
 
   public CycleServiceDbXStreamImpl(String processEngineName) {
-    this.processEngineName = processEngineName;
+    if (processEngineName == null) {
+      this.processEngineName = DEFAULT_ENGINE;
+    } else {
+      this.processEngineName = processEngineName;
+    }
+    PluginFinder.checkPluginInitialization();
   }
   
   public CycleServiceDbXStreamImpl() {
-    PluginFinder.checkPluginInitialization();
+    this(DEFAULT_ENGINE);
+  }
+    
+  private SqlSessionFactory getSessionFactory() {
+    if (dbFactories.get(processEngineName) == null) {
+      synchronized (dbFactories) {
+        // lazy initialization, only done once per proces engine!
+        if (dbFactories.get(processEngineName) == null) {          
+          CycleDbSqlSessionFactory factory = new CycleDbSqlSessionFactory();
+          factory.configurationCompleted(getProcessEngineConfiguration());
+          performDbSchemaCreation(factory, getProcessEngineConfiguration());
+          dbFactories.put(processEngineName, factory);
+        }
+      }
+    }
+    return dbFactories.get(processEngineName).getSqlSessionFactory();
   }
   
-  public CycleServiceDbXStreamImpl(File baseDir) {
-    // TODO: Do something with the base dir
-
-    PluginFinder.checkPluginInitialization();
-  }
-
   public XStream getXStream() {
     return xStream;
   }
@@ -163,7 +180,7 @@ public class CycleServiceDbXStreamImpl implements CycleService {
 
     ProcessEngineConfiguration processEngineConfiguration = null;
 
-    if (processEngineName == null) {
+    if (DEFAULT_ENGINE.equals(processEngineName)) {
       processEngineConfiguration = ((ProcessEngineImpl) ProcessEngines.getDefaultProcessEngine()).getProcessEngineConfiguration();
     } else {
       processEngineConfiguration = ((ProcessEngineImpl) ProcessEngines.getProcessEngine(processEngineName)).getProcessEngineConfiguration();
@@ -172,7 +189,7 @@ public class CycleServiceDbXStreamImpl implements CycleService {
   }
   
   public CycleConfigEntity selectById(String id) {
-    SqlSessionFactory sqlMapper = getIbatisConfig();
+    SqlSessionFactory sqlMapper = getSessionFactory();
     
     SqlSession session = sqlMapper.openSession();
     CycleConfigEntity cycleConfig = null;
@@ -193,7 +210,7 @@ public class CycleServiceDbXStreamImpl implements CycleService {
     String configXML = getXStream().toXML(o);
     cycleConfig.setConfigXML(configXML);
     
-    SqlSessionFactory sqlMapper = getIbatisConfig();
+    SqlSessionFactory sqlMapper = getSessionFactory();
     
     SqlSession session = sqlMapper.openSession();
     session.insert(
@@ -205,7 +222,7 @@ public class CycleServiceDbXStreamImpl implements CycleService {
   }
   
   public void updateById(CycleConfigEntity cycleConfig) {
-    SqlSessionFactory sqlMapper = getIbatisConfig();
+    SqlSessionFactory sqlMapper = getSessionFactory();
     
     SqlSession session = sqlMapper.openSession();
     try {
@@ -220,7 +237,7 @@ public class CycleServiceDbXStreamImpl implements CycleService {
   }
   
   public void deleteById(String id) {
-    SqlSessionFactory sqlMapper = getIbatisConfig();
+    SqlSessionFactory sqlMapper = getSessionFactory();
     
     SqlSession session = sqlMapper.openSession();
     try {
@@ -232,27 +249,6 @@ public class CycleServiceDbXStreamImpl implements CycleService {
       session.close();
     }
 
-  }
-  
-  private SqlSessionFactory getIbatisConfig() {
-//    Reader reader = null;
-//    //config.mapping.xml
-//    String resource = "org/activiti/cycle/impl/db/ibatis/activiti.ibatis.mem.conf.xml";
-//    try {
-//      reader = Resources.getResourceAsReader(resource);
-//    } catch (IOException e) {
-//        e.printStackTrace();
-//    }
-//
-//    SqlSessionFactory sqlMapper = new SqlSessionFactoryBuilder().build(reader);
-//    return sqlMapper;
-    
-    CycleDbSqlSessionFactory factory = new CycleDbSqlSessionFactory();
-    factory.configurationCompleted(getProcessEngineConfiguration());
-    
-    performDbSchemaCreation(factory, getProcessEngineConfiguration());
-    
-    return factory.getSqlSessionFactory();
   }
 
   private void performDbSchemaCreation(CycleDbSqlSessionFactory dbSqlSessionFactory, ProcessEngineConfiguration processEngineConfiguration) {

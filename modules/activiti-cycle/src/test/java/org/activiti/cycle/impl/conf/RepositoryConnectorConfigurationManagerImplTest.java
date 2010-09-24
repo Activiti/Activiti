@@ -1,8 +1,6 @@
 package org.activiti.cycle.impl.conf;
 
-import static org.junit.Assert.*;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.util.List;
@@ -13,28 +11,22 @@ import org.activiti.cycle.impl.connector.fs.FileSystemConnectorConfiguration;
 import org.activiti.cycle.impl.connector.signavio.SignavioConnectorConfiguration;
 import org.activiti.cycle.impl.connector.view.CustomizedViewConfiguration;
 import org.activiti.engine.ProcessEngines;
-import org.activiti.engine.impl.cfg.ProcessEngineConfiguration;
-import org.junit.After;
-import org.junit.Before;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
-/**
- * TODO: Remove sysouts
- * 
- * @author christian.lipphardt
- */
 public class RepositoryConnectorConfigurationManagerImplTest {
 
-  private CycleService configurationService;
+  private static CycleService configurationService;
 
-  @Before
-  public void setUp() throws Exception {
+  @BeforeClass
+  public static void setUp() throws Exception {
     ProcessEngines.init();
     configurationService = new CycleServiceDbXStreamImpl();
   }
-
-  @After
-  public void tearDown() throws Exception {
+  
+  @AfterClass
+  public static void tearDown() throws Exception {
     configurationService = null;
   }
   
