@@ -16,11 +16,12 @@ import java.io.File;
 
 import javax.servlet.http.HttpSession;
 
+import org.activiti.cycle.Cycle;
+import org.activiti.cycle.CycleService;
 import org.activiti.cycle.RepositoryConnector;
 import org.activiti.cycle.RepositoryException;
 import org.activiti.cycle.impl.conf.ConfigurationContainer;
-import org.activiti.cycle.impl.conf.CycleService;
-import org.activiti.cycle.impl.conf.CycleServiceXStreamImpl;
+import org.activiti.cycle.impl.conf.CycleServiceDbXStreamImpl;
 import org.activiti.cycle.impl.connector.demo.DemoConnectorConfiguration;
 import org.activiti.cycle.impl.connector.fs.FileSystemConnectorConfiguration;
 import org.activiti.cycle.impl.connector.signavio.SignavioConnectorConfiguration;
@@ -33,12 +34,6 @@ public class SessionUtil {
    * TODO: Check if list roots can return an empty array
    */
   private static final File fsBaseDir = File.listRoots()[0];
-
-  /**
-   * Not yet used, so can be null for the moment (but we maybe better should use
-   * it?)
-   */
-  private static final File configBaseDir = null;
 
   public static RepositoryConnector getRepositoryConnector(String currentUserId, HttpSession session) {
     String key = currentUserId + "_connector";
@@ -70,7 +65,7 @@ public class SessionUtil {
    * stuff
    */
   public static ConfigurationContainer loadUserConfiguration(String currentUserId) {
-    CycleService cycleConfigurationService = new CycleServiceXStreamImpl(configBaseDir);
+    CycleService cycleConfigurationService = Cycle.getCycleService(); // new CycleServiceDbXStreamImpl(configBaseDir);
 
     ConfigurationContainer configuration;
     try{

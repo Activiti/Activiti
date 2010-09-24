@@ -10,10 +10,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.activiti.cycle.impl.conf;
+package org.activiti.cycle;
 
 import java.util.List;
 
+import org.activiti.cycle.impl.conf.ConfigurationContainer;
+import org.activiti.cycle.impl.conf.RepositoryConnectorConfiguration;
 import org.activiti.engine.impl.cfg.ProcessEngineConfiguration;
 
 
@@ -32,6 +34,7 @@ public interface CycleService {
   public ConfigurationContainer getConfiguration(String name);
   
   public void saveConfiguration(ConfigurationContainer container);
+
   
 
   // TODO: DIscuss: I wouldn't mention the repository connectors here at all,
@@ -48,18 +51,18 @@ public interface CycleService {
   // createRepositoryConfiguration(Class< ? extends RepositoryConnector>
   // repositoryConnector, String user,
   // String password, String basePath);
+//
+//  public void persistRepositoryConfiguration(RepositoryConnectorConfiguration config);
+//
+//  // Why this? the persist should persist it immediately?
+//  // Breaks CRUD/DAO, or not?
+//  // public void persistAllRepositoryConfigurations();
+//
+//  public List<RepositoryConnectorConfiguration> findAllRepositoryConfigurations();
+//
+//  public void removeRepositoryConfiguration(String name);
 
-  public void persistRepositoryConfiguration(RepositoryConnectorConfiguration config);
-
-  // Why this? the persist should persist it immediately?
-  // Breaks CRUD/DAO, or not?
-  // public void persistAllRepositoryConfigurations();
-
-  public List<RepositoryConnectorConfiguration> findAllRepositoryConfigurations();
-
-  public void removeRepositoryConfiguration(String name);
-
-  public RepositoryConnectorConfiguration getRepositoryConfiguration(String name);
+//  public RepositoryConnectorConfiguration getRepositoryConfiguration(String name);
 
   // end crud methods
 
@@ -71,14 +74,14 @@ public interface CycleService {
   // repositoryConfig);
   
   //----- start method declaration for cycle persistence -----
-  public ProcessEngineConfiguration getProcessEngineConfiguration();
-  
-  public void createAndInsert(String configXML, String id);
-  
-  public CycleConfigEntity selectById(String id);
-  
-  public void deleteById(String id);
-  
-  public void updateById(CycleConfigEntity cycleConfig);
+//  public ProcessEngineConfiguration getProcessEngineConfiguration();
+//  
+//  public void createAndInsert(String configXML, String id);
+//  
+//  public CycleConfigEntity selectById(String id);
+//  
+//  public void deleteById(String id);
+//  
+//  public void updateById(CycleConfigEntity cycleConfig);
   
 }

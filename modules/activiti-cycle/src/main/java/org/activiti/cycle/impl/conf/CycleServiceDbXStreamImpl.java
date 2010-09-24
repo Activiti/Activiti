@@ -4,34 +4,18 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.Reader;
-import java.net.URL;
 import java.util.ArrayList;
-import java.util.Enumeration;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
 
+import org.activiti.cycle.CycleService;
 import org.activiti.cycle.RepositoryException;
 import org.activiti.cycle.impl.plugin.PluginFinder;
-import org.activiti.engine.ActivitiException;
 import org.activiti.engine.DbSchemaStrategy;
-import org.activiti.engine.ProcessEngine;
-import org.activiti.engine.ProcessEngineBuilder;
-import org.activiti.engine.ProcessEngineInfo;
 import org.activiti.engine.ProcessEngines;
 import org.activiti.engine.impl.ProcessEngineImpl;
 import org.activiti.engine.impl.cfg.ProcessEngineConfiguration;
-import org.activiti.engine.impl.db.DbSqlSessionFactory;
-import org.activiti.engine.impl.interceptor.CommandContext;
-import org.activiti.engine.impl.interceptor.CommandContextFactory;
-import org.apache.ibatis.io.Resources;
-import org.apache.ibatis.mapping.Environment;
-import org.apache.ibatis.session.ResultHandler;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
-import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 
 import com.thoughtworks.xstream.XStream;
 
@@ -42,7 +26,7 @@ import com.thoughtworks.xstream.XStream;
  * This is just used temporary until real persistence is implemented. The API
  * <b>and the resulting XML</b> should NOT be seen as stable in the meantime.
  */
-public class CycleServiceXStreamImpl implements CycleService {
+public class CycleServiceDbXStreamImpl implements CycleService {
 
   // TODO: Set a config dir for xstream?
   // private static final String CONFIG_DIR = "";
@@ -61,15 +45,15 @@ public class CycleServiceXStreamImpl implements CycleService {
   // private List<RepositoryConnectorConfiguration> repoConnectorConfigurations
   // = new ArrayList<RepositoryConnectorConfiguration>();
 
-  public CycleServiceXStreamImpl(String processEngineName) {
+  public CycleServiceDbXStreamImpl(String processEngineName) {
     this.processEngineName = processEngineName;
   }
   
-  public CycleServiceXStreamImpl() {
+  public CycleServiceDbXStreamImpl() {
     PluginFinder.checkPluginInitialization();
   }
   
-  public CycleServiceXStreamImpl(File baseDir) {
+  public CycleServiceDbXStreamImpl(File baseDir) {
     // TODO: Do something with the base dir
 
     PluginFinder.checkPluginInitialization();
@@ -130,7 +114,8 @@ public class CycleServiceXStreamImpl implements CycleService {
   }
 
   public void removeRepositoryConfiguration(String name) {
-    new File(getFileName(name)).delete();
+    deleteById(name);
+    //new File(getFileName(name)).delete();
   }
   
   public void saveObjectToFile(String name, Object o) {
@@ -161,11 +146,15 @@ public class CycleServiceXStreamImpl implements CycleService {
   }
 
   public void saveConfiguration(ConfigurationContainer container) {
-    saveObjectToFile(container.getName(), container);
+    createAndInsert(container, container.getName());
+    //saveObjectToFile(container.getName(), container);
   }
 
   public ConfigurationContainer getConfiguration(String name) {
-    return (ConfigurationContainer) loadFromFile(name);
+    CycleConfigEntity cycleConfig = selectById(name);
+    Object configXML = getXStream().fromXML(cycleConfig.getConfigXML());
+    return (ConfigurationContainer) configXML;
+    //return (ConfigurationContainer) loadFromFile(name);
   }
 
   //----- start implementation for cycle persistence -----
@@ -198,9 +187,10 @@ public class CycleServiceXStreamImpl implements CycleService {
     return cycleConfig;
   }
   
-  public void createAndInsert(String configXML, String id) {
+  public void createAndInsert(Object o, String id) {
     CycleConfigEntity cycleConfig = new CycleConfigEntity();
     cycleConfig.setId(id);
+    String configXML = getXStream().toXML(o);
     cycleConfig.setConfigXML(configXML);
     
     SqlSessionFactory sqlMapper = getIbatisConfig();
