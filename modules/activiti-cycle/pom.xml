@@ -26,34 +26,13 @@
 		</resources>
     <plugins>
       <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>build-helper-maven-plugin</artifactId>
-        <version>1.1</version>
-        <executions>
-          <execution>
-            <id>add-source</id>
-            <phase>generate-sources</phase>
-            <goals>
-              <goal>add-source</goal>
-            </goals>
-            <configuration>
-              <sources>
-                <source>src/external/diagram/java</source>
-                <source>src/external/syntaxchecker/java</source>
-                <source>src/external/bpmn2_0/java</source>
-              </sources>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
-      <!--plugin>
         <artifactId>maven-surefire-plugin</artifactId>
         <configuration>
           <excludes>
             <exclude>**/RepositoryConnectorConfigurationManagerImplTest.java</exclude>
           </excludes>
         </configuration>
-      </plugin-->
+      </plugin>
     </plugins>
 	</build>	
 
@@ -126,19 +105,10 @@
 	      <artifactId>h2</artifactId>
 	      <scope>test</scope>
 	    </dependency>
-    <!-- required for src/external/bpmn2_0 and src/external/syntaxchecker -->
-    <dependency>
-      <groupId>javax.xml</groupId>
-      <artifactId>jaxb-api</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>com.sun.xml.bind</groupId>
-      <artifactId>jaxb-impl</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>com.sun.xml.bind</groupId>
-      <artifactId>jaxb-xjc</artifactId>
-    </dependency>
+    	<dependency>
+      	  <groupId>com.signavio</groupId>
+      	  <artifactId>signavio-core-components</artifactId>
+    	</dependency>
   </dependencies>
 			
 	<profiles>

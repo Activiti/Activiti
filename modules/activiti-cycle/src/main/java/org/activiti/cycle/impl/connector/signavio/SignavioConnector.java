@@ -48,6 +48,8 @@ import org.restlet.data.Status;
 import org.restlet.ext.json.JsonRepresentation;
 import org.restlet.resource.Representation;
 
+import de.hpi.bpmn2_0.transformation.Json2XmlConverter;
+
 /**
  * TODO: Check correct Exceptions to be thrown (use
  * {@link RepositoryNodeNotFoundException}
@@ -524,17 +526,8 @@ public class SignavioConnector extends AbstractRepositoryConnector<SignavioConne
   public String transformJsonToBpmn20Xml(String jsonData) {
     try {
       JSONObject json = new JSONObject(jsonData);
-
-      Form dataForm = new Form();
-      dataForm.add("data", json.toString());
-      Representation jsonDataRep = dataForm.getWebRepresentation();
-
-      Request request = new Request(Method.POST, new Reference(getConfiguration().getBpmn20XmlExportServletUrl()), jsonDataRep);
-      Response jsonResponse = sendRequest(request);
-
-      // "xml" is just one entry in the returned JSON map
-      return new JSONObject(jsonResponse.getEntity().getText()).getString("xml");
-
+      Json2XmlConverter converter = new Json2XmlConverter(json.toString(), this.getClass().getClassLoader().getResource("META-INF/validation/xsd/BPMN20.xsd").toString());
+      return converter.getXml().toString();
     } catch (Exception ex) {
       throw new RepositoryException("Error while transforming BPMN2_0_JSON to BPMN2_0_XML", ex);
     }

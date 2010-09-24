@@ -248,6 +248,11 @@
         <artifactId>jaxb-xjc</artifactId>
         <version>2.1.7</version>
       </dependency>
+      <dependency>
+      	<groupId>com.signavio</groupId>
+        <artifactId>signavio-core-components</artifactId>
+        <version>1.0.beta2-SNAPSHOT</version>
+      </dependency>
       <!-- EMAIL -->
       <dependency>
         <groupId>org.apache.commons</groupId>
