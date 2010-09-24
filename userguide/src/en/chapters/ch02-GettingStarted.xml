@@ -39,7 +39,7 @@
       <listitem><para>Start tomcat</para></listitem>
     </itemizedlist>
     <para>After running this target H2 and Tomcat will be running in the background.  To stop those 
-    processes run <literal>ant demo.teardown</literal>. Note that if you start Tomcat manually with the <literal>startup</literal> and <literal>shutdown</literal> scripts in tomcats <literal>bin</literal> directory, on some platforms activiti cycle will currently store configuration files in the working directory (which is the directory you start the script in).</para>
+    processes run <literal>ant demo.teardown</literal>. Note that if you start Tomcat manually with the <literal>startup</literal> and <literal>shutdown</literal> scripts in tomcats <literal>bin</literal> directory, on some platforms Activiti Cycle will currently store configuration files in the working directory (which is the directory you start the script in).</para>
     <para>The other targets in that build script can also be called individually and they will take the 
     configurable properties into account. Run <literal>ant -p</literal> for more details.
     </para>
@@ -125,7 +125,7 @@
     </para>
     <para>The distribution doesn't contain the library dependencies out-of-the-box, 
     but <link linkend="librarydependencies">the next section</link> shows how the setup script can automatically 
-    download and organise the library dependencies.
+    download and organize the library dependencies.
     The <literal>examples</literal> directory in the root of the distribution
     contains these types of examples:
     </para>
@@ -149,7 +149,7 @@
     <para>Activiti takes great care in minimizing library dependencies.  
     The 3rd party library dependencies are not included in the Activiti 
     download to reduce the download size, but the setup script can download 
-    and organise the library dependencies for <link linkend="examples">those examples</link> 
+    and organize the library dependencies for <link linkend="examples">those examples</link> 
     that you want to explore.      
     </para>
     <para>Fetching the library dependencies is included in the 
@@ -201,11 +201,11 @@
     <literal>${activiti.home}/examples/activiti-pvm-examples</literal></para>
     <para>If you want to browse the Activiti source code, then you can attach the sources 
     (e.g. <literal>${activiti.home}/lib/activiti-engine-5.0.beta2-sources.jar</literal>) to the library 
-    in your project <literal>Java Build Path</literal> confiugration.
+    in your project <literal>Java Build Path</literal> configuration.
     </para>
     <para>If you want BPMN 2.0 XML auto-completion and validation while typing, you can add the BPMN 2.0
-      XSD to the XML catalog. Go to <literal>Preferences --> XML --> XML Catalog --> Add</literal>, 
-      and select the XSD from the fileSystem in the folder <emphasis>docs/xsd/BPMN20.xsd</emphasis>.
+      XML Schema to the XML catalog. Go to <literal>Preferences --> XML --> XML Catalog --> Add</literal>, 
+      and select the XML Schema from the file system in the folder <emphasis>docs/xsd/BPMN20.xsd</emphasis>.
       <mediaobject><imageobject><imagedata align="center" fileref="images/eclipse.setup.xml.catalog.png"/></imageobject></mediaobject>
     </para>
   </section>
@@ -213,10 +213,10 @@
   <section id="checking.database">
     <title>Checking the database</title>
     <para>
-      To check out the database while trying out the demo setup, run the following ant target 
+      To check out the database while trying out the demo setup, run the following Ant target 
       in the <emphasis>setup</emphasis> folder:
       <programlisting>ant h2.console.start</programlisting>
-      This will boot the H2 web console. Note that the ant task doesn't return, so a <emphasis>'ctrl + c'</emphasis>
+      This will boot the H2 web console. Note that the Ant target doesn't return, so a <emphasis>'CTRL + C'</emphasis>
       is required to shutdown the console.
       Fill in the following URL in the <emphasis>JDBC URL</emphasis> field
       and click connect:

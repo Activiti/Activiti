@@ -95,7 +95,7 @@
             <emphasis role="bold">name</emphasis>: this attribute is <emphasis role="bold">optional</emphasis>
             and maps to the <emphasis>name</emphasis> property of a <emphasis>ProcessDefinition</emphasis>.
             The engine itself doesn't use this property, so it can for example be used for displaying a more
-            human-friendly name in a UI.
+            human-friendly name in a user interface.
           </para>
         </listitem>
 		  </itemizedlist>
@@ -774,7 +774,7 @@ ProcessInstance processInstance = runtimeService.startProcessInstanceByXXX();</p
         
         <para>
           A sequence flow can have a condition defined on it. When a BPMN 2.0 activity
-          is left, the default behaviour is to evaluate the conditions on the outgoing
+          is left, the default behavior is to evaluate the conditions on the outgoing
           sequence flow. When a condition evaluates to <emphasis>true</emphasis>, that
           outgoing sequence flow is selected. When multiple sequence flow are selected
           that way, multiple <emphasis>executions</emphasis> will be generated
@@ -1466,7 +1466,7 @@ List&lt;Task&gt; tasks = taskService.createTaskQuery().assignee(&quot;kermit&quo
        </para>
        
        <itemizedlist>
-         <listitem><para>specifying a class that implements ActivityBehvior</para></listitem>
+         <listitem><para>specifying a class that implements ActivityBehavior</para></listitem>
          <listitem><para>method expression</para></listitem>
          <listitem><para>value expression</para></listitem>
        </itemizedlist>
@@ -1529,7 +1529,7 @@ List&lt;Task&gt; tasks = taskService.createTaskQuery().assignee(&quot;kermit&quo
         Implementations have then access to the more powerful <emphasis>ActivityExecution</emphasis>
         that for example also allows to influence the control flow of the process. Note however
         that this is not a very good practice, and should be avoided as much as possible.
-        So, it is adviced to use the <emphasis>ActivityBehavior</emphasis> interface only for 
+        So, it is advised to use the <emphasis>ActivityBehavior</emphasis> interface only for 
         advanced use cases and if you know exactly what you're doing.
       </para>
       
@@ -1568,7 +1568,7 @@ public class ToUppercase extends BpmnJavaDelegation {
         is supported when using the <emphasis>'class''</emphasis> attribute.
         Note that we need to <emphasis role="bold">declare a 'extensionElements' XML element
         before the actual field injection declarations</emphasis>, which is a requirement of
-        the BPMN 2.0 XSD.
+        the BPMN 2.0 XML Schema.
         <programlisting>
 &lt;serviceTask id=&quot;javaService&quot; 
     name=&quot;Java service invocation&quot; 
@@ -1578,7 +1578,7 @@ public class ToUppercase extends BpmnJavaDelegation {
   &lt;/extensionElements&gt;</emphasis>           
 &lt;/serviceTask&gt;        
         </programlisting>
-        Alternatively, for longs texts (eg. an inline e-mail) the <emphasis>'activiti:string'</emphasis>
+        Alternatively, for longs texts (e.g. an inline e-mail) the <emphasis>'activiti:string'</emphasis>
         sub element can be used:
         <programlisting>
 &lt;serviceTask id=&quot;javaService&quot; 
@@ -1615,7 +1615,7 @@ public class ToUppercase extends BpmnJavaDelegation {
 		  
 		  <para>
 		    Activiti allows to enhance business processes with automatic mail service tasks that send
-		    e-mails to one or more recipients, including suport for cc, bcc, html content, ... etc.
+		    e-mails to one or more recipients, including support for cc, bcc, html content, ... etc.
 		    Note that the mail task is <emphasis role="bold">not</emphasis> an 'official' task 
 		    of the BPMN 2.0 spec (and it does not have a dedicated icon as a consequence).
 		    Hence, in Activiti the mail task is implemented as a dedicated service task.
@@ -1645,7 +1645,7 @@ public class ToUppercase extends BpmnJavaDelegation {
 		          <row>
 		            <entry>mail.smtp.host</entry>
 		            <entry>yes</entry>
-		            <entry>The hostname of your mail server (eg. mail.mycorp.com)</entry>
+		            <entry>The hostname of your mail server (e.g. mail.mycorp.com)</entry>
 		          </row>
 		          <row>
                 <entry>mail.smtp.port</entry>
@@ -1730,7 +1730,7 @@ public class ToUppercase extends BpmnJavaDelegation {
                 <row>
                  <entry>html</entry>
                  <entry>no</entry>
-                 <entry>A piece of html that is the content of the e-mail.</entry>
+                 <entry>A piece of HTML that is the content of the e-mail.</entry>
                </row>
                <row>
                  <entry>text</entry>

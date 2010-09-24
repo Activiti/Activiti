@@ -13,26 +13,26 @@
   <para>
     It is possible to browse the REST API if you point your browser to http://localhost:8080/activiti-rest/service/index
     and login as one of the admin users (kermit). If you click the "Browse by Web Script Package" link you will get an overview
-    of the packages that are deployed on the server and you can easily navigate into a package to see the rest api calls
-    that are defined for that package. The "Alfresco Javascript Debugger" can be ignored since Java is used instead of
+    of the packages that are deployed on the server and you can easily navigate into a package to see the REST API calls
+    that are defined for that package. The "Alfresco JavaScript Debugger" can be ignored since Java is used instead of
     JavaScript to implement the logic.
   </para>
 
   <para>
-    Each REST API call has its individual authorisation level and you must be logged in as a user to invoke a REST API
+    Each REST API call has its individual authorization level and you must be logged in as a user to invoke a REST API
     call (except for the /login service). Authentication is done using Basic HTTP Authentication, so if you logged in as
     admin to browse the REST API, as described above, you should be able to perform all calls as described below.
   </para>
 
   <para>
-    The base url for invoking a REST call is http://localhost:8080/activiti-rest/service/.
+    The base URL for invoking a REST call is http://localhost:8080/activiti-rest/service/.
     So for example to list the process definitions in the engine point your browser to:
     http://localhost:8080/activiti-rest/service/process-engine
   </para>
 
   <para>
     Please look below to see what REST API calls that currently are available.
-    Please consider the API sections as a "one line hint" to what functionality of the core api that is used to implement the REST API call.    
+    Please consider the API sections as a "one line hint" to what functionality of the core API that is used to implement the REST API call.    
   </para>
 
     <section>
@@ -196,7 +196,7 @@
         </para>
         <para>
           Note that if a value is submitted as true (instead of "true") it will be treated as a
-          Boolean even if no descriptor is used. The same is also valid for number, ie 123 will become an Integer
+          Boolean even if no descriptor is used. The same is also valid for number, i.e., 123 will become an Integer
           but "123" will become a String (unless a descriptor is defined). Note that no variables containing "_" in
           the name will be saved, they are only treated as meta data fields.
         </para>

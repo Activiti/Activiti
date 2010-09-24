@@ -36,7 +36,7 @@ repositoryService.createDeployment()
     <title>Deploying with ant</title>
     <para>To deploy a business archive with ant, first the <literal>deploy-bar</literal> task 
     needs to be defined.  Make sure that the configuration jar is on the classpath, as well as the 
-    activiti jar and all its dependencies:</para>
+    Activiti jar and all its dependencies:</para>
     <programlisting>&lt;taskdef name=&quot;deploy-bar&quot; classname=&quot;org.activiti.engine.impl.ant.DeployBarTask&quot;&gt;
   &lt;classpath&gt;
     &lt;fileset dir=&quot;...&quot;&gt;

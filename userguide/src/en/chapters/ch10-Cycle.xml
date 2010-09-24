@@ -22,7 +22,7 @@
     <title>Repositories</title>
     <mediaobject><imageobject><imagedata align="center" fileref="images/activiti.cycle.repositories.png"/></imageobject></mediaobject>
     <para>
-      The above image shows the Activiti Cycle repository tree. By default it provides access to the repository of the Activiti Modeler and a demo Eclipse workspace which is located at <literal>${activiti.home}/apps/eclipse-workspace</literal> in your local file system. The repositories are plugged in as repository connectors which are currently configured via an xml file. You'll find the configuration file in the <literal>bin</literal> directory of the tomcat installation. Here is the default configuration for the user kermit:
+      The above image shows the Activiti Cycle repository tree. By default it provides access to the repository of the Activiti Modeler and a demo Eclipse workspace which is located at <literal>${activiti.home}/apps/eclipse-workspace</literal> in your local file system. The repositories are plugged in as repository connectors which are currently configured via an XML file. You'll find the configuration file in the <literal>bin</literal> directory of the tomcat installation. Here is the default configuration for the user kermit:
     </para>
     
     <programlisting>

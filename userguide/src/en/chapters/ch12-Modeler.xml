@@ -22,7 +22,7 @@
     <title>Changing the location of the process model repository</title>
     
     <para>
-      After running the demo setup, process xml files are stored 
+      After running the demo setup, process XML files are stored 
       in the <emphasis>apps/activiti-model-repository</emphasis> folder.
       The location of the file-based repository can be switched by changing the
       <emphasis role="bold">fileSystemRootDirectory</emphasis> property in the
@@ -36,9 +36,9 @@
     <title>Changing the host of the Modeler</title>
     
     <para>
-      After running the demo setup, the Activiti Modeler will accessible only on the <emphasis>locahlhost</emphasis>
+      After running the demo setup, the Activiti Modeler will accessible only on the <emphasis>localhost</emphasis>
       address.
-      When you want to change the host of the Modeler, eg. to run it centrally on a server, change the
+      When you want to change the host of the Modeler, e.g. to run it centrally on a server, change the
       <emphasis role="bold">host</emphasis> property in the
       <emphasis role="bold">(exploded)activiti-modeler.war/WEB-INF/classes/configuration.properties</emphasis> file.
     </para>

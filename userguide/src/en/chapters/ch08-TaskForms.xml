@@ -7,7 +7,7 @@
 	
 	<para>
 	 Business process are used to coordinate and facilitate the way people collaborate
-	 to fullfill the goals of a business. Nowadays people typically work in (web-based) user
+	 to fulfill the goals of a business. Nowadays people typically work in (web-based) user
 	 interfaces through forms to actually do that work.
 	</para>
 	
@@ -126,7 +126,7 @@ taskService.complete("taskId", variables);</programlisting>
       <itemizedlist>
          <listitem>
           <para>
-            Variable names must be camelcased.
+            Variable names must be camel-cased.
           </para>
         </listitem>
         <listitem>
@@ -147,7 +147,7 @@ taskService.complete("taskId", variables);</programlisting>
         <listitem>
           <para>
              In Activiti-Explorer, the <emphasis>Date</emphasis> type validates to ISO 8601 (<emphasis>YYYY-MM-DD</emphasis>). This field will also use any native date picker 
-             tools in the browser (using the HTML5 <emphasis>input type="date"</emphasis>) and fall back on a popup date picker using the YUI calendar widget. It is, 
+             tools in the browser (using the HTML5 <emphasis>input type="date"</emphasis>) and fall back on a pop-up date picker using the YUI calendar widget. It is, 
              of course still possible to manually enter your own date, which is validated as you type.
           </para> 
         </listitem>
@@ -249,7 +249,7 @@ Motivation:&lt;br/&gt;
     <para>
       Depending on the input of the manager in the user task, the employee will now
       get a new task in his personal task list, stating that the vacation request was
-      dissaproved and it needs can be refilled if wanted.
+      disapproved and it needs can be refilled if wanted.
       <mediaobject><imageobject><imagedata align="center" fileref="images/taskform.vacation.request.adjust.form.png"/></imageobject></mediaobject>
       The employee can now choose to resend the vacation request, which brings process
       execution again in the user task for the manager. Or the employee can throw away
