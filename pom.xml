@@ -263,6 +263,7 @@
         <groupId>org.subethamail</groupId>
         <artifactId>subethasmtp-wiser</artifactId>
         <version>1.2</version>
+        <scope>test</scope>
       </dependency>
     </dependencies>
   </dependencyManagement>
@@ -342,8 +343,8 @@
 			<id>check</id>
 			<modules>
         <module>modules/activiti-spring</module>
-        <!-- module>modules/activiti-cycle</module>
-		    <module>modules/activiti-rest</module -->
+        <module>modules/activiti-cycle</module>
+		    <module>modules/activiti-rest</module>
 		    <module>modules/activiti-cxf</module>
 			</modules>
 		</profile>
