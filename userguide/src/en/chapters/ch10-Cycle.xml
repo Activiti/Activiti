@@ -65,6 +65,19 @@
       ...
     </programlisting>
     
+    Another thing you might consider is to add a collection of BPMN examples from the <ulink url="http://oryx-project.org/">Oryx Project</ulink>. Therefor you just need the following connector configuration:
+    
+    <programlisting>
+      ...
+      &lt;org.activiti.cycle.impl.connector.signavio.OryxConnectorConfiguration&gt;
+        &lt;name&gt;oryx-project.org&lt;/name&gt;
+        &lt;credentialsSaved&gt;false&lt;/credentialsSaved&gt;
+        &lt;signavioBaseUrl&gt;http://oryx-project.org/&lt;/signavioBaseUrl&gt;
+        &lt;loginRequired&gt;false&lt;/loginRequired&gt;
+      &lt;/org.activiti.cycle.impl.connector.signavio.OryxConnectorConfiguration&gt;
+      ...
+    </programlisting>
+    
   </section>
   
   <section>
