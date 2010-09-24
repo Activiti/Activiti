@@ -30,6 +30,13 @@ public class CycleDbSqlSessionFactory extends DbSqlSessionFactory {
   
   private static Logger log = Logger.getLogger(CycleDbSqlSessionFactory.class.getName());
 
+  @Override
+  public void dbSchemaCheckVersion() {
+    // TODO: Introduce proper version checking for cycle tables as well
+    // ignore it for now
+  }
+
+  @Override
   protected SqlSessionFactory createSessionFactory(DataSource dataSource, TransactionFactory transactionFactory) {
     try {
       ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
