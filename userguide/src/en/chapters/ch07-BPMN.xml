@@ -1809,6 +1809,66 @@ public class ToUppercase extends BpmnJavaDelegation {
 		
 		</section>
 		
+		<section id="bpmnReceiveTask">
+		
+		  <title>Java receive task</title>
+		  
+		  <section id="bpmnReceiveTaskDescription">
+		  
+		    <title>Description</title>
+		    
+		    <para>
+          A receive task is a simple task that waits for the arrival of a certain message.
+          Currently, we have only implemented Java semantics for this task. When process
+          execution arrives at a receive task, the process state is committed to the 
+          persistence store. This means that the process will stay in this wait state, 
+          until a specific message is received by the engine, which triggers the continuation
+          of the process past the receive task.
+		    </para>
+		  
+		  </section>
+		  
+		  <section>
+		  
+		    <title>Graphical notation</title>
+        
+        <para>
+          A receive task is visualized as a task (rounded rectangle) with a message icon in
+          the top left corner. The message is white (a black message icon would have send semantics)
+          <mediaobject><imageobject><imagedata align="center" fileref="images/bpmn.receive.task.png"/></imageobject></mediaobject>
+        </para>
+      
+      </section>
+      
+      <section>
+      
+        <title>XML representation</title>
+        
+        <para>
+          <programlisting>&lt;receiveTask id=&quot;waitState&quot; name=&quot;wait&quot; />    </programlisting>
+        </para>
+        
+        <para>
+          To continue a process instance that is currently waiting at such a receive task,
+          the <emphasis>runtimeService.signal(executionId)</emphasis> must be called using
+          the id of the execution that arrived in the receive task.
+          The following code snippet shows how this works in practice:
+          <programlisting>
+ProcessInstance pi = runtimeService.startProcessInstanceByKey(&quot;receiveTask&quot;);
+Execution execution = runtimeService.createExecutionQuery()
+  .processInstanceId(pi.getId())
+  .activityId(&quot;wait&quot;)
+  .singleResult();
+assertNotNull(execution);
+    
+<emphasis role="bold">runtimeService.signal(execution.getId());</emphasis>   
+          </programlisting>
+        </para>
+      
+      </section>
+		
+		</section>
+		
 		<section id="bpmnBoundaryEvent">
 		  
 		  <title>Boundary events</title>
