@@ -97,7 +97,7 @@
     </repository>
   </repositories>
   
-  <build>
+  <!-- build>
     <plugins>
       <plugin>
         <artifactId>maven-surefire-plugin</artifactId>
@@ -108,7 +108,7 @@
         </configuration>
       </plugin>
     </plugins>
-  </build>
+  </build -->
 
   <profiles>
     <profile>

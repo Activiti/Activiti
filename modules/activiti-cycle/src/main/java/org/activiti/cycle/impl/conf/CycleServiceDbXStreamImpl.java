@@ -135,18 +135,23 @@ public class CycleServiceDbXStreamImpl implements CycleService {
   }
 
   private void performDbSchemaCreation(CycleDbSqlSessionFactory dbSqlSessionFactory, ProcessEngineConfiguration processEngineConfiguration) {    
-    DbSchemaStrategy dbSchemaStrategy = processEngineConfiguration.getDbSchemaStrategy();
+    String dbSchemaStrategy = processEngineConfiguration.getDbSchemaStrategy();
     
-    if (DbSchemaStrategy.DROP_CREATE == dbSchemaStrategy) {
+    if (ProcessEngineConfiguration.DBSCHEMASTRATEGY_DROP_CREATE.equals(dbSchemaStrategy)) {
       try {
         dbSqlSessionFactory.dbSchemaDrop();
       } catch (RuntimeException e) {
         // ignore
       }
     }
-    if (DbSchemaStrategy.CREATE_DROP == dbSchemaStrategy || DbSchemaStrategy.DROP_CREATE == dbSchemaStrategy || DbSchemaStrategy.CREATE == dbSchemaStrategy) {
+    
+    if ( DbSchemaStrategy.CREATE_DROP.equals(dbSchemaStrategy) 
+         || ProcessEngineConfiguration.DBSCHEMASTRATEGY_DROP_CREATE.equals(dbSchemaStrategy)
+         || ProcessEngineConfiguration.DBSCHEMASTRATEGY_CREATE.equals(dbSchemaStrategy)
+       ) {
       dbSqlSessionFactory.dbSchemaCreate();
-    } else if (DbSchemaStrategy.CHECK_VERSION == dbSchemaStrategy) {
+      
+    } else if (DbSchemaStrategy.CHECK_VERSION.equals(dbSchemaStrategy)) {
       dbSqlSessionFactory.dbSchemaCheckVersion();
     }    
   }

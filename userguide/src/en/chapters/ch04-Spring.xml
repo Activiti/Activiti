@@ -18,8 +18,24 @@
 &lt;bean id=&quot;processEngine&quot; class=&quot;org.activiti.engine.impl.cfg.spring.ProcessEngineFactoryBean&quot;&gt;
   ...
 &lt;/bean&gt;</programlisting>
+    <para>Properties that you can configure on the ProcessEngineFactoryBean:</para>
+    <itemizedlist>
+      <listitem><para><literal>processEngineName</literal> (String)</para> </listitem>
+      <listitem><para><literal>transactionManager</literal> (PlatformTransactionManager)</para> </listitem>
+      <listitem><para><literal>dataSource</literal> (DataSource)</para> </listitem>
+      <listitem><para><literal>dataBaseName</literal> (dataBaseName)</para> </listitem>
+      <listitem><para><literal>dbSchemaStrategy</literal> (String)</para> </listitem>
+      <listitem><para><literal>deploymentName</literal> (String)</para> </listitem>
+      <listitem><para><literal>deploymentResources</literal> (Resource[])</para> </listitem>
+      <listitem><para><literal>jobExecutorAutoActivate</literal> (boolean)</para> </listitem>
+      <listitem><para><literal>mailServerHost</literal> (String)</para> </listitem>
+      <listitem><para><literal>mailServerPort</literal> (String)</para> </listitem>
+      <listitem><para><literal>mailServerSmtpUserName</literal> (String)</para> </listitem>
+      <listitem><para><literal>mailServerSmtpPassword</literal> (String)</para> </listitem>
+      <listitem><para><literal>mailServerDefaultFromAddress</literal> (String)</para> </listitem>
+    </itemizedlist>
   </section>
-  
+
   <section>
     <title>Transactions</title>
     <para>We'll explain the <literal>SpringTransactionIntegrationTest</literal> here step by step.  
@@ -54,11 +70,11 @@
     &lt;property name=&quot;dataSource&quot; ref=&quot;dataSource&quot; /&gt;
   &lt;/bean&gt;
   
-  &lt;bean id=&quot;processEngine&quot; class=&quot;org.activiti.engine.impl.cfg.spring.ProcessEngineFactoryBean&quot;&gt;
+  &lt;bean id=&quot;processEngine&quot; class=&quot;org.activiti.spring.ProcessEngineFactoryBean&quot;&gt;
     &lt;property name=&quot;dataBaseName&quot; value=&quot;h2&quot; /&gt;
     &lt;property name=&quot;dataSource&quot; ref=&quot;dataSource&quot; /&gt;
     &lt;property name=&quot;transactionManager&quot; ref=&quot;transactionManager&quot; /&gt;
-    &lt;property name=&quot;dbSchemaStrategy&quot; value=&quot;DROP_CREATE&quot; /&gt;
+    &lt;property name=&quot;dbSchemaStrategy&quot; value=&quot;check-version&quot; /&gt;
   &lt;/bean&gt;
   
   &lt;bean id=&quot;repositoryService&quot; factory-bean=&quot;processEngine&quot; factory-method=&quot;getRepositoryService&quot; /&gt;
@@ -73,11 +89,11 @@
   ...
   &lt;tx:annotation-driven transaction-manager=&quot;transactionManager&quot;/&gt;
 
-  &lt;bean id=&quot;userBean&quot; class=&quot;org.activiti.examples.spring.UserBean&quot;&gt;
+  &lt;bean id=&quot;userBean&quot; class=&quot;org.activiti.spring.test.UserBean&quot;&gt;
     &lt;property name=&quot;runtimeService&quot; ref=&quot;runtimeService&quot; /&gt;
   &lt;/bean&gt;
 
-  &lt;bean id=&quot;printer&quot; class=&quot;org.activiti.examples.spring.Printer&quot; /&gt;
+  &lt;bean id=&quot;printer&quot; class=&quot;org.activiti.spring.test.Printer&quot; /&gt;
 
 &lt;/beans&gt;</programlisting>
     <para>First the application context is created with any of the Spring ways to do that.  In this 
@@ -93,7 +109,7 @@
     <programlisting>RepositoryService repositoryService = (RepositoryService) applicationContext.getBean(&quot;repositoryService&quot;);
 String deploymentId = repositoryService
   .createDeployment()
-  .addClasspathResource(&quot;org/activiti/examples/spring/hello.bpmn20.xml&quot;)
+  .addClasspathResource(&quot;org/activiti/spring/test/hello.bpmn20.xml&quot;)
   .deploy()
   .getId();
     </programlisting>

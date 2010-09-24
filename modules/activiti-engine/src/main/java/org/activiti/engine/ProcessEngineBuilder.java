@@ -60,7 +60,7 @@ public class ProcessEngineBuilder {
   protected String jdbcUsername = ProcessEngineConfiguration.DEFAULT_JDBC_USERNAME;
   protected String jdbcPassword = ProcessEngineConfiguration.DEFAULT_JDBC_PASSWORD;
   protected String wsSyncFactoryClassName = ProcessEngineConfiguration.DEFAULT_WS_SYNC_FACTORY;
-  protected DbSchemaStrategy dbSchemaStrategy = DbSchemaStrategy.CHECK_VERSION;
+  protected String dbSchemaStrategy = DbSchemaStrategy.CHECK_VERSION;
   protected boolean jobExecutorAutoActivate = true;
   protected boolean localTransactions = true;
   
@@ -105,7 +105,7 @@ public class ProcessEngineBuilder {
     return this;
   }
 
-  public ProcessEngineBuilder setDbSchemaStrategy(DbSchemaStrategy dbSchemaStrategy) {
+  public ProcessEngineBuilder setDbSchemaStrategy(String dbSchemaStrategy) {
     this.dbSchemaStrategy = dbSchemaStrategy;
     return this;
   }
@@ -174,8 +174,7 @@ public class ProcessEngineBuilder {
 
     String dbSchemaStrategy = configurationProperties.getProperty("db.schema.strategy");
     if (dbSchemaStrategy != null) {
-      String strategy = dbSchemaStrategy.toUpperCase().replace("-", "_");
-      this.dbSchemaStrategy = DbSchemaStrategy.valueOf(strategy);
+      this.dbSchemaStrategy = dbSchemaStrategy;
     }
     
     // JOBEXECUTOR

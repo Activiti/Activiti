@@ -44,7 +44,7 @@ public class ProcessEngineImpl implements ProcessEngine {
   protected IdentityService identityService;
   protected TaskService taskService;
   protected ManagementService managementService;
-  protected DbSchemaStrategy dbSchemaStrategy;
+  protected String dbSchemaStrategy;
   protected JobExecutor jobExecutor;
   protected CommandExecutor commandExecutor;
 
@@ -53,7 +53,7 @@ public class ProcessEngineImpl implements ProcessEngine {
     this.name = processEngineConfiguration.getProcessEngineName();
     this.repositoryService = processEngineConfiguration.getRepositoryService();
     this.runtimeService = processEngineConfiguration.getProcessService();
-    this.historicDataService = processEngineConfiguration.getHistoricDataService();
+    this.historicDataService = processEngineConfiguration.getHistoryService();
     this.identityService = processEngineConfiguration.getIdentityService();
     this.taskService = processEngineConfiguration.getTaskService();
     this.managementService = processEngineConfiguration.getManagementService();
@@ -81,16 +81,20 @@ public class ProcessEngineImpl implements ProcessEngine {
 
   protected void performSchemaOperationsCreate() {
     DbSqlSessionFactory dbSqlSessionFactory = processEngineConfiguration.getDbSqlSessionFactory();
-    if (DbSchemaStrategy.DROP_CREATE == dbSchemaStrategy) {
+    if (ProcessEngineConfiguration.DBSCHEMASTRATEGY_DROP_CREATE.equals(dbSchemaStrategy)) {
       try {
         dbSqlSessionFactory.dbSchemaDrop();
       } catch (RuntimeException e) {
         // ignore
       }
     }
-    if (DbSchemaStrategy.CREATE_DROP == dbSchemaStrategy || DbSchemaStrategy.DROP_CREATE == dbSchemaStrategy || DbSchemaStrategy.CREATE == dbSchemaStrategy) {
+    if ( DbSchemaStrategy.CREATE_DROP.equals(dbSchemaStrategy) 
+         || ProcessEngineConfiguration.DBSCHEMASTRATEGY_DROP_CREATE.equals(dbSchemaStrategy)
+         || ProcessEngineConfiguration.DBSCHEMASTRATEGY_CREATE.equals(dbSchemaStrategy)
+       ) {
       dbSqlSessionFactory.dbSchemaCreate();
-    } else if (DbSchemaStrategy.CHECK_VERSION == dbSchemaStrategy) {
+      
+    } else if (DbSchemaStrategy.CHECK_VERSION.equals(dbSchemaStrategy)) {
       dbSqlSessionFactory.dbSchemaCheckVersion();
     }
   }
@@ -109,7 +113,7 @@ public class ProcessEngineImpl implements ProcessEngine {
   }
 
   private void performSchemaOperationsClose() {
-    if (DbSchemaStrategy.CREATE_DROP == dbSchemaStrategy) {
+    if (DbSchemaStrategy.CREATE_DROP.equals(dbSchemaStrategy)) {
       DbSqlSessionFactory dbSqlSessionFactory = processEngineConfiguration.getDbSqlSessionFactory();
       dbSqlSessionFactory.dbSchemaDrop();
     }
@@ -142,7 +146,7 @@ public class ProcessEngineImpl implements ProcessEngine {
   public RuntimeService getRuntimeService() {
     return runtimeService;
   }
-  public DbSchemaStrategy getDbSchemaStrategy() {
+  public String getDbSchemaStrategy() {
     return dbSchemaStrategy;
   }
   public ProcessEngineConfiguration getProcessEngineConfiguration() {

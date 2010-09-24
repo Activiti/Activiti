@@ -15,8 +15,6 @@ package org.activiti.engine.test.db;
 
 import java.util.List;
 
-import junit.framework.TestCase;
-
 import org.activiti.engine.DbSchemaStrategy;
 import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.ProcessEngineBuilder;
@@ -26,6 +24,7 @@ import org.activiti.engine.impl.test.ActivitiInternalTestCase;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
+import org.activiti.pvm.test.PvmTestCase;
 
 
 /**
@@ -33,7 +32,7 @@ import org.activiti.engine.task.Task;
  * 
  * @author Joram Barrez
  */
-public class EngineRebootProcessDefinitionCacheTest extends TestCase {
+public class EngineRebootProcessDefinitionCacheTest extends PvmTestCase {
   
   // Test for a bug: when the process engine is rebooted the
   // cache is cleaned and the deployed process definition is

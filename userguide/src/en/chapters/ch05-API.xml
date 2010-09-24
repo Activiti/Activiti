@@ -32,37 +32,38 @@ HistoryService historyService = processEngine.getHistoryService();</programlisti
     <para>For more docs on the engine API, see<ulink url="../javadocs/index.html"> the javadocs</ulink>. 
     </para>
     
-    <section>
-    	<title>Exception strategy</title>
-    	<para>The base exception in Activiti is the <literal>ActivitiException</literal>, an unchecked exception. This exception can be thrown at all times by the API, but 'expected' exceptions that 
-    	happen in specific methods are documented in the <ulink url="../javadocs/index.html"> the javadocs</ulink>.
-    	For example, an extract from <literal>TaskService</literal>:
-    	<programlisting> /**
-  * Called when the task is successfully executed.
-  * @param taskId the id of the task to complete, cannot be null.
-  * @throws ActivitiException when no task exists with the given id.
-  */
-  void complete(String taskId);
-    	</programlisting>
-    	
-    	In the example above, when an id is passed for which no task exists, an exception will be thrown. Also, since the javadoc <emphasis role="bold">explicitly states that taskId cannot be null, an <literal>ActivitiException</literal> will be thrown when <literal>null</literal> is passed</emphasis>.
-    	</para>
-    	<para>
-    		Even though we want to avoid a big exception hierarchy, the following subclasses were added which are thrown in specific cases:
-	    	<itemizedlist>
-	    		<listitem>
-		          <para>
-		           <literal>ActivitiWrongDbException: </literal> Thrown when the Activiti engine discovers a mismatch between the database schema version and the engine version. 
-		          </para>
-		        </listitem>
-		        <listitem>
-		          <para>
-		           <literal>ActivitiOptimisticLockingException: </literal> Thrown when an optimistic locking occurs in the datastore caused by concurrent access of the same data entry. 
-		          </para>
-		        </listitem>
-		    </itemizedlist>
-    	</para>
-    </section>
+  </section>
+
+  <section>
+    <title>Exception strategy</title>
+    <para>The base exception in Activiti is the <literal>ActivitiException</literal>, an unchecked exception. This exception can be thrown at all times by the API, but 'expected' exceptions that 
+    happen in specific methods are documented in the <ulink url="../javadocs/index.html"> the javadocs</ulink>.
+    For example, an extract from <literal>TaskService</literal>:
+    <programlisting> /**
+	* Called when the task is successfully executed.
+	* @param taskId the id of the task to complete, cannot be null.
+	* @throws ActivitiException when no task exists with the given id.
+	*/
+	void complete(String taskId);
+    </programlisting>
+    
+    In the example above, when an id is passed for which no task exists, an exception will be thrown. Also, since the javadoc <emphasis role="bold">explicitly states that taskId cannot be null, an <literal>ActivitiException</literal> will be thrown when <literal>null</literal> is passed</emphasis>.
+    </para>
+    <para>
+      Even though we want to avoid a big exception hierarchy, the following subclasses were added which are thrown in specific cases:
+      <itemizedlist>
+        <listitem>
+            <para>
+             <literal>ActivitiWrongDbException: </literal> Thrown when the Activiti engine discovers a mismatch between the database schema version and the engine version. 
+            </para>
+          </listitem>
+          <listitem>
+            <para>
+             <literal>ActivitiOptimisticLockingException: </literal> Thrown when an optimistic locking occurs in the datastore caused by concurrent access of the same data entry. 
+            </para>
+          </listitem>
+      </itemizedlist>
+    </para>
   </section>
 
   <section>

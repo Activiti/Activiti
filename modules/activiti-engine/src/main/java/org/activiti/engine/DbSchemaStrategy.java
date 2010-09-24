@@ -13,29 +13,21 @@
 package org.activiti.engine;
 
 
-/**
+/** specifies the strategy to synchronize between the 
+ * library version and the database schema version. 
+ * 
  * @author Tom Baeyens
  */
-public enum DbSchemaStrategy {
+public interface DbSchemaStrategy {
   
-  /**
-   * Creates the schema when the process engine is being created.
-   * 
-   * Probably only useful in testing (eg. when testing rebooting the process engine).
-   */
-  CREATE,
-
   /** creates the schema when the process engine is being created and 
    * drops the schema when the process engine is being closed.
    */
-  CREATE_DROP,
-  
-  /** drops and creates the schema when the process engine is being created.
-   */
-  DROP_CREATE,
+  String CREATE_DROP = "create-drop";
   
   /** checks the version of the DB schema against the library when 
-   * the process engine is being created.
+   * the process engine is being created and throws an exception
+   * if the versions don't match.
    */
-  CHECK_VERSION
+  String CHECK_VERSION = "check-version";
 }

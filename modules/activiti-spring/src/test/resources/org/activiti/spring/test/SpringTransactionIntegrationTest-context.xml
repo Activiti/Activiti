@@ -27,7 +27,7 @@
     <property name="dataBaseName" value="h2" />
     <property name="dataSource" ref="dataSource" />
     <property name="transactionManager" ref="transactionManager" />
-    <property name="dbSchemaStrategy" value="DROP_CREATE" />
+    <property name="dbSchemaStrategy" value="drop-create" />
   </bean>
   
   <bean id="repositoryService" factory-bean="processEngine" factory-method="getRepositoryService" />

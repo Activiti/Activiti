@@ -176,12 +176,12 @@ public class ProcessEngineFactoryBean implements FactoryBean<ProcessEngine>, Dis
     processEngineConfiguration.setDataSource(dataSource);
   }
 
-  public void setDbSchemaStrategy(DbSchemaStrategy dbSchemaStrategy) {
+  public void setDbSchemaStrategy(String dbSchemaStrategy) {
     processEngineConfiguration.setDbSchemaStrategy(dbSchemaStrategy);
   }
 
-  public void setHistoricDataService(HistoryService historicDataService) {
-    processEngineConfiguration.setHistoricDataService(historicDataService);
+  public void setHistoryService(HistoryService historiyService) {
+    processEngineConfiguration.setHistoryService(historiyService);
   }
 
   public void setIdentityService(IdentityService identityService) {

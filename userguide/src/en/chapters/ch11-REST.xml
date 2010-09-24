@@ -35,12 +35,6 @@
     Please consider the API sections as a "one line hint" to what functionality of the core api that is used to implement the REST API call.    
   </para>
 
-  <section>
-
-    <title>API</title>
-
-    <!-- ENGINE -->
-
     <section>
 
       <title>Engine</title>
@@ -738,6 +732,5 @@
       </section>
 
     </section>
-  </section>
 
 </chapter>

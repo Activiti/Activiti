@@ -85,6 +85,9 @@ public class ProcessEngineConfiguration {
   
   public static final String DEFAULT_FROM_EMAIL_ADDRESS = "noreply@activiti.org";
   public static final int DEFAULT_MAIL_SERVER_SMTP_PORT = 25;
+  
+  public static final String DBSCHEMASTRATEGY_CREATE = "create";
+  public static final String DBSCHEMASTRATEGY_DROP_CREATE = "drop-create";
 
   protected String processEngineName;
 
@@ -102,7 +105,7 @@ public class ProcessEngineConfiguration {
 
   protected RepositoryService repositoryService;
   protected RuntimeService runtimeService;
-  protected HistoryService historicDataService;
+  protected HistoryService historyService;
   protected IdentityService identityService;
   protected TaskService taskService;
   protected ManagementService managementService;
@@ -115,7 +118,7 @@ public class ProcessEngineConfiguration {
   protected boolean jobExecutorAutoActivate;
   
   protected String databaseName;
-  protected DbSchemaStrategy dbSchemaStrategy;
+  protected String dbSchemaStrategy;
   protected IdGenerator idGenerator;
   protected long idBlockSize;
   protected DataSource dataSource;
@@ -160,7 +163,7 @@ public class ProcessEngineConfiguration {
     taskService = new TaskServiceImpl();
     managementService = new ManagementServiceImpl();
     identityService = new IdentityServiceImpl();
-    historicDataService = new HistoryServiceImpl();
+    historyService = new HistoryServiceImpl();
 
     sessionFactories = new HashMap<Class<?>, SessionFactory>();
     sessionFactories.put(RepositorySession.class, new DbRepositorySessionFactory());
@@ -225,7 +228,7 @@ public class ProcessEngineConfiguration {
       notifyConfigurationComplete(taskService);
       notifyConfigurationComplete(managementService);
       notifyConfigurationComplete(identityService);
-      notifyConfigurationComplete(historicDataService);
+      notifyConfigurationComplete(historyService);
       
       for (SessionFactory sessionFactory : sessionFactories.values()) {
         notifyConfigurationComplete(sessionFactory);
@@ -322,11 +325,11 @@ public class ProcessEngineConfiguration {
     return jobExecutor;
   }
 
-  public DbSchemaStrategy getDbSchemaStrategy() {
+  public String getDbSchemaStrategy() {
     return dbSchemaStrategy;
   }
 
-  public void setDbSchemaStrategy(DbSchemaStrategy dbSchemaStrategy) {
+  public void setDbSchemaStrategy(String dbSchemaStrategy) {
     this.dbSchemaStrategy = dbSchemaStrategy;
   }
 
@@ -334,12 +337,12 @@ public class ProcessEngineConfiguration {
     return runtimeService;
   }
 
-  public void setHistoricDataService(HistoryService historicDataService) {
-    this.historicDataService = historicDataService;
+  public void setHistoryService(HistoryService historyService) {
+    this.historyService = historyService;
   }
 
-  public HistoryService getHistoricDataService() {
-    return historicDataService;
+  public HistoryService getHistoryService() {
+    return historyService;
   }
 
   public IdentityService getIdentityService() {
