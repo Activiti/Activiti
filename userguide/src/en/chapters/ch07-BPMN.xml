@@ -1554,10 +1554,23 @@ public class ToUppercase extends BpmnJavaDelegation {
     name=&quot;Java service invocation&quot; 
     activiti:class=&quot;org.activiti.examples.bpmn.servicetask.ToUpperCaseFieldInjected&quot;&gt;
   <emphasis role="bold">&lt;extensionElements&gt;
-    &lt;activiti:field activiti:name=&quot;text&quot;&gt;
-      &lt;activiti:string&gt;Hello World&lt;/activiti:string&gt;
-    &lt;/activiti:field&gt;
+    &lt;activiti:field activiti:name=&quot;text&quot; activiti:string-value=&quot;Hello World&quot; /&gt;
   &lt;/extensionElements&gt;</emphasis>           
+&lt;/serviceTask&gt;        
+        </programlisting>
+        Alternatively, for longs texts (eg. an inline e-mail) the <emphasis>'activiti:string'</emphasis>
+        sub element can be used:
+        <programlisting>
+&lt;serviceTask id=&quot;javaService&quot; 
+    name=&quot;Java service invocation&quot; 
+    activiti:class=&quot;org.activiti.examples.bpmn.servicetask.ToUpperCaseFieldInjected&quot;&gt;
+  &lt;extensionElements&gt;   
+    &lt;activiti:field activiti:name=&quot;text&quot;&gt;
+      <emphasis role="bold">&lt;activiti:string&gt;
+        Hello World
+      &lt;/activiti:string&gt;</emphasis>
+    &lt;/activiti:field&gt;
+  &lt;/extensionElements&gt;        
 &lt;/serviceTask&gt;        
         </programlisting>
       </para>
@@ -1574,6 +1587,184 @@ public class ToUppercase extends BpmnJavaDelegation {
      
      </section>
   		
+		</section>
+		
+		<section id="bpmnEmailTask">
+		
+		  <title>Email task</title>
+		  
+		  <para>
+		    Activiti allows to enhance business processes with automatic mail service tasks that send
+		    e-mails to one or more recipients, including suport for cc, bcc, html content, ... etc.
+		    Note that the mail task is <emphasis role="bold">not</emphasis> an 'official' task 
+		    of the BPMN 2.0 spec (and it does not have a dedicated icon as a consequence).
+		    Hence, in Activiti the mail task is implemented as a dedicated service task.
+		  </para>
+		  
+		  
+		  <section id="bpmnEmailTaskServerConfiguration">
+		  
+		    <title>Mail server configuration</title>
+		    
+		    <para>
+		      The Activiti engine sends e-mails trough an external mail server with SMTP capabilities.
+		      To actually send e-mails, the engine needs to know how to reach the mail server.
+		      Following properties can be set in the <emphasis>activiti.properties</emphasis> 
+		      configuration file:
+		      <table>
+		        <title>Mail server configuration</title>
+            <tgroup cols='3'>
+            <thead>
+              <row>
+                <entry>Property</entry>
+                <entry>Required?</entry>
+                <entry>Description</entry>
+              </row>
+            </thead>
+            <tbody>
+		          <row>
+		            <entry>mail.smtp.host</entry>
+		            <entry>yes</entry>
+		            <entry>The hostname of your mail server (eg. mail.mycorp.com)</entry>
+		          </row>
+		          <row>
+                <entry>mail.smtp.port</entry>
+                <entry>yes, if not on the default port</entry>
+                <entry>The port for SMTP traffic on the mail server. The default is <emphasis>25</emphasis></entry>
+              </row>
+              <row>
+                <entry>mail.default.from</entry>
+                <entry>no</entry>
+                <entry>The default e-mail address of the sender of e-mails, when none is provided by the user. By default this is <emphasis>noreply@activiti.org</emphasis></entry>
+              </row>
+              <row>
+                <entry>mail.smtp.user</entry>
+                <entry>if applicable for your server</entry>
+                <entry>Some mail servers require credentials for sending e-mail.</entry>
+              </row>
+              <row>
+                <entry>mail.smtp.password</entry>
+                <entry>if applicable for your server</entry>
+                <entry>Some mail servers require credentials for sending e-mail.</entry>
+              </row>
+            </tbody>
+            </tgroup>
+          </table>
+		    </para>		  
+		  
+		  </section>
+		  
+		  <section id="bpmnEmailTaskUsage">
+		  
+		    <title>Defining an Email Task</title>
+		    
+		    <para>
+		      The Email task is implemented as a dedicated <link linkend="bpmnJavaServiceTask">Service Task</link>
+		      and is defined by setting <emphasis>'mail'</emphasis> for the <emphasis>type</emphasis> of the service task.
+		      <programlisting>
+&lt;serviceTask id=&quot;sendMail&quot; <emphasis role="bold">activiti:type=&quot;mail&quot;</emphasis>&lt;		      
+		      </programlisting>
+		    </para>
+		    
+        <para>
+		      The Email task is configured by <link linkend="serviceTaskFieldInjection">field injection</link>.
+		      All the values for these properties can contain EL expression, which are resolved at runtime
+		      during process execution.
+		      Following properties can be set:
+		      <table>
+	         <title>Mail server configuration</title>
+	         <tgroup cols='3'>
+	           <thead>
+	             <row>
+	               <entry>Property</entry>
+	               <entry>Required?</entry>
+	               <entry>Description</entry>
+	             </row>
+	           </thead>
+	           <tbody>
+	             <row>
+	               <entry>to</entry>
+	               <entry>yes</entry>
+	               <entry>The recipients if the e-mail. Multiple recipients are defined in a comma-separated list</entry>
+	             </row>
+	             <row>
+                 <entry>from</entry>
+                 <entry>no</entry>
+                 <entry>The sender e-mail address. If not provided, the <link linkend="bpmnEmailTaskServerConfiguration">default configured</link> from address is used.</entry>
+               </row>
+                <row>
+                 <entry>subject</entry>
+                 <entry>no</entry>
+                 <entry>The subject of the e-mail.</entry>
+               </row>
+                <row>
+                 <entry>cc</entry>
+                 <entry>no</entry>
+                 <entry>The cc's of the e-mail. Multiple recipients are defined in a comma-separated list</entry>
+               </row>
+                <row>
+                 <entry>bcc</entry>
+                 <entry>no</entry>
+                 <entry>The bcc's of the e-mail. Multiple recipients are defined in a comma-separated list</entry>
+               </row>
+                <row>
+                 <entry>html</entry>
+                 <entry>no</entry>
+                 <entry>A piece of html that is the content of the e-mail.</entry>
+               </row>
+               <row>
+                 <entry>text</entry>
+                 <entry>no</entry>
+                 <entry>The content of the e-mail, in case one needs to send plain none-rich e-mails.
+                   Can be used in combination with <emphasis>html</emphasis>, for e-mail clients
+                   that don't support rich content. The client will then fall back to this text-only alternative.
+                 </entry>
+               </row>
+             </tbody>
+	         </tgroup>
+	        </table>
+        </para>
+        
+		  </section>
+		  
+		  <section id="bpmnEmailTaskExampleUsage">
+		  
+		    <title>Example usage</title>
+		  
+		  
+		    <para>
+		      The following XML snippet shows an example of using the Email Task.
+		      <programlisting>
+&lt;serviceTask id=&quot;sendMail&quot; activiti:type=&quot;mail&quot;&gt;
+  &lt;extensionElements&gt;
+    &lt;activiti:field activiti:name=&quot;from&quot; activiti:string-value=&quot;order-shipping@thecompany.com&quot; /&gt;
+    &lt;activiti:field activiti:name=&quot;to&quot; activiti:string-value=&quot;${recipient}&quot; /&gt;
+    &lt;activiti:field activiti:name=&quot;subject&quot; activiti:string-value=&quot;Your order ${orderId} has been shipped&quot; /&gt;
+    &lt;activiti:field activiti:name=&quot;html&quot;&gt;
+      &lt;activiti:string&gt;
+        &lt;![CDATA[
+          &lt;html&gt;
+            &lt;body&gt;
+              Hello ${male ? 'Mr.' : 'Mrs.' } ${recipientName},&lt;br/&gt;&lt;br/&gt;
+                 
+              As of ${now}, your order has been &lt;b&gt;processed and shipped&lt;/b&gt;.&lt;br/&gt;&lt;br/&gt;
+                  
+              Kind regards,&lt;br/&gt;
+                  
+              TheCompany.
+            &lt;/body&gt;
+          &lt;/html&gt;
+        ]]&gt;
+      &lt;/activiti:string&gt;
+    &lt;/activiti:field&gt;      
+  &lt;/extensionElements&gt;
+&lt;/serviceTask&gt;		      
+		      </programlisting>
+		      with the following result:
+		      <mediaobject><imageobject><imagedata align="center" fileref="images/email.task.result.png"/></imageobject></mediaobject>
+		    </para>
+		  </section>
+		
 		</section>
 		
 		<section id="bpmnManualTask">

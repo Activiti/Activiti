@@ -28,7 +28,10 @@
     <property name="dataSource" ref="dataSource" />
     <property name="transactionManager" ref="transactionManager" />
     <property name="dbSchemaStrategy" value="DROP_CREATE" />
+    <property name="mailServerHost" value="localhost" />
+    <property name="mailServerPort" value="5025" />
   </bean>
+
   
   <bean id="repositoryService" factory-bean="processEngine" factory-method="getRepositoryService" />
   <bean id="runtimeService" factory-bean="processEngine" factory-method="getRuntimeService" />

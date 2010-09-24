@@ -198,6 +198,9 @@ public class ProcessEngineConfiguration {
     MapBusinessCalendarManager mapBusinessCalendarManager = new MapBusinessCalendarManager();
     mapBusinessCalendarManager.addBusinessCalendar(DurationBusinessCalendar.NAME, new DurationBusinessCalendar());
     businessCalendarManager = mapBusinessCalendarManager;
+    
+    mailServerDefaultFrom = DEFAULT_FROM_EMAIL_ADDRESS;
+    mailServerSmtpPort = DEFAULT_MAIL_SERVER_SMTP_PORT;
   }
   
   public ProcessEngine buildProcessEngine() {

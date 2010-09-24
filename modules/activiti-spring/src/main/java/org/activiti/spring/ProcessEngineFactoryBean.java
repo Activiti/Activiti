@@ -50,6 +50,7 @@ import org.springframework.transaction.support.TransactionTemplate;
  * @author Dave Syer
  * @author Christian Stettler
  * @author Tom Baeyens
+ * @author Joram Barrez
  */
 public class ProcessEngineFactoryBean implements FactoryBean<ProcessEngine>, DisposableBean, ApplicationContextAware {
 
@@ -205,5 +206,25 @@ public class ProcessEngineFactoryBean implements FactoryBean<ProcessEngine>, Dis
 
   public void setVariableTypes(VariableTypes variableTypes) {
     processEngineConfiguration.setVariableTypes(variableTypes);
+  }
+  
+  public void setMailServerHost(String mailServerHost) {
+    processEngineConfiguration.setMailServerSmtpHost(mailServerHost);
+  }
+  
+  public void setMailServerPort(int mailServerPort) {
+    processEngineConfiguration.setMailServerSmtpPort(mailServerPort);
+  }
+  
+  public void setMailServerUserName(String userName) {
+    processEngineConfiguration.setMailServerSmtpUserName(userName);
+  }
+  
+  public void setMailServerPassword(String password) {
+    processEngineConfiguration.setMailServerSmtpPassword(password);
+  }
+  
+  public void setMailServerDefaultFromAddress(String defaultFromAddress) {
+    processEngineConfiguration.setMailServerDefaultFrom(defaultFromAddress);
   }
 }
