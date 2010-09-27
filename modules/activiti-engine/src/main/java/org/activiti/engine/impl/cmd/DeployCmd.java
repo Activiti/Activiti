@@ -58,7 +58,7 @@ public class DeployCmd<T> implements Command<Deployment> {
     Map<String, ResourceEntity> resources = deployment.getResources();
     Map<String, ResourceEntity> savedResources = saved.getResources();
     if (!resources.keySet().equals(savedResources.keySet())) {
-      return false;
+      return true;
     }
     for (String resourceName: resources.keySet()) {
       ResourceEntity resource = resources.get(resourceName);
@@ -66,10 +66,10 @@ public class DeployCmd<T> implements Command<Deployment> {
       ResourceEntity savedResource = savedResources.get(resourceName);
       byte[] savedBytes = savedResource.getBytes();
       if (!Arrays.equals(bytes, savedBytes)) {
-        return false;
+        return true;
       }
     }
-    return true;
+    return false;
   }
 
 //  private boolean resourcesDiffer(ByteArrayEntity value, ByteArrayEntity other) {
