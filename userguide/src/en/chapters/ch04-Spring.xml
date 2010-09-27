@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE chapter PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN" "../../../target/docbook-tool-1.0/docbook-xml/docbookx.dtd">
 
-<chapter>
+<chapter id="springintegration">
   <title>Spring integration</title>
 
   <para>While you can use Activiti without Spring, we've provided some very nice integration features
@@ -20,19 +20,19 @@
 &lt;/bean&gt;</programlisting>
     <para>Properties that you can configure on the ProcessEngineFactoryBean:</para>
     <itemizedlist>
-      <listitem><para><literal>processEngineName</literal> (String)</para> </listitem>
+      <listitem><para><literal>processEngineName</literal> (String) see <xref linkend="configurationproperties"/></para> </listitem>
       <listitem><para><literal>transactionManager</literal> (PlatformTransactionManager)</para> </listitem>
       <listitem><para><literal>dataSource</literal> (DataSource)</para> </listitem>
-      <listitem><para><literal>dataBaseName</literal> (dataBaseName)</para> </listitem>
-      <listitem><para><literal>dbSchemaStrategy</literal> (String)</para> </listitem>
+      <listitem><para><literal>dataBaseName</literal> (dataBaseName) see <xref linkend="supporteddatabases"/></para></listitem>
+      <listitem><para><literal>dbSchemaStrategy</literal> (String) see <xref linkend="configurationproperties"/></para></listitem>
       <listitem><para><literal>deploymentName</literal> (String)</para> </listitem>
       <listitem><para><literal>deploymentResources</literal> (Resource[])</para> </listitem>
-      <listitem><para><literal>jobExecutorAutoActivate</literal> (boolean)</para> </listitem>
-      <listitem><para><literal>mailServerHost</literal> (String)</para> </listitem>
-      <listitem><para><literal>mailServerPort</literal> (String)</para> </listitem>
-      <listitem><para><literal>mailServerSmtpUserName</literal> (String)</para> </listitem>
-      <listitem><para><literal>mailServerSmtpPassword</literal> (String)</para> </listitem>
-      <listitem><para><literal>mailServerDefaultFromAddress</literal> (String)</para> </listitem>
+      <listitem><para><literal>jobExecutorAutoActivate</literal> (boolean) see <xref linkend="configurationproperties"/></para> </listitem>
+      <listitem><para><literal>mailServerHost</literal> (String) see <xref linkend="configurationproperties"/></para> </listitem>
+      <listitem><para><literal>mailServerPort</literal> (String) see <xref linkend="configurationproperties"/></para> </listitem>
+      <listitem><para><literal>mailServerSmtpUserName</literal> (String) see <xref linkend="configurationproperties"/></para> </listitem>
+      <listitem><para><literal>mailServerSmtpPassword</literal> (String) see <xref linkend="configurationproperties"/></para> </listitem>
+      <listitem><para><literal>mailServerDefaultFromAddress</literal> (String) see <xref linkend="configurationproperties"/></para> </listitem>
     </itemizedlist>
   </section>
 

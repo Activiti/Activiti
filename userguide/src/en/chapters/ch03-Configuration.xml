@@ -13,10 +13,35 @@
   not recommended. 
   </para>  
   
+  <section id="configurationproperties">
+    <title>Configuration properties</title>
+    <para>Here are the configuration properties that you can specify in the <literal>activiti.properties</literal>.
+    This is only applicable if you're using the <literal>ProcessEngineBuilder</literal> directly or indirectly 
+    through <literal>ProcessEngines</literal>. This is <emphasis role="bold">not</emphasis> applicable if you're 
+    using <link linkend="springintegration">the Spring style of building a process engine</link>.</para>
+    <itemizedlist>
+      <listitem><para><emphasis role="bold">process.engine.name</emphasis>:  The process engine name.  Only relevant if you're using 
+      multiple process engines in one classloading scope.
+      </para></listitem>
+      <listitem><para><emphasis role="bold">database</emphasis>:  one of the database names specified in <xref linkend="databasenames" /> </para></listitem>
+      <listitem><para><emphasis role="bold">jdbc.driver</emphasis>, <emphasis role="bold">jdbc.url</emphasis>, <emphasis role="bold">jdbc.username</emphasis> 
+      and <emphasis role="bold">jdbc.password</emphasis>:  JDBC properties pointing to the database Activiti will use.</para></listitem>
+      <listitem><para><emphasis role="bold">db.schema.strategy</emphasis>: { <literal>check-version</literal> | <literal>create-drop</literal> } <literal>check-version</literal> 
+      is the default and it will check if the DB version is the same as the library version when the process engine is created.  <literal>create-drop</literal> is handy for 
+      testing.  It creates the DB schema when the process engine is created and drops the schema when the engine is closed.</para></listitem>
+      <listitem><para><emphasis role="bold">job.executor.auto.activate</emphasis>: { <literal>enabled</literal> | <literal>disabled</literal> } <literal>enabled</literal> is the 
+      default which means that the JobExecutor component will start when the process engine is created.  In testing, it's best to set this property to <literal>disabled</literal>.
+      Then the job executor won't be activated and the test can manually search for jobs with <literal>ManagementService.createJobQuery</literal> and execute them 
+      with <literal>ManagementService.executeJob</literal>.</para></listitem>
+      <listitem><para><emphasis role="bold">mail.smtp.host</emphasis>, <emphasis role="bold">mail.smtp.port</emphasis>, <emphasis role="bold">mail.smtp.user</emphasis>, 
+      <emphasis role="bold">mail.smtp.password</emphasis> and <emphasis role="bold">mail.default.from</emphasis>: SMTP properties used when Activiti needs to send email.</para></listitem>
+    </itemizedlist>
+  </section>
+  
   <section id="supporteddatabases">
     <title>Supported databases</title>
     <para>Following are the names (case sensitive!) that Activiti uses to refer to databases.</para>
-    <table>
+    <table id="databasenames">
       <title>Supported databases</title>
       <tgroup cols='3'>
         <thead>
@@ -28,7 +53,7 @@
         </thead>
         <tbody>
           <row>
-            <entry>h2</entry>
+            <entry><emphasis role="bold">h2</emphasis></entry>
             <entry>1.2.132</entry>
             <entry></entry>
           </row>
