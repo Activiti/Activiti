@@ -4,7 +4,7 @@
 
 	<name>Activiti - Rest</name>
 	<groupId>org.activiti</groupId>
-	<artifactId>activiti-rest</artifactId>
+	<artifactId>activiti-webapp-rest</artifactId>
 	<packaging>war</packaging>
 
   <parent>
@@ -15,6 +15,7 @@
   </parent>
 
 	<build>
+    <finalName>activiti-rest</finalName>  
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -52,7 +53,7 @@
 			<scope>provided</scope>
 		</dependency>
 
-	<!-- scope not "provided" to preserve transitive dependencies in activiti-rest etc. -->
+	<!-- scope not "provided" to preserve transitive dependencies in activiti-webapp-rest etc. -->
     <dependency>
       <groupId>org.activiti</groupId>
       <artifactId>activiti-cycle</artifactId>

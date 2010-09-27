@@ -354,7 +354,7 @@
 			<modules>
         <module>modules/activiti-spring</module>
         <module>modules/activiti-cycle</module>
-		    <module>modules/activiti-rest</module>
+		    <module>modules/activiti-webapp-rest</module>
 		    <module>modules/activiti-cxf</module>
 			</modules>
 		</profile>
@@ -362,7 +362,7 @@
       <id>checkcycle</id>
       <modules>
         <module>modules/activiti-cycle</module>
-        <module>modules/activiti-rest</module>
+        <module>modules/activiti-webapp-rest</module>
       </modules>
     </profile>
     <profile>
@@ -371,14 +371,26 @@
         <module>modules/activiti-spring</module>
       </modules>
     </profile>    
+    <profile>
+      <!-- this profile prevents that tests are executed while running the qa/build.xml test.demo.setup target -->
+      <id>nodocs</id>
+      <activation>
+        <property>
+          <name>nodocs</name>
+        </property>
+      </activation>
+      <properties>
+        <skipTests>true</skipTests>
+      </properties>
+    </profile>
 		<profile>
 			<id>distro</id>
 			<modules>
         <module>modules/activiti-spring</module>
-        <module>modules/activiti-rest</module>
+        <module>modules/activiti-webapp-rest</module>
 				<module>modules/activiti-cycle</module>
         <module>modules/activiti-webapp</module>
-				<module>modules/activiti-rest</module>
+				<module>modules/activiti-webapp-rest</module>
         <module>modules/activiti-webapp-init</module>
 				<module>modules/activiti-webapp-probe</module>
 				<module>modules/activiti-webapp-explorer</module>

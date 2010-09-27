@@ -72,7 +72,7 @@
   </target>
 
   <target name="webapp.rest.redeploy">
-    <property name="webapp.redeploy.module" value="activiti-rest"/>
+    <property name="webapp.redeploy.module" value="activiti-webapp-rest"/>
     <antcall target="webapp.redeploy"/>
   </target>
 
@@ -138,11 +138,11 @@ Then run test.demo.setup to make it get placed inside your tomcat server." unles
 
 
   <target name="webapp.rest.redeploy.resources">
-    <copy todir="${tomcat.home}/webapps/activiti-rest/WEB-INF/classes/webscripts" verbose="true">
-      <fileset dir="../modules/activiti-rest/src/main/resources/webscripts" />
+    <copy todir="${tomcat.home}/webapps/activiti-webapp-rest/WEB-INF/classes/webscripts" verbose="true">
+      <fileset dir="../modules/activiti-webapp-rest/src/main/resources/webscripts" />
     </copy>
-    <copy todir="${tomcat.home}/webapps/activiti-rest" verbose="true">
-      <fileset dir="../modules/activiti-rest/src/main/webapp/" excludes="WEB-INF/web.xml" />
+    <copy todir="${tomcat.home}/webapps/activiti-webapp-rest" verbose="true">
+      <fileset dir="../modules/activiti-webapp-rest/src/main/webapp/" excludes="WEB-INF/web.xml" />
     </copy>
   </target>
 

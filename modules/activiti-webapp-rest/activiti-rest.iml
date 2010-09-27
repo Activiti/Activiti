@@ -9,7 +9,7 @@
         <webroots>
           <root url="file://$MODULE_DIR$/src/main/webapp" relative="/" />
         </webroots>
-        <context-artifact name="activiti-rest:war exploded" />
+        <context-artifact name="activiti-webapp-rest:war exploded" />
       </configuration>
     </facet>
     <facet type="Spring" name="Spring">
