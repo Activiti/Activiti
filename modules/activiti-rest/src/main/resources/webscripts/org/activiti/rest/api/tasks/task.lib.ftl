@@ -6,7 +6,7 @@
 
 <#macro printTask task>
 {
-  "id": ${task.id},
+  "id": "${task.id?js_string}",
   "name": "${task.name?js_string}",
   "description": "${(task.description!"")?js_string}",
   "priority": ${task.priority},

@@ -6,7 +6,7 @@
 
 <#macro printProcessDefinition processDefinition>
 {
-  "id": "${processDefinition.id}",
+  "id": "${processDefinition.id?js_string}",
   "key": "${processDefinition.key?js_string}",
   "version": ${processDefinition.version?string},
   "name": <#if processDefinition.name??>"${processDefinition.name?js_string}"<#else>null</#if>,

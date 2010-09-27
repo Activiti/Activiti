@@ -6,10 +6,10 @@
 
 <#macro printUser user>
 {
-  "id": "${user.id!""}",
-  "firstName": "${user.firstName!""}",
-  "lastName": "${user.lastName!""}",
-  "email": "${user.email!""}"
+  "id": "${(user.id!"")?js_string}",
+  "firstName": "${(user.firstName!"")?js_string}",
+  "lastName": "${(user.lastName!"")?js_string}",
+  "email": "${(user.email!"")?js_string}"
 }
 </#macro>
 
@@ -21,8 +21,8 @@
 
 <#macro printGroup group>
 {
-  "id": "${group.id!""}",
-  "name": "${group.name!""}",
-  "type": "${group.type!""}"
+  "id": "${(group.id!"")?js_string}",
+  "name": "${(group.name!"")?js_string}",
+  "type": "${(group.type!"")?js_string}"
 }
 </#macro>
