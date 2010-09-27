@@ -56,8 +56,6 @@
   xmlns=&quot;http://www.omg.org/spec/BPMN/20100524/MODEL&quot;
   xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;
   xmlns:activiti=&quot;http://activiti.org/bpmn-extensions&quot;
-  typeLanguage=&quot;http://www.w3.org/2001/XMLSchema&quot;
-  expressionLanguage=&quot;http://www.w3.org/1999/XPath&quot; 
   targetNamespace=&quot;http://www.activiti.org/bpmn2.0&quot;&gt;
 
   &lt;process id=&quot;myProcess&quot; name=&quot;My First Process&quot;&gt;

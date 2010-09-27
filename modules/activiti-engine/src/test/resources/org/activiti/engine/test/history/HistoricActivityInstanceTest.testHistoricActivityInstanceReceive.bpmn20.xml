@@ -4,8 +4,6 @@
   xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
   xmlns:activiti="http://activiti.org/bpmn-extensions"
   xsi:schemaLocation="http://schema.omg.org/spec/BPMN/2.0 BPMN20.xsd" 
-  typeLanguage="http://www.w3.org/2001/XMLSchema"
-  expressionLanguage="http://www.w3.org/1999/XPath" 
   targetNamespace="http://www.activiti.org/bpmn2.0">
 
   <process id="receiveProcess">

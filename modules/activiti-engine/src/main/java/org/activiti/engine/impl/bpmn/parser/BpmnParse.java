@@ -168,8 +168,7 @@ public class BpmnParse extends Parse {
   public BpmnParse execute() {
     super.execute(); // schema validation
 
-    // Item definitions and interfaces/operations are not part of any process definition
-    // They need to be parsed before the process definitions since they will refer to them
+    parseDefinitionsAttributes(rootElement);
     parseImports(rootElement);
     parseItemDefinitions(rootElement);
     parseMessages(rootElement);
@@ -177,6 +176,17 @@ public class BpmnParse extends Parse {
     parseProcessDefinitions(rootElement);
     
     return this;
+  }
+  
+  private void parseDefinitionsAttributes(Element rootElement) {
+    String typeLanguage = rootElement.attribute("typeLanguage");
+    String expressionLanguage = rootElement.attribute("expressionLanguage");
+    if (typeLanguage.contains("XMLSchema")) {
+      LOG.info("XMLSchema currently not supported as typeLanguage");
+    }
+    if(expressionLanguage.contains("XPath")) {
+      LOG.info("XPath currently not supported as typeLanguage");
+    }
   }
 
   /**
