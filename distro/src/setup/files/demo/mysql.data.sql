@@ -28,7 +28,7 @@ update ACT_GE_PROPERTY
 set VALUE_ = '10'
 where NAME_ = 'next.dbid';
 
-insert into ACT_CY_CONFIG values ('kermit', '<org.activiti.cycle.impl.conf.ConfigurationContainer>
+insert into CYCLE_CONFIG values ('kermit', '<org.activiti.cycle.impl.conf.ConfigurationContainer>
   <name>kermit</name>
   <linkedConnectors>
     <org.activiti.cycle.impl.connector.signavio.SignavioConnectorConfiguration>
@@ -44,7 +44,7 @@ insert into ACT_CY_CONFIG values ('kermit', '<org.activiti.cycle.impl.conf.Confi
   </linkedConnectors>
   <parentContainers/>
 </org.activiti.cycle.impl.conf.ConfigurationContainer>', 1);
-insert into ACT_CY_CONFIG values ('fozzie', '<org.activiti.cycle.impl.conf.ConfigurationContainer>
+insert into CYCLE_CONFIG values ('fozzie', '<org.activiti.cycle.impl.conf.ConfigurationContainer>
   <name>fozzie</name>
   <linkedConnectors>
     <org.activiti.cycle.impl.connector.signavio.SignavioConnectorConfiguration>
@@ -60,7 +60,7 @@ insert into ACT_CY_CONFIG values ('fozzie', '<org.activiti.cycle.impl.conf.Confi
   </linkedConnectors>
   <parentContainers/>
 </org.activiti.cycle.impl.conf.ConfigurationContainer>', 1);
-insert into ACT_CY_CONFIG values ('gonzo', '<org.activiti.cycle.impl.conf.ConfigurationContainer>
+insert into CYCLE_CONFIG values ('gonzo', '<org.activiti.cycle.impl.conf.ConfigurationContainer>
   <name>gonzo</name>
   <linkedConnectors>
     <org.activiti.cycle.impl.connector.signavio.SignavioConnectorConfiguration>

@@ -1,1 +1,1 @@
-drop table ACT_CY_CONFIG if exists;
+drop table CYCLE_CONFIG if exists;

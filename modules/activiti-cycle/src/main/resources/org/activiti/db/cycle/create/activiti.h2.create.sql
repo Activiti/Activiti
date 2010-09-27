@@ -1,4 +1,4 @@
-create table ACT_CY_CONFIG (
+create table CYCLE_CONFIG (
 	ID_ varchar,
     VALUE_ varchar,
     REV_ integer,
