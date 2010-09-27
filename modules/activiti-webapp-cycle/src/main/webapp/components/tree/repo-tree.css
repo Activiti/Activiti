@@ -5,3 +5,10 @@
 #content #left .activiti-component {
 	overflow: auto;
 }
+
+
+
+#content #left .activiti-component #treeDiv1 .loading {
+	background:url("/activiti-cycle/res/images/loading.gif") no-repeat scroll center center transparent;
+	height:8em;
+}
