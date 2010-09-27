@@ -280,7 +280,7 @@ public class DbSqlSessionFactory implements SessionFactory, ProcessEngineConfigu
       success = true;
 
     } catch (Exception e) {
-      throw new ActivitiException("couldn't create db schema", e);
+      throw new ActivitiException("couldn't create or drop db schema", e);
 
     } finally {
       if (success) {

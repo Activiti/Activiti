@@ -27,14 +27,12 @@ import java.lang.annotation.RetentionPolicy;
  * 
  * public class ExampleTest {
  * 
- *   &#64;Test
  *   &#64;Deployment
  *   public void testForADeploymentWithASingleResource() {
  *     // a deployment will be available in the engine repository
  *     // containing the single resource <b>org/example/ExampleTest.testForADeploymentWithASingleResource.bpmn20.xml</b>
  *   }
  * 
- *   &#64;Test
  *   &#64;Deployment(resources = { 
  *     "org/example/processOne.bpmn20.xml",
  *     "org/example/processTwo.bpmn20.xml",

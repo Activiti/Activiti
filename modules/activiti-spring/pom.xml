@@ -30,6 +30,11 @@
       <groupId>org.springframework</groupId>
       <artifactId>spring-tx</artifactId>
     </dependency>
+     <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-test</artifactId>
+      <scope>test</scope>
+    </dependency>
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
@@ -148,6 +153,7 @@
               <excludes>
                 <exclude>org/activiti/standalone/**</exclude>
                 <exclude>**/*TestCase.java</exclude>
+                <exclude>org/activiti/engine/test/api/testing/ActivitiRuleJunit4Test.java</exclude><!-- Can't run in Spring since ActivitiRule must be used different in Spring -->
               </excludes>
             </configuration>
           </plugin>

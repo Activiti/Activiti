@@ -66,7 +66,7 @@ import org.junit.runners.model.FrameworkMethod;
  */
 public class ActivitiRule extends TestWatchman {
 
-  protected String configurationResource = "activiti.properties";
+  protected String DEFAULT_CONIFGURATION_RESOURCE = "activiti.properties";
   protected String deploymentId = null;
 
   protected ProcessEngine processEngine;
@@ -81,7 +81,11 @@ public class ActivitiRule extends TestWatchman {
   }
 
   public ActivitiRule(String configurationResource) {
-    this.configurationResource = configurationResource;
+    this.DEFAULT_CONIFGURATION_RESOURCE = configurationResource;
+  }
+  
+  public ActivitiRule(ProcessEngine processEngine) {
+    this.processEngine = processEngine;
   }
 
   @Override
@@ -95,7 +99,7 @@ public class ActivitiRule extends TestWatchman {
   }
   
   protected void initializeProcessEngine() {
-    processEngine = TestHelper.getProcessEngine(configurationResource);
+    processEngine = TestHelper.getProcessEngine(DEFAULT_CONIFGURATION_RESOURCE);
   }
 
   protected void initializeServices() {
@@ -119,11 +123,11 @@ public class ActivitiRule extends TestWatchman {
   }
 
   public String getConfigurationResource() {
-    return configurationResource;
+    return DEFAULT_CONIFGURATION_RESOURCE;
   }
   
   public void setConfigurationResource(String configurationResource) {
-    this.configurationResource = configurationResource;
+    this.DEFAULT_CONIFGURATION_RESOURCE = configurationResource;
   }
   
   public ProcessEngine getProcessEngine() {

@@ -196,4 +196,48 @@ userBean.hello();</programlisting>
 
 &lt;/beans&gt;</programlisting>
   </section>
+  
+  <section id="springUnitTest">
+    <title>Unit testing</title>
+    <para>
+      When integrating with Spring, business processes can be tested very easily using the
+      standard <link linkend="apiUnitTesting">Activiti testing facilities</link>.
+      Following example shows how a business process is tested in a typical Spring-based unit test:
+      <programlisting>
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(&quot;classpath:org/activiti/spring/test/junit4/springTypicalUsageTest-context.xml&quot;)
+public class MyBusinessProcessTest {
+  
+  @Autowired
+  private RuntimeService runtimeService;
+  
+  @Autowired
+  private TaskService taskService;
+  
+  @Autowired
+  @Rule
+  public ActivitiRule activitiSpringRule;
+  
+  @Test
+  @Deployment
+  public void simpleProcessTest() {
+    runtimeService.startProcessInstanceByKey(&quot;simpleProcess&quot;);
+    Task task = taskService.createTaskQuery().singleResult();
+    assertEquals(&quot;My Task&quot;, task.getName());
+  
+    taskService.complete(task.getId());
+    assertEquals(0, runtimeService.createProcessInstanceQuery().count());
+   
+  }
+}      
+      </programlisting>
+      Note that for this to work, you need to define a <emphasis>org.activiti.engine.test.ActivitiRule</emphasis>
+      bean in the Spring configuration (which is injected by auto-wiring in the example above). 
+      <programlisting>
+&lt;bean id=&quot;activitiRule&quot; class=&quot;org.activiti.engine.test.ActivitiRule&quot;&gt;
+  &lt;property name=&quot;processEngine&quot; ref=&quot;processEngine&quot; /&gt;
+&lt;/bean&gt;        
+      </programlisting>
+    </para>
+  </section>
 </chapter>

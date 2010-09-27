@@ -37,7 +37,5 @@ public class SpringTransactionIntegrationTest extends PvmTestCase {
     userBean.hello();
     
     repositoryService.deleteDeploymentCascade(deploymentId);
-    
-    applicationContext.destroy();
   }
 }

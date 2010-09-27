@@ -34,8 +34,8 @@ import org.activiti.engine.impl.util.ClockUtil;
  *
  * <p>The ProcessEngine and the services available to subclasses through protected member fields.  
  * The processEngine will be initialized by default with the activiti.properties resource 
- * on the classpath.  To specify a different configuration file, pass the 
- * resource location in {@link #ActivitiTestCase(String) the appropriate constructor}.
+ * on the classpath.  To specify a different configuration file, override the 
+ * {@link #getConfigurationResource()} method.
  * Process engines will be cached statically.  The first time the setUp is called for a given 
  * configuration resource, the process engine will be constructed.</p>
  * 
@@ -72,11 +72,6 @@ public class ActivitiTestCase extends TestCase {
   public ActivitiTestCase() {
   }
   
-  /** specify a custom classpath resource for the activiti configuration file to use */
-  public ActivitiTestCase(String configurationResource) {
-    this.configurationResource = configurationResource;
-  }
-  
   public void assertProcessEnded(final String processInstanceId) {
     TestHelper.assertProcessEnded(processEngine, processInstanceId);
   }
@@ -94,7 +89,7 @@ public class ActivitiTestCase extends TestCase {
   }
 
   protected void initializeProcessEngine() {
-    processEngine = TestHelper.getProcessEngine(configurationResource);
+    processEngine = TestHelper.getProcessEngine(getConfigurationResource());
   }
 
   protected void initializeServices() {
@@ -122,5 +117,14 @@ public class ActivitiTestCase extends TestCase {
   public void setCurrentTime(Date currentTime) {
     ClockUtil.setCurrentTime(currentTime);
   }
+  
+  public String getConfigurationResource() {
+    return configurationResource;
+  }
+  
+  public void setConfigurationResource(String configurationResource) {
+    this.configurationResource = configurationResource;
+  }
+  
 }
 

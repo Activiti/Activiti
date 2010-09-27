@@ -21,7 +21,7 @@ import org.activiti.pvm.activity.ActivityExecution;
 /**
  * @author Tom Baeyens
  */
-public class ServiceTaskMethodExpressionActivityBehavior implements ActivityBehavior {
+public class ServiceTaskMethodExpressionActivityBehavior extends AbstractBpmnActivity implements ActivityBehavior {
 
   protected ActivitiMethodExpression methodExpression;
 
@@ -31,5 +31,6 @@ public class ServiceTaskMethodExpressionActivityBehavior implements ActivityBeha
 
   public void execute(ActivityExecution execution) throws Exception {
     methodExpression.invoke(execution);
+    leave(execution);
   }
 }
