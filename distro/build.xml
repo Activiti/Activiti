@@ -143,7 +143,7 @@
   </target>
   
   <target name="build.modules">
-    <exec executable="${mvn.executable}" dir="..">
+    <exec executable="${mvn.executable}" dir=".." failonerror="true">
       <arg line="-Pdistro clean install" />
     </exec>
   </target>
