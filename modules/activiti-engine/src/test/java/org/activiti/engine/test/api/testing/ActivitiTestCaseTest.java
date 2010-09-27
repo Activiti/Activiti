@@ -13,6 +13,7 @@
 
 package org.activiti.engine.test.api.testing;
 
+import org.activiti.engine.impl.cfg.ProcessEngineConfiguration;
 import org.activiti.engine.impl.test.ActivitiInternalTestCase;
 import org.activiti.engine.impl.test.TestHelper;
 import org.activiti.engine.task.Task;
@@ -41,6 +42,11 @@ public class ActivitiTestCaseTest extends ActivitiTestCase {
      * will fail if the DB schema isn't dropped here.
      */
     TestHelper.closeProcessEngines();
+    ProcessEngineConfiguration processEngineConfiguration = new ProcessEngineConfiguration();
+    processEngineConfiguration.setJdbcUrl("jdbc:h2:mem:activiti-reboot-test;DB_CLOSE_DELAY=1000");
+    try {
+      processEngineConfiguration.dbSchemaDrop();
+    } catch (Exception e) {}
   }
   
   @Deployment
