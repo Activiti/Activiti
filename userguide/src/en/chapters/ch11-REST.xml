@@ -35,6 +35,41 @@
     Please consider the API sections as a "one line hint" to what functionality of the core API that is used to implement the REST API call.    
   </para>
 
+  <section>
+
+     <title>Deployment</title>
+
+     <section>
+        <title>Get Deployment Resource</title>
+        <para>
+           Returns a resource from the deployment.
+        </para>
+        <itemizedlist>
+           <listitem>
+              <para>
+                 <emphasis role="bold">Request: </emphasis>
+                 <literal>GET /deployment/{deploymentId}/resource/{resourceName}</literal>
+              </para>
+           </listitem>
+           <listitem>
+              <para>
+                 <emphasis role="bold">API: </emphasis>
+                 <literal>ProcessEngines.getProcessEngine(configuredProcessEngineName).getRepositoryService().getResourceAsStream(deploymentId, resourceName)</literal>
+              </para>
+           </listitem>
+           <listitem>
+              <para>
+                 <emphasis role="bold">Response:</emphasis>
+                 <programlisting>I.e a .bpmn20.xml file, an image or whatever type of file the deployment resource contained.</programlisting>
+              </para>
+           </listitem>
+        </itemizedlist>
+     </section>
+
+    </section>
+
+    <!-- ENGINE -->
+
     <section>
 
       <title>Engine</title>
@@ -84,7 +119,11 @@
       <section>
         <title>List Process Definitions</title>
         <para>
-          Returns details about the deployed process definitions.
+          Returns details about the deployed process definitions. The name of the BPMN2.0 xml process diagram is given
+          in the "resourceName" attribute and can, in combination with the "deploymentId" attribute, be retreived
+          from the GET Deployment Resource REST API call above. If the process has a start form it is given in the
+          "startFormResourceKey" attribute. The start form for a process can be retrieved from the GET Start Process Form
+          REST API call.
         </para>
         <itemizedlist>
           <listitem>
@@ -110,7 +149,10 @@
       "id": "financialReport:1",
       "key": "financialReport",
       "version": 1,
-      "name": "Monthly financial report"
+      "name": "Monthly financial report",
+      "resourceName": "org/activiti/examples/bpmn/usertask/FinancialReportProcess.bpmn20.xml",
+      "deploymentId": "10",
+      "startFormResourceKey": null                 
     }
   ]
 }</programlisting>
@@ -128,7 +170,7 @@
           <listitem>
             <para>
               <emphasis role="bold">Request:</emphasis>
-              <literal>GET /process-definitions/{processDefinitionId}</literal>
+              <literal>GET /process-definition/{processDefinitionId}</literal>
             </para>
           </listitem>
           <listitem>
@@ -145,7 +187,10 @@
   "id": "financialReport:1",
   "key": "financialReport",
   "version": 1,
-  "name": "Monthly financial report"
+  "name": "Monthly financial report",
+  "resourceName": "org/activiti/examples/bpmn/usertask/FinancialReportProcess.bpmn20.xml",
+  "deploymentId": "10",
+  "startFormResourceKey": null
 }</programlisting>
             </para>
           </listitem>
@@ -161,7 +206,7 @@
           <listitem>
             <para>
               <emphasis role="bold">Request:</emphasis>
-              <literal>GET /process-definitions/{processDefinitionId}/form[?format=html|json]</literal>
+              <literal>GET /process-definition/{processDefinitionId}/form[?format=html|json]</literal>
             </para>
           </listitem>
           <listitem>
@@ -299,7 +344,9 @@
         <para>
           Returns a task list based on a) user of a specific role: assignee (lists the tasks assigned to the user) or
           candidate (lists the tasks that the user may claim) or a candidate group (lists tasks that the members of the group may claim).
-          Result will be paginated using start (index to start from, default 0) and size (the number of tasks to return in the request, default 10).           
+          Result will be paginated using start (index to start from, default 0) and size (the number of tasks to return in the request, default 10).
+          If the task has a form it is given in the "formResourceKey" attribute. The form for a task can be retrieved
+          from the GET Task Form REST API call.
         </para>
         <itemizedlist>
           <listitem>
@@ -311,7 +358,7 @@
           <listitem>
             <para>
               <emphasis role="bold">API:</emphasis>
-              <literal>ProcessEngines.getProcessEngine(configuredProcessEngineName).getTaskService().createTaskQuery().xxx().pagedList()</literal>
+              <literal>ProcessEngines.getProcessEngine(configuredProcessEngineName).getTaskService().createTaskQuery().xxx().listPage()</literal>
             </para>
           </listitem>
           <listitem>
@@ -321,12 +368,13 @@
 {
   "data": [
     {
-      "id": 218,
-      "name": "Write monthly financial report",
-      "description": "Write monthly financial report for publication to shareholders.",
-      "priority": 2,
+      "id": 127,
+      "name": "Handle vacation request",
+      "description": "Vacation request by Kermit",
+      "priority": 50,
       "assignee": null,
-      "executionId": 217
+      "executionId": 118,
+      "formResourceKey": "org/activiti/examples/taskforms/approve.form"
     }
   ],
   "total": 1,
@@ -363,12 +411,13 @@
               <emphasis role="bold">Response:</emphasis>
               <programlisting>
 {
-  "id": 218,
-  "name": "Write monthly financial report",
-  "description": "Write monthly financial report for publication to shareholders.",
-  "priority": 2,
-  "assignee": null,
-  "executionId": 217
+      "id": 127,
+      "name": "Handle vacation request",
+      "description": "Vacation request by Kermit",
+      "priority": 50,
+      "assignee": null,
+      "executionId": 118,
+      "formResourceKey": "org/activiti/examples/taskforms/approve.form"
 }</programlisting>
             </para>
           </listitem>
@@ -677,7 +726,7 @@
 {
   "tableName": "ACT_GE_PROPERTY",
   "columnNames": ["REV_","NAME_","VALUE_"],
-  "columnNames": ["class java.lang.Integer","class java.lang.String","class java.lang.String"]
+  "columnNames": ["class java.lang.Integer", "class java.lang.String", "class java.lang.String"]
 }</programlisting>
             </para>
           </listitem>
