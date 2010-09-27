@@ -88,6 +88,10 @@
       <scope>test</scope>
     </dependency>
     
+    <dependency>
+      <groupId>xerces</groupId>
+      <artifactId>xercesImpl</artifactId>
+    </dependency>
   </dependencies>
   
   <repositories>

@@ -37,6 +37,7 @@ import org.activiti.engine.impl.bpmn.SimpleStructure;
 import org.activiti.engine.impl.bpmn.Structure;
 import org.activiti.engine.impl.bpmn.parser.BpmnParse;
 import org.activiti.engine.impl.bpmn.parser.XMLImporter;
+import org.apache.xerces.parsers.DOMParser;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -49,7 +50,6 @@ import com.sun.tools.xjc.api.ErrorListener;
 import com.sun.tools.xjc.api.Mapping;
 import com.sun.tools.xjc.api.S2JJAXBModel;
 import com.sun.tools.xjc.api.SchemaCompiler;
-import com.sun.tools.xjc.api.TypeAndAnnotation;
 import com.sun.tools.xjc.api.XJC;
 
 /**
@@ -203,7 +203,7 @@ public class WSDLImporter implements XMLImporter {
 
   private Element getRootTypes() {
     try {
-      com.sun.org.apache.xerces.internal.parsers.DOMParser parser = new com.sun.org.apache.xerces.internal.parsers.DOMParser();
+      DOMParser parser = new DOMParser();
       parser.parse(this.wsdlLocation);
       Document doc = parser.getDocument();
       Element root = (Element) doc.getFirstChild();
