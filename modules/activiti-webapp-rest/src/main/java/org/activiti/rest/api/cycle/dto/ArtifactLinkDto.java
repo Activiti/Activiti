@@ -10,7 +10,6 @@ public class ArtifactLinkDto {
 	String linkType;
 	String targetUrl;
 	String description;
-	List<String> comments;
 	String contentType;
 	String previewUrl;
 	String label;
