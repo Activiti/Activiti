@@ -119,6 +119,9 @@
 		          <execution>
                 <id>copy-test-sources-from-engine</id>
 		            <phase>generate-sources</phase>
+                <goals>
+                  <goal>run</goal>
+                </goals>
 		            <configuration>
 		              <tasks>
                     <delete dir="src/test/java/org/activiti/engine/test"/>
@@ -138,10 +141,24 @@
 		                </copy>
 		              </tasks>
 		            </configuration>
-		            <goals>
-		              <goal>run</goal>
-		            </goals>
 		          </execution>
+              <execution>
+                <id>delete-test-sources-after</id>
+                <phase>package</phase>
+                <goals>
+                  <goal>run</goal>
+                </goals>
+                <configuration>
+                  <tasks>
+                    <delete dir="src/test/java/org/activiti/engine/test"/>
+                    <delete dir="src/test/resources/org/activiti/engine/test"/>
+                    <delete dir="src/test/java/org/activiti/examples"/>
+                    <delete dir="src/test/resources/org/activiti/examples"/>
+                    <delete dir="src/test/java/org/activiti/standalone"/>
+                    <delete dir="src/test/resources/org/activiti/standalone"/>
+                  </tasks>
+                </configuration>
+              </execution>
 		        </executions>
 		      </plugin>          
 		      <plugin>
