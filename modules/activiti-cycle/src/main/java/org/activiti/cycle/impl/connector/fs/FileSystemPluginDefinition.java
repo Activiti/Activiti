@@ -17,7 +17,7 @@ import org.activiti.cycle.impl.plugin.ActivitiCyclePluginDefinition;
 public class FileSystemPluginDefinition implements ActivitiCyclePluginDefinition {
   
   public static final String ARTIFACT_TYPE_BPMN_20_XML = "bpmn20.xml";
-  public static final String ARTIFACT_TYPE_ORYX_XML = "oryx.xml";
+  public static final String ARTIFACT_TYPE_ORYX_XML = "signavio.xml";
   public static final String ARTIFACT_TYPE_TEXT = "txt";
   public static final String ARTIFACT_TYPE_XML = "xml";
   public static final String ARTIFACT_TYPE_MS_WORD = "doc";
