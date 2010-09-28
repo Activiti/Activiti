@@ -23,8 +23,6 @@ import org.activiti.engine.ProcessEngineBuilder;
 import org.activiti.engine.impl.ProcessEngineImpl;
 import org.activiti.engine.impl.db.DbSqlSession;
 import org.activiti.engine.impl.db.DbSqlSessionFactory;
-import org.activiti.engine.impl.test.ActivitiInternalTestCase;
-import org.activiti.engine.impl.test.TestHelper;
 import org.activiti.pvm.test.PvmTestCase;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
@@ -35,9 +33,6 @@ import org.apache.ibatis.session.SqlSessionFactory;
 public class ProcessEngineInitializationTest extends PvmTestCase {
 
   public void testNoTables() {
-    TestHelper.closeProcessEngines();
-    ActivitiInternalTestCase.closeProcessEngine();
-    
     try {
       new ProcessEngineBuilder()
         .configureFromPropertiesResource("org/activiti/standalone/initialization/notables.activiti.properties")
@@ -47,7 +42,6 @@ public class ProcessEngineInitializationTest extends PvmTestCase {
       // OK
       assertTextPresent("no activiti tables in db.  set property db.schema.strategy=create-drop in activiti.properties for automatic schema creation", e.getMessage());
     }
-
   }
 
   public void testVersionMismatch() {

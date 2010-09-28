@@ -96,6 +96,15 @@ public class ProcessEngineImpl implements ProcessEngine {
       
     } else if (DbSchemaStrategy.CHECK_VERSION.equals(dbSchemaStrategy)) {
       dbSqlSessionFactory.dbSchemaCheckVersion();
+      
+    } else if (ProcessEngineConfiguration.DBSCHEMASTRATEGY_CREATE_IF_NECESSARY.equals(dbSchemaStrategy)) {
+      try {
+        dbSqlSessionFactory.dbSchemaCheckVersion();
+      } catch (Exception e) {
+        if (e.getMessage().indexOf("no activiti tables in db")!=-1) {
+          dbSqlSessionFactory.dbSchemaCreate();
+        }
+      }
     }
   }
 

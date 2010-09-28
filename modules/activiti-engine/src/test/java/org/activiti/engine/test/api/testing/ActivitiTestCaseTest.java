@@ -13,9 +13,6 @@
 
 package org.activiti.engine.test.api.testing;
 
-import org.activiti.engine.impl.cfg.ProcessEngineConfiguration;
-import org.activiti.engine.impl.test.ActivitiInternalTestCase;
-import org.activiti.engine.impl.test.TestHelper;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.test.ActivitiTestCase;
 import org.activiti.engine.test.Deployment;
@@ -25,29 +22,6 @@ import org.activiti.engine.test.Deployment;
  * @author Joram Barrez
  */
 public class ActivitiTestCaseTest extends ActivitiTestCase {
-  
-  @Override
-  protected void setUp() throws Exception {
-    ActivitiInternalTestCase.closeProcessEngine(); 
-    super.setUp();
-  }
-  
-  @Override
-  protected void tearDown() throws Exception {
-    /*
-     * After the test has run, we need to drop the schema.
-     * 
-     * Tests that follow this test will recreate the process engine (since we
-     * nullified it in the setup) and execute a DB schema create, which
-     * will fail if the DB schema isn't dropped here.
-     */
-    TestHelper.closeProcessEngines();
-    ProcessEngineConfiguration processEngineConfiguration = new ProcessEngineConfiguration();
-    processEngineConfiguration.setJdbcUrl("jdbc:h2:mem:activiti-reboot-test;DB_CLOSE_DELAY=1000");
-    try {
-      processEngineConfiguration.dbSchemaDrop();
-    } catch (Exception e) {}
-  }
   
   @Deployment
   public void testSimpleProcess() {
@@ -59,6 +33,4 @@ public class ActivitiTestCaseTest extends ActivitiTestCase {
     taskService.complete(task.getId());
     assertEquals(0, runtimeService.createProcessInstanceQuery().count());
   }
-  
-
 }

@@ -87,6 +87,7 @@ public class ProcessEngineConfiguration {
   public static final int DEFAULT_MAIL_SERVER_SMTP_PORT = 25;
   
   public static final String DBSCHEMASTRATEGY_CREATE = "create";
+  public static final String DBSCHEMASTRATEGY_CREATE_IF_NECESSARY = "create-if-necessary";
   public static final String DBSCHEMASTRATEGY_DROP_CREATE = "drop-create";
 
   protected String processEngineName;
