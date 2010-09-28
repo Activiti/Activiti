@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<definitions
+  xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  targetNamespace="http://www.activiti.org/bpmn2.0">
+
+  <process id='one' name="One">
+  
+    <startEvent id='start' />
+    <sequenceFlow id='flow1' sourceRef='start' targetRef='end' />
+    <endEvent id='end' />
+    
+  </process>
+
+</definitions>

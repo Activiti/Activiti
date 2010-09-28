@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project-modules id="moduleCoreId" project-version="1.5.0">
+    <wb-module deploy-name="activiti-probe">
+        <wb-resource deploy-path="/" source-path="/src/main/webapp"/>
+        <wb-resource deploy-path="/WEB-INF/classes" source-path="/src/main/resources"/>
+        <dependent-module deploy-path="/WEB-INF/lib" handle="module:/resource/activiti-webapp/activiti-webapp">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <property name="context-root" value="activiti-probe"/>
+        <property name="java-output-path" value="/activiti-webapp-probe/target/classes"/>
+    </wb-module>
+</project-modules>

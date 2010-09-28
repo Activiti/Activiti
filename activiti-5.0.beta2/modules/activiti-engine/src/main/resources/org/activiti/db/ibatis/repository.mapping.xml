@@ -1,0 +1,253 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
+  
+<mapper namespace="org.activiti.persistence">
+
+  <!-- DEPLOYMENT INSERT -->
+  
+  <insert id="insertDeployment" parameterType="org.activiti.engine.impl.repository.DeploymentEntity">
+    insert into ACT_RE_DEPLOYMENT(ID_, NAME_, DEPLOY_TIME_)
+    values(#{id, jdbcType=VARCHAR}, #{name, jdbcType=VARCHAR}, #{deploymentTime, jdbcType=TIMESTAMP})
+  </insert>
+  
+  <!-- DEPLOYMENT UPDATE -->
+  
+  <!-- DEPLOYMENT DELETE -->
+  
+  <delete id="deleteDeployment" parameterType="string">
+    delete from ACT_RE_DEPLOYMENT where ID_ = #{id}
+  </delete>
+
+  <!-- DEPLOYMENT RESULTMAP -->
+  
+  <resultMap id="deploymentResultMap" type="org.activiti.engine.impl.repository.DeploymentEntity">
+    <id property="id" column="ID_" jdbcType="VARCHAR" />
+    <result property="name" column="NAME_" jdbcType="VARCHAR" />
+    <result property="deploymentTime" column="DEPLOY_TIME_" jdbcType="TIMESTAMP"/>
+  </resultMap>
+
+  <!-- DEPLOYMENT SELECT -->
+
+  <select id="selectDeploymentsByQueryCriteria" parameterType="org.activiti.engine.impl.DeploymentQueryImpl" resultMap="deploymentResultMap">
+    select distinct(D.*)
+    <include refid="selectDeploymentsByQueryCriteriaSql"/>
+    <if test="orderBy != null">
+      order by ${orderBy}
+    </if>
+  </select>
+
+  <select id="selectDeploymentCountByQueryCriteria" parameterType="org.activiti.engine.impl.DeploymentQueryImpl" resultType="long">
+    select count(distinct D.ID_)
+    <include refid="selectDeploymentsByQueryCriteriaSql"/>
+  </select>
+  
+  <sql id="selectDeploymentsByQueryCriteriaSql">  
+    from ACT_RE_DEPLOYMENT D
+    <where>
+      <if test="deploymentId != null">
+        D.ID_ = #{deploymentId}
+      </if>
+      <if test="name != null">
+        D.NAME_ = #{name}
+      </if>
+      <if test="nameLike != null">
+        D.NAME_ like #{nameLike}
+      </if>
+    </where>
+  </sql>
+  
+  <select id="selectDeployments" resultMap="deploymentResultMap">
+    select * from ACT_RE_DEPLOYMENT D order by D.DEPLOY_TIME_ asc
+  </select>
+  
+  <select id="selectDeploymentsByName" parameterType="string" resultMap="deploymentResultMap">
+    select * from ACT_RE_DEPLOYMENT D where NAME_=#{name} order by D.DEPLOY_TIME_ asc
+  </select>
+  
+  <select id="selectDeploymentById" parameterType="string" resultMap="deploymentResultMap">
+    select * from ACT_RE_DEPLOYMENT where ID_ = #{id}
+  </select>
+  
+  <select id="selectDeploymentByProcessDefinitionId" parameterType="string" resultMap="deploymentResultMap">
+    select * from ACT_RE_DEPLOYMENT D 
+    where D.ID_ = 
+      (select P.DEPLOYMENT_ID_ from ACT_RE_PROC_DEF P where P.ID_ = #{processDefinitionId})
+  </select>
+  
+  <!-- RESOURCE INSERT -->
+
+  <insert id="insertResource" parameterType="org.activiti.engine.impl.repository.ResourceEntity">
+    insert into ACT_GE_BYTEARRAY(ID_, REV_, NAME_, BYTES_, DEPLOYMENT_ID_)
+    values (#{id, jdbcType=VARCHAR}, 1, #{name, jdbcType=VARCHAR}, #{bytes, jdbcType=BLOB}, #{deploymentId, jdbcType=VARCHAR})  
+  </insert>
+  
+  <!-- RESOURCE UPDATE -->
+
+  <!-- RESOURCE DELETE -->
+
+  <delete id="deleteResourcesByDeploymentId" parameterType="string">
+    delete from ACT_GE_BYTEARRAY where DEPLOYMENT_ID_ = #{id}
+  </delete>
+  
+  <!-- RESOURCE RESULTMAP -->
+
+  <resultMap id="resourceResultMap" type="org.activiti.engine.impl.repository.ResourceEntity">
+    <id property="id" column="ID_" jdbcType="VARCHAR" />
+    <result property="name" column="NAME_" jdbcType="VARCHAR"/>
+    <result property="bytes" column="BYTES_" jdbcType="BLOB"/>
+  </resultMap>
+  
+  <!-- RESOURCE SELECT -->
+
+  <select id="selectResourceNamesByDeploymentId" parameterType="string" resultType="string">
+    select NAME_ from ACT_GE_BYTEARRAY where DEPLOYMENT_ID_ = #{deploymentId} order by NAME_ asc
+  </select>
+  
+  <select id="selectResourceByDeploymentIdAndResourceName" parameterType="map" resultMap="resourceResultMap">
+    select * from ACT_GE_BYTEARRAY 
+    where DEPLOYMENT_ID_ = #{deploymentId}
+          AND NAME_ = #{resourceName}
+  </select>
+
+  <select id="selectResourcesByDeploymentId" parameterType="string" resultMap="resourceResultMap">
+    select * from ACT_GE_BYTEARRAY where DEPLOYMENT_ID_ = #{deploymentId} order by NAME_ asc
+  </select>  
+
+
+  <!-- PROCESSDEFINITION INSERT -->
+
+  <insert id="insertProcessDefinition" parameterType="org.activiti.engine.impl.repository.ProcessDefinitionEntity">
+    insert into ACT_RE_PROC_DEF(ID_, NAME_, KEY_, VERSION_, DEPLOYMENT_ID_, START_FORM_, RESOURCE_NAME_)
+    values (#{id, jdbcType=VARCHAR},
+            #{name, jdbcType=VARCHAR},
+            #{key, jdbcType=VARCHAR}, 
+            #{version, jdbcType=INTEGER},
+            #{deploymentId, jdbcType=VARCHAR},
+            #{startFormResourceKey, jdbcType=VARCHAR},
+            #{resourceName, jdbcType=VARCHAR})
+  </insert>
+  
+  <!-- PROCESSDEFINITION UPDATE -->
+
+  <!-- PROCESSDEFINITION DELETE -->
+
+  <delete id="deleteProcessDefinitionsByDeploymentId" parameterType="string">
+    delete from ACT_RE_PROC_DEF where DEPLOYMENT_ID_ = #{deploymenId} 
+  </delete>
+  
+  <!-- PROCESSDEFINITION RESULTMAP -->
+
+  <resultMap id="processDefinitionResultMap" type="org.activiti.engine.impl.repository.ProcessDefinitionEntity">
+    <id property="id" column="ID_" jdbcType="VARCHAR" />
+    <result property="name" column="NAME_" />
+    <result property="key" column="KEY_" jdbcType="VARCHAR" />
+    <result property="version" column="VERSION_" jdbcType="INTEGER"/>
+    <result property="deploymentId" column="DEPLOYMENT_ID_" jdbcType="VARCHAR"/>
+    <result property="resourceName" column="RESOURCE_NAME_" jdbcType="VARCHAR"/>
+    <result property="startFormResourceKey" column="START_FORM_" jdbcType="VARCHAR"/>
+  </resultMap>
+  
+  <!-- PROCESSDEFINITION SELECT -->
+  
+  <select id="selectProcessDefinitionById" parameterType="string" resultMap="processDefinitionResultMap">
+    select * from ACT_RE_PROC_DEF where ID_ = #{processDefinitionId}
+  </select>
+
+  <select id="selectProcessDefinitionsByQueryCriteria" parameterType="org.activiti.engine.impl.ProcessDefinitionQueryImpl" resultMap="processDefinitionResultMap">
+    select PD.*
+    <include refid="selectProcessDefinitionsByQueryCriteriaSql"/>
+    <if test="orderBy != null">
+      order by ${orderBy}
+    </if>
+  </select>
+
+  <select id="selectProcessDefinitionCountByQueryCriteria" parameterType="org.activiti.engine.impl.ProcessDefinitionQueryImpl" resultType="long">
+    select count(PD.ID_)
+    <include refid="selectProcessDefinitionsByQueryCriteriaSql"/>
+  </select>
+  
+  <sql id="selectProcessDefinitionsByQueryCriteriaSql">  
+    from ACT_RE_PROC_DEF PD
+    <where>
+      <if test="id != null">
+        PD.ID_ = #{id}
+      </if>
+      <if test="name != null">
+        PD.NAME_ = #{name}
+      </if>
+      <if test="nameLike != null">
+        PD.NAME_ like #{nameLike}
+      </if>
+      <if test="key != null">
+        and PD.KEY_ = #{key}
+      </if>
+      <if test="keyLike != null">
+        and PD.KEY_ like #{keyLike}
+      </if>
+      <if test="version != null">
+        and PD.VERSION_ = #{version}
+      </if>
+      <if test="deploymentId != null">
+        and PD.DEPLOYMENT_ID_ = #{deploymentId}
+      </if>
+      <if test="latest">
+        and PD.VERSION_ = (select max(VERSION_) from ACT_RE_PROC_DEF where KEY_ = PD.KEY_)
+      </if>
+    </where>
+  </sql>
+  
+  <select id="selectProcessDefinitions" resultMap="processDefinitionResultMap">
+    select * from ACT_RE_PROC_DEF
+    order by KEY_ ASC, VERSION_ DESC
+  </select>
+  
+  <select id="selectProcessDefinitionByDeployment" parameterType="string" resultMap="processDefinitionResultMap">
+    select * from ACT_RE_PROC_DEF where DEPLOYMENT_ID_ = #{deploymentId}
+  </select>
+  
+  <select id="selectProcessDefinitionByDeploymentAndKey" parameterType="map" resultMap="processDefinitionResultMap">
+    select * 
+    from ACT_RE_PROC_DEF 
+    where DEPLOYMENT_ID_ = #{deploymentId}
+      and KEY_ = #{processDefinitionKey}
+  </select>
+  
+  <select id="selectProcessDefinitionsByDeploymentId" parameterType="string" resultMap="processDefinitionResultMap">
+    select * from ACT_RE_PROC_DEF where DEPLOYMENT_ID_ = #{deploymentId}
+  </select>
+  
+  <select id="selectLatestProcessDefinitionByKey" parameterType="string" resultMap="processDefinitionResultMap">
+    select *
+    from ACT_RE_PROC_DEF 
+    where KEY_ = #{key} and
+          VERSION_ = (select max(VERSION_) from ACT_RE_PROC_DEF where KEY_ = #{processDefinitionKey})
+  </select>
+
+<!-- mysql specific sql -->
+  <select id="selectProcessDefinitionsByQueryCriteria_mysql" parameterType="org.activiti.engine.impl.ProcessDefinitionQueryImpl" resultMap="processDefinitionResultMap">
+    select distinct PD.*
+    <include refid="selectProcessDefinitionsByQueryCriteriaSql"/>
+    <if test="orderBy != null">
+      order by ${orderBy}
+    </if>
+  </select>
+
+  <select id="selectProcessDefinitionCountByQueryCriteria_mysql" parameterType="org.activiti.engine.impl.ProcessDefinitionQueryImpl" resultType="long">
+    select distinct count(PD.ID_)
+    <include refid="selectProcessDefinitionsByQueryCriteriaSql"/>
+  </select>
+
+  <select id="selectDeploymentsByQueryCriteria_mysql" parameterType="org.activiti.engine.impl.DeploymentQueryImpl" resultMap="deploymentResultMap">
+    select distinct D.*
+    <include refid="selectDeploymentsByQueryCriteriaSql"/>
+    <if test="orderBy != null">
+      order by ${orderBy}
+    </if>
+  </select>
+  
+  <select id="selectDeploymentCountByQueryCriteria_mysql" parameterType="org.activiti.engine.impl.DeploymentQueryImpl" resultType="long">
+    select distinct count(D.ID_)
+    <include refid="selectDeploymentsByQueryCriteriaSql"/>
+  </select>
+</mapper>

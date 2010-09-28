@@ -1,0 +1,7 @@
+<webscript>
+  <shortname>Group</shortname>
+  <description>Returns details about the group</description>
+  <url>/group/{groupId}</url>
+  <authentication>user</authentication>
+  <format default="json">argument</format>
+</webscript>

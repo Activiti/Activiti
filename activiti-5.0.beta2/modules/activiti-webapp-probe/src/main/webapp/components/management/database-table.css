@@ -1,0 +1,11 @@
+.database-table h1 {
+  float: left;
+}
+
+.database-table .yui-pg-container {
+  float: right;
+}
+
+.database-table .activiti-datatable.yui-dt {
+  clear: both;
+}

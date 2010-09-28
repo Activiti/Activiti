@@ -1,0 +1,28 @@
+Meeting Minutes
+---------------
+
+Agenda:
+1.) Scope and context of project
+2.) Discuss high level process
+3.) Define next steps
+
+
+Project Scope
+------------------
+We want to re implement the incident management process, because currently it is pretty chaotic.
+
+
+High Level Process
+------------------
+The high level (Level 1 according to the camunda method) was sketched and will be modeled in BPMN by Jakob afterwards
+(see post: http://www.bpm-guide.de/2010/07/15/bpmn-2-0-am-beispiel-incident-management/).
+
+
+Next Steps
+------------------
+The process will be modelled in Level 2 as well in BPMN (Jakob). This will be the input to discuss a possible
+technical implementation.
+
+Bottom line
+------------------
+We have talked for a while, was fun :-)

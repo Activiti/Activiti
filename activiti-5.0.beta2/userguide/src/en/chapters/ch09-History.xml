@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE chapter PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN" "../../../target/docbook-tool-1.0/docbook-xml/docbookx.dtd">
+
+<chapter>
+
+  <title>History</title>
+  
+  <warning><title>(Experimental)</title><para></para></warning>
+  
+  <para>History is the component that captures what happened
+  during process execution and stores it permanently.  In contrast to the runtime data, 
+  the history data will remain present in the DB also after process instances have completed.
+  </para>
+  <para>Currently, there are 2 history tables: <literal>ACT_HI_PROC_INST</literal> containing 
+  a record for every process instance and <literal>ACT_HI_ACT_INST</literal> containing a record
+  for every execution of an activity.
+  </para>
+  <para>In the API, the HistoryService exposes this information by offering methods 
+  <literal>createHistoricProcessInstanceQuery</literal> and <literal>createHistoricActivityInstanceQuery</literal>.
+  You might want to consider these querying these tables in order to minimize access to the runtime process instance data 
+  and that way keeping the runtime execution performant.
+  </para>
+  <para>Later on, this information will be exposed in Activiti Explorer and Activiti Probe.
+  Also, it will be the information from which the reports will be generated.
+  </para>
+  
+</chapter>

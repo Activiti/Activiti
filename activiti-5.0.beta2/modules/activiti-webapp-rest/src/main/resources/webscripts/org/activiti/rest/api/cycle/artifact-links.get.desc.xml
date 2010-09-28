@@ -1,0 +1,7 @@
+<webscript>
+  <shortname>Artifact Links</shortname>
+  <description>Returns a json string that represents the linked artifacts for a given artifact</description>
+  <url>/artifact-links</url>
+  <authentication>user</authentication>
+  <format default="json">argument</format>
+</webscript>
