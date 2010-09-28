@@ -43,36 +43,6 @@ public class ActivitiRuleJunit4Test {
   @Rule
   public ActivitiRule activitiRule = new ActivitiRule();
   
-  @BeforeClass
-  public static void beforeClass() {
-    /*
-     * If this test is run in the Maven suite, there will be already process
-     * engines initialized. Since we use the samen activiti.properties for each
-     * test, the processengine that is constructed in the ActivitiRule, will try
-     * to do a DB schema create and fail since the schema was already
-     * initialized.
-     * 
-     * By closing the existing process engines, existing db schema is dropped
-     * and the cached Process Engine is nullified. The next test that uses the
-     * ActivitiInternaleTestCase will then construct a new ProcessEngine and
-     * create the schema again.
-     */
-    ActivitiInternalTestCase.closeProcessEngine();
-  }
-  
-  @AfterClass
-  public static void afterClass() {
-    /*
-     * After the test has run, we need to drop the schema. The ActivitiRule will
-     * not do this automatically.
-     * 
-     * Tests that follow this test will recreate the process engine (since we
-     * nullified it in the BeforeClass) and execute a DB schema create, which
-     * will fail if the DB schema isn't dropped here.
-     */
-    TestHelper.closeProcessEngines();
-  }
-  
   @Test
   @Deployment
   public void ruleUsageExample() {
