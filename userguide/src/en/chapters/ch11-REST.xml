@@ -101,7 +101,7 @@
   "name": "default",
   "resourceUrl": "jar:file:\//&lt;path-to-deployment&gt;\/activiti-cfg.jar!\/activiti.properties",
   "exception": null,
-  "version": "5.0.beta2-SNAPSHOT"
+  "version": "5.0.beta2"
 }</programlisting>
             </para>
           </listitem>
@@ -761,7 +761,7 @@
     {
       "NAME_": "schema.version",
       "REV_": "1",
-      "VALUE_": "5.0.beta2-SNAPSHOT"
+      "VALUE_": "5.0.beta2"
     },
     {
       "NAME_": "next.dbid",
