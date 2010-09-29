@@ -43,10 +43,10 @@ public abstract class BpmnJavaDelegation extends BpmnActivityBehavior implements
     performDefaultOutgoingBehavior(execution);
   }
   
-  public void notify(EventListenerExecution execution) {
+  public void notify(EventListenerExecution execution) throws Exception {
     execute((DelegateExecution) execution);
   }
   
-  public abstract void execute(DelegateExecution execution);
+  public abstract void execute(DelegateExecution execution) throws Exception;
 
 }

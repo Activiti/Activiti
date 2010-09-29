@@ -22,5 +22,5 @@ public interface EventListener {
   String EVENTNAME_END = "end";
   String EVENTNAME_TAKE = "take";
   
-  void notify(EventListenerExecution execution);
+  void notify(EventListenerExecution execution) throws Exception;
 }

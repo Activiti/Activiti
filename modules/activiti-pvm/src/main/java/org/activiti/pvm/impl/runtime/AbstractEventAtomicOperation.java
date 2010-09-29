@@ -15,6 +15,7 @@ package org.activiti.pvm.impl.runtime;
 
 import java.util.List;
 
+import org.activiti.pvm.PvmException;
 import org.activiti.pvm.event.EventListener;
 import org.activiti.pvm.impl.process.ScopeImpl;
 
@@ -33,7 +34,13 @@ public abstract class AbstractEventAtomicOperation implements AtomicOperation {
       execution.setEventName(getEventName());
       execution.setEventSource(scope);
       EventListener listener = eventListeners.get(eventListenerIndex);
-      listener.notify(execution);
+      try {
+        listener.notify(execution);
+      } catch (RuntimeException e) {
+        throw e;
+      } catch (Exception e) {
+        throw new PvmException("couldn't execute event listener : "+e.getMessage(), e);
+      }
       execution.setEventListenerIndex(eventListenerIndex+1);
       execution.performOperation(this);
 
