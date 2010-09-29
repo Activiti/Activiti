@@ -18,15 +18,15 @@ import org.activiti.cycle.RepositoryNodeNotFoundException;
  * 
  * @author bernd.ruecker@camunda.com
  */
-public class TagTreeConnector implements RepositoryConnector {
+public class TagConnector implements RepositoryConnector {
 
-  private TagTreeConnectorConfiguration configuration;
+  private TagConnectorConfiguration configuration;
 
-  public TagTreeConnector(TagTreeConnectorConfiguration customizedViewConfiguration) {
+  public TagConnector(TagConnectorConfiguration customizedViewConfiguration) {
     configuration = customizedViewConfiguration;
   }
 
-  public TagTreeConnectorConfiguration getConfiguration() {
+  public TagConnectorConfiguration getConfiguration() {
     return configuration;
   }
 

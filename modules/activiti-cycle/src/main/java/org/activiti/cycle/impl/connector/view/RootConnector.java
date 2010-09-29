@@ -26,17 +26,17 @@ import org.activiti.cycle.impl.RepositoryNodeImpl;
  * 
  * @author bernd.ruecker@camunda.com
  */
-public class GlobalTreeConnector implements RepositoryConnector {
+public class RootConnector implements RepositoryConnector {
 
   private List<RepositoryConnector> repositoryConnectors;
   
-  private GlobalTreeConnectorConfiguration configuration;
+  private RootConnectorConfiguration configuration;
 
-  public GlobalTreeConnector(GlobalTreeConnectorConfiguration customizedViewConfiguration) {
+  public RootConnector(RootConnectorConfiguration customizedViewConfiguration) {
     configuration = customizedViewConfiguration;
   }
 
-  public GlobalTreeConnectorConfiguration getConfiguration() {
+  public RootConnectorConfiguration getConfiguration() {
     return configuration;
   }
   

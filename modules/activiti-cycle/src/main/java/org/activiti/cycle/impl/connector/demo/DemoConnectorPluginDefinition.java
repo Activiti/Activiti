@@ -10,6 +10,7 @@ import org.activiti.cycle.impl.conf.RepositoryConnectorConfiguration;
 import org.activiti.cycle.impl.connector.demo.action.CopyArtifactAction;
 import org.activiti.cycle.impl.connector.demo.action.OpenActivitiAction;
 import org.activiti.cycle.impl.connector.demo.provider.DemoProvider;
+import org.activiti.cycle.impl.connector.demo.provider.ExceptionProvider;
 import org.activiti.cycle.impl.plugin.ActivitiCyclePlugin;
 import org.activiti.cycle.impl.plugin.ActivitiCyclePluginDefinition;
 
@@ -21,6 +22,7 @@ public class DemoConnectorPluginDefinition implements ActivitiCyclePluginDefinit
   public static final String ARTIFACT_TYPE_BPMN_20 = "ARTIFACT_TYPE_BPMN_20";
 
   public static final String CONTENT_REPRESENTATION_ID_TEXT = "TEXT";
+  public static final String CONTENT_REPRESENTATION_ID_EXCEPTION = "EXCEPTION";
   public static final String CONTENT_REPRESENTATION_ID_PNG = "PNG";
   public static final String CONTENT_REPRESENTATION_ID_XML = "XML";
 
@@ -28,6 +30,7 @@ public class DemoConnectorPluginDefinition implements ActivitiCyclePluginDefinit
     ArtifactTypeImpl artifactType1 = new ArtifactTypeImpl(ARTIFACT_TYPE_TEXT);
     artifactType1.addDefaultContentRepresentation(new ContentRepresentationImpl(CONTENT_REPRESENTATION_ID_TEXT, ContentType.TEXT), new DemoProvider(
             CONTENT_REPRESENTATION_ID_TEXT));
+    artifactType1.addContentRepresentation(new ContentRepresentationImpl(CONTENT_REPRESENTATION_ID_EXCEPTION, ContentType.TEXT), new ExceptionProvider());
     artifactType1.addParameterizedAction(new CopyArtifactAction());
     artifactType1.addOpenUrlAction(new OpenActivitiAction());
     artifactType1.addDownloadContentAction(CONTENT_REPRESENTATION_ID_TEXT);

@@ -4,28 +4,24 @@ import org.activiti.cycle.RepositoryConnector;
 import org.activiti.cycle.impl.conf.ConfigurationContainer;
 import org.activiti.cycle.impl.conf.RepositoryConnectorConfiguration;
 
-public class GlobalTreeConnectorConfiguration extends RepositoryConnectorConfiguration {
+public class TagConnectorConfiguration extends RepositoryConnectorConfiguration {
 
   private ConfigurationContainer configuration;
 
-  public GlobalTreeConnectorConfiguration() {
+  public TagConnectorConfiguration() {
   }
 
   /**
    * Easiest way to instantiate is to hand in a {@link ConfigurationContainer}
    * for the current user
-   * 
-   * @param baseUrl
-   *          The base URL to construct a client url (maybe used in the gui
-   *          later on)
    */
-  public GlobalTreeConnectorConfiguration(ConfigurationContainer configuration) {
+  public TagConnectorConfiguration(ConfigurationContainer configuration, String tagName) {
     this.configuration = configuration;
   }
 
   @Override
   public RepositoryConnector createConnector() {
-    return new GlobalTreeConnector(this);
+    return new TagConnector(this);
   }
   
   public ConfigurationContainer getConfigurationContainer() {

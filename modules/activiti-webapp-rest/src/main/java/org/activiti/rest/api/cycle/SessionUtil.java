@@ -24,7 +24,7 @@ import org.activiti.cycle.impl.conf.ConfigurationContainer;
 import org.activiti.cycle.impl.connector.demo.DemoConnectorConfiguration;
 import org.activiti.cycle.impl.connector.fs.FileSystemConnectorConfiguration;
 import org.activiti.cycle.impl.connector.signavio.SignavioConnectorConfiguration;
-import org.activiti.cycle.impl.connector.view.GlobalTreeConnectorConfiguration;
+import org.activiti.cycle.impl.connector.view.RootConnectorConfiguration;
 import org.activiti.cycle.impl.plugin.PluginFinder;
 
 public class SessionUtil {
@@ -41,7 +41,7 @@ public class SessionUtil {
       PluginFinder.registerServletContext(session.getServletContext());
 
       ConfigurationContainer configuration = loadUserConfiguration(currentUserId);
-      connector = new GlobalTreeConnectorConfiguration(configuration).createConnector();
+      connector = new RootConnectorConfiguration(configuration).createConnector();
       
       // TODO: Correct user / password handling
       connector.login(currentUserId, currentUserId);
