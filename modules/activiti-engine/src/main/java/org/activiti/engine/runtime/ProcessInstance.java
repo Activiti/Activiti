@@ -12,8 +12,6 @@
  */
 package org.activiti.engine.runtime;
 
-import java.util.List;
-
 import org.activiti.engine.repository.ProcessDefinition;
 
 
@@ -29,10 +27,5 @@ public interface ProcessInstance extends Execution {
    * The id of the process definition of the process instance.
    */
   String getProcessDefinitionId();
-  
-  /**
-   * The ids of the activities that currently are active.
-   */
-  List<String> findActiveActivityIds();
   
 }
