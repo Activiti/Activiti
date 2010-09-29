@@ -9,9 +9,10 @@
   <!ENTITY ch07 SYSTEM "chapters/ch07-BPMN.xml">
   <!ENTITY ch08 SYSTEM "chapters/ch08-TaskForms.xml">
   <!ENTITY ch09 SYSTEM "chapters/ch09-History.xml">
-  <!ENTITY ch10 SYSTEM "chapters/ch10-Cycle.xml">
-  <!ENTITY ch11 SYSTEM "chapters/ch11-REST.xml">
-  <!ENTITY ch12 SYSTEM "chapters/ch12-Modeler.xml">
+  <!ENTITY ch10 SYSTEM "chapters/ch10-Designer.xml">
+  <!ENTITY ch11 SYSTEM "chapters/ch11-Modeler.xml">
+  <!ENTITY ch12 SYSTEM "chapters/ch12-Cycle.xml">
+  <!ENTITY ch13 SYSTEM "chapters/ch13-REST.xml">
 ]>
 
 <book>
@@ -32,5 +33,6 @@
 &ch10;
 &ch11;
 &ch12;
+&ch13;
   
 </book>
