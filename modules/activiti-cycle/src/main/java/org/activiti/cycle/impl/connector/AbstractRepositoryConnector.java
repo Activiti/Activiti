@@ -39,6 +39,13 @@ public abstract class AbstractRepositoryConnector<T extends RepositoryConnectorC
   }
 
   /**
+   * As a default a connector doesn't provide any preview picture
+   */
+  public Content getRepositoryArtifactPreview(String artifactId) throws RepositoryNodeNotFoundException {
+    return null;
+  }
+
+  /**
    * Typical basic implementation for execute a {@link ParameterizedAction} by
    * loading the {@link RepositoryArtifact}, query the action via the
    * {@link ArtifactType} and execute it by handing over "this" as parameter for

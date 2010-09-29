@@ -21,11 +21,10 @@ import org.activiti.cycle.CycleService;
 import org.activiti.cycle.RepositoryConnector;
 import org.activiti.cycle.RepositoryException;
 import org.activiti.cycle.impl.conf.ConfigurationContainer;
-import org.activiti.cycle.impl.conf.CycleServiceDbXStreamImpl;
 import org.activiti.cycle.impl.connector.demo.DemoConnectorConfiguration;
 import org.activiti.cycle.impl.connector.fs.FileSystemConnectorConfiguration;
 import org.activiti.cycle.impl.connector.signavio.SignavioConnectorConfiguration;
-import org.activiti.cycle.impl.connector.view.CustomizedViewConfiguration;
+import org.activiti.cycle.impl.connector.view.GlobalTreeConnectorConfiguration;
 import org.activiti.cycle.impl.plugin.PluginFinder;
 
 public class SessionUtil {
@@ -40,11 +39,9 @@ public class SessionUtil {
     RepositoryConnector connector = (RepositoryConnector) session.getAttribute(key);
     if (connector == null) {
       PluginFinder.registerServletContext(session.getServletContext());
-      
-      String contextPath = session.getServletContext().getContextPath();
 
       ConfigurationContainer configuration = loadUserConfiguration(currentUserId);
-      connector = new CustomizedViewConfiguration(contextPath, configuration).createConnector();
+      connector = new GlobalTreeConnectorConfiguration(configuration).createConnector();
       
       // TODO: Correct user / password handling
       connector.login(currentUserId, currentUserId);

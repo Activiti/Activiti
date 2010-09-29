@@ -50,6 +50,13 @@ public interface RepositoryConnector {
    * load the {@link RepositoryArtifact} including details
    */
   public RepositoryArtifact getRepositoryArtifact(String id) throws RepositoryNodeNotFoundException;
+  
+  /**
+   * returns a preview for the artifact if available, otherwiese null is
+   * returned. Not every connector must provide a preview for all
+   * {@link ArtifactType}s.
+   */
+  public Content getRepositoryArtifactPreview(String artifactId) throws RepositoryNodeNotFoundException;  
 
   public RepositoryFolder getRepositoryFolder(String id) throws RepositoryNodeNotFoundException;
 
@@ -57,17 +64,6 @@ public interface RepositoryConnector {
    * gets all elements
    */
   public RepositoryNodeCollection getChildren(String id) throws RepositoryNodeNotFoundException;
-
-  // TODO: Think about getRepositoryNode method which returns the node
-  // independent of the type, but currentlyx this is a problem with the Signavio
-  // Connector where we have to know what we want to query
-  
-  // /**
-  // * load a {@link RepositoryNode} independent if it is a
-  // * {@link RepositoryArtifact} or {@link RepositoryFolder}
-  // */
-  // public RepositoryNode getRepositoryNode(String id) throws
-  // RepositoryNodeNotFoundException;
 
   /**
    * return the list of supported {@link ArtifactType}s of this
@@ -119,4 +115,6 @@ public interface RepositoryConnector {
    * TODO double check the signature
    */
   public void executeParameterizedAction(String artifactId, String actionId, Map<String, Object> parameters) throws Exception;
+
+  // public String getGlobalId(RepositoryNode node);
 }

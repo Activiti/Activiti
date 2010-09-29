@@ -15,73 +15,72 @@ package org.activiti.cycle;
 import java.util.List;
 
 import org.activiti.cycle.impl.conf.ConfigurationContainer;
-import org.activiti.cycle.impl.conf.RepositoryConnectorConfiguration;
-import org.activiti.engine.impl.cfg.ProcessEngineConfiguration;
-
 
 /**
- * This interface provides the methods to read, write and manage configuration
- * entities.
- * 
- * @author christian.lipphardt@camunda.com
+ * This is the central entry point for Activiti Cycle. The service provides the
+ * possibility to store and load user configurations (which then contains
+ * {@link RepositoryConnector}s) and to do global actions not tied to a single
+ * repository like Tags, Links and so on...
  */
 public interface CycleService {
   
-  // TODO: Add this here?
-  // public RepositoryConnector createRepositoryConnector(String
-  // configuationName);
-
   public ConfigurationContainer getConfiguration(String name);
   
   public void saveConfiguration(ConfigurationContainer container);
 
+  /**
+   * adds default {@link CycleLink} for the supplied artifact ids. If you need
+   * more specific links please use the "addLink" method
+   */
+  public void addArtifactLink(String artifactId1, String artifactId2);
+
+  /**
+   * add given link to Cycle
+   */
+  public void addLink(CycleLink link); 
   
+  public List<CycleLink> getArtifactLinks(String artifactId);
+  public List<CycleLink> getArtifactLinks(String artifactId, Long revision);
+  public List<CycleLink> getArtifactLinks(String artifactId, String type);
+  public List<CycleLink> getArtifactLinks(String artifactId, Long revision, String type);
+ 
+  public void deleteLink(long linkId);
 
-  // TODO: DIscuss: I wouldn't mention the repository connectors here at all,
-  // or?
-  // public void registerRepositoryConnector(Class< ? extends
-  // RepositoryConnector> test);
-  //
-  // public List<Class< ? extends RepositoryConnector>>
-  // getRegisteredRepositoryConnectors();
+  /**
+   * add tag for the given node id. Tags are identified by their string names
+   */
+  public void addTag(String nodeId, String tagName);
 
-  // start crud methods
-
-  // public RepositoryConnectorConfiguration
-  // createRepositoryConfiguration(Class< ? extends RepositoryConnector>
-  // repositoryConnector, String user,
-  // String password, String basePath);
-//
-//  public void persistRepositoryConfiguration(RepositoryConnectorConfiguration config);
-//
-//  // Why this? the persist should persist it immediately?
-//  // Breaks CRUD/DAO, or not?
-//  // public void persistAllRepositoryConfigurations();
-//
-//  public List<RepositoryConnectorConfiguration> findAllRepositoryConfigurations();
-//
-//  public void removeRepositoryConfiguration(String name);
-
-//  public RepositoryConnectorConfiguration getRepositoryConfiguration(String name);
-
-  // end crud methods
-
-  // public List<RepositoryConnector>
-  // createRepositoryConnectorsFromConfigurations();
-
-  // public RepositoryConnector
-  // createRepositoryConnectorFromConfiguration(RepositoryConnectorConfiguration
-  // repositoryConfig);
+  /**
+   * add tag for the given node id and specify an alias which can be used in the
+   * GUI later on when showing the tag to the user
+   */
+  public void addTag(String nodeId, String tagName, String alias);
   
-  //----- start method declaration for cycle persistence -----
-//  public ProcessEngineConfiguration getProcessEngineConfiguration();
-//  
-//  public void createAndInsert(String configXML, String id);
-//  
-//  public CycleConfigEntity selectById(String id);
-//  
-//  public void deleteById(String id);
-//  
-//  public void updateById(CycleConfigEntity cycleConfig);
+  /**
+   * delete the
+   */
+  public void deleteTag(String nodeId, String tagName);
+
+  /**
+   * returns all {@link CycleTag}s for the {@link RepositoryNode} with the given
+   * id. Returns an empty list if not tags are available. Please note that
+   * different alias for tag names lead to different {@link CycleTag} objects.
+   */
+  public List<CycleTag> getTags(String nodeId) throws RepositoryNodeNotFoundException;
+  
+  /**
+   * get all available tags for the system in order to show them in the GUI (as
+   * folder, tag cloud, ...)
+   */
+  public List<CycleTag> getAllTags(); 
+
+  /**
+   * get all available tags for the system in order to show them in the GUI (as
+   * folder, tag cloud, ...) but ignore the alias settings, meaning the same tag
+   * names with different alias are merged together (which normally make sense
+   * for the top level GUI)
+   */
+  public List<CycleTag> getAllTagsIgnoreAlias(); 
   
 }

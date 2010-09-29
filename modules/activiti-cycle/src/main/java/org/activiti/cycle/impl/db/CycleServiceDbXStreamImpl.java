@@ -1,9 +1,11 @@
-package org.activiti.cycle.impl.conf;
+package org.activiti.cycle.impl.db;
 
 import java.util.HashMap;
 
 import org.activiti.cycle.CycleService;
-import org.activiti.cycle.impl.plugin.PluginFinder;
+import org.activiti.cycle.impl.conf.ConfigurationContainer;
+import org.activiti.cycle.impl.conf.CycleConfigEntity;
+import org.activiti.cycle.impl.conf.CycleDbSqlSessionFactory;
 import org.activiti.engine.DbSchemaStrategy;
 import org.activiti.engine.ProcessEngines;
 import org.activiti.engine.impl.ProcessEngineImpl;
@@ -17,7 +19,7 @@ import com.thoughtworks.xstream.XStream;
  * First implementation of {@link CycleService} using the database in the
  * background to write stuff as XML in the database.
  */
-public class CycleServiceDbXStreamImpl implements CycleService {
+public class CycleServiceDbXStreamImpl extends DummyBaseCycleService implements CycleService {
   
   private XStream xStream = new XStream();
   
@@ -32,7 +34,6 @@ public class CycleServiceDbXStreamImpl implements CycleService {
     } else {
       this.processEngineName = processEngineName;
     }
-    PluginFinder.checkPluginInitialization();
   }
   
   public CycleServiceDbXStreamImpl() {

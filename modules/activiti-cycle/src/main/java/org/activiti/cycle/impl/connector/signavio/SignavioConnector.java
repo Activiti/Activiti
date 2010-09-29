@@ -561,4 +561,5 @@ public class SignavioConnector extends AbstractRepositoryConnector<SignavioConne
   public void updateContent(String artifactId, String contentRepresentationName, Content content) throws RepositoryNodeNotFoundException {
     throw new RepositoryException("Moving artifacts is not (yet) supported by the Signavio Connector");
   }
+
 }

@@ -4,12 +4,11 @@ import org.activiti.cycle.RepositoryConnector;
 import org.activiti.cycle.impl.conf.ConfigurationContainer;
 import org.activiti.cycle.impl.conf.RepositoryConnectorConfiguration;
 
-public class CustomizedViewConfiguration extends RepositoryConnectorConfiguration {
+public class GlobalTreeConnectorConfiguration extends RepositoryConnectorConfiguration {
 
-  private String baseUrl;
   private ConfigurationContainer configuration;
 
-  public CustomizedViewConfiguration() {
+  public GlobalTreeConnectorConfiguration() {
   }
 
   /**
@@ -20,31 +19,14 @@ public class CustomizedViewConfiguration extends RepositoryConnectorConfiguratio
    *          The base URL to construct a client url (maybe used in the gui
    *          later on)
    */
-  public CustomizedViewConfiguration(String baseUrl, ConfigurationContainer configuration) {
-    if (baseUrl.endsWith("/")) {
-      this.baseUrl = baseUrl.substring(0, baseUrl.length() - 1);
-    } else {
-      this.baseUrl = baseUrl;
-    }
+  public GlobalTreeConnectorConfiguration(ConfigurationContainer configuration) {
     this.configuration = configuration;
   }
 
   @Override
   public RepositoryConnector createConnector() {
-    return new CustomizedViewConnector(this);
+    return new GlobalTreeConnector(this);
   }
-
-  public String getBaseUrl() {
-    return baseUrl;
-  }
-
-  // public String getBaseUrlWithoutSlashAtTheEnd() {
-  // if (baseUrl.endsWith("/")) {
-  // return baseUrl.substring(0, baseUrl.length() - 1);
-  // } else {
-  // return baseUrl;
-  // }
-  // }
   
   public ConfigurationContainer getConfigurationContainer() {
     return configuration;

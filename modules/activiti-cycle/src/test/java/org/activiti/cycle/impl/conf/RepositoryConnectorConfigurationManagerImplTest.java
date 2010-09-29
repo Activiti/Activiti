@@ -9,7 +9,8 @@ import org.activiti.cycle.CycleService;
 import org.activiti.cycle.RepositoryConnector;
 import org.activiti.cycle.impl.connector.fs.FileSystemConnectorConfiguration;
 import org.activiti.cycle.impl.connector.signavio.SignavioConnectorConfiguration;
-import org.activiti.cycle.impl.connector.view.CustomizedViewConfiguration;
+import org.activiti.cycle.impl.connector.view.GlobalTreeConnectorConfiguration;
+import org.activiti.cycle.impl.db.CycleServiceDbXStreamImpl;
 import org.activiti.engine.ProcessEngines;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -62,7 +63,7 @@ public class RepositoryConnectorConfigurationManagerImplTest {
       assertEquals("Signavio SAAS", connectors.get(1).getName());
       assertEquals("Activiti Modeler", connectors.get(2).getName());
 
-      RepositoryConnector connector = new CustomizedViewConfiguration("http://localhost:8080/activiti-cycle/", loadedConf).createConnector();
+      RepositoryConnector connector = new GlobalTreeConnectorConfiguration(loadedConf).createConnector();
       
       // check that files were created
 //      assertTrue(new File("bernd.cycle-conf.xml").delete());

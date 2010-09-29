@@ -26,17 +26,17 @@ import org.activiti.cycle.impl.RepositoryNodeImpl;
  * 
  * @author bernd.ruecker@camunda.com
  */
-public class CustomizedViewConnector implements RepositoryConnector {
+public class GlobalTreeConnector implements RepositoryConnector {
 
   private List<RepositoryConnector> repositoryConnectors;
   
-  private CustomizedViewConfiguration configuration;
+  private GlobalTreeConnectorConfiguration configuration;
 
-  public CustomizedViewConnector(CustomizedViewConfiguration customizedViewConfiguration) {
+  public GlobalTreeConnector(GlobalTreeConnectorConfiguration customizedViewConfiguration) {
     configuration = customizedViewConfiguration;
   }
 
-  public CustomizedViewConfiguration getConfiguration() {
+  public GlobalTreeConnectorConfiguration getConfiguration() {
     return configuration;
   }
   
@@ -191,6 +191,11 @@ public class CustomizedViewConnector implements RepositoryConnector {
     return repositoryArtifact;
   }
 
+  public Content getRepositoryArtifactPreview(String artifactId) throws RepositoryNodeNotFoundException {
+    RepositoryConnector connector = getConnectorFromUrl(artifactId);
+    return connector.getRepositoryArtifactPreview(getRepositoryPartOfUrl(artifactId));
+  }
+  
   public RepositoryFolder getRepositoryFolder(String id) {
     RepositoryConnector connector = getConnectorFromUrl(id);
     RepositoryFolder repositoryFolder = connector.getRepositoryFolder(getRepositoryPartOfUrl(id));

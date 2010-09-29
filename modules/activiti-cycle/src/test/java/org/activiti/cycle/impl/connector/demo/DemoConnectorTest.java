@@ -20,7 +20,7 @@ import org.activiti.cycle.impl.conf.ConfigurationContainer;
 import org.activiti.cycle.impl.connector.demo.action.CopyArtifactAction;
 import org.activiti.cycle.impl.connector.fs.FileSystemConnectorConfiguration;
 import org.activiti.cycle.impl.connector.signavio.SignavioConnectorConfiguration;
-import org.activiti.cycle.impl.connector.view.CustomizedViewConfiguration;
+import org.activiti.cycle.impl.connector.view.GlobalTreeConnectorConfiguration;
 import org.activiti.cycle.impl.plugin.PluginFinder;
 import org.activiti.cycle.impl.util.RepositoryLogHelper;
 import org.junit.Before;
@@ -39,7 +39,7 @@ public class DemoConnectorTest {
     // create demo connector but accessed via the customized view connector
     ConfigurationContainer userConfiguration = new ConfigurationContainer("bernd");
     userConfiguration.addRepositoryConnectorConfiguration(new DemoConnectorConfiguration("demo"));
-    RepositoryConnector conn = new CustomizedViewConfiguration("http://localhost:8080/activiti-cycle/", userConfiguration).createConnector();
+    RepositoryConnector conn = new GlobalTreeConnectorConfiguration(userConfiguration).createConnector();
     
     List<RepositoryNode> childNodes = conn.getChildren("/").asList();
     assertEquals(1, childNodes.size());
@@ -125,7 +125,7 @@ public class DemoConnectorTest {
     configuration.addRepositoryConnectorConfiguration(new SignavioConnectorConfiguration("signavio", "http://localhost:8080/activiti-modeler/"));
     configuration.addRepositoryConnectorConfiguration(new FileSystemConnectorConfiguration("files", new File("C:/temp")));
     
-    RepositoryConnector conn = new CustomizedViewConfiguration("http://localhost:8080/activiti-cycle/", configuration).createConnector();
+    RepositoryConnector conn = new GlobalTreeConnectorConfiguration(configuration).createConnector();
     
     RepositoryLogHelper.printNodes(conn, conn.getChildren("/").asList());
 
