@@ -13,6 +13,12 @@ alter table ACT_RU_EXECUTION
 alter table ACT_ID_MEMBERSHIP 
     drop constraint FK_MEMB_GROUP;
     
+alter table ACT_RU_EXECUTION
+    drop constraint UNIQ_RU_BUS_KEY;
+    
+alter table ACT_HI_PROC_INST
+    drop constraint UNIQ_HI_BUS_KEY;
+    
 alter table ACT_ID_MEMBERSHIP 
     drop constraint FK_MEMB_USER;
     

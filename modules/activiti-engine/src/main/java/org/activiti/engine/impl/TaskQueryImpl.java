@@ -37,6 +37,7 @@ public class TaskQueryImpl extends AbstractQuery<Task> implements TaskQuery {
   protected String descriptionLike;
   protected Integer priority;
   protected String assignee;
+  protected boolean unassigned = false;
   protected String candidateUser;
   protected String candidateGroup;
   protected String processInstanceId;
@@ -59,9 +60,6 @@ public class TaskQueryImpl extends AbstractQuery<Task> implements TaskQuery {
   }
   
   public TaskQueryImpl name(String name) {
-    if (name == null) {
-      throw new ActivitiException("Task name is null");
-    }
     this.name = name;
     return this;
   }
@@ -76,7 +74,7 @@ public class TaskQueryImpl extends AbstractQuery<Task> implements TaskQuery {
   
   public TaskQueryImpl description(String description) {
     if (description == null) {
-      throw new ActivitiException("Task description is null");
+      throw new ActivitiException("Description is null");
     }
     this.description = description;
     return this;
@@ -92,7 +90,7 @@ public class TaskQueryImpl extends AbstractQuery<Task> implements TaskQuery {
   
   public TaskQuery priority(Integer priority) {
     if (priority == null) {
-      throw new ActivitiException("Task priority is null");
+      throw new ActivitiException("Priority is null");
     }
     this.priority = priority;
     return this;
@@ -100,15 +98,20 @@ public class TaskQueryImpl extends AbstractQuery<Task> implements TaskQuery {
 
   public TaskQueryImpl assignee(String assignee) {
     if (assignee == null) {
-      throw new ActivitiException("Task assignee is null");
+      throw new ActivitiException("Assignee is null");
     }
     this.assignee = assignee;
+    return this;
+  }
+  
+  public TaskQuery unnassigned() {
+    this.unassigned = true;
     return this;
   }
 
   public TaskQueryImpl candidateUser(String candidateUser) {
     if (candidateUser == null) {
-      throw new ActivitiException("Task candidateUser is null");
+      throw new ActivitiException("Candidate user is null");
     }
     if (candidateGroup != null) {
       throw new ActivitiException("Invalid query usage: cannot set both candidateUser and candidateGroup");
@@ -119,7 +122,7 @@ public class TaskQueryImpl extends AbstractQuery<Task> implements TaskQuery {
   
   public TaskQueryImpl candidateGroup(String candidateGroup) {
     if (candidateGroup == null) {
-      throw new ActivitiException("Task candidateGroup is null");
+      throw new ActivitiException("Candidate group is null");
     }
     if (candidateUser != null) {
       throw new ActivitiException("Invalid query usage: cannot set both candidateUser and candidateGroup");
@@ -129,17 +132,11 @@ public class TaskQueryImpl extends AbstractQuery<Task> implements TaskQuery {
   }
   
   public TaskQueryImpl processInstanceId(String processInstanceId) {
-    if (processInstanceId == null) {
-      throw new ActivitiException("Process instance id is null");
-    }
     this.processInstanceId = processInstanceId;
     return this;
   }
   
   public TaskQueryImpl executionId(String executionId) {
-    if (executionId == null) {
-      throw new ActivitiException("Execution id is null");
-    }
     this.executionId = executionId;
     return this;
   }
@@ -249,6 +246,9 @@ public class TaskQueryImpl extends AbstractQuery<Task> implements TaskQuery {
   }
   public String getAssignee() {
     return assignee;
+  }
+  public boolean getUnassigned() {
+    return unassigned;
   }
   public String getCandidateUser() {
     return candidateUser;

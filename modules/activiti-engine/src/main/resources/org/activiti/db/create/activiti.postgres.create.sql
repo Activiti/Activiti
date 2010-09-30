@@ -31,19 +31,21 @@ create table ACT_RU_EXECUTION (
     ID_ varchar(64),
     REV_ integer,
     PROC_INST_ID_ varchar(64),
+    BUSINESS_KEY_ varchar(255),
     PARENT_ID_ varchar(64),
     PROC_DEF_ID_ varchar(64),
-	SUPER_EXEC_ varchar(64),
+	  SUPER_EXEC_ varchar(64),
     ACTIVITY_ID_ varchar(64),
     IS_ACTIVE_ boolean,
     IS_CONCURRENT_ boolean,
-	IS_SCOPE_ boolean,
-    primary key (ID_)
+	  IS_SCOPE_ boolean,
+    primary key (ID_),
+    unique (PROC_DEF_ID_, BUSINESS_KEY_)
 );
 
 create table ACT_RU_JOB (
     ID_ varchar(64) NOT NULL,
-	REV_ integer,
+	  REV_ integer,
     TYPE_ varchar(255) NOT NULL,
     LOCK_EXP_TIME_ timestamp,
     LOCK_OWNER_ varchar(255),
@@ -129,7 +131,7 @@ create table ACT_RU_VARIABLE (
     TYPE_ varchar(255) not null,
     NAME_ varchar(255) not null,
     EXECUTION_ID_ varchar(64),
-	PROC_INST_ID_ varchar(64),
+	  PROC_INST_ID_ varchar(64),
     TASK_ID_ varchar(64),
     BYTEARRAY_ID_ varchar(64),
     DATE_ timestamp,
@@ -142,6 +144,7 @@ create table ACT_RU_VARIABLE (
 create table ACT_HI_PROC_INST (
     ID_ varchar(64) not null,
     PROC_INST_ID_ varchar(64) not null,
+    BUSINESS_KEY_ varchar(255),
     PROC_DEF_ID_ varchar(64) not null,
     START_TIME_ timestamp not null,
     END_TIME_ timestamp,
@@ -149,7 +152,8 @@ create table ACT_HI_PROC_INST (
     -- TODO: check endStateName length
     END_ACT_ID_ varchar(64),
     primary key (ID_),
-    unique (PROC_INST_ID_)
+    unique (PROC_INST_ID_),
+    unique (PROC_DEF_ID_, BUSINESS_KEY_)
 );
 
 create table ACT_HI_ACT_INST (

@@ -43,6 +43,7 @@ public class SubProcessTest extends ActivitiInternalTestCase {
                                   .list();
 
     // Tasks are ordered by name (see query)
+    assertEquals(2, tasks.size());
     Task investigateHardwareTask = tasks.get(0);
     Task investigateSoftwareTask = tasks.get(1);
     assertEquals("Investigate hardware", investigateHardwareTask.getName());

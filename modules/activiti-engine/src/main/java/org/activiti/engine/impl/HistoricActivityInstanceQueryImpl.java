@@ -48,6 +48,7 @@ public class HistoricActivityInstanceQueryImpl extends AbstractQuery<HistoricAct
 
   @Override
   public long executeCount(CommandContext commandContext) {
+    checkQueryOk();
     return commandContext
       .getHistorySession()
       .findHistoricActivityInstanceCountByQueryCriteria(this);
@@ -55,11 +56,17 @@ public class HistoricActivityInstanceQueryImpl extends AbstractQuery<HistoricAct
 
   @Override
   public List<HistoricActivityInstance> executeList(CommandContext commandContext, Page page) {
+    checkQueryOk();
     return commandContext
       .getHistorySession()
       .findHistoricActivityInstancesByQueryCriteria(this, page);
   }
   
+  protected void checkQueryOk() {
+    if (orderProperty != null) {
+      throw new ActivitiException("Invalid query: call asc() or desc() after using orderByXX()");
+    }
+  }
 
   public HistoricActivityInstanceQueryImpl processInstanceId(String processInstanceId) {
     this.processInstanceId = processInstanceId;
@@ -116,7 +123,7 @@ public class HistoricActivityInstanceQueryImpl extends AbstractQuery<HistoricAct
     if (orderProperty==null) {
       throw new ActivitiException("you should call any of the orderBy methods first before specifying a direction");
     }
-    addOrder(direction.getName(), orderProperty.getName());
+    addOrder(orderProperty.getName(), direction.getName());
     orderProperty = null;
     return this;
   }

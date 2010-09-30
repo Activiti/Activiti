@@ -13,17 +13,16 @@
 
 package org.activiti.engine.test.history;
 
-import java.util.List;
-
+import org.activiti.engine.ActivitiException;
 import org.activiti.engine.history.HistoricActivityInstance;
 import org.activiti.engine.impl.test.ActivitiInternalTestCase;
 import org.activiti.engine.runtime.ProcessInstance;
-import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
 
 
 /**
  * @author Tom Baeyens
+ * @author Joram Barrez
  */
 public class HistoricActivityInstanceTest extends ActivitiInternalTestCase {
   
@@ -114,5 +113,65 @@ public class HistoricActivityInstanceTest extends ActivitiInternalTestCase {
       .singleResult();
     
     assertEquals("kermit", historicActivityInstance.getAssignee());
+  }
+  
+  @Deployment
+  public void testSorting() {
+    runtimeService.startProcessInstanceByKey("process");
+    
+    assertEquals(1, historyService.createHistoricActivityInstanceQuery().orderById().asc().list().size());
+    assertEquals(1, historyService.createHistoricActivityInstanceQuery().orderByStart().asc().list().size());
+    assertEquals(1, historyService.createHistoricActivityInstanceQuery().orderByEnd().asc().list().size());
+    assertEquals(1, historyService.createHistoricActivityInstanceQuery().orderByDuration().asc().list().size());
+    assertEquals(1, historyService.createHistoricActivityInstanceQuery().orderByExecutionId().asc().list().size());
+    assertEquals(1, historyService.createHistoricActivityInstanceQuery().orderByProcessDefinitionId().asc().list().size());
+    assertEquals(1, historyService.createHistoricActivityInstanceQuery().orderByProcessInstanceId().asc().list().size());
+
+    assertEquals(1, historyService.createHistoricActivityInstanceQuery().orderById().desc().list().size());
+    assertEquals(1, historyService.createHistoricActivityInstanceQuery().orderByStart().desc().list().size());
+    assertEquals(1, historyService.createHistoricActivityInstanceQuery().orderByEnd().desc().list().size());
+    assertEquals(1, historyService.createHistoricActivityInstanceQuery().orderByDuration().desc().list().size());
+    assertEquals(1, historyService.createHistoricActivityInstanceQuery().orderByExecutionId().desc().list().size());
+    assertEquals(1, historyService.createHistoricActivityInstanceQuery().orderByProcessDefinitionId().desc().list().size());
+    assertEquals(1, historyService.createHistoricActivityInstanceQuery().orderByProcessInstanceId().desc().list().size());
+
+    assertEquals(1, historyService.createHistoricActivityInstanceQuery().orderById().asc().count());
+    assertEquals(1, historyService.createHistoricActivityInstanceQuery().orderByStart().asc().count());
+    assertEquals(1, historyService.createHistoricActivityInstanceQuery().orderByEnd().asc().count());
+    assertEquals(1, historyService.createHistoricActivityInstanceQuery().orderByDuration().asc().count());
+    assertEquals(1, historyService.createHistoricActivityInstanceQuery().orderByExecutionId().asc().count());
+    assertEquals(1, historyService.createHistoricActivityInstanceQuery().orderByProcessDefinitionId().asc().count());
+    assertEquals(1, historyService.createHistoricActivityInstanceQuery().orderByProcessInstanceId().asc().count());
+  
+    assertEquals(1, historyService.createHistoricActivityInstanceQuery().orderById().desc().count());
+    assertEquals(1, historyService.createHistoricActivityInstanceQuery().orderByStart().desc().count());
+    assertEquals(1, historyService.createHistoricActivityInstanceQuery().orderByEnd().desc().count());
+    assertEquals(1, historyService.createHistoricActivityInstanceQuery().orderByDuration().desc().count());
+    assertEquals(1, historyService.createHistoricActivityInstanceQuery().orderByExecutionId().desc().count());
+    assertEquals(1, historyService.createHistoricActivityInstanceQuery().orderByProcessDefinitionId().desc().count());
+    assertEquals(1, historyService.createHistoricActivityInstanceQuery().orderByProcessInstanceId().desc().count());
+  }
+  
+  public void testInvalidSorting() {
+    try {
+      historyService.createHistoricActivityInstanceQuery().asc().list();
+      fail();
+    } catch (ActivitiException e) {
+      
+    }
+    
+    try {
+      historyService.createHistoricActivityInstanceQuery().desc().list();
+      fail();
+    } catch (ActivitiException e) {
+      
+    }
+    
+    try {
+      historyService.createHistoricActivityInstanceQuery().orderByDuration().list();
+      fail();
+    } catch (ActivitiException e) {
+      
+    }
   }
 }

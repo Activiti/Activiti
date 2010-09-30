@@ -15,8 +15,10 @@ package org.activiti.engine.impl;
 
 import java.util.List;
 
+import org.activiti.engine.ActivitiException;
 import org.activiti.engine.history.HistoricProcessInstance;
 import org.activiti.engine.history.HistoricProcessInstanceQuery;
+import org.activiti.engine.history.HistoricProcessInstanceQueryProperty;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
 
@@ -28,7 +30,9 @@ public class HistoricProcessInstanceQueryImpl extends AbstractQuery<HistoricProc
 
   protected String processInstanceId;
   protected String processDefinitionId;
-  protected String processDefinitionKey;
+  protected String businessKey;
+  protected boolean open = false;
+  protected HistoricProcessInstanceQueryProperty orderProperty;
   
   public HistoricProcessInstanceQueryImpl() {
   }
@@ -46,43 +50,97 @@ public class HistoricProcessInstanceQueryImpl extends AbstractQuery<HistoricProc
     this.processDefinitionId = processDefinitionId;
     return this;
   }
+  
+  public HistoricProcessInstanceQuery businessKey(String businessKey) {
+    this.businessKey = businessKey;
+    return this;
+  }
+  
+  public HistoricProcessInstanceQuery open() {
+    this.open = true;
+    return this;
+  }
+  
+  public HistoricProcessInstanceQuery orderById() {
+    return orderBy(HistoricProcessInstanceQueryProperty.ID);
+  }
+  
+  public HistoricProcessInstanceQuery orderByBusinessKey() {
+    return orderBy(HistoricProcessInstanceQueryProperty.BUSINESS_KEY);
+  }
+  
+  public HistoricProcessInstanceQuery orderByDuration() {
+    return orderBy(HistoricProcessInstanceQueryProperty.DURATION);
+  }
+  
+  public HistoricProcessInstanceQuery orderByStartTime() {
+    return orderBy(HistoricProcessInstanceQueryProperty.START_TIME);
+  }
+  
+  public HistoricProcessInstanceQuery orderByEndTime() {
+    return orderBy(HistoricProcessInstanceQueryProperty.END_TIME);
+  }
+  
+  public HistoricProcessInstanceQuery orderByProcessDefinitionId() {
+    return orderBy(HistoricProcessInstanceQueryProperty.PROCESS_DEFINITION_ID);
+  }
+  
+  public HistoricProcessInstanceQuery orderByProcessInstanceId() {
+    return orderBy(HistoricProcessInstanceQueryProperty.PROCESS_INSTANCE_ID_);
+  }
+  
+  
+  public HistoricProcessInstanceQuery asc() {
+    return direction(Direction.ASCENDING);
+  }
+  
+  public HistoricProcessInstanceQuery desc() {
+    return direction(Direction.DESCENDING);
+  }
+  
+  public HistoricProcessInstanceQuery direction(Direction direction) {
+    if (orderProperty==null) {
+      throw new ActivitiException("you should call any of the orderBy methods first before specifying a direction");
+    }
+    addOrder(orderProperty.getName(), direction.getName());
+    orderProperty = null;
+    return this;
+  }
 
-  public HistoricProcessInstanceQueryImpl processDefinitionKey(String processDefinitionKey) {
-    this.processDefinitionKey = processDefinitionKey;
-    return this;
-  }
-  
-  public HistoricProcessInstanceQueryImpl orderAsc(String column) {
-    super.addOrder(column, SORTORDER_ASC);
-    return this;
-  }
-  
-  public HistoricProcessInstanceQueryImpl orderDesc(String column) {
-    super.addOrder(column, SORTORDER_DESC);
+  public HistoricProcessInstanceQuery orderBy(HistoricProcessInstanceQueryProperty property) {
+    this.orderProperty = property;
     return this;
   }
   
   public long executeCount(CommandContext commandContext) {
+    checkQueryOk();
     return commandContext
       .getHistorySession()
       .findHistoricProcessInstanceCountByQueryCriteria(this);
   }
 
-  @SuppressWarnings("unchecked")
   public List<HistoricProcessInstance> executeList(CommandContext commandContext, Page page) {
-    return (List) commandContext
+    checkQueryOk();
+    return commandContext
       .getHistorySession()
       .findHistoricProcessInstancesByQueryCriteria(this, page);
   }
   
-  public String getProcessDefinitionKey() {
-    return processDefinitionKey;
+  protected void checkQueryOk() {
+    if (orderProperty != null) {
+      throw new ActivitiException("Invalid query: call asc() or desc() after using orderByXX()");
+    }
   }
   
+  public String getBusinessKey() {
+    return businessKey;
+  }
+  public boolean isOpen() {
+    return open;
+  }
   public String getProcessDefinitionId() {
     return processDefinitionId;
   }
-
   public String getProcessInstanceId() {
     return processInstanceId;
   }

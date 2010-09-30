@@ -84,9 +84,6 @@ public class ExecutionQueryImpl extends AbstractQuery<Execution> implements Exec
   }
   
   public ExecutionQueryImpl activityId(String activityId) {
-    if (activityId == null) {
-      throw new ActivitiException("Activity id is null");
-    }
     this.activityId = activityId;
     return this;
   }
@@ -159,31 +156,27 @@ public class ExecutionQueryImpl extends AbstractQuery<Execution> implements Exec
   public boolean getOnlyProcessInstances() {
     return false;
   }
-  
   public String getProcessDefinitionKey() {
     return processDefinitionKey;
   }
-  
   public String getProcessDefinitionId() {
     return processDefinitionId;
   }
-  
   public String getActivityId() {
     return activityId;
   }
-  
   public String getProcessInstanceId() {
     return processInstanceId;
   }
-  
+  public String getBusinessKey() {
+    return null;
+  }
   public String getExecutionId() {
     return executionId;
   }
-
   public String getSuperProcessInstanceId() {
     return superProcessInstanceId;
   }
-
   public String getSubProcessInstanceId() {
     return subProcessInstanceId;
   }

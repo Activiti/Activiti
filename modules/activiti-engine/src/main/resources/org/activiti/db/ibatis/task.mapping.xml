@@ -130,6 +130,9 @@
       <if test="assignee != null">
         and T.ASSIGNEE_ = #{assignee}
       </if>
+      <if test="unassigned">
+        and T.ASSIGNEE_ IS NULL
+      </if>
       <if test="processInstanceId != null">
         and T.PROC_INST_ID_ = #{processInstanceId}
       </if>

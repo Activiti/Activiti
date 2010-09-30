@@ -192,7 +192,7 @@ public class TaskQueryTest extends ActivitiInternalTestCase {
       fail();
     } catch (ActivitiException e) {}
   }
-
+  
   public void testQueryByAssignee() {
     TaskQuery query = taskService.createTaskQuery().assignee("gonzo");
     assertEquals(1, query.count());
@@ -204,12 +204,18 @@ public class TaskQueryTest extends ActivitiInternalTestCase {
     assertEquals(0, query.list().size());
     assertNull(query.singleResult());
   }
-
+  
   public void testQueryByNullAssignee() {
     try {
       taskService.createTaskQuery().assignee(null).list();
       fail();
     } catch(ActivitiException e) {}
+  }
+
+  public void testQueryByUnassigned() {
+    TaskQuery query = taskService.createTaskQuery().unnassigned();
+    assertEquals(11, query.count());
+    assertEquals(11, query.list().size());
   }
   
   public void testQueryByCandidateUser() {
@@ -260,7 +266,7 @@ public class TaskQueryTest extends ActivitiInternalTestCase {
       fail();
     } catch(ActivitiException e) {}
   }
-
+  
   public void testQueryPaging() {
     TaskQuery query = taskService.createTaskQuery().candidateUser("kermit");
 

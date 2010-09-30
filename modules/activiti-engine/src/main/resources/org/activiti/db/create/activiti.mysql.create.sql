@@ -31,6 +31,7 @@ create table ACT_RU_EXECUTION (
     ID_ varchar(64),
     REV_ integer,
     PROC_INST_ID_ varchar(64),
+    BUSINESS_KEY_ varchar(255),
     PARENT_ID_ varchar(64),
     PROC_DEF_ID_ varchar(64),
     SUPER_EXEC_ varchar(64),
@@ -38,7 +39,8 @@ create table ACT_RU_EXECUTION (
     IS_ACTIVE_ TINYINT,
     IS_CONCURRENT_ TINYINT,
     IS_SCOPE_ TINYINT,
-    primary key (ID_)
+    primary key (ID_),
+    unique UNIQ_RU_BUS_KEY (PROC_DEF_ID_, BUSINESS_KEY_)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE utf8_bin;
 
 create table ACT_RU_JOB (
@@ -142,13 +144,15 @@ create table ACT_RU_VARIABLE (
 create table ACT_HI_PROC_INST (
     ID_ varchar(64) not null,
     PROC_INST_ID_ varchar(64) not null,
+    BUSINESS_KEY_ varchar(255),
     PROC_DEF_ID_ varchar(64) not null,
     START_TIME_ datetime not null,
     END_TIME_ datetime,
     DURATION_ bigint,
     END_ACT_ID_ varchar(64),
     primary key (ID_),
-    unique (PROC_INST_ID_)
+    unique (PROC_INST_ID_),
+    unique UNIQ_HI_BUS_KEY (PROC_DEF_ID_, BUSINESS_KEY_)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE utf8_bin;
 
 create table ACT_HI_ACT_INST (

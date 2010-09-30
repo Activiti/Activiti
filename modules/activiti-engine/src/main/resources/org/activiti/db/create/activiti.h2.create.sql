@@ -31,6 +31,7 @@ create table ACT_RU_EXECUTION (
     ID_ varchar(64),
     REV_ integer,
     PROC_INST_ID_ varchar(64),
+    BUSINESS_KEY_ varchar(255),
     PARENT_ID_ varchar(64),
     PROC_DEF_ID_ varchar(64),
     SUPER_EXEC_ varchar(64),
@@ -142,6 +143,7 @@ create table ACT_RU_VARIABLE (
 create table ACT_HI_PROC_INST (
     ID_ varchar(64) not null,
     PROC_INST_ID_ varchar(64) not null,
+    BUSINESS_KEY_ varchar(255),
     PROC_DEF_ID_ varchar(64) not null,
     START_TIME_ timestamp not null,
     END_TIME_ timestamp,
@@ -185,6 +187,14 @@ alter table ACT_RU_EXECUTION
     add constraint FK_EXE_SUPER 
     foreign key (SUPER_EXEC_) 
     references ACT_RU_EXECUTION;
+    
+alter table ACT_RU_EXECUTION
+    add constraint UNIQ_RU_BUS_KEY
+    unique(PROC_DEF_ID_, BUSINESS_KEY_);
+    
+alter table ACT_HI_PROC_INST
+    add constraint UNIQ_HI_BUS_KEY
+    unique(PROC_DEF_ID_, BUSINESS_KEY_);
 
 alter table ACT_ID_MEMBERSHIP
     add constraint FK_MEMB_GROUP

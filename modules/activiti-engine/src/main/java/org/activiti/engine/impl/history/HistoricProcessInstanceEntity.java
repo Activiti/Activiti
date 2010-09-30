@@ -24,6 +24,7 @@ import org.activiti.engine.history.HistoricProcessInstance;
 public class HistoricProcessInstanceEntity extends HistoricScopeInstanceEntity implements HistoricProcessInstance {
 
   protected String endActivityId;
+  protected String businessKey;
 
   @SuppressWarnings("unchecked")
   @Override
@@ -34,12 +35,17 @@ public class HistoricProcessInstanceEntity extends HistoricScopeInstanceEntity i
   }
 
   // getters and setters //////////////////////////////////////////////////////
-
+  
+  
   public String getEndActivityId() {
     return endActivityId;
   }
-
-  
+  public String getBusinessKey() {
+    return businessKey;
+  }
+  public void setBusinessKey(String businessKey) {
+    this.businessKey = businessKey;
+  }
   public void setEndActivityId(String endActivityId) {
     this.endActivityId = endActivityId;
   }

@@ -7,11 +7,12 @@
   <!-- EXECUTION INSERT -->
 
   <insert id="insertExecution" parameterType="org.activiti.engine.impl.runtime.ExecutionEntity">
-    insert into ACT_RU_EXECUTION (ID_, REV_, PROC_INST_ID_, PROC_DEF_ID_, ACTIVITY_ID_, IS_ACTIVE_, IS_CONCURRENT_, IS_SCOPE_, PARENT_ID_, SUPER_EXEC_)
+    insert into ACT_RU_EXECUTION (ID_, REV_, PROC_INST_ID_, BUSINESS_KEY_, PROC_DEF_ID_, ACTIVITY_ID_, IS_ACTIVE_, IS_CONCURRENT_, IS_SCOPE_, PARENT_ID_, SUPER_EXEC_)
     values (
       #{id ,jdbcType=VARCHAR},
       1,
       #{processInstanceId, jdbcType=VARCHAR},
+      #{businessKey, jdbcType=VARCHAR},
       #{processDefinitionId ,jdbcType=VARCHAR},
       #{activityId ,jdbcType=VARCHAR},
       #{isActive ,jdbcType=BOOLEAN},
@@ -50,6 +51,7 @@
     <id property="id" column="ID_" jdbcType="VARCHAR" />
     <result property="revision" column="REV_" jdbcType="INTEGER" />
     <result property="processInstanceId" column="PROC_INST_ID_" jdbcType="VARCHAR" />
+    <result property="businessKey" column="BUSINESS_KEY_" jdbcType="VARCHAR" />
     <result property="processDefinitionId" column="PROC_DEF_ID_" jdbcType="VARCHAR" />
     <result property="activityId" column="ACTIVITY_ID_" jdbcType="VARCHAR" />
     <result property="isActive" column="IS_ACTIVE_" jdbcType="BOOLEAN" />
@@ -116,11 +118,14 @@
       <if test="processInstanceId != null">
         and E.PROC_INST_ID_ = #{processInstanceId}
       </if>
+      <if test="businessKey != null">
+        and E.BUSINESS_KEY_ = #{businessKey}
+      </if>
       <if test="activityId != null">
         and E.ACTIVITY_ID_ = #{activityId}
       </if>
       <if test="superProcessInstanceId != null">
-        <!-- A sub process instance is stored under a certain execution, potentially nested.
+        <!-- A sub process instance is stored under a certain *execution*, potentially nested.
              A sub process instance is NOT stored under the process instanc, hence the following: -->
         and E.SUPER_EXEC_ IN (select ID_ from ACT_RU_EXECUTION where PROC_INST_ID_ = #{superProcessInstanceId})
       </if>

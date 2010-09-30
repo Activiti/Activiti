@@ -49,6 +49,9 @@ public interface TaskQuery {
 
   /** Only select tasks which are assigned to the given user. */
   TaskQuery assignee(String assignee);
+  
+  /** Only select tasks which don't have an assignee. */
+  TaskQuery unnassigned();
 
   /** Only select tasks for which the given user is a candidate. */
   TaskQuery candidateUser(String candidateUser);

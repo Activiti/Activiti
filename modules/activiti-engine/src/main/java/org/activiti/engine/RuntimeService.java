@@ -36,13 +36,38 @@ public interface RuntimeService {
    * @throws ActivitiException when no process definition is deployed with the given key.
    */
   ProcessInstance startProcessInstanceByKey(String processDefinitionKey);
-
+  
+  /** 
+   * Starts a new process instance in the latest version of the process definition with the given key.
+   * The provided business key can be used to later look up the process instance using
+   * a key that has a business meaning (eg. an order id).
+   * The combination of processdefinitionKey-businessKey must be unique.
+   * @param processDefinitionKey key of process definition, cannot be null.
+   * @param businessKey a key that uniquely identifies the process instance in the context or the
+   *                    given process definition.
+   * @throws ActivitiException when no process definition is deployed with the given key.
+   */
+  ProcessInstance startProcessInstanceByKey(String processDefinitionKey, String businessKey);
+  
   /** Starts a new process instance in the latest version of the process definition with the given key 
    * @param processDefinitionKey key of process definition, cannot be null.
    * @param variables the variables to pass, can be null.
    * @throws ActivitiException when no process definition is deployed with the given key. 
    */
   ProcessInstance startProcessInstanceByKey(String processDefinitionKey, Map<String, Object> variables);
+  
+  /** 
+   * Starts a new process instance in the latest version of the process definition with the given key.
+   * The provided business key can be used to later look up the process instance using
+   * a key that has a business meaning (eg. an order id).
+   * The combination of processdefinitionKey-businessKey must be unique.
+   * @param processDefinitionKey key of process definition, cannot be null.
+   * @param variables the variables to pass, can be null.
+   * @param businessKey a key that uniquely identifies the process instance in the context or the
+   *                    given process definition.
+   * @throws ActivitiException when no process definition is deployed with the given key.
+   */
+  ProcessInstance startProcessInstanceByKey(String processDefinitionKey, String businessKey, Map<String, Object> variables);
 
   /** Starts a new process instance in the exactly specified version of the process definition with the given id.
    * @param processDefinitionId the id of the process definition, cannot be null.
@@ -50,12 +75,35 @@ public interface RuntimeService {
    */
   ProcessInstance startProcessInstanceById(String processDefinitionId);
   
+  /** 
+   * Starts a new process instance in the exactly specified version of the process definition with the given id.
+   * The provided business key can be used to later look up the process instance using
+   * a key that has a business meaning (eg. an order id).
+   * The combination of processdefinitionKey-businessKey must be unique.
+   * @param processDefinitionId the id of the process definition, cannot be null.
+   * @param businessKey a key that uniquely identifies the process instance in the context or the
+   *                    given process definition.
+   * @throws ActivitiException when no process definition is deployed with the given key. 
+   */
+  ProcessInstance startProcessInstanceById(String processDefinitionId, String businessKey);
+  
   /** Starts a new process instance in the exactly specified version of the process definition with the given id.
    * @param processDefinitionId the id of the process definition, cannot be null.
    * @param variables variables to be passed, can be null
    * @throws ActivitiException when no process definition is deployed with the given key. 
    */
   ProcessInstance startProcessInstanceById(String processDefinitionId, Map<String, Object> variables);
+  
+  /** 
+   * Starts a new process instance in the exactly specified version of the process definition with the given id.
+   * The provided business key can be used to later look up the process instance using
+   * a key that has a business meaning (eg. an order id).
+   * The combination of processdefinitionKey-businessKey must be unique.
+   * @param processDefinitionId the id of the process definition, cannot be null.
+   * @param variables variables to be passed, can be null
+   * @throws ActivitiException when no process definition is deployed with the given key. 
+   */
+  ProcessInstance startProcessInstanceById(String processDefinitionId, String businessKey, Map<String, Object> variables);
   
   /** Delete an existing runtime process instance.
    * @param processInstanceId id of process instance to delete, cannot be null.

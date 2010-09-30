@@ -30,6 +30,7 @@ import org.activiti.engine.runtime.ProcessInstanceQuery;
 public class ProcessInstanceQueryImpl extends AbstractQuery<ProcessInstance> implements ProcessInstanceQuery {
 
   protected String executionId;
+  protected String businessKey;
   protected String processDefinitionId;
   protected String processDefinitionKey;
   protected ProcessInstanceQueryProperty orderProperty;
@@ -56,6 +57,23 @@ public class ProcessInstanceQueryImpl extends AbstractQuery<ProcessInstance> imp
     return this;
   }
   
+  public ProcessInstanceQuery businessKey(String businessKey) {
+    if (businessKey == null) {
+      throw new ActivitiException("Business key is null");
+    }
+    this.businessKey = businessKey;
+    return this;
+  }
+  
+  public ProcessInstanceQuery businessKey(String businessKey, String processDefinitionKey) {
+    if (businessKey == null) {
+      throw new ActivitiException("Business key is null");
+    }
+    this.businessKey = businessKey;
+    this.processDefinitionKey = processDefinitionKey;
+    return this;
+  }
+  
   public ProcessInstanceQueryImpl processDefinitionId(String processDefinitionId) {
     if (processDefinitionId == null) {
       throw new ActivitiException("Process definition id is null");
@@ -73,17 +91,11 @@ public class ProcessInstanceQueryImpl extends AbstractQuery<ProcessInstance> imp
   }
   
   public ProcessInstanceQuery superProcessInstance(String superProcessInstanceId) {
-    if (superProcessInstanceId == null) {
-      throw new ActivitiException("Super process instance id is null");
-    }
     this.superProcessInstanceId = superProcessInstanceId;
     return this;
   }
   
   public ProcessInstanceQuery subProcessInstance(String subProcessInstanceId) {
-    if (subProcessInstanceId == null) {
-      throw new ActivitiException("Sub process instance id is null");
-    }
     this.subProcessInstanceId = subProcessInstanceId;
     return this;
   }
@@ -157,6 +169,9 @@ public class ProcessInstanceQueryImpl extends AbstractQuery<ProcessInstance> imp
   }
   public String getProcessInstanceId() {
     return executionId;
+  }
+  public String getBusinessKey() {
+    return businessKey;
   }
   public String getProcessDefinitionId() {
     return processDefinitionId;

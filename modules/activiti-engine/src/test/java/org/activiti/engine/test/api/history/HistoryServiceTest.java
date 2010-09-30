@@ -15,8 +15,6 @@ package org.activiti.engine.test.api.history;
 
 import java.util.List;
 
-import org.activiti.engine.ActivitiException;
-import org.activiti.engine.history.HistoricProcessInstance;
 import org.activiti.engine.impl.test.ActivitiInternalTestCase;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
@@ -26,21 +24,6 @@ import org.activiti.engine.test.Deployment;
  * @author Frederik Heremans
  */
 public class HistoryServiceTest extends ActivitiInternalTestCase {
-  
-  public void testFindHistoricProcessInstanceByUnexistingId() {
-    HistoricProcessInstance historicProcessInstance = historyService.findHistoricProcessInstanceById("unexisting");
-    assertNull(historicProcessInstance);
-  }
-  
-  public void testFindHistoricProcessInstanceNullArgument() {
-    try {
-      historyService.findHistoricProcessInstanceById(null);
-      fail("ActivitiException expected");
-    } catch(ActivitiException ae) {
-      assertTextPresent("processInstanceId is null", ae.getMessage());
-    }
-  }
-  
   
   @Deployment(resources = {"org/activiti/engine/test/api/oneTaskProcess.bpmn20.xml"})
   public void testHistoricProcessInstanceQuery() {

@@ -28,4 +28,9 @@ public interface ProcessInstance extends Execution {
    */
   String getProcessDefinitionId();
   
+  /**
+   * The business key of this process instance.
+   */
+  String getBusinessKey();
+  
 }

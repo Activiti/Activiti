@@ -24,6 +24,7 @@
       insert into ACT_HI_PROC_INST (
         ID_,
         PROC_INST_ID_,
+        BUSINESS_KEY_,
         PROC_DEF_ID_,
         START_TIME_,
         END_TIME_,
@@ -32,6 +33,7 @@
       ) values (
         #{id ,jdbcType=VARCHAR},
         #{processInstanceId, jdbcType=VARCHAR},
+        #{businessKey, jdbcType=VARCHAR},
         #{processDefinitionId, jdbcType=VARCHAR},
         #{startTime, jdbcType=TIMESTAMP},
         #{endTime, jdbcType=TIMESTAMP},
@@ -45,6 +47,7 @@
   <update id="updateHistoricProcessInstance" parameterType="org.activiti.engine.impl.history.HistoricProcessInstanceEntity">
     update ACT_HI_PROC_INST set
       PROC_INST_ID_ = #{processInstanceId, jdbcType=VARCHAR},
+      BUSINESS_KEY_ = #{businessKey, jdbcType=VARCHAR},
       PROC_DEF_ID_ = #{processDefinitionId, jdbcType=VARCHAR},
       START_TIME_ = #{startTime, jdbcType=TIMESTAMP},
       END_TIME_ = #{endTime, jdbcType=TIMESTAMP},
@@ -64,6 +67,7 @@
   <resultMap id="historicProcessInstanceResultMap" type="org.activiti.engine.impl.history.HistoricProcessInstanceEntity">
     <id property="id" column="ID_" jdbcType="VARCHAR" />
     <result property="processInstanceId" column="PROC_INST_ID_" jdbcType="VARCHAR" />
+    <result property="businessKey" column="BUSINESS_KEY_" jdbcType="VARCHAR"/>
     <result property="processDefinitionId" column="PROC_DEF_ID_" jdbcType="VARCHAR" />
     <result property="startTime" column="START_TIME_" jdbcType="TIMESTAMP" />
     <result property="endTime" column="END_TIME_" jdbcType="TIMESTAMP" />
@@ -93,8 +97,17 @@
   <sql id="selectHistoricProcessInstancesByQueryCriteriaSql">
     from ACT_HI_PROC_INST HPI
     <where>
+      <if test="processInstanceId != null">
+        HPI.PROC_INST_ID_ = #{processInstanceId}
+      </if>
       <if test="processDefinitionId != null">
-        HPI.PROC_DEF_ID_ = #{processDefinitionId}
+        and HPI.PROC_DEF_ID_ = #{processDefinitionId}
+      </if>
+      <if test="businessKey != null">
+        and HPI.BUSINESS_KEY_ = #{businessKey}
+      </if>
+      <if test="open">
+        and HPI.END_TIME_ IS NULL
       </if>
     </where>
   </sql>

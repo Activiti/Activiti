@@ -20,13 +20,15 @@ import java.util.Map;
 
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.test.ActivitiInternalTestCase;
-import org.activiti.engine.runtime.Execution;
+import org.activiti.engine.impl.util.CollectionUtil;
+import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.test.Deployment;
 
 
 /**
  * @author Frederik Heremans
+ * @author Joram Barrez
  */
 public class RuntimeServiceTest extends ActivitiInternalTestCase {
 
@@ -69,9 +71,65 @@ public class RuntimeServiceTest extends ActivitiInternalTestCase {
   @Deployment(resources={
     "org/activiti/engine/test/api/oneTaskProcess.bpmn20.xml"})
   public void testStartProcessInstanceByIdNullVariables() {
-    runtimeService.startProcessInstanceByKey("oneTaskProcess", null);
+    runtimeService.startProcessInstanceByKey("oneTaskProcess", (Map<String, Object>) null);
     assertEquals(1, runtimeService.createProcessInstanceQuery().processDefinitionKey("oneTaskProcess").count());
   }
+  
+  @Deployment(resources={
+    "org/activiti/engine/test/api/oneTaskProcess.bpmn20.xml"})
+  public void startProcessInstanceWithBusinessKey() {
+    ProcessDefinition processDefinition = repositoryService.createProcessDefinitionQuery().singleResult();
+    
+    // by key
+    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("oneTaskProcess", "123");
+    assertNotNull(processInstance);
+    assertEquals("123", processInstance.getBusinessKey());
+    assertEquals(1, runtimeService.createProcessInstanceQuery().processDefinitionKey("oneTaskProcess").count());
+    
+    // by key with variables
+    processInstance = runtimeService.startProcessInstanceByKey("oneTaskProcess", "456", CollectionUtil.singletonMap("var", "value"));
+    assertNotNull(processInstance);
+    assertEquals(2, runtimeService.createProcessInstanceQuery().processDefinitionKey("oneTaskProcess").count());
+    assertEquals("var", runtimeService.getVariable(processInstance.getId(), "var"));
+    
+    // by id
+    processInstance = runtimeService.startProcessInstanceById(processDefinition.getId(), "789");
+    assertNotNull(processInstance);
+    assertEquals(3, runtimeService.createProcessInstanceQuery().processDefinitionKey("oneTaskProcess").count());
+    
+    // by id with variables
+    processInstance = runtimeService.startProcessInstanceById(processDefinition.getId(), "101123", CollectionUtil.singletonMap("var", "value2"));
+    assertNotNull(processInstance);
+    assertEquals(4, runtimeService.createProcessInstanceQuery().processDefinitionKey("oneTaskProcess").count());
+    assertEquals("var", runtimeService.getVariable(processInstance.getId(), "var"));
+  }
+  
+  @Deployment(resources={
+    "org/activiti/engine/test/api/oneTaskProcess.bpmn20.xml"})
+  public void testNonUniqueBusinessKey() {
+    runtimeService.startProcessInstanceByKey("oneTaskProcess", "123");
+    try {
+      runtimeService.startProcessInstanceByKey("oneTaskProcess", "123");
+      fail("Non-unique business key used, this should fail");
+    } catch(Exception e) {
+      
+    }
+  }
+  
+  // some databases might react strange on having mutiple times null for the business key
+  // when the unique constraint is {processDefinitionId, businessKey}
+  @Deployment(resources={
+    "org/activiti/engine/test/api/oneTaskProcess.bpmn20.xml"})
+  public void testMultipleNullBusinessKeys() {
+    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("oneTaskProcess");
+    assertNull(processInstance.getBusinessKey());
+    
+    runtimeService.startProcessInstanceByKey("oneTaskProcess");
+    runtimeService.startProcessInstanceByKey("oneTaskProcess");
+    
+    assertEquals(3, runtimeService.createProcessInstanceQuery().count());
+  }
+
   
   @Deployment(resources={
     "org/activiti/engine/test/api/oneTaskProcess.bpmn20.xml"})

@@ -81,6 +81,11 @@ public class ExecutionEntity extends ExecutionImpl implements PersistentObject, 
    * @see #getProcessInstance()
    */
   protected String processInstanceId;
+  
+  /**
+   * persisted reference to the business key.
+   */
+  protected String businessKey;
 
   /**
    * persisted reference to the parent of this execution.
@@ -189,6 +194,16 @@ public class ExecutionEntity extends ExecutionImpl implements PersistentObject, 
       scope = getActivity();
     }
     return scope;
+  }
+  
+  // bussiness key ////////////////////////////////////////////////////////////
+  
+  public String getBusinessKey() {
+    return businessKey;
+  }
+  
+  public void setBusinessKey(String businessKey) {
+    this.businessKey = businessKey;
   }
 
   // process definition ///////////////////////////////////////////////////////
@@ -403,6 +418,7 @@ public class ExecutionEntity extends ExecutionImpl implements PersistentObject, 
   public Object getPersistentState() {
     Map<String, Object> persistentState = new HashMap<String, Object>();
     persistentState.put("processDefinitionId", this.processDefinitionId);
+    persistentState.put("businessKey", businessKey);
     persistentState.put("activitiId", this.activityId);
     persistentState.put("isActive", this.isActive);
     persistentState.put("isConcurrent", this.isConcurrent);

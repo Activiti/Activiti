@@ -31,10 +31,12 @@ public class StartProcessInstanceCmd<T> implements Command<ProcessInstance> {
   protected String processDefinitionKey;
   protected String processDefinitionId;
   protected Map<String, Object> variables;
+  protected String businessKey;
   
-  public StartProcessInstanceCmd(String processDefinitionKey, String processDefinitionId, Map<String, Object> variables) {
+  public StartProcessInstanceCmd(String processDefinitionKey, String processDefinitionId, String businessKey, Map<String, Object> variables) {
     this.processDefinitionKey = processDefinitionKey;
     this.processDefinitionId = processDefinitionId;
+    this.businessKey = businessKey;
     this.variables = variables;
   }
   
@@ -59,6 +61,10 @@ public class StartProcessInstanceCmd<T> implements Command<ProcessInstance> {
     
     if (variables!=null) {
       processInstance.setVariables(variables);
+    }
+    
+    if (businessKey != null) {
+      processInstance.setBusinessKey(businessKey);
     }
     
     processInstance.start();

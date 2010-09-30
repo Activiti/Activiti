@@ -26,6 +26,12 @@ public interface ProcessInstanceQuery {
 
   /** Select the process instance with the given id */
   ProcessInstanceQuery processInstanceId(String processInstanceId);
+  
+  /** Select process instances with the given business key */
+  ProcessInstanceQuery businessKey(String businessKey);
+  
+  /** Select process instance with the given business key, unique for the given process definition */
+  ProcessInstanceQuery businessKey(String businessKey, String processDefinitionKey);
 
   /**
    * Select the process instances which are defined by a process definition with

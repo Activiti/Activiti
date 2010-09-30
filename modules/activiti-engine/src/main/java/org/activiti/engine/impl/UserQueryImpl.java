@@ -55,9 +55,6 @@ public class UserQueryImpl extends AbstractQuery<User> implements UserQuery {
   }
   
   public UserQuery firstName(String firstName) {
-    if (firstName == null) {
-      throw new ActivitiException("Provided firstName is null");
-    }
     this.firstName = firstName;
     return this;
   }
@@ -71,9 +68,6 @@ public class UserQueryImpl extends AbstractQuery<User> implements UserQuery {
   }
   
   public UserQuery lastName(String lastName) {
-    if (lastName == null) {
-      throw new ActivitiException("Provided lastName is null");
-    }
     this.lastName = lastName;
     return this;
   }
@@ -87,9 +81,6 @@ public class UserQueryImpl extends AbstractQuery<User> implements UserQuery {
   }
   
   public UserQuery email(String email) {
-    if (email == null) {
-      throw new ActivitiException("Provided email is null");
-    }
     this.email = email;
     return this;
   }

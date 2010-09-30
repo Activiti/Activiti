@@ -27,8 +27,8 @@ import org.activiti.engine.test.Deployment;
  */
 public class ProcessInstanceQueryTest extends ActivitiInternalTestCase {
 
-  private static String PROCESS_KEY = "oneTaskProcess";
-  private static String PROCESS_KEY_2 = "oneTaskProcess2";
+  private static String PROCESS_DEFINITION_KEY = "oneTaskProcess";
+  private static String PROCESS_DEFINITION_KEY_2 = "oneTaskProcess2";
   
   private List<String> processInstanceIds;
 
@@ -45,9 +45,9 @@ public class ProcessInstanceQueryTest extends ActivitiInternalTestCase {
 
     processInstanceIds = new ArrayList<String>();
     for (int i = 0; i < 4; i++) {
-      processInstanceIds.add(runtimeService.startProcessInstanceByKey(PROCESS_KEY).getId());
+      processInstanceIds.add(runtimeService.startProcessInstanceByKey(PROCESS_DEFINITION_KEY, i + "").getId());
     }
-    processInstanceIds.add(runtimeService.startProcessInstanceByKey(PROCESS_KEY_2).getId());
+    processInstanceIds.add(runtimeService.startProcessInstanceByKey(PROCESS_DEFINITION_KEY_2, "1").getId());
   }
 
   protected void tearDown() throws Exception {
@@ -74,7 +74,7 @@ public class ProcessInstanceQueryTest extends ActivitiInternalTestCase {
   }
   
   public void testQueryByProcessDefinitionKeySingleResult() {
-    ProcessInstanceQuery query = runtimeService.createProcessInstanceQuery().processDefinitionKey(PROCESS_KEY_2);
+    ProcessInstanceQuery query = runtimeService.createProcessInstanceQuery().processDefinitionKey(PROCESS_DEFINITION_KEY_2);
     assertEquals(1, query.count());
     assertEquals(1, query.list().size());
     assertNotNull(query.singleResult());
@@ -86,7 +86,7 @@ public class ProcessInstanceQueryTest extends ActivitiInternalTestCase {
   }
 
   public void testQueryByProcessDefinitionKeyMultipleResults() {
-    ProcessInstanceQuery query = runtimeService.createProcessInstanceQuery().processDefinitionKey(PROCESS_KEY);
+    ProcessInstanceQuery query = runtimeService.createProcessInstanceQuery().processDefinitionKey(PROCESS_DEFINITION_KEY);
     assertEquals(4, query.count());
     assertEquals(4, query.list().size());
 
@@ -102,6 +102,30 @@ public class ProcessInstanceQueryTest extends ActivitiInternalTestCase {
     for (String processInstanceId : processInstanceIds) {
       assertNotNull(runtimeService.createProcessInstanceQuery().processInstanceId(processInstanceId).singleResult());
       assertEquals(1, runtimeService.createProcessInstanceQuery().processInstanceId(processInstanceId).list().size());
+    }
+  }
+  
+  public void testQueryByBusinessKeyAndProcessDefinitionKey() {
+    assertEquals(1, runtimeService.createProcessInstanceQuery().businessKey("0", PROCESS_DEFINITION_KEY).count());
+    assertEquals(1, runtimeService.createProcessInstanceQuery().businessKey("1", PROCESS_DEFINITION_KEY).count());
+    assertEquals(1, runtimeService.createProcessInstanceQuery().businessKey("2", PROCESS_DEFINITION_KEY).count());
+    assertEquals(1, runtimeService.createProcessInstanceQuery().businessKey("3", PROCESS_DEFINITION_KEY).count());
+    assertEquals(1, runtimeService.createProcessInstanceQuery().businessKey("1", PROCESS_DEFINITION_KEY_2).count());
+  }
+  
+  public void testQueryByBusinessKey() {
+    assertEquals(1, runtimeService.createProcessInstanceQuery().businessKey("0").count());
+    assertEquals(2, runtimeService.createProcessInstanceQuery().businessKey("1").count());
+  }
+  
+  public void testQueryByInvalidBusinessKey() {
+    assertEquals(0, runtimeService.createProcessInstanceQuery().businessKey("invalid").count());
+    
+    try {
+      runtimeService.createProcessInstanceQuery().businessKey(null).count();
+      fail();
+    } catch(ActivitiException e) {
+      
     }
   }
 
@@ -171,8 +195,8 @@ public class ProcessInstanceQueryTest extends ActivitiInternalTestCase {
   }
   
   public void testQueryPaging() {
-    assertEquals(2, runtimeService.createProcessInstanceQuery().processDefinitionKey(PROCESS_KEY).listPage(0, 2).size());
-    assertEquals(3, runtimeService.createProcessInstanceQuery().processDefinitionKey(PROCESS_KEY).listPage(1, 3).size());
+    assertEquals(2, runtimeService.createProcessInstanceQuery().processDefinitionKey(PROCESS_DEFINITION_KEY).listPage(0, 2).size());
+    assertEquals(3, runtimeService.createProcessInstanceQuery().processDefinitionKey(PROCESS_DEFINITION_KEY).listPage(1, 3).size());
 
   }
   
@@ -185,8 +209,8 @@ public class ProcessInstanceQueryTest extends ActivitiInternalTestCase {
     assertEquals(5, runtimeService.createProcessInstanceQuery().orderBy(ProcessInstanceQueryProperty.PROCESS_DEFINITION_ID).desc().list().size());
     assertEquals(5, runtimeService.createProcessInstanceQuery().orderBy(ProcessInstanceQueryProperty.PROCESS_DEFINITION_KEY).desc().list().size());
     
-    assertEquals(4, runtimeService.createProcessInstanceQuery().processDefinitionKey(PROCESS_KEY).orderBy(ProcessInstanceQueryProperty.PROCESS_INSTANCE_ID).asc().list().size());
-    assertEquals(4, runtimeService.createProcessInstanceQuery().processDefinitionKey(PROCESS_KEY).orderBy(ProcessInstanceQueryProperty.PROCESS_INSTANCE_ID).desc().list().size());
+    assertEquals(4, runtimeService.createProcessInstanceQuery().processDefinitionKey(PROCESS_DEFINITION_KEY).orderBy(ProcessInstanceQueryProperty.PROCESS_INSTANCE_ID).asc().list().size());
+    assertEquals(4, runtimeService.createProcessInstanceQuery().processDefinitionKey(PROCESS_DEFINITION_KEY).orderBy(ProcessInstanceQueryProperty.PROCESS_INSTANCE_ID).desc().list().size());
   }
   
   public void testQueryInvalidSorting() {

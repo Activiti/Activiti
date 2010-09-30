@@ -30,10 +30,12 @@ public class ProcessInstanceStartHandler implements EventListener {
     ExecutionEntity executionEntity = (ExecutionEntity) execution;
     String processInstanceId = executionEntity.getId();
     String processDefinitionId = executionEntity.getProcessDefinitionId();
+    String businessKey = executionEntity.getBusinessKey();
 
     HistoricProcessInstanceEntity historicProcessInstance = new HistoricProcessInstanceEntity();
     historicProcessInstance.setId(processInstanceId);
     historicProcessInstance.setProcessInstanceId(processInstanceId);
+    historicProcessInstance.setBusinessKey(businessKey);
     historicProcessInstance.setProcessDefinitionId(processDefinitionId);
     historicProcessInstance.setStartTime(ClockUtil.getCurrentTime());
     

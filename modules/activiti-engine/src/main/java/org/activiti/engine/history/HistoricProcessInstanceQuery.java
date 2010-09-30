@@ -22,14 +22,9 @@ import org.activiti.engine.ActivitiException;
 /** Allows programmatic querying of {@link HistoricProcessInstance}s.
  *  
  * @author Tom Baeyens
+ * @author Joram Barrez
  */
 public interface HistoricProcessInstanceQuery {
-
-  String PROPERTY_ID = "ID_";
-  String PROPERTY_START = "START_TIME_";
-  String PROPERTY_END = "END_TIME_";
-  String PROPERTY_DURATION = "DURATION_";
-  String PROPERTY_PROCESS_DEFINITION_ID = "PROC_DEF_ID_";
 
   /** Only select historic process instances with the given process instance.
    * {@link ProcessInstance) ids and {@link HistoricProcessInstance} ids match. */
@@ -38,13 +33,40 @@ public interface HistoricProcessInstanceQuery {
   /** Only select historic process instances for the given process definition */
   HistoricProcessInstanceQuery processDefinitionId(String processDefinitionId);
   
-  /**Order the results ascending on the given property as
-   * defined in this class. */
-  HistoricProcessInstanceQuery orderAsc(String property);
+  /** Only select historic process instances with the given business key */
+  HistoricProcessInstanceQuery businessKey(String businessKey);
+  
+  /** Only select historic process instance that are not yet finished. */
+  HistoricProcessInstanceQuery open();
+  
+  /** Order by id (needs to be followed by {@link #asc()} or {@link #desc()}). */
+  HistoricProcessInstanceQuery orderById();
+  
+  /** Order by the process instance id (needs to be followed by {@link #asc()} or {@link #desc()}). */
+  HistoricProcessInstanceQuery orderByProcessInstanceId();
+  
+  /** Order by the process definition id (needs to be followed by {@link #asc()} or {@link #desc()}). */
+  HistoricProcessInstanceQuery orderByProcessDefinitionId();
+  
+  /** Order by the business key (needs to be followed by {@link #asc()} or {@link #desc()}). */
+  HistoricProcessInstanceQuery orderByBusinessKey();
 
+  /** Order by the start time (needs to be followed by {@link #asc()} or {@link #desc()}). */
+  HistoricProcessInstanceQuery orderByStartTime();
+  
+  /** Order by the end time (needs to be followed by {@link #asc()} or {@link #desc()}). */
+  HistoricProcessInstanceQuery orderByEndTime();
+  
+  /** Order by the duration of the process instance (needs to be followed by {@link #asc()} or {@link #desc()}). */
+  HistoricProcessInstanceQuery orderByDuration();
+  
   /** Order the results descending on the given property as
-   * defined in this class. */
-  HistoricProcessInstanceQuery orderDesc(String property);
+   * defined in this class (needs to come after a call to one of the orderByXxxx methods). */
+  HistoricProcessInstanceQuery desc();
+  
+  /** Order the results descending on the given property as
+   * defined in this class (needs to come after a call to one of the orderByXxxx methods). */
+  HistoricProcessInstanceQuery asc();
 
   /** Executes the query and get a list of {@link HistoricProcessInstance}s as the result. */
   List<HistoricProcessInstance> list();

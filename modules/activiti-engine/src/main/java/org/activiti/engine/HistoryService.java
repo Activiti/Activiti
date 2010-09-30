@@ -28,15 +28,9 @@ import org.activiti.engine.history.HistoricProcessInstanceQuery;
  * 
  * @author Christian Stettler
  * @author Tom Baeyens
+ * @author Joram Barrez
  */
 public interface HistoryService {
-
-  /** 
-   * Finds the {@link HistoricProcessInstance} or null if the 
-   * given process instance does not exists.
-   * @param processInstanceId id of the process instance, cannot be null. 
-   */
-  HistoricProcessInstance findHistoricProcessInstanceById(String processInstanceId);
 
   /** Creates a new programmatic query to search for {@link HistoricProcessInstance}s. */
   HistoricProcessInstanceQuery createHistoricProcessInstanceQuery();

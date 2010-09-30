@@ -31,6 +31,7 @@ create table ACT_RU_EXECUTION (
     ID_ NVARCHAR2(64),
     REV_ INTEGER,
     PROC_INST_ID_ NVARCHAR2(64),
+    BUSINESS_KEY_ NVARCHAR2(255),
     PARENT_ID_ NVARCHAR2(64),
     PROC_DEF_ID_ NVARCHAR2(64),
     SUPER_EXEC_ NVARCHAR2(64),
@@ -38,7 +39,8 @@ create table ACT_RU_EXECUTION (
     IS_ACTIVE_ NUMBER(1,0) CHECK (IS_ACTIVE_ IN (1,0)),
     IS_CONCURRENT_ NUMBER(1,0) CHECK (IS_CONCURRENT_ IN (1,0)),
     IS_SCOPE_ NUMBER(1,0) CHECK (IS_SCOPE_ IN (1,0)),
-    primary key (ID_)
+    primary key (ID_),
+    unique(PROC_DEF_ID_, BUSINESS_KEY_)
 );
 
 create table ACT_RU_JOB (
@@ -142,13 +144,15 @@ create table ACT_RU_VARIABLE (
 create table ACT_HI_PROC_INST (
     ID_ NVARCHAR2(64) not null,
     PROC_INST_ID_ NVARCHAR2(64) not null,
+    BUSINESS_KEY NVARCHAR2(255),
     PROC_DEF_ID_ NVARCHAR2(64) not null,
     START_TIME_ TIMESTAMP(6) not null,
     END_TIME_ TIMESTAMP(6),
     DURATION_ NUMBER(19,0),
     END_ACT_ID_ NVARCHAR2(64),
     primary key (ID_),
-    unique (PROC_INST_ID_)
+    unique (PROC_INST_ID_),
+    unique(PROC_DEF_ID_, BUSINESS_KEY_)
 );
 
 create table ACT_HI_ACT_INST (

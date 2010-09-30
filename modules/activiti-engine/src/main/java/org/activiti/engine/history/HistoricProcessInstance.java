@@ -25,6 +25,8 @@ public interface HistoricProcessInstance {
   String getId();
   
   String getProcessInstanceId();
+  
+  String getBusinessKey();
 
   String getProcessDefinitionId();
 
