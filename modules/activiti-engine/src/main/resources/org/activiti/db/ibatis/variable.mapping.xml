@@ -111,7 +111,7 @@
   <delete id="deleteByteArraysForDeployment" parameterType="string">
     delete from ACT_GE_BYTEARRAY where DEPLOYMENT_ID_ = #{id}
   </delete>
-  
+   
   <delete id="deleteByteArray" parameterType="string">
     delete from ACT_GE_BYTEARRAY where ID_ = #{id}
   </delete>
@@ -122,7 +122,7 @@
     <id property="id" column="ID_" jdbcType="VARCHAR" />
     <result property="revision" column="REV_" jdbcType="INTEGER"/>
     <result property="name" column="NAME_" jdbcType="VARCHAR"/>
-    <result property="bytes" column="BYTES_" jdbcType="BLOB"/>
+    <result property="bytes" column="BYTES_" jdbcType="BLOB"/>  
   </resultMap>
 
   <!-- BYTE ARRAY SELECT -->
@@ -145,4 +145,35 @@
           AND NAME_ = #{resourceName}
   </select>
 
+<!-- Postgresql specific configuration -->
+  <resultMap id="byteArrayResultMap_postgres" type="org.activiti.engine.impl.runtime.ByteArrayEntity">
+    <id property="id" column="ID_" jdbcType="VARCHAR" />
+    <result property="revision" column="REV_" jdbcType="INTEGER"/>
+    <result property="name" column="NAME_" jdbcType="VARCHAR"/>
+    <result property="bytes" column="BYTES_" jdbcType="BINARY"/>  
+  </resultMap>
+  
+  <select id="selectByteArrayById_postgres" parameterType="string" resultMap="byteArrayResultMap_postgres">
+   select * from ACT_GE_BYTEARRAY where ID_ = #{id}
+  </select>
+
+	<update id="updateByteArray_postgres" parameterType="org.activiti.engine.impl.runtime.ByteArrayEntity">
+    update ACT_GE_BYTEARRAY 
+    set
+      REV_ = #{revisionNext, jdbcType=INTEGER},
+      BYTES_ = #{bytes, jdbcType=BINARY}
+    where ID_ = #{id}
+      and REV_ = #{revision, jdbcType=INTEGER}
+  </update>  
+  
+    <insert id="insertByteArray_postgres" parameterType="org.activiti.engine.impl.runtime.ByteArrayEntity">
+    insert into ACT_GE_BYTEARRAY(ID_, REV_, NAME_, BYTES_, DEPLOYMENT_ID_)
+    values (
+      #{id, jdbcType=VARCHAR},
+      1, 
+      #{name, jdbcType=VARCHAR}, 
+      #{bytes, jdbcType=BINARY}, 
+      #{deploymentId, jdbcType=VARCHAR}
+    )  
+  </insert>
 </mapper>

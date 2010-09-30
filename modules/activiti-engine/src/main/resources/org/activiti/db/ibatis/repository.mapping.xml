@@ -250,4 +250,22 @@
     select distinct count(D.ID_)
     <include refid="selectDeploymentsByQueryCriteriaSql"/>
   </select>
+
+<!-- postgresql specific -->
+
+  <resultMap id="resourceResultMap_postgres" type="org.activiti.engine.impl.repository.ResourceEntity">
+    <id property="id" column="ID_" jdbcType="VARCHAR" />
+    <result property="name" column="NAME_" jdbcType="VARCHAR"/>
+    <result property="bytes" column="BYTES_" jdbcType="BINARY"/>
+  </resultMap>
+    
+  <select id="selectResourceByDeploymentIdAndResourceName_postgres" parameterType="map" resultMap="resourceResultMap_postgres">
+    select * from ACT_GE_BYTEARRAY 
+    where DEPLOYMENT_ID_ = #{deploymentId}
+          AND NAME_ = #{resourceName}
+  </select>
+  
+  <select id="selectResourcesByDeploymentId_postgres" parameterType="string" resultMap="resourceResultMap_postgres">
+    select * from ACT_GE_BYTEARRAY where DEPLOYMENT_ID_ = #{deploymentId} order by NAME_ asc
+  </select>  
 </mapper>

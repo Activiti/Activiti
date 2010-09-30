@@ -109,12 +109,25 @@ public class DbManagementSession implements ManagementSession, Session {
         .getSqlSession()
         .getConnection()
         .getMetaData();
+      DbMetaDataHandler databaseMetaDataHandler = TableMetaDataCacheHandler.getInstance().getDatabaseHandler(metaData);
+      TableMetaData resultCached = null;
+      if( (resultCached = databaseMetaDataHandler.getFromCache(tableName)) != null)
+      {
+    	  return resultCached; 
+      }
+      else
+      {
+    	  tableName = databaseMetaDataHandler.handleTableName(tableName);
+      }
       ResultSet resultSet = metaData.getColumns(null, null, tableName, null);
       while(resultSet.next()) {
         String name = resultSet.getString("COLUMN_NAME");
         String type = resultSet.getString("TYPE_NAME");
         result.addColumnMetaData(name, type);
       }
+      
+      databaseMetaDataHandler.addToCache(result);
+      
     } catch (SQLException e) {
       throw new ActivitiException("Could not retrieve database metadata: " + e.getMessage());
     }
