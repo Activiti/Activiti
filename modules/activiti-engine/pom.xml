@@ -218,6 +218,23 @@
       </build>
     </profile>
     
+    <profile>
+      <id>oracle</id>
+      <activation>
+        <property>
+          <name>database</name>
+          <value>oracle</value>
+        </property>
+      </activation>
+      <dependencies>
+      	 <dependency>
+          <groupId>com.oracle.jdbc</groupId>
+          <artifactId>ojdbc5</artifactId>
+          <version>11.2.0.1.0</version>
+          <scope>test</scope>
+         </dependency>
+      </dependencies>
+    </profile>
   </profiles>
 
   <reporting>

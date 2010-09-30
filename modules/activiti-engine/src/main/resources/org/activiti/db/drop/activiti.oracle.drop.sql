@@ -35,35 +35,25 @@ alter table ACT_RU_VARIABLE
     drop CONSTRAINT FK_VAR_TASK;
 
 alter table ACT_RU_VARIABLE
-	drop CONSTRAINT FK_VAR_PROCINST;    
+	drop CONSTRAINT FK_VAR_PROCINST;
 
 alter table ACT_RU_VARIABLE
     drop CONSTRAINT FK_VAR_BYTEARRAY;
 
 alter table ACT_RU_JOB
     drop CONSTRAINT FK_JOB_EXCEPTION;
-    
-/*
-	if exists is not available for oracle drop statements
-	this might be a work around:
-	
-	begin
-		execute immediate 'DROP TABLE NAME_DER_TABELLE';
-		exception when others then null;
-	end
-*/	
- drop table  ACT_GE_PROPERTY;
- drop table  ACT_RU_VARIABLE;
- drop table  ACT_GE_BYTEARRAY;
- drop table  ACT_RE_DEPLOYMENT;
- drop table  ACT_RU_IDENTITY_LINK;
- drop table  ACT_RU_TASK;
- drop table  ACT_RE_PROC_DEF;
- drop table  ACT_RU_EXECUTION;
- drop table  ACT_ID_MEMBERSHIP;
- drop table  ACT_ID_GROUP;
- drop table  ACT_ID_USER;
- drop table  ACT_RU_JOB;
- drop table  ACT_HI_PROC_INST;
- drop table  ACT_HI_ACT_INST;
- drop table  ACT_HI_DETAIL;
+
+drop table  ACT_GE_PROPERTY;
+drop table  ACT_RU_VARIABLE;
+drop table  ACT_GE_BYTEARRAY;
+drop table  ACT_RE_DEPLOYMENT;
+drop table  ACT_RU_IDENTITY_LINK;
+drop table  ACT_RU_TASK;
+drop table  ACT_RE_PROC_DEF;
+drop table  ACT_RU_EXECUTION;
+drop table  ACT_ID_MEMBERSHIP;
+drop table  ACT_ID_GROUP;
+drop table  ACT_ID_USER;
+drop table  ACT_RU_JOB;
+drop table  ACT_HI_PROC_INST;
+drop table  ACT_HI_ACT_INST;

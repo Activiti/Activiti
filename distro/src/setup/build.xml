@@ -53,6 +53,9 @@
   <condition property="db.use.postgres">
 	<equals arg1="${db}" arg2="postgres" casesensitive="false"/>
   </condition>
+  <condition property="db.use.oracle">
+	<equals arg1="${db}" arg2="oracle" casesensitive="false"/>
+  </condition>
 	
   <property name="maven.path" value="apps/apache-maven-${maven.version}/bin/${mvn.executable}" />
 
@@ -86,7 +89,7 @@
 
   <available property="is.examples.engine.libs.fetched" file="${activiti.home}/examples/activiti-engine-examples/libs-runtime" />
   <target name="examples.get.libs.engine" depends="maven.install, internal.install.activiti.libs" unless="is.examples.engine.libs.fetched">
-    <get-module-libs module="engine" profile="-Pdatabase" />
+    <get-module-libs module="engine" profile="-Ddatabase=${db}" />
   </target>
 
   <available property="is.examples.spring.libs.fetched" file="${activiti.home}/examples/activiti-spring-examples/libs-runtime" />
@@ -116,6 +119,7 @@
   	  <include name="h2-*.jar" if="db.use.h2"/>
   	  <include name="mysql-*.jar" if="db.use.mysql"/>
   	  <include name="postgres-*.jar" if="db.use.postgres"/>
+  	  <include name="ojdbc5*.jar" if="db.use.oracle"/>
   	</fileset>
   </target>
 	
@@ -494,5 +498,25 @@ JAVA_OPTS="-Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=8787
 	    <arg value="${url}" />
 	  </exec>
   </target>
-
+  
+  <target name="db.oracle.install.driver">
+	<install-lib-in-maven group-id="com.oracle.jdbc"
+  	  artifact-id="ojdbc5"
+  	  version="11.2.0.1.0"
+  	  jar-name="ojdbc5.jar" />
+  </target>
+	
+  <macrodef name="install-lib-in-maven">
+	<attribute name="group-id" />
+	<attribute name="artifact-id" />
+  	<attribute name="version"/>
+  	<attribute name="jar-name" />
+	<sequential>
+	  <available file="${activiti.home}/lib/provided/@{jar-name}" property="is.jar.available" />
+	  <fail message="Please put jar '@{jar-name}' in the folder '${activiti.home}/lib/provided/'" unless="is.jar.available" />
+	  <exec dir="${activiti.home}/lib/provided" executable="../../${maven.path}" vmlauncher="${vmlauncher}">
+	    <arg line="install:install-file -Dfile=@{jar-name} -DgroupId=@{group-id} -DartifactId=@{artifact-id} -Dpackaging=jar -Dversion=@{version} -DcreateChecksum=true -DgeneratePom=true"/>
+	  </exec>
+    </sequential>
+  </macrodef>
 </project>

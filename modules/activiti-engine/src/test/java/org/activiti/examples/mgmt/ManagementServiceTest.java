@@ -12,6 +12,7 @@
  */
 package org.activiti.examples.mgmt;
 
+import java.util.Arrays;
 import java.util.Map;
 
 import org.activiti.engine.ManagementService;
@@ -52,9 +53,18 @@ public class ManagementServiceTest extends ActivitiInternalTestCase {
 
     assertTrue(assigneeIndex >= 0);
     assertTrue(createTimeIndex >= 0);
-
-    assertEquals("VARCHAR", tableMetaData.getColumnTypes().get(assigneeIndex));
-    assertEquals("TIMESTAMP", tableMetaData.getColumnTypes().get(createTimeIndex));
+    
+    assertOneOf(new String [] {"VARCHAR", "NVARCHAR2"}, tableMetaData.getColumnTypes().get(assigneeIndex));
+    assertOneOf(new String [] {"TIMESTAMP", "TIMESTAMP(6)"}, tableMetaData.getColumnTypes().get(createTimeIndex));
+  }
+  
+  private void assertOneOf(String[] possibleValues, String currentValue) {
+    for(String value : possibleValues) {
+      if(currentValue.equals(value)) {
+        return;
+      }
+    }
+    fail("Value '" + currentValue + "' should be one of: " + Arrays.deepToString(possibleValues));
   }
 
 }

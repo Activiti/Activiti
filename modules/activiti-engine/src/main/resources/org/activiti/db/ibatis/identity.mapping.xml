@@ -51,7 +51,7 @@
   <!-- USER SELECT -->
 
   <select id="selectUserById" parameterType="string" resultMap="userResultMap">
-    select * from ACT_ID_USER where ID_ = #{id}
+    select * from ACT_ID_USER where ID_ = #{id,jdbcType=VARCHAR}
   </select>
   
   <select id="selectUsers" resultMap="userResultMap">

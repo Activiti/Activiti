@@ -24,7 +24,7 @@ import org.activiti.engine.test.Deployment;
  * @author Frederik Heremans
  * @author Joram Barrez
  */
-public class ReposityServiceTest extends ActivitiInternalTestCase {
+public class RepositoryServiceTest extends ActivitiInternalTestCase {
 
   @Deployment(resources = {
   "org/activiti/engine/test/api/oneTaskProcess.bpmn20.xml"})
