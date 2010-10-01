@@ -144,7 +144,7 @@ create table ACT_RU_VARIABLE (
 create table ACT_HI_PROC_INST (
     ID_ NVARCHAR2(64) not null,
     PROC_INST_ID_ NVARCHAR2(64) not null,
-    BUSINESS_KEY NVARCHAR2(255),
+    BUSINESS_KEY_ NVARCHAR2(255),
     PROC_DEF_ID_ NVARCHAR2(64) not null,
     START_TIME_ TIMESTAMP(6) not null,
     END_TIME_ TIMESTAMP(6),
