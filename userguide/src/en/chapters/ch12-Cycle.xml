@@ -22,30 +22,27 @@
     <title>Repositories</title>
     <mediaobject><imageobject><imagedata align="center" fileref="images/activiti.cycle.repositories.png"/></imageobject></mediaobject>
     <para>
-      The above image shows the Activiti Cycle repository tree. By default it provides access to the repository of the Activiti Modeler and a demo Eclipse workspace which is located at <literal>${activiti.home}/apps/eclipse-workspace</literal> in your local file system. The repositories are plugged in as repository connectors which are currently configured via an XML file. You'll find the configuration file in the <literal>bin</literal> directory of the tomcat installation. Here is the default configuration for the user kermit:
+      The above image shows the Activiti Cycle repository tree. By default it provides access to the repository of the Activiti Modeler and a demo Eclipse workspace which is located at <literal>${activiti.home}/apps/eclipse-workspace</literal> in your local file system. The repositories are plugged in as repository connectors. You'll find the configuration as an XML string in the <literal>CYCLE_CONFIG</literal> table in the activiti database. Here is the default configuration for the user kermit:
     </para>
     
     <programlisting>
-      &lt;?xml version=&quot;1.0&quot;?&gt;
+      ...
       &lt;org.activiti.cycle.impl.conf.ConfigurationContainer&gt;
         &lt;name&gt;kermit&lt;/name&gt;
         &lt;linkedConnectors&gt;
-
           &lt;org.activiti.cycle.impl.connector.signavio.SignavioConnectorConfiguration&gt;
             &lt;name&gt;Activiti Modeler&lt;/name&gt;
             &lt;credentialsSaved&gt;false&lt;/credentialsSaved&gt;
             &lt;signavioBaseUrl&gt;http://localhost:8080/activiti-modeler/&lt;/signavioBaseUrl&gt;
             &lt;loginRequired&gt;false&lt;/loginRequired&gt;
           &lt;/org.activiti.cycle.impl.connector.signavio.SignavioConnectorConfiguration&gt;
-
           &lt;org.activiti.cycle.impl.connector.fs.FileSystemConnectorConfiguration&gt;
-            &lt;name&gt;Files&lt;/name&gt;
-            &lt;baseFilePath&gt;/path-to-activiti-home/activiti-5.0.beta1/apps/eclipse-workspace&lt;/baseFilePath&gt;
+            &lt;name&gt;Eclipse Workspace (File System)&lt;/name&gt;
+            &lt;baseFilePath&gt;/path-to-activiti-home/activiti-5.0.beta2/apps/eclipse-workspace&lt;/baseFilePath&gt;
           &lt;/org.activiti.cycle.impl.connector.fs.FileSystemConnectorConfiguration&gt;
-
-        &lt;/linkedConnectors&gt;
-        &lt;parentContainers/&gt;
+        &lt;/linkedConnectors&gt; &lt;parentContainers/&gt;
       &lt;/org.activiti.cycle.impl.conf.ConfigurationContainer&gt;
+      ...
     </programlisting>
     
     <para>
@@ -65,7 +62,7 @@
       ...
     </programlisting>
     
-    Another thing you might consider is to add a collection of BPMN examples from the <ulink url="http://oryx-project.org/">Oryx Project</ulink>. Therefor you just need the following connector configuration:
+    Another thing you might consider is to add a collection of BPMN examples from the <ulink url="http://oryx-project.org/">Oryx Project</ulink>. In order to do this, all you need is the following connector configuration:
     
     <programlisting>
       ...
