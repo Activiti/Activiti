@@ -507,15 +507,17 @@
 		   <url>http://mimacom.com</url> 
 		</developer>
 	</developers>
-    <issueManagement>
-        <system>JIRA</system>
-        <url>http://jira.codehaus.org/browse/ACT</url>
-    </issueManagement>
-    <ciManagement>
-        <system>Bamboo</system>
-        <url>http://bamboo.ci.codehaus.org/browse/ACT</url>
-    </ciManagement>
+  <issueManagement>
+    <system>JIRA</system>
+    <url>http://jira.codehaus.org/browse/ACT</url>
+  </issueManagement>
+  <ciManagement>
+    <system>Bamboo</system>
+    <url>http://bamboo.ci.codehaus.org/browse/ACT</url>
+  </ciManagement>
 	<scm>
+	 <connection>http://svn.codehaus.org/activiti/</connection>
+	 <developerConnection>https://svn.codehaus.org/activiti/</developerConnection>
 	</scm>
 
 </project>
