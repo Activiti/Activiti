@@ -27,19 +27,19 @@
   	select * from CYCLE_LINK where ID_ = #{id}
   </select>
   
-  <select id="selectCycleLinkBySourceArtifactId" parameterType="string" resultMap="map">
+  <select id="selectCycleLinkBySourceArtifactId" parameterType="string" resultType="list">
   	select * from CYCLE_LINK where SOURCE_ARTIFACT_ID_ = #{sourceArtifactId}
   </select>
   
-  <select id="selectCycleLinkBySourceArtifactIdAndType" parameterType="org.activiti.cycle.CycleLink" resultMap="map">
+  <select id="selectCycleLinkBySourceArtifactIdAndType" parameterType="org.activiti.cycle.CycleLink" resultType="list">
   	select * from CYCLE_LINK where SOURCE_ARTIFACT_ID_ = #{sourceArtifactId} and LINK_TYPE_ = #{linkType} 
   </select>
   
-  <select id="selectCycleLinkBySourceArtifactIdAndSourceRevision" parameterType="org.activiti.cycle.CycleLink" resultMap="map">
+  <select id="selectCycleLinkBySourceArtifactIdAndSourceRevision" parameterType="org.activiti.cycle.CycleLink" resultType="list">
   	select * from CYCLE_LINK where SOURCE_ARTIFACT_ID_ = #{sourceArtifactId} and SOURCE_REVISION_ = #{sourceRevision}
   </select>
   
-  <select id="selectCycleLinkBySourceArtifactIdAndTypeAndSourceRevision" parameterType="org.activiti.cycle.CycleLink" resultMap="map">
+  <select id="selectCycleLinkBySourceArtifactIdAndTypeAndSourceRevision" parameterType="org.activiti.cycle.CycleLink" resultType="list">
   	select * from CYCLE_LINK where SOURCE_ARTIFACT_ID_ = #{sourceArtifactId} and SOURCE_REVISION_ = #{sourceRevision} and LINK_TYPE_ = #{linkType}
   </select>
   
