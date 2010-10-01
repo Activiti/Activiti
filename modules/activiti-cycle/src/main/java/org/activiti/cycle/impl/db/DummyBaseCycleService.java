@@ -15,7 +15,7 @@ import org.activiti.cycle.impl.connector.demo.DemoConnector;
  */
 public abstract class DummyBaseCycleService implements CycleService {
   
-  public void addArtifactLink(String artifactId1, String artifactId2) {
+  public void addArtifactLink(String sourceArtifactId, String targetArtifactId) {
   }
 
   public void addLink(CycleLink link) {
@@ -41,19 +41,19 @@ public abstract class DummyBaseCycleService implements CycleService {
     return null;
   }
 
-  public List<CycleLink> getArtifactLinks(String artifactId) {
+  public List<CycleLink> getArtifactLinks(String sourceArtifactId) {
     return null;
   }
 
-  public List<CycleLink> getArtifactLinks(String artifactId, Long revision) {
+  public List<CycleLink> getArtifactLinks(String sourceArtifactId, Long sourceRevision) {
     return null;
   }
 
-  public List<CycleLink> getArtifactLinks(String artifactId, String type) {
+  public List<CycleLink> getArtifactLinks(String sourceArtifactId, String type) {
     return null;
   }
 
-  public List<CycleLink> getArtifactLinks(String artifactId, Long revision, String type) {
+  public List<CycleLink> getArtifactLinks(String sourceArtifactId, Long sourceRevision, String type) {
     return null;
   }
 

@@ -32,17 +32,17 @@ public interface CycleService {
    * adds default {@link CycleLink} for the supplied artifact ids. If you need
    * more specific links please use the "addLink" method
    */
-  public void addArtifactLink(String artifactId1, String artifactId2);
+  public void addArtifactLink(String sourceArtifactId, String targetArtifactId);
 
   /**
    * add given link to Cycle
    */
   public void addLink(CycleLink link); 
   
-  public List<CycleLink> getArtifactLinks(String artifactId);
-  public List<CycleLink> getArtifactLinks(String artifactId, Long revision);
-  public List<CycleLink> getArtifactLinks(String artifactId, String type);
-  public List<CycleLink> getArtifactLinks(String artifactId, Long revision, String type);
+  public List<CycleLink> getArtifactLinks(String sourceArtifactId);
+  public List<CycleLink> getArtifactLinks(String sourceArtifactId, Long sourceRevision);
+  public List<CycleLink> getArtifactLinks(String sourceArtifactId, String type);
+  public List<CycleLink> getArtifactLinks(String sourceArtifactId, Long sourceRevision, String type);
  
   public void deleteLink(long linkId);
 

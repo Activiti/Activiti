@@ -23,23 +23,23 @@ public class CycleLink {
    */
   private long id;
   
-  private String artifactId1;
+  private String sourceArtifactId;
   /**
    * machine readable id of element (what that exactly is depends on the
    * connector, could be the Signavio UUID for example)
    */
-  private String elementId1;
+  private String sourceElementId;
   /**
    * human readable name of element (what that exactly is depends on the
    * connector, could be the Signavio Task name for example)
    */
-  private String elementName1;
-  private Long revision1;
+  private String sourceElementName;
+  private Long sourceRevision;
   
-  private String artifactId2;
-  private String elementId2;
-  private String elementName2;
-  private Long revision2;
+  private String tagetArtifactId;
+  private String targetElementId;
+  private String targetElementName;
+  private Long targetRevision;
 
   /**
    * type of the link as String. Basically you could supply what you want, but
@@ -58,36 +58,36 @@ public class CycleLink {
    */
   private boolean linkedBothWays = true;
   
-  public String getArtifactId1() {
-    return artifactId1;
+  public String getSourceArtifactId() {
+    return sourceArtifactId;
   }
 
-  public void setArtifactId1(String artifactId1) {
-    this.artifactId1 = artifactId1;
+  public void setSourceArtifactId(String sourceArtifactId) {
+    this.sourceArtifactId = sourceArtifactId;
   }
 
-  public Long getRevision1() {
-    return revision1;
+  public Long getSourceRevision() {
+    return sourceRevision;
   }
 
-  public void setRevision1(Long revision1) {
-    this.revision1 = revision1;
+  public void setSourceRevision(Long sourceRevision) {
+    this.sourceRevision = sourceRevision;
   }
 
-  public String getArtifactId2() {
-    return artifactId2;
+  public String getTargetArtifactId() {
+    return tagetArtifactId;
   }
 
-  public void setArtifactId2(String artifactId2) {
-    this.artifactId2 = artifactId2;
+  public void setTargetArtifactId(String targetArtifactId) {
+    this.tagetArtifactId = targetArtifactId;
   }
 
-  public Long getRevision2() {
-    return revision2;
+  public Long getTargetRevision() {
+    return targetRevision;
   }
 
-  public void setRevision2(Long revision2) {
-    this.revision2 = revision2;
+  public void setTargetRevision(Long targetRevision) {
+    this.targetRevision = targetRevision;
   }
 
   public String getLinkType() {
@@ -99,20 +99,20 @@ public class CycleLink {
   }
 
   
-  public String getElementId1() {
-    return elementId1;
+  public String getSourceElementId() {
+    return sourceElementId;
   }
 
-  public void setElementId1(String elementId1) {
-    this.elementId1 = elementId1;
+  public void setSourceElementId(String sourceElementId) {
+    this.sourceElementId = sourceElementId;
   }
 
-  public String getElementId2() {
-    return elementId2;
+  public String getTargetElementId() {
+    return targetElementId;
   }
 
-  public void setElementId2(String elementId2) {
-    this.elementId2 = elementId2;
+  public void setTargetElementId(String sourceElementId) {
+    this.targetElementId = sourceElementId;
   }
 
   /**
@@ -127,20 +127,20 @@ public class CycleLink {
   }
 
   
-  public String getElementName1() {
-    return elementName1;
+  public String getSourceElementName() {
+    return sourceElementName;
   }
 
-  public void setElementName1(String elementName1) {
-    this.elementName1 = elementName1;
+  public void setSourceElementName(String sourceElementName) {
+    this.sourceElementName = sourceElementName;
   }
 
-  public String getElementName2() {
-    return elementName2;
+  public String getTargetElementName() {
+    return targetElementName;
   }
 
-  public void setElementName2(String elementName2) {
-    this.elementName2 = elementName2;
+  public void setTargetElementName(String targetElementName) {
+    this.targetElementName = targetElementName;
   }
 
   

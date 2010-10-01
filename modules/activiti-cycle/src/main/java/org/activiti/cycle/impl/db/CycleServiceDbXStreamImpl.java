@@ -1,7 +1,9 @@
 package org.activiti.cycle.impl.db;
 
 import java.util.HashMap;
+import java.util.List;
 
+import org.activiti.cycle.CycleLink;
 import org.activiti.cycle.CycleService;
 import org.activiti.cycle.impl.conf.ConfigurationContainer;
 import org.activiti.cycle.impl.conf.CycleConfigEntity;
@@ -67,6 +69,121 @@ public class CycleServiceDbXStreamImpl extends DummyBaseCycleService implements 
     CycleConfigEntity cycleConfig = selectById(name);
     Object configXML = getXStream().fromXML(cycleConfig.getConfigXML());
     return (ConfigurationContainer) configXML;
+  }
+  
+  @Override
+  public void addArtifactLink(String sourceArtifactId, String targetArtifactId) {
+    CycleLink cycleLink = new CycleLink();
+    cycleLink.setSourceArtifactId(sourceArtifactId);
+    cycleLink.setTargetArtifactId(targetArtifactId);
+    
+    SqlSessionFactory sqlMapper = getSessionFactory();
+    
+    SqlSession session = sqlMapper.openSession();
+    try {
+      session.insert("org.activiti.cycle.CycleLink.insertCycleLink", cycleLink);    
+      session.commit();
+    } finally {
+      session.close();
+    }
+  }
+  
+  @Override
+  public void addLink(CycleLink link) {
+    SqlSessionFactory sqlMapper = getSessionFactory();
+    
+    SqlSession session = sqlMapper.openSession();
+    try {
+      session.insert("org.activiti.cycle.CycleLink.insertCycleLink", link);    
+      session.commit();
+    } finally {
+      session.close();
+    }
+  }
+  
+  @Override
+  public List<CycleLink> getArtifactLinks(String sourceArtifactId) {
+    SqlSessionFactory sqlMapper = getSessionFactory();
+    
+    SqlSession session = sqlMapper.openSession();
+    try {
+      return (List<CycleLink>) session.selectList(
+              "org.activiti.cycle.CycleLink.selectCycleLinkBySourceArtifactId", sourceArtifactId);
+
+    } finally {
+      session.close();
+    }
+  }
+  
+  @Override
+  public List<CycleLink> getArtifactLinks(String sourceArtifactId, String type) {
+    CycleLink cycleLink = new CycleLink();
+    cycleLink.setSourceArtifactId(sourceArtifactId);
+    cycleLink.setLinkType(type);
+    
+    SqlSessionFactory sqlMapper = getSessionFactory();
+    
+    SqlSession session = sqlMapper.openSession();
+    try {
+      return (List<CycleLink>) session.selectList(
+              "org.activiti.cycle.CycleLink.selectCycleLinkBySourceArtifactIdAndType", cycleLink);
+
+    } finally {
+      session.close();
+    }
+  }
+  
+  @Override
+  public List<CycleLink> getArtifactLinks(String sourceArtifactId, Long sourceRevision) {
+    CycleLink cycleLink = new CycleLink();
+    cycleLink.setSourceArtifactId(sourceArtifactId);
+    cycleLink.setSourceRevision(sourceRevision);
+    
+    SqlSessionFactory sqlMapper = getSessionFactory();
+    
+    SqlSession session = sqlMapper.openSession();
+    try {
+      return (List<CycleLink>) session.selectList(
+              "org.activiti.cycle.CycleLink.selectCycleLinkBySourceArtifactIdAndSourceRevision", cycleLink);
+
+    } finally {
+      session.close();
+    }
+    
+  }
+
+  @Override
+  public List<CycleLink> getArtifactLinks(String sourceArtifactId, Long sourceRevision, String type) {
+    CycleLink cycleLink = new CycleLink();
+    cycleLink.setSourceArtifactId(sourceArtifactId);
+    cycleLink.setLinkType(type);
+    cycleLink.setSourceRevision(sourceRevision);
+    
+    SqlSessionFactory sqlMapper = getSessionFactory();
+    
+    SqlSession session = sqlMapper.openSession();
+    try {
+      return (List<CycleLink>) session.selectList(
+              "org.activiti.cycle.CycleLink.selectCycleLinkBySourceArtifactIdAndTypeAndSourceRevision", cycleLink);
+
+    } finally {
+      session.close();
+    }
+
+  }
+  
+  
+  @Override
+  public void deleteLink(long linkId) {
+    SqlSessionFactory sqlMapper = getSessionFactory();
+    
+    SqlSession session = sqlMapper.openSession();
+    try {
+      session.insert("org.activiti.cycle.CycleLink.deleteCycleLink", linkId);    
+      session.commit();
+    } finally {
+      session.close();
+    }
   }
 
   //----- start implementation for cycle persistence -----
