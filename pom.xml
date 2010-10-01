@@ -516,8 +516,8 @@
     <url>http://bamboo.ci.codehaus.org/browse/ACT</url>
   </ciManagement>
 	<scm>
-	 <connection>http://svn.codehaus.org/activiti/</connection>
-	 <developerConnection>https://svn.codehaus.org/activiti/</developerConnection>
+	 <connection>scm:svn:http://svn.codehaus.org/activiti/</connection>
+	 <developerConnection>scm:svn:https://svn.codehaus.org/activiti/</developerConnection>
 	</scm>
 
 </project>
