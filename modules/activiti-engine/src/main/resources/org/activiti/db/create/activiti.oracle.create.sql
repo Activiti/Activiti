@@ -188,10 +188,6 @@ alter table ACT_RU_EXECUTION
     foreign key (SUPER_EXEC_) 
     references ACT_RU_EXECUTION (ID_);
     
-alter table ACT_RU_EXECUTION
-    add constraint UNIQ_RU_BUS_KEY
-    UNIQUE (PROC_DEF_ID_, BUSINESS_KEY_);
-    
 alter table ACT_ID_MEMBERSHIP 
     add constraint FK_MEMB_GROUP 
     foreign key (GROUP_ID_) 
