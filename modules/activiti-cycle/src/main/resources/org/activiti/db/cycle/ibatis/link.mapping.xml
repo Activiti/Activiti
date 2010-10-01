@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
+  
+<mapper namespace="org.activiti.cycle.impl.conf">
+
+   <!-- CYCLE LINK RESULT MAP -->	
+  
+  <resultMap id="resultMapCycleLink" type="org.activiti.cycle.CycleLink">
+    <id property="id" column="ID_" jdbcType="BIGINT" />
+    <result property="sourceArtifactId" column="SOURCE_ARTIFACT_ID_" jdbcType="VARCHAR" />
+    <result property="sourceElementId" column="SOURCE_ELEMENT_ID_" jdbcType="VARCHAR" />
+    <result property="sourceElementName" column="SOURCE_ELEMENT_NAME_" jdbcType="VARCHAR" />
+    <result property="sourceRevision" column="SOURCE_REVISION_" jdbcType="BIGINT" />
+    <result property="tagetArtifactId" column="TARGET_ARTIFACT_ID_" jdbcType="VARCHAR" />
+    <result property="targetElementId" column="TARGET_ELEMENT_ID_" jdbcType="VARCHAR" />
+    <result property="targetElementName" column="TARGET_ELEMENT_NAME_" jdbcType="VARCHAR" />
+    <result property="targetRevision" column="TARGET_REVISION_" jdbcType="BIGINT" />
+    <result property="linkType" column="LINK_TYPE_" jdbcType="VARCHAR" />
+    <result property="description" column="DESCRIPTION_" jdbcType="VARCHAR" />
+    <result property="linkedBothWays" column="LINKED_BOTH_WAYS_" jdbcType="BOOLEAN" />                
+  </resultMap>
+
+  <!-- CYCLE LINK SELECT -->
+  
+  <select id="selectCycleLinkById" parameterType="long" resultMap="resultMapCycleLink">
+  	select * from CYCLE_LINK where ID_ = #{id}
+  </select>
+  
+  <select id="selectCycleLinkBySourceArtifactId" parameterType="string" resultMap="list">
+  	select * from CYCLE_LINK where SOURCE_ARTIFACT_ID_ = #{sourceArtifactId}
+  </select>
+  
+  <select id="selectCycleLinkBySourceArtifactIdAndType" parameterType="org.activiti.cycle.CycleLink" resultMap="list">
+  	select * from CYCLE_LINK where SOURCE_ARTIFACT_ID_ = #{sourceArtifactId} and LINK_TYPE_ = #{linkType} 
+  </select>
+  
+  <select id="selectCycleLinkBySourceArtifactIdAndSourceRevision" parameterType="org.activiti.cycle.CycleLink" resultMap="list">
+  	select * from CYCLE_LINK where SOURCE_ARTIFACT_ID_ = #{sourceArtifactId} and SOURCE_REVISION_ = #{sourceRevision}
+  </select>
+  
+  <select id="selectCycleLinkBySourceArtifactIdAndTypeAndSourceRevision" parameterType="org.activiti.cycle.CycleLink" resultMap="list">
+  	select * from CYCLE_LINK where SOURCE_ARTIFACT_ID_ = #{sourceArtifactId} and SOURCE_REVISION_ = #{sourceRevision} and LINK_TYPE_ = #{linkType}
+  </select>
+  
+  
+    <!-- CYCLE LINK INSERT -->
+  
+  <insert id="insertCycleLink" parameterType="org.activiti.cycle.CycleLink">
+    insert into CYCLE_LINK (ID_, SOURCE_ARTIFACT_ID_, SOURCE_ELEMENT_ID_, SOURCE_ELEMENT_NAME_, SOURCE_REVISION_, TARGET_ARTIFACT_ID_, 
+    						TARGET_ELEMENT_ID_, TARGET_ELEMENT_NAME_, TARGET_REVISION_, LINK_TYPE_, DESCRIPTION_, LINKED_BOTH_WAYS_)
+    values (
+    	#{id ,jdbcType=BIGINT},
+	    #{sourceArtifactId, jdbcType=VARCHAR},
+	    #{sourceElementId, jdbcType=VARCHAR},
+	    #{sourceElementName, jdbcType=VARCHAR},
+	    #{sourceRevision, jdbcType=BIGINT},
+	    #{tagetArtifactId, jdbcType=VARCHAR},
+	    #{targetElementId, jdbcType=VARCHAR},
+	    #{targetElementName, jdbcType=VARCHAR},
+	    #{targetRevision, jdbcType=BIGINT},
+	    #{linkType, jdbcType=VARCHAR},	    	    	    	    	    	    	    	    
+	    #{description, jdbcType=VARCHAR},
+	    #{linkedBothWays, jdbcType=BOOLEAN}	    
+    )
+  </insert>
+  
+  <!-- CYCLE LINK DELETE -->
+  
+  <delete id="deleteCycleLinkById" parameterType="long">
+  	delete from CYCLE_LINK where ID_ = #{id}
+  </delete>
+
+  <!-- CYCLE CONFIG UPDATE -->
+  
+  <update id="updateCycleLinkById" parameterType="org.activiti.cycle.CycleLink">
+    update CYCLE_LINK set
+    	ID_ = #{id},
+    	SOURCE_ARTIFACT_ID_ = #{sourceArtifactId},
+     	SOURCE_ELEMENT_ID_ = #{sourceElementId}
+     	SOURCE_ELEMENT_NAME_ = #{sourceElementName}
+     	SOURCE_REVISION_ = #{sourceRevision}
+     	TARGET_ARTIFACT_ID_ = #{tagetArtifactId}
+     	TARGET_ELEMENT_ID_ = #{targetElementId}
+     	TARGET_ELEMENT_NAME_ = #{targetElementName}
+     	TARGET_REVISION_ = #{targetRevision}
+     	LINK_TYPE_ = #{linkType}
+     	DESCRIPTION_ = #{description}
+     	LINKED_BOTH_WAYS_ = #{linkedBothWays}
+    where ID_ = #{id} 	
+  </update>
+
+</mapper>

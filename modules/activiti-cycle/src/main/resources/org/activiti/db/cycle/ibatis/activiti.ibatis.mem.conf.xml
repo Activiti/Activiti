@@ -8,5 +8,6 @@
 	</settings>
 	<mappers>
 		<mapper resource="org/activiti/db/cycle/ibatis/config.mapping.xml" />
+		<mapper resource="org/activiti/db/cycle/ibatis/link.mapping.xml" />
 	</mappers>
 </configuration>
