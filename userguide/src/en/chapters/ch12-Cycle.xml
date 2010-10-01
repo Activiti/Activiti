@@ -22,7 +22,16 @@
     <title>Repositories</title>
     <mediaobject><imageobject><imagedata align="center" fileref="images/activiti.cycle.repositories.png"/></imageobject></mediaobject>
     <para>
-      The above image shows the Activiti Cycle repository tree. By default it provides access to the repository of the Activiti Modeler and a demo Eclipse workspace which is located at <literal>${activiti.home}/apps/eclipse-workspace</literal> in your local file system. The repositories are plugged in as repository connectors. You'll find the configuration as an XML string in the <literal>CYCLE_CONFIG</literal> table in the activiti database. Here is the default configuration for the user kermit:
+        The above image shows the Activiti Cycle repository tree.
+        By default it provides access to the repository of the Activiti Modeler
+        and a demo Eclipse workspace, which is located at
+        <literal>${activiti.home}/apps/eclipse-workspace</literal>
+        in your local file system.
+        The repositories are plugged in as repository connectors.
+        You'll find the configuration as an XML string in
+        the table <literal>CYCLE_CONFIG</literal> in the Activiti database,
+        which you can access as decribed in <xref linkend="checking.database"/>.
+        Here is the default configuration for the user kermit:
     </para>
     
     <programlisting>
@@ -46,7 +55,11 @@
     </programlisting>
     
     <para>
-      Now if e.g. you want to add an enterprise Signavio Process Modeler repository, you can simply do this by adding a connector configuration to the xml file. If you need a Signavio account, you can register for a free trial at the <ulink url="http://www.signavio.com">Signavio web site</ulink>. Here is an example configuration:
+        Now, if you want to add, e.g., a Signavio Process Modeler repository,
+        you can simply do this by adding a connector configuration to the XML configuration.
+        If you need a Signavio account, you can register for a free trial
+        at the <ulink url="http://www.signavio.com">Signavio web site</ulink>.
+        Here is an example configuration:
     </para>
     
     <programlisting>
@@ -62,7 +75,12 @@
       ...
     </programlisting>
     
-    Another thing you might consider is to add a collection of BPMN examples from the <ulink url="http://oryx-project.org/">Oryx Project</ulink>. In order to do this, all you need is the following connector configuration:
+    <para>
+        Another thing you might consider
+        is to add a collection of BPMN examples from
+        the <ulink url="http://oryx-project.org/">Oryx Project</ulink>.
+        In order to do this, all you need is the following connector configuration:
+    </para>
     
     <programlisting>
       ...
