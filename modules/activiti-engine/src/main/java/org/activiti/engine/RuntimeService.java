@@ -37,15 +37,30 @@ public interface RuntimeService {
    */
   ProcessInstance startProcessInstanceByKey(String processDefinitionKey);
   
-  /** 
-   * Starts a new process instance in the latest version of the process definition with the given key.
-   * The provided business key can be used to later look up the process instance using
-   * a key that has a business meaning (eg. an order id).
+  /**
+   * Starts a new process instance in the latest version of the process
+   * definition with the given key.
+   * 
+   * A business key can be provided to associate the process instance with a
+   * certain identifier that has a clear business meaning. For example in an
+   * order process, the business key could be an order id. This business key can
+   * then be used to easily look up that process instance , see
+   * {@link ProcessInstanceQuery#businessKey(String)}. Providing such a business
+   * key is definitely a best practice.
+   * 
+   * Note that a business key MUST be unique for the given process definition.
+   * Process instance from different process definition are allowed to have the
+   * same business key.
+   * 
    * The combination of processdefinitionKey-businessKey must be unique.
-   * @param processDefinitionKey key of process definition, cannot be null.
-   * @param businessKey a key that uniquely identifies the process instance in the context or the
-   *                    given process definition.
-   * @throws ActivitiException when no process definition is deployed with the given key.
+   * 
+   * @param processDefinitionKey
+   *          key of process definition, cannot be null.
+   * @param businessKey
+   *          a key that uniquely identifies the process instance in the context
+   *          or the given process definition.
+   * @throws ActivitiException
+   *           when no process definition is deployed with the given key.
    */
   ProcessInstance startProcessInstanceByKey(String processDefinitionKey, String businessKey);
   
@@ -58,8 +73,18 @@ public interface RuntimeService {
   
   /** 
    * Starts a new process instance in the latest version of the process definition with the given key.
-   * The provided business key can be used to later look up the process instance using
-   * a key that has a business meaning (eg. an order id).
+   * 
+   * A business key can be provided to associate the process instance with a
+   * certain identifier that has a clear business meaning. For example in an
+   * order process, the business key could be an order id. This business key can
+   * then be used to easily look up that process instance , see
+   * {@link ProcessInstanceQuery#businessKey(String)}. Providing such a business
+   * key is definitely a best practice.
+   * 
+   * Note that a business key MUST be unique for the given process definition.
+   * Process instance from different process definition are allowed to have the
+   * same business key.
+   * 
    * The combination of processdefinitionKey-businessKey must be unique.
    * @param processDefinitionKey key of process definition, cannot be null.
    * @param variables the variables to pass, can be null.
@@ -77,9 +102,18 @@ public interface RuntimeService {
   
   /** 
    * Starts a new process instance in the exactly specified version of the process definition with the given id.
-   * The provided business key can be used to later look up the process instance using
-   * a key that has a business meaning (eg. an order id).
-   * The combination of processdefinitionKey-businessKey must be unique.
+   * 
+   * A business key can be provided to associate the process instance with a
+   * certain identifier that has a clear business meaning. For example in an
+   * order process, the business key could be an order id. This business key can
+   * then be used to easily look up that process instance , see
+   * {@link ProcessInstanceQuery#businessKey(String)}. Providing such a business
+   * key is definitely a best practice.
+   * 
+   * Note that a business key MUST be unique for the given process definition.
+   * Process instance from different process definition are allowed to have the
+   * same business key.
+   * 
    * @param processDefinitionId the id of the process definition, cannot be null.
    * @param businessKey a key that uniquely identifies the process instance in the context or the
    *                    given process definition.
@@ -96,9 +130,18 @@ public interface RuntimeService {
   
   /** 
    * Starts a new process instance in the exactly specified version of the process definition with the given id.
-   * The provided business key can be used to later look up the process instance using
-   * a key that has a business meaning (eg. an order id).
-   * The combination of processdefinitionKey-businessKey must be unique.
+   * 
+   * A business key can be provided to associate the process instance with a
+   * certain identifier that has a clear business meaning. For example in an
+   * order process, the business key could be an order id. This business key can
+   * then be used to easily look up that process instance , see
+   * {@link ProcessInstanceQuery#businessKey(String)}. Providing such a business
+   * key is definitely a best practice.
+   * 
+   * Note that a business key MUST be unique for the given process definition.
+   * Process instance from different process definition are allowed to have the
+   * same business key.
+   * 
    * @param processDefinitionId the id of the process definition, cannot be null.
    * @param variables variables to be passed, can be null
    * @throws ActivitiException when no process definition is deployed with the given key. 
