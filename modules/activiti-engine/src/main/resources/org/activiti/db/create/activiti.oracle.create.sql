@@ -39,8 +39,7 @@ create table ACT_RU_EXECUTION (
     IS_ACTIVE_ NUMBER(1,0) CHECK (IS_ACTIVE_ IN (1,0)),
     IS_CONCURRENT_ NUMBER(1,0) CHECK (IS_CONCURRENT_ IN (1,0)),
     IS_SCOPE_ NUMBER(1,0) CHECK (IS_SCOPE_ IN (1,0)),
-    primary key (ID_),
-    unique(PROC_DEF_ID_, BUSINESS_KEY_)
+    primary key (ID_)
 );
 
 create table ACT_RU_JOB (
@@ -151,8 +150,7 @@ create table ACT_HI_PROC_INST (
     DURATION_ NUMBER(19,0),
     END_ACT_ID_ NVARCHAR2(64),
     primary key (ID_),
-    unique (PROC_INST_ID_),
-    unique(PROC_DEF_ID_, BUSINESS_KEY_)
+    unique (PROC_INST_ID_)
 );
 
 create table ACT_HI_ACT_INST (
@@ -189,6 +187,10 @@ alter table ACT_RU_EXECUTION
     add constraint FK_EXE_SUPER 
     foreign key (SUPER_EXEC_) 
     references ACT_RU_EXECUTION (ID_);
+    
+alter table ACT_RU_EXECUTION
+    add constraint UNIQ_RU_BUS_KEY
+    UNIQUE (PROC_DEF_ID_, BUSINESS_KEY_);
     
 alter table ACT_ID_MEMBERSHIP 
     add constraint FK_MEMB_GROUP 
@@ -244,3 +246,13 @@ alter table ACT_RU_JOB
     add constraint FK_JOB_EXCEPTION 
     foreign key (EXCEPTION_STACK_ID_) 
     references ACT_GE_BYTEARRAY (ID_);
+    
+-- see http://stackoverflow.com/questions/675398/how-can-i-constrain-multiple-columns-to-prevent-duplicates-but-ignore-null-value
+create unique index business_key_ru_idx on ACT_RU_EXECUTION
+   (case when BUSINESS_KEY_ is null then null else PROC_DEF_ID_ end,
+    case when BUSINESS_KEY_ is null then null else BUSINESS_KEY_ end);
+    
+-- see http://stackoverflow.com/questions/675398/how-can-i-constrain-multiple-columns-to-prevent-duplicates-but-ignore-null-value
+create unique index business_key_hi_idx on ACT_HI_PROC_INST
+   (case when BUSINESS_KEY_ is null then null else PROC_DEF_ID_ end,
+    case when BUSINESS_KEY_ is null then null else BUSINESS_KEY_ end);
