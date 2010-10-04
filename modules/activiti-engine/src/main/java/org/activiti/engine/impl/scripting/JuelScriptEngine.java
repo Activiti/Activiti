@@ -18,19 +18,6 @@ import java.io.Reader;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 
-import javax.el.ArrayELResolver;
-import javax.el.BeanELResolver;
-import javax.el.CompositeELResolver;
-import javax.el.ELContext;
-import javax.el.ELException;
-import javax.el.ELResolver;
-import javax.el.ExpressionFactory;
-import javax.el.FunctionMapper;
-import javax.el.ListELResolver;
-import javax.el.MapELResolver;
-import javax.el.ResourceBundleELResolver;
-import javax.el.ValueExpression;
-import javax.el.VariableMapper;
 import javax.script.AbstractScriptEngine;
 import javax.script.Bindings;
 import javax.script.Compilable;
@@ -41,9 +28,22 @@ import javax.script.ScriptEngineFactory;
 import javax.script.ScriptException;
 import javax.script.SimpleBindings;
 
+import org.activiti.el.juel.util.SimpleResolver;
 import org.activiti.engine.impl.el.ExpressionFactoryResolver;
+import org.activiti.javax.el.ArrayELResolver;
+import org.activiti.javax.el.BeanELResolver;
+import org.activiti.javax.el.CompositeELResolver;
+import org.activiti.javax.el.ELContext;
+import org.activiti.javax.el.ELException;
+import org.activiti.javax.el.ELResolver;
+import org.activiti.javax.el.ExpressionFactory;
+import org.activiti.javax.el.FunctionMapper;
+import org.activiti.javax.el.ListELResolver;
+import org.activiti.javax.el.MapELResolver;
+import org.activiti.javax.el.ResourceBundleELResolver;
+import org.activiti.javax.el.ValueExpression;
+import org.activiti.javax.el.VariableMapper;
 
-import de.odysseus.el.util.SimpleResolver;
 
 /**
  * ScriptEngine that used JUEL for script evaluation and compilation (JSR-223).

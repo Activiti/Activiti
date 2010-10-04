@@ -15,9 +15,8 @@ package org.activiti.engine.impl.el;
 import java.beans.FeatureDescriptor;
 import java.util.Iterator;
 
-import javax.el.ELContext;
-import javax.el.ELResolver;
-
+import org.activiti.javax.el.ELContext;
+import org.activiti.javax.el.ELResolver;
 import org.activiti.pvm.impl.runtime.ExecutionImpl;
 
 

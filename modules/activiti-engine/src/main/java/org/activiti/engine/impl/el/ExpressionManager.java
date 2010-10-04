@@ -12,19 +12,22 @@
  */
 package org.activiti.engine.impl.el;
 
-import javax.el.ArrayELResolver;
-import javax.el.BeanELResolver;
-import javax.el.CompositeELResolver;
-import javax.el.ELContext;
-import javax.el.ELResolver;
-import javax.el.ExpressionFactory;
-import javax.el.ListELResolver;
-import javax.el.MapELResolver;
-import javax.el.MethodExpression;
-import javax.el.ValueExpression;
+import java.util.regex.Pattern;
 
+import org.activiti.el.juel.ExpressionFactoryImpl;
 import org.activiti.engine.impl.runtime.ExecutionEntity;
+import org.activiti.javax.el.ArrayELResolver;
+import org.activiti.javax.el.BeanELResolver;
+import org.activiti.javax.el.CompositeELResolver;
+import org.activiti.javax.el.ELContext;
+import org.activiti.javax.el.ELResolver;
+import org.activiti.javax.el.ExpressionFactory;
+import org.activiti.javax.el.ListELResolver;
+import org.activiti.javax.el.MapELResolver;
+import org.activiti.javax.el.MethodExpression;
+import org.activiti.javax.el.ValueExpression;
 import org.activiti.pvm.impl.runtime.ExecutionImpl;
+
 
 /**
  * <p>
@@ -47,6 +50,8 @@ public class ExpressionManager {
   public static final String UEL_VALUE = "uel-value";
   public static final String UEL_METHOD = "uel-method";
   public static final String DEFAULT_EXPRESSION_LANGUAGE = UEL_VALUE;
+  
+  private static final Pattern METHOD_PARAMS_PATTERN= Pattern.compile("\\w+(\\[|\\(.+\\)|\\])");
 
   protected ExpressionFactory expressionFactory;
   // Default implementation (does nothing)
@@ -54,8 +59,9 @@ public class ExpressionManager {
   
   
   public ExpressionManager() {
-    // Used to be able to run in environments which use old javex.el API
-    expressionFactory = ExpressionFactoryResolver.resolveExpressionFactory();
+    // Use the ExpressionFactoryImpl in activiti-juel, with parametrised method expressions
+    // enalbed
+    expressionFactory = new ExpressionFactoryImpl();
   }
 
   public ActivitiValueExpression createValueExpression(String expression) {
@@ -64,10 +70,16 @@ public class ExpressionManager {
   }
 
   public ActivitiMethodExpression createMethodExpression(String expression) {
-    // Returntype: passing in a value of null indicates the caller does not care
-    // what the return type is, and the check is disabled.
-    MethodExpression methodExpression = expressionFactory.createMethodExpression(parsingElContext, expression, null, new Class< ? >[] {});
-    return new ActivitiMethodExpression(methodExpression, this);
+    // If the method is invoked using parameters in the expression, we should use a valueExpression instead
+    if(METHOD_PARAMS_PATTERN.matcher(expression).find()) {
+      ValueExpression valueExpression = expressionFactory.createValueExpression(parsingElContext, expression, Object.class);
+      return new ActivitiMethodExpression(valueExpression, this);
+    } else {
+      // Returntype: passing in a value of null indicates the caller does not care
+      // what the return type is, and the check is disabled.
+      MethodExpression methodExpression = expressionFactory.createMethodExpression(parsingElContext, expression, null, new Class< ? >[] {});
+      return new ActivitiMethodExpression(methodExpression, this);
+    }
   }
 
   public void setExpressionFactory(ExpressionFactory expressionFactory) {

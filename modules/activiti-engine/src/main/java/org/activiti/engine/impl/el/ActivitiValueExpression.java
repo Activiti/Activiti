@@ -12,11 +12,10 @@
  */
 package org.activiti.engine.impl.el;
 
-import javax.el.ELContext;
-import javax.el.PropertyNotFoundException;
-import javax.el.ValueExpression;
-
 import org.activiti.engine.ActivitiException;
+import org.activiti.javax.el.ELContext;
+import org.activiti.javax.el.PropertyNotFoundException;
+import org.activiti.javax.el.ValueExpression;
 import org.activiti.pvm.delegate.DelegateExecution;
 import org.activiti.pvm.impl.runtime.ExecutionImpl;
 

@@ -12,10 +12,10 @@
  */
 package org.activiti.engine.impl.el;
 
-import javax.el.ELContext;
-import javax.el.ELResolver;
-import javax.el.FunctionMapper;
-import javax.el.VariableMapper;
+import org.activiti.javax.el.ELContext;
+import org.activiti.javax.el.ELResolver;
+import org.activiti.javax.el.FunctionMapper;
+import org.activiti.javax.el.VariableMapper;
 
 
 /**

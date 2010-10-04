@@ -12,11 +12,10 @@
  */
 package org.activiti.engine.impl.form;
 
-import javax.el.VariableMapper;
-
+import org.activiti.el.juel.util.SimpleContext;
 import org.activiti.engine.impl.task.TaskEntity;
+import org.activiti.javax.el.VariableMapper;
 
-import de.odysseus.el.util.SimpleContext;
 
 
 /**

@@ -24,12 +24,8 @@
 			<artifactId>mybatis</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>javax.el</groupId>
-			<artifactId>el-api</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>de.odysseus.juel</groupId>
-			<artifactId>juel-impl</artifactId>
+			<groupId>org.activiti</groupId>
+			<artifactId>activiti-juel</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.codehaus.groovy</groupId>

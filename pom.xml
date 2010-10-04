@@ -27,16 +27,6 @@
         <version>1.2.132</version>
       </dependency>
       <dependency>
-        <groupId>javax.el</groupId>
-        <artifactId>el-api</artifactId>
-        <version>1.0</version>
-      </dependency>
-      <dependency>
-        <groupId>de.odysseus.juel</groupId>
-        <artifactId>juel-impl</artifactId>
-        <version>2.2.1</version>
-      </dependency>
-      <dependency>
         <groupId>org.codehaus.groovy</groupId>
         <artifactId>groovy-all</artifactId>
         <version>1.7.2</version>
@@ -77,6 +67,11 @@
 	        	<artifactId>activiti-cxf</artifactId>
 	        	<version>${version}</version>
 	     	</dependency>
+	     	<dependency>
+		      <groupId>org.activiti</groupId>
+		      <artifactId>activiti-juel</artifactId>
+		      <version>2.2.1</version>
+		    </dependency>
 			<dependency>
 				<groupId>org.apache.ant</groupId>
 				<artifactId>ant</artifactId>
@@ -280,6 +275,7 @@
 
   <modules>
     <module>modules/activiti-pvm</module>
+    <module>modules/activiti-juel</module>
     <module>modules/activiti-engine</module>
   </modules>
 

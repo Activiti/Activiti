@@ -12,35 +12,53 @@
  */
 package org.activiti.engine.impl.el;
 
-import javax.el.ELContext;
-import javax.el.MethodExpression;
-import javax.el.MethodNotFoundException;
-
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.runtime.ExecutionEntity;
+import org.activiti.javax.el.ELContext;
+import org.activiti.javax.el.ELException;
+import org.activiti.javax.el.MethodExpression;
+import org.activiti.javax.el.MethodNotFoundException;
+import org.activiti.javax.el.ValueExpression;
 import org.activiti.pvm.delegate.DelegateExecution;
 
 
 /**
  * @author Tom Baeyens
  * @author Joram Barrez
+ * @author Frederik Heremans
  */
 public class ActivitiMethodExpression {
 
   protected MethodExpression methodExpression;
   protected ExpressionManager expressionManager;
+  protected ValueExpression valueExpression;
 
   public ActivitiMethodExpression(MethodExpression methodExpression, ExpressionManager expressionManager) {
     this.methodExpression = methodExpression;
     this.expressionManager = expressionManager;
   }
+  
+  public ActivitiMethodExpression(ValueExpression valueExpression, ExpressionManager expressionManager) {
+    this.valueExpression = valueExpression;
+    this.expressionManager = expressionManager;
+  }
 
   public Object invoke(DelegateExecution execution) {
     ELContext elContext = expressionManager.getElContext((ExecutionEntity) execution);
-    try {
-      return methodExpression.invoke(elContext, null);
-    } catch (MethodNotFoundException e) {
-      throw new ActivitiException("Unknown method used in expression '"+methodExpression+"'", e);
+    if(valueExpression != null) {
+      try {
+        return valueExpression.getValue(elContext);        
+      } catch(ELException ele) {
+        throw new ActivitiException("Error occured while invoking method '" +valueExpression + "'", ele);
+      }
+    } else if(methodExpression != null) { 
+      try {
+        return methodExpression.invoke(elContext, null);
+      } catch (MethodNotFoundException e) {
+        throw new ActivitiException("Unknown method used in expression '"+methodExpression+"'", e);
+      }
+    } else {
+      throw new ActivitiException("Nothing to invoke, both methodExpression and valueExpression are null");
     }
   }
 }

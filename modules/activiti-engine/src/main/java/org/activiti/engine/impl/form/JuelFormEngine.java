@@ -12,16 +12,15 @@
  */
 package org.activiti.engine.impl.form;
 
-import javax.el.ELContext;
-import javax.el.ExpressionFactory;
-import javax.el.ValueExpression;
-
+import org.activiti.el.juel.ExpressionFactoryImpl;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.repository.DeploymentEntity;
 import org.activiti.engine.impl.repository.ResourceEntity;
 import org.activiti.engine.impl.task.TaskEntity;
+import org.activiti.javax.el.ELContext;
+import org.activiti.javax.el.ExpressionFactory;
+import org.activiti.javax.el.ValueExpression;
 
-import de.odysseus.el.ExpressionFactoryImpl;
 
 /**
  * @author Tom Baeyens
