@@ -27,7 +27,7 @@ import org.activiti.engine.test.Deployment;
 /**
  * @author Frederik Heremans
  */
-public class ELTest extends ActivitiInternalTestCase {
+public class ExpressionManagerTest extends ActivitiInternalTestCase {
   
   @Override
   protected void setUp() throws Exception {
