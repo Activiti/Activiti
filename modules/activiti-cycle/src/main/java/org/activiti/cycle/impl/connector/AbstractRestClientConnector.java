@@ -16,6 +16,7 @@ import org.restlet.data.Method;
 import org.restlet.data.Preference;
 import org.restlet.data.Protocol;
 import org.restlet.data.Reference;
+import org.restlet.representation.Representation;
 
 
 public abstract class AbstractRestClientConnector<T extends PasswordEnabledRepositoryConnectorConfiguration> extends AbstractRepositoryConnector<T> {
@@ -67,78 +68,85 @@ public abstract class AbstractRestClientConnector<T extends PasswordEnabledRepos
    */
   protected abstract Request injectSecurityMechanism(Request request);
 
-  private Request createRequest(Reference reference) {
-    Request request = new Request();
-    request.setResourceRef(reference);
+  private Request createRequest(Reference reference, Representation representation) {
+    if (reference != null) {
+      Request request = new Request();
+      request.setResourceRef(reference);
+      if (representation != null) {
+        request.setEntity(representation);
+      }
     
-    return request;
+      return request;
+    }
+    
+    throw new RepositoryException("Reference object is null!");
   }
   
-  private Request createJsonRequest(Reference reference) {
-    Request jsonRequest = createRequest(reference);
+  private Request createJsonRequest(Reference reference, Representation representation) {
+    Request jsonRequest = createRequest(reference, representation);
     jsonRequest.getClientInfo().getAcceptedMediaTypes().add(new Preference<MediaType>(MediaType.APPLICATION_JSON));
     
     return jsonRequest;
   }
   
-  private Request createXmlRequest(Reference reference) {
-    Request xmlRequest = createRequest(reference);
+  private Request createXmlRequest(Reference reference, Representation representation) {
+    Request xmlRequest = createRequest(reference, representation);
     xmlRequest.getClientInfo().getAcceptedMediaTypes().add(new Preference<MediaType>(MediaType.APPLICATION_XML));
     
     return xmlRequest;
   }
   
-  public Response getJson(Reference reference) throws IOException {
-    Request getRequest = createJsonRequest(reference);
+  public Response getJson(Reference reference, Representation representation) throws IOException {
+    Request getRequest = createJsonRequest(reference, representation);
     getRequest.setMethod(Method.GET);
 
     return sendRequest(getRequest);
   }
   
-  public Response postJson(Reference reference) throws IOException {
-    Request postRequest = createJsonRequest(reference);
+  public Response postJson(Reference reference, Representation representation) throws IOException {
+    Request postRequest = createJsonRequest(reference, representation);
     postRequest.setMethod(Method.POST);
 
     return sendRequest(postRequest);
   }
   
-  public Response putJson(Reference reference) throws IOException {
-    Request putRequest = createJsonRequest(reference);
+  public Response putJson(Reference reference, Representation representation) throws IOException {
+    Request putRequest = createJsonRequest(reference, representation);
     putRequest.setMethod(Method.PUT);
 
     return sendRequest(putRequest);
   }
   
-  public Response deleteJson(Reference reference) throws IOException {
-    Request deleteRequest = createJsonRequest(reference);
+  public Response deleteJson(Reference reference, Representation representation) throws IOException {
+    Request deleteRequest = createJsonRequest(reference, representation);
     deleteRequest.setMethod(Method.DELETE);
 
     return sendRequest(deleteRequest);
   }
   
-  public Response getXml(Reference reference) throws IOException {
-    Request getRequest = createXmlRequest(reference);
+  public Response getXml(Reference reference, Representation representation) throws IOException {
+    Request getRequest = createXmlRequest(reference, representation);
     getRequest.setMethod(Method.GET);
 
     return sendRequest(getRequest);
   }
   
-  public Response postXml(Reference reference) throws IOException {
-    Request postRequest = createXmlRequest(reference);
+  public Response postXml(Reference reference, Representation representation) throws IOException {
+    Request postRequest = createXmlRequest(reference, representation);
     postRequest.setMethod(Method.POST);
 
     return sendRequest(postRequest);
   }
   
-  public Response putXml(Reference reference) throws IOException {
-    Request putRequest = createXmlRequest(reference);
+  public Response putXml(Reference reference, Representation representation) throws IOException {
+    Request putRequest = createXmlRequest(reference, representation);
     putRequest.setMethod(Method.PUT);
 
     return sendRequest(putRequest);
   }
   
-  public Response deleteXml(Reference reference) throws IOException {
-    Request deleteRequest = createXmlRequest(reference);
+  public Response deleteXml(Reference reference, Representation representation) throws IOException {
+    Request deleteRequest = createXmlRequest(reference, representation);
     deleteRequest.setMethod(Method.DELETE);
 
     return sendRequest(deleteRequest);
