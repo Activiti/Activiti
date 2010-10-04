@@ -16,8 +16,8 @@ import org.activiti.cycle.Content;
 import org.activiti.cycle.RepositoryArtifact;
 import org.activiti.cycle.RepositoryException;
 import org.activiti.cycle.impl.connector.signavio.SignavioConnector;
-import org.restlet.data.Response;
-import org.restlet.resource.DomRepresentation;
+import org.restlet.Response;
+import org.restlet.ext.xml.DomRepresentation;
 
 public class Jpdl4Provider extends SignavioContentRepresentationProvider {
 
@@ -27,7 +27,7 @@ public class Jpdl4Provider extends SignavioContentRepresentationProvider {
   public void addValueToContent(Content content, SignavioConnector connector, RepositoryArtifact artifact) {
     try {
       Response jpdlResponse = getJsonResponse(connector, artifact, "/jpdl4");
-      DomRepresentation xmlData = jpdlResponse.getEntityAsDom();
+      DomRepresentation xmlData = new DomRepresentation(jpdlResponse.getEntity());
       String jpdl4AsString = getXmlAsString(xmlData);
       log.finest("JPDL4 String: " + jpdl4AsString);
       content.setValue(jpdl4AsString);

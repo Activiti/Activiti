@@ -18,7 +18,7 @@ import org.activiti.cycle.ContentProvider;
 import org.activiti.cycle.RepositoryArtifact;
 import org.activiti.cycle.RepositoryConnector;
 import org.activiti.cycle.RepositoryException;
-import org.restlet.resource.DomRepresentation;
+import org.restlet.ext.xml.DomRepresentation;
 
 /**
  * 

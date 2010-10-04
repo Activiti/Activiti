@@ -17,7 +17,7 @@ import org.activiti.cycle.RepositoryArtifact;
 import org.activiti.cycle.RepositoryException;
 import org.activiti.cycle.impl.connector.signavio.SignavioConnector;
 import org.json.JSONObject;
-import org.restlet.data.Response;
+import org.restlet.Response;
 
 public class JsonProvider extends SignavioContentRepresentationProvider {
   

@@ -150,26 +150,27 @@
         <artifactId>json</artifactId>
         <version>20070829</version>
       </dependency>
+      <!-- cycle restlet dependencies -->
       <dependency>
-			<groupId>org.restlet</groupId>
-			<artifactId>org.restlet</artifactId>
-			<version>1.1.8</version>
-		</dependency>
-		<dependency>
-			<groupId>org.restlet</groupId>
-			<artifactId>org.restlet.ext.json</artifactId>
-			<version>1.1.8</version>
-		</dependency>
-		<dependency>
-			<groupId>com.noelios.restlet</groupId>
-			<artifactId>com.noelios.restlet</artifactId>
-			<version>1.1.8</version>
-		</dependency>
-		<dependency>
-			<groupId>com.noelios.restlet</groupId>
-			<artifactId>com.noelios.restlet.ext.httpclient</artifactId>
-			<version>1.1.8</version>
-		</dependency>
+	  	<groupId>org.restlet.jee</groupId>
+		<artifactId>org.restlet</artifactId>
+		<version>2.0.1</version>
+	  </dependency>
+      <dependency>
+		<groupId>org.restlet.jee</groupId>
+		<artifactId>org.restlet.ext.json</artifactId>
+		<version>2.0.1</version>
+	  </dependency>
+	  <dependency>
+		<groupId>org.restlet.jee</groupId>
+		<artifactId>org.restlet.ext.xml</artifactId>
+		<version>2.0.1</version>
+	  </dependency>
+	  <dependency>
+		<groupId>org.restlet.jee</groupId>
+		<artifactId>org.restlet.ext.httpclient</artifactId>
+		<version>2.0.1</version>
+	  </dependency>
 		<!-- required by Apache commons httpclient, required by restlet -->
 		<dependency>
 		  <groupId>commons-logging</groupId>

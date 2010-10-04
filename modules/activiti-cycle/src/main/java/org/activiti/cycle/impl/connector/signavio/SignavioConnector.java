@@ -30,23 +30,23 @@ import org.activiti.cycle.impl.RepositoryFolderImpl;
 import org.activiti.cycle.impl.RepositoryNodeCollectionImpl;
 import org.activiti.cycle.impl.connector.AbstractRepositoryConnector;
 import org.activiti.cycle.impl.connector.signavio.util.SignavioJsonHelper;
-import org.activiti.cycle.impl.connector.signavio.util.SignavioLogHelper;
+import org.activiti.cycle.impl.connector.util.RestClientLogHelper;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.restlet.Client;
 import org.restlet.Context;
+import org.restlet.Request;
+import org.restlet.Response;
 import org.restlet.data.Form;
 import org.restlet.data.MediaType;
 import org.restlet.data.Method;
 import org.restlet.data.Preference;
 import org.restlet.data.Protocol;
 import org.restlet.data.Reference;
-import org.restlet.data.Request;
-import org.restlet.data.Response;
 import org.restlet.data.Status;
 import org.restlet.ext.json.JsonRepresentation;
-import org.restlet.resource.Representation;
+import org.restlet.representation.Representation;
 
 import de.hpi.bpmn2_0.transformation.Json2XmlConverter;
 
@@ -92,14 +92,14 @@ public class SignavioConnector extends AbstractRepositoryConnector<SignavioConne
     injectSecurityToken(request);
 
     if (log.isLoggable(Level.FINE)) {
-      SignavioLogHelper.logHttpRequest(log, Level.FINE, request);
+      RestClientLogHelper.logHttpRequest(log, Level.FINE, request);
     }
 
     Client client = initClient();
     Response response = client.handle(request);
 
     if (log.isLoggable(Level.FINE)) {
-      SignavioLogHelper.logHttpResponse(log, Level.FINE, response);
+      RestClientLogHelper.logHttpResponse(log, Level.FINE, response);
     }
 
     if (response.getStatus().isSuccess()) {
@@ -278,7 +278,7 @@ public class SignavioConnector extends AbstractRepositoryConnector<SignavioConne
         JSONArray relJsonArray = jsonData.toJsonArray();
   
         if (log.isLoggable(Level.FINEST)) {
-          SignavioLogHelper.logJSONArray(log, Level.FINEST, relJsonArray);
+          RestClientLogHelper.logJSONArray(log, Level.FINEST, relJsonArray);
         }
   
         for (int i = 0; i < relJsonArray.length(); i++) {

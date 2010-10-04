@@ -21,7 +21,7 @@ import org.activiti.cycle.impl.transform.signavio.BpmnPoolExtraction;
 import org.activiti.cycle.impl.transform.signavio.ExchangeSignavioUuidWithNameTransformation;
 import org.activiti.cycle.impl.transform.signavio.RemedyTemporarySignavioIncompatibilityTransformation;
 import org.json.JSONObject;
-import org.restlet.data.Response;
+import org.restlet.Response;
 
 public class ActivitiCompliantBpmn20Provider extends SignavioContentRepresentationProvider {
 

@@ -19,7 +19,7 @@ import org.activiti.cycle.RepositoryArtifact;
 import org.activiti.cycle.RepositoryConnector;
 import org.activiti.cycle.impl.ContentProviderImpl;
 import org.activiti.cycle.impl.connector.signavio.SignavioConnector;
-import org.restlet.data.Response;
+import org.restlet.Response;
 
 public abstract class SignavioContentRepresentationProvider extends ContentProviderImpl {
 
