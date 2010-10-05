@@ -1493,6 +1493,18 @@ List&lt;Task&gt; tasks = taskService.createTaskQuery().assignee(&quot;kermit&quo
          The named objects are resolved in the execution's process variables and 
          (if applicable) in the Spring context.
        </para>
+       <para>
+       	It's also possible to pass parameters with an method used in the expression.
+       	<programlisting>
+&lt;serviceTask id=&quot;javaService&quot; 
+             name=&quot;My Java Service Task&quot; 
+             activiti:method-expr=&quot;#{printer.printMessage(execution, myVar)}&quot; /&gt;
+</programlisting>
+		Method <literal>printMessage</literal> will be called on the object named <literal>printer</literal>. The first
+		parameter passed is the <literal>DelegateExecution</literal>, which is available in the epression context by default
+		available as <literal>expression</literal>. The second parameter passed, is the value of the variable with name <literal>myVar</literal>
+		in the current execution. 
+       </para>
        
        <para>
          To specify a UEL value expression that should be evaluated, use 

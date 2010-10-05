@@ -15,7 +15,7 @@
   <property name="tomcat.home" value="${activiti.home}/apps/apache-tomcat-${tomcat.version}" /> 
   <property name="tomcat.filename" value="apache-tomcat-${tomcat.version}.zip" /> 
   <property name="tomcat.download.url" value="${apache.mirror.url}tomcat/tomcat-6/v${tomcat.version}/bin/${tomcat.filename}" />    
-  <property name="tomcat.java.opts" value="-server -Xms128m -Xmx512m -XX:NewSize=64m -XX:MaxNewSize=64m -XX:PermSize=256m -XX:MaxPermSize=512m" /> 
+  <property name="tomcat.java.opts" value="-server -Xms128m -Xmx512m -XX:NewSize=64m -XX:MaxNewSize=64m -XX:PermSize=256m -XX:MaxPermSize=512m -Dfile.encoding=UTF-8" /> 
 	
   <property name="macos.browser" value="/usr/bin/open" />
   <property name="windows.browser" value="C:/Program Files/Mozilla Firefox/firefox.exe" />

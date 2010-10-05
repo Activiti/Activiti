@@ -16,8 +16,6 @@ package org.activiti.engine.test.el;
 import java.util.HashMap;
 import java.util.Map;
 
-import junit.framework.Assert;
-
 import org.activiti.engine.identity.User;
 import org.activiti.engine.impl.test.ActivitiInternalTestCase;
 import org.activiti.engine.runtime.ProcessInstance;
@@ -53,7 +51,7 @@ public class ExpressionManagerTest extends ActivitiInternalTestCase {
     // Assignee should be resolved to user, evaluating
     // ${userstring.substring(3,7)}
     Task task = taskService.createTaskQuery().assignee(user.getId()).singleResult();
-    Assert.assertNotNull(task);
+    assertNotNull(task);
 
     runtimeService.deleteProcessInstance(pi.getId(), null);
     identityService.deleteUser(user.getId());
@@ -68,7 +66,19 @@ public class ExpressionManagerTest extends ActivitiInternalTestCase {
     vars.put("aString", "abcdefgh");
     runtimeService.startProcessInstanceByKey("methodExpressionProcess", vars);
     
-    Assert.assertEquals(0, runtimeService.createProcessInstanceQuery().processDefinitionKey("methodExpressionProcess").count());
+    assertEquals(0, runtimeService.createProcessInstanceQuery().processDefinitionKey("methodExpressionProcess").count());
   }
-
+  
+  @Deployment
+  public void testExecutionAvailable() {
+    Map<String, Object> vars = new HashMap<String, Object>();
+   
+    vars.put("myVar", new ExecutionTestVariable());
+    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("testExecutionAvailableProcess", vars);
+    
+    // Check of the testMethod has been called with the current execution
+    String value = (String) runtimeService.getVariable(processInstance.getId(), "testVar");
+    assertNotNull(value);
+    assertEquals("myValue", value);
+  }
 }

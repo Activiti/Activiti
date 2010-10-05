@@ -28,6 +28,8 @@ import org.activiti.pvm.impl.runtime.ExecutionImpl;
  */
 public class ExecutionVariableElResolver extends ELResolver {
   
+  public static final String EXECUTION_KEY = "execution";
+  
   protected ExecutionImpl execution;
   
   public ExecutionVariableElResolver(ExecutionImpl execution) {
@@ -39,9 +41,14 @@ public class ExecutionVariableElResolver extends ELResolver {
     // Variable resolution
     if (base == null) {
       String variable = (String) property; // according to javadoc, can only be a String
-      if (execution.hasVariable(variable)) {
-        context.setPropertyResolved(true); // if not set, the next elResolver in the CompositeElResolver will be called
-        return execution.getVariable(variable);
+      if(EXECUTION_KEY.equals(property)) {
+        context.setPropertyResolved(true);
+        return execution;
+      } else {
+        if (execution.hasVariable(variable)) {
+          context.setPropertyResolved(true); // if not set, the next elResolver in the CompositeElResolver will be called
+          return execution.getVariable(variable);
+        }        
       }
     }
     
