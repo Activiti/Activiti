@@ -114,7 +114,7 @@ runtimeService.startProcessInstanceByKey("vacationRequest", variables);</program
      <mediaobject><imageobject><imagedata align="center" fileref="images/taskform.example.png"/></imageobject></mediaobject>
       The mechanism for defining forms on user task is exactly the same.
       <programlisting>Object taskForm = taskService.getRenderedTaskForm(task.getId());</programlisting>
-      Activiti Explorer will display these forms when the <emphasis>Complete</emphasis>
+      Activiti Explorer will display these forms when the <emphasis>Complete Form</emphasis>
       button is clicked. The variables in the form will be stored as process variables 
       during the completion of the task:
       <programlisting>Map&lt;String, Object&gt; variables = new HashMap&lt;String, Object&gt;();

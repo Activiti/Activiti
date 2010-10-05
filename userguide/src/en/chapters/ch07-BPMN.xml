@@ -314,14 +314,14 @@
       <para>
         The business process described here is also deployed as an example to the demo setup database.
         After running the <link linkend="demo.setup">demo setup</link>, log into the Activiti Explorer
-        as <emphasis role="bold">fozzie</emphasis> (he's an accountant),
-        and select in the drop down menu on the right the <emphasis>'Monthly financial report'</emphasis> process.
+        as <emphasis role="bold">fozzie</emphasis> (he's an accountant), select the <emphasis>Processes</emphasis> page and
+        and click on the <emphasis>'Start Process'</emphasis> link in the <emphasis>'Actions'</emphasis> column corresponding to the <emphasis>'Monthly financial report'</emphasis> process.
         
         <mediaobject><imageobject><imagedata align="center" fileref="images/bpmn.financial.report.example.start.process.png"/></imageobject></mediaobject>
         
         As explained, the process will execute up to the first user task. Since we're logged in
         as fozzie, we can see that there is a new candidate task available for him after we've started
-        the process instance.
+        the process instance. Select the <emphasis>Tasks</emphasis> page to view this new task. 
         Note that even if the process was started by someone else, the task would still
         be visible as a candidate task to everyone in the accountancy group.
         
