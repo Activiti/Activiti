@@ -470,32 +470,3 @@ li.filter {
 #Activiti.yui-skin-sam .yui-calcontainer div.title {
 	margin: 0 -10px 10px;
 }
-
-/* Activiti Data Table */
-
-.yui-skin-sam tr.yui-dt-odd { 
-   background-color:#E4FFE0;
-}
-
-.yui-skin-sam tr.yui-dt-even td.yui-dt-asc, 
-.yui-skin-sam tr.yui-dt-even td.yui-dt-desc {
-   background-color:#E4FFE0;
-}
-
-.yui-skin-sam tr.yui-dt-odd td.yui-dt-asc, 
-.yui-skin-sam tr.yui-dt-odd td.yui-dt-desc {
-   background-color:#CFE7CB;
-}
-
-.processAction {
-	display:block;
-	padding-left:20px;
-} 
-
-.startProcess {
-	background: url("../images/process-start-icon.png") no-repeat 0 3px;
-}
-.viewProcess, 
-.viewXML {
-   background: url("../images/process-view-icon.png") no-repeat 0 3px;
-}

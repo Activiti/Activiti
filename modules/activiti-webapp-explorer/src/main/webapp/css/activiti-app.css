@@ -17,4 +17,31 @@ h1 {
   margin-right: 1em;
 }
 
+/* Activiti Data Table */
 
+#Activiti tr.yui-dt-odd { 
+   background-color:#E4FFE0;
+}
+
+#Activiti tr.yui-dt-even td.yui-dt-asc, 
+#Activiti tr.yui-dt-even td.yui-dt-desc {
+   background-color:#E4FFE0;
+}
+
+#Activiti tr.yui-dt-odd td.yui-dt-asc, 
+#Activiti tr.yui-dt-odd td.yui-dt-desc {
+   background-color:#CFE7CB;
+}
+
+.processAction {
+   display:block;
+   padding-left:20px;
+} 
+
+.startProcess {
+   background: url("../images/process-start-icon.png") no-repeat 0 3px;
+}
+.viewProcess, 
+.viewXML {
+   background: url("../images/process-view-icon.png") no-repeat 0 3px;
+}
