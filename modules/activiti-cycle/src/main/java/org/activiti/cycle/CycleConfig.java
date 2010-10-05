@@ -1,4 +1,4 @@
-package org.activiti.cycle.impl.conf;
+package org.activiti.cycle;
 
 import java.io.Serializable;
 import java.util.HashMap;
@@ -7,7 +7,7 @@ import java.util.Map;
 import org.activiti.engine.impl.db.PersistentObject;
 
 
-public class CycleConfigEntity implements Serializable, PersistentObject {
+public class CycleConfig implements Serializable, PersistentObject {
 
   private static final long serialVersionUID = -4985509539753978783L;
   
@@ -16,7 +16,7 @@ public class CycleConfigEntity implements Serializable, PersistentObject {
   protected int revision;
   
   // default constructor
-  public CycleConfigEntity() {
+  public CycleConfig() {
   }
 
   //------ getter and setter ------
