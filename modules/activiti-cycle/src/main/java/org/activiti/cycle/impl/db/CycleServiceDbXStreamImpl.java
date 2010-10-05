@@ -3,10 +3,10 @@ package org.activiti.cycle.impl.db;
 import java.util.HashMap;
 import java.util.List;
 
+import org.activiti.cycle.CycleConfig;
 import org.activiti.cycle.CycleLink;
 import org.activiti.cycle.CycleService;
 import org.activiti.cycle.impl.conf.ConfigurationContainer;
-import org.activiti.cycle.impl.conf.CycleConfigEntity;
 import org.activiti.cycle.impl.conf.CycleDbSqlSessionFactory;
 import org.activiti.engine.DbSchemaStrategy;
 import org.activiti.engine.ProcessEngines;
@@ -66,7 +66,7 @@ public class CycleServiceDbXStreamImpl extends DummyBaseCycleService implements 
   }
 
   public ConfigurationContainer getConfiguration(String name) {
-    CycleConfigEntity cycleConfig = selectById(name);
+    CycleConfig cycleConfig = selectById(name);
     Object configXML = getXStream().fromXML(cycleConfig.getConfigXML());
     return (ConfigurationContainer) configXML;
   }
@@ -196,13 +196,13 @@ public class CycleServiceDbXStreamImpl extends DummyBaseCycleService implements 
     }
   }
   
-  public CycleConfigEntity selectById(String id) {
+  public CycleConfig selectById(String id) {
     SqlSessionFactory sqlMapper = getSessionFactory();
     
     SqlSession session = sqlMapper.openSession();
     try {
-      return (CycleConfigEntity) session.selectOne(
-              "org.activiti.cycle.impl.conf.CycleConfigEntity.selectCycleConfigById", id);
+      return (CycleConfig) session.selectOne(
+              "org.activiti.cycle.CycleConfig.selectCycleConfigById", id);
 
     } finally {
       session.close();
@@ -210,7 +210,7 @@ public class CycleServiceDbXStreamImpl extends DummyBaseCycleService implements 
   }
   
   public void createAndInsert(Object o, String id) {
-    CycleConfigEntity cycleConfig = new CycleConfigEntity();
+    CycleConfig cycleConfig = new CycleConfig();
     cycleConfig.setId(id);
     String configXML = getXStream().toXML(o);
     cycleConfig.setConfigXML(configXML);
@@ -219,20 +219,20 @@ public class CycleServiceDbXStreamImpl extends DummyBaseCycleService implements 
     
     SqlSession session = sqlMapper.openSession();
     try {
-      session.insert("org.activiti.cycle.impl.conf.CycleConfigEntity.insertCycleConfig", cycleConfig);    
+      session.insert("org.activiti.cycle.CycleConfig.insertCycleConfig", cycleConfig);    
       session.commit();
     } finally {
       session.close();
     }
   }
   
-  public void updateById(CycleConfigEntity cycleConfig) {
+  public void updateById(CycleConfig cycleConfig) {
     SqlSessionFactory sqlMapper = getSessionFactory();
     
     SqlSession session = sqlMapper.openSession();
     try {
       session.update(
-              "org.activiti.cycle.impl.conf.CycleConfigEntity.updateCycleConfigById", cycleConfig);
+              "org.activiti.cycle.CycleConfig.updateCycleConfigById", cycleConfig);
       session.commit();
     } finally {
       session.close();
@@ -245,7 +245,7 @@ public class CycleServiceDbXStreamImpl extends DummyBaseCycleService implements 
     SqlSession session = sqlMapper.openSession();
     try {
       session.delete(
-              "org.activiti.cycle.impl.conf.CycleConfigEntity.deleteCycleConfigById", id);
+              "org.activiti.cycle.CycleConfig.deleteCycleConfigById", id);
       session.commit();
     } finally {
       session.close();
