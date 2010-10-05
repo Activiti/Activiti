@@ -2,7 +2,7 @@
 
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
   
-<mapper namespace="org.activiti.cycle.impl.conf">
+<mapper namespace="org.activiti.cycle">
 
    <!-- CYCLE LINK RESULT MAP -->	
   
@@ -24,30 +24,30 @@
   <!-- CYCLE LINK SELECT -->
   
   <select id="selectCycleLinkById" parameterType="long" resultMap="resultMapCycleLink">
-  	select * from CYCLE_LINK where ID_ = #{id}
+  	select * from ACT_CY_LINK where ID_ = #{id}
   </select>
   
   <select id="selectCycleLinkBySourceArtifactId" parameterType="string" resultType="list">
-  	select * from CYCLE_LINK where SOURCE_ARTIFACT_ID_ = #{sourceArtifactId}
+  	select * from ACT_CY_LINK where SOURCE_ARTIFACT_ID_ = #{sourceArtifactId}
   </select>
   
   <select id="selectCycleLinkBySourceArtifactIdAndType" parameterType="org.activiti.cycle.CycleLink" resultType="list">
-  	select * from CYCLE_LINK where SOURCE_ARTIFACT_ID_ = #{sourceArtifactId} and LINK_TYPE_ = #{linkType} 
+  	select * from ACT_CY_LINK where SOURCE_ARTIFACT_ID_ = #{sourceArtifactId} and LINK_TYPE_ = #{linkType} 
   </select>
   
   <select id="selectCycleLinkBySourceArtifactIdAndSourceRevision" parameterType="org.activiti.cycle.CycleLink" resultType="list">
-  	select * from CYCLE_LINK where SOURCE_ARTIFACT_ID_ = #{sourceArtifactId} and SOURCE_REVISION_ = #{sourceRevision}
+  	select * from ACT_CY_LINK where SOURCE_ARTIFACT_ID_ = #{sourceArtifactId} and SOURCE_REVISION_ = #{sourceRevision}
   </select>
   
   <select id="selectCycleLinkBySourceArtifactIdAndTypeAndSourceRevision" parameterType="org.activiti.cycle.CycleLink" resultType="list">
-  	select * from CYCLE_LINK where SOURCE_ARTIFACT_ID_ = #{sourceArtifactId} and SOURCE_REVISION_ = #{sourceRevision} and LINK_TYPE_ = #{linkType}
+  	select * from ACT_CY_LINK where SOURCE_ARTIFACT_ID_ = #{sourceArtifactId} and SOURCE_REVISION_ = #{sourceRevision} and LINK_TYPE_ = #{linkType}
   </select>
   
   
     <!-- CYCLE LINK INSERT -->
   
   <insert id="insertCycleLink" parameterType="org.activiti.cycle.CycleLink">
-    insert into CYCLE_LINK (ID_, SOURCE_ARTIFACT_ID_, SOURCE_ELEMENT_ID_, SOURCE_ELEMENT_NAME_, SOURCE_REVISION_, TARGET_ARTIFACT_ID_, 
+    insert into ACT_CY_LINK (ID_, SOURCE_ARTIFACT_ID_, SOURCE_ELEMENT_ID_, SOURCE_ELEMENT_NAME_, SOURCE_REVISION_, TARGET_ARTIFACT_ID_, 
     						TARGET_ELEMENT_ID_, TARGET_ELEMENT_NAME_, TARGET_REVISION_, LINK_TYPE_, DESCRIPTION_, LINKED_BOTH_WAYS_)
     values (
     	#{id ,jdbcType=BIGINT},
@@ -68,13 +68,13 @@
   <!-- CYCLE LINK DELETE -->
   
   <delete id="deleteCycleLinkById" parameterType="long">
-  	delete from CYCLE_LINK where ID_ = #{id}
+  	delete from ACT_CY_LINK where ID_ = #{id}
   </delete>
 
   <!-- CYCLE CONFIG UPDATE -->
   
   <update id="updateCycleLinkById" parameterType="org.activiti.cycle.CycleLink">
-    update CYCLE_LINK set
+    update ACT_CY_LINK set
     	ID_ = #{id},
     	SOURCE_ARTIFACT_ID_ = #{sourceArtifactId},
      	SOURCE_ELEMENT_ID_ = #{sourceElementId}

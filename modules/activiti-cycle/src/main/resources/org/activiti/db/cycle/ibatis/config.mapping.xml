@@ -2,11 +2,11 @@
 
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
   
-<mapper namespace="org.activiti.cycle.impl.conf">
+<mapper namespace="org.activiti.cycle">
 
    <!-- CYCLE CONFIG RESULT MAP -->	
   
-  <resultMap id="resultMapCycleConfig" type="org.activiti.cycle.impl.conf.CycleConfigEntity">
+  <resultMap id="resultMapCycleConfig" type="org.activiti.cycle.CycleConfig">
     <id property="id" column="ID_" jdbcType="VARCHAR" />
     <result property="configXML" column="VALUE_" jdbcType="VARCHAR" />
     <result property="revision" column="REV_" jdbcType="INTEGER" />
@@ -15,14 +15,14 @@
   <!-- CYCLE CONFIG SELECT -->
   
   <select id="selectCycleConfigById" parameterType="string" resultMap="resultMapCycleConfig">
-  	select * from CYCLE_CONFIG where ID_ = #{id}
+  	select * from ACT_CY_CONFIG where ID_ = #{id}
   </select>
   
   
     <!-- CYCLE CONFIG INSERT -->
   
-  <insert id="insertCycleConfig" parameterType="org.activiti.cycle.impl.conf.CycleConfigEntity">
-    insert into CYCLE_CONFIG (ID_, VALUE_, REV_)
+  <insert id="insertCycleConfig" parameterType="org.activiti.cycle.CycleConfig">
+    insert into ACT_CY_CONFIG (ID_, VALUE_, REV_)
     values (
     	#{id ,jdbcType=VARCHAR},
 	    #{configXML, jdbcType=VARCHAR},
@@ -33,13 +33,13 @@
   <!-- CYCLE CONFIG DELETE -->
   
   <delete id="deleteCycleConfigById" parameterType="string">
-  	delete from CYCLE_CONFIG where ID_ = #{id}
+  	delete from ACT_CY_CONFIG where ID_ = #{id}
   </delete>
 
   <!-- CYCLE CONFIG UPDATE -->
   
-  <update id="updateCycleConfigById" parameterType="org.activiti.cycle.impl.conf.CycleConfigEntity">
-    update CYCLE_CONFIG set
+  <update id="updateCycleConfigById" parameterType="org.activiti.cycle.CycleConfig">
+    update ACT_CY_CONFIG set
     	ID_ = #{id},
     	VALUE_ = #{configXML},
      	REV_ = #{revision}
