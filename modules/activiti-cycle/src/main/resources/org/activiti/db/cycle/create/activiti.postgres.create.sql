@@ -3,7 +3,7 @@ create table ACT_CY_CONFIG (
     VALUE_ text,
     REV_ integer,
     primary key (ID_)
-) TYPE=InnoDB;
+);
 
 create table ACT_CY_LINK (
 	ID_ bigint,
@@ -14,16 +14,16 @@ create table ACT_CY_LINK (
 	TARGET_ARTIFACT_ID_ varchar(255),
 	TARGET_ELEMENT_ID_ varchar(255) DEFAULT NULL,
 	TARGET_ELEMENT_NAME_ varchar(255),
-	TARGET_REVISION_ bigi nt DEFAULT NULL,
+	TARGET_REVISION_ bigint DEFAULT NULL,
 	LINK_TYPE_ varchar(255),
 	DESCRIPTION_ varchar(255),
 	LINKED_BOTH_WAYS_ boolean,
 	primary key (ID_)
-) TYPE=InnoDB;
+);
 
 create table ACT_CY_TAG (
 	ID_ bigint,
 	NAME_ varchar(255),
 	ALIAS_ varchar(255),
 	primary key(ID_)
-) TYPE=InnoDB;
+);

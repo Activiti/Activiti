@@ -1,11 +1,11 @@
-create table CYCLE_CONFIG (
+create table ACT_CY_CONFIG (
 	ID_ varchar,
-    VALUE_ varchar,
+    VALUE_ clob,
     REV_ integer,
     primary key (ID_)
 );
 
-create table CYCLE_LINK (
+create table ACT_CY_LINK (
 	ID_ bigint,
 	SOURCE_ARTIFACT_ID_ varchar,
 	SOURCE_ELEMENT_ID_ varchar DEFAULT NULL,
@@ -21,7 +21,7 @@ create table CYCLE_LINK (
 	primary key (ID_)
 );
 
-create table CYCLE_TAG (
+create table ACT_CY_TAG (
 	ID_ bigint,
 	NAME_ varchar,
 	ALIAS_ varchar,
