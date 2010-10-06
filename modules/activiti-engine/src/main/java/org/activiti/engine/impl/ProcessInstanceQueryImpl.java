@@ -26,8 +26,9 @@ import org.activiti.engine.runtime.ProcessInstanceQuery;
 /**
  * @author Tom Baeyens
  * @author Joram Barrez
+ * @author Frederik Heremans
  */
-public class ProcessInstanceQueryImpl extends AbstractQuery<ProcessInstance> implements ProcessInstanceQuery {
+public class ProcessInstanceQueryImpl extends ExecutionVariableQueryImpl<ProcessInstanceQuery, ProcessInstance> implements ProcessInstanceQuery {
 
   protected String executionId;
   protected String businessKey;
@@ -99,8 +100,7 @@ public class ProcessInstanceQueryImpl extends AbstractQuery<ProcessInstance> imp
     this.subProcessInstanceId = subProcessInstanceId;
     return this;
   }
-
-  //ordering //////////////////////////////////////////////
+  
 
   public ProcessInstanceQuery orderByProcessInstanceId() {
     this.orderProperty = ProcessInstanceQueryProperty.PROCESS_INSTANCE_ID;
@@ -143,6 +143,7 @@ public class ProcessInstanceQueryImpl extends AbstractQuery<ProcessInstance> imp
   
   public long executeCount(CommandContext commandContext) {
     checkQueryOk();
+    ensureVariablesInitialized(commandContext.getProcessEngineConfiguration());
     return commandContext
       .getRuntimeSession()
       .findProcessInstanceCountByQueryCriteria(this);
@@ -150,6 +151,7 @@ public class ProcessInstanceQueryImpl extends AbstractQuery<ProcessInstance> imp
 
   public List<ProcessInstance> executeList(CommandContext commandContext, Page page) {
     checkQueryOk();
+    ensureVariablesInitialized(commandContext.getProcessEngineConfiguration());
     return commandContext
       .getRuntimeSession()
       .findProcessInstanceByQueryCriteria(this, page);
@@ -187,6 +189,9 @@ public class ProcessInstanceQueryImpl extends AbstractQuery<ProcessInstance> imp
   }
   public String getSubProcessInstanceId() {
     return subProcessInstanceId;
+  }
+  public List<QueryVariableValue> getVariables() {
+    return variables;
   }
   
 }

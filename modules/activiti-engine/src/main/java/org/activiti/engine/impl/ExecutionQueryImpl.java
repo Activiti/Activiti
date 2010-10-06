@@ -24,8 +24,9 @@ import org.activiti.engine.runtime.ExecutionQuery;
 
 /**
  * @author Joram Barrez
+ * @author Frederik Heremans
  */
-public class ExecutionQueryImpl extends AbstractQuery<Execution> implements ExecutionQuery {
+public class ExecutionQueryImpl extends ExecutionVariableQueryImpl<ExecutionQueryImpl, Execution> implements ExecutionQuery {
 
   protected String processDefinitionId;
   protected String processDefinitionKey;
@@ -33,6 +34,7 @@ public class ExecutionQueryImpl extends AbstractQuery<Execution> implements Exec
   protected String executionId;
   protected String processInstanceId;
   protected ExecutionQueryProperty orderProperty;
+
   
   // Not used by end-users, but needed for dynamic ibatis query
   protected String superProcessInstanceId;
@@ -132,6 +134,7 @@ public class ExecutionQueryImpl extends AbstractQuery<Execution> implements Exec
   
   public long executeCount(CommandContext commandContext) {
     checkQueryOk();
+    ensureVariablesInitialized(commandContext.getProcessEngineConfiguration());
     return commandContext
       .getRuntimeSession()
       .findExecutionCountByQueryCriteria(this);
@@ -140,6 +143,7 @@ public class ExecutionQueryImpl extends AbstractQuery<Execution> implements Exec
   @SuppressWarnings("unchecked")
   public List<Execution> executeList(CommandContext commandContext, Page page) {
     checkQueryOk();
+    ensureVariablesInitialized(commandContext.getProcessEngineConfiguration());
     return (List) commandContext
       .getRuntimeSession()
       .findExecutionsByQueryCriteria(this, page);
@@ -180,5 +184,4 @@ public class ExecutionQueryImpl extends AbstractQuery<Execution> implements Exec
   public String getSubProcessInstanceId() {
     return subProcessInstanceId;
   }
-  
 }

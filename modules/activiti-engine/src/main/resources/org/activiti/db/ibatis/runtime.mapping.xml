@@ -101,6 +101,9 @@
   
   <sql id="selectExecutionsByQueryCriteriaSql">
     from ACT_RU_EXECUTION E
+    <foreach collection="variables" index="index" item="var">
+    	inner join ACT_RU_VARIABLE A${index} on E.ID_ = A${index}.EXECUTION_ID_ 
+    </foreach>
     inner join ACT_RE_PROC_DEF P on E.PROC_DEF_ID_ = P.ID_
     <where>
       <if test="onlyProcessInstances">
@@ -132,7 +135,50 @@
       <if test="subProcessInstanceId != null">
         and E.ID_ = (select PROC_INST_ID_ from ACT_RU_EXECUTION where ID_ = (select SUPER_EXEC_ from ACT_RU_EXECUTION where ID_ = #{subProcessInstanceId}))
       </if>
+      <foreach item="var" collection="variables" index="index">
+      	and A${index}.NAME_= #{var.name}
+      	<if test="var.textValue != null &amp;&amp; var.longValue == null &amp;&amp; var.doubleValue == null">
+	      and A${index}.TEXT_
+	      <choose>
+	        <when test="var.operator.equals('LIKE')">LIKE</when>
+	        <otherwise><include refid="executionVariableOperator" /></otherwise>
+	      </choose>
+	        #{var.textValue}
+      	</if>
+      	<if test="var.longValue != null">
+	      and A${index}.LONG_
+	      <include refid="executionVariableOperator" />
+	      #{var.longValue}
+      	</if>
+      	<if test="var.doubleValue != null">
+	      and A${index}.DOUBLE_
+	      <include refid="executionVariableOperator" />
+	      #{var.doubleValue}
+      	</if>
+      	<!-- Null variable type -->
+      	<if test="var.textValue == null &amp;&amp; var.longValue == null &amp;&amp; var.doubleValue == null">
+          <choose>
+	        <when test="var.operator.equals('NOT_EQUALS')">
+	          and (A${index}.TEXT_ is not null or A${index}.LONG_ is not null or A${index}.DOUBLE_ is not null or A${index}.BYTEARRAY_ID_ is not null)
+	        </when>
+	        <otherwise>
+			  and A${index}.TEXT_ is null and A${index}.LONG_ is null and A${index}.DOUBLE_ is null and A${index}.BYTEARRAY_ID_ is null
+	        </otherwise>
+	      </choose>
+      	</if>
+      </foreach>
     </where>
+  </sql>
+  
+  <sql id="executionVariableOperator">
+    <choose>
+   	  <when test="var.operator.equals('EQUALS')">=</when>
+   	  <when test="var.operator.equals('NOT_EQUALS')">&lt;&gt;</when>
+   	  <when test="var.operator.equals('GREATER_THAN')">&gt;</when>
+   	  <when test="var.operator.equals('GREATER_THAN_OR_EQUAL')">&gt;=</when>
+   	  <when test="var.operator.equals('LESS_THAN')">&lt;</when>
+   	  <when test="var.operator.equals('LESS_THAN_OR_EQUAL')">&lt;=</when>
+   </choose>
   </sql>
   
   <select id="selectSubProcessInstanceBySuperExecutionId" parameterType="string" resultMap="executionResultMap">

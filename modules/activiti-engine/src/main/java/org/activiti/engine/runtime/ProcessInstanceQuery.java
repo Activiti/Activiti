@@ -12,15 +12,18 @@
  */
 package org.activiti.engine.runtime;
 
+import java.io.Serializable;
 import java.util.List;
 
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.impl.cfg.ProcessEngineConfiguration;
 import org.activiti.engine.impl.runtime.ProcessInstanceQueryProperty;
 
 /**
  * Allows programmatic querying of {@link ProcessInstance}s.
  * 
  * @author Joram Barrez
+ * @author Frederik Heremans
  */
 public interface ProcessInstanceQuery {
 
@@ -57,6 +60,72 @@ public interface ProcessInstanceQuery {
    * such process instance that can be the result of this query.
    */
   ProcessInstanceQuery subProcessInstance(String subProcessInstanceId);
+  
+  /** 
+   * Only select process instances which have a variable with the given value. The type 
+   * of variable is determined based on the value, using types configured in 
+   * {@link ProcessEngineConfiguration#getVariableTypes()}. 
+   * Byte-arrays and {@link Serializable} objects (which are not primitive type wrappers)
+   * are not supported.
+   * @param name name of the variable, cannot be null.
+   */
+  ProcessInstanceQuery variableValue(String name, Object value);
+  
+  /** 
+   * Only select process instances which have a variable with the given name, but
+   * with a different value than the passed value.
+   * Byte-arrays and {@link Serializable} objects (which are not primitive type wrappers)
+   * are not supported.
+   * @param name name of the variable, cannot be null.
+   */
+  ProcessInstanceQuery variableValueNot(String name, Object value);
+  
+
+  /** 
+   * Only select process instances which have a variable value greater than the passed value.
+   * Byte-arrays and {@link Serializable} objects (which are not primitive type wrappers)
+   * are not supported.
+   * @param name variable name, cannot be null.
+   * @param value variable value, cannot be null.
+   */
+  ProcessInstanceQuery variableValueGreaterThan(String name, Object value);
+  
+  /** 
+   * Only select process instances which have a variable value greater than or equal to 
+   * the passed value. Byte-arrays and {@link Serializable} objects (which 
+   * are not primitive type wrappers) are not supported.
+   * @param name variable name, cannot be null.
+   * @param value variable value, cannot be null.
+   */
+  ProcessInstanceQuery variableValueGreaterThanOrEqual(String name, Object value);
+  
+  /** 
+   * Only select process instances which have a variable value less than the passed value.
+   * Byte-arrays and {@link Serializable} objects (which are not primitive type wrappers)
+   * are not supported.
+   * @param name variable name, cannot be null.
+   * @param value variable value, cannot be null.
+   */
+  ProcessInstanceQuery variableValueLessThan(String name, Object value);
+  
+  /** 
+   * Only select process instances which have a variable value less than or equal to the passed value.
+   * Byte-arrays and {@link Serializable} objects (which are not primitive type wrappers)
+   * are not supported.
+   * @param name variable name, cannot be null.
+   * @param value variable value, cannot be null.
+   */
+  ProcessInstanceQuery variableValueLessThanOrEqual(String name, Object value);
+  
+  /** 
+   * Only select process instances which have a variable value like the given value.
+   * This be used on string variables only.
+   * @param name variable name, cannot be null.
+   * @param value variable value, cannot be null. The string can include the
+   * wildcard character '%' to express like-strategy: 
+   * starts with (string%), ends with (%string) or contains (%string%).
+   */
+  ProcessInstanceQuery variableValueLike(String name, String value);
 
   
   //ordering /////////////////////////////////////////////////////////////////

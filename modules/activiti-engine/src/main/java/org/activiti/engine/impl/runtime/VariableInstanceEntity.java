@@ -54,17 +54,22 @@ public class VariableInstanceEntity implements Serializable, PersistentObject {
   }
 
   public static VariableInstanceEntity createAndInsert(String name, Type type, Object value) {
-    VariableInstanceEntity variableInstance = new VariableInstanceEntity();
-    
-    variableInstance.name = name;
-    variableInstance.type = type;
-    variableInstance.setValue(value);
+    VariableInstanceEntity variableInstance = create(name, type, value);
 
     CommandContext
       .getCurrent()
       .getDbSqlSession()
       .insert(variableInstance);
   
+    return variableInstance;
+  }
+  
+  public static VariableInstanceEntity create(String name, Type type, Object value) {
+    VariableInstanceEntity variableInstance = new VariableInstanceEntity();
+    variableInstance.name = name;
+    variableInstance.type = type;
+    variableInstance.setValue(value);
+    
     return variableInstance;
   }
 

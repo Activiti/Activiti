@@ -134,7 +134,7 @@ create table ACT_RU_VARIABLE (
     TASK_ID_ NVARCHAR2(64),
     BYTEARRAY_ID_ NVARCHAR2(64),
     DATE_ TIMESTAMP(6),
-    DOUBLE_ NUMBER(*,4),
+    DOUBLE_ NUMBER(*,10),
     LONG_ NUMBER(19,0),
     TEXT_ NVARCHAR2(255),
     primary key (ID_)
