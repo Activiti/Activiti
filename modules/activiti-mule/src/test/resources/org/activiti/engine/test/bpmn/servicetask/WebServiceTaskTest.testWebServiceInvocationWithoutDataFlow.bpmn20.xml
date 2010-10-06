@@ -33,7 +33,7 @@
   </process>
 
   <!-- Interface: implementationRef = QName of WSDL Port Type -->
-  <interface name="Counter Interface"> <!-- NEEDED FOR THE PORT -->
+  <interface name="Counter Interface" implementationRef="Counter"> <!-- NEEDED FOR THE PORT -->
     <!-- Operation: implementationRef = QName of WSDL Operation -->
     <operation id="incOperation" name="Increase Operation" implementationRef="inc"> <!-- NEEDED FOR THE OPERATION NAME -->
       <inMessageRef>incRequestMessage</inMessageRef>
