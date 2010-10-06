@@ -15,6 +15,7 @@ package org.activiti.examples.bpmn.servicetask;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.test.ActivitiInternalTestCase;
 import org.activiti.engine.impl.util.CollectionUtil;
 import org.activiti.engine.runtime.Execution;
@@ -57,6 +58,15 @@ public class JavaServiceTaskTest extends ActivitiInternalTestCase {
       .activityId("waitState")
       .singleResult();
     assertEquals("HELLO MR. KERMIT", runtimeService.getVariable(execution.getId(), "var"));
+  }
+
+  public void testIllegalUseOfResultVariableName() {
+    try {
+      repositoryService.createDeployment().addClasspathResource("org/activiti/examples/bpmn/servicetask/JavaServiceTaskTest.testIllegalUseOfResultVariableName.bpmn20.xml").deploy();
+      fail();
+    } catch (ActivitiException e) {
+      assertTrue(e.getMessage().contains("result-variable-name"));
+    }
   }
 
 }

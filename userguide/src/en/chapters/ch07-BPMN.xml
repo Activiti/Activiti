@@ -1616,6 +1616,27 @@ public class ToUppercase extends BpmnJavaDelegation {
       </para>
      
      </section>
+
+     <section id="serviceTaskResultValue">
+         <title>Service task results</title>
+
+         <para>
+           The return value of a service execution (for method or value expression service tasks only) can be assigned to an already existing or to a new process variable by
+           specifying the process variable name as a literal value for the <emphasis>'activiti:result-variable-name'</emphasis> attribute
+           of a service task definition. Any existing value for a specific process variable will be overwritten by the result
+           value of the service execution. When not specifying a result variable name, the service execution result value gets ignored.
+<programlisting>
+&lt;serviceTask id=&quot;aMethodExpressionServiceTask&quot;
+    activiti:method-expr=&quot;#{myService.doSomething()}&quot;
+    activiti:result-variable-name=&quot;myVar&quot;
+/&gt;
+</programlisting>
+             
+           In the above example, the result of the service execution (the return value of the <emphasis>'doSomething()'</emphasis> method invocation on an object that is made available
+           under the name <emphasis>'myService'</emphasis> either in the process variables or as a Spring bean) is set to the process variable named <emphasis>'myVar'</emphasis> after the service execution completes.
+         </para>
+
+     </section>
   		
 		</section>
 		

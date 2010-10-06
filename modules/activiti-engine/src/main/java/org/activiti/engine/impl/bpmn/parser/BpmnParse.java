@@ -572,6 +572,7 @@ public class BpmnParse extends Parse {
     String className = serviceTaskElement.attributeNS(BpmnParser.BPMN_EXTENSIONS_NS, "class");
     String methodExpr = serviceTaskElement.attributeNS(BpmnParser.BPMN_EXTENSIONS_NS, "method-expr");
     String valueExpr = serviceTaskElement.attributeNS(BpmnParser.BPMN_EXTENSIONS_NS, "value-expr");
+    String resultVariableName = serviceTaskElement.attributeNS(BpmnParser.BPMN_EXTENSIONS_NS, "result-variable-name");
     String implementation = serviceTaskElement.attribute("implementation");
     String operationRef = serviceTaskElement.attribute("operationRef");
     List<FieldDeclaration> fieldDeclarations = parseFieldDeclarations(serviceTaskElement);
@@ -584,13 +585,17 @@ public class BpmnParse extends Parse {
       }
     
     } else if (className != null && className.trim().length() > 0) {
+      if (resultVariableName != null) {
+        throw new ActivitiException("'result-variable-name' not supported for service tasks using 'class'");
+      }
+
       activity.setActivityBehavior(new ServiceTaskDelegateActivityBehaviour(expressionManager.createValueExpression(className), fieldDeclarations));
       
     } else if (methodExpr != null && methodExpr.trim().length() > 0) {
-      activity.setActivityBehavior(new ServiceTaskMethodExpressionActivityBehavior(expressionManager.createMethodExpression(methodExpr)));
+      activity.setActivityBehavior(new ServiceTaskMethodExpressionActivityBehavior(expressionManager.createMethodExpression(methodExpr), resultVariableName));
       
     } else if (valueExpr != null && valueExpr.trim().length() > 0) {
-      activity.setActivityBehavior(new ServiceTaskValueExpressionActivityBehavior(expressionManager.createValueExpression(valueExpr)));
+      activity.setActivityBehavior(new ServiceTaskValueExpressionActivityBehavior(expressionManager.createValueExpression(valueExpr), resultVariableName));
       
     } else if (implementation != null && operationRef != null && implementation.equalsIgnoreCase("##WebService")) {
       if (!this.operations.containsKey(operationRef)) {
@@ -600,7 +605,7 @@ public class BpmnParse extends Parse {
         activity.setActivityBehavior(new WebServiceActivityBehavior(operation));
       }
     } else {
-      throw new ActivitiException("'class' or 'expr' attribute is mandatory on serviceTask");
+      throw new ActivitiException("'class', 'method-expr' or 'value-expr' attribute is mandatory on serviceTask");
     }
 
     for (BpmnParseListener parseListener: parseListeners) {

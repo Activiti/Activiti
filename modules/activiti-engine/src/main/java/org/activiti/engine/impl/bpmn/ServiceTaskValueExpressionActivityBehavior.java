@@ -20,17 +20,25 @@ import org.activiti.pvm.activity.ActivityExecution;
 
 /**
  * @author Tom Baeyens
+ * @author Christian Stettler
  */
 public class ServiceTaskValueExpressionActivityBehavior extends AbstractBpmnActivity implements ActivityBehavior {
   
   protected ActivitiValueExpression activitiValueExpression;
-  
-  public ServiceTaskValueExpressionActivityBehavior(ActivitiValueExpression activitiValueExpression) {
+  protected String resultVariableName;
+
+  public ServiceTaskValueExpressionActivityBehavior(ActivitiValueExpression activitiValueExpression, String resultVariableName) {
     this.activitiValueExpression = activitiValueExpression;
+    this.resultVariableName = resultVariableName;
   }
 
   public void execute(ActivityExecution execution) throws Exception {
-    activitiValueExpression.getValue(execution);
+    Object value = activitiValueExpression.getValue(execution);
+
+    if (resultVariableName != null) {
+      execution.setVariable(resultVariableName, value);
+    }
+
     leave(execution);
   }
 }
