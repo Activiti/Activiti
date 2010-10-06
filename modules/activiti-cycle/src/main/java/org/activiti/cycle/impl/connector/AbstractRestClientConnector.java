@@ -7,15 +7,20 @@ import java.util.logging.Level;
 import org.activiti.cycle.RepositoryException;
 import org.activiti.cycle.impl.conf.PasswordEnabledRepositoryConnectorConfiguration;
 import org.activiti.cycle.impl.connector.util.RestClientLogHelper;
+import org.apache.http.auth.AuthenticationException;
 import org.restlet.Client;
 import org.restlet.Context;
 import org.restlet.Request;
 import org.restlet.Response;
+import org.restlet.data.ChallengeRequest;
+import org.restlet.data.ChallengeResponse;
+import org.restlet.data.ChallengeScheme;
 import org.restlet.data.MediaType;
 import org.restlet.data.Method;
 import org.restlet.data.Preference;
 import org.restlet.data.Protocol;
 import org.restlet.data.Reference;
+import org.restlet.data.Status;
 import org.restlet.representation.Representation;
 
 
@@ -42,18 +47,25 @@ public abstract class AbstractRestClientConnector<T extends PasswordEnabledRepos
   }
   
   public Response sendRequest(Request request) throws IOException {
-    injectSecurityMechanism(request);
+    injectCustomSecurityMechanism(request);
 
     if (log.isLoggable(Level.FINE)) {
       RestClientLogHelper.logHttpRequest(log, Level.FINE, request);
     }
+    
     Client client = initClient();
     Response response = client.handle(request);
+        
     if (log.isLoggable(Level.FINE)) {
       RestClientLogHelper.logHttpResponse(log, Level.FINE, response);
     }
+    
     if (response.getStatus().isSuccess()) {
       return response;
+    } else if (response.getStatus().equals(Status.CLIENT_ERROR_UNAUTHORIZED)) {
+      // retry request with additional authentication
+      Request retryRequest = createChallengeResponse(response);
+      return sendRequest(retryRequest);
     }
 
     throw new RepositoryException("Encountered error while retrieving http response (HttpStatus: " + response.getStatus() + ", Body: "
@@ -61,13 +73,37 @@ public abstract class AbstractRestClientConnector<T extends PasswordEnabledRepos
   }
 
   /**
-   * Overwrite this method to add required security mechanisms to request.
-   * For example: request.setChallengeResponse(new ChallengeResponse(ChallengeScheme.HTTP_BASIC, getConfiguration().getUser(), getConfiguration().getPassword()));
+   * Overwrite this method to add required security mechanisms to requests.
+   * For example: add a token to request headers
    * @param request
-   * @return modified request enhanced with security data
+   * @return modified request enhanced with custom security mechanism
    */
-  protected abstract Request injectSecurityMechanism(Request request);
+  protected abstract Request injectCustomSecurityMechanism(Request request);
 
+  private Request createChallengeResponse(Response resourceNeedsAuth) {
+    ChallengeResponse cResponse = null;
+      
+    for (ChallengeRequest challengeRequest : resourceNeedsAuth.getChallengeRequests()) {
+      ChallengeScheme cs = challengeRequest.getScheme();
+      
+      if (ChallengeScheme.HTTP_BASIC.equals(cs)) {
+        if (log.isLoggable(Level.INFO)) {
+          log.info("Received 401 Error -> retrying request with HTTP_BASIC AUTH now!");
+        }
+        cResponse = new ChallengeResponse(ChallengeScheme.HTTP_BASIC, getConfiguration().getUser(), getConfiguration().getPassword());
+        break;
+      }
+    }
+    
+    if (cResponse != null) {
+      Request authenticatedRequest = resourceNeedsAuth.getRequest();
+      authenticatedRequest.setChallengeResponse(cResponse);
+      return authenticatedRequest;
+    }
+    
+    throw new IllegalStateException(new AuthenticationException("Unable to determine required authentication scheme!"));
+  }
+  
   private Request createRequest(Reference reference, Representation representation) {
     if (reference != null) {
       Request request = new Request();
