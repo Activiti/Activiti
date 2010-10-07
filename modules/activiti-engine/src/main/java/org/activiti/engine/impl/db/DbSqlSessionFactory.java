@@ -92,7 +92,7 @@ public class DbSqlSessionFactory implements SessionFactory, ProcessEngineConfigu
     this.statementMappings = databaseSpecificStatements.get(processEngineConfiguration.getDatabaseName());
 
     DataSource dataSource = processEngineConfiguration.getDataSource();
-    if (dataSource==null) {
+    if (dataSource==null) { // standalone usage
       
       String jdbcDriver = processEngineConfiguration.getJdbcDriver(); 
       String jdbcUrl = processEngineConfiguration.getJdbcUrl(); 
@@ -106,12 +106,18 @@ public class DbSqlSessionFactory implements SessionFactory, ProcessEngineConfigu
         throw new ActivitiException("DataSource or JDBC properties have to be specified in a process engine configuration");
       }
       
-      dataSource = new PooledDataSource(
+      PooledDataSource pooledDataSource = 
+        new PooledDataSource(
               Thread.currentThread().getContextClassLoader(), 
               jdbcDriver, 
               jdbcUrl, 
               jdbcUsername,
               jdbcPassword );
+      
+      // ACT-233: connection pool of Ibatis is not properely initialized if this is not called!
+      pooledDataSource.forceCloseAll();
+      
+      dataSource = pooledDataSource;
     }
     
     TransactionFactory transactionFactory = null;
