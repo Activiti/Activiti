@@ -13,7 +13,7 @@
 	   <tbody>
 	      <#list processDefinitions as processDefinition>
 	         <tr>
-                <td>${processDefinition.name}</td>
+                <td>${processDefinition.name!processDefinition.id}</td>
                 <td>${processDefinition.key}</td>
                 <td>${processDefinition.version}</td>
 					 <td>
