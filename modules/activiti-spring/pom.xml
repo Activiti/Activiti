@@ -171,6 +171,7 @@
                 <exclude>org/activiti/standalone/**</exclude>
                 <exclude>**/*TestCase.java</exclude>
                 <exclude>org/activiti/engine/test/api/testing/ActivitiRuleJunit4Test.java</exclude><!-- Can't run in Spring since ActivitiRule must be used different in Spring -->
+                <exclude>org/activiti/engine/test/concurrency/CompetingJobAcquisitionTest.java</exclude> <!-- ACT-234 -->
               </excludes>
             </configuration>
           </plugin>
