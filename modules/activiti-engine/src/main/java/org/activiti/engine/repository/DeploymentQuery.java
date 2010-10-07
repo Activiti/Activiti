@@ -17,7 +17,6 @@ import java.util.List;
 
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.RepositoryService;
-import org.activiti.engine.impl.repository.DeploymentQueryProperty;
 
 /**
  * Allows programmatic querying of {@link Deployment}s.

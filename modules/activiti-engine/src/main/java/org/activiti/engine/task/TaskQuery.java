@@ -15,7 +15,6 @@ package org.activiti.engine.task;
 import java.util.List;
 
 import org.activiti.engine.ActivitiException;
-import org.activiti.engine.impl.task.TaskQueryProperty;
 
 /**
  * Allows programmatic querying of {@link Task}s;

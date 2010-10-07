@@ -24,10 +24,10 @@ import java.util.Map;
 import junit.framework.Assert;
 
 import org.activiti.engine.ActivitiException;
-import org.activiti.engine.impl.runtime.ProcessInstanceQueryProperty;
 import org.activiti.engine.impl.test.ActivitiInternalTestCase;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.runtime.ProcessInstanceQuery;
+import org.activiti.engine.runtime.ProcessInstanceQueryProperty;
 import org.activiti.engine.test.Deployment;
 
 /**

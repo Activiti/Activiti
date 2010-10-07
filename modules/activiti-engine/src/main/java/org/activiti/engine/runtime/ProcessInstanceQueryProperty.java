@@ -11,12 +11,11 @@
  * limitations under the License.
  */
 
-package org.activiti.engine.impl.runtime;
+package org.activiti.engine.runtime;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import org.activiti.engine.runtime.ProcessInstanceQuery;
 
 /**
  * Contains the possible properties that can be used in a {@link ProcessInstanceQuery}.

@@ -27,6 +27,7 @@ import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 
 import org.activiti.engine.impl.test.ActivitiInternalTestCase;
+import org.activiti.engine.impl.util.CollectionUtil;
 import org.activiti.engine.test.Deployment;
 import org.subethamail.wiser.Wiser;
 import org.subethamail.wiser.WiserMessage;
@@ -124,7 +125,7 @@ public class EmailServiceTaskTest extends ActivitiInternalTestCase {
   
   @Deployment
   public void testHtmlMail() throws Exception {
-    runtimeService.startProcessInstanceByKey("htmlMail");
+    runtimeService.startProcessInstanceByKey("htmlMail", CollectionUtil.singletonMap("gender", "male"));
     
     List<WiserMessage> messages = wiser.getMessages();
     assertEquals(1, messages.size());

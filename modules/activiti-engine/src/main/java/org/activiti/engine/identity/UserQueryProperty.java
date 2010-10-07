@@ -11,27 +11,30 @@
  * limitations under the License.
  */
 
-package org.activiti.engine.impl.runtime;
+package org.activiti.engine.identity;
 
 import java.util.HashMap;
 import java.util.Map;
 
+
+
 /**
- * Contains the possible properties that can be used in a {@link ExecutionQueryt}.
+ * Contains the possible properties that can be used by the {@link UserQuery}.
  * 
  * @author Joram Barrez
  */
-public class ExecutionQueryProperty {
+public class UserQueryProperty {
   
-  private static final Map<String, ExecutionQueryProperty> properties = new HashMap<String, ExecutionQueryProperty>();
+  private static final Map<String, UserQueryProperty> properties = new HashMap<String, UserQueryProperty>();
 
-  public static final ExecutionQueryProperty PROCESS_INSTANCE_ID = new ExecutionQueryProperty("E.ID_");
-  public static final ExecutionQueryProperty PROCESS_DEFINITION_KEY = new ExecutionQueryProperty("P.KEY_");
-  public static final ExecutionQueryProperty PROCESS_DEFINITION_ID = new ExecutionQueryProperty("P.ID_");
+  public static final UserQueryProperty ID = new UserQueryProperty("U.ID_");
+  public static final UserQueryProperty FIRST_NAME = new UserQueryProperty("U.FIRST_");
+  public static final UserQueryProperty LAST_NAME = new UserQueryProperty("U.LAST_");
+  public static final UserQueryProperty EMAIL = new UserQueryProperty("U.EMAIL_");
   
   private String name;
 
-  public ExecutionQueryProperty(String name) {
+  public UserQueryProperty(String name) {
     this.name = name;
     properties.put(name, this);
   }
@@ -40,7 +43,7 @@ public class ExecutionQueryProperty {
     return name;
   }
   
-  public static ExecutionQueryProperty findByName(String propertyName) {
+  public static UserQueryProperty findByName(String propertyName) {
     return properties.get(propertyName);
   }
 

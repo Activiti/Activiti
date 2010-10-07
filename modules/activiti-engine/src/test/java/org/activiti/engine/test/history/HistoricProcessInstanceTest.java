@@ -29,6 +29,7 @@ import org.activiti.engine.test.Deployment;
 
 /**
  * @author Tom Baeyens
+ * @author Joram Barrez
  */
 public class HistoricProcessInstanceTest extends ActivitiInternalTestCase {
   
@@ -75,6 +76,18 @@ public class HistoricProcessInstanceTest extends ActivitiInternalTestCase {
     assertEquals(noon, historicProcessInstance.getStartTime());
     assertEquals(twentyFiveSecsAfterNoon, historicProcessInstance.getEndTime());
     assertEquals(new Long(25*1000), historicProcessInstance.getDurationInMillis());
+  }
+  
+  @Deployment(resources = {"org/activiti/engine/test/history/oneTaskProcess.bpmn20.xml"})
+  public void testDeleteProcessInstanceHistoryCreated() {
+    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("oneTaskProcess");
+    assertNotNull(processInstance);
+    
+    // delete process instance should not delete the history
+    runtimeService.deleteProcessInstance(processInstance.getId(), "cancel");
+    HistoricProcessInstance historicProcessInstance = 
+      historyService.createHistoricProcessInstanceQuery().processInstanceId(processInstance.getId()).singleResult();
+    assertNotNull(historicProcessInstance.getEndTime());
   }
 
   @Deployment(resources = {"org/activiti/engine/test/history/oneTaskProcess.bpmn20.xml"})

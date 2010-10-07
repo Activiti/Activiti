@@ -16,7 +16,6 @@ package org.activiti.engine.repository;
 import java.util.List;
 
 import org.activiti.engine.ActivitiException;
-import org.activiti.engine.impl.repository.ProcessDefinitionQueryProperty;
 
 /**
  * Allows programmatic querying of {@link ProcessDefinition}s.

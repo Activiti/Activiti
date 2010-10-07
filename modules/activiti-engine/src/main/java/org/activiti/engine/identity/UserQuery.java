@@ -16,7 +16,6 @@ package org.activiti.engine.identity;
 import java.util.List;
 
 import org.activiti.engine.ActivitiException;
-import org.activiti.engine.impl.identity.UserQueryProperty;
 
 
 /**

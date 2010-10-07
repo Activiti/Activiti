@@ -22,7 +22,7 @@
             <![CDATA[
               <html>
                 <body>
-                  Hello <b>Kermit</b>
+                  Hello ${(gender.equals('male')) ? 'Mr.' : 'Mrs.'} <b>Kermit</b>
                 </body>
               </html>
             ]]>

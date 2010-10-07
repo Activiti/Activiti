@@ -60,6 +60,9 @@ public interface HistoricProcessInstanceQuery {
   /** Order by the duration of the process instance (needs to be followed by {@link #asc()} or {@link #desc()}). */
   HistoricProcessInstanceQuery orderByDuration();
   
+  /** Order by the given property */
+  HistoricProcessInstanceQuery orderBy(HistoricProcessInstanceQueryProperty property);
+  
   /** Order the results descending on the given property as
    * defined in this class (needs to come after a call to one of the orderByXxxx methods). */
   HistoricProcessInstanceQuery desc();

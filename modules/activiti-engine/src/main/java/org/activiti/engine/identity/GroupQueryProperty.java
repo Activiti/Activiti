@@ -11,31 +11,29 @@
  * limitations under the License.
  */
 
-package org.activiti.engine.impl.identity;
+package org.activiti.engine.identity;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import org.activiti.engine.identity.UserQuery;
 
 
 /**
- * Contains the possible properties that can be used by the {@link UserQuery}.
+ * Contains the possible properties that can be used by the {@link GroupQuery}.
  * 
  * @author Joram Barrez
  */
-public class UserQueryProperty {
+public class GroupQueryProperty {
   
-  private static final Map<String, UserQueryProperty> properties = new HashMap<String, UserQueryProperty>();
+  private static final Map<String, GroupQueryProperty> properties = new HashMap<String, GroupQueryProperty>();
 
-  public static final UserQueryProperty ID = new UserQueryProperty("U.ID_");
-  public static final UserQueryProperty FIRST_NAME = new UserQueryProperty("U.FIRST_");
-  public static final UserQueryProperty LAST_NAME = new UserQueryProperty("U.LAST_");
-  public static final UserQueryProperty EMAIL = new UserQueryProperty("U.EMAIL_");
+  public static final GroupQueryProperty ID = new GroupQueryProperty("G.ID_");
+  public static final GroupQueryProperty NAME = new GroupQueryProperty("G.NAME_");
+  public static final GroupQueryProperty TYPE = new GroupQueryProperty("G.TYPE_");
   
   private String name;
 
-  public UserQueryProperty(String name) {
+  public GroupQueryProperty(String name) {
     this.name = name;
     properties.put(name, this);
   }
@@ -44,7 +42,7 @@ public class UserQueryProperty {
     return name;
   }
   
-  public static UserQueryProperty findByName(String propertyName) {
+  public static GroupQueryProperty findByName(String propertyName) {
     return properties.get(propertyName);
   }
 

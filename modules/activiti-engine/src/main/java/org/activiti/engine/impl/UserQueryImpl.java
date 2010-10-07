@@ -18,7 +18,7 @@ import java.util.List;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.identity.User;
 import org.activiti.engine.identity.UserQuery;
-import org.activiti.engine.impl.identity.UserQueryProperty;
+import org.activiti.engine.identity.UserQueryProperty;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
 

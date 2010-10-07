@@ -19,8 +19,8 @@ import java.util.List;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
-import org.activiti.engine.impl.runtime.JobQueryProperty;
 import org.activiti.engine.impl.util.ClockUtil;
+import org.activiti.engine.management.JobQueryProperty;
 import org.activiti.engine.runtime.Job;
 import org.activiti.engine.runtime.JobQuery;
 

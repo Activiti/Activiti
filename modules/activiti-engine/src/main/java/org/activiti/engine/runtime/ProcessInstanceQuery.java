@@ -17,7 +17,6 @@ import java.util.List;
 
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.cfg.ProcessEngineConfiguration;
-import org.activiti.engine.impl.runtime.ProcessInstanceQueryProperty;
 
 /**
  * Allows programmatic querying of {@link ProcessInstance}s.

@@ -11,30 +11,27 @@
  * limitations under the License.
  */
 
-package org.activiti.engine.impl.identity;
+package org.activiti.engine.runtime;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import org.activiti.engine.identity.GroupQuery;
-
-
 /**
- * Contains the possible properties that can be used by the {@link GroupQuery}.
+ * Contains the possible properties that can be used in a {@link ExecutionQueryt}.
  * 
  * @author Joram Barrez
  */
-public class GroupQueryProperty {
+public class ExecutionQueryProperty {
   
-  private static final Map<String, GroupQueryProperty> properties = new HashMap<String, GroupQueryProperty>();
+  private static final Map<String, ExecutionQueryProperty> properties = new HashMap<String, ExecutionQueryProperty>();
 
-  public static final GroupQueryProperty ID = new GroupQueryProperty("G.ID_");
-  public static final GroupQueryProperty NAME = new GroupQueryProperty("G.NAME_");
-  public static final GroupQueryProperty TYPE = new GroupQueryProperty("G.TYPE_");
+  public static final ExecutionQueryProperty PROCESS_INSTANCE_ID = new ExecutionQueryProperty("E.ID_");
+  public static final ExecutionQueryProperty PROCESS_DEFINITION_KEY = new ExecutionQueryProperty("P.KEY_");
+  public static final ExecutionQueryProperty PROCESS_DEFINITION_ID = new ExecutionQueryProperty("P.ID_");
   
   private String name;
 
-  public GroupQueryProperty(String name) {
+  public ExecutionQueryProperty(String name) {
     this.name = name;
     properties.put(name, this);
   }
@@ -43,7 +40,7 @@ public class GroupQueryProperty {
     return name;
   }
   
-  public static GroupQueryProperty findByName(String propertyName) {
+  public static ExecutionQueryProperty findByName(String propertyName) {
     return properties.get(propertyName);
   }
 

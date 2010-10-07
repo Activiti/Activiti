@@ -11,7 +11,7 @@
  * limitations under the License.
  */
 
-package org.activiti.engine.impl.runtime;
+package org.activiti.engine.management;
 
 import java.util.HashMap;
 import java.util.Map;

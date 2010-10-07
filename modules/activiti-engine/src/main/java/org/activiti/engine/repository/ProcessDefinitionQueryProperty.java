@@ -11,12 +11,11 @@
  * limitations under the License.
  */
 
-package org.activiti.engine.impl.repository;
+package org.activiti.engine.repository;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import org.activiti.engine.repository.ProcessDefinitionQuery;
 
 /**
  * Contains the possible properties that can be used in a {@link ProcessDefinitionQuery}.

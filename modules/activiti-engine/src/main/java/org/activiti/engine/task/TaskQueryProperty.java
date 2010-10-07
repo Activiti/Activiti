@@ -24,12 +24,11 @@
  * limitations under the License.
  */
 
-package org.activiti.engine.impl.task;
+package org.activiti.engine.task;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import org.activiti.engine.task.TaskQuery;
 
 
 /**

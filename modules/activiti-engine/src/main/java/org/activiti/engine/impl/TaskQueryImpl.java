@@ -20,9 +20,9 @@ import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.identity.GroupEntity;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
-import org.activiti.engine.impl.task.TaskQueryProperty;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.task.TaskQuery;
+import org.activiti.engine.task.TaskQueryProperty;
 
 /**
  * @author Joram Barrez
