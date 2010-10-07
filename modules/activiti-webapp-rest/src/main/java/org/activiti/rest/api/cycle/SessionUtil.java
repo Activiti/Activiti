@@ -25,6 +25,7 @@ import org.activiti.cycle.impl.connector.demo.DemoConnectorConfiguration;
 import org.activiti.cycle.impl.connector.fs.FileSystemConnectorConfiguration;
 import org.activiti.cycle.impl.connector.signavio.SignavioConnectorConfiguration;
 import org.activiti.cycle.impl.connector.view.RootConnectorConfiguration;
+import org.activiti.cycle.impl.db.CycleServiceDbXStreamImpl;
 import org.activiti.cycle.impl.plugin.PluginFinder;
 
 public class SessionUtil {
@@ -34,6 +35,15 @@ public class SessionUtil {
    */
   private static final File fsBaseDir = File.listRoots()[0];
 
+  public static CycleService getCycleService() {
+    CycleService cycleService = Cycle.getCycleService();
+    return cycleService;
+  }
+  
+  /**
+   * need the same method in class {@link CycleServiceDbXStreamImpl}
+   */
+  @Deprecated
   public static RepositoryConnector getRepositoryConnector(String currentUserId, HttpSession session) {
     String key = currentUserId + "_connector";
     RepositoryConnector connector = (RepositoryConnector) session.getAttribute(key);
@@ -61,6 +71,10 @@ public class SessionUtil {
    * TODO: This should be rewritten as soon as we have real persistence and
    * stuff
    */
+  /**
+   * need the same method in class {@link CycleServiceDbXStreamImpl}
+   */
+  @Deprecated
   public static ConfigurationContainer loadUserConfiguration(String currentUserId) {
     CycleService cycleConfigurationService = Cycle.getCycleService(); // new CycleServiceDbXStreamImpl(configBaseDir);
 
@@ -74,6 +88,10 @@ public class SessionUtil {
     return configuration;
   }
 
+  /**
+   * need the same method in class {@link CycleServiceDbXStreamImpl}
+   */
+  @Deprecated
   public static ConfigurationContainer createDefaultDemoConfiguration(String currentUserId) {
     ConfigurationContainer configuration = new ConfigurationContainer(currentUserId);
     configuration.addRepositoryConnectorConfiguration(new DemoConnectorConfiguration("demo"));

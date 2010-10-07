@@ -6,7 +6,7 @@ import org.activiti.cycle.impl.plugin.PluginFinder;
 
 /**
  * TODO: make configurable somehow
- * @author polenz
+ * @author kristin.polenz@camunda.com
  */
 public class Cycle {
 

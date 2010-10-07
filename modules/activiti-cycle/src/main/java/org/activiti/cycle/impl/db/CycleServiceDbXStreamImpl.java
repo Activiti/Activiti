@@ -1,13 +1,26 @@
 package org.activiti.cycle.impl.db;
 
+import java.io.File;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import javax.servlet.http.HttpSession;
+
+import org.activiti.cycle.Cycle;
 import org.activiti.cycle.CycleConfig;
 import org.activiti.cycle.CycleLink;
+import org.activiti.cycle.CycleLinkTarget;
 import org.activiti.cycle.CycleService;
+import org.activiti.cycle.RepositoryConnector;
+import org.activiti.cycle.RepositoryException;
 import org.activiti.cycle.impl.conf.ConfigurationContainer;
 import org.activiti.cycle.impl.conf.CycleDbSqlSessionFactory;
+import org.activiti.cycle.impl.connector.demo.DemoConnectorConfiguration;
+import org.activiti.cycle.impl.connector.fs.FileSystemConnectorConfiguration;
+import org.activiti.cycle.impl.connector.signavio.SignavioConnectorConfiguration;
+import org.activiti.cycle.impl.connector.view.RootConnectorConfiguration;
+import org.activiti.cycle.impl.plugin.PluginFinder;
 import org.activiti.engine.DbSchemaStrategy;
 import org.activiti.engine.ProcessEngines;
 import org.activiti.engine.impl.ProcessEngineImpl;
@@ -30,6 +43,12 @@ public class CycleServiceDbXStreamImpl extends DummyBaseCycleService implements 
   
   private static HashMap<String, CycleDbSqlSessionFactory> dbFactories = new HashMap<String, CycleDbSqlSessionFactory>();
 
+  /**
+   * TODO: Check if list roots can return an empty array
+   */
+  private static final File fsBaseDir = File.listRoots()[0];
+
+  
   public CycleServiceDbXStreamImpl(String processEngineName) {
     if (processEngineName == null) {
       this.processEngineName = DEFAULT_ENGINE;
@@ -60,6 +79,58 @@ public class CycleServiceDbXStreamImpl extends DummyBaseCycleService implements 
   public XStream getXStream() {
     return xStream;
   }
+
+  //-- copied from SessionUtil class --
+  
+  public static RepositoryConnector getRepositoryConnector(String currentUserId, HttpSession session) {
+    String key = currentUserId + "_connector";
+    RepositoryConnector connector = (RepositoryConnector) session.getAttribute(key);
+    if (connector == null) {
+      PluginFinder.registerServletContext(session.getServletContext());
+
+      ConfigurationContainer configuration = loadUserConfiguration(currentUserId);
+      connector = new RootConnectorConfiguration(configuration).createConnector();
+      
+      // TODO: Correct user / password handling
+      connector.login(currentUserId, currentUserId);
+      
+      session.setAttribute(key, connector);      
+    }
+    return connector;
+  }
+
+  /**
+   * loads the configuration for this user. If no configuration exists, a demo
+   * config is created and save to file (this xml can be easily modified later
+   * on to play around with it).
+   * 
+   * This is a temporary solution until real persistence for configs is in place
+   * 
+   * TODO: This should be rewritten as soon as we have real persistence and
+   * stuff
+   */
+  public static ConfigurationContainer loadUserConfiguration(String currentUserId) {
+    CycleService cycleConfigurationService = Cycle.getCycleService(); // new CycleServiceDbXStreamImpl(configBaseDir);
+
+    ConfigurationContainer configuration;
+    try{
+      configuration = cycleConfigurationService.getConfiguration(currentUserId);
+    } catch(RepositoryException e) {
+      configuration = createDefaultDemoConfiguration(currentUserId);
+      cycleConfigurationService.saveConfiguration(configuration);
+    }
+    return configuration;
+  }
+
+  public static ConfigurationContainer createDefaultDemoConfiguration(String currentUserId) {
+    ConfigurationContainer configuration = new ConfigurationContainer(currentUserId);
+    configuration.addRepositoryConnectorConfiguration(new DemoConnectorConfiguration("demo"));
+    configuration.addRepositoryConnectorConfiguration(new SignavioConnectorConfiguration("signavio", "http://localhost:8080/activiti-modeler/"));
+    configuration.addRepositoryConnectorConfiguration(new FileSystemConnectorConfiguration("files", fsBaseDir));
+    return configuration;
+  }
+  
+  //-- end of copy --
   
   public void saveConfiguration(ConfigurationContainer container) {
     createAndInsert(container, container.getName());
@@ -74,8 +145,13 @@ public class CycleServiceDbXStreamImpl extends DummyBaseCycleService implements 
   @Override
   public void addArtifactLink(String sourceArtifactId, String targetArtifactId) {
     CycleLink cycleLink = new CycleLink();
+    CycleLinkTarget cycleLinkTarget = new CycleLinkTarget();
+    List<CycleLinkTarget> cycleLinkTargetList = new ArrayList<CycleLinkTarget>();
+    cycleLinkTarget.setTargetArtifactId(targetArtifactId);
+    cycleLinkTargetList.add(cycleLinkTarget);
+
     cycleLink.setSourceArtifactId(sourceArtifactId);
-    cycleLink.setTargetArtifactId(targetArtifactId);
+    cycleLink.setCycleLinkTarget(cycleLinkTargetList);
     
     SqlSessionFactory sqlMapper = getSessionFactory();
     
@@ -118,8 +194,14 @@ public class CycleServiceDbXStreamImpl extends DummyBaseCycleService implements 
   @Override
   public List<CycleLink> getArtifactLinks(String sourceArtifactId, String type) {
     CycleLink cycleLink = new CycleLink();
+    CycleLinkTarget cycleLinkTarget = new CycleLinkTarget();
+    List<CycleLinkTarget> cycleLinkTargetList = new ArrayList<CycleLinkTarget>();
+    
+    cycleLinkTarget.setLinkType(type);
+    cycleLinkTargetList.add(cycleLinkTarget);
+    
     cycleLink.setSourceArtifactId(sourceArtifactId);
-    cycleLink.setLinkType(type);
+    cycleLink.setCycleLinkTarget(cycleLinkTargetList);
     
     SqlSessionFactory sqlMapper = getSessionFactory();
     
@@ -155,9 +237,15 @@ public class CycleServiceDbXStreamImpl extends DummyBaseCycleService implements 
   @Override
   public List<CycleLink> getArtifactLinks(String sourceArtifactId, Long sourceRevision, String type) {
     CycleLink cycleLink = new CycleLink();
+    CycleLinkTarget cycleLinkTarget = new CycleLinkTarget();
+    List<CycleLinkTarget> cycleLinkTargetList = new ArrayList<CycleLinkTarget>();
+    
+    cycleLinkTarget.setLinkType(type);
+    cycleLinkTargetList.add(cycleLinkTarget);
+    
     cycleLink.setSourceArtifactId(sourceArtifactId);
-    cycleLink.setLinkType(type);
     cycleLink.setSourceRevision(sourceRevision);
+    cycleLink.setCycleLinkTarget(cycleLinkTargetList);
     
     SqlSessionFactory sqlMapper = getSessionFactory();
     
