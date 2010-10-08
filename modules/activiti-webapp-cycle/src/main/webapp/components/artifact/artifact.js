@@ -22,7 +22,14 @@
 		// Create new service instances and set this component to receive the callbacks
     this.services.repositoryService = new Activiti.service.RepositoryService(this);
     // Listen for events that interest this component
-    this.onEvent(Activiti.event.selectTreeLabel, this.onSelectTreeLabelEvent);
+    this.onEvent(Activiti.event.updateArtifactView, this.onSelectTreeLabelEvent);
+		
+		this._tabView = {};
+		this._repositoryNodeId = "";
+		this._isRepositoryArtifact = false;
+		this._name = "";
+		this._activeTabIndex = 0;
+
     return this;
   };
 
@@ -36,34 +43,44 @@
 		*/
 		onReady: function Artifact_onReady()
 		{
-			
+
 		},
 		
 		onSelectTreeLabelEvent: function Artifact_onSelectTreeLabelEvent(event, args) {
-			// get the tree node that was selected
-			var node = args[1].value.node;
+			
+			this._repositoryNodeId = args[1].value.repositoryNodeId;
+			this._isRepositoryArtifact = args[1].value.isRepositoryArtifact;
+			this._name = args[1].value.name;
+			this._activeTabIndex = args[1].value.activeTabIndex;
+
 			// get the header el of the content area
 			var headerEl = Selector.query("h1", this.id, true);
-			if("header-" + node.data.id === headerEl.id) {
-				// do nothing... the same node was clicked twice
+			if("header-" + args[1].value.repositoryNodeId === headerEl.id) {
+				// still the same node, check whether the tab should change
+
+				if(this._tabView.set) {
+					// Update active tav selection silently, without firing an event (last parameter is 'silent=true')
+					this._tabView.set("activeTab", this._tabView.getTab(this._activeTabIndex), true);
+				}
+
 			} else {
-				var tabView = YAHOO.util.Selector.query('div', 'artifact-div', true);
-				// check whether an artifact was selected before. If yes, remove tabView and actions
-				if(tabView) {
+				var tabViewHtml = YAHOO.util.Selector.query('div', 'artifact-div', true);
+				// check whether an artifact was selected before. If yes, remove tabViewHtml and actions
+				if(tabViewHtml) {
 					var artifactDiv = document.getElementById('artifact-div');
-					artifactDiv.removeChild(tabView);
+					artifactDiv.removeChild(tabViewHtml);
 					var optionsDiv = document.getElementById('options-div');
 					optionsDiv.innerHTML = "";
 					optionsDiv.removeAttribute("class");
 				}
 				// Check whether the selected node is a file node. If so, 
 				// we can load its data
-				if(node.data.file) {
-					this.services.repositoryService.loadArtifact(node.data.id);
+				if(args[1].value.isRepositoryArtifact) {
+					this.services.repositoryService.loadArtifact(args[1].value.repositoryNodeId);
 				}
 				// Update the heading that displays the name of the selected node
-		  	headerEl.id = "header-" + node.data.id;
-				headerEl.innerHTML = node.label;
+		  	headerEl.id = "header-" + args[1].value.repositoryNodeId;
+				headerEl.innerHTML = args[1].value.name;
 			}
 		},
 		
@@ -77,34 +94,31 @@
     onLoadArtifactSuccess: function RepoTree_RepositoryService_onLoadArtifactSuccess(response, obj)
     {
 	
-			var tabView = new YAHOO.widget.TabView(); 
+			this._tabView = new YAHOO.widget.TabView(); 
 			
 			// Retrieve rest api response
       var artifactJson = response.json;
-      var firstTab = true;
-			
 
-			// ---------- --------
-			
 			for(var i = 0; i<artifactJson.contentRepresentations.length; i++) {
 				var tab = new YAHOO.widget.Tab({ 
 					label: artifactJson.contentRepresentations[i], 
 					dataSrc: this.loadTabDataURL(artifactJson.id, artifactJson.contentRepresentations[i]), 
-					cacheData: true,
-					active: firstTab
+					cacheData: true
 				});
 				tab.addListener("contentChange", this.onTabDataLoaded);				
-
-//				tab.loadHandler.success = this.onTabDataLoaded;
-
-				tabView.addTab(tab);
-				firstTab = false;
+				this._tabView.addTab(tab);
 			}
 
-			// ---------- --------
-			
-			tabView.appendTo('artifact-div');
+			this._tabView.appendTo('artifact-div');
 
+			// replace the tabViews onActiveTabCHange evnet handler with our own one
+			this._tabView.unsubscribe("activeTabChange", this._tabView._onActiveTabChange);
+			this._tabView.subscribe("activeTabChange", this.onActiveTabChange, null, this);
+
+			// Select the active tab without firing an event (last parameter is 'silent=true')
+			this._tabView.set("activeTab", this._tabView.getTab(this._activeTabIndex), true);
+
+			// Create the options panel
 			var optionsDiv = document.getElementById("options-div");//YAHOO.util.Selector.query('div', 'artifact-div', true);
 
 			// Add a dropdown for the actions			
@@ -172,18 +186,14 @@
 
 		onExecuteActionClick: function Artifact_onExecuteActionClick(e)
 		{
-
 			var artifactId = this.value.split("#TOKEN#")[0];
 			var actionName = this.value.split("#TOKEN#")[1];
 			
-			
 			new Activiti.widget.ExecuteArtifactActionForm(this.id + "-executeArtifactActionForm", artifactId, actionName);
-			YAHOO.util.Event.preventDefault(e)
-			
-			
+			YAHOO.util.Event.preventDefault(e);
 		},
 		
-		onTabDataLoaded: function Artifact_onTabDataLoaded(a,b,c,d,e)
+		onTabDataLoaded: function Artifact_onTabDataLoaded()
 		{
 			prettyPrint();
 		},
@@ -191,7 +201,14 @@
 		loadTabDataURL: function Artifact_loadTabDataURL(artifactId, representationId)
     {
       return Activiti.service.REST_PROXY_URI_RELATIVE + "content-representation?artifactId=" + encodeURIComponent(artifactId) + "&representationId=" + encodeURIComponent(representationId);
-    }
+    },
+
+		onActiveTabChange: function Artifact_onActiveTabChange(event)
+		{
+			var newActiveTabIndex = this._tabView.getTabIndex(event.newValue);
+			this.fireEvent(Activiti.event.updateArtifactView, {"repositoryNodeId": this._repositoryNodeId, "isRepositoryArtifact": this._isRepositoryArtifact, "name": this._name, "activeTabIndex": newActiveTabIndex}, null, true);
+			YAHOO.util.Event.preventDefault(event);
+		},
 
 	});
 

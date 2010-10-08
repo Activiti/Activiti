@@ -23,6 +23,11 @@
     // Create new service instances and set this component to receive the callbacks
     this.services.repositoryService = new Activiti.service.RepositoryService(this);
 
+		// Listen for selectTreeLabel event in order to be able to expand the tree up to the selected artifact 
+    this.onEvent(Activiti.event.selectTreeLabel, this.onSelectTreeLabelEvent);
+
+		this._treeView = {};
+
     return this;
   };
 
@@ -63,18 +68,22 @@
 			};
 
 			// instantiate the TreeView control
-	   	var tree = new YAHOO.widget.TreeView("treeDiv1", treeNodesJson);
+	   	me._treeView = new YAHOO.widget.TreeView("treeDiv1", treeNodesJson);
 
 			// set the callback function to dynamically load child nodes
 			// set iconMode to 1 to use the leaf node icon when a node has no children. 
-		  tree.setDynamicLoad(loadTreeNodes, 1);
-		  tree.render();
+		  me._treeView.setDynamicLoad(loadTreeNodes, 1);
+		  me._treeView.render();
 
-			tree.subscribe("clickEvent", this.onLabelClick, null, this);
+			me._treeView.subscribe("clickEvent", this.onLabelClick, null, this);
+			
+			me._treeView.subscribe("expand", this.onNodeExpand, null, this);
+			me._treeView.subscribe("collapse", this.onNodeCollapse, null, this);
     },
 
 		/**
-     * TODO: doc
+     * 
+		 * 
      */
 		onLoadNodeDataSuccess: function RepoTree_RepositoryService_onLoadNodeDataSuccess(response, obj)
     {
@@ -98,8 +107,41 @@
      */
     onLabelClick: function RepoTree_onLabelClick (node)
     {
-      this.fireEvent(Activiti.event.selectTreeLabel, node, null, false);
-    }
+	
+			// Map the node properties to the event value object (value object property -> node property):
+			// - repositoryNodeId -> node.data.id
+			// - isRepositoryArtifact -> node.data.file
+			// - name -> node.label
+
+			this.fireEvent(Activiti.event.updateArtifactView, {"repositoryNodeId": node.node.data.id, "isRepositoryArtifact": node.node.data.file, "name": node.node.label, "activeTabIndex": 0}, null, true);
+    },
+
+		onNodeExpand: function RepoTree_onNodeExpand (node)
+		{
+
+			// TODO
+			// do the cookie processing to store the expand/collapse state of the tree
+
+		},
+		
+		onNodeCollapse: function RepoTree_onNodeCollapse (node)
+		{
+
+			// TODO
+			// do the cookie processing to store the expand/collapse state of the tree
+
+		},
+
+		onSelectTreeLabelEvent: function Artifact_onSelectTreeLabelEvent(event, args)
+		{
+			// Check, whether the tree contains the node that was selected, otherwise we will have to request it from the REST API
+			
+			// TODO
+			
+			// this._treeView
+			
+			// args[1].value.repositoryNodeId
+		}
 
 	});
 
