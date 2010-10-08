@@ -11,7 +11,7 @@
  * limitations under the License.
  */
 
-package org.activiti.engine.impl;
+package org.activiti.engine.query;
 
 
 /**

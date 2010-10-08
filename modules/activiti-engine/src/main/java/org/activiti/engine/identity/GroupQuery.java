@@ -13,7 +13,7 @@
 
 package org.activiti.engine.identity;
 
-import org.activiti.engine.impl.Query;
+import org.activiti.engine.query.Query;
 
 
 /**

@@ -14,7 +14,7 @@
 package org.activiti.engine.repository;
 
 import org.activiti.engine.RepositoryService;
-import org.activiti.engine.impl.Query;
+import org.activiti.engine.query.Query;
 
 /**
  * Allows programmatic querying of {@link Deployment}s.

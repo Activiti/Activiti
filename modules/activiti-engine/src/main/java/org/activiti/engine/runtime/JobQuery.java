@@ -15,7 +15,7 @@ package org.activiti.engine.runtime;
 
 import java.util.Date;
 
-import org.activiti.engine.impl.Query;
+import org.activiti.engine.query.Query;
 
 
 /**

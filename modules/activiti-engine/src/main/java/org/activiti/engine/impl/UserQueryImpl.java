@@ -21,6 +21,7 @@ import org.activiti.engine.identity.UserQuery;
 import org.activiti.engine.identity.UserQueryProperty;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
+import org.activiti.engine.query.QueryProperty;
 
 
 /**

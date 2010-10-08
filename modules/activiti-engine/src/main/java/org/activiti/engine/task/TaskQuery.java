@@ -12,7 +12,7 @@
  */
 package org.activiti.engine.task;
 
-import org.activiti.engine.impl.Query;
+import org.activiti.engine.query.Query;
 
 /**
  * Allows programmatic querying of {@link Task}s;

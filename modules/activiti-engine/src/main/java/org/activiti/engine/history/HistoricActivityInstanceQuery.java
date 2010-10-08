@@ -14,7 +14,7 @@
 package org.activiti.engine.history;
 
 import org.activiti.engine.impl.HistoricActivityInstanceQueryImpl;
-import org.activiti.engine.impl.Query;
+import org.activiti.engine.query.Query;
 
 
 /**

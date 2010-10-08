@@ -29,7 +29,7 @@ package org.activiti.engine.task;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.activiti.engine.impl.QueryProperty;
+import org.activiti.engine.query.QueryProperty;
 
 
 

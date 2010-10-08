@@ -16,7 +16,7 @@ package org.activiti.engine.runtime;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.activiti.engine.impl.QueryProperty;
+import org.activiti.engine.query.QueryProperty;
 
 /**
  * Contains the possible properties that can be used in a {@link JobQuery}.
