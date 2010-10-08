@@ -15,7 +15,6 @@
   </parent>
 
 	<build>
-    <finalName>activiti-rest</finalName>  
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>

@@ -107,7 +107,7 @@
     
   	<mkdir dir="${target.distro.root}/setup/files/webapps/activiti-rest.war" />
     <unzip dest="${target.distro.root}/setup/files/webapps/activiti-rest.war" 
-           src="../modules/activiti-webapp-rest/target/activiti-rest.war"/>
+           src="../modules/activiti-webapp-rest/target/activiti-webapp-rest-${activiti.version}.war"/>
   	<delete>
   		<fileset dir="${target.distro.root}/setup/files/webapps/activiti-rest.war/WEB-INF/lib" />
   	</delete>
@@ -118,7 +118,7 @@
     		<include name="activiti-cycle-*.jar"/>
     		<include name="spring-surf-*.jar"/>
     	</fileset>
-    	<fileset dir="../modules/activiti-webapp-rest/target/activiti-rest/WEB-INF/lib/">
+    	<fileset dir="../modules/activiti-webapp-rest/target/activiti-webapp-rest-${activiti.version}/WEB-INF/lib/">
     		<include name="xstream-*.jar"/>
     		<include name="xpp3_min-*.jar"/>
     		<include name="com.noelios.restlet*.jar"/>

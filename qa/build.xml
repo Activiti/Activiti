@@ -72,17 +72,17 @@
   </target>
 
   <target name="webapp.rest.redeploy">
-    <property name="webapp.redeploy.module" value="activiti-webapp-rest"/>
+    <property name="webapp.redeploy.module" value="rest"/>
     <antcall target="webapp.redeploy"/>
   </target>
 
   <target name="webapp.probe.redeploy">
-    <property name="webapp.redeploy.module" value="activiti-webapp-probe"/>
+    <property name="webapp.redeploy.module" value="probe"/>
     <antcall target="webapp.redeploy"/>
   </target>
 
   <target name="webapp.explorer.redeploy">
-    <property name="webapp.redeploy.module" value="activiti-webapp-explorer"/>
+    <property name="webapp.redeploy.module" value="explorer"/>
     <antcall target="webapp.redeploy"/>
   </target>
 
@@ -107,7 +107,7 @@ Then run test.demo.setup to make it get placed inside your tomcat server." unles
     <exec executable="${mvn.executable}" dir="../modules/activiti-webapp">
       <arg line="clean install" />
     </exec>
-    <exec executable="${mvn.executable}" dir="../modules/${webapp.redeploy.module}">
+    <exec executable="${mvn.executable}" dir="../modules/activiti-webapp-${webapp.redeploy.module}">
       <arg line="clean package" />
     </exec>
     <taskdef name="undeploy" classname="org.apache.catalina.ant.UndeployTask">
@@ -120,7 +120,7 @@ Then run test.demo.setup to make it get placed inside your tomcat server." unles
     <undeploy url="http://localhost:8080/manager"
             username="activiti"
             password="activiti"
-            path="/${webapp.redeploy.module}"
+            path="/activiti-${webapp.redeploy.module}"
             failonerror="false"/>
     <taskdef name="deploy" classname="org.apache.catalina.ant.DeployTask">
       <classpath>
@@ -132,8 +132,8 @@ Then run test.demo.setup to make it get placed inside your tomcat server." unles
     <deploy url="http://localhost:8080/manager"
             username="activiti"
             password="activiti"
-            path="/${webapp.redeploy.module}"
-            war="${basedir}/../modules/${webapp.redeploy.module}/target/${webapp.redeploy.module}-${activiti.version}.war"/>
+            path="/activiti-${webapp.redeploy.module}"
+            war="${basedir}/../modules/activiti-webapp-${webapp.redeploy.module}/target/activiti-webapp-${webapp.redeploy.module}-${activiti.version}.war"/>
   </target>
 
 
