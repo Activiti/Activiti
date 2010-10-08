@@ -1061,7 +1061,12 @@ Activiti.event = function() {
 		 * @property selectTreeLabel
 		 * @type string
 		 */
-		selectTreeLabel: "selectTreeLabel",
+		
+		updateArtifactView: "updateArtifactView",
+
+		expandTreeNode: "expandTreeNode",
+
+		collapseTreeNode: "collapseTreeNode",
 
     /**
      * Called from the activiti initializer when the first body element is ready.
