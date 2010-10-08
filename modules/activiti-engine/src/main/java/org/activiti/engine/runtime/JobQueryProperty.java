@@ -11,19 +11,19 @@
  * limitations under the License.
  */
 
-package org.activiti.engine.management;
+package org.activiti.engine.runtime;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import org.activiti.engine.runtime.JobQuery;
+import org.activiti.engine.impl.QueryProperty;
 
 /**
  * Contains the possible properties that can be used in a {@link JobQuery}.
  * 
  * @author Joram Barrez
  */
-public class JobQueryProperty {
+public class JobQueryProperty implements QueryProperty {
   
   private static final Map<String, JobQueryProperty> properties = new HashMap<String, JobQueryProperty>();
 

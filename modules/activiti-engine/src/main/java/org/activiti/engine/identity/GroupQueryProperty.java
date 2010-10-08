@@ -16,6 +16,8 @@ package org.activiti.engine.identity;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.activiti.engine.impl.QueryProperty;
+
 
 
 /**
@@ -23,7 +25,7 @@ import java.util.Map;
  * 
  * @author Joram Barrez
  */
-public class GroupQueryProperty {
+public class GroupQueryProperty implements QueryProperty {
   
   private static final Map<String, GroupQueryProperty> properties = new HashMap<String, GroupQueryProperty>();
 

@@ -13,9 +13,7 @@
 
 package org.activiti.engine.history;
 
-import java.util.List;
-
-import org.activiti.engine.ActivitiException;
+import org.activiti.engine.impl.Query;
 
 
 
@@ -24,7 +22,7 @@ import org.activiti.engine.ActivitiException;
  * @author Tom Baeyens
  * @author Joram Barrez
  */
-public interface HistoricProcessInstanceQuery {
+public interface HistoricProcessInstanceQuery extends Query<HistoricProcessInstanceQuery, HistoricProcessInstance>{
 
   /** Only select historic process instances with the given process instance.
    * {@link ProcessInstance) ids and {@link HistoricProcessInstance} ids match. */
@@ -59,30 +57,4 @@ public interface HistoricProcessInstanceQuery {
   
   /** Order by the duration of the process instance (needs to be followed by {@link #asc()} or {@link #desc()}). */
   HistoricProcessInstanceQuery orderByDuration();
-  
-  /** Order by the given property */
-  HistoricProcessInstanceQuery orderBy(HistoricProcessInstanceQueryProperty property);
-  
-  /** Order the results descending on the given property as
-   * defined in this class (needs to come after a call to one of the orderByXxxx methods). */
-  HistoricProcessInstanceQuery desc();
-  
-  /** Order the results descending on the given property as
-   * defined in this class (needs to come after a call to one of the orderByXxxx methods). */
-  HistoricProcessInstanceQuery asc();
-
-  /** Executes the query and get a list of {@link HistoricProcessInstance}s as the result. */
-  List<HistoricProcessInstance> list();
-  
-  /** Executes the query and get a page of {@link HistoricProcessInstance}s as the result. */
-  List<HistoricProcessInstance> listPage(int firstResult, int maxResults);
-  
-  /** Executes the query and get the single expected result. 
-   * @throws ActivitiException when the query results in more 
-   * than one historic process instance. 
-   */
-  HistoricProcessInstance singleResult();
-
-  /** Executes the query and get number of results. */
-  long count();
 }

@@ -26,7 +26,8 @@ import org.activiti.engine.runtime.ExecutionQueryProperty;
  * @author Joram Barrez
  * @author Frederik Heremans
  */
-public class ExecutionQueryImpl extends ExecutionVariableQueryImpl<ExecutionQueryImpl, Execution> implements ExecutionQuery {
+public class ExecutionQueryImpl extends ExecutionVariableQueryImpl<ExecutionQuery, Execution> 
+  implements ExecutionQuery {
 
   protected String processDefinitionId;
   protected String processDefinitionKey;
@@ -108,8 +109,11 @@ public class ExecutionQueryImpl extends ExecutionVariableQueryImpl<ExecutionQuer
     return this;
   }
   
-  public ExecutionQueryImpl orderBy(ExecutionQueryProperty property) {
-    this.orderProperty = property;
+  public ExecutionQueryImpl orderBy(QueryProperty property) {
+    if(!(property instanceof ExecutionQueryProperty)) {
+      throw new ActivitiException("Only ExecutionQueryProperty can be used with orderBy");
+    }
+    this.orderProperty = (ExecutionQueryProperty) property;
     return this;
   }
   

@@ -27,7 +27,7 @@ import org.activiti.engine.repository.DeploymentQueryProperty;
  * @author Tom Baeyens
  * @author Joram Barrez
  */
-public class DeploymentQueryImpl extends AbstractQuery<Deployment> implements DeploymentQuery {
+public class DeploymentQueryImpl extends AbstractQuery<DeploymentQuery, Deployment> implements DeploymentQuery {
 
   protected String deploymentId;
   protected String name;
@@ -79,8 +79,11 @@ public class DeploymentQueryImpl extends AbstractQuery<Deployment> implements De
     return orderBy(DeploymentQueryProperty.NAME);
   }
   
-  public DeploymentQueryImpl orderBy(DeploymentQueryProperty property) {
-    this.orderProperty = property;
+  public DeploymentQueryImpl orderBy(QueryProperty property) {
+    if(!(property instanceof DeploymentQueryProperty)) {
+      throw new ActivitiException("Only DeploymentQueryProperty can be used with orderBy");
+    }
+    this.orderProperty = (DeploymentQueryProperty) property;
     return this;
   }
   

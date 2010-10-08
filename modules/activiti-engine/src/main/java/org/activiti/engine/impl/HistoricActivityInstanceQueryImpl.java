@@ -26,7 +26,8 @@ import org.activiti.engine.impl.interceptor.CommandExecutor;
 /**
  * @author Tom Baeyens
  */
-public class HistoricActivityInstanceQueryImpl extends AbstractQuery<HistoricActivityInstance> implements HistoricActivityInstanceQuery {
+public class HistoricActivityInstanceQueryImpl extends AbstractQuery<HistoricActivityInstanceQuery, HistoricActivityInstance> 
+  implements HistoricActivityInstanceQuery {
   
   protected String processInstanceId;
   protected String executionId;
@@ -128,8 +129,11 @@ public class HistoricActivityInstanceQueryImpl extends AbstractQuery<HistoricAct
     return this;
   }
 
-  public HistoricActivityInstanceQueryImpl orderBy(HistoricActivityInstanceQueryProperty property) {
-    this.orderProperty = property;
+  public HistoricActivityInstanceQueryImpl orderBy(QueryProperty property) {
+    if(!(property instanceof HistoricActivityInstanceQueryProperty)) {
+      throw new ActivitiException("Only HistoricActivityInstanceQueryProperty can be used with orderBy");
+    }
+    this.orderProperty = (HistoricActivityInstanceQueryProperty) property;
     return this;
   }
 

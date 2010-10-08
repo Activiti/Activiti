@@ -16,13 +16,15 @@ package org.activiti.engine.runtime;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.activiti.engine.impl.QueryProperty;
+
 
 /**
  * Contains the possible properties that can be used in a {@link ProcessInstanceQuery}.
  * 
  * @author Joram Barrez
  */
-public class ProcessInstanceQueryProperty {
+public class ProcessInstanceQueryProperty implements QueryProperty {
   
   private static final Map<String, ProcessInstanceQueryProperty> properties = new HashMap<String, ProcessInstanceQueryProperty>();
 

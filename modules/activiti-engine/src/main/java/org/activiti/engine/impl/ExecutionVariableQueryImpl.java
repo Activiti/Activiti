@@ -28,7 +28,7 @@ import org.activiti.engine.impl.variable.VariableTypes;
  * 
  * @author Frederik Heremans
  */
-public abstract class ExecutionVariableQueryImpl<T, U> extends AbstractQuery<U> {
+public abstract class ExecutionVariableQueryImpl<T extends Query<?,?>, U> extends AbstractQuery<T, U> {
 
   protected List<QueryVariableValue> variables = new ArrayList<QueryVariableValue>();
   
@@ -62,7 +62,7 @@ public abstract class ExecutionVariableQueryImpl<T, U> extends AbstractQuery<U> 
   public T variableValueGreaterThan(String name, Object value) {
     addVariable(name, value, QueryOperator.GREATER_THAN);
     return (T) this;
-  }
+  } 
   
   @SuppressWarnings("unchecked")
   public T variableValueGreaterThanOrEqual(String name, Object value) {

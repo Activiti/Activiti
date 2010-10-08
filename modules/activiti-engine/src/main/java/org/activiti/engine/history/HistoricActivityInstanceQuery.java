@@ -13,10 +13,8 @@
 
 package org.activiti.engine.history;
 
-import java.util.List;
-
-import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.HistoricActivityInstanceQueryImpl;
+import org.activiti.engine.impl.Query;
 
 
 /**
@@ -24,7 +22,7 @@ import org.activiti.engine.impl.HistoricActivityInstanceQueryImpl;
  * 
  * @author Tom Baeyens
  */
-public interface HistoricActivityInstanceQuery {
+public interface HistoricActivityInstanceQuery extends Query<HistoricActivityInstanceQuery, HistoricActivityInstance>{
 
   /** Only select historic activity instances with the given process instance.
    * {@link ProcessInstance) ids and {@link HistoricProcessInstance} ids match. */
@@ -73,30 +71,4 @@ public interface HistoricActivityInstanceQuery {
   
   /** Order by processInstanceId (needs to be followed by {@link #asc()} or {@link #desc()}). */
   HistoricActivityInstanceQuery orderByProcessInstanceId();
-  
-  /** Order by the given property (needs to be followed by {@link #asc()} or {@link #desc()}). */
-  HistoricActivityInstanceQuery orderBy(HistoricActivityInstanceQueryProperty property);
-
-  /** Order the results ascending on the given property as
-   * defined in this class (needs to come after a call to one of the orderByXxxx methods). */
-  HistoricActivityInstanceQuery asc();
-
-  /** Order the results descending on the given property as
-   * defined in this class (needs to come after a call to one of the orderByXxxx methods). */
-  HistoricActivityInstanceQuery desc();
-  
-  /** Executes the query and get a list of {@link HistoricProcessInstance}s as the result. */
-  List<HistoricActivityInstance> list();
-  
-  /** Executes the query and get a page of {@link HistoricProcessInstance}s as the result. */
-  List<HistoricActivityInstance> listPage(int firstResult, int maxResults);
-  
-  /** Executes the query and get the single expected result. 
-   * @throws ActivitiException when the query results in more 
-   * than one historic activity instance.  
-   */
-  HistoricActivityInstance singleResult();
-
-  /** Executes the query and get number of results. */
-  long count();
 }

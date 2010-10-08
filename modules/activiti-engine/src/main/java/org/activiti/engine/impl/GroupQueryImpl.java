@@ -26,7 +26,7 @@ import org.activiti.engine.impl.interceptor.CommandExecutor;
 /**
  * @author Joram Barrez
  */
-public class GroupQueryImpl extends AbstractQuery<Group> implements GroupQuery {
+public class GroupQueryImpl extends AbstractQuery<GroupQuery, Group> implements GroupQuery {
   
   protected String id;
   protected String name;
@@ -97,8 +97,11 @@ public class GroupQueryImpl extends AbstractQuery<Group> implements GroupQuery {
     return orderBy(GroupQueryProperty.TYPE);
   }
   
-  public GroupQuery orderBy(GroupQueryProperty property) {
-    this.orderProperty = property;
+  public GroupQuery orderBy(QueryProperty property) {
+    if(!(property instanceof GroupQueryProperty)) {
+      throw new ActivitiException("Only GroupQueryProperty can be used with orderBy");
+    }
+    this.orderProperty = (GroupQueryProperty) property;
     return this;
   }
   

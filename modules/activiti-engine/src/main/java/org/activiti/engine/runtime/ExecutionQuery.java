@@ -13,9 +13,8 @@
 package org.activiti.engine.runtime;
 
 import java.io.Serializable;
-import java.util.List;
 
-import org.activiti.engine.ActivitiException;
+import org.activiti.engine.impl.Query;
 import org.activiti.engine.impl.cfg.ProcessEngineConfiguration;
 
 
@@ -25,7 +24,7 @@ import org.activiti.engine.impl.cfg.ProcessEngineConfiguration;
  * @author Joram Barrez
  * @author Frederik Heremans
  */
-public interface ExecutionQuery {
+public interface ExecutionQuery extends Query<ExecutionQuery, Execution>{
   
   /** Only select executions which have the given process definition key. **/
   ExecutionQuery processDefinitionKey(String processDefinitionKey);
@@ -118,36 +117,5 @@ public interface ExecutionQuery {
   
   /** Order by process definition id (needs to be followed by {@link #asc()} or {@link #desc()}). */
   ExecutionQuery orderByProcessDefinitionId();
-  
-  /** Order by the given property (needs to be followed by {@link #asc()} or {@link #desc()}). */
-  ExecutionQuery orderBy(ExecutionQueryProperty property);
-  
-  /** Order the results ascending on the given property as
-   * defined in this class (needs to come after a call to one of the orderByXxxx methods). */
-  ExecutionQuery asc();
-
-  /** Order the results descending on the given property as
-   * defined in this class (needs to come after a call to one of the orderByXxxx methods). */
-  ExecutionQuery desc();
-
-  
-  //results //////////////////////////////////////////////////////////////
-  
-  /** Executes the query and get a list of {@link Execution}s as the result. */
-  List<Execution> list();
-  
-  /** Executes the query and get a list of {@link Execution}s as the result. */
-  List<Execution> listPage(int firstResult, int maxResults);
-  
-  /**
-   * Executes the query and returns the {@link Execution}.
-   * @throws ActivitiException when the query results in more 
-   * than one execution. 
-   */
-  Execution singleResult();
-  
-  /** Executes the query and gets the number of result */
-  long count();
-  
   
 }

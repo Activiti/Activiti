@@ -14,10 +14,8 @@
 package org.activiti.engine.runtime;
 
 import java.util.Date;
-import java.util.List;
 
-import org.activiti.engine.ActivitiException;
-import org.activiti.engine.management.JobQueryProperty;
+import org.activiti.engine.impl.Query;
 
 
 /**
@@ -25,7 +23,7 @@ import org.activiti.engine.management.JobQueryProperty;
  * 
  * @author Joram Barrez
  */
-public interface JobQuery {
+public interface JobQuery extends Query<JobQuery, Job> {
   
   /** Only select jobs with the given id */
   JobQuery id(String jobId);
@@ -79,34 +77,4 @@ public interface JobQuery {
   
   /** Order by retries (needs to be followed by {@link #asc()} or {@link #desc()}). */
   JobQuery orderByRetries();
-  
-  /** Order by the given property (needs to be followed by {@link #asc()} or {@link #desc()}). */
-  JobQuery orderBy(JobQueryProperty property);
-  
-  /** Order the results ascending on the given property as
-   * defined in this class (needs to come after a call to one of the orderByXxxx methods). */
-  JobQuery asc();
-
-  /** Order the results descending on the given property as
-   * defined in this class (needs to come after a call to one of the orderByXxxx methods). */
-  JobQuery desc();
-  
-  //results //////////////////////////////////////////
-  
-  /** Executes the query and returns the number of results */
-  long count();
-  
-  /**
-   * Executes the query and returns the {@link Job}.
-   * @throws ActivitiException when the query results in more 
-   * than one job. 
-   */
-  Job singleResult();
-  
-  /** Executes the query and get a list of {@link Job}s as the result. */
-  List<Job> list();
-  
-  /** Executes the query and get a list of {@link Job}s as the result. */
-  List<Job> listPage(int firstResult, int maxResults);
-
 }

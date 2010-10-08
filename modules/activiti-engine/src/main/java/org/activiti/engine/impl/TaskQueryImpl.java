@@ -28,7 +28,7 @@ import org.activiti.engine.task.TaskQueryProperty;
  * @author Joram Barrez
  * @author Tom Baeyens
  */
-public class TaskQueryImpl extends AbstractQuery<Task> implements TaskQuery {
+public class TaskQueryImpl extends AbstractQuery<TaskQuery, Task> implements TaskQuery {
   
   protected String taskId;
   protected String name;
@@ -192,8 +192,11 @@ public class TaskQueryImpl extends AbstractQuery<Task> implements TaskQuery {
     return orderBy(TaskQueryProperty.ASSIGNEE);
   }
   
-  public TaskQueryImpl orderBy(TaskQueryProperty property) {
-    this.orderProperty = property;
+  public TaskQueryImpl orderBy(QueryProperty property) {
+    if(!(property instanceof QueryProperty)) {
+      throw new ActivitiException("Only QueryProperty can be used with orderBy");
+    }
+    this.orderProperty = (TaskQueryProperty) property;
     return this;
   }
   

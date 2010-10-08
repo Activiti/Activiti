@@ -16,13 +16,15 @@ package org.activiti.engine.history;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.activiti.engine.impl.QueryProperty;
+
 
 /**
  * Contains the possible properties which can be used in a {@link HistoricActivityInstanceQuery}.
  * 
  * @author Tom Baeyens
  */
-public class HistoricActivityInstanceQueryProperty {
+public class HistoricActivityInstanceQueryProperty implements QueryProperty {
 
   private static final Map<String, HistoricActivityInstanceQueryProperty> properties = new HashMap<String, HistoricActivityInstanceQueryProperty>();
 

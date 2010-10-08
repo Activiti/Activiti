@@ -16,11 +16,13 @@ package org.activiti.engine.history;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.activiti.engine.impl.QueryProperty;
+
 
 /**
  * @author Joram Barrez
  */
-public class HistoricProcessInstanceQueryProperty {
+public class HistoricProcessInstanceQueryProperty implements QueryProperty {
   
   private static final Map<String, HistoricProcessInstanceQueryProperty> properties = new HashMap<String, HistoricProcessInstanceQueryProperty>();
 

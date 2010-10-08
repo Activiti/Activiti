@@ -26,7 +26,7 @@ import org.activiti.engine.impl.interceptor.CommandExecutor;
 /**
  * @author Joram Barrez
  */
-public class UserQueryImpl extends AbstractQuery<User> implements UserQuery {
+public class UserQueryImpl extends AbstractQuery<UserQuery, User> implements UserQuery {
   
   protected String id;
   protected String firstName;
@@ -119,8 +119,11 @@ public class UserQueryImpl extends AbstractQuery<User> implements UserQuery {
     return orderBy(UserQueryProperty.LAST_NAME);
   }
   
-  public UserQuery orderBy(UserQueryProperty property) {
-    this.orderProperty = property;
+  public UserQuery orderBy(QueryProperty property) {
+    if(!(property instanceof UserQueryProperty)) {
+      throw new ActivitiException("Only UserQueryProperty can be used with orderBy");
+    }
+    this.orderProperty = (UserQueryProperty) property;
     return this;
   }
   

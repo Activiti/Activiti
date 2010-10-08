@@ -16,13 +16,15 @@ package org.activiti.engine.repository;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.activiti.engine.impl.QueryProperty;
+
 
 /**
  * Contains the possible properties that can be used in a {@link ProcessDefinitionQuery}.
  * 
  * @author Joram Barrez
  */
-public class ProcessDefinitionQueryProperty {
+public class ProcessDefinitionQueryProperty implements QueryProperty {
   
   private static final Map<String, ProcessDefinitionQueryProperty> properties = new HashMap<String, ProcessDefinitionQueryProperty>();
 

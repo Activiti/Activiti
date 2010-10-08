@@ -25,7 +25,7 @@ import org.activiti.engine.impl.interceptor.CommandExecutor;
  *  
  * @author Joram Barrez
  */
-public abstract class AbstractQuery<T> implements Command<Object>{
+public abstract class AbstractQuery<T extends Query<?,?>, U> implements Command<Object>, Query<T,U>{
   
   public static final String SORTORDER_ASC = "asc";
   public static final String SORTORDER_DESC = "desc";
@@ -49,23 +49,23 @@ public abstract class AbstractQuery<T> implements Command<Object>{
   }
 
   @SuppressWarnings("unchecked")
-  public T singleResult() {
+  public U singleResult() {
     this.resultType = ResultType.SINGLE_RESULT;
-    return (T) commandExecutor.execute(this);
+    return (U) commandExecutor.execute(this);
   }
 
   @SuppressWarnings("unchecked")
-  public List<T> list() {
+  public List<U> list() {
     this.resultType = ResultType.LIST;
-    return (List) commandExecutor.execute(this);
+    return (List<U>) commandExecutor.execute(this);
   }
   
   @SuppressWarnings("unchecked")
-  public List<T> listPage(int firstResult, int maxResults) {
+  public List<U> listPage(int firstResult, int maxResults) {
     this.firstResult = firstResult;
     this.maxResults = maxResults;
     this.resultType = ResultType.LIST_PAGE;
-    return (List) commandExecutor.execute(this);
+    return (List<U>) commandExecutor.execute(this);
   }
   
   public long count() {
@@ -91,10 +91,10 @@ public abstract class AbstractQuery<T> implements Command<Object>{
    * Executes the actual query to retrieve the list of results.
    * @param page used if the results must be paged. If null, no paging will be applied. 
    */
-  public abstract List<T> executeList(CommandContext commandContext, Page page);
+  public abstract List<U> executeList(CommandContext commandContext, Page page);
   
-  public T executeSingleResult(CommandContext commandContext) {
-    List<T> results = executeList(commandContext, null);
+  public U executeSingleResult(CommandContext commandContext) {
+    List<U> results = executeList(commandContext, null);
     if (results.size() == 1) {
       return results.get(0);
     } else if (results.size() > 1) {

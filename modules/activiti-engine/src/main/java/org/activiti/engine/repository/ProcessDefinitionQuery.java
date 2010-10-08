@@ -16,6 +16,7 @@ package org.activiti.engine.repository;
 import java.util.List;
 
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.impl.Query;
 
 /**
  * Allows programmatic querying of {@link ProcessDefinition}s.
@@ -23,7 +24,7 @@ import org.activiti.engine.ActivitiException;
  * @author Tom Baeyens
  * @author Joram Barrez
  */
-public interface ProcessDefinitionQuery {
+public interface ProcessDefinitionQuery extends Query<ProcessDefinitionQuery, ProcessDefinition> {
   
   /** Only select process definiton with the given id.  */
   ProcessDefinitionQuery id(String processDefinitionId);
@@ -86,40 +87,4 @@ public interface ProcessDefinitionQuery {
   
   /** Order by process definition version (needs to be followed by {@link #asc()} or {@link #desc()}). */
   ProcessDefinitionQuery orderByVersion();
-  
-  /** Order by the given property (needs to be followed by {@link #asc()} or {@link #desc()}). */
-  ProcessDefinitionQuery orderBy(ProcessDefinitionQueryProperty property);
-  
-  /** Order the results ascending on the given property as
-   * defined in this class (needs to come after a call to one of the orderByXxxx methods). */
-  ProcessDefinitionQuery asc();
-
-  /** Order the results descending on the given property as
-   * defined in this class (needs to come after a call to one of the orderByXxxx methods). */
-  ProcessDefinitionQuery desc();
-
-  // results ////////////////////////////////////////////////////////////
-
-  /**
-   * Executes the query and counts number of {@link ProcessDefinition}s in the result.
-   */
-  long count();
-
-  /**
-   * Executes the query and returns the {@link ProcessDefinition}.
-   * 
-   * @throws ActivitiException
-   *           when the query results in more than one process definition.
-   */
-  ProcessDefinition singleResult();
-
-  /**
-   * Executes the query and get a list of {@link ProcessDefinition}s as the result.
-   */
-  List<ProcessDefinition> list();
-
-  /**
-   * Executes the query and get a list of {@link ProcessDefinition}s as the result.
-   */
-  List<ProcessDefinition> listPage(int firstResult, int maxResults);
 }

@@ -13,9 +13,8 @@
 package org.activiti.engine.runtime;
 
 import java.io.Serializable;
-import java.util.List;
 
-import org.activiti.engine.ActivitiException;
+import org.activiti.engine.impl.Query;
 import org.activiti.engine.impl.cfg.ProcessEngineConfiguration;
 
 /**
@@ -24,7 +23,7 @@ import org.activiti.engine.impl.cfg.ProcessEngineConfiguration;
  * @author Joram Barrez
  * @author Frederik Heremans
  */
-public interface ProcessInstanceQuery {
+public interface ProcessInstanceQuery extends Query<ProcessInstanceQuery, ProcessInstance> {
 
   /** Select the process instance with the given id */
   ProcessInstanceQuery processInstanceId(String processInstanceId);
@@ -138,40 +137,4 @@ public interface ProcessInstanceQuery {
   /** Order by process definition id (needs to be followed by {@link #asc()} or {@link #desc()}). */
   ProcessInstanceQuery orderByProcessDefinitionId();
   
-  /** Order by the given property (needs to be followed by {@link #asc()} or {@link #desc()}). */
-  ProcessInstanceQuery orderBy(ProcessInstanceQueryProperty property);
-  
-  /** Order the results ascending on the given property as
-   * defined in this class (needs to come after a call to one of the orderByXxxx methods). */
-  ProcessInstanceQuery asc();
-
-  /** Order the results descending on the given property as
-   * defined in this class (needs to come after a call to one of the orderByXxxx methods). */
-  ProcessInstanceQuery desc();
-  
-  
-  //results /////////////////////////////////////////////////////////////////
-
-  /**
-   * Executes the query and get a list of {@link ProcessInstance}s as the
-   * result.
-   */
-  List<ProcessInstance> list();
-
-  /**
-   * Executes the query and get a list of {@link ProcessInstance}s as the
-   * result.
-   */
-  List<ProcessInstance> listPage(int firstResult, int maxResults);
-
-  /**
-   * Executes the query and returns the {@link ProcessInstance}.
-   * 
-   * @throws ActivitiException
-   *           when the query results in more than one process instance.
-   */
-  ProcessInstance singleResult();
-
-  /** Executes the query and returns the number of results */
-  long count();
 }

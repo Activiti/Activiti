@@ -16,12 +16,14 @@ package org.activiti.engine.runtime;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.activiti.engine.impl.QueryProperty;
+
 /**
  * Contains the possible properties that can be used in a {@link ExecutionQueryt}.
  * 
  * @author Joram Barrez
  */
-public class ExecutionQueryProperty {
+public class ExecutionQueryProperty implements QueryProperty {
   
   private static final Map<String, ExecutionQueryProperty> properties = new HashMap<String, ExecutionQueryProperty>();
 

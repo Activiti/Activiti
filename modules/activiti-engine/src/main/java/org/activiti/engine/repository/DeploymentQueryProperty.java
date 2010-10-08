@@ -29,6 +29,8 @@ package org.activiti.engine.repository;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.activiti.engine.impl.QueryProperty;
+
 
 
 /**
@@ -36,7 +38,7 @@ import java.util.Map;
  * 
  * @author Joram Barrez
  */
-public class DeploymentQueryProperty {
+public class DeploymentQueryProperty implements QueryProperty {
 
   private static final Map<String, DeploymentQueryProperty> properties = new HashMap<String, DeploymentQueryProperty>();
 

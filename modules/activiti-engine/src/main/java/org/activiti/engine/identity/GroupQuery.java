@@ -13,9 +13,7 @@
 
 package org.activiti.engine.identity;
 
-import java.util.List;
-
-import org.activiti.engine.ActivitiException;
+import org.activiti.engine.impl.Query;
 
 
 /**
@@ -23,7 +21,7 @@ import org.activiti.engine.ActivitiException;
  * 
  * @author Joram Barrez
  */
-public interface GroupQuery {
+public interface GroupQuery extends Query<GroupQuery, Group> {
   
   /** Only select {@link Group}s with the given id. */
   GroupQuery id(String id);
@@ -52,33 +50,4 @@ public interface GroupQuery {
   /** Order by group type (needs to be followed by {@link #asc()} or {@link #desc()}). */
   GroupQuery orderByType();
 
-  /** Order by the given property (needs to be followed by {@link #asc()} or {@link #desc()}). */
-  GroupQuery orderBy(GroupQueryProperty property);
-  
-  /** Order the results ascending on the given property as
-   * defined in this class (needs to come after a call to one of the orderByXxxx methods). */
-  GroupQuery asc();
-
-  /** Order the results descending on the given property as
-   * defined in this class (needs to come after a call to one of the orderByXxxx methods). */
-  GroupQuery desc();
-  
-  //results ////////////////////////////////////////////////////////
-
-  /** Executes the query and counts number of {@link Group}s in the result. */
-  long count();
-  
-  /**
-   * Executes the query and returns the {@link Group}. 
-   * @throws ActivitiException when the query results in more 
-   * than one {@link Group}. 
-   */
-  Group singleResult();
-  
-  /** Executes the query and get a list of {@link Group}s as the result. */
-  List<Group> list();
-  
-  /** Executes the query and get a list of {@link Group}s as the result. */
-  List<Group> listPage(int firstResult, int maxResults);
-  
 }

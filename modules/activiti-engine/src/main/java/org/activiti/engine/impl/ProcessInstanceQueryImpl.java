@@ -117,8 +117,11 @@ public class ProcessInstanceQueryImpl extends ExecutionVariableQueryImpl<Process
     return this;
   }
   
-  public ProcessInstanceQuery orderBy(ProcessInstanceQueryProperty property) {
-    this.orderProperty = property;
+  public ProcessInstanceQuery orderBy(QueryProperty property) {
+    if(!(property instanceof ProcessInstanceQueryProperty)) {
+      throw new ActivitiException("Only ProcessInstanceQueryProperty can be used with orderBy");
+    }
+    this.orderProperty = (ProcessInstanceQueryProperty) property;
     return this;
   }
   

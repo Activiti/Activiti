@@ -13,9 +13,7 @@
 
 package org.activiti.engine.identity;
 
-import java.util.List;
-
-import org.activiti.engine.ActivitiException;
+import org.activiti.engine.impl.Query;
 
 
 /**
@@ -23,7 +21,7 @@ import org.activiti.engine.ActivitiException;
  * 
  * @author Joram Barrez
  */
-public interface UserQuery {
+public interface UserQuery extends Query<UserQuery, User> {
   
   /** Only select {@link User}s with the given id/ */
   UserQuery id(String id);
@@ -68,34 +66,4 @@ public interface UserQuery {
   
   /** Order by user email  (needs to be followed by {@link #asc()} or {@link #desc()}). */
   UserQuery orderByEmail();
-  
-  /** Order by the given property (needs to be followed by {@link #asc()} or {@link #desc()}). */
-  UserQuery orderBy(UserQueryProperty property);
-  
-  /** Order the results ascending on the given property as
-   * defined in this class (needs to come after a call to one of the orderByXxxx methods). */
-  UserQuery asc();
-
-  /** Order the results descending on the given property as
-   * defined in this class (needs to come after a call to one of the orderByXxxx methods). */
-  UserQuery desc();
-
-  //results ////////////////////////////////////////////////////////
-
-  /** Executes the query and counts number of {@link User}s in the result. */
-  long count();
-  
-  /**
-   * Executes the query and returns the {@link User}. 
-   * @throws ActivitiException when the query results in more 
-   * than one {@link User}. 
-   */
-  User singleResult();
-  
-  /** Executes the query and get a list of {@link User}s as the result. */
-  List<User> list();
-  
-  /** Executes the query and get a list of {@link User}s as the result. */
-  List<User> listPage(int firstResult, int maxResults);
-
 }

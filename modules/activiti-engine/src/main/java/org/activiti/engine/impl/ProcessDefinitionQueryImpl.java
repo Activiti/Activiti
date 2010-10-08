@@ -27,7 +27,8 @@ import org.activiti.engine.repository.ProcessDefinitionQueryProperty;
  * @author Tom Baeyens
  * @author Joram Barrez
  */
-public class ProcessDefinitionQueryImpl extends AbstractQuery<ProcessDefinition> implements ProcessDefinitionQuery {
+public class ProcessDefinitionQueryImpl extends AbstractQuery<ProcessDefinitionQuery, ProcessDefinition> 
+  implements ProcessDefinitionQuery {
   
   protected String id;
   protected String name;
@@ -124,8 +125,11 @@ public class ProcessDefinitionQueryImpl extends AbstractQuery<ProcessDefinition>
     return orderBy(ProcessDefinitionQueryProperty.VERSION);
   }
   
-  public ProcessDefinitionQuery orderBy(ProcessDefinitionQueryProperty property) {
-    this.orderProperty = property;
+  public ProcessDefinitionQuery orderBy(QueryProperty property) {
+    if(!(property instanceof ProcessDefinitionQueryProperty)) {
+      throw new ActivitiException("Only ProcessDefinitionQueryProperty can be used with orderBy");
+    }
+    this.orderProperty = (ProcessDefinitionQueryProperty) property;
     return this;
   }
   

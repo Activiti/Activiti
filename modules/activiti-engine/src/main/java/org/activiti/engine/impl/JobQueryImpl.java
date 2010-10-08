@@ -20,16 +20,16 @@ import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
 import org.activiti.engine.impl.util.ClockUtil;
-import org.activiti.engine.management.JobQueryProperty;
 import org.activiti.engine.runtime.Job;
 import org.activiti.engine.runtime.JobQuery;
+import org.activiti.engine.runtime.JobQueryProperty;
 
 
 /**
  * @author Joram Barrez
  * @author Tom Baeyens
  */
-public class JobQueryImpl extends AbstractQuery<Job> implements JobQuery {
+public class JobQueryImpl extends AbstractQuery<JobQuery, Job> implements JobQuery {
   
   protected String id;
   protected String processInstanceId;
@@ -155,8 +155,11 @@ public class JobQueryImpl extends AbstractQuery<Job> implements JobQuery {
     return orderBy(JobQueryProperty.RETRIES);
   }
   
-  public JobQuery orderBy(JobQueryProperty property) {
-    this.orderProperty = property;
+  public JobQuery orderBy(QueryProperty property) {
+    if(!(property instanceof JobQueryProperty)) {
+      throw new ActivitiException("Only JobQueryProperty can be used with orderBy");
+    }
+    this.orderProperty = (JobQueryProperty) property;
     return this;
   }
   
