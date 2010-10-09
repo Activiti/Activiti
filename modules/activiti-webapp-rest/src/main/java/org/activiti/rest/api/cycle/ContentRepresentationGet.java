@@ -32,6 +32,7 @@ public class ContentRepresentationGet extends ActivitiWebScript {
 
     String artifactId = req.getString("artifactId");
     String representationId = req.getString("representationId");
+    String restProxyUri = req.getString("restProxyUri");
 
     RepositoryArtifact artifact = conn.getRepositoryArtifact(artifactId);
 
@@ -40,7 +41,7 @@ public class ContentRepresentationGet extends ActivitiWebScript {
       for (ContentRepresentation contentRepresentation : artifact.getArtifactType().getContentRepresentations()) {
         if (contentRepresentation.getId().equals(representationId)) {
           if (contentRepresentation.getMimeType().startsWith("image/")) {
-            String imageUrl = wsReq.getServerPath() + wsReq.getContextPath() + "/service/content?artifactId=" + URLEncoder.encode(artifactId, "UTF-8")
+            String imageUrl = restProxyUri + "/content?artifactId=" + URLEncoder.encode(artifactId, "UTF-8")
                     + "&content-type=" + URLEncoder.encode(contentRepresentation.getMimeType(), "UTF-8");
             model.put("imageUrl", imageUrl);
           } else {

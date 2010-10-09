@@ -22,7 +22,7 @@
 		// Create new service instances and set this component to receive the callbacks
     this.services.repositoryService = new Activiti.service.RepositoryService(this);
     // Listen for events that interest this component
-    this.onEvent(Activiti.event.updateArtifactView, this.onSelectTreeLabelEvent);
+    this.onEvent(Activiti.event.updateArtifactView, this.onUpdateArtifactView);
 		
 		this._tabView = {};
 		this._repositoryNodeId = "";
@@ -46,7 +46,7 @@
 
 		},
 		
-		onSelectTreeLabelEvent: function Artifact_onSelectTreeLabelEvent(event, args) {
+		onUpdateArtifactView: function Artifact_onUpdateArtifactView(event, args) {
 			
 			this._repositoryNodeId = args[1].value.repositoryNodeId;
 			this._isRepositoryArtifact = args[1].value.isRepositoryArtifact;
@@ -200,7 +200,7 @@
 
 		loadTabDataURL: function Artifact_loadTabDataURL(artifactId, representationId)
     {
-      return Activiti.service.REST_PROXY_URI_RELATIVE + "content-representation?artifactId=" + encodeURIComponent(artifactId) + "&representationId=" + encodeURIComponent(representationId);
+      return Activiti.service.REST_PROXY_URI_RELATIVE + "content-representation?artifactId=" + encodeURIComponent(artifactId) + "&representationId=" + encodeURIComponent(representationId) + "&restProxyUri=" + encodeURIComponent(Activiti.service.REST_PROXY_URI_RELATIVE);
     },
 
 		onActiveTabChange: function Artifact_onActiveTabChange(event)
