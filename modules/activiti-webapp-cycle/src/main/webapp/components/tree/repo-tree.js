@@ -23,8 +23,8 @@
     // Create new service instances and set this component to receive the callbacks
     this.services.repositoryService = new Activiti.service.RepositoryService(this);
 
-		// Listen for selectTreeLabel event in order to be able to expand the tree up to the selected artifact 
-    this.onEvent(Activiti.event.selectTreeLabel, this.onSelectTreeLabelEvent);
+		// Listen for updateArtifactView event in order to be able to expand the tree up to the selected artifact
+    this.onEvent(Activiti.event.updateArtifactView, this.onUpdateArtifactView);
 
 		this._treeView = {};
 
@@ -62,9 +62,14 @@
       var treeNodesJson = response.json;
 
 			var loadTreeNodes = function (node, fnLoadComplete) {
-				me.services.repositoryService.loadNodeData(node, fnLoadComplete);
-				// TODO: see if there is a way to define a timeout even if the server returns a HTTP 500 status
-				//timeout: 7000
+				if(node.data.file) {
+					// Don't attempt to load child nodes for artifacts
+					fnLoadComplete();
+				} else {
+					me.services.repositoryService.loadNodeData(node, fnLoadComplete);
+					// TODO: see if there is a way to define a timeout even if the server returns a HTTP 500 status
+					//timeout: 7000
+				}
 			};
 
 			// instantiate the TreeView control
@@ -91,7 +96,28 @@
       var treeNodesJson = response.json;
 
 			for(var i = 0; i<treeNodesJson.length; i++) {
-				new YAHOO.widget.TextNode(treeNodesJson[i], obj[0], treeNodesJson[i].expanded);
+				var node = new YAHOO.widget.TextNode(treeNodesJson[i], obj[0], treeNodesJson[i].expanded);
+				if(treeNodesJson[i].contentType) {
+					if(treeNodesJson[i].contentType === "image/png" || treeNodesJson[i].contentType === "image/gif" || treeNodesJson[i].contentType === "image/jpeg") {
+						node.labelStyle = "icon-img";
+					} else if(treeNodesJson[i].contentType === "application/xml") {
+						node.labelStyle = "icon-code-red";
+					}	else if(treeNodesJson[i].contentType === "text/plain") {
+						node.labelStyle = "icon-txt";
+					}	else if(treeNodesJson[i].contentType === "application/pdf") {
+						node.labelStyle = "icon-pdf";
+					}	else if(treeNodesJson[i].contentType === "application/json;charset=UTF-8") {
+						node.labelStyle = "icon-code-blue";
+					}	else if(treeNodesJson[i].contentType === "application/msword") {
+						node.labelStyle = "icon-doc";
+					}	else if(treeNodesJson[i].contentType === "application/powerpoint") {
+						node.labelStyle = "icon-ppt";
+					}	else if(treeNodesJson[i].contentType === "application/excel") {
+						node.labelStyle = "icon-xls";
+					}		else if(treeNodesJson[i].contentType === "application/javascript") {
+						node.labelStyle = "icon-code-blue";
+					}
+				}
 			}
 
 			// call the fnLoadComplete function that the treeView component provides to 
@@ -132,15 +158,21 @@
 
 		},
 
-		onSelectTreeLabelEvent: function Artifact_onSelectTreeLabelEvent(event, args)
+		onUpdateArtifactView: function Artifact_onUpdateArtifactView(event, args)
 		{
-			// Check, whether the tree contains the node that was selected, otherwise we will have to request it from the REST API
-			
-			// TODO
-			
-			// this._treeView
-			
-			// args[1].value.repositoryNodeId
+			if(!this._treeView._nodes) {
+				// tree is not initialized yet, we are coming from an external URL
+				
+			} else {
+				// Check, whether the tree contains the node that was selected, otherwise we will have to request it from the REST API
+				var nodeExists = false;
+				for(var i=0; i<this._treeView._nodes.length; i++) {
+					if(this._treeView._nodes && this._treeView._nodes[i] && (this._treeView._nodes[i].data.id === args[1].value.repositoryNodeId) ) {
+						nodeExists = true;
+					}
+				}
+				//alert("Node is there:" + nodeExists);
+			}
 		}
 
 	});

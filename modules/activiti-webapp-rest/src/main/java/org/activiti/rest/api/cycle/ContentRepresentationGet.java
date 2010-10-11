@@ -40,9 +40,9 @@ public class ContentRepresentationGet extends ActivitiWebScript {
     try {
       for (ContentRepresentation contentRepresentation : artifact.getArtifactType().getContentRepresentations()) {
         if (contentRepresentation.getId().equals(representationId)) {
-          if (contentRepresentation.getMimeType().startsWith("image/")) {
+          if (contentRepresentation.getContentType().getName().startsWith("image/")) {
             String imageUrl = restProxyUri + "/content?artifactId=" + URLEncoder.encode(artifactId, "UTF-8")
-                    + "&content-type=" + URLEncoder.encode(contentRepresentation.getMimeType(), "UTF-8");
+                    + "&content-type=" + URLEncoder.encode(contentRepresentation.getContentType().getName(), "UTF-8");
             model.put("imageUrl", imageUrl);
           } else {
             String content = conn.getContent(artifactId, contentRepresentation.getId()).asString();

@@ -48,7 +48,7 @@ public class ContentGet extends ActivitiStreamingWebScript {
 
     Collection<ContentRepresentation> representations = artifact.getArtifactType().getContentRepresentations();
     for (ContentRepresentation representation : representations) {
-      if (representation.getMimeType().equals(contentType)) {
+      if (representation.getContentType().getName().equals(contentType)) {
 
         // assuming we want to create an attachment for binary data...
         boolean attach = contentType.startsWith("application/") ? true : false;

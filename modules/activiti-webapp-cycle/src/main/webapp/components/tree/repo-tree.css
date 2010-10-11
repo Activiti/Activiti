@@ -6,9 +6,39 @@
 	overflow: auto;
 }
 
-
-
 #content #left .activiti-component #treeDiv1 .loading {
 	background:url("/activiti-cycle/res/images/loading.gif") no-repeat scroll center center transparent;
 	height:8em;
 }
+
+/* File type icons for tree nodes */
+.icon-doc-blue { display:block; height: 16px; padding-left: 20px; white-space: nowrap; background: transparent url("/activiti-cycle/res/images/doctype-icons.png") 0 0px no-repeat; }
+.icon-doc { display:block; height: 16px; padding-left: 20px; white-space: nowrap; background: transparent url("/activiti-cycle/res/images/doctype-icons.png") 0 -16px no-repeat; }
+.icon-ppt { display:block; height: 16px; padding-left: 20px; white-space: nowrap; background: transparent url("/activiti-cycle/res/images/doctype-icons.png") 0 -32px no-repeat; }
+.icon-xls { display:block; height: 16px; padding-left: 20px; white-space: nowrap; background: transparent url("/activiti-cycle/res/images/doctype-icons.png") 0 -48px no-repeat; }
+.icon-xls-blue { display:block; height: 16px; padding-left: 20px; white-space: nowrap; background: transparent url("/activiti-cycle/res/images/doctype-icons.png") 0 -64px no-repeat; }
+.icon-office { display:block; height: 16px; padding-left: 20px; white-space: nowrap; background: transparent url("/activiti-cycle/res/images/doctype-icons.png") 0 -80px no-repeat; }
+.icon-pdf { display:block; height: 16px; padding-left: 20px; white-space: nowrap; background: transparent url("/activiti-cycle/res/images/doctype-icons.png") 0 -96px no-repeat; }
+.icon-txt { display:block; height: 16px; padding-left: 20px; white-space: nowrap; background: transparent url("/activiti-cycle/res/images/doctype-icons.png") 0 -112px no-repeat; }
+.icon-blank { display:block; height: 16px; padding-left: 20px; white-space: nowrap; background: transparent url("/activiti-cycle/res/images/doctype-icons.png") 0 -128px no-repeat; }
+.icon-zip { display:block; height: 16px; padding-left: 20px; white-space: nowrap; background: transparent url("/activiti-cycle/res/images/doctype-icons.png") 0 -144px no-repeat; }
+.icon-archive { display:block; height: 16px; padding-left: 20px; white-space: nowrap; background: transparent url("/activiti-cycle/res/images/doctype-icons.png") 0 -160px no-repeat; }
+.icon-www { display:block; height: 16px; padding-left: 20px; white-space: nowrap; background: transparent url("/activiti-cycle/res/images/doctype-icons.png") 0 -176px no-repeat; }
+.icon-camera { display:block; height: 16px; padding-left: 20px; white-space: nowrap; background: transparent url("/activiti-cycle/res/images/doctype-icons.png") 0 -192px no-repeat; }
+.icon-img { display:block; height: 16px; padding-left: 20px; white-space: nowrap; background: transparent url("/activiti-cycle/res/images/doctype-icons.png") 0 -208px no-repeat; }
+.icon-java { display:block; height: 16px; padding-left: 20px; white-space: nowrap; background: transparent url("/activiti-cycle/res/images/doctype-icons.png") 0 -224px no-repeat; }
+.icon-php { display:block; height: 16px; padding-left: 20px; white-space: nowrap; background: transparent url("/activiti-cycle/res/images/doctype-icons.png") 0 -240px no-repeat; }
+.icon-ruby { display:block; height: 16px; padding-left: 20px; white-space: nowrap; background: transparent url("/activiti-cycle/res/images/doctype-icons.png") 0 -256px no-repeat; }
+.icon-sql { display:block; height: 16px; padding-left: 20px; white-space: nowrap; background: transparent url("/activiti-cycle/res/images/doctype-icons.png") 0 -272px no-repeat; }
+.icon-vs { display:block; height: 16px; padding-left: 20px; white-space: nowrap; background: transparent url("/activiti-cycle/res/images/doctype-icons.png") 0 -288px no-repeat; }
+.icon-c { display:block; height: 16px; padding-left: 20px; white-space: nowrap; background: transparent url("/activiti-cycle/res/images/doctype-icons.png") 0 -304px no-repeat; }
+.icon-h { display:block; height: 16px; padding-left: 20px; white-space: nowrap; background: transparent url("/activiti-cycle/res/images/doctype-icons.png") 0 -320px no-repeat; }
+.icon-c-sharp { display:block; height: 16px; padding-left: 20px; white-space: nowrap; background: transparent url("/activiti-cycle/res/images/doctype-icons.png") 0 -336px no-repeat; }
+.icon-c-plus-plus { display:block; height: 16px; padding-left: 20px; white-space: nowrap; background: transparent url("/activiti-cycle/res/images/doctype-icons.png") 0 -352px no-repeat; }
+.icon-action-script { display:block; height: 16px; padding-left: 20px; white-space: nowrap; background: transparent url("/activiti-cycle/res/images/doctype-icons.png") 0 -368px no-repeat; }
+.icon-flash { display:block; height: 16px; padding-left: 20px; white-space: nowrap; background: transparent url("/activiti-cycle/res/images/doctype-icons.png") 0 -384px no-repeat; }
+.icon-free-hand { display:block; height: 16px; padding-left: 20px; white-space: nowrap; background: transparent url("/activiti-cycle/res/images/doctype-icons.png") 0 -400px no-repeat; }
+.icon-code-page-blue { display:block; height: 16px; padding-left: 20px; white-space: nowrap; background: transparent url("/activiti-cycle/res/images/doctype-icons.png") 0 -416px no-repeat; }
+.icon-code-red { display:block; height: 16px; padding-left: 20px; white-space: nowrap; background: transparent url("/activiti-cycle/res/images/doctype-icons.png") 0 -432px no-repeat; }
+.icon-code-blue { display:block; height: 16px; padding-left: 20px; white-space: nowrap; background: transparent url("/activiti-cycle/res/images/doctype-icons.png") 0 -448px no-repeat; }
+.htmlnodelabel { margin-left: 20px; }

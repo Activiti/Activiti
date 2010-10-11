@@ -17,6 +17,7 @@
   "label": "${file.metadata.name}",
   "id": "${file.id}",
   "expanded": "true",
-  "file": "true"    
+  "file": "true",
+  "contentType": "${file.artifactType.contentType.getName()}"
 }
 </#macro>
