@@ -78,7 +78,7 @@ public class ExchangeSignavioUuidWithNameTransformation extends OryxTransformati
       return null;
     }
     try {
-      return URLEncoder.encode(name, "UTF-8");
+      return URLEncoder.encode(name.replace(' ', '_'), "UTF-8");
     } catch (UnsupportedEncodingException e) {
       // Should never happen :-)
       throw new IllegalStateException("Wired, platform couldn't encode UTF-8", e);
