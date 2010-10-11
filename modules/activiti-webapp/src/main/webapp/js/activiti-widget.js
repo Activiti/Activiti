@@ -465,19 +465,19 @@ Activiti.widget.PopupManager = function()
 (function()
 {
   /**
+   * The Activiti datatable constructor
    *
    * @param id {string} The components id
    * @param callbackHandler The object that shall implement the callbacks
    * @param events {Array} The names of the events to listen for that shall contain filter attributes
    * @param dataTableElId {string} The id of the HTMLElement in which to create the data table
    * @param paginationElIds {Array} The ids of the HTMLElements in which to create paginators
-   * @param listFieldKeys The data field keys in the data response from the server
    * @param listColumnDefs {Array} The columns defined as columnDefs for YAHOO.widget.DataTable
+   * @param listFieldKeys {Array} (Optional) The data field keys in the data response from the server
    */
-  Activiti.widget.DataTable = function DataTable_constructor(id, callbackHandler, events, dataTableElId, paginationElIds, listFieldKeys, listColumnDefs)
+  Activiti.widget.DataTable = function DataTable_constructor(id, callbackHandler, events, dataTableElId, paginationElIds, listColumnDefs, listFieldKeys)
   {
-
-    if (!callbackHandler || !events || !dataTableElId || !paginationElIds || !listFieldKeys || !listColumnDefs) {
+    if (!callbackHandler || !events || !dataTableElId || !paginationElIds || !listColumnDefs) {
       throw new Error("Mandatory parameters are missing ");
     }
     this.id = id;
@@ -487,7 +487,7 @@ Activiti.widget.PopupManager = function()
     this._dataSource = {};
     this._currentEventName = null;
     this._currentEventValue = {};
-    this._init(events, dataTableElId, paginationElIds, listFieldKeys, listColumnDefs);
+    this._init(events, dataTableElId, paginationElIds, listColumnDefs, listFieldKeys);
     return this;
   };
 
@@ -556,11 +556,11 @@ Activiti.widget.PopupManager = function()
      * @param events {Array} The events to listen for
      * @param dataTableElId {string} The id of the element in which to create the data table
      * @param paginationElIds {string} The id of the elements in which to create the paginators
-     * @param listFieldKeys {Array} The field keys that match the json response from the server
      * @param listColumnDefs {Array} The columns to create in the data table
+     * @param listFieldKeys {Array} (Optional) The field keys that match the json response from the server
      * @private
      */
-    _init: function (events, dataTableElId, paginationElIds, listFieldKeys, listColumnDefs)
+    _init: function (events, dataTableElId, paginationElIds, listColumnDefs, listFieldKeys)
     {
       var me = this;
 
@@ -581,6 +581,8 @@ Activiti.widget.PopupManager = function()
 
       // Create the Paginator
       me._paginator = new YAHOO.widget.Paginator({
+        rowsPerPage: 10,
+        recordOffset: 0,
         containers : paginationElIds,
         firstPageLinkLabel: Activiti.i18n.getMessage("Activiti.widget.DataTable.paginator.firstPageLinkLabel"),
         previousPageLinkLabel: Activiti.i18n.getMessage("Activiti.widget.DataTable.paginator.previousPageLinkLabel"),
@@ -620,7 +622,7 @@ Activiti.widget.PopupManager = function()
         paginator : me._paginator,
         dynamicData : true,
         initialLoad : false,
-        className: "activiti-datatable"
+        className: this._getDataTableClassName()
       });
 
       // Show loading message while page is being rendered
@@ -658,7 +660,7 @@ Activiti.widget.PopupManager = function()
         var meta = oResponse.meta;
         oPayload.totalRecords = meta.totalRecords || oPayload.totalRecords;
         oPayload.pagination = {
-          rowsPerPage: meta.paginationRowsPerPage || 10,
+          //rowsPerPage: meta.paginationRowsPerPage || 10,
           recordOffset: meta.paginationRecordOffset || 0
         };
         oPayload.sortedBy = {
@@ -673,6 +675,14 @@ Activiti.widget.PopupManager = function()
         this._eventPatterns[events[ei].event] = events[ei].value;
         Activiti.event.on(events[ei].event, this.onEvent, this)
       }
+    },
+
+    /**
+     * Returns the css class name to use for the yui datatable
+     */
+    _getDataTableClassName: function()
+    {
+      return "activiti-datatable";
     },
 
     /**
@@ -731,6 +741,42 @@ Activiti.widget.PopupManager = function()
   }
 })();
 
+(function()
+{
+
+  /**
+  /**
+   * The Activiti datatable constructor
+   *
+   * @param id {string} The components id
+   * @param callbackHandler The object that shall implement the callbacks
+   * @param events {Array} The names of the events to listen for that shall contain filter attributes
+   * @param dataTableElId {string} The id of the HTMLElement in which to create the data table
+   * @param paginationElIds {Array} The ids of the HTMLElements in which to create paginators
+   * @param listColumnDefs {Array} The columns defined as columnDefs for YAHOO.widget.DataTable
+   * @param listFieldKeys {Array} (Optional) The data field keys in the data response from the server
+   * @return {Activiti.widget.DataList} The new DataList instance
+   * @constructor
+   */
+  Activiti.widget.DataList = function TaskList_constructor(id, callbackHandler, events, dataTableElId, paginationElIds, listColumnDefs, listFieldKeys)
+  {
+    Activiti.widget.DataList.superclass.constructor.call(this, id, callbackHandler, events, dataTableElId, paginationElIds, listColumnDefs, listFieldKeys);
+    return this;
+  };
+
+  YAHOO.extend(Activiti.widget.DataList, Activiti.widget.DataTable, {
+
+    /**
+     * Returns the css class name to use for the yui datatable
+     */
+    _getDataTableClassName: function()
+    {
+      return "activiti-datalist";
+    }
+
+  });
+
+})();
 
 (function()
 {
@@ -828,18 +874,18 @@ Activiti.widget.PopupManager = function()
                 }
               }
               else if (inputEl.tagName.toLowerCase() == "select") {
-                Event.addListener(inputEl, "change", this.doValidate, inputEl, this);                
+                Event.addListener(inputEl, "change", this.doValidate, inputEl, this);
               }
               this.orgValuesForEl[attr].title =  inputEl.getAttribute("title") || null;
             }
-          } else 
+          } else
 			 {
 			 	var attrName = attr.split("_");
 			 	var attrMeta = attrName.length > 1 ? attrName[1] : null;
 				if (attrMeta === "type" && data[attr] == "Date") {
 					// set up date picker
 					this.dateSetup(Selector.query("[name=" + attrName[0] + "]", this.dialog.form, true));
-				} 
+				}
 			 }
         }
       }
@@ -870,7 +916,7 @@ Activiti.widget.PopupManager = function()
           Event.stopEvent(event);
           return false;
         }
-      };      
+      };
       var enterListener = new KeyListener(this.dialog.form,
       {
         keys: KeyListener.KEY.ENTER
@@ -882,7 +928,7 @@ Activiti.widget.PopupManager = function()
 
       // Run validations on empty form
       this.doValidate(null, null);
-		
+
     },
 
     getData: function() {
@@ -951,7 +997,7 @@ Activiti.widget.PopupManager = function()
             if (message) {
               errors.push(attrName);
               var title = this.orgValuesForEl[attrName].title;
-              inputEl.setAttribute("title", title ? title + " :: " + $msg("label.error", message) : message);              
+              inputEl.setAttribute("title", title ? title + " :: " + $msg("label.error", message) : message);
             }
           }
           else {
@@ -1031,7 +1077,7 @@ Activiti.widget.PopupManager = function()
         this.dialog.getButtons()[0].set("disabled", false);
       }
     },
-	 
+
 	 /**
      * sets up the date picker if required (uses HTML5 input type=date otherwise)
      *
@@ -1049,23 +1095,23 @@ Activiti.widget.PopupManager = function()
 			 labelEl = Dom.getAncestorByTagName(dateEl, "label"),
           calendar = new YAHOO.widget.Calendar(popupEl, {close:true } ),
 			 zeroPad = Activiti.util.zeroPad;
-			 
+
 	    buttonEl.id = elementName + "_button";
 		 buttonEl.className = "datePicker";
        buttonEl.innerHTML = buttonEl.title = $msg("button.datePicker");
-		 
+
 		 Dom.addClass(labelEl, "date")
-		 
+
 		 popupEl.id = elementName + "_popup";
 		 Dom.addClass(popupEl, "datePickerPopup");
-		 
+
 		 Dom.insertAfter(buttonEl, dateEl);
 		 Dom.insertAfter(popupEl, buttonEl)
-		 
+
 		 calendar.render();
 		 Event.addListener(buttonEl, "click", calendar.show, calendar, true);
-		 
-		 function handleSelect(type,args,obj) 
+
+		 function handleSelect(type,args,obj)
 		 {
 		 	var dates = args[0], date = dates[0], year = date[0], month = date[1], day = date[2];
 			dateEl.value = year + "-" + zeroPad(month) + "-" + zeroPad(day); // ISO8601
@@ -1073,7 +1119,7 @@ Activiti.widget.PopupManager = function()
 			this.doValidate();
 		 }
 		 calendar.selectEvent.subscribe(handleSelect, calendar, this);
-		 
+
 		}
 	 }
 

@@ -60,6 +60,11 @@ public class ActivitiUserFactory extends AbstractUserFactory
   private String assignmentGroupTypeId;
 
   /**
+   * The database security role group type id (used to separate security groups).
+   */
+  private int maximumNumberOfGroups;
+
+  /**
    * Setter for the endpoint id.
    *
    * @param endpointId The endpoint id
@@ -95,6 +100,16 @@ public class ActivitiUserFactory extends AbstractUserFactory
   public void setAssignmentGroupTypeId(String assignmentGroupTypeId)
   {
     this.assignmentGroupTypeId = assignmentGroupTypeId;
+  }
+
+  /**
+   * The maximum number groups to save for the user. 
+   *
+   * @param maximumNumberOfGroups The maximum number groups to save for the user
+   */
+  public void setMaximumNumberOfGroups(int maximumNumberOfGroups)
+  {
+    this.maximumNumberOfGroups = maximumNumberOfGroups;
   }
 
   /**
@@ -192,7 +207,7 @@ public class ActivitiUserFactory extends AbstractUserFactory
         JSONObject userJson = new JSONObject(response.getResponse());
 
         // Get the user's groups
-        response = connector.call("/user/" + URLEncoder.encode(userId) + "/groups");
+        response = connector.call("/user/" + URLEncoder.encode(userId) + "/groups?size=" + maximumNumberOfGroups);
         if (Status.STATUS_OK != response.getStatus().getCode()) {
           throw new UserFactoryException("Unable to create user - failed to retrieve group info: " +
             response.getStatus().getMessage(), (Exception) response.getStatus().getException());

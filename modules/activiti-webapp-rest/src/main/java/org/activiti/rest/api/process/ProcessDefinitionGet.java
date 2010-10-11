@@ -13,8 +13,7 @@ import java.util.Map;
  *
  * @author Erik Winlof
  */
-public class ProcessDefinitionGet extends ActivitiWebScript
-{
+public class ProcessDefinitionGet extends ActivitiWebScript {
 
   /**
    * Returns details about a process definition.
@@ -25,8 +24,7 @@ public class ProcessDefinitionGet extends ActivitiWebScript
    * @param model The webscripts template model
    */
   @Override
-  protected void executeWebScript(ActivitiRequest req, Status status, Cache cache, Map<String, Object> model)
-  {
+  protected void executeWebScript(ActivitiRequest req, Status status, Cache cache, Map<String, Object> model) {
     String processDefinitionId = req.getMandatoryPathParameter("processDefinitionId");
     model.put("processDefinition", getRepositoryService().createProcessDefinitionQuery().id(processDefinitionId).singleResult());
   }

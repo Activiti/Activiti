@@ -96,9 +96,9 @@
       Activiti.constants = Activiti.constants || {};
       Activiti.constants.DEBUG = ${DEBUG?string};
       Activiti.constants.URL_CONTEXT = "${url.context}/";
-      Activiti.service.REST_ENPOINT = "activiti-rest-endpoint";
-      Activiti.service.REST_PROXY_URI = window.location.protocol + "//" + window.location.host + "${url.context}/proxy/" + Activiti.service.REST_ENPOINT +"/";
-      Activiti.service.REST_PROXY_URI_RELATIVE = "${url.context}/proxy/" + Activiti.service.REST_ENPOINT + "/";
+      Activiti.service.REST_ENDPOINT = "activiti-rest-endpoint";
+      Activiti.service.REST_PROXY_URI = window.location.protocol + "//" + window.location.host + "${url.context}/proxy/" + Activiti.service.REST_ENDPOINT +"/";
+      Activiti.service.REST_PROXY_URI_RELATIVE = "${url.context}/proxy/" + Activiti.service.REST_ENDPOINT + "/";
       Activiti.constants.USERNAME = "${user.name!""}";
       Activiti.constants.GROUPS = { securityRole: {}, assignment: {}};
     <#if user.properties.securityRoleGroups??>

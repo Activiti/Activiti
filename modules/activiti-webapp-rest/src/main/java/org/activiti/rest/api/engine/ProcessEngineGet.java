@@ -24,8 +24,7 @@ import org.springframework.extensions.webscripts.*;
  *
  * @author Erik Winlof
  */
-public class ProcessEngineGet extends ActivitiWebScript
-{
+public class ProcessEngineGet extends ActivitiWebScript {
 
   /**
    * Prepares details about the process engine for the webscript template.
@@ -36,8 +35,7 @@ public class ProcessEngineGet extends ActivitiWebScript
    * @param model The webscripts template model
    */
   @Override
-  protected void executeWebScript(ActivitiRequest req, Status status, Cache cache, Map<String, Object> model)
-  {
+  protected void executeWebScript(ActivitiRequest req, Status status, Cache cache, Map<String, Object> model) {
     model.put("processEngineInfo", getProcessEngineInfo());
     model.put("version", ProcessEngine.VERSION);
   }

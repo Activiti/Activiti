@@ -70,24 +70,27 @@
        * onDataTableCreateURL
        * onDataTableRenderCell<FieldKey>
        */
-      this.widgets.dataTable = new Activiti.widget.DataTable(this.id + "-task-list",
+      var taskListId = this.id + "-task-list";
+      this.widgets.dataList = new Activiti.widget.DataList(taskListId,
         this,
         [ { event: Activiti.event.selectTaskFilter, value: {} }],
         this.id + "-datatable",
         [ this.id + "-paginator" ],
-        [ "id", "name", "description", "priority", "assignee", "executionId", "formResourceKey" ],
         [
-          { key:"id", label: "Select", sortable: false, width: 30 },
-          { key:"assignee", label: "Select", sortable: false, width: 30 },
-          { key:"name", label: "Select", sortable: false },
-          { key:"priority", label: "Select", sortable: false, width: 200 }
+          { key:"id", width: 30 },
+          { key:"assignee", width: 30 },
+          { key:"name" },
+          { key:"priority", width: 200 }
         ]
       );
-		var taskId = Activiti.util.getQueryStringParameter("taskId");
-		if (taskId != null) 
-		{
-			new Activiti.widget.CompleteTaskForm(this.id + "-completeTaskForm", taskId, null);
-		}
+      Dom.addClass(taskListId, "activiti-list");
+
+      // Display form if url
+      var taskId = Activiti.util.getQueryStringParameter("taskId");
+      if (taskId != null)
+      {
+        new Activiti.widget.CompleteTaskForm(this.id + "-completeTaskForm", taskId, null);
+      }
     },
 
     /**
@@ -99,7 +102,7 @@
      */
     refreshTaskList: function TaskList_refreshTaskList(event, eventArgs)
     {
-      this.widgets.dataTable.reload();
+      this.widgets.dataList.reload();
     },
 
     /**
@@ -137,10 +140,6 @@
      */
     onDataTableCreateURL: function TaskList_onDataTableCreateURL(dataTable, eventName, eventValue) {
       if (eventValue) {
-        if (!eventValue[Pagination.SORT]) {
-          // Set default sort order if not provided
-          eventValue[Pagination.SORT] = "id";
-        }
         return this.services.taskService.loadTasksURL(eventValue);
       }
       else {

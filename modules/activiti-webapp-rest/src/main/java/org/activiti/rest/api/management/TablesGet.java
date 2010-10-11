@@ -25,8 +25,7 @@ import org.springframework.extensions.webscripts.*;
  *
  * @author Erik Winlof
  */
-public class TablesGet extends ActivitiWebScript
-{
+public class TablesGet extends ActivitiWebScript {
 
   /**
    * Prepares details about all of the process engine's database tables for the webscript template.
@@ -37,8 +36,7 @@ public class TablesGet extends ActivitiWebScript
    * @param model The webscripts template model
    */
   @Override
-  protected void executeWebScript(ActivitiRequest req, Status status, Cache cache, Map<String, Object> model)
-  {
+  protected void executeWebScript(ActivitiRequest req, Status status, Cache cache, Map<String, Object> model) {
     Map<String, Long> tableCounts = getManagementService().getTableCount();
     ArrayList<String> tableNames = new ArrayList<String>(tableCounts.keySet());
     Collections.sort(tableNames);

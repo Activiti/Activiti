@@ -56,12 +56,11 @@
 // YOU ARE HERE: DATATABLE Upgrade
 
 /* New Code, not working yet
-        this.dataSource = new Activiti.widget.DataTable(this.id + "-task-list",
+        this.widgets.dataList = new Activiti.widget.DataList(this.id + "-task-list",
         this,
         [ { event: Activiti.event.selectTaskFilter, value: {} }],
         this.id + "-datatable",
         [ this.id + "-paginator" ],
-        [ "Name", "Key", "Version", "Action"],
         [
             {key:"Name",label:"Name",sortable:true},
             {key:"Key",label:"Key",sortable:true},

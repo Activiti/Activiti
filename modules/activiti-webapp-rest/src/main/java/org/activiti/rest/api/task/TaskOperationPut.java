@@ -10,14 +10,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.activiti.rest.api.tasks;
+package org.activiti.rest.api.task;
 
 import org.activiti.rest.util.ActivitiRequest;
 import org.activiti.rest.util.ActivitiWebScript;
 import org.springframework.extensions.webscripts.Cache;
 import org.springframework.extensions.webscripts.Status;
 import org.springframework.extensions.webscripts.WebScriptException;
-import org.springframework.extensions.webscripts.WebScriptRequest;
 
 import java.util.Map;
 
@@ -26,8 +25,7 @@ import java.util.Map;
  *
  * @author Erik Winlof
  */
-public class TaskOperationPut extends ActivitiWebScript
-{
+public class TaskOperationPut extends ActivitiWebScript {
 
   /**
    * Performs a given action on a task and collects info about the task for the webscript template.
@@ -38,14 +36,12 @@ public class TaskOperationPut extends ActivitiWebScript
    * @param model The webscripts template model
    */
   @Override
-  protected void executeWebScript(ActivitiRequest req, Status status, Cache cache, Map<String, Object> model)
-  {
+  protected void executeWebScript(ActivitiRequest req, Status status, Cache cache, Map<String, Object> model) {
     String taskId = req.getMandatoryPathParameter("taskId");
     String operation = req.getMandatoryPathParameter("operation");
     ActivitiRequest.ActivitiWebScriptBody body = req.getBody();
     Map<String, Object> variables = req.getFormVariables(body);
     String currentUserId = req.getCurrentUserId();
-    boolean result = false;
     if ("start".equals(operation)) {
       throw new WebScriptException(Status.STATUS_NOT_IMPLEMENTED, "Not implemented in this version");
     }
@@ -54,12 +50,10 @@ public class TaskOperationPut extends ActivitiWebScript
     }
     else if ("claim".equals(operation)) {
       getTaskService().claim(taskId, currentUserId);
-      result = true;
     }
     else if ("complete".equals(operation)) {
       variables.remove("taskId");
       getTaskService().complete(taskId, variables);
-      result = true;
     }
     else if ("revoke".equals(operation)) {
       throw new WebScriptException(Status.STATUS_NOT_IMPLEMENTED, "Not implemented in this version");
@@ -74,7 +68,6 @@ public class TaskOperationPut extends ActivitiWebScript
     {
       throw new WebScriptException(Status.STATUS_BAD_REQUEST, "'" + operation + "' is not a valid operation");
     }
-    model.put("result", result);
   }
 
 }

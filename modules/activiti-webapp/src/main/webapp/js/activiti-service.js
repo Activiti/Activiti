@@ -11,7 +11,7 @@ if (typeof Activiti == "undefined" || !Activiti)
 }
 
 Activiti.service = Activiti.service || {
-  REST_ENPOINT: null,
+  REST_ENDPOINT: null,
   REST_PROXY_URI: null,
   REST_PROXY_URI_RELATIVE: null
 };

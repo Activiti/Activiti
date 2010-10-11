@@ -1,12 +1,14 @@
 package org.activiti.rest.api.process;
 
 import org.activiti.rest.util.ActivitiRequest;
+import org.activiti.rest.util.ActivitiStreamingWebScript;
 import org.activiti.rest.util.ActivitiWebScript;
-import org.springframework.extensions.webscripts.Cache;
-import org.springframework.extensions.webscripts.Status;
-import org.springframework.extensions.webscripts.WebScriptException;
-import org.springframework.extensions.webscripts.WebScriptRequest;
+import org.springframework.extensions.webscripts.*;
 
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Date;
 import java.util.Map;
 
 /**
@@ -14,31 +16,40 @@ import java.util.Map;
  *
  * @author Erik Winlof
  */
-public class ProcessDefinitionFormGet extends ActivitiWebScript {
+public class ProcessDefinitionFormGet extends ActivitiStreamingWebScript
+{
 
   /**
-   * Returns a process definition's form.
+   * Returns a task form
    *
-   * @param req The webscripts request
-   * @param status The webscripts status
-   * @param cache The webscript cache
-   * @param model The webscripts template model
+   * @param req The activiti webscript request
+   * @param res The webscript response
    */
   @Override
-  protected void executeWebScript(ActivitiRequest req, Status status, Cache cache, Map<String, Object> model)
-  {
+  protected void executeStreamingWebScript(ActivitiRequest req, WebScriptResponse res) {
     String processDefinitionId = req.getMandatoryPathParameter("processDefinitionId");
-    Object processDefinitionForm = getTaskService().getRenderedStartFormById(processDefinitionId);
-    if (processDefinitionForm != null) {
-      if (processDefinitionForm instanceof String) {
-        model.put("form", processDefinitionForm);
+    Object form = getTaskService().getRenderedStartFormById(processDefinitionId);
+    InputStream is = null;
+    if (form != null && form instanceof String) {
+      is = new ByteArrayInputStream(((String) form).getBytes());
+    }
+    else if (form != null && form instanceof InputStream) {
+      is = (InputStream) form;
+    }
+    if (is != null) {
+      String mimeType = getMimeType(is);
+      try {
+        streamResponse(res, is, new Date(0), null, true, processDefinitionId, mimeType);
+      } catch (IOException e) {
+        throw new WebScriptException(Status.STATUS_INTERNAL_SERVER_ERROR, "The form for process definition '" + processDefinitionId + "' failed to render.");
       }
-      else {
-        throw new WebScriptException(Status.STATUS_NOT_IMPLEMENTED, "The form for process definition '" + processDefinitionId + "' cannot be rendered using the rest api.");
-      }
+    }
+    else if (form != null) {
+      throw new WebScriptException(Status.STATUS_INTERNAL_SERVER_ERROR, "The form for process definition '" + processDefinitionId + "' cannot be rendered using the rest api.");
     }
     else {
       throw new WebScriptException(Status.STATUS_NOT_FOUND, "There is no form for process definition '" + processDefinitionId + "'.");
     }
   }
+
 }

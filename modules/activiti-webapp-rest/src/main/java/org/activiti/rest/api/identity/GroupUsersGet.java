@@ -14,8 +14,10 @@ package org.activiti.rest.api.identity;
 
 import java.util.Map;
 
+import org.activiti.engine.identity.UserQuery;
+import org.activiti.engine.identity.UserQueryProperty;
 import org.activiti.rest.util.ActivitiRequest;
-import org.activiti.rest.util.ActivitiWebScript;
+import org.activiti.rest.util.ActivitiPagingWebScript;
 import org.springframework.extensions.webscripts.*;
 
 /**
@@ -23,8 +25,15 @@ import org.springframework.extensions.webscripts.*;
  *
  * @author Erik Winlof
  */
-public class GroupUsersGet extends ActivitiWebScript
+public class GroupUsersGet extends ActivitiPagingWebScript
 {
+
+  public GroupUsersGet() {
+    properties.put("id", UserQueryProperty.ID);
+    properties.put("firstName", UserQueryProperty.FIRST_NAME);
+    properties.put("lastName", UserQueryProperty.LAST_NAME);
+    properties.put("email", UserQueryProperty.EMAIL);
+  }
 
   /**
    * Collects info about a groups's users for the webscript template.
@@ -35,9 +44,10 @@ public class GroupUsersGet extends ActivitiWebScript
    * @param model The webscripts template model
    */
   @Override
-  protected void executeWebScript(ActivitiRequest req, Status status, Cache cache, Map<String, Object> model)
-  {
+  protected void executeWebScript(ActivitiRequest req, Status status, Cache cache, Map<String, Object> model) {
     String groupId = req.getMandatoryPathParameter("groupId");
-    model.put("users", getIdentityService().createUserQuery().memberOfGroup(groupId).list());
+    UserQuery userQuery = getIdentityService().createUserQuery().memberOfGroup(groupId);
+    paginateList(req, userQuery, "users", model, "id");
   }
+
 }

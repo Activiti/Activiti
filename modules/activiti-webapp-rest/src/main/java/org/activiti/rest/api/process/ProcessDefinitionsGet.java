@@ -14,19 +14,26 @@ package org.activiti.rest.api.process;
 
 import java.util.Map;
 
+import org.activiti.engine.repository.ProcessDefinitionQueryProperty;
+import org.activiti.rest.util.ActivitiPagingWebScript;
 import org.activiti.rest.util.ActivitiRequest;
-import org.activiti.rest.util.ActivitiWebScript;
 import org.springframework.extensions.webscripts.Cache;
 import org.springframework.extensions.webscripts.Status;
-import org.springframework.extensions.webscripts.WebScriptRequest;
 
 /**
  * Returns details about the process definitions.
  *
  * @author Erik Winlof
  */
-public class ProcessDefinitionsGet extends ActivitiWebScript
+public class ProcessDefinitionsGet extends ActivitiPagingWebScript
 {
+
+   public ProcessDefinitionsGet() {
+    properties.put("id", ProcessDefinitionQueryProperty.ID);
+    properties.put("key", ProcessDefinitionQueryProperty.KEY);
+    properties.put("version", ProcessDefinitionQueryProperty.VERSION);
+    properties.put("deploymentId", ProcessDefinitionQueryProperty.DEPLOYMENT_ID);
+  }
 
   /**
    * Collects details about the process definitions for the webscript template. 
@@ -37,13 +44,8 @@ public class ProcessDefinitionsGet extends ActivitiWebScript
    * @param model The webscripts template model
    */
   @Override
-  protected void executeWebScript(ActivitiRequest req, Status status, Cache cache, Map<String, Object> model)
-  {
-    model.put("processDefinitions", getRepositoryService()
-            .createProcessDefinitionQuery()
-            .orderById()
-            .asc()
-            .list());
+  protected void executeWebScript(ActivitiRequest req, Status status, Cache cache, Map<String, Object> model) {
+    paginateList(req, getRepositoryService().createProcessDefinitionQuery(), "processDefinitions", model, "id");
   }
 
 }

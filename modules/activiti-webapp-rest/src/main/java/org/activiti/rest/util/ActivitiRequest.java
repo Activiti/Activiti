@@ -14,6 +14,7 @@ package org.activiti.rest.util;
 
 import org.activiti.engine.impl.util.json.JSONObject;
 import org.springframework.extensions.surf.util.Base64;
+import org.springframework.extensions.surf.util.ISO8601DateFormat;
 import org.springframework.extensions.webscripts.Status;
 import org.springframework.extensions.webscripts.WebScriptException;
 import org.springframework.extensions.webscripts.WebScriptRequest;
@@ -22,6 +23,7 @@ import org.springframework.extensions.webscripts.servlet.WebScriptServletRequest
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -135,39 +137,112 @@ public class ActivitiRequest {
     return checkString(req.getServiceMatch().getTemplateVars().get(param), param, false);
   }
 
+
   /**
-   * Gets an int parameter value.
+   * Gets an date parameter value.
    *
-   * @param param The name of the int parameter
-   * @return The int parameter value or Integer.MIN_VALUE if not present
+   * @param param The name of the date parameter
+   * @return The date parameter value or null if not present
    */
-  public int getInt(String param) {
+  public Date getDate(String param) {
     String value = getString(param);
-    return value != null ? Integer.parseInt(value) : Integer.MIN_VALUE;
+    return value != null ? parseDate(value, param) : null;
   }
 
   /**
-   * Gets a mandatory int parameter and throws an exception if its not present.
+   * Gets a mandatory date parameter and throws an exception if its not present.
    *
-   * @param param The name of the path parameter
-   * @return The int parameter value
+   * @param param The name of the date parameter
+   * @return The date parameter value
    * @throws WebScriptException if parameter isn't present
    */
-  public int getMandatoryInt(String param) {
+  public Date getMandatoryDate(String param, Date defaultValue) {
     String value = getMandatoryString(param);
-    return value != null ? Integer.parseInt(value) : Integer.MIN_VALUE;
+    return value != null ? parseDate(value, param) : defaultValue;
   }
 
   /**
-   * Gets an int parameter value
+   * Gets an date parameter value
+   *
+   * @param param The name of the date parameter
+   * @param defaultValue The value to return if the parameter isn't present
+   * @return The date parameter value of defaultValue if the parameter isn't present
+   */
+  public Date getDate(String param, Date defaultValue) {
+    String value = getString(param);
+    return value != null ? parseDate(value, param) : defaultValue;
+  }
+
+
+  /**
+   * Gets an integer parameter value.
    *
    * @param param The name of the int parameter
-   * @param defaultValue The value to return if the parameter isn't present
-   * @return The int parameter value of defaultValue if the parameter isn't present
+   * @return The integer parameter value or null if not present
    */
-  public int getInt(String param, int defaultValue) {
+  public Integer getInteger(String param) {
     String value = getString(param);
-    return value != null ? Integer.parseInt(value) : defaultValue;
+    return value != null ? parseInt(value, param) : null;
+  }
+
+  /**
+   * Gets a mandatory integer parameter and throws an exception if its not present.
+   *
+   * @param param The name of the integer parameter
+   * @return The integer parameter value
+   * @throws WebScriptException if parameter isn't present
+   */
+  public Integer getMandatoryInteger(String param, Integer defaultValue) {
+    String value = getMandatoryString(param);
+    return value != null ? parseInt(value, param) : defaultValue;
+  }
+
+  /**
+   * Gets an integer parameter value
+   *
+   * @param param The name of the integer parameter
+   * @param defaultValue The value to return if the parameter isn't present
+   * @return The integer parameter value of defaultValue if the parameter isn't present
+   */
+  public Integer getInteger(String param, Integer defaultValue) {
+    String value = getString(param);
+    return value != null ? parseInt(value, param) : defaultValue;
+  }
+
+
+  /**
+   * Gets a boolean parameter value.
+   *
+   * @param param The name of the boolean parameter
+   * @return The boolean parameter value or null if not present
+   */
+  public Boolean getBoolean(String param) {
+    String value = getString(param);
+    return value != null ? parseBoolean(value, param) : null;
+  }
+
+  /**
+   * Gets a mandatory boolean parameter and throws an exception if its not present.
+   *
+   * @param param The name of the boolean parameter
+   * @return The boolean parameter value
+   * @throws WebScriptException if parameter isn't present
+   */
+  public Boolean getMandatoryBoolean(String param, Boolean defaultValue) {
+    String value = getMandatoryString(param);
+    return value != null ? parseBoolean(value, param) : defaultValue;
+  }
+
+  /**
+   * Gets a boolean parameter value
+   *
+   * @param param The name of the boolean parameter
+   * @param defaultValue The value to return if the parameter isn't present
+   * @return The boolean parameter value of defaultValue if the parameter isn't present
+   */
+  public Boolean getBoolean(String param, Boolean defaultValue) {
+    String value = getString(param);
+    return value != null ? parseBoolean(value, param) : defaultValue;
   }
 
   /**
@@ -228,7 +303,7 @@ public class ActivitiRequest {
   }
 
   /**
-   * Throws and exception if the parameter value is null or empty and mandatory
+   * Throws an exception if the parameter value is null or empty and mandatory
    * is true
    *
    * @param value The parameter value to test
@@ -245,7 +320,7 @@ public class ActivitiRequest {
   }
 
   /**
-   * Throws and exception if the parameter value is null or empty and mandatory
+   * Throws an exception if the parameter value is null or empty and mandatory
    * is true
    *
    * @param value The parameter value to test
@@ -263,6 +338,57 @@ public class ActivitiRequest {
       }
     }
     return value;
+  }
+
+  /**
+   * Returns a date and throws an exception if the value isn't an date value
+   *
+   * @param value The value to convert to a date
+   * @param param The name of the parameter
+   * @return A date based on the value parameter
+   */
+  private Date parseDate(String value, String param)
+  {
+    try {
+      return ISO8601DateFormat.parse(value.replaceAll(" ", "+"));
+    }
+    catch (NumberFormatException nfe) {
+      throw new WebScriptException(Status.STATUS_BAD_REQUEST, "Value for param '" + param + "' is not a valid iso8601 date value: '" + value + "'");
+    }
+  }
+
+  /**
+   * Returns an integer and throws an exception if the value isn't an int value
+   *
+   * @param value The value to convert to an integer
+   * @param param The name of the parameter
+   * @return An integer based on the value parameter
+   */
+  private Integer parseInt(String value, String param)
+  {
+    try {
+      return Integer.parseInt(value);
+    }
+    catch (NumberFormatException nfe) {
+      throw new WebScriptException(Status.STATUS_BAD_REQUEST, "Value for param '" + param + "' is not a valid int value: '" + value + "'");
+    }
+  }
+
+  /**
+   * Returns aboolean and throws an exception if the value isn't a boolean value
+   *
+   * @param value The value to convert to an boolean
+   * @param param The name of the parameter
+   * @return A boolean based on the value parameter
+   */
+  private Boolean parseBoolean(String value, String param)
+  {
+    try {
+      return Boolean.parseBoolean(value);
+    }
+    catch (NumberFormatException nfe) {
+      throw new WebScriptException(Status.STATUS_BAD_REQUEST, "Value for param '" + param + "' is not a valid bool value: '" + value + "'");
+    }
   }
 
   /**

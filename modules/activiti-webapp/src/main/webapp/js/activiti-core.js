@@ -1108,19 +1108,20 @@ Activiti.event = function() {
 
       // Render the first view when history and dom are ready so all other components have been initialised
       History.onReady(function() {
+        // Delay the call since all components might not have got their onReady event called
+        YAHOO.lang.later(YAHOO.util.Event.POLL_INTERVAL * 2, this, function(){
+          // Set to true so events are fired instead of added to the pending list
+          Activiti.event._initialized = true;
 
-        // Set to true so events are fired insted of added to the pending list
-        Activiti.event._initialized = true;
+          // Current state after BHM is initialized is the source of truth for what state to render
+          var currentState = History.getCurrentState(module);
+          Activiti.event._onHistoryEvent(currentState);
 
-        // Current state after BHM is initialized is the source of truth for what state to render
-        var currentState = History.getCurrentState(module);
-        Activiti.event._onHistoryEvent(currentState);
-
-        for (var i = 0, il = Activiti.event._pendingFireEventArguments.length, pendingArgs; i < il; i++) {
-          pendingArgs = Activiti.event._pendingFireEventArguments[i];
-          Activiti.event.fire(pendingArgs[0], pendingArgs[1], pendingArgs[2], pendingArgs[3]);
-        }
-
+          for (var i = 0, il = Activiti.event._pendingFireEventArguments.length, pendingArgs; i < il; i++) {
+            pendingArgs = Activiti.event._pendingFireEventArguments[i];
+            Activiti.event.fire(pendingArgs[0], pendingArgs[1], pendingArgs[2], pendingArgs[3]);
+          }
+        });
       });
 
       // Initialize the Browser History Manager.

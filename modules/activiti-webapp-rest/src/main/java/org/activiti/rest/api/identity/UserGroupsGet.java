@@ -14,9 +14,10 @@ package org.activiti.rest.api.identity;
 
 import java.util.Map;
 
+import org.activiti.engine.identity.GroupQueryProperty;
+import org.activiti.rest.util.ActivitiPagingWebScript;
 import org.activiti.rest.util.ActivitiRequest;
 import org.activiti.engine.identity.GroupQuery;
-import org.activiti.rest.util.ActivitiWebScript;
 import org.springframework.extensions.webscripts.*;
 
 /**
@@ -24,8 +25,14 @@ import org.springframework.extensions.webscripts.*;
  *
  * @author Erik Winlof
  */
-public class UserGroupsGet extends ActivitiWebScript
+public class UserGroupsGet extends ActivitiPagingWebScript
 {
+
+  public UserGroupsGet() {
+    properties.put("id", GroupQueryProperty.ID);
+    properties.put("name", GroupQueryProperty.NAME);
+    properties.put("type", GroupQueryProperty.TYPE);
+  }
 
   /**
    * Collects details about a user's groups for the webscript template.
@@ -36,23 +43,15 @@ public class UserGroupsGet extends ActivitiWebScript
    * @param model The webscripts template model
    */
   @Override
-  protected void executeWebScript(ActivitiRequest req, Status status, Cache cache, Map<String, Object> model)
-  {
+  protected void executeWebScript(ActivitiRequest req, Status status, Cache cache, Map<String, Object> model) {
     String userId = req.getMandatoryPathParameter("userId");
-    String groupType = req.getString("type");
-    if (groupType != null && !groupType.trim().equals(""))
-    {
-      GroupQuery query = getIdentityService().createGroupQuery().member(userId);
-      if (groupType != null) {
-        query.type(groupType);
-      }
-      model.put("groups", query.list());
-    }
-    else
-    {
-      model.put("groups", getIdentityService().createGroupQuery().member(userId).list());
-    }
+    String groupType = req.getString("type", null);
+    GroupQuery query = getIdentityService().createGroupQuery().member(userId);
+    if (groupType != null) {
 
+      query.type(groupType);
+    }
+    paginateList(req, query, "groups", model, "id");
   }
 
 }

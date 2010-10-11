@@ -23,8 +23,7 @@ import org.springframework.extensions.webscripts.*;
  *
  * @author Erik Winlof
  */
-public class GroupGet extends ActivitiWebScript
-{
+public class GroupGet extends ActivitiWebScript {
 
   /**
    * Collects details about a user for the webscript template.
@@ -35,8 +34,7 @@ public class GroupGet extends ActivitiWebScript
    * @param model The webscripts template model
    */
   @Override
-  protected void executeWebScript(ActivitiRequest req, Status status, Cache cache, Map<String, Object> model)
-  {
+  protected void executeWebScript(ActivitiRequest req, Status status, Cache cache, Map<String, Object> model) {
     String groupId = req.getMandatoryPathParameter("groupId");
     model.put("group", getIdentityService().createGroupQuery().id(groupId).singleResult());
   }

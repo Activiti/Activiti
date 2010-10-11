@@ -46,6 +46,7 @@
     <property name="adminGroupId" value="admin"/>
     <property name="assignmentGroupTypeId" value="assignment"/>
     <property name="securityRoleGroupTypeId" value="security-role"/>
+    <property name="maximumNumberOfGroups" value="500"/>
   </bean>
 
   <!-- Activiti i18n message -->

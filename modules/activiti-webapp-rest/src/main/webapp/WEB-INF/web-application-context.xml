@@ -86,9 +86,19 @@
         parent="activitiWebScript">
   </bean>
 
-  <bean id="webscript.org.activiti.rest.api.deployment.deployment-resource.get"
-        class="org.activiti.rest.api.deployment.DeploymentResourceGet"
+  <bean id="webscript.org.activiti.rest.api.repository.deployment-resource.get"
+        class="org.activiti.rest.api.repository.DeploymentResourceGet"
         parent="activitiStreamingWebScript">
+  </bean>
+
+  <bean id="webscript.org.activiti.rest.api.repository.deployments.get"
+        class="org.activiti.rest.api.repository.DeploymentsGet"
+        parent="activitiWebScript">
+  </bean>
+
+  <bean id="webscript.org.activiti.rest.api.repository.deployment.delete"
+        class="org.activiti.rest.api.repository.DeploymentDelete"
+        parent="activitiWebScript">
   </bean>
 
   <bean id="webscript.org.activiti.rest.api.engine.process-engine.get"
@@ -116,38 +126,53 @@
         parent="activitiWebScript">
   </bean>
 
-  <bean id="webscript.org.activiti.rest.api.tasks.task.get"
-        class="org.activiti.rest.api.tasks.TaskGet"
+  <bean id="webscript.org.activiti.rest.api.task.task.get"
+        class="org.activiti.rest.api.task.TaskGet"
         parent="activitiWebScript">
   </bean>
 
-  <bean id="webscript.org.activiti.rest.api.tasks.task-form.get"
-        class="org.activiti.rest.api.tasks.TaskFormGet"
+  <bean id="webscript.org.activiti.rest.api.task.task-form.get"
+        class="org.activiti.rest.api.task.TaskFormGet"
+        parent="activitiStreamingWebScript">
+  </bean>
+
+  <bean id="webscript.org.activiti.rest.api.task.tasks.get"
+        class="org.activiti.rest.api.task.TasksGet"
         parent="activitiWebScript">
   </bean>
 
-  <bean id="webscript.org.activiti.rest.api.tasks.tasks.get"
-        class="org.activiti.rest.api.tasks.TasksGet"
+  <bean id="webscript.org.activiti.rest.api.task.tasks-summary.get"
+        class="org.activiti.rest.api.task.TasksSummaryGet"
         parent="activitiWebScript">
   </bean>
 
-  <bean id="webscript.org.activiti.rest.api.tasks.tasks-summary.get"
-        class="org.activiti.rest.api.tasks.TasksSummaryGet"
+  <bean id="webscript.org.activiti.rest.api.task.task-operation.put"
+        class="org.activiti.rest.api.task.TaskOperationPut"
         parent="activitiWebScript">
   </bean>
 
-  <bean id="webscript.org.activiti.rest.api.tasks.task-operation.put"
-        class="org.activiti.rest.api.tasks.TaskOperationPut"
+  <bean id="webscript.org.activiti.rest.api.management.job-execute.put"
+        class="org.activiti.rest.api.management.JobExecutePut"
         parent="activitiWebScript">
   </bean>
 
-  <bean id="webscript.org.activiti.rest.api.management.tables.get"
-        class="org.activiti.rest.api.management.TablesGet"
+  <bean id="webscript.org.activiti.rest.api.management.job.get"
+        class="org.activiti.rest.api.management.JobGet"
+        parent="activitiWebScript">
+  </bean>
+
+  <bean id="webscript.org.activiti.rest.api.management.jobs.get"
+        class="org.activiti.rest.api.management.JobsGet"
         parent="activitiWebScript">
   </bean>
 
   <bean id="webscript.org.activiti.rest.api.management.table.get"
         class="org.activiti.rest.api.management.TableGet"
+        parent="activitiWebScript">
+  </bean>
+
+  <bean id="webscript.org.activiti.rest.api.management.tables.get"
+        class="org.activiti.rest.api.management.TablesGet"
         parent="activitiWebScript">
   </bean>
 

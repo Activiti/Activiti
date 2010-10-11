@@ -10,7 +10,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.activiti.rest.api.process;
+package org.activiti.rest.api.management;
+
+import java.util.Map;
 
 import org.activiti.rest.util.ActivitiRequest;
 import org.activiti.rest.util.ActivitiWebScript;
@@ -18,18 +20,15 @@ import org.springframework.extensions.webscripts.Cache;
 import org.springframework.extensions.webscripts.Status;
 import org.springframework.extensions.webscripts.WebScriptRequest;
 
-import java.util.Map;
-
 /**
- * Creates a new process instance base on a process definition id and returns details about the new process instance.
+ * Returns signalData, metadata and paging info about a table.
  *
  * @author Erik Winlof
  */
-public class ProcessInstancePost extends ActivitiWebScript {
+public class JobGet extends ActivitiWebScript {
 
   /**
-   * Creates a new process instance base on a process definition id and collects details about the new
-   * process instance for the webscript template.
+   * Prepares signalData, metadata and paging info about a table for the webscript template.
    *
    * @param req The webscripts request
    * @param status The webscripts status
@@ -37,12 +36,11 @@ public class ProcessInstancePost extends ActivitiWebScript {
    * @param model The webscripts template model
    */
   @Override
-  protected void executeWebScript(ActivitiRequest req, Status status, Cache cache, Map<String, Object> model) {
-    ActivitiRequest.ActivitiWebScriptBody body = req.getBody();
-    String processDefinitionId = req.getMandatoryString(body, "processDefinitionId");
-    Map<String, Object> variables = req.getFormVariables(body);
-    variables.remove("processDefinitionId");
-    model.put("instance", getRuntimeService().startProcessInstanceById(processDefinitionId, variables));
+  protected void executeWebScript(ActivitiRequest req, Status status, Cache cache, Map<String, Object> model)
+  {
+    String jobId = req.getMandatoryPathParameter("jobId");
+    model.put("job", getManagementService().createJobQuery().id(jobId).singleResult());
+    model.put("stacktrace", getManagementService().getJobExceptionStacktrace(jobId));
   }
 
 }

@@ -37,8 +37,7 @@ import org.springframework.extensions.webscripts.WebScriptRequest;
  *
  * @author Erik Winlof
  */
-public class LoginPost extends ActivitiWebScript
-{
+public class LoginPost extends ActivitiWebScript {
 
   /**
    * Authenticates username and password and prepares the response for the webscript template.
@@ -49,8 +48,7 @@ public class LoginPost extends ActivitiWebScript
    * @param model The webscripts template model
    */
   @Override
-  protected void executeWebScript(ActivitiRequest req, Status status, Cache cache, Map<String, Object> model)
-  {
+  protected void executeWebScript(ActivitiRequest req, Status status, Cache cache, Map<String, Object> model) {
     // Extract user and password from JSON POST
     Content c = req.getWebScriptRequest().getContent();
     if (c == null)

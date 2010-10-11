@@ -164,8 +164,8 @@
           [ { event: Activiti.event.selectDatabaseTable, value: { table: metadata.tableName } } ],
           this.id + "-" + metadata.tableName + "-datatable",
           [ this.id + "-" + metadata.tableName + "-paginator" ],
-          columnIds,
-          columnDefinitions
+          columnDefinitions,
+          columnIds            
         );
 
         // Re-fire the event but without bookmarking it so the data will be loaded

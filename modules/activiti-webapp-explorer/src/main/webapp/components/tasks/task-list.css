@@ -6,7 +6,7 @@
   float: right;
 }
 
-.task-list .activiti-datatable.yui-dt {
+.task-list .activiti-datalist.yui-dt {
   clear: both;
 }
 
@@ -14,18 +14,18 @@
 
 /* ICON */
 
-.task-list .activiti-datatable.yui-dt .yui-dt-col-id
+.task-list .activiti-datalist.yui-dt .yui-dt-col-id
 {
   text-align: center;
 }
 
 
-.task-list .activiti-datatable.yui-dt .yui-dt-col-id .yui-dt-liner 
+.task-list .activiti-datalist.yui-dt .yui-dt-col-id .yui-dt-liner
 {
   padding:0.4em 0.9em;
 }
 
-.task-list .activiti-datatable.yui-dt .yui-dt-col-id .task{
+.task-list .activiti-datalist.yui-dt .yui-dt-col-id .task{
   background-image: url(../../images/task-icon.png);
   background-repeat: no-repeat;
   background-position: center;
@@ -33,25 +33,25 @@
   padding: 1.5em;
 }
 
-.task-list .activiti-datatable.yui-dt .yui-dt-col-assignee .user-task-assigned,
-.task-list .activiti-datatable.yui-dt .yui-dt-col-assignee .user-task-unassigned {
+.task-list .activiti-datalist.yui-dt .yui-dt-col-assignee .user-task-assigned,
+.task-list .activiti-datalist.yui-dt .yui-dt-col-assignee .user-task-unassigned {
   background-repeat: no-repeat;
   background-position: center;
   padding: 1.1em ;
 }
 
-.task-list .activiti-datatable.yui-dt .yui-dt-col-assignee .user-task-assigned {
+.task-list .activiti-datalist.yui-dt .yui-dt-col-assignee .user-task-assigned {
   background-image: url(../../images/user-task-assigned-icon.png);
 }
 
-.task-list .activiti-datatable.yui-dt .yui-dt-col-assignee .user-task-unassigned {
+.task-list .activiti-datalist.yui-dt .yui-dt-col-assignee .user-task-unassigned {
   background-image: url(../../images/user-task-unassigned-icon.png);
 }
 
 
 /* ACTIONS */
 
-.task-list .activiti-datatable.yui-dt .yui-dt-col-priority {
+.task-list .activiti-datalist.yui-dt .yui-dt-col-priority {
   text-align: right;  
 }
 

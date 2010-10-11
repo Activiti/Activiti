@@ -10,7 +10,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.activiti.rest.api.tasks;
+package org.activiti.rest.api.task;
 
 import org.activiti.engine.TaskService;
 import org.activiti.engine.identity.Group;
@@ -19,7 +19,6 @@ import org.activiti.engine.identity.GroupQuery;
 import org.activiti.rest.util.ActivitiWebScript;
 import org.springframework.extensions.webscripts.Cache;
 import org.springframework.extensions.webscripts.Status;
-import org.springframework.extensions.webscripts.WebScriptRequest;
 
 import java.util.HashMap;
 import java.util.List;
@@ -41,8 +40,7 @@ public class TasksSummaryGet extends ActivitiWebScript {
    * @param model The webscripts template model
    */
   @Override
-  protected void executeWebScript(ActivitiRequest req, Status status, Cache cache, Map<String, Object> model)
-  {
+  protected void executeWebScript(ActivitiRequest req, Status status, Cache cache, Map<String, Object> model) {
     String user = req.getMandatoryString("user");
     TaskService ts = getTaskService();
     

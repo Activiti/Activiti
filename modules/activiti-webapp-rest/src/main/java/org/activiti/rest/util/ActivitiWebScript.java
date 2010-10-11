@@ -13,6 +13,7 @@
 package org.activiti.rest.util;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.activiti.engine.IdentityService;
@@ -23,11 +24,10 @@ import org.activiti.engine.ProcessEngines;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.RuntimeService;
 import org.activiti.engine.TaskService;
+import org.activiti.engine.query.Query;
+import org.activiti.engine.query.QueryProperty;
 import org.activiti.rest.Config;
-import org.springframework.extensions.webscripts.Cache;
-import org.springframework.extensions.webscripts.DeclarativeWebScript;
-import org.springframework.extensions.webscripts.Status;
-import org.springframework.extensions.webscripts.WebScriptRequest;
+import org.springframework.extensions.webscripts.*;
 
 /**
  * Helper class for all activiti webscripts.
@@ -65,6 +65,7 @@ public class ActivitiWebScript extends DeclarativeWebScript {
   protected Map<String, Object> executeImpl(WebScriptRequest req, Status status, Cache cache) {
     // Prepare model with process engine info
     Map<String, Object> model = new HashMap<String, Object>();
+    model.put("iso8601Date", new ISO8601DateFormatMethod());
     try {
       // Create activiti request to add heler methods
       ActivitiRequest ar = new ActivitiRequest(req);

@@ -23,8 +23,7 @@ import org.springframework.extensions.webscripts.*;
  *
  * @author Erik Winlof
  */
-public class UserGet extends ActivitiWebScript
-{
+public class UserGet extends ActivitiWebScript {
 
   /**
    * Collects details about a user for the webscript template.

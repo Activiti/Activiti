@@ -25,8 +25,7 @@ import org.springframework.extensions.webscripts.WebScriptRequest;
  *
  * @author Erik Winlof
  */
-public class TableGet extends ActivitiWebScript
-{
+public class TableGet extends ActivitiWebScript {
 
   /**
    * Prepares signalData, metadata and paging info about a table for the webscript template.
@@ -37,8 +36,7 @@ public class TableGet extends ActivitiWebScript
    * @param model The webscripts template model
    */
   @Override
-  protected void executeWebScript(ActivitiRequest req, Status status, Cache cache, Map<String, Object> model)
-  {
+  protected void executeWebScript(ActivitiRequest req, Status status, Cache cache, Map<String, Object> model) {
     String tableName = req.getMandatoryPathParameter("tableName");
     model.put("tableMetaData", getManagementService().getTableMetaData(tableName));
   }

@@ -314,39 +314,43 @@ li.filter {
 
 /* ACTIVITI DATA TABLE */
 
-.yui-dt.activiti-datatable table {
+#Activiti .activiti-datatable table {
   width: 100%;
 }
 
-/* ACTIVITI TASK LIST */
+/* ACTIVITI DATA TABLE */
 
-.task-list .yui-dt.activiti-datatable table,
-.task-list .yui-dt.activiti-datatable table tbody tr {
+#Activiti .activiti-datalist table {
+  width: 100%;
+}
+
+#Activiti .activiti-datalist table,
+#Activiti .activiti-datalist table tbody tr {
   border: none;
 }
 
-.task-list .yui-dt.activiti-datatable table thead {
+#Activiti .activiti-datalist table thead {
   display: none;
 }
 
-.task-list .yui-dt.activiti-datatable table tbody tr
+#Activiti .activiti-datalist table tbody tr
 {
   height: 4.5em;  
 }
 
-.task-list .yui-dt.activiti-datatable table tbody tr td,
-.task-list .yui-dt.activiti-datatable table tbody tr tdyui-dt-asc,
-.task-list .yui-dt.activiti-datatable table tbody tr td.yui-dt-desc
+#Activiti .activiti-datalist table tbody tr td,
+#Activiti .activiti-datalist table tbody tr td.yui-dt-asc,
+#Activiti .activiti-datalist table tbody tr td.yui-dt-desc
 {
   background-color: #ffffff;
-  border: none;
 }
 
-.task-list .yui-dt.activiti-datatable table tbody tr td,
-.task-list .yui-dt.activiti-datatable table tbody tr.yui-dt-first td
+#Activiti .activiti-datalist table tbody tr td,
+#Activiti .activiti-datalist table tbody tr.yui-dt-first td
 {
+  border: none;
   border-top: 1px solid #d4d4d4;
-}
+}  
 
 /* ACTIVITI FORMS */
 

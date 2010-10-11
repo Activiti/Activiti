@@ -1,3 +1,5 @@
+<#import "../activiti.lib.ftl" as restLib>
+<#escape x as jsonUtils.encodeJSONString(x)>
 {
   "data": [
     <#list tablePage.rows as row>
@@ -8,9 +10,6 @@
     }<#if row_has_next>,</#if>
     </#list>
   ],
-  "total": ${tablePage.total?c},
-  "start": ${tablePage.firstResult?c},
-  "size": ${size?c},
-  "sort": "${sortColumn!"ID_"}",
-  "order": "<#if sortOrder == "DESCENDING">desc<#else>asc</#if>"
+  <@restLib.printPagination/>
 }
+</#escape>

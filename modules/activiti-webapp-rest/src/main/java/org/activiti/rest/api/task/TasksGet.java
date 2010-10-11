@@ -10,13 +10,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.activiti.rest.api.tasks;
+package org.activiti.rest.api.task;
 
 import java.util.Map;
 
 import org.activiti.engine.task.TaskQuery;
+import org.activiti.engine.task.TaskQueryProperty;
 import org.activiti.rest.util.ActivitiRequest;
-import org.activiti.rest.util.ActivitiWebScript;
+import org.activiti.rest.util.ActivitiPagingWebScript;
 import org.springframework.extensions.webscripts.*;
 
 /**
@@ -24,8 +25,18 @@ import org.springframework.extensions.webscripts.*;
  *
  * @author Erik Winlof
  */
-public class TasksGet extends ActivitiWebScript
+public class TasksGet extends ActivitiPagingWebScript
 {
+
+  public TasksGet() {
+    properties.put("id", TaskQueryProperty.TASK_ID);
+    properties.put("name", TaskQueryProperty.NAME);
+    properties.put("description", TaskQueryProperty.DESCRIPTION);
+    properties.put("priority", TaskQueryProperty.PRIORITY);
+    properties.put("assignee", TaskQueryProperty.ASSIGNEE);
+    properties.put("executionId", TaskQueryProperty.EXECUTION_ID);
+    properties.put("processInstanceId", TaskQueryProperty.PROCESS_INSTANCE_ID);
+  }
 
   /**
    * Collects info about a list of tasks depending on the search filters for the webscript template.
@@ -36,30 +47,24 @@ public class TasksGet extends ActivitiWebScript
    * @param model The webscripts template model
    */
   @Override
-  protected void executeWebScript(ActivitiRequest req, Status status, Cache cache, Map<String, Object> model)
-  {
+  protected void executeWebScript(ActivitiRequest req, Status status, Cache cache, Map<String, Object> model) {
     String personalTaskUserId = req.getString("assignee");
     String candidateTaskUserId = req.getString("candidate");
     String candidateGroupId = req.getString("candidate-group");
-    int start = req.getInt("start", 0);
-    int size = req.getInt("size", 10);
-    TaskQuery tq = getTaskService().createTaskQuery();
+    TaskQuery taskQuery = getTaskService().createTaskQuery();
     if (personalTaskUserId != null) {
-      tq.assignee(personalTaskUserId);
+      taskQuery.assignee(personalTaskUserId);
     }
     else if (candidateTaskUserId != null) {
-      tq.candidateUser(candidateTaskUserId);
+      taskQuery.candidateUser(candidateTaskUserId);
     }
     else if (candidateGroupId != null) {
-      tq.candidateGroup(candidateGroupId);
+      taskQuery.candidateGroup(candidateGroupId);
     }
     else {
       throw new WebScriptException(Status.STATUS_BAD_REQUEST, "Tasks must be filtered with 'assignee', 'candidate' or 'candidate-group'");
     }
-    model.put("tasks", tq.listPage(start, size));
-    model.put("start", start);
-    model.put("total", tq.count());
-    model.put("size", size);
+    paginateList(req, taskQuery, "tasks", model, "id"); 
   }
 
 }
