@@ -57,7 +57,7 @@ public class ActivitiPagingWebScript extends ActivitiWebScript
     {
       QueryProperty qp = properties.get(sort);
       if (qp == null) {
-        throw new WebScriptException(Status.STATUS_BAD_REQUEST, "Value for param 'sort' is not a valid, '" + sort + "'is not a valid property");
+        throw new WebScriptException(Status.STATUS_BAD_REQUEST, "Value for param 'sort' is not a valid, '" + sort + "' is not a valid property");
       }
       query.orderBy(qp);
       if (order.equals("asc"))
