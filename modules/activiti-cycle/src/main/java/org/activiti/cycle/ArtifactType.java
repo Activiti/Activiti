@@ -28,6 +28,8 @@ import java.util.List;
 public interface ArtifactType {
 
   public String getId();
+  
+  public ContentType getContentType();
 
   /**
    * list of {@link ContentRepresentation} in the configured order

@@ -3,6 +3,7 @@ package org.activiti.cycle.impl;
 import java.io.Serializable;
 
 import org.activiti.cycle.ContentRepresentation;
+import org.activiti.cycle.ContentType;
 
 /**
  * Data structure for link to content, including the URL to the content, the
@@ -22,11 +23,10 @@ public class ContentRepresentationImpl implements ContentRepresentation, Seriali
 	private static final long serialVersionUID = 1L;
 
 	/**
-   * type of content as normally indicated by {@link ContentType}
-   * (e.g. text file, image, ...). Information for the client to render it
-   * correctly.
+   * type of content (e.g. text file, image, ...). Information for the client to render 
+   * the content correctly.
    */
-  private String mimeType;
+  private ContentType contentType;
 
   /**
    * Name of this representation, serves as a <b>unique key</b> to query the
@@ -35,17 +35,17 @@ public class ContentRepresentationImpl implements ContentRepresentation, Seriali
    */
 	private String id;
 
-  public ContentRepresentationImpl(String id, String mimeType) {
+  public ContentRepresentationImpl(String id, ContentType contentType) {
     super();
     this.id = id;
-    this.mimeType = mimeType;
+    this.contentType = contentType;
   }
   
   public String getId() {
     return id;
   }
 
-  public String getMimeType() {
-    return mimeType;
+  public ContentType getContentType() {
+    return this.contentType;
   }
 }

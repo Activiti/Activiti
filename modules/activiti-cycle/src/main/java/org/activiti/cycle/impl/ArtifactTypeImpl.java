@@ -20,6 +20,7 @@ import java.util.Map;
 import org.activiti.cycle.ArtifactType;
 import org.activiti.cycle.ContentProvider;
 import org.activiti.cycle.ContentRepresentation;
+import org.activiti.cycle.ContentType;
 import org.activiti.cycle.CreateUrlAction;
 import org.activiti.cycle.DownloadContentAction;
 import org.activiti.cycle.ParameterizedAction;
@@ -42,6 +43,8 @@ import org.activiti.cycle.RepositoryException;
 public class ArtifactTypeImpl implements ArtifactType {
 
   private String id;
+  
+  private ContentType contentType;
 
   /**
    * {@link List} of registered {@link ContentRepresentation}s of this
@@ -63,8 +66,9 @@ public class ArtifactTypeImpl implements ArtifactType {
 
   private List<DownloadContentAction> downloadContentActions; 
 
-  public ArtifactTypeImpl(String id) {
+  public ArtifactTypeImpl(String id, ContentType contentType) {
     this.id = id;
+    this.contentType = contentType;
     this.contentRepresentationList = new ArrayList<ContentRepresentation>();
     this.contentProviderMap = new HashMap<String, ContentProvider>();
     this.parameterizedActions = new ArrayList<ParameterizedAction>();
@@ -72,10 +76,11 @@ public class ArtifactTypeImpl implements ArtifactType {
     this.downloadContentActions = new ArrayList<DownloadContentAction>();
   }
 
-  public ArtifactTypeImpl(String id, List<ContentRepresentation> contentRepresentationList, ContentRepresentation defaultContentRepresentation,
+  public ArtifactTypeImpl(String id, ContentType contentType, List<ContentRepresentation> contentRepresentationList, ContentRepresentation defaultContentRepresentation,
           Map<String, ContentProvider> contentProviderMap, List<ParameterizedAction> parameterizedActions, List<CreateUrlAction> openUrlActions,
           List<DownloadContentAction> downloadContentActions) {
     this.id = id;
+    this.contentType = contentType;
     this.contentRepresentationList = contentRepresentationList;
     this.defaultContentRepresentation = defaultContentRepresentation;
     this.contentProviderMap = contentProviderMap;
@@ -86,6 +91,10 @@ public class ArtifactTypeImpl implements ArtifactType {
 
   public String getId() {
     return id;
+  }
+  
+  public ContentType getContentType() {
+    return this.contentType;
   }
   
   public ContentRepresentation getContentRepresentation(String id) {
@@ -268,6 +277,10 @@ public class ArtifactTypeImpl implements ArtifactType {
   throw new RepositoryException("Action '" + id + "' not found, cannot be executed. Existing actions are: " + actionNames.toString());
   }
 
+  public void setContentType(ContentType contentType) {
+    this.contentType = contentType;
+  }
+  
   public void addDefaultContentRepresentation(ContentRepresentation contentRepresentation, ContentProvider provider) {
     addContentRepresentation(contentRepresentation, provider);
     defaultContentRepresentation = contentRepresentation;

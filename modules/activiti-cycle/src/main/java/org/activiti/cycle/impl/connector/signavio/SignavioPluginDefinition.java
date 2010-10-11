@@ -59,7 +59,7 @@ public class SignavioPluginDefinition implements ActivitiCyclePluginDefinition {
     // SignavioConnector.SIGNAVIO_NAMESPACE_FOR_BPMN_JBPM4));
 
    
-    ArtifactTypeImpl artifactType1 = new ArtifactTypeImpl(ARTIFACT_TYPE_BPMN_20);
+    ArtifactTypeImpl artifactType1 = new ArtifactTypeImpl(ARTIFACT_TYPE_BPMN_20, ContentType.XML);
     artifactType1.addDefaultContentRepresentation(new ContentRepresentationImpl(CONTENT_REPRESENTATION_ID_PNG, ContentType.PNG), new PngProvider());
     artifactType1.addContentRepresentation(new ContentRepresentationImpl(CONTENT_REPRESENTATION_ID_BPMN_20_DEVELOPER, ContentType.XML),
             new ActivitiCompliantBpmn20Provider());
@@ -75,7 +75,7 @@ public class SignavioPluginDefinition implements ActivitiCyclePluginDefinition {
     types.add(artifactType1);
    
    
-    ArtifactTypeImpl artifactType2 = new ArtifactTypeImpl(ARTIFACT_TYPE_BPMN_FOR_JPDL4);
+    ArtifactTypeImpl artifactType2 = new ArtifactTypeImpl(ARTIFACT_TYPE_BPMN_FOR_JPDL4, ContentType.XML);
     artifactType2.addDefaultContentRepresentation(new ContentRepresentationImpl(CONTENT_REPRESENTATION_ID_PNG, ContentType.PNG), new PngProvider());
     artifactType2.addContentRepresentation(new ContentRepresentationImpl(CONTENT_REPRESENTATION_ID_JPDL4, ContentType.XML), new Jpdl4Provider());
     artifactType2.addContentRepresentation(new ContentRepresentationImpl(CONTENT_REPRESENTATION_ID_JSON, ContentType.XML), new JsonProvider());
@@ -89,7 +89,7 @@ public class SignavioPluginDefinition implements ActivitiCyclePluginDefinition {
     // initialize RepositoryRegistry with supported formats?
 
     // TODO: Check if really any artifact in Signavio has a PNG?
-    ArtifactTypeImpl artifactTypeDefault = new ArtifactTypeImpl(ARTIFACT_TYPE_DEFAULT);
+    ArtifactTypeImpl artifactTypeDefault = new ArtifactTypeImpl(ARTIFACT_TYPE_DEFAULT, ContentType.XML);
     artifactTypeDefault.addDefaultContentRepresentation(new ContentRepresentationImpl(CONTENT_REPRESENTATION_ID_PNG, ContentType.PNG), new PngProvider());
     types.add(artifactTypeDefault);
   }

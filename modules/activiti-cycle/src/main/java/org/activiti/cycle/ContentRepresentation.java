@@ -25,10 +25,10 @@ public interface ContentRepresentation extends Serializable {
 	public String getId();
 
 	/**
-   * type of content as normally indicated by {@link ContentType} (e.g. text
-   * file, image, ...). Information for the client to render it correctly.
+   * Type of content (e.g. text file, image, ...). Information for the client 
+   * to render the content correctly.
    */
-  public String getMimeType();
+  public ContentType getContentType();
 	// TODO: Think about that, maybe as annotation in the Plugin-Config
   // public boolean isDownloadable();
 }

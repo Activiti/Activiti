@@ -27,7 +27,7 @@ public class DemoConnectorPluginDefinition implements ActivitiCyclePluginDefinit
   public static final String CONTENT_REPRESENTATION_ID_XML = "XML";
 
   public void addArtifactTypes(List<ArtifactType> types) {
-    ArtifactTypeImpl artifactType1 = new ArtifactTypeImpl(ARTIFACT_TYPE_TEXT);
+    ArtifactTypeImpl artifactType1 = new ArtifactTypeImpl(ARTIFACT_TYPE_TEXT, ContentType.TEXT);
     artifactType1.addDefaultContentRepresentation(new ContentRepresentationImpl(CONTENT_REPRESENTATION_ID_TEXT, ContentType.TEXT), new DemoProvider(
             CONTENT_REPRESENTATION_ID_TEXT));
     artifactType1.addContentRepresentation(new ContentRepresentationImpl(CONTENT_REPRESENTATION_ID_EXCEPTION, ContentType.TEXT), new ExceptionProvider());
@@ -36,14 +36,14 @@ public class DemoConnectorPluginDefinition implements ActivitiCyclePluginDefinit
     artifactType1.addDownloadContentAction(CONTENT_REPRESENTATION_ID_TEXT);
     types.add(artifactType1);
 
-    ArtifactTypeImpl artifactType2 = new ArtifactTypeImpl(ARTIFACT_TYPE_MINDMAP);
+    ArtifactTypeImpl artifactType2 = new ArtifactTypeImpl(ARTIFACT_TYPE_MINDMAP, ContentType.XML);
     artifactType2.addDefaultContentRepresentation(new ContentRepresentationImpl(CONTENT_REPRESENTATION_ID_TEXT, ContentType.TEXT), new DemoProvider(
             CONTENT_REPRESENTATION_ID_TEXT));
     artifactType2.addContentRepresentation(new ContentRepresentationImpl(CONTENT_REPRESENTATION_ID_PNG, ContentType.PNG), new DemoProvider(
             CONTENT_REPRESENTATION_ID_PNG));
     types.add(artifactType2);
 
-    ArtifactTypeImpl artifactType3 = new ArtifactTypeImpl(ARTIFACT_TYPE_BPMN_20);
+    ArtifactTypeImpl artifactType3 = new ArtifactTypeImpl(ARTIFACT_TYPE_BPMN_20, ContentType.XML);
     artifactType3.addDefaultContentRepresentation(new ContentRepresentationImpl(CONTENT_REPRESENTATION_ID_XML, ContentType.TEXT), new DemoProvider(
             CONTENT_REPRESENTATION_ID_XML));
     artifactType3.addParameterizedAction(new CopyArtifactAction());

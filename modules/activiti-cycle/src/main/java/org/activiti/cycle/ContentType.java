@@ -10,22 +10,32 @@ package org.activiti.cycle;
  * 
  * @author bernd.ruecker@camunda.com
  */
-public class ContentType {
+public enum ContentType {
 
-	public static final String PNG = "image/png";
-  public static final String GIF = "image/gif";
-  public static final String JPEG = "image/jpeg"; // or use "image/jpeg;charset=ISO-8859-1" ?
-  public static final String XML = "application/xml";
-	public static final String HTML = "text/html";
-  public static final String TEXT = "text/plain";
-  public static final String PDF = "application/pdf";
-  public static final String JSON = "application/json;charset=UTF-8";
-  public static final String MS_WORD = "application/msword";
-  public static final String MS_POWERPOINT = "application/powerpoint";
-  public static final String MS_EXCEL = "application/excel";
-  public static final String JAVASCRIPT = "application/javascript";
-  
-  // TODO: Hmm?
-  public static final String BINARY = "unknown";
+  PNG("image/png"),
+  GIF("image/gif"), 
+  JPEG("image/jpeg") /* or use "image/jpeg;charset=ISO-8859-1" ? */, 
+  XML("application/xml"), 
+  HTML("text/html"), 
+  TEXT("text/plain"), 
+  PDF("application/pdf"), 
+  JSON("application/json;charset=UTF-8"), 
+  MS_WORD("application/msword"), 
+  MS_POWERPOINT("application/powerpoint"), 
+  MS_EXCEL("application/excel"), 
+  JAVASCRIPT("application/javascript"),
+  //  
+  // // TODO: Hmm?
+  BINARY("unknown");
+
+  private final String name;
+
+  private ContentType(String description) {
+    this.name = description;
+  }
+
+  public String getName() {
+    return this.name;
+  }
 
 }
