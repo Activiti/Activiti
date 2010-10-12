@@ -56,10 +56,10 @@ public class ParseHandler extends DefaultHandler {
   }
 
   public void error(SAXParseException e) {
-    parse.addProblem(e);
+    parse.addError(e);
   }
   public void fatalError(SAXParseException e) {
-    parse.addProblem(e);
+    parse.addError(e);
   }
   public void warning(SAXParseException e) {
     log.warning(e.toString());

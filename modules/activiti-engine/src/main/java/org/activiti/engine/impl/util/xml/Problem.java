@@ -17,6 +17,7 @@ import org.xml.sax.SAXParseException;
 
 /**
  * @author Tom Baeyens
+ * @author Joram Barrez
  */
 public class Problem {
 
@@ -35,6 +36,7 @@ public class Problem {
       }
       exception = exception.getCause();
     }
+    this.resource = resource;
     this.line = e.getLineNumber();
     this.column = e.getColumnNumber();
   }
@@ -47,7 +49,7 @@ public class Problem {
       this.column = element.getColumn();
     }
   }
-
+  
   public String toString() {
     return errorMessage+(resource!=null ? " | "+resource : "")+" | line "+line+" | column "+column;
   }

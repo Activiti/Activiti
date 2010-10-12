@@ -159,7 +159,11 @@ public class BpmnParse extends Parse {
     super(parser);
     this.expressionManager = parser.getExpressionManager();
     this.parseListeners = parser.getParseListeners();
-    setSchemaResource(BpmnParser.SCHEMA_RESOURCE);
+   
+    
+    //setSchemaResource(BpmnParser.SCHEMA_RESOURCE);
+    setSchemaResource(Thread.currentThread().getContextClassLoader().getResource(BpmnParser.SCHEMA_RESOURCE).toString());
+    
     
     this.importers.put("http://schemas.xmlsoap.org/wsdl/", new WSDLImporter());
   }
@@ -175,17 +179,31 @@ public class BpmnParse extends Parse {
     parseInterfaces(rootElement);
     parseProcessDefinitions(rootElement);
     
+    if (hasWarnings()) {
+      logWarnings();
+    }
+    if (hasErrors()) {
+      throwActivitiExceptionForErrors();
+    }
+    
     return this;
   }
   
   private void parseDefinitionsAttributes(Element rootElement) {
     String typeLanguage = rootElement.attribute("typeLanguage");
     String expressionLanguage = rootElement.attribute("expressionLanguage");
-    if (typeLanguage.contains("XMLSchema")) {
-      LOG.info("XMLSchema currently not supported as typeLanguage");
+    
+    if (typeLanguage != null) {
+      if (typeLanguage.contains("XMLSchema")) {
+        LOG.info("XMLSchema currently not supported as typeLanguage");
+      }
     }
-    if(expressionLanguage.contains("XPath")) {
-      LOG.info("XPath currently not supported as typeLanguage");
+    
+    
+    if (expressionLanguage != null) {
+      if(expressionLanguage.contains("XPath")) {
+        LOG.info("XPath currently not supported as typeLanguage");
+      }
     }
   }
 
@@ -201,7 +219,7 @@ public class BpmnParse extends Parse {
       String importType = theImport.attribute("importType");
       XMLImporter importer = this.importers.get(importType);
       if (importer == null) {
-        addProblem("Could not import item of type " + importType, theImport);
+        addError("Could not import item of type " + importType, theImport);
       } else {
         importer.importFrom(theImport, this);
       }
@@ -254,7 +272,7 @@ public class BpmnParse extends Parse {
       String itemRef = messageElement.attribute("itemRef");
       
       if (!this.itemDefinitions.containsKey(itemRef)) {
-        addProblem(itemRef + " does not exist", messageElement);
+        addError(itemRef + " does not exist", messageElement);
       } else {
         ItemDefinition itemDefinition = this.itemDefinitions.get(itemRef);
         Message message = new Message(id, itemDefinition);
@@ -293,7 +311,7 @@ public class BpmnParse extends Parse {
     Element inMessageRefElement = operationElement.element("inMessageRef");
 
     if (!this.messages.containsKey(inMessageRefElement.getText())) {
-      addProblem(inMessageRefElement.getText() + " does not exist", inMessageRefElement);
+      addError(inMessageRefElement.getText() + " does not exist", inMessageRefElement);
       return null;
     } else {
       Message inMessage = this.messages.get(inMessageRefElement.getText());
@@ -394,7 +412,7 @@ public class BpmnParse extends Parse {
   public void parseStartEvents(Element parentElement, ScopeImpl scope) {
     List<Element> startEventElements = parentElement.elements("startEvent");
     if (startEventElements.size() > 1) {
-      throw new ActivitiException("Multiple start events are currently unsupported");
+      addError("Multiple start events are currently unsupported", parentElement);
     } else if (startEventElements.size() > 0) {
 
       Element startEventElement = startEventElements.get(0);
@@ -411,7 +429,7 @@ public class BpmnParse extends Parse {
           // in order to support this, the initial should here be replaced with 
           // a kind of hidden decision activity that has pvm transitions to all 
           // of the visible bpmn start events
-          addProblem("multiple startEvents in a process definition are not yet supported", startEventElement);
+          addError("multiple startEvents in a process definition are not yet supported", startEventElement);
         }
         processDefinition.setInitial(startEventActivity);
 
@@ -581,12 +599,12 @@ public class BpmnParse extends Parse {
       if (type.equalsIgnoreCase("mail")) {
         parseEmailServiceTask(activity, serviceTaskElement, fieldDeclarations);
       } else {
-        addProblem("Invalid usage of type attribute: '" + type + "'", serviceTaskElement);
+        addError("Invalid usage of type attribute: '" + type + "'", serviceTaskElement);
       }
     
     } else if (className != null && className.trim().length() > 0) {
       if (resultVariableName != null) {
-        throw new ActivitiException("'result-variable-name' not supported for service tasks using 'class'");
+        addError("'result-variable-name' not supported for service tasks using 'class'", serviceTaskElement);
       }
 
       activity.setActivityBehavior(new ServiceTaskDelegateActivityBehaviour(expressionManager.createValueExpression(className), fieldDeclarations));
@@ -599,13 +617,13 @@ public class BpmnParse extends Parse {
       
     } else if (implementation != null && operationRef != null && implementation.equalsIgnoreCase("##WebService")) {
       if (!this.operations.containsKey(operationRef)) {
-        addProblem(operationRef + " does not exist" , serviceTaskElement);
+        addError(operationRef + " does not exist" , serviceTaskElement);
       } else {
         Operation operation = this.operations.get(operationRef);
         activity.setActivityBehavior(new WebServiceActivityBehavior(operation));
       }
     } else {
-      throw new ActivitiException("'class', 'method-expr' or 'value-expr' attribute is mandatory on serviceTask");
+      addError("'class', 'method-expr' or 'value-expr' attribute is mandatory on serviceTask", serviceTaskElement);
     }
 
     for (BpmnParseListener parseListener: parseListeners) {
@@ -634,10 +652,10 @@ public class BpmnParse extends Parse {
     }
     
     if (!toDefined) {
-      addProblem("No recipient is defined on the mail activity", serviceTaskElement);
+      addError("No recipient is defined on the mail activity", serviceTaskElement);
     }
     if (!textOrHtmlDefined) {
-      addProblem("Text or html field should be provided", serviceTaskElement);
+      addError("Text or html field should be provided", serviceTaskElement);
     }
   }
   
@@ -675,17 +693,17 @@ public class BpmnParse extends Parse {
       if (stringElement != null) {
         stringElementText = stringElement.getText();
         if (stringValue != null && (stringElementText != null || stringElementText.length() > 0)) {
-          addProblem("Invalid: both string-value and a text are provided", stringElement);
+          addError("Invalid: both string-value and a text are provided", stringElement);
         } else if (stringValue == null && (stringElementText == null || stringElementText.length() == 0)) {
-          addProblem("Invalid declartion: no string-value or string element text provided", fieldDeclarationElement);
+          addError("Invalid declartion: no string-value or string element text provided", fieldDeclarationElement);
         }
       }
       valueExpression = expressionManager.createValueExpression(stringValue != null ? stringValue : stringElementText); 
     } catch (ActivitiException e) {
       if (e.getMessage().contains("multiple elements with tag name")) {
-        addProblem("Invalid: multiple field declarations found", serviceTaskElement);
+        addError("Invalid: multiple field declarations found", serviceTaskElement);
       } else {
-        addProblem("Error when paring field declarations: " + e.getMessage(), serviceTaskElement);
+        addError("Error when paring field declarations: " + e.getMessage(), serviceTaskElement);
       }
     }
     return valueExpression;
@@ -788,7 +806,8 @@ public class BpmnParse extends Parse {
     List<Element> humanPerformerElements = taskElement.elements(HUMAN_PERFORMER);
 
     if (humanPerformerElements.size() > 1) {
-      throw new ActivitiException("Invalid task definition: multiple " + HUMAN_PERFORMER + " sub elements defined for " + taskDefinition.getNameValueExpression());
+      addError("Invalid task definition: multiple " + HUMAN_PERFORMER + " sub elements defined for " 
+              + taskDefinition.getNameValueExpression(), taskElement);
     } else if (humanPerformerElements.size() == 1) {
       Element humanPerformerElement = humanPerformerElements.get(0);
       if (humanPerformerElement != null) {
@@ -838,7 +857,7 @@ public class BpmnParse extends Parse {
 
   protected String[] splitCommaSeparatedExpression(String expression) {
     if (expression == null) {
-      throw new ActivitiException("Invalid: no content for " + FORMAL_EXPRESSION + " provided");
+      addError("Invalid: no content for " + FORMAL_EXPRESSION + " provided", rootElement);
     }
     return expression.split(",");
   }
@@ -855,7 +874,8 @@ public class BpmnParse extends Parse {
       if (taskDefinition.getAssigneeValueExpression() == null) {
         taskDefinition.setAssigneeValueExpression(expressionManager.createValueExpression(assignee));
       } else {
-        throw new ActivitiException("Invalid usage: duplicate assignee declaration for task " + taskDefinition.getNameValueExpression());
+        addError("Invalid usage: duplicate assignee declaration for task " 
+                + taskDefinition.getNameValueExpression(), taskElement);
       }
     }
 
@@ -928,7 +948,7 @@ public class BpmnParse extends Parse {
       // 'attachedToRef' attribute
       String attachedToRef = boundaryEventElement.attribute("attachedToRef");
       if (attachedToRef == null || attachedToRef.equals("")) {
-        throw new ActivitiException("AttachedToRef is required when using a timerEventDefinition");
+        addError("AttachedToRef is required when using a timerEventDefinition", boundaryEventElement);
       }
 
       // Representation structure-wise is a nested activity in the activity to
@@ -940,8 +960,8 @@ public class BpmnParse extends Parse {
 
       ActivityImpl parentActivity = scopeElement.findActivity(attachedToRef);
       if (parentActivity == null) {
-        throw new ActivitiException("Invalid reference in boundary event: " + attachedToRef
-              + " Make sure that the referenced activity is defined in the same scope as the boundary event");
+        addError("Invalid reference in boundary event. Make sure that the referenced activity is " 
+                + "defined in the same scope as the boundary event", boundaryEventElement);
       }
       ActivityImpl nestedActivity = parentActivity.createActivity(id);
       nestedActivity.setProperty("name", boundaryEventElement.attribute("name"));
@@ -955,7 +975,7 @@ public class BpmnParse extends Parse {
       if (timerEventDefinition != null) {
         parseBoundaryTimerEventDefinition(timerEventDefinition, interrupting, nestedActivity);
       } else {
-        throw new ActivitiException("Unsupported boundary event type");
+        addError("Unsupported boundary event type", boundaryEventElement);
       }
     }
   }
@@ -1053,8 +1073,7 @@ public class BpmnParse extends Parse {
     ActivityImpl activity = parseAndCreateActivityOnScopeElement(callActivityElement, scope);
     String calledElement = callActivityElement.attribute("calledElement");
     if (calledElement == null) {
-      throw new ActivitiException("Missing attribute 'calledElement' on callActivity (line " +
-              + callActivityElement.getLine() + ")");
+      addError("Missing attribute 'calledElement'", callActivityElement);
     }
     activity.setActivityBehavior(new CallActivityBehaviour(calledElement));
 
@@ -1095,7 +1114,7 @@ public class BpmnParse extends Parse {
     // If name isn't given, use the id as name
     if (name == null) {
       if (id == null) {
-        throw new ActivitiException("Invalid property usage on line " + propertyElement.getLine() + ": no id or name specified.");
+        addError("Invalid property usage on line " + propertyElement.getLine() + ": no id or name specified.", propertyElement);
       } else {
         name = id;
       }
@@ -1109,7 +1128,7 @@ public class BpmnParse extends Parse {
         Structure structure = itemDefinition.getStructure();
         type = structure.getId();
       } else {
-        throw new ActivitiException("Invalid itemDefinition reference: " + itemSubjectRef + " not found");
+        addError("Invalid itemDefinition reference: " + itemSubjectRef + " not found", propertyElement);
       }
     }
 
@@ -1197,10 +1216,10 @@ public class BpmnParse extends Parse {
       ActivityImpl destinationActivity = scope.findActivity(destinationRef);
 
       if (sourceActivity == null) {
-        throw new ActivitiException("Invalid source of sequence flow '" + id + "'");
+        addError("Invalid source of sequence flow '" + id + "'", sequenceFlowElement);
       }
       if (destinationActivity == null) {
-        throw new ActivitiException("Invalid destination of sequence flow '" + id + "'");
+        addError("Invalid destination of sequence flow '" + id + "'", sequenceFlowElement);
       }
 
       TransitionImpl transition = sourceActivity.createOutgoingTransition(id);
@@ -1229,8 +1248,7 @@ public class BpmnParse extends Parse {
       String expr = conditionExprElement.getText().trim();
       String type = conditionExprElement.attributeNS(BpmnParser.XSI_NS, "type");
       if (type != null && !type.equals("tFormalExpression")) {
-        throw new ActivitiException("Invalid type on conditionExpression (" + conditionExprElement.getLine() + "). "
-                + "Only tFormalExpression is currently supported");
+        addError("Invalid type, only tFormalExpression is currently supported", conditionExprElement);
       }
 
       String language = conditionExprElement.attribute("language");
@@ -1244,7 +1262,7 @@ public class BpmnParse extends Parse {
       } else if ("uel-method".equals(language)) {
         condition = new UelMethodExpressionCondition(expressionManager.createMethodExpression(expr));
       } else {
-        throw new ActivitiException("Unknown language for condition: " + language);
+        addError("Unknown language for condition: " + language, conditionExprElement);
       }
       seqFlow.setProperty(PROPERTYNAME_CONDITION, condition);
     }

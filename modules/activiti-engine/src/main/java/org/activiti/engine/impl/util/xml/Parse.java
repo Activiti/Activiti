@@ -19,12 +19,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Stack;
+import java.util.logging.Logger;
 
-import javax.xml.XMLConstants;
 import javax.xml.parsers.SAXParser;
-import javax.xml.validation.Schema;
-import javax.xml.validation.SchemaFactory;
-import javax.xml.validation.Validator;
+import javax.xml.parsers.SAXParserFactory;
 
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.util.io.InputStreamSource;
@@ -41,11 +39,16 @@ import org.xml.sax.helpers.DefaultHandler;
  */
 public class Parse extends DefaultHandler {
   
+  private static final Logger LOGGER = Logger.getLogger(Parse.class.getName());
+  
+  private static final String NEW_LINE = System.getProperty("line.separator");
+  
   protected Parser parser;
   protected String name;
   protected StreamSource streamSource;
   protected Element rootElement = null;
-  protected List<Problem> problems = new ArrayList<Problem>();
+  protected List<Problem> errors = new ArrayList<Problem>();
+  protected List<Problem> warnings = new ArrayList<Problem>();
   protected String schemaResource;
   protected Stack<Object> contextStack;
 
@@ -108,25 +111,22 @@ public class Parse extends DefaultHandler {
     }
     this.streamSource = streamSource;
   }
-
+  
+  private static final String JAXP_SCHEMA_SOURCE
+  = "http://java.sun.com/xml/jaxp/properties/schemaSource";
+  private static final String JAXP_SCHEMA_LANGUAGE
+  = "http://java.sun.com/xml/jaxp/properties/schemaLanguage";
+  private static final String W3C_XML_SCHEMA
+  = "http://www.w3.org/2001/XMLSchema";
+  
   public Parse execute() {
     try {
       InputStream inputStream = streamSource.getInputStream();
-      if (schemaResource != null) {
-        
-        SchemaFactory factory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
-        Schema schema = factory.newSchema(Thread.currentThread().getContextClassLoader().getResource(schemaResource));
-        parser.getSaxParserFactory().setSchema(schema);
-        
-        Validator validator = schema.newValidator();
-        validator.validate(new javax.xml.transform.stream.StreamSource(inputStream));
-        
-        // The validator will read the stream until the end, rendering it useless for further usage
-        // PLEASE do not remove this comment. It has cost me 2 hours to figure it out.
-        inputStream.reset();
-      }
       
       SAXParser saxParser = parser.getSaxParser(); 
+      saxParser.setProperty(JAXP_SCHEMA_LANGUAGE, W3C_XML_SCHEMA);
+      saxParser.setProperty(JAXP_SCHEMA_SOURCE, schemaResource);
+      
       saxParser.parse(inputStream, new ParseHandler(this));
     } catch (Exception e) { // any exception can happen (Activiti, Io, etc.)
       throw new ActivitiException("couldn't parse '"+name+"': "+e.getMessage(), e);
@@ -140,20 +140,52 @@ public class Parse extends DefaultHandler {
   }
 
   public List<Problem> getProblems() {
-    return problems;
+    return errors;
   }
 
-  public void addProblem(SAXParseException e) {
-    problems.add(new Problem(e, name));
+  public void addError(SAXParseException e) {
+    errors.add(new Problem(e, name));
   }
   
-  public void addProblem(String errorMessage, Element element) {
-    problems.add(new Problem(errorMessage, name, element));
+  public void addError(String errorMessage, Element element) {
+    errors.add(new Problem(errorMessage, name, element));
+  }
+  
+  public boolean hasErrors() {
+    return errors != null && !errors.isEmpty();
+  }
+  
+  public void addWarning(SAXParseException e) {
+    warnings.add(new Problem(e, name));
+  }
+  
+  public void addWarning(String errorMessage, Element element) {
+    warnings.add(new Problem(errorMessage, name, element));
+  }
+  
+  public boolean hasWarnings() {
+    return warnings != null && !warnings.isEmpty();
+  }
+  
+  public void logWarnings() {
+    for (Problem warning : warnings) {
+      LOGGER.warning(warning.toString());
+    }
+  }
+  
+  public void throwActivitiExceptionForErrors() {
+    StringBuilder strb = new StringBuilder();
+    for (Problem error : errors) {
+      strb.append(error.toString());
+      strb.append(NEW_LINE);
+    }
+    throw new ActivitiException(strb.toString());
   }
   
   public void setSchemaResource(String schemaResource) {
-    parser.getSaxParserFactory().setNamespaceAware(true);
-    parser.getSaxParserFactory().setValidating(true);
+    SAXParserFactory saxParserFactory = parser.getSaxParserFactory();
+    saxParserFactory.setNamespaceAware(true);
+    saxParserFactory.setValidating(true);
     this.schemaResource = schemaResource;
   }
   
