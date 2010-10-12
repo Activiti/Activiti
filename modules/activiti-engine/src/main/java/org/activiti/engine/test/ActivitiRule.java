@@ -73,7 +73,7 @@ public class ActivitiRule extends TestWatchman {
   protected RepositoryService repositoryService;
   protected RuntimeService runtimeService;
   protected TaskService taskService;
-  protected HistoryService historicDataService;
+  protected HistoryService historyService;
   protected IdentityService identityService;
   protected ManagementService managementService;
   
@@ -106,7 +106,7 @@ public class ActivitiRule extends TestWatchman {
     repositoryService = processEngine.getRepositoryService();
     runtimeService = processEngine.getRuntimeService();
     taskService = processEngine.getTaskService();
-    historicDataService = processEngine.getHistoryService();
+    historyService = processEngine.getHistoryService();
     identityService = processEngine.getIdentityService();
     managementService = processEngine.getManagementService();
   }
@@ -162,12 +162,12 @@ public class ActivitiRule extends TestWatchman {
     this.taskService = taskService;
   }
   
-  public HistoryService getHistoricDataService() {
-    return historicDataService;
+  public HistoryService getHistoryService() {
+    return historyService;
   }
-  
+
   public void setHistoricDataService(HistoryService historicDataService) {
-    this.historicDataService = historicDataService;
+    this.historyService = historicDataService;
   }
   
   public IdentityService getIdentityService() {
