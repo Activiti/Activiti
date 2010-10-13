@@ -93,6 +93,7 @@ public class TaskCandidateTest extends ActivitiInternalTestCase {
       .assignee(KERMIT)
       .list();
     assertEquals(1, tasks.size());
+    task = tasks.get(0);
     assertEquals("Pay out expenses", task.getName());
 
     // Completing the task ends the process
