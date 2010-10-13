@@ -237,7 +237,7 @@ html, body
   min-width:13em;
 }
 
-li.filter {
+li.filter, li.table {
 	white-space:nowrap;
 }
 

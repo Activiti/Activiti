@@ -10,3 +10,7 @@ h1 {
 }
 
 /* STRUCTURE */
+/* Override Core style for long DB table names */
+.yui-gf div.yui-u.first {
+  min-width:18em;
+}
