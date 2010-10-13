@@ -3,14 +3,16 @@ package org.activiti.cycle.impl.db;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 
 import javax.servlet.http.HttpSession;
 
+import org.activiti.cycle.ArtifactRevision;
 import org.activiti.cycle.Cycle;
 import org.activiti.cycle.CycleConfig;
+import org.activiti.cycle.Artifact;
 import org.activiti.cycle.CycleLink;
-import org.activiti.cycle.CycleLinkTarget;
 import org.activiti.cycle.CycleService;
 import org.activiti.cycle.RepositoryConnector;
 import org.activiti.cycle.RepositoryException;
@@ -144,135 +146,170 @@ public class CycleServiceDbXStreamImpl extends DummyBaseCycleService implements 
   
   @Override
   public void addArtifactLink(String sourceArtifactId, String targetArtifactId) {
+    SqlSessionFactory sqlMapper = getSessionFactory();
+    
+    //TODO: select before insert! check, if sourceArtifact exists as Artifact object in datbabase.
+    Artifact artifact = new Artifact();
+    artifact.setId(sourceArtifactId);
+    
     CycleLink cycleLink = new CycleLink();
-    CycleLinkTarget cycleLinkTarget = new CycleLinkTarget();
-    List<CycleLinkTarget> cycleLinkTargetList = new ArrayList<CycleLinkTarget>();
-    cycleLinkTarget.setTargetArtifactId(targetArtifactId);
-    cycleLinkTargetList.add(cycleLinkTarget);
-
-    cycleLink.setSourceArtifactId(sourceArtifactId);
-    cycleLink.setCycleLinkTarget(cycleLinkTargetList);
+    cycleLink.setSourceArtifact(artifact);
+    cycleLink.setId(targetArtifactId);
     
+    SqlSession session = sqlMapper.openSession();
+    
+    session.insert("org.activiti.cycle.CycleLink.insertCycleLink", cycleLink);
+    session.commit();
+  }
+  
+  @Override
+  public List<Artifact> getArtifactLinks(String sourceArtifactId) {
     SqlSessionFactory sqlMapper = getSessionFactory();
     
     SqlSession session = sqlMapper.openSession();
+    
     try {
-      session.insert("org.activiti.cycle.CycleLink.insertCycleLink", cycleLink);    
-      session.commit();
+      
+      List<Artifact> artifactResultList = session.selectList(
+              "org.activiti.cycle.Artifact.selectArtifact", sourceArtifactId);
+      return artifactResultList;
     } finally {
       session.close();
     }
   }
   
-  @Override
-  public void addLink(CycleLink link) {
-    SqlSessionFactory sqlMapper = getSessionFactory();
-    
-    SqlSession session = sqlMapper.openSession();
-    try {
-      session.insert("org.activiti.cycle.CycleLink.insertCycleLink", link);    
-      session.commit();
-    } finally {
-      session.close();
-    }
-  }
-  
-  @Override
-  public List<CycleLink> getArtifactLinks(String sourceArtifactId) {
-    SqlSessionFactory sqlMapper = getSessionFactory();
-    
-    SqlSession session = sqlMapper.openSession();
-    try {
-      return (List<CycleLink>) session.selectList(
-              "org.activiti.cycle.CycleLink.selectCycleLinkBySourceArtifactId", sourceArtifactId);
-
-    } finally {
-      session.close();
-    }
-  }
-  
-  @Override
-  public List<CycleLink> getArtifactLinks(String sourceArtifactId, String type) {
-    CycleLink cycleLink = new CycleLink();
-    CycleLinkTarget cycleLinkTarget = new CycleLinkTarget();
-    List<CycleLinkTarget> cycleLinkTargetList = new ArrayList<CycleLinkTarget>();
-    
-    cycleLinkTarget.setLinkType(type);
-    cycleLinkTargetList.add(cycleLinkTarget);
-    
-    cycleLink.setSourceArtifactId(sourceArtifactId);
-    cycleLink.setCycleLinkTarget(cycleLinkTargetList);
-    
-    SqlSessionFactory sqlMapper = getSessionFactory();
-    
-    SqlSession session = sqlMapper.openSession();
-    try {
-      return (List<CycleLink>) session.selectList(
-              "org.activiti.cycle.CycleLink.selectCycleLinkBySourceArtifactIdAndType", cycleLink);
-
-    } finally {
-      session.close();
-    }
-  }
-  
-  @Override
-  public List<CycleLink> getArtifactLinks(String sourceArtifactId, Long sourceRevision) {
-    CycleLink cycleLink = new CycleLink();
-    cycleLink.setSourceArtifactId(sourceArtifactId);
-    cycleLink.setSourceRevision(sourceRevision);
-    
-    SqlSessionFactory sqlMapper = getSessionFactory();
-    
-    SqlSession session = sqlMapper.openSession();
-    try {
-      return (List<CycleLink>) session.selectList(
-              "org.activiti.cycle.CycleLink.selectCycleLinkBySourceArtifactIdAndSourceRevision", cycleLink);
-
-    } finally {
-      session.close();
-    }
-    
-  }
-
-  @Override
-  public List<CycleLink> getArtifactLinks(String sourceArtifactId, Long sourceRevision, String type) {
-    CycleLink cycleLink = new CycleLink();
-    CycleLinkTarget cycleLinkTarget = new CycleLinkTarget();
-    List<CycleLinkTarget> cycleLinkTargetList = new ArrayList<CycleLinkTarget>();
-    
-    cycleLinkTarget.setLinkType(type);
-    cycleLinkTargetList.add(cycleLinkTarget);
-    
-    cycleLink.setSourceArtifactId(sourceArtifactId);
-    cycleLink.setSourceRevision(sourceRevision);
-    cycleLink.setCycleLinkTarget(cycleLinkTargetList);
-    
-    SqlSessionFactory sqlMapper = getSessionFactory();
-    
-    SqlSession session = sqlMapper.openSession();
-    try {
-      return (List<CycleLink>) session.selectList(
-              "org.activiti.cycle.CycleLink.selectCycleLinkBySourceArtifactIdAndTypeAndSourceRevision", cycleLink);
-
-    } finally {
-      session.close();
-    }
-
-  }
-  
-  
-  @Override
-  public void deleteLink(long linkId) {
-    SqlSessionFactory sqlMapper = getSessionFactory();
-    
-    SqlSession session = sqlMapper.openSession();
-    try {
-      session.insert("org.activiti.cycle.CycleLink.deleteCycleLink", linkId);    
-      session.commit();
-    } finally {
-      session.close();
-    }
-  }
+//  @Override
+//  public void addArtifactLink(String sourceArtifactId, String targetArtifactId) {
+//    Artifact cycleLink = new Artifact();
+//    CycleLink cycleLinkTarget = new CycleLink();
+//    cycleLinkTarget.setTargetArtifactId(targetArtifactId);
+//
+//    cycleLink.setSourceArtifactId(sourceArtifactId);
+//    cycleLinkTarget.setCycleLink(cycleLink);
+//    
+//    SqlSessionFactory sqlMapper = getSessionFactory();
+//    
+//    SqlSession session = sqlMapper.openSession();
+//    try {
+//      session.insert("org.activiti.cycle.CycleLink.insertCycleLink", cycleLink);
+//      session.insert("org.activiti.cycle.CycleLinkTarget.insertCycleLinkTarget", cycleLinkTarget);
+//      session.commit();
+//    } finally {
+//      session.close();
+//    }
+//  }
+//  
+//  @Override
+//  public void addLink(Artifact link) {
+//    SqlSessionFactory sqlMapper = getSessionFactory();
+//    
+//    SqlSession session = sqlMapper.openSession();
+//    try {
+//      session.insert("org.activiti.cycle.CycleLink.insertCycleLink", link);    
+//      session.commit();
+//    } finally {
+//      session.close();
+//    }
+//  }
+//  
+//  @Override
+//  public List<Artifact> getArtifactLinks(String sourceArtifactId) {
+//    SqlSessionFactory sqlMapper = getSessionFactory();
+//    
+//    SqlSession session = sqlMapper.openSession();
+//    try {
+//      
+//      List<Artifact> linkList = (List<Artifact>) session.selectList(
+//              "org.activiti.cycle.CycleLink.selectCycleLinkBySourceArtifactId", sourceArtifactId);
+//      Artifact link = linkList.get(0);
+//      return linkList;
+//    } finally {
+//      session.close();
+//    }
+//  }
+//  
+//  @Override
+//  public List<Artifact> getArtifactLinks(String sourceArtifactId, String type) {
+//    Artifact cycleLink = new Artifact();
+//    CycleLink cycleLinkTarget = new CycleLink();
+//    List<CycleLink> cycleLinkTargetList = new ArrayList<CycleLink>();
+//    
+//    cycleLinkTarget.setLinkType(type);
+//    cycleLinkTargetList.add(cycleLinkTarget);
+//    
+//    cycleLink.setSourceArtifactId(sourceArtifactId);
+//    cycleLink.setCycleLinkTarget(cycleLinkTargetList);
+//    
+//    SqlSessionFactory sqlMapper = getSessionFactory();
+//    
+//    SqlSession session = sqlMapper.openSession();
+//    try {
+//      return (List<Artifact>) session.selectList(
+//              "org.activiti.cycle.CycleLink.selectCycleLinkBySourceArtifactIdAndType", cycleLink);
+//
+//    } finally {
+//      session.close();
+//    }
+//  }
+//  
+//  @Override
+//  public List<Artifact> getArtifactLinks(String sourceArtifactId, Long sourceRevision) {
+//    Artifact cycleLink = new Artifact();
+//    cycleLink.setSourceArtifactId(sourceArtifactId);
+//    cycleLink.setSourceRevision(sourceRevision);
+//    
+//    SqlSessionFactory sqlMapper = getSessionFactory();
+//    
+//    SqlSession session = sqlMapper.openSession();
+//    try {
+//      return (List<Artifact>) session.selectList(
+//              "org.activiti.cycle.CycleLink.selectCycleLinkBySourceArtifactIdAndSourceRevision", cycleLink);
+//
+//    } finally {
+//      session.close();
+//    }
+//    
+//  }
+//
+//  @Override
+//  public List<Artifact> getArtifactLinks(String sourceArtifactId, Long sourceRevision, String type) {
+//    Artifact cycleLink = new Artifact();
+//    CycleLink cycleLinkTarget = new CycleLink();
+//    List<CycleLink> cycleLinkTargetList = new ArrayList<CycleLink>();
+//    
+//    cycleLinkTarget.setLinkType(type);
+//    cycleLinkTargetList.add(cycleLinkTarget);
+//    
+//    cycleLink.setSourceArtifactId(sourceArtifactId);
+//    cycleLink.setSourceRevision(sourceRevision);
+//    cycleLink.setCycleLinkTarget(cycleLinkTargetList);
+//    
+//    SqlSessionFactory sqlMapper = getSessionFactory();
+//    
+//    SqlSession session = sqlMapper.openSession();
+//    try {
+//      return (List<Artifact>) session.selectList(
+//              "org.activiti.cycle.CycleLink.selectCycleLinkBySourceArtifactIdAndTypeAndSourceRevision", cycleLink);
+//
+//    } finally {
+//      session.close();
+//    }
+//
+//  }
+//  
+//  
+//  @Override
+//  public void deleteLink(long linkId) {
+//    SqlSessionFactory sqlMapper = getSessionFactory();
+//    
+//    SqlSession session = sqlMapper.openSession();
+//    try {
+//      session.insert("org.activiti.cycle.CycleLink.deleteCycleLink", linkId);    
+//      session.commit();
+//    } finally {
+//      session.close();
+//    }
+//  }
 
   //----- start implementation for cycle persistence -----
   
