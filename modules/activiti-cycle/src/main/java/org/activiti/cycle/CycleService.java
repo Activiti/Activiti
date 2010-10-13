@@ -29,7 +29,7 @@ public interface CycleService {
   public void saveConfiguration(ConfigurationContainer container);
 
   /**
-   * adds default {@link CycleLink} for the supplied artifact ids. If you need
+   * adds default {@link Artifact} for the supplied artifact ids. If you need
    * more specific links please use the "addLink" method
    */
   public void addArtifactLink(String sourceArtifactId, String targetArtifactId);
@@ -37,12 +37,12 @@ public interface CycleService {
   /**
    * add given link to Cycle
    */
-  public void addLink(CycleLink link); 
+  public void addLink(Artifact link); 
   
-  public List<CycleLink> getArtifactLinks(String sourceArtifactId);
-  public List<CycleLink> getArtifactLinks(String sourceArtifactId, Long sourceRevision);
-  public List<CycleLink> getArtifactLinks(String sourceArtifactId, String type);
-  public List<CycleLink> getArtifactLinks(String sourceArtifactId, Long sourceRevision, String type);
+  public List<Artifact> getArtifactLinks(String sourceArtifactId);
+  public List<Artifact> getArtifactLinks(String sourceArtifactId, Long sourceRevision);
+  public List<Artifact> getArtifactLinks(String sourceArtifactId, String type);
+  public List<Artifact> getArtifactLinks(String sourceArtifactId, Long sourceRevision, String type);
  
   public void deleteLink(long linkId);
 
@@ -82,5 +82,5 @@ public interface CycleService {
    * for the top level GUI)
    */
   public List<CycleTag> getAllTagsIgnoreAlias(); 
-  
+   
 }
