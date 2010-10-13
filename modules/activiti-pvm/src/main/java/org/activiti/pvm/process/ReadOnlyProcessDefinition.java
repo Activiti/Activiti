@@ -13,14 +13,12 @@
 
 package org.activiti.pvm.process;
 
-import org.activiti.pvm.runtime.PvmProcessInstance;
-
 
 /**
  * @author Tom Baeyens
  */
-public interface PvmProcessDefinition extends ReadOnlyProcessDefinition {
+public interface ReadOnlyProcessDefinition extends PvmScope {
 
-  PvmProcessInstance createProcessInstance();
+  PvmActivity getInitial();
 
 }

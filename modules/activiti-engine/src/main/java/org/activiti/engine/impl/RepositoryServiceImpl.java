@@ -19,6 +19,7 @@ import java.util.List;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.impl.cmd.DeleteDeploymentCmd;
 import org.activiti.engine.impl.cmd.DeployCmd;
+import org.activiti.engine.impl.cmd.GetDeploymentProcessDefinitionCmd;
 import org.activiti.engine.impl.cmd.GetDeploymentResourceCmd;
 import org.activiti.engine.impl.cmd.GetDeploymentResourceNamesCmd;
 import org.activiti.engine.impl.repository.DeploymentBuilderImpl;
@@ -26,6 +27,7 @@ import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.repository.DeploymentBuilder;
 import org.activiti.engine.repository.DeploymentQuery;
 import org.activiti.engine.repository.ProcessDefinitionQuery;
+import org.activiti.pvm.process.ReadOnlyProcessDefinition;
 
 
 /**
@@ -64,6 +66,10 @@ public class RepositoryServiceImpl extends ServiceImpl implements RepositoryServ
 
   public DeploymentQuery createDeploymentQuery() {
     return new DeploymentQueryImpl(commandExecutor);
+  }
+
+  public ReadOnlyProcessDefinition getDeployedProcessDefinition(String processDefinitionId) {
+    return commandExecutor.execute(new GetDeploymentProcessDefinitionCmd(processDefinitionId));
   }
 }
 

@@ -13,10 +13,15 @@
 
 package org.activiti.engine.test.db;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.activiti.engine.impl.test.ActivitiInternalTestCase;
 import org.activiti.engine.repository.ProcessDefinition;
+import org.activiti.pvm.process.PvmActivity;
+import org.activiti.pvm.process.PvmTransition;
+import org.activiti.pvm.process.ReadOnlyProcessDefinition;
 
 
 /**
@@ -37,6 +42,36 @@ public class ProcessDefinitionPersistenceTest extends ActivitiInternalTestCase {
       .list();
     
     assertEquals(2, processDefinitions.size());
+    
+    repositoryService.deleteDeployment(deploymentId);
+  }
+
+  public void testProcessDefinitionIntrospection() {
+    String deploymentId = repositoryService
+      .createDeployment()
+      .addClasspathResource("org/activiti/engine/test/db/processOne.bpmn20.xml")
+      .deploy()
+      .getId();
+  
+    ReadOnlyProcessDefinition processDefinition = repositoryService.getDeployedProcessDefinition("processOne:1");
+    
+    assertEquals("processOne:1", processDefinition.getId());
+    
+    PvmActivity start = processDefinition.findActivity("start");
+    assertNotNull(start);
+    assertEquals("start", start.getId());
+    assertEquals(Collections.EMPTY_LIST, start.getActivities());
+    List<PvmTransition> outgoingTransitions = start.getOutgoingTransitions();
+    assertEquals(1, outgoingTransitions.size());
+
+    PvmActivity end = processDefinition.findActivity("end");
+    assertNotNull(end);
+    assertEquals("end", end.getId());
+    
+    PvmTransition transition = outgoingTransitions.get(0);
+    assertEquals("flow1", transition.getId());
+    assertSame(start, transition.getSource());
+    assertSame(end, transition.getDestination());
     
     repositoryService.deleteDeployment(deploymentId);
   }

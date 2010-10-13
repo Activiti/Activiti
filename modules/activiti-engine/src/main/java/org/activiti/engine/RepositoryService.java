@@ -19,6 +19,7 @@ import java.util.List;
 import org.activiti.engine.repository.DeploymentBuilder;
 import org.activiti.engine.repository.DeploymentQuery;
 import org.activiti.engine.repository.ProcessDefinitionQuery;
+import org.activiti.pvm.process.ReadOnlyProcessDefinition;
 
 
 /** Service providing access to the repository of process definitions and deployments.
@@ -63,7 +64,9 @@ public interface RepositoryService {
   /** Query process definitions. */
   ProcessDefinitionQuery createProcessDefinitionQuery();
   
+  /** exposes a fully deployed process definition for introspection purposes. */
+  ReadOnlyProcessDefinition getDeployedProcessDefinition(String processDefinitionId);
+  
   /** Query process definitions. */
   DeploymentQuery createDeploymentQuery();
-  
 }
