@@ -49,10 +49,10 @@ public class JobsGet extends ActivitiPagingWebScript
   @Override
   protected void executeWebScript(ActivitiRequest req, Status status, Cache cache, Map<String, Object> model) {
     String processInstanceId = req.getString("process-instance", null);
-    Boolean withRetriesLeft = req.getBoolean("with-retries-left", null);
-    Boolean executable = req.getBoolean("executable", null);
-    Boolean onlyTimers = req.getBoolean("only-timers", null);
-    Boolean onlyMessages = req.getBoolean("only-messages", null);
+    Boolean withRetriesLeft = req.getBoolean("with-retries-left", false);
+    Boolean executable = req.getBoolean("executable", false);
+    Boolean onlyTimers = req.getBoolean("only-timers", false);
+    Boolean onlyMessages = req.getBoolean("only-messages", false);
     Date dueDateLowerThen = req.getDate("duedate-lt", null);
     Date dueDateLowerThenOrEquals = req.getDate("duedate-ltoe", null);
     Date dueDateHigherThen = req.getDate("duedate-ht", null);
@@ -63,19 +63,19 @@ public class JobsGet extends ActivitiPagingWebScript
     {
       jobQuery.processInstanceId(processInstanceId);
     }
-    if (withRetriesLeft != null)
+    if (withRetriesLeft)
     {
       jobQuery.withRetriesLeft();
     }
-    if (executable != null)
+    if (executable)
     {
       jobQuery.executable();
     }
-    if (onlyTimers != null)
+    if (onlyTimers)
     {
       jobQuery.onlyTimers();
     }
-    if (onlyMessages != null)
+    if (onlyMessages)
     {
       jobQuery.onlyMessages();
     }

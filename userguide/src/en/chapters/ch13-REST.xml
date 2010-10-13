@@ -32,43 +32,117 @@
 
   <para>
     Please look below to see what REST API calls that currently are available.
-    Please consider the API sections as a "one line hint" to what functionality of the core API that is used to implement the REST API call.    
+    Please consider the "API" sections as a "one line hint" to what functionality of the core API that is used to implement the REST API call.
   </para>
 
   <section>
 
-     <title>Deployment</title>
+    <!-- REPOSITORY -->
 
-     <section>
-        <title>Get Deployment Resource</title>
-        <para>
-           Returns a resource from the deployment.
-        </para>
-        <itemizedlist>
-           <listitem>
-              <para>
-                 <emphasis role="bold">Request: </emphasis>
-                 <literal>GET /deployment/{deploymentId}/resource/{resourceName}</literal>
-              </para>
-           </listitem>
-           <listitem>
-              <para>
-                 <emphasis role="bold">API: </emphasis>
-                 <literal>ProcessEngines.getProcessEngine(configuredProcessEngineName).getRepositoryService().getResourceAsStream(deploymentId, resourceName)</literal>
-              </para>
-           </listitem>
-           <listitem>
-              <para>
-                 <emphasis role="bold">Response:</emphasis>
-                 <programlisting>I.e a .bpmn20.xml file, an image or whatever type of file the deployment resource contained.</programlisting>
-              </para>
-           </listitem>
-        </itemizedlist>
-     </section>
+    <title>Repository</title>
 
+    <section>
+      <title>Get Deployments</title>
+      <para>
+        Returns a paginated list deployments that can be sorted by "id", "name" or "deploymentTime".
+      </para>
+      <itemizedlist>
+        <listitem>
+          <para>
+            <emphasis role="bold">Request: </emphasis>
+            <literal>GET /deployments?start={start=0}&amp;size={size=10}&amp;sort={sort=id}&amp;order={order=asc}</literal>
+          </para>
+        </listitem>
+        <listitem>
+          <para>
+            <emphasis role="bold">API: </emphasis>
+            <literal>ProcessEngines.getProcessEngine(configuredProcessEngineName).getRepositoryService().createDeploymentQuery().listPage()</literal>
+          </para>
+        </listitem>
+        <listitem>
+          <para>
+            <emphasis role="bold">Response:</emphasis>
+            <programlisting>
+{
+  "data": [
+    {
+      "id": "10",
+      "name": "activiti-examples.bar",
+      "deploymentTime": "2010-10-13T14:54:26.750+02:00"
+    }
+  ],
+  "total": 1,
+  "start": 0,
+  "sort": "id",
+  "order": "asc",
+  "size": 1
+}</programlisting>
+          </para>
+        </listitem>
+      </itemizedlist>
     </section>
 
-    <!-- ENGINE -->
+    <section>
+      <title>Get Deployment Resource</title>
+      <para>
+        Returns a resource from the deployment.
+        Example: /deployment/10/resource/org/activiti/examples/bpmn/usertask/FinancialReportProcess.bpmn20.xml
+      </para>
+      <itemizedlist>
+        <listitem>
+          <para>
+            <emphasis role="bold">Request: </emphasis>
+            <literal>GET /deployment/{deploymentId}/resource/{resourceName}</literal>
+          </para>
+        </listitem>
+        <listitem>
+          <para>
+            <emphasis role="bold">API: </emphasis>
+            <literal>ProcessEngines.getProcessEngine(configuredProcessEngineName).getRepositoryService().getResourceAsStream(deploymentId, resourceName)</literal>
+          </para>
+        </listitem>
+        <listitem>
+          <para>
+            <emphasis role="bold">Response:</emphasis>
+            <programlisting>I.e a .bpmn20.xml file, an image or whatever type of file the deployment resource contained.</programlisting>
+          </para>
+        </listitem>
+      </itemizedlist>
+    </section>
+
+    <section>
+      <title>Delete Deployment</title>
+      <para>
+        Deletes a deployment.
+      </para>
+      <itemizedlist>
+        <listitem>
+          <para>
+            <emphasis role="bold">Request: </emphasis>
+            <literal>DELETE /deployment/{deploymentId}?cascade={cascade?}</literal>
+          </para>
+        </listitem>
+        <listitem>
+          <para>
+            <emphasis role="bold">API: </emphasis>
+            <literal>ProcessEngines.getProcessEngine(configuredProcessEngineName).getRepositoryService().deleteDeployment(deploymentId)</literal>
+          </para>
+        </listitem>
+        <listitem>
+          <para>
+            <emphasis role="bold">Response:</emphasis>
+            <programlisting>
+{
+  "success": true
+}</programlisting>
+          </para>
+        </listitem>
+      </itemizedlist>
+    </section>
+
+  </section>
+
+  <!-- ENGINE -->
 
     <section>
 
@@ -119,17 +193,17 @@
       <section>
         <title>List Process Definitions</title>
         <para>
-          Returns details about the deployed process definitions. The name of the BPMN2.0 xml process diagram is given
-          in the "resourceName" attribute and can, in combination with the "deploymentId" attribute, be retreived
-          from the GET Deployment Resource REST API call above. If the process has a start form it is given in the
-          "startFormResourceKey" attribute. The start form for a process can be retrieved from the GET Start Process Form
-          REST API call.
+          Returns details about the deployed process definitions that can be sorted by "id", "name", "version" or
+          "deploymentTime". The name of the BPMN2.0 xml process diagram is givenin the "resourceName" attribute and can,
+          in combination with the "deploymentId" attribute, be retreived from the GET Deployment Resource REST API call
+          above. If the process has a start form it is given in the "startFormResourceKey" attribute.
+          The start form for a process can be retrieved from the GET Start Process Form REST API call.
         </para>
         <itemizedlist>
           <listitem>
             <para>
-              <emphasis role="bold">Request:</emphasis>
-              <literal>GET /process-definitions</literal>
+              <emphasis role="bold">Paginated Request:</emphasis>
+              <literal>GET /process-definitions?start={start=0}&amp;size={size=10}&amp;sort={sort=id}&amp;order={order=asc}</literal>
             </para>
           </listitem>
           <listitem>
@@ -140,11 +214,10 @@
           </listitem>
           <listitem>
             <para>
-              <emphasis role="bold">Response:</emphasis>
+              <emphasis role="bold">Paginated Response:</emphasis>
               <programlisting>
 {
-  "data":
-  [
+  "data": [
     {
       "id": "financialReport:1",
       "key": "financialReport",
@@ -154,7 +227,12 @@
       "deploymentId": "10",
       "startFormResourceKey": null                 
     }
-  ]
+  ],
+  "total": 1,
+  "start": 0,
+  "sort": "id",
+  "order": "asc",
+  "size": 1
 }</programlisting>
             </para>
           </listitem>
@@ -342,17 +420,17 @@
       <section>
         <title>List Tasks</title>
         <para>
-          Returns a task list based on a) user of a specific role: assignee (lists the tasks assigned to the user) or
-          candidate (lists the tasks that the user may claim) or a candidate group (lists tasks that the members of the group may claim).
-          Result will be paginated using start (index to start from, default 0) and size (the number of tasks to return in the request, default 10).
-          If the task has a form it is given in the "formResourceKey" attribute. The form for a task can be retrieved
-          from the GET Task Form REST API call.
+          Returns a paginated list of tasks that can be sorted by: "id", "name", "description", "priority", "assignee",
+          "executionId" or "processInstanceId". The list must be based on a user of a specific role: assignee
+          (lists the tasks assigned to the user) or candidate (lists the tasks that the user may claim) or a candidate
+          group (lists tasks that the members of the group may claim). If the task has a form it is given in the
+          "formResourceKey" attribute. The form for a task can be retrieved from the GET Task Form REST API call.
         </para>
         <itemizedlist>
           <listitem>
             <para>
-              <emphasis role="bold">Request:</emphasis>
-              <literal>GET /tasks?[assignee={userId}|candidate={userId}|candidate-group={groupId}][&amp;start=0][&amp;size=10]</literal>
+              <emphasis role="bold">Paginated Request:</emphasis>
+              <literal>GET /tasks?[assignee={userId}|candidate={userId}|candidate-group={groupId}]&amp;start={start=0}&amp;size={size=10}&amp;sort={sort=id}&amp;order={order=asc}</literal>
             </para>
           </listitem>
           <listitem>
@@ -363,7 +441,7 @@
           </listitem>
           <listitem>
             <para>
-              <emphasis role="bold">Response:</emphasis>
+              <emphasis role="bold">Paginated Response:</emphasis>
               <programlisting>
 {
   "data": [
@@ -381,7 +459,7 @@
   "start": 0,
   "sort": "id",
   "order": "asc",
-  "size": 10
+  "size": 1
 }</programlisting>
             </para>
           </listitem>
@@ -494,7 +572,8 @@
       <section>
         <title>Login</title>
         <para>
-          Authenticates a user.
+          Authenticates a user. If user and password doesn't match a response with status 403 is returned.
+          If authentication is succesful a response with status 200 is returned.
         </para>
         <itemizedlist>
           <listitem>
@@ -562,13 +641,14 @@
       <section>
         <title>List User's Groups</title>
         <para>
-          Returns details about a user's groups. To only get groups of a certain type use the "type" parameter.
+          Returns a paginated list groups belonging to a user that can be sort by "id", "name" or "type".
+          To only get groups of a certain type use the "type" parameter.
         </para>
         <itemizedlist>
           <listitem>
             <para>
-              <emphasis role="bold">Request:</emphasis>
-              <literal>GET /user/{userId}/groups[?type=groupType]</literal>
+              <emphasis role="bold">Paginated Request:</emphasis>
+              <literal>GET /user/{userId}/groups[?type=groupType]?start={start=0}&amp;size={size=10}&amp;sort={sort=id}&amp;order={order=asc}</literal>
             </para>
           </listitem>
           <listitem>
@@ -577,7 +657,7 @@
             </para>
           </listitem>
           <listitem>
-            <para><emphasis role="bold">Response:</emphasis>
+            <para><emphasis role="bold">Paginated Response:</emphasis>
               <programlisting>
 {
   data: [
@@ -586,7 +666,12 @@
       "name": "System administrator",
       "type": "security-role"
     }
-  ]
+  ],
+  "total": 1,
+  "start": 0,
+  "sort": "id",
+  "order": "asc",
+  "size": 1
 }</programlisting>
             </para>
           </listitem>
@@ -628,12 +713,12 @@
       <section>
         <title>List Groups's Users</title>
         <para>
-          Returns details about a group's users.
+          Returns details about a group's users that can be sorted by "id", "firstName", "lastName" or "email".
         </para>
         <itemizedlist>
           <listitem>
             <para>
-              <emphasis role="bold">Request:</emphasis>
+              <emphasis role="bold">Paginated Request:</emphasis>
               <literal>GET /groups/{groupId}/users</literal>
             </para>
           </listitem>
@@ -643,7 +728,7 @@
             </para>
           </listitem>
           <listitem>
-            <para><emphasis role="bold">Response:</emphasis>
+            <para><emphasis role="bold">Paginated Response:</emphasis>
               <programlisting>
 {
   data: [
@@ -653,7 +738,12 @@
       "lastName": "the Frog",
       "email": "kermit@server.com"
     }
-  ]
+  ],
+  "total": 1,
+  "start": 0,
+  "sort": "id",
+  "order": "asc",
+  "size": 1
 }</programlisting>
             </para>
           </listitem>
@@ -667,6 +757,107 @@
     <section>
 
       <title>Management</title>
+
+      <section>
+        <title>List Jobs</title>
+        <para>
+          Returns a paginated list of jobs that can be sorted by "id", "process-instance-id", "execution-id",
+          "due-date", "retries" or some custom arbitrary property id. The list can also be filtered by
+          process instance id, due date or if the jobs have retries, are executable or only have messages or timers.
+        </para>
+        <itemizedlist>
+          <listitem>
+            <para>
+              <emphasis role="bold">Paginated Request:</emphasis>
+              <literal>GET /management/jobs?process-instance={processInstanceId?}&amp;with-retries-left={withRetriesLeft=false}&amp;executable={axecutable=false}&amp;only-timers={onlyTimers=false}&amp;only-messages={onlyMessage=false}&amp;duedate-lt={iso8601Date}&amp;duedate-ltoe={iso8601Date}&amp;duedate-ht={iso8601Date}&amp;duedate-htoe={iso8601Date}&amp;start={start=0}&amp;size={size=10}&amp;sort={sort=id}&amp;order={order=asc}</literal>
+            </para>
+          </listitem>
+          <listitem>
+            <para>
+              <emphasis role="bold">API:</emphasis>
+              <literal>ProcessEngines.getProcessEngine(configuredProcessEngineName).createJobQuery().xxx().listPage()</literal>
+            </para>
+          </listitem>
+          <listitem>
+            <para>
+              <emphasis role="bold">Paginated Response:</emphasis>
+              <programlisting>
+{
+  "data": [
+    {
+      TODO: Fill with example values when jobs are activated
+    }
+  ],
+  "total": 1,
+  "start": 0,
+  "sort": "id",
+  "order": "asc",
+  "size": 1
+}</programlisting>
+            </para>
+          </listitem>
+        </itemizedlist>
+      </section>
+
+      <section>
+        <title>Get Job</title>
+        <para>
+          Returns details about a job.
+        </para>
+        <itemizedlist>
+          <listitem>
+            <para>
+              <emphasis role="bold">Request:</emphasis>
+              <literal>GET /management/job({jobId}</literal>
+            </para>
+          </listitem>
+          <listitem>
+            <para>
+              <emphasis role="bold">API:</emphasis>
+              <literal>ProcessEngines.getProcessEngine(configuredProcessEngineName).createJobQuery().id(jobId).singleResult()</literal>
+            </para>
+          </listitem>
+          <listitem>
+            <para>
+              <emphasis role="bold">Response:</emphasis>
+              <programlisting>
+{
+  TODO: Fill with example values when jobs are activated
+}</programlisting>
+            </para>
+          </listitem>
+        </itemizedlist>
+      </section>
+
+      <section>
+        <title>Execute Job</title>
+        <para>
+          Executes a job.
+        </para>
+        <itemizedlist>
+          <listitem>
+            <para>
+              <emphasis role="bold">Request:</emphasis>
+              <literal>PUT /management/job/{jobId}/execute</literal>
+            </para>
+          </listitem>
+          <listitem>
+            <para>
+              <emphasis role="bold">API:</emphasis>
+              <literal>ProcessEngines.getProcessEngine(configuredProcessEngineName).executeJob(jobId)</literal>
+            </para>
+          </listitem>
+          <listitem>
+            <para>
+              <emphasis role="bold">Response:</emphasis>
+              <programlisting>
+{
+  "success": true
+}</programlisting>
+            </para>
+          </listitem>
+        </itemizedlist>
+      </section>
 
       <section>
         <title>List Database Tables</title>
@@ -737,14 +928,13 @@
       <section>
         <title>Get Table Data</title>
         <para>
-          Returns data from a database table. Result will be paginated even if no pagination parameters are provided.
-          Default value for start is 0 and default value for size is 10.
+          Returns a paginated list of database table data.
         </para>
         <itemizedlist>
           <listitem>
             <para>
-              <emphasis role="bold">Request:</emphasis>
-              <literal>GET /management/table/{tableName}/data?start=0&amp;size=10</literal>
+              <emphasis role="bold">Paginated Request:</emphasis>
+              <literal>GET /management/table/{tableName}/data</literal>
             </para>
           </listitem>
           <listitem>
@@ -754,7 +944,7 @@
             </para>
           </listitem>
           <listitem>
-            <para><emphasis role="bold">Response:</emphasis>
+            <para><emphasis role="bold">Paginated Response:</emphasis>
               <programlisting>
 {
   "data": [

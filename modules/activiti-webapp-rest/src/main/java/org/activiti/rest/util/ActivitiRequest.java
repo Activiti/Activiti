@@ -383,12 +383,10 @@ public class ActivitiRequest {
    */
   private Boolean parseBoolean(String value, String param)
   {
-    try {
-      return Boolean.parseBoolean(value);
+    if (value.equalsIgnoreCase("true") || value.equalsIgnoreCase("false")) {
+      return Boolean.parseBoolean(value);      
     }
-    catch (NumberFormatException nfe) {
-      throw new WebScriptException(Status.STATUS_BAD_REQUEST, "Value for param '" + param + "' is not a valid bool value: '" + value + "'");
-    }
+    throw new WebScriptException(Status.STATUS_BAD_REQUEST, "Value for param '" + param + "' is not a valid bool value: '" + value + "'");
   }
 
   /**
