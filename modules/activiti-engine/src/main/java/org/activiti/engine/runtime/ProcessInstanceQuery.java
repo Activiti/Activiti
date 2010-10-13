@@ -67,7 +67,7 @@ public interface ProcessInstanceQuery extends Query<ProcessInstanceQuery, Proces
    * are not supported.
    * @param name name of the variable, cannot be null.
    */
-  ProcessInstanceQuery variableValue(String name, Object value);
+  ProcessInstanceQuery variableValueEquals(String name, Object value);
   
   /** 
    * Only select process instances which have a variable with the given name, but
@@ -76,7 +76,7 @@ public interface ProcessInstanceQuery extends Query<ProcessInstanceQuery, Proces
    * are not supported.
    * @param name name of the variable, cannot be null.
    */
-  ProcessInstanceQuery variableValueNot(String name, Object value);
+  ProcessInstanceQuery variableValueNotEquals(String name, Object value);
   
 
   /** 

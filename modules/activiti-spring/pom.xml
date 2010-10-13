@@ -36,6 +36,11 @@
       <scope>test</scope>
     </dependency>
     <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-orm</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
       <scope>provided</scope>
@@ -63,6 +68,16 @@
     <dependency>
       <groupId>org.subethamail</groupId>
       <artifactId>subethasmtp-wiser</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+	  <groupId>javax.persistence</groupId>
+	  <artifactId>persistence-api</artifactId>
+	  <scope>provided</scope>
+	</dependency>
+	<dependency>
+      <groupId>org.apache.openjpa</groupId>
+      <artifactId>openjpa</artifactId>
       <scope>test</scope>
     </dependency>
 	</dependencies>

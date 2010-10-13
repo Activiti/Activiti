@@ -72,6 +72,17 @@
 			<groupId>com.sun.xml.bind</groupId>
 			<artifactId>jaxb-xjc</artifactId>
 		</dependency>
+		
+		<dependency>
+		    <groupId>javax.persistence</groupId>
+		    <artifactId>persistence-api</artifactId>
+		    <scope>provided</scope>
+		</dependency>
+		<dependency>
+	      <groupId>org.apache.openjpa</groupId>
+	      <artifactId>openjpa</artifactId>
+	      <scope>test</scope>
+	    </dependency>
 
 		<!-- EMAIL -->
 		<dependency>
@@ -88,6 +99,7 @@
 			<groupId>xerces</groupId>
 			<artifactId>xercesImpl</artifactId>
 		</dependency>
+		
 
 </dependencies>
 

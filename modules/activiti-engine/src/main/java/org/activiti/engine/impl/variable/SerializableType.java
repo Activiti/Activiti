@@ -27,10 +27,12 @@ import org.activiti.engine.impl.runtime.VariableInstanceEntity;
  */
 public class SerializableType extends ByteArrayType {
 
+  public static final String TYPE_NAME = "serializable";
+  
   private static final long serialVersionUID = 1L;
   
   public String getTypeName() {
-    return "serializable";
+    return TYPE_NAME;
   }
 
   public Object getValue(VariableInstanceEntity variableInstanceEntity) {

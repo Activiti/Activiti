@@ -136,7 +136,8 @@ create table ACT_RU_VARIABLE (
     DATE_ TIMESTAMP(6),
     DOUBLE_ NUMBER(*,10),
     LONG_ NUMBER(19,0),
-    TEXT_ NVARCHAR2(255),
+    TEXT1_ NVARCHAR2(255),
+    TEXT2_ NVARCHAR2(255),
     primary key (ID_)
 );
 

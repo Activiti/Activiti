@@ -41,6 +41,7 @@ public class VariableInstanceEntity implements Serializable, PersistentObject {
   protected Long longValue;
   protected Double doubleValue; 
   protected String textValue;
+  protected String textValue2;
 
   protected ByteArrayEntity byteArrayValue;
   protected String byteArrayValueId;
@@ -224,5 +225,11 @@ public class VariableInstanceEntity implements Serializable, PersistentObject {
   }
   public void setCachedValue(Object cachedValue) {
     this.cachedValue = cachedValue;
+  }
+  public String getTextValue2() {
+    return textValue2;
+  }
+  public void setTextValue2(String textValue2) {
+    this.textValue2 = textValue2;
   }
 }

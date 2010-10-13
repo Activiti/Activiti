@@ -138,12 +138,20 @@
       <foreach item="var" collection="variables" index="index">
       	and A${index}.NAME_= #{var.name}
       	<if test="var.textValue != null &amp;&amp; var.longValue == null &amp;&amp; var.doubleValue == null">
-	      and A${index}.TEXT_
+	      and A${index}.TEXT1_
 	      <choose>
 	        <when test="var.operator.equals('LIKE')">LIKE</when>
 	        <otherwise><include refid="executionVariableOperator" /></otherwise>
 	      </choose>
 	        #{var.textValue}
+      	</if>
+      	<if test="var.textValue2 != null">
+	      and A${index}.TEXT2_
+	      <choose>
+	        <when test="var.operator.equals('LIKE')">LIKE</when>
+	        <otherwise><include refid="executionVariableOperator" /></otherwise>
+	      </choose>
+	        #{var.textValue2}
       	</if>
       	<if test="var.longValue != null">
 	      and A${index}.LONG_
@@ -159,10 +167,10 @@
       	<if test="var.textValue == null &amp;&amp; var.longValue == null &amp;&amp; var.doubleValue == null">
           <choose>
 	        <when test="var.operator.equals('NOT_EQUALS')">
-	          and (A${index}.TEXT_ is not null or A${index}.LONG_ is not null or A${index}.DOUBLE_ is not null or A${index}.BYTEARRAY_ID_ is not null)
+	          and (A${index}.TEXT1_ is not null or A${index}.TEXT2_ is not null or A${index}.LONG_ is not null or A${index}.DOUBLE_ is not null or A${index}.BYTEARRAY_ID_ is not null)
 	        </when>
 	        <otherwise>
-			  and A${index}.TEXT_ is null and A${index}.LONG_ is null and A${index}.DOUBLE_ is null and A${index}.BYTEARRAY_ID_ is null
+			  and A${index}.TEXT1_ is null and A${index}.TEXT2_ is null and A${index}.LONG_ is null and A${index}.DOUBLE_ is null and A${index}.BYTEARRAY_ID_ is null
 	        </otherwise>
 	      </choose>
       	</if>

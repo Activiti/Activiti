@@ -48,13 +48,13 @@ public abstract class ExecutionVariableQueryImpl<T extends Query<?,?>, U> extend
   
   
   @SuppressWarnings("unchecked")
-  public T variableValue(String name, Object value) {
+  public T variableValueEquals(String name, Object value) {
     addVariable(name, value, QueryOperator.EQUALS);
     return (T) this;
   }
   
   @SuppressWarnings("unchecked")
-  public T variableValueNot(String name, Object value) {
+  public T variableValueNotEquals(String name, Object value) {
     addVariable(name, value, QueryOperator.NOT_EQUALS);
     return (T) this;
   }

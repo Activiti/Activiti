@@ -18,6 +18,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.variable.Type;
 import org.activiti.engine.impl.variable.VariableTypes;
@@ -34,12 +35,20 @@ public class IbatisVariableTypeHandler implements TypeHandler {
 
   public Object getResult(ResultSet rs, String columnName) throws SQLException {
     String typeName = rs.getString(columnName);
-    return getVariableTypes().getVariableType(typeName);
+    Type type = getVariableTypes().getVariableType(typeName);
+    if (type == null) {
+      throw new ActivitiException("unknown variable type name " + typeName);
+    }
+    return type;
   }
 
   public Object getResult(CallableStatement cs, int columnIndex) throws SQLException {
     String typeName = cs.getString(columnIndex);
-    return getVariableTypes().getVariableType(typeName);
+    Type type = getVariableTypes().getVariableType(typeName);
+    if (type == null) {
+      throw new ActivitiException("unknown variable type name " + typeName);
+    }
+    return type;
   }
 
   public void setParameter(PreparedStatement ps, int i, Object parameter, JdbcType jdbcType) throws SQLException {

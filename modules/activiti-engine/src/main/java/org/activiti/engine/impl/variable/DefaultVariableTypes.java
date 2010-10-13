@@ -43,8 +43,12 @@ public class DefaultVariableTypes implements Serializable, VariableTypes {
   }
 
   public DefaultVariableTypes addType(Type type) {
-    typesList.add(type);
-    typesMap.put(type.getTypeName(), type);
+    return addType(type, typesList.size());
+  }
+  
+  public DefaultVariableTypes addType(Type type, int index) {
+    typesList.add(index, type);
+    typesMap.put(type.getTypeName(), type);      
     return this;
   }
 
@@ -58,11 +62,7 @@ public class DefaultVariableTypes implements Serializable, VariableTypes {
   }
 
   public Type getVariableType(String typeName) {
-    Type type = typesMap.get(typeName);
-    if (type == null) {
-      throw new ActivitiException("unknown variable type name " + typeName);
-    }
-    return type;
+    return typesMap.get(typeName);
   }
 
   public Type findVariableType(Object value) {
@@ -72,5 +72,24 @@ public class DefaultVariableTypes implements Serializable, VariableTypes {
       }
     }
     throw new ActivitiException("couldn't find type for " + value);
+  }
+
+  public int getTypeIndex(Type type) {
+    return typesList.indexOf(type);
+  }
+
+  public int getTypeIndex(String typeName) {
+    Type type = typesMap.get(typeName);
+    if(type != null) {
+      return getTypeIndex(type);
+    } else {
+      return -1;
+    }
+  }
+
+  public VariableTypes removeType(Type type) {
+    typesList.remove(type);
+    typesMap.remove(type.getTypeName());
+    return this;
   }
 }

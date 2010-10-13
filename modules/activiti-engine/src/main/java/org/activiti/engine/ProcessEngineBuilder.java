@@ -63,6 +63,9 @@ public class ProcessEngineBuilder {
   protected String dbSchemaStrategy = DbSchemaStrategy.CHECK_VERSION;
   protected boolean jobExecutorAutoActivate = true;
   protected boolean localTransactions = true;
+  protected Object jpaEntityManagerFactory;
+  protected boolean jpaHandleTransaction;
+  protected boolean jpaCloseEntityManager;
   
   protected String mailServerSmtpHost;
   protected String mailServerSmtpUserName;
@@ -254,6 +257,17 @@ public class ProcessEngineBuilder {
     this.jobExecutorAutoActivate = jobExecutorAutoActivate;
     return this;
   }
+  
+  public ProcessEngineBuilder enableJPA(Object entityManagerFactory, boolean handleTransaction, boolean closeEntityManager) {
+    jpaEntityManagerFactory = entityManagerFactory;
+    jpaHandleTransaction = handleTransaction;
+    jpaHandleTransaction = closeEntityManager;
+    return this;
+  }
+  
+  public ProcessEngineBuilder enableJPA(Object entityManagerFactory) {
+    return enableJPA(entityManagerFactory, true, true);
+  }
 
   public ProcessEngine buildProcessEngine() {
     if (databaseName == null) {
@@ -284,7 +298,11 @@ public class ProcessEngineBuilder {
     processEngineConfiguration.setMailServerSmtpUserName(mailServerSmtpUserName);
     processEngineConfiguration.setMailServerSmtpPassword(mailServerSmtpPassword);
     processEngineConfiguration.setMailServerDefaultFrom(mailServerDefaultFrom);
-      
+    
+    // JPA
+    if(jpaEntityManagerFactory != null) {
+      processEngineConfiguration.enableJPA(jpaEntityManagerFactory, jpaHandleTransaction, jpaCloseEntityManager); 
+    }      
     return processEngineConfiguration.buildProcessEngine();
   }
 }

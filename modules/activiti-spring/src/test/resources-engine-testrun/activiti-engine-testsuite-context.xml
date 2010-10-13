@@ -23,6 +23,15 @@
     <property name="dataSource" ref="dataSource" />
   </bean>
   
+  <bean id="entityManagerFactory" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
+	<property name="dataSource" ref="dataSource"/>
+	<property name="jpaVendorAdapter">
+		<bean class="org.springframework.orm.jpa.vendor.OpenJpaVendorAdapter">
+			<property name="databasePlatform" value="org.apache.openjpa.jdbc.sql.H2Dictionary" />
+		</bean>
+	</property>
+</bean>
+  
   <bean id="processEngine" class="org.activiti.spring.ProcessEngineFactoryBean">
     <property name="dataBaseName" value="h2" />
     <property name="dataSource" ref="dataSource" />
@@ -30,6 +39,9 @@
     <property name="dbSchemaStrategy" value="create-drop" />
     <property name="mailServerHost" value="localhost" />
     <property name="mailServerPort" value="5025" />
+    <property name="jpaEntityManagerFactory" ref="entityManagerFactory" />
+    <property name="jpaHandleTransaction" value="true" />
+    <property name="jpaCloseEntityManager" value="true" />
   </bean>
 
   

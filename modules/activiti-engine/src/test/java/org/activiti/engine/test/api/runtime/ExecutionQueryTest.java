@@ -189,19 +189,19 @@ public class ExecutionQueryTest extends ActivitiInternalTestCase {
     ProcessInstance processInstance3 = runtimeService.startProcessInstanceByKey("oneTaskProcess", vars);
     
     // Test EQUAL on single string variable, should result in 2 matches
-    ExecutionQuery query = runtimeService.createExecutionQuery().variableValue("stringVar", "abcdef");
+    ExecutionQuery query = runtimeService.createExecutionQuery().variableValueEquals("stringVar", "abcdef");
     List<Execution> executions = query.list();
     Assert.assertNotNull(executions);
     Assert.assertEquals(2, executions.size());
 
     // Test EQUAL on two string variables, should result in single match
-    query = runtimeService.createExecutionQuery().variableValue("stringVar", "abcdef").variableValue("stringVar2", "ghijkl");
+    query = runtimeService.createExecutionQuery().variableValueEquals("stringVar", "abcdef").variableValueEquals("stringVar2", "ghijkl");
     Execution execution = query.singleResult();
     Assert.assertNotNull(execution);
     Assert.assertEquals(processInstance2.getId(), execution.getId());
     
     // Test NOT_EQUAL, should return only 1 execution
-    execution = runtimeService.createExecutionQuery().variableValueNot("stringVar", "abcdef").singleResult();
+    execution = runtimeService.createExecutionQuery().variableValueNotEquals("stringVar", "abcdef").singleResult();
     Assert.assertNotNull(execution);
     Assert.assertEquals(processInstance3.getId(), execution.getId());
     
@@ -277,23 +277,23 @@ public class ExecutionQueryTest extends ActivitiInternalTestCase {
     ProcessInstance processInstance3 = runtimeService.startProcessInstanceByKey("oneTaskProcess", vars);
     
     // Query on single long variable, should result in 2 matches
-    ExecutionQuery query = runtimeService.createExecutionQuery().variableValue("longVar", 12345L);
+    ExecutionQuery query = runtimeService.createExecutionQuery().variableValueEquals("longVar", 12345L);
     List<Execution> executions = query.list();
     Assert.assertNotNull(executions);
     Assert.assertEquals(2, executions.size());
   
     // Query on two long variables, should result in single match
-    query = runtimeService.createExecutionQuery().variableValue("longVar", 12345L).variableValue("longVar2", 67890L);
+    query = runtimeService.createExecutionQuery().variableValueEquals("longVar", 12345L).variableValueEquals("longVar2", 67890L);
     Execution execution = query.singleResult();
     Assert.assertNotNull(execution);
     Assert.assertEquals(processInstance2.getId(), execution.getId());
     
     // Query with unexisting variable value
-    execution = runtimeService.createExecutionQuery().variableValue("longVar", 999L).singleResult();
+    execution = runtimeService.createExecutionQuery().variableValueEquals("longVar", 999L).singleResult();
     Assert.assertNull(execution);
     
     // Test NOT_EQUALS
-    execution = runtimeService.createExecutionQuery().variableValueNot("longVar", 12345L).singleResult();
+    execution = runtimeService.createExecutionQuery().variableValueNotEquals("longVar", 12345L).singleResult();
     Assert.assertNotNull(execution);
     Assert.assertEquals(processInstance3.getId(), execution.getId());
     
@@ -356,23 +356,23 @@ public class ExecutionQueryTest extends ActivitiInternalTestCase {
     ProcessInstance processInstance3 = runtimeService.startProcessInstanceByKey("oneTaskProcess", vars);
     
     // Query on single double variable, should result in 2 matches
-    ExecutionQuery query = runtimeService.createExecutionQuery().variableValue("doubleVar", 12345.6789);
+    ExecutionQuery query = runtimeService.createExecutionQuery().variableValueEquals("doubleVar", 12345.6789);
     List<Execution> executions = query.list();
     Assert.assertNotNull(executions);
     Assert.assertEquals(2, executions.size());
   
     // Query on two double variables, should result in single value
-    query = runtimeService.createExecutionQuery().variableValue("doubleVar", 12345.6789).variableValue("doubleVar2", 9876.54321);
+    query = runtimeService.createExecutionQuery().variableValueEquals("doubleVar", 12345.6789).variableValueEquals("doubleVar2", 9876.54321);
     Execution execution = query.singleResult();
     Assert.assertNotNull(execution);
     Assert.assertEquals(processInstance2.getId(), execution.getId());
     
     // Query with unexisting variable value
-    execution = runtimeService.createExecutionQuery().variableValue("doubleVar", 9999.99).singleResult();
+    execution = runtimeService.createExecutionQuery().variableValueEquals("doubleVar", 9999.99).singleResult();
     Assert.assertNull(execution);
     
     // Test NOT_EQUALS
-    execution = runtimeService.createExecutionQuery().variableValueNot("doubleVar", 12345.6789).singleResult();
+    execution = runtimeService.createExecutionQuery().variableValueNotEquals("doubleVar", 12345.6789).singleResult();
     Assert.assertNotNull(execution);
     Assert.assertEquals(processInstance3.getId(), execution.getId());
     
@@ -435,23 +435,23 @@ public class ExecutionQueryTest extends ActivitiInternalTestCase {
     ProcessInstance processInstance3 = runtimeService.startProcessInstanceByKey("oneTaskProcess", vars);
     
     // Query on single integer variable, should result in 2 matches
-    ExecutionQuery query = runtimeService.createExecutionQuery().variableValue("integerVar", 12345);
+    ExecutionQuery query = runtimeService.createExecutionQuery().variableValueEquals("integerVar", 12345);
     List<Execution> executions = query.list();
     Assert.assertNotNull(executions);
     Assert.assertEquals(2, executions.size());
   
     // Query on two integer variables, should result in single value
-    query = runtimeService.createExecutionQuery().variableValue("integerVar", 12345).variableValue("integerVar2", 67890);
+    query = runtimeService.createExecutionQuery().variableValueEquals("integerVar", 12345).variableValueEquals("integerVar2", 67890);
     Execution execution = query.singleResult();
     Assert.assertNotNull(execution);
     Assert.assertEquals(processInstance2.getId(), execution.getId());
     
     // Query with unexisting variable value
-    execution = runtimeService.createExecutionQuery().variableValue("integerVar", 9999).singleResult();
+    execution = runtimeService.createExecutionQuery().variableValueEquals("integerVar", 9999).singleResult();
     Assert.assertNull(execution);
     
     // Test NOT_EQUALS
-    execution = runtimeService.createExecutionQuery().variableValueNot("integerVar", 12345).singleResult();
+    execution = runtimeService.createExecutionQuery().variableValueNotEquals("integerVar", 12345).singleResult();
     Assert.assertNotNull(execution);
     Assert.assertEquals(processInstance3.getId(), execution.getId());
     
@@ -516,24 +516,24 @@ public class ExecutionQueryTest extends ActivitiInternalTestCase {
     ProcessInstance processInstance3 = runtimeService.startProcessInstanceByKey("oneTaskProcess", vars);
     
     // Query on single short variable, should result in 2 matches
-    ExecutionQuery query = runtimeService.createExecutionQuery().variableValue("shortVar", shortVar);
+    ExecutionQuery query = runtimeService.createExecutionQuery().variableValueEquals("shortVar", shortVar);
     List<Execution> executions = query.list();
     Assert.assertNotNull(executions);
     Assert.assertEquals(2, executions.size());
   
     // Query on two short variables, should result in single value
-    query = runtimeService.createExecutionQuery().variableValue("shortVar", shortVar).variableValue("shortVar2", shortVar2);
+    query = runtimeService.createExecutionQuery().variableValueEquals("shortVar", shortVar).variableValueEquals("shortVar2", shortVar2);
     Execution execution = query.singleResult();
     Assert.assertNotNull(execution);
     Assert.assertEquals(processInstance2.getId(), execution.getId());
     
     // Query with unexisting variable value
     short unexistingValue = 9999;
-    execution = runtimeService.createExecutionQuery().variableValue("shortVar", unexistingValue).singleResult();
+    execution = runtimeService.createExecutionQuery().variableValueEquals("shortVar", unexistingValue).singleResult();
     Assert.assertNull(execution);
     
     // Test NOT_EQUALS
-    execution = runtimeService.createExecutionQuery().variableValueNot("shortVar", (short)1234).singleResult();
+    execution = runtimeService.createExecutionQuery().variableValueNotEquals("shortVar", (short)1234).singleResult();
     Assert.assertNotNull(execution);
     Assert.assertEquals(processInstance3.getId(), execution.getId());
     
@@ -610,24 +610,24 @@ public class ExecutionQueryTest extends ActivitiInternalTestCase {
     oneYearAgo.add(Calendar.YEAR, -1);    
     
     // Query on single short variable, should result in 2 matches
-    ExecutionQuery query = runtimeService.createExecutionQuery().variableValue("dateVar", date1);
+    ExecutionQuery query = runtimeService.createExecutionQuery().variableValueEquals("dateVar", date1);
     List<Execution> executions = query.list();
     Assert.assertNotNull(executions);
     Assert.assertEquals(2, executions.size());
   
     // Query on two short variables, should result in single value
-    query = runtimeService.createExecutionQuery().variableValue("dateVar", date1).variableValue("dateVar2", date2);
+    query = runtimeService.createExecutionQuery().variableValueEquals("dateVar", date1).variableValueEquals("dateVar2", date2);
     Execution execution = query.singleResult();
     Assert.assertNotNull(execution);
     Assert.assertEquals(processInstance2.getId(), execution.getId());
     
     // Query with unexisting variable value
     Date unexistingDate = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss").parse("01/01/1989 12:00:00");
-    execution = runtimeService.createExecutionQuery().variableValue("dateVar", unexistingDate).singleResult();
+    execution = runtimeService.createExecutionQuery().variableValueEquals("dateVar", unexistingDate).singleResult();
     Assert.assertNull(execution);
     
     // Test NOT_EQUALS
-    execution = runtimeService.createExecutionQuery().variableValueNot("dateVar", date1).singleResult();
+    execution = runtimeService.createExecutionQuery().variableValueNotEquals("dateVar", date1).singleResult();
     Assert.assertNotNull(execution);
     Assert.assertEquals(processInstance3.getId(), execution.getId());
     
@@ -697,18 +697,18 @@ public class ExecutionQueryTest extends ActivitiInternalTestCase {
     ProcessInstance processInstance5 = runtimeService.startProcessInstanceByKey("oneTaskProcess", vars);
     
     // Query on null value, should return one value
-    ExecutionQuery query = runtimeService.createExecutionQuery().variableValue("nullVar", null);
+    ExecutionQuery query = runtimeService.createExecutionQuery().variableValueEquals("nullVar", null);
     List<Execution> executions = query.list();
     Assert.assertNotNull(executions);
     Assert.assertEquals(1, executions.size());
     Assert.assertEquals(processInstance1.getId(), executions.get(0).getId());
     
     // Test NOT_EQUALS null
-    Assert.assertEquals(1, runtimeService.createExecutionQuery().variableValueNot("nullVar", null).count());
-    Assert.assertEquals(1, runtimeService.createExecutionQuery().variableValueNot("nullVarLong", null).count());
-    Assert.assertEquals(1, runtimeService.createExecutionQuery().variableValueNot("nullVarDouble", null).count());
+    Assert.assertEquals(1, runtimeService.createExecutionQuery().variableValueNotEquals("nullVar", null).count());
+    Assert.assertEquals(1, runtimeService.createExecutionQuery().variableValueNotEquals("nullVarLong", null).count());
+    Assert.assertEquals(1, runtimeService.createExecutionQuery().variableValueNotEquals("nullVarDouble", null).count());
     // When a byte-array refrence is present, the variable is not considered null
-    Assert.assertEquals(1, runtimeService.createExecutionQuery().variableValueNot("nullVarByte", null).count());
+    Assert.assertEquals(1, runtimeService.createExecutionQuery().variableValueNotEquals("nullVarByte", null).count());
     
     // All other variable queries with null should throw exception
     try {
@@ -764,7 +764,7 @@ public class ExecutionQueryTest extends ActivitiInternalTestCase {
     
     try {
       runtimeService.createExecutionQuery()
-        .variableValue("bytesVar", "test".getBytes())
+        .variableValueEquals("bytesVar", "test".getBytes())
         .list();
       fail("Expected exception");
     } catch(ActivitiException ae) {
@@ -773,7 +773,7 @@ public class ExecutionQueryTest extends ActivitiInternalTestCase {
     
     try {
       runtimeService.createExecutionQuery()
-        .variableValue("serializableVar", new DummySerializable())
+        .variableValueEquals("serializableVar", new DummySerializable())
         .list();
       fail("Expected exception");
     } catch(ActivitiException ae) {
@@ -785,13 +785,13 @@ public class ExecutionQueryTest extends ActivitiInternalTestCase {
   
   public void testQueryVariablesNullNameArgument() {
     try {
-      runtimeService.createExecutionQuery().variableValue(null, "value");
+      runtimeService.createExecutionQuery().variableValueEquals(null, "value");
       fail("Expected exception");
     } catch(ActivitiException ae) {
       assertTextPresent("name is null", ae.getMessage());
     }   
     try {
-      runtimeService.createExecutionQuery().variableValueNot(null, "value");
+      runtimeService.createExecutionQuery().variableValueNotEquals(null, "value");
       fail("Expected exception");
     } catch(ActivitiException ae) {
       assertTextPresent("name is null", ae.getMessage());
@@ -842,12 +842,12 @@ public class ExecutionQueryTest extends ActivitiInternalTestCase {
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("oneTaskProcess", vars);
     
     ExecutionQuery query = runtimeService.createExecutionQuery()
-      .variableValue("nullVar", null)
-      .variableValue("stringVar", "string")
-      .variableValue("longVar", 10L)
-      .variableValue("doubleVar", 1.2)
-      .variableValue("integerVar", 1234)
-      .variableValue("shortVar", (short) 123);
+      .variableValueEquals("nullVar", null)
+      .variableValueEquals("stringVar", "string")
+      .variableValueEquals("longVar", 10L)
+      .variableValueEquals("doubleVar", 1.2)
+      .variableValueEquals("integerVar", 1234)
+      .variableValueEquals("shortVar", (short) 123);
     
     List<Execution> executions = query.list();
     Assert.assertNotNull(executions);

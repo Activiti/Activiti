@@ -55,8 +55,8 @@ import org.activiti.engine.impl.history.handler.HistoryTaskAssignmentHandler;
 import org.activiti.engine.impl.interceptor.CommandContextFactory;
 import org.activiti.engine.impl.interceptor.CommandContextInterceptor;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
-import org.activiti.engine.impl.interceptor.CommandInterceptor;
 import org.activiti.engine.impl.interceptor.CommandExecutorImpl;
+import org.activiti.engine.impl.interceptor.CommandInterceptor;
 import org.activiti.engine.impl.interceptor.LogInterceptor;
 import org.activiti.engine.impl.interceptor.SessionFactory;
 import org.activiti.engine.impl.jobexecutor.JobExecutor;
@@ -68,6 +68,11 @@ import org.activiti.engine.impl.repository.Deployer;
 import org.activiti.engine.impl.scripting.ScriptingEngines;
 import org.activiti.engine.impl.task.TaskListener;
 import org.activiti.engine.impl.variable.DefaultVariableTypes;
+import org.activiti.engine.impl.variable.EntityManagerSession;
+import org.activiti.engine.impl.variable.EntityManagerSessionFactory;
+import org.activiti.engine.impl.variable.JPAEntityVariableType;
+import org.activiti.engine.impl.variable.SerializableType;
+import org.activiti.engine.impl.variable.Type;
 import org.activiti.engine.impl.variable.VariableTypes;
 
 /**
@@ -630,5 +635,28 @@ public class ProcessEngineConfiguration {
   
   public CommandExecutor getCommandExecutorTxRequiresNew() {
     return commandExecutorTxRequiresNew;
+  }
+  
+  
+  public void enableJPA(Object entityManagerFactory, boolean handleTransaction, boolean closeEntityManager) {
+    if(entityManagerFactory ==  null) {
+      throw new ActivitiException("entityManagerFactory is null, JPA cannot be enabled");
+    }
+    if(!sessionFactories.containsKey(EntityManagerSession.class)) {
+      sessionFactories.put(EntityManagerSession.class, new EntityManagerSessionFactory(entityManagerFactory, true, true));
+      Type jpaType = variableTypes.getVariableType(JPAEntityVariableType.TYPE_NAME);
+      // Add JPA-type
+      if(jpaType == null) {
+        // We try adding the variable right before SerializableType, if available
+        int serializableIndex = variableTypes.getTypeIndex(SerializableType.TYPE_NAME);
+        if(serializableIndex > -1) {
+          variableTypes.addType(new JPAEntityVariableType(), serializableIndex);
+        } else {
+          variableTypes.addType(new JPAEntityVariableType());
+        }        
+      }
+    } else {
+      throw new ActivitiException("JPA is already enabled");
+    }
   }
 }

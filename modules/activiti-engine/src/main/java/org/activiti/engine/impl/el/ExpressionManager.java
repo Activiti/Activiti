@@ -51,7 +51,7 @@ public class ExpressionManager {
   public static final String UEL_METHOD = "uel-method";
   public static final String DEFAULT_EXPRESSION_LANGUAGE = UEL_VALUE;
   
-  private static final Pattern METHOD_PARAMS_PATTERN= Pattern.compile("\\w+(\\[|\\(.+\\)|\\])");
+  private static final Pattern METHOD_PARAMS_PATTERN= Pattern.compile("\\{(\\.|\\w)+((\\[|\\().+(\\)|\\])).*\\}");
 
   protected ExpressionFactory expressionFactory;
   // Default implementation (does nothing)

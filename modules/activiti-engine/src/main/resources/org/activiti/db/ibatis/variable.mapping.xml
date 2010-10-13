@@ -7,7 +7,7 @@
   <!-- VARIABLE INSTANCE INSERT -->
   
   <insert id="insertVariableInstance" parameterType="org.activiti.engine.impl.runtime.VariableInstanceEntity">
-    insert into ACT_RU_VARIABLE (ID_, REV_, TYPE_, NAME_, EXECUTION_ID_, TASK_ID_, BYTEARRAY_ID_, DOUBLE_, LONG_ , TEXT_)
+    insert into ACT_RU_VARIABLE (ID_, REV_, TYPE_, NAME_, EXECUTION_ID_, TASK_ID_, BYTEARRAY_ID_, DOUBLE_, LONG_ , TEXT1_, TEXT2_)
     values (
 	    #{id, jdbcType=VARCHAR},
 	    1,
@@ -18,7 +18,8 @@
 	    #{byteArrayValueId, jdbcType=VARCHAR},
 	    #{doubleValue, jdbcType=DOUBLE},
 	    #{longValue, jdbcType=BIGINT},
-	    #{textValue, jdbcType=VARCHAR}
+	    #{textValue, jdbcType=VARCHAR},
+	    #{textValue2, jdbcType=VARCHAR}
     )
   </insert>
   
@@ -31,7 +32,8 @@
 	    BYTEARRAY_ID_ = #{byteArrayValueId, jdbcType=VARCHAR},
 	    DOUBLE_ = #{doubleValue, jdbcType=DOUBLE},
 	    LONG_ = #{longValue, jdbcType=BIGINT},
-	    TEXT_ = #{textValue, jdbcType=VARCHAR}
+	    TEXT1_ = #{textValue, jdbcType=VARCHAR},
+	    TEXT2_ = #{textValue2, jdbcType=VARCHAR}
     where ID_ = #{id, jdbcType=VARCHAR}
       and REV_ = #{revision, jdbcType=INTEGER}
   </update>
@@ -55,7 +57,8 @@
 		<result property="isConcurrencyScope" column="IS_CONCURRENCY_SCOPE_" jdbcType="BOOLEAN" />
 		<result property="byteArrayValueId" column="BYTEARRAY_ID_" />
 		<result property="doubleValue" column="DOUBLE_" />
-		<result property="textValue" column="TEXT_" />
+		<result property="textValue" column="TEXT1_" />
+		<result property="textValue2" column="TEXT2_" />
 		<result property="longValue" column="LONG_" />
 	</resultMap>
 

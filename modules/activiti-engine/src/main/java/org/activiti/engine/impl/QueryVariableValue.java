@@ -16,6 +16,7 @@ package org.activiti.engine.impl;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.runtime.VariableInstanceEntity;
 import org.activiti.engine.impl.variable.ByteArrayType;
+import org.activiti.engine.impl.variable.JPAEntityVariableType;
 import org.activiti.engine.impl.variable.Type;
 import org.activiti.engine.impl.variable.VariableTypes;
 
@@ -43,9 +44,11 @@ public class QueryVariableValue {
       Type type = types.findVariableType(value);
       if(type instanceof ByteArrayType) {
         throw new ActivitiException("Variables of type ByteArray cannot be used to query");
+      } else if(type instanceof JPAEntityVariableType && operator != QueryOperator.EQUALS) {
+        throw new ActivitiException("JPA entity variables can only be used in 'variableValueEquals'");
       } else {
         // Type implementation determines which fields are set on the entity
-        variableInstanceEntity = VariableInstanceEntity.create(name, type, value);              
+        variableInstanceEntity = VariableInstanceEntity.create(name, type, value);
       }
     }
   }
@@ -81,5 +84,11 @@ public class QueryVariableValue {
     }
     return null;
   }
-    
+  
+  public String getTextValue2() {
+    if(variableInstanceEntity != null) {
+      return variableInstanceEntity.getTextValue2();
+    }
+    return null;
+  }
 }

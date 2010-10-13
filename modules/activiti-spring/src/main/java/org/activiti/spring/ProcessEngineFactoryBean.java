@@ -20,7 +20,6 @@ import java.util.zip.ZipInputStream;
 
 import javax.sql.DataSource;
 
-import org.activiti.engine.DbSchemaStrategy;
 import org.activiti.engine.HistoryService;
 import org.activiti.engine.IdentityService;
 import org.activiti.engine.ProcessEngine;
@@ -60,6 +59,11 @@ public class ProcessEngineFactoryBean implements FactoryBean<ProcessEngine>, Dis
   protected String deploymentName = "SpringAutoDeployment";
   protected Resource[] deploymentResources = new Resource[0];
   protected ProcessEngineImpl processEngine;
+  
+  protected Object jpaEntityManagerFactory;
+  protected boolean jpaHandleTransaction = true;
+  protected boolean jpaCloseEntityManager = true;
+  
 
   public void destroy() throws Exception {
     if (processEngine != null) {
@@ -74,6 +78,7 @@ public class ProcessEngineFactoryBean implements FactoryBean<ProcessEngine>, Dis
   public ProcessEngine getObject() throws Exception {
     initializeSpringTransactionInterceptor();
     initializeExpressionManager();
+    initializeJPA();
 
     processEngine = (ProcessEngineImpl) processEngineConfiguration.buildProcessEngine();
 
@@ -107,6 +112,12 @@ public class ProcessEngineFactoryBean implements FactoryBean<ProcessEngine>, Dis
 
   protected void initializeExpressionManager() {
     processEngineConfiguration.setExpressionManager(new SpringExpressionManager(applicationContext));
+  }
+  
+  private void initializeJPA() {
+    if(jpaEntityManagerFactory != null) {
+      processEngineConfiguration.enableJPA(jpaEntityManagerFactory, jpaHandleTransaction, jpaCloseEntityManager);
+    }
   }
   
   public Class< ? > getObjectType() {
@@ -226,5 +237,17 @@ public class ProcessEngineFactoryBean implements FactoryBean<ProcessEngine>, Dis
   
   public void setMailServerDefaultFromAddress(String defaultFromAddress) {
     processEngineConfiguration.setMailServerDefaultFrom(defaultFromAddress);
+  }
+  
+  public void setJpaEntityManagerFactory(Object jpaEntityManagerFactory) {
+    this.jpaEntityManagerFactory = jpaEntityManagerFactory;
+  }
+
+  public void setJpaHandleTransaction(boolean jpaHandleTransaction) {
+    this.jpaHandleTransaction = jpaHandleTransaction;
+  }
+  
+  public void setJpaCloseEntityManager(boolean jpaCloseEntityManager) {
+    this.jpaCloseEntityManager = jpaCloseEntityManager;
   }
 }

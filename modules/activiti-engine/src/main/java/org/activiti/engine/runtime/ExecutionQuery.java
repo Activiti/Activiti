@@ -49,7 +49,7 @@ public interface ExecutionQuery extends Query<ExecutionQuery, Execution>{
    * are not supported.
    * @param name name of the variable, cannot be null.
    */
-  ExecutionQuery variableValue(String name, Object value);
+  ExecutionQuery variableValueEquals(String name, Object value);
   
   /** 
    * Only select executions which have a variable with the given name, but
@@ -58,7 +58,7 @@ public interface ExecutionQuery extends Query<ExecutionQuery, Execution>{
    * are not supported.
    * @param name name of the variable, cannot be null.
    */
-  ExecutionQuery variableValueNot(String name, Object value);
+  ExecutionQuery variableValueNotEquals(String name, Object value);
   
 
   /** 
