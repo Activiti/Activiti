@@ -1145,17 +1145,21 @@ Activiti.event = function() {
      * @param event {string|event} The event name or the full event
      * @param value {object|string|int} The event value
      * @param originalEvent {object} (Optional) The event that was originally fired, that will if supplied, get stopped.
+     * @param bookmark {boolean} Will if true make the event being put in the browser's address bar (note that only
+     *        the event name and its top level value attributes will "survive" the process of being put in the address bar)
      */
     fire: function fire(event, value, originalEvent, bookmark) {
       if (this._initialized) {
         if (bookmark) {
 
           // Navigate with url history first which will make _onHistoryEvent get called so it can fire event
-          var state = YAHOO.lang.JSON.stringify({
-            event: event,
-            value: value
-          });
-          YAHOO.util.History.navigate("event", encodeURIComponent(state));
+          var state = encodeURIComponent(event);
+          for (var name in value) {
+            if (value.hasOwnProperty(name)) {
+              state += "|" + encodeURIComponent(name) + "|" + encodeURIComponent(value[name]);
+            }
+          }
+          YAHOO.util.History.navigate("event", state);
         }
         else {
           // Fire event directly
@@ -1229,9 +1233,26 @@ Activiti.event = function() {
      */
     _stateToEventDescriptor: function(state)
     {
-      var obj = decodeURIComponent(state);
-      obj = obj && obj.length > 0 ? YAHOO.lang.JSON.parse(obj) : {};
-      return [obj.event, obj.value];
+      var event, value, name;
+      if (state && state.length > 0) {
+        var tokens = state.split("|");
+        if (tokens.length > 0) {
+          event = decodeURIComponent(tokens[0]);
+          value = {};
+          for (var i = 1, il = tokens.length; i < il;) {
+            if (i < il) {
+              name = decodeURIComponent(tokens[i]);
+              value[name] = null;
+            }
+            i++;
+            if (i < il) {
+              value[name] = decodeURIComponent(tokens[i]);
+            }
+            i++;
+          }
+        }
+      }
+      return [event, value];
     },
 
     /**
