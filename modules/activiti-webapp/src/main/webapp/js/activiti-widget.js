@@ -61,7 +61,7 @@ Activiti.widget.PopupManager = function()
      * {
      *    text: {string},         // The message text to display, mandatory
      *    spanClass: {string},    // The class of the span wrapping the text
-     *    effect: {YAHOO.widget.ContainerEffect}, // the effect to use when shpwing and hiding the message,
+     *    effect: {YAHOO.widget.ContainerEffect}, // the effect to use when showing and hiding the message,
      *                                            // default is YAHOO.widget.ContainerEffect.FADE
      *    effectDuration: {int},  // time in seconds that the effect should be played, default is 0.5
      *    displayTime: {int},     // time in seconds that the message will be displayed, default 2.5
@@ -663,10 +663,11 @@ Activiti.widget.PopupManager = function()
           //rowsPerPage: meta.paginationRowsPerPage || 10,
           recordOffset: meta.paginationRecordOffset || 0
         };
-        oPayload.sortedBy = {
-          key: meta.sortKey,
-          dir: (meta.sortDir) ? "yui-dt-" + meta.sortDir : "yui-dt-asc"
-        };
+        oPayload.sortedBy = {};
+        if (me._dataTable.getColumn(meta.sortKey)) {
+          oPayload.sortedBy.key = meta.sortKey;
+          oPayload.sortedBy.dir = (meta.sortDir) ? "yui-dt-" + meta.sortDir : "yui-dt-asc"
+        }
         return true;
       };
 
@@ -744,7 +745,6 @@ Activiti.widget.PopupManager = function()
 (function()
 {
 
-  /**
   /**
    * The Activiti datatable constructor
    *
