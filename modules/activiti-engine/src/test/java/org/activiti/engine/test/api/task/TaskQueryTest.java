@@ -58,8 +58,9 @@ public class TaskQueryTest extends ActivitiInternalTestCase {
     assertEquals(12, query.list().size());
     try {
       query.singleResult();
-      fail();
+      fail("expected exception");
     } catch (ActivitiException e) {
+      // OK
     }
   }
 
@@ -78,8 +79,10 @@ public class TaskQueryTest extends ActivitiInternalTestCase {
     
     try {
       taskService.createTaskQuery().taskId(null);
-      fail();
-    } catch (ActivitiException e) { }
+      fail("expected exception");
+    } catch (ActivitiException e) {
+      // OK
+    }
   }
   
   public void testQueryByName() {
@@ -89,8 +92,10 @@ public class TaskQueryTest extends ActivitiInternalTestCase {
     
     try {
       query.singleResult();
-      fail();
-    } catch(ActivitiException e) {}
+      fail("expected exception");
+    } catch (ActivitiException e) {
+      // OK
+    }
   }
   
   public void testQueryByInvalidName() {
@@ -101,8 +106,10 @@ public class TaskQueryTest extends ActivitiInternalTestCase {
     
     try {
       taskService.createTaskQuery().name(null).singleResult();
-      fail();
-    } catch (ActivitiException e) { }
+      fail("expected exception");
+    } catch (ActivitiException e) {
+      // OK
+    }
   }
   
   public void testQueryByNameLike() {
@@ -188,9 +195,11 @@ public class TaskQueryTest extends ActivitiInternalTestCase {
   
   public void testQueryByInvalidPriority() {
     try {
-      TaskQuery query = taskService.createTaskQuery().priority(null);
-      fail();
-    } catch (ActivitiException e) {}
+      taskService.createTaskQuery().priority(null);
+      fail("expected exception");
+    } catch (ActivitiException e) {
+      // OK
+    }
   }
   
   public void testQueryByAssignee() {
@@ -208,8 +217,10 @@ public class TaskQueryTest extends ActivitiInternalTestCase {
   public void testQueryByNullAssignee() {
     try {
       taskService.createTaskQuery().assignee(null).list();
-      fail();
-    } catch(ActivitiException e) {}
+      fail("expected exception");
+    } catch (ActivitiException e) {
+      // OK
+    }
   }
 
   public void testQueryByUnassigned() {
@@ -224,8 +235,9 @@ public class TaskQueryTest extends ActivitiInternalTestCase {
     assertEquals(11, query.list().size());
     try {
       query.singleResult();
-      fail();
+      fail("expected exception");
     } catch (ActivitiException e) {
+      // OK
     }
 
     query = taskService.createTaskQuery().candidateUser("fozzie");
@@ -233,8 +245,9 @@ public class TaskQueryTest extends ActivitiInternalTestCase {
     assertEquals(3, query.list().size());
     try {
       query.singleResult();
-      fail();
+      fail("expected exception");
     } catch (ActivitiException e) {
+      // OK
     }
   }
   
@@ -251,8 +264,9 @@ public class TaskQueryTest extends ActivitiInternalTestCase {
     assertEquals(3, query.list().size());
     try {
       query.singleResult();
-      fail();
+      fail("expected exception");
     } catch (ActivitiException e) {
+      // OK
     }
 
     query = taskService.createTaskQuery().candidateGroup("sales");
@@ -263,8 +277,10 @@ public class TaskQueryTest extends ActivitiInternalTestCase {
   public void testQueryByNullCandidateGroup() {
     try {
       taskService.createTaskQuery().candidateGroup(null).list();
-      fail();
-    } catch(ActivitiException e) {}
+      fail("expected exception");
+    } catch (ActivitiException e) {
+      // OK
+    }
   }
   
   public void testQueryPaging() {

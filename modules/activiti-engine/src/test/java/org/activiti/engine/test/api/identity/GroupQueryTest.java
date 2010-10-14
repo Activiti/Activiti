@@ -13,7 +13,6 @@
 
 package org.activiti.engine.test.api.identity;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.activiti.engine.ActivitiException;

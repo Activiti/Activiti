@@ -31,7 +31,6 @@ public abstract class ScopeImpl extends ProcessElementImpl implements PvmScope {
 
   private static final long serialVersionUID = 1L;
   
-  protected String name;
   protected List<ActivityImpl> activities = new ArrayList<ActivityImpl>();
   protected Map<String, ActivityImpl> namedActivities = new HashMap<String, ActivityImpl>();
   protected Map<String, List<EventListener>> eventListeners = new HashMap<String, List<EventListener>>();
@@ -111,13 +110,5 @@ public abstract class ScopeImpl extends ProcessElementImpl implements PvmScope {
   
   public List<ActivityImpl> getActivities() {
     return activities;
-  }
-
-  public String getName() {
-    return name;
-  }
-
-  public void setName(String name) {
-    this.name = name;
   }
 }

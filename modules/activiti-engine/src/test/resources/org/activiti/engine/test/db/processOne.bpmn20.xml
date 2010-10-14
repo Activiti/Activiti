@@ -5,11 +5,16 @@
   xmlns:activiti="http://activiti.org/bpmn-extensions"
   targetNamespace="http://www.activiti.org/bpmn2.0">
 
-  <process id="processOne">
+  <process id="processOne" name="Process One">
+    <documentation>the first process</documentation>
+    
+    <startEvent id="start" name="S t a r t">
+      <documentation>the start event</documentation>
+    </startEvent>
 
-    <startEvent id="start" />
-
-    <sequenceFlow id="flow1" sourceRef="start" targetRef="end" />
+    <sequenceFlow id="flow1" name="Flow One" sourceRef="start" targetRef="end">
+      <documentation>The only transitions in the process</documentation>
+    </sequenceFlow>
 
     <endEvent id="end" />
 

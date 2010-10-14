@@ -55,10 +55,14 @@ public class ProcessDefinitionPersistenceTest extends ActivitiInternalTestCase {
     ReadOnlyProcessDefinition processDefinition = repositoryService.getDeployedProcessDefinition("processOne:1");
     
     assertEquals("processOne:1", processDefinition.getId());
+    assertEquals("Process One", processDefinition.getProperty("name"));
+    assertEquals("the first process", processDefinition.getProperty("documentation"));
     
     PvmActivity start = processDefinition.findActivity("start");
     assertNotNull(start);
     assertEquals("start", start.getId());
+    assertEquals("S t a r t", start.getProperty("name"));
+    assertEquals("the start event", start.getProperty("documentation"));
     assertEquals(Collections.EMPTY_LIST, start.getActivities());
     List<PvmTransition> outgoingTransitions = start.getOutgoingTransitions();
     assertEquals(1, outgoingTransitions.size());
@@ -69,6 +73,8 @@ public class ProcessDefinitionPersistenceTest extends ActivitiInternalTestCase {
     
     PvmTransition transition = outgoingTransitions.get(0);
     assertEquals("flow1", transition.getId());
+    assertEquals("Flow One", transition.getProperty("name"));
+    assertEquals("The only transitions in the process", transition.getProperty("documentation"));
     assertSame(start, transition.getSource());
     assertSame(end, transition.getDestination());
     

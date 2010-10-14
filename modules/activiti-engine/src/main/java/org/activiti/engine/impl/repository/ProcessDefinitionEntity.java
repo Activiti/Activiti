@@ -78,6 +78,13 @@ public class ProcessDefinitionEntity extends ProcessDefinitionImpl implements Pr
     return "ProcessDefinitionEntity["+id+"]";
   }
 
+  public String getName() {
+    return (String) getProperty("name");
+  }
+  
+  public void setName(String name) {
+    setProperty("name", name);
+  }
 
   // getters and setters //////////////////////////////////////////////////////
   

@@ -363,7 +363,8 @@ public class BpmnParse extends Parse {
      * processDefinition.name -> bpmn name (optional)
      */
     processDefinition.setKey(processElement.attribute("id"));
-    processDefinition.setName(processElement.attribute("name"));
+    processDefinition.setProperty("name", processElement.attribute("name"));
+    processDefinition.setProperty("documentation", parseDocumentation(processElement));
 
     if (LOG.isLoggable(Level.FINE)) {
       LOG.fine("Parsing process " + processDefinition.getKey());
@@ -419,9 +420,11 @@ public class BpmnParse extends Parse {
 
       String id = startEventElement.attribute("id");
       String name = startEventElement.attribute("name");
+      String documentation = parseDocumentation(startEventElement);
 
       ActivityImpl startEventActivity = scope.createActivity(id);
       startEventActivity.setProperty("name", name);
+      startEventActivity.setProperty("documentation", documentation);
       
       if (scope instanceof ProcessDefinitionEntity) {
         ProcessDefinitionEntity processDefinition = (ProcessDefinitionEntity) scope;
@@ -512,14 +515,15 @@ public class BpmnParse extends Parse {
    * creates a new {@link ActivityImpl} on the given scope element.
    */
   public ActivityImpl parseAndCreateActivityOnScopeElement(Element activityElement, ScopeImpl scopeElement) {
-
     String id = activityElement.attribute("id");
     String name = activityElement.attribute("name");
+    String documentation = parseDocumentation(activityElement);
     if (LOG.isLoggable(Level.FINE)) {
       LOG.fine("Parsing activity " + id);
     }
     ActivityImpl activity = scopeElement.createActivity(id);
-    activity.setName(name);
+    activity.setProperty("name", name);
+    activity.setProperty("documentation", documentation);
     activity.setProperty("type", activityElement.getTagName());
     activity.setProperty("line", activityElement.getLine());
     return activity;
@@ -913,9 +917,11 @@ public class BpmnParse extends Parse {
     for (Element endEventElement : parentElement.elements("endEvent")) {
       String id = endEventElement.attribute("id");
       String name = endEventElement.attribute("name");
+      String documentation = parseDocumentation(endEventElement);
 
       ActivityImpl activity = scope.createActivity(id);
       activity.setProperty("name", name);
+      activity.setProperty("documentation", documentation);
 
       // Only none end events are currently supported
       activity.setActivityBehavior(new NoneEndEventActivity());
@@ -965,6 +971,7 @@ public class BpmnParse extends Parse {
       }
       ActivityImpl nestedActivity = parentActivity.createActivity(id);
       nestedActivity.setProperty("name", boundaryEventElement.attribute("name"));
+      nestedActivity.setProperty("documentation", parseDocumentation(boundaryEventElement));
 
       String cancelActivity = boundaryEventElement.attribute("cancelActivity", "true");
       boolean interrupting = cancelActivity.equals("true") ? true : false;
@@ -1224,6 +1231,7 @@ public class BpmnParse extends Parse {
 
       TransitionImpl transition = sourceActivity.createOutgoingTransition(id);
       transition.setProperty("name", sequenceFlowElement.attribute("name"));
+      transition.setProperty("documentation", parseDocumentation(sequenceFlowElement));
       transition.setDestination(destinationActivity);
       parseSequenceFlowConditionExpression(sequenceFlowElement, transition);
 
