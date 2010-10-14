@@ -13,7 +13,6 @@
 
 package org.activiti.engine.test.db;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 

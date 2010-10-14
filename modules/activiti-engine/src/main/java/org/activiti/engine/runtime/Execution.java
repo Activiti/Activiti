@@ -32,5 +32,8 @@ public interface Execution {
    * Indicates if the execution is ended.
    */
   boolean isEnded();
-
+  
+  /** Id of the root of the execution tree representing the process instance.
+   * It is the same as {@link #getId()} if this execution is the process instance. */ 
+  String getProcessInstanceId();
 }
