@@ -3,7 +3,8 @@ package org.activiti.cycle.impl.connector.signavio;
 import java.util.List;
 
 import org.activiti.cycle.ArtifactType;
-import org.activiti.cycle.ContentType;
+import org.activiti.cycle.RenderInfo;
+import org.activiti.cycle.StandardMimeType;
 import org.activiti.cycle.impl.ArtifactTypeImpl;
 import org.activiti.cycle.impl.ContentRepresentationImpl;
 import org.activiti.cycle.impl.conf.RepositoryConnectorConfiguration;
@@ -59,12 +60,12 @@ public class SignavioPluginDefinition implements ActivitiCyclePluginDefinition {
     // SignavioConnector.SIGNAVIO_NAMESPACE_FOR_BPMN_JBPM4));
 
    
-    ArtifactTypeImpl artifactType1 = new ArtifactTypeImpl(ARTIFACT_TYPE_BPMN_20, ContentType.XML);
-    artifactType1.addDefaultContentRepresentation(new ContentRepresentationImpl(CONTENT_REPRESENTATION_ID_PNG, ContentType.PNG), new PngProvider());
-    artifactType1.addContentRepresentation(new ContentRepresentationImpl(CONTENT_REPRESENTATION_ID_BPMN_20_DEVELOPER, ContentType.XML),
+    ArtifactTypeImpl artifactType1 = new ArtifactTypeImpl(ARTIFACT_TYPE_BPMN_20, StandardMimeType.XML);
+    artifactType1.addDefaultContentRepresentation(new ContentRepresentationImpl(CONTENT_REPRESENTATION_ID_PNG, StandardMimeType.PNG, RenderInfo.IMAGE), new PngProvider());
+    artifactType1.addContentRepresentation(new ContentRepresentationImpl(CONTENT_REPRESENTATION_ID_BPMN_20_DEVELOPER, StandardMimeType.XML, RenderInfo.CODE),
             new ActivitiCompliantBpmn20Provider());
-    artifactType1.addContentRepresentation(new ContentRepresentationImpl(CONTENT_REPRESENTATION_ID_BPMN_20_RAW, ContentType.XML), new Bpmn20Provider());
-    artifactType1.addContentRepresentation(new ContentRepresentationImpl(CONTENT_REPRESENTATION_ID_JSON, ContentType.XML), new JsonProvider());
+    artifactType1.addContentRepresentation(new ContentRepresentationImpl(CONTENT_REPRESENTATION_ID_BPMN_20_RAW, StandardMimeType.XML, RenderInfo.CODE), new Bpmn20Provider());
+    artifactType1.addContentRepresentation(new ContentRepresentationImpl(CONTENT_REPRESENTATION_ID_JSON, StandardMimeType.XML, RenderInfo.CODE), new JsonProvider());
     
     artifactType1.addParameterizedAction(new CreateTechnicalBpmnXmlAction());
     artifactType1.addParameterizedAction(new ValidateActivitiDeployment());
@@ -75,10 +76,10 @@ public class SignavioPluginDefinition implements ActivitiCyclePluginDefinition {
     types.add(artifactType1);
    
    
-    ArtifactTypeImpl artifactType2 = new ArtifactTypeImpl(ARTIFACT_TYPE_BPMN_FOR_JPDL4, ContentType.XML);
-    artifactType2.addDefaultContentRepresentation(new ContentRepresentationImpl(CONTENT_REPRESENTATION_ID_PNG, ContentType.PNG), new PngProvider());
-    artifactType2.addContentRepresentation(new ContentRepresentationImpl(CONTENT_REPRESENTATION_ID_JPDL4, ContentType.XML), new Jpdl4Provider());
-    artifactType2.addContentRepresentation(new ContentRepresentationImpl(CONTENT_REPRESENTATION_ID_JSON, ContentType.XML), new JsonProvider());
+    ArtifactTypeImpl artifactType2 = new ArtifactTypeImpl(ARTIFACT_TYPE_BPMN_FOR_JPDL4, StandardMimeType.XML);
+    artifactType2.addDefaultContentRepresentation(new ContentRepresentationImpl(CONTENT_REPRESENTATION_ID_PNG, StandardMimeType.PNG, RenderInfo.IMAGE), new PngProvider());
+    artifactType2.addContentRepresentation(new ContentRepresentationImpl(CONTENT_REPRESENTATION_ID_JPDL4, StandardMimeType.XML, RenderInfo.CODE), new Jpdl4Provider());
+    artifactType2.addContentRepresentation(new ContentRepresentationImpl(CONTENT_REPRESENTATION_ID_JSON, StandardMimeType.XML, RenderInfo.CODE), new JsonProvider());
 
     artifactType2.addOpenUrlAction(new OpenModelerAction());
     artifactType2.addDownloadContentAction(CONTENT_REPRESENTATION_ID_JPDL4);
@@ -89,8 +90,8 @@ public class SignavioPluginDefinition implements ActivitiCyclePluginDefinition {
     // initialize RepositoryRegistry with supported formats?
 
     // TODO: Check if really any artifact in Signavio has a PNG?
-    ArtifactTypeImpl artifactTypeDefault = new ArtifactTypeImpl(ARTIFACT_TYPE_DEFAULT, ContentType.XML);
-    artifactTypeDefault.addDefaultContentRepresentation(new ContentRepresentationImpl(CONTENT_REPRESENTATION_ID_PNG, ContentType.PNG), new PngProvider());
+    ArtifactTypeImpl artifactTypeDefault = new ArtifactTypeImpl(ARTIFACT_TYPE_DEFAULT, StandardMimeType.XML);
+    artifactTypeDefault.addDefaultContentRepresentation(new ContentRepresentationImpl(CONTENT_REPRESENTATION_ID_PNG, StandardMimeType.PNG, RenderInfo.IMAGE), new PngProvider());
     types.add(artifactTypeDefault);
   }
 

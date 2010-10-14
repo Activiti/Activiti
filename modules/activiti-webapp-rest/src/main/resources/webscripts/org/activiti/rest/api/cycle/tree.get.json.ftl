@@ -18,6 +18,6 @@
   "id": "${file.id}",
   "expanded": "true",
   "file": "true",
-  "contentType": "${file.artifactType.contentType.getName()}"
+  "contentType": "${file.artifactType.mimeType.contentType}"
 }
 </#macro>

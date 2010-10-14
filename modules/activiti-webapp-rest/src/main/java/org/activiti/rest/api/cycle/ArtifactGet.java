@@ -67,9 +67,9 @@ public class ArtifactGet extends ActivitiWebScript {
     List<DownloadActionView> downloads = new ArrayList<DownloadActionView>();
     for (DownloadContentAction action : artifact.getArtifactType().getDownloadContentActions()) {
       try {
-        String url = wsReq.getServerPath() + wsReq.getContextPath() + "/service/content?artifactId=" + URLEncoder.encode(artifactId, "UTF-8") + "&content-type="
-                + URLEncoder.encode(action.getContentRepresentation().getContentType().getName(), "UTF-8");
-        downloads.add(new DownloadActionView(action.getId(), url, action.getContentRepresentation().getContentType().name(), action.getContentRepresentation().getId()));
+        String url = wsReq.getServerPath() + wsReq.getContextPath() + "/service/content?artifactId=" + URLEncoder.encode(artifactId, "UTF-8") + "&contentRepresentationId="
+                + URLEncoder.encode(action.getContentRepresentation().getId(), "UTF-8");
+        downloads.add(new DownloadActionView(action.getId(), url, action.getContentRepresentation().getMimeType().getContentType(), action.getContentRepresentation().getId()));
       } catch (UnsupportedEncodingException e) {
         // should never be reached as long as we use UTF-8, which is valid in
         // java on all platforms

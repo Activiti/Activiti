@@ -8,7 +8,7 @@
                 "linkType": "linkType",
                 "targetUrl": "http:\/\/www.showhttprequest.com\/?targetUrl=true&artifact=0",
                 "description": "This is a description for Artifact Link No 0",
-                "contentType": "word",
+                "contentType": "application/msword",
                 "previewUrl": "http:\/\/www.showhttprequest.com\/?previewUrl=ture&artifact=0",
                 "label": "Artifact Link No 0"
             },
@@ -19,7 +19,7 @@
                 "linkType": "linkType",
                 "targetUrl": "http:\/\/www.showhttprequest.com\/?targetUrl=true&artifact=1",
                 "description": "This is a description for Artifact Link No 1",
-                "contentType": "word",
+                "contentType": "application/msword",
                 "previewUrl": "http:\/\/www.showhttprequest.com\/?previewUrl=ture&artifact=1",
                 "label": "Artifact Link No 1"
             }

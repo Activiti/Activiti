@@ -29,14 +29,14 @@ public interface ArtifactType {
 
   public String getId();
   
-  public ContentType getContentType();
+  public MimeType getMimeType();
 
   /**
    * list of {@link ContentRepresentation} in the configured order
    */
   public List<ContentRepresentation> getContentRepresentations();
 
-  // public ContentRepresentation getContentRepresentation(String id);
+  public ContentRepresentation getContentRepresentation(String id);
 
   public ContentRepresentation getDefaultContentRepresentation();  
 

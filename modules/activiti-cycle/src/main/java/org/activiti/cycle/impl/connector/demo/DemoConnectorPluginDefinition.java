@@ -3,7 +3,8 @@ package org.activiti.cycle.impl.connector.demo;
 import java.util.List;
 
 import org.activiti.cycle.ArtifactType;
-import org.activiti.cycle.ContentType;
+import org.activiti.cycle.RenderInfo;
+import org.activiti.cycle.StandardMimeType;
 import org.activiti.cycle.impl.ArtifactTypeImpl;
 import org.activiti.cycle.impl.ContentRepresentationImpl;
 import org.activiti.cycle.impl.conf.RepositoryConnectorConfiguration;
@@ -27,28 +28,28 @@ public class DemoConnectorPluginDefinition implements ActivitiCyclePluginDefinit
   public static final String CONTENT_REPRESENTATION_ID_XML = "XML";
 
   public void addArtifactTypes(List<ArtifactType> types) {
-    ArtifactTypeImpl artifactType1 = new ArtifactTypeImpl(ARTIFACT_TYPE_TEXT, ContentType.TEXT);
-    artifactType1.addDefaultContentRepresentation(new ContentRepresentationImpl(CONTENT_REPRESENTATION_ID_TEXT, ContentType.TEXT), new DemoProvider(
+    ArtifactTypeImpl artifactType1 = new ArtifactTypeImpl(ARTIFACT_TYPE_TEXT, StandardMimeType.TEXT);
+    artifactType1.addDefaultContentRepresentation(new ContentRepresentationImpl(CONTENT_REPRESENTATION_ID_TEXT, StandardMimeType.TEXT, RenderInfo.TEXT_PLAIN), new DemoProvider(
             CONTENT_REPRESENTATION_ID_TEXT));
-    artifactType1.addContentRepresentation(new ContentRepresentationImpl(CONTENT_REPRESENTATION_ID_EXCEPTION, ContentType.TEXT), new ExceptionProvider());
+    artifactType1.addContentRepresentation(new ContentRepresentationImpl(CONTENT_REPRESENTATION_ID_EXCEPTION, StandardMimeType.TEXT, RenderInfo.TEXT_PLAIN), new ExceptionProvider());
     artifactType1.addParameterizedAction(new CopyArtifactAction());
     artifactType1.addOpenUrlAction(new OpenActivitiAction());
     artifactType1.addDownloadContentAction(CONTENT_REPRESENTATION_ID_TEXT);
     types.add(artifactType1);
 
-    ArtifactTypeImpl artifactType2 = new ArtifactTypeImpl(ARTIFACT_TYPE_MINDMAP, ContentType.XML);
-    artifactType2.addDefaultContentRepresentation(new ContentRepresentationImpl(CONTENT_REPRESENTATION_ID_TEXT, ContentType.TEXT), new DemoProvider(
+    ArtifactTypeImpl artifactType2 = new ArtifactTypeImpl(ARTIFACT_TYPE_MINDMAP, StandardMimeType.XML);
+    artifactType2.addDefaultContentRepresentation(new ContentRepresentationImpl(CONTENT_REPRESENTATION_ID_TEXT, StandardMimeType.XML, RenderInfo.CODE), new DemoProvider(
             CONTENT_REPRESENTATION_ID_TEXT));
-    artifactType2.addContentRepresentation(new ContentRepresentationImpl(CONTENT_REPRESENTATION_ID_PNG, ContentType.PNG), new DemoProvider(
+    artifactType2.addContentRepresentation(new ContentRepresentationImpl(CONTENT_REPRESENTATION_ID_PNG, StandardMimeType.PNG, RenderInfo.IMAGE), new DemoProvider(
             CONTENT_REPRESENTATION_ID_PNG));
     types.add(artifactType2);
 
-    ArtifactTypeImpl artifactType3 = new ArtifactTypeImpl(ARTIFACT_TYPE_BPMN_20, ContentType.XML);
-    artifactType3.addDefaultContentRepresentation(new ContentRepresentationImpl(CONTENT_REPRESENTATION_ID_XML, ContentType.TEXT), new DemoProvider(
+    ArtifactTypeImpl artifactType3 = new ArtifactTypeImpl(ARTIFACT_TYPE_BPMN_20, StandardMimeType.XML);
+    artifactType3.addDefaultContentRepresentation(new ContentRepresentationImpl(CONTENT_REPRESENTATION_ID_XML, StandardMimeType.XML, RenderInfo.TEXT_PLAIN), new DemoProvider(
             CONTENT_REPRESENTATION_ID_XML));
     artifactType3.addParameterizedAction(new CopyArtifactAction());
     artifactType3.addOpenUrlAction(new OpenActivitiAction());
-    artifactType3.addContentRepresentation(new ContentRepresentationImpl(CONTENT_REPRESENTATION_ID_PNG, ContentType.PNG), new DemoProvider(
+    artifactType3.addContentRepresentation(new ContentRepresentationImpl(CONTENT_REPRESENTATION_ID_PNG, StandardMimeType.PNG, RenderInfo.IMAGE), new DemoProvider(
             CONTENT_REPRESENTATION_ID_PNG));
     types.add(artifactType3);
   }

@@ -75,7 +75,7 @@
 				}
 				// Check whether the selected node is a file node. If so, 
 				// we can load its data
-				if(args[1].value.isRepositoryArtifact) {
+				if(args[1].value.isRepositoryArtifact && (args[1].value.isRepositoryArtifact != "undefined") ) {
 					this.services.repositoryService.loadArtifact(args[1].value.repositoryNodeId);
 				}
 				// Update the heading that displays the name of the selected node

@@ -16,7 +16,6 @@ import org.activiti.rest.util.ActivitiRequest;
 import org.activiti.rest.util.ActivitiWebScript;
 import org.springframework.extensions.webscripts.Cache;
 import org.springframework.extensions.webscripts.Status;
-import org.springframework.extensions.webscripts.WebScriptRequest;
 
 public class ContentRepresentationGet extends ActivitiWebScript {
 
@@ -26,7 +25,6 @@ public class ContentRepresentationGet extends ActivitiWebScript {
   protected void executeWebScript(ActivitiRequest req, Status status, Cache cache, Map<String, Object> model) {
     String cuid = req.getCurrentUserId();
 
-    WebScriptRequest wsReq = req.getWebScriptRequest();
     HttpSession session = req.getHttpServletRequest().getSession(true);
     RepositoryConnector conn = SessionUtil.getRepositoryConnector(cuid, session);
 
@@ -38,20 +36,22 @@ public class ContentRepresentationGet extends ActivitiWebScript {
 
     // Get representation by id to determine whether it is an image...
     try {
-      for (ContentRepresentation contentRepresentation : artifact.getArtifactType().getContentRepresentations()) {
-        if (contentRepresentation.getId().equals(representationId)) {
-          if (contentRepresentation.getContentType().getName().startsWith("image/")) {
-            String imageUrl = restProxyUri + "/content?artifactId=" + URLEncoder.encode(artifactId, "UTF-8")
-                    + "&content-type=" + URLEncoder.encode(contentRepresentation.getContentType().getName(), "UTF-8");
-            model.put("imageUrl", imageUrl);
-          } else {
-            String content = conn.getContent(artifactId, contentRepresentation.getId()).asString();
-            model.put("content", content);
-          }
-          model.put("id", contentRepresentation.getId());
-          break;
-        }
+      ContentRepresentation contentRepresentation = artifact.getArtifactType().getContentRepresentation(representationId);
+      switch (contentRepresentation.getRenderInfo()) {
+      case IMAGE:
+        String imageUrl = restProxyUri + "/content?artifactId=" + URLEncoder.encode(artifactId, "UTF-8") + "&contentRepresentationId="
+                + URLEncoder.encode(contentRepresentation.getId(), "UTF-8");
+        model.put("imageUrl", imageUrl);
+        break;
+      case BINARY:
+      case CODE:
+      case HTML:
+      case TEXT_PLAIN:
+        String content = conn.getContent(artifactId, contentRepresentation.getId()).asString();
+        model.put("content", content);
       }
+
+      model.put("id", contentRepresentation.getId());
     } catch (Exception ex) {
       // we had a problem with a content representation log and go on,
       // that this will not prevent other representations to be shown
@@ -64,5 +64,4 @@ public class ContentRepresentationGet extends ActivitiWebScript {
       model.put("exception", stackTrace);
     }
   }
-
 }
