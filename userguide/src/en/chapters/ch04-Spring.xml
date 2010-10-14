@@ -33,6 +33,9 @@
       <listitem><para><literal>mailServerSmtpUserName</literal> (String) see <xref linkend="configurationproperties"/></para> </listitem>
       <listitem><para><literal>mailServerSmtpPassword</literal> (String) see <xref linkend="configurationproperties"/></para> </listitem>
       <listitem><para><literal>mailServerDefaultFromAddress</literal> (String) see <xref linkend="configurationproperties"/></para> </listitem>
+      <listitem><para><literal>jpaEntityManagerFactory</literal> (javax.persistence.EntityManagerFactory) see <xref linkend="jpaconfigurationspring"/></para> </listitem>
+      <listitem><para><literal>jpaHandleTransaction</literal> (boolean) see <xref linkend="jpaconfigurationspring"/></para> </listitem>
+      <listitem><para><literal>jpaCloseEntityManager</literal> (boolean) see <xref linkend="jpaconfigurationspring"/></para> </listitem>
     </itemizedlist>
   </section>
 

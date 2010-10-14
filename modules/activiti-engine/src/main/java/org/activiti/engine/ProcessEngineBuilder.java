@@ -261,7 +261,7 @@ public class ProcessEngineBuilder {
   public ProcessEngineBuilder enableJPA(Object entityManagerFactory, boolean handleTransaction, boolean closeEntityManager) {
     jpaEntityManagerFactory = entityManagerFactory;
     jpaHandleTransaction = handleTransaction;
-    jpaHandleTransaction = closeEntityManager;
+    jpaCloseEntityManager = closeEntityManager;
     return this;
   }
   

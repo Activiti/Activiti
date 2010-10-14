@@ -35,7 +35,7 @@ public interface HistoricProcessInstanceQuery extends Query<HistoricProcessInsta
   HistoricProcessInstanceQuery businessKey(String businessKey);
   
   /** Only select historic process instance that are not yet finished. */
-  HistoricProcessInstanceQuery open();
+  HistoricProcessInstanceQuery unfinished();
   
   /** Order by id (needs to be followed by {@link #asc()} or {@link #desc()}). */
   HistoricProcessInstanceQuery orderById();

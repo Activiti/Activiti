@@ -58,7 +58,7 @@ public class HistoricProcessInstanceQueryImpl extends AbstractQuery<HistoricProc
     return this;
   }
   
-  public HistoricProcessInstanceQuery open() {
+  public HistoricProcessInstanceQuery unfinished() {
     this.open = true;
     return this;
   }

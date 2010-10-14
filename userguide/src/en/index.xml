@@ -13,6 +13,7 @@
   <!ENTITY ch11 SYSTEM "chapters/ch11-Modeler.xml">
   <!ENTITY ch12 SYSTEM "chapters/ch12-Cycle.xml">
   <!ENTITY ch13 SYSTEM "chapters/ch13-REST.xml">
+  <!ENTITY ch14 SYSTEM "chapters/ch14-JPA.xml">
 ]>
 
 <book>
@@ -34,5 +35,6 @@
 &ch11;
 &ch12;
 &ch13;
+&ch14;
   
 </book>
