@@ -8,16 +8,17 @@
   <para>
     You can use JPA-Entities as process variables, allowing you to:
     <itemizedlist>
-      <listitem><para>Updating existing JPA-entities based on process variables, that can be filled in on a form in a usertask or genereted in a serviceTask.</para></listitem>
-      <listitem><para>Reusing existing domain model without having to write explicit services to update the values, which makes integration easier and can make everything mere loosly coupled.</para></listitem>
+      <listitem><para>Updating existing JPA-entities based on process variables, that can be filled in on a form in a usertask or generated in a serviceTask.</para></listitem>
+      <listitem><para>Reusing existing domain model without having to write explicit services to fetch the entities and update the values</para></listitem>
       <listitem><para>Make decisions (gateways) based on properties of existing entities.</para></listitem>
+      <listitem><para>...</para></listitem>
     </itemizedlist>
   </para>
 
   <section>
     <title>Requirements</title>
     <para>
-      Only entities that comply to the folowing are supported:
+      Only entities that comply to the following are supported:
       <itemizedlist>
         <listitem>
           <para>
@@ -52,7 +53,7 @@ ProcessEngine engine = new ProcessEngineBuilder()
   .enableJPA(entityManagerFactory, true, true)
   .buildProcessEngine();
         </programlisting>
-        This method accepts the folowing parameters:
+        This method accepts the following parameters:
         <itemizedlist>
           <listitem>
             <para>
@@ -138,13 +139,13 @@ ProcessEngine engine = new ProcessEngineBuilder()
       </para>
       <para>
         First of all, we create a <literal>EntityManagerFactory</literal> for our persistence-unit, which is based on <literal>META-INF/persistence.xml</literal>. This contains classes which should be included in 
-        the persistence unit and som vendor-specific configuration.
+        the persistence unit and some vendor-specific configuration.
       </para>
       <para>
         The <literal>EntityManagagerFactory</literal> is set on the engine to enable JPA support. Please note that this is done using a shortcut for testing purposes, and should actually be set properly using one of the methods described in <xref linkend="jpaconfiguration"/>.
       </para>
       <para>
-        We are using a simple entity in the test, having an id an <literal>String</literal> value property, which is also persisted. Before running the test, we create an entity and save this.
+        We are using a simple entity in the test, having an id and <literal>String</literal> value property, which is also persisted. Before running the test, we create an entity and save this.
         <programlisting>
 @Entity(name = "JPA_ENTITY_FIELD")
 public class FieldAccessJPAEntity {
@@ -196,7 +197,7 @@ ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("Upda
       </para>
       <para>
         When the service-task is finished, the processinstance waits in a usertask defined in the processdefinition, which allows us to inspect the processinstance. At this point, the <literal>EntityManager</literal> has been flushed
-        and the changes to the entity have been pushed to the database. When we get the value of the variable <literal>entityToUpdate</literal>, it's loaded agian and we get
+        and the changes to the entity have been pushed to the database. When we get the value of the variable <literal>entityToUpdate</literal>, it's loaded again and we get
         the entity with it's <literal>value</literal> property set to <literal>updatedValue</literal>. 
         <programlisting>
 // Servicetask in process 'UpdateJPAValuesProcess' should have set value on entityToUpdate.
@@ -299,8 +300,8 @@ assertEquals("updatedValue", ((FieldAccessJPAEntity)updatedEntity).getValue());
 
         </programlisting>
       </para>
-      <para>Although the example above is quite simple, it shows the power of using JTA combined with Spring and parameterised method-expressions. The process required
-      no custom java-code at all (except for the Spring-bean offcourse) and potentially speeds up development.
+      <para>Although the example above is quite simple, it shows the power of using JPA combined with Spring and parameterised method-expressions. The process requires
+      no custom java-code at all (except for the Spring-bean offcourse) and speeds up development drastically.
       </para>
     </section>
   </section>
