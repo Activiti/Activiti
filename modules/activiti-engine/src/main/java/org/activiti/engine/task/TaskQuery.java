@@ -12,6 +12,8 @@
  */
 package org.activiti.engine.task;
 
+import java.util.Date;
+
 import org.activiti.engine.query.Query;
 
 /**
@@ -61,7 +63,16 @@ public interface TaskQuery extends Query<TaskQuery, Task>{
 
   /** Only select tasks for the given execution. */
   TaskQuery executionId(String executionId);
+  
+  /** Only select tasks that are created on the given date. **/
+  TaskQuery createdOn(Date createTime);
+  
+  /** Only select tasks that are created before the given date. **/
+  TaskQuery createdBefore(Date before);
 
+  /** Only select tasks that are created after the given date. **/
+  TaskQuery createdAfter(Date after);
+  
   // ordering ////////////////////////////////////////////////////////////
   
   /** Order by task id (needs to be followed by {@link #asc()} or {@link #desc()}). */

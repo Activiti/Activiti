@@ -12,6 +12,8 @@
  */
 package org.activiti.engine.task;
 
+import java.util.Date;
+
 
 
 /** Represents one task for a human user.
@@ -53,4 +55,7 @@ public interface Task {
 	String getProcessDefinitionId();
 	
 	String getFormResourceKey();
+	
+	Date getCreateTime();
+	
 }

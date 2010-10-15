@@ -14,6 +14,7 @@ package org.activiti.engine.impl;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 
 import org.activiti.engine.ActivitiException;
@@ -44,6 +45,9 @@ public class TaskQueryImpl extends AbstractQuery<TaskQuery, Task> implements Tas
   protected String processInstanceId;
   protected String executionId;
   protected TaskQueryProperty orderProperty;
+  protected Date createTime;
+  protected Date createTimeBefore;
+  protected Date createTimeAfter;
   
   public TaskQueryImpl() {
   }
@@ -139,6 +143,21 @@ public class TaskQueryImpl extends AbstractQuery<TaskQuery, Task> implements Tas
   
   public TaskQueryImpl executionId(String executionId) {
     this.executionId = executionId;
+    return this;
+  }
+  
+  public TaskQueryImpl createdOn(Date createTime) {
+    this.createTime = createTime;
+    return this;
+  }
+  
+  public TaskQuery createdBefore(Date before) {
+    this.createTimeBefore = before;
+    return this;
+  }
+  
+  public TaskQuery createdAfter(Date after) {
+    this.createTimeAfter = after;
     return this;
   }
   
@@ -280,6 +299,15 @@ public class TaskQueryImpl extends AbstractQuery<TaskQuery, Task> implements Tas
   }
   public TaskQueryProperty getOrderProperty() {
     return orderProperty;
+  }
+  public Date getCreateTime() {
+    return createTime;
+  }
+  public Date getCreateTimeBefore() {
+    return createTimeBefore;
+  }
+  public Date getCreateTimeAfter() {
+    return createTimeAfter;
   }
   
 }

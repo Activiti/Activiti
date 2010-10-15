@@ -40,11 +40,13 @@ import org.activiti.engine.task.TaskQuery;
 public class TaskServiceImpl extends ServiceImpl implements TaskService {
 
   public Task newTask() {
-    return new TaskEntity(null);
+    return newTask(null);
   }
   
   public Task newTask(String taskId) {
-    return new TaskEntity(taskId);
+    TaskEntity task = TaskEntity.create();
+    task.setId(taskId);
+    return task;
   }
   
   public void saveTask(Task task) {

@@ -12,16 +12,20 @@
  */
 package org.activiti.engine.test.api.task;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.test.ActivitiInternalTestCase;
+import org.activiti.engine.impl.util.ClockUtil;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.task.TaskQuery;
 
 /**
  * @author Joram Barrez
+ * @author Frederik Heremans
  */
 public class TaskQueryTest extends ActivitiInternalTestCase {
 
@@ -283,6 +287,49 @@ public class TaskQueryTest extends ActivitiInternalTestCase {
     }
   }
   
+  public void testQueryCreatedOn() throws Exception {
+    SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss.SSS");
+    
+    // Exact matching of createTime, should result in 6 tasks
+    Date createTime = sdf.parse("01/01/2001 01:01:01.000");
+    
+    TaskQuery query = taskService.createTaskQuery().createdOn(createTime);
+    assertEquals(6, query.count());
+    assertEquals(6, query.list().size());
+  }
+  
+  public void testQueryCreatedBefore() throws Exception {
+    SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss.SSS");
+    
+    // Should result in 7 tasks
+    Date before = sdf.parse("03/02/2002 02:02:02.000");
+    
+    TaskQuery query = taskService.createTaskQuery().createdBefore(before);
+    assertEquals(7, query.count());
+    assertEquals(7, query.list().size());
+    
+    before = sdf.parse("01/01/2001 01:01:01.000");
+    query = taskService.createTaskQuery().createdBefore(before);
+    assertEquals(0, query.count());
+    assertEquals(0, query.list().size());
+  }
+  
+  public void testQueryCreatedAfter() throws Exception {
+    SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss.SSS");
+    
+    // Should result in 3 tasks
+    Date after = sdf.parse("03/03/2003 03:03:03.000");
+    
+    TaskQuery query = taskService.createTaskQuery().createdAfter(after);
+    assertEquals(3, query.count());
+    assertEquals(3, query.list().size());
+    
+    after = sdf.parse("05/05/2005 05:05:05.000");
+    query = taskService.createTaskQuery().createdAfter(after);
+    assertEquals(0, query.count());
+    assertEquals(0, query.list().size());
+  }
+  
   public void testQueryPaging() {
     TaskQuery query = taskService.createTaskQuery().candidateUser("kermit");
 
@@ -330,10 +377,12 @@ public class TaskQueryTest extends ActivitiInternalTestCase {
    * assigned to accountancy group - 1 task assigned to both the management and
    * accountancy group
    */
-  private List<String> generateTestTasks() {
+  private List<String> generateTestTasks() throws Exception {
     List<String> ids = new ArrayList<String>();
 
+    SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss.SSS");
     // 6 tasks for kermit
+    ClockUtil.setCurrentTime(sdf.parse("01/01/2001 01:01:01.000"));
     for (int i = 0; i < 6; i++) {
       Task task = taskService.newTask();
       task.setName("testTask");
@@ -344,6 +393,7 @@ public class TaskQueryTest extends ActivitiInternalTestCase {
       taskService.addCandidateUser(task.getId(), "kermit");
     }
 
+    ClockUtil.setCurrentTime(sdf.parse("02/02/2002 02:02:02.000"));
     // 1 task for gonzo
     Task task = taskService.newTask();
     task.setName("gonzoTask");
@@ -353,6 +403,7 @@ public class TaskQueryTest extends ActivitiInternalTestCase {
     taskService.setAssignee(task.getId(), "gonzo");
     ids.add(task.getId());
 
+    ClockUtil.setCurrentTime(sdf.parse("03/03/2003 03:03:03.000"));
     // 2 tasks for management group
     for (int i = 0; i < 2; i++) {
       task = taskService.newTask();
@@ -363,6 +414,7 @@ public class TaskQueryTest extends ActivitiInternalTestCase {
       ids.add(task.getId());
     }
 
+    ClockUtil.setCurrentTime(sdf.parse("04/04/2004 04:04:04.000"));
     // 2 tasks for accountancy group
     for (int i = 0; i < 2; i++) {
       task = taskService.newTask();
@@ -373,6 +425,7 @@ public class TaskQueryTest extends ActivitiInternalTestCase {
       ids.add(task.getId());
     }
 
+    ClockUtil.setCurrentTime(sdf.parse("05/05/2005 05:05:05.000"));
     // 1 task assigned to management and accountancy group
     task = taskService.newTask();
     task.setName("managementAndAccountancyTask");

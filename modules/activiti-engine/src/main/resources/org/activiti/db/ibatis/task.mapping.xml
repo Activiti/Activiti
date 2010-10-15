@@ -139,6 +139,15 @@
       <if test="executionId != null">
         and T.EXECUTION_ID_ = #{executionId}
       </if>
+      <if test="createTime != null">
+        and T.CREATE_TIME_ = #{createTime}
+      </if>
+      <if test="createTimeBefore != null">
+        and T.CREATE_TIME_ &lt; #{createTimeBefore}
+      </if>
+      <if test="createTimeAfter != null">
+        and T.CREATE_TIME_ &gt; #{createTimeAfter}
+      </if>
       <if test="candidateUser != null || candidateGroups != null">
         and T.ASSIGNEE_ is null
         and I.TYPE_ = 'candidate'
