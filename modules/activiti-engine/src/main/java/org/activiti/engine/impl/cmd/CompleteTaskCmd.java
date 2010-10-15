@@ -44,7 +44,7 @@ public class CompleteTaskCmd implements Command<Void> {
     
     TaskEntity task = taskSession.findTaskById(taskId);
     if (variables!=null) {
-      task.setActivityInstanceVariables(variables);
+      task.setExecutionVariables(variables);
     }
 
     if (task == null) {

@@ -26,6 +26,10 @@ public class IntegerType implements Type {
     return "integer";
   }
 
+  public boolean isCachable() {
+    return true;
+  }
+
   public Object getValue(VariableInstanceEntity variableInstanceEntity) {
     return new Integer(variableInstanceEntity.getLongValue().intValue());
   }

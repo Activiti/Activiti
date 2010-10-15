@@ -20,6 +20,7 @@ import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.repository.ProcessDefinitionEntity;
 import org.activiti.engine.impl.runtime.ExecutionEntity;
+import org.activiti.engine.impl.runtime.VariableMap;
 import org.activiti.engine.runtime.ProcessInstance;
 
 
@@ -60,7 +61,12 @@ public class StartProcessInstanceCmd<T> implements Command<ProcessInstance> {
     ExecutionEntity processInstance = processDefinition.createProcessInstance();
     
     if (variables!=null) {
-      processInstance.setVariables(variables);
+      try {
+        VariableMap.setExternalUpdate(Boolean.TRUE);
+        processInstance.setVariables(variables);
+      } finally {
+        VariableMap.setExternalUpdate(null);
+      }
     }
     
     if (businessKey != null) {

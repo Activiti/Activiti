@@ -26,6 +26,10 @@ public class LongType implements Type {
     return "long";
   }
 
+  public boolean isCachable() {
+    return true;
+  }
+
   public Object getValue(VariableInstanceEntity variableInstanceEntity) {
     return variableInstanceEntity.getLongValue();
   }

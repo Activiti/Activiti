@@ -10,34 +10,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.activiti.engine.impl.variable;
 
-import org.activiti.engine.impl.runtime.VariableInstanceEntity;
+package org.activiti.engine.test.history;
+
+import org.activiti.pvm.activity.ActivityBehavior;
+import org.activiti.pvm.activity.ActivityExecution;
 
 
 /**
  * @author Tom Baeyens
  */
-public class NullType implements Type {
+public class VariableSetter implements ActivityBehavior {
 
-  private static final long serialVersionUID = 1L;
-
-  public String getTypeName() {
-    return "null";
+  public void execute(ActivityExecution execution) throws Exception {
+    execution.setVariable("internalVar1", "this should not be part of default history level audit");
+    execution.setVariable("internalVar2", "this neither");
   }
 
-  public boolean isCachable() {
-    return true;
-  }
-
-  public Object getValue(VariableInstanceEntity variableInstanceEntity) {
-    return null;
-  }
-
-  public boolean isAbleToStore(Object value) {
-    return (value==null);
-  }
-
-  public void setValue(Object value, VariableInstanceEntity variableInstanceEntity) {
-  }
 }

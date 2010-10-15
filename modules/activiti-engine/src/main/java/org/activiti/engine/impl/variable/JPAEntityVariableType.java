@@ -35,6 +35,10 @@ public class JPAEntityVariableType implements Type {
     return TYPE_NAME;
   }
 
+  public boolean isCachable() {
+    return false;
+  }
+
   public boolean isAbleToStore(Object value) {
     return mappings.isJPAEntity(value);      
   }

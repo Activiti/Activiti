@@ -25,6 +25,7 @@ import java.util.Set;
 import org.activiti.engine.impl.db.PersistentObject;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.runtime.ExecutionEntity;
+import org.activiti.engine.impl.runtime.VariableMap;
 import org.activiti.engine.impl.util.ClockUtil;
 import org.activiti.engine.task.IdentityLinkType;
 import org.activiti.engine.task.Task;
@@ -210,9 +211,14 @@ public class TaskEntity implements Task, Serializable, PersistentObject {
     return Collections.EMPTY_MAP;
   }
   
-  public void setActivityInstanceVariables(Map<String, Object> parameters) {
+  public void setExecutionVariables(Map<String, Object> parameters) {
     if (getExecution()!=null) {
-      execution.setVariables(parameters);
+      try {
+        VariableMap.setExternalUpdate(Boolean.TRUE);
+        execution.setVariables(parameters);
+      } finally {
+        VariableMap.setExternalUpdate(null);
+      }
     }
   }
   

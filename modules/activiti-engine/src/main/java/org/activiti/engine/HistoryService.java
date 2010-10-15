@@ -18,6 +18,8 @@ import org.activiti.engine.history.HistoricActivityInstance;
 import org.activiti.engine.history.HistoricActivityInstanceQuery;
 import org.activiti.engine.history.HistoricProcessInstance;
 import org.activiti.engine.history.HistoricProcessInstanceQuery;
+import org.activiti.engine.history.HistoricVariableUpdate;
+import org.activiti.engine.history.HistoricVariableUpdateQuery;
 
 /** 
  * Service exposing information about ongoing and past process instances.  This is different
@@ -37,4 +39,7 @@ public interface HistoryService {
 
   /** Creates a new programmatic query to search for {@link HistoricActivityInstance}s. */
   HistoricActivityInstanceQuery createHistoricActivityInstanceQuery();
+  
+  /** Creates a new programmatic query to search for {@link HistoricVariableUpdate}s. */
+  HistoricVariableUpdateQuery createHistoricVariableUpdateQuery();
 }

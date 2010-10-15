@@ -21,7 +21,9 @@ import java.util.Map;
 import java.util.Set;
 
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.impl.cfg.ProcessEngineConfiguration;
 import org.activiti.engine.impl.db.DbSqlSession;
+import org.activiti.engine.impl.history.HistoricVariableUpdateEntity;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.variable.Type;
 import org.activiti.engine.impl.variable.VariableTypes;
@@ -38,10 +40,15 @@ public class VariableMap implements Map<String, Object> , Serializable {
   protected String executionId;
   protected String processInstanceId;
   protected Map<String, VariableInstanceEntity> variableInstances = null;
+  protected static ThreadLocal<Boolean> isExternalUpdateThreadLocal = new ThreadLocal<Boolean>();
 
   public VariableMap(String executionId, String processInstanceId) {
     this.executionId = executionId;
     this.processInstanceId = processInstanceId;
+  }
+  
+  public static void setExternalUpdate(Boolean isExternalUpdate) {
+    isExternalUpdateThreadLocal.set(isExternalUpdate);
   }
   
   /** returns an initialized empty variable map */
@@ -98,9 +105,9 @@ public class VariableMap implements Map<String, Object> , Serializable {
       remove(key);
       variableInstance = null;
     }
+    CommandContext commandContext = CommandContext.getCurrent();
     if (variableInstance == null) {
-      VariableTypes variableTypes = CommandContext
-        .getCurrent()
+      VariableTypes variableTypes = commandContext
         .getProcessEngineConfiguration()
         .getVariableTypes();
       
@@ -112,6 +119,16 @@ public class VariableMap implements Map<String, Object> , Serializable {
     }
     
     variableInstance.setValue(value);
+    
+    int historyLevel = commandContext.getProcessEngineConfiguration().getHistoryLevel();
+    if ( (historyLevel>=ProcessEngineConfiguration.HISTORYLEVEL_AUDIT)
+         && (Boolean.TRUE.equals(isExternalUpdateThreadLocal.get()))
+       ) {
+      DbSqlSession dbSqlSession = commandContext.getDbSqlSession();
+      HistoricVariableUpdateEntity historicVariableUpdate = new HistoricVariableUpdateEntity(variableInstance, dbSqlSession);
+      dbSqlSession.insert(historicVariableUpdate);
+    }
+    
     variableInstances.put(key, variableInstance);
     return null;
   }
@@ -120,16 +137,7 @@ public class VariableMap implements Map<String, Object> , Serializable {
     ensureInitialized();
     VariableInstanceEntity variableInstance = variableInstances.remove(key);
     if (variableInstance != null) {
-      // delete variable
-      DbSqlSession dbSqlSession = CommandContext
-        .getCurrent()
-        .getDbSqlSession();
-      
-      dbSqlSession.delete(VariableInstanceEntity.class, variableInstance.getId());
-      
-      if (variableInstance.getByteArrayValueId()!=null) {
-        dbSqlSession.delete(ByteArrayEntity.class, variableInstance.getByteArrayValueId());
-      }
+      variableInstance.delete();
     }
     return null;
   }

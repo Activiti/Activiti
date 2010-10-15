@@ -19,12 +19,16 @@ import java.util.Map;
 
 import org.activiti.engine.history.HistoricActivityInstance;
 import org.activiti.engine.history.HistoricProcessInstance;
+import org.activiti.engine.history.HistoricVariableUpdate;
 import org.activiti.engine.impl.HistoricActivityInstanceQueryImpl;
 import org.activiti.engine.impl.HistoricProcessInstanceQueryImpl;
+import org.activiti.engine.impl.HistoricVariableUpdateQueryImpl;
 import org.activiti.engine.impl.Page;
 import org.activiti.engine.impl.cfg.HistorySession;
 import org.activiti.engine.impl.history.HistoricActivityInstanceEntity;
 import org.activiti.engine.impl.history.HistoricProcessInstanceEntity;
+import org.activiti.engine.impl.history.HistoricVariableUpdateEntity;
+import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.interceptor.Session;
 
 
@@ -38,7 +42,15 @@ public class DbHistorySession extends AbstractDbSession implements HistorySessio
     dbSqlSession.insert(historicProcessInstance);
   }
 
+  @SuppressWarnings("unchecked")
   public void deleteHistoricProcessInstance(String historicProcessInstanceId) {
+    List<HistoricVariableUpdateEntity> historicVariableUpdates = (List) new HistoricVariableUpdateQueryImpl()
+      .processInstanceId(historicProcessInstanceId)
+      .executeList(CommandContext.getCurrent(), null);
+    for (HistoricVariableUpdateEntity historicVariableUpdate: historicVariableUpdates) {
+      historicVariableUpdate.delete();
+    }
+    
     dbSqlSession.delete("deleteHistoricActivityInstancesByProcessInstanceId", historicProcessInstanceId);
     dbSqlSession.delete(HistoricProcessInstanceEntity.class, historicProcessInstanceId);
   }
@@ -72,12 +84,6 @@ public class DbHistorySession extends AbstractDbSession implements HistorySessio
     return dbSqlSession.selectList("selectHistoricProcessInstancesByQueryCriteria", historicProcessInstanceQuery, page);
   }
 
-  public void close() {
-  }
-
-  public void flush() {
-  }
-
   public long findHistoricActivityInstanceCountByQueryCriteria(HistoricActivityInstanceQueryImpl historicActivityInstanceQuery) {
     return (Long) dbSqlSession.selectOne("selectHistoricActivityInstanceCountByQueryCriteria", historicActivityInstanceQuery);
   }
@@ -85,5 +91,20 @@ public class DbHistorySession extends AbstractDbSession implements HistorySessio
   @SuppressWarnings("unchecked")
   public List<HistoricActivityInstance> findHistoricActivityInstancesByQueryCriteria(HistoricActivityInstanceQueryImpl historicActivityInstanceQuery, Page page) {
     return dbSqlSession.selectList("selectHistoricActivityInstancesByQueryCriteria", historicActivityInstanceQuery, page);
+  }
+
+  public long findHistoricVariableUpdateCountByQueryCriteria(HistoricVariableUpdateQueryImpl historicVariableUpdateQuery) {
+    return (Long) dbSqlSession.selectOne("selectHistoricVariableUpdateCountByQueryCriteria", historicVariableUpdateQuery);
+  }
+
+  @SuppressWarnings("unchecked")
+  public List<HistoricVariableUpdate> findHistoricVariableUpdatesByQueryCriteria(HistoricVariableUpdateQueryImpl historicVariableUpdateQuery, Page page) {
+    return dbSqlSession.selectList("selectHistoricVariableUpdatesByQueryCriteria", historicVariableUpdateQuery, page);
+  }
+
+  public void close() {
+  }
+
+  public void flush() {
   }
 }

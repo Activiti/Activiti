@@ -17,8 +17,10 @@ import java.util.List;
 
 import org.activiti.engine.history.HistoricActivityInstance;
 import org.activiti.engine.history.HistoricProcessInstance;
+import org.activiti.engine.history.HistoricVariableUpdate;
 import org.activiti.engine.impl.HistoricActivityInstanceQueryImpl;
 import org.activiti.engine.impl.HistoricProcessInstanceQueryImpl;
+import org.activiti.engine.impl.HistoricVariableUpdateQueryImpl;
 import org.activiti.engine.impl.Page;
 import org.activiti.engine.impl.history.HistoricActivityInstanceEntity;
 import org.activiti.engine.impl.history.HistoricProcessInstanceEntity;
@@ -41,4 +43,7 @@ public interface HistorySession {
 
   long findHistoricActivityInstanceCountByQueryCriteria(HistoricActivityInstanceQueryImpl historicActivityInstanceQueryImpl);
   List<HistoricActivityInstance> findHistoricActivityInstancesByQueryCriteria(HistoricActivityInstanceQueryImpl historicActivityInstanceQueryImpl, Page page);
+  
+  long findHistoricVariableUpdateCountByQueryCriteria(HistoricVariableUpdateQueryImpl historicVariableUpdateQueryImpl);
+  List<HistoricVariableUpdate> findHistoricVariableUpdatesByQueryCriteria(HistoricVariableUpdateQueryImpl historicVariableUpdateQueryImpl, Page page);
 }

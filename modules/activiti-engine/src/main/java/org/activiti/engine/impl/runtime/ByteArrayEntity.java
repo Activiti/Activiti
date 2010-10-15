@@ -15,6 +15,7 @@ package org.activiti.engine.impl.runtime;
 import java.io.Serializable;
 
 import org.activiti.engine.impl.db.PersistentObject;
+import org.activiti.engine.impl.history.HistoricVariableUpdateEntity;
 import org.activiti.engine.impl.variable.ByteArrayType;
 
 /**

@@ -26,6 +26,10 @@ public class DoubleType implements Type {
     return "double";
   }
 
+  public boolean isCachable() {
+    return true;
+  }
+
   public Object getValue(VariableInstanceEntity variableInstanceEntity) {
     return variableInstanceEntity.getDoubleValue();
   }

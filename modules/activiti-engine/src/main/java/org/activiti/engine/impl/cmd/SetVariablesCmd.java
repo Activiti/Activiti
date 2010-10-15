@@ -18,6 +18,7 @@ import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.runtime.ExecutionEntity;
+import org.activiti.engine.impl.runtime.VariableMap;
 
 
 /**
@@ -46,7 +47,12 @@ public class SetVariablesCmd implements Command<Object> {
       throw new ActivitiException("execution "+executionId+" doesn't exist");
     }
     
-    execution.setVariables(variables);
+    try {
+      VariableMap.setExternalUpdate(Boolean.TRUE);
+      execution.setVariables(variables);
+    } finally {
+      VariableMap.setExternalUpdate(null);
+    }
     
     return null;
   }

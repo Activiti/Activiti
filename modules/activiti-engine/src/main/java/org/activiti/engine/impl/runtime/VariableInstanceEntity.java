@@ -46,12 +46,14 @@ public class VariableInstanceEntity implements Serializable, PersistentObject {
   protected ByteArrayEntity byteArrayValue;
   protected String byteArrayValueId;
 
+  protected int historyNextIndex;
+
   protected Object cachedValue;
 
   protected Type type;
   
   // Default constructor for SQL mapping
-  VariableInstanceEntity() {
+  protected VariableInstanceEntity() {
   }
 
   public static VariableInstanceEntity createAndInsert(String name, Type type, Object value) {
@@ -69,6 +71,7 @@ public class VariableInstanceEntity implements Serializable, PersistentObject {
     VariableInstanceEntity variableInstance = new VariableInstanceEntity();
     variableInstance.name = name;
     variableInstance.type = type;
+    variableInstance.historyNextIndex = 0;
     variableInstance.setValue(value);
     
     return variableInstance;
@@ -88,15 +91,19 @@ public class VariableInstanceEntity implements Serializable, PersistentObject {
   }
 
   public void delete() {
+    // delete variable
     DbSqlSession dbSqlSession = CommandContext
       .getCurrent()
       .getDbSqlSession();
-
+    
     dbSqlSession.delete(VariableInstanceEntity.class, id);
 
     if (byteArrayValueId != null) {
-      ByteArrayEntity byteArrayValue = getByteArrayValue();
-      dbSqlSession.delete(ByteArrayEntity.class, byteArrayValue.getId());
+      // the next apparently useless line is probably to ensure consistency in the DbSqlSession 
+      // cache, but should be checked and docced here (or removed if it turns out to be unnecessary)
+      // @see also HistoricVariableUpdateEntity
+      getByteArrayValue();
+      dbSqlSession.delete(ByteArrayEntity.class, byteArrayValueId);
     }
   }
 
@@ -153,15 +160,23 @@ public class VariableInstanceEntity implements Serializable, PersistentObject {
     }
     return byteArrayValue;
   }
+  
+  public int generateNextHistoryIndex() {
+    return historyNextIndex++;
+  }
 
   // type /////////////////////////////////////////////////////////////////////
 
   public Object getValue() {
-    return type.getValue(this);
+    if (!type.isCachable() || cachedValue==null) {
+      cachedValue = type.getValue(this);
+    }
+    return cachedValue;
   }
 
   public void setValue(Object value) {
     type.setValue(value, this);
+    cachedValue = value;
   }
 
   // getters and setters //////////////////////////////////////////////////////
@@ -231,5 +246,11 @@ public class VariableInstanceEntity implements Serializable, PersistentObject {
   }
   public void setTextValue2(String textValue2) {
     this.textValue2 = textValue2;
+  }
+  public int getHistoryNextIndex() {
+    return historyNextIndex;
+  }
+  public void setHistoryNextIndex(int historyNextIndex) {
+    this.historyNextIndex = historyNextIndex;
   }
 }

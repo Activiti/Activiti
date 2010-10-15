@@ -26,6 +26,10 @@ public class ShortType implements Type {
     return "short";
   }
 
+  public boolean isCachable() {
+    return true;
+  }
+
   public Object getValue(VariableInstanceEntity variableInstanceEntity) {
     return new Short(variableInstanceEntity.getLongValue().shortValue());
   }

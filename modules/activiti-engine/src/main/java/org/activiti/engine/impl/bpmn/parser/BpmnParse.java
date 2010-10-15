@@ -49,6 +49,7 @@ import org.activiti.engine.impl.bpmn.SubProcessActivity;
 import org.activiti.engine.impl.bpmn.TaskActivity;
 import org.activiti.engine.impl.bpmn.UserTaskActivity;
 import org.activiti.engine.impl.bpmn.WebServiceActivityBehavior;
+import org.activiti.engine.impl.cfg.ProcessEngineConfiguration;
 import org.activiti.engine.impl.el.ActivitiValueExpression;
 import org.activiti.engine.impl.el.ExpressionManager;
 import org.activiti.engine.impl.el.UelMethodExpressionCondition;
@@ -365,6 +366,11 @@ public class BpmnParse extends Parse {
     processDefinition.setKey(processElement.attribute("id"));
     processDefinition.setProperty("name", processElement.attribute("name"));
     processDefinition.setProperty("documentation", parseDocumentation(processElement));
+    
+    String historyLevelText = processElement.attribute("history");
+    if (historyLevelText!=null) {
+      processDefinition.setHistoryLevel(ProcessEngineConfiguration.parseHistoryLevel(historyLevelText));
+    }
 
     if (LOG.isLoggable(Level.FINE)) {
       LOG.fine("Parsing process " + processDefinition.getKey());

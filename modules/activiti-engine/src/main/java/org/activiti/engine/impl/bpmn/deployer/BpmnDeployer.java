@@ -44,7 +44,7 @@ public class BpmnDeployer implements Deployer, ProcessEngineConfigurationAware {
   public void configurationCompleted(ProcessEngineConfiguration processEngineConfiguration) {
     this.expressionManager = processEngineConfiguration.getExpressionManager();
     this.bpmnParser = new BpmnParser(expressionManager);
-    if (processEngineConfiguration.isHistoryEnabled()) {
+    if (processEngineConfiguration.getHistoryLevel()>=ProcessEngineConfiguration.HISTORYLEVEL_ACTIVITY) {
       bpmnParser.getParseListeners().add(new HistoryParseListener());
     }
   }

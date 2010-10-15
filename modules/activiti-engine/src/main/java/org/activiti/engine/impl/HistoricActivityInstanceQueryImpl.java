@@ -39,7 +39,6 @@ public class HistoricActivityInstanceQueryImpl extends AbstractQuery<HistoricAct
   protected String assignee;
   protected boolean onlyOpen;
   protected HistoricActivityInstanceQueryProperty orderProperty;
-  protected String orderBy;
 
   public HistoricActivityInstanceQueryImpl() {
   }

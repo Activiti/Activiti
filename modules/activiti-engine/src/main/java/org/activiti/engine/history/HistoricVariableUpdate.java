@@ -10,34 +10,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.activiti.engine.impl.variable;
 
-import org.activiti.engine.impl.runtime.VariableInstanceEntity;
+package org.activiti.engine.history;
+
+import java.util.Date;
 
 
 /**
  * @author Tom Baeyens
  */
-public class NullType implements Type {
+public interface HistoricVariableUpdate {
 
-  private static final long serialVersionUID = 1L;
-
-  public String getTypeName() {
-    return "null";
-  }
-
-  public boolean isCachable() {
-    return true;
-  }
-
-  public Object getValue(VariableInstanceEntity variableInstanceEntity) {
-    return null;
-  }
-
-  public boolean isAbleToStore(Object value) {
-    return (value==null);
-  }
-
-  public void setValue(Object value, VariableInstanceEntity variableInstanceEntity) {
-  }
+  String getProcessInstanceId();
+  String getExecutionId();
+  String getVariableName();
+  String getVariableType();
+  Object getValue();
+  int getIndex();
+  Date getTime();
 }

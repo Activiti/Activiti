@@ -27,6 +27,10 @@ public class ByteArrayType implements Type {
     return "bytes";
   }
 
+  public boolean isCachable() {
+    return true;
+  }
+
   public Object getValue(VariableInstanceEntity variableInstanceEntity) {
     if (variableInstanceEntity.getByteArrayValueId()==null) {
       return null;

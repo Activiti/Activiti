@@ -10,34 +10,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.activiti.engine.impl.variable;
 
-import org.activiti.engine.impl.runtime.VariableInstanceEntity;
+package org.activiti.engine.history;
+
+import org.activiti.engine.query.Query;
 
 
 /**
  * @author Tom Baeyens
  */
-public class NullType implements Type {
+public interface HistoricVariableUpdateQuery extends Query<HistoricVariableUpdateQuery, HistoricVariableUpdate> {
 
-  private static final long serialVersionUID = 1L;
+  /** Only select historic variable updates with the given process instance.
+   * {@link ProcessInstance) ids and {@link HistoricProcessInstance} ids match. */
+  HistoricVariableUpdateQuery processInstanceId(String processInstanceId);
 
-  public String getTypeName() {
-    return "null";
-  }
+  /** Only select historic variable updates with the given variableName. */
+  HistoricVariableUpdateQuery variableName(String variableName);
 
-  public boolean isCachable() {
-    return true;
-  }
-
-  public Object getValue(VariableInstanceEntity variableInstanceEntity) {
-    return null;
-  }
-
-  public boolean isAbleToStore(Object value) {
-    return (value==null);
-  }
-
-  public void setValue(Object value, VariableInstanceEntity variableInstanceEntity) {
-  }
+  
 }

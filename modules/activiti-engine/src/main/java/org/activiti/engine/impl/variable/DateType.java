@@ -26,6 +26,10 @@ public class DateType implements Type {
     return "date";
   }
 
+  public boolean isCachable() {
+    return true;
+  }
+
   public boolean isAbleToStore(Object value) {
     if (value==null) {
       return true;

@@ -72,6 +72,7 @@ public class ProcessEngineBuilder {
   protected String mailServerSmtpPassword;
   protected int mailServerSmtpPort = ProcessEngineConfiguration.DEFAULT_MAIL_SERVER_SMTP_PORT;
   protected String mailServerDefaultFrom = ProcessEngineConfiguration.DEFAULT_FROM_EMAIL_ADDRESS;
+  protected Integer historyLevel;
 
   public ProcessEngineBuilder setProcessEngineName(String processEngineName) {
     this.processEngineName = processEngineName;
@@ -226,6 +227,11 @@ public class ProcessEngineBuilder {
       this.mailServerDefaultFrom = mailServerDefaultFrom;
     }
     
+    String historyLevelText = configurationProperties.getProperty("history.level");
+    if (historyLevelText!=null) {
+      historyLevel = ProcessEngineConfiguration.parseHistoryLevel(historyLevelText);
+    }
+    
     return this;
   }
 
@@ -279,6 +285,11 @@ public class ProcessEngineBuilder {
     
     // JOBEXECUTOR
     processEngineConfiguration.setJobExecutorAutoActivate(jobExecutorAutoActivate);
+
+    // HISTORY
+    if (historyLevel!=null) {
+      processEngineConfiguration.setHistoryLevel(historyLevel);
+    }
 
     // DATABASE
     processEngineConfiguration.setDbSchemaStrategy(dbSchemaStrategy);

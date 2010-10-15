@@ -21,6 +21,7 @@ import org.activiti.engine.impl.runtime.VariableInstanceEntity;
 public interface Type {
 
   String getTypeName();
+  boolean isCachable();
   boolean isAbleToStore(Object value);
   void setValue(Object value, VariableInstanceEntity variableInstanceEntity);
   Object getValue(VariableInstanceEntity variableInstanceEntity);

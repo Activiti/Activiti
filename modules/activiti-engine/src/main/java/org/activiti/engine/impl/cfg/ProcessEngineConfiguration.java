@@ -95,6 +95,28 @@ public class ProcessEngineConfiguration {
   public static final String DBSCHEMASTRATEGY_CREATE_IF_NECESSARY = "create-if-necessary";
   public static final String DBSCHEMASTRATEGY_DROP_CREATE = "drop-create";
 
+  public static final int HISTORYLEVEL_NONE = 0;
+  public static final int HISTORYLEVEL_ACTIVITY = 1;
+  public static final int HISTORYLEVEL_AUDIT = 2;
+  public static final int HISTORYLEVEL_FULL = 3;
+  
+  public static Integer parseHistoryLevel(String historyLevelText) {
+    if ("none".equalsIgnoreCase(historyLevelText)) {
+      return HISTORYLEVEL_NONE;
+    }
+    if ("activity".equalsIgnoreCase(historyLevelText)) {
+      return HISTORYLEVEL_ACTIVITY;
+    }
+    if ("audit".equalsIgnoreCase(historyLevelText)) {
+      return HISTORYLEVEL_AUDIT;
+    }
+    if ("full".equalsIgnoreCase(historyLevelText)) {
+      return HISTORYLEVEL_FULL;
+    }
+    throw new ActivitiException("invalid history level: "+historyLevelText);
+  }
+
+
   protected String processEngineName;
 
   /** the configurable list which will be {@link #initializeInterceptorChain(List, ProcessEngineConfiguration) processed} to build the {@link #commandExecutorTxRequired} */
@@ -139,7 +161,7 @@ public class ProcessEngineConfiguration {
   protected ExpressionManager expressionManager;
   protected BusinessCalendarManager businessCalendarManager;
   
-  protected boolean isHistoryEnabled = true;
+  protected int historyLevel = HISTORYLEVEL_AUDIT;
   protected Map<String, List<TaskListener>> taskListeners;
   
   protected boolean isConfigurationCompleted = false;
@@ -253,7 +275,7 @@ public class ProcessEngineConfiguration {
       notifyConfigurationComplete(expressionManager);
       notifyConfigurationComplete(businessCalendarManager);
 
-      if (isHistoryEnabled) {
+      if (historyLevel>=HISTORYLEVEL_ACTIVITY) {
         addTaskListener(TaskListener.EVENTNAME_ASSIGNMENT, new HistoryTaskAssignmentHandler());
       }
       
@@ -308,6 +330,8 @@ public class ProcessEngineConfiguration {
   public DbSqlSessionFactory getDbSqlSessionFactory() {
     return (DbSqlSessionFactory) sessionFactories.get(DbSqlSession.class);
   }
+  
+  // configuration update methods /////////////////////////////////////////////
 
   public void addCommandInterceptorsTxRequired(CommandInterceptor commandInterceptor) {
     commandInterceptorsTxRequired.add(commandInterceptor);
@@ -315,6 +339,28 @@ public class ProcessEngineConfiguration {
 
   public void addCommandInterceptorsTxRequiresNew(CommandInterceptor commandInterceptor) {
     commandInterceptorsTxRequiresNew.add(commandInterceptor);
+  }
+  
+  public void enableJPA(Object entityManagerFactory, boolean handleTransaction, boolean closeEntityManager) {
+    if(entityManagerFactory ==  null) {
+      throw new ActivitiException("entityManagerFactory is null, JPA cannot be enabled");
+    }
+    if(!sessionFactories.containsKey(EntityManagerSession.class)) {
+      sessionFactories.put(EntityManagerSession.class, new EntityManagerSessionFactory(entityManagerFactory, true, true));
+      Type jpaType = variableTypes.getVariableType(JPAEntityVariableType.TYPE_NAME);
+      // Add JPA-type
+      if(jpaType == null) {
+        // We try adding the variable right before SerializableType, if available
+        int serializableIndex = variableTypes.getTypeIndex(SerializableType.TYPE_NAME);
+        if(serializableIndex > -1) {
+          variableTypes.addType(new JPAEntityVariableType(), serializableIndex);
+        } else {
+          variableTypes.addType(new JPAEntityVariableType());
+        }        
+      }
+    } else {
+      throw new ActivitiException("JPA is already enabled");
+    }
   }
 
   // getters and setters //////////////////////////////////////////////////////
@@ -547,14 +593,6 @@ public class ProcessEngineConfiguration {
     this.idBlockSize = idBlockSize;
   }
 
-  public boolean isHistoryEnabled() {
-    return isHistoryEnabled;
-  }
-
-  public void setHistoryEnabled(boolean isHistoryEnabled) {
-    this.isHistoryEnabled = isHistoryEnabled;
-  }
-
   public String getWsSyncFactoryClassName() {
     return wsSyncFactoryClassName;
   }
@@ -637,26 +675,12 @@ public class ProcessEngineConfiguration {
     return commandExecutorTxRequiresNew;
   }
   
+  public int getHistoryLevel() {
+    return historyLevel;
+  }
+
   
-  public void enableJPA(Object entityManagerFactory, boolean handleTransaction, boolean closeEntityManager) {
-    if(entityManagerFactory ==  null) {
-      throw new ActivitiException("entityManagerFactory is null, JPA cannot be enabled");
-    }
-    if(!sessionFactories.containsKey(EntityManagerSession.class)) {
-      sessionFactories.put(EntityManagerSession.class, new EntityManagerSessionFactory(entityManagerFactory, true, true));
-      Type jpaType = variableTypes.getVariableType(JPAEntityVariableType.TYPE_NAME);
-      // Add JPA-type
-      if(jpaType == null) {
-        // We try adding the variable right before SerializableType, if available
-        int serializableIndex = variableTypes.getTypeIndex(SerializableType.TYPE_NAME);
-        if(serializableIndex > -1) {
-          variableTypes.addType(new JPAEntityVariableType(), serializableIndex);
-        } else {
-          variableTypes.addType(new JPAEntityVariableType());
-        }        
-      }
-    } else {
-      throw new ActivitiException("JPA is already enabled");
-    }
+  public void setHistoryLevel(int historyLevel) {
+    this.historyLevel = historyLevel;
   }
 }

@@ -63,3 +63,4 @@ drop table ACT_RU_IDENTITY_LINK if exists;
 drop table ACT_RU_VARIABLE if exists;
 drop table ACT_HI_PROC_INST if exists;
 drop table ACT_HI_ACT_INST if exists;
+drop table ACT_HI_VAR_UPDATE if exists;

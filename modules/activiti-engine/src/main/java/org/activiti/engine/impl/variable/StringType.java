@@ -26,6 +26,10 @@ public class StringType implements Type {
     return "string";
   }
 
+  public boolean isCachable() {
+    return true;
+  }
+
   public Object getValue(VariableInstanceEntity variableInstanceEntity) {
     return variableInstanceEntity.getTextValue();
   }

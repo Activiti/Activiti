@@ -36,6 +36,7 @@ public class ProcessDefinitionEntity extends ProcessDefinitionImpl implements Pr
   protected String deploymentId;
   protected String resourceName;
   protected String startFormResourceKey;
+  protected Integer historyLevel;
   
   public ProcessDefinitionEntity() {
     super(null);
@@ -134,5 +135,13 @@ public class ProcessDefinitionEntity extends ProcessDefinitionImpl implements Pr
 
   public void setStartFormResourceKey(String startFormResourceKey) {
     this.startFormResourceKey = startFormResourceKey;
+  }
+
+  public Integer getHistoryLevel() {
+    return historyLevel;
+  }
+
+  public void setHistoryLevel(Integer historyLevel) {
+    this.historyLevel = historyLevel;
   }
 }
