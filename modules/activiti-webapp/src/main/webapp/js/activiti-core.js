@@ -1155,9 +1155,13 @@ Activiti.event = function() {
           // Navigate with url history first which will make _onHistoryEvent get called so it can fire event
           var state = encodeURIComponent(event);
           for (var name in value) {
-            if (value.hasOwnProperty(name)) {
-              state += "|" + encodeURIComponent(name) + "|" + encodeURIComponent(value[name]);
-            }
+						if (value.hasOwnProperty(name)) {
+							var val = value[name];
+							if (!YAHOO.lang.isBoolean(val) && !YAHOO.lang.isNumber(val) && !val) {
+ 								val = "";
+							}
+						state += "|" + encodeURIComponent(name) + "|" + encodeURIComponent(val);
+						}
           }
           YAHOO.util.History.navigate("event", state);
         }
@@ -1246,8 +1250,20 @@ Activiti.event = function() {
             }
             i++;
             if (i < il) {
-              value[name] = decodeURIComponent(tokens[i]);
-            }
+							var val = decodeURIComponent(tokens[i]);
+							if (val == "true") {
+								val = true;
+							}
+							else if (val == "false") {
+								val = false
+							}
+							else if (val.match(/^\d+$/)) {
+								val = parseInt(val);
+							}	else if (val == "") {
+								val = undefined;
+							}
+							value[name] = val;
+						}
             i++;
           }
         }
