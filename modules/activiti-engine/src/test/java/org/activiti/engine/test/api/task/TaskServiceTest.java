@@ -114,13 +114,6 @@ public class TaskServiceTest extends ActivitiInternalTestCase {
     } catch (ActivitiException ae) {
       assertTextPresent("taskId is null", ae.getMessage());
     }
-
-    try {
-      taskService.claim("taskId", null);
-      fail("ActivitiException expected");
-    } catch (ActivitiException ae) {
-      assertTextPresent("userId is null", ae.getMessage());
-    }
   }
 
   public void testClaimUnexistingTaskId() {
@@ -188,6 +181,27 @@ public class TaskServiceTest extends ActivitiInternalTestCase {
     // Claim the task again with the same user. No exception should be thrown
     taskService.claim(task.getId(), user.getId());
 
+    taskService.deleteTask(task.getId());
+    identityService.deleteUser(user.getId());
+  }
+  
+  public void testUnClaimTask() {
+    Task task = taskService.newTask();
+    taskService.saveTask(task);
+    User user = identityService.newUser("user");
+    identityService.saveUser(user);
+    
+    // Claim task the first time
+    taskService.claim(task.getId(), user.getId());
+    task = taskService.createTaskQuery().taskId(task.getId()).singleResult();
+    assertEquals(user.getId(), task.getAssignee());
+    
+    // Unclaim the task
+    taskService.claim(task.getId(), null);
+    
+    task = taskService.createTaskQuery().taskId(task.getId()).singleResult();
+    assertNull(task.getAssignee());
+    
     taskService.deleteTask(task.getId());
     identityService.deleteUser(user.getId());
   }

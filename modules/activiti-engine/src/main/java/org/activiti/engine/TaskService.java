@@ -62,7 +62,8 @@ public interface TaskService {
 	 /**
    * Claim responsibility for a task: the given user is made assignee for the task.
    * @param taskId task to claim, cannot be null.
-   * @param userId user that claims the task, cannot be null.
+   * @param userId user that claims the task. When userId is null the task is unclaimed,
+   * assigned to no one.
    * @throws ActivitiException when the user or task doesn't exist or when the task
    * is already claimed by another user.
    */

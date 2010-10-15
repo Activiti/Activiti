@@ -35,9 +35,6 @@ public class ClaimTaskCmd implements Command<Void> {
   }
   
   public Void execute(CommandContext commandContext) {
-    if(userId == null) {
-      throw new ActivitiException("userId is null");
-    }
     if(taskId == null) {
       throw new ActivitiException("taskId is null");
     }
@@ -49,20 +46,24 @@ public class ClaimTaskCmd implements Command<Void> {
     if (task == null) {
       throw new ActivitiException("Cannot find task with id " + taskId);
     }
-    
-    if (task.getAssignee() != null) {
-      if(!task.getAssignee().equals(userId)) {
-        // When the task is already claimed by another user, throw exception. Otherwise, ignore
-        // this, post-conditions of method already met.
-        throw new ActivitiException("Task " + taskId + " is already claimed by someone else");
-      }
-    } else {
-      if (identitySession.isValidUser(userId)) {
-        task.setAssignee(userId);
+    if(userId != null) {
+      if (task.getAssignee() != null) {
+        if(!task.getAssignee().equals(userId)) {
+          // When the task is already claimed by another user, throw exception. Otherwise, ignore
+          // this, post-conditions of method already met.
+          throw new ActivitiException("Task " + taskId + " is already claimed by someone else");
+        }
       } else {
-        throw new ActivitiException("Cannot claim task " + taskId + ": user " 
-                + userId + " unknown.");
-      }
+        if (identitySession.isValidUser(userId)) {
+          task.setAssignee(userId);
+        } else {
+          throw new ActivitiException("Cannot claim task " + taskId + ": user " 
+                  + userId + " unknown.");
+        }
+      }      
+    } else {
+      // Task should be assigned to no one
+      task.setAssignee(null);
     }
 
     return null;
