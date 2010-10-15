@@ -114,16 +114,14 @@ ProcessEngine engine = new ProcessEngineBuilder()
            <listitem>
             <para>
               <emphasis role="bold"><literal>jpaHandleTransaction: </literal></emphasis>Flag indicating that the engine should begin and commit/rollback the transaction
-              on the used <literal>EntityManager</literal> instances. Set to false when <literal>Java Transaction API (JTA)</literal> is used. This property is not required when using JPA,
-              defaults to <literal>true</literal>.
+              on the used <literal>EntityManager</literal> instances. Set to false when <literal>Java Transaction API (JTA)</literal> is used.
             </para>
           </listitem>
           <listitem>
             <para>
               <emphasis role="bold"><literal>jpaCloseEntityManager: </literal></emphasis>Flag indicating that the engine should close the <literal>EntityManager</literal> instance
               that was obtained from the <literal>jpaCloseEntityManager</literal>. Set to false when the <literal>EntityManager</literal> is container-managed
-              (eg. when using an Extended Persistence Context which isn't scoped to a single transaction').This property is not required when using JPA,
-              defaults to <literal>true</literal>.
+              (eg. when using an Extended Persistence Context which isn't scoped to a single transaction').
             </para>
           </listitem>
         </itemizedlist>

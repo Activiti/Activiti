@@ -99,10 +99,6 @@ public class VariableInstanceEntity implements Serializable, PersistentObject {
     dbSqlSession.delete(VariableInstanceEntity.class, id);
 
     if (byteArrayValueId != null) {
-      // the next apparently useless line is probably to ensure consistency in the DbSqlSession 
-      // cache, but should be checked and docced here (or removed if it turns out to be unnecessary)
-      // @see also HistoricVariableUpdateEntity
-      getByteArrayValue();
       dbSqlSession.delete(ByteArrayEntity.class, byteArrayValueId);
     }
   }
