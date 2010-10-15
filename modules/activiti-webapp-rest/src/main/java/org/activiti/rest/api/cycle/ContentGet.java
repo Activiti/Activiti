@@ -21,6 +21,7 @@ import org.activiti.cycle.ContentRepresentation;
 import org.activiti.cycle.RepositoryArtifact;
 import org.activiti.cycle.RepositoryConnector;
 import org.activiti.cycle.StandardMimeType;
+import org.activiti.cycle.impl.db.CycleServiceDbXStreamImpl;
 import org.activiti.rest.util.ActivitiRequest;
 import org.activiti.rest.util.ActivitiStreamingWebScript;
 import org.springframework.extensions.webscripts.WebScriptResponse;
@@ -30,19 +31,27 @@ import org.springframework.extensions.webscripts.WebScriptResponse;
  */
 public class ContentGet extends ActivitiStreamingWebScript {
 
+  // private CycleService cycleService;
+  private RepositoryConnector repositoryConnector;
+
+  private void init(ActivitiRequest req) {
+    String cuid = req.getCurrentUserId();
+
+    HttpSession session = req.getHttpServletRequest().getSession(true);
+    // this.cycleService = SessionUtil.getCycleService();
+    this.repositoryConnector = CycleServiceDbXStreamImpl.getRepositoryConnector(cuid, session);
+  }
+
   @Override
   protected void executeStreamingWebScript(ActivitiRequest req, WebScriptResponse res) throws IOException {
+    init(req);
+
     // Retrieve the artifactId from the request
     String artifactId = req.getMandatoryString("artifactId");
     String contentRepresentationId = req.getMandatoryString("contentRepresentationId");
 
-    // Retrieve session and repo connector
-    String cuid = req.getCurrentUserId();
-    HttpSession session = req.getHttpSession();
-    RepositoryConnector conn = SessionUtil.getRepositoryConnector(cuid, session);
-
     // Retrieve the artifact from the repository
-    RepositoryArtifact artifact = conn.getRepositoryArtifact(artifactId);
+    RepositoryArtifact artifact = repositoryConnector.getRepositoryArtifact(artifactId);
 
     ContentRepresentation contentRepresentation = artifact.getArtifactType().getContentRepresentation(contentRepresentationId);
 
@@ -74,8 +83,8 @@ public class ContentGet extends ActivitiStreamingWebScript {
     }
 
     // TODO: what is a good way to determine the etag? Using a fake one...
-    streamResponse(res, conn.getContent(artifact.getId(), contentRepresentation.getId()).asInputStream(), new Date(0), "W/\"647-1281077702000\"", attach,
-            attachmentFileName, contentType);
+    streamResponse(res, repositoryConnector.getContent(artifact.getId(), contentRepresentation.getId()).asInputStream(), new Date(0),
+            "W/\"647-1281077702000\"", attach, attachmentFileName, contentType);
 
   }
 
