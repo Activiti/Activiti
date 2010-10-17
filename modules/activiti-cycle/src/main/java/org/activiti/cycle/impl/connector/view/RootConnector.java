@@ -245,19 +245,10 @@ public class RootConnector implements RepositoryConnector {
     RepositoryConnector connector = getConnectorFromUrl(artifactId);
     String repoPartOfId = getRepositoryPartOfUrl(artifactId);
     for (Entry<String, Object> parameter : new HashSet<Entry<String, Object>>(parameters.entrySet())) {
-      // TODO: Think about that a bit more, a bit hacky to depend on naming
-      // conventions, or?
-      // The GUI currently has types, maybe we should transport them to here?
-      if (parameter.getKey().equals("targetFolder")) {
-        if (parameter.getValue() instanceof String) {
-          // folder id, I think the best for the moment.
+      if (parameter.getKey().equals("targetFolderId")) {
           String targetFolderId = (String) parameter.getValue();
           parameters.put("targetFolderConnector", getConnectorFromUrl(targetFolderId));
           parameters.put("targetFolder", getRepositoryPartOfUrl(targetFolderId));
-          
-        } else if (parameter.getValue() instanceof RepositoryFolder) {
-          throw new IllegalStateException("TArget Folder shouldn't be resolved by GUI any more");
-        }
       }
     }
     connector.executeParameterizedAction(repoPartOfId, actionId, parameters);

@@ -32,7 +32,7 @@
    YAHOO.lang.augmentObject(Activiti.service.ManagementService,
    {
      event: {
-       loadTree: "loadTree"
+       loadTree: "loadTree",
      }
    });
 
@@ -104,7 +104,7 @@
      */
     loadArtifactURL: function RepositoryService_loadArtifactURL(artifactid)
     {
-      return Activiti.service.REST_PROXY_URI_RELATIVE + "artifact?artifactId=" + encodeURIComponent(artifactid);
+      return Activiti.service.REST_PROXY_URI_RELATIVE + "artifact?artifactId=" + encodeURIComponent(artifactid) + "&restProxyUri=" + encodeURIComponent(Activiti.service.REST_PROXY_URI_RELATIVE);
     },
 
 		// TODO: doc

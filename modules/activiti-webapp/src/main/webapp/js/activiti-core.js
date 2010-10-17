@@ -1055,18 +1055,25 @@ Activiti.event = function() {
      */
     selectDatabaseTable: "selectDatabaseTable",
 
-		/**
-		 * Shall be fired when a tree node is selected.
-		 * 
-		 * @property selectTreeLabel
-		 * @type string
-		 */
-		
-		updateArtifactView: "updateArtifactView",
+    /**
+     * Shall be fired when a button next to a form field is clicked.
+     *
+     * @property clickFormEventButton
+     * @type string
+     */
+    clickFormEventButton: "clickFormEventButton",
 
-		expandTreeNode: "expandTreeNode",
+    /**
+ 		 * Shall be fired when a tree node is selected.
+ 		 * 
+ 		 * @property selectTreeLabel
+ 		 * @type string
+ 		 */
+     updateArtifactView: "updateArtifactView",
+     
+     expandTreeNode: "expandTreeNode",
 
-		collapseTreeNode: "collapseTreeNode",
+     collapseTreeNode: "collapseTreeNode",
 
     /**
      * Called from the activiti initializer when the first body element is ready.

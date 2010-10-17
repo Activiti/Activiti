@@ -458,17 +458,6 @@ public class ActivitiRequest {
               value = jsonBody.getString(key);
             } else if (type.equals("String")) {
               value = jsonBody.getString(key);
-            } else if (type.equals("RepositoryFolder")) {
-              // TODO: Check implementation in CustomizedViewConnector, but
-              // should be moved there
-              value = jsonBody.getString(key);
-              // if (conn != null) {
-              // value = conn.getRepositoryFolder(jsonBody.getString(key));
-              // } else {
-              // throw new WebScriptException(Status.STATUS_BAD_REQUEST,
-              // "Parameter '" + keyPair[0] + "' of type '" + type
-              // + "' requested without providing a repository connector");
-              // }
             } else {
               throw new WebScriptException(Status.STATUS_BAD_REQUEST, "Parameter '" + keyPair[0] + "' is of unknown type '" + type + "'");
             }

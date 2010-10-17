@@ -474,3 +474,27 @@ li.filter, li.table {
 #Activiti.yui-skin-sam .yui-calcontainer div.title {
 	margin: 0 -10px 10px;
 }
+
+/* Styling for the custom event button next to form fields */
+#Activiti .bd .activiti-form .file-chooser-button {
+	margin: 0 0 -13px 3px;
+}
+
+#Activiti .bd .activiti-form .file-chooser-button span {
+	margin: 0 -1px 0 -1px;
+}
+
+#Activiti .bd .activiti-form .file-chooser-button span a {
+	margin: 0;
+}
+
+#Activiti .bd .activiti-form label span.form-Event-value {
+  float: left;
+  width: 158px;
+  height: 16px;
+  background-color: #FFFFFF;
+  border: 1px solid #CCCCCC;
+  padding: 0.25em;
+  white-space: nowrap;
+  overflow: hidden;
+}

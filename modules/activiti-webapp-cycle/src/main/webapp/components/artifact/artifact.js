@@ -1,4 +1,4 @@
-(function()
+(function() 
 {
 	/**
 	 * Shortcuts
@@ -23,12 +23,15 @@
     this.services.repositoryService = new Activiti.service.RepositoryService(this);
     // Listen for events that interest this component
     this.onEvent(Activiti.event.updateArtifactView, this.onUpdateArtifactView);
+    this.onEvent(Activiti.event.clickFormEventButton, this.onClickFormEventButton);
 		
 		this._tabView = {};
 		this._repositoryNodeId = "";
 		this._isRepositoryArtifact = false;
 		this._name = "";
 		this._activeTabIndex = 0;
+
+    this._fileChooserDialog = {};
 
     return this;
   };
@@ -46,24 +49,36 @@
 
 		},
 		
+		/**
+		 * This method is invoked when a node in the tree is selected or the active tab chages. 
+		 * It first checks whether the node is still the same and updates the active tab if 
+		 * needed. If a new node was selected in the tree, the current artifact view is removed
+		 * and the loadArtifact method is invoked with the new artifacts id.
+		 * 
+		 * @method onUpdateArtifactView
+		 * @param event {String} the name of the event that triggered this method invokation
+		 * @param args {array} an array of object literals
+		 */
 		onUpdateArtifactView: function Artifact_onUpdateArtifactView(event, args) {
 			
-			this._repositoryNodeId = args[1].value.repositoryNodeId;
-			this._isRepositoryArtifact = args[1].value.isRepositoryArtifact;
-			this._name = args[1].value.name;
-			this._activeTabIndex = args[1].value.activeTabIndex;
+			var eventValue = args[1].value;
+			
+			this._repositoryNodeId = eventValue.repositoryNodeId;
+			this._isRepositoryArtifact = eventValue.isRepositoryArtifact;
+			this._name = eventValue.name;
+			this._activeTabIndex = eventValue.activeTabIndex;
 
 			// get the header el of the content area
 			var headerEl = Selector.query("h1", this.id, true);
-			if("header-" + args[1].value.repositoryNodeId === headerEl.id) {
-				// still the same node, check whether the tab should change
-
+			// determine whether the node is still the same
+			if("header-" + eventValue.repositoryNodeId === headerEl.id) {
+				// still the same node, if the tab view is instanciated, the tab selection should be updated
 				if(this._tabView.set) {
-					// Update active tav selection silently, without firing an event (last parameter is 'silent=true')
+					// Update active tab selection silently, without firing an event (last parameter 'true')
 					this._tabView.set("activeTab", this._tabView.getTab(this._activeTabIndex), true);
 				}
-
 			} else {
+				// a new node has been selected in the tree
 				var tabViewHtml = YAHOO.util.Selector.query('div', 'artifact-div', true);
 				// check whether an artifact was selected before. If yes, remove tabViewHtml and actions
 				if(tabViewHtml) {
@@ -73,31 +88,31 @@
 					optionsDiv.innerHTML = "";
 					optionsDiv.removeAttribute("class");
 				}
-				// Check whether the selected node is a file node. If so, 
-				// we can load its data
-				if(args[1].value.isRepositoryArtifact && (args[1].value.isRepositoryArtifact != "undefined") ) {
-					this.services.repositoryService.loadArtifact(args[1].value.repositoryNodeId);
+				// Check whether the selected node is a file node. If so, load its data
+				if(eventValue.isRepositoryArtifact ) {
+					this.services.repositoryService.loadArtifact(eventValue.repositoryNodeId);
 				}
 				// Update the heading that displays the name of the selected node
-		  	headerEl.id = "header-" + args[1].value.repositoryNodeId;
-				headerEl.innerHTML = args[1].value.name;
+				headerEl.id = "header-" + eventValue.repositoryNodeId;
+				headerEl.innerHTML = eventValue.name;
 			}
 		},
 		
 		/**
-     * Will display the artifact
-     *
-     * @method onLoadArtifactSuccess
-     * @param response {object} The callback response
-     * @param obj {object} Helper object
-     */
+		 * This method is invoked when an artifact is loaded successfully. It will draw a
+		 * yui tab view component to display the different content representations of the
+		 * artifact and create an options panel for links, downloads and actions.
+		 *
+		 * @method onLoadArtifactSuccess
+		 * @param response {object} The callback response
+		 * @param obj {object} Helper object
+		 */
     onLoadArtifactSuccess: function RepoTree_RepositoryService_onLoadArtifactSuccess(response, obj)
     {
-	
 			this._tabView = new YAHOO.widget.TabView(); 
 			
 			// Retrieve rest api response
-      var artifactJson = response.json;
+			var artifactJson = response.json;
 
 			for(var i = 0; i<artifactJson.contentRepresentations.length; i++) {
 				var tab = new YAHOO.widget.Tab({ 
@@ -133,11 +148,11 @@
 				option.appendChild(document.createTextNode("choose an action..."));
 				actionsDropdown.appendChild(option);
 				
-				for(var i = 0; i<artifactJson.actions.length; i++) {
+				for(i = 0; i<artifactJson.actions.length; i++) {
 					option = document.createElement("option");
 					option.setAttribute('value', artifactJson.id + "#TOKEN#" + artifactJson.actions[i].name);
 					option.appendChild(document.createTextNode(artifactJson.actions[i].label));
-		  		actionsDropdown.appendChild(option);
+					actionsDropdown.appendChild(option);
 					YAHOO.util.Event.addListener(option, "click", this.onExecuteActionClick);
 				}
 				actionsDiv.appendChild(actionsDropdown);
@@ -147,7 +162,7 @@
 				var linksDiv = document.createElement("div");
 				linksDiv.setAttribute('id', "artifact-links");
 				linksDiv.appendChild(document.createTextNode("Links: "));
-				for(var i=0; i<artifactJson.links.length; i++) {
+				for(i=0; i<artifactJson.links.length; i++) {
 					var link = document.createElement("a");
 					link.setAttribute('href', artifactJson.links[i].url);
 					link.setAttribute('title', artifactJson.links[i].label);
@@ -165,13 +180,13 @@
 				var downloadsDiv = document.createElement("div");
 				downloadsDiv.setAttribute('id', "artifact-downloads");
 				downloadsDiv.appendChild(document.createTextNode("Downloads: "));
-				for(var i=0; i<artifactJson.downloads.length; i++) {
-					var link = document.createElement("a");
-					link.setAttribute('href', artifactJson.downloads[i].url);
-					link.setAttribute('title', artifactJson.downloads[i].name + " (" + artifactJson.downloads[i].type + ")");
-					link.setAttribute('target', "blank");
-					link.appendChild(document.createTextNode(artifactJson.downloads[i].name));
-					downloadsDiv.appendChild(link);
+				for(i=0; i<artifactJson.downloads.length; i++) {
+					var link1 = document.createElement("a");
+					link1.setAttribute('href', artifactJson.downloads[i].url);
+					link1.setAttribute('title', artifactJson.downloads[i].name + " (" + artifactJson.downloads[i].type + ")");
+					link1.setAttribute('target', "blank");
+					link1.appendChild(document.createTextNode(artifactJson.downloads[i].name));
+					downloadsDiv.appendChild(link1);
 					if(i < (artifactJson.downloads.length -1)) {
 						downloadsDiv.appendChild(document.createTextNode(" | "));
 					}
@@ -188,9 +203,8 @@
 		{
 			var artifactId = this.value.split("#TOKEN#")[0];
 			var actionName = this.value.split("#TOKEN#")[1];
-			
-			new Activiti.widget.ExecuteArtifactActionForm(this.id + "-executeArtifactActionForm", artifactId, actionName);
-			YAHOO.util.Event.preventDefault(e);
+
+			return new Activiti.widget.ExecuteArtifactActionForm(this.id + "-executeArtifactActionForm", artifactId, actionName);
 		},
 		
 		onTabDataLoaded: function Artifact_onTabDataLoaded()
@@ -209,6 +223,11 @@
 			this.fireEvent(Activiti.event.updateArtifactView, {"repositoryNodeId": this._repositoryNodeId, "isRepositoryArtifact": this._isRepositoryArtifact, "name": this._name, "activeTabIndex": newActiveTabIndex}, null, true);
 			YAHOO.util.Event.preventDefault(event);
 		},
+		
+		onClickFormEventButton: function Artifact_onClickFormEventButton(event, args)
+		{
+		  return new Activiti.component.FileChooserDialog(this.id, args[1].value.callback);
+		}
 
 	});
 
