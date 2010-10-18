@@ -11,7 +11,7 @@ package org.activiti.cycle;
  * @author bernd.ruecker@camunda.com
  * @author nils.preusker@camunda.com
  */
-public enum StandardMimeType implements MimeType {
+public enum CycleDefaultMimeType implements MimeType {
 
   PNG("image/png"),
   GIF("image/gif"),
@@ -28,7 +28,7 @@ public enum StandardMimeType implements MimeType {
 
   private String contentType;
 
-  private StandardMimeType(String contentType) {
+  private CycleDefaultMimeType(String contentType) {
     this.contentType = contentType;
   }
 
@@ -41,10 +41,10 @@ public enum StandardMimeType implements MimeType {
    * 
    * @param contentType the content-type to create a MimeType instance for.
    */
-  public MimeType getMimeTypeFor(final String contentType) {
+  public static MimeType getMimeTypeFor(final String contentType) {
     // Check whether string equals one of the pre-defined 
     // standard content-types
-    for (StandardMimeType standardMimeType : values()) {
+    for (CycleDefaultMimeType standardMimeType : values()) {
       if (standardMimeType.getContentType().equals(contentType)) {
         return standardMimeType;
       }
