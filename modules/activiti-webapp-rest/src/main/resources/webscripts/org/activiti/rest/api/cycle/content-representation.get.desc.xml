@@ -3,5 +3,5 @@
   <description>Returns the specified content representation of an artifact as HTML</description>
   <url>/content-representation?artifactId={artifactId}&amp;representationId={representationId}</url>
   <authentication>user</authentication>
-  <format default="html">argument</format>
+  <format default="json">argument</format>
 </webscript>

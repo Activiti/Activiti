@@ -109,6 +109,7 @@
 		 */
     onLoadArtifactSuccess: function RepoTree_RepositoryService_onLoadArtifactSuccess(response, obj)
     {
+      var me = this;
 			this._tabView = new YAHOO.widget.TabView(); 
 			
 			// Retrieve rest api response
@@ -120,7 +121,11 @@
 					dataSrc: this.loadTabDataURL(artifactJson.id, artifactJson.contentRepresentations[i]), 
 					cacheData: true
 				});
-				tab.addListener("contentChange", this.onTabDataLoaded);				
+				tab.addListener("contentChange", this.onTabDataLoaded);
+				
+				tab.loadHandler.success = function(response) {
+          me.onLoadTabSuccess(this /* the tab */, response);
+  			};
 				this._tabView.addTab(tab);
 			}
 
@@ -197,6 +202,33 @@
 			clearDiv.setAttribute('style', 'clear: both');
 			optionsDiv.appendChild(clearDiv);
 			optionsDiv.setAttribute('class', 'active');
+    },
+
+    onLoadTabSuccess: function Artifact_onLoadTabSuccess(tab, response) {
+      
+      try {
+        var responseJson = YAHOO.lang.JSON.parse(response.responseText);
+        // parse response, create tab content and set it to the tab
+        
+        var tabContent;
+        if(responseJson.renderInfo == "IMAGE") {
+          tabContent = '<div class="artifact-image"><img id="' + responseJson.contentRepresentationId + '" src="' + responseJson.imageUrl + '" border=0></img></div>';
+        } else if (responseJson.renderInfo == "HTML") {
+          tabContent = '<div class="artifact-html"><div id="' + responseJson.contentRepresentationId + '">' + responseJson.content + '</div></div>';
+        } else if (responseJson.renderInfo == "BINARY") {
+          // TODO: show some information but no content for binary
+          tabContent = '<div class="artifact-binary"><p>No preview available...</p></div>';
+        } else if (responseJson.renderInfo == "CODE") {
+          tabContent = '<div class="artifact-code"><pre id="' + responseJson.contentRepresentationId + '" class="prettyprint" >' + responseJson.content + '</pre></div>';
+        } else if (responseJson.renderInfo == "TEXT_PLAIN") {
+          tabContent = '<div class="artifact-text-plain"><pre id="' + responseJson.contentRepresentationId + '">' + responseJson.content + '</pre></div>';
+        }
+        tab.set('content', tabContent);
+        //{ "renderInfo": "IMAGE", "contentRepresentationId": "PNG", "contentType": "image\/png", "imageUrl": "\/activiti-cycle\/proxy\/activiti-rest-endpoint\/content?artifactId=%2FDemo%2Fminutes%2FInitialMindmap.mm&contentRepresentationId=PNG" } 
+      }
+      catch (e) {
+          alert("Invalid response for tab data");
+      }
     },
 
 		onExecuteActionClick: function Artifact_onExecuteActionClick(e)

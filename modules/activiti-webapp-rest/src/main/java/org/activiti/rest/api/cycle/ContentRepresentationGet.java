@@ -10,6 +10,7 @@ import java.util.logging.Logger;
 import javax.servlet.http.HttpSession;
 
 import org.activiti.cycle.ContentRepresentation;
+import org.activiti.cycle.RenderInfo;
 import org.activiti.cycle.RepositoryArtifact;
 import org.activiti.cycle.RepositoryConnector;
 import org.activiti.cycle.impl.db.CycleServiceDbXStreamImpl;
@@ -48,6 +49,7 @@ public class ContentRepresentationGet extends ActivitiWebScript {
       ContentRepresentation contentRepresentation = artifact.getArtifactType().getContentRepresentation(representationId);
       switch (contentRepresentation.getRenderInfo()) {
       case IMAGE:
+        model.put("renderInfo", RenderInfo.IMAGE.name());
         String imageUrl = restProxyUri + "content?artifactId=" + URLEncoder.encode(artifactId, "UTF-8") + "&contentRepresentationId="
                 + URLEncoder.encode(contentRepresentation.getId(), "UTF-8");
         model.put("imageUrl", imageUrl);
@@ -60,7 +62,10 @@ public class ContentRepresentationGet extends ActivitiWebScript {
         model.put("content", content);
       }
 
-      model.put("id", contentRepresentation.getId());
+      model.put("renderInfo", contentRepresentation.getRenderInfo().name());
+      model.put("contentRepresentationId", contentRepresentation.getId());
+      model.put("contentType", contentRepresentation.getMimeType().getContentType());
+
     } catch (Exception ex) {
       // we had a problem with a content representation log and go on,
       // that this will not prevent other representations to be shown
