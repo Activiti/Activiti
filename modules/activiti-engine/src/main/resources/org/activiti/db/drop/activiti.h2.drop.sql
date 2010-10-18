@@ -1,3 +1,14 @@
+drop index ACT_IDX_EXEC_BUSKEY;
+drop index ACT_IDX_TASK_CREATE;
+drop index ACT_IDX_IDENT_LNK_USER;
+drop index ACT_IDX_IDENT_LNK_GROUP;
+drop index ACT_IDX_HI_PRO_INST_END;
+drop index ACT_IDX_HI_PRO_I_BUSKEY;
+drop index ACT_IDX_HI_ACT_INST_START;
+drop index ACT_IDX_HI_ACT_INST_END;
+drop index ACT_IDX_HI_VAR_UPD_TIME;
+drop index ACT_IDX_HI_VAR_UPD_NAME;
+
 alter table ACT_GE_BYTEARRAY 
     drop constraint FK_BYTEARR_DEPL;
 

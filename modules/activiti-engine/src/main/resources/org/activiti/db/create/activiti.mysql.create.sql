@@ -109,9 +109,6 @@ create table ACT_RU_TASK (
     ASSIGNEE_ varchar(64),
     PRIORITY_ integer,
     CREATE_TIME_ timestamp,
-    START_DEADLINE_ datetime,
-    COMPLETION_DEADLINE_ datetime,
-    SKIPPABLE_ TINYINT,
     primary key (ID_)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE utf8_bin;
 
@@ -188,6 +185,17 @@ create table ACT_HI_VAR_UPDATE (
     TEXT2_ varchar(255),
     primary key (ID_)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE utf8_bin;
+
+create index ACT_IDX_EXEC_BUSKEY on ACT_RU_EXECUTION(BUSINESS_KEY_);
+create index ACT_IDX_TASK_CREATE on ACT_RU_TASK(CREATE_TIME_);
+create index ACT_IDX_IDENT_LNK_USER on ACT_RU_IDENTITY_LINK(USER_ID_);
+create index ACT_IDX_IDENT_LNK_GROUP on ACT_RU_IDENTITY_LINK(GROUP_ID_);
+create index ACT_IDX_HI_PRO_INST_END on ACT_HI_PROC_INST(END_TIME_);
+create index ACT_IDX_HI_PRO_I_BUSKEY on ACT_HI_PROC_INST(BUSINESS_KEY_);
+create index ACT_IDX_HI_ACT_INST_START on ACT_HI_ACT_INST(START_TIME_);
+create index ACT_IDX_HI_ACT_INST_END on ACT_HI_ACT_INST(END_TIME_);
+create index ACT_IDX_HI_VAR_UPD_TIME on ACT_HI_VAR_UPDATE(TIME_);
+create index ACT_IDX_HI_VAR_UPD_NAME on ACT_HI_VAR_UPDATE(NAME_);
 
 alter table ACT_GE_BYTEARRAY
     add constraint FK_BYTEARR_DEPL 

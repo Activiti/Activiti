@@ -1,3 +1,30 @@
+drop index ACT_IDX_BYTEAR_DEPL ;
+drop index ACT_IDX_EXE_PROCINST ;
+drop index ACT_IDX_EXE_PARENT ;
+drop index ACT_IDX_EXE_SUPER;
+drop index ACT_IDX_MEMB_GROUP;
+drop index ACT_IDX_MEMB_USER;
+drop index ACT_IDX_TSKASS_TASK;
+drop index ACT_IDX_TASK_EXEC;
+drop index ACT_IDX_TASK_PROCINST;
+drop index ACT_IDX_TASK_PROCDEF;
+drop index ACT_IDX_VAR_TASK;
+drop index ACT_IDX_VAR_EXE;
+drop index ACT_IDX_VAR_PROCINST;
+drop index ACT_IDX_VAR_BYTEARRAY;
+drop index ACT_IDX_JOB_EXCEPTION;
+
+drop index ACT_IDX_EXEC_BUSKEY;
+drop index ACT_IDX_TASK_CREATE;
+drop index ACT_IDX_IDENT_LNK_USER;
+drop index ACT_IDX_IDENT_LNK_GROUP;
+drop index ACT_IDX_HI_PRO_INST_END;
+drop index ACT_IDX_HI_PRO_I_BUSKEY;
+drop index ACT_IDX_HI_ACT_INST_START;
+drop index ACT_IDX_HI_ACT_INST_END;
+drop index ACT_IDX_HI_VAR_UPD_TIME;
+drop index ACT_IDX_HI_VAR_UPD_NAME;
+
 alter table ACT_GE_BYTEARRAY 
     drop CONSTRAINT FK_BYTEARR_DEPL;
 

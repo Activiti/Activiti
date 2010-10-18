@@ -109,9 +109,6 @@ create table ACT_RU_TASK (
     ASSIGNEE_ varchar(64),
     PRIORITY_ integer,
     CREATE_TIME_ timestamp,
-    START_DEADLINE_ timestamp,
-    COMPLETION_DEADLINE_ timestamp,
-    SKIPPABLE_ smallint,
     primary key (ID_)
 );
 
@@ -190,76 +187,102 @@ create table ACT_HI_VAR_UPDATE (
     primary key (ID_)
 );
 
-alter table ACT_GE_BYTEARRAY 
+create index ACT_IDX_EXEC_BUSKEY on ACT_RU_EXECUTION(BUSINESS_KEY_);
+create index ACT_IDX_TASK_CREATE on ACT_RU_TASK(CREATE_TIME_);
+create index ACT_IDX_IDENT_LNK_USER on ACT_RU_IDENTITY_LINK(USER_ID_);
+create index ACT_IDX_IDENT_LNK_GROUP on ACT_RU_IDENTITY_LINK(GROUP_ID_);
+create index ACT_IDX_HI_PRO_INST_END on ACT_HI_PROC_INST(END_TIME_);
+create index ACT_IDX_HI_PRO_I_BUSKEY on ACT_HI_PROC_INST(BUSINESS_KEY_);
+create index ACT_IDX_HI_ACT_INST_START on ACT_HI_ACT_INST(START_TIME_);
+create index ACT_IDX_HI_ACT_INST_END on ACT_HI_ACT_INST(END_TIME_);
+create index ACT_IDX_HI_VAR_UPD_TIME on ACT_HI_VAR_UPDATE(TIME_);
+create index ACT_IDX_HI_VAR_UPD_NAME on ACT_HI_VAR_UPDATE(NAME_);
+
+create index ACT_IDX_BYTEAR_DEPL on ACT_GE_BYTEARRAY(DEPLOYMENT_ID_);
+alter table ACT_GE_BYTEARRAY
     add constraint FK_BYTEARR_DEPL 
     foreign key (DEPLOYMENT_ID_) 
     references ACT_RE_DEPLOYMENT (ID_);
 
+create index ACT_IDX_EXE_PROCINST on ACT_RU_EXECUTION(PROC_INST_ID_);
 alter table ACT_RU_EXECUTION
     add constraint FK_EXE_PROCINST 
     foreign key (PROC_INST_ID_) 
     references ACT_RU_EXECUTION (ID_);
 
+create index ACT_IDX_EXE_PARENT on ACT_RU_EXECUTION(PARENT_ID_);
 alter table ACT_RU_EXECUTION
     add constraint FK_EXE_PARENT 
     foreign key (PARENT_ID_) 
     references ACT_RU_EXECUTION (ID_);
-
+    
+create index ACT_IDX_EXE_SUPER on ACT_RU_EXECUTION(SUPER_EXEC_);
 alter table ACT_RU_EXECUTION
     add constraint FK_EXE_SUPER 
     foreign key (SUPER_EXEC_) 
-    references ACT_RU_EXECUTION(ID_);
+    references ACT_RU_EXECUTION (ID_);
 
+create index ACT_IDX_MEMB_GROUP on ACT_ID_MEMBERSHIP(GROUP_ID_);
 alter table ACT_ID_MEMBERSHIP 
     add constraint FK_MEMB_GROUP 
     foreign key (GROUP_ID_) 
     references ACT_ID_GROUP (ID_);
 
+create index ACT_IDX_MEMB_USER on ACT_ID_MEMBERSHIP(USER_ID_);
 alter table ACT_ID_MEMBERSHIP 
     add constraint FK_MEMB_USER 
     foreign key (USER_ID_) 
     references ACT_ID_USER (ID_);
 
+create index ACT_IDX_TSKASS_TASK on ACT_RU_IDENTITY_LINK(TASK_ID_);
 alter table ACT_RU_IDENTITY_LINK
     add constraint FK_TSKASS_TASK 
     foreign key (TASK_ID_) 
     references ACT_RU_TASK (ID_);
     
+create index ACT_IDX_TASK_EXEC on ACT_RU_TASK(EXECUTION_ID_);
 alter table ACT_RU_TASK
     add constraint FK_TASK_EXEC
     foreign key (EXECUTION_ID_)
     references ACT_RU_EXECUTION (ID_);
     
+create index ACT_IDX_TASK_PROCINST on ACT_RU_TASK(PROC_INST_ID_);
 alter table ACT_RU_TASK
     add constraint FK_TASK_PROCINST
     foreign key (PROC_INST_ID_)
     references ACT_RU_EXECUTION (ID_);
     
+create index ACT_IDX_TASK_PROCDEF on ACT_RU_TASK(PROC_DEF_ID_);
 alter table ACT_RU_TASK
   add constraint FK_TASK_PROCDEF
   foreign key (PROC_DEF_ID_)
   references ACT_RE_PROC_DEF (ID_);
   
+create index ACT_IDX_VAR_TASK on ACT_RU_VARIABLE(TASK_ID_);
 alter table ACT_RU_VARIABLE 
     add constraint FK_VAR_TASK 
     foreign key (TASK_ID_) 
     references ACT_RU_TASK (ID_);
 
+create index ACT_IDX_VAR_EXE on ACT_RU_VARIABLE(EXECUTION_ID_);
 alter table ACT_RU_VARIABLE 
     add constraint FK_VAR_EXE 
     foreign key (EXECUTION_ID_) 
     references ACT_RU_EXECUTION (ID_);
 
+create index ACT_IDX_VAR_PROCINST on ACT_RU_VARIABLE(PROC_INST_ID_);
 alter table ACT_RU_VARIABLE
     add constraint FK_VAR_PROCINST
     foreign key (PROC_INST_ID_)
     references ACT_RU_EXECUTION(ID_);
 
+create index ACT_IDX_VAR_BYTEARRAY on ACT_RU_VARIABLE(BYTEARRAY_ID_);
 alter table ACT_RU_VARIABLE 
     add constraint FK_VAR_BYTEARRAY 
     foreign key (BYTEARRAY_ID_) 
     references ACT_GE_BYTEARRAY (ID_);
-    
+
+create index ACT_IDX_JOB_EXCEPTION on ACT_RU_JOB(EXCEPTION_STACK_ID_);
 alter table ACT_RU_JOB 
     add constraint FK_JOB_EXCEPTION 
     foreign key (EXCEPTION_STACK_ID_) 
