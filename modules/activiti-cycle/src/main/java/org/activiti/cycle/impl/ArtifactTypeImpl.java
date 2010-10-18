@@ -28,7 +28,7 @@ import org.activiti.cycle.RepositoryArtifact;
 import org.activiti.cycle.RepositoryArtifactOutgoingLink;
 import org.activiti.cycle.RepositoryConnector;
 import org.activiti.cycle.RepositoryException;
-import org.activiti.cycle.StandardMimeType;
+import org.activiti.cycle.CycleDefaultMimeType;
 
 /**
  * The type specifies the type of an artifact, e.g. Signavio model, jpdl process
@@ -67,7 +67,7 @@ public class ArtifactTypeImpl implements ArtifactType {
 
   private List<DownloadContentAction> downloadContentActions; 
 
-  public ArtifactTypeImpl(String id, StandardMimeType mimeType) {
+  public ArtifactTypeImpl(String id, CycleDefaultMimeType mimeType) {
     this.id = id;
     this.mimeType = mimeType;
     this.contentRepresentationList = new ArrayList<ContentRepresentation>();

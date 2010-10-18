@@ -4,7 +4,7 @@ import java.io.Serializable;
 
 /**
  * Data structure for link to content, including the URL to the content, the
- * type (see {@link StandardMimeType}) and a name (which is shown in the GUI).
+ * type (see {@link CycleDefaultMimeType}) and a name (which is shown in the GUI).
  * 
  * The client URL should be normally set by the infrastructure, so a
  * {@link ContentRepresentationProvider} can concentrate on really providing the

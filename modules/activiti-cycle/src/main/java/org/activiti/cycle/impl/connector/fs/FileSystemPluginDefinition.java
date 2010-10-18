@@ -4,7 +4,7 @@ import java.util.List;
 
 import org.activiti.cycle.ArtifactType;
 import org.activiti.cycle.RenderInfo;
-import org.activiti.cycle.StandardMimeType;
+import org.activiti.cycle.CycleDefaultMimeType;
 import org.activiti.cycle.impl.ArtifactTypeImpl;
 import org.activiti.cycle.impl.ContentRepresentationImpl;
 import org.activiti.cycle.impl.conf.RepositoryConnectorConfiguration;
@@ -37,49 +37,49 @@ public class FileSystemPluginDefinition implements ActivitiCyclePluginDefinition
   // public static final String CONTENT_REPRESENTATION_ID_PDF = "pdf";
   
   public void addArtifactTypes(List<ArtifactType> types) {    
-    ArtifactTypeImpl artifactTypeDefault = new ArtifactTypeImpl(ARTIFACT_TYPE_DEFAULT, StandardMimeType.TEXT);
-    artifactTypeDefault.addDefaultContentRepresentation(new ContentRepresentationImpl(CONTENT_REPRESENTATION_ID_BINARY, StandardMimeType.TEXT, RenderInfo.TEXT_PLAIN),
+    ArtifactTypeImpl artifactTypeDefault = new ArtifactTypeImpl(ARTIFACT_TYPE_DEFAULT, CycleDefaultMimeType.TEXT);
+    artifactTypeDefault.addDefaultContentRepresentation(new ContentRepresentationImpl(CONTENT_REPRESENTATION_ID_BINARY, CycleDefaultMimeType.TEXT, RenderInfo.TEXT_PLAIN),
             new FileBinaryContentProvider());
     artifactTypeDefault.addDownloadContentAction(CONTENT_REPRESENTATION_ID_BINARY);
     types.add(artifactTypeDefault);    
     
-    ArtifactTypeImpl artifactType1 = new ArtifactTypeImpl(ARTIFACT_TYPE_BPMN_20_XML, StandardMimeType.XML);
-    artifactType1.addDefaultContentRepresentation(new ContentRepresentationImpl(CONTENT_REPRESENTATION_ID_XML, StandardMimeType.XML, RenderInfo.CODE), new XmlFileContentProvider());
+    ArtifactTypeImpl artifactType1 = new ArtifactTypeImpl(ARTIFACT_TYPE_BPMN_20_XML, CycleDefaultMimeType.XML);
+    artifactType1.addDefaultContentRepresentation(new ContentRepresentationImpl(CONTENT_REPRESENTATION_ID_XML, CycleDefaultMimeType.XML, RenderInfo.CODE), new XmlFileContentProvider());
     artifactType1.addDownloadContentAction(CONTENT_REPRESENTATION_ID_XML);
     types.add(artifactType1);
 
-    ArtifactTypeImpl artifactType2 = new ArtifactTypeImpl(ARTIFACT_TYPE_ORYX_XML, StandardMimeType.XML);
-    artifactType2.addDefaultContentRepresentation(new ContentRepresentationImpl(CONTENT_REPRESENTATION_ID_XML, StandardMimeType.XML, RenderInfo.CODE), new XmlFileContentProvider());
+    ArtifactTypeImpl artifactType2 = new ArtifactTypeImpl(ARTIFACT_TYPE_ORYX_XML, CycleDefaultMimeType.XML);
+    artifactType2.addDefaultContentRepresentation(new ContentRepresentationImpl(CONTENT_REPRESENTATION_ID_XML, CycleDefaultMimeType.XML, RenderInfo.CODE), new XmlFileContentProvider());
     artifactType2.addDownloadContentAction(CONTENT_REPRESENTATION_ID_XML);
     types.add(artifactType2);
 
-    ArtifactTypeImpl artifactType3 = new ArtifactTypeImpl(ARTIFACT_TYPE_TEXT, StandardMimeType.TEXT);
+    ArtifactTypeImpl artifactType3 = new ArtifactTypeImpl(ARTIFACT_TYPE_TEXT, CycleDefaultMimeType.TEXT);
     artifactType3
-            .addDefaultContentRepresentation(new ContentRepresentationImpl(CONTENT_REPRESENTATION_ID_TEXT, StandardMimeType.TEXT, RenderInfo.TEXT_PLAIN),
+            .addDefaultContentRepresentation(new ContentRepresentationImpl(CONTENT_REPRESENTATION_ID_TEXT, CycleDefaultMimeType.TEXT, RenderInfo.TEXT_PLAIN),
             new TextFileContentProvider());
     artifactType3.addDownloadContentAction(CONTENT_REPRESENTATION_ID_TEXT);
     types.add(artifactType3);
 
-    ArtifactTypeImpl artifactTypeXml = new ArtifactTypeImpl(ARTIFACT_TYPE_XML, StandardMimeType.XML);
+    ArtifactTypeImpl artifactTypeXml = new ArtifactTypeImpl(ARTIFACT_TYPE_XML, CycleDefaultMimeType.XML);
     artifactTypeXml
-            .addDefaultContentRepresentation(new ContentRepresentationImpl(CONTENT_REPRESENTATION_ID_XML, StandardMimeType.XML, RenderInfo.CODE), new XmlFileContentProvider());
+            .addDefaultContentRepresentation(new ContentRepresentationImpl(CONTENT_REPRESENTATION_ID_XML, CycleDefaultMimeType.XML, RenderInfo.CODE), new XmlFileContentProvider());
     artifactTypeXml.addDownloadContentAction(CONTENT_REPRESENTATION_ID_XML);
     types.add(artifactTypeXml);
 
-    ArtifactTypeImpl artifactType4 = new ArtifactTypeImpl(ARTIFACT_TYPE_MS_WORD, StandardMimeType.MS_WORD);
-    artifactType4.addDefaultContentRepresentation(new ContentRepresentationImpl(CONTENT_REPRESENTATION_ID_BINARY, StandardMimeType.MS_WORD, RenderInfo.BINARY),
+    ArtifactTypeImpl artifactType4 = new ArtifactTypeImpl(ARTIFACT_TYPE_MS_WORD, CycleDefaultMimeType.MS_WORD);
+    artifactType4.addDefaultContentRepresentation(new ContentRepresentationImpl(CONTENT_REPRESENTATION_ID_BINARY, CycleDefaultMimeType.MS_WORD, RenderInfo.BINARY),
             new FileBinaryContentProvider());
     artifactType4.addDownloadContentAction(CONTENT_REPRESENTATION_ID_BINARY);
     types.add(artifactType4);
 
-    ArtifactTypeImpl artifactType5 = new ArtifactTypeImpl(ARTIFACT_TYPE_MS_PP, StandardMimeType.MS_POWERPOINT);
-    artifactType5.addDefaultContentRepresentation(new ContentRepresentationImpl(CONTENT_REPRESENTATION_ID_BINARY, StandardMimeType.MS_POWERPOINT, RenderInfo.BINARY),
+    ArtifactTypeImpl artifactType5 = new ArtifactTypeImpl(ARTIFACT_TYPE_MS_PP, CycleDefaultMimeType.MS_POWERPOINT);
+    artifactType5.addDefaultContentRepresentation(new ContentRepresentationImpl(CONTENT_REPRESENTATION_ID_BINARY, CycleDefaultMimeType.MS_POWERPOINT, RenderInfo.BINARY),
             new FileBinaryContentProvider());
     artifactType5.addDownloadContentAction(CONTENT_REPRESENTATION_ID_BINARY);
     types.add(artifactType5);
 
-    ArtifactTypeImpl artifactType6 = new ArtifactTypeImpl(ARTIFACT_TYPE_PDF, StandardMimeType.PDF);
-    artifactType6.addDefaultContentRepresentation(new ContentRepresentationImpl(CONTENT_REPRESENTATION_ID_BINARY, StandardMimeType.PDF, RenderInfo.BINARY),
+    ArtifactTypeImpl artifactType6 = new ArtifactTypeImpl(ARTIFACT_TYPE_PDF, CycleDefaultMimeType.PDF);
+    artifactType6.addDefaultContentRepresentation(new ContentRepresentationImpl(CONTENT_REPRESENTATION_ID_BINARY, CycleDefaultMimeType.PDF, RenderInfo.BINARY),
             new FileBinaryContentProvider());
     artifactType6.addDownloadContentAction(CONTENT_REPRESENTATION_ID_BINARY);
     types.add(artifactType6);

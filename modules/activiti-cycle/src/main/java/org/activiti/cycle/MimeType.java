@@ -16,7 +16,7 @@ package org.activiti.cycle;
  * Provides a simple interface to retrieve the content-type of artifacts and
  * their content representations.
  * 
- * See {@link StandardMimeType} for a list of standard mime-types.
+ * See {@link CycleDefaultMimeType} for a list of standard mime-types.
  * 
  * @author nils.preusker@camunda.com
  */
