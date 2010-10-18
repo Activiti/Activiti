@@ -101,6 +101,9 @@ public class DemoConnectorTest {
     Map<String, Object> parameters = new HashMap<String, Object>();
     parameters.put("targetName", "xxx.txt");
     parameters.put("copyCount", 2);
+    parameters.put("targetFolderConnector", conn);
+    parameters.put("targetFolder", "/demo/minutes");
+    
     conn.executeParameterizedAction(file1.getId(), CopyArtifactAction.class.getName(), parameters);
     
     List<RepositoryNode> nodes = DemoConnector.nodes;
