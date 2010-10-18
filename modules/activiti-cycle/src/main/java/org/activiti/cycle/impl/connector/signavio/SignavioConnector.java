@@ -275,7 +275,7 @@ public class SignavioConnector extends AbstractRepositoryConnector<SignavioConne
       try {
         Response directoryResponse = getJsonResponse(getConfiguration().getDirectoryUrl(id));
         JsonRepresentation jsonData = new JsonRepresentation(directoryResponse.getEntity());
-        JSONArray relJsonArray = jsonData.toJsonArray();
+        JSONArray relJsonArray = jsonData.getJsonArray();
   
         if (log.isLoggable(Level.FINEST)) {
           RestClientLogHelper.logJSONArray(log, Level.FINEST, relJsonArray);
@@ -306,13 +306,13 @@ public class SignavioConnector extends AbstractRepositoryConnector<SignavioConne
     // extracts only BPMN 2.0 models, since everything else is more or less unsupported
     Response filterResponse = getJsonResponse(getConfiguration().getRepositoryBackendUrl() + "filter?type=http%3A%2F%2Fb3mn.org%2Fstencilset%2Fbpmn2.0%23&sort=rating");
     JsonRepresentation jsonRepresentation = new JsonRepresentation(filterResponse.getEntity());
-    JSONArray modelRefs = jsonRepresentation.toJsonArray();
+    JSONArray modelRefs = jsonRepresentation.getJsonArray();
     for (int i = 0; i < modelRefs.length(); i++) {
       String modelRef = modelRefs.getString(i);
       String modelId = getConfiguration().getModelIdFromUrl(modelRef);
       Response infoResponse = getJsonResponse(getConfiguration().getModelInfoUrl(modelId));
       jsonRepresentation = new JsonRepresentation(infoResponse.getEntity());
-      RepositoryArtifact fileInfo = getArtifactInfoFromFile(modelId, jsonRepresentation.toJsonObject());
+      RepositoryArtifact fileInfo = getArtifactInfoFromFile(modelId, jsonRepresentation.getJsonObject());
       nodes.add(fileInfo);
     }
     return nodes;
@@ -322,7 +322,7 @@ public class SignavioConnector extends AbstractRepositoryConnector<SignavioConne
     try {
       Response directoryResponse = getJsonResponse(getConfiguration().getDirectoryUrl(id));
       JsonRepresentation jsonData = new JsonRepresentation(directoryResponse.getEntity());
-      JSONObject jsonObject = jsonData.toJsonObject();
+      JSONObject jsonObject = jsonData.getJsonObject();
       return getFolderInfo(jsonObject);
     } catch (Exception ex) {
       throw new RepositoryNodeNotFoundException(getConfiguration().getName(), RepositoryArtifact.class, id, ex);
@@ -339,7 +339,7 @@ public class SignavioConnector extends AbstractRepositoryConnector<SignavioConne
       if (log.isLoggable(Level.FINE)) {
         log.fine("JsonData - (" + jsonData.getText() + ")");
       }
-      jsonObject = jsonData.toJsonObject();
+      jsonObject = jsonData.getJsonObject();
       return getArtifactInfoFromFile(id, jsonObject);
     } catch (Exception ex) {
       throw new RepositoryNodeNotFoundException(getConfiguration().getName(), RepositoryArtifact.class, id, ex);

@@ -81,7 +81,7 @@ public class EmbeddableModelProvider extends SignavioContentRepresentationProvid
     JsonRepresentation jsonData = new JsonRepresentation(embeddedBOResponse.getEntity());
 
     // Transform to JSONArray
-    JSONArray jsonArray = jsonData.toJsonArray();
+    JSONArray jsonArray = jsonData.getJsonArray();
 
     // Content of jsonArray above with modelID
     // /model/6fd6be02c610475c9daab28a046282e2
