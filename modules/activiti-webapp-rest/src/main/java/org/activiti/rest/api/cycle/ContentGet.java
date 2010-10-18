@@ -20,7 +20,7 @@ import javax.servlet.http.HttpSession;
 import org.activiti.cycle.ContentRepresentation;
 import org.activiti.cycle.RepositoryArtifact;
 import org.activiti.cycle.RepositoryConnector;
-import org.activiti.cycle.StandardMimeType;
+import org.activiti.cycle.CycleDefaultMimeType;
 import org.activiti.cycle.impl.db.CycleServiceDbXStreamImpl;
 import org.activiti.rest.util.ActivitiRequest;
 import org.activiti.rest.util.ActivitiStreamingWebScript;
@@ -65,19 +65,19 @@ public class ContentGet extends ActivitiStreamingWebScript {
     if (attach) {
       attachmentFileName = artifact.getMetadata().getName();
 
-      if (contentType.equals(StandardMimeType.XML) && !attachmentFileName.endsWith(".xml")) {
+      if (contentType.equals(CycleDefaultMimeType.XML) && !attachmentFileName.endsWith(".xml")) {
         attachmentFileName += ".xml";
-      } else if (contentType.equals(StandardMimeType.JSON) && !attachmentFileName.endsWith(".json")) {
+      } else if (contentType.equals(CycleDefaultMimeType.JSON) && !attachmentFileName.endsWith(".json")) {
         attachmentFileName += ".json";
-      } else if (contentType.equals(StandardMimeType.TEXT) && !attachmentFileName.endsWith(".txt")) {
+      } else if (contentType.equals(CycleDefaultMimeType.TEXT) && !attachmentFileName.endsWith(".txt")) {
         attachmentFileName += ".txt";
-      } else if (contentType.equals(StandardMimeType.PDF) && !attachmentFileName.endsWith(".pdf")) {
+      } else if (contentType.equals(CycleDefaultMimeType.PDF) && !attachmentFileName.endsWith(".pdf")) {
         attachmentFileName += ".pdf";
-      } else if (contentType.equals(StandardMimeType.MS_EXCEL) && !attachmentFileName.endsWith(".xls")) {
+      } else if (contentType.equals(CycleDefaultMimeType.MS_EXCEL) && !attachmentFileName.endsWith(".xls")) {
         attachmentFileName += ".xls";
-      } else if (contentType.equals(StandardMimeType.MS_POWERPOINT) && !attachmentFileName.endsWith(".ppt")) {
+      } else if (contentType.equals(CycleDefaultMimeType.MS_POWERPOINT) && !attachmentFileName.endsWith(".ppt")) {
         attachmentFileName += ".ppt";
-      } else if (contentType.equals(StandardMimeType.MS_WORD) && !attachmentFileName.endsWith(".doc")) {
+      } else if (contentType.equals(CycleDefaultMimeType.MS_WORD) && !attachmentFileName.endsWith(".doc")) {
         attachmentFileName += ".doc";
       }
     }
