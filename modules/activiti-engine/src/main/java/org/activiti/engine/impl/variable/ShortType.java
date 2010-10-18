@@ -31,16 +31,20 @@ public class ShortType implements Type {
   }
 
   public Object getValue(VariableInstanceEntity variableInstanceEntity) {
-    return new Short(variableInstanceEntity.getLongValue().shortValue());
+    if(variableInstanceEntity.getLongValue() != null) {
+      return new Short(variableInstanceEntity.getLongValue().shortValue());      
+    }
+    return null;
   }
 
   public void setValue(Object value, VariableInstanceEntity variableInstanceEntity) {
-    variableInstanceEntity.setLongValue(((Short) value).longValue());
     if (value!=null) {
+      variableInstanceEntity.setLongValue(((Short) value).longValue());
       variableInstanceEntity.setTextValue(value.toString());
     } else {
+      variableInstanceEntity.setLongValue(null);
       variableInstanceEntity.setTextValue(null);
-    }
+    }      
   }
 
   public boolean isAbleToStore(Object value) {

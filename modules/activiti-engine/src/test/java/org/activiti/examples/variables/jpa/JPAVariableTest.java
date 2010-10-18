@@ -240,7 +240,22 @@ public class JPAVariableTest extends ActivitiInternalTestCase {
     Assert.assertEquals(1L, ((SubclassPropertyAccessJPAEntity)subclassPropertyResult).getId().longValue());
     Assert.assertEquals("value4", ((SubclassPropertyAccessJPAEntity)subclassPropertyResult).getValue());
     
-    runtimeService.deleteProcessInstance(processInstance.getId(), "test");
+    // -----------------------------------------------------------------------------
+    // Test updating JPA-entity to null-value and back again
+    // -----------------------------------------------------------------------------
+    Object currentValue = runtimeService.getVariable(processInstance.getId(), "simpleEntityFieldAccess");
+    assertNotNull(currentValue);
+    // Set to null
+    runtimeService.setVariable(processInstance.getId(), "simpleEntityFieldAccess", null);
+    currentValue = runtimeService.getVariable(processInstance.getId(), "simpleEntityFieldAccess");
+    assertNull(currentValue);    
+    // Set to JPA-entity again
+    runtimeService.setVariable(processInstance.getId(), "simpleEntityFieldAccess", simpleEntityFieldAccess);
+    currentValue = runtimeService.getVariable(processInstance.getId(), "simpleEntityFieldAccess");
+    assertNotNull(currentValue);
+    Assert.assertTrue(currentValue instanceof FieldAccessJPAEntity);
+    Assert.assertEquals(1L, ((FieldAccessJPAEntity)currentValue).getId().longValue());
+    
     
     // -----------------------------------------------------------------------------
     // Test all allowed types of ID values
@@ -261,52 +276,52 @@ public class JPAVariableTest extends ActivitiInternalTestCase {
     variables.put("bigIntegerIdJPAEntity", bigIntegerIdJPAEntity);
     
     // Start the process with the JPA-entities as variables. They will be stored in the DB.
-    processInstance = runtimeService.startProcessInstanceByKey("JPAVariableProcess", variables);
-    Object byteIdResult = runtimeService.getVariable(processInstance.getId(), "byteIdJPAEntity");
+    ProcessInstance processInstanceAllTypes = runtimeService.startProcessInstanceByKey("JPAVariableProcess", variables);
+    Object byteIdResult = runtimeService.getVariable(processInstanceAllTypes.getId(), "byteIdJPAEntity");
     assertTrue(byteIdResult instanceof ByteIdJPAEntity);
     assertEquals(byteIdJPAEntity.getByteId(), ((ByteIdJPAEntity)byteIdResult).getByteId());
     
-    Object shortIdResult = runtimeService.getVariable(processInstance.getId(), "shortIdJPAEntity");
+    Object shortIdResult = runtimeService.getVariable(processInstanceAllTypes.getId(), "shortIdJPAEntity");
     assertTrue(shortIdResult instanceof ShortIdJPAEntity);
     assertEquals(shortIdJPAEntity.getShortId(), ((ShortIdJPAEntity)shortIdResult).getShortId());
     
-    Object integerIdResult = runtimeService.getVariable(processInstance.getId(), "integerIdJPAEntity");
+    Object integerIdResult = runtimeService.getVariable(processInstanceAllTypes.getId(), "integerIdJPAEntity");
     assertTrue(integerIdResult instanceof IntegerIdJPAEntity);
     assertEquals(integerIdJPAEntity.getIntId(), ((IntegerIdJPAEntity)integerIdResult).getIntId());
     
-    Object longIdResult = runtimeService.getVariable(processInstance.getId(), "longIdJPAEntity");
+    Object longIdResult = runtimeService.getVariable(processInstanceAllTypes.getId(), "longIdJPAEntity");
     assertTrue(longIdResult instanceof LongIdJPAEntity);
     assertEquals(longIdJPAEntity.getLongId(), ((LongIdJPAEntity)longIdResult).getLongId());
     
-    Object floatIdResult = runtimeService.getVariable(processInstance.getId(), "floatIdJPAEntity");
+    Object floatIdResult = runtimeService.getVariable(processInstanceAllTypes.getId(), "floatIdJPAEntity");
     assertTrue(floatIdResult instanceof FloatIdJPAEntity);
     assertEquals(floatIdJPAEntity.getFloatId(), ((FloatIdJPAEntity)floatIdResult).getFloatId());
     
-    Object doubleIdResult = runtimeService.getVariable(processInstance.getId(), "doubleIdJPAEntity");
+    Object doubleIdResult = runtimeService.getVariable(processInstanceAllTypes.getId(), "doubleIdJPAEntity");
     assertTrue(doubleIdResult instanceof DoubleIdJPAEntity);
     assertEquals(doubleIdJPAEntity.getDoubleId(), ((DoubleIdJPAEntity)doubleIdResult).getDoubleId());
     
-    Object charIdResult = runtimeService.getVariable(processInstance.getId(), "charIdJPAEntity");
+    Object charIdResult = runtimeService.getVariable(processInstanceAllTypes.getId(), "charIdJPAEntity");
     assertTrue(charIdResult instanceof CharIdJPAEntity);
     assertEquals(charIdJPAEntity.getCharId(), ((CharIdJPAEntity)charIdResult).getCharId());
     
-    Object stringIdResult = runtimeService.getVariable(processInstance.getId(), "stringIdJPAEntity");
+    Object stringIdResult = runtimeService.getVariable(processInstanceAllTypes.getId(), "stringIdJPAEntity");
     assertTrue(stringIdResult instanceof StringIdJPAEntity);
     assertEquals(stringIdJPAEntity.getStringId(), ((StringIdJPAEntity)stringIdResult).getStringId());
     
-    Object dateIdResult = runtimeService.getVariable(processInstance.getId(), "dateIdJPAEntity");
+    Object dateIdResult = runtimeService.getVariable(processInstanceAllTypes.getId(), "dateIdJPAEntity");
     assertTrue(dateIdResult instanceof DateIdJPAEntity);
     assertEquals(dateIdJPAEntity.getDateId(), ((DateIdJPAEntity)dateIdResult).getDateId());
     
-    Object sqlDateIdResult = runtimeService.getVariable(processInstance.getId(), "sqlDateIdJPAEntity");
+    Object sqlDateIdResult = runtimeService.getVariable(processInstanceAllTypes.getId(), "sqlDateIdJPAEntity");
     assertTrue(sqlDateIdResult instanceof SQLDateIdJPAEntity);
     assertEquals(sqlDateIdJPAEntity.getDateId(), ((SQLDateIdJPAEntity)sqlDateIdResult).getDateId());
     
-    Object bigDecimalIdResult= runtimeService.getVariable(processInstance.getId(), "bigDecimalIdJPAEntity");
+    Object bigDecimalIdResult= runtimeService.getVariable(processInstanceAllTypes.getId(), "bigDecimalIdJPAEntity");
     assertTrue(bigDecimalIdResult instanceof BigDecimalIdJPAEntity);
     assertEquals(bigDecimalIdJPAEntity.getBigDecimalId(), ((BigDecimalIdJPAEntity)bigDecimalIdResult).getBigDecimalId());
     
-    Object bigIntegerIdResult= runtimeService.getVariable(processInstance.getId(), "bigIntegerIdJPAEntity");
+    Object bigIntegerIdResult= runtimeService.getVariable(processInstanceAllTypes.getId(), "bigIntegerIdJPAEntity");
     assertTrue(bigIntegerIdResult instanceof BigIntegerIdJPAEntity);
     assertEquals(bigIntegerIdJPAEntity.getBigIntegerId(), ((BigIntegerIdJPAEntity)bigIntegerIdResult).getBigIntegerId());
   }

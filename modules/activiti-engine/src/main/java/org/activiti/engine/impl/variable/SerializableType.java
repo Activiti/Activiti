@@ -66,6 +66,9 @@ public class SerializableType extends ByteArrayType {
   }
 
   public static byte[] serialize(Object value, VariableInstanceEntity variableInstanceEntity) {
+    if(value == null) {
+      return null;
+    }
     ByteArrayOutputStream baos = new ByteArrayOutputStream();
     try {
       ObjectOutputStream ois = new ObjectOutputStream(baos);

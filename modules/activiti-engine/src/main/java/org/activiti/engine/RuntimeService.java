@@ -185,7 +185,8 @@ public interface RuntimeService {
   /** Update or create a variable for an execution. 
    * @param executionId id of execution to set variable in, cannot be null.
    * @param variableName name of variable to set, cannot be null.
-   * @param value value to set, can be null.
+   * @param value value to set. When null is passed, the variable is not removed,
+   * only it's value will be set to null.
    * @throws ActivitiException when no execution is found for the given executionId. 
    */
   void setVariable(String executionId, String variableName, Object value);

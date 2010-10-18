@@ -38,62 +38,76 @@ public class VariablesTest extends ActivitiInternalTestCase {
     serializable.add("three");
     byte[] bytes = "somebytes".getBytes();
 
-    // Start process instance
+    // Start process instance with different types of variables
     Map<String, Object> variables = new HashMap<String, Object>();
-    variables.put("cost center", 928374L);
-    variables.put("customer", "coca-cola");
-    variables.put("message", "<xml />");
-    variables.put("start date", now);
-    variables.put("nihil", null);
-    variables.put("numbers", serializable);
-    variables.put("manybits", bytes);
+    variables.put("longVar", 928374L);
+    variables.put("shortVar", (short) 123);
+    variables.put("integerVar", 1234);
+    variables.put("stringVar", "coca-cola");
+    variables.put("dateVar", now);
+    variables.put("nullVar", null);
+    variables.put("serializableVar", serializable);
+    variables.put("bytesVar", bytes);
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("taskAssigneeProcess", variables);
 
     variables = runtimeService.getVariables(processInstance.getId());
-    assertEquals(928374L, variables.get("cost center"));
-    assertEquals("coca-cola", variables.get("customer"));
-    assertEquals("<xml />", variables.get("message"));
-    assertEquals(now, variables.get("start date"));
-    assertEquals(null, variables.get("nihil"));
-    assertEquals(serializable, variables.get("numbers"));
-    assertTrue(Arrays.equals(bytes, (byte[]) variables.get("manybits")));
-    assertEquals(7, variables.size());
+    assertEquals(928374L, variables.get("longVar"));
+    assertEquals((short) 123, variables.get("shortVar"));
+    assertEquals(1234, variables.get("integerVar"));
+    assertEquals("coca-cola", variables.get("stringVar"));
+    assertEquals(now, variables.get("dateVar"));
+    assertEquals(null, variables.get("nullVar"));
+    assertEquals(serializable, variables.get("serializableVar"));
+    assertTrue(Arrays.equals(bytes, (byte[]) variables.get("bytesVar")));
+    assertEquals(8, variables.size());
 
-    runtimeService.setVariable(processInstance.getId(), "cost center", null);
-    runtimeService.setVariable(processInstance.getId(), "customer", null);
-    runtimeService.setVariable(processInstance.getId(), "message", null);
-    runtimeService.setVariable(processInstance.getId(), "start date", null);
-    runtimeService.setVariable(processInstance.getId(), "nihil", null);
-    runtimeService.setVariable(processInstance.getId(), "numbers", null);
-    runtimeService.setVariable(processInstance.getId(), "manybits", null);
+    // Set all existing variables values to null
+    runtimeService.setVariable(processInstance.getId(), "longVar", null);
+    runtimeService.setVariable(processInstance.getId(), "shortVar", null);
+    runtimeService.setVariable(processInstance.getId(), "integerVar", null);
+    runtimeService.setVariable(processInstance.getId(), "stringVar", null);
+    runtimeService.setVariable(processInstance.getId(), "dateVar", null);
+    runtimeService.setVariable(processInstance.getId(), "nullVar", null);
+    runtimeService.setVariable(processInstance.getId(), "serializableVar", null);
+    runtimeService.setVariable(processInstance.getId(), "bytesVar", null);
 
     variables = runtimeService.getVariables(processInstance.getId());
-    assertEquals(null, variables.get("cost center"));
-    assertEquals(null, variables.get("customer"));
-    assertEquals(null, variables.get("message"));
-    assertEquals(null, variables.get("start date"));
-    assertEquals(null, variables.get("nihil"));
-    assertEquals(null, variables.get("numbers"));
-    assertEquals(null, variables.get("manybits"));
-    assertEquals(7, variables.size());
+    assertEquals(null, variables.get("longVar"));
+    assertEquals(null, variables.get("shortVar"));
+    assertEquals(null, variables.get("integerVar"));
+    assertEquals(null, variables.get("stringVar"));
+    assertEquals(null, variables.get("dateVar"));
+    assertEquals(null, variables.get("nullVar"));
+    assertEquals(null, variables.get("serializableVar"));
+    assertEquals(null, variables.get("bytesVar"));
+    assertEquals(8, variables.size());
 
+    // Update existing variable values again, and add a new variable
     runtimeService.setVariable(processInstance.getId(), "new var", "hi");
-    runtimeService.setVariable(processInstance.getId(), "cost center", 9987L);
-    runtimeService.setVariable(processInstance.getId(), "customer", "colgate");
-    runtimeService.setVariable(processInstance.getId(), "message", "{json}");
-    runtimeService.setVariable(processInstance.getId(), "start date", now);
-    runtimeService.setVariable(processInstance.getId(), "numbers", serializable);
-    runtimeService.setVariable(processInstance.getId(), "manybits", bytes);
+    runtimeService.setVariable(processInstance.getId(), "longVar", 9987L);
+    runtimeService.setVariable(processInstance.getId(), "shortVar", (short) 456);
+    runtimeService.setVariable(processInstance.getId(), "integerVar", 4567);
+    runtimeService.setVariable(processInstance.getId(), "stringVar", "colgate");
+    runtimeService.setVariable(processInstance.getId(), "dateVar", now);
+    runtimeService.setVariable(processInstance.getId(), "serializableVar", serializable);
+    runtimeService.setVariable(processInstance.getId(), "bytesVar", bytes);
 
     variables = runtimeService.getVariables(processInstance.getId());
     assertEquals("hi", variables.get("new var"));
-    assertEquals(9987L, variables.get("cost center"));
-    assertEquals("colgate", variables.get("customer"));
-    assertEquals("{json}", variables.get("message"));
-    assertEquals(now, variables.get("start date"));
-    assertEquals(null, variables.get("nihil"));
-    assertEquals(serializable, variables.get("numbers"));
-    assertTrue(Arrays.equals(bytes, (byte[]) variables.get("manybits")));
-    assertEquals(8, variables.size());
+    assertEquals(9987L, variables.get("longVar"));
+    assertEquals((short)456, variables.get("shortVar"));
+    assertEquals(4567, variables.get("integerVar"));
+    assertEquals("colgate", variables.get("stringVar"));
+    assertEquals(now, variables.get("dateVar"));
+    assertEquals(null, variables.get("nullVar"));
+    assertEquals(serializable, variables.get("serializableVar"));
+    assertTrue(Arrays.equals(bytes, (byte[]) variables.get("bytesVar")));
+    assertEquals(9, variables.size());
+    
+    // Try setting the value of the variable that was initially created with value 'null'
+    runtimeService.setVariable(processInstance.getId(), "nullVar", "a value");
+    Object newValue = runtimeService.getVariable(processInstance.getId(), "nullVar");
+    assertNotNull(newValue);
+    assertEquals("a value", newValue);
   }
 }

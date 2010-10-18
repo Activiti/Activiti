@@ -31,14 +31,18 @@ public class IntegerType implements Type {
   }
 
   public Object getValue(VariableInstanceEntity variableInstanceEntity) {
-    return new Integer(variableInstanceEntity.getLongValue().intValue());
+    if(variableInstanceEntity.getLongValue() != null) {
+      return new Integer(variableInstanceEntity.getLongValue().intValue());      
+    }
+    return null;
   }
 
   public void setValue(Object value, VariableInstanceEntity variableInstanceEntity) {
-    variableInstanceEntity.setLongValue(((Integer) value).longValue());
     if (value!=null) {
+      variableInstanceEntity.setLongValue(((Integer) value).longValue());
       variableInstanceEntity.setTextValue(value.toString());
     } else {
+      variableInstanceEntity.setLongValue(null);
       variableInstanceEntity.setTextValue(null);
     }
   }

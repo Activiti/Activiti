@@ -39,5 +39,6 @@ public class NullType implements Type {
   }
 
   public void setValue(Object value, VariableInstanceEntity variableInstanceEntity) {
+ 
   }
 }

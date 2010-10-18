@@ -40,19 +40,29 @@ public class JPAEntityVariableType implements Type {
   }
 
   public boolean isAbleToStore(Object value) {
+    if(value == null) {
+      return true;
+    }
     return mappings.isJPAEntity(value);      
   }
 
   public void setValue(Object value, VariableInstanceEntity variableInstanceEntity) {
-    String className = mappings.getJPAClassString(value);
-    String idString = mappings.getJPAIdString(value);
-    
-    variableInstanceEntity.setTextValue(className);
-    variableInstanceEntity.setTextValue2(idString);
+    if(value != null) {
+      String className = mappings.getJPAClassString(value);
+      String idString = mappings.getJPAIdString(value);
+      variableInstanceEntity.setTextValue(className);
+      variableInstanceEntity.setTextValue2(idString);      
+    } else {
+      variableInstanceEntity.setTextValue(null);
+      variableInstanceEntity.setTextValue2(null);            
+    }
   }
 
   public Object getValue(VariableInstanceEntity variableInstanceEntity) {
-    return mappings.getJPAEntity(variableInstanceEntity.getTextValue(), variableInstanceEntity.getTextValue2());
+    if(variableInstanceEntity.getTextValue() != null && variableInstanceEntity.getTextValue2() != null) {
+      return mappings.getJPAEntity(variableInstanceEntity.getTextValue(), variableInstanceEntity.getTextValue2());      
+    }
+    return null;
   }
 
  
