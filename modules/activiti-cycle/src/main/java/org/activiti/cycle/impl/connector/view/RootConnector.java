@@ -94,7 +94,7 @@ public class RootConnector implements RepositoryConnector {
   private String getIdWithRepoName(RepositoryConnector connector, RepositoryNode repositoryNode) {
     String repositoryName = connector.getConfiguration().getName();
     if (!repositoryNode.getId().startsWith("/")) {
-      throw new RepositoryException("RepositoryNode id doesn't start with a slash, which is copnsidered invalid: '" + repositoryNode.getId()
+      throw new RepositoryException("RepositoryNode id doesn't start with a slash, which is considered invalid: '" + repositoryNode.getId()
               + "' in repository '" + repositoryName + "'");
     } else {
       return getRepositoryPrefix(repositoryName) + repositoryNode.getId();
