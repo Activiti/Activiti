@@ -245,7 +245,7 @@ public class RootConnector implements RepositoryConnector {
     RepositoryConnector connector = getConnectorFromUrl(artifactId);
     String repoPartOfId = getRepositoryPartOfUrl(artifactId);
     for (Entry<String, Object> parameter : new HashSet<Entry<String, Object>>(parameters.entrySet())) {
-      if (parameter.getKey().equals("targetFolderId")) {
+      if (parameter.getKey().equals("treeTarget")) {
           String targetFolderId = (String) parameter.getValue();
           parameters.put("targetFolderConnector", getConnectorFromUrl(targetFolderId));
           parameters.put("targetFolder", getRepositoryPartOfUrl(targetFolderId));

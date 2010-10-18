@@ -26,16 +26,30 @@ public class CopyArtifactAction extends ParameterizedHtmlFormTemplateAction {
     int count = (Integer) getParameter(parameters, "copyCount", true, null, Integer.class);
     String targetName = (String) getParameter(parameters, "targetName", true, null, String.class);
 
-    if (count==1) {
-      copyArtifact(connector, artifact, targetName);
+    RepositoryConnector targetFolderConnector = (RepositoryConnector) getParameter(parameters, "targetFolderConnector", true, null, RepositoryConnector.class);
+    String targetFolder = (String) getParameter(parameters, "targetFolder", true, null, String.class);
+
+    // retrieve the platform independent file separator
+    // String fileSeperator = System.getProperty("file.separator");\
+    // Combine targetFolder and targetName to put together the targetPath
+    // String targetPath = targetFolder +
+    // ((!targetFolder.endsWith(fileSeperator) &&
+    // !targetName.startsWith(fileSeperator)) ? fileSeperator : "") +
+    // targetName;
+
+    if (count == 1) {
+      copyArtifact(connector, targetFolderConnector, artifact, targetFolder, targetName);
+    } else {
+      for (int i = 0; i < count; i++) {
+        copyArtifact(connector, targetFolderConnector, artifact, targetFolder, targetName + i);
+      }
     }
-    for (int i = 0; i < count; i++) {
-      copyArtifact(connector, artifact, targetName + i);
-    }
+
   }
-  
-  private void copyArtifact(RepositoryConnector connector, RepositoryArtifact artifact, String targetName) {    
-    String path = artifact.getId().substring(0, artifact.getId().lastIndexOf("/"));
+  private void copyArtifact(RepositoryConnector sourceConnector, RepositoryConnector targetConnector, RepositoryArtifact artifact, String targetFolder,
+          String targetName) {
+    // String path = artifact.getId().substring(0,
+    // artifact.getId().lastIndexOf("/"));
 
     // if (targetName.startsWith("/")) {
     // targetName = artifact.getMetadata().setParentFolderId() + targetName;
@@ -43,8 +57,8 @@ public class CopyArtifactAction extends ParameterizedHtmlFormTemplateAction {
     // targetName = artifact.getMetadata().setParentFolderId() + "/" +
     // targetName;
     // }
-    
-    Content content = connector.getContent(artifact.getId(), artifact.getArtifactType().getDefaultContentRepresentation().getId());
-    connector.createArtifact(path, targetName, artifact.getArtifactType().getId(), content);
+
+    Content content = sourceConnector.getContent(artifact.getId(), artifact.getArtifactType().getDefaultContentRepresentation().getId());
+    targetConnector.createArtifact(targetFolder, targetName, artifact.getArtifactType().getId(), content);
   }
 }
