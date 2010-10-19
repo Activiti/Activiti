@@ -12,6 +12,11 @@ import org.activiti.engine.impl.db.PersistentObject;
  * 
  * @author kristin.polenz@camunda.com
  */
+/**
+ * @deprecated
+ * Now, we don't need an own entity for the revision. 
+ * All artifacts have only the current revision. 
+ */
 public class ArtifactRevision implements Serializable, PersistentObject{
   
   private static final long serialVersionUID = -4359987344641827978L;

@@ -1,7 +1,5 @@
 package org.activiti.cycle;
 
-import java.io.Serializable;
-
 import org.activiti.engine.impl.db.PersistentObject;
 
 /**
@@ -10,11 +8,9 @@ import org.activiti.engine.impl.db.PersistentObject;
  * 
  * The CycleLink is a persistent entity saved in the Cycle DB.
  * 
- * @author ruecker, kristin.polenz@camunda.com
+ * @author ruecker, polenz
  */
-public class CycleLink implements Serializable, PersistentObject{
-  
-  private static final long serialVersionUID = 5975388781338451533L;
+public class CycleLink implements PersistentObject {
   
   /**
    * TODO: Add own mini repository for types incling names for forward and
@@ -25,31 +21,30 @@ public class CycleLink implements Serializable, PersistentObject{
   public static String TYPE_UNSPECIFIED = "unspecified link";
   
   /**
-   * target artifact id
+   * artificial id used as primary key to identify this link
+   * auto generated primary key
    */
   private String id;
+  
+  private String sourceConnectorId;
+  private String sourceArtifactId;
+  /**
+   * machine readable id of element (what that exactly is depends on the
+   * connector, could be the Signavio UUID for example)
+   */
+  private String sourceElementId;
+  /**
+   * human readable name of element (what that exactly is depends on the
+   * connector, could be the Signavio Task name for example)
+   */
+  private String sourceElementName;
+  private Long sourceRevision;
+  
+  private String targetConnectorId;
+  private String targetArtifactId;
   private String targetElementId;
   private String targetElementName;
   private Long targetRevision;
-  private Artifact sourceArtifact;
-
-  /**
-   * default constructor
-   */
-  public CycleLink() {
-  }
-  
-  public CycleLink(String tagetArtifactId, String targetElementId, String targetElementName, Long targetRevision, Artifact sourceArtifact, String linkType,
-          String description, boolean linkedBothWays) {
-    this.id = tagetArtifactId;
-    this.targetElementId = targetElementId;
-    this.targetElementName = targetElementName;
-    this.targetRevision = targetRevision;
-    this.sourceArtifact = sourceArtifact;
-    this.linkType = linkType;
-    this.description = description;
-    this.linkedBothWays = linkedBothWays;
-  }
 
   /**
    * type of the link as String. Basically you could supply what you want, but
@@ -68,13 +63,28 @@ public class CycleLink implements Serializable, PersistentObject{
    */
   private boolean linkedBothWays = true;
   
-
-  public String getId() {
-    return id;
+  public String getSourceArtifactId() {
+    return sourceArtifactId;
   }
 
-  public void setId(String id) {
-    this.id = id;
+  public void setSourceArtifactId(String sourceArtifactId) {
+    this.sourceArtifactId = sourceArtifactId;
+  }
+
+  public Long getSourceRevision() {
+    return sourceRevision;
+  }
+
+  public void setSourceRevision(Long sourceRevision) {
+    this.sourceRevision = sourceRevision;
+  }
+
+  public String getTargetArtifactId() {
+    return targetArtifactId;
+  }
+
+  public void setTargetArtifactId(String targetArtifactId) {
+    this.targetArtifactId = targetArtifactId;
   }
 
   public Long getTargetRevision() {
@@ -93,21 +103,21 @@ public class CycleLink implements Serializable, PersistentObject{
     this.linkType = linkType;
   }
 
+  
+  public String getSourceElementId() {
+    return sourceElementId;
+  }
+
+  public void setSourceElementId(String sourceElementId) {
+    this.sourceElementId = sourceElementId;
+  }
+
   public String getTargetElementId() {
     return targetElementId;
   }
 
-  public void setTargetElementId(String sourceElementId) {
-    this.targetElementId = sourceElementId;
-  }
-  
-  public Artifact getSourceArtifact() {
-    return sourceArtifact;
-  }
-
-  
-  public void setSourceArtifact(Artifact sourceArtifact) {
-    this.sourceArtifact = sourceArtifact;
+  public void setTargetElementId(String targetElementId) {
+    this.targetElementId = targetElementId;
   }
 
   /**
@@ -121,6 +131,15 @@ public class CycleLink implements Serializable, PersistentObject{
     this.description = description;
   }
 
+  
+  public String getSourceElementName() {
+    return sourceElementName;
+  }
+
+  public void setSourceElementName(String sourceElementName) {
+    this.sourceElementName = sourceElementName;
+  }
+
   public String getTargetElementName() {
     return targetElementName;
   }
@@ -128,6 +147,16 @@ public class CycleLink implements Serializable, PersistentObject{
   public void setTargetElementName(String targetElementName) {
     this.targetElementName = targetElementName;
   }
+
+  
+  public String getId() {
+    return id;
+  }
+
+  public void setId(String id) {
+    this.id = id;
+  }
+
   
   public boolean isLinkedBothWays() {
     return linkedBothWays;
@@ -135,6 +164,22 @@ public class CycleLink implements Serializable, PersistentObject{
 
   public void setLinkedBothWays(boolean linkedBothWays) {
     this.linkedBothWays = linkedBothWays;
+  }
+  
+  public String getSourceConnectorId() {
+    return sourceConnectorId;
+  }
+  
+  public void setSourceConnectorId(String sourceConnectorId) {
+    this.sourceConnectorId = sourceConnectorId;
+  }
+
+  public String getTargetConnectorId() {
+    return targetConnectorId;
+  }
+  
+  public void setTargetConnectorId(String targetConnectorId) {
+    this.targetConnectorId = targetConnectorId;
   }
 
   public Object getPersistentState() {

@@ -13,6 +13,11 @@ import org.activiti.engine.impl.db.PersistentObject;
  * 
  * @author ruecker, kristin.polenz@camunda.com
  */
+/**
+ * @deprecated
+ * This entity is not necessary because it is enough to have a simple entity class 
+ * and one table for the cycle link persistence.
+ */
 public class Artifact implements Serializable, PersistentObject {
   
   private static final long serialVersionUID = -7697263644413286865L;
