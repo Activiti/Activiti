@@ -13,7 +13,7 @@
 	background: none repeat scroll 0 0 #F9F9F9;
 }
 
-artifact-image, artifact-html, artifact-binary, artifact-code, artifact-text-plain {
+.artifact-image, .artifact-html, .artifact-binary, .artifact-code, .artifact-text-plain {
   overflow: auto;
 }
 
