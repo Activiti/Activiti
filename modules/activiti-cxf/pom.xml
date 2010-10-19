@@ -41,6 +41,16 @@
 		  <groupId>org.apache.cxf</groupId>
     	  <artifactId>cxf-rt-frontend-jaxws</artifactId>
 		</dependency>
+        <dependency>
+          <groupId>com.h2database</groupId>
+          <artifactId>h2</artifactId>
+          <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.cxf</groupId>
+            <artifactId>cxf-rt-transports-http-jetty</artifactId>
+            <scope>test</scope>
+        </dependency>
 	</dependencies>
 			
 	<profiles>
