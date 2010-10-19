@@ -29,7 +29,7 @@ public interface ActivityExecution extends DelegateExecution {
   /* Process instance/activity/transition retrieval */
 
   /**
-   * returns the current {@link Activity} of the execution.
+   * returns the current {@link PvmActivity} of the execution.
    */
   PvmActivity getActivity();
   
@@ -51,7 +51,7 @@ public interface ActivityExecution extends DelegateExecution {
    * creates a new sub process instance.
    * The current execution will be the super execution of the created execution.
    * 
-   * @param processDefinition The {@link ProcessDefinition} of the subprocess.
+   * @param processDefinition The {@link PvmProcessDefinition} of the subprocess.
    */
   PvmProcessInstance createSubProcessInstance(PvmProcessDefinition processDefinition);
   
