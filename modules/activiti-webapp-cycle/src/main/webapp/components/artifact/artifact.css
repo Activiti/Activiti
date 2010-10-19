@@ -17,8 +17,13 @@
 	overflow: auto;
 }
 
-.artifact-code, .artifact-text-plain {
+.artifact-code, .artifact-text-plain, .artifact-html {
 	margin: 1.2em;
+}
+
+.artifact-html iframe {
+  border: 0;
+  width: 100%;
 }
 
 #options-div.active {

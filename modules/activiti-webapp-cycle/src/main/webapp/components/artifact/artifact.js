@@ -214,7 +214,7 @@
         if(responseJson.renderInfo == "IMAGE") {
           tabContent = '<div class="artifact-image"><img id="' + responseJson.contentRepresentationId + '" src="' + responseJson.imageUrl + '" border=0></img></div>';
         } else if (responseJson.renderInfo == "HTML") {
-          tabContent = '<div class="artifact-html"><div id="' + responseJson.contentRepresentationId + '">' + responseJson.content + '</div></div>';
+          tabContent = '<div class="artifact-html"><iframe src ="' + Activiti.service.REST_PROXY_URI_RELATIVE + "content?artifactId=" + encodeURIComponent(responseJson.artifactId) + "&contentRepresentationId=" + encodeURIComponent(responseJson.contentRepresentationId); + '" width="100%" height="100%"><p>Your browser does not support iframes.</p></iframe></div>';
         } else if (responseJson.renderInfo == "BINARY") {
           // TODO: show some information but no content for binary
           tabContent = '<div class="artifact-binary"><p>No preview available...</p></div>';

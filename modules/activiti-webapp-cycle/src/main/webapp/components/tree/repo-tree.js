@@ -102,7 +102,9 @@
 						node.labelStyle = "icon-img";
 					} else if(treeNodesJson[i].contentType === "application/xml") {
 						node.labelStyle = "icon-code-red";
-					}	else if(treeNodesJson[i].contentType === "text/plain") {
+					}	else if(treeNodesJson[i].contentType === "text/html") {
+  					  node.labelStyle = "icon-www";
+  				} else if(treeNodesJson[i].contentType === "text/plain") {
 						node.labelStyle = "icon-txt";
 					}	else if(treeNodesJson[i].contentType === "application/pdf") {
 						node.labelStyle = "icon-pdf";
@@ -114,8 +116,11 @@
 						node.labelStyle = "icon-ppt";
 					}	else if(treeNodesJson[i].contentType === "application/excel") {
 						node.labelStyle = "icon-xls";
-					}		else if(treeNodesJson[i].contentType === "application/javascript") {
+					}	else if(treeNodesJson[i].contentType === "application/javascript") {
 						node.labelStyle = "icon-code-blue";
+					} else {
+					  // Use white page as default icon for all other content types
+					  node.labelStyle = "icon-blank";
 					}
 				}
 			}

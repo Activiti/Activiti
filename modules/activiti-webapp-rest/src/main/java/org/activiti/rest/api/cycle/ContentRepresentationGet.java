@@ -62,6 +62,7 @@ public class ContentRepresentationGet extends ActivitiWebScript {
         model.put("content", content);
       }
 
+      model.put("artifactId", artifactId);
       model.put("renderInfo", contentRepresentation.getRenderInfo().name());
       model.put("contentRepresentationId", contentRepresentation.getId());
       model.put("contentType", contentRepresentation.getMimeType().getContentType());

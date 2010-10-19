@@ -1,5 +1,6 @@
 <#escape x as jsonUtils.encodeJSONString(x)>
 {
+	"artifactId": "${artifactId}",
 	"renderInfo": "${renderInfo}",
 	"contentRepresentationId": "${contentRepresentationId}",
 	"contentType": "${contentType}",
