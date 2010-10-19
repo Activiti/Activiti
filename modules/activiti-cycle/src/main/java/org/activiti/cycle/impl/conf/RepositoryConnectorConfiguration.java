@@ -25,15 +25,13 @@ public abstract class RepositoryConnectorConfiguration {
   
   private String name = this.getClass().getSimpleName().replace("Configuration", "");
 
-  // /**
-  // * id (unique!)
-  // * short name used in URL to identify repository
-  // */
-  // private String shortName =
-  // this.getClass().getSimpleName().replace("Configuration", "");
-
   private String description;
-  
+
+  /**
+   * help text to present the user when login fails.
+   */
+  private String loginHelp;
+
   /**
    * Name of configuration scope.
    * 
@@ -145,6 +143,15 @@ public abstract class RepositoryConnectorConfiguration {
 
   public void setId(String id) {
     this.id = id;
+  }
+
+  
+  public String getLoginHelp() {
+    return loginHelp;
+  }
+
+  public void setLoginHelp(String loginHelp) {
+    this.loginHelp = loginHelp;
   }
 
   // @Override
