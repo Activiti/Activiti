@@ -3,9 +3,13 @@ package org.activiti.cycle.impl.conf;
 import static org.junit.Assert.assertEquals;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 
+import org.activiti.cycle.Artifact;
+import org.activiti.cycle.CycleLink;
 import org.activiti.cycle.CycleService;
+import org.activiti.cycle.RepositoryArtifactLink;
 import org.activiti.cycle.RepositoryConnector;
 import org.activiti.cycle.impl.connector.fs.FileSystemConnectorConfiguration;
 import org.activiti.cycle.impl.connector.signavio.SignavioConnectorConfiguration;
@@ -16,12 +20,15 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import com.sun.xml.bind.CycleRecoverable;
+
 public class RepositoryConnectorConfigurationManagerImplTest {
 
   private static CycleService configurationService;
 
   @BeforeClass
   public static void setUp() throws Exception {
+    //ProcessEngines.destroy();
     ProcessEngines.init();
     configurationService = new CycleServiceDbXStreamImpl();
   }
@@ -29,51 +36,76 @@ public class RepositoryConnectorConfigurationManagerImplTest {
   @AfterClass
   public static void tearDown() throws Exception {
     configurationService = null;
+    //ProcessEngines.destroy();
   }
   
+//  @Test
+//  public void testAPI() {
+//    try {
+//      ConfigurationContainer enterpriseConfiguration = new ConfigurationContainer("camunda");
+//      // This one is for all, so don't save a password, the GUI should query it!
+//      RepositoryConnectorConfiguration conf1 = new SignavioConnectorConfiguration("Activiti Modeler", "http://localhost:8080/activiti-modeler/");
+//      enterpriseConfiguration.addRepositoryConnectorConfiguration(conf1);
+//
+//      ConfigurationContainer userConfiguration = new ConfigurationContainer("bernd");
+//      userConfiguration.addParent(enterpriseConfiguration);
+//      RepositoryConnectorConfiguration conf2 = new FileSystemConnectorConfiguration("Hard Drive", new File("c:"));
+//      userConfiguration.addRepositoryConnectorConfiguration(conf2);
+//      // This one ist just for me, I save the password
+//      RepositoryConnectorConfiguration conf3 = new SignavioConnectorConfiguration("Signavio SAAS", "http://editor.signavio.com/", null,
+//              "bernd.ruecker@camunda.com", "xxx");
+//      userConfiguration.addRepositoryConnectorConfiguration(conf3);
+//
+//      // now we have a config for the user containing 2 repository configs
+//
+//      configurationService.saveConfiguration(enterpriseConfiguration);
+//      configurationService.saveConfiguration(userConfiguration);
+//
+//      ConfigurationContainer loadedConf = configurationService.getConfiguration("bernd");
+//
+//      // ConfigurationContainer configuration =
+//      // configurationService.getConfiguration("bernd");
+//      List<RepositoryConnectorConfiguration> connectors = loadedConf.getConnectorConfigurations();
+//      assertEquals(3, connectors.size());
+//      assertEquals("Hard Drive", connectors.get(0).getName());
+//      assertEquals("Signavio SAAS", connectors.get(1).getName());
+//      assertEquals("Activiti Modeler", connectors.get(2).getName());
+//
+//      RepositoryConnector connector = new RootConnectorConfiguration(loadedConf).createConnector();
+//      
+//      // check that files were created
+////      assertTrue(new File("bernd.cycle-conf.xml").delete());
+////      assertTrue(new File("camunda.cycle-conf.xml").delete());
+//    } finally {
+//      // clean up to delete created configs, do it in the finally again to make
+//      // sure they are deleted
+////      new File("bernd.cycle-conf.xml").delete();
+////      new File("camunda.cycle-conf.xml").delete();
+//    }
+//  }
+  
   @Test
-  public void testAPI() {
-    try {
-      ConfigurationContainer enterpriseConfiguration = new ConfigurationContainer("camunda");
-      // This one is for all, so don't save a password, the GUI should query it!
-      RepositoryConnectorConfiguration conf1 = new SignavioConnectorConfiguration("Activiti Modeler", "http://localhost:8080/activiti-modeler/");
-      enterpriseConfiguration.addRepositoryConnectorConfiguration(conf1);
-
-      ConfigurationContainer userConfiguration = new ConfigurationContainer("bernd");
-      userConfiguration.addParent(enterpriseConfiguration);
-      RepositoryConnectorConfiguration conf2 = new FileSystemConnectorConfiguration("Hard Drive", new File("c:"));
-      userConfiguration.addRepositoryConnectorConfiguration(conf2);
-      // This one ist just for me, I save the password
-      RepositoryConnectorConfiguration conf3 = new SignavioConnectorConfiguration("Signavio SAAS", "http://editor.signavio.com/", null,
-              "bernd.ruecker@camunda.com", "xxx");
-      userConfiguration.addRepositoryConnectorConfiguration(conf3);
-
-      // now we have a config for the user containing 2 repository configs
-
-      configurationService.saveConfiguration(enterpriseConfiguration);
-      configurationService.saveConfiguration(userConfiguration);
-
-      ConfigurationContainer loadedConf = configurationService.getConfiguration("bernd");
-
-      // ConfigurationContainer configuration =
-      // configurationService.getConfiguration("bernd");
-      List<RepositoryConnectorConfiguration> connectors = loadedConf.getConnectorConfigurations();
-      assertEquals(3, connectors.size());
-      assertEquals("Hard Drive", connectors.get(0).getName());
-      assertEquals("Signavio SAAS", connectors.get(1).getName());
-      assertEquals("Activiti Modeler", connectors.get(2).getName());
-
-      RepositoryConnector connector = new RootConnectorConfiguration(loadedConf).createConnector();
-      
-      // check that files were created
-//      assertTrue(new File("bernd.cycle-conf.xml").delete());
-//      assertTrue(new File("camunda.cycle-conf.xml").delete());
-    } finally {
-      // clean up to delete created configs, do it in the finally again to make
-      // sure they are deleted
-//      new File("bernd.cycle-conf.xml").delete();
-//      new File("camunda.cycle-conf.xml").delete();
-    }
+  public void testLinks() {
+    configurationService.addArtifactLink("FS/text/test.txt", "SIG/bpmn/test.bpmn20.xml");
+    List<RepositoryArtifactLink> artifactResultList = configurationService.getArtifactLinks("FS/text/test.txt");
+    
+//    cycleLinkTarget.setDescription("nur ein Testlink");
+//    cycleLinkTarget.setLinkType(Artifact.TYPE_UNSPECIFIED);
+//    cycleLinkTarget.setTargetArtifactId("SIG/bpmn/test.bpmn20.xml");
+//    cycleLinkTargetList.add(cycleLinkTarget);
+//    
+//    cycleLink.setSourceArtifactId("FS/text/test.txt");
+//    
+////    cycleLink.setCycleLinkTarget(cycleLinkTargetList);
+//    
+//    configurationService.addArtifactLink("FS/text/test.txt", "SIG/bpmn/test.bpmn20.xml");
+//    
+//    List<Artifact> artifactLinks = configurationService.getArtifactLinks("FS/text/test.txt");
+//    if (artifactLinks != null && !artifactLinks.isEmpty()) {
+//      Artifact cyleLink = artifactLinks.get(0);
+//      System.out.println(cycleLink.getSourceArtifactId());
+//      System.out.println(cycleLink.getCycleLinkTarget().size());
+//    }
   }
 
   //Commented because method getProcessEngineConfiguration is not in the interface
