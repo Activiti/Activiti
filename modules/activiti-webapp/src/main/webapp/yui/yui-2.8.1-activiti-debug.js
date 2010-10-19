@@ -1861,10 +1861,10 @@ YAHOO.register("get", YAHOO.util.Get, {version: "2.8.1", build: "19"});
     // 'root': '2.5.2/build/',
     // 'base': 'http://yui.yahooapis.com/2.5.2/build/',
 
-    'root': '2.8.1/build/',
-    'base': 'http://yui.yahooapis.com/2.8.1/build/',
+    'root': '',
+    'base': '',
 
-    'comboBase': 'http://yui.yahooapis.com/combo?',
+    'comboBase': '',
 
     'skin': {
         'defaultSkin': 'sam',
