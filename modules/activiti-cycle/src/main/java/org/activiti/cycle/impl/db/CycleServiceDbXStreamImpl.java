@@ -3,19 +3,19 @@ package org.activiti.cycle.impl.db;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 
 import javax.servlet.http.HttpSession;
 
-import org.activiti.cycle.ArtifactRevision;
 import org.activiti.cycle.Cycle;
 import org.activiti.cycle.CycleConfig;
-import org.activiti.cycle.Artifact;
 import org.activiti.cycle.CycleLink;
 import org.activiti.cycle.CycleService;
+import org.activiti.cycle.RepositoryArtifact;
+import org.activiti.cycle.RepositoryArtifactLink;
 import org.activiti.cycle.RepositoryConnector;
 import org.activiti.cycle.RepositoryException;
+import org.activiti.cycle.impl.RepositoryArtifactLinkImpl;
 import org.activiti.cycle.impl.conf.ConfigurationContainer;
 import org.activiti.cycle.impl.conf.CycleDbSqlSessionFactory;
 import org.activiti.cycle.impl.connector.demo.DemoConnectorConfiguration;
@@ -41,6 +41,7 @@ public class CycleServiceDbXStreamImpl extends DummyBaseCycleService implements 
   private XStream xStream = new XStream();
   
   private String processEngineName = null;
+  private static Long DEFAULT_REVISION = new Long(0);
   private static String DEFAULT_ENGINE = "DEFAULT_PROCESS_ENGINE";
   
   private static HashMap<String, CycleDbSqlSessionFactory> dbFactories = new HashMap<String, CycleDbSqlSessionFactory>();
@@ -144,35 +145,71 @@ public class CycleServiceDbXStreamImpl extends DummyBaseCycleService implements 
     return (ConfigurationContainer) configXML;
   }
   
+  /**
+   *
+   * Should be the parameter connectorId and artifactId or is the sourceArtifactId parameter composed of
+   * connectorId and artifactId??
+   * If yes, how can I split the sourceArtifactId in connectorId and artifactId? Only with String-Operation? 
+   */
   @Override
   public void addArtifactLink(String sourceArtifactId, String targetArtifactId) {
     SqlSessionFactory sqlMapper = getSessionFactory();
     
-    //TODO: select before insert! check, if sourceArtifact exists as Artifact object in datbabase.
-    Artifact artifact = new Artifact();
-    artifact.setId(sourceArtifactId);
-    
-    CycleLink cycleLink = new CycleLink();
-    cycleLink.setSourceArtifact(artifact);
-    cycleLink.setId(targetArtifactId);
+    CycleLink link = new CycleLink();
+//    link.setSourceConnectorId(sourceConnectorId);
+//    link.setTargetConnectorId(targetConnectorId);
+    link.setSourceArtifactId(sourceArtifactId);
+    link.setTargetArtifactId(targetArtifactId);
     
     SqlSession session = sqlMapper.openSession();
     
-    session.insert("org.activiti.cycle.CycleLink.insertCycleLink", cycleLink);
+    session.insert("org.activiti.cycle.CycleLink.insertCycleLink", link);
     session.commit();
   }
   
+  /**
+   * Should be the parameter connectorId and artifactId or is the sourceArtifactId parameter composed of
+   * connectorId and artifactId??
+   * If yes, how can I split the sourceArtifactId in connectorId and artifactId? Only with String-Operation? 
+   */
   @Override
-  public List<Artifact> getArtifactLinks(String sourceArtifactId) {
+  public List<RepositoryArtifactLink> getArtifactLinks(String sourceArtifactId) {
+    
+    List<RepositoryArtifactLink> repositoryArtifactLinkList = new ArrayList<RepositoryArtifactLink>();
     SqlSessionFactory sqlMapper = getSessionFactory();
     
     SqlSession session = sqlMapper.openSession();
     
     try {
       
-      List<Artifact> artifactResultList = session.selectList(
-              "org.activiti.cycle.Artifact.selectArtifact", sourceArtifactId);
-      return artifactResultList;
+      List<CycleLink> linkResultList = session.selectList(
+              "org.activiti.cycle.CycleLink.selectArtifactLinkForSourceArtifact", sourceArtifactId);
+      
+      if (linkResultList != null && !linkResultList.isEmpty()) {
+         for (CycleLink cycleLink : linkResultList) {
+              RepositoryArtifactLink repositoryArtifactLink = new RepositoryArtifactLinkImpl();
+              repositoryArtifactLink.setId(cycleLink.getId());
+              repositoryArtifactLink.setSourceElementId(cycleLink.getSourceElementId());
+              repositoryArtifactLink.setTargetElementId(cycleLink.getTargetElementId());
+              repositoryArtifactLink.setSourceElementName(cycleLink.getSourceElementName());
+              repositoryArtifactLink.setTargetElementName(cycleLink.getTargetElementName());
+              repositoryArtifactLink.setSourceRevision(cycleLink.getSourceRevision());
+              repositoryArtifactLink.setTargetRevision(cycleLink.getTargetRevision());
+              repositoryArtifactLink.setDescription(cycleLink.getDescription());
+              repositoryArtifactLink.setLinkType(cycleLink.getLinkType());
+              repositoryArtifactLink.setLinkedBothWays(cycleLink.isLinkedBothWays());
+              
+              //TODO: How can I get the connector to create a new RepositoryArtifact?
+//              RepositoryArtifact sourceRepositoryArtifact = new RepositoryArtifactLinkImpl(cycleLink.getSourceConnectorId(), cycleLink.getSourceArtifactId(),  );
+//              RepositoryArtifact targetRepositoryArtifact = new RepositoryArtifactLinkImpl(cycleLink.getTargetConnectorId(), cycleLink.getTargetArtifactId(),  );
+//              repositoryArtifactLink.setSourceArtifactId(sourceRepositoryArtifact);
+//              repositoryArtifactLink.setTargetArtifactId(targetRepositoryArtifact);
+              
+              repositoryArtifactLinkList.add(repositoryArtifactLink);
+        }
+      }
+      
+      return repositoryArtifactLinkList;
     } finally {
       session.close();
     }

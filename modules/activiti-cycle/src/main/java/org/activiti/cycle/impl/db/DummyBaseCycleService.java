@@ -2,9 +2,9 @@ package org.activiti.cycle.impl.db;
 
 import java.util.List;
 
-import org.activiti.cycle.Artifact;
 import org.activiti.cycle.CycleService;
 import org.activiti.cycle.CycleTag;
+import org.activiti.cycle.RepositoryArtifactLink;
 import org.activiti.cycle.RepositoryNodeNotFoundException;
 import org.activiti.cycle.impl.connector.demo.DemoConnector;
 
@@ -18,7 +18,7 @@ public abstract class DummyBaseCycleService implements CycleService {
   public void addArtifactLink(String sourceArtifactId, String targetArtifactId) {
   }
 
-  public void addLink(Artifact link) {
+  public void addLink(RepositoryArtifactLink link) {
   }
 
   public void addTag(String nodeId, String tagName) {
@@ -41,19 +41,19 @@ public abstract class DummyBaseCycleService implements CycleService {
     return null;
   }
 
-  public List<Artifact> getArtifactLinks(String sourceArtifactId) {
+  public List<RepositoryArtifactLink> getArtifactLinks(String sourceArtifactId) {
     return null;
   }
 
-  public List<Artifact> getArtifactLinks(String sourceArtifactId, Long sourceRevision) {
+  public List<RepositoryArtifactLink> getArtifactLinks(String sourceArtifactId, Long sourceRevision) {
     return null;
   }
 
-  public List<Artifact> getArtifactLinks(String sourceArtifactId, String type) {
+  public List<RepositoryArtifactLink> getArtifactLinks(String sourceArtifactId, String type) {
     return null;
   }
 
-  public List<Artifact> getArtifactLinks(String sourceArtifactId, Long sourceRevision, String type) {
+  public List<RepositoryArtifactLink> getArtifactLinks(String sourceArtifactId, Long sourceRevision, String type) {
     return null;
   }
 

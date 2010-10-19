@@ -37,12 +37,12 @@ public interface CycleService {
   /**
    * add given link to Cycle
    */
-  public void addLink(Artifact link); 
+  public void addLink(RepositoryArtifactLink link); 
   
-  public List<Artifact> getArtifactLinks(String sourceArtifactId);
-  public List<Artifact> getArtifactLinks(String sourceArtifactId, Long sourceRevision);
-  public List<Artifact> getArtifactLinks(String sourceArtifactId, String type);
-  public List<Artifact> getArtifactLinks(String sourceArtifactId, Long sourceRevision, String type);
+  public List<RepositoryArtifactLink> getArtifactLinks(String sourceArtifactId);
+  public List<RepositoryArtifactLink> getArtifactLinks(String sourceArtifactId, Long sourceRevision);
+  public List<RepositoryArtifactLink> getArtifactLinks(String sourceArtifactId, String type);
+  public List<RepositoryArtifactLink> getArtifactLinks(String sourceArtifactId, Long sourceRevision, String type);
  
   public void deleteLink(long linkId);
 
