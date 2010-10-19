@@ -5,7 +5,7 @@
   <li class="filter">
     <a href="#" rel="candidate=${user.id?js_string}" title="${msg("label.filter.unassigned-tasks")}">${msg("label.filter.candidate")}</a> <em class="unassigned"></em>
     <ul>
-      <#list user.properties.assignmentGroups?keys as groupId>
+      <#list user.properties.assignmentGroups?keys?sort as groupId>
       <li class="filter">
         <span class="label">${msg("label.in")}</span><a href="#" rel="candidate-group=${groupId?js_string}" title="${msg("label.filter.candidate-group", user.properties.assignmentGroups[groupId]?js_string)}">${user.properties.assignmentGroups[groupId]?html}</a> <em class="unassigned-group-${groupId?js_string}"></em>
       </li>
