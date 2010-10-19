@@ -9,7 +9,6 @@ import java.util.Properties;
 import org.activiti.cycle.ArtifactType;
 import org.activiti.cycle.RepositoryConnector;
 import org.activiti.cycle.RepositoryException;
-import org.activiti.cycle.impl.connector.signavio.SignavioPluginDefinition;
 import org.activiti.cycle.impl.plugin.ActivitiCyclePluginDefinition;
 
 /**
@@ -22,6 +21,8 @@ public abstract class RepositoryConnectorConfiguration {
    * 
    * TODO: Use this default? Hmm....
    */
+  private String id = this.getClass().getSimpleName().replace("Configuration", "");
+  
   private String name = this.getClass().getSimpleName().replace("Configuration", "");
 
   // /**
@@ -135,6 +136,15 @@ public abstract class RepositoryConnectorConfiguration {
   
   public void setDescription(String description) {
     this.description = description;
+  }
+
+  
+  public String getId() {
+    return id;
+  }
+
+  public void setId(String id) {
+    this.id = id;
   }
 
   // @Override

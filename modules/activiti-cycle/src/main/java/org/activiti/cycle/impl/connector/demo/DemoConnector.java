@@ -52,7 +52,7 @@ public class DemoConnector extends AbstractRepositoryConnector<DemoConnectorConf
 
     RepositoryArtifact file2 = createArtifact("/minutes", "InitialMindmap.mm", DemoConnectorPluginDefinition.ARTIFACT_TYPE_MINDMAP,
             createContent("/org/activiti/cycle/impl/connector/demo/mindmap.html"));
-    addContentToInternalMap(file2.getId(), DemoConnectorPluginDefinition.CONTENT_REPRESENTATION_ID_PNG,
+    addContentToInternalMap(file2.getOriginalNodeId(), DemoConnectorPluginDefinition.CONTENT_REPRESENTATION_ID_PNG,
             createContent(
             "/org/activiti/cycle/impl/connector/demo/mindmap.jpg").asByteArray());
 
@@ -66,7 +66,7 @@ public class DemoConnector extends AbstractRepositoryConnector<DemoConnectorConf
     RepositoryArtifact file3 = createArtifactFromContentRepresentation("/BPMN/Level3", "InitialBpmnModel", DemoConnectorPluginDefinition.ARTIFACT_TYPE_BPMN_20,
             DemoConnectorPluginDefinition.CONTENT_REPRESENTATION_ID_XML,
             createContent("/org/activiti/cycle/impl/connector/demo/engine-pool.xml"));
-    addContentToInternalMap(file3.getId(), DemoConnectorPluginDefinition.CONTENT_REPRESENTATION_ID_PNG, createContent(
+    addContentToInternalMap(file3.getOriginalNodeId(), DemoConnectorPluginDefinition.CONTENT_REPRESENTATION_ID_PNG, createContent(
             "/org/activiti/cycle/impl/connector/demo/bpmn.png").asByteArray());
 
     rootNodes.add(folder2);
@@ -84,15 +84,15 @@ public class DemoConnector extends AbstractRepositoryConnector<DemoConnectorConf
   }
 
   public void copyArtifact(RepositoryArtifact artifact, String targetName) {
-    RepositoryArtifact copy = new RepositoryArtifactImpl(targetName, artifact.getArtifactType(), this);
+    RepositoryArtifact copy = new RepositoryArtifactImpl(getConfiguration().getId(), targetName, artifact.getArtifactType(), this);
     
     nodes.add(copy);
     
     Collection<ContentRepresentation> contentRepresentationDefinitions = artifact.getArtifactType().getContentRepresentations();
     for (ContentRepresentation def : contentRepresentationDefinitions) {
       def.getId();
-      Content cont = getContent(artifact.getId(), def.getId());
-      addContentToInternalMap(copy.getId(), def.getId(), cont.asByteArray());
+      Content cont = getContent(artifact.getOriginalNodeId(), def.getId());
+      addContentToInternalMap(copy.getOriginalNodeId(), def.getId(), cont.asByteArray());
     }
   }
 
@@ -106,7 +106,7 @@ public class DemoConnector extends AbstractRepositoryConnector<DemoConnectorConf
    */
   public static RepositoryFolderImpl clone(RepositoryFolder folder) {
     // TODO: Maybe make deep copy?
-    RepositoryFolderImpl newFolder = new RepositoryFolderImpl(folder.getId());
+    RepositoryFolderImpl newFolder = new RepositoryFolderImpl(folder.getConnectorId(), folder.getOriginalNodeId());
     
     newFolder.getMetadata().setName(folder.getMetadata().getName());
     newFolder.getMetadata().setParentFolderId(folder.getMetadata().setParentFolderId());
@@ -118,7 +118,7 @@ public class DemoConnector extends AbstractRepositoryConnector<DemoConnectorConf
    * later
    */
   public RepositoryArtifactImpl clone(RepositoryArtifact artifact) {
-    RepositoryArtifactImpl newArtifact = new RepositoryArtifactImpl(artifact.getId(), artifact.getArtifactType(), this);
+    RepositoryArtifactImpl newArtifact = new RepositoryArtifactImpl(artifact.getConnectorId(), artifact.getOriginalNodeId(), artifact.getArtifactType(), this);
 
     newArtifact.getMetadata().setName(artifact.getMetadata().getName());
     newArtifact.getMetadata().setParentFolderId(artifact.getMetadata().setParentFolderId());
@@ -181,9 +181,9 @@ public class DemoConnector extends AbstractRepositoryConnector<DemoConnectorConf
       }
     } else {
       for (RepositoryNode node : nodes) {
-        if (node.getId().startsWith(parentUrl) && !node.getId().equals(parentUrl)) {
+        if (node.getOriginalNodeId().startsWith(parentUrl) && !node.getOriginalNodeId().equals(parentUrl)) {
           // remove / at the end
-          String remainingUrl = node.getId().substring(parentUrl.length() + 1);
+          String remainingUrl = node.getOriginalNodeId().substring(parentUrl.length() + 1);
           remainingUrl = remainingUrl.substring(0, remainingUrl.length() - 1);
           
           if (!remainingUrl.contains("/")) {
@@ -201,7 +201,7 @@ public class DemoConnector extends AbstractRepositoryConnector<DemoConnectorConf
 
   public RepositoryArtifact getRepositoryArtifact(String id) {
     for (RepositoryNode node : nodes) {
-      if (node.getId().equals(id) && node instanceof RepositoryArtifact) {
+      if (node.getOriginalNodeId().equals(id) && node instanceof RepositoryArtifact) {
         return clone((RepositoryArtifact) node);
       }
     }
@@ -210,7 +210,7 @@ public class DemoConnector extends AbstractRepositoryConnector<DemoConnectorConf
   
   public RepositoryFolder getRepositoryFolder(String id) {
     for (RepositoryNode node : nodes) {
-      if (node.getId().equals(id) && node instanceof RepositoryFolder) {
+      if (node.getOriginalNodeId().equals(id) && node instanceof RepositoryFolder) {
         return clone((RepositoryFolder) node);
       }
     }
@@ -245,7 +245,7 @@ public class DemoConnector extends AbstractRepositoryConnector<DemoConnectorConf
     }
     id = id + artifactName;
     
-    RepositoryArtifact newArtifact = new RepositoryArtifactImpl(id, getArtifactType(artifactType), this);
+    RepositoryArtifact newArtifact = new RepositoryArtifactImpl(getConfiguration().getId(), id, getArtifactType(artifactType), this);
     newArtifact.getMetadata().setName(artifactName);
     newArtifact.getMetadata().setParentFolderId(containingFolderId);
     nodes.add(newArtifact);
@@ -272,7 +272,7 @@ public class DemoConnector extends AbstractRepositoryConnector<DemoConnectorConf
       id = id + "/";
     }
     id = id + name;
-    RepositoryFolderImpl newFolder = new RepositoryFolderImpl(id);
+    RepositoryFolderImpl newFolder = new RepositoryFolderImpl(getConfiguration().getId(), id);
 
     newFolder.getMetadata().setName(name);
     newFolder.getMetadata().setParentFolderId(parentFolderId);

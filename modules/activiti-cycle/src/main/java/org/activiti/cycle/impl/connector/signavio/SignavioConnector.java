@@ -204,7 +204,7 @@ public class SignavioConnector extends AbstractRepositoryConnector<SignavioConne
     // folderInfo.setId( directoryId );
     // TODO: Check where we get the real ID from!
     String id = getConfiguration().getDirectoryIdFromUrl(href);
-    RepositoryFolderImpl folderInfo = new RepositoryFolderImpl(id);
+    RepositoryFolderImpl folderInfo = new RepositoryFolderImpl(getConfiguration().getId(), id);
 
     folderInfo.getMetadata().setName(directoryName);
     // TODO: Where do we get the path from?
@@ -220,7 +220,7 @@ public class SignavioConnector extends AbstractRepositoryConnector<SignavioConne
 
   private RepositoryArtifact getArtifactInfoFromFile(String id, JSONObject json) throws JSONException {
     ArtifactType artifactType = getArtifactTypeForSignavioArtifact(json);
-    RepositoryArtifactImpl fileInfo = new RepositoryArtifactImpl(id, artifactType, this);
+    RepositoryArtifactImpl fileInfo = new RepositoryArtifactImpl(getConfiguration().getId(), id, artifactType, this);
 
     if (json.has("name")) {
       fileInfo.getMetadata().setName(json.optString("name"));
@@ -336,10 +336,7 @@ public class SignavioConnector extends AbstractRepositoryConnector<SignavioConne
     try {
       Response modelResponse = getJsonResponse(getConfiguration().getModelUrl(id) + "/info");
       jsonData = new JsonRepresentation(modelResponse.getEntity());
-      if (log.isLoggable(Level.FINE)) {
-        log.fine("JsonData - (" + jsonData.getText() + ")");
-      }
-      jsonObject = jsonData.getJsonObject();
+      jsonObject = jsonData.getJsonObject(); 
       return getArtifactInfoFromFile(id, jsonObject);
     } catch (Exception ex) {
       throw new RepositoryNodeNotFoundException(getConfiguration().getName(), RepositoryArtifact.class, id, ex);
@@ -404,7 +401,7 @@ public class SignavioConnector extends AbstractRepositoryConnector<SignavioConne
   }
 
   public String getModelUrl(RepositoryArtifact artifact) {
-    return getConfiguration().getModelUrl(artifact.getId());
+    return getConfiguration().getModelUrl(artifact.getOriginalNodeId());
   }
 
   public void commitPendingChanges(String comment) {

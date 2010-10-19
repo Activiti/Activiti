@@ -7,7 +7,7 @@
 <#macro printFolder folder>
 {
   "label": "${folder.metadata.name}",
-  "id": "${folder.id}",
+  "id": "${folder.currentPath}",
   "folder": "true"
 }
 </#macro>
@@ -15,7 +15,7 @@
 <#macro printFile file>
 {
   "label": "${file.metadata.name}",
-  "id": "${file.id}",
+  "id": "${file.currentPath}",
   "expanded": "true",
   "file": "true",
   "contentType": "${file.artifactType.mimeType.contentType}"

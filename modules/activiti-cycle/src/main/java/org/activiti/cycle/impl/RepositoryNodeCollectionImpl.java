@@ -65,9 +65,12 @@ public class RepositoryNodeCollectionImpl implements RepositoryNodeCollection {
     return (getArtifact(id) != null);
   }
 
-  public RepositoryArtifact getArtifact(String id) {
+  /**
+   * TODO: Duoble check that current path is the best option here!
+   */
+  public RepositoryArtifact getArtifact(String currentPath) {
     for (RepositoryArtifact file : getArtifactList()) {
-      if (id.equals(file.getId())) {
+      if (currentPath.equals(file.getCurrentPath())) {
         return file;
       }
     }
@@ -87,9 +90,12 @@ public class RepositoryNodeCollectionImpl implements RepositoryNodeCollection {
     return (getFolder(id) != null);
   }
 
-  public RepositoryFolder getFolder(String id) {
+  /**
+   * TODO: Duoble check that current path is the best option here!
+   */
+  public RepositoryFolder getFolder(String currentPath) {
     for (RepositoryFolder folder : getFolderList()) {
-      if (id.equals(folder.getId())) {
+      if (currentPath.equals(folder.getCurrentPath())) {
         return folder;
       }
     }

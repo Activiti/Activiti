@@ -33,18 +33,17 @@ insert into ACT_CY_CONFIG values ('kermit', '<org.activiti.cycle.impl.conf.Confi
   <name>kermit</name>
   <linkedConnectors>
     <org.activiti.cycle.impl.connector.signavio.SignavioConnectorConfiguration>
+      <id>Activiti</id>
       <name>Activiti Modeler</name>
       <credentialsSaved>false</credentialsSaved>
       <signavioBaseUrl>@activiti.modeler.base.url@</signavioBaseUrl>
       <loginRequired>false</loginRequired>
     </org.activiti.cycle.impl.connector.signavio.SignavioConnectorConfiguration>
     <org.activiti.cycle.impl.connector.fs.FileSystemConnectorConfiguration>
+      <id>Workspace</id>
       <name>Eclipse Workspace (File System)</name>
       <baseFilePath>@cycle.base.file.path@</baseFilePath>
     </org.activiti.cycle.impl.connector.fs.FileSystemConnectorConfiguration>
-	<org.activiti.cycle.impl.connector.demo.DemoConnectorConfiguration> 
-      <name>Demo</name> 
-    </org.activiti.cycle.impl.connector.demo.DemoConnectorConfiguration>
   </linkedConnectors>
   <parentContainers/>
 </org.activiti.cycle.impl.conf.ConfigurationContainer>', 1);
@@ -52,12 +51,14 @@ insert into ACT_CY_CONFIG values ('fozzie', '<org.activiti.cycle.impl.conf.Confi
   <name>fozzie</name>
   <linkedConnectors>
     <org.activiti.cycle.impl.connector.signavio.SignavioConnectorConfiguration>
+      <id>Activiti</id>
       <name>Activiti Modeler</name>
       <credentialsSaved>false</credentialsSaved>
       <signavioBaseUrl>@activiti.modeler.base.url@</signavioBaseUrl>
       <loginRequired>false</loginRequired>
     </org.activiti.cycle.impl.connector.signavio.SignavioConnectorConfiguration>
     <org.activiti.cycle.impl.connector.fs.FileSystemConnectorConfiguration>
+      <id>Workspace</id>
       <name>Eclipse Workspace (File System)</name>
       <baseFilePath>@cycle.base.file.path@</baseFilePath>
     </org.activiti.cycle.impl.connector.fs.FileSystemConnectorConfiguration>
@@ -68,12 +69,14 @@ insert into ACT_CY_CONFIG values ('gonzo', '<org.activiti.cycle.impl.conf.Config
   <name>gonzo</name>
   <linkedConnectors>
     <org.activiti.cycle.impl.connector.signavio.SignavioConnectorConfiguration>
+      <id>Activiti</id>
       <name>Activiti Modeler</name>
       <credentialsSaved>false</credentialsSaved>
       <signavioBaseUrl>http://localhost:8080/activiti-modeler/</signavioBaseUrl>
       <loginRequired>false</loginRequired>
     </org.activiti.cycle.impl.connector.signavio.SignavioConnectorConfiguration>
     <org.activiti.cycle.impl.connector.fs.FileSystemConnectorConfiguration>
+      <id>Workspace</id>
       <name>Eclipse Workspace (File System)</name>
       <baseFilePath>@cycle.base.file.path@</baseFilePath>
     </org.activiti.cycle.impl.connector.fs.FileSystemConnectorConfiguration>

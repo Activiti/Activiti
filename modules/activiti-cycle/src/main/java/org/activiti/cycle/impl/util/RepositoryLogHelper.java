@@ -45,7 +45,7 @@ public class RepositoryLogHelper {
   public static void logFolder(RepositoryConnector connector, String intend, RepositoryNodeCollection folder) {
     log.log(Level.INFO, intend + folder);
     for (RepositoryFolder subFolder : folder.getFolderList()) {
-      printFolder(connector, intend + "   ", connector.getChildren(subFolder.getId()));
+      printFolder(connector, intend + "   ", connector.getChildren(subFolder.getOriginalNodeId()));
     }
     for (RepositoryArtifact file : folder.getArtifactList()) {
       log.log(Level.INFO, intend + "-" + file);
@@ -60,7 +60,7 @@ public class RepositoryLogHelper {
   public static void printNodes(RepositoryConnector connector, String intend, List<RepositoryNode> nodes) {    
     for (RepositoryNode node : nodes) {
       if (node instanceof RepositoryFolder) {
-        printFolder(connector, intend + "   ", connector.getChildren(node.getId()));
+        printFolder(connector, intend + "   ", connector.getChildren(node.getOriginalNodeId()));
       } else {
         printArtifact(intend, (RepositoryArtifact) node);
       }

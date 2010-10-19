@@ -18,7 +18,7 @@ public class XmlFileContentProvider extends ContentProviderImpl {
 
   @Override
   public void addValueToContent(Content content, RepositoryConnector connector, RepositoryArtifact artifact) {
-    String fileName = ((FileSystemConnector) connector).getConfiguration().getBasePath() + artifact.getId();
+    String fileName = ((FileSystemConnector) connector).getConfiguration().getBasePath() + artifact.getOriginalNodeId();
     File file = new File(fileName);
 
     try {

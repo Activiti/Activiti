@@ -39,13 +39,11 @@ insert into ACT_CY_CONFIG values ('kermit', '<org.activiti.cycle.impl.conf.Confi
       <loginRequired>false</loginRequired>
     </org.activiti.cycle.impl.connector.signavio.SignavioConnectorConfiguration>
     <org.activiti.cycle.impl.connector.fs.FileSystemConnectorConfiguration>
+      <id>Workspace</id>
       <name>Eclipse Workspace (File System)</name>
       <baseFilePath>@cycle.base.file.path@</baseFilePath>
     </org.activiti.cycle.impl.connector.fs.FileSystemConnectorConfiguration>
-	<org.activiti.cycle.impl.connector.demo.DemoConnectorConfiguration> 
-      <name>Demo</name> 
-    </org.activiti.cycle.impl.connector.demo.DemoConnectorConfiguration>
-  </linkedConnectors>
+	</linkedConnectors>
   <parentContainers/>
 </org.activiti.cycle.impl.conf.ConfigurationContainer>', 1);
 insert into ACT_CY_CONFIG values ('fozzie', '<org.activiti.cycle.impl.conf.ConfigurationContainer>
@@ -58,6 +56,7 @@ insert into ACT_CY_CONFIG values ('fozzie', '<org.activiti.cycle.impl.conf.Confi
       <loginRequired>false</loginRequired>
     </org.activiti.cycle.impl.connector.signavio.SignavioConnectorConfiguration>
     <org.activiti.cycle.impl.connector.fs.FileSystemConnectorConfiguration>
+      <id>Workspace</id>
       <name>Eclipse Workspace (File System)</name>
       <baseFilePath>@cycle.base.file.path@</baseFilePath>
     </org.activiti.cycle.impl.connector.fs.FileSystemConnectorConfiguration>
@@ -74,6 +73,7 @@ insert into ACT_CY_CONFIG values ('gonzo', '<org.activiti.cycle.impl.conf.Config
       <loginRequired>false</loginRequired>
     </org.activiti.cycle.impl.connector.signavio.SignavioConnectorConfiguration>
     <org.activiti.cycle.impl.connector.fs.FileSystemConnectorConfiguration>
+      <id>Workspace</id>
       <name>Eclipse Workspace (File System)</name>
       <baseFilePath>@cycle.base.file.path@</baseFilePath>
     </org.activiti.cycle.impl.connector.fs.FileSystemConnectorConfiguration>

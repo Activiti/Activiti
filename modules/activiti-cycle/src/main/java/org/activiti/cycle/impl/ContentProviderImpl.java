@@ -35,7 +35,7 @@ public abstract class ContentProviderImpl implements ContentProvider {
 
     addValueToContent(c, connector, artifact);
     if (c.isNull()) {
-      throw new RepositoryException("No content created for artifact " + artifact.getId() + " ' by provider '" + this.getClass().getName()
+      throw new RepositoryException("No content created for artifact " + artifact.getGlobalUniqueId() + " ' by provider '" + this.getClass().getName()
               + "' (was null). Please check provider or artifact.");
     }
 

@@ -28,6 +28,8 @@ import org.activiti.cycle.impl.RepositoryNodeImpl;
  */
 public class RootConnector implements RepositoryConnector {
 
+  public static final String ROOT_CONNECTOR_ID = "ROOT-CONNECTOR";
+
   private List<RepositoryConnector> repositoryConnectors;
   
   private RootConnectorConfiguration configuration;
@@ -52,13 +54,13 @@ public class RootConnector implements RepositoryConnector {
   }
 
 
-  private RepositoryConnector getRepositoryConnector(String name) {
+  private RepositoryConnector getRepositoryConnector(String connectorId) {
     for (RepositoryConnector connector : getRepositoryConnectors()) {
-      if (connector.getConfiguration().getName().equals(name)) {
+      if (connector.getConfiguration().getId().equals(connectorId)) {
         return connector;
       }
     }
-    throw new RepositoryException("Couldn't find Repository Connector with name '" + name + "'");
+    throw new RepositoryException("Couldn't find Repository Connector with id '" + connectorId + "'");
   }
   
   /**
@@ -88,51 +90,29 @@ public class RootConnector implements RepositoryConnector {
   }
 
   /**
-   * construct a unique id for an {@link RepositoryNode} by adding the connector
-   * name (since this connector maintains different repos)
-   */
-  private String getIdWithRepoName(RepositoryConnector connector, RepositoryNode repositoryNode) {
-    String repositoryName = connector.getConfiguration().getName();
-    if (!repositoryNode.getId().startsWith("/")) {
-      throw new RepositoryException("RepositoryNode id doesn't start with a slash, which is considered invalid: '" + repositoryNode.getId()
-              + "' in repository '" + repositoryName + "'");
-    } else {
-      return getRepositoryPrefix(repositoryName) + repositoryNode.getId();
-    }
-  }
-
-  /**
-   * return the prefix for the {@link RepositoryConnector}
-   */
-  private String getRepositoryPrefix(String repositoryName) {
-    return "/" + repositoryName;
-  }
-
-  /**
    * add repository name in config to URL
    */
-  private RepositoryNode adjust(RepositoryConnector connector, RepositoryNode node) {
+  private void adjust(RepositoryConnector connector, RepositoryNode node) {
     RepositoryNodeImpl repositoryNode = ((RepositoryNodeImpl) node);
-    repositoryNode.setId(getIdWithRepoName(connector, repositoryNode));
-    return repositoryNode;
+    repositoryNode.addNewRootToCurrentPath(connector.getConfiguration().getId());
   }
 
-  protected RepositoryConnector getConnectorFromUrl(String url) {
+  protected RepositoryConnector getConnectorFromUrl(String parentCurrentPath) {
     RepositoryConnector connector = null;
     
-    int index = url.indexOf("/");
+    int index = parentCurrentPath.indexOf("/");
     if (index == -1) {
       // demo connector itself
-      connector = getRepositoryConnector(url);
+      connector = getRepositoryConnector(parentCurrentPath);
     } else if (index == 0) {
-      connector = getConnectorFromUrl(url.substring(1));
+      connector = getConnectorFromUrl(parentCurrentPath.substring(1));
     } else {
-      String repositoryName = url.substring(0, index);
+      String repositoryName = parentCurrentPath.substring(0, index);
       connector = getRepositoryConnector(repositoryName);
     }
     
     if (connector == null) {
-      throw new RepositoryException("Couldn't find any RepositoryConnector for url '" + url + "'");
+      throw new RepositoryException("Couldn't find any RepositoryConnector for url '" + parentCurrentPath + "'");
     } else {
       return connector;
     }
@@ -150,19 +130,19 @@ public class RootConnector implements RepositoryConnector {
     }
   }
 
-  public RepositoryNodeCollection getChildren(String parentUrl) {
+  public RepositoryNodeCollection getChildren(String parentCurrentPath) {
     // special handling for root
-    if ("/".equals(parentUrl)) {
+    if ("/".equals(parentCurrentPath)) {
       return getRepoRootFolders();
     } 
     
     // First identify correct repo and truncate path to local part of
     // connector
-    RepositoryConnector connector = getConnectorFromUrl(parentUrl);
-    parentUrl = getRepositoryPartOfUrl(parentUrl);
+    RepositoryConnector connector = getConnectorFromUrl(parentCurrentPath);
+    parentCurrentPath = getRepositoryPartOfUrl(parentCurrentPath);
 
       // now make the query
-    RepositoryNodeCollection children = connector.getChildren(parentUrl);
+    RepositoryNodeCollection children = connector.getChildren(parentCurrentPath);
    
     // and adjust the result to include repo name
     for (RepositoryNode repositoryNode : children.asList()) {
@@ -174,11 +154,12 @@ public class RootConnector implements RepositoryConnector {
   public RepositoryNodeCollection getRepoRootFolders() {
     ArrayList<RepositoryNode> nodes = new ArrayList<RepositoryNode>();
     for (RepositoryConnector connector : getRepositoryConnectors()) {
-      String repoName = connector.getConfiguration().getName();
-      RepositoryFolderImpl folder = new RepositoryFolderImpl(repoName);
-      folder.getMetadata().setName(repoName);
+
+      RepositoryFolderImpl folder = new RepositoryFolderImpl(ROOT_CONNECTOR_ID, connector.getConfiguration().getId());
+      folder.getMetadata().setName(connector.getConfiguration().getName());
       folder.getMetadata().setParentFolderId("/");
       nodes.add(folder);
+      
     }
     return new RepositoryNodeCollectionImpl(nodes);
   }

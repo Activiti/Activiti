@@ -25,7 +25,7 @@ public class PngProvider extends SignavioContentRepresentationProvider {
   @Override
   public void addValueToContent(Content content, SignavioConnector connector, RepositoryArtifact artifact) {
     try {
-      String modelAsPngUrl = connector.getConfiguration().getPngUrl(artifact.getId(), connector.getSecurityToken());
+      String modelAsPngUrl = connector.getConfiguration().getPngUrl(artifact.getOriginalNodeId(), connector.getSecurityToken());
       InputStream is = new URL(modelAsPngUrl).openStream();
       content.setValue(is);
     } catch (Exception ex) {

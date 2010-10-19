@@ -46,7 +46,7 @@ public interface ArtifactType {
   
   public ParameterizedAction getParameterizedAction(String name);
 
-  public List<RepositoryArtifactOutgoingLink> createLinks(RepositoryConnector connector, RepositoryArtifact artifact);
+  public List<RepositoryArtifactOpenLinkAction> createOpenLinkActions(RepositoryConnector connector, RepositoryArtifact artifact);
 
   public List<DownloadContentAction> getDownloadContentActions();
   

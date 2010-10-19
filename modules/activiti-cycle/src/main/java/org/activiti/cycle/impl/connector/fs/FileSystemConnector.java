@@ -160,7 +160,7 @@ public class FileSystemConnector extends AbstractRepositoryConnector<FileSystemC
     // TODO: We should have an extension to ArtifactType mapping somewhere
     ArtifactType artifactType = getConfiguration().getArtifactType(mimeType);
 
-    RepositoryArtifactImpl artifact = new RepositoryArtifactImpl(id, artifactType, this);
+    RepositoryArtifactImpl artifact = new RepositoryArtifactImpl(getConfiguration().getId(), id, artifactType, this);
     artifact.getMetadata().setName(file.getName());
         
     // TODO: CHECK Implementation
@@ -202,7 +202,7 @@ public class FileSystemConnector extends AbstractRepositoryConnector<FileSystemC
       // root folder is again a special case
       id = "/";
     }
-    RepositoryFolderImpl folder = new RepositoryFolderImpl(id);
+    RepositoryFolderImpl folder = new RepositoryFolderImpl(getConfiguration().getId(), id);
     folder.getMetadata().setName(file.getName());
     // TODO: Implement
     // folder.getMetadata().setParentFolderId();

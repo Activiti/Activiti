@@ -58,7 +58,7 @@ public class CopyArtifactAction extends ParameterizedHtmlFormTemplateAction {
     // targetName;
     // }
 
-    Content content = sourceConnector.getContent(artifact.getId(), artifact.getArtifactType().getDefaultContentRepresentation().getId());
+    Content content = sourceConnector.getContent(artifact.getOriginalNodeId(), artifact.getArtifactType().getDefaultContentRepresentation().getId());
     targetConnector.createArtifact(targetFolder, targetName, artifact.getArtifactType().getId(), content);
   }
 }

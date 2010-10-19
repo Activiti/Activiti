@@ -39,7 +39,7 @@ public class ValidateActivitiDeployment extends CreateTechnicalBpmnXmlAction {
     
     BpmnParser bpmnParser = new BpmnParser(expressionManager);
     // parse to validate
-    bpmnParser.createParse().sourceString(bpmnXml).name(artifact.getId()).execute();    
+    bpmnParser.createParse().sourceString(bpmnXml).name(artifact.getOriginalNodeId()).execute();    
     // That's it, now we get an exception is the file is invalid
   }
 

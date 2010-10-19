@@ -16,7 +16,7 @@ import java.util.List;
 
 import org.activiti.cycle.ArtifactType;
 import org.activiti.cycle.RepositoryArtifact;
-import org.activiti.cycle.RepositoryArtifactOutgoingLink;
+import org.activiti.cycle.RepositoryArtifactOpenLinkAction;
 import org.activiti.cycle.RepositoryConnector;
 
 /**
@@ -31,16 +31,17 @@ public class RepositoryArtifactImpl extends RepositoryNodeImpl implements Reposi
 
   private final ArtifactType artifactType;
 
-  private final List<RepositoryArtifactOutgoingLink> links;
+  private final List<RepositoryArtifactOpenLinkAction> openLinkActions;
 
-  public RepositoryArtifactImpl(String id, ArtifactType artifactType, RepositoryConnector connector) {
-    super(id);
+  public RepositoryArtifactImpl(String connectorId, String nodeId, ArtifactType artifactType, RepositoryConnector connector) {
+    super(connectorId, nodeId);
     this.artifactType = artifactType;
-    this.links = artifactType.createLinks(connector, this);
+    this.openLinkActions = artifactType.createOpenLinkActions(connector, this);
   }
 
   public String toString() {
-    return this.getClass().getSimpleName() + " [id=" + getId() + ";type=" + artifactType + ";metadata=" + getMetadata() + "]";
+    return this.getClass().getSimpleName() + " [connectorId=" + getConnectorId() + ";artifactId=" + getOriginalNodeId() + ";type=" + artifactType + ";metadata="
+            + getMetadata() + "]";
   }
 
 
@@ -48,7 +49,7 @@ public class RepositoryArtifactImpl extends RepositoryNodeImpl implements Reposi
     return artifactType;
   }
 
-  public List<RepositoryArtifactOutgoingLink> getOutgoingLinks() {
-    return links;
+  public List<RepositoryArtifactOpenLinkAction> getOpenLinkActions() {
+    return openLinkActions;
   }
 }

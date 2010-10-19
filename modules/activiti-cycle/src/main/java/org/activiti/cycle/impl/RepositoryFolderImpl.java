@@ -23,8 +23,8 @@ public class RepositoryFolderImpl extends RepositoryNodeImpl implements Reposito
 
   private static final long serialVersionUID = 1L;
 
-  public RepositoryFolderImpl(String id) {
-    super(id);
+  public RepositoryFolderImpl(String connectorId, String nodeId) {
+    super(connectorId, nodeId);
   }
 
 }

@@ -21,14 +21,14 @@ import org.activiti.cycle.ArtifactType;
 import org.activiti.cycle.ContentProvider;
 import org.activiti.cycle.ContentRepresentation;
 import org.activiti.cycle.CreateUrlAction;
+import org.activiti.cycle.CycleDefaultMimeType;
 import org.activiti.cycle.DownloadContentAction;
 import org.activiti.cycle.MimeType;
 import org.activiti.cycle.ParameterizedAction;
 import org.activiti.cycle.RepositoryArtifact;
-import org.activiti.cycle.RepositoryArtifactOutgoingLink;
+import org.activiti.cycle.RepositoryArtifactOpenLinkAction;
 import org.activiti.cycle.RepositoryConnector;
 import org.activiti.cycle.RepositoryException;
-import org.activiti.cycle.CycleDefaultMimeType;
 
 /**
  * The type specifies the type of an artifact, e.g. Signavio model, jpdl process
@@ -304,10 +304,10 @@ public class ArtifactTypeImpl implements ArtifactType {
     downloadContentActions.add(new DownloadContentActionImpl(getContentRepresentation(contentRepresentationId)));
   }
 
-  public List<RepositoryArtifactOutgoingLink> createLinks(RepositoryConnector connector, RepositoryArtifact artifact) {
-    ArrayList<RepositoryArtifactOutgoingLink> list = new ArrayList<RepositoryArtifactOutgoingLink>();
+  public List<RepositoryArtifactOpenLinkAction> createOpenLinkActions(RepositoryConnector connector, RepositoryArtifact artifact) {
+    ArrayList<RepositoryArtifactOpenLinkAction> list = new ArrayList<RepositoryArtifactOpenLinkAction>();
     for (CreateUrlAction action : getCreateUrlActions()) {
-      RepositoryArtifactOutgoingLink link = new RepositoryArtifactOutgoingLink(action.getId(), action.getUrl(connector, artifact));
+      RepositoryArtifactOpenLinkAction link = new RepositoryArtifactOpenLinkAction(action.getId(), action.getUrl(connector, artifact));
       list.add(link);
     }
     return list;

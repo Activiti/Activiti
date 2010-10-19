@@ -25,5 +25,5 @@ public interface RepositoryArtifact extends RepositoryNode {
   
   public ArtifactType getArtifactType();
   
-  public List<RepositoryArtifactOutgoingLink> getOutgoingLinks();
+  public List<RepositoryArtifactOpenLinkAction> getOpenLinkActions();
 }

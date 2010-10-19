@@ -7,6 +7,7 @@ public class DemoConnectorConfiguration extends RepositoryConnectorConfiguration
   
   public DemoConnectorConfiguration(String name) {
     setName(name);
+    setId(name);
   }
 
   @Override

@@ -86,7 +86,7 @@ public class ArtifactGet extends ActivitiWebScript {
     }
 
     model.put("downloads", downloads);
-    model.put("links", artifact.getOutgoingLinks());
-    model.put("artifactId", artifact.getId());
+    model.put("links", artifact.getOpenLinkActions());
+    model.put("artifactId", artifact.getCurrentPath());
   }
 }

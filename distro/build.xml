@@ -129,7 +129,9 @@
     		<include name="scannotation-*.jar"/>
     		<include name="javassist-*.jar"/>
     		<include name="signavio-core-components-*.jar"/>
-    		<include name="jaxb-impl-*.jar"/>    		
+    		<include name="jaxb-impl-*.jar"/> 
+      	<include name="httpclient-*.jar" />
+      	<include name="httpcore-*.jar" />
     	</fileset>
     </copy>
 

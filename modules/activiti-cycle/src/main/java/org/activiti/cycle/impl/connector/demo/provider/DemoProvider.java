@@ -25,12 +25,12 @@ public class DemoProvider extends ContentProviderImpl {
 
   @Override
   public void addValueToContent(Content content, RepositoryConnector connector, RepositoryArtifact artifact) {
-    Map<String, byte[]> map = DemoConnector.content.get(artifact.getId());
+    Map<String, byte[]> map = DemoConnector.content.get(artifact.getOriginalNodeId());
     if (map != null) {
       content.setValue(map.get(contentRepresentationName));
       return;
     }
-    throw new RepositoryException("Couldn't find content representation '" + contentRepresentationName + "' for artifact " + artifact.getId());
+    throw new RepositoryException("Couldn't find content representation '" + contentRepresentationName + "' for artifact " + artifact.getOriginalNodeId());
   }
 
 }
