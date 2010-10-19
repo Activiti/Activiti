@@ -17,7 +17,7 @@
 	overflow: auto;
 }
 
-#artifact-source {
+.artifact-code, .artifact-text-plain {
 	margin: 1.2em;
 }
 
