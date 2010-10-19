@@ -160,12 +160,9 @@ public class BpmnParse extends Parse {
     super(parser);
     this.expressionManager = parser.getExpressionManager();
     this.parseListeners = parser.getParseListeners();
-   
     
-    //setSchemaResource(BpmnParser.SCHEMA_RESOURCE);
     setSchemaResource(Thread.currentThread().getContextClassLoader().getResource(BpmnParser.SCHEMA_RESOURCE).toString());
-    
-    
+
     this.importers.put("http://schemas.xmlsoap.org/wsdl/", new WSDLImporter());
   }
 
@@ -500,6 +497,8 @@ public class BpmnParse extends Parse {
         parseSubProcess(activityElement, scopeElement);
       } else if (activityElement.getTagName().equals("callActivity")) {
         parseCallActivity(activityElement, scopeElement);
+      } else {
+        addWarning("Ignoring unsupported activity type", activityElement);
       }
     }
   }
