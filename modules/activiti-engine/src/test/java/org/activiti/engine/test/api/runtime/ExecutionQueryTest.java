@@ -673,6 +673,8 @@ public class ExecutionQueryTest extends ActivitiInternalTestCase {
     runtimeService.deleteProcessInstance(processInstance3.getId(), "test");
   }
   
+  @Deployment(resources={
+    "org/activiti/engine/test/api/oneTaskProcess.bpmn20.xml"})
   public void testQueryVariablesUpdatedToNullValue() {
     // Start process instance with different types of variables
     Map<String, Object> variables = new HashMap<String, Object>();
