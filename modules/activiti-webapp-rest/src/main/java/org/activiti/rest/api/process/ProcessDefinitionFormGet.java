@@ -28,7 +28,7 @@ public class ProcessDefinitionFormGet extends ActivitiStreamingWebScript
   @Override
   protected void executeStreamingWebScript(ActivitiRequest req, WebScriptResponse res) {
     String processDefinitionId = req.getMandatoryPathParameter("processDefinitionId");
-    Object form = getTaskService().getRenderedStartFormById(processDefinitionId);
+    Object form = getFormService().getRenderedStartForm(processDefinitionId);
     InputStream is = null;
     if (form != null && form instanceof String) {
       is = new ByteArrayInputStream(((String) form).getBytes());

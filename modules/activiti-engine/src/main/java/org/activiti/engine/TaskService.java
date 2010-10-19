@@ -151,26 +151,4 @@ public interface TaskService {
    * Returns a new {@link TaskQuery} that can be used to dynamically query tasks.
    */
   TaskQuery createTaskQuery();
-  
-  // forms ////////////////////////////////////////////////////////////////////
-  
-  /** Get a rendered startform, for collecting parameters from a user to start 
-   * a new process instance. Returns null if the processdefinition doesn't have a start form. 
-   * @param processDefinitionId process definition id, cannot be null.
-   * @throws ActivitiException when no deployed process exists with the given key. 
-   */ 
-  Object getRenderedStartFormById(String processDefinitionId);
-
-  /** Get a rendered startform, for collecting parameters from a user to start 
-   * a new process instance. Returns null if the processdefinition doesn't have a start form.
-   * @param processDefinitionKey process definition key, cannot be null.
-   * @throws ActivitiException when no deployed process exists with the given key. 
-   */ 
-  Object getRenderedStartFormByKey(String processDefinitionKey);
-
-  /** Get the rendered task form for the given task.
-   * @param taskId the id of the task to render the form for, cannot be null.
-   * @return rendered task form. Returns null when the given task has no task form.
-   */
-  Object getRenderedTaskForm(String taskId);
 }

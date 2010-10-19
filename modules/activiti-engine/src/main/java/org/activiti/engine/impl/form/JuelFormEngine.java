@@ -12,14 +12,13 @@
  */
 package org.activiti.engine.impl.form;
 
-import org.activiti.el.juel.ExpressionFactoryImpl;
-import org.activiti.engine.ActivitiException;
-import org.activiti.engine.impl.repository.DeploymentEntity;
+import org.activiti.engine.form.FormInstance;
+import org.activiti.engine.form.StartFormInstance;
+import org.activiti.engine.form.TaskFormInstance;
+import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.repository.ResourceEntity;
+import org.activiti.engine.impl.scripting.ScriptingEngines;
 import org.activiti.engine.impl.task.TaskEntity;
-import org.activiti.javax.el.ELContext;
-import org.activiti.javax.el.ExpressionFactory;
-import org.activiti.javax.el.ValueExpression;
 
 
 /**
@@ -27,31 +26,37 @@ import org.activiti.javax.el.ValueExpression;
  */
 public class JuelFormEngine implements FormEngine {
   
-  ExpressionFactory expressionFactory = new ExpressionFactoryImpl();
-
-  public String render(DeploymentEntity deployment, String formReference, TaskEntity task) {
-    try {
-      // get the template
-      ResourceEntity formResourceEntity = deployment.getResource(formReference);
-      if (formResourceEntity==null) {
-        throw new ActivitiException("form '"+formReference+"' not available in "+deployment);
-      }
-      byte[] formResourceBytes = formResourceEntity.getBytes();
-      String formString = new String(formResourceBytes);
-      
-      ELContext elContext = new TaskElContext(task);
-      ValueExpression result = expressionFactory.createValueExpression(elContext, formString, String.class);
-      return (String) result.getValue(elContext);
-      
-    } catch (Exception e) {
-      throw new ActivitiException("problem rendering template: "+e.getMessage(), e);
+  public Object renderStartForm(StartFormInstance startFormInstance) {
+    if (startFormInstance.getFormKey()==null) {
+      return null;
     }
+    CommandContext commandContext = CommandContext.getCurrent();
+    String formTemplateString = getFormTemplateString(startFormInstance, commandContext);
+    ScriptingEngines scriptingEngines = commandContext.getProcessEngineConfiguration().getScriptingEngines();
+    return scriptingEngines.evaluate(formTemplateString, ScriptingEngines.DEFAULT_SCRIPTING_LANGUAGE, null);
   }
 
-//  private Object createFormData(TaskEntity task) {
-//    if (task!=null) {
-//      return task.getActivityInstanceVariables();
-//    }
-//    return null;
-//  }
+  public Object renderTaskForm(TaskFormInstance taskFormInstance) {
+    if (taskFormInstance.getFormKey()==null) {
+      return null;
+    }
+    CommandContext commandContext = CommandContext.getCurrent();
+    String formTemplateString = getFormTemplateString(taskFormInstance, commandContext);
+    ScriptingEngines scriptingEngines = commandContext.getProcessEngineConfiguration().getScriptingEngines();
+    TaskEntity task = (TaskEntity) taskFormInstance.getTask();
+    return scriptingEngines.evaluate(formTemplateString, ScriptingEngines.DEFAULT_SCRIPTING_LANGUAGE, task.getExecution());
+  }
+
+  private String getFormTemplateString(FormInstance formInstance, CommandContext commandContext) {
+    String deploymentId = formInstance.getDeploymentId();
+    String formKey = formInstance.getFormKey();
+    
+    ResourceEntity resourceStream = commandContext
+      .getRepositorySession()
+      .findResourceByDeploymentIdAndResourceName(deploymentId, formKey);
+    
+    byte[] resourceBytes = resourceStream.getBytes();
+    String formTemplateString = new String(resourceBytes);
+    return formTemplateString;
+  }
 }

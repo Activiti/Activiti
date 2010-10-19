@@ -45,11 +45,11 @@ public class TaskFormsTest extends ActivitiInternalTestCase {
   public void testTaskFormsWithVacationRequestProcess() {
 
     // Get start form
-    Object startForm = taskService.getRenderedStartFormByKey("vacationRequest");
+    Object startForm = formService.getRenderedStartForm("vacationRequest:1");
     assertNotNull(startForm);
     
     ProcessDefinition processDefinition = repositoryService.createProcessDefinitionQuery().singleResult();
-    assertEquals("org/activiti/examples/taskforms/request.form", processDefinition.getStartFormResourceKey());
+    assertEquals("org/activiti/examples/taskforms/request.form", processDefinition.getFormKey());
 
     // Define variables that would be filled in through the form
     Map<String, Object> variables = new HashMap<String, Object>();
@@ -61,18 +61,18 @@ public class TaskFormsTest extends ActivitiInternalTestCase {
     // Management should now have a task assigned to them
     Task task = taskService.createTaskQuery().candidateGroup("management").singleResult();
     assertEquals("Vacation request by kermit", task.getDescription());
-    Object taskForm = taskService.getRenderedTaskForm(task.getId());
+    Object taskForm = formService.getRenderedTaskForm(task.getId());
     assertNotNull(taskForm);
 
   }
 
   @Deployment
   public void testTaskFormUnavailable() {
-    assertNull(taskService.getRenderedStartFormByKey("noStartOrTaskForm"));
+    assertNull(formService.getRenderedStartForm("noStartOrTaskForm:1"));
 
     runtimeService.startProcessInstanceByKey("noStartOrTaskForm");
     Task task = taskService.createTaskQuery().singleResult();
-    assertNull(taskService.getRenderedTaskForm(task.getId()));
+    assertNull(formService.getRenderedTaskForm(task.getId()));
   }
 
 }

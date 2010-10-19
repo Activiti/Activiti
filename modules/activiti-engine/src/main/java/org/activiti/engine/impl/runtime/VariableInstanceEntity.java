@@ -46,8 +46,6 @@ public class VariableInstanceEntity implements Serializable, PersistentObject {
   protected ByteArrayEntity byteArrayValue;
   protected String byteArrayValueId;
 
-  protected int historyNextIndex;
-
   protected Object cachedValue;
 
   protected Type type;
@@ -71,7 +69,6 @@ public class VariableInstanceEntity implements Serializable, PersistentObject {
     VariableInstanceEntity variableInstance = new VariableInstanceEntity();
     variableInstance.name = name;
     variableInstance.type = type;
-    variableInstance.historyNextIndex = 0;
     variableInstance.setValue(value);
     
     return variableInstance;
@@ -99,6 +96,10 @@ public class VariableInstanceEntity implements Serializable, PersistentObject {
     dbSqlSession.delete(VariableInstanceEntity.class, id);
 
     if (byteArrayValueId != null) {
+      // the next apparently useless line is probably to ensure consistency in the DbSqlSession 
+      // cache, but should be checked and docced here (or removed if it turns out to be unnecessary)
+      // @see also HistoricVariableUpdateEntity
+      getByteArrayValue();
       dbSqlSession.delete(ByteArrayEntity.class, byteArrayValueId);
     }
   }
@@ -157,10 +158,6 @@ public class VariableInstanceEntity implements Serializable, PersistentObject {
     return byteArrayValue;
   }
   
-  public int generateNextHistoryIndex() {
-    return historyNextIndex++;
-  }
-
   // type /////////////////////////////////////////////////////////////////////
 
   public Object getValue() {
@@ -242,11 +239,5 @@ public class VariableInstanceEntity implements Serializable, PersistentObject {
   }
   public void setTextValue2(String textValue2) {
     this.textValue2 = textValue2;
-  }
-  public int getHistoryNextIndex() {
-    return historyNextIndex;
-  }
-  public void setHistoryNextIndex(int historyNextIndex) {
-    this.historyNextIndex = historyNextIndex;
   }
 }

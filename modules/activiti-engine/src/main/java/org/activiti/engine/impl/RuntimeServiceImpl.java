@@ -18,8 +18,10 @@ import java.util.Map;
 
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.RuntimeService;
+import org.activiti.engine.form.FormInstance;
 import org.activiti.engine.impl.cmd.DeleteProcessInstanceCmd;
 import org.activiti.engine.impl.cmd.FindActiveActivityIdsCmd;
+import org.activiti.engine.impl.cmd.GetStartFormInstanceCmd;
 import org.activiti.engine.impl.cmd.GetVariableCmd;
 import org.activiti.engine.impl.cmd.GetVariablesCmd;
 import org.activiti.engine.impl.cmd.SetVariablesCmd;
@@ -105,5 +107,9 @@ public class RuntimeServiceImpl extends ServiceImpl implements RuntimeService {
 
   public List<String> getActiveActivityIds(String executionId) {
     return commandExecutor.execute(new FindActiveActivityIdsCmd(executionId));
+  }
+
+  public FormInstance getFormInstanceById(String processDefinitionId) {
+    return commandExecutor.execute(new GetStartFormInstanceCmd(processDefinitionId));
   }
 }

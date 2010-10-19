@@ -227,7 +227,7 @@
     <!-- HISTORIC VARIABLE UPDATE INSERT -->
   
   <insert id="insertHistoricVariableUpdate" parameterType="org.activiti.engine.impl.history.HistoricVariableUpdateEntity">
-    insert into ACT_HI_VAR_UPDATE (ID_, PROC_INST_ID_, EXECUTION_ID_, TASK_ID_, NAME_, TYPE_, INDEX_, TIME_, BYTEARRAY_ID_, DOUBLE_, LONG_ , TEXT1_, TEXT2_)
+    insert into ACT_HI_VAR_UPDATE (ID_, PROC_INST_ID_, EXECUTION_ID_, TASK_ID_, NAME_, TYPE_, TIME_, BYTEARRAY_ID_, DOUBLE_, LONG_ , TEXT1_, TEXT2_)
     values (
       #{id, jdbcType=VARCHAR},
       #{processInstanceId, jdbcType=VARCHAR},
@@ -235,7 +235,6 @@
       #{taskId, jdbcType=VARCHAR},
       #{variableName, jdbcType=VARCHAR},
       #{variableType, jdbcType=VARCHAR },
-      #{index, jdbcType=INTEGER },
       #{time, jdbcType=TIMESTAMP },
       #{byteArrayValueId, jdbcType=VARCHAR},
       #{doubleValue, jdbcType=DOUBLE},
@@ -261,7 +260,6 @@
     <result property="name" column="NAME_" javaType="String" jdbcType="VARCHAR" />
     <result property="type" column="TYPE_" javaType="org.activiti.engine.impl.variable.Type" jdbcType="VARCHAR"/>
     <result property="activityId" column="ACTIVITY_ID_" jdbcType="VARCHAR" />
-    <result property="index" column="INDEX_" jdbcType="INTEGER" />
     <result property="time" column="TIME_" jdbcType="TIMESTAMP" />
     <result property="activityId" column="ACTIVITY_ID_" jdbcType="VARCHAR" />
     <result property="byteArrayValueId" column="BYTEARRAY_ID_" />

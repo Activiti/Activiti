@@ -54,8 +54,5 @@ public interface Task {
 	
 	String getProcessDefinitionId();
 	
-	String getFormResourceKey();
-	
 	Date getCreateTime();
-	
 }

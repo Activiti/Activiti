@@ -13,18 +13,19 @@
 
 package org.activiti.engine.history;
 
+import java.util.Date;
 
 
 /**
  * @author Tom Baeyens
  */
-public interface HistoricVariableUpdate {
+public interface HistoricFormInstance {
 
-  String getHistoricFormInstanceId();
+  String getId();
   String getProcessInstanceId();
   String getExecutionId();
-  String getVariableName();
-  String getVariableType();
-  Object getValue();
-  int getRevision();
+  String getActivityId();
+  String getAuthenticatedUserId();
+  Date getTime();
+
 }

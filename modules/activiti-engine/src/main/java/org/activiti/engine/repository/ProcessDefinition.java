@@ -12,6 +12,8 @@
  */
 package org.activiti.engine.repository;
 
+import org.activiti.engine.RepositoryService;
+import org.activiti.engine.RuntimeService;
 import org.activiti.engine.runtime.ProcessInstance;
 
 /** Is an object structure representing an executable process composed of 
@@ -42,9 +44,13 @@ public interface ProcessDefinition {
   /** label used for display purposes */
   String getName();
   
+  /** name of {@link RepositoryService#getResourceAsStream(String, String) the resource} 
+   * of this process definition. */
   String getResourceName();
 
+  /** The deployment in which this process definition is contained. */
   String getDeploymentId();
   
-  String getStartFormResourceKey();
+  /** logical name for the form that can be used by UI's to render the form. */
+  String getFormKey();
 }

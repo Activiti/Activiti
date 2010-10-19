@@ -206,5 +206,12 @@ public class ActivitiStreamingWebScript extends AbstractWebScript {
     return getProcessEngine().getTaskService();
   }
 
-
+  /**
+   * Returns the form service.
+   *
+   * @return The form service
+   */
+  protected FormService getFormService() {
+    return getProcessEngine().getFormService();
+  }
 }

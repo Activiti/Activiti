@@ -11,20 +11,19 @@
  * limitations under the License.
  */
 
-package org.activiti.engine.history;
+package org.activiti.engine.impl.form;
 
+import java.util.Map;
+
+import org.activiti.engine.form.StartFormInstance;
+import org.activiti.engine.impl.repository.ProcessDefinitionEntity;
 
 
 /**
  * @author Tom Baeyens
  */
-public interface HistoricVariableUpdate {
+public interface StartFormHandler {
 
-  String getHistoricFormInstanceId();
-  String getProcessInstanceId();
-  String getExecutionId();
-  String getVariableName();
-  String getVariableType();
-  Object getValue();
-  int getRevision();
+  StartFormInstance createStartFormInstance(ProcessDefinitionEntity processDefinition);
+  void submitStartFormInstance(String processDefinitionId, Map<String, Object> properties);
 }

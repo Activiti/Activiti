@@ -36,7 +36,7 @@ public class UserTaskActivity extends TaskActivity {
   public void execute(ActivityExecution execution) throws Exception {
     TaskEntity task = TaskEntity.createAndInsert();
     task.setExecution(execution);
-    task.setFormResourceKey(taskDefinition.getFormResourceKey());
+    task.setTaskDefinition(taskDefinition);
 
     if (taskDefinition.getNameValueExpression() != null) {
       String name = (String) taskDefinition.getNameValueExpression().getValue(execution);

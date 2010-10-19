@@ -10,18 +10,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.activiti.engine.impl.form;
 
+import java.util.Map;
+
 import org.activiti.engine.form.StartFormInstance;
-import org.activiti.engine.form.TaskFormInstance;
+import org.activiti.engine.impl.interceptor.CommandExecutor;
+import org.activiti.engine.impl.repository.ProcessDefinitionEntity;
 
 
 /**
  * @author Tom Baeyens
  */
-public interface FormEngine {
+public class DefaultStartFormHandler implements StartFormHandler {
 
-  Object renderStartForm(StartFormInstance startFormInstance);
-  Object renderTaskForm(TaskFormInstance taskFormInstance);
+  public StartFormInstance createStartFormInstance(ProcessDefinitionEntity processDefinition) {
+    StartFormInstanceImpl startFormInstance = new StartFormInstanceImpl(processDefinition);
+    
+    //...
+    
+    return startFormInstance;
+  }
 
+  public void submitStartFormInstance(String processDefinitionId, Map<String, Object> properties) {
+  }
 }

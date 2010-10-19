@@ -32,7 +32,7 @@ public class HistoricVariableUpdateEntity extends VariableInstanceEntity impleme
   
   private static final long serialVersionUID = 1L;
   
-  protected int index;
+  protected String historicFormInstanceId;
   protected Date time;
   
   public HistoricVariableUpdateEntity() {
@@ -47,10 +47,10 @@ public class HistoricVariableUpdateEntity extends VariableInstanceEntity impleme
     if (executionId==null) {
       throw new ActivitiException("bug");
     }
+    this.revision = variableInstance.getRevision();
     this.name = variableInstance.getName();
     this.type = variableInstance.getType();
     this.time = ClockUtil.getCurrentTime();
-    this.index = variableInstance.generateNextHistoryIndex();
     if (variableInstance.getByteArrayValueId()!=null) {
       // TODO test and review.  name ok here?
       this.byteArrayValue = new ByteArrayEntity(name, variableInstance.getByteArrayValue().getBytes());
@@ -84,14 +84,6 @@ public class HistoricVariableUpdateEntity extends VariableInstanceEntity impleme
     return HistoricVariableUpdateEntity.class;
   }
 
-  
-  public int getIndex() {
-    return index;
-  }
-
-  public void setIndex(int index) {
-    this.index = index;
-  }
 
   public Date getTime() {
     return time;
@@ -107,5 +99,13 @@ public class HistoricVariableUpdateEntity extends VariableInstanceEntity impleme
 
   public String getVariableType() {
     return type.getTypeName();
+  }
+
+  public String getHistoricFormInstanceId() {
+    return historicFormInstanceId;
+  }
+
+  public void setHistoricFormInstanceId(String historicFormInstanceId) {
+    this.historicFormInstanceId = historicFormInstanceId;
   }
 }

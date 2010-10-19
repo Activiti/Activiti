@@ -54,6 +54,8 @@ import org.activiti.engine.impl.el.ActivitiValueExpression;
 import org.activiti.engine.impl.el.ExpressionManager;
 import org.activiti.engine.impl.el.UelMethodExpressionCondition;
 import org.activiti.engine.impl.el.UelValueExpressionCondition;
+import org.activiti.engine.impl.form.DefaultStartFormHandler;
+import org.activiti.engine.impl.form.StartFormHandler;
 import org.activiti.engine.impl.jobexecutor.TimerDeclarationImpl;
 import org.activiti.engine.impl.jobexecutor.TimerExecuteNestedActivityJobHandler;
 import org.activiti.engine.impl.repository.ProcessDefinitionEntity;
@@ -83,6 +85,9 @@ public class BpmnParse extends Parse {
   public static final String PROPERTYNAME_VARIABLE_DECLARATIONS = "variableDeclarations";
   public static final String PROPERTYNAME_TIMER_DECLARATION = "timerDeclarations";
   public static final String PROPERTYNAME_INITIAL = "initial";
+  public static final String PROPERTYNAME_INITIATOR_VARIABLE_NAME = "initiatorVariableName";
+
+  private static final StartFormHandler DEFAULT_FORM_INSTANCE_FACTORY = new DefaultStartFormHandler();
 
   private static final Logger LOG = Logger.getLogger(BpmnParse.class.getName());
   
@@ -363,6 +368,7 @@ public class BpmnParse extends Parse {
     processDefinition.setKey(processElement.attribute("id"));
     processDefinition.setProperty("name", processElement.attribute("name"));
     processDefinition.setProperty("documentation", parseDocumentation(processElement));
+    processDefinition.setTaskDefinitions(new HashMap<String, TaskDefinition>());
     
     String historyLevelText = processElement.attribute("history");
     if (historyLevelText!=null) {
@@ -439,14 +445,15 @@ public class BpmnParse extends Parse {
         }
         processDefinition.setInitial(startEventActivity);
 
-        String startFormResourceKey = startEventElement.attributeNS(BpmnParser.BPMN_EXTENSIONS_NS, "form");
-        if (startFormResourceKey != null) {
-          processDefinition.setStartFormResourceKey(startFormResourceKey);
+        String formKey = startEventElement.attributeNS(BpmnParser.BPMN_EXTENSIONS_NS, "form");
+        if (formKey != null) {
+          processDefinition.setFormKey(formKey);
+          processDefinition.setStartFormHandler(DEFAULT_FORM_INSTANCE_FACTORY);
         }
 
         String initiatorVariableName = startEventElement.attributeNS(BpmnParser.BPMN_EXTENSIONS_NS, "initiator");
         if (initiatorVariableName != null) {
-          processDefinition.setProperty("initiatorVariableName", initiatorVariableName);
+          processDefinition.setProperty(PROPERTYNAME_INITIATOR_VARIABLE_NAME, initiatorVariableName);
         }
 
       } else {
@@ -774,11 +781,12 @@ public class BpmnParse extends Parse {
    */
   public void parseUserTask(Element userTaskElement, ScopeImpl scope) {
     ActivityImpl activity = parseAndCreateActivityOnScopeElement(userTaskElement, scope);
-    TaskDefinition taskDefinition = parseTaskDefinition(userTaskElement);
+    TaskDefinition taskDefinition = parseTaskDefinition(userTaskElement, activity.getId(), (ProcessDefinitionEntity) scope.getProcessDefinition());
+
     UserTaskActivity userTaskActivity = new UserTaskActivity(expressionManager, taskDefinition);
 
     String formResourceKey = userTaskElement.attributeNS(BpmnParser.BPMN_EXTENSIONS_NS, "form");
-    taskDefinition.setFormResourceKey(formResourceKey);
+    taskDefinition.setFormKey(formResourceKey);
 
     activity.setActivityBehavior(userTaskActivity);
 
@@ -789,9 +797,12 @@ public class BpmnParse extends Parse {
     }
   }
 
-  public TaskDefinition parseTaskDefinition(Element taskElement) {
+  public TaskDefinition parseTaskDefinition(Element taskElement, String taskDefinitionKey, ProcessDefinitionEntity processDefinition) {
     TaskDefinition taskDefinition = new TaskDefinition();
 
+    taskDefinition.setKey(taskDefinitionKey);
+    processDefinition.getTaskDefinitions().put(taskDefinitionKey, taskDefinition);
+    
     String name = taskElement.attribute("name");
     if (name != null) {
       taskDefinition.setNameValueExpression(expressionManager.createValueExpression(name));

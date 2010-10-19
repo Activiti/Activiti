@@ -106,7 +106,7 @@ public class RepositoryServiceTest extends ActivitiInternalTestCase {
     assertEquals(1, processDefinitions.size());
     ProcessDefinition processDefinition = processDefinitions.get(0);
     
-    Object startForm = taskService.getRenderedStartFormById(processDefinition.getId());
+    Object startForm = formService.getRenderedStartForm(processDefinition.getId());
     assertNotNull(startForm);
   }
   
@@ -116,31 +116,22 @@ public class RepositoryServiceTest extends ActivitiInternalTestCase {
     assertEquals(1, processDefinitions.size());
     ProcessDefinition processDefinition = processDefinitions.get(0);
     
-    Object startForm = taskService.getRenderedStartFormById(processDefinition.getId());
+    Object startForm = formService.getRenderedStartForm(processDefinition.getId());
     assertNull(startForm);
   }
   
   public void testGetStartFormByKeyNullKey() {
     try {
-      taskService.getRenderedStartFormByKey(null);    
+      formService.getRenderedStartForm(null);    
       fail("ActivitiException expected");
     } catch (ActivitiException ae) {
       // Exception expected
     }
   }
   
-  public void testGetStartFormByKeyUnexistingProcessDefinitionKey() {
-    try {
-      taskService.getRenderedStartFormByKey("unexisting");    
-      fail("ActivitiException expected");
-    } catch (ActivitiException ae) {
-      assertTextPresent("no processes deployed with key", ae.getMessage());
-    }
-  }
-  
   public void testGetStartFormByIdNullId() {
     try {
-      taskService.getRenderedStartFormById(null);    
+      formService.getRenderedStartForm(null);    
       fail("ActivitiException expected");
     } catch (ActivitiException ae) {
       // Exception expected
@@ -149,7 +140,7 @@ public class RepositoryServiceTest extends ActivitiInternalTestCase {
   
   public void testGetStartFormByIdUnexistingProcessDefinitionId() {
     try {
-      taskService.getRenderedStartFormById("unexistingId");    
+      formService.getRenderedStartForm("unexistingId");    
       fail("ActivitiException expected");
     } catch (ActivitiException ae) {
       assertTextPresent("no deployed process definition found with id", ae.getMessage());

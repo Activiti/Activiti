@@ -11,20 +11,16 @@
  * limitations under the License.
  */
 
-package org.activiti.engine.history;
+package org.activiti.engine.form;
 
+import org.activiti.engine.repository.ProcessDefinition;
 
 
 /**
  * @author Tom Baeyens
  */
-public interface HistoricVariableUpdate {
+public interface StartFormInstance extends FormInstance {
 
-  String getHistoricFormInstanceId();
-  String getProcessInstanceId();
-  String getExecutionId();
-  String getVariableName();
-  String getVariableType();
-  Object getValue();
-  int getRevision();
+  ProcessDefinition getProcessDefinition();
+  
 }

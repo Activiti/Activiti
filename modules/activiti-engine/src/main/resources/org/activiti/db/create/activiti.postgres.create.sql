@@ -93,7 +93,7 @@ create table ACT_RE_PROC_DEF (
     VERSION_ integer,
     DEPLOYMENT_ID_ varchar(64),
 	RESOURCE_NAME_ varchar(255),
-  START_FORM_ varchar(255),
+  FORM_KEY_ varchar(255),
     primary key (ID_)
 );
 
@@ -105,7 +105,7 @@ create table ACT_RU_TASK (
     PROC_DEF_ID_ varchar(64),
     NAME_ varchar(255),
     DESCRIPTION_ varchar(255),
-    FORM_ varchar(255),
+    TASK_DEF_KEY_ varchar(255),
     ASSIGNEE_ varchar(64),
     PRIORITY_ integer,
     CREATE_TIME_ timestamp,

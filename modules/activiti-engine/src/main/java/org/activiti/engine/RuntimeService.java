@@ -147,7 +147,7 @@ public interface RuntimeService {
    * @throws ActivitiException when no process definition is deployed with the given key. 
    */
   ProcessInstance startProcessInstanceById(String processDefinitionId, String businessKey, Map<String, Object> variables);
-  
+
   /** Delete an existing runtime process instance.
    * @param processInstanceId id of process instance to delete, cannot be null.
    * @param deleteReason reason for deleting, can be null.
@@ -207,5 +207,4 @@ public interface RuntimeService {
    * to query process instances.
    */
   ProcessInstanceQuery createProcessInstanceQuery();
-
 }

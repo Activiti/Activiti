@@ -16,6 +16,8 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.activiti.engine.impl.el.ActivitiValueExpression;
+import org.activiti.engine.impl.form.DefaultTaskFormHandler;
+import org.activiti.engine.impl.form.TaskFormHandler;
 
 /**
  * Container for task definition information gathered at parsing time.
@@ -24,12 +26,16 @@ import org.activiti.engine.impl.el.ActivitiValueExpression;
  */
 public class TaskDefinition {
 
+  protected String key;
+  // assignment fields
   protected ActivitiValueExpression nameValueExpression;
   protected ActivitiValueExpression descriptionValueExpression;
   protected ActivitiValueExpression assigneeValueExpression;
   protected Set<ActivitiValueExpression> candidateUserIdValueExpressions = new HashSet<ActivitiValueExpression>();
   protected Set<ActivitiValueExpression> candidateGroupIdValueExpressions = new HashSet<ActivitiValueExpression>();
-  protected String formResourceKey;
+  // form fields
+  protected String formKey;
+  protected TaskFormHandler taskFormHandler = new DefaultTaskFormHandler();
 
   // getters and setters //////////////////////////////////////////////////////
 
@@ -73,12 +79,27 @@ public class TaskDefinition {
     candidateGroupIdValueExpressions.add(groupId);
   }
 
-  public String getFormResourceKey() {
-    return formResourceKey;
+  public String getFormKey() {
+    return formKey;
   }
 
-  public void setFormResourceKey(String formResourceKey) {
-    this.formResourceKey = formResourceKey;
+  public void setFormKey(String formKey) {
+    this.formKey = formKey;
   }
 
+  public TaskFormHandler getTaskFormHandler() {
+    return taskFormHandler;
+  }
+
+  public void setTaskFormHandler(TaskFormHandler taskFormHandler) {
+    this.taskFormHandler = taskFormHandler;
+  }
+
+  public String getKey() {
+    return key;
+  }
+
+  public void setKey(String key) {
+    this.key = key;
+  }
 }

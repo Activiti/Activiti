@@ -13,12 +13,15 @@
 package org.activiti.engine.impl.repository;
 
 import java.util.ArrayList;
+import java.util.Map;
 
 import org.activiti.engine.impl.db.PersistentObject;
+import org.activiti.engine.impl.form.StartFormHandler;
 import org.activiti.engine.impl.identity.Authentication;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.runtime.ExecutionEntity;
 import org.activiti.engine.impl.runtime.VariableMap;
+import org.activiti.engine.impl.task.TaskDefinition;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.pvm.impl.process.ProcessDefinitionImpl;
 import org.activiti.pvm.impl.runtime.ExecutionImpl;
@@ -35,8 +38,11 @@ public class ProcessDefinitionEntity extends ProcessDefinitionImpl implements Pr
   protected int version;
   protected String deploymentId;
   protected String resourceName;
-  protected String startFormResourceKey;
+  protected String formKey;
+  
   protected Integer historyLevel;
+  protected StartFormHandler startFormHandler;
+  protected Map<String, TaskDefinition> taskDefinitions;
   
   public ProcessDefinitionEntity() {
     super(null);
@@ -129,19 +135,35 @@ public class ProcessDefinitionEntity extends ProcessDefinitionImpl implements Pr
     this.resourceName = resourceName;
   }
 
-  public String getStartFormResourceKey() {
-    return startFormResourceKey;
-  }
-
-  public void setStartFormResourceKey(String startFormResourceKey) {
-    this.startFormResourceKey = startFormResourceKey;
-  }
-
   public Integer getHistoryLevel() {
     return historyLevel;
   }
 
   public void setHistoryLevel(Integer historyLevel) {
     this.historyLevel = historyLevel;
+  }
+
+  public StartFormHandler getStartFormHandler() {
+    return startFormHandler;
+  }
+
+  public void setStartFormHandler(StartFormHandler startFormHandler) {
+    this.startFormHandler = startFormHandler;
+  }
+
+  public String getFormKey() {
+    return formKey;
+  }
+
+  public void setFormKey(String formKey) {
+    this.formKey = formKey;
+  }
+
+  public Map<String, TaskDefinition> getTaskDefinitions() {
+    return taskDefinitions;
+  }
+
+  public void setTaskDefinitions(Map<String, TaskDefinition> taskDefinitions) {
+    this.taskDefinitions = taskDefinitions;
   }
 }

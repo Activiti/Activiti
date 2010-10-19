@@ -31,7 +31,7 @@ public class TaskFormGet extends ActivitiStreamingWebScript
   @Override
   protected void executeStreamingWebScript(ActivitiRequest req, WebScriptResponse res) {
     String taskId = req.getMandatoryPathParameter("taskId");
-    Object form = getTaskService().getRenderedTaskForm(taskId);
+    Object form = getFormService().getRenderedTaskForm(taskId);
     InputStream is = null;
     if (form != null && form instanceof String) {
       is = new ByteArrayInputStream(((String) form).getBytes());

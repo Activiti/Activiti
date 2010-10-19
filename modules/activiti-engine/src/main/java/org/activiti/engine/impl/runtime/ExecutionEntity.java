@@ -31,6 +31,7 @@ import org.activiti.engine.impl.db.PersistentObject;
 import org.activiti.engine.impl.history.HistoricActivityInstanceEntity;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.jobexecutor.TimerDeclarationImpl;
+import org.activiti.engine.impl.repository.ProcessDefinitionEntity;
 import org.activiti.engine.impl.task.TaskEntity;
 import org.activiti.engine.impl.variable.VariableDeclaration;
 import org.activiti.engine.runtime.Execution;
@@ -445,7 +446,7 @@ public class ExecutionEntity extends ExecutionImpl implements PersistentObject, 
   }
   
   // getters and setters //////////////////////////////////////////////////////
-
+  
   public String getProcessInstanceId() {
     return processInstanceId;
   }

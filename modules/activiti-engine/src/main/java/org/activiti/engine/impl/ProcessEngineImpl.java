@@ -15,12 +15,13 @@ package org.activiti.engine.impl;
 import java.util.logging.Logger;
 
 import org.activiti.engine.DbSchemaStrategy;
+import org.activiti.engine.FormService;
 import org.activiti.engine.HistoryService;
 import org.activiti.engine.IdentityService;
 import org.activiti.engine.ManagementService;
 import org.activiti.engine.ProcessEngine;
-import org.activiti.engine.RuntimeService;
 import org.activiti.engine.RepositoryService;
+import org.activiti.engine.RuntimeService;
 import org.activiti.engine.TaskService;
 import org.activiti.engine.impl.cfg.ProcessEngineConfiguration;
 import org.activiti.engine.impl.db.DbSqlSessionFactory;
@@ -43,6 +44,7 @@ public class ProcessEngineImpl implements ProcessEngine {
   protected HistoryService historicDataService;
   protected IdentityService identityService;
   protected TaskService taskService;
+  protected FormService formService;
   protected ManagementService managementService;
   protected String dbSchemaStrategy;
   protected JobExecutor jobExecutor;
@@ -56,6 +58,7 @@ public class ProcessEngineImpl implements ProcessEngine {
     this.historicDataService = processEngineConfiguration.getHistoryService();
     this.identityService = processEngineConfiguration.getIdentityService();
     this.taskService = processEngineConfiguration.getTaskService();
+    this.formService = processEngineConfiguration.getFormService();
     this.managementService = processEngineConfiguration.getManagementService();
     this.dbSchemaStrategy = processEngineConfiguration.getDbSchemaStrategy();
     this.jobExecutor = processEngineConfiguration.getJobExecutor();
@@ -155,14 +158,20 @@ public class ProcessEngineImpl implements ProcessEngine {
   public RuntimeService getRuntimeService() {
     return runtimeService;
   }
+  
   public String getDbSchemaStrategy() {
     return dbSchemaStrategy;
   }
+  
   public ProcessEngineConfiguration getProcessEngineConfiguration() {
     return processEngineConfiguration;
   }
 
   public RepositoryService getRepositoryService() {
     return repositoryService;
+  }
+  
+  public FormService getFormService() {
+    return formService;
   }
 }

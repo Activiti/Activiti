@@ -7,19 +7,19 @@
   <!-- TASK INSERT -->
   
   <insert id="insertTask" parameterType="org.activiti.engine.impl.task.TaskEntity">
-    insert into ACT_RU_TASK (ID_, REV_, NAME_, DESCRIPTION_, FORM_, PRIORITY_, CREATE_TIME_,
-                      ASSIGNEE_, EXECUTION_ID_, PROC_INST_ID_, PROC_DEF_ID_)
+    insert into ACT_RU_TASK (ID_, REV_, NAME_, DESCRIPTION_, PRIORITY_, CREATE_TIME_,
+                      ASSIGNEE_, EXECUTION_ID_, PROC_INST_ID_, PROC_DEF_ID_, TASK_DEF_KEY_)
     values (#{id, jdbcType=VARCHAR},
             1,
             #{name, jdbcType=VARCHAR},
             #{description, jdbcType=VARCHAR},
-            #{formResourceKey, jdbcType=VARCHAR},
             #{priority, jdbcType=INTEGER},
             #{createTime, jdbcType=TIMESTAMP},
             #{assignee, jdbcType=VARCHAR},
             #{executionId, jdbcType=VARCHAR},
             #{processInstanceId, jdbcType=VARCHAR},
-            #{processDefinitionId, jdbcType=VARCHAR}
+            #{processDefinitionId, jdbcType=VARCHAR},
+            #{taskDefinitionKey, jdbcType=VARCHAR}
            )
   </insert>
   
@@ -52,12 +52,12 @@
     <result property="revision" column="REV_" jdbcType="INTEGER"/>
     <result property="name" column="NAME_" jdbcType="VARCHAR"/>
     <result property="description" column="DESCRIPTION_" jdbcType="VARCHAR"/>
-    <result property="formResourceKey" column="FORM_" jdbcType="VARCHAR"/>
     <result property="priority" column="PRIORITY_" jdbcType="INTEGER"/>
     <result property="createTime" column="CREATE_TIME_" jdbcType="TIMESTAMP" />
     <result property="assignee" column="ASSIGNEE_" jdbcType="VARCHAR"/>
     <result property="executionId" column="EXECUTION_ID_" jdbcType="VARCHAR" />
     <result property="processDefinitionId" column="PROC_DEF_ID_" jdbcType="VARCHAR"/>
+    <result property="taskDefinitionKey" column="TASK_DEF_KEY_" jdbcType="VARCHAR"/>
   </resultMap>
 
   <!-- TASK SELECT -->  

@@ -26,6 +26,7 @@ import java.util.logging.Logger;
 import junit.framework.AssertionFailedError;
 
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.FormService;
 import org.activiti.engine.HistoryService;
 import org.activiti.engine.IdentityService;
 import org.activiti.engine.ManagementService;
@@ -74,6 +75,7 @@ public class ActivitiInternalTestCase extends PvmTestCase {
   protected RepositoryService repositoryService;
   protected RuntimeService runtimeService;
   protected TaskService taskService;
+  protected FormService formService;
   protected HistoryService historyService;
   protected IdentityService identityService;
   protected ManagementService managementService;
@@ -193,6 +195,7 @@ public class ActivitiInternalTestCase extends PvmTestCase {
     repositoryService = processEngine.getRepositoryService();
     runtimeService = processEngine.getRuntimeService();
     taskService = processEngine.getTaskService();
+    formService = processEngine.getFormService();
     historyService = processEngine.getHistoryService();
     identityService = processEngine.getIdentityService();
     managementService = processEngine.getManagementService();

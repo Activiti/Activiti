@@ -48,12 +48,12 @@ public class ProcessDefinitionQueryImpl extends AbstractQuery<ProcessDefinitionQ
     super(commandExecutor);
   }
   
-  public ProcessDefinitionQuery id(String processDefinitionId) {
+  public ProcessDefinitionQueryImpl id(String processDefinitionId) {
     this.id = processDefinitionId;
     return this;
   }
   
-  public ProcessDefinitionQuery name(String name) {
+  public ProcessDefinitionQueryImpl name(String name) {
     if (name == null) {
       throw new ActivitiException("name is null");
     }
@@ -61,7 +61,7 @@ public class ProcessDefinitionQueryImpl extends AbstractQuery<ProcessDefinitionQ
     return this;
   }
   
-  public ProcessDefinitionQuery nameLike(String nameLike) {
+  public ProcessDefinitionQueryImpl nameLike(String nameLike) {
     if (nameLike == null) {
       throw new ActivitiException("nameLike is null");
     }
@@ -77,7 +77,7 @@ public class ProcessDefinitionQueryImpl extends AbstractQuery<ProcessDefinitionQ
     return this;
   }
 
-  public ProcessDefinitionQuery key(String key) {
+  public ProcessDefinitionQueryImpl key(String key) {
     if (key == null) {
       throw new ActivitiException("key is null");
     }
@@ -85,7 +85,7 @@ public class ProcessDefinitionQueryImpl extends AbstractQuery<ProcessDefinitionQ
     return this;
   }
   
-  public ProcessDefinitionQuery keyLike(String keyLike) {
+  public ProcessDefinitionQueryImpl keyLike(String keyLike) {
     if (keyLike == null) {
       throw new ActivitiException("keyLike is null");
     }
@@ -93,7 +93,7 @@ public class ProcessDefinitionQueryImpl extends AbstractQuery<ProcessDefinitionQ
     return this;
   }
   
-  public ProcessDefinitionQuery version(Integer version) {
+  public ProcessDefinitionQueryImpl version(Integer version) {
     if (version == null) {
       throw new ActivitiException("version is null");
     } else if (version <= 0) {
@@ -103,30 +103,30 @@ public class ProcessDefinitionQueryImpl extends AbstractQuery<ProcessDefinitionQ
     return this;
   }
   
-  public ProcessDefinitionQuery latest() {
+  public ProcessDefinitionQueryImpl latest() {
     this.latest = true;
     return this;
   }
   
   //sorting ////////////////////////////////////////////
   
-  public ProcessDefinitionQuery orderByDeploymentId() {
+  public ProcessDefinitionQueryImpl orderByDeploymentId() {
     return orderBy(ProcessDefinitionQueryProperty.DEPLOYMENT_ID);
   }
   
-  public ProcessDefinitionQuery orderById() {
+  public ProcessDefinitionQueryImpl orderById() {
     return orderBy(ProcessDefinitionQueryProperty.ID);
   }
   
-  public ProcessDefinitionQuery orderByKey() {
+  public ProcessDefinitionQueryImpl orderByKey() {
     return orderBy(ProcessDefinitionQueryProperty.KEY);
   }
   
-  public ProcessDefinitionQuery orderByVersion() {
+  public ProcessDefinitionQueryImpl orderByVersion() {
     return orderBy(ProcessDefinitionQueryProperty.VERSION);
   }
   
-  public ProcessDefinitionQuery orderBy(QueryProperty property) {
+  public ProcessDefinitionQueryImpl orderBy(QueryProperty property) {
     if(!(property instanceof ProcessDefinitionQueryProperty)) {
       throw new ActivitiException("Only ProcessDefinitionQueryProperty can be used with orderBy");
     }
@@ -134,15 +134,15 @@ public class ProcessDefinitionQueryImpl extends AbstractQuery<ProcessDefinitionQ
     return this;
   }
   
-  public ProcessDefinitionQuery asc() {
+  public ProcessDefinitionQueryImpl asc() {
     return direction(Direction.ASCENDING);
   }
   
-  public ProcessDefinitionQuery desc() {
+  public ProcessDefinitionQueryImpl desc() {
     return direction(Direction.DESCENDING);
   }
   
-  public ProcessDefinitionQuery direction(Direction direction) {
+  public ProcessDefinitionQueryImpl direction(Direction direction) {
     if (orderProperty==null) {
       throw new ActivitiException("You should call any of the orderBy methods first before specifying a direction");
     }

@@ -21,6 +21,7 @@ import javax.sql.DataSource;
 
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.DbSchemaStrategy;
+import org.activiti.engine.FormService;
 import org.activiti.engine.HistoryService;
 import org.activiti.engine.IdentityService;
 import org.activiti.engine.ManagementService;
@@ -29,6 +30,7 @@ import org.activiti.engine.ProcessEngines;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.RuntimeService;
 import org.activiti.engine.TaskService;
+import org.activiti.engine.impl.FormServiceImpl;
 import org.activiti.engine.impl.HistoryServiceImpl;
 import org.activiti.engine.impl.IdentityServiceImpl;
 import org.activiti.engine.impl.ManagementServiceImpl;
@@ -51,6 +53,8 @@ import org.activiti.engine.impl.db.DbSqlSession;
 import org.activiti.engine.impl.db.DbSqlSessionFactory;
 import org.activiti.engine.impl.db.DbTaskSessionFactory;
 import org.activiti.engine.impl.el.ExpressionManager;
+import org.activiti.engine.impl.form.FormEngine;
+import org.activiti.engine.impl.form.JuelFormEngine;
 import org.activiti.engine.impl.history.handler.HistoryTaskAssignmentHandler;
 import org.activiti.engine.impl.interceptor.CommandContextFactory;
 import org.activiti.engine.impl.interceptor.CommandContextInterceptor;
@@ -136,6 +140,7 @@ public class ProcessEngineConfiguration {
   protected HistoryService historyService;
   protected IdentityService identityService;
   protected TaskService taskService;
+  protected FormService formService;
   protected ManagementService managementService;
   
   protected Map<Class<?>, SessionFactory> sessionFactories;
@@ -173,6 +178,8 @@ public class ProcessEngineConfiguration {
   protected String mailServerSmtpPassword;
   protected int mailServerSmtpPort;
   protected String mailServerDefaultFrom;
+  
+  protected Map<String, FormEngine> formEngines;
 
   public ProcessEngineConfiguration() {
     processEngineName = ProcessEngines.NAME_DEFAULT;
@@ -189,6 +196,7 @@ public class ProcessEngineConfiguration {
     repositoryService = new RepositoryServiceImpl();
     runtimeService = new RuntimeServiceImpl();
     taskService = new TaskServiceImpl();
+    formService = new FormServiceImpl();
     managementService = new ManagementServiceImpl();
     identityService = new IdentityServiceImpl();
     historyService = new HistoryServiceImpl();
@@ -232,6 +240,11 @@ public class ProcessEngineConfiguration {
     
     mailServerDefaultFrom = DEFAULT_FROM_EMAIL_ADDRESS;
     mailServerSmtpPort = DEFAULT_MAIL_SERVER_SMTP_PORT;
+
+    formEngines = new HashMap<String, FormEngine>();
+    FormEngine defaultFormEngine = new JuelFormEngine();
+    formEngines.put(null, defaultFormEngine); // default form engine is looked up with null
+    formEngines.put("juel", defaultFormEngine);
   }
   
   public ProcessEngine buildProcessEngine() {
@@ -254,6 +267,7 @@ public class ProcessEngineConfiguration {
       notifyConfigurationComplete(repositoryService);
       notifyConfigurationComplete(runtimeService);
       notifyConfigurationComplete(taskService);
+      notifyConfigurationComplete(formService);
       notifyConfigurationComplete(managementService);
       notifyConfigurationComplete(identityService);
       notifyConfigurationComplete(historyService);
@@ -660,17 +674,14 @@ public class ProcessEngineConfiguration {
     this.commandInterceptorsTxRequired = commandInterceptorsTxRequired;
   }
 
-  
   public List<CommandInterceptor> getCommandInterceptorsTxRequiresNew() {
     return commandInterceptorsTxRequiresNew;
   }
 
-  
   public void setCommandInterceptorsTxRequiresNew(List<CommandInterceptor> commandInterceptorsTxRequiresNew) {
     this.commandInterceptorsTxRequiresNew = commandInterceptorsTxRequiresNew;
   }
 
-  
   public CommandExecutor getCommandExecutorTxRequiresNew() {
     return commandExecutorTxRequiresNew;
   }
@@ -678,9 +689,24 @@ public class ProcessEngineConfiguration {
   public int getHistoryLevel() {
     return historyLevel;
   }
-
   
   public void setHistoryLevel(int historyLevel) {
     this.historyLevel = historyLevel;
+  }
+  
+  public Map<String, FormEngine> getFormEngines() {
+    return formEngines;
+  }
+
+  public void setFormEngines(Map<String, FormEngine> formEngines) {
+    this.formEngines = formEngines;
+  }
+
+  public FormService getFormService() {
+    return formService;
+  }
+
+  public void setFormService(FormService formService) {
+    this.formService = formService;
   }
 }
