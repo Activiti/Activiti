@@ -11,20 +11,28 @@
  * limitations under the License.
  */
 
-package org.activiti.engine.form;
+package org.activiti.engine.impl.form;
 
-import java.util.Map;
+import org.activiti.engine.form.TaskForm;
+import org.activiti.engine.impl.task.TaskEntity;
+import org.activiti.engine.task.Task;
 
 
 /**
  * @author Tom Baeyens
  */
-public interface FormInstance {
+public class TaskFormImpl extends FormImpl implements TaskForm {
 
-  String getFormKey();
-  String getDeploymentId();
+  private static final long serialVersionUID = 1L;
   
-  Map<String, Object> getProperties();
-  Object getProperty(String propertyName);
-  void setProperty(String propertyName, Object propertyValue);
+  protected Task task;
+  
+  public TaskFormImpl(String formKey, String deploymentId, TaskEntity task) {
+    super(formKey, deploymentId);
+    this.task = task;
+  }
+
+  public Task getTask() {
+    return task;
+  }
 }

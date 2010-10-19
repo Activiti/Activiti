@@ -11,20 +11,20 @@
  * limitations under the License.
  */
 
-package org.activiti.engine.impl.form;
+package org.activiti.engine.form;
 
 import java.util.Map;
-
-import org.activiti.engine.form.StartForm;
-import org.activiti.engine.impl.repository.ProcessDefinitionEntity;
-import org.activiti.engine.impl.runtime.ExecutionEntity;
 
 
 /**
  * @author Tom Baeyens
  */
-public interface StartFormHandler {
+public interface Form {
 
-  StartForm createStartForm(ProcessDefinitionEntity processDefinition);
-  ExecutionEntity submitStartForm(ProcessDefinitionEntity processDefinition, Map<String, Object> properties);
+  String getFormKey();
+  String getDeploymentId();
+  
+  Map<String, Object> getProperties();
+  Object getProperty(String propertyName);
+  void setProperty(String propertyName, Object propertyValue);
 }

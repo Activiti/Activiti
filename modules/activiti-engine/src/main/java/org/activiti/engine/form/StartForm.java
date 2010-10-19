@@ -13,13 +13,14 @@
 
 package org.activiti.engine.form;
 
-import org.activiti.engine.task.Task;
+import org.activiti.engine.repository.ProcessDefinition;
 
 
 /**
  * @author Tom Baeyens
  */
-public interface TaskFormInstance extends FormInstance {
+public interface StartForm extends Form {
 
-  Task getTask();
+  ProcessDefinition getProcessDefinition();
+  
 }

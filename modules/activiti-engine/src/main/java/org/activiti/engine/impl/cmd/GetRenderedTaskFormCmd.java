@@ -14,7 +14,7 @@
 package org.activiti.engine.impl.cmd;
 
 import org.activiti.engine.ActivitiException;
-import org.activiti.engine.form.TaskFormInstance;
+import org.activiti.engine.form.TaskForm;
 import org.activiti.engine.impl.cfg.TaskSession;
 import org.activiti.engine.impl.form.FormEngine;
 import org.activiti.engine.impl.form.TaskFormHandler;
@@ -57,8 +57,8 @@ public class GetRenderedTaskFormCmd  implements Command<Object> {
       throw new ActivitiException("No formEngine '" + formEngineName +"' defined process engine configuration");
     }
     
-    TaskFormInstance taskFormInstance = taskFormHandler.createTaskFormInstance(task);
+    TaskForm taskForm = taskFormHandler.createTaskForm(task);
     
-    return formEngine.renderTaskForm(taskFormInstance);
+    return formEngine.renderTaskForm(taskForm);
   }
 }

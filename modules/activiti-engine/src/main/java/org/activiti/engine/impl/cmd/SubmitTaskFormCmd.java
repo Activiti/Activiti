@@ -13,40 +13,53 @@
 
 package org.activiti.engine.impl.cmd;
 
+import java.util.Map;
+
 import org.activiti.engine.ActivitiException;
-import org.activiti.engine.form.TaskFormInstance;
 import org.activiti.engine.impl.cfg.TaskSession;
 import org.activiti.engine.impl.form.TaskFormHandler;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
-import org.activiti.engine.impl.interceptor.CommandExecutor;
+import org.activiti.engine.impl.runtime.VariableMap;
 import org.activiti.engine.impl.task.TaskEntity;
 
 
 /**
  * @author Tom Baeyens
  */
-public class GetTaskFormInstanceCmd implements Command<TaskFormInstance> {
+public class SubmitTaskFormCmd implements Command<Object> {
 
   protected String taskId;
-
-  public GetTaskFormInstanceCmd(String taskId) {
+  protected Map<String, Object> properties;
+  
+  public SubmitTaskFormCmd(String taskId, Map<String, Object> properties) {
     this.taskId = taskId;
+    this.properties = properties;
   }
 
-  public TaskFormInstance execute(CommandContext commandContext) {
+  public Object execute(CommandContext commandContext) {
+    if(taskId == null) {
+      throw new ActivitiException("taskId is null");
+    }
+    
     TaskSession taskSession = commandContext.getTaskSession();
+    
     TaskEntity task = taskSession.findTaskById(taskId);
+
     if (task == null) {
-      throw new ActivitiException("No task found for taskId '" + taskId +"'");
+      throw new ActivitiException("Cannot find task with id " + taskId);
     }
     
     TaskFormHandler taskFormHandler = task.getTaskDefinition().getTaskFormHandler();
-    if (taskFormHandler == null) {
-      throw new ActivitiException("No taskFormHandler specified for task '" + taskId +"'");
-    }
-    
-    return taskFormHandler.createTaskFormInstance(task);
-  }
+    try {
+      VariableMap.setExternalUpdate(Boolean.TRUE);
 
+      taskFormHandler.submitTaskForm(task, properties);
+
+    } finally {
+      VariableMap.setExternalUpdate(null);
+    }
+
+    return null;
+  }
 }

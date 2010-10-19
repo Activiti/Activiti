@@ -12,8 +12,8 @@
  */
 package org.activiti.engine.impl.form;
 
-import org.activiti.engine.form.StartFormInstance;
-import org.activiti.engine.form.TaskFormInstance;
+import org.activiti.engine.form.StartForm;
+import org.activiti.engine.form.TaskForm;
 
 
 /**
@@ -21,7 +21,7 @@ import org.activiti.engine.form.TaskFormInstance;
  */
 public interface FormEngine {
 
-  Object renderStartForm(StartFormInstance startFormInstance);
-  Object renderTaskForm(TaskFormInstance taskFormInstance);
+  Object renderStartForm(StartForm startForm);
+  Object renderTaskForm(TaskForm taskForm);
 
 }

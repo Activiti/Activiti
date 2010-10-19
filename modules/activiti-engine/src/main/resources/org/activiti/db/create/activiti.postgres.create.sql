@@ -92,8 +92,7 @@ create table ACT_RE_PROC_DEF (
     KEY_ varchar(255),
     VERSION_ integer,
     DEPLOYMENT_ID_ varchar(64),
-	RESOURCE_NAME_ varchar(255),
-  FORM_KEY_ varchar(255),
+    RESOURCE_NAME_ varchar(255),
     primary key (ID_)
 );
 

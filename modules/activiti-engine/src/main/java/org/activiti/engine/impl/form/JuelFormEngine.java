@@ -12,9 +12,9 @@
  */
 package org.activiti.engine.impl.form;
 
-import org.activiti.engine.form.FormInstance;
-import org.activiti.engine.form.StartFormInstance;
-import org.activiti.engine.form.TaskFormInstance;
+import org.activiti.engine.form.Form;
+import org.activiti.engine.form.StartForm;
+import org.activiti.engine.form.TaskForm;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.repository.ResourceEntity;
 import org.activiti.engine.impl.scripting.ScriptingEngines;
@@ -26,28 +26,28 @@ import org.activiti.engine.impl.task.TaskEntity;
  */
 public class JuelFormEngine implements FormEngine {
   
-  public Object renderStartForm(StartFormInstance startFormInstance) {
-    if (startFormInstance.getFormKey()==null) {
+  public Object renderStartForm(StartForm startForm) {
+    if (startForm.getFormKey()==null) {
       return null;
     }
     CommandContext commandContext = CommandContext.getCurrent();
-    String formTemplateString = getFormTemplateString(startFormInstance, commandContext);
+    String formTemplateString = getFormTemplateString(startForm, commandContext);
     ScriptingEngines scriptingEngines = commandContext.getProcessEngineConfiguration().getScriptingEngines();
     return scriptingEngines.evaluate(formTemplateString, ScriptingEngines.DEFAULT_SCRIPTING_LANGUAGE, null);
   }
 
-  public Object renderTaskForm(TaskFormInstance taskFormInstance) {
-    if (taskFormInstance.getFormKey()==null) {
+  public Object renderTaskForm(TaskForm taskForm) {
+    if (taskForm.getFormKey()==null) {
       return null;
     }
     CommandContext commandContext = CommandContext.getCurrent();
-    String formTemplateString = getFormTemplateString(taskFormInstance, commandContext);
+    String formTemplateString = getFormTemplateString(taskForm, commandContext);
     ScriptingEngines scriptingEngines = commandContext.getProcessEngineConfiguration().getScriptingEngines();
-    TaskEntity task = (TaskEntity) taskFormInstance.getTask();
+    TaskEntity task = (TaskEntity) taskForm.getTask();
     return scriptingEngines.evaluate(formTemplateString, ScriptingEngines.DEFAULT_SCRIPTING_LANGUAGE, task.getExecution());
   }
 
-  private String getFormTemplateString(FormInstance formInstance, CommandContext commandContext) {
+  private String getFormTemplateString(Form formInstance, CommandContext commandContext) {
     String deploymentId = formInstance.getDeploymentId();
     String formKey = formInstance.getFormKey();
     

@@ -55,9 +55,9 @@ import org.activiti.engine.impl.el.ExpressionManager;
 import org.activiti.engine.impl.el.UelMethodExpressionCondition;
 import org.activiti.engine.impl.el.UelValueExpressionCondition;
 import org.activiti.engine.impl.form.DefaultStartFormHandler;
-import org.activiti.engine.impl.form.StartFormHandler;
 import org.activiti.engine.impl.jobexecutor.TimerDeclarationImpl;
 import org.activiti.engine.impl.jobexecutor.TimerExecuteNestedActivityJobHandler;
+import org.activiti.engine.impl.repository.DeploymentEntity;
 import org.activiti.engine.impl.repository.ProcessDefinitionEntity;
 import org.activiti.engine.impl.scripting.ScriptingEngines;
 import org.activiti.engine.impl.task.TaskDefinition;
@@ -87,9 +87,9 @@ public class BpmnParse extends Parse {
   public static final String PROPERTYNAME_INITIAL = "initial";
   public static final String PROPERTYNAME_INITIATOR_VARIABLE_NAME = "initiatorVariableName";
 
-  private static final StartFormHandler DEFAULT_FORM_INSTANCE_FACTORY = new DefaultStartFormHandler();
-
   private static final Logger LOG = Logger.getLogger(BpmnParse.class.getName());
+  
+  protected DeploymentEntity deployment;
   
   /**
    * The end result of the parsing: a list of process definition.
@@ -165,10 +165,13 @@ public class BpmnParse extends Parse {
     super(parser);
     this.expressionManager = parser.getExpressionManager();
     this.parseListeners = parser.getParseListeners();
-    
     setSchemaResource(Thread.currentThread().getContextClassLoader().getResource(BpmnParser.SCHEMA_RESOURCE).toString());
-
     this.importers.put("http://schemas.xmlsoap.org/wsdl/", new WSDLImporter());
+  }
+  
+  public BpmnParse deployment(DeploymentEntity deployment) {
+    this.deployment = deployment;
+    return this;
   }
 
   @Override
@@ -369,6 +372,7 @@ public class BpmnParse extends Parse {
     processDefinition.setProperty("name", processElement.attribute("name"));
     processDefinition.setProperty("documentation", parseDocumentation(processElement));
     processDefinition.setTaskDefinitions(new HashMap<String, TaskDefinition>());
+    processDefinition.setDeploymentId(deployment.getId());
     
     String historyLevelText = processElement.attribute("history");
     if (historyLevelText!=null) {
@@ -445,10 +449,10 @@ public class BpmnParse extends Parse {
         }
         processDefinition.setInitial(startEventActivity);
 
-        String formKey = startEventElement.attributeNS(BpmnParser.BPMN_EXTENSIONS_NS, "form");
+        String formKey = startEventElement.attributeNS(BpmnParser.BPMN_EXTENSIONS_NS, "formKey");
         if (formKey != null) {
-          processDefinition.setFormKey(formKey);
-          processDefinition.setStartFormHandler(DEFAULT_FORM_INSTANCE_FACTORY);
+          String deploymentId = processDefinition.getDeploymentId();
+          processDefinition.setStartFormHandler(new DefaultStartFormHandler(formKey, deploymentId));
         }
 
         String initiatorVariableName = startEventElement.attributeNS(BpmnParser.BPMN_EXTENSIONS_NS, "initiator");
@@ -785,9 +789,6 @@ public class BpmnParse extends Parse {
 
     UserTaskActivity userTaskActivity = new UserTaskActivity(expressionManager, taskDefinition);
 
-    String formResourceKey = userTaskElement.attributeNS(BpmnParser.BPMN_EXTENSIONS_NS, "form");
-    taskDefinition.setFormKey(formResourceKey);
-
     activity.setActivityBehavior(userTaskActivity);
 
     parseProperties(userTaskElement, activity);
@@ -798,7 +799,11 @@ public class BpmnParse extends Parse {
   }
 
   public TaskDefinition parseTaskDefinition(Element taskElement, String taskDefinitionKey, ProcessDefinitionEntity processDefinition) {
-    TaskDefinition taskDefinition = new TaskDefinition();
+    
+    String formKey = taskElement.attributeNS(BpmnParser.BPMN_EXTENSIONS_NS, "formKey");
+    String deploymentId = processDefinition.getDeploymentId();
+
+    TaskDefinition taskDefinition = new TaskDefinition(formKey, deploymentId);
 
     taskDefinition.setKey(taskDefinitionKey);
     processDefinition.getTaskDefinitions().put(taskDefinitionKey, taskDefinition);

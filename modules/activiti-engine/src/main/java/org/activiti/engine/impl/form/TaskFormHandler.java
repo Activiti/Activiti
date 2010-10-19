@@ -15,7 +15,7 @@ package org.activiti.engine.impl.form;
 
 import java.util.Map;
 
-import org.activiti.engine.form.TaskFormInstance;
+import org.activiti.engine.form.TaskForm;
 import org.activiti.engine.impl.task.TaskEntity;
 
 
@@ -24,6 +24,6 @@ import org.activiti.engine.impl.task.TaskEntity;
  */
 public interface TaskFormHandler {
 
-  TaskFormInstance createTaskFormInstance(TaskEntity task);
-  void submitTaskFormInstance(String taskId, Map<String, Object> properties);
+  TaskForm createTaskForm(TaskEntity task);
+  void submitTaskForm(TaskEntity task, Map<String, Object> properties);
 }

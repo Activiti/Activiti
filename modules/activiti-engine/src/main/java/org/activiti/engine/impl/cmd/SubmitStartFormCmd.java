@@ -13,40 +13,52 @@
 
 package org.activiti.engine.impl.cmd;
 
+import java.util.Map;
+
 import org.activiti.engine.ActivitiException;
-import org.activiti.engine.form.StartFormInstance;
 import org.activiti.engine.impl.cfg.RepositorySession;
 import org.activiti.engine.impl.form.StartFormHandler;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
-import org.activiti.engine.impl.interceptor.CommandExecutor;
 import org.activiti.engine.impl.repository.ProcessDefinitionEntity;
+import org.activiti.engine.impl.runtime.ExecutionEntity;
+import org.activiti.engine.impl.runtime.VariableMap;
+import org.activiti.engine.runtime.ProcessInstance;
 
 
 /**
  * @author Tom Baeyens
  */
-public class GetStartFormInstanceCmd implements Command<StartFormInstance> {
+public class SubmitStartFormCmd implements Command<ProcessInstance> {
 
   protected String processDefinitionId;
-
-  public GetStartFormInstanceCmd(String processDefinitionId) {
+  protected Map<String, Object> properties;
+  
+  public SubmitStartFormCmd(String processDefinitionId, Map<String, Object> properties) {
     this.processDefinitionId = processDefinitionId;
+    this.properties = properties;
   }
 
-  public StartFormInstance execute(CommandContext commandContext) {
+  public ProcessInstance execute(CommandContext commandContext) {
     RepositorySession repositorySession = commandContext.getRepositorySession();
     ProcessDefinitionEntity processDefinition = repositorySession.findDeployedProcessDefinitionById(processDefinitionId);
     if (processDefinition == null) {
-      throw new ActivitiException("No process definition found for id '" + processDefinitionId +"'");
+      throw new ActivitiException("No process definition found for id = '" + processDefinitionId + "'");
     }
     
+    ExecutionEntity processInstance = null;
     StartFormHandler startFormHandler = processDefinition.getStartFormHandler();
-    if (startFormHandler == null) {
-      throw new ActivitiException("No startFormHandler defined in process '" + processDefinitionId +"'");
+    try {
+      VariableMap.setExternalUpdate(Boolean.TRUE);
+
+      processInstance = startFormHandler.submitStartForm(processDefinition, properties);
+
+    } finally {
+      VariableMap.setExternalUpdate(null);
     }
+
+    processInstance.start();
     
-    
-    return startFormHandler.createStartFormInstance(processDefinition);
+    return processInstance;
   }
 }

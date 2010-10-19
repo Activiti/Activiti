@@ -15,9 +15,9 @@ package org.activiti.engine.impl.form;
 
 import java.util.Map;
 
-import org.activiti.engine.form.StartFormInstance;
-import org.activiti.engine.impl.interceptor.CommandExecutor;
+import org.activiti.engine.form.StartForm;
 import org.activiti.engine.impl.repository.ProcessDefinitionEntity;
+import org.activiti.engine.impl.runtime.ExecutionEntity;
 
 
 /**
@@ -25,14 +25,28 @@ import org.activiti.engine.impl.repository.ProcessDefinitionEntity;
  */
 public class DefaultStartFormHandler implements StartFormHandler {
 
-  public StartFormInstance createStartFormInstance(ProcessDefinitionEntity processDefinition) {
-    StartFormInstanceImpl startFormInstance = new StartFormInstanceImpl(processDefinition);
-    
-    //...
-    
-    return startFormInstance;
+  protected String formKey;
+  protected String deploymentId;
+  
+  public DefaultStartFormHandler(String formKey, String deploymentId) {
+    this.formKey = formKey;
+    this.deploymentId = deploymentId;
   }
 
-  public void submitStartFormInstance(String processDefinitionId, Map<String, Object> properties) {
+  public StartForm createStartForm(ProcessDefinitionEntity processDefinition) {
+    StartFormImpl startForm = new StartFormImpl(formKey, deploymentId, processDefinition);
+    
+    // TODO resolve display properties
+    
+    return startForm;
+  }
+
+  public ExecutionEntity submitStartForm(ProcessDefinitionEntity processDefinition, Map<String, Object> properties) {
+    ExecutionEntity processInstance = processDefinition.createProcessInstance();
+    
+    // TODO process submit properties
+    processInstance.setVariables(properties);
+    
+    return processInstance;
   }
 }

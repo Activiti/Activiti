@@ -8,12 +8,12 @@
   
   <process id="vacationRequest" name="Vacation request">
   
-    <startEvent id="request" activiti:form="org/activiti/examples/taskforms/request.form" />
+    <startEvent id="request" activiti:formKey="org/activiti/examples/taskforms/request.form" />
 
     <sequenceFlow id="flow1" sourceRef="request" targetRef="handleRequest" />
     
     <userTask id="handleRequest" name="Handle vacation request"
-              activiti:form="org/activiti/examples/taskforms/approve.form" >
+              activiti:formKey="org/activiti/examples/taskforms/approve.form" >
       <documentation>
         Vacation request by ${employeeName}
       </documentation> 
@@ -43,7 +43,7 @@
     </sequenceFlow>
     
     <userTask id="adjustVacationRequestTask" name="Adjust vacation request" 
-              activiti:form="org/activiti/examples/taskforms/adjustRequest.form">
+              activiti:formKey="org/activiti/examples/taskforms/adjustRequest.form">
       <documentation>
         Your manager has not approved your vacation request.
       </documentation>

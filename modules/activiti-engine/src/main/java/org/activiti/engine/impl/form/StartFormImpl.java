@@ -13,9 +13,7 @@
 
 package org.activiti.engine.impl.form;
 
-import org.activiti.engine.form.StartFormInstance;
-import org.activiti.engine.impl.interceptor.Command;
-import org.activiti.engine.impl.interceptor.CommandContext;
+import org.activiti.engine.form.StartForm;
 import org.activiti.engine.impl.repository.ProcessDefinitionEntity;
 import org.activiti.engine.repository.ProcessDefinition;
 
@@ -23,20 +21,15 @@ import org.activiti.engine.repository.ProcessDefinition;
 /**
  * @author Tom Baeyens
  */
-public class StartFormInstanceImpl extends FormInstanceImpl implements StartFormInstance, Command<Object> {
+public class StartFormImpl extends FormImpl implements StartForm {
   
   private static final long serialVersionUID = 1L;
   
   protected ProcessDefinition processDefinition;
 
-  public StartFormInstanceImpl(ProcessDefinitionEntity processDefinition) {
-    this.formKey = (String) processDefinition.getFormKey();
-    this.deploymentId = processDefinition.getDeploymentId();
+  public StartFormImpl(String formKey, String deploymentId, ProcessDefinitionEntity processDefinition) {
+    super(formKey, deploymentId);
     this.processDefinition = processDefinition;
-  }
-
-  public Object execute(CommandContext commandContext) {
-    return null;
   }
 
   // getters and setters //////////////////////////////////////////////////////

@@ -15,8 +15,8 @@ package org.activiti.engine;
 
 import java.util.Map;
 
-import org.activiti.engine.form.StartFormInstance;
-import org.activiti.engine.form.TaskFormInstance;
+import org.activiti.engine.form.StartForm;
+import org.activiti.engine.form.TaskForm;
 
 
 /** Access to forms for starting new process instances and completing tasks.
@@ -25,14 +25,14 @@ import org.activiti.engine.form.TaskFormInstance;
  */
 public interface FormService {
 
-  StartFormInstance getStartFormInstance(String processDefinitionId);
+  StartForm getStartForm(String processDefinitionId);
   Object getRenderedStartForm(String processDefinitionId);
   Object getRenderedStartForm(String processDefinitionId, String formEngineName);
-  void submitStartFormInstance(String processDefinitionId, Map<String, Object> properties);
+  void submitStartForm(String processDefinitionId, Map<String, Object> properties);
 
-  TaskFormInstance getTaskFormInstance(String taskId);
+  TaskForm getTaskForm(String taskId);
   Object getRenderedTaskForm(String taskId);
   Object getRenderedTaskForm(String taskId, String formEngineName);
-  void submitTaskFormInstance(String taskId, Map<String, Object> properties);
+  void submitTaskForm(String taskId, Map<String, Object> properties);
   
 }

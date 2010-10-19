@@ -34,8 +34,11 @@ public class TaskDefinition {
   protected Set<ActivitiValueExpression> candidateUserIdValueExpressions = new HashSet<ActivitiValueExpression>();
   protected Set<ActivitiValueExpression> candidateGroupIdValueExpressions = new HashSet<ActivitiValueExpression>();
   // form fields
-  protected String formKey;
-  protected TaskFormHandler taskFormHandler = new DefaultTaskFormHandler();
+  protected TaskFormHandler taskFormHandler;
+  
+  public TaskDefinition(String formKey, String deploymentId) {
+    taskFormHandler = new DefaultTaskFormHandler(formKey, deploymentId);
+  }
 
   // getters and setters //////////////////////////////////////////////////////
 
@@ -77,14 +80,6 @@ public class TaskDefinition {
 
   public void addCandidateGroupIdValueExpression(ActivitiValueExpression groupId) {
     candidateGroupIdValueExpressions.add(groupId);
-  }
-
-  public String getFormKey() {
-    return formKey;
-  }
-
-  public void setFormKey(String formKey) {
-    this.formKey = formKey;
   }
 
   public TaskFormHandler getTaskFormHandler() {

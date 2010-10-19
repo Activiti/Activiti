@@ -63,6 +63,7 @@ public class BpmnDeployer implements Deployer, ProcessEngineConfigurationAware {
         BpmnParse bpmnParse = bpmnParser
           .createParse()
           .sourceInputStream(inputStream)
+          .deployment(deployment)
           .name(resourceName)
           .execute();
         

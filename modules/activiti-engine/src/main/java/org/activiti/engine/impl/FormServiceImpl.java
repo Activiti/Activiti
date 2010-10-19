@@ -16,12 +16,14 @@ package org.activiti.engine.impl;
 import java.util.Map;
 
 import org.activiti.engine.FormService;
-import org.activiti.engine.form.StartFormInstance;
-import org.activiti.engine.form.TaskFormInstance;
+import org.activiti.engine.form.StartForm;
+import org.activiti.engine.form.TaskForm;
 import org.activiti.engine.impl.cmd.GetRenderedStartFormCmd;
 import org.activiti.engine.impl.cmd.GetRenderedTaskFormCmd;
-import org.activiti.engine.impl.cmd.GetStartFormInstanceCmd;
-import org.activiti.engine.impl.cmd.GetTaskFormInstanceCmd;
+import org.activiti.engine.impl.cmd.GetStartFormCmd;
+import org.activiti.engine.impl.cmd.GetTaskFormCmd;
+import org.activiti.engine.impl.cmd.SubmitStartFormCmd;
+import org.activiti.engine.impl.cmd.SubmitTaskFormCmd;
 
 
 /**
@@ -45,18 +47,20 @@ public class FormServiceImpl extends ServiceImpl implements FormService {
     return commandExecutor.execute(new GetRenderedTaskFormCmd(taskId, engineName));
   }
 
-  public StartFormInstance getStartFormInstance(String processDefinitionId) {
-    return commandExecutor.execute(new GetStartFormInstanceCmd(processDefinitionId));
+  public StartForm getStartForm(String processDefinitionId) {
+    return commandExecutor.execute(new GetStartFormCmd(processDefinitionId));
   }
 
-  public TaskFormInstance getTaskFormInstance(String taskId) {
-    return commandExecutor.execute(new GetTaskFormInstanceCmd(taskId));
+  public TaskForm getTaskForm(String taskId) {
+    return commandExecutor.execute(new GetTaskFormCmd(taskId));
   }
 
-  public void submitStartFormInstance(String processDefinitionId, Map<String, Object> properties) {
+  public void submitStartForm(String processDefinitionId, Map<String, Object> properties) {
+    commandExecutor.execute(new SubmitStartFormCmd(processDefinitionId, properties));
   }
 
-  public void submitTaskFormInstance(String taskId, Map<String, Object> properties) {
+  public void submitTaskForm(String taskId, Map<String, Object> properties) {
+    commandExecutor.execute(new SubmitTaskFormCmd(taskId, properties));
   }
 
 }

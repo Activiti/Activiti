@@ -92,7 +92,6 @@ create table ACT_RE_PROC_DEF (
     VERSION_ INTEGER,
     DEPLOYMENT_ID_ NVARCHAR2(64),
     RESOURCE_NAME_ NVARCHAR2(255),
-    FORM_KEY_ NVARCHAR2(255),
     primary key (ID_)
 );
 

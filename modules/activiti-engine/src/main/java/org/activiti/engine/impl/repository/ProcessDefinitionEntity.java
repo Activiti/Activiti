@@ -38,7 +38,6 @@ public class ProcessDefinitionEntity extends ProcessDefinitionImpl implements Pr
   protected int version;
   protected String deploymentId;
   protected String resourceName;
-  protected String formKey;
   
   protected Integer historyLevel;
   protected StartFormHandler startFormHandler;
@@ -149,14 +148,6 @@ public class ProcessDefinitionEntity extends ProcessDefinitionImpl implements Pr
 
   public void setStartFormHandler(StartFormHandler startFormHandler) {
     this.startFormHandler = startFormHandler;
-  }
-
-  public String getFormKey() {
-    return formKey;
-  }
-
-  public void setFormKey(String formKey) {
-    this.formKey = formKey;
   }
 
   public Map<String, TaskDefinition> getTaskDefinitions() {

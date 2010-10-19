@@ -160,12 +160,16 @@ public class TaskEntity implements Task, Serializable, PersistentObject {
     }
   }
     
+  public void complete() {
+    delete();
+    if (executionId!=null) {
+      getExecution().signal(null, null);
+    }
+  }
 
   /*
    * TASK ASSIGNMENT
    */
-
-
   public IdentityLinkEntity createIdentityLink() {
     IdentityLinkEntity identityLinkEntity = IdentityLinkEntity.createAndInsert();
     getIdentityLinks().add(identityLinkEntity);

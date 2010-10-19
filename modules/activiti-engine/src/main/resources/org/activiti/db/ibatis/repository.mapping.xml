@@ -118,13 +118,12 @@
   <!-- PROCESSDEFINITION INSERT -->
 
   <insert id="insertProcessDefinition" parameterType="org.activiti.engine.impl.repository.ProcessDefinitionEntity">
-    insert into ACT_RE_PROC_DEF(ID_, NAME_, KEY_, VERSION_, DEPLOYMENT_ID_, FORM_KEY_, RESOURCE_NAME_)
+    insert into ACT_RE_PROC_DEF(ID_, NAME_, KEY_, VERSION_, DEPLOYMENT_ID_, RESOURCE_NAME_)
     values (#{id, jdbcType=VARCHAR},
             #{name, jdbcType=VARCHAR},
             #{key, jdbcType=VARCHAR}, 
             #{version, jdbcType=INTEGER},
             #{deploymentId, jdbcType=VARCHAR},
-            #{formKey, jdbcType=VARCHAR},
             #{resourceName, jdbcType=VARCHAR})
   </insert>
   
@@ -145,7 +144,6 @@
     <result property="version" column="VERSION_" jdbcType="INTEGER"/>
     <result property="deploymentId" column="DEPLOYMENT_ID_" jdbcType="VARCHAR"/>
     <result property="resourceName" column="RESOURCE_NAME_" jdbcType="VARCHAR"/>
-    <result property="formKey" column="FORM_KEY_" jdbcType="VARCHAR"/>
   </resultMap>
   
   <!-- PROCESSDEFINITION SELECT -->

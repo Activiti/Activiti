@@ -10,50 +10,43 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.activiti.engine.impl.cmd;
 
-import java.util.Map;
-
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.form.TaskForm;
 import org.activiti.engine.impl.cfg.TaskSession;
+import org.activiti.engine.impl.form.TaskFormHandler;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
+import org.activiti.engine.impl.interceptor.CommandExecutor;
 import org.activiti.engine.impl.task.TaskEntity;
-import org.activiti.pvm.runtime.PvmExecution;
 
 
 /**
- * @author Joram Barrez
+ * @author Tom Baeyens
  */
-public class CompleteTaskCmd implements Command<Void> {
-  
-  protected String taskId;
-  protected Map<String, Object> variables;
-  
-  public CompleteTaskCmd(String taskId, Map<String, Object> variables) {
-    this.taskId = taskId;
-    this.variables = variables;
-  }
-  
-  public Void execute(CommandContext commandContext) {
-    if(taskId == null) {
-      throw new ActivitiException("taskId is null");
-    }
-    
-    TaskSession taskSession = commandContext.getTaskSession();
-    
-    TaskEntity task = taskSession.findTaskById(taskId);
-    if (variables!=null) {
-      task.setExecutionVariables(variables);
-    }
+public class GetTaskFormCmd implements Command<TaskForm> {
 
+  protected String taskId;
+
+  public GetTaskFormCmd(String taskId) {
+    this.taskId = taskId;
+  }
+
+  public TaskForm execute(CommandContext commandContext) {
+    TaskSession taskSession = commandContext.getTaskSession();
+    TaskEntity task = taskSession.findTaskById(taskId);
     if (task == null) {
-      throw new ActivitiException("Cannot find task with id " + taskId);
+      throw new ActivitiException("No task found for taskId '" + taskId +"'");
     }
     
-    task.complete();
+    TaskFormHandler taskFormHandler = task.getTaskDefinition().getTaskFormHandler();
+    if (taskFormHandler == null) {
+      throw new ActivitiException("No taskFormHandler specified for task '" + taskId +"'");
+    }
     
-    return null;
+    return taskFormHandler.createTaskForm(task);
   }
 
 }

@@ -50,7 +50,4 @@ public interface ProcessDefinition {
 
   /** The deployment in which this process definition is contained. */
   String getDeploymentId();
-  
-  /** logical name for the form that can be used by UI's to render the form. */
-  String getFormKey();
 }

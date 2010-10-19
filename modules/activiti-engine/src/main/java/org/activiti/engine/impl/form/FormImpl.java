@@ -17,13 +17,13 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.activiti.engine.form.FormInstance;
+import org.activiti.engine.form.Form;
 
 
 /**
  * @author Tom Baeyens
  */
-public abstract class FormInstanceImpl implements FormInstance, Serializable {
+public abstract class FormImpl implements Form, Serializable {
 
   private static final long serialVersionUID = 1L;
   
@@ -31,6 +31,11 @@ public abstract class FormInstanceImpl implements FormInstance, Serializable {
   protected String deploymentId;
   protected Map<String, Object> properties = new HashMap<String, Object>();
   
+  public FormImpl(String formKey, String deploymentId) {
+    this.formKey = formKey;
+    this.deploymentId = deploymentId;
+  }
+
   public Object getProperty(String propertyName) {
     return properties.get(propertyName);
   }
