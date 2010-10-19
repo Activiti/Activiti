@@ -123,11 +123,11 @@ public class ProcessEngineConfiguration {
 
   protected String processEngineName;
 
-  /** the configurable list which will be {@link #initializeInterceptorChain(List, ProcessEngineConfiguration) processed} to build the {@link #commandExecutorTxRequired} */
+  /** the configurable list which will be {@link #initializeInterceptorChain(List) processed} to build the {@link #commandExecutorTxRequired} */
   protected List<CommandInterceptor> commandInterceptorsTxRequired;
   /** this will be initialized during the configurationComplete() */
   protected CommandExecutor commandExecutorTxRequired;
-  /** the configurable list which will be {@link #initializeInterceptorChain(List, ProcessEngineConfiguration) processed} to build the {@link #commandExecutorTxRequiresNew} */
+  /** the configurable list which will be {@link #initializeInterceptorChain(List) processed} to build the {@link #commandExecutorTxRequiresNew} */
   protected List<CommandInterceptor> commandInterceptorsTxRequiresNew;
   /** this will be initialized during the configurationComplete() */
   protected CommandExecutor commandExecutorTxRequiresNew;
