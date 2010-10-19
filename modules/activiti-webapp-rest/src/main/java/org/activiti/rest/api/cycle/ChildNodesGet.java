@@ -33,9 +33,9 @@ import org.springframework.extensions.webscripts.Status;
 /**
  * @author Nils Preusker
  */
-public class TreeGet extends ActivitiWebScript {
+public class ChildNodesGet extends ActivitiWebScript {
 
-  private static Logger log = Logger.getLogger(TreeGet.class.getName());
+  private static Logger log = Logger.getLogger(ChildNodesGet.class.getName());
 
   // private CycleService cycleService;
   private RepositoryConnector repositoryConnector;
@@ -47,29 +47,27 @@ public class TreeGet extends ActivitiWebScript {
     // this.cycleService = SessionUtil.getCycleService();
     this.repositoryConnector = CycleServiceDbXStreamImpl.getRepositoryConnector(cuid, session);
   }
-  
+
   @Override
   protected void executeWebScript(ActivitiRequest req, Status status, Cache cache, Map<String, Object> model) {
     init(req);
 
-    String id = req.getString("id");
-    boolean folder = Boolean.parseBoolean(req.getString("folder"));
-    if (folder) {
-      try {
-        RepositoryNodeCollection children = this.repositoryConnector.getChildren(id);
+    String artifactId = req.getMandatoryString("artifactId");
+    try {
+      RepositoryNodeCollection children = this.repositoryConnector.getChildren(artifactId);
 
-        model.put("files", children.getArtifactList());
-        model.put("folders", children.getFolderList());
-        return;
+      model.put("files", children.getArtifactList());
+      model.put("folders", children.getFolderList());
+      return;
 
-      } catch (RepositoryException e) {
-        log.log(Level.SEVERE, "Cannot load children for id '" + id + "'", e);
-        // TODO: how can we let the user know what went wrong without breaking the tree?
-        // throwing a HTTP 500 here will cause the tree to load the node for ever. 
-        // throw new WebScriptException(Status.STATUS_INTERNAL_SERVER_ERROR,
-        // "exception.message");
+    } catch (RepositoryException e) {
+      log.log(Level.SEVERE, "Cannot load children for id '" + artifactId + "'", e);
+      // TODO: how can we let the user know what went wrong without breaking the
+      // tree?
+      // throwing a HTTP 500 here will cause the tree to load the node for ever.
+      // throw new WebScriptException(Status.STATUS_INTERNAL_SERVER_ERROR,
+      // "exception.message");
 
-      }
     }
 
     // provide empty list as default

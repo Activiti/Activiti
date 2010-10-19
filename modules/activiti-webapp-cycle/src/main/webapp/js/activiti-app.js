@@ -43,11 +43,10 @@
      * Loads the repository tree
      *
      * @method loadTree
-     * @param obj {Object} Helper object to be sent to the callback
      */
-    loadTree: function RepositoryService_loadTree(obj)
+    loadTree: function RepositoryService_loadTree()
     {
-      this.jsonGet(this.loadTreeURL(), obj, "loadTree");
+      this.jsonGet(this.loadTreeURL(), null, "loadTree");
     },
 
     /**
@@ -58,7 +57,7 @@
      */
     loadTreeURL: function RepositoryService_loadTreeURL()
     {
-      return Activiti.service.REST_PROXY_URI_RELATIVE + "repo-tree?id=/&folder=true";
+      return Activiti.service.REST_PROXY_URI_RELATIVE + "child-nodes?artifactId=/";
     },
 
 		/**
@@ -68,7 +67,7 @@
 		loadNodeData: function RepositoryService_loadNodeData(node, fnLoadComplete)
 		{
 			var obj = [node, fnLoadComplete];
-			this.jsonGet(this.loadNodeURL(node.data.id, node.data.folder), obj, "loadNodeData");
+			this.jsonGet(this.loadNodeURL(node.data.id), obj, "loadNodeData");
 	  },
 
 		/**
@@ -78,12 +77,12 @@
      * @method loadTreeURL
      * @return {string} The url
      */
-    loadNodeURL: function RepositoryService_loadNodeURL(nodeid, folder)
+    loadNodeURL: function RepositoryService_loadNodeURL(nodeid)
     {
-      return Activiti.service.REST_PROXY_URI_RELATIVE + "repo-tree?id=" + encodeURIComponent(nodeid) + "&folder=" + folder;
+      return Activiti.service.REST_PROXY_URI_RELATIVE + "child-nodes?artifactId=" + encodeURIComponent(nodeid);
     },
 
-		/**
+    /**
      * Loads an artifact (id and url)
      *
      * @method loadArtifact

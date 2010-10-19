@@ -54,7 +54,7 @@
      * @param response {object} The callback response
      * @param obj {object} Helper object
      */
-    onLoadTreeSuccess: function RepoTree_RepositoryService_onLoadTreeSuccess(response, obj)
+    onLoadTreeSuccess: function RepoTree_RepositoryService_onLoadTreeSuccess(response)
     {
 			var	me = this;
 	
@@ -166,17 +166,15 @@
 		onUpdateArtifactView: function Artifact_onUpdateArtifactView(event, args)
 		{
 			if(!this._treeView._nodes) {
-				// tree is not initialized yet, we are coming from an external URL
+				// tree is not yet initialized, we are coming from an external URL
 				
 			} else {
-				// Check, whether the tree contains the node that was selected, otherwise we will have to request it from the REST API
-				var nodeExists = false;
-				for(var i=0; i<this._treeView._nodes.length; i++) {
-					if(this._treeView._nodes && this._treeView._nodes[i] && (this._treeView._nodes[i].data.id === args[1].value.repositoryNodeId) ) {
-						nodeExists = true;
-					}
+				// tree is initialized, this is either a regular click on the tree or an event from the browser history manager
+				var node = this._treeView.getNodeByProperty("id", args[1].value.repositoryNodeId);
+				if(node && (node != this._treeView.currentFocus) ) {
+				  // if the node isn't already focused this is a browser history event and we manually set focus to the current node
+          node.focus();
 				}
-				//alert("Node is there:" + nodeExists);
 			}
 		}
 

@@ -181,8 +181,8 @@
         parent="activitiWebScript">
   </bean>
   
-  <bean id="webscript.org.activiti.rest.api.cycle.tree.get"
-        class="org.activiti.rest.api.cycle.TreeGet"
+  <bean id="webscript.org.activiti.rest.api.cycle.child-nodes.get"
+        class="org.activiti.rest.api.cycle.ChildNodesGet"
         parent="activitiWebScript">
   </bean>
 

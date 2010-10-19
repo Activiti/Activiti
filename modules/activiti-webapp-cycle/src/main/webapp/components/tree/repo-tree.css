@@ -42,3 +42,68 @@
 .icon-code-red { display:block; height: 16px; padding-left: 20px; white-space: nowrap; background: transparent url("/activiti-cycle/res/images/doctype-icons.png") 0 -432px no-repeat; }
 .icon-code-blue { display:block; height: 16px; padding-left: 20px; white-space: nowrap; background: transparent url("/activiti-cycle/res/images/doctype-icons.png") 0 -448px no-repeat; }
 .htmlnodelabel { margin-left: 20px; }
+
+/* Folder style for tree */
+
+#treeDiv1 a:hover {
+  text-decoration: none;
+}
+
+/* first or middle sibling, no children */
+.ygtvtn { background: url("/activiti-cycle/res/images/folder/tn.gif") 0 0 no-repeat; width:17px; height:22px; }
+
+/* first or middle sibling, collapsable */
+.ygtvtm { background: url("/activiti-cycle/res/images/folder/tm.gif") 0 0 no-repeat; width:34px; height:22px; cursor:pointer }
+
+/* first or middle sibling, collapsable, hover */
+.ygtvtmh { background: url("/activiti-cycle/res/images/folder/tmh.gif") 0 0 no-repeat; width:34px; height:22px; cursor:pointer }
+
+/* first or middle sibling, expandable */
+.ygtvtp { background: url("/activiti-cycle/res/images/folder/tp.gif") 0 0 no-repeat; width:34px; height:22px; cursor:pointer }
+
+/* first or middle sibling, expandable, hover */
+.ygtvtph { background: url("/activiti-cycle/res/images/folder/tph.gif") 0 0 no-repeat; width:34px; height:22px; cursor:pointer }
+
+/* last sibling, no children */
+.ygtvln { background: url("/activiti-cycle/res/images/folder/ln.gif") 0 0 no-repeat; width:17px; height:22px; }
+
+/* Last sibling, collapsable */
+.ygtvlm { background: url("/activiti-cycle/res/images/folder/lm.gif") 0 0 no-repeat; width:34px; height:22px; cursor:pointer }
+
+/* Last sibling, collapsable, hover */
+.ygtvlmh { background: url("/activiti-cycle/res/images/folder/lmh.gif") 0 0 no-repeat; width:34px; height:22px; cursor:pointer }
+
+/* Last sibling, expandable */
+.ygtvlp { background: url("/activiti-cycle/res/images/folder/lp.gif") 0 0 no-repeat; width:34px; height:22px; cursor:pointer }
+
+/* Last sibling, expandable, hover */
+.ygtvlph { background: url("/activiti-cycle/res/images/folder/lph.gif") 0 0 no-repeat; width:34px; height:22px; cursor:pointer }
+
+/* Loading icon */
+.ygtvloading { background: url("/activiti-cycle/res/images/folder/loading.gif") no-repeat scroll 0 3px transparent }
+
+/* the style for the empty cells that are used for rendering the depth 
+ * of the node */
+.ygtvdepthcell { background: url("/activiti-cycle/res/images/folder/vline.gif") 0 0 no-repeat; width:17px; height:22px; }
+
+.ygtvblankdepthcell { width:17px; height:22px; }
+
+/* the style of the div around each node */
+.ygtvitem { }  
+
+.ygtvitem  table{
+    margin-bottom:0;
+}
+.ygtvitem  td {
+    border:none;padding:0;
+} 
+
+/* the style of the div around each node's collection of children */
+.ygtvchildren { }  
+* html .ygtvchildren { height:1%; }  
+
+/* the style of the text label in ygTextNode */
+.ygtvlabel, .ygtvlabel:link, .ygtvlabel:visited, .ygtvlabel:hover { 
+	margin-left:2px;
+	text-decoration: none;
+}
