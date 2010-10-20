@@ -65,7 +65,9 @@ public class ArtifactTypeImpl implements ArtifactType {
 
   private List<CreateUrlAction> openUrlActions;
 
-  private List<DownloadContentAction> downloadContentActions; 
+  private List<DownloadContentAction> downloadContentActions;
+  
+  private Long revision;
 
   public ArtifactTypeImpl(String id, CycleDefaultMimeType mimeType) {
     this.id = id;
@@ -75,11 +77,12 @@ public class ArtifactTypeImpl implements ArtifactType {
     this.parameterizedActions = new ArrayList<ParameterizedAction>();
     this.openUrlActions = new ArrayList<CreateUrlAction>();
     this.downloadContentActions = new ArrayList<DownloadContentAction>();
+    this.revision = 0l;
   }
 
   public ArtifactTypeImpl(String id, MimeType mimeType, List<ContentRepresentation> contentRepresentationList, ContentRepresentation defaultContentRepresentation,
           Map<String, ContentProvider> contentProviderMap, List<ParameterizedAction> parameterizedActions, List<CreateUrlAction> openUrlActions,
-          List<DownloadContentAction> downloadContentActions) {
+          List<DownloadContentAction> downloadContentActions, Long revision) {
     this.id = id;
     this.mimeType = mimeType;
     this.contentRepresentationList = contentRepresentationList;
@@ -88,6 +91,7 @@ public class ArtifactTypeImpl implements ArtifactType {
     this.parameterizedActions = parameterizedActions;
     this.openUrlActions = openUrlActions;
     this.downloadContentActions = downloadContentActions;
+    this.revision = revision;
   }
 
   public String getId() {
@@ -278,6 +282,10 @@ public class ArtifactTypeImpl implements ArtifactType {
   throw new RepositoryException("Action '" + id + "' not found, cannot be executed. Existing actions are: " + actionNames.toString());
   }
 
+  public Long getRevision() {
+    return this.revision;
+  }
+  
   public void setMimeType(MimeType mimeType) {
     this.mimeType = mimeType;
   }
@@ -318,4 +326,8 @@ public class ArtifactTypeImpl implements ArtifactType {
     return this.getClass().getSimpleName() + "[" + id + "]";
   }
 
+  public void setRevision(Long revision) {
+    this.revision = revision;
+  }
+  
 }

@@ -15,7 +15,7 @@ import org.activiti.cycle.impl.connector.demo.DemoConnector;
  */
 public abstract class DummyBaseCycleService implements CycleService {
   
-  public void addArtifactLink(String sourceArtifactId, String targetArtifactId) {
+  public void addArtifactLink(String sourceConnectorId, String sourceArtifactId, String targetConnectorId, String targetArtifactId) {
   }
 
   public void addLink(RepositoryArtifactLink link) {

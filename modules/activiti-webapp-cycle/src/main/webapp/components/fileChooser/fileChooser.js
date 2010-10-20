@@ -152,8 +152,8 @@
     },
 
     onSubmit: function FileChooserDialog_onSubmit() {
-      if(this._currentNode.data && this._currentNode.data.id && this._currentNode.label) {        
-        this._callbackFn({"nodeId": this._currentNode.data.id, "nodeName": this._currentNode.label});
+      if(this._currentNode.data && this._currentNode.data.connectorId && this._currentNode.data.artifactId && this._currentNode.label) {        
+        this._callbackFn({"connectorId": this._currentNode.data.connectorId, "nodeId": this._currentNode.data.artifactId, "nodeName": this._currentNode.label});
       } else {
         // TODO: handle error... should never happen due to validation, though...
       }

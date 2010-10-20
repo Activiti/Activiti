@@ -1,7 +1,7 @@
 <webscript>
   <shortname>Child nodes</shortname>
   <description>Returns a json representation of tree nodes starting at the node identified by the nodeId parameter</description>
-  <url>/child-nodes?artifactId={artifactId}</url>
+  <url>/child-nodes?connectorId={connectorId}&amp;artifactId={artifactId}</url>
   <authentication>user</authentication>
   <format default="json">argument</format>
 </webscript>

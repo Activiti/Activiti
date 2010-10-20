@@ -50,4 +50,6 @@ public interface ArtifactType {
 
   public List<DownloadContentAction> getDownloadContentActions();
   
+  public Long getRevision();
+  
 }

@@ -57,7 +57,7 @@
      */
     loadTreeURL: function RepositoryService_loadTreeURL()
     {
-      return Activiti.service.REST_PROXY_URI_RELATIVE + "child-nodes?artifactId=/";
+      return Activiti.service.REST_PROXY_URI_RELATIVE + "child-nodes?connectorId=/&artifactId=''";
     },
 
 		/**
@@ -67,7 +67,7 @@
 		loadNodeData: function RepositoryService_loadNodeData(node, fnLoadComplete)
 		{
 			var obj = [node, fnLoadComplete];
-			this.jsonGet(this.loadNodeURL(node.data.id), obj, "loadNodeData");
+			this.jsonGet(this.loadNodeURL(node.data.connectorId, node.data.artifactId), obj, "loadNodeData");
 	  },
 
 		/**
@@ -77,9 +77,9 @@
      * @method loadTreeURL
      * @return {string} The url
      */
-    loadNodeURL: function RepositoryService_loadNodeURL(nodeid)
+    loadNodeURL: function RepositoryService_loadNodeURL(connectorId, nodeid)
     {
-      return Activiti.service.REST_PROXY_URI_RELATIVE + "child-nodes?artifactId=" + encodeURIComponent(nodeid);
+      return Activiti.service.REST_PROXY_URI_RELATIVE + "child-nodes?connectorId=" + encodeURIComponent(connectorId) + "&artifactId=" + encodeURIComponent(nodeid);
     },
 
     /**
@@ -89,9 +89,9 @@
      * @param artifactid {string} The id of the artifact to be loaded
      * @param obj {Object} Helper object to be sent to the callback
      */
-    loadArtifact: function RepositoryService_loadArtifact(artifactid, obj)
+    loadArtifact: function RepositoryService_loadArtifact(connectorId, artifactid, obj)
     {
-      this.jsonGet(this.loadArtifactURL(artifactid), obj, "loadArtifact");
+      this.jsonGet(this.loadArtifactURL(connectorId, artifactid), obj, "loadArtifact");
     },
 
     /**
@@ -101,31 +101,31 @@
 		 * @param artifactid {string} The id of the artifact
      * @return {string} The url
      */
-    loadArtifactURL: function RepositoryService_loadArtifactURL(artifactid)
+    loadArtifactURL: function RepositoryService_loadArtifactURL(connectorId, artifactid)
     {
-      return Activiti.service.REST_PROXY_URI_RELATIVE + "artifact?artifactId=" + encodeURIComponent(artifactid) + "&restProxyUri=" + encodeURIComponent(Activiti.service.REST_PROXY_URI_RELATIVE);
+      return Activiti.service.REST_PROXY_URI_RELATIVE + "artifact?connectorId=" + encodeURIComponent(connectorId) + "&artifactId=" + encodeURIComponent(artifactid) + "&restProxyUri=" + encodeURIComponent(Activiti.service.REST_PROXY_URI_RELATIVE);
     },
 
 		// TODO: doc
-    loadArtifactActionForm: function RepositoryService_loadArtifactActionForm(artifactId, artifactActionName, obj)
+    loadArtifactActionForm: function RepositoryService_loadArtifactActionForm(connectorId, artifactId, artifactActionName, obj)
     {
-		  this.jsonGet(this.loadArtifactActionFormURL(artifactId, artifactActionName), obj, "loadArtifactActionForm");
+		  this.jsonGet(this.loadArtifactActionFormURL(connectorId, artifactId, artifactActionName), obj, "loadArtifactActionForm");
     },
 
 		// TODO: doc
-    loadArtifactActionFormURL: function RepositoryService_loadArtifactActionFormURL(artifactId, artifactActionName)
+    loadArtifactActionFormURL: function RepositoryService_loadArtifactActionFormURL(connectorId, artifactId, artifactActionName)
     {
-			return Activiti.service.REST_PROXY_URI_RELATIVE + "artifact-action-form?artifactId=" + encodeURIComponent(artifactId) + "&actionName=" + encodeURIComponent(artifactActionName);
+			return Activiti.service.REST_PROXY_URI_RELATIVE + "artifact-action-form?connectorId=" + encodeURIComponent(connectorId) + "&artifactId=" + encodeURIComponent(artifactId) + "&actionName=" + encodeURIComponent(artifactActionName);
     },
 
-		executeArtifactAction: function RepositoryService_executeArtifactAction(artifactId, artifactActionName, variables, obj)
+		executeArtifactAction: function RepositoryService_executeArtifactAction(connectorId, artifactId, artifactActionName, variables, obj)
 		{
-			this.jsonPut(this.executeArtifactFormURL(artifactId, artifactActionName), variables, obj, "executeArtifactAction");
+			this.jsonPut(this.executeArtifactFormURL(connectorId, artifactId, artifactActionName), variables, obj, "executeArtifactAction");
 		},
 
-		executeArtifactFormURL: function RepositoryService_executeArtifactFormURL(artifactId, artifactActionName)
+		executeArtifactFormURL: function RepositoryService_executeArtifactFormURL(connectorId, artifactId, artifactActionName)
 		{
-			return Activiti.service.REST_PROXY_URI_RELATIVE + "artifact-action?artifactId=" + encodeURIComponent(artifactId) + "&actionName=" + encodeURIComponent(artifactActionName);
+			return Activiti.service.REST_PROXY_URI_RELATIVE + "artifact-action?connectorId=" + encodeURIComponent(connectorId) + "&artifactId=" + encodeURIComponent(artifactId) + "&actionName=" + encodeURIComponent(artifactActionName);
 		}
 
   });
@@ -154,14 +154,15 @@
    * @return {Activiti.widget.ExecuteArtifactActionForm} The new Activiti.widget.ExecuteArtifactActionForm instance
    * @constructor
    */
-  Activiti.widget.ExecuteArtifactActionForm = function ExecuteArtifactActionForm_constructor(id, artifactId, artifactActionName)
+  Activiti.widget.ExecuteArtifactActionForm = function ExecuteArtifactActionForm_constructor(id, connectorId, artifactId, artifactActionName)
   {
     Activiti.widget.ExecuteArtifactActionForm.superclass.constructor.call(this, id);
+    this.connectorId = connectorId;
     this.artifactId = artifactId;
 		this.artifactActionName = artifactActionName;
     this.service = new Activiti.service.RepositoryService(this);
     this.service.setCallback("loadArtifactActionForm", { fn: this.onLoadFormSuccess, scope: this }, {fn: this.onLoadFormFailure, scope: this });
-    this.service.loadArtifactActionForm(this.artifactId, this.artifactActionName);
+    this.service.loadArtifactActionForm(this.connectorId, this.artifactId, this.artifactActionName);
     return this;
   };
 
@@ -175,7 +176,7 @@
      */
     doSubmit: function ExecuteArtifactActionForm__doSubmit(variables)
     {
-      this.service.executeArtifactAction(this.artifactId, this.artifactActionName, variables);
+      this.service.executeArtifactAction(this.connectorId, this.artifactId, this.artifactActionName, variables);
     }
 
   });

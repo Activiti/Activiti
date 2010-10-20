@@ -1,7 +1,7 @@
 <webscript>
   <shortname>Artifact</shortname>
   <description>Returns a json string that contains the URL to an image</description>
-  <url>/artifact?artifactId={artifactId}</url>
+  <url>/artifact?connectorId={connectorId}&amp;artifactId={artifactId}</url>
   <authentication>user</authentication>
   <format default="json">argument</format>
 </webscript>

@@ -1,4 +1,4 @@
-package org.activiti.cycle;
+package org.activiti.cycle.impl.db.entity;
 
 import java.io.Serializable;
 import java.util.HashMap;

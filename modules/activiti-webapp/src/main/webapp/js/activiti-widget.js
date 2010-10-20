@@ -1164,11 +1164,17 @@ Activiti.widget.PopupManager = function()
 		onFormEventButtonClick: function Form_onFormEventButtonClick(event, inputEl) {
       var me = this;
       Activiti.event.fire(Activiti.event.clickFormEventButton, {"callback": function (args) {
-        var input = Selector.query("input[name=treeTarget]", me.dialog.form, true);
-        input.value = args.nodeId;
-        input.type = "hidden";
+
+        var connectorIdInput = Selector.query("input[name=targetConnectorId]", me.dialog.form, true);
+        connectorIdInput.value = args.connectorId;
+        
+        var targetFolderId = Selector.query("input[name=targetFolderId]", me.dialog.form, true);
+        targetFolderId.value = args.nodeId;
+        targetFolderId.type = "hidden";
+        
         var formEventValueSpan = Selector.query("span[class=form-Event-value]", me.dialog.form, true);
         formEventValueSpan.innerHTML = args.nodeName;
+        
         me.doValidate();
       }}, null, false);
 		}

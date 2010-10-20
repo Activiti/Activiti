@@ -63,6 +63,7 @@
 			
 			var eventValue = args[1].value;
 			
+			this._connectorId = eventValue.connectorId;
 			this._repositoryNodeId = eventValue.repositoryNodeId;
 			this._isRepositoryArtifact = eventValue.isRepositoryArtifact;
 			this._name = eventValue.name;
@@ -90,7 +91,7 @@
 				}
 				// Check whether the selected node is a file node. If so, load its data
 				if(eventValue.isRepositoryArtifact ) {
-					this.services.repositoryService.loadArtifact(eventValue.repositoryNodeId);
+					this.services.repositoryService.loadArtifact(eventValue.connectorId, eventValue.repositoryNodeId);
 				}
 				// Update the heading that displays the name of the selected node
 				headerEl.id = "header-" + eventValue.repositoryNodeId;
@@ -118,7 +119,7 @@
 			for(var i = 0; i<artifactJson.contentRepresentations.length; i++) {
 				var tab = new YAHOO.widget.Tab({ 
 					label: artifactJson.contentRepresentations[i], 
-					dataSrc: this.loadTabDataURL(artifactJson.id, artifactJson.contentRepresentations[i]), 
+					dataSrc: this.loadTabDataURL(artifactJson.connectorId, artifactJson.artifactId, artifactJson.contentRepresentations[i]), 
 					cacheData: true
 				});
 				tab.addListener("contentChange", this.onTabDataLoaded);
@@ -155,7 +156,7 @@
 				
 				for(i = 0; i<artifactJson.actions.length; i++) {
 					option = document.createElement("option");
-					option.setAttribute('value', artifactJson.id + "#TOKEN#" + artifactJson.actions[i].name);
+					option.setAttribute('value', artifactJson.connectorId + "#TOKEN#" + artifactJson.artifactId + "#TOKEN#" + artifactJson.actions[i].name);
 					option.appendChild(document.createTextNode(artifactJson.actions[i].label));
 					actionsDropdown.appendChild(option);
 					YAHOO.util.Event.addListener(option, "click", this.onExecuteActionClick);
@@ -212,9 +213,9 @@
         
         var tabContent;
         if(responseJson.renderInfo == "IMAGE") {
-          tabContent = '<div class="artifact-image"><img id="' + responseJson.contentRepresentationId + '" src="' + responseJson.imageUrl + '" border=0></img></div>';
+          tabContent = '<div class="artifact-image"><img id="' + responseJson.contentRepresentationId + '" src="' + Activiti.service.REST_PROXY_URI_RELATIVE + "content?connectorId=" + encodeURIComponent(responseJson.connectorId) + "&artifactId=" + encodeURIComponent(responseJson.artifactId) + "&contentRepresentationId=" + encodeURIComponent(responseJson.contentRepresentationId) + '" border=0></img></div>';
         } else if (responseJson.renderInfo == "HTML") {
-          tabContent = '<div class="artifact-html"><iframe src ="' + Activiti.service.REST_PROXY_URI_RELATIVE + "content?artifactId=" + encodeURIComponent(responseJson.artifactId) + "&contentRepresentationId=" + encodeURIComponent(responseJson.contentRepresentationId); + '" width="100%" height="100%"><p>Your browser does not support iframes.</p></iframe></div>';
+          tabContent = '<div class="artifact-html"><iframe src ="' + Activiti.service.REST_PROXY_URI_RELATIVE + "content?connectorId=" + encodeURIComponent(responseJson.connectorId) + "&artifactId=" + encodeURIComponent(responseJson.artifactId) + "&contentRepresentationId=" + encodeURIComponent(responseJson.contentRepresentationId) + '" width="100%" height="100%"><p>Your browser does not support iframes.</p></iframe></div>';
         } else if (responseJson.renderInfo == "BINARY") {
           // TODO: show some information but no content for binary
           tabContent = '<div class="artifact-binary"><p>No preview available...</p></div>';
@@ -233,10 +234,11 @@
 
 		onExecuteActionClick: function Artifact_onExecuteActionClick(e)
 		{
-			var artifactId = this.value.split("#TOKEN#")[0];
-			var actionName = this.value.split("#TOKEN#")[1];
+		  var connectorId = this.value.split("#TOKEN#")[0];
+			var artifactId = this.value.split("#TOKEN#")[1];
+			var actionName = this.value.split("#TOKEN#")[2];
 
-			return new Activiti.widget.ExecuteArtifactActionForm(this.id + "-executeArtifactActionForm", artifactId, actionName);
+			return new Activiti.widget.ExecuteArtifactActionForm(this.id + "-executeArtifactActionForm", connectorId, artifactId, actionName);
 		},
 		
 		onTabDataLoaded: function Artifact_onTabDataLoaded()
@@ -244,15 +246,15 @@
 			prettyPrint();
 		},
 
-		loadTabDataURL: function Artifact_loadTabDataURL(artifactId, representationId)
+		loadTabDataURL: function Artifact_loadTabDataURL(connectorId, artifactId, representationId)
     {
-      return Activiti.service.REST_PROXY_URI_RELATIVE + "content-representation?artifactId=" + encodeURIComponent(artifactId) + "&representationId=" + encodeURIComponent(representationId) + "&restProxyUri=" + encodeURIComponent(Activiti.service.REST_PROXY_URI_RELATIVE);
+      return Activiti.service.REST_PROXY_URI_RELATIVE + "content-representation?connectorId=" + encodeURIComponent(connectorId) + "&artifactId=" + encodeURIComponent(artifactId) + "&representationId=" + encodeURIComponent(representationId);
     },
 
 		onActiveTabChange: function Artifact_onActiveTabChange(event)
 		{
 			var newActiveTabIndex = this._tabView.getTabIndex(event.newValue);
-			this.fireEvent(Activiti.event.updateArtifactView, {"repositoryNodeId": this._repositoryNodeId, "isRepositoryArtifact": this._isRepositoryArtifact, "name": this._name, "activeTabIndex": newActiveTabIndex}, null, true);
+			this.fireEvent(Activiti.event.updateArtifactView, {"connectorId": this._connectorId, "repositoryNodeId": this._repositoryNodeId, "isRepositoryArtifact": this._isRepositoryArtifact, "name": this._name, "activeTabIndex": newActiveTabIndex}, null, true);
 			YAHOO.util.Event.preventDefault(event);
 		},
 		

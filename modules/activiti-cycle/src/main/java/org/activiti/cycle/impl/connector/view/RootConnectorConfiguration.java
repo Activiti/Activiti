@@ -4,6 +4,7 @@ import org.activiti.cycle.RepositoryConnector;
 import org.activiti.cycle.impl.conf.ConfigurationContainer;
 import org.activiti.cycle.impl.conf.RepositoryConnectorConfiguration;
 
+@Deprecated
 public class RootConnectorConfiguration extends RepositoryConnectorConfiguration {
 
   private ConfigurationContainer configuration;
@@ -25,9 +26,9 @@ public class RootConnectorConfiguration extends RepositoryConnectorConfiguration
 
   @Override
   public RepositoryConnector createConnector() {
-    return new RootConnector(this);
+    return null;
   }
-  
+
   public ConfigurationContainer getConfigurationContainer() {
     return configuration;
   }

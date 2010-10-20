@@ -4,7 +4,7 @@
   
 <mapper namespace="org.activiti.cycle">
 
-  <resultMap id="resultMapCycleLink" type="org.activiti.cycle.CycleLink">
+  <resultMap id="resultMapCycleLink" type="org.activiti.cycle.impl.db.entity.CycleLink">
     <id property="id" column="ID_"/>
     <result property="sourceConnectorId" column="SOURCE_CONNECTOR_ID_"/>
     <result property="targetConnectorId" column="TARGET_CONNECTOR_ID_"/>
@@ -33,7 +33,7 @@
   </select>
   
   <!-- insertCycleLink -->
-  <insert id="insertCycleLink" parameterType="org.activiti.cycle.CycleLink">
+  <insert id="insertCycleLink" parameterType="org.activiti.cycle.impl.db.entity.CycleLink">
     insert into ACT_CY_LINK (ID_,SOURCE_CONNECTOR_ID_, TARGET_CONNECTOR_ID_, SOURCE_ARTIFACT_ID_,TARGET_ARTIFACT_ID_,SOURCE_ELEMENT_ID_,TARGET_ELEMENT_ID_,SOURCE_ELEMENT_NAME_,TARGET_ELEMENT_NAME_, SOURCE_REVISION_, TARGET_REVISION_ , LINK_TYPE_, DESCRIPTION_, LINKED_BOTH_WAYS_)
     values (
 	    #{id, jdbcType=VARCHAR},
@@ -61,7 +61,7 @@
     <result property="elementId" column="ELEMENT_ID_"/>
     <result property="elementName" column="ELEMENT_NAME_"/>
     <collection property="artifactRevisionList" javaType="ArrayList" ofType="org.activiti.cycle.ArtifactRevision" column="ID_" select="selectArtifactRevisionForArtifact"/>
-	<collection property="artifactCycleList" javaType="ArrayList" ofType="org.activiti.cycle.CycleLink" column="ID_" select="selectCycleLinkForSourceArtifact"/>    
+	<collection property="artifactCycleList" javaType="ArrayList" ofType="org.activiti.cycle.impl.db.entity.CycleLink" column="ID_" select="selectCycleLinkForSourceArtifact"/>    
   </resultMap> 	
   -->
   
@@ -74,7 +74,7 @@
    -->
   
   <!-- @deprecated: not useful now: Cycle Link RESULT MAP 
-  <resultMap id="resultMapCycleLink" type="org.activiti.cycle.CycleLink">
+  <resultMap id="resultMapCycleLink" type="org.activiti.cycle.impl.db.entity.CycleLink">
     <id property="id" column="ID_"/>
     <result property="targetArtifactId" column="TARGET_ARTIFACT_ID_"/>
     <result property="targetElementId" column="TARGET_ELEMENT_ID_"/>
@@ -128,7 +128,7 @@
    -->
    
   <!-- @deprecated: not useful now: insertCycleLink 
-  <insert id="insertCycleLink" parameterType="org.activiti.cycle.CycleLink">
+  <insert id="insertCycleLink" parameterType="org.activiti.cycle.impl.db.entity.CycleLink">
     insert into ACT_CY_LINK (ID_, TARGET_ELEMENT_NAME, TARGET_ELEMENT_ID_, TARGET_ELEMENT_REVISION_ ,SOURCE_ARTIFACT_ID_)
     values (
 	    #{id, jdbcType=VARCHAR},
@@ -161,7 +161,7 @@
   -->
 
   <!-- @deprecated: not useful now: updateCycleLink 
-  <update id="updateCycleLink" parameterType="org.activiti.cycle.CycleLink">
+  <update id="updateCycleLink" parameterType="org.activiti.cycle.impl.db.entity.CycleLink">
     update ACT_CY_LINK set
  	    ID_ = #{id},
 	    TARGET_ELEMENT_NAME_ = #{targetElementName},

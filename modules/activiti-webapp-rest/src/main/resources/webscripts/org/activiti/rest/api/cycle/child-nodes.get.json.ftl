@@ -7,7 +7,8 @@
 <#macro printFolder folder>
 {
   "label": "${folder.metadata.name}",
-  "id": "${folder.currentPath}",
+  "connectorId": "${folder.connectorId}",
+  "artifactId": "${folder.originalNodeId}",
   "folder": "true"
 }
 </#macro>
@@ -15,7 +16,8 @@
 <#macro printFile file>
 {
   "label": "${file.metadata.name}",
-  "id": "${file.currentPath}",
+  "connectorId": "${file.connectorId}",
+  "artifactId": "${file.originalNodeId}",
   "expanded": "true",
   "file": "true",
   "contentType": "${file.artifactType.mimeType.contentType}"

@@ -1,7 +1,7 @@
 <webscript>
   <shortname>Content Representation</shortname>
   <description>Returns the specified content representation of an artifact as HTML</description>
-  <url>/content-representation?artifactId={artifactId}&amp;representationId={representationId}</url>
+  <url>/content-representation?connectorId={connectorId}&amp;artifactId={artifactId}&amp;representationId={representationId}</url>
   <authentication>user</authentication>
   <format default="json">argument</format>
 </webscript>

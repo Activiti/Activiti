@@ -3,32 +3,25 @@ package org.activiti.cycle;
 /**
  * 
  * @author polenz
+ * @author Nils Preusker (nils.preusker@camunda.com)
  */
 public interface RepositoryArtifactLink {
 
   public String getId();
-  public RepositoryArtifact getSourceArtifactId();
-  public RepositoryArtifact getTargetArtifactId();
-  public String getSourceElementName();
-  public String getTargetElementName();
+  public RepositoryArtifact getSourceArtifact();
   public String getSourceElementId();
+  public String getSourceElementName();
+  public RepositoryArtifact getTargetArtifact();
   public String getTargetElementId();
-  public Long getSourceRevision();
-  public Long getTargetRevision();
-  public String getDescription();
-  public String getLinkType();
-  public Boolean isLinkedBothWays();
+  public String getTargetElementName();
+
   
   public void setId(String id);
-  public void setSourceArtifactId(RepositoryArtifact sourceArtifactId);
-  public void setTargetArtifactId(RepositoryArtifact targetArtifactId);
-  public void setSourceElementName(String sourceElementName);
-  public void setTargetElementName(String targetElementName);
+  public void setSourceArtifact(RepositoryArtifact sourceArtifact);
   public void setSourceElementId(String sourceElementId);
+  public void setSourceElementName(String sourceElementName);
+  public void setTargetArtifact(RepositoryArtifact targetArtifact);
   public void setTargetElementId(String targetElementId);
-  public void setSourceRevision(Long sourceRevision);
-  public void setTargetRevision(Long targetRevision);
-  public void setDescription(String description);
-  public void setLinkType(String linkType);
-  public void setLinkedBothWays(Boolean linkedBothWays);
+  public void setTargetElementName(String targetElementName);
+
 }

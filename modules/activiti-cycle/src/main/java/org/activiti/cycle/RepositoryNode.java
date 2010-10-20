@@ -12,7 +12,7 @@
  */
 package org.activiti.cycle;
 
-import org.activiti.cycle.impl.connector.view.RootConnector;
+import org.activiti.cycle.impl.CycleServiceImpl;
 
 
 /**
@@ -69,10 +69,10 @@ public interface RepositoryNode {
    * you don't have a special use case use this one!</b>
    * 
    * current path of artifact in the current "context", so for example the id of
-   * the artifact when using the {@link RootConnector} or maybe another
+   * the artifact when using the {@link CycleServiceImpl} or maybe another
    * accumulating connector like tags, ... This ID is <b>NOT</b> globally unique
    * and just always used in one special context. It may even be changed by
-   * connectors like the {@link RootConnector} on the fly.
+   * connectors like the {@link CycleServiceImpl} on the fly.
    */
   public String getCurrentPath(); 
 

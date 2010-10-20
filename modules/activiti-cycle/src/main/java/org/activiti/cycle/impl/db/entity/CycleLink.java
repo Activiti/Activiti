@@ -1,5 +1,7 @@
-package org.activiti.cycle;
+package org.activiti.cycle.impl.db.entity;
 
+import org.activiti.cycle.RepositoryArtifact;
+import org.activiti.cycle.RepositoryNode;
 import org.activiti.engine.impl.db.PersistentObject;
 
 /**

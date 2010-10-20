@@ -130,13 +130,20 @@
 			obj[1]();
     },
 
+    // TODO: See how we can handle failures
+    // onLoadNodeDataFailure: function RepoTree_RepositoryService_onLoadNodeDataFailure(response, obj)
+    //     {
+    //       
+    //       
+    //     },
+
 		/**
      * Will fire a Activiti.event.selectTreeLabel event so other components may display the node
      *
      * @method onLabelClick
      * @param e {object} The click event
      */
-    onLabelClick: function RepoTree_onLabelClick (node)
+    onLabelClick: function RepoTree_onLabelClick (event)
     {
 	
 			// Map the node properties to the event value object (value object property -> node property):
@@ -144,7 +151,7 @@
 			// - isRepositoryArtifact -> node.data.file
 			// - name -> node.label
 
-			this.fireEvent(Activiti.event.updateArtifactView, {"repositoryNodeId": node.node.data.id, "isRepositoryArtifact": node.node.data.file, "name": node.node.label, "activeTabIndex": 0}, null, true);
+			this.fireEvent(Activiti.event.updateArtifactView, {"connectorId": event.node.data.connectorId, "repositoryNodeId": event.node.data.artifactId, "isRepositoryArtifact": event.node.data.file, "name": event.node.label, "activeTabIndex": 0}, null, true);
     },
 
 		onNodeExpand: function RepoTree_onNodeExpand (node)

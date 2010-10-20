@@ -19,12 +19,12 @@ import java.util.logging.Logger;
 
 import javax.servlet.http.HttpSession;
 
+import org.activiti.cycle.CycleService;
 import org.activiti.cycle.RepositoryArtifact;
-import org.activiti.cycle.RepositoryConnector;
 import org.activiti.cycle.RepositoryException;
 import org.activiti.cycle.RepositoryFolder;
 import org.activiti.cycle.RepositoryNodeCollection;
-import org.activiti.cycle.impl.db.CycleServiceDbXStreamImpl;
+import org.activiti.cycle.impl.CycleServiceImpl;
 import org.activiti.rest.util.ActivitiRequest;
 import org.activiti.rest.util.ActivitiWebScript;
 import org.springframework.extensions.webscripts.Cache;
@@ -37,15 +37,13 @@ public class ChildNodesGet extends ActivitiWebScript {
 
   private static Logger log = Logger.getLogger(ChildNodesGet.class.getName());
 
-  // private CycleService cycleService;
-  private RepositoryConnector repositoryConnector;
+  private CycleService cycleService;
 
   private void init(ActivitiRequest req) {
     String cuid = req.getCurrentUserId();
 
     HttpSession session = req.getHttpServletRequest().getSession(true);
-    // this.cycleService = SessionUtil.getCycleService();
-    this.repositoryConnector = CycleServiceDbXStreamImpl.getRepositoryConnector(cuid, session);
+    this.cycleService = CycleServiceImpl.getCycleService(cuid, session);
   }
 
   @Override
@@ -53,8 +51,9 @@ public class ChildNodesGet extends ActivitiWebScript {
     init(req);
 
     String artifactId = req.getMandatoryString("artifactId");
+    String connectorId = req.getMandatoryString("connectorId");
     try {
-      RepositoryNodeCollection children = this.repositoryConnector.getChildren(artifactId);
+      RepositoryNodeCollection children = this.cycleService.getChildren(connectorId, artifactId);
 
       model.put("files", children.getArtifactList());
       model.put("folders", children.getFolderList());

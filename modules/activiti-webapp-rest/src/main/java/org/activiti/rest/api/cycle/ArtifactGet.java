@@ -21,10 +21,10 @@ import java.util.Map;
 import javax.servlet.http.HttpSession;
 
 import org.activiti.cycle.ContentRepresentation;
+import org.activiti.cycle.CycleService;
 import org.activiti.cycle.DownloadContentAction;
 import org.activiti.cycle.RepositoryArtifact;
-import org.activiti.cycle.RepositoryConnector;
-import org.activiti.cycle.impl.db.CycleServiceDbXStreamImpl;
+import org.activiti.cycle.impl.CycleServiceImpl;
 import org.activiti.rest.api.cycle.dto.DownloadActionView;
 import org.activiti.rest.util.ActivitiRequest;
 import org.activiti.rest.util.ActivitiWebScript;
@@ -39,15 +39,13 @@ public class ArtifactGet extends ActivitiWebScript {
 
   // private static Logger log = Logger.getLogger(ArtifactGet.class.getName());
 
-  // private CycleService cycleService;
-  private RepositoryConnector repositoryConnector;
+  private CycleService cycleService;
 
   private void init(ActivitiRequest req) {
     String cuid = req.getCurrentUserId();
 
     HttpSession session = req.getHttpServletRequest().getSession(true);
-    // this.cycleService = SessionUtil.getCycleService();
-    this.repositoryConnector = CycleServiceDbXStreamImpl.getRepositoryConnector(cuid, session);
+    this.cycleService = CycleServiceImpl.getCycleService(cuid, session);
   }
 
   @Override
@@ -55,11 +53,12 @@ public class ArtifactGet extends ActivitiWebScript {
     init(req);
 
     // Retrieve the artifactId from the request
+    String connectorId = req.getMandatoryString("connectorId");
     String artifactId = req.getString("artifactId");
     String restProxyUri = req.getString("restProxyUri");
 
     // Retrieve the artifact from the repository
-    RepositoryArtifact artifact = this.repositoryConnector.getRepositoryArtifact(artifactId);
+    RepositoryArtifact artifact = this.cycleService.getRepositoryArtifact(connectorId, artifactId);
 
     List<String> contentRepresentations = new ArrayList<String>();
     for (ContentRepresentation representation : artifact.getArtifactType().getContentRepresentations()) {
@@ -74,8 +73,8 @@ public class ArtifactGet extends ActivitiWebScript {
     List<DownloadActionView> downloads = new ArrayList<DownloadActionView>();
     for (DownloadContentAction action : artifact.getArtifactType().getDownloadContentActions()) {
       try {
-        String url = restProxyUri + "content?artifactId=" + URLEncoder.encode(artifactId, "UTF-8") + "&contentRepresentationId="
-                + URLEncoder.encode(action.getContentRepresentation().getId(), "UTF-8");
+        String url = restProxyUri + "content?connectorId=" + URLEncoder.encode(connectorId, "UTF-8") + "&artifactId=" + URLEncoder.encode(artifactId, "UTF-8")
+                + "&contentRepresentationId=" + URLEncoder.encode(action.getContentRepresentation().getId(), "UTF-8");
         downloads.add(new DownloadActionView(action.getId(), url, action.getContentRepresentation().getMimeType().getContentType(), action
                 .getContentRepresentation().getId()));
       } catch (UnsupportedEncodingException e) {
@@ -87,6 +86,7 @@ public class ArtifactGet extends ActivitiWebScript {
 
     model.put("downloads", downloads);
     model.put("links", artifact.getOpenLinkActions());
-    model.put("artifactId", artifact.getCurrentPath());
+    model.put("artifactId", artifact.getOriginalNodeId());
+    model.put("connectorId", artifact.getConnectorId());
   }
 }

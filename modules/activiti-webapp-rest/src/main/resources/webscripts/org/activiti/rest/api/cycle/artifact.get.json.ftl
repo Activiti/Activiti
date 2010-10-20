@@ -1,6 +1,7 @@
 <#escape x as jsonUtils.encodeJSONString(x)>
 {
-  "id": "${artifactId}",
+  "connectorId": "${connectorId}",
+  "artifactId": "${artifactId}",
   "contentRepresentations": [
   <#list contentRepresentations as contentRepresentation>
       "${contentRepresentation}"

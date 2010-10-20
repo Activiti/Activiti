@@ -2,7 +2,6 @@ package org.activiti.rest.api.cycle;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import java.net.URLEncoder;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -10,10 +9,9 @@ import java.util.logging.Logger;
 import javax.servlet.http.HttpSession;
 
 import org.activiti.cycle.ContentRepresentation;
-import org.activiti.cycle.RenderInfo;
+import org.activiti.cycle.CycleService;
 import org.activiti.cycle.RepositoryArtifact;
-import org.activiti.cycle.RepositoryConnector;
-import org.activiti.cycle.impl.db.CycleServiceDbXStreamImpl;
+import org.activiti.cycle.impl.CycleServiceImpl;
 import org.activiti.rest.util.ActivitiRequest;
 import org.activiti.rest.util.ActivitiWebScript;
 import org.springframework.extensions.webscripts.Cache;
@@ -23,45 +21,42 @@ public class ContentRepresentationGet extends ActivitiWebScript {
 
   private static Logger log = Logger.getLogger(ContentRepresentationGet.class.getName());
 
-  // private CycleService cycleService;
-  private RepositoryConnector repositoryConnector;
+  private CycleService cycleService;
 
   private void init(ActivitiRequest req) {
     String cuid = req.getCurrentUserId();
 
     HttpSession session = req.getHttpServletRequest().getSession(true);
-    // this.cycleService = SessionUtil.getCycleService();
-    this.repositoryConnector = CycleServiceDbXStreamImpl.getRepositoryConnector(cuid, session);
+    this.cycleService = CycleServiceImpl.getCycleService(cuid, session);
   }
 
   @Override
   protected void executeWebScript(ActivitiRequest req, Status status, Cache cache, Map<String, Object> model) {
     init(req);
 
+    String connectorId = req.getMandatoryString("connectorId");
     String artifactId = req.getString("artifactId");
     String representationId = req.getString("representationId");
-    String restProxyUri = req.getString("restProxyUri");
 
-    RepositoryArtifact artifact = this.repositoryConnector.getRepositoryArtifact(artifactId);
+    RepositoryArtifact artifact = this.cycleService.getRepositoryArtifact(connectorId, artifactId);
 
     // Get representation by id to determine whether it is an image...
     try {
       ContentRepresentation contentRepresentation = artifact.getArtifactType().getContentRepresentation(representationId);
       switch (contentRepresentation.getRenderInfo()) {
       case IMAGE:
-        model.put("renderInfo", RenderInfo.IMAGE.name());
-        String imageUrl = restProxyUri + "content?artifactId=" + URLEncoder.encode(artifactId, "UTF-8") + "&contentRepresentationId="
-                + URLEncoder.encode(contentRepresentation.getId(), "UTF-8");
-        model.put("imageUrl", imageUrl);
+      case HTML:
+        // For images and HTML we don't need to send the content, the URL will be put together in the UI
+        // and the content will be requested via ContentGet.
         break;
       case BINARY:
       case CODE:
-      case HTML:
       case TEXT_PLAIN:
-        String content = this.repositoryConnector.getContent(artifactId, contentRepresentation.getId()).asString();
+        String content = this.cycleService.getContent(connectorId, artifactId, contentRepresentation.getId()).asString();
         model.put("content", content);
       }
 
+      model.put("connectorId", connectorId);
       model.put("artifactId", artifactId);
       model.put("renderInfo", contentRepresentation.getRenderInfo().name());
       model.put("contentRepresentationId", contentRepresentation.getId());

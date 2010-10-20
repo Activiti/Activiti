@@ -26,8 +26,8 @@ public class CopyArtifactAction extends ParameterizedHtmlFormTemplateAction {
     int count = (Integer) getParameter(parameters, "copyCount", true, null, Integer.class);
     String targetName = (String) getParameter(parameters, "targetName", true, null, String.class);
 
-    RepositoryConnector targetFolderConnector = (RepositoryConnector) getParameter(parameters, "targetFolderConnector", true, null, RepositoryConnector.class);
-    String targetFolder = (String) getParameter(parameters, "targetFolder", true, null, String.class);
+    RepositoryConnector targetFolderConnector = (RepositoryConnector) getParameter(parameters, "targetConnectorId", true, null, RepositoryConnector.class);
+    String targetFolderId = (String) getParameter(parameters, "targetFolderId", true, null, String.class);
 
     // retrieve the platform independent file separator
     // String fileSeperator = System.getProperty("file.separator");\
@@ -38,10 +38,10 @@ public class CopyArtifactAction extends ParameterizedHtmlFormTemplateAction {
     // targetName;
 
     if (count == 1) {
-      copyArtifact(connector, targetFolderConnector, artifact, targetFolder, targetName);
+      copyArtifact(connector, targetFolderConnector, artifact, targetFolderId, targetName);
     } else {
       for (int i = 0; i < count; i++) {
-        copyArtifact(connector, targetFolderConnector, artifact, targetFolder, targetName + i);
+        copyArtifact(connector, targetFolderConnector, artifact, targetFolderId, targetName + i);
       }
     }
 

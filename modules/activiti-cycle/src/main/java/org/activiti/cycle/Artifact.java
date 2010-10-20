@@ -3,6 +3,7 @@ package org.activiti.cycle;
 import java.io.Serializable;
 import java.util.List;
 
+import org.activiti.cycle.impl.db.entity.CycleLink;
 import org.activiti.engine.impl.db.PersistentObject;
 
 /**

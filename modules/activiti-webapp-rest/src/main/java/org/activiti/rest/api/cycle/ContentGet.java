@@ -19,9 +19,9 @@ import javax.servlet.http.HttpSession;
 
 import org.activiti.cycle.ContentRepresentation;
 import org.activiti.cycle.CycleDefaultMimeType;
+import org.activiti.cycle.CycleService;
 import org.activiti.cycle.RepositoryArtifact;
-import org.activiti.cycle.RepositoryConnector;
-import org.activiti.cycle.impl.db.CycleServiceDbXStreamImpl;
+import org.activiti.cycle.impl.CycleServiceImpl;
 import org.activiti.rest.util.ActivitiRequest;
 import org.activiti.rest.util.ActivitiStreamingWebScript;
 import org.springframework.extensions.webscripts.WebScriptResponse;
@@ -31,15 +31,13 @@ import org.springframework.extensions.webscripts.WebScriptResponse;
  */
 public class ContentGet extends ActivitiStreamingWebScript {
 
-  // private CycleService cycleService;
-  private RepositoryConnector repositoryConnector;
+  private CycleService cycleService;
 
   private void init(ActivitiRequest req) {
     String cuid = req.getCurrentUserId();
 
     HttpSession session = req.getHttpServletRequest().getSession(true);
-    // this.cycleService = SessionUtil.getCycleService();
-    this.repositoryConnector = CycleServiceDbXStreamImpl.getRepositoryConnector(cuid, session);
+    this.cycleService = CycleServiceImpl.getCycleService(cuid, session);
   }
 
   @Override
@@ -47,11 +45,12 @@ public class ContentGet extends ActivitiStreamingWebScript {
     init(req);
 
     // Retrieve the artifactId from the request
+    String cnonectorId = req.getMandatoryString("connectorId");
     String artifactId = req.getMandatoryString("artifactId");
     String contentRepresentationId = req.getMandatoryString("contentRepresentationId");
 
     // Retrieve the artifact from the repository
-    RepositoryArtifact artifact = repositoryConnector.getRepositoryArtifact(artifactId);
+    RepositoryArtifact artifact = cycleService.getRepositoryArtifact(cnonectorId, artifactId);
 
     ContentRepresentation contentRepresentation = artifact.getArtifactType().getContentRepresentation(contentRepresentationId);
 
@@ -83,7 +82,7 @@ public class ContentGet extends ActivitiStreamingWebScript {
     }
 
     // TODO: what is a good way to determine the etag? Using a fake one...
-    streamResponse(res, repositoryConnector.getContent(artifact.getCurrentPath(), contentRepresentation.getId()).asInputStream(), new Date(0),
+    streamResponse(res, this.cycleService.getContent(artifact.getConnectorId(), artifact.getOriginalNodeId(), contentRepresentation.getId()).asInputStream(), new Date(0),
             "W/\"647-1281077702000\"", attach, attachmentFileName, contentType);
 
   }
