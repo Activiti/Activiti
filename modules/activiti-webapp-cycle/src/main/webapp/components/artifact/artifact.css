@@ -24,6 +24,7 @@
 .artifact-html iframe, .artifact-html-reference iframe {
   border: 0;
   width: 100%;
+  min-height: 600px;
 }
 
 #options-div.active {
