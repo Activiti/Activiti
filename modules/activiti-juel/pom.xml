@@ -4,8 +4,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.activiti</groupId>
   <artifactId>activiti-juel</artifactId>
-  <version>2.2.1</version>
-  
+
   <parent>
     <groupId>org.activiti</groupId>
     <artifactId>activiti-root</artifactId>
