@@ -209,6 +209,9 @@ public class DbRepositorySession implements Session, RepositorySession {
   }
 
   public ProcessDefinitionEntity findDeployedProcessDefinitionById(String processDefinitionId) {
+    if (processDefinitionId == null) {
+      throw new ActivitiException("Invalid process definition id : null");
+    }
     ProcessDefinitionEntity processDefinition = (ProcessDefinitionEntity) dbSqlSession.selectOne("selectProcessDefinitionById", processDefinitionId);
     if(processDefinition == null) {
       throw new ActivitiException("no deployed process definition found with id '" + processDefinitionId + "'");
