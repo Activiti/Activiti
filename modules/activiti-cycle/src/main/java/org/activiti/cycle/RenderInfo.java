@@ -19,8 +19,13 @@ public enum RenderInfo {
   CODE,
   /* The UI will attempt to render images as HTML image tags. */
   IMAGE,
-  /* The UI will attempt to render HTML artifact representations as HTML. */
+  /* ContentRepresentations that use the HTML RenderInfo should return HTML as 
+   * content, the UI will attempt to render HTML in an iframe. */
   HTML,
+  /* ContentRepresentations that use the HTML_REFERENCE RenderInfo should return 
+   * a URL as content, the UI will then use this URL as "src" attribute in the 
+   * iframe it uses to render the ContentRepresentation */
+  HTML_REFERENCE,
   /*
    * The UI will not attempt to render binary content-representations, it will
    * however display an icon based on the mimeType property of the

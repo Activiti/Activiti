@@ -49,6 +49,7 @@ public class ContentRepresentationGet extends ActivitiWebScript {
         // For images and HTML we don't need to send the content, the URL will be put together in the UI
         // and the content will be requested via ContentGet.
         break;
+      case HTML_REFERENCE:
       case BINARY:
       case CODE:
       case TEXT_PLAIN:

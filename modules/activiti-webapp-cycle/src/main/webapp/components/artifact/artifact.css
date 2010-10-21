@@ -13,7 +13,7 @@
 	background: none repeat scroll 0 0 #F9F9F9;
 }
 
-.artifact-image, .artifact-html, .artifact-binary, .artifact-code, .artifact-text-plain {
+.artifact-image, .artifact-html, .artifact-html-reference, .artifact-binary, .artifact-code, .artifact-text-plain {
   overflow: auto;
 }
 
@@ -21,7 +21,7 @@
 	margin: 1.2em;
 }
 
-.artifact-html iframe {
+.artifact-html iframe, .artifact-html-reference iframe {
   border: 0;
   width: 100%;
 }
