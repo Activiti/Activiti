@@ -106,9 +106,8 @@ public interface CycleService {
 
   public void addArtifactLink(RepositoryArtifactLink link);
 
-  public List<RepositoryArtifactLink> getArtifactLinks(String sourceArtifactId);
   public List<RepositoryArtifactLink> getArtifactLinks(String sourceArtifactId, Long sourceRevision);
-  public List<RepositoryArtifactLink> getArtifactLinks(String sourceArtifactId, String type);
+  public List<RepositoryArtifactLink> getArtifactLinks(String sourceConnectorId, String sourceArtifactId);
   public List<RepositoryArtifactLink> getArtifactLinks(String sourceArtifactId, Long sourceRevision, String type);
 
   public void deleteLink(long linkId);

@@ -1,10 +1,12 @@
 package org.activiti.rest.api.cycle;
 
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpSession;
 
 import org.activiti.cycle.CycleService;
+import org.activiti.cycle.RepositoryArtifactLink;
 import org.activiti.cycle.impl.CycleServiceImpl;
 import org.activiti.rest.util.ActivitiRequest;
 import org.activiti.rest.util.ActivitiWebScript;
@@ -26,12 +28,12 @@ public class ArtifactLinksGet extends ActivitiWebScript {
   protected void executeWebScript(ActivitiRequest req, Status status, Cache cache, Map<String, Object> model) {
     init(req);
 
+    String connectorId = req.getMandatoryString("connectorId");
     String artifactId = req.getString("artifactId");
-    String restProxyUri = req.getString("restProxyUri");
 
-    
-//    List<Artifact> link = this.cycleService.getArtifactLinks(artifactId);
-    
+    List<RepositoryArtifactLink> links = this.cycleService.getArtifactLinks(connectorId, artifactId);
+
+    model.put("links", links);
   }
 
 }

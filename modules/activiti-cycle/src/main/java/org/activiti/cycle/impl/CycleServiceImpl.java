@@ -290,10 +290,6 @@ public class CycleServiceImpl implements CycleService {
     // TODO: implement
     throw new RuntimeException("Not implemented yet");
   }
-  public List<RepositoryArtifactLink> getArtifactLinks(String sourceArtifactId) {
-    // TODO: implement
-    throw new RuntimeException("Not implemented yet");
-  }
 
   public List<RepositoryArtifactLink> getArtifactLinks(String sourceArtifactId, Long sourceRevision) {
     // TODO: implement

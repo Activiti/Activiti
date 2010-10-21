@@ -1,28 +1,19 @@
+<#escape x as jsonUtils.encodeJSONString(x)>
+[<#list links as link><@printLink link/><#if link_has_next>,</#if></#list>]
+</#escape>
+
+<#macro printLink link>
 {
-    "list": {
-        "org.activiti.rest.api.cycle.dto.ArtifactLinkDto": [
-            {
-                "targetId": "targetId",
-                "targetRevision": "targetRevision",
-                "targetElementId": "targetElementId",
-                "linkType": "linkType",
-                "targetUrl": "http:\/\/www.showhttprequest.com\/?targetUrl=true&artifact=0",
-                "description": "This is a description for Artifact Link No 0",
-                "contentType": "application/msword",
-                "previewUrl": "http:\/\/www.showhttprequest.com\/?previewUrl=ture&artifact=0",
-                "label": "Artifact Link No 0"
-            },
-            {
-                "targetId": "targetId",
-                "targetRevision": "targetRevision",
-                "targetElementId": "targetElementId",
-                "linkType": "linkType",
-                "targetUrl": "http:\/\/www.showhttprequest.com\/?targetUrl=true&artifact=1",
-                "description": "This is a description for Artifact Link No 1",
-                "contentType": "application/msword",
-                "previewUrl": "http:\/\/www.showhttprequest.com\/?previewUrl=ture&artifact=1",
-                "label": "Artifact Link No 1"
-            }
-        ]
-    }
-} 
+  <@printArtifact link.targetArtifact/>,
+  "targetElementId": "${link.targetElementId}",
+  "targetElementName": "${link.targetElementName}"
+}
+</#macro>
+
+<#macro printArtifact artifact>
+	"targetConnectorId": "${artifact.connectorId}",
+  	"targetArtifactId": "${artifact.originalNodeId}",
+	"targetArtifactRevision": "${artifact.artifactType.revision}",
+	"targetContentType": "${artifact.artifactType.mimeType.contentType}",
+	"label": "${artifact.metadata.name}"
+</#macro>
