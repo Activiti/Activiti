@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<definitions id="definitions"
+             targetNamespace="http://activiti.org/bpmn20" 
+             xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xmlns:activiti="http://activiti.org/bpmn-extensions">
+  
+  <process id="FormsProcess">
+  
+    <startEvent id="start" activiti:formKey="org/activiti/engine/test/forms/start.form" />
+
+    <sequenceFlow id="flow1" sourceRef="start" targetRef="task" />
+    
+    <userTask id="task"
+              activiti:formKey="org/activiti/engine/test/forms/task.form"
+              activiti:assignee="kermit" />
+
+    <sequenceFlow id='flow2' sourceRef='task' targetRef='wait' />
+    
+    <receiveTask id="wait" />
+
+  </process>
+  
+</definitions>

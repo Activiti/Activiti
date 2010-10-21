@@ -16,15 +16,24 @@ package org.activiti.engine.form;
 import java.util.Map;
 
 
-/**
+/** base class for {@link StartForm} and {@link TaskForm}
+ * 
  * @author Tom Baeyens
  */
 public interface Form {
 
+  /** user defined reference to a form. In the Explorer app, it is 
+   * assumed that the form key specifies a resource in the deployment 
+   * which is the template for the form.  But users are free to 
+   * use this property differently. */
   String getFormKey();
+
+  /** the deployment id of the process definition to which this form is related */
   String getDeploymentId();
   
+  /** properties containing the dynamic information that needs to be displayed in the form. */
   Map<String, Object> getProperties();
+
+  /** property containing the dynamic information that needs to be displayed in the form. */
   Object getProperty(String propertyName);
-  void setProperty(String propertyName, Object propertyValue);
 }

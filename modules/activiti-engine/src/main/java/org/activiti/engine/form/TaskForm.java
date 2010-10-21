@@ -16,10 +16,12 @@ package org.activiti.engine.form;
 import org.activiti.engine.task.Task;
 
 
-/**
+/** Specific {@link Form} for completing a task.
+ * 
  * @author Tom Baeyens
  */
 public interface TaskForm extends Form {
 
+  /** the task for which this form is used to complete it. */
   Task getTask();
 }

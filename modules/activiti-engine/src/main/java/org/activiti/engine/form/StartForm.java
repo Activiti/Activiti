@@ -16,11 +16,13 @@ package org.activiti.engine.form;
 import org.activiti.engine.repository.ProcessDefinition;
 
 
-/**
+/** Specific {@link Form} for starting a new process instance.
+ * 
  * @author Tom Baeyens
  */
 public interface StartForm extends Form {
 
+  /** the process definition for which this form is starting a new process instance */
   ProcessDefinition getProcessDefinition();
   
 }

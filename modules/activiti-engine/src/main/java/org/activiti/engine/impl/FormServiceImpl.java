@@ -24,6 +24,7 @@ import org.activiti.engine.impl.cmd.GetStartFormCmd;
 import org.activiti.engine.impl.cmd.GetTaskFormCmd;
 import org.activiti.engine.impl.cmd.SubmitStartFormCmd;
 import org.activiti.engine.impl.cmd.SubmitTaskFormCmd;
+import org.activiti.engine.runtime.ProcessInstance;
 
 
 /**
@@ -55,8 +56,8 @@ public class FormServiceImpl extends ServiceImpl implements FormService {
     return commandExecutor.execute(new GetTaskFormCmd(taskId));
   }
 
-  public void submitStartForm(String processDefinitionId, Map<String, Object> properties) {
-    commandExecutor.execute(new SubmitStartFormCmd(processDefinitionId, properties));
+  public ProcessInstance submitStartForm(String processDefinitionId, Map<String, Object> properties) {
+    return commandExecutor.execute(new SubmitStartFormCmd(processDefinitionId, properties));
   }
 
   public void submitTaskForm(String taskId, Map<String, Object> properties) {
