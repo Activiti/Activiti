@@ -15,6 +15,7 @@ package org.activiti.engine.impl.db;
 
 import java.util.List;
 
+import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.Page;
 import org.activiti.engine.impl.TaskQueryImpl;
 import org.activiti.engine.impl.cfg.TaskSession;
@@ -37,6 +38,9 @@ public class DbTaskSession implements TaskSession, Session {
   }
 
   public TaskEntity findTaskById(String id) {
+    if (id == null) {
+      throw new ActivitiException("Invalid task id : null");
+    }
     return (TaskEntity) dbSqlSession.selectOne("selectTask", id);
   }
 
