@@ -347,6 +347,7 @@ JAVA_OPTS="-Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=8787
         <include name="org/activiti/examples/taskforms/request.form"/>
         <include name="org/activiti/examples/taskforms/approve.form"/>
         <include name="org/activiti/examples/taskforms/adjustRequest.form"/>
+      	<include name="org/activiti/examples/bpmn/event/timer/BoundaryTimerEventTest.testInterruptingTimerDuration.bpmn20.xml" />
       </fileset>
     </zip>
     <taskdef name="deploy-bar" classname="org.activiti.engine.impl.ant.DeployBarTask">

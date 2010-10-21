@@ -5,13 +5,15 @@
 	xmlns:activiti="http://activiti.org/bpmn-extensions" 
 	targetNamespace="http://www.activiti.org/bpmn2.0">
 
-	<process id="interruptingBoundaryTimer">
+	<process id="escalationExample" name="Timer escalation example">
 
 		<startEvent id="theStart" />
 
 		<sequenceFlow id="flow1" sourceRef="theStart" targetRef="firstLineSupport" />
 
-		<userTask id="firstLineSupport" name="First line support" />
+		<userTask id="firstLineSupport" name="First line support" activiti:assignee="kermit">
+		  <documentation>Fix issue raised by customer</documentation>
+		</userTask>
 
 		<sequenceFlow id="flow2" sourceRef="firstLineSupport" targetRef="normalEnd" />
 
@@ -19,13 +21,15 @@
 
 		<boundaryEvent id="escalationTimer" cancelActivity="true" attachedToRef="firstLineSupport">
 			<timerEventDefinition>
-				<timeDuration>PT4H</timeDuration>
+				<timeDuration>PT5M</timeDuration>
 			</timerEventDefinition>
 		</boundaryEvent>
 
 		<sequenceFlow id="flow3" sourceRef="escalationTimer" targetRef="secondLineSupport" />
 
-		<userTask id="secondLineSupport" name="Second line support" />
+		<userTask id="secondLineSupport" name="Second line support" activiti:candidateGroups="management">
+		  <documentation>Escalation: issue was not fixed in time by first level support</documentation>
+		</userTask>
 
 		<sequenceFlow id="flow4" sourceRef="secondLineSupport" targetRef="escalatedEnd" />
 

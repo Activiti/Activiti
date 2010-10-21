@@ -12,10 +12,8 @@
  */
 package org.activiti.examples.bpmn.event.timer;
 
-import java.util.Date;
-
 import org.activiti.engine.impl.test.ActivitiInternalTestCase;
-import org.activiti.engine.impl.util.ClockUtil;
+import org.activiti.engine.runtime.Job;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
@@ -28,18 +26,16 @@ public class BoundaryTimerEventTest extends ActivitiInternalTestCase {
   @Deployment
   public void testInterruptingTimerDuration() {
     
-    Date startTime = new Date();
-
     // Start process instance
-    ProcessInstance pi = runtimeService.startProcessInstanceByKey("interruptingBoundaryTimer");
+    ProcessInstance pi = runtimeService.startProcessInstanceByKey("escalationExample");
 
     // There should be one task, with a timer : first line support
     Task task = taskService.createTaskQuery().processInstanceId(pi.getId()).singleResult();
     assertEquals("First line support", task.getName());
 
-    // Set clock to the future such that the timer can fire
-    ClockUtil.setCurrentTime(new Date(startTime.getTime() + (5 * 60 * 60 * 1000)));
-    waitForJobExecutorToProcessAllJobs(10000L, 250L);
+    // Manually execute the job
+    Job timer = managementService.createJobQuery().singleResult();
+    managementService.executeJob(timer.getId());
 
     // The timer has fired, and the second task (secondlinesupport) now exists
     task = taskService.createTaskQuery().processInstanceId(pi.getId()).singleResult();
