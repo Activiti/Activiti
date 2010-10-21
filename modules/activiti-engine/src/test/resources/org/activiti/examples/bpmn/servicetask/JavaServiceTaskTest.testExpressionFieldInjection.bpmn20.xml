@@ -13,10 +13,13 @@
     
     <serviceTask id="javaService" 
                  name="Java service invocation" 
-                 activiti:class="org.activiti.examples.bpmn.servicetask.ToUpperCaseFieldInjected">
+                 activiti:class="org.activiti.examples.bpmn.servicetask.ReverseStringsFieldInjected">
       <extensionElements>
-        <activiti:field activiti:name="text">
-          <activiti:string>Hello ${gender == 'male' ? 'Mr.' : 'Mrs.'} ${name}</activiti:string>
+        <activiti:field activiti:name="text1">
+          <activiti:methodExpr>${genderBean.getGenderString(gender)}</activiti:methodExpr>
+        </activiti:field>
+        <activiti:field activiti:name="text2">
+          <activiti:valueExpr>Hello ${gender == 'male' ? 'Mr.' : 'Mrs.'} ${name}</activiti:valueExpr>
         </activiti:field>
       </extensionElements>             
     </serviceTask>

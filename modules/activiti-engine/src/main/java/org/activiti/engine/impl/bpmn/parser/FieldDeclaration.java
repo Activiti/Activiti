@@ -13,7 +13,6 @@
 
 package org.activiti.engine.impl.bpmn.parser;
 
-import org.activiti.engine.impl.el.ActivitiValueExpression;
 
 
 /**
@@ -22,17 +21,18 @@ import org.activiti.engine.impl.el.ActivitiValueExpression;
  * &lt;field name='someField&gt; &lt;string ...
  * 
  * @author Joram Barrez
+ * @author Frederik Heremans
  */
 public class FieldDeclaration {
   
   protected String name;
   protected String type;
-  protected ActivitiValueExpression valueExpression;
+  protected Object value;
   
-  public FieldDeclaration(String name, String type, ActivitiValueExpression valueExpression) {
+  public FieldDeclaration(String name, String type, Object value) {
     this.name = name;
     this.type = type;
-    this.valueExpression = valueExpression;
+    this.value = value;
   }
   
   public FieldDeclaration() {
@@ -51,11 +51,11 @@ public class FieldDeclaration {
   public void setType(String type) {
     this.type = type;
   }
-  public ActivitiValueExpression getValueExpression() {
-    return valueExpression;
+  public Object getValue() {
+    return value;
   }
-  public void setValue(ActivitiValueExpression valueExpression) {
-    this.valueExpression = valueExpression;
+  public void setValue(Object value) {
+    this.value = value;
   }
   
 }

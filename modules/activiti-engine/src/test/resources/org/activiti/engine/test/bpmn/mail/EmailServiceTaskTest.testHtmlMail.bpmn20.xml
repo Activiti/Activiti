@@ -18,7 +18,7 @@
           <activiti:string>Test</activiti:string>
         </activiti:field>
         <activiti:field activiti:name="html">
-          <activiti:string>
+          <activiti:valueExpr>
             <![CDATA[
               <html>
                 <body>
@@ -26,7 +26,7 @@
                 </body>
               </html>
             ]]>
-          </activiti:string>
+          </activiti:valueExpr>
         </activiti:field>      
       </extensionElements>
     </serviceTask>

@@ -52,12 +52,16 @@ public class JavaServiceTaskTest extends ActivitiInternalTestCase {
     Map<String, Object> vars = new HashMap<String, Object>();
     vars.put("name", "kermit");
     vars.put("gender", "male");
+    vars.put("genderBean", new GenderBean());
+    
     ProcessInstance pi = runtimeService.startProcessInstanceByKey("expressionFieldInjection", vars);
     Execution execution = runtimeService.createExecutionQuery()
       .processInstanceId(pi.getId())
       .activityId("waitState")
       .singleResult();
-    assertEquals("HELLO MR. KERMIT", runtimeService.getVariable(execution.getId(), "var"));
+    
+    assertEquals("timrek .rM olleH", runtimeService.getVariable(execution.getId(), "var2"));
+    assertEquals("elam :si redneg ruoY", runtimeService.getVariable(execution.getId(), "var1"));
   }
 
   public void testIllegalUseOfResultVariableName() {

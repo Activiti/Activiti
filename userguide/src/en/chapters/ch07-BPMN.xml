@@ -1564,56 +1564,114 @@ public class ToUppercase extends BpmnJavaDelegation {
 }
 </programlisting>
         </para>
+        <para>An important thing to note is that there will be <emphasis role="bold">only one instance of that Java class created for the serviceTask it is defined on</emphasis>.
+        All process-instances share the same class instance that will be used to call <emphasis>execute(DelegateExecution)</emphasis>. 
+        This means that the class must not use any member variables and must be thread-safe, since it can be executed simultaneously from different threads.
+        This also influences the way <link linkend="serviceTaskFieldInjection">Field injection</link> is handled.
+        
+        </para>
      
      </section>
      
      <section id="serviceTaskFieldInjection">
      
       <title>Field injection</title>
-    
-      <para>
-        It's possible to inject values into the fields of the delegated classes.
-        Currently, only <emphasis>String</emphasis> injection is supported. The following
-        code snippet shows how to inject a constant value into a field. Field injection
-        is supported when using the <emphasis>'class''</emphasis> attribute.
-        Note that we need to <emphasis role="bold">declare a 'extensionElements' XML element
-        before the actual field injection declarations</emphasis>, which is a requirement of
-        the BPMN 2.0 XML Schema.
-        <programlisting>
+      
+        <para>
+        It's possible to inject values into the fields of the delegated classes. The folowing types of injection are supported:
+        <itemizedlist>
+          <listitem><para>Fixed string values.</para></listitem>
+          <listitem><para>Value expressions.</para></listitem>
+          <listitem><para>Method expressions.</para></listitem>
+        </itemizedlist>
+      </para>
+      
+        <para>
+          The following code snippet shows how to inject a constant value into a field. Field injection
+          is supported when using the <emphasis>'class''</emphasis> attribute.
+          Note that we need to <emphasis role="bold">declare a 'extensionElements' XML element
+          before the actual field injection declarations</emphasis>, which is a requirement of
+          the BPMN 2.0 XML Schema.
+          <programlisting>
 &lt;serviceTask id=&quot;javaService&quot; 
     name=&quot;Java service invocation&quot; 
     activiti:class=&quot;org.activiti.examples.bpmn.servicetask.ToUpperCaseFieldInjected&quot;&gt;
-  <emphasis role="bold">&lt;extensionElements&gt;
-    &lt;activiti:field activiti:name=&quot;text&quot; activiti:string-value=&quot;Hello World&quot; /&gt;
+    <emphasis role="bold">&lt;extensionElements&gt;
+    &lt;activiti:field activiti:name=&quot;text&quot; activiti:stringValue=&quot;Hello World&quot; /&gt;
   &lt;/extensionElements&gt;</emphasis>           
 &lt;/serviceTask&gt;        
-        </programlisting>
-        Alternatively, for longs texts (e.g. an inline e-mail) the <emphasis>'activiti:string'</emphasis>
-        sub element can be used:
-        <programlisting>
+          </programlisting>
+          Alternatively, for longs texts (e.g. an inline e-mail) the <emphasis>'activiti:string'</emphasis>
+          sub element can be used:
+          <programlisting>
 &lt;serviceTask id=&quot;javaService&quot; 
     name=&quot;Java service invocation&quot; 
     activiti:class=&quot;org.activiti.examples.bpmn.servicetask.ToUpperCaseFieldInjected&quot;&gt;
   &lt;extensionElements&gt;   
     &lt;activiti:field activiti:name=&quot;text&quot;&gt;
-      <emphasis role="bold">&lt;activiti:string&gt;
+        <emphasis role="bold">&lt;activiti:string&gt;
         Hello World
       &lt;/activiti:string&gt;</emphasis>
     &lt;/activiti:field&gt;
   &lt;/extensionElements&gt;        
 &lt;/serviceTask&gt;        
-        </programlisting>
-      </para>
-      
-      <para>
-        To inject values that are dynamically resolved at runtime, expressions can be used.
-        Those expressions can use process variables, or Spring defined beans (if Spring is used):
-        <programlisting>
-&lt;activiti:field activiti:name=&quot;text&quot;&gt;
-  &lt;activiti:string&gt;Hello ${gender == 'male' ? 'Mr.' : 'Mrs.'} ${name}&lt;/activiti:string&gt;
-&lt;/activiti:field&gt;        
+          </programlisting>
+        </para>
+
+        <para>
+        To inject values that are dynamically resolved at runtime, expressions can be used. Those expressions can use process variables, or Spring defined beans (if Spring is used).
+        As noted in <link linkend="bpmnJavaServiceTaskImplementation">Service Task Implementation</link>, an instance of the Java class is shared among all process-instances in a service task.
+        To have dynamic injection of values in fields, you can inject <literal>org.activiti.engine.impl.el.ActivitiValueExpression</literal>s and <literal>org.activiti.engine.impl.el.ActivitiMethodExpression</literal>s, 
+        which can be evaluated/invoked using the <literal>DelegateExecution</literal> passed in the <literal>execute</literal> method.
+<programlisting>
+&lt;serviceTask id=&quot;javaService&quot; name=&quot;Java service invocation&quot; 
+  activiti:class=&quot;org.activiti.examples.bpmn.servicetask.ReverseStringsFieldInjected&quot;&gt;
+  
+  &lt;extensionElements&gt;
+    &lt;activiti:field activiti:name=&quot;text1&quot;&gt;
+      <emphasis role="bold">&lt;activiti:methodExpr&gt;${genderBean.getGenderString(gender)}&lt;/activiti:methodExpr&gt;</emphasis>
+    &lt;/activiti:field&gt;
+    &lt;activiti:field activiti:name=&quot;text2&quot;&gt;
+       <emphasis role="bold">&lt;activiti:valueExpr&gt;Hello ${gender == 'male' ? 'Mr.' : 'Mrs.'} ${name}&lt;/activiti:valueExpr&gt;</emphasis>
+    &lt;/activiti:field&gt;
+  &lt;/ extensionElements&gt;
+&lt;/ serviceTask&gt;
+
 </programlisting>
-      </para>
+  </para>
+  <para>
+  The example class below uses the injected expressions and resolves them using the current <literal>DelegateExecution</literal>.
+  Full code and test can be found in <literal>org.activiti.examples.bpmn.servicetask.JavaServiceTaskTest.testExpressionFieldInjection</literal>
+<programlisting>
+
+public class ReverseStringsFieldInjected extends BpmnJavaDelegation {
+
+  private ActivitiMethodExpression text1;
+  private ActivitiValueExpression text2;
+
+  public void execute(DelegateExecution execution) {
+    String value1 = (String) text1.invoke(execution);
+    execution.setVariable("var1", new StringBuffer(value1).reverse().toString());
+
+    String value2 = (String) text2.getValue(execution);
+    execution.setVariable("var2", new StringBuffer(value2).reverse().toString());
+  }
+}
+</programlisting>
+  </para>
+  <para>
+  Alternatively, you can also set the expressions as an attribute instead of a child-element, to make the XML less verbose.
+<programlisting>
+&lt;activiti:field activiti:name=&quot;text1&quot; <emphasis role="bold">activiti:methodExpr=&quot;${genderBean.getGenderString(gender)}&quot;</emphasis> /&gt;
+&lt;activiti:field activiti:name=&quot;text1&quot; <emphasis role="bold">activiti:valueExpr=&quot;Hello ${gender == 'male' ? 'Mr.' : 'Mrs.'} ${name}&quot;</emphasis> /&gt;
+</programlisting>
+        </para>
+        <para>
+          <emphasis role="bold">
+            Since the Java class instance is reused, the injection only happens once, when the serviceTask is called the first time. When the fields are altered by your code,
+            the values won't be re-injected so you should treat them as immutable and don't make any changes to them.
+          </emphasis>
+        </para>
      
      </section>
 
@@ -1632,15 +1690,153 @@ public class ToUppercase extends BpmnJavaDelegation {
 /&gt;
 </programlisting>
              
-           In the above example, the result of the service execution (the return value of the <emphasis>'doSomething()'</emphasis> method invocation on an object that is made available
+           In the example above, the result of the service execution (the return value of the <emphasis>'doSomething()'</emphasis> method invocation on an object that is made available
            under the name <emphasis>'myService'</emphasis> either in the process variables or as a Spring bean) is set to the process variable named <emphasis>'myVar'</emphasis> after the service execution completes.
          </para>
 
      </section>
   		
 		</section>
+    
+    
+    
+      <section id="eventListeners">
+        <title>Event listeners</title>
+        <para>Event listeners allow you to execute external Java code or execute a method expression when certain events occur. The events that can be captured are:
+        <itemizedlist>
+          <listitem><para>Start and ending of a process instance.</para></listitem>
+          <listitem><para>Taking a transition.</para></listitem>
+          <listitem><para>Start and ending of an activity.</para></listitem>
+        </itemizedlist>
+        </para>
+        <para>
+        The folowing process definition contains 3 event-listeners:
+          <programlisting>
+  &lt;process id=&quot;eventListenersProcess&quot;&gt;
+  
+    <emphasis role="bold">&lt;extensionElements&gt;
+      &lt;activiti:listener activiti:class=&quot;org.activiti.examples.bpmn.eventlistener.ExampleEventListenerOne&quot; activiti:eventName=&quot;start&quot; /&gt;
+    &lt;/extensionElements&gt;</emphasis>
+    
+    &lt;startEvent id=&quot;theStart&quot; /&gt;
+    &lt;sequenceFlow sourceRef=&quot;theStart&quot; targetRef=&quot;firstTask&quot; /&gt;
+    
+    &lt;userTask id=&quot;firstTask&quot; /&gt;
+    &lt;sequenceFlow sourceRef=&quot;firstTask&quot; targetRef=&quot;secondTask&quot;&gt;
+       <emphasis role="bold">&lt;extensionElements&gt;
+        &lt;activiti:listener activiti:class=&quot;org.activiti.examples.bpmn.eventlistener.ExampleEventListenerTwo&quot; /&gt;
+      &lt;/extensionElements&gt;</emphasis>
+    &lt;/sequenceFlow&gt;
+    
+    &lt;userTask id=&quot;secondTask&quot; &gt;
+      <emphasis role="bold">&lt;extensionElements&gt;
+        &lt;activiti:listener activiti:methodExpr=&quot;${myPojo.myMethod(execution.eventName)}&quot; activiti:eventName=&quot;end&quot; /&gt;
+      &lt;/extensionElements&gt;</emphasis>
+    &lt;/userTask&gt;
+    &lt;sequenceFlow sourceRef=&quot;secondTask&quot; targetRef=&quot;thirdTask&quot; /&gt;
+       
+    &lt;userTask id=&quot;thirdTask&quot; /&gt;
+    &lt;sequenceFlow sourceRef=&quot;thirdTask&quot; targetRef=&quot;theEnd&quot; /&gt;
+
+    &lt;endEvent id=&quot;theEnd&quot; /&gt;
+    
+  &lt;/process&gt;</programlisting>
+        </para>
+        <para>The first event-listener is notified when the process starts. The listener is an external Java-class (<literal>ExampleEventListenerOne</literal>) which implements
+        <literal>org.activiti.pvm.event.EventListener</literal>. Classes implementing <literal>org.activiti.engine.bpmn.BpmnJavaDelegation</literal>
+        can be also used as eventlistener and have the advantage that they can also be used within a service task. When the event occurs (in this case <literal>end</literal>)
+        the method <literal>notify(EventListenerExecution execution)</literal> is called.
+        <programlisting>
+public class ExampleEventListenerOne implements <emphasis role="bold">EventListener</emphasis> {
+
+  <emphasis role="bold">public void notify(EventListenerExecution execution) throws Exception {</emphasis>
+    execution.setVariable("variableSetInEventListener", "firstValue");
+    execution.setVariable("eventNameReceived", execution.getEventName());
+  }
+}</programlisting>
+        </para>
+        <para>
+           The second event-listener is called when the transition is taken. Note that the <literal>listener</literal> element doesn't define an
+          <literal>eventName</literal>, since only <literal>take</literal> events are fired on transitions. 
+          <emphasis role="bold">Values in the <literal>eventName</literal> attribute are ignored when a listener is defined on a transition.</emphasis>
+        </para>
+        <para>
+          The last eventlistener is called when activity <literal>secondTask</literal> ends. Instead of using the <literal>class</literal> on the listener declaration,
+          a <literal>methodExpression</literal> is defined instead. 
+        </para>
+        <programlisting>
+&lt;activiti:listener activiti:methodExpr=&quot;<emphasis role="bold">${myPojo.myMethod(execution.eventName)}</emphasis>&quot; activiti:eventName=&quot;end&quot; /&gt;</programlisting>
+        <para>
+          As with other expressions, execution variables are resolved and can be used. Because an eventlistener gets a special kind of execution, an <literal>EventListenerExecution</literal> that is, it's
+          possible to pass the event-name to your methods using <literal>execution.eventName</literal>.
+        </para>
+        
+          <section id="eventListenerFieldInjection">
+      
+        <title>Field injection on event listeners</title>
+        <para>
+         When using an eventlistener that is configured with the <literal>class</literal> attribute, field injection can be applied. This is exaclty the same
+         mechanism as used <link linkend="serviceTaskFieldInjection">Service task field injection</link>, which contains an overview of the possibilities provided by field injection. 
+        </para>
+        <para>
+         The fragment below shows a simple example process with an event-listener with fields injected. 
+        <programlisting>
+ &lt;process id=&quot;eventListenersProcess&quot;&gt;
+    <emphasis role="bold">&lt;extensionElements&gt;
+      &lt;activiti:listener activiti:class=&quot;org.activiti.examples.bpmn.eventlistener.ExampleFieldInjectedEventListener&quot; activiti:eventName=&quot;start&quot;&gt;
+        &lt;activiti:field activiti:name=&quot;fixedValue&quot; activiti:stringValue=&quot;Yes, I am &quot; /&gt;
+        &lt;activiti:field activiti:name=&quot;dynamicValue&quot; activiti:valueExpr=&quot;${myVar}&quot; /&gt;
+      &lt;/activiti:listener&gt;
+    &lt;/extensionElements&gt;</emphasis>
+    
+    &lt;startEvent id=&quot;theStart&quot; /&gt;
+    &lt;sequenceFlow sourceRef=&quot;theStart&quot; targetRef=&quot;firstTask&quot; /&gt;
+    
+    &lt;userTask id=&quot;firstTask&quot; /&gt;
+    &lt;sequenceFlow sourceRef=&quot;firstTask&quot; targetRef=&quot;theEnd&quot; /&gt;
+    
+    &lt;endEvent id=&quot;theEnd&quot; /&gt;
+  &lt;/process&gt;
+        </programlisting>
+        </para>
+        <para>
+          <programlisting>
+public class ExampleFieldInjectedEventListener implements EventListener {
+
+  <emphasis role="bold">private String fixedValue;
+  
+  private ActivitiValueExpression dynamicValue;</emphasis>
+  
+  @Override
+  public void notify(EventListenerExecution execution) throws Exception {
+    execution.setVariable(<emphasis role="bold">"var", fixedValue + dynamicValue.getValue(execution).toString()</emphasis>);
+  }
+}
+          </programlisting>
+          The class <literal>ExampleFieldInjectedEventListener</literal> concatenates the 2 injected fields (one fixed an the other dynamic) and stores this in the process variable '<literal>var</literal>'.
+        </para>
+        <para>
+        <programlisting>
+@Deployment(resources = {"org/activiti/examples/bpmn/eventlistener/EventListenersFieldInjectionProcess.bpmn20.xml"})
+public void testEventListenerFieldInjection() {
+  Map&lt;String, Object&gt; variables = new HashMap&lt;String, Object&gt;();
+  <emphasis role="bold">variables.put("myVar", "listening!");</emphasis>
+    
+  ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("eventListenersProcess", variables);
+    
+  Object varSetByListener = runtimeService.getVariable(processInstance.getId(), "var");
+  assertNotNull(varSetByListener);
+  assertTrue(varSetByListener instanceof String);
+    
+  // Result is a concatenation of fixed injected field and injected value-expression
+  <emphasis role="bold">assertEquals("Yes, I am listening!", varSetByListener);</emphasis>
+}
+        </programlisting>
+        </para>
+        </section>
+         </section>
 		
-		<section id="bpmnEmailTask">
+         <section id="bpmnEmailTask">
 		
 		  <title>Email task</title>
 		  
@@ -1788,11 +1984,11 @@ public class ToUppercase extends BpmnJavaDelegation {
 		      <programlisting>
 &lt;serviceTask id=&quot;sendMail&quot; activiti:type=&quot;mail&quot;&gt;
   &lt;extensionElements&gt;
-    &lt;activiti:field activiti:name=&quot;from&quot; activiti:string-value=&quot;order-shipping@thecompany.com&quot; /&gt;
-    &lt;activiti:field activiti:name=&quot;to&quot; activiti:string-value=&quot;${recipient}&quot; /&gt;
-    &lt;activiti:field activiti:name=&quot;subject&quot; activiti:string-value=&quot;Your order ${orderId} has been shipped&quot; /&gt;
+    &lt;activiti:field activiti:name=&quot;from&quot; activiti:stringValue=&quot;order-shipping@thecompany.com&quot; /&gt;
+    &lt;activiti:field activiti:name=&quot;to&quot; activiti:valueExpr=&quot;${recipient}&quot; /&gt;
+    &lt;activiti:field activiti:name=&quot;subject&quot; activiti:valueExpr=&quot;Your order ${orderId} has been shipped&quot; /&gt;
     &lt;activiti:field activiti:name=&quot;html&quot;&gt;
-      &lt;activiti:string&gt;
+      &lt;activiti:valueExpr&gt;
         &lt;![CDATA[
           &lt;html&gt;
             &lt;body&gt;
@@ -1806,7 +2002,7 @@ public class ToUppercase extends BpmnJavaDelegation {
             &lt;/body&gt;
           &lt;/html&gt;
         ]]&gt;
-      &lt;/activiti:string&gt;
+      &lt;/activiti:valueExpr&gt;
     &lt;/activiti:field&gt;      
   &lt;/extensionElements&gt;
 &lt;/serviceTask&gt;		      

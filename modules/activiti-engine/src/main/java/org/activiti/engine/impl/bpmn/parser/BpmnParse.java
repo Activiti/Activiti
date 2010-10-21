@@ -28,12 +28,14 @@ import org.activiti.engine.impl.bpmn.BpmnInterfaceImplementation;
 import org.activiti.engine.impl.bpmn.CallActivityBehaviour;
 import org.activiti.engine.impl.bpmn.ClassStructure;
 import org.activiti.engine.impl.bpmn.Condition;
+import org.activiti.engine.impl.bpmn.DelegateEventListener;
 import org.activiti.engine.impl.bpmn.ExclusiveGatewayActivity;
 import org.activiti.engine.impl.bpmn.ItemDefinition;
 import org.activiti.engine.impl.bpmn.ItemKind;
 import org.activiti.engine.impl.bpmn.MailActivityBehavior;
 import org.activiti.engine.impl.bpmn.ManualTaskActivity;
 import org.activiti.engine.impl.bpmn.Message;
+import org.activiti.engine.impl.bpmn.MethodExpressionEventListener;
 import org.activiti.engine.impl.bpmn.NoneEndEventActivity;
 import org.activiti.engine.impl.bpmn.NoneStartEventActivity;
 import org.activiti.engine.impl.bpmn.Operation;
@@ -50,6 +52,7 @@ import org.activiti.engine.impl.bpmn.TaskActivity;
 import org.activiti.engine.impl.bpmn.UserTaskActivity;
 import org.activiti.engine.impl.bpmn.WebServiceActivityBehavior;
 import org.activiti.engine.impl.cfg.ProcessEngineConfiguration;
+import org.activiti.engine.impl.el.ActivitiMethodExpression;
 import org.activiti.engine.impl.el.ActivitiValueExpression;
 import org.activiti.engine.impl.el.ExpressionManager;
 import org.activiti.engine.impl.el.UelMethodExpressionCondition;
@@ -70,6 +73,7 @@ import org.activiti.engine.impl.util.xml.Parse;
 import org.activiti.engine.impl.variable.VariableDeclaration;
 import org.activiti.engine.impl.webservice.WSDLImporter;
 import org.activiti.pvm.activity.ActivityBehavior;
+import org.activiti.pvm.event.EventListener;
 import org.activiti.pvm.impl.process.ActivityImpl;
 import org.activiti.pvm.impl.process.ProcessDefinitionImpl;
 import org.activiti.pvm.impl.process.ScopeImpl;
@@ -82,6 +86,7 @@ import org.activiti.pvm.impl.process.TransitionImpl;
  * @author Tom Baeyens
  * @author Joram Barrez
  * @author Christian Stettler
+ * @author Frederik Heremans
  */
 public class BpmnParse extends Parse {
 
@@ -414,6 +419,7 @@ public class BpmnParse extends Parse {
     parseEndEvents(scopeElement, parentScope);
     parseBoundaryEvents(scopeElement, parentScope);
     parseSequenceFlow(scopeElement, parentScope);
+    parseEventListenersOnScope(scopeElement, parentScope);
   }
 
   /**
@@ -560,6 +566,8 @@ public class BpmnParse extends Parse {
     ActivityImpl activity = parseAndCreateActivityOnScopeElement(exclusiveGwElement, scope);
     activity.setActivityBehavior(new ExclusiveGatewayActivity());
     
+    parseEventListenersOnScope(exclusiveGwElement, activity);
+    
     for (BpmnParseListener parseListener: parseListeners) {
       parseListener.parseExclusiveGateway(exclusiveGwElement, scope, activity);
     }
@@ -571,6 +579,8 @@ public class BpmnParse extends Parse {
   public void parseParallelGateway(Element parallelGwElement, ScopeImpl scope) {
     ActivityImpl activity = parseAndCreateActivityOnScopeElement(parallelGwElement, scope);
     activity.setActivityBehavior(new ParallelGatewayActivity());
+    
+    parseEventListenersOnScope(parallelGwElement, activity);
     
     for (BpmnParseListener parseListener: parseListeners) {
       parseListener.parseParallelGateway(parallelGwElement, scope, activity);
@@ -602,6 +612,8 @@ public class BpmnParse extends Parse {
     }
     
     activity.setActivityBehavior(new ScriptTaskActivity(script, language, resultVariableName));
+    
+    parseEventListenersOnScope(scriptTaskElement, activity);
 
     for (BpmnParseListener parseListener: parseListeners) {
       parseListener.parseScript(scriptTaskElement, scope, activity);
@@ -621,7 +633,7 @@ public class BpmnParse extends Parse {
     String resultVariableName = serviceTaskElement.attributeNS(BpmnParser.BPMN_EXTENSIONS_NS, "result-variable-name");
     String implementation = serviceTaskElement.attribute("implementation");
     String operationRef = serviceTaskElement.attribute("operationRef");
-    List<FieldDeclaration> fieldDeclarations = parseFieldDeclarations(serviceTaskElement);
+    List<FieldDeclaration> fieldDeclarations = parseFieldDeclarationsOnServiceTask(serviceTaskElement);
 
     if (type != null) {
       if (type.equalsIgnoreCase("mail")) {
@@ -635,7 +647,7 @@ public class BpmnParse extends Parse {
         addError("'result-variable-name' not supported for service tasks using 'class'", serviceTaskElement);
       }
 
-      activity.setActivityBehavior(new ServiceTaskDelegateActivityBehaviour(expressionManager.createValueExpression(className), fieldDeclarations));
+      activity.setActivityBehavior(new ServiceTaskDelegateActivityBehaviour(className, fieldDeclarations));
       
     } else if (methodExpr != null && methodExpr.trim().length() > 0) {
       activity.setActivityBehavior(new ServiceTaskMethodExpressionActivityBehavior(expressionManager.createMethodExpression(methodExpr), resultVariableName));
@@ -653,6 +665,8 @@ public class BpmnParse extends Parse {
     } else {
       addError("'class', 'method-expr' or 'value-expr' attribute is mandatory on serviceTask", serviceTaskElement);
     }
+    
+    parseEventListenersOnScope(serviceTaskElement, activity);
 
     for (BpmnParseListener parseListener: parseListeners) {
       parseListener.parseServiceTask(serviceTaskElement, scope, activity);
@@ -661,7 +675,7 @@ public class BpmnParse extends Parse {
 
   protected void parseEmailServiceTask(ActivityImpl activity, Element serviceTaskElement, List<FieldDeclaration> fieldDeclarations) {
     validateFieldDeclarationsForEmail(serviceTaskElement, fieldDeclarations);
-    activity.setActivityBehavior(new ServiceTaskDelegateActivityBehaviour(MailActivityBehavior.class, fieldDeclarations));
+    activity.setActivityBehavior(new ServiceTaskDelegateActivityBehaviour(MailActivityBehavior.class.getName(), fieldDeclarations));
   }
   
   protected void validateFieldDeclarationsForEmail(Element serviceTaskElement, List<FieldDeclaration> fieldDeclarations) {
@@ -687,54 +701,121 @@ public class BpmnParse extends Parse {
     }
   }
   
-  public List<FieldDeclaration> parseFieldDeclarations(Element serviceTaskElement) {
-    List<FieldDeclaration> fieldDeclarations = new ArrayList<FieldDeclaration>();
+  public List<FieldDeclaration> parseFieldDeclarationsOnServiceTask(Element serviceTaskElement) {
     Element extensionElement = serviceTaskElement.element("extensionElements");
     if (extensionElement != null) {
-      List<Element> fieldDeclarationElements = extensionElement.elementsNS(BpmnParser.BPMN_EXTENSIONS_NS, "field");
-      if (fieldDeclarationElements != null && !fieldDeclarationElements.isEmpty()) {
-        
-        for (Element fieldDeclarationElement : fieldDeclarationElements) {
-          FieldDeclaration fieldDeclaration = parseFieldDeclaration(serviceTaskElement, fieldDeclarationElement);
-          fieldDeclarations.add(fieldDeclaration);
+      return parseFieldDeclarations(extensionElement);
+    }
+    return new ArrayList<FieldDeclaration>();
+  }
+  
+  public List<FieldDeclaration> parseFieldDeclarations(Element element) {
+    List<FieldDeclaration> fieldDeclarations = new ArrayList<FieldDeclaration>();
+    
+    List<Element> fieldDeclarationElements = element.elementsNS(BpmnParser.BPMN_EXTENSIONS_NS, "field");
+    if (fieldDeclarationElements != null && !fieldDeclarationElements.isEmpty()) {
+      
+      for (Element fieldDeclarationElement : fieldDeclarationElements) {
+        FieldDeclaration fieldDeclaration = parseFieldDeclaration(element, fieldDeclarationElement);
+        if(fieldDeclaration != null) {
+          fieldDeclarations.add(fieldDeclaration);            
         }
       }
     }
+    
     return fieldDeclarations;
   }
 
   protected FieldDeclaration parseFieldDeclaration(Element serviceTaskElement, Element fieldDeclarationElement) {
     String fieldName = fieldDeclarationElement.attributeNS(BpmnParser.BPMN_EXTENSIONS_NS, "name");
-    String type = "java.lang.String"; // default is string
-    ActivitiValueExpression valueExpression = parseFieldDeclarationValue(fieldDeclarationElement, serviceTaskElement);
-
-    FieldDeclaration fieldDeclaration = new FieldDeclaration(fieldName, type, valueExpression);
+    
+    FieldDeclaration fieldDeclaration = parseStringFieldDeclaration(fieldDeclarationElement, serviceTaskElement, fieldName);    
+    if(fieldDeclaration == null) {
+     fieldDeclaration = parseValueExpressionFieldDeclaration(fieldDeclarationElement, serviceTaskElement, fieldName);
+     if(fieldDeclaration == null) {
+       fieldDeclaration = parseMethodExpressionFieldDeclaration(fieldDeclarationElement, serviceTaskElement, fieldName);
+     }
+    }
+    
+    if(fieldDeclaration == null) {
+      addError("One of the following is mandatory on a field declaration: one of attributes stringValue|valueExpr|methodExpr " + 
+        "or one of child elements string|valueExpr|methodExpr",  serviceTaskElement);
+    }
     return fieldDeclaration;
   }
   
-  protected ActivitiValueExpression parseFieldDeclarationValue(Element fieldDeclarationElement, Element serviceTaskElement) {
-    ActivitiValueExpression valueExpression = null;
+  protected FieldDeclaration parseStringFieldDeclaration(Element fieldDeclarationElement, Element serviceTaskElement, String fieldName) {
     try {
-      String stringValue = fieldDeclarationElement.attributeNS(BpmnParser.BPMN_EXTENSIONS_NS, "string-value");
-      Element stringElement = fieldDeclarationElement.elementNS(BpmnParser.BPMN_EXTENSIONS_NS, "string");
-      String stringElementText = null;
-      if (stringElement != null) {
-        stringElementText = stringElement.getText();
-        if (stringValue != null && (stringElementText != null || stringElementText.length() > 0)) {
-          addError("Invalid: both string-value and a text are provided", stringElement);
-        } else if (stringValue == null && (stringElementText == null || stringElementText.length() == 0)) {
-          addError("Invalid declartion: no string-value or string element text provided", fieldDeclarationElement);
-        }
+      String fieldValue = getStringValueFromAttributeOrElement("stringValue", "string", BpmnParser.BPMN_EXTENSIONS_NS, fieldDeclarationElement);
+      if(fieldValue != null) {
+        return new FieldDeclaration(fieldName, String.class.getName(), fieldValue); 
       }
-      valueExpression = expressionManager.createValueExpression(stringValue != null ? stringValue : stringElementText); 
-    } catch (ActivitiException e) {
-      if (e.getMessage().contains("multiple elements with tag name")) {
-        addError("Invalid: multiple field declarations found", serviceTaskElement);
+    } catch (ActivitiException ae) {
+      if (ae.getMessage().contains("multiple elements with tag name")) {
+        addError("Multiple string field declarations found", serviceTaskElement);
       } else {
-        addError("Error when paring field declarations: " + e.getMessage(), serviceTaskElement);
+        addError("Error when paring field declarations: " + ae.getMessage(), serviceTaskElement);
       }
     }
-    return valueExpression;
+    return null;
+  }
+  
+  
+  protected FieldDeclaration parseValueExpressionFieldDeclaration(Element fieldDeclarationElement, Element serviceTaskElement, String fieldName) {
+    try {
+      String valueExpression = getStringValueFromAttributeOrElement("valueExpr", "valueExpr", BpmnParser.BPMN_EXTENSIONS_NS, fieldDeclarationElement);
+      if(valueExpression != null && valueExpression.trim().length() > 0) {
+        return new FieldDeclaration(fieldName, ActivitiValueExpression.class.getName(), expressionManager.createValueExpression(valueExpression));
+      }
+    } catch(ActivitiException ae) {
+      if (ae.getMessage().contains("multiple elements with tag name")) {
+        addError("Multiple value-expression field declarations found", serviceTaskElement);
+      } else {
+        addError("Error when paring field declarations: " + ae.getMessage(), serviceTaskElement);
+      }
+    }
+    return null;
+  }
+  
+  protected FieldDeclaration parseMethodExpressionFieldDeclaration(Element fieldDeclarationElement, Element serviceTaskElement, String fieldName) {
+    try {
+      String methodExpression = getStringValueFromAttributeOrElement("methodExpr", "methodExpr", BpmnParser.BPMN_EXTENSIONS_NS, fieldDeclarationElement);
+      if(methodExpression != null && methodExpression.trim().length() > 0) {
+        return new FieldDeclaration(fieldName, ActivitiMethodExpression.class.getName(), expressionManager.createMethodExpression(methodExpression));
+      }
+    } catch(ActivitiException ae) {
+      if (ae.getMessage().contains("multiple elements with tag name")) {
+        addError("Multiple method-expression field declarations found", serviceTaskElement);
+      } else {
+        addError("Error when paring field declarations: " + ae.getMessage(), serviceTaskElement);
+      }
+    }
+    return null;
+  }
+  
+  protected String getStringValueFromAttributeOrElement(String attributeName, String elementName, String namespace, Element element) {
+    String value = null;
+    
+    String attributeValue = element.attributeNS(namespace, attributeName);
+    Element childElement = element.elementNS(namespace, elementName);
+    String stringElementText = null;
+    
+    if(attributeValue != null && childElement != null) {
+      addError("Can't use attribute '" + attributeName + "' and element '" + elementName + "' toghether, only use one", element);
+    } else if (childElement != null) {
+      stringElementText = childElement.getText();
+      if (stringElementText == null || stringElementText.length() == 0) {
+        addError("No valid value found in attribute '" + attributeName + "' nor element '" + elementName + "'", element);
+      } else {
+        // Use text of element
+        value = stringElementText;
+      }
+    } else if(attributeValue != null && attributeValue.length() > 0) {
+      // Using attribute
+      value = attributeValue;
+    } 
+    
+    return value;
   }
 
   /**
@@ -743,6 +824,8 @@ public class BpmnParse extends Parse {
   public void parseTask(Element taskElement, ScopeImpl scope) {
     ActivityImpl activity = parseAndCreateActivityOnScopeElement(taskElement, scope);
     activity.setActivityBehavior(new TaskActivity());
+    
+    parseEventListenersOnScope(taskElement, activity);
 
     for (BpmnParseListener parseListener: parseListeners) {
       parseListener.parseTask(taskElement, scope, activity);
@@ -755,6 +838,8 @@ public class BpmnParse extends Parse {
   public void parseManualTask(Element manualTaskElement, ScopeImpl scope) {
     ActivityImpl activity = parseAndCreateActivityOnScopeElement(manualTaskElement, scope);
     activity.setActivityBehavior(new ManualTaskActivity());
+    
+    parseEventListenersOnScope(manualTaskElement, activity);
 
     for (BpmnParseListener parseListener: parseListeners) {
       parseListener.parseManualTask(manualTaskElement, scope, activity);
@@ -768,6 +853,8 @@ public class BpmnParse extends Parse {
     ActivityImpl activity = parseAndCreateActivityOnScopeElement(receiveTaskElement, scope);
     activity.setActivityBehavior(new ReceiveTaskActivity());
 
+    parseEventListenersOnScope(receiveTaskElement, activity);
+    
     for (BpmnParseListener parseListener: parseListeners) {
       parseListener.parseManualTask(receiveTaskElement, scope, activity);
     }
@@ -800,6 +887,8 @@ public class BpmnParse extends Parse {
     activity.setActivityBehavior(userTaskActivity);
 
     parseProperties(userTaskElement, activity);
+    
+    parseEventListenersOnScope(userTaskElement, activity);
 
     for (BpmnParseListener parseListener: parseListeners) {
       parseListener.parseUserTask(userTaskElement, scope, activity);
@@ -1098,7 +1187,7 @@ public class BpmnParse extends Parse {
     activity.setScope(true);
     activity.setActivityBehavior(new SubProcessActivity());
     parseScope(subProcessElement, activity);
-
+   
     for (BpmnParseListener parseListener: parseListeners) {
       parseListener.parseSubProcess(subProcessElement, scope, activity);
     }
@@ -1117,6 +1206,8 @@ public class BpmnParse extends Parse {
       addError("Missing attribute 'calledElement'", callActivityElement);
     }
     activity.setActivityBehavior(new CallActivityBehaviour(calledElement));
+    
+    parseEventListenersOnScope(callActivityElement, activity);
 
     for (BpmnParseListener parseListener: parseListeners) {
       parseListener.parseCallActivity(callActivityElement, scope, activity);
@@ -1268,6 +1359,8 @@ public class BpmnParse extends Parse {
       transition.setProperty("documentation", parseDocumentation(sequenceFlowElement));
       transition.setDestination(destinationActivity);
       parseSequenceFlowConditionExpression(sequenceFlowElement, transition);
+      
+      parseEventListenersOnTransition(sequenceFlowElement, transition);
 
       for (BpmnParseListener parseListener: parseListeners) {
         parseListener.parseSequenceFlow(sequenceFlowElement, scope, transition);
@@ -1308,6 +1401,82 @@ public class BpmnParse extends Parse {
       }
       seqFlow.setProperty(PROPERTYNAME_CONDITION, condition);
     }
+  }
+  
+  /**
+   * Parses all event-listeners on a scope.
+   * 
+   * @param scopeElement the XML element containing the scope definition.
+   * @param scope the scope to add the event-listeners to.
+   */
+  public void parseEventListenersOnScope(Element scopeElement, ScopeImpl scope) {
+    Element extentionsElement = scopeElement.element("extensionElements");
+    if(extentionsElement != null) {
+      List<Element> listenerElements = extentionsElement.elementsNS(BpmnParser.BPMN_EXTENSIONS_NS, "listener");
+      for(Element listenerElement :listenerElements) {
+        String eventName = listenerElement.attributeNS(BpmnParser.BPMN_EXTENSIONS_NS, "eventName");
+        if(isValidEventNameForScope(eventName, listenerElement)) {
+          EventListener listener = parseEventListener(listenerElement);
+          if(listener != null) {
+            scope.addEventListener(eventName, listener);
+          }
+        }
+      }      
+    }
+      
+  }
+  
+  /**
+   * Check if the given event name is valid. If not, an appropriate error is added.
+   */
+  private boolean isValidEventNameForScope(String eventName, Element listenerElement) {
+    if(eventName != null && eventName.trim().length() > 0) {
+      if("start".equals(eventName) || "end".equals(eventName)) {
+        return true;
+      } else {
+        addError("Attribute 'eventName' must be one of {start|end}", listenerElement);
+      }
+    } else {      
+      addError("Attribute 'eventName' is mandatory on listener", listenerElement);
+    }
+    return false;
+  }
+  
+  public void parseEventListenersOnTransition(Element activitiElement, TransitionImpl activity) {
+    Element extentionsElement = activitiElement.element("extensionElements");
+    if(extentionsElement != null) {
+      List<Element> listenerElements = extentionsElement.elementsNS(BpmnParser.BPMN_EXTENSIONS_NS, "listener");
+      for(Element listenerElement : listenerElements) {
+        EventListener listener = parseEventListener(listenerElement);
+        if(listener != null) {
+          // Since a transition only fires event 'take', we don't parse the eventName, it is ignored
+          activity.addEventListener(listener);
+        }
+      }      
+    }
+  }
+  
+  /**
+   * Parses an {@link EventListener} implementation for the given event-listener element.
+   * 
+   * @param eventListenerElement the XML element containing the event-listener definition.
+   */
+  public EventListener parseEventListener(Element eventListenerElement) {
+    EventListener eventListener = null;
+    
+    String className = eventListenerElement.attributeNS(BpmnParser.BPMN_EXTENSIONS_NS, "class");
+    String methodExpr = eventListenerElement.attributeNS(BpmnParser.BPMN_EXTENSIONS_NS, "methodExpr");
+    
+    List<FieldDeclaration> fieldDeclarations = parseFieldDeclarations(eventListenerElement);
+    
+    if(className != null && className.trim().length() > 0) {
+      eventListener = new DelegateEventListener(className, fieldDeclarations);
+    } else if(methodExpr != null && methodExpr.trim().length() > 0) {
+      eventListener = new MethodExpressionEventListener(expressionManager.createMethodExpression(methodExpr));
+    } else {
+      addError("Element 'class' or 'methodExpr' is mandatory on event-listener", eventListenerElement);
+    }
+    return eventListener;
   }
 
   /**

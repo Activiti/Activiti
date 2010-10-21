@@ -13,13 +13,10 @@
 
 package org.activiti.engine.impl.bpmn;
 
-import java.lang.reflect.Field;
 import java.util.List;
 
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.bpmn.parser.FieldDeclaration;
-import org.activiti.engine.impl.el.ActivitiValueExpression;
-import org.activiti.engine.impl.util.ReflectUtil;
 import org.activiti.pvm.activity.ActivityBehavior;
 import org.activiti.pvm.activity.ActivityExecution;
 import org.activiti.pvm.activity.SignallableActivityBehavior;
@@ -30,80 +27,29 @@ import org.activiti.pvm.activity.SignallableActivityBehavior;
  * @author Tom Baeyens
  * @author Joram Barrez
  */
-public class ServiceTaskDelegateActivityBehaviour implements SignallableActivityBehavior {
+public class ServiceTaskDelegateActivityBehaviour extends FieldDeclarationDelegate implements SignallableActivityBehavior {
 
-  protected ActivitiValueExpression expression;
-  protected Class<? extends ActivityBehavior> activityBehaviorType;
-  protected List<FieldDeclaration> fieldDeclarations;
-
-  public ServiceTaskDelegateActivityBehaviour(ActivitiValueExpression expression, List<FieldDeclaration> fieldDeclarations) {
-    this.expression = expression;
-    this.fieldDeclarations = fieldDeclarations;
+  public ServiceTaskDelegateActivityBehaviour(String className, List<FieldDeclaration> fieldDeclarations) {
+   super(className, fieldDeclarations);
   }
   
-  public ServiceTaskDelegateActivityBehaviour(Class<? extends ActivityBehavior> activityBehaviorType, List<FieldDeclaration> fieldDeclarations) {
-    this.activityBehaviorType = activityBehaviorType;
-    this.fieldDeclarations = fieldDeclarations;
-  }
-
   public void execute(ActivityExecution execution) throws Exception {
-    Object object = null;
-    
-    if (activityBehaviorType != null) {
-      object = activityBehaviorType.newInstance();
-    } else {
-      object = expression.getValue(execution);
-
-      // Classname is provided as String
-      if (object instanceof String) {
-        String className = (String) object;
-        if (className != null) {
-          object = ReflectUtil.instantiate(className);
-        }
-      }
-    }
-    
-    if (object instanceof ActivityBehavior) {
-      ActivityBehavior activityBehavior = (ActivityBehavior) object;
-      injectFields(execution, object);
+    Object delegate = getDelegateInstance();
+    if (delegate instanceof ActivityBehavior) {
+      ActivityBehavior activityBehavior = (ActivityBehavior) delegate;
       activityBehavior.execute(execution);
     } else {
-      throw new ActivitiException("Service " + object + " is used in a serviceTask, but does not" + " implement the "
+      throw new ActivitiException("Service " + delegate + " is used in a serviceTask, but does not" + " implement the "
               + ActivityBehavior.class.getCanonicalName() + " interface");
-    }
-
-  }
-
-  private void injectFields(ActivityExecution execution, Object object) {
-    if (fieldDeclarations != null) {
-      for (FieldDeclaration fieldDeclaration : fieldDeclarations) {
-        Field field = ReflectUtil.getField(fieldDeclaration.getName(), object);
-        
-        if (field == null) {
-          throw new ActivitiException("Invalid field declaration " + fieldDeclaration.getName() 
-                  + " not found on" + object.getClass().getCanonicalName());
-        }
-        
-        // Only String is supported now, so nothing special needs to happen (conversion etc.)
-        ReflectUtil.setField(field, object, fieldDeclaration.getValueExpression().getValue(execution));
-      }
     }
   }
 
   public void signal(ActivityExecution execution, String signalName, Object signalData) throws Exception {
-    Object object = expression.getValue(execution);
-
-    if (object instanceof String) {
-      String className = (String) object;
-      if (className != null) {
-        object = ReflectUtil.instantiate(className);
-      }
-    }
-
-    if (object instanceof SignallableActivityBehavior) {
-      ((SignallableActivityBehavior) object).signal(execution, signalName, signalData);
+    Object delegate = getDelegateInstance();
+    if (delegate instanceof SignallableActivityBehavior) {
+      ((SignallableActivityBehavior) delegate).signal(execution, signalName, signalData);
     } else {
-      throw new ActivitiException("Service " + object + " is used in a serviceTask, but does not" + " implement the "
+      throw new ActivitiException("Service of type '" + getDelegateClassName() + "' is used in a serviceTask, but does not" + " implement the "
               + SignallableActivityBehavior.class.getCanonicalName() + " interface");
     }
   }

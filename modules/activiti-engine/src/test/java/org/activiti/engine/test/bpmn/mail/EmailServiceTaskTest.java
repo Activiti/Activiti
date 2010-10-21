@@ -129,7 +129,7 @@ public class EmailServiceTaskTest extends ActivitiInternalTestCase {
     
     List<WiserMessage> messages = wiser.getMessages();
     assertEquals(1, messages.size());
-    assertEmailSend(messages.get(0), true, "Test", "<b>Kermit</b>", "noreply@activiti.org", Arrays.asList("kermit@activiti.org"), null);
+    assertEmailSend(messages.get(0), true, "Test", "Mr. <b>Kermit</b>", "noreply@activiti.org", Arrays.asList("kermit@activiti.org"), null);
   }
   
   // Helper 
