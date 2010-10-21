@@ -32,7 +32,6 @@ public class ByteArrayEntity implements Serializable, PersistentObject {
   protected String name;
   protected byte[] bytes;
   protected String deploymentId;
-  protected ByteArrayType variable;
 
   public ByteArrayEntity() {
   }
@@ -42,8 +41,7 @@ public class ByteArrayEntity implements Serializable, PersistentObject {
     this.bytes = bytes;
   }
 
-  public ByteArrayEntity(ByteArrayType variable, byte[] bytes) {
-    this.variable = variable;
+  public ByteArrayEntity(byte[] bytes) {
     this.bytes = bytes;
   }
 

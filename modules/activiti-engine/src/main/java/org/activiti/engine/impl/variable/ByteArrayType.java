@@ -42,7 +42,7 @@ public class ByteArrayType implements Type {
     ByteArrayEntity byteArray = variableInstanceEntity.getByteArrayValue();
     byte[] bytes = (byte[]) value;
     if (byteArray==null) {
-      byteArray = new ByteArrayEntity(this, bytes);
+      byteArray = new ByteArrayEntity(bytes);
       CommandContext
         .getCurrent()
         .getDbSqlSession()
