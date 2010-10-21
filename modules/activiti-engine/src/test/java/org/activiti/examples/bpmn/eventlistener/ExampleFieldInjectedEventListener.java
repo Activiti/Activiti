@@ -28,7 +28,6 @@ public class ExampleFieldInjectedEventListener implements EventListener {
   
   private ActivitiValueExpression dynamicValue;
   
-  @Override
   public void notify(EventListenerExecution execution) throws Exception {
     execution.setVariable("var", fixedValue + dynamicValue.getValue(execution).toString());
   }
