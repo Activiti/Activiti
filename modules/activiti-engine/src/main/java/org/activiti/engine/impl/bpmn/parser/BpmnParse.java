@@ -55,12 +55,16 @@ import org.activiti.engine.impl.el.ExpressionManager;
 import org.activiti.engine.impl.el.UelMethodExpressionCondition;
 import org.activiti.engine.impl.el.UelValueExpressionCondition;
 import org.activiti.engine.impl.form.DefaultStartFormHandler;
+import org.activiti.engine.impl.form.DefaultTaskFormHandler;
+import org.activiti.engine.impl.form.StartFormHandler;
+import org.activiti.engine.impl.form.TaskFormHandler;
 import org.activiti.engine.impl.jobexecutor.TimerDeclarationImpl;
 import org.activiti.engine.impl.jobexecutor.TimerExecuteNestedActivityJobHandler;
 import org.activiti.engine.impl.repository.DeploymentEntity;
 import org.activiti.engine.impl.repository.ProcessDefinitionEntity;
 import org.activiti.engine.impl.scripting.ScriptingEngines;
 import org.activiti.engine.impl.task.TaskDefinition;
+import org.activiti.engine.impl.util.ReflectUtil;
 import org.activiti.engine.impl.util.xml.Element;
 import org.activiti.engine.impl.util.xml.Parse;
 import org.activiti.engine.impl.variable.VariableDeclaration;
@@ -449,12 +453,16 @@ public class BpmnParse extends Parse {
         }
         processDefinition.setInitial(startEventActivity);
 
-        String formKey = startEventElement.attributeNS(BpmnParser.BPMN_EXTENSIONS_NS, "formKey");
-        if (formKey != null) {
-          String deploymentId = processDefinition.getDeploymentId();
-          processDefinition.setStartFormHandler(new DefaultStartFormHandler(formKey, deploymentId));
+        StartFormHandler startFormHandler;
+        String startFormHandlerClassName = startEventElement.attributeNS(BpmnParser.BPMN_EXTENSIONS_NS, "formHandlerClass");
+        if (startFormHandlerClassName!=null) {
+          startFormHandler = (StartFormHandler) ReflectUtil.instantiate(startFormHandlerClassName);
+        } else {
+          startFormHandler = new DefaultStartFormHandler();
         }
-
+        startFormHandler.parseConfiguration(deployment, startEventElement);
+        processDefinition.setStartFormHandler(startFormHandler);
+        
         String initiatorVariableName = startEventElement.attributeNS(BpmnParser.BPMN_EXTENSIONS_NS, "initiator");
         if (initiatorVariableName != null) {
           processDefinition.setProperty(PROPERTYNAME_INITIATOR_VARIABLE_NAME, initiatorVariableName);
@@ -653,7 +661,7 @@ public class BpmnParse extends Parse {
 
   protected void parseEmailServiceTask(ActivityImpl activity, Element serviceTaskElement, List<FieldDeclaration> fieldDeclarations) {
     validateFieldDeclarationsForEmail(serviceTaskElement, fieldDeclarations);
-    activity.setActivityBehavior(new ServiceTaskDelegateActivityBehaviour(new MailActivityBehavior(), fieldDeclarations));
+    activity.setActivityBehavior(new ServiceTaskDelegateActivityBehaviour(MailActivityBehavior.class, fieldDeclarations));
   }
   
   protected void validateFieldDeclarationsForEmail(Element serviceTaskElement, List<FieldDeclaration> fieldDeclarations) {
@@ -799,12 +807,17 @@ public class BpmnParse extends Parse {
   }
 
   public TaskDefinition parseTaskDefinition(Element taskElement, String taskDefinitionKey, ProcessDefinitionEntity processDefinition) {
+    TaskFormHandler taskFormHandler;
+    String taskFormHandlerClassName = taskElement.attributeNS(BpmnParser.BPMN_EXTENSIONS_NS, "formHandlerClass");
+    if (taskFormHandlerClassName!=null) {
+      taskFormHandler = (TaskFormHandler) ReflectUtil.instantiate(taskFormHandlerClassName);
+    } else {
+      taskFormHandler = new DefaultTaskFormHandler();
+    }
+    taskFormHandler.parseConfiguration(deployment, taskElement);
+
+    TaskDefinition taskDefinition = new TaskDefinition(taskFormHandler);
     
-    String formKey = taskElement.attributeNS(BpmnParser.BPMN_EXTENSIONS_NS, "formKey");
-    String deploymentId = processDefinition.getDeploymentId();
-
-    TaskDefinition taskDefinition = new TaskDefinition(formKey, deploymentId);
-
     taskDefinition.setKey(taskDefinitionKey);
     processDefinition.getTaskDefinitions().put(taskDefinitionKey, taskDefinition);
     

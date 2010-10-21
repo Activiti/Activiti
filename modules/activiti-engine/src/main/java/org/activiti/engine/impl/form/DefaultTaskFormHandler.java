@@ -23,15 +23,7 @@ import org.activiti.engine.impl.task.TaskEntity;
 /**
  * @author Tom Baeyens
  */
-public class DefaultTaskFormHandler implements TaskFormHandler {
-  
-  protected String formKey;
-  protected String deploymentId;
-  
-  public DefaultTaskFormHandler(String formKey, String deploymentId) {
-    this.formKey = formKey;
-    this.deploymentId = deploymentId;
-  }
+public class DefaultTaskFormHandler extends DefaultFormHandler implements TaskFormHandler {
 
   public TaskForm createTaskForm(TaskEntity task) {
     return new TaskFormImpl(formKey, deploymentId, task);

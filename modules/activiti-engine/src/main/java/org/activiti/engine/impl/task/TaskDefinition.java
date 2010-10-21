@@ -16,7 +16,6 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.activiti.engine.impl.el.ActivitiValueExpression;
-import org.activiti.engine.impl.form.DefaultTaskFormHandler;
 import org.activiti.engine.impl.form.TaskFormHandler;
 
 /**
@@ -36,8 +35,8 @@ public class TaskDefinition {
   // form fields
   protected TaskFormHandler taskFormHandler;
   
-  public TaskDefinition(String formKey, String deploymentId) {
-    taskFormHandler = new DefaultTaskFormHandler(formKey, deploymentId);
+  public TaskDefinition(TaskFormHandler taskFormHandler) {
+    this.taskFormHandler = taskFormHandler;
   }
 
   // getters and setters //////////////////////////////////////////////////////

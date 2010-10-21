@@ -33,7 +33,7 @@ import org.activiti.pvm.activity.SignallableActivityBehavior;
 public class ServiceTaskDelegateActivityBehaviour implements SignallableActivityBehavior {
 
   protected ActivitiValueExpression expression;
-  protected ActivityBehavior activityBehaviorImplementation;
+  protected Class<? extends ActivityBehavior> activityBehaviorType;
   protected List<FieldDeclaration> fieldDeclarations;
 
   public ServiceTaskDelegateActivityBehaviour(ActivitiValueExpression expression, List<FieldDeclaration> fieldDeclarations) {
@@ -41,16 +41,16 @@ public class ServiceTaskDelegateActivityBehaviour implements SignallableActivity
     this.fieldDeclarations = fieldDeclarations;
   }
   
-  public ServiceTaskDelegateActivityBehaviour(ActivityBehavior activityBehaviorImplementation, List<FieldDeclaration> fieldDeclarations) {
-    this.activityBehaviorImplementation = activityBehaviorImplementation;
+  public ServiceTaskDelegateActivityBehaviour(Class<? extends ActivityBehavior> activityBehaviorType, List<FieldDeclaration> fieldDeclarations) {
+    this.activityBehaviorType = activityBehaviorType;
     this.fieldDeclarations = fieldDeclarations;
   }
 
   public void execute(ActivityExecution execution) throws Exception {
     Object object = null;
     
-    if (activityBehaviorImplementation != null) {
-      object = activityBehaviorImplementation;
+    if (activityBehaviorType != null) {
+      object = activityBehaviorType.newInstance();
     } else {
       object = expression.getValue(execution);
 
