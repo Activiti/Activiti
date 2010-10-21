@@ -13,6 +13,11 @@
   </para>
   
   <para>
+    Bugs and issues can be reported on the 
+    <ulink url="http://code.google.com/p/signavio-core-components/issues/list">Signavio core components issue tracker</ulink>.
+  </para>
+  
+  <para>
     The Activiti Modeler is automatically installed during the <link linkend="demo.setup">demo setup</link>.
     <mediaobject><imageobject><imagedata align="center" fileref="images/activiti-modeler.png"/></imageobject></mediaobject>
   </para>
