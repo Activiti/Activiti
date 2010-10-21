@@ -30,7 +30,6 @@
         <configuration>
           <excludes>
             <exclude>**/RepositoryConnectorConfigurationManagerImplTest.java</exclude>
-            <exclude>**/DemoConnectorTest.java</exclude>
           </excludes>
         </configuration>
       </plugin>
