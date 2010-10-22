@@ -174,7 +174,7 @@ public class BpmnParse extends Parse {
     super(parser);
     this.expressionManager = parser.getExpressionManager();
     this.parseListeners = parser.getParseListeners();
-    setSchemaResource(Thread.currentThread().getContextClassLoader().getResource(BpmnParser.SCHEMA_RESOURCE).toString());
+    setSchemaResource(ReflectUtil.getClassLoader().getResource(BpmnParser.SCHEMA_RESOURCE).toString());
     this.importers.put("http://schemas.xmlsoap.org/wsdl/", new WSDLImporter());
   }
   
@@ -258,9 +258,9 @@ public class BpmnParse extends Parse {
       
       try {
         //it is a class
-        Class<?> classStructure = this.getClass().getClassLoader().loadClass(structureRef);
+        Class<?> classStructure = ReflectUtil.loadClass(structureRef);
         structure = new ClassStructure(classStructure);
-      } catch (ClassNotFoundException e) {
+      } catch (ActivitiException e) {
         //it is a reference to a different structure
         structure = this.structures.get(structureRef);
       }

@@ -15,6 +15,7 @@ package org.activiti.engine.impl.util.io;
 import java.io.InputStream;
 
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.impl.util.ReflectUtil;
 
 
 /**
@@ -36,7 +37,7 @@ public class ResourceStreamSource implements StreamSource {
 
   public InputStream getInputStream() {
     if (classLoader==null) {
-      classLoader = Thread.currentThread().getContextClassLoader();
+      classLoader = ReflectUtil.getClassLoader();
     }
     InputStream inputStream = classLoader.getResourceAsStream(resource);
     if (inputStream==null) {

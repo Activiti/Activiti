@@ -15,10 +15,10 @@ package org.activiti.engine.impl.webservice;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.bpmn.BpmnInterface;
 import org.activiti.engine.impl.bpmn.BpmnInterfaceImplementation;
 import org.activiti.engine.impl.cfg.ProcessEngineConfiguration;
+import org.activiti.engine.impl.util.ReflectUtil;
 
 /**
  * Represents a WS implementation of a {@link BpmnInterface}
@@ -57,17 +57,9 @@ public class WSService implements BpmnInterfaceImplementation {
 
   SyncWebServiceClient getClient() {
     if (this.client == null) {
-      try {
-        //TODO refactor to use configuration
-        SyncWebServiceClientFactory factory = (SyncWebServiceClientFactory) Class.forName(ProcessEngineConfiguration.DEFAULT_WS_SYNC_FACTORY).newInstance();
-        this.client = factory.create(this.wsdlLocation);
-      } catch (InstantiationException e) {
-        throw new ActivitiException("SyncWebServiceClientFactory not found", e);
-      } catch (IllegalAccessException e) {
-        throw new ActivitiException("SyncWebServiceClientFactory not found", e);
-      } catch (ClassNotFoundException e) {
-        throw new ActivitiException("SyncWebServiceClientFactory not found", e);
-      }
+      //TODO refactor to use configuration
+      SyncWebServiceClientFactory factory = (SyncWebServiceClientFactory) ReflectUtil.instantiate(ProcessEngineConfiguration.DEFAULT_WS_SYNC_FACTORY);
+      this.client = factory.create(this.wsdlLocation);
     }
     return this.client;
   }

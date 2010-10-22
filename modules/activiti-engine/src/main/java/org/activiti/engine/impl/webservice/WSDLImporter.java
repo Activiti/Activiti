@@ -37,6 +37,7 @@ import org.activiti.engine.impl.bpmn.SimpleStructure;
 import org.activiti.engine.impl.bpmn.Structure;
 import org.activiti.engine.impl.bpmn.parser.BpmnParse;
 import org.activiti.engine.impl.bpmn.parser.XMLImporter;
+import org.activiti.engine.impl.util.ReflectUtil;
 import org.apache.xerces.parsers.DOMParser;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -174,12 +175,8 @@ public class WSDLImporter implements XMLImporter {
     Map<String, JFieldVar> fields = theClass.fields();
     int index = 0;
     for (Entry<String, JFieldVar> entry : fields.entrySet()) {
-      try {
-        Class<?> fieldClass = Class.forName(entry.getValue().type().boxify().fullName());
-        structure.setFieldName(index, entry.getKey(), fieldClass);
-      } catch (ClassNotFoundException e) {
-        throw new ActivitiException(e.getMessage(), e);
-      }
+      Class<?> fieldClass = ReflectUtil.loadClass(entry.getValue().type().boxify().fullName());
+      structure.setFieldName(index, entry.getKey(), fieldClass);
       index++;
     }
   }

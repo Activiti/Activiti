@@ -36,6 +36,7 @@ import org.activiti.engine.impl.cfg.ProcessEngineConfigurationAware;
 import org.activiti.engine.impl.interceptor.Session;
 import org.activiti.engine.impl.interceptor.SessionFactory;
 import org.activiti.engine.impl.util.IoUtil;
+import org.activiti.engine.impl.util.ReflectUtil;
 import org.activiti.engine.impl.variable.Type;
 import org.activiti.pvm.impl.util.ClassNameUtil;
 import org.apache.ibatis.builder.xml.XMLConfigBuilder;
@@ -108,7 +109,7 @@ public class DbSqlSessionFactory implements SessionFactory, ProcessEngineConfigu
       
       PooledDataSource pooledDataSource = 
         new PooledDataSource(
-              Thread.currentThread().getContextClassLoader(), 
+              ReflectUtil.getClassLoader(), 
               jdbcDriver, 
               jdbcUrl, 
               jdbcUsername,
@@ -132,8 +133,8 @@ public class DbSqlSessionFactory implements SessionFactory, ProcessEngineConfigu
 
   protected SqlSessionFactory createSessionFactory(DataSource dataSource, TransactionFactory transactionFactory) {
     try {
-      ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
-      InputStream inputStream = classLoader.getResourceAsStream("org/activiti/db/ibatis/activiti.ibatis.mem.conf.xml");
+      
+      InputStream inputStream = ReflectUtil.getClassLoader().getResourceAsStream("org/activiti/db/ibatis/activiti.ibatis.mem.conf.xml");
 
       // update the jdbc parameters to the configured ones...
       Environment environment = new Environment("default", transactionFactory, dataSource);
@@ -259,9 +260,8 @@ public class DbSqlSessionFactory implements SessionFactory, ProcessEngineConfigu
     boolean success = false;
     try {
       Connection connection = sqlSession.getConnection();
-      ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
       String resource = "org/activiti/db/" + operation + "/activiti." + databaseName + "." + operation + ".sql";
-      InputStream inputStream = classLoader.getResourceAsStream(resource);
+      InputStream inputStream = ReflectUtil.getClassLoader().getResourceAsStream(resource);
       if (inputStream == null) {
         throw new ActivitiException("resource '" + resource + "' is not available for creating the schema");
       }

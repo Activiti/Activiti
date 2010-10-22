@@ -180,6 +180,7 @@ public class ProcessEngineConfiguration {
   protected String mailServerDefaultFrom;
   
   protected Map<String, FormEngine> formEngines;
+  private ClassLoader classLoader;
 
   public ProcessEngineConfiguration() {
     processEngineName = ProcessEngines.NAME_DEFAULT;
@@ -708,5 +709,13 @@ public class ProcessEngineConfiguration {
 
   public void setFormService(FormService formService) {
     this.formService = formService;
+  }
+  
+  public void setClassLoader(ClassLoader classLoader) {
+    this.classLoader = classLoader;
+  }
+
+  public ClassLoader getClassLoader() {
+    return classLoader;
   }
 }

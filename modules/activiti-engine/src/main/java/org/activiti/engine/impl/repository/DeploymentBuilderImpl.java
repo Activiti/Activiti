@@ -19,6 +19,7 @@ import java.util.zip.ZipInputStream;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.RepositoryServiceImpl;
 import org.activiti.engine.impl.util.IoUtil;
+import org.activiti.engine.impl.util.ReflectUtil;
 import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.repository.DeploymentBuilder;
 
@@ -50,8 +51,7 @@ public class DeploymentBuilderImpl implements DeploymentBuilder {
   }
 
   public DeploymentBuilder addClasspathResource(String resource) {
-    ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
-    InputStream inputStream = classLoader.getResourceAsStream(resource);
+    InputStream inputStream = ReflectUtil.getClassLoader().getResourceAsStream(resource);
     if (inputStream==null) {
       throw new ActivitiException("resource '"+resource+"' not found");
     }

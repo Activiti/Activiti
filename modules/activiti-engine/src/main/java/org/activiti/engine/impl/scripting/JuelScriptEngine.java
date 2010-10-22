@@ -29,7 +29,9 @@ import javax.script.ScriptException;
 import javax.script.SimpleBindings;
 
 import org.activiti.el.juel.util.SimpleResolver;
+import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.el.ExpressionFactoryResolver;
+import org.activiti.engine.impl.util.ReflectUtil;
 import org.activiti.javax.el.ArrayELResolver;
 import org.activiti.javax.el.BeanELResolver;
 import org.activiti.javax.el.CompositeELResolver;
@@ -211,9 +213,9 @@ public class JuelScriptEngine extends AbstractScriptEngine implements Compilable
       clazz = (Class< ? >) obj;
     } else if (obj instanceof String) {
       try {
-        clazz = Class.forName((String) obj);
-      } catch (ClassNotFoundException cnfe) {
-        throw new ELException(cnfe);
+        clazz = ReflectUtil.loadClass((String) obj);
+      } catch (ActivitiException ae) {
+        throw new ELException(ae);
       }
     } else {
       throw new ELException("Class or class name is missing");

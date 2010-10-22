@@ -38,6 +38,7 @@ import org.activiti.engine.impl.ProcessEngineImpl;
 import org.activiti.engine.impl.cfg.ProcessEngineConfiguration;
 import org.activiti.engine.impl.jobexecutor.JobExecutor;
 import org.activiti.engine.impl.util.ClockUtil;
+import org.activiti.engine.impl.util.ReflectUtil;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.pvm.impl.util.LogUtil.ThreadLogMode;
 import org.activiti.pvm.test.PvmTestCase;
@@ -82,16 +83,14 @@ public class ActivitiInternalTestCase extends PvmTestCase {
   
   private static ProcessEngineInitializer getProcessEngineInitializer() {
     String processEngineInitializerClassName = null;
-    ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
-    InputStream initializersInputStream = classLoader.getResourceAsStream("activiti.initializer.properties");
+    InputStream initializersInputStream = ReflectUtil.getClassLoader().getResourceAsStream("activiti.initializer.properties");
     if (initializersInputStream!=null) {
       Properties properties = new Properties();
       try {
         properties.load(initializersInputStream);
         processEngineInitializerClassName = properties.getProperty("process.engine.initializer");
         if (processEngineInitializerClassName!=null) {
-          Class< ? > processEngineInitializerClass = Class.forName(processEngineInitializerClassName, true, classLoader);
-          return (ProcessEngineInitializer) processEngineInitializerClass.newInstance();
+          return (ProcessEngineInitializer) ReflectUtil.instantiate(processEngineInitializerClassName);
         }
     
       } catch (Exception e) {

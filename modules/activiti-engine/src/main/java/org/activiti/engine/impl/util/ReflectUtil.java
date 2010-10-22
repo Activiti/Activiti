@@ -18,7 +18,7 @@ import java.lang.reflect.Method;
 import java.util.Arrays;
 
 import org.activiti.engine.ActivitiException;
-import org.activiti.engine.ProcessEngine;
+import org.activiti.engine.impl.interceptor.CommandContext;
 
 
 /**
@@ -27,6 +27,12 @@ import org.activiti.engine.ProcessEngine;
 public abstract class ReflectUtil {
 
   public static ClassLoader getClassLoader() {
+    if(CommandContext.getCurrent() != null) {
+      final ClassLoader classLoader = CommandContext.getCurrent().getProcessEngineConfiguration().getClassLoader();
+      if(classLoader != null) {
+        return classLoader;
+      }
+    }
     return Thread.currentThread().getContextClassLoader();
   }
   
@@ -113,14 +119,14 @@ public abstract class ReflectUtil {
     return null;
   }
 
-  public static ProcessEngine instantiate(String className, Object[] args) {
+  public static Object instantiate(String className, Object[] args) {
     Class< ? > clazz = loadClass(className);
     Constructor< ? > constructor = findMatchingConstructor(clazz, args);
     if (constructor==null) {
       throw new ActivitiException("couldn't find constructor for "+className+" with args "+Arrays.asList(args));
     } 
     try {
-      return (ProcessEngine) constructor.newInstance(args);
+      return constructor.newInstance(args);
     } catch (Exception e) {
       throw new ActivitiException("couldn't find constructor for "+className+" with args "+Arrays.asList(args), e);
     }

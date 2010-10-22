@@ -22,6 +22,7 @@ import junit.framework.Assert;
 
 import org.activiti.engine.impl.bpmn.SimpleStructure;
 import org.activiti.engine.impl.bpmn.Structure;
+import org.activiti.engine.impl.util.ReflectUtil;
 import org.activiti.engine.impl.webservice.WSDLImporter;
 import org.activiti.engine.impl.webservice.WSOperation;
 import org.activiti.engine.impl.webservice.WSService;
@@ -35,7 +36,7 @@ public class WSDLImporterTest {
   @Test
   public void testImport() throws Exception {
     WSDLImporter importer = new WSDLImporter();
-    URL url = Thread.currentThread().getContextClassLoader().getResource("org/activiti/engine/impl/webservice/counter.wsdl");
+    URL url = ReflectUtil.getClassLoader().getResource("org/activiti/engine/impl/webservice/counter.wsdl");
     importer.importFrom(url.toString());
     
     List<WSService> services = new ArrayList<WSService>(importer.getServices());

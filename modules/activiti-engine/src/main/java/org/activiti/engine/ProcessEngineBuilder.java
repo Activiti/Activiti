@@ -17,6 +17,7 @@ import java.io.InputStream;
 import java.util.Properties;
 
 import org.activiti.engine.impl.cfg.ProcessEngineConfiguration;
+import org.activiti.engine.impl.util.ReflectUtil;
 
 /**
  * Builds a process engine based on a couple of simple properties.
@@ -250,7 +251,7 @@ public class ProcessEngineBuilder {
   }
 
   public ProcessEngineBuilder configureFromPropertiesResource(String propertiesResource) {
-    InputStream inputStream = Thread.currentThread().getContextClassLoader().getResourceAsStream(propertiesResource);
+    InputStream inputStream = ReflectUtil.getClassLoader().getResourceAsStream(propertiesResource);
     if (inputStream == null) {
       throw new ActivitiException("configuration properties resource '" + propertiesResource + "' is unavailable on classpath "
               + System.getProperty("java.class.path"));

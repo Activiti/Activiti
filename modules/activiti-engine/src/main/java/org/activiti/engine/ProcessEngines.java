@@ -28,6 +28,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.activiti.engine.impl.ProcessEngineInfoImpl;
+import org.activiti.engine.impl.util.ReflectUtil;
 
 
 /** Helper for initializing and closing process engines in server environments.
@@ -64,7 +65,7 @@ public abstract class ProcessEngines {
   /** is called when a server boots by the activiti-rest webapp. */
   public synchronized static void init() {
     if (!isInitialized) {
-      ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+      ClassLoader classLoader = ReflectUtil.getClassLoader();
       Enumeration<URL> resources = null;
       try {
         resources = classLoader.getResources("activiti.properties");
