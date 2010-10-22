@@ -23,6 +23,7 @@ import javax.sql.DataSource;
 import org.activiti.engine.HistoryService;
 import org.activiti.engine.IdentityService;
 import org.activiti.engine.ProcessEngine;
+import org.activiti.engine.ProcessEngines;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.impl.ProcessEngineImpl;
 import org.activiti.engine.impl.cfg.IdGenerator;
@@ -67,6 +68,7 @@ public class ProcessEngineFactoryBean implements FactoryBean<ProcessEngine>, Dis
 
   public void destroy() throws Exception {
     if (processEngine != null) {
+      ProcessEngines.getProcessEngines().remove(processEngine.getName());
       processEngine.close();
     }
   }
@@ -81,6 +83,7 @@ public class ProcessEngineFactoryBean implements FactoryBean<ProcessEngine>, Dis
     initializeJPA();
 
     processEngine = (ProcessEngineImpl) processEngineConfiguration.buildProcessEngine();
+    ProcessEngines.getProcessEngines().put(processEngine.getName(), processEngine);
 
     if (deploymentResources.length > 0) {
       autoDeployResources();
@@ -111,7 +114,9 @@ public class ProcessEngineFactoryBean implements FactoryBean<ProcessEngine>, Dis
   }
 
   protected void initializeExpressionManager() {
-    processEngineConfiguration.setExpressionManager(new SpringExpressionManager(applicationContext));
+    if (applicationContext != null) {
+      processEngineConfiguration.setExpressionManager(new SpringExpressionManager(applicationContext));
+    }
   }
   
   private void initializeJPA() {
