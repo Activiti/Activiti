@@ -5,13 +5,13 @@
 	xmlns:activiti="http://activiti.org/bpmn-extensions" 
 	targetNamespace="http://www.activiti.org/bpmn2.0">
 
-	<process id="exceptionInJobExecution">
+	<process id="exceptionInJobExecution" name="Timer (1 minute) with exception">
 
 		<startEvent id="theStart" />
 
 		<sequenceFlow id="flow1" sourceRef="theStart" targetRef="firstLineSupport" />
-    
-		<userTask id="firstLineSupport" name="First line support" />
+
+		<userTask id="firstLineSupport" name="First line support" activiti:assignee="kermit"/>
 
 		<sequenceFlow id="flow2" sourceRef="firstLineSupport" targetRef="normalEnd" />
 
@@ -19,7 +19,7 @@
 
 		<boundaryEvent id="escalationTimer" cancelActivity="true" attachedToRef="firstLineSupport">
 			<timerEventDefinition>
-				<timeDuration>PT4H</timeDuration>
+				<timeDuration>PT1M</timeDuration>
 			</timerEventDefinition>
 		</boundaryEvent>
 

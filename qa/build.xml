@@ -187,7 +187,6 @@ Then run test.demo.setup to make it get placed inside your tomcat server." unles
     </copy>
   </target>
 
-
   <target name="open.html.page">
     <fail message="property url has to be specified to use this target" unless="url" />
     <exec executable="${macos.browser}" os="Mac OS X">
@@ -200,5 +199,28 @@ Then run test.demo.setup to make it get placed inside your tomcat server." unles
       <arg value="${url}" />
     </exec>
   </target>
+	
+	<!-- Assumes that a demo setup is successfully running (in /distro/target/etc) -->
+	<target name="deploy.ui.qa.processes">
+		<delete dir="ui/build" />
+		<mkdir dir="ui/build"/>
+		<zip destfile="ui/build/ui-qa-processes.bar">
+		  <fileset dir="ui/processes">
+		    <include name="verifyJobExceptionStacktrace.bpmn20.xml"/>
+		  </fileset>
+		</zip>
+		<taskdef name="deploy-bar" classname="org.activiti.engine.impl.ant.DeployBarTask">
+		  <classpath>
+		    <fileset dir="${activiti.home}/setup/build/">
+		      <include name="activiti-cfg.jar"/>
+		     </fileset>
+		     <fileset dir="${activiti.home}/examples/activiti-engine-examples/libs-runtime/" />
+         <fileset dir="${activiti.home}/examples/activiti-engine-examples/libs-test/" />
+		   </classpath>
+		  </taskdef>
+		
+		  <deploy-bar file="ui/build/ui-qa-processes.bar" />
+		  <delete dir="ui/build" />
+	</target>
 	
 </project>
