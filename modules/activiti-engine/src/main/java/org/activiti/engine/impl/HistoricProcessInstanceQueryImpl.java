@@ -63,7 +63,7 @@ public class HistoricProcessInstanceQueryImpl extends AbstractQuery<HistoricProc
     return this;
   }
   
-  public HistoricProcessInstanceQuery orderById() {
+  public HistoricProcessInstanceQuery orderByHistoricProcessInstanceId() {
     return orderBy(HistoricProcessInstanceQueryProperty.ID);
   }
   

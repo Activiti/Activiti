@@ -48,7 +48,7 @@ public class ProcessDefinitionQueryImpl extends AbstractQuery<ProcessDefinitionQ
     super(commandExecutor);
   }
   
-  public ProcessDefinitionQueryImpl id(String processDefinitionId) {
+  public ProcessDefinitionQueryImpl processDefinitionId(String processDefinitionId) {
     this.id = processDefinitionId;
     return this;
   }
@@ -114,8 +114,8 @@ public class ProcessDefinitionQueryImpl extends AbstractQuery<ProcessDefinitionQ
     return orderBy(ProcessDefinitionQueryProperty.DEPLOYMENT_ID);
   }
   
-  public ProcessDefinitionQueryImpl orderById() {
-    return orderBy(ProcessDefinitionQueryProperty.ID);
+  public ProcessDefinitionQueryImpl orderByProcessDefinitionId() {
+    return orderBy(ProcessDefinitionQueryProperty.PROCESS_DEFINITION_ID);
   }
   
   public ProcessDefinitionQueryImpl orderByKey() {

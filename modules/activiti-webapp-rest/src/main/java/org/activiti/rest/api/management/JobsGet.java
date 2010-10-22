@@ -31,7 +31,7 @@ public class JobsGet extends ActivitiPagingWebScript
 {
 
   public JobsGet() {
-    properties.put("id", JobQueryProperty.ID);
+    properties.put("id", JobQueryProperty.JOB_ID);
     properties.put("executionId", JobQueryProperty.EXECUTION_ID);
     properties.put("processInstanceId", JobQueryProperty.PROCESS_INSTANCE_ID);
     properties.put("dueDate", JobQueryProperty.DUEDATE);

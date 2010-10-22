@@ -52,7 +52,7 @@ public class JobQueryImpl extends AbstractQuery<JobQuery, Job> implements JobQue
     super(commandExecutor);
   }
   
-  public JobQuery id(String jobId) {
+  public JobQuery jobId(String jobId) {
     if (jobId == null) {
       throw new ActivitiException("Provided job id is null");
     }
@@ -144,8 +144,8 @@ public class JobQueryImpl extends AbstractQuery<JobQuery, Job> implements JobQue
     return orderBy(JobQueryProperty.EXECUTION_ID);
   }
   
-  public JobQuery orderById() {
-    return orderBy(JobQueryProperty.ID);
+  public JobQuery orderByJobId() {
+    return orderBy(JobQueryProperty.JOB_ID);
   }
   
   public JobQuery orderByProcessInstanceId() {

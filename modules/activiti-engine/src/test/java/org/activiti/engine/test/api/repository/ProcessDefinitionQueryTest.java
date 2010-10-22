@@ -181,7 +181,7 @@ public class ProcessDefinitionQueryTest extends ActivitiInternalTestCase {
   
   public void testInvalidUsageOfLatest() {
     try {
-      repositoryService.createProcessDefinitionQuery().id("test").latest().list();
+      repositoryService.createProcessDefinitionQuery().processDefinitionId("test").latest().list();
       fail();
     } catch (ActivitiException e) {}
     
@@ -210,7 +210,7 @@ public class ProcessDefinitionQueryTest extends ActivitiInternalTestCase {
     
     // asc 
     
-    ProcessDefinitionQuery query = repositoryService.createProcessDefinitionQuery().orderById().asc();
+    ProcessDefinitionQuery query = repositoryService.createProcessDefinitionQuery().orderByProcessDefinitionId().asc();
     verifyQueryResults(query, 3);
     
     query = repositoryService.createProcessDefinitionQuery().orderByDeploymentId().asc();
@@ -224,7 +224,7 @@ public class ProcessDefinitionQueryTest extends ActivitiInternalTestCase {
     
     // desc
     
-    query = repositoryService.createProcessDefinitionQuery().orderById().desc();
+    query = repositoryService.createProcessDefinitionQuery().orderByProcessDefinitionId().desc();
     verifyQueryResults(query, 3);
     
     query = repositoryService.createProcessDefinitionQuery().orderByDeploymentId().desc();

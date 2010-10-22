@@ -44,7 +44,7 @@ public class GroupQueryImpl extends AbstractQuery<GroupQuery, Group> implements 
     super(commandExecutor);
   }
   
-  public GroupQuery id(String id) {
+  public GroupQuery groupId(String id) {
     if (id == null) {
       throw new ActivitiException("Provided id is null");
     }
@@ -86,8 +86,8 @@ public class GroupQueryImpl extends AbstractQuery<GroupQuery, Group> implements 
 
   //sorting ////////////////////////////////////////////////////////
   
-  public GroupQuery orderById() {
-    return orderBy(GroupQueryProperty.ID);
+  public GroupQuery orderByGroupId() {
+    return orderBy(GroupQueryProperty.GROUP_ID);
   }
   
   public GroupQuery orderByName() {

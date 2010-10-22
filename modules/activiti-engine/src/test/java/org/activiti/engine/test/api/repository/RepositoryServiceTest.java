@@ -43,7 +43,7 @@ public class RepositoryServiceTest extends ActivitiInternalTestCase {
     List<ProcessDefinition> definitions = repositoryService.createProcessDefinitionQuery().list();
     assertEquals(1, definitions.size());
   
-    ProcessDefinition processDefinition = repositoryService.createProcessDefinitionQuery().id(definitions.get(0).getId()).singleResult();
+    ProcessDefinition processDefinition = repositoryService.createProcessDefinitionQuery().processDefinitionId(definitions.get(0).getId()).singleResult();
     assertNotNull(processDefinition);
     assertEquals("oneTaskProcess", processDefinition.getKey());
     assertEquals("The One Task Process", processDefinition.getName());

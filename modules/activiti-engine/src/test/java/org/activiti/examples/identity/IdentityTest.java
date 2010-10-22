@@ -100,7 +100,7 @@ public class IdentityTest extends ActivitiInternalTestCase {
     user.setEmail("johndoe@alfresco.com");
     identityService.saveUser(user);
 
-    user = identityService.createUserQuery().id("johndoe").singleResult();
+    user = identityService.createUserQuery().userId("johndoe").singleResult();
     assertEquals("johndoe", user.getId());
     assertEquals("John", user.getFirstName());
     assertEquals("Doe", user.getLastName());
@@ -114,7 +114,7 @@ public class IdentityTest extends ActivitiInternalTestCase {
     group.setName("Sales division");
     identityService.saveGroup(group);
 
-    group = identityService.createGroupQuery().id("sales").singleResult();
+    group = identityService.createGroupQuery().groupId("sales").singleResult();
     assertEquals("sales", group.getId());
     assertEquals("Sales division", group.getName());
 

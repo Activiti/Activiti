@@ -18,7 +18,6 @@ import org.activiti.rest.util.ActivitiRequest;
 import org.activiti.rest.util.ActivitiWebScript;
 import org.springframework.extensions.webscripts.Cache;
 import org.springframework.extensions.webscripts.Status;
-import org.springframework.extensions.webscripts.WebScriptRequest;
 
 /**
  * Returns signalData, metadata and paging info about a table.
@@ -39,7 +38,7 @@ public class JobGet extends ActivitiWebScript {
   protected void executeWebScript(ActivitiRequest req, Status status, Cache cache, Map<String, Object> model)
   {
     String jobId = req.getMandatoryPathParameter("jobId");
-    model.put("job", getManagementService().createJobQuery().id(jobId).singleResult());
+    model.put("job", getManagementService().createJobQuery().jobId(jobId).singleResult());
     model.put("stacktrace", getManagementService().getJobExceptionStacktrace(jobId));
   }
 

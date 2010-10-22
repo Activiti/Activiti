@@ -29,7 +29,7 @@ public class GroupQueryProperty implements QueryProperty {
   
   private static final Map<String, GroupQueryProperty> properties = new HashMap<String, GroupQueryProperty>();
 
-  public static final GroupQueryProperty ID = new GroupQueryProperty("G.ID_");
+  public static final GroupQueryProperty GROUP_ID = new GroupQueryProperty("G.ID_");
   public static final GroupQueryProperty NAME = new GroupQueryProperty("G.NAME_");
   public static final GroupQueryProperty TYPE = new GroupQueryProperty("G.TYPE_");
   

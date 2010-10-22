@@ -27,12 +27,8 @@ import org.activiti.engine.query.QueryProperty;
 public class ProcessDefinitionQueryProperty implements QueryProperty {
   
   private static final Map<String, ProcessDefinitionQueryProperty> properties = new HashMap<String, ProcessDefinitionQueryProperty>();
-
-  String PROPERTY_ID = "ID_";
-  String PROPERTY_KEY = "KEY_";
-  String PROPERTY_VERSION = "VERSION_";
   
-  public static final ProcessDefinitionQueryProperty ID = new ProcessDefinitionQueryProperty("PD.ID_");
+  public static final ProcessDefinitionQueryProperty PROCESS_DEFINITION_ID = new ProcessDefinitionQueryProperty("PD.ID_");
   public static final ProcessDefinitionQueryProperty DEPLOYMENT_ID = new ProcessDefinitionQueryProperty("PD.DEPLOYMENT_ID_");
   public static final ProcessDefinitionQueryProperty KEY = new ProcessDefinitionQueryProperty("PD.KEY_");
   public static final ProcessDefinitionQueryProperty VERSION = new ProcessDefinitionQueryProperty("PD.VERSION_");

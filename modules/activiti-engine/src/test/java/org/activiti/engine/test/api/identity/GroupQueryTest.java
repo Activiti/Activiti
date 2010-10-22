@@ -74,16 +74,16 @@ public class GroupQueryTest extends ActivitiInternalTestCase {
   }
   
   public void testQueryById() {
-    GroupQuery query = identityService.createGroupQuery().id("muppets");
+    GroupQuery query = identityService.createGroupQuery().groupId("muppets");
     verifyQueryResults(query, 1);
   }
   
   public void testQueryByInvalidId() {
-    GroupQuery query = identityService.createGroupQuery().id("invalid");
+    GroupQuery query = identityService.createGroupQuery().groupId("invalid");
     verifyQueryResults(query, 0);
     
     try {
-      identityService.createGroupQuery().id(null).list();
+      identityService.createGroupQuery().groupId(null).list();
       fail();
     } catch (ActivitiException e) {}
   }
@@ -152,7 +152,7 @@ public class GroupQueryTest extends ActivitiInternalTestCase {
     query = identityService.createGroupQuery().member("kermit");
     verifyQueryResults(query, 3);
     
-    query = query.orderById().asc();
+    query = query.orderByGroupId().asc();
     List<Group> groups = query.list();
     assertEquals(3, groups.size());
     assertEquals("admin", groups.get(0).getId());
@@ -178,12 +178,12 @@ public class GroupQueryTest extends ActivitiInternalTestCase {
   
   public void testQuerySorting() {
     // asc
-    assertEquals(4, identityService.createGroupQuery().orderById().asc().count());
+    assertEquals(4, identityService.createGroupQuery().orderByGroupId().asc().count());
     assertEquals(4, identityService.createGroupQuery().orderByName().asc().count());
     assertEquals(4, identityService.createGroupQuery().orderByType().asc().count());
 
     // desc
-    assertEquals(4, identityService.createGroupQuery().orderById().desc().count());
+    assertEquals(4, identityService.createGroupQuery().orderByGroupId().desc().count());
     assertEquals(4, identityService.createGroupQuery().orderByName().desc().count());
     assertEquals(4, identityService.createGroupQuery().orderByType().desc().count());
     
@@ -205,12 +205,12 @@ public class GroupQueryTest extends ActivitiInternalTestCase {
   
   public void testQueryInvalidSortingUsage() {
     try {
-      identityService.createGroupQuery().orderById().list();
+      identityService.createGroupQuery().orderByGroupId().list();
       fail();
     } catch (ActivitiException e) {}
     
     try {
-      identityService.createGroupQuery().orderById().orderByName().list();
+      identityService.createGroupQuery().orderByGroupId().orderByName().list();
       fail();
     } catch (ActivitiException e) {}
   }

@@ -38,7 +38,7 @@ public interface HistoricProcessInstanceQuery extends Query<HistoricProcessInsta
   HistoricProcessInstanceQuery unfinished();
   
   /** Order by id (needs to be followed by {@link #asc()} or {@link #desc()}). */
-  HistoricProcessInstanceQuery orderById();
+  HistoricProcessInstanceQuery orderByHistoricProcessInstanceId();
   
   /** Order by the process instance id (needs to be followed by {@link #asc()} or {@link #desc()}). */
   HistoricProcessInstanceQuery orderByProcessInstanceId();

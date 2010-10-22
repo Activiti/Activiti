@@ -36,7 +36,7 @@ public class GroupGet extends ActivitiWebScript {
   @Override
   protected void executeWebScript(ActivitiRequest req, Status status, Cache cache, Map<String, Object> model) {
     String groupId = req.getMandatoryPathParameter("groupId");
-    model.put("group", getIdentityService().createGroupQuery().id(groupId).singleResult());
+    model.put("group", getIdentityService().createGroupQuery().groupId(groupId).singleResult());
   }
 
 }

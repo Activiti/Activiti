@@ -241,14 +241,14 @@ public class JobQueryTest extends ActivitiInternalTestCase {
   
   public void testQuerySorting() {
     // asc
-    assertEquals(4, managementService.createJobQuery().orderById().asc().count());
+    assertEquals(4, managementService.createJobQuery().orderByJobId().asc().count());
     assertEquals(4, managementService.createJobQuery().orderByDuedate().asc().count());
     assertEquals(4, managementService.createJobQuery().orderByExecutionId().asc().count());
     assertEquals(4, managementService.createJobQuery().orderByProcessInstanceId().asc().count());
     assertEquals(4, managementService.createJobQuery().orderByRetries().asc().count());
 
     // desc
-    assertEquals(4, managementService.createJobQuery().orderById().desc().count());
+    assertEquals(4, managementService.createJobQuery().orderByJobId().desc().count());
     assertEquals(4, managementService.createJobQuery().orderByDuedate().desc().count());
     assertEquals(4, managementService.createJobQuery().orderByExecutionId().desc().count());
     assertEquals(4, managementService.createJobQuery().orderByProcessInstanceId().desc().count());
@@ -280,7 +280,7 @@ public class JobQueryTest extends ActivitiInternalTestCase {
   
   public void testQueryInvalidSortingUsage() {
     try {
-      managementService.createJobQuery().orderById().list();
+      managementService.createJobQuery().orderByJobId().list();
       fail();
     } catch (ActivitiException e) {
       assertTextPresent("call asc() or desc() after using orderByXX()", e.getMessage());

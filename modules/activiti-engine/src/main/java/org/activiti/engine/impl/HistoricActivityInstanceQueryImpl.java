@@ -152,8 +152,8 @@ public class HistoricActivityInstanceQueryImpl extends AbstractQuery<HistoricAct
     return this;
   }
 
-  public HistoricActivityInstanceQueryImpl orderById() {
-    orderBy(HistoricActivityInstanceQueryProperty.ID);
+  public HistoricActivityInstanceQueryImpl orderByHistoricActivityInstanceId() {
+    orderBy(HistoricActivityInstanceQueryProperty.HISTORIC_ACTIVITY_INSTANCE_ID);
     return this;
   }
 

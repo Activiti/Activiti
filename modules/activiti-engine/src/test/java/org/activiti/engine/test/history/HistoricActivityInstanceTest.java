@@ -119,7 +119,7 @@ public class HistoricActivityInstanceTest extends ActivitiInternalTestCase {
   public void testSorting() {
     runtimeService.startProcessInstanceByKey("process");
     
-    assertEquals(1, historyService.createHistoricActivityInstanceQuery().orderById().asc().list().size());
+    assertEquals(1, historyService.createHistoricActivityInstanceQuery().orderByHistoricActivityInstanceId().asc().list().size());
     assertEquals(1, historyService.createHistoricActivityInstanceQuery().orderByStart().asc().list().size());
     assertEquals(1, historyService.createHistoricActivityInstanceQuery().orderByEnd().asc().list().size());
     assertEquals(1, historyService.createHistoricActivityInstanceQuery().orderByDuration().asc().list().size());
@@ -127,7 +127,7 @@ public class HistoricActivityInstanceTest extends ActivitiInternalTestCase {
     assertEquals(1, historyService.createHistoricActivityInstanceQuery().orderByProcessDefinitionId().asc().list().size());
     assertEquals(1, historyService.createHistoricActivityInstanceQuery().orderByProcessInstanceId().asc().list().size());
 
-    assertEquals(1, historyService.createHistoricActivityInstanceQuery().orderById().desc().list().size());
+    assertEquals(1, historyService.createHistoricActivityInstanceQuery().orderByHistoricActivityInstanceId().desc().list().size());
     assertEquals(1, historyService.createHistoricActivityInstanceQuery().orderByStart().desc().list().size());
     assertEquals(1, historyService.createHistoricActivityInstanceQuery().orderByEnd().desc().list().size());
     assertEquals(1, historyService.createHistoricActivityInstanceQuery().orderByDuration().desc().list().size());
@@ -135,7 +135,7 @@ public class HistoricActivityInstanceTest extends ActivitiInternalTestCase {
     assertEquals(1, historyService.createHistoricActivityInstanceQuery().orderByProcessDefinitionId().desc().list().size());
     assertEquals(1, historyService.createHistoricActivityInstanceQuery().orderByProcessInstanceId().desc().list().size());
 
-    assertEquals(1, historyService.createHistoricActivityInstanceQuery().orderById().asc().count());
+    assertEquals(1, historyService.createHistoricActivityInstanceQuery().orderByHistoricActivityInstanceId().asc().count());
     assertEquals(1, historyService.createHistoricActivityInstanceQuery().orderByStart().asc().count());
     assertEquals(1, historyService.createHistoricActivityInstanceQuery().orderByEnd().asc().count());
     assertEquals(1, historyService.createHistoricActivityInstanceQuery().orderByDuration().asc().count());
@@ -143,7 +143,7 @@ public class HistoricActivityInstanceTest extends ActivitiInternalTestCase {
     assertEquals(1, historyService.createHistoricActivityInstanceQuery().orderByProcessDefinitionId().asc().count());
     assertEquals(1, historyService.createHistoricActivityInstanceQuery().orderByProcessInstanceId().asc().count());
   
-    assertEquals(1, historyService.createHistoricActivityInstanceQuery().orderById().desc().count());
+    assertEquals(1, historyService.createHistoricActivityInstanceQuery().orderByHistoricActivityInstanceId().desc().count());
     assertEquals(1, historyService.createHistoricActivityInstanceQuery().orderByStart().desc().count());
     assertEquals(1, historyService.createHistoricActivityInstanceQuery().orderByEnd().desc().count());
     assertEquals(1, historyService.createHistoricActivityInstanceQuery().orderByDuration().desc().count());

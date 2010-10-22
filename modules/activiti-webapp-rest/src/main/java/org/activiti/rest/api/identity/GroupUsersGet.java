@@ -29,7 +29,7 @@ public class GroupUsersGet extends ActivitiPagingWebScript
 {
 
   public GroupUsersGet() {
-    properties.put("id", UserQueryProperty.ID);
+    properties.put("id", UserQueryProperty.USER_ID);
     properties.put("firstName", UserQueryProperty.FIRST_NAME);
     properties.put("lastName", UserQueryProperty.LAST_NAME);
     properties.put("email", UserQueryProperty.EMAIL);

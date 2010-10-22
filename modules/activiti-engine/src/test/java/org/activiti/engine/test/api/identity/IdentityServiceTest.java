@@ -48,13 +48,13 @@ public class IdentityServiceTest extends ActivitiInternalTestCase {
     identityService.saveUser(user);
 
     // Fetch and update the user
-    user = identityService.createUserQuery().id("johndoe").singleResult();
+    user = identityService.createUserQuery().userId("johndoe").singleResult();
     user.setEmail("updated@alfresco.com");
     user.setFirstName("Jane");
     user.setLastName("Donnel");
     identityService.saveUser(user);
 
-    user = identityService.createUserQuery().id("johndoe").singleResult();
+    user = identityService.createUserQuery().userId("johndoe").singleResult();
     assertEquals("Jane", user.getFirstName());
     assertEquals("Donnel", user.getLastName());
     assertEquals("updated@alfresco.com", user.getEmail());
@@ -67,23 +67,23 @@ public class IdentityServiceTest extends ActivitiInternalTestCase {
     group.setName("Sales");
     identityService.saveGroup(group);
 
-    group = identityService.createGroupQuery().id("sales").singleResult();
+    group = identityService.createGroupQuery().groupId("sales").singleResult();
     group.setName("Updated");
     identityService.saveGroup(group);
 
-    group = identityService.createGroupQuery().id("sales").singleResult();
+    group = identityService.createGroupQuery().groupId("sales").singleResult();
     assertEquals("Updated", group.getName());
 
     identityService.deleteGroup(group.getId());
   }
 
   public void findUserByUnexistingId() {
-    User user = identityService.createUserQuery().id("unexistinguser").singleResult();
+    User user = identityService.createUserQuery().userId("unexistinguser").singleResult();
     assertNull(user);
   }
 
   public void findGroupByUnexistingId() {
-    Group group = identityService.createGroupQuery().id("unexistinggroup").singleResult();
+    Group group = identityService.createGroupQuery().groupId("unexistinggroup").singleResult();
     assertNull(group);
   }
 
@@ -156,7 +156,7 @@ public class IdentityServiceTest extends ActivitiInternalTestCase {
   
   public void testFindGroupByIdNullArgument() {
     try {
-      identityService.createGroupQuery().id(null).singleResult();
+      identityService.createGroupQuery().groupId(null).singleResult();
       fail("ActivitiException expected");
     } catch (ActivitiException ae) {
       assertTextPresent("id is null", ae.getMessage());

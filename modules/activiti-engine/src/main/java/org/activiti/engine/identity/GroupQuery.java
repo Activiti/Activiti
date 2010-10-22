@@ -24,7 +24,7 @@ import org.activiti.engine.query.Query;
 public interface GroupQuery extends Query<GroupQuery, Group> {
   
   /** Only select {@link Group}s with the given id. */
-  GroupQuery id(String id);
+  GroupQuery groupId(String id);
   
   /** Only select {@link Group}s with the given name. */
   GroupQuery name(String name);
@@ -42,7 +42,7 @@ public interface GroupQuery extends Query<GroupQuery, Group> {
   //sorting ////////////////////////////////////////////////////////
   
   /** Order by group id (needs to be followed by {@link #asc()} or {@link #desc()}). */
-  GroupQuery orderById();
+  GroupQuery orderByGroupId();
   
   /** Order by group name (needs to be followed by {@link #asc()} or {@link #desc()}). */
   GroupQuery orderByName();

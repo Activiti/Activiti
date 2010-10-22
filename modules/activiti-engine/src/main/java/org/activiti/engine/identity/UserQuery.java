@@ -24,7 +24,7 @@ import org.activiti.engine.query.Query;
 public interface UserQuery extends Query<UserQuery, User> {
   
   /** Only select {@link User}s with the given id/ */
-  UserQuery id(String id);
+  UserQuery userId(String id);
   
   /** Only select {@link User}s with the given firstName. */
   UserQuery firstName(String firstName);
@@ -56,7 +56,7 @@ public interface UserQuery extends Query<UserQuery, User> {
   //sorting ////////////////////////////////////////////////////////
   
   /** Order by user id (needs to be followed by {@link #asc()} or {@link #desc()}). */
-  UserQuery orderById();
+  UserQuery orderByUserId();
   
   /** Order by user first name (needs to be followed by {@link #asc()} or {@link #desc()}). */
   UserQuery orderByFirstName();

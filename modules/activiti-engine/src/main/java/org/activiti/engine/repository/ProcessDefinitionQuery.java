@@ -25,7 +25,7 @@ import org.activiti.engine.query.Query;
 public interface ProcessDefinitionQuery extends Query<ProcessDefinitionQuery, ProcessDefinition> {
   
   /** Only select process definiton with the given id.  */
-  ProcessDefinitionQuery id(String processDefinitionId);
+  ProcessDefinitionQuery processDefinitionId(String processDefinitionId);
   
   /** Only select process definitions with the given name. */
   ProcessDefinitionQuery name(String name);
@@ -67,7 +67,7 @@ public interface ProcessDefinitionQuery extends Query<ProcessDefinitionQuery, Pr
    * Can also be used without any other criteria (ie. query.latest().list()), which
    * will then give all the latest versions of all the deployed process definitions.
    * 
-   * @throws ActivitiException if used in combination with  {@link #id(string)}, {@link #version(int)}
+   * @throws ActivitiException if used in combination with  {@link #groupId(string)}, {@link #version(int)}
    *                           or {@link #deploymentId(String)}
    */
   ProcessDefinitionQuery latest();
@@ -75,7 +75,7 @@ public interface ProcessDefinitionQuery extends Query<ProcessDefinitionQuery, Pr
   // ordering ////////////////////////////////////////////////////////////
   
   /** Order by the id of the process definitions (needs to be followed by {@link #asc()} or {@link #desc()}). */
-  ProcessDefinitionQuery orderById();
+  ProcessDefinitionQuery orderByProcessDefinitionId();
   
   /** Order by deployment id (needs to be followed by {@link #asc()} or {@link #desc()}). */
   ProcessDefinitionQuery orderByDeploymentId();

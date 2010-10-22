@@ -27,7 +27,7 @@ public class JobQueryProperty implements QueryProperty {
   
   private static final Map<String, JobQueryProperty> properties = new HashMap<String, JobQueryProperty>();
 
-  public static final JobQueryProperty ID = new JobQueryProperty("ID_");
+  public static final JobQueryProperty JOB_ID = new JobQueryProperty("ID_");
   public static final JobQueryProperty PROCESS_INSTANCE_ID = new JobQueryProperty("J.PROCESS_INSTANCE_ID_");
   public static final JobQueryProperty EXECUTION_ID = new JobQueryProperty("J.EXECUTION_ID_");
   public static final JobQueryProperty DUEDATE = new JobQueryProperty("J.DUEDATE_");

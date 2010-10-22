@@ -47,7 +47,7 @@ public class UserQueryImpl extends AbstractQuery<UserQuery, User> implements Use
     super(commandExecutor);
   }
   
-  public UserQuery id(String id) {
+  public UserQuery userId(String id) {
     if (id == null) {
       throw new ActivitiException("Provided id is null");
     }
@@ -104,8 +104,8 @@ public class UserQueryImpl extends AbstractQuery<UserQuery, User> implements Use
 
   //sorting //////////////////////////////////////////////////////////
   
-  public UserQuery orderById() {
-    return orderBy(UserQueryProperty.ID);
+  public UserQuery orderByUserId() {
+    return orderBy(UserQueryProperty.USER_ID);
   }
   
   public UserQuery orderByEmail() {

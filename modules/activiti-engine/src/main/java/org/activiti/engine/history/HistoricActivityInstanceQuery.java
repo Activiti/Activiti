@@ -52,7 +52,7 @@ public interface HistoricActivityInstanceQuery extends Query<HistoricActivityIns
   // ordering /////////////////////////////////////////////////////////////////
   
   /** Order by id (needs to be followed by {@link #asc()} or {@link #desc()}). */
-  HistoricActivityInstanceQuery orderById();
+  HistoricActivityInstanceQuery orderByHistoricActivityInstanceId();
 
   /** Order by start (needs to be followed by {@link #asc()} or {@link #desc()}). */
   HistoricActivityInstanceQuery orderByStart();

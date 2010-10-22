@@ -69,16 +69,16 @@ public class UserQueryTest extends ActivitiInternalTestCase {
   }
   
   public void testQueryById() {
-    UserQuery query = identityService.createUserQuery().id("kermit");
+    UserQuery query = identityService.createUserQuery().userId("kermit");
     verifyQueryResults(query, 1);
   }
 
   public void testQueryByInvalidId() {
-    UserQuery query = identityService.createUserQuery().id("invalid");
+    UserQuery query = identityService.createUserQuery().userId("invalid");
     verifyQueryResults(query, 0);
     
     try {
-      identityService.createUserQuery().id(null).singleResult();
+      identityService.createUserQuery().userId(null).singleResult();
       fail();
     } catch (ActivitiException e) { }
   }
@@ -190,13 +190,13 @@ public class UserQueryTest extends ActivitiInternalTestCase {
   
   public void testQuerySorting() {
     // asc
-    assertEquals(3, identityService.createUserQuery().orderById().asc().count());
+    assertEquals(3, identityService.createUserQuery().orderByUserId().asc().count());
     assertEquals(3, identityService.createUserQuery().orderByEmail().asc().count());
     assertEquals(3, identityService.createUserQuery().orderByFirstName().asc().count());
     assertEquals(3, identityService.createUserQuery().orderByLastName().asc().count());
     
     // desc
-    assertEquals(3, identityService.createUserQuery().orderById().desc().count());
+    assertEquals(3, identityService.createUserQuery().orderByUserId().desc().count());
     assertEquals(3, identityService.createUserQuery().orderByEmail().desc().count());
     assertEquals(3, identityService.createUserQuery().orderByFirstName().desc().count());
     assertEquals(3, identityService.createUserQuery().orderByLastName().desc().count());
@@ -211,12 +211,12 @@ public class UserQueryTest extends ActivitiInternalTestCase {
   
   public void testQueryInvalidSortingUsage() {
     try {
-      identityService.createUserQuery().orderById().list();
+      identityService.createUserQuery().orderByUserId().list();
       fail();
     } catch (ActivitiException e) {}
     
     try {
-      identityService.createUserQuery().orderById().orderByEmail().list();
+      identityService.createUserQuery().orderByUserId().orderByEmail().list();
       fail();
     } catch (ActivitiException e) {}
   }

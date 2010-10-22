@@ -26,7 +26,7 @@ import org.activiti.engine.query.Query;
 public interface JobQuery extends Query<JobQuery, Job> {
   
   /** Only select jobs with the given id */
-  JobQuery id(String jobId);
+  JobQuery jobId(String jobId);
   
   /** Only select jobs which exist for the given process instance. **/
   JobQuery processInstanceId(String processInstanceId);
@@ -64,7 +64,7 @@ public interface JobQuery extends Query<JobQuery, Job> {
   //sorting //////////////////////////////////////////
   
   /** Order by job id (needs to be followed by {@link #asc()} or {@link #desc()}). */
-  JobQuery orderById();
+  JobQuery orderByJobId();
   
   /** Order by process instance id (needs to be followed by {@link #asc()} or {@link #desc()}). */
   JobQuery orderByProcessInstanceId();

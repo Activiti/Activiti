@@ -1,12 +1,11 @@
 package org.activiti.rest.api.process;
 
+import java.util.Map;
+
 import org.activiti.rest.util.ActivitiRequest;
 import org.activiti.rest.util.ActivitiWebScript;
 import org.springframework.extensions.webscripts.Cache;
 import org.springframework.extensions.webscripts.Status;
-import org.springframework.extensions.webscripts.WebScriptRequest;
-
-import java.util.Map;
 
 /**
  * Returns details about a process definition.
@@ -26,7 +25,7 @@ public class ProcessDefinitionGet extends ActivitiWebScript {
   @Override
   protected void executeWebScript(ActivitiRequest req, Status status, Cache cache, Map<String, Object> model) {
     String processDefinitionId = req.getMandatoryPathParameter("processDefinitionId");
-    model.put("processDefinition", getRepositoryService().createProcessDefinitionQuery().id(processDefinitionId).singleResult());
+    model.put("processDefinition", getRepositoryService().createProcessDefinitionQuery().processDefinitionId(processDefinitionId).singleResult());
   }
 
 }

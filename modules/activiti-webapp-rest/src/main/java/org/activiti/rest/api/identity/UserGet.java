@@ -37,7 +37,7 @@ public class UserGet extends ActivitiWebScript {
   protected void executeWebScript(ActivitiRequest req, Status status, Cache cache, Map<String, Object> model)
   {
     String userId = req.getMandatoryPathParameter("userId");
-    model.put("user", getIdentityService().createUserQuery().id(userId).singleResult());
+    model.put("user", getIdentityService().createUserQuery().userId(userId).singleResult());
   }
 
 }
