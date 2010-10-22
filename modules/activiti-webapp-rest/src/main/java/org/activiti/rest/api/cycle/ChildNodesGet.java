@@ -31,7 +31,8 @@ import org.springframework.extensions.webscripts.Cache;
 import org.springframework.extensions.webscripts.Status;
 
 /**
- * @author Nils Preusker
+ * 
+ * @author Nils Preusker (nils.preusker@camunda.com)
  */
 public class ChildNodesGet extends ActivitiWebScript {
 

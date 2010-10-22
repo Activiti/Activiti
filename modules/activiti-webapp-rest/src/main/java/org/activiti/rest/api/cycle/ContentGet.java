@@ -27,7 +27,8 @@ import org.activiti.rest.util.ActivitiStreamingWebScript;
 import org.springframework.extensions.webscripts.WebScriptResponse;
 
 /**
- * @author Nils Preusker
+ * 
+ * @author Nils Preusker (nils.preusker@camunda.com)
  */
 public class ContentGet extends ActivitiStreamingWebScript {
 

@@ -17,20 +17,20 @@ import java.util.Map;
 import javax.servlet.http.HttpSession;
 
 import org.activiti.cycle.CycleService;
-import org.activiti.cycle.ParameterizedAction;
 import org.activiti.cycle.RepositoryArtifact;
+import org.activiti.cycle.RepositoryArtifactLink;
 import org.activiti.cycle.impl.CycleServiceImpl;
+import org.activiti.cycle.impl.RepositoryArtifactLinkImpl;
 import org.activiti.rest.util.ActivitiRequest;
 import org.activiti.rest.util.ActivitiWebScript;
 import org.springframework.extensions.webscripts.Cache;
 import org.springframework.extensions.webscripts.Status;
-import org.springframework.extensions.webscripts.WebScriptException;
 
 /**
  * 
  * @author Nils Preusker (nils.preusker@camunda.com)
  */
-public class ArtifactActionFormGet extends ActivitiWebScript {
+public class ArtifactLinkPost extends ActivitiWebScript {
 
   private CycleService cycleService;
 
@@ -41,44 +41,37 @@ public class ArtifactActionFormGet extends ActivitiWebScript {
     this.cycleService = CycleServiceImpl.getCycleService(cuid, session);
   }
 
-  /**
-   * Returns an action's form.
-   * 
-   * @param req The webscripts request
-   * @param status The webscripts status
-   * @param cache The webscript cache
-   * @param model The webscripts template model
-   */
   @Override
   protected void executeWebScript(ActivitiRequest req, Status status, Cache cache, Map<String, Object> model) {
     init(req);
-    
-    // Retrieve the artifactId from the request
-    String connectorId = req.getMandatoryString("connectorId");
-    String artifactId = req.getMandatoryString("artifactId");
-    String actionId = req.getMandatoryString("actionName");
 
-    // Retrieve the artifact from the repository
-    RepositoryArtifact artifact = this.cycleService.getRepositoryArtifact(connectorId, artifactId);
+    ActivitiRequest.ActivitiWebScriptBody body = req.getBody();
 
-    if (artifact == null) {
-      throw new WebScriptException(Status.STATUS_NOT_FOUND, "There is no artifact with id '" + artifactId + "' for connector with id '" + connectorId + "'.");
-    }
+    String srcConnectorId = req.getMandatoryString(body, "connectorId");
+    String srcArtifactId = req.getMandatoryString(body, "artifactId");
 
-    // Retrieve the action and its form
-    String form = null;
-    for (ParameterizedAction action : artifact.getArtifactType().getParameterizedActions()) {
-      if (action.getId().equals(actionId)) {
-        form = action.getFormAsHtml();
-        break;
-      }
-    }
+    // String srcElementName = req.getMandatoryString("sourceElementName");
+    // String srcElementId = req.getMandatoryString("sourceElementId");
 
-    // Place the form in the response
-    if (form != null) {
-      model.put("form", form);
-    } else {
-      throw new WebScriptException(Status.STATUS_NOT_FOUND, "There is no form for action '" + actionId + "'.");
+    // String tgtElementName = req.getMandatoryString("targetElementName");
+    // String tgtElementId = req.getMandatoryString("targetElementId");
+
+    String tgtConnectorId = req.getMandatoryString(body, "targetConnectorId");
+    String tgtArtifactId = req.getMandatoryString(body, "targetArtifactId");
+
+    RepositoryArtifact srcArtifact = cycleService.getRepositoryArtifact(srcConnectorId, srcArtifactId);
+    RepositoryArtifact tgtArtifact = cycleService.getRepositoryArtifact(tgtConnectorId, tgtArtifactId);
+
+    RepositoryArtifactLink link = new RepositoryArtifactLinkImpl(null, srcArtifact, "", "", tgtArtifact, "", "");
+
+    try {
+      this.cycleService.addArtifactLink(link);
+      model.put("result", true);
+    } catch (Exception e) {
+      // TODO: see whether this makes sense, probably either exception or
+      // negative result.
+      model.put("result", false);
+      throw new RuntimeException(e);
     }
   }
 }

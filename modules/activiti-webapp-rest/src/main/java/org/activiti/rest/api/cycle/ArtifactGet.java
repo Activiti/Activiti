@@ -32,8 +32,9 @@ import org.springframework.extensions.webscripts.Cache;
 import org.springframework.extensions.webscripts.Status;
 
 /**
- * @author Nils Preusker
- * @author ruecker
+ * 
+ * @author Nils Preusker (nils.preusker@camunda.com)
+ * @author Bernd RŸcker
  */
 public class ArtifactGet extends ActivitiWebScript {
 

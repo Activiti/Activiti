@@ -210,9 +210,14 @@
         class="org.activiti.rest.api.cycle.ContentRepresentationGet"
         parent="activitiWebScript">
   </bean>
-  
+
   <bean id="webscript.org.activiti.rest.api.cycle.artifact-links.get"
         class="org.activiti.rest.api.cycle.ArtifactLinksGet"
+        parent="activitiWebScript">
+  </bean>
+
+  <bean id="webscript.org.activiti.rest.api.cycle.artifact-link.post"
+        class="org.activiti.rest.api.cycle.ArtifactLinkPost"
         parent="activitiWebScript">
   </bean>
 

@@ -82,8 +82,8 @@
 
 			me._treeView.subscribe("clickEvent", this.onLabelClick, null, this);
 			
-			me._treeView.subscribe("expand", this.onNodeExpand, null, this);
-			me._treeView.subscribe("collapse", this.onNodeCollapse, null, this);
+			// me._treeView.subscribe("expand", this.onNodeExpand, null, this);
+			// me._treeView.subscribe("collapse", this.onNodeCollapse, null, this);
     },
 
 		/**
@@ -95,35 +95,37 @@
       // Retrieve rest api response
       var treeNodesJson = response.json;
 
-			for(var i = 0; i<treeNodesJson.length; i++) {
-				var node = new YAHOO.widget.TextNode(treeNodesJson[i], obj[0], treeNodesJson[i].expanded);
-				if(treeNodesJson[i].contentType) {
-					if(treeNodesJson[i].contentType === "image/png" || treeNodesJson[i].contentType === "image/gif" || treeNodesJson[i].contentType === "image/jpeg") {
-						node.labelStyle = "icon-img";
-					} else if(treeNodesJson[i].contentType === "application/xml") {
-						node.labelStyle = "icon-code-red";
-					}	else if(treeNodesJson[i].contentType === "text/html") {
+      if(treeNodesJson) {
+			  for(var i = 0; i<treeNodesJson.length; i++) {
+				  var node = new YAHOO.widget.TextNode(treeNodesJson[i], obj[0], treeNodesJson[i].expanded);
+				  if(treeNodesJson[i].contentType) {
+					  if(treeNodesJson[i].contentType === "image/png" || treeNodesJson[i].contentType === "image/gif" || treeNodesJson[i].contentType === "image/jpeg") {
+						  node.labelStyle = "icon-img";
+					  } else if(treeNodesJson[i].contentType === "application/xml") {
+						  node.labelStyle = "icon-code-red";
+					  }	else if(treeNodesJson[i].contentType === "text/html") {
   					  node.labelStyle = "icon-www";
-  				} else if(treeNodesJson[i].contentType === "text/plain") {
-						node.labelStyle = "icon-txt";
-					}	else if(treeNodesJson[i].contentType === "application/pdf") {
-						node.labelStyle = "icon-pdf";
-					}	else if(treeNodesJson[i].contentType === "application/json;charset=UTF-8") {
-						node.labelStyle = "icon-code-blue";
-					}	else if(treeNodesJson[i].contentType === "application/msword") {
-						node.labelStyle = "icon-doc";
-					}	else if(treeNodesJson[i].contentType === "application/powerpoint") {
-						node.labelStyle = "icon-ppt";
-					}	else if(treeNodesJson[i].contentType === "application/excel") {
-						node.labelStyle = "icon-xls";
-					}	else if(treeNodesJson[i].contentType === "application/javascript") {
-						node.labelStyle = "icon-code-blue";
-					} else {
-					  // Use white page as default icon for all other content types
-					  node.labelStyle = "icon-blank";
-					}
-				}
-			}
+  				  } else if(treeNodesJson[i].contentType === "text/plain") {
+						  node.labelStyle = "icon-txt";
+					  }	else if(treeNodesJson[i].contentType === "application/pdf") {
+						  node.labelStyle = "icon-pdf";
+					  }	else if(treeNodesJson[i].contentType === "application/json;charset=UTF-8") {
+						  node.labelStyle = "icon-code-blue";
+					  }	else if(treeNodesJson[i].contentType === "application/msword") {
+						  node.labelStyle = "icon-doc";
+					  }	else if(treeNodesJson[i].contentType === "application/powerpoint") {
+						  node.labelStyle = "icon-ppt";
+					  }	else if(treeNodesJson[i].contentType === "application/excel") {
+						  node.labelStyle = "icon-xls";
+					  }	else if(treeNodesJson[i].contentType === "application/javascript") {
+						  node.labelStyle = "icon-code-blue";
+					  } else {
+					    // Use white page as default icon for all other content types
+					    node.labelStyle = "icon-blank";
+					  }
+				  }
+			  }
+		  }
 
 			// call the fnLoadComplete function that the treeView component provides to 
 			// indicate that the loading of the sub nodes was successfull.
@@ -154,30 +156,39 @@
 			this.fireEvent(Activiti.event.updateArtifactView, {"connectorId": event.node.data.connectorId, "repositoryNodeId": event.node.data.artifactId, "isRepositoryArtifact": event.node.data.file, "name": event.node.label, "activeTabIndex": 0}, null, true);
     },
 
-		onNodeExpand: function RepoTree_onNodeExpand (node)
-		{
-
-			// TODO
-			// do the cookie processing to store the expand/collapse state of the tree
-
-		},
-		
-		onNodeCollapse: function RepoTree_onNodeCollapse (node)
-		{
-
-			// TODO
-			// do the cookie processing to store the expand/collapse state of the tree
-
-		},
+		// onNodeExpand: function RepoTree_onNodeExpand (node)
+		//    {
+		// 
+		//      // TODO
+		//      // do the cookie processing to store the expand/collapse state of the tree
+		// 
+		//    },
+		//    
+		//    onNodeCollapse: function RepoTree_onNodeCollapse (node)
+		//    {
+		// 
+		//      // TODO
+		//      // do the cookie processing to store the expand/collapse state of the tree
+		// 
+		//    },
 
 		onUpdateArtifactView: function Artifact_onUpdateArtifactView(event, args)
 		{
 			if(!this._treeView._nodes) {
 				// tree is not yet initialized, we are coming from an external URL
-				
+        // TODO: load the tree up to the currently selected node
 			} else {
 				// tree is initialized, this is either a regular click on the tree or an event from the browser history manager
-				var node = this._treeView.getNodeByProperty("id", args[1].value.repositoryNodeId);
+				var connectorId = args[1].value.connectorId;
+				var repositoryNodeId = args[1].value.repositoryNodeId;
+				var nodes = this._treeView.getNodesBy( function(node) {
+				  if(node.data.connectorId && node.data.artifactId && node.data.connectorId === connectorId && node.data.artifactId === repositoryNodeId) {
+				    return true;
+				  }
+				  return false;
+				});
+        var node = nodes[0];
+
 				if(node && (node != this._treeView.currentFocus) ) {
 				  // if the node isn't already focused this is a browser history event and we manually set focus to the current node
           node.focus();
