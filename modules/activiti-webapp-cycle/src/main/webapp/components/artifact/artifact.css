@@ -1,16 +1,16 @@
 .yui-skin-sam .yui-navset .yui-nav a, .yui-skin-sam .yui-navset .yui-navset-top .yui-nav a {
-	border-left: 1px solid !important;
-	border-right: 1px solid !important;
-	border-color: #A3A3A3 !important;
+  border-left: 1px solid !important;
+  border-right: 1px solid !important;
+  border-color: #A3A3A3 !important;
 }
 .yui-skin-sam .yui-navset .yui-nav .selected a, .yui-skin-sam .yui-navset .yui-nav .selected a em {
-	border-color: #A3A3A3 !important;
+  border-color: #A3A3A3 !important;
 }
 .yui-skin-sam .yui-navset .yui-nav .selected a, .yui-skin-sam .yui-navset .yui-nav .selected a:focus, .yui-skin-sam .yui-navset .yui-nav .selected a:hover {
-	color: #FFFFFF !important;
+  color: #FFFFFF !important;
 }
 .yui-skin-sam .yui-navset .yui-content {
-	background: none repeat scroll 0 0 #F9F9F9;
+  background: none repeat scroll 0 0 #F9F9F9;
 }
 
 .artifact-image, .artifact-html, .artifact-html-reference, .artifact-binary, .artifact-code, .artifact-text-plain {
@@ -18,7 +18,9 @@
 }
 
 .artifact-code, .artifact-text-plain, .artifact-html {
-	margin: 1.2em;
+  background-color:#FFFFFF;
+  margin:0.5em;
+  padding:1.2em;
 }
 
 .artifact-html iframe, .artifact-html-reference iframe {
@@ -28,19 +30,19 @@
 }
 
 #options-div.active {
-	border-bottom: 1px dotted #EEEEEE;
-	border-top: 1px dotted #EEEEEE;
-	padding: 5px;
-	margin-bottom: 15px;
-	background-color: #FFFFF9;
+  border-bottom: 1px dotted #EEEEEE;
+  border-top: 1px dotted #EEEEEE;
+  padding: 5px;
+  margin-bottom: 15px;
+  background-color: #FFFFF9;
 }
 
 #artifact-actions, #artifact-links, #artifact-downloads {
-	float: left;
-	margin-right: 15px;
+  float: left;
+  margin-right: 15px;
 }
 
 #artifact-div .yui-navset div.loading div {
-	background:url("/activiti-cycle/res/images/loading.gif") no-repeat scroll center center transparent;
-	height:8em;
+  background:url("/activiti-cycle/res/images/loading.gif") no-repeat scroll center center transparent;
+  height:8em;
 }

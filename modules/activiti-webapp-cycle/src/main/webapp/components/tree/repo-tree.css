@@ -49,6 +49,10 @@
   text-decoration: none;
 }
 
+#treeDiv1 .ygtvcontent {
+  line-height:1.2em;
+}
+
 /* first or middle sibling, no children */
 .ygtvtn { background: url("/activiti-cycle/res/images/folder/tn.gif") 0 0 no-repeat; width:17px; height:22px; }
 
