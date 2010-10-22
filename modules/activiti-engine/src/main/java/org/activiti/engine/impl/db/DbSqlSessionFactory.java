@@ -224,8 +224,7 @@ public class DbSqlSessionFactory implements SessionFactory, ProcessEngineConfigu
       success = true;
 
     } catch (Exception e) {
-      String exceptionMessage = e.getMessage();
-      if ((exceptionMessage.indexOf("Table") != -1) && (exceptionMessage.indexOf("not found") != -1)) {
+      if (isMissingTablesException(e)) {
         throw new ActivitiException(
                 "no activiti tables in db.  set property db.schema.strategy=create-drop in activiti.properties for automatic schema creation", e);
       } else {
@@ -306,6 +305,27 @@ public class DbSqlSessionFactory implements SessionFactory, ProcessEngineConfigu
     }
 
     log.fine("activiti db schema " + operation + " successful");
+  }
+  
+  protected boolean isMissingTablesException(Exception e) {
+    String exceptionMessage = e.getMessage();
+    if(e.getMessage() != null) {      
+      // Matches message returned from H2
+      if ((exceptionMessage.indexOf("Table") != -1) && (exceptionMessage.indexOf("not found") != -1)) {
+        return true;
+      }
+      
+      // Message returned from MySQL and Oracle
+      if (((exceptionMessage.indexOf("Table") != -1 || exceptionMessage.indexOf("table") != -1)) && (exceptionMessage.indexOf("doesn't exist") != -1)) {
+        return true;
+      }
+      
+      // Message returned from Postgres
+      if (((exceptionMessage.indexOf("relation") != -1 || exceptionMessage.indexOf("table") != -1)) && (exceptionMessage.indexOf("does not exist") != -1)) {
+        return true;
+      }
+    }
+    return false;
   }
 
   // getters and setters //////////////////////////////////////////////////////
