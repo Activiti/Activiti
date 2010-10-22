@@ -130,6 +130,23 @@
         this._tabView.addTab(tab);
       }
 
+      // ------------------------------ Links Tab --
+
+      // Add artifact links tab
+			var linksTab = new YAHOO.widget.Tab({ 
+				label: "Links", 
+				dataSrc: Activiti.service.REST_PROXY_URI_RELATIVE + "artifact-links?connectorId=" + encodeURIComponent(artifactJson.connectorId) + "&artifactId=" + encodeURIComponent(artifactJson.artifactId),
+				cacheData: true
+			});
+
+			linksTab.loadHandler.success = function(response) {
+				me.onLodLinksSuccess(this /* the tab */, response);
+			};
+
+			this._tabView.addTab(linksTab);
+
+      // -------------------------- End Links Tab --
+
       this._tabView.appendTo('artifact-div');
 
       // replace the tabViews onActiveTabCHange evnet handler with our own one
@@ -234,6 +251,41 @@
       }
     },
 
+    onLodLinksSuccess: function Artifact_onLodLinksSuccess(tab, response) {
+      try{
+        var responseJson = YAHOO.lang.JSON.parse(response.responseText);
+
+        tab.set('content', '<div id="linksTab"/>');
+
+        var linksColumnDefs = [
+            {key:"Name", sortable:true},
+            {key:"Revision", sortable:true},
+            {key:"Type"}
+          ];
+        
+        var rows = [];
+        for(var i=0; i<responseJson.length; i++) {
+          var row = {Name: '<a class="openArtifactLink" href="#?connectorId=' + responseJson[i].targetConnectorId + '&artifactId=' + responseJson[i].targetArtifactId + '&artifactName=' + responseJson[i].label + '">' + responseJson[i].label + '</a>', Revision: responseJson[i].targetArtifactRevision, Type: responseJson[i].targetContentType };
+          rows.push(row);
+        }
+        var linksDataSource = new YAHOO.util.LocalDataSource(rows);
+
+        linksDataSource.responseSchema = {
+            fields: ["Name","Revision","Type"]
+          };
+
+        var linksDataTable = new YAHOO.widget.DataTable("linksTab", linksColumnDefs, linksDataSource, {scrollable:true});
+
+        var linkElements = Dom.getElementsByClassName("openArtifactLink", "a");
+        for (var i = 0; i < linkElements.length; i++) {
+				  YAHOO.util.Event.addListener(linkElements[i], "click", this.onArtifactLinkClick, this, true);
+        }
+      }
+      catch (e) {
+          alert("Invalid response for tab data");
+      }
+    },
+
     onExecuteActionClick: function Artifact_onExecuteActionClick(e)
     {
       var connectorId = this.value.split("#TOKEN#")[0];
@@ -258,6 +310,18 @@
       var newActiveTabIndex = this._tabView.getTabIndex(event.newValue);
       this.fireEvent(Activiti.event.updateArtifactView, {"connectorId": this._connectorId, "repositoryNodeId": this._repositoryNodeId, "isRepositoryArtifact": this._isRepositoryArtifact, "name": this._name, "activeTabIndex": newActiveTabIndex}, null, true);
       YAHOO.util.Event.preventDefault(event);
+    },
+    
+    onArtifactLinkClick: function Artifact_onArtifactLinkClick(event)
+    {
+      
+      var params = event.target.href.split("?")[1].split("&");
+      
+      var connectorId = params[0].split("=")[1];
+      var artifactId = params[1].split("=")[1];
+      var artifactName = params[2].split("=")[1];
+
+      this.fireEvent(Activiti.event.updateArtifactView, {"connectorId": connectorId, "repositoryNodeId": artifactId, "isRepositoryArtifact": true, "name": artifactName, "activeTabIndex": 0}, null, true);
     },
     
     onClickFormEventButton: function Artifact_onClickFormEventButton(event, args)
