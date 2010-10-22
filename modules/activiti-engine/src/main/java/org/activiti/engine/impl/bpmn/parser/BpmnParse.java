@@ -522,7 +522,12 @@ public class BpmnParse extends Parse {
         parseSubProcess(activityElement, scopeElement);
       } else if (activityElement.getTagName().equals("callActivity")) {
         parseCallActivity(activityElement, scopeElement);
-      } else {
+      } else if (activityElement.getTagName().equals("sendTask")
+              || activityElement.getTagName().equals("adHocSubProcess")
+              || activityElement.getTagName().equals("businessRuleTask")
+              || activityElement.getTagName().equals("complexGateway")
+              || activityElement.getTagName().equals("eventBasedGateway")
+              || activityElement.getTagName().equals("transaction")) {
         addWarning("Ignoring unsupported activity type", activityElement);
       }
     }
