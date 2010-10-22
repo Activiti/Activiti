@@ -8,11 +8,15 @@
     <title>Business archives</title>
     <para>To deploy processes, they have to be wrapped in a business archive.  A business archive is the unit 
     of deployment to an Activiti Engine.  Basically a business archive is equivalent to a zip file.  It can contain 
-    BPMN 2.0 processes, task forms, rules, java classes and any other type of file.  In general, a business archive 
+    BPMN 2.0 processes, task forms, rules and any other type of file.  In general, a business archive 
     contains a collection of named resources.  
     </para>
     <para>When a business archive is deployed, it is scanned for BPMN files with a <literal>.bpmn20.xml</literal> extension.
     Each of those will be parsed and potentially contains multiple process definitions.  
+    </para>
+    <para>
+      Note that Java classes present in the business archive <emphasis role="bold">will not be added to the classpath.</emphasis> All custom classes used in process definitions in the business archive (for example Java service tasks or event listener implementations) should be present
+      on the activiti-engine's classpath in order to run the processes. 
     </para>
   </section>
   
