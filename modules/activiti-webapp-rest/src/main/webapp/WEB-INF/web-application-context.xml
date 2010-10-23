@@ -101,6 +101,11 @@
         parent="activitiWebScript">
   </bean>
 
+  <bean id="webscript.org.activiti.rest.api.repository.deployments-delete.post"
+        class="org.activiti.rest.api.repository.DeploymentsDeletePost"
+        parent="activitiWebScript">
+  </bean>
+
   <bean id="webscript.org.activiti.rest.api.engine.process-engine.get"
         class="org.activiti.rest.api.engine.ProcessEngineGet"
         parent="activitiWebScript">
@@ -153,6 +158,11 @@
 
   <bean id="webscript.org.activiti.rest.api.management.job-execute.put"
         class="org.activiti.rest.api.management.JobExecutePut"
+        parent="activitiWebScript">
+  </bean>
+
+  <bean id="webscript.org.activiti.rest.api.management.jobs-execute.post"
+        class="org.activiti.rest.api.management.JobsExecutePost"
         parent="activitiWebScript">
   </bean>
 

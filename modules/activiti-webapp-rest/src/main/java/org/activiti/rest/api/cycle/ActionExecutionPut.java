@@ -19,6 +19,7 @@ import javax.servlet.http.HttpSession;
 import org.activiti.cycle.CycleService;
 import org.activiti.cycle.impl.CycleServiceImpl;
 import org.activiti.rest.util.ActivitiRequest;
+import org.activiti.rest.util.ActivitiRequestObject;
 import org.activiti.rest.util.ActivitiWebScript;
 import org.springframework.extensions.webscripts.Cache;
 import org.springframework.extensions.webscripts.Status;
@@ -46,9 +47,7 @@ public class ActionExecutionPut extends ActivitiWebScript {
     String artifactId = req.getMandatoryString("artifactId");
     String actionId = req.getMandatoryString("actionName");
     
-    ActivitiRequest.ActivitiWebScriptBody body = req.getBody();
-    Map<String, Object> parameters = req.getFormVariables(body);
-    
+    Map<String, Object> parameters = req.getFormVariables();    
     try {
       this.cycleService.executeParameterizedAction(connectorId, artifactId, actionId, parameters);
       model.put("result", true);

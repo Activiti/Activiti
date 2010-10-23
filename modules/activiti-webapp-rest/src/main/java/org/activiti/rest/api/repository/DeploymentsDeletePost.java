@@ -10,25 +10,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.activiti.rest.api.management;
+package org.activiti.rest.api.repository;
 
+import java.util.List;
 import java.util.Map;
 
 import org.activiti.rest.util.ActivitiRequest;
+import org.activiti.rest.util.ActivitiRequestObject;
 import org.activiti.rest.util.ActivitiWebScript;
 import org.springframework.extensions.webscripts.Cache;
 import org.springframework.extensions.webscripts.Status;
-import org.springframework.extensions.webscripts.WebScriptRequest;
 
 /**
- * Executes a job
+ * Deletes a list of deployments.
  *
  * @author Erik Winlof
  */
-public class JobExecutePut extends ActivitiWebScript {
+public class DeploymentsDeletePost extends ActivitiWebScript {
 
   /**
-   * Prepares signalData, metadata and paging info about a table for the webscript template.
+   * Deletes deployments.
    *
    * @param req The webscripts request
    * @param status The webscripts status
@@ -36,10 +37,18 @@ public class JobExecutePut extends ActivitiWebScript {
    * @param model The webscripts template model
    */
   @Override
-  protected void executeWebScript(ActivitiRequest req, Status status, Cache cache, Map<String, Object> model)
-  {
-    String jobId = req.getMandatoryPathParameter("jobId");
-    getManagementService().executeJob(jobId);
+  protected void executeWebScript(ActivitiRequest req, Status status, Cache cache, Map<String, Object> model) {
+    Boolean cascade = req.getBoolean("cascade", false);
+    ActivitiRequestObject obj = req.getBody();
+    List deploymentIds = req.getMandatoryList(obj, "deploymentIds", ActivitiRequestObject.STRING);
+    for (Object deploymentId : deploymentIds) {
+      if (cascade) {
+        getRepositoryService().deleteDeploymentCascade((String) deploymentId);
+      }
+      else {
+        getRepositoryService().deleteDeployment((String) deploymentId);
+      }
+    }
   }
 
 }

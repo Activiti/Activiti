@@ -12,7 +12,6 @@
  */
 package org.activiti.rest.util;
 
-import org.activiti.engine.impl.util.json.JSONObject;
 import org.springframework.extensions.surf.util.Base64;
 import org.springframework.extensions.surf.util.ISO8601DateFormat;
 import org.springframework.extensions.webscripts.Status;
@@ -23,10 +22,7 @@ import org.springframework.extensions.webscripts.servlet.WebScriptServletRequest
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Helper class that wrapps the webscript request to perform methods upon it.
@@ -103,16 +99,16 @@ public class ActivitiRequest {
   }
 
   /**
-   * Returns the webscript request body in an abstracted form so multiple
+   * Returns the webscript request obj in an abstracted form so multiple
    * formats may be implemented seamlessly in the future.
    *
-   * @return The webscript requests body
+   * @return The webscript requests obj
    */
-  public ActivitiWebScriptBody getBody() {
+  public ActivitiRequestObject getBody() {
     try {
-      return new ActivitiWebScriptBody(req);
+      return new JSONRequestObject(req);
     } catch (IOException e) {
-      throw new WebScriptException(Status.STATUS_BAD_REQUEST, "Can't read body");
+      throw new WebScriptException(Status.STATUS_BAD_REQUEST, "Can't read obj");
     }
   }
 
@@ -280,26 +276,63 @@ public class ActivitiRequest {
   }
 
   /**
-   * Gets a string parameter from the body
+   * Gets a string parameter from the obj
    *
-   * @param body The activiti webscript request body
+   * @param obj The activiti webscript request obj
    * @param param The name of the string parameter
-   * @return The value of the string body parameter
-   * @throws WebScriptException if string body parameter isn't present
+   * @return The value of the string obj parameter
+   * @throws WebScriptException if string obj parameter isn't present
    */
-  public String getMandatoryString(ActivitiWebScriptBody body, String param) {
-    return checkString(body.getString(param), param, true);
+  public String getMandatoryString(ActivitiRequestObject obj, String param) {
+    return checkString(obj.getString(param), param, true);
+  }
+
+  /**
+   * Gets a string parameter from the obj
+   *
+   * @param obj The activiti webscript request obj
+   * @param param The name of the string parameter
+   * @return The value of the string obj parameter
+   * @throws WebScriptException if string obj parameter isn't present
+   */
+  public List getMandatoryList(ActivitiRequestObject obj, String param, String type) {
+    List list = (List) checkObject(obj.getList(param), param, true);
+    for (Object item : list) {
+      if (item == null) {
+        throw getInvalidTypeException(param, null, ActivitiRequestObject.ARRAY);
+      }
+      if (type != null) {
+        if (item instanceof String && !type.equals(ActivitiRequestObject.STRING)) {
+          throw getInvalidTypeException(param, item.toString(), ActivitiRequestObject.STRING + " array");
+        }
+        if (item instanceof Date && !type.equals(ActivitiRequestObject.DATE)) {
+          throw getInvalidTypeException(param, item.toString(), ActivitiRequestObject.DATE + " array");
+        }
+        if (item instanceof Integer && !type.equals(ActivitiRequestObject.INTEGER)) {
+          throw getInvalidTypeException(param, item.toString(), ActivitiRequestObject.INTEGER + " array");
+        }
+        if (item instanceof Boolean && !type.equals(ActivitiRequestObject.BOOLEAN)) {
+          throw getInvalidTypeException(param, item.toString(), ActivitiRequestObject.BOOLEAN + " array");
+        }
+        if (item instanceof ActivitiRequestObject && !type.equals(ActivitiRequestObject.OBJECT)) {
+          throw getInvalidTypeException(param, item.toString(), ActivitiRequestObject.OBJECT + " array");
+        }
+        if (item instanceof List && !type.equals(ActivitiRequestObject.ARRAY)) {
+          throw getInvalidTypeException(param, item.toString(), ActivitiRequestObject.ARRAY + " array");
+        }
+      }
+    }
+    return list;
   }
 
   /**
    * Gets a parameter as Map
    *
-   * @param body The activiti webscript request body
-   * @return The value of the string body parameter
-   * @throws WebScriptException if string body parameter isn't present
+   * @return The value of the string obj parameter
+   * @throws WebScriptException if string obj parameter isn't present
    */
-  public Map<String, Object> getFormVariables(ActivitiWebScriptBody body) {
-    return body.getFormVariables();
+  public Map<String, Object> getFormVariables() {
+    return getBody().getFormVariables();
   }
 
   /**
@@ -347,13 +380,13 @@ public class ActivitiRequest {
    * @param param The name of the parameter
    * @return A date based on the value parameter
    */
-  private Date parseDate(String value, String param)
+  public static Date parseDate(String value, String param)
   {
     try {
       return ISO8601DateFormat.parse(value.replaceAll(" ", "+"));
     }
     catch (NumberFormatException nfe) {
-      throw new WebScriptException(Status.STATUS_BAD_REQUEST, "Value for param '" + param + "' is not a valid iso8601 date value: '" + value + "'");
+      throw getInvalidTypeException(param, value, "iso8601 date");
     }
   }
 
@@ -364,13 +397,13 @@ public class ActivitiRequest {
    * @param param The name of the parameter
    * @return An integer based on the value parameter
    */
-  private Integer parseInt(String value, String param)
+  public static Integer parseInt(String value, String param)
   {
     try {
       return Integer.parseInt(value);
     }
     catch (NumberFormatException nfe) {
-      throw new WebScriptException(Status.STATUS_BAD_REQUEST, "Value for param '" + param + "' is not a valid int value: '" + value + "'");
+      throw getInvalidTypeException(param, value, "integer");
     }
   }
 
@@ -381,100 +414,16 @@ public class ActivitiRequest {
    * @param param The name of the parameter
    * @return A boolean based on the value parameter
    */
-  private Boolean parseBoolean(String value, String param)
+  public static Boolean parseBoolean(String value, String param)
   {
     if (value.equalsIgnoreCase("true") || value.equalsIgnoreCase("false")) {
       return Boolean.parseBoolean(value);      
     }
-    throw new WebScriptException(Status.STATUS_BAD_REQUEST, "Value for param '" + param + "' is not a valid bool value: '" + value + "'");
+    throw getInvalidTypeException(param, value, "bool");
   }
 
-  /**
-   * A class that wraps the webscripts request body so multiple formats such as
-   * XML may be supported in the future.
-   */
-  public class ActivitiWebScriptBody {
-
-    /**
-     * The json body
-     */
-    private JSONObject jsonBody = null;
-
-    /**
-     * Constructor
-     *
-     * @param req The webscript request
-     * @throws IOException if body of correct format cannot be created
-     */
-    ActivitiWebScriptBody(WebScriptRequest req) throws IOException {
-      jsonBody = new JSONObject(req.getContent().getContent());
-    }
-
-    /**
-     * Gets a body parameter string value.
-     *
-     * @param param The name of the parameter
-     * @return The string value of the parameter
-     */
-    String getString(String param) {
-      return jsonBody.getString(param);
-    }
-
-    /**
-     * Gets a body parameter string value.
-     *
-     * @param param The name of the parameter
-     * @return The string value of the parameter
-     */
-    int getInt(String param) {
-      return jsonBody.getInt(param);
-    }
-
-    /**
-     * Gets the body as a map.
-     *
-     * @return The body as a map
-     */
-    Map<String, Object> getFormVariables() {
-      Map<String, Object> map = new HashMap<String, Object>();
-      Iterator keys = jsonBody.keys();
-      String key, typeKey, type;
-      String[] keyPair;
-      Object value;
-      while (keys.hasNext()) {
-        key = (String) keys.next();
-        keyPair = key.split("_");
-        if (keyPair.length == 1) {
-          typeKey = keyPair[0] + "_type";
-          if (jsonBody.has(typeKey)) {
-            type = jsonBody.getString(typeKey);
-            if (type.equals("Integer")) {
-              value = jsonBody.getInt(key);
-            } else if (type.equals("Boolean")) {
-              value = jsonBody.getBoolean(key);
-            } else if (type.equals("Date")) {
-              value = jsonBody.getString(key);
-            } else if (type.equals("User")) {
-              value = jsonBody.getString(key);
-            } else if (type.equals("String")) {
-              value = jsonBody.getString(key);
-            } else {
-              throw new WebScriptException(Status.STATUS_BAD_REQUEST, "Parameter '" + keyPair[0] + "' is of unknown type '" + type + "'");
-            }
-          } else {
-            value = jsonBody.get(key);
-          }
-          map.put(key, value);
-        } else if (keyPair.length == 2) {
-          if (keyPair[1].equals("required")) {
-            if (!jsonBody.has(keyPair[0]) || jsonBody.get(keyPair[0]) == null) {
-              throw new WebScriptException(Status.STATUS_BAD_REQUEST, "Parameter '" + keyPair[0] + "' has no value");
-            }
-          }
-        }
-      }
-      return map;
-    }
-
+  public static WebScriptException getInvalidTypeException(String param, String value, String type) {
+    return new WebScriptException(Status.STATUS_BAD_REQUEST, "Value for param '" + param + "' is not a valid " + type + " value: '" + value + "'");
   }
+
 }

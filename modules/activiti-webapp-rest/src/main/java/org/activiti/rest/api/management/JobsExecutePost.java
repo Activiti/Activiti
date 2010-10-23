@@ -12,23 +12,24 @@
  */
 package org.activiti.rest.api.management;
 
-import java.util.Map;
-
 import org.activiti.rest.util.ActivitiRequest;
+import org.activiti.rest.util.ActivitiRequestObject;
 import org.activiti.rest.util.ActivitiWebScript;
 import org.springframework.extensions.webscripts.Cache;
 import org.springframework.extensions.webscripts.Status;
-import org.springframework.extensions.webscripts.WebScriptRequest;
+
+import java.util.List;
+import java.util.Map;
 
 /**
- * Executes a job
+ * Executes multiple job
  *
  * @author Erik Winlof
  */
-public class JobExecutePut extends ActivitiWebScript {
+public class JobsExecutePost extends ActivitiWebScript {
 
   /**
-   * Prepares signalData, metadata and paging info about a table for the webscript template.
+   * Deletes deployments.
    *
    * @param req The webscripts request
    * @param status The webscripts status
@@ -36,10 +37,12 @@ public class JobExecutePut extends ActivitiWebScript {
    * @param model The webscripts template model
    */
   @Override
-  protected void executeWebScript(ActivitiRequest req, Status status, Cache cache, Map<String, Object> model)
-  {
-    String jobId = req.getMandatoryPathParameter("jobId");
-    getManagementService().executeJob(jobId);
+  protected void executeWebScript(ActivitiRequest req, Status status, Cache cache, Map<String, Object> model) {
+    ActivitiRequestObject obj = req.getBody();
+    List deploymentIds = req.getMandatoryList(obj, "jobIds", ActivitiRequestObject.STRING);
+    for (Object jobId : deploymentIds) {
+      getManagementService().executeJob((String) jobId);
+    }
   }
 
 }

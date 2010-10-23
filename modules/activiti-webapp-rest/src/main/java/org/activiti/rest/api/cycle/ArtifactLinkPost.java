@@ -22,6 +22,7 @@ import org.activiti.cycle.RepositoryArtifactLink;
 import org.activiti.cycle.impl.CycleServiceImpl;
 import org.activiti.cycle.impl.RepositoryArtifactLinkImpl;
 import org.activiti.rest.util.ActivitiRequest;
+import org.activiti.rest.util.ActivitiRequestObject;
 import org.activiti.rest.util.ActivitiWebScript;
 import org.springframework.extensions.webscripts.Cache;
 import org.springframework.extensions.webscripts.Status;
@@ -45,10 +46,10 @@ public class ArtifactLinkPost extends ActivitiWebScript {
   protected void executeWebScript(ActivitiRequest req, Status status, Cache cache, Map<String, Object> model) {
     init(req);
 
-    ActivitiRequest.ActivitiWebScriptBody body = req.getBody();
+    ActivitiRequestObject obj = req.getBody();
 
-    String srcConnectorId = req.getMandatoryString(body, "connectorId");
-    String srcArtifactId = req.getMandatoryString(body, "artifactId");
+    String srcConnectorId = req.getMandatoryString(obj, "connectorId");
+    String srcArtifactId = req.getMandatoryString(obj, "artifactId");
 
     // String srcElementName = req.getMandatoryString("sourceElementName");
     // String srcElementId = req.getMandatoryString("sourceElementId");
@@ -56,8 +57,8 @@ public class ArtifactLinkPost extends ActivitiWebScript {
     // String tgtElementName = req.getMandatoryString("targetElementName");
     // String tgtElementId = req.getMandatoryString("targetElementId");
 
-    String tgtConnectorId = req.getMandatoryString(body, "targetConnectorId");
-    String tgtArtifactId = req.getMandatoryString(body, "targetArtifactId");
+    String tgtConnectorId = req.getMandatoryString(obj, "targetConnectorId");
+    String tgtArtifactId = req.getMandatoryString(obj, "targetArtifactId");
 
     RepositoryArtifact srcArtifact = cycleService.getRepositoryArtifact(srcConnectorId, srcArtifactId);
     RepositoryArtifact tgtArtifact = cycleService.getRepositoryArtifact(tgtConnectorId, tgtArtifactId);

@@ -21,7 +21,7 @@ import org.springframework.extensions.webscripts.Cache;
 import org.springframework.extensions.webscripts.Status;
 
 /**
- * Returns a list of deployments
+ * Deletes a single deployment
  *
  * @author Erik Winlof
  */
@@ -40,10 +40,10 @@ public class DeploymentDelete extends ActivitiWebScript {
     String deploymentId = req.getMandatoryPathParameter("deploymentId");
     Boolean cascade = req.getBoolean("cascade", false);
     if (cascade) {
-      getRepositoryService().deleteDeployment(deploymentId);
+      getRepositoryService().deleteDeploymentCascade(deploymentId);
     }
     else {
-      getRepositoryService().deleteDeploymentCascade(deploymentId);
+      getRepositoryService().deleteDeployment(deploymentId);
     }
   }
 

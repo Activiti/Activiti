@@ -21,7 +21,18 @@
   <para>
     Each REST API call has its individual authorization level and you must be logged in as a user to invoke a REST API
     call (except for the /login service). Authentication is done using Basic HTTP Authentication, so if you logged in as
-    admin to browse the REST API, as described above, you should be able to perform all calls as described below.
+    an admin (i.e. kermit) to browse the REST API, as described above, you should be able to perform all calls as
+    described below.
+  </para>
+
+  <para>
+    The API follows normal REST API conventions using GET for read operations, POST for creating objects, PUT for updating and
+    performing operations on already created objects and finally DELETE for deleting objects. When performing a call
+    that affects multiple objects POST is used on all such operations for consistency and making sure that an unlimited
+    number of objects may be used. The reason for using POST is that the HTTP DELETE method doesn't implicitly allow
+    request bodies and therefore, a call using DELETE, in theory, could get it's request body stripped out by a proxy.
+    So to be certain this doesn't happen we use POST, even when PUT could have been used to update multiple objects,
+    for consistency.  
   </para>
 
   <para>
@@ -120,6 +131,40 @@
           <para>
             <emphasis role="bold">Request: </emphasis>
             <literal>DELETE /deployment/{deploymentId}?cascade={cascade?}</literal>
+          </para>
+        </listitem>
+        <listitem>
+          <para>
+            <emphasis role="bold">API: </emphasis>
+            <literal>ProcessEngines.getProcessEngine(configuredProcessEngineName).getRepositoryService().deleteDeployment(deploymentId)</literal>
+          </para>
+        </listitem>
+        <listitem>
+          <para>
+            <emphasis role="bold">Response:</emphasis>
+            <programlisting>
+{
+  "success": true
+}</programlisting>
+          </para>
+        </listitem>
+      </itemizedlist>
+    </section>
+
+    <section>
+      <title>Delete Deployments</title>
+      <para>
+        Deletes multiple deployment.
+      </para>
+      <itemizedlist>
+        <listitem>
+          <para>
+            <emphasis role="bold">Request: </emphasis>
+            <literal>POST /deployments?cascade={cascade?}</literal>
+            <programlisting>
+{
+"deploymentIds": [ "10", "11" ]
+}</programlisting>
           </para>
         </listitem>
         <listitem>
@@ -785,7 +830,13 @@
 {
   "data": [
     {
-      TODO: Fill with example values when jobs are activated
+      "id": "212",
+      "executionId": "211",
+      "retries": -1,
+      "processInstanceId": "210",
+      "dueDate": null,
+      "assignee": null,
+      "exceptionMessage": "Can\'t find scripting engine for \'groovy\'"
     }
   ],
   "total": 1,
@@ -822,7 +873,14 @@
               <emphasis role="bold">Response:</emphasis>
               <programlisting>
 {
-  TODO: Fill with example values when jobs are activated
+  "id": "212",
+  "executionId": "211",
+  "retries": -1,
+  "processInstanceId": "210",
+  "dueDate": null,
+  "assignee": null,
+  "exceptionMessage": "Can\'t find scripting engine for \'groovy\'",
+  "stacktrace": "org.activiti.engine.ActivitiException: Can't find scripting engine for 'groovy'\n\tat ..."
 }</programlisting>
             </para>
           </listitem>
@@ -844,7 +902,41 @@
           <listitem>
             <para>
               <emphasis role="bold">API:</emphasis>
-              <literal>ProcessEngines.getProcessEngine(configuredProcessEngineName).executeJob(jobId)</literal>
+              <literal>ProcessEngines.getProcessEngine(configuredProcessEngineName).getManagementService().executeJob(jobId)</literal>
+            </para>
+          </listitem>
+          <listitem>
+            <para>
+              <emphasis role="bold">Response:</emphasis>
+              <programlisting>
+{
+  "success": true
+}</programlisting>
+            </para>
+          </listitem>
+        </itemizedlist>
+      </section>
+
+      <section>
+        <title>Execute Jobs</title>
+        <para>
+          Executes multiple job.
+        </para>
+        <itemizedlist>
+          <listitem>
+            <para>
+              <emphasis role="bold">Request:</emphasis>
+              <literal>POST /management/jobs/execute</literal>
+              <programlisting>
+{
+  "jobIds": [ "212" ]
+}</programlisting>
+            </para>
+          </listitem>
+          <listitem>
+            <para>
+              <emphasis role="bold">API:</emphasis>
+              <literal>ProcessEngines.getProcessEngine(configuredProcessEngineName).getManagementService().executeJob(jobId)</literal>
             </para>
           </listitem>
           <listitem>

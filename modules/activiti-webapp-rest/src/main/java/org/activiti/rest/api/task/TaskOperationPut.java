@@ -13,6 +13,7 @@
 package org.activiti.rest.api.task;
 
 import org.activiti.rest.util.ActivitiRequest;
+import org.activiti.rest.util.ActivitiRequestObject;
 import org.activiti.rest.util.ActivitiWebScript;
 import org.springframework.extensions.webscripts.Cache;
 import org.springframework.extensions.webscripts.Status;
@@ -39,8 +40,7 @@ public class TaskOperationPut extends ActivitiWebScript {
   protected void executeWebScript(ActivitiRequest req, Status status, Cache cache, Map<String, Object> model) {
     String taskId = req.getMandatoryPathParameter("taskId");
     String operation = req.getMandatoryPathParameter("operation");
-    ActivitiRequest.ActivitiWebScriptBody body = req.getBody();
-    Map<String, Object> variables = req.getFormVariables(body);
+    Map<String, Object> variables = req.getFormVariables();
     String currentUserId = req.getCurrentUserId();
     if ("start".equals(operation)) {
       throw new WebScriptException(Status.STATUS_NOT_IMPLEMENTED, "Not implemented in this version");

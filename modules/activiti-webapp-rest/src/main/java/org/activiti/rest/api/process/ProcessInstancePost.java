@@ -13,10 +13,10 @@
 package org.activiti.rest.api.process;
 
 import org.activiti.rest.util.ActivitiRequest;
+import org.activiti.rest.util.ActivitiRequestObject;
 import org.activiti.rest.util.ActivitiWebScript;
 import org.springframework.extensions.webscripts.Cache;
 import org.springframework.extensions.webscripts.Status;
-import org.springframework.extensions.webscripts.WebScriptRequest;
 
 import java.util.Map;
 
@@ -38,9 +38,9 @@ public class ProcessInstancePost extends ActivitiWebScript {
    */
   @Override
   protected void executeWebScript(ActivitiRequest req, Status status, Cache cache, Map<String, Object> model) {
-    ActivitiRequest.ActivitiWebScriptBody body = req.getBody();
-    String processDefinitionId = req.getMandatoryString(body, "processDefinitionId");
-    Map<String, Object> variables = req.getFormVariables(body);
+    ActivitiRequestObject obj = req.getBody();
+    String processDefinitionId = req.getMandatoryString(obj, "processDefinitionId");
+    Map<String, Object> variables = req.getFormVariables();
     variables.remove("processDefinitionId");
     model.put("instance", getRuntimeService().startProcessInstanceById(processDefinitionId, variables));
   }

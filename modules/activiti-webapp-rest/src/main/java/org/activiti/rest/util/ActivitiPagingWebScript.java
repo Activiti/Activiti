@@ -57,7 +57,7 @@ public class ActivitiPagingWebScript extends ActivitiWebScript
     {
       QueryProperty qp = properties.get(sort);
       if (qp == null) {
-        throw new WebScriptException(Status.STATUS_BAD_REQUEST, "Value for param 'sort' is not a valid, '" + sort + "' is not a valid property");
+        throw new WebScriptException(Status.STATUS_BAD_REQUEST, "Value for param 'sort' is not valid, '" + sort + "' is not a valid property");
       }
       query.orderBy(qp);
       if (order.equals("asc"))
@@ -69,7 +69,7 @@ public class ActivitiPagingWebScript extends ActivitiWebScript
         query.desc();
       }
       else {
-        throw new WebScriptException(Status.STATUS_BAD_REQUEST, "Value for param 'order' is not a valid : '" + order + "', must be 'asc' or 'desc'");
+        throw new WebScriptException(Status.STATUS_BAD_REQUEST, "Value for param 'order' is not valid : '" + order + "', must be 'asc' or 'desc'");
       }
     }
 
