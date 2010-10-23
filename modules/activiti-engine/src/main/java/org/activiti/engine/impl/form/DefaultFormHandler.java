@@ -55,24 +55,24 @@ public class DefaultFormHandler {
     
       List<Element> formPropertyElements = extensionElement.elementsNS(BpmnParser.BPMN_EXTENSIONS_NS, "formProperty");
       for (Element formPropertyElement : formPropertyElements) {
-        FormPropertyHandler formProperty = new FormPropertyHandler();
+        FormPropertyHandler formPropertyHandler = new FormPropertyHandler();
         
         String id = formPropertyElement.attribute("http://activiti.org/bpmn-extensions:id");
         if (id==null) {
           bpmnParse.addError("attribute 'id' is required", formPropertyElement);
         }
-        formProperty.setId(id);
+        formPropertyHandler.setId(id);
         
         String name = formPropertyElement.attribute("http://activiti.org/bpmn-extensions:name");
-        formProperty.setName(name);
+        formPropertyHandler.setName(name);
         
         AbstractFormType type = formTypes.parseFormPropertyType(formPropertyElement, bpmnParse);
-        formProperty.setType(type);
+        formPropertyHandler.setType(type);
 
         String requiredText = formPropertyElement.attribute("http://activiti.org/bpmn-extensions:required", "false");
         Boolean required = bpmnParse.parseBooleanAttribute(requiredText);
         if (required!=null) {
-          formProperty.setRequired(required);
+          formPropertyHandler.setRequired(required);
         } else {
           bpmnParse.addError("attribute 'required' must be one of {on|yes|true|enabled|active|off|no|false|disabled|inactive}", formPropertyElement);
         }
@@ -80,7 +80,7 @@ public class DefaultFormHandler {
         String readableText = formPropertyElement.attribute("readable", "true");
         Boolean readable = bpmnParse.parseBooleanAttribute(readableText);
         if (readable!=null) {
-          formProperty.setReadable(readable);
+          formPropertyHandler.setReadable(readable);
         } else {
           bpmnParse.addError("attribute 'readable' must be one of {on|yes|true|enabled|active|off|no|false|disabled|inactive}", formPropertyElement);
         }
@@ -88,21 +88,21 @@ public class DefaultFormHandler {
         String writableText = formPropertyElement.attribute("http://activiti.org/bpmn-extensions:writable", "true");
         Boolean writable = bpmnParse.parseBooleanAttribute(writableText);
         if (writable!=null) {
-          formProperty.setWritable(writable);
+          formPropertyHandler.setWritable(writable);
         } else {
           bpmnParse.addError("attribute 'writable' must be one of {on|yes|true|enabled|active|off|no|false|disabled|inactive}", formPropertyElement);
         }
 
         String variableName = formPropertyElement.attribute("http://activiti.org/bpmn-extensions:variable");
-        formProperty.setVariableName(variableName);
+        formPropertyHandler.setVariableName(variableName);
 
         String valueExpressionText = formPropertyElement.attribute("http://activiti.org/bpmn-extensions:expression");
         if (valueExpressionText!=null) {
           ActivitiValueExpression valueExpression = expressionManager.createValueExpression(valueExpressionText);
-          formProperty.setVariableExpression(valueExpression);
+          formPropertyHandler.setVariableExpression(valueExpression);
         }
 
-        formPropertyHandlers.add(formProperty);
+        formPropertyHandlers.add(formPropertyHandler);
       }
     }
   }

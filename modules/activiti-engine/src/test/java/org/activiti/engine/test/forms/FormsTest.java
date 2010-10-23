@@ -153,4 +153,42 @@ public class FormsTest extends ActivitiInternalTestCase {
     assertEquals("rubensstraat", address.getStreet());
     assertEquals(expectedVariables, variables);
   }
+
+  @SuppressWarnings("unchecked")
+  @Deployment
+  public void testFormPropertyDetails() {
+    StartFormData startFormData = formService.getStartFormData("FormPropertyDetails:1");
+    FormProperty property = startFormData.getFormProperties().get(0);
+    assertEquals("speaker", property.getId());
+    assertNull(property.getValue());
+    assertTrue(property.isReadable());
+    assertTrue(property.isWritable());
+    assertFalse(property.isRequired());
+    assertEquals("string", property.getType().getName());
+    
+    property = startFormData.getFormProperties().get(1);
+    assertEquals("start", property.getId());
+    assertNull(property.getValue());
+    assertTrue(property.isReadable());
+    assertTrue(property.isWritable());
+    assertFalse(property.isRequired());
+    assertEquals("date", property.getType().getName());
+    assertEquals("dd-MMM-yyyy", property.getType().getInformation("datePattern"));
+    
+    property = startFormData.getFormProperties().get(2);
+    assertEquals("direction", property.getId());
+    assertNull(property.getValue());
+    assertTrue(property.isReadable());
+    assertTrue(property.isWritable());
+    assertFalse(property.isRequired());
+    assertEquals("enum", property.getType().getName());
+    Map<String, String> values = (Map) property.getType().getInformation("values");
+    
+    Map<String, String> expectedValues = new HashMap<String, String>();
+    expectedValues.put("left", "Go Left");
+    expectedValues.put("right", "Go Right");
+    expectedValues.put("up", "Go Up");
+    expectedValues.put("down", "Go Down");
+    assertEquals(expectedValues, values);
+  }
 }

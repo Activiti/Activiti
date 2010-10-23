@@ -38,20 +38,21 @@ public class FormPropertyHandler {
   public FormProperty createFormProperty(ExecutionEntity execution) {
     FormPropertyImpl formProperty = new FormPropertyImpl(this);
 
-    Object modelValue = null;
-    if (variableName!=null) {
-      modelValue = execution.getVariable(variableName);
-    } else if (variableExpression!=null) {
-      modelValue = variableExpression.getValue(execution); 
-    } else {
-      modelValue = execution.getVariable(id);
-    }
-
-    if (type!=null) {
-      String formValue = type.convertModelValueToFormValue(modelValue);
-      formProperty.setValue(formValue);
-    } else if (modelValue!=null) {
-      formProperty.setValue(modelValue.toString());
+    if (execution!=null) {
+      Object modelValue = null;
+      if (variableName != null) {
+        modelValue = execution.getVariable(variableName);
+      } else if (variableExpression != null) {
+        modelValue = variableExpression.getValue(execution);
+      } else {
+        modelValue = execution.getVariable(id);
+      }
+      if (type != null) {
+        String formValue = type.convertModelValueToFormValue(modelValue);
+        formProperty.setValue(formValue);
+      } else if (modelValue != null) {
+        formProperty.setValue(modelValue.toString());
+      }
     }
     
     return formProperty;

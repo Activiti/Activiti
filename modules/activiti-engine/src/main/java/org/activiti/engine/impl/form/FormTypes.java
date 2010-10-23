@@ -35,20 +35,24 @@ public class FormTypes {
     AbstractFormType formType = null;
 
     String typeText = formPropertyElement.attribute("http://activiti.org/bpmn-extensions:type");
-    if (typeText!=null) {
+    String datePatternText = formPropertyElement.attribute("http://activiti.org/bpmn-extensions:datePattern");
+    
+    if ("date".equals(typeText) && datePatternText!=null) {
+      formType = new DateFormType(datePatternText);
+      
+    } else if ("enum".equals(typeText)) {
+      Map<String, String> values = new HashMap<String, String>();
+      for (Element valueElement: formPropertyElement.elementsNS("http://activiti.org/bpmn-extensions","value")) {
+        String valueId = valueElement.attribute("http://activiti.org/bpmn-extensions:id");
+        String valueName = valueElement.attribute("http://activiti.org/bpmn-extensions:name");
+        values.put(valueId, valueName);
+      }
+      formType = new EnumFormType(values);
+      
+    } else if (typeText!=null) {
       formType = formTypes.get(typeText);
       if (formType==null) {
-        if ("enum".equals(formType)) {
-          Map<String, String> values = new HashMap<String, String>();
-          for (Element valueElement: formPropertyElement.elements("value")) {
-            String valueId = valueElement.attribute("id");
-            String valueName = valueElement.attribute("name");
-            values.put(valueId, valueName);
-          }
-          formType = new EnumFormType(values);
-        } else {
-          bpmnParse.addError("unknown type '"+typeText+"'", formPropertyElement);
-        }
+        bpmnParse.addError("unknown type '"+typeText+"'", formPropertyElement);
       }
     }
     return formType;

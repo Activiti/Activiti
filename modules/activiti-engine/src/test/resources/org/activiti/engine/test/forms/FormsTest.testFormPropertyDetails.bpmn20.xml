@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<definitions id="definitions"
+             targetNamespace="http://activiti.org/bpmn20" 
+             xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xmlns:a="http://activiti.org/bpmn-extensions">
+  
+  <process id="FormPropertyDetails">
+  
+    <startEvent id="start">
+      <extensionElements>
+
+        <a:formProperty a:id="speaker" 
+                        a:name="Speaker"
+                        a:variable="SpeakerName" 
+                        a:type="string" />
+
+        <a:formProperty a:id="start" 
+                        a:type="date" 
+                        a:datePattern="dd-MMM-yyyy" />
+
+        <a:formProperty a:id="direction" 
+                        a:type="enum">
+          <a:value a:id="left" a:name="Go Left" />
+          <a:value a:id="right" a:name="Go Right" />
+          <a:value a:id="up" a:name="Go Up" />
+          <a:value a:id="down" a:name="Go Down" />
+        </a:formProperty>
+        
+      </extensionElements>
+    </startEvent>
+
+  </process>
+  
+</definitions>

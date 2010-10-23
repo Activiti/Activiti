@@ -25,12 +25,12 @@ import org.activiti.engine.ActivitiException;
  */
 public class DateFormType extends AbstractFormType {
   
-  protected String pattern; 
+  protected String datePattern; 
   protected Format dateFormat; 
 
-  public DateFormType(String simpleDateFormatPattern) {
-    this.pattern = simpleDateFormatPattern;
-    this.dateFormat = new SimpleDateFormat(simpleDateFormatPattern);
+  public DateFormType(String datePattern) {
+    this.datePattern = datePattern;
+    this.dateFormat = new SimpleDateFormat(datePattern);
   }
   
   public String getName() {
@@ -38,8 +38,8 @@ public class DateFormType extends AbstractFormType {
   }
   
   public Object getInformation(String key) {
-    if ("pattern".equals(key)) {
-      return pattern;
+    if ("datePattern".equals(key)) {
+      return datePattern;
     }
     return null;
   }
