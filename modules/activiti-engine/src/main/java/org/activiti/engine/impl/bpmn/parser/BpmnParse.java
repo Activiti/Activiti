@@ -466,7 +466,7 @@ public class BpmnParse extends Parse {
         } else {
           startFormHandler = new DefaultStartFormHandler();
         }
-        startFormHandler.parseConfiguration(deployment, startEventElement);
+        startFormHandler.parseConfiguration(startEventElement, deployment, this);
         processDefinition.setStartFormHandler(startFormHandler);
         
         String initiatorVariableName = startEventElement.attributeNS(BpmnParser.BPMN_EXTENSIONS_NS, "initiator");
@@ -908,7 +908,7 @@ public class BpmnParse extends Parse {
     } else {
       taskFormHandler = new DefaultTaskFormHandler();
     }
-    taskFormHandler.parseConfiguration(deployment, taskElement);
+    taskFormHandler.parseConfiguration(taskElement, deployment, this);
 
     TaskDefinition taskDefinition = new TaskDefinition(taskFormHandler);
     
@@ -1543,5 +1543,25 @@ public class BpmnParse extends Parse {
 
   public void addOperation(OperationImplementation operationImplementation) {
     this.operationImplementations.put(operationImplementation.getName(), operationImplementation);
+  }
+
+  public Boolean parseBooleanAttribute(String booleanText) {
+    if ("true".equals(booleanText)
+        || "enabled".equals(booleanText)
+        || "on".equals(booleanText)
+        || "active".equals(booleanText)
+        || "yes".equals(booleanText)
+        ) {
+      return Boolean.TRUE;
+    }
+    if ("false".equals(booleanText)
+        || "disabled".equals(booleanText)
+        || "off".equals(booleanText)
+        || "inactive".equals(booleanText)
+        || "no".equals(booleanText)
+        ) {
+      return Boolean.FALSE;
+    }
+    return null;
   }
 }

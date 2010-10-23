@@ -15,7 +15,7 @@ package org.activiti.engine.impl.form;
 
 import java.util.Map;
 
-import org.activiti.engine.form.TaskForm;
+import org.activiti.engine.form.TaskFormData;
 import org.activiti.engine.impl.task.TaskEntity;
 
 
@@ -25,12 +25,16 @@ import org.activiti.engine.impl.task.TaskEntity;
  */
 public class DefaultTaskFormHandler extends DefaultFormHandler implements TaskFormHandler {
 
-  public TaskForm createTaskForm(TaskEntity task) {
-    return new TaskFormImpl(formKey, deploymentId, task);
+  public TaskFormData createTaskForm(TaskEntity task) {
+    TaskFormDataImpl taskFormData = new TaskFormDataImpl();
+    taskFormData.setFormKey(formKey);
+    taskFormData.setDeploymentId(deploymentId);
+    taskFormData.setTask(task);
+    initializeFormProperties(taskFormData, task.getExecution());
+    return taskFormData;
   }
 
-  public void submitTaskForm(TaskEntity task, Map<String, Object> properties) {
-    task.setExecutionVariables(properties);
-    task.complete();
+  public void submitTaskFormData(TaskEntity task, Map<String, String> properties) {
+    submitFormProperties(properties, task.getExecution());
   }
 }

@@ -11,24 +11,17 @@
  * limitations under the License.
  */
 
-package org.activiti.engine.impl.form;
+package org.activiti.engine.form;
 
-import java.util.Map;
-
-import org.activiti.engine.form.TaskFormData;
-import org.activiti.engine.impl.bpmn.parser.BpmnParse;
-import org.activiti.engine.impl.repository.DeploymentEntity;
-import org.activiti.engine.impl.task.TaskEntity;
-import org.activiti.engine.impl.util.xml.Element;
+import org.activiti.engine.task.Task;
 
 
-/**
+/** Specific {@link FormData} for completing a task.
+ * 
  * @author Tom Baeyens
  */
-public interface TaskFormHandler {
+public interface TaskFormData extends FormData {
 
-  TaskFormData createTaskForm(TaskEntity task);
-  void submitTaskFormData(TaskEntity task, Map<String, String> properties);
-  void parseConfiguration(Element userTaskElement, DeploymentEntity deployment, BpmnParse bpmnParse);
-
+  /** the task for which this form is used to complete it. */
+  Task getTask();
 }

@@ -11,24 +11,18 @@
  * limitations under the License.
  */
 
-package org.activiti.engine.impl.form;
+package org.activiti.engine.form;
 
-import java.util.Map;
-
-import org.activiti.engine.form.TaskFormData;
-import org.activiti.engine.impl.bpmn.parser.BpmnParse;
-import org.activiti.engine.impl.repository.DeploymentEntity;
-import org.activiti.engine.impl.task.TaskEntity;
-import org.activiti.engine.impl.util.xml.Element;
+import org.activiti.engine.repository.ProcessDefinition;
 
 
-/**
+/** Specific {@link FormData} for starting a new process instance.
+ * 
  * @author Tom Baeyens
  */
-public interface TaskFormHandler {
+public interface StartFormData extends FormData {
 
-  TaskFormData createTaskForm(TaskEntity task);
-  void submitTaskFormData(TaskEntity task, Map<String, String> properties);
-  void parseConfiguration(Element userTaskElement, DeploymentEntity deployment, BpmnParse bpmnParse);
-
+  /** the process definition for which this form is starting a new process instance */
+  ProcessDefinition getProcessDefinition();
+  
 }

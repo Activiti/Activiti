@@ -16,8 +16,8 @@ package org.activiti.engine.impl;
 import java.util.Map;
 
 import org.activiti.engine.FormService;
-import org.activiti.engine.form.StartForm;
-import org.activiti.engine.form.TaskForm;
+import org.activiti.engine.form.StartFormData;
+import org.activiti.engine.form.TaskFormData;
 import org.activiti.engine.impl.cmd.GetRenderedStartFormCmd;
 import org.activiti.engine.impl.cmd.GetRenderedTaskFormCmd;
 import org.activiti.engine.impl.cmd.GetStartFormCmd;
@@ -48,19 +48,19 @@ public class FormServiceImpl extends ServiceImpl implements FormService {
     return commandExecutor.execute(new GetRenderedTaskFormCmd(taskId, engineName));
   }
 
-  public StartForm getStartForm(String processDefinitionId) {
+  public StartFormData getStartFormData(String processDefinitionId) {
     return commandExecutor.execute(new GetStartFormCmd(processDefinitionId));
   }
 
-  public TaskForm getTaskForm(String taskId) {
+  public TaskFormData getTaskFormData(String taskId) {
     return commandExecutor.execute(new GetTaskFormCmd(taskId));
   }
 
-  public ProcessInstance submitStartForm(String processDefinitionId, Map<String, Object> properties) {
+  public ProcessInstance submitStartFormData(String processDefinitionId, Map<String, String> properties) {
     return commandExecutor.execute(new SubmitStartFormCmd(processDefinitionId, properties));
   }
 
-  public void submitTaskForm(String taskId, Map<String, Object> properties) {
+  public void submitTaskFormData(String taskId, Map<String, String> properties) {
     commandExecutor.execute(new SubmitTaskFormCmd(taskId, properties));
   }
 

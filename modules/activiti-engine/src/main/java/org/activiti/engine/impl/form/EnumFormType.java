@@ -13,26 +13,43 @@
 
 package org.activiti.engine.impl.form;
 
-import org.activiti.engine.form.TaskForm;
-import org.activiti.engine.impl.task.TaskEntity;
-import org.activiti.engine.task.Task;
+import java.util.List;
+import java.util.Map;
 
 
 /**
  * @author Tom Baeyens
  */
-public class TaskFormImpl extends FormImpl implements TaskForm {
+public class EnumFormType extends AbstractFormType {
 
-  private static final long serialVersionUID = 1L;
-  
-  protected Task task;
-  
-  public TaskFormImpl(String formKey, String deploymentId, TaskEntity task) {
-    super(formKey, deploymentId);
-    this.task = task;
+  protected Map<String, String> values;
+
+  public EnumFormType(Map<String, String> values) {
+    this.values = values;
   }
 
-  public Task getTask() {
-    return task;
+  public String getName() {
+    return "enum";
   }
+  
+  @Override
+  public Object getInformation(String key) {
+    if (key.equals("values")) {
+      return values;
+    }
+    return null;
+  }
+
+  @Override
+  public Object convertFormValueToModelValue(String propertyValue) {
+    // TODO
+    return null;
+  }
+
+  @Override
+  public String convertModelValueToFormValue(Object modelValue) {
+    // TODO
+    return null;
+  }
+
 }

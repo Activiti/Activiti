@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<definitions id="definitions"
+             targetNamespace="http://activiti.org/bpmn20" 
+             xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xmlns:activiti="http://activiti.org/bpmn-extensions">
+  
+  <process id="FormPropertyHandlingProcess">
+  
+    <startEvent id="start">
+      <extensionElements>
+        <activiti:formProperty activiti:id="speaker" activiti:variable="SpeakerName"/>
+        <activiti:formProperty activiti:id="duration" activiti:type="long"/>
+      </extensionElements>
+    </startEvent>
+
+    <sequenceFlow id="flow1" sourceRef="start" targetRef="task" />
+    
+    <userTask id="task"
+              activiti:assignee="kermit">
+      <extensionElements>
+        <activiti:formProperty activiti:id="room" />
+        <activiti:formProperty activiti:id="duration" activiti:type="long"/>
+        <activiti:formProperty activiti:id="speaker" activiti:variable="SpeakerName" activiti:writable="false" />
+        <activiti:formProperty activiti:id="street" activiti:expression="#{address.street}" activiti:required="true" />
+      </extensionElements>
+    </userTask>
+
+    <sequenceFlow id='flow2' sourceRef='task' targetRef='wait' />
+    
+    <receiveTask id="wait" />
+
+  </process>
+  
+</definitions>

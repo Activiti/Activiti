@@ -14,7 +14,7 @@
 package org.activiti.engine.impl.cmd;
 
 import org.activiti.engine.ActivitiException;
-import org.activiti.engine.form.TaskForm;
+import org.activiti.engine.form.TaskFormData;
 import org.activiti.engine.impl.cfg.TaskSession;
 import org.activiti.engine.impl.form.TaskFormHandler;
 import org.activiti.engine.impl.interceptor.Command;
@@ -26,7 +26,7 @@ import org.activiti.engine.impl.task.TaskEntity;
 /**
  * @author Tom Baeyens
  */
-public class GetTaskFormCmd implements Command<TaskForm> {
+public class GetTaskFormCmd implements Command<TaskFormData> {
 
   protected String taskId;
 
@@ -34,7 +34,7 @@ public class GetTaskFormCmd implements Command<TaskForm> {
     this.taskId = taskId;
   }
 
-  public TaskForm execute(CommandContext commandContext) {
+  public TaskFormData execute(CommandContext commandContext) {
     TaskSession taskSession = commandContext.getTaskSession();
     TaskEntity task = taskSession.findTaskById(taskId);
     if (task == null) {

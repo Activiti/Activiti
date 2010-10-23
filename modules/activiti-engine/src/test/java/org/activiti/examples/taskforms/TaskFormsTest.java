@@ -50,14 +50,14 @@ public class TaskFormsTest extends ActivitiInternalTestCase {
     
     ProcessDefinition processDefinition = repositoryService.createProcessDefinitionQuery().singleResult();
     String processDefinitionId = processDefinition.getId();
-    assertEquals("org/activiti/examples/taskforms/request.form", formService.getStartForm(processDefinitionId).getFormKey());
+    assertEquals("org/activiti/examples/taskforms/request.form", formService.getStartFormData(processDefinitionId).getFormKey());
 
     // Define variables that would be filled in through the form
-    Map<String, Object> formProperties = new HashMap<String, Object>();
+    Map<String, String> formProperties = new HashMap<String, String>();
     formProperties.put("employeeName", "kermit");
     formProperties.put("numberOfDays", "4");
     formProperties.put("vacationMotivation", "I'm tired");
-    formService.submitStartForm("vacationRequest:1", formProperties);
+    formService.submitStartFormData("vacationRequest:1", formProperties);
 
     // Management should now have a task assigned to them
     Task task = taskService.createTaskQuery().candidateGroup("management").singleResult();

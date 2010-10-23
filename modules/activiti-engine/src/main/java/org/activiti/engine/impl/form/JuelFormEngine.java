@@ -12,9 +12,9 @@
  */
 package org.activiti.engine.impl.form;
 
-import org.activiti.engine.form.Form;
-import org.activiti.engine.form.StartForm;
-import org.activiti.engine.form.TaskForm;
+import org.activiti.engine.form.FormData;
+import org.activiti.engine.form.StartFormData;
+import org.activiti.engine.form.TaskFormData;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.repository.ResourceEntity;
 import org.activiti.engine.impl.scripting.ScriptingEngines;
@@ -26,7 +26,7 @@ import org.activiti.engine.impl.task.TaskEntity;
  */
 public class JuelFormEngine implements FormEngine {
   
-  public Object renderStartForm(StartForm startForm) {
+  public Object renderStartForm(StartFormData startForm) {
     if (startForm.getFormKey()==null) {
       return null;
     }
@@ -36,7 +36,7 @@ public class JuelFormEngine implements FormEngine {
     return scriptingEngines.evaluate(formTemplateString, ScriptingEngines.DEFAULT_SCRIPTING_LANGUAGE, null);
   }
 
-  public Object renderTaskForm(TaskForm taskForm) {
+  public Object renderTaskForm(TaskFormData taskForm) {
     if (taskForm.getFormKey()==null) {
       return null;
     }
@@ -47,7 +47,7 @@ public class JuelFormEngine implements FormEngine {
     return scriptingEngines.evaluate(formTemplateString, ScriptingEngines.DEFAULT_SCRIPTING_LANGUAGE, task.getExecution());
   }
 
-  private String getFormTemplateString(Form formInstance, CommandContext commandContext) {
+  private String getFormTemplateString(FormData formInstance, CommandContext commandContext) {
     String deploymentId = formInstance.getDeploymentId();
     String formKey = formInstance.getFormKey();
     

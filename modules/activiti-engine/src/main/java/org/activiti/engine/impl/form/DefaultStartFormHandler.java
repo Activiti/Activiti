@@ -13,14 +13,11 @@
 
 package org.activiti.engine.impl.form;
 
-import java.util.List;
 import java.util.Map;
 
-import org.activiti.engine.form.StartForm;
-import org.activiti.engine.impl.bpmn.parser.BpmnParser;
+import org.activiti.engine.form.StartFormData;
 import org.activiti.engine.impl.repository.ProcessDefinitionEntity;
 import org.activiti.engine.impl.runtime.ExecutionEntity;
-import org.activiti.engine.impl.util.xml.Element;
 
 
 /**
@@ -28,20 +25,17 @@ import org.activiti.engine.impl.util.xml.Element;
  */
 public class DefaultStartFormHandler extends DefaultFormHandler implements StartFormHandler {
 
-  public StartForm createStartForm(ProcessDefinitionEntity processDefinition) {
-    StartFormImpl startForm = new StartFormImpl(formKey, deploymentId, processDefinition);
-    
-    // TODO resolve display properties
-    
-    return startForm;
+  public StartFormData createStartFormData(ProcessDefinitionEntity processDefinition) {
+    StartFormDataImpl startFormData = new StartFormDataImpl();
+    startFormData.setFormKey(formKey);
+    startFormData.setDeploymentId(deploymentId);
+    startFormData.setProcessDefinition(processDefinition);
+    return startFormData;
   }
 
-  public ExecutionEntity submitStartForm(ProcessDefinitionEntity processDefinition, Map<String, Object> properties) {
+  public ExecutionEntity submitStartFormData(ProcessDefinitionEntity processDefinition, Map<String, String> properties) {
     ExecutionEntity processInstance = processDefinition.createProcessInstance();
-    
-    // TODO process submit properties
-    processInstance.setVariables(properties);
-    
+    submitFormProperties(properties, processInstance);
     return processInstance;
   }
 }

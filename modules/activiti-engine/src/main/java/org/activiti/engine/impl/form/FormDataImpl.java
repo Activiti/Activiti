@@ -14,48 +14,46 @@
 package org.activiti.engine.impl.form;
 
 import java.io.Serializable;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 
-import org.activiti.engine.form.Form;
+import org.activiti.engine.form.FormData;
+import org.activiti.engine.form.FormProperty;
 
 
 /**
  * @author Tom Baeyens
  */
-public abstract class FormImpl implements Form, Serializable {
+public abstract class FormDataImpl implements FormData, Serializable {
 
   private static final long serialVersionUID = 1L;
   
   protected String formKey;
   protected String deploymentId;
-  protected Map<String, Object> properties = new HashMap<String, Object>();
+  protected List<FormProperty> formProperties = new ArrayList<FormProperty>();
   
-  public FormImpl(String formKey, String deploymentId) {
-    this.formKey = formKey;
-    this.deploymentId = deploymentId;
-  }
-
-  public Object getProperty(String propertyName) {
-    return properties.get(propertyName);
-  }
-  
-  public void setProperty(String propertyName, Object propertyValue) {
-    properties.put(propertyName, propertyValue);
-  }
-
   // getters and setters //////////////////////////////////////////////////////
   
   public String getFormKey() {
     return formKey;
   }
-  public void setProperties(Map<String, Object> properties) {
-    this.properties = properties;
-  }
-  public Map<String, Object> getProperties() {
-    return properties;
-  }
   public String getDeploymentId() {
     return deploymentId;
   }
+  public List<FormProperty> getFormProperties() {
+    return formProperties;
+  }
+  
+  public void setFormKey(String formKey) {
+    this.formKey = formKey;
+  }
+  
+  public void setDeploymentId(String deploymentId) {
+    this.deploymentId = deploymentId;
+  }
+  
+  public void setFormProperties(List<FormProperty> formProperties) {
+    this.formProperties = formProperties;
+  }
+
 }

@@ -13,22 +13,20 @@
 
 package org.activiti.engine.impl.form;
 
-import java.util.Map;
-
-import org.activiti.engine.form.TaskFormData;
-import org.activiti.engine.impl.bpmn.parser.BpmnParse;
-import org.activiti.engine.impl.repository.DeploymentEntity;
-import org.activiti.engine.impl.task.TaskEntity;
-import org.activiti.engine.impl.util.xml.Element;
+import org.activiti.engine.form.FormType;
 
 
 /**
  * @author Tom Baeyens
  */
-public interface TaskFormHandler {
+public abstract class AbstractFormType implements FormType {
 
-  TaskFormData createTaskForm(TaskEntity task);
-  void submitTaskFormData(TaskEntity task, Map<String, String> properties);
-  void parseConfiguration(Element userTaskElement, DeploymentEntity deployment, BpmnParse bpmnParse);
+  public abstract Object convertFormValueToModelValue(String propertyValue);
+
+  public abstract String convertModelValueToFormValue(Object modelValue);
+
+  public Object getInformation(String key) {
+    return null;
+  }
 
 }

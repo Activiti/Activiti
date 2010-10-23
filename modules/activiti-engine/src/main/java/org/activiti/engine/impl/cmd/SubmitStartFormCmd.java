@@ -32,9 +32,9 @@ import org.activiti.engine.runtime.ProcessInstance;
 public class SubmitStartFormCmd implements Command<ProcessInstance> {
 
   protected String processDefinitionId;
-  protected Map<String, Object> properties;
+  protected Map<String, String> properties;
   
-  public SubmitStartFormCmd(String processDefinitionId, Map<String, Object> properties) {
+  public SubmitStartFormCmd(String processDefinitionId, Map<String, String> properties) {
     this.processDefinitionId = processDefinitionId;
     this.properties = properties;
   }
@@ -51,7 +51,7 @@ public class SubmitStartFormCmd implements Command<ProcessInstance> {
     try {
       VariableMap.setExternalUpdate(Boolean.TRUE);
 
-      processInstance = startFormHandler.submitStartForm(processDefinition, properties);
+      processInstance = startFormHandler.submitStartFormData(processDefinition, properties);
 
     } finally {
       VariableMap.setExternalUpdate(null);

@@ -13,7 +13,7 @@
 package org.activiti.engine.impl.cmd;
 
 import org.activiti.engine.ActivitiException;
-import org.activiti.engine.form.StartForm;
+import org.activiti.engine.form.StartFormData;
 import org.activiti.engine.impl.cfg.RepositorySession;
 import org.activiti.engine.impl.form.FormEngine;
 import org.activiti.engine.impl.form.StartFormHandler;
@@ -56,7 +56,7 @@ public class GetRenderedStartFormCmd implements Command<Object> {
       throw new ActivitiException("No formEngine '" + formEngineName +"' defined process engine configuration");
     }
     
-    StartForm startForm = startFormHandler.createStartForm(processDefinition);
+    StartFormData startForm = startFormHandler.createStartFormData(processDefinition);
     
     return formEngine.renderStartForm(startForm);
   }

@@ -53,8 +53,12 @@ import org.activiti.engine.impl.db.DbSqlSession;
 import org.activiti.engine.impl.db.DbSqlSessionFactory;
 import org.activiti.engine.impl.db.DbTaskSessionFactory;
 import org.activiti.engine.impl.el.ExpressionManager;
+import org.activiti.engine.impl.form.DateFormType;
 import org.activiti.engine.impl.form.FormEngine;
+import org.activiti.engine.impl.form.FormTypes;
 import org.activiti.engine.impl.form.JuelFormEngine;
+import org.activiti.engine.impl.form.LongFormType;
+import org.activiti.engine.impl.form.StringFormType;
 import org.activiti.engine.impl.history.handler.HistoryTaskAssignmentHandler;
 import org.activiti.engine.impl.interceptor.CommandContextFactory;
 import org.activiti.engine.impl.interceptor.CommandContextInterceptor;
@@ -180,7 +184,9 @@ public class ProcessEngineConfiguration {
   protected String mailServerDefaultFrom;
   
   protected Map<String, FormEngine> formEngines;
-  private ClassLoader classLoader;
+  protected FormTypes formTypes;
+
+  protected ClassLoader classLoader;
 
   public ProcessEngineConfiguration() {
     processEngineName = ProcessEngines.NAME_DEFAULT;
@@ -246,6 +252,11 @@ public class ProcessEngineConfiguration {
     FormEngine defaultFormEngine = new JuelFormEngine();
     formEngines.put(null, defaultFormEngine); // default form engine is looked up with null
     formEngines.put("juel", defaultFormEngine);
+    
+    formTypes = new FormTypes();
+    formTypes.addFormType(new StringFormType());
+    formTypes.addFormType(new LongFormType());
+    formTypes.addFormType(new DateFormType("dd/MM/yyyy"));
   }
   
   public ProcessEngine buildProcessEngine() {
@@ -711,11 +722,19 @@ public class ProcessEngineConfiguration {
     this.formService = formService;
   }
   
-  public void setClassLoader(ClassLoader classLoader) {
-    this.classLoader = classLoader;
+  public FormTypes getFormTypes() {
+    return formTypes;
+  }
+  
+  public void setFormTypes(FormTypes formTypes) {
+    this.formTypes = formTypes;
   }
 
   public ClassLoader getClassLoader() {
     return classLoader;
+  }
+
+  public void setClassLoader(ClassLoader classLoader) {
+    this.classLoader = classLoader;
   }
 }

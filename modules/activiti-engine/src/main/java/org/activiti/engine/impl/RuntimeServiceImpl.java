@@ -18,7 +18,7 @@ import java.util.Map;
 
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.RuntimeService;
-import org.activiti.engine.form.Form;
+import org.activiti.engine.form.FormData;
 import org.activiti.engine.impl.cmd.DeleteProcessInstanceCmd;
 import org.activiti.engine.impl.cmd.FindActiveActivityIdsCmd;
 import org.activiti.engine.impl.cmd.GetStartFormCmd;
@@ -109,7 +109,7 @@ public class RuntimeServiceImpl extends ServiceImpl implements RuntimeService {
     return commandExecutor.execute(new FindActiveActivityIdsCmd(executionId));
   }
 
-  public Form getFormInstanceById(String processDefinitionId) {
+  public FormData getFormInstanceById(String processDefinitionId) {
     return commandExecutor.execute(new GetStartFormCmd(processDefinitionId));
   }
 }

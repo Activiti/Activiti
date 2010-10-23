@@ -11,18 +11,29 @@
  * limitations under the License.
  */
 
-package org.activiti.engine.form;
+package org.activiti.engine.impl.form;
 
+import org.activiti.engine.form.StartFormData;
+import org.activiti.engine.impl.repository.ProcessDefinitionEntity;
 import org.activiti.engine.repository.ProcessDefinition;
 
 
-/** Specific {@link Form} for starting a new process instance.
- * 
+/**
  * @author Tom Baeyens
  */
-public interface StartForm extends Form {
-
-  /** the process definition for which this form is starting a new process instance */
-  ProcessDefinition getProcessDefinition();
+public class StartFormDataImpl extends FormDataImpl implements StartFormData {
   
+  private static final long serialVersionUID = 1L;
+  
+  protected ProcessDefinition processDefinition;
+
+  // getters and setters //////////////////////////////////////////////////////
+  
+  public ProcessDefinition getProcessDefinition() {
+    return processDefinition;
+  }
+
+  public void setProcessDefinition(ProcessDefinition processDefinition) {
+    this.processDefinition = processDefinition;
+  }
 }

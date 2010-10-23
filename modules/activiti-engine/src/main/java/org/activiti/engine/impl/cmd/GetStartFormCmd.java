@@ -14,7 +14,7 @@
 package org.activiti.engine.impl.cmd;
 
 import org.activiti.engine.ActivitiException;
-import org.activiti.engine.form.StartForm;
+import org.activiti.engine.form.StartFormData;
 import org.activiti.engine.impl.cfg.RepositorySession;
 import org.activiti.engine.impl.form.StartFormHandler;
 import org.activiti.engine.impl.interceptor.Command;
@@ -26,7 +26,7 @@ import org.activiti.engine.impl.repository.ProcessDefinitionEntity;
 /**
  * @author Tom Baeyens
  */
-public class GetStartFormCmd implements Command<StartForm> {
+public class GetStartFormCmd implements Command<StartFormData> {
 
   protected String processDefinitionId;
 
@@ -34,7 +34,7 @@ public class GetStartFormCmd implements Command<StartForm> {
     this.processDefinitionId = processDefinitionId;
   }
 
-  public StartForm execute(CommandContext commandContext) {
+  public StartFormData execute(CommandContext commandContext) {
     RepositorySession repositorySession = commandContext.getRepositorySession();
     ProcessDefinitionEntity processDefinition = repositorySession.findDeployedProcessDefinitionById(processDefinitionId);
     if (processDefinition == null) {
@@ -47,6 +47,6 @@ public class GetStartFormCmd implements Command<StartForm> {
     }
     
     
-    return startFormHandler.createStartForm(processDefinition);
+    return startFormHandler.createStartFormData(processDefinition);
   }
 }

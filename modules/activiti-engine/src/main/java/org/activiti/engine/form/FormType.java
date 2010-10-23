@@ -11,24 +11,21 @@
  * limitations under the License.
  */
 
-package org.activiti.engine.impl.form;
-
-import java.util.Map;
-
-import org.activiti.engine.form.TaskFormData;
-import org.activiti.engine.impl.bpmn.parser.BpmnParse;
-import org.activiti.engine.impl.repository.DeploymentEntity;
-import org.activiti.engine.impl.task.TaskEntity;
-import org.activiti.engine.impl.util.xml.Element;
+package org.activiti.engine.form;
 
 
-/**
+/** 
  * @author Tom Baeyens
  */
-public interface TaskFormHandler {
+public interface FormType {
 
-  TaskFormData createTaskForm(TaskEntity task);
-  void submitTaskFormData(TaskEntity task, Map<String, String> properties);
-  void parseConfiguration(Element userTaskElement, DeploymentEntity deployment, BpmnParse bpmnParse);
+  /** name for the form type. */
+  String getName();
 
+  /** retrieve type specific extra information like 
+   * the list of values for enum types or the format
+   * for date types. Look in the userguide for 
+   * which extra information keys each type provides
+   * and what return type they give. */
+  Object getInformation(String key);
 }

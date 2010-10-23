@@ -13,28 +13,26 @@
 
 package org.activiti.engine.impl.form;
 
-import org.activiti.engine.form.StartForm;
-import org.activiti.engine.impl.repository.ProcessDefinitionEntity;
-import org.activiti.engine.repository.ProcessDefinition;
+import org.activiti.engine.form.TaskFormData;
+import org.activiti.engine.task.Task;
 
 
 /**
  * @author Tom Baeyens
  */
-public class StartFormImpl extends FormImpl implements StartForm {
-  
+public class TaskFormDataImpl extends FormDataImpl implements TaskFormData {
+
   private static final long serialVersionUID = 1L;
   
-  protected ProcessDefinition processDefinition;
-
-  public StartFormImpl(String formKey, String deploymentId, ProcessDefinitionEntity processDefinition) {
-    super(formKey, deploymentId);
-    this.processDefinition = processDefinition;
-  }
+  protected Task task;
 
   // getters and setters //////////////////////////////////////////////////////
   
-  public ProcessDefinition getProcessDefinition() {
-    return processDefinition;
+  public Task getTask() {
+    return task;
+  }
+
+  public void setTask(Task task) {
+    this.task = task;
   }
 }

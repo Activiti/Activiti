@@ -11,17 +11,34 @@
  * limitations under the License.
  */
 
-package org.activiti.engine.form;
-
-import org.activiti.engine.task.Task;
+package org.activiti.engine.impl.form;
 
 
-/** Specific {@link Form} for completing a task.
- * 
+
+/**
  * @author Tom Baeyens
  */
-public interface TaskForm extends Form {
+public class LongFormType extends AbstractFormType {
 
-  /** the task for which this form is used to complete it. */
-  Task getTask();
+  public String getName() {
+    return "long";
+  }
+
+  public String getMimeType() {
+    return "plain/text";
+  }
+
+  public Object convertFormValueToModelValue(String propertyValue) {
+    if (propertyValue==null || "".equals(propertyValue)) {
+      return null;
+    }
+    return new Long(propertyValue);
+  }
+
+  public String convertModelValueToFormValue(Object modelValue) {
+    if (modelValue==null) {
+      return null;
+    }
+    return modelValue.toString();
+  }
 }

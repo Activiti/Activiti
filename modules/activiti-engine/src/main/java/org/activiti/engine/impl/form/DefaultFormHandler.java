@@ -13,14 +13,19 @@
 
 package org.activiti.engine.impl.form;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import org.activiti.engine.form.FormProperty;
+import org.activiti.engine.impl.bpmn.parser.BpmnParse;
 import org.activiti.engine.impl.bpmn.parser.BpmnParser;
-import org.activiti.engine.impl.el.ActivitiMethodExpression;
 import org.activiti.engine.impl.el.ActivitiValueExpression;
 import org.activiti.engine.impl.el.ExpressionManager;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.repository.DeploymentEntity;
+import org.activiti.engine.impl.runtime.ExecutionEntity;
 import org.activiti.engine.impl.util.xml.Element;
 
 
@@ -31,43 +36,99 @@ public class DefaultFormHandler {
 
   protected String formKey;
   protected String deploymentId;
-  protected List<FormDisplayProperty> formDisplayProperties;
-  protected List<FormSubmitProperty> formSubmitProperties;
+  protected List<FormPropertyHandler> formPropertyHandlers = new ArrayList<FormPropertyHandler>();
   
-  public void parseConfiguration(DeploymentEntity deployment, Element activityElement) {
+  public void parseConfiguration(Element activityElement, DeploymentEntity deployment, BpmnParse bpmnParse) {
     this.deploymentId = deployment.getId();
     this.formKey = activityElement.attributeNS(BpmnParser.BPMN_EXTENSIONS_NS, "formKey");
     Element extensionElement = activityElement.element("extensionElements");
     if (extensionElement != null) {
-      List<Element> formDisplayPropertyElements = extensionElement.elementsNS(BpmnParser.BPMN_EXTENSIONS_NS, "formDisplay");
-      for (Element formDisplayPropertyElement : formDisplayPropertyElements) {
-        FormDisplayProperty formDisplayProperty = new FormDisplayProperty();
+
+      CommandContext commandContext = CommandContext.getCurrent();
+      ExpressionManager expressionManager = commandContext
+        .getProcessEngineConfiguration()
+        .getExpressionManager();
+      
+      FormTypes formTypes = commandContext
+        .getProcessEngineConfiguration()
+        .getFormTypes();
+    
+      List<Element> formPropertyElements = extensionElement.elementsNS(BpmnParser.BPMN_EXTENSIONS_NS, "formProperty");
+      for (Element formPropertyElement : formPropertyElements) {
+        FormPropertyHandler formProperty = new FormPropertyHandler();
         
-        String destProperty = formDisplayPropertyElement.attribute("destProperty");
-        formDisplayProperty.setDestProperty(destProperty);
+        String id = formPropertyElement.attribute("http://activiti.org/bpmn-extensions:id");
+        if (id==null) {
+          bpmnParse.addError("attribute 'id' is required", formPropertyElement);
+        }
+        formProperty.setId(id);
         
-        String srcVariable = formDisplayPropertyElement.attribute("srcVar");
-        formDisplayProperty.setSrcVariable(srcVariable);
+        String name = formPropertyElement.attribute("http://activiti.org/bpmn-extensions:name");
+        formProperty.setName(name);
         
-        ExpressionManager expressionManager = CommandContext
-          .getCurrent()
-          .getProcessEngineConfiguration()
-          .getExpressionManager();
-        
-        String srcValueExpressionText = formDisplayPropertyElement.attribute("srcValueExpr");
-        if (srcValueExpressionText!=null) {
-          ActivitiValueExpression srcValueExpression = expressionManager.createValueExpression(srcValueExpressionText);
-          formDisplayProperty.setSrcValueExpression(srcValueExpression);
+        AbstractFormType type = formTypes.parseFormPropertyType(formPropertyElement, bpmnParse);
+        formProperty.setType(type);
+
+        String requiredText = formPropertyElement.attribute("http://activiti.org/bpmn-extensions:required", "false");
+        Boolean required = bpmnParse.parseBooleanAttribute(requiredText);
+        if (required!=null) {
+          formProperty.setRequired(required);
+        } else {
+          bpmnParse.addError("attribute 'required' must be one of {on|yes|true|enabled|active|off|no|false|disabled|inactive}", formPropertyElement);
         }
 
-        String srcMethodExpressionText = formDisplayPropertyElement.attribute("srcMethodExpr");
-        if (srcMethodExpressionText!=null) {
-          ActivitiMethodExpression srcMethodExpression = expressionManager.createMethodExpression(srcMethodExpressionText);
-          formDisplayProperty.setSrcMethodExpression(srcMethodExpression);
+        String readableText = formPropertyElement.attribute("readable", "true");
+        Boolean readable = bpmnParse.parseBooleanAttribute(readableText);
+        if (readable!=null) {
+          formProperty.setReadable(readable);
+        } else {
+          bpmnParse.addError("attribute 'readable' must be one of {on|yes|true|enabled|active|off|no|false|disabled|inactive}", formPropertyElement);
         }
+        
+        String writableText = formPropertyElement.attribute("http://activiti.org/bpmn-extensions:writable", "true");
+        Boolean writable = bpmnParse.parseBooleanAttribute(writableText);
+        if (writable!=null) {
+          formProperty.setWritable(writable);
+        } else {
+          bpmnParse.addError("attribute 'writable' must be one of {on|yes|true|enabled|active|off|no|false|disabled|inactive}", formPropertyElement);
+        }
+
+        String variableName = formPropertyElement.attribute("http://activiti.org/bpmn-extensions:variable");
+        formProperty.setVariableName(variableName);
+
+        String valueExpressionText = formPropertyElement.attribute("http://activiti.org/bpmn-extensions:expression");
+        if (valueExpressionText!=null) {
+          ActivitiValueExpression valueExpression = expressionManager.createValueExpression(valueExpressionText);
+          formProperty.setVariableExpression(valueExpression);
+        }
+
+        formPropertyHandlers.add(formProperty);
       }
     }
   }
+
+  protected void initializeFormProperties(FormDataImpl formData, ExecutionEntity execution) {
+    List<FormProperty> formProperties = new ArrayList<FormProperty>();
+    for (FormPropertyHandler formPropertyHandler: formPropertyHandlers) {
+      if (formPropertyHandler.isReadable()) {
+        FormProperty formProperty = formPropertyHandler.createFormProperty(execution);
+        formProperties.add(formProperty);
+      }
+    }
+    formData.setFormProperties(formProperties);
+  }
+
+  protected void submitFormProperties(Map<String, String> properties, ExecutionEntity execution) {
+    Map<String, String> propertiesCopy = new HashMap<String, String>(properties);
+    for (FormPropertyHandler formPropertyHandler: formPropertyHandlers) {
+      // submitFormProperty will remove all the keys which it takes care of
+      formPropertyHandler.submitFormProperty(execution, propertiesCopy);
+    }
+    for (String propertyId: propertiesCopy.keySet()) {
+      execution.setVariable(propertyId, propertiesCopy.get(propertyId));
+    }
+  }
+
 
   // getters and setters //////////////////////////////////////////////////////
   
@@ -87,19 +148,11 @@ public class DefaultFormHandler {
     this.deploymentId = deploymentId;
   }
   
-  public List<FormDisplayProperty> getFormDisplayProperties() {
-    return formDisplayProperties;
+  public List<FormPropertyHandler> getFormPropertyHandlers() {
+    return formPropertyHandlers;
   }
   
-  public void setFormDisplayProperties(List<FormDisplayProperty> formDisplayProperties) {
-    this.formDisplayProperties = formDisplayProperties;
-  }
-  
-  public List<FormSubmitProperty> getFormSubmitProperties() {
-    return formSubmitProperties;
-  }
-  
-  public void setFormSubmitProperties(List<FormSubmitProperty> formSubmitProperties) {
-    this.formSubmitProperties = formSubmitProperties;
+  public void setFormPropertyHandlers(List<FormPropertyHandler> formPropertyHandlers) {
+    this.formPropertyHandlers = formPropertyHandlers;
   }
 }

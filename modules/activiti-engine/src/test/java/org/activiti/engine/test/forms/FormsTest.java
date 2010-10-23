@@ -13,11 +13,15 @@
 
 package org.activiti.engine.test.forms;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
-import org.activiti.engine.form.StartForm;
-import org.activiti.engine.form.TaskForm;
+import org.activiti.engine.ActivitiException;
+import org.activiti.engine.form.FormProperty;
+import org.activiti.engine.form.StartFormData;
+import org.activiti.engine.form.TaskFormData;
 import org.activiti.engine.impl.test.ActivitiInternalTestCase;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
@@ -32,21 +36,21 @@ public class FormsTest extends ActivitiInternalTestCase {
     "org/activiti/engine/test/forms/FormsProcess.bpmn20.xml", 
     "org/activiti/engine/test/forms/start.form", 
     "org/activiti/engine/test/forms/task.form" })
-  public void testTaskFormsWithVacationRequestProcess() {
-    StartForm startForm = formService.getStartForm("FormsProcess:1");
+  public void testTaskFormPropertyDefaultsAndFormRendering() {
+    StartFormData startForm = formService.getStartFormData("FormsProcess:1");
     assertNotNull(startForm);
     assertEquals(deploymentId, startForm.getDeploymentId());
     assertEquals("org/activiti/engine/test/forms/start.form", startForm.getFormKey());
-    assertEquals(new HashMap<String, Object>(), startForm.getProperties());
+    assertEquals(new ArrayList<FormProperty>(), startForm.getFormProperties());
     assertEquals("FormsProcess:1", startForm.getProcessDefinition().getId());
     
     Object renderedStartForm = formService.getRenderedStartForm("FormsProcess:1");
     assertEquals("start form content", renderedStartForm);
     
-    Map<String, Object> properties = new HashMap<String, Object>();
+    Map<String, String> properties = new HashMap<String, String>();
     properties.put("room", "5b");
     properties.put("speaker", "Mike");
-    String processInstanceId = formService.submitStartForm("FormsProcess:1", properties).getId();
+    String processInstanceId = formService.submitStartFormData("FormsProcess:1", properties).getId();
     
     Map<String, Object> expectedVariables = new HashMap<String, Object>();
     expectedVariables.put("room", "5b");
@@ -57,12 +61,96 @@ public class FormsTest extends ActivitiInternalTestCase {
     
     Task task = taskService.createTaskQuery().singleResult();
     String taskId = task.getId();
-    TaskForm taskForm = formService.getTaskForm(taskId);
+    TaskFormData taskForm = formService.getTaskFormData(taskId);
     assertEquals(deploymentId, taskForm.getDeploymentId());
     assertEquals("org/activiti/engine/test/forms/task.form", taskForm.getFormKey());
-    assertEquals(new HashMap<String, Object>(), taskForm.getProperties());
+    assertEquals(new ArrayList<FormProperty>(), taskForm.getFormProperties());
     assertEquals(taskId, taskForm.getTask().getId());
     
     assertEquals("Mike is speaking in room 5b", formService.getRenderedTaskForm(taskId));
+    
+    properties = new HashMap<String, String>();
+    properties.put("room", "3f");
+    formService.submitTaskFormData(taskId, properties);
+
+    expectedVariables = new HashMap<String, Object>();
+    expectedVariables.put("room", "3f");
+    expectedVariables.put("speaker", "Mike");
+    
+    variables = runtimeService.getVariables(processInstanceId);
+    assertEquals(expectedVariables, variables);
+  }
+
+  @Deployment
+  public void testFormPropertyHandling() {
+    Map<String, String> properties = new HashMap<String, String>();
+    properties.put("room", "5b"); // default
+    properties.put("speaker", "Mike"); // variable name mapping
+    properties.put("duration", "45"); // type conversion
+    String processInstanceId = formService.submitStartFormData("FormPropertyHandlingProcess:1", properties).getId();
+
+    Map<String, Object> expectedVariables = new HashMap<String, Object>();
+    expectedVariables.put("room", "5b");
+    expectedVariables.put("SpeakerName", "Mike");
+    expectedVariables.put("duration", new Long(45));
+
+    Map<String, Object> variables = runtimeService.getVariables(processInstanceId);
+    assertEquals(expectedVariables, variables);
+    
+    Address address = new Address();
+    address.setStreet("broadway");
+    runtimeService.setVariable(processInstanceId, "address", address);
+
+    String taskId = taskService.createTaskQuery().singleResult().getId();
+    TaskFormData taskFormData = formService.getTaskFormData(taskId);
+
+    List<FormProperty> formProperties = taskFormData.getFormProperties();
+    FormProperty propertyRoom = formProperties.get(0);
+    assertEquals("room", propertyRoom.getId());
+    assertEquals("5b", propertyRoom.getValue());
+    
+    FormProperty propertyDuration = formProperties.get(1);
+    assertEquals("duration", propertyDuration.getId());
+    assertEquals("45", propertyDuration.getValue());
+    
+    FormProperty propertySpeaker = formProperties.get(2);
+    assertEquals("speaker", propertySpeaker.getId());
+    assertEquals("Mike", propertySpeaker.getValue());
+
+    FormProperty propertyStreet = formProperties.get(3);
+    assertEquals("street", propertyStreet.getId());
+    assertEquals("broadway", propertyStreet.getValue());
+    
+    assertEquals(4, formProperties.size());
+
+    try {
+      formService.submitTaskFormData(taskId, new HashMap<String, String>());
+      fail("expected exception about required form property 'street'");
+    } catch (ActivitiException e) {
+      // OK
+    }
+
+    try {
+      properties = new HashMap<String, String>();
+      properties.put("speaker", "its not allowed to update speaker!");
+      formService.submitTaskFormData(taskId, properties);
+      fail("expected exception about a non writable form property 'speaker'");
+    } catch (ActivitiException e) {
+      // OK
+    }
+
+    properties = new HashMap<String, String>();
+    properties.put("street", "rubensstraat");
+    formService.submitTaskFormData(taskId, properties);
+
+    expectedVariables = new HashMap<String, Object>();
+    expectedVariables.put("room", "5b");
+    expectedVariables.put("SpeakerName", "Mike");
+    expectedVariables.put("duration", new Long(45));
+
+    variables = runtimeService.getVariables(processInstanceId);
+    address = (Address) variables.remove("address");
+    assertEquals("rubensstraat", address.getStreet());
+    assertEquals(expectedVariables, variables);
   }
 }

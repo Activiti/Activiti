@@ -11,24 +11,24 @@
  * limitations under the License.
  */
 
-package org.activiti.engine.impl.form;
+package org.activiti.engine.test.forms;
 
-import java.util.Map;
-
-import org.activiti.engine.form.TaskFormData;
-import org.activiti.engine.impl.bpmn.parser.BpmnParse;
-import org.activiti.engine.impl.repository.DeploymentEntity;
-import org.activiti.engine.impl.task.TaskEntity;
-import org.activiti.engine.impl.util.xml.Element;
+import java.io.Serializable;
 
 
 /**
  * @author Tom Baeyens
  */
-public interface TaskFormHandler {
+public class Address implements Serializable {
 
-  TaskFormData createTaskForm(TaskEntity task);
-  void submitTaskFormData(TaskEntity task, Map<String, String> properties);
-  void parseConfiguration(Element userTaskElement, DeploymentEntity deployment, BpmnParse bpmnParse);
+  private static final long serialVersionUID = 1L;
+  
+  private String street;
 
+  public String getStreet() {
+    return street;
+  }
+  public void setStreet(String street) {
+    this.street = street;
+  }
 }

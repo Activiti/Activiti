@@ -25,8 +25,8 @@ import org.activiti.pvm.impl.runtime.ExecutionImpl;
  */
 public class ActivitiValueExpression {
 
-  ValueExpression valueExpression;
-  ExpressionManager expressionManager;
+  protected ValueExpression valueExpression;
+  protected ExpressionManager expressionManager;
 
   public ActivitiValueExpression(ValueExpression valueExpression, ExpressionManager expressionManager) {
     this.valueExpression = valueExpression;

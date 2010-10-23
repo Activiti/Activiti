@@ -30,9 +30,9 @@ import org.activiti.engine.impl.task.TaskEntity;
 public class SubmitTaskFormCmd implements Command<Object> {
 
   protected String taskId;
-  protected Map<String, Object> properties;
+  protected Map<String, String> properties;
   
-  public SubmitTaskFormCmd(String taskId, Map<String, Object> properties) {
+  public SubmitTaskFormCmd(String taskId, Map<String, String> properties) {
     this.taskId = taskId;
     this.properties = properties;
   }
@@ -54,11 +54,13 @@ public class SubmitTaskFormCmd implements Command<Object> {
     try {
       VariableMap.setExternalUpdate(Boolean.TRUE);
 
-      taskFormHandler.submitTaskForm(task, properties);
+      taskFormHandler.submitTaskFormData(task, properties);
 
     } finally {
       VariableMap.setExternalUpdate(null);
     }
+    
+    task.complete();
 
     return null;
   }
