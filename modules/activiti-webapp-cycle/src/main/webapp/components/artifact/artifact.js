@@ -314,7 +314,6 @@
     
     onArtifactLinkClick: function Artifact_onArtifactLinkClick(event)
     {
-      
       var params = event.target.href.split("?")[1].split("&");
       
       var connectorId = params[0].split("=")[1];
@@ -322,6 +321,7 @@
       var artifactName = params[2].split("=")[1];
 
       this.fireEvent(Activiti.event.updateArtifactView, {"connectorId": connectorId, "repositoryNodeId": artifactId, "isRepositoryArtifact": true, "name": artifactName, "activeTabIndex": 0}, null, true);
+      YAHOO.util.Event.preventDefault(event);
     },
     
     onClickFormEventButton: function Artifact_onClickFormEventButton(event, args)
