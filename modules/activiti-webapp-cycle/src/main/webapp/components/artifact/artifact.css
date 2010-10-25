@@ -51,3 +51,8 @@
   margin-top: 10px;
   margin-left: 1px;
 }
+
+div .artifact-type {
+  line-height:1.2em;
+  color: #666;
+}

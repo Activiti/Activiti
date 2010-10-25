@@ -98,6 +98,13 @@
         // Update the heading that displays the name of the selected node
         headerEl.id = "header-" + eventValue.repositoryNodeId;
         headerEl.innerHTML = eventValue.name;
+        
+        var myTooltip = new YAHOO.widget.Tooltip("myTooltip", { 
+            context: headerEl.id, 
+            text: "You have hovered over myContextEl.",
+            showDelay: 500
+        });
+        
       }
     },
     
@@ -262,7 +269,32 @@
         
         var rows = [];
         for(var i=0; i<responseJson.length; i++) {
-          var row = {Name: '<a class="openArtifactLink" href="#?connectorId=' + responseJson[i].targetConnectorId + '&artifactId=' + responseJson[i].targetArtifactId + '&artifactName=' + responseJson[i].label + '">' + responseJson[i].label + '</a>', Revision: responseJson[i].targetArtifactRevision, Type: responseJson[i].targetContentType };
+          var typeClass;
+          if(responseJson[i].targetContentType === "image/png" || responseJson[i].targetContentType === "image/gif" || responseJson[i].targetContentType === "image/jpeg") {
+            typeClass = "icon-img";
+          } else if(responseJson[i].targetContentType === "application/xml") {
+            typeClass = "icon-code-red";
+          } else if(responseJson[i].targetContentType === "text/html") {
+            typeClass = "icon-www";
+          } else if(responseJson[i].targetContentType === "text/plain") {
+            typeClass = "icon-txt";
+          } else if(responseJson[i].targetContentType === "application/pdf") {
+            typeClass = "icon-pdf";
+          } else if(responseJson[i].targetContentType === "application/json;charset=UTF-8") {
+            typeClass = "icon-code-blue";
+          } else if(responseJson[i].targetContentType === "application/msword") {
+            typeClass = "icon-doc";
+          } else if(responseJson[i].targetContentType === "application/powerpoint") {
+            typeClass = "icon-ppt";
+          } else if(responseJson[i].targetContentType === "application/excel") {
+            typeClass = "icon-xls";
+          } else if(responseJson[i].targetContentType === "application/javascript") {
+            typeClass = "icon-code-blue";
+          } else {
+            // Use white page as default icon for all other content types
+            typeClass = "icon-blank";
+          }
+          var row = {Name: '<a class="openArtifactLink" href="#?connectorId=' + responseJson[i].targetConnectorId + '&artifactId=' + responseJson[i].targetArtifactId + '&artifactName=' + responseJson[i].label + '">' + responseJson[i].label + '</a>', Revision: responseJson[i].targetArtifactRevision, Type: '<div class="artifact-type ' + typeClass + '">' + responseJson[i].targetContentType + '</div>' };
           rows.push(row);
         }
         var linksDataSource = new YAHOO.util.LocalDataSource(rows);
