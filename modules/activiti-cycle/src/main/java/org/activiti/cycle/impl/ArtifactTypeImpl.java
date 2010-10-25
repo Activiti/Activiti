@@ -309,7 +309,7 @@ public class ArtifactTypeImpl implements ArtifactType {
   }
 
   public void addDownloadContentAction(String contentRepresentationId) {
-    downloadContentActions.add(new DownloadContentActionImpl(getContentRepresentation(contentRepresentationId)));
+    downloadContentActions.add(new DownloadContentActionImpl("Download " + contentRepresentationId, getContentRepresentation(contentRepresentationId)));
   }
 
   public List<RepositoryArtifactOpenLinkAction> createOpenLinkActions(RepositoryConnector connector, RepositoryArtifact artifact) {

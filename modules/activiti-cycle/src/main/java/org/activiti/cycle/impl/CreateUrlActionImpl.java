@@ -14,8 +14,8 @@ public abstract class CreateUrlActionImpl extends AbstractArtifactActionImpl imp
 
   private static final long serialVersionUID = 1L;
 
-  public CreateUrlActionImpl() {
-  }
+  // public CreateUrlActionImpl() {
+  // }
 
   public CreateUrlActionImpl(String actionId) {
     super(actionId);

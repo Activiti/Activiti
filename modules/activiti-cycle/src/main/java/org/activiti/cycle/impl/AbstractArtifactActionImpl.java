@@ -34,10 +34,10 @@ public abstract class AbstractArtifactActionImpl implements Serializable {
 
   protected Logger log = Logger.getLogger(this.getClass().getName());
 
-  private String id = this.getClass().getName();
+  private String id = this.getClass().getSimpleName();
 
-  public AbstractArtifactActionImpl() {
-  }
+  // public AbstractArtifactActionImpl() {
+  // }
 
   public AbstractArtifactActionImpl(String id) {
     this.id = id;

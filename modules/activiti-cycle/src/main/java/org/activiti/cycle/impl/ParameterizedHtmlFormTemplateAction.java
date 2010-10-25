@@ -16,8 +16,8 @@ public abstract class ParameterizedHtmlFormTemplateAction extends ParameterizedA
 
   private static final long serialVersionUID = 1L;
 
-  public ParameterizedHtmlFormTemplateAction() {
-  }
+  // public ParameterizedHtmlFormTemplateAction() {
+  // }
 
   public ParameterizedHtmlFormTemplateAction(String actionId) {
     super(actionId);

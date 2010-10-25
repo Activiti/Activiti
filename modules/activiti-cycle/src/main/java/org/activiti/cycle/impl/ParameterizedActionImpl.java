@@ -22,8 +22,8 @@ public abstract class ParameterizedActionImpl extends AbstractArtifactActionImpl
 
   private static final long serialVersionUID = 1L;
 
-  public ParameterizedActionImpl() {
-  }
+  // public ParameterizedActionImpl() {
+  // }
   
   public ParameterizedActionImpl(String actionId) {
     super(actionId);

@@ -19,10 +19,7 @@ public class OpenActivitiAction extends AbstractArtifactActionImpl implements Cr
   private static final long serialVersionUID = 1L;
   
   public OpenActivitiAction() {
-  }
-
-  public OpenActivitiAction(String id) {
-    super(id);
+    super("Open Activiti Cycle Homepage");
   }
 
   public URL getUrl(RepositoryConnector connector, RepositoryArtifact repositoryArtifact) {

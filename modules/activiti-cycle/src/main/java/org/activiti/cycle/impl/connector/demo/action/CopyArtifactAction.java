@@ -17,6 +17,10 @@ public class CopyArtifactAction extends ParameterizedHtmlFormTemplateAction {
 
   private static final long serialVersionUID = 1L;
 
+  public CopyArtifactAction() {
+    super("Copy...");
+  }
+
   @Override
   public String getFormResourceName() {
     return "/org/activiti/cycle/impl/connector/demo/action/CopyArtifactAction.html";

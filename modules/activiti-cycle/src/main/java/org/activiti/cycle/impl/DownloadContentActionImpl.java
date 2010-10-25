@@ -14,9 +14,10 @@ public class DownloadContentActionImpl extends AbstractArtifactActionImpl implem
   
   private final ContentRepresentation contentRepresentation;
 
-  public DownloadContentActionImpl(ContentRepresentation contentRepresentation) {
-    this.contentRepresentation = contentRepresentation;
-  }
+  // public DownloadContentActionImpl(ContentRepresentation
+  // contentRepresentation) {
+  // this.contentRepresentation = contentRepresentation;
+  // }
 
   public DownloadContentActionImpl(String actionId, ContentRepresentation contentRepresentation) {
     super(actionId);
