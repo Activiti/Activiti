@@ -19,7 +19,6 @@ import java.io.StringWriter;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
@@ -27,11 +26,14 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.activiti.engine.impl.ProcessEngineImpl;
 import org.activiti.engine.impl.ProcessEngineInfoImpl;
 import org.activiti.engine.impl.util.ReflectUtil;
 
 
 /** Helper for initializing and closing process engines in server environments.
+ * <br>
+ * All created {@link ProcessEngine}s will be registered with this class.
  * <br>
  * The activiti-webapp-init webapp will
  * call the {@link #init()} method when the webapp is deployed and it will call the 
@@ -41,7 +43,8 @@ import org.activiti.engine.impl.util.ReflectUtil;
  * obtain pre-initialized and cached process engines. <br>
  * <br>
  * Please note that there is <b>no lazy initialization</b> of process engines, so make sure the 
- * context-listener is configured.<br>
+ * context-listener is configured or {@link ProcessEngine}s are already created so they were registered
+ * on this class.<br>
  * <br>
  * The {@link #init()} method will try to build one {@link ProcessEngine} for 
  * each activiti.properties file found on the classpath.  If you have more then one,
@@ -61,10 +64,12 @@ public abstract class ProcessEngines {
   protected static Map<String, ProcessEngineInfo> processEngineInfosByName = new HashMap<String, ProcessEngineInfo>();
   protected static Map<String, ProcessEngineInfo> processEngineInfosByResourceUrl = new HashMap<String, ProcessEngineInfo>();
   protected static List<ProcessEngineInfo> processEngineInfos = new ArrayList<ProcessEngineInfo>();
-
+  
   /** is called when a server boots by the activiti-rest webapp. */
   public synchronized static void init() {
     if (!isInitialized) {
+      // Create a new hashMap in case the ProcessEngines.destroy() was called before and map is Unmodifiable
+      processEngines = new HashMap<String, ProcessEngine>();
       ClassLoader classLoader = ReflectUtil.getClassLoader();
       Enumeration<URL> resources = null;
       try {
@@ -80,6 +85,22 @@ public abstract class ProcessEngines {
     } else {
       log.info("Process engines already initialized");
     }
+  }
+ 
+  /**
+   * Registers the given process engine. No {@link ProcessEngineInfo} will be 
+   * available for this process engine. An engine that is registered will be closed
+   * when the {@link ProcessEngines#destroy()} is called.
+   */
+  public static void registerProcessEngine(ProcessEngine processEngine) {
+    processEngines.put(processEngine.getName(), processEngine);
+  }
+  
+  /**
+   * Unregisters the given process engine.
+   */
+  public static void unregister(ProcessEngineImpl processEngine) {
+    processEngines.remove(processEngine.getName());
   }
 
   private static ProcessEngineInfo initProcessEnginFromResource(URL resourceUrl) {
@@ -134,12 +155,15 @@ public abstract class ProcessEngines {
     }
   }
   
-  /** get initialization results. */
+  /** Get initialization results. */
   public static List<ProcessEngineInfo> getProcessEngineInfos() {
     return processEngineInfos;
   }
 
-  /** get initialization results. */
+  /** Get initialization results. Only info will we available for process engines
+   * which were added in the {@link ProcessEngines#init()}. No {@link ProcessEngineInfo}
+   * is available for engines which were registered programatically.
+  */
   public static ProcessEngineInfo getProcessEngineInfo(String processEngineName) {
     return processEngineInfosByName.get(processEngineName);
   }
@@ -173,11 +197,10 @@ public abstract class ProcessEngines {
   }
   
   /** closes all process engines.  This method is called when a server shutsdown by the activiti-rest webapp. */
-  @SuppressWarnings("unchecked")
   public synchronized static void destroy() {
     if (isInitialized) {
       Map<String, ProcessEngine> engines = new HashMap<String, ProcessEngine>(processEngines);
-      processEngines = Collections.unmodifiableMap(Collections.EMPTY_MAP);
+      processEngines = new HashMap<String, ProcessEngine>();
       
       for (String processEngineName: engines.keySet()) {
         ProcessEngine processEngine = engines.get(processEngineName);

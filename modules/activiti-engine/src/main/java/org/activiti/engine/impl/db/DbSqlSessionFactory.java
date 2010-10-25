@@ -134,7 +134,7 @@ public class DbSqlSessionFactory implements SessionFactory, ProcessEngineConfigu
   protected SqlSessionFactory createSessionFactory(DataSource dataSource, TransactionFactory transactionFactory) {
     try {
       
-      InputStream inputStream = ReflectUtil.getClassLoader().getResourceAsStream("org/activiti/db/ibatis/activiti.ibatis.mem.conf.xml");
+      InputStream inputStream = ReflectUtil.getResourceAsStream("org/activiti/db/ibatis/activiti.ibatis.mem.conf.xml");
 
       // update the jdbc parameters to the configured ones...
       Environment environment = new Environment("default", transactionFactory, dataSource);
@@ -260,7 +260,7 @@ public class DbSqlSessionFactory implements SessionFactory, ProcessEngineConfigu
     try {
       Connection connection = sqlSession.getConnection();
       String resource = "org/activiti/db/" + operation + "/activiti." + databaseName + "." + operation + ".sql";
-      InputStream inputStream = ReflectUtil.getClassLoader().getResourceAsStream(resource);
+      InputStream inputStream = ReflectUtil.getResourceAsStream(resource);
       if (inputStream == null) {
         throw new ActivitiException("resource '" + resource + "' is not available for creating the schema");
       }

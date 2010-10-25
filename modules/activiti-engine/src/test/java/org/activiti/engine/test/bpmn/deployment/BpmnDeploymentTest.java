@@ -46,7 +46,7 @@ public class BpmnDeploymentTest extends ActivitiInternalTestCase {
     assertTrue(contentFromDeployment.length() > 0);
     assertTrue(contentFromDeployment.contains("process id=\"emptyProcess\""));
     
-    InputStream fileInputStream = ReflectUtil.getClassLoader().getResourceAsStream("org/activiti/engine/test/bpmn/deployment/BpmnDeploymentTest.testGetBpmnXmlFileThroughService.bpmn20.xml");
+    InputStream fileInputStream = ReflectUtil.getResourceAsStream("org/activiti/engine/test/bpmn/deployment/BpmnDeploymentTest.testGetBpmnXmlFileThroughService.bpmn20.xml");
     String contentFromFile = readInputStreamToString(fileInputStream);
     assertEquals(contentFromFile, contentFromDeployment);
   }

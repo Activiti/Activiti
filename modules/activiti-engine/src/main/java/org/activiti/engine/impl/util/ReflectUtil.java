@@ -12,10 +12,13 @@
  */
 package org.activiti.engine.impl.util;
 
+import java.io.InputStream;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.net.URL;
 import java.util.Arrays;
+import java.util.logging.Logger;
 
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.interceptor.CommandContext;
@@ -26,24 +29,82 @@ import org.activiti.engine.impl.interceptor.CommandContext;
  */
 public abstract class ReflectUtil {
 
+  private static final Logger LOG = Logger.getLogger(ReflectUtil.class.getName());
+  
   public static ClassLoader getClassLoader() {
-    if(CommandContext.getCurrent() != null) {
-      final ClassLoader classLoader = CommandContext.getCurrent().getProcessEngineConfiguration().getClassLoader();
-      if(classLoader != null) {
-        return classLoader;
-      }
+    ClassLoader loader = getCustomClassLoader();
+    if(loader == null) {
+      loader = Thread.currentThread().getContextClassLoader();
     }
-    return Thread.currentThread().getContextClassLoader();
+    return loader;
   }
   
   public static Class<?> loadClass(String className) {
-    try {
-      ClassLoader classLoader = getClassLoader();
-      return Class.forName(className, true, classLoader);
-    } catch (Exception e) {
-      throw new ActivitiException("couldn't load class "+className, e);
-    }
+   Class<?> clazz = null;
+   ClassLoader classLoader = getCustomClassLoader();
+   if(classLoader != null) {
+     LOG.finest("Trying to load class with custom classloader: " + className);
+     clazz = loadClassSilent(className, classLoader);
+   }
+   
+   if(clazz == null) {
+     // Try the current Thread context classloader
+     LOG.finest("Trying to load class with current thread context classloader: " + className);
+     classLoader = Thread.currentThread().getContextClassLoader();
+     clazz = loadClassSilent(className, classLoader);
+     if(clazz == null) {
+       // Finally, try the classloader for this class
+       LOG.finest("Trying to load class with local classloader: " + className);
+       classLoader = ReflectUtil.class.getClassLoader();
+       clazz = loadClassSilent(className, classLoader);
+     }
+   }
+  
+   if(clazz == null) {
+     throw new ActivitiException("Couldn't load class "+className);     
+   }
+   return clazz;
   }
+  
+  public static InputStream getResourceAsStream(String name) {
+    InputStream resourceStream = null;
+    ClassLoader classLoader = getCustomClassLoader();
+    if(classLoader != null) {
+      resourceStream = classLoader.getResourceAsStream(name);
+    }
+    
+    if(resourceStream == null) {
+      // Try the current Thread context classloader
+      classLoader = Thread.currentThread().getContextClassLoader();
+      resourceStream = classLoader.getResourceAsStream(name);
+      if(resourceStream == null) {
+        // Finally, try the classloader for this class
+        classLoader = ReflectUtil.class.getClassLoader();
+        resourceStream = classLoader.getResourceAsStream(name);
+      }
+    }
+    return resourceStream;
+   }
+  
+  public static URL getResource(String name) {
+    URL url = null;
+    ClassLoader classLoader = getCustomClassLoader();
+    if(classLoader != null) {
+      url = classLoader.getResource(name);
+    }
+    if(url == null) {
+      // Try the current Thread context classloader
+      classLoader = Thread.currentThread().getContextClassLoader();
+      url = classLoader.getResource(name);
+      if(url == null) {
+        // Finally, try the classloader for this class
+        classLoader = ReflectUtil.class.getClassLoader();
+        url = classLoader.getResource(name);
+      }
+    }
+   
+    return url;
+   }
 
   public static Object instantiate(String className) {
     try {
@@ -163,5 +224,24 @@ public abstract class ReflectUtil {
       }
     }
     return true;
+  }
+  
+  private static ClassLoader getCustomClassLoader() {
+    if(CommandContext.getCurrent() != null) {
+      final ClassLoader classLoader = CommandContext.getCurrent().getProcessEngineConfiguration().getClassLoader();
+      if(classLoader != null) {
+        return classLoader;
+      }
+    }
+    return null;
+  }
+  
+  private static Class<?> loadClassSilent(String className, ClassLoader classLoader) {
+    try {
+      return Class.forName(className, true, classLoader);
+    } catch (ClassNotFoundException cnfe) {
+      // Ignore exception, we return null;
+      return null;
+    }
   }
 }

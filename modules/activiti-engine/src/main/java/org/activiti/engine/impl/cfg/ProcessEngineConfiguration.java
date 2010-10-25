@@ -186,7 +186,9 @@ public class ProcessEngineConfiguration {
   protected Map<String, FormEngine> formEngines;
   protected FormTypes formTypes;
 
+  protected static ThreadLocal<ClassLoader> currentClassLoaderParameter = new ThreadLocal<ClassLoader>();
   protected ClassLoader classLoader;
+  
 
   public ProcessEngineConfiguration() {
     processEngineName = ProcessEngines.NAME_DEFAULT;
@@ -261,10 +263,15 @@ public class ProcessEngineConfiguration {
   
   public ProcessEngine buildProcessEngine() {
     configurationComplete();
-
+    classLoader = currentClassLoaderParameter.get();
+    
     return new ProcessEngineImpl(this);
   }
 
+  public static void setCurrentClassLoaderParameter(ClassLoader currentClassLoader) {
+    currentClassLoaderParameter.set(currentClassLoader);
+  }
+  
   protected void configurationComplete() {
     if (!isConfigurationCompleted) {
       commandExecutorTxRequired = initializeInterceptorChain(commandInterceptorsTxRequired);
@@ -732,9 +739,5 @@ public class ProcessEngineConfiguration {
 
   public ClassLoader getClassLoader() {
     return classLoader;
-  }
-
-  public void setClassLoader(ClassLoader classLoader) {
-    this.classLoader = classLoader;
   }
 }

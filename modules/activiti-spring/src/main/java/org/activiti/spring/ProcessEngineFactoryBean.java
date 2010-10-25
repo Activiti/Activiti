@@ -86,9 +86,10 @@ public class ProcessEngineFactoryBean implements FactoryBean<ProcessEngine>, Dis
     if (deploymentResources.length > 0) {
       autoDeployResources();
     }
+
+    ProcessEngines.registerProcessEngine(processEngine);
     
     return processEngine;
-
   }
 
   private void initializeSpringTransactionInterceptor() {
@@ -112,7 +113,9 @@ public class ProcessEngineFactoryBean implements FactoryBean<ProcessEngine>, Dis
   }
 
   protected void initializeExpressionManager() {
-    processEngineConfiguration.setExpressionManager(new SpringExpressionManager(applicationContext));
+    if (applicationContext != null) {
+      processEngineConfiguration.setExpressionManager(new SpringExpressionManager(applicationContext));
+    }
   }
   
   private void initializeJPA() {

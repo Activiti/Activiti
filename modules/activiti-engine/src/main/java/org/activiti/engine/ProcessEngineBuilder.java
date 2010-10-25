@@ -251,7 +251,7 @@ public class ProcessEngineBuilder {
   }
 
   public ProcessEngineBuilder configureFromPropertiesResource(String propertiesResource) {
-    InputStream inputStream = ReflectUtil.getClassLoader().getResourceAsStream(propertiesResource);
+    InputStream inputStream = ReflectUtil.getResourceAsStream(propertiesResource);
     if (inputStream == null) {
       throw new ActivitiException("configuration properties resource '" + propertiesResource + "' is unavailable on classpath "
               + System.getProperty("java.class.path"));
@@ -315,6 +315,10 @@ public class ProcessEngineBuilder {
     if(jpaEntityManagerFactory != null) {
       processEngineConfiguration.enableJPA(jpaEntityManagerFactory, jpaHandleTransaction, jpaCloseEntityManager); 
     }      
-    return processEngineConfiguration.buildProcessEngine();
+    
+    ProcessEngine engine = processEngineConfiguration.buildProcessEngine();
+    ProcessEngines.registerProcessEngine(engine);
+    
+    return engine;
   }
 }

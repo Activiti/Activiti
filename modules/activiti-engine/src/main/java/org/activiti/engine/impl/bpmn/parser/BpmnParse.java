@@ -172,7 +172,7 @@ public class BpmnParse extends Parse {
     super(parser);
     this.expressionManager = parser.getExpressionManager();
     this.parseListeners = parser.getParseListeners();
-    setSchemaResource(ReflectUtil.getClassLoader().getResource(BpmnParser.SCHEMA_RESOURCE).toString());
+    setSchemaResource(ReflectUtil.getResource(BpmnParser.SCHEMA_RESOURCE).toString());
     this.importers.put("http://schemas.xmlsoap.org/wsdl/", new WSDLImporter());
   }
   

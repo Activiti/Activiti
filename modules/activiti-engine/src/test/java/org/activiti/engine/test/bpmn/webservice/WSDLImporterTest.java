@@ -36,7 +36,7 @@ public class WSDLImporterTest {
   @Test
   public void testImport() throws Exception {
     WSDLImporter importer = new WSDLImporter();
-    URL url = ReflectUtil.getClassLoader().getResource("org/activiti/engine/impl/webservice/counter.wsdl");
+    URL url = ReflectUtil.getResource("org/activiti/engine/impl/webservice/counter.wsdl");
     importer.importFrom(url.toString());
     
     List<WSService> services = new ArrayList<WSService>(importer.getServices());

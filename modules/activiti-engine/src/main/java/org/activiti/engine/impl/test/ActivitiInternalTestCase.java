@@ -83,7 +83,7 @@ public class ActivitiInternalTestCase extends PvmTestCase {
   
   private static ProcessEngineInitializer getProcessEngineInitializer() {
     String processEngineInitializerClassName = null;
-    InputStream initializersInputStream = ReflectUtil.getClassLoader().getResourceAsStream("activiti.initializer.properties");
+    InputStream initializersInputStream = ReflectUtil.getResourceAsStream("activiti.initializer.properties");
     if (initializersInputStream!=null) {
       Properties properties = new Properties();
       try {

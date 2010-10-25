@@ -20,6 +20,7 @@ import org.activiti.engine.HistoryService;
 import org.activiti.engine.IdentityService;
 import org.activiti.engine.ManagementService;
 import org.activiti.engine.ProcessEngine;
+import org.activiti.engine.ProcessEngines;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.RuntimeService;
 import org.activiti.engine.TaskService;
@@ -112,6 +113,7 @@ public class ProcessEngineImpl implements ProcessEngine {
   }
 
   public void close() {
+    ProcessEngines.unregister(this);
     if ((jobExecutor != null) && (jobExecutor.isActive())) {
       jobExecutor.shutdown();
     }

@@ -51,7 +51,7 @@ public class DeploymentBuilderImpl implements DeploymentBuilder {
   }
 
   public DeploymentBuilder addClasspathResource(String resource) {
-    InputStream inputStream = ReflectUtil.getClassLoader().getResourceAsStream(resource);
+    InputStream inputStream = ReflectUtil.getResourceAsStream(resource);
     if (inputStream==null) {
       throw new ActivitiException("resource '"+resource+"' not found");
     }

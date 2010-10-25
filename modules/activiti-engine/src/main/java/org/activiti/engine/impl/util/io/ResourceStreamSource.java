@@ -36,10 +36,12 @@ public class ResourceStreamSource implements StreamSource {
   }
 
   public InputStream getInputStream() {
+    InputStream inputStream = null;
     if (classLoader==null) {
-      classLoader = ReflectUtil.getClassLoader();
+      inputStream = ReflectUtil.getResourceAsStream(resource);
+    } else {
+      classLoader.getResourceAsStream(resource);
     }
-    InputStream inputStream = classLoader.getResourceAsStream(resource);
     if (inputStream==null) {
       throw new ActivitiException("resource '"+resource+"' doesn't exist");
     }
