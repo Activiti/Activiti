@@ -17,10 +17,8 @@ import java.util.Map;
 import javax.servlet.http.HttpSession;
 
 import org.activiti.cycle.CycleService;
-import org.activiti.cycle.RepositoryArtifact;
-import org.activiti.cycle.RepositoryArtifactLink;
 import org.activiti.cycle.impl.CycleServiceImpl;
-import org.activiti.cycle.impl.RepositoryArtifactLinkImpl;
+import org.activiti.cycle.impl.db.entity.CycleLink;
 import org.activiti.rest.util.ActivitiRequest;
 import org.activiti.rest.util.ActivitiRequestObject;
 import org.activiti.rest.util.ActivitiWebScript;
@@ -48,8 +46,8 @@ public class ArtifactLinkPost extends ActivitiWebScript {
 
     ActivitiRequestObject obj = req.getBody();
 
-    String srcConnectorId = req.getMandatoryString(obj, "connectorId");
-    String srcArtifactId = req.getMandatoryString(obj, "artifactId");
+    String sourceConnectorId = req.getMandatoryString(obj, "connectorId");
+    String sourceArtifactId = req.getMandatoryString(obj, "artifactId");
 
     // String srcElementName = req.getMandatoryString("sourceElementName");
     // String srcElementId = req.getMandatoryString("sourceElementId");
@@ -57,16 +55,17 @@ public class ArtifactLinkPost extends ActivitiWebScript {
     // String tgtElementName = req.getMandatoryString("targetElementName");
     // String tgtElementId = req.getMandatoryString("targetElementId");
 
-    String tgtConnectorId = req.getMandatoryString(obj, "targetConnectorId");
-    String tgtArtifactId = req.getMandatoryString(obj, "targetArtifactId");
+    String targetConnectorId = req.getMandatoryString(obj, "targetConnectorId");
+    String targetArtifactId = req.getMandatoryString(obj, "targetArtifactId");
 
-    RepositoryArtifact srcArtifact = cycleService.getRepositoryArtifact(srcConnectorId, srcArtifactId);
-    RepositoryArtifact tgtArtifact = cycleService.getRepositoryArtifact(tgtConnectorId, tgtArtifactId);
-
-    RepositoryArtifactLink link = new RepositoryArtifactLinkImpl(null, srcArtifact, "", "", tgtArtifact, "", "");
+    CycleLink link = new CycleLink();
+    link.setSourceConnectorId(sourceConnectorId);
+    link.setSourceArtifactId(sourceArtifactId);
+    link.setTargetConnectorId(targetConnectorId);
+    link.setTargetArtifactId(targetArtifactId);    
 
     try {
-      this.cycleService.addArtifactLink(link);
+      cycleService.addArtifactLink(link);
       model.put("result", true);
     } catch (Exception e) {
       // TODO: see whether this makes sense, probably either exception or

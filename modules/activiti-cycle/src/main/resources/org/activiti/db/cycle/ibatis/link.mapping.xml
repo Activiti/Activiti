@@ -17,24 +17,24 @@
     <result property="sourceElementRevision" column="SOURCE_ELEMENT_REVISION_"/>
     <result property="targetElementRevision" column="TARGET_ELEMENT_REVISION_"/>
     <result property="linkType" column="LINK_TYPE_"/>
-    <result property="description" column="DESCRIPTION_"/>
+    <result property="comment" column="COMMENT_"/>
     <result property="linkedBothWays" column="LINKED_BOTH_WAYS_"/>    
   </resultMap>
   
-  <!-- selectArtifactLink with PK (auto-generated key)-->
   <select id="selectArtifactLink" parameterType="string" resultMap="resultMapCycleLink">
   	select * from ACT_CY_LINK where ID_ = #{id}
   </select>
-
     
-  <!-- selectArtifactLink with sourceArtifactId -->
-  <select id="selectArtifactLinkForSourceArtifact" parameterType="string" resultType="list" resultMap="resultMapCycleLink"> 
-  	select * from ACT_CY_LINK where SOURCE_ARTIFACT_ID_ = #{sourceArtifactId}
+  <select id="selectArtifactLinkForSourceArtifact" parameterType="map" resultType="list" resultMap="resultMapCycleLink"> 
+  	select * from ACT_CY_LINK where SOURCE_CONNECTOR_ID_ = #{connectorId} and SOURCE_ARTIFACT_ID_ = #{artifactId}
+  </select>
+
+  <select id="selectArtifactLinkForTargetArtifact" parameterType="map" resultType="list" resultMap="resultMapCycleLink"> 
+  	select * from ACT_CY_LINK where TARGET_CONNECTOR_ID_ = #{connectorId} and TARGET_ARTIFACT_ID_ = #{artifactId}
   </select>
   
-  <!-- insertCycleLink -->
   <insert id="insertCycleLink" parameterType="org.activiti.cycle.impl.db.entity.CycleLink">
-    insert into ACT_CY_LINK (ID_,SOURCE_CONNECTOR_ID_, TARGET_CONNECTOR_ID_, SOURCE_ARTIFACT_ID_,TARGET_ARTIFACT_ID_,SOURCE_ELEMENT_ID_,TARGET_ELEMENT_ID_,SOURCE_ELEMENT_NAME_,TARGET_ELEMENT_NAME_, SOURCE_REVISION_, TARGET_REVISION_ , LINK_TYPE_, DESCRIPTION_, LINKED_BOTH_WAYS_)
+    insert into ACT_CY_LINK (ID_,SOURCE_CONNECTOR_ID_, TARGET_CONNECTOR_ID_, SOURCE_ARTIFACT_ID_,TARGET_ARTIFACT_ID_,SOURCE_ELEMENT_ID_,TARGET_ELEMENT_ID_,SOURCE_ELEMENT_NAME_,TARGET_ELEMENT_NAME_, SOURCE_REVISION_, TARGET_REVISION_ , LINK_TYPE_, COMMENT_, LINKED_BOTH_WAYS_)
     values (
 	    #{id, jdbcType=VARCHAR},
 	    #{sourceConnectorId, jdbcType=VARCHAR},
@@ -48,146 +48,9 @@
 	    #{sourceRevision, jdbcType=BIGINT},
 	    #{targetRevision, jdbcType=BIGINT},
 	    #{linkType, jdbcType=VARCHAR},
-	    #{description, jdbcType=VARCHAR},
+	    #{comment, jdbcType=VARCHAR},
 	    #{linkedBothWays, jdbcType=BOOLEAN}
     )
   </insert>
-
-  
-  
-  <!-- @deprecated: not useful now: Artifact RESULT MAP 
-  <resultMap id="resultMapArtifact" type="org.activiti.cycle.Artifact">
-    <id property="id" column="ID_"/>
-    <result property="elementId" column="ELEMENT_ID_"/>
-    <result property="elementName" column="ELEMENT_NAME_"/>
-    <collection property="artifactRevisionList" javaType="ArrayList" ofType="org.activiti.cycle.ArtifactRevision" column="ID_" select="selectArtifactRevisionForArtifact"/>
-	<collection property="artifactCycleList" javaType="ArrayList" ofType="org.activiti.cycle.impl.db.entity.CycleLink" column="ID_" select="selectCycleLinkForSourceArtifact"/>    
-  </resultMap> 	
-  -->
-  
-  <!-- @deprecated: not useful now: Artifact Revision RESULT MAP
-  <resultMap id="resultMapArtifactRevision" type="org.activiti.cycle.ArtifactRevision">
-    <id property="id" column="ID_"/>
-    <result property="artifactId" column="ARTIFACT_ID_"/>
-    <result property="revision" column="REVISION_"/>
-  </resultMap>
-   -->
-  
-  <!-- @deprecated: not useful now: Cycle Link RESULT MAP 
-  <resultMap id="resultMapCycleLink" type="org.activiti.cycle.impl.db.entity.CycleLink">
-    <id property="id" column="ID_"/>
-    <result property="targetArtifactId" column="TARGET_ARTIFACT_ID_"/>
-    <result property="targetElementId" column="TARGET_ELEMENT_ID_"/>
-    <result property="targetElementName" column="TARGET_ELEMENT_NAME_"/>
-    <result property="targetElementRevision" column="TARGET_ELEMENT_REVISION_"/>
-    <result property="sourceArtifactId" column="SOURCE_ARTIFACT_ID_"/>
-    <result property="description" column="DESCRIPTION_"/>
-    <result property="linkType" column="LINK_TYPE_"/>
-    <result property="linkedBothWays" column="LINKED_BOTH_WAYS_"/>    
-  </resultMap>
-  -->
-  
-  <!-- @deprecated: not useful now: selectArtifact 
-  <select id="selectArtifact" parameterType="string" resultType="list" resultMap="resultMapArtifact">
-  	select * from ACT_CY_ARTIFACT where ID_ = #{id}
-  </select>
-  -->
-    
-  <!-- @deprecated: not useful now: selectArtifactRevisionForArtifact 
-  <select id="selectArtifactRevisionForArtifact" parameterType="string" resultType="list" resultMap="resultMapArtifactRevision"> 
-  	select * from ACT_CY_ARTIFACT_REVISION where ARTIFACT_ID_ = #{artifactId}
-  </select>
-  -->
-  
-  <!-- @deprecated: not useful now: selectCycleLinkForSourceArtifact 
-  <select id="selectCycleLinkForSourceArtifact" parameterType="string" resultType="list" resultMap="resultMapCycleLink"> 
-  	select * from ACT_CY_LINK where SOURCE_ARTIFACT_ID_ = #{sourceArtifactId}
-  </select>
-  -->
-  
-  <!-- @deprecated: not useful now: insertArtifact 
-  <insert id="insertArtifact" parameterType="org.activiti.cycle.Artifact">
-    insert into ACT_CY_ARTIFACT (ID_, SOURCE_ELEMENT_ID_, SOURCE_ELEMENT_NAME_,)
-    values (
-	    #{id, jdbcType=VARCHAR},
-	    #{elementId, jdbcType=VARCHAR},
-	    #{elementName, jdbcType=VARCHAR}
-    )
-   </insert>
-   -->
-   
-  <!-- @deprecated: not useful now: insertArtifactRevision 
-  <insert id="insertArtifactRevision" parameterType="org.activiti.cycle.ArtifactRevision">
-    insert into ACT_CY_ARTIFACT_REVISION (ID_, ARTIFACT_ID_, REVISION_,)
-    values (
-	    #{id, jdbcType=VARCHAR},
-	    #{artifactId, jdbcType=VARCHAR},
-	    #{revision, jdbcType=BIGINT}
-    )
-   </insert>
-   -->
-   
-  <!-- @deprecated: not useful now: insertCycleLink 
-  <insert id="insertCycleLink" parameterType="org.activiti.cycle.impl.db.entity.CycleLink">
-    insert into ACT_CY_LINK (ID_, TARGET_ELEMENT_NAME, TARGET_ELEMENT_ID_, TARGET_ELEMENT_REVISION_ ,SOURCE_ARTIFACT_ID_)
-    values (
-	    #{id, jdbcType=VARCHAR},
-	    #{targetElementName, jdbcType=VARCHAR},
-	    #{targetElementId, jdbcType=VARCHAR},
-	    #{targetRevision, jdbcType=BIGINT},
-	    #{sourceArtifactId, jdbcType=VARCHAR}	    
-    )
-  </insert>
-  -->
-   
-  <!-- @deprecated: not useful now: updateArtifact 
-  <update id="updateArtifact" parameterType="org.activiti.cycle.Artifact">
-    update ACT_CY_ARTIFACT set
-	    ID_ = #{id},
-	    ELEMENT_ID_ = #{elementId},
-	    ELEMENT_NAME_ = #{elementName}
-	where ID_ = #{id} 
-   </update>
-  -->
-
-  <!-- @deprecated: not useful now: updateArtifactRevision 
-  <update id="updateArtifactRevision" parameterType="org.activiti.cycle.ArtifactRevision">
-    update ACT_CY_ARTIFACT_REVISION set
-	    ID_ = #{id},
-	    ARTIFACT_ID_ = #{artifactId},
-	    REVISION_ = #{revision},
-    where ID_ = #{id}
-   </update>
-  -->
-
-  <!-- @deprecated: not useful now: updateCycleLink 
-  <update id="updateCycleLink" parameterType="org.activiti.cycle.impl.db.entity.CycleLink">
-    update ACT_CY_LINK set
- 	    ID_ = #{id},
-	    TARGET_ELEMENT_NAME_ = #{targetElementName},
-	    TARGET_ELEMENT_ID_ = #{targetElementId},
-	    TARGET_REVISION_ = #{targetRevision},
-	    SOURCE_ARTIFACT_ID_ = #{sourceArtifactId}	    
-    where ID_ = #{id}
-  </update>
-  -->
-  
-  <!-- @deprecated: not useful now: deleteArtifact 
-  <delete id="deleteArtifact" parameterType="string">
-    delete from ACT_CY_ARTIFACT where ID_ = #{id} 
-   </delete>
-  -->
-  
-  <!-- @deprecated: not useful now: deleteArtifactRevision 
-  <delete id="deleteArtifactRevision" parameterType="string">
-    delete from ACT_CY_ARTIFACT_REVISION where ID_ = #{id}
-   </delete>
-  -->
-  
-  <!-- @deprecated: not useful now: deleteCycleLink 
-  <delete id="deleteCycleLink" parameterType="string">
-    delete ACT_CY_LINK where ID_ = #{id}
-  </delete>
-  -->
 
 </mapper>

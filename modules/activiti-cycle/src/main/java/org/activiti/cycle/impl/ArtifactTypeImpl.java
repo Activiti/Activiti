@@ -315,7 +315,8 @@ public class ArtifactTypeImpl implements ArtifactType {
   public List<RepositoryArtifactOpenLinkAction> createOpenLinkActions(RepositoryConnector connector, RepositoryArtifact artifact) {
     ArrayList<RepositoryArtifactOpenLinkAction> list = new ArrayList<RepositoryArtifactOpenLinkAction>();
     for (CreateUrlAction action : getCreateUrlActions()) {
-      RepositoryArtifactOpenLinkAction link = new RepositoryArtifactOpenLinkAction(action.getId(), action.getUrl(connector, artifact));
+      // TODO: Think about id
+      RepositoryArtifactOpenLinkAction link = new RepositoryArtifactOpenLinkAction("Open " + action.getId(), action.getUrl(connector, artifact));
       list.add(link);
     }
     return list;

@@ -18,7 +18,8 @@ public interface RepositoryArtifactLink {
   public RepositoryArtifact getTargetArtifact();
   public String getTargetElementId();
   public String getTargetElementName();
-
+  public String getComment();
+  public String getLinkType();
   
   public void setId(String id);
   public void setSourceArtifact(RepositoryArtifact sourceArtifact);
@@ -27,5 +28,7 @@ public interface RepositoryArtifactLink {
   public void setTargetArtifact(RepositoryArtifact targetArtifact);
   public void setTargetElementId(String targetElementId);
   public void setTargetElementName(String targetElementName);
+  public void setComment(String comment);
+  public void setLinkType(String linkType);
 
 }

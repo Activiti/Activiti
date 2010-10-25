@@ -9,11 +9,11 @@ import javax.servlet.http.HttpSession;
 
 import org.activiti.cycle.ArtifactType;
 import org.activiti.cycle.Content;
-import org.activiti.cycle.RepositoryArtifactTag;
 import org.activiti.cycle.CycleService;
 import org.activiti.cycle.CycleTagContent;
 import org.activiti.cycle.RepositoryArtifact;
 import org.activiti.cycle.RepositoryArtifactLink;
+import org.activiti.cycle.RepositoryArtifactTag;
 import org.activiti.cycle.RepositoryConnector;
 import org.activiti.cycle.RepositoryException;
 import org.activiti.cycle.RepositoryFolder;
@@ -250,31 +250,33 @@ public class CycleServiceImpl implements CycleService {
   // RepositoryArtifactLink specific methods
 
   public void addArtifactLink(RepositoryArtifactLink repositoryArtifactLink) {
-    CycleLink cycleLink = new CycleLink();
+    if (repositoryArtifactLink instanceof CycleLink) {
+      cycleDAO.insertCycleLink((CycleLink) repositoryArtifactLink);
+    } else {
+      CycleLink cycleLink = new CycleLink();
 
-    cycleLink.setId(repositoryArtifactLink.getId());
+      cycleLink.setId(repositoryArtifactLink.getId());
 
-    // set source artifact attributes
-    cycleLink.setSourceConnectorId(repositoryArtifactLink.getSourceArtifact().getConnectorId());
-    cycleLink.setSourceArtifactId(repositoryArtifactLink.getSourceArtifact().getNodeId());
-    cycleLink.setSourceElementId(repositoryArtifactLink.getSourceElementId());
-    cycleLink.setSourceElementName(repositoryArtifactLink.getSourceElementName());
-    cycleLink.setSourceRevision(repositoryArtifactLink.getSourceArtifact().getArtifactType().getRevision());
+      // set source artifact attributes
+      cycleLink.setSourceConnectorId(repositoryArtifactLink.getSourceArtifact().getConnectorId());
+      cycleLink.setSourceArtifactId(repositoryArtifactLink.getSourceArtifact().getNodeId());
+      cycleLink.setSourceElementId(repositoryArtifactLink.getSourceElementId());
+      cycleLink.setSourceElementName(repositoryArtifactLink.getSourceElementName());
+      cycleLink.setSourceRevision(repositoryArtifactLink.getSourceArtifact().getArtifactType().getRevision());
 
-    // set target artifact attributes
-    cycleLink.setTargetConnectorId(repositoryArtifactLink.getTargetArtifact().getConnectorId());
-    cycleLink.setTargetArtifactId(repositoryArtifactLink.getTargetArtifact().getNodeId());
-    cycleLink.setTargetElementId(repositoryArtifactLink.getTargetElementId());
-    cycleLink.setTargetElementName(repositoryArtifactLink.getTargetElementName());
-    cycleLink.setTargetRevision(repositoryArtifactLink.getTargetArtifact().getArtifactType().getRevision());
+      // set target artifact attributes
+      cycleLink.setTargetConnectorId(repositoryArtifactLink.getTargetArtifact().getConnectorId());
+      cycleLink.setTargetArtifactId(repositoryArtifactLink.getTargetArtifact().getNodeId());
+      cycleLink.setTargetElementId(repositoryArtifactLink.getTargetElementId());
+      cycleLink.setTargetElementName(repositoryArtifactLink.getTargetElementName());
+      cycleLink.setTargetRevision(repositoryArtifactLink.getTargetArtifact().getArtifactType().getRevision());
 
-    // TODO: decide whether we will use these attributes or get rid of them.
-    // Just setting defaults to prevent null values for now.
-    cycleLink.setDescription("");
-    cycleLink.setLinkedBothWays(false);
-    cycleLink.setLinkType("");
+      cycleLink.setLinkType(repositoryArtifactLink.getLinkType());
+      cycleLink.setComment(repositoryArtifactLink.getComment());
+      cycleLink.setLinkedBothWays(false);
 
-    cycleDAO.insertCycleLink(cycleLink);
+      cycleDAO.insertCycleLink(cycleLink);
+    }
   }
 
   public List<RepositoryArtifactLink> getArtifactLinks(String sourceConnectorId, String sourceArtifactId) {
@@ -282,7 +284,8 @@ public class CycleServiceImpl implements CycleService {
 
     List<CycleLink> linkResultList = cycleDAO.getOutgoingCycleLinks(sourceConnectorId, sourceArtifactId);
     for (CycleLink entity : linkResultList) {
-      artifactLinks.add(createLinkDtoFromLinkEntity(entity));
+      entity.resolveArtifacts(this);
+      artifactLinks.add(entity);
     }
 
     return artifactLinks;
@@ -320,42 +323,6 @@ public class CycleServiceImpl implements CycleService {
     return list;
   }
   
-  // Private convenience methods
-
-  private RepositoryArtifactLink createLinkDtoFromLinkEntity(CycleLink entity) {
-    RepositoryArtifactLink repositoryArtifactLink = new RepositoryArtifactLinkImpl();
-    repositoryArtifactLink.setId(entity.getId());
-    repositoryArtifactLink.setSourceElementId(entity.getSourceElementId());
-    repositoryArtifactLink.setSourceElementName(entity.getSourceElementName());
-    repositoryArtifactLink.setTargetElementId(entity.getTargetElementId());
-    repositoryArtifactLink.setTargetElementName(entity.getTargetElementName());
-
-    RepositoryArtifact sourceArtifact = null;
-    RepositoryArtifact targetArtifact = null;
-
-    for (RepositoryConnector conn : this.repositoryConnectors) {
-      if (conn.getConfiguration().getId().equals(entity.getSourceConnectorId())) {
-        sourceArtifact = conn.getRepositoryArtifact(entity.getSourceArtifactId());
-      }
-      if (conn.getConfiguration().getId().equals(entity.getTargetConnectorId())) {
-        targetArtifact = conn.getRepositoryArtifact(entity.getTargetArtifactId());
-      }
-    }
-
-    // TODO: think about exception handling :)
-    if (sourceArtifact == null) {
-      throw new RuntimeException("Source-artifact with id '" + entity.getSourceArtifactId() + "' not found for artifact-link with id '" + entity.getId() + "'");
-    }
-    if (targetArtifact == null) {
-      throw new RuntimeException("Target-artifact with id '" + entity.getSourceArtifactId() + "' not found for artifact-link with id '" + entity.getId() + "'");
-    }
-
-    repositoryArtifactLink.setSourceArtifact(sourceArtifact);
-    repositoryArtifactLink.setTargetArtifact(targetArtifact);
-
-    return repositoryArtifactLink;
-  }
-
   private RepositoryConnector getRepositoryConnector(String connectorId) {
     for (RepositoryConnector connector : this.repositoryConnectors) {
       if (connector.getConfiguration().getId().equals(connectorId)) {

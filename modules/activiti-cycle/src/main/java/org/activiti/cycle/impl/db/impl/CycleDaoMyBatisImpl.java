@@ -1,6 +1,7 @@
 package org.activiti.cycle.impl.db.impl;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import org.activiti.cycle.impl.CycleTagContentImpl;
@@ -15,8 +16,10 @@ public class CycleDaoMyBatisImpl extends AbstractCycleDaoMyBatisImpl implements 
   public List<CycleLink> getOutgoingCycleLinks(String sourceConnectorId, String sourceArtifactId) {
     SqlSession session = openSession();
     try {
-      // TODO: Ad connectorID to query parameter
-      List<CycleLink> linkResultList = session.selectList("org.activiti.cycle.impl.db.entity.CycleLink.selectArtifactLinkForSourceArtifact", sourceArtifactId);
+      HashMap<String, Object> parameters = new HashMap<String, Object>();
+      parameters.put("connectorId", sourceConnectorId);
+      parameters.put("artifactId", sourceArtifactId);
+      List<CycleLink> linkResultList = session.selectList("org.activiti.cycle.impl.db.entity.CycleLink.selectArtifactLinkForSourceArtifact", parameters);
       if (linkResultList != null) {
         return linkResultList;
       }
@@ -30,8 +33,10 @@ public class CycleDaoMyBatisImpl extends AbstractCycleDaoMyBatisImpl implements 
   public List<CycleLink> getIncomingCycleLinks(String targetConnectorId, String targetArtifactId) {
     SqlSession session = openSession();
     try {
-      // TODO: Ad connectorID to query parameter
-      List<CycleLink> linkResultList = session.selectList("org.activiti.cycle.impl.db.entity.CycleLink.selectArtifactLinkForTargetArtifact", targetArtifactId);
+      HashMap<String, Object> parameters = new HashMap<String, Object>();
+      parameters.put("connectorId", targetConnectorId);
+      parameters.put("artifactId", targetArtifactId);
+      List<CycleLink> linkResultList = session.selectList("org.activiti.cycle.impl.db.entity.CycleLink.selectArtifactLinkForTargetArtifact", parameters);
       if (linkResultList != null) {
         return linkResultList;
       }

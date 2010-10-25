@@ -1,6 +1,8 @@
 package org.activiti.cycle.impl.db.entity;
 
+import org.activiti.cycle.CycleService;
 import org.activiti.cycle.RepositoryArtifact;
+import org.activiti.cycle.RepositoryArtifactLink;
 import org.activiti.cycle.RepositoryNode;
 import org.activiti.engine.impl.db.PersistentObject;
 
@@ -12,7 +14,7 @@ import org.activiti.engine.impl.db.PersistentObject;
  * 
  * @author ruecker, polenz
  */
-public class CycleLink implements PersistentObject {
+public class CycleLink implements PersistentObject, RepositoryArtifactLink {
   
   /**
    * TODO: Add own mini repository for types incling names for forward and
@@ -30,6 +32,9 @@ public class CycleLink implements PersistentObject {
   
   private String sourceConnectorId;
   private String sourceArtifactId;
+  
+  private transient RepositoryArtifact sourceRepositoryArtifact;
+  
   /**
    * machine readable id of element (what that exactly is depends on the
    * connector, could be the Signavio UUID for example)
@@ -44,6 +49,9 @@ public class CycleLink implements PersistentObject {
   
   private String targetConnectorId;
   private String targetArtifactId;
+  
+  private transient RepositoryArtifact targetRepositoryArtifact;
+  
   private String targetElementId;
   private String targetElementName;
   private Long targetRevision;
@@ -57,13 +65,18 @@ public class CycleLink implements PersistentObject {
   /**
    * additional description maybe supplied by the user for this link
    */
-  private String description;
+  private String comment;
 
   /**
    * indicate if the link is found in both directions, default is true. If false
    * the link is only found when searching links for artifactId1
    */
-  private boolean linkedBothWays = true;
+  private boolean linkedBothWays = true;  
+
+  public void resolveArtifacts(CycleService service) {
+    this.sourceRepositoryArtifact = service.getRepositoryArtifact(sourceConnectorId, sourceArtifactId);
+    this.targetRepositoryArtifact = service.getRepositoryArtifact(targetConnectorId, targetArtifactId);
+  }
   
   public String getSourceArtifactId() {
     return sourceArtifactId;
@@ -125,12 +138,12 @@ public class CycleLink implements PersistentObject {
   /**
    * gets additional description maybe supplied by the user for this link
    */
-  public String getDescription() {
-    return description;
+  public String getComment() {
+    return comment;
   }
 
-  public void setDescription(String description) {
-    this.description = description;
+  public void setComment(String comment) {
+    this.comment = comment;
   }
 
   
@@ -187,4 +200,25 @@ public class CycleLink implements PersistentObject {
   public Object getPersistentState() {
     return null;
   }
+
+  public RepositoryArtifact getSourceArtifact() {
+    return sourceRepositoryArtifact;
+  }
+
+  public RepositoryArtifact getTargetArtifact() {
+    return targetRepositoryArtifact;
+  }
+
+  public void setSourceArtifact(RepositoryArtifact sourceArtifact) {
+    sourceRepositoryArtifact = sourceArtifact;
+    sourceConnectorId = sourceArtifact.getConnectorId();
+    sourceArtifactId = sourceArtifact.getNodeId();
+  }
+
+  public void setTargetArtifact(RepositoryArtifact targetArtifact) {
+    targetRepositoryArtifact = targetArtifact;
+    targetConnectorId = targetArtifact.getConnectorId();
+    targetArtifactId = targetArtifact.getNodeId();
+  }
+
 }

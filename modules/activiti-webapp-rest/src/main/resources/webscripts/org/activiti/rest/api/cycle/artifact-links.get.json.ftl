@@ -7,7 +7,9 @@
   "artifact": {
   	<@printArtifact link.targetArtifact/>,
   	"targetElementId": "${link.targetElementId}",
-  	"targetElementName": "${link.targetElementName}"
+  	"targetElementName": "${link.targetElementName}",
+  	"linkType": "${link.linkType}",
+  	"comment": "${link.comment}"
   }
 }
 </#macro>

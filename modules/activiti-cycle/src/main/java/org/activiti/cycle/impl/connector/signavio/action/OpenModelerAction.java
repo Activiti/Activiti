@@ -32,7 +32,7 @@ public class OpenModelerAction extends CreateUrlActionImpl {
   
   public OpenModelerAction() {
     // TODO: remove when real labels are introduced in the GUI
-    super("Open modeler action");
+    super("modeler");
   }
 
   public URL getUrl(RepositoryConnector connector, RepositoryArtifact artifact) {

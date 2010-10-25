@@ -48,6 +48,26 @@ public class ArtifactLinksGet extends ActivitiWebScript {
     String artifactId = req.getString("artifactId");
 
     List<RepositoryArtifactLink> links = this.cycleService.getArtifactLinks(connectorId, artifactId);
+    for (RepositoryArtifactLink link : links) {
+      if (link.getSourceElementId()==null) {
+        link.setSourceElementId("");
+      }
+      if (link.getSourceElementName()==null) {
+        link.setSourceElementName("");
+      }
+      if (link.getTargetElementId()==null) {
+        link.setTargetElementId("");
+      }
+      if (link.getTargetElementName()==null) {
+        link.setTargetElementName("");
+      }
+      if (link.getLinkType()==null) {
+        link.setLinkType("");
+      }
+      if (link.getComment()==null) {
+        link.setComment("");
+      }
+    }
 
     model.put("links", links);
   }
