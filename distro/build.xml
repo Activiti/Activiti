@@ -77,10 +77,11 @@
       <fileset dir="../modules/activiti-spring/target">
         <include name="activiti-spring-*.jar"/>
       </fileset>
-    	<!--added to copy activiti-cycle-*.jar-->
+    	<!--added to copy activiti-cycle-*.jar
         <fileset dir="../modules/activiti-cycle/target">
           <include name="activiti-cycle-*.jar"/>
         </fileset>
+        -->
     </copy>
       	
     <mkdir dir="${target.distro.root}/setup/files/webapps/activiti-probe.war" />
