@@ -145,6 +145,8 @@ create table ACT_HI_PROC_INST (
     START_TIME_ TIMESTAMP(6) not null,
     END_TIME_ TIMESTAMP(6),
     DURATION_ NUMBER(19,0),
+    START_USER_ID_ NVARCHAR2(255),
+    START_ACT_ID_ NVARCHAR2(255),
     END_ACT_ID_ NVARCHAR2(255),
     primary key (ID_),
     unique (PROC_INST_ID_)
