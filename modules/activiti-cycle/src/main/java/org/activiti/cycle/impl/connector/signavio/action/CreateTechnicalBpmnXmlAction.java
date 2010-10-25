@@ -86,7 +86,7 @@ public class CreateTechnicalBpmnXmlAction extends ParameterizedHtmlFormTemplateA
   }
 
   protected String getBpmn20Json(RepositoryConnector connector, RepositoryArtifact artifact) {
-    return connector.getContent(artifact.getOriginalNodeId(), SignavioPluginDefinition.CONTENT_REPRESENTATION_ID_JSON).asString();
+    return connector.getContent(artifact.getNodeId(), SignavioPluginDefinition.CONTENT_REPRESENTATION_ID_JSON).asString();
   }
 
   protected String applyJsonTransformations(String sourceJson) {

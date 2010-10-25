@@ -12,7 +12,7 @@
 
 <#macro printArtifact artifact>
 	"targetConnectorId": "${artifact.connectorId}",
-  	"targetArtifactId": "${artifact.originalNodeId}",
+  	"targetArtifactId": "${artifact.nodeId}",
 	"targetArtifactRevision": "${artifact.artifactType.revision}",
 	"targetContentType": "${artifact.artifactType.mimeType.contentType}",
 	"label": "${artifact.metadata.name}"

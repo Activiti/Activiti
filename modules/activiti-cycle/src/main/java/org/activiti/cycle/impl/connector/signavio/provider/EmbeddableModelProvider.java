@@ -60,7 +60,7 @@ public class EmbeddableModelProvider extends SignavioContentRepresentationProvid
     embeddedModelForm.add("label", "");
     embeddedModelForm.add("mails", "");
     embeddedModelForm.add("message", "");
-    embeddedModelForm.add("sbo", artifact.getOriginalNodeId());
+    embeddedModelForm.add("sbo", artifact.getNodeId());
     embeddedModelForm.add("type", "png");
     Representation embeddedModelRep = embeddedModelForm.getWebRepresentation();
 
@@ -171,7 +171,7 @@ public class EmbeddableModelProvider extends SignavioContentRepresentationProvid
     // Creating the JSON Object for the Snippet
     JSONObject resultJsonObject = new JSONObject();
 
-    resultJsonObject.put("url", connector.getConfiguration().getModelUrl(artifact.getOriginalNodeId()));
+    resultJsonObject.put("url", connector.getConfiguration().getModelUrl(artifact.getNodeId()));
     resultJsonObject.put("overflowX", "fit");
     resultJsonObject.put("overflowY", "fit");
     resultJsonObject.put("zoomSlider", true);
@@ -237,7 +237,7 @@ public class EmbeddableModelProvider extends SignavioContentRepresentationProvid
     try {
       Client client = connector.initClient();
 
-      Reference embeddedModelRef = new Reference(connector.getConfiguration().getSignavioUrl() + "purl/" + artifact.getOriginalNodeId() + "/info/");
+      Reference embeddedModelRef = new Reference(connector.getConfiguration().getSignavioUrl() + "purl/" + artifact.getNodeId() + "/info/");
 
       Request embeddedModelRequest = new Request(Method.DELETE, embeddedModelRef);
 

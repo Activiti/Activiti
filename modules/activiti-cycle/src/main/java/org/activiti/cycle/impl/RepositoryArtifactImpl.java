@@ -40,7 +40,7 @@ public class RepositoryArtifactImpl extends RepositoryNodeImpl implements Reposi
   }
 
   public String toString() {
-    return this.getClass().getSimpleName() + " [connectorId=" + getConnectorId() + ";artifactId=" + getOriginalNodeId() + ";type=" + artifactType + ";metadata="
+    return this.getClass().getSimpleName() + " [connectorId=" + getConnectorId() + ";artifactId=" + getNodeId() + ";type=" + artifactType + ";metadata="
             + getMetadata() + "]";
   }
 

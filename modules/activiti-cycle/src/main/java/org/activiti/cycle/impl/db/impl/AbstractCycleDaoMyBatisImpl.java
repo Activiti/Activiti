@@ -7,10 +7,11 @@ import org.activiti.engine.DbSchemaStrategy;
 import org.activiti.engine.ProcessEngines;
 import org.activiti.engine.impl.ProcessEngineImpl;
 import org.activiti.engine.impl.cfg.ProcessEngineConfiguration;
+import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 
 
-public abstract class CycleDbService {
+public abstract class AbstractCycleDaoMyBatisImpl {
   
   private static HashMap<String, CycleDbSqlSessionFactory> dbFactories = new HashMap<String, CycleDbSqlSessionFactory>();
   protected String processEngineName = DEFAULT_ENGINE;
@@ -29,6 +30,11 @@ public abstract class CycleDbService {
       }
     }
     return dbFactories.get(processEngineName).getSqlSessionFactory();
+  }
+  
+  protected SqlSession openSession() {
+    SqlSessionFactory sqlMapper = getSessionFactory();
+    return sqlMapper.openSession();
   }
 
   protected ProcessEngineConfiguration getProcessEngineConfiguration() {

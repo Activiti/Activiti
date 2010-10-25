@@ -15,7 +15,7 @@ public class TextFileContentProvider extends ContentProviderImpl {
 
   @Override
   public void addValueToContent(Content content, RepositoryConnector connector, RepositoryArtifact artifact) {
-    String fileName = ((FileSystemConnector) connector).getConfiguration().getBasePath() + artifact.getOriginalNodeId();
+    String fileName = ((FileSystemConnector) connector).getConfiguration().getBasePath() + artifact.getNodeId();
     File file = new File(fileName);
     try{
     	content.setValue(new FileInputStream(file));

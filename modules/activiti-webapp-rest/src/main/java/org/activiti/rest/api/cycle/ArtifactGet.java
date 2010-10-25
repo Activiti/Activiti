@@ -31,6 +31,7 @@ import org.activiti.rest.util.ActivitiWebScript;
 import org.springframework.extensions.webscripts.Cache;
 import org.springframework.extensions.webscripts.Status;
 
+
 /**
  * 
  * @author Nils Preusker (nils.preusker@camunda.com)
@@ -87,7 +88,7 @@ public class ArtifactGet extends ActivitiWebScript {
 
     model.put("downloads", downloads);
     model.put("links", artifact.getOpenLinkActions());
-    model.put("artifactId", artifact.getOriginalNodeId());
+    model.put("artifactId", artifact.getNodeId());
     model.put("connectorId", artifact.getConnectorId());
   }
 }

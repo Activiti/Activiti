@@ -17,7 +17,7 @@ import org.activiti.cycle.impl.util.IoUtils;
 public class FileBinaryContentProvider extends ContentProviderImpl {
   @Override
   public void addValueToContent(Content content, RepositoryConnector connector, RepositoryArtifact artifact) {
-    String fileName = ((FileSystemConnector) connector).getConfiguration().getBasePath() + artifact.getOriginalNodeId();
+    String fileName = ((FileSystemConnector) connector).getConfiguration().getBasePath() + artifact.getNodeId();
     File file = new File(fileName);
     FileInputStream fis = null;
 

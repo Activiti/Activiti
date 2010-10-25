@@ -37,7 +37,7 @@ public class OpenModelerAction extends CreateUrlActionImpl {
 
   public URL getUrl(RepositoryConnector connector, RepositoryArtifact artifact) {
     try {
-      return new URL(((SignavioConnector) connector).getConfiguration().getEditorUrl(artifact.getOriginalNodeId()));
+      return new URL(((SignavioConnector) connector).getConfiguration().getEditorUrl(artifact.getNodeId()));
     } catch (MalformedURLException ex) {
       throw new RepositoryException("Error while creating URL for opening Signavio modeler", ex);
     }

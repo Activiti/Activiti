@@ -70,7 +70,7 @@ public class RepositoryNodeCollectionImpl implements RepositoryNodeCollection {
    */
   public RepositoryArtifact getArtifact(String currentPath) {
     for (RepositoryArtifact file : getArtifactList()) {
-      if (currentPath.equals(file.getCurrentPath())) {
+      if (currentPath.equals(file.getGlobalUniqueId())) {
         return file;
       }
     }
@@ -95,7 +95,7 @@ public class RepositoryNodeCollectionImpl implements RepositoryNodeCollection {
    */
   public RepositoryFolder getFolder(String currentPath) {
     for (RepositoryFolder folder : getFolderList()) {
-      if (currentPath.equals(folder.getCurrentPath())) {
+      if (currentPath.equals(folder.getGlobalUniqueId())) {
         return folder;
       }
     }

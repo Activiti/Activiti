@@ -9,8 +9,9 @@ import javax.servlet.http.HttpSession;
 
 import org.activiti.cycle.ArtifactType;
 import org.activiti.cycle.Content;
+import org.activiti.cycle.RepositoryArtifactTag;
 import org.activiti.cycle.CycleService;
-import org.activiti.cycle.CycleTag;
+import org.activiti.cycle.CycleTagContent;
 import org.activiti.cycle.RepositoryArtifact;
 import org.activiti.cycle.RepositoryArtifactLink;
 import org.activiti.cycle.RepositoryConnector;
@@ -23,11 +24,13 @@ import org.activiti.cycle.impl.conf.ConfigurationContainer;
 import org.activiti.cycle.impl.connector.demo.DemoConnectorConfiguration;
 import org.activiti.cycle.impl.connector.fs.FileSystemConnectorConfiguration;
 import org.activiti.cycle.impl.connector.signavio.SignavioConnectorConfiguration;
+import org.activiti.cycle.impl.connector.view.TagConnectorConfiguration;
 import org.activiti.cycle.impl.db.CycleConfigurationService;
-import org.activiti.cycle.impl.db.CycleLinkService;
+import org.activiti.cycle.impl.db.CycleDAO;
+import org.activiti.cycle.impl.db.entity.CycleArtifactTagEntity;
 import org.activiti.cycle.impl.db.entity.CycleLink;
 import org.activiti.cycle.impl.db.impl.CycleConfigurationServiceImpl;
-import org.activiti.cycle.impl.db.impl.CycleLinkServiceImpl;
+import org.activiti.cycle.impl.db.impl.CycleDaoMyBatisImpl;
 import org.activiti.cycle.impl.plugin.PluginFinder;
 
 /**
@@ -40,7 +43,7 @@ import org.activiti.cycle.impl.plugin.PluginFinder;
  */
 public class CycleServiceImpl implements CycleService {
 
-  private CycleLinkService linkService;
+  private CycleDAO cycleDAO;
 
   private List<RepositoryConnector> repositoryConnectors;
 
@@ -52,9 +55,12 @@ public class CycleServiceImpl implements CycleService {
   public CycleServiceImpl(List<RepositoryConnector> repositoryConnectors) {
 
     PluginFinder.checkPluginInitialization();
-    this.linkService = new CycleLinkServiceImpl();
+    this.cycleDAO = new CycleDaoMyBatisImpl();
 
     this.repositoryConnectors = repositoryConnectors;
+    
+    // add tag connector hard coded for the moment
+    this.repositoryConnectors.add(new TagConnectorConfiguration(this).createConnector());
   }
 
   // bootstrapping for cycle
@@ -136,7 +142,7 @@ public class CycleServiceImpl implements CycleService {
   /**
    * commit pending changes in all repository connectors configured
    */
-  public void commitPendingChanges(String connectorId, String comment) {
+  public void commitPendingChanges(String comment) {
     for (RepositoryConnector connector : this.repositoryConnectors) {
       connector.commitPendingChanges(comment);
     }
@@ -250,14 +256,14 @@ public class CycleServiceImpl implements CycleService {
 
     // set source artifact attributes
     cycleLink.setSourceConnectorId(repositoryArtifactLink.getSourceArtifact().getConnectorId());
-    cycleLink.setSourceArtifactId(repositoryArtifactLink.getSourceArtifact().getOriginalNodeId());
+    cycleLink.setSourceArtifactId(repositoryArtifactLink.getSourceArtifact().getNodeId());
     cycleLink.setSourceElementId(repositoryArtifactLink.getSourceElementId());
     cycleLink.setSourceElementName(repositoryArtifactLink.getSourceElementName());
     cycleLink.setSourceRevision(repositoryArtifactLink.getSourceArtifact().getArtifactType().getRevision());
 
     // set target artifact attributes
     cycleLink.setTargetConnectorId(repositoryArtifactLink.getTargetArtifact().getConnectorId());
-    cycleLink.setTargetArtifactId(repositoryArtifactLink.getTargetArtifact().getOriginalNodeId());
+    cycleLink.setTargetArtifactId(repositoryArtifactLink.getTargetArtifact().getNodeId());
     cycleLink.setTargetElementId(repositoryArtifactLink.getTargetElementId());
     cycleLink.setTargetElementName(repositoryArtifactLink.getTargetElementName());
     cycleLink.setTargetRevision(repositoryArtifactLink.getTargetArtifact().getArtifactType().getRevision());
@@ -268,72 +274,52 @@ public class CycleServiceImpl implements CycleService {
     cycleLink.setLinkedBothWays(false);
     cycleLink.setLinkType("");
 
-    this.linkService.updateCycleLink(cycleLink);
+    cycleDAO.insertCycleLink(cycleLink);
   }
 
   public List<RepositoryArtifactLink> getArtifactLinks(String sourceConnectorId, String sourceArtifactId) {
     List<RepositoryArtifactLink> artifactLinks = new ArrayList<RepositoryArtifactLink>();
 
-    // TODO: query should be updated to use connectorId and artifactId
-    List<CycleLink> linkResultList = this.linkService.getCycleLinks(sourceArtifactId);
-
-    if (linkResultList != null && !linkResultList.isEmpty()) {
-      for (CycleLink entity : linkResultList) {
-        artifactLinks.add(createLinkDtoFromLinkEntity(entity));
-      }
+    List<CycleLink> linkResultList = cycleDAO.getOutgoingCycleLinks(sourceConnectorId, sourceArtifactId);
+    for (CycleLink entity : linkResultList) {
+      artifactLinks.add(createLinkDtoFromLinkEntity(entity));
     }
 
     return artifactLinks;
   }
 
-  public void deleteLink(long linkId) {
-    // TODO: implement
-    throw new RuntimeException("Not implemented yet");
+  public void deleteLink(String linkId) {
+    cycleDAO.deleteCycleLink(linkId);
   }
 
-  public List<RepositoryArtifactLink> getArtifactLinks(String sourceArtifactId, Long sourceRevision) {
-    // TODO: implement
-    throw new RuntimeException("Not implemented yet");
+  public void addTag(String connectorId, String artifactId, String tagName, String alias) {
+    CycleArtifactTagEntity tagEntity = new CycleArtifactTagEntity(tagName, connectorId, artifactId);
+    tagEntity.setAlias(alias);
+    cycleDAO.insertTag(tagEntity);
+  }
+  
+  public void deleteTag(String connectorId, String artifactId, String tagName) {
+    cycleDAO.deleteTag(connectorId, artifactId, tagName);
+  }
+  
+  public List<CycleTagContent> getRootTags() {
+    ArrayList<CycleTagContent> result = new ArrayList<CycleTagContent>();
+    result.addAll(cycleDAO.getTagsGroupedByName());
+    return result;
   }
 
-  public List<RepositoryArtifactLink> getArtifactLinks(String sourceArtifactId, Long sourceRevision, String type) {
-    // TODO: implement
-    throw new RuntimeException("Not implemented yet");
+  public CycleTagContent getTagContent(String name) {
+    CycleTagContentImpl tagContent = cycleDAO.getTagContent(name);
+    tagContent.resolveRepositoryArtifacts(this);
+    return tagContent;
   }
 
-  // Tag specific methods
-
-  public void addTag(String nodeId, String tagName) {
-
-    // TODO: implement
-    throw new RuntimeException("Not implemented yet");
+  public List<RepositoryArtifactTag> getTagsForNode(String connectorId, String artifactId) {
+    ArrayList<RepositoryArtifactTag> list = new ArrayList<RepositoryArtifactTag>();
+    list.addAll(cycleDAO.getTagsForNode(connectorId, artifactId));
+    return list;
   }
-
-  public void addTag(String nodeId, String tagName, String alias) {
-    // TODO: implement
-    throw new RuntimeException("Not implemented yet");
-  }
-
-  public void deleteTag(String nodeId, String tagName) {
-    // TODO: implement
-    throw new RuntimeException("Not implemented yet");
-  }
-
-  public List<CycleTag> getAllTags() {
-    // TODO: implement
-    throw new RuntimeException("Not implemented yet");
-  }
-
-  public List<CycleTag> getAllTagsIgnoreAlias() {
-    // TODO: implement
-    throw new RuntimeException("Not implemented yet");
-  }
-
-  public List<CycleTag> getTags(String nodeId) throws RepositoryNodeNotFoundException {
-    // TODO: implement
-    throw new RuntimeException("Not implemented yet");
-  }
-
+  
   // Private convenience methods
 
   private RepositoryArtifactLink createLinkDtoFromLinkEntity(CycleLink entity) {
@@ -378,4 +364,5 @@ public class CycleServiceImpl implements CycleService {
     }
     throw new RepositoryException("Couldn't find Repository Connector with id '" + connectorId + "'");
   }
+
 }

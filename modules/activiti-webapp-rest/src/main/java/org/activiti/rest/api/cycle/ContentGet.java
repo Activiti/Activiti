@@ -26,6 +26,7 @@ import org.activiti.rest.util.ActivitiRequest;
 import org.activiti.rest.util.ActivitiStreamingWebScript;
 import org.springframework.extensions.webscripts.WebScriptResponse;
 
+
 /**
  * 
  * @author Nils Preusker (nils.preusker@camunda.com)
@@ -83,7 +84,8 @@ public class ContentGet extends ActivitiStreamingWebScript {
     }
 
     // TODO: what is a good way to determine the etag? Using a fake one...
-    streamResponse(res, this.cycleService.getContent(artifact.getConnectorId(), artifact.getOriginalNodeId(), contentRepresentation.getId()).asInputStream(), new Date(0),
+    streamResponse(res, this.cycleService.getContent(artifact.getConnectorId(), artifact.getNodeId(), contentRepresentation.getId()).asInputStream(), new Date(
+            0),
             "W/\"647-1281077702000\"", attach, attachmentFileName, contentType);
 
   }

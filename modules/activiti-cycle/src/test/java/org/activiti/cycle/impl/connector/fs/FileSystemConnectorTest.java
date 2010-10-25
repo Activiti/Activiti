@@ -51,7 +51,7 @@ public class FileSystemConnectorTest {
 
         Collection<ContentRepresentation> contentRepresentations = artifact.getArtifactType().getContentRepresentations();
         for (ContentRepresentation contentRepresentation : contentRepresentations) {
-          System.out.println(contentRepresentation.getId() + " -> " + conn.getContent(artifact.getOriginalNodeId(), contentRepresentation.getId()).asString());
+          System.out.println(contentRepresentation.getId() + " -> " + conn.getContent(artifact.getNodeId(), contentRepresentation.getId()).asString());
         }
       }
     }

@@ -2,8 +2,10 @@ package org.activiti.cycle.impl;
 
 import org.activiti.cycle.RepositoryArtifact;
 import org.activiti.cycle.RepositoryArtifactLink;
+import org.activiti.cycle.impl.db.entity.CycleLink;
 
 /**
+ * TODO: THink about merging it with {@link CycleLink} entity!
  * 
  * @author polenz
  */

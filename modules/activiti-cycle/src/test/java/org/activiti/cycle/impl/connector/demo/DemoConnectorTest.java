@@ -52,36 +52,36 @@ public class DemoConnectorTest {
 
     assertTrue(childNodes.get(0) instanceof RepositoryFolder);
     RepositoryFolder folder1 = (RepositoryFolder) childNodes.get(0);
-    assertEquals("/minutes", folder1.getCurrentPath());
+    assertEquals("/minutes", folder1.getNodeId());
     // assertEquals("http://localhost:8080/activiti-cycle/demo/minutes",
     // folder1.getClientUrl());
 
     assertTrue(childNodes.get(1) instanceof RepositoryFolder);
     RepositoryFolder folder2 = (RepositoryFolder) childNodes.get(1);
-    assertEquals("/BPMN", folder2.getCurrentPath());
+    assertEquals("/BPMN", folder2.getNodeId());
 
     // check sub elements of folder 1
-    childNodes = cycleService.getChildren("demo", folder1.getCurrentPath()).asList();
+    childNodes = cycleService.getChildren("demo", folder1.getNodeId()).asList();
     assertEquals(2, childNodes.size());
 
     RepositoryArtifact file1 = (RepositoryArtifact) childNodes.get(0);
-    assertEquals("/minutes/20100701-KickOffMeeting.txt", file1.getCurrentPath());
+    assertEquals("/minutes/20100701-KickOffMeeting.txt", file1.getNodeId());
 
     RepositoryArtifact file2 = (RepositoryArtifact) childNodes.get(1);
-    assertEquals("/minutes/InitialMindmap.mm", file2.getCurrentPath());
+    assertEquals("/minutes/InitialMindmap.mm", file2.getNodeId());
 
     // check sub elements of folder 2
-    childNodes = cycleService.getChildren("demo", folder2.getCurrentPath()).asList();
+    childNodes = cycleService.getChildren("demo", folder2.getNodeId()).asList();
     assertEquals(1, childNodes.size());
 
     RepositoryFolder folder3 = (RepositoryFolder) childNodes.get(0);
-    assertEquals("/BPMN/Level3", folder3.getCurrentPath());
+    assertEquals("/BPMN/Level3", folder3.getNodeId());
 
-    childNodes = cycleService.getChildren("demo", folder3.getCurrentPath()).asList();
+    childNodes = cycleService.getChildren("demo", folder3.getNodeId()).asList();
     assertEquals(1, childNodes.size());
 
     RepositoryArtifact file3 = (RepositoryArtifact) childNodes.get(0);
-    assertEquals("/BPMN/Level3/InitialBpmnModel", file3.getCurrentPath());
+    assertEquals("/BPMN/Level3/InitialBpmnModel", file3.getNodeId());
     assertEquals("InitialBpmnModel", file3.getMetadata().getName());
     assertEquals("/BPMN/Level3", file3.getMetadata().setParentFolderId());
     //
@@ -91,7 +91,7 @@ public class DemoConnectorTest {
     //    
     Collection<ContentRepresentation> contentRepresentations = file3.getArtifactType().getContentRepresentations();
     for (ContentRepresentation contentRepresentation : contentRepresentations) {
-      Content content = cycleService.getContent("demo", file3.getCurrentPath(), contentRepresentation.getId());
+      Content content = cycleService.getContent("demo", file3.getNodeId(), contentRepresentation.getId());
       assertNotNull(content);
       assertNotNull(content.asByteArray());
     }
@@ -104,19 +104,19 @@ public class DemoConnectorTest {
     parameters.put("targetConnectorId", "demo");
     parameters.put("targetFolderId", "/minutes");
 
-    cycleService.executeParameterizedAction("demo", file1.getCurrentPath(), CopyArtifactAction.class.getName(), parameters);
+    cycleService.executeParameterizedAction("demo", file1.getNodeId(), CopyArtifactAction.class.getName(), parameters);
 
     List<RepositoryNode> nodes = DemoConnector.nodes;
     assertEquals(8, DemoConnector.nodes.size());
 
-    childNodes = cycleService.getChildren("demo", folder1.getCurrentPath()).asList();
+    childNodes = cycleService.getChildren("demo", folder1.getNodeId()).asList();
     assertEquals(4, childNodes.size());
 
-    assertEquals("/minutes/20100701-KickOffMeeting.txt", childNodes.get(0).getCurrentPath());
-    assertEquals("/minutes/InitialMindmap.mm", childNodes.get(1).getCurrentPath());
-    assertEquals("/minutes/xxx.txt0", childNodes.get(2).getCurrentPath());
+    assertEquals("/minutes/20100701-KickOffMeeting.txt", childNodes.get(0).getNodeId());
+    assertEquals("/minutes/InitialMindmap.mm", childNodes.get(1).getNodeId());
+    assertEquals("/minutes/xxx.txt0", childNodes.get(2).getNodeId());
     assertEquals("xxx.txt0", childNodes.get(2).getMetadata().getName());
-    assertEquals("/minutes/xxx.txt1", childNodes.get(3).getCurrentPath());
+    assertEquals("/minutes/xxx.txt1", childNodes.get(3).getNodeId());
     assertEquals("xxx.txt1", childNodes.get(3).getMetadata().getName());
   }
 

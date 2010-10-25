@@ -37,7 +37,7 @@ public interface CycleService {
    * method just does nothing. This means, there is no rollback and you
    * shouldn't rely on a transaction behavior.
    */
-  public void commitPendingChanges(String connectorId, String comment);
+  public void commitPendingChanges(String comment);
 
   /**
    * load the {@link RepositoryArtifact} including details
@@ -106,47 +106,35 @@ public interface CycleService {
 
   public void addArtifactLink(RepositoryArtifactLink link);
 
-  public List<RepositoryArtifactLink> getArtifactLinks(String sourceArtifactId, Long sourceRevision);
   public List<RepositoryArtifactLink> getArtifactLinks(String sourceConnectorId, String sourceArtifactId);
-  public List<RepositoryArtifactLink> getArtifactLinks(String sourceArtifactId, Long sourceRevision, String type);
+  // public List<RepositoryArtifactLink> getArtifactLinks(String
+  // sourceArtifactId, Long sourceRevision, String type);
 
-  public void deleteLink(long linkId);
+  public void deleteLink(String linkId);
 
-  /**
-   * add tag for the given node id. Tags are identified by their string names
-   */
-  public void addTag(String nodeId, String tagName);
+  // /**
+  // * add tag for the given node id. Tags are identified by their string names
+  // */
+  // public void addTag(String nodeId, String tagName);
 
   /**
    * add tag for the given node id and specify an alias which can be used in the
    * GUI later on when showing the tag to the user
    */
-  public void addTag(String nodeId, String tagName, String alias);
+  public void addTag(String connectorId, String artifactId, String tagName, String alias);
 
   /**
-   * delete the
+   * delete the tag
    */
-  public void deleteTag(String nodeId, String tagName);
-
-  /**
-   * returns all {@link CycleTag}s for the {@link RepositoryNode} with the given
-   * id. Returns an empty list if not tags are available. Please note that
-   * different alias for tag names lead to different {@link CycleTag} objects.
-   */
-  public List<CycleTag> getTags(String nodeId) throws RepositoryNodeNotFoundException;
+  public void deleteTag(String connectorId, String artifactId, String tagName);
 
   /**
    * get all available tags for the system in order to show them in the GUI (as
    * folder, tag cloud, ...)
    */
-  public List<CycleTag> getAllTags();
+  public CycleTagContent getTagContent(String name);
 
-  /**
-   * get all available tags for the system in order to show them in the GUI (as
-   * folder, tag cloud, ...) but ignore the alias settings, meaning the same tag
-   * names with different alias are merged together (which normally make sense
-   * for the top level GUI)
-   */
-  public List<CycleTag> getAllTagsIgnoreAlias();
+  public List<CycleTagContent> getRootTags();
 
+  public List<RepositoryArtifactTag> getTagsForNode(String connectorId, String artifactId);
 }

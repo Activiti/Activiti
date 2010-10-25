@@ -29,3 +29,12 @@ create table ACT_CY_TAG (
 	ALIAS_ varchar(255),
 	primary key(ID_)
 );
+
+create table ACT_CY_TAG (
+	ID_ varchar(255),
+	NAME_ varchar(700),
+	CONNECTOR_ID_ varchar(255),
+	ARTIFACT_ID_ varchar(550),
+	ALIAS_ varchar(255),
+	primary key(ID_)	
+);

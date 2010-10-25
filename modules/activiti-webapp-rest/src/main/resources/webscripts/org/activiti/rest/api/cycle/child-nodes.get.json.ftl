@@ -8,7 +8,7 @@
 {
   "label": "${folder.metadata.name}",
   "connectorId": "${folder.connectorId}",
-  "artifactId": "${folder.originalNodeId}",
+  "artifactId": "${folder.nodeId}",
   "folder": "true"
 }
 </#macro>
@@ -17,7 +17,7 @@
 {
   "label": "${file.metadata.name}",
   "connectorId": "${file.connectorId}",
-  "artifactId": "${file.originalNodeId}",
+  "artifactId": "${file.nodeId}",
   "expanded": "true",
   "file": "true",
   "contentType": "${file.artifactType.mimeType.contentType}"

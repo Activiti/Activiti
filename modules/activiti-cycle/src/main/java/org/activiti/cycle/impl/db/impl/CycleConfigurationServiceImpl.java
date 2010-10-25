@@ -8,7 +8,7 @@ import org.apache.ibatis.session.SqlSessionFactory;
 
 import com.thoughtworks.xstream.XStream;
 
-public class CycleConfigurationServiceImpl extends CycleDbService implements CycleConfigurationService {
+public class CycleConfigurationServiceImpl extends AbstractCycleDaoMyBatisImpl implements CycleConfigurationService {
 
   
   private XStream xStream = new XStream();

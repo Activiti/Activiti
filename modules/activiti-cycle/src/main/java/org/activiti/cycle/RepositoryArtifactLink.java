@@ -1,6 +1,10 @@
 package org.activiti.cycle;
 
+import org.activiti.cycle.impl.db.entity.CycleLink;
+
 /**
+ * Object given back by the {@link CycleService} for a {@link CycleLink} where
+ * the {@link RepositoryArtifact}s are already resolved.
  * 
  * @author polenz
  * @author Nils Preusker (nils.preusker@camunda.com)

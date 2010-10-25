@@ -401,7 +401,7 @@ public class SignavioConnector extends AbstractRepositoryConnector<SignavioConne
   }
 
   public String getModelUrl(RepositoryArtifact artifact) {
-    return getConfiguration().getModelUrl(artifact.getOriginalNodeId());
+    return getConfiguration().getModelUrl(artifact.getNodeId());
   }
 
   public void commitPendingChanges(String comment) {

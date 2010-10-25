@@ -24,8 +24,10 @@ create table ACT_CY_LINK (
 );
 
 create table ACT_CY_TAG (
-	ID_ bigint,
+	ID_ varchar,
 	NAME_ varchar,
+	CONNECTOR_ID_ varchar,
+	ARTIFACT_ID_ varchar,
 	ALIAS_ varchar,
-	primary key(ID_)
+	primary key(ID_)	
 );

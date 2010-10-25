@@ -12,7 +12,6 @@
  */
 package org.activiti.cycle;
 
-import org.activiti.cycle.impl.CycleServiceImpl;
 
 
 /**
@@ -42,9 +41,6 @@ public interface RepositoryNode {
   public String getConnectorId();
 
   /**
-   * <b>The current path is used in the {@link RepositoryConnector}-API, so if
-   * you don't have a special use case use that, not this one!</b>
-   * 
    * Unique ID of the {@link RepositoryNode} within the original
    * {@link RepositoryConnector} identified by the connectorId.
    * 
@@ -53,28 +49,13 @@ public interface RepositoryNode {
    * configured root folder of the FileSystem connector. For other repos this
    * may be whatever it needs to be, the client shouldn't really care.
    */
-  public String getOriginalNodeId();
+  public String getNodeId();
 
-  /**
-   * <b>The current path is used in the {@link RepositoryConnector}-API, so if
-   * you don't have a special use case use that, not this one!</b>
-   * 
+   /**
    * ID composed of the connectorId and the node id, which results in a Cycle
    * wide unique ID for an {@link RepositoryNode}
    */
   public String getGlobalUniqueId();
-
-  /**
-   * <b>The current path is used in the {@link RepositoryConnector}-API, so if
-   * you don't have a special use case use this one!</b>
-   * 
-   * current path of artifact in the current "context", so for example the id of
-   * the artifact when using the {@link CycleServiceImpl} or maybe another
-   * accumulating connector like tags, ... This ID is <b>NOT</b> globally unique
-   * and just always used in one special context. It may even be changed by
-   * connectors like the {@link CycleServiceImpl} on the fly.
-   */
-  public String getCurrentPath(); 
 
   public RepositoryNodeMetadata getMetadata();
 }

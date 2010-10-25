@@ -16,7 +16,6 @@ import java.io.Serializable;
 import java.util.Map;
 import java.util.logging.Logger;
 
-import org.activiti.cycle.RepositoryException;
 import org.activiti.cycle.RepositoryNode;
 import org.activiti.cycle.RepositoryNodeMetadata;
 
@@ -39,14 +38,9 @@ public class RepositoryNodeImpl implements RepositoryNode, Serializable {
 
   private final String nodeId;
   
-  private String currentPath;
-
   public RepositoryNodeImpl(String connectorId, String nodeId) {
     this.connectorId = connectorId;
     this.nodeId = nodeId;
-    // Creating a repositoryNodeImpl is done by the original connector, hence
-    // the nodeId is already the correct current path:
-    this.currentPath = nodeId;
   }
 
   @Override
@@ -72,37 +66,12 @@ public class RepositoryNodeImpl implements RepositoryNode, Serializable {
   /**
    * {@inheritDoc}
    */
-  public String getOriginalNodeId() {
+  public String getNodeId() {
     return nodeId;
   }
 
   public String getGlobalUniqueId() {
-    return getConnectorId() + "/" + getOriginalNodeId();
+    return getConnectorId() + "/" + getNodeId();
   }
-  
-  public String getCurrentPath() {
-    if (currentPath == null) {
-      throw new RepositoryException("current path is unset for " + this + "! Check implementation.");
-    }
-    return currentPath;
-  }
-  
-  public void setCurrentPath(String currentPath) {
-    this.currentPath = currentPath;
-  }
-  
-  public void addNewRootToCurrentPath(String rootName) {
-    if (!getCurrentPath().startsWith("/")) {
-      throw new RepositoryException("RepositoryNode id doesn't start with a slash, which is considered invalid: '" + getCurrentPath() + "' in repository '"
-              + getConnectorId() + "'");
-    } else {
-      if (rootName.startsWith("/")) {
-        setCurrentPath(rootName + getCurrentPath());
-      } else {
-        setCurrentPath("/" + rootName + getCurrentPath());
-      }
-    }    
-  }
-
   
 }
