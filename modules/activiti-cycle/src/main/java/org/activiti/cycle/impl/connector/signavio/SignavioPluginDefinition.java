@@ -15,6 +15,7 @@ import org.activiti.cycle.impl.connector.signavio.provider.ActivitiCompliantBpmn
 import org.activiti.cycle.impl.connector.signavio.provider.Bpmn20Provider;
 import org.activiti.cycle.impl.connector.signavio.provider.Jpdl4Provider;
 import org.activiti.cycle.impl.connector.signavio.provider.JsonProvider;
+import org.activiti.cycle.impl.connector.signavio.provider.SvgApiProvider;
 import org.activiti.cycle.impl.connector.signavio.provider.PngProvider;
 import org.activiti.cycle.impl.plugin.ActivitiCyclePlugin;
 import org.activiti.cycle.impl.plugin.ActivitiCyclePluginDefinition;
@@ -46,6 +47,7 @@ public class SignavioPluginDefinition implements ActivitiCyclePluginDefinition {
   public static final String CONTENT_REPRESENTATION_ID_BPMN_20_DEVELOPER = "Developer Friendly BPMN 2.0";
   public static final String CONTENT_REPRESENTATION_ID_BPMN_20_RAW = "Raw BPMN 2.0";
   public static final String CONTENT_REPRESENTATION_ID_JPDL4 = "jPDL 4";
+  public static final String CONTENT_REPRESENTATION_ID_SVGAPI = "SVG API";
   
   
   
@@ -66,6 +68,7 @@ public class SignavioPluginDefinition implements ActivitiCyclePluginDefinition {
             new ActivitiCompliantBpmn20Provider());
     artifactType1.addContentRepresentation(new ContentRepresentationImpl(CONTENT_REPRESENTATION_ID_BPMN_20_RAW, CycleDefaultMimeType.XML, RenderInfo.CODE), new Bpmn20Provider());
     artifactType1.addContentRepresentation(new ContentRepresentationImpl(CONTENT_REPRESENTATION_ID_JSON, CycleDefaultMimeType.XML, RenderInfo.CODE), new JsonProvider());
+    artifactType1.addContentRepresentation(new ContentRepresentationImpl(CONTENT_REPRESENTATION_ID_SVGAPI, CycleDefaultMimeType.HTML, RenderInfo.HTML), new SvgApiProvider());
     
     artifactType1.addParameterizedAction(new CreateTechnicalBpmnXmlAction());
     artifactType1.addParameterizedAction(new ValidateActivitiDeployment());
