@@ -78,10 +78,12 @@
         <include name="activiti-spring-*.jar"/>
       </fileset>
     	<!--added to copy activiti-cycle-*.jar
+    	  we have to include it, otherwise we get a NPE in the ant setup (why??)
+    	-->
         <fileset dir="../modules/activiti-cycle/target">
           <include name="activiti-cycle-*.jar"/>
         </fileset>
-        -->
+        
     </copy>
       	
     <mkdir dir="${target.distro.root}/setup/files/webapps/activiti-probe.war" />
@@ -116,7 +118,9 @@
     <!-- Copy activiti-cycle, spring-surf and xstream jars to lib directory of activiti-rest -->
     <copy todir="${target.distro.root}/setup/files/webapps/activiti-rest.war/WEB-INF/lib">
     	<fileset dir="../modules/activiti-cycle/target">
+    	  <!-- exlude it, since it must be copied into the lib directory (see above)
     		<include name="activiti-cycle-*.jar"/>
+    		-->
     		<include name="spring-surf-*.jar"/>
     	</fileset>
     	<fileset dir="../modules/activiti-webapp-rest/target/activiti-webapp-rest-${activiti.version}/WEB-INF/lib/">
