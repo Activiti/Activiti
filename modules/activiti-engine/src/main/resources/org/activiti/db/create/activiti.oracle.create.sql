@@ -145,7 +145,7 @@ create table ACT_HI_PROC_INST (
     START_TIME_ TIMESTAMP(6) not null,
     END_TIME_ TIMESTAMP(6),
     DURATION_ NUMBER(19,0),
-    END_ACT_ID_ NVARCHAR2(64),
+    END_ACT_ID_ NVARCHAR2(255),
     primary key (ID_),
     unique (PROC_INST_ID_)
 );
@@ -165,14 +165,15 @@ create table ACT_HI_ACT_INST (
     primary key (ID_)
 );
 
-create table ACT_HI_VAR_UPDATE (
+create table ACT_HI_DETAIL (
     ID_ varchar(64) not null,
+    TYPE_ NVARCHAR2(255) not null,
     PROC_INST_ID_ NVARCHAR2(64) not null,
     EXECUTION_ID_ NVARCHAR2(64) not null,
-    TASK_ID_ NVARCHAR2(64),
-    TYPE_ NVARCHAR2(255) not null,
+    ACT_INST_ID_ NVARCHAR2(64),
     NAME_ NVARCHAR2(255) not null,
-    INDEX_ INTEGER,
+    VAR_TYPE_ NVARCHAR2(64),
+    REV_ INTEGER,
     TIME_ TIMESTAMP(6) not null,
     BYTEARRAY_ID_ NVARCHAR2(64),
     DATE_ TIMESTAMP(6),
@@ -191,8 +192,10 @@ create index ACT_IDX_HI_PRO_INST_END on ACT_HI_PROC_INST(END_TIME_);
 create index ACT_IDX_HI_PRO_I_BUSKEY on ACT_HI_PROC_INST(BUSINESS_KEY_);
 create index ACT_IDX_HI_ACT_INST_START on ACT_HI_ACT_INST(START_TIME_);
 create index ACT_IDX_HI_ACT_INST_END on ACT_HI_ACT_INST(END_TIME_);
-create index ACT_IDX_HI_VAR_UPD_TIME on ACT_HI_VAR_UPDATE(TIME_);
-create index ACT_IDX_HI_VAR_UPD_NAME on ACT_HI_VAR_UPDATE(NAME_);
+create index ACT_IDX_HI_DETAIL_PROC_INST on ACT_HI_DETAIL(PROC_INST_ID_);
+create index ACT_IDX_HI_DETAIL_ACT_INST on ACT_HI_DETAIL(ACT_INST_ID_);
+create index ACT_IDX_HI_DETAIL_TIME on ACT_HI_DETAIL(TIME_);
+create index ACT_IDX_HI_DETAIL_NAME on ACT_HI_DETAIL(NAME_);
 
 create index ACT_IDX_BYTEAR_DEPL on ACT_GE_BYTEARRAY(DEPLOYMENT_ID_);
 alter table ACT_GE_BYTEARRAY

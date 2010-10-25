@@ -146,7 +146,7 @@ create table ACT_HI_PROC_INST (
     START_TIME_ datetime not null,
     END_TIME_ datetime,
     DURATION_ bigint,
-    END_ACT_ID_ varchar(64),
+    END_ACT_ID_ varchar(255),
     primary key (ID_),
     unique (PROC_INST_ID_),
     unique UNIQ_HI_BUS_KEY (PROC_DEF_ID_, BUSINESS_KEY_)
@@ -167,14 +167,15 @@ create table ACT_HI_ACT_INST (
     primary key (ID_)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE utf8_bin;
 
-create table ACT_HI_VAR_UPDATE (
+create table ACT_HI_DETAIL (
     ID_ varchar(64) not null,
+    TYPE_ varchar(255) not null,
     PROC_INST_ID_ varchar(64) not null,
     EXECUTION_ID_ varchar(64) not null,
-    TASK_ID_ varchar(64),
-    TYPE_ varchar(255) not null,
+    ACT_INST_ID_ varchar(64),
     NAME_ varchar(255) not null,
-    INDEX_ integer,
+    VAR_TYPE_ varchar(255),
+    REV_ integer,
     TIME_ datetime not null,
     BYTEARRAY_ID_ varchar(64),
     DATE_ datetime,
@@ -193,8 +194,10 @@ create index ACT_IDX_HI_PRO_INST_END on ACT_HI_PROC_INST(END_TIME_);
 create index ACT_IDX_HI_PRO_I_BUSKEY on ACT_HI_PROC_INST(BUSINESS_KEY_);
 create index ACT_IDX_HI_ACT_INST_START on ACT_HI_ACT_INST(START_TIME_);
 create index ACT_IDX_HI_ACT_INST_END on ACT_HI_ACT_INST(END_TIME_);
-create index ACT_IDX_HI_VAR_UPD_TIME on ACT_HI_VAR_UPDATE(TIME_);
-create index ACT_IDX_HI_VAR_UPD_NAME on ACT_HI_VAR_UPDATE(NAME_);
+create index ACT_IDX_HI_DETAIL_PROC_INST on ACT_HI_DETAIL(PROC_INST_ID_);
+create index ACT_IDX_HI_DETAIL_ACT_INST on ACT_HI_DETAIL(ACT_INST_ID_);
+create index ACT_IDX_HI_DETAIL_TIME on ACT_HI_DETAIL(TIME_);
+create index ACT_IDX_HI_DETAIL_NAME on ACT_HI_DETAIL(NAME_);
 
 alter table ACT_GE_BYTEARRAY
     add constraint FK_BYTEARR_DEPL 

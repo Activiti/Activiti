@@ -6,8 +6,11 @@ drop index ACT_IDX_HI_PRO_INST_END on ACT_HI_PROC_INST;
 drop index ACT_IDX_HI_PRO_I_BUSKEY on ACT_HI_PROC_INST;
 drop index ACT_IDX_HI_ACT_INST_START on ACT_HI_ACT_INST;
 drop index ACT_IDX_HI_ACT_INST_END on ACT_HI_ACT_INST;
-drop index ACT_IDX_HI_VAR_UPD_TIME on ACT_HI_VAR_UPDATE;
-drop index ACT_IDX_HI_VAR_UPD_NAME on ACT_HI_VAR_UPDATE;
+drop index ACT_IDX_HI_DETAIL_PROC_INST on ACT_HI_DETAIL;
+drop index ACT_IDX_HI_DETAIL_ACT_INST on ACT_HI_DETAIL;
+drop index ACT_IDX_HI_DETAIL_TIME on ACT_HI_DETAIL;
+drop index ACT_IDX_HI_DETAIL_NAME on ACT_HI_DETAIL;
+
 
 alter table ACT_GE_BYTEARRAY 
     drop FOREIGN KEY FK_BYTEARR_DEPL;
@@ -68,5 +71,5 @@ alter table ACT_RU_JOB
  drop table if exists ACT_RU_JOB;
  drop table if exists ACT_HI_PROC_INST;
  drop table if exists ACT_HI_ACT_INST;
- drop table if exists ACT_HI_VAR_UPDATE;
+ drop table if exists ACT_HI_DETAIL;
  
