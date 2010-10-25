@@ -86,7 +86,6 @@ public class ContentRepresentationGet extends ActivitiWebScript {
       // Show errors that occur during transformations as HTML in the UI
       model.put("renderInfo", RenderInfo.HTML);
       model.put("contentRepresentationId", representationId);
-      model.put("content", e.getRenderContent());
       model.put("contentType", CycleDefaultMimeType.HTML.getContentType());
     } catch (Exception ex) {
       log.log(Level.WARNING, "Exception while loading content representation", ex);
