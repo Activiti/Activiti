@@ -10,6 +10,12 @@ import java.util.List;
 public interface CycleTagContent {
 
   public String getName();
+  
+  /**
+   * return a count how often this tag is used. May be used to visualize tag
+   * cloud or the like
+   */
+  public long getUsageCount();
 
   public List<RepositoryNode> getTaggedRepositoryNodes();
 

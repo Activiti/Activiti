@@ -66,7 +66,7 @@ public class TagConnector implements RepositoryConnector {
     List<CycleTagContent> rootTags = getConfiguration().getCycleService().getRootTags();
     for (CycleTagContent tag : rootTags) {
       RepositoryFolderImpl folder = new RepositoryFolderImpl(getConfiguration().getId(), tag.getName());
-      folder.getMetadata().setName(tag.getName());
+      folder.getMetadata().setName(tag.getName() + " [" + tag.getUsageCount() + "]");
       tagFolderList.add(folder);
     }
 
