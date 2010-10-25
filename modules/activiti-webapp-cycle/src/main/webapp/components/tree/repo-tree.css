@@ -63,10 +63,10 @@
 .ygtvtmh { background: url("/activiti-cycle/res/images/folder/tmh.gif") 0 0 no-repeat; width:34px; height:22px; cursor:pointer }
 
 /* first or middle sibling, expandable */
-.ygtvtp { background: url("/activiti-cycle/res/images/folder/tp.gif") 0 0 no-repeat; width:34px; height:22px; cursor:pointer }
+.ygtvtp { background: url("/activiti-cycle/res/images/folder/tp.gif") 0 0 no-repeat; min-width:34px; height:22px; cursor:pointer }
 
 /* first or middle sibling, expandable, hover */
-.ygtvtph { background: url("/activiti-cycle/res/images/folder/tph.gif") 0 0 no-repeat; width:34px; height:22px; cursor:pointer }
+.ygtvtph { background: url("/activiti-cycle/res/images/folder/tph.gif") 0 0 no-repeat; min-width:34px; height:22px; cursor:pointer }
 
 /* last sibling, no children */
 .ygtvln { background: url("/activiti-cycle/res/images/folder/ln.gif") 0 0 no-repeat; width:17px; height:22px; }
