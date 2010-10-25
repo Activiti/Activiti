@@ -16,10 +16,10 @@
                  activiti:class="org.activiti.examples.bpmn.servicetask.ReverseStringsFieldInjected">
       <extensionElements>
         <activiti:field activiti:name="text1">
-          <activiti:methodExpr>${genderBean.getGenderString(gender)}</activiti:methodExpr>
+          <activiti:expression>${genderBean.getGenderString(gender)}</activiti:expression>
         </activiti:field>
         <activiti:field activiti:name="text2">
-          <activiti:valueExpr>Hello ${gender == 'male' ? 'Mr.' : 'Mrs.'} ${name}</activiti:valueExpr>
+          <activiti:expression>Hello ${gender == 'male' ? 'Mr.' : 'Mrs.'} ${name}</activiti:expression>
         </activiti:field>
       </extensionElements>             
     </serviceTask>

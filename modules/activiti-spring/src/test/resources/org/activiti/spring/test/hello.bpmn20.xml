@@ -11,7 +11,7 @@
     <sequenceFlow id="flow1" sourceRef="start" targetRef="print" />
     
     <serviceTask id="print" 
-                 activiti:method-expr="#{printer.printMessage}" />
+                 activiti:expression="#{printer.printMessage()}" />
     <sequenceFlow id="flow2" sourceRef="print" targetRef="end" />
     
     <endEvent id="end" />

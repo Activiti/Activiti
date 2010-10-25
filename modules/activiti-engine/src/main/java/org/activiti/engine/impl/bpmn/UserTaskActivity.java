@@ -12,7 +12,7 @@
  */
 package org.activiti.engine.impl.bpmn;
 
-import org.activiti.engine.impl.el.ActivitiValueExpression;
+import org.activiti.engine.impl.el.Expression;
 import org.activiti.engine.impl.el.ExpressionManager;
 import org.activiti.engine.impl.task.TaskDefinition;
 import org.activiti.engine.impl.task.TaskEntity;
@@ -38,13 +38,13 @@ public class UserTaskActivity extends TaskActivity {
     task.setExecution(execution);
     task.setTaskDefinition(taskDefinition);
 
-    if (taskDefinition.getNameValueExpression() != null) {
-      String name = (String) taskDefinition.getNameValueExpression().getValue(execution);
+    if (taskDefinition.getNameExpression() != null) {
+      String name = (String) taskDefinition.getNameExpression().getValue(execution);
       task.setName(name);
     }
 
-    if (taskDefinition.getDescriptionValueExpression() != null) {
-      String description = (String) taskDefinition.getDescriptionValueExpression().getValue(execution);
+    if (taskDefinition.getDescriptionExpression() != null) {
+      String description = (String) taskDefinition.getDescriptionExpression().getValue(execution);
       task.setDescription(description);
     }
 
@@ -56,18 +56,18 @@ public class UserTaskActivity extends TaskActivity {
   }
 
   protected void handleAssignments(TaskEntity task, ActivityExecution execution) {
-    if (taskDefinition.getAssigneeValueExpression() != null) {
-      task.setAssignee((String) taskDefinition.getAssigneeValueExpression().getValue(execution));
+    if (taskDefinition.getAssigneeExpression() != null) {
+      task.setAssignee((String) taskDefinition.getAssigneeExpression().getValue(execution));
     }
 
-    if (!taskDefinition.getCandidateGroupIdValueExpressions().isEmpty()) {
-      for (ActivitiValueExpression groupIdExpr : taskDefinition.getCandidateGroupIdValueExpressions()) {
+    if (!taskDefinition.getCandidateGroupIdExpressions().isEmpty()) {
+      for (Expression groupIdExpr : taskDefinition.getCandidateGroupIdExpressions()) {
         task.addCandidateGroup((String) groupIdExpr.getValue(execution));
       }
     }
 
-    if (!taskDefinition.getCandidateUserIdValueExpressions().isEmpty()) {
-      for (ActivitiValueExpression userIdExpr : taskDefinition.getCandidateUserIdValueExpressions()) {
+    if (!taskDefinition.getCandidateUserIdExpressions().isEmpty()) {
+      for (Expression userIdExpr : taskDefinition.getCandidateUserIdExpressions()) {
         task.addCandidateUser((String) userIdExpr.getValue(execution));
       }
     }

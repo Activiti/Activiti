@@ -11,24 +11,31 @@
  * limitations under the License.
  */
 
-package org.activiti.examples.bpmn.eventlistener;
+package org.activiti.engine.impl.el;
 
-import org.activiti.engine.impl.el.Expression;
-import org.activiti.pvm.event.EventListener;
-import org.activiti.pvm.event.EventListenerExecution;
+import org.activiti.engine.ActivitiException;
+import org.activiti.pvm.delegate.DelegateExecution;
 
 /**
- * Example {@link EventListener} which gets 2 fields injected.
+ * Expression that always returns the same value when <code>getValue</code> is
+ * called. Setting of the value is not supported.
  * 
  * @author Frederik Heremans
  */
-public class ExampleFieldInjectedEventListener implements EventListener {
+public class FixedValue implements Expression {
 
-  private Expression fixedValue;
+  private Object value;
 
-  private Expression dynamicValue;
-
-  public void notify(EventListenerExecution execution) throws Exception {
-    execution.setVariable("var", fixedValue.getValue(execution).toString() + dynamicValue.getValue(execution).toString());
+  public FixedValue(Object value) {
+    this.value = value;
   }
+
+  public Object getValue(DelegateExecution execution) {
+    return value;
+  }
+
+  public void setValue(Object value, DelegateExecution execution) {
+    throw new ActivitiException("Cannot change fixed value");
+  }
+
 }

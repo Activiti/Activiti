@@ -14,20 +14,20 @@
     <exclusiveGateway id="exclusiveGw" name="Exclusive Gateway" />
     
     <sequenceFlow id="flow2" sourceRef="exclusiveGw" targetRef="basicService">
-      <conditionExpression xsi:type="tFormalExpression" language="uel-method">
-        <![CDATA[${order.isBasic}]]>
+      <conditionExpression xsi:type="tFormalExpression">
+        <![CDATA[${order.basic}]]>
       </conditionExpression>
     </sequenceFlow>
     
     <sequenceFlow id="flow3" sourceRef="exclusiveGw" targetRef="standardService">
-      <conditionExpression xsi:type="tFormalExpression" language="uel-method">
-        <![CDATA[${order.isStandard}]]>
+      <conditionExpression xsi:type="tFormalExpression">
+        <![CDATA[${order.standard}]]>
       </conditionExpression>
     </sequenceFlow>
     
     <sequenceFlow id="flow4" sourceRef="exclusiveGw" targetRef="goldMemberService">
-      <conditionExpression xsi:type="tFormalExpression" language="uel-method">
-        <![CDATA[${order.isGold}]]>
+      <conditionExpression xsi:type="tFormalExpression">
+        <![CDATA[${order.gold}]]>
       </conditionExpression>
     </sequenceFlow>
 

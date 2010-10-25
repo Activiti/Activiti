@@ -16,24 +16,24 @@ package org.activiti.engine.impl.el;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.bpmn.Condition;
 import org.activiti.pvm.delegate.DelegateExecution;
-import org.activiti.pvm.impl.runtime.ExecutionImpl;
 
 
 /**
- * {@link Condition} that resolves a UEL method expression at runtime.  
+ * {@link Condition} that resolves an UEL expression at runtime.  
  * 
  * @author Joram Barrez
+ * @author Frederik Heremans
  */
-public class UelMethodExpressionCondition implements Condition {
+public class UelExpressionCondition implements Condition {
   
-  protected ActivitiMethodExpression methodExpression;
+  protected Expression expression;
   
-  public UelMethodExpressionCondition(ActivitiMethodExpression methodExpression) {
-    this.methodExpression = methodExpression;
+  public UelExpressionCondition(Expression expression) {
+    this.expression = expression;
   }
 
   public boolean evaluate(DelegateExecution execution) {
-    Object result = methodExpression.invoke((ExecutionImpl)execution);
+    Object result = expression.getValue(execution);
     
     if (result==null) {
       throw new ActivitiException("condition expression returns null");

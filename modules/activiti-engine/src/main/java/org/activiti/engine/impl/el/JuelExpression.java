@@ -10,10 +10,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.activiti.engine.impl.el;
 
 import org.activiti.engine.ActivitiException;
 import org.activiti.javax.el.ELContext;
+import org.activiti.javax.el.ELException;
+import org.activiti.javax.el.MethodNotFoundException;
 import org.activiti.javax.el.PropertyNotFoundException;
 import org.activiti.javax.el.ValueExpression;
 import org.activiti.pvm.delegate.DelegateExecution;
@@ -21,14 +24,16 @@ import org.activiti.pvm.impl.runtime.ExecutionImpl;
 
 
 /**
- * @author Tom Baeyens
+ * Expression implementation backed by a JUEL {@link ValueExpression}.
+ * 
+ * @author Frederik Heremans
  */
-public class ActivitiValueExpression {
+public class JuelExpression implements Expression {
 
-  protected ValueExpression valueExpression;
-  protected ExpressionManager expressionManager;
-
-  public ActivitiValueExpression(ValueExpression valueExpression, ExpressionManager expressionManager) {
+  private ValueExpression valueExpression;
+  private ExpressionManager expressionManager;
+  
+  public JuelExpression(ValueExpression valueExpression, ExpressionManager expressionManager) {
     this.valueExpression = valueExpression;
     this.expressionManager = expressionManager;
   }
@@ -37,8 +42,12 @@ public class ActivitiValueExpression {
     ELContext elContext = expressionManager.getElContext((ExecutionImpl) execution);
     try {
       return valueExpression.getValue(elContext);
-    } catch (PropertyNotFoundException e) {
-      throw new ActivitiException("Unknown property used in expression", e);
+    } catch (PropertyNotFoundException pnfe) {
+      throw new ActivitiException("Unknown property used in expression", pnfe);
+    } catch (MethodNotFoundException mnfe) {
+      throw new ActivitiException("Unknown method used in expression", mnfe);
+    } catch(ELException ele) {
+      throw new ActivitiException("Error while evalutaing expression", ele);
     }
   }
 
@@ -54,4 +63,5 @@ public class ActivitiValueExpression {
     }
     return super.toString();
   }
+
 }

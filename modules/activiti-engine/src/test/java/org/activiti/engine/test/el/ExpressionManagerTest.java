@@ -31,31 +31,6 @@ public class ExpressionManagerTest extends ActivitiInternalTestCase {
   protected void setUp() throws Exception {
     super.setUp();
   }
-
-
-  @Deployment
-  public void testResolveUserUsingMethodExpressionOnValueExpressionField() {
-    // This test will check that, even when we use a methodExpression in a field
-    // where a value expression is expected, resolving the value still works.
-    // In this case, we sey the assignee in the processdefinition xml to
-    // ${userstring.substring(3,7)}
-    // which should result in a task that is assigned to user with id 'user'.
-    User user = identityService.newUser("user");
-    identityService.saveUser(user);
-
-    Map<String, Object> vars = new HashMap<String, Object>();
-    vars.put("userstring", "XXXuserXXX");
-
-    ProcessInstance pi = runtimeService.startProcessInstanceByKey("resolveUserProcess", vars);
-
-    // Assignee should be resolved to user, evaluating
-    // ${userstring.substring(3,7)}
-    Task task = taskService.createTaskQuery().assignee(user.getId()).singleResult();
-    assertNotNull(task);
-
-    runtimeService.deleteProcessInstance(pi.getId(), null);
-    identityService.deleteUser(user.getId());
-  }
   
   @Deployment
   public void testMethodExpressions() {

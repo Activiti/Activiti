@@ -23,7 +23,7 @@
     
     <userTask id="secondTask" >
       <extensionElements>
-        <activiti:listener activiti:methodExpr="${myPojo.myMethod(execution.eventName)}" activiti:eventName="end" />
+        <activiti:listener activiti:expression="${myPojo.myMethod(execution.eventName)}" activiti:eventName="end" />
       </extensionElements>
     </userTask>
     <sequenceFlow sourceRef="secondTask" targetRef="thirdTask" />

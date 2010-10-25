@@ -190,7 +190,7 @@ ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("Upda
         The first node in our process definition contains a <literal>serviceTask</literal> that will invoke the method <literal>setValue</literal> on <literal>entityToUpdate</literal>, which resolves to
         the JPA variable we set earlier when starting the process instance and will be loaded from the <literal>EntityManager</literal> associated with the current engine's context'.
         <programlisting>
-&lt;serviceTask id='theTask' name='updateJPAEntityTask' activiti:method-expr=&quot;${entityToUpdate.setValue('updatedValue')}&quot; /&gt;        
+&lt;serviceTask id='theTask' name='updateJPAEntityTask' activiti:expression=&quot;${entityToUpdate.setValue('updatedValue')}&quot; /&gt;        
         </programlisting>
       </para>
       <para>
@@ -236,7 +236,7 @@ assertEquals("updatedValue", ((FieldAccessJPAEntity)updatedEntity).getValue());
                 <listitem>
                   <para>Service task that creates a new LoanRequest, using the existing <literal>LoanRequestBean</literal> using variables received
                   when starting the process (e.g. could come from a start form). The created entity is stored as a variable, using <literal>activiti:result-variable-name</literal>
-                  which stored the method-expression result as a variable.
+                  which stores the expression result as a variable.
                   </para>
                 </listitem>
                 <listitem><para>UserTask that allows a manager to review the request and approve/disapprove, which is stored as a boolean variable <literal>approvedByManager</literal></para></listitem>
@@ -268,7 +268,7 @@ assertEquals("updatedValue", ((FieldAccessJPAEntity)updatedEntity).getValue());
     &lt;sequenceFlow id='flow1' sourceRef='theStart' targetRef='createLoanRequest' /&gt;
     
     &lt;serviceTask id='createLoanRequest' name='Create loan request' 
-      activiti:method-expr=&quot;${loanRequestBean.newLoanRequest(customerName, amount)}&quot; 
+      activiti:expression=&quot;${loanRequestBean.newLoanRequest(customerName, amount)}&quot; 
       activiti:result-variable-name=&quot;loanRequest&quot;/&gt;    
     &lt;sequenceFlow id='flow2' sourceRef='createLoanRequest' targetRef='approveTask' /&gt;
     
@@ -276,7 +276,7 @@ assertEquals("updatedValue", ((FieldAccessJPAEntity)updatedEntity).getValue());
     &lt;sequenceFlow id='flow3' sourceRef='approveTask' targetRef='approveOrDissaprove' /&gt;
     
     &lt;serviceTask id='approveOrDissaprove' name='Store decision' 
-      activiti:method-expr=&quot;${loanRequest.setApproved(approvedByManager)}&quot; /&gt;
+      activiti:expression=&quot;${loanRequest.setApproved(approvedByManager)}&quot; /&gt;
     &lt;sequenceFlow id='flow4' sourceRef='approveOrDissaprove' targetRef='exclusiveGw' /&gt;
     
     &lt;exclusiveGateway id=&quot;exclusiveGw&quot; name=&quot;Exclusive Gateway approval&quot; /&gt; 

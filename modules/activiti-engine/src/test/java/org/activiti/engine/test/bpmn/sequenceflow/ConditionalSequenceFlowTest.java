@@ -28,9 +28,9 @@ import org.activiti.engine.test.Deployment;
 public class ConditionalSequenceFlowTest extends ActivitiInternalTestCase {
   
   @Deployment
-  public void testUelValueExpression() {
+  public void testUelExpression() {
     Map<String, Object> variables = CollectionUtil.singletonMap("input", "right");
-    ProcessInstance pi = runtimeService.startProcessInstanceByKey("condSeqFlowUelValueExpr", variables);
+    ProcessInstance pi = runtimeService.startProcessInstanceByKey("condSeqFlowUelExpr", variables);
     
     Task task = taskService
       .createTaskQuery()

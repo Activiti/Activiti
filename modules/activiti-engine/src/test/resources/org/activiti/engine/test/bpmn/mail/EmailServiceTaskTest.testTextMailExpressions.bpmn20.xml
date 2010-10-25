@@ -12,16 +12,16 @@
     <serviceTask id="sendMail" activiti:type="mail">
       <extensionElements>
         <activiti:field activiti:name="from">
-          <activiti:valueExpr>${sender}</activiti:valueExpr>
+          <activiti:expression>${sender}</activiti:expression>
         </activiti:field>
         <activiti:field activiti:name="to">
-          <activiti:valueExpr>${recipient}</activiti:valueExpr>
+          <activiti:expression>${recipient}</activiti:expression>
         </activiti:field>
         <activiti:field activiti:name="subject">
-          <activiti:valueExpr>${subject}</activiti:valueExpr>
+          <activiti:expression>${subject}</activiti:expression>
         </activiti:field>
         <activiti:field activiti:name="text">
-          <activiti:valueExpr>Hello ${recipientName}, this is an e-mail</activiti:valueExpr>
+          <activiti:expression>Hello ${recipientName}, this is an e-mail</activiti:expression>
         </activiti:field>      
       </extensionElements>
     </serviceTask>

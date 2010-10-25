@@ -16,8 +16,7 @@ package org.activiti.engine.impl.bpmn;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.bpmn.BpmnJavaDelegation;
 import org.activiti.engine.impl.cfg.ProcessEngineConfiguration;
-import org.activiti.engine.impl.el.ActivitiMethodExpression;
-import org.activiti.engine.impl.el.ActivitiValueExpression;
+import org.activiti.engine.impl.el.Expression;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.pvm.delegate.DelegateExecution;
 import org.apache.commons.mail.Email;
@@ -31,13 +30,13 @@ import org.apache.commons.mail.SimpleEmail;
  */
 public class MailActivityBehavior extends BpmnJavaDelegation {
 
-  private Object to;
-  private Object from;
-  private Object cc;
-  private Object bcc;
-  private Object subject;
-  private Object text;
-  private Object html;
+  private Expression to;
+  private Expression from;
+  private Expression cc;
+  private Expression bcc;
+  private Expression subject;
+  private Expression text;
+  private Expression html;
 
   public void execute(DelegateExecution execution) {
     String toStr = getStringFromField(to, execution);
@@ -188,29 +187,14 @@ public class MailActivityBehavior extends BpmnJavaDelegation {
     return null;
   }
 
-  protected String getStringFromField(Object fieldValue, DelegateExecution execution) {
-    // TODO: Move to shared location maybe?? Boiler-plate! or wrap in dedicated
-    // model to allow field
-    // injection to be transparent to user?
-    String result = null;
-    if (fieldValue instanceof String) {
-      result = (String) fieldValue;
-    } else if (fieldValue instanceof ActivitiValueExpression) {
-      Object value = ((ActivitiValueExpression) fieldValue).getValue(execution);
-      if (value != null) {
-        result = value.toString();
+  protected String getStringFromField(Expression expression, DelegateExecution execution) {
+    if(expression != null) {
+      Object value = expression.getValue(execution);
+      if(value != null) {
+        return value.toString();
       }
-    } else if (fieldValue instanceof ActivitiValueExpression) {
-      Object methodResult = ((ActivitiMethodExpression) fieldValue).invoke(execution);
-      if (methodResult != null) {
-        result = methodResult.toString();
-      }
-    } else if (fieldValue != null) {
-      // For non-null objects use toString
-      result = fieldValue.toString();
     }
-    
-    return result;
+    return null;
   }
 
 }

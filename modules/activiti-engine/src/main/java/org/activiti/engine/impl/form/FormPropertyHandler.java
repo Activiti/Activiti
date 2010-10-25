@@ -17,7 +17,7 @@ import java.util.Map;
 
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.form.FormProperty;
-import org.activiti.engine.impl.el.ActivitiValueExpression;
+import org.activiti.engine.impl.el.Expression;
 import org.activiti.engine.impl.runtime.ExecutionEntity;
 
 
@@ -33,7 +33,7 @@ public class FormPropertyHandler {
   protected boolean isWritable;
   protected boolean isRequired;
   protected String variableName;
-  protected ActivitiValueExpression variableExpression;
+  protected Expression variableExpression;
   
   public FormProperty createFormProperty(ExecutionEntity execution) {
     FormPropertyImpl formProperty = new FormPropertyImpl(this);
@@ -137,11 +137,11 @@ public class FormPropertyHandler {
     this.variableName = variableName;
   }
   
-  public ActivitiValueExpression getVariableExpression() {
+  public Expression getVariableExpression() {
     return variableExpression;
   }
   
-  public void setVariableExpression(ActivitiValueExpression variableExpression) {
+  public void setVariableExpression(Expression variableExpression) {
     this.variableExpression = variableExpression;
   }
   

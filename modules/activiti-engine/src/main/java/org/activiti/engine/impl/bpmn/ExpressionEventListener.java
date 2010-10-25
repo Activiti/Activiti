@@ -13,24 +13,25 @@
 
 package org.activiti.engine.impl.bpmn;
 
-import org.activiti.engine.impl.el.ActivitiMethodExpression;
+import org.activiti.engine.impl.el.Expression;
 import org.activiti.pvm.event.EventListener;
 import org.activiti.pvm.event.EventListenerExecution;
 
 /**
- * An {@link EventListener} that invokes a {@link ActivitiMethodExpression}.
+ * An {@link EventListener} that evaluates a {@link Expression} when notified.
  * 
  * @author Frederik Heremans
  */
-public class MethodExpressionEventListener implements EventListener {
+public class ExpressionEventListener implements EventListener {
 
-  protected ActivitiMethodExpression activitiMethodExpression;
+  protected Expression expression;
 
-  public MethodExpressionEventListener(ActivitiMethodExpression activitiMethodExpression) {
-    this.activitiMethodExpression = activitiMethodExpression;
+  public ExpressionEventListener(Expression expression) {
+    this.expression = expression;
   }
 
   public void notify(EventListenerExecution execution) throws Exception {
-    activitiMethodExpression.invoke(execution);
+    // Return value of expression is ignored
+    expression.getValue(execution);
   }
 }

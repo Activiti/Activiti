@@ -21,7 +21,7 @@ import java.util.Map;
 import org.activiti.engine.form.FormProperty;
 import org.activiti.engine.impl.bpmn.parser.BpmnParse;
 import org.activiti.engine.impl.bpmn.parser.BpmnParser;
-import org.activiti.engine.impl.el.ActivitiValueExpression;
+import org.activiti.engine.impl.el.Expression;
 import org.activiti.engine.impl.el.ExpressionManager;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.repository.DeploymentEntity;
@@ -96,10 +96,10 @@ public class DefaultFormHandler {
         String variableName = formPropertyElement.attribute("http://activiti.org/bpmn-extensions:variable");
         formPropertyHandler.setVariableName(variableName);
 
-        String valueExpressionText = formPropertyElement.attribute("http://activiti.org/bpmn-extensions:expression");
-        if (valueExpressionText!=null) {
-          ActivitiValueExpression valueExpression = expressionManager.createValueExpression(valueExpressionText);
-          formPropertyHandler.setVariableExpression(valueExpression);
+        String expressionText = formPropertyElement.attribute("http://activiti.org/bpmn-extensions:expression");
+        if (expressionText!=null) {
+          Expression expression = expressionManager.createExpression(expressionText);
+          formPropertyHandler.setVariableExpression(expression);
         }
 
         formPropertyHandlers.add(formPropertyHandler);

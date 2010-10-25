@@ -12,13 +12,13 @@
     
     <exclusiveGateway id="exclusiveGw" name="Exclusive Gateway" />
     <sequenceFlow id="flow2" sourceRef="exclusiveGw" targetRef="standardService">
-      <conditionExpression xsi:type="tFormalExpression" language="uel-value">
+      <conditionExpression xsi:type="tFormalExpression">
         <![CDATA[${order.price <= 250}]]>
       </conditionExpression>
     </sequenceFlow>
     <sequenceFlow id="flow3" sourceRef="exclusiveGw" targetRef="premiumService">
-      <conditionExpression xsi:type="tFormalExpression" language="uel-method">
-        <![CDATA[${order.isPremiumOrder}]]>
+      <conditionExpression xsi:type="tFormalExpression">
+        <![CDATA[${order.isPremiumOrder()}]]>
       </conditionExpression>
     </sequenceFlow>
     

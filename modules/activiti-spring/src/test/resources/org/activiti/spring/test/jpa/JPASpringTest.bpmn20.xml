@@ -10,7 +10,7 @@
     <sequenceFlow id='flow1' sourceRef='theStart' targetRef='createLoanRequest' />
     
     <serviceTask id='createLoanRequest' name='Create loan request' 
-      activiti:method-expr="${loanRequestBean.newLoanRequest(customerName, amount)}" 
+      activiti:expression="${loanRequestBean.newLoanRequest(customerName, amount)}" 
       activiti:result-variable-name="loanRequest"/>    
     <sequenceFlow id='flow2' sourceRef='createLoanRequest' targetRef='approveTask' />
     
@@ -18,7 +18,7 @@
     <sequenceFlow id='flow3' sourceRef='approveTask' targetRef='approveOrDissaprove' />
     
     <serviceTask id='approveOrDissaprove' name='Store decision' 
-      activiti:method-expr="${loanRequest.setApproved(approvedByManager)}" />
+      activiti:expression="${loanRequest.setApproved(approvedByManager)}" />
     <sequenceFlow id='flow4' sourceRef='approveOrDissaprove' targetRef='exclusiveGw' />
     
     <exclusiveGateway id="exclusiveGw" name="Exclusive Gateway approval" /> 

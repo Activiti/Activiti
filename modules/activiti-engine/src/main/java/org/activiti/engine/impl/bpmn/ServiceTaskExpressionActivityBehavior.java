@@ -13,27 +13,31 @@
 
 package org.activiti.engine.impl.bpmn;
 
-import org.activiti.engine.impl.el.ActivitiMethodExpression;
+import org.activiti.engine.impl.el.Expression;
 import org.activiti.pvm.activity.ActivityBehavior;
 import org.activiti.pvm.activity.ActivityExecution;
 
 
 /**
+ * ActivityBehavior that evaluates an expression when executed. Optionally, it sets the result 
+ * of the expression as a variable on the execution.
+ * 
  * @author Tom Baeyens
  * @author Christian Stettler
+ * @author Frederik Heremans
  */
-public class ServiceTaskMethodExpressionActivityBehavior extends AbstractBpmnActivity implements ActivityBehavior {
+public class ServiceTaskExpressionActivityBehavior extends AbstractBpmnActivity implements ActivityBehavior {
 
-  protected ActivitiMethodExpression methodExpression;
+  protected Expression expression;
   protected String resultVariableName;
 
-  public ServiceTaskMethodExpressionActivityBehavior(ActivitiMethodExpression methodExpression, String resultVariableName) {
-    this.methodExpression = methodExpression;
+  public ServiceTaskExpressionActivityBehavior(Expression expression, String resultVariableName) {
+    this.expression = expression;
     this.resultVariableName = resultVariableName;
   }
 
   public void execute(ActivityExecution execution) throws Exception {
-    Object value = methodExpression.invoke(execution);
+    Object value = expression.getValue(execution);
 
     if (resultVariableName != null) {
       execution.setVariable(resultVariableName, value);

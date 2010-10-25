@@ -13,25 +13,23 @@
 package org.activiti.examples.bpmn.servicetask;
 
 import org.activiti.engine.bpmn.BpmnJavaDelegation;
-import org.activiti.engine.impl.el.ActivitiMethodExpression;
-import org.activiti.engine.impl.el.ActivitiValueExpression;
+import org.activiti.engine.impl.el.Expression;
 import org.activiti.pvm.delegate.DelegateExecution;
 
 /**
  * Example BpmnJavaDelegation that uses an injected
- * {@link ActivitiMethodExpression} and {@link ActivitiValueExpression} in fields
- * 'text1' and 'text2'. While executing, 'var1' is set with the reversed result of the
+ * {@link Expression}s in fields 'text1' and 'text2'. While executing, 'var1' is set with the reversed result of the
  * method invocation and 'var2' will be the reversed result of the value expression.
  * 
  * @author Frederik Heremans
  */
 public class ReverseStringsFieldInjected extends BpmnJavaDelegation {
 
-  private ActivitiMethodExpression text1;
-  private ActivitiValueExpression text2;
+  private Expression text1;
+  private Expression text2;
 
   public void execute(DelegateExecution execution) {
-    String value1 = (String) text1.invoke(execution);
+    String value1 = (String) text1.getValue(execution);
     execution.setVariable("var1", new StringBuffer(value1).reverse().toString());
 
     String value2 = (String) text2.getValue(execution);

@@ -816,48 +816,31 @@ ProcessInstance processInstance = runtimeService.startProcessInstanceByXXX();</p
   &lt;/conditionExpression&gt;
 &lt;/sequenceFlow&gt;</programlisting>
         </para>
-        
-        <para>
-          Activiti supports two kind of expressions: UEL-value and UEL-method expressions 
-          (UEL stands for <emphasis>Unified Expression Language</emphasis> and is part of the EE6 specification, see
-          <ulink url="http://docs.sun.com/app/docs/doc/820-7627/gjddd?l=en&amp;a=view">
-          the EE6 specification</ulink> for detailed information)
-        </para>
-        
-        <para>
-          Specifying the type of expression, is done through the <emphasis role="bold">language</emphasis>
-          attribute on the <emphasis>expression</emphasis> element:
-  <programlisting>
-&lt;conditionExpression xsi:type=&quot;tFormalExpression&quot; <emphasis role="bold">language=&quot;uel-value | uel-method</emphasis>&quot;>
-  &lt;![CDATA[${order.isStandard}]]&gt;
-&lt;/conditionExpression&gt;</programlisting>
-        </para>
-        
-        <para>
+        <para> 
+          Currently conditionalExpressions can <emphasis role="bold">only be used with UEL</emphasis>, detailed info about these can be found in section <link linkend="apiExpressions">Expressions</link>.
+          The expression used should resolve to a boolean value, otherwise an exception is thrown while evaluating the condition.  
           <itemizedlist>
             <listitem>
               <para>
-                <emphasis role="bold">uel-value</emphasis>: references data of a process 
+                The example below references data of a process 
                 variable, in the typical JavaBean style through getters. 
               </para>
               <para>
-<programlisting>&lt;conditionExpression xsi:type=&quot;tFormalExpression&quot; <emphasis role="bold">language=&quot;uel-value&quot;</emphasis>&gt;
+<programlisting>&lt;conditionExpression xsi:type=&quot;tFormalExpression&quot;&gt;
   &lt;![CDATA[${order.price &gt; 100 &amp;&amp; order.price &lt; 250}]]&gt;
 &lt;/conditionExpression&gt;</programlisting>
               </para>
             </listitem>
              <listitem>
               <para>
-                <emphasis role="bold">uel-method</emphasis>: invokes a method that resolves to a boolean value.
-<programlisting>&lt;conditionExpression xsi:type=&quot;tFormalExpression&quot; <emphasis role="bold">language=&quot;uel-method&quot;</emphasis>&gt;
-  &lt;![CDATA[${order.isStandardOrder}]]&gt;
+                This example invokes a method that resolves to a boolean value.
+<programlisting>&lt;conditionExpression xsi:type=&quot;tFormalExpression&quot;&gt;
+  &lt;![CDATA[${order.isStandardOrder()}]]&gt;
 &lt;/conditionExpression&gt;</programlisting>                
               </para>
             </listitem>
           </itemizedlist>
-          Note that these expressions support resolving primitives (incl. comparing them), beans, lists, arrays and maps.
-          <emphasis role="bold">If no value for the language attribute is specified, by default
-          the expression is resolved as a value expression.</emphasis> 
+          
         </para>
         
         <para>
@@ -1464,9 +1447,9 @@ List&lt;Task&gt; tasks = taskService.createTaskQuery().assignee(&quot;kermit&quo
        </para>
        
        <itemizedlist>
-         <listitem><para>specifying a class that implements ActivityBehavior</para></listitem>
-         <listitem><para>method expression</para></listitem>
-         <listitem><para>value expression</para></listitem>
+         <listitem><para>Specifying a class that implements ActivityBehavior</para></listitem>
+         <listitem><para>Invoking a method expression</para></listitem>
+         <listitem><para>Evaluating a value expression</para></listitem>
        </itemizedlist>
        
        <para>
@@ -1482,11 +1465,11 @@ List&lt;Task&gt; tasks = taskService.createTaskQuery().assignee(&quot;kermit&quo
        
        <para>
          To specify a UEL method expression that should be evaluated, use 
-         attribute <emphasis role="bold">activiti:method-expr</emphasis>.
+         attribute <emphasis role="bold">activiti:expression</emphasis>.
 <programlisting>
 &lt;serviceTask id=&quot;javaService&quot; 
              name=&quot;My Java Service Task&quot; 
-             activiti:method-expr=&quot;#{printer.printMessage}&quot; /&gt;
+             activiti:expression=&quot;#{printer.printMessage()}&quot; /&gt;
 </programlisting>
          Method <literal>printMessage</literal> (without parameters) will 
          be called on the named object called <literal>printer</literal>.
@@ -1498,7 +1481,7 @@ List&lt;Task&gt; tasks = taskService.createTaskQuery().assignee(&quot;kermit&quo
        	<programlisting>
 &lt;serviceTask id=&quot;javaService&quot; 
              name=&quot;My Java Service Task&quot; 
-             activiti:method-expr=&quot;#{printer.printMessage(execution, myVar)}&quot; /&gt;
+             activiti:expression=&quot;#{printer.printMessage(execution, myVar)}&quot; /&gt;
 </programlisting>
 		Method <literal>printMessage</literal> will be called on the object named <literal>printer</literal>. The first
 		parameter passed is the <literal>DelegateExecution</literal>, which is available in the expression context by default
@@ -1508,13 +1491,13 @@ List&lt;Task&gt; tasks = taskService.createTaskQuery().assignee(&quot;kermit&quo
        
        <para>
          To specify a UEL value expression that should be evaluated, use 
-         attribute <emphasis role="bold">activiti:value-expr</emphasis>.
+         attribute <emphasis role="bold">activiti:expression</emphasis>.
 <programlisting>
 &lt;serviceTask id=&quot;javaService&quot; 
              name=&quot;My Java Service Task&quot; 
-             activiti:value-expr=&quot;#{split.ready}&quot; /&gt;
+             activiti:expression=&quot;#{split.ready}&quot; /&gt;
 </programlisting>
-         Method <literal>getReady</literal> (without parameters) will 
+         The getter method of property <literal>ready</literal>, <literal>getReady</literal> (without parameters), will 
          be called on the named bean called <literal>split</literal>.
          The named objects are resolved in the execution's process variables and 
          (if applicable) in the Spring context.
@@ -1580,15 +1563,14 @@ public class ToUppercase extends BpmnJavaDelegation {
         <para>
         It's possible to inject values into the fields of the delegated classes. The following types of injection are supported:
         <itemizedlist>
-          <listitem><para>Fixed string values.</para></listitem>
-          <listitem><para>Value expressions.</para></listitem>
-          <listitem><para>Method expressions.</para></listitem>
+          <listitem><para>Fixed string values</para></listitem>
+          <listitem><para>Expressions</para></listitem>
         </itemizedlist>
       </para>
       
         <para>
           The following code snippet shows how to inject a constant value into a field. Field injection
-          is supported when using the <emphasis>'class''</emphasis> attribute.
+          is supported when using the <emphasis>'class'</emphasis> attribute.
           Note that we need to <emphasis role="bold">declare a 'extensionElements' XML element
           before the actual field injection declarations</emphasis>, which is a requirement of
           the BPMN 2.0 XML Schema.
@@ -1601,6 +1583,10 @@ public class ToUppercase extends BpmnJavaDelegation {
   &lt;/extensionElements&gt;</emphasis>           
 &lt;/serviceTask&gt;        
           </programlisting>
+          The class <literal>ToUpperCaseFieldInjected</literal> has a field <literal>text</literal> which is of type <literal>org.activiti.engine.impl.el.Expression</literal>. 
+          When calling <literal>text.getValue(execution)</literal>, the configured string value <literal>Hello World</literal> will be returned.
+        </para>
+        <para>
           Alternatively, for longs texts (e.g. an inline e-mail) the <emphasis>'activiti:string'</emphasis>
           sub element can be used:
           <programlisting>
@@ -1621,7 +1607,7 @@ public class ToUppercase extends BpmnJavaDelegation {
         <para>
         To inject values that are dynamically resolved at runtime, expressions can be used. Those expressions can use process variables, or Spring defined beans (if Spring is used).
         As noted in <link linkend="bpmnJavaServiceTaskImplementation">Service Task Implementation</link>, an instance of the Java class is shared among all process-instances in a service task.
-        To have dynamic injection of values in fields, you can inject <literal>org.activiti.engine.impl.el.ActivitiValueExpression</literal>s and <literal>org.activiti.engine.impl.el.ActivitiMethodExpression</literal>s, 
+        To have dynamic injection of values in fields, you can inject value and method expressions in a <literal>org.activiti.engine.impl.el.Expression</literal> 
         which can be evaluated/invoked using the <literal>DelegateExecution</literal> passed in the <literal>execute</literal> method.
 <programlisting>
 &lt;serviceTask id=&quot;javaService&quot; name=&quot;Java service invocation&quot; 
@@ -1629,10 +1615,10 @@ public class ToUppercase extends BpmnJavaDelegation {
   
   &lt;extensionElements&gt;
     &lt;activiti:field activiti:name=&quot;text1&quot;&gt;
-      <emphasis role="bold">&lt;activiti:methodExpr&gt;${genderBean.getGenderString(gender)}&lt;/activiti:methodExpr&gt;</emphasis>
+      <emphasis role="bold">&lt;activiti:expression&gt;${genderBean.getGenderString(gender)}&lt;/activiti:expression&gt;</emphasis>
     &lt;/activiti:field&gt;
     &lt;activiti:field activiti:name=&quot;text2&quot;&gt;
-       <emphasis role="bold">&lt;activiti:valueExpr&gt;Hello ${gender == 'male' ? 'Mr.' : 'Mrs.'} ${name}&lt;/activiti:valueExpr&gt;</emphasis>
+       <emphasis role="bold">&lt;activiti:expression&gt;Hello ${gender == 'male' ? 'Mr.' : 'Mrs.'} ${name}&lt;/activiti:expression&gt;</emphasis>
     &lt;/activiti:field&gt;
   &lt;/ extensionElements&gt;
 &lt;/ serviceTask&gt;
@@ -1646,8 +1632,8 @@ public class ToUppercase extends BpmnJavaDelegation {
 
 public class ReverseStringsFieldInjected extends BpmnJavaDelegation {
 
-  private ActivitiMethodExpression text1;
-  private ActivitiValueExpression text2;
+  private Expression text1;
+  private Expression text2;
 
   public void execute(DelegateExecution execution) {
     String value1 = (String) text1.invoke(execution);
@@ -1662,8 +1648,8 @@ public class ReverseStringsFieldInjected extends BpmnJavaDelegation {
   <para>
   Alternatively, you can also set the expressions as an attribute instead of a child-element, to make the XML less verbose.
 <programlisting>
-&lt;activiti:field activiti:name=&quot;text1&quot; <emphasis role="bold">activiti:methodExpr=&quot;${genderBean.getGenderString(gender)}&quot;</emphasis> /&gt;
-&lt;activiti:field activiti:name=&quot;text1&quot; <emphasis role="bold">activiti:valueExpr=&quot;Hello ${gender == 'male' ? 'Mr.' : 'Mrs.'} ${name}&quot;</emphasis> /&gt;
+&lt;activiti:field activiti:name=&quot;text1&quot; <emphasis role="bold">activiti:expression=&quot;${genderBean.getGenderString(gender)}&quot;</emphasis> /&gt;
+&lt;activiti:field activiti:name=&quot;text1&quot; <emphasis role="bold">activiti:expression=&quot;Hello ${gender == 'male' ? 'Mr.' : 'Mrs.'} ${name}&quot;</emphasis> /&gt;
 </programlisting>
         </para>
         <para>
@@ -1679,13 +1665,13 @@ public class ReverseStringsFieldInjected extends BpmnJavaDelegation {
          <title>Service task results</title>
 
          <para>
-           The return value of a service execution (for method or value expression service tasks only) can be assigned to an already existing or to a new process variable by
+           The return value of a service execution (for service task using expression only) can be assigned to an already existing or to a new process variable by
            specifying the process variable name as a literal value for the <emphasis>'activiti:result-variable-name'</emphasis> attribute
            of a service task definition. Any existing value for a specific process variable will be overwritten by the result
            value of the service execution. When not specifying a result variable name, the service execution result value gets ignored.
 <programlisting>
 &lt;serviceTask id=&quot;aMethodExpressionServiceTask&quot;
-    activiti:method-expr=&quot;#{myService.doSomething()}&quot;
+    activiti:expression=&quot;#{myService.doSomething()}&quot;
     activiti:result-variable-name=&quot;myVar&quot;
 /&gt;
 </programlisting>
@@ -1702,7 +1688,7 @@ public class ReverseStringsFieldInjected extends BpmnJavaDelegation {
     
       <section id="eventListeners">
         <title>Event listeners</title>
-        <para>Event listeners allow you to execute external Java code or execute a method expression when certain events occur. The events that can be captured are:
+        <para>Event listeners allow you to execute external Java code or evaluate an expression when certain events occur. The events that can be captured are:
         <itemizedlist>
           <listitem><para>Start and ending of a process instance.</para></listitem>
           <listitem><para>Taking a transition.</para></listitem>
@@ -1730,7 +1716,7 @@ public class ReverseStringsFieldInjected extends BpmnJavaDelegation {
     
     &lt;userTask id=&quot;secondTask&quot; &gt;
       <emphasis role="bold">&lt;extensionElements&gt;
-        &lt;activiti:listener activiti:methodExpr=&quot;${myPojo.myMethod(execution.eventName)}&quot; activiti:eventName=&quot;end&quot; /&gt;
+        &lt;activiti:listener activiti:expression=&quot;${myPojo.myMethod(execution.eventName)}&quot; activiti:eventName=&quot;end&quot; /&gt;
       &lt;/extensionElements&gt;</emphasis>
     &lt;/userTask&gt;
     &lt;sequenceFlow sourceRef=&quot;secondTask&quot; targetRef=&quot;thirdTask&quot; /&gt;
@@ -1762,10 +1748,10 @@ public class ExampleEventListenerOne implements <emphasis role="bold">EventListe
         </para>
         <para>
           The last eventlistener is called when activity <literal>secondTask</literal> ends. Instead of using the <literal>class</literal> on the listener declaration,
-          a <literal>methodExpression</literal> is defined instead. 
+          a <literal>expression</literal> is defined instead which is evaluated/invoked when the event is fired. 
         </para>
         <programlisting>
-&lt;activiti:listener activiti:methodExpr=&quot;<emphasis role="bold">${myPojo.myMethod(execution.eventName)}</emphasis>&quot; activiti:eventName=&quot;end&quot; /&gt;</programlisting>
+&lt;activiti:listener activiti:expression=&quot;<emphasis role="bold">${myPojo.myMethod(execution.eventName)}</emphasis>&quot; activiti:eventName=&quot;end&quot; /&gt;</programlisting>
         <para>
           As with other expressions, execution variables are resolved and can be used. Because an eventlistener gets a special kind of execution, an <literal>EventListenerExecution</literal> that is, it's
           possible to pass the event-name to your methods using <literal>execution.eventName</literal>.
@@ -1785,7 +1771,7 @@ public class ExampleEventListenerOne implements <emphasis role="bold">EventListe
     <emphasis role="bold">&lt;extensionElements&gt;
       &lt;activiti:listener activiti:class=&quot;org.activiti.examples.bpmn.eventlistener.ExampleFieldInjectedEventListener&quot; activiti:eventName=&quot;start&quot;&gt;
         &lt;activiti:field activiti:name=&quot;fixedValue&quot; activiti:stringValue=&quot;Yes, I am &quot; /&gt;
-        &lt;activiti:field activiti:name=&quot;dynamicValue&quot; activiti:valueExpr=&quot;${myVar}&quot; /&gt;
+        &lt;activiti:field activiti:name=&quot;dynamicValue&quot; activiti:expression=&quot;${myVar}&quot; /&gt;
       &lt;/activiti:listener&gt;
     &lt;/extensionElements&gt;</emphasis>
     
@@ -1803,13 +1789,12 @@ public class ExampleEventListenerOne implements <emphasis role="bold">EventListe
           <programlisting>
 public class ExampleFieldInjectedEventListener implements EventListener {
 
-  <emphasis role="bold">private String fixedValue;
-  
-  private ActivitiValueExpression dynamicValue;</emphasis>
-  
-  @Override
+  <emphasis role="bold">private Expression fixedValue;
+
+  private Expression dynamicValue;</emphasis>
+
   public void notify(EventListenerExecution execution) throws Exception {
-    execution.setVariable(<emphasis role="bold">"var", fixedValue + dynamicValue.getValue(execution).toString()</emphasis>);
+    execution.setVariable("var", <emphasis role="bold">fixedValue.getValue(execution).toString()</emphasis> + <emphasis role="bold">dynamicValue.getValue(execution).toString()</emphasis>);
   }
 }
           </programlisting>
@@ -1828,7 +1813,7 @@ public void testEventListenerFieldInjection() {
   assertNotNull(varSetByListener);
   assertTrue(varSetByListener instanceof String);
     
-  // Result is a concatenation of fixed injected field and injected value-expression
+  // Result is a concatenation of fixed injected field and injected expression
   <emphasis role="bold">assertEquals("Yes, I am listening!", varSetByListener);</emphasis>
 }
         </programlisting>
@@ -1985,10 +1970,10 @@ public void testEventListenerFieldInjection() {
 &lt;serviceTask id=&quot;sendMail&quot; activiti:type=&quot;mail&quot;&gt;
   &lt;extensionElements&gt;
     &lt;activiti:field activiti:name=&quot;from&quot; activiti:stringValue=&quot;order-shipping@thecompany.com&quot; /&gt;
-    &lt;activiti:field activiti:name=&quot;to&quot; activiti:valueExpr=&quot;${recipient}&quot; /&gt;
-    &lt;activiti:field activiti:name=&quot;subject&quot; activiti:valueExpr=&quot;Your order ${orderId} has been shipped&quot; /&gt;
+    &lt;activiti:field activiti:name=&quot;to&quot; activiti:expression=&quot;${recipient}&quot; /&gt;
+    &lt;activiti:field activiti:name=&quot;subject&quot; activiti:expression=&quot;Your order ${orderId} has been shipped&quot; /&gt;
     &lt;activiti:field activiti:name=&quot;html&quot;&gt;
-      &lt;activiti:valueExpr&gt;
+      &lt;activiti:expression&gt;
         &lt;![CDATA[
           &lt;html&gt;
             &lt;body&gt;
@@ -2002,7 +1987,7 @@ public void testEventListenerFieldInjection() {
             &lt;/body&gt;
           &lt;/html&gt;
         ]]&gt;
-      &lt;/activiti:valueExpr&gt;
+      &lt;/activiti:expression&gt;
     &lt;/activiti:field&gt;      
   &lt;/extensionElements&gt;
 &lt;/serviceTask&gt;		      

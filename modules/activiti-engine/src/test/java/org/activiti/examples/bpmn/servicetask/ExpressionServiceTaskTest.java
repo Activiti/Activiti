@@ -10,7 +10,7 @@ import org.activiti.engine.test.Deployment;
 /**
  * @author Christian Stettler
  */
-public class ValueExpressionServiceTaskTest extends ActivitiInternalTestCase {
+public class ExpressionServiceTaskTest extends ActivitiInternalTestCase {
 
   @Deployment
   public void testSetServiceResultToProcessVariables() {

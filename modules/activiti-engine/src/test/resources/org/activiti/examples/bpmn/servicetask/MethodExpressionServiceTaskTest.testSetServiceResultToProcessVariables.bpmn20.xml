@@ -17,13 +17,13 @@
 
         <serviceTask id="methodExpressionServiceWithResultVariableNameSet"
                      activiti:result-variable-name="result"
-                     activiti:method-expr="#{okReturningService.invoke}"/>
+                     activiti:expression="#{okReturningService.invoke()}"/>
 
         <sequenceFlow sourceRef="methodExpressionServiceWithResultVariableNameSet"
                       targetRef="methodExpressionServiceWithoutResultVariableNameSet"/>
 
         <serviceTask id="methodExpressionServiceWithoutResultVariableNameSet"
-                     activiti:method-expr="#{okReturningService.invoke}"/>
+                     activiti:expression="#{okReturningService.invoke()}"/>
 
         <sequenceFlow sourceRef="methodExpressionServiceWithoutResultVariableNameSet"
                       targetRef="waitState"/>

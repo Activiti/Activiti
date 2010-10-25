@@ -5,18 +5,18 @@
   xmlns:activiti="http://activiti.org/bpmn-extensions"
   targetNamespace="http://www.activiti.org/bpmn2.0">
   
-  <process id="condSeqFlowUelValueExpr">
+  <process id="condSeqFlowUelExpr">
   
     <startEvent id="theStart" />
     
     <sequenceFlow id="flow1" sourceRef="theStart" targetRef="task1">
-      <conditionExpression xsi:type="tFormalExpression" language="uel-value">
+      <conditionExpression xsi:type="tFormalExpression">
          <![CDATA[${input == 'left'}]]>
       </conditionExpression>
     </sequenceFlow>
     
     <sequenceFlow id="flow2" sourceRef="theStart" targetRef="task2">
-      <conditionExpression xsi:type="tFormalExpression" language="uel-value">
+      <conditionExpression xsi:type="tFormalExpression">
          <![CDATA[${input == 'right'}]]>
       </conditionExpression>
     </sequenceFlow>

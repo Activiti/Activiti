@@ -26,7 +26,7 @@ import org.activiti.javax.el.VariableMapper;
  * of the {@link ELContext} interface is required by the {@link ExpressionFactory}
  * when create value- and methodexpressions.
  * 
- * @see ExpressionManager#createValueExpression(String)
+ * @see ExpressionManager#createExpression(String)
  * @see ExpressionManager#createMethodExpression(String)
  * 
  * @author Joram Barrez

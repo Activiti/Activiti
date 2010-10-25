@@ -206,5 +206,45 @@ activityInstance.signal(null, null);
 activityInstance = processInstance.findExecution("c");
 assertNotNull(activityInstance);</programlisting>
   </section>
+  
+  
+  <section id="apiExpressions">
+    <title>Expressions</title>
+    <para>Activiti uses UEL for expression-resolving. UEL stands for <emphasis>Unified Expression Language</emphasis> and is part of the EE6 specification, see
+          <ulink url="http://docs.sun.com/app/docs/doc/820-7627/gjddd?l=en&amp;a=view">
+          the EE6 specification</ulink> for detailed information). To support all features of latest UEL spec on ALL environements, we use a modified version of JUEL.
+    </para>
+    <para>
+      Expressions can be used in for example <link linkend="bpmnJavaServiceTaskXML">Java Service tasks</link>, <link linkend="eventListeners">Event Listeners</link> and  <link linkend="sequenceFlowXml">Conditional sequence flows</link>.
+      Although there are 2 types of expressions, value-expression and method-expression, activiti makes abstraction of this and they can both be used where an <literal>expression</literal> is needed.
+      <itemizedlist>
+        <listitem>
+          <para>
+            <emphasis role="bold">Value expression</emphasis>: resolves to a value. By default, all process variables are available to use. Also all spring-beans (if using spring) are available to use in expressions. 
+            On top of that, the <literal>DelegateExecution</literal> is also available in the expression-context and can be accessed using the name <literal>execution</literal>. 
+            <emphasis role="bold">Since the execution is exposed as <literal>execution</literal>, all variables and spring-beans with name <literal>execution</literal> are hidden and cannot be used in an expression.</emphasis>
+            Some examples:
+<programlisting>${myVar}
+${myBean.myProperty}</programlisting>
+          </para>
+        </listitem>
+        <listitem>
+        <para>
+            <emphasis role="bold">Method expression</emphasis>: invokes a method, with or without parameters. <emphasis role="bold">When invoking a method without parameters, be sure to add empty parentheses after the method-name.</emphasis>
+            The passed parameters can be literal values or expressions that are resolved themselves. Examples:
+<programlisting>${printer.print()}
+${myBean.addNewOrder('orderName')}
+${myBean.doSomething(myVar, execution)}
+</programlisting>
+          </para>
+        </listitem>
+      </itemizedlist>
+      Note that these expressions support resolving primitives (incl. comparing them), beans, lists, arrays and maps.
+    </para>
+    <para>
+      For more concrete usage and examples, check out <link linkend="springExpressions">Expressions in Spring</link>, <link linkend="bpmnJavaServiceTaskXML">Java Service tasks</link>, <link linkend="eventListeners">Event Listeners</link> or <link linkend="sequenceFlowXml">Conditional sequence flows</link>.
+    </para>
+    
+  </section>
 
 </chapter>

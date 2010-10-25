@@ -84,7 +84,7 @@ public class EventListenerTest extends ActivitiInternalTestCase {
     assertNotNull(varSetByListener);
     assertTrue(varSetByListener instanceof String);
     
-    // Result is a concatenation of fixed injected field and injected value-expression
+    // Result is a concatenation of fixed injected field and injected expression
     assertEquals("Yes, I am listening!", varSetByListener);
   }
 }

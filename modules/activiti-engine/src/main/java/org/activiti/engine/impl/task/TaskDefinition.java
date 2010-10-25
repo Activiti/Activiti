@@ -15,7 +15,7 @@ package org.activiti.engine.impl.task;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.activiti.engine.impl.el.ActivitiValueExpression;
+import org.activiti.engine.impl.el.Expression;
 import org.activiti.engine.impl.form.TaskFormHandler;
 
 /**
@@ -27,11 +27,11 @@ public class TaskDefinition {
 
   protected String key;
   // assignment fields
-  protected ActivitiValueExpression nameValueExpression;
-  protected ActivitiValueExpression descriptionValueExpression;
-  protected ActivitiValueExpression assigneeValueExpression;
-  protected Set<ActivitiValueExpression> candidateUserIdValueExpressions = new HashSet<ActivitiValueExpression>();
-  protected Set<ActivitiValueExpression> candidateGroupIdValueExpressions = new HashSet<ActivitiValueExpression>();
+  protected Expression nameExpression;
+  protected Expression descriptionExpression;
+  protected Expression assigneeExpression;
+  protected Set<Expression> candidateUserIdExpressions = new HashSet<Expression>();
+  protected Set<Expression> candidateGroupIdExpressions = new HashSet<Expression>();
   // form fields
   protected TaskFormHandler taskFormHandler;
   
@@ -41,44 +41,44 @@ public class TaskDefinition {
 
   // getters and setters //////////////////////////////////////////////////////
 
-  public ActivitiValueExpression getNameValueExpression() {
-    return nameValueExpression;
+  public Expression getNameExpression() {
+    return nameExpression;
   }
 
-  public void setNameValueExpression(ActivitiValueExpression nameValueExpression) {
-    this.nameValueExpression = nameValueExpression;
+  public void setNameExpression(Expression nameExpression) {
+    this.nameExpression = nameExpression;
   }
 
-  public ActivitiValueExpression getDescriptionValueExpression() {
-    return descriptionValueExpression;
+  public Expression getDescriptionExpression() {
+    return descriptionExpression;
   }
 
-  public void setDescriptionValueExpression(ActivitiValueExpression descriptionValueExpression) {
-    this.descriptionValueExpression = descriptionValueExpression;
+  public void setDescriptionExpression(Expression descriptionExpression) {
+    this.descriptionExpression = descriptionExpression;
   }
 
-  public ActivitiValueExpression getAssigneeValueExpression() {
-    return assigneeValueExpression;
+  public Expression getAssigneeExpression() {
+    return assigneeExpression;
   }
 
-  public void setAssigneeValueExpression(ActivitiValueExpression assigneeValueExpression) {
-    this.assigneeValueExpression = assigneeValueExpression;
+  public void setAssigneeExpression(Expression assigneeExpression) {
+    this.assigneeExpression = assigneeExpression;
   }
 
-  public Set<ActivitiValueExpression> getCandidateUserIdValueExpressions() {
-    return candidateUserIdValueExpressions;
+  public Set<Expression> getCandidateUserIdExpressions() {
+    return candidateUserIdExpressions;
   }
 
-  public void addCandidateUserIdValueExpression(ActivitiValueExpression userId) {
-    candidateUserIdValueExpressions.add(userId);
+  public void addCandidateUserIdExpression(Expression userId) {
+    candidateUserIdExpressions.add(userId);
   }
 
-  public Set<ActivitiValueExpression> getCandidateGroupIdValueExpressions() {
-    return candidateGroupIdValueExpressions;
+  public Set<Expression> getCandidateGroupIdExpressions() {
+    return candidateGroupIdExpressions;
   }
 
-  public void addCandidateGroupIdValueExpression(ActivitiValueExpression groupId) {
-    candidateGroupIdValueExpressions.add(groupId);
+  public void addCandidateGroupIdExpression(Expression groupId) {
+    candidateGroupIdExpressions.add(groupId);
   }
 
   public TaskFormHandler getTaskFormHandler() {

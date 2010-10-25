@@ -9,7 +9,7 @@
   
     <startEvent id='theStart' />
     <sequenceFlow id='flow1' sourceRef='theStart' targetRef='servicetask1' />
-    <serviceTask id='servicetask1' name='ServiceTask 1' activiti:method-expr="${myVar.testMethod(execution)}" />    
+    <serviceTask id='servicetask1' name='ServiceTask 1' activiti:expression="${myVar.testMethod(execution)}" />    
     <sequenceFlow id='flow2' sourceRef='servicetask1' targetRef='userTask' />
     <userTask id="userTask" />
     <sequenceFlow id='flow3' sourceRef='userTask' targetRef='theEnd' />

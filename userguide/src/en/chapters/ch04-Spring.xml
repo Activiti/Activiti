@@ -143,9 +143,9 @@ userBean.hello();</programlisting>
 }</programlisting>
   </section>
 
-  <section>
+  <section id="springExpressions">
     <title>Expressions</title>
-    <para>When using the ProcessEngineFactoryBean, by default, all expressions in the BPMN processes
+    <para>When using the ProcessEngineFactoryBean, by default, all <link linkend="apiExpressions">expressions</link> in the BPMN processes
     will also 'see' the Spring beans.  For example, the SpringTransactionIntegrationTest <literal>hello.bpmn20.xml</literal>
     shows how a method on a Spring bean can be invoked using a UEL method expression:
     </para>
@@ -157,7 +157,7 @@ userBean.hello();</programlisting>
     &lt;sequenceFlow id=&quot;flow1&quot; sourceRef=&quot;start&quot; targetRef=&quot;print&quot; /&gt;
     
     &lt;serviceTask id=&quot;print&quot; 
-                 <emphasis role="bold">activiti:method-expr=&quot;#{printer.printMessage}&quot;</emphasis> /&gt;
+                 <emphasis role="bold">activiti:expression=&quot;#{printer.printMessage()}&quot;</emphasis> /&gt;
     &lt;sequenceFlow id=&quot;flow2&quot; sourceRef=&quot;print&quot; targetRef=&quot;end&quot; /&gt;
     
     &lt;endEvent id=&quot;end&quot; /&gt;

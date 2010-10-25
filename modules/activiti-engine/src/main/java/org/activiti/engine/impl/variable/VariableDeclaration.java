@@ -15,7 +15,7 @@ package org.activiti.engine.impl.variable;
 import java.io.Serializable;
 
 import org.activiti.engine.ActivitiException;
-import org.activiti.engine.impl.el.ActivitiValueExpression;
+import org.activiti.engine.impl.el.Expression;
 import org.activiti.pvm.impl.runtime.ExecutionImpl;
 
 
@@ -29,11 +29,11 @@ public class VariableDeclaration implements Serializable {
   protected String name;
   protected String type;
   protected String sourceVariableName;
-  protected ActivitiValueExpression sourceValueExpression;
+  protected Expression sourceExpression;
   protected String destinationVariableName;
-  protected ActivitiValueExpression destinationValueExpression;
+  protected Expression destinationExpression;
   protected String link;
-  protected ActivitiValueExpression linkValueExpression;
+  protected Expression linkExpression;
   
 
   public void initialize(ExecutionImpl innerScopeInstance, ExecutionImpl outerScopeInstance) {
@@ -48,8 +48,8 @@ public class VariableDeclaration implements Serializable {
       }
     }
     
-    if (sourceValueExpression!=null) {
-      Object value = sourceValueExpression.getValue(outerScopeInstance);
+    if (sourceExpression!=null) {
+      Object value = sourceExpression.getValue(outerScopeInstance);
       innerScopeInstance.setVariable(destinationVariableName, value);
     }
     
@@ -63,8 +63,8 @@ public class VariableDeclaration implements Serializable {
       }
     }
 
-    if (linkValueExpression!=null) {
-      Object value = sourceValueExpression.getValue(outerScopeInstance);
+    if (linkExpression!=null) {
+      Object value = sourceExpression.getValue(outerScopeInstance);
       innerScopeInstance.setVariable(destinationVariableName, value);
     }
 
@@ -81,8 +81,8 @@ public class VariableDeclaration implements Serializable {
       }
     }
 
-    if (destinationValueExpression!=null) {
-      Object value = destinationValueExpression.getValue(innerScopeInstance);
+    if (destinationExpression!=null) {
+      Object value = destinationExpression.getValue(innerScopeInstance);
       outerScopeInstance.setVariable(destinationVariableName, value);
     }
     
@@ -95,8 +95,8 @@ public class VariableDeclaration implements Serializable {
       }
     }
 
-    if (linkValueExpression!=null) {
-      Object value = sourceValueExpression.getValue(innerScopeInstance);
+    if (linkExpression!=null) {
+      Object value = sourceExpression.getValue(innerScopeInstance);
       outerScopeInstance.setVariable(destinationVariableName, value);
     }
   }
@@ -135,12 +135,12 @@ public class VariableDeclaration implements Serializable {
     this.sourceVariableName = sourceVariableName;
   }
 
-  public ActivitiValueExpression getSourceValueExpression() {
-    return sourceValueExpression;
+  public Expression getSourceExpression() {
+    return sourceExpression;
   }
   
-  public void setSourceValueExpression(ActivitiValueExpression sourceValueExpression) {
-    this.sourceValueExpression = sourceValueExpression;
+  public void setSourceExpression(Expression sourceExpression) {
+    this.sourceExpression = sourceExpression;
   }
   
   public String getDestinationVariableName() {
@@ -151,12 +151,12 @@ public class VariableDeclaration implements Serializable {
     this.destinationVariableName = destinationVariableName;
   }
 
-  public ActivitiValueExpression getDestinationValueExpression() {
-    return destinationValueExpression;
+  public Expression getDestinationExpression() {
+    return destinationExpression;
   }
   
-  public void setDestinationValueExpression(ActivitiValueExpression destinationValueExpression) {
-    this.destinationValueExpression = destinationValueExpression;
+  public void setDestinationExpression(Expression destinationExpression) {
+    this.destinationExpression = destinationExpression;
   }
   
   public String getLink() {
@@ -167,11 +167,11 @@ public class VariableDeclaration implements Serializable {
     this.link = link;
   }
   
-  public ActivitiValueExpression getLinkValueExpression() {
-    return linkValueExpression;
+  public Expression getLinkExpression() {
+    return linkExpression;
   }
 
-  public void setLinkValueExpression(ActivitiValueExpression linkValueExpression) {
-    this.linkValueExpression = linkValueExpression;
+  public void setLinkExpression(Expression linkExpression) {
+    this.linkExpression = linkExpression;
   }
 }

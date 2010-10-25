@@ -12,8 +12,6 @@
  */
 package org.activiti.engine.impl.el;
 
-import java.util.regex.Pattern;
-
 import org.activiti.el.juel.ExpressionFactoryImpl;
 import org.activiti.engine.impl.runtime.ExecutionEntity;
 import org.activiti.javax.el.ArrayELResolver;
@@ -24,7 +22,6 @@ import org.activiti.javax.el.ELResolver;
 import org.activiti.javax.el.ExpressionFactory;
 import org.activiti.javax.el.ListELResolver;
 import org.activiti.javax.el.MapELResolver;
-import org.activiti.javax.el.MethodExpression;
 import org.activiti.javax.el.ValueExpression;
 import org.activiti.pvm.impl.runtime.ExecutionImpl;
 
@@ -44,14 +41,10 @@ import org.activiti.pvm.impl.runtime.ExecutionImpl;
  * 
  * @author Tom Baeyens
  * @author Dave Syer
+ * @author Frederik Heremans
  */
 public class ExpressionManager {
 
-  public static final String UEL_VALUE = "uel-value";
-  public static final String UEL_METHOD = "uel-method";
-  public static final String DEFAULT_EXPRESSION_LANGUAGE = UEL_VALUE;
-  
-  private static final Pattern METHOD_PARAMS_PATTERN= Pattern.compile("\\{.*(\\.|\\w)+((\\[|\\().+(\\)|\\])).*\\}");
 
   protected ExpressionFactory expressionFactory;
   // Default implementation (does nothing)
@@ -60,26 +53,15 @@ public class ExpressionManager {
   
   public ExpressionManager() {
     // Use the ExpressionFactoryImpl in activiti-juel, with parametrised method expressions
-    // enalbed
+    // enabled
     expressionFactory = new ExpressionFactoryImpl();
   }
 
-  public ActivitiValueExpression createValueExpression(String expression) {
+ 
+  
+  public Expression createExpression(String expression) {
     ValueExpression valueExpression = expressionFactory.createValueExpression(parsingElContext, expression, Object.class);
-    return new ActivitiValueExpression(valueExpression, this);
-  }
-
-  public ActivitiMethodExpression createMethodExpression(String expression) {
-    // If the method is invoked using parameters in the expression, we should use a valueExpression instead
-    if(METHOD_PARAMS_PATTERN.matcher(expression).find()) {
-      ValueExpression valueExpression = expressionFactory.createValueExpression(parsingElContext, expression, Object.class);
-      return new ActivitiMethodExpression(valueExpression, this);
-    } else {
-      // Returntype: passing in a value of null indicates the caller does not care
-      // what the return type is, and the check is disabled.
-      MethodExpression methodExpression = expressionFactory.createMethodExpression(parsingElContext, expression, null, new Class< ? >[] {});
-      return new ActivitiMethodExpression(methodExpression, this);
-    }
+    return new JuelExpression(valueExpression, this);
   }
 
   public void setExpressionFactory(ExpressionFactory expressionFactory) {
