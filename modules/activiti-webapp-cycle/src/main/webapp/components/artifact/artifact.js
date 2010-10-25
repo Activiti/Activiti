@@ -26,12 +26,14 @@
     this.onEvent(Activiti.event.clickFormEventButton, this.onClickFormEventButton);
     
     this._tabView = {};
+    this._connectorId = "";
     this._repositoryNodeId = "";
     this._isRepositoryArtifact = false;
     this._name = "";
     this._activeTabIndex = 0;
 
     this._fileChooserDialog = {};
+    this._linksDataTable = {};
 
     return this;
   };
@@ -130,8 +132,6 @@
         this._tabView.addTab(tab);
       }
 
-      // ------------------------------ Links Tab --
-
       // Add artifact links tab
 			var linksTab = new YAHOO.widget.Tab({ 
 				label: "Links", 
@@ -144,8 +144,6 @@
 			};
 
 			this._tabView.addTab(linksTab);
-
-      // -------------------------- End Links Tab --
 
       this._tabView.appendTo('artifact-div');
 
@@ -244,7 +242,6 @@
           tabContent = '<div class="artifact-text-plain"><pre id="' + responseJson.contentRepresentationId + '">' + responseJson.content + '</pre></div>';
         }
         tab.set('content', tabContent);
-        //{ "renderInfo": "IMAGE", "contentRepresentationId": "PNG", "contentType": "image\/png", "imageUrl": "\/activiti-cycle\/proxy\/activiti-rest-endpoint\/content?artifactId=%2FDemo%2Fminutes%2FInitialMindmap.mm&contentRepresentationId=PNG" } 
       }
       catch (e) {
           alert("Invalid response for tab data");
@@ -255,7 +252,7 @@
       try{
         var responseJson = YAHOO.lang.JSON.parse(response.responseText);
 
-        tab.set('content', '<div id="linksTab"/>');
+        tab.set('content', '<div id="linksTable"></div><span id="addLink" class="yui-button"><span class="first-child"><button type="button">Add link</button></span></span>');
 
         var linksColumnDefs = [
             {key:"Name", sortable:true},
@@ -274,12 +271,16 @@
             fields: ["Name","Revision","Type"]
           };
 
-        var linksDataTable = new YAHOO.widget.DataTable("linksTab", linksColumnDefs, linksDataSource, {scrollable:true});
+        this._linksDataTable = new YAHOO.widget.DataTable("linksTable", linksColumnDefs, linksDataSource, {scrollable:true});
 
         var linkElements = Dom.getElementsByClassName("openArtifactLink", "a");
         for (var i = 0; i < linkElements.length; i++) {
 				  YAHOO.util.Event.addListener(linkElements[i], "click", this.onArtifactLinkClick, this, true);
         }
+
+        var addLinkButton = new YAHOO.widget.Button("addLink", { label:"Add link", id:"addLinkButton" });
+        
+        addLinkButton.addListener("click", this.onClickAddLinkButton, null, this);
       }
       catch (e) {
           alert("Invalid response for tab data");
@@ -326,7 +327,29 @@
     
     onClickFormEventButton: function Artifact_onClickFormEventButton(event, args)
     {
-      return new Activiti.component.FileChooserDialog(this.id, args[1].value.callback);
+      return new Activiti.component.FileChooserDialog(this.id, args[1].value.callback, false, null, true, false);
+    },
+    
+    onClickAddLinkButton: function Artifact_onClickAddLinkButton(event, args)
+    {
+      return new Activiti.component.FileChooserDialog(this.id, "onAddLinkSubmit", true, this, false, true);
+    },
+
+    onAddLinkSubmit: function Artifact_onAddLinkSubmit(obj) {
+      this.services.repositoryService.createArtifactLink({"connectorId": this._connectorId, "artifactId": this._repositoryNodeId, "targetConnectorId": obj.connectorId,"targetArtifactId": obj.nodeId});
+    },
+
+    /**
+     * This method is called when the service method createArtifactLink returns and reloads 
+     * the links-tab so the new row in the links-table becomes visible.
+     *
+     * @param args object that contains three attributes: config, json and serverResponse
+     */
+    onCreateArtifactLinkSuccess: function Artifact_onCreateArtifactLinkSuccess(args)
+    {
+      this._tabView.getTab(this._activeTabIndex).set( 'cacheData', false );
+      this._tabView.selectTab( this._activeTabIndex );
+      this._tabView.getTab(this._activeTabIndex).set( 'cacheData', true );
     }
 
   });

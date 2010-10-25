@@ -16,7 +16,7 @@
 	 * @return {Activiti.component.RepoTree} The new component.FileChooserDialog instance
 	 * @constructor
 	 */
-	Activiti.component.FileChooserDialog = function FileChooserDialog_constructor(htmlId, callbackFn)
+	Activiti.component.FileChooserDialog = function FileChooserDialog_constructor(htmlId, callbackFn, showFiles, scope, highlightFolders, highlightFiles)
   {
     Activiti.component.FileChooserDialog.superclass.constructor.call(this, "Activiti.component.FileChooserDialog", htmlId);
 
@@ -27,6 +27,10 @@
 		this._treeView = {};
 		this._currentNode = {};
 		this._callbackFn = callbackFn;
+		this._showFiles = showFiles;
+    this._scope = scope;
+    this._highlightFolders = highlightFolders;
+    this._highlightFiles = highlightFiles;
 
     return this;
   };
@@ -94,7 +98,16 @@
 			// instantiate the TreeView control
 	   	this._treeView = new YAHOO.widget.TreeView("fileChooserTree", treeNodesJson);
       this._treeView.singleNodeHighlight = true;
-      this._treeView.subscribe('clickEvent', this.onTreeNodeLabelClicked, this, true); 
+      this._treeView.subscribe('clickEvent', this.onTreeNodeLabelClicked, this, true);
+      
+      for(var nodeIndex in this._treeView._nodes) {
+        var node = this._treeView.getNodeByIndex(nodeIndex);
+        if(node.data.folder) {
+          node.enableHighlight = this._highlightFolders;
+        } else if (node.data.file) {
+          node.enableHighlight = this._highlightFiles;
+        }
+      }
 
 			// set the callback function to dynamically load child nodes
 			// set iconMode to 1 to use the leaf node icon when a node has no children. 
@@ -116,8 +129,38 @@
       var treeNodesJson = response.json;
 
 			for(var i = 0; i<treeNodesJson.length; i++) {
-			  if(treeNodesJson[i].folder) {
-			    var node = new YAHOO.widget.TextNode(treeNodesJson[i], obj[0], treeNodesJson[i].expanded);
+			  if( treeNodesJson[i].folder ) {
+			    var node = new YAHOO.widget.TextNode(treeNodesJson[i], obj[0], false);
+			    node.enableHighlight = this._highlightFolders;
+			  } else if( this._showFiles && treeNodesJson[i].file ) {
+			    var node = new YAHOO.widget.TextNode(treeNodesJson[i], obj[0], true);
+			    if(treeNodesJson[i].contentType) {
+            if(treeNodesJson[i].contentType === "image/png" || treeNodesJson[i].contentType === "image/gif" || treeNodesJson[i].contentType === "image/jpeg") {
+              node.labelStyle = "icon-img";
+            } else if(treeNodesJson[i].contentType === "application/xml") {
+              node.labelStyle = "icon-code-red";
+            } else if(treeNodesJson[i].contentType === "text/html") {
+              node.labelStyle = "icon-www";
+            } else if(treeNodesJson[i].contentType === "text/plain") {
+              node.labelStyle = "icon-txt";
+            } else if(treeNodesJson[i].contentType === "application/pdf") {
+              node.labelStyle = "icon-pdf";
+            } else if(treeNodesJson[i].contentType === "application/json;charset=UTF-8") {
+              node.labelStyle = "icon-code-blue";
+            } else if(treeNodesJson[i].contentType === "application/msword") {
+              node.labelStyle = "icon-doc";
+            } else if(treeNodesJson[i].contentType === "application/powerpoint") {
+              node.labelStyle = "icon-ppt";
+            } else if(treeNodesJson[i].contentType === "application/excel") {
+              node.labelStyle = "icon-xls";
+            } else if(treeNodesJson[i].contentType === "application/javascript") {
+              node.labelStyle = "icon-code-blue";
+            } else {
+              // Use white page as default icon for all other content types
+              node.labelStyle = "icon-blank";
+            }
+          }
+          node.enableHighlight = this._highlightFiles;
 			  }
 			}
 
@@ -153,7 +196,12 @@
 
     onSubmit: function FileChooserDialog_onSubmit() {
       if(this._currentNode.data && this._currentNode.data.connectorId && this._currentNode.data.artifactId && this._currentNode.label) {        
-        this._callbackFn({"connectorId": this._currentNode.data.connectorId, "nodeId": this._currentNode.data.artifactId, "nodeName": this._currentNode.label});
+        
+        if(this._scope) {
+          this._scope[this._callbackFn]({"connectorId": this._currentNode.data.connectorId, "nodeId": this._currentNode.data.artifactId, "nodeName": this._currentNode.label});
+        } else {
+          this._callbackFn({"connectorId": this._currentNode.data.connectorId, "nodeId": this._currentNode.data.artifactId, "nodeName": this._currentNode.label});
+        }
       } else {
         // TODO: handle error... should never happen due to validation, though...
       }

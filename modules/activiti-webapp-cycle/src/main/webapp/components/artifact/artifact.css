@@ -46,3 +46,8 @@
   background:url("/activiti-cycle/res/images/loading.gif") no-repeat scroll center center transparent;
   height:8em;
 }
+
+#artifact-div .yui-push-button {
+  margin-top: 10px;
+  margin-left: 1px;
+}

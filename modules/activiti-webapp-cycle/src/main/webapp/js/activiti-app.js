@@ -126,6 +126,27 @@
     executeArtifactFormURL: function RepositoryService_executeArtifactFormURL(connectorId, artifactId, artifactActionName)
     {
       return Activiti.service.REST_PROXY_URI_RELATIVE + "artifact-action?connectorId=" + encodeURIComponent(connectorId) + "&artifactId=" + encodeURIComponent(artifactId) + "&actionName=" + encodeURIComponent(artifactActionName);
+    },
+
+    /**
+     * Creates a new artifactLink by posting the provided artifactLinkLiteral parameter to the
+     * REST API. The 'artifactLinkLiteral' is an object literal that should contain the following
+     * values: "connectorId", "artifactId", "targetConnectorId", "targetArtifactId"
+     *
+     * @param artifactLinkLiteral object literal with the values of the link to be created
+     */
+    createArtifactLink: function RepositoryService_createArtifactLink(artifactLinkLiteral) {
+      this.jsonPost(this.createArtifactLinkURL(), artifactLinkLiteral, null, "createArtifactLink");
+    },
+
+    /**
+     * Creates the POST url to use when creating an artifact-link
+     *
+     * @method createArtifactLinkURL
+     * @return {string} The url
+     */
+    createArtifactLinkURL: function RepositoryService_createArtifactLinkURL() {
+      return Activiti.service.REST_PROXY_URI_RELATIVE + "artifact-link";
     }
 
   });
