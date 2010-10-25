@@ -104,7 +104,7 @@ public class DemoConnectorTest {
     parameters.put("targetConnectorId", "demo");
     parameters.put("targetFolderId", "/minutes");
 
-    cycleService.executeParameterizedAction("demo", file1.getNodeId(), CopyArtifactAction.class.getName(), parameters);
+    cycleService.executeParameterizedAction("demo", file1.getNodeId(), new CopyArtifactAction().getId(), parameters);
 
     List<RepositoryNode> nodes = DemoConnector.nodes;
     assertEquals(8, DemoConnector.nodes.size());
