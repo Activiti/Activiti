@@ -85,15 +85,17 @@ public class ContentGet extends ActivitiStreamingWebScript {
       }
     }
 
-    InputStream content;
     try {
-      content = this.cycleService.getContent(artifact.getConnectorId(), artifact.getNodeId(), contentRepresentation.getId()).asInputStream();
+      
+      streamResponse(res, this.cycleService.getContent(artifact.getConnectorId(), artifact.getNodeId(), contentRepresentation.getId()).asInputStream(), new Date(0),
+              // TODO: what is a good way to determine the etag? Using a fake one...
+                      "W/\"647-1281077702000\"", attach, attachmentFileName, contentType);
     } catch (TransformationException e) {
-      content = new ByteArrayInputStream(e.getRenderContent().getBytes());
+      streamResponse(res, new ByteArrayInputStream(e.getRenderContent().getBytes()), new Date(0),
+              // TODO: what is a good way to determine the etag? Using a fake one...
+                      "W/\"647-1281077702000\"", false, null, CycleDefaultMimeType.HTML.getContentType());
     }
-    streamResponse(res, content, new Date(0),
-    // TODO: what is a good way to determine the etag? Using a fake one...
-            "W/\"647-1281077702000\"", attach, attachmentFileName, contentType);
+    
 
   }
 
