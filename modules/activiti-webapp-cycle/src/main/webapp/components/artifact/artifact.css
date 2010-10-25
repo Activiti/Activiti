@@ -30,11 +30,9 @@
 }
 
 #options-div.active {
-  border-bottom: 1px dotted #EEEEEE;
-  border-top: 1px dotted #EEEEEE;
-  padding: 5px;
-  margin-bottom: 15px;
-  background-color: #FFFFF9;
+  float:right;
+  position:relative;
+  z-index:2;
 }
 
 #artifact-actions, #artifact-links, #artifact-downloads {
@@ -42,7 +40,7 @@
   margin-right: 15px;
 }
 
-#artifact-div .yui-navset div.loading div {
+#artifact-div .yui-navset div.loading {
   background:url("/activiti-cycle/res/images/loading.gif") no-repeat scroll center center transparent;
   height:8em;
 }

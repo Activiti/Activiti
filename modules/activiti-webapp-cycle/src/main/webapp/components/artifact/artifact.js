@@ -98,13 +98,6 @@
         // Update the heading that displays the name of the selected node
         headerEl.id = "header-" + eventValue.repositoryNodeId;
         headerEl.innerHTML = eventValue.name;
-        
-        var myTooltip = new YAHOO.widget.Tooltip("myTooltip", { 
-            context: headerEl.id, 
-            text: "You have hovered over myContextEl.",
-            showDelay: 500
-        });
-        
       }
     },
     
@@ -161,66 +154,36 @@
       // Select the active tab without firing an event (last parameter is 'silent=true')
       this._tabView.set("activeTab", this._tabView.getTab(this._activeTabIndex), true);
 
-      // Create the options panel
-      var optionsDiv = document.getElementById("options-div");//YAHOO.util.Selector.query('div', 'artifact-div', true);
+      // Get the options panel
+      var optionsDiv = document.getElementById("options-div");
 
-      // Add a dropdown for the actions     
-      if(artifactJson.actions.length > 0) {
-        var actionsDiv = document.createElement("div");
-        actionsDiv.setAttribute('id', "artifact-actions");
-        actionsDiv.appendChild(document.createTextNode("Actions: "));
-        var actionsDropdown = document.createElement("select");
-        actionsDropdown.setAttribute('name', "Actions");
-        
-        var option = document.createElement("option");
-        option.appendChild(document.createTextNode("choose an action..."));
-        actionsDropdown.appendChild(option);
-        
+      // Add a dropdowns for actions, links and downloads
+      if(artifactJson.actions.length > 0 || artifactJson.links.length > 0 || artifactJson.downloads.length > 0) {
+        var optionsMenuItems = [];
+        var actions = [];
         for(i = 0; i<artifactJson.actions.length; i++) {
-          option = document.createElement("option");
-          option.setAttribute('value', artifactJson.connectorId + "#TOKEN#" + artifactJson.artifactId + "#TOKEN#" + artifactJson.actions[i].name);
-          option.appendChild(document.createTextNode(artifactJson.actions[i].label));
-          actionsDropdown.appendChild(option);
-          YAHOO.util.Event.addListener(option, "click", this.onExecuteActionClick);
+          actions.push({ text: artifactJson.actions[i].label, value: {connectorId: artifactJson.connectorId, artifactId: artifactJson.artifactId, actionName: artifactJson.actions[i].name}, onclick: { fn: this.onExecuteActionClick } });
         }
-        actionsDiv.appendChild(actionsDropdown);
-        optionsDiv.appendChild(actionsDiv);
-      }
-      if(artifactJson.links.length > 0) {
-        var linksDiv = document.createElement("div");
-        linksDiv.setAttribute('id', "artifact-links");
-        linksDiv.appendChild(document.createTextNode("Links: "));
+        if(actions.length > 0) {
+          optionsMenuItems.push(actions);
+        }
+        var links = [];
         for(i=0; i<artifactJson.links.length; i++) {
-          var link = document.createElement("a");
-          link.setAttribute('href', artifactJson.links[i].url);
-          link.setAttribute('title', artifactJson.links[i].label);
-          link.setAttribute('target', "blank");
-          link.appendChild(document.createTextNode(artifactJson.links[i].label));
-          linksDiv.appendChild(link);
-          if(i < (artifactJson.links.length - 1)) {
-            linksDiv.appendChild(document.createTextNode(" | "));
-          }
+          links.push({ text: artifactJson.links[i].label, url: artifactJson.links[i].url, target: "_blank"});
         }
-        optionsDiv.appendChild(linksDiv);
-      }
-      // Add download links if available
-      if(artifactJson.downloads.length > 0) {
-        var downloadsDiv = document.createElement("div");
-        downloadsDiv.setAttribute('id', "artifact-downloads");
-        downloadsDiv.appendChild(document.createTextNode("Downloads: "));
+        if(links.length > 0) {
+          optionsMenuItems.push(links);
+        }
+        var downloads = [];
         for(i=0; i<artifactJson.downloads.length; i++) {
-          var link1 = document.createElement("a");
-          link1.setAttribute('href', artifactJson.downloads[i].url);
-          link1.setAttribute('title', artifactJson.downloads[i].name + " (" + artifactJson.downloads[i].type + ")");
-          link1.setAttribute('target', "blank");
-          link1.appendChild(document.createTextNode(artifactJson.downloads[i].name));
-          downloadsDiv.appendChild(link1);
-          if(i < (artifactJson.downloads.length -1)) {
-            downloadsDiv.appendChild(document.createTextNode(" | "));
-          }
+          downloads.push({ text: artifactJson.downloads[i].label, url: artifactJson.downloads[i].url, target: "_blank"});
         }
-        optionsDiv.appendChild(downloadsDiv);
-      }
+        if(downloads.length > 0) {
+          optionsMenuItems.push(downloads);
+        }
+        var optionsMenu = new YAHOO.widget.Button({ type: "menu", label: "Options", name: "options", menu: optionsMenuItems, container: optionsDiv });
+      }      
+
       var clearDiv = document.createElement('div');
       clearDiv.setAttribute('style', 'clear: both');
       optionsDiv.appendChild(clearDiv);
@@ -321,11 +284,7 @@
 
     onExecuteActionClick: function Artifact_onExecuteActionClick(e)
     {
-      var connectorId = this.value.split("#TOKEN#")[0];
-      var artifactId = this.value.split("#TOKEN#")[1];
-      var actionName = this.value.split("#TOKEN#")[2];
-
-      return new Activiti.widget.ExecuteArtifactActionForm(this.id + "-executeArtifactActionForm", connectorId, artifactId, actionName);
+      return new Activiti.widget.ExecuteArtifactActionForm(this.id + "-executeArtifactActionForm", this.value.connectorId, this.value.artifactId, this.value.actionName);
     },
     
     onTabDataLoaded: function Artifact_onTabDataLoaded()
