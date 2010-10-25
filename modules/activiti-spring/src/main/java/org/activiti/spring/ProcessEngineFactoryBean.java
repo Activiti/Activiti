@@ -68,7 +68,6 @@ public class ProcessEngineFactoryBean implements FactoryBean<ProcessEngine>, Dis
 
   public void destroy() throws Exception {
     if (processEngine != null) {
-      ProcessEngines.getProcessEngines().remove(processEngine.getName());
       processEngine.close();
     }
   }
@@ -83,7 +82,6 @@ public class ProcessEngineFactoryBean implements FactoryBean<ProcessEngine>, Dis
     initializeJPA();
 
     processEngine = (ProcessEngineImpl) processEngineConfiguration.buildProcessEngine();
-    ProcessEngines.getProcessEngines().put(processEngine.getName(), processEngine);
 
     if (deploymentResources.length > 0) {
       autoDeployResources();
@@ -114,9 +112,7 @@ public class ProcessEngineFactoryBean implements FactoryBean<ProcessEngine>, Dis
   }
 
   protected void initializeExpressionManager() {
-    if (applicationContext != null) {
-      processEngineConfiguration.setExpressionManager(new SpringExpressionManager(applicationContext));
-    }
+    processEngineConfiguration.setExpressionManager(new SpringExpressionManager(applicationContext));
   }
   
   private void initializeJPA() {
