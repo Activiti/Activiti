@@ -29,6 +29,8 @@
         START_TIME_,
         END_TIME_,
         DURATION_,
+        START_USER_ID_,
+        START_ACT_ID_,
         END_ACT_ID_
       ) values (
         #{id ,jdbcType=VARCHAR},
@@ -38,6 +40,8 @@
         #{startTime, jdbcType=TIMESTAMP},
         #{endTime, jdbcType=TIMESTAMP},
         #{durationInMillis ,jdbcType=BIGINT},
+        #{startFormUserId, jdbcType=VARCHAR},
+        #{startFormActivityId, jdbcType=VARCHAR},
         #{endActivityId, jdbcType=VARCHAR}
       )
   </insert>
@@ -69,6 +73,8 @@
     <result property="startTime" column="START_TIME_" jdbcType="TIMESTAMP" />
     <result property="endTime" column="END_TIME_" jdbcType="TIMESTAMP" />
     <result property="durationInMillis" column="DURATION_" jdbcType="BIGINT" />
+    <result property="startFormUserId" column="START_USER_ID_" jdbcType="VARCHAR" />
+    <result property="startFormActivityId" column="START_ACT_ID_" jdbcType="VARCHAR" />
     <result property="endActivityId" column="END_ACT_ID_" jdbcType="VARCHAR" />
   </resultMap>
 

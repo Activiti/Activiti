@@ -17,29 +17,39 @@ package org.activiti.engine.history;
 import java.util.Date;
 
 /**
- * Represents a historic activity instance that is stored permanently.
+ * Represents one execution of an activity and it's stored permanent for statistics, audit and other business intelligence purposes.
  * 
  * @author Christian Stettler
  */
 public interface HistoricActivityInstance {
 
+  /** The unique identifier of the activity in the process */
   String getActivityId();
 
+  /** The display name for the activity */
   String getActivityName();
 
+  /** The XML tag of the activity as in the process file */
   String getActivityType();
 
+  /** Process definition reference */
   String getProcessDefinitionId();
 
+  /** Process instance reference */
   String getProcessInstanceId();
 
+  /** Execution reference */
   String getExecutionId();
 
+  /** Assignee in case of user task activity */
   String getAssignee();
 
+  /** Time when the activity instance started */
   Date getStartTime();
 
+  /** Time when the activity instance ended */
   Date getEndTime();
 
+  /** Difference between {@link #getEndTime()} and {@link #getStartTime()}.  */
   Long getDurationInMillis();
 }

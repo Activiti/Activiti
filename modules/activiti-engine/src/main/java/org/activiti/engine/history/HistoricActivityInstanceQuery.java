@@ -18,7 +18,7 @@ import org.activiti.engine.query.Query;
 
 
 /**
- * Allows programmatic querying of {@link HistoricActivityInstance}s.
+ * Programmatic querying for {@link HistoricActivityInstance}s.
  * 
  * @author Tom Baeyens
  */

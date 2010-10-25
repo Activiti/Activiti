@@ -14,13 +14,18 @@
 package org.activiti.engine.history;
 
 
-/**
+/** A single field that was submitted in either a start form or a task form.
+ * This is the audit information that can be used to trace who supplied which 
+ * input for which tasks at what time.
+ * 
  * @author Tom Baeyens
  */
 public interface HistoricFormProperty extends HistoricDetail {
 
+  /** the id or key of the property */
   String getPropertyId();
 
+  /** the submitted value */
   String getPropertyValue();
 
 }

@@ -16,23 +16,41 @@ package org.activiti.engine.history;
 
 import java.util.Date;
 
+import org.activiti.engine.FormService;
+import org.activiti.engine.IdentityService;
+import org.activiti.engine.runtime.ProcessInstance;
+
 /** A single execution of a whole process definition that is stored permanently.
  * 
  * @author Christian Stettler
  */
 public interface HistoricProcessInstance {
   
+  /** The process instance id (== as the id for the runtime {@link ProcessInstance process instance}). */
   String getId();
   
+  /** The user provided unique reference to this process instance. */
   String getBusinessKey();
 
+  /** The process definition reference. */
   String getProcessDefinitionId();
 
+  /** The time the process was started. */
   Date getStartTime();
 
+  /** The time the process was ended. */
   Date getEndTime();
 
+  /** The difference between {@link #getEndTime()} and {@link #getStartTime()} . */
   Long getDurationInMillis();
 
+  /** Reference to the activity in which this process instance ended. */
   String getEndActivityId();
+  
+  /** The authenticated user when a form was submitted with {@link FormService#submitStartFormData(String, java.util.Map)}. 
+   * @see IdentityService#setAuthenticatedUserId(String) */
+  String getStartFormUserId();
+  
+  /** The start activity used when submitting the start form. */
+  String getStartFormActivityId();
 }

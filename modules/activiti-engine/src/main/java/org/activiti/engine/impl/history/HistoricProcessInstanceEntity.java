@@ -28,8 +28,8 @@ public class HistoricProcessInstanceEntity extends HistoricScopeInstanceEntity i
 
   protected String endActivityId;
   protected String businessKey;
-  protected String formUserId;
-  protected String formActivityId;
+  protected String startFormUserId;
+  protected String startFormActivityId;
 
   public HistoricProcessInstanceEntity() {
   }
@@ -65,16 +65,16 @@ public class HistoricProcessInstanceEntity extends HistoricScopeInstanceEntity i
   public void setEndActivityId(String endActivityId) {
     this.endActivityId = endActivityId;
   }
-  public String getFormUserId() {
-    return formUserId;
+  public String getStartFormUserId() {
+    return startFormUserId;
   }
-  public void setFormUserId(String formUserId) {
-    this.formUserId = formUserId;
+  public void setStartFormUserId(String startFormUserId) {
+    this.startFormUserId = startFormUserId;
   }
-  public String getFormActivityId() {
-    return formActivityId;
+  public String getStartFormActivityId() {
+    return startFormActivityId;
   }
-  public void setFormActivityId(String formActivityId) {
-    this.formActivityId = formActivityId;
+  public void setStartFormActivityId(String startFormActivityId) {
+    this.startFormActivityId = startFormActivityId;
   }
 }

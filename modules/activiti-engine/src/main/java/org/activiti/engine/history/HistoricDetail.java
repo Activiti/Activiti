@@ -17,14 +17,25 @@ import java.util.Date;
 
 
 
-/**
+/** Base class for all kinds of information that is related to 
+ * either a {@link HistoricProcessInstance} or a {@link HistoricActivityInstance}.
+ * 
  * @author Tom Baeyens
  */
 public interface HistoricDetail {
 
+  /** The unique DB id for this historic detail */
   String getId();
+  
+  /** The process instance reference. */
   String getProcessInstanceId();
+
+  /** The activity reference in case this detail is related to an activity instance. */
   String getActivityInstanceId();
+
+  /** The identifier for the path of execution. */
   String getExecutionId();
+  
+  /** The time when this detail occurred */
   Date getTime();
 }
