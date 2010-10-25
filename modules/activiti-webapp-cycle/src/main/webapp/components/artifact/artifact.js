@@ -48,7 +48,20 @@
     */
     onReady: function Artifact_onReady()
     {
-
+      var size = parseInt(Dom.getStyle('content', 'width'), 10); 
+      var left, main;
+      var resize = new YAHOO.util.Resize('left', {
+          handles: ['r']
+        });
+      left = Dom.get('left');
+      main = Dom.get('main');
+      resize.on('resize', function(ev) {
+          var w = ev.width;
+          Dom.setStyle(left, 'height', '');
+          Dom.setStyle(main, 'width', (size - w - 37) + 'px');
+        });
+      
+      
     },
     
     /**
