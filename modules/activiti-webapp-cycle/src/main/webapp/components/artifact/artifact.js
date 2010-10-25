@@ -183,10 +183,6 @@
         }
         var optionsMenu = new YAHOO.widget.Button({ type: "menu", label: "Options", name: "options", menu: optionsMenuItems, container: optionsDiv });
       }      
-
-      var clearDiv = document.createElement('div');
-      clearDiv.setAttribute('style', 'clear: both');
-      optionsDiv.appendChild(clearDiv);
       optionsDiv.setAttribute('class', 'active');
     },
 
@@ -233,31 +229,31 @@
         var rows = [];
         for(var i=0; i<responseJson.length; i++) {
           var typeClass;
-          if(responseJson[i].targetContentType === "image/png" || responseJson[i].targetContentType === "image/gif" || responseJson[i].targetContentType === "image/jpeg") {
+          if(responseJson[i].artifact.targetContentType === "image/png" || responseJson[i].artifact.targetContentType === "image/gif" || responseJson[i].artifact.targetContentType === "image/jpeg") {
             typeClass = "icon-img";
-          } else if(responseJson[i].targetContentType === "application/xml") {
+          } else if(responseJson[i].artifact.targetContentType === "application/xml") {
             typeClass = "icon-code-red";
-          } else if(responseJson[i].targetContentType === "text/html") {
+          } else if(responseJson[i].artifact.targetContentType === "text/html") {
             typeClass = "icon-www";
-          } else if(responseJson[i].targetContentType === "text/plain") {
+          } else if(responseJson[i].artifact.targetContentType === "text/plain") {
             typeClass = "icon-txt";
-          } else if(responseJson[i].targetContentType === "application/pdf") {
+          } else if(responseJson[i].artifact.targetContentType === "application/pdf") {
             typeClass = "icon-pdf";
-          } else if(responseJson[i].targetContentType === "application/json;charset=UTF-8") {
+          } else if(responseJson[i].artifact.targetContentType === "application/json;charset=UTF-8") {
             typeClass = "icon-code-blue";
-          } else if(responseJson[i].targetContentType === "application/msword") {
+          } else if(responseJson[i].artifact.targetContentType === "application/msword") {
             typeClass = "icon-doc";
-          } else if(responseJson[i].targetContentType === "application/powerpoint") {
+          } else if(responseJson[i].artifact.targetContentType === "application/powerpoint") {
             typeClass = "icon-ppt";
-          } else if(responseJson[i].targetContentType === "application/excel") {
+          } else if(responseJson[i].artifact.targetContentType === "application/excel") {
             typeClass = "icon-xls";
-          } else if(responseJson[i].targetContentType === "application/javascript") {
+          } else if(responseJson[i].artifact.targetContentType === "application/javascript") {
             typeClass = "icon-code-blue";
           } else {
             // Use white page as default icon for all other content types
             typeClass = "icon-blank";
           }
-          var row = {Name: '<a class="openArtifactLink" href="#?connectorId=' + responseJson[i].targetConnectorId + '&artifactId=' + responseJson[i].targetArtifactId + '&artifactName=' + responseJson[i].label + '">' + responseJson[i].label + '</a>', Revision: responseJson[i].targetArtifactRevision, Type: '<div class="artifact-type ' + typeClass + '">' + responseJson[i].targetContentType + '</div>' };
+          var row = {Name: '<a class="openArtifactLink" href="#?connectorId=' + responseJson[i].artifact.targetConnectorId + '&artifactId=' + responseJson[i].artifact.targetArtifactId + '&artifactName=' + responseJson[i].artifact.label + '">' + responseJson[i].artifact.label + '</a>', Revision: responseJson[i].artifact.targetArtifactRevision, Type: '<div class="artifact-type ' + typeClass + '">' + responseJson[i].artifact.targetContentType + '</div>' };
           rows.push(row);
         }
         var linksDataSource = new YAHOO.util.LocalDataSource(rows);

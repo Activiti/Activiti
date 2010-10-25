@@ -21,9 +21,12 @@ import java.util.logging.Logger;
 import javax.servlet.http.HttpSession;
 
 import org.activiti.cycle.ContentRepresentation;
+import org.activiti.cycle.CycleDefaultMimeType;
 import org.activiti.cycle.CycleService;
+import org.activiti.cycle.RenderInfo;
 import org.activiti.cycle.RepositoryArtifact;
 import org.activiti.cycle.impl.CycleServiceImpl;
+import org.activiti.cycle.impl.transform.TransformationException;
 import org.activiti.rest.util.ActivitiRequest;
 import org.activiti.rest.util.ActivitiWebScript;
 import org.springframework.extensions.webscripts.Cache;
@@ -58,11 +61,15 @@ public class ContentRepresentationGet extends ActivitiWebScript {
 
     // Get representation by id to determine whether it is an image...
     try {
+      model.put("connectorId", connectorId);
+      model.put("artifactId", artifactId);
+
       ContentRepresentation contentRepresentation = artifact.getArtifactType().getContentRepresentation(representationId);
       switch (contentRepresentation.getRenderInfo()) {
       case IMAGE:
       case HTML:
-        // For images and HTML we don't need to send the content, the URL will be put together in the UI
+        // For images and HTML we don't need to send the content, the URL will
+        // be put together in the UI
         // and the content will be requested via ContentGet.
         break;
       case HTML_REFERENCE:
@@ -72,18 +79,17 @@ public class ContentRepresentationGet extends ActivitiWebScript {
         String content = this.cycleService.getContent(connectorId, artifactId, contentRepresentation.getId()).asString();
         model.put("content", content);
       }
-
-      model.put("connectorId", connectorId);
-      model.put("artifactId", artifactId);
       model.put("renderInfo", contentRepresentation.getRenderInfo().name());
       model.put("contentRepresentationId", contentRepresentation.getId());
       model.put("contentType", contentRepresentation.getMimeType().getContentType());
-
+    } catch (TransformationException e) {
+      // Show errors that occur during transformations as HTML in the UI
+      model.put("renderInfo", RenderInfo.HTML);
+      model.put("contentRepresentationId", "Exception");
+      model.put("content", e.getRenderContent());
+      model.put("contentType", CycleDefaultMimeType.HTML.getContentType());
     } catch (Exception ex) {
-      // we had a problem with a content representation log and go on,
-      // that this will not prevent other representations to be shown
       log.log(Level.WARNING, "Exception while loading content representation", ex);
-
       // TODO:Better concept how this is handled in the GUI
       StringWriter sw = new StringWriter();
       ex.printStackTrace(new PrintWriter(sw));

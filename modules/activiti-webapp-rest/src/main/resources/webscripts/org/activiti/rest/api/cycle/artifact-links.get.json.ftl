@@ -4,9 +4,11 @@
 
 <#macro printLink link>
 {
-  <@printArtifact link.targetArtifact/>,
-  "targetElementId": "${link.targetElementId}",
-  "targetElementName": "${link.targetElementName}"
+  "artifact": {
+  	<@printArtifact link.targetArtifact/>,
+  	"targetElementId": "${link.targetElementId}",
+  	"targetElementName": "${link.targetElementName}"
+  }
 }
 </#macro>
 
