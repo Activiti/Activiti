@@ -12,13 +12,12 @@
  */
 package org.activiti.engine.impl.variable;
 
-import org.activiti.engine.impl.runtime.VariableInstanceEntity;
 
 
 /**
  * @author Tom Baeyens
  */
-public class NullType implements Type {
+public class NullType implements VariableType {
 
   private static final long serialVersionUID = 1L;
 
@@ -30,7 +29,7 @@ public class NullType implements Type {
     return true;
   }
 
-  public Object getValue(VariableInstanceEntity variableInstanceEntity) {
+  public Object getValue(ValueFields valueFields) {
     return null;
   }
 
@@ -38,7 +37,6 @@ public class NullType implements Type {
     return (value==null);
   }
 
-  public void setValue(Object value, VariableInstanceEntity variableInstanceEntity) {
- 
+  public void setValue(Object value, ValueFields valueFields) {
   }
 }

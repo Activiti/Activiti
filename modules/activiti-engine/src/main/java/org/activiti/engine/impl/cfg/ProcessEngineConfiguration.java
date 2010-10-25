@@ -80,7 +80,7 @@ import org.activiti.engine.impl.variable.EntityManagerSession;
 import org.activiti.engine.impl.variable.EntityManagerSessionFactory;
 import org.activiti.engine.impl.variable.JPAEntityVariableType;
 import org.activiti.engine.impl.variable.SerializableType;
-import org.activiti.engine.impl.variable.Type;
+import org.activiti.engine.impl.variable.VariableType;
 import org.activiti.engine.impl.variable.VariableTypes;
 
 /**
@@ -373,7 +373,7 @@ public class ProcessEngineConfiguration {
     }
     if(!sessionFactories.containsKey(EntityManagerSession.class)) {
       sessionFactories.put(EntityManagerSession.class, new EntityManagerSessionFactory(entityManagerFactory, true, true));
-      Type jpaType = variableTypes.getVariableType(JPAEntityVariableType.TYPE_NAME);
+      VariableType jpaType = variableTypes.getVariableType(JPAEntityVariableType.TYPE_NAME);
       // Add JPA-type
       if(jpaType == null) {
         // We try adding the variable right before SerializableType, if available

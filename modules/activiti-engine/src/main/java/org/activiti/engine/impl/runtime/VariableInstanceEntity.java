@@ -20,12 +20,13 @@ import org.activiti.engine.impl.db.DbSqlSession;
 import org.activiti.engine.impl.db.PersistentObject;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.task.TaskEntity;
-import org.activiti.engine.impl.variable.Type;
+import org.activiti.engine.impl.variable.ValueFields;
+import org.activiti.engine.impl.variable.VariableType;
 
 /**
  * @author Tom Baeyens
  */
-public class VariableInstanceEntity implements Serializable, PersistentObject {
+public class VariableInstanceEntity implements ValueFields, PersistentObject, Serializable {
 
   private static final long serialVersionUID = 1L;
 
@@ -48,13 +49,13 @@ public class VariableInstanceEntity implements Serializable, PersistentObject {
 
   protected Object cachedValue;
 
-  protected Type type;
+  protected VariableType type;
   
   // Default constructor for SQL mapping
   protected VariableInstanceEntity() {
   }
 
-  public static VariableInstanceEntity createAndInsert(String name, Type type, Object value) {
+  public static VariableInstanceEntity createAndInsert(String name, VariableType type, Object value) {
     VariableInstanceEntity variableInstance = create(name, type, value);
 
     CommandContext
@@ -65,7 +66,7 @@ public class VariableInstanceEntity implements Serializable, PersistentObject {
     return variableInstance;
   }
   
-  public static VariableInstanceEntity create(String name, Type type, Object value) {
+  public static VariableInstanceEntity create(String name, VariableType type, Object value) {
     VariableInstanceEntity variableInstance = new VariableInstanceEntity();
     variableInstance.name = name;
     variableInstance.type = type;
@@ -222,10 +223,10 @@ public class VariableInstanceEntity implements Serializable, PersistentObject {
   public void setRevision(int revision) {
     this.revision = revision;
   }
-  public void setType(Type type) {
+  public void setType(VariableType type) {
     this.type = type;
   }
-  public Type getType() {
+  public VariableType getType() {
     return type;
   }
   public Object getCachedValue() {

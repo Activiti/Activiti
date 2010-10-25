@@ -26,12 +26,13 @@ import org.activiti.engine.impl.TaskQueryImpl;
 import org.activiti.engine.impl.bpmn.parser.BpmnParse;
 import org.activiti.engine.impl.calendar.BusinessCalendar;
 import org.activiti.engine.impl.calendar.DurationBusinessCalendar;
+import org.activiti.engine.impl.cfg.ProcessEngineConfiguration;
 import org.activiti.engine.impl.db.DbSqlSession;
 import org.activiti.engine.impl.db.PersistentObject;
 import org.activiti.engine.impl.history.HistoricActivityInstanceEntity;
+import org.activiti.engine.impl.history.HistoricProcessInstanceEntity;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.jobexecutor.TimerDeclarationImpl;
-import org.activiti.engine.impl.repository.ProcessDefinitionEntity;
 import org.activiti.engine.impl.task.TaskEntity;
 import org.activiti.engine.impl.variable.VariableDeclaration;
 import org.activiti.engine.runtime.Execution;
@@ -42,6 +43,8 @@ import org.activiti.pvm.impl.process.ActivityImpl;
 import org.activiti.pvm.impl.process.ProcessDefinitionImpl;
 import org.activiti.pvm.impl.process.ScopeImpl;
 import org.activiti.pvm.impl.runtime.ExecutionImpl;
+import org.activiti.pvm.process.PvmProcessDefinition;
+import org.activiti.pvm.runtime.PvmProcessInstance;
 
 
 /**
@@ -108,6 +111,21 @@ public class ExecutionEntity extends ExecutionImpl implements PersistentObject, 
   protected boolean forcedUpdate;
 
   public ExecutionEntity() {
+  }
+  
+  @Override
+  public PvmProcessInstance createSubProcessInstance(PvmProcessDefinition processDefinition) {
+    PvmProcessInstance subProcessInstance = super.createSubProcessInstance(processDefinition);
+    
+    CommandContext commandContext = CommandContext.getCurrent();
+    int historyLevel = commandContext.getProcessEngineConfiguration().getHistoryLevel();
+    if (historyLevel>=ProcessEngineConfiguration.HISTORYLEVEL_ACTIVITY) {
+      DbSqlSession dbSqlSession = commandContext.getSession(DbSqlSession.class);
+      HistoricProcessInstanceEntity historicProcessInstance = new HistoricProcessInstanceEntity((ExecutionEntity) subProcessInstance);
+      dbSqlSession.insert(historicProcessInstance);
+    }
+
+    return subProcessInstance;
   }
 
   @Override

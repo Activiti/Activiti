@@ -10,14 +10,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-package org.activiti.engine.impl.history;
+package org.activiti.engine.impl.variable;
 
 
 
 /**
  * @author Tom Baeyens
  */
-public class HistoricDetailVariableUpdateEntity extends HistoricDetailEntity {
+public interface VariableType {
+
+  String getTypeName();
+  boolean isCachable();
+  boolean isAbleToStore(Object value);
+  void setValue(Object value, ValueFields valueFields);
+  Object getValue(ValueFields valueFields);
 
 }

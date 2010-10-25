@@ -13,22 +13,14 @@
 
 package org.activiti.engine.impl.form;
 
-import java.util.Map;
-
 import org.activiti.engine.form.StartFormData;
-import org.activiti.engine.impl.bpmn.parser.BpmnParse;
-import org.activiti.engine.impl.repository.DeploymentEntity;
 import org.activiti.engine.impl.repository.ProcessDefinitionEntity;
-import org.activiti.engine.impl.runtime.ExecutionEntity;
-import org.activiti.engine.impl.util.xml.Element;
 
 
 /**
  * @author Tom Baeyens
  */
-public interface StartFormHandler {
+public interface StartFormHandler extends FormHandler {
 
   StartFormData createStartFormData(ProcessDefinitionEntity processDefinition);
-  ExecutionEntity submitStartFormData(ProcessDefinitionEntity processDefinition, Map<String, String> properties);
-  void parseConfiguration(Element startEventElement, DeploymentEntity deployment, BpmnParse bpmnParse);
 }

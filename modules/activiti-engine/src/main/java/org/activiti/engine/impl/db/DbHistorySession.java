@@ -18,14 +18,15 @@ import java.util.List;
 import java.util.Map;
 
 import org.activiti.engine.history.HistoricActivityInstance;
+import org.activiti.engine.history.HistoricDetail;
 import org.activiti.engine.history.HistoricProcessInstance;
-import org.activiti.engine.history.HistoricVariableUpdate;
 import org.activiti.engine.impl.HistoricActivityInstanceQueryImpl;
+import org.activiti.engine.impl.HistoricDetailQueryImpl;
 import org.activiti.engine.impl.HistoricProcessInstanceQueryImpl;
-import org.activiti.engine.impl.HistoricVariableUpdateQueryImpl;
 import org.activiti.engine.impl.Page;
 import org.activiti.engine.impl.cfg.HistorySession;
 import org.activiti.engine.impl.history.HistoricActivityInstanceEntity;
+import org.activiti.engine.impl.history.HistoricDetailEntity;
 import org.activiti.engine.impl.history.HistoricProcessInstanceEntity;
 import org.activiti.engine.impl.history.HistoricVariableUpdateEntity;
 import org.activiti.engine.impl.interceptor.CommandContext;
@@ -44,10 +45,10 @@ public class DbHistorySession extends AbstractDbSession implements HistorySessio
 
   @SuppressWarnings("unchecked")
   public void deleteHistoricProcessInstance(String historicProcessInstanceId) {
-    List<HistoricVariableUpdateEntity> historicVariableUpdates = (List) new HistoricVariableUpdateQueryImpl()
+    List<HistoricDetailEntity> historicDetails = (List) new HistoricDetailQueryImpl()
       .processInstanceId(historicProcessInstanceId)
       .executeList(CommandContext.getCurrent(), null);
-    for (HistoricVariableUpdateEntity historicVariableUpdate: historicVariableUpdates) {
+    for (HistoricDetailEntity historicVariableUpdate: historicDetails) {
       historicVariableUpdate.delete();
     }
     
@@ -93,13 +94,13 @@ public class DbHistorySession extends AbstractDbSession implements HistorySessio
     return dbSqlSession.selectList("selectHistoricActivityInstancesByQueryCriteria", historicActivityInstanceQuery, page);
   }
 
-  public long findHistoricVariableUpdateCountByQueryCriteria(HistoricVariableUpdateQueryImpl historicVariableUpdateQuery) {
-    return (Long) dbSqlSession.selectOne("selectHistoricVariableUpdateCountByQueryCriteria", historicVariableUpdateQuery);
+  public long findHistoricDetailCountByQueryCriteria(HistoricDetailQueryImpl historicVariableUpdateQuery) {
+    return (Long) dbSqlSession.selectOne("selectHistoricDetailCountByQueryCriteria", historicVariableUpdateQuery);
   }
 
   @SuppressWarnings("unchecked")
-  public List<HistoricVariableUpdate> findHistoricVariableUpdatesByQueryCriteria(HistoricVariableUpdateQueryImpl historicVariableUpdateQuery, Page page) {
-    return dbSqlSession.selectList("selectHistoricVariableUpdatesByQueryCriteria", historicVariableUpdateQuery, page);
+  public List<HistoricDetail> findHistoricDetailsByQueryCriteria(HistoricDetailQueryImpl historicVariableUpdateQuery, Page page) {
+    return dbSqlSession.selectList("selectHistoricDetailsByQueryCriteria", historicVariableUpdateQuery, page);
   }
 
   public void close() {

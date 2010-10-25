@@ -221,12 +221,7 @@ public class TaskEntity implements Task, Serializable, PersistentObject {
   
   public void setExecutionVariables(Map<String, Object> parameters) {
     if (getExecution()!=null) {
-      try {
-        VariableMap.setExternalUpdate(Boolean.TRUE);
-        execution.setVariables(parameters);
-      } finally {
-        VariableMap.setExternalUpdate(null);
-      }
+      execution.setVariables(parameters);
     }
   }
   

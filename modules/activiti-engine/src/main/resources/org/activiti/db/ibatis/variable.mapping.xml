@@ -50,18 +50,18 @@
 	<resultMap id="variableInstanceResultMap" type="org.activiti.engine.impl.runtime.VariableInstanceEntity">
 		<id property="id" column="ID_" jdbcType="VARCHAR" />
     <result property="revision" column="REV_" jdbcType="INTEGER"/>
-		<result property="type" column="TYPE_" javaType="org.activiti.engine.impl.variable.Type" jdbcType="VARCHAR"/>
+		<result property="type" column="TYPE_" javaType="org.activiti.engine.impl.variable.VariableType" jdbcType="VARCHAR"/>
 		<result property="name" column="NAME_" javaType="String" jdbcType="VARCHAR" />
     <result property="processInstanceId" column="PROC_INST_ID_" jdbcType="VARCHAR" />
     <result property="executionId" column="EXECUTION_ID_" jdbcType="VARCHAR" />
 		<result property="activityId" column="ACTIVITY_ID_" jdbcType="VARCHAR" />
 		<result property="isActive" column="IS_ACTIVE_" jdbcType="BOOLEAN" />
 		<result property="isConcurrencyScope" column="IS_CONCURRENCY_SCOPE_" jdbcType="BOOLEAN" />
-		<result property="byteArrayValueId" column="BYTEARRAY_ID_" />
-		<result property="doubleValue" column="DOUBLE_" />
-		<result property="textValue" column="TEXT1_" />
-		<result property="textValue2" column="TEXT2_" />
-		<result property="longValue" column="LONG_" />
+		<result property="byteArrayValueId" column="BYTEARRAY_ID_" jdbcType="VARCHAR" />
+		<result property="doubleValue" column="DOUBLE_" jdbcType="DOUBLE" />
+		<result property="textValue" column="TEXT1_" jdbcType="VARCHAR"/>
+		<result property="textValue2" column="TEXT2_" jdbcType="VARCHAR"/>
+		<result property="longValue" column="LONG_" jdbcType="BIGINT"/>
 	</resultMap>
 
   <!-- VARIABLE INSTANCE SELECT -->

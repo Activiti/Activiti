@@ -23,18 +23,31 @@ import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.runtime.ByteArrayEntity;
 import org.activiti.engine.impl.runtime.VariableInstanceEntity;
 import org.activiti.engine.impl.util.ClockUtil;
+import org.activiti.engine.impl.variable.ValueFields;
+import org.activiti.engine.impl.variable.VariableType;
 
 
 /**
  * @author Tom Baeyens
  */
-public class HistoricVariableUpdateEntity extends VariableInstanceEntity implements HistoricVariableUpdate, PersistentObject {
+public class HistoricVariableUpdateEntity extends HistoricDetailEntity implements ValueFields, HistoricVariableUpdate, PersistentObject {
   
   private static final long serialVersionUID = 1L;
   
-  protected String historicFormInstanceId;
-  protected Date time;
-  
+  protected String name;
+  protected int revision;
+  protected VariableType variableType;
+
+  protected Long longValue;
+  protected Double doubleValue; 
+  protected String textValue;
+  protected String textValue2;
+
+  protected ByteArrayEntity byteArrayValue;
+  protected String byteArrayValueId;
+
+  protected Object cachedValue;
+
   public HistoricVariableUpdateEntity() {
   }
 
@@ -49,7 +62,7 @@ public class HistoricVariableUpdateEntity extends VariableInstanceEntity impleme
     }
     this.revision = variableInstance.getRevision();
     this.name = variableInstance.getName();
-    this.type = variableInstance.getType();
+    this.variableType = variableInstance.getType();
     this.time = ClockUtil.getCurrentTime();
     if (variableInstance.getByteArrayValueId()!=null) {
       // TODO test and review.  name ok here?
@@ -63,19 +76,24 @@ public class HistoricVariableUpdateEntity extends VariableInstanceEntity impleme
     this.longValue = variableInstance.getLongValue();
   }
   
-  public void delete() {
-    DbSqlSession dbSqlSession = CommandContext
-      .getCurrent()
-      .getDbSqlSession();
+  public Object getValue() {
+    if (!variableType.isCachable() || cachedValue==null) {
+      cachedValue = variableType.getValue(this);
+    }
+    return cachedValue;
+  }
 
-    dbSqlSession.delete(HistoricVariableUpdateEntity.class, id);
+  public void delete() {
+    super.delete();
 
     if (byteArrayValueId != null) {
       // the next apparently useless line is probably to ensure consistency in the DbSqlSession 
       // cache, but should be checked and docced here (or removed if it turns out to be unnecessary)
       // @see also HistoricVariableInstanceEntity
       getByteArrayValue();
-      dbSqlSession.delete(ByteArrayEntity.class, byteArrayValueId);
+      CommandContext
+        .getCurrentSession(DbSqlSession.class)
+        .delete(ByteArrayEntity.class, byteArrayValueId);
     }
   }
 
@@ -97,15 +115,100 @@ public class HistoricVariableUpdateEntity extends VariableInstanceEntity impleme
     return name;
   }
 
-  public String getVariableType() {
-    return type.getTypeName();
+  public VariableType getVariableType() {
+    return variableType;
   }
 
-  public String getHistoricFormInstanceId() {
-    return historicFormInstanceId;
+  public int getRevision() {
+    return revision;
   }
 
-  public void setHistoricFormInstanceId(String historicFormInstanceId) {
-    this.historicFormInstanceId = historicFormInstanceId;
+  public void setRevision(int revision) {
+    this.revision = revision;
+  }
+
+  
+  public String getName() {
+    return name;
+  }
+
+  
+  public void setName(String name) {
+    this.name = name;
+  }
+
+  
+  public Long getLongValue() {
+    return longValue;
+  }
+
+  
+  public void setLongValue(Long longValue) {
+    this.longValue = longValue;
+  }
+
+  
+  public Double getDoubleValue() {
+    return doubleValue;
+  }
+
+  
+  public void setDoubleValue(Double doubleValue) {
+    this.doubleValue = doubleValue;
+  }
+
+  
+  public String getTextValue() {
+    return textValue;
+  }
+
+  
+  public void setTextValue(String textValue) {
+    this.textValue = textValue;
+  }
+
+  
+  public String getTextValue2() {
+    return textValue2;
+  }
+
+  
+  public void setTextValue2(String textValue2) {
+    this.textValue2 = textValue2;
+  }
+
+  
+  public ByteArrayEntity getByteArrayValue() {
+    return byteArrayValue;
+  }
+
+  
+  public void setByteArrayValue(ByteArrayEntity byteArrayValue) {
+    this.byteArrayValue = byteArrayValue;
+  }
+
+  
+  public String getByteArrayValueId() {
+    return byteArrayValueId;
+  }
+
+  
+  public void setByteArrayValueId(String byteArrayValueId) {
+    this.byteArrayValueId = byteArrayValueId;
+  }
+
+  
+  public Object getCachedValue() {
+    return cachedValue;
+  }
+
+  
+  public void setCachedValue(Object cachedValue) {
+    this.cachedValue = cachedValue;
+  }
+
+  
+  public void setVariableType(VariableType variableType) {
+    this.variableType = variableType;
   }
 }

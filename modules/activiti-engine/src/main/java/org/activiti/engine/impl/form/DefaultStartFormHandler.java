@@ -34,8 +34,7 @@ public class DefaultStartFormHandler extends DefaultFormHandler implements Start
     return startFormData;
   }
 
-  public ExecutionEntity submitStartFormData(ProcessDefinitionEntity processDefinition, Map<String, String> properties) {
-    ExecutionEntity processInstance = processDefinition.createProcessInstance();
+  public ExecutionEntity submitStartFormData(ExecutionEntity processInstance, Map<String, String> properties) {
     submitFormProperties(properties, processInstance);
     return processInstance;
   }

@@ -17,7 +17,7 @@ import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.runtime.VariableInstanceEntity;
 import org.activiti.engine.impl.variable.ByteArrayType;
 import org.activiti.engine.impl.variable.JPAEntityVariableType;
-import org.activiti.engine.impl.variable.Type;
+import org.activiti.engine.impl.variable.VariableType;
 import org.activiti.engine.impl.variable.VariableTypes;
 
 
@@ -41,7 +41,7 @@ public class QueryVariableValue {
   
   public void initialize(VariableTypes types) {
     if(variableInstanceEntity == null) {
-      Type type = types.findVariableType(value);
+      VariableType type = types.findVariableType(value);
       if(type instanceof ByteArrayType) {
         throw new ActivitiException("Variables of type ByteArray cannot be used to query");
       } else if(type instanceof JPAEntityVariableType && operator != QueryOperator.EQUALS) {

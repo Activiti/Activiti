@@ -13,18 +13,16 @@
 
 package org.activiti.engine.history;
 
+import org.activiti.engine.impl.variable.VariableType;
 
 
 /**
  * @author Tom Baeyens
  */
-public interface HistoricVariableUpdate {
+public interface HistoricVariableUpdate extends HistoricDetail {
 
-  String getHistoricFormInstanceId();
-  String getProcessInstanceId();
-  String getExecutionId();
   String getVariableName();
-  String getVariableType();
+  VariableType getVariableType();
   Object getValue();
   int getRevision();
 }

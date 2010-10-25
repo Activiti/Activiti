@@ -33,8 +33,4 @@ public class DefaultTaskFormHandler extends DefaultFormHandler implements TaskFo
     initializeFormProperties(taskFormData, task.getExecution());
     return taskFormData;
   }
-
-  public void submitTaskFormData(TaskEntity task, Map<String, String> properties) {
-    submitFormProperties(properties, task.getExecution());
-  }
 }

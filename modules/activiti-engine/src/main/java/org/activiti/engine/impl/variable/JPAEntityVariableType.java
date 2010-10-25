@@ -13,7 +13,6 @@
 
 package org.activiti.engine.impl.variable;
 
-import org.activiti.engine.impl.runtime.VariableInstanceEntity;
 
 /**
  * Variable type capable of storing reference to JPA-entities. Only JPA-Entities which
@@ -21,7 +20,7 @@ import org.activiti.engine.impl.runtime.VariableInstanceEntity;
  * 
  * @author Frederik Heremans
  */
-public class JPAEntityVariableType implements Type {
+public class JPAEntityVariableType implements VariableType {
 
   public static final String TYPE_NAME = "jpa-entity";
   
@@ -46,21 +45,21 @@ public class JPAEntityVariableType implements Type {
     return mappings.isJPAEntity(value);      
   }
 
-  public void setValue(Object value, VariableInstanceEntity variableInstanceEntity) {
+  public void setValue(Object value, ValueFields valueFields) {
     if(value != null) {
       String className = mappings.getJPAClassString(value);
       String idString = mappings.getJPAIdString(value);
-      variableInstanceEntity.setTextValue(className);
-      variableInstanceEntity.setTextValue2(idString);      
+      valueFields.setTextValue(className);
+      valueFields.setTextValue2(idString);      
     } else {
-      variableInstanceEntity.setTextValue(null);
-      variableInstanceEntity.setTextValue2(null);            
+      valueFields.setTextValue(null);
+      valueFields.setTextValue2(null);            
     }
   }
 
-  public Object getValue(VariableInstanceEntity variableInstanceEntity) {
-    if(variableInstanceEntity.getTextValue() != null && variableInstanceEntity.getTextValue2() != null) {
-      return mappings.getJPAEntity(variableInstanceEntity.getTextValue(), variableInstanceEntity.getTextValue2());      
+  public Object getValue(ValueFields valueFields) {
+    if(valueFields.getTextValue() != null && valueFields.getTextValue2() != null) {
+      return mappings.getJPAEntity(valueFields.getTextValue(), valueFields.getTextValue2());      
     }
     return null;
   }

@@ -52,7 +52,7 @@ public class HistoricProcessInstanceTest extends ActivitiInternalTestCase {
     HistoricProcessInstance historicProcessInstance = historyService.createHistoricProcessInstanceQuery().processInstanceId(processInstance.getId()).singleResult();
 
     assertNotNull(historicProcessInstance);
-    assertEquals(processInstance.getId(), historicProcessInstance.getProcessInstanceId());
+    assertEquals(processInstance.getId(), historicProcessInstance.getId());
     assertEquals(processInstance.getProcessDefinitionId(), historicProcessInstance.getProcessDefinitionId());
     assertEquals(noon, historicProcessInstance.getStartTime());
     assertNull(historicProcessInstance.getEndTime());
@@ -71,7 +71,7 @@ public class HistoricProcessInstanceTest extends ActivitiInternalTestCase {
     historicProcessInstance = historyService.createHistoricProcessInstanceQuery().processInstanceId(processInstance.getId()).singleResult();
 
     assertNotNull(historicProcessInstance);
-    assertEquals(processInstance.getId(), historicProcessInstance.getProcessInstanceId());
+    assertEquals(processInstance.getId(), historicProcessInstance.getId());
     assertEquals(processInstance.getProcessDefinitionId(), historicProcessInstance.getProcessDefinitionId());
     assertEquals(noon, historicProcessInstance.getStartTime());
     assertEquals(twentyFiveSecsAfterNoon, historicProcessInstance.getEndTime());

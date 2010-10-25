@@ -10,20 +10,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.activiti.engine.impl.variable;
 
-import org.activiti.engine.impl.runtime.VariableInstanceEntity;
+package org.activiti.engine.history;
+
+import java.util.Date;
+
 
 
 /**
  * @author Tom Baeyens
  */
-public interface Type {
+public interface HistoricDetail {
 
-  String getTypeName();
-  boolean isCachable();
-  boolean isAbleToStore(Object value);
-  void setValue(Object value, VariableInstanceEntity variableInstanceEntity);
-  Object getValue(VariableInstanceEntity variableInstanceEntity);
-
+  String getId();
+  String getProcessInstanceId();
+  String getActivityInstanceId();
+  String getExecutionId();
+  Date getTime();
 }

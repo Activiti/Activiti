@@ -15,8 +15,11 @@ package org.activiti.engine.impl.repository;
 import java.util.ArrayList;
 import java.util.Map;
 
+import org.activiti.engine.impl.cfg.ProcessEngineConfiguration;
+import org.activiti.engine.impl.db.DbSqlSession;
 import org.activiti.engine.impl.db.PersistentObject;
 import org.activiti.engine.impl.form.StartFormHandler;
+import org.activiti.engine.impl.history.HistoricProcessInstanceEntity;
 import org.activiti.engine.impl.identity.Authentication;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.runtime.ExecutionEntity;
@@ -49,6 +52,13 @@ public class ProcessDefinitionEntity extends ProcessDefinitionImpl implements Pr
 
   public ExecutionEntity createProcessInstance() {
     ExecutionEntity processInstance = (ExecutionEntity) super.createProcessInstance();
+
+    CommandContext commandContext = CommandContext.getCurrent();
+
+    commandContext
+      .getDbSqlSession()
+      .insert(processInstance);
+  
     processInstance.setExecutions(new ArrayList<ExecutionImpl>());
     processInstance.setProcessDefinition(processDefinition);
     // Do not initialize variable map (let it happen lazily)
@@ -64,20 +74,20 @@ public class ProcessDefinitionEntity extends ProcessDefinitionImpl implements Pr
     
     VariableMap variableMap = VariableMap.createNewInitialized(processInstance.getId(), processInstance.getId());
     processInstance.setVariables(variableMap);
-    
+
+    int historyLevel = commandContext.getProcessEngineConfiguration().getHistoryLevel();
+    if (historyLevel>=ProcessEngineConfiguration.HISTORYLEVEL_ACTIVITY) {
+      DbSqlSession dbSqlSession = commandContext.getSession(DbSqlSession.class);
+      HistoricProcessInstanceEntity historicProcessInstance = new HistoricProcessInstanceEntity(processInstance);
+      dbSqlSession.insert(historicProcessInstance);
+    }
+
     return processInstance;
   }
   
   @Override
   protected ExecutionImpl newProcessInstance() {
-    ExecutionEntity processInstance = new ExecutionEntity();
-
-    CommandContext
-      .getCurrent()
-      .getDbSqlSession()
-      .insert(processInstance);
-
-    return processInstance;
+    return new ExecutionEntity();
   }
 
   public String toString() {

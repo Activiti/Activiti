@@ -47,12 +47,7 @@ public class SetVariablesCmd implements Command<Object> {
       throw new ActivitiException("execution "+executionId+" doesn't exist");
     }
     
-    try {
-      VariableMap.setExternalUpdate(Boolean.TRUE);
-      execution.setVariables(variables);
-    } finally {
-      VariableMap.setExternalUpdate(null);
-    }
+    execution.setVariables(variables);
     
     return null;
   }

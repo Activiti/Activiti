@@ -16,9 +16,9 @@ package org.activiti.engine.impl;
 import java.util.List;
 
 import org.activiti.engine.ActivitiException;
-import org.activiti.engine.history.HistoricVariableUpdate;
-import org.activiti.engine.history.HistoricVariableUpdateQuery;
-import org.activiti.engine.history.HistoricVariableUpdateQueryProperty;
+import org.activiti.engine.history.HistoricDetail;
+import org.activiti.engine.history.HistoricDetailQuery;
+import org.activiti.engine.history.HistoricDetailQueryProperty;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
 import org.activiti.engine.query.QueryProperty;
@@ -27,34 +27,39 @@ import org.activiti.engine.query.QueryProperty;
 /**
  * @author Tom Baeyens
  */
-public class HistoricVariableUpdateQueryImpl extends AbstractQuery<HistoricVariableUpdateQuery, HistoricVariableUpdate> implements HistoricVariableUpdateQuery {
+public class HistoricDetailQueryImpl extends AbstractQuery<HistoricDetailQuery, HistoricDetail> implements HistoricDetailQuery {
 
   protected String processInstanceId;
-  protected String variableName;
-  protected HistoricVariableUpdateQueryProperty orderProperty;
+  protected String type;
+  protected HistoricDetailQueryProperty orderProperty;
 
-  public HistoricVariableUpdateQueryImpl() {
+  public HistoricDetailQueryImpl() {
   }
 
-  public HistoricVariableUpdateQueryImpl(CommandExecutor commandExecutor) {
+  public HistoricDetailQueryImpl(CommandExecutor commandExecutor) {
     super(commandExecutor);
   }
 
-  public HistoricVariableUpdateQueryImpl processInstanceId(String processInstanceId) {
+  public HistoricDetailQueryImpl processInstanceId(String processInstanceId) {
     this.processInstanceId = processInstanceId;
     return this;
   }
 
-  public HistoricVariableUpdateQueryImpl variableName(String variableName) {
-    this.variableName = variableName;
+  public HistoricDetailQuery onlyFormProperties() {
+    this.type = "FormProperty";
     return this;
   }
 
-  public HistoricVariableUpdateQueryImpl asc() {
+  public HistoricDetailQuery onlyVariableUpdates() {
+    this.type = "VariableUpdate";
+    return this;
+  }
+
+  public HistoricDetailQueryImpl asc() {
     return direction(Direction.ASCENDING);
   }
   
-  public HistoricVariableUpdateQueryImpl desc() {
+  public HistoricDetailQueryImpl desc() {
     return direction(Direction.DESCENDING);
   }
   
@@ -62,14 +67,14 @@ public class HistoricVariableUpdateQueryImpl extends AbstractQuery<HistoricVaria
     checkQueryOk();
     return commandContext
       .getHistorySession()
-      .findHistoricVariableUpdateCountByQueryCriteria(this);
+      .findHistoricDetailCountByQueryCriteria(this);
   }
 
-  public List<HistoricVariableUpdate> executeList(CommandContext commandContext, Page page) {
+  public List<HistoricDetail> executeList(CommandContext commandContext, Page page) {
     checkQueryOk();
     return commandContext
       .getHistorySession()
-      .findHistoricVariableUpdatesByQueryCriteria(this, page);
+      .findHistoricDetailsByQueryCriteria(this, page);
   }
   
   protected void checkQueryOk() {
@@ -78,7 +83,7 @@ public class HistoricVariableUpdateQueryImpl extends AbstractQuery<HistoricVaria
     }
   }
 
-  public HistoricVariableUpdateQueryImpl direction(Direction direction) {
+  public HistoricDetailQueryImpl direction(Direction direction) {
     if (orderProperty==null) {
       throw new ActivitiException("you should call any of the orderBy methods first before specifying a direction");
     }
@@ -87,11 +92,11 @@ public class HistoricVariableUpdateQueryImpl extends AbstractQuery<HistoricVaria
     return this;
   }
 
-  public HistoricVariableUpdateQueryImpl orderBy(QueryProperty property) {
-    if(!(property instanceof HistoricVariableUpdateQueryProperty)) {
+  public HistoricDetailQueryImpl orderBy(QueryProperty property) {
+    if(!(property instanceof HistoricDetailQueryProperty)) {
       throw new ActivitiException("Only HistoricVariableUpdateQueryProperty can be used with orderBy");
     }
-    this.orderProperty = (HistoricVariableUpdateQueryProperty) property;
+    this.orderProperty = (HistoricDetailQueryProperty) property;
     return this;
   }
 
@@ -99,8 +104,5 @@ public class HistoricVariableUpdateQueryImpl extends AbstractQuery<HistoricVaria
   
   public String getProcessInstanceId() {
     return processInstanceId;
-  }
-  public String getVariableName() {
-    return variableName;
   }
 }

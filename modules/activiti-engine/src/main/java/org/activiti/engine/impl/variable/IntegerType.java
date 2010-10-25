@@ -12,13 +12,12 @@
  */
 package org.activiti.engine.impl.variable;
 
-import org.activiti.engine.impl.runtime.VariableInstanceEntity;
 
 
 /**
  * @author Joram Barrez
  */
-public class IntegerType implements Type {
+public class IntegerType implements VariableType {
 
   private static final long serialVersionUID = 1L;
   
@@ -30,20 +29,20 @@ public class IntegerType implements Type {
     return true;
   }
 
-  public Object getValue(VariableInstanceEntity variableInstanceEntity) {
-    if(variableInstanceEntity.getLongValue() != null) {
-      return new Integer(variableInstanceEntity.getLongValue().intValue());      
+  public Object getValue(ValueFields valueFields) {
+    if(valueFields.getLongValue() != null) {
+      return new Integer(valueFields.getLongValue().intValue());      
     }
     return null;
   }
 
-  public void setValue(Object value, VariableInstanceEntity variableInstanceEntity) {
+  public void setValue(Object value, ValueFields valueFields) {
     if (value!=null) {
-      variableInstanceEntity.setLongValue(((Integer) value).longValue());
-      variableInstanceEntity.setTextValue(value.toString());
+      valueFields.setLongValue(((Integer) value).longValue());
+      valueFields.setTextValue(value.toString());
     } else {
-      variableInstanceEntity.setLongValue(null);
-      variableInstanceEntity.setTextValue(null);
+      valueFields.setLongValue(null);
+      valueFields.setTextValue(null);
     }
   }
 

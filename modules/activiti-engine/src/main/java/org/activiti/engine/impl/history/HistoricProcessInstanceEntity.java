@@ -17,14 +17,30 @@ package org.activiti.engine.impl.history;
 import java.util.Map;
 
 import org.activiti.engine.history.HistoricProcessInstance;
+import org.activiti.engine.impl.runtime.ExecutionEntity;
+import org.activiti.engine.impl.util.ClockUtil;
 
 /**
+ * @author Tom Baeyens
  * @author Christian Stettler
  */
 public class HistoricProcessInstanceEntity extends HistoricScopeInstanceEntity implements HistoricProcessInstance {
 
   protected String endActivityId;
   protected String businessKey;
+  protected String formUserId;
+  protected String formActivityId;
+
+  public HistoricProcessInstanceEntity() {
+  }
+
+  public HistoricProcessInstanceEntity(ExecutionEntity processInstance) {
+    id = processInstance.getId();
+    processInstanceId = processInstance.getId();
+    businessKey = processInstance.getBusinessKey();
+    processDefinitionId = processInstance.getProcessDefinitionId();
+    startTime = ClockUtil.getCurrentTime();
+  }
 
   @SuppressWarnings("unchecked")
   @Override
@@ -48,5 +64,17 @@ public class HistoricProcessInstanceEntity extends HistoricScopeInstanceEntity i
   }
   public void setEndActivityId(String endActivityId) {
     this.endActivityId = endActivityId;
+  }
+  public String getFormUserId() {
+    return formUserId;
+  }
+  public void setFormUserId(String formUserId) {
+    this.formUserId = formUserId;
+  }
+  public String getFormActivityId() {
+    return formActivityId;
+  }
+  public void setFormActivityId(String formActivityId) {
+    this.formActivityId = formActivityId;
   }
 }

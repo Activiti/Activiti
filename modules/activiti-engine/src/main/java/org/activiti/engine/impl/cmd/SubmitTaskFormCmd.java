@@ -20,7 +20,6 @@ import org.activiti.engine.impl.cfg.TaskSession;
 import org.activiti.engine.impl.form.TaskFormHandler;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
-import org.activiti.engine.impl.runtime.VariableMap;
 import org.activiti.engine.impl.task.TaskEntity;
 
 
@@ -51,14 +50,7 @@ public class SubmitTaskFormCmd implements Command<Object> {
     }
     
     TaskFormHandler taskFormHandler = task.getTaskDefinition().getTaskFormHandler();
-    try {
-      VariableMap.setExternalUpdate(Boolean.TRUE);
-
-      taskFormHandler.submitTaskFormData(task, properties);
-
-    } finally {
-      VariableMap.setExternalUpdate(null);
-    }
+    taskFormHandler.submitFormProperties(properties, task.getExecution());
     
     task.complete();
 

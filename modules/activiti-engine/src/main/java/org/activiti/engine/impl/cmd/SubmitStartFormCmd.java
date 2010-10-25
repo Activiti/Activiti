@@ -16,13 +16,17 @@ package org.activiti.engine.impl.cmd;
 import java.util.Map;
 
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.impl.cfg.ProcessEngineConfiguration;
 import org.activiti.engine.impl.cfg.RepositorySession;
+import org.activiti.engine.impl.db.DbSqlSession;
 import org.activiti.engine.impl.form.StartFormHandler;
+import org.activiti.engine.impl.history.HistoricFormPropertyEntity;
+import org.activiti.engine.impl.history.HistoricProcessInstanceEntity;
+import org.activiti.engine.impl.identity.Authentication;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.repository.ProcessDefinitionEntity;
 import org.activiti.engine.impl.runtime.ExecutionEntity;
-import org.activiti.engine.impl.runtime.VariableMap;
 import org.activiti.engine.runtime.ProcessInstance;
 
 
@@ -47,15 +51,28 @@ public class SubmitStartFormCmd implements Command<ProcessInstance> {
     }
     
     ExecutionEntity processInstance = null;
-    StartFormHandler startFormHandler = processDefinition.getStartFormHandler();
-    try {
-      VariableMap.setExternalUpdate(Boolean.TRUE);
+    processInstance = processDefinition.createProcessInstance();
 
-      processInstance = startFormHandler.submitStartFormData(processDefinition, properties);
+    int historyLevel = commandContext.getProcessEngineConfiguration().getHistoryLevel();
+    if (historyLevel>=ProcessEngineConfiguration.HISTORYLEVEL_ACTIVITY) {
+      DbSqlSession dbSqlSession = commandContext.getSession(DbSqlSession.class);
 
-    } finally {
-      VariableMap.setExternalUpdate(null);
+      if (historyLevel>=ProcessEngineConfiguration.HISTORYLEVEL_AUDIT) {
+        String authenticatedUserId = Authentication.getAuthenticatedUserId();
+        HistoricProcessInstanceEntity historicProcessInstance = dbSqlSession.selectById(HistoricProcessInstanceEntity.class, processInstance.getId());
+        historicProcessInstance.setFormUserId(authenticatedUserId);
+        historicProcessInstance.setFormActivityId(processInstance.getActivityId());
+        
+        for (String propertyId: properties.keySet()) {
+          String propertyValue = properties.get(propertyId);
+          HistoricFormPropertyEntity historicFormProperty = new HistoricFormPropertyEntity(processInstance, propertyId, propertyValue);
+          dbSqlSession.insert(historicFormProperty);
+        }
+      }
     }
+    
+    StartFormHandler startFormHandler = processDefinition.getStartFormHandler();
+    startFormHandler.submitFormProperties(properties, processInstance);
 
     processInstance.start();
     

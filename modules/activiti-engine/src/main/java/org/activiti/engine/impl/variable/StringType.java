@@ -12,13 +12,12 @@
  */
 package org.activiti.engine.impl.variable;
 
-import org.activiti.engine.impl.runtime.VariableInstanceEntity;
 
 
 /**
  * @author Tom Baeyens
  */
-public class StringType implements Type {
+public class StringType implements VariableType {
 
   private static final long serialVersionUID = 1L;
 
@@ -30,12 +29,12 @@ public class StringType implements Type {
     return true;
   }
 
-  public Object getValue(VariableInstanceEntity variableInstanceEntity) {
-    return variableInstanceEntity.getTextValue();
+  public Object getValue(ValueFields valueFields) {
+    return valueFields.getTextValue();
   }
 
-  public void setValue(Object value, VariableInstanceEntity variableInstanceEntity) {
-    variableInstanceEntity.setTextValue((String) value);
+  public void setValue(Object value, ValueFields valueFields) {
+    valueFields.setTextValue((String) value);
   }
 
   public boolean isAbleToStore(Object value) {

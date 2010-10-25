@@ -6,8 +6,10 @@ drop index ACT_IDX_HI_PRO_INST_END;
 drop index ACT_IDX_HI_PRO_I_BUSKEY;
 drop index ACT_IDX_HI_ACT_INST_START;
 drop index ACT_IDX_HI_ACT_INST_END;
-drop index ACT_IDX_HI_VAR_UPD_TIME;
-drop index ACT_IDX_HI_VAR_UPD_NAME;
+drop index ACT_IDX_HI_DETAIL_PROC_INST;
+drop index ACT_IDX_HI_DETAIL_ACT_INST;
+drop index ACT_IDX_HI_DETAIL_TIME;
+drop index ACT_IDX_HI_DETAIL_NAME;
 
 alter table ACT_GE_BYTEARRAY 
     drop constraint FK_BYTEARR_DEPL;
@@ -74,4 +76,4 @@ drop table ACT_RU_IDENTITY_LINK if exists;
 drop table ACT_RU_VARIABLE if exists;
 drop table ACT_HI_PROC_INST if exists;
 drop table ACT_HI_ACT_INST if exists;
-drop table ACT_HI_VAR_UPDATE if exists;
+drop table ACT_HI_DETAIL if exists;

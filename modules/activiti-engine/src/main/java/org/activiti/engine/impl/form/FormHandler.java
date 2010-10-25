@@ -11,22 +11,24 @@
  * limitations under the License.
  */
 
-package org.activiti.engine.history;
+package org.activiti.engine.impl.form;
 
-import org.activiti.engine.query.Query;
+import java.util.Map;
+
+import org.activiti.engine.impl.bpmn.parser.BpmnParse;
+import org.activiti.engine.impl.repository.DeploymentEntity;
+import org.activiti.engine.impl.runtime.ExecutionEntity;
+import org.activiti.engine.impl.util.xml.Element;
 
 
 /**
  * @author Tom Baeyens
  */
-public interface HistoricVariableUpdateQuery extends Query<HistoricVariableUpdateQuery, HistoricVariableUpdate> {
+public interface FormHandler {
 
-  /** Only select historic variable updates with the given process instance.
-   * {@link ProcessInstance) ids and {@link HistoricProcessInstance} ids match. */
-  HistoricVariableUpdateQuery processInstanceId(String processInstanceId);
+  ThreadLocal<FormHandler> current = new ThreadLocal<FormHandler>();
 
-  /** Only select historic variable updates with the given variableName. */
-  HistoricVariableUpdateQuery variableName(String variableName);
+  void parseConfiguration(Element activityElement, DeploymentEntity deployment, BpmnParse bpmnParse);
 
-  
+  void submitFormProperties(Map<String, String> properties, ExecutionEntity execution);
 }

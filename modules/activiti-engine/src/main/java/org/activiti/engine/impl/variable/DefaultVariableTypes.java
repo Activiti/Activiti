@@ -27,8 +27,8 @@ public class DefaultVariableTypes implements Serializable, VariableTypes {
 
   private static final long serialVersionUID = 1L;
 
-  private final List<Type> typesList = new ArrayList<Type>();
-  private final Map<String, Type> typesMap = new HashMap<String, Type>();
+  private final List<VariableType> typesList = new ArrayList<VariableType>();
+  private final Map<String, VariableType> typesMap = new HashMap<String, VariableType>();
 
   public DefaultVariableTypes() {
     addType(new NullType());
@@ -42,31 +42,31 @@ public class DefaultVariableTypes implements Serializable, VariableTypes {
     addType(new SerializableType());
   }
 
-  public DefaultVariableTypes addType(Type type) {
+  public DefaultVariableTypes addType(VariableType type) {
     return addType(type, typesList.size());
   }
   
-  public DefaultVariableTypes addType(Type type, int index) {
+  public DefaultVariableTypes addType(VariableType type, int index) {
     typesList.add(index, type);
     typesMap.put(type.getTypeName(), type);      
     return this;
   }
 
-  public void setTypesList(List<Type> typesList) {
+  public void setTypesList(List<VariableType> typesList) {
     this.typesList.clear();
     this.typesList.addAll(typesList);
     this.typesMap.clear();
-    for (Type type : typesList) {
+    for (VariableType type : typesList) {
       typesMap.put(type.getTypeName(), type);
     }
   }
 
-  public Type getVariableType(String typeName) {
+  public VariableType getVariableType(String typeName) {
     return typesMap.get(typeName);
   }
 
-  public Type findVariableType(Object value) {
-    for (Type type : typesList) {
+  public VariableType findVariableType(Object value) {
+    for (VariableType type : typesList) {
       if (type.isAbleToStore(value)) {
         return type;
       }
@@ -74,12 +74,12 @@ public class DefaultVariableTypes implements Serializable, VariableTypes {
     throw new ActivitiException("couldn't find type for " + value);
   }
 
-  public int getTypeIndex(Type type) {
+  public int getTypeIndex(VariableType type) {
     return typesList.indexOf(type);
   }
 
   public int getTypeIndex(String typeName) {
-    Type type = typesMap.get(typeName);
+    VariableType type = typesMap.get(typeName);
     if(type != null) {
       return getTypeIndex(type);
     } else {
@@ -87,7 +87,7 @@ public class DefaultVariableTypes implements Serializable, VariableTypes {
     }
   }
 
-  public VariableTypes removeType(Type type) {
+  public VariableTypes removeType(VariableType type) {
     typesList.remove(type);
     typesMap.remove(type.getTypeName());
     return this;

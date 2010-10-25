@@ -11,18 +11,16 @@
  * limitations under the License.
  */
 
-package org.activiti.engine.impl.form;
-
-import java.util.Map;
-
-import org.activiti.engine.form.TaskFormData;
-import org.activiti.engine.impl.task.TaskEntity;
+package org.activiti.engine.history;
 
 
 /**
  * @author Tom Baeyens
  */
-public interface TaskFormHandler extends FormHandler {
+public interface HistoricFormProperty extends HistoricDetail {
 
-  TaskFormData createTaskForm(TaskEntity task);
+  String getPropertyId();
+
+  String getPropertyValue();
+
 }

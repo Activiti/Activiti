@@ -20,7 +20,7 @@ import java.sql.SQLException;
 
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.interceptor.CommandContext;
-import org.activiti.engine.impl.variable.Type;
+import org.activiti.engine.impl.variable.VariableType;
 import org.activiti.engine.impl.variable.VariableTypes;
 import org.apache.ibatis.type.JdbcType;
 import org.apache.ibatis.type.TypeHandler;
@@ -35,7 +35,7 @@ public class IbatisVariableTypeHandler implements TypeHandler {
 
   public Object getResult(ResultSet rs, String columnName) throws SQLException {
     String typeName = rs.getString(columnName);
-    Type type = getVariableTypes().getVariableType(typeName);
+    VariableType type = getVariableTypes().getVariableType(typeName);
     if (type == null) {
       throw new ActivitiException("unknown variable type name " + typeName);
     }
@@ -44,7 +44,7 @@ public class IbatisVariableTypeHandler implements TypeHandler {
 
   public Object getResult(CallableStatement cs, int columnIndex) throws SQLException {
     String typeName = cs.getString(columnIndex);
-    Type type = getVariableTypes().getVariableType(typeName);
+    VariableType type = getVariableTypes().getVariableType(typeName);
     if (type == null) {
       throw new ActivitiException("unknown variable type name " + typeName);
     }
@@ -52,7 +52,7 @@ public class IbatisVariableTypeHandler implements TypeHandler {
   }
 
   public void setParameter(PreparedStatement ps, int i, Object parameter, JdbcType jdbcType) throws SQLException {
-    String typeName = ((Type) parameter).getTypeName();
+    String typeName = ((VariableType) parameter).getTypeName();
     ps.setString(i, typeName);
   }
 

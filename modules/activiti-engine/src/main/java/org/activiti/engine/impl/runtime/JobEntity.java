@@ -82,8 +82,8 @@ public abstract class JobEntity implements Serializable, Job, PersistentObject {
   
   public void delete() {
     DbSqlSession dbSqlSession = CommandContext
-    .getCurrent()
-    .getDbSqlSession();
+      .getCurrent()
+      .getDbSqlSession();
 
     dbSqlSession.delete(JobEntity.class, id);
 

@@ -14,12 +14,11 @@ package org.activiti.engine.impl.variable;
 
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.runtime.ByteArrayEntity;
-import org.activiti.engine.impl.runtime.VariableInstanceEntity;
 
 /**
  * @author Tom Baeyens
  */
-public class ByteArrayType implements Type {
+public class ByteArrayType implements VariableType {
 
   private static final long serialVersionUID = 1L;
   
@@ -31,15 +30,15 @@ public class ByteArrayType implements Type {
     return true;
   }
 
-  public Object getValue(VariableInstanceEntity variableInstanceEntity) {
-    if (variableInstanceEntity.getByteArrayValueId()==null) {
+  public Object getValue(ValueFields valueFields) {
+    if (valueFields.getByteArrayValueId()==null) {
       return null;
     }
-    return variableInstanceEntity.getByteArrayValue().getBytes();
+    return valueFields.getByteArrayValue().getBytes();
   }
 
-  public void setValue(Object value, VariableInstanceEntity variableInstanceEntity) {
-    ByteArrayEntity byteArray = variableInstanceEntity.getByteArrayValue();
+  public void setValue(Object value, ValueFields valueFields) {
+    ByteArrayEntity byteArray = valueFields.getByteArrayValue();
     byte[] bytes = (byte[]) value;
     if (byteArray==null) {
       byteArray = new ByteArrayEntity(bytes);
@@ -47,7 +46,7 @@ public class ByteArrayType implements Type {
         .getCurrent()
         .getDbSqlSession()
         .insert(byteArray);
-      variableInstanceEntity.setByteArrayValue(byteArray);
+      valueFields.setByteArrayValue(byteArray);
     } else {
       byteArray.setBytes(bytes);
     }

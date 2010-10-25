@@ -17,8 +17,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.activiti.engine.history.HistoricVariableUpdate;
-import org.activiti.engine.history.HistoricVariableUpdateQueryProperty;
+import org.activiti.engine.history.HistoricDetail;
+import org.activiti.engine.history.HistoricDetailQueryProperty;
+import org.activiti.engine.history.HistoricFormProperty;
 import org.activiti.engine.impl.test.ActivitiInternalTestCase;
 import org.activiti.engine.test.Deployment;
 
@@ -30,26 +31,31 @@ public class HistoricVariableUpdateTest extends ActivitiInternalTestCase {
 
   @Deployment
   public void testHistoricVariableUpdates() {
-    Map<String, Object> variables = new HashMap<String, Object>();
-    variables.put("startFormParamA", "one");
-    variables.put("startFormParamB", new Long(234));
-    variables.put("startFormParamC", new SerializableVariable("contents"));
-    runtimeService.startProcessInstanceByKey("HistoricVariableUpdateProcess", variables);
+    Map<String, String> properties = new HashMap<String, String>();
+    properties.put("startFormParamA", "one");
+    properties.put("startFormParamB", "234");
     
-    List<HistoricVariableUpdate> historicVariableUpdates = historyService
-      .createHistoricVariableUpdateQuery()
-      .orderBy(HistoricVariableUpdateQueryProperty.INDEX).asc()
+    String processInstanceId = formService.submitStartFormData("HistoricVariableUpdateProcess:1", properties).getId();
+
+    List<HistoricDetail> historicDetails = historyService
+      .createHistoricDetailQuery()
+      .orderBy(HistoricDetailQueryProperty.VARIABLE_NAME).asc()
       .list();
     
-//    HistoricVariableUpdate historicVariableUpdate = historicVariableUpdates.get(0);
-//    assertEquals(expected, historicVariableUpdate.getProcessInstanceId());
-//    assertEquals(expected, historicVariableUpdate.getExecutionId());
-//    assertEquals(expected, historicVariableUpdate.getIndex());
-//    assertEquals(expected, historicVariableUpdate.getTime());
-//    assertEquals(expected, historicVariableUpdate.getVariableName());
-//    assertEquals(expected, historicVariableUpdate.getVariableType());
-//    assertEquals(expected, historicVariableUpdate.getValue());
-    
-    System.out.println(historicVariableUpdates);
+    System.out.println(historicDetails);
+
+    HistoricFormProperty historicFormProperty = (HistoricFormProperty) historicDetails.get(0);
+    assertEquals(processInstanceId, historicFormProperty.getProcessInstanceId());
+    assertEquals(processInstanceId, historicFormProperty.getExecutionId());
+    assertNotNull(historicFormProperty.getTime());
+    assertEquals("startFormParamA", historicFormProperty.getPropertyId());
+    assertEquals("one", historicFormProperty.getPropertyValue());
+
+    historicFormProperty = (HistoricFormProperty) historicDetails.get(1);
+    assertEquals(processInstanceId, historicFormProperty.getProcessInstanceId());
+    assertEquals(processInstanceId, historicFormProperty.getExecutionId());
+    assertNotNull(historicFormProperty.getTime());
+    assertEquals("startFormParamB", historicFormProperty.getPropertyId());
+    assertEquals("234", historicFormProperty.getPropertyValue());
   }
 }

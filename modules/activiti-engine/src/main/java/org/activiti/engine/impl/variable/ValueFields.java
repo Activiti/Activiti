@@ -10,37 +10,35 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.activiti.engine.impl.variable;
 
+import org.activiti.engine.impl.runtime.ByteArrayEntity;
 
 
 /**
  * @author Tom Baeyens
  */
-public class DoubleType implements VariableType {
+public interface ValueFields {
 
-  private static final long serialVersionUID = 1L;
+  String getName();
 
-  public String getTypeName() {
-    return "double";
-  }
+  String getTextValue();
+  void setTextValue(String textValue);
 
-  public boolean isCachable() {
-    return true;
-  }
+  String getTextValue2();
+  void setTextValue2(String textValue2);
 
-  public Object getValue(ValueFields valueFields) {
-    return valueFields.getDoubleValue();
-  }
-
-  public void setValue(Object value, ValueFields valueFields) {
-    valueFields.setDoubleValue( (Double) value );
-  }
-
-  public boolean isAbleToStore(Object value) {
-    if (value==null) {
-      return true;
-    }
-    return Double.class.isAssignableFrom(value.getClass());
-  }
+  Long getLongValue();
+  void setLongValue(Long longValue);
+  
+  Double getDoubleValue();
+  void setDoubleValue(Double doubleValue);
+  
+  String getByteArrayValueId();
+  void setByteArrayValue(ByteArrayEntity byteArrayValue);
+  ByteArrayEntity getByteArrayValue();
+  
+  Object getCachedValue();
+  void setCachedValue(Object deserializedObject);
 }

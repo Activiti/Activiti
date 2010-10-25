@@ -176,6 +176,9 @@ public class DbSqlSession implements Session {
     String selectStatement = dbSqlSessionFactory.getSelectStatement(entityClass);
     selectStatement = dbSqlSessionFactory.mapStatement(selectStatement);
     persistentObject = (T) sqlSession.selectOne(selectStatement, id);
+    if (persistentObject==null) {
+      return null;
+    }
     cachePut(persistentObject, true);
     return persistentObject;
   }

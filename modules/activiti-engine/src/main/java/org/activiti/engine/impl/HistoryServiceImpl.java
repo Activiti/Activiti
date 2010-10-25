@@ -17,7 +17,7 @@ package org.activiti.engine.impl;
 import org.activiti.engine.HistoryService;
 import org.activiti.engine.history.HistoricActivityInstanceQuery;
 import org.activiti.engine.history.HistoricProcessInstanceQuery;
-import org.activiti.engine.history.HistoricVariableUpdateQuery;
+import org.activiti.engine.history.HistoricDetailQuery;
 
 /**
  * @author Tom Baeyens
@@ -33,7 +33,7 @@ public class HistoryServiceImpl extends ServiceImpl implements HistoryService {
     return new HistoricActivityInstanceQueryImpl(commandExecutor);
   }
 
-  public HistoricVariableUpdateQuery createHistoricVariableUpdateQuery() {
-    return new HistoricVariableUpdateQueryImpl(commandExecutor);
+  public HistoricDetailQuery createHistoricDetailQuery() {
+    return new HistoricDetailQueryImpl(commandExecutor);
   }
 }

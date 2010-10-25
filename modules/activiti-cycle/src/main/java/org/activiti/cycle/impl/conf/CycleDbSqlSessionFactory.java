@@ -15,7 +15,7 @@ import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.db.DbSqlSessionFactory;
 import org.activiti.engine.impl.db.IbatisVariableTypeHandler;
 import org.activiti.engine.impl.util.IoUtil;
-import org.activiti.engine.impl.variable.Type;
+import org.activiti.engine.impl.variable.VariableType;
 import org.apache.ibatis.builder.xml.XMLConfigBuilder;
 import org.apache.ibatis.mapping.Environment;
 import org.apache.ibatis.session.Configuration;
@@ -48,7 +48,7 @@ public class CycleDbSqlSessionFactory extends DbSqlSessionFactory {
       XMLConfigBuilder parser = new XMLConfigBuilder(reader);
       Configuration configuration = parser.getConfiguration();
       configuration.setEnvironment(environment);
-      configuration.getTypeHandlerRegistry().register(Type.class, JdbcType.VARCHAR, new IbatisVariableTypeHandler());
+      configuration.getTypeHandlerRegistry().register(VariableType.class, JdbcType.VARCHAR, new IbatisVariableTypeHandler());
       configuration = parser.parse();
       
       return new DefaultSqlSessionFactory(configuration);

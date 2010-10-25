@@ -11,18 +11,25 @@
  * limitations under the License.
  */
 
-package org.activiti.engine.impl.form;
+package org.activiti.engine.history;
 
-import java.util.Map;
-
-import org.activiti.engine.form.TaskFormData;
-import org.activiti.engine.impl.task.TaskEntity;
+import org.activiti.engine.query.Query;
 
 
 /**
  * @author Tom Baeyens
  */
-public interface TaskFormHandler extends FormHandler {
+public interface HistoricDetailQuery extends Query<HistoricDetailQuery, HistoricDetail> {
 
-  TaskFormData createTaskForm(TaskEntity task);
+  /** Only select historic variable updates with the given process instance.
+   * {@link ProcessInstance) ids and {@link HistoricProcessInstance} ids match. */
+  HistoricDetailQuery processInstanceId(String processInstanceId);
+
+  /** Only select {@link HistoricFormProperty}s. */
+  HistoricDetailQuery onlyFormProperties();
+
+  /** Only select {@link HistoricVariableUpdate}s. */
+  HistoricDetailQuery onlyVariableUpdates();
+
+  
 }

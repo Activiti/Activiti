@@ -32,8 +32,8 @@ import org.activiti.engine.impl.util.xml.Element;
 /**
  * @author Tom Baeyens
  */
-public class DefaultFormHandler {
-
+public class DefaultFormHandler implements FormHandler {
+  
   protected String formKey;
   protected String deploymentId;
   protected List<FormPropertyHandler> formPropertyHandlers = new ArrayList<FormPropertyHandler>();
@@ -118,7 +118,7 @@ public class DefaultFormHandler {
     formData.setFormProperties(formProperties);
   }
 
-  protected void submitFormProperties(Map<String, String> properties, ExecutionEntity execution) {
+  public void submitFormProperties(Map<String, String> properties, ExecutionEntity execution) {
     Map<String, String> propertiesCopy = new HashMap<String, String>(properties);
     for (FormPropertyHandler formPropertyHandler: formPropertyHandlers) {
       // submitFormProperty will remove all the keys which it takes care of

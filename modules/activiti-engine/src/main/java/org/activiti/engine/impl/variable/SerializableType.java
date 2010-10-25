@@ -35,37 +35,39 @@ public class SerializableType extends ByteArrayType {
     return TYPE_NAME;
   }
 
-  public Object getValue(VariableInstanceEntity variableInstanceEntity) {
-    Object cachedObject = variableInstanceEntity.getCachedValue();
+  public Object getValue(ValueFields valueFields) {
+    Object cachedObject = valueFields.getCachedValue();
     if (cachedObject!=null) {
       return cachedObject;
     }
-    byte[] bytes = (byte[]) super.getValue(variableInstanceEntity);
+    byte[] bytes = (byte[]) super.getValue(valueFields);
     ByteArrayInputStream bais = new ByteArrayInputStream(bytes);
     Object deserializedObject;
     try {
       ObjectInputStream ois = new ObjectInputStream(bais);
       deserializedObject = ois.readObject();
-      variableInstanceEntity.setCachedValue(deserializedObject);
+      valueFields.setCachedValue(deserializedObject);
       
-      CommandContext
-        .getCurrent()
-        .getDbSqlSession()
-        .addDeserializedObject(deserializedObject, bytes, variableInstanceEntity);
+      if (valueFields instanceof VariableInstanceEntity) {
+        CommandContext
+          .getCurrent()
+          .getDbSqlSession()
+          .addDeserializedObject(deserializedObject, bytes, (VariableInstanceEntity) valueFields);
+      }
       
     } catch (Exception e) {
-      throw new ActivitiException("coudn't deserialize object in variable '"+variableInstanceEntity.getName()+"'", e);
+      throw new ActivitiException("coudn't deserialize object in variable '"+valueFields.getName()+"'", e);
     }
     return deserializedObject;
   }
 
-  public void setValue(Object value, VariableInstanceEntity variableInstanceEntity) {
-    byte[] byteArray = serialize(value, variableInstanceEntity);
-    variableInstanceEntity.setCachedValue(value);
-    super.setValue(byteArray, variableInstanceEntity);
+  public void setValue(Object value, ValueFields valueFields) {
+    byte[] byteArray = serialize(value, valueFields);
+    valueFields.setCachedValue(value);
+    super.setValue(byteArray, valueFields);
   }
 
-  public static byte[] serialize(Object value, VariableInstanceEntity variableInstanceEntity) {
+  public static byte[] serialize(Object value, ValueFields valueFields) {
     if(value == null) {
       return null;
     }
@@ -74,7 +76,7 @@ public class SerializableType extends ByteArrayType {
       ObjectOutputStream ois = new ObjectOutputStream(baos);
       ois.writeObject(value);
     } catch (Exception e) {
-      throw new ActivitiException("coudn't deserialize value '"+value+"' in variable '"+variableInstanceEntity.getName()+"'", e);
+      throw new ActivitiException("coudn't deserialize value '"+value+"' in variable '"+valueFields.getName()+"'", e);
     }
     return baos.toByteArray();
   }

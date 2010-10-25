@@ -20,7 +20,7 @@ import org.activiti.engine.impl.runtime.VariableInstanceEntity;
 /**
  * @author Tom Baeyens
  */
-public class DateType implements Type {
+public class DateType implements VariableType {
 
   public String getTypeName() {
     return "date";
@@ -37,19 +37,19 @@ public class DateType implements Type {
     return Date.class.isAssignableFrom(value.getClass());
   }
 
-  public Object getValue(VariableInstanceEntity variableInstanceEntity) {
-    Long longValue = variableInstanceEntity.getLongValue();
+  public Object getValue(ValueFields valueFields) {
+    Long longValue = valueFields.getLongValue();
     if (longValue!=null) {
       return new Date(longValue);
     }
     return null;
   }
 
-  public void setValue(Object value, VariableInstanceEntity variableInstanceEntity) {
+  public void setValue(Object value, ValueFields valueFields) {
     if (value!=null) {
-      variableInstanceEntity.setLongValue(((Date)value).getTime());
+      valueFields.setLongValue(((Date)value).getTime());
     } else {
-      variableInstanceEntity.setLongValue(null);
+      valueFields.setLongValue(null);
     }
   }
 }
