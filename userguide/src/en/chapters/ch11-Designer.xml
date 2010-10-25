@@ -63,7 +63,7 @@
         </listitem>
         <listitem>
           <para>
-            Support for the activiti extensions: Java class configuration, assignee and candidate user/group.
+            Support for the Activiti extensions: Java class configuration, assignee and candidate user/group.
           </para>
         </listitem>  
         <listitem>

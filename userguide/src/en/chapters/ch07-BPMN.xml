@@ -1501,7 +1501,7 @@ List&lt;Task&gt; tasks = taskService.createTaskQuery().assignee(&quot;kermit&quo
              activiti:method-expr=&quot;#{printer.printMessage(execution, myVar)}&quot; /&gt;
 </programlisting>
 		Method <literal>printMessage</literal> will be called on the object named <literal>printer</literal>. The first
-		parameter passed is the <literal>DelegateExecution</literal>, which is available in the epression context by default
+		parameter passed is the <literal>DelegateExecution</literal>, which is available in the expression context by default
 		available as <literal>expression</literal>. The second parameter passed, is the value of the variable with name <literal>myVar</literal>
 		in the current execution. 
        </para>
@@ -1578,7 +1578,7 @@ public class ToUppercase extends BpmnJavaDelegation {
       <title>Field injection</title>
       
         <para>
-        It's possible to inject values into the fields of the delegated classes. The folowing types of injection are supported:
+        It's possible to inject values into the fields of the delegated classes. The following types of injection are supported:
         <itemizedlist>
           <listitem><para>Fixed string values.</para></listitem>
           <listitem><para>Value expressions.</para></listitem>
@@ -1710,7 +1710,7 @@ public class ReverseStringsFieldInjected extends BpmnJavaDelegation {
         </itemizedlist>
         </para>
         <para>
-        The folowing process definition contains 3 event-listeners:
+        The following process definition contains 3 event-listeners:
           <programlisting>
   &lt;process id=&quot;eventListenersProcess&quot;&gt;
   
@@ -1775,7 +1775,7 @@ public class ExampleEventListenerOne implements <emphasis role="bold">EventListe
       
         <title>Field injection on event listeners</title>
         <para>
-         When using an eventlistener that is configured with the <literal>class</literal> attribute, field injection can be applied. This is exaclty the same
+         When using an eventlistener that is configured with the <literal>class</literal> attribute, field injection can be applied. This is exactly the same
          mechanism as used <link linkend="serviceTaskFieldInjection">Service task field injection</link>, which contains an overview of the possibilities provided by field injection. 
         </para>
         <para>

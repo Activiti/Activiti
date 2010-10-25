@@ -136,7 +136,7 @@
     	    </listitem>
     	    <listitem>
     	      <para>
-    	        The only thing left to do is calling the folowing ant target, in the build-file located in <literal>/setup</literal>: 
+    	        The only thing left to do is calling the following ant target, in the build-file located in <literal>/setup</literal>: 
     	        <programlisting>db.oracle.install.driver</programlisting>  
     	        The ant-target will actually install the jdbc-driver in the maven repository to be able to use it afterward, using the command:
     	        <programlisting>

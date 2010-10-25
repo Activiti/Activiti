@@ -8,7 +8,7 @@
   <para>
     You can use JPA-Entities as process variables, allowing you to:
     <itemizedlist>
-      <listitem><para>Updating existing JPA-entities based on process variables, that can be filled in on a form in a usertask or generated in a serviceTask.</para></listitem>
+      <listitem><para>Updating existing JPA-entities based on process variables, that can be filled in on a form in a userTask or generated in a serviceTask.</para></listitem>
       <listitem><para>Reusing existing domain model without having to write explicit services to fetch the entities and update the values</para></listitem>
       <listitem><para>Make decisions (gateways) based on properties of existing entities.</para></listitem>
       <listitem><para>...</para></listitem>
@@ -22,7 +22,7 @@
       <itemizedlist>
         <listitem>
           <para>
-            Entities should be configured using JPA-annotations, we support both field and property-access. Mapped superclasses can
+            Entities should be configured using JPA-annotations, we support both field and property-access. Mapped super classes can
             also be used.
 	      </para>
         </listitem>
@@ -30,7 +30,7 @@
           <para>
             Entity should have a primary key annotated with <literal>@Id</literal>, compound primary keys are not supported 
             (<literal>@EmbeddedId</literal> and <literal>@IdClass</literal>). The Id field/property can be of any type supported in the JPA-spec:
-            Primitive types and threir wrappers (excluding boolean), <literal>String</literal>, <literal>BigInteger</literal>, <literal>BigDecimal</literal>,
+            Primitive types and their wrappers (excluding boolean), <literal>String</literal>, <literal>BigInteger</literal>, <literal>BigDecimal</literal>,
             <literal>java.util.Date</literal> and <literal>java.sql.Date</literal>.
           </para>
         </listitem>
@@ -71,7 +71,7 @@ ProcessEngine engine = new ProcessEngineBuilder()
             <para>
               <emphasis role="bold"><literal>closeEntityManager: </literal></emphasis>Flag indicating that the engine should close the <literal>EntityManager</literal> instance
               that was obtained from the <literal>EntityManagerFactory</literal>. Set to false when the <literal>EntityManager</literal> is container-managed
-              (eg. when using an Extended Persistence Context which isn't scoped to a single transaction').
+              (e.g. when using an Extended Persistence Context which isn't scoped to a single transaction').
             </para>
           </listitem>
         </itemizedlist>
@@ -121,7 +121,7 @@ ProcessEngine engine = new ProcessEngineBuilder()
             <para>
               <emphasis role="bold"><literal>jpaCloseEntityManager: </literal></emphasis>Flag indicating that the engine should close the <literal>EntityManager</literal> instance
               that was obtained from the <literal>jpaCloseEntityManager</literal>. Set to false when the <literal>EntityManager</literal> is container-managed
-              (eg. when using an Extended Persistence Context which isn't scoped to a single transaction').
+              (e.g. when using an Extended Persistence Context which isn't scoped to a single transaction').
             </para>
           </listitem>
         </itemizedlist>
@@ -187,14 +187,14 @@ ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("Upda
         </programlisting>
       </para>
       <para>
-        The first node in our processdefinition contains a <literal>serviceTask</literal> that will invoke the method <literal>setValue</literal> on <literal>entityToUpdate</literal>, which resolves to
+        The first node in our process definition contains a <literal>serviceTask</literal> that will invoke the method <literal>setValue</literal> on <literal>entityToUpdate</literal>, which resolves to
         the JPA variable we set earlier when starting the process instance and will be loaded from the <literal>EntityManager</literal> associated with the current engine's context'.
         <programlisting>
 &lt;serviceTask id='theTask' name='updateJPAEntityTask' activiti:method-expr=&quot;${entityToUpdate.setValue('updatedValue')}&quot; /&gt;        
         </programlisting>
       </para>
       <para>
-        When the service-task is finished, the processinstance waits in a usertask defined in the processdefinition, which allows us to inspect the processinstance. At this point, the <literal>EntityManager</literal> has been flushed
+        When the service-task is finished, the process instance waits in a userTask defined in the process definition, which allows us to inspect the process instance. At this point, the <literal>EntityManager</literal> has been flushed
         and the changes to the entity have been pushed to the database. When we get the value of the variable <literal>entityToUpdate</literal>, it's loaded again and we get
         the entity with it's <literal>value</literal> property set to <literal>updatedValue</literal>. 
         <programlisting>
@@ -223,23 +223,23 @@ assertEquals("updatedValue", ((FieldAccessJPAEntity)updatedEntity).getValue());
     <section>
       <title>Advanced example using Spring beans and JPA</title>
       <para>
-        A more advanced example, <literal>JPASpringTest</literal>, can be found in <literal>activiti-spring-examples</literal>. It describes the folowing simple usecase:
+        A more advanced example, <literal>JPASpringTest</literal>, can be found in <literal>activiti-spring-examples</literal>. It describes the following simple use case:
         <itemizedlist>
           <listitem>
             <para>An existing Spring-bean which uses JPA entities already exists which allows for Loan Requests to be stored.</para>
           </listitem>
            <listitem>
-            <para>Using activiti, we can use the existing entities, obtained through the existing bean, and use them as variable in our process.</para>
+            <para>Using Activiti, we can use the existing entities, obtained through the existing bean, and use them as variable in our process.</para>
             <para>
-              Process is defined in the folowing steps:
+              Process is defined in the following steps:
                <itemizedlist>
                 <listitem>
                   <para>Service task that creates a new LoanRequest, using the existing <literal>LoanRequestBean</literal> using variables received
-                  when starting the process (eg. could come from a start form). The created entity is stored as a variable, using <literal>activiti:result-variable-name</literal>
+                  when starting the process (e.g. could come from a start form). The created entity is stored as a variable, using <literal>activiti:result-variable-name</literal>
                   which stored the method-expression result as a variable.
                   </para>
                 </listitem>
-                <listitem><para>Usertask that allows a manager to review the request and approve/dissaprove, which is stored as a boolean variable <literal>approvedByManager</literal></para></listitem>
+                <listitem><para>UserTask that allows a manager to review the request and approve/disapprove, which is stored as a boolean variable <literal>approvedByManager</literal></para></listitem>
                 <listitem><para>ServiceTask that updates the loan request entity so the entity is in sync with the process.</para></listitem>
                 <listitem>
                   <para>Depending on the value of the entity property <literal>approved</literal>, an exclusive gateway is used to make a decision
@@ -298,8 +298,8 @@ assertEquals("updatedValue", ((FieldAccessJPAEntity)updatedEntity).getValue());
 
         </programlisting>
       </para>
-      <para>Although the example above is quite simple, it shows the power of using JPA combined with Spring and parameterised method-expressions. The process requires
-      no custom java-code at all (except for the Spring-bean offcourse) and speeds up development drastically.
+      <para>Although the example above is quite simple, it shows the power of using JPA combined with Spring and parametrized method-expressions. The process requires
+      no custom java-code at all (except for the Spring-bean off course) and speeds up development drastically.
       </para>
     </section>
   </section>

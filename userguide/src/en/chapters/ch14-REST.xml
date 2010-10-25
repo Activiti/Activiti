@@ -239,8 +239,8 @@
         <title>List Process Definitions</title>
         <para>
           Returns details about the deployed process definitions that can be sorted by "id", "name", "version" or
-          "deploymentTime". The name of the BPMN2.0 xml process diagram is givenin the "resourceName" attribute and can,
-          in combination with the "deploymentId" attribute, be retreived from the GET Deployment Resource REST API call
+          "deploymentTime". The name of the BPMN2.0 XML process diagram is given in the "resourceName" attribute and can,
+          in combination with the "deploymentId" attribute, be retrieved from the GET Deployment Resource REST API call
           above. If the process has a start form it is given in the "startFormResourceKey" attribute.
           The start form for a process can be retrieved from the GET Start Process Form REST API call.
         </para>
@@ -618,7 +618,7 @@
         <title>Login</title>
         <para>
           Authenticates a user. If user and password doesn't match a response with status 403 is returned.
-          If authentication is succesful a response with status 200 is returned.
+          If authentication is successful, a response with status 200 is returned.
         </para>
         <itemizedlist>
           <listitem>
@@ -756,7 +756,7 @@
       </section>
 
       <section>
-        <title>List Groups's Users</title>
+        <title>List Group Users</title>
         <para>
           Returns details about a group's users that can be sorted by "id", "firstName", "lastName" or "email".
         </para>

@@ -100,7 +100,7 @@ Motivation:&lt;br/&gt;
     
     <para>
       When deployed, Activiti Explorer can now use these forms. When you click to a process definition name
-      to start a certain process instance, the startform is first retrieved: 
+      to start a certain process instance, the start form is first retrieved: 
       <programlisting>Object startForm = taskService.getRenderedStartFormByKey("vacationRequest");</programlisting>
       (Note that the return value is an <emphasis>object</emphasis>, such that people can plug in their own form types
       into the Activiti engine.)
@@ -168,7 +168,7 @@ taskService.complete("taskId", variables);</programlisting>
     
     <para>
       The demo setup script installs the <emphasis>vacationRequest</emphasis> business process 
-      as an example of using taskforms through Activiti Explorer. Please check the example
+      as an example of using task forms through Activiti Explorer. Please check the example
       for the complete source code.
       The business process mode looks as follows:
       
@@ -207,7 +207,7 @@ Motivation:&lt;br/&gt;
       After submitting the form, a process instance is started and now someone of the
       management team needs to handle the request.   
       <mediaobject><imageobject><imagedata align="center" fileref="images/taskform.vacation.request.management.group.png"/></imageobject></mediaobject>
-      The corresponding user task has a taskform attached to it, which uses the
+      The corresponding user task has a task form attached to it, which uses the
       variables which were given as input by the employee in the start form. These variables
       are referenced as expressions and are resolved at runtime to their text representation.
       <programlisting>&lt;h1&gt;Vacation Approval&lt;/h1&gt;

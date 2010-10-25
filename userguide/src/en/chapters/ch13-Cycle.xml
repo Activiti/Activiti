@@ -30,7 +30,7 @@
         The repositories are plugged in as repository connectors.
         You'll find the configuration as an XML string in
         the table <literal>CYCLE_CONFIG</literal> in the Activiti database,
-        which you can access as decribed in <xref linkend="checking.database"/>.
+        which you can access as described in <xref linkend="checking.database"/>.
         Here is the default configuration for the user kermit:
     </para>
     

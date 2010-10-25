@@ -118,7 +118,7 @@ public class MyBusinessProcessTest extends ActivitiTestCase {
       <emphasis>ActivitiTestCase</emphasis> (see above), including this Rule will enable the use
       of the <emphasis>org.activiti.engine.test.Deployment</emphasis> annotation (see above for an explanation
       of its use and configuration). Process engines are statically cached over
-      mutliple unit tests when using the same configuration resource. 
+      multiple unit tests when using the same configuration resource. 
    </para>
    <para>
      Following code snippet shows an example of using the Junit 4 style of testing and the 
