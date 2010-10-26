@@ -72,7 +72,7 @@
   <select id="selectDeploymentByProcessDefinitionId" parameterType="string" resultMap="deploymentResultMap">
     select * from ACT_RE_DEPLOYMENT D 
     where D.ID_ = 
-      (select P.DEPLOYMENT_ID_ from ACT_RE_PROC_DEF P where P.ID_ = #{processDefinitionId})
+      (select P.DEPLOYMENT_ID_ from ACT_RE_PROCDEF P where P.ID_ = #{processDefinitionId})
   </select>
   
   <!-- RESOURCE INSERT -->
@@ -118,7 +118,7 @@
   <!-- PROCESSDEFINITION INSERT -->
 
   <insert id="insertProcessDefinition" parameterType="org.activiti.engine.impl.repository.ProcessDefinitionEntity">
-    insert into ACT_RE_PROC_DEF(ID_, NAME_, KEY_, VERSION_, DEPLOYMENT_ID_, RESOURCE_NAME_)
+    insert into ACT_RE_PROCDEF(ID_, NAME_, KEY_, VERSION_, DEPLOYMENT_ID_, RESOURCE_NAME_)
     values (#{id, jdbcType=VARCHAR},
             #{name, jdbcType=VARCHAR},
             #{key, jdbcType=VARCHAR}, 
@@ -132,7 +132,7 @@
   <!-- PROCESSDEFINITION DELETE -->
 
   <delete id="deleteProcessDefinitionsByDeploymentId" parameterType="string">
-    delete from ACT_RE_PROC_DEF where DEPLOYMENT_ID_ = #{deploymenId} 
+    delete from ACT_RE_PROCDEF where DEPLOYMENT_ID_ = #{deploymenId} 
   </delete>
   
   <!-- PROCESSDEFINITION RESULTMAP -->
@@ -149,7 +149,7 @@
   <!-- PROCESSDEFINITION SELECT -->
   
   <select id="selectProcessDefinitionById" parameterType="string" resultMap="processDefinitionResultMap">
-    select * from ACT_RE_PROC_DEF where ID_ = #{processDefinitionId}
+    select * from ACT_RE_PROCDEF where ID_ = #{processDefinitionId}
   </select>
 
   <select id="selectProcessDefinitionsByQueryCriteria" parameterType="org.activiti.engine.impl.ProcessDefinitionQueryImpl" resultMap="processDefinitionResultMap">
@@ -166,7 +166,7 @@
   </select>
   
   <sql id="selectProcessDefinitionsByQueryCriteriaSql">  
-    from ACT_RE_PROC_DEF PD
+    from ACT_RE_PROCDEF PD
     <where>
       <if test="id != null">
         PD.ID_ = #{id}
@@ -190,36 +190,36 @@
         and PD.DEPLOYMENT_ID_ = #{deploymentId}
       </if>
       <if test="latest">
-        and PD.VERSION_ = (select max(VERSION_) from ACT_RE_PROC_DEF where KEY_ = PD.KEY_)
+        and PD.VERSION_ = (select max(VERSION_) from ACT_RE_PROCDEF where KEY_ = PD.KEY_)
       </if>
     </where>
   </sql>
   
   <select id="selectProcessDefinitions" resultMap="processDefinitionResultMap">
-    select * from ACT_RE_PROC_DEF
+    select * from ACT_RE_PROCDEF
     order by KEY_ ASC, VERSION_ DESC
   </select>
   
   <select id="selectProcessDefinitionByDeployment" parameterType="string" resultMap="processDefinitionResultMap">
-    select * from ACT_RE_PROC_DEF where DEPLOYMENT_ID_ = #{deploymentId}
+    select * from ACT_RE_PROCDEF where DEPLOYMENT_ID_ = #{deploymentId}
   </select>
   
   <select id="selectProcessDefinitionByDeploymentAndKey" parameterType="map" resultMap="processDefinitionResultMap">
     select * 
-    from ACT_RE_PROC_DEF 
+    from ACT_RE_PROCDEF 
     where DEPLOYMENT_ID_ = #{deploymentId}
       and KEY_ = #{processDefinitionKey}
   </select>
   
   <select id="selectProcessDefinitionsByDeploymentId" parameterType="string" resultMap="processDefinitionResultMap">
-    select * from ACT_RE_PROC_DEF where DEPLOYMENT_ID_ = #{deploymentId}
+    select * from ACT_RE_PROCDEF where DEPLOYMENT_ID_ = #{deploymentId}
   </select>
   
   <select id="selectLatestProcessDefinitionByKey" parameterType="string" resultMap="processDefinitionResultMap">
     select *
-    from ACT_RE_PROC_DEF 
+    from ACT_RE_PROCDEF 
     where KEY_ = #{key} and
-          VERSION_ = (select max(VERSION_) from ACT_RE_PROC_DEF where KEY_ = #{processDefinitionKey})
+          VERSION_ = (select max(VERSION_) from ACT_RE_PROCDEF where KEY_ = #{processDefinitionKey})
   </select>
 
 <!-- mysql specific sql -->

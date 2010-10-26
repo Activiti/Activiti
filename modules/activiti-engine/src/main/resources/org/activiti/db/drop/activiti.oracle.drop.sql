@@ -44,7 +44,7 @@ alter table ACT_ID_MEMBERSHIP
 alter table ACT_ID_MEMBERSHIP 
     drop CONSTRAINT FK_MEMB_USER;
     
-alter table ACT_RU_IDENTITY_LINK
+alter table ACT_RU_IDENTITYLINK
     drop CONSTRAINT FK_TSKASS_TASK;
 
 alter table ACT_RU_TASK
@@ -72,14 +72,14 @@ drop table  ACT_GE_PROPERTY;
 drop table  ACT_RU_VARIABLE;
 drop table  ACT_GE_BYTEARRAY;
 drop table  ACT_RE_DEPLOYMENT;
-drop table  ACT_RU_IDENTITY_LINK;
+drop table  ACT_RU_IDENTITYLINK;
 drop table  ACT_RU_TASK;
-drop table  ACT_RE_PROC_DEF;
+drop table  ACT_RE_PROCDEF;
 drop table  ACT_RU_EXECUTION;
 drop table  ACT_ID_MEMBERSHIP;
 drop table  ACT_ID_GROUP;
 drop table  ACT_ID_USER;
 drop table  ACT_RU_JOB;
-drop table  ACT_HI_PROC_INST;
-drop table  ACT_HI_ACT_INST;
+drop table  ACT_HI_PROCINST;
+drop table  ACT_HI_ACTINST;
 drop table  ACT_HI_DETAIL;

@@ -85,7 +85,7 @@ create table ACT_ID_USER (
     primary key (ID_)
 );
 
-create table ACT_RE_PROC_DEF (
+create table ACT_RE_PROCDEF (
     ID_ varchar(64),
     NAME_ varchar(255),
     KEY_ varchar(255),
@@ -110,7 +110,7 @@ create table ACT_RU_TASK (
     primary key (ID_)
 );
 
-create table ACT_RU_IDENTITY_LINK (
+create table ACT_RU_IDENTITYLINK (
     ID_ varchar(64),
     REV_ integer,
     GROUP_ID_ varchar(64),
@@ -135,7 +135,7 @@ create table ACT_RU_VARIABLE (
     primary key (ID_)
 );
 
-create table ACT_HI_PROC_INST (
+create table ACT_HI_PROCINST (
     ID_ varchar(64) not null,
     PROC_INST_ID_ varchar(64) not null,
     BUSINESS_KEY_ varchar(255),
@@ -150,7 +150,7 @@ create table ACT_HI_PROC_INST (
     unique (PROC_INST_ID_)
 );
 
-create table ACT_HI_ACT_INST (
+create table ACT_HI_ACTINST (
     ID_ varchar(64) not null,
     PROC_DEF_ID_ varchar(64) not null,
     PROC_INST_ID_ varchar(64) not null,
@@ -185,12 +185,12 @@ create table ACT_HI_DETAIL (
 
 create index ACT_IDX_EXEC_BUSKEY on ACT_RU_EXECUTION(BUSINESS_KEY_);
 create index ACT_IDX_TASK_CREATE on ACT_RU_TASK(CREATE_TIME_);
-create index ACT_IDX_IDENT_LNK_USER on ACT_RU_IDENTITY_LINK(USER_ID_);
-create index ACT_IDX_IDENT_LNK_GROUP on ACT_RU_IDENTITY_LINK(GROUP_ID_);
-create index ACT_IDX_HI_PRO_INST_END on ACT_HI_PROC_INST(END_TIME_);
-create index ACT_IDX_HI_PRO_I_BUSKEY on ACT_HI_PROC_INST(BUSINESS_KEY_);
-create index ACT_IDX_HI_ACT_INST_START on ACT_HI_ACT_INST(START_TIME_);
-create index ACT_IDX_HI_ACT_INST_END on ACT_HI_ACT_INST(END_TIME_);
+create index ACT_IDX_IDENT_LNK_USER on ACT_RU_IDENTITYLINK(USER_ID_);
+create index ACT_IDX_IDENT_LNK_GROUP on ACT_RU_IDENTITYLINK(GROUP_ID_);
+create index ACT_IDX_HI_PRO_INST_END on ACT_HI_PROCINST(END_TIME_);
+create index ACT_IDX_HI_PRO_I_BUSKEY on ACT_HI_PROCINST(BUSINESS_KEY_);
+create index ACT_IDX_HI_ACT_INST_START on ACT_HI_ACTINST(START_TIME_);
+create index ACT_IDX_HI_ACT_INST_END on ACT_HI_ACTINST(END_TIME_);
 create index ACT_IDX_HI_DETAIL_PROC_INST on ACT_HI_DETAIL(PROC_INST_ID_);
 create index ACT_IDX_HI_DETAIL_ACT_INST on ACT_HI_DETAIL(ACT_INST_ID_);
 create index ACT_IDX_HI_DETAIL_TIME on ACT_HI_DETAIL(TIME_);
@@ -220,7 +220,7 @@ alter table ACT_RU_EXECUTION
     add constraint UNIQ_RU_BUS_KEY
     unique(PROC_DEF_ID_, BUSINESS_KEY_);
     
-alter table ACT_HI_PROC_INST
+alter table ACT_HI_PROCINST
     add constraint UNIQ_HI_BUS_KEY
     unique(PROC_DEF_ID_, BUSINESS_KEY_);
 
@@ -234,7 +234,7 @@ alter table ACT_ID_MEMBERSHIP
     foreign key (USER_ID_)
     references ACT_ID_USER;
 
-alter table ACT_RU_IDENTITY_LINK
+alter table ACT_RU_IDENTITYLINK
     add constraint FK_TSKASS_TASK
     foreign key (TASK_ID_)
     references ACT_RU_TASK;
@@ -252,7 +252,7 @@ alter table ACT_RU_TASK
 alter table ACT_RU_TASK
   add constraint FK_TASK_PROCDEF
   foreign key (PROC_DEF_ID_)
-  references ACT_RE_PROC_DEF;
+  references ACT_RE_PROCDEF;
 
 alter table ACT_RU_VARIABLE
     add constraint FK_VAR_EXE

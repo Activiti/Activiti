@@ -37,9 +37,9 @@ public class ManagementServiceTest extends ActivitiInternalTestCase {
     assertEquals(new Long(0), tableCount.get("ACT_ID_GROUP"));
     assertEquals(new Long(0), tableCount.get("ACT_ID_MEMBERSHIP"));
     assertEquals(new Long(0), tableCount.get("ACT_ID_USER"));
-    assertEquals(new Long(0), tableCount.get("ACT_RE_PROC_DEF"));
+    assertEquals(new Long(0), tableCount.get("ACT_RE_PROCDEF"));
     assertEquals(new Long(0), tableCount.get("ACT_RU_TASK"));
-    assertEquals(new Long(0), tableCount.get("ACT_RU_IDENTITY_LINK"));
+    assertEquals(new Long(0), tableCount.get("ACT_RU_IDENTITYLINK"));
     ;
   }
 

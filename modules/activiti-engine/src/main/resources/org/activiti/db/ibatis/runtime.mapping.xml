@@ -104,7 +104,7 @@
     <foreach collection="variables" index="index" item="var">
     	inner join ACT_RU_VARIABLE A${index} on E.ID_ = A${index}.EXECUTION_ID_ 
     </foreach>
-    inner join ACT_RE_PROC_DEF P on E.PROC_DEF_ID_ = P.ID_
+    inner join ACT_RE_PROCDEF P on E.PROC_DEF_ID_ = P.ID_
     <where>
       <if test="onlyProcessInstances">
         E.PARENT_ID_ is null
