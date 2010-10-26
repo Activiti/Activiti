@@ -17,7 +17,7 @@ import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.impl.el.Expression;
 
 /**
- * Example BpmnJavaDelegation that uses an injected
+ * Example JavaDelegation that uses an injected
  * {@link Expression}s in fields 'text1' and 'text2'. While executing, 'var1' is set with the reversed result of the
  * method invocation and 'var2' will be the reversed result of the value expression.
  * 
