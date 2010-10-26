@@ -11,7 +11,7 @@
     
     <serviceTask id='createLoanRequest' name='Create loan request' 
       activiti:expression="${loanRequestBean.newLoanRequest(customerName, amount)}" 
-      activiti:result-variable-name="loanRequest"/>    
+      activiti:resultVariableName="loanRequest"/>    
     <sequenceFlow id='flow2' sourceRef='createLoanRequest' targetRef='approveTask' />
     
     <userTask id="approveTask" name="Approve request" />

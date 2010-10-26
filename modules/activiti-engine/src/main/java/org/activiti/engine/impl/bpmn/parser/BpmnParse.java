@@ -610,7 +610,7 @@ public class BpmnParse extends Parse {
         language = ScriptingEngines.DEFAULT_SCRIPTING_LANGUAGE;
       }
 
-      resultVariableName = scriptTaskElement.attributeNS(BpmnParser.BPMN_EXTENSIONS_NS, "result-variable-name");
+      resultVariableName = scriptTaskElement.attributeNS(BpmnParser.BPMN_EXTENSIONS_NS, "resultVariableName");
     }
     
     activity.setActivityBehavior(new ScriptTaskActivity(script, language, resultVariableName));
@@ -631,7 +631,7 @@ public class BpmnParse extends Parse {
     String type = serviceTaskElement.attributeNS(BpmnParser.BPMN_EXTENSIONS_NS, "type");
     String className = serviceTaskElement.attributeNS(BpmnParser.BPMN_EXTENSIONS_NS, "class");
     String expression = serviceTaskElement.attributeNS(BpmnParser.BPMN_EXTENSIONS_NS, "expression");
-    String resultVariableName = serviceTaskElement.attributeNS(BpmnParser.BPMN_EXTENSIONS_NS, "result-variable-name");
+    String resultVariableName = serviceTaskElement.attributeNS(BpmnParser.BPMN_EXTENSIONS_NS, "resultVariableName");
     String implementation = serviceTaskElement.attribute("implementation");
     String operationRef = serviceTaskElement.attribute("operationRef");
     List<FieldDeclaration> fieldDeclarations = parseFieldDeclarationsOnServiceTask(serviceTaskElement);
@@ -645,7 +645,7 @@ public class BpmnParse extends Parse {
     
     } else if (className != null && className.trim().length() > 0) {
       if (resultVariableName != null) {
-        addError("'result-variable-name' not supported for service tasks using 'class'", serviceTaskElement);
+        addError("'resultVariableName' not supported for service tasks using 'class'", serviceTaskElement);
       }
 
       activity.setActivityBehavior(new ServiceTaskDelegateActivityBehaviour(className, fieldDeclarations));
@@ -780,7 +780,7 @@ public class BpmnParse extends Parse {
     String stringElementText = null;
     
     if(attributeValue != null && childElement != null) {
-      addError("Can't use attribute '" + attributeName + "' and element '" + elementName + "' toghether, only use one", element);
+      addError("Can't use attribute '" + attributeName + "' and element '" + elementName + "' together, only use one", element);
     } else if (childElement != null) {
       stringElementText = childElement.getText();
       if (stringElementText == null || stringElementText.length() == 0) {

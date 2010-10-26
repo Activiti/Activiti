@@ -16,7 +16,7 @@
                       targetRef="methodExpressionServiceWithResultVariableNameSet"/>
 
         <serviceTask id="methodExpressionServiceWithResultVariableNameSet"
-                     activiti:result-variable-name="result"
+                     activiti:resultVariableName="result"
                      activiti:expression="#{okReturningService.invoke()}"/>
 
         <sequenceFlow sourceRef="methodExpressionServiceWithResultVariableNameSet"

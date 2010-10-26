@@ -235,7 +235,7 @@ assertEquals("updatedValue", ((FieldAccessJPAEntity)updatedEntity).getValue());
                <itemizedlist>
                 <listitem>
                   <para>Service task that creates a new LoanRequest, using the existing <literal>LoanRequestBean</literal> using variables received
-                  when starting the process (e.g. could come from a start form). The created entity is stored as a variable, using <literal>activiti:result-variable-name</literal>
+                  when starting the process (e.g. could come from a start form). The created entity is stored as a variable, using <literal>activiti:resultVariableName</literal>
                   which stores the expression result as a variable.
                   </para>
                 </listitem>
@@ -269,7 +269,7 @@ assertEquals("updatedValue", ((FieldAccessJPAEntity)updatedEntity).getValue());
     
     &lt;serviceTask id='createLoanRequest' name='Create loan request' 
       activiti:expression=&quot;${loanRequestBean.newLoanRequest(customerName, amount)}&quot; 
-      activiti:result-variable-name=&quot;loanRequest&quot;/&gt;    
+      activiti:resultVariableName=&quot;loanRequest&quot;/&gt;    
     &lt;sequenceFlow id='flow2' sourceRef='createLoanRequest' targetRef='approveTask' /&gt;
     
     &lt;userTask id=&quot;approveTask&quot; name=&quot;Approve request&quot; /&gt;

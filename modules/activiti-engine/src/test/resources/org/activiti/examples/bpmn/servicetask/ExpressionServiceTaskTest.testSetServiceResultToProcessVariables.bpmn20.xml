@@ -16,7 +16,7 @@
                       targetRef="valueExpressionServiceWithResultVariableNameSet"/>
 
         <serviceTask id="valueExpressionServiceWithResultVariableNameSet"
-                     activiti:result-variable-name="result"
+                     activiti:resultVariableName="result"
                      activiti:expression="#{bean.value}"/>
 
         <sequenceFlow sourceRef="valueExpressionServiceWithResultVariableNameSet"
