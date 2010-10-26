@@ -50,22 +50,22 @@
 		<echo message="  jdbc.password: ${jdbc.password}"/>
 		
 		<replaceregexp file="./target/test-classes/activiti.cfg.xml" flags="s"
-		                match='database name=".*"' 
+		                match='database name=".*?"' 
 			              replace='database name="${database}"'/>
 		<replaceregexp file="./target/test-classes/activiti.cfg.xml" flags="s"
-		                    match='driver=".*"' 
+		                    match='driver=".*?"' 
 		                    replace='driver="${jdbc.driver}"'/>
 		<replaceregexp file="./target/test-classes/activiti.cfg.xml" flags="s"
-		                        match='url=".*"' 
+		                        match='url=".*?"' 
 		                        replace='url="${jdbc.url}"'/>
 		<replaceregexp file="./target/test-classes/activiti.cfg.xml" flags="s"
-		                        match='username=".*"' 
+		                        match='username=".*?"' 
 		                        replace='username="${jdbc.username}"'/>
 		<replaceregexp file="./target/test-classes/activiti.cfg.xml" flags="s"
-		                        match='password=".*"' 
+		                        match='password=".*?"' 
 		                        replace='driver="${jdbc.password}"'/>
 		<replaceregexp file="./target/test-classes/activiti.cfg.xml" flags="s"
-		                        match='schema-strategy=".*"' 
+		                        match='schema-strategy=".*?"' 
 		                        replace='schema-strategy="${check-version}"'/>
 	</target>
 </project>
