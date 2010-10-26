@@ -50,8 +50,8 @@
 		<echo message="  jdbc.password: ${jdbc.password}"/>
 		
 		<replaceregexp file="./target/test-classes/activiti.cfg.xml" flags="s"
-		                match='database name=".*?"' 
-			              replace='database name="${database}"'/>
+		                match='database type=".*?"' 
+			              replace='database type="${database}"'/>
 		<replaceregexp file="./target/test-classes/activiti.cfg.xml" flags="s"
 		                    match='driver=".*?"' 
 		                    replace='driver="${jdbc.driver}"'/>

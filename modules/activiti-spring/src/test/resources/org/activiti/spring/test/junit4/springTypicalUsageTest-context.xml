@@ -24,7 +24,7 @@
   </bean>
   
   <bean id="processEngine" class="org.activiti.spring.ProcessEngineFactoryBean">
-    <property name="dataBaseName" value="h2" />
+    <property name="databaseType" value="h2" />
     <property name="dataSource" ref="dataSource" />
     <property name="transactionManager" ref="transactionManager" />
     <property name="dbSchemaStrategy" value="drop-create" />

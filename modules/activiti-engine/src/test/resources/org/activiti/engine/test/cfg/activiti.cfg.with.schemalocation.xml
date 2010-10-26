@@ -4,13 +4,13 @@
               xsi:schemaLocation="http://activiti.org/cfg http://activiti.org/cfg/activiti-cfg-5.0.xsd"
               process-engine-name="with-schema">
 
-  <mail host="localhost" port="5025" />
+  <mail server="localhost" port="5025" />
 
-  <job-executor auto-activate="on" />
+  <job-executor activate="on" />
   
   <history level="audit" />
   
-  <database name="h2" schema-strategy="create-if-necessary">
+  <database type="h2" schema-strategy="create-if-necessary">
     <jdbc url="jdbc:h2:mem:activiti;DB_CLOSE_DELAY=1000"
           driver="org.h2.Driver"
           username="sa"

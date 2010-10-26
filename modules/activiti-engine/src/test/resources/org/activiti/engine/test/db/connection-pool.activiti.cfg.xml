@@ -5,7 +5,11 @@
     <jdbc url="jdbc:h2:mem:activiti;DB_CLOSE_DELAY=1000"
           driver="org.h2.Driver"
           username="sa"
-          password="" />
+          password="" 
+          max-active="25"
+          max-idle="10" 
+          max-checkout="30000"
+          max-wait="25000" /> 
   </database>
   
   <job-executor activate="off" />

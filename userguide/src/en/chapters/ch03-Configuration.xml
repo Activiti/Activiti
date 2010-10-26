@@ -23,7 +23,7 @@
       <listitem><para><emphasis role="bold">process.engine.name</emphasis>:  The process engine name.  Only relevant if you're using 
       multiple process engines in one classloading scope.
       </para></listitem>
-      <listitem><para><emphasis role="bold">database</emphasis>:  one of the database names specified in <xref linkend="databasenames" /> </para></listitem>
+      <listitem><para><emphasis role="bold">database</emphasis>:  one of the database names specified in <xref linkend="databaseTypes" /> </para></listitem>
       <listitem><para><emphasis role="bold">jdbc.driver</emphasis>, <emphasis role="bold">jdbc.url</emphasis>, <emphasis role="bold">jdbc.username</emphasis> 
       and <emphasis role="bold">jdbc.password</emphasis>:  JDBC properties pointing to the database Activiti will use.</para></listitem>
       <listitem><para><emphasis role="bold">db.schema.strategy</emphasis>: { <literal>check-version</literal> | <literal>create-drop</literal> } <literal>check-version</literal> 
@@ -41,7 +41,7 @@
   <section id="supporteddatabases">
     <title>Supported databases</title>
     <para>Following are the names (case sensitive!) that Activiti uses to refer to databases.</para>
-    <table id="databasenames">
+    <table id="databaseTypes">
       <title>Supported databases</title>
       <tgroup cols='3'>
         <thead>

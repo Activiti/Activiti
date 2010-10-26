@@ -93,7 +93,7 @@ ProcessEngine engine = new ProcessEngineBuilder()
 &lt;/bean&gt;
   
 &lt;bean id=&quot;processEngine&quot; class=&quot;org.activiti.spring.ProcessEngineFactoryBean&quot;&gt;
-  &lt;property name=&quot;dataBaseName&quot; value=&quot;h2&quot; /&gt;
+  &lt;property name=&quot;dataBaseType&quot; value=&quot;h2&quot; /&gt;
   &lt;property name=&quot;dataSource&quot; ref=&quot;dataSource&quot; /&gt;
   &lt;property name=&quot;transactionManager&quot; ref=&quot;transactionManager&quot; /&gt;
   &lt;property name=&quot;dbSchemaStrategy&quot; value=&quot;create-drop&quot; /&gt;

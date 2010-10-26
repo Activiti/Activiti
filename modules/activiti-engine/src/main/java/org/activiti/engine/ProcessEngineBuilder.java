@@ -34,7 +34,7 @@ import org.activiti.engine.impl.util.IoUtil;
  * 
  * <pre>
  * ProcessEngine processEngine = ProcessEngineBuilder
- *   .setDatabaseName(&quot;h2&quot;)
+ *   .setDatabaseType(&quot;h2&quot;)
  *   .setJdbcDriver(&quot;org.h2.Driver&quot;)
  *   .setJdbcUrl(&quot;jdbc:h2:tcp://localhost/activiti&quot;)
  *   .setJdbcUsername(&quot;sa&quot;)
@@ -47,7 +47,7 @@ import org.activiti.engine.impl.util.IoUtil;
  * 
  * <pre>
  * ProcessEngine processEngine = ProcessEngineBuilder
- *   .setDatabaseName(&quot;h2&quot;)
+ *   .setDatabaseType(&quot;h2&quot;)
  *   .setJdbcDriver(&quot;org.h2.Driver&quot;)
  *   .setJdbcUrl(&quot;jdbc:h2:mem:activiti&quot;)
  *   .setJdbcUsername(&quot;sa&quot;)
@@ -69,8 +69,8 @@ public class ProcessEngineBuilder {
     return this;
   }
 
-  public ProcessEngineBuilder setDatabaseName(String databaseName) {
-    processEngineConfiguration.setDatabaseName(databaseName);
+  public ProcessEngineBuilder setDatabaseType(String databaseType) {
+    processEngineConfiguration.setDatabaseType(databaseType);
     return this;
   }
 
@@ -130,7 +130,7 @@ public class ProcessEngineBuilder {
   }
 
   public ProcessEngineBuilder setJobExecutorAutoActivation(boolean jobExecutorAutoActivate) {
-    processEngineConfiguration.setJobExecutorAutoActivate(jobExecutorAutoActivate);
+    processEngineConfiguration.setJobExecutorActivate(jobExecutorAutoActivate);
     return this;
   }
   
@@ -165,9 +165,9 @@ public class ProcessEngineBuilder {
     }
     
     // Database
-    String databaseName = cfgParse.getDatabaseName();
-    if (databaseName != null) {
-      processEngineConfiguration.setDatabaseName(databaseName);
+    String databaseType = cfgParse.getDatabaseType();
+    if (databaseType != null) {
+      processEngineConfiguration.setDatabaseType(databaseType);
     }
     String databaseSchemaStrategy = cfgParse.getDatabaseSchemaStrategy();
     if (databaseSchemaStrategy != null) {
@@ -190,6 +190,25 @@ public class ProcessEngineBuilder {
       if (databasePassword != null) {
         processEngineConfiguration.setJdbcPassword(databasePassword);
       }
+      
+      // Connection pool
+      Integer maxActiveConnections = cfgParse.getMaxActiveConnections();
+      if (maxActiveConnections != null) {
+        processEngineConfiguration.setMaxActiveConnections(maxActiveConnections);
+      }
+      Integer maxIdleConnections = cfgParse.getMaxIdleConnections();
+      if (maxIdleConnections != null) {
+        processEngineConfiguration.setMaxIdleConnections(maxIdleConnections);
+      }
+      Integer maxCheckoutTime = cfgParse.getMaxCheckoutTime();
+      if (maxCheckoutTime != null) {
+        processEngineConfiguration.setMaxCheckoutTime(maxCheckoutTime);
+      }
+      Integer maxWaitTime = cfgParse.getMaxWaitTime();
+      if (maxWaitTime != null) {
+        processEngineConfiguration.setMaxWaitTime(maxWaitTime);
+      }
+      
     }
     
     // Mail
@@ -215,9 +234,9 @@ public class ProcessEngineBuilder {
     }
     
     // Job executor
-    Boolean jobExecutorAutoActivate = cfgParse.getIsJobExecutorAutoActivate();
-    if (jobExecutorAutoActivate != null) {
-      processEngineConfiguration.setJobExecutorAutoActivate(jobExecutorAutoActivate);
+    Boolean jobExecutorActivate = cfgParse.getJobExecutorActivate();
+    if (jobExecutorActivate != null) {
+      processEngineConfiguration.setJobExecutorActivate(jobExecutorActivate);
     }
     
     // History

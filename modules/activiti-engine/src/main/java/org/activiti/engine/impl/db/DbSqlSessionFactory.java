@@ -62,7 +62,7 @@ public class DbSqlSessionFactory implements SessionFactory, ProcessEngineConfigu
   protected static final Map<String, Map<String, String>> databaseSpecificStatements = new HashMap<String, Map<String,String>>();
 
   static {
-	//mysql specific  
+	  //mysql specific  
     addDatabaseSpecificStatement("mysql", "selectTaskByQueryCriteria", "selectTaskByQueryCriteria_mysql");
     addDatabaseSpecificStatement("mysql", "selectNextJobsToExecute", "selectNextJobsToExecute_mysql");
     addDatabaseSpecificStatement("mysql", "selectProcessDefinitionsByQueryCriteria", "selectProcessDefinitionsByQueryCriteria_mysql");
@@ -78,7 +78,7 @@ public class DbSqlSessionFactory implements SessionFactory, ProcessEngineConfigu
     addDatabaseSpecificStatement("postgres", "selectResourcesByDeploymentId", "selectResourcesByDeploymentId_postgres");
   }
   
-  protected String databaseName;
+  protected String databaseType;
   protected SqlSessionFactory sqlSessionFactory;
   protected IdGenerator idGenerator;
   protected Map<String, String> statementMappings;
@@ -88,37 +88,13 @@ public class DbSqlSessionFactory implements SessionFactory, ProcessEngineConfigu
   protected Map<Class<?>,String>  selectStatements = Collections.synchronizedMap(new HashMap<Class<?>, String>());
   
   public void configurationCompleted(ProcessEngineConfiguration processEngineConfiguration) {
-    this.databaseName = processEngineConfiguration.getDatabaseName();
+    this.databaseType = processEngineConfiguration.getDatabaseType();
     this.idGenerator = processEngineConfiguration.getIdGenerator();
-    this.statementMappings = databaseSpecificStatements.get(processEngineConfiguration.getDatabaseName());
+    this.statementMappings = databaseSpecificStatements.get(processEngineConfiguration.getDatabaseType());
 
     DataSource dataSource = processEngineConfiguration.getDataSource();
     if (dataSource==null) { // standalone usage
-      
-      String jdbcDriver = processEngineConfiguration.getJdbcDriver(); 
-      String jdbcUrl = processEngineConfiguration.getJdbcUrl(); 
-      String jdbcUsername = processEngineConfiguration.getJdbcUsername();
-      String jdbcPassword = processEngineConfiguration.getJdbcPassword();
-
-      if ( (jdbcDriver==null)
-           || (jdbcUrl==null)
-           || (jdbcUsername==null)
-         ) {
-        throw new ActivitiException("DataSource or JDBC properties have to be specified in a process engine configuration");
-      }
-      
-      PooledDataSource pooledDataSource = 
-        new PooledDataSource(
-              ReflectUtil.getClassLoader(), 
-              jdbcDriver, 
-              jdbcUrl, 
-              jdbcUsername,
-              jdbcPassword );
-      
-      // ACT-233: connection pool of Ibatis is not properely initialized if this is not called!
-      pooledDataSource.forceCloseAll();
-      
-      dataSource = pooledDataSource;
+      dataSource = createPooledDatasource(processEngineConfiguration);
     }
     
     TransactionFactory transactionFactory = null;
@@ -131,10 +107,46 @@ public class DbSqlSessionFactory implements SessionFactory, ProcessEngineConfigu
     this.sqlSessionFactory = createSessionFactory(dataSource, transactionFactory);
   }
 
+  protected PooledDataSource createPooledDatasource(ProcessEngineConfiguration processEngineConfiguration) {
+    String jdbcDriver = processEngineConfiguration.getJdbcDriver(); 
+    String jdbcUrl = processEngineConfiguration.getJdbcUrl(); 
+    String jdbcUsername = processEngineConfiguration.getJdbcUsername();
+    String jdbcPassword = processEngineConfiguration.getJdbcPassword();
+
+    if ( (jdbcDriver==null) || (jdbcUrl==null) || (jdbcUsername==null) ) {
+      throw new ActivitiException("DataSource or JDBC properties have to be specified in a process engine configuration");
+    }
+    
+    PooledDataSource pooledDataSource = 
+      new PooledDataSource(ReflectUtil.getClassLoader(), jdbcDriver, jdbcUrl, jdbcUsername, jdbcPassword );
+    
+    // Update with connection pool settings
+    int maxActiveConnections = processEngineConfiguration.getMaxActiveConnections();
+    int maxIdleConnections = processEngineConfiguration.getMaxIdleConnections();
+    int maxCheckoutTime = processEngineConfiguration.getMaxCheckoutTime();
+    int maxWaitTime = processEngineConfiguration.getMaxWaitTime();
+    
+    if (maxActiveConnections > 0) {
+      pooledDataSource.setPoolMaximumActiveConnections(maxActiveConnections);
+    }
+    if (maxIdleConnections > 0) {
+      pooledDataSource.setPoolMaximumIdleConnections(maxIdleConnections);
+    }
+    if (maxCheckoutTime > 0) {
+      pooledDataSource.setPoolMaximumCheckoutTime(maxCheckoutTime);
+    }
+    if (maxWaitTime > 0) {
+      pooledDataSource.setPoolTimeToWait(maxWaitTime);
+    }
+    
+    // ACT-233: connection pool of Ibatis is not properely initialized if this is not called!
+    pooledDataSource.forceCloseAll();
+    return pooledDataSource;
+  }
+
   protected SqlSessionFactory createSessionFactory(DataSource dataSource, TransactionFactory transactionFactory) {
     InputStream inputStream = null;
     try {
-      
       inputStream = ReflectUtil.getResourceAsStream("org/activiti/db/ibatis/activiti.ibatis.mem.conf.xml");
 
       // update the jdbc parameters to the configured ones...
@@ -145,7 +157,7 @@ public class DbSqlSessionFactory implements SessionFactory, ProcessEngineConfigu
       configuration.setEnvironment(environment);
       configuration.getTypeHandlerRegistry().register(VariableType.class, JdbcType.VARCHAR, new IbatisVariableTypeHandler());
       configuration = parser.parse();
-      
+
       return new DefaultSqlSessionFactory(configuration);
 
     } catch (Exception e) {
@@ -154,7 +166,6 @@ public class DbSqlSessionFactory implements SessionFactory, ProcessEngineConfigu
       IoUtil.closeSilently(inputStream);
     }
   }
-
 
   public Session openSession() {
     return new DbSqlSession(this);
@@ -191,11 +202,11 @@ public class DbSqlSessionFactory implements SessionFactory, ProcessEngineConfigu
 
   // db specific mappings /////////////////////////////////////////////////////
   
-  protected static void addDatabaseSpecificStatement(String databaseName, String activitiStatement, String ibatisStatement) {
-    Map<String, String> specificStatements = databaseSpecificStatements.get(databaseName);
+  protected static void addDatabaseSpecificStatement(String databaseType, String activitiStatement, String ibatisStatement) {
+    Map<String, String> specificStatements = databaseSpecificStatements.get(databaseType);
     if (specificStatements == null) {
       specificStatements = new HashMap<String, String>();
-      databaseSpecificStatements.put(databaseName, specificStatements);
+      databaseSpecificStatements.put(databaseType, specificStatements);
     }
     specificStatements.put(activitiStatement, ibatisStatement);
   }
@@ -250,20 +261,20 @@ public class DbSqlSessionFactory implements SessionFactory, ProcessEngineConfigu
   }
 
   public void dbSchemaCreate() {
-    executeSchemaResource("create", databaseName, sqlSessionFactory);
+    executeSchemaResource("create", databaseType, sqlSessionFactory);
   }
 
   public void dbSchemaDrop() {
-    executeSchemaResource("drop", databaseName, sqlSessionFactory);
+    executeSchemaResource("drop", databaseType, sqlSessionFactory);
   }
 
-  public static void executeSchemaResource(String operation, String databaseName, SqlSessionFactory sqlSessionFactory) {
+  public static void executeSchemaResource(String operation, String databaseType, SqlSessionFactory sqlSessionFactory) {
     SqlSession sqlSession = sqlSessionFactory.openSession();
     boolean success = false;
     InputStream inputStream = null;
     try {
       Connection connection = sqlSession.getConnection();
-      String resource = "org/activiti/db/" + operation + "/activiti." + databaseName + "." + operation + ".sql";
+      String resource = "org/activiti/db/" + operation + "/activiti." + databaseType + "." + operation + ".sql";
       inputStream = ReflectUtil.getResourceAsStream(resource);
       if (inputStream == null) {
         throw new ActivitiException("resource '" + resource + "' is not available for creating the schema");

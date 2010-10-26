@@ -42,10 +42,10 @@
         <element ref="tns:jdbc" />
         <element ref="tns:datasource" />
       </choice>
-      <attribute name="name" use="required" type="string">
+      <attribute name="type" use="required" type="string">
         <annotation>
           <documentation>
-            The name of the database (eg. h2, oracle, mysql, etc.). 
+            The type of database (eg. h2, oracle, mysql, etc.). 
             See Activiti userguide for supported databases (http://activiti.org/userguide/)
           </documentation>
         </annotation>
@@ -72,9 +72,13 @@
       <attribute name="driver" use="required" />
       <attribute name="username" use="required" />
       <attribute name="password" use="required" />
+      <attribute name="max-active" />
+      <attribute name="max-idle" />
+      <attribute name="max-checkout" />
+      <attribute name="max-wait" />
     </complexType>  
   </element>
-  
+
   <element name="datasource">
     <annotation>
       <documentation>
@@ -99,13 +103,23 @@
       </documentation>
     </annotation>
     <complexType>
-      <attribute name="auto-activate" use="required" type="string">
+      <attribute name="activate" use="required">
         <annotation>
           <documentation>
             Specifies if the job executor must be activated when the engine starts.
             Possible values: on/off enabled/disabled true/false.
           </documentation>  
         </annotation>
+        <simpleType>
+          <restriction base="string">
+            <enumeration value="on" />
+            <enumeration value="off" />
+            <enumeration value="enabled" />
+            <enumeration value="disabled" />
+            <enumeration value="true" />
+            <enumeration value="false" />
+          </restriction>
+        </simpleType>
       </attribute>
     </complexType>    
   </element>
@@ -117,10 +131,10 @@
       </documentation>
     </annotation>
     <complexType>
-      <attribute name="host"  use="required" type="string">
+      <attribute name="server"  use="required" type="string">
         <annotation>
           <documentation>
-            Host of the SMTP mail server.
+            Server host address of the SMTP mail server.
           </documentation>
         </annotation>
       </attribute>

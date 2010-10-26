@@ -90,7 +90,7 @@ public class ProcessEngineConfiguration {
   
   // Static values (defaults, etc.) ////////////////////////////////////////////
   
-  public static final String DEFAULT_DATABASE_NAME = "h2";
+  public static final String DEFAULT_DATABASE_TYPE = "h2";
   public static final String DEFAULT_JDBC_DRIVER = "org.h2.Driver";
   public static final String DEFAULT_JDBC_URL = "jdbc:h2:mem:activiti";
   public static final String DEFAULT_JDBC_USERNAME = "sa";
@@ -161,10 +161,10 @@ public class ProcessEngineConfiguration {
   // Job executor
   protected JobExecutor jobExecutor;
   protected JobHandlers jobHandlers;
-  protected boolean jobExecutorAutoActivate;
+  protected boolean jobExecutorActivate;
   
   // Database
-  protected String databaseName;
+  protected String databaseType;
   protected String dbSchemaStrategy;
   protected DataSource dataSource;
   protected String jdbcDriver;
@@ -172,6 +172,10 @@ public class ProcessEngineConfiguration {
   protected String jdbcUsername;
   protected String jdbcPassword;
   protected boolean transactionsExternallyManaged;
+  protected int maxActiveConnections;
+  protected int maxIdleConnections;
+  protected int maxCheckoutTime;
+  protected int maxWaitTime;
   
   // Id generator
   protected IdGenerator idGenerator;
@@ -249,9 +253,9 @@ public class ProcessEngineConfiguration {
     jobHandlers = new JobHandlers();
     jobHandlers.addJobHandler(new TimerExecuteNestedActivityJobHandler());
     jobExecutor = new JobExecutor();
-    jobExecutorAutoActivate = false;
+    jobExecutorActivate = false;
     
-    databaseName = "h2";
+    databaseType = "h2";
     dbSchemaStrategy = DbSchemaStrategy.CREATE_DROP;
     idGenerator = new DbIdGenerator();
     idBlockSize = 100;
@@ -287,7 +291,7 @@ public class ProcessEngineConfiguration {
   
   public ProcessEngine buildProcessEngine() {
     // Validation of settings
-    if (databaseName == null) {
+    if (databaseType == null) {
       throw new ActivitiException("No database name provided. "
       		+ "This is required for schema creation and query lookup");
     }
@@ -576,12 +580,12 @@ public class ProcessEngineConfiguration {
     this.transactionContextFactory = transactionContextFactory;
   }
 
-  public String getDatabaseName() {
-    return databaseName;
+  public String getDatabaseType() {
+    return databaseType;
   }
 
-  public void setDatabaseName(String databaseName) {
-    this.databaseName = databaseName;
+  public void setDatabaseType(String databaseType) {
+    this.databaseType = databaseType;
   }
 
   public DataSource getDataSource() {
@@ -625,11 +629,11 @@ public class ProcessEngineConfiguration {
   }
 
   public boolean isJobExecutorAutoActivate() {
-    return jobExecutorAutoActivate;
+    return jobExecutorActivate;
   }
 
-  public void setJobExecutorAutoActivate(boolean jobExecutorAutoActivate) {
-    this.jobExecutorAutoActivate = jobExecutorAutoActivate;
+  public void setJobExecutorActivate(boolean jobExecutorActivate) {
+    this.jobExecutorActivate = jobExecutorActivate;
   }
 
   public boolean isTransactionsExternallyManaged() {
@@ -769,4 +773,38 @@ public class ProcessEngineConfiguration {
   public ClassLoader getClassLoader() {
     return classLoader;
   }
+
+  
+  public int getMaxActiveConnections() {
+    return maxActiveConnections;
+  }
+  
+  public void setMaxActiveConnections(int maxActiveConnections) {
+    this.maxActiveConnections = maxActiveConnections;
+  }
+
+  public int getMaxIdleConnections() {
+    return maxIdleConnections;
+  }
+
+  public void setMaxIdleConnections(int maxIdleConnections) {
+    this.maxIdleConnections = maxIdleConnections;
+  }
+  
+  public int getMaxCheckoutTime() {
+    return maxCheckoutTime;
+  }
+
+  public void setMaxCheckoutTime(int maxCheckoutTime) {
+    this.maxCheckoutTime = maxCheckoutTime;
+  }
+
+  public int getMaxWaitTime() {
+    return maxWaitTime;
+  }
+
+  public void setMaxWaitTime(int maxWaitTime) {
+    this.maxWaitTime = maxWaitTime;
+  }
+  
 }

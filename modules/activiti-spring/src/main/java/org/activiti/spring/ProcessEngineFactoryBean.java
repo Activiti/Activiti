@@ -182,8 +182,8 @@ public class ProcessEngineFactoryBean implements FactoryBean<ProcessEngine>, Dis
     this.deploymentResources = deploymentResources;
   }
 
-  public void setDataBaseName(String dataBaseName) {
-    processEngineConfiguration.setDatabaseName(dataBaseName);
+  public void setDatabaseType(String databaseType) {
+    processEngineConfiguration.setDatabaseType(databaseType);
   }
 
   public void setDataSource(DataSource dataSource) {
@@ -211,7 +211,7 @@ public class ProcessEngineFactoryBean implements FactoryBean<ProcessEngine>, Dis
   }
 
   public void setJobExecutorAutoActivate(boolean jobExecutorAutoActivate) {
-    processEngineConfiguration.setJobExecutorAutoActivate(jobExecutorAutoActivate);
+    processEngineConfiguration.setJobExecutorActivate(jobExecutorAutoActivate);
   }
 
   public void setProcessEngineName(String processEngineName) {

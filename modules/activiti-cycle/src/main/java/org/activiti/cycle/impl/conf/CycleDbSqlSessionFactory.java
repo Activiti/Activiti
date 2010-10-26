@@ -63,12 +63,12 @@ public class CycleDbSqlSessionFactory extends DbSqlSessionFactory {
   
   @Override
   public void dbSchemaCreate() {
-    executeSchemaResource("create", databaseName, sqlSessionFactory);
+    executeSchemaResource("create", databaseType, sqlSessionFactory);
   }
 
   @Override
   public void dbSchemaDrop() {
-    executeSchemaResource("drop", databaseName, sqlSessionFactory);
+    executeSchemaResource("drop", databaseType, sqlSessionFactory);
   }
   
   public static void executeSchemaResource(String operation, String databaseName, SqlSessionFactory sqlSessionFactory) {

@@ -90,14 +90,14 @@ public class ConfigurationParserTest extends PvmTestCase {
     assertNull(parse.getMailServerUsername());
     assertNull(parse.getMailServerPassword());
     
-    assertEquals("h2", parse.getDatabaseName());
+    assertEquals("h2", parse.getDatabaseType());
     assertEquals("create-if-necessary", parse.getDatabaseSchemaStrategy());
     assertEquals("jdbc:h2:mem:activiti;DB_CLOSE_DELAY=1000", parse.getJdbcUrl());
     assertEquals("org.h2.Driver", parse.getJdbcDriver());
     assertEquals("sa", parse.getJdbcUsername());
     assertEquals("", parse.getJdbcPassword());
     
-    assertTrue(parse.getIsJobExecutorAutoActivate());
+    assertTrue(parse.getJobExecutorActivate());
     
     assertEquals(ProcessEngineConfiguration.parseHistoryLevel("audit"), parse.getHistoryLevel());
   }

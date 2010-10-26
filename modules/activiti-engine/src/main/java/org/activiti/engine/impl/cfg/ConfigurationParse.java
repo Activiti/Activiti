@@ -33,15 +33,19 @@ public class ConfigurationParse extends Parse {
   
   // Database config
   protected boolean isJdbcConfigured;
-  protected String databaseName;
+  protected String databaseType;
   protected String databaseSchemaStrategy;
   protected String jdbcUrl;
   protected String jdbcDriver;
   protected String jdbcUsername;
   protected String jdbcPassword;
+  protected Integer maxActiveConnections;
+  protected Integer maxIdleConnections;
+  protected Integer maxCheckoutTime;
+  protected Integer maxWaitTime;
   
   // Jobexecutor
-  protected Boolean isJobExecutorAutoActivate;
+  protected Boolean jobExecutorActivate;
   
   // Mail
   protected String mailServerHost;
@@ -90,7 +94,7 @@ public class ConfigurationParse extends Parse {
   protected void parseDatabaseCfg() {
     Element databaseElement = rootElement.element("database");
     if (databaseElement != null) {
-      this.databaseName = databaseElement.attribute("name");
+      this.databaseType = databaseElement.attribute("type");
       this.databaseSchemaStrategy = databaseElement.attribute("schema-strategy");
       
       // Jdbc
@@ -101,6 +105,15 @@ public class ConfigurationParse extends Parse {
         this.jdbcDriver = jdbcElement.attribute("driver");
         this.jdbcUsername = jdbcElement.attribute("username");
         this.jdbcPassword = jdbcElement.attribute("password");
+        
+        if (jdbcUrl == null || jdbcDriver == null || jdbcUsername == null || jdbcPassword == null) {
+          addError("Invalid jdbc configuration: need to provide url, driver, username and password", jdbcElement);
+        }
+        
+        this.maxActiveConnections = stringToInteger(jdbcElement, "max-active", jdbcElement.attribute("max-active"));
+        this.maxIdleConnections = stringToInteger(jdbcElement, "max-idle", jdbcElement.attribute("max-idle"));
+        this.maxCheckoutTime = stringToInteger(jdbcElement, "max-checkout", jdbcElement.attribute("max-checkout"));
+        this.maxWaitTime = stringToInteger(jdbcElement, "max-wait", jdbcElement.attribute("max-wait"));
       }
       
       // Datasource through jndi: TODO
@@ -114,19 +127,19 @@ public class ConfigurationParse extends Parse {
   protected void parseJobExecutorCfg() {
     Element jobExecutorElement = rootElement.element("job-executor");
     if (jobExecutorElement != null) {
-      String autoActivateString = jobExecutorElement.attribute("auto-activate");
+      String activateString = jobExecutorElement.attribute("activate");
       
-      if (autoActivateString != null) {
+      if (activateString != null) {
         
-        if (autoActivateString.equals("off")
-              || autoActivateString.equals("disabled")
-              || autoActivateString.equals("false")) {
-          this.isJobExecutorAutoActivate = false;
+        if (activateString.equals("off")
+              || activateString.equals("disabled")
+              || activateString.equals("false")) {
+          this.jobExecutorActivate = false;
           
-        } else if (autoActivateString.equals("on")
-                || autoActivateString.equals("enabled")
-                || autoActivateString.equals("true")) {
-          this.isJobExecutorAutoActivate = true;
+        } else if (activateString.equals("on")
+                || activateString.equals("enabled")
+                || activateString.equals("true")) {
+          this.jobExecutorActivate = true;
           
         } else {
           addError("Invalid value for 'auto-activate', current values are supported:" 
@@ -141,15 +154,16 @@ public class ConfigurationParse extends Parse {
   protected void parseMailServerCfg() {
     Element mailElement = rootElement.element("mail");
     if (mailElement != null) {
-      this.mailServerHost = mailElement.attribute("host");
+      this.mailServerHost = mailElement.attribute("server");
+      
+      if(mailServerHost == null) {
+        addError("server is a required attribute when configuring e-mail", mailElement);
+      }
+      
       this.mailServerUsername = mailElement.attribute("username");
       this.mailServerPassword = mailElement.attribute("password");
       this.mailDefaultFrom = mailElement.attribute("default-from");
-      try {
-        this.mailServerPort = Integer.parseInt(mailElement.attribute("port"));
-      } catch (NumberFormatException e) {
-        addError("Invalid port for mail service", mailElement);
-      }
+      this.mailServerPort = stringToInteger(mailElement, "mail port", mailElement.attribute("port"));
     }
   }
   
@@ -161,6 +175,17 @@ public class ConfigurationParse extends Parse {
         this.historyLevel = ProcessEngineConfiguration.parseHistoryLevel(historyLevelString);
       }
     }
+  }
+  
+  protected Integer stringToInteger(Element element, String attributeName, String value) {
+    if (value != null) {
+      try {
+        return Integer.parseInt(value);
+      } catch (NumberFormatException e) {
+        addError("Invalid: value for " + attributeName + " is not numerical", element);
+      }
+    }
+    return null;
   }
   
   // Source definition operations //////////////////////////////////////////////////
@@ -209,8 +234,8 @@ public class ConfigurationParse extends Parse {
   public boolean isJdbcConfigured() {
     return isJdbcConfigured;
   }
-  public String getDatabaseName() {
-    return databaseName;
+  public String getDatabaseType() {
+    return databaseType;
   }
   public String getDatabaseSchemaStrategy() {
     return databaseSchemaStrategy;
@@ -227,8 +252,8 @@ public class ConfigurationParse extends Parse {
   public String getJdbcPassword() {
     return jdbcPassword;
   }
-  public Boolean getIsJobExecutorAutoActivate() {
-    return isJobExecutorAutoActivate;
+  public Boolean getJobExecutorActivate() {
+    return jobExecutorActivate;
   }
   public String getMailServerHost() {
     return mailServerHost;
@@ -248,6 +273,17 @@ public class ConfigurationParse extends Parse {
   public Integer getHistoryLevel() {
     return historyLevel;
   }
-  
+  public Integer getMaxActiveConnections() {
+    return maxActiveConnections;
+  }
+  public Integer getMaxIdleConnections() {
+    return maxIdleConnections;
+  }
+  public Integer getMaxCheckoutTime() {
+    return maxCheckoutTime;
+  }
+  public Integer getMaxWaitTime() {
+    return maxWaitTime;
+  }
 
 }

@@ -23,7 +23,7 @@
       <listitem><para><literal>processEngineName</literal> (String) see <xref linkend="configurationproperties"/></para> </listitem>
       <listitem><para><literal>transactionManager</literal> (PlatformTransactionManager)</para> </listitem>
       <listitem><para><literal>dataSource</literal> (DataSource)</para> </listitem>
-      <listitem><para><literal>dataBaseName</literal> (dataBaseName) see <xref linkend="supporteddatabases"/></para></listitem>
+      <listitem><para><literal>databaseType</literal> (databaseType) see <xref linkend="supporteddatabases"/></para></listitem>
       <listitem><para><literal>dbSchemaStrategy</literal> (String) see <xref linkend="configurationproperties"/></para></listitem>
       <listitem><para><literal>deploymentName</literal> (String)</para> </listitem>
       <listitem><para><literal>deploymentResources</literal> (Resource[])</para> </listitem>
@@ -74,7 +74,7 @@
   &lt;/bean&gt;
   
   &lt;bean id=&quot;processEngine&quot; class=&quot;org.activiti.spring.ProcessEngineFactoryBean&quot;&gt;
-    &lt;property name=&quot;dataBaseName&quot; value=&quot;h2&quot; /&gt;
+    &lt;property name=&quot;databaseType&quot; value=&quot;h2&quot; /&gt;
     &lt;property name=&quot;dataSource&quot; ref=&quot;dataSource&quot; /&gt;
     &lt;property name=&quot;transactionManager&quot; ref=&quot;transactionManager&quot; /&gt;
     &lt;property name=&quot;dbSchemaStrategy&quot; value=&quot;check-version&quot; /&gt;
