@@ -6,12 +6,12 @@
 
 <#macro printProcessDefinition processDefinition>
 {
-  "id": "${processDefinition.id?js_string}",
-  "key": "${processDefinition.key?js_string}",
-  "name": <#if processDefinition.name??>"${processDefinition.name?js_string}"<#else>null</#if>,
-  "version": ${processDefinition.version?string},
-  "deploymentId": "${processDefinition.deploymentId?js_string}",
-  "resourceName": "${processDefinition.resourceName?js_string}",
-  "startFormResourceKey": <#if processDefinition.startFormResourceKey??>"${processDefinition.startFormResourceKey?js_string}"<#else>null</#if>
+  "id": "${processDefinition.id}",
+  "key": "${processDefinition.key}",
+  "name": <#if processDefinition.name??>"${processDefinition.name}"<#else>null</#if>,
+  "version": ${processDefinition.version},
+  "deploymentId": "${processDefinition.deploymentId}",
+  "resourceName": "${processDefinition.resourceName}",
+  "startFormResourceKey": <#if processDefinition.startFormResourceKey??>"${processDefinition.startFormResourceKey}"<#else>null</#if>
 }
 </#macro>

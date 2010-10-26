@@ -4,8 +4,8 @@
   "data": [
     <#list tableNames as tableName>
     {
-      "tableName": "${tableName?js_string}",
-      "total": ${tables[tableName]?js_string}
+      "tableName": "${tableName}",
+      "total": ${tables[tableName]}
     }<#if tableName_has_next>,</#if>
     </#list>
   ]

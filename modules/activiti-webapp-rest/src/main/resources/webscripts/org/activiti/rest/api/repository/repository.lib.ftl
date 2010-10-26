@@ -9,7 +9,7 @@
 </#macro>
 
 <#macro printDeployment deployment>
-  "id": "${deployment.id?js_string}",
-  "name": "${deployment.name?js_string}",
+  "id": "${deployment.id}",
+  "name": "${deployment.name}",
   "deploymentTime": <#if deployment.deploymentTime??>"${iso8601Date(deployment.deploymentTime)}"<#else>null</#if>
 </#macro>

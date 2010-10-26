@@ -9,12 +9,12 @@
 </#macro>
 
 <#macro printTask task>
-  "id": "${task.id?js_string}",
-  "name": "${task.name?js_string}",
-  "description": "${(task.description!"")?js_string}",
+  "id": "${task.id}",
+  "name": "${task.name}",
+  "description": "${(task.description!"")}",
   "priority": ${task.priority},
-  "assignee": <#if task.assignee??>"${task.assignee?js_string}"<#else>null</#if>,
+  "assignee": <#if task.assignee??>"${task.assignee}"<#else>null</#if>,
   "executionId": ${task.executionId},
-  "processInstanceId": <#if task.processInstanceId??>"${task.processInstanceId?js_string}"<#else>null</#if>,
-  "formResourceKey": <#if task.formResourceKey??>"${task.formResourceKey?js_string}"<#else>null</#if>
+  "processInstanceId": <#if task.processInstanceId??>"${task.processInstanceId}"<#else>null</#if>,
+  "formResourceKey": <#if task.formResourceKey??>"${task.formResourceKey}"<#else>null</#if>
 </#macro>
