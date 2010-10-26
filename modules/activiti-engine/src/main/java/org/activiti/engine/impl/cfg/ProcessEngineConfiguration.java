@@ -253,10 +253,10 @@ public class ProcessEngineConfiguration {
     jobHandlers = new JobHandlers();
     jobHandlers.addJobHandler(new TimerExecuteNestedActivityJobHandler());
     jobExecutor = new JobExecutor();
-    jobExecutorActivate = false;
+    jobExecutorActivate = true;
     
     databaseType = "h2";
-    dbSchemaStrategy = DbSchemaStrategy.CREATE_DROP;
+    dbSchemaStrategy = DbSchemaStrategy.CHECK_VERSION;
     idGenerator = new DbIdGenerator();
     idBlockSize = 100;
     dataSource = null;
