@@ -115,6 +115,15 @@
         </tbody>
       </tgroup>
     </table>
+    
+    <para>
+      Note that the Activiti demo setup is a way of showing the capabilities and functionality of
+      Activiti as easy and as fast as possible. This does however, <emphasis role="bold">not</emphasis> mean
+      that it is the only way of using Activiti. As Activiti is 'just a jar', it can 
+      be embedded in any Java environment: with swing or on a Tomcat, JBoss, WebSphere, etc.
+      Or you could very well choose to run Activiti as a typical, standalone BPM server.
+      If it is possible in Java, it is possible with Activiti!
+    </para>
   </section>
   
   <section id="examples">
