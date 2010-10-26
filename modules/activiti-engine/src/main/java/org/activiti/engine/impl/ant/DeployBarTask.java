@@ -24,6 +24,7 @@ import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.ProcessEngineInfo;
 import org.activiti.engine.ProcessEngines;
 import org.activiti.engine.RepositoryService;
+import org.activiti.engine.impl.util.IoUtil;
 import org.activiti.engine.impl.util.LogUtil;
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.DirectoryScanner;
@@ -103,7 +104,7 @@ public class DeployBarTask extends Task {
                 .addZipInputStream(new ZipInputStream(inputStream))
                 .deploy();
           } finally {
-            inputStream.close();
+            IoUtil.closeSilently(inputStream);
           }
         } catch (Exception e) {
           throw new BuildException("couldn't deploy bar "+path+": "+e.getMessage(), e);

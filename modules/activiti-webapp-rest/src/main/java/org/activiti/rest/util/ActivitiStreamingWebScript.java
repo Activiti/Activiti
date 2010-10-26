@@ -12,20 +12,25 @@
  */
 package org.activiti.rest.util;
 
-import eu.medsea.mimeutil.MimeType;
-import eu.medsea.mimeutil.MimeUtil;
-import org.activiti.engine.*;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.SocketException;
+import java.util.Date;
+
+import org.activiti.engine.FormService;
+import org.activiti.engine.IdentityService;
+import org.activiti.engine.ManagementService;
+import org.activiti.engine.ProcessEngine;
+import org.activiti.engine.ProcessEngineInfo;
+import org.activiti.engine.ProcessEngines;
+import org.activiti.engine.RepositoryService;
+import org.activiti.engine.RuntimeService;
+import org.activiti.engine.TaskService;
 import org.activiti.rest.Config;
 import org.springframework.extensions.webscripts.AbstractWebScript;
 import org.springframework.extensions.webscripts.Cache;
 import org.springframework.extensions.webscripts.WebScriptRequest;
 import org.springframework.extensions.webscripts.WebScriptResponse;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.SocketException;
-import java.util.Collection;
-import java.util.Date;
 
 /**
  * Helper class that wrapps the webscript request to perform methods upon it.

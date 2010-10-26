@@ -21,6 +21,7 @@ import java.io.Serializable;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.runtime.VariableInstanceEntity;
+import org.activiti.engine.impl.util.IoUtil;
 
 /**
  * @author Tom Baeyens
@@ -57,6 +58,8 @@ public class SerializableType extends ByteArrayType {
       
     } catch (Exception e) {
       throw new ActivitiException("coudn't deserialize object in variable '"+valueFields.getName()+"'", e);
+    } finally {
+      IoUtil.closeSilently(bais);
     }
     return deserializedObject;
   }
@@ -72,11 +75,14 @@ public class SerializableType extends ByteArrayType {
       return null;
     }
     ByteArrayOutputStream baos = new ByteArrayOutputStream();
+    ObjectOutputStream ois = null;
     try {
-      ObjectOutputStream ois = new ObjectOutputStream(baos);
+      ois = new ObjectOutputStream(baos);
       ois.writeObject(value);
     } catch (Exception e) {
       throw new ActivitiException("coudn't deserialize value '"+value+"' in variable '"+valueFields.getName()+"'", e);
+    } finally {
+      IoUtil.closeSilently(ois);
     }
     return baos.toByteArray();
   }

@@ -5,6 +5,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 
 import org.activiti.cycle.RepositoryException;
+import org.activiti.engine.impl.util.IoUtil;
 
 /**
  * Base class for all actions requiring parameters (see
@@ -31,13 +32,15 @@ public abstract class ParameterizedHtmlFormTemplateAction extends ParameterizedA
     return "/" + this.getClass().getName().replace(".", "/") + ".html";
   }
 
+  
   public String getFormAsHtml() {
+    InputStream is = null;
     try {
       String resourceName = getFormResourceName();
       if (resourceName == null) {
         return null;
       }
-      InputStream is = this.getClass().getResourceAsStream(resourceName);
+      is = this.getClass().getResourceAsStream(resourceName);
       if (is == null) {
         throw new RepositoryException("HTML form for action " + this.getClass() + " from template '" + getFormResourceName() + "' doesn't exist in classpath");
       }
@@ -53,6 +56,8 @@ public abstract class ParameterizedHtmlFormTemplateAction extends ParameterizedA
     } catch (Exception ex) {
       throw new RepositoryException("Exception while creating HTML form for action " + this.getClass() + " from form template '" + getFormResourceName() + "'",
               ex);
+    } finally {
+      IoUtil.closeSilently(is);
     }
   }
 

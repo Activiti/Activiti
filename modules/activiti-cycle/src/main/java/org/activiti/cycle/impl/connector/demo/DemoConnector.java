@@ -21,6 +21,7 @@ import org.activiti.cycle.impl.RepositoryArtifactImpl;
 import org.activiti.cycle.impl.RepositoryFolderImpl;
 import org.activiti.cycle.impl.RepositoryNodeCollectionImpl;
 import org.activiti.cycle.impl.connector.AbstractRepositoryConnector;
+import org.activiti.engine.impl.util.IoUtil;
 
 public class DemoConnector extends AbstractRepositoryConnector<DemoConnectorConfiguration> {
 
@@ -147,12 +148,13 @@ public class DemoConnector extends AbstractRepositoryConnector<DemoConnectorConf
   
   private Content createContent(String contentSourceUrl) {
     Content result = new Content();
+    InputStream in = null;
     try {
       ByteArrayOutputStream byteStream = new ByteArrayOutputStream();
 
       // read locally instead of internet
       // InputStream in = new URL(contentSourceUrl).openStream();
-      InputStream in = DemoConnector.class.getResourceAsStream(contentSourceUrl);
+      in = DemoConnector.class.getResourceAsStream(contentSourceUrl);
       if (in == null) {
         throw new RuntimeException("resource '" + contentSourceUrl + "' not found in classpath");
       }
@@ -169,6 +171,8 @@ public class DemoConnector extends AbstractRepositoryConnector<DemoConnectorConf
       result.setValue(byteStream.toByteArray());
     } catch (Exception ex) {
       throw new RepositoryException("couldn't create content from URL " + contentSourceUrl, ex);
+    } finally {
+      IoUtil.closeSilently(in); 
     }
     return result;      
   }  

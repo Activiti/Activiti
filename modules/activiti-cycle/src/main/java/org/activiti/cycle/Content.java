@@ -5,6 +5,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
+import org.activiti.engine.impl.util.IoUtil;
+
 /**
  * This class encapsulates real content (text, images, ...).
  * 
@@ -36,13 +38,14 @@ public class Content {
         }
         byteStream.write(buf, 0, len);
       }
-      inputStream.close();
-      byteStream.close();
       return byteStream.toByteArray();
 
      } catch (IOException ex) {
-      throw new RepositoryException("Couldn't load from InputStream of content, check nested exception.", ex);
-    }
+       throw new RepositoryException("Couldn't load from InputStream of content, check nested exception.", ex);
+     } finally {
+       // Close inputstream. Closing of ByteArrayOutputStream not nessecairy, does nothing
+       IoUtil.closeSilently(inputStream);
+     }
   }
   
    public byte[] asByteArray() {

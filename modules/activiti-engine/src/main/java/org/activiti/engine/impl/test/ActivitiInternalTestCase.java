@@ -38,6 +38,7 @@ import org.activiti.engine.impl.ProcessEngineImpl;
 import org.activiti.engine.impl.cfg.ProcessEngineConfiguration;
 import org.activiti.engine.impl.jobexecutor.JobExecutor;
 import org.activiti.engine.impl.util.ClockUtil;
+import org.activiti.engine.impl.util.IoUtil;
 import org.activiti.engine.impl.util.ReflectUtil;
 import org.activiti.engine.impl.util.LogUtil.ThreadLogMode;
 import org.activiti.engine.runtime.ProcessInstance;
@@ -94,6 +95,8 @@ public class ActivitiInternalTestCase extends PvmTestCase {
     
       } catch (Exception e) {
         throw new RuntimeException("couldn't instantiate process engine initializer "+properties+": "+e, e);
+      } finally {
+        IoUtil.closeSilently(initializersInputStream);
       }
     }
     return new DefaultProcessEngineInitializer();

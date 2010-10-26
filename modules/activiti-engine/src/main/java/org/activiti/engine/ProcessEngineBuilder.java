@@ -17,6 +17,7 @@ import java.io.InputStream;
 import java.util.Properties;
 
 import org.activiti.engine.impl.cfg.ProcessEngineConfiguration;
+import org.activiti.engine.impl.util.IoUtil;
 import org.activiti.engine.impl.util.ReflectUtil;
 
 /**
@@ -245,6 +246,8 @@ public class ProcessEngineBuilder {
       properties.load(inputStream);
     } catch (IOException e) {
       throw new ActivitiException("problem while reading activiti configuration properties " + e.getMessage(), e);
+    } finally {
+      IoUtil.closeSilently(inputStream);
     }
     configureFromProperties(properties);
     return this;

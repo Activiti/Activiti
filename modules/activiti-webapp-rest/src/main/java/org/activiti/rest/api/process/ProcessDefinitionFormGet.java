@@ -1,15 +1,16 @@
 package org.activiti.rest.api.process;
 
-import org.activiti.rest.util.ActivitiRequest;
-import org.activiti.rest.util.ActivitiStreamingWebScript;
-import org.activiti.rest.util.ActivitiWebScript;
-import org.springframework.extensions.webscripts.*;
-
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Date;
-import java.util.Map;
+
+import org.activiti.engine.impl.util.IoUtil;
+import org.activiti.rest.util.ActivitiRequest;
+import org.activiti.rest.util.ActivitiStreamingWebScript;
+import org.springframework.extensions.webscripts.Status;
+import org.springframework.extensions.webscripts.WebScriptException;
+import org.springframework.extensions.webscripts.WebScriptResponse;
 
 /**
  * Returns a process definition's form.
@@ -42,6 +43,8 @@ public class ProcessDefinitionFormGet extends ActivitiStreamingWebScript
         streamResponse(res, is, new Date(0), null, true, processDefinitionId, mimeType);
       } catch (IOException e) {
         throw new WebScriptException(Status.STATUS_INTERNAL_SERVER_ERROR, "The form for process definition '" + processDefinitionId + "' failed to render.");
+      } finally {
+        IoUtil.closeSilently(is);
       }
     }
     else if (form != null) {

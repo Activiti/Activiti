@@ -132,9 +132,10 @@ public class DbSqlSessionFactory implements SessionFactory, ProcessEngineConfigu
   }
 
   protected SqlSessionFactory createSessionFactory(DataSource dataSource, TransactionFactory transactionFactory) {
+    InputStream inputStream = null;
     try {
       
-      InputStream inputStream = ReflectUtil.getResourceAsStream("org/activiti/db/ibatis/activiti.ibatis.mem.conf.xml");
+      inputStream = ReflectUtil.getResourceAsStream("org/activiti/db/ibatis/activiti.ibatis.mem.conf.xml");
 
       // update the jdbc parameters to the configured ones...
       Environment environment = new Environment("default", transactionFactory, dataSource);
@@ -149,6 +150,8 @@ public class DbSqlSessionFactory implements SessionFactory, ProcessEngineConfigu
 
     } catch (Exception e) {
       throw new ActivitiException("Error while building ibatis SqlSessionFactory: " + e.getMessage(), e);
+    } finally {
+      IoUtil.closeSilently(inputStream);
     }
   }
 
@@ -257,10 +260,11 @@ public class DbSqlSessionFactory implements SessionFactory, ProcessEngineConfigu
   public static void executeSchemaResource(String operation, String databaseName, SqlSessionFactory sqlSessionFactory) {
     SqlSession sqlSession = sqlSessionFactory.openSession();
     boolean success = false;
+    InputStream inputStream = null;
     try {
       Connection connection = sqlSession.getConnection();
       String resource = "org/activiti/db/" + operation + "/activiti." + databaseName + "." + operation + ".sql";
-      InputStream inputStream = ReflectUtil.getResourceAsStream(resource);
+      inputStream = ReflectUtil.getResourceAsStream(resource);
       if (inputStream == null) {
         throw new ActivitiException("resource '" + resource + "' is not available for creating the schema");
       }
@@ -296,6 +300,7 @@ public class DbSqlSessionFactory implements SessionFactory, ProcessEngineConfigu
       throw new ActivitiException("couldn't create or drop db schema", e);
 
     } finally {
+      IoUtil.closeSilently(inputStream);
       if (success) {
         sqlSession.commit(true);
       } else {

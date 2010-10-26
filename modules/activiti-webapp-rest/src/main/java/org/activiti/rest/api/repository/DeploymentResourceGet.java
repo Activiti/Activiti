@@ -13,6 +13,7 @@
 
 package org.activiti.rest.api.repository;
 
+import org.activiti.engine.impl.util.IoUtil;
 import org.activiti.rest.util.ActivitiRequest;
 import org.activiti.rest.util.ActivitiStreamingWebScript;
 import org.springframework.extensions.webscripts.*;
@@ -39,6 +40,8 @@ public class DeploymentResourceGet extends ActivitiStreamingWebScript {
         streamResponse(res, resource, new Date(0), null, true, resourceName, getMimeType(resource));
       } catch (IOException e) {
         throw new WebScriptException(Status.STATUS_INTERNAL_SERVER_ERROR, "The resource with name '" + resourceName + "' for deployment with id '" + deploymentId + "' could not be streamed: " + e.getMessage());
+      } finally {
+        IoUtil.closeSilently(resource);
       }
     }
     else {

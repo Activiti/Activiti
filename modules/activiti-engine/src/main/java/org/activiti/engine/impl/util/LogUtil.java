@@ -51,8 +51,7 @@ public class LogUtil {
   }
 
   public static void readJavaUtilLoggingConfigFromClasspath() {
-    ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
-    InputStream inputStream = classLoader.getResourceAsStream("logging.properties");
+    InputStream inputStream = ReflectUtil.getResourceAsStream("logging.properties");
     try {
       if (inputStream != null) {
         LogManager.getLogManager().readConfiguration(inputStream);
@@ -61,11 +60,11 @@ public class LogUtil {
         if ((redirectCommons != null) && (!redirectCommons.equalsIgnoreCase("false"))) {
           System.setProperty("org.apache.commons.logging.Log", "org.apache.commons.logging.impl.Jdk14Logger");
         }
-
-        inputStream.close();
       }
     } catch (Exception e) {
       throw new PvmException("couldn't initialize logging properly", e);
+    } finally {
+      IoUtil.closeSilently(inputStream);
     }
   }
 

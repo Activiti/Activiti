@@ -17,6 +17,7 @@ import java.io.File;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
+import org.activiti.engine.impl.util.IoUtil;
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Task;
 
@@ -71,10 +72,11 @@ public class LaunchThread extends Thread {
       .redirectErrorStream(true)
       .directory(dir);
     
+    InputStream consoleStream = null;
     try {
       Process process = processBuilder.start();
       
-      InputStream consoleStream = process.getInputStream();
+      consoleStream = process.getInputStream();
       BufferedReader consoleReader = new BufferedReader(new InputStreamReader(consoleStream));
       String consoleLine = "";
       while ( (consoleLine!=null)
@@ -90,6 +92,8 @@ public class LaunchThread extends Thread {
       }
     } catch (Exception e) {
       throw new BuildException("couldn't launch "+cmdString(cmd), e);
+    } finally {
+      IoUtil.closeSilently(consoleStream);
     }
   }
 }

@@ -38,9 +38,10 @@ public class CycleDbSqlSessionFactory extends DbSqlSessionFactory {
 
   @Override
   protected SqlSessionFactory createSessionFactory(DataSource dataSource, TransactionFactory transactionFactory) {
+    InputStream inputStream = null;
     try {
       ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
-      InputStream inputStream = classLoader.getResourceAsStream("org/activiti/db/cycle/ibatis/activiti.ibatis.mem.conf.xml");
+      inputStream = classLoader.getResourceAsStream("org/activiti/db/cycle/ibatis/activiti.ibatis.mem.conf.xml");
 
       // update the jdbc parameters to the configured ones...
       Environment environment = new Environment("default", transactionFactory, dataSource);
@@ -55,6 +56,8 @@ public class CycleDbSqlSessionFactory extends DbSqlSessionFactory {
 
     } catch (Exception e) {
       throw new ActivitiException("Error while building ibatis SqlSessionFactory: " + e.getMessage(), e);
+    } finally {
+      IoUtil.closeSilently(inputStream);
     }
   }
   
@@ -71,11 +74,12 @@ public class CycleDbSqlSessionFactory extends DbSqlSessionFactory {
   public static void executeSchemaResource(String operation, String databaseName, SqlSessionFactory sqlSessionFactory) {
     SqlSession sqlSession = sqlSessionFactory.openSession();
     boolean success = false;
+    InputStream inputStream = null;
     try {
       Connection connection = sqlSession.getConnection();
       ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
       String resource = "org/activiti/db/cycle/" + operation + "/activiti." + databaseName + "." + operation + ".sql";
-      InputStream inputStream = classLoader.getResourceAsStream(resource);
+      inputStream = classLoader.getResourceAsStream(resource);
       if (inputStream == null) {
         throw new ActivitiException("resource '" + resource + "' is not available for creating the schema");
       }
@@ -111,6 +115,7 @@ public class CycleDbSqlSessionFactory extends DbSqlSessionFactory {
       throw new ActivitiException("couldn't create db schema", e);
 
     } finally {
+      IoUtil.closeSilently(inputStream);
       if (success) {
         sqlSession.commit(true);
       } else {

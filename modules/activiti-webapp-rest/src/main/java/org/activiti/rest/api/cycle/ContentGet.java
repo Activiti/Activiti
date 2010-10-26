@@ -25,6 +25,7 @@ import org.activiti.cycle.CycleService;
 import org.activiti.cycle.RepositoryArtifact;
 import org.activiti.cycle.impl.CycleServiceImpl;
 import org.activiti.cycle.impl.transform.TransformationException;
+import org.activiti.engine.impl.util.IoUtil;
 import org.activiti.rest.util.ActivitiRequest;
 import org.activiti.rest.util.ActivitiStreamingWebScript;
 import org.springframework.extensions.webscripts.WebScriptResponse;
@@ -85,15 +86,18 @@ public class ContentGet extends ActivitiStreamingWebScript {
       }
     }
 
+    InputStream contentInputStream = null;
     try {
-      
-      streamResponse(res, this.cycleService.getContent(artifact.getConnectorId(), artifact.getNodeId(), contentRepresentation.getId()).asInputStream(), new Date(0),
+      contentInputStream = this.cycleService.getContent(artifact.getConnectorId(), artifact.getNodeId(), contentRepresentation.getId()).asInputStream();
+      streamResponse(res, contentInputStream, new Date(0),
               // TODO: what is a good way to determine the etag? Using a fake one...
                       "W/\"647-1281077702000\"", attach, attachmentFileName, contentType);
     } catch (TransformationException e) {
       streamResponse(res, new ByteArrayInputStream(e.getRenderContent().getBytes()), new Date(0),
               // TODO: what is a good way to determine the etag? Using a fake one...
                       "W/\"647-1281077702000\"", false, null, CycleDefaultMimeType.HTML.getContentType());
+    } finally {
+      IoUtil.closeSilently(contentInputStream);
     }
     
 

@@ -13,13 +13,16 @@
 package org.activiti.engine.impl.util;
 
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 
 import org.activiti.engine.ActivitiException;
 
 
 /**
  * @author Tom Baeyens
+ * @author Frederik Heremans
  */
 public class IoUtil {
 
@@ -38,5 +41,31 @@ public class IoUtil {
     return outputStream.toByteArray();
   }
 
+  /**
+   * Closes the given stream. The same as calling {@link InputStream#close()}, but
+   * errors while closing are silently ignored.
+   */
+  public static void closeSilently(InputStream inputStream) {
+    try {
+      if(inputStream != null) {
+        inputStream.close();
+      }
+    } catch(IOException ignore) {
+      // Exception is silently ignored
+    }
+  }
 
+  /**
+   * Closes the given stream. The same as calling {@link OutputStream#close()}, but
+   * errors while closing are silently ignored.
+   */
+  public static void closeSilently(OutputStream outputStream) {
+    try {
+      if(outputStream != null) {
+        outputStream.close();
+      }
+    } catch(IOException ignore) {
+      // Exception is silently ignored
+    }
+  }
 }

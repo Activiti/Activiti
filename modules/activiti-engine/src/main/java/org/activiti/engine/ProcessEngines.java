@@ -28,6 +28,7 @@ import java.util.logging.Logger;
 
 import org.activiti.engine.impl.ProcessEngineImpl;
 import org.activiti.engine.impl.ProcessEngineInfoImpl;
+import org.activiti.engine.impl.util.IoUtil;
 import org.activiti.engine.impl.util.ReflectUtil;
 
 
@@ -142,9 +143,10 @@ public abstract class ProcessEngines {
     return sw.toString();
   }
 
-  private static ProcessEngine buildProcessEngine(URL resource) {
+  private static  ProcessEngine buildProcessEngine(URL resource) {
+    InputStream inputStream = null;
     try {
-      InputStream inputStream = resource.openStream();
+      inputStream = resource.openStream();
       ProcessEngine processEngine = new ProcessEngineBuilder()
           .configureFromPropertiesInputStream(inputStream)
           .buildProcessEngine();
@@ -152,6 +154,8 @@ public abstract class ProcessEngines {
       
     } catch (IOException e) {
       throw new ActivitiException("couldn't open resource stream: "+e.getMessage(), e);
+    } finally {
+      IoUtil.closeSilently(inputStream);
     }
   }
   

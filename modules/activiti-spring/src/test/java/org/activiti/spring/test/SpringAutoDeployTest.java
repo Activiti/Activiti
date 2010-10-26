@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.activiti.engine.RepositoryService;
+import org.activiti.engine.impl.util.IoUtil;
 import org.activiti.engine.impl.test.PvmTestCase;
 import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.repository.DeploymentQuery;
@@ -120,9 +121,7 @@ public class SpringAutoDeployTest extends PvmTestCase {
       inputStream = new BufferedInputStream(new FileInputStream(getFile(filePath)));
       inputStream.read(buffer);
     } finally {
-      if (inputStream != null) {
-          inputStream.close();
-      }
+      IoUtil.closeSilently(inputStream);
     }
     return new String(buffer);
   }
