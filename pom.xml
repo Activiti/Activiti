@@ -62,11 +62,6 @@
 	        	<artifactId>activiti-cxf</artifactId>
 	        	<version>${version}</version>
 	     	</dependency>
-	     	<dependency>
-		      <groupId>org.activiti</groupId>
-		      <artifactId>activiti-juel</artifactId>
-		      <version>${version}</version>
-		    </dependency>
 			<dependency>
 				<groupId>org.apache.ant</groupId>
 				<artifactId>ant</artifactId>
@@ -303,7 +298,6 @@
   </dependencyManagement>
 
   <modules>
-    <module>modules/activiti-juel</module>
     <module>modules/activiti-engine</module>
   </modules>
 

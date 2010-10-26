@@ -15,7 +15,7 @@ package org.activiti.engine.impl.el;
 
 import java.lang.reflect.Method;
 
-import org.activiti.javax.el.FunctionMapper;
+import org.activiti.engine.impl.javax.el.FunctionMapper;
 
 
 /**

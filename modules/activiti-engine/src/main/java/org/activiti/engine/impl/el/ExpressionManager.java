@@ -12,18 +12,18 @@
  */
 package org.activiti.engine.impl.el;
 
-import org.activiti.el.juel.ExpressionFactoryImpl;
+import org.activiti.engine.impl.javax.el.ArrayELResolver;
+import org.activiti.engine.impl.javax.el.BeanELResolver;
+import org.activiti.engine.impl.javax.el.CompositeELResolver;
+import org.activiti.engine.impl.javax.el.ELContext;
+import org.activiti.engine.impl.javax.el.ELResolver;
+import org.activiti.engine.impl.javax.el.ExpressionFactory;
+import org.activiti.engine.impl.javax.el.ListELResolver;
+import org.activiti.engine.impl.javax.el.MapELResolver;
+import org.activiti.engine.impl.javax.el.ValueExpression;
+import org.activiti.engine.impl.juel.ExpressionFactoryImpl;
 import org.activiti.engine.impl.pvm.runtime.ExecutionImpl;
 import org.activiti.engine.impl.runtime.ExecutionEntity;
-import org.activiti.javax.el.ArrayELResolver;
-import org.activiti.javax.el.BeanELResolver;
-import org.activiti.javax.el.CompositeELResolver;
-import org.activiti.javax.el.ELContext;
-import org.activiti.javax.el.ELResolver;
-import org.activiti.javax.el.ExpressionFactory;
-import org.activiti.javax.el.ListELResolver;
-import org.activiti.javax.el.MapELResolver;
-import org.activiti.javax.el.ValueExpression;
 
 
 /**

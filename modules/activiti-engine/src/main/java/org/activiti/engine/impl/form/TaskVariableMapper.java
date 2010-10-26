@@ -12,9 +12,9 @@
  */
 package org.activiti.engine.impl.form;
 
+import org.activiti.engine.impl.javax.el.ValueExpression;
+import org.activiti.engine.impl.javax.el.VariableMapper;
 import org.activiti.engine.impl.task.TaskEntity;
-import org.activiti.javax.el.ValueExpression;
-import org.activiti.javax.el.VariableMapper;
 
 
 /**

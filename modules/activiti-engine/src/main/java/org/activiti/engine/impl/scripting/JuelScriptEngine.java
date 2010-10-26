@@ -28,23 +28,23 @@ import javax.script.ScriptEngineFactory;
 import javax.script.ScriptException;
 import javax.script.SimpleBindings;
 
-import org.activiti.el.juel.util.SimpleResolver;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.el.ExpressionFactoryResolver;
+import org.activiti.engine.impl.javax.el.ArrayELResolver;
+import org.activiti.engine.impl.javax.el.BeanELResolver;
+import org.activiti.engine.impl.javax.el.CompositeELResolver;
+import org.activiti.engine.impl.javax.el.ELContext;
+import org.activiti.engine.impl.javax.el.ELException;
+import org.activiti.engine.impl.javax.el.ELResolver;
+import org.activiti.engine.impl.javax.el.ExpressionFactory;
+import org.activiti.engine.impl.javax.el.FunctionMapper;
+import org.activiti.engine.impl.javax.el.ListELResolver;
+import org.activiti.engine.impl.javax.el.MapELResolver;
+import org.activiti.engine.impl.javax.el.ResourceBundleELResolver;
+import org.activiti.engine.impl.javax.el.ValueExpression;
+import org.activiti.engine.impl.javax.el.VariableMapper;
+import org.activiti.engine.impl.juel.SimpleResolver;
 import org.activiti.engine.impl.util.ReflectUtil;
-import org.activiti.javax.el.ArrayELResolver;
-import org.activiti.javax.el.BeanELResolver;
-import org.activiti.javax.el.CompositeELResolver;
-import org.activiti.javax.el.ELContext;
-import org.activiti.javax.el.ELException;
-import org.activiti.javax.el.ELResolver;
-import org.activiti.javax.el.ExpressionFactory;
-import org.activiti.javax.el.FunctionMapper;
-import org.activiti.javax.el.ListELResolver;
-import org.activiti.javax.el.MapELResolver;
-import org.activiti.javax.el.ResourceBundleELResolver;
-import org.activiti.javax.el.ValueExpression;
-import org.activiti.javax.el.VariableMapper;
 
 
 /**

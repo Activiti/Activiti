@@ -13,8 +13,8 @@
 
 package org.activiti.engine.impl.el;
 
-import org.activiti.el.juel.ExpressionFactoryImpl;
-import org.activiti.javax.el.ExpressionFactory;
+import org.activiti.engine.impl.javax.el.ExpressionFactory;
+import org.activiti.engine.impl.juel.ExpressionFactoryImpl;
 
 
 

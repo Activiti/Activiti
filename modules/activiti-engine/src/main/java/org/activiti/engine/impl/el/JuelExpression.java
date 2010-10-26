@@ -15,12 +15,12 @@ package org.activiti.engine.impl.el;
 
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.delegate.DelegateExecution;
+import org.activiti.engine.impl.javax.el.ELContext;
+import org.activiti.engine.impl.javax.el.ELException;
+import org.activiti.engine.impl.javax.el.MethodNotFoundException;
+import org.activiti.engine.impl.javax.el.PropertyNotFoundException;
+import org.activiti.engine.impl.javax.el.ValueExpression;
 import org.activiti.engine.impl.pvm.runtime.ExecutionImpl;
-import org.activiti.javax.el.ELContext;
-import org.activiti.javax.el.ELException;
-import org.activiti.javax.el.MethodNotFoundException;
-import org.activiti.javax.el.PropertyNotFoundException;
-import org.activiti.javax.el.ValueExpression;
 
 
 /**

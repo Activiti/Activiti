@@ -16,8 +16,8 @@ package org.activiti.spring;
 import java.beans.FeatureDescriptor;
 import java.util.Iterator;
 
-import org.activiti.javax.el.ELContext;
-import org.activiti.javax.el.ELResolver;
+import org.activiti.engine.impl.javax.el.ELContext;
+import org.activiti.engine.impl.javax.el.ELResolver;
 import org.springframework.context.ApplicationContext;
 
 
