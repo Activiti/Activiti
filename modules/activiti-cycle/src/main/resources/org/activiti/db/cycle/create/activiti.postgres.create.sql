@@ -6,7 +6,7 @@ create table ACT_CY_CONFIG (
 );
 
 create table ACT_CY_LINK (
-	ID_ varchar(255) AUTO_INCREMENT,
+	ID_ serial,
 	SOURCE_CONNECTOR_ID_ varchar(255),
 	SOURCE_ARTIFACT_ID_ varchar(255),
 	SOURCE_ELEMENT_ID_ varchar(255) DEFAULT NULL,
@@ -20,13 +20,6 @@ create table ACT_CY_LINK (
 	LINK_TYPE_ varchar(255),
 	COMMENT_ varchar(255),
 	LINKED_BOTH_WAYS_ boolean,
-	primary key(ID_)
-);
-
-create table ACT_CY_TAG (
-	ID_ bigint,
-	NAME_ varchar(255),
-	ALIAS_ varchar(255),
 	primary key(ID_)
 );
 

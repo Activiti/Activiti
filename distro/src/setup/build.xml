@@ -112,7 +112,7 @@
   	<fileset id="jdbc.driver.libs" dir="${activiti.home}/examples/activiti-engine-examples/libs-test">
   	  <include name="h2-*.jar" if="db.use.h2"/>
   	  <include name="mysql-*.jar" if="db.use.mysql"/>
-  	  <include name="postgres-*.jar" if="db.use.postgres"/>
+  	  <include name="postgresql-*.jar" if="db.use.postgres"/>
   	  <include name="ojdbc5*.jar" if="db.use.oracle"/>
   	</fileset>
   </target>

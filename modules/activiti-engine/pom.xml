@@ -178,6 +178,7 @@
 					<groupId>postgresql</groupId>
 					<artifactId>postgresql</artifactId>
 					<version>8.4-701.jdbc4</version>
+                    <scope>test</scope>
 				</dependency>
 			</dependencies>
 			<build>
