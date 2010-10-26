@@ -11,14 +11,8 @@
  * limitations under the License.
  */
 
-package org.activiti.engine.bpmn;
+package org.activiti.engine.delegate;
 
-import org.activiti.engine.delegate.ActivityBehavior;
-import org.activiti.engine.delegate.ActivityExecution;
-import org.activiti.engine.delegate.DelegateExecution;
-import org.activiti.engine.delegate.EventListener;
-import org.activiti.engine.delegate.EventListenerExecution;
-import org.activiti.engine.impl.bpmn.BpmnActivityBehavior;
 
 /**
  * Convience class that should be used when a Java delegation in a BPMN 2.0
@@ -36,17 +30,8 @@ import org.activiti.engine.impl.bpmn.BpmnActivityBehavior;
  * 
  * @author Joram Barrez
  */
-public abstract class BpmnJavaDelegation extends BpmnActivityBehavior implements ActivityBehavior, EventListener {
+public interface JavaDelegation {
   
-  public void execute(ActivityExecution execution) throws Exception {
-    execute((DelegateExecution) execution);
-    performDefaultOutgoingBehavior(execution);
-  }
-  
-  public void notify(EventListenerExecution execution) throws Exception {
-    execute((DelegateExecution) execution);
-  }
-  
-  public abstract void execute(DelegateExecution execution) throws Exception;
+  void execute(DelegateExecution execution) throws Exception;
 
 }

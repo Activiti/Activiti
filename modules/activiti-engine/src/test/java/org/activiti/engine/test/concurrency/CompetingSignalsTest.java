@@ -16,8 +16,8 @@ package org.activiti.engine.test.concurrency;
 import java.util.logging.Logger;
 
 import org.activiti.engine.ActivitiOptimisticLockingException;
-import org.activiti.engine.delegate.ActivityBehavior;
-import org.activiti.engine.delegate.ActivityExecution;
+import org.activiti.engine.impl.pvm.delegate.ActivityBehavior;
+import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
 import org.activiti.engine.impl.test.ActivitiInternalTestCase;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.test.Deployment;

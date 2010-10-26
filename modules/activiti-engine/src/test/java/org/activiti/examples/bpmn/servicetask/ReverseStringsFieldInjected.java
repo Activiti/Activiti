@@ -12,7 +12,7 @@
  */
 package org.activiti.examples.bpmn.servicetask;
 
-import org.activiti.engine.bpmn.BpmnJavaDelegation;
+import org.activiti.engine.delegate.JavaDelegation;
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.impl.el.Expression;
 
@@ -23,7 +23,7 @@ import org.activiti.engine.impl.el.Expression;
  * 
  * @author Frederik Heremans
  */
-public class ReverseStringsFieldInjected extends BpmnJavaDelegation {
+public class ReverseStringsFieldInjected implements JavaDelegation {
 
   private Expression text1;
   private Expression text2;

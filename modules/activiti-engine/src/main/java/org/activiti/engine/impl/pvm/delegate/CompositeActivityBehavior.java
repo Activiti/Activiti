@@ -10,17 +10,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.activiti.engine.delegate;
+
+package org.activiti.engine.impl.pvm.delegate;
+
 
 
 /**
  * @author Tom Baeyens
  */
-public interface EventListener {
+public interface CompositeActivityBehavior extends ActivityBehavior {
 
-  String EVENTNAME_START = "start";
-  String EVENTNAME_END = "end";
-  String EVENTNAME_TAKE = "take";
-  
-  void notify(EventListenerExecution execution) throws Exception;
+  void lastExecutionEnded(ActivityExecution execution);
 }

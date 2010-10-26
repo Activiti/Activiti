@@ -12,9 +12,9 @@
  */
 package org.activiti.engine.impl.bpmn;
 
-import org.activiti.engine.delegate.ActivityExecution;
 import org.activiti.engine.impl.el.Expression;
 import org.activiti.engine.impl.el.ExpressionManager;
+import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
 import org.activiti.engine.impl.task.TaskDefinition;
 import org.activiti.engine.impl.task.TaskEntity;
 

@@ -43,7 +43,7 @@ public class FieldDeclarationDelegate {
    * {@link FieldDeclaration}s. The same instance is always returned,
    * it is is created and injected only once.
    */
-  protected Object getDelegateInstance() {
+  public Object getDelegateInstance() {
     if(objectInstance == null) {
       objectInstance = ReflectUtil.instantiate(className);
       injectFieldDeclarations(objectInstance);

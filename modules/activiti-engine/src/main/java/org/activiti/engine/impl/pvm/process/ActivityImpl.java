@@ -18,10 +18,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.activiti.engine.delegate.ActivityBehavior;
 import org.activiti.engine.impl.pvm.PvmActivity;
 import org.activiti.engine.impl.pvm.PvmException;
 import org.activiti.engine.impl.pvm.PvmTransition;
+import org.activiti.engine.impl.pvm.delegate.ActivityBehavior;
 
 
 /**

@@ -13,8 +13,8 @@
 
 package org.activiti.engine.impl.history.handler;
 
-import org.activiti.engine.delegate.EventListener;
 import org.activiti.engine.impl.bpmn.parser.BpmnParseListener;
+import org.activiti.engine.impl.pvm.delegate.EventListener;
 import org.activiti.engine.impl.pvm.process.ActivityImpl;
 import org.activiti.engine.impl.pvm.process.ScopeImpl;
 import org.activiti.engine.impl.pvm.process.TransitionImpl;

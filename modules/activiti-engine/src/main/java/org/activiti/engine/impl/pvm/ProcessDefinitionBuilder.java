@@ -17,8 +17,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
 
-import org.activiti.engine.delegate.ActivityBehavior;
-import org.activiti.engine.delegate.EventListener;
+import org.activiti.engine.impl.pvm.delegate.ActivityBehavior;
+import org.activiti.engine.impl.pvm.delegate.EventListener;
 import org.activiti.engine.impl.pvm.process.ActivityImpl;
 import org.activiti.engine.impl.pvm.process.ProcessDefinitionImpl;
 import org.activiti.engine.impl.pvm.process.ProcessElementImpl;

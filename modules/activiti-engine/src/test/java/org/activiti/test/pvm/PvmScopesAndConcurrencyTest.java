@@ -16,12 +16,12 @@ package org.activiti.test.pvm;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.activiti.engine.delegate.EventListener;
 import org.activiti.engine.impl.pvm.ProcessDefinitionBuilder;
 import org.activiti.engine.impl.pvm.PvmException;
 import org.activiti.engine.impl.pvm.PvmExecution;
 import org.activiti.engine.impl.pvm.PvmProcessDefinition;
 import org.activiti.engine.impl.pvm.PvmProcessInstance;
+import org.activiti.engine.impl.pvm.delegate.EventListener;
 import org.activiti.engine.impl.test.PvmTestCase;
 import org.activiti.test.pvm.activities.Automatic;
 import org.activiti.test.pvm.activities.End;

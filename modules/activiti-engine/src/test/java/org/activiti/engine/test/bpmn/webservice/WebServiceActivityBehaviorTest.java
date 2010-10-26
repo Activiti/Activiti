@@ -18,12 +18,12 @@ import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
 import org.activiti.engine.ActivitiException;
-import org.activiti.engine.delegate.ActivityExecution;
 import org.activiti.engine.impl.bpmn.ItemDefinition;
 import org.activiti.engine.impl.bpmn.Message;
 import org.activiti.engine.impl.bpmn.Operation;
 import org.activiti.engine.impl.bpmn.SimpleStructure;
 import org.activiti.engine.impl.bpmn.WebServiceActivityBehavior;
+import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
 import org.activiti.engine.impl.transformer.Transformer;
 import org.activiti.engine.impl.webservice.SyncWebServiceClient;
 import org.activiti.engine.impl.webservice.WSOperation;

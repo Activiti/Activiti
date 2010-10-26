@@ -12,7 +12,7 @@
  */
 package org.activiti.engine.impl.pvm.runtime;
 
-import org.activiti.engine.delegate.EventListener;
+import org.activiti.engine.impl.pvm.delegate.EventListener;
 import org.activiti.engine.impl.pvm.process.ActivityImpl;
 import org.activiti.engine.impl.pvm.process.ScopeImpl;
 import org.activiti.engine.impl.pvm.process.TransitionImpl;

@@ -13,11 +13,11 @@
 
 package org.activiti.engine.impl.bpmn;
 
-import org.activiti.engine.delegate.ActivityExecution;
 import org.activiti.engine.delegate.DelegateExecution;
-import org.activiti.engine.delegate.SubProcessActivityBehavior;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.pvm.PvmProcessInstance;
+import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
+import org.activiti.engine.impl.pvm.delegate.SubProcessActivityBehavior;
 import org.activiti.engine.impl.pvm.process.ProcessDefinitionImpl;
 
 

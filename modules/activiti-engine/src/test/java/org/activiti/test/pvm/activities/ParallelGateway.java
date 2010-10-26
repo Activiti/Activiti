@@ -16,10 +16,10 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.activiti.engine.delegate.ActivityBehavior;
-import org.activiti.engine.delegate.ActivityExecution;
 import org.activiti.engine.impl.pvm.PvmActivity;
 import org.activiti.engine.impl.pvm.PvmTransition;
+import org.activiti.engine.impl.pvm.delegate.ActivityBehavior;
+import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
 import org.activiti.engine.impl.pvm.runtime.ExecutionImpl;
 
 /**

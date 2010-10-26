@@ -16,11 +16,11 @@ package org.activiti.engine.impl.bpmn;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.activiti.engine.delegate.ActivityExecution;
-import org.activiti.engine.delegate.CompositeActivityBehavior;
 import org.activiti.engine.impl.bpmn.parser.BpmnParse;
 import org.activiti.engine.impl.pvm.PvmActivity;
 import org.activiti.engine.impl.pvm.PvmTransition;
+import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
+import org.activiti.engine.impl.pvm.delegate.CompositeActivityBehavior;
 import org.activiti.engine.impl.pvm.process.ActivityImpl;
 
 

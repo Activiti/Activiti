@@ -15,10 +15,10 @@ package org.activiti.engine.impl.history.handler;
 
 import java.util.Date;
 
-import org.activiti.engine.delegate.EventListener;
-import org.activiti.engine.delegate.EventListenerExecution;
 import org.activiti.engine.impl.history.HistoricProcessInstanceEntity;
 import org.activiti.engine.impl.interceptor.CommandContext;
+import org.activiti.engine.impl.pvm.delegate.EventListener;
+import org.activiti.engine.impl.pvm.delegate.EventListenerExecution;
 import org.activiti.engine.impl.util.ClockUtil;
 
 

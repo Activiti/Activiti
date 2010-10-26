@@ -13,9 +13,9 @@
 
 package org.activiti.examples.bpmn.eventlistener;
 
-import org.activiti.engine.delegate.EventListener;
-import org.activiti.engine.delegate.EventListenerExecution;
 import org.activiti.engine.impl.el.Expression;
+import org.activiti.engine.impl.pvm.delegate.EventListener;
+import org.activiti.engine.impl.pvm.delegate.EventListenerExecution;
 
 /**
  * Example {@link EventListener} which gets 2 fields injected.

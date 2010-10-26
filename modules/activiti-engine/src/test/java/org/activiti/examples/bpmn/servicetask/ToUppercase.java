@@ -12,14 +12,14 @@
  */
 package org.activiti.examples.bpmn.servicetask;
 
-import org.activiti.engine.bpmn.BpmnJavaDelegation;
+import org.activiti.engine.delegate.JavaDelegation;
 import org.activiti.engine.delegate.DelegateExecution;
 
 
 /**
  * @author Joram Barrez
  */
-public class ToUppercase extends BpmnJavaDelegation {
+public class ToUppercase implements JavaDelegation {
   
   private static final String VARIABLE_NAME = "input";
   

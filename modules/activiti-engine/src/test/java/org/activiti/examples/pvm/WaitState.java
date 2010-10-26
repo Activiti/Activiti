@@ -12,9 +12,9 @@
  */
 package org.activiti.examples.pvm;
 
-import org.activiti.engine.delegate.ActivityExecution;
-import org.activiti.engine.delegate.SignallableActivityBehavior;
 import org.activiti.engine.impl.pvm.PvmTransition;
+import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
+import org.activiti.engine.impl.pvm.delegate.SignallableActivityBehavior;
 
 
 

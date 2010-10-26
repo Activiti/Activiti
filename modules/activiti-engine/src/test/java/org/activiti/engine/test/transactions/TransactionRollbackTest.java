@@ -13,8 +13,8 @@
 
 package org.activiti.engine.test.transactions;
 
-import org.activiti.engine.delegate.ActivityBehavior;
-import org.activiti.engine.delegate.ActivityExecution;
+import org.activiti.engine.impl.pvm.delegate.ActivityBehavior;
+import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
 import org.activiti.engine.impl.test.ActivitiInternalTestCase;
 import org.activiti.engine.test.Deployment;
 

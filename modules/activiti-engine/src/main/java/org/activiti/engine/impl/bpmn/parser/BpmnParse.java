@@ -22,8 +22,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.activiti.engine.ActivitiException;
-import org.activiti.engine.delegate.ActivityBehavior;
-import org.activiti.engine.delegate.EventListener;
+import org.activiti.engine.delegate.JavaDelegation;
 import org.activiti.engine.impl.bpmn.BoundaryTimerEventActivity;
 import org.activiti.engine.impl.bpmn.BpmnInterface;
 import org.activiti.engine.impl.bpmn.BpmnInterfaceImplementation;
@@ -33,8 +32,10 @@ import org.activiti.engine.impl.bpmn.Condition;
 import org.activiti.engine.impl.bpmn.DelegateEventListener;
 import org.activiti.engine.impl.bpmn.ExclusiveGatewayActivity;
 import org.activiti.engine.impl.bpmn.ExpressionEventListener;
+import org.activiti.engine.impl.bpmn.FieldDeclarationDelegate;
 import org.activiti.engine.impl.bpmn.ItemDefinition;
 import org.activiti.engine.impl.bpmn.ItemKind;
+import org.activiti.engine.impl.bpmn.JavaDelegationDelegate;
 import org.activiti.engine.impl.bpmn.MailActivityBehavior;
 import org.activiti.engine.impl.bpmn.ManualTaskActivity;
 import org.activiti.engine.impl.bpmn.Message;
@@ -45,7 +46,6 @@ import org.activiti.engine.impl.bpmn.OperationImplementation;
 import org.activiti.engine.impl.bpmn.ParallelGatewayActivity;
 import org.activiti.engine.impl.bpmn.ReceiveTaskActivity;
 import org.activiti.engine.impl.bpmn.ScriptTaskActivity;
-import org.activiti.engine.impl.bpmn.ServiceTaskDelegateActivityBehaviour;
 import org.activiti.engine.impl.bpmn.ServiceTaskExpressionActivityBehavior;
 import org.activiti.engine.impl.bpmn.Structure;
 import org.activiti.engine.impl.bpmn.SubProcessActivity;
@@ -63,6 +63,8 @@ import org.activiti.engine.impl.form.StartFormHandler;
 import org.activiti.engine.impl.form.TaskFormHandler;
 import org.activiti.engine.impl.jobexecutor.TimerDeclarationImpl;
 import org.activiti.engine.impl.jobexecutor.TimerExecuteNestedActivityJobHandler;
+import org.activiti.engine.impl.pvm.delegate.ActivityBehavior;
+import org.activiti.engine.impl.pvm.delegate.EventListener;
 import org.activiti.engine.impl.pvm.process.ActivityImpl;
 import org.activiti.engine.impl.pvm.process.ProcessDefinitionImpl;
 import org.activiti.engine.impl.pvm.process.ScopeImpl;
@@ -648,7 +650,14 @@ public class BpmnParse extends Parse {
         addError("'resultVariableName' not supported for service tasks using 'class'", serviceTaskElement);
       }
 
-      activity.setActivityBehavior(new ServiceTaskDelegateActivityBehaviour(className, fieldDeclarations));
+      Object delegateInstance = new FieldDeclarationDelegate(className, fieldDeclarations).getDelegateInstance();
+      if (delegateInstance instanceof ActivityBehavior) {
+        activity.setActivityBehavior((ActivityBehavior) delegateInstance);
+      } else if (delegateInstance instanceof JavaDelegation) {
+        activity.setActivityBehavior(new JavaDelegationDelegate((JavaDelegation) delegateInstance));
+      } else {
+        addError(delegateInstance.getClass().getName()+" doesn't implement "+JavaDelegation.class.getName()+" nor "+ActivityBehavior.class.getName(), serviceTaskElement);
+      }
       
     } else if (expression != null && expression.trim().length() > 0) {
       activity.setActivityBehavior(new ServiceTaskExpressionActivityBehavior(expressionManager.createExpression(expression), resultVariableName));
@@ -673,7 +682,8 @@ public class BpmnParse extends Parse {
 
   protected void parseEmailServiceTask(ActivityImpl activity, Element serviceTaskElement, List<FieldDeclaration> fieldDeclarations) {
     validateFieldDeclarationsForEmail(serviceTaskElement, fieldDeclarations);
-    activity.setActivityBehavior(new ServiceTaskDelegateActivityBehaviour(MailActivityBehavior.class.getName(), fieldDeclarations));
+    ActivityBehavior mailBehavior = (ActivityBehavior) new FieldDeclarationDelegate(MailActivityBehavior.class.getName(), fieldDeclarations).getDelegateInstance();
+    activity.setActivityBehavior(mailBehavior);
   }
   
   protected void validateFieldDeclarationsForEmail(Element serviceTaskElement, List<FieldDeclaration> fieldDeclarations) {
@@ -1437,7 +1447,14 @@ public class BpmnParse extends Parse {
     List<FieldDeclaration> fieldDeclarations = parseFieldDeclarations(eventListenerElement);
     
     if(className != null && className.trim().length() > 0) {
-      eventListener = new DelegateEventListener(className, fieldDeclarations);
+      Object delegateInstance = new DelegateEventListener(className, fieldDeclarations).getDelegateInstance();
+      if (delegateInstance instanceof EventListener) {
+        eventListener = (EventListener) delegateInstance; 
+      } else if (delegateInstance instanceof JavaDelegation) {
+        eventListener = new JavaDelegationDelegate((JavaDelegation) delegateInstance);
+      } else {
+        addError(delegateInstance.getClass().getName()+" doesn't implement "+JavaDelegation.class.getName()+" nor "+EventListener.class.getName(), eventListenerElement);
+      }
     } else if(expression != null && expression.trim().length() > 0) {
       eventListener = new ExpressionEventListener(expressionManager.createExpression(expression));
     } else {

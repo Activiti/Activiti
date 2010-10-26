@@ -14,8 +14,8 @@ package org.activiti.engine.impl.pvm.runtime;
 
 import java.util.logging.Logger;
 
-import org.activiti.engine.delegate.ActivityBehavior;
 import org.activiti.engine.impl.pvm.PvmException;
+import org.activiti.engine.impl.pvm.delegate.ActivityBehavior;
 import org.activiti.engine.impl.pvm.process.ActivityImpl;
 
 
@@ -41,7 +41,7 @@ public class AtomicOperationActivityExecute implements AtomicOperation {
     } catch (RuntimeException e) {
       throw e;
     } catch (Exception e) {
-      throw new PvmException("couldn't start activity '"+activity.getId()+"': "+e.getMessage(), e);
+      throw new PvmException("couldn't execute activity <"+activity.getProperty("type")+" id=\""+activity.getId()+"\" ...>: "+e.getMessage(), e);
     }
   }
 }

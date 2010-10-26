@@ -15,8 +15,8 @@ package org.activiti.engine.impl.pvm.runtime;
 import java.util.List;
 import java.util.logging.Logger;
 
-import org.activiti.engine.delegate.EventListener;
 import org.activiti.engine.impl.pvm.PvmException;
+import org.activiti.engine.impl.pvm.delegate.EventListener;
 import org.activiti.engine.impl.pvm.process.ActivityImpl;
 import org.activiti.engine.impl.pvm.process.ScopeImpl;
 import org.activiti.engine.impl.pvm.process.TransitionImpl;

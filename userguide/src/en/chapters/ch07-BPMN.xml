@@ -1511,14 +1511,14 @@ List&lt;Task&gt; tasks = taskService.createTaskQuery().assignee(&quot;kermit&quo
       
       <para>
         To implement a class that can be called during process execution, this class needs to
-        extend the <emphasis>org.activiti.engine.bpmn.BpmnJavaDelegation</emphasis> class and provide the required
+        implement the <emphasis>org.activiti.engine.delegate.JavaDelegation</emphasis> interface and provide the required
         logic in the <emphasis>execute</emphasis> method. When process execution arrives
         at this particular step, it will execute this logic defined in that method and leave 
         the activity in the default BPMN 2.0 way.
       </para>  
-      <para>
+      <para><emphasis role="bold">[EXPERIMENTAL]</emphasis>
         It is also possible to provide a class that implements the 
-        <emphasis>org.activiti.pvm.activity.ActivityBehavior</emphasis> interface.
+        <emphasis>org.activiti.engine.impl.pvm.delegate.ActivityBehavior</emphasis> interface.
         Implementations have then access to the more powerful <emphasis>ActivityExecution</emphasis>
         that for example also allows to influence the control flow of the process. Note however
         that this is not a very good practice, and should be avoided as much as possible.
@@ -1528,17 +1528,17 @@ List&lt;Task&gt; tasks = taskService.createTaskQuery().assignee(&quot;kermit&quo
       
       <para>
         Let's create for example a Java class that can be used to change a process variable String
-        to uppercase. This class needs to extend the <emphasis>org.activiti.engine.bpmn.BpmnJavaDelegation</emphasis>
-        class, which requires us to implement the <emphasis>execute(DelegateExecution)</emphasis>
+        to uppercase. This class needs to implement the <emphasis>org.activiti.engine.delegate.JavaDelegation</emphasis>
+        interface, which requires us to implement the <emphasis>execute(DelegateExecution)</emphasis>
         method. It's this operation that will be called by the engine and which needs to contain
         the business logic. Process instance information such as process variables  and other
         can be accessed and manipulated through the 
-        <ulink url="http://activiti.org/javadocs/org/activiti/pvm/delegate/DelegateExecution.html">DelegateExecution</ulink>
+        <ulink url="http://activiti.org/javadocs/org/activiti/engine/delegate/DelegateExecution.html">DelegateExecution</ulink>
         interface (click on the link for a detailed Javadoc of its operations).
 <programlisting>
-public class ToUppercase extends BpmnJavaDelegation {
+public class ToUppercase implements JavaDelegation {
   
-  public void execute(ActivityExecution execution) throws Exception {
+  public void execute(DelegateExecution execution) throws Exception {
     String var = (String) execution.getVariable(&quot;input&quot;);
     var = var.toUpperCase();
     execution.setVariable(&quot;input&quot;, var);
@@ -1630,7 +1630,7 @@ public class ToUppercase extends BpmnJavaDelegation {
   Full code and test can be found in <literal>org.activiti.examples.bpmn.servicetask.JavaServiceTaskTest.testExpressionFieldInjection</literal>
 <programlisting>
 
-public class ReverseStringsFieldInjected extends BpmnJavaDelegation {
+public class ReverseStringsFieldInjected implements JavaDelegation {
 
   private Expression text1;
   private Expression text2;
@@ -1728,14 +1728,13 @@ public class ReverseStringsFieldInjected extends BpmnJavaDelegation {
     
   &lt;/process&gt;</programlisting>
         </para>
-        <para>The first event-listener is notified when the process starts. The listener is an external Java-class (<literal>ExampleEventListenerOne</literal>) which implements
-        <literal>org.activiti.pvm.event.EventListener</literal>. Classes implementing <literal>org.activiti.engine.bpmn.BpmnJavaDelegation</literal>
-        can be also used as eventlistener and have the advantage that they can also be used within a service task. When the event occurs (in this case <literal>end</literal>)
+        <para>The first event-listener is notified when the process starts. The listener is an external Java-class (like <literal>ExampleEventListenerOne</literal>) 
+        and should implement <literal>org.activiti.engine.delegate.JavaDelegation</literal>. When the event occurs (in this case <literal>end</literal> event)
         the method <literal>notify(EventListenerExecution execution)</literal> is called.
         <programlisting>
-public class ExampleEventListenerOne implements <emphasis role="bold">EventListener</emphasis> {
+public class ExampleEventListenerOne implements <emphasis role="bold">JavaDelegation</emphasis> {
 
-  <emphasis role="bold">public void notify(EventListenerExecution execution) throws Exception {</emphasis>
+  <emphasis role="bold">public void notify(DelegateExecution execution) throws Exception {</emphasis>
     execution.setVariable("variableSetInEventListener", "firstValue");
     execution.setVariable("eventNameReceived", execution.getEventName());
   }
@@ -1753,11 +1752,11 @@ public class ExampleEventListenerOne implements <emphasis role="bold">EventListe
         <programlisting>
 &lt;activiti:listener expression=&quot;<emphasis role="bold">${myPojo.myMethod(execution.eventName)}</emphasis>&quot; eventName=&quot;end&quot; /&gt;</programlisting>
         <para>
-          As with other expressions, execution variables are resolved and can be used. Because an eventlistener gets a special kind of execution, an <literal>EventListenerExecution</literal> that is, it's
+          As with other expressions, execution variables are resolved and can be used. Because the execution implementation object has a property that exposes the event name, it's
           possible to pass the event-name to your methods using <literal>execution.eventName</literal>.
         </para>
         
-          <section id="eventListenerFieldInjection">
+      <section id="eventListenerFieldInjection">
       
         <title>Field injection on event listeners</title>
         <para>

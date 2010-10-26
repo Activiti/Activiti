@@ -11,7 +11,9 @@
  * limitations under the License.
  */
 
-package org.activiti.engine.delegate;
+package org.activiti.engine.impl.pvm.delegate;
+
+import org.activiti.engine.delegate.DelegateExecution;
 
 
 

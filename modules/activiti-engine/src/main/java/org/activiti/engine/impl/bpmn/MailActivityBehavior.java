@@ -14,7 +14,6 @@
 package org.activiti.engine.impl.bpmn;
 
 import org.activiti.engine.ActivitiException;
-import org.activiti.engine.bpmn.BpmnJavaDelegation;
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.impl.cfg.ProcessEngineConfiguration;
 import org.activiti.engine.impl.el.Expression;
@@ -28,7 +27,7 @@ import org.apache.commons.mail.SimpleEmail;
  * @author Joram Barrez
  * @author Frederik Heremans
  */
-public class MailActivityBehavior extends BpmnJavaDelegation {
+public class MailActivityBehavior extends JavaDelegationDelegate {
 
   private Expression to;
   private Expression from;

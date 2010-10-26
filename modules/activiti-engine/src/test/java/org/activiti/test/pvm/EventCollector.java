@@ -17,8 +17,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
-import org.activiti.engine.delegate.EventListener;
-import org.activiti.engine.delegate.EventListenerExecution;
+import org.activiti.engine.impl.pvm.delegate.EventListener;
+import org.activiti.engine.impl.pvm.delegate.EventListenerExecution;
 
 
 /**

@@ -13,10 +13,10 @@
 
 package org.activiti.test.pvm;
 
-import org.activiti.engine.delegate.EventListener;
 import org.activiti.engine.impl.pvm.ProcessDefinitionBuilder;
 import org.activiti.engine.impl.pvm.PvmProcessDefinition;
 import org.activiti.engine.impl.pvm.PvmProcessInstance;
+import org.activiti.engine.impl.pvm.delegate.EventListener;
 import org.activiti.engine.impl.test.PvmTestCase;
 import org.activiti.test.pvm.activities.Automatic;
 import org.activiti.test.pvm.activities.WaitState;

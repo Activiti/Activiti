@@ -13,11 +13,11 @@
 
 package org.activiti.engine.impl.history.handler;
 
-import org.activiti.engine.delegate.EventListener;
-import org.activiti.engine.delegate.EventListenerExecution;
 import org.activiti.engine.impl.cfg.IdGenerator;
 import org.activiti.engine.impl.history.HistoricActivityInstanceEntity;
 import org.activiti.engine.impl.interceptor.CommandContext;
+import org.activiti.engine.impl.pvm.delegate.EventListener;
+import org.activiti.engine.impl.pvm.delegate.EventListenerExecution;
 import org.activiti.engine.impl.runtime.ExecutionEntity;
 import org.activiti.engine.impl.util.ClockUtil;
 

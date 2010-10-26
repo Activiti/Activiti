@@ -17,9 +17,9 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.activiti.engine.ActivitiException;
-import org.activiti.engine.delegate.ActivityExecution;
 import org.activiti.engine.impl.bpmn.parser.BpmnParse;
 import org.activiti.engine.impl.pvm.PvmTransition;
+import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
 
 
 /**

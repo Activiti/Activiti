@@ -14,7 +14,7 @@
 package org.activiti.engine.impl.bpmn;
 
 import org.activiti.engine.RuntimeService;
-import org.activiti.engine.delegate.ActivityExecution;
+import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
 
 
 /**

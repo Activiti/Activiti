@@ -10,14 +10,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.activiti.engine.delegate;
+package org.activiti.engine.impl.pvm.delegate;
+
+import org.activiti.engine.delegate.DelegateExecution;
+import org.activiti.engine.impl.pvm.PvmProcessElement;
 
 
 /**
  * @author Tom Baeyens
  */
-public interface SignallableActivityBehavior extends ActivityBehavior {
-
-  void signal(ActivityExecution execution, String signalEvent, Object signalData) throws Exception;
+public interface EventListenerExecution extends DelegateExecution {
   
+  String getEventName();
+
+  PvmProcessElement getEventSource();
+
+  String getDeleteReason();
 }

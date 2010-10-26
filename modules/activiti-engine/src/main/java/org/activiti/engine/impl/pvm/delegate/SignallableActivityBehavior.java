@@ -10,15 +10,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-package org.activiti.engine.delegate;
-
+package org.activiti.engine.impl.pvm.delegate;
 
 
 /**
  * @author Tom Baeyens
  */
-public interface CompositeActivityBehavior extends ActivityBehavior {
+public interface SignallableActivityBehavior extends ActivityBehavior {
 
-  void lastExecutionEnded(ActivityExecution execution);
+  void signal(ActivityExecution execution, String signalEvent, Object signalData) throws Exception;
+  
 }

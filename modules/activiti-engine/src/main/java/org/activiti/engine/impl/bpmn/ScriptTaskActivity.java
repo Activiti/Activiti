@@ -12,8 +12,8 @@
  */
 package org.activiti.engine.impl.bpmn;
 
-import org.activiti.engine.delegate.ActivityExecution;
 import org.activiti.engine.impl.interceptor.CommandContext;
+import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
 import org.activiti.engine.impl.scripting.ScriptingEngines;
 
 

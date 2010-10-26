@@ -13,9 +13,9 @@
 
 package org.activiti.engine.impl.pvm.runtime;
 
-import org.activiti.engine.delegate.ActivityBehavior;
-import org.activiti.engine.delegate.CompositeActivityBehavior;
-import org.activiti.engine.delegate.EventListener;
+import org.activiti.engine.impl.pvm.delegate.ActivityBehavior;
+import org.activiti.engine.impl.pvm.delegate.CompositeActivityBehavior;
+import org.activiti.engine.impl.pvm.delegate.EventListener;
 import org.activiti.engine.impl.pvm.process.ActivityImpl;
 import org.activiti.engine.impl.pvm.process.ScopeImpl;
 

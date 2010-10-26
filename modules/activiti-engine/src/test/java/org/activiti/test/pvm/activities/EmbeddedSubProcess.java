@@ -17,10 +17,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import org.activiti.engine.delegate.ActivityExecution;
-import org.activiti.engine.delegate.CompositeActivityBehavior;
 import org.activiti.engine.impl.pvm.PvmActivity;
 import org.activiti.engine.impl.pvm.PvmTransition;
+import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
+import org.activiti.engine.impl.pvm.delegate.CompositeActivityBehavior;
 
 
 /**
