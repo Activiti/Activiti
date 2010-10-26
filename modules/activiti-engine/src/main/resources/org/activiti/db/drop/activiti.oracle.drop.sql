@@ -8,7 +8,6 @@ drop index ACT_IDX_TSKASS_TASK;
 drop index ACT_IDX_TASK_EXEC;
 drop index ACT_IDX_TASK_PROCINST;
 drop index ACT_IDX_TASK_PROCDEF;
-drop index ACT_IDX_VAR_TASK;
 drop index ACT_IDX_VAR_EXE;
 drop index ACT_IDX_VAR_PROCINST;
 drop index ACT_IDX_VAR_BYTEARRAY;
