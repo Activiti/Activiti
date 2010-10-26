@@ -32,11 +32,7 @@ where NAME_ = 'next.dbid';
 insert into ACT_CY_CONFIG values ('kermit', '<org.activiti.cycle.impl.conf.ConfigurationContainer>
   <name>kermit</name>
   <linkedConnectors>
-	  <org.activiti.cycle.impl.connector.demo.DemoConnectorConfiguration> 
-      <id>Demo</id> 
-      <name>Demo</name> 
-    </org.activiti.cycle.impl.connector.demo.DemoConnectorConfiguration>
-    <org.activiti.cycle.impl.connector.signavio.SignavioConnectorConfiguration>
+	  <org.activiti.cycle.impl.connector.signavio.SignavioConnectorConfiguration>
       <id>Activiti</id>
       <name>Activiti Modeler</name>
       <credentialsSaved>false</credentialsSaved>
