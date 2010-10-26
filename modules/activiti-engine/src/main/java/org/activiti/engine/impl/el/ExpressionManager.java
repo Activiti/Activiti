@@ -52,8 +52,7 @@ public class ExpressionManager {
   
   
   public ExpressionManager() {
-    // Use the ExpressionFactoryImpl in activiti-juel, with parametrised method expressions
-    // enabled
+    // Use the ExpressionFactoryImpl in activiti build in version of juel, with parametrised method expressions enabled
     expressionFactory = new ExpressionFactoryImpl();
   }
 

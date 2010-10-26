@@ -319,6 +319,9 @@
       <if test="processInstanceId != null">
         HD.PROC_INST_ID_ = #{processInstanceId}
       </if>
+      <if test="activityId != null">
+        HD.ACT_INST_ID_ = #{activityId}
+      </if>
       <if test="type != null">
         and HD.TYPE_ = #{type}
       </if>

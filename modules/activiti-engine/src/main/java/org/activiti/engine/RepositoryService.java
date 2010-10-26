@@ -64,9 +64,6 @@ public interface RepositoryService {
   /** Query process definitions. */
   ProcessDefinitionQuery createProcessDefinitionQuery();
   
-  /** exposes a fully deployed process definition for introspection purposes. */
-  ReadOnlyProcessDefinition getDeployedProcessDefinition(String processDefinitionId);
-  
   /** Query process definitions. */
   DeploymentQuery createDeploymentQuery();
 }

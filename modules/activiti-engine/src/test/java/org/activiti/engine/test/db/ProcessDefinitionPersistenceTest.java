@@ -16,6 +16,7 @@ package org.activiti.engine.test.db;
 import java.util.Collections;
 import java.util.List;
 
+import org.activiti.engine.impl.RepositoryServiceImpl;
 import org.activiti.engine.impl.pvm.PvmActivity;
 import org.activiti.engine.impl.pvm.PvmTransition;
 import org.activiti.engine.impl.pvm.ReadOnlyProcessDefinition;
@@ -52,7 +53,7 @@ public class ProcessDefinitionPersistenceTest extends ActivitiInternalTestCase {
       .deploy()
       .getId();
   
-    ReadOnlyProcessDefinition processDefinition = repositoryService.getDeployedProcessDefinition("processOne:1");
+    ReadOnlyProcessDefinition processDefinition = ((RepositoryServiceImpl)repositoryService).getDeployedProcessDefinition("processOne:1");
     
     assertEquals("processOne:1", processDefinition.getId());
     assertEquals("Process One", processDefinition.getProperty("name"));

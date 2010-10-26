@@ -30,6 +30,7 @@ import org.activiti.engine.query.QueryProperty;
 public class HistoricDetailQueryImpl extends AbstractQuery<HistoricDetailQuery, HistoricDetail> implements HistoricDetailQuery {
 
   protected String processInstanceId;
+  protected String activityId;
   protected String type;
   protected HistoricDetailQueryProperty orderProperty;
 
@@ -42,6 +43,11 @@ public class HistoricDetailQueryImpl extends AbstractQuery<HistoricDetailQuery, 
 
   public HistoricDetailQueryImpl processInstanceId(String processInstanceId) {
     this.processInstanceId = processInstanceId;
+    return this;
+  }
+
+  public HistoricDetailQuery activityId(String activityId) {
+    this.activityId = activityId;
     return this;
   }
 
