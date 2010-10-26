@@ -2,7 +2,7 @@
 <activiti-cfg xmlns="http://activiti.org/cfg" 
               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
               xsi:schemaLocation="http://activiti.org/cfg http://activiti.org/cfg/activiti-cfg-5.0.xsd"
-              process-engine-name="complete-cfg">
+              process-engine-name="with-schema">
 
   <mail host="localhost" port="5025" />
 

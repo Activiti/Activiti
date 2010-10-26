@@ -117,13 +117,15 @@ public class Parse extends DefaultHandler {
     try {
       InputStream inputStream = streamSource.getInputStream();
 
-      SAXParser saxParser = parser.getSaxParser(); 
-      if (schemaResource != null) {
-        saxParser.setProperty(JAXP_SCHEMA_LANGUAGE, W3C_XML_SCHEMA);
-        saxParser.setProperty(JAXP_SCHEMA_SOURCE, schemaResource);
-      } else {
+      if (schemaResource == null) { // must be done before parser is created
         parser.getSaxParserFactory().setNamespaceAware(false);
         parser.getSaxParserFactory().setValidating(false);
+      }
+
+      SAXParser saxParser = parser.getSaxParser(); 
+      if (schemaResource != null) { 
+        saxParser.setProperty(JAXP_SCHEMA_LANGUAGE, W3C_XML_SCHEMA);
+        saxParser.setProperty(JAXP_SCHEMA_SOURCE, schemaResource);
       }
       saxParser.parse(inputStream, new ParseHandler(this));
       

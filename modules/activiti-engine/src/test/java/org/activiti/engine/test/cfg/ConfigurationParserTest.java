@@ -40,7 +40,7 @@ public class ConfigurationParserTest extends PvmTestCase {
         .execute();
       fail("Invalid config xml should not parse");
     } catch (ActivitiException e) {
-      assertTextPresent("Cannot find the declaration of element 'activiti-invalid'", e.getMessage());
+      assertTextPresent("Invalid root element", e.getMessage());
     }
   }
   
@@ -56,12 +56,12 @@ public class ConfigurationParserTest extends PvmTestCase {
   }
   
   public void testOnlyDbConfiguration() {
-      ConfigurationParse parse = 
-        configurationParser.createParse()
-        .sourceResource("org/activiti/engine/test/cfg/only-db-config.activiti.cfg.xml")
-        .execute();
-      assertNotNull(parse);
-      assertEquals("only-db", parse.getProcessEngineName());
+    ConfigurationParse parse = 
+      configurationParser.createParse()
+      .sourceResource("org/activiti/engine/test/cfg/only-db-config.activiti.cfg.xml")
+      .execute();
+    assertNotNull(parse);
+    assertEquals("only-db", parse.getProcessEngineName());
   }
   
   public void testMultipleDbConfigurations() {
@@ -75,7 +75,7 @@ public class ConfigurationParserTest extends PvmTestCase {
     }
   }
   
-  public void testValidConfiguration() {
+  public void testCompleteConfiguration() {
     ConfigurationParse parse = 
       configurationParser.createParse()
       .sourceResource("org/activiti/engine/test/cfg/complete.activiti.cfg.xml")
@@ -100,6 +100,15 @@ public class ConfigurationParserTest extends PvmTestCase {
     assertTrue(parse.getIsJobExecutorAutoActivate());
     
     assertEquals(ProcessEngineConfiguration.parseHistoryLevel("audit"), parse.getHistoryLevel());
+  }
+  
+  public void testConfigurationWithSchemaLocations() {
+    ConfigurationParse parse = 
+      configurationParser.createParse()
+      .sourceResource("org/activiti/engine/test/cfg/activiti.cfg.with.schemalocation.xml")
+      .execute();
+    assertNotNull(parse);
+    assertEquals("with-schema", parse.getProcessEngineName());
   }
 
 }

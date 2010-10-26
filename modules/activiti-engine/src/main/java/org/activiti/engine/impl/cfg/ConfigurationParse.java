@@ -16,7 +16,6 @@ package org.activiti.engine.impl.cfg;
 import java.io.InputStream;
 import java.net.URL;
 
-import org.activiti.engine.impl.util.ReflectUtil;
 import org.activiti.engine.impl.util.xml.Element;
 import org.activiti.engine.impl.util.xml.Parse;
 import org.activiti.engine.impl.util.xml.Parser;
@@ -59,14 +58,13 @@ public class ConfigurationParse extends Parse {
    */
   ConfigurationParse(Parser parser) {
     super(parser);
-    setSchemaResource(ReflectUtil.getClassLoader().getResource(ConfigurationParser.SCHEMA_RESOURCE_5_0).toString());
   }
   
   @Override
   public ConfigurationParse execute() {
     super.execute();
     
-    parseRootElementAttributes();
+    parseRootElement();
     parseDatabaseCfg();
     parseJobExecutorCfg();
     parseMailServerCfg();
@@ -82,7 +80,10 @@ public class ConfigurationParse extends Parse {
     return this;
   }
   
-  protected void parseRootElementAttributes() {
+  protected void parseRootElement() {
+    if (!"activiti-cfg".equals(rootElement.getTagName())) {
+      addError("Invalid root element: " + rootElement.getTagName(), rootElement);
+    }
     this.processEngineName = rootElement.attribute("process-engine-name");
   }
   

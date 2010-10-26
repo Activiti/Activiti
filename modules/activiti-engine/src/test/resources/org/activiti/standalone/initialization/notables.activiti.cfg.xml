@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<activiti-cfg xmlns="http://activiti.org/cfg">
+<activiti-cfg>
   
   <database name="h2" schema-strategy="check-version">
     <jdbc url="jdbc:h2:mem:ProcessEngineInitializationTest;DB_CLOSE_DELAY=1000"
