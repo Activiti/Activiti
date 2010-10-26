@@ -33,7 +33,6 @@ import org.activiti.engine.impl.interceptor.CommandExecutorImpl;
 import org.activiti.engine.impl.interceptor.CommandInterceptor;
 import org.activiti.engine.impl.interceptor.LogInterceptor;
 import org.activiti.engine.impl.jobexecutor.JobExecutor;
-import org.activiti.engine.impl.variable.VariableTypes;
 import org.activiti.engine.repository.DeploymentBuilder;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.DisposableBean;
@@ -93,7 +92,7 @@ public class ProcessEngineFactoryBean implements FactoryBean<ProcessEngine>, Dis
   }
 
   private void initializeSpringTransactionInterceptor() {
-    processEngineConfiguration.setLocalTransactions(transactionManager == null);
+    processEngineConfiguration.setTransactionsExternallyManaged(transactionManager != null);
 
     if (transactionManager != null) {
       List<CommandInterceptor> commandInterceptorsTxRequired = new ArrayList<CommandInterceptor>();
@@ -219,24 +218,20 @@ public class ProcessEngineFactoryBean implements FactoryBean<ProcessEngine>, Dis
     processEngineConfiguration.setProcessEngineName(processEngineName);
   }
 
-  public void setVariableTypes(VariableTypes variableTypes) {
-    processEngineConfiguration.setVariableTypes(variableTypes);
-  }
-  
   public void setMailServerHost(String mailServerHost) {
-    processEngineConfiguration.setMailServerSmtpHost(mailServerHost);
+    processEngineConfiguration.setMailServerHost(mailServerHost);
   }
   
   public void setMailServerPort(int mailServerPort) {
-    processEngineConfiguration.setMailServerSmtpPort(mailServerPort);
+    processEngineConfiguration.setMailServerPort(mailServerPort);
   }
   
-  public void setMailServerUserName(String userName) {
-    processEngineConfiguration.setMailServerSmtpUserName(userName);
+  public void setMailServerUsername(String username) {
+    processEngineConfiguration.setMailServerUsername(username);
   }
   
   public void setMailServerPassword(String password) {
-    processEngineConfiguration.setMailServerSmtpPassword(password);
+    processEngineConfiguration.setMailServerPassword(password);
   }
   
   public void setMailServerDefaultFromAddress(String defaultFromAddress) {

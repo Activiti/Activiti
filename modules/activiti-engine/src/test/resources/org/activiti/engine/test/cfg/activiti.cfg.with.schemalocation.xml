@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<activiti-cfg xmlns="http://activiti.org/cfg" 
+              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+              xsi:schemaLocation="http://activiti.org/cfg http://activiti.org/cfg/activiti-cfg-5.0.xsd"
+              process-engine-name="complete-cfg">
+
+  <mail host="localhost" port="5025" />
+
+  <job-executor auto-activate="on" />
+  
+  <history level="audit" />
+  
+  <database name="h2" schema-strategy="create-if-necessary">
+    <jdbc url="jdbc:h2:mem:activiti;DB_CLOSE_DELAY=1000"
+          driver="org.h2.Driver"
+          username="sa"
+          password="" />
+  </database>
+  
+</activiti-cfg>

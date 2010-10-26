@@ -13,7 +13,7 @@
   <bean id="config"
         class="org.activiti.rest.Config"
         scope="singleton">
-    <!-- The "engine" value must match the process.engine.name property as configured int he activiti.properties file -->
+    <!-- The "engine" value must match the process.engine.name property as configured int he activiti.cfg.xml file -->
     <property name="engine" value="default"/>
     <!-- The following ids must match the ids in the engine's database -->
     <property name="adminGroupId" value="admin"/>

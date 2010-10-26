@@ -30,8 +30,8 @@
       <listitem><para><literal>jobExecutorAutoActivate</literal> (boolean) see <xref linkend="configurationproperties"/></para> </listitem>
       <listitem><para><literal>mailServerHost</literal> (String) see <xref linkend="configurationproperties"/></para> </listitem>
       <listitem><para><literal>mailServerPort</literal> (String) see <xref linkend="configurationproperties"/></para> </listitem>
-      <listitem><para><literal>mailServerSmtpUserName</literal> (String) see <xref linkend="configurationproperties"/></para> </listitem>
-      <listitem><para><literal>mailServerSmtpPassword</literal> (String) see <xref linkend="configurationproperties"/></para> </listitem>
+      <listitem><para><literal>mailServerUsername</literal> (String) see <xref linkend="configurationproperties"/></para> </listitem>
+      <listitem><para><literal>mailServerPassword</literal> (String) see <xref linkend="configurationproperties"/></para> </listitem>
       <listitem><para><literal>mailServerDefaultFromAddress</literal> (String) see <xref linkend="configurationproperties"/></para> </listitem>
       <listitem><para><literal>jpaEntityManagerFactory</literal> (javax.persistence.EntityManagerFactory) see <xref linkend="jpaconfigurationspring"/></para> </listitem>
       <listitem><para><literal>jpaHandleTransaction</literal> (boolean) see <xref linkend="jpaconfigurationspring"/></para> </listitem>

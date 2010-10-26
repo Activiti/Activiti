@@ -29,7 +29,7 @@ public class DefaultProcessEngineInitializer implements ProcessEngineInitializer
   public ProcessEngine getProcessEngine() {
     log.fine("==== BUILDING PROCESS ENGINE ========================================================================");
     ProcessEngine processEngine = new ProcessEngineBuilder()
-      .configureFromPropertiesResource("activiti.properties")
+      .configureFromResource("activiti.cfg.xml")
       .buildProcessEngine();
     log.fine("==== PROCESS ENGINE CREATED =========================================================================");
     return processEngine;

@@ -14,16 +14,23 @@ package org.activiti.engine;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Properties;
 
 import org.activiti.engine.impl.cfg.ProcessEngineConfiguration;
-import org.activiti.engine.impl.util.IoUtil;
+import org.activiti.engine.impl.cfg.ConfigurationParse;
+import org.activiti.engine.impl.cfg.ConfigurationParser;
 import org.activiti.engine.impl.util.ReflectUtil;
+import org.activiti.engine.impl.util.IoUtil;
 
 /**
- * Builds a process engine based on a couple of simple properties.
+ * Builds a process engine based on an XML configuration resource:
  * 
- * To build a ProcessEngine that's using a h2 database over a TCP connection:
+ * <pre>
+ * ProcessEngine processEngine = ProcessEngineBuilder
+ *   .configureFromResource("activiti.cfg.xml")
+ *   .buildProcessEngine();
+ * </pre>
+ * 
+ * To build programmatically a ProcessEngine that for example uses a h2 database over a TCP connection:
  * 
  * <pre>
  * ProcessEngine processEngine = ProcessEngineBuilder
@@ -55,273 +62,194 @@ import org.activiti.engine.impl.util.ReflectUtil;
  */
 public class ProcessEngineBuilder {
 
-  protected String processEngineName = ProcessEngines.NAME_DEFAULT;
-  protected String databaseName = ProcessEngineConfiguration.DEFAULT_DATABASE_NAME;
-  protected String jdbcDriver = ProcessEngineConfiguration.DEFAULT_JDBC_DRIVER;
-  protected String jdbcUrl = ProcessEngineConfiguration.DEFAULT_JDBC_URL;
-  protected String jdbcUsername = ProcessEngineConfiguration.DEFAULT_JDBC_USERNAME;
-  protected String jdbcPassword = ProcessEngineConfiguration.DEFAULT_JDBC_PASSWORD;
-  protected String wsSyncFactoryClassName = ProcessEngineConfiguration.DEFAULT_WS_SYNC_FACTORY;
-  protected String dbSchemaStrategy = DbSchemaStrategy.CHECK_VERSION;
-  protected boolean jobExecutorAutoActivate = true;
-  protected boolean localTransactions = true;
-  protected Object jpaEntityManagerFactory;
-  protected boolean jpaHandleTransaction;
-  protected boolean jpaCloseEntityManager;
+  protected ProcessEngineConfiguration processEngineConfiguration = new ProcessEngineConfiguration();
   
-  protected String mailServerSmtpHost;
-  protected String mailServerSmtpUserName;
-  protected String mailServerSmtpPassword;
-  protected int mailServerSmtpPort = ProcessEngineConfiguration.DEFAULT_MAIL_SERVER_SMTP_PORT;
-  protected String mailServerDefaultFrom = ProcessEngineConfiguration.DEFAULT_FROM_EMAIL_ADDRESS;
-  protected Integer historyLevel;
-
   public ProcessEngineBuilder setProcessEngineName(String processEngineName) {
-    this.processEngineName = processEngineName;
+    processEngineConfiguration.setProcessEngineName(processEngineName);
     return this;
   }
 
   public ProcessEngineBuilder setDatabaseName(String databaseName) {
-    this.databaseName = databaseName;
+    processEngineConfiguration.setDatabaseName(databaseName);
     return this;
   }
 
   public ProcessEngineBuilder setJdbcDriver(String jdbcDriver) {
-    this.jdbcDriver = jdbcDriver;
+    processEngineConfiguration.setJdbcDriver(jdbcDriver);
     return this;
   }
 
-  public ProcessEngineBuilder setLocalTransactions(boolean localTransactions) {
-    this.localTransactions = localTransactions;
+  public ProcessEngineBuilder setTransactionsExternallyManaged(boolean transactionsExternallyManaged) {
+    processEngineConfiguration.setTransactionsExternallyManaged(transactionsExternallyManaged);
     return this;
   }
 
   public ProcessEngineBuilder setJdbcUrl(String jdbcUrl) {
-    this.jdbcUrl = jdbcUrl;
+    processEngineConfiguration.setJdbcUrl(jdbcUrl);
     return this;
   }
 
   public ProcessEngineBuilder setJdbcUsername(String jdbcUsername) {
-    this.jdbcUsername = jdbcUsername;
+    processEngineConfiguration.setJdbcUsername(jdbcUsername);
     return this;
   }
 
   public ProcessEngineBuilder setJdbcPassword(String jdbcPassword) {
-    this.jdbcPassword = jdbcPassword;
+    processEngineConfiguration.setJdbcPassword(jdbcPassword);
     return this;
   }
 
   public ProcessEngineBuilder setDbSchemaStrategy(String dbSchemaStrategy) {
-    this.dbSchemaStrategy = dbSchemaStrategy;
+    processEngineConfiguration.setDbSchemaStrategy(dbSchemaStrategy);
     return this;
   }
   
-  public ProcessEngineBuilder setMailServerSmtpHost(String mailServerSmtpHost) {
-    this.mailServerSmtpHost = mailServerSmtpHost;
+  public ProcessEngineBuilder setMailServerHost(String mailServerHost) {
+    processEngineConfiguration.setMailServerHost(mailServerHost);
     return this;
   }
   
-  public ProcessEngineBuilder setMailServerSmtpUserName(String mailServerSmtpUserName) {
-    this.mailServerSmtpUserName = mailServerSmtpUserName;
+  public ProcessEngineBuilder setMailServerUsername(String mailServerUsername) {
+    processEngineConfiguration.setMailServerUsername(mailServerUsername);
     return this;
   }
   
-  public ProcessEngineBuilder setMailServerSmtpPassword(String mailServerSmtpPassword) {
-    this.mailServerSmtpPassword = mailServerSmtpPassword;
+  public ProcessEngineBuilder setMailServerPassword(String mailServerPassword) {
+    processEngineConfiguration.setMailServerPassword(mailServerPassword);
     return this;
   }
   
-  public ProcessEngineBuilder setMailServerSmtpPort(int mailServerSmtpPort) {
-    this.mailServerSmtpPort = mailServerSmtpPort;
+  public ProcessEngineBuilder setMailServerPort(int mailServerPort) {
+    processEngineConfiguration.setMailServerPort(mailServerPort);
     return this;
   }
   
   public ProcessEngineBuilder setMailServerDefaultFrom(String mailServerDefaultFrom) {
-    this.mailServerDefaultFrom = mailServerDefaultFrom;
-    return this;
-  }
-
-  public ProcessEngineBuilder configureFromProperties(Properties configurationProperties) {
-    if (configurationProperties == null) {
-      throw new ActivitiException("configurationProperties is null");
-    }
-
-    String processEngineName = configurationProperties.getProperty("process.engine.name");
-    if (processEngineName != null) {
-      this.processEngineName = processEngineName;
-    }
-    
-    // DATABASE
-
-    String databaseName = configurationProperties.getProperty("database");
-    if (databaseName != null) {
-      this.databaseName = databaseName;
-    }
-
-    String jdbcDriver = configurationProperties.getProperty("jdbc.driver");
-    if (jdbcDriver != null) {
-      this.jdbcDriver = jdbcDriver;
-    }
-
-    String jdbcUrl = configurationProperties.getProperty("jdbc.url");
-    if (jdbcUrl != null) {
-      this.jdbcUrl = jdbcUrl;
-    }
-
-    String jdbcUsername = configurationProperties.getProperty("jdbc.username");
-    if (jdbcUsername != null) {
-      this.jdbcUsername = jdbcUsername;
-    }
-
-    String jdbcPassword = configurationProperties.getProperty("jdbc.password");
-    if (jdbcPassword != null) {
-      this.jdbcPassword = jdbcPassword;
-    }
-
-    String dbSchemaStrategy = configurationProperties.getProperty("db.schema.strategy");
-    if (dbSchemaStrategy != null) {
-      this.dbSchemaStrategy = dbSchemaStrategy;
-    }
-    
-    // JOBEXECUTOR
-
-    String jobExecutorAutoActivate = configurationProperties.getProperty("job.executor.auto.activate");
-    if ((jobExecutorAutoActivate != null)
-            && (("false".equals(jobExecutorAutoActivate)) || ("disabled".equals(jobExecutorAutoActivate)) || ("off".equals(jobExecutorAutoActivate)))) {
-      this.jobExecutorAutoActivate = false;
-    }
-    
-    // WEBSERVICE
-    
-    String wsSyncFactory = configurationProperties.getProperty("ws.sync.factory");
-    if (wsSyncFactory != null) {
-      this.wsSyncFactoryClassName = wsSyncFactory;
-    }
-
-    // EMAIL
-    
-    String mailServerSmtpHost = configurationProperties.getProperty("mail.smtp.host");
-    if (mailServerSmtpHost != null) {
-      this.mailServerSmtpHost = mailServerSmtpHost;
-    }
-    
-    String mailServerSmtpPort= configurationProperties.getProperty("mail.smtp.port");
-    if (mailServerSmtpPort != null) {
-      try {
-        this.mailServerSmtpPort = Integer.parseInt(mailServerSmtpPort);
-      } catch (NumberFormatException e) {
-        throw new ActivitiException("Invalid port number: " + mailServerSmtpPort, e);
-      }
-    }
-    
-    String mailServerSmtpUserName = configurationProperties.getProperty("mail.smtp.user");
-    if (mailServerSmtpUserName != null) {
-      this.mailServerSmtpUserName = mailServerSmtpUserName;
-    }
-    
-    String mailServerSmtpPassword= configurationProperties.getProperty("mail.smtp.password");
-    if (mailServerSmtpPassword != null) {
-      this.mailServerSmtpPassword = mailServerSmtpPassword;
-    }
-    
-    String mailServerDefaultFrom= configurationProperties.getProperty("mail.default.from");
-    if (mailServerDefaultFrom != null) {
-      this.mailServerDefaultFrom = mailServerDefaultFrom;
-    }
-    
-    String historyLevelText = configurationProperties.getProperty("history.level");
-    if (historyLevelText!=null) {
-      historyLevel = ProcessEngineConfiguration.parseHistoryLevel(historyLevelText);
-    }
-    
-    return this;
-  }
-
-  public ProcessEngineBuilder configureFromPropertiesInputStream(InputStream inputStream) {
-    if (inputStream == null) {
-      throw new ActivitiException("inputStream is null");
-    }
-    Properties properties = new Properties();
-    try {
-      properties.load(inputStream);
-    } catch (IOException e) {
-      throw new ActivitiException("problem while reading activiti configuration properties " + e.getMessage(), e);
-    } finally {
-      IoUtil.closeSilently(inputStream);
-    }
-    configureFromProperties(properties);
-    return this;
-  }
-
-  public ProcessEngineBuilder configureFromPropertiesResource(String propertiesResource) {
-    InputStream inputStream = ReflectUtil.getResourceAsStream(propertiesResource);
-    if (inputStream == null) {
-      throw new ActivitiException("configuration properties resource '" + propertiesResource + "' is unavailable on classpath "
-              + System.getProperty("java.class.path"));
-    }
-    configureFromPropertiesInputStream(inputStream);
+    processEngineConfiguration.setMailServerDefaultFrom(mailServerDefaultFrom);
     return this;
   }
 
   public ProcessEngineBuilder setJobExecutorAutoActivation(boolean jobExecutorAutoActivate) {
-    this.jobExecutorAutoActivate = jobExecutorAutoActivate;
+    processEngineConfiguration.setJobExecutorAutoActivate(jobExecutorAutoActivate);
     return this;
   }
   
   public ProcessEngineBuilder enableJPA(Object entityManagerFactory, boolean handleTransaction, boolean closeEntityManager) {
-    jpaEntityManagerFactory = entityManagerFactory;
-    jpaHandleTransaction = handleTransaction;
-    jpaCloseEntityManager = closeEntityManager;
+    processEngineConfiguration.enableJPA(entityManagerFactory, handleTransaction, closeEntityManager);
     return this;
   }
   
   public ProcessEngineBuilder enableJPA(Object entityManagerFactory) {
     return enableJPA(entityManagerFactory, true, true);
   }
-
-  public ProcessEngine buildProcessEngine() {
-    if (databaseName == null) {
-      throw new ActivitiException("no database name specified (used to look up queries and scripts)");
+  
+  /**
+   * Configures a {@link ProcessEngine} based on an XML configuration provided by the inputstream.
+   * 
+   * Calling methods are responsible for closing the provided inputStream.
+   */
+  public ProcessEngineBuilder configureFromInputStream(InputStream inputStream) {
+    if (inputStream == null) {
+      throw new ActivitiException("inputStream is null");
     }
-
-    ProcessEngineConfiguration processEngineConfiguration = new ProcessEngineConfiguration();
-    processEngineConfiguration.setProcessEngineName(processEngineName);
     
-    // JOBEXECUTOR
-    processEngineConfiguration.setJobExecutorAutoActivate(jobExecutorAutoActivate);
-
-    // HISTORY
-    if (historyLevel!=null) {
+    ConfigurationParser cfgParser = new ConfigurationParser();
+    ConfigurationParse cfgParse = cfgParser.createParse()
+      .sourceInputStream(inputStream)
+      .execute();
+    
+    // Process engine
+    String processEngineName = cfgParse.getProcessEngineName();
+    if (processEngineName != null) {
+      processEngineConfiguration.setProcessEngineName(processEngineName);
+    }
+    
+    // Database
+    String databaseName = cfgParse.getDatabaseName();
+    if (databaseName != null) {
+      processEngineConfiguration.setDatabaseName(databaseName);
+    }
+    String databaseSchemaStrategy = cfgParse.getDatabaseSchemaStrategy();
+    if (databaseSchemaStrategy != null) {
+      processEngineConfiguration.setDbSchemaStrategy(databaseSchemaStrategy);
+    }
+    if (cfgParse.isJdbcConfigured()) {
+      String databaseUrl = cfgParse.getJdbcUrl();
+      if (databaseUrl != null) {
+        processEngineConfiguration.setJdbcUrl(databaseUrl);
+      }
+      String databaseDriver = cfgParse.getJdbcDriver();
+      if (databaseDriver != null) {
+        processEngineConfiguration.setJdbcDriver(databaseDriver);
+      }
+      String databaseUsername = cfgParse.getJdbcUsername();
+      if (databaseUsername != null) {
+        processEngineConfiguration.setJdbcUsername(databaseUsername);
+      }
+      String databasePassword = cfgParse.getJdbcPassword();
+      if (databasePassword != null) {
+        processEngineConfiguration.setJdbcPassword(databasePassword);
+      }
+    }
+    
+    // Mail
+    String mailServerHost = cfgParse.getMailServerHost();
+    if (mailServerHost != null) {
+      processEngineConfiguration.setMailServerHost(mailServerHost);
+    }
+    Integer mailServerPort = cfgParse.getMailServerPort();
+    if (mailServerPort != null) {
+      processEngineConfiguration.setMailServerPort(mailServerPort);
+    }
+    String mailServerUsername = cfgParse.getMailServerUsername();
+    if (mailServerUsername != null) {
+      processEngineConfiguration.setMailServerUsername(mailServerUsername);
+    }
+    String mailServerPassword = cfgParse.getMailServerPassword();
+    if (mailServerPassword != null) {
+      processEngineConfiguration.setMailServerPassword(mailServerPassword);
+    }
+    String mailDefaultFrom = cfgParse.getMailDefaultFrom();
+    if (mailDefaultFrom != null) {
+      processEngineConfiguration.setMailServerDefaultFrom(mailDefaultFrom);
+    }
+    
+    // Job executor
+    Boolean jobExecutorAutoActivate = cfgParse.getIsJobExecutorAutoActivate();
+    if (jobExecutorAutoActivate != null) {
+      processEngineConfiguration.setJobExecutorAutoActivate(jobExecutorAutoActivate);
+    }
+    
+    // History
+    Integer historyLevel = cfgParse.getHistoryLevel();
+    if (historyLevel != null) {
       processEngineConfiguration.setHistoryLevel(historyLevel);
     }
 
-    // DATABASE
-    processEngineConfiguration.setDbSchemaStrategy(dbSchemaStrategy);
-    processEngineConfiguration.setJdbcDriver(jdbcDriver);
-    processEngineConfiguration.setJdbcUrl(jdbcUrl);
-    processEngineConfiguration.setJdbcUsername(jdbcUsername);
-    processEngineConfiguration.setJdbcPassword(jdbcPassword);
-    processEngineConfiguration.setDatabaseName(databaseName);
-    processEngineConfiguration.setLocalTransactions(localTransactions);
-    
-    // WEBSERVICE
-    processEngineConfiguration.setWsSyncFactoryClassName(wsSyncFactoryClassName);
-    
-    // EMAIL
-    processEngineConfiguration.setMailServerSmtpHost(mailServerSmtpHost);
-    processEngineConfiguration.setMailServerSmtpPort(mailServerSmtpPort);
-    processEngineConfiguration.setMailServerSmtpUserName(mailServerSmtpUserName);
-    processEngineConfiguration.setMailServerSmtpPassword(mailServerSmtpPassword);
-    processEngineConfiguration.setMailServerDefaultFrom(mailServerDefaultFrom);
-    
-    // JPA
-    if(jpaEntityManagerFactory != null) {
-      processEngineConfiguration.enableJPA(jpaEntityManagerFactory, jpaHandleTransaction, jpaCloseEntityManager); 
-    }      
-    
-    ProcessEngine engine = processEngineConfiguration.buildProcessEngine();
-    ProcessEngines.registerProcessEngine(engine);
-    
-    return engine;
+    return this;
+  }
+  
+  /**
+   * Configures a {@link ProcessEngine} based on an XML configuration file.
+   */
+  public ProcessEngineBuilder configureFromResource(String resource) {
+    InputStream inputStream = ReflectUtil.getClassLoader().getResourceAsStream(resource);
+    if (inputStream == null) {
+      throw new ActivitiException("configuration resource '" + resource 
+              + "' is unavailable on classpath " + System.getProperty("java.class.path"));
+    }
+    try {
+      configureFromInputStream(inputStream);
+      inputStream.close();
+    } catch (IOException e) {
+        throw new ActivitiException("Exception while closing inputstream", e);
+    } finally {
+      IoUtil.closeSilently(inputStream);
+    }
+    return this;
+  }
+
+  public ProcessEngine buildProcessEngine() {
+    return processEngineConfiguration.buildProcessEngine();
   }
 }

@@ -160,17 +160,17 @@ public class MailActivityBehavior extends BpmnJavaDelegation {
   protected void setMailServerProperties(Email email) {
     ProcessEngineConfiguration config = CommandContext.getCurrent().getProcessEngineConfiguration();
 
-    String host = config.getMailServerSmtpHost();
+    String host = config.getMailServerHost();
     if (host == null) {
       throw new ActivitiException("Could not send email: no SMTP host is configured");
     }
     email.setHostName(host);
 
-    int port = config.getMailServerSmtpPort();
+    int port = config.getMailServerPort();
     email.setSmtpPort(port);
 
-    String user = config.getMailServerSmtpUserName();
-    String password = config.getMailServerSmtpPassword();
+    String user = config.getMailServerUsername();
+    String password = config.getMailServerPassword();
     if (user != null && password != null) {
       email.setAuthentication(user, password);
     }

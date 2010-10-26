@@ -47,13 +47,13 @@ public class Element {
   
   public Element(String uri, String localName, String qName, Attributes attributes, Locator locator) {
     this.uri = uri;
-    this.tagName = localName;
+    this.tagName = (uri == null || uri.equals("")) ? qName : localName;
     
     if (attributes!=null) {
       for (int i=0; i<attributes.getLength(); i++) {
-        String name = attributes.getLocalName(i);
-        String value = attributes.getValue(i);
         String attributeUri = attributes.getURI(i);
+        String name = (attributeUri == null || attributeUri.equals("")) ? attributes.getQName(i) : attributes.getLocalName(i);
+        String value = attributes.getValue(i);
         this.attributeMap.put(composeMapKey(attributeUri, name), 
           new Attribute(name, value, attributeUri));
       }

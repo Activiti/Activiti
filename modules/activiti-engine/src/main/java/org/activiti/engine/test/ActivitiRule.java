@@ -42,7 +42,7 @@ import org.junit.runners.model.FrameworkMethod;
  * 
  * <p>The ProcessEngine and the services will be made available to the test class 
  * through the getters of the activitiRule.  
- * The processEngine will be initialized by default with the activiti.properties resource 
+ * The processEngine will be initialized by default with the activiti.cfg.xml resource 
  * on the classpath.  To specify a different configuration file, pass the 
  * resource location in {@link #ActivitiRule(String) the appropriate constructor}.
  * Process engines will be cached statically.  Right before the first time the setUp is called for a given 
@@ -66,7 +66,7 @@ import org.junit.runners.model.FrameworkMethod;
  */
 public class ActivitiRule extends TestWatchman {
 
-  protected String DEFAULT_CONIFGURATION_RESOURCE = "activiti.properties";
+  protected String configurationResource = "activiti.cfg.xml";
   protected String deploymentId = null;
 
   protected ProcessEngine processEngine;
@@ -81,7 +81,7 @@ public class ActivitiRule extends TestWatchman {
   }
 
   public ActivitiRule(String configurationResource) {
-    this.DEFAULT_CONIFGURATION_RESOURCE = configurationResource;
+    this.configurationResource = configurationResource;
   }
   
   public ActivitiRule(ProcessEngine processEngine) {
@@ -99,7 +99,7 @@ public class ActivitiRule extends TestWatchman {
   }
   
   protected void initializeProcessEngine() {
-    processEngine = TestHelper.getProcessEngine(DEFAULT_CONIFGURATION_RESOURCE);
+    processEngine = TestHelper.getProcessEngine(configurationResource);
   }
 
   protected void initializeServices() {
@@ -123,11 +123,11 @@ public class ActivitiRule extends TestWatchman {
   }
 
   public String getConfigurationResource() {
-    return DEFAULT_CONIFGURATION_RESOURCE;
+    return configurationResource;
   }
   
   public void setConfigurationResource(String configurationResource) {
-    this.DEFAULT_CONIFGURATION_RESOURCE = configurationResource;
+    this.configurationResource = configurationResource;
   }
   
   public ProcessEngine getProcessEngine() {

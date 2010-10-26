@@ -48,7 +48,7 @@ import org.activiti.engine.impl.util.ReflectUtil;
  * on this class.<br>
  * <br>
  * The {@link #init()} method will try to build one {@link ProcessEngine} for 
- * each activiti.properties file found on the classpath.  If you have more then one,
+ * each activiti.cfg.xml file found on the classpath.  If you have more then one,
  * make sure you specify different process.engine.name values.
  *  
  * @author Tom Baeyens
@@ -74,9 +74,9 @@ public abstract class ProcessEngines {
       ClassLoader classLoader = ReflectUtil.getClassLoader();
       Enumeration<URL> resources = null;
       try {
-        resources = classLoader.getResources("activiti.properties");
+        resources = classLoader.getResources("activiti.cfg.xml");
       } catch (IOException e) {
-        throw new ActivitiException("can't find activiti.properties resources on the classpath: "+System.getProperty("java.class.path"), e);
+        throw new ActivitiException("can't find activiti.cfg.xml resources on the classpath: "+System.getProperty("java.class.path"), e);
       }
       while (resources.hasMoreElements()) {
         URL resource = resources.nextElement();
@@ -148,7 +148,7 @@ public abstract class ProcessEngines {
     try {
       inputStream = resource.openStream();
       ProcessEngine processEngine = new ProcessEngineBuilder()
-          .configureFromPropertiesInputStream(inputStream)
+          .configureFromInputStream(inputStream)
           .buildProcessEngine();
       return processEngine;
       

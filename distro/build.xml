@@ -29,7 +29,7 @@
       </fileset>
       <fileset dir="../modules/activiti-engine/src/test/resources">
         <include name="org/activiti/examples/**" />
-        <include name="activiti.properties" />
+        <include name="activiti.cfg.xml" />
         <include name="logging.properties" />
       </fileset>
     </copy>
@@ -56,6 +56,9 @@
       <fileset dir="../modules/activiti-engine/src/main/resources/org/activiti/impl/bpmn/parser">
       	<include name="*.xsd" />
       </fileset>
+    	<fileset dir="../modules/activiti-engine/src/main/resources/org/activiti/impl/cfg">
+    	  <include name="*.xsd" />
+    	</fileset>
     </copy>
   
     <mkdir dir="${target.distro.root}/lib" />

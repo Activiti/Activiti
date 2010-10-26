@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema xmlns="http://www.w3.org/2001/XMLSchema" 
+        elementFormDefault="qualified" 
+        attributeFormDefault="unqualified"
+        targetNamespace="http://activiti.org/cfg" 
+        xmlns:tns="http://activiti.org/cfg">
+        
+  <annotation>
+    <documentation>XML schema for Activiti configuration filees.</documentation>
+  </annotation>
+
+  <element name="activiti-cfg">
+    <annotation>
+      <documentation>Root element of an Activiti configuration.</documentation>
+    </annotation>
+    <complexType>
+      <choice minOccurs="1" maxOccurs="unbounded">
+        <element ref="tns:database" minOccurs="1" maxOccurs="1" />
+        <element ref="tns:job-executor" minOccurs="0" maxOccurs="1" />
+        <element ref="tns:mail" minOccurs="0" maxOccurs="1" />
+        <element ref="tns:history" minOccurs="0" maxOccurs="1" />
+      </choice>
+      <attribute name="process-engine-name" type="string">
+        <annotation>
+          <documentation>
+            Optional name for the process engine. If not provided, 
+            the process engine will be named 'default'
+          </documentation>
+        </annotation>      
+      </attribute>
+    </complexType>
+  </element>
+  
+  <element name="database">
+    <annotation>
+      <documentation>
+        Configuration for the Activiti database.
+      </documentation>
+    </annotation>
+    <complexType>
+      <choice>
+        <element ref="tns:jdbc" />
+        <element ref="tns:datasource" />
+      </choice>
+      <attribute name="name" use="required" type="string">
+        <annotation>
+          <documentation>
+            The name of the database (eg. h2, oracle, mysql, etc.). 
+            See Activiti userguide for supported databases (http://activiti.org/userguide/)
+          </documentation>
+        </annotation>
+      </attribute>
+      <attribute name="schema-strategy" type="string">
+        <annotation>
+          <documentation>
+            Specifies the strategy to synchronize between the library version and the 
+            database schema version (eg create-drop, check-version, etc.). 
+          </documentation>
+        </annotation>
+      </attribute>
+    </complexType>
+  </element>
+  
+  <element name="jdbc">
+    <annotation>
+      <documentation>
+        Configuration of the Activiti database using JDBC connection properties.
+      </documentation>
+    </annotation>
+    <complexType>
+      <attribute name="url" use="required" />
+      <attribute name="driver" use="required" />
+      <attribute name="username" use="required" />
+      <attribute name="password" use="required" />
+    </complexType>  
+  </element>
+  
+  <element name="datasource">
+    <annotation>
+      <documentation>
+        Configuration of the Activiti database using a JNDI datasource.
+      </documentation>
+    </annotation>
+    <complexType>
+      <attribute name="jndi" use="required">
+        <annotation>
+          <documentation>
+            Jndi name used to look up the Activiti datasource.
+          </documentation>
+        </annotation>
+      </attribute>
+    </complexType>
+  </element>
+  
+  <element name="job-executor">
+    <annotation>
+      <documentation>
+        Configuration of the job executor.
+      </documentation>
+    </annotation>
+    <complexType>
+      <attribute name="auto-activate" use="required" type="string">
+        <annotation>
+          <documentation>
+            Specifies if the job executor must be activated when the engine starts.
+            Possible values: on/off enabled/disabled true/false.
+          </documentation>  
+        </annotation>
+      </attribute>
+    </complexType>    
+  </element>
+  
+  <element name="mail">
+    <annotation>
+      <documentation>
+        Configuration of an SMTP mail server to send e-mails during business process execution.
+      </documentation>
+    </annotation>
+    <complexType>
+      <attribute name="host"  use="required" type="string">
+        <annotation>
+          <documentation>
+            Host of the SMTP mail server.
+          </documentation>
+        </annotation>
+      </attribute>
+      <attribute name="port" type="string">
+        <annotation>
+          <documentation>
+            Port of the SMTP mail server. By default port 25.
+          </documentation>
+        </annotation>
+      </attribute>
+      <attribute name="username" type="string">
+        <annotation>
+          <documentation>
+            Optional user name for secured SMTP mail servers.
+          </documentation>
+        </annotation>
+      </attribute>
+      <attribute name="password">
+        <annotation>
+          <documentation>
+            Optional password for secured SMTP mail servers.
+          </documentation>
+        </annotation>
+      </attribute>
+      <attribute name="default-from" type="string">
+        <annotation>
+          <documentation>
+            Process engine wide setting for the default mail address from
+            which e-mail are sent in business processes. Process definitions
+            can overwrite this process engine wide 'from address' if needed.
+            Default value is 'noreply@activiti.org'.
+          </documentation>
+        </annotation>
+      </attribute>
+    </complexType>
+  </element>
+  
+  <element name="history">
+    <annotation>
+      <documentation>
+        Configuration for the history capabilities of Activiti.
+      </documentation>
+    </annotation>
+    <complexType>
+      <attribute name="level" use="required">
+        <annotation>
+          <documentation>
+            Indicates the level of history logging.  
+          </documentation>
+        </annotation>
+        <simpleType>
+          <restriction base="string">
+            <enumeration value="none" />
+            <enumeration value="activity" />
+            <enumeration value="audit" />
+            <enumeration value="full" />
+          </restriction>
+        </simpleType>
+      </attribute>
+    </complexType>
+  </element>
+
+</schema>

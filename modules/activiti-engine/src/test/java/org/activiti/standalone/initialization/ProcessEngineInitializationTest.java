@@ -35,19 +35,19 @@ public class ProcessEngineInitializationTest extends PvmTestCase {
   public void testNoTables() {
     try {
       new ProcessEngineBuilder()
-        .configureFromPropertiesResource("org/activiti/standalone/initialization/notables.activiti.properties")
+        .configureFromResource("org/activiti/standalone/initialization/notables.activiti.cfg.xml")
         .buildProcessEngine();
       fail("expected exception");
     } catch (Exception e) {
       // OK
-      assertTextPresent("no activiti tables in db.  set property db.schema.strategy=create-drop in activiti.properties for automatic schema creation", e.getMessage());
+      assertTextPresent("no activiti tables in db", e.getMessage());
     }
   }
 
   public void testVersionMismatch() {
     // first create the schema
     ProcessEngineImpl processEngine = (ProcessEngineImpl) new ProcessEngineBuilder()
-      .configureFromPropertiesResource("org/activiti/standalone/initialization/notables.activiti.properties")
+      .configureFromResource("org/activiti/standalone/initialization/notables.activiti.cfg.xml")
       .setDbSchemaStrategy(DbSchemaStrategy.CREATE_DROP)
       .buildProcessEngine();
 
@@ -80,7 +80,7 @@ public class ProcessEngineInitializationTest extends PvmTestCase {
       // now we can see what happens if when a process engine is being
       // build with a version mismatch between library and db tables
       new ProcessEngineBuilder()
-        .configureFromPropertiesResource("org/activiti/standalone/initialization/notables.activiti.properties")
+        .configureFromResource("org/activiti/standalone/initialization/notables.activiti.cfg.xml")
         .setDbSchemaStrategy(DbSchemaStrategy.CHECK_VERSION)
         .buildProcessEngine();
       

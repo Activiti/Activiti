@@ -38,7 +38,7 @@
 	</target>
 	
 	<target name="create.activiti.prop">
-		<echo message="creating activiti.properties in target environment"/>
+		<echo message="creating activiti.cfg.xml in target environment"/>
 		<echo message="  basedir: ${basedir}"/>
 		<echo message="  database: ${database}"/>
 		
@@ -49,7 +49,7 @@
 		<echo message="  jdbc.username: ${jdbc.username}"/>
 		<echo message="  jdbc.password: ${jdbc.password}"/>
 		
-		<propertyfile file="./target/test-classes/activiti.properties">
+		<propertyfile file="./target/test-classes/activiti.cfg.xml">
 			<entry key="database" value="${database}"/>
 			<entry key="jdbc.driver" value="${jdbc.driver}"/>
 			<entry key="jdbc.url" value="${jdbc.url}"/>

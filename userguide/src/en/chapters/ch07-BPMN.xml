@@ -1894,7 +1894,7 @@ public void testEventListenerFieldInjection() {
 		      The Email task is implemented as a dedicated <link linkend="bpmnJavaServiceTask">Service Task</link>
 		      and is defined by setting <emphasis>'mail'</emphasis> for the <emphasis>type</emphasis> of the service task.
 		      <programlisting>
-&lt;serviceTask id=&quot;sendMail&quot; <emphasis role="bold">activiti:type=&quot;mail&quot;</emphasis>&lt;		      
+&lt;serviceTask id=&quot;sendMail&quot; <emphasis role="bold">activiti:type=&quot;mail&quot;</emphasis>&gt;		      
 		      </programlisting>
 		    </para>
 		    

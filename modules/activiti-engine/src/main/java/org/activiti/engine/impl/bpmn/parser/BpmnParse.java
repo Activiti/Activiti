@@ -78,8 +78,7 @@ import org.activiti.engine.impl.variable.VariableDeclaration;
 import org.activiti.engine.impl.webservice.WSDLImporter;
 
 /**
- * Specific parsing representation created by the {@link BpmnParser} to parse
- * one BPMN 2.0 process XML file.
+ * Specific parsing of one BPMN 2.0 XML file, created by the {@link BpmnParser}.
  * 
  * @author Tom Baeyens
  * @author Joram Barrez
@@ -185,12 +184,12 @@ public class BpmnParse extends Parse {
   public BpmnParse execute() {
     super.execute(); // schema validation
 
-    parseDefinitionsAttributes(rootElement);
-    parseImports(rootElement);
-    parseItemDefinitions(rootElement);
-    parseMessages(rootElement);
-    parseInterfaces(rootElement);
-    parseProcessDefinitions(rootElement);
+    parseDefinitionsAttributes();
+    parseImports();
+    parseItemDefinitions();
+    parseMessages();
+    parseInterfaces();
+    parseProcessDefinitions();
     
     if (hasWarnings()) {
       logWarnings();
@@ -202,7 +201,7 @@ public class BpmnParse extends Parse {
     return this;
   }
   
-  private void parseDefinitionsAttributes(Element rootElement) {
+  private void parseDefinitionsAttributes() {
     String typeLanguage = rootElement.attribute("typeLanguage");
     String expressionLanguage = rootElement.attribute("expressionLanguage");
     
@@ -226,7 +225,7 @@ public class BpmnParse extends Parse {
    * @param rootElement
    *          The root element of the XML file.
    */
-  private void parseImports(Element rootElement) {
+  private void parseImports() {
     List<Element> imports = rootElement.elements("import");
     for (Element theImport : imports) {
       String importType = theImport.attribute("importType");
@@ -247,8 +246,8 @@ public class BpmnParse extends Parse {
    * @param definitionsElement
    *          The root element of the XML file.
    */
-  public void parseItemDefinitions(Element definitionsElement) {
-    for (Element itemDefinitionElement : definitionsElement.elements("itemDefinition")) {
+  public void parseItemDefinitions() {
+    for (Element itemDefinitionElement : rootElement.elements("itemDefinition")) {
       String id = itemDefinitionElement.attribute("id");
       String structureRef = itemDefinitionElement.attribute("structureRef");
       String itemKind = itemDefinitionElement.attribute("itemKind");
@@ -279,8 +278,8 @@ public class BpmnParse extends Parse {
    * @param definitionsElement
    *          The root element of the XML file/
    */
-  public void parseMessages(Element definitionsElement) {
-    for (Element messageElement : definitionsElement.elements("message")) {
+  public void parseMessages() {
+    for (Element messageElement : rootElement.elements("message")) {
       String id = messageElement.attribute("id");
       String itemRef = messageElement.attribute("itemRef");
       
@@ -300,8 +299,8 @@ public class BpmnParse extends Parse {
    * @param definitionsElement
    *          The root element of the XML file/
    */
-  public void parseInterfaces(Element definitionsElement) {
-    for (Element interfaceElement : definitionsElement.elements("interface")) {
+  public void parseInterfaces() {
+    for (Element interfaceElement : rootElement.elements("interface")) {
 
       // Create the interface
       String id = interfaceElement.attribute("id");
@@ -352,9 +351,9 @@ public class BpmnParse extends Parse {
    * @param definitionsElement
    *          The root element of the XML file.
    */
-  public void parseProcessDefinitions(Element definitionsElement) {
+  public void parseProcessDefinitions() {
     // TODO: parse specific definitions signalData (id, imports, etc)
-    for (Element processElement : definitionsElement.elements("process")) {
+    for (Element processElement : rootElement.elements("process")) {
       processDefinitions.add(parseProcess(processElement));
     }
   }

@@ -198,7 +198,7 @@ public abstract class TestHelper {
     if (processEngine==null) {
       log.fine("==== BUILDING PROCESS ENGINE ========================================================================");
       processEngine = new ProcessEngineBuilder()
-        .configureFromPropertiesResource(configurationResource)
+        .configureFromResource(configurationResource)
         .buildProcessEngine();
       log.fine("==== PROCESS ENGINE CREATED =========================================================================");
       processEngines.put(configurationResource, processEngine);

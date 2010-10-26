@@ -24,7 +24,7 @@ public class NoDbConnectionTest extends PvmTestCase {
 
   public void testNoDbConnection() {
     try {
-      new ProcessEngineBuilder().configureFromPropertiesResource("org/activiti/standalone/initialization/nodbconnection.activiti.properties").buildProcessEngine();
+      new ProcessEngineBuilder().configureFromResource("org/activiti/standalone/initialization/nodbconnection.activiti.cfg.xml").buildProcessEngine();
       fail("expected exception");
     } catch (RuntimeException e) {
       assertTrue(containsSqlException(e));

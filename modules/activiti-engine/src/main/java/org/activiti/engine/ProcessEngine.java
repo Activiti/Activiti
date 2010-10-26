@@ -51,8 +51,8 @@ public interface ProcessEngine {
   /** the version of the activiti library */
   public static String VERSION = "5.0.rc1-SNAPSHOT";
 
-  /** the name as specified in the 'process.engine.name' property in 
-   * the activiti.properties configuration file or in the 
+  /** The name as specified in 'process-engine-name' in 
+   * the activiti.cfg.xml configuration file.
    * The default name for a process engine is 'default */
   String getName();
 

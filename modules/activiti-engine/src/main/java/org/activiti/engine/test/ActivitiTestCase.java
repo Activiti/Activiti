@@ -33,7 +33,7 @@ import org.activiti.engine.impl.util.ClockUtil;
  * <p>Usage: <code>public class YourTest extends ActivitiTestCase</code></p>
  *
  * <p>The ProcessEngine and the services available to subclasses through protected member fields.  
- * The processEngine will be initialized by default with the activiti.properties resource 
+ * The processEngine will be initialized by default with the activiti.cfg.xml resource 
  * on the classpath.  To specify a different configuration file, override the 
  * {@link #getConfigurationResource()} method.
  * Process engines will be cached statically.  The first time the setUp is called for a given 
@@ -57,7 +57,7 @@ import org.activiti.engine.impl.util.ClockUtil;
  */
 public class ActivitiTestCase extends TestCase {
 
-  protected String configurationResource = "activiti.properties";
+  protected String configurationResource = "activiti.cfg.xml";
   protected String deploymentId = null;
 
   protected ProcessEngine processEngine;
@@ -68,7 +68,7 @@ public class ActivitiTestCase extends TestCase {
   protected IdentityService identityService;
   protected ManagementService managementService;
 
-  /** uses 'activiti.properties' as it's configuration resource */
+  /** uses 'activiti.cfg.xml' as it's configuration resource */
   public ActivitiTestCase() {
   }
   

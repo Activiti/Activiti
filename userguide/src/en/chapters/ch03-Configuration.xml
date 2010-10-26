@@ -53,7 +53,7 @@
         </thead>
         <tbody>
           <row>
-            <entry><emphasis role="bold">h2</emphasis></entry>
+            <entry>h2</entry>
             <entry>1.2.132</entry>
             <entry></entry>
           </row>
@@ -70,10 +70,15 @@
           <row>
             <entry>postgresql</entry>
             <entry></entry>
-            <entry>not yet supported (coming soon)</entry>
+            <entry>8.4</entry>
           </row>
           <row>
             <entry>db2</entry>
+            <entry></entry>
+            <entry>not yet supported (coming soon)</entry>
+          </row>
+          <row>
+            <entry>Mssql</entry>
             <entry></entry>
             <entry>not yet supported (coming soon)</entry>
           </row>

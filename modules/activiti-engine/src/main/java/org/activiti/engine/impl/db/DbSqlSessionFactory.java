@@ -122,10 +122,10 @@ public class DbSqlSessionFactory implements SessionFactory, ProcessEngineConfigu
     }
     
     TransactionFactory transactionFactory = null;
-    if (processEngineConfiguration.isLocalTransactions()) {
-      transactionFactory = new JdbcTransactionFactory();
-    } else {
+    if (processEngineConfiguration.isTransactionsExternallyManaged()) {
       transactionFactory = new ManagedTransactionFactory();
+    } else {
+      transactionFactory = new JdbcTransactionFactory();
     }
     
     this.sqlSessionFactory = createSessionFactory(dataSource, transactionFactory);
@@ -229,7 +229,7 @@ public class DbSqlSessionFactory implements SessionFactory, ProcessEngineConfigu
     } catch (Exception e) {
       if (isMissingTablesException(e)) {
         throw new ActivitiException(
-                "no activiti tables in db.  set property db.schema.strategy=create-drop in activiti.properties for automatic schema creation", e);
+                "no activiti tables in db.  set schema-strategy='create-drop' in activiti.cfg.xml for automatic schema creation", e);
       } else {
         if (e instanceof RuntimeException) {
           throw (RuntimeException) e;

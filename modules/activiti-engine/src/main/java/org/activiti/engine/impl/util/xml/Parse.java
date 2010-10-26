@@ -17,8 +17,6 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.ListIterator;
-import java.util.Stack;
 import java.util.logging.Logger;
 
 import javax.xml.parsers.SAXParser;
@@ -54,7 +52,6 @@ public class Parse extends DefaultHandler {
   protected List<Problem> errors = new ArrayList<Problem>();
   protected List<Problem> warnings = new ArrayList<Problem>();
   protected String schemaResource;
-  protected Stack<Object> contextStack;
 
   public Parse(Parser parser) {
     this.parser = parser;
@@ -119,12 +116,17 @@ public class Parse extends DefaultHandler {
   public Parse execute() {
     try {
       InputStream inputStream = streamSource.getInputStream();
-      
+
       SAXParser saxParser = parser.getSaxParser(); 
-      saxParser.setProperty(JAXP_SCHEMA_LANGUAGE, W3C_XML_SCHEMA);
-      saxParser.setProperty(JAXP_SCHEMA_SOURCE, schemaResource);
-      
+      if (schemaResource != null) {
+        saxParser.setProperty(JAXP_SCHEMA_LANGUAGE, W3C_XML_SCHEMA);
+        saxParser.setProperty(JAXP_SCHEMA_SOURCE, schemaResource);
+      } else {
+        parser.getSaxParserFactory().setNamespaceAware(false);
+        parser.getSaxParserFactory().setValidating(false);
+      }
       saxParser.parse(inputStream, new ParseHandler(this));
+      
     } catch (Exception e) { // any exception can happen (Activiti, Io, etc.)
       throw new ActivitiException("couldn't parse '"+name+"': "+e.getMessage(), e);
     }
@@ -185,35 +187,5 @@ public class Parse extends DefaultHandler {
     saxParserFactory.setValidating(true);
     this.schemaResource = schemaResource;
   }
-  
-  public void pushContextObject(Object obj) {
-    if (contextStack == null) {
-      contextStack = new Stack<Object>();
-    }
-    contextStack.push(obj);
-  }
-  
-  public Object popContextObject() {
-    if (contextStack != null) {
-      return contextStack.pop();      
-    } else {
-      throw new ActivitiException("Context stack was never initialised, so calling the pop() operation is invalid");
-    }
-  }
-  
-  /**
-   * Searches the contextual stack from top to bottom for an object of the given class
-   */
-  public <T> T findContextualObject(Class<T> clazz) {
-    if (contextStack != null) {
-      ListIterator<Object> iterator = contextStack.listIterator(contextStack.size());
-      while (iterator.hasPrevious()) {
-        Object obj = iterator.previous();
-        if (clazz.isInstance(obj)) {
-          return clazz.cast(obj);
-        }
-      }
-    }
-    return null;
-  }
+
 }

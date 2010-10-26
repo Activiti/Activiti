@@ -87,22 +87,25 @@ import org.activiti.engine.impl.variable.VariableTypes;
  * @author Tom Baeyens
  */
 public class ProcessEngineConfiguration {
-
+  
+  // Static values (defaults, etc.) ////////////////////////////////////////////
+  
   public static final String DEFAULT_DATABASE_NAME = "h2";
   public static final String DEFAULT_JDBC_DRIVER = "org.h2.Driver";
   public static final String DEFAULT_JDBC_URL = "jdbc:h2:mem:activiti";
   public static final String DEFAULT_JDBC_USERNAME = "sa";
   public static final String DEFAULT_JDBC_PASSWORD = "";
   
+  // Exprimental scheme strategies (ie not in DbSchemaStrategy)
+  public static final String DBSCHEMASTRATEGY_CREATE = "create";
+  public static final String DBSCHEMASTRATEGY_CREATE_IF_NECESSARY = "create-if-necessary";
+  public static final String DBSCHEMASTRATEGY_DROP_CREATE = "drop-create";
+  
   public static final String DEFAULT_WS_SYNC_FACTORY = "org.activiti.engine.impl.webservice.CxfWebServiceClientFactory";
   
   public static final String DEFAULT_FROM_EMAIL_ADDRESS = "noreply@activiti.org";
   public static final int DEFAULT_MAIL_SERVER_SMTP_PORT = 25;
   
-  public static final String DBSCHEMASTRATEGY_CREATE = "create";
-  public static final String DBSCHEMASTRATEGY_CREATE_IF_NECESSARY = "create-if-necessary";
-  public static final String DBSCHEMASTRATEGY_DROP_CREATE = "drop-create";
-
   public static final int HISTORYLEVEL_NONE = 0;
   public static final int HISTORYLEVEL_ACTIVITY = 1;
   public static final int HISTORYLEVEL_AUDIT = 2;
@@ -123,10 +126,13 @@ public class ProcessEngineConfiguration {
     }
     throw new ActivitiException("invalid history level: "+historyLevelText);
   }
-
-
+  
+  
+  // Configurable member fields //////////////////////////////////////////////
+  
   protected String processEngineName;
 
+  // Command executor and interceptor stack
   /** the configurable list which will be {@link #initializeInterceptorChain(List) processed} to build the {@link #commandExecutorTxRequired} */
   protected List<CommandInterceptor> commandInterceptorsTxRequired;
   /** this will be initialized during the configurationComplete() */
@@ -139,6 +145,7 @@ public class ProcessEngineConfiguration {
   protected CommandContextFactory commandContextFactory;
   protected TransactionContextFactory transactionContextFactory;
 
+  // Services
   protected RepositoryService repositoryService;
   protected RuntimeService runtimeService;
   protected HistoryService historyService;
@@ -147,49 +154,64 @@ public class ProcessEngineConfiguration {
   protected FormService formService;
   protected ManagementService managementService;
   
+  // Session Factories
   protected Map<Class<?>, SessionFactory> sessionFactories;
   protected List<Deployer> deployers;
 
+  // Job executor
   protected JobExecutor jobExecutor;
   protected JobHandlers jobHandlers;
   protected boolean jobExecutorAutoActivate;
   
+  // Database
   protected String databaseName;
   protected String dbSchemaStrategy;
-  protected IdGenerator idGenerator;
-  protected long idBlockSize;
   protected DataSource dataSource;
-  protected boolean localTransactions;
   protected String jdbcDriver;
   protected String jdbcUrl;
   protected String jdbcUsername;
   protected String jdbcPassword;
+  protected boolean transactionsExternallyManaged;
+  
+  // Id generator
+  protected IdGenerator idGenerator;
+  protected long idBlockSize;
 
+  // History
+  protected int historyLevel;
+  protected Map<String, List<TaskListener>> taskListeners;
+  
+  // Webservices
+  protected String wsSyncFactoryClassName;
+  
+  // Mail
+  protected String mailServerHost;
+  protected String mailServerUsername;
+  protected String mailServerPassword;
+  protected int mailServerPort;
+  protected String mailServerDefaultFrom;
+  
+  // Forms
+  protected Map<String, FormEngine> formEngines;
+  protected FormTypes formTypes;
+
+  // Classloading
+  protected static ThreadLocal<ClassLoader> currentClassLoaderParameter = new ThreadLocal<ClassLoader>();
+  protected ClassLoader classLoader;
+  
+  // miscellaneous
   protected ScriptingEngines scriptingEngines;
   protected VariableTypes variableTypes;
   protected ExpressionManager expressionManager;
   protected BusinessCalendarManager businessCalendarManager;
   
-  protected int historyLevel = HISTORYLEVEL_AUDIT;
-  protected Map<String, List<TaskListener>> taskListeners;
-  
+  // Indicates whether the configuration has been completed: 
+  // ie a process engine has been built using this configuration
   protected boolean isConfigurationCompleted = false;
-  
-  protected String wsSyncFactoryClassName;
-  
-  protected String mailServerSmtpHost;
-  protected String mailServerSmtpUserName;
-  protected String mailServerSmtpPassword;
-  protected int mailServerSmtpPort;
-  protected String mailServerDefaultFrom;
-  
-  protected Map<String, FormEngine> formEngines;
-  protected FormTypes formTypes;
 
-  protected static ThreadLocal<ClassLoader> currentClassLoaderParameter = new ThreadLocal<ClassLoader>();
-  protected ClassLoader classLoader;
-  
-
+  /**
+   * Constructs a {@link ProcessEngineConfiguration} based on the default settings.
+   */
   public ProcessEngineConfiguration() {
     processEngineName = ProcessEngines.NAME_DEFAULT;
 
@@ -229,12 +251,12 @@ public class ProcessEngineConfiguration {
     jobExecutor = new JobExecutor();
     jobExecutorAutoActivate = false;
     
-    databaseName = DEFAULT_DATABASE_NAME;
+    databaseName = "h2";
     dbSchemaStrategy = DbSchemaStrategy.CREATE_DROP;
     idGenerator = new DbIdGenerator();
     idBlockSize = 100;
     dataSource = null;
-    localTransactions = true;
+    transactionsExternallyManaged = false;
     jdbcDriver = DEFAULT_JDBC_DRIVER;
     jdbcUrl = DEFAULT_JDBC_URL;
     jdbcUsername = DEFAULT_JDBC_USERNAME;
@@ -247,8 +269,10 @@ public class ProcessEngineConfiguration {
     mapBusinessCalendarManager.addBusinessCalendar(DurationBusinessCalendar.NAME, new DurationBusinessCalendar());
     businessCalendarManager = mapBusinessCalendarManager;
     
+    historyLevel = HISTORYLEVEL_AUDIT;
+    
     mailServerDefaultFrom = DEFAULT_FROM_EMAIL_ADDRESS;
-    mailServerSmtpPort = DEFAULT_MAIL_SERVER_SMTP_PORT;
+    mailServerPort = DEFAULT_MAIL_SERVER_SMTP_PORT;
 
     formEngines = new HashMap<String, FormEngine>();
     FormEngine defaultFormEngine = new JuelFormEngine();
@@ -262,6 +286,12 @@ public class ProcessEngineConfiguration {
   }
   
   public ProcessEngine buildProcessEngine() {
+    // Validation of settings
+    if (databaseName == null) {
+      throw new ActivitiException("No database name provided. "
+      		+ "This is required for schema creation and query lookup");
+    }
+    
     configurationComplete();
     classLoader = currentClassLoaderParameter.get();
     
@@ -602,12 +632,12 @@ public class ProcessEngineConfiguration {
     this.jobExecutorAutoActivate = jobExecutorAutoActivate;
   }
 
-  public boolean isLocalTransactions() {
-    return localTransactions;
+  public boolean isTransactionsExternallyManaged() {
+    return transactionsExternallyManaged;
   }
 
-  public void setLocalTransactions(boolean localTransactions) {
-    this.localTransactions = localTransactions;
+  public void setTransactionsExternallyManaged(boolean transactionsExternallyManaged) {
+    this.transactionsExternallyManaged = transactionsExternallyManaged;
   }
   
   public List<Deployer> getDeployers() {
@@ -634,42 +664,41 @@ public class ProcessEngineConfiguration {
     this.wsSyncFactoryClassName = wsSyncFactoryClassName;
   }
   
-  public String getMailServerSmtpHost() {
-    return mailServerSmtpHost;
+  public String getMailServerHost() {
+    return mailServerHost;
   }
   
-  public void setMailServerSmtpHost(String mailServerSmtpHost) {
-    this.mailServerSmtpHost = mailServerSmtpHost;
+  public void setMailServerHost(String mailServerHost) {
+    this.mailServerHost = mailServerHost;
   }
   
-  public String getMailServerSmtpUserName() {
-    return mailServerSmtpUserName;
+  public String getMailServerUsername() {
+    return mailServerUsername;
   }
   
-  public void setMailServerSmtpUserName(String mailServerSmtpUserName) {
-    this.mailServerSmtpUserName = mailServerSmtpUserName;
+  public void setMailServerUsername(String mailServerUsername) {
+    this.mailServerUsername = mailServerUsername;
   }
   
-  public String getMailServerSmtpPassword() {
-    return mailServerSmtpPassword;
+  public String getMailServerPassword() {
+    return mailServerPassword;
   }
 
-  public void setMailServerSmtpPassword(String mailServerSmtpPassword) {
-    this.mailServerSmtpPassword = mailServerSmtpPassword;
+  public void setMailServerPassword(String mailServerPassword) {
+    this.mailServerPassword = mailServerPassword;
   }
   
-  public int getMailServerSmtpPort() {
-    return mailServerSmtpPort;
+  public int getMailServerPort() {
+    return mailServerPort;
   }
   
-  public void setMailServerSmtpPort(int mailServerSmtpPort) {
-    this.mailServerSmtpPort = mailServerSmtpPort;
+  public void setMailServerPort(int mailServerPort) {
+    this.mailServerPort = mailServerPort;
   }
   
   public String getMailServerDefaultFrom() {
     return mailServerDefaultFrom;
   }
-
   
   public void setMailServerDefaultFrom(String mailServerDefaultFrom) {
     this.mailServerDefaultFrom = mailServerDefaultFrom;
