@@ -7,7 +7,7 @@
   <!-- VARIABLE INSTANCE INSERT -->
   
   <insert id="insertVariableInstance" parameterType="org.activiti.engine.impl.runtime.VariableInstanceEntity">
-    insert into ACT_RU_VARIABLE (ID_, REV_, TYPE_, NAME_, PROC_INST_ID_, EXECUTION_ID_, TASK_ID_, BYTEARRAY_ID_, DOUBLE_, LONG_ , TEXT1_, TEXT2_)
+    insert into ACT_RU_VARIABLE (ID_, REV_, TYPE_, NAME_, PROC_INST_ID_, EXECUTION_ID_, BYTEARRAY_ID_, DOUBLE_, LONG_ , TEXT_, TEXT2_)
     values (
 	    #{id, jdbcType=VARCHAR},
 	    1,
@@ -15,7 +15,6 @@
 	    #{name, jdbcType=VARCHAR},
       #{processInstanceId, jdbcType=VARCHAR},
 	    #{executionId, jdbcType=VARCHAR},
-	    #{taskId, jdbcType=VARCHAR},
 	    #{byteArrayValueId, jdbcType=VARCHAR},
 	    #{doubleValue, jdbcType=DOUBLE},
 	    #{longValue, jdbcType=BIGINT},
@@ -33,7 +32,7 @@
 	    BYTEARRAY_ID_ = #{byteArrayValueId, jdbcType=VARCHAR},
 	    DOUBLE_ = #{doubleValue, jdbcType=DOUBLE},
 	    LONG_ = #{longValue, jdbcType=BIGINT},
-	    TEXT1_ = #{textValue, jdbcType=VARCHAR},
+	    TEXT_ = #{textValue, jdbcType=VARCHAR},
 	    TEXT2_ = #{textValue2, jdbcType=VARCHAR}
     where ID_ = #{id, jdbcType=VARCHAR}
       and REV_ = #{revision, jdbcType=INTEGER}
@@ -59,7 +58,7 @@
 		<result property="isConcurrencyScope" column="IS_CONCURRENCY_SCOPE_" jdbcType="BOOLEAN" />
 		<result property="byteArrayValueId" column="BYTEARRAY_ID_" jdbcType="VARCHAR" />
 		<result property="doubleValue" column="DOUBLE_" jdbcType="DOUBLE" />
-		<result property="textValue" column="TEXT1_" jdbcType="VARCHAR"/>
+		<result property="textValue" column="TEXT_" jdbcType="VARCHAR"/>
 		<result property="textValue2" column="TEXT2_" jdbcType="VARCHAR"/>
 		<result property="longValue" column="LONG_" jdbcType="BIGINT"/>
 	</resultMap>
@@ -76,12 +75,6 @@
 		EXECUTION_ID_ = #{executionId,
 		jdbcType=VARCHAR}
   </select>
-
-	<select id="selectVariablesByTaskId" parameterType="string" resultMap="variableInstanceResultMap">
-		select * from ACT_RU_VARIABLE where TASK_ID_
-		= #{executionId, jdbcType=VARCHAR}
-	</select>
-
 
   <!-- BYTE ARRAY INSERT -->
 

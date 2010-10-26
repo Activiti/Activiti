@@ -129,10 +129,9 @@ create table ACT_RU_VARIABLE (
     PROC_INST_ID_ NVARCHAR2(64),
     TASK_ID_ NVARCHAR2(64),
     BYTEARRAY_ID_ NVARCHAR2(64),
-    DATE_ TIMESTAMP(6),
     DOUBLE_ NUMBER(*,10),
     LONG_ NUMBER(19,0),
-    TEXT1_ NVARCHAR2(255),
+    TEXT_ NVARCHAR2(255),
     TEXT2_ NVARCHAR2(255),
     primary key (ID_)
 );
@@ -178,10 +177,9 @@ create table ACT_HI_DETAIL (
     REV_ INTEGER,
     TIME_ TIMESTAMP(6) not null,
     BYTEARRAY_ID_ NVARCHAR2(64),
-    DATE_ TIMESTAMP(6),
     DOUBLE_ NUMBER(*,10),
     LONG_ NUMBER(19,0),
-    TEXT1_ NVARCHAR2(255),
+    TEXT_ NVARCHAR2(255),
     TEXT2_ NVARCHAR2(255),
     primary key (ID_)
 );
@@ -259,12 +257,6 @@ alter table ACT_RU_TASK
   foreign key (PROC_DEF_ID_)
   references ACT_RE_PROC_DEF (ID_);
   
-create index ACT_IDX_VAR_TASK on ACT_RU_VARIABLE(TASK_ID_);
-alter table ACT_RU_VARIABLE 
-    add constraint FK_VAR_TASK 
-    foreign key (TASK_ID_) 
-    references ACT_RU_TASK (ID_);
-
 create index ACT_IDX_VAR_EXE on ACT_RU_VARIABLE(EXECUTION_ID_);
 alter table ACT_RU_VARIABLE 
     add constraint FK_VAR_EXE 

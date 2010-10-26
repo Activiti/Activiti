@@ -61,9 +61,6 @@ alter table ACT_RU_VARIABLE
     drop CONSTRAINT FK_VAR_EXE;
     
 alter table ACT_RU_VARIABLE
-    drop CONSTRAINT FK_VAR_TASK;
-
-alter table ACT_RU_VARIABLE
 	drop CONSTRAINT FK_VAR_PROCINST;
 
 alter table ACT_RU_VARIABLE

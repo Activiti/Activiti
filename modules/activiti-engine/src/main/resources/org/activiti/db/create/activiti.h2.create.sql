@@ -127,12 +127,10 @@ create table ACT_RU_VARIABLE (
     NAME_ varchar(255) not null,
     EXECUTION_ID_ varchar(64),
     PROC_INST_ID_ varchar(64),
-    TASK_ID_ varchar(64),
     BYTEARRAY_ID_ varchar(64),
-    DATE_ timestamp,
     DOUBLE_ double,
     LONG_ bigint,
-    TEXT1_ varchar(255),
+    TEXT_ varchar(255),
     TEXT2_ varchar(255),
     primary key (ID_)
 );
@@ -178,10 +176,9 @@ create table ACT_HI_DETAIL (
     REV_ integer,
     TIME_ timestamp not null,
     BYTEARRAY_ID_ varchar(64),
-    DATE_ timestamp,
     DOUBLE_ double,
     LONG_ bigint,
-    TEXT1_ varchar(255),
+    TEXT_ varchar(255),
     TEXT2_ varchar(255),
     primary key (ID_)
 );
@@ -256,11 +253,6 @@ alter table ACT_RU_TASK
   add constraint FK_TASK_PROCDEF
   foreign key (PROC_DEF_ID_)
   references ACT_RE_PROC_DEF;
-
-alter table ACT_RU_VARIABLE
-    add constraint FK_VAR_TASK
-    foreign key (TASK_ID_)
-    references ACT_RU_TASK;
 
 alter table ACT_RU_VARIABLE
     add constraint FK_VAR_EXE

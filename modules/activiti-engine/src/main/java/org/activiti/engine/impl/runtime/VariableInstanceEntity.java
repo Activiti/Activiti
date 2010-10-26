@@ -19,7 +19,6 @@ import java.util.Map;
 import org.activiti.engine.impl.db.DbSqlSession;
 import org.activiti.engine.impl.db.PersistentObject;
 import org.activiti.engine.impl.interceptor.CommandContext;
-import org.activiti.engine.impl.task.TaskEntity;
 import org.activiti.engine.impl.variable.ValueFields;
 import org.activiti.engine.impl.variable.VariableType;
 
@@ -37,7 +36,6 @@ public class VariableInstanceEntity implements ValueFields, PersistentObject, Se
 
   protected String processInstanceId;
   protected String executionId;
-  protected String taskId;
 
   protected Long longValue;
   protected Double doubleValue; 
@@ -78,14 +76,6 @@ public class VariableInstanceEntity implements ValueFields, PersistentObject, Se
   public void setExecution(ExecutionEntity execution) {
     this.executionId = execution.getId();
     this.processInstanceId = execution.getProcessInstanceId();
-  }
-
-  public void setTask(TaskEntity task) {
-    if (task != null) {
-      this.taskId = task.getId();
-    } else {
-      this.taskId = null;
-    }
   }
 
   public void delete() {
@@ -140,11 +130,9 @@ public class VariableInstanceEntity implements ValueFields, PersistentObject, Se
   public void setProcessInstanceId(String processInstanceId) {
     this.processInstanceId = processInstanceId;
   }
+
   public void setExecutionId(String executionId) {
     this.executionId = executionId;
-  }
-  public void setTaskId(String taskId) {
-    this.taskId = taskId;
   }
 
   public void setByteArrayValueId(String byteArrayValueId) {
@@ -192,9 +180,6 @@ public class VariableInstanceEntity implements ValueFields, PersistentObject, Se
   }
   public String getExecutionId() {
     return executionId;
-  }
-  public String getTaskId() {
-    return taskId;
   }
   public Long getLongValue() {
     return longValue;
