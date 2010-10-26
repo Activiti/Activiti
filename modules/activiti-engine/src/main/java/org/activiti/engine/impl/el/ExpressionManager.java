@@ -13,6 +13,7 @@
 package org.activiti.engine.impl.el;
 
 import org.activiti.el.juel.ExpressionFactoryImpl;
+import org.activiti.engine.impl.pvm.runtime.ExecutionImpl;
 import org.activiti.engine.impl.runtime.ExecutionEntity;
 import org.activiti.javax.el.ArrayELResolver;
 import org.activiti.javax.el.BeanELResolver;
@@ -23,7 +24,6 @@ import org.activiti.javax.el.ExpressionFactory;
 import org.activiti.javax.el.ListELResolver;
 import org.activiti.javax.el.MapELResolver;
 import org.activiti.javax.el.ValueExpression;
-import org.activiti.pvm.impl.runtime.ExecutionImpl;
 
 
 /**

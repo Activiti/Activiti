@@ -26,8 +26,8 @@ import org.activiti.engine.ActivitiOptimisticLockingException;
 import org.activiti.engine.impl.Page;
 import org.activiti.engine.impl.interceptor.Session;
 import org.activiti.engine.impl.runtime.VariableInstanceEntity;
+import org.activiti.engine.impl.util.ClassNameUtil;
 import org.activiti.engine.impl.variable.DeserializedObject;
-import org.activiti.pvm.impl.util.ClassNameUtil;
 import org.apache.ibatis.session.RowBounds;
 import org.apache.ibatis.session.SqlSession;
 

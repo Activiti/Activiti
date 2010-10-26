@@ -13,9 +13,9 @@
 package org.activiti.engine.impl.scripting;
 
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.impl.bpmn.Condition;
 import org.activiti.engine.impl.interceptor.CommandContext;
-import org.activiti.pvm.delegate.DelegateExecution;
 
 /**
  * @author Tom Baeyens

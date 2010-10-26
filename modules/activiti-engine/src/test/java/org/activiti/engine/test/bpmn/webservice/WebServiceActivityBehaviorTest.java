@@ -18,6 +18,7 @@ import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.delegate.ActivityExecution;
 import org.activiti.engine.impl.bpmn.ItemDefinition;
 import org.activiti.engine.impl.bpmn.Message;
 import org.activiti.engine.impl.bpmn.Operation;
@@ -27,7 +28,6 @@ import org.activiti.engine.impl.transformer.Transformer;
 import org.activiti.engine.impl.webservice.SyncWebServiceClient;
 import org.activiti.engine.impl.webservice.WSOperation;
 import org.activiti.engine.impl.webservice.WSService;
-import org.activiti.pvm.activity.ActivityExecution;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;

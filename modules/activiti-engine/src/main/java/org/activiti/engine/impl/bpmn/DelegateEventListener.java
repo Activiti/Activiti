@@ -16,9 +16,9 @@ package org.activiti.engine.impl.bpmn;
 import java.util.List;
 
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.delegate.EventListener;
+import org.activiti.engine.delegate.EventListenerExecution;
 import org.activiti.engine.impl.bpmn.parser.FieldDeclaration;
-import org.activiti.pvm.event.EventListener;
-import org.activiti.pvm.event.EventListenerExecution;
 
 /**
  * EventListener that delegates the event notification to an instance of

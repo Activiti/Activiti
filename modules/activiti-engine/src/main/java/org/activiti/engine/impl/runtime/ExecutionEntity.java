@@ -33,18 +33,18 @@ import org.activiti.engine.impl.history.HistoricActivityInstanceEntity;
 import org.activiti.engine.impl.history.HistoricProcessInstanceEntity;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.jobexecutor.TimerDeclarationImpl;
+import org.activiti.engine.impl.pvm.PvmProcessDefinition;
+import org.activiti.engine.impl.pvm.PvmProcessInstance;
+import org.activiti.engine.impl.pvm.process.ActivityImpl;
+import org.activiti.engine.impl.pvm.process.ProcessDefinitionImpl;
+import org.activiti.engine.impl.pvm.process.ScopeImpl;
+import org.activiti.engine.impl.pvm.runtime.ExecutionImpl;
 import org.activiti.engine.impl.task.TaskEntity;
 import org.activiti.engine.impl.variable.VariableDeclaration;
 import org.activiti.engine.runtime.Execution;
 import org.activiti.engine.runtime.Job;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.javax.el.ELContext;
-import org.activiti.pvm.impl.process.ActivityImpl;
-import org.activiti.pvm.impl.process.ProcessDefinitionImpl;
-import org.activiti.pvm.impl.process.ScopeImpl;
-import org.activiti.pvm.impl.runtime.ExecutionImpl;
-import org.activiti.pvm.process.PvmProcessDefinition;
-import org.activiti.pvm.runtime.PvmProcessInstance;
 
 
 /**

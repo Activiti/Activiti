@@ -22,13 +22,6 @@
       <fileset dir="src" />
     </copy>
  
-    <mkdir dir="${target.distro.root}/examples/activiti-pvm-examples/src" />
-    <copy todir="${target.distro.root}/examples/activiti-pvm-examples/src">
-      <fileset dir="../modules/activiti-pvm/src/test/java">
-        <include name="org/activiti/examples/**" />
-    	</fileset>
-    </copy>
-
   	<mkdir dir="${target.distro.root}/examples/activiti-engine-examples/src" />
     <copy todir="${target.distro.root}/examples/activiti-engine-examples/src">
       <fileset dir="../modules/activiti-engine/src/test/java">
@@ -54,7 +47,6 @@
     <copy todir="${target.distro.root}/setup/files/examples">
       <fileset dir="..">
         <include name="pom.xml" />
-        <include name="modules/activiti-pvm/pom.xml" />
         <include name="modules/activiti-engine/pom.xml" />
         <include name="modules/activiti-spring/pom.xml" />
       </fileset>
@@ -71,19 +63,15 @@
     	<fileset dir="../modules/activiti-engine/target">
     		<include name="activiti-engine-*.jar"/>
     	</fileset>
-      <fileset dir="../modules/activiti-pvm/target">
-        <include name="activiti-pvm-*.jar"/>
-      </fileset>
       <fileset dir="../modules/activiti-spring/target">
         <include name="activiti-spring-*.jar"/>
       </fileset>
     	<!--added to copy activiti-cycle-*.jar
     	  we have to include it, otherwise we get a NPE in the ant setup (why??)
     	-->
-        <fileset dir="../modules/activiti-cycle/target">
-          <include name="activiti-cycle-*.jar"/>
-        </fileset>
-        
+      <fileset dir="../modules/activiti-cycle/target">
+        <include name="activiti-cycle-*.jar"/>
+      </fileset>
     </copy>
       	
     <mkdir dir="${target.distro.root}/setup/files/webapps/activiti-probe.war" />

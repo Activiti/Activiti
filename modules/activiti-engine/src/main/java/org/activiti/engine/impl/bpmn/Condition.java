@@ -12,7 +12,7 @@
  */
 package org.activiti.engine.impl.bpmn;
 
-import org.activiti.pvm.delegate.DelegateExecution;
+import org.activiti.engine.delegate.DelegateExecution;
 
 
 

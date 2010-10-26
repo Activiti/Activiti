@@ -22,8 +22,8 @@ import javax.script.ScriptException;
 import javax.script.SimpleBindings;
 
 import org.activiti.engine.ActivitiException;
-import org.activiti.pvm.delegate.DelegateExecution;
-import org.activiti.pvm.impl.runtime.ExecutionImpl;
+import org.activiti.engine.delegate.DelegateExecution;
+import org.activiti.engine.impl.pvm.runtime.ExecutionImpl;
 
 /**
  * @author Tom Baeyens

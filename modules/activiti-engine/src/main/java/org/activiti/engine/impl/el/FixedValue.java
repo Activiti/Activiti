@@ -14,7 +14,7 @@
 package org.activiti.engine.impl.el;
 
 import org.activiti.engine.ActivitiException;
-import org.activiti.pvm.delegate.DelegateExecution;
+import org.activiti.engine.delegate.DelegateExecution;
 
 /**
  * Expression that always returns the same value when <code>getValue</code> is

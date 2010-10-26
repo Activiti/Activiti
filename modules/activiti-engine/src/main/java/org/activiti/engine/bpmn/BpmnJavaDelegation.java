@@ -13,12 +13,12 @@
 
 package org.activiti.engine.bpmn;
 
+import org.activiti.engine.delegate.ActivityBehavior;
+import org.activiti.engine.delegate.ActivityExecution;
+import org.activiti.engine.delegate.DelegateExecution;
+import org.activiti.engine.delegate.EventListener;
+import org.activiti.engine.delegate.EventListenerExecution;
 import org.activiti.engine.impl.bpmn.BpmnActivityBehavior;
-import org.activiti.pvm.activity.ActivityBehavior;
-import org.activiti.pvm.activity.ActivityExecution;
-import org.activiti.pvm.delegate.DelegateExecution;
-import org.activiti.pvm.event.EventListener;
-import org.activiti.pvm.event.EventListenerExecution;
 
 /**
  * Convience class that should be used when a Java delegation in a BPMN 2.0

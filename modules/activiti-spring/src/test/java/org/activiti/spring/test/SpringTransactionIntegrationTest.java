@@ -14,7 +14,7 @@
 package org.activiti.spring.test;
 
 import org.activiti.engine.RepositoryService;
-import org.activiti.pvm.test.PvmTestCase;
+import org.activiti.engine.impl.test.PvmTestCase;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 

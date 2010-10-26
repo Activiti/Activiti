@@ -39,9 +39,8 @@ import org.activiti.engine.impl.cfg.ProcessEngineConfiguration;
 import org.activiti.engine.impl.jobexecutor.JobExecutor;
 import org.activiti.engine.impl.util.ClockUtil;
 import org.activiti.engine.impl.util.ReflectUtil;
+import org.activiti.engine.impl.util.LogUtil.ThreadLogMode;
 import org.activiti.engine.runtime.ProcessInstance;
-import org.activiti.pvm.impl.util.LogUtil.ThreadLogMode;
-import org.activiti.pvm.test.PvmTestCase;
 import org.junit.Assert;
 
 

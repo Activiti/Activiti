@@ -16,7 +16,7 @@ import java.io.Serializable;
 
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.el.Expression;
-import org.activiti.pvm.impl.runtime.ExecutionImpl;
+import org.activiti.engine.impl.pvm.runtime.ExecutionImpl;
 
 
 /**

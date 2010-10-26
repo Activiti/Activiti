@@ -19,9 +19,9 @@ import java.util.Map;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.RuntimeService;
 import org.activiti.engine.TaskService;
+import org.activiti.engine.impl.test.PvmTestCase;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
-import org.activiti.pvm.test.PvmTestCase;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 

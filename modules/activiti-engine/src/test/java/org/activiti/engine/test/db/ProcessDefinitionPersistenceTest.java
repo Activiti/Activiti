@@ -16,11 +16,11 @@ package org.activiti.engine.test.db;
 import java.util.Collections;
 import java.util.List;
 
+import org.activiti.engine.impl.pvm.PvmActivity;
+import org.activiti.engine.impl.pvm.PvmTransition;
+import org.activiti.engine.impl.pvm.ReadOnlyProcessDefinition;
 import org.activiti.engine.impl.test.ActivitiInternalTestCase;
 import org.activiti.engine.repository.ProcessDefinition;
-import org.activiti.pvm.process.PvmActivity;
-import org.activiti.pvm.process.PvmTransition;
-import org.activiti.pvm.process.ReadOnlyProcessDefinition;
 
 
 /**

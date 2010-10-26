@@ -13,7 +13,7 @@
 package org.activiti.examples.bpmn.servicetask;
 
 import org.activiti.engine.bpmn.BpmnJavaDelegation;
-import org.activiti.pvm.delegate.DelegateExecution;
+import org.activiti.engine.delegate.DelegateExecution;
 
 
 /**

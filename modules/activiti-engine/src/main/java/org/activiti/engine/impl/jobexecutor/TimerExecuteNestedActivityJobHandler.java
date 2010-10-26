@@ -17,8 +17,8 @@ import java.util.logging.Logger;
 
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.interceptor.CommandContext;
+import org.activiti.engine.impl.pvm.process.ActivityImpl;
 import org.activiti.engine.impl.runtime.ExecutionEntity;
-import org.activiti.pvm.impl.process.ActivityImpl;
 
 
 /**

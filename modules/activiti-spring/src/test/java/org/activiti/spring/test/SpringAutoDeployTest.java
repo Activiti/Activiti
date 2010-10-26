@@ -26,11 +26,11 @@ import java.util.List;
 import java.util.Set;
 
 import org.activiti.engine.RepositoryService;
+import org.activiti.engine.impl.test.PvmTestCase;
 import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.repository.DeploymentQuery;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.repository.ProcessDefinitionQuery;
-import org.activiti.pvm.test.PvmTestCase;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 

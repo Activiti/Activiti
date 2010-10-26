@@ -13,14 +13,14 @@
 
 package org.activiti.engine.impl.history.handler;
 
+import org.activiti.engine.delegate.EventListener;
 import org.activiti.engine.impl.bpmn.parser.BpmnParseListener;
+import org.activiti.engine.impl.pvm.process.ActivityImpl;
+import org.activiti.engine.impl.pvm.process.ScopeImpl;
+import org.activiti.engine.impl.pvm.process.TransitionImpl;
 import org.activiti.engine.impl.repository.ProcessDefinitionEntity;
 import org.activiti.engine.impl.util.xml.Element;
 import org.activiti.engine.impl.variable.VariableDeclaration;
-import org.activiti.pvm.event.EventListener;
-import org.activiti.pvm.impl.process.ActivityImpl;
-import org.activiti.pvm.impl.process.ScopeImpl;
-import org.activiti.pvm.impl.process.TransitionImpl;
 
 
 /**

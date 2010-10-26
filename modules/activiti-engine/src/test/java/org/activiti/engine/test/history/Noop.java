@@ -13,9 +13,9 @@
 
 package org.activiti.engine.test.history;
 
-import org.activiti.pvm.activity.ActivityBehavior;
-import org.activiti.pvm.activity.ActivityExecution;
-import org.activiti.pvm.process.PvmTransition;
+import org.activiti.engine.delegate.ActivityBehavior;
+import org.activiti.engine.delegate.ActivityExecution;
+import org.activiti.engine.impl.pvm.PvmTransition;
 
 
 /**

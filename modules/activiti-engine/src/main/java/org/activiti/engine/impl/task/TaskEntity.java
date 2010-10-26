@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.impl.cfg.RepositorySession;
 import org.activiti.engine.impl.db.PersistentObject;
 import org.activiti.engine.impl.interceptor.CommandContext;
@@ -31,7 +32,6 @@ import org.activiti.engine.impl.runtime.VariableMap;
 import org.activiti.engine.impl.util.ClockUtil;
 import org.activiti.engine.task.IdentityLinkType;
 import org.activiti.engine.task.Task;
-import org.activiti.pvm.delegate.DelegateExecution;
 
 /**
  * @author Tom Baeyens

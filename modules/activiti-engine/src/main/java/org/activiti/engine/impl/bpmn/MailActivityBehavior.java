@@ -15,10 +15,10 @@ package org.activiti.engine.impl.bpmn;
 
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.bpmn.BpmnJavaDelegation;
+import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.impl.cfg.ProcessEngineConfiguration;
 import org.activiti.engine.impl.el.Expression;
 import org.activiti.engine.impl.interceptor.CommandContext;
-import org.activiti.pvm.delegate.DelegateExecution;
 import org.apache.commons.mail.Email;
 import org.apache.commons.mail.EmailException;
 import org.apache.commons.mail.HtmlEmail;

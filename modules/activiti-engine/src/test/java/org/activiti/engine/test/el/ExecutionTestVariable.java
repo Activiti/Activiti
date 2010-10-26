@@ -15,7 +15,7 @@ package org.activiti.engine.test.el;
 
 import java.io.Serializable;
 
-import org.activiti.pvm.delegate.DelegateExecution;
+import org.activiti.engine.delegate.DelegateExecution;
 
 
 /**

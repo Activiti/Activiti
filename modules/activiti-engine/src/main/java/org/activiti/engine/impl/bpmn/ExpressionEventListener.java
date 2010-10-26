@@ -13,9 +13,9 @@
 
 package org.activiti.engine.impl.bpmn;
 
+import org.activiti.engine.delegate.EventListener;
+import org.activiti.engine.delegate.EventListenerExecution;
 import org.activiti.engine.impl.el.Expression;
-import org.activiti.pvm.event.EventListener;
-import org.activiti.pvm.event.EventListenerExecution;
 
 /**
  * An {@link EventListener} that evaluates a {@link Expression} when notified.

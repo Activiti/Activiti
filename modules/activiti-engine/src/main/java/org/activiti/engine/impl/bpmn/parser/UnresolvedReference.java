@@ -12,7 +12,7 @@
  */
 package org.activiti.engine.impl.bpmn.parser;
 
-import org.activiti.pvm.impl.process.ProcessDefinitionImpl;
+import org.activiti.engine.impl.pvm.process.ProcessDefinitionImpl;
 
 
 /**

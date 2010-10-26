@@ -23,7 +23,7 @@ import org.activiti.engine.ProcessEngineBuilder;
 import org.activiti.engine.impl.ProcessEngineImpl;
 import org.activiti.engine.impl.db.DbSqlSession;
 import org.activiti.engine.impl.db.DbSqlSessionFactory;
-import org.activiti.pvm.test.PvmTestCase;
+import org.activiti.engine.impl.test.PvmTestCase;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 

@@ -18,7 +18,7 @@ import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.ProcessEngineInfo;
 import org.activiti.engine.ProcessEngines;
 import org.activiti.engine.impl.test.ActivitiInternalTestCase;
-import org.activiti.pvm.test.PvmTestCase;
+import org.activiti.engine.impl.test.PvmTestCase;
 
 /**
  * @author Tom Baeyens

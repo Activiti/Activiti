@@ -15,7 +15,7 @@ package org.activiti.engine.impl.interceptor;
 
 import java.util.logging.Logger;
 
-import org.activiti.pvm.impl.util.ClassNameUtil;
+import org.activiti.engine.impl.util.ClassNameUtil;
 
 
 /**

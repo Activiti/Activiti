@@ -77,16 +77,10 @@
   <target name="demo.teardown" depends="tomcat.stop, db.drop, h2.stop" />
   
   <target name="examples.get.libs.all" 
-  	      depends="examples.get.libs.pvm,
-  	               examples.get.libs.engine,
+  	      depends="examples.get.libs.engine,
   	               examples.get.libs.spring" 
   	      description="retrieves the libs for all the examples" />
     
-  <available property="is.examples.pvm.libs.fetched" file="${activiti.home}/examples/activiti-pvm-examples/libs-runtime" />
-  <target name="examples.get.libs.pvm" depends="maven.install, internal.install.activiti.libs" unless="is.examples.pvm.libs.fetched">
-    <get-module-libs module="pvm" profile="" />
-  </target>
-
   <available property="is.examples.engine.libs.fetched" file="${activiti.home}/examples/activiti-engine-examples/libs-runtime" />
   <target name="examples.get.libs.engine" depends="maven.install, internal.install.activiti.libs" unless="is.examples.engine.libs.fetched">
     <get-module-libs module="engine" profile="-Ddatabase=${db}" />
@@ -124,9 +118,6 @@
   </target>
 	
   <target name="internal.install.activiti.libs">
-    <exec dir="${activiti.home}/lib" executable="../${maven.path}" vmlauncher="${vmlauncher}">
-      <arg line="install:install-file -Dfile=activiti-pvm-${activiti.version}.jar -DgroupId=org.activiti -DartifactId=activiti-pvm -Dpackaging=jar -Dversion=${activiti.version}"/>
-    </exec>
     <exec dir="${activiti.home}/lib" executable="../${maven.path}" vmlauncher="${vmlauncher}">
       <arg line="install:install-file -Dfile=activiti-engine-${activiti.version}.jar -DgroupId=org.activiti -DartifactId=activiti-engine -Dpackaging=jar -Dversion=${activiti.version}"/>
     </exec>
@@ -297,7 +288,6 @@ JAVA_OPTS="-Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=8787
   <target name="deploy.activiti.engine.into.tomcat" depends="cfg.create, examples.get.libs.engine">
     <copy todir="${tomcat.home}/lib">
       <fileset dir="${activiti.home}/examples/activiti-engine-examples/libs-runtime">
-        <include name="activiti-pvm-${activiti.version}.jar"/>
         <include name="activiti-engine-${activiti.version}.jar"/>
       	<include name="activiti-juel-*.jar"/>
         <include name="mybatis-*.jar"/>

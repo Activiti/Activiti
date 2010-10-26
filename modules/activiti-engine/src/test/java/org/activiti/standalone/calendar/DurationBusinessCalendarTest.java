@@ -17,8 +17,8 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import org.activiti.engine.impl.calendar.DurationBusinessCalendar;
+import org.activiti.engine.impl.test.PvmTestCase;
 import org.activiti.engine.impl.util.ClockUtil;
-import org.activiti.pvm.test.PvmTestCase;
 
 /**
  * @author Tom Baeyens

@@ -16,11 +16,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.delegate.ActivityBehavior;
+import org.activiti.engine.delegate.ActivityExecution;
 import org.activiti.engine.impl.transformer.Identity;
 import org.activiti.engine.impl.transformer.Transformer;
 import org.activiti.engine.impl.webservice.SyncWebServiceClient;
-import org.activiti.pvm.activity.ActivityBehavior;
-import org.activiti.pvm.activity.ActivityExecution;
 
 
 /**

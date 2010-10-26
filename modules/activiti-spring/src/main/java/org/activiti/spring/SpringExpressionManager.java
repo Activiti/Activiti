@@ -15,13 +15,13 @@ package org.activiti.spring;
 
 import org.activiti.engine.impl.el.ExecutionVariableElResolver;
 import org.activiti.engine.impl.el.ExpressionManager;
+import org.activiti.engine.impl.pvm.runtime.ExecutionImpl;
 import org.activiti.javax.el.ArrayELResolver;
 import org.activiti.javax.el.BeanELResolver;
 import org.activiti.javax.el.CompositeELResolver;
 import org.activiti.javax.el.ELResolver;
 import org.activiti.javax.el.ListELResolver;
 import org.activiti.javax.el.MapELResolver;
-import org.activiti.pvm.impl.runtime.ExecutionImpl;
 import org.springframework.context.ApplicationContext;
 
 

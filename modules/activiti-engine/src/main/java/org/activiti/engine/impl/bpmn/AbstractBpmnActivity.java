@@ -13,8 +13,8 @@
 package org.activiti.engine.impl.bpmn;
 
 import org.activiti.engine.ActivitiException;
-import org.activiti.pvm.activity.ActivityExecution;
-import org.activiti.pvm.activity.SignallableActivityBehavior;
+import org.activiti.engine.delegate.ActivityExecution;
+import org.activiti.engine.delegate.SignallableActivityBehavior;
 
 
 /**

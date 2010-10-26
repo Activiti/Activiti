@@ -13,8 +13,8 @@
 
 package org.activiti.examples.bpmn.eventlistener;
 
-import org.activiti.pvm.event.EventListener;
-import org.activiti.pvm.event.EventListenerExecution;
+import org.activiti.engine.delegate.EventListener;
+import org.activiti.engine.delegate.EventListenerExecution;
 
 /**
  * Simple {@link EventListener} that sets 2 variables on the execution.

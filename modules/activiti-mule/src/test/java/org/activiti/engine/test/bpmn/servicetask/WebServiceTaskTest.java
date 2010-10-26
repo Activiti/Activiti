@@ -17,8 +17,8 @@ import java.util.List;
 
 import org.activiti.engine.impl.test.ActivitiInternalTestCase;
 import org.activiti.engine.impl.test.TestHelper;
+import org.activiti.engine.impl.util.ClassNameUtil;
 import org.activiti.engine.repository.DeploymentBuilder;
-import org.activiti.pvm.impl.util.ClassNameUtil;
 import org.activiti.test.mule.Counter;
 import org.mule.api.MuleContext;
 import org.mule.api.config.ConfigurationBuilder;

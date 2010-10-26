@@ -13,8 +13,8 @@
 package org.activiti.examples.bpmn.servicetask;
 
 import org.activiti.engine.bpmn.BpmnJavaDelegation;
+import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.impl.el.Expression;
-import org.activiti.pvm.delegate.DelegateExecution;
 
 /**
  * Example BpmnJavaDelegation that uses an injected

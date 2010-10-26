@@ -21,10 +21,10 @@ import org.activiti.engine.ProcessEngineBuilder;
 import org.activiti.engine.TaskService;
 import org.activiti.engine.impl.cfg.ProcessEngineConfiguration;
 import org.activiti.engine.impl.test.ActivitiInternalTestCase;
+import org.activiti.engine.impl.test.PvmTestCase;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
-import org.activiti.pvm.test.PvmTestCase;
 
 
 /**
