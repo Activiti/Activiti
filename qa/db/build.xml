@@ -63,9 +63,9 @@
 		                        replace='username="${jdbc.username}"'/>
 		<replaceregexp file="./target/test-classes/activiti.cfg.xml" flags="s"
 		                        match='password=".*?"' 
-		                        replace='driver="${jdbc.password}"'/>
+		                        replace='password="${jdbc.password}"'/>
 		<replaceregexp file="./target/test-classes/activiti.cfg.xml" flags="s"
 		                        match='schema-strategy=".*?"' 
-		                        replace='schema-strategy="${check-version}"'/>
+		                        replace='schema-strategy="check-version"'/>
 	</target>
 </project>
