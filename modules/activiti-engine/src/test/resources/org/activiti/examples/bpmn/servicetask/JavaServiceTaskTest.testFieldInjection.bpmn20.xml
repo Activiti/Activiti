@@ -15,7 +15,7 @@
                  name="Java service invocation" 
                  activiti:class="org.activiti.examples.bpmn.servicetask.ToUpperCaseFieldInjected">
       <extensionElements>
-        <activiti:field activiti:name="text">
+        <activiti:field name="text">
           <activiti:string>Hello World</activiti:string>
         </activiti:field>
       </extensionElements>             

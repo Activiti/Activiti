@@ -1579,7 +1579,7 @@ public class ToUppercase extends BpmnJavaDelegation {
     name=&quot;Java service invocation&quot; 
     activiti:class=&quot;org.activiti.examples.bpmn.servicetask.ToUpperCaseFieldInjected&quot;&gt;
     <emphasis role="bold">&lt;extensionElements&gt;
-    &lt;activiti:field activiti:name=&quot;text&quot; activiti:stringValue=&quot;Hello World&quot; /&gt;
+    &lt;activiti:field name=&quot;text&quot; stringValue=&quot;Hello World&quot; /&gt;
   &lt;/extensionElements&gt;</emphasis>           
 &lt;/serviceTask&gt;        
           </programlisting>
@@ -1594,7 +1594,7 @@ public class ToUppercase extends BpmnJavaDelegation {
     name=&quot;Java service invocation&quot; 
     activiti:class=&quot;org.activiti.examples.bpmn.servicetask.ToUpperCaseFieldInjected&quot;&gt;
   &lt;extensionElements&gt;   
-    &lt;activiti:field activiti:name=&quot;text&quot;&gt;
+    &lt;activiti:field name=&quot;text&quot;&gt;
         <emphasis role="bold">&lt;activiti:string&gt;
         Hello World
       &lt;/activiti:string&gt;</emphasis>
@@ -1614,10 +1614,10 @@ public class ToUppercase extends BpmnJavaDelegation {
   activiti:class=&quot;org.activiti.examples.bpmn.servicetask.ReverseStringsFieldInjected&quot;&gt;
   
   &lt;extensionElements&gt;
-    &lt;activiti:field activiti:name=&quot;text1&quot;&gt;
+    &lt;activiti:field name=&quot;text1&quot;&gt;
       <emphasis role="bold">&lt;activiti:expression&gt;${genderBean.getGenderString(gender)}&lt;/activiti:expression&gt;</emphasis>
     &lt;/activiti:field&gt;
-    &lt;activiti:field activiti:name=&quot;text2&quot;&gt;
+    &lt;activiti:field name=&quot;text2&quot;&gt;
        <emphasis role="bold">&lt;activiti:expression&gt;Hello ${gender == 'male' ? 'Mr.' : 'Mrs.'} ${name}&lt;/activiti:expression&gt;</emphasis>
     &lt;/activiti:field&gt;
   &lt;/ extensionElements&gt;
@@ -1648,8 +1648,8 @@ public class ReverseStringsFieldInjected extends BpmnJavaDelegation {
   <para>
   Alternatively, you can also set the expressions as an attribute instead of a child-element, to make the XML less verbose.
 <programlisting>
-&lt;activiti:field activiti:name=&quot;text1&quot; <emphasis role="bold">activiti:expression=&quot;${genderBean.getGenderString(gender)}&quot;</emphasis> /&gt;
-&lt;activiti:field activiti:name=&quot;text1&quot; <emphasis role="bold">activiti:expression=&quot;Hello ${gender == 'male' ? 'Mr.' : 'Mrs.'} ${name}&quot;</emphasis> /&gt;
+&lt;activiti:field name=&quot;text1&quot; <emphasis role="bold">expression=&quot;${genderBean.getGenderString(gender)}&quot;</emphasis> /&gt;
+&lt;activiti:field name=&quot;text1&quot; <emphasis role="bold">expression=&quot;Hello ${gender == 'male' ? 'Mr.' : 'Mrs.'} ${name}&quot;</emphasis> /&gt;
 </programlisting>
         </para>
         <para>
@@ -1701,7 +1701,7 @@ public class ReverseStringsFieldInjected extends BpmnJavaDelegation {
   &lt;process id=&quot;eventListenersProcess&quot;&gt;
   
     <emphasis role="bold">&lt;extensionElements&gt;
-      &lt;activiti:listener activiti:class=&quot;org.activiti.examples.bpmn.eventlistener.ExampleEventListenerOne&quot; activiti:eventName=&quot;start&quot; /&gt;
+      &lt;activiti:listener class=&quot;org.activiti.examples.bpmn.eventlistener.ExampleEventListenerOne&quot; eventName=&quot;start&quot; /&gt;
     &lt;/extensionElements&gt;</emphasis>
     
     &lt;startEvent id=&quot;theStart&quot; /&gt;
@@ -1710,13 +1710,13 @@ public class ReverseStringsFieldInjected extends BpmnJavaDelegation {
     &lt;userTask id=&quot;firstTask&quot; /&gt;
     &lt;sequenceFlow sourceRef=&quot;firstTask&quot; targetRef=&quot;secondTask&quot;&gt;
        <emphasis role="bold">&lt;extensionElements&gt;
-        &lt;activiti:listener activiti:class=&quot;org.activiti.examples.bpmn.eventlistener.ExampleEventListenerTwo&quot; /&gt;
+        &lt;activiti:listener class=&quot;org.activiti.examples.bpmn.eventlistener.ExampleEventListenerTwo&quot; /&gt;
       &lt;/extensionElements&gt;</emphasis>
     &lt;/sequenceFlow&gt;
     
     &lt;userTask id=&quot;secondTask&quot; &gt;
       <emphasis role="bold">&lt;extensionElements&gt;
-        &lt;activiti:listener activiti:expression=&quot;${myPojo.myMethod(execution.eventName)}&quot; activiti:eventName=&quot;end&quot; /&gt;
+        &lt;activiti:listener expression=&quot;${myPojo.myMethod(execution.eventName)}&quot; eventName=&quot;end&quot; /&gt;
       &lt;/extensionElements&gt;</emphasis>
     &lt;/userTask&gt;
     &lt;sequenceFlow sourceRef=&quot;secondTask&quot; targetRef=&quot;thirdTask&quot; /&gt;
@@ -1751,7 +1751,7 @@ public class ExampleEventListenerOne implements <emphasis role="bold">EventListe
           a <literal>expression</literal> is defined instead which is evaluated/invoked when the event is fired. 
         </para>
         <programlisting>
-&lt;activiti:listener activiti:expression=&quot;<emphasis role="bold">${myPojo.myMethod(execution.eventName)}</emphasis>&quot; activiti:eventName=&quot;end&quot; /&gt;</programlisting>
+&lt;activiti:listener expression=&quot;<emphasis role="bold">${myPojo.myMethod(execution.eventName)}</emphasis>&quot; eventName=&quot;end&quot; /&gt;</programlisting>
         <para>
           As with other expressions, execution variables are resolved and can be used. Because an eventlistener gets a special kind of execution, an <literal>EventListenerExecution</literal> that is, it's
           possible to pass the event-name to your methods using <literal>execution.eventName</literal>.
@@ -1769,9 +1769,9 @@ public class ExampleEventListenerOne implements <emphasis role="bold">EventListe
         <programlisting>
  &lt;process id=&quot;eventListenersProcess&quot;&gt;
     <emphasis role="bold">&lt;extensionElements&gt;
-      &lt;activiti:listener activiti:class=&quot;org.activiti.examples.bpmn.eventlistener.ExampleFieldInjectedEventListener&quot; activiti:eventName=&quot;start&quot;&gt;
-        &lt;activiti:field activiti:name=&quot;fixedValue&quot; activiti:stringValue=&quot;Yes, I am &quot; /&gt;
-        &lt;activiti:field activiti:name=&quot;dynamicValue&quot; activiti:expression=&quot;${myVar}&quot; /&gt;
+      &lt;activiti:listener class=&quot;org.activiti.examples.bpmn.eventlistener.ExampleFieldInjectedEventListener&quot; eventName=&quot;start&quot;&gt;
+        &lt;activiti:field name=&quot;fixedValue&quot; stringValue=&quot;Yes, I am &quot; /&gt;
+        &lt;activiti:field name=&quot;dynamicValue&quot; expression=&quot;${myVar}&quot; /&gt;
       &lt;/activiti:listener&gt;
     &lt;/extensionElements&gt;</emphasis>
     
@@ -1969,10 +1969,10 @@ public void testEventListenerFieldInjection() {
 		      <programlisting>
 &lt;serviceTask id=&quot;sendMail&quot; activiti:type=&quot;mail&quot;&gt;
   &lt;extensionElements&gt;
-    &lt;activiti:field activiti:name=&quot;from&quot; activiti:stringValue=&quot;order-shipping@thecompany.com&quot; /&gt;
-    &lt;activiti:field activiti:name=&quot;to&quot; activiti:expression=&quot;${recipient}&quot; /&gt;
-    &lt;activiti:field activiti:name=&quot;subject&quot; activiti:expression=&quot;Your order ${orderId} has been shipped&quot; /&gt;
-    &lt;activiti:field activiti:name=&quot;html&quot;&gt;
+    &lt;activiti:field name=&quot;from&quot; stringValue=&quot;order-shipping@thecompany.com&quot; /&gt;
+    &lt;activiti:field name=&quot;to&quot; expression=&quot;${recipient}&quot; /&gt;
+    &lt;activiti:field name=&quot;subject&quot; expression=&quot;Your order ${orderId} has been shipped&quot; /&gt;
+    &lt;activiti:field name=&quot;html&quot;&gt;
       &lt;activiti:expression&gt;
         &lt;![CDATA[
           &lt;html&gt;

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <definitions id="taskAssigneeExample" 
   xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+  xmlns:activiti="http://activiti.org/bpmn-extensions"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	targetNamespace="http://www.activiti.org/bpmn2.0">
 	

@@ -7,7 +7,7 @@
   <process id="eventListenersProcess">
   
     <extensionElements>
-      <activiti:listener activiti:class="org.activiti.examples.bpmn.eventlistener.ExampleEventListenerOne" activiti:eventName="start" />
+      <activiti:listener class="org.activiti.examples.bpmn.eventlistener.ExampleEventListenerOne" eventName="start" />
     </extensionElements>
     
     <startEvent id="theStart" />
@@ -17,13 +17,13 @@
     <userTask id="firstTask" />
     <sequenceFlow sourceRef="firstTask" targetRef="secondTask">
        <extensionElements>
-        <activiti:listener activiti:class="org.activiti.examples.bpmn.eventlistener.ExampleEventListenerTwo" />
+        <activiti:listener class="org.activiti.examples.bpmn.eventlistener.ExampleEventListenerTwo" />
       </extensionElements>
     </sequenceFlow>
     
     <userTask id="secondTask" >
       <extensionElements>
-        <activiti:listener activiti:expression="${myPojo.myMethod(execution.eventName)}" activiti:eventName="end" />
+        <activiti:listener expression="${myPojo.myMethod(execution.eventName)}" eventName="end" />
       </extensionElements>
     </userTask>
     <sequenceFlow sourceRef="secondTask" targetRef="thirdTask" />

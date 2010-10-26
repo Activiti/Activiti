@@ -10,8 +10,8 @@
   
     <startEvent id="start">
       <extensionElements>
-        <activiti:formProperty activiti:id="speaker" activiti:variable="SpeakerName"/>
-        <activiti:formProperty activiti:id="duration" activiti:type="long"/>
+        <activiti:formProperty id="speaker" variable="SpeakerName"/>
+        <activiti:formProperty id="duration" type="long"/>
       </extensionElements>
     </startEvent>
 
@@ -20,10 +20,10 @@
     <userTask id="task"
               activiti:assignee="kermit">
       <extensionElements>
-        <activiti:formProperty activiti:id="room" />
-        <activiti:formProperty activiti:id="duration" activiti:type="long"/>
-        <activiti:formProperty activiti:id="speaker" activiti:variable="SpeakerName" activiti:writable="false" />
-        <activiti:formProperty activiti:id="street" activiti:expression="#{address.street}" activiti:required="true" />
+        <activiti:formProperty id="room" />
+        <activiti:formProperty id="duration" type="long"/>
+        <activiti:formProperty id="speaker" variable="SpeakerName" writable="false" />
+        <activiti:formProperty id="street" expression="#{address.street}" required="true" />
       </extensionElements>
     </userTask>
 

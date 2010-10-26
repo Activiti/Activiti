@@ -11,14 +11,14 @@
     
     <serviceTask id="sendMail" activiti:type="mail">
       <extensionElements>
-        <activiti:field activiti:name="to">
+        <activiti:field name="to">
           <activiti:string>kermit@activiti.org</activiti:string>
         </activiti:field>
-        <activiti:field activiti:name="subject">
+        <activiti:field name="subject">
           <activiti:string>Test</activiti:string>
         </activiti:field>
-        <activiti:field activiti:name="html">
-          <activiti:expression>
+        <activiti:field name="html">
+          <expression>
             <![CDATA[
               <html>
                 <body>
@@ -26,7 +26,7 @@
                 </body>
               </html>
             ]]>
-          </activiti:expression>
+          </expression>
         </activiti:field>      
       </extensionElements>
     </serviceTask>

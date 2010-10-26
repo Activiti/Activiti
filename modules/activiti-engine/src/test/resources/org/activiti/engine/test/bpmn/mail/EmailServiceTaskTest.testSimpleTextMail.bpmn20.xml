@@ -11,13 +11,13 @@
     
     <serviceTask id="sendMail" activiti:type="mail">
       <extensionElements>
-        <activiti:field activiti:name="to">
+        <activiti:field name="to">
           <activiti:string>kermit@activiti.org</activiti:string>
         </activiti:field>
-        <activiti:field activiti:name="subject">
+        <activiti:field name="subject">
           <activiti:string>Hello Kermit!</activiti:string>
         </activiti:field>
-        <activiti:field activiti:name="text">
+        <activiti:field name="text">
           <activiti:string>This a text only e-mail.</activiti:string>
         </activiti:field>      
       </extensionElements>

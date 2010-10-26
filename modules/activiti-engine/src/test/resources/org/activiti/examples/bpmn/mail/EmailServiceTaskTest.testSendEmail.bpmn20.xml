@@ -11,11 +11,11 @@
     
     <serviceTask id="sendMail" activiti:type="mail">
       <extensionElements>
-        <activiti:field activiti:name="from" activiti:expression="${sender}" />
-        <activiti:field activiti:name="to" activiti:expression="${recipient}" />
-        <activiti:field activiti:name="subject" activiti:expression="Your order ${orderId} has been shipped" />
-        <activiti:field activiti:name="html">
-          <activiti:expression>
+        <activiti:field name="from" expression="${sender}" />
+        <activiti:field name="to" expression="${recipient}" />
+        <activiti:field name="subject" expression="Your order ${orderId} has been shipped" />
+        <activiti:field name="html">
+          <expression>
             <![CDATA[
               <html>
                 <body>
@@ -29,7 +29,7 @@
                 </body>
               </html>
             ]]>
-          </activiti:expression>
+          </expression>
         </activiti:field>      
       </extensionElements>
     </serviceTask>

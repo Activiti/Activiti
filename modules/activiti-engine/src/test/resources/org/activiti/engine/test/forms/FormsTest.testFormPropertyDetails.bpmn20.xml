@@ -4,29 +4,27 @@
              targetNamespace="http://activiti.org/bpmn20" 
              xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-             xmlns:a="http://activiti.org/bpmn-extensions">
+             xmlns:activiti="http://activiti.org/bpmn-extensions">
   
   <process id="FormPropertyDetails">
   
     <startEvent id="start">
       <extensionElements>
+        <activiti:formProperty id="speaker" 
+          name="Speaker"
+          variable="SpeakerName" 
+          type="string" />
 
-        <a:formProperty a:id="speaker" 
-                        a:name="Speaker"
-                        a:variable="SpeakerName" 
-                        a:type="string" />
+        <activiti:formProperty id="start" 
+          type="date" 
+          datePattern="dd-MMM-yyyy" />
 
-        <a:formProperty a:id="start" 
-                        a:type="date" 
-                        a:datePattern="dd-MMM-yyyy" />
-
-        <a:formProperty a:id="direction" 
-                        a:type="enum">
-          <a:value a:id="left" a:name="Go Left" />
-          <a:value a:id="right" a:name="Go Right" />
-          <a:value a:id="up" a:name="Go Up" />
-          <a:value a:id="down" a:name="Go Down" />
-        </a:formProperty>
+        <activiti:formProperty id="direction" type="enum">
+          <activiti:value id="left" name="Go Left" />
+          <activiti:value id="right" name="Go Right" />
+          <activiti:value id="up" name="Go Up" />
+          <activiti:value id="down" name="Go Down" />
+        </activiti:formProperty>
         
       </extensionElements>
     </startEvent>

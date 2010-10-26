@@ -15,11 +15,11 @@
                  name="Java service invocation" 
                  activiti:class="org.activiti.examples.bpmn.servicetask.ReverseStringsFieldInjected">
       <extensionElements>
-        <activiti:field activiti:name="text1">
-          <activiti:expression>${genderBean.getGenderString(gender)}</activiti:expression>
+        <activiti:field name="text1">
+          <expression>${genderBean.getGenderString(gender)}</expression>
         </activiti:field>
-        <activiti:field activiti:name="text2">
-          <activiti:expression>Hello ${gender == 'male' ? 'Mr.' : 'Mrs.'} ${name}</activiti:expression>
+        <activiti:field name="text2">
+          <expression>Hello ${gender == 'male' ? 'Mr.' : 'Mrs.'} ${name}</expression>
         </activiti:field>
       </extensionElements>             
     </serviceTask>

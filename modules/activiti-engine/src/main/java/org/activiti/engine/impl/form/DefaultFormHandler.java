@@ -57,19 +57,19 @@ public class DefaultFormHandler implements FormHandler {
       for (Element formPropertyElement : formPropertyElements) {
         FormPropertyHandler formPropertyHandler = new FormPropertyHandler();
         
-        String id = formPropertyElement.attribute("http://activiti.org/bpmn-extensions:id");
+        String id = formPropertyElement.attribute("id");
         if (id==null) {
           bpmnParse.addError("attribute 'id' is required", formPropertyElement);
         }
         formPropertyHandler.setId(id);
         
-        String name = formPropertyElement.attribute("http://activiti.org/bpmn-extensions:name");
+        String name = formPropertyElement.attribute("name");
         formPropertyHandler.setName(name);
         
         AbstractFormType type = formTypes.parseFormPropertyType(formPropertyElement, bpmnParse);
         formPropertyHandler.setType(type);
 
-        String requiredText = formPropertyElement.attribute("http://activiti.org/bpmn-extensions:required", "false");
+        String requiredText = formPropertyElement.attribute("required", "false");
         Boolean required = bpmnParse.parseBooleanAttribute(requiredText);
         if (required!=null) {
           formPropertyHandler.setRequired(required);
@@ -85,7 +85,7 @@ public class DefaultFormHandler implements FormHandler {
           bpmnParse.addError("attribute 'readable' must be one of {on|yes|true|enabled|active|off|no|false|disabled|inactive}", formPropertyElement);
         }
         
-        String writableText = formPropertyElement.attribute("http://activiti.org/bpmn-extensions:writable", "true");
+        String writableText = formPropertyElement.attribute("writable", "true");
         Boolean writable = bpmnParse.parseBooleanAttribute(writableText);
         if (writable!=null) {
           formPropertyHandler.setWritable(writable);
@@ -93,10 +93,10 @@ public class DefaultFormHandler implements FormHandler {
           bpmnParse.addError("attribute 'writable' must be one of {on|yes|true|enabled|active|off|no|false|disabled|inactive}", formPropertyElement);
         }
 
-        String variableName = formPropertyElement.attribute("http://activiti.org/bpmn-extensions:variable");
+        String variableName = formPropertyElement.attribute("variable");
         formPropertyHandler.setVariableName(variableName);
 
-        String expressionText = formPropertyElement.attribute("http://activiti.org/bpmn-extensions:expression");
+        String expressionText = formPropertyElement.attribute("expression");
         if (expressionText!=null) {
           Expression expression = expressionManager.createExpression(expressionText);
           formPropertyHandler.setVariableExpression(expression);

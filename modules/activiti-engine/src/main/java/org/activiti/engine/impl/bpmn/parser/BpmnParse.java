@@ -725,7 +725,7 @@ public class BpmnParse extends Parse {
   }
 
   protected FieldDeclaration parseFieldDeclaration(Element serviceTaskElement, Element fieldDeclarationElement) {
-    String fieldName = fieldDeclarationElement.attributeNS(BpmnParser.BPMN_EXTENSIONS_NS, "name");
+    String fieldName = fieldDeclarationElement.attribute("name");
     
     FieldDeclaration fieldDeclaration = parseStringFieldDeclaration(fieldDeclarationElement, serviceTaskElement, fieldName);    
     if(fieldDeclaration == null) {
@@ -741,7 +741,7 @@ public class BpmnParse extends Parse {
   
   protected FieldDeclaration parseStringFieldDeclaration(Element fieldDeclarationElement, Element serviceTaskElement, String fieldName) {
     try {
-      String fieldValue = getStringValueFromAttributeOrElement("stringValue", "string", BpmnParser.BPMN_EXTENSIONS_NS, fieldDeclarationElement);
+      String fieldValue = getStringValueFromAttributeOrElement("stringValue", "string", null, fieldDeclarationElement);
       if(fieldValue != null) {
         return new FieldDeclaration(fieldName, Expression.class.getName(), new FixedValue(fieldValue)); 
       }
@@ -758,7 +758,7 @@ public class BpmnParse extends Parse {
   
   protected FieldDeclaration parseExpressionFieldDeclaration(Element fieldDeclarationElement, Element serviceTaskElement, String fieldName) {
     try {
-      String expression = getStringValueFromAttributeOrElement("expression", "expression", BpmnParser.BPMN_EXTENSIONS_NS, fieldDeclarationElement);
+      String expression = getStringValueFromAttributeOrElement("expression", "expression", null, fieldDeclarationElement);
       if(expression != null && expression.trim().length() > 0) {
         return new FieldDeclaration(fieldName, Expression.class.getName(), expressionManager.createExpression(expression));
       }
@@ -1261,7 +1261,7 @@ public class BpmnParse extends Parse {
   public void parsePropertyCustomExtensions(ActivityImpl activity, Element propertyElement, String propertyName, String propertyType) {
 
     if (propertyType == null) {
-      String type = propertyElement.attribute("activiti:type");
+      String type = propertyElement.attributeNS(BpmnParser.BPMN_EXTENSIONS_NS, "type");
       propertyType = type != null ? type : "string"; // default is string
     }
 
@@ -1381,7 +1381,7 @@ public class BpmnParse extends Parse {
     if(extentionsElement != null) {
       List<Element> listenerElements = extentionsElement.elementsNS(BpmnParser.BPMN_EXTENSIONS_NS, "listener");
       for(Element listenerElement :listenerElements) {
-        String eventName = listenerElement.attributeNS(BpmnParser.BPMN_EXTENSIONS_NS, "eventName");
+        String eventName = listenerElement.attribute("eventName");
         if(isValidEventNameForScope(eventName, listenerElement)) {
           EventListener listener = parseEventListener(listenerElement);
           if(listener != null) {
@@ -1431,8 +1431,8 @@ public class BpmnParse extends Parse {
   public EventListener parseEventListener(Element eventListenerElement) {
     EventListener eventListener = null;
     
-    String className = eventListenerElement.attributeNS(BpmnParser.BPMN_EXTENSIONS_NS, "class");
-    String expression = eventListenerElement.attributeNS(BpmnParser.BPMN_EXTENSIONS_NS, "expression");
+    String className = eventListenerElement.attribute("class");
+    String expression = eventListenerElement.attribute( "expression");
     
     List<FieldDeclaration> fieldDeclarations = parseFieldDeclarations(eventListenerElement);
     

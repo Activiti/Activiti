@@ -2,6 +2,7 @@
 <definitions id="taskAssigneeExample" 
   xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:activiti="http://activiti.org/bpmn-extensions"
   xsi:schemaLocation="http://schema.omg.org/spec/BPMN/2.0 BPMN20.xsd"
 	targetNamespace="http://www.activiti.org/bpmn2.0">
 	

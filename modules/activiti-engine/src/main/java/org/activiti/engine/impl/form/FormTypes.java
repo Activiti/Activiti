@@ -17,6 +17,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.activiti.engine.impl.bpmn.parser.BpmnParse;
+import org.activiti.engine.impl.bpmn.parser.BpmnParser;
 import org.activiti.engine.impl.util.xml.Element;
 
 
@@ -34,17 +35,17 @@ public class FormTypes {
   public AbstractFormType parseFormPropertyType(Element formPropertyElement, BpmnParse bpmnParse) {
     AbstractFormType formType = null;
 
-    String typeText = formPropertyElement.attribute("http://activiti.org/bpmn-extensions:type");
-    String datePatternText = formPropertyElement.attribute("http://activiti.org/bpmn-extensions:datePattern");
+    String typeText = formPropertyElement.attribute("type");
+    String datePatternText = formPropertyElement.attribute("datePattern");
     
     if ("date".equals(typeText) && datePatternText!=null) {
       formType = new DateFormType(datePatternText);
       
     } else if ("enum".equals(typeText)) {
       Map<String, String> values = new HashMap<String, String>();
-      for (Element valueElement: formPropertyElement.elementsNS("http://activiti.org/bpmn-extensions","value")) {
-        String valueId = valueElement.attribute("http://activiti.org/bpmn-extensions:id");
-        String valueName = valueElement.attribute("http://activiti.org/bpmn-extensions:name");
+      for (Element valueElement: formPropertyElement.elementsNS(BpmnParser.BPMN_EXTENSIONS_NS,"value")) {
+        String valueId = valueElement.attribute("id");
+        String valueName = valueElement.attribute("name");
         values.put(valueId, valueName);
       }
       formType = new EnumFormType(values);
