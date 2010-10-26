@@ -24,14 +24,19 @@ public interface Task {
   
   int PRIORITY_NORMAL = 50; 
 	
+  /** DB id of the task. */
 	String getId();
 	
+  /** Name or title of the task. */
 	String getName();
 
+  /** Name or title of the task. */
 	void setName(String name);
 	
+  /** Free text description of the task. */
 	String getDescription();
 	
+  /** Refers to a {@link User.getId() user} which is the owner or person responsible for completing this task. */
 	void setDescription(String description);
 	
 	/** indication of how important/urgent this task is with a number between 
@@ -46,13 +51,21 @@ public interface Task {
    * [80..100] highest */
 	void setPriority(int priority);
 	
+  /** Refers to a {@link User.getId() user} which is the owner or person responsible for completing this task. */
 	String getAssignee();
 	
+  /** Reference to the process instance or null if it is not related to a process instance. */
 	String getProcessInstanceId();
 	
+  /** Reference to the path of execution or null if it is not related to a process instance. */
 	String getExecutionId();
 	
+  /** Reference to the process definition or null if it is not related to a process. */
 	String getProcessDefinitionId();
-	
+
+	/** The date/time when this task was created */
 	Date getCreateTime();
+	
+	/** The id of the activity in the process defining this task or null if this is not related to a process */
+	String getTaskDefinitionKey();
 }
