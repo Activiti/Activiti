@@ -33,15 +33,19 @@ h1 {
    background-color:#CFE7CB;
 }
  
-.processAction {
+#Activiti .processAction {
    display:block;
    padding-left:20px;
 } 
 
-.startProcess {
+#Activiti .startProcess {
    background: url("../images/process-start-icon.png") no-repeat 0 3px;
 }
-.viewProcess, 
-.viewXML {
+#Activiti .viewProcess, 
+#Activiti .viewXML {
    background: url("../images/process-view-icon.png") no-repeat 0 3px;
+}
+
+#Activiti .activiti-datatable table {
+  width:auto;
 }

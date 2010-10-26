@@ -923,6 +923,20 @@ Activiti.service.Ajax = function() {
      */
     loadProcessInstanceFormURL: function ProcessService_loadProcessInstanceFormURL(processDefinitionId) {
       return Activiti.service.REST_PROXY_URI_RELATIVE + "process-definition/" + encodeURIComponent(processDefinitionId) + "/form";
+    }, 
+    
+    /**
+     * Returns the url to load the process definitions from the server
+     * 
+     * @method loadProcessDefinitionsURL
+     * @param {Object} eventValue an object of URL parameters
+     * @return {string} the URL
+     */
+    loadProcessDefinitionsURL: function ProcessService_loadProcessDefinitionsURL(eventValue) 
+    {
+      var url = Activiti.service.REST_PROXY_URI_RELATIVE + "process-definitions", 
+      params = Activiti.util.objectToArgumentString(eventValue);
+      return (params) ? url + "?" + params : url;
     }
     
 
@@ -1133,7 +1147,11 @@ Activiti.service.Ajax = function() {
    {
      event: {
        loadTables: "loadTables",
-       loadTable: "loadTable"
+       loadTable: "loadTable",
+       deleteDeployments: "deleteDeployments",
+       loadJob: "loadJob",
+       executeJob: "executeJob",
+       jobAction: "jobAction"
      }
    });
 
@@ -1215,6 +1233,129 @@ Activiti.service.Ajax = function() {
     {
       return Activiti.service.REST_PROXY_URI_RELATIVE + "management/table/" + encodeURIComponent(table) + "/data?" +
           Activiti.util.Pagination.args(filters);
+    },
+    
+    /**
+     * Returns the url to load the deployments from the server
+     * 
+     * @method loadDeploymentsURL
+     * @param {Object} eventValue an object of URL parameters
+     * @return {string} the URL
+     */
+    loadDeploymentsURL: function ManagementService_loadDeploymentsURL(eventValue) 
+    {
+      var url = Activiti.service.REST_PROXY_URI_RELATIVE + "deployments", 
+      params = Activiti.util.objectToArgumentString(eventValue);
+      return (params) ? url + "?" + params : url;
+    },
+
+    /**
+     * Returns the url to delete the deployments from the server
+     * 
+     *  @method deleteDeploymentsURL
+     *  @param {Array} deploymentIds
+     *  @param {Boolean} cascade
+     *  @return {String} the URL
+     */
+    deleteDeploymentsURL: function ManagementService_deleteDeploymentsURL(cascade)
+    {
+      return Activiti.service.REST_PROXY_URI_RELATIVE + "deployments/delete?cascade=" + cascade; 
+    },
+
+    /**
+     * Calls the url to delete the deployments from the server
+     * 
+     *  @method deleteDeployments
+     *  @param {Array} deploymentIds
+     *  @param {Boolean} cascade
+     *  @return {String} the URL
+     */    
+    deleteDeployments: function ManagementService_deleteDeployments(deploymentIds, cascade, obj) 
+    {
+      deploymentsObj = {deploymentIds: deploymentIds};
+      this.jsonPost(this.deleteDeploymentsURL(cascade), deploymentsObj, obj, "deleteDeployment");
+    },
+    
+    /**
+     * Returns the URL needed to get a list of jobs
+     * 
+     * @method loadJobsURL
+     * @param {Object} eventValue - parameters needed for the URL
+     * @return {String} URL
+     */
+    loadJobsURL: function ManagementService_loadJobsURL(eventValue) 
+    {      
+      var url = Activiti.service.REST_PROXY_URI_RELATIVE + "management/jobs", 
+      params = Activiti.util.objectToArgumentString(eventValue);
+      return (params) ? url + "?" + params : url;
+    },
+    
+    /**
+     * Returns URL for job details
+     * 
+     * @method loadJobURL
+     * @param {String} jobId
+     * @return {String} URL
+     */
+    loadJobURL: function ManagementService_loadJobURL(jobId) 
+    {
+      return Activiti.service.REST_PROXY_URI_RELATIVE + "management/job/" + jobId;
+    },
+
+    /**
+     * Returns URL to execute a job
+     * 
+     * @method executeJobURL
+     * @param {String} jobId
+     * @return {String} URL
+     */    
+    executeJobURL: function ManagementService_executeJobURL(jobId) 
+    {
+      return this.loadJobURL(jobId) + "/execute";
+    },
+ 
+
+    /**
+     * Returns URL to execute multiple jobs
+     * 
+     * @method executeJobsURL
+     * @return {String} URL
+     */      
+    executeJobsURL: function ManagementService_executeJobsURL()
+    {
+      return Activiti.service.REST_PROXY_URI_RELATIVE + "management/jobs/execute"
+    },
+
+    /**
+     * Loads the JSON for a job details and triggers a callback function
+     * 
+     * @method loadJob
+     * @param {String} jobId
+     * @param {Object} obj - helper object for callback function
+     * @return {String} URL
+     */    
+    loadJob: function ManagementService_loadJob(jobId, obj) 
+    {
+      this.jsonGet(this.loadJobURL(jobId), obj, "loadJob");
+    },
+    
+    /**
+     * Executes a job via the REST API and triggers a callback function
+     * 
+     * @method executeJob
+     * @param {String} jobId
+     * @param {Object} obj - helper object for callback function
+     * @return {String} URL
+     */    
+    executeJob: function ManagementService_executeJob(jobId, obj) 
+    {
+      this.jsonPut(this.executeJobURL(jobId),{}, obj, "executeJob");
+    },
+    
+    executeJobs: function ManagementService_executeJobs(jobIds, obj)
+    {
+      jobsObj = {jobIds: jobIds};
+      this.jsonPost(this.executeJobsURL(), jobsObj, obj, "executeJob");
     }
 
   });

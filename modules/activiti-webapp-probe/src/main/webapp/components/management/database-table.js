@@ -14,8 +14,7 @@
 /**
  * Activiti.component.DatabaseTable
  *
- * Will display a list of tasks based on the filter from the Activiti.event.TASKS_FILTER_CLICKED event.
- * Will also let user clain and complete taks in the list.
+ * Displays the contents of the selected Database Table.
  *
  * @namespace Activiti
  * @class Activiti.component.DatabaseTable

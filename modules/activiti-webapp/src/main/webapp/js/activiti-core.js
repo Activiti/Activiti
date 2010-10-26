@@ -1076,6 +1076,68 @@ Activiti.event = function() {
      collapseTreeNode: "collapseTreeNode",
 
     /**
+     * Fires when the Processes Table is ready
+     * 
+     * @property displayProcesses
+     * @type string
+     */
+
+    displayProcesses: "displayProcesses",
+
+    /**
+     * Fires when the Deployments Table is ready
+     * 
+     * @property displayDeployments
+     * @type string
+     */
+
+    displayDeployments: "displayDeployments",
+
+    /**
+     * Fires when the Jobs Table is ready
+     * 
+     * @property displayJobs
+     * @type string
+     */
+    displayJobs: "displayJobs",
+
+    /**
+     * Fires when a process Action in the Activiti Explorer is clicked on
+     * 
+     * @property processActionClick
+     * @type string
+     */
+
+    processActionClick: "processActionClick",
+
+    /**
+     * Fires when a deployment is deleted
+     * 
+     * @property deleteDeployment
+     * @type string
+     */
+    
+    deleteDeployment: "deleteDeployment",
+    
+    /**
+     * Fires when a job Action is triggered
+     * 
+     * @property jobAction
+     * @type {String}
+     */
+    jobAction: "jobAction",
+    
+    /**
+     * Fires when a job is sent for executed
+     * 
+     * @property executeJob
+     * @type {String}
+     */
+    executeJob: "executeJob",
+    
+        
+
+    /**
      * Called from the activiti initializer when the first body element is ready.
      *
      * The event flow of the Activit webapp is:

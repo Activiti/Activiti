@@ -15,7 +15,7 @@
  * Activiti.component.TaskList
  *
  * Will display a list of tasks based on the filter from the Activiti.event.TASKS_FILTER_CLICKED event.
- * Will also let user clain and complete taks in the list.
+ * Will also let user claim and complete tasks in the list.
  *
  * @namespace Activiti
  * @class Activiti.component.TaskList

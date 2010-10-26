@@ -671,10 +671,18 @@ Activiti.widget.PopupManager = function()
         return true;
       };
 
-      // Now that we are ready we may start to listen for events
-      for (var ei = 0, eil = events.length; ei < eil; ei++) {
-        this._eventPatterns[events[ei].event] = events[ei].value;
-        Activiti.event.on(events[ei].event, this.onEvent, this)
+      // Now that we are ready we may handle events
+      for (var ei = 0, eil = events.length; ei < eil; ei++) 
+      {
+        //Subscribe to events bubbled up to the YAHOO.widget.dataTable object
+        if (events[ei].subscribe && events[ei].subscribe === true) 
+        {
+          me._dataTable.subscribe(events[ei].event, me.trigger, {event: events[ei].trigger}); 
+        } else // Listen for the event
+        {
+          this._eventPatterns[events[ei].event] = events[ei].value;
+          Activiti.event.on(events[ei].event, this.onEvent, this)          
+        }
       }
     },
 
@@ -690,7 +698,7 @@ Activiti.widget.PopupManager = function()
      * Called when table is paginated or sorted and will fire an event so it gets put in the browser history.
      * Afterwards onEvent will be called so the actual data can be loaded.
      *
-     * @method onEvent
+     * @method fireEvent
      * @param start {int}
      * @param sort {string}
      * @param order {string}
@@ -723,6 +731,19 @@ Activiti.widget.PopupManager = function()
         this._currentEventValue = Activiti.event.getValue(args);
         this.reload();
       }
+    },
+
+    /**
+     * Triggers a non Filter/Pagination event
+     * 
+     * @param {Object} e Event Object
+     * @param {Object} args Object of arguments
+     * @param {String} args.event Name of event to trigger
+     */
+    trigger: function(e, args)
+    {
+      args.e = e; // Ensure the event object is passed through to the listening function
+      YAHOO.Bubbling.fire(args.event, args);
     },
 
     /**

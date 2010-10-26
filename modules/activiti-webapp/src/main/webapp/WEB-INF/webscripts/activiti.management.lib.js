@@ -14,3 +14,21 @@ function getTables(connector)
   }
   return null;
 }
+
+/**
+ * Gets a list of the Deployments from the server
+ *
+ * @method getDeployments
+ * @param connector
+ * @return {Array} A list with deployment objects
+ */
+function getDeployments(connector)
+
+{
+	var result = connector.get("/management/deployments");
+	if (result.status == 200) 
+	{
+		return eval('(' + result + ')').data;
+	}
+	return null;
+}

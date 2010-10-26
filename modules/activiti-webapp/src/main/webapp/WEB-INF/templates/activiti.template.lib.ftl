@@ -70,7 +70,6 @@
     <@script type="text/javascript" src="${resource}/yui/bubbling.v2.1.js"></@script>
     <script type="text/javascript" src="${url.context}/service/messages.js?locale=${locale}"></script>
     <script type="text/javascript" src="${resource}/js/activiti-core.js"></script>
-    <script type="text/javascript" src="${resource}/js/activiti-form.js"></script>
     <script type="text/javascript" src="${resource}/js/activiti-widget.js"></script>
     <script type="text/javascript" src="${resource}/js/activiti-service.js"></script>
     <script type="text/javascript">//<![CDATA[
