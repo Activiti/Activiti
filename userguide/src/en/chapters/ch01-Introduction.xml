@@ -37,7 +37,12 @@
   </para>
   <para>After you've done that you can post questions and comments on <ulink url="http://forums.activiti.org/en/viewforum.php?f=3">the Users forum</ulink> and 
   create issues in <ulink url="http://jira.codehaus.org/browse/ACT">our JIRA issue tracker</ulink> </para>
-  
+</section>
+
+<section id="experimental">
+  <title>Experimental features</title>
+  <para>Sections marked with <emphasis role="bold">[EXPERIMENTAL]</emphasis> should 
+  not be considered stable.</para>
 </section>
 
 </chapter>

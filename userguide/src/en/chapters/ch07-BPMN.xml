@@ -1516,7 +1516,7 @@ List&lt;Task&gt; tasks = taskService.createTaskQuery().assignee(&quot;kermit&quo
         at this particular step, it will execute this logic defined in that method and leave 
         the activity in the default BPMN 2.0 way.
       </para>  
-      <para><emphasis role="bold">[EXPERIMENTAL]</emphasis>
+      <para><link linkend="experimental"><emphasis role="bold">[EXPERIMENTAL]</emphasis></link>
         It is also possible to provide a class that implements the 
         <emphasis>org.activiti.engine.impl.pvm.delegate.ActivityBehavior</emphasis> interface.
         Implementations have then access to the more powerful <emphasis>ActivityExecution</emphasis>
