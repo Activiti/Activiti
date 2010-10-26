@@ -205,7 +205,7 @@
 											<property name="test_classpath" refid="maven.test.classpath" />
 											<property name="database" value="${database}" />
 										</ant>
-										<ant antfile="${basedir}/../../qa/db/build.xml" target="create.activiti.prop">
+										<ant antfile="${basedir}/../../qa/db/build.xml" target="create.activiti.cfg">
 											<property name="database" value="${database}" />
 										</ant>
 									</tasks>

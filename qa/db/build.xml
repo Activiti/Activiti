@@ -37,7 +37,7 @@
 		</sql>
 	</target>
 	
-	<target name="create.activiti.prop">
+	<target name="create.activiti.cfg">
 		<echo message="creating activiti.cfg.xml in target environment"/>
 		<echo message="  basedir: ${basedir}"/>
 		<echo message="  database: ${database}"/>
@@ -49,13 +49,23 @@
 		<echo message="  jdbc.username: ${jdbc.username}"/>
 		<echo message="  jdbc.password: ${jdbc.password}"/>
 		
-		<propertyfile file="./target/test-classes/activiti.cfg.xml">
-			<entry key="database" value="${database}"/>
-			<entry key="jdbc.driver" value="${jdbc.driver}"/>
-			<entry key="jdbc.url" value="${jdbc.url}"/>
-			<entry key="jdbc.username" value="${jdbc.username}"/>
-			<entry key="jdbc.password" value="${jdbc.password}"/>
-			<entry key="db.schema.strategy" value="check-version"/>
-		</propertyfile>
+		<replaceregexp file="./target/test-classes/activiti.cfg.xml" flags="s"
+		                match='database name=".*"' 
+			              replace='database name="${database}"'/>
+		<replaceregexp file="./target/test-classes/activiti.cfg.xml" flags="s"
+		                    match='driver=".*"' 
+		                    replace='driver="${jdbc.driver}"'/>
+		<replaceregexp file="./target/test-classes/activiti.cfg.xml" flags="s"
+		                        match='url=".*"' 
+		                        replace='url="${jdbc.url}"'/>
+		<replaceregexp file="./target/test-classes/activiti.cfg.xml" flags="s"
+		                        match='username=".*"' 
+		                        replace='username="${jdbc.username}"'/>
+		<replaceregexp file="./target/test-classes/activiti.cfg.xml" flags="s"
+		                        match='password=".*"' 
+		                        replace='driver="${jdbc.password}"'/>
+		<replaceregexp file="./target/test-classes/activiti.cfg.xml" flags="s"
+		                        match='schema-strategy=".*"' 
+		                        replace='schema-strategy="${check-version}"'/>
 	</target>
 </project>
