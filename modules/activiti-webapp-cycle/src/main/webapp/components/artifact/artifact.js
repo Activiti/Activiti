@@ -266,7 +266,7 @@
             // Use white page as default icon for all other content types
             typeClass = "icon-blank";
           }
-          var row = {Name: '<a class="openArtifactLink" href="#?connectorId=' + responseJson[i].artifact.targetConnectorId + '&artifactId=' + responseJson[i].artifact.targetArtifactId + '&artifactName=' + responseJson[i].artifact.label + '">' + responseJson[i].artifact.label + '</a>', Revision: responseJson[i].artifact.targetArtifactRevision, Type: '<div class="artifact-type ' + typeClass + '">' + responseJson[i].artifact.targetContentType + '</div>' };
+          var row = {Name: '<a class="openArtifactLink" href="#?connectorId=' + encodeURIComponent(responseJson[i].artifact.targetConnectorId) + '&artifactId=' + encodeURIComponent(responseJson[i].artifact.targetArtifactId) + '&artifactName=' + encodeURIComponent(responseJson[i].artifact.label) + '">' + responseJson[i].artifact.label + '</a>', Revision: responseJson[i].artifact.targetArtifactRevision, Type: '<div class="artifact-type ' + typeClass + '">' + responseJson[i].artifact.targetContentType + '</div>' };
           rows.push(row);
         }
         var linksDataSource = new YAHOO.util.LocalDataSource(rows);
@@ -317,9 +317,9 @@
     {
       var params = event.target.href.split("?")[1].split("&");
       
-      var connectorId = params[0].split("=")[1];
-      var artifactId = params[1].split("=")[1];
-      var artifactName = params[2].split("=")[1];
+      var connectorId = decodeURIComponent(params[0].split("=")[1]);
+      var artifactId = decodeURIComponent(params[1].split("=")[1]);
+      var artifactName = decodeURIComponent(params[2].split("=")[1]);
 
       this.fireEvent(Activiti.event.updateArtifactView, {"connectorId": connectorId, "repositoryNodeId": artifactId, "isRepositoryArtifact": true, "name": artifactName, "activeTabIndex": 0}, null, true);
       YAHOO.util.Event.preventDefault(event);

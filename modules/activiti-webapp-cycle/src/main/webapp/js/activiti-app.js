@@ -32,7 +32,7 @@
    YAHOO.lang.augmentObject(Activiti.service.ManagementService,
    {
      event: {
-       loadTree: "loadTree",
+       loadTree: "loadTree"
      }
    });
 
