@@ -76,7 +76,6 @@
           {key:"retries", label: this.msg("jobs.label.retries"), sortable:true},
           {key:"processInstanceId", label: this.msg("jobs.label.processInstanceId"), sortable:true},
           {key:"dueDate", label: this.msg("jobs.label.dueDate"), sortable:true},
-          {key:"assignee", label: this.msg("jobs.label.assignee")},
           {key:"action", label: this.msg("jobs.label.actions")},
           {key:"select", label: this.msg("jobs.label.select")}
         ]

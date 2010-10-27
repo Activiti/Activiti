@@ -15,8 +15,7 @@
   "executionId": "${job.executionId}",
   "retries": ${job.retries?c},
   "processInstanceId": "${(job.processInstanceId!"")}",
-  "dueDate": <#if job.dueDate??>"${iso8601Date(job.dueDate)}"<#else>null</#if>,
-  "assignee": <#if job.assignee??>"${job.assignee}"<#else>null</#if>,
+  "dueDate": <#if job.duedate??>"${iso8601Date(job.duedate)}"<#else>null</#if>,
   "exceptionMessage": <#if job.exceptionMessage??>"${job.exceptionMessage}"<#else>null</#if>
 </#macro>
 
