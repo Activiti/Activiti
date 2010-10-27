@@ -20,13 +20,15 @@ import org.activiti.engine.query.QueryProperty;
 
 
 /**
+ * Contains the possible properties which can be used in a {@link HistoricProcessInstanceQueryProperty}.
+ * 
  * @author Joram Barrez
  */
 public class HistoricProcessInstanceQueryProperty implements QueryProperty {
   
   private static final Map<String, HistoricProcessInstanceQueryProperty> properties = new HashMap<String, HistoricProcessInstanceQueryProperty>();
 
-  public static final HistoricProcessInstanceQueryProperty ID = new HistoricProcessInstanceQueryProperty("ID_");
+  public static final HistoricProcessInstanceQueryProperty HISTORIC_PROCESS_INSTANCE_ID = new HistoricProcessInstanceQueryProperty("ID_");
   public static final HistoricProcessInstanceQueryProperty PROCESS_INSTANCE_ID_ = new HistoricProcessInstanceQueryProperty("PROC_INST_ID_");
   public static final HistoricProcessInstanceQueryProperty PROCESS_DEFINITION_ID = new HistoricProcessInstanceQueryProperty("PROC_DEF_ID_");
   public static final HistoricProcessInstanceQueryProperty BUSINESS_KEY = new HistoricProcessInstanceQueryProperty("BUSINESS_KEY_");

@@ -19,7 +19,7 @@ import java.util.Map;
 import org.activiti.engine.query.QueryProperty;
 
 /**
- * Contains the possible properties that can be used in a {@link ExecutionQueryt}.
+ * Contains the possible properties that can be used in a {@link ExecutionQuery}.
  * 
  * @author Joram Barrez
  */

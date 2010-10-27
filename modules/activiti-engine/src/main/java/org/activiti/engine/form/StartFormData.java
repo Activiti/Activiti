@@ -22,7 +22,7 @@ import org.activiti.engine.repository.ProcessDefinition;
  */
 public interface StartFormData extends FormData {
 
-  /** the process definition for which this form is starting a new process instance */
+  /** The process definition for which this form is starting a new process instance */
   ProcessDefinition getProcessDefinition();
   
 }

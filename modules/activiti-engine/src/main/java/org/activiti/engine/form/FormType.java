@@ -15,14 +15,15 @@ package org.activiti.engine.form;
 
 
 /** 
+ * Used to indicate the type on a {@link FormProperty}.
  * @author Tom Baeyens
  */
 public interface FormType {
 
-  /** name for the form type. */
+  /** Name for the form type. */
   String getName();
 
-  /** retrieve type specific extra information like 
+  /** Retrieve type specific extra information like 
    * the list of values for enum types or the format
    * for date types. Look in the userguide for 
    * which extra information keys each type provides

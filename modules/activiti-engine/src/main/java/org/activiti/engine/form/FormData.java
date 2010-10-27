@@ -16,23 +16,23 @@ package org.activiti.engine.form;
 import java.util.List;
 
 
-/** contains all information for diaplaying a form and serves as 
+/** Contains all information for displaying a form and serves as 
  * base interface for {@link StartFormData} and {@link TaskFormData}
  * 
  * @author Tom Baeyens
  */
 public interface FormData {
 
-  /** user defined reference to a form. In the Explorer app, it is 
+  /** User defined reference to a form. In the Explorer app, it is 
    * assumed that the form key specifies a resource in the deployment 
    * which is the template for the form.  But users are free to 
    * use this property differently. */
   String getFormKey();
 
-  /** the deployment id of the process definition to which this form is related 
+  /** The deployment id of the process definition to which this form is related 
    *  */
   String getDeploymentId();
   
-  /** properties containing the dynamic information that needs to be displayed in the form. */
+  /** Properties containing the dynamic information that needs to be displayed in the form. */
   List<FormProperty> getFormProperties();
 }

@@ -17,6 +17,8 @@ import java.util.Map;
 
 
 /**
+ * Execution used in {@link JavaDelegation}.
+ * 
  * @author Tom Baeyens
  */
 public interface DelegateExecution {

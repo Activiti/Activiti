@@ -28,7 +28,7 @@ public class HistoricDetailQueryProperty implements QueryProperty {
 
   private static final Map<String, HistoricDetailQueryProperty> properties = new HashMap<String, HistoricDetailQueryProperty>();
 
-  public static final HistoricDetailQueryProperty PROCESS_INSTANCE_ID_ = new HistoricDetailQueryProperty("PROC_INST_ID_");
+  public static final HistoricDetailQueryProperty PROCESS_INSTANCE_ID = new HistoricDetailQueryProperty("PROC_INST_ID_");
   public static final HistoricDetailQueryProperty VARIABLE_NAME = new HistoricDetailQueryProperty("NAME_");
   public static final HistoricDetailQueryProperty VARIABLE_TYPE = new HistoricDetailQueryProperty("TYPE_");
   public static final HistoricDetailQueryProperty REVISION = new HistoricDetailQueryProperty("REV_");

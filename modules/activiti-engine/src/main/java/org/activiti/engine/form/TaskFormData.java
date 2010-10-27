@@ -22,6 +22,6 @@ import org.activiti.engine.task.Task;
  */
 public interface TaskFormData extends FormData {
 
-  /** the task for which this form is used to complete it. */
+  /** The task for which this form is used to complete it. */
   Task getTask();
 }
