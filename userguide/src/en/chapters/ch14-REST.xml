@@ -4,6 +4,8 @@
 <chapter>
 
   <title>REST API</title>
+  
+  <para><link linkend="experimental"><emphasis role="bold">&lt;EXPERIMENTAL&gt;</emphasis></link>... the whole REST interface is still experimental</para>
 
   <para>
     Activiti includes a REST API to the engine that will be deployed to your server when you run the setup script.
@@ -1063,5 +1065,7 @@
       </section>
 
     </section>
+
+  <para>The whole REST interface is still experimental ...<link linkend="experimental"><emphasis role="bold">&lt;/EXPERIMENTAL&gt;</emphasis></link></para>
 
 </chapter>

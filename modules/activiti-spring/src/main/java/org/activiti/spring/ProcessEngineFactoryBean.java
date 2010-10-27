@@ -59,6 +59,7 @@ public class ProcessEngineFactoryBean implements FactoryBean<ProcessEngine>, Dis
   protected String deploymentName = "SpringAutoDeployment";
   protected Resource[] deploymentResources = new Resource[0];
   protected ProcessEngineImpl processEngine;
+  protected Integer historyLevel;
   
   protected Object jpaEntityManagerFactory;
   protected boolean jpaHandleTransaction = true;
@@ -248,5 +249,9 @@ public class ProcessEngineFactoryBean implements FactoryBean<ProcessEngine>, Dis
   
   public void setJpaCloseEntityManager(boolean jpaCloseEntityManager) {
     this.jpaCloseEntityManager = jpaCloseEntityManager;
+  }
+
+  public void setHistoryLevel(String historyLevelString) {
+    this.historyLevel = ProcessEngineConfiguration.parseHistoryLevel(historyLevelString);
   }
 }

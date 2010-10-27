@@ -5,25 +5,91 @@
 
   <title>History</title>
   
-  <para><link linkend="experimental"><emphasis role="bold">&lt;EXPERIMENTAL&gt;</emphasis></link></para>
-  
   <para>History is the component that captures what happened
   during process execution and stores it permanently.  In contrast to the runtime data, 
   the history data will remain present in the DB also after process instances have completed.
   </para>
-  <para>Currently, there are 2 history tables: <literal>ACT_HI_PROC_INST</literal> containing 
-  a record for every process instance and <literal>ACT_HI_ACT_INST</literal> containing a record
-  for every execution of an activity.
+  <para>There are 3 history entities: <literal>HistoricProcessInstance</literal>s containing 
+  information about current and past process instances, <literal>HistoricActivityInstance</literal>s 
+  containing information about a single execution of an activity and <literal>HistoricDetail</literal> 
+  containing various kinds of information related to either a historic process instances or an activity instance.
   </para>
   <para>In the API, the HistoryService exposes this information by offering methods 
-  <literal>createHistoricProcessInstanceQuery</literal> and <literal>createHistoricActivityInstanceQuery</literal>.
-  You might want to consider these querying these tables in order to minimize access to the runtime process instance data 
+  <literal>createHistoricProcessInstanceQuery</literal>, <literal>createHistoricActivityInstanceQuery</literal>
+  and <literal>createHistoricDetailQuery</literal>.
+  </para>
+  <para>Since the DB contains historic entities for past as well as ongoing instances, you might want to consider 
+  querying these tables in order to minimize access to the runtime process instance data 
   and that way keeping the runtime execution performant.
   </para>
   <para>Later on, this information will be exposed in Activiti Explorer and Activiti Probe.
   Also, it will be the information from which the reports will be generated.
   </para>
-
-  <para><link linkend="experimental"><emphasis role="bold">&lt;/EXPERIMENTAL&gt;</emphasis></link></para>
+  
+  <section id="historyConfiguration">
+    <title>History configuration</title>
+	  <para>In the activiti.cfg.xml configuration file, you can configure the level of history archiving 
+	  that needs to happen:
+	  </para>
+	  
+	  <programlisting>&lt;activiti-cfg&gt;
+  &lt;history level=&quot;audit&quot; /&gt;  
+  ...
+&lt;/activiti-cfg&gt;
+	  </programlisting>
+	  
+	  <para>Or if you're using the spring style of configuration:</para>
+	  
+	  <programlisting>&lt;bean id=&quot;processEngine&quot; class=&quot;org.activiti.spring.ProcessEngineFactoryBean&quot;&gt;
+  &lt;property name=&quot;historyLevel&quot; value=&quot;audit&quot; /&gt;
+  ...
+&lt;/bean&gt;</programlisting>
+	  
+	  <para>Following history levels can be configured:
+	  </para>
+	  
+	  <itemizedlist>
+	    <listitem><para><literal>none</literal>: skips all history archiving.  This is the most performant for runtime 
+	    process execution, but no historical information will be available. </para></listitem>
+	    <listitem><para><literal>activity</literal>: archives all process instances and activity instances. 
+	    No details will be archived</para></listitem>
+	    <listitem><para><literal>audit</literal>: This is the default.  It archives all process instances, 
+	    activity instances and all form properties that are submitted so that all user interaction 
+	    through forms is traceable and can be audited.</para></listitem>
+	    <listitem><para><literal>full</literal>: This is the highest level of history archiving and hence the 
+	    slowest.  This level stores all information as in the <literal>audit</literal> level 
+	    plus all other possible details like process variable updates.</para></listitem>
+	  </itemizedlist>
+  </section>
+  
+  <section id="historyFormAuditPurposes">
+    <title>History for audit purposes</title>
+    
+    <para>When <link linkend="historyConfiguration">configuring</link> at least <literal>audit</literal> level
+    for configuration. Then all properties submitted through methods 
+    <literal>FormService.submitStartFormData(String processDefinitionId, Map&lt;String, String&gt; properties)</literal>
+    and <literal>FormService.submitTaskFormData(String taskId, Map&lt;String, String&gt; properties)</literal>
+    are recorded.
+    </para>
+    
+    <para>Form properties can be retrieved with the query API like this:</para>
+    
+    <programlisting>historyService
+      .createHistoricDetailQuery()
+      .onlyFormProperties()
+      ...
+      .list();</programlisting>
+      
+    <para>In that case only historic details of type <literal>HistoricFormProperty</literal> are returned.
+    </para>
+    
+    <para>If you've set the authenticated user before calling the submit methods with
+    <literal>IdentityService.setAuthenticatedUserId(String)</literal> then that authenticated user 
+    who submitted the form will be accessible in the history as well with
+    <literal>HistoricProcessInstance.getStartFormUserId()</literal> for start forms and 
+    <literal>HistoricActivityInstance.getAssignee()</literal> for task forms.
+    </para>
+    
+  </section>
   
 </chapter>
