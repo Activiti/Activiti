@@ -1,3 +1,5 @@
+<#escape x as jsonUtils.encodeJSONString(x)>
+
 <#macro printUserList userList>
 [
   <#list userList as user><@printUser user/><#if user_has_next>,</#if></#list>
@@ -26,3 +28,5 @@
   "type": "${(group.type!"")}"
 }
 </#macro>
+
+</#escape>

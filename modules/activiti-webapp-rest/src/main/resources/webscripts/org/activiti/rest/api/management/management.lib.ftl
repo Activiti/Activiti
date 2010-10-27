@@ -1,3 +1,5 @@
+<#escape x as jsonUtils.encodeJSONString(x)>
+
 <#macro printJobList jobList>
 [
   <#list jobs as job>
@@ -17,3 +19,5 @@
   "assignee": <#if job.assignee??>"${job.assignee}"<#else>null</#if>,
   "exceptionMessage": <#if job.exceptionMessage??>"${job.exceptionMessage}"<#else>null</#if>
 </#macro>
+
+</#escape>

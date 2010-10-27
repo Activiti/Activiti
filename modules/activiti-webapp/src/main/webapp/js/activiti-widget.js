@@ -593,27 +593,36 @@ Activiti.widget.PopupManager = function()
 
       // Hook in formatter so we can call it in the callbackHandler's scope
       for (var i = 0, il = listColumnDefs.length; i <il; i++) {
-        if (!listColumnDefs[i].formatter &&
-            (YAHOO.lang.isFunction(me._callbackHandler["onDataTableRenderCell" + listColumnDefs[i].key.substring(0, 1).toUpperCase() + listColumnDefs[i].key.substring(1)]) ||
-                YAHOO.lang.isFunction(me._callbackHandler["onDataTableRenderCell"]))) {
-          listColumnDefs[i].formatter = function(el, oRecord, oColumn, oData)
-          {
-            // Apply widths on each cell so it actually works as given in the column definitions
-            if (oColumn.width) {
-              YUIDom.setStyle(el, "width", oColumn.width + "px");
-              YUIDom.setStyle(el.parentNode, "width", oColumn.width + "px");
-            }
+        if (!listColumnDefs[i].formatter) {
 
-            var fieldKey = oColumn.getField(),
-              defaultMethodName = "onDataTableRenderCell",
-              methodName = defaultMethodName + fieldKey.substring(0, 1).toUpperCase() + fieldKey.substring(1);
-            if (YAHOO.lang.isFunction(me._callbackHandler[methodName])) {
-              me._callbackHandler[methodName].call(me._callbackHandler, me, el, oRecord, oColumn, oData);
-            }
-            else if (YAHOO.lang.isFunction(me._callbackHandler[defaultMethodName])) {
-              me._callbackHandler[defaultMethodName].call(me._callbackHandler, me, el, oRecord, oColumn, oData);
-            }
-          };
+          if (YAHOO.lang.isFunction(me._callbackHandler["onDataTableRenderCell" + listColumnDefs[i].key.substring(0, 1).toUpperCase() + listColumnDefs[i].key.substring(1)]) ||
+              YAHOO.lang.isFunction(me._callbackHandler["onDataTableRenderCell"])) {
+            listColumnDefs[i].formatter = function(el, oRecord, oColumn, oData)
+            {
+              // Apply widths on each cell so it actually works as given in the column definitions
+              if (oColumn.width) {
+                YUIDom.setStyle(el, "width", oColumn.width + "px");
+                YUIDom.setStyle(el.parentNode, "width", oColumn.width + "px");
+              }
+
+              var fieldKey = oColumn.getField(),
+                  defaultMethodName = "onDataTableRenderCell",
+                  methodName = defaultMethodName + fieldKey.substring(0, 1).toUpperCase() + fieldKey.substring(1);
+              if (YAHOO.lang.isFunction(me._callbackHandler[methodName])) {
+                me._callbackHandler[methodName].call(me._callbackHandler, me, el, oRecord, oColumn, oData);
+              }
+              else if (YAHOO.lang.isFunction(me._callbackHandler[defaultMethodName])) {
+                me._callbackHandler[defaultMethodName].call(me._callbackHandler, me, el, oRecord, oColumn, oData);
+              }
+            };
+          }
+          else {
+            listColumnDefs[i].formatter = function(el, oRecord, oColumn, oData)
+            {
+              // Make sure we encode data so no xss code can run
+              el.innerHTML = Activiti.util.encodeHTML(oData);
+            };
+          }
         }
       }
 

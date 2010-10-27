@@ -1,3 +1,5 @@
+<#escape x as jsonUtils.encodeJSONString(x)>
+
 <#macro printTaskList taskList>
 [
   <#list tasks as task>
@@ -18,3 +20,5 @@
   "processInstanceId": <#if task.processInstanceId??>"${task.processInstanceId}"<#else>null</#if>,
   "formResourceKey": <#if task.formResourceKey??>"${task.formResourceKey}"<#else>null</#if>
 </#macro>
+
+</#escape>

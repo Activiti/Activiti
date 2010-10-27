@@ -1,3 +1,5 @@
+<#escape x as jsonUtils.encodeJSONString(x)>
+
 <#macro printDeploymentList deploymentList>
 [
   <#list deployments as deployment>
@@ -13,3 +15,5 @@
   "name": "${deployment.name}",
   "deploymentTime": <#if deployment.deploymentTime??>"${iso8601Date(deployment.deploymentTime)}"<#else>null</#if>
 </#macro>
+
+</#escape>

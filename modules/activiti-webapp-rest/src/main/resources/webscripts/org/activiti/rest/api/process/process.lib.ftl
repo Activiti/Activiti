@@ -1,3 +1,5 @@
+<#escape x as jsonUtils.encodeJSONString(x)>
+
 <#macro printProcessDefinitionList processDefinitions>
 [
   <#list processDefinitions as processDefinition><@printProcessDefinition processDefinition/><#if processDefinition_has_next>,</#if></#list>
@@ -15,3 +17,15 @@
   "startFormResourceKey": <#if processDefinition.startFormResourceKey??>"${processDefinition.startFormResourceKey}"<#else>null</#if>
 }
 </#macro>
+
+
+<#macro printProcessInstance processInstance>
+{
+  "id": "${processInstance.id}",
+  "processDefinitionId": "${processInstance.processDefinitionId}",
+  "activityNames": [<#list processInstance.findActiveActivityIds() as name>"${name}"<#if name_has_next>, </#if></#list>],
+  "ended": ${processInstance.ended?string}
+}
+</#macro>
+
+</#escape>
