@@ -11,11 +11,12 @@
  * limitations under the License.
  */
 
-package org.activiti.engine.identity;
+package org.activiti.engine.impl;
 
 import java.util.HashMap;
 import java.util.Map;
 
+import org.activiti.engine.identity.GroupQuery;
 import org.activiti.engine.query.QueryProperty;
 
 

@@ -23,7 +23,6 @@ import org.activiti.engine.impl.util.ClockUtil;
 import org.activiti.engine.query.QueryProperty;
 import org.activiti.engine.runtime.Job;
 import org.activiti.engine.runtime.JobQuery;
-import org.activiti.engine.runtime.JobQueryProperty;
 
 
 /**
@@ -43,7 +42,6 @@ public class JobQueryImpl extends AbstractQuery<JobQuery, Job> implements JobQue
   protected Date duedateLowerThen;
   protected Date duedateHigherThenOrEqual;
   protected Date duedateLowerThenOrEqual;
-  protected JobQueryProperty orderProperty;
   
   public JobQueryImpl() {
   }
@@ -136,7 +134,7 @@ public class JobQueryImpl extends AbstractQuery<JobQuery, Job> implements JobQue
   
   //sorting //////////////////////////////////////////
   
-  public JobQuery orderByDuedate() {
+  public JobQuery orderByJobDuedate() {
     return orderBy(JobQueryProperty.DUEDATE);
   }
   
@@ -152,33 +150,8 @@ public class JobQueryImpl extends AbstractQuery<JobQuery, Job> implements JobQue
     return orderBy(JobQueryProperty.PROCESS_INSTANCE_ID);
   }
   
-  public JobQuery orderByRetries() {
+  public JobQuery orderByJobRetries() {
     return orderBy(JobQueryProperty.RETRIES);
-  }
-  
-  public JobQuery orderBy(QueryProperty property) {
-    if(!(property instanceof JobQueryProperty)) {
-      throw new ActivitiException("Only JobQueryProperty can be used with orderBy");
-    }
-    this.orderProperty = (JobQueryProperty) property;
-    return this;
-  }
-  
-  public JobQuery asc() {
-    return direction(Direction.ASCENDING);
-  }
-  
-  public JobQuery desc() {
-    return direction(Direction.DESCENDING);
-  }
-  
-  public JobQuery direction(Direction direction) {
-    if (orderProperty==null) {
-      throw new ActivitiException("You should call any of the orderBy methods first before specifying a direction");
-    }
-    addOrder(orderProperty.getName(), direction.getName());
-    orderProperty = null;
-    return this;
   }
   
   //results //////////////////////////////////////////
@@ -196,13 +169,6 @@ public class JobQueryImpl extends AbstractQuery<JobQuery, Job> implements JobQue
       .getRuntimeSession()
       .findJobsByQueryCriteria(this, page);
   }
-  
-  protected void checkQueryOk() {
-    if (orderProperty != null) {
-      throw new ActivitiException("Invalid query: call asc() or desc() after using orderByXX()");
-    }
-  }
-
   
   //getters //////////////////////////////////////////
   

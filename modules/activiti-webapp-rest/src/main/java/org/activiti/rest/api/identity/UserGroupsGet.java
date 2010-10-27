@@ -14,10 +14,10 @@ package org.activiti.rest.api.identity;
 
 import java.util.Map;
 
-import org.activiti.engine.identity.GroupQueryProperty;
 import org.activiti.rest.util.ActivitiPagingWebScript;
 import org.activiti.rest.util.ActivitiRequest;
 import org.activiti.engine.identity.GroupQuery;
+import org.activiti.engine.impl.GroupQueryProperty;
 import org.springframework.extensions.webscripts.*;
 
 /**
@@ -46,10 +46,10 @@ public class UserGroupsGet extends ActivitiPagingWebScript
   protected void executeWebScript(ActivitiRequest req, Status status, Cache cache, Map<String, Object> model) {
     String userId = req.getMandatoryPathParameter("userId");
     String groupType = req.getString("type", null);
-    GroupQuery query = getIdentityService().createGroupQuery().member(userId);
+    GroupQuery query = getIdentityService().createGroupQuery().groupMember(userId);
     if (groupType != null) {
 
-      query.type(groupType);
+      query.groupType(groupType);
     }
     paginateList(req, query, "groups", model, "id");
   }

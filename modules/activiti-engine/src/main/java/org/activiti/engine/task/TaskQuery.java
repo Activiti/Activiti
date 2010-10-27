@@ -30,33 +30,33 @@ public interface TaskQuery extends Query<TaskQuery, Task>{
   TaskQuery taskId(String taskId);
 
   /** Only select tasks with the given name */
-  TaskQuery name(String name);
+  TaskQuery taskName(String name);
   
   /** Only select tasks with a name matching the parameter.
    *  The syntax is that of SQL: for example usage: nameLike(%activiti%)*/
-  TaskQuery nameLike(String nameLike);
+  TaskQuery taskNameLike(String nameLike);
   
   /** Only select tasks with the given description. */
-  TaskQuery description(String description);
+  TaskQuery taskDescription(String description);
   
   /** Only select tasks with a description matching the parameter .
    *  The syntax is that of SQL: for example usage: descriptionLike(%activiti%)*/
-  TaskQuery descriptionLike(String descriptionLike);
+  TaskQuery taskDescriptionLike(String descriptionLike);
   
   /** Only select tasks with the given priority. */
-  TaskQuery priority(Integer priority);
+  TaskQuery taskPriority(Integer priority);
 
   /** Only select tasks which are assigned to the given user. */
-  TaskQuery assignee(String assignee);
+  TaskQuery taskAssignee(String assignee);
   
   /** Only select tasks which don't have an assignee. */
-  TaskQuery unnassigned();
+  TaskQuery taskUnnassigned();
 
   /** Only select tasks for which the given user is a candidate. */
-  TaskQuery candidateUser(String candidateUser);
+  TaskQuery taskCandidateUser(String candidateUser);
 
   /** Only select tasks for which users in the given group are candidates. */
-  TaskQuery candidateGroup(String candidateGroup);
+  TaskQuery taskCandidateGroup(String candidateGroup);
 
   /** Only select tasks for the given process instance id. */
   TaskQuery processInstanceId(String processInstanceId);
@@ -65,13 +65,13 @@ public interface TaskQuery extends Query<TaskQuery, Task>{
   TaskQuery executionId(String executionId);
   
   /** Only select tasks that are created on the given date. **/
-  TaskQuery createdOn(Date createTime);
+  TaskQuery taskCreatedOn(Date createTime);
   
   /** Only select tasks that are created before the given date. **/
-  TaskQuery createdBefore(Date before);
+  TaskQuery taskCreatedBefore(Date before);
 
   /** Only select tasks that are created after the given date. **/
-  TaskQuery createdAfter(Date after);
+  TaskQuery taskCreatedAfter(Date after);
   
   // ordering ////////////////////////////////////////////////////////////
   
@@ -79,21 +79,20 @@ public interface TaskQuery extends Query<TaskQuery, Task>{
   TaskQuery orderByTaskId();
   
   /** Order by task name (needs to be followed by {@link #asc()} or {@link #desc()}). */
-  TaskQuery orderByName();
+  TaskQuery orderByTaskName();
   
   /** Order by description (needs to be followed by {@link #asc()} or {@link #desc()}). */
-  TaskQuery orderByDescription();
+  TaskQuery orderByTaskDescription();
   
   /** Order by priority (needs to be followed by {@link #asc()} or {@link #desc()}). */
-  TaskQuery orderByPriority();
+  TaskQuery orderByTaskPriority();
   
   /** Order by assignee (needs to be followed by {@link #asc()} or {@link #desc()}). */
-  TaskQuery orderByAssignee();
+  TaskQuery orderByTaskAssignee();
   
   /** Order by process instance id (needs to be followed by {@link #asc()} or {@link #desc()}). */
   TaskQuery orderByProcessInstanceId();
   
   /** Order by execution id (needs to be followed by {@link #asc()} or {@link #desc()}). */
   TaskQuery orderByExecutionId();
-
 }

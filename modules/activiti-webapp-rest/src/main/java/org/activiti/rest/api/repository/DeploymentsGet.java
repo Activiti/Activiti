@@ -14,8 +14,8 @@ package org.activiti.rest.api.repository;
 
 import java.util.Map;
 
+import org.activiti.engine.impl.DeploymentQueryProperty;
 import org.activiti.engine.repository.DeploymentQuery;
-import org.activiti.engine.repository.DeploymentQueryProperty;
 import org.activiti.rest.util.ActivitiPagingWebScript;
 import org.activiti.rest.util.ActivitiRequest;
 import org.springframework.extensions.webscripts.Cache;
@@ -31,7 +31,7 @@ public class DeploymentsGet extends ActivitiPagingWebScript
 
   public DeploymentsGet() {
     properties.put("id", DeploymentQueryProperty.DEPLOYMENT_ID);
-    properties.put("name", DeploymentQueryProperty.NAME);
+    properties.put("name", DeploymentQueryProperty.DEPLOYMENT_NAME);
     properties.put("deploymentTime", DeploymentQueryProperty.DEPLOY_TIME);
   }
 

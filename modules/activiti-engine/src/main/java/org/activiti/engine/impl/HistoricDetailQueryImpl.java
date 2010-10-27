@@ -15,13 +15,10 @@ package org.activiti.engine.impl;
 
 import java.util.List;
 
-import org.activiti.engine.ActivitiException;
 import org.activiti.engine.history.HistoricDetail;
 import org.activiti.engine.history.HistoricDetailQuery;
-import org.activiti.engine.history.HistoricDetailQueryProperty;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
-import org.activiti.engine.query.QueryProperty;
 
 
 /**
@@ -32,7 +29,6 @@ public class HistoricDetailQueryImpl extends AbstractQuery<HistoricDetailQuery, 
   protected String processInstanceId;
   protected String activityId;
   protected String type;
-  protected HistoricDetailQueryProperty orderProperty;
 
   public HistoricDetailQueryImpl() {
   }
@@ -61,14 +57,6 @@ public class HistoricDetailQueryImpl extends AbstractQuery<HistoricDetailQuery, 
     return this;
   }
 
-  public HistoricDetailQueryImpl asc() {
-    return direction(Direction.ASCENDING);
-  }
-  
-  public HistoricDetailQueryImpl desc() {
-    return direction(Direction.DESCENDING);
-  }
-  
   public long executeCount(CommandContext commandContext) {
     checkQueryOk();
     return commandContext
@@ -83,32 +71,34 @@ public class HistoricDetailQueryImpl extends AbstractQuery<HistoricDetailQuery, 
       .findHistoricDetailsByQueryCriteria(this, page);
   }
   
-  protected void checkQueryOk() {
-    if (orderProperty != null) {
-      throw new ActivitiException("Invalid query: call asc() or desc() after using orderByXX()");
-    }
-  }
-
-  public HistoricDetailQueryImpl direction(Direction direction) {
-    if (orderProperty==null) {
-      throw new ActivitiException("you should call any of the orderBy methods first before specifying a direction");
-    }
-    addOrder(orderProperty.getName(), direction.getName());
-    orderProperty = null;
-    return this;
-  }
-
-  public HistoricDetailQueryImpl orderBy(QueryProperty property) {
-    if(!(property instanceof HistoricDetailQueryProperty)) {
-      throw new ActivitiException("Only HistoricVariableUpdateQueryProperty can be used with orderBy");
-    }
-    this.orderProperty = (HistoricDetailQueryProperty) property;
-    return this;
-  }
-
   // getters and setters //////////////////////////////////////////////////////
   
   public String getProcessInstanceId() {
     return processInstanceId;
+  }
+
+  public HistoricDetailQuery orderByProcessInstanceId() {
+    orderBy(HistoricDetailQueryProperty.PROCESS_INSTANCE_ID);
+    return this;
+  }
+
+  public HistoricDetailQuery orderByTime() {
+    orderBy(HistoricDetailQueryProperty.TIME);
+    return this;
+  }
+
+  public HistoricDetailQuery orderByVariableName() {
+    orderBy(HistoricDetailQueryProperty.VARIABLE_NAME);
+    return this;
+  }
+
+  public HistoricDetailQuery orderByVariableRevision() {
+    orderBy(HistoricDetailQueryProperty.VARIABLE_REVISION);
+    return this;
+  }
+
+  public HistoricDetailQuery orderByVariableType() {
+    orderBy(HistoricDetailQueryProperty.VARIABLE_TYPE);
+    return this;
   }
 }

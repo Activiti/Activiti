@@ -17,10 +17,10 @@ import java.util.List;
 import java.util.Map;
 
 import org.activiti.engine.form.TaskFormData;
+import org.activiti.engine.impl.TaskQueryProperty;
 import org.activiti.engine.impl.task.TaskEntity;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.task.TaskQuery;
-import org.activiti.engine.task.TaskQueryProperty;
 import org.activiti.rest.model.RestTask;
 import org.activiti.rest.util.ActivitiPagingWebScript;
 import org.activiti.rest.util.ActivitiRequest;
@@ -62,13 +62,13 @@ public class TasksGet extends ActivitiPagingWebScript
     String candidateGroupId = req.getString("candidate-group");
     TaskQuery taskQuery = getTaskService().createTaskQuery();
     if (personalTaskUserId != null) {
-      taskQuery.assignee(personalTaskUserId);
+      taskQuery.taskAssignee(personalTaskUserId);
     }
     else if (candidateTaskUserId != null) {
-      taskQuery.candidateUser(candidateTaskUserId);
+      taskQuery.taskCandidateUser(candidateTaskUserId);
     }
     else if (candidateGroupId != null) {
-      taskQuery.candidateGroup(candidateGroupId);
+      taskQuery.taskCandidateGroup(candidateGroupId);
     }
     else {
       throw new WebScriptException(Status.STATUS_BAD_REQUEST, "Tasks must be filtered with 'assignee', 'candidate' or 'candidate-group'");

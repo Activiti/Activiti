@@ -36,5 +36,13 @@ public interface HistoricDetailQuery extends Query<HistoricDetailQuery, Historic
   /** Only select {@link HistoricVariableUpdate}s. */
   HistoricDetailQuery onlyVariableUpdates();
 
+  HistoricDetailQuery orderByProcessInstanceId();
   
+  HistoricDetailQuery orderByVariableName();
+  
+  HistoricDetailQuery orderByVariableType();
+  
+  HistoricDetailQuery orderByVariableRevision();
+  
+  HistoricDetailQuery orderByTime();
 }

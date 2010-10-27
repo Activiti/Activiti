@@ -38,7 +38,7 @@ public class SubProcessTest extends ActivitiInternalTestCase {
     ProcessInstance pi = runtimeService.startProcessInstanceByKey("fixSystemFailure");
     List<Task> tasks = taskService.createTaskQuery()
                                   .processInstanceId(pi.getId())
-                                  .orderByName()
+                                  .orderByTaskName()
                                   .asc()
                                   .list();
 

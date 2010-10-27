@@ -87,26 +87,26 @@ public class DeploymentQueryTest extends ActivitiInternalTestCase {
   }
   
   public void testQueryByName() {
-    DeploymentQuery query = repositoryService.createDeploymentQuery().name("org/activiti/engine/test/repository/two.bpmn20.xml");
+    DeploymentQuery query = repositoryService.createDeploymentQuery().deploymentName("org/activiti/engine/test/repository/two.bpmn20.xml");
     assertNotNull(query.singleResult());
     assertEquals(1, query.list().size());
     assertEquals(1, query.count());
   }
   
   public void testQueryByInvalidName() {
-    DeploymentQuery query = repositoryService.createDeploymentQuery().name("invalid");
+    DeploymentQuery query = repositoryService.createDeploymentQuery().deploymentName("invalid");
     assertNull(query.singleResult());
     assertEquals(0, query.list().size());
     assertEquals(0, query.count());
     
     try {
-      repositoryService.createDeploymentQuery().name(null);
+      repositoryService.createDeploymentQuery().deploymentName(null);
       fail();
     } catch (ActivitiException e) {}
   }
   
   public void testQueryByNameLike() {
-    DeploymentQuery query = repositoryService.createDeploymentQuery().nameLike("%activiti%");
+    DeploymentQuery query = repositoryService.createDeploymentQuery().deploymentNameLike("%activiti%");
     assertEquals(2, query.list().size());
     assertEquals(2, query.count());
     
@@ -117,13 +117,13 @@ public class DeploymentQueryTest extends ActivitiInternalTestCase {
   }
   
   public void testQueryByInvalidNameLike() {
-    DeploymentQuery query = repositoryService.createDeploymentQuery().nameLike("invalid");
+    DeploymentQuery query = repositoryService.createDeploymentQuery().deploymentNameLike("invalid");
     assertNull(query.singleResult());
     assertEquals(0, query.list().size());
     assertEquals(0, query.count());
     
     try {
-      repositoryService.createDeploymentQuery().nameLike(null);
+      repositoryService.createDeploymentQuery().deploymentNameLike(null);
       fail();
     } catch (ActivitiException e) {}
   }
@@ -143,7 +143,7 @@ public class DeploymentQueryTest extends ActivitiInternalTestCase {
     assertEquals(deploymentTwoId, deploymentTwo.getId());
     
     deployments = repositoryService.createDeploymentQuery()
-      .nameLike("%one%")
+      .deploymentNameLike("%one%")
        .orderByDeploymentName()
       .asc()
       .list();

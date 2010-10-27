@@ -24,20 +24,20 @@ import org.activiti.engine.query.Query;
 public interface GroupQuery extends Query<GroupQuery, Group> {
   
   /** Only select {@link Group}s with the given id. */
-  GroupQuery groupId(String id);
+  GroupQuery groupId(String groupId);
   
   /** Only select {@link Group}s with the given name. */
-  GroupQuery name(String name);
+  GroupQuery groupName(String groupName);
   
   /** Only select {@link Group}s where the name matches the given parameter.
    *  The syntax to use is that of SQL, eg. %activiti%. */
-  GroupQuery nameLike(String nameLike);
+  GroupQuery groupNameLike(String groupNameLike);
   
   /** Only select {@link Group}s which have the given type. */
-  GroupQuery type(String type);
+  GroupQuery groupType(String groupType);
   
   /** Only selects {@link Group}s where the given user is a member of. */
-  GroupQuery member(String userId);
+  GroupQuery groupMember(String groupMemberUserId);
   
   //sorting ////////////////////////////////////////////////////////
   
@@ -45,9 +45,9 @@ public interface GroupQuery extends Query<GroupQuery, Group> {
   GroupQuery orderByGroupId();
   
   /** Order by group name (needs to be followed by {@link #asc()} or {@link #desc()}). */
-  GroupQuery orderByName();
+  GroupQuery orderByGroupName();
   
   /** Order by group type (needs to be followed by {@link #asc()} or {@link #desc()}). */
-  GroupQuery orderByType();
+  GroupQuery orderByGroupType();
 
 }

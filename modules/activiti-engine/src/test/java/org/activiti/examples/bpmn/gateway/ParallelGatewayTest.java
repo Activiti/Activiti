@@ -33,7 +33,7 @@ public class ParallelGatewayTest extends ActivitiInternalTestCase {
     TaskQuery query = taskService
                         .createTaskQuery()
                         .processInstanceId(pi.getId())
-                        .orderByName()
+                        .orderByTaskName()
                         .asc();
 
     List<Task> tasks = query.list();
@@ -59,7 +59,7 @@ public class ParallelGatewayTest extends ActivitiInternalTestCase {
     ProcessInstance pi = runtimeService.startProcessInstanceByKey("UnbalancedForkJoin");
     TaskQuery query = taskService.createTaskQuery()
                                  .processInstanceId(pi.getId())
-                                 .orderByName()
+                                 .orderByTaskName()
                                  .asc();
     
     List<Task> tasks = query.list(); 

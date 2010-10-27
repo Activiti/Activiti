@@ -32,13 +32,10 @@ public interface HistoricProcessInstanceQuery extends Query<HistoricProcessInsta
   HistoricProcessInstanceQuery processDefinitionId(String processDefinitionId);
   
   /** Only select historic process instances with the given business key */
-  HistoricProcessInstanceQuery businessKey(String businessKey);
+  HistoricProcessInstanceQuery processInstanceBusinessKey(String processInstanceBusinessKey);
   
   /** Only select historic process instance that are not yet finished. */
   HistoricProcessInstanceQuery unfinished();
-  
-  /** Order by id (needs to be followed by {@link #asc()} or {@link #desc()}). */
-  HistoricProcessInstanceQuery orderByHistoricProcessInstanceId();
   
   /** Order by the process instance id (needs to be followed by {@link #asc()} or {@link #desc()}). */
   HistoricProcessInstanceQuery orderByProcessInstanceId();
@@ -47,14 +44,14 @@ public interface HistoricProcessInstanceQuery extends Query<HistoricProcessInsta
   HistoricProcessInstanceQuery orderByProcessDefinitionId();
   
   /** Order by the business key (needs to be followed by {@link #asc()} or {@link #desc()}). */
-  HistoricProcessInstanceQuery orderByBusinessKey();
+  HistoricProcessInstanceQuery orderByProcessInstanceBusinessKey();
 
   /** Order by the start time (needs to be followed by {@link #asc()} or {@link #desc()}). */
-  HistoricProcessInstanceQuery orderByStartTime();
+  HistoricProcessInstanceQuery orderByProcessInstanceStartTime();
   
   /** Order by the end time (needs to be followed by {@link #asc()} or {@link #desc()}). */
-  HistoricProcessInstanceQuery orderByEndTime();
+  HistoricProcessInstanceQuery orderByProcessInstanceEndTime();
   
   /** Order by the duration of the process instance (needs to be followed by {@link #asc()} or {@link #desc()}). */
-  HistoricProcessInstanceQuery orderByDuration();
+  HistoricProcessInstanceQuery orderByProcessInstanceDuration();
 }

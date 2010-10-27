@@ -47,12 +47,12 @@ public class StandaloneTaskTest extends ActivitiInternalTestCase {
     taskService.addCandidateUser(taskId, "gonzo");
 
     // Retrieve task list for jbarrez
-    List<Task> tasks = taskService.createTaskQuery().candidateUser("kermit").list();
+    List<Task> tasks = taskService.createTaskQuery().taskCandidateUser("kermit").list();
     assertEquals(1, tasks.size());
     assertEquals("testTask", tasks.get(0).getName());
 
     // Retrieve task list for tbaeyens
-    tasks = taskService.createTaskQuery().candidateUser("gonzo").list();
+    tasks = taskService.createTaskQuery().taskCandidateUser("gonzo").list();
     assertEquals(1, tasks.size());
     assertEquals("testTask", tasks.get(0).getName());
 
@@ -60,8 +60,8 @@ public class StandaloneTaskTest extends ActivitiInternalTestCase {
     taskService.claim(taskId, "kermit");
 
     // Tasks shouldn't appear in the candidate tasklists anymore
-    assertTrue(taskService.createTaskQuery().candidateUser("kermit").list().isEmpty());
-    assertTrue(taskService.createTaskQuery().candidateUser("gonzo").list().isEmpty());
+    assertTrue(taskService.createTaskQuery().taskCandidateUser("kermit").list().isEmpty());
+    assertTrue(taskService.createTaskQuery().taskCandidateUser("gonzo").list().isEmpty());
 
     // Complete task
     taskService.complete(taskId);

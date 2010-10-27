@@ -17,9 +17,9 @@ import java.util.List;
 import java.util.Map;
 
 import org.activiti.engine.form.StartFormData;
+import org.activiti.engine.impl.ProcessDefinitionQueryProperty;
 import org.activiti.engine.impl.repository.ProcessDefinitionEntity;
 import org.activiti.engine.repository.ProcessDefinition;
-import org.activiti.engine.repository.ProcessDefinitionQueryProperty;
 import org.activiti.rest.model.RestProcessDefinition;
 import org.activiti.rest.util.ActivitiPagingWebScript;
 import org.activiti.rest.util.ActivitiRequest;
@@ -35,8 +35,8 @@ public class ProcessDefinitionsGet extends ActivitiPagingWebScript {
 
   public ProcessDefinitionsGet() {
     properties.put("id", ProcessDefinitionQueryProperty.PROCESS_DEFINITION_ID);
-    properties.put("key", ProcessDefinitionQueryProperty.KEY);
-    properties.put("version", ProcessDefinitionQueryProperty.VERSION);
+    properties.put("key", ProcessDefinitionQueryProperty.PROCESS_DEFINITION_KEY);
+    properties.put("version", ProcessDefinitionQueryProperty.PROCESS_DEFINITION_VERSION);
     properties.put("deploymentId", ProcessDefinitionQueryProperty.DEPLOYMENT_ID);
   }
 

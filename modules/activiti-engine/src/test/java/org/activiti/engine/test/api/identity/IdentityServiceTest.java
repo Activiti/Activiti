@@ -181,7 +181,7 @@ public class IdentityServiceTest extends ActivitiInternalTestCase {
 
   public void testFindGroupsByUserIdNullArguments() {
     try {
-      identityService.createGroupQuery().member(null).singleResult();
+      identityService.createGroupQuery().groupMember(null).singleResult();
       fail("ActivitiException expected");
     } catch (ActivitiException ae) {
       assertTextPresent("userId is null", ae.getMessage());
@@ -212,13 +212,13 @@ public class IdentityServiceTest extends ActivitiInternalTestCase {
     // Add membership
     identityService.createMembership(johndoe.getId(), sales.getId());
 
-    List<Group> groups = identityService.createGroupQuery().member(johndoe.getId()).list();
+    List<Group> groups = identityService.createGroupQuery().groupMember(johndoe.getId()).list();
     assertTrue(groups.size() == 1);
     assertEquals("sales", groups.get(0).getId());
 
     // Delete the membership and check members of sales group
     identityService.deleteMembership(johndoe.getId(), sales.getId());
-    groups = identityService.createGroupQuery().member(johndoe.getId()).list();
+    groups = identityService.createGroupQuery().groupMember(johndoe.getId()).list();
     assertTrue(groups.size() == 0);
 
     identityService.deleteGroup("sales");

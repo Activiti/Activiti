@@ -93,7 +93,7 @@ public class SubProcessTest extends ActivitiInternalTestCase {
     TaskQuery taskQuery = taskService
       .createTaskQuery()
       .processInstanceId(pi.getId())
-      .orderByName()
+      .orderByTaskName()
       .asc();
     
     Task subProcessTask = taskQuery.singleResult();
@@ -181,7 +181,7 @@ public class SubProcessTest extends ActivitiInternalTestCase {
     
     // After starting the process, the two task in the subprocess should be active
     ProcessInstance pi = runtimeService.startProcessInstanceByKey("simpleParallelSubProcess");
-    List<Task> subProcessTasks = taskService.createTaskQuery().processInstanceId(pi.getId()).orderByName().asc().list();
+    List<Task> subProcessTasks = taskService.createTaskQuery().processInstanceId(pi.getId()).orderByTaskName().asc().list();
     
     // Tasks are ordered by name (see query)
     Task taskA = subProcessTasks.get(0);
@@ -201,7 +201,7 @@ public class SubProcessTest extends ActivitiInternalTestCase {
     
     // After staring the process, the tasks in the subprocess should be active
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("simpleParallelSubProcessWithTimer");
-    List<Task> subProcessTasks = taskService.createTaskQuery().processInstanceId(processInstance.getId()).orderByName().asc().list();
+    List<Task> subProcessTasks = taskService.createTaskQuery().processInstanceId(processInstance.getId()).orderByTaskName().asc().list();
     
     // Tasks are ordered by name (see query)
     Task taskA = subProcessTasks.get(0);
@@ -231,7 +231,7 @@ public class SubProcessTest extends ActivitiInternalTestCase {
     TaskQuery taskQuery = taskService
       .createTaskQuery()
       .processInstanceId(pi.getId())
-      .orderByName()
+      .orderByTaskName()
       .asc();
     List<Task> tasks = taskQuery.list();
     
@@ -266,7 +266,7 @@ public class SubProcessTest extends ActivitiInternalTestCase {
     TaskQuery taskQuery = taskService
       .createTaskQuery()
       .processInstanceId(pi.getId())
-      .orderByName()
+      .orderByTaskName()
       .asc();
     List<Task> tasks = taskQuery.list();
     
@@ -297,7 +297,7 @@ public class SubProcessTest extends ActivitiInternalTestCase {
     TaskQuery taskQuery = taskService
       .createTaskQuery()
       .processInstanceId(pi.getId())
-      .orderByName()
+      .orderByTaskName()
       .asc();
     List<Task> tasks = taskQuery.list();
     

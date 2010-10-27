@@ -28,7 +28,6 @@ import org.activiti.engine.impl.test.ActivitiInternalTestCase;
 import org.activiti.engine.runtime.Execution;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.runtime.ProcessInstanceQuery;
-import org.activiti.engine.runtime.ProcessInstanceQueryProperty;
 import org.activiti.engine.test.Deployment;
 
 /**
@@ -116,23 +115,23 @@ public class ProcessInstanceQueryTest extends ActivitiInternalTestCase {
   }
   
   public void testQueryByBusinessKeyAndProcessDefinitionKey() {
-    assertEquals(1, runtimeService.createProcessInstanceQuery().businessKey("0", PROCESS_DEFINITION_KEY).count());
-    assertEquals(1, runtimeService.createProcessInstanceQuery().businessKey("1", PROCESS_DEFINITION_KEY).count());
-    assertEquals(1, runtimeService.createProcessInstanceQuery().businessKey("2", PROCESS_DEFINITION_KEY).count());
-    assertEquals(1, runtimeService.createProcessInstanceQuery().businessKey("3", PROCESS_DEFINITION_KEY).count());
-    assertEquals(1, runtimeService.createProcessInstanceQuery().businessKey("1", PROCESS_DEFINITION_KEY_2).count());
+    assertEquals(1, runtimeService.createProcessInstanceQuery().processInstanceBusinessKey("0", PROCESS_DEFINITION_KEY).count());
+    assertEquals(1, runtimeService.createProcessInstanceQuery().processInstanceBusinessKey("1", PROCESS_DEFINITION_KEY).count());
+    assertEquals(1, runtimeService.createProcessInstanceQuery().processInstanceBusinessKey("2", PROCESS_DEFINITION_KEY).count());
+    assertEquals(1, runtimeService.createProcessInstanceQuery().processInstanceBusinessKey("3", PROCESS_DEFINITION_KEY).count());
+    assertEquals(1, runtimeService.createProcessInstanceQuery().processInstanceBusinessKey("1", PROCESS_DEFINITION_KEY_2).count());
   }
   
   public void testQueryByBusinessKey() {
-    assertEquals(1, runtimeService.createProcessInstanceQuery().businessKey("0").count());
-    assertEquals(2, runtimeService.createProcessInstanceQuery().businessKey("1").count());
+    assertEquals(1, runtimeService.createProcessInstanceQuery().processInstanceBusinessKey("0").count());
+    assertEquals(2, runtimeService.createProcessInstanceQuery().processInstanceBusinessKey("1").count());
   }
   
   public void testQueryByInvalidBusinessKey() {
-    assertEquals(0, runtimeService.createProcessInstanceQuery().businessKey("invalid").count());
+    assertEquals(0, runtimeService.createProcessInstanceQuery().processInstanceBusinessKey("invalid").count());
     
     try {
-      runtimeService.createProcessInstanceQuery().businessKey(null).count();
+      runtimeService.createProcessInstanceQuery().processInstanceBusinessKey(null).count();
       fail();
     } catch(ActivitiException e) {
       
@@ -211,16 +210,16 @@ public class ProcessInstanceQueryTest extends ActivitiInternalTestCase {
   }
   
   public void testQuerySorting() {
-    assertEquals(5, runtimeService.createProcessInstanceQuery().orderBy(ProcessInstanceQueryProperty.PROCESS_INSTANCE_ID).asc().list().size());
-    assertEquals(5, runtimeService.createProcessInstanceQuery().orderBy(ProcessInstanceQueryProperty.PROCESS_DEFINITION_ID).asc().list().size());
-    assertEquals(5, runtimeService.createProcessInstanceQuery().orderBy(ProcessInstanceQueryProperty.PROCESS_DEFINITION_KEY).asc().list().size());
+    assertEquals(5, runtimeService.createProcessInstanceQuery().orderByProcessInstanceId().asc().list().size());
+    assertEquals(5, runtimeService.createProcessInstanceQuery().orderByProcessDefinitionId().asc().list().size());
+    assertEquals(5, runtimeService.createProcessInstanceQuery().orderByProcessDefinitionKey().asc().list().size());
     
-    assertEquals(5, runtimeService.createProcessInstanceQuery().orderBy(ProcessInstanceQueryProperty.PROCESS_INSTANCE_ID).desc().list().size());
-    assertEquals(5, runtimeService.createProcessInstanceQuery().orderBy(ProcessInstanceQueryProperty.PROCESS_DEFINITION_ID).desc().list().size());
-    assertEquals(5, runtimeService.createProcessInstanceQuery().orderBy(ProcessInstanceQueryProperty.PROCESS_DEFINITION_KEY).desc().list().size());
+    assertEquals(5, runtimeService.createProcessInstanceQuery().orderByProcessInstanceId().desc().list().size());
+    assertEquals(5, runtimeService.createProcessInstanceQuery().orderByProcessDefinitionId().desc().list().size());
+    assertEquals(5, runtimeService.createProcessInstanceQuery().orderByProcessDefinitionKey().desc().list().size());
     
-    assertEquals(4, runtimeService.createProcessInstanceQuery().processDefinitionKey(PROCESS_DEFINITION_KEY).orderBy(ProcessInstanceQueryProperty.PROCESS_INSTANCE_ID).asc().list().size());
-    assertEquals(4, runtimeService.createProcessInstanceQuery().processDefinitionKey(PROCESS_DEFINITION_KEY).orderBy(ProcessInstanceQueryProperty.PROCESS_INSTANCE_ID).desc().list().size());
+    assertEquals(4, runtimeService.createProcessInstanceQuery().processDefinitionKey(PROCESS_DEFINITION_KEY).orderByProcessInstanceId().asc().list().size());
+    assertEquals(4, runtimeService.createProcessInstanceQuery().processDefinitionKey(PROCESS_DEFINITION_KEY).orderByProcessInstanceId().desc().list().size());
   }
   
   public void testQueryInvalidSorting() {

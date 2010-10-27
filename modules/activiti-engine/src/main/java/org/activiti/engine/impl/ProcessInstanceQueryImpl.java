@@ -18,10 +18,8 @@ import java.util.List;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
-import org.activiti.engine.query.QueryProperty;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.runtime.ProcessInstanceQuery;
-import org.activiti.engine.runtime.ProcessInstanceQueryProperty;
 
 
 /**
@@ -35,7 +33,6 @@ public class ProcessInstanceQueryImpl extends ExecutionVariableQueryImpl<Process
   protected String businessKey;
   protected String processDefinitionId;
   protected String processDefinitionKey;
-  protected ProcessInstanceQueryProperty orderProperty;
   protected String superProcessInstanceId;
   protected String subProcessInstanceId;
   
@@ -59,7 +56,7 @@ public class ProcessInstanceQueryImpl extends ExecutionVariableQueryImpl<Process
     return this;
   }
   
-  public ProcessInstanceQuery businessKey(String businessKey) {
+  public ProcessInstanceQuery processInstanceBusinessKey(String businessKey) {
     if (businessKey == null) {
       throw new ActivitiException("Business key is null");
     }
@@ -67,7 +64,7 @@ public class ProcessInstanceQueryImpl extends ExecutionVariableQueryImpl<Process
     return this;
   }
   
-  public ProcessInstanceQuery businessKey(String businessKey, String processDefinitionKey) {
+  public ProcessInstanceQuery processInstanceBusinessKey(String businessKey, String processDefinitionKey) {
     if (businessKey == null) {
       throw new ActivitiException("Business key is null");
     }
@@ -118,31 +115,6 @@ public class ProcessInstanceQueryImpl extends ExecutionVariableQueryImpl<Process
     return this;
   }
   
-  public ProcessInstanceQuery orderBy(QueryProperty property) {
-    if(!(property instanceof ProcessInstanceQueryProperty)) {
-      throw new ActivitiException("Only ProcessInstanceQueryProperty can be used with orderBy");
-    }
-    this.orderProperty = (ProcessInstanceQueryProperty) property;
-    return this;
-  }
-  
-  public ProcessInstanceQuery asc() {
-    return direction(Direction.ASCENDING);
-  }
-  
-  public ProcessInstanceQuery desc() {
-    return direction(Direction.DESCENDING);
-  }
-  
-  public ProcessInstanceQuery direction(Direction direction) {
-    if (orderProperty==null) {
-      throw new ActivitiException("You should call any of the orderBy methods first before specifying a direction");
-    }
-    addOrder(orderProperty.getName(), direction.getName());
-    orderProperty = null;
-    return this;
-  }
-  
   //results /////////////////////////////////////////////////////////////////
   
   public long executeCount(CommandContext commandContext) {
@@ -160,13 +132,6 @@ public class ProcessInstanceQueryImpl extends ExecutionVariableQueryImpl<Process
       .getRuntimeSession()
       .findProcessInstanceByQueryCriteria(this, page);
   }
-  
-  protected void checkQueryOk() {
-    if (orderProperty != null) {
-      throw new ActivitiException("Invalid query: call asc() or desc() after using orderByXX()");
-    }
-  }
-
   
   //getters /////////////////////////////////////////////////////////////////
   

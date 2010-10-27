@@ -89,67 +89,67 @@ public class GroupQueryTest extends ActivitiInternalTestCase {
   }
   
   public void testQueryByName() {
-    GroupQuery query = identityService.createGroupQuery().name("Muppet show characters");
+    GroupQuery query = identityService.createGroupQuery().groupName("Muppet show characters");
     verifyQueryResults(query, 1);
     
-    query = identityService.createGroupQuery().name("Famous frogs");
+    query = identityService.createGroupQuery().groupName("Famous frogs");
     verifyQueryResults(query, 1);
   }
   
   public void testQueryByInvalidName() {
-    GroupQuery query = identityService.createGroupQuery().name("invalid");
+    GroupQuery query = identityService.createGroupQuery().groupName("invalid");
     verifyQueryResults(query, 0);
     
     try {
-      identityService.createGroupQuery().name(null).list();
+      identityService.createGroupQuery().groupName(null).list();
       fail();
     } catch (ActivitiException e) {}
   }
   
   public void testQueryByNameLike() {
-    GroupQuery query = identityService.createGroupQuery().nameLike("%Famous%");
+    GroupQuery query = identityService.createGroupQuery().groupNameLike("%Famous%");
     verifyQueryResults(query, 2);
     
-    query = identityService.createGroupQuery().nameLike("Famous%");
+    query = identityService.createGroupQuery().groupNameLike("Famous%");
     verifyQueryResults(query, 2);
     
-    query = identityService.createGroupQuery().nameLike("%show%");
+    query = identityService.createGroupQuery().groupNameLike("%show%");
     verifyQueryResults(query, 1);
   }
   
   public void testQueryByInvalidNameLike() {
-    GroupQuery query = identityService.createGroupQuery().nameLike("%invalid%");
+    GroupQuery query = identityService.createGroupQuery().groupNameLike("%invalid%");
     verifyQueryResults(query, 0);
     
     try {
-      identityService.createGroupQuery().nameLike(null).list();
+      identityService.createGroupQuery().groupNameLike(null).list();
       fail();
     } catch (ActivitiException e) {}
   }
   
   public void testQueryByType() {
-    GroupQuery query = identityService.createGroupQuery().type("user");
+    GroupQuery query = identityService.createGroupQuery().groupType("user");
     verifyQueryResults(query, 3);
     
-    query = identityService.createGroupQuery().type("admin");
+    query = identityService.createGroupQuery().groupType("admin");
     verifyQueryResults(query, 0);
   }
   
   public void testQueryByInvalidType() {
-    GroupQuery query = identityService.createGroupQuery().type("invalid");
+    GroupQuery query = identityService.createGroupQuery().groupType("invalid");
     verifyQueryResults(query, 0);
     
     try {
-      identityService.createGroupQuery().type(null).list();
+      identityService.createGroupQuery().groupType(null).list();
       fail();
     } catch (ActivitiException e) {}
   }
   
   public void testQueryByMember() {
-    GroupQuery query = identityService.createGroupQuery().member("fozzie");
+    GroupQuery query = identityService.createGroupQuery().groupMember("fozzie");
     verifyQueryResults(query, 2);
     
-    query = identityService.createGroupQuery().member("kermit");
+    query = identityService.createGroupQuery().groupMember("kermit");
     verifyQueryResults(query, 3);
     
     query = query.orderByGroupId().asc();
@@ -159,7 +159,7 @@ public class GroupQueryTest extends ActivitiInternalTestCase {
     assertEquals("frogs", groups.get(1).getId());
     assertEquals("muppets", groups.get(2).getId());
 
-    query = query.type("user");
+    query = query.groupType("user");
     groups = query.list();
     assertEquals(2, groups.size());
     assertEquals("frogs", groups.get(0).getId());
@@ -167,11 +167,11 @@ public class GroupQueryTest extends ActivitiInternalTestCase {
   }
   
   public void testQueryByInvalidMember() {
-    GroupQuery query = identityService.createGroupQuery().member("invalid");
+    GroupQuery query = identityService.createGroupQuery().groupMember("invalid");
     verifyQueryResults(query, 0);
     
     try {
-      identityService.createGroupQuery().member(null).list();
+      identityService.createGroupQuery().groupMember(null).list();
       fail();
     } catch (ActivitiException e) {}
   }
@@ -179,16 +179,16 @@ public class GroupQueryTest extends ActivitiInternalTestCase {
   public void testQuerySorting() {
     // asc
     assertEquals(4, identityService.createGroupQuery().orderByGroupId().asc().count());
-    assertEquals(4, identityService.createGroupQuery().orderByName().asc().count());
-    assertEquals(4, identityService.createGroupQuery().orderByType().asc().count());
+    assertEquals(4, identityService.createGroupQuery().orderByGroupName().asc().count());
+    assertEquals(4, identityService.createGroupQuery().orderByGroupType().asc().count());
 
     // desc
     assertEquals(4, identityService.createGroupQuery().orderByGroupId().desc().count());
-    assertEquals(4, identityService.createGroupQuery().orderByName().desc().count());
-    assertEquals(4, identityService.createGroupQuery().orderByType().desc().count());
+    assertEquals(4, identityService.createGroupQuery().orderByGroupName().desc().count());
+    assertEquals(4, identityService.createGroupQuery().orderByGroupType().desc().count());
     
     // Multiple sortings
-    GroupQuery query = identityService.createGroupQuery().orderByType().asc().orderByName().desc();
+    GroupQuery query = identityService.createGroupQuery().orderByGroupType().asc().orderByGroupName().desc();
     List<Group> groups = query.list();
     assertEquals(4, query.count());
     
@@ -210,7 +210,7 @@ public class GroupQueryTest extends ActivitiInternalTestCase {
     } catch (ActivitiException e) {}
     
     try {
-      identityService.createGroupQuery().orderByGroupId().orderByName().list();
+      identityService.createGroupQuery().orderByGroupId().orderByGroupName().list();
       fail();
     } catch (ActivitiException e) {}
   }

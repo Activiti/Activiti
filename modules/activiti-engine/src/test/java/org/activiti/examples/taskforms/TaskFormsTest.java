@@ -60,7 +60,7 @@ public class TaskFormsTest extends ActivitiInternalTestCase {
     formService.submitStartFormData("vacationRequest:1", formProperties);
 
     // Management should now have a task assigned to them
-    Task task = taskService.createTaskQuery().candidateGroup("management").singleResult();
+    Task task = taskService.createTaskQuery().taskCandidateGroup("management").singleResult();
     assertEquals("Vacation request by kermit", task.getDescription());
     Object taskForm = formService.getRenderedTaskForm(task.getId());
     assertNotNull(taskForm);

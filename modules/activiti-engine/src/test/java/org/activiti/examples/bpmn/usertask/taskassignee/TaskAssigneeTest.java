@@ -36,7 +36,7 @@ public class TaskAssigneeTest extends ActivitiInternalTestCase {
     // Get task list
     List<Task> tasks = taskService
       .createTaskQuery()
-      .assignee("kermit")
+      .taskAssignee("kermit")
       .list();
     assertEquals(1, tasks.size());
     Task myTask = tasks.get(0);

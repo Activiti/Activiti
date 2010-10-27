@@ -54,7 +54,7 @@ public class TaskAssignmentExtensionsTest extends ActivitiInternalTestCase {
     runtimeService.startProcessInstanceByKey("assigneeExtension");
     List<Task> tasks = taskService
       .createTaskQuery()
-      .assignee("kermit")
+      .taskAssignee("kermit")
       .list();
     assertEquals(1, tasks.size());
     assertEquals("my task", tasks.get(0).getName());
@@ -73,9 +73,9 @@ public class TaskAssignmentExtensionsTest extends ActivitiInternalTestCase {
   @Deployment
   public void testCandidateUsersExtension() {
     runtimeService.startProcessInstanceByKey("candidateUsersExtension");
-    List<Task> tasks = taskService.createTaskQuery().candidateUser("kermit").list();
+    List<Task> tasks = taskService.createTaskQuery().taskCandidateUser("kermit").list();
     assertEquals(1, tasks.size());
-    tasks = taskService.createTaskQuery().candidateUser("gonzo").list();
+    tasks = taskService.createTaskQuery().taskCandidateUser("gonzo").list();
     assertEquals(1, tasks.size());
   }
 
@@ -85,18 +85,18 @@ public class TaskAssignmentExtensionsTest extends ActivitiInternalTestCase {
 
     // Bugfix check: potentially the query could return 2 tasks since
     // kermit is a member of the two candidate groups
-    List<Task> tasks = taskService.createTaskQuery().candidateUser("kermit").list();
+    List<Task> tasks = taskService.createTaskQuery().taskCandidateUser("kermit").list();
     assertEquals(1, tasks.size());
     assertEquals("make profit", tasks.get(0).getName());
 
-    tasks = taskService.createTaskQuery().candidateUser("fozzie").list();
+    tasks = taskService.createTaskQuery().taskCandidateUser("fozzie").list();
     assertEquals(1, tasks.size());
     assertEquals("make profit", tasks.get(0).getName());
 
     // Test the task query find-by-candidate-group operation
     TaskQuery query = taskService.createTaskQuery();
-    assertEquals(1, query.candidateGroup("management").count());
-    assertEquals(1, query.candidateGroup("accountancy").count());
+    assertEquals(1, query.taskCandidateGroup("management").count());
+    assertEquals(1, query.taskCandidateGroup("accountancy").count());
   }
 
   // Test where the candidate user extension is used together
@@ -105,16 +105,16 @@ public class TaskAssignmentExtensionsTest extends ActivitiInternalTestCase {
   public void testMixedCandidateUserDefinition() {
     runtimeService.startProcessInstanceByKey("mixedCandidateUser");
 
-    List<Task> tasks = taskService.createTaskQuery().candidateUser("kermit").list();
+    List<Task> tasks = taskService.createTaskQuery().taskCandidateUser("kermit").list();
     assertEquals(1, tasks.size());
 
-    tasks = taskService.createTaskQuery().candidateUser("fozzie").list();
+    tasks = taskService.createTaskQuery().taskCandidateUser("fozzie").list();
     assertEquals(1, tasks.size());
 
-    tasks = taskService.createTaskQuery().candidateUser("gonzo").list();
+    tasks = taskService.createTaskQuery().taskCandidateUser("gonzo").list();
     assertEquals(1, tasks.size());
 
-    tasks = taskService.createTaskQuery().candidateUser("mispiggy").list();
+    tasks = taskService.createTaskQuery().taskCandidateUser("mispiggy").list();
     assertEquals(0, tasks.size());
   }
 

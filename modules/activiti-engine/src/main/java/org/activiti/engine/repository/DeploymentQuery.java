@@ -36,10 +36,10 @@ public interface DeploymentQuery extends Query<DeploymentQuery, Deployment>{
   DeploymentQuery deploymentId(String deploymentId);
   
   /** Only select deployments with the given name. */
-  DeploymentQuery name(String name);
+  DeploymentQuery deploymentName(String name);
   
   /** Only select deployments with a name like the given string. */
-  DeploymentQuery nameLike(String nameLike);
+  DeploymentQuery deploymentNameLike(String nameLike);
   
   //sorting ////////////////////////////////////////////////////////
   

@@ -18,7 +18,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.activiti.engine.history.HistoricDetail;
-import org.activiti.engine.history.HistoricDetailQueryProperty;
 import org.activiti.engine.history.HistoricFormProperty;
 import org.activiti.engine.impl.test.ActivitiInternalTestCase;
 import org.activiti.engine.test.Deployment;
@@ -39,7 +38,7 @@ public class HistoricVariableUpdateTest extends ActivitiInternalTestCase {
 
     List<HistoricDetail> historicDetails = historyService
       .createHistoricDetailQuery()
-      .orderBy(HistoricDetailQueryProperty.VARIABLE_NAME).asc()
+      .orderByVariableName().asc()
       .list();
     
     System.out.println(historicDetails);

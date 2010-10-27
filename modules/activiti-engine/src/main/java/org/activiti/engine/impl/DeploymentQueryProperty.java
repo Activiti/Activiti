@@ -24,36 +24,32 @@
  * limitations under the License.
  */
 
-package org.activiti.engine.task;
+package org.activiti.engine.impl;
 
 import java.util.HashMap;
 import java.util.Map;
 
 import org.activiti.engine.query.QueryProperty;
+import org.activiti.engine.repository.DeploymentQuery;
 
 
 
 /**
- * Contains the possible properties that can be used in a {@link TaskQuery}.
+ * Contains the possible properties that can be used in a {@link DeploymentQuery}.
  * 
  * @author Joram Barrez
  */
-public class TaskQueryProperty implements QueryProperty {
-  
-  private static final Map<String, TaskQueryProperty> properties = new HashMap<String, TaskQueryProperty>();
+public class DeploymentQueryProperty implements QueryProperty {
 
-  public static final TaskQueryProperty TASK_ID = new TaskQueryProperty("T.ID_");
-  public static final TaskQueryProperty NAME = new TaskQueryProperty("T.NAME_");
-  public static final TaskQueryProperty DESCRIPTION = new TaskQueryProperty("T.DESCRIPTION_");
-  public static final TaskQueryProperty PRIORITY = new TaskQueryProperty("T.PRIORITY_");
-  public static final TaskQueryProperty ASSIGNEE = new TaskQueryProperty("T.ASSIGNEE_");
-  public static final TaskQueryProperty PROCESS_INSTANCE_ID = new TaskQueryProperty("T.PROC_INST_ID_");
-  public static final TaskQueryProperty EXECUTION_ID = new TaskQueryProperty("T.EXECUTION_ID_");
+  private static final Map<String, DeploymentQueryProperty> properties = new HashMap<String, DeploymentQueryProperty>();
 
+  public static final DeploymentQueryProperty DEPLOYMENT_ID = new DeploymentQueryProperty("D.ID_");
+  public static final DeploymentQueryProperty DEPLOYMENT_NAME = new DeploymentQueryProperty("D.NAME_");
+  public static final DeploymentQueryProperty DEPLOY_TIME = new DeploymentQueryProperty("D.DEPLOY_TIME_");
   
   private String name;
 
-  public TaskQueryProperty(String name) {
+  public DeploymentQueryProperty(String name) {
     this.name = name;
     properties.put(name, this);
   }
@@ -62,8 +58,9 @@ public class TaskQueryProperty implements QueryProperty {
     return name;
   }
   
-  public static TaskQueryProperty findByName(String propertyName) {
+  public static DeploymentQueryProperty findByName(String propertyName) {
     return properties.get(propertyName);
   }
 
+  
 }

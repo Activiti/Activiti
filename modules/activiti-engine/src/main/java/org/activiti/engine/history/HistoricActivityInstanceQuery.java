@@ -43,32 +43,40 @@ public interface HistoricActivityInstanceQuery extends Query<HistoricActivityIns
   /** Only select historic activity instances for activities with the given activity type */
   HistoricActivityInstanceQueryImpl activityType(String activityType);
 
-  /** Only select historic activity instances for activities assigned to the given user */
+  /** Only select historic activity instances for userTask activities assigned to the given user */
   HistoricActivityInstanceQueryImpl assignee(String userId);
 
   /** Only select historic activity instances that are not finished yet. */
   HistoricActivityInstanceQueryImpl onlyOpen();
 
   // ordering /////////////////////////////////////////////////////////////////
-  
   /** Order by id (needs to be followed by {@link #asc()} or {@link #desc()}). */
   HistoricActivityInstanceQuery orderByHistoricActivityInstanceId();
 
-  /** Order by start (needs to be followed by {@link #asc()} or {@link #desc()}). */
-  HistoricActivityInstanceQuery orderByStart();
-  
-  /** Order by end (needs to be followed by {@link #asc()} or {@link #desc()}). */
-  HistoricActivityInstanceQuery orderByEnd();
-  
-  /** Order by duration (needs to be followed by {@link #asc()} or {@link #desc()}). */
-  HistoricActivityInstanceQuery orderByDuration();
-  
+  /** Order by processInstanceId (needs to be followed by {@link #asc()} or {@link #desc()}). */
+  HistoricActivityInstanceQuery orderByProcessInstanceId();
+
   /** Order by executionId (needs to be followed by {@link #asc()} or {@link #desc()}). */
   HistoricActivityInstanceQuery orderByExecutionId();
   
+  /** Order by activityId (needs to be followed by {@link #asc()} or {@link #desc()}). */
+  HistoricActivityInstanceQuery orderByActivityId();
+  
+  /** Order by activityName (needs to be followed by {@link #asc()} or {@link #desc()}). */
+  HistoricActivityInstanceQuery orderByActivityName();
+  
+  /** Order by activityType (needs to be followed by {@link #asc()} or {@link #desc()}). */
+  HistoricActivityInstanceQuery orderByActivityType();
+  
+  /** Order by start (needs to be followed by {@link #asc()} or {@link #desc()}). */
+  HistoricActivityInstanceQuery orderByHistoricActivityInstanceStartTime();
+  
+  /** Order by end (needs to be followed by {@link #asc()} or {@link #desc()}). */
+  HistoricActivityInstanceQuery orderByHistoricActivityInstanceEndTime();
+  
+  /** Order by duration (needs to be followed by {@link #asc()} or {@link #desc()}). */
+  HistoricActivityInstanceQuery orderByHistoricActivityInstanceDuration();
+  
   /** Order by processDefinitionId (needs to be followed by {@link #asc()} or {@link #desc()}). */
   HistoricActivityInstanceQuery orderByProcessDefinitionId();
-  
-  /** Order by processInstanceId (needs to be followed by {@link #asc()} or {@link #desc()}). */
-  HistoricActivityInstanceQuery orderByProcessInstanceId();
 }

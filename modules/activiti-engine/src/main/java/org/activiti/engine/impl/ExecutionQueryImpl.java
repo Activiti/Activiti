@@ -17,10 +17,8 @@ import java.util.List;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
-import org.activiti.engine.query.QueryProperty;
 import org.activiti.engine.runtime.Execution;
 import org.activiti.engine.runtime.ExecutionQuery;
-import org.activiti.engine.runtime.ExecutionQueryProperty;
 
 
 /**
@@ -35,8 +33,6 @@ public class ExecutionQueryImpl extends ExecutionVariableQueryImpl<ExecutionQuer
   protected String activityId;
   protected String executionId;
   protected String processInstanceId;
-  protected ExecutionQueryProperty orderProperty;
-
   
   // Not used by end-users, but needed for dynamic ibatis query
   protected String superProcessInstanceId;
@@ -110,31 +106,6 @@ public class ExecutionQueryImpl extends ExecutionVariableQueryImpl<ExecutionQuer
     return this;
   }
   
-  public ExecutionQueryImpl orderBy(QueryProperty property) {
-    if(!(property instanceof ExecutionQueryProperty)) {
-      throw new ActivitiException("Only ExecutionQueryProperty can be used with orderBy");
-    }
-    this.orderProperty = (ExecutionQueryProperty) property;
-    return this;
-  }
-  
-  public ExecutionQueryImpl asc() {
-    return direction(Direction.ASCENDING);
-  }
-  
-  public ExecutionQueryImpl desc() {
-    return direction(Direction.DESCENDING);
-  }
-  
-  public ExecutionQueryImpl direction(Direction direction) {
-    if (orderProperty==null) {
-      throw new ActivitiException("You should call any of the orderBy methods first before specifying a direction");
-    }
-    addOrder(orderProperty.getName(), direction.getName());
-    orderProperty = null;
-    return this;
-  }
-  
   //results ////////////////////////////////////////////////////
   
   public long executeCount(CommandContext commandContext) {
@@ -152,12 +123,6 @@ public class ExecutionQueryImpl extends ExecutionVariableQueryImpl<ExecutionQuer
     return (List) commandContext
       .getRuntimeSession()
       .findExecutionsByQueryCriteria(this, page);
-  }
-  
-  protected void checkQueryOk() {
-    if (orderProperty != null) {
-      throw new ActivitiException("Invalid query: please call asc() or desc() after using orderByXX()");
-    }
   }
   
   //getters ////////////////////////////////////////////////////

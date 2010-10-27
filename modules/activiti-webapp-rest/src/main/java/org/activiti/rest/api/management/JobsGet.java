@@ -15,8 +15,8 @@ package org.activiti.rest.api.management;
 import java.util.Date;
 import java.util.Map;
 
+import org.activiti.engine.impl.JobQueryProperty;
 import org.activiti.engine.runtime.JobQuery;
-import org.activiti.engine.runtime.JobQueryProperty;
 import org.activiti.rest.util.ActivitiPagingWebScript;
 import org.activiti.rest.util.ActivitiRequest;
 import org.springframework.extensions.webscripts.Cache;

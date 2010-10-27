@@ -21,10 +21,8 @@ import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.identity.GroupEntity;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
-import org.activiti.engine.query.QueryProperty;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.task.TaskQuery;
-import org.activiti.engine.task.TaskQueryProperty;
 
 /**
  * @author Joram Barrez
@@ -44,7 +42,6 @@ public class TaskQueryImpl extends AbstractQuery<TaskQuery, Task> implements Tas
   protected String candidateGroup;
   protected String processInstanceId;
   protected String executionId;
-  protected TaskQueryProperty orderProperty;
   protected Date createTime;
   protected Date createTimeBefore;
   protected Date createTimeAfter;
@@ -64,12 +61,12 @@ public class TaskQueryImpl extends AbstractQuery<TaskQuery, Task> implements Tas
     return this;
   }
   
-  public TaskQueryImpl name(String name) {
+  public TaskQueryImpl taskName(String name) {
     this.name = name;
     return this;
   }
   
-  public TaskQueryImpl nameLike(String nameLike) {
+  public TaskQueryImpl taskNameLike(String nameLike) {
     if (nameLike == null) {
       throw new ActivitiException("Task namelike is null");
     }
@@ -77,7 +74,7 @@ public class TaskQueryImpl extends AbstractQuery<TaskQuery, Task> implements Tas
     return this;
   }
   
-  public TaskQueryImpl description(String description) {
+  public TaskQueryImpl taskDescription(String description) {
     if (description == null) {
       throw new ActivitiException("Description is null");
     }
@@ -85,7 +82,7 @@ public class TaskQueryImpl extends AbstractQuery<TaskQuery, Task> implements Tas
     return this;
   }
   
-  public TaskQuery descriptionLike(String descriptionLike) {
+  public TaskQuery taskDescriptionLike(String descriptionLike) {
     if (descriptionLike == null) {
       throw new ActivitiException("Task descriptionlike is null");
     }
@@ -93,7 +90,7 @@ public class TaskQueryImpl extends AbstractQuery<TaskQuery, Task> implements Tas
     return this;
   }
   
-  public TaskQuery priority(Integer priority) {
+  public TaskQuery taskPriority(Integer priority) {
     if (priority == null) {
       throw new ActivitiException("Priority is null");
     }
@@ -101,7 +98,7 @@ public class TaskQueryImpl extends AbstractQuery<TaskQuery, Task> implements Tas
     return this;
   }
 
-  public TaskQueryImpl assignee(String assignee) {
+  public TaskQueryImpl taskAssignee(String assignee) {
     if (assignee == null) {
       throw new ActivitiException("Assignee is null");
     }
@@ -109,12 +106,12 @@ public class TaskQueryImpl extends AbstractQuery<TaskQuery, Task> implements Tas
     return this;
   }
   
-  public TaskQuery unnassigned() {
+  public TaskQuery taskUnnassigned() {
     this.unassigned = true;
     return this;
   }
 
-  public TaskQueryImpl candidateUser(String candidateUser) {
+  public TaskQueryImpl taskCandidateUser(String candidateUser) {
     if (candidateUser == null) {
       throw new ActivitiException("Candidate user is null");
     }
@@ -125,7 +122,7 @@ public class TaskQueryImpl extends AbstractQuery<TaskQuery, Task> implements Tas
     return this;
   }
   
-  public TaskQueryImpl candidateGroup(String candidateGroup) {
+  public TaskQueryImpl taskCandidateGroup(String candidateGroup) {
     if (candidateGroup == null) {
       throw new ActivitiException("Candidate group is null");
     }
@@ -146,17 +143,17 @@ public class TaskQueryImpl extends AbstractQuery<TaskQuery, Task> implements Tas
     return this;
   }
   
-  public TaskQueryImpl createdOn(Date createTime) {
+  public TaskQueryImpl taskCreatedOn(Date createTime) {
     this.createTime = createTime;
     return this;
   }
   
-  public TaskQuery createdBefore(Date before) {
+  public TaskQuery taskCreatedBefore(Date before) {
     this.createTimeBefore = before;
     return this;
   }
   
-  public TaskQuery createdAfter(Date after) {
+  public TaskQuery taskCreatedAfter(Date after) {
     this.createTimeAfter = after;
     return this;
   }
@@ -188,15 +185,15 @@ public class TaskQueryImpl extends AbstractQuery<TaskQuery, Task> implements Tas
     return orderBy(TaskQueryProperty.TASK_ID);
   }
   
-  public TaskQuery orderByName() {
+  public TaskQuery orderByTaskName() {
     return orderBy(TaskQueryProperty.NAME);
   }
   
-  public TaskQuery orderByDescription() {
+  public TaskQuery orderByTaskDescription() {
     return orderBy(TaskQueryProperty.DESCRIPTION);
   }
   
-  public TaskQuery orderByPriority() {
+  public TaskQuery orderByTaskPriority() {
     return orderBy(TaskQueryProperty.PRIORITY);
   }
   
@@ -208,55 +205,24 @@ public class TaskQueryImpl extends AbstractQuery<TaskQuery, Task> implements Tas
     return orderBy(TaskQueryProperty.EXECUTION_ID);
   }
   
-  public TaskQuery orderByAssignee() {
+  public TaskQuery orderByTaskAssignee() {
     return orderBy(TaskQueryProperty.ASSIGNEE);
-  }
-  
-  public TaskQueryImpl orderBy(QueryProperty property) {
-    if(!(property instanceof QueryProperty)) {
-      throw new ActivitiException("Only QueryProperty can be used with orderBy");
-    }
-    this.orderProperty = (TaskQueryProperty) property;
-    return this;
-  }
-  
-  public TaskQueryImpl asc() {
-    return direction(Direction.ASCENDING);
-  }
-  
-  public TaskQueryImpl desc() {
-    return direction(Direction.DESCENDING);
-  }
-  
-  protected TaskQueryImpl direction(Direction direction) {
-    if (orderProperty==null) {
-      throw new ActivitiException("You should call any of the orderBy methods first before specifying a direction");
-    }
-    addOrder(orderProperty.getName(), direction.getName());
-    orderProperty = null;
-    return this;
   }
   
   //results ////////////////////////////////////////////////////////////////
   
   public List<Task> executeList(CommandContext commandContext, Page page) {
-    checkQuery();
+    checkQueryOk();
     return commandContext
       .getTaskSession()
       .findTasksByQueryCriteria(this, page);
   }
   
   public long executeCount(CommandContext commandContext) {
-    checkQuery();
+    checkQueryOk();
     return commandContext
       .getTaskSession()
       .findTaskCountByQueryCriteria(this);
-  }
-  
-  protected void checkQuery() {
-    if (orderProperty != null) {
-      throw new ActivitiException("Invalid query: call asc() or desc() after using orderByXX()");
-    }
   }
   
   //getters ////////////////////////////////////////////////////////////////
@@ -297,9 +263,6 @@ public class TaskQueryImpl extends AbstractQuery<TaskQuery, Task> implements Tas
   public Integer getPriority() {
     return priority;
   }
-  public TaskQueryProperty getOrderProperty() {
-    return orderProperty;
-  }
   public Date getCreateTime() {
     return createTime;
   }
@@ -309,5 +272,4 @@ public class TaskQueryImpl extends AbstractQuery<TaskQuery, Task> implements Tas
   public Date getCreateTimeAfter() {
     return createTimeAfter;
   }
-  
 }

@@ -11,12 +11,13 @@
  * limitations under the License.
  */
 
-package org.activiti.engine.repository;
+package org.activiti.engine.impl;
 
 import java.util.HashMap;
 import java.util.Map;
 
 import org.activiti.engine.query.QueryProperty;
+import org.activiti.engine.repository.ProcessDefinitionQuery;
 
 
 /**
@@ -28,12 +29,12 @@ public class ProcessDefinitionQueryProperty implements QueryProperty {
   
   private static final Map<String, ProcessDefinitionQueryProperty> properties = new HashMap<String, ProcessDefinitionQueryProperty>();
   
+  public static final ProcessDefinitionQueryProperty PROCESS_DEFINITION_KEY = new ProcessDefinitionQueryProperty("PD.KEY_");
+  public static final ProcessDefinitionQueryProperty PROCESS_DEFINITION_CATEGORY = new ProcessDefinitionQueryProperty("PD.CATEGORY_");
   public static final ProcessDefinitionQueryProperty PROCESS_DEFINITION_ID = new ProcessDefinitionQueryProperty("PD.ID_");
+  public static final ProcessDefinitionQueryProperty PROCESS_DEFINITION_VERSION = new ProcessDefinitionQueryProperty("PD.VERSION_");
+  public static final ProcessDefinitionQueryProperty PROCESS_DEFINITION_NAME = new ProcessDefinitionQueryProperty("PD.NAME_");
   public static final ProcessDefinitionQueryProperty DEPLOYMENT_ID = new ProcessDefinitionQueryProperty("PD.DEPLOYMENT_ID_");
-  public static final ProcessDefinitionQueryProperty KEY = new ProcessDefinitionQueryProperty("PD.KEY_");
-  public static final ProcessDefinitionQueryProperty VERSION = new ProcessDefinitionQueryProperty("PD.VERSION_");
-  public static final ProcessDefinitionQueryProperty NAME = new ProcessDefinitionQueryProperty("PD.NAME_");
-  public static final ProcessDefinitionQueryProperty CATEGORY = new ProcessDefinitionQueryProperty("PD.CATEGORY_");
 
   private String name;
 

@@ -39,10 +39,8 @@ public class ProcessDefinitionsTest extends ActivitiInternalTestCase {
 
     List<ProcessDefinition> processDefinitions = repositoryService
       .createProcessDefinitionQuery()
-      .orderByKey()
-      .asc()
-      .orderByVersion()
-      .desc()
+      .orderByProcessDefinitionKey().asc()
+      .orderByProcessDefinitionVersion().desc()
       .list();
 
     assertNotNull(processDefinitions);
@@ -89,10 +87,8 @@ public class ProcessDefinitionsTest extends ActivitiInternalTestCase {
 
     List<ProcessDefinition> processDefinitions = repositoryService
       .createProcessDefinitionQuery()
-      .orderByKey()
-      .asc()
-      .orderByVersion()
-      .desc()
+      .orderByProcessDefinitionKey().asc()
+      .orderByProcessDefinitionVersion().desc()
       .list();
 
     assertNotNull(processDefinitions);

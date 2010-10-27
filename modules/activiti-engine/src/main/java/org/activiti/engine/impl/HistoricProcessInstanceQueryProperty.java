@@ -11,7 +11,7 @@
  * limitations under the License.
  */
 
-package org.activiti.engine.history;
+package org.activiti.engine.impl;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -28,7 +28,6 @@ public class HistoricProcessInstanceQueryProperty implements QueryProperty {
   
   private static final Map<String, HistoricProcessInstanceQueryProperty> properties = new HashMap<String, HistoricProcessInstanceQueryProperty>();
 
-  public static final HistoricProcessInstanceQueryProperty HISTORIC_PROCESS_INSTANCE_ID = new HistoricProcessInstanceQueryProperty("ID_");
   public static final HistoricProcessInstanceQueryProperty PROCESS_INSTANCE_ID_ = new HistoricProcessInstanceQueryProperty("PROC_INST_ID_");
   public static final HistoricProcessInstanceQueryProperty PROCESS_DEFINITION_ID = new HistoricProcessInstanceQueryProperty("PROC_DEF_ID_");
   public static final HistoricProcessInstanceQueryProperty BUSINESS_KEY = new HistoricProcessInstanceQueryProperty("BUSINESS_KEY_");

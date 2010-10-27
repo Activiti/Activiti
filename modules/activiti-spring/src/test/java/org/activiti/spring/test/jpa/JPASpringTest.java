@@ -106,7 +106,7 @@ public class JPASpringTest extends PvmTestCase{
     assertEquals("Send rejection letter", task.getName());
     
     // Finally cleanup the deployment
-    String deploymentId = repositoryService.createProcessDefinitionQuery().key("LoanRequestProcess").singleResult().getDeploymentId();
+    String deploymentId = repositoryService.createProcessDefinitionQuery().processDefinitionKey("LoanRequestProcess").singleResult().getDeploymentId();
     repositoryService.deleteDeploymentCascade(deploymentId);
   }
   

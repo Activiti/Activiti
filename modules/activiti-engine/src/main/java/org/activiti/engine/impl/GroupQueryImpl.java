@@ -18,10 +18,8 @@ import java.util.List;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.identity.Group;
 import org.activiti.engine.identity.GroupQuery;
-import org.activiti.engine.identity.GroupQueryProperty;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
-import org.activiti.engine.query.QueryProperty;
 
 
 /**
@@ -34,7 +32,6 @@ public class GroupQueryImpl extends AbstractQuery<GroupQuery, Group> implements 
   protected String nameLike;
   protected String type;
   protected String userId;
-  protected GroupQueryProperty orderProperty;
   
   public GroupQueryImpl() {
     
@@ -52,7 +49,7 @@ public class GroupQueryImpl extends AbstractQuery<GroupQuery, Group> implements 
     return this;
   }
   
-  public GroupQuery name(String name) {
+  public GroupQuery groupName(String name) {
     if (name == null) {
       throw new ActivitiException("Provided name is null");
     }
@@ -60,7 +57,7 @@ public class GroupQueryImpl extends AbstractQuery<GroupQuery, Group> implements 
     return this;
   }
   
-  public GroupQuery nameLike(String nameLike) {
+  public GroupQuery groupNameLike(String nameLike) {
     if (nameLike == null) {
       throw new ActivitiException("Provided nameLike is null");
     }
@@ -68,7 +65,7 @@ public class GroupQueryImpl extends AbstractQuery<GroupQuery, Group> implements 
     return this;
   }
   
-  public GroupQuery type(String type) {
+  public GroupQuery groupType(String type) {
     if (type == null) {
       throw new ActivitiException("Provided type is null");
     }
@@ -76,7 +73,7 @@ public class GroupQueryImpl extends AbstractQuery<GroupQuery, Group> implements 
     return this;
   }
   
-  public GroupQuery member(String userId) {
+  public GroupQuery groupMember(String userId) {
     if (userId == null) {
       throw new ActivitiException("Provided userId is null");
     }
@@ -90,39 +87,14 @@ public class GroupQueryImpl extends AbstractQuery<GroupQuery, Group> implements 
     return orderBy(GroupQueryProperty.GROUP_ID);
   }
   
-  public GroupQuery orderByName() {
+  public GroupQuery orderByGroupName() {
     return orderBy(GroupQueryProperty.NAME);
   }
   
-  public GroupQuery orderByType() {
+  public GroupQuery orderByGroupType() {
     return orderBy(GroupQueryProperty.TYPE);
   }
   
-  public GroupQuery orderBy(QueryProperty property) {
-    if(!(property instanceof GroupQueryProperty)) {
-      throw new ActivitiException("Only GroupQueryProperty can be used with orderBy");
-    }
-    this.orderProperty = (GroupQueryProperty) property;
-    return this;
-  }
-  
-  public GroupQuery asc() {
-    return direction(Direction.ASCENDING);
-  }
-  
-  public GroupQuery desc() {
-    return direction(Direction.DESCENDING);
-  }
-  
-  public GroupQuery direction(Direction direction) {
-    if (orderProperty==null) {
-      throw new ActivitiException("You should call any of the orderBy methods first before specifying a direction");
-    }
-    addOrder(orderProperty.getName(), direction.getName());
-    orderProperty = null;
-    return this;
-  }
-
   //results ////////////////////////////////////////////////////////
   
   public long executeCount(CommandContext commandContext) {
@@ -137,12 +109,6 @@ public class GroupQueryImpl extends AbstractQuery<GroupQuery, Group> implements 
     return commandContext
       .getIdentitySession()
       .findGroupByQueryCriteria(this, page);
-  }
-  
-  protected void checkQueryOk() {
-    if (orderProperty != null) {
-      throw new ActivitiException("Invalid query: call asc() or desc() after using orderByXX()");
-    }
   }
   
   //getters ////////////////////////////////////////////////////////

@@ -11,12 +11,13 @@
  * limitations under the License.
  */
 
-package org.activiti.engine.runtime;
+package org.activiti.engine.impl;
 
 import java.util.HashMap;
 import java.util.Map;
 
 import org.activiti.engine.query.QueryProperty;
+import org.activiti.engine.runtime.ExecutionQuery;
 
 /**
  * Contains the possible properties that can be used in a {@link ExecutionQuery}.

@@ -15,7 +15,7 @@ package org.activiti.rest.api.identity;
 import java.util.Map;
 
 import org.activiti.engine.identity.UserQuery;
-import org.activiti.engine.identity.UserQueryProperty;
+import org.activiti.engine.impl.UserQueryProperty;
 import org.activiti.rest.util.ActivitiRequest;
 import org.activiti.rest.util.ActivitiPagingWebScript;
 import org.springframework.extensions.webscripts.*;

@@ -15,13 +15,10 @@ package org.activiti.engine.impl;
 
 import java.util.List;
 
-import org.activiti.engine.ActivitiException;
 import org.activiti.engine.history.HistoricActivityInstance;
 import org.activiti.engine.history.HistoricActivityInstanceQuery;
-import org.activiti.engine.history.HistoricActivityInstanceQueryProperty;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
-import org.activiti.engine.query.QueryProperty;
 
 
 /**
@@ -38,7 +35,6 @@ public class HistoricActivityInstanceQueryImpl extends AbstractQuery<HistoricAct
   protected String activityType;
   protected String assignee;
   protected boolean onlyOpen;
-  protected HistoricActivityInstanceQueryProperty orderProperty;
 
   public HistoricActivityInstanceQueryImpl() {
   }
@@ -63,12 +59,6 @@ public class HistoricActivityInstanceQueryImpl extends AbstractQuery<HistoricAct
       .findHistoricActivityInstancesByQueryCriteria(this, page);
   }
   
-  protected void checkQueryOk() {
-    if (orderProperty != null) {
-      throw new ActivitiException("Invalid query: call asc() or desc() after using orderByXX()");
-    }
-  }
-
   public HistoricActivityInstanceQueryImpl processInstanceId(String processInstanceId) {
     this.processInstanceId = processInstanceId;
     return this;
@@ -112,37 +102,12 @@ public class HistoricActivityInstanceQueryImpl extends AbstractQuery<HistoricAct
 
   // ordering /////////////////////////////////////////////////////////////////
 
-  public HistoricActivityInstanceQueryImpl asc() {
-    return direction(Direction.ASCENDING);
-  }
-
-  public HistoricActivityInstanceQueryImpl desc() {
-    return direction(Direction.DESCENDING);
-  }
-
-  public HistoricActivityInstanceQueryImpl direction(Direction direction) {
-    if (orderProperty==null) {
-      throw new ActivitiException("you should call any of the orderBy methods first before specifying a direction");
-    }
-    addOrder(orderProperty.getName(), direction.getName());
-    orderProperty = null;
-    return this;
-  }
-
-  public HistoricActivityInstanceQueryImpl orderBy(QueryProperty property) {
-    if(!(property instanceof HistoricActivityInstanceQueryProperty)) {
-      throw new ActivitiException("Only HistoricActivityInstanceQueryProperty can be used with orderBy");
-    }
-    this.orderProperty = (HistoricActivityInstanceQueryProperty) property;
-    return this;
-  }
-
-  public HistoricActivityInstanceQueryImpl orderByDuration() {
+  public HistoricActivityInstanceQueryImpl orderByHistoricActivityInstanceDuration() {
     orderBy(HistoricActivityInstanceQueryProperty.DURATION);
     return this;
   }
 
-  public HistoricActivityInstanceQueryImpl orderByEnd() {
+  public HistoricActivityInstanceQueryImpl orderByHistoricActivityInstanceEndTime() {
     orderBy(HistoricActivityInstanceQueryProperty.END);
     return this;
   }
@@ -167,10 +132,26 @@ public class HistoricActivityInstanceQueryImpl extends AbstractQuery<HistoricAct
     return this;
   }
 
-  public HistoricActivityInstanceQueryImpl orderByStart() {
+  public HistoricActivityInstanceQueryImpl orderByHistoricActivityInstanceStartTime() {
     orderBy(HistoricActivityInstanceQueryProperty.START);
     return this;
   }
+
+  public HistoricActivityInstanceQuery orderByActivityId() {
+    orderBy(HistoricActivityInstanceQueryProperty.ACTIVITY_ID);
+    return this;
+  }
+
+  public HistoricActivityInstanceQuery orderByActivityName() {
+    orderBy(HistoricActivityInstanceQueryProperty.ACTIVITY_NAME);
+    return this;
+  }
+
+  public HistoricActivityInstanceQuery orderByActivityType() {
+    orderBy(HistoricActivityInstanceQueryProperty.ACTIVITY_TYPE);
+    return this;
+  }
+
 
   // getters and setters //////////////////////////////////////////////////////
   

@@ -242,17 +242,17 @@ public class JobQueryTest extends ActivitiInternalTestCase {
   public void testQuerySorting() {
     // asc
     assertEquals(4, managementService.createJobQuery().orderByJobId().asc().count());
-    assertEquals(4, managementService.createJobQuery().orderByDuedate().asc().count());
+    assertEquals(4, managementService.createJobQuery().orderByJobDuedate().asc().count());
     assertEquals(4, managementService.createJobQuery().orderByExecutionId().asc().count());
     assertEquals(4, managementService.createJobQuery().orderByProcessInstanceId().asc().count());
-    assertEquals(4, managementService.createJobQuery().orderByRetries().asc().count());
+    assertEquals(4, managementService.createJobQuery().orderByJobRetries().asc().count());
 
     // desc
     assertEquals(4, managementService.createJobQuery().orderByJobId().desc().count());
-    assertEquals(4, managementService.createJobQuery().orderByDuedate().desc().count());
+    assertEquals(4, managementService.createJobQuery().orderByJobDuedate().desc().count());
     assertEquals(4, managementService.createJobQuery().orderByExecutionId().desc().count());
     assertEquals(4, managementService.createJobQuery().orderByProcessInstanceId().desc().count());
-    assertEquals(4, managementService.createJobQuery().orderByRetries().desc().count());
+    assertEquals(4, managementService.createJobQuery().orderByJobRetries().desc().count());
     
     // sorting on multiple fields
     setRetries(processInstanceIdTwo, 2);
@@ -261,9 +261,9 @@ public class JobQueryTest extends ActivitiInternalTestCase {
     JobQuery query = managementService.createJobQuery()
       .onlyTimers()
       .executable()
-      .orderByRetries()
+      .orderByJobRetries()
       .asc()
-      .orderByDuedate()
+      .orderByJobDuedate()
       .desc();
      
     List<Job> jobs = query.list();

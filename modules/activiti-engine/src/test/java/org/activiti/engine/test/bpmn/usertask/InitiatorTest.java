@@ -31,6 +31,6 @@ public class InitiatorTest extends ActivitiInternalTestCase {
       identityService.setAuthenticatedUserId(null);
     }
     
-    assertEquals(1, taskService.createTaskQuery().assignee("bono").count());
+    assertEquals(1, taskService.createTaskQuery().taskAssignee("bono").count());
   }
 }

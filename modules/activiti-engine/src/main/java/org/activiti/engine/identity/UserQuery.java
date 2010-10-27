@@ -27,28 +27,28 @@ public interface UserQuery extends Query<UserQuery, User> {
   UserQuery userId(String id);
   
   /** Only select {@link User}s with the given firstName. */
-  UserQuery firstName(String firstName);
+  UserQuery userFirstName(String firstName);
   
   /** Only select {@link User}s where the first name matches the given parameter.
    * The syntax is that of SQL, eg. %activivi%.
    */
-  UserQuery firstNameLike(String firstNameLike);
+  UserQuery userFirstNameLike(String firstNameLike);
   
   /** Only select {@link User}s with the given lastName. */
-  UserQuery lastName(String lastName);
+  UserQuery userLastName(String lastName);
   
   /** Only select {@link User}s where the last name matches the given parameter.
    * The syntax is that of SQL, eg. %activivi%.
    */
-  UserQuery lastNameLike(String lastNameLike);
+  UserQuery userLastNameLike(String lastNameLike);
   
   /** Only those {@link User}s with the given email addres. */
-  UserQuery email(String email);
+  UserQuery userEmail(String email);
   
   /** Only select {@link User}s where the email matches the given parameter.
    * The syntax is that of SQL, eg. %activivi%.
    */
-  UserQuery emailLike(String emailLike);
+  UserQuery userEmailLike(String emailLike);
   
   /** Only select {@link User}s that belong to the given group. */ 
   UserQuery memberOfGroup(String groupId);
@@ -59,11 +59,11 @@ public interface UserQuery extends Query<UserQuery, User> {
   UserQuery orderByUserId();
   
   /** Order by user first name (needs to be followed by {@link #asc()} or {@link #desc()}). */
-  UserQuery orderByFirstName();
+  UserQuery orderByUserFirstName();
   
   /** Order by user last name (needs to be followed by {@link #asc()} or {@link #desc()}). */
-  UserQuery orderByLastName();
+  UserQuery orderByUserLastName();
   
   /** Order by user email  (needs to be followed by {@link #asc()} or {@link #desc()}). */
-  UserQuery orderByEmail();
+  UserQuery orderByUserEmail();
 }

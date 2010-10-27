@@ -19,6 +19,8 @@ import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
 import org.activiti.engine.query.Query;
+import org.activiti.engine.query.QueryProperty;
+import org.activiti.engine.repository.DeploymentQuery;
 
 
 /**
@@ -48,7 +50,37 @@ public abstract class AbstractQuery<T extends Query<?,?>, U> implements Command<
   protected AbstractQuery(CommandExecutor commandExecutor) {
     this.commandExecutor = commandExecutor;
   }
+  
+  protected QueryProperty orderProperty;
 
+  public T orderBy(QueryProperty property) {
+    this.orderProperty = property;
+    return (T) this;
+  }
+  
+  public T asc() {
+    return direction(Direction.ASCENDING);
+  }
+  
+  public T desc() {
+    return direction(Direction.DESCENDING);
+  }
+  
+  public T direction(Direction direction) {
+    if (orderProperty==null) {
+      throw new ActivitiException("You should call any of the orderBy methods first before specifying a direction");
+    }
+    addOrder(orderProperty.getName(), direction.getName());
+    orderProperty = null;
+    return (T) this;
+  }
+  
+  protected void checkQueryOk() {
+    if (orderProperty != null) {
+      throw new ActivitiException("Invalid query: call asc() or desc() after using orderByXX()");
+    }
+  }
+  
   @SuppressWarnings("unchecked")
   public U singleResult() {
     this.resultType = ResultType.SINGLE_RESULT;

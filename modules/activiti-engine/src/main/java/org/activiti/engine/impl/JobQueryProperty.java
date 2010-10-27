@@ -11,32 +11,32 @@
  * limitations under the License.
  */
 
-package org.activiti.engine.identity;
+package org.activiti.engine.impl;
 
 import java.util.HashMap;
 import java.util.Map;
 
 import org.activiti.engine.query.QueryProperty;
-
-
+import org.activiti.engine.runtime.JobQuery;
 
 /**
- * Contains the possible properties that can be used by the {@link UserQuery}.
+ * Contains the possible properties that can be used in a {@link JobQuery}.
  * 
  * @author Joram Barrez
  */
-public class UserQueryProperty implements QueryProperty {
+public class JobQueryProperty implements QueryProperty {
   
-  private static final Map<String, UserQueryProperty> properties = new HashMap<String, UserQueryProperty>();
+  private static final Map<String, JobQueryProperty> properties = new HashMap<String, JobQueryProperty>();
 
-  public static final UserQueryProperty USER_ID = new UserQueryProperty("U.ID_");
-  public static final UserQueryProperty FIRST_NAME = new UserQueryProperty("U.FIRST_");
-  public static final UserQueryProperty LAST_NAME = new UserQueryProperty("U.LAST_");
-  public static final UserQueryProperty EMAIL = new UserQueryProperty("U.EMAIL_");
-  
+  public static final JobQueryProperty JOB_ID = new JobQueryProperty("ID_");
+  public static final JobQueryProperty PROCESS_INSTANCE_ID = new JobQueryProperty("J.PROCESS_INSTANCE_ID_");
+  public static final JobQueryProperty EXECUTION_ID = new JobQueryProperty("J.EXECUTION_ID_");
+  public static final JobQueryProperty DUEDATE = new JobQueryProperty("J.DUEDATE_");
+  public static final JobQueryProperty RETRIES = new JobQueryProperty("J.RETRIES_");
+
   private String name;
 
-  public UserQueryProperty(String name) {
+  public JobQueryProperty(String name) {
     this.name = name;
     properties.put(name, this);
   }
@@ -45,7 +45,7 @@ public class UserQueryProperty implements QueryProperty {
     return name;
   }
   
-  public static UserQueryProperty findByName(String propertyName) {
+  public static JobQueryProperty findByName(String propertyName) {
     return properties.get(propertyName);
   }
 

@@ -66,15 +66,15 @@ public interface JobQuery extends Query<JobQuery, Job> {
   /** Order by job id (needs to be followed by {@link #asc()} or {@link #desc()}). */
   JobQuery orderByJobId();
   
+  /** Order by duedate (needs to be followed by {@link #asc()} or {@link #desc()}). */
+  JobQuery orderByJobDuedate();
+  
+  /** Order by retries (needs to be followed by {@link #asc()} or {@link #desc()}). */
+  JobQuery orderByJobRetries();
+
   /** Order by process instance id (needs to be followed by {@link #asc()} or {@link #desc()}). */
   JobQuery orderByProcessInstanceId();
   
   /** Order by execution id (needs to be followed by {@link #asc()} or {@link #desc()}). */
   JobQuery orderByExecutionId();
-  
-  /** Order by duedate (needs to be followed by {@link #asc()} or {@link #desc()}). */
-  JobQuery orderByDuedate();
-  
-  /** Order by retries (needs to be followed by {@link #asc()} or {@link #desc()}). */
-  JobQuery orderByRetries();
 }

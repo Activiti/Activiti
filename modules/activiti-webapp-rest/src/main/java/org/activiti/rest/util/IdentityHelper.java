@@ -28,7 +28,7 @@ public class IdentityHelper {
   protected boolean isUserInGroup(String groupId) {
     String userId = req.getCurrentUserId();
     if (userId != null) {
-      List<Group> groups = identityService.createGroupQuery().member(userId).list();
+      List<Group> groups = identityService.createGroupQuery().groupMember(userId).list();
       for (Group group : groups) {
         if (groupId.equals(group.getId())) {
           return true;

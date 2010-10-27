@@ -18,10 +18,8 @@ import java.util.List;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
-import org.activiti.engine.query.QueryProperty;
 import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.repository.DeploymentQuery;
-import org.activiti.engine.repository.DeploymentQueryProperty;
 
 
 /**
@@ -33,7 +31,6 @@ public class DeploymentQueryImpl extends AbstractQuery<DeploymentQuery, Deployme
   protected String deploymentId;
   protected String name;
   protected String nameLike;
-  protected DeploymentQueryProperty orderProperty;
 
   public DeploymentQueryImpl() {
   }
@@ -50,17 +47,17 @@ public class DeploymentQueryImpl extends AbstractQuery<DeploymentQuery, Deployme
     return this;
   }
   
-  public DeploymentQuery name(String name) {
-    if (name == null) {
-      throw new ActivitiException("Deployment name is null");
+  public DeploymentQueryImpl deploymentName(String deploymentName) {
+    if (deploymentName == null) {
+      throw new ActivitiException("deploymentName is null");
     }
-    this.name = name;
+    this.name = deploymentName;
     return this;
   }
 
-  public DeploymentQueryImpl nameLike(String nameLike) {
+  public DeploymentQueryImpl deploymentNameLike(String nameLike) {
     if (nameLike == null) {
-      throw new ActivitiException("Namelike is null");
+      throw new ActivitiException("deploymentNameLike is null");
     }
     this.nameLike = nameLike;
     return this;
@@ -68,7 +65,7 @@ public class DeploymentQueryImpl extends AbstractQuery<DeploymentQuery, Deployme
   
   //sorting ////////////////////////////////////////////////////////
   
-  public DeploymentQueryImpl orderByDeploymentId() {
+  public DeploymentQuery orderByDeploymentId() {
     return orderBy(DeploymentQueryProperty.DEPLOYMENT_ID);
   }
   
@@ -77,32 +74,7 @@ public class DeploymentQueryImpl extends AbstractQuery<DeploymentQuery, Deployme
   }
   
   public DeploymentQuery orderByDeploymentName() {
-    return orderBy(DeploymentQueryProperty.NAME);
-  }
-  
-  public DeploymentQueryImpl orderBy(QueryProperty property) {
-    if(!(property instanceof DeploymentQueryProperty)) {
-      throw new ActivitiException("Only DeploymentQueryProperty can be used with orderBy");
-    }
-    this.orderProperty = (DeploymentQueryProperty) property;
-    return this;
-  }
-  
-  public DeploymentQuery asc() {
-    return direction(Direction.ASCENDING);
-  }
-  
-  public DeploymentQuery desc() {
-    return direction(Direction.DESCENDING);
-  }
-  
-  public DeploymentQuery direction(Direction direction) {
-    if (orderProperty==null) {
-      throw new ActivitiException("You should call any of the orderBy methods first before specifying a direction");
-    }
-    addOrder(orderProperty.getName(), direction.getName());
-    orderProperty = null;
-    return this;
+    return orderBy(DeploymentQueryProperty.DEPLOYMENT_NAME);
   }
   
   //results ////////////////////////////////////////////////////////
@@ -121,12 +93,6 @@ public class DeploymentQueryImpl extends AbstractQuery<DeploymentQuery, Deployme
     return commandContext
       .getRepositorySession()
       .findDeploymentsByQueryCriteria(this, page);
-  }
-  
-  protected void checkQueryOk() {
-    if (orderProperty != null) {
-      throw new ActivitiException("Invalid query: call asc() or desc() after using orderByXX()");
-    }
   }
   
   //getters ////////////////////////////////////////////////////////

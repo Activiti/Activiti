@@ -23,12 +23,6 @@ import java.util.List;
 public interface Query<T extends Query< ? , ? >, U extends Object> {
 
   /**
-   * Order by the given property (needs to be followed by {@link #asc()} or
-   * {@link #desc()}).
-   */
-  T orderBy(QueryProperty property);
-
-  /**
    * Order the results ascending on the given property as defined in this
    * class (needs to come after a call to one of the orderByXxxx methods).
    */

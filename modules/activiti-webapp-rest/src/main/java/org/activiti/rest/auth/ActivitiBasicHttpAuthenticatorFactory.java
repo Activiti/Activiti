@@ -90,11 +90,11 @@ public class ActivitiBasicHttpAuthenticatorFactory extends AbstractBasicHttpAuth
       GroupQuery query = ProcessEngines.getProcessEngine(config.getEngine())
         .getIdentityService()
         .createGroupQuery()
-        .member(username);
+        .groupMember(username);
       
       String securityRoleGroupTypeId = config.getSecurityRoleGroupTypeId();
       if (securityRoleGroupTypeId != null) {
-        query.type(securityRoleGroupTypeId);
+        query.groupType(securityRoleGroupTypeId);
       }
         
       List<Group> userGroups = query.list();

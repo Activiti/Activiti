@@ -15,13 +15,10 @@ package org.activiti.engine.impl;
 
 import java.util.List;
 
-import org.activiti.engine.ActivitiException;
 import org.activiti.engine.history.HistoricProcessInstance;
 import org.activiti.engine.history.HistoricProcessInstanceQuery;
-import org.activiti.engine.history.HistoricProcessInstanceQueryProperty;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
-import org.activiti.engine.query.QueryProperty;
 
 
 /**
@@ -34,7 +31,6 @@ public class HistoricProcessInstanceQueryImpl extends AbstractQuery<HistoricProc
   protected String processDefinitionId;
   protected String businessKey;
   protected boolean open = false;
-  protected HistoricProcessInstanceQueryProperty orderProperty;
   
   public HistoricProcessInstanceQueryImpl() {
   }
@@ -53,7 +49,7 @@ public class HistoricProcessInstanceQueryImpl extends AbstractQuery<HistoricProc
     return this;
   }
   
-  public HistoricProcessInstanceQuery businessKey(String businessKey) {
+  public HistoricProcessInstanceQuery processInstanceBusinessKey(String businessKey) {
     this.businessKey = businessKey;
     return this;
   }
@@ -63,23 +59,19 @@ public class HistoricProcessInstanceQueryImpl extends AbstractQuery<HistoricProc
     return this;
   }
   
-  public HistoricProcessInstanceQuery orderByHistoricProcessInstanceId() {
-    return orderBy(HistoricProcessInstanceQueryProperty.HISTORIC_PROCESS_INSTANCE_ID);
-  }
-  
-  public HistoricProcessInstanceQuery orderByBusinessKey() {
+  public HistoricProcessInstanceQuery orderByProcessInstanceBusinessKey() {
     return orderBy(HistoricProcessInstanceQueryProperty.BUSINESS_KEY);
   }
   
-  public HistoricProcessInstanceQuery orderByDuration() {
+  public HistoricProcessInstanceQuery orderByProcessInstanceDuration() {
     return orderBy(HistoricProcessInstanceQueryProperty.DURATION);
   }
   
-  public HistoricProcessInstanceQuery orderByStartTime() {
+  public HistoricProcessInstanceQuery orderByProcessInstanceStartTime() {
     return orderBy(HistoricProcessInstanceQueryProperty.START_TIME);
   }
   
-  public HistoricProcessInstanceQuery orderByEndTime() {
+  public HistoricProcessInstanceQuery orderByProcessInstanceEndTime() {
     return orderBy(HistoricProcessInstanceQueryProperty.END_TIME);
   }
   
@@ -89,32 +81,6 @@ public class HistoricProcessInstanceQueryImpl extends AbstractQuery<HistoricProc
   
   public HistoricProcessInstanceQuery orderByProcessInstanceId() {
     return orderBy(HistoricProcessInstanceQueryProperty.PROCESS_INSTANCE_ID_);
-  }
-  
-  
-  public HistoricProcessInstanceQuery asc() {
-    return direction(Direction.ASCENDING);
-  }
-  
-  public HistoricProcessInstanceQuery desc() {
-    return direction(Direction.DESCENDING);
-  }
-  
-  public HistoricProcessInstanceQuery direction(Direction direction) {
-    if (orderProperty==null) {
-      throw new ActivitiException("you should call any of the orderBy methods first before specifying a direction");
-    }
-    addOrder(orderProperty.getName(), direction.getName());
-    orderProperty = null;
-    return this;
-  }
-
-  public HistoricProcessInstanceQuery orderBy(QueryProperty property) {
-    if(!(property instanceof HistoricProcessInstanceQueryProperty)) {
-      throw new ActivitiException("Only HistoricProcessInstanceQueryProperty can be used with orderBy");
-    }
-    this.orderProperty = (HistoricProcessInstanceQueryProperty) property;
-    return this;
   }
   
   public long executeCount(CommandContext commandContext) {
@@ -129,12 +95,6 @@ public class HistoricProcessInstanceQueryImpl extends AbstractQuery<HistoricProc
     return commandContext
       .getHistorySession()
       .findHistoricProcessInstancesByQueryCriteria(this, page);
-  }
-  
-  protected void checkQueryOk() {
-    if (orderProperty != null) {
-      throw new ActivitiException("Invalid query: call asc() or desc() after using orderByXX()");
-    }
   }
   
   public String getBusinessKey() {

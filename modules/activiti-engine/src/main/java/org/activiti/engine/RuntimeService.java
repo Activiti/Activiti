@@ -45,7 +45,7 @@ public interface RuntimeService {
    * certain identifier that has a clear business meaning. For example in an
    * order process, the business key could be an order id. This business key can
    * then be used to easily look up that process instance , see
-   * {@link ProcessInstanceQuery#businessKey(String)}. Providing such a business
+   * {@link ProcessInstanceQuery#processInstanceBusinessKey(String)}. Providing such a business
    * key is definitely a best practice.
    * 
    * Note that a business key MUST be unique for the given process definition.
@@ -78,7 +78,7 @@ public interface RuntimeService {
    * certain identifier that has a clear business meaning. For example in an
    * order process, the business key could be an order id. This business key can
    * then be used to easily look up that process instance , see
-   * {@link ProcessInstanceQuery#businessKey(String)}. Providing such a business
+   * {@link ProcessInstanceQuery#processInstanceBusinessKey(String)}. Providing such a business
    * key is definitely a best practice.
    * 
    * Note that a business key MUST be unique for the given process definition.
@@ -107,7 +107,7 @@ public interface RuntimeService {
    * certain identifier that has a clear business meaning. For example in an
    * order process, the business key could be an order id. This business key can
    * then be used to easily look up that process instance , see
-   * {@link ProcessInstanceQuery#businessKey(String)}. Providing such a business
+   * {@link ProcessInstanceQuery#processInstanceBusinessKey(String)}. Providing such a business
    * key is definitely a best practice.
    * 
    * Note that a business key MUST be unique for the given process definition.
@@ -135,7 +135,7 @@ public interface RuntimeService {
    * certain identifier that has a clear business meaning. For example in an
    * order process, the business key could be an order id. This business key can
    * then be used to easily look up that process instance , see
-   * {@link ProcessInstanceQuery#businessKey(String)}. Providing such a business
+   * {@link ProcessInstanceQuery#processInstanceBusinessKey(String)}. Providing such a business
    * key is definitely a best practice.
    * 
    * Note that a business key MUST be unique for the given process definition.

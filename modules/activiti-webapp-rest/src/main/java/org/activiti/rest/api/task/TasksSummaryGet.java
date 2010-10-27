@@ -46,11 +46,11 @@ public class TasksSummaryGet extends ActivitiWebScript {
     
     GroupQuery query = getIdentityService()
       .createGroupQuery()
-      .member(user);
+      .groupMember(user);
     
     String assignmentGroupType = config.getAssignmentGroupTypeId();
     if (assignmentGroupType != null) {
-      query.type(assignmentGroupType);
+      query.groupType(assignmentGroupType);
     }
     
     List<Group> groups = query.list();
@@ -58,12 +58,12 @@ public class TasksSummaryGet extends ActivitiWebScript {
     long tasksInGroup;
     for (Group group : groups)
     {
-      tasksInGroup = ts.createTaskQuery().candidateGroup(group.getId()).count();
+      tasksInGroup = ts.createTaskQuery().taskCandidateGroup(group.getId()).count();
       unassignedByGroup.put(group.getId(), tasksInGroup);
     }
     model.put("unassignedByGroup", unassignedByGroup);
-    model.put("unassigned", ts.createTaskQuery().candidateUser(user).count());
-    model.put("assigned", ts.createTaskQuery().assignee(user).count());
+    model.put("unassigned", ts.createTaskQuery().taskCandidateUser(user).count());
+    model.put("assigned", ts.createTaskQuery().taskAssignee(user).count());
   }
 
 }

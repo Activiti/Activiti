@@ -18,7 +18,6 @@ import java.util.List;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.identity.User;
 import org.activiti.engine.identity.UserQuery;
-import org.activiti.engine.identity.UserQueryProperty;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
 import org.activiti.engine.query.QueryProperty;
@@ -37,7 +36,6 @@ public class UserQueryImpl extends AbstractQuery<UserQuery, User> implements Use
   protected String email;
   protected String emailLike;
   protected String groupId;
-  protected UserQueryProperty orderProperty;
   
   public UserQueryImpl() {
     
@@ -55,12 +53,12 @@ public class UserQueryImpl extends AbstractQuery<UserQuery, User> implements Use
     return this;
   }
   
-  public UserQuery firstName(String firstName) {
+  public UserQuery userFirstName(String firstName) {
     this.firstName = firstName;
     return this;
   }
   
-  public UserQuery firstNameLike(String firstNameLike) {
+  public UserQuery userFirstNameLike(String firstNameLike) {
     if (firstNameLike == null) {
       throw new ActivitiException("Provided firstNameLike is null");
     }
@@ -68,12 +66,12 @@ public class UserQueryImpl extends AbstractQuery<UserQuery, User> implements Use
     return this;
   }
   
-  public UserQuery lastName(String lastName) {
+  public UserQuery userLastName(String lastName) {
     this.lastName = lastName;
     return this;
   }
   
-  public UserQuery lastNameLike(String lastNameLike) {
+  public UserQuery userLastNameLike(String lastNameLike) {
     if (lastNameLike == null) {
       throw new ActivitiException("Provided lastNameLike is null");
     }
@@ -81,12 +79,12 @@ public class UserQueryImpl extends AbstractQuery<UserQuery, User> implements Use
     return this;
   }
   
-  public UserQuery email(String email) {
+  public UserQuery userEmail(String email) {
     this.email = email;
     return this;
   }
   
-  public UserQuery emailLike(String emailLike) {
+  public UserQuery userEmailLike(String emailLike) {
     if (emailLike == null) {
       throw new ActivitiException("Provided emailLike is null");
     }
@@ -108,41 +106,16 @@ public class UserQueryImpl extends AbstractQuery<UserQuery, User> implements Use
     return orderBy(UserQueryProperty.USER_ID);
   }
   
-  public UserQuery orderByEmail() {
+  public UserQuery orderByUserEmail() {
     return orderBy(UserQueryProperty.EMAIL);
   }
   
-  public UserQuery orderByFirstName() {
+  public UserQuery orderByUserFirstName() {
     return orderBy(UserQueryProperty.FIRST_NAME);
   }
   
-  public UserQuery orderByLastName() {
+  public UserQuery orderByUserLastName() {
     return orderBy(UserQueryProperty.LAST_NAME);
-  }
-  
-  public UserQuery orderBy(QueryProperty property) {
-    if(!(property instanceof UserQueryProperty)) {
-      throw new ActivitiException("Only UserQueryProperty can be used with orderBy");
-    }
-    this.orderProperty = (UserQueryProperty) property;
-    return this;
-  }
-  
-  public UserQuery asc() {
-    return direction(Direction.ASCENDING);
-  }
-  
-  public UserQuery desc() {
-    return direction(Direction.DESCENDING);
-  }
-  
-  public UserQuery direction(Direction direction) {
-    if (orderProperty==null) {
-      throw new ActivitiException("You should call any of the orderBy methods first before specifying a direction");
-    }
-    addOrder(orderProperty.getName(), direction.getName());
-    orderProperty = null;
-    return this;
   }
   
   //results //////////////////////////////////////////////////////////
@@ -159,12 +132,6 @@ public class UserQueryImpl extends AbstractQuery<UserQuery, User> implements Use
     return commandContext
       .getIdentitySession()
       .findUserByQueryCriteria(this, page);
-  }
-  
-  protected void checkQueryOk() {
-    if (orderProperty != null) {
-      throw new ActivitiException("Invalid query: call asc() or desc() after using orderByXX()");
-    }
   }
   
   //getters //////////////////////////////////////////////////////////
@@ -193,8 +160,4 @@ public class UserQueryImpl extends AbstractQuery<UserQuery, User> implements Use
   public String getGroupId() {
     return groupId;
   }
-  public UserQueryProperty getOrderProperty() {
-    return orderProperty;
-  }
-  
 }

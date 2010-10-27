@@ -12,6 +12,7 @@
  */
 package org.activiti.rest.util;
 
+import org.activiti.engine.impl.AbstractQuery;
 import org.activiti.engine.query.Query;
 import org.activiti.engine.query.QueryProperty;
 import org.springframework.extensions.webscripts.Status;
@@ -59,7 +60,7 @@ public class ActivitiPagingWebScript extends ActivitiWebScript
       if (qp == null) {
         throw new WebScriptException(Status.STATUS_BAD_REQUEST, "Value for param 'sort' is not valid, '" + sort + "' is not a valid property");
       }
-      query.orderBy(qp);
+      ((AbstractQuery)query).orderBy(qp);
       if (order.equals("asc"))
       {
         query.asc();

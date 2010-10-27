@@ -84,7 +84,7 @@ public class UserQueryTest extends ActivitiInternalTestCase {
   }
   
   public void testQueryByFirstName() {
-    UserQuery query = identityService.createUserQuery().firstName("Gonzo");
+    UserQuery query = identityService.createUserQuery().userFirstName("Gonzo");
     verifyQueryResults(query, 1);
     
     User result = query.singleResult();
@@ -92,35 +92,35 @@ public class UserQueryTest extends ActivitiInternalTestCase {
   }
   
   public void testQueryByInvalidFirstName() {
-    UserQuery query = identityService.createUserQuery().firstName("invalid");
+    UserQuery query = identityService.createUserQuery().userFirstName("invalid");
     verifyQueryResults(query, 0);
     
     try {
-      identityService.createUserQuery().firstName(null).singleResult();
+      identityService.createUserQuery().userFirstName(null).singleResult();
       fail();
     } catch (ActivitiException e) { }
   }
   
   public void testQueryByFirstNameLike() {
-    UserQuery query = identityService.createUserQuery().firstNameLike("%o%");
+    UserQuery query = identityService.createUserQuery().userFirstNameLike("%o%");
     verifyQueryResults(query, 2);
     
-    query = identityService.createUserQuery().firstNameLike("Ker%");
+    query = identityService.createUserQuery().userFirstNameLike("Ker%");
     verifyQueryResults(query, 1);
   }
   
   public void testQueryByInvalidFirstNameLike() {
-    UserQuery query = identityService.createUserQuery().firstNameLike("%mispiggy%");
+    UserQuery query = identityService.createUserQuery().userFirstNameLike("%mispiggy%");
     verifyQueryResults(query, 0);
     
     try {
-      identityService.createUserQuery().firstNameLike(null).singleResult();
+      identityService.createUserQuery().userFirstNameLike(null).singleResult();
       fail();
     } catch (ActivitiException e) { }
   }
   
   public void testQueryByLastName() {
-    UserQuery query = identityService.createUserQuery().lastName("Bear");
+    UserQuery query = identityService.createUserQuery().userLastName("Bear");
     verifyQueryResults(query, 1);
     
     User result = query.singleResult();
@@ -128,62 +128,62 @@ public class UserQueryTest extends ActivitiInternalTestCase {
   }
   
   public void testQueryByInvalidLastName() {
-    UserQuery query = identityService.createUserQuery().lastName("invalid");
+    UserQuery query = identityService.createUserQuery().userLastName("invalid");
     verifyQueryResults(query, 0);
       
     try {
-      identityService.createUserQuery().lastName(null).singleResult();
+      identityService.createUserQuery().userLastName(null).singleResult();
       fail();
     } catch (ActivitiException e) { }
   }
   
   public void testQueryByLastNameLike() {
-    UserQuery query = identityService.createUserQuery().lastNameLike("%rog%");
+    UserQuery query = identityService.createUserQuery().userLastNameLike("%rog%");
     verifyQueryResults(query, 1);
     
-    query = identityService.createUserQuery().lastNameLike("%ea%");
+    query = identityService.createUserQuery().userLastNameLike("%ea%");
     verifyQueryResults(query, 2);
   }
   
   public void testQueryByInvalidLastNameLike() {
-    UserQuery query = identityService.createUserQuery().lastNameLike("%invalid%");
+    UserQuery query = identityService.createUserQuery().userLastNameLike("%invalid%");
     verifyQueryResults(query, 0);
       
     try {
-      identityService.createUserQuery().lastNameLike(null).singleResult();
+      identityService.createUserQuery().userLastNameLike(null).singleResult();
       fail();
     } catch (ActivitiException e) { }
   }
   
   public void testQueryByEmail() {
-    UserQuery query = identityService.createUserQuery().email("kermit@muppetshow.com");
+    UserQuery query = identityService.createUserQuery().userEmail("kermit@muppetshow.com");
     verifyQueryResults(query, 1);
   }
   
   public void testQueryByInvalidEmail() {
-    UserQuery query = identityService.createUserQuery().email("invalid");
+    UserQuery query = identityService.createUserQuery().userEmail("invalid");
     verifyQueryResults(query, 0);
       
     try {
-      identityService.createUserQuery().email(null).singleResult();
+      identityService.createUserQuery().userEmail(null).singleResult();
       fail();
     } catch (ActivitiException e) { }
   }
   
   public void testQueryByEmailLike() {
-    UserQuery query = identityService.createUserQuery().emailLike("%muppetshow.com");
+    UserQuery query = identityService.createUserQuery().userEmailLike("%muppetshow.com");
     verifyQueryResults(query, 3);
     
-    query = identityService.createUserQuery().emailLike("%kermit%");
+    query = identityService.createUserQuery().userEmailLike("%kermit%");
     verifyQueryResults(query, 1);
   }
   
   public void testQueryByInvalidEmailLike() {
-    UserQuery query = identityService.createUserQuery().emailLike("%invalid%");
+    UserQuery query = identityService.createUserQuery().userEmailLike("%invalid%");
     verifyQueryResults(query, 0);
       
     try {
-      identityService.createUserQuery().emailLike(null).singleResult();
+      identityService.createUserQuery().userEmailLike(null).singleResult();
       fail();
     } catch (ActivitiException e) { }
   }
@@ -191,18 +191,18 @@ public class UserQueryTest extends ActivitiInternalTestCase {
   public void testQuerySorting() {
     // asc
     assertEquals(3, identityService.createUserQuery().orderByUserId().asc().count());
-    assertEquals(3, identityService.createUserQuery().orderByEmail().asc().count());
-    assertEquals(3, identityService.createUserQuery().orderByFirstName().asc().count());
-    assertEquals(3, identityService.createUserQuery().orderByLastName().asc().count());
+    assertEquals(3, identityService.createUserQuery().orderByUserEmail().asc().count());
+    assertEquals(3, identityService.createUserQuery().orderByUserFirstName().asc().count());
+    assertEquals(3, identityService.createUserQuery().orderByUserLastName().asc().count());
     
     // desc
     assertEquals(3, identityService.createUserQuery().orderByUserId().desc().count());
-    assertEquals(3, identityService.createUserQuery().orderByEmail().desc().count());
-    assertEquals(3, identityService.createUserQuery().orderByFirstName().desc().count());
-    assertEquals(3, identityService.createUserQuery().orderByLastName().desc().count());
+    assertEquals(3, identityService.createUserQuery().orderByUserEmail().desc().count());
+    assertEquals(3, identityService.createUserQuery().orderByUserFirstName().desc().count());
+    assertEquals(3, identityService.createUserQuery().orderByUserLastName().desc().count());
 
     // Combined with criteria
-    UserQuery query = identityService.createUserQuery().lastNameLike("%ea%").orderByFirstName().asc();
+    UserQuery query = identityService.createUserQuery().userLastNameLike("%ea%").orderByUserFirstName().asc();
     List<User> users = query.list();
     assertEquals(2,users.size());
     assertEquals("Fozzie", users.get(0).getFirstName());
@@ -216,7 +216,7 @@ public class UserQueryTest extends ActivitiInternalTestCase {
     } catch (ActivitiException e) {}
     
     try {
-      identityService.createUserQuery().orderByUserId().orderByEmail().list();
+      identityService.createUserQuery().orderByUserId().orderByUserEmail().list();
       fail();
     } catch (ActivitiException e) {}
   }
