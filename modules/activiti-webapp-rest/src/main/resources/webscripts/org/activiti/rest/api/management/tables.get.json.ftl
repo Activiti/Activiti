@@ -1,4 +1,3 @@
-<#import "management.lib.ftl" as managementLib>
 <#escape x as jsonUtils.encodeJSONString(x)>
 {
   "data": [
