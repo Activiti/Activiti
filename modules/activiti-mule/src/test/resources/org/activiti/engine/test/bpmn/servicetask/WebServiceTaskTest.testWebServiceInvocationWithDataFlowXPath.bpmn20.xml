@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <definitions id="definitions" 
   xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xmlns:activiti="http://activiti.org/bpmn"
   xmlns:xsd="http://www.w3.org/2001/XMLSchema"
   typeLanguage="http://www.w3.org/2001/XMLSchema"
@@ -62,17 +61,17 @@
                 <sourceRef>dataInputOfProcess</sourceRef>
                 <targetRef>dataInputOfServiceTask</targetRef>
    				<assignment>
-   					<from>bpmn:getDataObject('dataInputOfProcess')/prefix</from>
-   					<to>bpmn:getDataInput('dataInputOfServiceTask')/counter:prefix}</to>
+   					<from>bpmn:getDataObject("dataInputOfProcess")/prefix</from>
+   					<to>bpmn:getDataInput("dataInputOfServiceTask")/counter:prefix}</to>
    				</assignment>
    				<assignment>
-   					<from>bpmn:getDataObject('dataInputOfProcess')/suffix</from>
-   					<to>bpmn:getDataInput('dataInputOfServiceTask')/counter:suffix}</to>
+   					<from>bpmn:getDataObject("dataInputOfProcess")/suffix</from>
+   					<to>bpmn:getDataInput("dataInputOfServiceTask")/counter:suffix}</to>
    				</assignment>
             </dataInputAssociation>
             <dataOutputAssociation>
             	<targetRef>dataOutputOfProcess</targetRef>
-            	<transformation>bpmn:getDataOutput('dataOutputOfServiceTask')/counter:prettyPrint</transformation>
+            	<transformation>bpmn:getDataOutput("dataOutputOfServiceTask")/counter:prettyPrint</transformation>
             </dataOutputAssociation>
     </serviceTask>
     

@@ -2,16 +2,15 @@
 <definitions id="taskAssigneeExample" 
   xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
   xmlns:activiti="http://activiti.org/bpmn"
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	targetNamespace="Examples">
+  targetNamespace="Examples">
 	
-	<process id='multipleCandidatesGroup' name="Multiple candidate groups example">
+	<process id="multipleCandidatesGroup" name="Multiple candidate groups example">
 	
-		<startEvent id='theStart' />
+		<startEvent id="theStart" />
 		
-		<sequenceFlow id='flow1' sourceRef='theStart' targetRef='theTask' />
+		<sequenceFlow id="flow1" sourceRef="theStart" targetRef="theTask" />
 
-		<userTask id='theTask' name='Approve expenses' >
+		<userTask id="theTask" name="Approve expenses" >
 		  <documentation>
 		    Judge expenses of employees before end of fiscal quarter.
 		  </documentation>
@@ -22,9 +21,9 @@
 		  </potentialOwner>
 		</userTask>
 		
-		<sequenceFlow id='flow2' sourceRef='theTask' targetRef='theEnd' />
+		<sequenceFlow id="flow2" sourceRef="theTask" targetRef="theEnd" />
 		
-		<endEvent id='theEnd' />
+		<endEvent id="theEnd" />
 		
 	</process>
 

@@ -2,15 +2,14 @@
 
 <definitions
   xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xmlns:activiti="http://activiti.org/bpmn"
   targetNamespace="Examples">
 
-  <process id='two' name="Two">
+  <process id="two" name="Two">
   
-    <startEvent id='start' />
-    <sequenceFlow id='flow1' sourceRef='start' targetRef='end' />
-    <endEvent id='end' />
+    <startEvent id="start" />
+    <sequenceFlow id="flow1" sourceRef="start" targetRef="end" />
+    <endEvent id="end" />
     
   </process>
 

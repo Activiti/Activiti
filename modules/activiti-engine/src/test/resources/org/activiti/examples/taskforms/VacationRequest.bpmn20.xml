@@ -24,21 +24,21 @@
       </potentialOwner>         
     </userTask>
 
-    <sequenceFlow id='flow2' sourceRef='handleRequest' targetRef='requestApprovedDecision' />
+    <sequenceFlow id="flow2" sourceRef="handleRequest" targetRef="requestApprovedDecision" />
     
     <exclusiveGateway id="requestApprovedDecision" name="Request approved?" />
     
-    <sequenceFlow id='flow3' sourceRef="requestApprovedDecision" targetRef="sendApprovalMail">
+    <sequenceFlow id="flow3" sourceRef="requestApprovedDecision" targetRef="sendApprovalMail">
       <conditionExpression xsi:type="tFormalExpression">${vacationApproved}</conditionExpression>
     </sequenceFlow>
     
     <task id="sendApprovalMail" name="Send confirmation e-mail" />
     
-    <sequenceFlow id='flow4' sourceRef="sendApprovalMail" targetRef="theEnd1" />
+    <sequenceFlow id="flow4" sourceRef="sendApprovalMail" targetRef="theEnd1" />
     
     <endEvent id="theEnd1" />
     
-    <sequenceFlow id='flow5' sourceRef="requestApprovedDecision" targetRef="adjustVacationRequestTask">
+    <sequenceFlow id="flow5" sourceRef="requestApprovedDecision" targetRef="adjustVacationRequestTask">
       <conditionExpression xsi:type="tFormalExpression">${!vacationApproved}</conditionExpression>
     </sequenceFlow>
     
@@ -54,15 +54,15 @@
       </humanPerformer>  
     </userTask>
      
-    <sequenceFlow id='flow6' sourceRef="adjustVacationRequestTask" targetRef="resendRequestDecision" />
+    <sequenceFlow id="flow6" sourceRef="adjustVacationRequestTask" targetRef="resendRequestDecision" />
     
     <exclusiveGateway id="resendRequestDecision" name="Resend request?" />
     
-    <sequenceFlow id='flow7' sourceRef="resendRequestDecision" targetRef="handleRequest">
+    <sequenceFlow id="flow7" sourceRef="resendRequestDecision" targetRef="handleRequest">
       <conditionExpression xsi:type="tFormalExpression">${resendRequest}</conditionExpression>
     </sequenceFlow>
     
-     <sequenceFlow id='flow8' sourceRef="resendRequestDecision" targetRef="theEnd2">
+     <sequenceFlow id="flow8" sourceRef="resendRequestDecision" targetRef="theEnd2">
       <conditionExpression xsi:type="tFormalExpression">${!resendRequest}</conditionExpression>
     </sequenceFlow>
           

@@ -2,7 +2,6 @@
 <definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
   xmlns:activiti="http://activiti.org/bpmn"
-  xsi:schemaLocation="http://schema.omg.org/spec/BPMN/2.0 BPMN20.xsd" 
   targetNamespace="Examples">
 
   <process id="bogusProcess" invalidAttribute="bogus">

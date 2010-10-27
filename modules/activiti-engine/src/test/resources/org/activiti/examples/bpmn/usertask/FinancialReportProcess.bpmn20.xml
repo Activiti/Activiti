@@ -8,7 +8,7 @@
 	
 		<startEvent id="theStart" />
 		
-		<sequenceFlow id='flow1' sourceRef='theStart' targetRef='writeReportTask' />
+		<sequenceFlow id="flow1" sourceRef="theStart" targetRef="writeReportTask" />
 		
 		<userTask id="writeReportTask" name="Write monthly financial report" >
 		  <documentation>
@@ -21,7 +21,7 @@
       </potentialOwner>
 		</userTask>
 		
-		<sequenceFlow id='flow2' sourceRef='writeReportTask' targetRef='verifyReportTask' />
+		<sequenceFlow id="flow2" sourceRef="writeReportTask" targetRef="verifyReportTask" />
 			
 		<userTask id="verifyReportTask" name="Verify monthly financial report" >
 		  <documentation>
@@ -35,7 +35,7 @@
       </potentialOwner>
 		</userTask>
 		
-		<sequenceFlow id='flow3' sourceRef='verifyReportTask' targetRef='theEnd' />
+		<sequenceFlow id="flow3" sourceRef="verifyReportTask" targetRef="theEnd" />
 			
 		<endEvent id="theEnd" />
 			

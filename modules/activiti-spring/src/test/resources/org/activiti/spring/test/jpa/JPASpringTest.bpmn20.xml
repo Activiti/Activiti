@@ -6,20 +6,20 @@
   targetNamespace="Examples">
 	
   <process id="LoanRequestProcess" name="Process creating and handling loan request">
-    <startEvent id='theStart' />
-    <sequenceFlow id='flow1' sourceRef='theStart' targetRef='createLoanRequest' />
+    <startEvent id="theStart" />
+    <sequenceFlow id="flow1" sourceRef="theStart" targetRef="createLoanRequest" />
     
-    <serviceTask id='createLoanRequest' name='Create loan request' 
+    <serviceTask id="createLoanRequest" name="Create loan request" 
       activiti:expression="${loanRequestBean.newLoanRequest(customerName, amount)}" 
       activiti:resultVariableName="loanRequest"/>    
-    <sequenceFlow id='flow2' sourceRef='createLoanRequest' targetRef='approveTask' />
+    <sequenceFlow id="flow2" sourceRef="createLoanRequest" targetRef="approveTask" />
     
     <userTask id="approveTask" name="Approve request" />
-    <sequenceFlow id='flow3' sourceRef='approveTask' targetRef='approveOrDissaprove' />
+    <sequenceFlow id="flow3" sourceRef="approveTask" targetRef="approveOrDissaprove" />
     
-    <serviceTask id='approveOrDissaprove' name='Store decision' 
+    <serviceTask id="approveOrDissaprove" name="Store decision" 
       activiti:expression="${loanRequest.setApproved(approvedByManager)}" />
-    <sequenceFlow id='flow4' sourceRef='approveOrDissaprove' targetRef='exclusiveGw' />
+    <sequenceFlow id="flow4" sourceRef="approveOrDissaprove" targetRef="exclusiveGw" />
     
     <exclusiveGateway id="exclusiveGw" name="Exclusive Gateway approval" /> 
     <sequenceFlow id="endFlow1" sourceRef="exclusiveGw" targetRef="theEnd">
@@ -30,10 +30,10 @@
     </sequenceFlow>
     
     <userTask id="sendRejectionLetter" name="Send rejection letter" />
-    <sequenceFlow id='flow5' sourceRef='sendRejectionLetter' targetRef='theOtherEnd' />
+    <sequenceFlow id="flow5" sourceRef="sendRejectionLetter" targetRef="theOtherEnd" />
     
-    <endEvent id='theEnd' />
-    <endEvent id='theOtherEnd' />
+    <endEvent id="theEnd" />
+    <endEvent id="theOtherEnd" />
   </process>
 
 </definitions>

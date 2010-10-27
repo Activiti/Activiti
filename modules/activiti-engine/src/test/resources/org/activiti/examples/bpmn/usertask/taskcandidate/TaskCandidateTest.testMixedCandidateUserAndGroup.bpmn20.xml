@@ -1,18 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <definitions id="taskAssigneeExample" 
   xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xmlns:activiti="http://activiti.org/bpmn"
-  xsi:schemaLocation="http://schema.omg.org/spec/BPMN/2.0 BPMN20.xsd"
-	targetNamespace="Examples">
+  targetNamespace="Examples">
 	
-	<process id='mixedCandidateUserAndGroup' name="Mixed candidate user and group example">
+	<process id="mixedCandidateUserAndGroup" name="Mixed candidate user and group example">
 	
-		<startEvent id='theStart' />
+		<startEvent id="theStart" />
 		
-		<sequenceFlow id='flow1' sourceRef='theStart' targetRef='theTask' />
+		<sequenceFlow id="flow1" sourceRef="theStart" targetRef="theTask" />
 
-		<userTask id='theTask' name='Write financial report' >
+		<userTask id="theTask" name="Write financial report" >
 		  <documentation>
 		    Write the bi-monthly financial report for the shareholders newsletter.
 		  </documentation>
@@ -23,9 +21,9 @@
 		  </potentialOwner>
 		</userTask>
 		
-		<sequenceFlow id='flow2' sourceRef='theTask' targetRef='theEnd' />
+		<sequenceFlow id="flow2" sourceRef="theTask" targetRef="theEnd" />
 		
-		<endEvent id='theEnd' />
+		<endEvent id="theEnd" />
 		
 	</process>
 

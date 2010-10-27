@@ -4,11 +4,11 @@
              xmlns:activiti="http://activiti.org/bpmn"
              targetNamespace="Examples">
 
-  <process id='one' name="One">
+  <process id="one" name="One">
   
-    <startEvent id='start' />
-    <sequenceFlow id='flow1' sourceRef='start' targetRef='end' />
-    <endEvent id='end' />
+    <startEvent id="start" />
+    <sequenceFlow id="flow1" sourceRef="start" targetRef="end" />
+    <endEvent id="end" />
     
   </process>
 

@@ -1,14 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <definitions 
-  xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" 
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://schema.omg.org/spec/BPMN/2.0 BPMN20.xsd" 
+  xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+  xmlns:activiti="http://activiti.org/bpmn"
   targetNamespace="Examples">
 
-  <process id='startToEnd'>
-    <startEvent id='theStart' />
-    <sequenceFlow id='flow1' sourceRef='theStart' targetRef='theEnd' />
-    <endEvent id='theEnd' />
+  <process id="startToEnd">
+    <startEvent id="theStart" />
+    <sequenceFlow id="flow1" sourceRef="theStart" targetRef="theEnd" />
+    <endEvent id="theEnd" />
   </process>
 
 </definitions>

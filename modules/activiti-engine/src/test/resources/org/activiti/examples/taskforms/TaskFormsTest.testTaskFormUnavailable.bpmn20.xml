@@ -13,7 +13,7 @@
     
     <userTask id="approve" />
 
-    <sequenceFlow id='flow2' sourceRef='approve' targetRef='end' />
+    <sequenceFlow id="flow2" sourceRef="approve" targetRef="end" />
       
     <endEvent id="end" />
       
