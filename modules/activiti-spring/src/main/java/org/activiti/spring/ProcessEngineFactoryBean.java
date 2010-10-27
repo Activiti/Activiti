@@ -210,7 +210,7 @@ public class ProcessEngineFactoryBean implements FactoryBean<ProcessEngine>, Dis
     processEngineConfiguration.setJobExecutor(jobExecutor);
   }
 
-  public void setJobExecutorAutoActivate(boolean jobExecutorAutoActivate) {
+  public void setJobExecutorActivate(boolean jobExecutorAutoActivate) {
     processEngineConfiguration.setJobExecutorActivate(jobExecutorAutoActivate);
   }
 

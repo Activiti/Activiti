@@ -27,7 +27,7 @@
       <listitem><para><literal>dbSchemaStrategy</literal> (String) see <xref linkend="configurationproperties"/></para></listitem>
       <listitem><para><literal>deploymentName</literal> (String)</para> </listitem>
       <listitem><para><literal>deploymentResources</literal> (Resource[])</para> </listitem>
-      <listitem><para><literal>jobExecutorAutoActivate</literal> (boolean) see <xref linkend="configurationproperties"/></para> </listitem>
+      <listitem><para><literal>jobExecutorActivate</literal> (boolean) see <xref linkend="configurationproperties"/></para> </listitem>
       <listitem><para><literal>mailServerHost</literal> (String) see <xref linkend="configurationproperties"/></para> </listitem>
       <listitem><para><literal>mailServerPort</literal> (String) see <xref linkend="configurationproperties"/></para> </listitem>
       <listitem><para><literal>mailServerUsername</literal> (String) see <xref linkend="configurationproperties"/></para> </listitem>
