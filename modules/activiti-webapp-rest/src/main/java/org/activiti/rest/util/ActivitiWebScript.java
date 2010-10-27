@@ -13,9 +13,9 @@
 package org.activiti.rest.util;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
+import org.activiti.engine.FormService;
 import org.activiti.engine.IdentityService;
 import org.activiti.engine.ManagementService;
 import org.activiti.engine.ProcessEngine;
@@ -24,10 +24,12 @@ import org.activiti.engine.ProcessEngines;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.RuntimeService;
 import org.activiti.engine.TaskService;
-import org.activiti.engine.query.Query;
-import org.activiti.engine.query.QueryProperty;
 import org.activiti.rest.Config;
-import org.springframework.extensions.webscripts.*;
+import org.springframework.extensions.webscripts.Cache;
+import org.springframework.extensions.webscripts.DeclarativeWebScript;
+import org.springframework.extensions.webscripts.ISO8601DateFormatMethod;
+import org.springframework.extensions.webscripts.Status;
+import org.springframework.extensions.webscripts.WebScriptRequest;
 
 /**
  * Helper class for all activiti webscripts.
@@ -159,6 +161,15 @@ public class ActivitiWebScript extends DeclarativeWebScript {
    */
   protected TaskService getTaskService() {
     return getProcessEngine().getTaskService();
+  }
+  
+  /**
+   * Returns the form service.
+   *
+   * @return The form service
+   */
+  protected FormService getFormService() {
+    return getProcessEngine().getFormService();
   }
 
 
