@@ -48,6 +48,169 @@
     <p>We are including slightly modified source code of the Apache Licensed <a href="http://juel.sourceforge.net/" title="JUEL project page">JUEL 2.2.1</a>, created by Odysseus Software GmbH.</p>
 
   <h1>Activiti Release Notes</h1>
+  
+    <h3>5.0.rc1 (November 1, 2010)</h3>
+
+    <h4>Highlights</h4>
+    
+    <ul>
+    <li>TODO</li>
+    </ul>
+    
+<h4>Sub-tasks</h4>
+<ul>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-191'>ACT-191</a>] -         Documentation Mistake in ProcessEngineFactoryBean section of User Guide
+</li>
+</ul>
+    
+<h4>Bug</h4>
+<ul>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-144'>ACT-144</a>] -         Canot start process instance when sorted on version first
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-192'>ACT-192</a>] -         Table &quot;ACT_ID_GROUP&quot; not found for dbSchemaStrategy = &quot;create-drop&quot;
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-194'>ACT-194</a>] -         Business model is not persisted when reconnecting SequenceFlow
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-195'>ACT-195</a>] -         UpdateConnectionFlowElementFeature is not invoked for SequenceFlows
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-206'>ACT-206</a>] -         Cannot unclaim a task
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-233'>ACT-233</a>] -         Connection pool of Ibatis is not used in standalone usage
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-287'>ACT-287</a>] -         Starting process instance in explorer doesn&#39;t show &#39;Start form&#39; anymore when the process has a startform
+</li>
+</ul>
+    
+<h4>Improvement</h4>
+<ul>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-21'>ACT-21</a>] -         Manage list of deployments
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-22'>ACT-22</a>] -         Manage list of jobs
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-23'>ACT-23</a>] -         Add no-wrap to task list menu navigation
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-129'>ACT-129</a>] -         Make connection pool of MyBatis configurable
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-138'>ACT-138</a>] -         Create REST API for Manage list of jobs
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-139'>ACT-139</a>] -         REST API for Manage list of deployments
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-179'>ACT-179</a>] -         Fix css code so its consistent with the rest of the app
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-189'>ACT-189</a>] -         Engine should be able to resolve parameterised method expressions  
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-196'>ACT-196</a>] -         Process and subprocess diagram should have default content
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-197'>ACT-197</a>] -         SequenceFlow arrowheads are mispositioned and too large
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-209'>ACT-209</a>] -         Expose Task start time in interface and query API
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-210'>ACT-210</a>] -         Rename ActivitiRule.getHistoricDataService() to ActivitiRule.getHistoryService() 
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-213'>ACT-213</a>] -         Verify all basic indices exist on supported databases
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-214'>ACT-214</a>] -         Clarify documentation demo setup
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-216'>ACT-216</a>] -         ServiceTaskMethodExpressionActivityBehavior / ServiceTaskValueExpressionActivityBehavior should support storing service task return value in process variable
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-219'>ACT-219</a>] -         Update Userguide with latest UI changes
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-224'>ACT-224</a>] -         Allow parsing of document element for all activity types
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-230'>ACT-230</a>] -         Change BpmnParse: instead of throwing an exception, use the addProblem() method
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-238'>ACT-238</a>] -         Extract common methods from Query API to single Interface
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-241'>ACT-241</a>] -         Handle closing of inputstreams in a consistent way
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-246'>ACT-246</a>] -         Missing warning when process has a construct which is unsupported.
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-257'>ACT-257</a>] -         Define a order for group list (left panel)
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-259'>ACT-259</a>] -         Make method naming in Query API consistent
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-260'>ACT-260</a>] -         Make namespace prefix consistent activiti:
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-261'>ACT-261</a>] -         Change dashes in xml-entities to camelCase
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-265'>ACT-265</a>] -         Always use ReflectUtil to do classloader-related operations
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-272'>ACT-272</a>] -         Only use &#39;Expression&#39; instead of making distinction between value/method
+</li>
+</ul>
+    
+<h4>New Feature</h4>
+<ul>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-120'>ACT-120</a>] -         Audit tracking
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-125'>ACT-125</a>] -         BPMN: add event listeners
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-145'>ACT-145</a>] -         Add Task.getTaskDefinitionKey()
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-148'>ACT-148</a>] -         Make Activiti &quot;offline runnable&quot;
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-152'>ACT-152</a>] -         Introduce business key
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-190'>ACT-190</a>] -         Query for process instances based on variable values
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-208'>ACT-208</a>] -         Cannot remove a variable
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-220'>ACT-220</a>] -         Allow for parameter injection in method-expr on service-task
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-242'>ACT-242</a>] -         Expose process definition model for introspection
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-258'>ACT-258</a>] -         Introduce form instances
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-273'>ACT-273</a>] -         Allow user to customize preference of automatically adding labels to sequence flows
+</li>
+</ul>
+    
+<h4>Task</h4>
+<ul>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-134'>ACT-134</a>] -         Revisit configuration
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-137'>ACT-137</a>] -         Add oracle support
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-174'>ACT-174</a>] -         Document link to Signavio community in our wiki
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-183'>ACT-183</a>] -         Remove &#39;about&#39; tabs in the webapps
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-186'>ACT-186</a>] -         Improve exception analysis when no tables are present
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-193'>ACT-193</a>] -         Bring CYCLE_CONFIG in sync with rest of table naming conventions
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-243'>ACT-243</a>] -         Expose Execution.getProcessInstanceId
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-245'>ACT-245</a>] -         review variable in ByteArrayEntity
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-247'>ACT-247</a>] -         Clean unused table columns
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-248'>ACT-248</a>] -         Verify HistoricProcessInstance query filtering
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-251'>ACT-251</a>] -         Add task audit to history
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-262'>ACT-262</a>] -         Check docs about bar file classloading
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-263'>ACT-263</a>] -         Use a correct versioning scheme for activiti-juel module
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-264'>ACT-264</a>] -         Remove eclipse/idea files from trunk
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-266'>ACT-266</a>] -         Make demo-setup run on Postgres
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-267'>ACT-267</a>] -         Merge pvm and juel modules into engine
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-282'>ACT-282</a>] -         Transform BpmnJavaDelegation class to JavaDelegation interface
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-283'>ACT-283</a>] -         rename activiti bpmn extensions namespace
+</li>
+</ul>
+    
+<h4>Test</h4>
+<ul>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-221'>ACT-221</a>] -         Add an integration test for the webservice task solely based on CXF
+</li>
+</ul>
+    
 
     <h3>5.0.beta2 (October 1, 2010)</h3>
 
