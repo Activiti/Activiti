@@ -65,10 +65,10 @@
         this.id + "-datatable",
         [ this.id + "-paginator" ],
         [
-          {key:"id", sortable:true},
-          {key:"key",sortable:true},
-          {key:"version",sortable:true},
-          {key:"action"}
+          {key:"name", label: this.msg("processes.name"), sortable:true},
+          {key:"key", label: this.msg("processes.key"), sortable:true},
+          {key:"version",  label: this.msg("processes.version"),sortable:true},
+          {key:"action", label: this.msg("processes.action")}
         ]
       );
       
