@@ -5,7 +5,7 @@
 
   <title>History</title>
   
-  <warning><title>(Experimental)</title><para></para></warning>
+  <para><link linkend="experimental"><emphasis role="bold">&lt;EXPERIMENTAL&gt;</emphasis></link></para>
   
   <para>History is the component that captures what happened
   during process execution and stores it permanently.  In contrast to the runtime data, 
@@ -23,5 +23,7 @@
   <para>Later on, this information will be exposed in Activiti Explorer and Activiti Probe.
   Also, it will be the information from which the reports will be generated.
   </para>
+
+  <para><link linkend="experimental"><emphasis role="bold">&lt;/EXPERIMENTAL&gt;</emphasis></link></para>
   
 </chapter>

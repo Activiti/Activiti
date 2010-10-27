@@ -7,7 +7,7 @@
   <!ENTITY ch05 SYSTEM "chapters/ch05-API.xml">
   <!ENTITY ch06 SYSTEM "chapters/ch06-Deployment.xml">
   <!ENTITY ch07 SYSTEM "chapters/ch07-BPMN.xml">
-  <!ENTITY ch08 SYSTEM "chapters/ch08-TaskForms.xml">
+  <!ENTITY ch08 SYSTEM "chapters/ch08-Forms.xml">
   <!ENTITY ch09 SYSTEM "chapters/ch09-JPA.xml">
   <!ENTITY ch10 SYSTEM "chapters/ch10-History.xml">
   <!ENTITY ch11 SYSTEM "chapters/ch11-Designer.xml">

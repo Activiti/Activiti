@@ -583,7 +583,7 @@
            <emphasis role="bold">form</emphasis>: references to a form template that users have to fill out to 
            supply the information to start a new process instance.  More information can be found in 
            <xref linkend="taskForms" />.  Example:
-           <programlisting>&lt;startEvent id=&quot;request&quot; activiti:form=&quot;org/activiti/examples/taskforms/request.form&quot; /&gt;</programlisting>
+           <programlisting>&lt;startEvent id=&quot;request&quot; activiti:formKey=&quot;org/activiti/examples/taskforms/request.form&quot; /&gt;</programlisting>
          </para>
        </listitem>
        <listitem>
