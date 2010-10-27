@@ -3,11 +3,12 @@ package org.activiti.cycle.impl.connector.signavio;
 import java.util.List;
 
 import org.activiti.cycle.ArtifactType;
-import org.activiti.cycle.RenderInfo;
 import org.activiti.cycle.CycleDefaultMimeType;
+import org.activiti.cycle.RenderInfo;
 import org.activiti.cycle.impl.ArtifactTypeImpl;
 import org.activiti.cycle.impl.ContentRepresentationImpl;
 import org.activiti.cycle.impl.conf.RepositoryConnectorConfiguration;
+import org.activiti.cycle.impl.connector.signavio.action.CopySignavioModelAction;
 import org.activiti.cycle.impl.connector.signavio.action.CreateTechnicalBpmnXmlAction;
 import org.activiti.cycle.impl.connector.signavio.action.OpenModelerAction;
 import org.activiti.cycle.impl.connector.signavio.action.ValidateActivitiDeployment;
@@ -15,8 +16,8 @@ import org.activiti.cycle.impl.connector.signavio.provider.ActivitiCompliantBpmn
 import org.activiti.cycle.impl.connector.signavio.provider.Bpmn20Provider;
 import org.activiti.cycle.impl.connector.signavio.provider.Jpdl4Provider;
 import org.activiti.cycle.impl.connector.signavio.provider.JsonProvider;
-import org.activiti.cycle.impl.connector.signavio.provider.SvgApiProvider;
 import org.activiti.cycle.impl.connector.signavio.provider.PngProvider;
+import org.activiti.cycle.impl.connector.signavio.provider.SvgApiProvider;
 import org.activiti.cycle.impl.plugin.ActivitiCyclePlugin;
 import org.activiti.cycle.impl.plugin.ActivitiCyclePluginDefinition;
 
@@ -72,6 +73,7 @@ public class SignavioPluginDefinition implements ActivitiCyclePluginDefinition {
     
     artifactType1.addParameterizedAction(new CreateTechnicalBpmnXmlAction());
     artifactType1.addParameterizedAction(new ValidateActivitiDeployment());
+    artifactType1.addParameterizedAction(new CopySignavioModelAction());
     artifactType1.addOpenUrlAction(new OpenModelerAction());
     artifactType1.addDownloadContentAction(CONTENT_REPRESENTATION_ID_BPMN_20_DEVELOPER);
     artifactType1.addDownloadContentAction(CONTENT_REPRESENTATION_ID_BPMN_20_RAW);

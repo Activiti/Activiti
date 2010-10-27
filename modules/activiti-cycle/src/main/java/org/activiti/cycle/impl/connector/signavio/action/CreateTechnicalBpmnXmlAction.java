@@ -33,8 +33,8 @@ public class CreateTechnicalBpmnXmlAction extends ParameterizedHtmlFormTemplateA
 
   private static final long serialVersionUID = 1L;
   
-  public static final String PARAM_TARGET_FOLDER = "targetFolder";
-  public static final String PARAM_TARGET_CONNECTOR = "targetFolderConnector";
+  public static final String PARAM_TARGET_FOLDER = "targetFolderId";
+  public static final String PARAM_TARGET_CONNECTOR = "targetConnectorId";
   public static final String PARAM_TARGET_NAME = "targetName";
   public static final String PARAM_COMMENT = "comment";
 
