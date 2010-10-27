@@ -2,6 +2,9 @@ package org.activiti.rest.api.process;
 
 import java.util.Map;
 
+import org.activiti.engine.form.StartFormData;
+import org.activiti.engine.impl.repository.ProcessDefinitionEntity;
+import org.activiti.rest.model.RestProcessDefinition;
 import org.activiti.rest.util.ActivitiRequest;
 import org.activiti.rest.util.ActivitiWebScript;
 import org.springframework.extensions.webscripts.Cache;
@@ -25,7 +28,14 @@ public class ProcessDefinitionGet extends ActivitiWebScript {
   @Override
   protected void executeWebScript(ActivitiRequest req, Status status, Cache cache, Map<String, Object> model) {
     String processDefinitionId = req.getMandatoryPathParameter("processDefinitionId");
-    model.put("processDefinition", getRepositoryService().createProcessDefinitionQuery().processDefinitionId(processDefinitionId).singleResult());
+    ProcessDefinitionEntity processDefinition =  (ProcessDefinitionEntity) getRepositoryService().createProcessDefinitionQuery().processDefinitionId(processDefinitionId).singleResult();
+    
+    RestProcessDefinition restProcessDefinition = new RestProcessDefinition(processDefinition);
+    StartFormData startFormData = getFormService().getStartFormData(processDefinitionId);
+    if(startFormData != null) {
+      restProcessDefinition.setStartFormResourceKey(startFormData.getFormKey());
+    }
+    model.put("processDefinition", restProcessDefinition);
   }
 
 }

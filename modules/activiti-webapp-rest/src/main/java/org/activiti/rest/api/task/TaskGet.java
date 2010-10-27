@@ -1,11 +1,14 @@
 package org.activiti.rest.api.task;
 
+import java.util.Map;
+
+import org.activiti.engine.form.TaskFormData;
+import org.activiti.engine.impl.task.TaskEntity;
+import org.activiti.rest.model.RestTask;
 import org.activiti.rest.util.ActivitiRequest;
 import org.activiti.rest.util.ActivitiWebScript;
 import org.springframework.extensions.webscripts.Cache;
 import org.springframework.extensions.webscripts.Status;
-
-import java.util.Map;
 
 /**
  * Returns info about a task.
@@ -26,6 +29,14 @@ public class TaskGet extends ActivitiWebScript {
   @Override
   protected void executeWebScript(ActivitiRequest req, Status status, Cache cache, Map<String, Object> model) {
     String taskId = req.getMandatoryPathParameter("taskId");
-    model.put("task", getTaskService().createTaskQuery().taskId(taskId));
+    TaskEntity task = (TaskEntity) getTaskService().createTaskQuery().taskId(taskId).singleResult();
+    RestTask restTask = new RestTask(task);
+    
+    TaskFormData taskFormData = getFormService().getTaskFormData(taskId);
+    if(taskFormData != null) {
+      restTask.setFormResourceKey(taskFormData.getFormKey());     
+    }
+    
+    model.put("task", restTask);
   }
 }
