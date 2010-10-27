@@ -18,6 +18,8 @@ package org.activiti.engine.impl.pvm;
  * @author Tom Baeyens
  */
 public interface ReadOnlyProcessDefinition extends PvmScope {
+  
+  String getName();
 
   PvmActivity getInitial();
 

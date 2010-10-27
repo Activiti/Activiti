@@ -40,7 +40,7 @@ public class DefaultFormHandler implements FormHandler {
   
   public void parseConfiguration(Element activityElement, DeploymentEntity deployment, BpmnParse bpmnParse) {
     this.deploymentId = deployment.getId();
-    this.formKey = activityElement.attributeNS(BpmnParser.BPMN_EXTENSIONS_NS, "formKey");
+    this.formKey = activityElement.attributeNS(BpmnParser.ACTIVITI_BPMN_EXTENSIONS_NS, "formKey");
     Element extensionElement = activityElement.element("extensionElements");
     if (extensionElement != null) {
 
@@ -53,7 +53,7 @@ public class DefaultFormHandler implements FormHandler {
         .getProcessEngineConfiguration()
         .getFormTypes();
     
-      List<Element> formPropertyElements = extensionElement.elementsNS(BpmnParser.BPMN_EXTENSIONS_NS, "formProperty");
+      List<Element> formPropertyElements = extensionElement.elementsNS(BpmnParser.ACTIVITI_BPMN_EXTENSIONS_NS, "formProperty");
       for (Element formPropertyElement : formPropertyElements) {
         FormPropertyHandler formPropertyHandler = new FormPropertyHandler();
         

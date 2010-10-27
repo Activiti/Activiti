@@ -377,7 +377,8 @@ public class BpmnParse extends Parse {
      * processDefinition.name -> bpmn name (optional)
      */
     processDefinition.setKey(processElement.attribute("id"));
-    processDefinition.setProperty("name", processElement.attribute("name"));
+    processDefinition.setName(processElement.attribute("name"));
+    processDefinition.setCategory(rootElement.attribute("targetNamespace"));
     processDefinition.setProperty("documentation", parseDocumentation(processElement));
     processDefinition.setTaskDefinitions(new HashMap<String, TaskDefinition>());
     processDefinition.setDeploymentId(deployment.getId());
@@ -459,7 +460,7 @@ public class BpmnParse extends Parse {
         processDefinition.setInitial(startEventActivity);
 
         StartFormHandler startFormHandler;
-        String startFormHandlerClassName = startEventElement.attributeNS(BpmnParser.BPMN_EXTENSIONS_NS, "formHandlerClass");
+        String startFormHandlerClassName = startEventElement.attributeNS(BpmnParser.ACTIVITI_BPMN_EXTENSIONS_NS, "formHandlerClass");
         if (startFormHandlerClassName!=null) {
           startFormHandler = (StartFormHandler) ReflectUtil.instantiate(startFormHandlerClassName);
         } else {
@@ -468,7 +469,7 @@ public class BpmnParse extends Parse {
         startFormHandler.parseConfiguration(startEventElement, deployment, this);
         processDefinition.setStartFormHandler(startFormHandler);
         
-        String initiatorVariableName = startEventElement.attributeNS(BpmnParser.BPMN_EXTENSIONS_NS, "initiator");
+        String initiatorVariableName = startEventElement.attributeNS(BpmnParser.ACTIVITI_BPMN_EXTENSIONS_NS, "initiator");
         if (initiatorVariableName != null) {
           processDefinition.setProperty(PROPERTYNAME_INITIATOR_VARIABLE_NAME, initiatorVariableName);
         }
@@ -612,7 +613,7 @@ public class BpmnParse extends Parse {
         language = ScriptingEngines.DEFAULT_SCRIPTING_LANGUAGE;
       }
 
-      resultVariableName = scriptTaskElement.attributeNS(BpmnParser.BPMN_EXTENSIONS_NS, "resultVariableName");
+      resultVariableName = scriptTaskElement.attributeNS(BpmnParser.ACTIVITI_BPMN_EXTENSIONS_NS, "resultVariableName");
     }
     
     activity.setActivityBehavior(new ScriptTaskActivity(script, language, resultVariableName));
@@ -630,10 +631,10 @@ public class BpmnParse extends Parse {
   public void parseServiceTask(Element serviceTaskElement, ScopeImpl scope) {
     ActivityImpl activity = parseAndCreateActivityOnScopeElement(serviceTaskElement, scope);
 
-    String type = serviceTaskElement.attributeNS(BpmnParser.BPMN_EXTENSIONS_NS, "type");
-    String className = serviceTaskElement.attributeNS(BpmnParser.BPMN_EXTENSIONS_NS, "class");
-    String expression = serviceTaskElement.attributeNS(BpmnParser.BPMN_EXTENSIONS_NS, "expression");
-    String resultVariableName = serviceTaskElement.attributeNS(BpmnParser.BPMN_EXTENSIONS_NS, "resultVariableName");
+    String type = serviceTaskElement.attributeNS(BpmnParser.ACTIVITI_BPMN_EXTENSIONS_NS, "type");
+    String className = serviceTaskElement.attributeNS(BpmnParser.ACTIVITI_BPMN_EXTENSIONS_NS, "class");
+    String expression = serviceTaskElement.attributeNS(BpmnParser.ACTIVITI_BPMN_EXTENSIONS_NS, "expression");
+    String resultVariableName = serviceTaskElement.attributeNS(BpmnParser.ACTIVITI_BPMN_EXTENSIONS_NS, "resultVariableName");
     String implementation = serviceTaskElement.attribute("implementation");
     String operationRef = serviceTaskElement.attribute("operationRef");
     List<FieldDeclaration> fieldDeclarations = parseFieldDeclarationsOnServiceTask(serviceTaskElement);
@@ -720,7 +721,7 @@ public class BpmnParse extends Parse {
   public List<FieldDeclaration> parseFieldDeclarations(Element element) {
     List<FieldDeclaration> fieldDeclarations = new ArrayList<FieldDeclaration>();
     
-    List<Element> fieldDeclarationElements = element.elementsNS(BpmnParser.BPMN_EXTENSIONS_NS, "field");
+    List<Element> fieldDeclarationElements = element.elementsNS(BpmnParser.ACTIVITI_BPMN_EXTENSIONS_NS, "field");
     if (fieldDeclarationElements != null && !fieldDeclarationElements.isEmpty()) {
       
       for (Element fieldDeclarationElement : fieldDeclarationElements) {
@@ -886,7 +887,7 @@ public class BpmnParse extends Parse {
 
   public TaskDefinition parseTaskDefinition(Element taskElement, String taskDefinitionKey, ProcessDefinitionEntity processDefinition) {
     TaskFormHandler taskFormHandler;
-    String taskFormHandlerClassName = taskElement.attributeNS(BpmnParser.BPMN_EXTENSIONS_NS, "formHandlerClass");
+    String taskFormHandlerClassName = taskElement.attributeNS(BpmnParser.ACTIVITI_BPMN_EXTENSIONS_NS, "formHandlerClass");
     if (taskFormHandlerClassName!=null) {
       taskFormHandler = (TaskFormHandler) ReflectUtil.instantiate(taskFormHandlerClassName);
     } else {
@@ -985,7 +986,7 @@ public class BpmnParse extends Parse {
   protected void parseUserTaskCustomExtensions(Element taskElement, TaskDefinition taskDefinition) {
 
     // assignee
-    String assignee = taskElement.attributeNS(BpmnParser.BPMN_EXTENSIONS_NS, ASSIGNEE_EXTENSION);
+    String assignee = taskElement.attributeNS(BpmnParser.ACTIVITI_BPMN_EXTENSIONS_NS, ASSIGNEE_EXTENSION);
     if (assignee != null) {
       if (taskDefinition.getAssigneeExpression() == null) {
         taskDefinition.setAssigneeExpression(expressionManager.createExpression(assignee));
@@ -996,7 +997,7 @@ public class BpmnParse extends Parse {
     }
 
     // Candidate users
-    String candidateUsersString = taskElement.attributeNS(BpmnParser.BPMN_EXTENSIONS_NS, CANDIDATE_USERS_EXTENSION);
+    String candidateUsersString = taskElement.attributeNS(BpmnParser.ACTIVITI_BPMN_EXTENSIONS_NS, CANDIDATE_USERS_EXTENSION);
     if (candidateUsersString != null) {
       String[] candidateUsers = candidateUsersString.split(",");
       for (String candidateUser : candidateUsers) {
@@ -1005,7 +1006,7 @@ public class BpmnParse extends Parse {
     }
 
     // Candidate groups
-    String candidateGroupsString = taskElement.attributeNS(BpmnParser.BPMN_EXTENSIONS_NS, CANDIDATE_GROUPS_EXTENSION);
+    String candidateGroupsString = taskElement.attributeNS(BpmnParser.ACTIVITI_BPMN_EXTENSIONS_NS, CANDIDATE_GROUPS_EXTENSION);
     if (candidateGroupsString != null) {
       String[] candidateGroups = candidateGroupsString.split(",");
       for (String candidateGroup : candidateGroups) {
@@ -1271,7 +1272,7 @@ public class BpmnParse extends Parse {
   public void parsePropertyCustomExtensions(ActivityImpl activity, Element propertyElement, String propertyName, String propertyType) {
 
     if (propertyType == null) {
-      String type = propertyElement.attributeNS(BpmnParser.BPMN_EXTENSIONS_NS, "type");
+      String type = propertyElement.attributeNS(BpmnParser.ACTIVITI_BPMN_EXTENSIONS_NS, "type");
       propertyType = type != null ? type : "string"; // default is string
     }
 
@@ -1279,34 +1280,34 @@ public class BpmnParse extends Parse {
     addVariableDeclaration(activity, variableDeclaration);
     activity.setScope(true);
 
-    String src = propertyElement.attributeNS(BpmnParser.BPMN_EXTENSIONS_NS, "src");
+    String src = propertyElement.attributeNS(BpmnParser.ACTIVITI_BPMN_EXTENSIONS_NS, "src");
     if (src != null) {
       variableDeclaration.setSourceVariableName(src);
     }
 
-    String srcExpr = propertyElement.attributeNS(BpmnParser.BPMN_EXTENSIONS_NS, "srcExpr");
+    String srcExpr = propertyElement.attributeNS(BpmnParser.ACTIVITI_BPMN_EXTENSIONS_NS, "srcExpr");
     if (srcExpr != null) {
       Expression sourceExpression = expressionManager.createExpression(srcExpr);
       variableDeclaration.setSourceExpression(sourceExpression);
     }
 
-    String dst = propertyElement.attributeNS(BpmnParser.BPMN_EXTENSIONS_NS, "dst");
+    String dst = propertyElement.attributeNS(BpmnParser.ACTIVITI_BPMN_EXTENSIONS_NS, "dst");
     if (dst != null) {
       variableDeclaration.setDestinationVariableName(dst);
     }
 
-    String destExpr = propertyElement.attributeNS(BpmnParser.BPMN_EXTENSIONS_NS, "dstExpr");
+    String destExpr = propertyElement.attributeNS(BpmnParser.ACTIVITI_BPMN_EXTENSIONS_NS, "dstExpr");
     if (destExpr != null) {
       Expression destinationExpression = expressionManager.createExpression(destExpr);
       variableDeclaration.setDestinationExpression(destinationExpression);
     }
 
-    String link = propertyElement.attributeNS(BpmnParser.BPMN_EXTENSIONS_NS, "link");
+    String link = propertyElement.attributeNS(BpmnParser.ACTIVITI_BPMN_EXTENSIONS_NS, "link");
     if (link != null) {
       variableDeclaration.setLink(link);
     }
 
-    String linkExpr = propertyElement.attributeNS(BpmnParser.BPMN_EXTENSIONS_NS, "linkExpr");
+    String linkExpr = propertyElement.attributeNS(BpmnParser.ACTIVITI_BPMN_EXTENSIONS_NS, "linkExpr");
     if (linkExpr != null) {
       Expression linkExpression = expressionManager.createExpression(linkExpr);
       variableDeclaration.setLinkExpression(linkExpression);
@@ -1389,7 +1390,7 @@ public class BpmnParse extends Parse {
   public void parseEventListenersOnScope(Element scopeElement, ScopeImpl scope) {
     Element extentionsElement = scopeElement.element("extensionElements");
     if(extentionsElement != null) {
-      List<Element> listenerElements = extentionsElement.elementsNS(BpmnParser.BPMN_EXTENSIONS_NS, "listener");
+      List<Element> listenerElements = extentionsElement.elementsNS(BpmnParser.ACTIVITI_BPMN_EXTENSIONS_NS, "listener");
       for(Element listenerElement :listenerElements) {
         String eventName = listenerElement.attribute("eventName");
         if(isValidEventNameForScope(eventName, listenerElement)) {
@@ -1422,7 +1423,7 @@ public class BpmnParse extends Parse {
   public void parseEventListenersOnTransition(Element activitiElement, TransitionImpl activity) {
     Element extentionsElement = activitiElement.element("extensionElements");
     if(extentionsElement != null) {
-      List<Element> listenerElements = extentionsElement.elementsNS(BpmnParser.BPMN_EXTENSIONS_NS, "listener");
+      List<Element> listenerElements = extentionsElement.elementsNS(BpmnParser.ACTIVITI_BPMN_EXTENSIONS_NS, "listener");
       for(Element listenerElement : listenerElements) {
         EventListener listener = parseEventListener(listenerElement);
         if(listener != null) {

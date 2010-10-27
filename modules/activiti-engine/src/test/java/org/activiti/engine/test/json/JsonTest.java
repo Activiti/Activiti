@@ -33,7 +33,7 @@ public class JsonTest extends ActivitiInternalTestCase {
     
     deploymentIds.add(
             deployProcessString(("<definitions xmlns='http://www.omg.org/spec/BPMN/20100524/MODEL'" +
-                    "             targetNamespace='http://www.activiti.org/bpmn2.0'>" +
+                    "             targetNamespace='org.activiti.enginge.test.json'>" +
                     "  <process id='LoanProcess' >" +
                     "    <startEvent id='theStart' />" +
                     "    <sequenceFlow id='flow1' sourceRef='theStart' targetRef='theTask' />" +
@@ -46,7 +46,7 @@ public class JsonTest extends ActivitiInternalTestCase {
     
     deploymentIds.add(
             deployProcessString(("<definitions xmlns='http://www.omg.org/spec/BPMN/20100524/MODEL'" +
-                    "             targetNamespace='http://www.activiti.org/bpmn2.0'>" +
+                    "             targetNamespace='org.activiti.enginge.test.json'>" +
                     "  <process id='ExpenseNoteProcess' >" +
                     "    <startEvent id='theStart' />" +
                     "    <sequenceFlow id='flow1' sourceRef='theStart' targetRef='theTask' />" +

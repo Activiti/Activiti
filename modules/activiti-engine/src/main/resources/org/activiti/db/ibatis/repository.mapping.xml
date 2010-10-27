@@ -118,8 +118,9 @@
   <!-- PROCESSDEFINITION INSERT -->
 
   <insert id="insertProcessDefinition" parameterType="org.activiti.engine.impl.repository.ProcessDefinitionEntity">
-    insert into ACT_RE_PROCDEF(ID_, NAME_, KEY_, VERSION_, DEPLOYMENT_ID_, RESOURCE_NAME_)
+    insert into ACT_RE_PROCDEF(ID_, CATEGORY_, NAME_, KEY_, VERSION_, DEPLOYMENT_ID_, RESOURCE_NAME_)
     values (#{id, jdbcType=VARCHAR},
+            #{category, jdbcType=VARCHAR},
             #{name, jdbcType=VARCHAR},
             #{key, jdbcType=VARCHAR}, 
             #{version, jdbcType=INTEGER},
@@ -139,6 +140,7 @@
 
   <resultMap id="processDefinitionResultMap" type="org.activiti.engine.impl.repository.ProcessDefinitionEntity">
     <id property="id" column="ID_" jdbcType="VARCHAR" />
+    <result property="category" column="CATEGORY_" />
     <result property="name" column="NAME_" />
     <result property="key" column="KEY_" jdbcType="VARCHAR" />
     <result property="version" column="VERSION_" jdbcType="INTEGER"/>
@@ -170,6 +172,9 @@
     <where>
       <if test="id != null">
         PD.ID_ = #{id}
+      </if>
+      <if test="category != null">
+        PD.CATEGORY_ = #{category}
       </if>
       <if test="name != null">
         PD.NAME_ = #{name}

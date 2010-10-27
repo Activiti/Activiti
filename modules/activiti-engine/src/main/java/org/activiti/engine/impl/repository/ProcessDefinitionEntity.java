@@ -36,12 +36,12 @@ import org.activiti.engine.repository.ProcessDefinition;
 public class ProcessDefinitionEntity extends ProcessDefinitionImpl implements ProcessDefinition, PersistentObject {
 
   private static final long serialVersionUID = 1L;
-  
+
   protected String key;
   protected int version;
+  protected String category;
   protected String deploymentId;
   protected String resourceName;
-  
   protected Integer historyLevel;
   protected StartFormHandler startFormHandler;
   protected Map<String, TaskDefinition> taskDefinitions;
@@ -94,13 +94,6 @@ public class ProcessDefinitionEntity extends ProcessDefinitionImpl implements Pr
     return "ProcessDefinitionEntity["+id+"]";
   }
 
-  public String getName() {
-    return (String) getProperty("name");
-  }
-  
-  public void setName(String name) {
-    setProperty("name", name);
-  }
 
   // getters and setters //////////////////////////////////////////////////////
   
@@ -166,5 +159,13 @@ public class ProcessDefinitionEntity extends ProcessDefinitionImpl implements Pr
 
   public void setTaskDefinitions(Map<String, TaskDefinition> taskDefinitions) {
     this.taskDefinitions = taskDefinitions;
+  }
+
+  public String getCategory() {
+    return category;
+  }
+
+  public void setCategory(String category) {
+    this.category = category;
   }
 }

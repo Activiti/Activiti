@@ -27,6 +27,15 @@ public interface ProcessDefinitionQuery extends Query<ProcessDefinitionQuery, Pr
   /** Only select process definiton with the given id.  */
   ProcessDefinitionQuery processDefinitionId(String processDefinitionId);
   
+  /** Only select process definitions with the given category. */
+  ProcessDefinitionQuery category(String category);
+  
+  /**
+   * Only select process definitions where the category matches the given parameter.
+   * The syntax that should be used is the same as in SQL, eg. %activiti%
+   */
+  ProcessDefinitionQuery categoryLike(String categoryLike);
+
   /** Only select process definitions with the given name. */
   ProcessDefinitionQuery name(String name);
   

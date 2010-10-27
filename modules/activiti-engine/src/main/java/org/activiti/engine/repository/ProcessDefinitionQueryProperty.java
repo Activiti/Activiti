@@ -32,6 +32,8 @@ public class ProcessDefinitionQueryProperty implements QueryProperty {
   public static final ProcessDefinitionQueryProperty DEPLOYMENT_ID = new ProcessDefinitionQueryProperty("PD.DEPLOYMENT_ID_");
   public static final ProcessDefinitionQueryProperty KEY = new ProcessDefinitionQueryProperty("PD.KEY_");
   public static final ProcessDefinitionQueryProperty VERSION = new ProcessDefinitionQueryProperty("PD.VERSION_");
+  public static final ProcessDefinitionQueryProperty NAME = new ProcessDefinitionQueryProperty("PD.NAME_");
+  public static final ProcessDefinitionQueryProperty CATEGORY = new ProcessDefinitionQueryProperty("PD.CATEGORY_");
 
   private String name;
 

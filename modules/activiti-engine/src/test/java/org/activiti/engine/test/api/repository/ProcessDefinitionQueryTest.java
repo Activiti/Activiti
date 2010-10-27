@@ -19,6 +19,7 @@ import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.test.ActivitiInternalTestCase;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.repository.ProcessDefinitionQuery;
+import org.activiti.engine.repository.ProcessDefinitionQueryProperty;
 
 
 /**
@@ -54,6 +55,33 @@ public class ProcessDefinitionQueryTest extends ActivitiInternalTestCase {
     super.tearDown();
     repositoryService.deleteDeploymentCascade(deploymentOneId);
     repositoryService.deleteDeploymentCascade(deploymentTwoId);
+  }
+  
+  public void testProcessDefinitionProperties() {
+    List<ProcessDefinition> processDefinitions = repositoryService
+      .createProcessDefinitionQuery()
+      .orderBy(ProcessDefinitionQueryProperty.NAME).asc()
+      .orderBy(ProcessDefinitionQueryProperty.VERSION).asc()
+      .orderBy(ProcessDefinitionQueryProperty.CATEGORY).asc()
+      .list();
+    
+    ProcessDefinition processDefinition = processDefinitions.get(0);
+    assertEquals("one", processDefinition.getKey());
+    assertEquals("One", processDefinition.getName());
+    assertEquals("one:1", processDefinition.getId());
+    assertEquals("Examples", processDefinition.getCategory());
+
+    processDefinition = processDefinitions.get(1);
+    assertEquals("one", processDefinition.getKey());
+    assertEquals("One", processDefinition.getName());
+    assertEquals("one:2", processDefinition.getId());
+    assertEquals("Examples", processDefinition.getCategory());
+
+    processDefinition = processDefinitions.get(2);
+    assertEquals("two", processDefinition.getKey());
+    assertEquals("Two", processDefinition.getName());
+    assertEquals("two:1", processDefinition.getId());
+    assertEquals("Examples", processDefinition.getCategory());
   }
   
   public void testQueryByDeploymentId() {

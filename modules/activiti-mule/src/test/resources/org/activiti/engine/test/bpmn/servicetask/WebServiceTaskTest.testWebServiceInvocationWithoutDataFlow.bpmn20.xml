@@ -2,9 +2,9 @@
 <definitions id="definitions" 
   xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xmlns:activiti="http://activiti.org/bpmn-extensions"
-  targetNamespace="http://www.activiti.org/bpmn2.0/examples/webServiceInvocationWithoutDataFlow"
-  xmlns:tns="http://www.activiti.org/bpmn2.0/examples/webServiceInvocationWithoutDataFlow"
+  xmlns:activiti="http://activiti.org/bpmn"
+  targetNamespace="org.activiti.engine.test.bpmn.servicetask"
+  xmlns:tns="org.activiti.engine.test.bpmn.servicetask"
   xmlns:counter="http://webservice.activiti.org/">
 
   <import importType="http://schemas.xmlsoap.org/wsdl/"

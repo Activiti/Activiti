@@ -32,6 +32,8 @@ public class ProcessDefinitionQueryImpl extends AbstractQuery<ProcessDefinitionQ
   implements ProcessDefinitionQuery {
   
   protected String id;
+  protected String category;
+  protected String categoryLike;
   protected String name;
   protected String nameLike;
   protected String deploymentId;
@@ -53,6 +55,22 @@ public class ProcessDefinitionQueryImpl extends AbstractQuery<ProcessDefinitionQ
     return this;
   }
   
+  public ProcessDefinitionQueryImpl category(String category) {
+    if (category == null) {
+      throw new ActivitiException("category is null");
+    }
+    this.category = category;
+    return this;
+  }
+  
+  public ProcessDefinitionQueryImpl categoryLike(String categoryLike) {
+    if (categoryLike == null) {
+      throw new ActivitiException("categoryLike is null");
+    }
+    this.categoryLike = categoryLike;
+    return this;
+  }
+
   public ProcessDefinitionQueryImpl name(String name) {
     if (name == null) {
       throw new ActivitiException("name is null");
@@ -204,5 +222,11 @@ public class ProcessDefinitionQueryImpl extends AbstractQuery<ProcessDefinitionQ
   }
   public boolean isLatest() {
     return latest;
+  }
+  public String getCategory() {
+    return category;
+  }
+  public String getCategoryLike() {
+    return categoryLike;
   }
 }

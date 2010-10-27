@@ -35,15 +35,18 @@ public interface ProcessDefinition {
   /** unique identifier */
   String getId();
 
+  /** category name which is derived from the targetNamespace attribute in the definitions element */
+  String getCategory();
+  
+  /** label used for display purposes */
+  String getName();
+  
   /** unique name for all versions this process definitions */
   String getKey();
   
   /** version of this process definition */
   int getVersion();
 
-  /** label used for display purposes */
-  String getName();
-  
   /** name of {@link RepositoryService#getResourceAsStream(String, String) the resource} 
    * of this process definition. */
   String getResourceName();

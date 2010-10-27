@@ -87,6 +87,7 @@ create table ACT_ID_USER (
 
 create table ACT_RE_PROCDEF (
     ID_ varchar(64),
+    CATEGORY_ varchar(255),
     NAME_ varchar(255),
     KEY_ varchar(255),
     VERSION_ integer,

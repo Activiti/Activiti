@@ -43,7 +43,7 @@ public class FormTypes {
       
     } else if ("enum".equals(typeText)) {
       Map<String, String> values = new HashMap<String, String>();
-      for (Element valueElement: formPropertyElement.elementsNS(BpmnParser.BPMN_EXTENSIONS_NS,"value")) {
+      for (Element valueElement: formPropertyElement.elementsNS(BpmnParser.ACTIVITI_BPMN_EXTENSIONS_NS,"value")) {
         String valueId = valueElement.attribute("id");
         String valueName = valueElement.attribute("name");
         values.put(valueId, valueName);

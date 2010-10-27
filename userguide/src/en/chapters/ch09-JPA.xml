@@ -260,8 +260,8 @@ assertEquals("updatedValue", ((FieldAccessJPAEntity)updatedEntity).getValue());
 &lt;definitions id=&quot;taskAssigneeExample&quot; 
   xmlns=&quot;http://www.omg.org/spec/BPMN/20100524/MODEL&quot;
   xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;
-  xmlns:activiti=&quot;http://activiti.org/bpmn-extensions&quot;
-  targetNamespace=&quot;http://www.activiti.org/bpmn2.0&quot;&gt;
+  xmlns:activiti=&quot;http://activiti.org/bpmn&quot;
+  targetNamespace=&quot;org.activiti.examples&quot;&gt;
   
   &lt;process id=&quot;LoanRequestProcess&quot; name=&quot;Process creating and handling loan request&quot;&gt;
     &lt;startEvent id='theStart' /&gt;

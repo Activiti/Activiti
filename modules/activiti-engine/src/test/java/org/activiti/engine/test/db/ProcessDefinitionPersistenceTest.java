@@ -56,7 +56,7 @@ public class ProcessDefinitionPersistenceTest extends ActivitiInternalTestCase {
     ReadOnlyProcessDefinition processDefinition = ((RepositoryServiceImpl)repositoryService).getDeployedProcessDefinition("processOne:1");
     
     assertEquals("processOne:1", processDefinition.getId());
-    assertEquals("Process One", processDefinition.getProperty("name"));
+    assertEquals("Process One", processDefinition.getName());
     assertEquals("the first process", processDefinition.getProperty("documentation"));
     
     PvmActivity start = processDefinition.findActivity("start");

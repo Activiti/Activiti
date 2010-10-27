@@ -39,7 +39,7 @@ public class BpmnParser extends Parser {
   /**
    * The namespace of the Activiti custom BPMN extensions
    */
-  public static final String BPMN_EXTENSIONS_NS = "http://activiti.org/bpmn-extensions";
+  public static final String ACTIVITI_BPMN_EXTENSIONS_NS = "http://activiti.org/bpmn";
 
   /**
    * The Schema-Instance namespace.
