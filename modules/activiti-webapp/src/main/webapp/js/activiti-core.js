@@ -1673,9 +1673,12 @@ Activiti.thirdparty.toISO8601 = function()
 
 Activiti.support.inputDate = function()
 {
+	/* Temporarily disabled due to WebKit bug. See ACT-296
 	var i = document.createElement("input");
 	i.setAttribute("type", "date");
 	return (i.type !== "text")
+	*/
+  return false;
 }();
 
 
