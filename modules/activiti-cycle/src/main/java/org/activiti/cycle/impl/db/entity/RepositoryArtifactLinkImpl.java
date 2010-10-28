@@ -14,15 +14,16 @@ import org.activiti.engine.impl.db.PersistentObject;
  * 
  * @author ruecker, polenz
  */
-public class CycleLink implements PersistentObject, RepositoryArtifactLink {
+public class RepositoryArtifactLinkImpl implements PersistentObject, RepositoryArtifactLink {
   
   /**
    * TODO: Add own mini repository for types incling names for forward and
    * reverse direction (like "is implemented by" in this case)
    */
-  public static String TYPE_IMPLEMENTS = "implements";
-  public static String TYPE_REFINES = "refines";
-  public static String TYPE_UNSPECIFIED = "unspecified link";
+  public static final String TYPE_IMPLEMENTS = "implements";
+  public static final String TYPE_REFINES = "refines";
+  public static final String TYPE_UNSPECIFIED = "unspecified link";
+  public static final String TYPE_COPY = "copy";
   
   /**
    * artificial id used as primary key to identify this link

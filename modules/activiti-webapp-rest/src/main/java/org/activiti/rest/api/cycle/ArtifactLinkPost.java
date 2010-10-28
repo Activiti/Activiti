@@ -18,7 +18,7 @@ import javax.servlet.http.HttpSession;
 
 import org.activiti.cycle.CycleService;
 import org.activiti.cycle.impl.CycleServiceImpl;
-import org.activiti.cycle.impl.db.entity.CycleLink;
+import org.activiti.cycle.impl.db.entity.RepositoryArtifactLinkImpl;
 import org.activiti.rest.util.ActivitiRequest;
 import org.activiti.rest.util.ActivitiRequestObject;
 import org.activiti.rest.util.ActivitiWebScript;
@@ -58,7 +58,7 @@ public class ArtifactLinkPost extends ActivitiWebScript {
     String targetConnectorId = req.getMandatoryString(obj, "targetConnectorId");
     String targetArtifactId = req.getMandatoryString(obj, "targetArtifactId");
 
-    CycleLink link = new CycleLink();
+    RepositoryArtifactLinkImpl link = new RepositoryArtifactLinkImpl();
     link.setSourceConnectorId(sourceConnectorId);
     link.setSourceArtifactId(sourceArtifactId);
     link.setTargetConnectorId(targetConnectorId);

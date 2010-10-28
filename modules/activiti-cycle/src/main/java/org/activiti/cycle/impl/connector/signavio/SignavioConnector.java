@@ -14,6 +14,7 @@ package org.activiti.cycle.impl.connector.signavio;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -480,7 +481,6 @@ public class SignavioConnector extends AbstractRepositoryConnector<SignavioConne
         modelForm.add("description", "");
       }
       modelForm.add("glossary_xml", new JSONArray().toString());
-      // signavio generates a new id for POSTed models, so don't set an id
       modelForm.add("json_xml", jsonModel.toString());
       modelForm.add("name", artifactName);
       
@@ -498,6 +498,13 @@ public class SignavioConnector extends AbstractRepositoryConnector<SignavioConne
                       "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:oryx=\"http://oryx-editor.org\" id=\"sid-80D82B67-3B30-4B35-A6CB-16EEE17A719F\" width=\"50\" height=\"50\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" xmlns:svg=\"http://www.w3.org/2000/svg\"><defs/><g stroke=\"black\" font-family=\"Verdana, sans-serif\" font-size-adjust=\"none\" font-style=\"normal\" font-variant=\"normal\" font-weight=\"normal\" line-heigth=\"normal\" font-size=\"12\"><g class=\"stencils\" transform=\"translate(25, 25)\"><g class=\"me\"/><g class=\"children\"/><g class=\"edge\"/></g></g></svg>");
       modelForm.add("type", "BPMN 2.0");
       
+      // Signavio generates a new id for POSTed models, so we don't have to set
+      // this ID ourself.
+      // But anyway, then we don't know the id and cannot load the artifact down
+      // to return it correctly, so we generate one ourself
+      String id = UUID.randomUUID().toString();
+      modelForm.add("id", id);
+      
       // modelForm.add("views", new JSONArray().toString());
       Representation modelRep = modelForm.getWebRepresentation();
 
@@ -506,7 +513,7 @@ public class SignavioConnector extends AbstractRepositoryConnector<SignavioConne
       sendRequest(jsonRequest);
       
       // TODO: return the object
-      return null;
+      return getRepositoryArtifact(id);
     } catch (Exception je) {
       throw new RepositoryException("Unable to create model '" + artifactName + "' in parent folder '" + containingFolderId + "'", je);
     }

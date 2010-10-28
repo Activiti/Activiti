@@ -10,6 +10,7 @@ import org.activiti.engine.impl.ProcessEngineImpl;
 import org.activiti.engine.impl.bpmn.parser.BpmnParser;
 import org.activiti.engine.impl.cfg.ProcessEngineConfiguration;
 import org.activiti.engine.impl.el.ExpressionManager;
+import org.activiti.engine.impl.repository.DeploymentEntity;
 
 
 public class ValidateActivitiDeployment extends CreateTechnicalBpmnXmlAction {
@@ -38,8 +39,14 @@ public class ValidateActivitiDeployment extends CreateTechnicalBpmnXmlAction {
     String bpmnXml = transformToBpmn20((SignavioConnector) connector, transformedJson); 
     
     BpmnParser bpmnParser = new BpmnParser(expressionManager);
+    
+    // Unfortunately the deployment id is requested while parsing, so we have to
+    // set a DeploymentEntity to avoid a NPE
+    DeploymentEntity deployment = new DeploymentEntity();
+    deployment.setId("VALIDATION_DEPLOYMENT");
+    
     // parse to validate
-    bpmnParser.createParse().sourceString(bpmnXml).name(artifact.getNodeId()).execute();    
+    bpmnParser.createParse().deployment(deployment).sourceString(bpmnXml).name(artifact.getNodeId()).execute();    
     // That's it, now we get an exception is the file is invalid
   }
 

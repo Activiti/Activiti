@@ -6,6 +6,7 @@ import java.util.Map;
 
 import org.activiti.cycle.Content;
 import org.activiti.cycle.RepositoryArtifact;
+import org.activiti.cycle.RepositoryArtifactLink;
 import org.activiti.cycle.RepositoryConnector;
 import org.activiti.cycle.RepositoryException;
 import org.activiti.cycle.RepositoryFolder;
@@ -13,6 +14,7 @@ import org.activiti.cycle.impl.ParameterizedHtmlFormTemplateAction;
 import org.activiti.cycle.impl.connector.fs.FileSystemPluginDefinition;
 import org.activiti.cycle.impl.connector.signavio.SignavioConnector;
 import org.activiti.cycle.impl.connector.signavio.SignavioPluginDefinition;
+import org.activiti.cycle.impl.db.entity.RepositoryArtifactLinkImpl;
 import org.activiti.cycle.impl.transform.JsonTransformation;
 import org.activiti.cycle.impl.transform.signavio.AdjustShapeNamesTransformation;
 import org.activiti.cycle.impl.transform.signavio.BpmnPoolExtraction;
@@ -37,6 +39,7 @@ public class CreateTechnicalBpmnXmlAction extends ParameterizedHtmlFormTemplateA
   public static final String PARAM_TARGET_CONNECTOR = "targetConnectorId";
   public static final String PARAM_TARGET_NAME = "targetName";
   public static final String PARAM_COMMENT = "comment";
+  public static final String CREATE_LINK_NAME = "createLink";
 
   /**
    * Where do we get the transformations from? How are they registered?
@@ -75,14 +78,35 @@ public class CreateTechnicalBpmnXmlAction extends ParameterizedHtmlFormTemplateA
     String targetName = (String) getParameter(parameters, PARAM_TARGET_NAME, false, getProcessName(artifact), String.class);
     String comment = (String) getParameter(parameters, PARAM_COMMENT, false, null, String.class);
     RepositoryConnector targetConnector = (RepositoryConnector) getParameter(parameters, PARAM_TARGET_CONNECTOR, true, null, RepositoryConnector.class);
-    
-    String sourceJson = getBpmn20Json((SignavioConnector) connector, artifact);
-    String transformedJson = applyJsonTransformations(sourceJson);
-    String bpmnXml = transformToBpmn20((SignavioConnector) connector, transformedJson);
-    createTargetArtifact(targetConnector, targetFolderId, targetName + ".bpmn20.xml", bpmnXml, FileSystemPluginDefinition.ARTIFACT_TYPE_BPMN_20_XML);
+    boolean createLink = (Boolean) getParameter(parameters, CREATE_LINK_NAME, true, Boolean.TRUE, Boolean.class);
+
+    RepositoryArtifact targetArtifact = createArtifact(connector, artifact, targetFolderId, targetName, targetConnector);
 
     // TODO: Think about that more, does it make sense like this?
     targetConnector.commitPendingChanges(comment);
+
+    if (createLink) {
+      RepositoryArtifactLink link = new RepositoryArtifactLinkImpl();
+      link.setSourceArtifact(artifact);
+      link.setTargetArtifact(targetArtifact);
+      link.setComment(comment);
+      link.setLinkType(getLinkType());
+      connector.getConfiguration().getCycleService().addArtifactLink(link);
+    }
+  }
+
+  public String getLinkType() {
+    return RepositoryArtifactLinkImpl.TYPE_IMPLEMENTS;
+  }
+
+  public RepositoryArtifact createArtifact(RepositoryConnector connector, RepositoryArtifact artifact, String targetFolderId, String targetName,
+          RepositoryConnector targetConnector) throws Exception {
+    String sourceJson = getBpmn20Json((SignavioConnector) connector, artifact);
+    String transformedJson = applyJsonTransformations(sourceJson);
+    String bpmnXml = transformToBpmn20((SignavioConnector) connector, transformedJson);
+    RepositoryArtifact targetArtifact = createTargetArtifact(targetConnector, targetFolderId, targetName + ".bpmn20.xml", bpmnXml,
+            FileSystemPluginDefinition.ARTIFACT_TYPE_BPMN_20_XML);
+    return targetArtifact;
   }
 
   protected String getBpmn20Json(RepositoryConnector connector, RepositoryArtifact artifact) {
@@ -109,10 +133,11 @@ public class CreateTechnicalBpmnXmlAction extends ParameterizedHtmlFormTemplateA
     return bpmnXml;
   }
 
-  public void createTargetArtifact(RepositoryConnector targetConnector, String targetFolderId, String artifactId, String bpmnXml, String artifactTypeId) {
+  public RepositoryArtifact createTargetArtifact(RepositoryConnector targetConnector, String targetFolderId, String artifactId, String bpmnXml,
+          String artifactTypeId) {
     Content content = new Content();
     content.setValue(bpmnXml);
-    targetConnector.createArtifact(targetFolderId, artifactId, artifactTypeId, content);
+    return targetConnector.createArtifact(targetFolderId, artifactId, artifactTypeId, content);
   }
   
   public String getProcessName(RepositoryArtifact artifact) {

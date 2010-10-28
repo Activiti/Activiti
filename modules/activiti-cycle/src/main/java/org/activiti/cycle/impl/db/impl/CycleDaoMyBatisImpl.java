@@ -7,46 +7,46 @@ import java.util.List;
 import org.activiti.cycle.impl.CycleTagContentImpl;
 import org.activiti.cycle.impl.db.CycleDAO;
 import org.activiti.cycle.impl.db.entity.CycleArtifactTagEntity;
-import org.activiti.cycle.impl.db.entity.CycleLink;
+import org.activiti.cycle.impl.db.entity.RepositoryArtifactLinkImpl;
 import org.apache.ibatis.session.SqlSession;
 
 public class CycleDaoMyBatisImpl extends AbstractCycleDaoMyBatisImpl implements CycleDAO {
 
   @SuppressWarnings("unchecked")
-  public List<CycleLink> getOutgoingCycleLinks(String sourceConnectorId, String sourceArtifactId) {
+  public List<RepositoryArtifactLinkImpl> getOutgoingCycleLinks(String sourceConnectorId, String sourceArtifactId) {
     SqlSession session = openSession();
     try {
       HashMap<String, Object> parameters = new HashMap<String, Object>();
       parameters.put("connectorId", sourceConnectorId);
       parameters.put("artifactId", sourceArtifactId);
-      List<CycleLink> linkResultList = session.selectList("org.activiti.cycle.impl.db.entity.CycleLink.selectArtifactLinkForSourceArtifact", parameters);
+      List<RepositoryArtifactLinkImpl> linkResultList = session.selectList("org.activiti.cycle.impl.db.entity.CycleLink.selectArtifactLinkForSourceArtifact", parameters);
       if (linkResultList != null) {
         return linkResultList;
       }
-      return new ArrayList<CycleLink>();
+      return new ArrayList<RepositoryArtifactLinkImpl>();
     } finally {
       session.close();
     }
   }
 
   @SuppressWarnings("unchecked")
-  public List<CycleLink> getIncomingCycleLinks(String targetConnectorId, String targetArtifactId) {
+  public List<RepositoryArtifactLinkImpl> getIncomingCycleLinks(String targetConnectorId, String targetArtifactId) {
     SqlSession session = openSession();
     try {
       HashMap<String, Object> parameters = new HashMap<String, Object>();
       parameters.put("connectorId", targetConnectorId);
       parameters.put("artifactId", targetArtifactId);
-      List<CycleLink> linkResultList = session.selectList("org.activiti.cycle.impl.db.entity.CycleLink.selectArtifactLinkForTargetArtifact", parameters);
+      List<RepositoryArtifactLinkImpl> linkResultList = session.selectList("org.activiti.cycle.impl.db.entity.CycleLink.selectArtifactLinkForTargetArtifact", parameters);
       if (linkResultList != null) {
         return linkResultList;
       }
-      return new ArrayList<CycleLink>();
+      return new ArrayList<RepositoryArtifactLinkImpl>();
     } finally {
       session.close();
     }
   }
   
-  public void insertCycleLink(CycleLink cycleLink) {
+  public void insertCycleLink(RepositoryArtifactLinkImpl cycleLink) {
     SqlSession session = openSession();
     try {
       session.insert("org.activiti.cycle.impl.db.entity.CycleLink.insertCycleLink", cycleLink);

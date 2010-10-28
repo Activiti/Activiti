@@ -1,9 +1,9 @@
 package org.activiti.cycle;
 
-import org.activiti.cycle.impl.db.entity.CycleLink;
+import org.activiti.cycle.impl.db.entity.RepositoryArtifactLinkImpl;
 
 /**
- * Object given back by the {@link CycleService} for a {@link CycleLink} where
+ * Object given back by the {@link CycleService} for a {@link RepositoryArtifactLinkImpl} where
  * the {@link RepositoryArtifact}s are already resolved.
  * 
  * @author polenz

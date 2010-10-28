@@ -28,7 +28,7 @@ import org.activiti.cycle.impl.connector.view.TagConnectorConfiguration;
 import org.activiti.cycle.impl.db.CycleConfigurationService;
 import org.activiti.cycle.impl.db.CycleDAO;
 import org.activiti.cycle.impl.db.entity.CycleArtifactTagEntity;
-import org.activiti.cycle.impl.db.entity.CycleLink;
+import org.activiti.cycle.impl.db.entity.RepositoryArtifactLinkImpl;
 import org.activiti.cycle.impl.db.impl.CycleConfigurationServiceImpl;
 import org.activiti.cycle.impl.db.impl.CycleDaoMyBatisImpl;
 import org.activiti.cycle.impl.plugin.PluginFinder;
@@ -47,10 +47,8 @@ public class CycleServiceImpl implements CycleService {
 
   private List<RepositoryConnector> repositoryConnectors;
 
-  /**
-   * TODO: Check if list roots can return an empty array
-   */
-  private static final File fsBaseDir = File.listRoots()[0];
+  // private static ThreadLocal<CycleService> currentCycleService = new
+  // ThreadLocal<CycleService>();
 
   public CycleServiceImpl(List<RepositoryConnector> repositoryConnectors) {
 
@@ -58,6 +56,10 @@ public class CycleServiceImpl implements CycleService {
     this.cycleDAO = new CycleDaoMyBatisImpl();
 
     this.repositoryConnectors = repositoryConnectors;
+    
+    for (RepositoryConnector repositoryConnector : repositoryConnectors) {
+      repositoryConnector.getConfiguration().setCycleService(this);
+    }
     
     // add tag connector hard coded for the moment
     this.repositoryConnectors.add(new TagConnectorConfiguration(this).createConnector());
@@ -116,7 +118,7 @@ public class CycleServiceImpl implements CycleService {
     ConfigurationContainer configuration = new ConfigurationContainer(currentUserId);
     configuration.addRepositoryConnectorConfiguration(new DemoConnectorConfiguration("demo"));
     configuration.addRepositoryConnectorConfiguration(new SignavioConnectorConfiguration("signavio", "http://localhost:8080/activiti-modeler/"));
-    configuration.addRepositoryConnectorConfiguration(new FileSystemConnectorConfiguration("files", fsBaseDir));
+    configuration.addRepositoryConnectorConfiguration(new FileSystemConnectorConfiguration("files", File.listRoots()[0]));
     return configuration;
   }
 
@@ -250,10 +252,10 @@ public class CycleServiceImpl implements CycleService {
   // RepositoryArtifactLink specific methods
 
   public void addArtifactLink(RepositoryArtifactLink repositoryArtifactLink) {
-    if (repositoryArtifactLink instanceof CycleLink) {
-      cycleDAO.insertCycleLink((CycleLink) repositoryArtifactLink);
+    if (repositoryArtifactLink instanceof RepositoryArtifactLinkImpl) {
+      cycleDAO.insertCycleLink((RepositoryArtifactLinkImpl) repositoryArtifactLink);
     } else {
-      CycleLink cycleLink = new CycleLink();
+      RepositoryArtifactLinkImpl cycleLink = new RepositoryArtifactLinkImpl();
 
       cycleLink.setId(repositoryArtifactLink.getId());
 
@@ -282,8 +284,8 @@ public class CycleServiceImpl implements CycleService {
   public List<RepositoryArtifactLink> getArtifactLinks(String sourceConnectorId, String sourceArtifactId) {
     List<RepositoryArtifactLink> artifactLinks = new ArrayList<RepositoryArtifactLink>();
 
-    List<CycleLink> linkResultList = cycleDAO.getOutgoingCycleLinks(sourceConnectorId, sourceArtifactId);
-    for (CycleLink entity : linkResultList) {
+    List<RepositoryArtifactLinkImpl> linkResultList = cycleDAO.getOutgoingCycleLinks(sourceConnectorId, sourceArtifactId);
+    for (RepositoryArtifactLinkImpl entity : linkResultList) {
       entity.resolveArtifacts(this);
       artifactLinks.add(entity);
     }

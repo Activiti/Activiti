@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.Properties;
 
 import org.activiti.cycle.ArtifactType;
+import org.activiti.cycle.CycleService;
 import org.activiti.cycle.RepositoryConnector;
 import org.activiti.cycle.RepositoryException;
 import org.activiti.cycle.impl.plugin.ActivitiCyclePluginDefinition;
@@ -39,13 +40,17 @@ public abstract class RepositoryConnectorConfiguration {
    */
   private String configurationScope;
   
-  private static Map<Class< ? extends RepositoryConnectorConfiguration>, List<ArtifactType>> registeredArtifactTypesPerConnector = new HashMap<Class< ? extends RepositoryConnectorConfiguration>, List<ArtifactType>>();  
+  private static Map<Class< ? extends RepositoryConnectorConfiguration>, List<ArtifactType>> registeredArtifactTypesPerConnector = new HashMap<Class< ? extends RepositoryConnectorConfiguration>, List<ArtifactType>>();
+
+  private CycleService cycleService;
 
   /**
    * TODO: Decide if we want to keep that here
+   * 
+   * @param cycleService
    */
   public abstract RepositoryConnector createConnector();
-    
+
   public static void addPluginDefinition(ActivitiCyclePluginDefinition definition) {
     List<ArtifactType> registeredArtifactTypes = new ArrayList<ArtifactType>();
     definition.addArtifactTypes(registeredArtifactTypes);
@@ -152,6 +157,16 @@ public abstract class RepositoryConnectorConfiguration {
 
   public void setLoginHelp(String loginHelp) {
     this.loginHelp = loginHelp;
+  }
+
+  
+  public CycleService getCycleService() {
+    return cycleService;
+  }
+
+  
+  public void setCycleService(CycleService cycleService) {
+    this.cycleService = cycleService;
   }
 
   // @Override
