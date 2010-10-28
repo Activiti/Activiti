@@ -12,7 +12,7 @@
     <groupId>org.activiti</groupId>
     <artifactId>activiti-root</artifactId>
     <relativePath>../..</relativePath>
-    <version>5.0.rc1-SNAPSHOT</version>
+    <version>5.0.rc1</version>
   </parent>
 
   <dependencies>
