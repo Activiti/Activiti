@@ -148,7 +148,7 @@ public class ProcessInstanceQueryTest extends ActivitiInternalTestCase {
   public void testQueryBySuperProcessInstanceId() {
     ProcessInstance superProcessInstance = runtimeService.startProcessInstanceByKey("subProcessQueryTest");
     
-    ProcessInstanceQuery query = runtimeService.createProcessInstanceQuery().superProcessInstance(superProcessInstance.getId());
+    ProcessInstanceQuery query = runtimeService.createProcessInstanceQuery().superProcessInstanceId(superProcessInstance.getId());
     ProcessInstance subProcessInstance = query.singleResult();
     assertNotNull(subProcessInstance);
     assertEquals(1, query.list().size());
@@ -156,8 +156,8 @@ public class ProcessInstanceQueryTest extends ActivitiInternalTestCase {
   }
   
   public void testQueryByInvalidSuperProcessInstanceId() {
-    assertNull(runtimeService.createProcessInstanceQuery().superProcessInstance("invalid").singleResult());
-    assertEquals(0, runtimeService.createProcessInstanceQuery().superProcessInstance("invalid").list().size());
+    assertNull(runtimeService.createProcessInstanceQuery().superProcessInstanceId("invalid").singleResult());
+    assertEquals(0, runtimeService.createProcessInstanceQuery().superProcessInstanceId("invalid").list().size());
   }
   
   @Deployment(resources = {"org/activiti/engine/test/api/runtime/superProcess.bpmn20.xml",
@@ -165,14 +165,14 @@ public class ProcessInstanceQueryTest extends ActivitiInternalTestCase {
   public void testQueryBySubProcessInstanceId() {
     ProcessInstance superProcessInstance = runtimeService.startProcessInstanceByKey("subProcessQueryTest");
     
-    ProcessInstance subProcessInstance = runtimeService.createProcessInstanceQuery().superProcessInstance(superProcessInstance.getId()).singleResult();
+    ProcessInstance subProcessInstance = runtimeService.createProcessInstanceQuery().superProcessInstanceId(superProcessInstance.getId()).singleResult();
     assertNotNull(subProcessInstance);
-    assertEquals(superProcessInstance.getId(), runtimeService.createProcessInstanceQuery().subProcessInstance(subProcessInstance.getId()).singleResult().getId());
+    assertEquals(superProcessInstance.getId(), runtimeService.createProcessInstanceQuery().subProcessInstanceId(subProcessInstance.getId()).singleResult().getId());
   }
   
   public void testQueryByInvalidSubProcessInstanceId() {
-    assertNull(runtimeService.createProcessInstanceQuery().subProcessInstance("invalid").singleResult());
-    assertEquals(0, runtimeService.createProcessInstanceQuery().subProcessInstance("invalid").list().size());
+    assertNull(runtimeService.createProcessInstanceQuery().subProcessInstanceId("invalid").singleResult());
+    assertEquals(0, runtimeService.createProcessInstanceQuery().subProcessInstanceId("invalid").list().size());
   }
   
   // Nested subprocess make the query complexer, hence this test
@@ -182,10 +182,10 @@ public class ProcessInstanceQueryTest extends ActivitiInternalTestCase {
   public void testQueryBySuperProcessInstanceIdNested() {
     ProcessInstance superProcessInstance = runtimeService.startProcessInstanceByKey("nestedSubProcessQueryTest");
     
-    ProcessInstance subProcessInstance = runtimeService.createProcessInstanceQuery().superProcessInstance(superProcessInstance.getId()).singleResult();
+    ProcessInstance subProcessInstance = runtimeService.createProcessInstanceQuery().superProcessInstanceId(superProcessInstance.getId()).singleResult();
     assertNotNull(subProcessInstance);
     
-    ProcessInstance nestedSubProcessInstance = runtimeService.createProcessInstanceQuery().superProcessInstance(subProcessInstance.getId()).singleResult();
+    ProcessInstance nestedSubProcessInstance = runtimeService.createProcessInstanceQuery().superProcessInstanceId(subProcessInstance.getId()).singleResult();
     assertNotNull(nestedSubProcessInstance);
   }
   
@@ -196,11 +196,11 @@ public class ProcessInstanceQueryTest extends ActivitiInternalTestCase {
   public void testQueryBySubProcessInstanceIdNested() {
     ProcessInstance superProcessInstance = runtimeService.startProcessInstanceByKey("nestedSubProcessQueryTest");
     
-    ProcessInstance subProcessInstance = runtimeService.createProcessInstanceQuery().superProcessInstance(superProcessInstance.getId()).singleResult();
-    assertEquals(superProcessInstance.getId(), runtimeService.createProcessInstanceQuery().subProcessInstance(subProcessInstance.getId()).singleResult().getId());
+    ProcessInstance subProcessInstance = runtimeService.createProcessInstanceQuery().superProcessInstanceId(superProcessInstance.getId()).singleResult();
+    assertEquals(superProcessInstance.getId(), runtimeService.createProcessInstanceQuery().subProcessInstanceId(subProcessInstance.getId()).singleResult().getId());
     
-    ProcessInstance nestedSubProcessInstance = runtimeService.createProcessInstanceQuery().superProcessInstance(subProcessInstance.getId()).singleResult();
-    assertEquals(subProcessInstance.getId(), runtimeService.createProcessInstanceQuery().subProcessInstance(nestedSubProcessInstance.getId()).singleResult().getId());
+    ProcessInstance nestedSubProcessInstance = runtimeService.createProcessInstanceQuery().superProcessInstanceId(subProcessInstance.getId()).singleResult();
+    assertEquals(subProcessInstance.getId(), runtimeService.createProcessInstanceQuery().subProcessInstanceId(nestedSubProcessInstance.getId()).singleResult().getId());
   }
   
   public void testQueryPaging() {

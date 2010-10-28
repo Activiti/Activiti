@@ -89,12 +89,12 @@ public class ProcessInstanceQueryImpl extends ExecutionVariableQueryImpl<Process
     return this;
   }
   
-  public ProcessInstanceQuery superProcessInstance(String superProcessInstanceId) {
+  public ProcessInstanceQuery superProcessInstanceId(String superProcessInstanceId) {
     this.superProcessInstanceId = superProcessInstanceId;
     return this;
   }
   
-  public ProcessInstanceQuery subProcessInstance(String subProcessInstanceId) {
+  public ProcessInstanceQuery subProcessInstanceId(String subProcessInstanceId) {
     this.subProcessInstanceId = subProcessInstanceId;
     return this;
   }

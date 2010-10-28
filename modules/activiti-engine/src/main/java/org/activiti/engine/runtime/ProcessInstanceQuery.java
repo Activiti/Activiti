@@ -50,14 +50,14 @@ public interface ProcessInstanceQuery extends Query<ProcessInstanceQuery, Proces
    * Select the process instances which are a sub process instance of the given
    * super process instance.
    */
-  ProcessInstanceQuery superProcessInstance(String superProcessInstanceId);
+  ProcessInstanceQuery superProcessInstanceId(String superProcessInstanceId);
 
   /**
    * Select the process instance that have as sub process instance the given
    * process instance. Note that there will always be maximum only <b>one</b>
    * such process instance that can be the result of this query.
    */
-  ProcessInstanceQuery subProcessInstance(String subProcessInstanceId);
+  ProcessInstanceQuery subProcessInstanceId(String subProcessInstanceId);
   
   /** 
    * Only select process instances which have a variable with the given value. The type 

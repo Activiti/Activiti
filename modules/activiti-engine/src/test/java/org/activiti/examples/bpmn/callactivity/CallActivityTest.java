@@ -37,9 +37,9 @@ public class CallActivityTest extends ActivitiInternalTestCase {
     assertEquals("Verify credit history", verifyCreditTask.getName());
     
     // Verify with Query API
-    ProcessInstance subProcessInstance = runtimeService.createProcessInstanceQuery().superProcessInstance(pi.getId()).singleResult();
+    ProcessInstance subProcessInstance = runtimeService.createProcessInstanceQuery().superProcessInstanceId(pi.getId()).singleResult();
     assertNotNull(subProcessInstance);
-    assertEquals(pi.getId(), runtimeService.createProcessInstanceQuery().subProcessInstance(subProcessInstance.getId()).singleResult().getId());
+    assertEquals(pi.getId(), runtimeService.createProcessInstanceQuery().subProcessInstanceId(subProcessInstance.getId()).singleResult().getId());
     
     // Completing the task with approval, will end the subprocess and continue the original process
     taskService.complete(verifyCreditTask.getId(), CollectionUtil.singletonMap("creditApproved", true));
