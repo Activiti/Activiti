@@ -169,24 +169,42 @@
 	                                            so we don't want to let the ant task return--> 
 	</target>
   
-  <target name="db.create" depends="internal.classpath.libs">
+  <target name="db.create" depends="internal.classpath.libs, db.create.engine, db.create.cycle, db.create.cycle.custom.delimiter">
+  </target>
+
+  <target name="db.create.engine">
+	    <sql driver="${jdbc.driver}" 
+	         password="${jdbc.password}" 
+	         url="${jdbc.url}" 
+	         userid="${jdbc.username}"
+	         classpathref="classpath.libs">
+	      <javaresource name="org/activiti/db/create/activiti.${db}.create.sql" 
+	                    classpathref="classpath.libs" /> 
+	    </sql>
+	  </target>
+  <target name="db.create.cycle" unless="db.use.oracle">
+  	<!--added to create ACT_CY_CONFIG table-->
     <sql driver="${jdbc.driver}" 
          password="${jdbc.password}" 
          url="${jdbc.url}" 
          userid="${jdbc.username}"
-         classpathref="classpath.libs">
-      <javaresource name="org/activiti/db/create/activiti.${db}.create.sql" 
+         classpathref="classpath.libs" >
+      <javaresource name="org/activiti/db/cycle/create/activiti.${db}.create.sql" 
                     classpathref="classpath.libs" /> 
     </sql>
-  	    <!--added to create ACT_CY_CONFIG table-->
-        <sql driver="${jdbc.driver}" 
-             password="${jdbc.password}" 
-             url="${jdbc.url}" 
-             userid="${jdbc.username}"
-             classpathref="classpath.libs">
-          <javaresource name="org/activiti/db/cycle/create/activiti.${db}.create.sql" 
-                        classpathref="classpath.libs" /> 
-        </sql>
+  </target>
+	
+  <target name="db.create.cycle.custom.delimiter" if="db.use.oracle">
+  	<!-- Custom delimiter should be used, oracle script contains statements split by / -->
+	<sql driver="${jdbc.driver}" 
+         password="${jdbc.password}" 
+         url="${jdbc.url}" 
+         userid="${jdbc.username}"
+         classpathref="classpath.libs"
+    	delimiter="/">
+      <javaresource name="org/activiti/db/cycle/create/activiti.${db}.create.sql" 
+                    classpathref="classpath.libs" /> 
+    </sql>
   </target>
   
   <target name="db.drop" depends="internal.classpath.libs">

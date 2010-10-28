@@ -32,7 +32,8 @@ where NAME_ = 'next.dbid';
 insert into ACT_CY_CONFIG values ('kermit', '<org.activiti.cycle.impl.conf.ConfigurationContainer>
   <name>kermit</name>
   <linkedConnectors>
-    <org.activiti.cycle.impl.connector.signavio.SignavioConnectorConfiguration>
+	  <org.activiti.cycle.impl.connector.signavio.SignavioConnectorConfiguration>
+      <id>Activiti</id>
       <name>Activiti Modeler</name>
       <credentialsSaved>false</credentialsSaved>
       <signavioBaseUrl>@activiti.modeler.base.url@</signavioBaseUrl>
@@ -43,13 +44,14 @@ insert into ACT_CY_CONFIG values ('kermit', '<org.activiti.cycle.impl.conf.Confi
       <name>Eclipse Workspace (File System)</name>
       <baseFilePath>@cycle.base.file.path@</baseFilePath>
     </org.activiti.cycle.impl.connector.fs.FileSystemConnectorConfiguration>
-	</linkedConnectors>
+  </linkedConnectors>
   <parentContainers/>
 </org.activiti.cycle.impl.conf.ConfigurationContainer>', 1);
 insert into ACT_CY_CONFIG values ('fozzie', '<org.activiti.cycle.impl.conf.ConfigurationContainer>
   <name>fozzie</name>
   <linkedConnectors>
     <org.activiti.cycle.impl.connector.signavio.SignavioConnectorConfiguration>
+      <id>Activiti</id>
       <name>Activiti Modeler</name>
       <credentialsSaved>false</credentialsSaved>
       <signavioBaseUrl>@activiti.modeler.base.url@</signavioBaseUrl>
@@ -67,6 +69,7 @@ insert into ACT_CY_CONFIG values ('gonzo', '<org.activiti.cycle.impl.conf.Config
   <name>gonzo</name>
   <linkedConnectors>
     <org.activiti.cycle.impl.connector.signavio.SignavioConnectorConfiguration>
+      <id>Activiti</id>
       <name>Activiti Modeler</name>
       <credentialsSaved>false</credentialsSaved>
       <signavioBaseUrl>http://localhost:8080/activiti-modeler/</signavioBaseUrl>
