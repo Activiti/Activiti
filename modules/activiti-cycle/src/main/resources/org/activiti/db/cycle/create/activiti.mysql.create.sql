@@ -6,7 +6,7 @@ create table ACT_CY_CONFIG (
 ) TYPE=InnoDB;
 
 create table ACT_CY_LINK (
-	ID_ varchar(255) AUTO_INCREMENT,
+	ID_ bigint AUTO_INCREMENT,
 	SOURCE_CONNECTOR_ID_ varchar(255),
 	SOURCE_ARTIFACT_ID_ varchar(255),
 	SOURCE_ELEMENT_ID_ varchar(255) DEFAULT NULL,
@@ -23,16 +23,10 @@ create table ACT_CY_LINK (
 	primary key(ID_)
 )TYPE=InnoDB;
 
-create table ACT_CY_TAG (
-	ID_ bigint,
-	NAME_ varchar(255),
-	ALIAS_ varchar(255),
-	primary key(ID_)
-)
 
 create table ACT_CY_TAG (
-	ID_ varchar(700),
-	NAME_ varchar(255),
+	ID_ varchar(255),
+	NAME_ varchar(700),
 	CONNECTOR_ID_ varchar(255),
 	ARTIFACT_ID_ varchar(550),
 	ALIAS_ varchar(255),
