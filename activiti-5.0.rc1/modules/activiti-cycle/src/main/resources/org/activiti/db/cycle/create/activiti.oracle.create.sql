@@ -3,10 +3,11 @@ create table ACT_CY_CONFIG (
     VALUE_ clob,
     REV_ INTEGER,
     primary key (ID_)
-);
+)
+/
 
 create table ACT_CY_LINK (
-	ID_ NVARCHAR2(255) AUTO_INCREMENT,
+	ID_ NUMBER(38,0),
 	SOURCE_CONNECTOR_ID_ NVARCHAR2(255),
 	SOURCE_ARTIFACT_ID_ NVARCHAR2(255),
 	SOURCE_ELEMENT_ID_ NVARCHAR2(255) DEFAULT NULL,
@@ -19,9 +20,10 @@ create table ACT_CY_LINK (
 	TARGET_REVISION_ INTEGER DEFAULT NULL,
 	LINK_TYPE_ NVARCHAR2(255),
 	COMMENT_ NVARCHAR2(255),
-	LINKED_BOTH_WAYS_ boolean,
+	LINKED_BOTH_WAYS_ NUMBER(1,0) CHECK (LINKED_BOTH_WAYS_ IN (1,0)),
 	primary key(ID_)
-);
+)
+/
 
 create table ACT_CY_TAG (
 	ID_ NVARCHAR2(255),
@@ -30,4 +32,16 @@ create table ACT_CY_TAG (
 	ARTIFACT_ID_ NVARCHAR2(550),
 	ALIAS_ NVARCHAR2(255),
 	primary key(ID_)	
-);
+)
+/
+
+create sequence ACT_SQ_CY_LINK_ID start with 1 increment by 1
+/
+
+create trigger ACT_TRI_CY_LINK_ID
+	before insert on ACT_CY_LINK
+for each row
+begin
+	select ACT_SQ_CY_LINK_ID.nextval into :new.ID_ from dual;
+end;
+/
