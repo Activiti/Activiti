@@ -71,6 +71,12 @@
     and <literal>FormService.submitTaskFormData(String taskId, Map&lt;String, String&gt; properties)</literal>
     are recorded.
     </para>
+
+    <para><emphasis role="bold">[KNOWN LIMITATION]</emphasis> Currently the forms as worked out in Activiti Explorer
+    do not yet use the <literal>submitStartFormData</literal> and <literal>submitTaskFormData</literal>.
+    So the form properties are not yet archived when using the forms in Activity Explorer.
+    @see <ulink url="http://jira.codehaus.org/browse/ACT-294">ACT-294</ulink>
+    </para>
     
     <para>Form properties can be retrieved with the query API like this:</para>
     
