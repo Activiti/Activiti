@@ -22,7 +22,7 @@
   <tr>
     <td>
       <label>
-         First day of vacation:<br/>
+         First day of vacation: (YYYY-MM-DD)<br/>
          <input type="date" name="startDate"/>
          <input type="hidden" name="startDate_type" value="Date"/>
       </label>
@@ -31,7 +31,7 @@
   <tr>
     <td>
       <label>
-         Date of return to work:<br/>
+         Date of return to work: (YYYY-MM-DD)<br/>
          <input type="date" name="returnDate"/>
          <input type="hidden" name="returnDate_type" value="Date"/>
       </label>
