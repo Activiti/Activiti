@@ -10,7 +10,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.activiti.test.pvm.activities;
+package org.activiti.engine.test.pvm.activities;
 
 import java.util.List;
 import java.util.logging.Level;

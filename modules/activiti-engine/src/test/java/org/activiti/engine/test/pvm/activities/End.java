@@ -11,7 +11,7 @@
  * limitations under the License.
  */
 
-package org.activiti.test.pvm.activities;
+package org.activiti.engine.test.pvm.activities;
 
 import org.activiti.engine.impl.pvm.delegate.ActivityBehavior;
 import org.activiti.engine.impl.pvm.delegate.ActivityExecution;

@@ -11,7 +11,7 @@
  * limitations under the License.
  */
 
-package org.activiti.test.pvm.activities;
+package org.activiti.engine.test.pvm.activities;
 
 import java.util.ArrayList;
 import java.util.Collections;
