@@ -31,10 +31,10 @@ public interface HistoricDetailQuery extends Query<HistoricDetailQuery, Historic
   HistoricDetailQuery activityId(String activityId);
 
   /** Only select {@link HistoricFormProperty}s. */
-  HistoricDetailQuery onlyFormProperties();
+  HistoricDetailQuery formProperties();
 
   /** Only select {@link HistoricVariableUpdate}s. */
-  HistoricDetailQuery onlyVariableUpdates();
+  HistoricDetailQuery variableUpdates();
 
   HistoricDetailQuery orderByProcessInstanceId();
   

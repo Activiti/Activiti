@@ -47,12 +47,12 @@ public class HistoricDetailQueryImpl extends AbstractQuery<HistoricDetailQuery, 
     return this;
   }
 
-  public HistoricDetailQuery onlyFormProperties() {
+  public HistoricDetailQuery formProperties() {
     this.type = "FormProperty";
     return this;
   }
 
-  public HistoricDetailQuery onlyVariableUpdates() {
+  public HistoricDetailQuery variableUpdates() {
     this.type = "VariableUpdate";
     return this;
   }

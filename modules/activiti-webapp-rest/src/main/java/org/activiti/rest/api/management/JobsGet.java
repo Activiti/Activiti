@@ -73,11 +73,11 @@ public class JobsGet extends ActivitiPagingWebScript
     }
     if (onlyTimers)
     {
-      jobQuery.onlyTimers();
+      jobQuery.timers();
     }
     if (onlyMessages)
     {
-      jobQuery.onlyMessages();
+      jobQuery.messages();
     }
     if (dueDateLowerThen != null)
     {

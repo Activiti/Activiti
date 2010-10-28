@@ -84,7 +84,7 @@ public class JobQueryImpl extends AbstractQuery<JobQuery, Job> implements JobQue
     return this;
   }
   
-  public JobQuery onlyTimers() {
+  public JobQuery timers() {
     if (onlyMessages) {
       throw new ActivitiException("Cannot combine onlyTimers() with onlyMessages() in the same query");
     }
@@ -92,7 +92,7 @@ public class JobQueryImpl extends AbstractQuery<JobQuery, Job> implements JobQue
     return this;
   }
   
-  public JobQuery onlyMessages() {
+  public JobQuery messages() {
     if (onlyTimers) {
       throw new ActivitiException("Cannot combine onlyTimers() with onlyMessages() in the same query");
     }

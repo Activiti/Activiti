@@ -415,7 +415,7 @@ public class ExecutionEntity extends ExecutionImpl implements PersistentObject, 
     // update the persisted historic activity instances that are open
     List<HistoricActivityInstanceEntity> historicActivityInstances = (List) new HistoricActivityInstanceQueryImpl()
       .executionId(id)
-      .onlyOpen()
+      .open()
       .executeList(commandContext, null);
     for (HistoricActivityInstanceEntity historicActivityInstance: historicActivityInstances) {
       historicActivityInstance.setExecutionId(replacedBy.getId());

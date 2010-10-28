@@ -162,18 +162,18 @@ public class JobQueryTest extends ActivitiInternalTestCase {
   }
   
   public void testQueryByOnlyTimers() {
-    JobQuery query = managementService.createJobQuery().onlyTimers();
+    JobQuery query = managementService.createJobQuery().timers();
     verifyQueryResults(query, 3);
   }
   
   public void testQueryByOnlyMessages() {
-    JobQuery query = managementService.createJobQuery().onlyMessages();
+    JobQuery query = managementService.createJobQuery().messages();
     verifyQueryResults(query, 1);
   }
   
   public void testInvalidOnlyTimersUsage() {
     try {
-      managementService.createJobQuery().onlyTimers().onlyMessages().list();
+      managementService.createJobQuery().timers().messages().list();
       fail();
     } catch (ActivitiException e) {
       assertTextPresent("Cannot combine onlyTimers() with onlyMessages() in the same query", e.getMessage());
@@ -259,7 +259,7 @@ public class JobQueryTest extends ActivitiInternalTestCase {
     ClockUtil.setCurrentTime(new Date(timerThreeFireTime.getTime() + ONE_SECOND)); // make sure all timers can fire
     
     JobQuery query = managementService.createJobQuery()
-      .onlyTimers()
+      .timers()
       .executable()
       .orderByJobRetries()
       .asc()

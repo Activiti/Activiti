@@ -65,7 +65,7 @@ public class ActivityInstanceEndHandler implements EventListener {
     List<HistoricActivityInstance> historicActivityInstances = new HistoricActivityInstanceQueryImpl()
       .executionId(executionId)
       .activityId(activityId)
-      .onlyOpen()
+      .open()
       .executeList(commandContext, new Page(0, 1));
     
     if (!historicActivityInstances.isEmpty()) {

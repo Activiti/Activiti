@@ -42,12 +42,12 @@ public interface JobQuery extends Query<JobQuery, Job> {
   JobQuery executable();
 
   /** Only select jobs that are timers. 
-   * Cannot be used together with {@link #onlyMessages()} */
-  JobQuery onlyTimers();
+   * Cannot be used together with {@link #messages()} */
+  JobQuery timers();
  
   /** Only select jobs that are messages. 
-   * Cannot be used together with {@link #onlyTimers()} */
-  JobQuery onlyMessages();
+   * Cannot be used together with {@link #timers()} */
+  JobQuery messages();
   
   /** Only select jobs where the duedate is lower then the given date.  */
   JobQuery duedateLowerThen(Date date);

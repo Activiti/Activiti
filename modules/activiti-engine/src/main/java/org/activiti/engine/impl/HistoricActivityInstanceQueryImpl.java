@@ -89,12 +89,12 @@ public class HistoricActivityInstanceQueryImpl extends AbstractQuery<HistoricAct
     return this;
   }
   
-  public HistoricActivityInstanceQueryImpl assignee(String assignee) {
+  public HistoricActivityInstanceQueryImpl taskAssignee(String assignee) {
     this.assignee = assignee;
     return this;
   }
   
-  public HistoricActivityInstanceQueryImpl onlyOpen() {
+  public HistoricActivityInstanceQueryImpl open() {
     this.onlyOpen = true;
     return this;
   }
