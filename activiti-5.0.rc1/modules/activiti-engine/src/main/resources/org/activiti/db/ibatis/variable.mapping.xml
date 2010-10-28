@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="org.activiti.persistence">
+
+  <!-- VARIABLE INSTANCE INSERT -->
+  
+  <insert id="insertVariableInstance" parameterType="org.activiti.engine.impl.runtime.VariableInstanceEntity">
+    insert into ACT_RU_VARIABLE (ID_, REV_, TYPE_, NAME_, PROC_INST_ID_, EXECUTION_ID_, BYTEARRAY_ID_, DOUBLE_, LONG_ , TEXT_, TEXT2_)
+    values (
+	    #{id, jdbcType=VARCHAR},
+	    1,
+	    #{type, jdbcType=VARCHAR },
+	    #{name, jdbcType=VARCHAR},
+      #{processInstanceId, jdbcType=VARCHAR},
+	    #{executionId, jdbcType=VARCHAR},
+	    #{byteArrayValueId, jdbcType=VARCHAR},
+	    #{doubleValue, jdbcType=DOUBLE},
+	    #{longValue, jdbcType=BIGINT},
+	    #{textValue, jdbcType=VARCHAR},
+	    #{textValue2, jdbcType=VARCHAR}
+    )
+  </insert>
+  
+  <!-- VARIABLE INSTANCE UPDATE -->
+  
+  <update id="updateVariableInstance" parameterType="org.activiti.engine.impl.runtime.VariableInstanceEntity">
+    update ACT_RU_VARIABLE
+    set 
+      REV_ = #{revisionNext, jdbcType=INTEGER},
+	    BYTEARRAY_ID_ = #{byteArrayValueId, jdbcType=VARCHAR},
+	    DOUBLE_ = #{doubleValue, jdbcType=DOUBLE},
+	    LONG_ = #{longValue, jdbcType=BIGINT},
+	    TEXT_ = #{textValue, jdbcType=VARCHAR},
+	    TEXT2_ = #{textValue2, jdbcType=VARCHAR}
+    where ID_ = #{id, jdbcType=VARCHAR}
+      and REV_ = #{revision, jdbcType=INTEGER}
+  </update>
+
+  <!-- VARIABLE INSTANCE DELETE -->
+
+  <delete id="deleteVariableInstance" parameterType="string">
+    delete from ACT_RU_VARIABLE where ID_ = #{id, jdbcType=VARCHAR}
+  </delete>
+  
+  <!-- VARIABLE INSTANCE RESULTMAP -->
+
+	<resultMap id="variableInstanceResultMap" type="org.activiti.engine.impl.runtime.VariableInstanceEntity">
+		<id property="id" column="ID_" jdbcType="VARCHAR" />
+    <result property="revision" column="REV_" jdbcType="INTEGER"/>
+		<result property="type" column="TYPE_" javaType="org.activiti.engine.impl.variable.VariableType" jdbcType="VARCHAR"/>
+		<result property="name" column="NAME_" javaType="String" jdbcType="VARCHAR" />
+    <result property="processInstanceId" column="PROC_INST_ID_" jdbcType="VARCHAR" />
+    <result property="executionId" column="EXECUTION_ID_" jdbcType="VARCHAR" />
+		<result property="activityId" column="ACTIVITY_ID_" jdbcType="VARCHAR" />
+		<result property="isActive" column="IS_ACTIVE_" jdbcType="BOOLEAN" />
+		<result property="isConcurrencyScope" column="IS_CONCURRENCY_SCOPE_" jdbcType="BOOLEAN" />
+		<result property="byteArrayValueId" column="BYTEARRAY_ID_" jdbcType="VARCHAR" />
+		<result property="doubleValue" column="DOUBLE_" jdbcType="DOUBLE" />
+		<result property="textValue" column="TEXT_" jdbcType="VARCHAR"/>
+		<result property="textValue2" column="TEXT2_" jdbcType="VARCHAR"/>
+		<result property="longValue" column="LONG_" jdbcType="BIGINT"/>
+	</resultMap>
+
+  <!-- VARIABLE INSTANCE SELECT -->
+
+	<select id="selectVariableInstance" parameterType="string" resultMap="variableInstanceResultMap">
+		select * from ACT_RU_VARIABLE where ID_ =
+		#{id, jdbcType=VARCHAR}
+  </select>
+
+	<select id="selectVariablesByExecutionId" parameterType="string" resultMap="variableInstanceResultMap">
+		select * from ACT_RU_VARIABLE where
+		EXECUTION_ID_ = #{executionId,
+		jdbcType=VARCHAR}
+  </select>
+
+  <!-- BYTE ARRAY INSERT -->
+
+  <insert id="insertByteArray" parameterType="org.activiti.engine.impl.runtime.ByteArrayEntity">
+    insert into ACT_GE_BYTEARRAY(ID_, REV_, NAME_, BYTES_, DEPLOYMENT_ID_)
+    values (
+      #{id, jdbcType=VARCHAR},
+      1, 
+      #{name, jdbcType=VARCHAR}, 
+      #{bytes, jdbcType=BLOB}, 
+      #{deploymentId, jdbcType=VARCHAR}
+    )  
+  </insert>
+  
+  <!-- BYTE ARRAY UPDATE -->
+
+  <update id="updateByteArray" parameterType="org.activiti.engine.impl.runtime.ByteArrayEntity">
+    update ACT_GE_BYTEARRAY 
+    set
+      REV_ = #{revisionNext, jdbcType=INTEGER},
+      BYTES_ = #{bytes, jdbcType=BLOB}
+    where ID_ = #{id}
+      and REV_ = #{revision, jdbcType=INTEGER}
+  </update>
+  
+  <!-- BYTE ARRAY DELETE -->
+
+  <select id="selectBytesOfByteArray" parameterType="string" resultType="hashmap">
+    select BYTES_ from ACT_GE_BYTEARRAY where ID_ = #{id}
+  </select>
+  
+  <delete id="deleteByteArraysForDeployment" parameterType="string">
+    delete from ACT_GE_BYTEARRAY where DEPLOYMENT_ID_ = #{id}
+  </delete>
+   
+  <delete id="deleteByteArray" parameterType="string">
+    delete from ACT_GE_BYTEARRAY where ID_ = #{id}
+  </delete>
+
+  <!-- BYTE ARRAY RESULTMAP -->
+  
+  <resultMap id="byteArrayResultMap" type="org.activiti.engine.impl.runtime.ByteArrayEntity">
+    <id property="id" column="ID_" jdbcType="VARCHAR" />
+    <result property="revision" column="REV_" jdbcType="INTEGER"/>
+    <result property="name" column="NAME_" jdbcType="VARCHAR"/>
+    <result property="bytes" column="BYTES_" jdbcType="BLOB"/>  
+  </resultMap>
+
+  <!-- BYTE ARRAY SELECT -->
+  
+  <select id="selectByteArrayById" parameterType="string" resultMap="byteArrayResultMap">
+   select * from ACT_GE_BYTEARRAY where ID_ = #{id}
+  </select>
+  
+  <select id="selectByteArraysForDeployment" parameterType="string" resultMap="byteArrayResultMap">
+    select * from ACT_GE_BYTEARRAY where DEPLOYMENT_ID_ = #{deploymentId} order by NAME_ asc
+  </select>  
+  
+  <select id="selectResourceNamesForDeployment" parameterType="string" resultType="string">
+    select NAME_ from ACT_GE_BYTEARRAY where DEPLOYMENT_ID_ = #{deploymentId} order by NAME_ asc
+  </select>
+  
+  <select id="selectDeploymentResource" parameterType="map" resultMap="byteArrayResultMap">
+    select * from ACT_GE_BYTEARRAY 
+    where DEPLOYMENT_ID_ = #{deploymentId}
+          AND NAME_ = #{resourceName}
+  </select>
+
+<!-- Postgresql specific configuration -->
+  <resultMap id="byteArrayResultMap_postgres" type="org.activiti.engine.impl.runtime.ByteArrayEntity">
+    <id property="id" column="ID_" jdbcType="VARCHAR" />
+    <result property="revision" column="REV_" jdbcType="INTEGER"/>
+    <result property="name" column="NAME_" jdbcType="VARCHAR"/>
+    <result property="bytes" column="BYTES_" jdbcType="BINARY"/>  
+  </resultMap>
+  
+  <select id="selectByteArrayById_postgres" parameterType="string" resultMap="byteArrayResultMap_postgres">
+   select * from ACT_GE_BYTEARRAY where ID_ = #{id}
+  </select>
+
+	<update id="updateByteArray_postgres" parameterType="org.activiti.engine.impl.runtime.ByteArrayEntity">
+    update ACT_GE_BYTEARRAY 
+    set
+      REV_ = #{revisionNext, jdbcType=INTEGER},
+      BYTES_ = #{bytes, jdbcType=BINARY}
+    where ID_ = #{id}
+      and REV_ = #{revision, jdbcType=INTEGER}
+  </update>  
+  
+    <insert id="insertByteArray_postgres" parameterType="org.activiti.engine.impl.runtime.ByteArrayEntity">
+    insert into ACT_GE_BYTEARRAY(ID_, REV_, NAME_, BYTES_, DEPLOYMENT_ID_)
+    values (
+      #{id, jdbcType=VARCHAR},
+      1, 
+      #{name, jdbcType=VARCHAR}, 
+      #{bytes, jdbcType=BINARY}, 
+      #{deploymentId, jdbcType=VARCHAR}
+    )  
+  </insert>
+</mapper>

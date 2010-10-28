@@ -1,0 +1,5 @@
+<webscript>
+  <shortname>Activiti - About Cycle</shortname>
+  <description>Describes the Activiti Cycle application</description>
+  <url>/component/about</url>
+</webscript>

@@ -1,0 +1,227 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<name>Activiti - Spring</name>
+	<groupId>org.activiti</groupId>
+	<artifactId>activiti-spring</artifactId>
+
+	<parent>
+		<groupId>org.activiti</groupId>
+		<artifactId>activiti-root</artifactId>
+		<relativePath>../..</relativePath>
+		<version>5.0.rc1-SNAPSHOT</version>
+	</parent>
+
+	<dependencies>
+    <dependency>
+      <groupId>org.activiti</groupId>
+      <artifactId>activiti-engine</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-context</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-jdbc</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-tx</artifactId>
+    </dependency>
+     <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-test</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-orm</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>cglib</groupId>
+      <artifactId>cglib</artifactId>
+      <scope>provided</scope>
+    </dependency>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+      <scope>provided</scope>
+		</dependency>
+    <dependency>
+      <groupId>com.h2database</groupId>
+      <artifactId>h2</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.mockito</groupId>
+      <artifactId>mockito-core</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.subethamail</groupId>
+      <artifactId>subethasmtp-wiser</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+	  <groupId>javax.persistence</groupId>
+	  <artifactId>persistence-api</artifactId>
+	  <scope>provided</scope>
+	</dependency>
+	<dependency>
+      <groupId>org.apache.openjpa</groupId>
+      <artifactId>openjpa</artifactId>
+      <scope>test</scope>
+    </dependency>
+	</dependencies>
+
+	<!-- build>
+		<plugins>
+			<plugin>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<configuration>
+					<excludes>
+					</excludes>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build -->
+
+  <profiles>
+    <profile>
+      <id>check</id>
+      <build>
+        <plugins>
+          <plugin>
+            <artifactId>maven-antrun-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>delete-test-sources</id>
+                <phase>generate-sources</phase>
+                <configuration>
+                  <tasks>
+                    <delete dir="src/test/java/org/activiti/engine/test"/>
+                    <delete dir="src/test/resources/org/activiti/engine/test"/>
+                    <delete dir="src/test/java/org/activiti/examples"/>
+                    <delete dir="src/test/resources/org/activiti/examples"/>
+                    <delete dir="src/test/java/org/activiti/standalone"/>
+                    <delete dir="src/test/resources/org/activiti/standalone"/>
+                  </tasks>
+                </configuration>
+                <goals>
+                  <goal>run</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>          
+        </plugins>
+      </build>
+    </profile>
+    <profile>
+      <id>checkspring</id>
+      <build>
+		    <plugins>
+          <plugin>
+		        <artifactId>maven-antrun-plugin</artifactId>
+		        <executions>
+		          <execution>
+                <id>copy-test-sources-from-engine</id>
+		            <phase>generate-sources</phase>
+                <goals>
+                  <goal>run</goal>
+                </goals>
+		            <configuration>
+		              <tasks>
+                    <delete dir="src/test/java/org/activiti/engine/test"/>
+                    <delete dir="src/test/resources/org/activiti/engine/test"/>
+                    <delete dir="src/test/java/org/activiti/examples"/>
+                    <delete dir="src/test/resources/org/activiti/examples"/>
+                    <delete dir="src/test/java/org/activiti/standalone"/>
+                    <delete dir="src/test/resources/org/activiti/standalone"/>
+                    <copy todir="src/test/java" overwrite="true">
+                      <fileset dir="../activiti-engine/src/test/java" />
+                    </copy>
+                    <copy todir="src/test/resources" overwrite="true">
+                      <fileset dir="../activiti-engine/src/test/resources" />
+                    </copy>
+		                <copy todir="target/test-classes" overwrite="true">
+		                  <fileset dir="src/test/resources-engine-testrun" />
+		                </copy>
+		              </tasks>
+		            </configuration>
+		          </execution>
+              <execution>
+                <id>delete-test-sources-after</id>
+                <phase>package</phase>
+                <goals>
+                  <goal>run</goal>
+                </goals>
+                <configuration>
+                  <tasks>
+                    <delete dir="src/test/java/org/activiti/engine/test"/>
+                    <delete dir="src/test/resources/org/activiti/engine/test"/>
+                    <delete dir="src/test/java/org/activiti/examples"/>
+                    <delete dir="src/test/resources/org/activiti/examples"/>
+                    <delete dir="src/test/java/org/activiti/standalone"/>
+                    <delete dir="src/test/resources/org/activiti/standalone"/>
+                  </tasks>
+                </configuration>
+              </execution>
+		        </executions>
+		      </plugin>          
+		      <plugin>
+            <artifactId>maven-surefire-plugin</artifactId>
+            <configuration>
+              <systemProperties>
+                <property><name>process.engine.initializer</name><value>org.activiti.spring.SpringProcessEngineInitializer</value></property>
+              </systemProperties>
+              <excludes>
+                <exclude>org/activiti/standalone/**</exclude>
+                <exclude>**/*TestCase.java</exclude>
+                <exclude>org/activiti/engine/test/api/testing/ActivitiRuleJunit4Test.java</exclude><!-- Can't run in Spring since ActivitiRule must be used different in Spring -->
+                <exclude>org/activiti/engine/test/concurrency/CompetingJobAcquisitionTest.java</exclude> <!-- ACT-234 -->
+              </excludes>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+    <profile>
+      <id>distro</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-source-plugin</artifactId>
+            <version>2.1.1</version>
+            <executions>
+              <execution>
+                <id>attach-sources</id>
+                <phase>package</phase>
+                <goals>
+                  <goal>jar-no-fork</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>   
+  
+  <repositories>
+    <!-- This repo declaration is here for as this will be part of the distro -->
+    <repository>
+      <id>alfresco</id>
+      <url>http://maven.alfresco.com/nexus/content/groups/public</url>
+    </repository>
+  </repositories>
+
+</project>

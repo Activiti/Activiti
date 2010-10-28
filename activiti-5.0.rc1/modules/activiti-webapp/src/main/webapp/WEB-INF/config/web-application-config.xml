@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:jdbc="http://www.springframework.org/schema/jdbc"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-2.5.xsd
+		http://www.springframework.org/schema/jdbc http://www.springframework.org/schema/jdbc/spring-jdbc-3.0.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd">
+	
+	<!-- SURF: required infrastructure imports -->
+	<import resource="surf-config.xml"/>
+	
+	<!-- Maps requests to @Controllers based on @RequestMapping("path") annotation values
+		 If no annotation-based path mapping is found, Spring MVC sends a 404 response and logs a pageNotFound warning. -->
+  <bean class="org.springframework.web.servlet.mvc.annotation.DefaultAnnotationHandlerMapping">
+    <property name="order" value="1" />
+		
+    <!-- SURF: required interceptors -->
+    <property name="interceptors">
+      <list>
+        <ref bean="requestContextInterceptor"/>
+        <ref bean="themeInterceptor"/>
+        <ref bean="previewContextInterceptor"/>
+      </list>
+    </property>
+  </bean>
+
+  <!-- SURF: interoperability with annotated controllers -->
+  <!-- Enables annotated @Controllers; responsible for invoking an annotated POJO @Controller when one is mapped. -->
+  <bean id="annotationMethodHandlerAdapter" class="org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerAdapter"/>
+	
+  <!-- SURF: interoperability with simple controllers -->
+  <!-- Support for Default Surf Controllers -->
+  <bean id="simpleControllerHandlerAdapter" class="org.springframework.web.servlet.mvc.SimpleControllerHandlerAdapter"/>
+	
+  <!-- Apache Commons Fileupload -->
+  <bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+    <property name="maxUploadSize" value="10000000"/>
+  </bean>
+
+  <!-- Activiti User Factory -->
+  <bean id="webframework.factory.user.activiti" class="org.activiti.surf.ActivitiUserFactory" parent="webframework.factory.base">
+    <property name="endpointId" value="activiti-rest-endpoint"/>
+    <property name="adminGroupId" value="admin"/>
+    <property name="assignmentGroupTypeId" value="assignment"/>
+    <property name="securityRoleGroupTypeId" value="security-role"/>
+    <property name="maximumNumberOfGroups" value="500"/>
+  </bean>
+
+  <!-- Activiti i18n message -->
+  <bean id="webscripts.resources" class="org.springframework.extensions.surf.util.ResourceBundleBootstrapComponent">
+     <property name="resourceBundles">
+        <list>
+           <value>webscripts.messages.webscripts</value>
+           <value>messages.activiti-i18n-core</value>
+           <value>messages.activiti-i18n-app</value>
+        </list>
+     </property>
+  </bean>
+
+</beans>

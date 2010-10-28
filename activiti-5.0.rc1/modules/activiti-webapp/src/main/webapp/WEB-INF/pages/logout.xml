@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<page>
+  <title>Logout</title>
+  <title-id>page.logout.title</title-id>
+  <template-instance>logout</template-instance>
+  <authentication>none</authentication>  
+</page>

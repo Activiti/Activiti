@@ -1,0 +1,7 @@
+<webscript>
+  <shortname>Execute Jobs</shortname>
+  <description>Executes multiple jobs defined as a body object attribute of type string array named "jobIds"</description>
+  <url>/management/jobs/execute</url>
+  <authentication>admin</authentication>
+  <format default="json">argument</format>
+</webscript>

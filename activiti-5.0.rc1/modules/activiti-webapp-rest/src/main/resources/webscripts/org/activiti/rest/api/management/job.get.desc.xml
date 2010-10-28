@@ -1,0 +1,7 @@
+<webscript>
+  <shortname>Job</shortname>
+  <description>List detailed info about job (including the stacktrace if any)</description>
+  <url>/management/job/{jobId}</url>
+  <authentication>admin</authentication>
+  <format default="json">argument</format>
+</webscript>

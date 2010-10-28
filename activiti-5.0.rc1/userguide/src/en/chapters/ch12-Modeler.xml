@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE chapter PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN" "../../../target/docbook-tool-1.0/docbook-xml/docbookx.dtd">
+
+<chapter>
+
+  <title>Activiti Modeler</title>
+  
+  <para>
+    The Activiti Modeler is a web based process editor that can be used
+    to author BPMN 2.0 process graphically using nothing more then a browser.
+    The process files are stored by the server on a the file system, such
+    that they are easily accessible and can be imported without hassles into any Java IDE.
+  </para>
+  
+  <para>
+    Bugs and issues can be reported on the 
+    <ulink url="http://code.google.com/p/signavio-core-components/issues/list">Signavio core components issue tracker</ulink>.
+  </para>
+  
+  <para>
+    The Activiti Modeler is automatically installed during the <link linkend="demo.setup">demo setup</link>.
+    <mediaobject><imageobject><imagedata align="center" fileref="images/activiti-modeler.png"/></imageobject></mediaobject>
+  </para>
+  
+  <section>
+    
+    <title>Changing the location of the process model repository</title>
+    
+    <para>
+      After running the demo setup, process XML files are stored 
+      in the <emphasis>apps/activiti-model-repository</emphasis> folder.
+      The location of the file-based repository can be switched by changing the
+      <emphasis role="bold">fileSystemRootDirectory</emphasis> property in the
+      <emphasis role="bold">(exploded)activiti-modeler.war/WEB-INF/classes/configuration.properties</emphasis> file.
+    </para>
+      
+  </section>
+  
+  <section>
+  
+    <title>Changing the host of the Modeler</title>
+    
+    <para>
+      After running the demo setup, the Activiti Modeler will accessible only on the <emphasis>localhost</emphasis>
+      address.
+      When you want to change the host of the Modeler, e.g. to run it centrally on a server, change the
+      <emphasis role="bold">host</emphasis> property in the
+      <emphasis role="bold">(exploded)activiti-modeler.war/WEB-INF/classes/configuration.properties</emphasis> file.
+    </para>
+    
+    <para>
+<programlisting>
+> cat configuration.properties 
+host = http://192.168.1.101:8080
+fileSystemRootDirectory = /Users/jbarrez/Development/model-repo
+</programlisting>
+    </para>
+    
+  </section>
+ 
+</chapter>

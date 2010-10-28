@@ -1,0 +1,51 @@
+/* STYLING */
+
+#Activiti a.current,
+#Activiti .yui-pg-current-page,
+#Activiti .activiti-form.bd h1,
+#Activiti .activiti-form.bd h2,
+#Activiti .activiti-form.bd h3,
+h1 {
+  color: #2e9726;
+}
+
+/* STRUCTURE */
+
+#navigation ul.activiti-menu.actions {
+  float: right;
+  margin-top: 0.4em;
+  margin-right: 1em;
+}
+
+/* Activiti data tables */
+
+#Activiti tr.yui-dt-odd { 
+   background-color:#E4FFE0;
+}
+
+#Activiti tr.yui-dt-even td.yui-dt-asc, 
+#Activiti tr.yui-dt-even td.yui-dt-desc {
+   background-color:#E4FFE0;
+}
+
+#Activiti tr.yui-dt-odd td.yui-dt-asc,
+#Activiti tr.yui-dt-odd td.yui-dt-desc {
+   background-color:#CFE7CB;
+}
+ 
+#Activiti .processAction {
+   display:block;
+   padding-left:20px;
+} 
+
+#Activiti .startProcess {
+   background: url("../images/process-start-icon.png") no-repeat 0 3px;
+}
+#Activiti .viewProcess, 
+#Activiti .viewXML {
+   background: url("../images/process-view-icon.png") no-repeat 0 3px;
+}
+
+#Activiti .activiti-datatable table {
+  width:auto;
+}
