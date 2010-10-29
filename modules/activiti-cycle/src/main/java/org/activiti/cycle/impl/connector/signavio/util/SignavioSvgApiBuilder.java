@@ -18,9 +18,16 @@ public class SignavioSvgApiBuilder {
   
   private String authToken;
   private String clickFunction;
-  private Map nodes;
-  private String color;
   
+  private Map<Map,String> nodes;
+//  private Map nodes;
+//  private String color;
+  
+  /**
+   * Constructor to create a SignavioSvgApiBuilder object.
+   * @param connector required for constructing correct model url
+   * @param artifact required for constructing correct model url
+   */
   public SignavioSvgApiBuilder(SignavioConnector connector, RepositoryArtifact artifact) {
     this.connector = connector;
     this.artifact = artifact;
@@ -57,24 +64,34 @@ public class SignavioSvgApiBuilder {
   // ]
 //  }
   
+  /**
+   * Submit a map containing the nodes to be highlighted and in which color.
+   * Key: Signavio ID, Value: a string
+   */
   public SignavioSvgApiBuilder highlightNodes(Map nodes, String color) {
-    this.nodes = nodes;
-    this.color = color;
+    this.nodes.put(nodes, color);
     
     return this;
   }
   
-//  public SignavioSvgApiBuilder highlightNode(String nodeId, String message, String color) {
-//    
-//    return this;
-//  }
-  
+  /**
+   * Maybe required to get access to models in saas/enterprise signavio.
+   * @param authToken authtoken for saas / enterprise signavio
+   */
   public SignavioSvgApiBuilder authToken(String authToken) {
     this.authToken = authToken;
     
     return this;
   }
   
+  /**
+   * A javascript function submitted as string. You have the javascript variables 'node' and 'editor' to your disposal.
+   * @param clickFunction a string representation of a javascript function, e.g.
+   * 'if(node.properties["oryx-name"]||node.properties["oryx-title"]) {
+   *    alert("Name: " + node.properties["oryx-name"] + "\n(Sid: " + node.resourceId + ")");
+   *  };'
+   * @return
+   */
   public SignavioSvgApiBuilder clickFunction(String clickFunction) {
     this.clickFunction = clickFunction;
     
@@ -104,31 +121,80 @@ public class SignavioSvgApiBuilder {
     
     svgApiCall += "}";
     svgApiCall += "</script>";
+    
+    // include messages as text
+    svgApiCall += buildMessages();
+    
     svgApiCall += FOOTER;
     
     return svgApiCall;
   }
   
+  private String buildMessages() {
+    if (nodes == null || nodes.isEmpty()) {
+      return "";
+    }
+    
+    String mappingValidationErrorHtml = "<h2>Mapping validation issues</h2>";
+    for (Object nodeMap : nodes.entrySet()) {
+      Entry entryNodeMap = (Entry) nodeMap;
+      // set color for list
+      mappingValidationErrorHtml += "<ul style=\"" + (String) entryNodeMap.getValue() + "\">";
+      for (Object errorObj : ((Map) entryNodeMap.getKey()).entrySet()) {
+        Entry mappingValidationError = (Entry) errorObj;
+        mappingValidationErrorHtml += "<li>SID: " + mappingValidationError.getKey() + " - Message: " + mappingValidationError.getValue() + "</li>";
+      }
+      mappingValidationErrorHtml += "</ul>";
+    }
+    
+    return mappingValidationErrorHtml;
+  }
+
   private String createUrl() {
     return "url: \"" + connector.getConfiguration().getModelUrl(artifact.getNodeId()) + "\"";
   }
   
   private String createClickFunction() {
+    String function = ", click : function(node, editor) {";
+    
     if (clickFunction != null && clickFunction.length() > 0) {
-      return ", " + clickFunction;
+      function += clickFunction;
     } else {
       // create default click function
-      String function = ", click: function(node, editor) {";
       function += "if(node.properties[\"oryx-name\"]||node.properties[\"oryx-title\"]) {";
       function += "alert(\"Name: \" + node.properties[\"oryx-name\"] + \" (Sid: \" + node.resourceId + \")\");";
-      function += "} }";
-
-      return function;
+      function += "}";
     }
+    function += "}";
+    
+    return function;
   }
   
-  private String highlightNode(String nodeId, String message, String color) {
+  private String highlightNode(String nodeId, String message) {
     return "\"" + nodeId + "\", ";
+  }
+  
+  private String highlightNodesMap(Map nodes, String color) {
+    if (nodes == null || nodes.isEmpty()) {
+      return "";
+    }
+    // set default color if not provided
+    if (color == null || color.length() == 0) {
+      color = "red";
+    }
+    
+    String highlightning = "{ nodes:[";
+    for (Object obj : nodes.entrySet()) {
+      Entry nodeEntry = (Entry) obj;
+      highlightning += highlightNode((String) nodeEntry.getKey(), (String) nodeEntry.getValue());        
+    }
+    // empty node for comma issues
+    highlightning += "\"\"";
+    highlightning += "],";
+    highlightning += "attributes:{ fill:\"" + color + "\" }";
+    highlightning += "}";
+    
+    return highlightning;
   }
   
   private String buildHighlightning() {
@@ -136,22 +202,15 @@ public class SignavioSvgApiBuilder {
       return "";
     }
     
-    String highlightning = ",focus: [{";
-
-    highlightning += "nodes:[";
-    for (Object node : nodes.entrySet()) {
-      Entry nodeEntry = (Entry) node;
-      highlightning += highlightNode((String) nodeEntry.getKey(), (String) nodeEntry.getValue(), color);
+    String highlightning = ",focus: [";
+    for (Object nodeMap : nodes.entrySet()) {
+      Entry nodeEntry = (Entry) nodeMap;
+      highlightning += highlightNodesMap((Map) nodeEntry.getKey(), (String) nodeEntry.getValue());
+      highlightning += ", ";
     }
     // empty node for comma issues
     highlightning += "\"\"";
-    highlightning += "],";
-    if (color != null && color.length() > 0) {
-      highlightning += "attributes:{ fill:\"" + color + "\" }";
-    } else {
-      highlightning += "attributes:{ fill:\"red\" }";
-    }
-    highlightning += "}]";
+    highlightning += "]";
     
     return highlightning;  
   }
