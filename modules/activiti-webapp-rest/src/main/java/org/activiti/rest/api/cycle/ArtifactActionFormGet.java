@@ -14,14 +14,9 @@ package org.activiti.rest.api.cycle;
 
 import java.util.Map;
 
-import javax.servlet.http.HttpSession;
-
-import org.activiti.cycle.CycleService;
 import org.activiti.cycle.ParameterizedAction;
 import org.activiti.cycle.RepositoryArtifact;
-import org.activiti.cycle.impl.CycleServiceImpl;
 import org.activiti.rest.util.ActivitiRequest;
-import org.activiti.rest.util.ActivitiWebScript;
 import org.springframework.extensions.webscripts.Cache;
 import org.springframework.extensions.webscripts.Status;
 import org.springframework.extensions.webscripts.WebScriptException;
@@ -30,16 +25,7 @@ import org.springframework.extensions.webscripts.WebScriptException;
  * 
  * @author Nils Preusker (nils.preusker@camunda.com)
  */
-public class ArtifactActionFormGet extends ActivitiWebScript {
-
-  private CycleService cycleService;
-
-  private void init(ActivitiRequest req) {
-    String cuid = req.getCurrentUserId();
-
-    HttpSession session = req.getHttpServletRequest().getSession(true);
-    this.cycleService = CycleServiceImpl.getCycleService(cuid, session);
-  }
+public class ArtifactActionFormGet extends ActivitiCycleWebScript {
 
   /**
    * Returns an action's form.
@@ -50,8 +36,7 @@ public class ArtifactActionFormGet extends ActivitiWebScript {
    * @param model The webscripts template model
    */
   @Override
-  protected void executeWebScript(ActivitiRequest req, Status status, Cache cache, Map<String, Object> model) {
-    init(req);
+  protected void execute(ActivitiRequest req, Status status, Cache cache, Map<String, Object> model) {
     
     // Retrieve the artifactId from the request
     String connectorId = req.getMandatoryString("connectorId");

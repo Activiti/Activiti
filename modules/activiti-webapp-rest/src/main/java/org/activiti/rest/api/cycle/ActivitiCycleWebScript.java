@@ -10,36 +10,39 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.activiti.rest.api.cycle;
 
 import java.util.Map;
 
+import javax.servlet.http.HttpSession;
+
+import org.activiti.cycle.CycleService;
+import org.activiti.cycle.impl.CycleServiceImpl;
 import org.activiti.rest.util.ActivitiRequest;
+import org.activiti.rest.util.ActivitiWebScript;
 import org.springframework.extensions.webscripts.Cache;
 import org.springframework.extensions.webscripts.Status;
 
 /**
- * 
  * @author Nils Preusker (nils.preusker@camunda.com)
  */
-public class ActionExecutionPut extends ActivitiCycleWebScript {
+public abstract class ActivitiCycleWebScript extends ActivitiWebScript {
 
-  @Override
-  protected void execute(ActivitiRequest req, Status status, Cache cache, Map<String, Object> model) {
-    String connectorId = req.getMandatoryString("connectorId");
-    String artifactId = req.getMandatoryString("artifactId");
-    String actionId = req.getMandatoryString("actionName");
-    
-    Map<String, Object> parameters = req.getFormVariables();    
-    try {
-      this.cycleService.executeParameterizedAction(connectorId, artifactId, actionId, parameters);
-      model.put("result", true);
-    } catch (Exception e) {
-      // TODO: see whether this makes sense, probably either exception or negative result.
-      model.put("result", false);
-      throw new RuntimeException(e);
-    }
-    
+  protected CycleService cycleService;
+
+  private void init(ActivitiRequest req) {
+    String cuid = req.getCurrentUserId();
+
+    HttpSession session = req.getHttpServletRequest().getSession(true);
+    this.cycleService = CycleServiceImpl.getCycleService(cuid, session);
   }
 
+  @Override
+  protected void executeWebScript(ActivitiRequest req, Status status, Cache cache, Map<String, Object> model) {
+    init(req);
+    execute(req, status, cache, model);
+  }
+
+  abstract void execute(ActivitiRequest req, Status status, Cache cache, Map<String, Object> model);
 }

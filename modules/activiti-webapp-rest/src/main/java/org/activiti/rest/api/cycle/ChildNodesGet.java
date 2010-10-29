@@ -17,16 +17,11 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.servlet.http.HttpSession;
-
-import org.activiti.cycle.CycleService;
 import org.activiti.cycle.RepositoryArtifact;
 import org.activiti.cycle.RepositoryException;
 import org.activiti.cycle.RepositoryFolder;
 import org.activiti.cycle.RepositoryNodeCollection;
-import org.activiti.cycle.impl.CycleServiceImpl;
 import org.activiti.rest.util.ActivitiRequest;
-import org.activiti.rest.util.ActivitiWebScript;
 import org.springframework.extensions.webscripts.Cache;
 import org.springframework.extensions.webscripts.Status;
 
@@ -34,22 +29,12 @@ import org.springframework.extensions.webscripts.Status;
  * 
  * @author Nils Preusker (nils.preusker@camunda.com)
  */
-public class ChildNodesGet extends ActivitiWebScript {
+public class ChildNodesGet extends ActivitiCycleWebScript {
 
   private static Logger log = Logger.getLogger(ChildNodesGet.class.getName());
 
-  private CycleService cycleService;
-
-  private void init(ActivitiRequest req) {
-    String cuid = req.getCurrentUserId();
-
-    HttpSession session = req.getHttpServletRequest().getSession(true);
-    this.cycleService = CycleServiceImpl.getCycleService(cuid, session);
-  }
-
   @Override
-  protected void executeWebScript(ActivitiRequest req, Status status, Cache cache, Map<String, Object> model) {
-    init(req);
+  protected void execute(ActivitiRequest req, Status status, Cache cache, Map<String, Object> model) {
 
     String artifactId = req.getMandatoryString("artifactId");
     String connectorId = req.getMandatoryString("connectorId");

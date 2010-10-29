@@ -106,7 +106,11 @@ public class ActivitiRequest {
    */
   public ActivitiRequestObject getBody() {
     try {
-      return new JSONRequestObject(req);
+      if (this.req.getContentType().contains("multipart")) {
+        return new MultipartRequestObject(req);
+      } else {
+        return new JSONRequestObject(req);
+      }
     } catch (IOException e) {
       throw new WebScriptException(Status.STATUS_BAD_REQUEST, "Can't read obj");
     }

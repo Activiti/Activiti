@@ -1,0 +1,7 @@
+<webscript>
+  <shortname>Creates an artifact</shortname>
+  <description>Creates a new artifact</description>
+  <url>/artifact</url>
+  <authentication>user</authentication>
+  <format default="json">argument</format>
+</webscript>

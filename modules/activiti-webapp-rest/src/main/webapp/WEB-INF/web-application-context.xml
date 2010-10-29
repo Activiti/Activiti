@@ -231,4 +231,8 @@
         parent="activitiWebScript">
   </bean>
 
+  <bean id="webscript.org.activiti.rest.api.cycle.artifact.post"
+        class="org.activiti.rest.api.cycle.ArtifactPost"
+        parent="activitiWebScript">
+  </bean>
 </beans>
