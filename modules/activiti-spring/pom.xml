@@ -82,17 +82,19 @@
     </dependency>
 	</dependencies>
 
-	<!-- build>
+	<build>
 		<plugins>
 			<plugin>
 				<artifactId>maven-surefire-plugin</artifactId>
 				<configuration>
 					<excludes>
+            <exclude>**/CompetingJobAcquisitionTest.java</exclude> <!-- http://jira.codehaus.org/browse/ACT-234 -->
+            <exclude>**/JobQueryTest</exclude> <!-- http://jira.codehaus.org/browse/ACT-299 -->
 					</excludes>
 				</configuration>
 			</plugin>
 		</plugins>
-	</build -->
+	</build>
 
   <profiles>
     <profile>
