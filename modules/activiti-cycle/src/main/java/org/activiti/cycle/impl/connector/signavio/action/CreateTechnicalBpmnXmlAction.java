@@ -14,7 +14,7 @@ import org.activiti.cycle.impl.ParameterizedHtmlFormTemplateAction;
 import org.activiti.cycle.impl.connector.fs.FileSystemPluginDefinition;
 import org.activiti.cycle.impl.connector.signavio.SignavioConnector;
 import org.activiti.cycle.impl.connector.signavio.SignavioPluginDefinition;
-import org.activiti.cycle.impl.db.entity.RepositoryArtifactLinkImpl;
+import org.activiti.cycle.impl.db.entity.RepositoryArtifactLinkEntity;
 import org.activiti.cycle.impl.transform.JsonTransformation;
 import org.activiti.cycle.impl.transform.signavio.AdjustShapeNamesTransformation;
 import org.activiti.cycle.impl.transform.signavio.BpmnPoolExtraction;
@@ -86,7 +86,7 @@ public class CreateTechnicalBpmnXmlAction extends ParameterizedHtmlFormTemplateA
     targetConnector.commitPendingChanges(comment);
 
     if (createLink) {
-      RepositoryArtifactLink link = new RepositoryArtifactLinkImpl();
+      RepositoryArtifactLink link = new RepositoryArtifactLinkEntity();
       link.setSourceArtifact(artifact);
       link.setTargetArtifact(targetArtifact);
       link.setComment(comment);
@@ -96,7 +96,7 @@ public class CreateTechnicalBpmnXmlAction extends ParameterizedHtmlFormTemplateA
   }
 
   public String getLinkType() {
-    return RepositoryArtifactLinkImpl.TYPE_IMPLEMENTS;
+    return RepositoryArtifactLinkEntity.TYPE_IMPLEMENTS;
   }
 
   public RepositoryArtifact createArtifact(RepositoryConnector connector, RepositoryArtifact artifact, String targetFolderId, String targetName,

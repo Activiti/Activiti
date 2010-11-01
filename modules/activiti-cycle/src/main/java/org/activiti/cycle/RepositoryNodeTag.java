@@ -16,13 +16,13 @@ package org.activiti.cycle;
  * 
  * @author ruecker
  */
-public interface RepositoryArtifactTag {
+public interface RepositoryNodeTag {
 
   public String getName();
 
   public String getConnectorId();
 
-  public String getArtifactId();
+  public String getNodeId();
 
   public String getAlias();
 

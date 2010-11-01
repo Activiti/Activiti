@@ -4,7 +4,7 @@
   
 <mapper namespace="org.activiti.cycle">
 
-  <resultMap id="resultMapCycleLink" type="org.activiti.cycle.impl.db.entity.RepositoryArtifactLinkImpl">
+  <resultMap id="resultMapCycleLink" type="org.activiti.cycle.impl.db.entity.RepositoryArtifactLinkEntity">
     <id property="id" column="ID_"/>
     <result property="sourceConnectorId" column="SOURCE_CONNECTOR_ID_"/>
     <result property="targetConnectorId" column="TARGET_CONNECTOR_ID_"/>
@@ -24,6 +24,10 @@
   <select id="selectArtifactLink" parameterType="string" resultMap="resultMapCycleLink">
   	select * from ACT_CY_LINK where ID_ = #{id}
   </select>
+  
+  <delete id="deleteArtifactLink" parameterType="string">
+  	delete from ACT_CY_LINK where ID_ = #{id}
+  </delete>  
     
   <select id="selectArtifactLinkForSourceArtifact" parameterType="map" resultType="list" resultMap="resultMapCycleLink"> 
   	select * from ACT_CY_LINK where SOURCE_CONNECTOR_ID_ = #{connectorId} and SOURCE_ARTIFACT_ID_ = #{artifactId}
@@ -33,7 +37,7 @@
   	select * from ACT_CY_LINK where TARGET_CONNECTOR_ID_ = #{connectorId} and TARGET_ARTIFACT_ID_ = #{artifactId}
   </select>
   
-  <insert id="insertCycleLink" parameterType="org.activiti.cycle.impl.db.entity.RepositoryArtifactLinkImpl">
+  <insert id="insertCycleLink" parameterType="org.activiti.cycle.impl.db.entity.RepositoryArtifactLinkEntity">
     insert into ACT_CY_LINK (ID_,SOURCE_CONNECTOR_ID_, TARGET_CONNECTOR_ID_, SOURCE_ARTIFACT_ID_,TARGET_ARTIFACT_ID_,SOURCE_ELEMENT_ID_,TARGET_ELEMENT_ID_,SOURCE_ELEMENT_NAME_,TARGET_ELEMENT_NAME_, SOURCE_REVISION_, TARGET_REVISION_ , LINK_TYPE_, COMMENT_, LINKED_BOTH_WAYS_)
     values (
 	    #{id, jdbcType=VARCHAR},

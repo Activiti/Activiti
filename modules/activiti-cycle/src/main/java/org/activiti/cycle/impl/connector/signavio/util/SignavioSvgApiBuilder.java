@@ -1,5 +1,6 @@
 package org.activiti.cycle.impl.connector.signavio.util;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -9,9 +10,9 @@ import org.activiti.cycle.impl.connector.signavio.SignavioConnector;
 
 public class SignavioSvgApiBuilder {
 
-  private static final String HEADER = "<html><head></head><body>";
-  private static final String FOOTER = "</body></html>";
-  private static final String SVGAPI_URL = "http://signavio-core-components.googlecode.com/svn/trunk/api/src/signavio-svg.js";
+  public static final String HEADER = "<html><head></head><body>";
+  public static final String FOOTER = "</body></html>";
+  public static final String SVGAPI_URL = "http://signavio-core-components.googlecode.com/svn/trunk/api/src/signavio-svg.js";
 
   private SignavioConnector connector;
   private RepositoryArtifact artifact;
@@ -19,9 +20,11 @@ public class SignavioSvgApiBuilder {
   private String authToken;
   private String clickFunction;
   
-  private Map<Map,String> nodes;
-//  private Map nodes;
-//  private String color;
+  /**
+   * Map mapping a color for highlighting with a {@link Map} of node (ids) with
+   * messages to show
+   */
+  private Map<String, Map<String, String>> nodesToHighlight = new HashMap<String, Map<String, String>>();
   
   /**
    * Constructor to create a SignavioSvgApiBuilder object.
@@ -63,14 +66,13 @@ public class SignavioSvgApiBuilder {
   // }
   // ]
 //  }
-  
+
   /**
    * Submit a map containing the nodes to be highlighted and in which color.
-   * Key: Signavio ID, Value: a string
+   * Key: Signavio ID, Value: Message to show
    */
-  public SignavioSvgApiBuilder highlightNodes(Map nodes, String color) {
-    this.nodes.put(nodes, color);
-    
+  public SignavioSvgApiBuilder highlightNodes(Map<String, String> nodes, String color) {
+    nodesToHighlight.put(color, nodes);    
     return this;
   }
   
@@ -79,8 +81,7 @@ public class SignavioSvgApiBuilder {
    * @param authToken authtoken for saas / enterprise signavio
    */
   public SignavioSvgApiBuilder authToken(String authToken) {
-    this.authToken = authToken;
-    
+    this.authToken = authToken;    
     return this;
   }
   
@@ -93,16 +94,32 @@ public class SignavioSvgApiBuilder {
    * @return
    */
   public SignavioSvgApiBuilder clickFunction(String clickFunction) {
-    this.clickFunction = clickFunction;
-    
+    this.clickFunction = clickFunction;    
     return this;
   }
-  
+
+  /**
+   * use buildHtml instead
+   */
+  @Deprecated
   public String build() {
-    String svgApiCall = "";
-    
-    svgApiCall += HEADER;
-    svgApiCall += "<script type=\"text/javascript\" src=\"" + SVGAPI_URL + "\"></script>";
+    return buildHtml();
+  }
+  
+  public String buildHtml() {
+    return buildHtml(buildScript());
+  }
+
+  public static String buildHtml(String content) {
+    return HEADER + content + FOOTER;
+  }
+  
+  public static String buildHtml(String content, int height) {
+    return HEADER + "<div id=\"model\" style=\"height: " + height + "px; width: 600px;\">" + content + FOOTER;
+  }
+
+  public String buildScript() {
+    String svgApiCall = "<script type=\"text/javascript\" src=\"" + SVGAPI_URL + "\"></script>";
     svgApiCall += "<script type=\"text/plain\">";
     svgApiCall += "{";
     // url to svgapi script
@@ -125,24 +142,20 @@ public class SignavioSvgApiBuilder {
     // include messages as text
     svgApiCall += buildMessages();
     
-    svgApiCall += FOOTER;
-    
     return svgApiCall;
   }
   
   private String buildMessages() {
-    if (nodes == null || nodes.isEmpty()) {
+    if (nodesToHighlight == null || nodesToHighlight.isEmpty()) {
       return "";
     }
     
     String mappingValidationErrorHtml = "<h2>Mapping validation issues</h2>";
-    for (Object nodeMap : nodes.entrySet()) {
-      Entry entryNodeMap = (Entry) nodeMap;
+    for (Entry<String, Map<String, String>> entry : nodesToHighlight.entrySet()) {
       // set color for list
-      mappingValidationErrorHtml += "<ul style=\"" + (String) entryNodeMap.getValue() + "\">";
-      for (Object errorObj : ((Map) entryNodeMap.getKey()).entrySet()) {
-        Entry mappingValidationError = (Entry) errorObj;
-        mappingValidationErrorHtml += "<li>SID: " + mappingValidationError.getKey() + " - Message: " + mappingValidationError.getValue() + "</li>";
+      mappingValidationErrorHtml += "<ul style=\"" + (String) entry.getKey() + "\">";
+      for (Entry<String, String> messageObject : entry.getValue().entrySet()) {
+        mappingValidationErrorHtml += "<li>SID: " + messageObject.getKey() + " - Message: " + messageObject.getValue() + "</li>";
       }
       mappingValidationErrorHtml += "</ul>";
     }
@@ -174,7 +187,7 @@ public class SignavioSvgApiBuilder {
     return "\"" + nodeId + "\", ";
   }
   
-  private String highlightNodesMap(Map nodes, String color) {
+  private String highlightNodesMap(String color, Map<String, String> nodes) {
     if (nodes == null || nodes.isEmpty()) {
       return "";
     }
@@ -184,8 +197,7 @@ public class SignavioSvgApiBuilder {
     }
     
     String highlightning = "{ nodes:[";
-    for (Object obj : nodes.entrySet()) {
-      Entry nodeEntry = (Entry) obj;
+    for (Entry<String, String> nodeEntry : nodes.entrySet()) {
       highlightning += highlightNode((String) nodeEntry.getKey(), (String) nodeEntry.getValue());        
     }
     // empty node for comma issues
@@ -198,14 +210,13 @@ public class SignavioSvgApiBuilder {
   }
   
   private String buildHighlightning() {
-    if (nodes == null || nodes.isEmpty()) {
+    if (nodesToHighlight == null || nodesToHighlight.isEmpty()) {
       return "";
     }
     
     String highlightning = ",focus: [";
-    for (Object nodeMap : nodes.entrySet()) {
-      Entry nodeEntry = (Entry) nodeMap;
-      highlightning += highlightNodesMap((Map) nodeEntry.getKey(), (String) nodeEntry.getValue());
+    for (Entry<String, Map<String, String>> entry : nodesToHighlight.entrySet()) {
+      highlightning += highlightNodesMap((String) entry.getKey(), (Map<String, String>) entry.getValue());
       highlightning += ", ";
     }
     // empty node for comma issues

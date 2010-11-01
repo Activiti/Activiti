@@ -9,6 +9,8 @@
 	<mappers>
 		<mapper resource="org/activiti/db/cycle/ibatis/config.mapping.xml" />
 		<mapper resource="org/activiti/db/cycle/ibatis/link.mapping.xml" />
+		<mapper resource="org/activiti/db/cycle/ibatis/linkPeople.mapping.xml" />
 		<mapper resource="org/activiti/db/cycle/ibatis/tag.mapping.xml" />
+		<mapper resource="org/activiti/db/cycle/ibatis/comment.mapping.xml" />
 	</mappers>
 </configuration>

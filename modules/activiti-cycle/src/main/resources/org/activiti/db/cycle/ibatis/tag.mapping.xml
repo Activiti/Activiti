@@ -3,7 +3,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
   
 <mapper namespace="org.activiti.cycle">
-  <insert id="insertCycleArtifactTag" parameterType="org.activiti.cycle.impl.db.entity.CycleArtifactTagEntity">
+  <insert id="insertCycleArtifactTag" parameterType="org.activiti.cycle.impl.db.entity.RepositoryNodeTagEntity">
     insert into ACT_CY_TAG (ID_, NAME_, CONNECTOR_ID_, ARTIFACT_ID_, ALIAS_)
     values (
 	    #{id, jdbcType=VARCHAR},
@@ -14,7 +14,11 @@
     )
   </insert>
   
-  <resultMap id="resultMapCycleArtifactTag" type="org.activiti.cycle.impl.db.entity.CycleArtifactTagEntity">
+  <delete id="deleteArtifactTag" parameterType="map">
+  	delete from ACT_CY_TAG where CONNECTOR_ID_ = #{connectorId} AND ARTIFACT_ID_ = #{artifactId} AND NAME_ = #{name}
+  </delete> 
+  
+  <resultMap id="resultMapCycleArtifactTag" type="org.activiti.cycle.impl.db.entity.RepositoryNodeTagEntity">
     <id property="id" column="ID_"/>
     <result property="name" column="NAME_"/>
     <result property="connectorId" column="CONNECTOR_ID_"/>
@@ -25,14 +29,13 @@
   <select id="selectArtifactTag" parameterType="string" resultMap="resultMapCycleArtifactTag">
   	select * from ACT_CY_TAG where ID_ = #{id}
   </select>
-
     
   <select id="selectAllTags" resultType="list" resultMap="resultMapCycleArtifactTag"> 
   	select * from ACT_CY_TAG ORDER BY NAME_
   </select>
       
-  <select id="selectTagsForNode" parameterType="string" resultType="list" resultMap="resultMapCycleArtifactTag"> 
-  	select * from ACT_CY_TAG where ARTIFACT_ID_ = #{artifactId}
+  <select id="selectTagsForNode" parameterType="map" resultType="list" resultMap="resultMapCycleArtifactTag"> 
+  	select * from ACT_CY_TAG where ARTIFACT_ID_ = #{artifactId} and CONNECTOR_ID_ = #{connectorId}
   </select>
   
   <select id="selectTagsByName" parameterType="string" resultType="list" resultMap="resultMapCycleArtifactTag"> 

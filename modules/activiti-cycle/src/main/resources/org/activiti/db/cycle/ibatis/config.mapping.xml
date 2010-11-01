@@ -6,7 +6,7 @@
 
    <!-- CYCLE CONFIG RESULT MAP -->	
   
-  <resultMap id="resultMapCycleConfig" type="org.activiti.cycle.impl.db.entity.CycleConfig">
+  <resultMap id="resultMapCycleConfig" type="org.activiti.cycle.impl.db.entity.CycleConfigEntity">
     <id property="id" column="ID_" jdbcType="VARCHAR" />
     <result property="configXML" column="VALUE_" jdbcType="VARCHAR" />
     <result property="revision" column="REV_" jdbcType="INTEGER" />
@@ -21,7 +21,7 @@
   
     <!-- CYCLE CONFIG INSERT -->
   
-  <insert id="insertCycleConfig" parameterType="org.activiti.cycle.impl.db.entity.CycleConfig">
+  <insert id="insertCycleConfig" parameterType="org.activiti.cycle.impl.db.entity.CycleConfigEntity">
     insert into ACT_CY_CONFIG (ID_, VALUE_, REV_)
     values (
     	#{id ,jdbcType=VARCHAR},
@@ -38,7 +38,7 @@
 
   <!-- CYCLE CONFIG UPDATE -->
   
-  <update id="updateCycleConfigById" parameterType="org.activiti.cycle.impl.db.entity.CycleConfig">
+  <update id="updateCycleConfigById" parameterType="org.activiti.cycle.impl.db.entity.CycleConfigEntity">
     update ACT_CY_CONFIG set
     	ID_ = #{id},
     	VALUE_ = #{configXML},

@@ -8,7 +8,7 @@ import org.activiti.cycle.CycleTagContent;
 import org.activiti.cycle.RepositoryArtifact;
 import org.activiti.cycle.RepositoryNode;
 import org.activiti.cycle.RepositoryNodeNotFoundException;
-import org.activiti.cycle.impl.db.entity.CycleArtifactTagEntity;
+import org.activiti.cycle.impl.db.entity.RepositoryNodeTagEntity;
 
 /**
  * 
@@ -20,7 +20,7 @@ public class CycleTagContentImpl implements CycleTagContent {
 
   private long usageCount;
   
-  private List<CycleArtifactTagEntity> containedArtifactIds = new ArrayList<CycleArtifactTagEntity>();
+  private List<RepositoryNodeTagEntity> containedArtifactIds = new ArrayList<RepositoryNodeTagEntity>();
   private List<RepositoryNode> containedNodes = new ArrayList<RepositoryNode>();
 
   public CycleTagContentImpl() {
@@ -34,7 +34,7 @@ public class CycleTagContentImpl implements CycleTagContent {
     this.tagName = tagName;
   }
   
-  public void addArtifact(CycleArtifactTagEntity tagEntity) {
+  public void addArtifact(RepositoryNodeTagEntity tagEntity) {
     containedArtifactIds.add(tagEntity);
     usageCount = containedArtifactIds.size();
   }
@@ -44,14 +44,14 @@ public class CycleTagContentImpl implements CycleTagContent {
    * the database
    */
   public void resolveRepositoryArtifacts(CycleService service) {
-    for (CycleArtifactTagEntity tag : containedArtifactIds) {
+    for (RepositoryNodeTagEntity tag : containedArtifactIds) {
       // TODO: FUCK, now we need a getRepositoryNode which is hard for Signavio.
       // But this implementation obviously sucks. Improve!
       RepositoryNode node = null;
       try {
-        node = service.getRepositoryFolder(tag.getConnectorId(), tag.getArtifactId());
+        node = service.getRepositoryFolder(tag.getConnectorId(), tag.getNodeId());
       } catch (RepositoryNodeNotFoundException ex) {
-        node = service.getRepositoryArtifact(tag.getConnectorId(), tag.getArtifactId());
+        node = service.getRepositoryArtifact(tag.getConnectorId(), tag.getNodeId());
       }
 
       if (tag.hasAlias()) {

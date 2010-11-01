@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.activiti.cycle.RepositoryArtifact;
-import org.activiti.cycle.RepositoryArtifactTag;
+import org.activiti.cycle.RepositoryNodeTag;
 import org.activiti.engine.impl.db.PersistentObject;
 
 /**
@@ -12,7 +12,7 @@ import org.activiti.engine.impl.db.PersistentObject;
  * 
  * @author ruecker
  */
-public class CycleArtifactTagEntity implements PersistentObject, RepositoryArtifactTag {
+public class RepositoryNodeTagEntity implements PersistentObject, RepositoryNodeTag {
 
   /**
    * primary key / unique id composed of tag name, connector id and artifact id
@@ -33,17 +33,17 @@ public class CycleArtifactTagEntity implements PersistentObject, RepositoryArtif
    */
   private String alias;
 
-  public CycleArtifactTagEntity() {
+  public RepositoryNodeTagEntity() {
   }
 
-  public CycleArtifactTagEntity(String name, String connectorId, String artifactId) {
+  public RepositoryNodeTagEntity(String name, String connectorId, String artifactId) {
     this.name = name;
     this.connectorId = connectorId;
     this.artifactId = artifactId;
     createId();
   }
 
-  private void createId() {
+  public void createId() {
     // TODO: Check if this works with the Activiti persistence mechanism
     setId(name + "->" + connectorId + "/" + artifactId);
   }
@@ -64,7 +64,7 @@ public class CycleArtifactTagEntity implements PersistentObject, RepositoryArtif
     return connectorId;
   }
 
-  public String getArtifactId() {
+  public String getNodeId() {
     return artifactId;
   }
 
@@ -88,6 +88,38 @@ public class CycleArtifactTagEntity implements PersistentObject, RepositoryArtif
 
   public boolean hasAlias() {
     return (alias != null && alias.length() > 0);
+  }
+
+  public String getComment() {
+    return null;
+  }
+
+  public String getLinkType() {
+    return null;
+  }
+
+  public String getGroupId() {
+    return null;
+  }
+
+  public String getUserId() {
+    return null;
+  }
+
+  public Long getSourceRevision() {
+    return null;
+  }
+
+  public RepositoryArtifact getSourceRepositoryArtifact() {
+    return null;
+  }
+
+  public String getSourceArtifactId() {
+    return null;
+  }
+
+  public String getSourceConnectorId() {
+    return null;
   }
 
 }

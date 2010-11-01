@@ -3,68 +3,120 @@ package org.activiti.cycle.impl.db.impl;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.UUID;
 
 import org.activiti.cycle.impl.CycleTagContentImpl;
 import org.activiti.cycle.impl.db.CycleDAO;
-import org.activiti.cycle.impl.db.entity.CycleArtifactTagEntity;
-import org.activiti.cycle.impl.db.entity.RepositoryArtifactLinkImpl;
+import org.activiti.cycle.impl.db.entity.RepositoryArtifactLinkEntity;
+import org.activiti.cycle.impl.db.entity.RepositoryNodeCommentEntity;
+import org.activiti.cycle.impl.db.entity.RepositoryNodePeopleLinkEntity;
+import org.activiti.cycle.impl.db.entity.RepositoryNodeTagEntity;
 import org.apache.ibatis.session.SqlSession;
 
 public class CycleDaoMyBatisImpl extends AbstractCycleDaoMyBatisImpl implements CycleDAO {
 
+  /**
+   * LINKS
+   */
+  
   @SuppressWarnings("unchecked")
-  public List<RepositoryArtifactLinkImpl> getOutgoingCycleLinks(String sourceConnectorId, String sourceArtifactId) {
+  public List<RepositoryArtifactLinkEntity> getOutgoingArtifactLinks(String sourceConnectorId, String sourceArtifactId) {
     SqlSession session = openSession();
     try {
       HashMap<String, Object> parameters = new HashMap<String, Object>();
       parameters.put("connectorId", sourceConnectorId);
       parameters.put("artifactId", sourceArtifactId);
-      List<RepositoryArtifactLinkImpl> linkResultList = session.selectList("org.activiti.cycle.impl.db.entity.CycleLink.selectArtifactLinkForSourceArtifact", parameters);
+      List<RepositoryArtifactLinkEntity> linkResultList = session.selectList("selectArtifactLinkForSourceArtifact", parameters);
       if (linkResultList != null) {
         return linkResultList;
       }
-      return new ArrayList<RepositoryArtifactLinkImpl>();
+      return new ArrayList<RepositoryArtifactLinkEntity>();
     } finally {
       session.close();
     }
   }
 
   @SuppressWarnings("unchecked")
-  public List<RepositoryArtifactLinkImpl> getIncomingCycleLinks(String targetConnectorId, String targetArtifactId) {
+  public List<RepositoryArtifactLinkEntity> getIncomingArtifactLinks(String targetConnectorId, String targetArtifactId) {
     SqlSession session = openSession();
     try {
       HashMap<String, Object> parameters = new HashMap<String, Object>();
       parameters.put("connectorId", targetConnectorId);
       parameters.put("artifactId", targetArtifactId);
-      List<RepositoryArtifactLinkImpl> linkResultList = session.selectList("org.activiti.cycle.impl.db.entity.CycleLink.selectArtifactLinkForTargetArtifact", parameters);
-      if (linkResultList != null) {
-        return linkResultList;
-      }
-      return new ArrayList<RepositoryArtifactLinkImpl>();
+      return session.selectList("selectArtifactLinkForTargetArtifact", parameters);
     } finally {
       session.close();
     }
   }
   
-  public void insertCycleLink(RepositoryArtifactLinkImpl cycleLink) {
+  public void insertArtifactLink(RepositoryArtifactLinkEntity cycleLink) {
+    cycleLink.setId(UUID.randomUUID().toString());
     SqlSession session = openSession();
     try {
-      session.insert("org.activiti.cycle.impl.db.entity.CycleLink.insertCycleLink", cycleLink);
+      session.insert("insertCycleLink", cycleLink);
       session.commit();
     } finally {
       session.close();
     }
   }
   
-  public void deleteCycleLink(String id) {
-    // TODO: IMplement
-    throw new RuntimeException("not yet implemented");
-  }
-  
-  public void insertTag(CycleArtifactTagEntity tag) {
+  public void deleteArtifactLink(String id) {
     SqlSession session = openSession();
     try {
-      session.insert("org.activiti.cycle.impl.db.entity.CycleArtifactTag.insert", tag);
+      session.delete("deleteArtifactLink", id);
+      session.commit();
+    } finally {
+      session.close();
+    }
+  }
+  
+  /**
+   * People-Links
+   */
+  
+  public void insertPeopleLink(RepositoryNodePeopleLinkEntity link) {
+    link.setId(UUID.randomUUID().toString());
+    SqlSession session = openSession();
+    try {
+      session.insert("insertPeopleLink", link);
+      session.commit();
+    } finally {
+      session.close();
+    }
+  }
+  
+  public void deletePeopleLink(String id) {
+    SqlSession session = openSession();
+    try {
+      session.delete("deletePeopleLink", id);
+      session.commit();
+    } finally {
+      session.close();
+    }
+  }  
+
+  @SuppressWarnings("unchecked")
+  public List<RepositoryNodePeopleLinkEntity> getPeopleLinks(String connectorId, String artifactId) {
+    SqlSession session = openSession();
+    try {
+      HashMap<String, Object> parameters = new HashMap<String, Object>();
+      parameters.put("connectorId", connectorId);
+      parameters.put("artifactId", artifactId);
+      return session.selectList("selectPeopleLinkForSourceArtifact", parameters);
+    } finally {
+      session.close();
+    }
+  }
+
+  /**
+   * TAGS
+   */
+  
+  public void insertTag(RepositoryNodeTagEntity tag) {
+    tag.createId();
+    SqlSession session = openSession();
+    try {
+      session.insert("insertCycleArtifactTag", tag);
       session.commit();
     } finally {
       session.close();
@@ -72,8 +124,18 @@ public class CycleDaoMyBatisImpl extends AbstractCycleDaoMyBatisImpl implements 
   }
   
   public void deleteTag(String connectorId, String artifactId, String tagName) {
-    // TODO: IMplement
-    throw new RuntimeException("not yet implemented");
+    SqlSession session = openSession();
+    try {
+      HashMap<String, Object> parameters = new HashMap<String, Object>();
+      parameters.put("connectorId", connectorId);
+      parameters.put("artifactId", artifactId);
+      parameters.put("name", tagName);
+      
+      session.delete("deleteArtifactTag", parameters);
+      session.commit();
+    } finally {
+      session.close();
+    }
   }
 
   @SuppressWarnings("unchecked")
@@ -88,15 +150,18 @@ public class CycleDaoMyBatisImpl extends AbstractCycleDaoMyBatisImpl implements 
   }
 
   @SuppressWarnings("unchecked")
-  public List<CycleArtifactTagEntity> getTagsForNode(String connectorId, String artifactId) {
+  public List<RepositoryNodeTagEntity> getTagsForNode(String connectorId, String artifactId) {
     SqlSession session = openSession();
     try {
-      // TODO: Ad connectorID to query parameter
-      List<CycleArtifactTagEntity> linkResultList = session.selectList("org.activiti.cycle.impl.db.entity.CycleArtifactTag.selectTagsForNode", artifactId);
+      HashMap<String, Object> parameters = new HashMap<String, Object>();
+      parameters.put("connectorId", connectorId);
+      parameters.put("artifactId", artifactId);
+
+      List<RepositoryNodeTagEntity> linkResultList = session.selectList("selectTagsForNode", parameters);
       if (linkResultList != null) {
         return linkResultList;
       }
-      return new ArrayList<CycleArtifactTagEntity>();
+      return new ArrayList<RepositoryNodeTagEntity>();
     } finally {
       session.close();
     }
@@ -108,11 +173,49 @@ public class CycleDaoMyBatisImpl extends AbstractCycleDaoMyBatisImpl implements 
     try {
       CycleTagContentImpl tagContent = new CycleTagContentImpl(name);
 
-      List<CycleArtifactTagEntity> tags = session.selectList("org.activiti.cycle.impl.db.entity.CycleArtifactTag.selectTagsByName", name);      
-      for (CycleArtifactTagEntity tag : tags) {
+      List<RepositoryNodeTagEntity> tags = session.selectList("selectTagsByName", name);      
+      for (RepositoryNodeTagEntity tag : tags) {
           tagContent.addArtifact(tag);
       }
       return tagContent;
+    } finally {
+      session.close();
+    }
+  }
+
+  /**
+   * COMMENTS
+   */
+
+  public void insertComment(RepositoryNodeCommentEntity comment) {
+    SqlSession session = openSession();
+    try {
+      session.insert("insertCycleComment", comment);
+      session.commit();
+    } finally {
+      session.close();
+    }
+  }
+
+  public void deleteComment(String id) {
+    SqlSession session = openSession();
+    try {
+      session.delete("deleteCycleCommentById", id);
+      session.commit();
+    } finally {
+      session.close();
+    }
+  }
+  
+  @SuppressWarnings("unchecked")
+  public List<RepositoryNodeCommentEntity> getCommentsForNode(String connectorId, String artifactId) {
+    SqlSession session = openSession();
+    try {
+      HashMap<String, Object> parameters = new HashMap<String, Object>();
+      parameters.put("connectorId", connectorId);
+      parameters.put("artifactId", artifactId);
+
+      return session.selectList("selectCycleCommentForSourceArtifact", parameters);
     } finally {
       session.close();
     }

@@ -1,6 +1,7 @@
 package org.activiti.cycle.impl.db.impl;
 
 import java.util.HashMap;
+import java.util.logging.Logger;
 
 import org.activiti.cycle.impl.conf.CycleDbSqlSessionFactory;
 import org.activiti.engine.DbSchemaStrategy;
@@ -16,6 +17,8 @@ public abstract class AbstractCycleDaoMyBatisImpl {
   private static HashMap<String, CycleDbSqlSessionFactory> dbFactories = new HashMap<String, CycleDbSqlSessionFactory>();
   protected String processEngineName = DEFAULT_ENGINE;
   protected static String DEFAULT_ENGINE = "DEFAULT_PROCESS_ENGINE";
+  
+  private static Logger log = Logger.getLogger(AbstractCycleDaoMyBatisImpl.class.getName());
   
   protected SqlSessionFactory getSessionFactory() {
     if (dbFactories.get(processEngineName) == null) {
@@ -47,7 +50,7 @@ public abstract class AbstractCycleDaoMyBatisImpl {
   
   private void performDbSchemaCreation(CycleDbSqlSessionFactory dbSqlSessionFactory, ProcessEngineConfiguration processEngineConfiguration) {
     String dbSchemaStrategy = processEngineConfiguration.getDbSchemaStrategy();
-
+    
     if (ProcessEngineConfiguration.DBSCHEMASTRATEGY_DROP_CREATE.equals(dbSchemaStrategy)) {
       try {
         dbSqlSessionFactory.dbSchemaDrop();
@@ -55,14 +58,49 @@ public abstract class AbstractCycleDaoMyBatisImpl {
         // ignore
       }
     }
-
     if (DbSchemaStrategy.CREATE_DROP.equals(dbSchemaStrategy) || ProcessEngineConfiguration.DBSCHEMASTRATEGY_DROP_CREATE.equals(dbSchemaStrategy)
             || ProcessEngineConfiguration.DBSCHEMASTRATEGY_CREATE.equals(dbSchemaStrategy)) {
       dbSqlSessionFactory.dbSchemaCreate();
-
+      
     } else if (DbSchemaStrategy.CHECK_VERSION.equals(dbSchemaStrategy)) {
       dbSqlSessionFactory.dbSchemaCheckVersion();
+      
+    } else if (ProcessEngineConfiguration.DBSCHEMASTRATEGY_CREATE_IF_NECESSARY.equals(dbSchemaStrategy)) {
+      log.warning("Cycle doesn't support '" + ProcessEngineConfiguration.DBSCHEMASTRATEGY_CREATE_IF_NECESSARY
+              + "' DB strategy at the moment. Nothing is created!");
+      // TODO: the check if necessary doesn't work, since the tables are alway created by the engine already!
+//      try {
+      // dbSqlSessionFactory.dbSchemaCreate();
+//        dbSqlSessionFactory.dbSchemaCheckVersion();
+//      } catch (Exception e) {
+//        if (e.getMessage().indexOf("no activiti tables in db") != -1) {
+//          dbSqlSessionFactory.dbSchemaCreate();
+//        }
+      // }
     }
+    
+
+    //
+    // if
+    // (ProcessEngineConfiguration.DBSCHEMASTRATEGY_DROP_CREATE.equals(dbSchemaStrategy))
+    // {
+    // try {
+    // dbSqlSessionFactory.dbSchemaDrop();
+    // } catch (RuntimeException e) {
+    // // ignore
+    // }
+    // }
+    //
+    // if (DbSchemaStrategy.CREATE_DROP.equals(dbSchemaStrategy) ||
+    // ProcessEngineConfiguration.DBSCHEMASTRATEGY_DROP_CREATE.equals(dbSchemaStrategy)
+    // ||
+    // ProcessEngineConfiguration.DBSCHEMASTRATEGY_CREATE.equals(dbSchemaStrategy))
+    // {
+    // dbSqlSessionFactory.dbSchemaCreate();
+    //
+    // } else if (DbSchemaStrategy.CHECK_VERSION.equals(dbSchemaStrategy)) {
+    // dbSqlSessionFactory.dbSchemaCheckVersion();
+    // }
   }
   
 }

@@ -1,5 +1,8 @@
 package org.activiti.cycle.impl.db.entity;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.activiti.cycle.CycleService;
 import org.activiti.cycle.RepositoryArtifact;
 import org.activiti.cycle.RepositoryArtifactLink;
@@ -7,14 +10,14 @@ import org.activiti.cycle.RepositoryNode;
 import org.activiti.engine.impl.db.PersistentObject;
 
 /**
- * Link between to {@link RepositoryArtifact}s (maybe that get extended to
+ * Link between to {@link RepositoryNode}s (maybe that get extended to
  * {@link RepositoryNode}s in the future, but which is not needed at the moment.
  * 
  * The CycleLink is a persistent entity saved in the Cycle DB.
  * 
  * @author ruecker, polenz
  */
-public class RepositoryArtifactLinkImpl implements PersistentObject, RepositoryArtifactLink {
+public class RepositoryArtifactLinkEntity implements PersistentObject, RepositoryArtifactLink {
   
   /**
    * TODO: Add own mini repository for types incling names for forward and
@@ -77,6 +80,38 @@ public class RepositoryArtifactLinkImpl implements PersistentObject, RepositoryA
   public void resolveArtifacts(CycleService service) {
     this.sourceRepositoryArtifact = service.getRepositoryArtifact(sourceConnectorId, sourceArtifactId);
     this.targetRepositoryArtifact = service.getRepositoryArtifact(targetConnectorId, targetArtifactId);
+  }
+  
+  public void setSourceArtifact(RepositoryArtifact sourceArtifact) {
+    sourceRepositoryArtifact = sourceArtifact;
+    sourceConnectorId = sourceArtifact.getConnectorId();
+    sourceArtifactId = sourceArtifact.getNodeId();
+  }
+
+  public void setTargetArtifact(RepositoryArtifact targetArtifact) {
+    targetRepositoryArtifact = targetArtifact;
+    targetConnectorId = targetArtifact.getConnectorId();
+    targetArtifactId = targetArtifact.getNodeId();
+  }
+
+  @Override
+  public Object getPersistentState() {
+    Map<String, Object> persistentState = new HashMap<String, Object>();
+    persistentState.put("id", id);
+    persistentState.put("sourceConnectorId", sourceConnectorId);
+    persistentState.put("sourceArtifactId", sourceArtifactId);
+    persistentState.put("sourceElementId", sourceElementId);
+    persistentState.put("sourceElementName", sourceElementName);
+    persistentState.put("sourceRevision", sourceRevision);
+    persistentState.put("targetConnectorId", targetConnectorId);
+    persistentState.put("targetArtifactId", targetArtifactId);
+    persistentState.put("targetElementId", targetElementId);
+    persistentState.put("targetElementName", targetElementName);
+    persistentState.put("targetRevision", targetRevision);
+    persistentState.put("linkType", linkType);
+    persistentState.put("comment", comment);
+    persistentState.put("linkedBothWays", linkedBothWays);
+    return persistentState;
   }
   
   public String getSourceArtifactId() {
@@ -146,7 +181,6 @@ public class RepositoryArtifactLinkImpl implements PersistentObject, RepositoryA
   public void setComment(String comment) {
     this.comment = comment;
   }
-
   
   public String getSourceElementName() {
     return sourceElementName;
@@ -163,7 +197,6 @@ public class RepositoryArtifactLinkImpl implements PersistentObject, RepositoryA
   public void setTargetElementName(String targetElementName) {
     this.targetElementName = targetElementName;
   }
-
   
   public String getId() {
     return id;
@@ -198,10 +231,6 @@ public class RepositoryArtifactLinkImpl implements PersistentObject, RepositoryA
     this.targetConnectorId = targetConnectorId;
   }
 
-  public Object getPersistentState() {
-    return null;
-  }
-
   public RepositoryArtifact getSourceArtifact() {
     return sourceRepositoryArtifact;
   }
@@ -210,16 +239,16 @@ public class RepositoryArtifactLinkImpl implements PersistentObject, RepositoryA
     return targetRepositoryArtifact;
   }
 
-  public void setSourceArtifact(RepositoryArtifact sourceArtifact) {
-    sourceRepositoryArtifact = sourceArtifact;
-    sourceConnectorId = sourceArtifact.getConnectorId();
-    sourceArtifactId = sourceArtifact.getNodeId();
+  public String getGroupId() {
+    return null;
   }
 
-  public void setTargetArtifact(RepositoryArtifact targetArtifact) {
-    targetRepositoryArtifact = targetArtifact;
-    targetConnectorId = targetArtifact.getConnectorId();
-    targetArtifactId = targetArtifact.getNodeId();
+  public String getUserId() {
+    return null;
+  }
+
+  public RepositoryArtifact getSourceRepositoryArtifact() {
+    return null;
   }
 
 }

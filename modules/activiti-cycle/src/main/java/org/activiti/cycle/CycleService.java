@@ -136,5 +136,5 @@ public interface CycleService {
 
   public List<CycleTagContent> getRootTags();
 
-  public List<RepositoryArtifactTag> getTagsForNode(String connectorId, String artifactId);
+  public List<RepositoryNodeTag> getTagsForNode(String connectorId, String artifactId);
 }

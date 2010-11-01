@@ -3,29 +3,59 @@ package org.activiti.cycle.impl.db;
 import java.util.List;
 
 import org.activiti.cycle.impl.CycleTagContentImpl;
-import org.activiti.cycle.impl.db.entity.CycleArtifactTagEntity;
-import org.activiti.cycle.impl.db.entity.RepositoryArtifactLinkImpl;
+import org.activiti.cycle.impl.db.entity.RepositoryArtifactLinkEntity;
+import org.activiti.cycle.impl.db.entity.RepositoryNodeCommentEntity;
+import org.activiti.cycle.impl.db.entity.RepositoryNodePeopleLinkEntity;
+import org.activiti.cycle.impl.db.entity.RepositoryNodeTagEntity;
 
+/**
+ * Central DAO to do all relevant DB operations for Cycle entities.
+ * 
+ * @author ruecker
+ */
 public interface CycleDAO {
 
-  public List<RepositoryArtifactLinkImpl> getOutgoingCycleLinks(String sourceConnectorId, String sourceArtifactId);
-  public List<RepositoryArtifactLinkImpl> getIncomingCycleLinks(String targetConnectorId, String targetArtifactId);
+  /**
+   * LINKS
+   */
+  public List<RepositoryArtifactLinkEntity> getOutgoingArtifactLinks(String sourceConnectorId, String sourceArtifactId);
 
-  // public CycleLink findCycleLinkById(String id);
+  public List<RepositoryArtifactLinkEntity> getIncomingArtifactLinks(String targetConnectorId, String targetArtifactId);
 
-  // public void updateCycleLink(CycleLink cycleLink);
+  public void insertArtifactLink(RepositoryArtifactLinkEntity cycleLink);
 
-  public void insertCycleLink(RepositoryArtifactLinkImpl cycleLink);
-  public void deleteCycleLink(String id);
-  
-  public List<CycleTagContentImpl> getTagsGroupedByName();
-  public List<CycleArtifactTagEntity> getTagsForNode(String connectorId, String artifactId);
+  public void deleteArtifactLink(String id);
 
-  public CycleTagContentImpl getTagContent(String alias);
-  
-  public void insertTag(CycleArtifactTagEntity tag);
+  /**
+   * People-Links
+   */
+  public void insertPeopleLink(RepositoryNodePeopleLinkEntity link);
+
+  public void deletePeopleLink(String id);
+
+  public List<RepositoryNodePeopleLinkEntity> getPeopleLinks(String connectorId, String artifactId);
+
+  /**
+   * TAGS
+   */
+  public void insertTag(RepositoryNodeTagEntity tag);
+
   public void deleteTag(String connectorId, String artifactId, String tagName);
 
-  // public void deleteTag(String id);
+  public List<CycleTagContentImpl> getTagsGroupedByName();
+
+  public List<RepositoryNodeTagEntity> getTagsForNode(String connectorId, String artifactId);
+
+  public CycleTagContentImpl getTagContent(String name);
+
+  /**
+   * COMMENTS
+   */
+  public void insertComment(RepositoryNodeCommentEntity comment);
+
+  public void deleteComment(String id);
+
+  public List<RepositoryNodeCommentEntity> getCommentsForNode(String connectorId, String artifactId);
+
 
 }

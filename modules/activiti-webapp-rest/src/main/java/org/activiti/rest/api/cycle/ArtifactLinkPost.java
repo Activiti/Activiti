@@ -14,7 +14,7 @@ package org.activiti.rest.api.cycle;
 
 import java.util.Map;
 
-import org.activiti.cycle.impl.db.entity.RepositoryArtifactLinkImpl;
+import org.activiti.cycle.impl.db.entity.RepositoryArtifactLinkEntity;
 import org.activiti.rest.util.ActivitiRequest;
 import org.activiti.rest.util.ActivitiRequestObject;
 import org.springframework.extensions.webscripts.Cache;
@@ -43,7 +43,7 @@ public class ArtifactLinkPost extends ActivitiCycleWebScript {
     String targetConnectorId = req.getMandatoryString(obj, "targetConnectorId");
     String targetArtifactId = req.getMandatoryString(obj, "targetArtifactId");
 
-    RepositoryArtifactLinkImpl link = new RepositoryArtifactLinkImpl();
+    RepositoryArtifactLinkEntity link = new RepositoryArtifactLinkEntity();
     link.setSourceConnectorId(sourceConnectorId);
     link.setSourceArtifactId(sourceArtifactId);
     link.setTargetConnectorId(targetConnectorId);

@@ -13,7 +13,7 @@ import org.activiti.cycle.CycleService;
 import org.activiti.cycle.CycleTagContent;
 import org.activiti.cycle.RepositoryArtifact;
 import org.activiti.cycle.RepositoryArtifactLink;
-import org.activiti.cycle.RepositoryArtifactTag;
+import org.activiti.cycle.RepositoryNodeTag;
 import org.activiti.cycle.RepositoryConnector;
 import org.activiti.cycle.RepositoryException;
 import org.activiti.cycle.RepositoryFolder;
@@ -27,8 +27,8 @@ import org.activiti.cycle.impl.connector.signavio.SignavioConnectorConfiguration
 import org.activiti.cycle.impl.connector.view.TagConnectorConfiguration;
 import org.activiti.cycle.impl.db.CycleConfigurationService;
 import org.activiti.cycle.impl.db.CycleDAO;
-import org.activiti.cycle.impl.db.entity.CycleArtifactTagEntity;
-import org.activiti.cycle.impl.db.entity.RepositoryArtifactLinkImpl;
+import org.activiti.cycle.impl.db.entity.RepositoryNodeTagEntity;
+import org.activiti.cycle.impl.db.entity.RepositoryArtifactLinkEntity;
 import org.activiti.cycle.impl.db.impl.CycleConfigurationServiceImpl;
 import org.activiti.cycle.impl.db.impl.CycleDaoMyBatisImpl;
 import org.activiti.cycle.impl.plugin.PluginFinder;
@@ -252,10 +252,10 @@ public class CycleServiceImpl implements CycleService {
   // RepositoryArtifactLink specific methods
 
   public void addArtifactLink(RepositoryArtifactLink repositoryArtifactLink) {
-    if (repositoryArtifactLink instanceof RepositoryArtifactLinkImpl) {
-      cycleDAO.insertCycleLink((RepositoryArtifactLinkImpl) repositoryArtifactLink);
+    if (repositoryArtifactLink instanceof RepositoryArtifactLinkEntity) {
+      cycleDAO.insertArtifactLink((RepositoryArtifactLinkEntity) repositoryArtifactLink);
     } else {
-      RepositoryArtifactLinkImpl cycleLink = new RepositoryArtifactLinkImpl();
+      RepositoryArtifactLinkEntity cycleLink = new RepositoryArtifactLinkEntity();
 
       cycleLink.setId(repositoryArtifactLink.getId());
 
@@ -277,15 +277,15 @@ public class CycleServiceImpl implements CycleService {
       cycleLink.setComment(repositoryArtifactLink.getComment());
       cycleLink.setLinkedBothWays(false);
 
-      cycleDAO.insertCycleLink(cycleLink);
+      cycleDAO.insertArtifactLink(cycleLink);
     }
   }
 
   public List<RepositoryArtifactLink> getArtifactLinks(String sourceConnectorId, String sourceArtifactId) {
     List<RepositoryArtifactLink> artifactLinks = new ArrayList<RepositoryArtifactLink>();
 
-    List<RepositoryArtifactLinkImpl> linkResultList = cycleDAO.getOutgoingCycleLinks(sourceConnectorId, sourceArtifactId);
-    for (RepositoryArtifactLinkImpl entity : linkResultList) {
+    List<RepositoryArtifactLinkEntity> linkResultList = cycleDAO.getOutgoingArtifactLinks(sourceConnectorId, sourceArtifactId);
+    for (RepositoryArtifactLinkEntity entity : linkResultList) {
       entity.resolveArtifacts(this);
       artifactLinks.add(entity);
     }
@@ -294,11 +294,11 @@ public class CycleServiceImpl implements CycleService {
   }
 
   public void deleteLink(String linkId) {
-    cycleDAO.deleteCycleLink(linkId);
+    cycleDAO.deleteArtifactLink(linkId);
   }
 
   public void addTag(String connectorId, String artifactId, String tagName, String alias) {
-    CycleArtifactTagEntity tagEntity = new CycleArtifactTagEntity(tagName, connectorId, artifactId);
+    RepositoryNodeTagEntity tagEntity = new RepositoryNodeTagEntity(tagName, connectorId, artifactId);
     tagEntity.setAlias(alias);
     cycleDAO.insertTag(tagEntity);
   }
@@ -319,8 +319,8 @@ public class CycleServiceImpl implements CycleService {
     return tagContent;
   }
 
-  public List<RepositoryArtifactTag> getTagsForNode(String connectorId, String artifactId) {
-    ArrayList<RepositoryArtifactTag> list = new ArrayList<RepositoryArtifactTag>();
+  public List<RepositoryNodeTag> getTagsForNode(String connectorId, String artifactId) {
+    ArrayList<RepositoryNodeTag> list = new ArrayList<RepositoryNodeTag>();
     list.addAll(cycleDAO.getTagsForNode(connectorId, artifactId));
     return list;
   }

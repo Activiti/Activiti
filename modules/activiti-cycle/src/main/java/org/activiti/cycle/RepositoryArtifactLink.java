@@ -1,9 +1,9 @@
 package org.activiti.cycle;
 
-import org.activiti.cycle.impl.db.entity.RepositoryArtifactLinkImpl;
+import org.activiti.cycle.impl.db.entity.RepositoryArtifactLinkEntity;
 
 /**
- * Object given back by the {@link CycleService} for a {@link RepositoryArtifactLinkImpl} where
+ * Object given back by the {@link CycleService} for a {@link RepositoryArtifactLinkEntity} where
  * the {@link RepositoryArtifact}s are already resolved.
  * 
  * @author polenz
@@ -12,6 +12,7 @@ import org.activiti.cycle.impl.db.entity.RepositoryArtifactLinkImpl;
 public interface RepositoryArtifactLink {
 
   public String getId();
+  
   public RepositoryArtifact getSourceArtifact();
   public String getSourceElementId();
   public String getSourceElementName();

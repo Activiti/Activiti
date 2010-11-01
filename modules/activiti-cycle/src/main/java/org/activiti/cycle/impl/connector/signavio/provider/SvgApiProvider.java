@@ -9,8 +9,7 @@ public class SvgApiProvider extends SignavioContentRepresentationProvider {
 
   @Override
   public void addValueToContent(Content content, SignavioConnector connector, RepositoryArtifact artifact) {
-    String text = new SignavioSvgApiBuilder(connector, artifact).build();
-    
+    String text = new SignavioSvgApiBuilder(connector, artifact).buildHtml();    
     content.setValue(text);
   }
 

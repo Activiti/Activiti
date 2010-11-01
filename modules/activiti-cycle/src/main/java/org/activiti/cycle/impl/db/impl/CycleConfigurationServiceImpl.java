@@ -2,9 +2,8 @@ package org.activiti.cycle.impl.db.impl;
 
 import org.activiti.cycle.impl.conf.ConfigurationContainer;
 import org.activiti.cycle.impl.db.CycleConfigurationService;
-import org.activiti.cycle.impl.db.entity.CycleConfig;
+import org.activiti.cycle.impl.db.entity.CycleConfigEntity;
 import org.apache.ibatis.session.SqlSession;
-import org.apache.ibatis.session.SqlSessionFactory;
 
 import com.thoughtworks.xstream.XStream;
 
@@ -23,17 +22,15 @@ public class CycleConfigurationServiceImpl extends AbstractCycleDaoMyBatisImpl i
   }
 
   public ConfigurationContainer getConfiguration(String name) {
-    CycleConfig cycleConfig = selectById(name);
+    CycleConfigEntity cycleConfig = selectById(name);
     Object configXML = this.xStream.fromXML(cycleConfig.getConfigXML());
     return (ConfigurationContainer) configXML;
   }
 
-  private CycleConfig selectById(String id) {
-    SqlSessionFactory sqlMapper = getSessionFactory();
-
-    SqlSession session = sqlMapper.openSession();
+  private CycleConfigEntity selectById(String id) {
+    SqlSession session = openSession();
     try {
-      return (CycleConfig) session.selectOne("org.activiti.cycle.impl.db.entity.CycleConfig.selectCycleConfigById", id);
+      return (CycleConfigEntity) session.selectOne("selectCycleConfigById", id);
 
     } finally {
       session.close();
@@ -41,28 +38,24 @@ public class CycleConfigurationServiceImpl extends AbstractCycleDaoMyBatisImpl i
   }
 
   private void createAndInsert(Object o, String id) {
-    CycleConfig cycleConfig = new CycleConfig();
+    CycleConfigEntity cycleConfig = new CycleConfigEntity();
     cycleConfig.setId(id);
     String configXML = this.xStream.toXML(o);
     cycleConfig.setConfigXML(configXML);
 
-    SqlSessionFactory sqlMapper = getSessionFactory();
-
-    SqlSession session = sqlMapper.openSession();
+    SqlSession session = openSession();
     try {
-      session.insert("org.activiti.cycle.impl.db.entity.CycleConfig.insertCycleConfig", cycleConfig);
+      session.insert("insertCycleConfig", cycleConfig);
       session.commit();
     } finally {
       session.close();
     }
   }
 
-  private void updateById(CycleConfig cycleConfig) {
-    SqlSessionFactory sqlMapper = getSessionFactory();
-
-    SqlSession session = sqlMapper.openSession();
+  private void updateById(CycleConfigEntity cycleConfig) {
+    SqlSession session = openSession();
     try {
-      session.update("org.activiti.cycle.impl.db.entity.CycleConfig.updateCycleConfigById", cycleConfig);
+      session.update("updateCycleConfigById", cycleConfig);
       session.commit();
     } finally {
       session.close();
@@ -70,11 +63,9 @@ public class CycleConfigurationServiceImpl extends AbstractCycleDaoMyBatisImpl i
   }
 
   private void deleteById(String id) {
-    SqlSessionFactory sqlMapper = getSessionFactory();
-
-    SqlSession session = sqlMapper.openSession();
+    SqlSession session = openSession();
     try {
-      session.delete("org.activiti.cycle.impl.db.entity.CycleConfig.deleteCycleConfigById", id);
+      session.delete("deleteCycleConfigById", id);
       session.commit();
     } finally {
       session.close();

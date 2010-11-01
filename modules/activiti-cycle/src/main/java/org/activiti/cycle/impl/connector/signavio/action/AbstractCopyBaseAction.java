@@ -7,7 +7,7 @@ import org.activiti.cycle.RepositoryArtifact;
 import org.activiti.cycle.RepositoryArtifactLink;
 import org.activiti.cycle.RepositoryConnector;
 import org.activiti.cycle.impl.ParameterizedHtmlFormTemplateAction;
-import org.activiti.cycle.impl.db.entity.RepositoryArtifactLinkImpl;
+import org.activiti.cycle.impl.db.entity.RepositoryArtifactLinkEntity;
 
 /**
  * This action copies any artifact to another location. Extend it to specify the
@@ -48,11 +48,11 @@ public abstract class AbstractCopyBaseAction extends ParameterizedHtmlFormTempla
     targetConnector.commitPendingChanges(comment);
     
     if (createLink) {
-      RepositoryArtifactLink link = new RepositoryArtifactLinkImpl();
+      RepositoryArtifactLink link = new RepositoryArtifactLinkEntity();
       link.setSourceArtifact(artifact);
       link.setTargetArtifact(targetArtifact);
       link.setComment(comment);
-      link.setLinkType(RepositoryArtifactLinkImpl.TYPE_COPY);
+      link.setLinkType(RepositoryArtifactLinkEntity.TYPE_COPY);
       connector.getConfiguration().getCycleService().addArtifactLink(link);
     }
   }

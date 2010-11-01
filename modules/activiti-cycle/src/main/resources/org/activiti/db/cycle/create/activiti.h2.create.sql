@@ -6,7 +6,7 @@ create table ACT_CY_CONFIG (
 );
 
 create table ACT_CY_LINK (
-	ID_ varchar AUTO_INCREMENT,
+	ID_ varchar NOT NULL,
 	SOURCE_CONNECTOR_ID_ varchar,
 	SOURCE_ARTIFACT_ID_ varchar,
 	SOURCE_ELEMENT_ID_ varchar DEFAULT NULL,
@@ -23,11 +23,41 @@ create table ACT_CY_LINK (
 	primary key(ID_)
 );
 
+create table ACT_CY_PEOPLE_LINK (
+	ID_ varchar NOT NULL,
+	SOURCE_CONNECTOR_ID_ varchar,
+	SOURCE_ARTIFACT_ID_ varchar,
+	SOURCE_REVISION_ bigint DEFAULT NULL,
+	USER_ID_ varchar,
+	GROUP_ID_ varchar,
+	LINK_TYPE_ varchar,
+	COMMENT_ varchar,
+	primary key(ID_)
+);
+
 create table ACT_CY_TAG (
-	ID_ varchar,
-	NAME_ varchar,
-	CONNECTOR_ID_ varchar,
-	ARTIFACT_ID_ varchar,
-	ALIAS_ varchar,
+	ID_ varchar NOT NULL,
+	NAME_ varchar NOT NULL,
+	CONNECTOR_ID_ varchar NOT NULL,
+	ARTIFACT_ID_ varchar NOT NULL,
+	ALIAS_ varchar DEFAULT NULL,
 	primary key(ID_)	
 );
+
+create table ACT_CY_COMMENT (
+	ID_ varchar NOT NULL,
+	CONNECTOR_ID_ varchar NOT NULL,
+	ARTIFACT_ID_ varchar NOT NULL,
+	ELEMENT_ID_ varchar DEFAULT NULL,
+	CONENT_ varchar NOT NULL,
+	AUTHOR_ varchar,
+	DATE_ timestamp NOT NULL,
+	ANSWERED_COMMENT_ID_ varchar DEFAULT NULL,
+	primary key(ID_)
+);
+ 
+create index ACT_CY_IDX_COMMENT on ACT_CY_COMMENT(ANSWERED_COMMENT_ID_);
+alter table ACT_CY_COMMENT 
+    add constraint FK_CY_COMMENT_COMMENT 
+    foreign key (ANSWERED_COMMENT_ID_) 
+    references ACT_CY_COMMENT;
