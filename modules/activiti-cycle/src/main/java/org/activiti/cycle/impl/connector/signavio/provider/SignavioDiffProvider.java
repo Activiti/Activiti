@@ -1,6 +1,8 @@
 package org.activiti.cycle.impl.connector.signavio.provider;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.activiti.cycle.Content;
@@ -9,6 +11,7 @@ import org.activiti.cycle.RepositoryException;
 import org.activiti.cycle.impl.connector.signavio.SignavioConnector;
 import org.activiti.cycle.impl.connector.signavio.SignavioPluginDefinition;
 import org.activiti.cycle.impl.connector.signavio.util.SignavioSvgApiBuilder;
+import org.json.JSONException;
 import org.oryxeditor.server.diagram.Diagram;
 import org.oryxeditor.server.diagram.DiagramBuilder;
 import org.oryxeditor.server.diagram.Shape;
@@ -34,8 +37,8 @@ public class SignavioDiffProvider extends SignavioContentRepresentationProvider 
       diffTarget = artifact;
     }
 
-    Map<String, String> missingSourceElements = new HashMap<String, String>();
-    Map<String, String> missingTargetElements = new HashMap<String, String>();
+    Map<String, List<String>> missingSourceElements = new HashMap<String, List<String>>();
+    Map<String, List<String>> missingTargetElements = new HashMap<String, List<String>>();
     
     // create DIFF
     String sourceJson = connector.getContent(artifact.getNodeId(), SignavioPluginDefinition.CONTENT_REPRESENTATION_ID_JSON).asString();
@@ -57,7 +60,9 @@ public class SignavioDiffProvider extends SignavioContentRepresentationProvider 
         }
         if (!existant) {
           // add to missing nodes in target artifact
-          missingSourceElements.put(sourceId, "MISSING");
+          ArrayList<String> messages = new ArrayList<String>();
+          messages.add("MISSING");
+          missingSourceElements.put(sourceId, messages);
         }
       }
       for (Shape targetShape : targetDiagram.getShapes()) {
@@ -71,26 +76,33 @@ public class SignavioDiffProvider extends SignavioContentRepresentationProvider 
         }
         if (!existant) {
           // add to missing nodes in target artifact
-          missingTargetElements.put(targetId, "MISSING");
+          ArrayList<String> messages = new ArrayList<String>();
+          messages.add("MISSING");
+          missingTargetElements.put(targetId, messages);
         }
       }
     } catch (Exception e) {
-      throw new RepositoryException("Could create DIFF due to exception", e);
+      throw new RepositoryException("Could not create DIFF due to exception", e);
     }
 
     // and create resulting HTML
-    String script1 = new SignavioSvgApiBuilder(connector, artifact).highlightNodes(missingSourceElements, INFO_COLOR).buildScript();
-    String script2 = new SignavioSvgApiBuilder(connector, diffTarget).highlightNodes(missingTargetElements, INFO_COLOR).buildScript();     
+    try {
+      String script1 = new SignavioSvgApiBuilder(connector, artifact).highlightNodes(missingSourceElements, INFO_COLOR).buildScript();
+      String script2 = new SignavioSvgApiBuilder(connector, diffTarget).highlightNodes(missingTargetElements, INFO_COLOR).buildScript();
+      
+      String htmlContent = "<p><b>Expertimental</b> feature to play around with Signavio diffing. Currently show diff against artifact "
+        + diffTarget.getGlobalUniqueId()
+        + ". Use Options to select other diff target.</p>";
+      htmlContent += "Changes from " + diffTarget.getMetadata().getName() + " in " + artifact.getMetadata().getName();
+      htmlContent += script1;
+      htmlContent += "Changes from " + artifact.getMetadata().getName() + " in " + diffTarget.getMetadata().getName();
+      htmlContent += script2;
+      
+      String html = SignavioSvgApiBuilder.buildHtml(htmlContent, 200);
+      content.setValue(html);
+    } catch (JSONException e) {
+      throw new RepositoryException("Could not show DIFF due to exception in SvgApi", e);
+    }
     
-    String htmlContent = "<p><b>Expertimental</b> feature to play around with Signavio diffing. Currently show diff against artifact "
-            + diffTarget.getGlobalUniqueId()
-            + ". Use Options to select other diff target.</p>";
-    htmlContent += "Changes from " + diffTarget.getMetadata().getName() + " in " + artifact.getMetadata().getName();
-    htmlContent += script1;
-    htmlContent += "Changes from " + artifact.getMetadata().getName() + " in " + diffTarget.getMetadata().getName();
-    htmlContent += script2;
-    
-    String html = SignavioSvgApiBuilder.buildHtml(htmlContent, 200);
-    content.setValue(html);
   }
 }
