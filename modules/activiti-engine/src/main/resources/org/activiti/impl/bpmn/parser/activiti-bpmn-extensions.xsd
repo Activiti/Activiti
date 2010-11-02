@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema
+  xmlns="http://www.w3.org/2001/XMLSchema"
+  targetNamespace="http://activiti.org/bpmn"
+  xmlns:tns="http://activiti.org/bpmn"
+  elementFormDefault="qualified">
+
+  <annotation>
+    <documentation>
+      This XML Schema defines and documents BPMN 2.0 Extension Elements and
+      Attributes introduced by Activiti.
+    </documentation>
+  </annotation>
+
+  <attribute name="class">
+    <annotation>
+      <documentation>
+        Service Task attribute for specifying a fully qualified Java class
+        name. The Java class must implement either
+        org.activiti.engine.delegate.JavaDelegation or
+        org.activiti.engine.impl.pvm.delegate.ActivityBehavior
+      </documentation>
+    </annotation>
+    <simpleType>
+      <restriction base="string">
+        <!-- regular expression taken from http://regexlib.com/REDetails.aspx?regexp_id=2821 -->
+        <pattern value="([a-z]{2,3}(\.[a-zA-Z][a-zA-Z_$0-9]*)*)\.([A-Z][a-zA-Z_$0-9]*)"/>
+      </restriction>
+    </simpleType>
+  </attribute>
+
+  <element name="field">
+    <annotation>
+      <documentation>
+        Extension Element for Service Tasks to inject values into the fields of
+        delegate classes.
+      </documentation>
+    </annotation>
+    <complexType>
+      <choice minOccurs="0" maxOccurs="1">
+      	<element name="string" type="string" />
+      	<element name="expression" type="tns:tExpression" />
+      </choice>
+      <attribute name="name" type="string" />
+      <attribute name="stringValue" type="string" use="optional" />
+      <attribute name="expression" type="tns:tExpression" use="optional" />
+    </complexType>
+  </element>
+  
+  <simpleType name="tExpression">
+    <annotation>
+      <documentation>
+        Expression using the language declared in the expressionLanguage
+        attribute of BPMN's definitions element.
+      </documentation>
+    </annotation>
+    <restriction base="string">
+    </restriction>
+  </simpleType>
+
+</schema>
