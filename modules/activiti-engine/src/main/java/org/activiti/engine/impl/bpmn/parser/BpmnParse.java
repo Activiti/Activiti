@@ -1338,10 +1338,10 @@ public class BpmnParse extends Parse {
       ActivityImpl destinationActivity = scope.findActivity(destinationRef);
 
       if (sourceActivity == null) {
-        addError("Invalid source of sequence flow '" + id + "'", sequenceFlowElement);
+        addError("Invalid source '" + sourceRef + "' of sequence flow '" + id + "'", sequenceFlowElement);
       }
       if (destinationActivity == null) {
-        addError("Invalid destination of sequence flow '" + id + "'", sequenceFlowElement);
+        addError("Invalid destination '" + destinationRef + "' of sequence flow '" + id + "'", sequenceFlowElement);
       }
 
       TransitionImpl transition = sourceActivity.createOutgoingTransition(id);
