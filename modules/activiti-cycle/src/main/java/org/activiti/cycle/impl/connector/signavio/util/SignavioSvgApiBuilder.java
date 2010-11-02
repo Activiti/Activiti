@@ -109,8 +109,8 @@ public class SignavioSvgApiBuilder {
     svgApiCall.append("<script type=\"text/plain\">");
     svgApiCall.append("{");
     // url to svgapi script
-    svgApiCall.append("url: \"http://localhost:8080/activiti-modeler\"");
-//    svgApiCall.append("url: \"" + connector.getConfiguration().getModelUrl(artifact.getNodeId()) + "\"");
+//    svgApiCall.append("url: \"http://localhost:8080/activiti-modeler\"");
+    svgApiCall.append("url: \"" + connector.getConfiguration().getModelUrl(artifact.getNodeId()) + "\"");
 
     // if authToken is available
     if (authToken != null && authToken.length() > 0) {
