@@ -266,5 +266,5 @@ public class SignavioSvgApiBuilder {
 //   // System.out.println(test.createJsonMessagesObject());
 //   // System.out.println(test.buildHighlightning());
 //   System.out.println(test.buildHtml());
-   }
+//   }
 }
