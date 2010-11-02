@@ -20,15 +20,16 @@ package org.activiti.engine.impl.bpmn;
 public interface OperationImplementation {
 
   /**
-   * Executes the operation using the arguments
-   * 
-   * @param arguments the arguments to be used during execution
-   * @return the result of executing the operation
-   */
-  Object[] execute(Object[] arguments) throws Exception;
-
-  /**
    * @return the name of this implementation
    */
   String getName();
+
+  /**
+   * Sends the message on behalf of operation
+   * 
+   * @param message the message to be sent
+   * @param operation the operation that is interested on sending the message
+   * @return the resulting message
+   */
+  MessageInstance sendFor(MessageInstance message, Operation operation);
 }

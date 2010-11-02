@@ -13,30 +13,19 @@
 package org.activiti.engine.impl.bpmn;
 
 /**
- * Implementation of the BPMN 2.0 'message'
+ * Implementation of the BPMN 2.0 'dataInputRef' and 'dataOutputRef'
  * 
  * @author Esteban Robles Luna
  */
-public class Message {
+public class DataRef {
 
-  protected String id;
+  protected String idRef;
   
-  protected ItemDefinition itemDefinition;
-  
-  public Message(String id, ItemDefinition itemDefinition) {
-    this.id = id;
-    this.itemDefinition = itemDefinition;
+  public DataRef(String idRef) {
+    this.idRef = idRef;
   }
   
-  public MessageInstance createInstance() {
-    return new MessageInstance(this);
-  }
-  
-  public ItemDefinition getItemDefinition() {
-    return this.itemDefinition;
-  }
-
-  public Structure getStructure() {
-    return this.itemDefinition.getStructure();
+  public String getIdRef() {
+    return this.idRef;
   }
 }

@@ -13,30 +13,26 @@
 package org.activiti.engine.impl.bpmn;
 
 /**
- * Implementation of the BPMN 2.0 'message'
+ * Implementation of the BPMN 2.0 'dataInput' and 'dataOutput'
  * 
  * @author Esteban Robles Luna
  */
-public class Message {
+public class Data {
 
   protected String id;
   
-  protected ItemDefinition itemDefinition;
+  protected ItemDefinition definition;
   
-  public Message(String id, ItemDefinition itemDefinition) {
+  public Data(String id, ItemDefinition definition) {
     this.id = id;
-    this.itemDefinition = itemDefinition;
+    this.definition = definition;
   }
   
-  public MessageInstance createInstance() {
-    return new MessageInstance(this);
+  public String getId() {
+    return this.id;
   }
   
-  public ItemDefinition getItemDefinition() {
-    return this.itemDefinition;
-  }
-
-  public Structure getStructure() {
-    return this.itemDefinition.getStructure();
+  public ItemDefinition getDefinition() {
+    return this.definition;
   }
 }

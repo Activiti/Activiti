@@ -12,31 +12,27 @@
  */
 package org.activiti.engine.impl.bpmn;
 
+import org.activiti.engine.impl.el.Expression;
+import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
+
 /**
- * Implementation of the BPMN 2.0 'message'
+ * Implementation of the BPMN 2.0 'assignment'
  * 
  * @author Esteban Robles Luna
  */
-public class Message {
+public class Assignment {
 
-  protected String id;
+  protected Expression fromExpression;
   
-  protected ItemDefinition itemDefinition;
+  protected Expression toExpression;
   
-  public Message(String id, ItemDefinition itemDefinition) {
-    this.id = id;
-    this.itemDefinition = itemDefinition;
+  public Assignment(Expression fromExpression, Expression toExpression) {
+    this.fromExpression = fromExpression;
+    this.toExpression = toExpression;
   }
   
-  public MessageInstance createInstance() {
-    return new MessageInstance(this);
-  }
-  
-  public ItemDefinition getItemDefinition() {
-    return this.itemDefinition;
-  }
-
-  public Structure getStructure() {
-    return this.itemDefinition.getStructure();
+  public void evaluate(ActivityExecution execution) {
+    //TODO doublecheck if this is OK
+    this.toExpression.setValue(this.fromExpression.getValue(execution), execution);
   }
 }

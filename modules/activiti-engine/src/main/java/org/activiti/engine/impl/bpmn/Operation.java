@@ -46,8 +46,12 @@ public class Operation {
     setInMessage(inMessage);
   }
   
-  public Object[] execute(Object[] arguments) throws Exception {
-    return this.implementation.execute(arguments);
+  public MessageInstance createEmptySendMessage() {
+    return this.inMessage.createInstance();
+  }
+  
+  public MessageInstance sendMessage(MessageInstance message) {
+    return this.implementation.sendFor(message, this);
   }
   
   public String getId() {
