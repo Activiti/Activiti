@@ -11,7 +11,6 @@ import org.activiti.cycle.RepositoryException;
 import org.activiti.cycle.impl.connector.signavio.SignavioConnector;
 import org.activiti.cycle.impl.connector.signavio.SignavioPluginDefinition;
 import org.activiti.cycle.impl.connector.signavio.util.SignavioSvgApiBuilder;
-import org.json.JSONException;
 import org.oryxeditor.server.diagram.Diagram;
 import org.oryxeditor.server.diagram.DiagramBuilder;
 import org.oryxeditor.server.diagram.Shape;
@@ -86,23 +85,18 @@ public class SignavioDiffProvider extends SignavioContentRepresentationProvider 
     }
 
     // and create resulting HTML
-    try {
-      String script1 = new SignavioSvgApiBuilder(connector, artifact).highlightNodes(missingSourceElements, INFO_COLOR).buildScript();
-      String script2 = new SignavioSvgApiBuilder(connector, diffTarget).highlightNodes(missingTargetElements, INFO_COLOR).buildScript();
-      
-      String htmlContent = "<p><b>Expertimental</b> feature to play around with Signavio diffing. Currently show diff against artifact "
-        + diffTarget.getGlobalUniqueId()
-        + ". Use Options to select other diff target.</p>";
-      htmlContent += "Changes from " + diffTarget.getMetadata().getName() + " in " + artifact.getMetadata().getName();
-      htmlContent += script1;
-      htmlContent += "Changes from " + artifact.getMetadata().getName() + " in " + diffTarget.getMetadata().getName();
-      htmlContent += script2;
-      
-      String html = SignavioSvgApiBuilder.buildHtml(htmlContent, 200, 600);
-      content.setValue(html);
-    } catch (JSONException e) {
-      throw new RepositoryException("Could not show DIFF due to exception in SvgApi", e);
-    }
+    String script1 = new SignavioSvgApiBuilder(connector, artifact).highlightNodes(missingSourceElements, INFO_COLOR).buildScript();
+    String script2 = new SignavioSvgApiBuilder(connector, diffTarget).highlightNodes(missingTargetElements, INFO_COLOR).buildScript();
+
+    String htmlContent = "<p><b>Expertimental</b> feature to play around with Signavio diffing. Currently show diff against artifact "
+            + diffTarget.getGlobalUniqueId() + ". Use Options to select other diff target.</p>";
+    htmlContent += "Changes from " + diffTarget.getMetadata().getName() + " in " + artifact.getMetadata().getName();
+    htmlContent += script1;
+    htmlContent += "Changes from " + artifact.getMetadata().getName() + " in " + diffTarget.getMetadata().getName();
+    htmlContent += script2;
+
+    String html = SignavioSvgApiBuilder.buildHtml(htmlContent, 200, 600);
+    content.setValue(html);
     
   }
 }

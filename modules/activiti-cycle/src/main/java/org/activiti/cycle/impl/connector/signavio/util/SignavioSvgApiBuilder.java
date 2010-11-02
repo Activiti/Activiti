@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import org.activiti.cycle.RepositoryArtifact;
+import org.activiti.cycle.RepositoryException;
 import org.activiti.cycle.impl.connector.signavio.SignavioConnector;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -94,11 +95,11 @@ public class SignavioSvgApiBuilder {
    * @throws JSONException
    */
   @Deprecated
-  public String build() throws JSONException {
+  public String build() {
     return buildHtml();
   }
 
-  public String buildHtml() throws JSONException {
+  public String buildHtml() {
     return buildHtml(buildScript());
   }
 
@@ -110,40 +111,45 @@ public class SignavioSvgApiBuilder {
     return HEADER + "<div id=\"model\" style=\"height: " + height + "px; width: " + width + "px;\">" + content + "</div>" + FOOTER;
   }
 
-  public String buildScript() throws JSONException {
-    StringBuilder svgApiCall = new StringBuilder();
-    svgApiCall.append("<script type=\"text/javascript\" src=\"" + SVGAPI_URL + "\"></script>");
-    svgApiCall.append("<script type=\"text/plain\">");
-    svgApiCall.append("{");
-    // url to svgapi script
-    // svgApiCall.append("url: \"http://localhost:8080/activiti-modeler\"");
-    svgApiCall.append("url: \"" + connector.getConfiguration().getModelUrl(artifact.getNodeId()) + "\"");
-
-    if (useLocalScripts) {
-      svgApiCall.append(", server: \"" + SERVER_SCRIPT_URL + "\"");
+  public String buildScript() {
+    try {
+      StringBuilder svgApiCall = new StringBuilder();
+      svgApiCall.append("<script type=\"text/javascript\" src=\"" + SVGAPI_URL + "\"></script>");
+      svgApiCall.append("<script type=\"text/plain\">");
+      svgApiCall.append("{");
+      // url to svgapi script
+      // svgApiCall.append("url: \"http://localhost:8080/activiti-modeler\"");
+      svgApiCall.append("url: \"" + connector.getConfiguration().getModelUrl(artifact.getNodeId()) + "\"");
+  
+      if (useLocalScripts) {
+        svgApiCall.append(", server: \"" + SERVER_SCRIPT_URL + "\"");
+      }
+  
+      // if authToken is available
+      if (authToken != null && authToken.length() > 0) {
+        svgApiCall.append(", authToken: \"" + authToken + "\",");
+      }
+  
+      // register mouseover event on callback function
+      svgApiCall.append(", callback: " + registerMouseOverEvent());
+  
+      // executed when click on a shape
+      svgApiCall.append(", click: " + createClickFunction());
+  
+      // highlight nodes
+      svgApiCall.append(", focus: " + buildHighlightning());
+  
+      svgApiCall.append("}");
+      svgApiCall.append("</script>");
+  
+      // include messages as text
+      svgApiCall.append("<div id=\"messages\">" + buildMessages() + "</div>");
+  
+      return svgApiCall.toString();
     }
-
-    // if authToken is available
-    if (authToken != null && authToken.length() > 0) {
-      svgApiCall.append(", authToken: \"" + authToken + "\",");
+    catch (JSONException ex) {
+      throw new RepositoryException("Unexpected exception with JSON handling for " + artifact, ex);
     }
-
-    // register mouseover event on callback function
-    svgApiCall.append(", callback: " + registerMouseOverEvent());
-
-    // executed when click on a shape
-    svgApiCall.append(", click: " + createClickFunction());
-
-    // highlight nodes
-    svgApiCall.append(", focus: " + buildHighlightning());
-
-    svgApiCall.append("}");
-    svgApiCall.append("</script>");
-
-    // include messages as text
-    svgApiCall.append("<div id=\"messages\">" + buildMessages() + "</div>");
-
-    return svgApiCall.toString();
   }
 
   private String registerMouseOverEvent() throws JSONException {

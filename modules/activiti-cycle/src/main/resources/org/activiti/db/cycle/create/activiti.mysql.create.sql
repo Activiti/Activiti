@@ -36,7 +36,7 @@ create table ACT_CY_PEOPLE_LINK (
 );
 
 create table ACT_CY_TAG (
-	ID_ varchar(800),
+	ID_ varchar(255),
 	NAME_ varchar(255),
 	CONNECTOR_ID_ varchar(255),
 	ARTIFACT_ID_ varchar(550),
