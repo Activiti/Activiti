@@ -148,7 +148,7 @@ public class SignavioSvgApiBuilder {
 
   private String registerMouseOverEvent() throws JSONException {
     if (nodesToHighlight == null || nodesToHighlight.isEmpty()) {
-      return "";
+      return "function(editor) {}";
     }
 
     StringBuilder callbackFunc = new StringBuilder();
