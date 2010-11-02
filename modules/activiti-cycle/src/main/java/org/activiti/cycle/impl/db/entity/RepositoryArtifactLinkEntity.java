@@ -94,7 +94,6 @@ public class RepositoryArtifactLinkEntity implements PersistentObject, Repositor
     targetArtifactId = targetArtifact.getNodeId();
   }
 
-  @Override
   public Object getPersistentState() {
     Map<String, Object> persistentState = new HashMap<String, Object>();
     persistentState.put("id", id);

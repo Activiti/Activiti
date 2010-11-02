@@ -72,7 +72,6 @@ public class RepositoryNodePeopleLinkEntity implements PersistentObject, Reposit
     sourceArtifactId = sourceArtifact.getNodeId();
   }
 
-  @Override
   public Object getPersistentState() {
     Map<String, Object> persistentState = new HashMap<String, Object>();
     persistentState.put("id", id);
