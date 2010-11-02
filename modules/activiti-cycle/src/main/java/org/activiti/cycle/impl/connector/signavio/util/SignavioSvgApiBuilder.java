@@ -1,6 +1,5 @@
 package org.activiti.cycle.impl.connector.signavio.util;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -26,6 +25,8 @@ public class SignavioSvgApiBuilder {
   private String authToken;
   private String clickFunction;
 
+  private boolean useLocalScripts = false;
+  
   /**
    * Map mapping a color for highlighting with a {@link Map} of node (ids) with
    * messages to show
@@ -81,6 +82,12 @@ public class SignavioSvgApiBuilder {
     return this;
   }
 
+  public SignavioSvgApiBuilder useLocalScripts(boolean useLocalScripts) {
+    this.useLocalScripts = useLocalScripts;
+    
+    return this;
+  }
+  
   /**
    * use buildHtml instead
    * 
@@ -99,8 +106,8 @@ public class SignavioSvgApiBuilder {
     return HEADER + content + FOOTER;
   }
 
-  public static String buildHtml(String content, int height) {
-    return HEADER + "<div id=\"model\" style=\"height: " + height + "px; width: 600px;\">" + content + "</div>" + FOOTER;
+  public static String buildHtml(String content, int height, int width) {
+    return HEADER + "<div id=\"model\" style=\"height: " + height + "px; width: " + width + "px;\">" + content + "</div>" + FOOTER;
   }
 
   public String buildScript() throws JSONException {
@@ -109,8 +116,12 @@ public class SignavioSvgApiBuilder {
     svgApiCall.append("<script type=\"text/plain\">");
     svgApiCall.append("{");
     // url to svgapi script
-//    svgApiCall.append("url: \"http://localhost:8080/activiti-modeler\"");
+    // svgApiCall.append("url: \"http://localhost:8080/activiti-modeler\"");
     svgApiCall.append("url: \"" + connector.getConfiguration().getModelUrl(artifact.getNodeId()) + "\"");
+
+    if (useLocalScripts) {
+      svgApiCall.append(", server: \"" + SERVER_SCRIPT_URL + "\"");
+    }
 
     // if authToken is available
     if (authToken != null && authToken.length() > 0) {
@@ -130,30 +141,34 @@ public class SignavioSvgApiBuilder {
     svgApiCall.append("</script>");
 
     // include messages as text
-    svgApiCall.append("<div id=\"messages\">" +buildMessages() + "</div>");
+    svgApiCall.append("<div id=\"messages\">" + buildMessages() + "</div>");
 
     return svgApiCall.toString();
   }
 
   private String registerMouseOverEvent() throws JSONException {
+    if (nodesToHighlight == null || nodesToHighlight.isEmpty()) {
+      return "";
+    }
+
     StringBuilder callbackFunc = new StringBuilder();
     callbackFunc.append("function(editor) {");
     callbackFunc.append("editor.registerOnEvent(\"mouseover\", function(evt, node) {");
     callbackFunc.append("var errorMessages = " + createJsonMessagesObject() + ";");
     callbackFunc.append("var myNodeMessages = errorMessages[node.resourceId];");
-    callbackFunc.append("if (myNodeMessages.length > 0) {");
-    callbackFunc.append("var myNodeMessagesStr;");
+    callbackFunc.append("if (myNodeMessages != undefined) {");
+    callbackFunc.append("var myNodeMessagesStr = \"\";");
     callbackFunc.append("for (msg in myNodeMessages) {");
-    callbackFunc.append("myNodeMessagesStr += myNodeMessages[msg] + \"\n\";");
+    callbackFunc.append("myNodeMessagesStr += myNodeMessages[msg] + \"\\n\";");
     callbackFunc.append("}");
     callbackFunc.append("}");
+    // @TODO: doesn't work atm, unable to get variable 'me'
     callbackFunc.append("if (node instanceof me.ORYX.Core.Shape) {");
     callbackFunc.append("alert(\"Sid: \" + node.resourceId + \"\nMessages: \" + myNodeMessagesStr);");
     callbackFunc.append("}");
     callbackFunc.append("});");
 
     callbackFunc.append("}");
-
     return callbackFunc.toString();
   }
 
@@ -193,12 +208,12 @@ public class SignavioSvgApiBuilder {
   private String createClickFunction() throws JSONException {
     StringBuilder clickFunc = new StringBuilder();
     clickFunc.append("function(node, editor) {");
-    clickFunc.append("var errorMessages = " + createJsonMessagesObject() + ";");
     if (clickFunction != null && clickFunction.length() > 0) {
       clickFunc.append(clickFunction);
     } else {
       // create default click function
-      clickFunc.append("if(node.properties[\"oryx-name\"]||node.properties[\"oryx-title\"]) {");
+      //clickFunc.append("var errorMessages = " + createJsonMessagesObject() + ";");
+      clickFunc.append("if(node.properties[\"oryx-name\"] || node.properties[\"oryx-title\"]) {");
       clickFunc.append("alert(\"Name: \" + node.properties[\"oryx-name\"] + \" (Sid: \" + node.resourceId + \")\");");
       clickFunc.append("}");
     }
@@ -227,20 +242,23 @@ public class SignavioSvgApiBuilder {
 
   private String buildHighlightning() throws JSONException {
     if (nodesToHighlight == null || nodesToHighlight.isEmpty()) {
-      return "";
+      return "[]";
     }
+    
     JSONArray focusArr = new JSONArray();
-
     for (Entry<String, Map<String, List<String>>> entry : nodesToHighlight.entrySet()) {
       focusArr.put(highlightNodesMap((String) entry.getKey(), (Map<String, List<String>>) entry.getValue()));
     }
-
+    
     return focusArr.toString();
   }
 
   private String createJsonMessagesObject() throws JSONException {
+    if (nodesToHighlight == null || nodesToHighlight.isEmpty()) {
+      return "";
+    }
+    
     JSONObject jsonMessageObj = new JSONObject();
-
     for (Entry<String, Map<String, List<String>>> entry : nodesToHighlight.entrySet()) {
       for (Entry<String, List<String>> mapEntry : entry.getValue().entrySet()) {
         jsonMessageObj.put(mapEntry.getKey(), mapEntry.getValue());
@@ -250,21 +268,21 @@ public class SignavioSvgApiBuilder {
     return jsonMessageObj.toString();
   }
 
-//   public static void main(String[] args) throws JSONException {
-//   Map<String, List<String>> properties = new HashMap<String, List<String>>();
-//   ArrayList<String> list1 = new ArrayList<String>();
-//   list1.add("adasdsadsgffdgfd");
-//   list1.add("fdgdlkzjtlkhjk");
-//   ArrayList<String> list2 = new ArrayList<String>();
-//   list2.add("545354353453543adasdsadsgffdgfd");
-//   list2.add("3256879867468fdgdlkzjtlkhjk");
-//   properties.put("sid-43245-345-435-345", list1);
-//   properties.put("sid-87686-6456-4645-456", list2);
-//      
-//   SignavioSvgApiBuilder test = new SignavioSvgApiBuilder(null,
-//   null).highlightNodes(properties, "red").highlightNodes(properties, "blue");
-//   // System.out.println(test.createJsonMessagesObject());
-//   // System.out.println(test.buildHighlightning());
-//   System.out.println(test.buildHtml());
-//   }
+  // public static void main(String[] args) throws JSONException {
+  // Map<String, List<String>> properties = new HashMap<String, List<String>>();
+  // ArrayList<String> list1 = new ArrayList<String>();
+  // list1.add("adasdsadsgffdgfd");
+  // list1.add("fdgdlkzjtlkhjk");
+  // ArrayList<String> list2 = new ArrayList<String>();
+  // list2.add("545354353453543adasdsadsgffdgfd");
+  // list2.add("3256879867468fdgdlkzjtlkhjk");
+  // properties.put("sid-43245-345-435-345", list1);
+  // properties.put("sid-87686-6456-4645-456", list2);
+  //      
+  // SignavioSvgApiBuilder test = new SignavioSvgApiBuilder(null,
+  // null).highlightNodes(properties, "red").highlightNodes(properties, "blue");
+  // // System.out.println(test.createJsonMessagesObject());
+  // // System.out.println(test.buildHighlightning());
+  // System.out.println(test.buildHtml());
+  // }
 }

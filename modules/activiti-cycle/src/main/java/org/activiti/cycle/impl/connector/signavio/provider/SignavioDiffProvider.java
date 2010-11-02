@@ -98,7 +98,7 @@ public class SignavioDiffProvider extends SignavioContentRepresentationProvider 
       htmlContent += "Changes from " + artifact.getMetadata().getName() + " in " + diffTarget.getMetadata().getName();
       htmlContent += script2;
       
-      String html = SignavioSvgApiBuilder.buildHtml(htmlContent, 200);
+      String html = SignavioSvgApiBuilder.buildHtml(htmlContent, 200, 600);
       content.setValue(html);
     } catch (JSONException e) {
       throw new RepositoryException("Could not show DIFF due to exception in SvgApi", e);
