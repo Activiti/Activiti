@@ -250,21 +250,21 @@ public class SignavioSvgApiBuilder {
     return jsonMessageObj.toString();
   }
 
-   public static void main(String[] args) throws JSONException {
-   Map<String, List<String>> properties = new HashMap<String, List<String>>();
-   ArrayList<String> list1 = new ArrayList<String>();
-   list1.add("adasdsadsgffdgfd");
-   list1.add("fdgdlkzjtlkhjk");
-   ArrayList<String> list2 = new ArrayList<String>();
-   list2.add("545354353453543adasdsadsgffdgfd");
-   list2.add("3256879867468fdgdlkzjtlkhjk");
-   properties.put("sid-43245-345-435-345", list1);
-   properties.put("sid-87686-6456-4645-456", list2);
-      
-   SignavioSvgApiBuilder test = new SignavioSvgApiBuilder(null,
-   null).highlightNodes(properties, "red").highlightNodes(properties, "blue");
-   // System.out.println(test.createJsonMessagesObject());
-   // System.out.println(test.buildHighlightning());
-   System.out.println(test.buildHtml());
+//   public static void main(String[] args) throws JSONException {
+//   Map<String, List<String>> properties = new HashMap<String, List<String>>();
+//   ArrayList<String> list1 = new ArrayList<String>();
+//   list1.add("adasdsadsgffdgfd");
+//   list1.add("fdgdlkzjtlkhjk");
+//   ArrayList<String> list2 = new ArrayList<String>();
+//   list2.add("545354353453543adasdsadsgffdgfd");
+//   list2.add("3256879867468fdgdlkzjtlkhjk");
+//   properties.put("sid-43245-345-435-345", list1);
+//   properties.put("sid-87686-6456-4645-456", list2);
+//      
+//   SignavioSvgApiBuilder test = new SignavioSvgApiBuilder(null,
+//   null).highlightNodes(properties, "red").highlightNodes(properties, "blue");
+//   // System.out.println(test.createJsonMessagesObject());
+//   // System.out.println(test.buildHighlightning());
+//   System.out.println(test.buildHtml());
    }
 }
