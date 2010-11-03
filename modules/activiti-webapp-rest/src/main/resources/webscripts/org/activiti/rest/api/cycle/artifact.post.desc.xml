@@ -3,5 +3,5 @@
   <description>Creates a new artifact</description>
   <url>/artifact</url>
   <authentication>user</authentication>
-  <format default="json">argument</format>
+  <format default="html">argument</format>
 </webscript>

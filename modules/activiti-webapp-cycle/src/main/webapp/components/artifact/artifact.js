@@ -172,30 +172,31 @@
 
       // Add a dropdowns for actions, links and downloads
       if(artifactJson.actions.length > 0 || artifactJson.links.length > 0 || artifactJson.downloads.length > 0) {
-        var optionsMenuItems = [];
+        var actionsMenuItems = [];
         var actions = [];
         for(i = 0; i<artifactJson.actions.length; i++) {
           actions.push({ text: artifactJson.actions[i].label, value: {connectorId: artifactJson.connectorId, artifactId: artifactJson.artifactId, actionName: artifactJson.actions[i].name}, onclick: { fn: this.onExecuteActionClick } });
         }
         if(actions.length > 0) {
-          optionsMenuItems.push(actions);
+          actionsMenuItems.push(actions);
         }
         var links = [];
         for(i=0; i<artifactJson.links.length; i++) {
           links.push({ text: artifactJson.links[i].label, url: artifactJson.links[i].url, target: "_blank"});
         }
         if(links.length > 0) {
-          optionsMenuItems.push(links);
+          actionsMenuItems.push(links);
         }
         var downloads = [];
         for(i=0; i<artifactJson.downloads.length; i++) {
           downloads.push({ text: artifactJson.downloads[i].label, url: artifactJson.downloads[i].url, target: "_blank"});
         }
         if(downloads.length > 0) {
-          optionsMenuItems.push(downloads);
+          actionsMenuItems.push(downloads);
         }
-        var optionsMenu = new YAHOO.widget.Button({ type: "menu", label: "Options", name: "options", menu: optionsMenuItems, container: optionsDiv });
-      }      
+        // TODO: i18n
+        var optionsMenu = new YAHOO.widget.Button({ type: "menu", label: "Actions", name: "options", menu: actionsMenuItems, container: optionsDiv });
+      }
       optionsDiv.setAttribute('class', 'active');
     },
 
@@ -233,6 +234,7 @@
 
         tab.set('content', '<div id="linksTable"></div><span id="addLink" class="yui-button"><span class="first-child"><button type="button">Add link</button></span></span>');
 
+        // TODO: i18n
         var linksColumnDefs = [
             {key:"Name", sortable:true},
             {key:"Revision", sortable:true},

@@ -13,7 +13,7 @@
 	 * FileChooserDialog constructor.
 	 *
 	 * @param {String} htmlId The HTML id of the parent element
-	 * @return {Activiti.component.RepoTree} The new component.FileChooserDialog instance
+	 * @return {Activiti.component.FileChooserDialog} The new component.FileChooserDialog instance
 	 * @constructor
 	 */
 	Activiti.component.FileChooserDialog = function FileChooserDialog_constructor(htmlId, callbackFn, showFiles, scope, highlightFolders, highlightFiles)

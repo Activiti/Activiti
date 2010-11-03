@@ -44,7 +44,6 @@
     {
       // load the json representation of the tree, onLoadTreeSuccess will be called due to naming convention
       this.services.repositoryService.loadTree();
-    
     },
     
     /**
@@ -81,9 +80,38 @@
       me._treeView.render();
 
       me._treeView.subscribe("clickEvent", this.onLabelClick, null, this);
-      
+		  
+		  this._contextMenu = new YAHOO.widget.ContextMenu("mycontextmenu", {
+		      trigger: "treeDiv1"
+		    });
+
+      this._contextMenu.render(document.body);
+      this._contextMenu.subscribe("triggerContextMenu", function (event, menu) {
+          // retrieve the node the context menu was triggered on
+          var oTarget = this.contextEventTarget;
+          var node = me._treeView.getNodeByElement(oTarget);
+          
+          // clear existing menu items and set up the context menu according to the current node
+          this.clearContent();
+          if(node.data.file) {
+            // this.addItems([]);
+          } else if(node.data.folder) {
+            this.addItem({ text: "Create artifact here...", value: {connectorId: node.data.connectorId, artifactId: node.data.artifactId}, onclick: { fn: me.onCreateArtifactContextMenuClick, obj: node, scope: me } });
+          }
+          this.render();
+        });
+              
       // me._treeView.subscribe("expand", this.onNodeExpand, null, this);
       // me._treeView.subscribe("collapse", this.onNodeCollapse, null, this);
+    },
+
+    /**
+     *
+     *
+     */
+    onCreateArtifactContextMenuClick: function RepoTree_onCreateArtifactContextMenuClick(eventName, params, node)
+    {
+      return new Activiti.component.CreateArtifactDialog(this.id, node.data.connectorId, node.data.artifactId, function() {alert("hello");});
     },
 
     /**
