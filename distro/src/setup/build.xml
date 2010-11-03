@@ -455,13 +455,48 @@ JAVA_OPTS="-Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=8787
   	<!-- Touch is required, see http://stackoverflow.com/questions/2210041/updating-files-inside-an-existing-war-file -->
   	<tstamp> <format property="touch.time" pattern="MM/dd/yyyy hh:mm aa"/>  </tstamp>
   	<touch datetime="${touch.time}" file="files/cfg.modeler/configuration.properties"/>
-  	    
+
   	<war destfile="${downloads.dir}/activiti-modeler-${activiti.version}.war" update="true">
-  	  <zipfileset file="files/cfg.modeler/configuration.properties"  prefix="WEB-INF/classes/"/>
+  	  <zipfileset file="files/cfg.modeler/configuration.properties" prefix="WEB-INF/classes/" />
   	</war>
   	    
   	<!-- end of ACT-177 -->
 
+    <!-- Integrate Activiti Cycle plugin into modeler -->
+    <mkdir dir="build/modeler-patches" />
+    <unzip src="${downloads.dir}/activiti-modeler-${activiti.version}.war"
+           dest="build/modeler-patches">
+      <patternset>
+        <include name="editor/oryx.debug.js"/>
+        <include name="editor/oryx.js"/>
+        <include name="editor/plugins.xml"/>
+      </patternset>
+      <mapper type="flatten"/>
+    </unzip>
+    <concat destfile="build/modeler-patches/oryx.debug.patched.js">
+      <fileset file="build/modeler-patches/oryx.debug.js" />
+      <fileset file="files/cfg.modeler/ActivitiCycle.js" />
+    </concat>
+    <concat destfile="build/modeler-patches/oryx.patched.js">
+      <fileset file="build/modeler-patches/oryx.js" />
+      <fileset file="files/cfg.modeler/ActivitiCycle.js" />
+    </concat>
+    <replace file="build/modeler-patches/plugins.xml">
+      <replacetoken><![CDATA[</plugins>]]></replacetoken>
+    <replacevalue><![CDATA[
+		<plugin source="ActivitiCycle.js" name="ORYX.Plugins.ActivitiCycle" />
+
+	</plugins>]]></replacevalue>
+    </replace>
+    <fixcrlf file="build/modeler-patches/plugins.xml" eol="dos" />
+    <war destfile="${downloads.dir}/activiti-modeler-${activiti.version}.war" update="true">
+      <zipfileset file="files/cfg.modeler/activiti_logo_16x16.png"   fullpath="editor/images/activiti_logo_16x16.png" />
+      <zipfileset file="build/modeler-patches/oryx.debug.patched.js" fullpath="editor/oryx.debug.js" />
+      <zipfileset file="build/modeler-patches/oryx.patched.js"       fullpath="editor/oryx.js" />
+      <zipfileset file="build/modeler-patches/plugins.xml"           fullpath="editor/plugins.xml" />
+      <zipfileset file="build/modeler-patches/plugins.xml"           fullpath="WEB-INF/xml/editor/plugins.xml" />
+    </war>
+    <!-- end of Activiti Cycle plugin integration -->
   	
     <copy file="${downloads.dir}/activiti-modeler-${activiti.version}.war"
           tofile="${tomcat.home}/webapps/activiti-modeler.war"/>
