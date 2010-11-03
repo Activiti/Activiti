@@ -9,8 +9,10 @@ import java.util.zip.ZipInputStream;
 
 import org.activiti.cycle.Content;
 import org.activiti.cycle.RepositoryArtifact;
+import org.activiti.cycle.RepositoryArtifactLink;
 import org.activiti.cycle.RepositoryConnector;
 import org.activiti.cycle.RepositoryException;
+import org.activiti.cycle.impl.db.entity.RepositoryArtifactLinkEntity;
 import org.activiti.engine.impl.util.IoUtil;
 
 public class CreateMavenProjectAction extends CreateTechnicalBpmnXmlAction {
@@ -37,22 +39,22 @@ public class CreateMavenProjectAction extends CreateTechnicalBpmnXmlAction {
     RepositoryConnector targetConnector = (RepositoryConnector) getParameter(parameters, PARAM_TARGET_CONNECTOR, true, null, RepositoryConnector.class);
     boolean createLink = (Boolean) getParameter(parameters, CREATE_LINK_NAME, true, Boolean.TRUE, Boolean.class);
 
-    createProject(targetConnector, targetFolderId, targetName, createBpmnXml(connector, artifact));
+    RepositoryArtifact bpmnArtifact = createProject(targetConnector, targetFolderId, targetName, createBpmnXml(connector, artifact));
 
     // TODO: Think about that more, does it make sense like this?
     targetConnector.commitPendingChanges(comment);
 
-    if (createLink) {
+    if (createLink && bpmnArtifact != null) {
       // TODO: We cannot link to a folder at the moment!
-
       // RepositoryFolder targetFolder =
       // targetConnector.getRepositoryFolder(targetFolderId);
-      // RepositoryArtifactLink link = new RepositoryArtifactLinkEntity();
-      // link.setSourceArtifact(artifact);
-      // link.setTargetArtifact(targetFolder);
-      // link.setComment(comment);
-      // link.setLinkType(getLinkType());
-      // connector.getConfiguration().getCycleService().addArtifactLink(link);
+
+      RepositoryArtifactLink link = new RepositoryArtifactLinkEntity();
+      link.setSourceArtifact(artifact);
+      link.setTargetArtifact(bpmnArtifact);
+      link.setComment(comment);
+      link.setLinkType(getLinkType());
+      connector.getConfiguration().getCycleService().addArtifactLink(link);
     }
   }
   
@@ -65,7 +67,12 @@ public class CreateMavenProjectAction extends CreateTechnicalBpmnXmlAction {
     return getFormNameForClass(CreateTechnicalBpmnXmlAction.class);
   }
 
-  public void createProject(RepositoryConnector connector, String rootFolderId, String projectName, String processDefinitionXml) {
+  /**
+   * create a project from the Maven template and return the RepositoryArtifact
+   * representing the bpmn process model
+   */
+  public RepositoryArtifact createProject(RepositoryConnector connector, String rootFolderId, String projectName, String processDefinitionXml) {
+    RepositoryArtifact result = null;
     try {
       ZipInputStream projectTemplateInputStream = new ZipInputStream(getProjectTemplate());
       ZipEntry zipEntry = null;
@@ -93,7 +100,8 @@ public class CreateMavenProjectAction extends CreateTechnicalBpmnXmlAction {
           // rename the root folder in all other paths as well
           path = path.replace(rootSubstitution, projectName);
         }
-        String absolutePath = rootFolderId + "/" + path; 
+        String absolutePath = rootFolderId + "/" + path;
+        boolean isBpmnModel = false;
         if (zipEntry.isDirectory()) {
           connector.createFolder(absolutePath, name);
         } else {
@@ -103,14 +111,18 @@ public class CreateMavenProjectAction extends CreateTechnicalBpmnXmlAction {
             // This file shall be replaced with the process definition
             content.setValue(processDefinitionXml);
             name = projectName + ".bpmn20.xml";
-            log.log(Level.INFO, "Create processdefinition from Signavio process model " + projectName);
+            isBpmnModel = true;
+            log.log(Level.INFO, "Create processdefinition from Signavio process model " + projectName);            
           } else {
             byte[] bytes = IoUtil.readInputStream(projectTemplateInputStream, "ZIP entry '" + zipName + "'");
             String txtContent = new String(bytes).replaceAll(REPLACE_STRING, projectName);
             content.setValue(txtContent);
           }
           log.log(Level.INFO, "Create new artifact from zip entry '" + zipEntry.getName() + "' in folder '" + absolutePath + "' with name '" + name + "'");
-          connector.createArtifact(absolutePath, name, null, content);
+          RepositoryArtifact artifact = connector.createArtifact(absolutePath, name, null, content);
+          if (isBpmnModel) {
+            result = artifact;
+          }
         }
         projectTemplateInputStream.closeEntry();
       }
@@ -118,6 +130,7 @@ public class CreateMavenProjectAction extends CreateTechnicalBpmnXmlAction {
     } catch (IOException ex) {
       throw new RepositoryException("Couldn't create maven project due to IO errors", ex);
     }
+    return result;
   }
 
   protected InputStream getProjectTemplate() {
