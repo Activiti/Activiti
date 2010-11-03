@@ -1,14 +1,14 @@
 <#escape x as jsonUtils.encodeJSONString(x)>
 {
   "assigned": {
-    "total": ${assigned}
+    "total": ${assigned?c}
   },
   "unassigned": {
-    "total": ${unassigned},
+    "total": ${unassigned?c},
     "groups":
     {
       <#list unassignedByGroup?keys as group>
-      "${group}": ${unassignedByGroup[group]}<#if group_has_next>,</#if>
+      "${group}": ${unassignedByGroup[group]?c}<#if group_has_next>,</#if>
       </#list>
     }
   }
