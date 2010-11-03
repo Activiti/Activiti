@@ -88,8 +88,6 @@
 				<artifactId>maven-surefire-plugin</artifactId>
 				<configuration>
 					<excludes>
-            <exclude>**/CompetingJobAcquisitionTest.java</exclude> <!-- http://jira.codehaus.org/browse/ACT-234 -->
-            <exclude>**/JobQueryTest.java</exclude> <!-- http://jira.codehaus.org/browse/ACT-299 -->
 					</excludes>
 				</configuration>
 			</plugin>
@@ -187,8 +185,9 @@
               <excludes>
                 <exclude>org/activiti/standalone/**</exclude>
                 <exclude>**/*TestCase.java</exclude>
-                <exclude>org/activiti/engine/test/api/testing/ActivitiRuleJunit4Test.java</exclude><!-- Can't run in Spring since ActivitiRule must be used different in Spring -->
-                <exclude>org/activiti/engine/test/concurrency/CompetingJobAcquisitionTest.java</exclude> <!-- ACT-234 -->
+                <exclude>**/ActivitiRuleJunit4Test.java</exclude><!-- Can't run in Spring since ActivitiRule must be used different in Spring -->
+		            <exclude>**/CompetingJobAcquisitionTest.java</exclude> <!-- http://jira.codehaus.org/browse/ACT-234 -->
+		            <exclude>**/JobQueryTest.java</exclude> <!-- http://jira.codehaus.org/browse/ACT-299 -->
               </excludes>
             </configuration>
           </plugin>
