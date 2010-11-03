@@ -29,9 +29,12 @@ public abstract class ParameterizedHtmlFormTemplateAction extends ParameterizedA
    * class name + ".html" in the same package as the class
    */
   public String getDefaultFormName() {
-    return "/" + this.getClass().getName().replace(".", "/") + ".html";
+    return getFormNameForClass(this.getClass());
   }
 
+  public String getFormNameForClass(Class clazz) {
+    return "/" + clazz.getName().replace(".", "/") + ".html";
+  }
   
   public String getFormAsHtml() {
     InputStream is = null;

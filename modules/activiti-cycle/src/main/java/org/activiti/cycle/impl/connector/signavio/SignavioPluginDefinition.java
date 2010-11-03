@@ -9,6 +9,7 @@ import org.activiti.cycle.impl.ArtifactTypeImpl;
 import org.activiti.cycle.impl.ContentRepresentationImpl;
 import org.activiti.cycle.impl.conf.RepositoryConnectorConfiguration;
 import org.activiti.cycle.impl.connector.signavio.action.CopySignavioModelAction;
+import org.activiti.cycle.impl.connector.signavio.action.CreateMavenProjectAction;
 import org.activiti.cycle.impl.connector.signavio.action.CreateTechnicalBpmnXmlAction;
 import org.activiti.cycle.impl.connector.signavio.action.OpenModelerAction;
 import org.activiti.cycle.impl.connector.signavio.action.SelectDiffTargetAction;
@@ -80,6 +81,7 @@ public class SignavioPluginDefinition implements ActivitiCyclePluginDefinition {
     artifactType1.addParameterizedAction(new ValidateActivitiDeployment());
     artifactType1.addParameterizedAction(new CopySignavioModelAction());
     artifactType1.addParameterizedAction(new SelectDiffTargetAction());
+    artifactType1.addParameterizedAction(new CreateMavenProjectAction());
     artifactType1.addOpenUrlAction(new OpenModelerAction());
     artifactType1.addDownloadContentAction(CONTENT_REPRESENTATION_ID_BPMN_20_DEVELOPER);
     artifactType1.addDownloadContentAction(CONTENT_REPRESENTATION_ID_BPMN_20_RAW);

@@ -1,6 +1,6 @@
 package org.activiti.cycle.impl.transform.signavio;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 
@@ -9,9 +9,8 @@ public class ExchangeSignavioUuidWithNameTransformationTest {
 
   @Test
   public void testAdjustNamesForEngine() {
-    String name = "Send rejection e-mail";
-    String actual = ExchangeSignavioUuidWithNameTransformation.adjustNamesForEngine(name);
-    assertEquals("Send_rejection_e-mail", actual);
+    assertEquals("Send_rejection_e-mail", ExchangeSignavioUuidWithNameTransformation.adjustNamesForEngine("Send rejection e-mail"));
+    assertEquals("_15__everything_mine__-_", ExchangeSignavioUuidWithNameTransformation.adjustNamesForEngine("§15: everything mine :-)"));
   }
 
 }

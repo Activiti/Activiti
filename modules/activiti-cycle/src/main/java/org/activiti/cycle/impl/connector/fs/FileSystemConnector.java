@@ -104,9 +104,9 @@ public class FileSystemConnector extends AbstractRepositoryConnector<FileSystemC
   }
 
   public RepositoryFolder createFolder(String parentFolderId, String name) throws RepositoryNodeNotFoundException {
-    File newSubFolder = new File(getFileFromId(parentFolderId), parentFolderId);
+    File newSubFolder = new File(getFileFromId(parentFolderId), name);
     if (!newSubFolder.mkdir()) {
-      throw new RepositoryException("Unable to create subfolder " + parentFolderId + " in parentfolder " + parentFolderId);
+      throw new RepositoryException("Unable to create subfolder '" + name + "' in parentfolder '" + parentFolderId + "'");
     }
     
     return getRepositoryFolder(getRepositoryNodeId(parentFolderId, name));

@@ -1,26 +1,19 @@
 package org.activiti.cycle.impl.connector.signavio.action;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 
 import org.activiti.cycle.Content;
 import org.activiti.cycle.RepositoryArtifact;
 import org.activiti.cycle.RepositoryArtifactLink;
 import org.activiti.cycle.RepositoryConnector;
-import org.activiti.cycle.RepositoryException;
 import org.activiti.cycle.RepositoryFolder;
 import org.activiti.cycle.impl.ParameterizedHtmlFormTemplateAction;
 import org.activiti.cycle.impl.connector.fs.FileSystemPluginDefinition;
 import org.activiti.cycle.impl.connector.signavio.SignavioConnector;
 import org.activiti.cycle.impl.connector.signavio.SignavioPluginDefinition;
+import org.activiti.cycle.impl.connector.signavio.util.SignavioTransformationHelper;
 import org.activiti.cycle.impl.db.entity.RepositoryArtifactLinkEntity;
-import org.activiti.cycle.impl.transform.JsonTransformation;
-import org.activiti.cycle.impl.transform.signavio.AdjustShapeNamesTransformation;
-import org.activiti.cycle.impl.transform.signavio.BpmnPoolExtraction;
-import org.activiti.cycle.impl.transform.signavio.ExchangeSignavioUuidWithNameTransformation;
 import org.activiti.cycle.impl.transform.signavio.RemedyTemporarySignavioIncompatibilityTransformation;
-import org.json.JSONObject;
 
 /**
  * This action creates a technical BPMN 2.0 XML for the process engines. It
@@ -41,22 +34,6 @@ public class CreateTechnicalBpmnXmlAction extends ParameterizedHtmlFormTemplateA
   public static final String PARAM_COMMENT = "comment";
   public static final String CREATE_LINK_NAME = "createLink";
 
-  /**
-   * Where do we get the transformations from? How are they registered?
-   * 
-   * How can we extend that project specific?
-   */
-  public static List<JsonTransformation> registeredTransformations = new ArrayList<JsonTransformation>();
-  
-  static {
-     // TODO: How to register JSON-Transformations
-
-    // example with cutting out just the Engine Pool
-    addTransformation(new BpmnPoolExtraction("Process Engine"));
-    addTransformation(new ExchangeSignavioUuidWithNameTransformation());
-    addTransformation(new AdjustShapeNamesTransformation());
-  }
-
   public CreateTechnicalBpmnXmlAction() {
     // TODO: remove when real labels are introduced in the GUI
     super("Create technical model");
@@ -65,10 +42,6 @@ public class CreateTechnicalBpmnXmlAction extends ParameterizedHtmlFormTemplateA
   public CreateTechnicalBpmnXmlAction(String name) {
     // TODO: remove when real labels are introduced in the GUI
     super(name);
-  }
-
-  public static void addTransformation(JsonTransformation transformation) {
-    registeredTransformations.add(transformation);
   }
 
   public void execute(RepositoryConnector connector, RepositoryArtifact artifact, Map<String, Object> parameters) throws Exception {
@@ -101,30 +74,21 @@ public class CreateTechnicalBpmnXmlAction extends ParameterizedHtmlFormTemplateA
 
   public RepositoryArtifact createArtifact(RepositoryConnector connector, RepositoryArtifact artifact, String targetFolderId, String targetName,
           RepositoryConnector targetConnector) throws Exception {
-    String sourceJson = getBpmn20Json((SignavioConnector) connector, artifact);
-    String transformedJson = applyJsonTransformations(sourceJson);
-    String bpmnXml = transformToBpmn20((SignavioConnector) connector, transformedJson);
+    String bpmnXml = createBpmnXml(connector, artifact);
     RepositoryArtifact targetArtifact = createTargetArtifact(targetConnector, targetFolderId, targetName + ".bpmn20.xml", bpmnXml,
             FileSystemPluginDefinition.ARTIFACT_TYPE_BPMN_20_XML);
     return targetArtifact;
   }
 
-  protected String getBpmn20Json(RepositoryConnector connector, RepositoryArtifact artifact) {
-    return connector.getContent(artifact.getNodeId(), SignavioPluginDefinition.CONTENT_REPRESENTATION_ID_JSON).asString();
+  public String createBpmnXml(RepositoryConnector connector, RepositoryArtifact artifact) {
+    String sourceJson = getBpmn20Json((SignavioConnector) connector, artifact);
+    String transformedJson = SignavioTransformationHelper.applyJsonTransformations(sourceJson);
+    String bpmnXml = transformToBpmn20((SignavioConnector) connector, transformedJson);
+    return bpmnXml;
   }
 
-  protected String applyJsonTransformations(String sourceJson) {
-    try {
-      JSONObject jsonObject = new JSONObject(sourceJson);
-
-      for (JsonTransformation trafo : registeredTransformations) {
-        jsonObject = trafo.transform(jsonObject);
-      }
-
-      return jsonObject.toString();
-    } catch (Exception e) {
-      throw new RepositoryException("Exception occured while transformation of BPMN model", e);
-    }
+  protected String getBpmn20Json(RepositoryConnector connector, RepositoryArtifact artifact) {
+    return connector.getContent(artifact.getNodeId(), SignavioPluginDefinition.CONTENT_REPRESENTATION_ID_JSON).asString();
   }
 
   protected String transformToBpmn20(SignavioConnector connector, String transformedJson) {

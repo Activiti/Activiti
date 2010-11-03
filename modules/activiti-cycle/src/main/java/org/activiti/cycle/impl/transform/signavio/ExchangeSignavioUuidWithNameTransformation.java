@@ -1,7 +1,5 @@
 package org.activiti.cycle.impl.transform.signavio;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -17,8 +15,6 @@ import org.oryxeditor.server.diagram.Shape;
  */
 public class ExchangeSignavioUuidWithNameTransformation extends OryxTransformation {
 
-  private static final String TASK_NAME = "Task";
-
   @Override
   public Diagram transform(Diagram diagram) {
     Set<String> existingNames = new HashSet<String>();
@@ -29,15 +25,11 @@ public class ExchangeSignavioUuidWithNameTransformation extends OryxTransformati
   }
 
   private void adjustShapeNames(List<Shape> shapes, Set<String> existingNames) {
-    for (Shape shape : shapes) {      
+    for (Shape shape : shapes) {
       // TODO: Check which exact stencil sets we need to change
-      String name = null;
-      
+      String name = null;      
       if (shape.getProperty("name") != null && shape.getProperty("name").length() > 0) {
-        // shape.getStencil()!= null &&/
-        // TASK_NAME.equals(shape.getStencil().getId())
         name = shape.getProperty("name");
-
       } else {
         name = shape.getStencilId();
       }
@@ -62,28 +54,14 @@ public class ExchangeSignavioUuidWithNameTransformation extends OryxTransformati
   }
 
   /**
-   * adjust name from Signavio (remove new lines, ' and maybe add more in
-   * future) See https://app.camunda.com/jira/browse/HEMERA-164.
-   * 
-   * Since that makes problems (see
-   * http://forums.activiti.org/en/viewtopic.php?f=4&t=259&p=917) we changed to
-   * proper encoding, even if that is less developer friendly.
-   * 
-   * TODO: Improve encoding / readability
-   * 
-   * TODO: Should we have this as own pattern?
+   * adjust name from Signavio (remove all non special characters to avoid
+   * possible problems). See e.g.
+   * http://forums.activiti.org/en/viewtopic.php?f=4&t=259&p=917
    */
   public static String adjustNamesForEngine(String name) {
     if (name == null) {
       return null;
     }
-    try {
-      return URLEncoder.encode(name.replace(' ', '_'), "UTF-8");
-    } catch (UnsupportedEncodingException e) {
-      // Should never happen :-)
-      throw new IllegalStateException("Wired, platform couldn't encode UTF-8", e);
-    }
-    // return name.replaceAll("\n", " ").replaceAll("'", "").replaceAll("\"",
-    // "");
+    return name.replaceAll("[^a-zA-Z0-9-]", "_");
   } 
 }

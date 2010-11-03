@@ -34,9 +34,7 @@ public class ValidateActivitiDeployment extends CreateTechnicalBpmnXmlAction {
             .getProcessEngineConfiguration();
     ExpressionManager expressionManager = processEngineConfiguration.getExpressionManager();
     
-    String sourceJson = getBpmn20Json((SignavioConnector) connector, artifact);
-    String transformedJson = applyJsonTransformations(sourceJson);
-    String bpmnXml = transformToBpmn20((SignavioConnector) connector, transformedJson); 
+    String bpmnXml = createBpmnXml((SignavioConnector) connector, artifact); 
     
     BpmnParser bpmnParser = new BpmnParser(expressionManager);
     
