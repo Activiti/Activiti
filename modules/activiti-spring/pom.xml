@@ -89,7 +89,7 @@
 				<configuration>
 					<excludes>
             <exclude>**/CompetingJobAcquisitionTest.java</exclude> <!-- http://jira.codehaus.org/browse/ACT-234 -->
-            <exclude>**/JobQueryTest</exclude> <!-- http://jira.codehaus.org/browse/ACT-299 -->
+            <exclude>**/JobQueryTest.java</exclude> <!-- http://jira.codehaus.org/browse/ACT-299 -->
 					</excludes>
 				</configuration>
 			</plugin>
