@@ -437,6 +437,8 @@ JAVA_OPTS="-Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=8787
   
   <target name="deploy.activiti.modeler.into.tomcat" unless="skip.deploy.activiti.modeler">
     <antcall target="internal.download.activiti.modeler" /> <!-- Can't use depends for this, due to http://ant.apache.org/faq.html#stop-dependency-->
+    <antcall target="internal.modeler.plugin.cycle.install" />
+  	
     <mkdir dir="${activiti.modeler.repository.home}"/>
   	
   	<!--ACT-177 Workaround for the Modeler not supporting relative paths -->
@@ -462,42 +464,6 @@ JAVA_OPTS="-Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=8787
   	    
   	<!-- end of ACT-177 -->
 
-    <!-- Integrate Activiti Cycle plugin into modeler -->
-    <mkdir dir="build/modeler-patches" />
-    <unzip src="${downloads.dir}/activiti-modeler-${activiti.version}.war"
-           dest="build/modeler-patches">
-      <patternset>
-        <include name="editor/oryx.debug.js"/>
-        <include name="editor/oryx.js"/>
-        <include name="editor/plugins.xml"/>
-      </patternset>
-      <mapper type="flatten"/>
-    </unzip>
-    <concat destfile="build/modeler-patches/oryx.debug.patched.js">
-      <fileset file="build/modeler-patches/oryx.debug.js" />
-      <fileset file="files/cfg.modeler/ActivitiCycle.js" />
-    </concat>
-    <concat destfile="build/modeler-patches/oryx.patched.js">
-      <fileset file="build/modeler-patches/oryx.js" />
-      <fileset file="files/cfg.modeler/ActivitiCycle.js" />
-    </concat>
-    <replace file="build/modeler-patches/plugins.xml">
-      <replacetoken><![CDATA[</plugins>]]></replacetoken>
-    <replacevalue><![CDATA[
-		<plugin source="ActivitiCycle.js" name="ORYX.Plugins.ActivitiCycle" />
-
-	</plugins>]]></replacevalue>
-    </replace>
-    <fixcrlf file="build/modeler-patches/plugins.xml" eol="dos" />
-    <war destfile="${downloads.dir}/activiti-modeler-${activiti.version}.war" update="true">
-      <zipfileset file="files/cfg.modeler/activiti_logo_16x16.png"   fullpath="editor/images/activiti_logo_16x16.png" />
-      <zipfileset file="build/modeler-patches/oryx.debug.patched.js" fullpath="editor/oryx.debug.js" />
-      <zipfileset file="build/modeler-patches/oryx.patched.js"       fullpath="editor/oryx.js" />
-      <zipfileset file="build/modeler-patches/plugins.xml"           fullpath="editor/plugins.xml" />
-      <zipfileset file="build/modeler-patches/plugins.xml"           fullpath="WEB-INF/xml/editor/plugins.xml" />
-    </war>
-    <!-- end of Activiti Cycle plugin integration -->
-  	
     <copy file="${downloads.dir}/activiti-modeler-${activiti.version}.war"
           tofile="${tomcat.home}/webapps/activiti-modeler.war"/>
   </target>
@@ -531,6 +497,90 @@ JAVA_OPTS="-Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=8787
           <include name="activiti-cycle-${activiti.version}.jar" />
         </fileset>
     </path>
+  </target>
+
+  <target name="internal.modeler.plugin.cycle.install">
+    <!-- This target adds the Activiti Cycle Plugin to a war file.
+         In theory it should work on any version of Signavio or Oryx,
+         although it has been tested only for the Activiti modeler.
+         The target depends on internal.download.activiti.modeler
+         to allow for running it standalone.
+         Hint: The property activiti.modeler.download.url used by the
+         download target can also be a URL in the local file system,
+         i.e., file://... -->
+    <antcall target="internal.download.activiti.modeler" /> <!-- Can't use depends for this, due to http://ant.apache.org/faq.html#stop-dependency-->
+    <mkdir dir="build/modeler/patched" />
+    <mkdir dir="build/modeler/extracted-from-war" />
+    <!-- extract files to be patched from the war -->
+    <unzip src="${downloads.dir}/activiti-modeler-${activiti.version}.war"
+           dest="build/modeler/extracted-from-war">
+      <patternset>
+        <include name="editor/oryx.debug.js" />
+        <include name="editor/oryx.js" />
+        <include name="editor/plugins.xml" />
+      </patternset>
+      <mapper type="flatten" />
+    </unzip>
+    <!-- check whether the war has already been patched -->
+    <loadfile srcFile="build/modeler/extracted-from-war/oryx.js"
+              property="activiti.modeler.editor.oryx.js" />
+    <condition property="activiti.modeler.war.contains.plugin.cycle">
+      <contains string="${activiti.modeler.editor.oryx.js}"
+                substring="ORYX.Plugins.ActivitiCycle" />
+    </condition>
+    <!-- restore backup if war has already been patched -->
+    <antcall target="internal.modeler.plugin.cycle.backup.restore" />
+    <!-- backup the original files in case the patch needs to be reapplied,
+         but only of the war has NOT already been patched -->
+    <antcall target="internal.modeler.plugin.cycle.backup.create" />
+    <!-- patch the files -->
+    <antcall target="internal.modeler.plugin.cycle.patch" />
+    <!-- update the war with the patched files -->
+    <war destfile="${downloads.dir}/activiti-modeler-${activiti.version}.war" update="true">
+      <zipfileset file="files/cfg.modeler/activiti_logo_16x16.png"   fullpath="editor/images/activiti_logo_16x16.png" />
+      <zipfileset file="build/modeler/patched/oryx.debug.js" fullpath="editor/oryx.debug.js" />
+      <zipfileset file="build/modeler/patched/oryx.js"       fullpath="editor/oryx.js" />
+      <zipfileset file="build/modeler/patched/plugins.xml"   fullpath="editor/plugins.xml" />
+      <zipfileset file="build/modeler/patched/plugins.xml"   fullpath="WEB-INF/xml/editor/plugins.xml" />
+    </war>
+  </target>
+
+  <target name="internal.modeler.plugin.cycle.backup.create" unless="activiti.modeler.war.contains.plugin.cycle">
+    <mkdir dir="build/modeler/backup" />
+    <copy file="build/modeler/extracted-from-war/oryx.debug.js" todir="build/modeler/backup" overwrite="true" />
+    <copy file="build/modeler/extracted-from-war/oryx.js"       todir="build/modeler/backup" overwrite="true" />
+    <copy file="build/modeler/extracted-from-war/plugins.xml"   todir="build/modeler/backup" overwrite="true" />
+  </target>
+
+  <target name="internal.modeler.plugin.cycle.backup.restore" if="activiti.modeler.war.contains.plugin.cycle">
+    <!-- If the backup does not exist, the build shall fail, as this indicates
+         that the newly downloaded war has been patched. -->
+    <copy file="build/modeler/backup/oryx.debug.js" todir="build/modeler/extracted-from-war" overwrite="true" />
+    <copy file="build/modeler/backup/oryx.js"       todir="build/modeler/extracted-from-war" overwrite="true" />
+    <copy file="build/modeler/backup/plugins.xml"   todir="build/modeler/extracted-from-war" overwrite="true" />
+  </target>
+
+  <target name="internal.modeler.plugin.cycle.patch">
+    <!-- add plugin code -->
+    <concat destfile="build/modeler/patched/oryx.debug.js">
+      <fileset file="build/modeler/extracted-from-war/oryx.debug.js" />
+      <fileset file="files/cfg.modeler/ActivitiCycle.js" />
+    </concat>
+    <concat destfile="build/modeler/patched/oryx.js">
+      <fileset file="build/modeler/extracted-from-war/oryx.js" />
+      <fileset file="files/cfg.modeler/ActivitiCycle.js" />
+    </concat>
+    <!-- register plugin -->
+    <copy file="build/modeler/extracted-from-war/plugins.xml"
+          tofile="build/modeler/patched/plugins.xml" overwrite="true" />
+    <replace file="build/modeler/patched/plugins.xml">
+      <replacetoken><![CDATA[</plugins>]]></replacetoken>
+    <replacevalue><![CDATA[
+		<plugin source="ActivitiCycle.js" name="ORYX.Plugins.ActivitiCycle" />
+
+	</plugins>]]></replacevalue>
+    </replace>
+    <fixcrlf file="build/modeler/patched/plugins.xml" eol="dos" />
   </target>
 
   <target name="open.html.page">
