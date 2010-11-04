@@ -24,6 +24,16 @@
 				</includes>
 			</resource>
 		</resources>
+    <plugins>
+      <plugin>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <configuration>
+          <excludes>
+            <exclude>**/WebServiceTaskTest.java</exclude> <!-- ACT-315 -->
+          </excludes>
+        </configuration>
+      </plugin>
+    </plugins>
 	</build>	
 
 	<dependencies>

@@ -59,6 +59,34 @@
 	
   <property name="maven.path" value="apps/apache-maven-${maven.version}/bin/${mvn.executable}" />
 
+	
+  <target name="build.cfg"
+          description="creates a build/activiti-cfg/activiti.cfg.xml and build/activiti-cfg.jar as specified by the build.properties">
+    <mkdir dir="${activiti.home}/setup/build/activiti-cfg" />
+    <copy todir="${activiti.home}/setup/build/activiti-cfg" overwrite="true">
+      <filterset filtersfile="build.${db}.properties" />
+      <fileset dir="files/cfg.activiti/${tx}" />
+    </copy>
+    <jar destfile="${activiti.home}/setup/build/activiti-cfg.jar">
+      <fileset dir="${activiti.home}/setup/build/activiti-cfg" />
+    </jar>
+  </target>
+
+  <target name="build.examples">
+    <mkdir dir="${activiti.home}/examples/activiti-engine-examples/libs-runtime" />
+  	<copy todir="${activiti.home}/examples/activiti-engine-examples/libs-runtime">
+  		<fileset dir="files/dependencies" >
+  			<include name="mybatis-*.jar"/>
+  	  </fileset>
+  		<condition property="groovylibs" value="" />
+  		groovy
+  		jpa
+  		scripting --> livetribe
+  	</copy>
+  </target>
+
+
+	
   <target name="demo.setup" depends="examples.get.libs.all,
   	                                 db.get.libs,
   	                                 h2.install, 
