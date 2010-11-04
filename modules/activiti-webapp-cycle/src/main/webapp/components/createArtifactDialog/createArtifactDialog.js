@@ -12,17 +12,17 @@
 	/**
 	 * CreateArtifactDialog constructor.
 	 *
-	 * @param {String} htmlId The HTML id of the parent element
+	 * @param htmlId {String} The HTML id of the parent element
+	 * @param connectorId {String} The id of the connector the artifact should be created in
+	 * @param containingFolderId The id of the folder the artifact should be created in
 	 * @return {Activiti.component.CreateArtifactDialog} The new component.CreateArtifactDialog instance
 	 * @constructor
 	 */
-	Activiti.component.CreateArtifactDialog = function CreateArtifactDialog_constructor(htmlId, connectorId, containingFolderId, callbackFn)
+	Activiti.component.CreateArtifactDialog = function CreateArtifactDialog_constructor(htmlId, connectorId, containingFolderId)
   {
     Activiti.component.CreateArtifactDialog.superclass.constructor.call(this, "Activiti.component.CreateArtifactDialog", htmlId);
 
     this._dialog = {};
-		this._callbackFn = callbackFn;
-		
 		this._connectorId = connectorId;
 		this._containingFolderId = containingFolderId;
 

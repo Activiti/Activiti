@@ -118,7 +118,7 @@
      */
     onCreateArtifactContextMenuClick: function RepoTree_onCreateArtifactContextMenuClick(eventName, params, node)
     {
-      return new Activiti.component.CreateArtifactDialog(this.id, node.data.connectorId, node.data.artifactId, function() {alert("hello");});
+      return new Activiti.component.CreateArtifactDialog(this.id, node.data.connectorId, node.data.artifactId);
     },
 
     /**
