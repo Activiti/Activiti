@@ -131,7 +131,7 @@ public class SignavioSvgApiBuilder {
       }
   
       // register mouseover event on callback function
-      svgApiCall.append(", callback: " + registerMouseOverEvent());
+//      svgApiCall.append(", callback: " + registerMouseOverEvent());
   
       // executed when click on a shape
       svgApiCall.append(", click: " + createClickFunction());
@@ -218,10 +218,21 @@ public class SignavioSvgApiBuilder {
       clickFunc.append(clickFunction);
     } else {
       // create default click function
-      //clickFunc.append("var errorMessages = " + createJsonMessagesObject() + ";");
-      clickFunc.append("if(node.properties[\"oryx-name\"] || node.properties[\"oryx-title\"] || node.resourceId) {");
-      clickFunc.append("alert(\"Name: \" + node.properties[\"oryx-name\"] + \" (Sid: \" + node.resourceId + \")\");");
+      clickFunc.append("var errorMessages = " + createJsonMessagesObject() + ";");
+      clickFunc.append("var myNodeMessages = errorMessages[node.resourceId];");
+      clickFunc.append("if (myNodeMessages != '' || myNodeMessages != 'undefined' || myNodeMessages != undefined) {");
+      clickFunc.append("var myNodeMessagesStr = \"\";");
+      clickFunc.append("for (msg in myNodeMessages) {");
+      clickFunc.append("myNodeMessagesStr += myNodeMessages[msg] + \"\\n\";");
       clickFunc.append("}");
+      clickFunc.append("alert(\"Sid: \" + node.resourceId + \"\\nErrorMessages: \" + myNodeMessagesStr);");
+      clickFunc.append("}");
+
+      
+      //clickFunc.append("var errorMessages = " + createJsonMessagesObject() + ";");
+//      clickFunc.append("if(node.properties[\"oryx-name\"] || node.properties[\"oryx-title\"] || node.resourceId) {");
+//      clickFunc.append("alert(\"Name: \" + node.properties[\"oryx-name\"] + \" (Sid: \" + node.resourceId + \")\");");
+//      clickFunc.append("}");
     }
     clickFunc.append("}");
 
