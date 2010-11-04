@@ -162,16 +162,16 @@ public class SignavioSvgApiBuilder {
     callbackFunc.append("editor.registerOnEvent(\"mouseover\", function(evt, node) {");
     callbackFunc.append("var errorMessages = " + createJsonMessagesObject() + ";");
     callbackFunc.append("var myNodeMessages = errorMessages[node.resourceId];");
-    callbackFunc.append("if (myNodeMessages != undefined) {");
+    callbackFunc.append("if (myNodeMessages != '' || myNodeMessages != 'undefined' || myNodeMessages != undefined) {");
     callbackFunc.append("var myNodeMessagesStr = \"\";");
     callbackFunc.append("for (msg in myNodeMessages) {");
     callbackFunc.append("myNodeMessagesStr += myNodeMessages[msg] + \"\\n\";");
     callbackFunc.append("}");
     callbackFunc.append("}");
     // @TODO: doesn't work atm, unable to get variable 'me'
-    callbackFunc.append("if (node instanceof me.ORYX.Core.Shape) {");
-    callbackFunc.append("alert(\"Sid: \" + node.resourceId + \"\nMessages: \" + myNodeMessagesStr);");
-    callbackFunc.append("}");
+//    callbackFunc.append("if (node instanceof me.ORYX.Core.Shape) {");
+    callbackFunc.append("alert(\"Sid: \" + node.resourceId + \"\\nMessages: \" + myNodeMessagesStr);");
+//    callbackFunc.append("}");
     callbackFunc.append("});");
 
     callbackFunc.append("}");
@@ -219,7 +219,7 @@ public class SignavioSvgApiBuilder {
     } else {
       // create default click function
       //clickFunc.append("var errorMessages = " + createJsonMessagesObject() + ";");
-      clickFunc.append("if(node.properties[\"oryx-name\"] || node.properties[\"oryx-title\"]) {");
+      clickFunc.append("if(node.properties[\"oryx-name\"] || node.properties[\"oryx-title\"] || node.resourceId) {");
       clickFunc.append("alert(\"Name: \" + node.properties[\"oryx-name\"] + \" (Sid: \" + node.resourceId + \")\");");
       clickFunc.append("}");
     }
