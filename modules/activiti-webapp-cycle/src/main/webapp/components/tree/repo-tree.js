@@ -47,11 +47,12 @@
     },
     
     /**
-     * Will display the tree
+     * Success callback of the RepositoryService method loadTree. This method is invoked when the asynchronous request to load the tree
+     * returns, it takes the JSON response and creates a YUI TreeView instance with a dynamic load function, specific context menus for
+     * the different nodes and a click event listener to fire an event for other components to listen to.
      *
      * @method onLoadTreeSuccess
      * @param response {object} The callback response
-     * @param obj {object} Helper object
      */
     onLoadTreeSuccess: function RepoTree_RepositoryService_onLoadTreeSuccess(response)
     {
@@ -106,8 +107,14 @@
     },
 
     /**
+     * This method is invoked when the "Create artifact here..." context menu item is clicked. It returns a new dialog component to
+     * provide details for the new artifact.
      *
-     *
+     * @method onCreateArtifactContextMenuClick
+     * @param eventName {string} the name of the event that lead to the invokation of this method
+     * @param params {Array} array of parameters that contains the event that lead to the invokation of this method
+     * @param node the tree node that the context menu was invoked on
+     * @return {Activiti.component.CreateArtifactDialog} dialog to provide details for the new artifact
      */
     onCreateArtifactContextMenuClick: function RepoTree_onCreateArtifactContextMenuClick(eventName, params, node)
     {
@@ -115,8 +122,13 @@
     },
 
     /**
+     * Success callback of the RepositoryService method loadNodeData. This method gets invoked when the asynchronous request returns. It creates a
+     * new TextNode instacne based on the JSON in the response and inserts it into the tree. It also determines the file type and sets the style 
+     * attribute of the node accordingly.
      * 
-     * 
+     * @method onLoadNodeDataSuccess
+     * @param response the response object that contains the JSON response string
+     * @param obj an array of objects that contains the containing node at index 0 and the loadComplete callback of the treeView component at index 1
      */
     onLoadNodeDataSuccess: function RepoTree_RepositoryService_onLoadNodeDataSuccess(response, obj)
     {
@@ -168,7 +180,7 @@
     //     },
 
     /**
-     * Will fire a Activiti.event.selectTreeLabel event so other components may display the node
+     * Will fire an Activiti.event.selectTreeLabel event so other components may display the node
      *
      * @method onLabelClick
      * @param e {object} The click event
@@ -200,6 +212,13 @@
     // 
     //    },
 
+    /**
+     * Event listener for "Activiti.event.updateArtifactView" event, sets the focus to the currently active node in the tree.
+     *
+     * @method onUpdateArtifactView
+     * @param event {Object} the event that triggered the invokation of this method
+     * @param args {array} an array of arguments containing the object literal of the event at index 1
+     */
     onUpdateArtifactView: function Artifact_onUpdateArtifactView(event, args)
     {
       if(!this._treeView._nodes) {
