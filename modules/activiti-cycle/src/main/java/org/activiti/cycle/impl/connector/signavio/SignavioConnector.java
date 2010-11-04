@@ -502,7 +502,8 @@ public class SignavioConnector extends AbstractRepositoryConnector<SignavioConne
       // this ID ourself.
       // But anyway, then we don't know the id and cannot load the artifact down
       // to return it correctly, so we generate one ourself
-      String id = UUID.randomUUID().toString();
+      // Christian: We need to remove the hypen in the generated uuid, otherwise signavio is unable to create a model
+      String id = UUID.randomUUID().toString().replace("-", "");
       modelForm.add("id", id);
       
       // modelForm.add("views", new JSONArray().toString());
