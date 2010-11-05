@@ -146,7 +146,7 @@
 			<dependency>
         <groupId>org.springframework</groupId>
         <artifactId>spring-test</artifactId>
-        <version>${spring.framework.version}E</version>
+        <version>${spring.framework.version}</version>
       </dependency>
 			<dependency>
 				<groupId>org.mybatis</groupId>
