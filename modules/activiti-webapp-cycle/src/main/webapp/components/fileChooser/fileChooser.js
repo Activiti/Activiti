@@ -183,7 +183,7 @@
         // clear the current node and disable 'select' button
         this._currentNode = {};
         this._dialog.getButtons()[0].set("disabled", true);
-      } else {
+      } else if( (args.node.data.file && this._highlightFiles) || (args.node.data.folder && this._highlightFolders) ) {
         // set current node and enable 'select' button
         this._currentNode = args.node;
         this._dialog.getButtons()[0].set("disabled", false);
