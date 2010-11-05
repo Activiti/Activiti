@@ -235,4 +235,9 @@
         class="org.activiti.rest.api.cycle.ArtifactPost"
         parent="activitiWebScript">
   </bean>
+  
+  <bean id="webscript.org.activiti.rest.api.cycle.folder.post"
+        class="org.activiti.rest.api.cycle.FolderPost"
+        parent="activitiWebScript">
+  </bean>
 </beans>

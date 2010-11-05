@@ -108,7 +108,7 @@ public class FileSystemConnector extends AbstractRepositoryConnector<FileSystemC
     if (!newSubFolder.mkdir()) {
       throw new RepositoryException("Unable to create subfolder '" + name + "' in parentfolder '" + parentFolderId + "'");
     }
-    
+
     return getRepositoryFolder(getRepositoryNodeId(parentFolderId, name));
   }
 
@@ -212,9 +212,9 @@ public class FileSystemConnector extends AbstractRepositoryConnector<FileSystemC
     return folder;
   }
 
-  public RepositoryArtifact createArtifact(String containingFolderId, String artifactName, String artifactType, Content artifactContent)
+  public RepositoryArtifact createArtifact(String parentFolderId, String artifactName, String artifactType, Content artifactContent)
           throws RepositoryNodeNotFoundException {
-    File newFile = new File(getFileFromId(containingFolderId), artifactName);
+    File newFile = new File(getFileFromId(parentFolderId), artifactName);
     BufferedOutputStream bos = null;
 
     try {
@@ -223,23 +223,23 @@ public class FileSystemConnector extends AbstractRepositoryConnector<FileSystemC
         bos.write(artifactContent.asByteArray());
       }
     } catch (IOException ioe) {
-      throw new RepositoryException("Unable to create file '" + artifactName + " in folder " + containingFolderId, ioe);
+      throw new RepositoryException("Unable to create file '" + artifactName + " in folder " + parentFolderId, ioe);
     } finally {
       if (bos != null) {
         try {
           bos.close();
         } catch (IOException e) {
-          throw new RepositoryException("Unable to create file " + artifactName + " in folder " + containingFolderId, e);
+          throw new RepositoryException("Unable to create file " + artifactName + " in folder " + parentFolderId, e);
         }
       }
     }
     
-    return getRepositoryArtifact(getRepositoryNodeId(containingFolderId, artifactName));
+    return getRepositoryArtifact(getRepositoryNodeId(parentFolderId, artifactName));
   }
 
-  public RepositoryArtifact createArtifactFromContentRepresentation(String containingFolderId, String artifactName, String artifactType,
+  public RepositoryArtifact createArtifactFromContentRepresentation(String parentFolderId, String artifactName, String artifactType,
           String contentRepresentationName, Content artifactContent) throws RepositoryNodeNotFoundException {
-    return createArtifact(containingFolderId, artifactName, artifactType, artifactContent);
+    return createArtifact(parentFolderId, artifactName, artifactType, artifactContent);
   }
 
   public void updateContent(String artifactId, Content content) throws RepositoryNodeNotFoundException {

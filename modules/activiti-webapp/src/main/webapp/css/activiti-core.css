@@ -370,6 +370,10 @@ li.filter, li.table {
   border: none;
 }
 
+.yui-skin-sam .yui-panel .bd {
+  padding: 20px 50px 10px 10px;
+}
+
 #Activiti .yui-panel .hd
 {
   display: none;

@@ -71,10 +71,10 @@ public interface CycleService {
    * 
    * @param artifactId
    */
-  public RepositoryArtifact createArtifact(String connectorId, String containingFolderId, String artifactName, String artifactType, Content artifactContent)
+  public RepositoryArtifact createArtifact(String connectorId, String parentFolderId, String artifactName, String artifactType, Content artifactContent)
           throws RepositoryNodeNotFoundException;
 
-  public RepositoryArtifact createArtifactFromContentRepresentation(String connectorId, String containingFolderId, String artifactName, String artifactType,
+  public RepositoryArtifact createArtifactFromContentRepresentation(String connectorId, String parentFolderId, String artifactName, String artifactType,
           String contentRepresentationId, Content artifactContent) throws RepositoryNodeNotFoundException;
 
   /**

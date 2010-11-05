@@ -442,20 +442,20 @@ public class SignavioConnector extends AbstractRepositoryConnector<SignavioConne
     }
   }
 
-  public RepositoryArtifact createArtifact(String containingFolderId, String artifactName, String artifactType, Content artifactContent)
+  public RepositoryArtifact createArtifact(String parentFolderId, String artifactName, String artifactType, Content artifactContent)
           throws RepositoryNodeNotFoundException {
     // TODO: Add handling of different artifact types!
-    return createArtifactFromJSON(containingFolderId, artifactName, artifactType, artifactContent.asString());
+    return createArtifactFromJSON(parentFolderId, artifactName, artifactType, artifactContent.asString());
   }
 
-  public RepositoryArtifact createArtifactFromContentRepresentation(String containingFolderId, String artifactName, String artifactType,
+  public RepositoryArtifact createArtifactFromContentRepresentation(String parentFolderId, String artifactName, String artifactType,
           String contentRepresentationName, Content artifactContent) throws RepositoryNodeNotFoundException {
     // TODO: Add handling of different content representations, e.g. BPMN 2.0
     // Import
-    return createArtifactFromJSON(containingFolderId, artifactName, artifactType, artifactContent.asString());
+    return createArtifactFromJSON(parentFolderId, artifactName, artifactType, artifactContent.asString());
   }
 
-  public RepositoryArtifact createArtifactFromJSON(String containingFolderId, String artifactName, String artifactType, String jsonContent)
+  public RepositoryArtifact createArtifactFromJSON(String parentFolderId, String artifactName, String artifactType, String jsonContent)
           throws RepositoryNodeNotFoundException {
 
     // TODO: Add check if model already exists (overwrite or throw exception?)
@@ -489,7 +489,7 @@ public class SignavioConnector extends AbstractRepositoryConnector<SignavioConne
       // Important: Don't set the type attribute here, otherwise it will not
       // work!
 
-      modelForm.add("parent", "/" + getConfiguration().DIRECTORY_URL_SUFFIX + containingFolderId);
+      modelForm.add("parent", "/" + getConfiguration().DIRECTORY_URL_SUFFIX + parentFolderId);
       // we have to provide a SVG (even if don't have the correct one) because
       // otherwise Signavio throws an exception in its GUI
       modelForm
@@ -516,7 +516,7 @@ public class SignavioConnector extends AbstractRepositoryConnector<SignavioConne
       // TODO: return the object
       return getRepositoryArtifact(id);
     } catch (Exception je) {
-      throw new RepositoryException("Unable to create model '" + artifactName + "' in parent folder '" + containingFolderId + "'", je);
+      throw new RepositoryException("Unable to create model '" + artifactName + "' in parent folder '" + parentFolderId + "'", je);
     }
   }
 

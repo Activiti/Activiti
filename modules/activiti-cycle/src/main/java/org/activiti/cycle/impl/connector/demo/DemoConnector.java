@@ -230,16 +230,16 @@ public class DemoConnector extends AbstractRepositoryConnector<DemoConnectorConf
   public void commitPendingChanges(String comment) {
   }
 
-  public RepositoryArtifact createArtifact(String containingFolderId, String artifactName, String artifactType, Content artifactContent)
+  public RepositoryArtifact createArtifact(String parentFolderId, String artifactName, String artifactType, Content artifactContent)
           throws RepositoryNodeNotFoundException {
-    return createArtifactFromContentRepresentation(containingFolderId, artifactName, artifactType, getArtifactType(artifactType)
+    return createArtifactFromContentRepresentation(parentFolderId, artifactName, artifactType, getArtifactType(artifactType)
             .getDefaultContentRepresentation().getId(),
             artifactContent);
   }
 
-  public RepositoryArtifact createArtifactFromContentRepresentation(String containingFolderId, String artifactName, String artifactType,
+  public RepositoryArtifact createArtifactFromContentRepresentation(String parentFolderId, String artifactName, String artifactType,
           String contentRepresentationName, Content artifactContent) throws RepositoryNodeNotFoundException {
-    String id = containingFolderId;
+    String id = parentFolderId;
     if (!id.startsWith("/")) {
       id = "/" + id;
     }
@@ -251,7 +251,7 @@ public class DemoConnector extends AbstractRepositoryConnector<DemoConnectorConf
     
     RepositoryArtifact newArtifact = new RepositoryArtifactImpl(getConfiguration().getId(), id, getArtifactType(artifactType), this);
     newArtifact.getMetadata().setName(artifactName);
-    newArtifact.getMetadata().setParentFolderId(containingFolderId);
+    newArtifact.getMetadata().setParentFolderId(parentFolderId);
     nodes.add(newArtifact);
 
     addContentToInternalMap(id, contentRepresentationName, artifactContent.asByteArray());

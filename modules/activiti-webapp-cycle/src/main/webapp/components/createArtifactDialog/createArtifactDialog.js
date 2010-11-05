@@ -14,17 +14,17 @@
 	 *
 	 * @param htmlId {String} The HTML id of the parent element
 	 * @param connectorId {String} The id of the connector the artifact should be created in
-	 * @param containingFolderId The id of the folder the artifact should be created in
+	 * @param parentFolderId The id of the folder the artifact should be created in
 	 * @return {Activiti.component.CreateArtifactDialog} The new component.CreateArtifactDialog instance
 	 * @constructor
 	 */
-	Activiti.component.CreateArtifactDialog = function CreateArtifactDialog_constructor(htmlId, connectorId, containingFolderId)
+	Activiti.component.CreateArtifactDialog = function CreateArtifactDialog_constructor(htmlId, connectorId, parentFolderId)
   {
     Activiti.component.CreateArtifactDialog.superclass.constructor.call(this, "Activiti.component.CreateArtifactDialog", htmlId);
 
     this._dialog = {};
 		this._connectorId = connectorId;
-		this._containingFolderId = containingFolderId;
+		this._parentFolderId = parentFolderId;
 
     return this;
   };
@@ -46,7 +46,7 @@
 
 	    // TODO: switch to rest proxy URL (Activiti.service.REST_PROXY_URI_RELATIVE), when using this URL at the moment, it seems to be redirecting to the GET URL... Find out what goes wrong here.
 
-      content.innerHTML = '<div class="bd"><form id="' + this.id + '-artifact-upload-form" action="http://localhost:8080/activiti-rest/service/artifact" method="POST" enctype="multipart/form-data" accept-charset="utf-8"><h1>Create new artifact</h1><table><tr><td><label>Name:<br/><input type="text" name="artifactName" value="" /></label><br/></td></tr><tr><td><label>Upload a file:<br/><input type="file" name="file" value="" /></label><br/></td></tr></table><input type="hidden" name="connectorId" value="' + this._connectorId + '" /><input type="hidden" name="containingFolderId" value="' + this._containingFolderId + '" /></form></div>';
+      content.innerHTML = '<div class="bd"><form id="' + this.id + '-artifact-upload-form" action="http://localhost:8080/activiti-rest/service/artifact" method="POST" enctype="multipart/form-data" accept-charset="utf-8"><h1>Create new artifact</h1><table><tr><td><label>Name:<br/><input type="text" name="artifactName" value="" /></label><br/></td></tr><tr><td><label>Upload a file:<br/><input type="file" name="file" value="" /></label><br/></td></tr></table><input type="hidden" name="connectorId" value="' + this._connectorId + '" /><input type="hidden" name="parentFolderId" value="' + this._parentFolderId + '" /></form></div>';
 
       this._dialog = new YAHOO.widget.Dialog(content, {
         fixedcenter: true,
@@ -92,16 +92,13 @@
     onUpload: function CreateArtifactDialog_onUplaod(o) {
       // TODO: fire an event for e.g. the tree to reload it's nodes etc.
       // TODO: i18n
-      var message;
       if(o.responseText.indexOf("success: true") != -1) {
-        message = "Successfully created artifact";
+        Activiti.widget.PopupManager.displayMessage({
+          text: "Successfully created artifact"
+        });
       } else {
-        message = "Unable to create artifact";
+        Activiti.widget.PopupManager.displayError("Error creating artifact", "Unable to create artifact");
       }
-
-      Activiti.widget.PopupManager.displayMessage({
-        text: message
-      });
     }
 
 	});

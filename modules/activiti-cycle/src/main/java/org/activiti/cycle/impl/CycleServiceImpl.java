@@ -190,14 +190,14 @@ public class CycleServiceImpl implements CycleService {
     return repositoryFolder;
   }
 
-  public RepositoryArtifact createArtifact(String connectorId, String containingFolderId, String artifactName, String artifactType, Content artifactContent)
+  public RepositoryArtifact createArtifact(String connectorId, String parentFolderId, String artifactName, String artifactType, Content artifactContent)
           throws RepositoryNodeNotFoundException {
-    return getRepositoryConnector(connectorId).createArtifact(containingFolderId, artifactName, artifactType, artifactContent);
+    return getRepositoryConnector(connectorId).createArtifact(parentFolderId, artifactName, artifactType, artifactContent);
   }
 
-  public RepositoryArtifact createArtifactFromContentRepresentation(String connectorId, String containingFolderId, String artifactName, String artifactType,
+  public RepositoryArtifact createArtifactFromContentRepresentation(String connectorId, String parentFolderId, String artifactName, String artifactType,
           String contentRepresentationName, Content artifactContent) throws RepositoryNodeNotFoundException {
-    return getRepositoryConnector(connectorId).createArtifactFromContentRepresentation(containingFolderId, artifactName, artifactType,
+    return getRepositoryConnector(connectorId).createArtifactFromContentRepresentation(parentFolderId, artifactName, artifactType,
             contentRepresentationName, artifactContent);
   }
 

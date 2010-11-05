@@ -147,6 +147,28 @@
      */
     createArtifactLinkURL: function RepositoryService_createArtifactLinkURL() {
       return Activiti.service.REST_PROXY_URI_RELATIVE + "artifact-link";
+    },
+    
+    /**
+     * Creates a new folder by posting the provided object literal parameter to the
+     * REST API. The 'folderLiteral' is an object literal that should contain the following
+     * values: "connectorId", "parentFolderId", "name"
+     *
+     * @method createFolder
+     * @param folderLiteral object literal with the values of the folder to be created
+     */
+    createFolder: function RepositoryService_createFolder(folderLiteral) {
+      this.jsonPost(this.createFolderURL(), folderLiteral, null, "createFolder");
+    },
+
+    /**
+     * Creates the POST url to use when creating a folder
+     *
+     * @method createFolderURL
+     * @return {string} The url
+     */
+    createFolderURL: function RepositoryService_createFolderURL() {
+      return Activiti.service.REST_PROXY_URI_RELATIVE + "folder";
     }
 
   });
@@ -201,5 +223,112 @@
     }
 
   });
+
+})();
+
+(function()
+{
+	/**
+	 * Shortcuts
+	 */
+	var Dom = YAHOO.util.Dom,
+			Selector = YAHOO.util.Selector,
+			Event = YAHOO.util.Event,
+			Pagination = Activiti.util.Pagination,
+			$html = Activiti.util.decodeHTML;
+			
+	/**
+	 * CreateFolderDialog constructor.
+	 *
+	 * @param htmlId {String} The HTML id of the parent element
+	 * @param connectorId {String} The id of the connector the artifact should be created in
+	 * @param parentFolderId The id of the folder the artifact should be created in
+	 * @return {Activiti.component.CreateArtifactDialog} The new component.CreateFolderDialog instance
+	 * @constructor
+	 */
+	Activiti.component.CreateFolderDialog = function CreateFolderDialog_constructor(htmlId, connectorId, parentFolderId)
+  {
+    Activiti.component.CreateFolderDialog.superclass.constructor.call(this, "Activiti.component.CreateFolderDialog", htmlId);
+
+    this.service = new Activiti.service.RepositoryService(this);
+
+    this._dialog = {};
+		this._connectorId = connectorId;
+		this._parentFolderId = parentFolderId;
+
+    return this;
+  };
+
+  YAHOO.extend(Activiti.component.CreateFolderDialog, Activiti.component.Base,
+  {
+	
+		/**
+		* Fired by YUI when parent element is available for scripting.
+		* Template initialisation, including instantiation of YUI widgets and event listener binding.
+		*
+		* @method onReady
+		*/
+		onReady: function CreateFolderDialog_onReady()
+		{
+		  var content = document.createElement("div");
+
+	    // TODO: i18n
+
+	    // TODO: switch to rest proxy URL (Activiti.service.REST_PROXY_URI_RELATIVE), when using this URL at the moment, it seems to be redirecting to the GET URL... Find out what goes wrong here.
+
+      content.innerHTML = '<div class="bd"><form id="' + this.id + '-artifact-upload-form" action="http://localhost:8080/activiti-rest/service/folder" method="POST" enctype="multipart/form-data" accept-charset="utf-8"><h1>Create new folder</h1><table><tr><td><label>Name:<br/><input type="text" name="name" value="" /></label><br/></td></tr></table><input type="hidden" name="connectorId" value="' + this._connectorId + '" /><input type="hidden" name="parentFolderId" value="' + this._parentFolderId + '" /></form></div>';
+
+      this._dialog = new YAHOO.widget.Dialog(content, {
+        fixedcenter: true,
+        visible: false,
+        constraintoviewport: true,
+        modal: true,
+        buttons: [
+          // TODO: i18n
+          { text: "Create" , handler: { fn: this.onSubmit, scope: this }, isDefault:true },
+          { text: "Cancel", handler: { fn: this.onCancel, scope: this } }
+        ]
+      });
+
+      this._dialog.callback.success = this.onSuccess;
+      this._dialog.callback.failure = this.onFailure;
+
+		  this._dialog.render(document.body);
+
+      // TODO: validation
+
+      // this._dialog.getButtons()[0].set("disabled", true);
+		  this._dialog.show();
+		},
+
+    onSubmit: function CreateFolderDialog_onSubmit(event, dialog) {
+      this.service.createFolder(dialog.getData());
+      if (this._dialog) {
+        this._dialog.destroy();
+      }
+    },
+
+    onCancel: function CreateFolderDialog_onCancel() {
+      this._dialog.cancel();
+    },
+
+    onSuccess: function CreateFolderDialog_onSuccess(o) {
+      // TODO: fire an event for e.g. the tree to reload it's nodes etc.
+      // TODO: i18n
+      if(o.json.success) {
+        Activiti.widget.PopupManager.displayMessage({
+          text: "Successfully created artifact"
+        });
+      } else {
+        Activiti.widget.PopupManager.displayError("Error creating artifact", "Unable to create artifact");
+      }
+    },
+
+    onFailure: function CreateFolderDialog_onFailure(o) {
+      // TODO: i18n
+      Activiti.widget.PopupManager.displayError("Connection Error", "Unable to create folder. Check your internet connection and make sure the Activiti server can be reached.");
+    }
+
+	});
 
 })();

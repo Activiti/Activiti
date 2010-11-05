@@ -15,40 +15,31 @@ package org.activiti.rest.api.cycle;
 
 import java.util.Map;
 
-import org.activiti.cycle.Content;
 import org.activiti.cycle.CycleService;
-import org.activiti.cycle.RepositoryArtifact;
+import org.activiti.cycle.RepositoryFolder;
 import org.activiti.rest.util.ActivitiRequest;
 import org.activiti.rest.util.ActivitiRequestObject;
 import org.springframework.extensions.webscripts.Cache;
 import org.springframework.extensions.webscripts.Status;
-import org.springframework.extensions.webscripts.servlet.WebScriptServletRequest;
-import org.springframework.extensions.webscripts.servlet.FormData.FormField;
 
 /**
- * Creates a new {@link RepositoryArtifact} through the {@link CycleService}
+ * Creates a new {@link RepositoryFolder} instance and persists it using the
+ * {@link CycleService}.
  * 
  * @author Nils Preusker (nils.preusker@camunda.com)
  */
-public class ArtifactPost extends ActivitiCycleWebScript {
+public class FolderPost extends ActivitiCycleWebScript {
 
   @Override
-  protected void execute(ActivitiRequest req, Status status, Cache cache, Map<String, Object> model) {
-    FormField file = ((WebScriptServletRequest) req.getWebScriptRequest()).getFileField("file");
-
+  void execute(ActivitiRequest req, Status status, Cache cache, Map<String, Object> model) {
     ActivitiRequestObject obj = req.getBody();
 
     String connectorId = req.getMandatoryString(obj, "connectorId");
     String parentFolderId = req.getMandatoryString(obj, "parentFolderId");
-    String artifactName = req.getMandatoryString(obj, "artifactName");
-    // TODO: what are the possible types and where can I get them/ how can I
-    // visualize them in the UI?
-    String artifactType = "";
+    String name = req.getMandatoryString(obj, "name");
 
-    Content artifactContent = new Content();
-    artifactContent.setValue(file.getInputStream());
     try {
-      this.cycleService.createArtifact(connectorId, parentFolderId, artifactName, artifactType, artifactContent);
+      this.cycleService.createFolder(connectorId, parentFolderId, name);
       model.put("result", true);
     } catch (Exception e) {
       model.put("result", false);

@@ -97,7 +97,8 @@
           if(node.data.file) {
             // this.addItems([]);
           } else if(node.data.folder) {
-            this.addItem({ text: "Create artifact here...", value: {connectorId: node.data.connectorId, artifactId: node.data.artifactId}, onclick: { fn: me.onCreateArtifactContextMenuClick, obj: node, scope: me } });
+            this.addItem({ text: "New artifact...", value: {connectorId: node.data.connectorId, artifactId: node.data.artifactId}, onclick: { fn: me.onCreateArtifactContextMenuClick, obj: node, scope: me } });
+            this.addItem({ text: "New folder...", value: {connectorId: node.data.connectorId, artifactId: node.data.artifactId}, onclick: { fn: me.onCreateFolderContextMenuClick, obj: node, scope: me } });
           }
           this.render();
         });
@@ -119,6 +120,21 @@
     onCreateArtifactContextMenuClick: function RepoTree_onCreateArtifactContextMenuClick(eventName, params, node)
     {
       return new Activiti.component.CreateArtifactDialog(this.id, node.data.connectorId, node.data.artifactId);
+    },
+
+    /**
+     * This method is invoked when the "Create folder here..." context menu item is clicked. It returns a new dialog component to
+     * provide details for the new folder.
+     *
+     * @method onCreateArtifactContextMenuClick
+     * @param eventName {string} the name of the event that lead to the invokation of this method
+     * @param params {Array} array of parameters that contains the event that lead to the invokation of this method
+     * @param node the tree node that the context menu was invoked on
+     * @return {Activiti.component.CreateFolderDialog} dialog to provide details for the new folder
+     */
+    onCreateFolderContextMenuClick: function RepoTree_onCreateFolderContextMenuClick(eventName, params, node)
+    {
+      return new Activiti.component.CreateFolderDialog(this.id, node.data.connectorId, node.data.artifactId);
     },
 
     /**
