@@ -70,6 +70,11 @@
 				<artifactId>servlet-api</artifactId>
 				<version>2.5</version>
 			</dependency>
+      <dependency>
+        <groupId>javax.mail</groupId>
+        <artifactId>mail</artifactId>
+        <version>1.4.1</version>
+      </dependency>
 			<dependency>
 				<groupId>junit</groupId>
 				<artifactId>junit</artifactId>
@@ -206,6 +211,11 @@
 		  <artifactId>commons-logging</artifactId>
 		  <version>1.1.1</version>
 		</dependency>
+    <dependency>
+      <groupId>commons-codec</groupId>
+      <artifactId>commons-codec</artifactId>
+      <version>1.4</version>
+    </dependency>
 		<!-- required for Activiti Cycle file system connector -->
 		<dependency>
 			<groupId>com.thoughtworks.xstream</groupId>

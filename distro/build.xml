@@ -12,8 +12,17 @@
      <os family="windows"/>
   </condition>
 
+  <condition property="ls.executable" value="dir" else="ls">
+     <os family="windows"/>
+  </condition>
+
+	<condition property="ls.executable.options" value="/B" else="">
+     <os family="windows"/>
+  </condition>
+
+
   <target name="clean">
-  	<delete dir="target" />
+    <delete dir="target" />
   </target>
 
   <target name="distro" depends="build.modules, build.userguide, build.javadocs">
@@ -77,13 +86,55 @@
       </fileset>
     </copy>
   	
-    <mkdir dir="${target.distro.root}/lib/dependencies/engine/runtime" />
     <exec executable="${mvn.executable}" dir="../modules/activiti-engine">
-      <arg line="dependency:copy-dependencies -DoutputDirectory=../../distro/${target.distro.root}/setup/files/dependencies/engine/runtime"/>
+      <arg line="dependency:copy-dependencies -DoutputDirectory=../../distro/${target.distro.root}/setup/files/libs/engine/runtime"/>
     </exec>
-    <mkdir dir="${target.distro.root}/setup/files/dependencies/engine/runtime/feature-openjpa" />
-  	<move todir="${target.distro.root}/setup/files/dependencies/engine/runtime/feature-openjpa">
-  		<fileset dir="${target.distro.root}/setup/files/dependencies/engine/runtime">
+    
+    <exec executable="${mvn.executable}" dir="../modules/activiti-spring">
+      <arg line="dependency:copy-dependencies -DoutputDirectory=../../distro/${target.distro.root}/setup/files/libs/engine/runtime/feature-spring"/>
+    </exec>
+    
+    <exec executable="${mvn.executable}" dir="../modules/activiti-cycle">
+      <arg line="dependency:copy-dependencies -DoutputDirectory=../../distro/${target.distro.root}/setup/files/libs/cycle/runtime"/>
+    </exec>
+    
+    <exec executable="${mvn.executable}" dir="../modules/activiti-webapp-rest">
+      <arg line="dependency:copy-dependencies -DoutputDirectory=../../distro/${target.distro.root}/setup/files/libs/webapps-rest"/>
+    </exec>
+    
+    <exec output="target/libs.engine.txt" executable="${ls.executable}">
+      <arg line="${ls.executable.options} ${target.distro.root}/setup/files/libs/engine/runtime"/>
+    </exec>
+
+    <exec output="target/libs.spring.txt" executable="${ls.executable}">
+      <arg line="${ls.executable.options} ${target.distro.root}/setup/files/libs/engine/runtime/feature-spring"/>
+    </exec>
+
+    <exec output="target/libs.cycle.txt" executable="${ls.executable}">
+      <arg line="${ls.executable.options} ${target.distro.root}/setup/files/libs/cycle/runtime"/>
+    </exec>
+
+    <delete>
+      <fileset dir="${target.distro.root}/setup/files/libs/engine/runtime/feature-spring" 
+               includesfile="target/libs.engine.txt" />
+      <fileset dir="${target.distro.root}/setup/files/libs/cycle/runtime" 
+               includesfile="target/libs.engine.txt" />
+      <fileset dir="${target.distro.root}/setup/files/libs/webapps-rest" 
+                 includesfile="target/libs.engine.txt" />
+      <fileset dir="${target.distro.root}/setup/files/libs/cycle/runtime" 
+               includesfile="target/libs.spring.txt" />
+      <fileset dir="${target.distro.root}/setup/files/libs/webapps-rest" 
+                 includesfile="target/libs.spring.txt" />
+      <fileset dir="${target.distro.root}/setup/files/libs/webapps-rest" 
+                 includesfile="target/libs.cycle.txt" />
+      <fileset dir="${target.distro.root}/setup/files/libs/engine/runtime">
+        <include name="ant-*.jar" />
+      </fileset>
+    </delete>
+
+    <mkdir dir="${target.distro.root}/setup/files/libs/engine/runtime/feature-openjpa" />
+  	<move todir="${target.distro.root}/setup/files/libs/engine/runtime/feature-openjpa">
+  		<fileset dir="${target.distro.root}/setup/files/libs/engine/runtime">
   			<include name="persistence-api-*.jar"/>
         <include name="openjpa-*.jar"/>
         <include name="serp-*.jar"/>
@@ -97,42 +148,38 @@
   	  </fileset>
   	</move>
 
-  	<mkdir dir="${target.distro.root}/setup/files/dependencies/engine/runtime/feature-groovy" />
-    <move todir="${target.distro.root}/setup/files/dependencies/engine/runtime/feature-groovy">
-      <fileset dir="${target.distro.root}/setup/files/dependencies/engine/runtime">
+  	<mkdir dir="${target.distro.root}/setup/files/libs/engine/runtime/feature-groovy" />
+    <move todir="${target.distro.root}/setup/files/libs/engine/runtime/feature-groovy">
+      <fileset dir="${target.distro.root}/setup/files/libs/engine/runtime">
         <include name="groovy-all-*.jar"/>
       </fileset>
     </move>
     
-  	<mkdir dir="${target.distro.root}/setup/files/dependencies/engine/runtime/feature-jdk5-scripting" />
-    <move todir="${target.distro.root}/setup/files/dependencies/engine/runtime/feature-jdk5-scripting">
-      <fileset dir="${target.distro.root}/setup/files/dependencies/engine/runtime">
+  	<mkdir dir="${target.distro.root}/setup/files/libs/engine/runtime/feature-jdk5-scripting" />
+    <move todir="${target.distro.root}/setup/files/libs/engine/runtime/feature-jdk5-scripting">
+      <fileset dir="${target.distro.root}/setup/files/libs/engine/runtime">
         <include name="livetribe-jsr223-*.jar"/>
       </fileset>
     </move>
       	
-    <mkdir dir="${target.distro.root}/setup/files/dependencies/engine/runtime/feature-email" />
-    <move todir="${target.distro.root}/setup/files/dependencies/engine/runtime/feature-email">
-      <fileset dir="${target.distro.root}/setup/files/dependencies/engine/runtime">
+    <mkdir dir="${target.distro.root}/setup/files/libs/engine/runtime/feature-email" />
+    <move todir="${target.distro.root}/setup/files/libs/engine/runtime/feature-email">
+      <fileset dir="${target.distro.root}/setup/files/libs/engine/runtime">
         <include name="mail-*.jar"/>
         <include name="commons-email-*.jar"/>
         <include name="activation-*.jar"/>
       </fileset>
     </move>
 
-    <mkdir dir="${target.distro.root}/setup/files/dependencies/engine/test" />
-    <move todir="${target.distro.root}/setup/files/dependencies/engine/test">
-      <fileset dir="${target.distro.root}/setup/files/dependencies/engine/runtime">
+    <mkdir dir="${target.distro.root}/setup/files/libs/engine/test" />
+    <move todir="${target.distro.root}/setup/files/libs/engine/test">
+      <fileset dir="${target.distro.root}/setup/files/libs/engine/runtime">
+      	<include name="*.jar" />
         <exclude name="mybatis-*.jar"/>
+        <exclude name="activiti-engine-*.jar"/>
       </fileset>
     </move>
   	
-    <delete>
-      <fileset dir="${target.distro.root}/setup/files/dependencies/engine/runtime">
-      	<include name="ant-*.jar" />
-      </fileset>
-    </delete>
-
     <mkdir dir="${target.distro.root}/setup/files/webapps/activiti-probe.war" />
     <unzip dest="${target.distro.root}/setup/files/webapps/activiti-probe.war" 
            src="../modules/activiti-webapp-probe/target/activiti-webapp-probe-${activiti.version}.war"/>
