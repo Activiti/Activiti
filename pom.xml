@@ -12,6 +12,40 @@
   <properties>
     <spring.framework.version>3.0.3.RELEASE</spring.framework.version>
     <mule.version>2.2.1</mule.version>
+
+      <!-- OSGi bundles properties -->
+      <activiti.artifact/>
+      <activiti.osgi.import.activiti.version>version="[$(version;==;${activiti.osgi.version.clean}),$(version;=+;${activiti.osgi.version.clean}))"</activiti.osgi.import.activiti.version>
+      <activiti.osgi.import.strict.version>version="[$(version;===;${activiti.osgi.version.clean}),$(version;==+;${activiti.osgi.version.clean}))"</activiti.osgi.import.strict.version>
+      <activiti.osgi.import.default.version>[$(version;==;$(@)),$(version;+;$(@)))</activiti.osgi.import.default.version>
+      <activiti.osgi.import.defaults>
+      </activiti.osgi.import.defaults>
+      <activiti.osgi.import.before.defaults />
+      <activiti.osgi.import.additional />
+      <activiti.osgi.import.pkg>
+        org.activiti.*;${activiti.osgi.import.activiti.version},
+        ${activiti.osgi.import.before.defaults},
+        ${activiti.osgi.import.defaults},
+        ${activiti.osgi.import.additional},
+        *
+      </activiti.osgi.import.pkg>
+      <activiti.osgi.activator />
+      <activiti.osgi.failok>false</activiti.osgi.failok>
+      <activiti.osgi.export>${activiti.osgi.export.pkg};${activiti.osgi.version};-noimport:=true</activiti.osgi.export>
+      <!--
+      <activiti.osgi.export.pkg>!*.impl;${activiti.artifact}*</activiti.osgi.export.pkg>
+      <activiti.osgi.private.pkg>${activiti.artifact}*.impl</activiti.osgi.private.pkg>
+      -->
+      <activiti.osgi.export.pkg>${activiti.artifact}*</activiti.osgi.export.pkg>
+      <activiti.osgi.private.pkg></activiti.osgi.private.pkg>
+      <activiti.osgi.version>version=${project.version}</activiti.osgi.version>
+      <activiti.osgi.split.pkg>-split-package:=first</activiti.osgi.split.pkg>
+      <activiti.osgi.import>${activiti.osgi.import.pkg}</activiti.osgi.import>
+      <activiti.osgi.dynamic />
+      <activiti.osgi.symbolic.name>${activiti.artifact}</activiti.osgi.symbolic.name>
+      <activiti.osgi.exclude.dependencies>false</activiti.osgi.exclude.dependencies>
+      <activiti.osgi.remove.headers>Ignore-Package,Include-Resource,Private-Package,Bundle-DocURL</activiti.osgi.remove.headers>
+      <activiti.osgi.include.resource>{maven-resources}</activiti.osgi.include.resource>
   </properties>
 
 	<dependencyManagement>
@@ -357,6 +391,44 @@
 					</excludes>
 				</configuration>
 			</plugin>
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+                <version>2.1.0</version>
+                <extensions>true</extensions>
+                <inherited>true</inherited>
+                <configuration>
+                    <excludeDependencies>${activiti.osgi.exclude.dependencies}</excludeDependencies>
+                    <instructions>
+                        <Bundle-Name>${project.name}</Bundle-Name>
+                        <Bundle-SymbolicName>${activiti.osgi.symbolic.name}</Bundle-SymbolicName>
+                        <Bundle-Activator>${activiti.osgi.activator}</Bundle-Activator>
+                        <Export-Package>${activiti.osgi.export}</Export-Package>
+                        <Import-Package>${activiti.osgi.import}</Import-Package>
+                        <DynamicImport-Package>${activiti.osgi.dynamic}</DynamicImport-Package>
+                        <Private-Package>${activiti.osgi.private.pkg}</Private-Package>
+                        <Implementation-Title>Activiti</Implementation-Title>
+                        <Implementation-Version>${project.version}</Implementation-Version>
+                        <Include-Resource>${activiti.osgi.include.resource}</Include-Resource>
+                        <_versionpolicy>${activiti.osgi.import.default.version}</_versionpolicy>
+                        <_removeheaders>${activiti.osgi.remove.headers}}</_removeheaders>
+                        <_failok>${activiti.osgi.failok}</_failok>
+                        <Export-Service>${activiti.osgi.export.service}</Export-Service>
+                        <Import-Service>${activiti.osgi.import.service}</Import-Service>
+                    </instructions>
+                    <versions>
+                        <activiti.osgi.version.clean>${project.version}</activiti.osgi.version.clean>
+                    </versions>
+                </configuration>
+                <executions>
+                    <execution>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>cleanVersions</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
 		</plugins>
 	</build>
 
@@ -413,7 +485,6 @@
 			<id>distro</id>
 			<modules>
         <module>modules/activiti-spring</module>
-        <module>modules/activiti-webapp-rest</module>
 				<module>modules/activiti-cycle</module>
         <module>modules/activiti-webapp</module>
 				<module>modules/activiti-webapp-rest</module>

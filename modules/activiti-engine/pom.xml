@@ -6,6 +6,7 @@
 	<name>Activiti - Engine</name>
 	<groupId>org.activiti</groupId>
 	<artifactId>activiti-engine</artifactId>
+    <packaging>bundle</packaging>
 
 	<parent>
 		<groupId>org.activiti</groupId>
@@ -73,7 +74,21 @@
 
 </dependencies>
 
-	<repositories>
+
+    <properties>
+        <activiti.artifact>org.activiti.engine</activiti.artifact>
+        <activiti.osgi.import.additional>
+            junit*;resolution:=optional,
+            org.junit*;resolution:=optional,
+            com.sun*;resolution:=optional,
+            javax.persistence*;resolution:=optional,
+            org.apache.commons.mail;resolution:=optional,
+            org.apache.tools.ant*;resolution:=optional,
+            org.apache.xerces*;resolution:=optional,
+        </activiti.osgi.import.additional>
+    </properties>
+
+    <repositories>
 		<repository>
 			<id>alfresco</id>
 			<url>http://maven.alfresco.com/nexus/content/groups/public</url>
