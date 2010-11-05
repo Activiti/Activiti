@@ -13,8 +13,6 @@
 		"containmentRules": []
 	},
 	"removestencils": [
-		"Pool",
-		"Lane",
 		"ITSystem",
 		"EventSubprocess",
 		"CollapsedEventSubprocess",
@@ -33,8 +31,6 @@
 		"ComplexGateway",
 		"CollapsedPool",
 		"processparticipant",
-		"Group",
-		"TextAnnotation",
 		"DataObject",
 		"StartConditionalEvent",
 		"StartSignalEvent",
@@ -62,10 +58,9 @@
 		"EndSignalEvent",
 		"EndMultipleEvent",
 		"EndTerminateEvent",
-		"Association_Undirected",
 		"Association_Unidirectional",
 		"Association_Bidirectional",
-        "MessageFlow"
+		"MessageFlow"
 	],
 	"removeproperties": []
 }
