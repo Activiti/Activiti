@@ -38,6 +38,7 @@ public class ProcessDefinitionsGet extends ActivitiPagingWebScript {
     properties.put("key", ProcessDefinitionQueryProperty.PROCESS_DEFINITION_KEY);
     properties.put("version", ProcessDefinitionQueryProperty.PROCESS_DEFINITION_VERSION);
     properties.put("deploymentId", ProcessDefinitionQueryProperty.DEPLOYMENT_ID);
+    properties.put("name", ProcessDefinitionQueryProperty.PROCESS_DEFINITION_NAME);
   }
 
   /**

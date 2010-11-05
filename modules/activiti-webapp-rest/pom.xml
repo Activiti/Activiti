@@ -51,7 +51,7 @@
 			<artifactId>activiti-engine</artifactId>
 			<scope>provided</scope>
 		</dependency>
-
+    
 	<!-- scope not "provided" to preserve transitive dependencies in activiti-webapp-rest etc. -->
     <dependency>
       <groupId>org.activiti</groupId>
@@ -73,6 +73,14 @@
 			<artifactId>spring-surf</artifactId>
 			<version>1.0.0-RC2</version>
 		</dependency>
+
+    
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <scope>test</scope>
+    </dependency>
+    
 	</dependencies>
 
 </project>
