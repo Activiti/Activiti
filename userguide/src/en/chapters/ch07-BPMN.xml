@@ -1092,7 +1092,7 @@ assertEquals("Ship Order", task2.getName());</programlisting>
 			 
 			 <para>
 			   A 'user task' is used to model work that needs to be done by a human actor. 
-			   When process executes arrives at such a user task, a new task is created in the 
+			   When the process execution arrives at such a user task, a new task is created in the 
 			   task list of the user(s) or group(s) assigned to that task.
 			 </para>
 			
