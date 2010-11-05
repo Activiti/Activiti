@@ -1337,24 +1337,25 @@ public class BpmnParse extends Parse {
       ActivityImpl sourceActivity = scope.findActivity(sourceRef);
       ActivityImpl destinationActivity = scope.findActivity(destinationRef);
 
-      if (sourceActivity == null) {
+      if (sourceActivity != null && destinationActivity != null) {
+        
+        TransitionImpl transition = sourceActivity.createOutgoingTransition(id);
+        transition.setProperty("name", sequenceFlowElement.attribute("name"));
+        transition.setProperty("documentation", parseDocumentation(sequenceFlowElement));
+        transition.setDestination(destinationActivity);
+        parseSequenceFlowConditionExpression(sequenceFlowElement, transition);
+        parseEventListenersOnTransition(sequenceFlowElement, transition);
+
+        for (BpmnParseListener parseListener: parseListeners) {
+          parseListener.parseSequenceFlow(sequenceFlowElement, scope, transition);
+        }
+        
+      } else  if (sourceActivity == null) {
         addError("Invalid source '" + sourceRef + "' of sequence flow '" + id + "'", sequenceFlowElement);
-      }
-      if (destinationActivity == null) {
+      } else if (destinationActivity == null) {
         addError("Invalid destination '" + destinationRef + "' of sequence flow '" + id + "'", sequenceFlowElement);
       }
 
-      TransitionImpl transition = sourceActivity.createOutgoingTransition(id);
-      transition.setProperty("name", sequenceFlowElement.attribute("name"));
-      transition.setProperty("documentation", parseDocumentation(sequenceFlowElement));
-      transition.setDestination(destinationActivity);
-      parseSequenceFlowConditionExpression(sequenceFlowElement, transition);
-      
-      parseEventListenersOnTransition(sequenceFlowElement, transition);
-
-      for (BpmnParseListener parseListener: parseListeners) {
-        parseListener.parseSequenceFlow(sequenceFlowElement, scope, transition);
-      }
     }
   }
 
