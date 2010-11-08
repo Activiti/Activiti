@@ -23,8 +23,8 @@ import org.activiti.engine.impl.pvm.PvmTransition;
 import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
 
 /**
- * helper class for implementing BPMN 2.0 activities, offering convience methods
- * specific to BPMN 2.0.
+ * helper class for implementing BPMN 2.0 activities, offering convenience
+ * methods specific to BPMN 2.0.
  * 
  * This class can be used by inheritance or aggregation.
  * 
