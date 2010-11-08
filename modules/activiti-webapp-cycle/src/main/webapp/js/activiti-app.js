@@ -556,7 +556,7 @@
 
     onFailure: function CreateFolderDialog_onFailure(o) {
       // TODO: i18n
-      Activiti.widget.PopupManager.displayError("Connection Error", "Unable to create folder. Check your internet connection and make sure the Activiti server can be reached.");
+      // Activiti.widget.PopupManager.displayError("Connection Error", "Unable to create folder. Check your internet connection and make sure the Activiti server can be reached.");
     }
 
 	});

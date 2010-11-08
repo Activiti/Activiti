@@ -359,7 +359,7 @@ public class SignavioConnector extends AbstractRepositoryConnector<SignavioConne
       Form createFolderForm = new Form();
       createFolderForm.add("name", name);
       createFolderForm.add("description", ""); // TODO: what should we use here?
-      createFolderForm.add("parent", "/directory/" + parentFolderId);
+      createFolderForm.add("parent", "/directory" + parentFolderId);
       Representation createFolderRep = createFolderForm.getWebRepresentation();
 
       Request jsonRequest = new Request(Method.POST, new Reference(getConfiguration().getDirectoryRootUrl()), createFolderRep);
