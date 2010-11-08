@@ -12,21 +12,19 @@
  */
 package org.activiti.osgi;
 
-import org.apache.felix.fileinstall.ArtifactListener;
-import org.apache.felix.fileinstall.ArtifactUrlTransformer;
-import org.osgi.framework.BundleActivator;
-import org.osgi.framework.BundleContext;
-import org.osgi.framework.ServiceRegistration;
-import org.osgi.service.url.URLStreamHandlerService;
-import org.osgi.util.tracker.BundleTracker;
-import sun.tools.java.ClassNotFound;
-
 import java.util.ArrayList;
 import java.util.Dictionary;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import org.apache.felix.fileinstall.ArtifactListener;
+import org.apache.felix.fileinstall.ArtifactUrlTransformer;
+import org.osgi.framework.BundleActivator;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.ServiceRegistration;
+import org.osgi.service.url.URLStreamHandlerService;
 
 /**
  * OSGi Activator
