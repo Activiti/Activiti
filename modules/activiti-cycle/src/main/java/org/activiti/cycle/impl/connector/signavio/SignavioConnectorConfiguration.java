@@ -129,12 +129,10 @@ public class SignavioConnectorConfiguration extends PasswordEnabledRepositoryCon
 
   public String getModelUrl(String id) {
     if (id.startsWith("/")) {
-      // this is how it should be now
-      return getRepositoryBackendUrl() + MODEL_URL_SUFFIX + encode(id);
-    } else {
-      // this is how it was in ancient times
-      return getRepositoryBackendUrl() + MODEL_URL_SUFFIX + "/" + encode(id);
+      // don't encode this one!
+      id = id.substring(1);
     }    
+    return getRepositoryBackendUrl() + MODEL_URL_SUFFIX + "/" + encode(id);
   }
 
   private String encode(String id) {
@@ -164,12 +162,10 @@ public class SignavioConnectorConfiguration extends PasswordEnabledRepositoryCon
 
   public String getDirectoryUrl(String id) {
     if (id.startsWith("/")) {
-      // this is how it should be now
-      return getRepositoryBackendUrl() + DIRECTORY_URL_SUFFIX + encode(id);
-    } else {
-      // this is how it was in ancient times
-      return getRepositoryBackendUrl() + DIRECTORY_URL_SUFFIX + "/" + encode(id);
+      // don't encode this one!
+      id = id.substring(1);
     }
+    return getRepositoryBackendUrl() + DIRECTORY_URL_SUFFIX + "/" + encode(id);
   }
 
   public String getRegistrationUrl() {
