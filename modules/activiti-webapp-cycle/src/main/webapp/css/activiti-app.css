@@ -9,4 +9,8 @@ h1 {
   color: #007dc3;
 }
 
+#fileChooserTree a:hover {
+  text-decoration: none;
+}
+
 /* STRUCTURE */
