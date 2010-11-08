@@ -271,7 +271,7 @@
 
   YAHOO.extend(Activiti.component.FileChooserDialog, Activiti.component.Base,
   {
-	
+
 		/**
 		* Fired by YUI when parent element is available for scripting.
 		* Template initialisation, including instantiation of YUI widgets and event listener binding.
@@ -547,10 +547,10 @@
       // TODO: i18n
       if(o.json.success) {
         Activiti.widget.PopupManager.displayMessage({
-          text: "Successfully created artifact"
+          text: "Successfully created folder"
         });
       } else {
-        Activiti.widget.PopupManager.displayError("Error creating artifact", "Unable to create artifact");
+        Activiti.widget.PopupManager.displayError("Error creating folder", "Unable to create folder");
       }
     },
 

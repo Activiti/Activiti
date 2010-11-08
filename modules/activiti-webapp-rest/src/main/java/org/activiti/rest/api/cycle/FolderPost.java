@@ -43,6 +43,7 @@ public class FolderPost extends ActivitiCycleWebScript {
       model.put("result", true);
     } catch (Exception e) {
       model.put("result", false);
+      throw new RuntimeException(e);
     }
   }
 }
