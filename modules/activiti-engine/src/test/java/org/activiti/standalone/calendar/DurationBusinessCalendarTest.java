@@ -28,13 +28,13 @@ public class DurationBusinessCalendarTest extends PvmTestCase {
   public void testSimpleDuration() throws Exception {
     DurationBusinessCalendar businessCalendar = new DurationBusinessCalendar();
 
-    SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy MMM dd - HH:mm");
-    Date now = simpleDateFormat.parse("2010 Jun 11 - 17:23");
+    SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy MM dd - HH:mm");
+    Date now = simpleDateFormat.parse("2010 06 11 - 17:23");
     ClockUtil.setCurrentTime(now);
 
     Date duedate = businessCalendar.resolveDuedate("P2DT5H70M");
 
-    Date expectedDuedate = simpleDateFormat.parse("2010 Jun 13 - 23:33");
+    Date expectedDuedate = simpleDateFormat.parse("2010 06 13 - 23:33");
 
     assertEquals(expectedDuedate, duedate);
   }
