@@ -141,16 +141,40 @@ public class SignavioSvgApiBuilder {
   
       svgApiCall.append("}");
       svgApiCall.append("</script>");
-  
-      // include messages as text
-      svgApiCall.append("<div id=\"messages\">" + buildMessages() + "</div>");
-  
+    
       return svgApiCall.toString();
     }
     catch (JSONException ex) {
       throw new RepositoryException("Unexpected exception with JSON handling for " + artifact, ex);
     }
   }
+  
+  public static String buildTable(String headline, Map<String, List<String>> nodesMap) {
+    StringBuffer html = new StringBuffer();
+    if (nodesMap != null || !nodesMap.isEmpty()) {
+      html.append("<h2>" + headline + "</h2>");
+
+      html.append("<table border=\"1\">");
+      html.append("<thead><tr>");
+      html.append("<th>Signavio Id</th><th>Message</th>");
+      html.append("</tr></thead>");
+      html.append("<tbody>");
+      for (Entry<String, List<String>> mapEntry : nodesMap.entrySet()) {
+        html.append("<tr>");
+        html.append("<td>" + mapEntry.getKey() + "</td>");
+        html.append("<td>");
+        for (String message : mapEntry.getValue()) {
+          html.append(message + "<br/>");
+        }
+        html.append("</td>");
+        html.append("</tr>");
+      }
+      html.append("</tbody>");
+      html.append("</table>");
+      html.append("<br/>");
+    }
+    return html.toString();
+  }  
 
   private String registerMouseOverEvent() throws JSONException {
     if (nodesToHighlight == null || nodesToHighlight.isEmpty()) {
@@ -176,39 +200,6 @@ public class SignavioSvgApiBuilder {
 
     callbackFunc.append("}");
     return callbackFunc.toString();
-  }
-
-  private String buildMessages() {
-    if (nodesToHighlight == null || nodesToHighlight.isEmpty()) {
-      return "";
-    }
-
-    StringBuilder mappingValidationErrorHtml = new StringBuilder();
-    mappingValidationErrorHtml.append("<h2>Mapping validation issues</h2>");
-    for (Entry<String, Map<String, List<String>>> entry : nodesToHighlight.entrySet()) {
-      if (entry.getValue() != null && !entry.getValue().isEmpty()) {
-        mappingValidationErrorHtml.append("<table border=\"1\">");
-        mappingValidationErrorHtml.append("<thead><tr>");
-        mappingValidationErrorHtml.append("<th>SignavioId</th><th>Mapping validation messages</th>");
-        mappingValidationErrorHtml.append("</tr></thead>");
-        mappingValidationErrorHtml.append("<tbody>");
-        for (Entry<String, List<String>> mapEntry : entry.getValue().entrySet()) {
-          mappingValidationErrorHtml.append("<tr>");
-          mappingValidationErrorHtml.append("<td>" + mapEntry.getKey() + "</td>");
-          mappingValidationErrorHtml.append("<td>");
-          for (String message : mapEntry.getValue()) {
-            mappingValidationErrorHtml.append(message + "<br/>");
-          }
-          mappingValidationErrorHtml.append("</td>");
-          mappingValidationErrorHtml.append("</tr>");
-        }
-        mappingValidationErrorHtml.append("</tbody>");
-        mappingValidationErrorHtml.append("</table>");
-        mappingValidationErrorHtml.append("<br/>");
-      }
-    }
-
-    return mappingValidationErrorHtml.toString();
   }
 
   private String createClickFunction() throws JSONException {
