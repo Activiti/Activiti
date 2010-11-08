@@ -12,8 +12,12 @@
  */
 package org.activiti.cycle.impl.connector.signavio;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+
 import org.activiti.cycle.ArtifactType;
 import org.activiti.cycle.RepositoryConnector;
+import org.activiti.cycle.RepositoryException;
 import org.activiti.cycle.impl.conf.PasswordEnabledRepositoryConnectorConfiguration;
 
 /**
@@ -126,13 +130,21 @@ public class SignavioConnectorConfiguration extends PasswordEnabledRepositoryCon
   public String getModelUrl(String id) {
     if (id.startsWith("/")) {
       // this is how it should be now
-      return getRepositoryBackendUrl() + MODEL_URL_SUFFIX + id;
+      return getRepositoryBackendUrl() + MODEL_URL_SUFFIX + encode(id);
     } else {
       // this is how it was in ancient times
-      return getRepositoryBackendUrl() + MODEL_URL_SUFFIX + "/" + id;
+      return getRepositoryBackendUrl() + MODEL_URL_SUFFIX + "/" + encode(id);
+    }    
+  }
+
+  private String encode(String id) {
+    try {
+      return URLEncoder.encode(id, "UTF-8");
+    } catch (UnsupportedEncodingException ex) {
+      throw new RepositoryException("Couldn't UTF-8 encode id '" + id + "' for Signavio.", ex);
     }
   }
-  
+
   // TODO: CARE about correct encoding of ID! But wasn't that easy and need some
   // serious thinking
   // try {
@@ -153,10 +165,10 @@ public class SignavioConnectorConfiguration extends PasswordEnabledRepositoryCon
   public String getDirectoryUrl(String id) {
     if (id.startsWith("/")) {
       // this is how it should be now
-      return getRepositoryBackendUrl() + DIRECTORY_URL_SUFFIX + id;
+      return getRepositoryBackendUrl() + DIRECTORY_URL_SUFFIX + encode(id);
     } else {
       // this is how it was in ancient times
-      return getRepositoryBackendUrl() + DIRECTORY_URL_SUFFIX + "/" + id;
+      return getRepositoryBackendUrl() + DIRECTORY_URL_SUFFIX + "/" + encode(id);
     }
   }
 
