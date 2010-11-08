@@ -22,6 +22,14 @@
 		<os family="windows"/>
 	</condition>
 
+	<property name="ant.libs" value="${user.home}/.ant/lib" />
+  <condition property="xalan.libs.installed">
+    <and>
+    	<available file="${ant.libs}/" property="one" />
+    	<available file="${docbooktool.dir}" property="two" />
+    </and>
+  </condition>
+
 	<target name="build.userguide" depends="install.docbooktool, build.html" />
 	
   <path id="xslt.classpath">
@@ -48,6 +56,24 @@
       <arg line="compile" />
     </exec>
   </target>
+	
+	<!-- 
+	     Fix for a known bug in ant:
+	     Normally, when executing XSLT with JAXP (eg for generating docbook), a JAXP implementation jar will have 
+	     precedence on the classes shipped in the JDK (com.sun.org.apache.xalan..., which is an old version of Xalan)
+	     However, providing such jars in the classpath element of the xslt task DOES NOT WORK,
+	     and hence the internal sun classes will ALWAYS be used (and they are crap).
+	     Therefore, the xalan libs must be installed in user.home/.ant/lib, which 
+	     will make the xslt task use these jars instead of the internal JDK ones.
+  -->
+	<target name="install.xalan.libs">
+    <mkdir dir="${user.home}/.ant/lib"/>
+	  <copy todir="${user.home}/.ant/lib">
+	    <fileset dir="${docbooktool.dir}/xalan">
+	      <include name="*.jar" />
+	    </fileset>
+	  </copy>
+	</target>
 
 	<target name="prepare.src">
 		<mkdir dir="target/prepared-src" />
@@ -72,10 +98,15 @@
 		      depends="prepare.src"
 		      description="Generates HTML files from DocBook XML">
     <mkdir dir="target/html" />
+		<echo message="Executing docbook XSLT on userguide source files." />
+		<echo message="On failure, make sure that you have installed the Xalan libs by executing the 'install.xalan.libs' target in the 'userguide' folder."></echo>
 		<xslt style="${html.stylesheet}" extension=".html" basedir="target/prepared-src" destdir="target/html">
 			<include name="en/index.xml" />
 			<param name="html.stylesheet" expression="style.css" />
-			<classpath refid="xslt.classpath" />
+			<!-- <classpath refid="xslt.classpath" /> 
+			      Does not work -> known bug!! 
+			      Will NEVER use the xalan libs, but always the com.sun.xslt stuff (==crap). 
+			      Call the 'install.xalan.libs' first to get it working.-->
 		</xslt>
 		<copy todir="target/html/en">
 			<fileset dir="target/prepared-src">
