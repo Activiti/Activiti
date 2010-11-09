@@ -15,15 +15,11 @@ package org.activiti.engine.impl.cmd;
 import java.util.Map;
 
 import org.activiti.engine.ActivitiException;
-import org.activiti.engine.impl.cfg.ProcessEngineConfiguration;
 import org.activiti.engine.impl.cfg.RepositorySession;
-import org.activiti.engine.impl.db.DbSqlSession;
-import org.activiti.engine.impl.history.HistoricProcessInstanceEntity;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.repository.ProcessDefinitionEntity;
 import org.activiti.engine.impl.runtime.ExecutionEntity;
-import org.activiti.engine.impl.runtime.VariableMap;
 import org.activiti.engine.runtime.ProcessInstance;
 
 
@@ -61,14 +57,10 @@ public class StartProcessInstanceCmd<T> implements Command<ProcessInstance> {
       throw new ActivitiException("processDefinitionKey and processDefinitionId are null");
     }
     
-    ExecutionEntity processInstance = processDefinition.createProcessInstance();
+    ExecutionEntity processInstance = processDefinition.createProcessInstance(businessKey);
 
     if (variables!=null) {
       processInstance.setVariables(variables);
-    }
-    
-    if (businessKey != null) {
-      processInstance.setBusinessKey(businessKey);
     }
     
     processInstance.start();

@@ -49,40 +49,48 @@ public class ProcessDefinitionEntity extends ProcessDefinitionImpl implements Pr
   public ProcessDefinitionEntity() {
     super(null);
   }
+  
+  public ExecutionEntity createProcessInstance(String businessKey) {
+	  ExecutionEntity processInstance = (ExecutionEntity) super.createProcessInstance();
+
+	    CommandContext commandContext = CommandContext.getCurrent();
+
+	    commandContext
+	      .getDbSqlSession()
+	      .insert(processInstance);
+	  
+	    processInstance.setExecutions(new ArrayList<ExecutionImpl>());
+	    processInstance.setProcessDefinition(processDefinition);
+	    // Do not initialize variable map (let it happen lazily)
+
+	    if (businessKey != null) {
+	    	processInstance.setBusinessKey(businessKey);
+	    }
+	    
+	    // reset the process instance in order to have the db-generated process instance id available
+	    processInstance.setProcessInstance(processInstance);
+	    
+	    String initiatorVariableName = (String) getProperty("initiatorVariableName");
+	    if (initiatorVariableName!=null) {
+	      String authenticatedUserId = Authentication.getAuthenticatedUserId();
+	      processInstance.setVariable(initiatorVariableName, authenticatedUserId);
+	    }
+	    
+	    VariableMap variableMap = VariableMap.createNewInitialized(processInstance.getId(), processInstance.getId());
+	    processInstance.setVariables(variableMap);
+
+	    int historyLevel = commandContext.getProcessEngineConfiguration().getHistoryLevel();
+	    if (historyLevel>=ProcessEngineConfiguration.HISTORYLEVEL_ACTIVITY) {
+	      DbSqlSession dbSqlSession = commandContext.getSession(DbSqlSession.class);
+	      HistoricProcessInstanceEntity historicProcessInstance = new HistoricProcessInstanceEntity(processInstance);
+	      dbSqlSession.insert(historicProcessInstance);
+	    }
+
+	    return processInstance;
+  }
 
   public ExecutionEntity createProcessInstance() {
-    ExecutionEntity processInstance = (ExecutionEntity) super.createProcessInstance();
-
-    CommandContext commandContext = CommandContext.getCurrent();
-
-    commandContext
-      .getDbSqlSession()
-      .insert(processInstance);
-  
-    processInstance.setExecutions(new ArrayList<ExecutionImpl>());
-    processInstance.setProcessDefinition(processDefinition);
-    // Do not initialize variable map (let it happen lazily)
-
-    // reset the process instance in order to have the db-generated process instance id available
-    processInstance.setProcessInstance(processInstance);
-    
-    String initiatorVariableName = (String) getProperty("initiatorVariableName");
-    if (initiatorVariableName!=null) {
-      String authenticatedUserId = Authentication.getAuthenticatedUserId();
-      processInstance.setVariable(initiatorVariableName, authenticatedUserId);
-    }
-    
-    VariableMap variableMap = VariableMap.createNewInitialized(processInstance.getId(), processInstance.getId());
-    processInstance.setVariables(variableMap);
-
-    int historyLevel = commandContext.getProcessEngineConfiguration().getHistoryLevel();
-    if (historyLevel>=ProcessEngineConfiguration.HISTORYLEVEL_ACTIVITY) {
-      DbSqlSession dbSqlSession = commandContext.getSession(DbSqlSession.class);
-      HistoricProcessInstanceEntity historicProcessInstance = new HistoricProcessInstanceEntity(processInstance);
-      dbSqlSession.insert(historicProcessInstance);
-    }
-
-    return processInstance;
+    return createProcessInstance(null);
   }
   
   @Override

@@ -47,12 +47,13 @@ public class HistoricProcessInstanceTest extends ActivitiInternalTestCase {
     Date noon = calendar.getTime();
     
     ClockUtil.setCurrentTime(noon);
-    final ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("oneTaskProcess");
+    final ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("oneTaskProcess", "myBusinessKey");
 
     HistoricProcessInstance historicProcessInstance = historyService.createHistoricProcessInstanceQuery().processInstanceId(processInstance.getId()).singleResult();
 
     assertNotNull(historicProcessInstance);
     assertEquals(processInstance.getId(), historicProcessInstance.getId());
+    assertEquals(processInstance.getBusinessKey(), historicProcessInstance.getBusinessKey());
     assertEquals(processInstance.getProcessDefinitionId(), historicProcessInstance.getProcessDefinitionId());
     assertEquals(noon, historicProcessInstance.getStartTime());
     assertNull(historicProcessInstance.getEndTime());
@@ -145,4 +146,5 @@ public class HistoricProcessInstanceTest extends ActivitiInternalTestCase {
       
     }
   }
+
 }
