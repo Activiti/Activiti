@@ -16,7 +16,9 @@ public class SignavioSvgApiBuilder {
 
   public static final String HEADER = "<html><head></head><body>";
   public static final String FOOTER = "</body></html>";
-  public static final String SVGAPI_URL = "http://signavio-core-components.googlecode.com/svn/trunk/api/src/signavio-svg.js";
+  public static final String SVGAPI_URL_REMOTE = "http://signavio-core-components.googlecode.com/svn/trunk/api/src/signavio-svg.js";
+  // path to signavio-svg.js in activiti-modeler or so...
+  public static final String SVGAPI_URL_LOCAL = "http://localhost:8080/activiti-modeler/signavio-svg.js";
   // maybe make this changable?
   public static final String SERVER_SCRIPT_URL = "http://localhost:8080/activiti-modeler";
 
@@ -85,7 +87,6 @@ public class SignavioSvgApiBuilder {
 
   public SignavioSvgApiBuilder useLocalScripts(boolean useLocalScripts) {
     this.useLocalScripts = useLocalScripts;
-    
     return this;
   }
   
@@ -102,29 +103,37 @@ public class SignavioSvgApiBuilder {
   public String buildHtml() {
     return buildHtml(buildScript());
   }
-
+  
   public static String buildHtml(String content) {
-    return HEADER + content + FOOTER;
+    return HEADER + "<div id=\"model\">" + content + "</div>" + FOOTER;
   }
 
-  public static String buildHtml(String content, int height, int width) {
-    return HEADER + "<div id=\"model\" style=\"height: " + height + "px; width: " + width + "px;\">" + content + "</div>" + FOOTER;
+  public static String buildHtml(String content, String additionalContent, int height, int width) {
+    return HEADER + "<div id=\"model\" style=\"height: " + height + "px; width: " + width + "px;\">" + content + "</div>" + additionalContent + FOOTER;
   }
+  
 
   public String buildScript() {
     try {
       StringBuilder svgApiCall = new StringBuilder();
-      svgApiCall.append("<script type=\"text/javascript\" src=\"" + SVGAPI_URL + "\"></script>");
+      svgApiCall.append("<script type=\"text/javascript\" src=\"");
+      if (useLocalScripts) {
+        svgApiCall.append(SVGAPI_URL_LOCAL);
+      } else {        
+        svgApiCall.append(SVGAPI_URL_REMOTE);
+      }
+      svgApiCall.append("\"></script>");
       svgApiCall.append("<script type=\"text/plain\">");
       svgApiCall.append("{");
-      // url to svgapi script
-      // svgApiCall.append("url: \"http://localhost:8080/activiti-modeler\"");
       svgApiCall.append("url: \"" + connector.getConfiguration().getModelUrl(artifact.getNodeId()) + "\"");
   
       if (useLocalScripts) {
+        // url to svgapi script
         svgApiCall.append(", server: \"" + SERVER_SCRIPT_URL + "\"");
       }
   
+      svgApiCall.append(", element: \"model\"");
+      
       // if authToken is available
       if (authToken != null && authToken.length() > 0) {
         svgApiCall.append(", authToken: \"" + authToken + "\",");
@@ -186,15 +195,15 @@ public class SignavioSvgApiBuilder {
     callbackFunc.append("editor.registerOnEvent(\"mouseover\", function(evt, node) {");
     callbackFunc.append("var errorMessages = " + createJsonMessagesObject() + ";");
     callbackFunc.append("var myNodeMessages = errorMessages[node.resourceId];");
-    callbackFunc.append("if (myNodeMessages != '' || myNodeMessages != 'undefined' || myNodeMessages != undefined) {");
+    callbackFunc.append("if (myNodeMessages != '' && myNodeMessages != 'undefined' && myNodeMessages != undefined) {");
     callbackFunc.append("var myNodeMessagesStr = \"\";");
     callbackFunc.append("for (msg in myNodeMessages) {");
     callbackFunc.append("myNodeMessagesStr += myNodeMessages[msg] + \"\\n\";");
     callbackFunc.append("}");
+    callbackFunc.append("alert(\"Sid: \" + node.resourceId + \"\\nMessages: \" + myNodeMessagesStr);");
     callbackFunc.append("}");
     // @TODO: doesn't work atm, unable to get variable 'me'
 //    callbackFunc.append("if (node instanceof me.ORYX.Core.Shape) {");
-    callbackFunc.append("alert(\"Sid: \" + node.resourceId + \"\\nMessages: \" + myNodeMessagesStr);");
 //    callbackFunc.append("}");
     callbackFunc.append("});");
 
@@ -211,7 +220,7 @@ public class SignavioSvgApiBuilder {
       // create default click function
       clickFunc.append("var errorMessages = " + createJsonMessagesObject() + ";");
       clickFunc.append("var myNodeMessages = errorMessages[node.resourceId];");
-      clickFunc.append("if (myNodeMessages != '' || myNodeMessages != 'undefined' || myNodeMessages != undefined) {");
+      clickFunc.append("if (myNodeMessages != '' && myNodeMessages != 'undefined' && myNodeMessages != undefined) {");
       clickFunc.append("var myNodeMessagesStr = \"\";");
       clickFunc.append("for (msg in myNodeMessages) {");
       clickFunc.append("myNodeMessagesStr += myNodeMessages[msg] + \"\\n\";");
@@ -263,7 +272,7 @@ public class SignavioSvgApiBuilder {
 
   private String createJsonMessagesObject() throws JSONException {
     if (nodesToHighlight == null || nodesToHighlight.isEmpty()) {
-      return "";
+      return "\"\"";
     }
     
     JSONObject jsonMessageObj = new JSONObject();
@@ -275,22 +284,5 @@ public class SignavioSvgApiBuilder {
 
     return jsonMessageObj.toString();
   }
-
-  // public static void main(String[] args) throws JSONException {
-  // Map<String, List<String>> properties = new HashMap<String, List<String>>();
-  // ArrayList<String> list1 = new ArrayList<String>();
-  // list1.add("adasdsadsgffdgfd");
-  // list1.add("fdgdlkzjtlkhjk");
-  // ArrayList<String> list2 = new ArrayList<String>();
-  // list2.add("545354353453543adasdsadsgffdgfd");
-  // list2.add("3256879867468fdgdlkzjtlkhjk");
-  // properties.put("sid-43245-345-435-345", list1);
-  // properties.put("sid-87686-6456-4645-456", list2);
-  //      
-  // SignavioSvgApiBuilder test = new SignavioSvgApiBuilder(null,
-  // null).highlightNodes(properties, "red").highlightNodes(properties, "blue");
-  // // System.out.println(test.createJsonMessagesObject());
-  // // System.out.println(test.buildHighlightning());
-  // System.out.println(test.buildHtml());
-  // }
+  
 }
