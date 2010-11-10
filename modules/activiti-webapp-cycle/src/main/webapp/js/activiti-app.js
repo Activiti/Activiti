@@ -504,9 +504,7 @@
 
 	    // TODO: i18n
 
-	    // TODO: switch to rest proxy URL (Activiti.service.REST_PROXY_URI_RELATIVE), when using this URL at the moment, it seems to be redirecting to the GET URL... Find out what goes wrong here.
-
-      content.innerHTML = '<div class="bd"><form id="' + this.id + '-artifact-upload-form" action="http://localhost:8080/activiti-rest/service/folder" method="POST" enctype="multipart/form-data" accept-charset="utf-8"><h1>Create new folder</h1><table><tr><td><label>Name:<br/><input type="text" name="name" value="" /></label><br/></td></tr></table><input type="hidden" name="connectorId" value="' + this._connectorId + '" /><input type="hidden" name="parentFolderId" value="' + this._parentFolderId + '" /></form></div>';
+      content.innerHTML = '<div class="bd"><form id="' + this.id + '-create-folder-form" accept-charset="utf-8"><h1>Create new folder</h1><table><tr><td><label>Name:<br/><input type="text" name="name" value="" /></label><br/></td></tr></table><input type="hidden" name="connectorId" value="' + this._connectorId + '" /><input type="hidden" name="parentFolderId" value="' + this._parentFolderId + '" /></form></div>';
 
       this._dialog = new YAHOO.widget.Dialog(content, {
         fixedcenter: true,
@@ -616,9 +614,7 @@
 
 	    // TODO: i18n
 
-	    // TODO: switch to rest proxy URL (Activiti.service.REST_PROXY_URI_RELATIVE), when using this URL at the moment, it seems to be redirecting to the GET URL... Find out what goes wrong here.
-
-      content.innerHTML = '<div class="bd"><form id="' + this.id + '-artifact-upload-form" action="http://localhost:8080/activiti-rest/service/artifact" method="POST" enctype="multipart/form-data" accept-charset="utf-8"><h1>Create new artifact</h1><table><tr><td><label>Name:<br/><input type="text" name="artifactName" value="" /></label><br/></td></tr><tr><td><label>Upload a file:<br/><input type="file" name="file" value="" /></label><br/></td></tr></table><input type="hidden" name="connectorId" value="' + this._connectorId + '" /><input type="hidden" name="parentFolderId" value="' + this._parentFolderId + '" /></form></div>';
+      content.innerHTML = '<div class="bd"><form id="' + this.id + '-artifact-upload-form" action="' + Activiti.service.REST_PROXY_URI_RELATIVE + 'artifact" method="POST" enctype="multipart/form-data" accept-charset="utf-8"><h1>Create new artifact</h1><table><tr><td><label>Name:<br/><input type="text" name="artifactName" value="" /></label><br/></td></tr><tr><td><label>Upload a file:<br/><input type="file" name="file" value="" /></label><br/></td></tr></table><input type="hidden" name="connectorId" value="' + this._connectorId + '" /><input type="hidden" name="parentFolderId" value="' + this._parentFolderId + '" /></form></div>';
 
       this._dialog = new YAHOO.widget.Dialog(content, {
         fixedcenter: true,

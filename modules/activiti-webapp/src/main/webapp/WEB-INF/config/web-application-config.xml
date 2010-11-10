@@ -35,11 +35,6 @@
   <!-- Support for Default Surf Controllers -->
   <bean id="simpleControllerHandlerAdapter" class="org.springframework.web.servlet.mvc.SimpleControllerHandlerAdapter"/>
 	
-  <!-- Apache Commons Fileupload -->
-  <bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
-    <property name="maxUploadSize" value="10000000"/>
-  </bean>
-
   <!-- Activiti User Factory -->
   <bean id="webframework.factory.user.activiti" class="org.activiti.surf.ActivitiUserFactory" parent="webframework.factory.base">
     <property name="endpointId" value="activiti-rest-endpoint"/>
