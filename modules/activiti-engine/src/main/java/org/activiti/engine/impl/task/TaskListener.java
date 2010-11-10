@@ -13,6 +13,8 @@
 
 package org.activiti.engine.impl.task;
 
+import org.activiti.engine.delegate.DelegateTask;
+
 
 
 /**
@@ -20,7 +22,8 @@ package org.activiti.engine.impl.task;
  */
 public interface TaskListener {
 
+  String EVENTNAME_CREATE = "create";
   String EVENTNAME_ASSIGNMENT = "assignment";
   
-  void notify(TaskEntity task);
+  void notify(DelegateTask delegateTask);
 }

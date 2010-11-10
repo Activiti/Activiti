@@ -23,6 +23,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.activiti.engine.delegate.DelegateExecution;
+import org.activiti.engine.delegate.DelegateTask;
 import org.activiti.engine.impl.cfg.RepositorySession;
 import org.activiti.engine.impl.db.PersistentObject;
 import org.activiti.engine.impl.interceptor.CommandContext;
@@ -36,7 +37,7 @@ import org.activiti.engine.task.Task;
  * @author Tom Baeyens
  * @author Joram Barrez
  */ 
-public class TaskEntity implements Task, Serializable, PersistentObject {
+public class TaskEntity implements Task, DelegateTask, Serializable, PersistentObject {
 
   private static final long serialVersionUID = 1L;
 

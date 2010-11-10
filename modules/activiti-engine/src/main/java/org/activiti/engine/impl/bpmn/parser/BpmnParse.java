@@ -13,6 +13,7 @@
 package org.activiti.engine.impl.bpmn.parser;
 
 import java.io.InputStream;
+import java.lang.reflect.Field;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -29,10 +30,9 @@ import org.activiti.engine.impl.bpmn.BpmnInterfaceImplementation;
 import org.activiti.engine.impl.bpmn.CallActivityBehaviour;
 import org.activiti.engine.impl.bpmn.ClassStructure;
 import org.activiti.engine.impl.bpmn.Condition;
-import org.activiti.engine.impl.bpmn.DelegateEventListener;
 import org.activiti.engine.impl.bpmn.ExclusiveGatewayActivity;
 import org.activiti.engine.impl.bpmn.ExpressionEventListener;
-import org.activiti.engine.impl.bpmn.FieldDeclarationDelegate;
+import org.activiti.engine.impl.bpmn.ExpressionTaskListener;
 import org.activiti.engine.impl.bpmn.ItemDefinition;
 import org.activiti.engine.impl.bpmn.ItemKind;
 import org.activiti.engine.impl.bpmn.JavaDelegationDelegate;
@@ -73,6 +73,7 @@ import org.activiti.engine.impl.repository.DeploymentEntity;
 import org.activiti.engine.impl.repository.ProcessDefinitionEntity;
 import org.activiti.engine.impl.scripting.ScriptingEngines;
 import org.activiti.engine.impl.task.TaskDefinition;
+import org.activiti.engine.impl.task.TaskListener;
 import org.activiti.engine.impl.util.ReflectUtil;
 import org.activiti.engine.impl.util.xml.Element;
 import org.activiti.engine.impl.util.xml.Parse;
@@ -668,7 +669,8 @@ public class BpmnParse extends Parse {
         addError("'resultVariableName' not supported for service tasks using 'class'", serviceTaskElement);
       }
 
-      Object delegateInstance = new FieldDeclarationDelegate(className, fieldDeclarations).getDelegateInstance();
+      Object delegateInstance = instantiateDelegate(className, fieldDeclarations);
+      
       if (delegateInstance instanceof ActivityBehavior) {
         activity.setActivityBehavior((ActivityBehavior) delegateInstance);
       } else if (delegateInstance instanceof JavaDelegation) {
@@ -700,8 +702,7 @@ public class BpmnParse extends Parse {
 
   protected void parseEmailServiceTask(ActivityImpl activity, Element serviceTaskElement, List<FieldDeclaration> fieldDeclarations) {
     validateFieldDeclarationsForEmail(serviceTaskElement, fieldDeclarations);
-    ActivityBehavior mailBehavior = (ActivityBehavior) new FieldDeclarationDelegate(MailActivityBehavior.class.getName(), fieldDeclarations).getDelegateInstance();
-    activity.setActivityBehavior(mailBehavior);
+    activity.setActivityBehavior(instantiateAndHandleFieldDeclarations(MailActivityBehavior.class, fieldDeclarations));
   }
   
   protected void validateFieldDeclarationsForEmail(Element serviceTaskElement, List<FieldDeclaration> fieldDeclarations) {
@@ -1028,6 +1029,51 @@ public class BpmnParse extends Parse {
         taskDefinition.addCandidateGroupIdExpression(expressionManager.createExpression(candidateGroup.trim()));
       }
     }
+    
+    // Task listeners
+    parseTaskListeners(taskElement, taskDefinition);
+  }
+  
+  protected void parseTaskListeners(Element userTaskElement, TaskDefinition taskDefinition) {
+    Element extentionsElement = userTaskElement.element("extensionElements");
+    if(extentionsElement != null) {
+      List<Element> taskListenerElements = extentionsElement.elementsNS(BpmnParser.ACTIVITI_BPMN_EXTENSIONS_NS, "taskListener");
+      for(Element taskListenerElement : taskListenerElements) {
+        String eventName = taskListenerElement.attribute("eventName");
+        if (eventName != null) {
+          if (TaskListener.EVENTNAME_CREATE.equals(eventName) 
+                  && TaskListener.EVENTNAME_ASSIGNMENT.equals(eventName)) {
+              TaskListener taskListener = parseTaskListener(taskListenerElement);
+              taskDefinition.addTaskListener(eventName, taskListener);
+            } else {
+              addError("Invalid eventName for taskListener: choose 'create' |'assignment'", userTaskElement);
+            }
+        } else {
+          addError("EventName is mandatory on taskListener", userTaskElement);
+        }
+      }      
+    }
+  }
+  
+  protected TaskListener parseTaskListener(Element taskListenerElement) {
+    TaskListener taskListener = null;
+    
+    String className = taskListenerElement.attribute("class");
+    String expression = taskListenerElement.attribute( "expression");
+    
+    if(className != null && className.trim().length() > 0) {
+      Object delegateInstance = instantiateDelegate(className, parseFieldDeclarations(taskListenerElement));
+      if (delegateInstance instanceof EventListener) {
+        taskListener = (TaskListener) delegateInstance; 
+      } else {
+        addError(delegateInstance.getClass().getName()+" doesn't implement "+TaskListener.class, taskListenerElement);
+      }
+    } else if(expression != null && expression.trim().length() > 0) {
+      taskListener = new ExpressionTaskListener(expressionManager.createExpression(expression));
+    } else {
+      addError("Element 'class' or 'expression' is mandatory on taskListener", taskListenerElement);
+    }
+    return taskListener;
   }
 
   /**
@@ -1417,13 +1463,12 @@ public class BpmnParse extends Parse {
         }
       }      
     }
-      
   }
   
   /**
    * Check if the given event name is valid. If not, an appropriate error is added.
    */
-  private boolean isValidEventNameForScope(String eventName, Element listenerElement) {
+  protected boolean isValidEventNameForScope(String eventName, Element listenerElement) {
     if(eventName != null && eventName.trim().length() > 0) {
       if("start".equals(eventName) || "end".equals(eventName)) {
         return true;
@@ -1461,10 +1506,9 @@ public class BpmnParse extends Parse {
     String className = eventListenerElement.attribute("class");
     String expression = eventListenerElement.attribute( "expression");
     
-    List<FieldDeclaration> fieldDeclarations = parseFieldDeclarations(eventListenerElement);
-    
     if(className != null && className.trim().length() > 0) {
-      Object delegateInstance = new DelegateEventListener(className, fieldDeclarations).getDelegateInstance();
+
+      Object delegateInstance = instantiateDelegate(className, parseFieldDeclarations(eventListenerElement));
       if (delegateInstance instanceof EventListener) {
         eventListener = (EventListener) delegateInstance; 
       } else if (delegateInstance instanceof JavaDelegation) {
@@ -1472,6 +1516,7 @@ public class BpmnParse extends Parse {
       } else {
         addError(delegateInstance.getClass().getName()+" doesn't implement "+JavaDelegation.class.getName()+" nor "+EventListener.class.getName(), eventListenerElement);
       }
+      
     } else if(expression != null && expression.trim().length() > 0) {
       eventListener = new ExpressionEventListener(expressionManager.createExpression(expression));
     } else {
@@ -1560,4 +1605,40 @@ public class BpmnParse extends Parse {
     }
     return null;
   }
+  
+  @SuppressWarnings("unchecked")
+  protected <T> T instantiateAndHandleFieldDeclarations(Class<T> clazz, List<FieldDeclaration> fieldDeclarations) {
+    return (T) instantiateDelegate(clazz.getName(), fieldDeclarations);
+  }
+  
+  protected Object instantiateDelegate(String className, List<FieldDeclaration> fieldDeclarations) {
+    Object object = ReflectUtil.instantiate(className);
+    if(fieldDeclarations != null) {
+      for(FieldDeclaration declaration : fieldDeclarations) {
+        Field field = ReflectUtil.getField(declaration.getName(), object);
+        if(field == null) {
+          throw new ActivitiException("Field definition uses unexisting field '" + declaration.getName() + "' on class " + className);
+        }
+        // Check if the delegate field's type is correct
+       if(!fieldTypeCompatible(declaration, field)) {
+         throw new ActivitiException("Incompatible type set on field declaration '" + declaration.getName() 
+            + "' for class " + className 
+            + ". Declared value has type " + declaration.getValue().getClass().getName() 
+            + ", while expecting " + field.getType().getName());
+       }
+       ReflectUtil.setField(field, object, declaration.getValue());
+      }
+    }
+    return object;
+  }
+  
+  protected boolean fieldTypeCompatible(FieldDeclaration declaration, Field field) {
+    if(declaration.getValue() != null) {
+      return field.getType().isAssignableFrom(declaration.getValue().getClass());
+    } else {      
+      // Null can be set any field type
+      return true;
+    }
+  }
+  
 }

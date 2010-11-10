@@ -11,26 +11,34 @@
  * limitations under the License.
  */
 
-package org.activiti.engine.impl.history.handler;
+package org.activiti.engine.impl.bpmn;
 
+import org.activiti.engine.ActivitiException;
 import org.activiti.engine.delegate.DelegateTask;
-import org.activiti.engine.impl.history.HistoricActivityInstanceEntity;
+import org.activiti.engine.impl.el.Expression;
 import org.activiti.engine.impl.runtime.ExecutionEntity;
 import org.activiti.engine.impl.task.TaskEntity;
 import org.activiti.engine.impl.task.TaskListener;
 
 
 /**
- * @author Tom Baeyens
+ * @author Joram Barrez
  */
-public class UserTaskAssignmentHandler implements TaskListener {
-
-  public void notify(DelegateTask task) {
-    ExecutionEntity execution = ((TaskEntity) task).getExecution();
-    if (execution != null) {
-      HistoricActivityInstanceEntity historicActivityInstance = ActivityInstanceEndHandler.findActivityInstance(execution);
-      historicActivityInstance.setAssignee(task.getAssignee());
-    }
+public class ExpressionTaskListener implements TaskListener {
+  
+  protected Expression expression;
+  
+  public ExpressionTaskListener(Expression expression) {
+    this.expression = expression;
   }
   
+  public void notify(DelegateTask delegateTask) {
+    ExecutionEntity execution = ((TaskEntity) delegateTask).getExecution();
+    if (execution != null) {
+      expression.getValue(execution);
+    } else {
+      throw new ActivitiException("Expressions are not usable outside a execution context");
+    }
+  }
+
 }

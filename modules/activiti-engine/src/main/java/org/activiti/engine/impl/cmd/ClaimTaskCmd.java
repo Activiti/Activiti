@@ -13,7 +13,6 @@
 package org.activiti.engine.impl.cmd;
 
 import org.activiti.engine.ActivitiException;
-import org.activiti.engine.impl.cfg.IdentitySession;
 import org.activiti.engine.impl.cfg.TaskSession;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
@@ -40,7 +39,6 @@ public class ClaimTaskCmd implements Command<Void> {
     }
     
     TaskSession taskSession = commandContext.getTaskSession();
-    IdentitySession identitySession = commandContext.getIdentitySession();
     TaskEntity task = taskSession.findTaskById(taskId);
     
     if (task == null) {

@@ -39,7 +39,7 @@ public interface RuntimeSession {
   long findProcessInstanceCountByQueryCriteria(Object executionQuery);
   List<ProcessInstance> findProcessInstanceByQueryCriteria(Object executionQuery, Page page);
   List<ExecutionEntity> findChildExecutionsByParentExecutionId(String executionId);
-  ExecutionEntity findExecutionById(String activityInstanceId);
+  ExecutionEntity findExecutionById(String executionId);
   
   List<VariableInstanceEntity> findVariableInstancesByExecutionId(String executionId);
   List<VariableInstanceEntity> findVariablesByTaskId(String taskId);
