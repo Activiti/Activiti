@@ -229,6 +229,7 @@
     		<include name="jaxb-impl-*.jar"/> 
       	<include name="httpclient-*.jar" />
       	<include name="httpcore-*.jar" />
+      	<include name="svnclientadapter-*.jar" />
     	</fileset>
     </copy>
 
