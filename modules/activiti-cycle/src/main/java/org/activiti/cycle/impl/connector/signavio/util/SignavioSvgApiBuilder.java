@@ -108,11 +108,10 @@ public class SignavioSvgApiBuilder {
     return HEADER + "<div id=\"model\">" + content + "</div>" + FOOTER;
   }
 
-  public static String buildHtml(String content, String additionalContent, int height, int width) {
-    return HEADER + "<div id=\"model\" style=\"height: " + height + "px; width: " + width + "px;\">" + content + "</div>" + additionalContent + FOOTER;
+  public static String buildHtml(String content, String additionalContent, int height) {
+    return HEADER + "<div id=\"model\" style=\"height: " + height + "px;\">" + content + "</div>" + additionalContent + FOOTER;
   }
   
-
   public String buildScript() {
     try {
       StringBuilder svgApiCall = new StringBuilder();

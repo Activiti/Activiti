@@ -95,7 +95,7 @@ public class SignavioDiffProvider extends SignavioContentRepresentationProvider 
     htmlContent += "Changes from " + artifact.getMetadata().getName() + " in " + diffTarget.getMetadata().getName();
     htmlContent += script2;
 
-    String html = SignavioSvgApiBuilder.buildHtml(htmlContent, "", 200, 600);
+    String html = SignavioSvgApiBuilder.buildHtml(htmlContent, "", 200);
     content.setValue(html);
     
   }
