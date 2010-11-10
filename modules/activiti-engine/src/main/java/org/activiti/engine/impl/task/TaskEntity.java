@@ -28,7 +28,6 @@ import org.activiti.engine.impl.db.PersistentObject;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.repository.ProcessDefinitionEntity;
 import org.activiti.engine.impl.runtime.ExecutionEntity;
-import org.activiti.engine.impl.runtime.VariableMap;
 import org.activiti.engine.impl.util.ClockUtil;
 import org.activiti.engine.task.IdentityLinkType;
 import org.activiti.engine.task.Task;
@@ -49,6 +48,7 @@ public class TaskEntity implements Task, Serializable, PersistentObject {
   protected String description;
   protected int priority = Task.PRIORITY_NORMAL;
   protected Date createTime; // The time when the task has been created
+  
   protected boolean isIdentityLinksInitialized = false;
   protected List<IdentityLinkEntity> taskIdentityLinkEntities = new ArrayList<IdentityLinkEntity>(); 
   
@@ -170,10 +170,13 @@ public class TaskEntity implements Task, Serializable, PersistentObject {
   /*
    * TASK ASSIGNMENT
    */
-  public IdentityLinkEntity createIdentityLink() {
+  public IdentityLinkEntity createIdentityLink(String userId, String groupId, String type) {
     IdentityLinkEntity identityLinkEntity = IdentityLinkEntity.createAndInsert();
     getIdentityLinks().add(identityLinkEntity);
     identityLinkEntity.setTask(this);
+    identityLinkEntity.setUserId(userId);
+    identityLinkEntity.setGroupId(groupId);
+    identityLinkEntity.setType(type);
     return identityLinkEntity;
   }
   
@@ -188,15 +191,11 @@ public class TaskEntity implements Task, Serializable, PersistentObject {
   }
   
   public void addCandidateUser(String userId) {
-    IdentityLinkEntity identityLink = createIdentityLink();
-    identityLink.setUserId(userId);
-    identityLink.setType(IdentityLinkType.CANDIDATE);
+    createIdentityLink(userId, null, IdentityLinkType.CANDIDATE);
   }
   
   public void addCandidateGroup(String groupId) {
-    IdentityLinkEntity identityLink = createIdentityLink();
-    identityLink.setGroupId(groupId);
-    identityLink.setType(IdentityLinkType.CANDIDATE);
+    createIdentityLink(null, groupId, IdentityLinkType.CANDIDATE);
   }
   
   public List<IdentityLinkEntity> getIdentityLinks() {
@@ -235,17 +234,13 @@ public class TaskEntity implements Task, Serializable, PersistentObject {
     this.assignee = assignee;
     fireEvent(TaskListener.EVENTNAME_ASSIGNMENT);
   }
-
+  
   public void fireEvent(String taskEventName) {
-    Map<String, List<TaskListener>> taskListeners = CommandContext
-      .getCurrent()
-      .getProcessEngineConfiguration()
-      .getTaskListeners();
-    
-    if (taskListeners!=null) {
-      List<TaskListener> taskAssignmentListeners = taskListeners.get(taskEventName);
-      if (taskAssignmentListeners!=null) {
-        for (TaskListener taskListener: taskAssignmentListeners) {
+    TaskDefinition taskDefinition = getTaskDefinition();
+    if (taskDefinition != null) {
+      List<TaskListener> taskEventListeners = getTaskDefinition().getTaskListener(taskEventName);
+      if (taskEventListeners != null) {
+        for (TaskListener taskListener : taskEventListeners) {
           taskListener.notify(this);
         }
       }
@@ -333,7 +328,13 @@ public class TaskEntity implements Task, Serializable, PersistentObject {
   public void setProcessDefinitionId(String processDefinitionId) {
     this.processDefinitionId = processDefinitionId;
   }  
-
+  
+  // used in MyBatis mapping: no need to fire event every time the task is fetched from db and assignee is set by reflection
+  // MyBatis usage:  <result property="assigneeWithoutFireEvent" column="ASSIGNEE_" jdbcType="VARCHAR"/>
+  public void setAssigneeWithoutFireEvent(String assignee) {
+    setAssignee(assignee);
+  }
+  
   public String getAssignee() {
     return assignee;
   }

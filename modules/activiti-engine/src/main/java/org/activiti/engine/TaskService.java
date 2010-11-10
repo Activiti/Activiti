@@ -61,6 +61,8 @@ public interface TaskService {
 	
 	 /**
    * Claim responsibility for a task: the given user is made assignee for the task.
+   * The difference with {@link #setAssignee(String, String)} is that here 
+   * a check is done if the provided user is known by the identity component.
    * @param taskId task to claim, cannot be null.
    * @param userId user that claims the task. When userId is null the task is unclaimed,
    * assigned to no one.
@@ -87,8 +89,9 @@ public interface TaskService {
 
   /**
    * Changes the assignee of the given task to the given userId.
+   * No check is done whether the user is known by the identity component.
    * @param taskId id of the task, cannot be null.
-   * @param userId id of the user to use as assignee, cannot be null.
+   * @param userId id of the user to use as assignee.
    * @throws ActivitiException when the task or user doesn't exist.
    */
   void setAssignee(String taskId, String userId);

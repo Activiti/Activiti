@@ -621,7 +621,7 @@ public class BpmnParse extends Parse {
     parseEventListenersOnScope(scriptTaskElement, activity);
 
     for (BpmnParseListener parseListener: parseListeners) {
-      parseListener.parseScript(scriptTaskElement, scope, activity);
+      parseListener.parseScriptTask(scriptTaskElement, scope, activity);
     }
   }
 
@@ -873,11 +873,9 @@ public class BpmnParse extends Parse {
     TaskDefinition taskDefinition = parseTaskDefinition(userTaskElement, activity.getId(), (ProcessDefinitionEntity) scope.getProcessDefinition());
 
     UserTaskActivity userTaskActivity = new UserTaskActivity(expressionManager, taskDefinition);
-
     activity.setActivityBehavior(userTaskActivity);
 
     parseProperties(userTaskElement, activity);
-    
     parseEventListenersOnScope(userTaskElement, activity);
 
     for (BpmnParseListener parseListener: parseListeners) {

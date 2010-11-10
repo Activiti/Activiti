@@ -22,7 +22,7 @@ import org.activiti.engine.impl.task.TaskListener;
 /**
  * @author Tom Baeyens
  */
-public class HistoryTaskAssignmentHandler implements TaskListener {
+public class UserTaskAssignmentHandler implements TaskListener {
 
   public void notify(TaskEntity task) {
     ExecutionEntity execution = task.getExecution();

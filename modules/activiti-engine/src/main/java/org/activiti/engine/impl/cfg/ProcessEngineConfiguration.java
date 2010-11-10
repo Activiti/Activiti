@@ -59,7 +59,6 @@ import org.activiti.engine.impl.form.FormTypes;
 import org.activiti.engine.impl.form.JuelFormEngine;
 import org.activiti.engine.impl.form.LongFormType;
 import org.activiti.engine.impl.form.StringFormType;
-import org.activiti.engine.impl.history.handler.HistoryTaskAssignmentHandler;
 import org.activiti.engine.impl.interceptor.CommandContextFactory;
 import org.activiti.engine.impl.interceptor.CommandContextInterceptor;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
@@ -74,7 +73,6 @@ import org.activiti.engine.impl.jobexecutor.JobHandlers;
 import org.activiti.engine.impl.jobexecutor.TimerExecuteNestedActivityJobHandler;
 import org.activiti.engine.impl.repository.Deployer;
 import org.activiti.engine.impl.scripting.ScriptingEngines;
-import org.activiti.engine.impl.task.TaskListener;
 import org.activiti.engine.impl.variable.DefaultVariableTypes;
 import org.activiti.engine.impl.variable.EntityManagerSession;
 import org.activiti.engine.impl.variable.EntityManagerSessionFactory;
@@ -183,7 +181,6 @@ public class ProcessEngineConfiguration {
 
   // History
   protected int historyLevel;
-  protected Map<String, List<TaskListener>> taskListeners;
   
   // Webservices
   protected String wsSyncFactoryClassName;
@@ -342,10 +339,6 @@ public class ProcessEngineConfiguration {
       notifyConfigurationComplete(expressionManager);
       notifyConfigurationComplete(businessCalendarManager);
 
-      if (historyLevel>=HISTORYLEVEL_ACTIVITY) {
-        addTaskListener(TaskListener.EVENTNAME_ASSIGNMENT, new HistoryTaskAssignmentHandler());
-      }
-      
       isConfigurationCompleted = true;
     }
   }
@@ -364,18 +357,6 @@ public class ProcessEngineConfiguration {
       }
     }
     return chain.get(0);
-  }
-  
-  public void addTaskListener(String taskEventName, TaskListener taskListener) {
-    if (taskListeners==null) {
-      taskListeners = new HashMap<String, List<TaskListener>>();
-    }
-    List<TaskListener> taskEventListeners = taskListeners.get(taskEventName);
-    if (taskEventListeners==null) {
-      taskEventListeners = new ArrayList<TaskListener>();
-      taskListeners.put(taskEventName, taskEventListeners);
-    }
-    taskEventListeners.add(taskListener);
   }
 
   protected void notifyConfigurationComplete(Object object) {
@@ -707,15 +688,6 @@ public class ProcessEngineConfiguration {
   public void setMailServerDefaultFrom(String mailServerDefaultFrom) {
     this.mailServerDefaultFrom = mailServerDefaultFrom;
   }
-
-  public Map<String, List<TaskListener>> getTaskListeners() {
-    return taskListeners;
-  }
-  
-  public void setTaskListeners(Map<String, List<TaskListener>> taskListeners) {
-    this.taskListeners = taskListeners;
-  }
-
   
   public List<CommandInterceptor> getCommandInterceptorsTxRequired() {
     return commandInterceptorsTxRequired;

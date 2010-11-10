@@ -13,21 +13,35 @@
 
 package org.activiti.engine.impl.history.handler;
 
+import org.activiti.engine.impl.bpmn.UserTaskActivity;
 import org.activiti.engine.impl.bpmn.parser.BpmnParseListener;
+import org.activiti.engine.impl.cfg.ProcessEngineConfiguration;
 import org.activiti.engine.impl.pvm.delegate.EventListener;
 import org.activiti.engine.impl.pvm.process.ActivityImpl;
 import org.activiti.engine.impl.pvm.process.ScopeImpl;
 import org.activiti.engine.impl.pvm.process.TransitionImpl;
 import org.activiti.engine.impl.repository.ProcessDefinitionEntity;
+import org.activiti.engine.impl.task.TaskDefinition;
+import org.activiti.engine.impl.task.TaskListener;
 import org.activiti.engine.impl.util.xml.Element;
 import org.activiti.engine.impl.variable.VariableDeclaration;
 
 
 /**
  * @author Tom Baeyens
+ * @author Joram Barrez
  */
 public class HistoryParseListener implements BpmnParseListener {
+  
+  // Statically created handlers
+  protected static final UserTaskAssignmentHandler USER_TASK_ASSIGNMENT_HANDLER = new UserTaskAssignmentHandler();
 
+  protected int historyLevel;
+  
+  public HistoryParseListener(int historyLevel) {
+    this.historyLevel = historyLevel;
+  }
+  
   public void parseProcess(Element processElement, ProcessDefinitionEntity processDefinition) {
     processDefinition.addEventListener(EventListener.EVENTNAME_START, new ProcessInstanceStartHandler());
     processDefinition.addEventListener(EventListener.EVENTNAME_END, new ProcessInstanceEndHandler());
@@ -45,7 +59,7 @@ public class HistoryParseListener implements BpmnParseListener {
     addActivityHandlers(manualTaskElement, activity);
   }
 
-  public void parseScript(Element scriptTaskElement, ScopeImpl scope, ActivityImpl activity) {
+  public void parseScriptTask(Element scriptTaskElement, ScopeImpl scope, ActivityImpl activity) {
     addActivityHandlers(scriptTaskElement, activity);
   }
 
@@ -55,6 +69,11 @@ public class HistoryParseListener implements BpmnParseListener {
 
   public void parseUserTask(Element userTaskElement, ScopeImpl scope, ActivityImpl activity) {
     addActivityHandlers(userTaskElement, activity);
+    
+    if (historyLevel>=ProcessEngineConfiguration.HISTORYLEVEL_ACTIVITY) {
+      TaskDefinition taskDefinition = ((UserTaskActivity) activity.getActivityBehavior()).getTaskDefinition();
+      taskDefinition.addTaskListener(TaskListener.EVENTNAME_ASSIGNMENT, USER_TASK_ASSIGNMENT_HANDLER);
+    }
   }
 
   public void parseServiceTask(Element serviceTaskElement, ScopeImpl scope, ActivityImpl activity) {

@@ -36,7 +36,7 @@ public interface Task {
   /** Free text description of the task. */
 	String getDescription();
 	
-  /** Refers to a {@link User.getId() user} which is the owner or person responsible for completing this task. */
+  /** Change the description of the task */
 	void setDescription(String description);
 	
 	/** indication of how important/urgent this task is with a number between 

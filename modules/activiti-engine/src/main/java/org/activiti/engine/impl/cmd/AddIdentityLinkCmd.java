@@ -84,31 +84,17 @@ public class AddIdentityLinkCmd implements Command<Void> {
        throw new ActivitiException("Cannot find user with id " + userId);
     }
     
-    // Special treatment for assignee
+    if (groupId != null && commandContext.getIdentitySession().findGroupById(groupId) == null) {
+      throw new ActivitiException("Cannot find group with id " + groupId);
+    }
+    
     if (IdentityLinkType.ASSIGNEE.equals(type)) {
       task.setAssignee(userId);
     } else {
-      if (userId != null) {
-        addIdentityLink(task, userId, null);
-      } else {
-        if (commandContext.getIdentitySession().findGroupById(groupId) == null) {
-          throw new ActivitiException("Cannot find group with id " + groupId);
-        } 
-        addIdentityLink(task, null, groupId);
-      }
-      
+      task.createIdentityLink(userId, groupId, type);
     }
+    
     return null;  
   }
   
-  protected void addIdentityLink(TaskEntity task, String userId, String groupId) {
-    IdentityLinkEntity identityLinkEntity = task.createIdentityLink();
-    identityLinkEntity.setType(type);
-    if (userId != null) {
-      identityLinkEntity.setUserId(userId);      
-    } else {
-      identityLinkEntity.setGroupId(groupId);
-    }
-  }
-
 }

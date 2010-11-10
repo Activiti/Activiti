@@ -89,7 +89,7 @@ public class IdentityLinkEntity implements Serializable, IdentityLink, Persisten
   }
   
   public void setUserId(String userId) {
-    if (groupId != null) {
+    if (this.groupId != null && userId != null) {
       throw new ActivitiException("Cannot assign a userId to a task assignment that already has a groupId");
     }
     this.userId = userId;
@@ -100,7 +100,7 @@ public class IdentityLinkEntity implements Serializable, IdentityLink, Persisten
   }
   
   public void setGroupId(String groupId) {
-    if (userId != null) {
+    if (this.userId != null && groupId != null) {
       throw new ActivitiException("Cannot assign a groupId to a task assignment that already has a userId");
     }
     this.groupId = groupId;

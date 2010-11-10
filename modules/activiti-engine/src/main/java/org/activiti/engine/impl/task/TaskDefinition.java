@@ -12,7 +12,11 @@
  */
 package org.activiti.engine.impl.task;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.activiti.engine.impl.el.Expression;
@@ -26,14 +30,19 @@ import org.activiti.engine.impl.form.TaskFormHandler;
 public class TaskDefinition {
 
   protected String key;
+  
   // assignment fields
   protected Expression nameExpression;
   protected Expression descriptionExpression;
   protected Expression assigneeExpression;
   protected Set<Expression> candidateUserIdExpressions = new HashSet<Expression>();
   protected Set<Expression> candidateGroupIdExpressions = new HashSet<Expression>();
+  
   // form fields
   protected TaskFormHandler taskFormHandler;
+  
+  // task listeners
+  protected Map<String, List<TaskListener>> taskListeners = new HashMap<String, List<TaskListener>>();
   
   public TaskDefinition(TaskFormHandler taskFormHandler) {
     this.taskFormHandler = taskFormHandler;
@@ -96,4 +105,26 @@ public class TaskDefinition {
   public void setKey(String key) {
     this.key = key;
   }
+
+  public Map<String, List<TaskListener>> getTaskListeners() {
+    return taskListeners;
+  }
+
+  public void setTaskListeners(Map<String, List<TaskListener>> taskListeners) {
+    this.taskListeners = taskListeners;
+  }
+  
+  public List<TaskListener> getTaskListener(String eventName) {
+    return taskListeners.get(eventName);
+  }
+  
+  public void addTaskListener(String eventName, TaskListener taskListener) {
+    List<TaskListener> taskEventListeners = taskListeners.get(eventName);
+    if (taskEventListeners == null) {
+      taskEventListeners = new ArrayList<TaskListener>();
+      taskListeners.put(eventName, taskEventListeners);
+    }
+    taskEventListeners.add(taskListener);
+  }
+  
 }
