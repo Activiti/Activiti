@@ -2,7 +2,6 @@ package org.activiti.cycle.impl.connector.svn;
 
 import org.activiti.cycle.RepositoryConnector;
 import org.activiti.cycle.impl.conf.PasswordEnabledRepositoryConnectorConfiguration;
-import org.activiti.cycle.impl.conf.RepositoryConnectorConfiguration;
 
 /**
  * The Configuration for {@link SvnRepositoryConnector}s
@@ -27,6 +26,7 @@ public class SvnConnectorConfiguration extends PasswordEnabledRepositoryConnecto
 	 * 
 	 * @return
 	 */
+	@Override
 	public RepositoryConnector createConnector() {
 		SvnRepositoryConnector theConnector = new SvnRepositoryConnector(this);
 		return theConnector;

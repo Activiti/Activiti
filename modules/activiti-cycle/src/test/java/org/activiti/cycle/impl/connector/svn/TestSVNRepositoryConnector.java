@@ -1,18 +1,12 @@
 package org.activiti.cycle.impl.connector.svn;
 
-import java.io.File;
-import java.io.StringReader;
-import java.io.StringWriter;
-
 import org.activiti.cycle.Content;
 import org.activiti.cycle.RepositoryArtifact;
 import org.activiti.cycle.RepositoryConnector;
 import org.activiti.cycle.RepositoryFolder;
-import org.activiti.cycle.RepositoryNode;
 import org.activiti.cycle.RepositoryNodeCollection;
 import org.activiti.cycle.RepositoryNodeNotFoundException;
 import org.activiti.cycle.impl.conf.ConfigurationContainer;
-import org.activiti.cycle.impl.connector.fs.FileSystemConnectorConfiguration;
 import org.activiti.cycle.impl.plugin.PluginFinder;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -49,6 +43,13 @@ public class TestSVNRepositoryConnector {
 		RepositoryNodeCollection result = connector.getChildren("");
 		Assert.assertTrue(result.asList().size() > 0);
 
+		try {
+			result = connector.getChildren("nonExistentPath");
+			Assert.fail();
+		} catch (RepositoryNodeNotFoundException e) {
+			// this should happen
+		}
+
 	}
 
 	@Test
@@ -56,7 +57,7 @@ public class TestSVNRepositoryConnector {
 		RepositoryArtifact artifact = connector.getRepositoryArtifact("activiti/trunk/pom.xml");
 		Assert.assertEquals("pom.xml", artifact.getMetadata().getName());
 		try {
-			connector.getRepositoryArtifact("activiti/trunk/pom2.xml");
+			connector.getRepositoryArtifact("nonExistentArtifact");
 			Assert.fail();
 		} catch (RepositoryNodeNotFoundException e) {
 			// this should happen
@@ -68,7 +69,7 @@ public class TestSVNRepositoryConnector {
 		RepositoryFolder folder = connector.getRepositoryFolder("activiti/trunk");
 		Assert.assertEquals("trunk", folder.getMetadata().getName());
 		try {
-			connector.getRepositoryArtifact("activiti/trun");
+			connector.getRepositoryArtifact("nonExistentFolder");
 			Assert.fail();
 		} catch (RepositoryNodeNotFoundException e) {
 			// this should happen
@@ -78,9 +79,9 @@ public class TestSVNRepositoryConnector {
 	@Test
 	public void testGetXmlContent() {
 		RepositoryArtifact artifact = connector.getRepositoryArtifact("activiti/trunk/pom.xml");
-		System.out.println(artifact.getArtifactType());
+
 		Content content = connector.getContent(artifact.getNodeId(), artifact.getArtifactType().getContentRepresentations().get(0).getId());
-		System.out.println(content.asByteArray().length);
+		Assert.assertTrue(content.asByteArray().length > 0);
 	}
 
 }

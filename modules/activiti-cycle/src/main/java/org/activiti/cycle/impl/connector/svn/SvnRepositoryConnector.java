@@ -92,10 +92,9 @@ public class SvnRepositoryConnector extends AbstractRepositoryConnector<SvnConne
 		try {
 			clientAdapter.getList(new SVNUrl(getConfiguration().getRepositoryPath()), SVNRevision.HEAD, false);
 			return true;
-		} catch (MalformedURLException e) {
-			throw new RuntimeException("Cannot login to repository, malformed URL", e);
-		} catch (SVNClientException e) {
-			throw new RuntimeException("Cannot login to repository", e);
+		} catch (Exception e) {
+			log.log(Level.WARNING, "cannot log into repository", e);
+			return false;
 		}
 	}
 
@@ -107,75 +106,49 @@ public class SvnRepositoryConnector extends AbstractRepositoryConnector<SvnConne
 	public RepositoryArtifact getRepositoryArtifact(String id) throws RepositoryNodeNotFoundException {
 		ISVNClientAdapter clientAdapter = getSvnClientAdapter();
 		if (clientAdapter == null)
-			return null;
+			throw new RepositoryNodeNotFoundException(getConfiguration().getName(), RepositoryArtifact.class, id);
 
 		ISVNDirEntry entry = null;
 
 		try {
 			entry = clientAdapter.getDirEntry(buildSVNURL(id), SVNRevision.HEAD);
-		} catch (SVNClientException e) {
-			log.log(Level.WARNING, "cannot get Children of " + id, e);
-			return null;
-		} catch (MalformedURLException e) {
-			log.log(Level.WARNING, "cannot get children, malformed URL ", e);
-			throw new RepositoryNodeNotFoundException("cannot get Children of, malformed URL " + id);
-		}
-		try {
 			return (RepositoryArtifact) createRepositoryNode(entry, id);
 		} catch (Exception e) {
-			throw new RepositoryNodeNotFoundException("Node with id '" + id + "' not found: " + e);
+			log.log(Level.WARNING, "cannot get Artifact " + id, e);
+			throw new RepositoryNodeNotFoundException(getConfiguration().getName(), RepositoryArtifact.class, id, e);
 		}
+
 	}
 
 	public RepositoryFolder getRepositoryFolder(String id) throws RepositoryNodeNotFoundException {
 		ISVNClientAdapter clientAdapter = getSvnClientAdapter();
 		if (clientAdapter == null)
-			return null;
+			throw new RepositoryNodeNotFoundException(getConfiguration().getName(), RepositoryFolder.class, id);
 
 		ISVNDirEntry entry = null;
 
 		try {
 			entry = clientAdapter.getDirEntry(buildSVNURL(id), SVNRevision.HEAD);
-		} catch (SVNClientException e) {
-			log.log(Level.WARNING, "cannot get Children of " + id, e);
-			return null;
-		} catch (MalformedURLException e) {
-			log.log(Level.WARNING, "cannot get children, malformed URL ", e);
-			throw new RepositoryNodeNotFoundException("cannot get Children of, malformed URL " + id);
-		}
-		try {
 			return (RepositoryFolder) createRepositoryNode(entry, id);
 		} catch (Exception e) {
-			throw new RepositoryNodeNotFoundException("Node with id '" + id + "' not found: " + e);
+			log.log(Level.WARNING, "cannot get Folder " + id, e);
+			throw new RepositoryNodeNotFoundException(getConfiguration().getName(), RepositoryFolder.class, id, e);
 		}
 
-	}
-
-	public SVNUrl buildSVNURL(String id) throws MalformedURLException {
-		String urlString = getConfiguration().getRepositoryPath();
-		if (!urlString.endsWith("/")) {
-			urlString += "/";
-		}
-		urlString += id;
-		return new SVNUrl(urlString);
 	}
 
 	public RepositoryNodeCollection getChildren(String id) throws RepositoryNodeNotFoundException {
 		ISVNClientAdapter clientAdapter = getSvnClientAdapter();
 		if (clientAdapter == null)
-			return null;
+			throw new RepositoryNodeNotFoundException(getConfiguration().getName(), RepositoryFolder.class, id);
 
 		ISVNDirEntry[] dirEntries;
 
 		try {
 			dirEntries = clientAdapter.getList(buildSVNURL(id), SVNRevision.HEAD, false);
-
-		} catch (SVNClientException e) {
-			log.log(Level.WARNING, "cannot get Children of " + id, e);
-			return null;
-		} catch (MalformedURLException e) {
-			log.log(Level.WARNING, "cannot get children, malformed URL ", e);
-			throw new RepositoryNodeNotFoundException("cannot get Children of, malformed URL " + id);
+		} catch (Exception e) {
+			log.log(Level.WARNING, "cannot get children of " + id, e);
+			throw new RepositoryNodeNotFoundException(getConfiguration().getName(), RepositoryFolder.class, id, e);
 		}
 
 		List<RepositoryNode> nodeList = new ArrayList<RepositoryNode>();
@@ -188,6 +161,15 @@ public class SvnRepositoryConnector extends AbstractRepositoryConnector<SvnConne
 
 		RepositoryNodeCollection result = new RepositoryNodeCollectionImpl(nodeList);
 		return result;
+	}
+
+	public SVNUrl buildSVNURL(String id) throws MalformedURLException {
+		String urlString = getConfiguration().getRepositoryPath();
+		if (!urlString.endsWith("/")) {
+			urlString += "/";
+		}
+		urlString += id;
+		return new SVNUrl(urlString);
 	}
 
 	protected RepositoryNode createRepositoryNode(ISVNDirEntry isvnDirEntry, String id) {
@@ -260,38 +242,35 @@ public class SvnRepositoryConnector extends AbstractRepositoryConnector<SvnConne
 
 	public RepositoryArtifact createArtifact(String parentFolderId, String artifactName, String artifactType, Content artifactContent)
 			throws RepositoryNodeNotFoundException {
-		// TODO Auto-generated method stub
-		return null;
+		throw new UnsupportedOperationException("createArtifact");
 	}
 
 	public RepositoryArtifact createArtifactFromContentRepresentation(String parentFolderId, String artifactName, String artifactType,
 			String contentRepresentationName, Content artifactContent) throws RepositoryNodeNotFoundException {
-		// TODO Auto-generated method stub
-		return null;
+		throw new UnsupportedOperationException("createArtifactFromContentRepresentation");
 	}
 
 	public RepositoryFolder createFolder(String parentFolderId, String name) throws RepositoryNodeNotFoundException {
-		// TODO Auto-generated method stub
-		return null;
+		throw new UnsupportedOperationException("createFolder");
 	}
 
 	public void updateContent(String artifactId, Content content) throws RepositoryNodeNotFoundException {
-		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException("updateContent");
 
 	}
 
 	public void updateContent(String artifactId, String contentRepresentationName, Content content) throws RepositoryNodeNotFoundException {
-		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException("updateContent");
 
 	}
 
 	public void deleteArtifact(String artifactId) throws RepositoryNodeNotFoundException {
-		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException("deleteArtifact");
 
 	}
 
 	public void deleteFolder(String folderId) throws RepositoryNodeNotFoundException {
-		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException("deleteFolder");
 
 	}
 
