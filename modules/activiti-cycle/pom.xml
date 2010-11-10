@@ -30,6 +30,7 @@
         <configuration>
           <excludes>
             <exclude>**/RepositoryConnectorConfigurationManagerImplTest.java</exclude>
+	    <exclude>**/TestSVNRepositoryConnector.java</exclude>
           </excludes>
         </configuration>
       </plugin>
@@ -109,6 +110,16 @@
       	  <groupId>com.signavio</groupId>
       	  <artifactId>signavio-core-components</artifactId>
     	</dependency>
+    	
+    	<!-- required by the Activiti Cycle svnconnector plugin -->
+    	<dependency>
+    		<groupId>org.tigris.subversion</groupId>
+    		<artifactId>svnclientadapter</artifactId> 
+    		<version>0.9.100</version>    	
+    	</dependency>
+    	
+    	   	
+    	
   </dependencies>
 			
 	<profiles>
