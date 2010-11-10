@@ -51,6 +51,10 @@
 		  <groupId>org.apache.cxf</groupId>
     	  <artifactId>cxf-rt-frontend-jaxws</artifactId>
 		</dependency>
+		<dependency>
+      	  <groupId>xerces</groupId>
+          <artifactId>xercesImpl</artifactId>
+        </dependency>
         <dependency>
           <groupId>com.h2database</groupId>
           <artifactId>h2</artifactId>

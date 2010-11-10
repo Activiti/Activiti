@@ -77,7 +77,6 @@ import org.activiti.engine.impl.util.ReflectUtil;
 import org.activiti.engine.impl.util.xml.Element;
 import org.activiti.engine.impl.util.xml.Parse;
 import org.activiti.engine.impl.variable.VariableDeclaration;
-import org.activiti.engine.impl.webservice.WSDLImporter;
 
 /**
  * Specific parsing of one BPMN 2.0 XML file, created by the {@link BpmnParser}.
@@ -174,7 +173,6 @@ public class BpmnParse extends Parse {
     this.expressionManager = parser.getExpressionManager();
     this.parseListeners = parser.getParseListeners();
     setSchemaResource(ReflectUtil.getResource(BpmnParser.SCHEMA_RESOURCE).toString());
-    this.importers.put("http://schemas.xmlsoap.org/wsdl/", new WSDLImporter());
   }
   
   public BpmnParse deployment(DeploymentEntity deployment) {
@@ -231,12 +229,31 @@ public class BpmnParse extends Parse {
     List<Element> imports = rootElement.elements("import");
     for (Element theImport : imports) {
       String importType = theImport.attribute("importType");
-      XMLImporter importer = this.importers.get(importType);
+      XMLImporter importer = this.getImporter(importType, theImport);
       if (importer == null) {
         addError("Could not import item of type " + importType, theImport);
       } else {
         importer.importFrom(theImport, this);
       }
+    }
+  }
+  
+  private XMLImporter getImporter(String importType, Element theImport) {
+    if (this.importers.containsKey(importType)) {
+      return this.importers.get(importType);
+    } else {
+      if (importType.equals("http://schemas.xmlsoap.org/wsdl/")) {
+        Class< ? > wsdlImporterClass;
+        try {
+          wsdlImporterClass = Class.forName("org.activiti.engine.impl.webservice.WSDLImporter", true, Thread.currentThread().getContextClassLoader());
+          XMLImporter newInstance = (XMLImporter) wsdlImporterClass.newInstance();
+          this.importers.put(importType, newInstance);
+          return newInstance;
+        } catch (Exception e) {
+          addError("Could not find importer for type " + importType, theImport);
+        }
+      }
+      return null;
     }
   }
 
@@ -254,7 +271,7 @@ public class BpmnParse extends Parse {
       String structureRef = itemDefinitionElement.attribute("structureRef");
       String itemKind = itemDefinitionElement.attribute("itemKind");
       Structure structure = null;
-      
+
       try {
         //it is a class
         Class<?> classStructure = ReflectUtil.loadClass(structureRef);

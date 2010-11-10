@@ -25,7 +25,7 @@
 	-->
   	<ioSpecification>
   		<dataInput id="dataInputOfProcess" itemSubjectRef="tns:prettyPrintCountRequestItem" />
-  		<dataOutput id="dataOutputOfProcess" itemSubjectRef="xsd:string" />
+  		<dataOutput id="dataOutputOfProcess" itemSubjectRef="tns:prettyPrintCountResponseItem" />
   		<inputSet>
   			<dataInputRefs>dataInputOfProcess</dataInputRefs>
   		</inputSet>
@@ -66,7 +66,7 @@
    				</assignment>
             </dataInputAssociation>
             <dataOutputAssociation>
-            	<targetRef>dataOutputOfProcess</targetRef>
+            	<targetRef>{$dataOutputOfProcess.prettyPrint}</targetRef>
             	<transformation>{$dataOutputOfServiceTask.prettyPrint}</transformation>
             </dataOutputAssociation>
     </serviceTask>
