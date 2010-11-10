@@ -11,9 +11,6 @@ public interface DelegateTask {
   /** Name or title of the task. */
   String getName();
 
-  /** Name or title of the task. */
-  void setName(String name);
-  
   /** Free text description of the task. */
   String getDescription();
   
@@ -41,12 +38,13 @@ public interface DelegateTask {
   /** The id of the activity in the process defining this task or null if this is not related to a process */
   String getTaskDefinitionKey();
   
-  // Task assignment
-  
+  /** Adds the given user as a candidate user to this task. */
   void addCandidateUser(String userId);
   
+  /** Adds the given group as candidate group to this task */
   void addCandidateGroup(String groupId);
 
+  /** Sets the current assignee of this task to the given user */
   void setAssignee(String assignee);
   
 }

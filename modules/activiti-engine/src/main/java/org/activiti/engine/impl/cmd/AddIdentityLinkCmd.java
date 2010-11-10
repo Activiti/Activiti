@@ -17,7 +17,6 @@ import org.activiti.engine.impl.cfg.TaskSession;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.task.TaskEntity;
-import org.activiti.engine.impl.task.IdentityLinkEntity;
 import org.activiti.engine.task.IdentityLinkType;
 
 
@@ -47,16 +46,12 @@ public class AddIdentityLinkCmd implements Command<Void> {
       throw new ActivitiException("taskId is null");
     }
     
-    if (userId != null && groupId != null) {
-      throw new ActivitiException("userId and groupId cannot both be given.");      
+    if (type == null) {
+      throw new ActivitiException("type is required when adding a new task identity link");
     }
     
     if (userId == null && groupId == null) {
-      throw new ActivitiException("userId and groupId cannot both be null");      
-    }
-    
-    if (type == null) {
-      throw new ActivitiException("type is required when adding a new task identity link");
+      throw new ActivitiException("userId and groupId cannot both be null");
     }
     
     // Special treatment for assignee
@@ -78,14 +73,6 @@ public class AddIdentityLinkCmd implements Command<Void> {
     
     if (task == null) {
       throw new ActivitiException("Cannot find task with id " + taskId);
-    }
-    
-    if(userId != null && commandContext.getIdentitySession().findUserById(userId) == null) {
-       throw new ActivitiException("Cannot find user with id " + userId);
-    }
-    
-    if (groupId != null && commandContext.getIdentitySession().findGroupById(groupId) == null) {
-      throw new ActivitiException("Cannot find group with id " + groupId);
     }
     
     if (IdentityLinkType.ASSIGNEE.equals(type)) {

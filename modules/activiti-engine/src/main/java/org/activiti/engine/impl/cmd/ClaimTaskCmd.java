@@ -54,12 +54,7 @@ public class ClaimTaskCmd implements Command<Void> {
           throw new ActivitiException("Task " + taskId + " is already claimed by someone else");
         }
       } else {
-        if (identitySession.isValidUser(userId)) {
-          task.setAssignee(userId);
-        } else {
-          throw new ActivitiException("Cannot claim task " + taskId + ": user " 
-                  + userId + " unknown.");
-        }
+        task.setAssignee(userId);
       }      
     } else {
       // Task should be assigned to no one

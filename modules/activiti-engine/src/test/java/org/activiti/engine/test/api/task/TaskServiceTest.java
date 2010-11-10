@@ -130,21 +130,6 @@ public class TaskServiceTest extends ActivitiInternalTestCase {
     identityService.deleteUser(user.getId());
   }
 
-  public void testClaimUnexistingUserId() {
-    Task task = taskService.newTask();
-    taskService.saveTask(task);
-
-    try {
-      taskService.claim(task.getId(), "unexistinguserid");
-      fail("ActivitiException expected");
-    } catch (ActivitiException ae) {
-      assertTextPresent("Cannot claim task", ae.getMessage());
-      assertTextPresent("user unexistinguserid unknown.", ae.getMessage());
-    }
-
-    taskService.deleteTask(task.getId());
-  }
-
   public void testClaimAlreadyClaimedTaskByOtherUser() {
     Task task = taskService.newTask();
     taskService.saveTask(task);
@@ -338,15 +323,6 @@ public class TaskServiceTest extends ActivitiInternalTestCase {
     }
   }
   
-  public void testSetAssigneeNullUserId() {
-    try {
-      taskService.setAssignee("taskId", null);
-      fail("ActivitiException expected");
-    } catch (ActivitiException ae) {
-      assertTextPresent("userId and groupId cannot both be null", ae.getMessage());
-    }
-  }
-  
   public void testSetAssigneeUnexistingTask() {
     User user = identityService.newUser("user");
     identityService.saveUser(user);
@@ -359,20 +335,6 @@ public class TaskServiceTest extends ActivitiInternalTestCase {
     }
     
     identityService.deleteUser(user.getId());
-  }
-  
-  public void testSetAssigneeUnexistingUser() {    
-    Task task = taskService.newTask();
-    taskService.saveTask(task);
-    
-    try {
-      taskService.setAssignee(task.getId(), "unexistinguser");
-      fail("ActivitiException expected");
-    } catch (ActivitiException ae) {
-      assertTextPresent("Cannot find user with id unexistinguser", ae.getMessage());
-    }
-    
-    taskService.deleteTask(task.getId());
   }
   
   public void testAddCandidateUserDuplicate() {
@@ -424,20 +386,6 @@ public class TaskServiceTest extends ActivitiInternalTestCase {
     identityService.deleteUser(user.getId());
   }
   
-  public void testAddCandidateUserUnexistingUser() {    
-    Task task = taskService.newTask();
-    taskService.saveTask(task);
-    
-    try {
-      taskService.addCandidateUser(task.getId(), "unexistinguser");
-      fail("ActivitiException expected");
-    } catch (ActivitiException ae) {
-      assertTextPresent("Cannot find user with id unexistinguser", ae.getMessage());
-    }
-    
-    taskService.deleteTask(task.getId());
-  }
-  
   public void testAddCandidateGroupNullTaskId() {
     try {
       taskService.addCandidateGroup(null, "groupId");
@@ -466,20 +414,6 @@ public class TaskServiceTest extends ActivitiInternalTestCase {
       assertTextPresent("Cannot find task with id unexistingTaskId", ae.getMessage());
     }
     identityService.deleteGroup(group.getId());
-  }
-  
-  public void testAddCandidateGroupUnexistingGroup() {    
-    Task task = taskService.newTask();
-    taskService.saveTask(task);
-    
-    try {
-      taskService.addCandidateGroup(task.getId(), "unexistinggroup");
-      fail("ActivitiException expected");
-    } catch (ActivitiException ae) {
-      assertTextPresent("Cannot find group with id unexistinggroup", ae.getMessage());
-    }
-    
-    taskService.deleteTask(task.getId());
   }
   
   public void testAddGroupIdentityLinkNullTaskId() {
@@ -514,20 +448,6 @@ public class TaskServiceTest extends ActivitiInternalTestCase {
     identityService.deleteUser(user.getId());
   }
   
-  public void testAddGroupIdentityLinkUnexistingGroup() {    
-    Task task = taskService.newTask();
-    taskService.saveTask(task);
-    
-    try {
-      taskService.addGroupIdentityLink(task.getId(), "unexistinguser", IdentityLinkType.CANDIDATE);
-      fail("ActivitiException expected");
-    } catch (ActivitiException ae) {
-      assertTextPresent("Cannot find group with id unexistinguser", ae.getMessage());
-    }
-    
-    taskService.deleteTask(task.getId());
-  }
-  
   public void testAddUserIdentityLinkNullTaskId() {
     try {
       taskService.addUserIdentityLink(null, "userId", IdentityLinkType.CANDIDATE);
@@ -558,20 +478,6 @@ public class TaskServiceTest extends ActivitiInternalTestCase {
     }
     
     identityService.deleteUser(user.getId());
-  }
-  
-  public void testAddUserIdentityLinkUnexistingUser() {    
-    Task task = taskService.newTask();
-    taskService.saveTask(task);
-    
-    try {
-      taskService.addUserIdentityLink(task.getId(), "unexistinguser", IdentityLinkType.CANDIDATE);
-      fail("ActivitiException expected");
-    } catch (ActivitiException ae) {
-      assertTextPresent("Cannot find user with id unexistinguser", ae.getMessage());
-    }
-    
-    taskService.deleteTask(task.getId());
   }
   
   public void testGetIdentityLinksWithCandidateUser() {

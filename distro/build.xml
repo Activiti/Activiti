@@ -251,6 +251,7 @@
   </target>
   
   <target name="build.userguide" unless="nodocs" >
+  	 <echo message="On failure, make sure that you have installed the Xalan libs by executing the 'install.xalan.libs' target in the 'userguide' folder."></echo>
     <ant antfile="../userguide/build.xml" inheritall="false" />
     <mkdir dir="${target.distro.root}/docs/userguide" />
   	<copy todir="${target.distro.root}/docs/userguide">
