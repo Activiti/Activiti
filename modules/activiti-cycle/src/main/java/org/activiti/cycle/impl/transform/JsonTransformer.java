@@ -21,4 +21,8 @@ public class JsonTransformer {
     return json;
   }
 
+  public JSONObject transform(String json) throws JSONException {
+    return transform(new JSONObject(json));
+  }
+
 }
