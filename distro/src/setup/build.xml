@@ -570,6 +570,14 @@ JAVA_OPTS="-Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=8787
                   substring="ORYX.Plugins.ActivitiSelectStencilSetPerspective" />
       </or>
     </condition>
+    <condition property="activiti.modeler.war.contains.plugin.selectssperspective">
+      <or>
+        <contains string="${activiti.modeler.editor.oryx.js}"
+                  substring="ORYX.Plugins.SelectStencilSetPerspective" />
+        <contains string="${activiti.modeler.editor.oryx.js}"
+                  substring="ORYX.Plugins.ActivitiSelectStencilSetPerspective" />
+      </or>
+    </condition>
     <!-- restore backup if war has already been patched -->
     <antcall target="internal.modeler.backup.restore" />
     <!-- backup the original files in case the patch needs to be reapplied,
@@ -615,7 +623,9 @@ JAVA_OPTS="-Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=8787
     <fixcrlf file="${activiti.modeler.patches.dir}/patched/plugins.xml" eol="dos" />
   </target>
 
-  <target name="internal.modeler.stencilsets.patch" depends="internal.modeler.patches.init">
+  <target name="internal.modeler.stencilsets.patch"
+          depends="internal.modeler.patches.init"
+          unless="activiti.modeler.war.contains.plugin.selectssperspective">
     <!-- add plugin code -->
     <concat destfile="${activiti.modeler.patches.dir}/patched/oryx.debug.js" append="true">
       <fileset file="files/cfg.modeler/selectssperspective.js" />
