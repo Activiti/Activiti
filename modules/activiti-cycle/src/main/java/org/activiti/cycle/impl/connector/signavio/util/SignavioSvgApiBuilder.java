@@ -14,7 +14,7 @@ import org.json.JSONObject;
 
 public class SignavioSvgApiBuilder {
 
-  public static final String HEADER = "<html><head></head><body>";
+  public static final String HEADER = "<html><head><link href=\"../../res/css/activiti-core.css\" type=\"text/css\" rel=\"stylesheet\"></head><body>";
   public static final String FOOTER = "</body></html>";
   public static final String SVGAPI_URL_REMOTE = "http://signavio-core-components.googlecode.com/svn/trunk/api/api/signavio-svg.js";
   // path to signavio-svg.js in activiti-modeler or so...
@@ -101,18 +101,32 @@ public class SignavioSvgApiBuilder {
   }
 
   public String buildHtml() {
-    return buildHtml(buildScript());
+    return buildHtml(buildScript(), null);
   }
   
   public static String buildHtml(String content) {
-    return HEADER + "<div id=\"model\">" + content + "</div>" + FOOTER;
+    return buildHtml(content, null);
+  }
+
+  public static String buildHtml(String content, String additionalContent) {
+    if (additionalContent == null) {
+      additionalContent = "";
+    }
+    return HEADER + "<div id=\"model\">" + content + "</div>" + additionalContent + FOOTER;
   }
 
   public static String buildHtml(String content, String additionalContent, int height) {
+    if (additionalContent == null) {
+      additionalContent = "";
+    }
     return HEADER + "<div id=\"model\" style=\"height: " + height + "px;\">" + content + "</div>" + additionalContent + FOOTER;
   }
   
   public String buildScript() {
+    return buildScript(100);
+  }
+
+  public String buildScript(Integer zoom) {
     try {
       StringBuilder svgApiCall = new StringBuilder();
       svgApiCall.append("<script type=\"text/javascript\" src=\"");
@@ -147,6 +161,9 @@ public class SignavioSvgApiBuilder {
       // highlight nodes
       svgApiCall.append(", focus: " + buildHighlightning());
   
+      // initial zoom
+      svgApiCall.append(", zoom: " + zoom);
+  
       svgApiCall.append("}");
       svgApiCall.append("</script>");
     
@@ -159,7 +176,7 @@ public class SignavioSvgApiBuilder {
   
   public static String buildTable(String headline, Map<String, List<String>> nodesMap) {
     StringBuffer html = new StringBuffer();
-    if (nodesMap != null || !nodesMap.isEmpty()) {
+    if (nodesMap != null && !nodesMap.isEmpty()) {
       html.append("<h2>" + headline + "</h2>");
 
       html.append("<table border=\"1\">");
@@ -169,7 +186,7 @@ public class SignavioSvgApiBuilder {
       html.append("<tbody>");
       for (Entry<String, List<String>> mapEntry : nodesMap.entrySet()) {
         html.append("<tr>");
-        html.append("<td>" + mapEntry.getKey() + "</td>");
+        html.append("<td style=\"vertical-align: top\">" + mapEntry.getKey() + "</td>");
         html.append("<td>");
         for (String message : mapEntry.getValue()) {
           html.append(message + "<br/>");
