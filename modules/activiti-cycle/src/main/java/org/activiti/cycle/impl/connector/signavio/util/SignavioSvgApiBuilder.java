@@ -16,9 +16,9 @@ public class SignavioSvgApiBuilder {
 
   public static final String HEADER = "<html><head></head><body>";
   public static final String FOOTER = "</body></html>";
-  public static final String SVGAPI_URL_REMOTE = "http://signavio-core-components.googlecode.com/svn/trunk/api/src/signavio-svg.js";
+  public static final String SVGAPI_URL_REMOTE = "http://signavio-core-components.googlecode.com/svn/trunk/api/api/signavio-svg.js";
   // path to signavio-svg.js in activiti-modeler or so...
-  public static final String SVGAPI_URL_LOCAL = "http://localhost:8080/activiti-modeler/signavio-svg.js";
+  public static final String SVGAPI_URL_LOCAL = "http://localhost:8080/activiti-modeler/api/signavio-svg.js";
   // maybe make this changable?
   public static final String SERVER_SCRIPT_URL = "http://localhost:8080/activiti-modeler";
 
