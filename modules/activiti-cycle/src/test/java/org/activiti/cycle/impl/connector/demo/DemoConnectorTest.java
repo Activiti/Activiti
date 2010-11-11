@@ -40,8 +40,7 @@ public class DemoConnectorTest {
 
     CycleService cycleService = new CycleServiceImpl(configurationContainer.getConnectorList());
 
-    // TODO: Correct user / password handling!!!!
-    cycleService.login("bernd", "bernd");
+    cycleService.login("bernd", "bernd", "demo");
 
     List<RepositoryNode> childNodes = cycleService.getChildren("demo", "/").asList();
 //    assertEquals(1, childNodes.size());

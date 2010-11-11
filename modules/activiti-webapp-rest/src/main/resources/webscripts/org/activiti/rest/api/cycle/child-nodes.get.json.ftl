@@ -1,6 +1,18 @@
-[<#list folders as folder><@printFolder folder/><#if folder_has_next>,</#if></#list>
-<#if (folders?size > 0) && (files?size > 0)>,</#if>
-<#list files as file><@printFile file/><#if file_has_next>,</#if></#list>]
+<#if authenticationError??>
+	<#escape x as jsonUtils.encodeJSONString(x)>
+	{
+		"authenticationError": "${authenticationError?string}",
+		"reposInError": [<#list reposInError?keys as key>
+			{
+    			"${key}": "${reposInError[key]}"
+    		}<#if key_has_next>,</#if></#list>]
+	}
+	</#escape>
+<#else>
+	[<#list folders as folder><@printFolder folder/><#if folder_has_next>,</#if></#list>
+	<#if (folders?size > 0) && (files?size > 0)>,</#if>
+	<#list files as file><@printFile file/><#if file_has_next>,</#if></#list>]
+</#if>
 
 <#macro printFolder folder>
 <#escape x as jsonUtils.encodeJSONString(x)>

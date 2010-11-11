@@ -44,9 +44,9 @@
      *
      * @method loadTree
      */
-    loadTree: function RepositoryService_loadTree()
+    loadTree: function RepositoryService_loadTree(data)
     {
-      this.jsonGet(this.loadTreeURL(), null, "loadTree");
+      this.jsonGet(this.loadTreeURL(data), null, "loadTree");
     },
 
     /**
@@ -55,9 +55,13 @@
      * @method loadTreeURL
      * @return {string} The url
      */
-    loadTreeURL: function RepositoryService_loadTreeURL()
+    loadTreeURL: function RepositoryService_loadTreeURL(data)
     {
-      return Activiti.service.REST_PROXY_URI_RELATIVE + "child-nodes?connectorId=/&artifactId=''";
+      var url = Activiti.service.REST_PROXY_URI_RELATIVE + "child-nodes?connectorId=/&artifactId=''";
+      if(data) {
+        url += "&" + Activiti.service.Ajax.jsonToParamString(data);
+      }
+      return url;
     },
 
     /**

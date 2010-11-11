@@ -24,12 +24,17 @@ import java.util.Map;
 public interface CycleService {
 
   /**
-   * Log in user to all registered repositories
+   * Log in to the repository configured for the given connector with the
+   * provided user name and password.
    * 
-   * TODO: (Nils Preusker, 20.10.2010) this needs to be reviewed, we are
-   * currently expecting one user for all repos...
+   * @param username
+   *          the username to log in
+   * @param password
+   *          the password to log in
+   * @param connectorId
+   *          the id of the repository-connector to use
    */
-  public boolean login(String username, String password);
+  public boolean login(String username, String password, String connectorId);
 
   /**
    * Some connectors support commit (like SVN), so all pending changes must be

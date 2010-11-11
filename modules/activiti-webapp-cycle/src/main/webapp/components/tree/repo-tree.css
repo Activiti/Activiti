@@ -111,3 +111,11 @@
 	margin-left:2px;
 	text-decoration: none;
 }
+
+#Activiti .yui-panel .bd h1 {
+  padding-bottom: 1.2em;
+}
+
+#Activiti .yui-panel .bd p {
+  margin:0.5em 0.25em 1em;
+}
