@@ -26,9 +26,11 @@
   <!-- 
   to work with Activiti Modeler or Activiti Cycle on trunk, set property activiti.modeler.download.url
   in your ${user.home}/.activiti/build.properties
-  -->  
-  <property name="activiti.modeler.download.url" value="http://activiti.org/downloads/activiti-modeler-${activiti.version}.war" />
-  <available property="is.activiti.modeler.available" file="${downloads.dir}/activiti-modeler-${activiti.version}.war" />
+  -->
+  <property name="activiti.modeler.filename" value="activiti-modeler-${activiti.version}.war" />
+  <property name="activiti.modeler.download.url" value="http://activiti.org/downloads/${activiti.modeler.filename}" />
+  <available property="is.activiti.modeler.available" file="${downloads.dir}/${activiti.modeler.filename}" />
+  <property name="activiti.modeler.patches.dir" value="${downloads.dir}/${activiti.modeler.filename}.patches" />
   <property name="activiti.modeler.repository.home" value="${activiti.home}/apps/activiti-model-repository" />
   
   <property name="maven.version" value="2.2.1" />
@@ -486,16 +488,16 @@ JAVA_OPTS="-Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=8787
   	<tstamp> <format property="touch.time" pattern="MM/dd/yyyy hh:mm aa"/>  </tstamp>
   	<touch datetime="${touch.time}" file="files/cfg.modeler/configuration.properties"/>
 
-  	<war destfile="${downloads.dir}/activiti-modeler-${activiti.version}.war" update="true">
+  	<war destfile="${downloads.dir}/${activiti.modeler.filename}" update="true">
       <zipfileset file="files/cfg.modeler/configuration.properties"  prefix="WEB-INF/classes/" />
       <!-- Activiti Cycle Plugin and Activiti stencilsets -->
       <!-- Updating the war is slow. Therefore, it is duplicated here from the
            targets internal.modeler.stencilsets.install and
            internal.modeler.plugin.cycle.install instead of invoking those. -->
-      <zipfileset file="build/modeler/patched/oryx.debug.js"       fullpath="editor/oryx.debug.js" />
-      <zipfileset file="build/modeler/patched/oryx.js"             fullpath="editor/oryx.js" />
-      <zipfileset file="build/modeler/patched/plugins.xml"         fullpath="editor/plugins.xml" />
-      <zipfileset file="build/modeler/patched/plugins.xml"         fullpath="WEB-INF/xml/editor/plugins.xml" />
+      <zipfileset file="${activiti.modeler.patches.dir}/patched/oryx.debug.js"       fullpath="editor/oryx.debug.js" />
+      <zipfileset file="${activiti.modeler.patches.dir}/patched/oryx.js"             fullpath="editor/oryx.js" />
+      <zipfileset file="${activiti.modeler.patches.dir}/patched/plugins.xml"         fullpath="editor/plugins.xml" />
+      <zipfileset file="${activiti.modeler.patches.dir}/patched/plugins.xml"         fullpath="WEB-INF/xml/editor/plugins.xml" />
       <zipfileset file="files/cfg.modeler/activiti_logo_16x16.png" fullpath="editor/images/activiti_logo_16x16.png" />
       <zipfileset file="files/cfg.modeler/extensions.json"         fullpath="WEB-INF/json/extensions.json" />
       <zipfileset file="files/cfg.modeler/extensions.json"         fullpath="editor/stencilsets/extensions/extensions.json" />
@@ -504,14 +506,14 @@ JAVA_OPTS="-Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=8787
   	    
   	<!-- end of ACT-177 -->
 
-    <copy file="${downloads.dir}/activiti-modeler-${activiti.version}.war"
+    <copy file="${downloads.dir}/${activiti.modeler.filename}"
           tofile="${tomcat.home}/webapps/activiti-modeler.war"/>
   </target>
   
   <target name="internal.download.activiti.modeler" unless="is.activiti.modeler.available">
     <echo message="This could take a while. Set the 'skip.deploy.activiti.modeler' property in user.home/.activiti/build.properties to skip this step" />
     <mkdir dir="${downloads.dir}"/>
-    <get src="${activiti.modeler.download.url}" dest="${downloads.dir}/activiti-modeler-${activiti.version}.war"/>
+    <get src="${activiti.modeler.download.url}" dest="${downloads.dir}/${activiti.modeler.filename}"/>
   </target>
 
   <target name="internal.download.tomcat" unless="is.tomcat.available">
@@ -544,12 +546,12 @@ JAVA_OPTS="-Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=8787
           depends="internal.modeler.plugin.cycle.patch, internal.modeler.stencilsets.patch" />
 
   <target name="internal.modeler.patches.init">
-    <mkdir dir="build/modeler/patched" />
-    <mkdir dir="build/modeler/extracted-from-war" />
-    <mkdir dir="build/modeler/backup" />
+    <mkdir dir="${activiti.modeler.patches.dir}/patched" />
+    <mkdir dir="${activiti.modeler.patches.dir}/extracted-from-war" />
+    <mkdir dir="${activiti.modeler.patches.dir}/backup" />
     <!-- extract files to be patched from the war -->
-    <unzip src="${downloads.dir}/activiti-modeler-${activiti.version}.war"
-           dest="build/modeler/extracted-from-war">
+    <unzip src="${downloads.dir}/${activiti.modeler.filename}"
+           dest="${activiti.modeler.patches.dir}/extracted-from-war">
       <patternset>
         <include name="editor/oryx.debug.js" />
         <include name="editor/oryx.js" />
@@ -558,7 +560,7 @@ JAVA_OPTS="-Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=8787
       <mapper type="flatten" />
     </unzip>
     <!-- check whether the war has already been patched -->
-    <loadfile srcFile="build/modeler/extracted-from-war/oryx.js"
+    <loadfile srcFile="${activiti.modeler.patches.dir}/extracted-from-war/oryx.js"
               property="activiti.modeler.editor.oryx.js" />
     <condition property="activiti.modeler.war.contains.plugin.cycle">
       <or>
@@ -574,35 +576,35 @@ JAVA_OPTS="-Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=8787
          but only of the war has NOT already been patched -->
     <antcall target="internal.modeler.backup.create" />
     <!-- copy files to be patched -->
-    <copy todir="build/modeler/patched" overwrite="true">
-      <fileset dir="build/modeler/extracted-from-war" />
+    <copy todir="${activiti.modeler.patches.dir}/patched" overwrite="true">
+      <fileset dir="${activiti.modeler.patches.dir}/extracted-from-war" />
     </copy>
   </target>
 
   <target name="internal.modeler.backup.create" unless="activiti.modeler.war.contains.plugin.cycle">
-    <copy todir="build/modeler/backup" overwrite="true">
-      <fileset dir="build/modeler/extracted-from-war" />
+    <copy todir="${activiti.modeler.patches.dir}/backup" overwrite="true">
+      <fileset dir="${activiti.modeler.patches.dir}/extracted-from-war" />
     </copy>
   </target>
 
   <target name="internal.modeler.backup.restore" if="activiti.modeler.war.contains.plugin.cycle">
     <!-- If the backup does not exist, the build shall fail, as this indicates
          that an already patched war has been downloaded. -->
-    <copy todir="build/modeler/extracted-from-war" overwrite="true">
-      <fileset dir="build/modeler/backup" />
+    <copy todir="${activiti.modeler.patches.dir}/extracted-from-war" overwrite="true">
+      <fileset dir="${activiti.modeler.patches.dir}/backup" />
     </copy>
   </target>
 
   <target name="internal.modeler.plugin.cycle.patch" depends="internal.modeler.patches.init">
     <!-- add plugin code -->
-    <concat destfile="build/modeler/patched/oryx.debug.js" append="true">
+    <concat destfile="${activiti.modeler.patches.dir}/patched/oryx.debug.js" append="true">
       <fileset file="files/cfg.modeler/ActivitiCycle.js" />
     </concat>
-    <concat destfile="build/modeler/patched/oryx.js" append="true">
+    <concat destfile="${activiti.modeler.patches.dir}/patched/oryx.js" append="true">
       <fileset file="files/cfg.modeler/ActivitiCycle.js" />
     </concat>
     <!-- register Activiti Cycle Plugin -->
-    <replace file="build/modeler/patched/plugins.xml">
+    <replace file="${activiti.modeler.patches.dir}/patched/plugins.xml">
       <replacetoken><![CDATA[</plugins>]]></replacetoken>
     <replacevalue><![CDATA[
 		<plugin source="ActivitiCycle.js" name="ORYX.Plugins.ActivitiCycle" />
@@ -610,19 +612,19 @@ JAVA_OPTS="-Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=8787
 	</plugins>]]></replacevalue>
     </replace>
     <!-- fix line endings in patched plugins.xml -->
-    <fixcrlf file="build/modeler/patched/plugins.xml" eol="dos" />
+    <fixcrlf file="${activiti.modeler.patches.dir}/patched/plugins.xml" eol="dos" />
   </target>
 
   <target name="internal.modeler.stencilsets.patch" depends="internal.modeler.patches.init">
     <!-- add plugin code -->
-    <concat destfile="build/modeler/patched/oryx.debug.js" append="true">
+    <concat destfile="${activiti.modeler.patches.dir}/patched/oryx.debug.js" append="true">
       <fileset file="files/cfg.modeler/selectssperspective.js" />
     </concat>
-    <concat destfile="build/modeler/patched/oryx.js" append="true">
+    <concat destfile="${activiti.modeler.patches.dir}/patched/oryx.js" append="true">
       <fileset file="files/cfg.modeler/selectssperspective.js" />
     </concat>
     <!-- register Stencilset Perspective Plugin -->
-    <replace file="build/modeler/patched/plugins.xml">
+    <replace file="${activiti.modeler.patches.dir}/patched/plugins.xml">
       <replacetoken><![CDATA[<plugin source="shaperepository.js"]]></replacetoken>
     <replacevalue><![CDATA[<plugin source="selectssperspective.js" name="ORYX.Plugins.ActivitiSelectStencilSetPerspective" />
 		<plugin source="shaperepository.js"]]></replacevalue>
@@ -642,11 +644,11 @@ JAVA_OPTS="-Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=8787
     <!-- patch the files -->
     <antcall target="internal.modeler.plugin.cycle.patch" />
     <!-- update the war with the patched files -->
-    <war destfile="${downloads.dir}/activiti-modeler-${activiti.version}.war" update="true">
-      <zipfileset file="build/modeler/patched/oryx.debug.js"       fullpath="editor/oryx.debug.js" />
-      <zipfileset file="build/modeler/patched/oryx.js"             fullpath="editor/oryx.js" />
-      <zipfileset file="build/modeler/patched/plugins.xml"         fullpath="editor/plugins.xml" />
-      <zipfileset file="build/modeler/patched/plugins.xml"         fullpath="WEB-INF/xml/editor/plugins.xml" />
+    <war destfile="${downloads.dir}/${activiti.modeler.filename}" update="true">
+      <zipfileset file="${activiti.modeler.patches.dir}/patched/oryx.debug.js" fullpath="editor/oryx.debug.js" />
+      <zipfileset file="${activiti.modeler.patches.dir}/patched/oryx.js"       fullpath="editor/oryx.js" />
+      <zipfileset file="${activiti.modeler.patches.dir}/patched/plugins.xml"   fullpath="editor/plugins.xml" />
+      <zipfileset file="${activiti.modeler.patches.dir}/patched/plugins.xml"   fullpath="WEB-INF/xml/editor/plugins.xml" />
       <zipfileset file="files/cfg.modeler/activiti_logo_16x16.png" fullpath="editor/images/activiti_logo_16x16.png" />
     </war>
   </target>
@@ -663,11 +665,11 @@ JAVA_OPTS="-Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=8787
     <!-- patch the files -->
     <antcall target="internal.modeler.stencilsets.patch" />
     <!-- update the war with the patched files -->
-    <war destfile="${downloads.dir}/activiti-modeler-${activiti.version}.war" update="true">
-      <zipfileset file="build/modeler/patched/oryx.debug.js"       fullpath="editor/oryx.debug.js" />
-      <zipfileset file="build/modeler/patched/oryx.js"             fullpath="editor/oryx.js" />
-      <zipfileset file="build/modeler/patched/plugins.xml"         fullpath="editor/plugins.xml" />
-      <zipfileset file="build/modeler/patched/plugins.xml"         fullpath="WEB-INF/xml/editor/plugins.xml" />
+    <war destfile="${downloads.dir}/${activiti.modeler.filename}" update="true">
+      <zipfileset file="${activiti.modeler.patches.dir}/patched/oryx.debug.js" fullpath="editor/oryx.debug.js" />
+      <zipfileset file="${activiti.modeler.patches.dir}/patched/oryx.js"       fullpath="editor/oryx.js" />
+      <zipfileset file="${activiti.modeler.patches.dir}/patched/plugins.xml"   fullpath="editor/plugins.xml" />
+      <zipfileset file="${activiti.modeler.patches.dir}/patched/plugins.xml"   fullpath="WEB-INF/xml/editor/plugins.xml" />
       <zipfileset file="files/cfg.modeler/extensions.json"         fullpath="WEB-INF/json/extensions.json" />
       <zipfileset file="files/cfg.modeler/extensions.json"         fullpath="editor/stencilsets/extensions/extensions.json" />
       <zipfileset file="files/cfg.modeler/bpmn2.0activiti.json"    fullpath="editor/stencilsets/extensions/bpmn2.0activiti/bpmn2.0activiti.json" />
