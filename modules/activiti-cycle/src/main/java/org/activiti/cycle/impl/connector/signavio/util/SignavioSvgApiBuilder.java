@@ -29,6 +29,7 @@ public class SignavioSvgApiBuilder {
   private String clickFunction;
 
   private boolean useLocalScripts = false;
+  private static String svgApiScript = "";
   
   /**
    * Map mapping a color for highlighting with a {@link Map} of node (ids) with
@@ -112,14 +113,14 @@ public class SignavioSvgApiBuilder {
     if (additionalContent == null) {
       additionalContent = "";
     }
-    return HEADER + "<div id=\"model\">" + content + "</div>" + additionalContent + FOOTER;
+    return HEADER +"<div id=\"model\">" + content + "</div>" + additionalContent + svgApiScript + FOOTER;
   }
 
   public static String buildHtml(String content, String additionalContent, int height) {
     if (additionalContent == null) {
       additionalContent = "";
     }
-    return HEADER + "<div id=\"model\" style=\"height: " + height + "px;\">" + content + "</div>" + additionalContent + FOOTER;
+    return HEADER + "<div id=\"model\" style=\"height: " + height + "px;\">" + content + "</div>" + additionalContent + svgApiScript + FOOTER;
   }
   
   public String buildScript() {
@@ -128,14 +129,17 @@ public class SignavioSvgApiBuilder {
 
   public String buildScript(Integer zoom) {
     try {
-      StringBuilder svgApiCall = new StringBuilder();
-      svgApiCall.append("<script type=\"text/javascript\" src=\"");
+      StringBuilder svgApiScriptBuilder = new StringBuilder();
+      svgApiScriptBuilder.append("<script type=\"text/javascript\" src=\"");
       if (useLocalScripts) {
-        svgApiCall.append(SVGAPI_URL_LOCAL);
+        svgApiScriptBuilder.append(SVGAPI_URL_LOCAL);
       } else {        
-        svgApiCall.append(SVGAPI_URL_REMOTE);
+        svgApiScriptBuilder.append(SVGAPI_URL_REMOTE);
       }
-      svgApiCall.append("\"></script>");
+      svgApiScriptBuilder.append("\"></script>");
+      svgApiScript = svgApiScriptBuilder.toString();
+
+      StringBuilder svgApiCall = new StringBuilder();
       svgApiCall.append("<script type=\"text/plain\">");
       svgApiCall.append("{");
       svgApiCall.append("url: \"" + connector.getConfiguration().getModelUrl(artifact.getNodeId()) + "\"");
