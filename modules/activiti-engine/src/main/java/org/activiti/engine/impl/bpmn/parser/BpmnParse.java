@@ -1039,10 +1039,11 @@ public class BpmnParse extends Parse {
     if(extentionsElement != null) {
       List<Element> taskListenerElements = extentionsElement.elementsNS(BpmnParser.ACTIVITI_BPMN_EXTENSIONS_NS, "taskListener");
       for(Element taskListenerElement : taskListenerElements) {
-        String eventName = taskListenerElement.attribute("eventName");
+        String eventName = taskListenerElement.attribute("event");
         if (eventName != null) {
           if (TaskListener.EVENTNAME_CREATE.equals(eventName) 
-                  && TaskListener.EVENTNAME_ASSIGNMENT.equals(eventName)) {
+                  || TaskListener.EVENTNAME_ASSIGNMENT.equals(eventName)
+                  || TaskListener.EVENTNAME_COMPLETE.equals(eventName)) {
               TaskListener taskListener = parseTaskListener(taskListenerElement);
               taskDefinition.addTaskListener(eventName, taskListener);
             } else {
@@ -1063,7 +1064,7 @@ public class BpmnParse extends Parse {
     
     if(className != null && className.trim().length() > 0) {
       Object delegateInstance = instantiateDelegate(className, parseFieldDeclarations(taskListenerElement));
-      if (delegateInstance instanceof EventListener) {
+      if (delegateInstance instanceof TaskListener) {
         taskListener = (TaskListener) delegateInstance; 
       } else {
         addError(delegateInstance.getClass().getName()+" doesn't implement "+TaskListener.class, taskListenerElement);

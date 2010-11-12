@@ -17,6 +17,7 @@ import org.activiti.engine.impl.el.ExpressionManager;
 import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
 import org.activiti.engine.impl.task.TaskDefinition;
 import org.activiti.engine.impl.task.TaskEntity;
+import org.activiti.engine.impl.task.TaskListener;
 
 /**
  * activity implementation for the user task.
@@ -47,8 +48,11 @@ public class UserTaskActivity extends TaskActivity {
       String description = (String) taskDefinition.getDescriptionExpression().getValue(execution);
       task.setDescription(description);
     }
-
+    
     handleAssignments(task, execution);
+   
+    // All properties set, now firing 'create' event
+    task.fireEvent(TaskListener.EVENTNAME_CREATE);
   }
 
   public void signal(ActivityExecution execution, String signalName, Object signalData) throws Exception {
@@ -73,8 +77,6 @@ public class UserTaskActivity extends TaskActivity {
     }
   }
 
-
-  
   // getters and setters //////////////////////////////////////////////////////
   
   public TaskDefinition getTaskDefinition() {

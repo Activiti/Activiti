@@ -16,10 +16,8 @@ package org.activiti.engine.test.el;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.activiti.engine.identity.User;
 import org.activiti.engine.impl.test.ActivitiInternalTestCase;
 import org.activiti.engine.runtime.ProcessInstance;
-import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
 
 /**

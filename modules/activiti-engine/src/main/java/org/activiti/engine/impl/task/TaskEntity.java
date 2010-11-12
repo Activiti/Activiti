@@ -61,8 +61,8 @@ public class TaskEntity implements Task, DelegateTask, Serializable, PersistentO
   
   protected String processDefinitionId;
   
-  protected String taskDefinitionKey;
   protected TaskDefinition taskDefinition;
+  protected String taskDefinitionKey;
   
   public TaskEntity() {
   }
@@ -74,6 +74,7 @@ public class TaskEntity implements Task, DelegateTask, Serializable, PersistentO
   /** creates and initializes a new persistent task. */
   public static TaskEntity createAndInsert() {
     TaskEntity task = create();
+    
     CommandContext
         .getCurrent()
         .getDbSqlSession()
@@ -162,6 +163,7 @@ public class TaskEntity implements Task, DelegateTask, Serializable, PersistentO
   }
     
   public void complete() {
+    fireEvent(TaskListener.EVENTNAME_COMPLETE);
     delete();
     if (executionId!=null) {
       getExecution().signal(null, null);

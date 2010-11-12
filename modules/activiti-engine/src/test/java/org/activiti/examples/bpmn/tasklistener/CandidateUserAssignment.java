@@ -10,20 +10,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.activiti.engine.impl.cmd;
+package org.activiti.examples.bpmn.tasklistener;
 
-import org.activiti.engine.impl.interceptor.Command;
-import org.activiti.engine.impl.interceptor.CommandContext;
-import org.activiti.engine.impl.task.TaskEntity;
-import org.activiti.engine.task.Task;
+import org.activiti.engine.delegate.DelegateTask;
+import org.activiti.engine.impl.task.TaskListener;
+
 
 /**
  * @author Joram Barrez
  */
-public class CreateTaskCmd implements Command<Task> {
-
-  public Task execute(CommandContext commandContext) {
-    return TaskEntity.create();
+public class CandidateUserAssignment implements TaskListener {
+  
+  public void notify(DelegateTask delegateTask) {
+    delegateTask.addCandidateUser("kermit");
+    delegateTask.addCandidateUser("fozzie");
   }
 
 }

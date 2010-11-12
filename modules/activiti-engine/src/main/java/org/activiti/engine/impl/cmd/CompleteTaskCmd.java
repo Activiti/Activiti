@@ -18,7 +18,6 @@ import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.cfg.TaskSession;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
-import org.activiti.engine.impl.pvm.PvmExecution;
 import org.activiti.engine.impl.task.TaskEntity;
 
 
@@ -41,14 +40,13 @@ public class CompleteTaskCmd implements Command<Void> {
     }
     
     TaskSession taskSession = commandContext.getTaskSession();
-    
     TaskEntity task = taskSession.findTaskById(taskId);
-    if (variables!=null) {
-      task.setExecutionVariables(variables);
-    }
-
     if (task == null) {
       throw new ActivitiException("Cannot find task with id " + taskId);
+    }
+    
+    if (variables!=null) {
+      task.setExecutionVariables(variables);
     }
     
     task.complete();

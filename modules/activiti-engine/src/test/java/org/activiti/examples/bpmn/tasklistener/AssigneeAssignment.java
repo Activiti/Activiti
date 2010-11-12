@@ -10,21 +10,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-package org.activiti.engine.impl.task;
+package org.activiti.examples.bpmn.tasklistener;
 
 import org.activiti.engine.delegate.DelegateTask;
-
+import org.activiti.engine.impl.task.TaskListener;
 
 
 /**
- * @author Tom Baeyens
+ * @author Joram Barrez
  */
-public interface TaskListener {
+public class AssigneeAssignment implements TaskListener {
 
-  String EVENTNAME_CREATE = "create";
-  String EVENTNAME_ASSIGNMENT = "assignment";
-  String EVENTNAME_COMPLETE = "complete";
+  public void notify(DelegateTask delegateTask) {
+    delegateTask.setAssignee("kermit");
+  }
   
-  void notify(DelegateTask delegateTask);
 }
