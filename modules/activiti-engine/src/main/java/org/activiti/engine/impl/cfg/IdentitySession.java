@@ -16,10 +16,11 @@ package org.activiti.engine.impl.cfg;
 import java.util.List;
 
 import org.activiti.engine.identity.Group;
+import org.activiti.engine.identity.GroupQuery;
 import org.activiti.engine.identity.User;
+import org.activiti.engine.identity.UserQuery;
 import org.activiti.engine.impl.Page;
-import org.activiti.engine.impl.identity.GroupEntity;
-import org.activiti.engine.impl.identity.UserEntity;
+import org.activiti.engine.impl.interceptor.CommandExecutor;
 
 
 /**
@@ -28,19 +29,25 @@ import org.activiti.engine.impl.identity.UserEntity;
 public interface IdentitySession {
 
   /* User */
-  void insertUser(UserEntity user);
+  User createNewUser(String userId);
+  void insertUser(User user);
+  void updateUser(User updatedUser);
   void deleteUser(String userId);
-  UserEntity findUserById(String userId);
-  List<UserEntity> findUsersByGroupId(String groupId);
+  User findUserById(String userId);
+  List<User> findUsersByGroupId(String groupId);
   boolean isValidUser(String userId);
+  UserQuery createNewUserQuery(CommandExecutor commandExecutor);
   List<User> findUserByQueryCriteria(Object query, Page page);
   long findUserCountByQueryCriteria(Object query);
   
   /* Group */
-  void insertGroup(GroupEntity group);
-  GroupEntity findGroupById(String groupId);
-  List<GroupEntity> findGroupsByUser(String userId);
+  Group createNewGroup(String groupId);
+  void insertGroup(Group group);
+  void updateGroup(Group updatedGroup);
   void deleteGroup(String groupId);
+  Group findGroupById(String groupId);
+  List<Group> findGroupsByUser(String userId);
+  GroupQuery createNewGroupQuery(CommandExecutor commandExecutor);
   List<Group> findGroupByQueryCriteria(Object query, Page page);
   long findGroupCountByQueryCriteria(Object query);
 

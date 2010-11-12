@@ -39,11 +39,9 @@ public class SaveUserCmd implements Command<Void> {
         .getIdentitySession()
         .insertUser(user);
     } else {
-      UserEntity persistentUser = commandContext
+      commandContext
         .getIdentitySession()
-        .findUserById(user.getId());
-      
-      persistentUser.update(user);
+        .updateUser(user);
     }
     
     return null;

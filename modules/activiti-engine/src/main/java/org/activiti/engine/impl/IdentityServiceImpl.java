@@ -18,7 +18,11 @@ import org.activiti.engine.identity.GroupQuery;
 import org.activiti.engine.identity.User;
 import org.activiti.engine.identity.UserQuery;
 import org.activiti.engine.impl.cmd.CheckPassword;
+import org.activiti.engine.impl.cmd.CreateGroupCmd;
+import org.activiti.engine.impl.cmd.CreateGroupQueryCmd;
 import org.activiti.engine.impl.cmd.CreateMembershipCmd;
+import org.activiti.engine.impl.cmd.CreateUserCmd;
+import org.activiti.engine.impl.cmd.CreateUserQueryCmd;
 import org.activiti.engine.impl.cmd.DeleteGroupCmd;
 import org.activiti.engine.impl.cmd.DeleteMembershipCmd;
 import org.activiti.engine.impl.cmd.DeleteUserCmd;
@@ -36,11 +40,11 @@ import org.activiti.engine.impl.interceptor.CommandExecutor;
 public class IdentityServiceImpl extends ServiceImpl implements IdentityService {
   
   public Group newGroup(String groupId) {
-    return new GroupEntity(groupId);
+    return commandExecutor.execute(new CreateGroupCmd(groupId));
   }
 
   public User newUser(String userId) {
-    return new UserEntity(userId);
+    return commandExecutor.execute(new CreateUserCmd(userId));
   }
 
   public void saveGroup(Group group) {
@@ -52,11 +56,11 @@ public class IdentityServiceImpl extends ServiceImpl implements IdentityService 
   }
   
   public UserQuery createUserQuery() {
-    return new UserQueryImpl(commandExecutor);
+    return commandExecutor.execute(new CreateUserQueryCmd());
   }
   
   public GroupQuery createGroupQuery() {
-    return new GroupQueryImpl(commandExecutor);
+    return commandExecutor.execute(new CreateGroupQueryCmd());
   }
 
   public void createMembership(String userId, String groupId) {

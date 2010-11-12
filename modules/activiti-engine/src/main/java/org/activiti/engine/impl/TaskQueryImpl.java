@@ -18,7 +18,7 @@ import java.util.Date;
 import java.util.List;
 
 import org.activiti.engine.ActivitiException;
-import org.activiti.engine.impl.identity.GroupEntity;
+import org.activiti.engine.identity.Group;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
 import org.activiti.engine.task.Task;
@@ -168,12 +168,12 @@ public class TaskQueryImpl extends AbstractQuery<TaskQuery, Task> implements Tas
   }
   
   protected List<String> getGroupsForCandidateUser(String candidateUser) {
-    List<GroupEntity> groups = CommandContext
+    List<Group> groups = CommandContext
       .getCurrent()
       .getIdentitySession()
       .findGroupsByUser(candidateUser);
     List<String> groupIds = new ArrayList<String>();
-    for (GroupEntity group : groups) {
+    for (Group group : groups) {
       groupIds.add(group.getId());
     }
     return groupIds;

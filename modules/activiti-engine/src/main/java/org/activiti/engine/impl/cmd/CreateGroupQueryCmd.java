@@ -10,38 +10,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.activiti.engine.impl.cmd;
 
-import org.activiti.engine.identity.User;
-import org.activiti.engine.impl.cfg.IdentitySession;
+import org.activiti.engine.identity.GroupQuery;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
+import org.activiti.engine.impl.interceptor.CommandExecutor;
 
 
 /**
  * @author Tom Baeyens
  */
-public class CheckPassword implements Command<Boolean> {
+public class CreateGroupQueryCmd implements Command<GroupQuery> {
 
-  String userId;
-  String password;
-  
-  public CheckPassword(String userId, String password) {
-    this.userId = userId;
-    this.password = password;
-  }
-
-
-  public Boolean execute(CommandContext commandContext) {
-    IdentitySession identitySession = commandContext.getIdentitySession();
-    User user = identitySession.findUserById(userId);
-    if ( (user!=null)
-         && (password!=null)
-         && (password.equals(user.getPassword()))
-       ) {
-      return true;
-    }
-    return false;
+  public GroupQuery execute(CommandContext commandContext) {
+    CommandExecutor commandExecutor = commandContext.getProcessEngineConfiguration().getCommandExecutorTxRequired();
+    return commandContext
+      .getIdentitySession()
+      .createNewGroupQuery(commandExecutor);
   }
 
 }

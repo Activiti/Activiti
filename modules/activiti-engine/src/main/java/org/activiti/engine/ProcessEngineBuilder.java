@@ -155,6 +155,7 @@ public class ProcessEngineBuilder {
     
     ConfigurationParser cfgParser = new ConfigurationParser();
     ConfigurationParse cfgParse = cfgParser.createParse()
+      // .processEngineConfiguration(processEngineConfiguration)
       .sourceInputStream(inputStream)
       .execute();
     

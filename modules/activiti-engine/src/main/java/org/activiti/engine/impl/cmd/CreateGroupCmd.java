@@ -10,10 +10,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.activiti.engine.impl.cmd;
 
-import org.activiti.engine.identity.User;
-import org.activiti.engine.impl.cfg.IdentitySession;
+import org.activiti.engine.ActivitiException;
+import org.activiti.engine.identity.Group;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 
@@ -21,27 +22,21 @@ import org.activiti.engine.impl.interceptor.CommandContext;
 /**
  * @author Tom Baeyens
  */
-public class CheckPassword implements Command<Boolean> {
+public class CreateGroupCmd implements Command<Group> {
 
-  String userId;
-  String password;
+  protected String groupId;
   
-  public CheckPassword(String userId, String password) {
-    this.userId = userId;
-    this.password = password;
+  public CreateGroupCmd(String groupId) {
+    if(groupId == null) {
+      throw new ActivitiException("groupId is null");
+    }
+    this.groupId = groupId;
   }
 
-
-  public Boolean execute(CommandContext commandContext) {
-    IdentitySession identitySession = commandContext.getIdentitySession();
-    User user = identitySession.findUserById(userId);
-    if ( (user!=null)
-         && (password!=null)
-         && (password.equals(user.getPassword()))
-       ) {
-      return true;
-    }
-    return false;
+  public Group execute(CommandContext commandContext) {
+    return commandContext
+      .getIdentitySession()
+      .createNewGroup(groupId);
   }
 
 }

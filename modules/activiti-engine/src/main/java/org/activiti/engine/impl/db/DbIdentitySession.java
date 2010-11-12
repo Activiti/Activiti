@@ -18,12 +18,17 @@ import java.util.List;
 import java.util.Map;
 
 import org.activiti.engine.identity.Group;
+import org.activiti.engine.identity.GroupQuery;
 import org.activiti.engine.identity.User;
+import org.activiti.engine.identity.UserQuery;
+import org.activiti.engine.impl.GroupQueryImpl;
 import org.activiti.engine.impl.Page;
+import org.activiti.engine.impl.UserQueryImpl;
 import org.activiti.engine.impl.cfg.IdentitySession;
 import org.activiti.engine.impl.identity.GroupEntity;
 import org.activiti.engine.impl.identity.UserEntity;
 import org.activiti.engine.impl.interceptor.CommandContext;
+import org.activiti.engine.impl.interceptor.CommandExecutor;
 import org.activiti.engine.impl.interceptor.Session;
 
 
@@ -38,8 +43,8 @@ public class DbIdentitySession implements IdentitySession, Session {
     this.dbSqlSession = CommandContext.getCurrentSession(DbSqlSession.class);
   }
 
-  public void insertUser(UserEntity user) {
-    dbSqlSession.insert(user);
+  public void insertUser(User user) {
+    dbSqlSession.insert((PersistentObject) user);
   }
 
   public UserEntity findUserById(String userId) {
@@ -47,7 +52,7 @@ public class DbIdentitySession implements IdentitySession, Session {
   }
 
   @SuppressWarnings("unchecked")
-  public List<UserEntity> findUsersByGroupId(String groupId) {
+  public List<User> findUsersByGroupId(String groupId) {
     return dbSqlSession.selectList("selectUsersByGroupId", groupId);
   }
 
@@ -60,8 +65,8 @@ public class DbIdentitySession implements IdentitySession, Session {
     dbSqlSession.delete("deleteUser", userId);
   }
 
-  public void insertGroup(GroupEntity group) {
-    dbSqlSession.insert(group);
+  public void insertGroup(Group group) {
+    dbSqlSession.insert((PersistentObject) group);
   }
 
   public GroupEntity findGroupById(String groupId) {
@@ -69,7 +74,7 @@ public class DbIdentitySession implements IdentitySession, Session {
   }
 
   @SuppressWarnings("unchecked")
-  public List<GroupEntity> findGroupsByUser(String userId) {
+  public List<Group> findGroupsByUser(String userId) {
     return dbSqlSession.selectList("selectGroupsByUserId", userId);
   }
 
@@ -108,6 +113,32 @@ public class DbIdentitySession implements IdentitySession, Session {
   
   public long findGroupCountByQueryCriteria(Object query) {
     return (Long) dbSqlSession.selectOne("selectGroupCountByQueryCriteria", query);
+  }
+
+  public Group createNewGroup(String groupId) {
+    return new GroupEntity(groupId);
+  }
+
+  public GroupQuery createNewGroupQuery(CommandExecutor commandExecutor) {
+    return new GroupQueryImpl(commandExecutor);
+  }
+
+  public User createNewUser(String userId) {
+    return new UserEntity(userId);
+  }
+
+  public UserQuery createNewUserQuery(CommandExecutor commandExecutor) {
+    return new UserQueryImpl(commandExecutor);
+  }
+
+  public void updateGroup(Group updatedGroup) {
+    GroupEntity persistentGroup = findGroupById(updatedGroup.getId());
+    persistentGroup.update((GroupEntity) updatedGroup);
+  }
+
+  public void updateUser(User updatedUser) {
+    UserEntity persistentUser = findUserById(updatedUser.getId());
+    persistentUser.update((UserEntity) updatedUser);
   }
 
   public void close() {

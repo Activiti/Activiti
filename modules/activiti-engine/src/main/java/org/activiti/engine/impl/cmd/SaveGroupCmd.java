@@ -13,6 +13,7 @@
 package org.activiti.engine.impl.cmd;
 
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.identity.Group;
 import org.activiti.engine.impl.identity.GroupEntity;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
@@ -38,11 +39,9 @@ public class SaveGroupCmd implements Command<Void> {
         .getIdentitySession()
         .insertGroup(group);
     } else {
-      GroupEntity persistentGroup = commandContext
+      commandContext
         .getIdentitySession()
-        .findGroupById(group.getId());
-      
-      persistentGroup.update(group);
+        .updateGroup(group);
     }
     
     return null;
