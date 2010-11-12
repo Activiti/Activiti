@@ -21,9 +21,9 @@
     </exec>
   </target>
 
-  <target name="test.demo.setup" depends="build.clean.distro">
+  <target name="test.demo.start" depends="build.clean.distro">
     <ant antfile="../distro/target/activiti-${activiti.version}/setup/build.xml"
-         target="demo.setup"
+         target="demo.start"
          inheritall="false">
     	<property name="nodocs" value="true" />
     </ant>
@@ -32,9 +32,9 @@
     <antcall target="open.html.page"/>
   </target>
 	
-  <target name="test.demo.teardown">
+  <target name="test.demo.stop">
     <ant antfile="../distro/target/activiti-${activiti.version}/setup/build.xml"
-         target="demo.teardown"
+         target="demo.stop"
          inheritall="false" />
   </target>
   
@@ -59,7 +59,7 @@
   	<ant antfile="../distro/build.xml" inheritall="false">
       <target name="clean" />
       <target name="distro" />
-  		<property name="nodocs" value="" />
+  		<property name="nodocs" value="true" />
     </ant>
   </target>
 

@@ -1,16 +1,17 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-	<modelVersion>4.0.0</modelVersion>
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
 
   <name>Activiti</name>
   <description>BPM and workflow engine</description>
-	<groupId>org.activiti</groupId>
-	<artifactId>activiti-root</artifactId>
+  <groupId>org.activiti</groupId>
+  <artifactId>activiti-root</artifactId>
 
-	<packaging>pom</packaging>
-	<version>5.0-SNAPSHOT</version>
+  <packaging>pom</packaging>
+  <version>5.0-SNAPSHOT</version>
   <properties>
     <spring.framework.version>3.0.3.RELEASE</spring.framework.version>
+    <spring.surf.version>1.0.0-RC2</spring.surf.version>
     <mule.version>2.2.1</mule.version>
 
       <!-- OSGi bundles properties -->
@@ -48,8 +49,8 @@
       <activiti.osgi.include.resource>{maven-resources}</activiti.osgi.include.resource>
   </properties>
 
-	<dependencyManagement>
-		<dependencies>
+  <dependencyManagement>
+    <dependencies>
       <dependency>
         <groupId>cglib</groupId>
         <artifactId>cglib</artifactId>
@@ -61,242 +62,26 @@
         <version>1.2.132</version>
       </dependency>
       <dependency>
-        <groupId>org.codehaus.groovy</groupId>
-        <artifactId>groovy-all</artifactId>
-        <version>1.7.2</version>
+        <!-- required by Apache commons httpclient, required by restlet -->
+        <groupId>commons-logging</groupId>
+        <artifactId>commons-logging</artifactId>
+        <version>1.1.1</version>
       </dependency>
-			<dependency>
-				<groupId>javax.servlet</groupId>
-				<artifactId>servlet-api</artifactId>
-				<version>2.5</version>
-			</dependency>
       <dependency>
-        <groupId>javax.mail</groupId>
-        <artifactId>mail</artifactId>
-        <version>1.4.1</version>
-      </dependency>
-			<dependency>
-				<groupId>junit</groupId>
-				<artifactId>junit</artifactId>
-				<version>4.8.1</version>
-			</dependency>
-			<dependency>
-				<groupId>org.activiti</groupId>
-				<artifactId>activiti-engine</artifactId>
-				<version>${version}</version>
-			</dependency>
-	      	<dependency>
-	        	<groupId>org.activiti</groupId>
-	        	<artifactId>activiti-cycle</artifactId>
-	        	<version>${version}</version>
-	     	</dependency>
-			<dependency>
-				<groupId>org.activiti</groupId>
-				<artifactId>activiti-webapp</artifactId>
-				<type>war</type>
-				<version>${version}</version>
-			</dependency> 
-	      	<dependency>
-	        	<groupId>org.activiti</groupId>
-	        	<artifactId>activiti-cxf</artifactId>
-	        	<version>${version}</version>
-	     	</dependency>
-			<dependency>
-				<groupId>org.apache.ant</groupId>
-				<artifactId>ant</artifactId>
-				<version>1.7.1</version>
-				<scope>provided</scope>
-			</dependency>
-			<dependency>
-				<groupId>org.springframework</groupId>
-				<artifactId>spring-test</artifactId>
-				<version>${spring.framework.version}</version>
-        <scope>test</scope>
-			</dependency>
-			<dependency>
-				<groupId>org.springframework</groupId>
-				<artifactId>spring-core</artifactId>
-				<version>${spring.framework.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.springframework</groupId>
-				<artifactId>spring-context</artifactId>
-				<version>${spring.framework.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.springframework</groupId>
-				<artifactId>spring-aop</artifactId>
-				<version>${spring.framework.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.springframework</groupId>
-				<artifactId>spring-jdbc</artifactId>
-				<version>${spring.framework.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.springframework</groupId>
-				<artifactId>spring-orm</artifactId>
-				<version>${spring.framework.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.springframework</groupId>
-				<artifactId>spring-tx</artifactId>
-				<version>${spring.framework.version}</version>
-			</dependency>
-			<dependency>
-			    <groupId>org.springframework</groupId>
-			    <artifactId>spring-orm</artifactId>
-			    <version>${spring.framework.version}</version>
-			</dependency>
-			<dependency>
-        <groupId>org.springframework</groupId>
-        <artifactId>spring-test</artifactId>
-        <version>${spring.framework.version}</version>
-      </dependency>
-			<dependency>
-				<groupId>org.mybatis</groupId>
-				<artifactId>mybatis</artifactId>
-				<version>3.0.1</version>
-			</dependency>
-      <dependency>
-        <groupId>org.mockito</groupId>
-        <artifactId>mockito-core</artifactId>
-        <version>1.8.2</version>
+        <groupId>com.oracle.jdbc</groupId>
+        <artifactId>ojdbc5</artifactId>
+        <version>11.2.0.1.0</version>
         <scope>test</scope>
       </dependency>
       <dependency>
-        <groupId>org.springframework.extensions.surf</groupId>
-        <artifactId>spring-surf</artifactId>
-        <version>1.0.0.M3</version>
+        <groupId>com.sun.xml.bind</groupId>
+        <artifactId>jaxb-impl</artifactId>
+        <version>2.1.7</version>
       </dependency>
       <dependency>
-        <groupId>org.springframework.extensions.surf</groupId>
-        <artifactId>spring-webscripts</artifactId>
-        <version>1.0.0.M3</version>
-      </dependency>
-      <dependency>
-        <groupId>org.springframework.extensions.surf</groupId>
-        <artifactId>spring-webscripts-api</artifactId>
-        <version>1.0.0.M3</version>
-      </dependency>
-      <dependency>
-        <groupId>org.json</groupId>
-        <artifactId>json</artifactId>
-        <version>20070829</version>
-      </dependency>
-      <!-- cycle restlet dependencies -->
-      <dependency>
-	  	<groupId>org.restlet.jee</groupId>
-		<artifactId>org.restlet</artifactId>
-		<version>2.0.1</version>
-	  </dependency>
-      <dependency>
-		<groupId>org.restlet.jee</groupId>
-		<artifactId>org.restlet.ext.json</artifactId>
-		<version>2.0.1</version>
-	  </dependency>
-	  <dependency>
-		<groupId>org.restlet.jee</groupId>
-		<artifactId>org.restlet.ext.xml</artifactId>
-		<version>2.0.1</version>
-	  </dependency>
-	  <dependency>
-		<groupId>org.restlet.jee</groupId>
-		<artifactId>org.restlet.ext.httpclient</artifactId>
-		<version>2.0.1</version>
-	  </dependency>
-		<!-- required by Apache commons httpclient, required by restlet -->
-		<dependency>
-		  <groupId>commons-logging</groupId>
-		  <artifactId>commons-logging</artifactId>
-		  <version>1.1.1</version>
-		</dependency>
-    <dependency>
-      <groupId>commons-codec</groupId>
-      <artifactId>commons-codec</artifactId>
-      <version>1.4</version>
-    </dependency>
-		<!-- required for Activiti Cycle file system connector -->
-		<dependency>
-			<groupId>com.thoughtworks.xstream</groupId>
-			<artifactId>xstream</artifactId>
-			<version>1.3.1</version>
-		</dependency>
-		<!-- required for Activiti Cycle file system connector -->
-		<dependency>
-		    <groupId>eu.medsea.mimeutil</groupId>
-		    <artifactId>mime-util</artifactId>
-		    <version>2.1.3</version>
-		</dependency>
-		<dependency>
-		  <groupId>org.slf4j</groupId>
-		  <artifactId>slf4j-jdk14</artifactId>
-		  <version>1.6.1</version>
-		</dependency>		
-		<dependency>
-			<!-- required for Activiti Cycle Plugin Scanning -->
-		    <groupId>org.scannotation</groupId>
-		    <artifactId>scannotation</artifactId>
-		    <version>1.0.2</version>
-		</dependency>
-      <!-- required for building with JDK 5 -->
-      <dependency>
-        <groupId>org.livetribe</groupId>
-        <artifactId>livetribe-jsr223</artifactId>
-        <version>2.0.6</version>
-        <type>jar</type>
-        <scope>compile</scope>
-      </dependency>
-		<!-- Web service -->
-		<dependency>
-		  <groupId>org.apache.cxf</groupId>
-    	  <artifactId>cxf-rt-frontend-jaxws</artifactId>
-    	  <version>2.1.2</version>
-		</dependency>
-        <dependency>
-          <groupId>org.apache.cxf</groupId>
-          <artifactId>cxf-rt-transports-http</artifactId>
-          <version>2.1.2</version>
-        </dependency>
-        <dependency>
-          <groupId>org.apache.cxf</groupId>
-          <artifactId>cxf-rt-transports-http-jetty</artifactId>
-          <version>2.1.2</version>
-        </dependency>
-        <dependency>
-          <groupId>org.apache.cxf</groupId>
-          <artifactId>cxf-rt-bindings-soap</artifactId>
-          <version>2.1.2</version>
-        </dependency>
-		<dependency>
-		  <groupId>org.mule.transports</groupId>
-		  <artifactId>mule-transport-cxf</artifactId>
-		  <version>${mule.version}</version>
-		</dependency>
-		<dependency>
-		  <groupId>org.mule.tests</groupId>
-		  <artifactId>mule-tests-functional</artifactId>
-		  <version>${mule.version}</version>
-		</dependency>
-		<dependency>
-          <groupId>org.springframework</groupId>
-          <artifactId>spring-beans</artifactId>
-          <version>${spring.framework.version}</version>
-		</dependency>
-		<dependency>
-      	  <groupId>com.sun.xml.bind</groupId>
-          <artifactId>jaxb-impl</artifactId>
-          <version>2.1.7</version>
-        </dependency>
-      <dependency>
-        <groupId>wsdl4j</groupId>
-        <artifactId>wsdl4j</artifactId>
-        <version>1.6.2</version>
-      </dependency>
-      <dependency>
-        <groupId>javax.xml</groupId>
-        <artifactId>jaxb-api</artifactId>
-        <version>2.1</version>
+        <groupId>com.signavio</groupId>
+        <artifactId>signavio-core-components</artifactId>
+        <version>1.0.beta2-SNAPSHOT</version>
       </dependency>
       <dependency>
         <groupId>com.sun.xml.bind</groupId>
@@ -304,14 +89,75 @@
         <version>2.1.7</version>
       </dependency>
       <dependency>
-        <groupId>xerces</groupId>
-        <artifactId>xercesImpl</artifactId>
-        <version>2.9.1</version>
+        <!-- required for Activiti Cycle file system connector -->
+        <groupId>com.thoughtworks.xstream</groupId>
+        <artifactId>xstream</artifactId>
+        <version>1.3.1</version>
       </dependency>
       <dependency>
-      	<groupId>com.signavio</groupId>
-        <artifactId>signavio-core-components</artifactId>
-        <version>1.0.beta2-SNAPSHOT</version>
+        <!-- required for Activiti Cycle file system connector -->
+        <groupId>eu.medsea.mimeutil</groupId>
+        <artifactId>mime-util</artifactId>
+        <version>2.1.3</version>
+      </dependency>
+      <dependency>
+        <groupId>javax.servlet</groupId>
+        <artifactId>servlet-api</artifactId>
+        <version>2.5</version>
+      </dependency>
+      <dependency>
+        <groupId>javax.mail</groupId>
+        <artifactId>mail</artifactId>
+        <version>1.4.1</version>
+      </dependency>
+      <dependency>
+        <groupId>javax.persistence</groupId>
+        <artifactId>persistence-api</artifactId>
+        <version>1.0</version>
+        <scope>provided</scope>
+      </dependency>
+      <dependency>
+        <groupId>javax.xml</groupId>
+        <artifactId>jaxb-api</artifactId>
+        <version>2.1</version>
+      </dependency>
+      <dependency>
+        <groupId>junit</groupId>
+        <artifactId>junit</artifactId>
+        <version>4.8.1</version>
+      </dependency>
+      <dependency>
+        <groupId>mysql</groupId>
+        <artifactId>mysql-connector-java</artifactId>
+        <version>5.1.6</version>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.activiti</groupId>
+        <artifactId>activiti-engine</artifactId>
+        <version>${version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.activiti</groupId>
+        <artifactId>activiti-cycle</artifactId>
+        <version>${version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.activiti</groupId>
+        <artifactId>activiti-webapp</artifactId>
+        <type>war</type>
+        <version>${version}</version>
+      </dependency> 
+      <dependency>
+        <groupId>org.activiti</groupId>
+        <artifactId>activiti-cxf</artifactId>
+        <version>${version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.ant</groupId>
+        <artifactId>ant</artifactId>
+        <version>1.7.1</version>
+        <scope>provided</scope>
       </dependency>
       <!-- EMAIL -->
       <dependency>
@@ -320,24 +166,221 @@
         <version>1.2</version>
       </dependency>
       <dependency>
+        <!-- Web service -->
+        <groupId>org.apache.cxf</groupId>
+        <artifactId>cxf-rt-frontend-jaxws</artifactId>
+        <version>2.1.2</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.cxf</groupId>
+        <artifactId>cxf-rt-transports-http</artifactId>
+        <version>2.1.2</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.cxf</groupId>
+        <artifactId>cxf-rt-transports-http-jetty</artifactId>
+        <version>2.1.2</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.cxf</groupId>
+        <artifactId>cxf-rt-bindings-soap</artifactId>
+        <version>2.1.2</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.geronimo.specs</groupId>
+        <artifactId>geronimo-jta_1.1_spec</artifactId>
+        <version>1.1.1</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.openjpa</groupId>
+        <artifactId>openjpa</artifactId>
+        <version>1.2.2</version>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.codehaus.groovy</groupId>
+        <artifactId>groovy-all</artifactId>
+        <version>1.7.2</version>
+      </dependency>
+      <dependency>
+        <groupId>org.json</groupId>
+        <artifactId>json</artifactId>
+        <version>20070829</version>
+      </dependency>
+      <dependency>
+        <!-- required for building with JDK 5 -->
+        <groupId>org.livetribe</groupId>
+        <artifactId>livetribe-jsr223</artifactId>
+        <version>2.0.6</version>
+        <type>jar</type>
+        <scope>compile</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.mule.transports</groupId>
+        <artifactId>mule-transport-cxf</artifactId>
+        <version>${mule.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.mule.tests</groupId>
+        <artifactId>mule-tests-functional</artifactId>
+        <version>${mule.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.mybatis</groupId>
+        <artifactId>mybatis</artifactId>
+        <version>3.0.1</version>
+      </dependency>
+      <dependency>
+        <groupId>org.mockito</groupId>
+        <artifactId>mockito-core</artifactId>
+        <version>1.8.2</version>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.osgi</groupId>
+        <artifactId>org.osgi.core</artifactId>
+        <version>4.2.0</version>
+        <scope>provided</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.osgi</groupId>
+        <artifactId>org.osgi.compendium</artifactId>
+        <version>4.2.0</version>
+        <scope>provided</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.felix</groupId>
+        <artifactId>org.apache.felix.fileinstall</artifactId>
+        <version>3.0.2</version>
+        <optional>true</optional>
+      </dependency>
+      <dependency>
+        <!-- cycle restlet dependencies -->
+        <groupId>org.restlet.jee</groupId>
+        <artifactId>org.restlet</artifactId>
+        <version>2.0.1</version>
+      </dependency>
+      <dependency>
+        <groupId>org.restlet.jee</groupId>
+        <artifactId>org.restlet.ext.json</artifactId>
+        <version>2.0.1</version>
+      </dependency>
+      <dependency>
+        <groupId>org.restlet.jee</groupId>
+        <artifactId>org.restlet.ext.xml</artifactId>
+        <version>2.0.1</version>
+      </dependency>
+      <dependency>
+        <groupId>org.restlet.jee</groupId>
+        <artifactId>org.restlet.ext.httpclient</artifactId>
+        <version>2.0.1</version>
+      </dependency>
+      <dependency>
+        <!-- required for Activiti Cycle Plugin Scanning -->
+        <groupId>org.scannotation</groupId>
+        <artifactId>scannotation</artifactId>
+        <version>1.0.2</version>
+      </dependency>
+      <dependency>
+        <groupId>org.slf4j</groupId>
+        <artifactId>slf4j-jdk14</artifactId>
+        <version>1.6.1</version>
+      </dependency>    
+      <dependency>
+        <groupId>org.springframework</groupId>
+        <artifactId>spring-beans</artifactId>
+        <version>${spring.framework.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.springframework</groupId>
+        <artifactId>spring-core</artifactId>
+        <version>${spring.framework.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.springframework</groupId>
+        <artifactId>spring-context</artifactId>
+        <version>${spring.framework.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.springframework</groupId>
+        <artifactId>spring-aop</artifactId>
+        <version>${spring.framework.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.springframework</groupId>
+        <artifactId>spring-jdbc</artifactId>
+        <version>${spring.framework.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.springframework</groupId>
+        <artifactId>spring-orm</artifactId>
+        <version>${spring.framework.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.springframework</groupId>
+        <artifactId>spring-tx</artifactId>
+        <version>${spring.framework.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.springframework</groupId>
+        <artifactId>spring-orm</artifactId>
+        <version>${spring.framework.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.springframework</groupId>
+        <artifactId>spring-test</artifactId>
+        <version>${spring.framework.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.springframework</groupId>
+        <artifactId>spring-test</artifactId>
+        <version>${spring.framework.version}</version>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.springframework.extensions.surf</groupId>
+        <artifactId>spring-surf</artifactId>
+        <version>${spring.surf.version}</version>
+      </dependency>
+	    <dependency>
+	      <groupId>org.springframework.extensions.surf</groupId>
+	      <artifactId>spring-surf-application</artifactId>
+        <version>${spring.surf.version}</version>
+	      <type>war</type>
+	      <scope>runtime</scope>
+	    </dependency>
+      <dependency>
+        <groupId>org.springframework.extensions.surf</groupId>
+        <artifactId>spring-webscripts</artifactId>
+        <version>${spring.surf.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.springframework.extensions.surf</groupId>
+        <artifactId>spring-webscripts-api</artifactId>
+        <version>${spring.surf.version}</version>
+      </dependency>
+      <dependency>
         <groupId>org.subethamail</groupId>
         <artifactId>subethasmtp-wiser</artifactId>
         <version>1.2</version>
         <scope>test</scope>
       </dependency>
-      
       <dependency>
-		<groupId>javax.persistence</groupId>
-		<artifactId>persistence-api</artifactId>
-		<version>1.0</version>
-		<scope>provided</scope>
-	  </dependency>
-	  <dependency>
-	      <groupId>org.apache.openjpa</groupId>
-	      <artifactId>openjpa</artifactId>
-	      <version>1.2.2</version>
-	      <scope>test</scope>
-	  </dependency>
+        <groupId>postgresql</groupId>
+        <artifactId>postgresql</artifactId>
+        <version>8.4-701.jdbc4</version>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>wsdl4j</groupId>
+        <artifactId>wsdl4j</artifactId>
+        <version>1.6.2</version>
+      </dependency>
+      <dependency>
+        <groupId>xerces</groupId>
+        <artifactId>xercesImpl</artifactId>
+        <version>2.9.1</version>
+      </dependency>
     </dependencies>
   </dependencyManagement>
 
@@ -345,62 +388,62 @@
     <module>modules/activiti-engine</module>
   </modules>
 
-	<repositories>
-		<repository>
-			<id>alfresco</id>
-			<url>http://maven.alfresco.com/nexus/content/groups/public</url>
-		</repository>
-		<repository>
+  <repositories>
+    <repository>
+      <id>alfresco</id>
+      <url>http://maven.alfresco.com/nexus/content/groups/public</url>
+    </repository>
+    <repository>
         <id>Activiti third party</id>
         <url>http://maven.alfresco.com/nexus/content/repositories/activiti-thirdparty/</url>
      </repository>
      <repository>
-			<id>alfresco-snapshots</id>
-			<url>http://maven.alfresco.com/nexus/content/groups/public-snapshots</url>
-	</repository>
-		<repository>
-			<id>spring-extensions-milestone</id>
-			<name>Spring Extensions Milestone Repository</name>
-			<url>http://extensions.springframework.org/milestone</url>
-		</repository>
-		<repository>
-	       <id>maven-restlet</id>  
-	       <name>Public online Restlet repository</name>  
-	       <url>http://maven.restlet.org</url>  
-	    </repository>
-	</repositories>
+      <id>alfresco-snapshots</id>
+      <url>http://maven.alfresco.com/nexus/content/groups/public-snapshots</url>
+  </repository>
+    <repository>
+      <id>spring-extensions-milestone</id>
+      <name>Spring Extensions Milestone Repository</name>
+      <url>http://extensions.springframework.org/milestone</url>
+    </repository>
+    <repository>
+         <id>maven-restlet</id>  
+         <name>Public online Restlet repository</name>  
+         <url>http://maven.restlet.org</url>  
+      </repository>
+  </repositories>
 
-	<pluginRepositories>
-		<pluginRepository>
-			<id>maven2.java.net</id>
-			<name>Java.net Repository for Maven 2</name>
-			<url>http://download.java.net/maven/2/</url>
-		</pluginRepository>
-	</pluginRepositories>
+  <pluginRepositories>
+    <pluginRepository>
+      <id>maven2.java.net</id>
+      <name>Java.net Repository for Maven 2</name>
+      <url>http://download.java.net/maven/2/</url>
+    </pluginRepository>
+  </pluginRepositories>
 
-	<build>
-		<plugins>
-			<plugin>
-				<artifactId>maven-compiler-plugin</artifactId>
-				<configuration>
-          			<source>1.5</source>
-          			<target>1.5</target>
-					<showDeprecation>true</showDeprecation>
-					<showWarnings>true</showWarnings>
-					<optimize>true</optimize>
-				</configuration>
-			</plugin>
-			<plugin>
-				<artifactId>maven-surefire-plugin</artifactId>
-				<configuration>
-					<failIfNoTests>false</failIfNoTests>
-					<trimStackTrace>false</trimStackTrace>
-					<redirectTestOutputToFile>true</redirectTestOutputToFile>
-					<excludes>
-						<exclude>**/*TestCase.java</exclude>
-					</excludes>
-				</configuration>
-			</plugin>
+  <build>
+    <plugins>
+      <plugin>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <configuration>
+                <source>1.5</source>
+                <target>1.5</target>
+          <showDeprecation>true</showDeprecation>
+          <showWarnings>true</showWarnings>
+          <optimize>true</optimize>
+        </configuration>
+      </plugin>
+      <plugin>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <configuration>
+          <failIfNoTests>false</failIfNoTests>
+          <trimStackTrace>false</trimStackTrace>
+          <redirectTestOutputToFile>true</redirectTestOutputToFile>
+          <excludes>
+            <exclude>**/*TestCase.java</exclude>
+          </excludes>
+        </configuration>
+      </plugin>
             <plugin>
                 <groupId>org.apache.felix</groupId>
                 <artifactId>maven-bundle-plugin</artifactId>
@@ -439,15 +482,15 @@
                     </execution>
                 </executions>
             </plugin>
-		</plugins>
-	</build>
+    </plugins>
+  </build>
 
-	<profiles>
-		<profile>
-			<id>nofail</id>
-			  <properties>
-			    <maven.test.failure.ignore>true</maven.test.failure.ignore>
-			  </properties>
+  <profiles>
+    <profile>
+      <id>nofail</id>
+        <properties>
+          <maven.test.failure.ignore>true</maven.test.failure.ignore>
+        </properties>
     </profile>
     <profile>
       <id>deploy</id>
@@ -457,15 +500,15 @@
         <module>modules/activiti-mule</module>
       </modules>
     </profile>
-		<profile>
-			<id>check</id>
-			<modules>
+    <profile>
+      <id>check</id>
+      <modules>
         <module>modules/activiti-spring</module>
         <module>modules/activiti-cycle</module>
-		    <module>modules/activiti-webapp-rest</module>
-		    <module>modules/activiti-cxf</module>
-			</modules>
-		</profile>
+        <module>modules/activiti-webapp-rest</module>
+        <module>modules/activiti-cxf</module>
+      </modules>
+    </profile>
     <profile>
       <id>checkcycle</id>
       <modules>
@@ -491,22 +534,22 @@
         <skipTests>true</skipTests>
       </properties>
     </profile>
-		<profile>
-			<id>distro</id>
-			<modules>
+    <profile>
+      <id>distro</id>
+      <modules>
         <module>modules/activiti-spring</module>
-				<module>modules/activiti-cycle</module>
+        <module>modules/activiti-cycle</module>
         <module>modules/activiti-webapp</module>
-				<module>modules/activiti-webapp-rest</module>
+        <module>modules/activiti-webapp-rest</module>
         <module>modules/activiti-webapp-init</module>
-				<module>modules/activiti-webapp-probe</module>
-				<module>modules/activiti-webapp-explorer</module>
-				<module>modules/activiti-webapp-cycle</module>
-		    <module>modules/activiti-cxf</module>
-		    <module>modules/activiti-mule</module>
+        <module>modules/activiti-webapp-probe</module>
+        <module>modules/activiti-webapp-explorer</module>
+        <module>modules/activiti-webapp-cycle</module>
+        <module>modules/activiti-cxf</module>
+        <module>modules/activiti-mule</module>
                 <module>modules/activiti-osgi</module>
-			</modules>
-		</profile>
+      </modules>
+    </profile>
     <profile>
       <id>database</id>
       <activation>
@@ -518,95 +561,95 @@
         <module>modules/activiti-engine</module>
       </modules>
     </profile>
-	</profiles>
+  </profiles>
 
-	<distributionManagement>
-		<snapshotRepository>
-		  <id>alfresco.snapshot.repo</id>
-		  <url>http://maven.alfresco.com/nexus/content/repositories/activiti-snapshots/</url>
-		  <uniqueVersion>false</uniqueVersion>
-		</snapshotRepository>
-		<repository>
-		  <id>alfresco.release.repo</id>
-		  <url>http://maven.alfresco.com/nexus/content/repositories/activiti/</url>
-		</repository>
-	</distributionManagement>
+  <distributionManagement>
+    <snapshotRepository>
+      <id>alfresco.snapshot.repo</id>
+      <url>http://maven.alfresco.com/nexus/content/repositories/activiti-snapshots/</url>
+      <uniqueVersion>false</uniqueVersion>
+    </snapshotRepository>
+    <repository>
+      <id>alfresco.release.repo</id>
+      <url>http://maven.alfresco.com/nexus/content/repositories/activiti/</url>
+    </repository>
+  </distributionManagement>
 
-	<!-- Various information, not used by the build -->
+  <!-- Various information, not used by the build -->
 
-	<url>http://activiti.org</url>
-	<licenses>
-		<license>
-			<name>Apache v2</name>
-			<url>http://www.apache.org/licenses/LICENSE-2.0.html</url>
-		</license>
-	</licenses>
-	<organization>
-		<name>Alfresco</name>
-		<url>http://alfresco.com</url>
-	</organization>
-	<developers>
-		<developer>
-			<name>Tom Baeyens</name>
-			<organization>Alfresco</organization>
-			<url>http://alfresco.com</url>
-		</developer>
-		<developer>
-			<name>Joram Barrez</name>
-			<organization>Alfresco</organization>
-			<url>http://alfresco.com</url>
-		</developer>
-		<developer>
-			<name>Bernd Ruecker</name>
-			<organization>camunda</organization>
-			<url>http://camunda.com</url>
-		</developer>
-		<developer>
-			<name>Falko Menge</name>
-			<organization>camunda</organization>
-			<url>http://camunda.com</url>
-		</developer>
-		<developer>
-			<name>Nils Preusker</name>
-			<organization>camunda</organization>
-			<url>http://camunda.com</url>
-		</developer>
-		<developer>
-			<name>Christian Lipphardt</name>
-			<organization>camunda</organization>
-			<url>http://camunda.com</url>
-		</developer>
-		<developer>
-			<name>Kristin Polenz</name>
-			<organization>camunda</organization>
-			<url>http://camunda.com</url>
-		</developer>
-		<developer>
-			<name>Gero Decker</name>
-			<organization>Signavio</organization>
-			<url>http://signavio.com</url>
-		</developer>
-		<developer>
-			<name>Erik Winlöf</name>
-			<organization>Alfresco</organization>
-			<url>http://alfresco.com</url>
-		</developer>
-		<developer>
-		   <name>Nick Burch</name>
-		   <organization>Alfresco</organization>
-		   <url>http://alfresco.com</url> 
-		</developer>
-		<developer>
-		   <name>Frederik Heremans</name>
-		   <organization>Alfresco</organization>
-		   <url>http://alfresco.com</url> 
-		</developer>
-		<developer>
-		   <name>Christian Stettler</name>
-		   <organization>Mimacom</organization>
-		   <url>http://mimacom.com</url> 
-		</developer>
-	</developers>
+  <url>http://activiti.org</url>
+  <licenses>
+    <license>
+      <name>Apache v2</name>
+      <url>http://www.apache.org/licenses/LICENSE-2.0.html</url>
+    </license>
+  </licenses>
+  <organization>
+    <name>Alfresco</name>
+    <url>http://alfresco.com</url>
+  </organization>
+  <developers>
+    <developer>
+      <name>Tom Baeyens</name>
+      <organization>Alfresco</organization>
+      <url>http://alfresco.com</url>
+    </developer>
+    <developer>
+      <name>Joram Barrez</name>
+      <organization>Alfresco</organization>
+      <url>http://alfresco.com</url>
+    </developer>
+    <developer>
+      <name>Bernd Ruecker</name>
+      <organization>camunda</organization>
+      <url>http://camunda.com</url>
+    </developer>
+    <developer>
+      <name>Falko Menge</name>
+      <organization>camunda</organization>
+      <url>http://camunda.com</url>
+    </developer>
+    <developer>
+      <name>Nils Preusker</name>
+      <organization>camunda</organization>
+      <url>http://camunda.com</url>
+    </developer>
+    <developer>
+      <name>Christian Lipphardt</name>
+      <organization>camunda</organization>
+      <url>http://camunda.com</url>
+    </developer>
+    <developer>
+      <name>Kristin Polenz</name>
+      <organization>camunda</organization>
+      <url>http://camunda.com</url>
+    </developer>
+    <developer>
+      <name>Gero Decker</name>
+      <organization>Signavio</organization>
+      <url>http://signavio.com</url>
+    </developer>
+    <developer>
+      <name>Erik Winlöf</name>
+      <organization>Alfresco</organization>
+      <url>http://alfresco.com</url>
+    </developer>
+    <developer>
+       <name>Nick Burch</name>
+       <organization>Alfresco</organization>
+       <url>http://alfresco.com</url> 
+    </developer>
+    <developer>
+       <name>Frederik Heremans</name>
+       <organization>Alfresco</organization>
+       <url>http://alfresco.com</url> 
+    </developer>
+    <developer>
+       <name>Christian Stettler</name>
+       <organization>Mimacom</organization>
+       <url>http://mimacom.com</url> 
+    </developer>
+  </developers>
   <issueManagement>
     <system>JIRA</system>
     <url>http://jira.codehaus.org/browse/ACT</url>
@@ -615,9 +658,9 @@
     <system>Bamboo</system>
     <url>http://bamboo.ci.codehaus.org/browse/ACT</url>
   </ciManagement>
-	<scm>
-	 <connection>scm:svn:http://svn.codehaus.org/activiti/</connection>
-	 <developerConnection>scm:svn:https://svn.codehaus.org/activiti/</developerConnection>
-	</scm>
+  <scm>
+   <connection>scm:svn:http://svn.codehaus.org/activiti/</connection>
+   <developerConnection>scm:svn:https://svn.codehaus.org/activiti/</developerConnection>
+  </scm>
 
 </project>

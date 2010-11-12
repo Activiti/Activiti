@@ -79,7 +79,6 @@
     <dependency>
       <groupId>org.springframework.extensions.surf</groupId>
       <artifactId>spring-surf-application</artifactId>
-      <version>1.0.0-RC2</version>
       <type>war</type>
       <scope>runtime</scope>
     </dependency>

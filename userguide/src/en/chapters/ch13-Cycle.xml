@@ -25,7 +25,7 @@
         The above image shows the Activiti Cycle repository tree.
         By default it provides access to the repository of the Activiti Modeler
         and a demo Eclipse workspace, which is located at
-        <literal>${activiti.home}/apps/eclipse-workspace</literal>
+        <literal>${activiti.home}/workspace/activiti-cycle-examples</literal>
         in your local file system.
         The repositories are plugged in as repository connectors.
         You'll find the configuration as an XML string in
@@ -47,7 +47,7 @@
           &lt;/org.activiti.cycle.impl.connector.signavio.SignavioConnectorConfiguration&gt;
           &lt;org.activiti.cycle.impl.connector.fs.FileSystemConnectorConfiguration&gt;
             &lt;name&gt;Eclipse Workspace (File System)&lt;/name&gt;
-            &lt;baseFilePath&gt;/path-to-activiti-home/activiti-5.0.beta2/apps/eclipse-workspace&lt;/baseFilePath&gt;
+            &lt;baseFilePath&gt;/path-to-activiti-home/activiti-5.0.beta2/workspace/activiti-cycle-examples&lt;/baseFilePath&gt;
           &lt;/org.activiti.cycle.impl.connector.fs.FileSystemConnectorConfiguration&gt;
         &lt;/linkedConnectors&gt; &lt;parentContainers/&gt;
       &lt;/org.activiti.cycle.impl.conf.ConfigurationContainer&gt;

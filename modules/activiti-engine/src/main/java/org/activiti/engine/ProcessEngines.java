@@ -179,6 +179,9 @@ public abstract class ProcessEngines {
   /** obtain a process engine by name.  
    * @param processEngineName is the name of the process engine or null for the default process engine.  */
   public static ProcessEngine getProcessEngine(String processEngineName) {
+    if (!isInitialized) {
+      init();
+    }
     return processEngines.get(processEngineName);
   }
   
