@@ -77,6 +77,10 @@ public class ProcessDefinitionImpl extends ScopeImpl implements PvmProcessDefini
     return new ExecutionImpl();
   }
 
+  public String getDiagramResourceName() {
+    return null;
+  }
+
   // getters and setters //////////////////////////////////////////////////////
   
   public ActivityImpl getInitial() {

@@ -44,6 +44,7 @@ public class ProcessDefinitionEntity extends ProcessDefinitionImpl implements Pr
   protected String resourceName;
   protected Integer historyLevel;
   protected StartFormHandler startFormHandler;
+  protected String diagramResourceName;
   protected Map<String, TaskDefinition> taskDefinitions;
   
   public ProcessDefinitionEntity() {
@@ -175,5 +176,13 @@ public class ProcessDefinitionEntity extends ProcessDefinitionImpl implements Pr
 
   public void setCategory(String category) {
     this.category = category;
+  }
+  
+  public String getDiagramResourceName() {
+    return diagramResourceName;
+  }
+
+  public void setDiagramResourceName(String diagramResourceName) {
+    this.diagramResourceName = diagramResourceName;
   }
 }

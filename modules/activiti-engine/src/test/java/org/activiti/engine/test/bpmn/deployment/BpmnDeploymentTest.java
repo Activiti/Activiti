@@ -20,8 +20,12 @@ import java.io.InputStreamReader;
 import java.util.List;
 
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.impl.RepositoryServiceImpl;
+import org.activiti.engine.impl.pvm.ReadOnlyProcessDefinition;
 import org.activiti.engine.impl.test.ActivitiInternalTestCase;
+import org.activiti.engine.impl.util.IoUtil;
 import org.activiti.engine.impl.util.ReflectUtil;
+import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.test.Deployment;
 
 
@@ -40,6 +44,12 @@ public class BpmnDeploymentTest extends ActivitiInternalTestCase {
     String bpmnResourceName = "org/activiti/engine/test/bpmn/deployment/BpmnDeploymentTest.testGetBpmnXmlFileThroughService.bpmn20.xml";
     assertEquals(bpmnResourceName, deploymentResources.get(0));
     
+    ProcessDefinition processDefinition = repositoryService.createProcessDefinitionQuery().singleResult();
+    assertEquals(bpmnResourceName, processDefinition.getResourceName());
+    
+    ReadOnlyProcessDefinition readOnlyProcessDefinition = ((RepositoryServiceImpl)repositoryService).getDeployedProcessDefinition(processDefinition.getId());
+    assertNull(readOnlyProcessDefinition.getDiagramResourceName());
+    
     // verify content
     InputStream deploymentInputStream = repositoryService.getResourceAsStream(deploymentId, bpmnResourceName);
     String contentFromDeployment = readInputStreamToString(deploymentInputStream);
@@ -52,27 +62,8 @@ public class BpmnDeploymentTest extends ActivitiInternalTestCase {
   }
   
   private String readInputStreamToString(InputStream inputStream) {
-    assertNotNull("Provided inputstream is null", inputStream);
-    BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
-    StringBuilder strb = new StringBuilder();
-    try {
-      String line = reader.readLine();
-      while (line != null) {
-        strb.append(line);
-        line = reader.readLine();
-      }
-    } catch (IOException e) {
-      fail("Couldnt read from inputstream");
-    } finally {
-      if (reader != null) {
-        try {
-          reader.close();
-        } catch (IOException e) {
-          fail("Couldn't close reader");
-        }
-      }
-    }
-    return strb.toString();
+    byte[] bytes = IoUtil.readInputStream(inputStream, "input stream");
+    return new String(bytes);
   }
   
   public void testViolateProcessDefinitionIdMaximumLength() {
@@ -89,4 +80,18 @@ public class BpmnDeploymentTest extends ActivitiInternalTestCase {
     assertEquals(0, repositoryService.createDeploymentQuery().count());
   }
 
+  @Deployment(resources={
+    "org/activiti/engine/test/bpmn/deployment/BpmnDeploymentTest.testProcessDiagramResource.bpmn20.xml",
+    "org/activiti/engine/test/bpmn/deployment/BpmnDeploymentTest.testProcessDiagramResource.jpg"
+  })
+  public void testProcessDiagramResource() {
+    String processDefinitionId = repositoryService.createProcessDefinitionQuery().singleResult().getId();
+    ReadOnlyProcessDefinition processDefinition = ((RepositoryServiceImpl)repositoryService).getDeployedProcessDefinition(processDefinitionId);
+    String diagramResourceName = processDefinition.getDiagramResourceName();
+    assertEquals("org/activiti/engine/test/bpmn/deployment/BpmnDeploymentTest.testProcessDiagramResource.jpg", diagramResourceName);
+    
+    InputStream diagramStream = repositoryService.getResourceAsStream(deploymentId, "org/activiti/engine/test/bpmn/deployment/BpmnDeploymentTest.testProcessDiagramResource.jpg");
+    byte[] diagramBytes = IoUtil.readInputStream(diagramStream, "diagram stream");
+    assertEquals(33343, diagramBytes.length);
+  }
 }

@@ -37,6 +37,7 @@ public class BpmnDeployer implements Deployer, ProcessEngineConfigurationAware {
   private static final Logger LOG = Logger.getLogger(BpmnDeployer.class.getName());;
 
   public static final String BPMN_RESOURCE_SUFFIX = "bpmn20.xml";
+  public static final String[] DIAGRAM_SUFFIXES = new String[]{"png", "jpg", "gif", "svg"};
 
   protected ExpressionManager expressionManager;
   protected BpmnParser bpmnParser;
@@ -68,13 +69,32 @@ public class BpmnDeployer implements Deployer, ProcessEngineConfigurationAware {
           .name(resourceName)
           .execute();
         
+        String diagramResource = getDiagramResource(resourceName, resources);
+
+//        if (diagramResource==null) {
+//          TODO ACT-340 this is where diagram resource generation would be cool to have based on the bpmn process xml 
+//        }
+
         for (ProcessDefinitionEntity processDefinition: bpmnParse.getProcessDefinitions()) {
           processDefinition.setResourceName(resourceName);
+          processDefinition.setDiagramResourceName(diagramResource);
           processDefinitions.add(processDefinition);
         }
       }
     }
     
     return processDefinitions;
+  }
+
+  protected String getDiagramResource(String resourceName, Map<String, ResourceEntity> resources) {
+    String processResourceBase = resourceName.substring(0, resourceName.length()-10);
+    for (String diagramSuffix: DIAGRAM_SUFFIXES) {
+      String processDiagramResource = processResourceBase + diagramSuffix;
+      if (resources.containsKey(processDiagramResource)) {
+        return processDiagramResource;
+      }
+    }
+    
+    return null;
   }
 }

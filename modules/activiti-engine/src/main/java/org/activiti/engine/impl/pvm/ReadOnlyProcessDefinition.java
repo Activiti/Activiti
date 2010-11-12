@@ -23,4 +23,5 @@ public interface ReadOnlyProcessDefinition extends PvmScope {
 
   PvmActivity getInitial();
 
+  String getDiagramResourceName();
 }
