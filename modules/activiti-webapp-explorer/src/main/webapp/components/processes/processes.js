@@ -75,7 +75,7 @@
       // Needed to load data and set up other events
       if (!Activiti.event.isInitEvent(Activiti.event.displayProcesses)) 
       {
-        this.fireEvent(Activiti.event.displayProcesses, {}, null, true);
+        this.fireEvent(Activiti.event.displayProcesses, {}, null);
       }   
       
       // Display form if url

@@ -130,10 +130,10 @@
      */
     onFilterClick: function TaskFilters_onFilterClick (e, el)
     {
-      // Get target, highlight the link and fire the event
+      // Get target, highlight the link and fire the event (as a bookmark only if a click was made)
       el = el ? el : Event.getTarget(e);
       var filter = Activiti.util.argumentStringToObject(el.getAttribute("rel"));
-      this.fireEvent(Activiti.event.selectTaskFilter, filter, e, true);
+      this.fireEvent(Activiti.event.selectTaskFilter, filter, e, e != null);
     },
 
     /**

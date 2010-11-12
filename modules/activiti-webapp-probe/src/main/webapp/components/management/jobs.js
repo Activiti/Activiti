@@ -84,7 +84,7 @@
       // Needed to load data and set up other events
       if (!Activiti.event.isInitEvent(Activiti.event.displayJobs)) 
       {
-        this.fireEvent(Activiti.event.displayJobs, {}, null, true);
+        this.fireEvent(Activiti.event.displayJobs, {}, null);
       }   
       
       // Set up button events

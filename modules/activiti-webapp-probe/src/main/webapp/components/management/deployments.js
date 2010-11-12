@@ -83,7 +83,7 @@
       // Needed to load data and set up other events
       if (!Activiti.event.isInitEvent(Activiti.event.displayDeployments)) 
       {
-        this.fireEvent(Activiti.event.displayDeployments, {}, null, true);
+        this.fireEvent(Activiti.event.displayDeployments, {}, null);
       }   
       
       // Set up button events
