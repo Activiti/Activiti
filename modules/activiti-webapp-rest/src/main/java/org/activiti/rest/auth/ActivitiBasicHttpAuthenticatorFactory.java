@@ -16,6 +16,7 @@ import org.activiti.engine.ProcessEngines;
 import org.activiti.engine.identity.Group;
 import org.activiti.engine.identity.GroupQuery;
 import org.activiti.rest.Config;
+import org.springframework.extensions.webscripts.AbstractBasicHttpAuthenticatorFactory;
 import org.springframework.extensions.webscripts.Description;
 
 import java.util.ArrayList;
