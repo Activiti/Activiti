@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<definitions id="oryx_513b45f3-f35e-4a20-ad0d-f94eeee5225c" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://www.omg.org/bpmn20" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:schemaLocation="http://schema.omg.org/spec/BPMN/2.0 BPMN20.xsd" xmlns="http://schema.omg.org/spec/BPMN/2.0" xmlns:bpmndi="http://bpmndi.org">
+    <process id="oryx_77c62be5-953d-4704-983e-c074802a57d7"  name="Mixed candidate user and group example">
+        <laneSet id="oryx_0f8c7873-1edc-4646-ba86-5882139d376a">
+            <lane name="DefaultLane" id="oryx_1127af6d-111a-4784-87df-306af5f0a0a1">
+                <flowElementRef>oryx_E8781290-5011-4A22-A563-9C0B24048A96</flowElementRef>
+                <flowElementRef>oryx_8933AC72-DAF7-4180-969D-3F08D85B7B06</flowElementRef>
+                <flowElementRef>oryx_D42D2647-C3C5-4FC3-9684-DE6A035CA2CE</flowElementRef>
+            </lane>
+        </laneSet>
+        <startEvent name="" id="oryx_E8781290-5011-4A22-A563-9C0B24048A96"/>
+        <userTask implementation="unspecified" completionQuantity="1" startQuantity="1" isForCompensation="false" name="Write financial report" id="oryx_8933AC72-DAF7-4180-969D-3F08D85B7B06">
+            <documentation id="oryx_314a78ff-cf0a-4c06-a859-9427b64eb0dd">Write the bi-monthly financial report for the shareholders newsletter.</documentation>
+            <potentialOwner>
+                <resourceAssignmentExpression>
+                    <formalExpression>user(kermit), group(sales)</formalExpression>
+                </resourceAssignmentExpression>
+            </potentialOwner>
+        </userTask>
+        <endEvent name="" id="oryx_D42D2647-C3C5-4FC3-9684-DE6A035CA2CE"/>
+        <sequenceFlow targetRef="oryx_8933AC72-DAF7-4180-969D-3F08D85B7B06" sourceRef="oryx_E8781290-5011-4A22-A563-9C0B24048A96" name="" id="oryx_4D7BA7FE-AABC-4B76-9F7C-37D8CA8A10DB"/>
+        <sequenceFlow targetRef="oryx_D42D2647-C3C5-4FC3-9684-DE6A035CA2CE" sourceRef="oryx_8933AC72-DAF7-4180-969D-3F08D85B7B06" name="" id="oryx_538ED348-875B-4509-99F6-D3CCB91303ED"/>
+    </process>
+    <bpmndi:processDiagram processRef="oryx_77c62be5-953d-4704-983e-c074802a57d7" id="oryx_77c62be5-953d-4704-983e-c074802a57d7_gui">
+        <bpmndi:laneCompartment isVisible="false" height="0.0" width="0.0" y="0.0" x="0.0" name="DefaultLane" id="oryx_1127af6d-111a-4784-87df-306af5f0a0a1_gui">
+            <bpmndi:eventShape eventRef="oryx_E8781290-5011-4A22-A563-9C0B24048A96" height="30.0" width="30.0" y="165.0" x="180.0" name="" id="oryx_E8781290-5011-4A22-A563-9C0B24048A96_gui"/>
+            <bpmndi:activityShape activityRef="oryx_8933AC72-DAF7-4180-969D-3F08D85B7B06" height="80.0" width="100.0" y="140.0" x="255.0" name="Write financial report" id="oryx_8933AC72-DAF7-4180-969D-3F08D85B7B06_gui"/>
+            <bpmndi:eventShape eventRef="oryx_D42D2647-C3C5-4FC3-9684-DE6A035CA2CE" height="28.0" width="28.0" y="166.0" x="400.0" name="" id="oryx_D42D2647-C3C5-4FC3-9684-DE6A035CA2CE_gui"/>
+        </bpmndi:laneCompartment>
+        <bpmndi:sequenceFlowConnector sequenceFlowRef="oryx_4D7BA7FE-AABC-4B76-9F7C-37D8CA8A10DB" label="" targetRef="oryx_8933AC72-DAF7-4180-969D-3F08D85B7B06_gui" sourceRef="oryx_E8781290-5011-4A22-A563-9C0B24048A96_gui" id="oryx_4D7BA7FE-AABC-4B76-9F7C-37D8CA8A10DB_gui"/>
+        <bpmndi:sequenceFlowConnector sequenceFlowRef="oryx_538ED348-875B-4509-99F6-D3CCB91303ED" label="" targetRef="oryx_D42D2647-C3C5-4FC3-9684-DE6A035CA2CE_gui" sourceRef="oryx_8933AC72-DAF7-4180-969D-3F08D85B7B06_gui" id="oryx_538ED348-875B-4509-99F6-D3CCB91303ED_gui"/>
+    </bpmndi:processDiagram>
+</definitions>

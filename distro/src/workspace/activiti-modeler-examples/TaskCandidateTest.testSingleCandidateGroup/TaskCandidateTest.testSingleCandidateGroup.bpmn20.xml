@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<definitions id="oryx_04121f1b-403f-4034-a6f9-7adf3dc159b3" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://www.omg.org/bpmn20" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://schema.omg.org/spec/BPMN/2.0" xmlns:bpmndi="http://bpmndi.org">
+    <process id="oryx_a3703d29-53c4-4efc-913d-d20d737201a7" name="Single candidate group example">
+        <laneSet id="oryx_7029c696-8bb5-4475-bcec-419c599e4d66">
+            <lane name="DefaultLane" id="oryx_dd380803-71f7-4b0d-ab54-4e0c71b95836">
+                <flowElementRef>oryx_53830E5F-F687-4564-AB2C-81A0D462ED0D</flowElementRef>
+                <flowElementRef>oryx_25701702-0FB5-40D0-BA2B-25E55F444D14</flowElementRef>
+                <flowElementRef>oryx_FC58C7AF-F7D4-41CF-86FC-8ED9623B2C1E</flowElementRef>
+            </lane>
+        </laneSet>
+        <startEvent name="" id="oryx_53830E5F-F687-4564-AB2C-81A0D462ED0D"/>
+        <userTask implementation="unspecified" completionQuantity="1" startQuantity="1" isForCompensation="false" name="Pay out expenses" id="oryx_25701702-0FB5-40D0-BA2B-25E55F444D14">
+            <documentation id="oryx_f6215776-d202-4190-bae9-ac52d64241c0">Transfer money for approved expenses to employee.</documentation>
+            <potentialOwner>
+                <resourceAssignmentExpression>
+                    <formalExpression>accountancy</formalExpression>
+                </resourceAssignmentExpression>
+            </potentialOwner>
+        </userTask>
+        <endEvent name="" id="oryx_FC58C7AF-F7D4-41CF-86FC-8ED9623B2C1E"/>
+        <sequenceFlow targetRef="oryx_25701702-0FB5-40D0-BA2B-25E55F444D14" sourceRef="oryx_53830E5F-F687-4564-AB2C-81A0D462ED0D" name="" id="oryx_05B99B7B-6293-4DDA-B5A6-3826C969F404"/>
+        <sequenceFlow targetRef="oryx_FC58C7AF-F7D4-41CF-86FC-8ED9623B2C1E" sourceRef="oryx_25701702-0FB5-40D0-BA2B-25E55F444D14" name="" id="oryx_490C8E09-7FFB-490F-AAC2-096AA3355695"/>
+    </process>
+    <bpmndi:processDiagram processRef="oryx_a3703d29-53c4-4efc-913d-d20d737201a7" id="oryx_a3703d29-53c4-4efc-913d-d20d737201a7_gui">
+        <bpmndi:laneCompartment isVisible="false" height="0.0" width="0.0" y="0.0" x="0.0" name="DefaultLane" id="oryx_dd380803-71f7-4b0d-ab54-4e0c71b95836_gui">
+            <bpmndi:eventShape eventRef="oryx_53830E5F-F687-4564-AB2C-81A0D462ED0D" height="30.0" width="30.0" y="135.0" x="240.0" name="" id="oryx_53830E5F-F687-4564-AB2C-81A0D462ED0D_gui"/>
+            <bpmndi:activityShape activityRef="oryx_25701702-0FB5-40D0-BA2B-25E55F444D14" height="80.0" width="100.0" y="110.0" x="315.0" name="Pay out expenses" id="oryx_25701702-0FB5-40D0-BA2B-25E55F444D14_gui"/>
+            <bpmndi:eventShape eventRef="oryx_FC58C7AF-F7D4-41CF-86FC-8ED9623B2C1E" height="28.0" width="28.0" y="136.0" x="460.0" name="" id="oryx_FC58C7AF-F7D4-41CF-86FC-8ED9623B2C1E_gui"/>
+        </bpmndi:laneCompartment>
+        <bpmndi:sequenceFlowConnector sequenceFlowRef="oryx_05B99B7B-6293-4DDA-B5A6-3826C969F404" label="" targetRef="oryx_25701702-0FB5-40D0-BA2B-25E55F444D14_gui" sourceRef="oryx_53830E5F-F687-4564-AB2C-81A0D462ED0D_gui" id="oryx_05B99B7B-6293-4DDA-B5A6-3826C969F404_gui"/>
+        <bpmndi:sequenceFlowConnector sequenceFlowRef="oryx_490C8E09-7FFB-490F-AAC2-096AA3355695" label="" targetRef="oryx_FC58C7AF-F7D4-41CF-86FC-8ED9623B2C1E_gui" sourceRef="oryx_25701702-0FB5-40D0-BA2B-25E55F444D14_gui" id="oryx_490C8E09-7FFB-490F-AAC2-096AA3355695_gui"/>
+    </bpmndi:processDiagram>
+</definitions>

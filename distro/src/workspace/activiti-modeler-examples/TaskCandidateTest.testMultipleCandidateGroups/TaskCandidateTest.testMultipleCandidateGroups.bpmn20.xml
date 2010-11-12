@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<definitions id="oryx_6e9e52e8-1f08-47d3-afa3-04dc543b94c3" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://www.omg.org/bpmn20" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://schema.omg.org/spec/BPMN/2.0" xmlns:bpmndi="http://bpmndi.org">
+    <process id="oryx_6cccecf4-d3a2-4141-b85f-be0538dd74e8" name="Multiple candidate groups example">
+        <laneSet id="oryx_e1c63f98-4c3a-4d04-bc30-a675ecac8c6a">
+            <lane name="DefaultLane" id="oryx_bacd7ab5-a0d9-46ca-99cc-8f259383c9ca">
+                <flowElementRef>oryx_4670019D-0BB0-4355-93E0-3F2E0E9E5A01</flowElementRef>
+                <flowElementRef>oryx_5B790FCC-C8C4-44D8-9DD2-3935EA223BB7</flowElementRef>
+                <flowElementRef>oryx_D607CFCF-4C28-4144-BB25-E82269B5CD9D</flowElementRef>
+            </lane>
+        </laneSet>
+        <startEvent name="" id="oryx_4670019D-0BB0-4355-93E0-3F2E0E9E5A01"/>
+        <userTask implementation="unspecified" completionQuantity="1" startQuantity="1" isForCompensation="false" name="Approve expenses" id="oryx_5B790FCC-C8C4-44D8-9DD2-3935EA223BB7">
+            <documentation id="oryx_db0ded94-a253-4079-a0a4-c20692af2ac8">Judge expenses of employees before end of fiscal quarter.</documentation>
+            <potentialOwner>
+                <resourceAssignmentExpression>
+                    <formalExpression>group(accountancy), group(management)</formalExpression>
+                </resourceAssignmentExpression>
+            </potentialOwner>
+        </userTask>
+        <endEvent name="" id="oryx_D607CFCF-4C28-4144-BB25-E82269B5CD9D"/>
+        <sequenceFlow targetRef="oryx_5B790FCC-C8C4-44D8-9DD2-3935EA223BB7" sourceRef="oryx_4670019D-0BB0-4355-93E0-3F2E0E9E5A01" name="" id="oryx_861670C4-BF71-4497-98CE-6C57922E082A"/>
+        <sequenceFlow targetRef="oryx_D607CFCF-4C28-4144-BB25-E82269B5CD9D" sourceRef="oryx_5B790FCC-C8C4-44D8-9DD2-3935EA223BB7" name="" id="oryx_3BE99AB9-4596-444E-8AFE-3B7D369C4252"/>
+    </process>
+    <bpmndi:processDiagram processRef="oryx_6cccecf4-d3a2-4141-b85f-be0538dd74e8" id="oryx_6cccecf4-d3a2-4141-b85f-be0538dd74e8_gui">
+        <bpmndi:laneCompartment isVisible="false" height="0.0" width="0.0" y="0.0" x="0.0" name="DefaultLane" id="oryx_bacd7ab5-a0d9-46ca-99cc-8f259383c9ca_gui">
+            <bpmndi:eventShape eventRef="oryx_4670019D-0BB0-4355-93E0-3F2E0E9E5A01" height="30.0" width="30.0" y="120.0" x="225.0" name="" id="oryx_4670019D-0BB0-4355-93E0-3F2E0E9E5A01_gui"/>
+            <bpmndi:activityShape activityRef="oryx_5B790FCC-C8C4-44D8-9DD2-3935EA223BB7" height="80.0" width="100.0" y="95.0" x="300.0" name="Approve expenses" id="oryx_5B790FCC-C8C4-44D8-9DD2-3935EA223BB7_gui"/>
+            <bpmndi:eventShape eventRef="oryx_D607CFCF-4C28-4144-BB25-E82269B5CD9D" height="28.0" width="28.0" y="121.0" x="445.0" name="" id="oryx_D607CFCF-4C28-4144-BB25-E82269B5CD9D_gui"/>
+        </bpmndi:laneCompartment>
+        <bpmndi:sequenceFlowConnector sequenceFlowRef="oryx_861670C4-BF71-4497-98CE-6C57922E082A" label="" targetRef="oryx_5B790FCC-C8C4-44D8-9DD2-3935EA223BB7_gui" sourceRef="oryx_4670019D-0BB0-4355-93E0-3F2E0E9E5A01_gui" id="oryx_861670C4-BF71-4497-98CE-6C57922E082A_gui"/>
+        <bpmndi:sequenceFlowConnector sequenceFlowRef="oryx_3BE99AB9-4596-444E-8AFE-3B7D369C4252" label="" targetRef="oryx_D607CFCF-4C28-4144-BB25-E82269B5CD9D_gui" sourceRef="oryx_5B790FCC-C8C4-44D8-9DD2-3935EA223BB7_gui" id="oryx_3BE99AB9-4596-444E-8AFE-3B7D369C4252_gui"/>
+    </bpmndi:processDiagram>
+</definitions>

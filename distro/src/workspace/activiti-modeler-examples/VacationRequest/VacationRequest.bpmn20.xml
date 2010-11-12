@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<definitions id="oryx_b7b1b53e-2b61-4eca-bde6-4efcad282cc8" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://www.omg.org/bpmn20" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:activiti="http://activiti.org/bpmn-extensions" xmlns="http://schema.omg.org/spec/BPMN/2.0" xmlns:bpmndi="http://bpmndi.org">
+    <process id="oryx_f6bc2e05-d1bb-4008-8617-eee0fe0be439"  name="Vacation request">
+        <laneSet id="oryx_fdd35c53-79fe-4300-a84b-71b6f7d5e245">
+            <lane name="DefaultLane" id="oryx_25b53991-0539-4205-8be3-3ad39d12c469">
+                <flowElementRef>oryx_4DD85C61-62D1-401D-88B9-2B9D8BC93D83</flowElementRef>
+                <flowElementRef>oryx_75C671C8-686E-4D8A-9D74-9053172498D3</flowElementRef>
+                <flowElementRef>oryx_A8AEE0F6-D1C6-4BAF-8F90-A5EAB5C6B9D2</flowElementRef>
+                <flowElementRef>oryx_E585F693-2947-4735-A3B8-E8A3416BE4D8</flowElementRef>
+                <flowElementRef>oryx_356C9E2D-91BE-44AD-B325-31FC11BAA290</flowElementRef>
+                <flowElementRef>oryx_878E7259-2C71-4FB9-ACD1-78F40311EB68</flowElementRef>
+                <flowElementRef>oryx_CBD37BB3-20A6-40D6-9342-BB62D573152C</flowElementRef>
+                <flowElementRef>oryx_F1E5A511-837D-4F67-A3B9-080B49E1817A</flowElementRef>
+            </lane>
+        </laneSet>
+        <startEvent name="" id="oryx_4DD85C61-62D1-401D-88B9-2B9D8BC93D83" activiti:form="com/camunda/request.form" />
+        <userTask implementation="unspecified" completionQuantity="1" startQuantity="1" isForCompensation="false" name="Handle vacation request" id="oryx_75C671C8-686E-4D8A-9D74-9053172498D3" activiti:form="com/camunda/approve.form" >
+            <documentation id="oryx_391d07fd-f989-4c2e-82af-928df159d24a">Vacation request by ${employeeName}</documentation>
+            <potentialOwner>
+                <resourceAssignmentExpression>
+                    <formalExpression>management</formalExpression>
+                </resourceAssignmentExpression>
+            </potentialOwner>
+        </userTask>
+        <exclusiveGateway gatewayDirection="Diverging" name="Resend request?" id="oryx_A8AEE0F6-D1C6-4BAF-8F90-A5EAB5C6B9D2"/>
+        <userTask implementation="unspecified" completionQuantity="1" startQuantity="1" isForCompensation="false" name="Adjust vacation request" id="oryx_E585F693-2947-4735-A3B8-E8A3416BE4D8" activiti:form="com/camunda/adjustRequest.form" >
+            <documentation id="oryx_0e28c38f-0381-484f-a513-b133675a1038">Your manager has not approved your vacation request.</documentation>
+            <humanPerformer>
+                <resourceAssignmentExpression>
+                    <formalExpression>${employeeName}</formalExpression>
+                </resourceAssignmentExpression>
+            </humanPerformer>
+        </userTask>
+        <exclusiveGateway gatewayDirection="Diverging" name="Request Approved?" id="oryx_356C9E2D-91BE-44AD-B325-31FC11BAA290"/>
+        <task completionQuantity="1" startQuantity="1" isForCompensation="false" name="Send confirmation e-mail" id="oryx_878E7259-2C71-4FB9-ACD1-78F40311EB68"/>
+        <endEvent name="" id="oryx_CBD37BB3-20A6-40D6-9342-BB62D573152C"/>
+        <endEvent name="" id="oryx_F1E5A511-837D-4F67-A3B9-080B49E1817A"/>
+        <sequenceFlow targetRef="oryx_75C671C8-686E-4D8A-9D74-9053172498D3" sourceRef="oryx_4DD85C61-62D1-401D-88B9-2B9D8BC93D83" name="" id="oryx_E1838A99-9C77-497F-ACFD-02AC09D98151"/>
+        <sequenceFlow targetRef="oryx_356C9E2D-91BE-44AD-B325-31FC11BAA290" sourceRef="oryx_75C671C8-686E-4D8A-9D74-9053172498D3" name="" id="oryx_6D475F30-F77A-4A9E-8ABF-244A8986E337"/>
+        <sequenceFlow isImmediate="false" targetRef="oryx_878E7259-2C71-4FB9-ACD1-78F40311EB68" sourceRef="oryx_356C9E2D-91BE-44AD-B325-31FC11BAA290" name="Yes" id="oryx_E8CE747B-643B-475C-9338-4FE33F497985">
+            <conditionExpression xsi:type="tFormalExpression" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">${vacationApproved}</conditionExpression>
+        </sequenceFlow>
+        <sequenceFlow targetRef="oryx_CBD37BB3-20A6-40D6-9342-BB62D573152C" sourceRef="oryx_878E7259-2C71-4FB9-ACD1-78F40311EB68" name="" id="oryx_F0D37AF7-7FC0-414B-A0AC-A9A7234D35F5"/>
+        <sequenceFlow targetRef="oryx_E585F693-2947-4735-A3B8-E8A3416BE4D8" sourceRef="oryx_356C9E2D-91BE-44AD-B325-31FC11BAA290" name="No" id="oryx_7BE7C6BE-34B6-4042-9A70-5383F289BE04">
+            <conditionExpression xsi:type="tFormalExpression" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">${!vacationApproved}</conditionExpression>
+        </sequenceFlow>
+        <sequenceFlow targetRef="oryx_A8AEE0F6-D1C6-4BAF-8F90-A5EAB5C6B9D2" sourceRef="oryx_E585F693-2947-4735-A3B8-E8A3416BE4D8" name="" id="oryx_6DB12610-20D5-4644-99C6-952D527BFADE"/>
+        <sequenceFlow targetRef="oryx_75C671C8-686E-4D8A-9D74-9053172498D3" sourceRef="oryx_A8AEE0F6-D1C6-4BAF-8F90-A5EAB5C6B9D2" name="Yes" id="oryx_70D5A82A-AC07-49B4-9891-2621B0233E35">
+            <conditionExpression xsi:type="tFormalExpression" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">${resendRequest}</conditionExpression>
+        </sequenceFlow>
+        <sequenceFlow targetRef="oryx_F1E5A511-837D-4F67-A3B9-080B49E1817A" sourceRef="oryx_A8AEE0F6-D1C6-4BAF-8F90-A5EAB5C6B9D2" name="No" id="oryx_46069045-D741-4F83-926E-F0CC350711EB">
+            <conditionExpression xsi:type="tFormalExpression" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">${!resendRequest}</conditionExpression>
+        </sequenceFlow>
+    </process>
+    <bpmndi:processDiagram processRef="oryx_f6bc2e05-d1bb-4008-8617-eee0fe0be439" id="oryx_f6bc2e05-d1bb-4008-8617-eee0fe0be439_gui">
+        <bpmndi:laneCompartment isVisible="false" height="0.0" width="0.0" y="0.0" x="0.0" name="DefaultLane" id="oryx_25b53991-0539-4205-8be3-3ad39d12c469_gui">
+            <bpmndi:eventShape eventRef="oryx_4DD85C61-62D1-401D-88B9-2B9D8BC93D83" height="30.0" width="30.0" y="55.0" x="15.0" name="" id="oryx_4DD85C61-62D1-401D-88B9-2B9D8BC93D83_gui"/>
+            <bpmndi:activityShape activityRef="oryx_75C671C8-686E-4D8A-9D74-9053172498D3" height="80.0" width="100.0" y="30.0" x="105.0" name="Handle vacation request" id="oryx_75C671C8-686E-4D8A-9D74-9053172498D3_gui"/>
+            <bpmndi:gatewayShape gatewayRef="oryx_A8AEE0F6-D1C6-4BAF-8F90-A5EAB5C6B9D2" height="40.0" width="40.0" y="179.0" x="454.0" name="Resend request?" id="oryx_A8AEE0F6-D1C6-4BAF-8F90-A5EAB5C6B9D2_gui"/>
+            <bpmndi:activityShape activityRef="oryx_E585F693-2947-4735-A3B8-E8A3416BE4D8" height="80.0" width="109.0" y="159.0" x="300.0" name="Adjust vacation request" id="oryx_E585F693-2947-4735-A3B8-E8A3416BE4D8_gui"/>
+            <bpmndi:gatewayShape gatewayRef="oryx_356C9E2D-91BE-44AD-B325-31FC11BAA290" height="40.0" width="40.0" y="50.0" x="250.0" name="Request Approved?" id="oryx_356C9E2D-91BE-44AD-B325-31FC11BAA290_gui"/>
+            <bpmndi:activityShape activityRef="oryx_878E7259-2C71-4FB9-ACD1-78F40311EB68" height="80.0" width="87.0" y="30.0" x="515.0" name="Send confirmation e-mail" id="oryx_878E7259-2C71-4FB9-ACD1-78F40311EB68_gui"/>
+            <bpmndi:eventShape eventRef="oryx_CBD37BB3-20A6-40D6-9342-BB62D573152C" height="28.0" width="28.0" y="56.0" x="647.0" name="" id="oryx_CBD37BB3-20A6-40D6-9342-BB62D573152C_gui"/>
+            <bpmndi:eventShape eventRef="oryx_F1E5A511-837D-4F67-A3B9-080B49E1817A" height="28.0" width="28.0" y="185.0" x="647.0" name="" id="oryx_F1E5A511-837D-4F67-A3B9-080B49E1817A_gui"/>
+        </bpmndi:laneCompartment>
+        <bpmndi:sequenceFlowConnector sequenceFlowRef="oryx_E1838A99-9C77-497F-ACFD-02AC09D98151" label="" targetRef="oryx_75C671C8-686E-4D8A-9D74-9053172498D3_gui" sourceRef="oryx_4DD85C61-62D1-401D-88B9-2B9D8BC93D83_gui" id="oryx_E1838A99-9C77-497F-ACFD-02AC09D98151_gui"/>
+        <bpmndi:sequenceFlowConnector sequenceFlowRef="oryx_6D475F30-F77A-4A9E-8ABF-244A8986E337" label="" targetRef="oryx_356C9E2D-91BE-44AD-B325-31FC11BAA290_gui" sourceRef="oryx_75C671C8-686E-4D8A-9D74-9053172498D3_gui" id="oryx_6D475F30-F77A-4A9E-8ABF-244A8986E337_gui"/>
+        <bpmndi:sequenceFlowConnector sequenceFlowRef="oryx_E8CE747B-643B-475C-9338-4FE33F497985" label="Yes" targetRef="oryx_878E7259-2C71-4FB9-ACD1-78F40311EB68_gui" sourceRef="oryx_356C9E2D-91BE-44AD-B325-31FC11BAA290_gui" id="oryx_E8CE747B-643B-475C-9338-4FE33F497985_gui"/>
+        <bpmndi:sequenceFlowConnector sequenceFlowRef="oryx_F0D37AF7-7FC0-414B-A0AC-A9A7234D35F5" label="" targetRef="oryx_CBD37BB3-20A6-40D6-9342-BB62D573152C_gui" sourceRef="oryx_878E7259-2C71-4FB9-ACD1-78F40311EB68_gui" id="oryx_F0D37AF7-7FC0-414B-A0AC-A9A7234D35F5_gui"/>
+        <bpmndi:sequenceFlowConnector sequenceFlowRef="oryx_7BE7C6BE-34B6-4042-9A70-5383F289BE04" label="No" targetRef="oryx_E585F693-2947-4735-A3B8-E8A3416BE4D8_gui" sourceRef="oryx_356C9E2D-91BE-44AD-B325-31FC11BAA290_gui" id="oryx_7BE7C6BE-34B6-4042-9A70-5383F289BE04_gui">
+            <bpmndi:bendpoint y="199.0" x="270.5"/>
+        </bpmndi:sequenceFlowConnector>
+        <bpmndi:sequenceFlowConnector sequenceFlowRef="oryx_6DB12610-20D5-4644-99C6-952D527BFADE" label="" targetRef="oryx_A8AEE0F6-D1C6-4BAF-8F90-A5EAB5C6B9D2_gui" sourceRef="oryx_E585F693-2947-4735-A3B8-E8A3416BE4D8_gui" id="oryx_6DB12610-20D5-4644-99C6-952D527BFADE_gui"/>
+        <bpmndi:sequenceFlowConnector sequenceFlowRef="oryx_70D5A82A-AC07-49B4-9891-2621B0233E35" label="Yes" targetRef="oryx_75C671C8-686E-4D8A-9D74-9053172498D3_gui" sourceRef="oryx_A8AEE0F6-D1C6-4BAF-8F90-A5EAB5C6B9D2_gui" id="oryx_70D5A82A-AC07-49B4-9891-2621B0233E35_gui">
+            <bpmndi:bendpoint y="270.0" x="474.5"/>
+            <bpmndi:bendpoint y="270.0" x="155.0"/>
+        </bpmndi:sequenceFlowConnector>
+        <bpmndi:sequenceFlowConnector sequenceFlowRef="oryx_46069045-D741-4F83-926E-F0CC350711EB" label="No" targetRef="oryx_F1E5A511-837D-4F67-A3B9-080B49E1817A_gui" sourceRef="oryx_A8AEE0F6-D1C6-4BAF-8F90-A5EAB5C6B9D2_gui" id="oryx_46069045-D741-4F83-926E-F0CC350711EB_gui"/>
+    </bpmndi:processDiagram>
+</definitions>
