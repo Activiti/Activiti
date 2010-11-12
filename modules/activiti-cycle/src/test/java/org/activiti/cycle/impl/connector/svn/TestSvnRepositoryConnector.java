@@ -1,5 +1,7 @@
 package org.activiti.cycle.impl.connector.svn;
 
+import java.util.UUID;
+
 import org.activiti.cycle.Content;
 import org.activiti.cycle.RepositoryArtifact;
 import org.activiti.cycle.RepositoryConnector;
@@ -13,14 +15,16 @@ import org.junit.Test;
 import org.junit.Assert;
 
 /**
- * Assert that we can login to the activiti public repository
+ * WARNING: this Test is not usable without my local repo :)
  * 
  * @author daniel.meyer@camunda.com
  * 
  */
-public class TestSVNRepositoryConnector {
+public class TestSvnRepositoryConnector {
 
-	public final static String REPO_LOCATION = "http://svn.codehaus.org/activiti/";
+	// public final static String REPO_LOCATION =
+	// "http://svn.codehaus.org/activiti/";
+	public final static String REPO_LOCATION = "file:///home/meyerd/tmp/svn-tmp/";
 
 	private static ConfigurationContainer userConfiguration;
 
@@ -29,13 +33,13 @@ public class TestSVNRepositoryConnector {
 	@BeforeClass
 	public static void createConnector() {
 		userConfiguration = new ConfigurationContainer("daniel");
-		userConfiguration.addRepositoryConnectorConfiguration(new SvnConnectorConfiguration("svn", REPO_LOCATION));
+		userConfiguration.addRepositoryConnectorConfiguration(new SvnConnectorConfiguration("svn", REPO_LOCATION, "/tmp"));
 		connector = userConfiguration.getConnector("svn");
 
 		// TODO: Should be done in Bootstrapping
 		PluginFinder.checkPluginInitialization();
 
-		connector.login("guest", "");
+		// connector.login("guest", "");
 	}
 
 	@Test
@@ -82,6 +86,43 @@ public class TestSVNRepositoryConnector {
 
 		Content content = connector.getContent(artifact.getNodeId(), artifact.getArtifactType().getContentRepresentations().get(0).getId());
 		Assert.assertTrue(content.asByteArray().length > 0);
+	}
+
+	@Test
+	public void testCreateArtifact() {
+		RepositoryArtifact artifact = connector.getRepositoryArtifact("test.txt");
+
+		Content content = connector.getContent(artifact.getNodeId(), "Text");
+
+		RepositoryArtifact newArtifact = connector.createArtifact("", UUID.randomUUID() + ".txt", "Text", content);
+
+	}
+
+	@Test
+	public void testCreateFolder() {
+		RepositoryFolder folder = connector.createFolder("", UUID.randomUUID().toString());
+	}
+
+	@Test
+	public void testUpdateContent() {
+		RepositoryArtifact test1 = connector.getRepositoryArtifact("test.txt");
+		RepositoryArtifact test2 = connector.getRepositoryArtifact("test2.txt");
+
+		Content contentTest1 = connector.getContent(test1.getNodeId(), "Text");
+		Content contentTest2 = connector.getContent(test2.getNodeId(), "Text");
+
+		connector.updateContent(test1.getNodeId(), contentTest2);
+		connector.updateContent(test2.getNodeId(), contentTest1);
+	}
+
+	@Test
+	public void testDeleteArtifact() {
+		connector.deleteArtifact("test_delete.txt");
+	}
+
+	@Test
+	public void testDeleteFolder() {
+		connector.deleteFolder("trunk");
 	}
 
 }

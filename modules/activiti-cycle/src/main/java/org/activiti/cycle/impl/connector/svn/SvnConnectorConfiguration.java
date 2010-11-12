@@ -11,14 +11,17 @@ import org.activiti.cycle.impl.conf.PasswordEnabledRepositoryConnectorConfigurat
  */
 public class SvnConnectorConfiguration extends PasswordEnabledRepositoryConnectorConfiguration {
 
-	protected String repositoryPath = "";
+	private String repositoryPath = "";
+
+	private String temporaryFileStore = "";
 
 	public SvnConnectorConfiguration() {
 	}
 
-	public SvnConnectorConfiguration(String name, String repoLocation) {
+	public SvnConnectorConfiguration(String name, String repoLocation, String tempFiles) {
 		repositoryPath = repoLocation;
 		setName(name);
+		setTemporaryFileStore(tempFiles);
 	}
 
 	/**
@@ -26,7 +29,6 @@ public class SvnConnectorConfiguration extends PasswordEnabledRepositoryConnecto
 	 * 
 	 * @return
 	 */
-	@Override
 	public RepositoryConnector createConnector() {
 		SvnRepositoryConnector theConnector = new SvnRepositoryConnector(this);
 		return theConnector;
@@ -38,6 +40,14 @@ public class SvnConnectorConfiguration extends PasswordEnabledRepositoryConnecto
 
 	public void setRepositoryPath(String repositoryPath) {
 		this.repositoryPath = repositoryPath;
+	}
+
+	public String getTemporaryFileStore() {
+		return temporaryFileStore;
+	}
+
+	public void setTemporaryFileStore(String temporaryFileStore) {
+		this.temporaryFileStore = temporaryFileStore;
 	}
 
 }
