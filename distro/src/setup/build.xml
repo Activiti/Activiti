@@ -576,7 +576,7 @@ set JAVA_OPTS=%JAVA_OPTS% @tomcat.java.opts@
     <equals arg1="${feature.modeler}" arg2="enabled"/>
   </condition>
   
-  <target name="internal.download.activiti.modeler" if="is.activiti.modeler.available">
+  <target name="internal.download.activiti.modeler" unless="is.activiti.modeler.available">
     <echo message="This could take a while. Set the 'feature.modeler' property to 'disabled' in the build.properties or in your user.home/.activiti/build.properties to skip this step" />
     <mkdir dir="${downloads.dir}"/>
     <get src="${activiti.modeler.download.url}" dest="${downloads.dir}/activiti-modeler-${activiti.version}.war"/>
