@@ -30,7 +30,7 @@
         <configuration>
           <excludes>
             <exclude>**/RepositoryConnectorConfigurationManagerImplTest.java</exclude>
-	    <exclude>**/TestSVNRepositoryConnector.java</exclude>
+	    <exclude>**/TestSvnRepositoryConnector.java</exclude>
           </excludes>
         </configuration>
       </plugin>
