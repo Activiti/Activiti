@@ -21,7 +21,7 @@ import java.util.Map;
 
 import org.activiti.engine.impl.pvm.PvmException;
 import org.activiti.engine.impl.pvm.PvmScope;
-import org.activiti.engine.impl.pvm.delegate.EventListener;
+import org.activiti.engine.impl.pvm.delegate.ExecutionListener;
 
 
 /**
@@ -33,7 +33,7 @@ public abstract class ScopeImpl extends ProcessElementImpl implements PvmScope {
   
   protected List<ActivityImpl> activities = new ArrayList<ActivityImpl>();
   protected Map<String, ActivityImpl> namedActivities = new HashMap<String, ActivityImpl>();
-  protected Map<String, List<EventListener>> eventListeners = new HashMap<String, List<EventListener>>();
+  protected Map<String, List<ExecutionListener>> executionListeners = new HashMap<String, List<ExecutionListener>>();
 
   public ScopeImpl(String id, ProcessDefinitionImpl processDefinition) {
     super(id, processDefinition);
@@ -85,25 +85,25 @@ public abstract class ScopeImpl extends ProcessElementImpl implements PvmScope {
   // event listeners //////////////////////////////////////////////////////////
   
   @SuppressWarnings("unchecked")
-  public List<EventListener> getEventListeners(String eventName) {
-    List<EventListener> eventListenerList = getEventListeners().get(eventName);
-    if (eventListenerList!=null) {
-      return eventListenerList;
+  public List<ExecutionListener> getExecutionListeners(String eventName) {
+    List<ExecutionListener> executionListenerList = getExecutionListeners().get(eventName);
+    if (executionListenerList!=null) {
+      return executionListenerList;
     }
     return Collections.EMPTY_LIST;
   }
   
-  public void addEventListener(String eventName, EventListener eventListener) {
-    List<EventListener> listeners = eventListeners.get(eventName);
+  public void addExecutionListener(String eventName, ExecutionListener executionListener) {
+    List<ExecutionListener> listeners = executionListeners.get(eventName);
     if (listeners==null) {
-      listeners = new ArrayList<EventListener>();
-      eventListeners.put(eventName, listeners);
+      listeners = new ArrayList<ExecutionListener>();
+      executionListeners.put(eventName, listeners);
     }
-    listeners.add(eventListener);
+    listeners.add(executionListener);
   }
   
-  public Map<String, List<EventListener>> getEventListeners() {
-    return eventListeners;
+  public Map<String, List<ExecutionListener>> getExecutionListeners() {
+    return executionListeners;
   }
   
   // getters and setters //////////////////////////////////////////////////////

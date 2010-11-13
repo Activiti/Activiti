@@ -31,7 +31,7 @@ import org.activiti.engine.impl.bpmn.CallActivityBehaviour;
 import org.activiti.engine.impl.bpmn.ClassStructure;
 import org.activiti.engine.impl.bpmn.Condition;
 import org.activiti.engine.impl.bpmn.ExclusiveGatewayActivity;
-import org.activiti.engine.impl.bpmn.ExpressionEventListener;
+import org.activiti.engine.impl.bpmn.ExpressionExecutionListener;
 import org.activiti.engine.impl.bpmn.ExpressionTaskListener;
 import org.activiti.engine.impl.bpmn.ItemDefinition;
 import org.activiti.engine.impl.bpmn.ItemKind;
@@ -64,7 +64,7 @@ import org.activiti.engine.impl.form.TaskFormHandler;
 import org.activiti.engine.impl.jobexecutor.TimerDeclarationImpl;
 import org.activiti.engine.impl.jobexecutor.TimerExecuteNestedActivityJobHandler;
 import org.activiti.engine.impl.pvm.delegate.ActivityBehavior;
-import org.activiti.engine.impl.pvm.delegate.EventListener;
+import org.activiti.engine.impl.pvm.delegate.ExecutionListener;
 import org.activiti.engine.impl.pvm.process.ActivityImpl;
 import org.activiti.engine.impl.pvm.process.ProcessDefinitionImpl;
 import org.activiti.engine.impl.pvm.process.ScopeImpl;
@@ -437,7 +437,7 @@ public class BpmnParse extends Parse {
     parseEndEvents(scopeElement, parentScope);
     parseBoundaryEvents(scopeElement, parentScope);
     parseSequenceFlow(scopeElement, parentScope);
-    parseEventListenersOnScope(scopeElement, parentScope);
+    parseExecutionListenersOnScope(scopeElement, parentScope);
   }
 
   /**
@@ -589,7 +589,7 @@ public class BpmnParse extends Parse {
     ActivityImpl activity = parseAndCreateActivityOnScopeElement(exclusiveGwElement, scope);
     activity.setActivityBehavior(new ExclusiveGatewayActivity());
     
-    parseEventListenersOnScope(exclusiveGwElement, activity);
+    parseExecutionListenersOnScope(exclusiveGwElement, activity);
     
     for (BpmnParseListener parseListener: parseListeners) {
       parseListener.parseExclusiveGateway(exclusiveGwElement, scope, activity);
@@ -603,7 +603,7 @@ public class BpmnParse extends Parse {
     ActivityImpl activity = parseAndCreateActivityOnScopeElement(parallelGwElement, scope);
     activity.setActivityBehavior(new ParallelGatewayActivity());
     
-    parseEventListenersOnScope(parallelGwElement, activity);
+    parseExecutionListenersOnScope(parallelGwElement, activity);
     
     for (BpmnParseListener parseListener: parseListeners) {
       parseListener.parseParallelGateway(parallelGwElement, scope, activity);
@@ -636,7 +636,7 @@ public class BpmnParse extends Parse {
     
     activity.setActivityBehavior(new ScriptTaskActivity(script, language, resultVariableName));
     
-    parseEventListenersOnScope(scriptTaskElement, activity);
+    parseExecutionListenersOnScope(scriptTaskElement, activity);
 
     for (BpmnParseListener parseListener: parseListeners) {
       parseListener.parseScriptTask(scriptTaskElement, scope, activity);
@@ -693,7 +693,7 @@ public class BpmnParse extends Parse {
       addError("'class', 'type', or 'expression' attribute is mandatory on serviceTask", serviceTaskElement);
     }
     
-    parseEventListenersOnScope(serviceTaskElement, activity);
+    parseExecutionListenersOnScope(serviceTaskElement, activity);
 
     for (BpmnParseListener parseListener: parseListeners) {
       parseListener.parseServiceTask(serviceTaskElement, scope, activity);
@@ -833,7 +833,7 @@ public class BpmnParse extends Parse {
     ActivityImpl activity = parseAndCreateActivityOnScopeElement(taskElement, scope);
     activity.setActivityBehavior(new TaskActivity());
     
-    parseEventListenersOnScope(taskElement, activity);
+    parseExecutionListenersOnScope(taskElement, activity);
 
     for (BpmnParseListener parseListener: parseListeners) {
       parseListener.parseTask(taskElement, scope, activity);
@@ -847,7 +847,7 @@ public class BpmnParse extends Parse {
     ActivityImpl activity = parseAndCreateActivityOnScopeElement(manualTaskElement, scope);
     activity.setActivityBehavior(new ManualTaskActivity());
     
-    parseEventListenersOnScope(manualTaskElement, activity);
+    parseExecutionListenersOnScope(manualTaskElement, activity);
 
     for (BpmnParseListener parseListener: parseListeners) {
       parseListener.parseManualTask(manualTaskElement, scope, activity);
@@ -861,7 +861,7 @@ public class BpmnParse extends Parse {
     ActivityImpl activity = parseAndCreateActivityOnScopeElement(receiveTaskElement, scope);
     activity.setActivityBehavior(new ReceiveTaskActivity());
 
-    parseEventListenersOnScope(receiveTaskElement, activity);
+    parseExecutionListenersOnScope(receiveTaskElement, activity);
     
     for (BpmnParseListener parseListener: parseListeners) {
       parseListener.parseManualTask(receiveTaskElement, scope, activity);
@@ -894,7 +894,7 @@ public class BpmnParse extends Parse {
     activity.setActivityBehavior(userTaskActivity);
 
     parseProperties(userTaskElement, activity);
-    parseEventListenersOnScope(userTaskElement, activity);
+    parseExecutionListenersOnScope(userTaskElement, activity);
 
     for (BpmnParseListener parseListener: parseListeners) {
       parseListener.parseUserTask(userTaskElement, scope, activity);
@@ -1259,7 +1259,7 @@ public class BpmnParse extends Parse {
     }
     activity.setActivityBehavior(new CallActivityBehaviour(calledElement));
     
-    parseEventListenersOnScope(callActivityElement, activity);
+    parseExecutionListenersOnScope(callActivityElement, activity);
 
     for (BpmnParseListener parseListener: parseListeners) {
       parseListener.parseCallActivity(callActivityElement, scope, activity);
@@ -1406,7 +1406,7 @@ public class BpmnParse extends Parse {
         transition.setProperty("documentation", parseDocumentation(sequenceFlowElement));
         transition.setDestination(destinationActivity);
         parseSequenceFlowConditionExpression(sequenceFlowElement, transition);
-        parseEventListenersOnTransition(sequenceFlowElement, transition);
+        parseExecutionListenersOnTransition(sequenceFlowElement, transition);
 
         for (BpmnParseListener parseListener: parseListeners) {
           parseListener.parseSequenceFlow(sequenceFlowElement, scope, transition);
@@ -1445,21 +1445,21 @@ public class BpmnParse extends Parse {
   }
   
   /**
-   * Parses all event-listeners on a scope.
+   * Parses all execution-listeners on a scope.
    * 
    * @param scopeElement the XML element containing the scope definition.
-   * @param scope the scope to add the event-listeners to.
+   * @param scope the scope to add the executionListeners to.
    */
-  public void parseEventListenersOnScope(Element scopeElement, ScopeImpl scope) {
+  public void parseExecutionListenersOnScope(Element scopeElement, ScopeImpl scope) {
     Element extentionsElement = scopeElement.element("extensionElements");
     if(extentionsElement != null) {
-      List<Element> listenerElements = extentionsElement.elementsNS(BpmnParser.ACTIVITI_BPMN_EXTENSIONS_NS, "listener");
+      List<Element> listenerElements = extentionsElement.elementsNS(BpmnParser.ACTIVITI_BPMN_EXTENSIONS_NS, "executionListener");
       for(Element listenerElement :listenerElements) {
-        String eventName = listenerElement.attribute("eventName");
+        String eventName = listenerElement.attribute("event");
         if(isValidEventNameForScope(eventName, listenerElement)) {
-          EventListener listener = parseEventListener(listenerElement);
+          ExecutionListener listener = parseExecutionListener(listenerElement);
           if(listener != null) {
-            scope.addEventListener(eventName, listener);
+            scope.addExecutionListener(eventName, listener);
           }
         }
       }      
@@ -1482,48 +1482,48 @@ public class BpmnParse extends Parse {
     return false;
   }
   
-  public void parseEventListenersOnTransition(Element activitiElement, TransitionImpl activity) {
+  public void parseExecutionListenersOnTransition(Element activitiElement, TransitionImpl activity) {
     Element extentionsElement = activitiElement.element("extensionElements");
     if(extentionsElement != null) {
-      List<Element> listenerElements = extentionsElement.elementsNS(BpmnParser.ACTIVITI_BPMN_EXTENSIONS_NS, "listener");
+      List<Element> listenerElements = extentionsElement.elementsNS(BpmnParser.ACTIVITI_BPMN_EXTENSIONS_NS, "executionListener");
       for(Element listenerElement : listenerElements) {
-        EventListener listener = parseEventListener(listenerElement);
+        ExecutionListener listener = parseExecutionListener(listenerElement);
         if(listener != null) {
           // Since a transition only fires event 'take', we don't parse the eventName, it is ignored
-          activity.addEventListener(listener);
+          activity.addExecutionListener(listener);
         }
       }      
     }
   }
   
   /**
-   * Parses an {@link EventListener} implementation for the given event-listener element.
+   * Parses an {@link ExecutionListener} implementation for the given executionListener element.
    * 
-   * @param eventListenerElement the XML element containing the event-listener definition.
+   * @param executionListenerElement the XML element containing the executionListener definition.
    */
-  public EventListener parseEventListener(Element eventListenerElement) {
-    EventListener eventListener = null;
+  public ExecutionListener parseExecutionListener(Element executionListenerElement) {
+    ExecutionListener executionListener = null;
     
-    String className = eventListenerElement.attribute("class");
-    String expression = eventListenerElement.attribute( "expression");
+    String className = executionListenerElement.attribute("class");
+    String expression = executionListenerElement.attribute( "expression");
     
     if(className != null && className.trim().length() > 0) {
 
-      Object delegateInstance = instantiateDelegate(className, parseFieldDeclarations(eventListenerElement));
-      if (delegateInstance instanceof EventListener) {
-        eventListener = (EventListener) delegateInstance; 
+      Object delegateInstance = instantiateDelegate(className, parseFieldDeclarations(executionListenerElement));
+      if (delegateInstance instanceof ExecutionListener) {
+        executionListener = (ExecutionListener) delegateInstance; 
       } else if (delegateInstance instanceof JavaDelegation) {
-        eventListener = new JavaDelegationDelegate((JavaDelegation) delegateInstance);
+        executionListener = new JavaDelegationDelegate((JavaDelegation) delegateInstance);
       } else {
-        addError(delegateInstance.getClass().getName()+" doesn't implement "+JavaDelegation.class.getName()+" nor "+EventListener.class.getName(), eventListenerElement);
+        addError(delegateInstance.getClass().getName()+" doesn't implement "+JavaDelegation.class.getName()+" nor "+ExecutionListener.class.getName(), executionListenerElement);
       }
       
     } else if(expression != null && expression.trim().length() > 0) {
-      eventListener = new ExpressionEventListener(expressionManager.createExpression(expression));
+      executionListener = new ExpressionExecutionListener(expressionManager.createExpression(expression));
     } else {
-      addError("Element 'class' or 'expression' is mandatory on event-listener", eventListenerElement);
+      addError("Element 'class' or 'expression' is mandatory on executionListener", executionListenerElement);
     }
-    return eventListener;
+    return executionListener;
   }
 
   /**

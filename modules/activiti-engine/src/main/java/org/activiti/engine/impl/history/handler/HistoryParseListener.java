@@ -16,7 +16,7 @@ package org.activiti.engine.impl.history.handler;
 import org.activiti.engine.impl.bpmn.UserTaskActivity;
 import org.activiti.engine.impl.bpmn.parser.BpmnParseListener;
 import org.activiti.engine.impl.cfg.ProcessEngineConfiguration;
-import org.activiti.engine.impl.pvm.delegate.EventListener;
+import org.activiti.engine.impl.pvm.delegate.ExecutionListener;
 import org.activiti.engine.impl.pvm.process.ActivityImpl;
 import org.activiti.engine.impl.pvm.process.ScopeImpl;
 import org.activiti.engine.impl.pvm.process.TransitionImpl;
@@ -43,8 +43,8 @@ public class HistoryParseListener implements BpmnParseListener {
   }
   
   public void parseProcess(Element processElement, ProcessDefinitionEntity processDefinition) {
-    processDefinition.addEventListener(EventListener.EVENTNAME_START, new ProcessInstanceStartHandler());
-    processDefinition.addEventListener(EventListener.EVENTNAME_END, new ProcessInstanceEndHandler());
+    processDefinition.addExecutionListener(ExecutionListener.EVENTNAME_START, new ProcessInstanceStartHandler());
+    processDefinition.addExecutionListener(ExecutionListener.EVENTNAME_END, new ProcessInstanceEndHandler());
   }
 
   public void parseExclusiveGateway(Element exclusiveGwElement, ScopeImpl scope, ActivityImpl activity) {
@@ -106,7 +106,7 @@ public class HistoryParseListener implements BpmnParseListener {
   
   protected void addActivityHandlers(Element activityElement, ActivityImpl activity) {
     String activityType = activityElement.getTagName();
-    activity.addEventListener(EventListener.EVENTNAME_START, new ActivityInstanceStartHandler(activityType));
-    activity.addEventListener(EventListener.EVENTNAME_END, new ActivityInstanceEndHandler());
+    activity.addExecutionListener(ExecutionListener.EVENTNAME_START, new ActivityInstanceStartHandler(activityType));
+    activity.addExecutionListener(ExecutionListener.EVENTNAME_END, new ActivityInstanceEndHandler());
   }
 }

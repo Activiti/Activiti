@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.logging.Logger;
 
 import org.activiti.engine.impl.pvm.PvmException;
-import org.activiti.engine.impl.pvm.delegate.EventListener;
+import org.activiti.engine.impl.pvm.delegate.ExecutionListener;
 import org.activiti.engine.impl.pvm.process.ActivityImpl;
 import org.activiti.engine.impl.pvm.process.ScopeImpl;
 import org.activiti.engine.impl.pvm.process.TransitionImpl;
@@ -32,13 +32,13 @@ public class AtomicOperationTransitionNotifyListenerTake implements AtomicOperat
   public void execute(ExecutionImpl execution) {
     TransitionImpl transition = execution.getTransition();
     
-    List<EventListener> eventListeners = transition.getEventListeners();
-    int eventListenerIndex = execution.getEventListenerIndex();
+    List<ExecutionListener> executionListeners = transition.getExecutionListeners();
+    int executionListenerIndex = execution.getExecutionListenerIndex();
     
-    if (eventListeners.size()>eventListenerIndex) {
-      execution.setEventName(EventListener.EVENTNAME_TAKE);
+    if (executionListeners.size()>executionListenerIndex) {
+      execution.setEventName(ExecutionListener.EVENTNAME_TAKE);
       execution.setEventSource(transition);
-      EventListener listener = eventListeners.get(eventListenerIndex);
+      ExecutionListener listener = executionListeners.get(executionListenerIndex);
       try {
         listener.notify(execution);
       } catch (RuntimeException e) {
@@ -46,12 +46,12 @@ public class AtomicOperationTransitionNotifyListenerTake implements AtomicOperat
       } catch (Exception e) {
         throw new PvmException("couldn't execute event listener : "+e.getMessage(), e);
       }
-      execution.setEventListenerIndex(eventListenerIndex+1);
+      execution.setExecutionListenerIndex(executionListenerIndex+1);
       execution.performOperation(this);
 
     } else {
       log.fine(execution+" takes transition "+transition);
-      execution.setEventListenerIndex(0);
+      execution.setExecutionListenerIndex(0);
       execution.setEventName(null);
       execution.setEventSource(null);
 

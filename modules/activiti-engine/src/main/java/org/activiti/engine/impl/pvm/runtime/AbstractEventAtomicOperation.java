@@ -16,7 +16,7 @@ package org.activiti.engine.impl.pvm.runtime;
 import java.util.List;
 
 import org.activiti.engine.impl.pvm.PvmException;
-import org.activiti.engine.impl.pvm.delegate.EventListener;
+import org.activiti.engine.impl.pvm.delegate.ExecutionListener;
 import org.activiti.engine.impl.pvm.process.ScopeImpl;
 
 
@@ -27,13 +27,13 @@ public abstract class AbstractEventAtomicOperation implements AtomicOperation {
 
   public void execute(ExecutionImpl execution) {
     ScopeImpl scope = getScope(execution);
-    List<EventListener> eventListeners = scope.getEventListeners(getEventName());
-    int eventListenerIndex = execution.getEventListenerIndex();
+    List<ExecutionListener> exectionListeners = scope.getExecutionListeners(getEventName());
+    int executionListenerIndex = execution.getExecutionListenerIndex();
     
-    if (eventListeners.size()>eventListenerIndex) {
+    if (exectionListeners.size()>executionListenerIndex) {
       execution.setEventName(getEventName());
       execution.setEventSource(scope);
-      EventListener listener = eventListeners.get(eventListenerIndex);
+      ExecutionListener listener = exectionListeners.get(executionListenerIndex);
       try {
         listener.notify(execution);
       } catch (RuntimeException e) {
@@ -41,11 +41,11 @@ public abstract class AbstractEventAtomicOperation implements AtomicOperation {
       } catch (Exception e) {
         throw new PvmException("couldn't execute event listener : "+e.getMessage(), e);
       }
-      execution.setEventListenerIndex(eventListenerIndex+1);
+      execution.setExecutionListenerIndex(executionListenerIndex+1);
       execution.performOperation(this);
 
     } else {
-      execution.setEventListenerIndex(0);
+      execution.setExecutionListenerIndex(0);
       execution.setEventName(null);
       execution.setEventSource(null);
       

@@ -18,7 +18,7 @@ import java.util.List;
 import java.util.Stack;
 
 import org.activiti.engine.impl.pvm.delegate.ActivityBehavior;
-import org.activiti.engine.impl.pvm.delegate.EventListener;
+import org.activiti.engine.impl.pvm.delegate.ExecutionListener;
 import org.activiti.engine.impl.pvm.process.ActivityImpl;
 import org.activiti.engine.impl.pvm.process.ProcessDefinitionImpl;
 import org.activiti.engine.impl.pvm.process.ProcessElementImpl;
@@ -134,18 +134,18 @@ public class ProcessDefinitionBuilder {
     return this;
   }
 
-  public ProcessDefinitionBuilder eventListener(EventListener eventListener) {
+  public ProcessDefinitionBuilder executionListener(ExecutionListener executionListener) {
     if (transition!=null) {
-      transition.addEventListener(eventListener);
+      transition.addExecutionListener(executionListener);
     } else {
       throw new PvmException("not in a transition scope");
     }
     return this;
   }
   
-  public ProcessDefinitionBuilder eventListener(String eventName, EventListener eventListener) {
+  public ProcessDefinitionBuilder executionListener(String eventName, ExecutionListener executionListener) {
     if (transition==null) {
-      scopeStack.peek().addEventListener(eventName, eventListener);
+      scopeStack.peek().addExecutionListener(eventName, executionListener);
     } else {
       throw new PvmException("not in an activity- or process definition scope. (but in a transition scope)");
     }

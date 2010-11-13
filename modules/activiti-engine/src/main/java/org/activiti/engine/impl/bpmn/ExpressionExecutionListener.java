@@ -11,24 +11,27 @@
  * limitations under the License.
  */
 
-package org.activiti.examples.bpmn.eventlistener;
+package org.activiti.engine.impl.bpmn;
 
 import org.activiti.engine.impl.el.Expression;
-import org.activiti.engine.impl.pvm.delegate.EventListener;
-import org.activiti.engine.impl.pvm.delegate.EventListenerExecution;
+import org.activiti.engine.impl.pvm.delegate.ExecutionListener;
+import org.activiti.engine.impl.pvm.delegate.ExecutionListenerExecution;
 
 /**
- * Example {@link EventListener} which gets 2 fields injected.
+ * An {@link ExecutionListener} that evaluates a {@link Expression} when notified.
  * 
  * @author Frederik Heremans
  */
-public class ExampleFieldInjectedEventListener implements EventListener {
+public class ExpressionExecutionListener implements ExecutionListener {
 
-  private Expression fixedValue;
+  protected Expression expression;
 
-  private Expression dynamicValue;
+  public ExpressionExecutionListener(Expression expression) {
+    this.expression = expression;
+  }
 
-  public void notify(EventListenerExecution execution) throws Exception {
-    execution.setVariable("var", fixedValue.getValue(execution).toString() + dynamicValue.getValue(execution).toString());
+  public void notify(ExecutionListenerExecution execution) throws Exception {
+    // Return value of expression is ignored
+    expression.getValue(execution);
   }
 }

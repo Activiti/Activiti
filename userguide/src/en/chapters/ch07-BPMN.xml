@@ -1686,22 +1686,23 @@ public class ReverseStringsFieldInjected implements JavaDelegation {
     
     
     
-      <section id="eventListeners">
-        <title>Event listeners</title>
-        <para>Event listeners allow you to execute external Java code or evaluate an expression when certain events occur. The events that can be captured are:
-        <itemizedlist>
-          <listitem><para>Start and ending of a process instance.</para></listitem>
-          <listitem><para>Taking a transition.</para></listitem>
-          <listitem><para>Start and ending of an activity.</para></listitem>
-        </itemizedlist>
-        </para>
-        <para>
-        The following process definition contains 3 event-listeners:
-          <programlisting>
-  &lt;process id=&quot;eventListenersProcess&quot;&gt;
+    <section id="executionListeners">
+      <title>Execution listeners</title>
+      <para>Execution listeners allow you to execute external Java code or evaluate an expression when certain events occur
+      during process exevcution. The events that can be captured are:
+      <itemizedlist>
+        <listitem><para>Start and ending of a process instance.</para></listitem>
+        <listitem><para>Taking a transition.</para></listitem>
+        <listitem><para>Start and ending of an activity.</para></listitem>
+      </itemizedlist>
+      </para>
+      <para>
+        The following process definition contains 3 execution listenerss:
+        <programlisting>
+  &lt;process id=&quot;executionListenersProcess&quot;&gt;
   
     <emphasis role="bold">&lt;extensionElements&gt;
-      &lt;activiti:listener class=&quot;org.activiti.examples.bpmn.eventlistener.ExampleEventListenerOne&quot; eventName=&quot;start&quot; /&gt;
+      &lt;activiti:executionListener class=&quot;org.activiti.examples.bpmn.executionlistener.ExampleExecutionListenerOne&quot; event=&quot;start&quot; /&gt;
     &lt;/extensionElements&gt;</emphasis>
     
     &lt;startEvent id=&quot;theStart&quot; /&gt;
@@ -1709,15 +1710,15 @@ public class ReverseStringsFieldInjected implements JavaDelegation {
     
     &lt;userTask id=&quot;firstTask&quot; /&gt;
     &lt;sequenceFlow sourceRef=&quot;firstTask&quot; targetRef=&quot;secondTask&quot;&gt;
-       <emphasis role="bold">&lt;extensionElements&gt;
-        &lt;activiti:listener class=&quot;org.activiti.examples.bpmn.eventlistener.ExampleEventListenerTwo&quot; /&gt;
-      &lt;/extensionElements&gt;</emphasis>
+    <emphasis role="bold">&lt;extensionElements&gt;
+      &lt;activiti:executionListener class=&quot;org.activiti.examples.bpmn.executionListener.ExampleExecutionListenerTwo&quot; /&gt;
+    &lt;/extensionElements&gt;</emphasis>
     &lt;/sequenceFlow&gt;
     
     &lt;userTask id=&quot;secondTask&quot; &gt;
-      <emphasis role="bold">&lt;extensionElements&gt;
-        &lt;activiti:listener expression=&quot;${myPojo.myMethod(execution.eventName)}&quot; eventName=&quot;end&quot; /&gt;
-      &lt;/extensionElements&gt;</emphasis>
+    <emphasis role="bold">&lt;extensionElements&gt;
+      &lt;activiti:executionListener expression=&quot;${myPojo.myMethod(execution.event)}&quot; event=&quot;end&quot; /&gt;
+    &lt;/extensionElements&gt;</emphasis>
     &lt;/userTask&gt;
     &lt;sequenceFlow sourceRef=&quot;secondTask&quot; targetRef=&quot;thirdTask&quot; /&gt;
        
@@ -1728,50 +1729,52 @@ public class ReverseStringsFieldInjected implements JavaDelegation {
     
   &lt;/process&gt;</programlisting>
         </para>
-        <para>The first event-listener is notified when the process starts. The listener is an external Java-class (like <literal>ExampleEventListenerOne</literal>) 
-        and should implement <literal>org.activiti.engine.delegate.JavaDelegation</literal>. When the event occurs (in this case <literal>end</literal> event)
-        the method <literal>notify(EventListenerExecution execution)</literal> is called.
+        <para>The first execution listener is notified when the process starts. The listener is an external Java-class (like <literal>ExampleExecutionListenerOne</literal>) 
+        and should implement <literal>org.activiti.engine.impl.pvm.delegate.ExecutionListener</literal>. When the event occurs (in this case <literal>end</literal> event)
+        the method <literal>notify(ExecutionListenerExecution execution)</literal> is called.
         <programlisting>
-public class ExampleEventListenerOne implements <emphasis role="bold">JavaDelegation</emphasis> {
+public class ExampleExecutionListenerOne implements <emphasis role="bold">ExecutionListener</emphasis> {
 
   <emphasis role="bold">public void notify(DelegateExecution execution) throws Exception {</emphasis>
-    execution.setVariable("variableSetInEventListener", "firstValue");
-    execution.setVariable("eventNameReceived", execution.getEventName());
+    execution.setVariable("variableSetInExecutionListener", "firstValue");
+    execution.setVariable("eventReceived", execution.getevent());
   }
 }</programlisting>
+        It is also possible to use a delegation class that implements the <literal>org.activiti.engine.delegate.JavaDelegation</literal>
+        interface. These delegation classes can then be reused in other constructs, such as a delegation for a serviceTask.
         </para>
         <para>
-           The second event-listener is called when the transition is taken. Note that the <literal>listener</literal> element doesn't define an
-          <literal>eventName</literal>, since only <literal>take</literal> events are fired on transitions. 
-          <emphasis role="bold">Values in the <literal>eventName</literal> attribute are ignored when a listener is defined on a transition.</emphasis>
+           The second execution listener is called when the transition is taken. Note that the <literal>listener</literal> element doesn't define an
+          <literal>event</literal>, since only <literal>take</literal> events are fired on transitions. 
+          <emphasis role="bold">Values in the <literal>event</literal> attribute are ignored when a listener is defined on a transition.</emphasis>
         </para>
         <para>
-          The last eventlistener is called when activity <literal>secondTask</literal> ends. Instead of using the <literal>class</literal> on the listener declaration,
+          The last execution listener is called when activity <literal>secondTask</literal> ends. Instead of using the <literal>class</literal> on the listener declaration,
           a <literal>expression</literal> is defined instead which is evaluated/invoked when the event is fired. 
         </para>
         <programlisting>
-&lt;activiti:listener expression=&quot;<emphasis role="bold">${myPojo.myMethod(execution.eventName)}</emphasis>&quot; eventName=&quot;end&quot; /&gt;</programlisting>
+&lt;activiti:executionListener expression=&quot;<emphasis role="bold">${myPojo.myMethod(execution.eventName)}</emphasis>&quot; event=&quot;end&quot; /&gt;</programlisting>
         <para>
           As with other expressions, execution variables are resolved and can be used. Because the execution implementation object has a property that exposes the event name, it's
           possible to pass the event-name to your methods using <literal>execution.eventName</literal>.
         </para>
         
-      <section id="eventListenerFieldInjection">
+      <section id="executionListenerFieldInjection">
       
         <title>Field injection on event listeners</title>
         <para>
-         When using an eventlistener that is configured with the <literal>class</literal> attribute, field injection can be applied. This is exactly the same
+         When using an executionListener that is configured with the <literal>class</literal> attribute, field injection can be applied. This is exactly the same
          mechanism as used <link linkend="serviceTaskFieldInjection">Service task field injection</link>, which contains an overview of the possibilities provided by field injection. 
         </para>
         <para>
-         The fragment below shows a simple example process with an event-listener with fields injected. 
+         The fragment below shows a simple example process with an execution listener with fields injected. 
         <programlisting>
- &lt;process id=&quot;eventListenersProcess&quot;&gt;
+ &lt;process id=&quot;executionListenersProcess&quot;&gt;
     <emphasis role="bold">&lt;extensionElements&gt;
-      &lt;activiti:listener class=&quot;org.activiti.examples.bpmn.eventlistener.ExampleFieldInjectedEventListener&quot; eventName=&quot;start&quot;&gt;
+      &lt;activiti:executionListener class=&quot;org.activiti.examples.bpmn.executionListener.ExampleFieldInjectedExecutionListener&quot; event=&quot;start&quot;&gt;
         &lt;activiti:field name=&quot;fixedValue&quot; stringValue=&quot;Yes, I am &quot; /&gt;
         &lt;activiti:field name=&quot;dynamicValue&quot; expression=&quot;${myVar}&quot; /&gt;
-      &lt;/activiti:listener&gt;
+      &lt;/activiti:executionListener&gt;
     &lt;/extensionElements&gt;</emphasis>
     
     &lt;startEvent id=&quot;theStart&quot; /&gt;
@@ -1786,27 +1789,27 @@ public class ExampleEventListenerOne implements <emphasis role="bold">JavaDelega
         </para>
         <para>
           <programlisting>
-public class ExampleFieldInjectedEventListener implements EventListener {
+public class ExampleFieldInjectedExecutionListener implements ExecutionListener {
 
   <emphasis role="bold">private Expression fixedValue;
 
   private Expression dynamicValue;</emphasis>
 
-  public void notify(EventListenerExecution execution) throws Exception {
+  public void notify(ExecutionListenerExecution execution) throws Exception {
     execution.setVariable("var", <emphasis role="bold">fixedValue.getValue(execution).toString()</emphasis> + <emphasis role="bold">dynamicValue.getValue(execution).toString()</emphasis>);
   }
 }
           </programlisting>
-          The class <literal>ExampleFieldInjectedEventListener</literal> concatenates the 2 injected fields (one fixed an the other dynamic) and stores this in the process variable '<literal>var</literal>'.
+          The class <literal>ExampleFieldInjectedExecutionListener</literal> concatenates the 2 injected fields (one fixed an the other dynamic) and stores this in the process variable '<literal>var</literal>'.
         </para>
         <para>
         <programlisting>
-@Deployment(resources = {"org/activiti/examples/bpmn/eventlistener/EventListenersFieldInjectionProcess.bpmn20.xml"})
-public void testEventListenerFieldInjection() {
+@Deployment(resources = {"org/activiti/examples/bpmn/executionListener/ExecutionListenersFieldInjectionProcess.bpmn20.xml"})
+public void testExecutionListenerFieldInjection() {
   Map&lt;String, Object&gt; variables = new HashMap&lt;String, Object&gt;();
   <emphasis role="bold">variables.put("myVar", "listening!");</emphasis>
     
-  ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("eventListenersProcess", variables);
+  ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("executionListenersProcess", variables);
     
   Object varSetByListener = runtimeService.getVariable(processInstance.getId(), "var");
   assertNotNull(varSetByListener);
@@ -1820,7 +1823,7 @@ public void testEventListenerFieldInjection() {
         </section>
          </section>
 		
-         <section id="bpmnEmailTask">
+  <section id="bpmnEmailTask">
 		
 		  <title>Email task</title>
 		  

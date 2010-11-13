@@ -16,8 +16,8 @@ package org.activiti.engine.impl.history.handler;
 import org.activiti.engine.impl.cfg.IdGenerator;
 import org.activiti.engine.impl.history.HistoricActivityInstanceEntity;
 import org.activiti.engine.impl.interceptor.CommandContext;
-import org.activiti.engine.impl.pvm.delegate.EventListener;
-import org.activiti.engine.impl.pvm.delegate.EventListenerExecution;
+import org.activiti.engine.impl.pvm.delegate.ExecutionListener;
+import org.activiti.engine.impl.pvm.delegate.ExecutionListenerExecution;
 import org.activiti.engine.impl.runtime.ExecutionEntity;
 import org.activiti.engine.impl.util.ClockUtil;
 
@@ -25,7 +25,7 @@ import org.activiti.engine.impl.util.ClockUtil;
 /**
  * @author Tom Baeyens
  */
-public class ActivityInstanceStartHandler implements EventListener {
+public class ActivityInstanceStartHandler implements ExecutionListener {
 
   protected String activityType;
   
@@ -33,7 +33,7 @@ public class ActivityInstanceStartHandler implements EventListener {
     this.activityType = activityType;
   }
 
-  public void notify(EventListenerExecution execution) {
+  public void notify(ExecutionListenerExecution execution) {
     CommandContext commandContext = CommandContext.getCurrent();
     IdGenerator idGenerator = commandContext.getProcessEngineConfiguration().getIdGenerator();
     

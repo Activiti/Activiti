@@ -11,7 +11,7 @@
  * limitations under the License.
  */
 
-package org.activiti.examples.bpmn.eventlistener;
+package org.activiti.examples.bpmn.executionlistener;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -24,45 +24,45 @@ import org.activiti.engine.test.Deployment;
 /**
  * @author Frederik Heremans
  */
-public class EventListenerTest extends ActivitiInternalTestCase {
+public class ExecutionListenerTest extends ActivitiInternalTestCase {
 
   
-  @Deployment(resources = {"org/activiti/examples/bpmn/eventlistener/EventListenersProcess.bpmn20.xml"})
-  public void testEventListenersOnAllPossibleElements() {
+  @Deployment(resources = {"org/activiti/examples/bpmn/executionlistener/ExecutionListenersProcess.bpmn20.xml"})
+  public void testExecutionListenersOnAllPossibleElements() {
 
-    // Process start event-listener will have event-listener class that sets 2 variables
-    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("eventListenersProcess");
+    // Process start executionListener will have executionListener class that sets 2 variables
+    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("executionListenersProcess");
     
-    String varSetInEventListener = (String) runtimeService.getVariable(processInstance.getId(), "variableSetInEventListener");
+    String varSetInExecutionListener = (String) runtimeService.getVariable(processInstance.getId(), "variableSetInExecutionListener");
     String eventNameReceived = (String) runtimeService.getVariable(processInstance.getId(), "eventNameReceived");
     
-    assertNotNull(varSetInEventListener);
-    assertEquals("firstValue", varSetInEventListener);
+    assertNotNull(varSetInExecutionListener);
+    assertEquals("firstValue", varSetInExecutionListener);
     assertNotNull(eventNameReceived);
     assertEquals("start", eventNameReceived);
     
-    // Transition take event-listener will set 2 variables
+    // Transition take executionListener will set 2 variables
     Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
     assertNotNull(task);
     taskService.complete(task.getId());
     
-    varSetInEventListener = (String) runtimeService.getVariable(processInstance.getId(), "variableSetInEventListener");
+    varSetInExecutionListener = (String) runtimeService.getVariable(processInstance.getId(), "variableSetInExecutionListener");
     eventNameReceived = (String) runtimeService.getVariable(processInstance.getId(), "eventNameReceived");
     
-    assertNotNull(varSetInEventListener);
-    assertEquals("secondValue", varSetInEventListener);
+    assertNotNull(varSetInExecutionListener);
+    assertEquals("secondValue", varSetInExecutionListener);
     assertNotNull(eventNameReceived);
     assertEquals("take", eventNameReceived);
 
-    ExampleEventListenerPojo myPojo = new ExampleEventListenerPojo();
+    ExampleExecutionListenerPojo myPojo = new ExampleExecutionListenerPojo();
     runtimeService.setVariable(processInstance.getId(), "myPojo", myPojo);
     
     task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
     assertNotNull(task);
     taskService.complete(task.getId());
     
-    // First usertask uses a method-expression as event-listener: ${myPojo.myMethod(execution.eventName)}
-    ExampleEventListenerPojo pojoVariable = (ExampleEventListenerPojo) runtimeService.getVariable(processInstance.getId(), "myPojo");
+    // First usertask uses a method-expression as executionListener: ${myPojo.myMethod(execution.eventName)}
+    ExampleExecutionListenerPojo pojoVariable = (ExampleExecutionListenerPojo) runtimeService.getVariable(processInstance.getId(), "myPojo");
     assertNotNull(pojoVariable.getReceivedEventName());
     assertEquals("end", pojoVariable.getReceivedEventName());
     
@@ -73,12 +73,12 @@ public class EventListenerTest extends ActivitiInternalTestCase {
     assertProcessEnded(processInstance.getId());
   }
   
-  @Deployment(resources = {"org/activiti/examples/bpmn/eventlistener/EventListenersFieldInjectionProcess.bpmn20.xml"})
-  public void testEventListenerFieldInjection() {
+  @Deployment(resources = {"org/activiti/examples/bpmn/executionlistener/ExecutionListenersFieldInjectionProcess.bpmn20.xml"})
+  public void testExecutionListenerFieldInjection() {
     Map<String, Object> variables = new HashMap<String, Object>();
     variables.put("myVar", "listening!");
     
-    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("eventListenersProcess", variables);
+    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("executionListenersProcess", variables);
     
     Object varSetByListener = runtimeService.getVariable(processInstance.getId(), "var");
     assertNotNull(varSetByListener);

@@ -3,10 +3,10 @@
   xmlns:activiti="http://activiti.org/bpmn"
   targetNamespace="Examples">
   
-  <process id="eventListenersProcess">
+  <process id="executionListenersProcess">
   
     <extensionElements>
-      <activiti:listener class="org.activiti.examples.bpmn.eventlistener.ExampleEventListenerOne" eventName="start" />
+      <activiti:executionListener class="org.activiti.examples.bpmn.executionlistener.ExampleExecutionListenerOne" event="start" />
     </extensionElements>
     
     <startEvent id="theStart" />
@@ -16,13 +16,13 @@
     <userTask id="firstTask" />
     <sequenceFlow sourceRef="firstTask" targetRef="secondTask">
        <extensionElements>
-        <activiti:listener class="org.activiti.examples.bpmn.eventlistener.ExampleEventListenerTwo" />
+        <activiti:executionListener class="org.activiti.examples.bpmn.executionlistener.ExampleExecutionListenerTwo" />
       </extensionElements>
     </sequenceFlow>
     
     <userTask id="secondTask" >
       <extensionElements>
-        <activiti:listener expression="${myPojo.myMethod(execution.eventName)}" eventName="end" />
+        <activiti:executionListener expression="${myPojo.myMethod(execution.eventName)}" event="end" />
       </extensionElements>
     </userTask>
     <sequenceFlow sourceRef="secondTask" targetRef="thirdTask" />

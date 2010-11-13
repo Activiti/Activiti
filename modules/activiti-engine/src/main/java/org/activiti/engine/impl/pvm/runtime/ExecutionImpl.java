@@ -28,7 +28,7 @@ import org.activiti.engine.impl.pvm.PvmProcessElement;
 import org.activiti.engine.impl.pvm.PvmProcessInstance;
 import org.activiti.engine.impl.pvm.PvmTransition;
 import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
-import org.activiti.engine.impl.pvm.delegate.EventListenerExecution;
+import org.activiti.engine.impl.pvm.delegate.ExecutionListenerExecution;
 import org.activiti.engine.impl.pvm.delegate.SignallableActivityBehavior;
 import org.activiti.engine.impl.pvm.process.ActivityImpl;
 import org.activiti.engine.impl.pvm.process.ProcessDefinitionImpl;
@@ -41,7 +41,7 @@ import org.activiti.engine.impl.pvm.process.TransitionImpl;
 public class ExecutionImpl implements
         Serializable,
         ActivityExecution, 
-        EventListenerExecution, 
+        ExecutionListenerExecution, 
         PvmProcessInstance,
         PvmExecution {
   
@@ -96,7 +96,7 @@ public class ExecutionImpl implements
   
   protected String eventName;
   protected PvmProcessElement eventSource;
-  protected int eventListenerIndex = 0;
+  protected int executionListenerIndex = 0;
   
   // cascade deletion ////////////////////////////////////////////////////////
   
@@ -653,11 +653,11 @@ public class ExecutionImpl implements
   public void setTransition(TransitionImpl transition) {
     this.transition = transition;
   }
-  public Integer getEventListenerIndex() {
-    return eventListenerIndex;
+  public Integer getExecutionListenerIndex() {
+    return executionListenerIndex;
   }
-  public void setEventListenerIndex(Integer eventListenerIndex) {
-    this.eventListenerIndex = eventListenerIndex;
+  public void setExecutionListenerIndex(Integer executionListenerIndex) {
+    this.executionListenerIndex = executionListenerIndex;
   }
   public boolean isConcurrent() {
     return isConcurrent;

@@ -13,7 +13,7 @@
 
 package org.activiti.engine.impl.pvm.runtime;
 
-import org.activiti.engine.impl.pvm.delegate.EventListener;
+import org.activiti.engine.impl.pvm.delegate.ExecutionListener;
 import org.activiti.engine.impl.pvm.delegate.SubProcessActivityBehavior;
 import org.activiti.engine.impl.pvm.process.ScopeImpl;
 
@@ -30,7 +30,7 @@ public class AtomicOperationProcessEnd extends AbstractEventAtomicOperation {
 
   @Override
   protected String getEventName() {
-    return EventListener.EVENTNAME_END;
+    return ExecutionListener.EVENTNAME_END;
   }
 
   @Override

@@ -15,8 +15,8 @@ package org.activiti.engine.impl.history.handler;
 
 import org.activiti.engine.impl.history.HistoricProcessInstanceEntity;
 import org.activiti.engine.impl.interceptor.CommandContext;
-import org.activiti.engine.impl.pvm.delegate.EventListener;
-import org.activiti.engine.impl.pvm.delegate.EventListenerExecution;
+import org.activiti.engine.impl.pvm.delegate.ExecutionListener;
+import org.activiti.engine.impl.pvm.delegate.ExecutionListenerExecution;
 import org.activiti.engine.impl.runtime.ExecutionEntity;
 import org.activiti.engine.impl.util.ClockUtil;
 
@@ -24,9 +24,9 @@ import org.activiti.engine.impl.util.ClockUtil;
 /**
  * @author Tom Baeyens
  */
-public class ProcessInstanceStartHandler implements EventListener {
+public class ProcessInstanceStartHandler implements ExecutionListener {
 
-  public void notify(EventListenerExecution execution) {
+  public void notify(ExecutionListenerExecution execution) {
 //    ExecutionEntity executionEntity = (ExecutionEntity) execution;
 //    String processInstanceId = executionEntity.getId();
 //    String processDefinitionId = executionEntity.getProcessDefinitionId();

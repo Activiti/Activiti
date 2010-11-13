@@ -18,7 +18,7 @@ import java.util.Collections;
 import java.util.List;
 
 import org.activiti.engine.impl.pvm.PvmTransition;
-import org.activiti.engine.impl.pvm.delegate.EventListener;
+import org.activiti.engine.impl.pvm.delegate.ExecutionListener;
 
 
 
@@ -32,7 +32,7 @@ public class TransitionImpl extends ProcessElementImpl implements PvmTransition 
   
   protected ActivityImpl source;
   protected ActivityImpl destination;
-  protected List<EventListener> eventListeners;
+  protected List<ExecutionListener> executionListeners;
 
   public TransitionImpl(String id, ProcessDefinitionImpl processDefinition) {
     super(id, processDefinition);
@@ -47,11 +47,11 @@ public class TransitionImpl extends ProcessElementImpl implements PvmTransition 
     destination.getIncomingTransitions().add(this);
   }
   
-  public void addEventListener(EventListener eventListener) {
-    if (eventListeners==null) {
-      eventListeners = new ArrayList<EventListener>();
+  public void addExecutionListener(ExecutionListener executionListener) {
+    if (executionListeners==null) {
+      executionListeners = new ArrayList<ExecutionListener>();
     }
-    eventListeners.add(eventListener);
+    executionListeners.add(executionListener);
   }
 
   public String toString() {
@@ -59,11 +59,11 @@ public class TransitionImpl extends ProcessElementImpl implements PvmTransition 
   }
 
   @SuppressWarnings("unchecked")
-  public List<EventListener> getEventListeners() {
-    if (eventListeners==null) {
+  public List<ExecutionListener> getExecutionListeners() {
+    if (executionListeners==null) {
       return Collections.EMPTY_LIST;
     }
-    return eventListeners;
+    return executionListeners;
   }
 
   // getters and setters //////////////////////////////////////////////////////
@@ -76,7 +76,7 @@ public class TransitionImpl extends ProcessElementImpl implements PvmTransition 
     return destination;
   }
   
-  public void setEventListeners(List<EventListener> eventListeners) {
-    this.eventListeners = eventListeners;
+  public void setExecutionListeners(List<ExecutionListener> executionListeners) {
+    this.executionListeners = executionListeners;
   }
 }

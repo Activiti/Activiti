@@ -215,7 +215,7 @@ assertNotNull(activityInstance);</programlisting>
           the EE6 specification</ulink> for detailed information). To support all features of latest UEL spec on ALL environements, we use a modified version of JUEL.
     </para>
     <para>
-      Expressions can be used in for example <link linkend="bpmnJavaServiceTaskXML">Java Service tasks</link>, <link linkend="eventListeners">Event Listeners</link> and  <link linkend="conditionalSequenceFlowXml">Conditional sequence flows</link>.
+      Expressions can be used in for example <link linkend="bpmnJavaServiceTaskXML">Java Service tasks</link>, <link linkend="executionListeners">Event Listeners</link> and  <link linkend="conditionalSequenceFlowXml">Conditional sequence flows</link>.
       Although there are 2 types of expressions, value-expression and method-expression, activiti makes abstraction of this and they can both be used where an <literal>expression</literal> is needed.
       <itemizedlist>
         <listitem>
@@ -242,7 +242,7 @@ ${myBean.doSomething(myVar, execution)}
       Note that these expressions support resolving primitives (incl. comparing them), beans, lists, arrays and maps.
     </para>
     <para>
-      For more concrete usage and examples, check out <link linkend="springExpressions">Expressions in Spring</link>, <link linkend="bpmnJavaServiceTaskXML">Java Service tasks</link>, <link linkend="eventListeners">Event Listeners</link> or <link linkend="conditionalSequenceFlowXml">Conditional sequence flows</link>.
+      For more concrete usage and examples, check out <link linkend="springExpressions">Expressions in Spring</link>, <link linkend="bpmnJavaServiceTaskXML">Java Service tasks</link>, <link linkend="executionListeners">Event Listeners</link> or <link linkend="conditionalSequenceFlowXml">Conditional sequence flows</link>.
     </para>
     
   </section>

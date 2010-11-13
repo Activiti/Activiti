@@ -244,6 +244,10 @@ public class TaskEntity implements Task, DelegateTask, Serializable, PersistentO
       List<TaskListener> taskEventListeners = getTaskDefinition().getTaskListener(taskEventName);
       if (taskEventListeners != null) {
         for (TaskListener taskListener : taskEventListeners) {
+          ExecutionEntity execution = getExecution();
+          if (execution != null) {
+            execution.setEventName(taskEventName);
+          }
           taskListener.notify(this);
         }
       }

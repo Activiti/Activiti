@@ -23,8 +23,8 @@ import org.activiti.engine.impl.Page;
 import org.activiti.engine.impl.db.DbSqlSession;
 import org.activiti.engine.impl.history.HistoricActivityInstanceEntity;
 import org.activiti.engine.impl.interceptor.CommandContext;
-import org.activiti.engine.impl.pvm.delegate.EventListener;
-import org.activiti.engine.impl.pvm.delegate.EventListenerExecution;
+import org.activiti.engine.impl.pvm.delegate.ExecutionListener;
+import org.activiti.engine.impl.pvm.delegate.ExecutionListenerExecution;
 import org.activiti.engine.impl.runtime.ExecutionEntity;
 import org.activiti.engine.impl.util.ClockUtil;
 
@@ -32,9 +32,9 @@ import org.activiti.engine.impl.util.ClockUtil;
 /**
  * @author Tom Baeyens
  */
-public class ActivityInstanceEndHandler implements EventListener {
+public class ActivityInstanceEndHandler implements ExecutionListener {
 
-  public void notify(EventListenerExecution execution) {
+  public void notify(ExecutionListenerExecution execution) {
     ExecutionEntity executionEntity = (ExecutionEntity) execution;
     HistoricActivityInstanceEntity historicActivityInstance = findActivityInstance(executionEntity);
 

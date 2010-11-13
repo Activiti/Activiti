@@ -11,20 +11,20 @@
  * limitations under the License.
  */
 
-package org.activiti.examples.bpmn.eventlistener;
+package org.activiti.examples.bpmn.executionlistener;
 
-import org.activiti.engine.impl.pvm.delegate.EventListener;
-import org.activiti.engine.impl.pvm.delegate.EventListenerExecution;
+import org.activiti.engine.impl.pvm.delegate.ExecutionListener;
+import org.activiti.engine.impl.pvm.delegate.ExecutionListenerExecution;
 
 /**
- * Simple {@link EventListener} that sets 2 variables on the execution.
+ * Simple {@link ExecutionListener} that sets 2 variables on the execution.
  * 
  * @author Frederik Heremans
  */
-public class ExampleEventListenerOne implements EventListener {
+public class ExampleExecutionListenerTwo implements ExecutionListener {
 
-  public void notify(EventListenerExecution execution) throws Exception {
-    execution.setVariable("variableSetInEventListener", "firstValue");
+  public void notify(ExecutionListenerExecution execution) throws Exception {
+    execution.setVariable("variableSetInExecutionListener", "secondValue");
     execution.setVariable("eventNameReceived", execution.getEventName());
   }
 }

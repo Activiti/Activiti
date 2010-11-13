@@ -17,20 +17,20 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
-import org.activiti.engine.impl.pvm.delegate.EventListener;
-import org.activiti.engine.impl.pvm.delegate.EventListenerExecution;
+import org.activiti.engine.impl.pvm.delegate.ExecutionListener;
+import org.activiti.engine.impl.pvm.delegate.ExecutionListenerExecution;
 
 
 /**
  * @author Tom Baeyens
  */
-public class EventCollector implements EventListener {
+public class EventCollector implements ExecutionListener {
   
   private static Logger log = Logger.getLogger(EventCollector.class.getName());
   
   public List<String> events = new ArrayList<String>(); 
 
-  public void notify(EventListenerExecution execution) {
+  public void notify(ExecutionListenerExecution execution) {
     log.fine("collecting event: "+execution.getEventName()+" on "+execution.getEventSource());
     events.add(execution.getEventName()+" on "+execution.getEventSource());
   }

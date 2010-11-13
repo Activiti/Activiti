@@ -12,15 +12,18 @@
  */
 package org.activiti.engine.impl.pvm.delegate;
 
+import org.activiti.engine.delegate.DelegateExecution;
+import org.activiti.engine.impl.pvm.PvmProcessElement;
+
 
 /**
  * @author Tom Baeyens
  */
-public interface EventListener {
-
-  String EVENTNAME_START = "start";
-  String EVENTNAME_END = "end";
-  String EVENTNAME_TAKE = "take";
+public interface ExecutionListenerExecution extends DelegateExecution {
   
-  void notify(EventListenerExecution execution) throws Exception;
+  String getEventName();
+
+  PvmProcessElement getEventSource();
+
+  String getDeleteReason();
 }

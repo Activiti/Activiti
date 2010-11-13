@@ -11,20 +11,31 @@
  * limitations under the License.
  */
 
-package org.activiti.examples.bpmn.eventlistener;
+package org.activiti.examples.bpmn.executionlistener;
 
-import org.activiti.engine.impl.pvm.delegate.EventListener;
-import org.activiti.engine.impl.pvm.delegate.EventListenerExecution;
+import java.io.Serializable;
 
 /**
- * Simple {@link EventListener} that sets 2 variables on the execution.
+ * Simple pojo than will be used to act as an event listener.
  * 
  * @author Frederik Heremans
  */
-public class ExampleEventListenerTwo implements EventListener {
+public class ExampleExecutionListenerPojo implements Serializable {
 
-  public void notify(EventListenerExecution execution) throws Exception {
-    execution.setVariable("variableSetInEventListener", "secondValue");
-    execution.setVariable("eventNameReceived", execution.getEventName());
+  private static final long serialVersionUID = 1L;
+
+  private String receivedEventName;
+  
+  public void myMethod(String eventName) {
+    this.receivedEventName = eventName;
   }
+
+  public String getReceivedEventName() {
+    return receivedEventName;
+  }
+
+  public void setReceivedEventName(String receivedEventName) {
+    this.receivedEventName = receivedEventName;
+  }
+
 }

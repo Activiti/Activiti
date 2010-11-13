@@ -3,12 +3,12 @@
   xmlns:activiti="http://activiti.org/bpmn"
   targetNamespace="Examples">
   
-  <process id="eventListenersProcess">
+  <process id="executionListenersProcess">
     <extensionElements>
-      <activiti:listener class="org.activiti.examples.bpmn.eventlistener.ExampleFieldInjectedEventListener" eventName="start">
+      <activiti:executionListener class="org.activiti.examples.bpmn.executionlistener.ExampleFieldInjectedExecutionListener" event="start">
         <activiti:field name="fixedValue" stringValue="Yes, I am " />
         <activiti:field name="dynamicValue" expression="${myVar}" />
-      </activiti:listener>
+      </activiti:executionListener>
     </extensionElements>
     
     <startEvent id="theStart" />

@@ -13,7 +13,7 @@
 
 package org.activiti.engine.impl.pvm.runtime;
 
-import org.activiti.engine.impl.pvm.delegate.EventListener;
+import org.activiti.engine.impl.pvm.delegate.ExecutionListener;
 import org.activiti.engine.impl.pvm.process.ScopeImpl;
 
 
@@ -29,7 +29,7 @@ public class AtomicOperationActivityStart extends AbstractEventAtomicOperation {
 
   @Override
   protected String getEventName() {
-    return EventListener.EVENTNAME_START;
+    return ExecutionListener.EVENTNAME_START;
   }
 
   @Override
