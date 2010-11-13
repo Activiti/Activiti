@@ -12,10 +12,12 @@
  */
 package org.activiti.spring.test.taskassignment;
 
+import org.activiti.engine.RepositoryService;
 import org.activiti.engine.RuntimeService;
 import org.activiti.engine.TaskService;
 import org.activiti.engine.impl.test.PvmTestCase;
 import org.activiti.engine.impl.util.CollectionUtil;
+import org.activiti.engine.repository.Deployment;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 
@@ -26,11 +28,18 @@ public class CustomTaskAssignmentTest extends PvmTestCase {
   
   public void testSetAssigneeThroughSpringService() {
     ClassPathXmlApplicationContext applicationContext = new ClassPathXmlApplicationContext("org/activiti/spring/test/taskassignment/taskassignment-context.xml");
-    RuntimeService runtimeService = (RuntimeService) applicationContext.getBean(RuntimeService.class);
-    TaskService taskService = (TaskService) applicationContext.getBean(TaskService.class);
+    RuntimeService runtimeService =  applicationContext.getBean(RuntimeService.class);
+    TaskService taskService = applicationContext.getBean(TaskService.class);
     
     runtimeService.startProcessInstanceByKey("assigneeThroughSpringService", CollectionUtil.singletonMap("emp", "fozzie"));
     assertEquals(1, taskService.createTaskQuery().taskAssignee("Kermit The Frog").count());
+    
+    // Remove deployments
+    RepositoryService repositoryService = applicationContext.getBean(RepositoryService.class);
+    for (Deployment deployment : repositoryService.createDeploymentQuery().list()) {
+      repositoryService.deleteDeploymentCascade(deployment.getId());
+    }
+    applicationContext.destroy();
   }
 
 }
