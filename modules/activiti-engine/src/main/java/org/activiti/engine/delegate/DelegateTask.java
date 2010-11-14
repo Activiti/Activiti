@@ -12,10 +12,8 @@
  */
 package org.activiti.engine.delegate;
 
+import java.util.Collection;
 import java.util.Date;
-import java.util.Set;
-
-import org.activiti.engine.impl.task.IdentityLinkEntity;
 
 /**
  * @author Joram Barrez
@@ -73,8 +71,14 @@ public interface DelegateTask {
   /** Adds the given user as a candidate user to this task. */
   void addCandidateUser(String userId);
   
+  /** Adds multiple users as candidate user to this task. */
+  void addCandidateUsers(Collection<String> candidateUsers);
+  
   /** Adds the given group as candidate group to this task */
   void addCandidateGroup(String groupId);
+  
+  /** Adds multiple groups as candidate group to this task.
+  void addCandidateGroups(Collection<String> candidateGroups);
 
   /** Sets the current assignee of this task to the given user */
   void setAssignee(String assignee);

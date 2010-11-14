@@ -11,7 +11,7 @@
  * limitations under the License.
  */
 
-package org.activiti.engine.impl.task;
+package org.activiti.engine.impl.pvm.delegate;
 
 import org.activiti.engine.delegate.DelegateTask;
 

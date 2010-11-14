@@ -34,7 +34,24 @@ public class CustomTaskAssignmentTest extends PvmTestCase {
     runtimeService.startProcessInstanceByKey("assigneeThroughSpringService", CollectionUtil.singletonMap("emp", "fozzie"));
     assertEquals(1, taskService.createTaskQuery().taskAssignee("Kermit The Frog").count());
     
-    // Remove deployments
+    cleanup(applicationContext);
+  }
+  
+  public void testSetCandidateUsersThroughSpringService() {
+    ClassPathXmlApplicationContext applicationContext = new ClassPathXmlApplicationContext("org/activiti/spring/test/taskassignment/taskassignment-context.xml");
+    RuntimeService runtimeService =  applicationContext.getBean(RuntimeService.class);
+    TaskService taskService = applicationContext.getBean(TaskService.class);
+    
+    runtimeService.startProcessInstanceByKey("candidateUsersThroughSpringService", CollectionUtil.singletonMap("emp", "fozzie"));
+    assertEquals(1, taskService.createTaskQuery().taskCandidateUser("kermit").count());
+    assertEquals(1, taskService.createTaskQuery().taskCandidateUser("fozzie").count());
+    assertEquals(1, taskService.createTaskQuery().taskCandidateUser("gonzo").count());
+    assertEquals(0, taskService.createTaskQuery().taskCandidateUser("mispiggy").count());
+    
+    cleanup(applicationContext);
+  }
+  
+  private void cleanup(ClassPathXmlApplicationContext applicationContext) {
     RepositoryService repositoryService = applicationContext.getBean(RepositoryService.class);
     for (Deployment deployment : repositoryService.createDeploymentQuery().list()) {
       repositoryService.deleteDeploymentCascade(deployment.getId());

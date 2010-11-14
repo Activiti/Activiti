@@ -26,7 +26,7 @@
   Also, it will be the information from which the reports will be generated.
   </para>
   
-  <section id="historyConfiguration">
+  <section id="historyConfig">
     <title>History configuration</title>
 	  <para>In the activiti.cfg.xml configuration file, you can configure the level of history archiving 
 	  that needs to happen:

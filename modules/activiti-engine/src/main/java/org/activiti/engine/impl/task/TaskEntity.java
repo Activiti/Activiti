@@ -14,6 +14,7 @@ package org.activiti.engine.impl.task;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
@@ -27,6 +28,7 @@ import org.activiti.engine.delegate.DelegateTask;
 import org.activiti.engine.impl.cfg.RepositorySession;
 import org.activiti.engine.impl.db.PersistentObject;
 import org.activiti.engine.impl.interceptor.CommandContext;
+import org.activiti.engine.impl.pvm.delegate.TaskListener;
 import org.activiti.engine.impl.repository.ProcessDefinitionEntity;
 import org.activiti.engine.impl.runtime.ExecutionEntity;
 import org.activiti.engine.impl.util.ClockUtil;
@@ -197,8 +199,20 @@ public class TaskEntity implements Task, DelegateTask, Serializable, PersistentO
     createIdentityLink(userId, null, IdentityLinkType.CANDIDATE);
   }
   
+  public void addCandidateUsers(Collection<String> candidateUsers) {
+    for (String candidateUser : candidateUsers) {
+      addCandidateUser(candidateUser);
+    }
+  }
+  
   public void addCandidateGroup(String groupId) {
     createIdentityLink(null, groupId, IdentityLinkType.CANDIDATE);
+  }
+  
+  public void addCandidateGroups(Collection<String> candidateGroups) {
+    for (String candidateGroup : candidateGroups) {
+      addCandidateGroup(candidateGroup);
+    }
   }
   
   public List<IdentityLinkEntity> getIdentityLinks() {

@@ -30,7 +30,7 @@
     <property name="dataSource" ref="dataSource" />
     <property name="transactionManager" ref="transactionManager" />
     <property name="dbSchemaStrategy" value="drop-create" />
-    <property name="deploymentResources" value="classpath:/org/activiti/spring/test/taskassignment/SetAssigneeThroughSpringService.bpmn20.xml" />
+    <property name="deploymentResources" value="classpath:/org/activiti/spring/test/taskassignment/*.bpmn20.xml" />
   </bean>
 
   <bean id="repositoryService" factory-bean="processEngine" factory-method="getRepositoryService" />

@@ -12,6 +12,9 @@
  */
 package org.activiti.spring.test.taskassignment;
 
+import java.util.Arrays;
+import java.util.List;
+
 
 /**
  * @author Joram Barrez
@@ -21,6 +24,10 @@ public class FakeLdapService {
   public String findManagerForEmployee(String employee) {
     // Pretty useless LDAP service ...
     return "Kermit The Frog";
+  }
+  
+  public List<String> findAllSales() {
+    return Arrays.asList("kermit", "gonzo", "fozzie");
   }
 
 }

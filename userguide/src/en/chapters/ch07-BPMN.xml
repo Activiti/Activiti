@@ -1225,9 +1225,11 @@ List&lt;Task&gt; tasks = taskService.createTaskQuery().assignee(&quot;kermit&quo
 &lt;formalExpression&gt;accountancy&lt;/formalExpression&gt;</programlisting>
         </para>
         
-        <section id="bpmnUserTaskUserAssignmentExtension">
+			</section> <!-- task assignment -->
+			
+			<section id="bpmnUserTaskUserAssignmentExtension">
           
-          <title>Custom extension for simple task assignments</title>
+          <title>Activiti extensions for task assignment</title>
           
           <para>
             It is clear that user and group assignments are quite cumbersome
@@ -1286,9 +1288,61 @@ List&lt;Task&gt; tasks = taskService.createTaskQuery().assignee(&quot;kermit&quo
             </itemizedlist>
           </para>
           
-        </section> <!-- task assignment extensions -->
+          <para>
+            In case the previous approaches are not sufficient, it is possible to delegate to 
+            custom assignment logic using a <link linkend="taskListeners">task listener</link>
+            on the create event:
+            <programlisting>
+&lt;userTask id=&quot;task1&quot; name=&quot;My task&quot; &gt;
+  &lt;extensionElements&gt;
+    &lt;activiti:taskListener event=&quot;create&quot; class=&quot;org.activiti.MyAssignmentHandler&quot; /&gt;
+  &lt;/extensionElements&gt;
+&lt;/userTask&gt;</programlisting>
+            The <literal>DelegateTask</literal> that is passed to the <literal>TaskListener</literal>
+            implementation, allows to set the assignee and candidate-users/groups:
+            <programlisting>
+public class MyAssignmentHandler implements TaskListener {
 
-			</section> <!-- task assignment -->
+  public void notify(DelegateTask delegateTask) {
+    // Execute custom identity lookups here
+    
+    // and then for example call following methods:
+    delegateTask.setAssignee(&quot;kermit&quot;);
+    delegateTask.addCandidateUser(&quot;fozzie&quot;);
+    delegateTask.addCandidateGroup(&quot;management&quot;);
+    ...
+  }
+  
+}</programlisting>
+          </para>
+          
+          <para>
+            When using Spring it is possible to use the custom assignment attirbutes as described in the section above,
+            and delegate to a Spring bean using a <link linkend="taskListeners">task listener</link>
+            with an <link linkend="springExpressions">expression</link> that listens to task <emphasis>create</emphasis> events.
+            In the following example, the assignee will be set by calling the <literal>findManagerOfEmployee</literal>
+            on the <literal>ldapService</literal> Spring bean. The <emphasis>emp</emphasis> parameter
+            that is passed, is a process variable>.
+            <programlisting>&lt;userTask id=&quot;task&quot; name=&quot;My Task&quot; activiti:assignee=&quot;${ldapService.findManagerForEmployee(emp)}&quot;/&gt;</programlisting>
+            This also works similar for candidate users and groups:
+            <programlisting>&lt;userTask id=&quot;task&quot; name=&quot;My Task&quot; activiti:candidateUsers=&quot;${ldapService.findAllSales()}&quot;/&gt;</programlisting>
+            Note that this will only work if the return type of the invoked methods is <literal>String</literal>
+            or <literal>Collection&lt;String&gt;</literal> (for candidate users and groups):
+            <programlisting>            
+public class FakeLdapService {
+  
+  public String findManagerForEmployee(String employee) {
+    return &quot;Kermit The Frog&quot;;
+  }
+  
+  public List&lt;String&gt; findAllSales() {
+    return Arrays.asList(&quot;kermit&quot;, &quot;gonzo&quot;, &quot;fozzie&quot;);
+  }
+
+}</programlisting>
+          </para>
+          
+        </section> <!-- task assignment extensions -->
 
 		</section>
 		
@@ -1687,7 +1741,7 @@ public class ReverseStringsFieldInjected implements JavaDelegation {
     
     
     <section id="executionListeners">
-      <title>Execution listeners</title>
+      <title>Execution listener</title>
       <para>Execution listeners allow you to execute external Java code or evaluate an expression when certain events occur
       during process exevcution. The events that can be captured are:
       <itemizedlist>
@@ -1822,6 +1876,69 @@ public void testExecutionListenerFieldInjection() {
         </para>
         </section>
          </section>
+         
+  <section id="taskListeners">
+  
+    <title>Task listener</title>
+    
+    <para>
+      A <emphasis>task listener</emphasis> is used to execute custom Java logic or an expression
+      upon the occurrence of a certain task-related event.
+    </para>
+    
+    <para>
+      A task listener can only be added in the process definition as a child element of a <link linkend="bpmnUserTask">user task</link>.
+      Note that this also must happen as a child of the <emphasis>BPMN 2.0 extensionElements</emphasis>
+      and in the <emphasis>activiti</emphasis> namespace, since a task listener is an Activiti-specific construct.      
+      <programlisting>
+&lt;userTask id=&quot;myTask&quot; name=&quot;My Task&quot; &gt;
+  &lt;extensionElements&gt;
+    <emphasis role="bold">&lt;activiti:taskListener event=&quot;create&quot; class=&quot;org.activiti.MyTaskCreateListener&quot; /&gt;</emphasis>
+  &lt;/extensionElements&gt;
+&lt;/userTask&gt;</programlisting>
+      A <emphasis>task listener</emphasis> supports following attributes:
+      <itemizedlist>
+        <listitem>
+          <para>
+            <emphasis role="bold">event</emphasis> (required): the type of task event on which the task listener will
+            be invoked. Possible values are <emphasis role="bold">'create'</emphasis> (occurs when the task 
+            has been created an all task properties are set), <emphasis role="bold">'assignment'</emphasis> 
+            (occurs when the task is assigned to somebody) or <emphasis role="bold">'complete'</emphasis>
+            (occurs when the task is completed and just before the task is deleted from the runtime data).
+          </para>
+        </listitem>
+        <listitem>
+          <para>
+            <emphasis role="bold">class</emphasis>: the delegation class that must be called. 
+            This class must implement the <literal>org.activiti.engine.impl.pvm.delegate.TaskListener</literal>
+            interface.
+            <programlisting>
+public class MyTaskCreateListener implements TaskListener {
+
+  public void notify(DelegateTask delegateTask) {
+    // Custom logic goes here
+  }
+
+}</programlisting>
+            
+            It is also possible to use <link linkend="serviceTaskFieldInjection">field injection</link> to pass
+            process variables or the execution to the delegation class.
+            Note that an instance of the delegation class is created upon process deployment
+            (as is the case with any class delegation in Activiti), which means that the 
+            instance is shared between all process instance executions.
+          </para>
+        </listitem>
+        <listitem>
+          <para>
+            <emphasis role="bold">expression</emphasis>: (cannot be used together with the <emphasis>class</emphasis> attribute):
+            specifies an expression that will be executed when the event happens.
+            <programlisting>&lt;activiti:taskListener event=&quot;create&quot; expression=&quot;${execution.setVariable('myVar', 'Hello from the task listener!')}&quot; /&gt;</programlisting>
+          </para>
+        </listitem>
+      </itemizedlist>
+    </para>
+    
+  </section>       
 		
   <section id="bpmnEmailTask">
 		

@@ -21,6 +21,7 @@ import java.util.Set;
 
 import org.activiti.engine.impl.el.Expression;
 import org.activiti.engine.impl.form.TaskFormHandler;
+import org.activiti.engine.impl.pvm.delegate.TaskListener;
 
 /**
  * Container for task definition information gathered at parsing time.

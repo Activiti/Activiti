@@ -12,12 +12,15 @@
  */
 package org.activiti.engine.impl.bpmn;
 
+import java.util.Collection;
+
+import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.el.Expression;
 import org.activiti.engine.impl.el.ExpressionManager;
 import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
+import org.activiti.engine.impl.pvm.delegate.TaskListener;
 import org.activiti.engine.impl.task.TaskDefinition;
 import org.activiti.engine.impl.task.TaskEntity;
-import org.activiti.engine.impl.task.TaskListener;
 
 /**
  * activity implementation for the user task.
@@ -59,6 +62,7 @@ public class UserTaskActivity extends TaskActivity {
     leave(execution);
   }
 
+  @SuppressWarnings({ "unchecked", "rawtypes" })
   protected void handleAssignments(TaskEntity task, ActivityExecution execution) {
     if (taskDefinition.getAssigneeExpression() != null) {
       task.setAssignee((String) taskDefinition.getAssigneeExpression().getValue(execution));
@@ -66,13 +70,27 @@ public class UserTaskActivity extends TaskActivity {
 
     if (!taskDefinition.getCandidateGroupIdExpressions().isEmpty()) {
       for (Expression groupIdExpr : taskDefinition.getCandidateGroupIdExpressions()) {
-        task.addCandidateGroup((String) groupIdExpr.getValue(execution));
+        Object value = groupIdExpr.getValue(execution);
+        if (value instanceof String) {
+          task.addCandidateGroup((String) value);
+        } else if (value instanceof Collection) {
+          task.addCandidateGroups((Collection) value);
+        } else {
+          throw new ActivitiException("Expression did not resolve to a string or collection of strings");
+        }
       }
     }
 
     if (!taskDefinition.getCandidateUserIdExpressions().isEmpty()) {
       for (Expression userIdExpr : taskDefinition.getCandidateUserIdExpressions()) {
-        task.addCandidateUser((String) userIdExpr.getValue(execution));
+        Object value = userIdExpr.getValue(execution);
+        if (value instanceof String) {
+          task.addCandidateUser((String) value);
+        } else if (value instanceof Collection) {
+          task.addCandidateUsers((Collection) value);
+        } else {
+          throw new ActivitiException("Expression did not resolve to a string or collection of strings");
+        }
       }
     }
   }

@@ -65,6 +65,7 @@ import org.activiti.engine.impl.jobexecutor.TimerDeclarationImpl;
 import org.activiti.engine.impl.jobexecutor.TimerExecuteNestedActivityJobHandler;
 import org.activiti.engine.impl.pvm.delegate.ActivityBehavior;
 import org.activiti.engine.impl.pvm.delegate.ExecutionListener;
+import org.activiti.engine.impl.pvm.delegate.TaskListener;
 import org.activiti.engine.impl.pvm.process.ActivityImpl;
 import org.activiti.engine.impl.pvm.process.ProcessDefinitionImpl;
 import org.activiti.engine.impl.pvm.process.ScopeImpl;
@@ -73,7 +74,6 @@ import org.activiti.engine.impl.repository.DeploymentEntity;
 import org.activiti.engine.impl.repository.ProcessDefinitionEntity;
 import org.activiti.engine.impl.scripting.ScriptingEngines;
 import org.activiti.engine.impl.task.TaskDefinition;
-import org.activiti.engine.impl.task.TaskListener;
 import org.activiti.engine.impl.util.ReflectUtil;
 import org.activiti.engine.impl.util.xml.Element;
 import org.activiti.engine.impl.util.xml.Parse;
@@ -1050,7 +1050,7 @@ public class BpmnParse extends Parse {
               addError("Invalid eventName for taskListener: choose 'create' |'assignment'", userTaskElement);
             }
         } else {
-          addError("EventName is mandatory on taskListener", userTaskElement);
+          addError("Event is mandatory on taskListener", userTaskElement);
         }
       }      
     }
