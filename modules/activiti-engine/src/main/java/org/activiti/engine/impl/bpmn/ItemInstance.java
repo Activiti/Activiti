@@ -12,28 +12,27 @@
  */
 package org.activiti.engine.impl.bpmn;
 
-
 /**
- * An instance of a {@link MessageDefinition}
+ * An instance of {@link ItemDefinition}
  * 
  * @author Esteban Robles Luna
  */
-public class MessageInstance {
+public class ItemInstance {
 
-  protected MessageDefinition message;
-  
-  protected ItemInstance item;
-  
-  MessageInstance(MessageDefinition message, ItemInstance item) {
-    this.message = message;
+  protected ItemDefinition item;
+
+  protected StructureInstance structureInstance;
+
+  public ItemInstance(ItemDefinition item, StructureInstance structureInstance) {
     this.item = item;
+    this.structureInstance = structureInstance;
   }
-  
+
+  public ItemDefinition getItem() {
+    return this.item;
+  }
+
   public StructureInstance getStructureInstance() {
-    return this.item.getStructureInstance();
-  }
-  
-  public MessageDefinition getMessage() {
-    return this.message;
+    return this.structureInstance;
   }
 }

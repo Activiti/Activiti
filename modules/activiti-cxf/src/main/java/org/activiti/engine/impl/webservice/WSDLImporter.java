@@ -33,8 +33,8 @@ import javax.wsdl.xml.WSDLReader;
 import javax.xml.namespace.QName;
 
 import org.activiti.engine.ActivitiException;
-import org.activiti.engine.impl.bpmn.SimpleStructure;
-import org.activiti.engine.impl.bpmn.Structure;
+import org.activiti.engine.impl.bpmn.SimpleStructureDefinition;
+import org.activiti.engine.impl.bpmn.StructureDefinition;
 import org.activiti.engine.impl.bpmn.parser.BpmnParse;
 import org.activiti.engine.impl.bpmn.parser.XMLImporter;
 import org.activiti.engine.impl.util.ReflectUtil;
@@ -60,27 +60,22 @@ import com.sun.tools.xjc.api.XJC;
  */
 public class WSDLImporter implements XMLImporter {
 
-
-// This class should be refactored to use our own parser like this:
-//  Parser wsdlImportParser = new Parser();
-//  Element rootElement = wsdlImportParser.createParse()
-//    .sourceUrl(this.wsdlLocation)
-//    .execute()
-//    .getRootElement();
-//  
-//  Element typesElement = rootElement.elementNS("the-wsdl-namespace-uri", "types");
-//  Element schemaElement = typesElement.elementNS("the-wsdl-namespace-uri", "schema");
-  
-  
   protected Map<String, WSService> wsServices = new HashMap<String, WSService>();
 
   protected Map<String, WSOperation> wsOperations = new HashMap<String, WSOperation>();
 
-  protected Map<String, Structure> structures = new HashMap<String, Structure>();
+  protected Map<String, StructureDefinition> structures = new HashMap<String, StructureDefinition>();
 
   protected String wsdlLocation;
+  
+  protected String namespace;
+  
+  public WSDLImporter() {
+    this.namespace = "";
+  }
 
   public void importFrom(org.activiti.engine.impl.util.xml.Element element, BpmnParse parse) {
+    this.namespace = element.attribute("namespace") == null ? "" : element.attribute("namespace") + ":";
     this.importFrom(element.attribute("location"));
     this.transferImportsToParse(parse);
   }
@@ -120,7 +115,7 @@ public class WSDLImporter implements XMLImporter {
     for (Object serviceObject : definition.getServices().values()) {
       Service service = (Service) serviceObject;
       WSService wsService = this.importService(service);
-      this.wsServices.put(wsService.getName(), wsService);
+      this.wsServices.put(this.namespace + wsService.getName(), wsService);
       
       Port port = (Port) service.getPorts().values().iterator().next();
       for (Object bindOperationObject : port.getBinding().getBindingOperations()) {
@@ -128,7 +123,7 @@ public class WSDLImporter implements XMLImporter {
         WSOperation operation = this.processOperation(bindOperation.getOperation(), wsService);
         wsService.addOperation(operation);
 
-        this.wsOperations.put(operation.getName(), operation);
+        this.wsOperations.put(this.namespace + operation.getName(), operation);
       }
     }
   }
@@ -149,12 +144,12 @@ public class WSDLImporter implements XMLImporter {
       }
     }
 
-    WSService wsService = new WSService(name, location, this.wsdlLocation);
+    WSService wsService = new WSService(this.namespace + name, location, this.wsdlLocation);
     return wsService;
   }
 
   private WSOperation processOperation(Operation wsOperation, WSService service) {
-    WSOperation operation = new WSOperation(wsOperation.getName(), service);
+    WSOperation operation = new WSOperation(this.namespace + wsOperation.getName(), wsOperation.getName(), service);
     return operation;
   }
 
@@ -182,7 +177,7 @@ public class WSDLImporter implements XMLImporter {
   private void importStructure(Mapping mapping) {
     QName qname = mapping.getElement();
     JDefinedClass theClass = (JDefinedClass) mapping.getType().getTypeClass();
-    SimpleStructure structure = (SimpleStructure) this.structures.get(qname.getLocalPart());
+    SimpleStructureDefinition structure = (SimpleStructureDefinition) this.structures.get(this.namespace + qname.getLocalPart());
     
     Map<String, JFieldVar> fields = theClass.fields();
     int index = 0;
@@ -204,8 +199,8 @@ public class WSDLImporter implements XMLImporter {
     NodeList complexTypes = rootTypes.getElementsByTagName("xs:complexType");
     for (int i = 0; i < complexTypes.getLength(); i++) {
       Element element = (Element) complexTypes.item(i);
-      String structureName = element.getAttribute("name");
-      SimpleStructure structure = new SimpleStructure(structureName);
+      String structureName = this.namespace + element.getAttribute("name");
+      SimpleStructureDefinition structure = new SimpleStructureDefinition(structureName);
       this.structures.put(structure.getId(), structure);
     }
   }
@@ -227,7 +222,7 @@ public class WSDLImporter implements XMLImporter {
 
   private void transferImportsToParse(BpmnParse parse) {
     if (parse != null) {
-      for (Structure structure : this.structures.values()) {
+      for (StructureDefinition structure : this.structures.values()) {
         parse.addStructure(structure);
       }
       for (WSService service : this.wsServices.values()) {
@@ -239,7 +234,7 @@ public class WSDLImporter implements XMLImporter {
     }
   }
 
-  public Collection<Structure> getStructures() {
+  public Collection<StructureDefinition> getStructures() {
     return this.structures.values();
   }
 

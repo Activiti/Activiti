@@ -40,6 +40,7 @@ public class DefaultVariableTypes implements Serializable, VariableTypes {
     addType(new DoubleType());
     addType(new ByteArrayType());
     addType(new SerializableType());
+    addType(new ItemType());
   }
 
   public DefaultVariableTypes addType(VariableType type) {

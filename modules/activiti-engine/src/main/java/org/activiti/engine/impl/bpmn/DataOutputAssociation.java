@@ -12,28 +12,26 @@
  */
 package org.activiti.engine.impl.bpmn;
 
+import org.activiti.engine.impl.el.Expression;
+import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
 
 /**
- * An instance of a {@link MessageDefinition}
+ * A data output association between a source and a target
  * 
  * @author Esteban Robles Luna
  */
-public class MessageInstance {
+public class DataOutputAssociation {
 
-  protected MessageDefinition message;
+  protected String targetRef;
   
-  protected ItemInstance item;
+  protected Expression transformation;
   
-  MessageInstance(MessageDefinition message, ItemInstance item) {
-    this.message = message;
-    this.item = item;
+  public DataOutputAssociation(String targetRef, Expression transformation) {
+    this.targetRef = targetRef;
+    this.transformation = transformation;
   }
-  
-  public StructureInstance getStructureInstance() {
-    return this.item.getStructureInstance();
-  }
-  
-  public MessageDefinition getMessage() {
-    return this.message;
+
+  public void evaluate(ActivityExecution execution) {
+    //TODO
   }
 }

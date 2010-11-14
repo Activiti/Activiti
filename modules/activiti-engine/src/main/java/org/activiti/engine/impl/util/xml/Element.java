@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.activiti.engine.ActivitiException;
 import org.xml.sax.Attributes;
@@ -105,6 +106,10 @@ public class Element {
       return attributeMap.get(name).getValue();
     }
     return null;
+  }
+  
+  public Set<String> attributes() {
+    return attributeMap.keySet();
   }
   
   public String attributeNS(String namespaceUri, String name) {

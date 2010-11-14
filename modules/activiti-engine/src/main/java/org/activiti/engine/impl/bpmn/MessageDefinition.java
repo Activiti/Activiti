@@ -12,28 +12,35 @@
  */
 package org.activiti.engine.impl.bpmn;
 
-
 /**
- * An instance of a {@link MessageDefinition}
+ * Implementation of the BPMN 2.0 'message'
  * 
  * @author Esteban Robles Luna
  */
-public class MessageInstance {
+public class MessageDefinition {
 
-  protected MessageDefinition message;
+  protected String id;
   
-  protected ItemInstance item;
+  protected ItemDefinition itemDefinition;
   
-  MessageInstance(MessageDefinition message, ItemInstance item) {
-    this.message = message;
-    this.item = item;
+  public MessageDefinition(String id, ItemDefinition itemDefinition) {
+    this.id = id;
+    this.itemDefinition = itemDefinition;
   }
   
-  public StructureInstance getStructureInstance() {
-    return this.item.getStructureInstance();
+  public MessageInstance createInstance() {
+    return new MessageInstance(this, this.itemDefinition.createInstance());
   }
   
-  public MessageDefinition getMessage() {
-    return this.message;
+  public ItemDefinition getItemDefinition() {
+    return this.itemDefinition;
+  }
+
+  public StructureDefinition getStructureDefinition() {
+    return this.itemDefinition.getStructureDefinition();
+  }
+
+  public String getId() {
+    return this.id;
   }
 }

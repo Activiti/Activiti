@@ -19,7 +19,7 @@
     <serviceTask id="webService" 
                  name="Web service invocation"
                  implementation="##WebService"
-                 operationRef="incOperation" />
+                 operationRef="tns:incOperation" />
     
     <sequenceFlow id="flow2" sourceRef="webService" targetRef="waitState" />
     
@@ -32,18 +32,18 @@
   </process>
 
   <!-- Interface: implementationRef = QName of WSDL Port Type -->
-  <interface name="Counter Interface" implementationRef="Counter"> <!-- NEEDED FOR THE PORT -->
+  <interface name="Counter Interface" implementationRef="counter:Counter"> <!-- NEEDED FOR THE PORT -->
     <!-- Operation: implementationRef = QName of WSDL Operation -->
-    <operation id="incOperation" name="Increase Operation" implementationRef="inc"> <!-- NEEDED FOR THE OPERATION NAME -->
-      <inMessageRef>incRequestMessage</inMessageRef>
-      <outMessageRef>incResponseMessage</outMessageRef>
+    <operation id="incOperation" name="Increase Operation" implementationRef="counter:inc"> <!-- NEEDED FOR THE OPERATION NAME -->
+      <inMessageRef>tns:incRequestMessage</inMessageRef>
+      <outMessageRef>tns:incResponseMessage</outMessageRef>
     </operation>
   </interface>
   
-  <message id="incRequestMessage" itemRef="incRequestItem" />
-  <message id="incResponseMessage" itemRef="incResponseItem" />
+  <message id="incRequestMessage" itemRef="tns:incRequestItem" />
+  <message id="incResponseMessage" itemRef="tns:incResponseItem" />
   
-  <itemDefinition id="incRequestItem" structureRef="inc" /><!-- QName of input element --> <!-- NEEDED FOR THE ARGUMENTS -->
-  <itemDefinition id="incResponseItem" structureRef="incResponse" /><!-- QName of output element -->
+  <itemDefinition id="incRequestItem" structureRef="counter:inc" /><!-- QName of input element --> <!-- NEEDED FOR THE ARGUMENTS -->
+  <itemDefinition id="incResponseItem" structureRef="counter:incResponse" /><!-- QName of output element -->
   
 </definitions>

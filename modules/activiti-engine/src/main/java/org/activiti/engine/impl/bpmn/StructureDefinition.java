@@ -12,28 +12,22 @@
  */
 package org.activiti.engine.impl.bpmn;
 
-
 /**
- * An instance of a {@link MessageDefinition}
+ * Represents a definition of a structure used to exchange information
  * 
  * @author Esteban Robles Luna
  */
-public class MessageInstance {
+public interface StructureDefinition {
 
-  protected MessageDefinition message;
-  
-  protected ItemInstance item;
-  
-  MessageInstance(MessageDefinition message, ItemInstance item) {
-    this.message = message;
-    this.item = item;
-  }
-  
-  public StructureInstance getStructureInstance() {
-    return this.item.getStructureInstance();
-  }
-  
-  public MessageDefinition getMessage() {
-    return this.message;
-  }
+  /**
+   * Obtains the id of this structure
+   * 
+   * @return the id of this structure
+   */
+  String getId();
+
+  /**
+   * @return a new instance of this structure definition
+   */
+  StructureInstance createInstance();
 }

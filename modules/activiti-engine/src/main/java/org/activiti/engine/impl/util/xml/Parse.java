@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
+import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
@@ -28,6 +29,8 @@ import org.activiti.engine.impl.util.io.ResourceStreamSource;
 import org.activiti.engine.impl.util.io.StreamSource;
 import org.activiti.engine.impl.util.io.StringStreamSource;
 import org.activiti.engine.impl.util.io.UrlStreamSource;
+import org.xml.sax.SAXNotRecognizedException;
+import org.xml.sax.SAXNotSupportedException;
 import org.xml.sax.SAXParseException;
 import org.xml.sax.helpers.DefaultHandler;
 
@@ -187,6 +190,11 @@ public class Parse extends DefaultHandler {
     SAXParserFactory saxParserFactory = parser.getSaxParserFactory();
     saxParserFactory.setNamespaceAware(true);
     saxParserFactory.setValidating(true);
+    try {
+      saxParserFactory.setFeature("http://xml.org/sax/features/namespace-prefixes", true);
+    } catch (Exception e) {
+      LOGGER.warning(e.getMessage());
+    }
     this.schemaResource = schemaResource;
   }
 

@@ -28,13 +28,23 @@ public class WSOperation implements OperationImplementation {
 
   private static final Logger LOGGER = Logger.getLogger(WSOperation.class.getName());
   
+  protected String id;
+
   protected String name;
   
   protected WSService service;
   
-  public WSOperation(String operationName, WSService service) {
+  public WSOperation(String id, String operationName, WSService service) {
+    this.id = id;
     this.name = operationName;
     this.service = service;
+  }
+  
+  /**
+   * {@inheritDoc}
+   */
+  public String getId() {
+    return this.id;
   }
   
   /**
@@ -54,14 +64,7 @@ public class WSOperation implements OperationImplementation {
   }
 
   private Object[] getArguments(MessageInstance message) {
-    int fieldSize = message.getFieldSize();
-    Object[] arguments = new Object[fieldSize];
-    for (int i = 0; i < fieldSize; i++) {
-      String fieldName = message.getFieldNameAt(i);
-      Object argument = message.getFieldValue(fieldName);
-      arguments[i] = argument;
-    }
-    return arguments;
+    return message.getStructureInstance().toArray();
   }
   
   private Object[] safeSend(Object[] arguments) {
@@ -81,14 +84,7 @@ public class WSOperation implements OperationImplementation {
   
   private MessageInstance createResponseMessage(Object[] results, Operation operation) {
     MessageInstance message = operation.getOutMessage().createInstance();
-    
-    int fieldSize = message.getFieldSize();
-    for (int i = 0; i < fieldSize; i++) {
-      String fieldName = message.getFieldNameAt(i);
-      Object fieldValue = results[i];
-      message.setFieldValue(fieldName, fieldValue);
-    }
-    
+    message.getStructureInstance().loadFrom(results);
     return message;
   }
 

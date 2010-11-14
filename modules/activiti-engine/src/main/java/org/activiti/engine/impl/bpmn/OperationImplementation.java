@@ -20,6 +20,11 @@ package org.activiti.engine.impl.bpmn;
 public interface OperationImplementation {
 
   /**
+   * @return the id of this implementation
+   */
+  String getId();
+  
+  /**
    * @return the name of this implementation
    */
   String getName();

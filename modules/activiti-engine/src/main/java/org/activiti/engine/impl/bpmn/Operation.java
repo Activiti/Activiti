@@ -24,9 +24,9 @@ public class Operation {
   
   protected String name;
   
-  protected Message inMessage;
+  protected MessageDefinition inMessage;
   
-  protected Message outMessage;
+  protected MessageDefinition outMessage;
   
   protected OperationImplementation implementation;
   
@@ -39,15 +39,11 @@ public class Operation {
     
   }
   
-  public Operation(String id, String name, BpmnInterface bpmnInterface, Message inMessage) {
+  public Operation(String id, String name, BpmnInterface bpmnInterface, MessageDefinition inMessage) {
     setId(id);
     setName(name);
     setInterface(bpmnInterface);
     setInMessage(inMessage);
-  }
-  
-  public MessageInstance createEmptySendMessage() {
-    return this.inMessage.createInstance();
   }
   
   public MessageInstance sendMessage(MessageInstance message) {
@@ -78,19 +74,19 @@ public class Operation {
     this.bpmnInterface = bpmnInterface;
   }
 
-  public Message getInMessage() {
+  public MessageDefinition getInMessage() {
     return inMessage;
   }
 
-  public void setInMessage(Message inMessage) {
+  public void setInMessage(MessageDefinition inMessage) {
     this.inMessage = inMessage;
   }
 
-  public Message getOutMessage() {
+  public MessageDefinition getOutMessage() {
     return outMessage;
   }
 
-  public void setOutMessage(Message outMessage) {
+  public void setOutMessage(MessageDefinition outMessage) {
     this.outMessage = outMessage;
   }
 

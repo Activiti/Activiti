@@ -13,30 +13,30 @@
 package org.activiti.engine.impl.bpmn;
 
 /**
- * Implementation of the BPMN 2.0 'message'
+ * Represents a structure based on a primitive class
  * 
  * @author Esteban Robles Luna
  */
-public class Message {
-
+public class PrimitiveStructureDefinition implements StructureDefinition {
+  
   protected String id;
   
-  protected ItemDefinition itemDefinition;
+  protected Class<?> primitiveClass;
   
-  public Message(String id, ItemDefinition itemDefinition) {
+  public PrimitiveStructureDefinition(String id, Class<?> primitiveClass) {
     this.id = id;
-    this.itemDefinition = itemDefinition;
+    this.primitiveClass = primitiveClass;
   }
   
-  public MessageInstance createInstance() {
-    return new MessageInstance(this);
+  public String getId() {
+    return this.id;
   }
   
-  public ItemDefinition getItemDefinition() {
-    return this.itemDefinition;
+  public Class<?> getPrimitiveClass() {
+    return primitiveClass;
   }
 
-  public Structure getStructure() {
-    return this.itemDefinition.getStructure();
+  public StructureInstance createInstance() {
+    return new PrimitiveStructureInstance(this);
   }
 }

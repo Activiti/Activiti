@@ -27,41 +27,65 @@ public class WebServiceActivityBehavior implements ActivityBehavior {
 
   protected Operation operation;
   
-  protected List<DataAssociation> dataInputAssociations;
+  protected IOSpecification ioSpecification;
+  
+  protected List<DataInputAssociation> dataInputAssociations;
 
-  protected List<DataAssociation> dataOutputAssociations;
+  protected List<DataOutputAssociation> dataOutputAssociations;
 
   public WebServiceActivityBehavior(Operation operation) {
     this.operation = operation;
-    this.dataInputAssociations = new ArrayList<DataAssociation>();
-    this.dataOutputAssociations = new ArrayList<DataAssociation>();
+    this.dataInputAssociations = new ArrayList<DataInputAssociation>();
+    this.dataOutputAssociations = new ArrayList<DataOutputAssociation>();
+  }
+  
+  public void addDataInputAssociation(DataInputAssociation dataAssociation) {
+    this.dataInputAssociations.add(dataAssociation);
+  }
+  
+  public void addDataOutputAssociation(DataOutputAssociation dataAssociation) {
+    this.dataOutputAssociations.add(dataAssociation);
   }
   
   /**
    * {@inheritDoc}
    */
   public void execute(ActivityExecution execution) throws Exception {
-    MessageInstance message = this.createEmptyMessage();
+    MessageInstance message;
+    
+    if (ioSpecification != null) {
+      this.ioSpecification.initialize(execution);
+      ItemInstance inputItem = (ItemInstance) execution.getVariable(this.ioSpecification.getFirstDataInputId());
+      message = new MessageInstance(this.operation.getInMessage(), inputItem);
+    } else {
+      message = this.operation.getInMessage().createInstance();
+    }
+    
     this.fillMessage(message, execution);
+    
     MessageInstance receivedMessage = this.operation.sendMessage(message);
+    
+    if (ioSpecification != null) {
+      ItemInstance outputItem = (ItemInstance) execution.getVariable(this.ioSpecification.getFirstDataOutputId());
+      outputItem.getStructureInstance().loadFrom(receivedMessage.getStructureInstance().toArray());
+    }
+    
     this.returnMessage(receivedMessage, execution);
   }
   
   private void returnMessage(MessageInstance message, ActivityExecution execution) {
-    //TODO DO SOMETHING WITH THE MESSAGE AND THE EXECUTION CONTEXT BEFORE?
-    for (DataAssociation dataAssociation : this.dataOutputAssociations) {
+    for (DataOutputAssociation dataAssociation : this.dataOutputAssociations) {
       dataAssociation.evaluate(execution);
     }
   }
 
   private void fillMessage(MessageInstance message, ActivityExecution execution) {
-    //TODO DO SOMETHING WITH THE MESSAGE AND THE EXECUTION CONTEXT BEFORE?
-    for (DataAssociation dataAssociation : this.dataInputAssociations) {
+    for (DataInputAssociation dataAssociation : this.dataInputAssociations) {
       dataAssociation.evaluate(execution);
     }
   }
 
-  private MessageInstance createEmptyMessage() {
-    return this.operation.createEmptySendMessage();
+  public void setIoSpecification(IOSpecification ioSpecification) {
+    this.ioSpecification = ioSpecification;
   }
 }

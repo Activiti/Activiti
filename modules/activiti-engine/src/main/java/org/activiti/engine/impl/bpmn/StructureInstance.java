@@ -12,28 +12,24 @@
  */
 package org.activiti.engine.impl.bpmn;
 
-
 /**
- * An instance of a {@link MessageDefinition}
+ * An instance of {@link StructureDefinition}
  * 
  * @author Esteban Robles Luna
  */
-public class MessageInstance {
+public interface StructureInstance {
 
-  protected MessageDefinition message;
-  
-  protected ItemInstance item;
-  
-  MessageInstance(MessageDefinition message, ItemInstance item) {
-    this.message = message;
-    this.item = item;
-  }
-  
-  public StructureInstance getStructureInstance() {
-    return this.item.getStructureInstance();
-  }
-  
-  public MessageDefinition getMessage() {
-    return this.message;
-  }
+  /**
+   * Converts this structure instance into an array
+   * 
+   * @return this structure as an array
+   */
+  Object[] toArray();
+
+  /**
+   * Loads this structure from array
+   * 
+   * @param array the array where this structure loads data
+   */
+  void loadFrom(Object[] array);
 }

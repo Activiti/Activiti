@@ -13,7 +13,10 @@
 package org.activiti.engine.impl.bpmn;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+
+import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
 
 /**
  * Implementation of the BPMN 2.0 'ioSpecification'
@@ -37,6 +40,24 @@ public class IOSpecification {
     this.dataOutputRefs = new ArrayList<DataRef>();
   }
   
+  public void initialize(ActivityExecution execution) {
+    for (Data data : this.dataInputs) {
+      execution.setVariable(data.getId(), data.getDefinition().createInstance());
+    }
+
+    for (Data data : this.dataOutputs) {
+      execution.setVariable(data.getId(), data.getDefinition().createInstance());
+    }
+  }
+  
+  public List<Data> getDataInputs() {
+    return Collections.unmodifiableList(this.dataInputs);
+  }
+
+  public List<Data> getDataOutputs() {
+    return Collections.unmodifiableList(this.dataOutputs);
+  }
+
   public void addInput(Data data) {
     this.dataInputs.add(data);
   }
@@ -51,5 +72,13 @@ public class IOSpecification {
 
   public void addOutputRef(DataRef dataRef) {
     this.dataOutputRefs.add(dataRef);
+  }
+
+  public String getFirstDataInputId() {
+    return this.dataInputs.get(0).getId();
+  }
+
+  public String getFirstDataOutputId() {
+    return this.dataOutputs.get(0).getId();
   }
 }

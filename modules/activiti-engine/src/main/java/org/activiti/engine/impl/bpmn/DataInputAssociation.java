@@ -18,11 +18,11 @@ import java.util.List;
 import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
 
 /**
- * A data association between a source and a target
+ * A data input association between a source and a target
  * 
  * @author Esteban Robles Luna
  */
-public class DataAssociation {
+public class DataInputAssociation {
 
   protected String source;
   
@@ -30,7 +30,7 @@ public class DataAssociation {
   
   protected List<Assignment> assignments;
   
-  public DataAssociation(String source, String target) {
+  public DataInputAssociation(String source, String target) {
     this.source = source;
     this.target = target;
     this.assignments = new ArrayList<Assignment>();

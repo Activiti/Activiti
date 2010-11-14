@@ -13,18 +13,11 @@
 package org.activiti.engine.impl.bpmn;
 
 /**
- * Represents a structure used to exchange information
+ * Represents a structure definition based on fields
  * 
  * @author Esteban Robles Luna
  */
-public interface Structure {
-
-  /**
-   * Obtains the id of this structure
-   * 
-   * @return the id of this structure
-   */
-  String getId();
+public interface FieldBaseStructureDefinition extends StructureDefinition {
 
   /**
    * Obtains the number of fields that this structure has

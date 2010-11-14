@@ -20,7 +20,7 @@ import java.util.List;
  * 
  * @author Esteban Robles Luna
  */
-public class SimpleStructure implements Structure {
+public class SimpleStructureDefinition implements FieldBaseStructureDefinition {
 
   protected String id;
   
@@ -28,7 +28,7 @@ public class SimpleStructure implements Structure {
 
   protected List<Class<?>> fieldTypes;
 
-  public SimpleStructure(String id) {
+  public SimpleStructureDefinition(String id) {
     this.id = id;
     this.fieldNames = new ArrayList<String>();
     this.fieldTypes = new ArrayList<Class<?>>();
@@ -63,5 +63,9 @@ public class SimpleStructure implements Structure {
 
   public Class<?> getFieldTypeAt(int index) {
     return this.fieldTypes.get(index);
+  }
+  
+  public StructureInstance createInstance() {
+    return new FieldBaseStructureInstance(this);
   }
 }

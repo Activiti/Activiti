@@ -20,8 +20,8 @@ import java.util.List;
 
 import junit.framework.Assert;
 
-import org.activiti.engine.impl.bpmn.SimpleStructure;
-import org.activiti.engine.impl.bpmn.Structure;
+import org.activiti.engine.impl.bpmn.SimpleStructureDefinition;
+import org.activiti.engine.impl.bpmn.StructureDefinition;
 import org.activiti.engine.impl.util.ReflectUtil;
 import org.activiti.engine.impl.webservice.WSDLImporter;
 import org.activiti.engine.impl.webservice.WSOperation;
@@ -46,9 +46,9 @@ public class WSDLImporterTest {
     Assert.assertEquals("Counter", service.getName());
     Assert.assertEquals("http://localhost:63081/counter", service.getLocation());
     
-    List<Structure> structures = new ArrayList<Structure>(importer.getStructures());
-    Collections.sort(structures, new Comparator<Structure>() {
-      public int compare(Structure o1, Structure o2) {
+    List<StructureDefinition> structures = new ArrayList<StructureDefinition>(importer.getStructures());
+    Collections.sort(structures, new Comparator<StructureDefinition>() {
+      public int compare(StructureDefinition o1, StructureDefinition o2) {
         return o1.getId().compareTo(o2.getId());
       }
     });
@@ -89,14 +89,14 @@ public class WSDLImporterTest {
     Assert.assertEquals(service, wsOperation.getService());
   }
 
-  private void assertStructure(Structure structure, String structureId, String[] parameters, Class<?>[] classes) {
-    SimpleStructure simpleStructure = (SimpleStructure) structure;
+  private void assertStructure(StructureDefinition structure, String structureId, String[] parameters, Class<?>[] classes) {
+    SimpleStructureDefinition simpleStructure = (SimpleStructureDefinition) structure;
     
     Assert.assertEquals(structureId, simpleStructure.getId());
     
-    for (int i = 0; i < structure.getFieldSize(); i++) {
-      Assert.assertEquals(parameters[i], structure.getFieldNameAt(i));
-      Assert.assertEquals(classes[i], structure.getFieldTypeAt(i));
+    for (int i = 0; i < simpleStructure.getFieldSize(); i++) {
+      Assert.assertEquals(parameters[i], simpleStructure.getFieldNameAt(i));
+      Assert.assertEquals(classes[i], simpleStructure.getFieldTypeAt(i));
     }
   }
 }

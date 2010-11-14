@@ -10,35 +10,37 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.activiti.engine.impl.bpmn;
+package org.activiti.engine.impl.variable;
+
+import org.activiti.engine.impl.bpmn.ItemInstance;
 
 /**
- * Represents a structure encapsulated in a class
+ * Type for {@link ItemInstance}
  * 
  * @author Esteban Robles Luna
  */
-public class ClassStructure implements Structure {
+public class ItemType implements VariableType {
 
-  protected Class<?> classStructure;
-
-  public ClassStructure(Class<?> classStructure) {
-    this.classStructure = classStructure;
+  public String getTypeName() {
+    return "item";
   }
 
-  public String getId() {
-    return this.classStructure.getName();
-  }
-
-  public int getFieldSize() {
-    //TODO
-    return 0;
-  }
-
-  public String getFieldNameAt(int index) {
+  public Object getValue(ValueFields valueFields) {
     return null;
   }
 
-  public Class< ? > getFieldTypeAt(int index) {
-    return null;
+  public boolean isAbleToStore(Object value) {
+    if (value==null) {
+      return true;
+    }
+    return ItemInstance.class.isAssignableFrom(value.getClass());
   }
+
+  public boolean isCachable() {
+    return false;
+  }
+
+  public void setValue(Object value, ValueFields valueFields) {
+  }
+
 }
