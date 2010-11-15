@@ -66,8 +66,9 @@
 	      </exclusions>
 	    </dependency>
 		<dependency>
-			<groupId>commons-lang</groupId>
-			<artifactId>commons-lang</artifactId>
+		  <groupId>commons-lang</groupId>
+		  <artifactId>commons-lang</artifactId>
+	      <scope>test</scope>
 		</dependency>
 		<!-- EMAIL -->
 		<dependency>
