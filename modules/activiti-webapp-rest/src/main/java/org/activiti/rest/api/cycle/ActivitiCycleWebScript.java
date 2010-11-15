@@ -90,8 +90,7 @@ public abstract class ActivitiCycleWebScript extends ActivitiWebScript {
       init(req);
       execute(req, status, cache, model);
     } catch (RepositoryAuthenticationException e) {
-      model.put("authenticationError", e.getMessage());
-      model.put("reposInError", e.getConnectors());
+      model.put("authenticationException", e);
     }
   }
 

@@ -1,3 +1,8 @@
+<#if authenticationException??>
+	<#import "cycle.lib.ftl" as cycleLib/>
+	<@cycleLib.printAuthenticationException authenticationException/>
+<#else>
+
 [<#list links as link><@printLink link/><#if link_has_next>,</#if></#list>]
 
 <#macro printLink link>
@@ -23,3 +28,5 @@
 	"label": "${artifact.metadata.name}"
 </#escape>
 </#macro>
+
+</#if>

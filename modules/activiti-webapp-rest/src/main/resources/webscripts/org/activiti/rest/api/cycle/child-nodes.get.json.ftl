@@ -1,13 +1,6 @@
-<#if authenticationError??>
-	<#escape x as jsonUtils.encodeJSONString(x)>
-	{
-		"authenticationError": "${authenticationError?string}",
-		"reposInError": [<#list reposInError?keys as key>
-			{
-    			"${key}": "${reposInError[key]}"
-    		}<#if key_has_next>,</#if></#list>]
-	}
-	</#escape>
+<#if authenticationException??>
+	<#import "cycle.lib.ftl" as cycleLib/>
+	<@cycleLib.printAuthenticationException authenticationException/>
 <#else>
 	[<#list folders as folder><@printFolder folder/><#if folder_has_next>,</#if></#list>
 	<#if (folders?size > 0) && (files?size > 0)>,</#if>
