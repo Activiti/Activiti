@@ -34,6 +34,9 @@ public interface HistoricProcessInstanceQuery extends Query<HistoricProcessInsta
   /** Only select historic process instances with the given business key */
   HistoricProcessInstanceQuery processInstanceBusinessKey(String processInstanceBusinessKey);
   
+  /** Only select historic process instances that are completely finished. */
+  HistoricProcessInstanceQuery finished();
+  
   /** Only select historic process instance that are not yet finished. */
   HistoricProcessInstanceQuery unfinished();
   

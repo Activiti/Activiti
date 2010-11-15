@@ -34,7 +34,8 @@ public class HistoricActivityInstanceQueryImpl extends AbstractQuery<HistoricAct
   protected String activityName;
   protected String activityType;
   protected String assignee;
-  protected boolean onlyOpen;
+  protected boolean finished;
+  protected boolean unfinished;
 
   public HistoricActivityInstanceQueryImpl() {
   }
@@ -94,11 +95,15 @@ public class HistoricActivityInstanceQueryImpl extends AbstractQuery<HistoricAct
     return this;
   }
   
-  public HistoricActivityInstanceQueryImpl open() {
-    this.onlyOpen = true;
+  public HistoricActivityInstanceQueryImpl finished() {
+    this.finished = true;
     return this;
   }
-
+  
+  public HistoricActivityInstanceQueryImpl unfinished() {
+    this.unfinished = true;
+    return this;
+  }
 
   // ordering /////////////////////////////////////////////////////////////////
 
@@ -176,10 +181,14 @@ public class HistoricActivityInstanceQueryImpl extends AbstractQuery<HistoricAct
   public String getActivityType() {
     return activityType;
   }
-  public boolean isOnlyOpen() {
-    return onlyOpen;
-  }
   public String getAssignee() {
     return assignee;
   }
+  public boolean isFinished() {
+    return finished;
+  }
+  public boolean isUnfinished() {
+    return unfinished;
+  }
+  
 }

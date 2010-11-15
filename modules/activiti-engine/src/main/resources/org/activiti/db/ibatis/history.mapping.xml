@@ -109,8 +109,11 @@
       <if test="businessKey != null">
         and HPI.BUSINESS_KEY_ = #{businessKey}
       </if>
-      <if test="open">
+      <if test="unfinished">
         and HPI.END_TIME_ IS NULL
+      </if>
+      <if test="finished">
+        and HPI.END_TIME_ is not NULL
       </if>
     </where>
   </sql>
@@ -221,8 +224,11 @@
       <if test="assignee != null">
         and HAI.ASSIGNEE_ = #{assignee}
       </if>
-      <if test="onlyOpen">
+      <if test="unfinished">
         and HAI.END_TIME_ is null
+      </if>
+      <if test="finished">
+       and HAI.END_TIME_ is not null
       </if>
     </where>
   </sql>

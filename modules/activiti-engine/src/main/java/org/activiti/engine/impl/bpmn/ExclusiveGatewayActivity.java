@@ -54,7 +54,7 @@ public class ExclusiveGatewayActivity extends GatewayActivity {
     while (outgoingSeqFlow == null && transitionIterator.hasNext()) {
       PvmTransition seqFlow = transitionIterator.next();
       
-// TODO conditions should go into the activity behaviour configuration (probably base BpmnActivity as all activities need conditions)
+      // TODO conditions should go into the activity behaviour configuration (probably base BpmnActivity as all activities need conditions)
       Condition condition = (Condition) seqFlow.getProperty(BpmnParse.PROPERTYNAME_CONDITION);
       if ( condition==null || condition.evaluate(execution) ) {
         if (log.isLoggable(Level.FINE)) {

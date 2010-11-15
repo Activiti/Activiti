@@ -45,9 +45,12 @@ public interface HistoricActivityInstanceQuery extends Query<HistoricActivityIns
 
   /** Only select historic activity instances for userTask activities assigned to the given user */
   HistoricActivityInstanceQueryImpl taskAssignee(String userId);
+  
+  /** Only select historic activity instances that are finished. */
+  HistoricActivityInstanceQueryImpl finished();
 
   /** Only select historic activity instances that are not finished yet. */
-  HistoricActivityInstanceQueryImpl open();
+  HistoricActivityInstanceQueryImpl unfinished();
 
   // ordering /////////////////////////////////////////////////////////////////
   /** Order by id (needs to be followed by {@link #asc()} or {@link #desc()}). */

@@ -30,7 +30,8 @@ public class HistoricProcessInstanceQueryImpl extends AbstractQuery<HistoricProc
   protected String processInstanceId;
   protected String processDefinitionId;
   protected String businessKey;
-  protected boolean open = false;
+  protected boolean finished = false;
+  protected boolean unfinished = false;
   
   public HistoricProcessInstanceQueryImpl() {
   }
@@ -53,9 +54,14 @@ public class HistoricProcessInstanceQueryImpl extends AbstractQuery<HistoricProc
     this.businessKey = businessKey;
     return this;
   }
+
+  public HistoricProcessInstanceQuery finished() {
+    this.finished = true;
+    return this;
+  }
   
   public HistoricProcessInstanceQuery unfinished() {
-    this.open = true;
+    this.unfinished = true;
     return this;
   }
   
@@ -101,7 +107,7 @@ public class HistoricProcessInstanceQueryImpl extends AbstractQuery<HistoricProc
     return businessKey;
   }
   public boolean isOpen() {
-    return open;
+    return unfinished;
   }
   public String getProcessDefinitionId() {
     return processDefinitionId;

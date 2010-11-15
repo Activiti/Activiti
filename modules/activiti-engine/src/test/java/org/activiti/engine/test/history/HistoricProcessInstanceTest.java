@@ -49,6 +49,8 @@ public class HistoricProcessInstanceTest extends ActivitiInternalTestCase {
     ClockUtil.setCurrentTime(noon);
     final ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("oneTaskProcess", "myBusinessKey");
 
+    assertEquals(1, historyService.createHistoricProcessInstanceQuery().unfinished().count());
+    assertEquals(0, historyService.createHistoricProcessInstanceQuery().finished().count());
     HistoricProcessInstance historicProcessInstance = historyService.createHistoricProcessInstanceQuery().processInstanceId(processInstance.getId()).singleResult();
 
     assertNotNull(historicProcessInstance);
@@ -77,6 +79,9 @@ public class HistoricProcessInstanceTest extends ActivitiInternalTestCase {
     assertEquals(noon, historicProcessInstance.getStartTime());
     assertEquals(twentyFiveSecsAfterNoon, historicProcessInstance.getEndTime());
     assertEquals(new Long(25*1000), historicProcessInstance.getDurationInMillis());
+    
+    assertEquals(0, historyService.createHistoricProcessInstanceQuery().unfinished().count());
+    assertEquals(1, historyService.createHistoricProcessInstanceQuery().finished().count());
   }
   
   @Deployment(resources = {"org/activiti/engine/test/history/oneTaskProcess.bpmn20.xml"})

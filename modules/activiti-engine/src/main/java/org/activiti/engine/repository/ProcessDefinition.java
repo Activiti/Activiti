@@ -13,7 +13,6 @@
 package org.activiti.engine.repository;
 
 import org.activiti.engine.RepositoryService;
-import org.activiti.engine.RuntimeService;
 import org.activiti.engine.impl.bpmn.IOSpecification;
 import org.activiti.engine.runtime.ProcessInstance;
 

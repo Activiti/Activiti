@@ -100,6 +100,9 @@ public class HistoricActivityInstanceTest extends ActivitiInternalTestCase {
 
     assertEquals(0, historyService.createHistoricActivityInstanceQuery().processDefinitionId("nonExistingProcessDefinitionId").list().size());
     assertEquals(1, historyService.createHistoricActivityInstanceQuery().processDefinitionId(processInstance.getProcessDefinitionId()).list().size());
+    
+    assertEquals(0, historyService.createHistoricActivityInstanceQuery().unfinished().list().size());
+    assertEquals(1, historyService.createHistoricActivityInstanceQuery().finished().list().size());
   }
   
   @Deployment
