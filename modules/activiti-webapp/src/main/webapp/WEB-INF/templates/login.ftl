@@ -1,4 +1,6 @@
 <#include "activiti.template.lib.ftl" />
+<#assign successUrl=(url.args["url"]!url.url)?html />
+<#assign failureUrl="/login?error=true" />
 <@templateHeader/>
 <@templateBody>
   <div id="header">
@@ -11,8 +13,10 @@
   <div id="content">
     <div id="login">
       <form accept-charset="UTF-8" method="post" action="${url.context}/dologin">
-        <input name="success" type="hidden" value="${url.context}/start" />
-        <input name="failure" type="hidden" value="${url.context}/login?error=true" />
+        <#if !successUrl?contains(failureUrl)>
+          <input name="success" type="hidden" value="${successUrl}" />
+        </#if>
+        <input name="failure" type="hidden" value="${url.context}${failureUrl}&amp;url=${successUrl?url}" />
         <#if url.args["error"]??>
         <div class="section">
           <div id="login-error" class="status-error"></div>
