@@ -229,10 +229,9 @@ public class BpmnParse extends Parse {
       }
     }
     
-    
     if (expressionLanguage != null) {
       if(expressionLanguage.contains("XPath")) {
-        LOG.info("XPath currently not supported as typeLanguage");
+        LOG.info("XPath currently not supported as expressionLanguage");
       }
     }
     
