@@ -32,6 +32,7 @@ import org.activiti.engine.impl.pvm.delegate.TaskListener;
 import org.activiti.engine.impl.repository.ProcessDefinitionEntity;
 import org.activiti.engine.impl.runtime.ExecutionEntity;
 import org.activiti.engine.impl.util.ClockUtil;
+import org.activiti.engine.task.IdentityLink;
 import org.activiti.engine.task.IdentityLinkType;
 import org.activiti.engine.task.Task;
 
@@ -185,8 +186,8 @@ public class TaskEntity implements Task, DelegateTask, Serializable, PersistentO
     return identityLinkEntity;
   }
   
-  public Set<IdentityLinkEntity> getCandidates() {
-    Set<IdentityLinkEntity> potentialOwners = new HashSet<IdentityLinkEntity>();
+  public Set<IdentityLink> getCandidates() {
+    Set<IdentityLink> potentialOwners = new HashSet<IdentityLink>();
     for (IdentityLinkEntity identityLinkEntity : getIdentityLinks()) {
       if (IdentityLinkType.CANDIDATE.equals(identityLinkEntity.getType())) {
         potentialOwners.add(identityLinkEntity);

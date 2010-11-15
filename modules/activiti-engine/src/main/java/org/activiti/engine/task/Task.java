@@ -13,9 +13,6 @@
 package org.activiti.engine.task;
 
 import java.util.Date;
-import java.util.Set;
-
-import org.activiti.engine.impl.task.IdentityLinkEntity;
 
 
 
@@ -56,9 +53,6 @@ public interface Task {
 	
   /** Refers to a {@link User.getId() user} which is the owner or person responsible for completing this task. */
 	String getAssignee();
-	
-	/** Retrieves all candidates (user or group) for this task */
-	Set<IdentityLinkEntity> getCandidates();
 	
   /** Reference to the process instance or null if it is not related to a process instance. */
 	String getProcessInstanceId();
