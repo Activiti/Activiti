@@ -56,6 +56,14 @@ public class TaskQueryTest extends ActivitiInternalTestCase {
     taskService.deleteTasks(taskIds);
   }
   
+  public void tesBasicTaskPropertiesNotNull() {
+    Task task = taskService.createTaskQuery().taskId(taskIds.get(0)).singleResult();
+    assertNotNull(task.getDescription());
+    assertNotNull(task.getId());
+    assertNotNull(task.getName());
+    assertNotNull(task.getCreateTime());
+  }
+  
   public void testQueryNoCriteria() {
     TaskQuery query = taskService.createTaskQuery();
     assertEquals(12, query.count());
@@ -358,6 +366,7 @@ public class TaskQueryTest extends ActivitiInternalTestCase {
     assertEquals(12, taskService.createTaskQuery().orderByTaskDescription().asc().list().size());
     assertEquals(12, taskService.createTaskQuery().orderByProcessInstanceId().asc().list().size());
     assertEquals(12, taskService.createTaskQuery().orderByExecutionId().asc().list().size());
+    assertEquals(12, taskService.createTaskQuery().orderByTaskCreateTime().asc().list().size());
 
     assertEquals(12, taskService.createTaskQuery().orderByTaskId().desc().list().size());
     assertEquals(12, taskService.createTaskQuery().orderByTaskName().desc().list().size());
@@ -366,6 +375,7 @@ public class TaskQueryTest extends ActivitiInternalTestCase {
     assertEquals(12, taskService.createTaskQuery().orderByTaskDescription().desc().list().size());
     assertEquals(12, taskService.createTaskQuery().orderByProcessInstanceId().desc().list().size());
     assertEquals(12, taskService.createTaskQuery().orderByExecutionId().desc().list().size());
+    assertEquals(12, taskService.createTaskQuery().orderByTaskCreateTime().desc().list().size());
     
     assertEquals(6, taskService.createTaskQuery().orderByTaskId().taskName("testTask").asc().list().size());
     assertEquals(6, taskService.createTaskQuery().orderByTaskId().taskName("testTask").desc().list().size());

@@ -90,6 +90,9 @@ public interface TaskQuery extends Query<TaskQuery, Task>{
   /** Order by assignee (needs to be followed by {@link #asc()} or {@link #desc()}). */
   TaskQuery orderByTaskAssignee();
   
+  /** Order by the time on which the tasks were created (needs to be followed by {@link #asc()} or {@link #desc()}). */
+  TaskQuery orderByTaskCreateTime();
+  
   /** Order by process instance id (needs to be followed by {@link #asc()} or {@link #desc()}). */
   TaskQuery orderByProcessInstanceId();
   

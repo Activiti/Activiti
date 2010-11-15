@@ -209,6 +209,10 @@ public class TaskQueryImpl extends AbstractQuery<TaskQuery, Task> implements Tas
     return orderBy(TaskQueryProperty.ASSIGNEE);
   }
   
+  public TaskQuery orderByTaskCreateTime() {
+    return orderBy(TaskQueryProperty.CREATE_TIME);
+  }
+  
   //results ////////////////////////////////////////////////////////////////
   
   public List<Task> executeList(CommandContext commandContext, Page page) {

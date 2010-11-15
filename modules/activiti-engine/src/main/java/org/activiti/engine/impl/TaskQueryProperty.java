@@ -48,6 +48,7 @@ public class TaskQueryProperty implements QueryProperty {
   public static final TaskQueryProperty DESCRIPTION = new TaskQueryProperty("T.DESCRIPTION_");
   public static final TaskQueryProperty PRIORITY = new TaskQueryProperty("T.PRIORITY_");
   public static final TaskQueryProperty ASSIGNEE = new TaskQueryProperty("T.ASSIGNEE_");
+  public static final TaskQueryProperty CREATE_TIME = new TaskQueryProperty("T.CREATE_TIME_");
   public static final TaskQueryProperty PROCESS_INSTANCE_ID = new TaskQueryProperty("T.PROC_INST_ID_");
   public static final TaskQueryProperty EXECUTION_ID = new TaskQueryProperty("T.EXECUTION_ID_");
   
