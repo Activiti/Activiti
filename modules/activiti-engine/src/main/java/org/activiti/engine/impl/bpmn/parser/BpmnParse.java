@@ -96,6 +96,7 @@ import org.activiti.engine.impl.variable.VariableDeclaration;
 public class BpmnParse extends Parse {
 
   public static final String PROPERTYNAME_CONDITION = "condition";
+  public static final String PROPERTYNAME_CONDITION_TEXT = "conditionText";
   public static final String PROPERTYNAME_VARIABLE_DECLARATIONS = "variableDeclarations";
   public static final String PROPERTYNAME_TIMER_DECLARATION = "timerDeclarations";
   public static final String PROPERTYNAME_INITIAL = "initial";
@@ -1555,14 +1556,15 @@ public class BpmnParse extends Parse {
   public void parseSequenceFlowConditionExpression(Element seqFlowElement, TransitionImpl seqFlow) {
     Element conditionExprElement = seqFlowElement.element("conditionExpression");
     if (conditionExprElement != null) {
-      String expr = conditionExprElement.getText().trim();
+      String expression = conditionExprElement.getText().trim();
       String type = conditionExprElement.attributeNS(BpmnParser.XSI_NS, "type");
       if (type != null && !type.equals("tFormalExpression")) {
         addError("Invalid type, only tFormalExpression is currently supported", conditionExprElement);
       }
       
-      Condition condition = new UelExpressionCondition(expressionManager.createExpression(expr));     
-      seqFlow.setProperty(PROPERTYNAME_CONDITION, condition);
+      Condition expressionCondition = new UelExpressionCondition(expressionManager.createExpression(expression)); 
+      seqFlow.setProperty(PROPERTYNAME_CONDITION_TEXT, expression);
+      seqFlow.setProperty(PROPERTYNAME_CONDITION, expressionCondition);
     }
   }
   

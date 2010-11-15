@@ -17,6 +17,7 @@ import java.util.Collections;
 import java.util.List;
 
 import org.activiti.engine.impl.RepositoryServiceImpl;
+import org.activiti.engine.impl.bpmn.parser.BpmnParse;
 import org.activiti.engine.impl.pvm.PvmActivity;
 import org.activiti.engine.impl.pvm.PvmTransition;
 import org.activiti.engine.impl.pvm.ReadOnlyProcessDefinition;
@@ -67,6 +68,7 @@ public class ProcessDefinitionPersistenceTest extends ActivitiInternalTestCase {
     assertEquals(Collections.EMPTY_LIST, start.getActivities());
     List<PvmTransition> outgoingTransitions = start.getOutgoingTransitions();
     assertEquals(1, outgoingTransitions.size());
+    assertEquals("${a == b}", outgoingTransitions.get(0).getProperty(BpmnParse.PROPERTYNAME_CONDITION_TEXT));
 
     PvmActivity end = processDefinition.findActivity("end");
     assertNotNull(end);

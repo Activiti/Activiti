@@ -13,6 +13,7 @@
 
     <sequenceFlow id="flow1" name="Flow One" sourceRef="start" targetRef="end">
       <documentation>The only transitions in the process</documentation>
+      <conditionExpression>${a == b}</conditionExpression>
     </sequenceFlow>
 
     <endEvent id="end" />
