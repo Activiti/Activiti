@@ -649,7 +649,7 @@ Activiti.widget.PopupManager = function()
       // Define a custom function to route pagination through the Browser History Manager
       var handlePagination = function(state) {
         // Reflect the new pagination values while preserving existing sort values
-        var sortedBy = this.get("sortedBy");
+        var sortedBy = this.get("sortedBy") || {dir: null, key:null};
         if (sortedBy.dir && sortedBy.dir.indexOf("yui-dt-") == 0) {
           sortedBy.dir = sortedBy.dir.substring("yui-dt-".length);
         }
