@@ -15,6 +15,7 @@ package org.activiti.engine.test;
 
 import java.util.Date;
 
+import org.activiti.engine.FormService;
 import org.activiti.engine.HistoryService;
 import org.activiti.engine.IdentityService;
 import org.activiti.engine.ManagementService;
@@ -76,6 +77,7 @@ public class ActivitiRule extends TestWatchman {
   protected HistoryService historyService;
   protected IdentityService identityService;
   protected ManagementService managementService;
+  protected FormService formService;
   
   public ActivitiRule() {
   }
@@ -109,6 +111,7 @@ public class ActivitiRule extends TestWatchman {
     historyService = processEngine.getHistoryService();
     identityService = processEngine.getIdentityService();
     managementService = processEngine.getManagementService();
+    formService = processEngine.getFormService();
   }
 
   @Override
@@ -180,6 +183,10 @@ public class ActivitiRule extends TestWatchman {
   
   public ManagementService getManagementService() {
     return managementService;
+  }
+  
+  public FormService getFormService() {
+    return formService;
   }
   
   public void setManagementService(ManagementService managementService) {

@@ -17,6 +17,7 @@ import java.util.Date;
 
 import junit.framework.TestCase;
 
+import org.activiti.engine.FormService;
 import org.activiti.engine.HistoryService;
 import org.activiti.engine.IdentityService;
 import org.activiti.engine.ManagementService;
@@ -67,6 +68,7 @@ public class ActivitiTestCase extends TestCase {
   protected HistoryService historicDataService;
   protected IdentityService identityService;
   protected ManagementService managementService;
+  protected FormService formService;
 
   /** uses 'activiti.cfg.xml' as it's configuration resource */
   public ActivitiTestCase() {
@@ -99,6 +101,7 @@ public class ActivitiTestCase extends TestCase {
     historicDataService = processEngine.getHistoryService();
     identityService = processEngine.getIdentityService();
     managementService = processEngine.getManagementService();
+    formService = processEngine.getFormService();
   }
 
   @Override
