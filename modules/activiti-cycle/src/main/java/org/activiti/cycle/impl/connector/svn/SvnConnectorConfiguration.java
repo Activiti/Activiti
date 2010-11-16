@@ -1,5 +1,6 @@
 package org.activiti.cycle.impl.connector.svn;
 
+import org.activiti.cycle.ArtifactType;
 import org.activiti.cycle.RepositoryConnector;
 import org.activiti.cycle.impl.conf.PasswordEnabledRepositoryConnectorConfiguration;
 
@@ -48,6 +49,10 @@ public class SvnConnectorConfiguration extends PasswordEnabledRepositoryConnecto
 
 	public void setTemporaryFileStore(String temporaryFileStore) {
 		this.temporaryFileStore = temporaryFileStore;
+	}
+	
+	public ArtifactType getDefaultArtifactType() {
+		return getArtifactType(SvnConnectorPluginDefinition.ARTIFACT_TYPE_DEFAULT);
 	}
 
 }
