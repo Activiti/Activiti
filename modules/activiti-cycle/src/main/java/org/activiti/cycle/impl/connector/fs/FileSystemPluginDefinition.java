@@ -11,12 +11,14 @@ import org.activiti.cycle.impl.conf.RepositoryConnectorConfiguration;
 import org.activiti.cycle.impl.connector.fs.provider.FileBinaryContentProvider;
 import org.activiti.cycle.impl.connector.fs.provider.TextFileContentProvider;
 import org.activiti.cycle.impl.connector.fs.provider.XmlFileContentProvider;
+import org.activiti.cycle.impl.connector.signavio.SignavioPluginDefinition;
 import org.activiti.cycle.impl.plugin.ActivitiCyclePlugin;
 import org.activiti.cycle.impl.plugin.ActivitiCyclePluginDefinition;
 
 @ActivitiCyclePlugin
 public class FileSystemPluginDefinition implements ActivitiCyclePluginDefinition {
 
+  public static final String ARTIFACT_TYPE_DEFAULT = "default";
   public static final String ARTIFACT_TYPE_BPMN_20_XML = "bpmn20.xml";
   public static final String ARTIFACT_TYPE_ORYX_XML = "signavio.xml";
   public static final String ARTIFACT_TYPE_TEXT = "txt";
@@ -24,16 +26,15 @@ public class FileSystemPluginDefinition implements ActivitiCyclePluginDefinition
   public static final String ARTIFACT_TYPE_MS_WORD = "doc";
   public static final String ARTIFACT_TYPE_MS_PP = "ppt";
   public static final String ARTIFACT_TYPE_PDF = "pdf";
-
   public static final String ARTIFACT_TYPE_HTML = "html";
-
-  public static final String ARTIFACT_TYPE_DEFAULT = "default";
+  public static final String ARTIFACT_TYPE_JSON = "json";
 
   public static final String CONTENT_REPRESENTATION_ID_XML = "XML";
   public static final String CONTENT_REPRESENTATION_ID_TEXT = "Text";
   public static final String CONTENT_REPRESENTATION_ID_BINARY = "Binary";
   public static final String CONTENT_REPRESENTATION_ID_HTML = "HTML";
   public static final String CONTENT_REPRESENTATION_ID_HTML_SOURCE = "HTML source";
+  public static final String CONTENT_REPRESENTATION_ID_JSON = SignavioPluginDefinition.CONTENT_REPRESENTATION_ID_JSON;
 
   // public static final String CONTENT_REPRESENTATION_ID_MS_WORD_X = "docx";
   // public static final String CONTENT_REPRESENTATION_ID_MS_PP = "ppt";
@@ -96,7 +97,14 @@ public class FileSystemPluginDefinition implements ActivitiCyclePluginDefinition
     artifactTypeHtml.addContentRepresentation(new ContentRepresentationImpl(CONTENT_REPRESENTATION_ID_HTML_SOURCE, CycleDefaultMimeType.HTML, RenderInfo.CODE),
             new TextFileContentProvider());
     types.add(artifactTypeHtml);
-  }
+
+    ArtifactTypeImpl artifactTypeJson = new ArtifactTypeImpl(ARTIFACT_TYPE_JSON, CycleDefaultMimeType.JSON);
+    artifactTypeJson.addDefaultContentRepresentation(new ContentRepresentationImpl(CONTENT_REPRESENTATION_ID_JSON, CycleDefaultMimeType.JSON, RenderInfo.CODE),
+            new TextFileContentProvider());
+    artifactTypeJson.addDownloadContentAction(CONTENT_REPRESENTATION_ID_JSON);
+    types.add(artifactTypeJson);
+
+}
 
   public Class< ? extends RepositoryConnectorConfiguration> getRepositoryConnectorConfigurationType() {
     return FileSystemConnectorConfiguration.class;

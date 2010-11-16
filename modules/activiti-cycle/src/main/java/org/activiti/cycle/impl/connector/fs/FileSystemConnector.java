@@ -176,16 +176,16 @@ public class FileSystemConnector extends AbstractRepositoryConnector<FileSystemC
    */
   private String getMimeType(File file) {
     
-    // TODO: This has problems with e.g. "*.bpmn.xml"
-    String extension = MimeUtil.getExtension(file);
-    
     // so we overwrite it with a temporary hack
     // But this cannot recognize *.bpmn20.xml :-/
     String name = file.getName();
     if (name.indexOf(".") > 0) {
       return name.substring(name.lastIndexOf(".") + 1);
     }
-
+    
+    // TODO: This has problems with e.g. "*.bpmn.xml"
+    String extension = MimeUtil.getExtension(file);
+    
     return extension;
 
     // MimeUtil.registerMimeDetector("eu.medsea.mimeutil.detector.MagicMimeMimeDetector");

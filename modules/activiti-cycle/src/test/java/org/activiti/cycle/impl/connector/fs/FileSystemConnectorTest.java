@@ -6,6 +6,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.logging.Logger;
 
+import org.activiti.cycle.Content;
 import org.activiti.cycle.ContentRepresentation;
 import org.activiti.cycle.RepositoryArtifact;
 import org.activiti.cycle.RepositoryConnector;
@@ -51,7 +52,8 @@ public class FileSystemConnectorTest {
 
         Collection<ContentRepresentation> contentRepresentations = artifact.getArtifactType().getContentRepresentations();
         for (ContentRepresentation contentRepresentation : contentRepresentations) {
-          System.out.println(contentRepresentation.getId() + " -> " + conn.getContent(artifact.getNodeId(), contentRepresentation.getId()).asString());
+          Content content = conn.getContent(artifact.getNodeId(), contentRepresentation.getId());
+          System.out.println(contentRepresentation.getId() + " -> " + content.asString());
         }
       }
     }
