@@ -42,11 +42,11 @@ public class IOSpecification {
   
   public void initialize(ActivityExecution execution) {
     for (Data data : this.dataInputs) {
-      execution.setVariable(data.getId(), data.getDefinition().createInstance());
+      execution.setVariable(data.getName(), data.getDefinition().createInstance());
     }
 
     for (Data data : this.dataOutputs) {
-      execution.setVariable(data.getId(), data.getDefinition().createInstance());
+      execution.setVariable(data.getName(), data.getDefinition().createInstance());
     }
   }
   
@@ -74,11 +74,11 @@ public class IOSpecification {
     this.dataOutputRefs.add(dataRef);
   }
 
-  public String getFirstDataInputId() {
-    return this.dataInputs.get(0).getId();
+  public String getFirstDataInputName() {
+    return this.dataInputs.get(0).getName();
   }
 
-  public String getFirstDataOutputId() {
-    return this.dataOutputs.get(0).getId();
+  public String getFirstDataOutputName() {
+    return this.dataOutputs.get(0).getName();
   }
 }

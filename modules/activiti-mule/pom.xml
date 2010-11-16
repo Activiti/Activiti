@@ -24,16 +24,6 @@
 				</includes>
 			</resource>
 		</resources>
-	<plugins>
-      <plugin>
-        <artifactId>maven-surefire-plugin</artifactId>
-        <configuration>
-          <excludes>
-            <exclude>**/WebServiceUELTest.java</exclude>
-          </excludes>
-        </configuration>
-      </plugin>
-    </plugins>
 	</build>
 
 	<dependencies>

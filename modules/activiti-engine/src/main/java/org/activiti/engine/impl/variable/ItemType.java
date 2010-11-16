@@ -26,7 +26,7 @@ public class ItemType implements VariableType {
   }
 
   public Object getValue(ValueFields valueFields) {
-    return null;
+    return valueFields.getCachedValue();
   }
 
   public boolean isAbleToStore(Object value) {
@@ -37,10 +37,10 @@ public class ItemType implements VariableType {
   }
 
   public boolean isCachable() {
-    return false;
+    return true;
   }
 
   public void setValue(Object value, ValueFields valueFields) {
+    valueFields.setCachedValue(value);
   }
-
 }

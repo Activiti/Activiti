@@ -32,7 +32,7 @@ public class Assignment {
   }
   
   public void evaluate(ActivityExecution execution) {
-    //TODO doublecheck if this is OK
-    this.toExpression.setValue(this.fromExpression.getValue(execution), execution);
+    Object value = this.fromExpression.getValue(execution);
+    this.toExpression.setValue(value, execution);
   }
 }

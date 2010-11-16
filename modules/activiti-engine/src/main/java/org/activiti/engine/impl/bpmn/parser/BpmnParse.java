@@ -493,7 +493,7 @@ public class BpmnParse extends Parse {
       String id = dataInputElement.attribute("id");
       String itemSubjectRef = this.resolveName(dataInputElement.attribute("itemSubjectRef"));
       ItemDefinition itemDefinition = this.itemDefinitions.get(itemSubjectRef);
-      Data dataInput = new Data(this.targetNamespace + ":" + id, itemDefinition);
+      Data dataInput = new Data(this.targetNamespace + ":" + id, id, itemDefinition);
       ioSpecification.addInput(dataInput);
     }
     
@@ -501,7 +501,7 @@ public class BpmnParse extends Parse {
       String id = dataOutputElement.attribute("id");
       String itemSubjectRef = this.resolveName(dataOutputElement.attribute("itemSubjectRef"));
       ItemDefinition itemDefinition = this.itemDefinitions.get(itemSubjectRef);
-      Data dataOutput = new Data(this.targetNamespace + ":" + id, itemDefinition);
+      Data dataOutput = new Data(this.targetNamespace + ":" + id, id, itemDefinition);
       ioSpecification.addOutput(dataOutput);
     }
 

@@ -55,7 +55,7 @@ public class WebServiceActivityBehavior implements ActivityBehavior {
     
     if (ioSpecification != null) {
       this.ioSpecification.initialize(execution);
-      ItemInstance inputItem = (ItemInstance) execution.getVariable(this.ioSpecification.getFirstDataInputId());
+      ItemInstance inputItem = (ItemInstance) execution.getVariable(this.ioSpecification.getFirstDataInputName());
       message = new MessageInstance(this.operation.getInMessage(), inputItem);
     } else {
       message = this.operation.getInMessage().createInstance();
@@ -66,7 +66,7 @@ public class WebServiceActivityBehavior implements ActivityBehavior {
     MessageInstance receivedMessage = this.operation.sendMessage(message);
     
     if (ioSpecification != null) {
-      ItemInstance outputItem = (ItemInstance) execution.getVariable(this.ioSpecification.getFirstDataOutputId());
+      ItemInstance outputItem = (ItemInstance) execution.getVariable(this.ioSpecification.getFirstDataOutputName());
       outputItem.getStructureInstance().loadFrom(receivedMessage.getStructureInstance().toArray());
     }
     

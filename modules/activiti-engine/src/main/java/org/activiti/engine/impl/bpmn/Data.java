@@ -21,15 +21,22 @@ public class Data {
 
   protected String id;
   
+  protected String name;
+  
   protected ItemDefinition definition;
   
-  public Data(String id, ItemDefinition definition) {
+  public Data(String id, String name, ItemDefinition definition) {
     this.id = id;
+    this.name = name;
     this.definition = definition;
   }
   
   public String getId() {
     return this.id;
+  }
+  
+  public String getName() {
+    return this.name;
   }
   
   public ItemDefinition getDefinition() {

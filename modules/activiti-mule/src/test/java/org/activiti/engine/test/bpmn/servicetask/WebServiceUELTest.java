@@ -1,19 +1,29 @@
+/* Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package org.activiti.engine.test.bpmn.servicetask;
 
 import java.util.HashMap;
 import java.util.Map;
 
 import org.activiti.engine.impl.bpmn.FieldBaseStructureInstance;
-import org.activiti.engine.impl.bpmn.IOSpecification;
 import org.activiti.engine.impl.bpmn.ItemDefinition;
 import org.activiti.engine.impl.bpmn.ItemInstance;
-import org.activiti.engine.impl.bpmn.MessageInstance;
 import org.activiti.engine.impl.bpmn.SimpleStructureDefinition;
-import org.activiti.engine.repository.ProcessDefinition;
-import org.activiti.engine.repository.ProcessDefinitionQuery;
 import org.activiti.engine.runtime.ProcessInstance;
 
-
+/**
+ * @author Esteban Robles Luna
+ */
 public class WebServiceUELTest extends AbstractWebServiceTaskTest {
 
   public void testWebServiceInvocationWithDataFlowUEL() throws Exception {
@@ -36,9 +46,7 @@ public class WebServiceUELTest extends AbstractWebServiceTaskTest {
             variables);
     waitForJobExecutorToProcessAllJobs(10000L, 250L);
     
-    MessageInstance response = (MessageInstance) processEngine.getRuntimeService().getVariable(instance.getId(), "dataOutputOfProcess");
-    
-    structureInstance = (FieldBaseStructureInstance) response.getStructureInstance();
-    assertEquals("The counter has the value -1. Good news", structureInstance.getFieldValue("prettyPrint"));
+    String response = (String) processEngine.getRuntimeService().getVariable(instance.getId(), "dataOutputOfProcess");
+    assertEquals("The counter has the value -1. Good news", response);
   }
 }

@@ -115,12 +115,12 @@ public abstract class ReflectUtil {
     }
   }
 
-  public static void invoke(Object target, String methodName, Object[] args) {
+  public static Object invoke(Object target, String methodName, Object[] args) {
     try {
       Class<? extends Object> clazz = target.getClass();
       Method method = findMethod(clazz, methodName, args);
       method.setAccessible(true);
-      method.invoke(target, args);
+      return method.invoke(target, args);
     } catch (Exception e) {
       throw new ActivitiException("couldn't invoke "+methodName+" on "+target, e);
     }

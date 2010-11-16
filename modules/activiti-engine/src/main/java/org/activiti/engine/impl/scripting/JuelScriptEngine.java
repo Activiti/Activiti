@@ -29,10 +29,12 @@ import javax.script.ScriptException;
 import javax.script.SimpleBindings;
 
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.impl.bpmn.ItemInstance;
 import org.activiti.engine.impl.el.ExpressionFactoryResolver;
 import org.activiti.engine.impl.javax.el.ArrayELResolver;
 import org.activiti.engine.impl.javax.el.BeanELResolver;
 import org.activiti.engine.impl.javax.el.CompositeELResolver;
+import org.activiti.engine.impl.javax.el.DynamicBeanPropertyELResolver;
 import org.activiti.engine.impl.javax.el.ELContext;
 import org.activiti.engine.impl.javax.el.ELException;
 import org.activiti.engine.impl.javax.el.ELResolver;
@@ -116,6 +118,7 @@ public class JuelScriptEngine extends AbstractScriptEngine implements Compilable
     compositeResolver.add(new ListELResolver());
     compositeResolver.add(new MapELResolver());
     compositeResolver.add(new ResourceBundleELResolver());
+    compositeResolver.add(new DynamicBeanPropertyELResolver(ItemInstance.class, "getFieldValue", "setFieldValue"));
     compositeResolver.add(new BeanELResolver());
     return new SimpleResolver(compositeResolver);
   }

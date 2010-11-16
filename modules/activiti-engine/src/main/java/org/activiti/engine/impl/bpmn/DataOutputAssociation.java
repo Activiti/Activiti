@@ -32,6 +32,7 @@ public class DataOutputAssociation {
   }
 
   public void evaluate(ActivityExecution execution) {
-    //TODO
+    Object value = this.transformation.getValue(execution);
+    execution.setVariable(this.targetRef, value);
   }
 }

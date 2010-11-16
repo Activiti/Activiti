@@ -18,9 +18,11 @@ package org.activiti.engine.impl.juel;
 import java.beans.FeatureDescriptor;
 import java.util.Iterator;
 
+import org.activiti.engine.impl.bpmn.ItemInstance;
 import org.activiti.engine.impl.javax.el.ArrayELResolver;
 import org.activiti.engine.impl.javax.el.BeanELResolver;
 import org.activiti.engine.impl.javax.el.CompositeELResolver;
+import org.activiti.engine.impl.javax.el.DynamicBeanPropertyELResolver;
 import org.activiti.engine.impl.javax.el.ELContext;
 import org.activiti.engine.impl.javax.el.ELResolver;
 import org.activiti.engine.impl.javax.el.ListELResolver;
@@ -41,6 +43,7 @@ public class SimpleResolver extends ELResolver {
 			add(new ListELResolver(true));
 			add(new MapELResolver(true));
 			add(new ResourceBundleELResolver());
+      add(new DynamicBeanPropertyELResolver(true, ItemInstance.class, "getFieldValue", "setFieldValue"));
 			add(new BeanELResolver(true));
 		}
 	};
@@ -50,6 +53,7 @@ public class SimpleResolver extends ELResolver {
 			add(new ListELResolver(false));
 			add(new MapELResolver(false));
 			add(new ResourceBundleELResolver());
+      add(new DynamicBeanPropertyELResolver(false, ItemInstance.class, "getFieldValue", "setFieldValue"));
 			add(new BeanELResolver(false));
 		}
 	};

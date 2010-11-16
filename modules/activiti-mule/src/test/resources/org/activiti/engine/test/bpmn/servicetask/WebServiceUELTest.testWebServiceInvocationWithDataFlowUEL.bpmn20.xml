@@ -57,17 +57,17 @@
                 <sourceRef>dataInputOfProcess</sourceRef>
                 <targetRef>dataInputOfServiceTask</targetRef>
    				<assignment>
-   					<from>{$dataInputOfProcess.prefix}</from>
-   					<to>{$dataInputOfServiceTask.prefix}</to>
+   					<from>${dataInputOfProcess.prefix}</from>
+   					<to>${dataInputOfServiceTask.prefix}</to>
    				</assignment>
    				<assignment>
-   					<from>{$dataInputOfProcess.suffix}</from>
-   					<to>{$dataInputOfServiceTask.suffix}</to>
+   					<from>${dataInputOfProcess.suffix}</from>
+   					<to>${dataInputOfServiceTask.suffix}</to>
    				</assignment>
             </dataInputAssociation>
             <dataOutputAssociation>
             	<targetRef>dataOutputOfProcess</targetRef>
-            	<transformation>{$dataOutputOfServiceTask.prettyPrint}</transformation>
+            	<transformation>${dataOutputOfServiceTask.prettyPrint}</transformation>
             </dataOutputAssociation>
     </serviceTask>
     

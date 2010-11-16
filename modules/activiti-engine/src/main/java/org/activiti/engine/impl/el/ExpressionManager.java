@@ -12,9 +12,11 @@
  */
 package org.activiti.engine.impl.el;
 
+import org.activiti.engine.impl.bpmn.ItemInstance;
 import org.activiti.engine.impl.javax.el.ArrayELResolver;
 import org.activiti.engine.impl.javax.el.BeanELResolver;
 import org.activiti.engine.impl.javax.el.CompositeELResolver;
+import org.activiti.engine.impl.javax.el.DynamicBeanPropertyELResolver;
 import org.activiti.engine.impl.javax.el.ELContext;
 import org.activiti.engine.impl.javax.el.ELResolver;
 import org.activiti.engine.impl.javax.el.ExpressionFactory;
@@ -95,6 +97,7 @@ public class ExpressionManager {
     elResolver.add(new ArrayELResolver());
     elResolver.add(new ListELResolver());
     elResolver.add(new MapELResolver());
+    elResolver.add(new DynamicBeanPropertyELResolver(ItemInstance.class, "getFieldValue", "setFieldValue"));
     elResolver.add(new BeanELResolver());
     return elResolver;
   }
