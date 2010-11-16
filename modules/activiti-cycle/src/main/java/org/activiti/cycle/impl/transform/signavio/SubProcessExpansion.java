@@ -32,7 +32,13 @@ public class SubProcessExpansion extends OryxTransformation {
 
   @Override
   public Diagram transform(Diagram diagram) {
-    for (Shape shape : diagram.getShapes()) {
+    expandSubProcesses(diagram);
+    return diagram;
+  }
+
+  private void expandSubProcesses(Diagram diagram) {
+    List<Shape> shapes = diagram.getShapes();
+    for (Shape shape : shapes) {
       if (STENCIL_COLLAPSED_SUBPROCESS.equals(shape.getStencilId())) {
         String subProcessUrl = shape.getProperty(PROPERTY_ENTRY);
         if (subProcessUrl != null && subProcessUrl.length() > 0) {
@@ -44,6 +50,8 @@ public class SubProcessExpansion extends OryxTransformation {
             String subProcessJson = connector.getContent(subProcessId, representationName).asString();
             
             Diagram subProcess = DiagramBuilder.parseJson(subProcessJson);
+            expandSubProcesses(subProcess);
+            
             shape.setStencil(new StencilType(STENCIL_SUBPROCESS));
             ArrayList<Shape> childShapes = shape.getChildShapes();
             childShapes.addAll(subProcess.getChildShapes());
@@ -57,7 +65,6 @@ public class SubProcessExpansion extends OryxTransformation {
         }
       }
     }
-    return diagram;
   }
 
   public static String getModelIdFromSignavioUrl(String subProcessUrl) throws UnsupportedEncodingException {
