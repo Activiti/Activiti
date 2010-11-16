@@ -2,7 +2,7 @@
 Copyright (c) 2010, Yahoo! Inc. All rights reserved.
 Code licensed under the BSD License:
 http://developer.yahoo.com/yui/license.html
-version: 2.8.1
+version: 2.8.2r1
 */
 /**
  * The YAHOO object is the single global object used by YUI Library.  It
@@ -1072,7 +1072,7 @@ YAHOO.augment = L.augmentProto;
 YAHOO.extend = L.extend;
 
 })();
-YAHOO.register("yahoo", YAHOO, {version: "2.8.1", build: "19"});
+YAHOO.register("yahoo", YAHOO, {version: "2.8.2r1", build: "7"});
 /**
  * Provides a mechanism to fetch remote resources and
  * insert them into a document
@@ -1821,7 +1821,7 @@ YAHOO.util.Get = function() {
     };
 }();
 
-YAHOO.register("get", YAHOO.util.Get, {version: "2.8.1", build: "19"});
+YAHOO.register("get", YAHOO.util.Get, {version: "2.8.2r1", build: "7"});
 /**
  * Provides dynamic loading for the YUI library.  It includes the dependency
  * info for the library, and will automatically pull in dependencies for
@@ -1861,10 +1861,10 @@ YAHOO.register("get", YAHOO.util.Get, {version: "2.8.1", build: "19"});
     // 'root': '2.5.2/build/',
     // 'base': 'http://yui.yahooapis.com/2.5.2/build/',
 
-    'root': '',
-    'base': '',
+    'root': '2.8.2r1/build/',
+    'base': 'http://yui.yahooapis.com/2.8.2r1/build/',
 
-    'comboBase': '',
+    'comboBase': 'http://yui.yahooapis.com/combo?',
 
     'skin': {
         'defaultSkin': 'sam',
@@ -3876,12 +3876,12 @@ throw new Error("You must supply an onSuccess handler for your sandbox");
 
 })();
 
-YAHOO.register("yuiloader", YAHOO.util.YUILoader, {version: "2.8.1", build: "19"});
+YAHOO.register("yuiloader", YAHOO.util.YUILoader, {version: "2.8.2r1", build: "7"});
 /*
 Copyright (c) 2010, Yahoo! Inc. All rights reserved.
 Code licensed under the BSD License:
 http://developer.yahoo.com/yui/license.html
-version: 2.8.1
+version: 2.8.2r1
 */
 /**
  * The dom module provides helper methods for manipulating Dom elements.
@@ -5748,12 +5748,12 @@ Y.Dom.Color = {
     }
 };
 }());
-YAHOO.register("dom", YAHOO.util.Dom, {version: "2.8.1", build: "19"});
+YAHOO.register("dom", YAHOO.util.Dom, {version: "2.8.2r1", build: "7"});
 /*
 Copyright (c) 2010, Yahoo! Inc. All rights reserved.
 Code licensed under the BSD License:
 http://developer.yahoo.com/yui/license.html
-version: 2.8.1
+version: 2.8.2r1
 */
 
 /**
@@ -8272,12 +8272,12 @@ KeyListener.KEY = {
 };
 
 })();
-YAHOO.register("event", YAHOO.util.Event, {version: "2.8.1", build: "19"});
+YAHOO.register("event", YAHOO.util.Event, {version: "2.8.2r1", build: "7"});
 /*
 Copyright (c) 2010, Yahoo! Inc. All rights reserved.
 Code licensed under the BSD License:
 http://developer.yahoo.com/yui/license.html
-version: 2.8.1
+version: 2.8.2r1
 */
 (function() {
 
@@ -9668,12 +9668,12 @@ YAHOO.util.Easing = {
 
     Y.Scroll = Scroll;
 })();
-YAHOO.register("animation", YAHOO.util.Anim, {version: "2.8.1", build: "19"});
+YAHOO.register("animation", YAHOO.util.Anim, {version: "2.8.2r1", build: "7"});
 /*
 Copyright (c) 2010, Yahoo! Inc. All rights reserved.
 Code licensed under the BSD License:
 http://developer.yahoo.com/yui/license.html
-version: 2.8.1
+version: 2.8.2r1
 */
 /**
  * The Connection Manager provides a simplified interface to the XMLHttpRequest
@@ -11244,12 +11244,6088 @@ YAHOO.util.Connect =
 	YCM.uploadFile = _uploadFile;
 })();
 
-YAHOO.register("connection", YAHOO.util.Connect, {version: "2.8.1", build: "19"});
+YAHOO.register("connection", YAHOO.util.Connect, {version: "2.8.2r1", build: "7"});
 /*
 Copyright (c) 2010, Yahoo! Inc. All rights reserved.
 Code licensed under the BSD License:
 http://developer.yahoo.com/yui/license.html
-version: 2.8.1
+version: 2.8.2r1
+*/
+(function () {
+
+var lang   = YAHOO.lang,
+    util   = YAHOO.util,
+    Ev     = util.Event;
+
+/**
+ * The DataSource utility provides a common configurable interface for widgets to
+ * access a variety of data, from JavaScript arrays to online database servers.
+ *
+ * @module datasource
+ * @requires yahoo, event
+ * @optional json, get, connection 
+ * @title DataSource Utility
+ */
+
+/****************************************************************************/
+/****************************************************************************/
+/****************************************************************************/
+
+/**
+ * Base class for the YUI DataSource utility.
+ *
+ * @namespace YAHOO.util
+ * @class YAHOO.util.DataSourceBase
+ * @constructor
+ * @param oLiveData {HTMLElement}  Pointer to live data.
+ * @param oConfigs {object} (optional) Object literal of configuration values.
+ */
+util.DataSourceBase = function(oLiveData, oConfigs) {
+    if(oLiveData === null || oLiveData === undefined) {
+        YAHOO.log("Could not instantiate DataSource due to invalid live database",
+                "error", this.toString());
+        return;
+    }
+    
+    this.liveData = oLiveData;
+    this._oQueue = {interval:null, conn:null, requests:[]};
+    this.responseSchema = {};   
+
+    // Set any config params passed in to override defaults
+    if(oConfigs && (oConfigs.constructor == Object)) {
+        for(var sConfig in oConfigs) {
+            if(sConfig) {
+                this[sConfig] = oConfigs[sConfig];
+            }
+        }
+    }
+    
+    // Validate and initialize public configs
+    var maxCacheEntries = this.maxCacheEntries;
+    if(!lang.isNumber(maxCacheEntries) || (maxCacheEntries < 0)) {
+        maxCacheEntries = 0;
+    }
+
+    // Initialize interval tracker
+    this._aIntervals = [];
+
+    /////////////////////////////////////////////////////////////////////////////
+    //
+    // Custom Events
+    //
+    /////////////////////////////////////////////////////////////////////////////
+
+    /**
+     * Fired when a request is made to the local cache.
+     *
+     * @event cacheRequestEvent
+     * @param oArgs.request {Object} The request object.
+     * @param oArgs.callback {Object} The callback object.
+     * @param oArgs.caller {Object} (deprecated) Use callback.scope.
+     */
+    this.createEvent("cacheRequestEvent");
+
+    /**
+     * Fired when data is retrieved from the local cache.
+     *
+     * @event cacheResponseEvent
+     * @param oArgs.request {Object} The request object.
+     * @param oArgs.response {Object} The response object.
+     * @param oArgs.callback {Object} The callback object.
+     * @param oArgs.caller {Object} (deprecated) Use callback.scope.
+     */
+    this.createEvent("cacheResponseEvent");
+
+    /**
+     * Fired when a request is sent to the live data source.
+     *
+     * @event requestEvent
+     * @param oArgs.request {Object} The request object.
+     * @param oArgs.callback {Object} The callback object.
+     * @param oArgs.tId {Number} Transaction ID.     
+     * @param oArgs.caller {Object} (deprecated) Use callback.scope.
+     */
+    this.createEvent("requestEvent");
+
+    /**
+     * Fired when live data source sends response.
+     *
+     * @event responseEvent
+     * @param oArgs.request {Object} The request object.
+     * @param oArgs.response {Object} The raw response object.
+     * @param oArgs.callback {Object} The callback object.
+     * @param oArgs.tId {Number} Transaction ID.     
+     * @param oArgs.caller {Object} (deprecated) Use callback.scope.
+     */
+    this.createEvent("responseEvent");
+
+    /**
+     * Fired when response is parsed.
+     *
+     * @event responseParseEvent
+     * @param oArgs.request {Object} The request object.
+     * @param oArgs.response {Object} The parsed response object.
+     * @param oArgs.callback {Object} The callback object.
+     * @param oArgs.caller {Object} (deprecated) Use callback.scope.
+     */
+    this.createEvent("responseParseEvent");
+
+    /**
+     * Fired when response is cached.
+     *
+     * @event responseCacheEvent
+     * @param oArgs.request {Object} The request object.
+     * @param oArgs.response {Object} The parsed response object.
+     * @param oArgs.callback {Object} The callback object.
+     * @param oArgs.caller {Object} (deprecated) Use callback.scope.
+     */
+    this.createEvent("responseCacheEvent");
+    /**
+     * Fired when an error is encountered with the live data source.
+     *
+     * @event dataErrorEvent
+     * @param oArgs.request {Object} The request object.
+     * @param oArgs.response {String} The response object (if available).
+     * @param oArgs.callback {Object} The callback object.
+     * @param oArgs.caller {Object} (deprecated) Use callback.scope.
+     * @param oArgs.message {String} The error message.
+     */
+    this.createEvent("dataErrorEvent");
+
+    /**
+     * Fired when the local cache is flushed.
+     *
+     * @event cacheFlushEvent
+     */
+    this.createEvent("cacheFlushEvent");
+
+    var DS = util.DataSourceBase;
+    this._sName = "DataSource instance" + DS._nIndex;
+    DS._nIndex++;
+    YAHOO.log("DataSource initialized", "info", this.toString());
+};
+
+var DS = util.DataSourceBase;
+
+lang.augmentObject(DS, {
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// DataSourceBase public constants
+//
+/////////////////////////////////////////////////////////////////////////////
+
+/**
+ * Type is unknown.
+ *
+ * @property TYPE_UNKNOWN
+ * @type Number
+ * @final
+ * @default -1
+ */
+TYPE_UNKNOWN : -1,
+
+/**
+ * Type is a JavaScript Array.
+ *
+ * @property TYPE_JSARRAY
+ * @type Number
+ * @final
+ * @default 0
+ */
+TYPE_JSARRAY : 0,
+
+/**
+ * Type is a JavaScript Function.
+ *
+ * @property TYPE_JSFUNCTION
+ * @type Number
+ * @final
+ * @default 1
+ */
+TYPE_JSFUNCTION : 1,
+
+/**
+ * Type is hosted on a server via an XHR connection.
+ *
+ * @property TYPE_XHR
+ * @type Number
+ * @final
+ * @default 2
+ */
+TYPE_XHR : 2,
+
+/**
+ * Type is JSON.
+ *
+ * @property TYPE_JSON
+ * @type Number
+ * @final
+ * @default 3
+ */
+TYPE_JSON : 3,
+
+/**
+ * Type is XML.
+ *
+ * @property TYPE_XML
+ * @type Number
+ * @final
+ * @default 4
+ */
+TYPE_XML : 4,
+
+/**
+ * Type is plain text.
+ *
+ * @property TYPE_TEXT
+ * @type Number
+ * @final
+ * @default 5
+ */
+TYPE_TEXT : 5,
+
+/**
+ * Type is an HTML TABLE element. Data is parsed out of TR elements from all TBODY elements.
+ *
+ * @property TYPE_HTMLTABLE
+ * @type Number
+ * @final
+ * @default 6
+ */
+TYPE_HTMLTABLE : 6,
+
+/**
+ * Type is hosted on a server via a dynamic script node.
+ *
+ * @property TYPE_SCRIPTNODE
+ * @type Number
+ * @final
+ * @default 7
+ */
+TYPE_SCRIPTNODE : 7,
+
+/**
+ * Type is local.
+ *
+ * @property TYPE_LOCAL
+ * @type Number
+ * @final
+ * @default 8
+ */
+TYPE_LOCAL : 8,
+
+/**
+ * Error message for invalid dataresponses.
+ *
+ * @property ERROR_DATAINVALID
+ * @type String
+ * @final
+ * @default "Invalid data"
+ */
+ERROR_DATAINVALID : "Invalid data",
+
+/**
+ * Error message for null data responses.
+ *
+ * @property ERROR_DATANULL
+ * @type String
+ * @final
+ * @default "Null data"
+ */
+ERROR_DATANULL : "Null data",
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// DataSourceBase private static properties
+//
+/////////////////////////////////////////////////////////////////////////////
+
+/**
+ * Internal class variable to index multiple DataSource instances.
+ *
+ * @property DataSourceBase._nIndex
+ * @type Number
+ * @private
+ * @static
+ */
+_nIndex : 0,
+
+/**
+ * Internal class variable to assign unique transaction IDs.
+ *
+ * @property DataSourceBase._nTransactionId
+ * @type Number
+ * @private
+ * @static
+ */
+_nTransactionId : 0,
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// DataSourceBase private static methods
+//
+/////////////////////////////////////////////////////////////////////////////
+
+/**
+ * Get an XPath-specified value for a given field from an XML node or document.
+ *
+ * @method _getLocationValue
+ * @param field {String | Object} Field definition.
+ * @param context {Object} XML node or document to search within.
+ * @return {Object} Data value or null.
+ * @static
+ * @private
+ */
+_getLocationValue: function(field, context) {
+    var locator = field.locator || field.key || field,
+        xmldoc = context.ownerDocument || context,
+        result, res, value = null;
+
+    try {
+        // Standards mode
+        if(!lang.isUndefined(xmldoc.evaluate)) {
+            result = xmldoc.evaluate(locator, context, xmldoc.createNSResolver(!context.ownerDocument ? context.documentElement : context.ownerDocument.documentElement), 0, null);
+            while(res = result.iterateNext()) {
+                value = res.textContent;
+            }
+        }
+        // IE mode
+        else {
+            xmldoc.setProperty("SelectionLanguage", "XPath");
+            result = context.selectNodes(locator)[0];
+            value = result.value || result.text || null;
+        }
+        return value;
+
+    }
+    catch(e) {
+    }
+},
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// DataSourceBase public static methods
+//
+/////////////////////////////////////////////////////////////////////////////
+
+/**
+ * Executes a configured callback.  For object literal callbacks, the third
+ * param determines whether to execute the success handler or failure handler.
+ *  
+ * @method issueCallback
+ * @param callback {Function|Object} the callback to execute
+ * @param params {Array} params to be passed to the callback method
+ * @param error {Boolean} whether an error occurred
+ * @param scope {Object} the scope from which to execute the callback
+ * (deprecated - use an object literal callback)
+ * @static     
+ */
+issueCallback : function (callback,params,error,scope) {
+    if (lang.isFunction(callback)) {
+        callback.apply(scope, params);
+    } else if (lang.isObject(callback)) {
+        scope = callback.scope || scope || window;
+        var callbackFunc = callback.success;
+        if (error) {
+            callbackFunc = callback.failure;
+        }
+        if (callbackFunc) {
+            callbackFunc.apply(scope, params.concat([callback.argument]));
+        }
+    }
+},
+
+/**
+ * Converts data to type String.
+ *
+ * @method DataSourceBase.parseString
+ * @param oData {String | Number | Boolean | Date | Array | Object} Data to parse.
+ * The special values null and undefined will return null.
+ * @return {String} A string, or null.
+ * @static
+ */
+parseString : function(oData) {
+    // Special case null and undefined
+    if(!lang.isValue(oData)) {
+        return null;
+    }
+    
+    //Convert to string
+    var string = oData + "";
+
+    // Validate
+    if(lang.isString(string)) {
+        return string;
+    }
+    else {
+        YAHOO.log("Could not convert data " + lang.dump(oData) + " to type String", "warn", this.toString());
+        return null;
+    }
+},
+
+/**
+ * Converts data to type Number.
+ *
+ * @method DataSourceBase.parseNumber
+ * @param oData {String | Number | Boolean} Data to convert. Note, the following
+ * values return as null: null, undefined, NaN, "". 
+ * @return {Number} A number, or null.
+ * @static
+ */
+parseNumber : function(oData) {
+    if(!lang.isValue(oData) || (oData === "")) {
+        return null;
+    }
+
+    //Convert to number
+    var number = oData * 1;
+    
+    // Validate
+    if(lang.isNumber(number)) {
+        return number;
+    }
+    else {
+        YAHOO.log("Could not convert data " + lang.dump(oData) + " to type Number", "warn", this.toString());
+        return null;
+    }
+},
+// Backward compatibility
+convertNumber : function(oData) {
+    YAHOO.log("The method YAHOO.util.DataSourceBase.convertNumber() has been" +
+    " deprecated in favor of YAHOO.util.DataSourceBase.parseNumber()", "warn",
+    this.toString());
+    return DS.parseNumber(oData);
+},
+
+/**
+ * Converts data to type Date.
+ *
+ * @method DataSourceBase.parseDate
+ * @param oData {Date | String | Number} Data to convert.
+ * @return {Date} A Date instance.
+ * @static
+ */
+parseDate : function(oData) {
+    var date = null;
+    
+    //Convert to date
+    if(!(oData instanceof Date)) {
+        date = new Date(oData);
+    }
+    else {
+        return oData;
+    }
+    
+    // Validate
+    if(date instanceof Date) {
+        return date;
+    }
+    else {
+        YAHOO.log("Could not convert data " + lang.dump(oData) + " to type Date", "warn", this.toString());
+        return null;
+    }
+},
+// Backward compatibility
+convertDate : function(oData) {
+    YAHOO.log("The method YAHOO.util.DataSourceBase.convertDate() has been" +
+    " deprecated in favor of YAHOO.util.DataSourceBase.parseDate()", "warn",
+    this.toString());
+    return DS.parseDate(oData);
+}
+
+});
+
+// Done in separate step so referenced functions are defined.
+/**
+ * Data parsing functions.
+ * @property DataSource.Parser
+ * @type Object
+ * @static
+ */
+DS.Parser = {
+    string   : DS.parseString,
+    number   : DS.parseNumber,
+    date     : DS.parseDate
+};
+
+// Prototype properties and methods
+DS.prototype = {
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// DataSourceBase private properties
+//
+/////////////////////////////////////////////////////////////////////////////
+
+/**
+ * Name of DataSource instance.
+ *
+ * @property _sName
+ * @type String
+ * @private
+ */
+_sName : null,
+
+/**
+ * Local cache of data result object literals indexed chronologically.
+ *
+ * @property _aCache
+ * @type Object[]
+ * @private
+ */
+_aCache : null,
+
+/**
+ * Local queue of request connections, enabled if queue needs to be managed.
+ *
+ * @property _oQueue
+ * @type Object
+ * @private
+ */
+_oQueue : null,
+
+/**
+ * Array of polling interval IDs that have been enabled, needed to clear all intervals.
+ *
+ * @property _aIntervals
+ * @type Array
+ * @private
+ */
+_aIntervals : null,
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// DataSourceBase public properties
+//
+/////////////////////////////////////////////////////////////////////////////
+
+/**
+ * Max size of the local cache.  Set to 0 to turn off caching.  Caching is
+ * useful to reduce the number of server connections.  Recommended only for data
+ * sources that return comprehensive results for queries or when stale data is
+ * not an issue.
+ *
+ * @property maxCacheEntries
+ * @type Number
+ * @default 0
+ */
+maxCacheEntries : 0,
+
+ /**
+ * Pointer to live database.
+ *
+ * @property liveData
+ * @type Object
+ */
+liveData : null,
+
+/**
+ * Where the live data is held:
+ * 
+ * <dl>  
+ *    <dt>TYPE_UNKNOWN</dt>
+ *    <dt>TYPE_LOCAL</dt>
+ *    <dt>TYPE_XHR</dt>
+ *    <dt>TYPE_SCRIPTNODE</dt>
+ *    <dt>TYPE_JSFUNCTION</dt>
+ * </dl> 
+ *  
+ * @property dataType
+ * @type Number
+ * @default YAHOO.util.DataSourceBase.TYPE_UNKNOWN
+ *
+ */
+dataType : DS.TYPE_UNKNOWN,
+
+/**
+ * Format of response:
+ *  
+ * <dl>  
+ *    <dt>TYPE_UNKNOWN</dt>
+ *    <dt>TYPE_JSARRAY</dt>
+ *    <dt>TYPE_JSON</dt>
+ *    <dt>TYPE_XML</dt>
+ *    <dt>TYPE_TEXT</dt>
+ *    <dt>TYPE_HTMLTABLE</dt> 
+ * </dl> 
+ *
+ * @property responseType
+ * @type Number
+ * @default YAHOO.util.DataSourceBase.TYPE_UNKNOWN
+ */
+responseType : DS.TYPE_UNKNOWN,
+
+/**
+ * Response schema object literal takes a combination of the following properties:
+ *
+ * <dl>
+ * <dt>resultsList</dt> <dd>Pointer to array of tabular data</dd>
+ * <dt>resultNode</dt> <dd>Pointer to node name of row data (XML data only)</dd>
+ * <dt>recordDelim</dt> <dd>Record delimiter (text data only)</dd>
+ * <dt>fieldDelim</dt> <dd>Field delimiter (text data only)</dd>
+ * <dt>fields</dt> <dd>Array of field names (aka keys), or array of object literals
+ * such as: {key:"fieldname",parser:YAHOO.util.DataSourceBase.parseDate}</dd>
+ * <dt>metaFields</dt> <dd>Object literal of keys to include in the oParsedResponse.meta collection</dd>
+ * <dt>metaNode</dt> <dd>Name of the node under which to search for meta information in XML response data</dd>
+ * </dl>
+ *
+ * @property responseSchema
+ * @type Object
+ */
+responseSchema : null,
+
+/**
+ * Additional arguments passed to the JSON parse routine.  The JSON string
+ * is the assumed first argument (where applicable).  This property is not
+ * set by default, but the parse methods will use it if present.
+ *
+ * @property parseJSONArgs
+ * @type {MIXED|Array} If an Array, contents are used as individual arguments.
+ *                     Otherwise, value is used as an additional argument.
+ */
+// property intentionally undefined
+ 
+/**
+ * When working with XML data, setting this property to true enables support for
+ * XPath-syntaxed locators in schema definitions.
+ *
+ * @property useXPath
+ * @type Boolean
+ * @default false
+ */
+useXPath : false,
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// DataSourceBase public methods
+//
+/////////////////////////////////////////////////////////////////////////////
+
+/**
+ * Public accessor to the unique name of the DataSource instance.
+ *
+ * @method toString
+ * @return {String} Unique name of the DataSource instance.
+ */
+toString : function() {
+    return this._sName;
+},
+
+/**
+ * Overridable method passes request to cache and returns cached response if any,
+ * refreshing the hit in the cache as the newest item. Returns null if there is
+ * no cache hit.
+ *
+ * @method getCachedResponse
+ * @param oRequest {Object} Request object.
+ * @param oCallback {Object} Callback object.
+ * @param oCaller {Object} (deprecated) Use callback object.
+ * @return {Object} Cached response object or null.
+ */
+getCachedResponse : function(oRequest, oCallback, oCaller) {
+    var aCache = this._aCache;
+
+    // If cache is enabled...
+    if(this.maxCacheEntries > 0) {        
+        // Initialize local cache
+        if(!aCache) {
+            this._aCache = [];
+            YAHOO.log("Cache initialized", "info", this.toString());
+        }
+        // Look in local cache
+        else {
+            var nCacheLength = aCache.length;
+            if(nCacheLength > 0) {
+                var oResponse = null;
+                this.fireEvent("cacheRequestEvent", {request:oRequest,callback:oCallback,caller:oCaller});
+        
+                // Loop through each cached element
+                for(var i = nCacheLength-1; i >= 0; i--) {
+                    var oCacheElem = aCache[i];
+        
+                    // Defer cache hit logic to a public overridable method
+                    if(this.isCacheHit(oRequest,oCacheElem.request)) {
+                        // The cache returned a hit!
+                        // Grab the cached response
+                        oResponse = oCacheElem.response;
+                        this.fireEvent("cacheResponseEvent", {request:oRequest,response:oResponse,callback:oCallback,caller:oCaller});
+                        
+                        // Refresh the position of the cache hit
+                        if(i < nCacheLength-1) {
+                            // Remove element from its original location
+                            aCache.splice(i,1);
+                            // Add as newest
+                            this.addToCache(oRequest, oResponse);
+                            YAHOO.log("Refreshed cache position of the response for \"" +  oRequest + "\"", "info", this.toString());
+                        }
+                        
+                        // Add a cache flag
+                        oResponse.cached = true;
+                        break;
+                    }
+                }
+                YAHOO.log("The cached response for \"" + lang.dump(oRequest) +
+                        "\" is " + lang.dump(oResponse), "info", this.toString());
+                return oResponse;
+            }
+        }
+    }
+    else if(aCache) {
+        this._aCache = null;
+        YAHOO.log("Cache destroyed", "info", this.toString());
+    }
+    return null;
+},
+
+/**
+ * Default overridable method matches given request to given cached request.
+ * Returns true if is a hit, returns false otherwise.  Implementers should
+ * override this method to customize the cache-matching algorithm.
+ *
+ * @method isCacheHit
+ * @param oRequest {Object} Request object.
+ * @param oCachedRequest {Object} Cached request object.
+ * @return {Boolean} True if given request matches cached request, false otherwise.
+ */
+isCacheHit : function(oRequest, oCachedRequest) {
+    return (oRequest === oCachedRequest);
+},
+
+/**
+ * Adds a new item to the cache. If cache is full, evicts the stalest item
+ * before adding the new item.
+ *
+ * @method addToCache
+ * @param oRequest {Object} Request object.
+ * @param oResponse {Object} Response object to cache.
+ */
+addToCache : function(oRequest, oResponse) {
+    var aCache = this._aCache;
+    if(!aCache) {
+        return;
+    }
+
+    // If the cache is full, make room by removing stalest element (index=0)
+    while(aCache.length >= this.maxCacheEntries) {
+        aCache.shift();
+    }
+
+    // Add to cache in the newest position, at the end of the array
+    var oCacheElem = {request:oRequest,response:oResponse};
+    aCache[aCache.length] = oCacheElem;
+    this.fireEvent("responseCacheEvent", {request:oRequest,response:oResponse});
+    YAHOO.log("Cached the response for \"" +  oRequest + "\"", "info", this.toString());
+},
+
+/**
+ * Flushes cache.
+ *
+ * @method flushCache
+ */
+flushCache : function() {
+    if(this._aCache) {
+        this._aCache = [];
+        this.fireEvent("cacheFlushEvent");
+        YAHOO.log("Flushed the cache", "info", this.toString());
+    }
+},
+
+/**
+ * Sets up a polling mechanism to send requests at set intervals and forward
+ * responses to given callback.
+ *
+ * @method setInterval
+ * @param nMsec {Number} Length of interval in milliseconds.
+ * @param oRequest {Object} Request object.
+ * @param oCallback {Function} Handler function to receive the response.
+ * @param oCaller {Object} (deprecated) Use oCallback.scope.
+ * @return {Number} Interval ID.
+ */
+setInterval : function(nMsec, oRequest, oCallback, oCaller) {
+    if(lang.isNumber(nMsec) && (nMsec >= 0)) {
+        YAHOO.log("Enabling polling to live data for \"" + oRequest + "\" at interval " + nMsec, "info", this.toString());
+        var oSelf = this;
+        var nId = setInterval(function() {
+            oSelf.makeConnection(oRequest, oCallback, oCaller);
+        }, nMsec);
+        this._aIntervals.push(nId);
+        return nId;
+    }
+    else {
+        YAHOO.log("Could not enable polling to live data for \"" + oRequest + "\" at interval " + nMsec, "info", this.toString());
+    }
+},
+
+/**
+ * Disables polling mechanism associated with the given interval ID.
+ *
+ * @method clearInterval
+ * @param nId {Number} Interval ID.
+ */
+clearInterval : function(nId) {
+    // Remove from tracker if there
+    var tracker = this._aIntervals || [];
+    for(var i=tracker.length-1; i>-1; i--) {
+        if(tracker[i] === nId) {
+            tracker.splice(i,1);
+            clearInterval(nId);
+        }
+    }
+},
+
+/**
+ * Disables all known polling intervals.
+ *
+ * @method clearAllIntervals
+ */
+clearAllIntervals : function() {
+    var tracker = this._aIntervals || [];
+    for(var i=tracker.length-1; i>-1; i--) {
+        clearInterval(tracker[i]);
+    }
+    tracker = [];
+},
+
+/**
+ * First looks for cached response, then sends request to live data. The
+ * following arguments are passed to the callback function:
+ *     <dl>
+ *     <dt><code>oRequest</code></dt>
+ *     <dd>The same value that was passed in as the first argument to sendRequest.</dd>
+ *     <dt><code>oParsedResponse</code></dt>
+ *     <dd>An object literal containing the following properties:
+ *         <dl>
+ *         <dt><code>tId</code></dt>
+ *         <dd>Unique transaction ID number.</dd>
+ *         <dt><code>results</code></dt>
+ *         <dd>Schema-parsed data results.</dd>
+ *         <dt><code>error</code></dt>
+ *         <dd>True in cases of data error.</dd>
+ *         <dt><code>cached</code></dt>
+ *         <dd>True when response is returned from DataSource cache.</dd> 
+ *         <dt><code>meta</code></dt>
+ *         <dd>Schema-parsed meta data.</dd>
+ *         </dl>
+ *     <dt><code>oPayload</code></dt>
+ *     <dd>The same value as was passed in as <code>argument</code> in the oCallback object literal.</dd>
+ *     </dl> 
+ *
+ * @method sendRequest
+ * @param oRequest {Object} Request object.
+ * @param oCallback {Object} An object literal with the following properties:
+ *     <dl>
+ *     <dt><code>success</code></dt>
+ *     <dd>The function to call when the data is ready.</dd>
+ *     <dt><code>failure</code></dt>
+ *     <dd>The function to call upon a response failure condition.</dd>
+ *     <dt><code>scope</code></dt>
+ *     <dd>The object to serve as the scope for the success and failure handlers.</dd>
+ *     <dt><code>argument</code></dt>
+ *     <dd>Arbitrary data that will be passed back to the success and failure handlers.</dd>
+ *     </dl> 
+ * @param oCaller {Object} (deprecated) Use oCallback.scope.
+ * @return {Number} Transaction ID, or null if response found in cache.
+ */
+sendRequest : function(oRequest, oCallback, oCaller) {
+    // First look in cache
+    var oCachedResponse = this.getCachedResponse(oRequest, oCallback, oCaller);
+    if(oCachedResponse) {
+        DS.issueCallback(oCallback,[oRequest,oCachedResponse],false,oCaller);
+        return null;
+    }
+
+
+    // Not in cache, so forward request to live data
+    YAHOO.log("Making connection to live data for \"" + oRequest + "\"", "info", this.toString());
+    return this.makeConnection(oRequest, oCallback, oCaller);
+},
+
+/**
+ * Overridable default method generates a unique transaction ID and passes 
+ * the live data reference directly to the  handleResponse function. This
+ * method should be implemented by subclasses to achieve more complex behavior
+ * or to access remote data.          
+ *
+ * @method makeConnection
+ * @param oRequest {Object} Request object.
+ * @param oCallback {Object} Callback object literal.
+ * @param oCaller {Object} (deprecated) Use oCallback.scope.
+ * @return {Number} Transaction ID.
+ */
+makeConnection : function(oRequest, oCallback, oCaller) {
+    var tId = DS._nTransactionId++;
+    this.fireEvent("requestEvent", {tId:tId, request:oRequest,callback:oCallback,caller:oCaller});
+
+    /* accounts for the following cases:
+    YAHOO.util.DataSourceBase.TYPE_UNKNOWN
+    YAHOO.util.DataSourceBase.TYPE_JSARRAY
+    YAHOO.util.DataSourceBase.TYPE_JSON
+    YAHOO.util.DataSourceBase.TYPE_HTMLTABLE
+    YAHOO.util.DataSourceBase.TYPE_XML
+    YAHOO.util.DataSourceBase.TYPE_TEXT
+    */
+    var oRawResponse = this.liveData;
+    
+    this.handleResponse(oRequest, oRawResponse, oCallback, oCaller, tId);
+    return tId;
+},
+
+/**
+ * Receives raw data response and type converts to XML, JSON, etc as necessary.
+ * Forwards oFullResponse to appropriate parsing function to get turned into
+ * oParsedResponse. Calls doBeforeCallback() and adds oParsedResponse to 
+ * the cache when appropriate before calling issueCallback().
+ * 
+ * The oParsedResponse object literal has the following properties:
+ * <dl>
+ *     <dd><dt>tId {Number}</dt> Unique transaction ID</dd>
+ *     <dd><dt>results {Array}</dt> Array of parsed data results</dd>
+ *     <dd><dt>meta {Object}</dt> Object literal of meta values</dd> 
+ *     <dd><dt>error {Boolean}</dt> (optional) True if there was an error</dd>
+ *     <dd><dt>cached {Boolean}</dt> (optional) True if response was cached</dd>
+ * </dl>
+ *
+ * @method handleResponse
+ * @param oRequest {Object} Request object
+ * @param oRawResponse {Object} The raw response from the live database.
+ * @param oCallback {Object} Callback object literal.
+ * @param oCaller {Object} (deprecated) Use oCallback.scope.
+ * @param tId {Number} Transaction ID.
+ */
+handleResponse : function(oRequest, oRawResponse, oCallback, oCaller, tId) {
+    this.fireEvent("responseEvent", {tId:tId, request:oRequest, response:oRawResponse,
+            callback:oCallback, caller:oCaller});
+    YAHOO.log("Received live data response for \"" + oRequest + "\"", "info", this.toString());
+    var xhr = (this.dataType == DS.TYPE_XHR) ? true : false;
+    var oParsedResponse = null;
+    var oFullResponse = oRawResponse;
+    
+    // Try to sniff data type if it has not been defined
+    if(this.responseType === DS.TYPE_UNKNOWN) {
+        var ctype = (oRawResponse && oRawResponse.getResponseHeader) ? oRawResponse.getResponseHeader["Content-Type"] : null;
+        if(ctype) {
+             // xml
+            if(ctype.indexOf("text/xml") > -1) {
+                this.responseType = DS.TYPE_XML;
+            }
+            else if(ctype.indexOf("application/json") > -1) { // json
+                this.responseType = DS.TYPE_JSON;
+            }
+            else if(ctype.indexOf("text/plain") > -1) { // text
+                this.responseType = DS.TYPE_TEXT;
+            }
+        }
+        else {
+            if(YAHOO.lang.isArray(oRawResponse)) { // array
+                this.responseType = DS.TYPE_JSARRAY;
+            }
+             // xml
+            else if(oRawResponse && oRawResponse.nodeType && (oRawResponse.nodeType === 9 || oRawResponse.nodeType === 1 || oRawResponse.nodeType === 11)) {
+                this.responseType = DS.TYPE_XML;
+            }
+            else if(oRawResponse && oRawResponse.nodeName && (oRawResponse.nodeName.toLowerCase() == "table")) { // table
+                this.responseType = DS.TYPE_HTMLTABLE;
+            }    
+            else if(YAHOO.lang.isObject(oRawResponse)) { // json
+                this.responseType = DS.TYPE_JSON;
+            }
+            else if(YAHOO.lang.isString(oRawResponse)) { // text
+                this.responseType = DS.TYPE_TEXT;
+            }
+        }
+    }
+
+    switch(this.responseType) {
+        case DS.TYPE_JSARRAY:
+            if(xhr && oRawResponse && oRawResponse.responseText) {
+                oFullResponse = oRawResponse.responseText; 
+            }
+            try {
+                // Convert to JS array if it's a string
+                if(lang.isString(oFullResponse)) {
+                    var parseArgs = [oFullResponse].concat(this.parseJSONArgs);
+                    // Check for YUI JSON Util
+                    if(lang.JSON) {
+                        oFullResponse = lang.JSON.parse.apply(lang.JSON,parseArgs);
+                    }
+                    // Look for JSON parsers using an API similar to json2.js
+                    else if(window.JSON && JSON.parse) {
+                        oFullResponse = JSON.parse.apply(JSON,parseArgs);
+                    }
+                    // Look for JSON parsers using an API similar to json.js
+                    else if(oFullResponse.parseJSON) {
+                        oFullResponse = oFullResponse.parseJSON.apply(oFullResponse,parseArgs.slice(1));
+                    }
+                    // No JSON lib found so parse the string
+                    else {
+                        // Trim leading spaces
+                        while (oFullResponse.length > 0 &&
+                                (oFullResponse.charAt(0) != "{") &&
+                                (oFullResponse.charAt(0) != "[")) {
+                            oFullResponse = oFullResponse.substring(1, oFullResponse.length);
+                        }
+
+                        if(oFullResponse.length > 0) {
+                            // Strip extraneous stuff at the end
+                            var arrayEnd =
+Math.max(oFullResponse.lastIndexOf("]"),oFullResponse.lastIndexOf("}"));
+                            oFullResponse = oFullResponse.substring(0,arrayEnd+1);
+
+                            // Turn the string into an object literal...
+                            // ...eval is necessary here
+                            oFullResponse = eval("(" + oFullResponse + ")");
+
+                        }
+                    }
+                }
+            }
+            catch(e1) {
+            }
+            oFullResponse = this.doBeforeParseData(oRequest, oFullResponse, oCallback);
+            oParsedResponse = this.parseArrayData(oRequest, oFullResponse);
+            break;
+        case DS.TYPE_JSON:
+            if(xhr && oRawResponse && oRawResponse.responseText) {
+                oFullResponse = oRawResponse.responseText;
+            }
+            try {
+                // Convert to JSON object if it's a string
+                if(lang.isString(oFullResponse)) {
+                    var parseArgs = [oFullResponse].concat(this.parseJSONArgs);
+                    // Check for YUI JSON Util
+                    if(lang.JSON) {
+                        oFullResponse = lang.JSON.parse.apply(lang.JSON,parseArgs);
+                    }
+                    // Look for JSON parsers using an API similar to json2.js
+                    else if(window.JSON && JSON.parse) {
+                        oFullResponse = JSON.parse.apply(JSON,parseArgs);
+                    }
+                    // Look for JSON parsers using an API similar to json.js
+                    else if(oFullResponse.parseJSON) {
+                        oFullResponse = oFullResponse.parseJSON.apply(oFullResponse,parseArgs.slice(1));
+                    }
+                    // No JSON lib found so parse the string
+                    else {
+                        // Trim leading spaces
+                        while (oFullResponse.length > 0 &&
+                                (oFullResponse.charAt(0) != "{") &&
+                                (oFullResponse.charAt(0) != "[")) {
+                            oFullResponse = oFullResponse.substring(1, oFullResponse.length);
+                        }
+    
+                        if(oFullResponse.length > 0) {
+                            // Strip extraneous stuff at the end
+                            var objEnd = Math.max(oFullResponse.lastIndexOf("]"),oFullResponse.lastIndexOf("}"));
+                            oFullResponse = oFullResponse.substring(0,objEnd+1);
+    
+                            // Turn the string into an object literal...
+                            // ...eval is necessary here
+                            oFullResponse = eval("(" + oFullResponse + ")");
+    
+                        }
+                    }
+                }
+            }
+            catch(e) {
+            }
+
+            oFullResponse = this.doBeforeParseData(oRequest, oFullResponse, oCallback);
+            oParsedResponse = this.parseJSONData(oRequest, oFullResponse);
+            break;
+        case DS.TYPE_HTMLTABLE:
+            if(xhr && oRawResponse.responseText) {
+                var el = document.createElement('div');
+                el.innerHTML = oRawResponse.responseText;
+                oFullResponse = el.getElementsByTagName('table')[0];
+            }
+            oFullResponse = this.doBeforeParseData(oRequest, oFullResponse, oCallback);
+            oParsedResponse = this.parseHTMLTableData(oRequest, oFullResponse);
+            break;
+        case DS.TYPE_XML:
+            if(xhr && oRawResponse.responseXML) {
+                oFullResponse = oRawResponse.responseXML;
+            }
+            oFullResponse = this.doBeforeParseData(oRequest, oFullResponse, oCallback);
+            oParsedResponse = this.parseXMLData(oRequest, oFullResponse);
+            break;
+        case DS.TYPE_TEXT:
+            if(xhr && lang.isString(oRawResponse.responseText)) {
+                oFullResponse = oRawResponse.responseText;
+            }
+            oFullResponse = this.doBeforeParseData(oRequest, oFullResponse, oCallback);
+            oParsedResponse = this.parseTextData(oRequest, oFullResponse);
+            break;
+        default:
+            oFullResponse = this.doBeforeParseData(oRequest, oFullResponse, oCallback);
+            oParsedResponse = this.parseData(oRequest, oFullResponse);
+            break;
+    }
+
+
+    // Clean up for consistent signature
+    oParsedResponse = oParsedResponse || {};
+    if(!oParsedResponse.results) {
+        oParsedResponse.results = [];
+    }
+    if(!oParsedResponse.meta) {
+        oParsedResponse.meta = {};
+    }
+
+    // Success
+    if(!oParsedResponse.error) {
+        // Last chance to touch the raw response or the parsed response
+        oParsedResponse = this.doBeforeCallback(oRequest, oFullResponse, oParsedResponse, oCallback);
+        this.fireEvent("responseParseEvent", {request:oRequest,
+                response:oParsedResponse, callback:oCallback, caller:oCaller});
+        // Cache the response
+        this.addToCache(oRequest, oParsedResponse);
+    }
+    // Error
+    else {
+        // Be sure the error flag is on
+        oParsedResponse.error = true;
+        this.fireEvent("dataErrorEvent", {request:oRequest, response: oRawResponse, callback:oCallback, 
+                caller:oCaller, message:DS.ERROR_DATANULL});
+        YAHOO.log(DS.ERROR_DATANULL, "error", this.toString());
+    }
+
+    // Send the response back to the caller
+    oParsedResponse.tId = tId;
+    DS.issueCallback(oCallback,[oRequest,oParsedResponse],oParsedResponse.error,oCaller);
+},
+
+/**
+ * Overridable method gives implementers access to the original full response
+ * before the data gets parsed. Implementers should take care not to return an
+ * unparsable or otherwise invalid response.
+ *
+ * @method doBeforeParseData
+ * @param oRequest {Object} Request object.
+ * @param oFullResponse {Object} The full response from the live database.
+ * @param oCallback {Object} The callback object.  
+ * @return {Object} Full response for parsing.
+  
+ */
+doBeforeParseData : function(oRequest, oFullResponse, oCallback) {
+    return oFullResponse;
+},
+
+/**
+ * Overridable method gives implementers access to the original full response and
+ * the parsed response (parsed against the given schema) before the data
+ * is added to the cache (if applicable) and then sent back to callback function.
+ * This is your chance to access the raw response and/or populate the parsed
+ * response with any custom data.
+ *
+ * @method doBeforeCallback
+ * @param oRequest {Object} Request object.
+ * @param oFullResponse {Object} The full response from the live database.
+ * @param oParsedResponse {Object} The parsed response to return to calling object.
+ * @param oCallback {Object} The callback object. 
+ * @return {Object} Parsed response object.
+ */
+doBeforeCallback : function(oRequest, oFullResponse, oParsedResponse, oCallback) {
+    return oParsedResponse;
+},
+
+/**
+ * Overridable method parses data of generic RESPONSE_TYPE into a response object.
+ *
+ * @method parseData
+ * @param oRequest {Object} Request object.
+ * @param oFullResponse {Object} The full Array from the live database.
+ * @return {Object} Parsed response object with the following properties:<br>
+ *     - results {Array} Array of parsed data results<br>
+ *     - meta {Object} Object literal of meta values<br>
+ *     - error {Boolean} (optional) True if there was an error<br>
+ */
+parseData : function(oRequest, oFullResponse) {
+    if(lang.isValue(oFullResponse)) {
+        var oParsedResponse = {results:oFullResponse,meta:{}};
+        YAHOO.log("Parsed generic data is " +
+                lang.dump(oParsedResponse), "info", this.toString());
+        return oParsedResponse;
+
+    }
+    YAHOO.log("Generic data could not be parsed: " + lang.dump(oFullResponse), 
+            "error", this.toString());
+    return null;
+},
+
+/**
+ * Overridable method parses Array data into a response object.
+ *
+ * @method parseArrayData
+ * @param oRequest {Object} Request object.
+ * @param oFullResponse {Object} The full Array from the live database.
+ * @return {Object} Parsed response object with the following properties:<br>
+ *     - results (Array) Array of parsed data results<br>
+ *     - error (Boolean) True if there was an error
+ */
+parseArrayData : function(oRequest, oFullResponse) {
+    if(lang.isArray(oFullResponse)) {
+        var results = [],
+            i, j,
+            rec, field, data;
+        
+        // Parse for fields
+        if(lang.isArray(this.responseSchema.fields)) {
+            var fields = this.responseSchema.fields;
+            for (i = fields.length - 1; i >= 0; --i) {
+                if (typeof fields[i] !== 'object') {
+                    fields[i] = { key : fields[i] };
+                }
+            }
+
+            var parsers = {}, p;
+            for (i = fields.length - 1; i >= 0; --i) {
+                p = (typeof fields[i].parser === 'function' ?
+                          fields[i].parser :
+                          DS.Parser[fields[i].parser+'']) || fields[i].converter;
+                if (p) {
+                    parsers[fields[i].key] = p;
+                }
+            }
+
+            var arrType = lang.isArray(oFullResponse[0]);
+            for(i=oFullResponse.length-1; i>-1; i--) {
+                var oResult = {};
+                rec = oFullResponse[i];
+                if (typeof rec === 'object') {
+                    for(j=fields.length-1; j>-1; j--) {
+                        field = fields[j];
+                        data = arrType ? rec[j] : rec[field.key];
+
+                        if (parsers[field.key]) {
+                            data = parsers[field.key].call(this,data);
+                        }
+
+                        // Safety measure
+                        if(data === undefined) {
+                            data = null;
+                        }
+
+                        oResult[field.key] = data;
+                    }
+                }
+                else if (lang.isString(rec)) {
+                    for(j=fields.length-1; j>-1; j--) {
+                        field = fields[j];
+                        data = rec;
+
+                        if (parsers[field.key]) {
+                            data = parsers[field.key].call(this,data);
+                        }
+
+                        // Safety measure
+                        if(data === undefined) {
+                            data = null;
+                        }
+
+                        oResult[field.key] = data;
+                    }                
+                }
+                results[i] = oResult;
+            }    
+        }
+        // Return entire data set
+        else {
+            results = oFullResponse;
+        }
+        var oParsedResponse = {results:results};
+        YAHOO.log("Parsed array data is " +
+                lang.dump(oParsedResponse), "info", this.toString());
+        return oParsedResponse;
+
+    }
+    YAHOO.log("Array data could not be parsed: " + lang.dump(oFullResponse), 
+            "error", this.toString());
+    return null;
+},
+
+/**
+ * Overridable method parses plain text data into a response object.
+ *
+ * @method parseTextData
+ * @param oRequest {Object} Request object.
+ * @param oFullResponse {Object} The full text response from the live database.
+ * @return {Object} Parsed response object with the following properties:<br>
+ *     - results (Array) Array of parsed data results<br>
+ *     - error (Boolean) True if there was an error
+ */
+parseTextData : function(oRequest, oFullResponse) {
+    if(lang.isString(oFullResponse)) {
+        if(lang.isString(this.responseSchema.recordDelim) &&
+                lang.isString(this.responseSchema.fieldDelim)) {
+            var oParsedResponse = {results:[]};
+            var recDelim = this.responseSchema.recordDelim;
+            var fieldDelim = this.responseSchema.fieldDelim;
+            if(oFullResponse.length > 0) {
+                // Delete the last line delimiter at the end of the data if it exists
+                var newLength = oFullResponse.length-recDelim.length;
+                if(oFullResponse.substr(newLength) == recDelim) {
+                    oFullResponse = oFullResponse.substr(0, newLength);
+                }
+                if(oFullResponse.length > 0) {
+                    // Split along record delimiter to get an array of strings
+                    var recordsarray = oFullResponse.split(recDelim);
+                    // Cycle through each record
+                    for(var i = 0, len = recordsarray.length, recIdx = 0; i < len; ++i) {
+                        var bError = false,
+                            sRecord = recordsarray[i];
+                        if (lang.isString(sRecord) && (sRecord.length > 0)) {
+                            // Split each record along field delimiter to get data
+                            var fielddataarray = recordsarray[i].split(fieldDelim);
+                            var oResult = {};
+                            
+                            // Filter for fields data
+                            if(lang.isArray(this.responseSchema.fields)) {
+                                var fields = this.responseSchema.fields;
+                                for(var j=fields.length-1; j>-1; j--) {
+                                    try {
+                                        // Remove quotation marks from edges, if applicable
+                                        var data = fielddataarray[j];
+                                        if (lang.isString(data)) {
+                                            if(data.charAt(0) == "\"") {
+                                                data = data.substr(1);
+                                            }
+                                            if(data.charAt(data.length-1) == "\"") {
+                                                data = data.substr(0,data.length-1);
+                                            }
+                                            var field = fields[j];
+                                            var key = (lang.isValue(field.key)) ? field.key : field;
+                                            // Backward compatibility
+                                            if(!field.parser && field.converter) {
+                                                field.parser = field.converter;
+                                                YAHOO.log("The field property converter has been deprecated" +
+                                                        " in favor of parser", "warn", this.toString());
+                                            }
+                                            var parser = (typeof field.parser === 'function') ?
+                                                field.parser :
+                                                DS.Parser[field.parser+''];
+                                            if(parser) {
+                                                data = parser.call(this, data);
+                                            }
+                                            // Safety measure
+                                            if(data === undefined) {
+                                                data = null;
+                                            }
+                                            oResult[key] = data;
+                                        }
+                                        else {
+                                            bError = true;
+                                        }
+                                    }
+                                    catch(e) {
+                                        bError = true;
+                                    }
+                                }
+                            }            
+                            // No fields defined so pass along all data as an array
+                            else {
+                                oResult = fielddataarray;
+                            }
+                            if(!bError) {
+                                oParsedResponse.results[recIdx++] = oResult;
+                            }
+                        }
+                    }
+                }
+            }
+            YAHOO.log("Parsed text data is " +
+                    lang.dump(oParsedResponse), "info", this.toString());
+            return oParsedResponse;
+        }
+    }
+    YAHOO.log("Text data could not be parsed: " + lang.dump(oFullResponse), 
+            "error", this.toString());
+    return null;
+            
+},
+
+/**
+ * Overridable method parses XML data for one result into an object literal.
+ *
+ * @method parseXMLResult
+ * @param result {XML} XML for one result.
+ * @return {Object} Object literal of data for one result.
+ */
+parseXMLResult : function(result) {
+    var oResult = {},
+        schema = this.responseSchema;
+        
+    try {
+        // Loop through each data field in each result using the schema
+        for(var m = schema.fields.length-1; m >= 0 ; m--) {
+            var field = schema.fields[m];
+            var key = (lang.isValue(field.key)) ? field.key : field;
+            var data = null;
+
+            if(this.useXPath) {
+                data = YAHOO.util.DataSource._getLocationValue(field, result);
+            }
+            else {
+                // Values may be held in an attribute...
+                var xmlAttr = result.attributes.getNamedItem(key);
+                if(xmlAttr) {
+                    data = xmlAttr.value;
+                }
+                // ...or in a node
+                else {
+                    var xmlNode = result.getElementsByTagName(key);
+                    if(xmlNode && xmlNode.item(0)) {
+                        var item = xmlNode.item(0);
+                        // For IE, then DOM...
+                        data = (item) ? ((item.text) ? item.text : (item.textContent) ? item.textContent : null) : null;
+                        // ...then fallback, but check for multiple child nodes
+                        if(!data) {
+                            var datapieces = [];
+                            for(var j=0, len=item.childNodes.length; j<len; j++) {
+                                if(item.childNodes[j].nodeValue) {
+                                    datapieces[datapieces.length] = item.childNodes[j].nodeValue;
+                                }
+                            }
+                            if(datapieces.length > 0) {
+                                data = datapieces.join("");
+                            }
+                        }
+                    }
+                }
+            }
+            
+            
+            // Safety net
+            if(data === null) {
+                   data = "";
+            }
+            // Backward compatibility
+            if(!field.parser && field.converter) {
+                field.parser = field.converter;
+                YAHOO.log("The field property converter has been deprecated" +
+                        " in favor of parser", "warn", this.toString());
+            }
+            var parser = (typeof field.parser === 'function') ?
+                field.parser :
+                DS.Parser[field.parser+''];
+            if(parser) {
+                data = parser.call(this, data);
+            }
+            // Safety measure
+            if(data === undefined) {
+                data = null;
+            }
+            oResult[key] = data;
+        }
+    }
+    catch(e) {
+        YAHOO.log("Error while parsing XML result: " + e.message);
+    }
+
+    return oResult;
+},
+
+
+
+/**
+ * Overridable method parses XML data into a response object.
+ *
+ * @method parseXMLData
+ * @param oRequest {Object} Request object.
+ * @param oFullResponse {Object} The full XML response from the live database.
+ * @return {Object} Parsed response object with the following properties<br>
+ *     - results (Array) Array of parsed data results<br>
+ *     - error (Boolean) True if there was an error
+ */
+parseXMLData : function(oRequest, oFullResponse) {
+    var bError = false,
+        schema = this.responseSchema,
+        oParsedResponse = {meta:{}},
+        xmlList = null,
+        metaNode      = schema.metaNode,
+        metaLocators  = schema.metaFields || {},
+        i,k,loc,v;
+
+    // In case oFullResponse is something funky
+    try {
+        // Pull any meta identified
+        if(this.useXPath) {
+            for (k in metaLocators) {
+                oParsedResponse.meta[k] = YAHOO.util.DataSource._getLocationValue(metaLocators[k], oFullResponse);
+            }
+        }
+        else {
+            metaNode = metaNode ? oFullResponse.getElementsByTagName(metaNode)[0] :
+                       oFullResponse;
+
+            if (metaNode) {
+                for (k in metaLocators) {
+                    if (lang.hasOwnProperty(metaLocators, k)) {
+                        loc = metaLocators[k];
+                        // Look for a node
+                        v = metaNode.getElementsByTagName(loc)[0];
+
+                        if (v) {
+                            v = v.firstChild.nodeValue;
+                        } else {
+                            // Look for an attribute
+                            v = metaNode.attributes.getNamedItem(loc);
+                            if (v) {
+                                v = v.value;
+                            }
+                        }
+
+                        if (lang.isValue(v)) {
+                            oParsedResponse.meta[k] = v;
+                        }
+                    }
+                }
+            }
+        }
+        
+        // For result data
+        xmlList = (schema.resultNode) ?
+            oFullResponse.getElementsByTagName(schema.resultNode) :
+            null;
+    }
+    catch(e) {
+        YAHOO.log("Error while parsing XML data: " + e.message);
+    }
+    if(!xmlList || !lang.isArray(schema.fields)) {
+        bError = true;
+    }
+    // Loop through each result
+    else {
+        oParsedResponse.results = [];
+        for(i = xmlList.length-1; i >= 0 ; --i) {
+            var oResult = this.parseXMLResult(xmlList.item(i));
+            // Capture each array of values into an array of results
+            oParsedResponse.results[i] = oResult;
+        }
+    }
+    if(bError) {
+        YAHOO.log("XML data could not be parsed: " +
+                lang.dump(oFullResponse), "error", this.toString());
+        oParsedResponse.error = true;
+    }
+    else {
+        YAHOO.log("Parsed XML data is " +
+                lang.dump(oParsedResponse), "info", this.toString());
+    }
+    return oParsedResponse;
+},
+
+/**
+ * Overridable method parses JSON data into a response object.
+ *
+ * @method parseJSONData
+ * @param oRequest {Object} Request object.
+ * @param oFullResponse {Object} The full JSON from the live database.
+ * @return {Object} Parsed response object with the following properties<br>
+ *     - results (Array) Array of parsed data results<br>
+ *     - error (Boolean) True if there was an error
+ */
+parseJSONData : function(oRequest, oFullResponse) {
+    var oParsedResponse = {results:[],meta:{}};
+    
+    if(lang.isObject(oFullResponse) && this.responseSchema.resultsList) {
+        var schema = this.responseSchema,
+            fields          = schema.fields,
+            resultsList     = oFullResponse,
+            results         = [],
+            metaFields      = schema.metaFields || {},
+            fieldParsers    = [],
+            fieldPaths      = [],
+            simpleFields    = [],
+            bError          = false,
+            i,len,j,v,key,parser,path;
+
+        // Function to convert the schema's fields into walk paths
+        var buildPath = function (needle) {
+            var path = null, keys = [], i = 0;
+            if (needle) {
+                // Strip the ["string keys"] and [1] array indexes
+                needle = needle.
+                    replace(/\[(['"])(.*?)\1\]/g,
+                    function (x,$1,$2) {keys[i]=$2;return '.@'+(i++);}).
+                    replace(/\[(\d+)\]/g,
+                    function (x,$1) {keys[i]=parseInt($1,10)|0;return '.@'+(i++);}).
+                    replace(/^\./,''); // remove leading dot
+
+                // If the cleaned needle contains invalid characters, the
+                // path is invalid
+                if (!/[^\w\.\$@]/.test(needle)) {
+                    path = needle.split('.');
+                    for (i=path.length-1; i >= 0; --i) {
+                        if (path[i].charAt(0) === '@') {
+                            path[i] = keys[parseInt(path[i].substr(1),10)];
+                        }
+                    }
+                }
+                else {
+                    YAHOO.log("Invalid locator: " + needle, "error", this.toString());
+                }
+            }
+            return path;
+        };
+
+
+        // Function to walk a path and return the pot of gold
+        var walkPath = function (path, origin) {
+            var v=origin,i=0,len=path.length;
+            for (;i<len && v;++i) {
+                v = v[path[i]];
+            }
+            return v;
+        };
+
+        // Parse the response
+        // Step 1. Pull the resultsList from oFullResponse (default assumes
+        // oFullResponse IS the resultsList)
+        path = buildPath(schema.resultsList);
+        if (path) {
+            resultsList = walkPath(path, oFullResponse);
+            if (resultsList === undefined) {
+                bError = true;
+            }
+        } else {
+            bError = true;
+        }
+        
+        if (!resultsList) {
+            resultsList = [];
+        }
+
+        if (!lang.isArray(resultsList)) {
+            resultsList = [resultsList];
+        }
+
+        if (!bError) {
+            // Step 2. Parse out field data if identified
+            if(schema.fields) {
+                var field;
+                // Build the field parser map and location paths
+                for (i=0, len=fields.length; i<len; i++) {
+                    field = fields[i];
+                    key    = field.key || field;
+                    parser = ((typeof field.parser === 'function') ?
+                        field.parser :
+                        DS.Parser[field.parser+'']) || field.converter;
+                    path   = buildPath(key);
+    
+                    if (parser) {
+                        fieldParsers[fieldParsers.length] = {key:key,parser:parser};
+                    }
+    
+                    if (path) {
+                        if (path.length > 1) {
+                            fieldPaths[fieldPaths.length] = {key:key,path:path};
+                        } else {
+                            simpleFields[simpleFields.length] = {key:key,path:path[0]};
+                        }
+                    } else {
+                        YAHOO.log("Invalid key syntax: " + key,"warn",this.toString());
+                    }
+                }
+
+                // Process the results, flattening the records and/or applying parsers if needed
+                for (i = resultsList.length - 1; i >= 0; --i) {
+                    var r = resultsList[i], rec = {};
+                    if(r) {
+                        for (j = simpleFields.length - 1; j >= 0; --j) {
+                            // Bug 1777850: data might be held in an array
+                            rec[simpleFields[j].key] =
+                                    (r[simpleFields[j].path] !== undefined) ?
+                                    r[simpleFields[j].path] : r[j];
+                        }
+
+                        for (j = fieldPaths.length - 1; j >= 0; --j) {
+                            rec[fieldPaths[j].key] = walkPath(fieldPaths[j].path,r);
+                        }
+
+                        for (j = fieldParsers.length - 1; j >= 0; --j) {
+                            var p = fieldParsers[j].key;
+                            rec[p] = fieldParsers[j].parser(rec[p]);
+                            if (rec[p] === undefined) {
+                                rec[p] = null;
+                            }
+                        }
+                    }
+                    results[i] = rec;
+                }
+            }
+            else {
+                results = resultsList;
+            }
+
+            for (key in metaFields) {
+                if (lang.hasOwnProperty(metaFields,key)) {
+                    path = buildPath(metaFields[key]);
+                    if (path) {
+                        v = walkPath(path, oFullResponse);
+                        oParsedResponse.meta[key] = v;
+                    }
+                }
+            }
+
+        } else {
+            YAHOO.log("JSON data could not be parsed due to invalid responseSchema.resultsList or invalid response: " +
+                    lang.dump(oFullResponse), "error", this.toString());
+
+            oParsedResponse.error = true;
+        }
+
+        oParsedResponse.results = results;
+    }
+    else {
+        YAHOO.log("JSON data could not be parsed: " +
+                lang.dump(oFullResponse), "error", this.toString());
+        oParsedResponse.error = true;
+    }
+
+    return oParsedResponse;
+},
+
+/**
+ * Overridable method parses an HTML TABLE element reference into a response object.
+ * Data is parsed out of TR elements from all TBODY elements. 
+ *
+ * @method parseHTMLTableData
+ * @param oRequest {Object} Request object.
+ * @param oFullResponse {Object} The full HTML element reference from the live database.
+ * @return {Object} Parsed response object with the following properties<br>
+ *     - results (Array) Array of parsed data results<br>
+ *     - error (Boolean) True if there was an error
+ */
+parseHTMLTableData : function(oRequest, oFullResponse) {
+    var bError = false;
+    var elTable = oFullResponse;
+    var fields = this.responseSchema.fields;
+    var oParsedResponse = {results:[]};
+
+    if(lang.isArray(fields)) {
+        // Iterate through each TBODY
+        for(var i=0; i<elTable.tBodies.length; i++) {
+            var elTbody = elTable.tBodies[i];
+    
+            // Iterate through each TR
+            for(var j=elTbody.rows.length-1; j>-1; j--) {
+                var elRow = elTbody.rows[j];
+                var oResult = {};
+                
+                for(var k=fields.length-1; k>-1; k--) {
+                    var field = fields[k];
+                    var key = (lang.isValue(field.key)) ? field.key : field;
+                    var data = elRow.cells[k].innerHTML;
+    
+                    // Backward compatibility
+                    if(!field.parser && field.converter) {
+                        field.parser = field.converter;
+                        YAHOO.log("The field property converter has been deprecated" +
+                                " in favor of parser", "warn", this.toString());
+                    }
+                    var parser = (typeof field.parser === 'function') ?
+                        field.parser :
+                        DS.Parser[field.parser+''];
+                    if(parser) {
+                        data = parser.call(this, data);
+                    }
+                    // Safety measure
+                    if(data === undefined) {
+                        data = null;
+                    }
+                    oResult[key] = data;
+                }
+                oParsedResponse.results[j] = oResult;
+            }
+        }
+    }
+    else {
+        bError = true;
+        YAHOO.log("Invalid responseSchema.fields", "error", this.toString());
+    }
+
+    if(bError) {
+        YAHOO.log("HTML TABLE data could not be parsed: " +
+                lang.dump(oFullResponse), "error", this.toString());
+        oParsedResponse.error = true;
+    }
+    else {
+        YAHOO.log("Parsed HTML TABLE data is " +
+                lang.dump(oParsedResponse), "info", this.toString());
+    }
+    return oParsedResponse;
+}
+
+};
+
+// DataSourceBase uses EventProvider
+lang.augmentProto(DS, util.EventProvider);
+
+
+
+/****************************************************************************/
+/****************************************************************************/
+/****************************************************************************/
+
+/**
+ * LocalDataSource class for in-memory data structs including JavaScript arrays,
+ * JavaScript object literals (JSON), XML documents, and HTML tables.
+ *
+ * @namespace YAHOO.util
+ * @class YAHOO.util.LocalDataSource
+ * @extends YAHOO.util.DataSourceBase 
+ * @constructor
+ * @param oLiveData {HTMLElement}  Pointer to live data.
+ * @param oConfigs {object} (optional) Object literal of configuration values.
+ */
+util.LocalDataSource = function(oLiveData, oConfigs) {
+    this.dataType = DS.TYPE_LOCAL;
+    
+    if(oLiveData) {
+        if(YAHOO.lang.isArray(oLiveData)) { // array
+            this.responseType = DS.TYPE_JSARRAY;
+        }
+         // xml
+        else if(oLiveData.nodeType && oLiveData.nodeType == 9) {
+            this.responseType = DS.TYPE_XML;
+        }
+        else if(oLiveData.nodeName && (oLiveData.nodeName.toLowerCase() == "table")) { // table
+            this.responseType = DS.TYPE_HTMLTABLE;
+            oLiveData = oLiveData.cloneNode(true);
+        }    
+        else if(YAHOO.lang.isString(oLiveData)) { // text
+            this.responseType = DS.TYPE_TEXT;
+        }
+        else if(YAHOO.lang.isObject(oLiveData)) { // json
+            this.responseType = DS.TYPE_JSON;
+        }
+    }
+    else {
+        oLiveData = [];
+        this.responseType = DS.TYPE_JSARRAY;
+    }
+    
+    util.LocalDataSource.superclass.constructor.call(this, oLiveData, oConfigs); 
+};
+
+// LocalDataSource extends DataSourceBase
+lang.extend(util.LocalDataSource, DS);
+
+// Copy static members to LocalDataSource class
+lang.augmentObject(util.LocalDataSource, DS);
+
+
+
+
+
+
+
+
+
+
+
+
+
+/****************************************************************************/
+/****************************************************************************/
+/****************************************************************************/
+
+/**
+ * FunctionDataSource class for JavaScript functions.
+ *
+ * @namespace YAHOO.util
+ * @class YAHOO.util.FunctionDataSource
+ * @extends YAHOO.util.DataSourceBase  
+ * @constructor
+ * @param oLiveData {HTMLElement}  Pointer to live data.
+ * @param oConfigs {object} (optional) Object literal of configuration values.
+ */
+util.FunctionDataSource = function(oLiveData, oConfigs) {
+    this.dataType = DS.TYPE_JSFUNCTION;
+    oLiveData = oLiveData || function() {};
+    
+    util.FunctionDataSource.superclass.constructor.call(this, oLiveData, oConfigs); 
+};
+
+// FunctionDataSource extends DataSourceBase
+lang.extend(util.FunctionDataSource, DS, {
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// FunctionDataSource public properties
+//
+/////////////////////////////////////////////////////////////////////////////
+
+/**
+ * Context in which to execute the function. By default, is the DataSource
+ * instance itself. If set, the function will receive the DataSource instance
+ * as an additional argument. 
+ *
+ * @property scope
+ * @type Object
+ * @default null
+ */
+scope : null,
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// FunctionDataSource public methods
+//
+/////////////////////////////////////////////////////////////////////////////
+
+/**
+ * Overriding method passes query to a function. The returned response is then
+ * forwarded to the handleResponse function.
+ *
+ * @method makeConnection
+ * @param oRequest {Object} Request object.
+ * @param oCallback {Object} Callback object literal.
+ * @param oCaller {Object} (deprecated) Use oCallback.scope.
+ * @return {Number} Transaction ID.
+ */
+makeConnection : function(oRequest, oCallback, oCaller) {
+    var tId = DS._nTransactionId++;
+    this.fireEvent("requestEvent", {tId:tId,request:oRequest,callback:oCallback,caller:oCaller});
+
+    // Pass the request in as a parameter and
+    // forward the return value to the handler
+    
+    
+    var oRawResponse = (this.scope) ? this.liveData.call(this.scope, oRequest, this) : this.liveData(oRequest);
+    
+    // Try to sniff data type if it has not been defined
+    if(this.responseType === DS.TYPE_UNKNOWN) {
+        if(YAHOO.lang.isArray(oRawResponse)) { // array
+            this.responseType = DS.TYPE_JSARRAY;
+        }
+         // xml
+        else if(oRawResponse && oRawResponse.nodeType && oRawResponse.nodeType == 9) {
+            this.responseType = DS.TYPE_XML;
+        }
+        else if(oRawResponse && oRawResponse.nodeName && (oRawResponse.nodeName.toLowerCase() == "table")) { // table
+            this.responseType = DS.TYPE_HTMLTABLE;
+        }    
+        else if(YAHOO.lang.isObject(oRawResponse)) { // json
+            this.responseType = DS.TYPE_JSON;
+        }
+        else if(YAHOO.lang.isString(oRawResponse)) { // text
+            this.responseType = DS.TYPE_TEXT;
+        }
+    }
+
+    this.handleResponse(oRequest, oRawResponse, oCallback, oCaller, tId);
+    return tId;
+}
+
+});
+
+// Copy static members to FunctionDataSource class
+lang.augmentObject(util.FunctionDataSource, DS);
+
+
+
+
+
+
+
+
+
+
+
+
+
+/****************************************************************************/
+/****************************************************************************/
+/****************************************************************************/
+
+/**
+ * ScriptNodeDataSource class for accessing remote data via the YUI Get Utility. 
+ *
+ * @namespace YAHOO.util
+ * @class YAHOO.util.ScriptNodeDataSource
+ * @extends YAHOO.util.DataSourceBase  
+ * @constructor
+ * @param oLiveData {HTMLElement}  Pointer to live data.
+ * @param oConfigs {object} (optional) Object literal of configuration values.
+ */
+util.ScriptNodeDataSource = function(oLiveData, oConfigs) {
+    this.dataType = DS.TYPE_SCRIPTNODE;
+    oLiveData = oLiveData || "";
+    
+    util.ScriptNodeDataSource.superclass.constructor.call(this, oLiveData, oConfigs); 
+};
+
+// ScriptNodeDataSource extends DataSourceBase
+lang.extend(util.ScriptNodeDataSource, DS, {
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// ScriptNodeDataSource public properties
+//
+/////////////////////////////////////////////////////////////////////////////
+
+/**
+ * Alias to YUI Get Utility, to allow implementers to use a custom class.
+ *
+ * @property getUtility
+ * @type Object
+ * @default YAHOO.util.Get
+ */
+getUtility : util.Get,
+
+/**
+ * Defines request/response management in the following manner:
+ * <dl>
+ *     <!--<dt>queueRequests</dt>
+ *     <dd>If a request is already in progress, wait until response is returned before sending the next request.</dd>
+ *     <dt>cancelStaleRequests</dt>
+ *     <dd>If a request is already in progress, cancel it before sending the next request.</dd>-->
+ *     <dt>ignoreStaleResponses</dt>
+ *     <dd>Send all requests, but handle only the response for the most recently sent request.</dd>
+ *     <dt>allowAll</dt>
+ *     <dd>Send all requests and handle all responses.</dd>
+ * </dl>
+ *
+ * @property asyncMode
+ * @type String
+ * @default "allowAll"
+ */
+asyncMode : "allowAll",
+
+/**
+ * Callback string parameter name sent to the remote script. By default,
+ * requests are sent to
+ * &#60;URI&#62;?&#60;scriptCallbackParam&#62;=callbackFunction
+ *
+ * @property scriptCallbackParam
+ * @type String
+ * @default "callback"
+ */
+scriptCallbackParam : "callback",
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// ScriptNodeDataSource public methods
+//
+/////////////////////////////////////////////////////////////////////////////
+
+/**
+ * Creates a request callback that gets appended to the script URI. Implementers
+ * can customize this string to match their server's query syntax.
+ *
+ * @method generateRequestCallback
+ * @return {String} String fragment that gets appended to script URI that 
+ * specifies the callback function 
+ */
+generateRequestCallback : function(id) {
+    return "&" + this.scriptCallbackParam + "=YAHOO.util.ScriptNodeDataSource.callbacks["+id+"]" ;
+},
+
+/**
+ * Overridable method gives implementers access to modify the URI before the dynamic
+ * script node gets inserted. Implementers should take care not to return an
+ * invalid URI.
+ *
+ * @method doBeforeGetScriptNode
+ * @param {String} URI to the script 
+ * @return {String} URI to the script
+ */
+doBeforeGetScriptNode : function(sUri) {
+    return sUri;
+},
+
+/**
+ * Overriding method passes query to Get Utility. The returned
+ * response is then forwarded to the handleResponse function.
+ *
+ * @method makeConnection
+ * @param oRequest {Object} Request object.
+ * @param oCallback {Object} Callback object literal.
+ * @param oCaller {Object} (deprecated) Use oCallback.scope.
+ * @return {Number} Transaction ID.
+ */
+makeConnection : function(oRequest, oCallback, oCaller) {
+    var tId = DS._nTransactionId++;
+    this.fireEvent("requestEvent", {tId:tId,request:oRequest,callback:oCallback,caller:oCaller});
+    
+    // If there are no global pending requests, it is safe to purge global callback stack and global counter
+    if(util.ScriptNodeDataSource._nPending === 0) {
+        util.ScriptNodeDataSource.callbacks = [];
+        util.ScriptNodeDataSource._nId = 0;
+    }
+    
+    // ID for this request
+    var id = util.ScriptNodeDataSource._nId;
+    util.ScriptNodeDataSource._nId++;
+    
+    // Dynamically add handler function with a closure to the callback stack
+    var oSelf = this;
+    util.ScriptNodeDataSource.callbacks[id] = function(oRawResponse) {
+        if((oSelf.asyncMode !== "ignoreStaleResponses")||
+                (id === util.ScriptNodeDataSource.callbacks.length-1)) { // Must ignore stale responses
+                
+            // Try to sniff data type if it has not been defined
+            if(oSelf.responseType === DS.TYPE_UNKNOWN) {
+                if(YAHOO.lang.isArray(oRawResponse)) { // array
+                    oSelf.responseType = DS.TYPE_JSARRAY;
+                }
+                 // xml
+                else if(oRawResponse.nodeType && oRawResponse.nodeType == 9) {
+                    oSelf.responseType = DS.TYPE_XML;
+                }
+                else if(oRawResponse.nodeName && (oRawResponse.nodeName.toLowerCase() == "table")) { // table
+                    oSelf.responseType = DS.TYPE_HTMLTABLE;
+                }    
+                else if(YAHOO.lang.isObject(oRawResponse)) { // json
+                    oSelf.responseType = DS.TYPE_JSON;
+                }
+                else if(YAHOO.lang.isString(oRawResponse)) { // text
+                    oSelf.responseType = DS.TYPE_TEXT;
+                }
+            }
+
+            oSelf.handleResponse(oRequest, oRawResponse, oCallback, oCaller, tId);
+        }
+        else {
+            YAHOO.log("DataSource ignored stale response for tId " + tId + "(" + oRequest + ")", "info", oSelf.toString());
+        }
+    
+        delete util.ScriptNodeDataSource.callbacks[id];
+    };
+    
+    // We are now creating a request
+    util.ScriptNodeDataSource._nPending++;
+    var sUri = this.liveData + oRequest + this.generateRequestCallback(id);
+    sUri = this.doBeforeGetScriptNode(sUri);
+    YAHOO.log("DataSource is querying URL " + sUri, "info", this.toString());
+    this.getUtility.script(sUri,
+            {autopurge: true,
+            onsuccess: util.ScriptNodeDataSource._bumpPendingDown,
+            onfail: util.ScriptNodeDataSource._bumpPendingDown});
+
+    return tId;
+}
+
+});
+
+// Copy static members to ScriptNodeDataSource class
+lang.augmentObject(util.ScriptNodeDataSource, DS);
+
+// Copy static members to ScriptNodeDataSource class
+lang.augmentObject(util.ScriptNodeDataSource,  {
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// ScriptNodeDataSource private static properties
+//
+/////////////////////////////////////////////////////////////////////////////
+
+/**
+ * Unique ID to track requests.
+ *
+ * @property _nId
+ * @type Number
+ * @private
+ * @static
+ */
+_nId : 0,
+
+/**
+ * Counter for pending requests. When this is 0, it is safe to purge callbacks
+ * array.
+ *
+ * @property _nPending
+ * @type Number
+ * @private
+ * @static
+ */
+_nPending : 0,
+
+/**
+ * Global array of callback functions, one for each request sent.
+ *
+ * @property callbacks
+ * @type Function[]
+ * @static
+ */
+callbacks : []
+
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/****************************************************************************/
+/****************************************************************************/
+/****************************************************************************/
+
+/**
+ * XHRDataSource class for accessing remote data via the YUI Connection Manager
+ * Utility
+ *
+ * @namespace YAHOO.util
+ * @class YAHOO.util.XHRDataSource
+ * @extends YAHOO.util.DataSourceBase  
+ * @constructor
+ * @param oLiveData {HTMLElement}  Pointer to live data.
+ * @param oConfigs {object} (optional) Object literal of configuration values.
+ */
+util.XHRDataSource = function(oLiveData, oConfigs) {
+    this.dataType = DS.TYPE_XHR;
+    this.connMgr = this.connMgr || util.Connect;
+    oLiveData = oLiveData || "";
+    
+    util.XHRDataSource.superclass.constructor.call(this, oLiveData, oConfigs); 
+};
+
+// XHRDataSource extends DataSourceBase
+lang.extend(util.XHRDataSource, DS, {
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// XHRDataSource public properties
+//
+/////////////////////////////////////////////////////////////////////////////
+
+ /**
+ * Alias to YUI Connection Manager, to allow implementers to use a custom class.
+ *
+ * @property connMgr
+ * @type Object
+ * @default YAHOO.util.Connect
+ */
+connMgr: null,
+
+ /**
+ * Defines request/response management in the following manner:
+ * <dl>
+ *     <dt>queueRequests</dt>
+ *     <dd>If a request is already in progress, wait until response is returned
+ *     before sending the next request.</dd>
+ *
+ *     <dt>cancelStaleRequests</dt>
+ *     <dd>If a request is already in progress, cancel it before sending the next
+ *     request.</dd>
+ *
+ *     <dt>ignoreStaleResponses</dt>
+ *     <dd>Send all requests, but handle only the response for the most recently
+ *     sent request.</dd>
+ *
+ *     <dt>allowAll</dt>
+ *     <dd>Send all requests and handle all responses.</dd>
+ *
+ * </dl>
+ *
+ * @property connXhrMode
+ * @type String
+ * @default "allowAll"
+ */
+connXhrMode: "allowAll",
+
+ /**
+ * True if data is to be sent via POST. By default, data will be sent via GET.
+ *
+ * @property connMethodPost
+ * @type Boolean
+ * @default false
+ */
+connMethodPost: false,
+
+ /**
+ * The connection timeout defines how many  milliseconds the XHR connection will
+ * wait for a server response. Any non-zero value will enable the Connection Manager's
+ * Auto-Abort feature.
+ *
+ * @property connTimeout
+ * @type Number
+ * @default 0
+ */
+connTimeout: 0,
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// XHRDataSource public methods
+//
+/////////////////////////////////////////////////////////////////////////////
+
+/**
+ * Overriding method passes query to Connection Manager. The returned
+ * response is then forwarded to the handleResponse function.
+ *
+ * @method makeConnection
+ * @param oRequest {Object} Request object.
+ * @param oCallback {Object} Callback object literal.
+ * @param oCaller {Object} (deprecated) Use oCallback.scope.
+ * @return {Number} Transaction ID.
+ */
+makeConnection : function(oRequest, oCallback, oCaller) {
+
+    var oRawResponse = null;
+    var tId = DS._nTransactionId++;
+    this.fireEvent("requestEvent", {tId:tId,request:oRequest,callback:oCallback,caller:oCaller});
+
+    // Set up the callback object and
+    // pass the request in as a URL query and
+    // forward the response to the handler
+    var oSelf = this;
+    var oConnMgr = this.connMgr;
+    var oQueue = this._oQueue;
+
+    /**
+     * Define Connection Manager success handler
+     *
+     * @method _xhrSuccess
+     * @param oResponse {Object} HTTPXMLRequest object
+     * @private
+     */
+    var _xhrSuccess = function(oResponse) {
+        // If response ID does not match last made request ID,
+        // silently fail and wait for the next response
+        if(oResponse && (this.connXhrMode == "ignoreStaleResponses") &&
+                (oResponse.tId != oQueue.conn.tId)) {
+            YAHOO.log("Ignored stale response", "warn", this.toString());
+            return null;
+        }
+        // Error if no response
+        else if(!oResponse) {
+            this.fireEvent("dataErrorEvent", {request:oRequest, response:null,
+                    callback:oCallback, caller:oCaller,
+                    message:DS.ERROR_DATANULL});
+            YAHOO.log(DS.ERROR_DATANULL, "error", this.toString());
+
+            // Send error response back to the caller with the error flag on
+            DS.issueCallback(oCallback,[oRequest, {error:true}], true, oCaller);
+
+            return null;
+        }
+        // Forward to handler
+        else {
+            // Try to sniff data type if it has not been defined
+            if(this.responseType === DS.TYPE_UNKNOWN) {
+                var ctype = (oResponse.getResponseHeader) ? oResponse.getResponseHeader["Content-Type"] : null;
+                if(ctype) {
+                    // xml
+                    if(ctype.indexOf("text/xml") > -1) {
+                        this.responseType = DS.TYPE_XML;
+                    }
+                    else if(ctype.indexOf("application/json") > -1) { // json
+                        this.responseType = DS.TYPE_JSON;
+                    }
+                    else if(ctype.indexOf("text/plain") > -1) { // text
+                        this.responseType = DS.TYPE_TEXT;
+                    }
+                }
+            }
+            this.handleResponse(oRequest, oResponse, oCallback, oCaller, tId);
+        }
+    };
+
+    /**
+     * Define Connection Manager failure handler
+     *
+     * @method _xhrFailure
+     * @param oResponse {Object} HTTPXMLRequest object
+     * @private
+     */
+    var _xhrFailure = function(oResponse) {
+        this.fireEvent("dataErrorEvent", {request:oRequest, response: oResponse,
+                callback:oCallback, caller:oCaller,
+                message:DS.ERROR_DATAINVALID});
+        YAHOO.log(DS.ERROR_DATAINVALID + ": " +
+                oResponse.statusText, "error", this.toString());
+
+        // Backward compatibility
+        if(lang.isString(this.liveData) && lang.isString(oRequest) &&
+            (this.liveData.lastIndexOf("?") !== this.liveData.length-1) &&
+            (oRequest.indexOf("?") !== 0)){
+                YAHOO.log("DataSources using XHR no longer automatically supply " + 
+                "a \"?\" between the host and query parameters" +
+                " -- please check that the request URL is correct", "warn", this.toString());
+        }
+
+        // Send failure response back to the caller with the error flag on
+        oResponse = oResponse || {};
+        oResponse.error = true;
+        DS.issueCallback(oCallback,[oRequest,oResponse],true, oCaller);
+
+        return null;
+    };
+
+    /**
+     * Define Connection Manager callback object
+     *
+     * @property _xhrCallback
+     * @param oResponse {Object} HTTPXMLRequest object
+     * @private
+     */
+     var _xhrCallback = {
+        success:_xhrSuccess,
+        failure:_xhrFailure,
+        scope: this
+    };
+
+    // Apply Connection Manager timeout
+    if(lang.isNumber(this.connTimeout)) {
+        _xhrCallback.timeout = this.connTimeout;
+    }
+
+    // Cancel stale requests
+    if(this.connXhrMode == "cancelStaleRequests") {
+            // Look in queue for stale requests
+            if(oQueue.conn) {
+                if(oConnMgr.abort) {
+                    oConnMgr.abort(oQueue.conn);
+                    oQueue.conn = null;
+                    YAHOO.log("Canceled stale request", "warn", this.toString());
+                }
+                else {
+                    YAHOO.log("Could not find Connection Manager abort() function", "error", this.toString());
+                }
+            }
+    }
+
+    // Get ready to send the request URL
+    if(oConnMgr && oConnMgr.asyncRequest) {
+        var sLiveData = this.liveData;
+        var isPost = this.connMethodPost;
+        var sMethod = (isPost) ? "POST" : "GET";
+        // Validate request
+        var sUri = (isPost || !lang.isValue(oRequest)) ? sLiveData : sLiveData+oRequest;
+        var sRequest = (isPost) ? oRequest : null;
+
+        // Send the request right away
+        if(this.connXhrMode != "queueRequests") {
+            oQueue.conn = oConnMgr.asyncRequest(sMethod, sUri, _xhrCallback, sRequest);
+        }
+        // Queue up then send the request
+        else {
+            // Found a request already in progress
+            if(oQueue.conn) {
+                var allRequests = oQueue.requests;
+                // Add request to queue
+                allRequests.push({request:oRequest, callback:_xhrCallback});
+
+                // Interval needs to be started
+                if(!oQueue.interval) {
+                    oQueue.interval = setInterval(function() {
+                        // Connection is in progress
+                        if(oConnMgr.isCallInProgress(oQueue.conn)) {
+                            return;
+                        }
+                        else {
+                            // Send next request
+                            if(allRequests.length > 0) {
+                                // Validate request
+                                sUri = (isPost || !lang.isValue(allRequests[0].request)) ? sLiveData : sLiveData+allRequests[0].request;
+                                sRequest = (isPost) ? allRequests[0].request : null;
+                                oQueue.conn = oConnMgr.asyncRequest(sMethod, sUri, allRequests[0].callback, sRequest);
+
+                                // Remove request from queue
+                                allRequests.shift();
+                            }
+                            // No more requests
+                            else {
+                                clearInterval(oQueue.interval);
+                                oQueue.interval = null;
+                            }
+                        }
+                    }, 50);
+                }
+            }
+            // Nothing is in progress
+            else {
+                oQueue.conn = oConnMgr.asyncRequest(sMethod, sUri, _xhrCallback, sRequest);
+            }
+        }
+    }
+    else {
+        YAHOO.log("Could not find Connection Manager asyncRequest() function", "error", this.toString());
+        // Send null response back to the caller with the error flag on
+        DS.issueCallback(oCallback,[oRequest,{error:true}],true,oCaller);
+    }
+
+    return tId;
+}
+
+});
+
+// Copy static members to XHRDataSource class
+lang.augmentObject(util.XHRDataSource, DS);
+
+
+
+
+
+
+
+
+
+
+
+
+
+/****************************************************************************/
+/****************************************************************************/
+/****************************************************************************/
+
+/**
+ * Factory class for creating a BaseDataSource subclass instance. The sublcass is
+ * determined by oLiveData's type, unless the dataType config is explicitly passed in.  
+ *
+ * @namespace YAHOO.util
+ * @class YAHOO.util.DataSource
+ * @constructor
+ * @param oLiveData {HTMLElement}  Pointer to live data.
+ * @param oConfigs {object} (optional) Object literal of configuration values.
+ */
+util.DataSource = function(oLiveData, oConfigs) {
+    oConfigs = oConfigs || {};
+    
+    // Point to one of the subclasses, first by dataType if given, then by sniffing oLiveData type.
+    var dataType = oConfigs.dataType;
+    if(dataType) {
+        if(dataType == DS.TYPE_LOCAL) {
+            lang.augmentObject(util.DataSource, util.LocalDataSource);
+            return new util.LocalDataSource(oLiveData, oConfigs);            
+        }
+        else if(dataType == DS.TYPE_XHR) {
+            lang.augmentObject(util.DataSource, util.XHRDataSource);
+            return new util.XHRDataSource(oLiveData, oConfigs);            
+        }
+        else if(dataType == DS.TYPE_SCRIPTNODE) {
+            lang.augmentObject(util.DataSource, util.ScriptNodeDataSource);
+            return new util.ScriptNodeDataSource(oLiveData, oConfigs);            
+        }
+        else if(dataType == DS.TYPE_JSFUNCTION) {
+            lang.augmentObject(util.DataSource, util.FunctionDataSource);
+            return new util.FunctionDataSource(oLiveData, oConfigs);            
+        }
+    }
+    
+    if(YAHOO.lang.isString(oLiveData)) { // strings default to xhr
+        lang.augmentObject(util.DataSource, util.XHRDataSource);
+        return new util.XHRDataSource(oLiveData, oConfigs);
+    }
+    else if(YAHOO.lang.isFunction(oLiveData)) {
+        lang.augmentObject(util.DataSource, util.FunctionDataSource);
+        return new util.FunctionDataSource(oLiveData, oConfigs);
+    }
+    else { // ultimate default is local
+        lang.augmentObject(util.DataSource, util.LocalDataSource);
+        return new util.LocalDataSource(oLiveData, oConfigs);
+    }
+};
+
+// Copy static members to DataSource class
+lang.augmentObject(util.DataSource, DS);
+
+})();
+
+/****************************************************************************/
+/****************************************************************************/
+/****************************************************************************/
+
+/**
+ * The static Number class provides helper functions to deal with data of type
+ * Number.
+ *
+ * @namespace YAHOO.util
+ * @requires yahoo
+ * @class Number
+ * @static
+ */
+ YAHOO.util.Number = {
+ 
+     /**
+     * Takes a native JavaScript Number and formats to string for display to user.
+     *
+     * @method format
+     * @param nData {Number} Number.
+     * @param oConfig {Object} (Optional) Optional configuration values:
+     *  <dl>
+     *   <dt>prefix {String}</dd>
+     *   <dd>String prepended before each number, like a currency designator "$"</dd>
+     *   <dt>decimalPlaces {Number}</dd>
+     *   <dd>Number of decimal places to round.</dd>
+     *   <dt>decimalSeparator {String}</dd>
+     *   <dd>Decimal separator</dd>
+     *   <dt>thousandsSeparator {String}</dd>
+     *   <dd>Thousands separator</dd>
+     *   <dt>suffix {String}</dd>
+     *   <dd>String appended after each number, like " items" (note the space)</dd>
+     *   <dt>negativeFormat</dt>
+     *   <dd>String used as a guide for how to indicate negative numbers.  The first '#' character in the string will be replaced by the number.  Default '-#'.</dd>
+     *  </dl>
+     * @return {String} Formatted number for display. Note, the following values
+     * return as "": null, undefined, NaN, "".
+     */
+    format : function(n, cfg) {
+        if (!isFinite(+n)) {
+            return '';
+        }
+
+        n   = !isFinite(+n) ? 0 : +n;
+        cfg = YAHOO.lang.merge(YAHOO.util.Number.format.defaults, (cfg || {}));
+
+        var neg    = n < 0,        absN   = Math.abs(n),
+            places = cfg.decimalPlaces,
+            sep    = cfg.thousandsSeparator,
+            s, bits, i;
+
+        if (places < 0) {
+            // Get rid of the decimal info
+            s = absN - (absN % 1) + '';
+            i = s.length + places;
+
+            // avoid 123 vs decimalPlaces -4 (should return "0")
+            if (i > 0) {
+                    // leverage toFixed by making 123 => 0.123 for the rounding
+                    // operation, then add the appropriate number of zeros back on
+                s = Number('.' + s).toFixed(i).slice(2) +
+                    new Array(s.length - i + 1).join('0');
+            } else {
+                s = "0";
+            }
+        } else {        // There is a bug in IE's toFixed implementation:
+            // for n in {(-0.94, -0.5], [0.5, 0.94)} n.toFixed() returns 0
+            // instead of -1 and 1. Manually handle that case.
+            s = absN < 1 && absN >= 0.5 && !places ? '1' : absN.toFixed(places);
+        }
+
+        if (absN > 1000) {
+            bits  = s.split(/\D/);
+            i  = bits[0].length % 3 || 3;
+
+            bits[0] = bits[0].slice(0,i) +
+                      bits[0].slice(i).replace(/(\d{3})/g, sep + '$1');
+
+            s = bits.join(cfg.decimalSeparator);
+        }
+
+        s = cfg.prefix + s + cfg.suffix;
+
+        return neg ? cfg.negativeFormat.replace(/#/,s) : s;
+    }
+};
+YAHOO.util.Number.format.defaults = {
+    decimalSeparator : '.',
+    decimalPlaces    : null,
+    thousandsSeparator : '',
+    prefix : '',
+    suffix : '',
+    negativeFormat : '-#'
+};
+
+
+/****************************************************************************/
+/****************************************************************************/
+/****************************************************************************/
+
+(function () {
+
+var xPad=function (x, pad, r)
+{
+    if(typeof r === 'undefined')
+    {
+        r=10;
+    }
+    for( ; parseInt(x, 10)<r && r>1; r/=10) {
+        x = pad.toString() + x;
+    }
+    return x.toString();
+};
+
+
+/**
+ * The static Date class provides helper functions to deal with data of type Date.
+ *
+ * @namespace YAHOO.util
+ * @requires yahoo
+ * @class Date
+ * @static
+ */
+ var Dt = {
+    formats: {
+        a: function (d, l) { return l.a[d.getDay()]; },
+        A: function (d, l) { return l.A[d.getDay()]; },
+        b: function (d, l) { return l.b[d.getMonth()]; },
+        B: function (d, l) { return l.B[d.getMonth()]; },
+        C: function (d) { return xPad(parseInt(d.getFullYear()/100, 10), 0); },
+        d: ['getDate', '0'],
+        e: ['getDate', ' '],
+        g: function (d) { return xPad(parseInt(Dt.formats.G(d)%100, 10), 0); },
+        G: function (d) {
+                var y = d.getFullYear();
+                var V = parseInt(Dt.formats.V(d), 10);
+                var W = parseInt(Dt.formats.W(d), 10);
+    
+                if(W > V) {
+                    y++;
+                } else if(W===0 && V>=52) {
+                    y--;
+                }
+    
+                return y;
+            },
+        H: ['getHours', '0'],
+        I: function (d) { var I=d.getHours()%12; return xPad(I===0?12:I, 0); },
+        j: function (d) {
+                var gmd_1 = new Date('' + d.getFullYear() + '/1/1 GMT');
+                var gmdate = new Date('' + d.getFullYear() + '/' + (d.getMonth()+1) + '/' + d.getDate() + ' GMT');
+                var ms = gmdate - gmd_1;
+                var doy = parseInt(ms/60000/60/24, 10)+1;
+                return xPad(doy, 0, 100);
+            },
+        k: ['getHours', ' '],
+        l: function (d) { var I=d.getHours()%12; return xPad(I===0?12:I, ' '); },
+        m: function (d) { return xPad(d.getMonth()+1, 0); },
+        M: ['getMinutes', '0'],
+        p: function (d, l) { return l.p[d.getHours() >= 12 ? 1 : 0 ]; },
+        P: function (d, l) { return l.P[d.getHours() >= 12 ? 1 : 0 ]; },
+        s: function (d, l) { return parseInt(d.getTime()/1000, 10); },
+        S: ['getSeconds', '0'],
+        u: function (d) { var dow = d.getDay(); return dow===0?7:dow; },
+        U: function (d) {
+                var doy = parseInt(Dt.formats.j(d), 10);
+                var rdow = 6-d.getDay();
+                var woy = parseInt((doy+rdow)/7, 10);
+                return xPad(woy, 0);
+            },
+        V: function (d) {
+                var woy = parseInt(Dt.formats.W(d), 10);
+                var dow1_1 = (new Date('' + d.getFullYear() + '/1/1')).getDay();
+                // First week is 01 and not 00 as in the case of %U and %W,
+                // so we add 1 to the final result except if day 1 of the year
+                // is a Monday (then %W returns 01).
+                // We also need to subtract 1 if the day 1 of the year is 
+                // Friday-Sunday, so the resulting equation becomes:
+                var idow = woy + (dow1_1 > 4 || dow1_1 <= 1 ? 0 : 1);
+                if(idow === 53 && (new Date('' + d.getFullYear() + '/12/31')).getDay() < 4)
+                {
+                    idow = 1;
+                }
+                else if(idow === 0)
+                {
+                    idow = Dt.formats.V(new Date('' + (d.getFullYear()-1) + '/12/31'));
+                }
+    
+                return xPad(idow, 0);
+            },
+        w: 'getDay',
+        W: function (d) {
+                var doy = parseInt(Dt.formats.j(d), 10);
+                var rdow = 7-Dt.formats.u(d);
+                var woy = parseInt((doy+rdow)/7, 10);
+                return xPad(woy, 0, 10);
+            },
+        y: function (d) { return xPad(d.getFullYear()%100, 0); },
+        Y: 'getFullYear',
+        z: function (d) {
+                var o = d.getTimezoneOffset();
+                var H = xPad(parseInt(Math.abs(o/60), 10), 0);
+                var M = xPad(Math.abs(o%60), 0);
+                return (o>0?'-':'+') + H + M;
+            },
+        Z: function (d) {
+		var tz = d.toString().replace(/^.*:\d\d( GMT[+-]\d+)? \(?([A-Za-z ]+)\)?\d*$/, '$2').replace(/[a-z ]/g, '');
+		if(tz.length > 4) {
+			tz = Dt.formats.z(d);
+		}
+		return tz;
+	},
+        '%': function (d) { return '%'; }
+    },
+
+    aggregates: {
+        c: 'locale',
+        D: '%m/%d/%y',
+        F: '%Y-%m-%d',
+        h: '%b',
+        n: '\n',
+        r: 'locale',
+        R: '%H:%M',
+        t: '\t',
+        T: '%H:%M:%S',
+        x: 'locale',
+        X: 'locale'
+        //'+': '%a %b %e %T %Z %Y'
+    },
+
+     /**
+     * Takes a native JavaScript Date and formats to string for display to user.
+     *
+     * @method format
+     * @param oDate {Date} Date.
+     * @param oConfig {Object} (Optional) Object literal of configuration values:
+     *  <dl>
+     *   <dt>format &lt;String&gt;</dt>
+     *   <dd>
+     *   <p>
+     *   Any strftime string is supported, such as "%I:%M:%S %p". strftime has several format specifiers defined by the Open group at 
+     *   <a href="http://www.opengroup.org/onlinepubs/007908799/xsh/strftime.html">http://www.opengroup.org/onlinepubs/007908799/xsh/strftime.html</a>
+     *   </p>
+     *   <p>   
+     *   PHP added a few of its own, defined at <a href="http://www.php.net/strftime">http://www.php.net/strftime</a>
+     *   </p>
+     *   <p>
+     *   This javascript implementation supports all the PHP specifiers and a few more.  The full list is below:
+     *   </p>
+     *   <dl>
+     *    <dt>%a</dt> <dd>abbreviated weekday name according to the current locale</dd>
+     *    <dt>%A</dt> <dd>full weekday name according to the current locale</dd>
+     *    <dt>%b</dt> <dd>abbreviated month name according to the current locale</dd>
+     *    <dt>%B</dt> <dd>full month name according to the current locale</dd>
+     *    <dt>%c</dt> <dd>preferred date and time representation for the current locale</dd>
+     *    <dt>%C</dt> <dd>century number (the year divided by 100 and truncated to an integer, range 00 to 99)</dd>
+     *    <dt>%d</dt> <dd>day of the month as a decimal number (range 01 to 31)</dd>
+     *    <dt>%D</dt> <dd>same as %m/%d/%y</dd>
+     *    <dt>%e</dt> <dd>day of the month as a decimal number, a single digit is preceded by a space (range ' 1' to '31')</dd>
+     *    <dt>%F</dt> <dd>same as %Y-%m-%d (ISO 8601 date format)</dd>
+     *    <dt>%g</dt> <dd>like %G, but without the century</dd>
+     *    <dt>%G</dt> <dd>The 4-digit year corresponding to the ISO week number</dd>
+     *    <dt>%h</dt> <dd>same as %b</dd>
+     *    <dt>%H</dt> <dd>hour as a decimal number using a 24-hour clock (range 00 to 23)</dd>
+     *    <dt>%I</dt> <dd>hour as a decimal number using a 12-hour clock (range 01 to 12)</dd>
+     *    <dt>%j</dt> <dd>day of the year as a decimal number (range 001 to 366)</dd>
+     *    <dt>%k</dt> <dd>hour as a decimal number using a 24-hour clock (range 0 to 23); single digits are preceded by a blank. (See also %H.)</dd>
+     *    <dt>%l</dt> <dd>hour as a decimal number using a 12-hour clock (range 1 to 12); single digits are preceded by a blank. (See also %I.) </dd>
+     *    <dt>%m</dt> <dd>month as a decimal number (range 01 to 12)</dd>
+     *    <dt>%M</dt> <dd>minute as a decimal number</dd>
+     *    <dt>%n</dt> <dd>newline character</dd>
+     *    <dt>%p</dt> <dd>either `AM' or `PM' according to the given time value, or the corresponding strings for the current locale</dd>
+     *    <dt>%P</dt> <dd>like %p, but lower case</dd>
+     *    <dt>%r</dt> <dd>time in a.m. and p.m. notation equal to %I:%M:%S %p</dd>
+     *    <dt>%R</dt> <dd>time in 24 hour notation equal to %H:%M</dd>
+     *    <dt>%s</dt> <dd>number of seconds since the Epoch, ie, since 1970-01-01 00:00:00 UTC</dd>
+     *    <dt>%S</dt> <dd>second as a decimal number</dd>
+     *    <dt>%t</dt> <dd>tab character</dd>
+     *    <dt>%T</dt> <dd>current time, equal to %H:%M:%S</dd>
+     *    <dt>%u</dt> <dd>weekday as a decimal number [1,7], with 1 representing Monday</dd>
+     *    <dt>%U</dt> <dd>week number of the current year as a decimal number, starting with the
+     *            first Sunday as the first day of the first week</dd>
+     *    <dt>%V</dt> <dd>The ISO 8601:1988 week number of the current year as a decimal number,
+     *            range 01 to 53, where week 1 is the first week that has at least 4 days
+     *            in the current year, and with Monday as the first day of the week.</dd>
+     *    <dt>%w</dt> <dd>day of the week as a decimal, Sunday being 0</dd>
+     *    <dt>%W</dt> <dd>week number of the current year as a decimal number, starting with the
+     *            first Monday as the first day of the first week</dd>
+     *    <dt>%x</dt> <dd>preferred date representation for the current locale without the time</dd>
+     *    <dt>%X</dt> <dd>preferred time representation for the current locale without the date</dd>
+     *    <dt>%y</dt> <dd>year as a decimal number without a century (range 00 to 99)</dd>
+     *    <dt>%Y</dt> <dd>year as a decimal number including the century</dd>
+     *    <dt>%z</dt> <dd>numerical time zone representation</dd>
+     *    <dt>%Z</dt> <dd>time zone name or abbreviation</dd>
+     *    <dt>%%</dt> <dd>a literal `%' character</dd>
+     *   </dl>
+     *  </dd>
+     * </dl>
+     * @param sLocale {String} (Optional) The locale to use when displaying days of week,
+     *  months of the year, and other locale specific strings.  The following locales are
+     *  built in:
+     *  <dl>
+     *   <dt>en</dt>
+     *   <dd>English</dd>
+     *   <dt>en-US</dt>
+     *   <dd>US English</dd>
+     *   <dt>en-GB</dt>
+     *   <dd>British English</dd>
+     *   <dt>en-AU</dt>
+     *   <dd>Australian English (identical to British English)</dd>
+     *  </dl>
+     *  More locales may be added by subclassing of YAHOO.util.DateLocale.
+     *  See YAHOO.util.DateLocale for more information.
+     * @return {String} Formatted date for display.
+     * @sa YAHOO.util.DateLocale
+     */
+    format : function (oDate, oConfig, sLocale) {
+        oConfig = oConfig || {};
+        
+        if(!(oDate instanceof Date)) {
+            return YAHOO.lang.isValue(oDate) ? oDate : "";
+        }
+
+        var format = oConfig.format || "%m/%d/%Y";
+
+        // Be backwards compatible, support strings that are
+        // exactly equal to YYYY/MM/DD, DD/MM/YYYY and MM/DD/YYYY
+        if(format === 'YYYY/MM/DD') {
+            format = '%Y/%m/%d';
+        } else if(format === 'DD/MM/YYYY') {
+            format = '%d/%m/%Y';
+        } else if(format === 'MM/DD/YYYY') {
+            format = '%m/%d/%Y';
+        }
+        // end backwards compatibility block
+ 
+        sLocale = sLocale || "en";
+
+        // Make sure we have a definition for the requested locale, or default to en.
+        if(!(sLocale in YAHOO.util.DateLocale)) {
+            if(sLocale.replace(/-[a-zA-Z]+$/, '') in YAHOO.util.DateLocale) {
+                sLocale = sLocale.replace(/-[a-zA-Z]+$/, '');
+            } else {
+                sLocale = "en";
+            }
+        }
+
+        var aLocale = YAHOO.util.DateLocale[sLocale];
+
+        var replace_aggs = function (m0, m1) {
+            var f = Dt.aggregates[m1];
+            return (f === 'locale' ? aLocale[m1] : f);
+        };
+
+        var replace_formats = function (m0, m1) {
+            var f = Dt.formats[m1];
+            if(typeof f === 'string') {             // string => built in date function
+                return oDate[f]();
+            } else if(typeof f === 'function') {    // function => our own function
+                return f.call(oDate, oDate, aLocale);
+            } else if(typeof f === 'object' && typeof f[0] === 'string') {  // built in function with padding
+                return xPad(oDate[f[0]](), f[1]);
+            } else {
+                return m1;
+            }
+        };
+
+        // First replace aggregates (run in a loop because an agg may be made up of other aggs)
+        while(format.match(/%[cDFhnrRtTxX]/)) {
+            format = format.replace(/%([cDFhnrRtTxX])/g, replace_aggs);
+        }
+
+        // Now replace formats (do not run in a loop otherwise %%a will be replace with the value of %a)
+        var str = format.replace(/%([aAbBCdegGHIjklmMpPsSuUVwWyYzZ%])/g, replace_formats);
+
+        replace_aggs = replace_formats = undefined;
+
+        return str;
+    }
+ };
+ 
+ YAHOO.namespace("YAHOO.util");
+ YAHOO.util.Date = Dt;
+
+/**
+ * The DateLocale class is a container and base class for all
+ * localised date strings used by YAHOO.util.Date. It is used
+ * internally, but may be extended to provide new date localisations.
+ *
+ * To create your own DateLocale, follow these steps:
+ * <ol>
+ *  <li>Find an existing locale that matches closely with your needs</li>
+ *  <li>Use this as your base class.  Use YAHOO.util.DateLocale if nothing
+ *   matches.</li>
+ *  <li>Create your own class as an extension of the base class using
+ *   YAHOO.lang.merge, and add your own localisations where needed.</li>
+ * </ol>
+ * See the YAHOO.util.DateLocale['en-US'] and YAHOO.util.DateLocale['en-GB']
+ * classes which extend YAHOO.util.DateLocale['en'].
+ *
+ * For example, to implement locales for French french and Canadian french,
+ * we would do the following:
+ * <ol>
+ *  <li>For French french, we have no existing similar locale, so use
+ *   YAHOO.util.DateLocale as the base, and extend it:
+ *   <pre>
+ *      YAHOO.util.DateLocale['fr'] = YAHOO.lang.merge(YAHOO.util.DateLocale, {
+ *          a: ['dim', 'lun', 'mar', 'mer', 'jeu', 'ven', 'sam'],
+ *          A: ['dimanche', 'lundi', 'mardi', 'mercredi', 'jeudi', 'vendredi', 'samedi'],
+ *          b: ['jan', 'f&eacute;v', 'mar', 'avr', 'mai', 'jun', 'jui', 'ao&ucirc;', 'sep', 'oct', 'nov', 'd&eacute;c'],
+ *          B: ['janvier', 'f&eacute;vrier', 'mars', 'avril', 'mai', 'juin', 'juillet', 'ao&ucirc;t', 'septembre', 'octobre', 'novembre', 'd&eacute;cembre'],
+ *          c: '%a %d %b %Y %T %Z',
+ *          p: ['', ''],
+ *          P: ['', ''],
+ *          x: '%d.%m.%Y',
+ *          X: '%T'
+ *      });
+ *   </pre>
+ *  </li>
+ *  <li>For Canadian french, we start with French french and change the meaning of \%x:
+ *   <pre>
+ *      YAHOO.util.DateLocale['fr-CA'] = YAHOO.lang.merge(YAHOO.util.DateLocale['fr'], {
+ *          x: '%Y-%m-%d'
+ *      });
+ *   </pre>
+ *  </li>
+ * </ol>
+ *
+ * With that, you can use your new locales:
+ * <pre>
+ *    var d = new Date("2008/04/22");
+ *    YAHOO.util.Date.format(d, {format: "%A, %d %B == %x"}, "fr");
+ * </pre>
+ * will return:
+ * <pre>
+ *    mardi, 22 avril == 22.04.2008
+ * </pre>
+ * And
+ * <pre>
+ *    YAHOO.util.Date.format(d, {format: "%A, %d %B == %x"}, "fr-CA");
+ * </pre>
+ * Will return:
+ * <pre>
+ *   mardi, 22 avril == 2008-04-22
+ * </pre>
+ * @namespace YAHOO.util
+ * @requires yahoo
+ * @class DateLocale
+ */
+ YAHOO.util.DateLocale = {
+        a: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
+        A: ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
+        b: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+        B: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
+        c: '%a %d %b %Y %T %Z',
+        p: ['AM', 'PM'],
+        P: ['am', 'pm'],
+        r: '%I:%M:%S %p',
+        x: '%d/%m/%y',
+        X: '%T'
+ };
+
+ YAHOO.util.DateLocale['en'] = YAHOO.lang.merge(YAHOO.util.DateLocale, {});
+
+ YAHOO.util.DateLocale['en-US'] = YAHOO.lang.merge(YAHOO.util.DateLocale['en'], {
+        c: '%a %d %b %Y %I:%M:%S %p %Z',
+        x: '%m/%d/%Y',
+        X: '%I:%M:%S %p'
+ });
+
+ YAHOO.util.DateLocale['en-GB'] = YAHOO.lang.merge(YAHOO.util.DateLocale['en'], {
+        r: '%l:%M:%S %P %Z'
+ });
+ YAHOO.util.DateLocale['en-AU'] = YAHOO.lang.merge(YAHOO.util.DateLocale['en']);
+
+})();
+
+YAHOO.register("datasource", YAHOO.util.DataSource, {version: "2.8.2r1", build: "7"});
+/*
+Copyright (c) 2010, Yahoo! Inc. All rights reserved.
+Code licensed under the BSD License:
+http://developer.yahoo.com/yui/license.html
+version: 2.8.2r1
+*/
+/////////////////////////////////////////////////////////////////////////////
+//
+// YAHOO.widget.DataSource Backwards Compatibility
+//
+/////////////////////////////////////////////////////////////////////////////
+
+YAHOO.widget.DS_JSArray = YAHOO.util.LocalDataSource;
+
+YAHOO.widget.DS_JSFunction = YAHOO.util.FunctionDataSource;
+
+YAHOO.widget.DS_XHR = function(sScriptURI, aSchema, oConfigs) {
+    var DS = new YAHOO.util.XHRDataSource(sScriptURI, oConfigs);
+    DS._aDeprecatedSchema = aSchema;
+    return DS;
+};
+
+YAHOO.widget.DS_ScriptNode = function(sScriptURI, aSchema, oConfigs) {
+    var DS = new YAHOO.util.ScriptNodeDataSource(sScriptURI, oConfigs);
+    DS._aDeprecatedSchema = aSchema;
+    return DS;
+};
+
+YAHOO.widget.DS_XHR.TYPE_JSON = YAHOO.util.DataSourceBase.TYPE_JSON;
+YAHOO.widget.DS_XHR.TYPE_XML = YAHOO.util.DataSourceBase.TYPE_XML;
+YAHOO.widget.DS_XHR.TYPE_FLAT = YAHOO.util.DataSourceBase.TYPE_TEXT;
+
+// TODO: widget.DS_ScriptNode.scriptCallbackParam
+
+
+
+ /**
+ * The AutoComplete control provides the front-end logic for text-entry suggestion and
+ * completion functionality.
+ *
+ * @module autocomplete
+ * @requires yahoo, dom, event, datasource
+ * @optional animation
+ * @namespace YAHOO.widget
+ * @title AutoComplete Widget
+ */
+
+/****************************************************************************/
+/****************************************************************************/
+/****************************************************************************/
+
+/**
+ * The AutoComplete class provides the customizable functionality of a plug-and-play DHTML
+ * auto completion widget.  Some key features:
+ * <ul>
+ * <li>Navigate with up/down arrow keys and/or mouse to pick a selection</li>
+ * <li>The drop down container can "roll down" or "fly out" via configurable
+ * animation</li>
+ * <li>UI look-and-feel customizable through CSS, including container
+ * attributes, borders, position, fonts, etc</li>
+ * </ul>
+ *
+ * @class AutoComplete
+ * @constructor
+ * @param elInput {HTMLElement} DOM element reference of an input field.
+ * @param elInput {String} String ID of an input field.
+ * @param elContainer {HTMLElement} DOM element reference of an existing DIV.
+ * @param elContainer {String} String ID of an existing DIV.
+ * @param oDataSource {YAHOO.widget.DataSource} DataSource instance.
+ * @param oConfigs {Object} (optional) Object literal of configuration params.
+ */
+YAHOO.widget.AutoComplete = function(elInput,elContainer,oDataSource,oConfigs) {
+    if(elInput && elContainer && oDataSource) {
+        // Validate DataSource
+        if(oDataSource && YAHOO.lang.isFunction(oDataSource.sendRequest)) {
+            this.dataSource = oDataSource;
+        }
+        else {
+            YAHOO.log("Could not instantiate AutoComplete due to an invalid DataSource", "error", this.toString());
+            return;
+        }
+
+        // YAHOO.widget.DataSource schema backwards compatibility
+        // Converted deprecated schema into supported schema
+        // First assume key data is held in position 0 of results array
+        this.key = 0;
+        var schema = oDataSource.responseSchema;
+        // An old school schema has been defined in the deprecated DataSource constructor
+        if(oDataSource._aDeprecatedSchema) {
+            var aDeprecatedSchema = oDataSource._aDeprecatedSchema;
+            if(YAHOO.lang.isArray(aDeprecatedSchema)) {
+                
+                if((oDataSource.responseType === YAHOO.util.DataSourceBase.TYPE_JSON) || 
+                (oDataSource.responseType === YAHOO.util.DataSourceBase.TYPE_UNKNOWN)) { // Used to default to unknown
+                    // Store the resultsList
+                    schema.resultsList = aDeprecatedSchema[0];
+                    // Store the key
+                    this.key = aDeprecatedSchema[1];
+                    // Only resultsList and key are defined, so grab all the data
+                    schema.fields = (aDeprecatedSchema.length < 3) ? null : aDeprecatedSchema.slice(1);
+                }
+                else if(oDataSource.responseType === YAHOO.util.DataSourceBase.TYPE_XML) {
+                    schema.resultNode = aDeprecatedSchema[0];
+                    this.key = aDeprecatedSchema[1];
+                    schema.fields = aDeprecatedSchema.slice(1);
+                }                
+                else if(oDataSource.responseType === YAHOO.util.DataSourceBase.TYPE_TEXT) {
+                    schema.recordDelim = aDeprecatedSchema[0];
+                    schema.fieldDelim = aDeprecatedSchema[1];
+                }                
+                oDataSource.responseSchema = schema;
+            }
+        }
+        
+        // Validate input element
+        if(YAHOO.util.Dom.inDocument(elInput)) {
+            if(YAHOO.lang.isString(elInput)) {
+                    this._sName = "instance" + YAHOO.widget.AutoComplete._nIndex + " " + elInput;
+                    this._elTextbox = document.getElementById(elInput);
+            }
+            else {
+                this._sName = (elInput.id) ?
+                    "instance" + YAHOO.widget.AutoComplete._nIndex + " " + elInput.id:
+                    "instance" + YAHOO.widget.AutoComplete._nIndex;
+                this._elTextbox = elInput;
+            }
+            YAHOO.util.Dom.addClass(this._elTextbox, "yui-ac-input");
+        }
+        else {
+            YAHOO.log("Could not instantiate AutoComplete due to an invalid input element", "error", this.toString());
+            return;
+        }
+
+        // Validate container element
+        if(YAHOO.util.Dom.inDocument(elContainer)) {
+            if(YAHOO.lang.isString(elContainer)) {
+                    this._elContainer = document.getElementById(elContainer);
+            }
+            else {
+                this._elContainer = elContainer;
+            }
+            if(this._elContainer.style.display == "none") {
+                YAHOO.log("The container may not display properly if display is set to \"none\" in CSS", "warn", this.toString());
+            }
+            
+            // For skinning
+            var elParent = this._elContainer.parentNode;
+            var elTag = elParent.tagName.toLowerCase();
+            if(elTag == "div") {
+                YAHOO.util.Dom.addClass(elParent, "yui-ac");
+            }
+            else {
+                YAHOO.log("Could not find the wrapper element for skinning", "warn", this.toString());
+            }
+        }
+        else {
+            YAHOO.log("Could not instantiate AutoComplete due to an invalid container element", "error", this.toString());
+            return;
+        }
+
+        // Default applyLocalFilter setting is to enable for local sources
+        if(this.dataSource.dataType === YAHOO.util.DataSourceBase.TYPE_LOCAL) {
+            this.applyLocalFilter = true;
+        }
+        
+        // Set any config params passed in to override defaults
+        if(oConfigs && (oConfigs.constructor == Object)) {
+            for(var sConfig in oConfigs) {
+                if(sConfig) {
+                    this[sConfig] = oConfigs[sConfig];
+                }
+            }
+        }
+
+        // Initialization sequence
+        this._initContainerEl();
+        this._initProps();
+        this._initListEl();
+        this._initContainerHelperEls();
+
+        // Set up events
+        var oSelf = this;
+        var elTextbox = this._elTextbox;
+
+        // Dom events
+        YAHOO.util.Event.addListener(elTextbox,"keyup",oSelf._onTextboxKeyUp,oSelf);
+        YAHOO.util.Event.addListener(elTextbox,"keydown",oSelf._onTextboxKeyDown,oSelf);
+        YAHOO.util.Event.addListener(elTextbox,"focus",oSelf._onTextboxFocus,oSelf);
+        YAHOO.util.Event.addListener(elTextbox,"blur",oSelf._onTextboxBlur,oSelf);
+        YAHOO.util.Event.addListener(elContainer,"mouseover",oSelf._onContainerMouseover,oSelf);
+        YAHOO.util.Event.addListener(elContainer,"mouseout",oSelf._onContainerMouseout,oSelf);
+        YAHOO.util.Event.addListener(elContainer,"click",oSelf._onContainerClick,oSelf);
+        YAHOO.util.Event.addListener(elContainer,"scroll",oSelf._onContainerScroll,oSelf);
+        YAHOO.util.Event.addListener(elContainer,"resize",oSelf._onContainerResize,oSelf);
+        YAHOO.util.Event.addListener(elTextbox,"keypress",oSelf._onTextboxKeyPress,oSelf);
+        YAHOO.util.Event.addListener(window,"unload",oSelf._onWindowUnload,oSelf);
+
+        // Custom events
+        this.textboxFocusEvent = new YAHOO.util.CustomEvent("textboxFocus", this);
+        this.textboxKeyEvent = new YAHOO.util.CustomEvent("textboxKey", this);
+        this.dataRequestEvent = new YAHOO.util.CustomEvent("dataRequest", this);
+        this.dataReturnEvent = new YAHOO.util.CustomEvent("dataReturn", this);
+        this.dataErrorEvent = new YAHOO.util.CustomEvent("dataError", this);
+        this.containerPopulateEvent = new YAHOO.util.CustomEvent("containerPopulate", this);
+        this.containerExpandEvent = new YAHOO.util.CustomEvent("containerExpand", this);
+        this.typeAheadEvent = new YAHOO.util.CustomEvent("typeAhead", this);
+        this.itemMouseOverEvent = new YAHOO.util.CustomEvent("itemMouseOver", this);
+        this.itemMouseOutEvent = new YAHOO.util.CustomEvent("itemMouseOut", this);
+        this.itemArrowToEvent = new YAHOO.util.CustomEvent("itemArrowTo", this);
+        this.itemArrowFromEvent = new YAHOO.util.CustomEvent("itemArrowFrom", this);
+        this.itemSelectEvent = new YAHOO.util.CustomEvent("itemSelect", this);
+        this.unmatchedItemSelectEvent = new YAHOO.util.CustomEvent("unmatchedItemSelect", this);
+        this.selectionEnforceEvent = new YAHOO.util.CustomEvent("selectionEnforce", this);
+        this.containerCollapseEvent = new YAHOO.util.CustomEvent("containerCollapse", this);
+        this.textboxBlurEvent = new YAHOO.util.CustomEvent("textboxBlur", this);
+        this.textboxChangeEvent = new YAHOO.util.CustomEvent("textboxChange", this);
+        
+        // Finish up
+        elTextbox.setAttribute("autocomplete","off");
+        YAHOO.widget.AutoComplete._nIndex++;
+        YAHOO.log("AutoComplete initialized","info",this.toString());
+    }
+    // Required arguments were not found
+    else {
+        YAHOO.log("Could not instantiate AutoComplete due invalid arguments", "error", this.toString());
+    }
+};
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Public member variables
+//
+/////////////////////////////////////////////////////////////////////////////
+
+/**
+ * The DataSource object that encapsulates the data used for auto completion.
+ * This object should be an inherited object from YAHOO.widget.DataSource.
+ *
+ * @property dataSource
+ * @type YAHOO.widget.DataSource
+ */
+YAHOO.widget.AutoComplete.prototype.dataSource = null;
+
+/**
+ * By default, results from local DataSources will pass through the filterResults
+ * method to apply a client-side matching algorithm. 
+ * 
+ * @property applyLocalFilter
+ * @type Boolean
+ * @default true for local arrays and json, otherwise false
+ */
+YAHOO.widget.AutoComplete.prototype.applyLocalFilter = null;
+
+/**
+ * When applyLocalFilter is true, the local filtering algorthim can have case sensitivity
+ * enabled. 
+ * 
+ * @property queryMatchCase
+ * @type Boolean
+ * @default false
+ */
+YAHOO.widget.AutoComplete.prototype.queryMatchCase = false;
+
+/**
+ * When applyLocalFilter is true, results can  be locally filtered to return
+ * matching strings that "contain" the query string rather than simply "start with"
+ * the query string.
+ * 
+ * @property queryMatchContains
+ * @type Boolean
+ * @default false
+ */
+YAHOO.widget.AutoComplete.prototype.queryMatchContains = false;
+
+/**
+ * Enables query subset matching. When the DataSource's cache is enabled and queryMatchSubset is
+ * true, substrings of queries will return matching cached results. For
+ * instance, if the first query is for "abc" susequent queries that start with
+ * "abc", like "abcd", will be queried against the cache, and not the live data
+ * source. Recommended only for DataSources that return comprehensive results
+ * for queries with very few characters.
+ *
+ * @property queryMatchSubset
+ * @type Boolean
+ * @default false
+ *
+ */
+YAHOO.widget.AutoComplete.prototype.queryMatchSubset = false;
+
+/**
+ * Number of characters that must be entered before querying for results. A negative value
+ * effectively turns off the widget. A value of 0 allows queries of null or empty string
+ * values.
+ *
+ * @property minQueryLength
+ * @type Number
+ * @default 1
+ */
+YAHOO.widget.AutoComplete.prototype.minQueryLength = 1;
+
+/**
+ * Maximum number of results to display in results container.
+ *
+ * @property maxResultsDisplayed
+ * @type Number
+ * @default 10
+ */
+YAHOO.widget.AutoComplete.prototype.maxResultsDisplayed = 10;
+
+/**
+ * Number of seconds to delay before submitting a query request.  If a query
+ * request is received before a previous one has completed its delay, the
+ * previous request is cancelled and the new request is set to the delay. If 
+ * typeAhead is also enabled, this value must always be less than the typeAheadDelay
+ * in order to avoid certain race conditions. 
+ *
+ * @property queryDelay
+ * @type Number
+ * @default 0.2
+ */
+YAHOO.widget.AutoComplete.prototype.queryDelay = 0.2;
+
+/**
+ * If typeAhead is true, number of seconds to delay before updating input with
+ * typeAhead value. In order to prevent certain race conditions, this value must
+ * always be greater than the queryDelay.
+ *
+ * @property typeAheadDelay
+ * @type Number
+ * @default 0.5
+ */
+YAHOO.widget.AutoComplete.prototype.typeAheadDelay = 0.5;
+
+/**
+ * When IME usage is detected or interval detection is explicitly enabled,
+ * AutoComplete will detect the input value at the given interval and send a
+ * query if the value has changed.
+ *
+ * @property queryInterval
+ * @type Number
+ * @default 500
+ */
+YAHOO.widget.AutoComplete.prototype.queryInterval = 500;
+
+/**
+ * Class name of a highlighted item within results container.
+ *
+ * @property highlightClassName
+ * @type String
+ * @default "yui-ac-highlight"
+ */
+YAHOO.widget.AutoComplete.prototype.highlightClassName = "yui-ac-highlight";
+
+/**
+ * Class name of a pre-highlighted item within results container.
+ *
+ * @property prehighlightClassName
+ * @type String
+ */
+YAHOO.widget.AutoComplete.prototype.prehighlightClassName = null;
+
+/**
+ * Query delimiter. A single character separator for multiple delimited
+ * selections. Multiple delimiter characteres may be defined as an array of
+ * strings. A null value or empty string indicates that query results cannot
+ * be delimited. This feature is not recommended if you need forceSelection to
+ * be true.
+ *
+ * @property delimChar
+ * @type String | String[]
+ */
+YAHOO.widget.AutoComplete.prototype.delimChar = null;
+
+/**
+ * Whether or not the first item in results container should be automatically highlighted
+ * on expand.
+ *
+ * @property autoHighlight
+ * @type Boolean
+ * @default true
+ */
+YAHOO.widget.AutoComplete.prototype.autoHighlight = true;
+
+/**
+ * If autohighlight is enabled, whether or not the input field should be automatically updated
+ * with the first query result as the user types, auto-selecting the substring portion
+ * of the first result that the user has not yet typed.
+ *
+ * @property typeAhead
+ * @type Boolean
+ * @default false
+ */
+YAHOO.widget.AutoComplete.prototype.typeAhead = false;
+
+/**
+ * Whether or not to animate the expansion/collapse of the results container in the
+ * horizontal direction.
+ *
+ * @property animHoriz
+ * @type Boolean
+ * @default false
+ */
+YAHOO.widget.AutoComplete.prototype.animHoriz = false;
+
+/**
+ * Whether or not to animate the expansion/collapse of the results container in the
+ * vertical direction.
+ *
+ * @property animVert
+ * @type Boolean
+ * @default true
+ */
+YAHOO.widget.AutoComplete.prototype.animVert = true;
+
+/**
+ * Speed of container expand/collapse animation, in seconds..
+ *
+ * @property animSpeed
+ * @type Number
+ * @default 0.3
+ */
+YAHOO.widget.AutoComplete.prototype.animSpeed = 0.3;
+
+/**
+ * Whether or not to force the user's selection to match one of the query
+ * results. Enabling this feature essentially transforms the input field into a
+ * &lt;select&gt; field. This feature is not recommended with delimiter character(s)
+ * defined.
+ *
+ * @property forceSelection
+ * @type Boolean
+ * @default false
+ */
+YAHOO.widget.AutoComplete.prototype.forceSelection = false;
+
+/**
+ * Whether or not to allow browsers to cache user-typed input in the input
+ * field. Disabling this feature will prevent the widget from setting the
+ * autocomplete="off" on the input field. When autocomplete="off"
+ * and users click the back button after form submission, user-typed input can
+ * be prefilled by the browser from its cache. This caching of user input may
+ * not be desired for sensitive data, such as credit card numbers, in which
+ * case, implementers should consider setting allowBrowserAutocomplete to false.
+ *
+ * @property allowBrowserAutocomplete
+ * @type Boolean
+ * @default true
+ */
+YAHOO.widget.AutoComplete.prototype.allowBrowserAutocomplete = true;
+
+/**
+ * Enabling this feature prevents the toggling of the container to a collapsed state.
+ * Setting to true does not automatically trigger the opening of the container.
+ * Implementers are advised to pre-load the container with an explicit "sendQuery()" call.   
+ *
+ * @property alwaysShowContainer
+ * @type Boolean
+ * @default false
+ */
+YAHOO.widget.AutoComplete.prototype.alwaysShowContainer = false;
+
+/**
+ * Whether or not to use an iFrame to layer over Windows form elements in
+ * IE. Set to true only when the results container will be on top of a
+ * &lt;select&gt; field in IE and thus exposed to the IE z-index bug (i.e.,
+ * 5.5 < IE < 7).
+ *
+ * @property useIFrame
+ * @type Boolean
+ * @default false
+ */
+YAHOO.widget.AutoComplete.prototype.useIFrame = false;
+
+/**
+ * Whether or not the results container should have a shadow.
+ *
+ * @property useShadow
+ * @type Boolean
+ * @default false
+ */
+YAHOO.widget.AutoComplete.prototype.useShadow = false;
+
+/**
+ * Whether or not the input field should be updated with selections.
+ *
+ * @property suppressInputUpdate
+ * @type Boolean
+ * @default false
+ */
+YAHOO.widget.AutoComplete.prototype.suppressInputUpdate = false;
+
+/**
+ * For backward compatibility to pre-2.6.0 formatResults() signatures, setting
+ * resultsTypeList to true will take each object literal result returned by
+ * DataSource and flatten into an array.  
+ *
+ * @property resultTypeList
+ * @type Boolean
+ * @default true
+ */
+YAHOO.widget.AutoComplete.prototype.resultTypeList = true;
+
+/**
+ * For XHR DataSources, AutoComplete will automatically insert a "?" between the server URI and 
+ * the "query" param/value pair. To prevent this behavior, implementers should
+ * set this value to false. To more fully customize the query syntax, implementers
+ * should override the generateRequest() method. 
+ *
+ * @property queryQuestionMark
+ * @type Boolean
+ * @default true
+ */
+YAHOO.widget.AutoComplete.prototype.queryQuestionMark = true;
+
+/**
+ * If true, before each time the container expands, the container element will be
+ * positioned to snap to the bottom-left corner of the input element. If
+ * autoSnapContainer is set to false, this positioning will not be done.  
+ *
+ * @property autoSnapContainer
+ * @type Boolean
+ * @default true
+ */
+YAHOO.widget.AutoComplete.prototype.autoSnapContainer = true;
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Public methods
+//
+/////////////////////////////////////////////////////////////////////////////
+
+ /**
+ * Public accessor to the unique name of the AutoComplete instance.
+ *
+ * @method toString
+ * @return {String} Unique name of the AutoComplete instance.
+ */
+YAHOO.widget.AutoComplete.prototype.toString = function() {
+    return "AutoComplete " + this._sName;
+};
+
+ /**
+ * Returns DOM reference to input element.
+ *
+ * @method getInputEl
+ * @return {HTMLELement} DOM reference to input element.
+ */
+YAHOO.widget.AutoComplete.prototype.getInputEl = function() {
+    return this._elTextbox;
+};
+
+ /**
+ * Returns DOM reference to container element.
+ *
+ * @method getContainerEl
+ * @return {HTMLELement} DOM reference to container element.
+ */
+YAHOO.widget.AutoComplete.prototype.getContainerEl = function() {
+    return this._elContainer;
+};
+
+ /**
+ * Returns true if widget instance is currently active.
+ *
+ * @method isFocused
+ * @return {Boolean} Returns true if widget instance is currently active.
+ */
+YAHOO.widget.AutoComplete.prototype.isFocused = function() {
+    return this._bFocused;
+};
+
+ /**
+ * Returns true if container is in an expanded state, false otherwise.
+ *
+ * @method isContainerOpen
+ * @return {Boolean} Returns true if container is in an expanded state, false otherwise.
+ */
+YAHOO.widget.AutoComplete.prototype.isContainerOpen = function() {
+    return this._bContainerOpen;
+};
+
+/**
+ * Public accessor to the &lt;ul&gt; element that displays query results within the results container.
+ *
+ * @method getListEl
+ * @return {HTMLElement[]} Reference to &lt;ul&gt; element within the results container.
+ */
+YAHOO.widget.AutoComplete.prototype.getListEl = function() {
+    return this._elList;
+};
+
+/**
+ * Public accessor to the matching string associated with a given &lt;li&gt; result.
+ *
+ * @method getListItemMatch
+ * @param elListItem {HTMLElement} Reference to &lt;LI&gt; element.
+ * @return {String} Matching string.
+ */
+YAHOO.widget.AutoComplete.prototype.getListItemMatch = function(elListItem) {
+    if(elListItem._sResultMatch) {
+        return elListItem._sResultMatch;
+    }
+    else {
+        return null;
+    }
+};
+
+/**
+ * Public accessor to the result data associated with a given &lt;li&gt; result.
+ *
+ * @method getListItemData
+ * @param elListItem {HTMLElement} Reference to &lt;LI&gt; element.
+ * @return {Object} Result data.
+ */
+YAHOO.widget.AutoComplete.prototype.getListItemData = function(elListItem) {
+    if(elListItem._oResultData) {
+        return elListItem._oResultData;
+    }
+    else {
+        return null;
+    }
+};
+
+/**
+ * Public accessor to the index of the associated with a given &lt;li&gt; result.
+ *
+ * @method getListItemIndex
+ * @param elListItem {HTMLElement} Reference to &lt;LI&gt; element.
+ * @return {Number} Index.
+ */
+YAHOO.widget.AutoComplete.prototype.getListItemIndex = function(elListItem) {
+    if(YAHOO.lang.isNumber(elListItem._nItemIndex)) {
+        return elListItem._nItemIndex;
+    }
+    else {
+        return null;
+    }
+};
+
+/**
+ * Sets HTML markup for the results container header. This markup will be
+ * inserted within a &lt;div&gt; tag with a class of "yui-ac-hd".
+ *
+ * @method setHeader
+ * @param sHeader {String} HTML markup for results container header.
+ */
+YAHOO.widget.AutoComplete.prototype.setHeader = function(sHeader) {
+    if(this._elHeader) {
+        var elHeader = this._elHeader;
+        if(sHeader) {
+            elHeader.innerHTML = sHeader;
+            elHeader.style.display = "";
+        }
+        else {
+            elHeader.innerHTML = "";
+            elHeader.style.display = "none";
+        }
+    }
+};
+
+/**
+ * Sets HTML markup for the results container footer. This markup will be
+ * inserted within a &lt;div&gt; tag with a class of "yui-ac-ft".
+ *
+ * @method setFooter
+ * @param sFooter {String} HTML markup for results container footer.
+ */
+YAHOO.widget.AutoComplete.prototype.setFooter = function(sFooter) {
+    if(this._elFooter) {
+        var elFooter = this._elFooter;
+        if(sFooter) {
+                elFooter.innerHTML = sFooter;
+                elFooter.style.display = "";
+        }
+        else {
+            elFooter.innerHTML = "";
+            elFooter.style.display = "none";
+        }
+    }
+};
+
+/**
+ * Sets HTML markup for the results container body. This markup will be
+ * inserted within a &lt;div&gt; tag with a class of "yui-ac-bd".
+ *
+ * @method setBody
+ * @param sBody {String} HTML markup for results container body.
+ */
+YAHOO.widget.AutoComplete.prototype.setBody = function(sBody) {
+    if(this._elBody) {
+        var elBody = this._elBody;
+        YAHOO.util.Event.purgeElement(elBody, true);
+        if(sBody) {
+            elBody.innerHTML = sBody;
+            elBody.style.display = "";
+        }
+        else {
+            elBody.innerHTML = "";
+            elBody.style.display = "none";
+        }
+        this._elList = null;
+    }
+};
+
+/**
+* A function that converts an AutoComplete query into a request value which is then
+* passed to the DataSource's sendRequest method in order to retrieve data for 
+* the query. By default, returns a String with the syntax: "query={query}"
+* Implementers can customize this method for custom request syntaxes.
+* 
+* @method generateRequest
+* @param sQuery {String} Query string
+* @return {MIXED} Request
+*/
+YAHOO.widget.AutoComplete.prototype.generateRequest = function(sQuery) {
+    var dataType = this.dataSource.dataType;
+    
+    // Transform query string in to a request for remote data
+    // By default, local data doesn't need a transformation, just passes along the query as is.
+    if(dataType === YAHOO.util.DataSourceBase.TYPE_XHR) {
+        // By default, XHR GET requests look like "{scriptURI}?{scriptQueryParam}={sQuery}&{scriptQueryAppend}"
+        if(!this.dataSource.connMethodPost) {
+            sQuery = (this.queryQuestionMark ? "?" : "") + (this.dataSource.scriptQueryParam || "query") + "=" + sQuery + 
+                (this.dataSource.scriptQueryAppend ? ("&" + this.dataSource.scriptQueryAppend) : "");        
+        }
+        // By default, XHR POST bodies are sent to the {scriptURI} like "{scriptQueryParam}={sQuery}&{scriptQueryAppend}"
+        else {
+            sQuery = (this.dataSource.scriptQueryParam || "query") + "=" + sQuery + 
+                (this.dataSource.scriptQueryAppend ? ("&" + this.dataSource.scriptQueryAppend) : "");
+        }
+    }
+    // By default, remote script node requests look like "{scriptURI}&{scriptCallbackParam}={callbackString}&{scriptQueryParam}={sQuery}&{scriptQueryAppend}"
+    else if(dataType === YAHOO.util.DataSourceBase.TYPE_SCRIPTNODE) {
+        sQuery = "&" + (this.dataSource.scriptQueryParam || "query") + "=" + sQuery + 
+            (this.dataSource.scriptQueryAppend ? ("&" + this.dataSource.scriptQueryAppend) : "");    
+    }
+    
+    return sQuery;
+};
+
+/**
+ * Makes query request to the DataSource.
+ *
+ * @method sendQuery
+ * @param sQuery {String} Query string.
+ */
+YAHOO.widget.AutoComplete.prototype.sendQuery = function(sQuery) {
+    // Activate focus for a new interaction
+    this._bFocused = true;
+    
+    // Adjust programatically sent queries to look like they were input by user
+    // when delimiters are enabled
+    var newQuery = (this.delimChar) ? this._elTextbox.value + sQuery : sQuery;
+    this._sendQuery(newQuery);
+};
+
+/**
+ * Snaps container to bottom-left corner of input element
+ *
+ * @method snapContainer
+ */
+YAHOO.widget.AutoComplete.prototype.snapContainer = function() {
+    var oTextbox = this._elTextbox,
+        pos = YAHOO.util.Dom.getXY(oTextbox);
+    pos[1] += YAHOO.util.Dom.get(oTextbox).offsetHeight + 2;
+    YAHOO.util.Dom.setXY(this._elContainer,pos);
+};
+
+/**
+ * Expands container.
+ *
+ * @method expandContainer
+ */
+YAHOO.widget.AutoComplete.prototype.expandContainer = function() {
+    this._toggleContainer(true);
+};
+
+/**
+ * Collapses container.
+ *
+ * @method collapseContainer
+ */
+YAHOO.widget.AutoComplete.prototype.collapseContainer = function() {
+    this._toggleContainer(false);
+};
+
+/**
+ * Clears entire list of suggestions.
+ *
+ * @method clearList
+ */
+YAHOO.widget.AutoComplete.prototype.clearList = function() {
+    var allItems = this._elList.childNodes,
+        i=allItems.length-1;
+    for(; i>-1; i--) {
+          allItems[i].style.display = "none";
+    }
+};
+
+/**
+ * Handles subset matching for when queryMatchSubset is enabled.
+ *
+ * @method getSubsetMatches
+ * @param sQuery {String} Query string.
+ * @return {Object} oParsedResponse or null. 
+ */
+YAHOO.widget.AutoComplete.prototype.getSubsetMatches = function(sQuery) {
+    var subQuery, oCachedResponse, subRequest;
+    // Loop through substrings of each cached element's query property...
+    for(var i = sQuery.length; i >= this.minQueryLength ; i--) {
+        subRequest = this.generateRequest(sQuery.substr(0,i));
+        this.dataRequestEvent.fire(this, subQuery, subRequest);
+        YAHOO.log("Searching for query subset \"" + subQuery + "\" in cache", "info", this.toString());
+        
+        // If a substring of the query is found in the cache
+        oCachedResponse = this.dataSource.getCachedResponse(subRequest);
+        if(oCachedResponse) {
+            YAHOO.log("Found match for query subset \"" + subQuery + "\": " + YAHOO.lang.dump(oCachedResponse), "info", this.toString());
+            return this.filterResults.apply(this.dataSource, [sQuery, oCachedResponse, oCachedResponse, {scope:this}]);
+        }
+    }
+    YAHOO.log("Did not find subset match for query subset \"" + sQuery + "\"" , "info", this.toString());
+    return null;
+};
+
+/**
+ * Executed by DataSource (within DataSource scope via doBeforeParseData()) to
+ * handle responseStripAfter cleanup.
+ *
+ * @method preparseRawResponse
+ * @param sQuery {String} Query string.
+ * @return {Object} oParsedResponse or null. 
+ */
+YAHOO.widget.AutoComplete.prototype.preparseRawResponse = function(oRequest, oFullResponse, oCallback) {
+    var nEnd = ((this.responseStripAfter !== "") && (oFullResponse.indexOf)) ?
+        oFullResponse.indexOf(this.responseStripAfter) : -1;
+    if(nEnd != -1) {
+        oFullResponse = oFullResponse.substring(0,nEnd);
+    }
+    return oFullResponse;
+};
+
+/**
+ * Executed by DataSource (within DataSource scope via doBeforeCallback()) to
+ * filter results through a simple client-side matching algorithm. 
+ *
+ * @method filterResults
+ * @param sQuery {String} Original request.
+ * @param oFullResponse {Object} Full response object.
+ * @param oParsedResponse {Object} Parsed response object.
+ * @param oCallback {Object} Callback object. 
+ * @return {Object} Filtered response object.
+ */
+
+YAHOO.widget.AutoComplete.prototype.filterResults = function(sQuery, oFullResponse, oParsedResponse, oCallback) {
+    // If AC has passed a query string value back to itself, grab it
+    if(oCallback && oCallback.argument && oCallback.argument.query) {
+        sQuery = oCallback.argument.query;
+    }
+
+    // Only if a query string is available to match against
+    if(sQuery && sQuery !== "") {
+        // First make a copy of the oParseResponse
+        oParsedResponse = YAHOO.widget.AutoComplete._cloneObject(oParsedResponse);
+        
+        var oAC = oCallback.scope,
+            oDS = this,
+            allResults = oParsedResponse.results, // the array of results
+            filteredResults = [], // container for filtered results,
+            nMax = oAC.maxResultsDisplayed, // max to find
+            bMatchCase = (oDS.queryMatchCase || oAC.queryMatchCase), // backward compat
+            bMatchContains = (oDS.queryMatchContains || oAC.queryMatchContains); // backward compat
+            
+        // Loop through each result object...
+        for(var i=0, len=allResults.length; i<len; i++) {
+            var oResult = allResults[i];
+
+            // Grab the data to match against from the result object...
+            var sResult = null;
+            
+            // Result object is a simple string already
+            if(YAHOO.lang.isString(oResult)) {
+                sResult = oResult;
+            }
+            // Result object is an array of strings
+            else if(YAHOO.lang.isArray(oResult)) {
+                sResult = oResult[0];
+            
+            }
+            // Result object is an object literal of strings
+            else if(this.responseSchema.fields) {
+                var key = this.responseSchema.fields[0].key || this.responseSchema.fields[0];
+                sResult = oResult[key];
+            }
+            // Backwards compatibility
+            else if(this.key) {
+                sResult = oResult[this.key];
+            }
+            
+            if(YAHOO.lang.isString(sResult)) {
+                
+                var sKeyIndex = (bMatchCase) ?
+                sResult.indexOf(decodeURIComponent(sQuery)) :
+                sResult.toLowerCase().indexOf(decodeURIComponent(sQuery).toLowerCase());
+
+                // A STARTSWITH match is when the query is found at the beginning of the key string...
+                if((!bMatchContains && (sKeyIndex === 0)) ||
+                // A CONTAINS match is when the query is found anywhere within the key string...
+                (bMatchContains && (sKeyIndex > -1))) {
+                    // Stash the match
+                    filteredResults.push(oResult);
+                }
+            }
+            
+            // Filter no more if maxResultsDisplayed is reached
+            if(len>nMax && filteredResults.length===nMax) {
+                break;
+            }
+        }
+        oParsedResponse.results = filteredResults;
+        YAHOO.log("Filtered " + filteredResults.length + " results against query \""  + sQuery + "\": " + YAHOO.lang.dump(filteredResults), "info", this.toString());
+    }
+    else {
+        YAHOO.log("Did not filter results against query", "info", this.toString());
+    }
+    
+    return oParsedResponse;
+};
+
+/**
+ * Handles response for display. This is the callback function method passed to
+ * YAHOO.util.DataSourceBase#sendRequest so results from the DataSource are
+ * returned to the AutoComplete instance.
+ *
+ * @method handleResponse
+ * @param sQuery {String} Original request.
+ * @param oResponse {Object} Response object.
+ * @param oPayload {MIXED} (optional) Additional argument(s)
+ */
+YAHOO.widget.AutoComplete.prototype.handleResponse = function(sQuery, oResponse, oPayload) {
+    if((this instanceof YAHOO.widget.AutoComplete) && this._sName) {
+        this._populateList(sQuery, oResponse, oPayload);
+    }
+};
+
+/**
+ * Overridable method called before container is loaded with result data.
+ *
+ * @method doBeforeLoadData
+ * @param sQuery {String} Original request.
+ * @param oResponse {Object} Response object.
+ * @param oPayload {MIXED} (optional) Additional argument(s)
+ * @return {Boolean} Return true to continue loading data, false to cancel.
+ */
+YAHOO.widget.AutoComplete.prototype.doBeforeLoadData = function(sQuery, oResponse, oPayload) {
+    return true;
+};
+
+/**
+ * Overridable method that returns HTML markup for one result to be populated
+ * as innerHTML of an &lt;LI&gt; element. 
+ *
+ * @method formatResult
+ * @param oResultData {Object} Result data object.
+ * @param sQuery {String} The corresponding query string.
+ * @param sResultMatch {HTMLElement} The current query string. 
+ * @return {String} HTML markup of formatted result data.
+ */
+YAHOO.widget.AutoComplete.prototype.formatResult = function(oResultData, sQuery, sResultMatch) {
+    var sMarkup = (sResultMatch) ? sResultMatch : "";
+    return sMarkup;
+};
+
+/**
+ * Overridable method called before container expands allows implementers to access data
+ * and DOM elements.
+ *
+ * @method doBeforeExpandContainer
+ * @param elTextbox {HTMLElement} The text input box.
+ * @param elContainer {HTMLElement} The container element.
+ * @param sQuery {String} The query string.
+ * @param aResults {Object[]}  An array of query results.
+ * @return {Boolean} Return true to continue expanding container, false to cancel the expand.
+ */
+YAHOO.widget.AutoComplete.prototype.doBeforeExpandContainer = function(elTextbox, elContainer, sQuery, aResults) {
+    return true;
+};
+
+
+/**
+ * Nulls out the entire AutoComplete instance and related objects, removes attached
+ * event listeners, and clears out DOM elements inside the container. After
+ * calling this method, the instance reference should be expliclitly nulled by
+ * implementer, as in myAutoComplete = null. Use with caution!
+ *
+ * @method destroy
+ */
+YAHOO.widget.AutoComplete.prototype.destroy = function() {
+    var instanceName = this.toString();
+    var elInput = this._elTextbox;
+    var elContainer = this._elContainer;
+
+    // Unhook custom events
+    this.textboxFocusEvent.unsubscribeAll();
+    this.textboxKeyEvent.unsubscribeAll();
+    this.dataRequestEvent.unsubscribeAll();
+    this.dataReturnEvent.unsubscribeAll();
+    this.dataErrorEvent.unsubscribeAll();
+    this.containerPopulateEvent.unsubscribeAll();
+    this.containerExpandEvent.unsubscribeAll();
+    this.typeAheadEvent.unsubscribeAll();
+    this.itemMouseOverEvent.unsubscribeAll();
+    this.itemMouseOutEvent.unsubscribeAll();
+    this.itemArrowToEvent.unsubscribeAll();
+    this.itemArrowFromEvent.unsubscribeAll();
+    this.itemSelectEvent.unsubscribeAll();
+    this.unmatchedItemSelectEvent.unsubscribeAll();
+    this.selectionEnforceEvent.unsubscribeAll();
+    this.containerCollapseEvent.unsubscribeAll();
+    this.textboxBlurEvent.unsubscribeAll();
+    this.textboxChangeEvent.unsubscribeAll();
+
+    // Unhook DOM events
+    YAHOO.util.Event.purgeElement(elInput, true);
+    YAHOO.util.Event.purgeElement(elContainer, true);
+
+    // Remove DOM elements
+    elContainer.innerHTML = "";
+
+    // Null out objects
+    for(var key in this) {
+        if(YAHOO.lang.hasOwnProperty(this, key)) {
+            this[key] = null;
+        }
+    }
+
+    YAHOO.log("AutoComplete instance destroyed: " + instanceName);
+};
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Public events
+//
+/////////////////////////////////////////////////////////////////////////////
+
+/**
+ * Fired when the input field receives focus.
+ *
+ * @event textboxFocusEvent
+ * @param oSelf {YAHOO.widget.AutoComplete} The AutoComplete instance.
+ */
+YAHOO.widget.AutoComplete.prototype.textboxFocusEvent = null;
+
+/**
+ * Fired when the input field receives key input.
+ *
+ * @event textboxKeyEvent
+ * @param oSelf {YAHOO.widget.AutoComplete} The AutoComplete instance.
+ * @param nKeycode {Number} The keycode number.
+ */
+YAHOO.widget.AutoComplete.prototype.textboxKeyEvent = null;
+
+/**
+ * Fired when the AutoComplete instance makes a request to the DataSource.
+ * 
+ * @event dataRequestEvent
+ * @param oSelf {YAHOO.widget.AutoComplete} The AutoComplete instance.
+ * @param sQuery {String} The query string. 
+ * @param oRequest {Object} The request.
+ */
+YAHOO.widget.AutoComplete.prototype.dataRequestEvent = null;
+
+/**
+ * Fired when the AutoComplete instance receives query results from the data
+ * source.
+ *
+ * @event dataReturnEvent
+ * @param oSelf {YAHOO.widget.AutoComplete} The AutoComplete instance.
+ * @param sQuery {String} The query string.
+ * @param aResults {Object[]} Results array.
+ */
+YAHOO.widget.AutoComplete.prototype.dataReturnEvent = null;
+
+/**
+ * Fired when the AutoComplete instance does not receive query results from the
+ * DataSource due to an error.
+ *
+ * @event dataErrorEvent
+ * @param oSelf {YAHOO.widget.AutoComplete} The AutoComplete instance.
+ * @param sQuery {String} The query string.
+ * @param oResponse {Object} The response object, if available.
+ */
+YAHOO.widget.AutoComplete.prototype.dataErrorEvent = null;
+
+/**
+ * Fired when the results container is populated.
+ *
+ * @event containerPopulateEvent
+ * @param oSelf {YAHOO.widget.AutoComplete} The AutoComplete instance.
+ */
+YAHOO.widget.AutoComplete.prototype.containerPopulateEvent = null;
+
+/**
+ * Fired when the results container is expanded.
+ *
+ * @event containerExpandEvent
+ * @param oSelf {YAHOO.widget.AutoComplete} The AutoComplete instance.
+ */
+YAHOO.widget.AutoComplete.prototype.containerExpandEvent = null;
+
+/**
+ * Fired when the input field has been prefilled by the type-ahead
+ * feature. 
+ *
+ * @event typeAheadEvent
+ * @param oSelf {YAHOO.widget.AutoComplete} The AutoComplete instance.
+ * @param sQuery {String} The query string.
+ * @param sPrefill {String} The prefill string.
+ */
+YAHOO.widget.AutoComplete.prototype.typeAheadEvent = null;
+
+/**
+ * Fired when result item has been moused over.
+ *
+ * @event itemMouseOverEvent
+ * @param oSelf {YAHOO.widget.AutoComplete} The AutoComplete instance.
+ * @param elItem {HTMLElement} The &lt;li&gt element item moused to.
+ */
+YAHOO.widget.AutoComplete.prototype.itemMouseOverEvent = null;
+
+/**
+ * Fired when result item has been moused out.
+ *
+ * @event itemMouseOutEvent
+ * @param oSelf {YAHOO.widget.AutoComplete} The AutoComplete instance.
+ * @param elItem {HTMLElement} The &lt;li&gt; element item moused from.
+ */
+YAHOO.widget.AutoComplete.prototype.itemMouseOutEvent = null;
+
+/**
+ * Fired when result item has been arrowed to. 
+ *
+ * @event itemArrowToEvent
+ * @param oSelf {YAHOO.widget.AutoComplete} The AutoComplete instance.
+ * @param elItem {HTMLElement} The &lt;li&gt; element item arrowed to.
+ */
+YAHOO.widget.AutoComplete.prototype.itemArrowToEvent = null;
+
+/**
+ * Fired when result item has been arrowed away from.
+ *
+ * @event itemArrowFromEvent
+ * @param oSelf {YAHOO.widget.AutoComplete} The AutoComplete instance.
+ * @param elItem {HTMLElement} The &lt;li&gt; element item arrowed from.
+ */
+YAHOO.widget.AutoComplete.prototype.itemArrowFromEvent = null;
+
+/**
+ * Fired when an item is selected via mouse click, ENTER key, or TAB key.
+ *
+ * @event itemSelectEvent
+ * @param oSelf {YAHOO.widget.AutoComplete} The AutoComplete instance.
+ * @param elItem {HTMLElement} The selected &lt;li&gt; element item.
+ * @param oData {Object} The data returned for the item, either as an object,
+ * or mapped from the schema into an array.
+ */
+YAHOO.widget.AutoComplete.prototype.itemSelectEvent = null;
+
+/**
+ * Fired when a user selection does not match any of the displayed result items.
+ *
+ * @event unmatchedItemSelectEvent
+ * @param oSelf {YAHOO.widget.AutoComplete} The AutoComplete instance.
+ * @param sSelection {String} The selected string.  
+ */
+YAHOO.widget.AutoComplete.prototype.unmatchedItemSelectEvent = null;
+
+/**
+ * Fired if forceSelection is enabled and the user's input has been cleared
+ * because it did not match one of the returned query results.
+ *
+ * @event selectionEnforceEvent
+ * @param oSelf {YAHOO.widget.AutoComplete} The AutoComplete instance.
+ * @param sClearedValue {String} The cleared value (including delimiters if applicable). 
+ */
+YAHOO.widget.AutoComplete.prototype.selectionEnforceEvent = null;
+
+/**
+ * Fired when the results container is collapsed.
+ *
+ * @event containerCollapseEvent
+ * @param oSelf {YAHOO.widget.AutoComplete} The AutoComplete instance.
+ */
+YAHOO.widget.AutoComplete.prototype.containerCollapseEvent = null;
+
+/**
+ * Fired when the input field loses focus.
+ *
+ * @event textboxBlurEvent
+ * @param oSelf {YAHOO.widget.AutoComplete} The AutoComplete instance.
+ */
+YAHOO.widget.AutoComplete.prototype.textboxBlurEvent = null;
+
+/**
+ * Fired when the input field value has changed when it loses focus.
+ *
+ * @event textboxChangeEvent
+ * @param oSelf {YAHOO.widget.AutoComplete} The AutoComplete instance.
+ */
+YAHOO.widget.AutoComplete.prototype.textboxChangeEvent = null;
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Private member variables
+//
+/////////////////////////////////////////////////////////////////////////////
+
+/**
+ * Internal class variable to index multiple AutoComplete instances.
+ *
+ * @property _nIndex
+ * @type Number
+ * @default 0
+ * @private
+ */
+YAHOO.widget.AutoComplete._nIndex = 0;
+
+/**
+ * Name of AutoComplete instance.
+ *
+ * @property _sName
+ * @type String
+ * @private
+ */
+YAHOO.widget.AutoComplete.prototype._sName = null;
+
+/**
+ * Text input field DOM element.
+ *
+ * @property _elTextbox
+ * @type HTMLElement
+ * @private
+ */
+YAHOO.widget.AutoComplete.prototype._elTextbox = null;
+
+/**
+ * Container DOM element.
+ *
+ * @property _elContainer
+ * @type HTMLElement
+ * @private
+ */
+YAHOO.widget.AutoComplete.prototype._elContainer = null;
+
+/**
+ * Reference to content element within container element.
+ *
+ * @property _elContent
+ * @type HTMLElement
+ * @private
+ */
+YAHOO.widget.AutoComplete.prototype._elContent = null;
+
+/**
+ * Reference to header element within content element.
+ *
+ * @property _elHeader
+ * @type HTMLElement
+ * @private
+ */
+YAHOO.widget.AutoComplete.prototype._elHeader = null;
+
+/**
+ * Reference to body element within content element.
+ *
+ * @property _elBody
+ * @type HTMLElement
+ * @private
+ */
+YAHOO.widget.AutoComplete.prototype._elBody = null;
+
+/**
+ * Reference to footer element within content element.
+ *
+ * @property _elFooter
+ * @type HTMLElement
+ * @private
+ */
+YAHOO.widget.AutoComplete.prototype._elFooter = null;
+
+/**
+ * Reference to shadow element within container element.
+ *
+ * @property _elShadow
+ * @type HTMLElement
+ * @private
+ */
+YAHOO.widget.AutoComplete.prototype._elShadow = null;
+
+/**
+ * Reference to iframe element within container element.
+ *
+ * @property _elIFrame
+ * @type HTMLElement
+ * @private
+ */
+YAHOO.widget.AutoComplete.prototype._elIFrame = null;
+
+/**
+ * Whether or not the widget instance is currently active. If query results come back
+ * but the user has already moved on, do not proceed with auto complete behavior.
+ *
+ * @property _bFocused
+ * @type Boolean
+ * @private
+ */
+YAHOO.widget.AutoComplete.prototype._bFocused = false;
+
+/**
+ * Animation instance for container expand/collapse.
+ *
+ * @property _oAnim
+ * @type Boolean
+ * @private
+ */
+YAHOO.widget.AutoComplete.prototype._oAnim = null;
+
+/**
+ * Whether or not the results container is currently open.
+ *
+ * @property _bContainerOpen
+ * @type Boolean
+ * @private
+ */
+YAHOO.widget.AutoComplete.prototype._bContainerOpen = false;
+
+/**
+ * Whether or not the mouse is currently over the results
+ * container. This is necessary in order to prevent clicks on container items
+ * from being text input field blur events.
+ *
+ * @property _bOverContainer
+ * @type Boolean
+ * @private
+ */
+YAHOO.widget.AutoComplete.prototype._bOverContainer = false;
+
+/**
+ * Internal reference to &lt;ul&gt; elements that contains query results within the
+ * results container.
+ *
+ * @property _elList
+ * @type HTMLElement
+ * @private
+ */
+YAHOO.widget.AutoComplete.prototype._elList = null;
+
+/*
+ * Array of &lt;li&gt; elements references that contain query results within the
+ * results container.
+ *
+ * @property _aListItemEls
+ * @type HTMLElement[]
+ * @private
+ */
+//YAHOO.widget.AutoComplete.prototype._aListItemEls = null;
+
+/**
+ * Number of &lt;li&gt; elements currently displayed in results container.
+ *
+ * @property _nDisplayedItems
+ * @type Number
+ * @private
+ */
+YAHOO.widget.AutoComplete.prototype._nDisplayedItems = 0;
+
+/*
+ * Internal count of &lt;li&gt; elements displayed and hidden in results container.
+ *
+ * @property _maxResultsDisplayed
+ * @type Number
+ * @private
+ */
+//YAHOO.widget.AutoComplete.prototype._maxResultsDisplayed = 0;
+
+/**
+ * Current query string
+ *
+ * @property _sCurQuery
+ * @type String
+ * @private
+ */
+YAHOO.widget.AutoComplete.prototype._sCurQuery = null;
+
+/**
+ * Selections from previous queries (for saving delimited queries).
+ *
+ * @property _sPastSelections
+ * @type String
+ * @default "" 
+ * @private
+ */
+YAHOO.widget.AutoComplete.prototype._sPastSelections = "";
+
+/**
+ * Stores initial input value used to determine if textboxChangeEvent should be fired.
+ *
+ * @property _sInitInputValue
+ * @type String
+ * @private
+ */
+YAHOO.widget.AutoComplete.prototype._sInitInputValue = null;
+
+/**
+ * Pointer to the currently highlighted &lt;li&gt; element in the container.
+ *
+ * @property _elCurListItem
+ * @type HTMLElement
+ * @private
+ */
+YAHOO.widget.AutoComplete.prototype._elCurListItem = null;
+
+/**
+ * Pointer to the currently pre-highlighted &lt;li&gt; element in the container.
+ *
+ * @property _elCurPrehighlightItem
+ * @type HTMLElement
+ * @private
+ */
+YAHOO.widget.AutoComplete.prototype._elCurPrehighlightItem = null;
+
+/**
+ * Whether or not an item has been selected since the container was populated
+ * with results. Reset to false by _populateList, and set to true when item is
+ * selected.
+ *
+ * @property _bItemSelected
+ * @type Boolean
+ * @private
+ */
+YAHOO.widget.AutoComplete.prototype._bItemSelected = false;
+
+/**
+ * Key code of the last key pressed in textbox.
+ *
+ * @property _nKeyCode
+ * @type Number
+ * @private
+ */
+YAHOO.widget.AutoComplete.prototype._nKeyCode = null;
+
+/**
+ * Delay timeout ID.
+ *
+ * @property _nDelayID
+ * @type Number
+ * @private
+ */
+YAHOO.widget.AutoComplete.prototype._nDelayID = -1;
+
+/**
+ * TypeAhead delay timeout ID.
+ *
+ * @property _nTypeAheadDelayID
+ * @type Number
+ * @private
+ */
+YAHOO.widget.AutoComplete.prototype._nTypeAheadDelayID = -1;
+
+/**
+ * Src to iFrame used when useIFrame = true. Supports implementations over SSL
+ * as well.
+ *
+ * @property _iFrameSrc
+ * @type String
+ * @private
+ */
+YAHOO.widget.AutoComplete.prototype._iFrameSrc = "javascript:false;";
+
+/**
+ * For users typing via certain IMEs, queries must be triggered by intervals,
+ * since key events yet supported across all browsers for all IMEs.
+ *
+ * @property _queryInterval
+ * @type Object
+ * @private
+ */
+YAHOO.widget.AutoComplete.prototype._queryInterval = null;
+
+/**
+ * Internal tracker to last known textbox value, used to determine whether or not
+ * to trigger a query via interval for certain IME users.
+ *
+ * @event _sLastTextboxValue
+ * @type String
+ * @private
+ */
+YAHOO.widget.AutoComplete.prototype._sLastTextboxValue = null;
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Private methods
+//
+/////////////////////////////////////////////////////////////////////////////
+
+/**
+ * Updates and validates latest public config properties.
+ *
+ * @method __initProps
+ * @private
+ */
+YAHOO.widget.AutoComplete.prototype._initProps = function() {
+    // Correct any invalid values
+    var minQueryLength = this.minQueryLength;
+    if(!YAHOO.lang.isNumber(minQueryLength)) {
+        this.minQueryLength = 1;
+    }
+    var maxResultsDisplayed = this.maxResultsDisplayed;
+    if(!YAHOO.lang.isNumber(maxResultsDisplayed) || (maxResultsDisplayed < 1)) {
+        this.maxResultsDisplayed = 10;
+    }
+    var queryDelay = this.queryDelay;
+    if(!YAHOO.lang.isNumber(queryDelay) || (queryDelay < 0)) {
+        this.queryDelay = 0.2;
+    }
+    var typeAheadDelay = this.typeAheadDelay;
+    if(!YAHOO.lang.isNumber(typeAheadDelay) || (typeAheadDelay < 0)) {
+        this.typeAheadDelay = 0.2;
+    }
+    var delimChar = this.delimChar;
+    if(YAHOO.lang.isString(delimChar) && (delimChar.length > 0)) {
+        this.delimChar = [delimChar];
+    }
+    else if(!YAHOO.lang.isArray(delimChar)) {
+        this.delimChar = null;
+    }
+    var animSpeed = this.animSpeed;
+    if((this.animHoriz || this.animVert) && YAHOO.util.Anim) {
+        if(!YAHOO.lang.isNumber(animSpeed) || (animSpeed < 0)) {
+            this.animSpeed = 0.3;
+        }
+        if(!this._oAnim ) {
+            this._oAnim = new YAHOO.util.Anim(this._elContent, {}, this.animSpeed);
+        }
+        else {
+            this._oAnim.duration = this.animSpeed;
+        }
+    }
+    if(this.forceSelection && delimChar) {
+        YAHOO.log("The forceSelection feature has been enabled with delimChar defined.","warn", this.toString());
+    }
+};
+
+/**
+ * Initializes the results container helpers if they are enabled and do
+ * not exist
+ *
+ * @method _initContainerHelperEls
+ * @private
+ */
+YAHOO.widget.AutoComplete.prototype._initContainerHelperEls = function() {
+    if(this.useShadow && !this._elShadow) {
+        var elShadow = document.createElement("div");
+        elShadow.className = "yui-ac-shadow";
+        elShadow.style.width = 0;
+        elShadow.style.height = 0;
+        this._elShadow = this._elContainer.appendChild(elShadow);
+    }
+    if(this.useIFrame && !this._elIFrame) {
+        var elIFrame = document.createElement("iframe");
+        elIFrame.src = this._iFrameSrc;
+        elIFrame.frameBorder = 0;
+        elIFrame.scrolling = "no";
+        elIFrame.style.position = "absolute";
+        elIFrame.style.width = 0;
+        elIFrame.style.height = 0;
+        elIFrame.style.padding = 0;
+        elIFrame.tabIndex = -1;
+        elIFrame.role = "presentation";
+        elIFrame.title = "Presentational iframe shim";
+        this._elIFrame = this._elContainer.appendChild(elIFrame);
+    }
+};
+
+/**
+ * Initializes the results container once at object creation
+ *
+ * @method _initContainerEl
+ * @private
+ */
+YAHOO.widget.AutoComplete.prototype._initContainerEl = function() {
+    YAHOO.util.Dom.addClass(this._elContainer, "yui-ac-container");
+    
+    if(!this._elContent) {
+        // The elContent div is assigned DOM listeners and 
+        // helps size the iframe and shadow properly
+        var elContent = document.createElement("div");
+        elContent.className = "yui-ac-content";
+        elContent.style.display = "none";
+
+        this._elContent = this._elContainer.appendChild(elContent);
+
+        var elHeader = document.createElement("div");
+        elHeader.className = "yui-ac-hd";
+        elHeader.style.display = "none";
+        this._elHeader = this._elContent.appendChild(elHeader);
+
+        var elBody = document.createElement("div");
+        elBody.className = "yui-ac-bd";
+        this._elBody = this._elContent.appendChild(elBody);
+
+        var elFooter = document.createElement("div");
+        elFooter.className = "yui-ac-ft";
+        elFooter.style.display = "none";
+        this._elFooter = this._elContent.appendChild(elFooter);
+    }
+    else {
+        YAHOO.log("Could not initialize the container","warn",this.toString());
+    }
+};
+
+/**
+ * Clears out contents of container body and creates up to
+ * YAHOO.widget.AutoComplete#maxResultsDisplayed &lt;li&gt; elements in an
+ * &lt;ul&gt; element.
+ *
+ * @method _initListEl
+ * @private
+ */
+YAHOO.widget.AutoComplete.prototype._initListEl = function() {
+    var nListLength = this.maxResultsDisplayed,
+        elList = this._elList || document.createElement("ul"),
+        elListItem;
+    
+    while(elList.childNodes.length < nListLength) {
+        elListItem = document.createElement("li");
+        elListItem.style.display = "none";
+        elListItem._nItemIndex = elList.childNodes.length;
+        elList.appendChild(elListItem);
+    }
+    if(!this._elList) {
+        var elBody = this._elBody;
+        YAHOO.util.Event.purgeElement(elBody, true);
+        elBody.innerHTML = "";
+        this._elList = elBody.appendChild(elList);
+    }
+    
+    this._elBody.style.display = "";
+};
+
+/**
+ * Focuses input field.
+ *
+ * @method _focus
+ * @private
+ */
+YAHOO.widget.AutoComplete.prototype._focus = function() {
+    // http://developer.mozilla.org/en/docs/index.php?title=Key-navigable_custom_DHTML_widgets
+    var oSelf = this;
+    setTimeout(function() {
+        try {
+            oSelf._elTextbox.focus();
+        }
+        catch(e) {
+        }
+    },0);
+};
+
+/**
+ * Enables interval detection for IME support.
+ *
+ * @method _enableIntervalDetection
+ * @private
+ */
+YAHOO.widget.AutoComplete.prototype._enableIntervalDetection = function() {
+    var oSelf = this;
+    if(!oSelf._queryInterval && oSelf.queryInterval) {
+        oSelf._queryInterval = setInterval(function() { oSelf._onInterval(); }, oSelf.queryInterval);
+        YAHOO.log("Interval set", "info", this.toString());
+    }
+};
+
+/**
+ * Enables interval detection for a less performant but brute force mechanism to
+ * detect input values at an interval set by queryInterval and send queries if
+ * input value has changed. Needed to support right-click+paste or shift+insert
+ * edge cases. Please note that intervals are cleared at the end of each interaction,
+ * so enableIntervalDetection must be called for each new interaction. The
+ * recommended approach is to call it in response to textboxFocusEvent.
+ *
+ * @method enableIntervalDetection
+ */
+YAHOO.widget.AutoComplete.prototype.enableIntervalDetection =
+    YAHOO.widget.AutoComplete.prototype._enableIntervalDetection;
+
+/**
+ * Enables query triggers based on text input detection by intervals (rather
+ * than by key events).
+ *
+ * @method _onInterval
+ * @private
+ */
+YAHOO.widget.AutoComplete.prototype._onInterval = function() {
+    var currValue = this._elTextbox.value;
+    var lastValue = this._sLastTextboxValue;
+    if(currValue != lastValue) {
+        this._sLastTextboxValue = currValue;
+        this._sendQuery(currValue);
+    }
+};
+
+/**
+ * Cancels text input detection by intervals.
+ *
+ * @method _clearInterval
+ * @param oSelf {YAHOO.widget.AutoComplete} The AutoComplete instance.
+ * @private
+ */
+YAHOO.widget.AutoComplete.prototype._clearInterval = function() {
+    if(this._queryInterval) {
+        clearInterval(this._queryInterval);
+        this._queryInterval = null;
+        YAHOO.log("Interval cleared", "info", this.toString());
+    }
+};
+
+/**
+ * Whether or not key is functional or should be ignored. Note that the right
+ * arrow key is NOT an ignored key since it triggers queries for certain intl
+ * charsets.
+ *
+ * @method _isIgnoreKey
+ * @param nKeycode {Number} Code of key pressed.
+ * @return {Boolean} True if key should be ignored, false otherwise.
+ * @private
+ */
+YAHOO.widget.AutoComplete.prototype._isIgnoreKey = function(nKeyCode) {
+    if((nKeyCode == 9) || (nKeyCode == 13)  || // tab, enter
+            (nKeyCode == 16) || (nKeyCode == 17) || // shift, ctl
+            (nKeyCode >= 18 && nKeyCode <= 20) || // alt, pause/break,caps lock
+            (nKeyCode == 27) || // esc
+            (nKeyCode >= 33 && nKeyCode <= 35) || // page up,page down,end
+            /*(nKeyCode >= 36 && nKeyCode <= 38) || // home,left,up
+            (nKeyCode == 40) || // down*/
+            (nKeyCode >= 36 && nKeyCode <= 40) || // home,left,up, right, down
+            (nKeyCode >= 44 && nKeyCode <= 45) || // print screen,insert
+            (nKeyCode == 229) // Bug 2041973: Korean XP fires 2 keyup events, the key and 229
+        ) { 
+        return true;
+    }
+    return false;
+};
+
+/**
+ * Makes query request to the DataSource.
+ *
+ * @method _sendQuery
+ * @param sQuery {String} Query string.
+ * @private
+ */
+YAHOO.widget.AutoComplete.prototype._sendQuery = function(sQuery) {
+    // Widget has been effectively turned off
+    if(this.minQueryLength < 0) {
+        this._toggleContainer(false);
+        YAHOO.log("Property minQueryLength is less than 0", "info", this.toString());
+        return;
+    }
+    // Delimiter has been enabled
+    if(this.delimChar) {
+        var extraction = this._extractQuery(sQuery);
+        // Here is the query itself
+        sQuery = extraction.query;
+        // ...and save the rest of the string for later
+        this._sPastSelections = extraction.previous;
+    }
+
+    // Don't search queries that are too short
+    if((sQuery && (sQuery.length < this.minQueryLength)) || (!sQuery && this.minQueryLength > 0)) {
+        if(this._nDelayID != -1) {
+            clearTimeout(this._nDelayID);
+        }
+        this._toggleContainer(false);
+        YAHOO.log("Query \"" + sQuery + "\" is too short", "info", this.toString());
+        return;
+    }
+
+    sQuery = encodeURIComponent(sQuery);
+    this._nDelayID = -1;    // Reset timeout ID because request is being made
+    
+    // Subset matching
+    if(this.dataSource.queryMatchSubset || this.queryMatchSubset) { // backward compat
+        var oResponse = this.getSubsetMatches(sQuery);
+        if(oResponse) {
+            this.handleResponse(sQuery, oResponse, {query: sQuery});
+            return;
+        }
+    }
+    
+    if(this.dataSource.responseStripAfter) {
+        this.dataSource.doBeforeParseData = this.preparseRawResponse;
+    }
+    if(this.applyLocalFilter) {
+        this.dataSource.doBeforeCallback = this.filterResults;
+    }
+    
+    var sRequest = this.generateRequest(sQuery);
+    this.dataRequestEvent.fire(this, sQuery, sRequest);
+    YAHOO.log("Sending query \"" + sRequest + "\"", "info", this.toString());
+
+    this.dataSource.sendRequest(sRequest, {
+            success : this.handleResponse,
+            failure : this.handleResponse,
+            scope   : this,
+            argument: {
+                query: sQuery
+            }
+    });
+};
+
+/**
+ * Populates the given &lt;li&gt; element with return value from formatResult().
+ *
+ * @method _populateListItem
+ * @param elListItem {HTMLElement} The LI element.
+ * @param oResult {Object} The result object.
+ * @param sCurQuery {String} The query string.
+ * @private
+ */
+YAHOO.widget.AutoComplete.prototype._populateListItem = function(elListItem, oResult, sQuery) {
+    elListItem.innerHTML = this.formatResult(oResult, sQuery, elListItem._sResultMatch);
+};
+
+/**
+ * Populates the array of &lt;li&gt; elements in the container with query
+ * results.
+ *
+ * @method _populateList
+ * @param sQuery {String} Original request.
+ * @param oResponse {Object} Response object.
+ * @param oPayload {MIXED} (optional) Additional argument(s)
+ * @private
+ */
+YAHOO.widget.AutoComplete.prototype._populateList = function(sQuery, oResponse, oPayload) {
+    // Clear previous timeout
+    if(this._nTypeAheadDelayID != -1) {
+        clearTimeout(this._nTypeAheadDelayID);
+    }
+        
+    sQuery = (oPayload && oPayload.query) ? oPayload.query : sQuery;
+    
+    // Pass data through abstract method for any transformations
+    var ok = this.doBeforeLoadData(sQuery, oResponse, oPayload);
+
+    // Data is ok
+    if(ok && !oResponse.error) {
+        this.dataReturnEvent.fire(this, sQuery, oResponse.results);
+        
+        // Continue only if instance is still active (i.e., user hasn't already moved on)
+        if(this._bFocused) {
+            // Store state for this interaction
+            var sCurQuery = decodeURIComponent(sQuery);
+            this._sCurQuery = sCurQuery;
+            this._bItemSelected = false;
+        
+            var allResults = oResponse.results,
+                nItemsToShow = Math.min(allResults.length,this.maxResultsDisplayed),
+                sMatchKey = (this.dataSource.responseSchema.fields) ? 
+                    (this.dataSource.responseSchema.fields[0].key || this.dataSource.responseSchema.fields[0]) : 0;
+            
+            if(nItemsToShow > 0) {
+                // Make sure container and helpers are ready to go
+                if(!this._elList || (this._elList.childNodes.length < nItemsToShow)) {
+                    this._initListEl();
+                }
+                this._initContainerHelperEls();
+                
+                var allListItemEls = this._elList.childNodes;
+                // Fill items with data from the bottom up
+                for(var i = nItemsToShow-1; i >= 0; i--) {
+                    var elListItem = allListItemEls[i],
+                    oResult = allResults[i];
+                    
+                    // Backward compatibility
+                    if(this.resultTypeList) {
+                        // Results need to be converted back to an array
+                        var aResult = [];
+                        // Match key is first
+                        aResult[0] = (YAHOO.lang.isString(oResult)) ? oResult : oResult[sMatchKey] || oResult[this.key];
+                        // Add additional data to the result array
+                        var fields = this.dataSource.responseSchema.fields;
+                        if(YAHOO.lang.isArray(fields) && (fields.length > 1)) {
+                            for(var k=1, len=fields.length; k<len; k++) {
+                                aResult[aResult.length] = oResult[fields[k].key || fields[k]];
+                            }
+                        }
+                        // No specific fields defined, so pass along entire data object
+                        else {
+                            // Already an array
+                            if(YAHOO.lang.isArray(oResult)) {
+                                aResult = oResult;
+                            }
+                            // Simple string 
+                            else if(YAHOO.lang.isString(oResult)) {
+                                aResult = [oResult];
+                            }
+                            // Object
+                            else {
+                                aResult[1] = oResult;
+                            }
+                        }
+                        oResult = aResult;
+                    }
+
+                    // The matching value, including backward compatibility for array format and safety net
+                    elListItem._sResultMatch = (YAHOO.lang.isString(oResult)) ? oResult : (YAHOO.lang.isArray(oResult)) ? oResult[0] : (oResult[sMatchKey] || "");
+                    elListItem._oResultData = oResult; // Additional data
+                    this._populateListItem(elListItem, oResult, sCurQuery);
+                    elListItem.style.display = "";
+                }
+        
+                // Clear out extraneous items
+                if(nItemsToShow < allListItemEls.length) {
+                    var extraListItem;
+                    for(var j = allListItemEls.length-1; j >= nItemsToShow; j--) {
+                        extraListItem = allListItemEls[j];
+                        extraListItem.style.display = "none";
+                    }
+                }
+                
+                this._nDisplayedItems = nItemsToShow;
+                
+                this.containerPopulateEvent.fire(this, sQuery, allResults);
+                
+                // Highlight the first item
+                if(this.autoHighlight) {
+                    var elFirstListItem = this._elList.firstChild;
+                    this._toggleHighlight(elFirstListItem,"to");
+                    this.itemArrowToEvent.fire(this, elFirstListItem);
+                    YAHOO.log("Arrowed to first item", "info", this.toString());
+                    this._typeAhead(elFirstListItem,sQuery);
+                }
+                // Unhighlight any previous time
+                else {
+                    this._toggleHighlight(this._elCurListItem,"from");
+                }
+        
+                // Pre-expansion stuff
+                ok = this._doBeforeExpandContainer(this._elTextbox, this._elContainer, sQuery, allResults);
+                
+                // Expand the container
+                this._toggleContainer(ok);
+            }
+            else {
+                this._toggleContainer(false);
+            }
+
+            YAHOO.log("Container populated with " + nItemsToShow +  " list items", "info", this.toString());
+            return;
+        }
+    }
+    // Error
+    else {
+        this.dataErrorEvent.fire(this, sQuery, oResponse);
+    }
+        
+    YAHOO.log("Could not populate list", "info", this.toString());    
+};
+
+/**
+ * Called before container expands, by default snaps container to the
+ * bottom-left corner of the input element, then calls public overrideable method.
+ *
+ * @method _doBeforeExpandContainer
+ * @param elTextbox {HTMLElement} The text input box.
+ * @param elContainer {HTMLElement} The container element.
+ * @param sQuery {String} The query string.
+ * @param aResults {Object[]}  An array of query results.
+ * @return {Boolean} Return true to continue expanding container, false to cancel the expand.
+ * @private 
+ */
+YAHOO.widget.AutoComplete.prototype._doBeforeExpandContainer = function(elTextbox, elContainer, sQuery, aResults) {
+    if(this.autoSnapContainer) {
+        this.snapContainer();
+    }
+
+    return this.doBeforeExpandContainer(elTextbox, elContainer, sQuery, aResults);
+};
+
+/**
+ * When forceSelection is true and the user attempts
+ * leave the text input box without selecting an item from the query results,
+ * the user selection is cleared.
+ *
+ * @method _clearSelection
+ * @private
+ */
+YAHOO.widget.AutoComplete.prototype._clearSelection = function() {
+    var extraction = (this.delimChar) ? this._extractQuery(this._elTextbox.value) :
+            {previous:"",query:this._elTextbox.value};
+    this._elTextbox.value = extraction.previous;
+    this.selectionEnforceEvent.fire(this, extraction.query);
+    YAHOO.log("Selection enforced", "info", this.toString());
+};
+
+/**
+ * Whether or not user-typed value in the text input box matches any of the
+ * query results.
+ *
+ * @method _textMatchesOption
+ * @return {HTMLElement} Matching list item element if user-input text matches
+ * a result, null otherwise.
+ * @private
+ */
+YAHOO.widget.AutoComplete.prototype._textMatchesOption = function() {
+    var elMatch = null;
+
+    for(var i=0; i<this._nDisplayedItems; i++) {
+        var elListItem = this._elList.childNodes[i];
+        var sMatch = ("" + elListItem._sResultMatch).toLowerCase();
+        if(sMatch == this._sCurQuery.toLowerCase()) {
+            elMatch = elListItem;
+            break;
+        }
+    }
+    return(elMatch);
+};
+
+/**
+ * Updates in the text input box with the first query result as the user types,
+ * selecting the substring that the user has not typed.
+ *
+ * @method _typeAhead
+ * @param elListItem {HTMLElement} The &lt;li&gt; element item whose data populates the input field.
+ * @param sQuery {String} Query string.
+ * @private
+ */
+YAHOO.widget.AutoComplete.prototype._typeAhead = function(elListItem, sQuery) {
+    // Don't typeAhead if turned off or is backspace
+    if(!this.typeAhead || (this._nKeyCode == 8)) {
+        return;
+    }
+
+    var oSelf = this,
+        elTextbox = this._elTextbox;
+        
+    // Only if text selection is supported
+    if(elTextbox.setSelectionRange || elTextbox.createTextRange) {
+        // Set and store timeout for this typeahead
+        this._nTypeAheadDelayID = setTimeout(function() {
+                // Select the portion of text that the user has not typed
+                var nStart = elTextbox.value.length; // any saved queries plus what user has typed
+                oSelf._updateValue(elListItem);
+                var nEnd = elTextbox.value.length;
+                oSelf._selectText(elTextbox,nStart,nEnd);
+                var sPrefill = elTextbox.value.substr(nStart,nEnd);
+                oSelf.typeAheadEvent.fire(oSelf,sQuery,sPrefill);
+                YAHOO.log("Typeahead occured with prefill string \"" + sPrefill + "\"", "info", oSelf.toString());
+            },(this.typeAheadDelay*1000));            
+    }
+};
+
+/**
+ * Selects text in the input field.
+ *
+ * @method _selectText
+ * @param elTextbox {HTMLElement} Text input box element in which to select text.
+ * @param nStart {Number} Starting index of text string to select.
+ * @param nEnd {Number} Ending index of text selection.
+ * @private
+ */
+YAHOO.widget.AutoComplete.prototype._selectText = function(elTextbox, nStart, nEnd) {
+    if(elTextbox.setSelectionRange) { // For Mozilla
+        elTextbox.setSelectionRange(nStart,nEnd);
+    }
+    else if(elTextbox.createTextRange) { // For IE
+        var oTextRange = elTextbox.createTextRange();
+        oTextRange.moveStart("character", nStart);
+        oTextRange.moveEnd("character", nEnd-elTextbox.value.length);
+        oTextRange.select();
+    }
+    else {
+        elTextbox.select();
+    }
+};
+
+/**
+ * Extracts rightmost query from delimited string.
+ *
+ * @method _extractQuery
+ * @param sQuery {String} String to parse
+ * @return {Object} Object literal containing properties "query" and "previous".  
+ * @private
+ */
+YAHOO.widget.AutoComplete.prototype._extractQuery = function(sQuery) {
+    var aDelimChar = this.delimChar,
+        nDelimIndex = -1,
+        nNewIndex, nQueryStart,
+        i = aDelimChar.length-1,
+        sPrevious;
+        
+    // Loop through all possible delimiters and find the rightmost one in the query
+    // A " " may be a false positive if they are defined as delimiters AND
+    // are used to separate delimited queries
+    for(; i >= 0; i--) {
+        nNewIndex = sQuery.lastIndexOf(aDelimChar[i]);
+        if(nNewIndex > nDelimIndex) {
+            nDelimIndex = nNewIndex;
+        }
+    }
+    // If we think the last delimiter is a space (" "), make sure it is NOT
+    // a false positive by also checking the char directly before it
+    if(aDelimChar[i] == " ") {
+        for (var j = aDelimChar.length-1; j >= 0; j--) {
+            if(sQuery[nDelimIndex - 1] == aDelimChar[j]) {
+                nDelimIndex--;
+                break;
+            }
+        }
+    }
+    // A delimiter has been found in the query so extract the latest query from past selections
+    if(nDelimIndex > -1) {
+        nQueryStart = nDelimIndex + 1;
+        // Trim any white space from the beginning...
+        while(sQuery.charAt(nQueryStart) == " ") {
+            nQueryStart += 1;
+        }
+        // ...and save the rest of the string for later
+        sPrevious = sQuery.substring(0,nQueryStart);
+        // Here is the query itself
+        sQuery = sQuery.substr(nQueryStart);
+    }
+    // No delimiter found in the query, so there are no selections from past queries
+    else {
+        sPrevious = "";
+    }
+    
+    return {
+        previous: sPrevious,
+        query: sQuery
+    };
+};
+
+/**
+ * Syncs results container with its helpers.
+ *
+ * @method _toggleContainerHelpers
+ * @param bShow {Boolean} True if container is expanded, false if collapsed
+ * @private
+ */
+YAHOO.widget.AutoComplete.prototype._toggleContainerHelpers = function(bShow) {
+    var width = this._elContent.offsetWidth + "px";
+    var height = this._elContent.offsetHeight + "px";
+
+    if(this.useIFrame && this._elIFrame) {
+    var elIFrame = this._elIFrame;
+        if(bShow) {
+            elIFrame.style.width = width;
+            elIFrame.style.height = height;
+            elIFrame.style.padding = "";
+            YAHOO.log("Iframe expanded", "info", this.toString());
+        }
+        else {
+            elIFrame.style.width = 0;
+            elIFrame.style.height = 0;
+            elIFrame.style.padding = 0;
+            YAHOO.log("Iframe collapsed", "info", this.toString());
+        }
+    }
+    if(this.useShadow && this._elShadow) {
+    var elShadow = this._elShadow;
+        if(bShow) {
+            elShadow.style.width = width;
+            elShadow.style.height = height;
+            YAHOO.log("Shadow expanded", "info", this.toString());
+        }
+        else {
+            elShadow.style.width = 0;
+            elShadow.style.height = 0;
+            YAHOO.log("Shadow collapsed", "info", this.toString());
+        }
+    }
+};
+
+/**
+ * Animates expansion or collapse of the container.
+ *
+ * @method _toggleContainer
+ * @param bShow {Boolean} True if container should be expanded, false if container should be collapsed
+ * @private
+ */
+YAHOO.widget.AutoComplete.prototype._toggleContainer = function(bShow) {
+    YAHOO.log("Toggling container " + ((bShow) ? "open" : "closed"), "info", this.toString());
+
+    var elContainer = this._elContainer;
+
+    // If implementer has container always open and it's already open, don't mess with it
+    // Container is initialized with display "none" so it may need to be shown first time through
+    if(this.alwaysShowContainer && this._bContainerOpen) {
+        return;
+    }
+    
+    // Reset states
+    if(!bShow) {
+        this._toggleHighlight(this._elCurListItem,"from");
+        this._nDisplayedItems = 0;
+        this._sCurQuery = null;
+        
+        // Container is already closed, so don't bother with changing the UI
+        if(this._elContent.style.display == "none") {
+            return;
+        }
+    }
+
+    // If animation is enabled...
+    var oAnim = this._oAnim;
+    if(oAnim && oAnim.getEl() && (this.animHoriz || this.animVert)) {
+        if(oAnim.isAnimated()) {
+            oAnim.stop(true);
+        }
+
+        // Clone container to grab current size offscreen
+        var oClone = this._elContent.cloneNode(true);
+        elContainer.appendChild(oClone);
+        oClone.style.top = "-9000px";
+        oClone.style.width = "";
+        oClone.style.height = "";
+        oClone.style.display = "";
+
+        // Current size of the container is the EXPANDED size
+        var wExp = oClone.offsetWidth;
+        var hExp = oClone.offsetHeight;
+
+        // Calculate COLLAPSED sizes based on horiz and vert anim
+        var wColl = (this.animHoriz) ? 0 : wExp;
+        var hColl = (this.animVert) ? 0 : hExp;
+
+        // Set animation sizes
+        oAnim.attributes = (bShow) ?
+            {width: { to: wExp }, height: { to: hExp }} :
+            {width: { to: wColl}, height: { to: hColl }};
+
+        // If opening anew, set to a collapsed size...
+        if(bShow && !this._bContainerOpen) {
+            this._elContent.style.width = wColl+"px";
+            this._elContent.style.height = hColl+"px";
+        }
+        // Else, set it to its last known size.
+        else {
+            this._elContent.style.width = wExp+"px";
+            this._elContent.style.height = hExp+"px";
+        }
+
+        elContainer.removeChild(oClone);
+        oClone = null;
+
+    	var oSelf = this;
+    	var onAnimComplete = function() {
+            // Finish the collapse
+    		oAnim.onComplete.unsubscribeAll();
+
+            if(bShow) {
+                oSelf._toggleContainerHelpers(true);
+                oSelf._bContainerOpen = bShow;
+                oSelf.containerExpandEvent.fire(oSelf);
+                YAHOO.log("Container expanded", "info", oSelf.toString());
+            }
+            else {
+                oSelf._elContent.style.display = "none";
+                oSelf._bContainerOpen = bShow;
+                oSelf.containerCollapseEvent.fire(oSelf);
+                YAHOO.log("Container collapsed", "info", oSelf.toString());
+            }
+     	};
+
+        // Display container and animate it
+        this._toggleContainerHelpers(false); // Bug 1424486: Be early to hide, late to show;
+        this._elContent.style.display = "";
+        oAnim.onComplete.subscribe(onAnimComplete);
+        oAnim.animate();
+    }
+    // Else don't animate, just show or hide
+    else {
+        if(bShow) {
+            this._elContent.style.display = "";
+            this._toggleContainerHelpers(true);
+            this._bContainerOpen = bShow;
+            this.containerExpandEvent.fire(this);
+            YAHOO.log("Container expanded", "info", this.toString());
+        }
+        else {
+            this._toggleContainerHelpers(false);
+            this._elContent.style.display = "none";
+            this._bContainerOpen = bShow;
+            this.containerCollapseEvent.fire(this);
+            YAHOO.log("Container collapsed", "info", this.toString());
+        }
+   }
+
+};
+
+/**
+ * Toggles the highlight on or off for an item in the container, and also cleans
+ * up highlighting of any previous item.
+ *
+ * @method _toggleHighlight
+ * @param elNewListItem {HTMLElement} The &lt;li&gt; element item to receive highlight behavior.
+ * @param sType {String} Type "mouseover" will toggle highlight on, and "mouseout" will toggle highlight off.
+ * @private
+ */
+YAHOO.widget.AutoComplete.prototype._toggleHighlight = function(elNewListItem, sType) {
+    if(elNewListItem) {
+        var sHighlight = this.highlightClassName;
+        if(this._elCurListItem) {
+            // Remove highlight from old item
+            YAHOO.util.Dom.removeClass(this._elCurListItem, sHighlight);
+            this._elCurListItem = null;
+        }
+    
+        if((sType == "to") && sHighlight) {
+            // Apply highlight to new item
+            YAHOO.util.Dom.addClass(elNewListItem, sHighlight);
+            this._elCurListItem = elNewListItem;
+        }
+    }
+};
+
+/**
+ * Toggles the pre-highlight on or off for an item in the container, and also cleans
+ * up pre-highlighting of any previous item.
+ *
+ * @method _togglePrehighlight
+ * @param elNewListItem {HTMLElement} The &lt;li&gt; element item to receive highlight behavior.
+ * @param sType {String} Type "mouseover" will toggle highlight on, and "mouseout" will toggle highlight off.
+ * @private
+ */
+YAHOO.widget.AutoComplete.prototype._togglePrehighlight = function(elNewListItem, sType) {
+    var sPrehighlight = this.prehighlightClassName;
+
+    if(this._elCurPrehighlightItem) {
+        YAHOO.util.Dom.removeClass(this._elCurPrehighlightItem, sPrehighlight);
+    }
+    if(elNewListItem == this._elCurListItem) {
+        return;
+    }
+
+    if((sType == "mouseover") && sPrehighlight) {
+        // Apply prehighlight to new item
+        YAHOO.util.Dom.addClass(elNewListItem, sPrehighlight);
+        this._elCurPrehighlightItem = elNewListItem;
+    }
+    else {
+        // Remove prehighlight from old item
+        YAHOO.util.Dom.removeClass(elNewListItem, sPrehighlight);
+    }
+};
+
+/**
+ * Updates the text input box value with selected query result. If a delimiter
+ * has been defined, then the value gets appended with the delimiter.
+ *
+ * @method _updateValue
+ * @param elListItem {HTMLElement} The &lt;li&gt; element item with which to update the value.
+ * @private
+ */
+YAHOO.widget.AutoComplete.prototype._updateValue = function(elListItem) {
+    if(!this.suppressInputUpdate) {    
+        var elTextbox = this._elTextbox;
+        var sDelimChar = (this.delimChar) ? (this.delimChar[0] || this.delimChar) : null;
+        var sResultMatch = elListItem._sResultMatch;
+    
+        // Calculate the new value
+        var sNewValue = "";
+        if(sDelimChar) {
+            // Preserve selections from past queries
+            sNewValue = this._sPastSelections;
+            // Add new selection plus delimiter
+            sNewValue += sResultMatch + sDelimChar;
+            if(sDelimChar != " ") {
+                sNewValue += " ";
+            }
+        }
+        else { 
+            sNewValue = sResultMatch;
+        }
+        
+        // Update input field
+        elTextbox.value = sNewValue;
+    
+        // Scroll to bottom of textarea if necessary
+        if(elTextbox.type == "textarea") {
+            elTextbox.scrollTop = elTextbox.scrollHeight;
+        }
+    
+        // Move cursor to end
+        var end = elTextbox.value.length;
+        this._selectText(elTextbox,end,end);
+    
+        this._elCurListItem = elListItem;
+    }
+};
+
+/**
+ * Selects a result item from the container
+ *
+ * @method _selectItem
+ * @param elListItem {HTMLElement} The selected &lt;li&gt; element item.
+ * @private
+ */
+YAHOO.widget.AutoComplete.prototype._selectItem = function(elListItem) {
+    this._bItemSelected = true;
+    this._updateValue(elListItem);
+    this._sPastSelections = this._elTextbox.value;
+    this._clearInterval();
+    this.itemSelectEvent.fire(this, elListItem, elListItem._oResultData);
+    YAHOO.log("Item selected: " + YAHOO.lang.dump(elListItem._oResultData), "info", this.toString());
+    this._toggleContainer(false);
+};
+
+/**
+ * If an item is highlighted in the container, the right arrow key jumps to the
+ * end of the textbox and selects the highlighted item, otherwise the container
+ * is closed.
+ *
+ * @method _jumpSelection
+ * @private
+ */
+YAHOO.widget.AutoComplete.prototype._jumpSelection = function() {
+    if(this._elCurListItem) {
+        this._selectItem(this._elCurListItem);
+    }
+    else {
+        this._toggleContainer(false);
+    }
+};
+
+/**
+ * Triggered by up and down arrow keys, changes the current highlighted
+ * &lt;li&gt; element item. Scrolls container if necessary.
+ *
+ * @method _moveSelection
+ * @param nKeyCode {Number} Code of key pressed.
+ * @private
+ */
+YAHOO.widget.AutoComplete.prototype._moveSelection = function(nKeyCode) {
+    if(this._bContainerOpen) {
+        // Determine current item's id number
+        var elCurListItem = this._elCurListItem,
+            nCurItemIndex = -1;
+
+        if(elCurListItem) {
+            nCurItemIndex = elCurListItem._nItemIndex;
+        }
+
+        var nNewItemIndex = (nKeyCode == 40) ?
+                (nCurItemIndex + 1) : (nCurItemIndex - 1);
+
+        // Out of bounds
+        if(nNewItemIndex < -2 || nNewItemIndex >= this._nDisplayedItems) {
+            return;
+        }
+
+        if(elCurListItem) {
+            // Unhighlight current item
+            this._toggleHighlight(elCurListItem, "from");
+            this.itemArrowFromEvent.fire(this, elCurListItem);
+            YAHOO.log("Item arrowed from: " + elCurListItem._nItemIndex, "info", this.toString());
+        }
+        if(nNewItemIndex == -1) {
+           // Go back to query (remove type-ahead string)
+            if(this.delimChar) {
+                this._elTextbox.value = this._sPastSelections + this._sCurQuery;
+            }
+            else {
+                this._elTextbox.value = this._sCurQuery;
+            }
+            return;
+        }
+        if(nNewItemIndex == -2) {
+            // Close container
+            this._toggleContainer(false);
+            return;
+        }
+        
+        var elNewListItem = this._elList.childNodes[nNewItemIndex],
+
+        // Scroll the container if necessary
+            elContent = this._elContent,
+            sOF = YAHOO.util.Dom.getStyle(elContent,"overflow"),
+            sOFY = YAHOO.util.Dom.getStyle(elContent,"overflowY"),
+            scrollOn = ((sOF == "auto") || (sOF == "scroll") || (sOFY == "auto") || (sOFY == "scroll"));
+        if(scrollOn && (nNewItemIndex > -1) &&
+        (nNewItemIndex < this._nDisplayedItems)) {
+            // User is keying down
+            if(nKeyCode == 40) {
+                // Bottom of selected item is below scroll area...
+                if((elNewListItem.offsetTop+elNewListItem.offsetHeight) > (elContent.scrollTop + elContent.offsetHeight)) {
+                    // Set bottom of scroll area to bottom of selected item
+                    elContent.scrollTop = (elNewListItem.offsetTop+elNewListItem.offsetHeight) - elContent.offsetHeight;
+                }
+                // Bottom of selected item is above scroll area...
+                else if((elNewListItem.offsetTop+elNewListItem.offsetHeight) < elContent.scrollTop) {
+                    // Set top of selected item to top of scroll area
+                    elContent.scrollTop = elNewListItem.offsetTop;
+
+                }
+            }
+            // User is keying up
+            else {
+                // Top of selected item is above scroll area
+                if(elNewListItem.offsetTop < elContent.scrollTop) {
+                    // Set top of scroll area to top of selected item
+                    this._elContent.scrollTop = elNewListItem.offsetTop;
+                }
+                // Top of selected item is below scroll area
+                else if(elNewListItem.offsetTop > (elContent.scrollTop + elContent.offsetHeight)) {
+                    // Set bottom of selected item to bottom of scroll area
+                    this._elContent.scrollTop = (elNewListItem.offsetTop+elNewListItem.offsetHeight) - elContent.offsetHeight;
+                }
+            }
+        }
+
+        this._toggleHighlight(elNewListItem, "to");
+        this.itemArrowToEvent.fire(this, elNewListItem);
+        YAHOO.log("Item arrowed to " + elNewListItem._nItemIndex, "info", this.toString());
+        if(this.typeAhead) {
+            this._updateValue(elNewListItem);
+        }
+    }
+};
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Private event handlers
+//
+/////////////////////////////////////////////////////////////////////////////
+
+/**
+ * Handles container mouseover events.
+ *
+ * @method _onContainerMouseover
+ * @param v {HTMLEvent} The mouseover event.
+ * @param oSelf {YAHOO.widget.AutoComplete} The AutoComplete instance.
+ * @private
+ */
+YAHOO.widget.AutoComplete.prototype._onContainerMouseover = function(v,oSelf) {
+    var elTarget = YAHOO.util.Event.getTarget(v);
+    var elTag = elTarget.nodeName.toLowerCase();
+    while(elTarget && (elTag != "table")) {
+        switch(elTag) {
+            case "body":
+                return;
+            case "li":
+                if(oSelf.prehighlightClassName) {
+                    oSelf._togglePrehighlight(elTarget,"mouseover");
+                }
+                else {
+                    oSelf._toggleHighlight(elTarget,"to");
+                }
+            
+                oSelf.itemMouseOverEvent.fire(oSelf, elTarget);
+                YAHOO.log("Item moused over " + elTarget._nItemIndex, "info", oSelf.toString());
+                break;
+            case "div":
+                if(YAHOO.util.Dom.hasClass(elTarget,"yui-ac-container")) {
+                    oSelf._bOverContainer = true;
+                    return;
+                }
+                break;
+            default:
+                break;
+        }
+        
+        elTarget = elTarget.parentNode;
+        if(elTarget) {
+            elTag = elTarget.nodeName.toLowerCase();
+        }
+    }
+};
+
+/**
+ * Handles container mouseout events.
+ *
+ * @method _onContainerMouseout
+ * @param v {HTMLEvent} The mouseout event.
+ * @param oSelf {YAHOO.widget.AutoComplete} The AutoComplete instance.
+ * @private
+ */
+YAHOO.widget.AutoComplete.prototype._onContainerMouseout = function(v,oSelf) {
+    var elTarget = YAHOO.util.Event.getTarget(v);
+    var elTag = elTarget.nodeName.toLowerCase();
+    while(elTarget && (elTag != "table")) {
+        switch(elTag) {
+            case "body":
+                return;
+            case "li":
+                if(oSelf.prehighlightClassName) {
+                    oSelf._togglePrehighlight(elTarget,"mouseout");
+                }
+                else {
+                    oSelf._toggleHighlight(elTarget,"from");
+                }
+            
+                oSelf.itemMouseOutEvent.fire(oSelf, elTarget);
+                YAHOO.log("Item moused out " + elTarget._nItemIndex, "info", oSelf.toString());
+                break;
+            case "ul":
+                oSelf._toggleHighlight(oSelf._elCurListItem,"to");
+                break;
+            case "div":
+                if(YAHOO.util.Dom.hasClass(elTarget,"yui-ac-container")) {
+                    oSelf._bOverContainer = false;
+                    return;
+                }
+                break;
+            default:
+                break;
+        }
+
+        elTarget = elTarget.parentNode;
+        if(elTarget) {
+            elTag = elTarget.nodeName.toLowerCase();
+        }
+    }
+};
+
+/**
+ * Handles container click events.
+ *
+ * @method _onContainerClick
+ * @param v {HTMLEvent} The click event.
+ * @param oSelf {YAHOO.widget.AutoComplete} The AutoComplete instance.
+ * @private
+ */
+YAHOO.widget.AutoComplete.prototype._onContainerClick = function(v,oSelf) {
+    var elTarget = YAHOO.util.Event.getTarget(v);
+    var elTag = elTarget.nodeName.toLowerCase();
+    while(elTarget && (elTag != "table")) {
+        switch(elTag) {
+            case "body":
+                return;
+            case "li":
+                // In case item has not been moused over
+                oSelf._toggleHighlight(elTarget,"to");
+                oSelf._selectItem(elTarget);
+                return;
+            default:
+                break;
+        }
+
+        elTarget = elTarget.parentNode;
+        if(elTarget) {
+            elTag = elTarget.nodeName.toLowerCase();
+        }
+    }    
+};
+
+
+/**
+ * Handles container scroll events.
+ *
+ * @method _onContainerScroll
+ * @param v {HTMLEvent} The scroll event.
+ * @param oSelf {YAHOO.widget.AutoComplete} The AutoComplete instance.
+ * @private
+ */
+YAHOO.widget.AutoComplete.prototype._onContainerScroll = function(v,oSelf) {
+    oSelf._focus();
+};
+
+/**
+ * Handles container resize events.
+ *
+ * @method _onContainerResize
+ * @param v {HTMLEvent} The resize event.
+ * @param oSelf {YAHOO.widget.AutoComplete} The AutoComplete instance.
+ * @private
+ */
+YAHOO.widget.AutoComplete.prototype._onContainerResize = function(v,oSelf) {
+    oSelf._toggleContainerHelpers(oSelf._bContainerOpen);
+};
+
+
+/**
+ * Handles textbox keydown events of functional keys, mainly for UI behavior.
+ *
+ * @method _onTextboxKeyDown
+ * @param v {HTMLEvent} The keydown event.
+ * @param oSelf {YAHOO.widget.AutoComplete} The AutoComplete instance.
+ * @private
+ */
+YAHOO.widget.AutoComplete.prototype._onTextboxKeyDown = function(v,oSelf) {
+    var nKeyCode = v.keyCode;
+
+    // Clear timeout
+    if(oSelf._nTypeAheadDelayID != -1) {
+        clearTimeout(oSelf._nTypeAheadDelayID);
+    }
+    
+    switch (nKeyCode) {
+        case 9: // tab
+            if(!YAHOO.env.ua.opera && (navigator.userAgent.toLowerCase().indexOf("mac") == -1) || (YAHOO.env.ua.webkit>420)) {
+                // select an item or clear out
+                if(oSelf._elCurListItem) {
+                    if(oSelf.delimChar && (oSelf._nKeyCode != nKeyCode)) {
+                        if(oSelf._bContainerOpen) {
+                            YAHOO.util.Event.stopEvent(v);
+                        }
+                    }
+                    oSelf._selectItem(oSelf._elCurListItem);
+                }
+                else {
+                    oSelf._toggleContainer(false);
+                }
+            }
+            break;
+        case 13: // enter
+            if(!YAHOO.env.ua.opera && (navigator.userAgent.toLowerCase().indexOf("mac") == -1) || (YAHOO.env.ua.webkit>420)) {
+                if(oSelf._elCurListItem) {
+                    if(oSelf._nKeyCode != nKeyCode) {
+                        if(oSelf._bContainerOpen) {
+                            YAHOO.util.Event.stopEvent(v);
+                        }
+                    }
+                    oSelf._selectItem(oSelf._elCurListItem);
+                }
+                else {
+                    oSelf._toggleContainer(false);
+                }
+            }
+            break;
+        case 27: // esc
+            oSelf._toggleContainer(false);
+            return;
+        case 39: // right
+            oSelf._jumpSelection();
+            break;
+        case 38: // up
+            if(oSelf._bContainerOpen) {
+                YAHOO.util.Event.stopEvent(v);
+                oSelf._moveSelection(nKeyCode);
+            }
+            break;
+        case 40: // down
+            if(oSelf._bContainerOpen) {
+                YAHOO.util.Event.stopEvent(v);
+                oSelf._moveSelection(nKeyCode);
+            }
+            break;
+        default: 
+            oSelf._bItemSelected = false;
+            oSelf._toggleHighlight(oSelf._elCurListItem, "from");
+
+            oSelf.textboxKeyEvent.fire(oSelf, nKeyCode);
+            YAHOO.log("Textbox keyed", "info", oSelf.toString());
+            break;
+    }
+
+    if(nKeyCode === 18){
+        oSelf._enableIntervalDetection();
+    }    
+    oSelf._nKeyCode = nKeyCode;
+};
+
+/**
+ * Handles textbox keypress events.
+ * @method _onTextboxKeyPress
+ * @param v {HTMLEvent} The keypress event.
+ * @param oSelf {YAHOO.widget.AutoComplete} The AutoComplete instance.
+ * @private
+ */
+YAHOO.widget.AutoComplete.prototype._onTextboxKeyPress = function(v,oSelf) {
+    var nKeyCode = v.keyCode;
+
+        // Expose only to non SF3 (bug 1978549) Mac browsers (bug 790337) and  Opera browsers (bug 583531),
+        // where stopEvent is ineffective on keydown events 
+        if(YAHOO.env.ua.opera || (navigator.userAgent.toLowerCase().indexOf("mac") != -1) && (YAHOO.env.ua.webkit < 420)) {
+            switch (nKeyCode) {
+            case 9: // tab
+                // select an item or clear out
+                if(oSelf._bContainerOpen) {
+                    if(oSelf.delimChar) {
+                        YAHOO.util.Event.stopEvent(v);
+                    }
+                    if(oSelf._elCurListItem) {
+                        oSelf._selectItem(oSelf._elCurListItem);
+                    }
+                    else {
+                        oSelf._toggleContainer(false);
+                    }
+                }
+                break;
+            case 13: // enter
+                if(oSelf._bContainerOpen) {
+                    YAHOO.util.Event.stopEvent(v);
+                    if(oSelf._elCurListItem) {
+                        oSelf._selectItem(oSelf._elCurListItem);
+                    }
+                    else {
+                        oSelf._toggleContainer(false);
+                    }
+                }
+                break;
+            default:
+                break;
+            }
+        }
+
+        //TODO: (?) limit only to non-IE, non-Mac-FF for Korean IME support (bug 811948)
+        // Korean IME detected
+        else if(nKeyCode == 229) {
+            oSelf._enableIntervalDetection();
+        }
+};
+
+/**
+ * Handles textbox keyup events to trigger queries.
+ *
+ * @method _onTextboxKeyUp
+ * @param v {HTMLEvent} The keyup event.
+ * @param oSelf {YAHOO.widget.AutoComplete} The AutoComplete instance.
+ * @private
+ */
+YAHOO.widget.AutoComplete.prototype._onTextboxKeyUp = function(v,oSelf) {
+    var sText = this.value; //string in textbox
+    
+    // Check to see if any of the public properties have been updated
+    oSelf._initProps();
+
+    // Filter out chars that don't trigger queries
+    var nKeyCode = v.keyCode;
+    if(oSelf._isIgnoreKey(nKeyCode)) {
+        return;
+    }
+
+    // Clear previous timeout
+    if(oSelf._nDelayID != -1) {
+        clearTimeout(oSelf._nDelayID);
+    }
+
+    // Set new timeout
+    oSelf._nDelayID = setTimeout(function(){
+            oSelf._sendQuery(sText);
+        },(oSelf.queryDelay * 1000));
+};
+
+/**
+ * Handles text input box receiving focus.
+ *
+ * @method _onTextboxFocus
+ * @param v {HTMLEvent} The focus event.
+ * @param oSelf {YAHOO.widget.AutoComplete} The AutoComplete instance.
+ * @private
+ */
+YAHOO.widget.AutoComplete.prototype._onTextboxFocus = function (v,oSelf) {
+    // Start of a new interaction
+    if(!oSelf._bFocused) {
+        oSelf._elTextbox.setAttribute("autocomplete","off");
+        oSelf._bFocused = true;
+        oSelf._sInitInputValue = oSelf._elTextbox.value;
+        oSelf.textboxFocusEvent.fire(oSelf);
+        YAHOO.log("Textbox focused", "info", oSelf.toString());
+    }
+};
+
+/**
+ * Handles text input box losing focus.
+ *
+ * @method _onTextboxBlur
+ * @param v {HTMLEvent} The focus event.
+ * @param oSelf {YAHOO.widget.AutoComplete} The AutoComplete instance.
+ * @private
+ */
+YAHOO.widget.AutoComplete.prototype._onTextboxBlur = function (v,oSelf) {
+    // Is a true blur
+    if(!oSelf._bOverContainer || (oSelf._nKeyCode == 9)) {
+        // Current query needs to be validated as a selection
+        if(!oSelf._bItemSelected) {
+            var elMatchListItem = oSelf._textMatchesOption();
+            // Container is closed or current query doesn't match any result
+            if(!oSelf._bContainerOpen || (oSelf._bContainerOpen && (elMatchListItem === null))) {
+                // Force selection is enabled so clear the current query
+                if(oSelf.forceSelection) {
+                    oSelf._clearSelection();
+                }
+                // Treat current query as a valid selection
+                else {
+                    oSelf.unmatchedItemSelectEvent.fire(oSelf, oSelf._sCurQuery);
+                    YAHOO.log("Unmatched item selected: " + oSelf._sCurQuery, "info", oSelf.toString());
+                }
+            }
+            // Container is open and current query matches a result
+            else {
+                // Force a selection when textbox is blurred with a match
+                if(oSelf.forceSelection) {
+                    oSelf._selectItem(elMatchListItem);
+                }
+            }
+        }
+
+        oSelf._clearInterval();
+        oSelf._bFocused = false;
+        if(oSelf._sInitInputValue !== oSelf._elTextbox.value) {
+            oSelf.textboxChangeEvent.fire(oSelf);
+        }
+        oSelf.textboxBlurEvent.fire(oSelf);
+        YAHOO.log("Textbox blurred", "info", oSelf.toString());
+
+        oSelf._toggleContainer(false);
+    }
+    // Not a true blur if it was a selection via mouse click
+    else {
+        oSelf._focus();
+    }
+};
+
+/**
+ * Handles window unload event.
+ *
+ * @method _onWindowUnload
+ * @param v {HTMLEvent} The unload event.
+ * @param oSelf {YAHOO.widget.AutoComplete} The AutoComplete instance.
+ * @private
+ */
+YAHOO.widget.AutoComplete.prototype._onWindowUnload = function(v,oSelf) {
+    if(oSelf && oSelf._elTextbox && oSelf.allowBrowserAutocomplete) {
+        oSelf._elTextbox.setAttribute("autocomplete","on");
+    }
+};
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Deprecated for Backwards Compatibility
+//
+/////////////////////////////////////////////////////////////////////////////
+/**
+ * @method doBeforeSendQuery
+ * @deprecated Use generateRequest.
+ */
+YAHOO.widget.AutoComplete.prototype.doBeforeSendQuery = function(sQuery) {
+    return this.generateRequest(sQuery);
+};
+
+/**
+ * @method getListItems
+ * @deprecated Use getListEl().childNodes.
+ */
+YAHOO.widget.AutoComplete.prototype.getListItems = function() {
+    var allListItemEls = [],
+        els = this._elList.childNodes;
+    for(var i=els.length-1; i>=0; i--) {
+        allListItemEls[i] = els[i];
+    }
+    return allListItemEls;
+};
+
+/////////////////////////////////////////////////////////////////////////
+//
+// Private static methods
+//
+/////////////////////////////////////////////////////////////////////////
+
+/**
+ * Clones object literal or array of object literals.
+ *
+ * @method AutoComplete._cloneObject
+ * @param o {Object} Object.
+ * @private
+ * @static     
+ */
+YAHOO.widget.AutoComplete._cloneObject = function(o) {
+    if(!YAHOO.lang.isValue(o)) {
+        return o;
+    }
+    
+    var copy = {};
+    
+    if(YAHOO.lang.isFunction(o)) {
+        copy = o;
+    }
+    else if(YAHOO.lang.isArray(o)) {
+        var array = [];
+        for(var i=0,len=o.length;i<len;i++) {
+            array[i] = YAHOO.widget.AutoComplete._cloneObject(o[i]);
+        }
+        copy = array;
+    }
+    else if(YAHOO.lang.isObject(o)) { 
+        for (var x in o){
+            if(YAHOO.lang.hasOwnProperty(o, x)) {
+                if(YAHOO.lang.isValue(o[x]) && YAHOO.lang.isObject(o[x]) || YAHOO.lang.isArray(o[x])) {
+                    copy[x] = YAHOO.widget.AutoComplete._cloneObject(o[x]);
+                }
+                else {
+                    copy[x] = o[x];
+                }
+            }
+        }
+    }
+    else {
+        copy = o;
+    }
+
+    return copy;
+};
+
+
+
+
+YAHOO.register("autocomplete", YAHOO.widget.AutoComplete, {version: "2.8.2r1", build: "7"});
+/*
+Copyright (c) 2010, Yahoo! Inc. All rights reserved.
+Code licensed under the BSD License:
+http://developer.yahoo.com/yui/license.html
+version: 2.8.2r1
 */
 /**
  * The drag and drop utility provides a framework for building drag and drop
@@ -14954,12 +21030,12 @@ YAHOO.extend(YAHOO.util.DDTarget, YAHOO.util.DragDrop, {
         return ("DDTarget " + this.id);
     }
 });
-YAHOO.register("dragdrop", YAHOO.util.DragDropMgr, {version: "2.8.1", build: "19"});
+YAHOO.register("dragdrop", YAHOO.util.DragDropMgr, {version: "2.8.2r1", build: "7"});
 /*
 Copyright (c) 2010, Yahoo! Inc. All rights reserved.
 Code licensed under the BSD License:
 http://developer.yahoo.com/yui/license.html
-version: 2.8.1
+version: 2.8.2r1
 */
 (function () {
 
@@ -24030,12 +30106,12 @@ version: 2.8.1
     YAHOO.lang.augmentProto(ContainerEffect, YAHOO.util.EventProvider);
 
 })();
-YAHOO.register("container", YAHOO.widget.Module, {version: "2.8.1", build: "19"});
+YAHOO.register("container", YAHOO.widget.Module, {version: "2.8.2r1", build: "7"});
 /*
 Copyright (c) 2010, Yahoo! Inc. All rights reserved.
 Code licensed under the BSD License:
 http://developer.yahoo.com/yui/license.html
-version: 2.8.1
+version: 2.8.2r1
 */
 
 
@@ -33900,12 +39976,12 @@ toString: function() {
 }
     
 }); // END YAHOO.lang.extend
-YAHOO.register("menu", YAHOO.widget.Menu, {version: "2.8.1", build: "19"});
+YAHOO.register("menu", YAHOO.widget.Menu, {version: "2.8.2r1", build: "7"});
 /*
 Copyright (c) 2010, Yahoo! Inc. All rights reserved.
 Code licensed under the BSD License:
 http://developer.yahoo.com/yui/license.html
-version: 2.8.1
+version: 2.8.2r1
 */
 /**
  * Provides Attribute configurations.
@@ -35006,12 +41082,12 @@ YAHOO.augment(Element, AttributeProvider);
 YAHOO.util.Element = Element;
 })();
 
-YAHOO.register("element", YAHOO.util.Element, {version: "2.8.1", build: "19"});
+YAHOO.register("element", YAHOO.util.Element, {version: "2.8.2r1", build: "7"});
 /*
 Copyright (c) 2010, Yahoo! Inc. All rights reserved.
 Code licensed under the BSD License:
 http://developer.yahoo.com/yui/license.html
-version: 2.8.1
+version: 2.8.2r1
 */
 /**
 * @module button
@@ -39700,12 +45776,12 @@ version: 2.8.1
     });
 
 })();
-YAHOO.register("button", YAHOO.widget.Button, {version: "2.8.1", build: "19"});
+YAHOO.register("button", YAHOO.widget.Button, {version: "2.8.2r1", build: "7"});
 /*
 Copyright (c) 2010, Yahoo! Inc. All rights reserved.
 Code licensed under the BSD License:
 http://developer.yahoo.com/yui/license.html
-version: 2.8.1
+version: 2.8.2r1
 */
 (function () {
 
@@ -47024,12 +53100,12 @@ YAHOO.widget.CalendarNavigator.prototype = {
     __isMac : (navigator.userAgent.toLowerCase().indexOf("macintosh") != -1)
 
 };
-YAHOO.register("calendar", YAHOO.widget.Calendar, {version: "2.8.1", build: "19"});
+YAHOO.register("calendar", YAHOO.widget.Calendar, {version: "2.8.2r1", build: "7"});
 /*
 Copyright (c) 2010, Yahoo! Inc. All rights reserved.
 Code licensed under the BSD License:
 http://developer.yahoo.com/yui/license.html
-version: 2.8.1
+version: 2.8.2r1
 */
 /**
  * Utilities for cookie management
@@ -47506,3079 +53582,12 @@ YAHOO.util.Cookie = {
 
 };
 
-YAHOO.register("cookie", YAHOO.util.Cookie, {version: "2.8.1", build: "19"});
+YAHOO.register("cookie", YAHOO.util.Cookie, {version: "2.8.2r1", build: "7"});
 /*
 Copyright (c) 2010, Yahoo! Inc. All rights reserved.
 Code licensed under the BSD License:
 http://developer.yahoo.com/yui/license.html
-version: 2.8.1
-*/
-(function () {
-
-var lang   = YAHOO.lang,
-    util   = YAHOO.util,
-    Ev     = util.Event;
-
-/**
- * The DataSource utility provides a common configurable interface for widgets to
- * access a variety of data, from JavaScript arrays to online database servers.
- *
- * @module datasource
- * @requires yahoo, event
- * @optional json, get, connection 
- * @title DataSource Utility
- */
-
-/****************************************************************************/
-/****************************************************************************/
-/****************************************************************************/
-
-/**
- * Base class for the YUI DataSource utility.
- *
- * @namespace YAHOO.util
- * @class YAHOO.util.DataSourceBase
- * @constructor
- * @param oLiveData {HTMLElement}  Pointer to live data.
- * @param oConfigs {object} (optional) Object literal of configuration values.
- */
-util.DataSourceBase = function(oLiveData, oConfigs) {
-    if(oLiveData === null || oLiveData === undefined) {
-        YAHOO.log("Could not instantiate DataSource due to invalid live database",
-                "error", this.toString());
-        return;
-    }
-    
-    this.liveData = oLiveData;
-    this._oQueue = {interval:null, conn:null, requests:[]};
-    this.responseSchema = {};   
-
-    // Set any config params passed in to override defaults
-    if(oConfigs && (oConfigs.constructor == Object)) {
-        for(var sConfig in oConfigs) {
-            if(sConfig) {
-                this[sConfig] = oConfigs[sConfig];
-            }
-        }
-    }
-    
-    // Validate and initialize public configs
-    var maxCacheEntries = this.maxCacheEntries;
-    if(!lang.isNumber(maxCacheEntries) || (maxCacheEntries < 0)) {
-        maxCacheEntries = 0;
-    }
-
-    // Initialize interval tracker
-    this._aIntervals = [];
-
-    /////////////////////////////////////////////////////////////////////////////
-    //
-    // Custom Events
-    //
-    /////////////////////////////////////////////////////////////////////////////
-
-    /**
-     * Fired when a request is made to the local cache.
-     *
-     * @event cacheRequestEvent
-     * @param oArgs.request {Object} The request object.
-     * @param oArgs.callback {Object} The callback object.
-     * @param oArgs.caller {Object} (deprecated) Use callback.scope.
-     */
-    this.createEvent("cacheRequestEvent");
-
-    /**
-     * Fired when data is retrieved from the local cache.
-     *
-     * @event cacheResponseEvent
-     * @param oArgs.request {Object} The request object.
-     * @param oArgs.response {Object} The response object.
-     * @param oArgs.callback {Object} The callback object.
-     * @param oArgs.caller {Object} (deprecated) Use callback.scope.
-     */
-    this.createEvent("cacheResponseEvent");
-
-    /**
-     * Fired when a request is sent to the live data source.
-     *
-     * @event requestEvent
-     * @param oArgs.request {Object} The request object.
-     * @param oArgs.callback {Object} The callback object.
-     * @param oArgs.tId {Number} Transaction ID.     
-     * @param oArgs.caller {Object} (deprecated) Use callback.scope.
-     */
-    this.createEvent("requestEvent");
-
-    /**
-     * Fired when live data source sends response.
-     *
-     * @event responseEvent
-     * @param oArgs.request {Object} The request object.
-     * @param oArgs.response {Object} The raw response object.
-     * @param oArgs.callback {Object} The callback object.
-     * @param oArgs.tId {Number} Transaction ID.     
-     * @param oArgs.caller {Object} (deprecated) Use callback.scope.
-     */
-    this.createEvent("responseEvent");
-
-    /**
-     * Fired when response is parsed.
-     *
-     * @event responseParseEvent
-     * @param oArgs.request {Object} The request object.
-     * @param oArgs.response {Object} The parsed response object.
-     * @param oArgs.callback {Object} The callback object.
-     * @param oArgs.caller {Object} (deprecated) Use callback.scope.
-     */
-    this.createEvent("responseParseEvent");
-
-    /**
-     * Fired when response is cached.
-     *
-     * @event responseCacheEvent
-     * @param oArgs.request {Object} The request object.
-     * @param oArgs.response {Object} The parsed response object.
-     * @param oArgs.callback {Object} The callback object.
-     * @param oArgs.caller {Object} (deprecated) Use callback.scope.
-     */
-    this.createEvent("responseCacheEvent");
-    /**
-     * Fired when an error is encountered with the live data source.
-     *
-     * @event dataErrorEvent
-     * @param oArgs.request {Object} The request object.
-     * @param oArgs.response {String} The response object (if available).
-     * @param oArgs.callback {Object} The callback object.
-     * @param oArgs.caller {Object} (deprecated) Use callback.scope.
-     * @param oArgs.message {String} The error message.
-     */
-    this.createEvent("dataErrorEvent");
-
-    /**
-     * Fired when the local cache is flushed.
-     *
-     * @event cacheFlushEvent
-     */
-    this.createEvent("cacheFlushEvent");
-
-    var DS = util.DataSourceBase;
-    this._sName = "DataSource instance" + DS._nIndex;
-    DS._nIndex++;
-    YAHOO.log("DataSource initialized", "info", this.toString());
-};
-
-var DS = util.DataSourceBase;
-
-lang.augmentObject(DS, {
-
-/////////////////////////////////////////////////////////////////////////////
-//
-// DataSourceBase public constants
-//
-/////////////////////////////////////////////////////////////////////////////
-
-/**
- * Type is unknown.
- *
- * @property TYPE_UNKNOWN
- * @type Number
- * @final
- * @default -1
- */
-TYPE_UNKNOWN : -1,
-
-/**
- * Type is a JavaScript Array.
- *
- * @property TYPE_JSARRAY
- * @type Number
- * @final
- * @default 0
- */
-TYPE_JSARRAY : 0,
-
-/**
- * Type is a JavaScript Function.
- *
- * @property TYPE_JSFUNCTION
- * @type Number
- * @final
- * @default 1
- */
-TYPE_JSFUNCTION : 1,
-
-/**
- * Type is hosted on a server via an XHR connection.
- *
- * @property TYPE_XHR
- * @type Number
- * @final
- * @default 2
- */
-TYPE_XHR : 2,
-
-/**
- * Type is JSON.
- *
- * @property TYPE_JSON
- * @type Number
- * @final
- * @default 3
- */
-TYPE_JSON : 3,
-
-/**
- * Type is XML.
- *
- * @property TYPE_XML
- * @type Number
- * @final
- * @default 4
- */
-TYPE_XML : 4,
-
-/**
- * Type is plain text.
- *
- * @property TYPE_TEXT
- * @type Number
- * @final
- * @default 5
- */
-TYPE_TEXT : 5,
-
-/**
- * Type is an HTML TABLE element. Data is parsed out of TR elements from all TBODY elements.
- *
- * @property TYPE_HTMLTABLE
- * @type Number
- * @final
- * @default 6
- */
-TYPE_HTMLTABLE : 6,
-
-/**
- * Type is hosted on a server via a dynamic script node.
- *
- * @property TYPE_SCRIPTNODE
- * @type Number
- * @final
- * @default 7
- */
-TYPE_SCRIPTNODE : 7,
-
-/**
- * Type is local.
- *
- * @property TYPE_LOCAL
- * @type Number
- * @final
- * @default 8
- */
-TYPE_LOCAL : 8,
-
-/**
- * Error message for invalid dataresponses.
- *
- * @property ERROR_DATAINVALID
- * @type String
- * @final
- * @default "Invalid data"
- */
-ERROR_DATAINVALID : "Invalid data",
-
-/**
- * Error message for null data responses.
- *
- * @property ERROR_DATANULL
- * @type String
- * @final
- * @default "Null data"
- */
-ERROR_DATANULL : "Null data",
-
-/////////////////////////////////////////////////////////////////////////////
-//
-// DataSourceBase private static properties
-//
-/////////////////////////////////////////////////////////////////////////////
-
-/**
- * Internal class variable to index multiple DataSource instances.
- *
- * @property DataSourceBase._nIndex
- * @type Number
- * @private
- * @static
- */
-_nIndex : 0,
-
-/**
- * Internal class variable to assign unique transaction IDs.
- *
- * @property DataSourceBase._nTransactionId
- * @type Number
- * @private
- * @static
- */
-_nTransactionId : 0,
-
-/////////////////////////////////////////////////////////////////////////////
-//
-// DataSourceBase private static methods
-//
-/////////////////////////////////////////////////////////////////////////////
-
-/**
- * Get an XPath-specified value for a given field from an XML node or document.
- *
- * @method _getLocationValue
- * @param field {String | Object} Field definition.
- * @param context {Object} XML node or document to search within.
- * @return {Object} Data value or null.
- * @static
- * @private
- */
-_getLocationValue: function(field, context) {
-    var locator = field.locator || field.key || field,
-        xmldoc = context.ownerDocument || context,
-        result, res, value = null;
-
-    try {
-        // Standards mode
-        if(!lang.isUndefined(xmldoc.evaluate)) {
-            result = xmldoc.evaluate(locator, context, xmldoc.createNSResolver(!context.ownerDocument ? context.documentElement : context.ownerDocument.documentElement), 0, null);
-            while(res = result.iterateNext()) {
-                value = res.textContent;
-            }
-        }
-        // IE mode
-        else {
-            xmldoc.setProperty("SelectionLanguage", "XPath");
-            result = context.selectNodes(locator)[0];
-            value = result.value || result.text || null;
-        }
-        return value;
-
-    }
-    catch(e) {
-    }
-},
-
-/////////////////////////////////////////////////////////////////////////////
-//
-// DataSourceBase public static methods
-//
-/////////////////////////////////////////////////////////////////////////////
-
-/**
- * Executes a configured callback.  For object literal callbacks, the third
- * param determines whether to execute the success handler or failure handler.
- *  
- * @method issueCallback
- * @param callback {Function|Object} the callback to execute
- * @param params {Array} params to be passed to the callback method
- * @param error {Boolean} whether an error occurred
- * @param scope {Object} the scope from which to execute the callback
- * (deprecated - use an object literal callback)
- * @static     
- */
-issueCallback : function (callback,params,error,scope) {
-    if (lang.isFunction(callback)) {
-        callback.apply(scope, params);
-    } else if (lang.isObject(callback)) {
-        scope = callback.scope || scope || window;
-        var callbackFunc = callback.success;
-        if (error) {
-            callbackFunc = callback.failure;
-        }
-        if (callbackFunc) {
-            callbackFunc.apply(scope, params.concat([callback.argument]));
-        }
-    }
-},
-
-/**
- * Converts data to type String.
- *
- * @method DataSourceBase.parseString
- * @param oData {String | Number | Boolean | Date | Array | Object} Data to parse.
- * The special values null and undefined will return null.
- * @return {String} A string, or null.
- * @static
- */
-parseString : function(oData) {
-    // Special case null and undefined
-    if(!lang.isValue(oData)) {
-        return null;
-    }
-    
-    //Convert to string
-    var string = oData + "";
-
-    // Validate
-    if(lang.isString(string)) {
-        return string;
-    }
-    else {
-        YAHOO.log("Could not convert data " + lang.dump(oData) + " to type String", "warn", this.toString());
-        return null;
-    }
-},
-
-/**
- * Converts data to type Number.
- *
- * @method DataSourceBase.parseNumber
- * @param oData {String | Number | Boolean} Data to convert. Note, the following
- * values return as null: null, undefined, NaN, "". 
- * @return {Number} A number, or null.
- * @static
- */
-parseNumber : function(oData) {
-    if(!lang.isValue(oData) || (oData === "")) {
-        return null;
-    }
-
-    //Convert to number
-    var number = oData * 1;
-    
-    // Validate
-    if(lang.isNumber(number)) {
-        return number;
-    }
-    else {
-        YAHOO.log("Could not convert data " + lang.dump(oData) + " to type Number", "warn", this.toString());
-        return null;
-    }
-},
-// Backward compatibility
-convertNumber : function(oData) {
-    YAHOO.log("The method YAHOO.util.DataSourceBase.convertNumber() has been" +
-    " deprecated in favor of YAHOO.util.DataSourceBase.parseNumber()", "warn",
-    this.toString());
-    return DS.parseNumber(oData);
-},
-
-/**
- * Converts data to type Date.
- *
- * @method DataSourceBase.parseDate
- * @param oData {Date | String | Number} Data to convert.
- * @return {Date} A Date instance.
- * @static
- */
-parseDate : function(oData) {
-    var date = null;
-    
-    //Convert to date
-    if(!(oData instanceof Date)) {
-        date = new Date(oData);
-    }
-    else {
-        return oData;
-    }
-    
-    // Validate
-    if(date instanceof Date) {
-        return date;
-    }
-    else {
-        YAHOO.log("Could not convert data " + lang.dump(oData) + " to type Date", "warn", this.toString());
-        return null;
-    }
-},
-// Backward compatibility
-convertDate : function(oData) {
-    YAHOO.log("The method YAHOO.util.DataSourceBase.convertDate() has been" +
-    " deprecated in favor of YAHOO.util.DataSourceBase.parseDate()", "warn",
-    this.toString());
-    return DS.parseDate(oData);
-}
-
-});
-
-// Done in separate step so referenced functions are defined.
-/**
- * Data parsing functions.
- * @property DataSource.Parser
- * @type Object
- * @static
- */
-DS.Parser = {
-    string   : DS.parseString,
-    number   : DS.parseNumber,
-    date     : DS.parseDate
-};
-
-// Prototype properties and methods
-DS.prototype = {
-
-/////////////////////////////////////////////////////////////////////////////
-//
-// DataSourceBase private properties
-//
-/////////////////////////////////////////////////////////////////////////////
-
-/**
- * Name of DataSource instance.
- *
- * @property _sName
- * @type String
- * @private
- */
-_sName : null,
-
-/**
- * Local cache of data result object literals indexed chronologically.
- *
- * @property _aCache
- * @type Object[]
- * @private
- */
-_aCache : null,
-
-/**
- * Local queue of request connections, enabled if queue needs to be managed.
- *
- * @property _oQueue
- * @type Object
- * @private
- */
-_oQueue : null,
-
-/**
- * Array of polling interval IDs that have been enabled, needed to clear all intervals.
- *
- * @property _aIntervals
- * @type Array
- * @private
- */
-_aIntervals : null,
-
-/////////////////////////////////////////////////////////////////////////////
-//
-// DataSourceBase public properties
-//
-/////////////////////////////////////////////////////////////////////////////
-
-/**
- * Max size of the local cache.  Set to 0 to turn off caching.  Caching is
- * useful to reduce the number of server connections.  Recommended only for data
- * sources that return comprehensive results for queries or when stale data is
- * not an issue.
- *
- * @property maxCacheEntries
- * @type Number
- * @default 0
- */
-maxCacheEntries : 0,
-
- /**
- * Pointer to live database.
- *
- * @property liveData
- * @type Object
- */
-liveData : null,
-
-/**
- * Where the live data is held:
- * 
- * <dl>  
- *    <dt>TYPE_UNKNOWN</dt>
- *    <dt>TYPE_LOCAL</dt>
- *    <dt>TYPE_XHR</dt>
- *    <dt>TYPE_SCRIPTNODE</dt>
- *    <dt>TYPE_JSFUNCTION</dt>
- * </dl> 
- *  
- * @property dataType
- * @type Number
- * @default YAHOO.util.DataSourceBase.TYPE_UNKNOWN
- *
- */
-dataType : DS.TYPE_UNKNOWN,
-
-/**
- * Format of response:
- *  
- * <dl>  
- *    <dt>TYPE_UNKNOWN</dt>
- *    <dt>TYPE_JSARRAY</dt>
- *    <dt>TYPE_JSON</dt>
- *    <dt>TYPE_XML</dt>
- *    <dt>TYPE_TEXT</dt>
- *    <dt>TYPE_HTMLTABLE</dt> 
- * </dl> 
- *
- * @property responseType
- * @type Number
- * @default YAHOO.util.DataSourceBase.TYPE_UNKNOWN
- */
-responseType : DS.TYPE_UNKNOWN,
-
-/**
- * Response schema object literal takes a combination of the following properties:
- *
- * <dl>
- * <dt>resultsList</dt> <dd>Pointer to array of tabular data</dd>
- * <dt>resultNode</dt> <dd>Pointer to node name of row data (XML data only)</dd>
- * <dt>recordDelim</dt> <dd>Record delimiter (text data only)</dd>
- * <dt>fieldDelim</dt> <dd>Field delimiter (text data only)</dd>
- * <dt>fields</dt> <dd>Array of field names (aka keys), or array of object literals
- * such as: {key:"fieldname",parser:YAHOO.util.DataSourceBase.parseDate}</dd>
- * <dt>metaFields</dt> <dd>Object literal of keys to include in the oParsedResponse.meta collection</dd>
- * <dt>metaNode</dt> <dd>Name of the node under which to search for meta information in XML response data</dd>
- * </dl>
- *
- * @property responseSchema
- * @type Object
- */
-responseSchema : null,
-
-/**
- * Additional arguments passed to the JSON parse routine.  The JSON string
- * is the assumed first argument (where applicable).  This property is not
- * set by default, but the parse methods will use it if present.
- *
- * @property parseJSONArgs
- * @type {MIXED|Array} If an Array, contents are used as individual arguments.
- *                     Otherwise, value is used as an additional argument.
- */
-// property intentionally undefined
- 
-/**
- * When working with XML data, setting this property to true enables support for
- * XPath-syntaxed locators in schema definitions.
- *
- * @property useXPath
- * @type Boolean
- * @default false
- */
-useXPath : false,
-
-/////////////////////////////////////////////////////////////////////////////
-//
-// DataSourceBase public methods
-//
-/////////////////////////////////////////////////////////////////////////////
-
-/**
- * Public accessor to the unique name of the DataSource instance.
- *
- * @method toString
- * @return {String} Unique name of the DataSource instance.
- */
-toString : function() {
-    return this._sName;
-},
-
-/**
- * Overridable method passes request to cache and returns cached response if any,
- * refreshing the hit in the cache as the newest item. Returns null if there is
- * no cache hit.
- *
- * @method getCachedResponse
- * @param oRequest {Object} Request object.
- * @param oCallback {Object} Callback object.
- * @param oCaller {Object} (deprecated) Use callback object.
- * @return {Object} Cached response object or null.
- */
-getCachedResponse : function(oRequest, oCallback, oCaller) {
-    var aCache = this._aCache;
-
-    // If cache is enabled...
-    if(this.maxCacheEntries > 0) {        
-        // Initialize local cache
-        if(!aCache) {
-            this._aCache = [];
-            YAHOO.log("Cache initialized", "info", this.toString());
-        }
-        // Look in local cache
-        else {
-            var nCacheLength = aCache.length;
-            if(nCacheLength > 0) {
-                var oResponse = null;
-                this.fireEvent("cacheRequestEvent", {request:oRequest,callback:oCallback,caller:oCaller});
-        
-                // Loop through each cached element
-                for(var i = nCacheLength-1; i >= 0; i--) {
-                    var oCacheElem = aCache[i];
-        
-                    // Defer cache hit logic to a public overridable method
-                    if(this.isCacheHit(oRequest,oCacheElem.request)) {
-                        // The cache returned a hit!
-                        // Grab the cached response
-                        oResponse = oCacheElem.response;
-                        this.fireEvent("cacheResponseEvent", {request:oRequest,response:oResponse,callback:oCallback,caller:oCaller});
-                        
-                        // Refresh the position of the cache hit
-                        if(i < nCacheLength-1) {
-                            // Remove element from its original location
-                            aCache.splice(i,1);
-                            // Add as newest
-                            this.addToCache(oRequest, oResponse);
-                            YAHOO.log("Refreshed cache position of the response for \"" +  oRequest + "\"", "info", this.toString());
-                        }
-                        
-                        // Add a cache flag
-                        oResponse.cached = true;
-                        break;
-                    }
-                }
-                YAHOO.log("The cached response for \"" + lang.dump(oRequest) +
-                        "\" is " + lang.dump(oResponse), "info", this.toString());
-                return oResponse;
-            }
-        }
-    }
-    else if(aCache) {
-        this._aCache = null;
-        YAHOO.log("Cache destroyed", "info", this.toString());
-    }
-    return null;
-},
-
-/**
- * Default overridable method matches given request to given cached request.
- * Returns true if is a hit, returns false otherwise.  Implementers should
- * override this method to customize the cache-matching algorithm.
- *
- * @method isCacheHit
- * @param oRequest {Object} Request object.
- * @param oCachedRequest {Object} Cached request object.
- * @return {Boolean} True if given request matches cached request, false otherwise.
- */
-isCacheHit : function(oRequest, oCachedRequest) {
-    return (oRequest === oCachedRequest);
-},
-
-/**
- * Adds a new item to the cache. If cache is full, evicts the stalest item
- * before adding the new item.
- *
- * @method addToCache
- * @param oRequest {Object} Request object.
- * @param oResponse {Object} Response object to cache.
- */
-addToCache : function(oRequest, oResponse) {
-    var aCache = this._aCache;
-    if(!aCache) {
-        return;
-    }
-
-    // If the cache is full, make room by removing stalest element (index=0)
-    while(aCache.length >= this.maxCacheEntries) {
-        aCache.shift();
-    }
-
-    // Add to cache in the newest position, at the end of the array
-    var oCacheElem = {request:oRequest,response:oResponse};
-    aCache[aCache.length] = oCacheElem;
-    this.fireEvent("responseCacheEvent", {request:oRequest,response:oResponse});
-    YAHOO.log("Cached the response for \"" +  oRequest + "\"", "info", this.toString());
-},
-
-/**
- * Flushes cache.
- *
- * @method flushCache
- */
-flushCache : function() {
-    if(this._aCache) {
-        this._aCache = [];
-        this.fireEvent("cacheFlushEvent");
-        YAHOO.log("Flushed the cache", "info", this.toString());
-    }
-},
-
-/**
- * Sets up a polling mechanism to send requests at set intervals and forward
- * responses to given callback.
- *
- * @method setInterval
- * @param nMsec {Number} Length of interval in milliseconds.
- * @param oRequest {Object} Request object.
- * @param oCallback {Function} Handler function to receive the response.
- * @param oCaller {Object} (deprecated) Use oCallback.scope.
- * @return {Number} Interval ID.
- */
-setInterval : function(nMsec, oRequest, oCallback, oCaller) {
-    if(lang.isNumber(nMsec) && (nMsec >= 0)) {
-        YAHOO.log("Enabling polling to live data for \"" + oRequest + "\" at interval " + nMsec, "info", this.toString());
-        var oSelf = this;
-        var nId = setInterval(function() {
-            oSelf.makeConnection(oRequest, oCallback, oCaller);
-        }, nMsec);
-        this._aIntervals.push(nId);
-        return nId;
-    }
-    else {
-        YAHOO.log("Could not enable polling to live data for \"" + oRequest + "\" at interval " + nMsec, "info", this.toString());
-    }
-},
-
-/**
- * Disables polling mechanism associated with the given interval ID.
- *
- * @method clearInterval
- * @param nId {Number} Interval ID.
- */
-clearInterval : function(nId) {
-    // Remove from tracker if there
-    var tracker = this._aIntervals || [];
-    for(var i=tracker.length-1; i>-1; i--) {
-        if(tracker[i] === nId) {
-            tracker.splice(i,1);
-            clearInterval(nId);
-        }
-    }
-},
-
-/**
- * Disables all known polling intervals.
- *
- * @method clearAllIntervals
- */
-clearAllIntervals : function() {
-    var tracker = this._aIntervals || [];
-    for(var i=tracker.length-1; i>-1; i--) {
-        clearInterval(tracker[i]);
-    }
-    tracker = [];
-},
-
-/**
- * First looks for cached response, then sends request to live data. The
- * following arguments are passed to the callback function:
- *     <dl>
- *     <dt><code>oRequest</code></dt>
- *     <dd>The same value that was passed in as the first argument to sendRequest.</dd>
- *     <dt><code>oParsedResponse</code></dt>
- *     <dd>An object literal containing the following properties:
- *         <dl>
- *         <dt><code>tId</code></dt>
- *         <dd>Unique transaction ID number.</dd>
- *         <dt><code>results</code></dt>
- *         <dd>Schema-parsed data results.</dd>
- *         <dt><code>error</code></dt>
- *         <dd>True in cases of data error.</dd>
- *         <dt><code>cached</code></dt>
- *         <dd>True when response is returned from DataSource cache.</dd> 
- *         <dt><code>meta</code></dt>
- *         <dd>Schema-parsed meta data.</dd>
- *         </dl>
- *     <dt><code>oPayload</code></dt>
- *     <dd>The same value as was passed in as <code>argument</code> in the oCallback object literal.</dd>
- *     </dl> 
- *
- * @method sendRequest
- * @param oRequest {Object} Request object.
- * @param oCallback {Object} An object literal with the following properties:
- *     <dl>
- *     <dt><code>success</code></dt>
- *     <dd>The function to call when the data is ready.</dd>
- *     <dt><code>failure</code></dt>
- *     <dd>The function to call upon a response failure condition.</dd>
- *     <dt><code>scope</code></dt>
- *     <dd>The object to serve as the scope for the success and failure handlers.</dd>
- *     <dt><code>argument</code></dt>
- *     <dd>Arbitrary data that will be passed back to the success and failure handlers.</dd>
- *     </dl> 
- * @param oCaller {Object} (deprecated) Use oCallback.scope.
- * @return {Number} Transaction ID, or null if response found in cache.
- */
-sendRequest : function(oRequest, oCallback, oCaller) {
-    // First look in cache
-    var oCachedResponse = this.getCachedResponse(oRequest, oCallback, oCaller);
-    if(oCachedResponse) {
-        DS.issueCallback(oCallback,[oRequest,oCachedResponse],false,oCaller);
-        return null;
-    }
-
-
-    // Not in cache, so forward request to live data
-    YAHOO.log("Making connection to live data for \"" + oRequest + "\"", "info", this.toString());
-    return this.makeConnection(oRequest, oCallback, oCaller);
-},
-
-/**
- * Overridable default method generates a unique transaction ID and passes 
- * the live data reference directly to the  handleResponse function. This
- * method should be implemented by subclasses to achieve more complex behavior
- * or to access remote data.          
- *
- * @method makeConnection
- * @param oRequest {Object} Request object.
- * @param oCallback {Object} Callback object literal.
- * @param oCaller {Object} (deprecated) Use oCallback.scope.
- * @return {Number} Transaction ID.
- */
-makeConnection : function(oRequest, oCallback, oCaller) {
-    var tId = DS._nTransactionId++;
-    this.fireEvent("requestEvent", {tId:tId, request:oRequest,callback:oCallback,caller:oCaller});
-
-    /* accounts for the following cases:
-    YAHOO.util.DataSourceBase.TYPE_UNKNOWN
-    YAHOO.util.DataSourceBase.TYPE_JSARRAY
-    YAHOO.util.DataSourceBase.TYPE_JSON
-    YAHOO.util.DataSourceBase.TYPE_HTMLTABLE
-    YAHOO.util.DataSourceBase.TYPE_XML
-    YAHOO.util.DataSourceBase.TYPE_TEXT
-    */
-    var oRawResponse = this.liveData;
-    
-    this.handleResponse(oRequest, oRawResponse, oCallback, oCaller, tId);
-    return tId;
-},
-
-/**
- * Receives raw data response and type converts to XML, JSON, etc as necessary.
- * Forwards oFullResponse to appropriate parsing function to get turned into
- * oParsedResponse. Calls doBeforeCallback() and adds oParsedResponse to 
- * the cache when appropriate before calling issueCallback().
- * 
- * The oParsedResponse object literal has the following properties:
- * <dl>
- *     <dd><dt>tId {Number}</dt> Unique transaction ID</dd>
- *     <dd><dt>results {Array}</dt> Array of parsed data results</dd>
- *     <dd><dt>meta {Object}</dt> Object literal of meta values</dd> 
- *     <dd><dt>error {Boolean}</dt> (optional) True if there was an error</dd>
- *     <dd><dt>cached {Boolean}</dt> (optional) True if response was cached</dd>
- * </dl>
- *
- * @method handleResponse
- * @param oRequest {Object} Request object
- * @param oRawResponse {Object} The raw response from the live database.
- * @param oCallback {Object} Callback object literal.
- * @param oCaller {Object} (deprecated) Use oCallback.scope.
- * @param tId {Number} Transaction ID.
- */
-handleResponse : function(oRequest, oRawResponse, oCallback, oCaller, tId) {
-    this.fireEvent("responseEvent", {tId:tId, request:oRequest, response:oRawResponse,
-            callback:oCallback, caller:oCaller});
-    YAHOO.log("Received live data response for \"" + oRequest + "\"", "info", this.toString());
-    var xhr = (this.dataType == DS.TYPE_XHR) ? true : false;
-    var oParsedResponse = null;
-    var oFullResponse = oRawResponse;
-    
-    // Try to sniff data type if it has not been defined
-    if(this.responseType === DS.TYPE_UNKNOWN) {
-        var ctype = (oRawResponse && oRawResponse.getResponseHeader) ? oRawResponse.getResponseHeader["Content-Type"] : null;
-        if(ctype) {
-             // xml
-            if(ctype.indexOf("text/xml") > -1) {
-                this.responseType = DS.TYPE_XML;
-            }
-            else if(ctype.indexOf("application/json") > -1) { // json
-                this.responseType = DS.TYPE_JSON;
-            }
-            else if(ctype.indexOf("text/plain") > -1) { // text
-                this.responseType = DS.TYPE_TEXT;
-            }
-        }
-        else {
-            if(YAHOO.lang.isArray(oRawResponse)) { // array
-                this.responseType = DS.TYPE_JSARRAY;
-            }
-             // xml
-            else if(oRawResponse && oRawResponse.nodeType && (oRawResponse.nodeType === 9 || oRawResponse.nodeType === 1 || oRawResponse.nodeType === 11)) {
-                this.responseType = DS.TYPE_XML;
-            }
-            else if(oRawResponse && oRawResponse.nodeName && (oRawResponse.nodeName.toLowerCase() == "table")) { // table
-                this.responseType = DS.TYPE_HTMLTABLE;
-            }    
-            else if(YAHOO.lang.isObject(oRawResponse)) { // json
-                this.responseType = DS.TYPE_JSON;
-            }
-            else if(YAHOO.lang.isString(oRawResponse)) { // text
-                this.responseType = DS.TYPE_TEXT;
-            }
-        }
-    }
-
-    switch(this.responseType) {
-        case DS.TYPE_JSARRAY:
-            if(xhr && oRawResponse && oRawResponse.responseText) {
-                oFullResponse = oRawResponse.responseText; 
-            }
-            try {
-                // Convert to JS array if it's a string
-                if(lang.isString(oFullResponse)) {
-                    var parseArgs = [oFullResponse].concat(this.parseJSONArgs);
-                    // Check for YUI JSON Util
-                    if(lang.JSON) {
-                        oFullResponse = lang.JSON.parse.apply(lang.JSON,parseArgs);
-                    }
-                    // Look for JSON parsers using an API similar to json2.js
-                    else if(window.JSON && JSON.parse) {
-                        oFullResponse = JSON.parse.apply(JSON,parseArgs);
-                    }
-                    // Look for JSON parsers using an API similar to json.js
-                    else if(oFullResponse.parseJSON) {
-                        oFullResponse = oFullResponse.parseJSON.apply(oFullResponse,parseArgs.slice(1));
-                    }
-                    // No JSON lib found so parse the string
-                    else {
-                        // Trim leading spaces
-                        while (oFullResponse.length > 0 &&
-                                (oFullResponse.charAt(0) != "{") &&
-                                (oFullResponse.charAt(0) != "[")) {
-                            oFullResponse = oFullResponse.substring(1, oFullResponse.length);
-                        }
-
-                        if(oFullResponse.length > 0) {
-                            // Strip extraneous stuff at the end
-                            var arrayEnd =
-Math.max(oFullResponse.lastIndexOf("]"),oFullResponse.lastIndexOf("}"));
-                            oFullResponse = oFullResponse.substring(0,arrayEnd+1);
-
-                            // Turn the string into an object literal...
-                            // ...eval is necessary here
-                            oFullResponse = eval("(" + oFullResponse + ")");
-
-                        }
-                    }
-                }
-            }
-            catch(e1) {
-            }
-            oFullResponse = this.doBeforeParseData(oRequest, oFullResponse, oCallback);
-            oParsedResponse = this.parseArrayData(oRequest, oFullResponse);
-            break;
-        case DS.TYPE_JSON:
-            if(xhr && oRawResponse && oRawResponse.responseText) {
-                oFullResponse = oRawResponse.responseText;
-            }
-            try {
-                // Convert to JSON object if it's a string
-                if(lang.isString(oFullResponse)) {
-                    var parseArgs = [oFullResponse].concat(this.parseJSONArgs);
-                    // Check for YUI JSON Util
-                    if(lang.JSON) {
-                        oFullResponse = lang.JSON.parse.apply(lang.JSON,parseArgs);
-                    }
-                    // Look for JSON parsers using an API similar to json2.js
-                    else if(window.JSON && JSON.parse) {
-                        oFullResponse = JSON.parse.apply(JSON,parseArgs);
-                    }
-                    // Look for JSON parsers using an API similar to json.js
-                    else if(oFullResponse.parseJSON) {
-                        oFullResponse = oFullResponse.parseJSON.apply(oFullResponse,parseArgs.slice(1));
-                    }
-                    // No JSON lib found so parse the string
-                    else {
-                        // Trim leading spaces
-                        while (oFullResponse.length > 0 &&
-                                (oFullResponse.charAt(0) != "{") &&
-                                (oFullResponse.charAt(0) != "[")) {
-                            oFullResponse = oFullResponse.substring(1, oFullResponse.length);
-                        }
-    
-                        if(oFullResponse.length > 0) {
-                            // Strip extraneous stuff at the end
-                            var objEnd = Math.max(oFullResponse.lastIndexOf("]"),oFullResponse.lastIndexOf("}"));
-                            oFullResponse = oFullResponse.substring(0,objEnd+1);
-    
-                            // Turn the string into an object literal...
-                            // ...eval is necessary here
-                            oFullResponse = eval("(" + oFullResponse + ")");
-    
-                        }
-                    }
-                }
-            }
-            catch(e) {
-            }
-
-            oFullResponse = this.doBeforeParseData(oRequest, oFullResponse, oCallback);
-            oParsedResponse = this.parseJSONData(oRequest, oFullResponse);
-            break;
-        case DS.TYPE_HTMLTABLE:
-            if(xhr && oRawResponse.responseText) {
-                var el = document.createElement('div');
-                el.innerHTML = oRawResponse.responseText;
-                oFullResponse = el.getElementsByTagName('table')[0];
-            }
-            oFullResponse = this.doBeforeParseData(oRequest, oFullResponse, oCallback);
-            oParsedResponse = this.parseHTMLTableData(oRequest, oFullResponse);
-            break;
-        case DS.TYPE_XML:
-            if(xhr && oRawResponse.responseXML) {
-                oFullResponse = oRawResponse.responseXML;
-            }
-            oFullResponse = this.doBeforeParseData(oRequest, oFullResponse, oCallback);
-            oParsedResponse = this.parseXMLData(oRequest, oFullResponse);
-            break;
-        case DS.TYPE_TEXT:
-            if(xhr && lang.isString(oRawResponse.responseText)) {
-                oFullResponse = oRawResponse.responseText;
-            }
-            oFullResponse = this.doBeforeParseData(oRequest, oFullResponse, oCallback);
-            oParsedResponse = this.parseTextData(oRequest, oFullResponse);
-            break;
-        default:
-            oFullResponse = this.doBeforeParseData(oRequest, oFullResponse, oCallback);
-            oParsedResponse = this.parseData(oRequest, oFullResponse);
-            break;
-    }
-
-
-    // Clean up for consistent signature
-    oParsedResponse = oParsedResponse || {};
-    if(!oParsedResponse.results) {
-        oParsedResponse.results = [];
-    }
-    if(!oParsedResponse.meta) {
-        oParsedResponse.meta = {};
-    }
-
-    // Success
-    if(!oParsedResponse.error) {
-        // Last chance to touch the raw response or the parsed response
-        oParsedResponse = this.doBeforeCallback(oRequest, oFullResponse, oParsedResponse, oCallback);
-        this.fireEvent("responseParseEvent", {request:oRequest,
-                response:oParsedResponse, callback:oCallback, caller:oCaller});
-        // Cache the response
-        this.addToCache(oRequest, oParsedResponse);
-    }
-    // Error
-    else {
-        // Be sure the error flag is on
-        oParsedResponse.error = true;
-        this.fireEvent("dataErrorEvent", {request:oRequest, response: oRawResponse, callback:oCallback, 
-                caller:oCaller, message:DS.ERROR_DATANULL});
-        YAHOO.log(DS.ERROR_DATANULL, "error", this.toString());
-    }
-
-    // Send the response back to the caller
-    oParsedResponse.tId = tId;
-    DS.issueCallback(oCallback,[oRequest,oParsedResponse],oParsedResponse.error,oCaller);
-},
-
-/**
- * Overridable method gives implementers access to the original full response
- * before the data gets parsed. Implementers should take care not to return an
- * unparsable or otherwise invalid response.
- *
- * @method doBeforeParseData
- * @param oRequest {Object} Request object.
- * @param oFullResponse {Object} The full response from the live database.
- * @param oCallback {Object} The callback object.  
- * @return {Object} Full response for parsing.
-  
- */
-doBeforeParseData : function(oRequest, oFullResponse, oCallback) {
-    return oFullResponse;
-},
-
-/**
- * Overridable method gives implementers access to the original full response and
- * the parsed response (parsed against the given schema) before the data
- * is added to the cache (if applicable) and then sent back to callback function.
- * This is your chance to access the raw response and/or populate the parsed
- * response with any custom data.
- *
- * @method doBeforeCallback
- * @param oRequest {Object} Request object.
- * @param oFullResponse {Object} The full response from the live database.
- * @param oParsedResponse {Object} The parsed response to return to calling object.
- * @param oCallback {Object} The callback object. 
- * @return {Object} Parsed response object.
- */
-doBeforeCallback : function(oRequest, oFullResponse, oParsedResponse, oCallback) {
-    return oParsedResponse;
-},
-
-/**
- * Overridable method parses data of generic RESPONSE_TYPE into a response object.
- *
- * @method parseData
- * @param oRequest {Object} Request object.
- * @param oFullResponse {Object} The full Array from the live database.
- * @return {Object} Parsed response object with the following properties:<br>
- *     - results {Array} Array of parsed data results<br>
- *     - meta {Object} Object literal of meta values<br>
- *     - error {Boolean} (optional) True if there was an error<br>
- */
-parseData : function(oRequest, oFullResponse) {
-    if(lang.isValue(oFullResponse)) {
-        var oParsedResponse = {results:oFullResponse,meta:{}};
-        YAHOO.log("Parsed generic data is " +
-                lang.dump(oParsedResponse), "info", this.toString());
-        return oParsedResponse;
-
-    }
-    YAHOO.log("Generic data could not be parsed: " + lang.dump(oFullResponse), 
-            "error", this.toString());
-    return null;
-},
-
-/**
- * Overridable method parses Array data into a response object.
- *
- * @method parseArrayData
- * @param oRequest {Object} Request object.
- * @param oFullResponse {Object} The full Array from the live database.
- * @return {Object} Parsed response object with the following properties:<br>
- *     - results (Array) Array of parsed data results<br>
- *     - error (Boolean) True if there was an error
- */
-parseArrayData : function(oRequest, oFullResponse) {
-    if(lang.isArray(oFullResponse)) {
-        var results = [],
-            i, j,
-            rec, field, data;
-        
-        // Parse for fields
-        if(lang.isArray(this.responseSchema.fields)) {
-            var fields = this.responseSchema.fields;
-            for (i = fields.length - 1; i >= 0; --i) {
-                if (typeof fields[i] !== 'object') {
-                    fields[i] = { key : fields[i] };
-                }
-            }
-
-            var parsers = {}, p;
-            for (i = fields.length - 1; i >= 0; --i) {
-                p = (typeof fields[i].parser === 'function' ?
-                          fields[i].parser :
-                          DS.Parser[fields[i].parser+'']) || fields[i].converter;
-                if (p) {
-                    parsers[fields[i].key] = p;
-                }
-            }
-
-            var arrType = lang.isArray(oFullResponse[0]);
-            for(i=oFullResponse.length-1; i>-1; i--) {
-                var oResult = {};
-                rec = oFullResponse[i];
-                if (typeof rec === 'object') {
-                    for(j=fields.length-1; j>-1; j--) {
-                        field = fields[j];
-                        data = arrType ? rec[j] : rec[field.key];
-
-                        if (parsers[field.key]) {
-                            data = parsers[field.key].call(this,data);
-                        }
-
-                        // Safety measure
-                        if(data === undefined) {
-                            data = null;
-                        }
-
-                        oResult[field.key] = data;
-                    }
-                }
-                else if (lang.isString(rec)) {
-                    for(j=fields.length-1; j>-1; j--) {
-                        field = fields[j];
-                        data = rec;
-
-                        if (parsers[field.key]) {
-                            data = parsers[field.key].call(this,data);
-                        }
-
-                        // Safety measure
-                        if(data === undefined) {
-                            data = null;
-                        }
-
-                        oResult[field.key] = data;
-                    }                
-                }
-                results[i] = oResult;
-            }    
-        }
-        // Return entire data set
-        else {
-            results = oFullResponse;
-        }
-        var oParsedResponse = {results:results};
-        YAHOO.log("Parsed array data is " +
-                lang.dump(oParsedResponse), "info", this.toString());
-        return oParsedResponse;
-
-    }
-    YAHOO.log("Array data could not be parsed: " + lang.dump(oFullResponse), 
-            "error", this.toString());
-    return null;
-},
-
-/**
- * Overridable method parses plain text data into a response object.
- *
- * @method parseTextData
- * @param oRequest {Object} Request object.
- * @param oFullResponse {Object} The full text response from the live database.
- * @return {Object} Parsed response object with the following properties:<br>
- *     - results (Array) Array of parsed data results<br>
- *     - error (Boolean) True if there was an error
- */
-parseTextData : function(oRequest, oFullResponse) {
-    if(lang.isString(oFullResponse)) {
-        if(lang.isString(this.responseSchema.recordDelim) &&
-                lang.isString(this.responseSchema.fieldDelim)) {
-            var oParsedResponse = {results:[]};
-            var recDelim = this.responseSchema.recordDelim;
-            var fieldDelim = this.responseSchema.fieldDelim;
-            if(oFullResponse.length > 0) {
-                // Delete the last line delimiter at the end of the data if it exists
-                var newLength = oFullResponse.length-recDelim.length;
-                if(oFullResponse.substr(newLength) == recDelim) {
-                    oFullResponse = oFullResponse.substr(0, newLength);
-                }
-                if(oFullResponse.length > 0) {
-                    // Split along record delimiter to get an array of strings
-                    var recordsarray = oFullResponse.split(recDelim);
-                    // Cycle through each record
-                    for(var i = 0, len = recordsarray.length, recIdx = 0; i < len; ++i) {
-                        var bError = false,
-                            sRecord = recordsarray[i];
-                        if (lang.isString(sRecord) && (sRecord.length > 0)) {
-                            // Split each record along field delimiter to get data
-                            var fielddataarray = recordsarray[i].split(fieldDelim);
-                            var oResult = {};
-                            
-                            // Filter for fields data
-                            if(lang.isArray(this.responseSchema.fields)) {
-                                var fields = this.responseSchema.fields;
-                                for(var j=fields.length-1; j>-1; j--) {
-                                    try {
-                                        // Remove quotation marks from edges, if applicable
-                                        var data = fielddataarray[j];
-                                        if (lang.isString(data)) {
-                                            if(data.charAt(0) == "\"") {
-                                                data = data.substr(1);
-                                            }
-                                            if(data.charAt(data.length-1) == "\"") {
-                                                data = data.substr(0,data.length-1);
-                                            }
-                                            var field = fields[j];
-                                            var key = (lang.isValue(field.key)) ? field.key : field;
-                                            // Backward compatibility
-                                            if(!field.parser && field.converter) {
-                                                field.parser = field.converter;
-                                                YAHOO.log("The field property converter has been deprecated" +
-                                                        " in favor of parser", "warn", this.toString());
-                                            }
-                                            var parser = (typeof field.parser === 'function') ?
-                                                field.parser :
-                                                DS.Parser[field.parser+''];
-                                            if(parser) {
-                                                data = parser.call(this, data);
-                                            }
-                                            // Safety measure
-                                            if(data === undefined) {
-                                                data = null;
-                                            }
-                                            oResult[key] = data;
-                                        }
-                                        else {
-                                            bError = true;
-                                        }
-                                    }
-                                    catch(e) {
-                                        bError = true;
-                                    }
-                                }
-                            }            
-                            // No fields defined so pass along all data as an array
-                            else {
-                                oResult = fielddataarray;
-                            }
-                            if(!bError) {
-                                oParsedResponse.results[recIdx++] = oResult;
-                            }
-                        }
-                    }
-                }
-            }
-            YAHOO.log("Parsed text data is " +
-                    lang.dump(oParsedResponse), "info", this.toString());
-            return oParsedResponse;
-        }
-    }
-    YAHOO.log("Text data could not be parsed: " + lang.dump(oFullResponse), 
-            "error", this.toString());
-    return null;
-            
-},
-
-/**
- * Overridable method parses XML data for one result into an object literal.
- *
- * @method parseXMLResult
- * @param result {XML} XML for one result.
- * @return {Object} Object literal of data for one result.
- */
-parseXMLResult : function(result) {
-    var oResult = {},
-        schema = this.responseSchema;
-        
-    try {
-        // Loop through each data field in each result using the schema
-        for(var m = schema.fields.length-1; m >= 0 ; m--) {
-            var field = schema.fields[m];
-            var key = (lang.isValue(field.key)) ? field.key : field;
-            var data = null;
-
-            if(this.useXPath) {
-                data = YAHOO.util.DataSource._getLocationValue(field, result);
-            }
-            else {
-                // Values may be held in an attribute...
-                var xmlAttr = result.attributes.getNamedItem(key);
-                if(xmlAttr) {
-                    data = xmlAttr.value;
-                }
-                // ...or in a node
-                else {
-                    var xmlNode = result.getElementsByTagName(key);
-                    if(xmlNode && xmlNode.item(0)) {
-                        var item = xmlNode.item(0);
-                        // For IE, then DOM...
-                        data = (item) ? ((item.text) ? item.text : (item.textContent) ? item.textContent : null) : null;
-                        // ...then fallback, but check for multiple child nodes
-                        if(!data) {
-                            var datapieces = [];
-                            for(var j=0, len=item.childNodes.length; j<len; j++) {
-                                if(item.childNodes[j].nodeValue) {
-                                    datapieces[datapieces.length] = item.childNodes[j].nodeValue;
-                                }
-                            }
-                            if(datapieces.length > 0) {
-                                data = datapieces.join("");
-                            }
-                        }
-                    }
-                }
-            }
-            
-            
-            // Safety net
-            if(data === null) {
-                   data = "";
-            }
-            // Backward compatibility
-            if(!field.parser && field.converter) {
-                field.parser = field.converter;
-                YAHOO.log("The field property converter has been deprecated" +
-                        " in favor of parser", "warn", this.toString());
-            }
-            var parser = (typeof field.parser === 'function') ?
-                field.parser :
-                DS.Parser[field.parser+''];
-            if(parser) {
-                data = parser.call(this, data);
-            }
-            // Safety measure
-            if(data === undefined) {
-                data = null;
-            }
-            oResult[key] = data;
-        }
-    }
-    catch(e) {
-        YAHOO.log("Error while parsing XML result: " + e.message);
-    }
-
-    return oResult;
-},
-
-
-
-/**
- * Overridable method parses XML data into a response object.
- *
- * @method parseXMLData
- * @param oRequest {Object} Request object.
- * @param oFullResponse {Object} The full XML response from the live database.
- * @return {Object} Parsed response object with the following properties<br>
- *     - results (Array) Array of parsed data results<br>
- *     - error (Boolean) True if there was an error
- */
-parseXMLData : function(oRequest, oFullResponse) {
-    var bError = false,
-        schema = this.responseSchema,
-        oParsedResponse = {meta:{}},
-        xmlList = null,
-        metaNode      = schema.metaNode,
-        metaLocators  = schema.metaFields || {},
-        i,k,loc,v;
-
-    // In case oFullResponse is something funky
-    try {
-        // Pull any meta identified
-        if(this.useXPath) {
-            for (k in metaLocators) {
-                oParsedResponse.meta[k] = YAHOO.util.DataSource._getLocationValue(metaLocators[k], oFullResponse);
-            }
-        }
-        else {
-            metaNode = metaNode ? oFullResponse.getElementsByTagName(metaNode)[0] :
-                       oFullResponse;
-
-            if (metaNode) {
-                for (k in metaLocators) {
-                    if (lang.hasOwnProperty(metaLocators, k)) {
-                        loc = metaLocators[k];
-                        // Look for a node
-                        v = metaNode.getElementsByTagName(loc)[0];
-
-                        if (v) {
-                            v = v.firstChild.nodeValue;
-                        } else {
-                            // Look for an attribute
-                            v = metaNode.attributes.getNamedItem(loc);
-                            if (v) {
-                                v = v.value;
-                            }
-                        }
-
-                        if (lang.isValue(v)) {
-                            oParsedResponse.meta[k] = v;
-                        }
-                    }
-                }
-            }
-        }
-        
-        // For result data
-        xmlList = (schema.resultNode) ?
-            oFullResponse.getElementsByTagName(schema.resultNode) :
-            null;
-    }
-    catch(e) {
-        YAHOO.log("Error while parsing XML data: " + e.message);
-    }
-    if(!xmlList || !lang.isArray(schema.fields)) {
-        bError = true;
-    }
-    // Loop through each result
-    else {
-        oParsedResponse.results = [];
-        for(i = xmlList.length-1; i >= 0 ; --i) {
-            var oResult = this.parseXMLResult(xmlList.item(i));
-            // Capture each array of values into an array of results
-            oParsedResponse.results[i] = oResult;
-        }
-    }
-    if(bError) {
-        YAHOO.log("XML data could not be parsed: " +
-                lang.dump(oFullResponse), "error", this.toString());
-        oParsedResponse.error = true;
-    }
-    else {
-        YAHOO.log("Parsed XML data is " +
-                lang.dump(oParsedResponse), "info", this.toString());
-    }
-    return oParsedResponse;
-},
-
-/**
- * Overridable method parses JSON data into a response object.
- *
- * @method parseJSONData
- * @param oRequest {Object} Request object.
- * @param oFullResponse {Object} The full JSON from the live database.
- * @return {Object} Parsed response object with the following properties<br>
- *     - results (Array) Array of parsed data results<br>
- *     - error (Boolean) True if there was an error
- */
-parseJSONData : function(oRequest, oFullResponse) {
-    var oParsedResponse = {results:[],meta:{}};
-    
-    if(lang.isObject(oFullResponse) && this.responseSchema.resultsList) {
-        var schema = this.responseSchema,
-            fields          = schema.fields,
-            resultsList     = oFullResponse,
-            results         = [],
-            metaFields      = schema.metaFields || {},
-            fieldParsers    = [],
-            fieldPaths      = [],
-            simpleFields    = [],
-            bError          = false,
-            i,len,j,v,key,parser,path;
-
-        // Function to convert the schema's fields into walk paths
-        var buildPath = function (needle) {
-            var path = null, keys = [], i = 0;
-            if (needle) {
-                // Strip the ["string keys"] and [1] array indexes
-                needle = needle.
-                    replace(/\[(['"])(.*?)\1\]/g,
-                    function (x,$1,$2) {keys[i]=$2;return '.@'+(i++);}).
-                    replace(/\[(\d+)\]/g,
-                    function (x,$1) {keys[i]=parseInt($1,10)|0;return '.@'+(i++);}).
-                    replace(/^\./,''); // remove leading dot
-
-                // If the cleaned needle contains invalid characters, the
-                // path is invalid
-                if (!/[^\w\.\$@]/.test(needle)) {
-                    path = needle.split('.');
-                    for (i=path.length-1; i >= 0; --i) {
-                        if (path[i].charAt(0) === '@') {
-                            path[i] = keys[parseInt(path[i].substr(1),10)];
-                        }
-                    }
-                }
-                else {
-                    YAHOO.log("Invalid locator: " + needle, "error", this.toString());
-                }
-            }
-            return path;
-        };
-
-
-        // Function to walk a path and return the pot of gold
-        var walkPath = function (path, origin) {
-            var v=origin,i=0,len=path.length;
-            for (;i<len && v;++i) {
-                v = v[path[i]];
-            }
-            return v;
-        };
-
-        // Parse the response
-        // Step 1. Pull the resultsList from oFullResponse (default assumes
-        // oFullResponse IS the resultsList)
-        path = buildPath(schema.resultsList);
-        if (path) {
-            resultsList = walkPath(path, oFullResponse);
-            if (resultsList === undefined) {
-                bError = true;
-            }
-        } else {
-            bError = true;
-        }
-        
-        if (!resultsList) {
-            resultsList = [];
-        }
-
-        if (!lang.isArray(resultsList)) {
-            resultsList = [resultsList];
-        }
-
-        if (!bError) {
-            // Step 2. Parse out field data if identified
-            if(schema.fields) {
-                var field;
-                // Build the field parser map and location paths
-                for (i=0, len=fields.length; i<len; i++) {
-                    field = fields[i];
-                    key    = field.key || field;
-                    parser = ((typeof field.parser === 'function') ?
-                        field.parser :
-                        DS.Parser[field.parser+'']) || field.converter;
-                    path   = buildPath(key);
-    
-                    if (parser) {
-                        fieldParsers[fieldParsers.length] = {key:key,parser:parser};
-                    }
-    
-                    if (path) {
-                        if (path.length > 1) {
-                            fieldPaths[fieldPaths.length] = {key:key,path:path};
-                        } else {
-                            simpleFields[simpleFields.length] = {key:key,path:path[0]};
-                        }
-                    } else {
-                        YAHOO.log("Invalid key syntax: " + key,"warn",this.toString());
-                    }
-                }
-
-                // Process the results, flattening the records and/or applying parsers if needed
-                for (i = resultsList.length - 1; i >= 0; --i) {
-                    var r = resultsList[i], rec = {};
-                    if(r) {
-                        for (j = simpleFields.length - 1; j >= 0; --j) {
-                            // Bug 1777850: data might be held in an array
-                            rec[simpleFields[j].key] =
-                                    (r[simpleFields[j].path] !== undefined) ?
-                                    r[simpleFields[j].path] : r[j];
-                        }
-
-                        for (j = fieldPaths.length - 1; j >= 0; --j) {
-                            rec[fieldPaths[j].key] = walkPath(fieldPaths[j].path,r);
-                        }
-
-                        for (j = fieldParsers.length - 1; j >= 0; --j) {
-                            var p = fieldParsers[j].key;
-                            rec[p] = fieldParsers[j].parser(rec[p]);
-                            if (rec[p] === undefined) {
-                                rec[p] = null;
-                            }
-                        }
-                    }
-                    results[i] = rec;
-                }
-            }
-            else {
-                results = resultsList;
-            }
-
-            for (key in metaFields) {
-                if (lang.hasOwnProperty(metaFields,key)) {
-                    path = buildPath(metaFields[key]);
-                    if (path) {
-                        v = walkPath(path, oFullResponse);
-                        oParsedResponse.meta[key] = v;
-                    }
-                }
-            }
-
-        } else {
-            YAHOO.log("JSON data could not be parsed due to invalid responseSchema.resultsList or invalid response: " +
-                    lang.dump(oFullResponse), "error", this.toString());
-
-            oParsedResponse.error = true;
-        }
-
-        oParsedResponse.results = results;
-    }
-    else {
-        YAHOO.log("JSON data could not be parsed: " +
-                lang.dump(oFullResponse), "error", this.toString());
-        oParsedResponse.error = true;
-    }
-
-    return oParsedResponse;
-},
-
-/**
- * Overridable method parses an HTML TABLE element reference into a response object.
- * Data is parsed out of TR elements from all TBODY elements. 
- *
- * @method parseHTMLTableData
- * @param oRequest {Object} Request object.
- * @param oFullResponse {Object} The full HTML element reference from the live database.
- * @return {Object} Parsed response object with the following properties<br>
- *     - results (Array) Array of parsed data results<br>
- *     - error (Boolean) True if there was an error
- */
-parseHTMLTableData : function(oRequest, oFullResponse) {
-    var bError = false;
-    var elTable = oFullResponse;
-    var fields = this.responseSchema.fields;
-    var oParsedResponse = {results:[]};
-
-    if(lang.isArray(fields)) {
-        // Iterate through each TBODY
-        for(var i=0; i<elTable.tBodies.length; i++) {
-            var elTbody = elTable.tBodies[i];
-    
-            // Iterate through each TR
-            for(var j=elTbody.rows.length-1; j>-1; j--) {
-                var elRow = elTbody.rows[j];
-                var oResult = {};
-                
-                for(var k=fields.length-1; k>-1; k--) {
-                    var field = fields[k];
-                    var key = (lang.isValue(field.key)) ? field.key : field;
-                    var data = elRow.cells[k].innerHTML;
-    
-                    // Backward compatibility
-                    if(!field.parser && field.converter) {
-                        field.parser = field.converter;
-                        YAHOO.log("The field property converter has been deprecated" +
-                                " in favor of parser", "warn", this.toString());
-                    }
-                    var parser = (typeof field.parser === 'function') ?
-                        field.parser :
-                        DS.Parser[field.parser+''];
-                    if(parser) {
-                        data = parser.call(this, data);
-                    }
-                    // Safety measure
-                    if(data === undefined) {
-                        data = null;
-                    }
-                    oResult[key] = data;
-                }
-                oParsedResponse.results[j] = oResult;
-            }
-        }
-    }
-    else {
-        bError = true;
-        YAHOO.log("Invalid responseSchema.fields", "error", this.toString());
-    }
-
-    if(bError) {
-        YAHOO.log("HTML TABLE data could not be parsed: " +
-                lang.dump(oFullResponse), "error", this.toString());
-        oParsedResponse.error = true;
-    }
-    else {
-        YAHOO.log("Parsed HTML TABLE data is " +
-                lang.dump(oParsedResponse), "info", this.toString());
-    }
-    return oParsedResponse;
-}
-
-};
-
-// DataSourceBase uses EventProvider
-lang.augmentProto(DS, util.EventProvider);
-
-
-
-/****************************************************************************/
-/****************************************************************************/
-/****************************************************************************/
-
-/**
- * LocalDataSource class for in-memory data structs including JavaScript arrays,
- * JavaScript object literals (JSON), XML documents, and HTML tables.
- *
- * @namespace YAHOO.util
- * @class YAHOO.util.LocalDataSource
- * @extends YAHOO.util.DataSourceBase 
- * @constructor
- * @param oLiveData {HTMLElement}  Pointer to live data.
- * @param oConfigs {object} (optional) Object literal of configuration values.
- */
-util.LocalDataSource = function(oLiveData, oConfigs) {
-    this.dataType = DS.TYPE_LOCAL;
-    
-    if(oLiveData) {
-        if(YAHOO.lang.isArray(oLiveData)) { // array
-            this.responseType = DS.TYPE_JSARRAY;
-        }
-         // xml
-        else if(oLiveData.nodeType && oLiveData.nodeType == 9) {
-            this.responseType = DS.TYPE_XML;
-        }
-        else if(oLiveData.nodeName && (oLiveData.nodeName.toLowerCase() == "table")) { // table
-            this.responseType = DS.TYPE_HTMLTABLE;
-            oLiveData = oLiveData.cloneNode(true);
-        }    
-        else if(YAHOO.lang.isString(oLiveData)) { // text
-            this.responseType = DS.TYPE_TEXT;
-        }
-        else if(YAHOO.lang.isObject(oLiveData)) { // json
-            this.responseType = DS.TYPE_JSON;
-        }
-    }
-    else {
-        oLiveData = [];
-        this.responseType = DS.TYPE_JSARRAY;
-    }
-    
-    util.LocalDataSource.superclass.constructor.call(this, oLiveData, oConfigs); 
-};
-
-// LocalDataSource extends DataSourceBase
-lang.extend(util.LocalDataSource, DS);
-
-// Copy static members to LocalDataSource class
-lang.augmentObject(util.LocalDataSource, DS);
-
-
-
-
-
-
-
-
-
-
-
-
-
-/****************************************************************************/
-/****************************************************************************/
-/****************************************************************************/
-
-/**
- * FunctionDataSource class for JavaScript functions.
- *
- * @namespace YAHOO.util
- * @class YAHOO.util.FunctionDataSource
- * @extends YAHOO.util.DataSourceBase  
- * @constructor
- * @param oLiveData {HTMLElement}  Pointer to live data.
- * @param oConfigs {object} (optional) Object literal of configuration values.
- */
-util.FunctionDataSource = function(oLiveData, oConfigs) {
-    this.dataType = DS.TYPE_JSFUNCTION;
-    oLiveData = oLiveData || function() {};
-    
-    util.FunctionDataSource.superclass.constructor.call(this, oLiveData, oConfigs); 
-};
-
-// FunctionDataSource extends DataSourceBase
-lang.extend(util.FunctionDataSource, DS, {
-
-/////////////////////////////////////////////////////////////////////////////
-//
-// FunctionDataSource public properties
-//
-/////////////////////////////////////////////////////////////////////////////
-
-/**
- * Context in which to execute the function. By default, is the DataSource
- * instance itself. If set, the function will receive the DataSource instance
- * as an additional argument. 
- *
- * @property scope
- * @type Object
- * @default null
- */
-scope : null,
-
-
-/////////////////////////////////////////////////////////////////////////////
-//
-// FunctionDataSource public methods
-//
-/////////////////////////////////////////////////////////////////////////////
-
-/**
- * Overriding method passes query to a function. The returned response is then
- * forwarded to the handleResponse function.
- *
- * @method makeConnection
- * @param oRequest {Object} Request object.
- * @param oCallback {Object} Callback object literal.
- * @param oCaller {Object} (deprecated) Use oCallback.scope.
- * @return {Number} Transaction ID.
- */
-makeConnection : function(oRequest, oCallback, oCaller) {
-    var tId = DS._nTransactionId++;
-    this.fireEvent("requestEvent", {tId:tId,request:oRequest,callback:oCallback,caller:oCaller});
-
-    // Pass the request in as a parameter and
-    // forward the return value to the handler
-    
-    
-    var oRawResponse = (this.scope) ? this.liveData.call(this.scope, oRequest, this) : this.liveData(oRequest);
-    
-    // Try to sniff data type if it has not been defined
-    if(this.responseType === DS.TYPE_UNKNOWN) {
-        if(YAHOO.lang.isArray(oRawResponse)) { // array
-            this.responseType = DS.TYPE_JSARRAY;
-        }
-         // xml
-        else if(oRawResponse && oRawResponse.nodeType && oRawResponse.nodeType == 9) {
-            this.responseType = DS.TYPE_XML;
-        }
-        else if(oRawResponse && oRawResponse.nodeName && (oRawResponse.nodeName.toLowerCase() == "table")) { // table
-            this.responseType = DS.TYPE_HTMLTABLE;
-        }    
-        else if(YAHOO.lang.isObject(oRawResponse)) { // json
-            this.responseType = DS.TYPE_JSON;
-        }
-        else if(YAHOO.lang.isString(oRawResponse)) { // text
-            this.responseType = DS.TYPE_TEXT;
-        }
-    }
-
-    this.handleResponse(oRequest, oRawResponse, oCallback, oCaller, tId);
-    return tId;
-}
-
-});
-
-// Copy static members to FunctionDataSource class
-lang.augmentObject(util.FunctionDataSource, DS);
-
-
-
-
-
-
-
-
-
-
-
-
-
-/****************************************************************************/
-/****************************************************************************/
-/****************************************************************************/
-
-/**
- * ScriptNodeDataSource class for accessing remote data via the YUI Get Utility. 
- *
- * @namespace YAHOO.util
- * @class YAHOO.util.ScriptNodeDataSource
- * @extends YAHOO.util.DataSourceBase  
- * @constructor
- * @param oLiveData {HTMLElement}  Pointer to live data.
- * @param oConfigs {object} (optional) Object literal of configuration values.
- */
-util.ScriptNodeDataSource = function(oLiveData, oConfigs) {
-    this.dataType = DS.TYPE_SCRIPTNODE;
-    oLiveData = oLiveData || "";
-    
-    util.ScriptNodeDataSource.superclass.constructor.call(this, oLiveData, oConfigs); 
-};
-
-// ScriptNodeDataSource extends DataSourceBase
-lang.extend(util.ScriptNodeDataSource, DS, {
-
-/////////////////////////////////////////////////////////////////////////////
-//
-// ScriptNodeDataSource public properties
-//
-/////////////////////////////////////////////////////////////////////////////
-
-/**
- * Alias to YUI Get Utility, to allow implementers to use a custom class.
- *
- * @property getUtility
- * @type Object
- * @default YAHOO.util.Get
- */
-getUtility : util.Get,
-
-/**
- * Defines request/response management in the following manner:
- * <dl>
- *     <!--<dt>queueRequests</dt>
- *     <dd>If a request is already in progress, wait until response is returned before sending the next request.</dd>
- *     <dt>cancelStaleRequests</dt>
- *     <dd>If a request is already in progress, cancel it before sending the next request.</dd>-->
- *     <dt>ignoreStaleResponses</dt>
- *     <dd>Send all requests, but handle only the response for the most recently sent request.</dd>
- *     <dt>allowAll</dt>
- *     <dd>Send all requests and handle all responses.</dd>
- * </dl>
- *
- * @property asyncMode
- * @type String
- * @default "allowAll"
- */
-asyncMode : "allowAll",
-
-/**
- * Callback string parameter name sent to the remote script. By default,
- * requests are sent to
- * &#60;URI&#62;?&#60;scriptCallbackParam&#62;=callbackFunction
- *
- * @property scriptCallbackParam
- * @type String
- * @default "callback"
- */
-scriptCallbackParam : "callback",
-
-
-/////////////////////////////////////////////////////////////////////////////
-//
-// ScriptNodeDataSource public methods
-//
-/////////////////////////////////////////////////////////////////////////////
-
-/**
- * Creates a request callback that gets appended to the script URI. Implementers
- * can customize this string to match their server's query syntax.
- *
- * @method generateRequestCallback
- * @return {String} String fragment that gets appended to script URI that 
- * specifies the callback function 
- */
-generateRequestCallback : function(id) {
-    return "&" + this.scriptCallbackParam + "=YAHOO.util.ScriptNodeDataSource.callbacks["+id+"]" ;
-},
-
-/**
- * Overridable method gives implementers access to modify the URI before the dynamic
- * script node gets inserted. Implementers should take care not to return an
- * invalid URI.
- *
- * @method doBeforeGetScriptNode
- * @param {String} URI to the script 
- * @return {String} URI to the script
- */
-doBeforeGetScriptNode : function(sUri) {
-    return sUri;
-},
-
-/**
- * Overriding method passes query to Get Utility. The returned
- * response is then forwarded to the handleResponse function.
- *
- * @method makeConnection
- * @param oRequest {Object} Request object.
- * @param oCallback {Object} Callback object literal.
- * @param oCaller {Object} (deprecated) Use oCallback.scope.
- * @return {Number} Transaction ID.
- */
-makeConnection : function(oRequest, oCallback, oCaller) {
-    var tId = DS._nTransactionId++;
-    this.fireEvent("requestEvent", {tId:tId,request:oRequest,callback:oCallback,caller:oCaller});
-    
-    // If there are no global pending requests, it is safe to purge global callback stack and global counter
-    if(util.ScriptNodeDataSource._nPending === 0) {
-        util.ScriptNodeDataSource.callbacks = [];
-        util.ScriptNodeDataSource._nId = 0;
-    }
-    
-    // ID for this request
-    var id = util.ScriptNodeDataSource._nId;
-    util.ScriptNodeDataSource._nId++;
-    
-    // Dynamically add handler function with a closure to the callback stack
-    var oSelf = this;
-    util.ScriptNodeDataSource.callbacks[id] = function(oRawResponse) {
-        if((oSelf.asyncMode !== "ignoreStaleResponses")||
-                (id === util.ScriptNodeDataSource.callbacks.length-1)) { // Must ignore stale responses
-                
-            // Try to sniff data type if it has not been defined
-            if(oSelf.responseType === DS.TYPE_UNKNOWN) {
-                if(YAHOO.lang.isArray(oRawResponse)) { // array
-                    oSelf.responseType = DS.TYPE_JSARRAY;
-                }
-                 // xml
-                else if(oRawResponse.nodeType && oRawResponse.nodeType == 9) {
-                    oSelf.responseType = DS.TYPE_XML;
-                }
-                else if(oRawResponse.nodeName && (oRawResponse.nodeName.toLowerCase() == "table")) { // table
-                    oSelf.responseType = DS.TYPE_HTMLTABLE;
-                }    
-                else if(YAHOO.lang.isObject(oRawResponse)) { // json
-                    oSelf.responseType = DS.TYPE_JSON;
-                }
-                else if(YAHOO.lang.isString(oRawResponse)) { // text
-                    oSelf.responseType = DS.TYPE_TEXT;
-                }
-            }
-
-            oSelf.handleResponse(oRequest, oRawResponse, oCallback, oCaller, tId);
-        }
-        else {
-            YAHOO.log("DataSource ignored stale response for tId " + tId + "(" + oRequest + ")", "info", oSelf.toString());
-        }
-    
-        delete util.ScriptNodeDataSource.callbacks[id];
-    };
-    
-    // We are now creating a request
-    util.ScriptNodeDataSource._nPending++;
-    var sUri = this.liveData + oRequest + this.generateRequestCallback(id);
-    sUri = this.doBeforeGetScriptNode(sUri);
-    YAHOO.log("DataSource is querying URL " + sUri, "info", this.toString());
-    this.getUtility.script(sUri,
-            {autopurge: true,
-            onsuccess: util.ScriptNodeDataSource._bumpPendingDown,
-            onfail: util.ScriptNodeDataSource._bumpPendingDown});
-
-    return tId;
-}
-
-});
-
-// Copy static members to ScriptNodeDataSource class
-lang.augmentObject(util.ScriptNodeDataSource, DS);
-
-// Copy static members to ScriptNodeDataSource class
-lang.augmentObject(util.ScriptNodeDataSource,  {
-
-/////////////////////////////////////////////////////////////////////////////
-//
-// ScriptNodeDataSource private static properties
-//
-/////////////////////////////////////////////////////////////////////////////
-
-/**
- * Unique ID to track requests.
- *
- * @property _nId
- * @type Number
- * @private
- * @static
- */
-_nId : 0,
-
-/**
- * Counter for pending requests. When this is 0, it is safe to purge callbacks
- * array.
- *
- * @property _nPending
- * @type Number
- * @private
- * @static
- */
-_nPending : 0,
-
-/**
- * Global array of callback functions, one for each request sent.
- *
- * @property callbacks
- * @type Function[]
- * @static
- */
-callbacks : []
-
-});
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-/****************************************************************************/
-/****************************************************************************/
-/****************************************************************************/
-
-/**
- * XHRDataSource class for accessing remote data via the YUI Connection Manager
- * Utility
- *
- * @namespace YAHOO.util
- * @class YAHOO.util.XHRDataSource
- * @extends YAHOO.util.DataSourceBase  
- * @constructor
- * @param oLiveData {HTMLElement}  Pointer to live data.
- * @param oConfigs {object} (optional) Object literal of configuration values.
- */
-util.XHRDataSource = function(oLiveData, oConfigs) {
-    this.dataType = DS.TYPE_XHR;
-    this.connMgr = this.connMgr || util.Connect;
-    oLiveData = oLiveData || "";
-    
-    util.XHRDataSource.superclass.constructor.call(this, oLiveData, oConfigs); 
-};
-
-// XHRDataSource extends DataSourceBase
-lang.extend(util.XHRDataSource, DS, {
-
-/////////////////////////////////////////////////////////////////////////////
-//
-// XHRDataSource public properties
-//
-/////////////////////////////////////////////////////////////////////////////
-
- /**
- * Alias to YUI Connection Manager, to allow implementers to use a custom class.
- *
- * @property connMgr
- * @type Object
- * @default YAHOO.util.Connect
- */
-connMgr: null,
-
- /**
- * Defines request/response management in the following manner:
- * <dl>
- *     <dt>queueRequests</dt>
- *     <dd>If a request is already in progress, wait until response is returned
- *     before sending the next request.</dd>
- *
- *     <dt>cancelStaleRequests</dt>
- *     <dd>If a request is already in progress, cancel it before sending the next
- *     request.</dd>
- *
- *     <dt>ignoreStaleResponses</dt>
- *     <dd>Send all requests, but handle only the response for the most recently
- *     sent request.</dd>
- *
- *     <dt>allowAll</dt>
- *     <dd>Send all requests and handle all responses.</dd>
- *
- * </dl>
- *
- * @property connXhrMode
- * @type String
- * @default "allowAll"
- */
-connXhrMode: "allowAll",
-
- /**
- * True if data is to be sent via POST. By default, data will be sent via GET.
- *
- * @property connMethodPost
- * @type Boolean
- * @default false
- */
-connMethodPost: false,
-
- /**
- * The connection timeout defines how many  milliseconds the XHR connection will
- * wait for a server response. Any non-zero value will enable the Connection Manager's
- * Auto-Abort feature.
- *
- * @property connTimeout
- * @type Number
- * @default 0
- */
-connTimeout: 0,
-
-/////////////////////////////////////////////////////////////////////////////
-//
-// XHRDataSource public methods
-//
-/////////////////////////////////////////////////////////////////////////////
-
-/**
- * Overriding method passes query to Connection Manager. The returned
- * response is then forwarded to the handleResponse function.
- *
- * @method makeConnection
- * @param oRequest {Object} Request object.
- * @param oCallback {Object} Callback object literal.
- * @param oCaller {Object} (deprecated) Use oCallback.scope.
- * @return {Number} Transaction ID.
- */
-makeConnection : function(oRequest, oCallback, oCaller) {
-
-    var oRawResponse = null;
-    var tId = DS._nTransactionId++;
-    this.fireEvent("requestEvent", {tId:tId,request:oRequest,callback:oCallback,caller:oCaller});
-
-    // Set up the callback object and
-    // pass the request in as a URL query and
-    // forward the response to the handler
-    var oSelf = this;
-    var oConnMgr = this.connMgr;
-    var oQueue = this._oQueue;
-
-    /**
-     * Define Connection Manager success handler
-     *
-     * @method _xhrSuccess
-     * @param oResponse {Object} HTTPXMLRequest object
-     * @private
-     */
-    var _xhrSuccess = function(oResponse) {
-        // If response ID does not match last made request ID,
-        // silently fail and wait for the next response
-        if(oResponse && (this.connXhrMode == "ignoreStaleResponses") &&
-                (oResponse.tId != oQueue.conn.tId)) {
-            YAHOO.log("Ignored stale response", "warn", this.toString());
-            return null;
-        }
-        // Error if no response
-        else if(!oResponse) {
-            this.fireEvent("dataErrorEvent", {request:oRequest, response:null,
-                    callback:oCallback, caller:oCaller,
-                    message:DS.ERROR_DATANULL});
-            YAHOO.log(DS.ERROR_DATANULL, "error", this.toString());
-
-            // Send error response back to the caller with the error flag on
-            DS.issueCallback(oCallback,[oRequest, {error:true}], true, oCaller);
-
-            return null;
-        }
-        // Forward to handler
-        else {
-            // Try to sniff data type if it has not been defined
-            if(this.responseType === DS.TYPE_UNKNOWN) {
-                var ctype = (oResponse.getResponseHeader) ? oResponse.getResponseHeader["Content-Type"] : null;
-                if(ctype) {
-                    // xml
-                    if(ctype.indexOf("text/xml") > -1) {
-                        this.responseType = DS.TYPE_XML;
-                    }
-                    else if(ctype.indexOf("application/json") > -1) { // json
-                        this.responseType = DS.TYPE_JSON;
-                    }
-                    else if(ctype.indexOf("text/plain") > -1) { // text
-                        this.responseType = DS.TYPE_TEXT;
-                    }
-                }
-            }
-            this.handleResponse(oRequest, oResponse, oCallback, oCaller, tId);
-        }
-    };
-
-    /**
-     * Define Connection Manager failure handler
-     *
-     * @method _xhrFailure
-     * @param oResponse {Object} HTTPXMLRequest object
-     * @private
-     */
-    var _xhrFailure = function(oResponse) {
-        this.fireEvent("dataErrorEvent", {request:oRequest, response: oResponse,
-                callback:oCallback, caller:oCaller,
-                message:DS.ERROR_DATAINVALID});
-        YAHOO.log(DS.ERROR_DATAINVALID + ": " +
-                oResponse.statusText, "error", this.toString());
-
-        // Backward compatibility
-        if(lang.isString(this.liveData) && lang.isString(oRequest) &&
-            (this.liveData.lastIndexOf("?") !== this.liveData.length-1) &&
-            (oRequest.indexOf("?") !== 0)){
-                YAHOO.log("DataSources using XHR no longer automatically supply " + 
-                "a \"?\" between the host and query parameters" +
-                " -- please check that the request URL is correct", "warn", this.toString());
-        }
-
-        // Send failure response back to the caller with the error flag on
-        oResponse = oResponse || {};
-        oResponse.error = true;
-        DS.issueCallback(oCallback,[oRequest,oResponse],true, oCaller);
-
-        return null;
-    };
-
-    /**
-     * Define Connection Manager callback object
-     *
-     * @property _xhrCallback
-     * @param oResponse {Object} HTTPXMLRequest object
-     * @private
-     */
-     var _xhrCallback = {
-        success:_xhrSuccess,
-        failure:_xhrFailure,
-        scope: this
-    };
-
-    // Apply Connection Manager timeout
-    if(lang.isNumber(this.connTimeout)) {
-        _xhrCallback.timeout = this.connTimeout;
-    }
-
-    // Cancel stale requests
-    if(this.connXhrMode == "cancelStaleRequests") {
-            // Look in queue for stale requests
-            if(oQueue.conn) {
-                if(oConnMgr.abort) {
-                    oConnMgr.abort(oQueue.conn);
-                    oQueue.conn = null;
-                    YAHOO.log("Canceled stale request", "warn", this.toString());
-                }
-                else {
-                    YAHOO.log("Could not find Connection Manager abort() function", "error", this.toString());
-                }
-            }
-    }
-
-    // Get ready to send the request URL
-    if(oConnMgr && oConnMgr.asyncRequest) {
-        var sLiveData = this.liveData;
-        var isPost = this.connMethodPost;
-        var sMethod = (isPost) ? "POST" : "GET";
-        // Validate request
-        var sUri = (isPost || !lang.isValue(oRequest)) ? sLiveData : sLiveData+oRequest;
-        var sRequest = (isPost) ? oRequest : null;
-
-        // Send the request right away
-        if(this.connXhrMode != "queueRequests") {
-            oQueue.conn = oConnMgr.asyncRequest(sMethod, sUri, _xhrCallback, sRequest);
-        }
-        // Queue up then send the request
-        else {
-            // Found a request already in progress
-            if(oQueue.conn) {
-                var allRequests = oQueue.requests;
-                // Add request to queue
-                allRequests.push({request:oRequest, callback:_xhrCallback});
-
-                // Interval needs to be started
-                if(!oQueue.interval) {
-                    oQueue.interval = setInterval(function() {
-                        // Connection is in progress
-                        if(oConnMgr.isCallInProgress(oQueue.conn)) {
-                            return;
-                        }
-                        else {
-                            // Send next request
-                            if(allRequests.length > 0) {
-                                // Validate request
-                                sUri = (isPost || !lang.isValue(allRequests[0].request)) ? sLiveData : sLiveData+allRequests[0].request;
-                                sRequest = (isPost) ? allRequests[0].request : null;
-                                oQueue.conn = oConnMgr.asyncRequest(sMethod, sUri, allRequests[0].callback, sRequest);
-
-                                // Remove request from queue
-                                allRequests.shift();
-                            }
-                            // No more requests
-                            else {
-                                clearInterval(oQueue.interval);
-                                oQueue.interval = null;
-                            }
-                        }
-                    }, 50);
-                }
-            }
-            // Nothing is in progress
-            else {
-                oQueue.conn = oConnMgr.asyncRequest(sMethod, sUri, _xhrCallback, sRequest);
-            }
-        }
-    }
-    else {
-        YAHOO.log("Could not find Connection Manager asyncRequest() function", "error", this.toString());
-        // Send null response back to the caller with the error flag on
-        DS.issueCallback(oCallback,[oRequest,{error:true}],true,oCaller);
-    }
-
-    return tId;
-}
-
-});
-
-// Copy static members to XHRDataSource class
-lang.augmentObject(util.XHRDataSource, DS);
-
-
-
-
-
-
-
-
-
-
-
-
-
-/****************************************************************************/
-/****************************************************************************/
-/****************************************************************************/
-
-/**
- * Factory class for creating a BaseDataSource subclass instance. The sublcass is
- * determined by oLiveData's type, unless the dataType config is explicitly passed in.  
- *
- * @namespace YAHOO.util
- * @class YAHOO.util.DataSource
- * @constructor
- * @param oLiveData {HTMLElement}  Pointer to live data.
- * @param oConfigs {object} (optional) Object literal of configuration values.
- */
-util.DataSource = function(oLiveData, oConfigs) {
-    oConfigs = oConfigs || {};
-    
-    // Point to one of the subclasses, first by dataType if given, then by sniffing oLiveData type.
-    var dataType = oConfigs.dataType;
-    if(dataType) {
-        if(dataType == DS.TYPE_LOCAL) {
-            lang.augmentObject(util.DataSource, util.LocalDataSource);
-            return new util.LocalDataSource(oLiveData, oConfigs);            
-        }
-        else if(dataType == DS.TYPE_XHR) {
-            lang.augmentObject(util.DataSource, util.XHRDataSource);
-            return new util.XHRDataSource(oLiveData, oConfigs);            
-        }
-        else if(dataType == DS.TYPE_SCRIPTNODE) {
-            lang.augmentObject(util.DataSource, util.ScriptNodeDataSource);
-            return new util.ScriptNodeDataSource(oLiveData, oConfigs);            
-        }
-        else if(dataType == DS.TYPE_JSFUNCTION) {
-            lang.augmentObject(util.DataSource, util.FunctionDataSource);
-            return new util.FunctionDataSource(oLiveData, oConfigs);            
-        }
-    }
-    
-    if(YAHOO.lang.isString(oLiveData)) { // strings default to xhr
-        lang.augmentObject(util.DataSource, util.XHRDataSource);
-        return new util.XHRDataSource(oLiveData, oConfigs);
-    }
-    else if(YAHOO.lang.isFunction(oLiveData)) {
-        lang.augmentObject(util.DataSource, util.FunctionDataSource);
-        return new util.FunctionDataSource(oLiveData, oConfigs);
-    }
-    else { // ultimate default is local
-        lang.augmentObject(util.DataSource, util.LocalDataSource);
-        return new util.LocalDataSource(oLiveData, oConfigs);
-    }
-};
-
-// Copy static members to DataSource class
-lang.augmentObject(util.DataSource, DS);
-
-})();
-
-/****************************************************************************/
-/****************************************************************************/
-/****************************************************************************/
-
-/**
- * The static Number class provides helper functions to deal with data of type
- * Number.
- *
- * @namespace YAHOO.util
- * @requires yahoo
- * @class Number
- * @static
- */
- YAHOO.util.Number = {
- 
-     /**
-     * Takes a native JavaScript Number and formats to string for display to user.
-     *
-     * @method format
-     * @param nData {Number} Number.
-     * @param oConfig {Object} (Optional) Optional configuration values:
-     *  <dl>
-     *   <dt>prefix {String}</dd>
-     *   <dd>String prepended before each number, like a currency designator "$"</dd>
-     *   <dt>decimalPlaces {Number}</dd>
-     *   <dd>Number of decimal places to round.</dd>
-     *   <dt>decimalSeparator {String}</dd>
-     *   <dd>Decimal separator</dd>
-     *   <dt>thousandsSeparator {String}</dd>
-     *   <dd>Thousands separator</dd>
-     *   <dt>suffix {String}</dd>
-     *   <dd>String appended after each number, like " items" (note the space)</dd>
-     *   <dt>negativeFormat</dt>
-     *   <dd>String used as a guide for how to indicate negative numbers.  The first '#' character in the string will be replaced by the number.  Default '-#'.</dd>
-     *  </dl>
-     * @return {String} Formatted number for display. Note, the following values
-     * return as "": null, undefined, NaN, "".
-     */
-    format : function(n, cfg) {
-        if (!isFinite(+n)) {
-            return '';
-        }
-
-        n   = !isFinite(+n) ? 0 : +n;
-        cfg = YAHOO.lang.merge(YAHOO.util.Number.format.defaults, (cfg || {}));
-
-        var neg    = n < 0,        absN   = Math.abs(n),
-            places = cfg.decimalPlaces,
-            sep    = cfg.thousandsSeparator,
-            s, bits, i;
-
-        if (places < 0) {
-            // Get rid of the decimal info
-            s = absN - (absN % 1) + '';
-            i = s.length + places;
-
-            // avoid 123 vs decimalPlaces -4 (should return "0")
-            if (i > 0) {
-                    // leverage toFixed by making 123 => 0.123 for the rounding
-                    // operation, then add the appropriate number of zeros back on
-                s = Number('.' + s).toFixed(i).slice(2) +
-                    new Array(s.length - i + 1).join('0');
-            } else {
-                s = "0";
-            }
-        } else {        // There is a bug in IE's toFixed implementation:
-            // for n in {(-0.94, -0.5], [0.5, 0.94)} n.toFixed() returns 0
-            // instead of -1 and 1. Manually handle that case.
-            s = absN < 1 && absN >= 0.5 && !places ? '1' : absN.toFixed(places);
-        }
-
-        if (absN > 1000) {
-            bits  = s.split(/\D/);
-            i  = bits[0].length % 3 || 3;
-
-            bits[0] = bits[0].slice(0,i) +
-                      bits[0].slice(i).replace(/(\d{3})/g, sep + '$1');
-
-            s = bits.join(cfg.decimalSeparator);
-        }
-
-        s = cfg.prefix + s + cfg.suffix;
-
-        return neg ? cfg.negativeFormat.replace(/#/,s) : s;
-    }
-};
-YAHOO.util.Number.format.defaults = {
-    decimalSeparator : '.',
-    decimalPlaces    : null,
-    thousandsSeparator : '',
-    prefix : '',
-    suffix : '',
-    negativeFormat : '-#'
-};
-
-
-/****************************************************************************/
-/****************************************************************************/
-/****************************************************************************/
-
-(function () {
-
-var xPad=function (x, pad, r)
-{
-    if(typeof r === 'undefined')
-    {
-        r=10;
-    }
-    for( ; parseInt(x, 10)<r && r>1; r/=10) {
-        x = pad.toString() + x;
-    }
-    return x.toString();
-};
-
-
-/**
- * The static Date class provides helper functions to deal with data of type Date.
- *
- * @namespace YAHOO.util
- * @requires yahoo
- * @class Date
- * @static
- */
- var Dt = {
-    formats: {
-        a: function (d, l) { return l.a[d.getDay()]; },
-        A: function (d, l) { return l.A[d.getDay()]; },
-        b: function (d, l) { return l.b[d.getMonth()]; },
-        B: function (d, l) { return l.B[d.getMonth()]; },
-        C: function (d) { return xPad(parseInt(d.getFullYear()/100, 10), 0); },
-        d: ['getDate', '0'],
-        e: ['getDate', ' '],
-        g: function (d) { return xPad(parseInt(Dt.formats.G(d)%100, 10), 0); },
-        G: function (d) {
-                var y = d.getFullYear();
-                var V = parseInt(Dt.formats.V(d), 10);
-                var W = parseInt(Dt.formats.W(d), 10);
-    
-                if(W > V) {
-                    y++;
-                } else if(W===0 && V>=52) {
-                    y--;
-                }
-    
-                return y;
-            },
-        H: ['getHours', '0'],
-        I: function (d) { var I=d.getHours()%12; return xPad(I===0?12:I, 0); },
-        j: function (d) {
-                var gmd_1 = new Date('' + d.getFullYear() + '/1/1 GMT');
-                var gmdate = new Date('' + d.getFullYear() + '/' + (d.getMonth()+1) + '/' + d.getDate() + ' GMT');
-                var ms = gmdate - gmd_1;
-                var doy = parseInt(ms/60000/60/24, 10)+1;
-                return xPad(doy, 0, 100);
-            },
-        k: ['getHours', ' '],
-        l: function (d) { var I=d.getHours()%12; return xPad(I===0?12:I, ' '); },
-        m: function (d) { return xPad(d.getMonth()+1, 0); },
-        M: ['getMinutes', '0'],
-        p: function (d, l) { return l.p[d.getHours() >= 12 ? 1 : 0 ]; },
-        P: function (d, l) { return l.P[d.getHours() >= 12 ? 1 : 0 ]; },
-        s: function (d, l) { return parseInt(d.getTime()/1000, 10); },
-        S: ['getSeconds', '0'],
-        u: function (d) { var dow = d.getDay(); return dow===0?7:dow; },
-        U: function (d) {
-                var doy = parseInt(Dt.formats.j(d), 10);
-                var rdow = 6-d.getDay();
-                var woy = parseInt((doy+rdow)/7, 10);
-                return xPad(woy, 0);
-            },
-        V: function (d) {
-                var woy = parseInt(Dt.formats.W(d), 10);
-                var dow1_1 = (new Date('' + d.getFullYear() + '/1/1')).getDay();
-                // First week is 01 and not 00 as in the case of %U and %W,
-                // so we add 1 to the final result except if day 1 of the year
-                // is a Monday (then %W returns 01).
-                // We also need to subtract 1 if the day 1 of the year is 
-                // Friday-Sunday, so the resulting equation becomes:
-                var idow = woy + (dow1_1 > 4 || dow1_1 <= 1 ? 0 : 1);
-                if(idow === 53 && (new Date('' + d.getFullYear() + '/12/31')).getDay() < 4)
-                {
-                    idow = 1;
-                }
-                else if(idow === 0)
-                {
-                    idow = Dt.formats.V(new Date('' + (d.getFullYear()-1) + '/12/31'));
-                }
-    
-                return xPad(idow, 0);
-            },
-        w: 'getDay',
-        W: function (d) {
-                var doy = parseInt(Dt.formats.j(d), 10);
-                var rdow = 7-Dt.formats.u(d);
-                var woy = parseInt((doy+rdow)/7, 10);
-                return xPad(woy, 0, 10);
-            },
-        y: function (d) { return xPad(d.getFullYear()%100, 0); },
-        Y: 'getFullYear',
-        z: function (d) {
-                var o = d.getTimezoneOffset();
-                var H = xPad(parseInt(Math.abs(o/60), 10), 0);
-                var M = xPad(Math.abs(o%60), 0);
-                return (o>0?'-':'+') + H + M;
-            },
-        Z: function (d) {
-		var tz = d.toString().replace(/^.*:\d\d( GMT[+-]\d+)? \(?([A-Za-z ]+)\)?\d*$/, '$2').replace(/[a-z ]/g, '');
-		if(tz.length > 4) {
-			tz = Dt.formats.z(d);
-		}
-		return tz;
-	},
-        '%': function (d) { return '%'; }
-    },
-
-    aggregates: {
-        c: 'locale',
-        D: '%m/%d/%y',
-        F: '%Y-%m-%d',
-        h: '%b',
-        n: '\n',
-        r: 'locale',
-        R: '%H:%M',
-        t: '\t',
-        T: '%H:%M:%S',
-        x: 'locale',
-        X: 'locale'
-        //'+': '%a %b %e %T %Z %Y'
-    },
-
-     /**
-     * Takes a native JavaScript Date and formats to string for display to user.
-     *
-     * @method format
-     * @param oDate {Date} Date.
-     * @param oConfig {Object} (Optional) Object literal of configuration values:
-     *  <dl>
-     *   <dt>format &lt;String&gt;</dt>
-     *   <dd>
-     *   <p>
-     *   Any strftime string is supported, such as "%I:%M:%S %p". strftime has several format specifiers defined by the Open group at 
-     *   <a href="http://www.opengroup.org/onlinepubs/007908799/xsh/strftime.html">http://www.opengroup.org/onlinepubs/007908799/xsh/strftime.html</a>
-     *   </p>
-     *   <p>   
-     *   PHP added a few of its own, defined at <a href="http://www.php.net/strftime">http://www.php.net/strftime</a>
-     *   </p>
-     *   <p>
-     *   This javascript implementation supports all the PHP specifiers and a few more.  The full list is below:
-     *   </p>
-     *   <dl>
-     *    <dt>%a</dt> <dd>abbreviated weekday name according to the current locale</dd>
-     *    <dt>%A</dt> <dd>full weekday name according to the current locale</dd>
-     *    <dt>%b</dt> <dd>abbreviated month name according to the current locale</dd>
-     *    <dt>%B</dt> <dd>full month name according to the current locale</dd>
-     *    <dt>%c</dt> <dd>preferred date and time representation for the current locale</dd>
-     *    <dt>%C</dt> <dd>century number (the year divided by 100 and truncated to an integer, range 00 to 99)</dd>
-     *    <dt>%d</dt> <dd>day of the month as a decimal number (range 01 to 31)</dd>
-     *    <dt>%D</dt> <dd>same as %m/%d/%y</dd>
-     *    <dt>%e</dt> <dd>day of the month as a decimal number, a single digit is preceded by a space (range ' 1' to '31')</dd>
-     *    <dt>%F</dt> <dd>same as %Y-%m-%d (ISO 8601 date format)</dd>
-     *    <dt>%g</dt> <dd>like %G, but without the century</dd>
-     *    <dt>%G</dt> <dd>The 4-digit year corresponding to the ISO week number</dd>
-     *    <dt>%h</dt> <dd>same as %b</dd>
-     *    <dt>%H</dt> <dd>hour as a decimal number using a 24-hour clock (range 00 to 23)</dd>
-     *    <dt>%I</dt> <dd>hour as a decimal number using a 12-hour clock (range 01 to 12)</dd>
-     *    <dt>%j</dt> <dd>day of the year as a decimal number (range 001 to 366)</dd>
-     *    <dt>%k</dt> <dd>hour as a decimal number using a 24-hour clock (range 0 to 23); single digits are preceded by a blank. (See also %H.)</dd>
-     *    <dt>%l</dt> <dd>hour as a decimal number using a 12-hour clock (range 1 to 12); single digits are preceded by a blank. (See also %I.) </dd>
-     *    <dt>%m</dt> <dd>month as a decimal number (range 01 to 12)</dd>
-     *    <dt>%M</dt> <dd>minute as a decimal number</dd>
-     *    <dt>%n</dt> <dd>newline character</dd>
-     *    <dt>%p</dt> <dd>either `AM' or `PM' according to the given time value, or the corresponding strings for the current locale</dd>
-     *    <dt>%P</dt> <dd>like %p, but lower case</dd>
-     *    <dt>%r</dt> <dd>time in a.m. and p.m. notation equal to %I:%M:%S %p</dd>
-     *    <dt>%R</dt> <dd>time in 24 hour notation equal to %H:%M</dd>
-     *    <dt>%s</dt> <dd>number of seconds since the Epoch, ie, since 1970-01-01 00:00:00 UTC</dd>
-     *    <dt>%S</dt> <dd>second as a decimal number</dd>
-     *    <dt>%t</dt> <dd>tab character</dd>
-     *    <dt>%T</dt> <dd>current time, equal to %H:%M:%S</dd>
-     *    <dt>%u</dt> <dd>weekday as a decimal number [1,7], with 1 representing Monday</dd>
-     *    <dt>%U</dt> <dd>week number of the current year as a decimal number, starting with the
-     *            first Sunday as the first day of the first week</dd>
-     *    <dt>%V</dt> <dd>The ISO 8601:1988 week number of the current year as a decimal number,
-     *            range 01 to 53, where week 1 is the first week that has at least 4 days
-     *            in the current year, and with Monday as the first day of the week.</dd>
-     *    <dt>%w</dt> <dd>day of the week as a decimal, Sunday being 0</dd>
-     *    <dt>%W</dt> <dd>week number of the current year as a decimal number, starting with the
-     *            first Monday as the first day of the first week</dd>
-     *    <dt>%x</dt> <dd>preferred date representation for the current locale without the time</dd>
-     *    <dt>%X</dt> <dd>preferred time representation for the current locale without the date</dd>
-     *    <dt>%y</dt> <dd>year as a decimal number without a century (range 00 to 99)</dd>
-     *    <dt>%Y</dt> <dd>year as a decimal number including the century</dd>
-     *    <dt>%z</dt> <dd>numerical time zone representation</dd>
-     *    <dt>%Z</dt> <dd>time zone name or abbreviation</dd>
-     *    <dt>%%</dt> <dd>a literal `%' character</dd>
-     *   </dl>
-     *  </dd>
-     * </dl>
-     * @param sLocale {String} (Optional) The locale to use when displaying days of week,
-     *  months of the year, and other locale specific strings.  The following locales are
-     *  built in:
-     *  <dl>
-     *   <dt>en</dt>
-     *   <dd>English</dd>
-     *   <dt>en-US</dt>
-     *   <dd>US English</dd>
-     *   <dt>en-GB</dt>
-     *   <dd>British English</dd>
-     *   <dt>en-AU</dt>
-     *   <dd>Australian English (identical to British English)</dd>
-     *  </dl>
-     *  More locales may be added by subclassing of YAHOO.util.DateLocale.
-     *  See YAHOO.util.DateLocale for more information.
-     * @return {String} Formatted date for display.
-     * @sa YAHOO.util.DateLocale
-     */
-    format : function (oDate, oConfig, sLocale) {
-        oConfig = oConfig || {};
-        
-        if(!(oDate instanceof Date)) {
-            return YAHOO.lang.isValue(oDate) ? oDate : "";
-        }
-
-        var format = oConfig.format || "%m/%d/%Y";
-
-        // Be backwards compatible, support strings that are
-        // exactly equal to YYYY/MM/DD, DD/MM/YYYY and MM/DD/YYYY
-        if(format === 'YYYY/MM/DD') {
-            format = '%Y/%m/%d';
-        } else if(format === 'DD/MM/YYYY') {
-            format = '%d/%m/%Y';
-        } else if(format === 'MM/DD/YYYY') {
-            format = '%m/%d/%Y';
-        }
-        // end backwards compatibility block
- 
-        sLocale = sLocale || "en";
-
-        // Make sure we have a definition for the requested locale, or default to en.
-        if(!(sLocale in YAHOO.util.DateLocale)) {
-            if(sLocale.replace(/-[a-zA-Z]+$/, '') in YAHOO.util.DateLocale) {
-                sLocale = sLocale.replace(/-[a-zA-Z]+$/, '');
-            } else {
-                sLocale = "en";
-            }
-        }
-
-        var aLocale = YAHOO.util.DateLocale[sLocale];
-
-        var replace_aggs = function (m0, m1) {
-            var f = Dt.aggregates[m1];
-            return (f === 'locale' ? aLocale[m1] : f);
-        };
-
-        var replace_formats = function (m0, m1) {
-            var f = Dt.formats[m1];
-            if(typeof f === 'string') {             // string => built in date function
-                return oDate[f]();
-            } else if(typeof f === 'function') {    // function => our own function
-                return f.call(oDate, oDate, aLocale);
-            } else if(typeof f === 'object' && typeof f[0] === 'string') {  // built in function with padding
-                return xPad(oDate[f[0]](), f[1]);
-            } else {
-                return m1;
-            }
-        };
-
-        // First replace aggregates (run in a loop because an agg may be made up of other aggs)
-        while(format.match(/%[cDFhnrRtTxX]/)) {
-            format = format.replace(/%([cDFhnrRtTxX])/g, replace_aggs);
-        }
-
-        // Now replace formats (do not run in a loop otherwise %%a will be replace with the value of %a)
-        var str = format.replace(/%([aAbBCdegGHIjklmMpPsSuUVwWyYzZ%])/g, replace_formats);
-
-        replace_aggs = replace_formats = undefined;
-
-        return str;
-    }
- };
- 
- YAHOO.namespace("YAHOO.util");
- YAHOO.util.Date = Dt;
-
-/**
- * The DateLocale class is a container and base class for all
- * localised date strings used by YAHOO.util.Date. It is used
- * internally, but may be extended to provide new date localisations.
- *
- * To create your own DateLocale, follow these steps:
- * <ol>
- *  <li>Find an existing locale that matches closely with your needs</li>
- *  <li>Use this as your base class.  Use YAHOO.util.DateLocale if nothing
- *   matches.</li>
- *  <li>Create your own class as an extension of the base class using
- *   YAHOO.lang.merge, and add your own localisations where needed.</li>
- * </ol>
- * See the YAHOO.util.DateLocale['en-US'] and YAHOO.util.DateLocale['en-GB']
- * classes which extend YAHOO.util.DateLocale['en'].
- *
- * For example, to implement locales for French french and Canadian french,
- * we would do the following:
- * <ol>
- *  <li>For French french, we have no existing similar locale, so use
- *   YAHOO.util.DateLocale as the base, and extend it:
- *   <pre>
- *      YAHOO.util.DateLocale['fr'] = YAHOO.lang.merge(YAHOO.util.DateLocale, {
- *          a: ['dim', 'lun', 'mar', 'mer', 'jeu', 'ven', 'sam'],
- *          A: ['dimanche', 'lundi', 'mardi', 'mercredi', 'jeudi', 'vendredi', 'samedi'],
- *          b: ['jan', 'f&eacute;v', 'mar', 'avr', 'mai', 'jun', 'jui', 'ao&ucirc;', 'sep', 'oct', 'nov', 'd&eacute;c'],
- *          B: ['janvier', 'f&eacute;vrier', 'mars', 'avril', 'mai', 'juin', 'juillet', 'ao&ucirc;t', 'septembre', 'octobre', 'novembre', 'd&eacute;cembre'],
- *          c: '%a %d %b %Y %T %Z',
- *          p: ['', ''],
- *          P: ['', ''],
- *          x: '%d.%m.%Y',
- *          X: '%T'
- *      });
- *   </pre>
- *  </li>
- *  <li>For Canadian french, we start with French french and change the meaning of \%x:
- *   <pre>
- *      YAHOO.util.DateLocale['fr-CA'] = YAHOO.lang.merge(YAHOO.util.DateLocale['fr'], {
- *          x: '%Y-%m-%d'
- *      });
- *   </pre>
- *  </li>
- * </ol>
- *
- * With that, you can use your new locales:
- * <pre>
- *    var d = new Date("2008/04/22");
- *    YAHOO.util.Date.format(d, {format: "%A, %d %B == %x"}, "fr");
- * </pre>
- * will return:
- * <pre>
- *    mardi, 22 avril == 22.04.2008
- * </pre>
- * And
- * <pre>
- *    YAHOO.util.Date.format(d, {format: "%A, %d %B == %x"}, "fr-CA");
- * </pre>
- * Will return:
- * <pre>
- *   mardi, 22 avril == 2008-04-22
- * </pre>
- * @namespace YAHOO.util
- * @requires yahoo
- * @class DateLocale
- */
- YAHOO.util.DateLocale = {
-        a: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
-        A: ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
-        b: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
-        B: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
-        c: '%a %d %b %Y %T %Z',
-        p: ['AM', 'PM'],
-        P: ['am', 'pm'],
-        r: '%I:%M:%S %p',
-        x: '%d/%m/%y',
-        X: '%T'
- };
-
- YAHOO.util.DateLocale['en'] = YAHOO.lang.merge(YAHOO.util.DateLocale, {});
-
- YAHOO.util.DateLocale['en-US'] = YAHOO.lang.merge(YAHOO.util.DateLocale['en'], {
-        c: '%a %d %b %Y %I:%M:%S %p %Z',
-        x: '%m/%d/%Y',
-        X: '%I:%M:%S %p'
- });
-
- YAHOO.util.DateLocale['en-GB'] = YAHOO.lang.merge(YAHOO.util.DateLocale['en'], {
-        r: '%l:%M:%S %P %Z'
- });
- YAHOO.util.DateLocale['en-AU'] = YAHOO.lang.merge(YAHOO.util.DateLocale['en']);
-
-})();
-
-YAHOO.register("datasource", YAHOO.util.DataSource, {version: "2.8.1", build: "19"});
-/*
-Copyright (c) 2010, Yahoo! Inc. All rights reserved.
-Code licensed under the BSD License:
-http://developer.yahoo.com/yui/license.html
-version: 2.8.1
+version: 2.8.2r1
 */
 (function () {
 /**
@@ -52966,12 +55975,12 @@ Paginator.ui.RowsPerPageDropdown.prototype = {
 };
 
 })();
-YAHOO.register("paginator", YAHOO.widget.Paginator, {version: "2.8.1", build: "19"});
+YAHOO.register("paginator", YAHOO.widget.Paginator, {version: "2.8.2r1", build: "7"});
 /*
 Copyright (c) 2010, Yahoo! Inc. All rights reserved.
 Code licensed under the BSD License:
 http://developer.yahoo.com/yui/license.html
-version: 2.8.1
+version: 2.8.2r1
 */
 /**
  * Mechanism to execute a series of callbacks in a non-blocking queue.  Each callback is executed via setTimout unless configured with a negative timeout, in which case it is run in blocking mode in the same execution thread as the previous callback.  Callbacks can be function references or object literals with the following keys:
@@ -70326,12 +73335,12 @@ lang.augmentObject(CE, BCE);
 
 })();
 
-YAHOO.register("datatable", YAHOO.widget.DataTable, {version: "2.8.1", build: "19"});
+YAHOO.register("datatable", YAHOO.widget.DataTable, {version: "2.8.2r1", build: "7"});
 /*
 Copyright (c) 2010, Yahoo! Inc. All rights reserved.
 Code licensed under the BSD License:
 http://developer.yahoo.com/yui/license.html
-version: 2.8.1
+version: 2.8.2r1
 */
 /**
  * The Browser History Manager provides the ability to use the back/forward
@@ -71134,12 +74143,12 @@ YAHOO.util.History = (function () {
     };
 
 })();
-YAHOO.register("history", YAHOO.util.History, {version: "2.8.1", build: "19"});
+YAHOO.register("history", YAHOO.util.History, {version: "2.8.2r1", build: "7"});
 /*
 Copyright (c) 2010, Yahoo! Inc. All rights reserved.
 Code licensed under the BSD License:
 http://developer.yahoo.com/yui/license.html
-version: 2.8.1
+version: 2.8.2r1
 */
 /**
  * Provides methods to parse JSON strings and convert objects to JSON strings.
@@ -71672,12 +74681,12 @@ YAHOO.lang.JSON = {
 YAHOO.lang.JSON.isValid = YAHOO.lang.JSON.isSafe;
 
 })();
-YAHOO.register("json", YAHOO.lang.JSON, {version: "2.8.1", build: "19"});
+YAHOO.register("json", YAHOO.lang.JSON, {version: "2.8.2r1", build: "7"});
 /*
 Copyright (c) 2010, Yahoo! Inc. All rights reserved.
 Code licensed under the BSD License:
 http://developer.yahoo.com/yui/license.html
-version: 2.8.1
+version: 2.8.2r1
 */
 /**
  * @description <p>Makes an element resizable</p>
@@ -73421,12 +76430,12 @@ var D = YAHOO.util.Dom,
 
 })();
 
-YAHOO.register("resize", YAHOO.util.Resize, {version: "2.8.1", build: "19"});
+YAHOO.register("resize", YAHOO.util.Resize, {version: "2.8.2r1", build: "7"});
 /*
 Copyright (c) 2010, Yahoo! Inc. All rights reserved.
 Code licensed under the BSD License:
 http://developer.yahoo.com/yui/license.html
-version: 2.8.1
+version: 2.8.2r1
 */
 /**
  * The selector module provides helper methods allowing CSS3 Selectors to be used with DOM elements.
@@ -74072,12 +77081,12 @@ if (YAHOO.env.ua.ie && YAHOO.env.ua.ie < 8) { // rewrite class for IE < 8
 }
 
 })();
-YAHOO.register("selector", YAHOO.util.Selector, {version: "2.8.1", build: "19"});
+YAHOO.register("selector", YAHOO.util.Selector, {version: "2.8.2r1", build: "7"});
 /*
 Copyright (c) 2010, Yahoo! Inc. All rights reserved.
 Code licensed under the BSD License:
 http://developer.yahoo.com/yui/license.html
-version: 2.8.1
+version: 2.8.2r1
 */
 (function() {
 
@@ -75067,12 +78076,12 @@ version: 2.8.1
     YAHOO.widget.Tab = Tab;
 })();
 
-YAHOO.register("tabview", YAHOO.widget.TabView, {version: "2.8.1", build: "19"});
+YAHOO.register("tabview", YAHOO.widget.TabView, {version: "2.8.2r1", build: "7"});
 /*
 Copyright (c) 2010, Yahoo! Inc. All rights reserved.
 Code licensed under the BSD License:
 http://developer.yahoo.com/yui/license.html
-version: 2.8.1
+version: 2.8.2r1
 */
 (function () {
     var Dom = YAHOO.util.Dom,
@@ -79125,12 +82134,12 @@ YAHOO.widget.TVFadeOut.prototype = {
     }
 };
 
-YAHOO.register("treeview", YAHOO.widget.TreeView, {version: "2.8.1", build: "19"});
+YAHOO.register("treeview", YAHOO.widget.TreeView, {version: "2.8.2r1", build: "7"});
 /*
 Copyright (c) 2010, Yahoo! Inc. All rights reserved.
 Code licensed under the BSD License:
 http://developer.yahoo.com/yui/license.html
-version: 2.8.1
+version: 2.8.2r1
 */
 /****************************************************************************/
 /****************************************************************************/
@@ -81229,4 +84238,4 @@ LogReader.prototype = {
 YAHOO.widget.LogReader = LogReader;
 
 })();
-YAHOO.register("logger", YAHOO.widget.Logger, {version: "2.8.1", build: "19"});
+YAHOO.register("logger", YAHOO.widget.Logger, {version: "2.8.2r1", build: "7"});

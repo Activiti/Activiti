@@ -173,6 +173,14 @@
      */
     createFolderURL: function RepositoryService_createFolderURL() {
       return Activiti.service.REST_PROXY_URI_RELATIVE + "folder";
+    },
+    
+    createTag: function RepositoryService_createTag(tagLiteral) {
+      this.jsonPost(this.createTagUrl(), tagLiteral, null, "createTag");
+    },
+    
+    createTagUrl: function RepositoryService_createTagUrl(connectorId, artifactId, tag) {
+      return Activiti.service.REST_PROXY_URI_RELATIVE + "tag";
     }
 
   });
@@ -454,6 +462,148 @@
         this._dialog.destroy();
       }
     }
+
+	});
+
+})();
+
+
+(function()
+{
+	/**
+	 * Shortcuts
+	 */
+	var Dom = YAHOO.util.Dom,
+			Selector = YAHOO.util.Selector,
+			Event = YAHOO.util.Event,
+			Pagination = Activiti.util.Pagination,
+			$html = Activiti.util.decodeHTML;
+			
+	/**
+	 * TagThisDialog constructor.
+	 *
+	 * @param htmlId {String} The HTML id of the parent element
+	 * @param connectorId {String} The connector-id of artifact that should be tagged
+	 * @param artifactId The id of the artifact that should be tagged
+	 * @return {Activiti.component.TagThisDialog} The new component.TagThisDialog instance
+	 * @constructor
+	 */
+	Activiti.component.TagThisDialog = function TagThisDialog_constructor(htmlId, connectorId, artifactId, artifactLabel)
+  {
+    Activiti.component.TagThisDialog.superclass.constructor.call(this, "Activiti.component.TagThisDialog", htmlId);
+
+    this.service = new Activiti.service.RepositoryService(this);
+
+    this._dialog = {};
+		this._connectorId = connectorId;
+		this._artifactId = artifactId;
+		this._artifactLabel = artifactLabel;
+
+    return this;
+  };
+
+  YAHOO.extend(Activiti.component.TagThisDialog, Activiti.component.Base,
+  {
+	
+		/**
+		* Fired by YUI when parent element is available for scripting.
+		* Template initialisation, including instantiation of YUI widgets and event listener binding.
+		*
+		* @method onReady
+		*/
+		onReady: function TagThisDialog_onReady()
+		{
+		  var content = document.createElement("div");
+
+	    // TODO: i18n
+
+      content.innerHTML = '<div class="bd"><form id="' + this.id + '-tag-this-form" accept-charset="utf-8"><h1>Tag "' + this._artifactLabel + '"</h1><table><tr><td><label>Tag Name:<br/><input type="text" name="tags" id="tag-input" value="" /></label><br/></td></tr><tr><td><label>Suggestions: <div id="tag-suggestions"> </div></label><td></tr></table></form></div>';
+
+      this._dialog = new YAHOO.widget.Dialog(content, {
+        fixedcenter: true,
+        visible: false,
+        constraintoviewport: true,
+        modal: true,
+        buttons: [
+          // TODO: i18n
+          { text: "Tag it" , handler: { fn: this.onSubmit, scope: this }, isDefault:true },
+          { text: "Cancel", handler: { fn: this.onCancel, scope: this } }
+        ]
+      });
+
+      this._dialog.callback.success = this.onSuccess;
+      this._dialog.callback.failure = this.onFailure;
+
+		  this._dialog.render(document.body);
+		  
+      var tagsDataSource = new YAHOO.util.XHRDataSource("http://localhost:8080/activiti-cycle/proxy/activiti-rest-endpoint/tags");
+      tagsDataSource.responseSchema = {
+        resultsList: "tags",
+        fields : [
+          {
+            key:"id",
+            key:"alias"
+          }
+        ]};
+
+      // Instantiate the AutoComplete
+      var autoComplete = new YAHOO.widget.AutoComplete("tag-input", "tag-suggestions", tagsDataSource);      
+      autoComplete.generateRequest = function(sQuery) {
+            return '?tag=' + sQuery;
+      };
+      
+      autoComplete.allowBrowserAutocomplete = false; // Disable the browser's built-in autocomplete caching mechanism
+      autoComplete.typeAhead = true; // Enable type ahead
+      autoComplete.alwaysShowContainer = false;
+      autoComplete.minQueryLength = 0; // Can be 0, which will return all results
+      autoComplete.maxResultsDisplayed = 4; // Show more results, scrolling is enabled via CSS
+      autoComplete.delimChar = [",",";"]; // Enable comma and semi-colon delimiters
+      autoComplete.autoHighlight = false; // Auto-highlighting interferes with adding new tags
+
+      // Populate list to start a new interaction
+      autoComplete.itemSelectEvent.subscribe(function(sType, aArgs) {
+          autoComplete.sendQuery("");
+      });
+
+      // TODO: validation
+
+      // this._dialog.getButtons()[0].set("disabled", true);
+		  this._dialog.show();
+		},
+
+    onSubmit: function TagThisDialog_onSubmit(event, dialog) {
+      var tags = dialog.getData().tags.split(',');
+      
+      for(var tag in tags) {
+        if(tags[tag] && tags[tag].length > 0) {
+          this.service.createTag({
+            connectorId: this._connectorId,
+            artifactId: this._artifactId,
+            tagName: tags[tag],
+            alias: tags[tag]
+          });
+        }
+      }
+
+      // this.service.createTag(this._connectorId, this._artifactId, name, alias);
+      if (this._dialog) {
+        this._dialog.destroy();
+      }
+    },
+
+    onCancel: function TagThisDialog_onCancel() {
+      this._dialog.cancel();
+    },
+
+    doValidate: function TagThisDialog_doValidate(event, object) {
+      alert(event);
+    },
+
+    onCreateTagSuccess: function TagThisDialog_RepositoryService_onSuccess(o) {
+
+      // TODO
+
+    },
 
 	});
 

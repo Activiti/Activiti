@@ -13,4 +13,16 @@ h1 {
   text-decoration: none;
 }
 
+/* YUI AutoComplete (used for "tag this" dialog) */
+
+.yui-ac-content ul li {
+  list-style: none;
+  float: left;
+  margin: 0 5px 0 0;
+}
+
+#tag-suggestions {
+  position: inherit !important;
+}
+
 /* STRUCTURE */
