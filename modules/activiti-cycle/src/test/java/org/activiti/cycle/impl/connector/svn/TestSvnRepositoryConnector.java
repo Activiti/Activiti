@@ -6,6 +6,7 @@ import org.activiti.cycle.Content;
 import org.activiti.cycle.RepositoryArtifact;
 import org.activiti.cycle.RepositoryConnector;
 import org.activiti.cycle.RepositoryFolder;
+import org.activiti.cycle.RepositoryNode;
 import org.activiti.cycle.RepositoryNodeCollection;
 import org.activiti.cycle.RepositoryNodeNotFoundException;
 import org.activiti.cycle.impl.conf.ConfigurationContainer;
@@ -28,13 +29,13 @@ public class TestSvnRepositoryConnector {
 
 	private static ConfigurationContainer userConfiguration;
 
-	private static RepositoryConnector connector;
+	private static SvnRepositoryConnector connector;
 
 	@BeforeClass
 	public static void createConnector() {
 		userConfiguration = new ConfigurationContainer("daniel");
 		userConfiguration.addRepositoryConnectorConfiguration(new SvnConnectorConfiguration("svn", REPO_LOCATION, "/tmp"));
-		connector = userConfiguration.getConnector("svn");
+		connector = (SvnRepositoryConnector) userConfiguration.getConnector("svn");
 
 		// TODO: Should be done in Bootstrapping
 		PluginFinder.checkPluginInitialization();
@@ -44,8 +45,11 @@ public class TestSvnRepositoryConnector {
 
 	@Test
 	public void testGetChildrenRoot() {
-		RepositoryNodeCollection result = connector.getChildren("");
+		RepositoryNodeCollection result = connector.getChildren("c38797fd-5800-4bb9-9286-c90161d099ff");
 		Assert.assertTrue(result.asList().size() > 0);
+		for (RepositoryNode node : result.asList()) {
+			System.out.println(node.getNodeId());
+		}
 
 		try {
 			result = connector.getChildren("nonExistentPath");
@@ -123,6 +127,23 @@ public class TestSvnRepositoryConnector {
 	@Test
 	public void testDeleteFolder() {
 		connector.deleteFolder("trunk");
+	}
+
+	@Test
+	public void testTransaction() {
+
+		connector.beginTransaction("", "begin transaction on repository root", false);
+
+		RepositoryArtifact test1 = connector.getRepositoryArtifact("test.txt");
+		RepositoryArtifact test2 = connector.getRepositoryArtifact("test2.txt");
+
+		Content contentTest1 = connector.getContent(test1.getNodeId(), "Text");
+		Content contentTest2 = connector.getContent(test2.getNodeId(), "Text");
+
+		connector.updateContent(test1.getNodeId(), contentTest2);
+		connector.updateContent(test2.getNodeId(), contentTest1);
+
+		connector.commitPendingChanges("commit");
 	}
 
 }
