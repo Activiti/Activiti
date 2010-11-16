@@ -8,10 +8,8 @@ import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -31,6 +29,7 @@ import org.activiti.cycle.impl.RepositoryNodeCollectionImpl;
 import org.activiti.cycle.impl.connector.AbstractRepositoryConnector;
 import org.tigris.subversion.svnclientadapter.ISVNClientAdapter;
 import org.tigris.subversion.svnclientadapter.ISVNDirEntry;
+import org.tigris.subversion.svnclientadapter.ISVNInfo;
 import org.tigris.subversion.svnclientadapter.SVNClientAdapterFactory;
 import org.tigris.subversion.svnclientadapter.SVNClientException;
 import org.tigris.subversion.svnclientadapter.SVNNodeKind;
@@ -40,7 +39,10 @@ import org.tigris.subversion.svnclientadapter.commandline.CmdLineClientAdapterFa
 import org.tigris.subversion.svnclientadapter.svnkit.SvnKitClientAdapterFactory;
 
 /**
- * The {@link RepositoryConnector} for SVN repositories.
+ * The {@link RepositoryConnector} for SVN repositories. Use this Connector in a
+ * stateless way for browsing and atomic commits. Call
+ * {@link #beginTransaction(String, String, boolean)} to start longer
+ * transactions (with batch-commits)
  * 
  * 
  * @author daniel.meyer@camunda.com
@@ -56,9 +58,8 @@ public class SvnRepositoryConnector extends AbstractRepositoryConnector<SvnConne
 
 	private ISVNClientAdapter svnClientAdapter;
 
-	private SVNUrl lockedURL;
-
 	private Map<String, File> dirtyFolders = new HashMap<String, File>();
+	private Map<String, File> createdFolders = new HashMap<String, File>();
 
 	private boolean transactionActive = false;
 
@@ -78,8 +79,13 @@ public class SvnRepositoryConnector extends AbstractRepositoryConnector<SvnConne
 	protected void validateConfig() {
 		String repositoryPath = getConfiguration().getRepositoryPath();
 		if (repositoryPath == null) {
-			throw new RuntimeException("Cannot initialize SVNRepositoryConnector: repositoryPath not set.");
+			throw new RuntimeException("Cannot initialize SvnRepositoryConnector: repositoryPath not set.");
 		}
+		String tempFilePath = getConfiguration().getTemporaryFileStore();
+		if (tempFilePath == null) {
+			throw new RuntimeException("Cannot initialize SvnRepositoryConnector: temporaryFileStore not set.");
+		}
+
 	}
 
 	protected static void setupFactories() {
@@ -147,6 +153,7 @@ public class SvnRepositoryConnector extends AbstractRepositoryConnector<SvnConne
 				recDelete(dirtyFolder);
 			}
 			dirtyFolders.clear();
+			createdFolders.clear();
 		}
 
 	}
@@ -154,11 +161,17 @@ public class SvnRepositoryConnector extends AbstractRepositoryConnector<SvnConne
 	public RepositoryArtifact getRepositoryArtifact(String id) throws RepositoryNodeNotFoundException {
 		ISVNClientAdapter clientAdapter = getSvnClientAdapter();
 
-		ISVNDirEntry entry = null;
+		ISVNInfo entry = null;
 
 		try {
-			entry = clientAdapter.getDirEntry(buildSVNURL(id), SVNRevision.HEAD);
-			return (RepositoryArtifact) createRepositoryNode(entry, id);
+			File dirtyFile = isDirty(id);
+			if (dirtyFile != null) {
+				entry = clientAdapter.getInfo(dirtyFile);
+			} else {
+				entry = clientAdapter.getInfo(buildSVNURL(id));
+			}
+			return (RepositoryArtifact) initRepositoryNode(entry, id);
+
 		} catch (Exception e) {
 			log.log(Level.WARNING, "cannot get Artifact " + id, e);
 			throw new RepositoryNodeNotFoundException(getConfiguration().getName(), RepositoryArtifact.class, id, e);
@@ -169,11 +182,16 @@ public class SvnRepositoryConnector extends AbstractRepositoryConnector<SvnConne
 	public RepositoryFolder getRepositoryFolder(String id) throws RepositoryNodeNotFoundException {
 		ISVNClientAdapter clientAdapter = getSvnClientAdapter();
 
-		ISVNDirEntry entry = null;
+		ISVNInfo entry = null;
 
 		try {
-			entry = clientAdapter.getDirEntry(buildSVNURL(id), SVNRevision.HEAD);
-			return (RepositoryFolder) createRepositoryNode(entry, id);
+			File dirtyFolder = isDirty(id);
+			if (dirtyFolder != null) {
+				entry = clientAdapter.getInfo(dirtyFolder);
+			} else {
+				entry = clientAdapter.getInfo(buildSVNURL(id));
+			}
+			return (RepositoryFolder) initRepositoryNode(entry, id);
 		} catch (Exception e) {
 			log.log(Level.WARNING, "cannot get Folder " + id, e);
 			throw new RepositoryNodeNotFoundException(getConfiguration().getName(), RepositoryFolder.class, id, e);
@@ -184,21 +202,42 @@ public class SvnRepositoryConnector extends AbstractRepositoryConnector<SvnConne
 	public RepositoryNodeCollection getChildren(String id) throws RepositoryNodeNotFoundException {
 		ISVNClientAdapter clientAdapter = getSvnClientAdapter();
 
-		ISVNDirEntry[] dirEntries;
+		List<RepositoryNode> nodeList = new ArrayList<RepositoryNode>();
 
 		try {
-			dirEntries = clientAdapter.getList(buildSVNURL(id), SVNRevision.HEAD, false);
+			File dirtyFolder = isDirty(id);
+			if (dirtyFolder != null) {
+				// get local list using traditional Java-file-API:
+				File[] list = dirtyFolder.listFiles();
+				for (File file : list) {
+					if (file.isHidden()) {
+						continue;
+					}
+					ISVNInfo info = clientAdapter.getInfo(file);
+					String nodeId = buildId(id, info.getFile().getName());
+					if (info != null) {
+						RepositoryNode node = initRepositoryNode(info, nodeId);
+						if (node != null) {
+							nodeList.add(node);
+						}
+					}
+				}
+			} else {
+				// get list from remote repository
+				ISVNDirEntry[] dirEntries = clientAdapter.getList(buildSVNURL(id), SVNRevision.HEAD, false);
+				for (ISVNDirEntry isvnDirEntry : dirEntries) {
+					String nodeId = buildId(id, isvnDirEntry.getPath());
+					// FIXME: this is expensive:
+					ISVNInfo info = clientAdapter.getInfo(buildSVNURL(nodeId));
+					RepositoryNode node = initRepositoryNode(info, nodeId);
+					if (node != null) {
+						nodeList.add(node);
+					}
+				}
+			}
 		} catch (Exception e) {
 			log.log(Level.WARNING, "cannot get children of " + id, e);
 			throw new RepositoryNodeNotFoundException(getConfiguration().getName(), RepositoryFolder.class, id, e);
-		}
-
-		List<RepositoryNode> nodeList = new ArrayList<RepositoryNode>();
-		for (ISVNDirEntry isvnDirEntry : dirEntries) {
-			RepositoryNode node = createRepositoryNode(isvnDirEntry, id);
-			if (node != null) {
-				nodeList.add(node);
-			}
 		}
 
 		RepositoryNodeCollection result = new RepositoryNodeCollectionImpl(nodeList);
@@ -227,11 +266,10 @@ public class SvnRepositoryConnector extends AbstractRepositoryConnector<SvnConne
 			// commit changes
 			if (this.autocommit) {
 				commitPendingChanges("Activiti-Cycle created file " + artifactName + " in " + parentFolderId);
-				// FIXME: can only return artifact if we commit
-				return getRepositoryArtifact(buildId(parentFolderId, artifactName));
 			}
 
-			return null;
+			// FIXME: can only return artifact if we commit
+			return getRepositoryArtifact(buildId(parentFolderId, artifactName));
 
 		} catch (Exception e) {
 			log.log(Level.WARNING, "Unable to create" + artifactName + " in " + parentFolderId, e);
@@ -244,7 +282,6 @@ public class SvnRepositoryConnector extends AbstractRepositoryConnector<SvnConne
 	public RepositoryArtifact createArtifactFromContentRepresentation(String parentFolderId, String artifactName, String artifactType,
 			String contentRepresentationName, Content artifactContent) throws RepositoryNodeNotFoundException {
 		return createArtifact(parentFolderId, artifactName, artifactType, artifactContent);
-
 	}
 
 	public RepositoryFolder createFolder(String parentFolderId, String name) throws RepositoryNodeNotFoundException {
@@ -264,14 +301,16 @@ public class SvnRepositoryConnector extends AbstractRepositoryConnector<SvnConne
 			// add new folder
 			clientAdapter.addFile(newDirectory);
 
+			String newFolderId = buildId(parentFolderId, name);
+			createdFolders.put(newFolderId, newDirectory);
+
 			// commit changes
 			if (this.autocommit) {
 				commitPendingChanges("Activiti-Cycle created folder " + name + " in " + parentFolderId);
-				// FIXME: can only return folder if we commit
-				return getRepositoryFolder(buildId(parentFolderId, name));
 			}
 
-			return null;
+			// FIXME: can only return folder if we commit
+			return getRepositoryFolder(newFolderId);
 
 		} catch (Exception e) {
 			String error = "Error while creating folder" + name + " in " + parentFolderId;
@@ -355,6 +394,12 @@ public class SvnRepositoryConnector extends AbstractRepositoryConnector<SvnConne
 		String result = "";
 		for (int i = 0; i < constituents.length; i++) {
 			String constituent = constituents[i];
+			while (constituent.endsWith("//")) {
+				constituent = constituent.substring(0, constituent.length() - 1);
+			}
+			while (constituent.startsWith("//")) {
+				constituent = constituent.substring(1);
+			}
 			if (i == 0) {
 				result = constituents[i];
 				continue;
@@ -374,41 +419,89 @@ public class SvnRepositoryConnector extends AbstractRepositoryConnector<SvnConne
 		return new SVNUrl(buildId(repositoryPath, id));
 	}
 
-	protected RepositoryNode createRepositoryNode(ISVNDirEntry isvnDirEntry, String id) {
-		String nodeId = id;
-		if (!id.endsWith(isvnDirEntry.getPath())) {
-			nodeId += "/" + isvnDirEntry.getPath();
-		}
+	/**
+	 * creates and initializes a new {@link RepositoryNode} for the given
+	 * {@link ISVNDirEntry} and the given id. The id is the node-id of the node
+	 * as returned by {@link RepositoryNode#getNodeId()}
+	 * 
+	 * @param info
+	 * @param the
+	 *            repositoryNodeId
+	 * @return an initialized {@link RepositoryNode}
+	 */
+	protected RepositoryNode initRepositoryNode(ISVNInfo info, String id) {
 
-		// TODO: other types ?
-
-		if (isvnDirEntry.getNodeKind().equals(SVNNodeKind.DIR)) {
-			return createFolderNode(isvnDirEntry, nodeId);
+		if (info.getNodeKind().equals(SVNNodeKind.DIR)) {
+			return createFolderNode(info, id);
 		}
-		if (isvnDirEntry.getNodeKind().equals(SVNNodeKind.FILE)) {
-			return createArtifactNode(isvnDirEntry, nodeId);
+		if (info.getNodeKind().equals(SVNNodeKind.FILE)) {
+			return createArtifactNode(info, id);
 		}
 		return null;
+		// TODO: other types ?
 	}
 
-	protected RepositoryNode createArtifactNode(ISVNDirEntry isvnDirEntry, String id) {
-		String path = isvnDirEntry.getPath();
+	/**
+	 * Check whether the {@link RepositoryNode} with the given url is dirty and
+	 * if true returns the corresponding dirty {@link File}
+	 * 
+	 * @param id
+	 *            the id of the {@link RepositoryNode}
+	 * @return the {@link File} corresponding to the file in the local
+	 *         repository
+	 */
+	protected File isDirty(String id) {
+		// a node is dirty, if the parent folder is in the dirtyFolders-list or
+		// if the
+		// parent folder was created in this transaction (is in the
+		// createdFolders list)
+		try {
+			String parentFolderId = id;
+			if (parentFolderId.contains(("/"))) {
+				parentFolderId = parentFolderId.substring(0, id.lastIndexOf("/"));
+			}
+			String filename = id;
+			if (filename.contains(("/"))) {
+				filename = filename.substring(id.lastIndexOf("/") + 1);
+			}
 
-		// TODO: ignore hidden files:
-		if (path.startsWith(".")) {
+			File parentFolder = createdFolders.get(parentFolderId);
+			if (parentFolder != null)
+				return new File(parentFolder.getAbsolutePath() + File.separator + filename);
+
+			String url = buildSVNURL(parentFolderId).toString();
+			for (String dirtyUrl : dirtyFolders.keySet()) {
+				if (!url.equals(dirtyUrl)) {
+					continue;
+				}
+				File dirtyFolder = dirtyFolders.get(dirtyUrl);
+				return new File(dirtyFolder.getAbsolutePath() + File.separator + filename);
+
+			}
+			return null;
+		} catch (Exception e) {
+			return null;
+		}
+
+	}
+
+	protected RepositoryNode createArtifactNode(ISVNInfo info, String id) {
+		String filename = info.getFile().getName();
+
+		// TODO: ignore hidden files?
+		if (filename.startsWith(".")) {
 			return null;
 		}
 
 		// get mimetype
-		ArtifactType artifactType = getMimeType(path);
-
-		// find filename
-		String filename = new File(path).getName();
+		ArtifactType artifactType = getMimeType(filename);
 
 		RepositoryArtifactImpl artifact = new RepositoryArtifactImpl(getConfiguration().getId(), id, artifactType, this);
 		artifact.getMetadata().setName(filename);
-		artifact.getMetadata().setLastAuthor(isvnDirEntry.getLastCommitAuthor());
-		artifact.getMetadata().setVersion(isvnDirEntry.getLastChangedRevision().toString());
+		artifact.getMetadata().setLastAuthor(info.getLastCommitAuthor());
+		if (info.getLastChangedRevision() != null) {
+			artifact.getMetadata().setVersion(info.getLastChangedRevision().toString());
+		}
 
 		return artifact;
 	}
@@ -441,17 +534,16 @@ public class SvnRepositoryConnector extends AbstractRepositoryConnector<SvnConne
 
 	}
 
-	protected RepositoryNode createFolderNode(ISVNDirEntry isvnDirEntry, String nodeId) {
-		String path = isvnDirEntry.getPath();
+	protected RepositoryNode createFolderNode(ISVNInfo info, String nodeId) {
+		String filename = info.getFile().getName();
 
 		RepositoryFolderImpl folder = new RepositoryFolderImpl(getConfiguration().getId(), nodeId);
 
-		// find filename
-		String filename = new File(path).getName();
-
 		folder.getMetadata().setName(filename);
-		folder.getMetadata().setLastAuthor(isvnDirEntry.getLastCommitAuthor());
-		folder.getMetadata().setVersion(isvnDirEntry.getLastChangedRevision().toString());
+		folder.getMetadata().setLastAuthor(info.getLastCommitAuthor());
+		if (info.getLastChangedRevision() != null) {
+			folder.getMetadata().setVersion(info.getLastChangedRevision().toString());
+		}
 		return folder;
 	}
 
@@ -462,6 +554,9 @@ public class SvnRepositoryConnector extends AbstractRepositoryConnector<SvnConne
 
 			// already checked out?
 			File temporaryFileStrore = dirtyFolders.get(parentFolderUrl.toString());
+			if (temporaryFileStrore != null)
+				return temporaryFileStrore;
+			temporaryFileStrore = createdFolders.get(folderId);
 			if (temporaryFileStrore != null)
 				return temporaryFileStrore;
 
@@ -537,18 +632,19 @@ public class SvnRepositoryConnector extends AbstractRepositoryConnector<SvnConne
 		synchronized (transaction_lock) {
 			ISVNClientAdapter clientAdapter = getSvnClientAdapter();
 
-			try {
-				clientAdapter.unlock(new SVNUrl[] { lockedURL }, true);
-			} catch (Exception e) {
-				log.log(Level.SEVERE, "Error while unlocking " + lockedURL, e);
-				// TODO: what now?
-			}
+			// try {
+			// clientAdapter.unlock(new SVNUrl[] { lockedURL }, true);
+			// } catch (Exception e) {
+			// log.log(Level.SEVERE, "Error while unlocking " + lockedURL, e);
+			// // TODO: what now?
+			// }
 
 			for (File dirtyFolder : dirtyFolders.values()) {
 				recDelete(dirtyFolder);
 			}
 
 			dirtyFolders.clear();
+			createdFolders.clear();
 
 			transactionActive = false;
 
@@ -567,15 +663,17 @@ public class SvnRepositoryConnector extends AbstractRepositoryConnector<SvnConne
 
 		ISVNClientAdapter clientAdapter = getSvnClientAdapter();
 
-		try {
-			SVNUrl url = buildSVNURL(onFolderId);
-			// TODO: lock resource ?
-			// clientAdapter.lock(new SVNUrl[] { url }, lockComment, false);
-			lockedURL = url;
-
-		} catch (Exception e) {
-			throw new RepositoryNodeNotFoundException(getConfiguration().getName(), RepositoryFolder.class, onFolderId, e);
-		}
+		// try {
+		// SVNUrl url = buildSVNURL(onFolderId);
+		// // TODO: lock resource ?
+		// clientAdapter.lock(new SVNUrl[] { url }, lockComment, false);
+		// lockedURL = url;
+		//
+		// } catch (Exception e) {
+		// throw new
+		// RepositoryNodeNotFoundException(getConfiguration().getName(),
+		// RepositoryFolder.class, onFolderId, e);
+		// }
 	}
 
 	public ISVNClientAdapter getSvnClientAdapter() {
@@ -590,10 +688,12 @@ public class SvnRepositoryConnector extends AbstractRepositoryConnector<SvnConne
 			String bestClientType = SVNClientAdapterFactory.getPreferredSVNClientType();
 			log.fine("Using " + bestClientType + " factory");
 			svnClientAdapter = SVNClientAdapterFactory.createSVNClient(bestClientType);
+
 		} catch (SVNClientException e) {
 			log.log(Level.SEVERE, "Cannot create an SVN Client. No client library installed? This activiti-cycle connector is not usable.",
 					e);
 			throw new RepositoryException("Could not initialize client adapter. No client library available? " + e.getMessage());
 		}
 	}
+
 }
