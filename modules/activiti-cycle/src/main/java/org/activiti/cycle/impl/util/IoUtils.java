@@ -50,10 +50,6 @@ public class IoUtils {
 	}
 	
 	public static String readText(InputStream in) throws IOException {
-		if (in == null) {
-			throw new IllegalArgumentException("InputStream cannot be null");
-		}
-		
-		return "";
+		return new String(readBytes(in));
 	}
 }
