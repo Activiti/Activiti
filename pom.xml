@@ -199,8 +199,8 @@
       </dependency>
       <dependency>
         <groupId>org.codehaus.groovy</groupId>
-        <artifactId>groovy-all</artifactId>
-        <version>1.7.2</version>
+        <artifactId>groovy</artifactId>
+        <version>1.7.5</version>
       </dependency>
       <dependency>
         <groupId>org.json</groupId>
