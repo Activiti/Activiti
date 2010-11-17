@@ -18,7 +18,9 @@ import java.util.Map;
 import org.activiti.engine.impl.bpmn.FieldBaseStructureInstance;
 import org.activiti.engine.impl.bpmn.ItemDefinition;
 import org.activiti.engine.impl.bpmn.ItemInstance;
-import org.activiti.engine.impl.bpmn.SimpleStructureDefinition;
+import org.activiti.engine.impl.cfg.RepositorySession;
+import org.activiti.engine.impl.db.DbRepositorySessionFactory;
+import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.runtime.ProcessInstance;
 
 /**
@@ -27,25 +29,22 @@ import org.activiti.engine.runtime.ProcessInstance;
 public class WebServiceUELTest extends AbstractWebServiceTaskTest {
 
   public void testWebServiceInvocationWithDataFlowUEL() throws Exception {
-    //TODO replace structure creation with a query to the repository
-    SimpleStructureDefinition simpleStructureDefinition = new SimpleStructureDefinition("structure-id");
-    simpleStructureDefinition.setFieldName(0, "prefix", String.class);
-    simpleStructureDefinition.setFieldName(1, "suffix", String.class);
-    ItemDefinition itemDefinition = new ItemDefinition("definition-id", simpleStructureDefinition);
-    
+    DbRepositorySessionFactory dbRepositorySessionFactory = (DbRepositorySessionFactory) this.processEngineConfiguration.getSessionFactories().get(
+            RepositorySession.class);
+    ProcessDefinition processDefinition = dbRepositorySessionFactory.getProcessDefinitionCache().get("webServiceInvocationWithDataFlowUEL:1");
+    ItemDefinition itemDefinition = processDefinition.getIoSpecification().getDataInputs().get(0).getDefinition();
+
     ItemInstance itemInstance = itemDefinition.createInstance();
     FieldBaseStructureInstance structureInstance = (FieldBaseStructureInstance) itemInstance.getStructureInstance();
     structureInstance.setFieldValue("prefix", "The counter has the value ");
     structureInstance.setFieldValue("suffix", ". Good news");
-    
+
     Map<String, Object> variables = new HashMap<String, Object>();
     variables.put("dataInputOfProcess", itemInstance);
-    
-    ProcessInstance instance = processEngine.getRuntimeService().startProcessInstanceByKey(
-            "webServiceInvocationWithDataFlowUEL",
-            variables);
+
+    ProcessInstance instance = processEngine.getRuntimeService().startProcessInstanceByKey("webServiceInvocationWithDataFlowUEL", variables);
     waitForJobExecutorToProcessAllJobs(10000L, 250L);
-    
+
     String response = (String) processEngine.getRuntimeService().getVariable(instance.getId(), "dataOutputOfProcess");
     assertEquals("The counter has the value -1. Good news", response);
   }
