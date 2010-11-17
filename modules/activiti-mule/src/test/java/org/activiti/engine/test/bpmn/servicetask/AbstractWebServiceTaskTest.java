@@ -13,8 +13,12 @@
 package org.activiti.engine.test.bpmn.servicetask;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import org.activiti.engine.impl.repository.DeploymentBuilderImpl;
+import org.activiti.engine.impl.repository.ResourceEntity;
 import org.activiti.engine.impl.test.ActivitiInternalTestCase;
 import org.activiti.engine.impl.test.TestHelper;
 import org.activiti.engine.impl.util.ClassNameUtil;
@@ -50,10 +54,17 @@ public abstract class AbstractWebServiceTaskTest extends ActivitiInternalTestCas
   
     String resource = TestHelper.getBpmnProcessDefinitionResource(this.getClass(), this.getName());
     deploymentBuilder.addClasspathResource(resource);
-  
+
+    DeploymentBuilderImpl impl = (DeploymentBuilderImpl) deploymentBuilder;
+    impl.getDeployment().setValidatingSchema(this.isValidating());
+    
     deploymentId = deploymentBuilder.deploy().getId();
   }
 
+  protected boolean isValidating() {
+    return true;
+  }
+  
   @Override
   protected void tearDown() throws Exception {
     super.tearDown();

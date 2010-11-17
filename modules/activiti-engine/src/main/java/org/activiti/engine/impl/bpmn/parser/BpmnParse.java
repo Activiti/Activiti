@@ -32,8 +32,8 @@ import org.activiti.engine.impl.bpmn.CallActivityBehaviour;
 import org.activiti.engine.impl.bpmn.ClassStructureDefinition;
 import org.activiti.engine.impl.bpmn.Condition;
 import org.activiti.engine.impl.bpmn.Data;
-import org.activiti.engine.impl.bpmn.DataInputAssociation;
-import org.activiti.engine.impl.bpmn.DataOutputAssociation;
+import org.activiti.engine.impl.bpmn.AbstractDataInputAssociation;
+import org.activiti.engine.impl.bpmn.AbstractDataOutputAssociation;
 import org.activiti.engine.impl.bpmn.DataRef;
 import org.activiti.engine.impl.bpmn.ExclusiveGatewayActivity;
 import org.activiti.engine.impl.bpmn.ExpressionExecutionListener;
@@ -45,6 +45,8 @@ import org.activiti.engine.impl.bpmn.JavaDelegationDelegate;
 import org.activiti.engine.impl.bpmn.MailActivityBehavior;
 import org.activiti.engine.impl.bpmn.ManualTaskActivity;
 import org.activiti.engine.impl.bpmn.MessageDefinition;
+import org.activiti.engine.impl.bpmn.MessageImplicitDataInputAssociation;
+import org.activiti.engine.impl.bpmn.MessageImplicitDataOutputAssociation;
 import org.activiti.engine.impl.bpmn.NoneEndEventActivity;
 import org.activiti.engine.impl.bpmn.NoneStartEventActivity;
 import org.activiti.engine.impl.bpmn.Operation;
@@ -53,9 +55,11 @@ import org.activiti.engine.impl.bpmn.ParallelGatewayActivity;
 import org.activiti.engine.impl.bpmn.ReceiveTaskActivity;
 import org.activiti.engine.impl.bpmn.ScriptTaskActivity;
 import org.activiti.engine.impl.bpmn.ServiceTaskExpressionActivityBehavior;
+import org.activiti.engine.impl.bpmn.SimpleDataInputAssociation;
 import org.activiti.engine.impl.bpmn.StructureDefinition;
 import org.activiti.engine.impl.bpmn.SubProcessActivity;
 import org.activiti.engine.impl.bpmn.TaskActivity;
+import org.activiti.engine.impl.bpmn.TransformationDataOutputAssociation;
 import org.activiti.engine.impl.bpmn.UserTaskActivity;
 import org.activiti.engine.impl.bpmn.WebServiceActivityBehavior;
 import org.activiti.engine.impl.cfg.ProcessEngineConfiguration;
@@ -522,20 +526,25 @@ public class BpmnParse extends Parse {
     return ioSpecification;
   }
   
-  protected DataInputAssociation parseDataInputAssociation(Element dataAssociationElement) {
+  protected AbstractDataInputAssociation parseDataInputAssociation(Element dataAssociationElement) {
     String sourceRef = dataAssociationElement.element("sourceRef").getText();
     String targetRef = dataAssociationElement.element("targetRef").getText();
     
-    DataInputAssociation dataAssociation = new DataInputAssociation(sourceRef, targetRef);
-    
-    for (Element assigmentElement : dataAssociationElement.elements("assignment")) {
-      Expression from = this.expressionManager.createExpression(assigmentElement.element("from").getText());
-      Expression to = this.expressionManager.createExpression(assigmentElement.element("to").getText());
-      Assignment assignment = new Assignment(from, to);
-      dataAssociation.addAssignment(assignment);
+    List<Element> assignments = dataAssociationElement.elements("assignment");
+    if (assignments.isEmpty()) {
+      return new MessageImplicitDataInputAssociation(sourceRef, targetRef);
+    } else {
+      SimpleDataInputAssociation dataAssociation = new SimpleDataInputAssociation(sourceRef, targetRef);
+      
+      for (Element assigmentElement : dataAssociationElement.elements("assignment")) {
+        Expression from = this.expressionManager.createExpression(assigmentElement.element("from").getText());
+        Expression to = this.expressionManager.createExpression(assigmentElement.element("to").getText());
+        Assignment assignment = new Assignment(from, to);
+        dataAssociation.addAssignment(assignment);
+      }
+      
+      return dataAssociation;
     }
-    
-    return dataAssociation;
   }
 
   /**
@@ -794,12 +803,12 @@ public class BpmnParse extends Parse {
         }
         
         for (Element dataAssociationElement : serviceTaskElement.elements("dataInputAssociation")) {
-          DataInputAssociation dataAssociation = this.parseDataInputAssociation(dataAssociationElement);
+          AbstractDataInputAssociation dataAssociation = this.parseDataInputAssociation(dataAssociationElement);
           webServiceActivityBehavior.addDataInputAssociation(dataAssociation);
         }
         
         for (Element dataAssociationElement : serviceTaskElement.elements("dataOutputAssociation")) {
-          DataOutputAssociation dataAssociation = this.parseDataOutputAssociation(dataAssociationElement);
+          AbstractDataOutputAssociation dataAssociation = this.parseDataOutputAssociation(dataAssociationElement);
           webServiceActivityBehavior.addDataOutputAssociation(dataAssociation);
         }
 
@@ -816,11 +825,17 @@ public class BpmnParse extends Parse {
     }
   }
 
-  private DataOutputAssociation parseDataOutputAssociation(Element dataAssociationElement) {
+  private AbstractDataOutputAssociation parseDataOutputAssociation(Element dataAssociationElement) {
     String targetRef = dataAssociationElement.element("targetRef").getText();
-    Expression transformation = this.expressionManager.createExpression(dataAssociationElement.element("transformation").getText());
-    DataOutputAssociation dataOutputAssociation = new DataOutputAssociation(targetRef, transformation);
-    return dataOutputAssociation;
+
+    if (dataAssociationElement.element("sourceRef") != null) {
+      String sourceRef = dataAssociationElement.element("sourceRef").getText();
+      return new MessageImplicitDataOutputAssociation(targetRef, sourceRef);
+    } else {
+      Expression transformation = this.expressionManager.createExpression(dataAssociationElement.element("transformation").getText());
+      AbstractDataOutputAssociation dataOutputAssociation = new TransformationDataOutputAssociation(targetRef, transformation);
+      return dataOutputAssociation;
+    }
   }
   
   protected void parseEmailServiceTask(ActivityImpl activity, Element serviceTaskElement, List<FieldDeclaration> fieldDeclarations) {

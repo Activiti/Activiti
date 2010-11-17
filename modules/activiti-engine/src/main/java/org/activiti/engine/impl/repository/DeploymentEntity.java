@@ -36,6 +36,7 @@ public class DeploymentEntity implements Serializable, Deployment, PersistentObj
   protected String name;
   protected Map<String, ResourceEntity> resources;
   protected Date deploymentTime;
+  protected boolean validatingSchema = true;
   
   public ResourceEntity getResource(String resourceName) {
     return getResources().get(resourceName);
@@ -96,5 +97,13 @@ public class DeploymentEntity implements Serializable, Deployment, PersistentObj
   
   public void setDeploymentTime(Date deploymentTime) {
     this.deploymentTime = deploymentTime;
+  }
+
+  public boolean isValidatingSchema() {
+    return validatingSchema;
+  }
+  
+  public void setValidatingSchema(boolean validatingSchema) {
+    this.validatingSchema = validatingSchema;
   }
 }

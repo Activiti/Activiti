@@ -19,6 +19,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.impl.bpmn.ItemInstance;
+import org.activiti.engine.impl.bpmn.MessageInstance;
 
 /**
  * @author Tom Baeyens
@@ -40,7 +42,8 @@ public class DefaultVariableTypes implements Serializable, VariableTypes {
     addType(new DoubleType());
     addType(new ByteArrayType());
     addType(new SerializableType());
-    addType(new ItemType());
+    addType(new CustomObjectType("item", ItemInstance.class));
+    addType(new CustomObjectType("message", MessageInstance.class));
   }
 
   public DefaultVariableTypes addType(VariableType type) {

@@ -24,26 +24,28 @@ import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
  * @author Esteban Robles Luna
  */
 public class WebServiceActivityBehavior implements ActivityBehavior {
+  
+  public static final String CURRENT_MESSAGE = "org.activiti.engine.impl.bpmn.CURRENT_MESSAGE";
 
   protected Operation operation;
   
   protected IOSpecification ioSpecification;
   
-  protected List<DataInputAssociation> dataInputAssociations;
+  protected List<AbstractDataInputAssociation> dataInputAssociations;
 
-  protected List<DataOutputAssociation> dataOutputAssociations;
+  protected List<AbstractDataOutputAssociation> dataOutputAssociations;
 
   public WebServiceActivityBehavior(Operation operation) {
     this.operation = operation;
-    this.dataInputAssociations = new ArrayList<DataInputAssociation>();
-    this.dataOutputAssociations = new ArrayList<DataOutputAssociation>();
+    this.dataInputAssociations = new ArrayList<AbstractDataInputAssociation>();
+    this.dataOutputAssociations = new ArrayList<AbstractDataOutputAssociation>();
   }
   
-  public void addDataInputAssociation(DataInputAssociation dataAssociation) {
+  public void addDataInputAssociation(AbstractDataInputAssociation dataAssociation) {
     this.dataInputAssociations.add(dataAssociation);
   }
   
-  public void addDataOutputAssociation(DataOutputAssociation dataAssociation) {
+  public void addDataOutputAssociation(AbstractDataOutputAssociation dataAssociation) {
     this.dataOutputAssociations.add(dataAssociation);
   }
   
@@ -61,26 +63,32 @@ public class WebServiceActivityBehavior implements ActivityBehavior {
       message = this.operation.getInMessage().createInstance();
     }
     
+    execution.setVariable(CURRENT_MESSAGE, message);
+    
     this.fillMessage(message, execution);
     
     MessageInstance receivedMessage = this.operation.sendMessage(message);
-    
+
+    execution.setVariable(CURRENT_MESSAGE, receivedMessage);
+
     if (ioSpecification != null) {
       ItemInstance outputItem = (ItemInstance) execution.getVariable(this.ioSpecification.getFirstDataOutputName());
       outputItem.getStructureInstance().loadFrom(receivedMessage.getStructureInstance().toArray());
     }
     
     this.returnMessage(receivedMessage, execution);
+    
+    execution.setVariable(CURRENT_MESSAGE, null);
   }
   
   private void returnMessage(MessageInstance message, ActivityExecution execution) {
-    for (DataOutputAssociation dataAssociation : this.dataOutputAssociations) {
+    for (AbstractDataOutputAssociation dataAssociation : this.dataOutputAssociations) {
       dataAssociation.evaluate(execution);
     }
   }
 
   private void fillMessage(MessageInstance message, ActivityExecution execution) {
-    for (DataInputAssociation dataAssociation : this.dataInputAssociations) {
+    for (AbstractDataInputAssociation dataAssociation : this.dataInputAssociations) {
       dataAssociation.evaluate(execution);
     }
   }

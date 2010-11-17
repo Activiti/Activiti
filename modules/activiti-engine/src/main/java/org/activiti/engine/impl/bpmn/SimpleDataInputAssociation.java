@@ -18,21 +18,16 @@ import java.util.List;
 import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
 
 /**
- * A data input association between a source and a target
+ * A simple data input association between a source and a target with assignments
  * 
  * @author Esteban Robles Luna
  */
-public class DataInputAssociation {
+public class SimpleDataInputAssociation extends AbstractDataInputAssociation {
 
-  protected String source;
-  
-  protected String target;
-  
   protected List<Assignment> assignments;
   
-  public DataInputAssociation(String source, String target) {
-    this.source = source;
-    this.target = target;
+  public SimpleDataInputAssociation(String source, String target) {
+    super(source, target);
     this.assignments = new ArrayList<Assignment>();
   }
   
@@ -44,13 +39,5 @@ public class DataInputAssociation {
     for (Assignment assignment : this.assignments) {
       assignment.evaluate(execution);
     }
-  }
-  
-  public String getSource() {
-    return source;
-  }
-  
-  public String getTarget() {
-    return target;
   }
 }

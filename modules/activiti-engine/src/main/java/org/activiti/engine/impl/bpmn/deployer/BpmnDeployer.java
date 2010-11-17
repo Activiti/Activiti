@@ -66,8 +66,13 @@ public class BpmnDeployer implements Deployer, ProcessEngineConfigurationAware {
           .createParse()
           .sourceInputStream(inputStream)
           .deployment(deployment)
-          .name(resourceName)
-          .execute();
+          .name(resourceName);
+        
+        if (!deployment.isValidatingSchema()) {
+          bpmnParse.setSchemaResource(null);
+        }
+        
+        bpmnParse.execute();
         
         String diagramResource = getDiagramResource(resourceName, resources);
 

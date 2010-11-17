@@ -15,14 +15,22 @@ package org.activiti.engine.impl.variable;
 import org.activiti.engine.impl.bpmn.ItemInstance;
 
 /**
- * Type for {@link ItemInstance}
+ * Custom object type
  * 
  * @author Esteban Robles Luna
  */
-public class ItemType implements VariableType {
+public class CustomObjectType implements VariableType {
+  
+  protected String typeName;
+  protected Class<?> theClass;
 
+  public CustomObjectType(String typeName, Class<?> theClass) {
+    this.theClass = theClass;
+    this.typeName = typeName;
+  }
+  
   public String getTypeName() {
-    return "item";
+    return this.typeName;
   }
 
   public Object getValue(ValueFields valueFields) {
@@ -33,7 +41,7 @@ public class ItemType implements VariableType {
     if (value==null) {
       return true;
     }
-    return ItemInstance.class.isAssignableFrom(value.getClass());
+    return this.theClass.isAssignableFrom(value.getClass());
   }
 
   public boolean isCachable() {

@@ -12,7 +12,6 @@
  */
 package org.activiti.engine.impl.bpmn;
 
-import org.activiti.engine.impl.el.Expression;
 import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
 
 /**
@@ -20,19 +19,13 @@ import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
  * 
  * @author Esteban Robles Luna
  */
-public class DataOutputAssociation {
+public abstract class AbstractDataOutputAssociation {
 
   protected String targetRef;
   
-  protected Expression transformation;
-  
-  public DataOutputAssociation(String targetRef, Expression transformation) {
+  protected AbstractDataOutputAssociation(String targetRef) {
     this.targetRef = targetRef;
-    this.transformation = transformation;
   }
 
-  public void evaluate(ActivityExecution execution) {
-    Object value = this.transformation.getValue(execution);
-    execution.setVariable(this.targetRef, value);
-  }
+  public abstract void evaluate(ActivityExecution execution);
 }
