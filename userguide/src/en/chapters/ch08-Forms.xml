@@ -373,6 +373,14 @@ Motivation:&lt;br/&gt;
     <para>It's also possible to provide type meta data as part of the FormData that is 
     returned from methods <literal>StartFormData FormService.getStartFormData(String processDefinitionId)</literal>
     and <literal>TaskFormdata FormService.getTaskFormData(String taskId)</literal></para>
+    
+    <para>We support following form property types:</para>
+    <itemizedlist>
+      <listitem><para><literal>string</literal> (org.activiti.engine.impl.form.StringFormType)</para></listitem>
+      <listitem><para><literal>long</literal> (org.activiti.engine.impl.form.LongFormType)</para></listitem>
+      <listitem><para><literal>enum</literal> (org.activiti.engine.impl.form.EnumFormType)</para></listitem>
+      <listitem><para><literal>date</literal> (org.activiti.engine.impl.form.DateFormType)</para></listitem>
+    </itemizedlist>
 
     <para>For each form property declared, the following <literal>FormProperty</literal>
     information will be made available through 
