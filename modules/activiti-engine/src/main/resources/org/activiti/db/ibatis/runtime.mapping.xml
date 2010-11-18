@@ -137,7 +137,7 @@
       </if>
       <foreach item="var" collection="variables" index="index">
       	and A${index}.NAME_= #{var.name}
-        <if test="!var.operator.equals('NOT_EQUALS') &amp;&amp; !var.type.equals('null')">
+        <if test="!var.type.equals('null')">
         <!-- When operator is not-equals or type of value is null, type doesn't matter! -->
           and A${index}.TYPE_ = #{var.type}
         </if>
