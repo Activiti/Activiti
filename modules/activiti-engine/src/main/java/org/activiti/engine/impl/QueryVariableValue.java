@@ -91,4 +91,11 @@ public class QueryVariableValue {
     }
     return null;
   }
+
+  public String getType() {
+    if(variableInstanceEntity != null) {
+      return variableInstanceEntity.getType().getTypeName();
+    }
+    return null;
+  }
 }

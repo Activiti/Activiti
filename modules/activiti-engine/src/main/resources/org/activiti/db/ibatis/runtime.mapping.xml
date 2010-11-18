@@ -137,6 +137,10 @@
       </if>
       <foreach item="var" collection="variables" index="index">
       	and A${index}.NAME_= #{var.name}
+        <if test="!var.operator.equals('NOT_EQUALS') &amp;&amp; !var.type.equals('null')">
+        <!-- When operator is not-equals or type of value is null, type doesn't matter! -->
+          and A${index}.TYPE_ = #{var.type}
+        </if>
       	<if test="var.textValue != null &amp;&amp; var.longValue == null &amp;&amp; var.doubleValue == null">
 	      and A${index}.TEXT_
 	      <choose>
@@ -164,7 +168,7 @@
 	      #{var.doubleValue}
       	</if>
       	<!-- Null variable type -->
-      	<if test="var.textValue == null &amp;&amp; var.longValue == null &amp;&amp; var.doubleValue == null">
+      	<if test="var.textValue == null &amp;&amp; var.textValue2 == null &amp;&amp; var.longValue == null &amp;&amp; var.doubleValue == null">
           <choose>
 	        <when test="var.operator.equals('NOT_EQUALS')">
 	          and (A${index}.TEXT_ is not null or A${index}.TEXT2_ is not null or A${index}.LONG_ is not null or A${index}.DOUBLE_ is not null or A${index}.BYTEARRAY_ID_ is not null)

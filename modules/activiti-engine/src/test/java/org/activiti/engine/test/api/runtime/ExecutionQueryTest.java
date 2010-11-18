@@ -512,7 +512,7 @@ public class ExecutionQueryTest extends ActivitiInternalTestCase {
     ProcessInstance processInstance2 = runtimeService.startProcessInstanceByKey("oneTaskProcess", vars);
     
     vars = new HashMap<String, Object>();
-    vars.put("shortVar", 5555);
+    vars.put("shortVar", (short)5555);
     ProcessInstance processInstance3 = runtimeService.startProcessInstanceByKey("oneTaskProcess", vars);
     
     // Query on single short variable, should result in 2 matches
@@ -528,7 +528,7 @@ public class ExecutionQueryTest extends ActivitiInternalTestCase {
     Assert.assertEquals(processInstance2.getId(), execution.getId());
     
     // Query with unexisting variable value
-    short unexistingValue = 9999;
+    short unexistingValue = (short)9999;
     execution = runtimeService.createExecutionQuery().variableValueEquals("shortVar", unexistingValue).singleResult();
     Assert.assertNull(execution);
     
@@ -900,5 +900,30 @@ public class ExecutionQueryTest extends ActivitiInternalTestCase {
   
     runtimeService.deleteProcessInstance(processInstance.getId(), "test");
   }
+  
+  @Deployment(resources={
+  "org/activiti/engine/test/api/oneTaskProcess.bpmn20.xml"})
+  public void testClashingValues() throws Exception {
+    Map<String, Object> vars = new HashMap<String, Object>();
+    vars.put("var", 1234L);
+    
+    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("oneTaskProcess", vars);
+    
+    Map<String, Object> vars2 = new HashMap<String, Object>();
+    vars2.put("var", 1234);
+    
+    ProcessInstance processInstance2 = runtimeService.startProcessInstanceByKey("oneTaskProcess", vars2);
+    
+    List<Execution> executions = runtimeService.createExecutionQuery()
+    .processDefinitionKey("oneTaskProcess")
+    .variableValueEquals("var", 1234L)
+    .list();
+    
+    assertEquals(1, executions.size());
+    assertEquals(processInstance.getId(), executions.get(0).getProcessInstanceId());
+    
+    runtimeService.deleteProcessInstance(processInstance.getId(), "test");
+    runtimeService.deleteProcessInstance(processInstance2.getId(), "test");
+}
   
 }
