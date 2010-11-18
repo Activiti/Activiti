@@ -58,18 +58,7 @@
 	      <groupId>org.apache.openjpa</groupId>
 	      <artifactId>openjpa</artifactId>
 	      <scope>test</scope>
-	      <exclusions>
-	        <exclusion>
-	          <groupId>commons-lang</groupId>
-	          <artifactId>commons-lang</artifactId>
-	        </exclusion>
-	      </exclusions>
 	    </dependency>
-		<dependency>
-		  <groupId>commons-lang</groupId>
-		  <artifactId>commons-lang</artifactId>
-	      <scope>test</scope>
-		</dependency>
 		<!-- EMAIL -->
 		<dependency>
 			<groupId>org.apache.commons</groupId>
