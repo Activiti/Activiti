@@ -63,7 +63,7 @@ public interface ExecutionQuery extends Query<ExecutionQuery, Execution>{
 
   /** 
    * Only select executions which have a variable value greater than the passed value.
-   * Byte-arrays and {@link Serializable} objects (which are not primitive type wrappers)
+   * Booleans, Byte-arrays and {@link Serializable} objects (which are not primitive type wrappers)
    * are not supported.
    * @param name variable name, cannot be null.
    * @param value variable value, cannot be null.
@@ -72,7 +72,7 @@ public interface ExecutionQuery extends Query<ExecutionQuery, Execution>{
   
   /** 
    * Only select executions which have a variable value greater than or equal to 
-   * the passed value. Byte-arrays and {@link Serializable} objects (which 
+   * the passed value. Booleans, Byte-arrays and {@link Serializable} objects (which 
    * are not primitive type wrappers) are not supported.
    * @param name variable name, cannot be null.
    * @param value variable value, cannot be null.
@@ -81,7 +81,7 @@ public interface ExecutionQuery extends Query<ExecutionQuery, Execution>{
   
   /** 
    * Only select executions which have a variable value less than the passed value.
-   * Byte-arrays and {@link Serializable} objects (which are not primitive type wrappers)
+   * Booleans, Byte-arrays and {@link Serializable} objects (which are not primitive type wrappers)
    * are not supported.
    * @param name variable name, cannot be null.
    * @param value variable value, cannot be null.
@@ -90,7 +90,7 @@ public interface ExecutionQuery extends Query<ExecutionQuery, Execution>{
   
   /** 
    * Only select executions which have a variable value less than or equal to the passed value.
-   * Byte-arrays and {@link Serializable} objects (which are not primitive type wrappers)
+   * Booleans, Byte-arrays and {@link Serializable} objects (which are not primitive type wrappers)
    * are not supported.
    * @param name variable name, cannot be null.
    * @param value variable value, cannot be null.

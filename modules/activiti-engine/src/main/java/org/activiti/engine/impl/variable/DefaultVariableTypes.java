@@ -35,6 +35,7 @@ public class DefaultVariableTypes implements Serializable, VariableTypes {
   public DefaultVariableTypes() {
     addType(new NullType());
     addType(new StringType());
+    addType(new BooleanType());
     addType(new ShortType());
     addType(new IntegerType());
     addType(new LongType());

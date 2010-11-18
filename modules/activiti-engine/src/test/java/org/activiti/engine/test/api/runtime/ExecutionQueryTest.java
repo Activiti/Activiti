@@ -674,6 +674,77 @@ public class ExecutionQueryTest extends ActivitiInternalTestCase {
   }
   
   @Deployment(resources={
+  "org/activiti/engine/test/api/oneTaskProcess.bpmn20.xml"})
+public void testBooleanVariable() throws Exception {
+
+  // TEST EQUALS
+  HashMap<String, Object> vars = new HashMap<String, Object>();
+  vars.put("booleanVar", true);
+  ProcessInstance processInstance1 = runtimeService.startProcessInstanceByKey("oneTaskProcess", vars);
+
+  vars = new HashMap<String, Object>();
+  vars.put("booleanVar", false);
+  ProcessInstance processInstance2 = runtimeService.startProcessInstanceByKey("oneTaskProcess", vars);
+
+  List<ProcessInstance> instances = runtimeService.createProcessInstanceQuery().variableValueEquals("booleanVar", true).list();
+
+  assertNotNull(instances);
+  assertEquals(1, instances.size());
+  assertEquals(processInstance1.getId(), instances.get(0).getId());
+
+  instances = runtimeService.createProcessInstanceQuery().variableValueEquals("booleanVar", false).list();
+
+  assertNotNull(instances);
+  assertEquals(1, instances.size());
+  assertEquals(processInstance2.getId(), instances.get(0).getId());
+  
+  // TEST NOT_EQUALS
+  instances = runtimeService.createProcessInstanceQuery().variableValueNotEquals("booleanVar", true).list();
+
+  assertNotNull(instances);
+  assertEquals(1, instances.size());
+  assertEquals(processInstance2.getId(), instances.get(0).getId());
+
+  instances = runtimeService.createProcessInstanceQuery().variableValueNotEquals("booleanVar", false).list();
+
+  assertNotNull(instances);
+  assertEquals(1, instances.size());
+  assertEquals(processInstance1.getId(), instances.get(0).getId());
+  
+  // Test unsupported operations
+  try {
+    runtimeService.createProcessInstanceQuery().variableValueGreaterThan("booleanVar", true);
+    fail("Excetion expected");
+  } catch(ActivitiException ae) {
+    assertTextPresent("Booleans and null cannot be used in 'greater than' condition", ae.getMessage());
+  }
+  
+  try {
+    runtimeService.createProcessInstanceQuery().variableValueGreaterThanOrEqual("booleanVar", true);
+    fail("Excetion expected");
+  } catch(ActivitiException ae) {
+    assertTextPresent("Booleans and null cannot be used in 'greater than or equal' condition", ae.getMessage());
+  }
+  
+  try {
+    runtimeService.createProcessInstanceQuery().variableValueLessThan("booleanVar", true);
+    fail("Excetion expected");
+  } catch(ActivitiException ae) {
+    assertTextPresent("Booleans and null cannot be used in 'less than' condition", ae.getMessage());
+  }
+  
+  try {
+    runtimeService.createProcessInstanceQuery().variableValueLessThanOrEqual("booleanVar", true);
+    fail("Excetion expected");
+  } catch(ActivitiException ae) {
+    assertTextPresent("Booleans and null cannot be used in 'less than or equal' condition", ae.getMessage());
+  }
+  
+  runtimeService.deleteProcessInstance(processInstance1.getId(), "test");
+  runtimeService.deleteProcessInstance(processInstance2.getId(), "test");
+}
+  
+  @Deployment(resources={
     "org/activiti/engine/test/api/oneTaskProcess.bpmn20.xml"})
   public void testQueryVariablesUpdatedToNullValue() {
     // Start process instance with different types of variables
@@ -682,6 +753,7 @@ public class ExecutionQueryTest extends ActivitiInternalTestCase {
     variables.put("shortVar", (short) 123);
     variables.put("integerVar", 1234);
     variables.put("stringVar", "coca-cola");
+    variables.put("booleanVar", true);
     variables.put("dateVar", new Date());
     variables.put("nullVar", null);
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("oneTaskProcess", variables);
@@ -691,6 +763,7 @@ public class ExecutionQueryTest extends ActivitiInternalTestCase {
       .variableValueEquals("shortVar", null)
       .variableValueEquals("integerVar", null)
       .variableValueEquals("stringVar", null)
+      .variableValueEquals("booleanVar", null)
       .variableValueEquals("dateVar", null);
     
     ExecutionQuery notQuery = runtimeService.createExecutionQuery()
@@ -698,6 +771,7 @@ public class ExecutionQueryTest extends ActivitiInternalTestCase {
     .variableValueNotEquals("shortVar", null)
     .variableValueNotEquals("integerVar", null)
     .variableValueNotEquals("stringVar", null)
+    .variableValueNotEquals("booleanVar", null)
     .variableValueNotEquals("dateVar", null);
     
     assertNull(query.singleResult());
@@ -708,6 +782,7 @@ public class ExecutionQueryTest extends ActivitiInternalTestCase {
     runtimeService.setVariable(processInstance.getId(), "shortVar", null);
     runtimeService.setVariable(processInstance.getId(), "integerVar", null);
     runtimeService.setVariable(processInstance.getId(), "stringVar", null);
+    runtimeService.setVariable(processInstance.getId(), "booleanVar", null);
     runtimeService.setVariable(processInstance.getId(), "dateVar", null);
     runtimeService.setVariable(processInstance.getId(), "nullVar", null);
     
@@ -759,35 +834,35 @@ public class ExecutionQueryTest extends ActivitiInternalTestCase {
       runtimeService.createExecutionQuery().variableValueGreaterThan("nullVar", null);
       fail("Excetion expected");
     } catch(ActivitiException ae) {
-      assertTextPresent("Nullvalue cannot be used in 'greater than' condition", ae.getMessage());
+      assertTextPresent("Booleans and null cannot be used in 'greater than' condition", ae.getMessage());
     }
     
     try {
       runtimeService.createExecutionQuery().variableValueGreaterThanOrEqual("nullVar", null);
       fail("Excetion expected");
     } catch(ActivitiException ae) {
-      assertTextPresent("Nullvalue cannot be used in 'greater than or equal' condition", ae.getMessage());
+      assertTextPresent("Booleans and null cannot be used in 'greater than or equal' condition", ae.getMessage());
     }
     
     try {
       runtimeService.createExecutionQuery().variableValueLessThan("nullVar", null);
       fail("Excetion expected");
     } catch(ActivitiException ae) {
-      assertTextPresent("Nullvalue cannot be used in 'less than' condition", ae.getMessage());
+      assertTextPresent("Booleans and null cannot be used in 'less than' condition", ae.getMessage());
     }
     
     try {
       runtimeService.createExecutionQuery().variableValueLessThanOrEqual("nullVar", null);
       fail("Excetion expected");
     } catch(ActivitiException ae) {
-      assertTextPresent("Nullvalue cannot be used in 'less than or equal' condition", ae.getMessage());
+      assertTextPresent("Booleans and null cannot be used in 'less than or equal' condition", ae.getMessage());
     }
     
     try {
       runtimeService.createExecutionQuery().variableValueLike("nullVar", null);
       fail("Excetion expected");
     } catch(ActivitiException ae) {
-      assertTextPresent("Nullvalue cannot be used in 'like' condition", ae.getMessage());
+      assertTextPresent("Booleans and null cannot be used in 'like' condition", ae.getMessage());
     }
     
     runtimeService.deleteProcessInstance(processInstance1.getId(), "test");
@@ -881,6 +956,7 @@ public class ExecutionQueryTest extends ActivitiInternalTestCase {
     vars.put("longVar", 10L);
     vars.put("doubleVar", 1.2);
     vars.put("integerVar", 1234);
+    vars.put("booleanVar", true);
     vars.put("shortVar", (short) 123);
     
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("oneTaskProcess", vars);
@@ -891,6 +967,7 @@ public class ExecutionQueryTest extends ActivitiInternalTestCase {
       .variableValueEquals("longVar", 10L)
       .variableValueEquals("doubleVar", 1.2)
       .variableValueEquals("integerVar", 1234)
+      .variableValueEquals("booleanVar", true)
       .variableValueEquals("shortVar", (short) 123);
     
     List<Execution> executions = query.list();

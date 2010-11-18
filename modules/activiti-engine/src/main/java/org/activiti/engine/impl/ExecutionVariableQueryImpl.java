@@ -93,24 +93,31 @@ public abstract class ExecutionVariableQueryImpl<T extends Query<?,?>, U> extend
     if(name == null) {
       throw new ActivitiException("name is null");
     }
-    if(value == null) {
-      // only null-values can be used in EQUALS and NOT_EQUALS
+    if(value == null || isBoolean(value)) {
+      // Null-values and booleans can only be used in EQUALS and NOT_EQUALS
       switch(operator) {
       case GREATER_THAN:
-        throw new ActivitiException("Nullvalue cannot be used in 'greater than' condition");
+        throw new ActivitiException("Booleans and null cannot be used in 'greater than' condition");
       case LESS_THAN:
-        throw new ActivitiException("Nullvalue cannot be used in 'less than' condition");
+        throw new ActivitiException("Booleans and null cannot be used in 'less than' condition");
       case GREATER_THAN_OR_EQUAL:
-        throw new ActivitiException("Nullvalue cannot be used in 'greater than or equal' condition");
+        throw new ActivitiException("Booleans and null cannot be used in 'greater than or equal' condition");
       case LESS_THAN_OR_EQUAL:
-        throw new ActivitiException("Nullvalue cannot be used in 'less than or equal' condition");
+        throw new ActivitiException("Booleans and null cannot be used in 'less than or equal' condition");
       case LIKE:
-        throw new ActivitiException("Nullvalue cannot be used in 'like' condition");
+        throw new ActivitiException("Booleans and null cannot be used in 'like' condition");
       }
     }
     variables.add(new QueryVariableValue(name, value, operator));
   }
   
+  private boolean isBoolean(Object value) {
+    if (value == null) {
+      return false;
+    }
+    return Boolean.class.isAssignableFrom(value.getClass()) || boolean.class.isAssignableFrom(value.getClass());
+  }
+
   protected void ensureVariablesInitialized(ProcessEngineConfiguration configuration) {    
     VariableTypes types = configuration.getVariableTypes();
     for(QueryVariableValue var : variables) {
