@@ -16,7 +16,10 @@
      <os family="windows"/>
   </condition>
 
-	<condition property="ls.executable.options" value="/c dir /B > " else="">
+	<condition property="ls.executable.options" value="/c dir /B" else="">
+     <os family="windows"/>
+  </condition>
+	<condition property="ls.executable.path.seperator" value="\" else="/">
      <os family="windows"/>
   </condition>
 
@@ -85,17 +88,17 @@
 		<!-- CREATE DEPENDENCY LIST FILES -->
     <mkdir dir="${target.distro.root}/setup/files/dependencies/libs" />
     <exec output="${target.distro.root}/setup/files/dependencies/libs.engine.test.txt" executable="${ls.executable}">
-      <arg line="${ls.executable.options} target/libs-engine-test"/>
+      <arg line="${ls.executable.options} target${ls.executable.path.seperator}libs-engine-test"/>
     </exec>
     <delete>
       <fileset dir="target/libs-engine-runtime" 
                includesfile="${target.distro.root}/setup/files/dependencies/libs.engine.test.txt" />
     </delete>
     <exec output="${target.distro.root}/setup/files/dependencies/libs.engine.runtime.txt" executable="${ls.executable}">
-      <arg line="${ls.executable.options} target/libs-engine-runtime"/>
+      <arg line="${ls.executable.options} target${ls.executable.path.seperator}libs-engine-runtime"/>
     </exec>
     <exec output="${target.distro.root}/setup/files/dependencies/libs.spring.test.txt" executable="${ls.executable}">
-      <arg line="${ls.executable.options} target/libs-spring-test"/>
+      <arg line="${ls.executable.options} target${ls.executable.path.seperator}libs-spring-test"/>
     </exec>
     <delete>
       <fileset dir="target/libs-spring-runtime" 
@@ -104,21 +107,21 @@
                includesfile="${target.distro.root}/setup/files/dependencies/libs.engine.test.txt" />
       <fileset dir="target/libs-cycle-runtime" 
                includesfile="${target.distro.root}/setup/files/dependencies/libs.engine.runtime.txt" />
-    </delete>
+    </delete>    
     <exec output="${target.distro.root}/setup/files/dependencies/libs.spring.test.txt" executable="${ls.executable}">
-       <arg line="${ls.executable.options} target/libs-spring-test"/>
+       <arg line="${ls.executable.options} target${ls.executable.path.seperator}libs-spring-test"/>
     </exec>
     <exec output="${target.distro.root}/setup/files/dependencies/libs.spring.runtime.txt" executable="${ls.executable}">
-      <arg line="${ls.executable.options} target/libs-spring-runtime"/>
+      <arg line="${ls.executable.options} target${ls.executable.path.seperator}libs-spring-runtime"/>
     </exec>
     <exec output="${target.distro.root}/setup/files/dependencies/libs.cycle.runtime.txt" executable="${ls.executable}">
-      <arg line="${ls.executable.options} target/libs-cycle-runtime"/>
+      <arg line='${ls.executable.options} "target${ls.executable.path.seperator}libs-cycle-runtime"'/>
     </exec>
     <exec output="${target.distro.root}/setup/files/dependencies/libs.webapp.rest.txt" executable="${ls.executable}">
-      <arg line="${ls.executable.options} target/libs-webapp-rest"/>
+      <arg line="${ls.executable.options} target${ls.executable.path.seperator}libs-webapp-rest"/>
     </exec>
     <exec output="${target.distro.root}/setup/files/dependencies/libs.webapp.ui.txt" executable="${ls.executable}">
-      <arg line="${ls.executable.options} target/spring-surf-application-war/WEB-INF/lib"/>
+      <arg line="${ls.executable.options} target${ls.executable.path.seperator}spring-surf-application-war${ls.executable.path.seperator}WEB-INF${ls.executable.path.seperator}lib"/>
     </exec>
     <!-- MOVE ALL LIBS TO setup/files/dependencies/libs -->
     <move todir="${target.distro.root}/setup/files/dependencies/libs">
