@@ -19,6 +19,7 @@ import org.activiti.engine.impl.cfg.ProcessEngineConfiguration;
 import org.activiti.engine.impl.pvm.delegate.ExecutionListener;
 import org.activiti.engine.impl.pvm.delegate.TaskListener;
 import org.activiti.engine.impl.pvm.process.ActivityImpl;
+import org.activiti.engine.impl.pvm.process.ProcessDefinitionImpl;
 import org.activiti.engine.impl.pvm.process.ScopeImpl;
 import org.activiti.engine.impl.pvm.process.TransitionImpl;
 import org.activiti.engine.impl.repository.ProcessDefinitionEntity;
@@ -128,7 +129,14 @@ public class HistoryParseListener implements BpmnParseListener {
   }
   
   protected int determineHistoryLevel(ScopeImpl scopeElement) {
-    return Math.min(configurationhistoryLevel, ((ProcessDefinitionEntity) scopeElement.getProcessDefinition()).getHistoryLevel());
+    ProcessDefinitionImpl processDefinition = scopeElement.getProcessDefinition();
+    if (processDefinition != null) {
+      Integer processHistoryLevel = ((ProcessDefinitionEntity) processDefinition).getHistoryLevel();
+      if (processHistoryLevel != null) {
+        return Math.min(configurationhistoryLevel, ((ProcessDefinitionEntity) scopeElement.getProcessDefinition()).getHistoryLevel());
+      }
+    }
+    return configurationhistoryLevel;
   }
   
 }
