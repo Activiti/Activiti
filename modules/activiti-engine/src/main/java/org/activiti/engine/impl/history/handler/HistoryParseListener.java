@@ -36,15 +36,18 @@ public class HistoryParseListener implements BpmnParseListener {
   // Statically created handlers
   protected static final UserTaskAssignmentHandler USER_TASK_ASSIGNMENT_HANDLER = new UserTaskAssignmentHandler();
 
-  protected int historyLevel;
+  // The history level set in the Activiti configuration
+  protected int configurationhistoryLevel;
   
   public HistoryParseListener(int historyLevel) {
-    this.historyLevel = historyLevel;
+    this.configurationhistoryLevel = historyLevel;
   }
   
   public void parseProcess(Element processElement, ProcessDefinitionEntity processDefinition) {
-    processDefinition.addExecutionListener(ExecutionListener.EVENTNAME_START, new ProcessInstanceStartHandler());
-    processDefinition.addExecutionListener(ExecutionListener.EVENTNAME_END, new ProcessInstanceEndHandler());
+    if (activityHistoryEnabled(processDefinition)) {
+      processDefinition.addExecutionListener(ExecutionListener.EVENTNAME_START, new ProcessInstanceStartHandler());
+      processDefinition.addExecutionListener(ExecutionListener.EVENTNAME_END, new ProcessInstanceEndHandler());
+    }
   }
 
   public void parseExclusiveGateway(Element exclusiveGwElement, ScopeImpl scope, ActivityImpl activity) {
@@ -70,7 +73,7 @@ public class HistoryParseListener implements BpmnParseListener {
   public void parseUserTask(Element userTaskElement, ScopeImpl scope, ActivityImpl activity) {
     addActivityHandlers(userTaskElement, activity);
     
-    if (historyLevel>=ProcessEngineConfiguration.HISTORYLEVEL_ACTIVITY) {
+    if (activityHistoryEnabled(scope)) {
       TaskDefinition taskDefinition = ((UserTaskActivity) activity.getActivityBehavior()).getTaskDefinition();
       taskDefinition.addTaskListener(TaskListener.EVENTNAME_ASSIGNMENT, USER_TASK_ASSIGNMENT_HANDLER);
     }
@@ -105,8 +108,27 @@ public class HistoryParseListener implements BpmnParseListener {
   // helper methods ///////////////////////////////////////////////////////////
   
   protected void addActivityHandlers(Element activityElement, ActivityImpl activity) {
-    String activityType = activityElement.getTagName();
-    activity.addExecutionListener(ExecutionListener.EVENTNAME_START, new ActivityInstanceStartHandler(activityType));
-    activity.addExecutionListener(ExecutionListener.EVENTNAME_END, new ActivityInstanceEndHandler());
+    if (activityHistoryEnabled(activity)) {
+      String activityType = activityElement.getTagName();
+      activity.addExecutionListener(ExecutionListener.EVENTNAME_START, new ActivityInstanceStartHandler(activityType));
+      activity.addExecutionListener(ExecutionListener.EVENTNAME_END, new ActivityInstanceEndHandler());
+    }
   }
+  
+  protected boolean fullHistoryEnabled(ScopeImpl scopeElement) {
+    return determineHistoryLevel(scopeElement) >= ProcessEngineConfiguration.HISTORYLEVEL_FULL;
+  }
+  
+  protected boolean auditHistoryEnabled(ScopeImpl scopeElement) {
+    return determineHistoryLevel(scopeElement) >= ProcessEngineConfiguration.HISTORYLEVEL_AUDIT;
+  }
+  
+  protected boolean activityHistoryEnabled(ScopeImpl scopeElement) {
+    return determineHistoryLevel(scopeElement) >= ProcessEngineConfiguration.HISTORYLEVEL_ACTIVITY;
+  }
+  
+  protected int determineHistoryLevel(ScopeImpl scopeElement) {
+    return Math.min(configurationhistoryLevel, ((ProcessDefinitionEntity) scopeElement.getProcessDefinition()).getHistoryLevel());
+  }
+  
 }

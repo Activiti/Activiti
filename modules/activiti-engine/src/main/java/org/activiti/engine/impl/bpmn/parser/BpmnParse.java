@@ -444,7 +444,7 @@ public class BpmnParse extends Parse {
     processDefinition.setTaskDefinitions(new HashMap<String, TaskDefinition>());
     processDefinition.setDeploymentId(deployment.getId());
     
-    String historyLevelText = processElement.attribute("history");
+    String historyLevelText = processElement.attributeNS(BpmnParser.ACTIVITI_BPMN_EXTENSIONS_NS, "history");
     if (historyLevelText!=null) {
       processDefinition.setHistoryLevel(ProcessEngineConfiguration.parseHistoryLevel(historyLevelText));
     }
