@@ -12,52 +12,52 @@ drop index ACT_IDX_HI_DETAIL_TIME;
 drop index ACT_IDX_HI_DETAIL_NAME;
 
 alter table ACT_GE_BYTEARRAY 
-    drop constraint FK_BYTEARR_DEPL;
+    drop constraint FK_ACT_BYTEARR_DEPL;
 
 alter table ACT_RU_EXECUTION
-    drop constraint FK_EXE_PROCINST;
+    drop constraint FK_ACT_EXE_PROCINST;
 
 alter table ACT_RU_EXECUTION 
-    drop constraint FK_EXE_PARENT;
+    drop constraint FK_ACT_EXE_PARENT;
 
 alter table ACT_RU_EXECUTION 
-    drop constraint FK_EXE_SUPER;
+    drop constraint FK_ACT_EXE_SUPER;
     
 alter table ACT_ID_MEMBERSHIP 
-    drop constraint FK_MEMB_GROUP;
+    drop constraint FK_ACT_MEMB_GROUP;
     
 alter table ACT_RU_EXECUTION
-    drop constraint UNIQ_RU_BUS_KEY;
+    drop constraint ACT_UNIQ_RU_BUS_KEY;
     
 alter table ACT_HI_PROCINST
-    drop constraint UNIQ_HI_BUS_KEY;
+    drop constraint ACT_UNIQ_HI_BUS_KEY;
     
 alter table ACT_ID_MEMBERSHIP 
-    drop constraint FK_MEMB_USER;
+    drop constraint FK_ACT_MEMB_USER;
     
 alter table ACT_RU_IDENTITYLINK
-    drop constraint FK_TSKASS_TASK;
+    drop constraint FK_ACT_TSKASS_TASK;
  
 alter table ACT_RU_TASK
-	drop constraint FK_TASK_EXEC;
+	drop constraint FK_ACT_TASK_EXE;
 
 alter table ACT_RU_TASK
-	drop constraint FK_TASK_PROCINST;
+	drop constraint FK_ACT_TASK_PROCINST;
 	
 alter table ACT_RU_TASK
-	drop constraint FK_TASK_PROCDEF;
+	drop constraint FK_ACT_TASK_PROCDEF;
 	
 alter table ACT_RU_VARIABLE
-    drop constraint FK_VAR_EXE;
+    drop constraint FK_ACT_VAR_EXE;
     
 alter table ACT_RU_VARIABLE
-    drop constraint FK_VAR_PROCINST;
+    drop constraint FK_ACT_VAR_PROCINST;
     
 alter table ACT_RU_VARIABLE
-    drop constraint FK_VAR_BYTEARRAY;
+    drop constraint FK_ACT_VAR_BYTEARRAY;
 
 alter table ACT_RU_JOB
-    drop constraint FK_JOB_EXCEPTION;
+    drop constraint FK_ACT_JOB_EXCEPTION;
     
 drop table ACT_GE_PROPERTY if exists;
 drop table ACT_GE_BYTEARRAY if exists;

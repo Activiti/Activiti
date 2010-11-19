@@ -40,12 +40,12 @@ create table ACT_RU_EXECUTION (
     IS_CONCURRENT_ TINYINT,
     IS_SCOPE_ TINYINT,
     primary key (ID_),
-    unique UNIQ_RU_BUS_KEY (PROC_DEF_ID_, BUSINESS_KEY_)
+    unique ACT_UNIQ_RU_BUS_KEY (PROC_DEF_ID_, BUSINESS_KEY_)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE utf8_bin;
 
 create table ACT_RU_JOB (
     ID_ varchar(64) NOT NULL,
-	REV_ integer,
+	  REV_ integer,
     TYPE_ varchar(255) NOT NULL,
     LOCK_EXP_TIME_ timestamp,
     LOCK_OWNER_ varchar(255),
@@ -128,7 +128,7 @@ create table ACT_RU_VARIABLE (
     TYPE_ varchar(255) not null,
     NAME_ varchar(255) not null,
     EXECUTION_ID_ varchar(64),
-	PROC_INST_ID_ varchar(64),
+	  PROC_INST_ID_ varchar(64),
     TASK_ID_ varchar(64),
     BYTEARRAY_ID_ varchar(64),
     DOUBLE_ double,
@@ -151,7 +151,7 @@ create table ACT_HI_PROCINST (
     END_ACT_ID_ varchar(255),
     primary key (ID_),
     unique (PROC_INST_ID_),
-    unique UNIQ_HI_BUS_KEY (PROC_DEF_ID_, BUSINESS_KEY_)
+    unique ACT_UNIQ_HI_BUS_KEY (PROC_DEF_ID_, BUSINESS_KEY_)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE utf8_bin;
 
 create table ACT_HI_ACTINST (
@@ -201,71 +201,71 @@ create index ACT_IDX_HI_DETAIL_TIME on ACT_HI_DETAIL(TIME_);
 create index ACT_IDX_HI_DETAIL_NAME on ACT_HI_DETAIL(NAME_);
 
 alter table ACT_GE_BYTEARRAY
-    add constraint FK_BYTEARR_DEPL 
+    add constraint FK_ACT_BYTEARR_DEPL 
     foreign key (DEPLOYMENT_ID_) 
     references ACT_RE_DEPLOYMENT (ID_);
 
 alter table ACT_RU_EXECUTION
-    add constraint FK_EXE_PROCINST 
+    add constraint FK_ACT_EXE_PROCINST 
     foreign key (PROC_INST_ID_) 
     references ACT_RU_EXECUTION (ID_) on delete cascade on update cascade;
 
 alter table ACT_RU_EXECUTION
-    add constraint FK_EXE_PARENT 
+    add constraint FK_ACT_EXE_PARENT 
     foreign key (PARENT_ID_) 
     references ACT_RU_EXECUTION (ID_);
     
 alter table ACT_RU_EXECUTION
-    add constraint FK_EXE_SUPER 
+    add constraint FK_ACT_EXE_SUPER 
     foreign key (SUPER_EXEC_) 
     references ACT_RU_EXECUTION (ID_);
     
 alter table ACT_ID_MEMBERSHIP 
-    add constraint FK_MEMB_GROUP 
+    add constraint FK_ACT_MEMB_GROUP 
     foreign key (GROUP_ID_) 
     references ACT_ID_GROUP (ID_);
 
 alter table ACT_ID_MEMBERSHIP 
-    add constraint FK_MEMB_USER 
+    add constraint FK_ACT_MEMB_USER 
     foreign key (USER_ID_) 
     references ACT_ID_USER (ID_);
 
 alter table ACT_RU_IDENTITYLINK
-    add constraint FK_TSKASS_TASK 
+    add constraint FK_ACT_TSKASS_TASK 
     foreign key (TASK_ID_) 
     references ACT_RU_TASK (ID_);
     
 alter table ACT_RU_TASK
-    add constraint FK_TASK_EXEC
+    add constraint FK_ACT_TASK_EXE
     foreign key (EXECUTION_ID_)
     references ACT_RU_EXECUTION (ID_);
     
 alter table ACT_RU_TASK
-    add constraint FK_TASK_PROCINST
+    add constraint FK_ACT_TASK_PROCINST
     foreign key (PROC_INST_ID_)
     references ACT_RU_EXECUTION (ID_);
     
 alter table ACT_RU_TASK
-  add constraint FK_TASK_PROCDEF
+  add constraint FK_ACT_TASK_PROCDEF
   foreign key (PROC_DEF_ID_)
   references ACT_RE_PROCDEF (ID_);
   
 alter table ACT_RU_VARIABLE 
-    add constraint FK_VAR_EXE 
+    add constraint FK_ACT_VAR_EXE 
     foreign key (EXECUTION_ID_) 
     references ACT_RU_EXECUTION (ID_);
 
 alter table ACT_RU_VARIABLE
-    add constraint FK_VAR_PROCINST
+    add constraint FK_ACT_VAR_PROCINST
     foreign key (PROC_INST_ID_)
     references ACT_RU_EXECUTION(ID_);
 
 alter table ACT_RU_VARIABLE 
-    add constraint FK_VAR_BYTEARRAY 
+    add constraint FK_ACT_VAR_BYTEARRAY 
     foreign key (BYTEARRAY_ID_) 
     references ACT_GE_BYTEARRAY (ID_);
 
 alter table ACT_RU_JOB 
-    add constraint FK_JOB_EXCEPTION 
+    add constraint FK_ACT_JOB_EXCEPTION 
     foreign key (EXCEPTION_STACK_ID_) 
     references ACT_GE_BYTEARRAY (ID_);
