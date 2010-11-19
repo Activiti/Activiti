@@ -45,7 +45,7 @@ public class TestSvnRepositoryConnector {
 
 	@Test
 	public void testGetChildrenRoot() {
-		RepositoryNodeCollection result = connector.getChildren("c38797fd-5800-4bb9-9286-c90161d099ff");
+		RepositoryNodeCollection result = connector.getChildren("");
 		Assert.assertTrue(result.asList().size() > 0);
 		for (RepositoryNode node : result.asList()) {
 			System.out.println(node.getNodeId());
@@ -99,6 +99,34 @@ public class TestSvnRepositoryConnector {
 		Content content = connector.getContent(artifact.getNodeId(), "Text");
 
 		RepositoryArtifact newArtifact = connector.createArtifact("", UUID.randomUUID() + ".txt", "Text", content);
+
+	}
+
+	@Test
+	public void testTransactionalCreateArtifact() {
+		
+		RepositoryArtifact artifact = connector.getRepositoryArtifact("test.txt");
+
+		Content content = connector.getContent(artifact.getNodeId(), "Text");
+
+		connector.beginTransaction("//", "begin transaction on repository root", false);
+
+		RepositoryFolder folder = connector.createFolder("//", UUID.randomUUID().toString());
+
+		RepositoryFolder folder2 = connector.createFolder(folder.getNodeId(), UUID.randomUUID().toString());
+		System.out.println(folder2);
+
+		String filename = UUID.randomUUID() + ".txt";
+		RepositoryArtifact newArtifact = connector.createArtifact(folder2.getNodeId(), filename, "Text", content);
+		Assert.assertNotNull(newArtifact);
+
+		RepositoryNodeCollection nodeCollection = connector.getChildren(folder2.getNodeId());
+		Assert.assertTrue(nodeCollection.containsArtifact(newArtifact.getGlobalUniqueId()));
+
+		connector.commitPendingChanges("");
+
+		nodeCollection = connector.getChildren(folder2.getNodeId());
+		Assert.assertTrue(nodeCollection.containsArtifact(newArtifact.getGlobalUniqueId()));
 
 	}
 

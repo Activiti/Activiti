@@ -14,13 +14,13 @@
 		<version>5.0-SNAPSHOT</version>
 
 	</parent>
-	
-    <properties>
-        <activiti.artifact>org.activiti.cycle</activiti.artifact>
-        <activiti.osgi.import.additional>
-            *;resolution:=optional,
+
+	<properties>
+		<activiti.artifact>org.activiti.cycle</activiti.artifact>
+		<activiti.osgi.import.additional>
+			*;resolution:=optional,
         </activiti.osgi.import.additional>
-    </properties>
+	</properties>
 
 	<build>
 		<resources>
@@ -31,80 +31,77 @@
 				</includes>
 			</resource>
 		</resources>
-    <plugins>
-      <plugin>
-        <artifactId>maven-surefire-plugin</artifactId>
-        <configuration>
-          <excludes>
-            <exclude>**/RepositoryConnectorConfigurationManagerImplTest.java</exclude>
-	    <exclude>**/TestSvnRepositoryConnector.java</exclude>
-          </excludes>
-        </configuration>
-      </plugin>
-        <plugin>
-          <artifactId>maven-jar-plugin</artifactId>
-          <configuration>
-            <archive>
-              <manifestFile>${project.build.outputDirectory}/META-INF/MANIFEST.MF</manifestFile>
-            </archive>
-          </configuration>
-        </plugin>
-        <plugin>
-           <groupId>org.apache.felix</groupId>
-           <artifactId>maven-bundle-plugin</artifactId>
-            <executions>
-                <execution>
-                    <phase>generate-sources</phase>
-                    <goals>
-                        <goal>cleanVersions</goal>
-                    </goals>
-                </execution>
-              <execution>
-                <id>bundle-manifest</id>
-                <phase>process-classes</phase>
-                <goals>
-                  <goal>manifest</goal>
-                </goals>
-              </execution>
-            </executions>
-          </plugin>
-    </plugins>
-	</build>	
-	
-  <dependencies>
+		<plugins>
+			<plugin>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<configuration>
+					<excludes>
+						<exclude>**/RepositoryConnectorConfigurationManagerImplTest.java</exclude>
+						<exclude>**/TestSvnRepositoryConnector.java</exclude>
+					</excludes>
+				</configuration>
+			</plugin>
+			<plugin>
+				<artifactId>maven-jar-plugin</artifactId>
+				<configuration>
+					<archive>
+						<manifestFile>${project.build.outputDirectory}/META-INF/MANIFEST.MF</manifestFile>
+					</archive>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.felix</groupId>
+				<artifactId>maven-bundle-plugin</artifactId>
+				<executions>
+					<execution>
+						<phase>generate-sources</phase>
+						<goals>
+							<goal>cleanVersions</goal>
+						</goals>
+					</execution>
+					<execution>
+						<id>bundle-manifest</id>
+						<phase>process-classes</phase>
+						<goals>
+							<goal>manifest</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
+
+	<dependencies>
 		<dependency>
 			<groupId>org.activiti</groupId>
 			<artifactId>activiti-engine</artifactId>
 			<scope>provided</scope>
 		</dependency>
-	
-		<!--
-			<dependency> <groupId>org.activiti</groupId>
-			<artifactId>activiti-pvm</artifactId> </dependency> <dependency>
-			<groupId>org.activiti</groupId>
-			<artifactId>activiti-engine</artifactId> </dependency>
-		-->
+
+		<!-- <dependency> <groupId>org.activiti</groupId> <artifactId>activiti-pvm</artifactId> 
+			</dependency> <dependency> <groupId>org.activiti</groupId> <artifactId>activiti-engine</artifactId> 
+			</dependency> -->
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
-		  <groupId>org.restlet.jee</groupId>
-		  <artifactId>org.restlet</artifactId>
-	    </dependency>
-        <dependency>
-		  <groupId>org.restlet.jee</groupId>
-		  <artifactId>org.restlet.ext.json</artifactId>
-	  	</dependency>
-	  	<dependency>
-		  <groupId>org.restlet.jee</groupId>
-		  <artifactId>org.restlet.ext.xml</artifactId>
-	  	</dependency>
-	  	<dependency>
-		  <groupId>org.restlet.jee</groupId>
-		  <artifactId>org.restlet.ext.httpclient</artifactId>
-	  	</dependency>
+			<groupId>org.restlet.jee</groupId>
+			<artifactId>org.restlet</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.restlet.jee</groupId>
+			<artifactId>org.restlet.ext.json</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.restlet.jee</groupId>
+			<artifactId>org.restlet.ext.xml</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.restlet.jee</groupId>
+			<artifactId>org.restlet.ext.httpclient</artifactId>
+		</dependency>
 		<!-- required by Apache commons httpclient, required by restlet -->
 		<dependency>
 			<groupId>commons-logging</groupId>
@@ -117,16 +114,16 @@
 		</dependency>
 		<!-- required for mimetype lookup -->
 		<dependency>
-		    <groupId>eu.medsea.mimeutil</groupId>
-		    <artifactId>mime-util</artifactId>
+			<groupId>eu.medsea.mimeutil</groupId>
+			<artifactId>mime-util</artifactId>
 		</dependency>
 		<dependency>
-		  <groupId>org.slf4j</groupId>
-		  <artifactId>slf4j-jdk14</artifactId>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-jdk14</artifactId>
 		</dependency>
 		<dependency>
-		    <groupId>org.scannotation</groupId>
-		    <artifactId>scannotation</artifactId>
+			<groupId>org.scannotation</groupId>
+			<artifactId>scannotation</artifactId>
 		</dependency>
 		<!-- required to access ServletContext needed for PluginFinder in web context -->
 		<dependency>
@@ -134,28 +131,39 @@
 			<artifactId>servlet-api</artifactId>
 			<scope>provided</scope>
 		</dependency>
-		<!-- added h2.jar to support H2 database -->	
-	    <dependency>
-	      <groupId>com.h2database</groupId>
-	      <artifactId>h2</artifactId>
-	      <scope>test</scope>
-	    </dependency>
-    	<dependency>
-      	  <groupId>com.signavio</groupId>
-      	  <artifactId>signavio-core-components</artifactId>
-    	</dependency>
-    	
-    	<!-- required by the Activiti Cycle svnconnector plugin -->
-    	<dependency>
-    		<groupId>org.tigris.subversion</groupId>
-    		<artifactId>svnclientadapter</artifactId> 
-    		<version>0.9.100</version>    	
-    	</dependency>
-    	
-    	   	
-    	
-  </dependencies>
-			
+		<!-- added h2.jar to support H2 database -->
+		<dependency>
+			<groupId>com.h2database</groupId>
+			<artifactId>h2</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.signavio</groupId>
+			<artifactId>signavio-core-components</artifactId>
+		</dependency>
+
+		<!-- required by the Activiti Cycle svnconnector plugin -->
+		<dependency>
+			<groupId>org.tigris.subversion</groupId>
+			<artifactId>svnclientadapter</artifactId>
+			<version>0.9.100</version>
+		</dependency>
+
+		<dependency>
+			<groupId>commons-vfs</groupId>
+			<artifactId>commons-vfs</artifactId>
+			<version>1.0</version>
+		</dependency>
+		
+		<!-- required for sftp support -->
+		<dependency>
+			<groupId>jsch</groupId>
+			<artifactId>jsch</artifactId>
+			<version>0.1.29</version>
+		</dependency>
+
+	</dependencies>
+
 	<profiles>
 		<profile>
 			<id>distro</id>

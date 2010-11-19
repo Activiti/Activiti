@@ -268,7 +268,6 @@ public class SvnRepositoryConnector extends AbstractRepositoryConnector<SvnConne
 				commitPendingChanges("Activiti-Cycle created file " + artifactName + " in " + parentFolderId);
 			}
 
-			// FIXME: can only return artifact if we commit
 			return getRepositoryArtifact(buildId(parentFolderId, artifactName));
 
 		} catch (Exception e) {
@@ -309,7 +308,6 @@ public class SvnRepositoryConnector extends AbstractRepositoryConnector<SvnConne
 				commitPendingChanges("Activiti-Cycle created folder " + name + " in " + parentFolderId);
 			}
 
-			// FIXME: can only return folder if we commit
 			return getRepositoryFolder(newFolderId);
 
 		} catch (Exception e) {
