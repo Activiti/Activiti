@@ -12,11 +12,11 @@
      <os family="windows"/>
   </condition>
 
-  <condition property="ls.executable" value="dir" else="ls">
+  <condition property="ls.executable" value="cmd" else="ls">
      <os family="windows"/>
   </condition>
 
-	<condition property="ls.executable.options" value="/B" else="">
+	<condition property="ls.executable.options" value="/c dir /B" else="">
      <os family="windows"/>
   </condition>
 
