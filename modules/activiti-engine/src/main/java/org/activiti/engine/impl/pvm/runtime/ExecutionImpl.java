@@ -480,26 +480,24 @@ public class ExecutionImpl implements
       while (!transitions.isEmpty()) {
         PvmTransition outgoingTransition = transitions.remove(0);
 
+        ExecutionImpl outgoingExecution = null;
         if (recyclableExecutions.isEmpty()) {
-          ExecutionImpl outgoingExecution = concurrentRoot.createExecution();
-          outgoingExecution.setActive(true);
-          outgoingExecution.setScope(false);
-          outgoingExecution.setConcurrent(true);
-          outgoingExecutions.add(new OutgoingExecution(outgoingExecution, outgoingTransition, true));
+          outgoingExecution = concurrentRoot.createExecution();
           log.fine("new "+outgoingExecution+" created to take transition "+outgoingTransition);
         } else {
-          ExecutionImpl outgoingExecution = (ExecutionImpl) recyclableExecutions.remove(0);
-          outgoingExecution.setActive(true);
-          outgoingExecution.setConcurrent(true);
-          outgoingExecution.setScope(false);
-          outgoingExecutions.add(new OutgoingExecution(outgoingExecution, outgoingTransition, true));
+          outgoingExecution = (ExecutionImpl) recyclableExecutions.remove(0);
           log.fine("recycled "+outgoingExecution+" to take transition "+outgoingTransition);
         }
+        
+        outgoingExecution.setActive(true);
+        outgoingExecution.setScope(false);
+        outgoingExecution.setConcurrent(true);
+        outgoingExecutions.add(new OutgoingExecution(outgoingExecution, outgoingTransition, true));
       }
 
       // prune the executions that are not recycled 
       for (ActivityExecution prunedExecution: recyclableExecutions) {
-        log.info("pruning execution "+prunedExecution);
+        log.fine("pruning execution "+prunedExecution);
         prunedExecution.end();
       }
 
