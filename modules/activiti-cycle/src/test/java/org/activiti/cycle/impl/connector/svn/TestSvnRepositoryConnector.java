@@ -11,6 +11,8 @@ import org.activiti.cycle.RepositoryNodeCollection;
 import org.activiti.cycle.RepositoryNodeNotFoundException;
 import org.activiti.cycle.impl.conf.ConfigurationContainer;
 import org.activiti.cycle.impl.plugin.PluginFinder;
+import org.activiti.cycle.incubator.connector.svn.SvnConnectorConfiguration;
+import org.activiti.cycle.incubator.connector.svn.SvnRepositoryConnector;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.Assert;
