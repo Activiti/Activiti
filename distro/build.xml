@@ -16,7 +16,7 @@
      <os family="windows"/>
   </condition>
 
-	<condition property="ls.executable.options" value="/c dir /B" else="">
+	<condition property="ls.executable.options" value="/c dir /B > " else="">
      <os family="windows"/>
   </condition>
 
