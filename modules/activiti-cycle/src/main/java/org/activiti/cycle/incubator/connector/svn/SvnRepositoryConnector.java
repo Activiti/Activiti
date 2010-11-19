@@ -1,4 +1,4 @@
-package org.activiti.cycle.impl.connector.svn;
+package org.activiti.cycle.incubator.connector.svn;
 
 import java.io.BufferedOutputStream;
 import java.io.File;

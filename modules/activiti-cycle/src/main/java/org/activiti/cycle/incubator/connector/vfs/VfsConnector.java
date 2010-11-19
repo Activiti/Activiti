@@ -1,4 +1,4 @@
-package org.activiti.cycle.impl.connector.vfs;
+package org.activiti.cycle.incubator.connector.vfs;
 
 import java.util.ArrayList;
 import java.util.List;

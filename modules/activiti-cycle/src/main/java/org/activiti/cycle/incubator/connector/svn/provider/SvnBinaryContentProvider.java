@@ -1,4 +1,4 @@
-package org.activiti.cycle.impl.connector.svn.provider;
+package org.activiti.cycle.incubator.connector.svn.provider;
 
 import java.io.BufferedInputStream;
 import java.io.InputStream;
@@ -9,7 +9,7 @@ import org.activiti.cycle.RepositoryArtifact;
 import org.activiti.cycle.RepositoryConnector;
 import org.activiti.cycle.RepositoryException;
 import org.activiti.cycle.impl.ContentProviderImpl;
-import org.activiti.cycle.impl.connector.svn.SvnRepositoryConnector;
+import org.activiti.cycle.incubator.connector.svn.SvnRepositoryConnector;
 import org.tigris.subversion.svnclientadapter.ISVNClientAdapter;
 import org.tigris.subversion.svnclientadapter.SVNClientException;
 import org.tigris.subversion.svnclientadapter.SVNRevision;

@@ -100,7 +100,7 @@
     
     <programlisting>
 	...
-	&lt;org.activiti.cycle.impl.connector.svn.SvnConnectorConfiguration&gt;
+	&lt;org.activiti.cycle.incubator.connector.svn.SvnConnectorConfiguration&gt;
 		&lt;id&gt;RepositoryId (e.g. ProjectSVN)&lt;/id&gt;
 		&lt;name&gt;Repository Name (My Project SVN)&lt;/name&gt;
 		&lt;credentialsSaved&gt;true&lt;/credentialsSaved&gt;
@@ -108,7 +108,7 @@
 		&lt;password&gt;&lt;/password&gt;
 		&lt;repositoryPath&gt;Path to your repository (e.g. http://mycompany.com/svn/projectName)&lt;/repositoryPath&gt;
 		&lt;temporaryFileStore&gt;where the connector creates temporary files between commits (e.g. /tmp)&lt;/temporaryFileStore&gt;
-	&lt;/org.activiti.cycle.impl.connector.svn.SvnConnectorConfiguration&gt;
+	&lt;/org.activiti.cycle.incubator.connector.svn.SvnConnectorConfiguration&gt;
 	...
 	</programlisting>   
 	<para> 
@@ -120,7 +120,7 @@
       <literal>${activiti.home}/apps/apache-tomcat-6.X.XX/lib/</literal>. (Tomcat restart required.) SVNKit cannot be bundled 
       with Activiti due to licensing restrictions.</para></listitem>
      </itemizedlist>	
-     Please also note that the SVN Connector is still considered experimental.
+     Please note that the SVN Connector is still in incubation and considered experimental.
     </para> 
 	
   </section>

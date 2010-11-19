@@ -1,4 +1,4 @@
-package org.activiti.cycle.impl.connector.svn.provider;
+package org.activiti.cycle.incubator.connector.svn.provider;
 
 /**
  * Content Provider for TextFiles used by the SvnConnectorPlugin

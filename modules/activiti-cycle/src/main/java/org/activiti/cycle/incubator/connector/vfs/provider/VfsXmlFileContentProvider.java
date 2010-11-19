@@ -1,4 +1,4 @@
-package org.activiti.cycle.impl.connector.svn.provider;
+package org.activiti.cycle.incubator.connector.vfs.provider;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -15,13 +15,9 @@ import org.activiti.cycle.RepositoryConnector;
 import org.activiti.cycle.RepositoryException;
 import org.w3c.dom.Document;
 
-/**
- * 
- * @author daniel.meyer@camunda.com
- * 
- */
-public class SvnXmlFileContentProvider extends SvnBinaryContentProvider {
-	Logger log = Logger.getLogger(SvnBinaryContentProvider.class.getName());
+public class VfsXmlFileContentProvider extends VfsBinaryContentProvider{
+	
+	Logger log = Logger.getLogger(VfsXmlFileContentProvider.class.getName());
 
 	@Override
 	public void addValueToContent(Content content, RepositoryConnector connector, RepositoryArtifact artifact) {
@@ -52,4 +48,5 @@ public class SvnXmlFileContentProvider extends SvnBinaryContentProvider {
 		}
 
 	}
+
 }

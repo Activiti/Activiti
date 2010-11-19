@@ -1,4 +1,4 @@
-package org.activiti.cycle.impl.connector.vfs;
+package org.activiti.cycle.incubator.connector.vfs;
 
 import org.activiti.cycle.ArtifactType;
 import org.activiti.cycle.RepositoryConnector;

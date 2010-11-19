@@ -1,4 +1,4 @@
-package org.activiti.cycle.impl.connector.vfs.provider;
+package org.activiti.cycle.incubator.connector.vfs.provider;
 
 import java.util.logging.Level;
 
@@ -7,7 +7,7 @@ import org.activiti.cycle.RepositoryArtifact;
 import org.activiti.cycle.RepositoryConnector;
 import org.activiti.cycle.RepositoryException;
 import org.activiti.cycle.impl.ContentProviderImpl;
-import org.activiti.cycle.impl.connector.vfs.VfsConnector;
+import org.activiti.cycle.incubator.connector.vfs.VfsConnector;
 import org.apache.commons.vfs.FileContent;
 import org.apache.commons.vfs.FileObject;
 import org.apache.commons.vfs.FileSystemException;

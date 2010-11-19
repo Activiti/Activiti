@@ -1,4 +1,4 @@
-package org.activiti.cycle.impl.connector.vfs.provider;
+package org.activiti.cycle.incubator.connector.vfs.provider;
 
 public class VfsTextContentProvider extends VfsBinaryContentProvider {
 
