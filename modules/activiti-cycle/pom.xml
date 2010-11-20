@@ -38,6 +38,7 @@
 					<excludes>
 						<exclude>**/RepositoryConnectorConfigurationManagerImplTest.java</exclude>
 						<exclude>**/TestSvnRepositoryConnector.java</exclude>
+						<exclude>**/SubProcessExpansionTest.java</exclude>
 					</excludes>
 				</configuration>
 			</plugin>

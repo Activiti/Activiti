@@ -23,6 +23,7 @@
             },
             "childShapes": [],
             "dockers": [],
+            "labels": [],
             "outgoing": [{"resourceId": "sid-2AADB355-38F9-4771-AF8F-18BF2B0BA98A"}],
             "properties": {
                 "auditing": "",
@@ -60,6 +61,7 @@
                     "y": 40
                 }
             ],
+            "labels": [],
             "outgoing": [{"resourceId": "sid-F4A32C8D-1F23-460F-9CA4-1C4DCC3DB526"}],
             "properties": {
                 "auditing": "",
@@ -88,6 +90,7 @@
             },
             "childShapes": [],
             "dockers": [],
+            "labels": [],
             "outgoing": [],
             "properties": {
                 "auditing": "",
@@ -125,6 +128,7 @@
                     "y": 14
                 }
             ],
+            "labels": [],
             "outgoing": [{"resourceId": "sid-97E04FE3-BB0D-40AE-9AE0-AE2B117667CA"}],
             "properties": {
                 "auditing": "",
@@ -165,6 +169,7 @@
                     },
                     "childShapes": [],
                     "dockers": [],
+                    "labels": [],
                     "outgoing": [{"resourceId": "sid-877B9C8E-F957-41D6-BA8E-FBA9BAA6B42B"}],
                     "properties": {
                         "auditing": "",
@@ -193,6 +198,7 @@
                     },
                     "childShapes": [],
                     "dockers": [],
+                    "labels": [],
                     "outgoing": [{"resourceId": "sid-E6862C5A-DFC0-4A27-A421-C3047E4657FE"}],
                     "properties": {
                         "assignments": "",
@@ -202,7 +208,7 @@
                         "callacitivity": "",
                         "categories": "",
                         "completioncondition": "",
-                        "completionquantity": "1",
+                        "completionquantity": 1,
                         "complexbehaviordefinition": "",
                         "datainputset": "",
                         "dataoutputset": "",
@@ -239,7 +245,7 @@
                         "resources": "",
                         "script": "",
                         "scriptformat": "",
-                        "startquantity": "1",
+                        "startquantity": 1,
                         "tasktype": "None",
                         "testbefore": ""
                     },
@@ -268,6 +274,7 @@
                             "y": 40
                         }
                     ],
+                    "labels": [],
                     "outgoing": [{"resourceId": "sid-7BA8D259-D8CD-4F56-88A7-0C44C9C5787E"}],
                     "properties": {
                         "auditing": "",
@@ -296,6 +303,7 @@
                     },
                     "childShapes": [],
                     "dockers": [],
+                    "labels": [],
                     "outgoing": [],
                     "properties": {
                         "auditing": "",
@@ -333,6 +341,7 @@
                             "y": 14
                         }
                     ],
+                    "labels": [],
                     "outgoing": [{"resourceId": "sid-49E9129D-4357-4422-9F48-E635DCB164E6"}],
                     "properties": {
                         "auditing": "",
@@ -350,10 +359,11 @@
                 }
             ],
             "dockers": [],
+            "labels": [],
             "outgoing": [{"resourceId": "sid-8DC54906-3065-4506-A70C-E367193B0DB6"}],
             "properties": {
                 "activitytype": "Sub-Process",
-                "adhoccancelremaininginstances": "true",
+                "adhoccancelremaininginstances": true,
                 "adhoccompletioncondition": "",
                 "adhocordering": "Sequential",
                 "assignments": "",
@@ -363,7 +373,7 @@
                 "callacitivity": "",
                 "categories": "",
                 "completioncondition": "",
-                "completionquantity": "1",
+                "completionquantity": 1,
                 "complexbehaviordefinition": "",
                 "datainputset": "",
                 "dataoutputset": "",
@@ -407,7 +417,7 @@
                 "resources": "",
                 "script": "",
                 "scriptformat": "",
-                "startquantity": "1",
+                "startquantity": 1,
                 "subprocesstype": "Embedded",
                 "tasktype": "None",
                 "testbefore": "",
