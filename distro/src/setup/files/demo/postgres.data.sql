@@ -28,15 +28,18 @@ update ACT_GE_PROPERTY
 set VALUE_ = '10'
 where NAME_ = 'next.dbid';
 
+
 insert into ACT_CY_CONFIG values ('kermit', '<org.activiti.cycle.impl.conf.ConfigurationContainer>
   <name>kermit</name>
   <linkedConnectors>
     <org.activiti.cycle.impl.connector.signavio.SignavioConnectorConfiguration>
       <id>Activiti</id>
       <name>Activiti Modeler</name>
-      <credentialsSaved>false</credentialsSaved>
       <signavioBaseUrl>@activiti.modeler.base.url@</signavioBaseUrl>
       <loginRequired>false</loginRequired>
+      <credentialsSaved>true</credentialsSaved>
+      <user></user>
+      <password></password>
     </org.activiti.cycle.impl.connector.signavio.SignavioConnectorConfiguration>
     <org.activiti.cycle.impl.connector.fs.FileSystemConnectorConfiguration>
       <id>Workspace</id>
@@ -52,9 +55,11 @@ insert into ACT_CY_CONFIG values ('fozzie', '<org.activiti.cycle.impl.conf.Confi
     <org.activiti.cycle.impl.connector.signavio.SignavioConnectorConfiguration>
       <id>Activiti</id>
       <name>Activiti Modeler</name>
-      <credentialsSaved>false</credentialsSaved>
       <signavioBaseUrl>@activiti.modeler.base.url@</signavioBaseUrl>
       <loginRequired>false</loginRequired>
+      <credentialsSaved>true</credentialsSaved>
+      <user></user>
+      <password></password>
     </org.activiti.cycle.impl.connector.signavio.SignavioConnectorConfiguration>
     <org.activiti.cycle.impl.connector.fs.FileSystemConnectorConfiguration>
       <id>Workspace</id>
@@ -70,9 +75,11 @@ insert into ACT_CY_CONFIG values ('gonzo', '<org.activiti.cycle.impl.conf.Config
     <org.activiti.cycle.impl.connector.signavio.SignavioConnectorConfiguration>
       <id>Activiti</id>
       <name>Activiti Modeler</name>
-      <credentialsSaved>false</credentialsSaved>
       <signavioBaseUrl>http://localhost:8080/activiti-modeler/</signavioBaseUrl>
       <loginRequired>false</loginRequired>
+      <credentialsSaved>true</credentialsSaved>
+      <user></user>
+      <password></password>
     </org.activiti.cycle.impl.connector.signavio.SignavioConnectorConfiguration>
     <org.activiti.cycle.impl.connector.fs.FileSystemConnectorConfiguration>
       <id>Workspace</id>

@@ -40,12 +40,16 @@
         &lt;name&gt;kermit&lt;/name&gt;
         &lt;linkedConnectors&gt;
           &lt;org.activiti.cycle.impl.connector.signavio.SignavioConnectorConfiguration&gt;
+            &lt;id&gt;Activiti&lt;/id&gt;
             &lt;name&gt;Activiti Modeler&lt;/name&gt;
-            &lt;credentialsSaved&gt;false&lt;/credentialsSaved&gt;
             &lt;signavioBaseUrl&gt;http://localhost:8080/activiti-modeler/&lt;/signavioBaseUrl&gt;
             &lt;loginRequired&gt;false&lt;/loginRequired&gt;
+            &lt;credentialsSaved&gt;true&lt;/credentialsSaved&gt;
+            &lt;user&gt;&lt;/user&gt;
+            &lt;password&gt;&lt;/password&gt;
           &lt;/org.activiti.cycle.impl.connector.signavio.SignavioConnectorConfiguration&gt;
           &lt;org.activiti.cycle.impl.connector.fs.FileSystemConnectorConfiguration&gt;
+            &lt;id&gt;Workspace&lt;/id&gt;
             &lt;name&gt;Eclipse Workspace (File System)&lt;/name&gt;
             &lt;baseFilePath&gt;/path-to-activiti-home/activiti-5.0.beta2/workspace/activiti-cycle-examples&lt;/baseFilePath&gt;
           &lt;/org.activiti.cycle.impl.connector.fs.FileSystemConnectorConfiguration&gt;
@@ -65,16 +69,23 @@
     <programlisting>
       ...
       &lt;org.activiti.cycle.impl.connector.signavio.SignavioConnectorConfiguration&gt;
+        &lt;id&gt;Signavio&lt;/id&gt;
         &lt;name&gt;Signavio&lt;/name&gt;
+        &lt;signavioBaseUrl&gt;https://editor.signavio.com/&lt;/signavioBaseUrl&gt;
+        &lt;loginRequired&gt;true&lt;/loginRequired&gt;
         &lt;credentialsSaved&gt;true&lt;/credentialsSaved&gt;
         &lt;user&gt;your user name&lt;/user&gt;
         &lt;password&gt;secret&lt;/password&gt;
-        &lt;loginRequired&gt;true&lt;/loginRequired&gt;
-        &lt;signavioBaseUrl&gt;https://editor.signavio.com/&lt;/signavioBaseUrl&gt;
       &lt;/org.activiti.cycle.impl.connector.signavio.SignavioConnectorConfiguration&gt;
       ...
     </programlisting>
     
+    <para>
+        You may also choose not to save your username and password in the database
+        by setting 'credentialsSaved' to 'false' and leaving 'user' and 'password' empty.
+        Cycle will then ask you for your credentials when it needs them.
+    </para>
+
     <para>
         Another thing you might consider
         is to add a collection of BPMN examples from
@@ -85,10 +96,13 @@
     <programlisting>
       ...
       &lt;org.activiti.cycle.impl.connector.signavio.OryxConnectorConfiguration&gt;
+        &lt;id&gt;Signavio&lt;/id&gt;
         &lt;name&gt;oryx-project.org&lt;/name&gt;
-        &lt;credentialsSaved&gt;false&lt;/credentialsSaved&gt;
         &lt;signavioBaseUrl&gt;http://oryx-project.org/&lt;/signavioBaseUrl&gt;
         &lt;loginRequired&gt;false&lt;/loginRequired&gt;
+        &lt;credentialsSaved&gt;true&lt;/credentialsSaved&gt;
+        &lt;user&gt;&lt;/user&gt;
+        &lt;password&gt;&lt;/password&gt;
       &lt;/org.activiti.cycle.impl.connector.signavio.OryxConnectorConfiguration&gt;
       ...
     </programlisting>
@@ -103,10 +117,10 @@
 	&lt;org.activiti.cycle.incubator.connector.svn.SvnConnectorConfiguration&gt;
 		&lt;id&gt;RepositoryId (e.g. ProjectSVN)&lt;/id&gt;
 		&lt;name&gt;Repository Name (My Project SVN)&lt;/name&gt;
+		&lt;repositoryPath&gt;Path to your repository (e.g. http://mycompany.com/svn/projectName)&lt;/repositoryPath&gt;
 		&lt;credentialsSaved&gt;true&lt;/credentialsSaved&gt;
 		&lt;user&gt;user name&lt;/user&gt;
 		&lt;password&gt;&lt;/password&gt;
-		&lt;repositoryPath&gt;Path to your repository (e.g. http://mycompany.com/svn/projectName)&lt;/repositoryPath&gt;
 		&lt;temporaryFileStore&gt;where the connector creates temporary files between commits (e.g. /tmp)&lt;/temporaryFileStore&gt;
 	&lt;/org.activiti.cycle.incubator.connector.svn.SvnConnectorConfiguration&gt;
 	...
