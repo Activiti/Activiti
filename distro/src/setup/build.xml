@@ -354,11 +354,12 @@
   <target name="internal.tomcat.enable.debug" if="tomcat.enable.debug">
     <echo>Enabling tomcat remote debugging ... </echo>
     <replace file="${tomcat.home}/bin/startup.sh">
-      <replacetoken><![CDATA[
-# Licensed to the Apache Software Foundation (ASF) under one or more]]></replacetoken>
-      <replacevalue><![CDATA[
-JAVA_OPTS="-Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=8787"
-# Licensed to the Apache Software Foundation (ASF) under one or more]]></replacevalue>
+      <replacetoken><![CDATA[exec "$PRGDIR"/"$EXECUTABLE" start "$@"]]></replacetoken>
+      <replacevalue><![CDATA[exec "$PRGDIR"/"$EXECUTABLE" jpda start "$@"]]></replacevalue>
+    </replace>
+    <replace file="${tomcat.home}/bin/startup.bat">
+      <replacetoken><![CDATA[call "%EXECUTABLE%" start %CMD_LINE_ARGS%]]></replacetoken>
+      <replacevalue><![CDATA[call "%EXECUTABLE%" jpda start %CMD_LINE_ARGS%]]></replacevalue>
     </replace>
   </target>
   
