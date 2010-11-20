@@ -181,8 +181,16 @@
     
     createTagUrl: function RepositoryService_createTagUrl(connectorId, artifactId, tag) {
       return Activiti.service.REST_PROXY_URI_RELATIVE + "tag";
+    },
+    
+    loadTagsByArtifact: function RepositoryService_loadTagsByArtifact(connectorId, artifactId) {
+      this.jsonGet(this.loadTagsByArtifactUrl(connectorId, artifactId), null, "loadTagsByArtifact");
+    },
+    
+    loadTagsByArtifactUrl: function RepositoryService_loadTagsByArtifactUrl(connectorId, artifactId) {
+      return Activiti.service.REST_PROXY_URI_RELATIVE + "tags?connectorId=" + encodeURIComponent(connectorId) + "&artifactId=" + encodeURIComponent(artifactId);
     }
-
+    
   });
 })();
 
@@ -535,8 +543,8 @@
       this._dialog.callback.failure = this.onFailure;
 
 		  this._dialog.render(document.body);
-		  
-      var tagsDataSource = new YAHOO.util.XHRDataSource("http://localhost:8080/activiti-cycle/proxy/activiti-rest-endpoint/tags");
+
+      var tagsDataSource = new YAHOO.util.XHRDataSource(Activiti.service.REST_PROXY_URI_RELATIVE + "tags");
       tagsDataSource.responseSchema = {
         resultsList: "tags",
         fields : [
@@ -585,7 +593,6 @@
         }
       }
 
-      // this.service.createTag(this._connectorId, this._artifactId, name, alias);
       if (this._dialog) {
         this._dialog.destroy();
       }

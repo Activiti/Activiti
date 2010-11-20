@@ -107,6 +107,8 @@
         // Check whether the selected node is a file node. If so, load its data
         if(eventValue.isRepositoryArtifact ) {
           this.services.repositoryService.loadArtifact(eventValue.connectorId, eventValue.repositoryNodeId);
+        } else {
+          this.services.repositoryService.loadTagsByArtifact(eventValue.connectorId, eventValue.repositoryNodeId);
         }
         // Update the heading that displays the name of the selected node
         headerEl.id = "header-" + eventValue.repositoryNodeId;
@@ -123,9 +125,16 @@
      * @param response {object} The callback response
      * @param obj {object} Helper object
      */
-    onLoadArtifactSuccess: function RepoTree_RepositoryService_onLoadArtifactSuccess(response, obj)
+    onLoadArtifactSuccess: function Artifact_RepositoryService_onLoadArtifactSuccess(response, obj)
     {
       var me = this;
+      
+      // remove folder tags from UI
+      var tagsDiv = document.getElementById("tags-div");
+      if(tagsDiv) {
+        tagsDiv.innerHTML = "";
+      }
+      
       this._tabView = new YAHOO.widget.TabView(); 
       
       // Retrieve rest api response
@@ -198,6 +207,32 @@
         var optionsMenu = new YAHOO.widget.Button({ type: "menu", label: "Actions", name: "options", menu: actionsMenuItems, container: optionsDiv });
       }
       optionsDiv.setAttribute('class', 'active');
+    },
+
+    onLoadTagsByArtifactSuccess: function Artifact_RepositoryService_onLoadTagsByArtifactSuccess(response, obj) {
+      var tagsDiv = document.getElementById("tags-div");
+      if(!tagsDiv) {
+        // create tags div
+        tagsDiv = document.createElement("div");
+        tagsDiv.setAttribute('id', 'tags-div');
+        // retrieve the header
+        var headerEl = Selector.query("h1", this.id, true);
+        // insert tagsDiv after the header
+        Dom.insertAfter(tagsDiv, headerEl);
+      }
+      
+      if(response.json.tags && response.json.tags.length > 0) {
+        tagsDiv.innerHTML = "Tags: ";
+      } else {
+        tagsDiv.innerHTML = "";
+      }
+      
+      for(tag in response.json.tags) {
+        var tagSpan = document.createElement("span");
+        tagSpan.innerHTML = response.json.tags[tag].alias;
+        tagsDiv.appendChild(tagSpan);
+      }
+      
     },
 
     onLoadTabSuccess: function Artifact_onLoadTabSuccess(tab, response) {
