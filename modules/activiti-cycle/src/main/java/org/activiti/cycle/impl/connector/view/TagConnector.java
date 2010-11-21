@@ -121,6 +121,9 @@ public class TagConnector implements RepositoryConnector {
 
   public void updateContent(String artifactId, String contentRepresentationName, Content content) throws RepositoryNodeNotFoundException {
     throw new UnsupportedOperationException("Cannot update content in TagConnector, use real RepositoryConnector istead.");    
+  }
+
+  public void beginTransaction(String folderId, String lockComment, boolean autocommit) {
   } 
   
 }

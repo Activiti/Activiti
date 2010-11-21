@@ -82,8 +82,9 @@ public class CycleServiceImpl implements CycleService {
       }
     }
 
-    // add tag connector hard coded for the moment
-    this.repositoryConnectors.add(new TagConnectorConfiguration(this).createConnector());
+    // add tag connector hard coded for the moment (at the first node in the
+    // tree)
+    this.repositoryConnectors.add(0, new TagConnectorConfiguration(this).createConnector());
   }
 
   // bootstrapping for cycle

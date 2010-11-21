@@ -29,6 +29,20 @@ public abstract class AbstractRepositoryConnector<T extends RepositoryConnectorC
   }
 
   /**
+   * empty base configuration for connector (most of them don't support
+   * transactions)
+   */
+  public void beginTransaction(String folderId, String lockComment, boolean autocommit) {
+  }
+
+  /**
+   * empty base configuration for connector (most of them don't support
+   * transactions)
+   */
+  public void commitPendingChanges(String comment) {
+  }
+
+  /**
    * Typical basic implementation to query {@link Content} from
    * {@link ContentProvider} obtained by the {@link ArtifactType} of the
    * artifact.

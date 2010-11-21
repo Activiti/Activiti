@@ -28,7 +28,8 @@ public class SignavioSvgApiBuilder {
   private String authToken;
   private String clickFunction;
 
-  private boolean useLocalScripts = false;
+  // TODO: Remove the hard coded urls anyway!
+  private boolean useLocalScripts = true;
   private static String svgApiScript = "";
   
   /**

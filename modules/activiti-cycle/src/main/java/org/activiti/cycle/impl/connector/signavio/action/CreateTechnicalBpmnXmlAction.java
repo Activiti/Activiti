@@ -9,11 +9,8 @@ import org.activiti.cycle.RepositoryConnector;
 import org.activiti.cycle.RepositoryFolder;
 import org.activiti.cycle.impl.ParameterizedHtmlFormTemplateAction;
 import org.activiti.cycle.impl.connector.fs.FileSystemPluginDefinition;
-import org.activiti.cycle.impl.connector.signavio.SignavioConnector;
-import org.activiti.cycle.impl.connector.signavio.SignavioPluginDefinition;
-import org.activiti.cycle.impl.connector.signavio.util.SignavioTransformationHelper;
+import org.activiti.cycle.impl.connector.signavio.provider.ActivitiCompliantBpmn20Provider;
 import org.activiti.cycle.impl.db.entity.RepositoryArtifactLinkEntity;
-import org.activiti.cycle.impl.transform.signavio.RemedyTemporarySignavioIncompatibilityTransformation;
 
 /**
  * This action creates a technical BPMN 2.0 XML for the process engines. It
@@ -74,27 +71,10 @@ public class CreateTechnicalBpmnXmlAction extends ParameterizedHtmlFormTemplateA
 
   public RepositoryArtifact createArtifact(RepositoryConnector connector, RepositoryArtifact artifact, String targetFolderId, String targetName,
           RepositoryConnector targetConnector) throws Exception {
-    String bpmnXml = createBpmnXml(connector, artifact);
+    String bpmnXml = ActivitiCompliantBpmn20Provider.createBpmnXml(connector, artifact);
     RepositoryArtifact targetArtifact = createTargetArtifact(targetConnector, targetFolderId, targetName + ".bpmn20.xml", bpmnXml,
             FileSystemPluginDefinition.ARTIFACT_TYPE_BPMN_20_XML);
     return targetArtifact;
-  }
-
-  public String createBpmnXml(RepositoryConnector connector, RepositoryArtifact artifact) {
-    String sourceJson = getBpmn20Json((SignavioConnector) connector, artifact);
-    String transformedJson = SignavioTransformationHelper.applyJsonTransformations(sourceJson);
-    String bpmnXml = transformToBpmn20((SignavioConnector) connector, transformedJson);
-    return bpmnXml;
-  }
-
-  protected String getBpmn20Json(RepositoryConnector connector, RepositoryArtifact artifact) {
-    return connector.getContent(artifact.getNodeId(), SignavioPluginDefinition.CONTENT_REPRESENTATION_ID_JSON).asString();
-  }
-
-  protected String transformToBpmn20(SignavioConnector connector, String transformedJson) {
-    String bpmnXml = connector.transformJsonToBpmn20Xml(transformedJson);
-    bpmnXml = new RemedyTemporarySignavioIncompatibilityTransformation().transformBpmn20Xml(bpmnXml);
-    return bpmnXml;
   }
 
   public RepositoryArtifact createTargetArtifact(RepositoryConnector targetConnector, String targetFolderId, String artifactId, String bpmnXml,

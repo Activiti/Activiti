@@ -649,7 +649,7 @@ public class SvnRepositoryConnector extends AbstractRepositoryConnector<SvnConne
 		}
 	}
 
-	public void beginTransaction(String onFolderId, String lockComment, boolean autocommit) throws RepositoryNodeNotFoundException {
+  public void beginTransaction(boolean autocommit) {
 
 		synchronized (transaction_lock) {
 			if (transactionActive == true) {

@@ -32,10 +32,22 @@ public interface RepositoryConnector {
   public boolean login(String username, String password);
 
   /**
+   * starts a new transaction for the given folder id
+   * 
+   * TODO: do we need the folder id here?
+   */
+  public void beginTransaction(String folderId, String lockComment, boolean autocommit);
+
+  /**
    * Some connectors support commit (like SVN), so all pending changes must be
    * committed correctly. If the connector doesn't support committing, this
    * method just does nothing. This means, there is no rollback and you
    * shouldn't rely on a transaction behavior.
+   * 
+   * TODO: Should be change the name that it fits to the beginTransaction
+   * method?
+   * 
+   * TODO: Do we need a rollbackTransaction method?
    */
   public void commitPendingChanges(String comment);
 

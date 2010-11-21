@@ -12,8 +12,8 @@ import org.activiti.cycle.RepositoryArtifact;
 import org.activiti.cycle.RepositoryArtifactLink;
 import org.activiti.cycle.RepositoryConnector;
 import org.activiti.cycle.RepositoryException;
+import org.activiti.cycle.impl.connector.signavio.provider.ActivitiCompliantBpmn20Provider;
 import org.activiti.cycle.impl.db.entity.RepositoryArtifactLinkEntity;
-import org.activiti.cycle.incubator.connector.svn.SvnRepositoryConnector;
 import org.activiti.engine.impl.util.IoUtil;
 
 public class CreateMavenProjectAction extends CreateTechnicalBpmnXmlAction {
@@ -40,14 +40,10 @@ public class CreateMavenProjectAction extends CreateTechnicalBpmnXmlAction {
     RepositoryConnector targetConnector = (RepositoryConnector) getParameter(parameters, PARAM_TARGET_CONNECTOR, true, null, RepositoryConnector.class);
     boolean createLink = (Boolean) getParameter(parameters, CREATE_LINK_NAME, true, Boolean.TRUE, Boolean.class);
 
-    if (targetConnector instanceof SvnRepositoryConnector) {
-		SvnRepositoryConnector svnRepoConnector = (SvnRepositoryConnector) targetConnector;
-		svnRepoConnector.beginTransaction(targetFolderId, "", false);		
-	}
-    
-    RepositoryArtifact bpmnArtifact = createProject(targetConnector, targetFolderId, targetName, createBpmnXml(connector, artifact));
+    String bpmnXml = ActivitiCompliantBpmn20Provider.createBpmnXml(connector, artifact);
 
-    // TODO: Think about that more, does it make sense like this?
+    targetConnector.beginTransaction(targetFolderId, "create maven project for " + artifact, false);
+    RepositoryArtifact bpmnArtifact = createProject(targetConnector, targetFolderId, targetName, bpmnXml);
     targetConnector.commitPendingChanges(comment);
 
     if (createLink && bpmnArtifact != null) {

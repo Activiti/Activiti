@@ -407,9 +407,6 @@ public class SignavioConnector extends AbstractRepositoryConnector<SignavioConne
     return getConfiguration().getModelUrl(artifact.getNodeId());
   }
 
-  public void commitPendingChanges(String comment) {
-  }
-
   public void moveModel(String targetFolderId, String modelId) throws IOException {
     try {
       Form bodyForm = new Form();

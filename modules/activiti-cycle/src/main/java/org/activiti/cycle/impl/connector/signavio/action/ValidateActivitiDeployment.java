@@ -5,6 +5,7 @@ import java.util.Map;
 import org.activiti.cycle.RepositoryArtifact;
 import org.activiti.cycle.RepositoryConnector;
 import org.activiti.cycle.impl.connector.signavio.SignavioConnector;
+import org.activiti.cycle.impl.connector.signavio.provider.ActivitiCompliantBpmn20Provider;
 import org.activiti.engine.ProcessEngines;
 import org.activiti.engine.impl.ProcessEngineImpl;
 import org.activiti.engine.impl.bpmn.parser.BpmnParser;
@@ -34,7 +35,7 @@ public class ValidateActivitiDeployment extends CreateTechnicalBpmnXmlAction {
             .getProcessEngineConfiguration();
     ExpressionManager expressionManager = processEngineConfiguration.getExpressionManager();
     
-    String bpmnXml = createBpmnXml((SignavioConnector) connector, artifact); 
+    String bpmnXml = ActivitiCompliantBpmn20Provider.createBpmnXml((SignavioConnector) connector, artifact); 
     
     BpmnParser bpmnParser = new BpmnParser(expressionManager);
     
