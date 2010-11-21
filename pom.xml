@@ -546,10 +546,8 @@
         <module>modules/activiti-webapp-cycle</module>
         <module>modules/activiti-cxf</module>
         <module>modules/activiti-mule</module>
-        <!--
         <module>modules/activiti-osgi</module>
         <module>modules/activiti-osgi-rest</module>
-        -->
       </modules>
     </profile>
     <profile>
