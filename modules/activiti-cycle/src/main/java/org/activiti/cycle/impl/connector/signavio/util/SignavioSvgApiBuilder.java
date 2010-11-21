@@ -16,8 +16,10 @@ public class SignavioSvgApiBuilder {
 
   public static final String HEADER = "<html><head><link href=\"../../res/css/activiti-core.css\" type=\"text/css\" rel=\"stylesheet\"></head><body>";
   public static final String FOOTER = "</body></html>";
-  public static final String SVGAPI_URL_REMOTE = "http://signavio-core-components.googlecode.com/svn/trunk/api/api/signavio-svg.js";
-  // path to signavio-svg.js in activiti-modeler or so...
+  // public static final String SVGAPI_URL_REMOTE =
+  // "http://signavio-core-components.googlecode.com/svn/trunk/api/api/signavio-svg.js";
+  // TODO: Should that be configurable and point to a SaaS Signavio if that is
+  // used? Or is the local URL the best?
   public static final String SVGAPI_URL_LOCAL = "http://localhost:8080/activiti-modeler/api/signavio-svg.js";
   // maybe make this changable?
   public static final String SERVER_SCRIPT_URL = "http://localhost:8080/activiti-modeler";
@@ -132,11 +134,11 @@ public class SignavioSvgApiBuilder {
     try {
       StringBuilder svgApiScriptBuilder = new StringBuilder();
       svgApiScriptBuilder.append("<script type=\"text/javascript\" src=\"");
-      if (useLocalScripts) {
+      // if (useLocalScripts) {
         svgApiScriptBuilder.append(SVGAPI_URL_LOCAL);
-      } else {        
-        svgApiScriptBuilder.append(SVGAPI_URL_REMOTE);
-      }
+      // } else {
+      // svgApiScriptBuilder.append(SVGAPI_URL_REMOTE);
+      // }
       svgApiScriptBuilder.append("\"></script>");
       svgApiScript = svgApiScriptBuilder.toString();
 
