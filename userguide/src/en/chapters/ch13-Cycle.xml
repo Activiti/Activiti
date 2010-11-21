@@ -6,7 +6,19 @@
   <title>Activiti Cycle</title>
   
   <para>
-    Activiti Cycle is a web application that aims to provide a collaborative platform for business stakeholders, developers and IT operations people. It combines different repositories like the Activiti Modeler repository, Subversion or your local file system into a single view, which makes it easy to browse all the artifacts that are involved in the process of creating an executable business process. In addition to this, Activiti Cycle provides built in actions like moving artifacts between repositories or downloading different formats of process models, and a plug-in infrastructure for custom actions. Below is a screen shot of Cycle in the standard configuration as pre-configured in the demo setup.
+    Activiti Cycle is a web application that provides a collaborative platform for different stakeholders of BPM projects (Business, developers, IT operations, ...).
+    It combines different repositories like the Activiti Modeler repository, Subversion or your local file system into a single view, 
+    which makes it easy to browse all the artifacts that are involved in the process of creating an executable business process. 
+    In addition to this, Activiti Cycle provides built in actions like moving artifacts between repositories or downloading different
+    formats of process models, and a plug-in infrastructure for custom actions. Below is a screen shot of Cycle in a default 
+    configuration as pre-configured in the demo setup.
+    
+    <emphasis role="bold">Please note: Activiti Cycle is still in a "beta" state.</emphasis>
+    With collaborative tools like Activiti Cycle we dont have years of experience yet, like we have with the core engine. Currently
+    most features are already stable, but with adding more use cases and features, we still have to do some tuning of the APIs or database tables. 
+    This means, that for example the Plugin-API is still subject to change, which you have to know when you start writing own plugins. 
+    Or the database might change without having out-of-the-box database migration scripts ready. But be sure: We work hard on removing the beta status,
+    meaning you will get a stable API and database schema.
   </para>
   
   <mediaobject><imageobject><imagedata align="center" fileref="images/activiti.cycle.png"/></imageobject></mediaobject>
