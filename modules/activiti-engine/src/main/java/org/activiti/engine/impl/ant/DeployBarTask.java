@@ -75,18 +75,14 @@ public class DeployBarTask extends Task {
         List<ProcessEngineInfo> processEngineInfos = ProcessEngines.getProcessEngineInfos();
         if( processEngineInfos != null && processEngineInfos.size() > 0 )
         {
-        	ProcessEngineInfo engineInfo = processEngineInfos.get(0);
-        
-            if(engineInfo.getException().indexOf("driver on UnpooledDataSource") != -1)
-            {
-                throw new ActivitiException("Exception while initializing process engine! Database or database driver might not have been configured correctly." +
-                		"Please consult the user guide for supported database environments or build.properties. Exception: " + engineInfo.getException());          	  
-            }
-            else
-            	throw new ActivitiException("Process engine '" + processEngineName + "' can not be initialized! " + engineInfo.getException());
+          // Since no engine with the given name is found, we can't be 100% sure which ProcessEngineInfo
+          // is causing the error. We should show ALL errors and process engine names / resource URL's.
+          String message = getErrorMessage(processEngineInfos, processEngineName);
+          throw new ActivitiException(message);
         }
         else
-        	throw new ActivitiException("Could not find a process engine with name '" + processEngineName + "'");
+        	throw new ActivitiException("Could not find a process engine with name '" + processEngineName + "', no engines found. " +
+        	        "Make sure an engine configuration is present on the classpath");
       }
       RepositoryService repositoryService = processEngine.getRepositoryService();
 
@@ -114,6 +110,33 @@ public class DeployBarTask extends Task {
     } finally {
       currentThread.setContextClassLoader(originalClassLoader);
     }
+  }
+
+  private String getErrorMessage(List<ProcessEngineInfo> processEngineInfos, String name) {
+    StringBuilder builder = new StringBuilder("Could not find a process engine with name ");
+    builder.append(name).append(", engines loaded:\n");
+    for (ProcessEngineInfo engineInfo : processEngineInfos) {
+      String engineName = (engineInfo.getName() != null) ? engineInfo.getName() : "unknown";
+      builder.append("Process engine name: ").append(engineName);
+      builder.append(" - resource: ").append(engineInfo.getResourceUrl());
+      builder.append(" - status: ");
+
+      if (engineInfo.getException() != null) {
+        builder.append("Error while initializing engine. ");
+        if (engineInfo.getException().indexOf("driver on UnpooledDataSource") != -1) {
+          builder.append("Exception while initializing process engine! Database or database driver might not have been configured correctly.")
+                  .append("Please consult the user guide for supported database environments or build.properties. Stacktrace: ")
+                  .append(engineInfo.getException());
+        } else {
+          builder.append("Stacktrace: ").append(engineInfo.getException());
+        }
+      } else {
+        // Process engine initialised without exception
+        builder.append("Initialised");
+      }
+      builder.append("\n");
+    }
+    return builder.toString();
   }
 
   public String getProcessEngineName() {
