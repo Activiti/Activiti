@@ -34,6 +34,10 @@ import org.activiti.engine.test.Deployment;
  * @author Joram Barrez
  */
 public class TaskServiceTest extends ActivitiInternalTestCase {
+  
+  public void testMustFail() {
+    assertTrue(false);
+  }
 
   public void testSaveTaskUpdate() {
     Task task = taskService.newTask();
