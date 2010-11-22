@@ -24,7 +24,7 @@ import org.activiti.cycle.impl.db.entity.RepositoryArtifactLinkEntity;
 public class CreateTechnicalBpmnXmlAction extends ParameterizedHtmlFormTemplateAction {
 
   private static final long serialVersionUID = 1L;
-  
+
   public static final String PARAM_TARGET_FOLDER = "targetFolderId";
   public static final String PARAM_TARGET_CONNECTOR = "targetConnectorId";
   public static final String PARAM_TARGET_NAME = "targetName";
@@ -34,7 +34,7 @@ public class CreateTechnicalBpmnXmlAction extends ParameterizedHtmlFormTemplateA
   public CreateTechnicalBpmnXmlAction() {
     // TODO: remove when real labels are introduced in the GUI
     super("Create technical model");
-  }  
+  }
 
   public CreateTechnicalBpmnXmlAction(String name) {
     // TODO: remove when real labels are introduced in the GUI
@@ -52,7 +52,6 @@ public class CreateTechnicalBpmnXmlAction extends ParameterizedHtmlFormTemplateA
 
     // no transaction required: atomic
     RepositoryArtifact targetArtifact = createArtifact(connector, artifact, targetFolderId, targetName, targetConnector);
-
 
     if (createLink) {
       RepositoryArtifactLink link = new RepositoryArtifactLinkEntity();
@@ -82,7 +81,7 @@ public class CreateTechnicalBpmnXmlAction extends ParameterizedHtmlFormTemplateA
     content.setValue(bpmnXml);
     return targetConnector.createArtifact(targetFolderId, artifactId, artifactTypeId, content);
   }
-  
+
   public String getProcessName(RepositoryArtifact artifact) {
     return artifact.getMetadata().getName();
   }
@@ -91,5 +90,5 @@ public class CreateTechnicalBpmnXmlAction extends ParameterizedHtmlFormTemplateA
   public String getFormResourceName() {
     return getDefaultFormName();
   }
-  
+
 }

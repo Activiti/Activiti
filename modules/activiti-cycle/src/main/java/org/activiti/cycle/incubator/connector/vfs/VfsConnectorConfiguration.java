@@ -5,47 +5,54 @@ import org.activiti.cycle.RepositoryConnector;
 import org.activiti.cycle.RepositoryException;
 import org.activiti.cycle.impl.conf.PasswordEnabledRepositoryConnectorConfiguration;
 
+/**
+ * Configuration class for vfs-based connectors.
+ * 
+ * Implementation Node: register protocols in {@link #createConnector()}.
+ * 
+ * @author daniel.meyer@camunda.com
+ */
 public class VfsConnectorConfiguration extends PasswordEnabledRepositoryConnectorConfiguration {
 
-	private String repositoryPath;
+  private String repositoryPath;
 
-	private String protocol;
+  private String protocol;
 
-	public VfsConnectorConfiguration(String name, String repositoryLocation, String protocol) {
-		setRepositoryPath(repositoryLocation);
-		setName(name);
-		setProtocol(protocol);
-	}
+  public VfsConnectorConfiguration(String name, String repositoryLocation, String protocol) {
+    setRepositoryPath(repositoryLocation);
+    setName(name);
+    setProtocol(protocol);
+  }
 
-	public VfsConnectorConfiguration() {
+  public VfsConnectorConfiguration() {
 
-	}
+  }
 
-	public RepositoryConnector createConnector() {
-		if(protocol.equals("sftp")) {
-			return new SftpRepositoryConnector(this);
-		}
-				
-		throw new RepositoryException("No connector found for protocol " + protocol);		
-	}
+  public RepositoryConnector createConnector() {
+    if (protocol.equals("sftp")) {
+      return new SftpRepositoryConnector(this);
+    }
 
-	public ArtifactType getDefaultArtifactType() {
-		return getArtifactType(VfsConnectorPluginDefinition.ARTIFACT_TYPE_DEFAULT);
-	}
+    throw new RepositoryException("No connector found for protocol " + protocol);
+  }
 
-	public String getRepositoryPath() {
-		return repositoryPath;
-	}
+  public ArtifactType getDefaultArtifactType() {
+    return getArtifactType(VfsConnectorPluginDefinition.ARTIFACT_TYPE_DEFAULT);
+  }
 
-	public void setRepositoryPath(String repositoryLocation) {
-		this.repositoryPath = repositoryLocation;
-	}
+  public String getRepositoryPath() {
+    return repositoryPath;
+  }
 
-	public String getProtocol() {
-		return protocol;
-	}
+  public void setRepositoryPath(String repositoryLocation) {
+    this.repositoryPath = repositoryLocation;
+  }
 
-	public void setProtocol(String protocol) {
-		this.protocol = protocol;
-	}
+  public String getProtocol() {
+    return protocol;
+  }
+
+  public void setProtocol(String protocol) {
+    this.protocol = protocol;
+  }
 }

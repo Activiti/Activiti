@@ -29,273 +29,281 @@ import org.apache.commons.vfs.FileSystemManager;
 import org.apache.commons.vfs.FileSystemOptions;
 import org.apache.commons.vfs.FileType;
 
+/**
+ * Abstract base class for vfs-based connectors. Extend in order to implement
+ * concrete protocols like (S)FTP etc.
+ * 
+ * Implementation Note: protocols need to be registered in the
+ * {@link VfsConnectorConfiguration#createConnector()}-method.
+ * 
+ * @author daniel.meyer@camunda.com
+ */
 public abstract class VfsConnector extends AbstractRepositoryConnector<VfsConnectorConfiguration> {
 
-	private static Logger log = Logger.getLogger(VfsConnector.class.getName());
+  private static Logger log = Logger.getLogger(VfsConnector.class.getName());
 
-	protected FileSystemManager fileSystemManager;
+  protected FileSystemManager fileSystemManager;
 
-	protected String connectionString;
+  protected String connectionString;
 
-	protected FileSystemOptions fileSystemOptions;
+  protected FileSystemOptions fileSystemOptions;
 
-	public VfsConnector(VfsConnectorConfiguration configuration) {
-		super(configuration);
-		validateConfiguration();
-	}
+  public VfsConnector(VfsConnectorConfiguration configuration) {
+    super(configuration);
+    validateConfiguration();
+  }
 
-	public void commitPendingChanges(String comment) {
-		// do nothing, this connector is not transactional
-	}
+  public void commitPendingChanges(String comment) {
+    // do nothing, this connector is not transactional
+  }
 
-	public RepositoryArtifact getRepositoryArtifact(String id) throws RepositoryNodeNotFoundException {
-		checkRepository();
+  public RepositoryArtifact getRepositoryArtifact(String id) throws RepositoryNodeNotFoundException {
+    checkRepository();
 
-		String filename = buildFilename(id);
-		FileObject fileObject = null;
-		RepositoryArtifact artifact = null;
+    String filename = buildFilename(id);
+    FileObject fileObject = null;
+    RepositoryArtifact artifact = null;
 
-		try {
-			fileObject = fileSystemManager.resolveFile(filename);
-			artifact = initRepositoryArtifact(fileObject, id);
-			if (artifact == null)
-				throw new RepositoryNodeNotFoundException(getConfiguration().getName(), RepositoryArtifact.class, id);
-		} catch (FileSystemException e) {
-			log.log(Level.WARNING, "cannot get artifact with id  " + id, e);
-			throw new RepositoryNodeNotFoundException(getConfiguration().getName(), RepositoryArtifact.class, id, e);
-		} finally {
-			close(fileObject);
-		}
+    try {
+      fileObject = fileSystemManager.resolveFile(filename);
+      artifact = initRepositoryArtifact(fileObject, id);
+      if (artifact == null)
+        throw new RepositoryNodeNotFoundException(getConfiguration().getName(), RepositoryArtifact.class, id);
+    } catch (FileSystemException e) {
+      log.log(Level.WARNING, "cannot get artifact with id  " + id, e);
+      throw new RepositoryNodeNotFoundException(getConfiguration().getName(), RepositoryArtifact.class, id, e);
+    } finally {
+      close(fileObject);
+    }
 
-		return artifact;
-	}
+    return artifact;
+  }
 
-	public RepositoryFolder getRepositoryFolder(String id) throws RepositoryNodeNotFoundException {
-		checkRepository();
+  public RepositoryFolder getRepositoryFolder(String id) throws RepositoryNodeNotFoundException {
+    checkRepository();
 
-		String filename = buildFilename(id);
-		FileObject fileObject = null;
-		RepositoryFolder artifact = null;
+    String filename = buildFilename(id);
+    FileObject fileObject = null;
+    RepositoryFolder artifact = null;
 
-		try {
-			fileObject = fileSystemManager.resolveFile(filename);
-			artifact = initRepositoryFolder(fileObject, id);
-			if (artifact == null)
-				throw new RepositoryNodeNotFoundException(getConfiguration().getName(), RepositoryFolder.class, id);
-		} catch (FileSystemException e) {
-			log.log(Level.WARNING, "cannot get artifact with id  " + id, e);
-			throw new RepositoryNodeNotFoundException(getConfiguration().getName(), RepositoryFolder.class, id, e);
-		} finally {
-			close(fileObject);
-		}
+    try {
+      fileObject = fileSystemManager.resolveFile(filename);
+      artifact = initRepositoryFolder(fileObject, id);
+      if (artifact == null)
+        throw new RepositoryNodeNotFoundException(getConfiguration().getName(), RepositoryFolder.class, id);
+    } catch (FileSystemException e) {
+      log.log(Level.WARNING, "cannot get artifact with id  " + id, e);
+      throw new RepositoryNodeNotFoundException(getConfiguration().getName(), RepositoryFolder.class, id, e);
+    } finally {
+      close(fileObject);
+    }
 
-		return artifact;
-	}
+    return artifact;
+  }
 
-	public RepositoryNodeCollection getChildren(String id) throws RepositoryNodeNotFoundException {
-		checkRepository();
+  public RepositoryNodeCollection getChildren(String id) throws RepositoryNodeNotFoundException {
+    checkRepository();
 
-		String filename = buildFilename(id);
-		FileObject fileObject = null;
-		FileObject[] children;
-		List<RepositoryNode> result = new ArrayList<RepositoryNode>();
+    String filename = buildFilename(id);
+    FileObject fileObject = null;
+    FileObject[] children;
+    List<RepositoryNode> result = new ArrayList<RepositoryNode>();
 
-		try {
-			fileObject = fileSystemManager.resolveFile(filename);
-			children = fileObject.getChildren();
-		} catch (FileSystemException e) {
-			log.log(Level.WARNING, "cannot get Children of  " + id, e);
-			throw new RepositoryNodeNotFoundException(getConfiguration().getName(), RepositoryFolder.class, id, e);
-		} finally {
-			close(fileObject);
-		}
+    try {
+      fileObject = fileSystemManager.resolveFile(filename);
+      children = fileObject.getChildren();
+    } catch (FileSystemException e) {
+      log.log(Level.WARNING, "cannot get Children of  " + id, e);
+      throw new RepositoryNodeNotFoundException(getConfiguration().getName(), RepositoryFolder.class, id, e);
+    } finally {
+      close(fileObject);
+    }
 
-		for (FileObject child : children) {
-			String newId = ConnectorPathUtils.buildId(id, child.getName().getBaseName());
-			RepositoryNode node = initRepositoryNode(child, newId);
-			if (node == null)
-				continue;
-			result.add(node);
-			close(child);
-		}
+    for (FileObject child : children) {
+      String newId = ConnectorPathUtils.buildId(id, child.getName().getBaseName());
+      RepositoryNode node = initRepositoryNode(child, newId);
+      if (node == null)
+        continue;
+      result.add(node);
+      close(child);
+    }
 
-		return new RepositoryNodeCollectionImpl(result);
-	}
+    return new RepositoryNodeCollectionImpl(result);
+  }
 
-	public RepositoryArtifact createArtifact(String parentFolderId, String artifactName, String artifactType, Content artifactContent)
-			throws RepositoryNodeNotFoundException {
-		checkRepository();
+  public RepositoryArtifact createArtifact(String parentFolderId, String artifactName, String artifactType, Content artifactContent)
+          throws RepositoryNodeNotFoundException {
+    checkRepository();
 
-		String parentFolderName = buildFilename(parentFolderId);
-		String artifactFileName = ConnectorPathUtils.buildId(parentFolderName, artifactName);
-		FileObject newFile = null;
-		try {
-			newFile = fileSystemManager.resolveFile(artifactFileName);
-			newFile.createFile();
-			OutputStream os = newFile.getContent().getOutputStream();
-			InputStream is = artifactContent.asInputStream();
-			// closes stream
-			ConnectorStreamUtils.copyStreams(is, os, 2024);
+    String parentFolderName = buildFilename(parentFolderId);
+    String artifactFileName = ConnectorPathUtils.buildId(parentFolderName, artifactName);
+    FileObject newFile = null;
+    try {
+      newFile = fileSystemManager.resolveFile(artifactFileName);
+      newFile.createFile();
+      OutputStream os = newFile.getContent().getOutputStream();
+      InputStream is = artifactContent.asInputStream();
+      // closes stream
+      ConnectorStreamUtils.copyStreams(is, os, 2024);
 
-			return getRepositoryArtifact(ConnectorPathUtils.buildId(parentFolderId, artifactName));
+      return getRepositoryArtifact(ConnectorPathUtils.buildId(parentFolderId, artifactName));
 
-		} catch (Exception e) {
-			throw new RepositoryException("Could not create artifact '" + artifactName + "' in folder '" + parentFolderId + "'. Reason: "
-					+ e.getMessage(), e);
-		}
+    } catch (Exception e) {
+      throw new RepositoryException("Could not create artifact '" + artifactName + "' in folder '" + parentFolderId + "'. Reason: " + e.getMessage(), e);
+    }
 
-	}
+  }
 
-	public RepositoryArtifact createArtifactFromContentRepresentation(String parentFolderId, String artifactName, String artifactType,
-			String contentRepresentationName, Content artifactContent) throws RepositoryNodeNotFoundException {
-		return createArtifact(parentFolderId, artifactName, artifactType, artifactContent);
-	}
+  public RepositoryArtifact createArtifactFromContentRepresentation(String parentFolderId, String artifactName, String artifactType,
+          String contentRepresentationName, Content artifactContent) throws RepositoryNodeNotFoundException {
+    return createArtifact(parentFolderId, artifactName, artifactType, artifactContent);
+  }
 
-	public RepositoryFolder createFolder(String parentFolderId, String name) throws RepositoryNodeNotFoundException {
-		checkRepository();
+  public RepositoryFolder createFolder(String parentFolderId, String name) throws RepositoryNodeNotFoundException {
+    checkRepository();
 
-		String parentFolderName = buildFilename(parentFolderId);
-		String folderFileName = ConnectorPathUtils.buildId(parentFolderName, name);
-		FileObject newFolder = null;
-		try {
-			newFolder = fileSystemManager.resolveFile(folderFileName);
-			newFolder.createFolder();
+    String parentFolderName = buildFilename(parentFolderId);
+    String folderFileName = ConnectorPathUtils.buildId(parentFolderName, name);
+    FileObject newFolder = null;
+    try {
+      newFolder = fileSystemManager.resolveFile(folderFileName);
+      newFolder.createFolder();
 
-			return getRepositoryFolder(ConnectorPathUtils.buildId(parentFolderId, name));
+      return getRepositoryFolder(ConnectorPathUtils.buildId(parentFolderId, name));
 
-		} catch (Exception e) {
-			throw new RepositoryException("Could not create folder '" + name + "' in folder '" + parentFolderId + "'. Reason: "
-					+ e.getMessage(), e);
-		}
-	}
+    } catch (Exception e) {
+      throw new RepositoryException("Could not create folder '" + name + "' in folder '" + parentFolderId + "'. Reason: " + e.getMessage(), e);
+    }
+  }
 
-	public void updateContent(String artifactId, Content content) throws RepositoryNodeNotFoundException {
-		checkRepository();
+  public void updateContent(String artifactId, Content content) throws RepositoryNodeNotFoundException {
+    checkRepository();
 
-		String artifactFileName = buildFilename(artifactId);
-		FileObject file = null;
-		try {
-			file = fileSystemManager.resolveFile(artifactFileName);
+    String artifactFileName = buildFilename(artifactId);
+    FileObject file = null;
+    try {
+      file = fileSystemManager.resolveFile(artifactFileName);
 
-			OutputStream os = file.getContent().getOutputStream();
-			InputStream is = content.asInputStream();
-			// closes stream
-			ConnectorStreamUtils.copyStreams(is, os, 2024);
+      OutputStream os = file.getContent().getOutputStream();
+      InputStream is = content.asInputStream();
+      // closes stream
+      ConnectorStreamUtils.copyStreams(is, os, 2024);
 
-		} catch (Exception e) {
-			throw new RepositoryException("Could not update content of  artifact '" + artifactId + "'. Reason: " + e.getMessage(), e);
-		}
-	}
+    } catch (Exception e) {
+      throw new RepositoryException("Could not update content of  artifact '" + artifactId + "'. Reason: " + e.getMessage(), e);
+    }
+  }
 
-	public void updateContent(String artifactId, String contentRepresentationName, Content content) throws RepositoryNodeNotFoundException {
-		updateContent(artifactId, content);
-	}
+  public void updateContent(String artifactId, String contentRepresentationName, Content content) throws RepositoryNodeNotFoundException {
+    updateContent(artifactId, content);
+  }
 
-	public void deleteArtifact(String artifactId) throws RepositoryNodeNotFoundException {
-		checkRepository();
+  public void deleteArtifact(String artifactId) throws RepositoryNodeNotFoundException {
+    checkRepository();
 
-		String artifactFileName = buildFilename(artifactId);
-		FileObject file = null;
-		try {
-			file = fileSystemManager.resolveFile(artifactFileName);
+    String artifactFileName = buildFilename(artifactId);
+    FileObject file = null;
+    try {
+      file = fileSystemManager.resolveFile(artifactFileName);
 
-			file.delete();
+      file.delete();
 
-		} catch (Exception e) {
-			throw new RepositoryException("Could not delete artifact '" + artifactId + "'. Reason: " + e.getMessage(), e);
-		}
-	}
+    } catch (Exception e) {
+      throw new RepositoryException("Could not delete artifact '" + artifactId + "'. Reason: " + e.getMessage(), e);
+    }
+  }
 
-	public void deleteFolder(String folderId) throws RepositoryNodeNotFoundException {
-		checkRepository();
+  public void deleteFolder(String folderId) throws RepositoryNodeNotFoundException {
+    checkRepository();
 
-		String folderFileName = buildFilename(folderId);
-		FileObject file = null;
-		try {
-			file = fileSystemManager.resolveFile(folderFileName);
+    String folderFileName = buildFilename(folderId);
+    FileObject file = null;
+    try {
+      file = fileSystemManager.resolveFile(folderFileName);
 
-			file.delete(new FileSelector() {
-				public boolean traverseDescendents(FileSelectInfo fileInfo) throws Exception {
-					// TODO: good idea?
-					return true;
-				}
+      file.delete(new FileSelector() {
 
-				public boolean includeFile(FileSelectInfo fileInfo) throws Exception {
-					// TODO: good idea?
-					return true;
-				}
-			});
+        public boolean traverseDescendents(FileSelectInfo fileInfo) throws Exception {
+          // TODO: good idea?
+          return true;
+        }
 
-		} catch (Exception e) {
-			throw new RepositoryException("Could not delete folder '" + folderId + "'. Reason: " + e.getMessage(), e);
-		}
-	}
+        public boolean includeFile(FileSelectInfo fileInfo) throws Exception {
+          // TODO: good idea?
+          return true;
+        }
+      });
 
-	protected RepositoryNode initRepositoryNode(FileObject child, String id) {
-		FileType type = null;
-		try {
-			type = child.getType();
-		} catch (FileSystemException e) {
-			log.log(Level.WARNING, "Error while determining type of " + child.getName(), e);
-			return null;
-		}
+    } catch (Exception e) {
+      throw new RepositoryException("Could not delete folder '" + folderId + "'. Reason: " + e.getMessage(), e);
+    }
+  }
 
-		if (FileType.FOLDER.equals(type)) {
-			return initRepositoryFolder(child, id);
-		} else if (FileType.FILE.equals(type)) {
-			return initRepositoryArtifact(child, id);
-		}
+  protected RepositoryNode initRepositoryNode(FileObject child, String id) {
+    FileType type = null;
+    try {
+      type = child.getType();
+    } catch (FileSystemException e) {
+      log.log(Level.WARNING, "Error while determining type of " + child.getName(), e);
+      return null;
+    }
 
-		// TODO what about other types?
-		log.info("could not determine whether " + child.getName() + " is a File or a directory.");
-		return null;
+    if (FileType.FOLDER.equals(type)) {
+      return initRepositoryFolder(child, id);
+    } else if (FileType.FILE.equals(type)) {
+      return initRepositoryArtifact(child, id);
+    }
 
-	}
+    // TODO what about other types?
+    log.info("could not determine whether " + child.getName() + " is a File or a directory.");
+    return null;
 
-	protected RepositoryArtifact initRepositoryArtifact(FileObject child, String id) {
-		String name = child.getName().getBaseName();
-		if (name.equals(".") || name.equals(".."))
-			return null;
+  }
 
-		ArtifactType type = ConnectorPathUtils.getMimeType(child.getName().getBaseName(), getConfiguration());
-		if (type == null)
-			return null;
+  protected RepositoryArtifact initRepositoryArtifact(FileObject child, String id) {
+    String name = child.getName().getBaseName();
+    if (name.equals(".") || name.equals(".."))
+      return null;
 
-		RepositoryArtifact newArtifact = new RepositoryArtifactImpl(getConfiguration().getId(), id, type, this);
-		newArtifact.getMetadata().setName(name);
-		return newArtifact;
-	}
+    ArtifactType type = ConnectorPathUtils.getMimeType(child.getName().getBaseName(), getConfiguration());
+    if (type == null)
+      return null;
 
-	protected RepositoryFolder initRepositoryFolder(FileObject child, String id) {
-		String name = child.getName().getBaseName();
-		if (name.equals(".") || name.equals(".."))
-			return null;
-		RepositoryFolderImpl newFolder = new RepositoryFolderImpl(getConfiguration().getId(), id);
-		newFolder.getMetadata().setName(name);
-		return newFolder;
-	}
+    RepositoryArtifact newArtifact = new RepositoryArtifactImpl(getConfiguration().getId(), id, type, this);
+    newArtifact.getMetadata().setName(name);
+    return newArtifact;
+  }
 
-	public String buildFilename(String id) {
-		return ConnectorPathUtils.buildId(connectionString, id);
-	}
+  protected RepositoryFolder initRepositoryFolder(FileObject child, String id) {
+    String name = child.getName().getBaseName();
+    if (name.equals(".") || name.equals(".."))
+      return null;
+    RepositoryFolderImpl newFolder = new RepositoryFolderImpl(getConfiguration().getId(), id);
+    newFolder.getMetadata().setName(name);
+    return newFolder;
+  }
 
-	private void checkRepository() {
-		getFileSystemManager();
-		if (connectionString == null)
-			throw new RepositoryException("You need to login first.");
+  public String buildFilename(String id) {
+    return ConnectorPathUtils.buildId(connectionString, id);
+  }
 
-	}
+  private void checkRepository() {
+    getFileSystemManager();
+    if (connectionString == null)
+      throw new RepositoryException("You need to login first.");
 
-	protected void close(FileObject fileObject) {
-		try {
-			if (fileObject != null)
-				fileObject.close();
-		} catch (FileSystemException e) {
-			log.log(Level.WARNING, "cannot close  " + fileObject.getName(), e);
-		}
-	}
+  }
 
-	protected abstract void validateConfiguration();
+  protected void close(FileObject fileObject) {
+    try {
+      if (fileObject != null)
+        fileObject.close();
+    } catch (FileSystemException e) {
+      log.log(Level.WARNING, "cannot close  " + fileObject.getName(), e);
+    }
+  }
 
-	public abstract FileSystemManager getFileSystemManager();
+  protected abstract void validateConfiguration();
+
+  public abstract FileSystemManager getFileSystemManager();
 }

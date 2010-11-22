@@ -20,7 +20,7 @@ import org.activiti.cycle.impl.db.entity.RepositoryArtifactLinkEntity;
 public abstract class AbstractCopyBaseAction extends ParameterizedHtmlFormTemplateAction {
 
   private static final long serialVersionUID = 1L;
-  
+
   public static final String PARAM_TARGET_FOLDER = "targetFolderId";
   public static final String PARAM_TARGET_CONNECTOR = "targetConnectorId";
   public static final String PARAM_TARGET_NAME = "targetName";
@@ -38,15 +38,14 @@ public abstract class AbstractCopyBaseAction extends ParameterizedHtmlFormTempla
     RepositoryConnector targetConnector = (RepositoryConnector) getParameter(parameters, PARAM_TARGET_CONNECTOR, true, null, RepositoryConnector.class);
 
     boolean createLink = (Boolean) getParameter(parameters, CREATE_LINK_NAME, true, Boolean.TRUE, Boolean.class);
-    
+
     String contentAsString = connector.getContent(artifact.getNodeId(), getContentRepresentationIdToUse()).asString();
     Content content = new Content();
     content.setValue(contentAsString);
-    
+
     // no transaction required: atomic
     RepositoryArtifact targetArtifact = targetConnector.createArtifact(targetFolderId, targetName, artifact.getArtifactType().getId(), content);
-   
-    
+
     if (createLink) {
       RepositoryArtifactLink link = new RepositoryArtifactLinkEntity();
       link.setSourceArtifact(artifact);
@@ -63,5 +62,5 @@ public abstract class AbstractCopyBaseAction extends ParameterizedHtmlFormTempla
   public String getFormResourceName() {
     return getDefaultFormName();
   }
-  
+
 }

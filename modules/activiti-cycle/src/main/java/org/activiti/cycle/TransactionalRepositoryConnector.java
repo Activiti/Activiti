@@ -1,40 +1,49 @@
 package org.activiti.cycle;
 
+/**
+ * Interface for {@link RepositoryConnector} supporting transactions.
+ * Transactions are sets of modifications to the repository that either succeed
+ * as a whole of fail as a whole.
+ * 
+ * It is good practice to call beginTransaction() before making a set of
+ * modifications to the repository and then try to commit them using
+ * {@link #commitPendingChanges(String)}.
+ * 
+ * @author daniel.meyer@camunda.com
+ * @see TransactionalConnectorUtils
+ */
 public interface TransactionalRepositoryConnector extends RepositoryConnector {
 
-	/**
-	 * Some connectors support transactions. Transactions are sets of
-	 * modifications to the repository that either succeed as a whole of fail as
-	 * a wohle.
-	 * 
-	 * It is good practice to call beginTransaction() before making a set of
-	 * modifications to the repository and then try to commit them using
-	 * {@link #commitPendingChanges(String)}.
-	 * 
-	 * The {@link #beginTransaction()} has the following behavior:
-	 * <ul>
-	 * <li>if a transaction is already running the method returns</li>
-	 * <li>if no transaction is running, the method starts a new transaction</li>
-	 * </ul>
-	 * 
-	 * What a transaction 'means' is dependent individual connectors; most connectors will not  
-	 * 
-	 */
-	public void beginTransaction();
-	
-	public void rollbackTransaction();
-	
-	/**
-	 * Some connectors support commit (like SVN), so all pending changes must be
-	 * committed correctly. If the connector doesn't support committing, this
-	 * method just does nothing. This means, there is no rollback and you
-	 * shouldn't rely on a transaction behavior.
-	 * 
-	 * TODO: Should be change the name that it fits to the beginTransaction
-	 * method?
-	 * 
-	 * TODO: Do we need a rollbackTransaction method?
-	 */
-	public void commitPendingChanges(String comment);
-	
+  /**
+   * Starts a new transaction. The {@link #beginTransaction()} has the following
+   * behavior:
+   * <ul>
+   * <li>if a transaction is already running the method returns</li>
+   * <li>if no transaction is running, the method starts a new transaction</li>
+   * </ul>
+   * Contract: the user must either call {@link #commitPendingChanges(String)}
+   * or {@link #rollbackTransaction()}.
+   * 
+   * @see TransactionalConnectorUtils#beginTransaction(RepositoryConnector)
+   */
+  public void beginTransaction();
+
+  /**
+   * Performs a rollback for a running transaction. Causes a connector to
+   * release all resources related to the active transaction (i.e. temporary
+   * files)
+   * 
+   * @see TransactionalConnectorUtils#rollbackTransaction(RepositoryConnector)
+   */
+  public void rollbackTransaction();
+
+  /**
+   * Commits pending changes. Contract: if the commit fails, the user must
+   * {@link #rollbackTransaction()}.
+   * 
+   * @see TransactionalConnectorUtils#commitPendingChanges(RepositoryConnector,
+   *      String)
+   */
+  public void commitPendingChanges(String comment);
+
 }

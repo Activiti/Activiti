@@ -12,47 +12,47 @@ import org.activiti.cycle.impl.conf.PasswordEnabledRepositoryConnectorConfigurat
  */
 public class SvnConnectorConfiguration extends PasswordEnabledRepositoryConnectorConfiguration {
 
-	private String repositoryPath = "";
+  private String repositoryPath = "";
 
-	private String temporaryFileStore = "";
+  private String temporaryFileStore = "";
 
-	public SvnConnectorConfiguration() {
-	}
+  public SvnConnectorConfiguration() {
+  }
 
-	public SvnConnectorConfiguration(String name, String repoLocation, String tempFiles) {
-		repositoryPath = repoLocation;
-		setName(name);
-		setTemporaryFileStore(tempFiles);
-	}
+  public SvnConnectorConfiguration(String name, String repoLocation, String tempFiles) {
+    repositoryPath = repoLocation;
+    setName(name);
+    setTemporaryFileStore(tempFiles);
+  }
 
-	/**
-	 * creates and configures a new {@link SvnRepositoryConnector}
-	 * 
-	 * @return
-	 */
-	public RepositoryConnector createConnector() {
-		SvnRepositoryConnector theConnector = new SvnRepositoryConnector(this);
-		return theConnector;
-	}
+  /**
+   * creates and configures a new {@link SvnRepositoryConnector}
+   * 
+   * @return
+   */
+  public RepositoryConnector createConnector() {
+    SvnRepositoryConnector theConnector = new SvnRepositoryConnector(this);
+    return theConnector;
+  }
 
-	public String getRepositoryPath() {
-		return repositoryPath;
-	}
+  public String getRepositoryPath() {
+    return repositoryPath;
+  }
 
-	public void setRepositoryPath(String repositoryPath) {
-		this.repositoryPath = repositoryPath;
-	}
+  public void setRepositoryPath(String repositoryPath) {
+    this.repositoryPath = repositoryPath;
+  }
 
-	public String getTemporaryFileStore() {
-		return temporaryFileStore;
-	}
+  public String getTemporaryFileStore() {
+    return temporaryFileStore;
+  }
 
-	public void setTemporaryFileStore(String temporaryFileStore) {
-		this.temporaryFileStore = temporaryFileStore;
-	}
-	
-	public ArtifactType getDefaultArtifactType() {
-		return getArtifactType(SvnConnectorPluginDefinition.ARTIFACT_TYPE_DEFAULT);
-	}
+  public void setTemporaryFileStore(String temporaryFileStore) {
+    this.temporaryFileStore = temporaryFileStore;
+  }
+
+  public ArtifactType getDefaultArtifactType() {
+    return getArtifactType(SvnConnectorPluginDefinition.ARTIFACT_TYPE_DEFAULT);
+  }
 
 }
