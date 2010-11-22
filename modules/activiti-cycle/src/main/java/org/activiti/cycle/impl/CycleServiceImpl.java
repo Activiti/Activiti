@@ -1,6 +1,7 @@
 package org.activiti.cycle.impl;
 
 import java.io.File;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -22,12 +23,12 @@ import org.activiti.cycle.RepositoryNode;
 import org.activiti.cycle.RepositoryNodeCollection;
 import org.activiti.cycle.RepositoryNodeNotFoundException;
 import org.activiti.cycle.RepositoryNodeTag;
-import org.activiti.cycle.TransactionalRepositoryConnector;
 import org.activiti.cycle.impl.conf.ConfigurationContainer;
 import org.activiti.cycle.impl.conf.PasswordEnabledRepositoryConnectorConfiguration;
 import org.activiti.cycle.impl.connector.demo.DemoConnectorConfiguration;
 import org.activiti.cycle.impl.connector.fs.FileSystemConnectorConfiguration;
 import org.activiti.cycle.impl.connector.signavio.SignavioConnectorConfiguration;
+import org.activiti.cycle.impl.connector.util.TransactionalConnectorUtils;
 import org.activiti.cycle.impl.connector.view.TagConnectorConfiguration;
 import org.activiti.cycle.impl.db.CycleConfigurationService;
 import org.activiti.cycle.impl.db.CycleDAO;
@@ -47,9 +48,19 @@ import org.activiti.cycle.impl.plugin.PluginFinder;
  */
 public class CycleServiceImpl implements CycleService {
 
+  protected static class ConnectorList implements Serializable {
+    private static final long serialVersionUID = 1L;
+    // the transient field keeps the servlet container from serializing the connectors in the session
+    // TODO: needs testing: When do servlet containers serialize/deserialize? Tomcat seems to do it 
+    // between shutdowns / startups. At the moment I would qualify this as a 'hack' - Daniel Meyer
+    private transient List<RepositoryConnector> connectors;           
+  }
+  
 	private CycleDAO cycleDAO;
 
 	private List<RepositoryConnector> repositoryConnectors;
+	
+	
 
 	// private static ThreadLocal<CycleService> currentCycleService = new
 	// ThreadLocal<CycleService>();
@@ -127,13 +138,19 @@ public class CycleServiceImpl implements CycleService {
 	 */
 	public static List<RepositoryConnector> getConfiguredRepositoryConnectors(String currentUserId, HttpSession session) {
 		String key = currentUserId + "_cycleConfiguredRepositoryConnectors";
-		@SuppressWarnings("unchecked")
-		List<RepositoryConnector> connectors = ((List<RepositoryConnector>) session.getAttribute(key));
+		
+		ConnectorList connectorList = (ConnectorList) session.getAttribute(key);		
+		List<RepositoryConnector> connectors =null;
+		if(connectorList != null) {
+		  connectors = connectorList.connectors;
+		}
 		if (connectors == null) {
 			PluginFinder.registerServletContext(session.getServletContext());
-			ConfigurationContainer container = loadUserConfiguration(currentUserId);
+			ConfigurationContainer container = loadUserConfiguration(currentUserId);			
 			connectors = container.getConnectorList();
-			session.setAttribute(key, connectors);
+			connectorList = new ConnectorList();
+			connectorList.connectors = connectors;
+			session.setAttribute(key, connectorList);
 		}
 		return connectors;
 	}
@@ -183,10 +200,7 @@ public class CycleServiceImpl implements CycleService {
 	 */
 	public void commitPendingChanges(String comment) {
 		for (RepositoryConnector connector : this.repositoryConnectors) {
-			if (connector instanceof TransactionalRepositoryConnector) {
-				TransactionalRepositoryConnector transactionalConnector = (TransactionalRepositoryConnector) connector;
-				transactionalConnector.commitPendingChanges(comment);
-			}
+			TransactionalConnectorUtils.commitPendingChanges(connector, comment);
 		}
 	}
 
