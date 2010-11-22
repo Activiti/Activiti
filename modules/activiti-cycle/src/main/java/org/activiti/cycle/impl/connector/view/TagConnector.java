@@ -123,7 +123,7 @@ public class TagConnector implements RepositoryConnector {
     throw new UnsupportedOperationException("Cannot update content in TagConnector, use real RepositoryConnector istead.");    
   }
 
-  public void beginTransaction(String folderId, String lockComment, boolean autocommit) {
+  public void beginTransaction() {
   } 
   
 }

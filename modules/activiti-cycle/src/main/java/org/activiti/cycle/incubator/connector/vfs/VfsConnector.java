@@ -1,5 +1,7 @@
 package org.activiti.cycle.incubator.connector.vfs;
 
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -18,7 +20,10 @@ import org.activiti.cycle.impl.RepositoryFolderImpl;
 import org.activiti.cycle.impl.RepositoryNodeCollectionImpl;
 import org.activiti.cycle.impl.connector.AbstractRepositoryConnector;
 import org.activiti.cycle.impl.connector.util.ConnectorPathUtils;
+import org.activiti.cycle.impl.connector.util.ConnectorStreamUtils;
 import org.apache.commons.vfs.FileObject;
+import org.apache.commons.vfs.FileSelectInfo;
+import org.apache.commons.vfs.FileSelector;
 import org.apache.commons.vfs.FileSystemException;
 import org.apache.commons.vfs.FileSystemManager;
 import org.apache.commons.vfs.FileSystemOptions;
@@ -44,6 +49,8 @@ public abstract class VfsConnector extends AbstractRepositoryConnector<VfsConnec
 	}
 
 	public RepositoryArtifact getRepositoryArtifact(String id) throws RepositoryNodeNotFoundException {
+		checkRepository();
+
 		String filename = buildFilename(id);
 		FileObject fileObject = null;
 		RepositoryArtifact artifact = null;
@@ -64,6 +71,8 @@ public abstract class VfsConnector extends AbstractRepositoryConnector<VfsConnec
 	}
 
 	public RepositoryFolder getRepositoryFolder(String id) throws RepositoryNodeNotFoundException {
+		checkRepository();
+
 		String filename = buildFilename(id);
 		FileObject fileObject = null;
 		RepositoryFolder artifact = null;
@@ -115,33 +124,111 @@ public abstract class VfsConnector extends AbstractRepositoryConnector<VfsConnec
 
 	public RepositoryArtifact createArtifact(String parentFolderId, String artifactName, String artifactType, Content artifactContent)
 			throws RepositoryNodeNotFoundException {
-		throw new UnsupportedOperationException("Create artifact not yet implemented");
+		checkRepository();
+
+		String parentFolderName = buildFilename(parentFolderId);
+		String artifactFileName = ConnectorPathUtils.buildId(parentFolderName, artifactName);
+		FileObject newFile = null;
+		try {
+			newFile = fileSystemManager.resolveFile(artifactFileName);
+			newFile.createFile();
+			OutputStream os = newFile.getContent().getOutputStream();
+			InputStream is = artifactContent.asInputStream();
+			// closes stream
+			ConnectorStreamUtils.copyStreams(is, os, 2024);
+
+			return getRepositoryArtifact(ConnectorPathUtils.buildId(parentFolderId, artifactName));
+
+		} catch (Exception e) {
+			throw new RepositoryException("Could not create artifact '" + artifactName + "' in folder '" + parentFolderId + "'. Reason: "
+					+ e.getMessage(), e);
+		}
+
 	}
 
 	public RepositoryArtifact createArtifactFromContentRepresentation(String parentFolderId, String artifactName, String artifactType,
 			String contentRepresentationName, Content artifactContent) throws RepositoryNodeNotFoundException {
-		throw new UnsupportedOperationException("Create artifact not yet implemented");
+		return createArtifact(parentFolderId, artifactName, artifactType, artifactContent);
 	}
 
 	public RepositoryFolder createFolder(String parentFolderId, String name) throws RepositoryNodeNotFoundException {
-		throw new UnsupportedOperationException("Create folder not yet implemented");
+		checkRepository();
+
+		String parentFolderName = buildFilename(parentFolderId);
+		String folderFileName = ConnectorPathUtils.buildId(parentFolderName, name);
+		FileObject newFolder = null;
+		try {
+			newFolder = fileSystemManager.resolveFile(folderFileName);
+			newFolder.createFolder();
+
+			return getRepositoryFolder(ConnectorPathUtils.buildId(parentFolderId, name));
+
+		} catch (Exception e) {
+			throw new RepositoryException("Could not create folder '" + name + "' in folder '" + parentFolderId + "'. Reason: "
+					+ e.getMessage(), e);
+		}
 	}
 
 	public void updateContent(String artifactId, Content content) throws RepositoryNodeNotFoundException {
-		throw new UnsupportedOperationException("Update content not yet implemented");
+		checkRepository();
 
+		String artifactFileName = buildFilename(artifactId);
+		FileObject file = null;
+		try {
+			file = fileSystemManager.resolveFile(artifactFileName);
+
+			OutputStream os = file.getContent().getOutputStream();
+			InputStream is = content.asInputStream();
+			// closes stream
+			ConnectorStreamUtils.copyStreams(is, os, 2024);
+
+		} catch (Exception e) {
+			throw new RepositoryException("Could not update content of  artifact '" + artifactId + "'. Reason: " + e.getMessage(), e);
+		}
 	}
 
 	public void updateContent(String artifactId, String contentRepresentationName, Content content) throws RepositoryNodeNotFoundException {
-		throw new UnsupportedOperationException("Update content not yet implemented");
+		updateContent(artifactId, content);
 	}
 
 	public void deleteArtifact(String artifactId) throws RepositoryNodeNotFoundException {
-		throw new UnsupportedOperationException("Delete artifact not yet implemented");
+		checkRepository();
+
+		String artifactFileName = buildFilename(artifactId);
+		FileObject file = null;
+		try {
+			file = fileSystemManager.resolveFile(artifactFileName);
+
+			file.delete();
+
+		} catch (Exception e) {
+			throw new RepositoryException("Could not delete artifact '" + artifactId + "'. Reason: " + e.getMessage(), e);
+		}
 	}
 
 	public void deleteFolder(String folderId) throws RepositoryNodeNotFoundException {
-		throw new UnsupportedOperationException("deleteFolder not yet implemented");
+		checkRepository();
+
+		String folderFileName = buildFilename(folderId);
+		FileObject file = null;
+		try {
+			file = fileSystemManager.resolveFile(folderFileName);
+
+			file.delete(new FileSelector() {
+				public boolean traverseDescendents(FileSelectInfo fileInfo) throws Exception {
+					// TODO: good idea?
+					return true;
+				}
+
+				public boolean includeFile(FileSelectInfo fileInfo) throws Exception {
+					// TODO: good idea?
+					return true;
+				}
+			});
+
+		} catch (Exception e) {
+			throw new RepositoryException("Could not delete folder '" + folderId + "'. Reason: " + e.getMessage(), e);
+		}
 	}
 
 	protected RepositoryNode initRepositoryNode(FileObject child, String id) {

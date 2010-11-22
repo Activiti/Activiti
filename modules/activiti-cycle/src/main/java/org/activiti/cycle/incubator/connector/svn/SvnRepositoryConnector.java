@@ -6,7 +6,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -23,10 +22,12 @@ import org.activiti.cycle.RepositoryFolder;
 import org.activiti.cycle.RepositoryNode;
 import org.activiti.cycle.RepositoryNodeCollection;
 import org.activiti.cycle.RepositoryNodeNotFoundException;
+import org.activiti.cycle.TransactionalRepositoryConnector;
 import org.activiti.cycle.impl.RepositoryArtifactImpl;
 import org.activiti.cycle.impl.RepositoryFolderImpl;
 import org.activiti.cycle.impl.RepositoryNodeCollectionImpl;
 import org.activiti.cycle.impl.connector.AbstractRepositoryConnector;
+import org.activiti.cycle.impl.connector.util.ConnectorPathUtils;
 import org.tigris.subversion.svnclientadapter.ISVNClientAdapter;
 import org.tigris.subversion.svnclientadapter.ISVNDirEntry;
 import org.tigris.subversion.svnclientadapter.ISVNInfo;
@@ -52,7 +53,8 @@ import org.tigris.subversion.svnclientadapter.svnkit.SvnKitClientAdapterFactory;
  * IMPLEMENTATION NOTE: we perform lazy-initialization of the actual client
  * adapter. Make sure to always call getSvnClientAdapter().
  */
-public class SvnRepositoryConnector extends AbstractRepositoryConnector<SvnConnectorConfiguration> {
+public class SvnRepositoryConnector extends AbstractRepositoryConnector<SvnConnectorConfiguration> implements
+		TransactionalRepositoryConnector {
 
 	private static Logger log = Logger.getLogger(SvnRepositoryConnector.class.getName());
 
@@ -145,7 +147,7 @@ public class SvnRepositoryConnector extends AbstractRepositoryConnector<SvnConne
 
 		} catch (SVNClientException e) {
 			log.log(Level.SEVERE, "Could not commit changes in " + dirtyFolders.values().toArray(new File[0]) + " " + e.getMessage());
-			cancelTransaction();
+
 			throw new RepositoryException("Could not commit changes in " + dirtyFolders.values().toArray(new File[0]), e);
 		} finally {
 			// TODO: do this elsewhere?
@@ -214,7 +216,7 @@ public class SvnRepositoryConnector extends AbstractRepositoryConnector<SvnConne
 						continue;
 					}
 					ISVNInfo info = clientAdapter.getInfo(file);
-					String nodeId = buildId(id, info.getFile().getName());
+					String nodeId = ConnectorPathUtils.buildId(id, info.getFile().getName());
 					if (info != null) {
 						RepositoryNode node = initRepositoryNode(info, nodeId);
 						if (node != null) {
@@ -226,7 +228,7 @@ public class SvnRepositoryConnector extends AbstractRepositoryConnector<SvnConne
 				// get list from remote repository
 				ISVNDirEntry[] dirEntries = clientAdapter.getList(buildSVNURL(id), SVNRevision.HEAD, false);
 				for (ISVNDirEntry isvnDirEntry : dirEntries) {
-					String nodeId = buildId(id, isvnDirEntry.getPath());
+					String nodeId = ConnectorPathUtils.buildId(id, isvnDirEntry.getPath());
 					// FIXME: this is expensive:
 					ISVNInfo info = clientAdapter.getInfo(buildSVNURL(nodeId));
 					RepositoryNode node = initRepositoryNode(info, nodeId);
@@ -248,9 +250,8 @@ public class SvnRepositoryConnector extends AbstractRepositoryConnector<SvnConne
 			throws RepositoryNodeNotFoundException {
 		ISVNClientAdapter clientAdapter = getSvnClientAdapter();
 		File temporaryFileStrore = null;
-		// acquire lock
-		beginTransaction(parentFolderId, "Temporarily locked by Activiti-Cycle for transactional commit on " + new Date() + ".",
-				!transactionActive);
+		// begin transaction if not active
+		beginTransaction(!transactionActive);
 		try {
 			// checkout parent folder to temporary filestore
 			temporaryFileStrore = temporaryCheckout(parentFolderId);
@@ -268,11 +269,13 @@ public class SvnRepositoryConnector extends AbstractRepositoryConnector<SvnConne
 				commitPendingChanges("Activiti-Cycle created file " + artifactName + " in " + parentFolderId);
 			}
 
-			return getRepositoryArtifact(buildId(parentFolderId, artifactName));
+			return getRepositoryArtifact(ConnectorPathUtils.buildId(parentFolderId, artifactName));
 
 		} catch (Exception e) {
 			log.log(Level.WARNING, "Unable to create" + artifactName + " in " + parentFolderId, e);
-			cancelTransaction();
+			if (autocommit) {
+				rollbackTransaction();
+			}
 			throw new RepositoryException("Unable to create " + artifactName + " in " + parentFolderId + " " + e.getMessage(), e);
 		}
 
@@ -286,9 +289,8 @@ public class SvnRepositoryConnector extends AbstractRepositoryConnector<SvnConne
 	public RepositoryFolder createFolder(String parentFolderId, String name) throws RepositoryNodeNotFoundException {
 		ISVNClientAdapter clientAdapter = getSvnClientAdapter();
 		File temporaryFileStrore = null;
-		// acquire lock
-		beginTransaction(parentFolderId, "Temporarily locked by Activiti-Cycle for transactional commit on " + new Date() + ".",
-				!transactionActive);
+		// begin transaction if not active
+		beginTransaction(!transactionActive);
 		try {
 			// checkout parent folder to temporary filestore
 			temporaryFileStrore = temporaryCheckout(parentFolderId);
@@ -300,7 +302,7 @@ public class SvnRepositoryConnector extends AbstractRepositoryConnector<SvnConne
 			// add new folder
 			clientAdapter.addFile(newDirectory);
 
-			String newFolderId = buildId(parentFolderId, name);
+			String newFolderId = ConnectorPathUtils.buildId(parentFolderId, name);
 			createdFolders.put(newFolderId, newDirectory);
 
 			// commit changes
@@ -313,7 +315,9 @@ public class SvnRepositoryConnector extends AbstractRepositoryConnector<SvnConne
 		} catch (Exception e) {
 			String error = "Error while creating folder" + name + " in " + parentFolderId;
 			log.log(Level.WARNING, error, e);
-			cancelTransaction();
+			if (autocommit) {
+				rollbackTransaction();
+			}
 			throw new RepositoryException(error, e);
 		}
 	}
@@ -334,9 +338,8 @@ public class SvnRepositoryConnector extends AbstractRepositoryConnector<SvnConne
 			fileName = artifactId;
 		}
 
-		// acquire lock
-		beginTransaction(parentFolderId, "Temporarily locked by Activiti-Cycle for transactional commit on " + new Date() + ".",
-				!transactionActive);
+		// begin transaction if not active
+		beginTransaction(!transactionActive);
 		try {
 			// checkout parent folder to temporary filestore
 			temporaryFileStrore = temporaryCheckout(parentFolderId);
@@ -352,7 +355,9 @@ public class SvnRepositoryConnector extends AbstractRepositoryConnector<SvnConne
 		} catch (Exception e) {
 			String error = "Error while updating file " + fileName + " in " + parentFolderId;
 			log.log(Level.WARNING, error, e);
-			cancelTransaction();
+			if (autocommit) {
+				rollbackTransaction();
+			}
 			throw new RepositoryException(error, e);
 		}
 	}
@@ -388,33 +393,9 @@ public class SvnRepositoryConnector extends AbstractRepositoryConnector<SvnConne
 		}
 	}
 
-	private String buildId(String... constituents) {
-		String result = "";
-		for (int i = 0; i < constituents.length; i++) {
-			String constituent = constituents[i];
-			while (constituent.endsWith("//")) {
-				constituent = constituent.substring(0, constituent.length() - 1);
-			}
-			while (constituent.startsWith("//")) {
-				constituent = constituent.substring(1);
-			}
-			if (i == 0) {
-				result = constituents[i];
-				continue;
-			}
-			if (!result.endsWith("/") && !constituent.startsWith("/") && constituent.length() > 0) {
-				result += "/";
-			}
-
-			result += constituent;
-
-		}
-		return result;
-	}
-
 	public SVNUrl buildSVNURL(String id) throws MalformedURLException {
 		String repositoryPath = getConfiguration().getRepositoryPath();
-		return new SVNUrl(buildId(repositoryPath, id));
+		return new SVNUrl(ConnectorPathUtils.buildId(repositoryPath, id));
 	}
 
 	/**
@@ -492,7 +473,7 @@ public class SvnRepositoryConnector extends AbstractRepositoryConnector<SvnConne
 		}
 
 		// get mimetype
-		ArtifactType artifactType = getMimeType(filename);
+		ArtifactType artifactType = ConnectorPathUtils.getMimeType(filename, getConfiguration());
 
 		RepositoryArtifactImpl artifact = new RepositoryArtifactImpl(getConfiguration().getId(), id, artifactType, this);
 		artifact.getMetadata().setName(filename);
@@ -502,34 +483,6 @@ public class SvnRepositoryConnector extends AbstractRepositoryConnector<SvnConne
 		}
 
 		return artifact;
-	}
-
-	protected ArtifactType getMimeType(String path) {
-		// try to find artifact type
-		ArtifactType artifactType = null;
-		String extension = path;
-
-		// TODO: figure out a better way to do this
-		// problem exists with extensions like .bpmn20.xml
-		while (extension.contains(".")) {
-			extension = extension.substring(path.indexOf(".") + 1);
-			try {
-				// throws exception if it cannot find an artifact type.
-				artifactType = getConfiguration().getArtifactType(extension);
-			} catch (Exception e) {
-				// let the exception pass
-			}
-			if (artifactType != null) {
-				break;
-			}
-
-		}
-		if (artifactType == null) {
-			return getConfiguration().getDefaultArtifactType();
-		}
-
-		return artifactType;
-
 	}
 
 	protected RepositoryNode createFolderNode(ISVNInfo info, String nodeId) {
@@ -626,7 +579,7 @@ public class SvnRepositoryConnector extends AbstractRepositoryConnector<SvnConne
 		return result;
 	}
 
-	public void cancelTransaction() {
+	public void rollbackTransaction() {
 		synchronized (transaction_lock) {
 			ISVNClientAdapter clientAdapter = getSvnClientAdapter();
 
@@ -649,7 +602,12 @@ public class SvnRepositoryConnector extends AbstractRepositoryConnector<SvnConne
 		}
 	}
 
-  public void beginTransaction(boolean autocommit) {
+	public void beginTransaction() {
+		// do not autocommit on transactions coming in via the public API.
+		beginTransaction(false);
+	}
+
+	protected void beginTransaction(boolean autocommit) {
 
 		synchronized (transaction_lock) {
 			if (transactionActive == true) {
@@ -658,20 +616,6 @@ public class SvnRepositoryConnector extends AbstractRepositoryConnector<SvnConne
 			this.transactionActive = true;
 			this.autocommit = autocommit;
 		}
-
-		ISVNClientAdapter clientAdapter = getSvnClientAdapter();
-
-		// try {
-		// SVNUrl url = buildSVNURL(onFolderId);
-		// // TODO: lock resource ?
-		// clientAdapter.lock(new SVNUrl[] { url }, lockComment, false);
-		// lockedURL = url;
-		//
-		// } catch (Exception e) {
-		// throw new
-		// RepositoryNodeNotFoundException(getConfiguration().getName(),
-		// RepositoryFolder.class, onFolderId, e);
-		// }
 	}
 
 	public ISVNClientAdapter getSvnClientAdapter() {

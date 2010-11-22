@@ -111,7 +111,7 @@ public class TestSvnRepositoryConnector {
 
 		Content content = connector.getContent(artifact.getNodeId(), "Text");
 
-		connector.beginTransaction("//", "begin transaction on repository root", false);
+		connector.beginTransaction();
 
 		RepositoryFolder folder = connector.createFolder("//", UUID.randomUUID().toString());
 
@@ -162,7 +162,7 @@ public class TestSvnRepositoryConnector {
 	@Test
 	public void testTransaction() {
 
-		connector.beginTransaction("", "begin transaction on repository root", false);
+		connector.beginTransaction();
 
 		RepositoryArtifact test1 = connector.getRepositoryArtifact("test.txt");
 		RepositoryArtifact test2 = connector.getRepositoryArtifact("test2.txt");

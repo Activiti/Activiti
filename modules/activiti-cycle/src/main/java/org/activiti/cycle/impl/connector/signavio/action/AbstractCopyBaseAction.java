@@ -42,10 +42,10 @@ public abstract class AbstractCopyBaseAction extends ParameterizedHtmlFormTempla
     String contentAsString = connector.getContent(artifact.getNodeId(), getContentRepresentationIdToUse()).asString();
     Content content = new Content();
     content.setValue(contentAsString);
+    
+    // no transaction required: atomic
     RepositoryArtifact targetArtifact = targetConnector.createArtifact(targetFolderId, targetName, artifact.getArtifactType().getId(), content);
-
-    // TODO: Think about that more, does it make sense like this?
-    targetConnector.commitPendingChanges(comment);
+   
     
     if (createLink) {
       RepositoryArtifactLink link = new RepositoryArtifactLinkEntity();

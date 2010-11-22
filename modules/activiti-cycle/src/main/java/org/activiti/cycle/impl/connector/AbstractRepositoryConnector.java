@@ -16,76 +16,62 @@ import org.activiti.cycle.impl.conf.RepositoryConnectorConfiguration;
 
 public abstract class AbstractRepositoryConnector<T extends RepositoryConnectorConfiguration> implements RepositoryConnector {
 
-  protected Logger log = Logger.getLogger(this.getClass().getName());
-  
-  private T configuration;
+	protected Logger log = Logger.getLogger(this.getClass().getName());
 
-  public AbstractRepositoryConnector(T configuration) {
-    this.configuration = configuration;
-  }
+	private T configuration;
 
-  public T getConfiguration() {
-    return configuration;
-  }
+	public AbstractRepositoryConnector(T configuration) {
+		this.configuration = configuration;
+	}
 
-  /**
-   * empty base configuration for connector (most of them don't support
-   * transactions)
-   */
-  public void beginTransaction(String folderId, String lockComment, boolean autocommit) {
-  }
+	public T getConfiguration() {
+		return configuration;
+	}
 
-  /**
-   * empty base configuration for connector (most of them don't support
-   * transactions)
-   */
-  public void commitPendingChanges(String comment) {
-  }
+	/**
+	 * Typical basic implementation to query {@link Content} from
+	 * {@link ContentProvider} obtained by the {@link ArtifactType} of the
+	 * artifact.
+	 */
+	public Content getContent(String artifactId, String representationName) throws RepositoryNodeNotFoundException {
+		RepositoryArtifact artifact = getRepositoryArtifact(artifactId);
+		return artifact.getArtifactType().getContentProvider(representationName).createContent(this, artifact);
+	}
 
-  /**
-   * Typical basic implementation to query {@link Content} from
-   * {@link ContentProvider} obtained by the {@link ArtifactType} of the
-   * artifact.
-   */
-  public Content getContent(String artifactId, String representationName) throws RepositoryNodeNotFoundException {
-    RepositoryArtifact artifact = getRepositoryArtifact(artifactId);
-    return artifact.getArtifactType().getContentProvider(representationName).createContent(this, artifact);
-  }
+	/**
+	 * As a default a connector doesn't provide any preview picture
+	 */
+	public Content getRepositoryArtifactPreview(String artifactId) throws RepositoryNodeNotFoundException {
+		return null;
+	}
 
-  /**
-   * As a default a connector doesn't provide any preview picture
-   */
-  public Content getRepositoryArtifactPreview(String artifactId) throws RepositoryNodeNotFoundException {
-    return null;
-  }
+	/**
+	 * Typical basic implementation for execute a {@link ParameterizedAction} by
+	 * loading the {@link RepositoryArtifact}, query the action via the
+	 * {@link ArtifactType} and execute it by handing over "this" as parameter
+	 * for the connector
+	 */
+	public void executeParameterizedAction(String artifactId, String actionId, Map<String, Object> parameters) throws Exception {
+		RepositoryArtifact artifact = getRepositoryArtifact(artifactId);
+		artifact.getArtifactType().getParameterizedAction(actionId).execute(this, artifact, parameters);
+	}
 
-  /**
-   * Typical basic implementation for execute a {@link ParameterizedAction} by
-   * loading the {@link RepositoryArtifact}, query the action via the
-   * {@link ArtifactType} and execute it by handing over "this" as parameter for
-   * the connector
-   */
-  public void executeParameterizedAction(String artifactId, String actionId, Map<String, Object> parameters) throws Exception {
-    RepositoryArtifact artifact = getRepositoryArtifact(artifactId);
-    artifact.getArtifactType().getParameterizedAction(actionId).execute(this, artifact, parameters);
-  }
-  
+	/**
+	 * Basic implementation returning all registered {@link ArtifactType}s from
+	 * the {@link RepositoryConnectorConfiguration}
+	 */
+	public List<ArtifactType> getSupportedArtifactTypes(String folderId) {
+		return getConfiguration().getArtifactTypes();
+	}
 
-  /**
-   * Basic implementation returning all registered {@link ArtifactType}s from
-   * the {@link RepositoryConnectorConfiguration}
-   */
-  public List<ArtifactType> getSupportedArtifactTypes(String folderId) {
-    return getConfiguration().getArtifactTypes();
-  }
-  
-  public ArtifactType getArtifactType(String id) {
-    for (ArtifactType type : getConfiguration().getArtifactTypes()) {
-      if (type.getId().equals(id)) {        
-        return type;
-      }      
-    }
-    throw new RepositoryException("ArtifactType with id '" + id + "' doesn't exist. Possible types are: " + getConfiguration().getArtifactTypes());
-  }
+	public ArtifactType getArtifactType(String id) {
+		for (ArtifactType type : getConfiguration().getArtifactTypes()) {
+			if (type.getId().equals(id)) {
+				return type;
+			}
+		}
+		throw new RepositoryException("ArtifactType with id '" + id + "' doesn't exist. Possible types are: "
+				+ getConfiguration().getArtifactTypes());
+	}
 
 }

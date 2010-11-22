@@ -50,10 +50,9 @@ public class CreateTechnicalBpmnXmlAction extends ParameterizedHtmlFormTemplateA
     RepositoryConnector targetConnector = (RepositoryConnector) getParameter(parameters, PARAM_TARGET_CONNECTOR, true, null, RepositoryConnector.class);
     boolean createLink = (Boolean) getParameter(parameters, CREATE_LINK_NAME, true, Boolean.TRUE, Boolean.class);
 
+    // no transaction required: atomic
     RepositoryArtifact targetArtifact = createArtifact(connector, artifact, targetFolderId, targetName, targetConnector);
 
-    // TODO: Think about that more, does it make sense like this?
-    targetConnector.commitPendingChanges(comment);
 
     if (createLink) {
       RepositoryArtifactLink link = new RepositoryArtifactLinkEntity();
