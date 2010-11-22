@@ -54,6 +54,7 @@ public class SignavioConnectorConfiguration extends PasswordEnabledRepositoryCon
   public static String DIRECTORY_URL_SUFFIX = "directory";
   public static String MASHUP_URL_SUFFIX = "mashup/";
   public static String MODEL_INFO_URL_SUFFIX = "info";
+  public static String STENCILSETS_URL_SUFFIX = "stencilsets/stencilsets.json";
 
   public static String BPMN_20_EXPORT_SERVLET = "bpmn2_0serialization";
   public static String BPMN_20_IMPORT_SERVLET = "bpmn2_0deserialization";
@@ -247,6 +248,10 @@ public class SignavioConnectorConfiguration extends PasswordEnabledRepositoryCon
 
   public String getEditorBackendUrlSuffix() {
     return EDITOR_BACKEND_URL_SUFFIX;
+  }
+
+  public String getStencilsetsUrl() {
+    return getEditorBackendUrl() + STENCILSETS_URL_SUFFIX;
   }
 
 }

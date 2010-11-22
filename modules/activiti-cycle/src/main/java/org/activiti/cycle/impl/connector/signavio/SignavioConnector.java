@@ -13,6 +13,7 @@
 package org.activiti.cycle.impl.connector.signavio;
 
 import java.io.IOException;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.UUID;
 import java.util.logging.Level;
@@ -275,7 +276,9 @@ public class SignavioConnector extends AbstractRepositoryConnector<SignavioConne
   public RepositoryNodeCollection getChildren(String id) throws RepositoryNodeNotFoundException {
     try {
       ArrayList<RepositoryNode> nodes = new ArrayList<RepositoryNode>();
-      try {
+      if (getConfiguration() instanceof OryxConnectorConfiguration) {
+        nodes = getChildrenFromOryxBackend(id);
+      } else {
         Response directoryResponse = getJsonResponse(getConfiguration().getDirectoryUrl(id));
         JsonRepresentation jsonData = new JsonRepresentation(directoryResponse.getEntity());
         JSONArray relJsonArray = jsonData.getJsonArray();
@@ -295,8 +298,6 @@ public class SignavioConnector extends AbstractRepositoryConnector<SignavioConne
             nodes.add(fileInfo);
           }
         }    
-      } catch (RepositoryException e) {
-        nodes = getModelsFromOryxBackend();
       }
       return new RepositoryNodeCollectionImpl(nodes);
     } catch (Exception ex) {
@@ -304,21 +305,83 @@ public class SignavioConnector extends AbstractRepositoryConnector<SignavioConne
     }
   }
 
-  private ArrayList<RepositoryNode> getModelsFromOryxBackend() throws IOException, JSONException {
+  private ArrayList<RepositoryNode> getChildrenFromOryxBackend(String id) throws IOException, JSONException {
     ArrayList<RepositoryNode> nodes = new ArrayList<RepositoryNode>();
     // extracts only BPMN 2.0 models, since everything else is more or less unsupported
-    Response filterResponse = getJsonResponse(getConfiguration().getRepositoryBackendUrl() + "filter?type=http%3A%2F%2Fb3mn.org%2Fstencilset%2Fbpmn2.0%23&sort=rating");
-    JsonRepresentation jsonRepresentation = new JsonRepresentation(filterResponse.getEntity());
-    JSONArray modelRefs = jsonRepresentation.getJsonArray();
-    for (int i = 0; i < modelRefs.length(); i++) {
-      String modelRef = modelRefs.getString(i);
-      String modelId = getConfiguration().getModelIdFromUrl(modelRef);
-      Response infoResponse = getJsonResponse(getConfiguration().getModelInfoUrl(modelId));
-      jsonRepresentation = new JsonRepresentation(infoResponse.getEntity());
-      RepositoryArtifact fileInfo = getArtifactInfoFromFile(modelId, jsonRepresentation.getJsonObject());
-      nodes.add(fileInfo);
+    SignavioConnectorConfiguration connectorConfiguration = getConfiguration();
+    String connectorId = connectorConfiguration.getId();
+    int pageSize = 10;
+    if ("/".equals(id)) {
+      JSONArray stencilsets = getStencilsets();
+      for (int i = 0; i < stencilsets.length(); i++) {
+        JSONObject stencilsetInfo = stencilsets.getJSONObject(i);
+        String stencilsetName = stencilsetInfo.getString("title");
+        String stencilsetNamespace = stencilsetInfo.getString("namespace");
+        // takes too long: JSONArray modelRefs = getModelIdsFromOryxBackend(stencilsetNamespace);
+        String folderId = stencilsetNamespace;
+        String folderName = stencilsetName; // takes too long: + " (" + modelRefs.length() + ")";
+        RepositoryFolder virtualFolder = new RepositoryFolderImpl(connectorId, folderId);
+        virtualFolder.getMetadata().setName(folderName);
+        nodes.add(virtualFolder);
+      }
+    } else {
+      int lastIndexOfNumberSign = id.lastIndexOf('#');
+      if (lastIndexOfNumberSign == id.length() - 1) {
+        JSONArray modelRefs = getModelIdsFromOryxBackend(id);
+        int numberOfModels = modelRefs.length();
+        if (numberOfModels <= pageSize) {
+          for (int i = modelRefs.length() - 1; (i >= 0 && i > modelRefs.length() - pageSize); i--) {
+            String modelRef = modelRefs.getString(i);
+            String modelId = connectorConfiguration.getModelIdFromUrl(modelRef);
+            Response infoResponse = getJsonResponse(connectorConfiguration.getModelInfoUrl(modelId));
+            JsonRepresentation jsonRepresentation = new JsonRepresentation(infoResponse.getEntity());
+            RepositoryArtifact fileInfo = getArtifactInfoFromFile(modelId, jsonRepresentation.getJsonObject());
+            nodes.add(fileInfo);
+          }
+        } else {
+          for (int j = 0; j <= numberOfModels / pageSize; j++) {
+            String folderId = id + j;
+            int upperBound = numberOfModels;
+            if (j + 1 <= numberOfModels / pageSize) {
+              upperBound = (j + 1) * pageSize;
+            }
+            String folderName = j * pageSize + "-" + upperBound;
+            RepositoryFolder virtualFolder = new RepositoryFolderImpl(connectorId, folderId);
+            virtualFolder.getMetadata().setName(folderName);
+            nodes.add(virtualFolder);
+          }
+        }
+      } else {
+        Integer pageNumber = Integer.valueOf(id.substring(lastIndexOfNumberSign + 1));
+        id = (String) id.subSequence(0, lastIndexOfNumberSign + 1);
+        JSONArray modelRefs = getModelIdsFromOryxBackend(id);
+        for (int i = modelRefs.length() - 1 - pageNumber * pageSize; (i >= 0 && i > modelRefs.length() - (pageNumber + 1) * pageSize); i--) {
+          String modelRef = modelRefs.getString(i);
+          String modelId = connectorConfiguration.getModelIdFromUrl(modelRef);
+          Response infoResponse = getJsonResponse(connectorConfiguration.getModelInfoUrl(modelId));
+          JsonRepresentation jsonRepresentation = new JsonRepresentation(infoResponse.getEntity());
+          RepositoryArtifact fileInfo = getArtifactInfoFromFile(modelId, jsonRepresentation.getJsonObject());
+          nodes.add(fileInfo);
+        }
+      }
     }
     return nodes;
+  }
+
+  private JSONArray getModelIdsFromOryxBackend(String stencilsetNamespace) throws IOException, JSONException {
+    String type = URLEncoder.encode(stencilsetNamespace, "UTF-8");
+    Response filterResponse = getJsonResponse(getConfiguration().getRepositoryBackendUrl() + "filter?type=" + type + "&sort=rating");
+    JsonRepresentation jsonRepresentation = new JsonRepresentation(filterResponse.getEntity());
+    JSONArray modelRefs = jsonRepresentation.getJsonArray();
+    return modelRefs;
+  }
+
+  private JSONArray getStencilsets() throws IOException, JSONException {
+    JSONArray stencilsets;
+    Response stencilsetsResponse = getJsonResponse(getConfiguration().getStencilsetsUrl());
+    JsonRepresentation stencilsetsJsonRepresentation = new JsonRepresentation(stencilsetsResponse.getEntity());
+    stencilsets = stencilsetsJsonRepresentation.getJsonArray();
+    return stencilsets;
   }
 
   public RepositoryFolder getRepositoryFolder(String id) {
