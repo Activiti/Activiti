@@ -282,7 +282,7 @@
     {      
       Activiti.widget.PopupManager.displayMessage({
         text: this.msg("jobs.message.execute.success")
-      })
+      });
       this.widgets.dataTable.reload();
     },
     
@@ -292,10 +292,9 @@
       this.widgets.dataTable.reload();
     },
     
-    onViewException: function Jobs_onViewException(exception) 
-    
+    onViewException: function Jobs_onViewException(exception)
     {
-      Activiti.widget.PopupManager.displayError(Activiti.i18n.getMessage("label.failure"), exception); 
+      Activiti.widget.PopupManager.displayError(exception);
     }
     
   });

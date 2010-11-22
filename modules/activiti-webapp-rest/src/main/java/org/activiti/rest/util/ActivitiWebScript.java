@@ -25,11 +25,7 @@ import org.activiti.engine.RepositoryService;
 import org.activiti.engine.RuntimeService;
 import org.activiti.engine.TaskService;
 import org.activiti.rest.Config;
-import org.springframework.extensions.webscripts.Cache;
-import org.springframework.extensions.webscripts.DeclarativeWebScript;
-import org.springframework.extensions.webscripts.ISO8601DateFormatMethod;
-import org.springframework.extensions.webscripts.Status;
-import org.springframework.extensions.webscripts.WebScriptRequest;
+import org.springframework.extensions.webscripts.*;
 
 /**
  * Helper class for all activiti webscripts.
@@ -68,15 +64,32 @@ public class ActivitiWebScript extends DeclarativeWebScript {
     // Prepare model with process engine info
     Map<String, Object> model = new HashMap<String, Object>();
     model.put("iso8601Date", new ISO8601DateFormatMethod());
+
+    // Create activiti request to add heler methods
+    ActivitiRequest ar = new ActivitiRequest(req);
     try {
-      // Create activiti request to add heler methods
-      ActivitiRequest ar = new ActivitiRequest(req);
 
       // Set logged in web user as current user in engine api
       getIdentityService().setAuthenticatedUserId(ar.getCurrentUserId());
 
       // Let implementing webscript do something useful
       executeWebScript(ar, status, cache, model);
+    }
+    catch (Exception e) {
+      String failure = ar.getString("failure", null);
+      if (failure == null) {
+        failure = ar.getBody().getString("failure");
+      }
+      if (failure != null) {
+        model.put("failure", failure);
+        model.put("error", e.getMessage());
+      }
+      else if (e instanceof WebScriptException) {
+        throw (WebScriptException) e;
+      }
+      else {
+        throw new WebScriptException(Status.STATUS_INTERNAL_SERVER_ERROR, e.getMessage(), e);
+      }
     }
     finally {
       // Reset the current engine api user

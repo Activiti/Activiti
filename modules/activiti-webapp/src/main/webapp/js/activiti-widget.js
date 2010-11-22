@@ -7,6 +7,118 @@
 Activiti.widget = Activiti.widget || {};
 
 /**
+ * Wrapper to create a YUI Button with common attributes.
+ * All supplied object parameters are passed to the button constructor
+ * e.g. Alfresco.util.createButton(this, "OK", this.onOK, {type: "submit"});
+ *
+ * @method Alfresco.util.createYUIButton
+ * @param component {object} Component containing button; must have "id" parameter
+ * @param name {string} Dom element ID of markup that button is created from {p_scope.id}-{name}
+ * @param callback {function} If supplied, registered with the button's click event
+ * @param obj {object} Optional extra object parameters to pass to button constructor which also will be available as callback value
+ * @param el {string|HTMLElement} Optional and accepts a string to use as an ID for getting a DOM reference or an actual DOM reference
+ * @return {YAHOO.widget.Button} New Button instance
+ * @static
+ */
+Activiti.widget.createButton = function(component, name, callback, obj, el)
+{
+  // Default button parameters
+  var config =
+  {
+    type: "button",
+    disabled: false
+  };
+
+  // Any extra parameters?
+  if (typeof obj == "object")
+  {
+    config = YAHOO.lang.merge(config, obj);
+  }
+
+  // Fix-up the menu element ID
+  if (typeof config.menu == "string")
+  {
+    config.type = "menu";
+    config.menu = component.id + "-" + config.menu;
+  }
+
+  // Create the button
+  var oElement = el ? el : component.id + "-" + name,
+      button = null;
+
+  if (YUIDom.get(oElement) !== null)
+  {
+    button = new YAHOO.widget.Button(oElement, obj);
+
+    if (typeof button == "object")
+    {
+      // Register the click listener if one was supplied
+      if (typeof callback == "function")
+      {
+        // Special case for a menu
+        if (config.type == "menu")
+        {
+          button.getMenu().subscribe("click", callback, component, obj || true);
+          button.getMenu().subscribe("keydown", function (p_sType, p_aArgs, p_oObj)
+          {
+            if (p_aArgs[0].keyCode == YAHOO.event.KeyListener.KEY.ENTER)
+            {
+              this.hide();
+              p_oObj.fn.call(p_oObj.scope, p_sType, p_oObj.obj || p_aArgs);
+            }
+          },
+          {
+            scope: component,
+            fn: callback,
+            obj: obj
+          });
+        }
+        else
+        {
+          button.on("click", callback, obj || button, component);
+        }
+      }
+
+      // Special case if htmlName was passed-in as an option
+      if (typeof config.htmlName != "undefined")
+      {
+        button.get("element").getElementsByTagName("button")[0].name = config.htmlName;
+      }
+    }
+  }
+  return button;
+};
+
+
+/**
+ * Wrapper to create a YUI Dialog with common attributes.
+ * e.g. Alfresco.util.createDialog(this, "OK");
+ *
+ * @method Alfresco.util.createSubmitDialog
+ * @param component {object} Component containing form
+ * @param name {string} Dom element ID of markup that dialog is created from {component.id}-{name}
+ * @return {YAHOO.widget.Dialog} New Dialog instance
+ * @static
+ */
+Activiti.widget.createSubmitDialog = function(component, name)
+{
+  var dialog = new YAHOO.widget.Dialog(component.id + "-" + name,
+  {
+    fixedcenter: true,
+    visible: false,
+    constraintoviewport: true,
+    modal: true,
+    hideaftersubmit: false,
+    buttons: [
+      { text: Activiti.i18n.getMessage("button.ok") , handler: { fn: function () { this.submit(); } }, isDefault:true },
+      { text: Activiti.i18n.getMessage("button.cancel"), handler: { fn: function() { this.cancel(); } } }
+    ]
+  });
+  dialog.render();
+  return dialog;
+};
+
+/**
  * Provides a common interface for displaying popups in various forms
  *
  * @class Activiti.widget.PopupManager
@@ -161,7 +273,7 @@ Activiti.widget.PopupManager = function()
       buttons: [
         {
           text: null, // Too early to localize at this time, do it when called instead
-          callbackHandler: function()
+          handler: function()
           {
             this.destroy();
           },
@@ -251,7 +363,14 @@ Activiti.widget.PopupManager = function()
       prompt.show();
     },
 
-    displayError: function(title, text) {
+    /**
+     * Displays an error message
+     *
+     * @method displayError
+     * @param text {String}
+     * @param title {String} (Optional) Will default to "label.failure"
+     */
+    displayError: function(text, title) {
       this.displayPrompt({
         icon: "error",
         title: title ? title : Activiti.i18n.getMessage("label.failure"),
@@ -649,7 +768,7 @@ Activiti.widget.PopupManager = function()
       // Define a custom function to route pagination through the Browser History Manager
       var handlePagination = function(state) {
         // Reflect the new pagination values while preserving existing sort values
-        var sortedBy = this.get("sortedBy") || {dir: null, key:null};
+        var sortedBy = this.get("sortedBy");
         if (sortedBy.dir && sortedBy.dir.indexOf("yui-dt-") == 0) {
           sortedBy.dir = sortedBy.dir.substring("yui-dt-".length);
         }
@@ -995,7 +1114,7 @@ Activiti.widget.PopupManager = function()
           value = data[attrName];
           inputEl = Selector.query("[name=" + attrName + "]", this.dialog.form, true);
           if (!inputEl) {
-            Activiti.widget.PopupManager.displayError(null, $msg("message.error.form-config.input.not-matching"));
+            Activiti.widget.PopupManager.displayError($msg("message.error.form-config.input.not-matching"));
             return;
           }
           if (attrMeta) {

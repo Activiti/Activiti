@@ -26,10 +26,10 @@
   * Shortcuts
   */
   var Dom = YAHOO.util.Dom,
-  Selector = YAHOO.util.Selector,
-  Event = YAHOO.util.Event,
-  $html = Activiti.util.decodeHTML;
-  
+    Selector = YAHOO.util.Selector,
+    Event = YAHOO.util.Event,
+    $html = Activiti.util.decodeHTML;
+
   /**
   * Deployments constructor.
   *
@@ -40,18 +40,18 @@
   Activiti.component.Deployments = function Deployments_constructor(htmlId)
   {
     Activiti.component.Deployments.superclass.constructor.call(this, "Activiti.component.Deployments", htmlId);
-           
+
     this.services.managementService = new Activiti.service.ManagementService(this);
-    
+
     // Listen for events that interest us
     this.onEvent(Activiti.event.deleteDeployment, this.onDeleteClick);
-    
+
     return this;
   };
-  
+
   YAHOO.extend(Activiti.component.Deployments, Activiti.component.Base,
   {
-  
+
     /**
     * Fired by YUI when parent element is available for scripting.
     * Template initialisation, including instantiation of YUI widgets and event listener binding.
@@ -60,9 +60,6 @@
     */
     onReady: function Deployments_onReady()
     {
-      //Event.addListener(deleteEls, "click", this.onDeleteClick, false, this);
-      //Event.addListener(deleteCascadeEls, "click", this.onDeleteClick, true, this);
-      var actionHeading = this.msg("deployments.label.action")
       this.widgets.dataTable = new Activiti.widget.DataTable(
         this.id + "-deployments",
         this,
@@ -73,182 +70,188 @@
         this.id + "-datatable",
         [ this.id + "-paginator" ],
         [
-          {key:"id", label: this.msg("deployments.label.id"), sortable:true},
-          {key:"name", label: this.msg("deployments.label.name"), sortable:true},
-          {key:"deploymentTime", label: this.msg("deployments.label.deploymentTime"), sortable:true},
-          {key:"action", label: actionHeading}
+          { key: "id", label: this.msg("label.id"), sortable:true },
+          { key: "name", label: this.msg("label.name"), sortable:true },
+          { key: "deploymentTime", label: this.msg("label.deploymentTime"), sortable:true },
+          { key: "action", label: this.msg("label.action") }
         ]
       );
-      
+
       // Needed to load data and set up other events
-      if (!Activiti.event.isInitEvent(Activiti.event.displayDeployments)) 
+      if (!Activiti.event.isInitEvent(Activiti.event.displayDeployments))
       {
         this.fireEvent(Activiti.event.displayDeployments, {}, null);
       }   
-      
-      // Set up button events
-      var buttonId = this.id+"-delete";
-      
-      this.deleteButton = new YAHOO.widget.Button(buttonId, 
-      {
-        onclick: 
-        {
-          fn: this.onDeleteClick,
-          obj: 
-          {
-            cascade: false
-          },
-          scope: this
-        }
-      });
 
-      this.deleteCascadeButton = new YAHOO.widget.Button(buttonId+"Cascade", 
-      {
-        onclick: 
-        {
-          fn: this.onDeleteClick,
-          obj: 
-          {
-            cascade: true
-          },
-          scope: this
-        }
-      });
-      
-      // Display form if url
-      /* TODO: Decide on URL schema and update this code:
-      var processId = Activiti.util.getQueryStringParameter("id");
-      if (processId != null)
-      {
-        this.startProcess(processId);
-      }
-      */
+      // Set up buttons and dialogs
+      this.widgets.deleteButton = Activiti.widget.createButton(this, "delete", this.onDeleteClick, { cascade: false });
+      this.widgets.deleteCascadeButton = Activiti.widget.createButton(this, "deleteCascade", this.onDeleteClick, { cascade: true });
+      this.widgets.uploadButton = Activiti.widget.createButton(this, "upload", this.onUploadClick);
+      this.widgets.uploadDialog = Activiti.widget.createSubmitDialog(this, "uploadDeployment");
     },
-    
-    
+
     /**
-    * Handler for click events on delete buttons
-    *
-    * @method onDeleteClick
-    * @param e {object} The click event
-    */
+     * Handler for click events on delete buttons
+     *
+     * @method onDeleteClick
+     * @param e {object} The click event
+     */
     onDeleteClick: function Deployments_onDeleteClick(e, obj)
     {
-      el = Event.getTarget(e);
-      cascade = obj.cascade ? obj.cascade : false;
-      var selectEls = Dom.getElementsByClassName("deleteSelect"),
+      var selectEls = Selector.query(".deleteSelect", this.id),
         selectIds = [];
-      for (var i = 0; i < selectEls.length ;i++) 
-      {
-        if (selectEls[i].checked === true) 
-        {
+      for (var i = 0; i < selectEls.length ;i++) {
+        if (selectEls[i].checked === true) {
           selectIds.push(selectEls[i].value);
         }
       }
-       if (selectIds.length >= 1) 
-      {
-        this.deleteDeployment(selectIds, cascade);
-      } else 
-      {
-        Activiti.widget.PopupManager.displayMessage({
-          text: this.msg("deployments.message.none-selected")
-        })
-      } 
-    }, 
-   
-   onDeleteConfirm: function Deployments_onDeleteConfirm(e, obj) 
-   {
-     this.confirmDialogue.hide();
-     this.services.managementService.deleteDeployments(obj.deploymentIds, obj.cascade);
-   },
-   
-   onDeleteCancel: function Deployments_onDeleteCancel(obj) 
-   {
-     this.confirmDialogue.hide();
-   },
-    
+      if (selectIds.length >= 1) {
+        this.deleteDeployment(selectIds, obj.cascade == true);
+      } else {
+        Activiti.widget.PopupManager.displayError(this.msg("message.none-selected"));
+      }
+    },
+
+    /**
+     * Called when user has confirmed he wants to delete the deployments
+     *
+     * @method onDeleteConfirm
+     * @param e
+     * @param obj
+     */
+    onDeleteConfirm: function Deployments_onDeleteConfirm(e, obj)
+    {
+      this.confirmDialogue.hide();
+      this.services.managementService.deleteDeployments(obj.deploymentIds, obj.cascade);
+    },
+
+    /**
+     * Called when user changed his mind and decided to not delete the deployments
+     *
+     * @method onDeleteConfirm
+     */
+    onDeleteCancel: function Deployments_onDeleteCancel()
+    {
+      this.confirmDialogue.hide();
+    },
+
     /**
     * Prompts user for confirmation and then makes the REST api call to delete service.
-    * 
+    *
     * @method deleteDeployment
     * @param {Array} deploymentIds - the id of the deployment to be deleted
     * @param {Boolean} cascade - Should the Delete cascade to related resources?
     */
-    deleteDeployment: function Deployments_deleteDeployment(deploymentIds, cascade) 
+    deleteDeployment: function Deployments_deleteDeployment(deploymentIds, cascade)
     {
       // Set up message string & helper object
-      var count = (deploymentIds.length > 1)? "plural": "singular",
-        cascadeString = (cascade)? "Cascade" : "",
-        obj = 
+      var obj =
         {
           deploymentIds: deploymentIds,
           cascade: cascade
-        }
+        };
+
       // Instantiate the Dialog
-      this.confirmDialogue = new YAHOO.widget.SimpleDialog("simpledialog1", 
-      { 
+      this.confirmDialogue = new YAHOO.widget.SimpleDialog(this.id + "-confirmDelete",
+      {
         width: "300px",
         fixedcenter: true,
         visible: false,
         draggable: false,
         close: false,
-        text: this.msg("deployments.prompt.delete"+cascadeString+"."+count),
+        text: this.msg("prompt.delete" + (cascade ? "Cascade" : "")),
         icon: YAHOO.widget.SimpleDialog.ICON_WARN,
         constraintoviewport: true,
-        buttons: 
-        [ 
-          { text:this.msg("deployments.prompt.confirm"), handler:
+        buttons:
+        [
+          {
+            text:this.msg("prompt.confirm"),
+            handler:
             {
               fn:this.onDeleteConfirm,
               obj:obj,
               scope: this
             }
           },
-          { text:this.msg("deployments.prompt.cancel"),  handler:
-            { 
+          {
+            text:this.msg("prompt.cancel"),
+            handler:
+            {
               fn: this.onDeleteCancel,
               obj:obj,
               scope: this
-             }, 
-             isDefault:true 
-          } 
+            },
+            isDefault:true
+          }
         ]
-      });      
-      // Confirm with user
-      this.confirmDialogue.setHeader(this.msg("deployments.prompt.header"))
+      });
+      this.confirmDialogue.setHeader(this.msg("prompt.header"));
       this.confirmDialogue.render(this.id);
       this.confirmDialogue.show();
-    
     },
-    
+
+    /**
+     * Handler for click events on upload button
+     *
+     * @method onUploadClick
+     * @param e {object} The click event
+     */
+    onUploadClick: function Deployments_onUploadClick(e)
+    {
+      this.widgets.uploadDialog.show();
+    },
+
     /**
      * Fires when a deployment has been deleted - refreshes data.
-     * 
+     *
      * @method onDeploymentDeletedEvent
      * @param {Object} result
      */
     onDeleteDeploymentSuccess: function Deployments_onDeleteDeploymentSuccess(result)
     {
       Activiti.widget.PopupManager.displayMessage({
-        text: this.msg("deployments.message.delete.success")
-      })
+        text: this.msg("message.delete.success")
+      });
       this.widgets.dataTable.reload();
     },
-    
+
     /**
      * Fires when a deployment has NOT been deleted - refreshes data.
-     * 
+     *
      * @method onDeploymentDeletedEvent
      * @param {Object} result
      */
     onDeleteDeploymentFailure: function Deployments_onDeleteDeploymentFailure(result)
     {
       Activiti.widget.PopupManager.displayMessage({
-        text: this.msg("deployments.message.delete.failure")
-      })
+        text: this.msg("message.delete.failure")
+      });
     },
-    
-    
+
+    /**
+     * Called when a deployment has been successfully uploaded.
+     * Its getting called since the form is using hidden input fields containing the javascript to invoke on success.
+     *
+     * @method onUploadDeploymentSuccess
+     */
+    onUploadDeploymentSuccess: function() {
+      Activiti.event.fire('displayDeployments', {});
+      this.widgets.uploadDialog.hide();
+      Activiti.widget.PopupManager.displayMessage({
+        text: this.msg("message.upload.success")
+      });
+    },
+
+    /**
+     * Called when a deployment failed to be uploaded.
+     * Its getting called since the form is using hidden input fields containing the javascript to invoke on failure.
+     *
+     * @method onUploadDeploymentFailure
+     */
+    onUploadDeploymentFailure: function(error) {
+      Activiti.widget.PopupManager.displayError(error);
+    },
+
     /**
      * Activiti.widget.DataTable-callback to construct the url to use to load data into the data table.
      *
@@ -262,11 +265,11 @@
     {
       return this.services.managementService.loadDeploymentsURL(eventValue);
     },
-    
+
     /**
-     * 
+     *
      * Activiti.widget.DataTable-callback that is called to render the content of each cell in the Actions row
-     * 
+     *
      * @method onDataTableRenderCellAction
      * @param {Object} dataTable
      * @param {Object} el
@@ -274,17 +277,17 @@
      * @param {Object} oColumn
      * @param {Object} oData
      */
-    onDataTableRenderCellAction: function Processes_onDataTableRenderCellAssignee(dataTable, el, oRecord, oColumn, oData) 
+    onDataTableRenderCellAction: function Processes_onDataTableRenderCellAssignee(dataTable, el, oRecord, oColumn, oData)
     {
       el.innerHTML = "<input type='checkbox' value='"+ oRecord.getData().id +"' class='deleteSelect' />";
     },
-    
+
     /**
-     * 
+     *
      * Activiti.widget.DataTable-callback that is called to render the content of each cell in the DeploymentTime row
-     * 
+     *
      * This funtion formats the time according to a property string prior to display.
-     * 
+     *
      * @method onDataTableRenderCellDeploymentTime
      * @param {Object} dataTable
      * @param {Object} el
@@ -292,11 +295,11 @@
      * @param {Object} oColumn
      * @param {Object} oData
      */
-    onDataTableRenderCellDeploymentTime: function Processes_onDataTableRenderCellAssignee(dataTable, el, oRecord, oColumn, oData) 
+    onDataTableRenderCellDeploymentTime: function Processes_onDataTableRenderCellAssignee(dataTable, el, oRecord, oColumn, oData)
     {
       el.innerHTML = Activiti.thirdparty.dateFormat(Activiti.thirdparty.fromISO8601(oRecord.getData().deploymentTime), this.msg("Activiti.date-format.default"));
     }
-    
+
   });
 
 })();

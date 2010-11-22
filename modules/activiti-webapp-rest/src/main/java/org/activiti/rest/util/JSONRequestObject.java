@@ -54,7 +54,7 @@ public class JSONRequestObject implements ActivitiRequestObject {
    * @return The string value of the parameter
    */
   public String getString(String param) {
-    Object value = json.get(param);
+    Object value = json.optString(param, null);
     if (value == null) {
       return null;
     }
@@ -71,7 +71,7 @@ public class JSONRequestObject implements ActivitiRequestObject {
    * @return The string value of the parameter
    */
   public Integer getInt(String param) {
-    Object value = json.get(param);
+    Object value = json.optString(param, null);
     if (value == null) {
       return null;
     }
@@ -88,7 +88,7 @@ public class JSONRequestObject implements ActivitiRequestObject {
    * @return The boolean value of the parameter
    */
   public Boolean getBoolean(String param) {
-    Object value = json.get(param);
+    Object value = json.optString(param, null);
     if (value == null) {
       return null;
     }
@@ -105,7 +105,7 @@ public class JSONRequestObject implements ActivitiRequestObject {
    * @return The boolean value of the parameter
    */
   public Date getDate(String param) {
-    Object value = json.get(param);
+    Object value = json.optString(param, null);
     if (value == null) {
       return null;
     }
@@ -122,7 +122,7 @@ public class JSONRequestObject implements ActivitiRequestObject {
    * @return The string value of the parameter
    */
   public JSONRequestObject getBodyObject(String param) {
-    Object value = json.get(param);
+    Object value = json.optJSONObject(param);
     if (value == null) {
       return null;
     }

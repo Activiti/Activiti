@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.extensions.webscripts.WebScriptRequest;
+import org.springframework.extensions.webscripts.servlet.FormData;
 import org.springframework.extensions.webscripts.servlet.WebScriptServletRequest;
 
 /**

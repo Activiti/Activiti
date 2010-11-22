@@ -114,6 +114,10 @@
     <property name="templateName" value="identity/group-users.get.json" />
   </bean>
 
+  <bean id="webscript.org.activiti.rest.api.repository.deployment.post"
+        class="org.activiti.rest.api.repository.DeploymentPost"
+        parent="activitiWebScript">
+  </bean>
 
   <bean id="webscript.org.activiti.rest.api.repository.deployment-resource.get"
         class="org.activiti.rest.api.repository.DeploymentResourceGet"

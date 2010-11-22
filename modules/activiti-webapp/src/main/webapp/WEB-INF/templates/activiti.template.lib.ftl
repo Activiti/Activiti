@@ -76,7 +76,7 @@
       Activiti.service.Ajax.displayFailureMessage = function(msgKey, response) {
         var msg = Activiti.i18n.getMessage(msgKey);
         msg = (msg != msgKey) ? msg : (response.json ? response.json.message : response.serverResponse.responseText);
-        Activiti.widget.PopupManager.displayError(Activiti.i18n.getMessage("label.failure"), msg);
+        Activiti.widget.PopupManager.displayError(msg);
       };
       Activiti.service.Ajax.displaySuccessMessage = function(msgKey, response) {
         var msg = Activiti.i18n.getMessage(msgKey);
