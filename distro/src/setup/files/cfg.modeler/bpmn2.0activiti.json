@@ -70,7 +70,7 @@
             "type": "node",
             "id":"ScriptTask",
             "superId":"Task",
-            "title":"Scipt Task",
+            "title":"Script Task",
             "title_de":"Skriptaufgabe",
             "groups":["Activities"],
             "groups_de":["Aktivitäten"],

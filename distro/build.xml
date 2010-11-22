@@ -228,4 +228,113 @@
     </copy>
 	</target>
 	
+	<!-- ##### ACTIVITI MODELER PATCHING ##########################################
+	
+	     Note that this target is NOT executed during a distro build, because the 
+	     Modeler is not shipped with the final zip.
+	     
+	     This target exists to be called to add the Activiti stencil set and Cycle plugins,
+	     when a new version of the Modeler is built from the Signavio source repository. 
+	  -->
+	
+	<property name="modeler.patch.folder" value="${modeler.target.folder}/patched" />
+  <property name="modeler.extracted-war.folder" value="${modeler.target.folder}/extracted-from-war" />
+	<property name="modeler.src.files.folder" value="src/setup/files/cfg.modeler" />
+	
+	<target name="patch.activiti.modeler"
+		depends="internal.modeler.plugin.cycle.patch, internal.modeler.stencilsets.patch" />
+		
+  <target name="internal.modeler.patches.init">
+  	<delete dir="${modeler.patch.folder}" />
+    <mkdir dir="${modeler.patch.folder}" />
+	  <delete dir="${modeler.extracted-war.folder}" />
+    <mkdir dir="${modeler.extracted-war.folder}" />
+    <!-- extract files to be patched from the war -->
+    <unzip src="${modeler.target.folder}/activiti-modeler.war"
+           dest="${modeler.extracted-war.folder}">
+      <patternset>
+        <include name="editor/oryx.debug.js" />
+        <include name="editor/oryx.js" />
+        <include name="editor/plugins.xml" />
+      </patternset>
+      <mapper type="flatten" />
+    </unzip>
+    <!-- copy files to be patched in the internal.modeler.xx targets -->
+    <copy todir="${modeler.patch.folder}" overwrite="true">
+      <fileset dir="${modeler.extracted-war.folder}" />
+    </copy>
+  	<!-- copy war to be patched to the patch folder -->
+  	<copy file="${modeler.target.folder}/activiti-modeler.war" tofile="${modeler.patch.folder}/activiti-modeler-${activiti.version}.war" />
+  </target>
+
+  <target name="internal.modeler.plugin.cycle.patch" depends="internal.modeler.patches.init">
+    <!-- add plugin code -->
+    <concat destfile="${modeler.patch.folder}/oryx.debug.js" append="true">
+      <fileset file="${modeler.src.files.folder}/ActivitiCycle.js" />
+    </concat>
+    <concat destfile="${modeler.patch.folder}/oryx.js" append="true">
+      <fileset file="${modeler.src.files.folder}/ActivitiCycle.js" />
+    </concat>
+    <!-- register Activiti Cycle Plugin -->
+    <replace file="${modeler.patch.folder}/plugins.xml">
+      <replacetoken><![CDATA[</plugins>]]></replacetoken>
+    <replacevalue><![CDATA[
+    <plugin source="ActivitiCycle.js" name="ORYX.Plugins.ActivitiCycle" />
+  </plugins>]]></replacevalue>
+    </replace>
+    <!-- fix line endings in patched plugins.xml -->
+    <fixcrlf file="${modeler.patch.folder}/plugins.xml" eol="dos" />
+  	<!-- Update war with patched files -->
+  	
+  	<!-- Touch is required, see http://stackoverflow.com/questions/2210041/updating-files-inside-an-existing-war-file -->
+  	<tstamp> <format property="touch.time" pattern="MM/dd/yyyy hh:mm aa"/></tstamp>
+  	<touch datetime="${touch.time}" file="${modeler.patch.folder}/oryx.debug.js"/>
+  	<touch datetime="${touch.time}" file="${modeler.patch.folder}/oryx.js"/>
+  	<touch datetime="${touch.time}" file="${modeler.patch.folder}/plugins.xml"/>
+  	<touch datetime="${touch.time}" file="${modeler.src.files.folder}/activiti_logo_16x16.png"/>
+  	
+  	<war destfile="${modeler.patch.folder}/activiti-modeler-${activiti.version}.war" update="true">
+      <zipfileset file="${modeler.patch.folder}/oryx.debug.js"       fullpath="editor/oryx.debug.js" />
+      <zipfileset file="${modeler.patch.folder}/oryx.js"             fullpath="editor/oryx.js" />
+      <zipfileset file="${modeler.patch.folder}/plugins.xml"         fullpath="editor/plugins.xml" />
+      <zipfileset file="${modeler.patch.folder}/plugins.xml"         fullpath="WEB-INF/xml/editor/plugins.xml" />
+      <zipfileset file="${modeler.src.files.folder}/activiti_logo_16x16.png" fullpath="editor/images/activiti_logo_16x16.png" />
+    </war>
+  </target>
+
+  <target name="internal.modeler.stencilsets.patch" depends="internal.modeler.patches.init">
+    <!-- add plugin code -->
+    <concat destfile="${modeler.patch.folder}/oryx.debug.js" append="true">
+      <fileset file="${modeler.src.files.folder}/selectssperspective.js" />
+    </concat>
+    <concat destfile="${modeler.patch.folder}/oryx.js" append="true">
+      <fileset file="${modeler.src.files.folder}/selectssperspective.js" />
+    </concat>
+    <!-- register Stencilset Perspective Plugin -->
+    <replace file="${modeler.patch.folder}/plugins.xml">
+      <replacetoken><![CDATA[<plugin source="shaperepository.js"]]></replacetoken>
+    <replacevalue><![CDATA[<plugin source="selectssperspective.js" name="ORYX.Plugins.ActivitiSelectStencilSetPerspective" />
+    <plugin source="shaperepository.js"]]></replacevalue>
+    </replace>
+  	<!-- Update war with patched files --> 
+  	
+  	<!-- Touch is required, see http://stackoverflow.com/questions/2210041/updating-files-inside-an-existing-war-file -->
+  	<tstamp> <format property="touch.time" pattern="MM/dd/yyyy hh:mm aa"/></tstamp>
+  	<touch datetime="${touch.time}" file="${modeler.patch.folder}/oryx.debug.js"/>
+  	<touch datetime="${touch.time}" file="${modeler.patch.folder}/oryx.js"/>
+  	<touch datetime="${touch.time}" file="${modeler.patch.folder}/plugins.xml"/>
+    <touch datetime="${touch.time}" file="${modeler.src.files.folder}/extensions.json"/>
+    <touch datetime="${touch.time}" file="${modeler.src.files.folder}/bpmn2.0activiti.json"/>
+  	
+  	<war destfile="${modeler.patch.folder}/activiti-modeler-${activiti.version}.war" update="true">
+  	  <zipfileset file="${modeler.patch.folder}/oryx.debug.js"       fullpath="editor/oryx.debug.js" />
+  	  <zipfileset file="${modeler.patch.folder}/oryx.js"             fullpath="editor/oryx.js" />
+  	  <zipfileset file="${modeler.patch.folder}/plugins.xml"         fullpath="editor/plugins.xml" />
+  	  <zipfileset file="${modeler.patch.folder}/plugins.xml"         fullpath="WEB-INF/xml/editor/plugins.xml" />
+  	  <zipfileset file="${modeler.src.files.folder}/extensions.json"         fullpath="WEB-INF/json/extensions.json" />
+  	  <zipfileset file="${modeler.src.files.folder}/extensions.json"         fullpath="editor/stencilsets/extensions/extensions.json" />
+  	  <zipfileset file="${modeler.src.files.folder}/bpmn2.0activiti.json"    fullpath="editor/stencilsets/extensions/bpmn2.0activiti/bpmn2.0activiti.json" />
+  	</war>
+  </target>
+	
 </project>
