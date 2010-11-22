@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema
+  xmlns="http://www.w3.org/2001/XMLSchema"
+  targetNamespace="http://activiti.org/bpmn"
+  xmlns:tns="http://activiti.org/bpmn"
+  elementFormDefault="qualified">
+  
+  <!-- TODO
+  
+    
+       formKey
+
+       formProperty id="" type variable expression writable required
+                    activiti:value
+
+       executionListener -> same as taskListener
+   -->
+
+  <annotation>
+    <documentation>
+      This XML Schema defines and documents BPMN 2.0 extension elements and
+      attributes introduced by Activiti.
+    </documentation>
+  </annotation>
+  
+  <attribute name="initiator" type="string">
+    <annotation>
+      <documentation>
+        Attribute on a start event.
+        Denotes a process variable in which the process initiator set in the 
+        identityService.setAuthenticatedUserId(userId) is captured.
+      </documentation>
+    </annotation>
+  </attribute>
+  
+  <attribute name="history">
+    <annotation>
+      <documentation>
+        Attribute on the process element. 
+        Allows to set the history level for this specific process definition
+        differently from the history level set in the process engine configuration.
+      </documentation>
+    </annotation>
+    <simpleType>
+      <restriction base="string">
+        <enumeration value="none" />
+        <enumeration value="activity" />
+        <enumeration value="audit" />
+        <enumeration value="full" />
+      </restriction>
+    </simpleType>
+  </attribute>
+
+  <attribute name="class">
+    <annotation>
+      <documentation>
+        Service Task attribute for specifying a fully qualified Java class
+        name. The Java class must implement either
+        org.activiti.engine.delegate.JavaDelegation or
+        org.activiti.engine.impl.pvm.delegate.ActivityBehavior
+      </documentation>
+    </annotation>
+    <simpleType>
+      <restriction base="string">
+        <!-- regular expression taken from http://regexlib.com/REDetails.aspx?regexp_id=2821 -->
+        <pattern value="([a-z]{2,3}(\.[a-zA-Z][a-zA-Z_$0-9]*)*)\.([A-Z][a-zA-Z_$0-9]*)"/>
+      </restriction>
+    </simpleType>
+  </attribute>
+  
+  <attribute name="type">
+    <annotation>
+      <documentation>
+        Service Task attribute specifying a built-in service task implementation.
+      </documentation>
+    </annotation>
+    <simpleType>
+      <restriction base="string">
+        <enumeration value="mail"/>
+      </restriction>
+    </simpleType>
+  </attribute>
+  
+  <attribute name="resultVariableName" type="string">
+    <annotation>
+      <documentation>
+        Attribute on Service and Script Task corresponding with a process variable name.
+        The result of executing the service task logic or the script will be stored 
+        in this process variable.
+      </documentation>
+    </annotation>
+  </attribute>
+  
+  <attribute name="expression" type="string"">
+    <annotation>
+      <documentation>
+        Allows to specify an expression that is evaluated at runtime.     
+      </documentation>
+    </annotation>
+  </attribute>
+
+  <element name="field">
+    <annotation>
+      <documentation>
+        Extension Element for Service Tasks to inject values into the fields of
+        delegate classes.
+      </documentation>
+    </annotation>
+    <complexType>
+      <choice minOccurs="0" maxOccurs="1">
+      	<element name="string" type="string" />
+      	<element name="expression" type="tns:tExpression" />
+      </choice>
+      <attribute name="name" type="string" use="required"/>
+      <attribute name="stringValue" type="string" use="optional" />
+      <attribute name="expression" type="tns:tExpression" use="optional" />
+    </complexType>
+  </element>
+  
+  <simpleType name="tExpression">
+    <annotation>
+      <documentation>
+        Expression using the language declared in the expressionLanguage
+        attribute of BPMN's definitions element.
+      </documentation>
+    </annotation>
+    <restriction base="string">
+    </restriction>
+  </simpleType>
+  
+  <attribute name="assignee" type="string"">
+    <annotation>
+      <documentation>
+        User Task attribute to set the human performer of a user task.
+        Also supports expressions that evaluate to a String.
+      </documentation>
+    </annotation>
+  </attribute>
+  
+  <attribute name="candidateUsers">
+    <annotation>
+      <documentation>
+        User Task attribute to set the potential owners of a user task.
+        The provided user(s) will be candidate for performing the user task.
+        In case of multiple user ids, a comma-separated list must be provided.
+        Also supports expressions that evaluate to a String or Collection&lt;String&gt;.
+      </documentation>
+    </annotation>
+  </attribute>
+  
+  <attribute name="candidateGroups">
+    <annotation>
+      <documentation>
+        User Task attribute to set the potential owners of a user task.
+        The provided group(s) will be candidate for performing the user task.
+        In case of multiple group ids, a comma-separated list must be provided.
+        Also supports expressions that evaluate to a String or Collection&lt;String&gt;.
+      </documentation>
+    </annotation>
+  </attribute>
+
+  <element name="taskListener">
+    <annotation>
+      <documentation>
+        Extension element for User Tasks used to execute custom Java logic or an 
+        expression upon the occurrence of a certain event. 
+      </documentation>
+    </annotation>
+    <complexType>
+      <attribute name="class" type="string">
+        <annotation>
+          <documentation>
+            An implementation of the org.activiti.engine.impl.pvm.delegate.TaskListener interface
+            that will be called when the task event occurs.
+          </documentation>
+        </annotation>
+      </attribute>
+      <attribute name="expression" type="tns:tExpression">
+        Expression that will be evaluated when the task event occurs.
+      </attribute>
+      <attribute name="event" type="string" use="required">
+        <annotation>
+          <documentation>
+            The event on which the delegation class or expression will be executed
+          </documentation>
+        </annotation>
+        <simpleType>
+          <restriction base="string">
+            <enumeration value="create" />
+            <enumeration value="assignment" />
+            <enumeration value="complete" />
+          </restriction>
+        </simpleType>
+      </attribute>
+      <sequence>
+        <element ref="tns:field" />
+      </sequence>
+    </complexType>
+  </attribute>
+  
+</schema>
