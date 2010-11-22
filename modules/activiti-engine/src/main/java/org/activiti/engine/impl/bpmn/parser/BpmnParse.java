@@ -13,7 +13,6 @@
 package org.activiti.engine.impl.bpmn.parser;
 
 import java.io.InputStream;
-import java.lang.reflect.Field;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -23,17 +22,17 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.activiti.engine.ActivitiException;
-import org.activiti.engine.delegate.JavaDelegation;
+import org.activiti.engine.impl.bpmn.AbstractDataInputAssociation;
+import org.activiti.engine.impl.bpmn.AbstractDataOutputAssociation;
 import org.activiti.engine.impl.bpmn.Assignment;
 import org.activiti.engine.impl.bpmn.BoundaryTimerEventActivity;
 import org.activiti.engine.impl.bpmn.BpmnInterface;
 import org.activiti.engine.impl.bpmn.BpmnInterfaceImplementation;
 import org.activiti.engine.impl.bpmn.CallActivityBehaviour;
+import org.activiti.engine.impl.bpmn.ClassDelegate;
 import org.activiti.engine.impl.bpmn.ClassStructureDefinition;
 import org.activiti.engine.impl.bpmn.Condition;
 import org.activiti.engine.impl.bpmn.Data;
-import org.activiti.engine.impl.bpmn.AbstractDataInputAssociation;
-import org.activiti.engine.impl.bpmn.AbstractDataOutputAssociation;
 import org.activiti.engine.impl.bpmn.DataRef;
 import org.activiti.engine.impl.bpmn.ExclusiveGatewayActivity;
 import org.activiti.engine.impl.bpmn.ExpressionExecutionListener;
@@ -41,7 +40,6 @@ import org.activiti.engine.impl.bpmn.ExpressionTaskListener;
 import org.activiti.engine.impl.bpmn.IOSpecification;
 import org.activiti.engine.impl.bpmn.ItemDefinition;
 import org.activiti.engine.impl.bpmn.ItemKind;
-import org.activiti.engine.impl.bpmn.JavaDelegationDelegate;
 import org.activiti.engine.impl.bpmn.MailActivityBehavior;
 import org.activiti.engine.impl.bpmn.ManualTaskActivity;
 import org.activiti.engine.impl.bpmn.MessageDefinition;
@@ -762,11 +760,10 @@ public class BpmnParse extends Parse {
     String resultVariableName = serviceTaskElement.attributeNS(BpmnParser.ACTIVITI_BPMN_EXTENSIONS_NS, "resultVariableName");
     String implementation = serviceTaskElement.attribute("implementation");
     String operationRef = this.resolveName(serviceTaskElement.attribute("operationRef"));
-    List<FieldDeclaration> fieldDeclarations = parseFieldDeclarationsOnServiceTask(serviceTaskElement);
 
     if (type != null) {
       if (type.equalsIgnoreCase("mail")) {
-        parseEmailServiceTask(activity, serviceTaskElement, fieldDeclarations);
+        parseEmailServiceTask(activity, serviceTaskElement, parseFieldDeclarations(serviceTaskElement));
       } else {
         addError("Invalid usage of type attribute: '" + type + "'", serviceTaskElement);
       }
@@ -775,16 +772,7 @@ public class BpmnParse extends Parse {
       if (resultVariableName != null) {
         addError("'resultVariableName' not supported for service tasks using 'class'", serviceTaskElement);
       }
-
-      Object delegateInstance = instantiateDelegate(className, fieldDeclarations);
-      
-      if (delegateInstance instanceof ActivityBehavior) {
-        activity.setActivityBehavior((ActivityBehavior) delegateInstance);
-      } else if (delegateInstance instanceof JavaDelegation) {
-        activity.setActivityBehavior(new JavaDelegationDelegate((JavaDelegation) delegateInstance));
-      } else {
-        addError(delegateInstance.getClass().getName()+" doesn't implement "+JavaDelegation.class.getName()+" nor "+ActivityBehavior.class.getName(), serviceTaskElement);
-      }
+      activity.setActivityBehavior(new ClassDelegate(className, parseFieldDeclarations(serviceTaskElement)));
       
     } else if (expression != null && expression.trim().length() > 0) {
       activity.setActivityBehavior(new ServiceTaskExpressionActivityBehavior(expressionManager.createExpression(expression), resultVariableName));
@@ -840,7 +828,7 @@ public class BpmnParse extends Parse {
   
   protected void parseEmailServiceTask(ActivityImpl activity, Element serviceTaskElement, List<FieldDeclaration> fieldDeclarations) {
     validateFieldDeclarationsForEmail(serviceTaskElement, fieldDeclarations);
-    activity.setActivityBehavior(instantiateAndHandleFieldDeclarations(MailActivityBehavior.class, fieldDeclarations));
+    activity.setActivityBehavior((MailActivityBehavior) ClassDelegate.instantiateDelegate(MailActivityBehavior.class, fieldDeclarations));
   }
   
   protected void validateFieldDeclarationsForEmail(Element serviceTaskElement, List<FieldDeclaration> fieldDeclarations) {
@@ -865,19 +853,15 @@ public class BpmnParse extends Parse {
       addError("Text or html field should be provided", serviceTaskElement);
     }
   }
-  
-  public List<FieldDeclaration> parseFieldDeclarationsOnServiceTask(Element serviceTaskElement) {
-    Element extensionElement = serviceTaskElement.element("extensionElements");
-    if (extensionElement != null) {
-      return parseFieldDeclarations(extensionElement);
-    }
-    return new ArrayList<FieldDeclaration>();
-  }
-  
+    
   public List<FieldDeclaration> parseFieldDeclarations(Element element) {
     List<FieldDeclaration> fieldDeclarations = new ArrayList<FieldDeclaration>();
     
-    List<Element> fieldDeclarationElements = element.elementsNS(BpmnParser.ACTIVITI_BPMN_EXTENSIONS_NS, "field");
+    Element elementWithFieldInjections = element.element("extensionElements");
+    if (elementWithFieldInjections == null) { // Custom extensions will just have the <field.. as a subelement
+      elementWithFieldInjections = element;
+    }
+    List<Element> fieldDeclarationElements = elementWithFieldInjections.elementsNS(BpmnParser.ACTIVITI_BPMN_EXTENSIONS_NS, "field");
     if (fieldDeclarationElements != null && !fieldDeclarationElements.isEmpty()) {
       
       for (Element fieldDeclarationElement : fieldDeclarationElements) {
@@ -1201,12 +1185,7 @@ public class BpmnParse extends Parse {
     String expression = taskListenerElement.attribute( "expression");
     
     if(className != null && className.trim().length() > 0) {
-      Object delegateInstance = instantiateDelegate(className, parseFieldDeclarations(taskListenerElement));
-      if (delegateInstance instanceof TaskListener) {
-        taskListener = (TaskListener) delegateInstance; 
-      } else {
-        addError(delegateInstance.getClass().getName()+" doesn't implement "+TaskListener.class, taskListenerElement);
-      }
+      taskListener = new ClassDelegate(className, parseFieldDeclarations(taskListenerElement));
     } else if(expression != null && expression.trim().length() > 0) {
       taskListener = new ExpressionTaskListener(expressionManager.createExpression(expression));
     } else {
@@ -1647,16 +1626,7 @@ public class BpmnParse extends Parse {
     String expression = executionListenerElement.attribute( "expression");
     
     if(className != null && className.trim().length() > 0) {
-
-      Object delegateInstance = instantiateDelegate(className, parseFieldDeclarations(executionListenerElement));
-      if (delegateInstance instanceof ExecutionListener) {
-        executionListener = (ExecutionListener) delegateInstance; 
-      } else if (delegateInstance instanceof JavaDelegation) {
-        executionListener = new JavaDelegationDelegate((JavaDelegation) delegateInstance);
-      } else {
-        addError(delegateInstance.getClass().getName()+" doesn't implement "+JavaDelegation.class.getName()+" nor "+ExecutionListener.class.getName(), executionListenerElement);
-      }
-      
+      executionListener = new ClassDelegate(className, parseFieldDeclarations(executionListenerElement));
     } else if(expression != null && expression.trim().length() > 0) {
       executionListener = new ExpressionExecutionListener(expressionManager.createExpression(expression));
     } else {
@@ -1744,41 +1714,6 @@ public class BpmnParse extends Parse {
       return Boolean.FALSE;
     }
     return null;
-  }
-  
-  @SuppressWarnings("unchecked")
-  protected <T> T instantiateAndHandleFieldDeclarations(Class<T> clazz, List<FieldDeclaration> fieldDeclarations) {
-    return (T) instantiateDelegate(clazz.getName(), fieldDeclarations);
-  }
-  
-  protected Object instantiateDelegate(String className, List<FieldDeclaration> fieldDeclarations) {
-    Object object = ReflectUtil.instantiate(className);
-    if(fieldDeclarations != null) {
-      for(FieldDeclaration declaration : fieldDeclarations) {
-        Field field = ReflectUtil.getField(declaration.getName(), object);
-        if(field == null) {
-          throw new ActivitiException("Field definition uses unexisting field '" + declaration.getName() + "' on class " + className);
-        }
-        // Check if the delegate field's type is correct
-       if(!fieldTypeCompatible(declaration, field)) {
-         throw new ActivitiException("Incompatible type set on field declaration '" + declaration.getName() 
-            + "' for class " + className 
-            + ". Declared value has type " + declaration.getValue().getClass().getName() 
-            + ", while expecting " + field.getType().getName());
-       }
-       ReflectUtil.setField(field, object, declaration.getValue());
-      }
-    }
-    return object;
-  }
-  
-  protected boolean fieldTypeCompatible(FieldDeclaration declaration, Field field) {
-    if(declaration.getValue() != null) {
-      return field.getType().isAssignableFrom(declaration.getValue().getClass());
-    } else {      
-      // Null can be set any field type
-      return true;
-    }
   }
   
 }

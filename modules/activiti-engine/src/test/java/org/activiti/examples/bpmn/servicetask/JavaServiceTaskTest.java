@@ -63,6 +63,16 @@ public class JavaServiceTaskTest extends ActivitiInternalTestCase {
     assertEquals("timrek .rM olleH", runtimeService.getVariable(execution.getId(), "var2"));
     assertEquals("elam :si redneg ruoY", runtimeService.getVariable(execution.getId(), "var1"));
   }
+  
+  @Deployment
+  public void testUnexistingClassDelegation() {
+    try {
+      runtimeService.startProcessInstanceByKey("unexistingClassDelegation");
+      fail();
+    } catch (ActivitiException e) {
+      assertTrue(e.getMessage().contains("couldn't instantiate class org.activiti.BogusClass"));
+    }
+  }
 
   public void testIllegalUseOfResultVariableName() {
     try {
