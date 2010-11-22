@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<activiti-cfg>
+  
+  <!-- In memory db for test case -->
+  <database type="h2" schema-strategy="create-drop">
+    <jdbc url="jdbc:h2:mem:activiti;DB_CLOSE_DELAY=1000"
+          driver="org.h2.Driver"
+          username="sa"
+          password="" />
+  </database>
+  
+  <job-executor activate="on" />
+  
+  <mail server="localhost" port="5025" />
+  
+</activiti-cfg>
