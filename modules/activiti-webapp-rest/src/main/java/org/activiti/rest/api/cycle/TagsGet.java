@@ -68,7 +68,7 @@ public class TagsGet extends ActivitiCycleWebScript {
    */
   private Map<String, String> getTagsByArtifact(String connectorId, String artifactId) {
     Map<String, String> tags = new HashMap<String, String>();
-    for(RepositoryNodeTag repositoryNodeTag : this.cycleService.getTagsForNode(connectorId, artifactId)) {
+    for (RepositoryNodeTag repositoryNodeTag : this.cycleService.getRepositoryNodeTags(connectorId, artifactId)) {
       tags.put(repositoryNodeTag.getName(), repositoryNodeTag.getAlias());
     }
     return tags;
