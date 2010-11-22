@@ -29,7 +29,7 @@
   <select id="selectArtifactTag" parameterType="string" resultMap="resultMapCycleArtifactTag">
   	select * from ACT_CY_TAG where ID_ = #{id}
   </select>
-    
+      
   <select id="selectAllTags" resultType="list" resultMap="resultMapCycleArtifactTag"> 
   	select * from ACT_CY_TAG ORDER BY NAME_
   </select>
@@ -41,6 +41,10 @@
   <select id="selectTagsByName" parameterType="string" resultType="list" resultMap="resultMapCycleArtifactTag"> 
   	select * from ACT_CY_TAG where NAME_ = #{name}
   </select>
+  
+  <select id="selectSimiliarTagNames" parameterType="string" resultType="list" resultMap="resultMapCycleArtifactTag">
+  	select * from ACT_CY_TAG where NAME_ like #{tagNamePattern}
+  </select>  
  
    <resultMap id="resultMapCycleArtifactTagContent" type="org.activiti.cycle.impl.CycleTagContentImpl">
     <result property="tagName" column="NAME_"/>

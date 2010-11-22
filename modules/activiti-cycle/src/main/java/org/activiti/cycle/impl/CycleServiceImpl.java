@@ -22,7 +22,6 @@ import org.activiti.cycle.RepositoryNode;
 import org.activiti.cycle.RepositoryNodeCollection;
 import org.activiti.cycle.RepositoryNodeNotFoundException;
 import org.activiti.cycle.RepositoryNodeTag;
-import org.activiti.cycle.TransactionalRepositoryConnector;
 import org.activiti.cycle.impl.conf.ConfigurationContainer;
 import org.activiti.cycle.impl.conf.PasswordEnabledRepositoryConnectorConfiguration;
 import org.activiti.cycle.impl.connector.demo.DemoConnectorConfiguration;
@@ -339,33 +338,60 @@ public class CycleServiceImpl implements CycleService {
 		cycleDAO.deleteArtifactLink(linkId);
 	}
 
-	public void addTag(String connectorId, String artifactId, String tagName, String alias) {
-		RepositoryNodeTagEntity tagEntity = new RepositoryNodeTagEntity(tagName, connectorId, artifactId);
-		tagEntity.setAlias(alias);
-		cycleDAO.insertTag(tagEntity);
-	}
 
-	public void deleteTag(String connectorId, String artifactId, String tagName) {
-		cycleDAO.deleteTag(connectorId, artifactId, tagName);
-	}
+  public void addTag(String connectorId, String artifactId, String tagName, String alias) {
+    RepositoryNodeTagEntity tagEntity = new RepositoryNodeTagEntity(tagName, connectorId, artifactId);
+    tagEntity.setAlias(alias);
+    cycleDAO.insertTag(tagEntity);
+  }
 
-	public List<CycleTagContent> getRootTags() {
-		ArrayList<CycleTagContent> result = new ArrayList<CycleTagContent>();
-		result.addAll(cycleDAO.getTagsGroupedByName());
-		return result;
-	}
+  public void setTags(String connectorId, String nodeId, List<String> tags) {
+    // TODO: Improve method to really just update changes!
+    List<RepositoryNodeTagEntity> tagsForNode = cycleDAO.getTagsForNode(connectorId, nodeId);
+    for (RepositoryNodeTagEntity tagEntity : tagsForNode) {
+      cycleDAO.deleteTag(connectorId, nodeId, tagEntity.getName());
+    }
+    for (String tag : tags) {
+      // TODO: Add Alias to setTags method as soon as we have a UI concept for
+      // it
+      addTag(connectorId, nodeId, tag, null);
+    }
+  }
 
-	public CycleTagContent getTagContent(String name) {
-		CycleTagContentImpl tagContent = cycleDAO.getTagContent(name);
-		tagContent.resolveRepositoryArtifacts(this);
-		return tagContent;
-	}
+  public List<RepositoryNodeTag> getRepositoryNodeTags(String connectorId, String nodeId) {
+    ArrayList<RepositoryNodeTag> list = new ArrayList<RepositoryNodeTag>();
+    list.addAll(cycleDAO.getTagsForNode(connectorId, nodeId));
+    return list;
+  }
 
-	public List<RepositoryNodeTag> getTagsForNode(String connectorId, String artifactId) {
-		ArrayList<RepositoryNodeTag> list = new ArrayList<RepositoryNodeTag>();
-		list.addAll(cycleDAO.getTagsForNode(connectorId, artifactId));
-		return list;
-	}
+  public List<String> getTags(String connectorId, String nodeId) {
+    ArrayList<String> result = new ArrayList<String>();
+    List<RepositoryNodeTagEntity> tagsForNode = cycleDAO.getTagsForNode(connectorId, nodeId);
+    for (RepositoryNodeTagEntity tagEntity : tagsForNode) {
+      result.add(tagEntity.getName());
+    }
+    return result;
+  }
+
+  public List<String> getSimiliarTagNames(String tagNamePattern) {
+    return cycleDAO.getSimiliarTagNames(tagNamePattern);
+  }
+
+  public void deleteTag(String connectorId, String artifactId, String tagName) {
+    cycleDAO.deleteTag(connectorId, artifactId, tagName);
+  }
+
+  public List<CycleTagContent> getRootTags() {
+    ArrayList<CycleTagContent> result = new ArrayList<CycleTagContent>();
+    result.addAll(cycleDAO.getTagsGroupedByName());
+    return result;
+  }
+
+  public CycleTagContent getTagContent(String name) {
+    CycleTagContentImpl tagContent = cycleDAO.getTagContent(name);
+    tagContent.resolveRepositoryArtifacts(this);
+    return tagContent;
+  }
 
 	private RepositoryConnector getRepositoryConnector(String connectorId) {
 		for (RepositoryConnector connector : this.repositoryConnectors) {

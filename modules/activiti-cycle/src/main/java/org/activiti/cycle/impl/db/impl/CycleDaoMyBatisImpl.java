@@ -3,6 +3,7 @@ package org.activiti.cycle.impl.db.impl;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.TreeSet;
 import java.util.UUID;
 
 import org.activiti.cycle.impl.CycleTagContentImpl;
@@ -162,6 +163,26 @@ public class CycleDaoMyBatisImpl extends AbstractCycleDaoMyBatisImpl implements 
         return linkResultList;
       }
       return new ArrayList<RepositoryNodeTagEntity>();
+    } finally {
+      session.close();
+    }
+  }
+
+  @SuppressWarnings("unchecked")
+  public List<String> getSimiliarTagNames(String tagNamePattern) {
+    SqlSession session = openSession();
+    try {
+      HashMap<String, Object> parameters = new HashMap<String, Object>();
+      // TODO: Check correct usage of LIKE
+      parameters.put("tagNamePattern", "%" + tagNamePattern + "%");
+
+      // TODO: change to return list of unique strings directly
+      List<RepositoryNodeTagEntity> tags = session.selectList("selectSimiliarTagNames", parameters);
+      TreeSet<String> result = new TreeSet<String>();
+      for (RepositoryNodeTagEntity tagEntity : tags) {
+        result.add(tagEntity.getName());
+      }
+      return new ArrayList<String>(result);
     } finally {
       session.close();
     }

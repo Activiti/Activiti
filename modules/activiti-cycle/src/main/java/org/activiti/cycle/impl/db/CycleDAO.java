@@ -57,5 +57,6 @@ public interface CycleDAO {
 
   public List<RepositoryNodeCommentEntity> getCommentsForNode(String connectorId, String artifactId);
 
+  public List<String> getSimiliarTagNames(String tagNamePattern);
 
 }

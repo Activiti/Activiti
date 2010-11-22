@@ -112,26 +112,43 @@ public interface CycleService {
   public void addArtifactLink(RepositoryArtifactLink link);
 
   public List<RepositoryArtifactLink> getArtifactLinks(String sourceConnectorId, String sourceArtifactId);
-  // public List<RepositoryArtifactLink> getArtifactLinks(String
-  // sourceArtifactId, Long sourceRevision, String type);
 
   public void deleteLink(String linkId);
-
-  // /**
-  // * add tag for the given node id. Tags are identified by their string names
-  // */
-  // public void addTag(String nodeId, String tagName);
 
   /**
    * add tag for the given node id and specify an alias which can be used in the
    * GUI later on when showing the tag to the user
    */
-  public void addTag(String connectorId, String artifactId, String tagName, String alias);
+  public void addTag(String connectorId, String nodeId, String tagName, String alias);
+
+  public List<String> getTags(String connectorId, String nodeId);
+
+  public List<RepositoryNodeTag> getRepositoryNodeTags(String connectorId, String nodeId);
+
+  /**
+   * sets provided tags to the given artifact, this means it should reset the
+   * previous tags for that artifact!
+   * 
+   * Additionally it does some magic for you:
+   * <ul>
+   * <li>checks for every tag whether it is empty (doesn't create it if that is
+   * the case)</li>
+   * <li>checks whether the tag already exists, CycleService should worry about
+   * duplicate exceptions etc.</li>
+   * </ul>
+   */
+  public void setTags(String connectorId, String nodeId, List<String> tags);
 
   /**
    * delete the tag
    */
-  public void deleteTag(String connectorId, String artifactId, String tagName);
+  public void deleteTag(String connectorId, String nodeId, String tagName);
+
+  /**
+   * get all tag names matching the given pattern. This can be used to find
+   * already used tags to resuse them
+   */
+  public List<String> getSimiliarTagNames(String tagNamePattern);
 
   /**
    * get all available tags for the system in order to show them in the GUI (as
@@ -141,5 +158,4 @@ public interface CycleService {
 
   public List<CycleTagContent> getRootTags();
 
-  public List<RepositoryNodeTag> getTagsForNode(String connectorId, String artifactId);
 }

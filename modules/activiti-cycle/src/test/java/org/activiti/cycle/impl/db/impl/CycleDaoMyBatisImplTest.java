@@ -120,6 +120,50 @@ public class CycleDaoMyBatisImplTest extends ActivitiInternalTestCase {
 
     List<RepositoryNodeTagEntity> tags3 = dao.getTagsForNode("connector1", "artifact1");
     assertEquals(0, tags3.size());    
+
+    // List<String> similiarTagNames = dao.getSimiliarTagNames("ame");
+    // assertEquals(2, similiarTagNames.size());
+    // assertEquals("name1", similiarTagNames.get(0));
+    // assertEquals("name2", similiarTagNames.get(1));
+  }
+
+  public void testTagFindSimiliar() {
+    RepositoryNodeTagEntity tag = new RepositoryNodeTagEntity("name1", "connector1", "artifact1");
+    dao.insertTag(tag);
+
+    List<RepositoryNodeTagEntity> tags1 = dao.getTagsForNode("connector1", "artifact1");
+    assertEquals(1, tags1.size());
+    assertEquals("name1", tags1.get(0).getName());
+    assertNotNull(tags1.get(0).getId());
+
+    List<RepositoryNodeTagEntity> tags2 = dao.getTagsForNode("connector2", "artifact2");
+    assertEquals(0, tags2.size());
+
+    CycleTagContentImpl tagContent1 = dao.getTagContent("name1");
+    assertEquals("name1", tagContent1.getName());
+    assertEquals(1, tagContent1.getUsageCount());
+
+    RepositoryNodeTagEntity tag2 = new RepositoryNodeTagEntity("name1", "connector1", "artifact2");
+    dao.insertTag(tag2);
+    RepositoryNodeTagEntity tag3 = new RepositoryNodeTagEntity("name2", "connector1", "artifact2");
+    dao.insertTag(tag3);
+
+    CycleTagContentImpl tagContent2 = dao.getTagContent("name1");
+    assertEquals("name1", tagContent2.getName());
+    assertEquals(2, tagContent2.getUsageCount());
+
+    List<CycleTagContentImpl> tagsGroupedByName = dao.getTagsGroupedByName();
+    assertEquals("name1", tagsGroupedByName.get(0).getName());
+    assertEquals(2, tagsGroupedByName.get(0).getUsageCount());
+    assertEquals("name2", tagsGroupedByName.get(1).getName());
+    assertEquals(1, tagsGroupedByName.get(1).getUsageCount());
+
+    dao.deleteTag("connector1", "artifact1", "name1");
+    dao.deleteTag("connector1", "artifact2", "name1");
+    dao.deleteTag("connector1", "artifact2", "name2");
+
+    List<RepositoryNodeTagEntity> tags3 = dao.getTagsForNode("connector1", "artifact1");
+    assertEquals(0, tags3.size());
   }
   
   public void testComment() {
