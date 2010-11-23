@@ -1507,7 +1507,7 @@ public class FakeLdapService {
        </itemizedlist>
        
        <para>
-         To specify an implementation of ActivityBehavior, the fully qualified classname 
+         To specify a class that is called during process execution, the fully qualified classname 
          needs to be provided by the <emphasis role="bold">'activiti:class'</emphasis>
          attribute.
 <programlisting>
@@ -1515,6 +1515,8 @@ public class FakeLdapService {
              name=&quot;My Java Service Task&quot; 
              activiti:class=&quot;org.activiti.MyActivityBehavior&quot; /&gt;
 </programlisting>
+         See <link linkend="bpmnJavaServiceTaskImplementation">the <emphasis>implementation</emphasis> section</link>
+         for more details on how to use such a class.
        </para>
        
        <para>
@@ -1601,11 +1603,22 @@ public class ToUppercase implements JavaDelegation {
 }
 </programlisting>
         </para>
-        <para>An important thing to note is that there will be <emphasis role="bold">only one instance of that Java class created for the serviceTask it is defined on</emphasis>.
-        All process-instances share the same class instance that will be used to call <emphasis>execute(DelegateExecution)</emphasis>. 
-        This means that the class must not use any member variables and must be thread-safe, since it can be executed simultaneously from different threads.
-        This also influences the way <link linkend="serviceTaskFieldInjection">Field injection</link> is handled.
-        
+        <para>
+          Note: there will be <emphasis role="bold">only one instance of that Java class created for the serviceTask it is defined on</emphasis>.
+          All process-instances share the same class instance that will be used to call <emphasis>execute(DelegateExecution)</emphasis>. 
+          This means that the class must not use any member variables and must be thread-safe, since it can be executed simultaneously from different threads.
+          This also influences the way <link linkend="serviceTaskFieldInjection">Field injection</link> is handled.
+        </para>
+        <para>
+          The classes that are referenced in the process definition are <emphasis role="bold">NOT
+          instantiated during deployment</emphasis>. Only when a process execution arrives 
+          for the first time at the point in the process where the class is used, an instance
+          of that class will be created. If the class cannot be found, an <literal>ActivitiException</literal>
+          will be thrown. The reasoning for this is that the environment (and more
+          specifically the <emphasis>classpath</emphasis>) when you are deploying is often
+          different from the actual runtime environment. For example when using <emphasis>ant</emphasis>
+          or the business archive upload in Activiti Probe to deploy processes,
+          the classpath does not contain the referenced classes.  
         </para>
      
      </section>
