@@ -34,6 +34,8 @@ import org.activiti.engine.impl.bpmn.ClassStructureDefinition;
 import org.activiti.engine.impl.bpmn.Condition;
 import org.activiti.engine.impl.bpmn.Data;
 import org.activiti.engine.impl.bpmn.DataRef;
+import org.activiti.engine.impl.bpmn.DelegateExpressionExecutionListener;
+import org.activiti.engine.impl.bpmn.DelegateExpressionTaskListener;
 import org.activiti.engine.impl.bpmn.ExclusiveGatewayActivity;
 import org.activiti.engine.impl.bpmn.ExpressionExecutionListener;
 import org.activiti.engine.impl.bpmn.ExpressionTaskListener;
@@ -52,6 +54,7 @@ import org.activiti.engine.impl.bpmn.OperationImplementation;
 import org.activiti.engine.impl.bpmn.ParallelGatewayActivity;
 import org.activiti.engine.impl.bpmn.ReceiveTaskActivity;
 import org.activiti.engine.impl.bpmn.ScriptTaskActivity;
+import org.activiti.engine.impl.bpmn.ServiceTaskDelegateExpressionActivityBehavior;
 import org.activiti.engine.impl.bpmn.ServiceTaskExpressionActivityBehavior;
 import org.activiti.engine.impl.bpmn.SimpleDataInputAssociation;
 import org.activiti.engine.impl.bpmn.StructureDefinition;
@@ -757,6 +760,7 @@ public class BpmnParse extends Parse {
     String type = serviceTaskElement.attributeNS(BpmnParser.ACTIVITI_BPMN_EXTENSIONS_NS, "type");
     String className = serviceTaskElement.attributeNS(BpmnParser.ACTIVITI_BPMN_EXTENSIONS_NS, "class");
     String expression = serviceTaskElement.attributeNS(BpmnParser.ACTIVITI_BPMN_EXTENSIONS_NS, "expression");
+    String delegateExpression = serviceTaskElement.attributeNS(BpmnParser.ACTIVITI_BPMN_EXTENSIONS_NS, "delegateExpression");
     String resultVariableName = serviceTaskElement.attributeNS(BpmnParser.ACTIVITI_BPMN_EXTENSIONS_NS, "resultVariableName");
     String implementation = serviceTaskElement.attribute("implementation");
     String operationRef = this.resolveName(serviceTaskElement.attribute("operationRef"));
@@ -773,6 +777,12 @@ public class BpmnParse extends Parse {
         addError("'resultVariableName' not supported for service tasks using 'class'", serviceTaskElement);
       }
       activity.setActivityBehavior(new ClassDelegate(className, parseFieldDeclarations(serviceTaskElement)));
+      
+    } else if (delegateExpression != null) {
+      if (resultVariableName != null) {
+        addError("'resultVariableName' not supported for service tasks using 'delegateExpression'", serviceTaskElement);
+      }
+      activity.setActivityBehavior(new ServiceTaskDelegateExpressionActivityBehavior(expressionManager.createExpression(delegateExpression)));
       
     } else if (expression != null && expression.trim().length() > 0) {
       activity.setActivityBehavior(new ServiceTaskExpressionActivityBehavior(expressionManager.createExpression(expression), resultVariableName));
@@ -803,7 +813,7 @@ public class BpmnParse extends Parse {
         activity.setActivityBehavior(webServiceActivityBehavior);
       }
     } else {
-      addError("'class', 'type', or 'expression' attribute is mandatory on serviceTask", serviceTaskElement);
+      addError("'class', 'delegateExpression', type', or 'expression' attribute is mandatory on serviceTask", serviceTaskElement);
     }
     
     parseExecutionListenersOnScope(serviceTaskElement, activity);
@@ -1182,12 +1192,15 @@ public class BpmnParse extends Parse {
     TaskListener taskListener = null;
     
     String className = taskListenerElement.attribute("class");
-    String expression = taskListenerElement.attribute( "expression");
+    String expression = taskListenerElement.attribute("expression");
+    String delegateExpression = taskListenerElement.attribute("delegateExpression");
     
-    if(className != null && className.trim().length() > 0) {
+    if(className != null) {
       taskListener = new ClassDelegate(className, parseFieldDeclarations(taskListenerElement));
-    } else if(expression != null && expression.trim().length() > 0) {
+    } else if(expression != null) {
       taskListener = new ExpressionTaskListener(expressionManager.createExpression(expression));
+    } else if (delegateExpression != null) {
+      taskListener = new DelegateExpressionTaskListener(expressionManager.createExpression(delegateExpression));
     } else {
       addError("Element 'class' or 'expression' is mandatory on taskListener", taskListenerElement);
     }
@@ -1623,12 +1636,15 @@ public class BpmnParse extends Parse {
     ExecutionListener executionListener = null;
     
     String className = executionListenerElement.attribute("class");
-    String expression = executionListenerElement.attribute( "expression");
+    String expression = executionListenerElement.attribute("expression");
+    String delegateExpression = executionListenerElement.attribute("delegateExpression");
     
-    if(className != null && className.trim().length() > 0) {
+    if(className != null) {
       executionListener = new ClassDelegate(className, parseFieldDeclarations(executionListenerElement));
-    } else if(expression != null && expression.trim().length() > 0) {
+    } else if (expression != null) {
       executionListener = new ExpressionExecutionListener(expressionManager.createExpression(expression));
+    } else if (delegateExpression != null) {
+      executionListener = new DelegateExpressionExecutionListener(expressionManager.createExpression(delegateExpression));
     } else {
       addError("Element 'class' or 'expression' is mandatory on executionListener", executionListenerElement);
     }

@@ -28,7 +28,8 @@
     <property name="dataSource" ref="dataSource" />
     <property name="transactionManager" ref="transactionManager" />
     <property name="dbSchemaStrategy" value="check-version" />
-    <property name="deploymentResources" value="classpath*:/org/activiti/spring/test/autodeploy.*.bpmn20.xml" />
+    <property name="jobExecutorActivate" value="false" />
+    <property name="deploymentResources" value="classpath*:/org/activiti/spring/test/autodeployment/autodeploy.*.bpmn20.xml" />
   </bean>
 
   <bean id="repositoryService" factory-bean="processEngine" factory-method="getRepositoryService" />

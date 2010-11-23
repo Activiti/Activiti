@@ -10,8 +10,11 @@
     <sequenceFlow id="flow1" sourceRef="start" targetRef="print" />
     
     <serviceTask id="print" 
-                 activiti:expression="#{printer.printMessage()}" />
-    <sequenceFlow id="flow2" sourceRef="print" targetRef="end" />
+                 activiti:expression="#{printer.printMessage(execution)}" />
+    <sequenceFlow id="flow2" sourceRef="print" targetRef="userTask" />
+    
+    <userTask id="userTask" />
+    <sequenceFlow id="flow3" sourceRef="userTask" targetRef="end" />
     
     <endEvent id="end" />
     

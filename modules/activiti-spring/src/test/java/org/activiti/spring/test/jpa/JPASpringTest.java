@@ -16,13 +16,11 @@ package org.activiti.spring.test.jpa;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.activiti.engine.RepositoryService;
-import org.activiti.engine.RuntimeService;
-import org.activiti.engine.TaskService;
-import org.activiti.engine.impl.test.PvmTestCase;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.activiti.engine.test.Deployment;
+import org.activiti.spring.impl.test.ActivitiInternalSpringTestCase;
+import org.springframework.test.context.ContextConfiguration;
 
 
 /**
@@ -30,23 +28,15 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
  * 
  * @author Frederik Heremans
  */
-public class JPASpringTest extends PvmTestCase{
-
-  public void testJPAVariableSpring() {
-    ClassPathXmlApplicationContext applicationContext = new ClassPathXmlApplicationContext("org/activiti/spring/test/jpa/JPASpringTest-context.xml");
-    
-    RuntimeService runtimeService = (RuntimeService) applicationContext.getBean("runtimeService");
-    TaskService taskService = (TaskService) applicationContext.getBean("taskService"); 
-    RepositoryService repositoryService = (RepositoryService) applicationContext.getBean("repositoryService"); 
-    
-    // Simulate form submission with customerName and amount
+@ContextConfiguration("classpath:org/activiti/spring/test/jpa/JPASpringTest-context.xml")
+public class JPASpringTest extends ActivitiInternalSpringTestCase {
+  
+  @Deployment(resources = {"org/activiti/spring/test/jpa/JPASpringTest.bpmn20.xml"})
+  public void testJpaVariableHappyPath() {
     Map<String, Object> variables = new HashMap<String, Object>();
     variables.put("customerName", "John Doe");
     variables.put("amount", 15000L);
     
-    // ----------------------------
-    // First process instance that follows the path of an approved loan request
-    // ----------------------------
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("LoanRequestProcess", variables);
     
     // Variable should be present containing the loanRequest created by the spring bean
@@ -69,20 +59,21 @@ public class JPASpringTest extends PvmTestCase{
     // If approved, the processsInstance should be finished, gateway based on loanRequest.approved value
     assertEquals(0, runtimeService.createProcessInstanceQuery().processInstanceId(processInstance.getId()).count());
     
-    // ----------------------------
-    // Second process instance that follows the path of an disapproved loan request
-    // ----------------------------
-    variables = new HashMap<String, Object>();
+  }
+
+  @Deployment(resources = {"org/activiti/spring/test/jpa/JPASpringTest.bpmn20.xml"})
+  public void testJpaVariableDisapprovalPath() {
+    Map<String, Object> variables = new HashMap<String, Object>();
     variables.put("customerName", "Jane Doe");
-    variables.put("amount", 50000L);
-    
-    processInstance = runtimeService.startProcessInstanceByKey("LoanRequestProcess", variables);
+    variables.put("amount", 50000);
+
+    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("LoanRequestProcess", variables);
     
     // Variable should be present containing the loanRequest created by the spring bean
-    value = runtimeService.getVariable(processInstance.getId(), "loanRequest");
+    Object value = runtimeService.getVariable(processInstance.getId(), "loanRequest");
     assertNotNull(value);
     assertTrue(value instanceof LoanRequest);
-    request = (LoanRequest) value;
+    LoanRequest request = (LoanRequest) value;
     assertEquals("Jane Doe", request.getCustomerName());
     assertEquals(50000L, request.getAmount().longValue());
     assertFalse(request.isApproved());
@@ -91,7 +82,7 @@ public class JPASpringTest extends PvmTestCase{
     variables = new HashMap<String, Object>();
     variables.put("approvedByManager", Boolean.FALSE);
     
-    task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
+    Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
     assertNotNull(task);
     taskService.complete(task.getId(), variables);
     
@@ -102,12 +93,7 @@ public class JPASpringTest extends PvmTestCase{
     // If disapproved, an extra task will be available instead of the process ending
     task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
     assertNotNull(task);
-    
     assertEquals("Send rejection letter", task.getName());
-    
-    // Finally cleanup the deployment
-    String deploymentId = repositoryService.createProcessDefinitionQuery().processDefinitionKey("LoanRequestProcess").singleResult().getDeploymentId();
-    repositoryService.deleteDeploymentCascade(deploymentId);
   }
   
   

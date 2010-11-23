@@ -8,8 +8,6 @@
                            http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-2.5.xsd
                            http://www.springframework.org/schema/tx      http://www.springframework.org/schema/tx/spring-tx-3.0.xsd">
 
-  <bean id="fakeLdapService" class="org.activiti.spring.test.taskassignment.FakeLdapService" />
-
   <bean id="dataSource" class="org.springframework.jdbc.datasource.TransactionAwareDataSourceProxy">
     <property name="targetDataSource">
       <bean class="org.springframework.jdbc.datasource.SimpleDriverDataSource">
@@ -29,13 +27,22 @@
     <property name="databaseType" value="h2" />
     <property name="dataSource" ref="dataSource" />
     <property name="transactionManager" ref="transactionManager" />
+    <property name="jobExecutorActivate" value="false" />
     <property name="dbSchemaStrategy" value="create-if-necessary" />
   </bean>
-
+  
   <bean id="repositoryService" factory-bean="processEngine" factory-method="getRepositoryService" />
   <bean id="runtimeService" factory-bean="processEngine" factory-method="getRuntimeService" />
   <bean id="taskService" factory-bean="processEngine" factory-method="getTaskService" />
   <bean id="historyService" factory-bean="processEngine" factory-method="getHistoryService" />
   <bean id="managementService" factory-bean="processEngine" factory-method="getManagementService" />
+
+  <tx:annotation-driven transaction-manager="transactionManager"/>
+
+  <bean id="userBean" class="org.activiti.spring.test.transaction.UserBean">
+    <property name="runtimeService" ref="runtimeService" />
+  </bean>
+
+  <bean id="printer" class="org.activiti.spring.test.transaction.Printer" />
 
 </beans>

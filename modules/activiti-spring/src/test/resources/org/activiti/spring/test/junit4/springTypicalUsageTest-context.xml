@@ -42,10 +42,4 @@
 
   <tx:annotation-driven transaction-manager="transactionManager"/>
 
-  <bean id="userBean" class="org.activiti.spring.test.UserBean">
-    <property name="runtimeService" ref="runtimeService" />
-  </bean>
-
-  <bean id="printer" class="org.activiti.spring.test.Printer" />
-
 </beans>

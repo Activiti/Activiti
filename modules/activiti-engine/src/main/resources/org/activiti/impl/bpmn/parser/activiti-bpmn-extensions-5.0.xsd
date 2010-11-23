@@ -98,6 +98,16 @@
       </documentation>
     </annotation>
   </attribute>
+  
+  <attribute name="delegateExpression">
+    <annotation>
+      <documentation>
+        Allows to specify an expression on a service task, taskListener or executionListener
+        that at runtime must resolve to an object that implements the corresponsing
+        interface (JavaDelegation, ActivityBehavior, TaskListener, ExecutionListener, etc.)
+      </documentation>
+    </annotation>
+  </attribute>
 
   <element name="field">
     <annotation>

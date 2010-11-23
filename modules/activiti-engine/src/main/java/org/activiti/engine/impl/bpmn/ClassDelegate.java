@@ -107,7 +107,7 @@ public class ClassDelegate implements ActivityBehavior, TaskListener, ExecutionL
     }
   }
   
-  // --HELPER METHODS (also usable for external classes) ----------------------------------------
+  // --HELPER METHODS (also usable by external classes) ----------------------------------------
   
   public static Object instantiateDelegate(Class<?> clazz, List<FieldDeclaration> fieldDeclarations) {
     return instantiateDelegate(clazz.getName(), fieldDeclarations);

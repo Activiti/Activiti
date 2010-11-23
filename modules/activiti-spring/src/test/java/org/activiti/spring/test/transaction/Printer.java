@@ -11,7 +11,9 @@
  * limitations under the License.
  */
 
-package org.activiti.spring.test;
+package org.activiti.spring.test.transaction;
+
+import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
 
 
 /**
@@ -19,7 +21,7 @@ package org.activiti.spring.test;
  */
 public class Printer {
 
-  public void printMessage() {
-    System.out.println("hello world");
+  public void printMessage(ActivityExecution execution) {
+    execution.setVariable("myVar", "Hello from Printer!");
   }
 }

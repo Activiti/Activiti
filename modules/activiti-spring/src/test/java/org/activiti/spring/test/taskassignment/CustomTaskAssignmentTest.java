@@ -12,51 +12,31 @@
  */
 package org.activiti.spring.test.taskassignment;
 
-import org.activiti.engine.RepositoryService;
-import org.activiti.engine.RuntimeService;
-import org.activiti.engine.TaskService;
-import org.activiti.engine.impl.test.PvmTestCase;
 import org.activiti.engine.impl.util.CollectionUtil;
-import org.activiti.engine.repository.Deployment;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.activiti.engine.test.Deployment;
+import org.activiti.spring.impl.test.ActivitiInternalSpringTestCase;
+import org.springframework.test.context.ContextConfiguration;
 
 
 /**
  * @author Joram Barrez
  */
-public class CustomTaskAssignmentTest extends PvmTestCase {
+@ContextConfiguration("classpath:org/activiti/spring/test/taskassignment/taskassignment-context.xml")
+public class CustomTaskAssignmentTest extends ActivitiInternalSpringTestCase {
   
+  @Deployment
   public void testSetAssigneeThroughSpringService() {
-    ClassPathXmlApplicationContext applicationContext = new ClassPathXmlApplicationContext("org/activiti/spring/test/taskassignment/taskassignment-context.xml");
-    RuntimeService runtimeService =  applicationContext.getBean(RuntimeService.class);
-    TaskService taskService = applicationContext.getBean(TaskService.class);
-    
     runtimeService.startProcessInstanceByKey("assigneeThroughSpringService", CollectionUtil.singletonMap("emp", "fozzie"));
     assertEquals(1, taskService.createTaskQuery().taskAssignee("Kermit The Frog").count());
-    
-    cleanup(applicationContext);
   }
   
+  @Deployment
   public void testSetCandidateUsersThroughSpringService() {
-    ClassPathXmlApplicationContext applicationContext = new ClassPathXmlApplicationContext("org/activiti/spring/test/taskassignment/taskassignment-context.xml");
-    RuntimeService runtimeService =  applicationContext.getBean(RuntimeService.class);
-    TaskService taskService = applicationContext.getBean(TaskService.class);
-    
     runtimeService.startProcessInstanceByKey("candidateUsersThroughSpringService", CollectionUtil.singletonMap("emp", "fozzie"));
     assertEquals(1, taskService.createTaskQuery().taskCandidateUser("kermit").count());
     assertEquals(1, taskService.createTaskQuery().taskCandidateUser("fozzie").count());
     assertEquals(1, taskService.createTaskQuery().taskCandidateUser("gonzo").count());
     assertEquals(0, taskService.createTaskQuery().taskCandidateUser("mispiggy").count());
-    
-    cleanup(applicationContext);
   }
   
-  private void cleanup(ClassPathXmlApplicationContext applicationContext) {
-    RepositoryService repositoryService = applicationContext.getBean(RepositoryService.class);
-    for (Deployment deployment : repositoryService.createDeploymentQuery().list()) {
-      repositoryService.deleteDeploymentCascade(deployment.getId());
-    }
-    applicationContext.destroy();
-  }
-
 }

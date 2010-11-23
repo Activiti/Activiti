@@ -10,36 +10,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.activiti.spring.test.servicetask;
 
-package org.activiti.engine.impl.bpmn;
-
-import org.activiti.engine.ActivitiException;
-import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.DelegateTask;
-import org.activiti.engine.impl.el.Expression;
 import org.activiti.engine.impl.pvm.delegate.TaskListener;
-import org.activiti.engine.impl.runtime.ExecutionEntity;
-import org.activiti.engine.impl.task.TaskEntity;
 
 
 /**
  * @author Joram Barrez
  */
-public class ExpressionTaskListener implements TaskListener {
-  
-  protected Expression expression;
-  
-  public ExpressionTaskListener(Expression expression) {
-    this.expression = expression;
-  }
+public class MyTaskListenerBean implements TaskListener {
   
   public void notify(DelegateTask delegateTask) {
-    DelegateExecution execution = delegateTask.getExecution();
-    if (execution != null) {
-      expression.getValue(execution);
-    } else {
-      throw new ActivitiException("Expressions are not usable outside a execution context");
-    }
+    delegateTask.getExecution().setVariable("taskListenerVar", "working");
   }
 
 }

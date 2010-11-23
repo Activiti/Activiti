@@ -14,7 +14,6 @@
 package org.activiti.engine.impl.bpmn;
 
 import org.activiti.engine.impl.el.Expression;
-import org.activiti.engine.impl.pvm.delegate.ActivityBehavior;
 import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
 
 
@@ -26,7 +25,7 @@ import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
  * @author Christian Stettler
  * @author Frederik Heremans
  */
-public class ServiceTaskExpressionActivityBehavior extends AbstractBpmnActivity implements ActivityBehavior {
+public class ServiceTaskExpressionActivityBehavior extends AbstractBpmnActivity {
 
   protected Expression expression;
   protected String resultVariableName;
