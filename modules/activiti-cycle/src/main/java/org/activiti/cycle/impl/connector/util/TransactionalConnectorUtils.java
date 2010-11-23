@@ -13,20 +13,20 @@ public class TransactionalConnectorUtils {
 
   /**
    * Calls the
-   * {@link TransactionalRepositoryConnector#commitPendingChanges(String)}
+   * {@link TransactionalRepositoryConnector#commitTransaction(String)}
    * method if connector is an instance of
    * {@link TransactionalRepositoryConnector}. Does nothing otherwise.
    * 
    * @param connector
    * @param comment
    */
-  public static void commitPendingChanges(RepositoryConnector connector, String comment) {
+  public static void commitTransaction(RepositoryConnector connector, String comment) {
     if (!(connector instanceof TransactionalRepositoryConnector)) {
       // not transactional
       return;
     }
     TransactionalRepositoryConnector transactionalRepositoryConnector = (TransactionalRepositoryConnector) connector;
-    transactionalRepositoryConnector.commitPendingChanges(comment);
+    transactionalRepositoryConnector.commitTransaction(comment);
   }
 
   /**

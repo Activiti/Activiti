@@ -7,7 +7,7 @@ package org.activiti.cycle;
  * 
  * It is good practice to call beginTransaction() before making a set of
  * modifications to the repository and then try to commit them using
- * {@link #commitPendingChanges(String)}.
+ * {@link #commitTransaction(String)}.
  * 
  * @author daniel.meyer@camunda.com
  * @see TransactionalConnectorUtils
@@ -21,7 +21,7 @@ public interface TransactionalRepositoryConnector extends RepositoryConnector {
    * <li>if a transaction is already running the method returns</li>
    * <li>if no transaction is running, the method starts a new transaction</li>
    * </ul>
-   * Contract: the user must either call {@link #commitPendingChanges(String)}
+   * Contract: the user must either call {@link #commitTransaction(String)}
    * or {@link #rollbackTransaction()}.
    * 
    * @see TransactionalConnectorUtils#beginTransaction(RepositoryConnector)
@@ -41,9 +41,9 @@ public interface TransactionalRepositoryConnector extends RepositoryConnector {
    * Commits pending changes. Contract: if the commit fails, the user must
    * {@link #rollbackTransaction()}.
    * 
-   * @see TransactionalConnectorUtils#commitPendingChanges(RepositoryConnector,
+   * @see TransactionalConnectorUtils#commitTransaction(RepositoryConnector,
    *      String)
    */
-  public void commitPendingChanges(String comment);
+  public void commitTransaction(String comment);
 
 }

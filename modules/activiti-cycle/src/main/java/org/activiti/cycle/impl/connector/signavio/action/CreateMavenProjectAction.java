@@ -48,7 +48,7 @@ public class CreateMavenProjectAction extends CreateTechnicalBpmnXmlAction {
     try {
       // create maven project
       bpmnArtifact = createProject(targetConnector, targetFolderId, targetName, bpmnXml);
-      TransactionalConnectorUtils.commitPendingChanges(targetConnector, comment);
+      TransactionalConnectorUtils.commitTransaction(targetConnector, comment);
     } catch (RepositoryException e) {
       TransactionalConnectorUtils.rollbackTransaction(targetConnector);
       throw e;

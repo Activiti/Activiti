@@ -200,7 +200,7 @@ public class CycleServiceImpl implements CycleService {
 	 */
 	public void commitPendingChanges(String comment) {
 		for (RepositoryConnector connector : this.repositoryConnectors) {
-			TransactionalConnectorUtils.commitPendingChanges(connector, comment);
+			TransactionalConnectorUtils.commitTransaction(connector, comment);
 		}
 	}
 

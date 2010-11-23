@@ -123,7 +123,7 @@ public class SvnRepositoryConnector extends AbstractRepositoryConnector<SvnConne
     }
   }
 
-  public void commitPendingChanges(String comment) {
+  public void commitTransaction(String comment) {
 
     synchronized (transaction_lock) {
       if (!transactionActive) {
@@ -263,7 +263,7 @@ public class SvnRepositoryConnector extends AbstractRepositoryConnector<SvnConne
 
       // commit changes
       if (this.autocommit) {
-        commitPendingChanges("Activiti-Cycle created file " + artifactName + " in " + parentFolderId);
+        commitTransaction("Activiti-Cycle created file " + artifactName + " in " + parentFolderId);
       }
 
       return getRepositoryArtifact(ConnectorPathUtils.buildId(parentFolderId, artifactName));
@@ -304,7 +304,7 @@ public class SvnRepositoryConnector extends AbstractRepositoryConnector<SvnConne
 
       // commit changes
       if (this.autocommit) {
-        commitPendingChanges("Activiti-Cycle created folder " + name + " in " + parentFolderId);
+        commitTransaction("Activiti-Cycle created folder " + name + " in " + parentFolderId);
       }
 
       return getRepositoryFolder(newFolderId);
@@ -346,7 +346,7 @@ public class SvnRepositoryConnector extends AbstractRepositoryConnector<SvnConne
 
       // commit changes
       if (this.autocommit) {
-        commitPendingChanges("Activiti-Cycle updated file " + fileName + " in " + parentFolderId);
+        commitTransaction("Activiti-Cycle updated file " + fileName + " in " + parentFolderId);
       }
 
     } catch (Exception e) {

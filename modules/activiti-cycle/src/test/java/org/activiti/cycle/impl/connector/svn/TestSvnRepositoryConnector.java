@@ -125,7 +125,7 @@ public class TestSvnRepositoryConnector {
 		RepositoryNodeCollection nodeCollection = connector.getChildren(folder2.getNodeId());
 		Assert.assertTrue(nodeCollection.containsArtifact(newArtifact.getGlobalUniqueId()));
 
-		connector.commitPendingChanges("");
+		connector.commitTransaction("");
 
 		nodeCollection = connector.getChildren(folder2.getNodeId());
 		Assert.assertTrue(nodeCollection.containsArtifact(newArtifact.getGlobalUniqueId()));
@@ -173,7 +173,7 @@ public class TestSvnRepositoryConnector {
 		connector.updateContent(test1.getNodeId(), contentTest2);
 		connector.updateContent(test2.getNodeId(), contentTest1);
 
-		connector.commitPendingChanges("commit");
+		connector.commitTransaction("commit");
 	}
 
 }
