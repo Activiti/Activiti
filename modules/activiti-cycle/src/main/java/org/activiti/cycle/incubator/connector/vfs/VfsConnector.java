@@ -53,10 +53,6 @@ public abstract class VfsConnector extends AbstractRepositoryConnector<VfsConnec
     validateConfiguration();
   }
 
-  public void commitPendingChanges(String comment) {
-    // do nothing, this connector is not transactional
-  }
-
   public RepositoryArtifact getRepositoryArtifact(String id) throws RepositoryNodeNotFoundException {
     checkRepository();
 

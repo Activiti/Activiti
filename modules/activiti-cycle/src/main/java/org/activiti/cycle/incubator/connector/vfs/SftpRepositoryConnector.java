@@ -27,8 +27,8 @@ public class SftpRepositoryConnector extends VfsConnector {
       throw new RepositoryException("No protocol specified");
     if (!getConfiguration().getProtocol().equals("sftp"))
       throw new RepositoryException("Protocol needs to be sftp");
-    if (getConfiguration().getRepositoryPath() == null)
-      throw new RepositoryException("No repositoryLocation specified");
+    if (getConfiguration().getHostname() == null)
+      throw new RepositoryException("No hostname specified");
   }
 
   public boolean login(String username, String password) {
@@ -41,13 +41,16 @@ public class SftpRepositoryConnector extends VfsConnector {
       connectionString += username + ":";
       connectionString += password;
       connectionString += "@";
-      connectionString += getConfiguration().getRepositoryPath();
+      connectionString += getConfiguration().getHostname();
+      if (getConfiguration().getPath() != null) {
+        connectionString += getConfiguration().getPath();
+      }
 
       // try to login:
       fileSystemManager.resolveFile(connectionString, fileSystemOptions);
 
     } catch (Exception e) {
-      log.log(Level.WARNING, "Could not login to " + getConfiguration().getRepositoryPath(), e);
+      log.log(Level.WARNING, "Could not login to " + getConfiguration().getHostname(), e);
       return false;
     }
 

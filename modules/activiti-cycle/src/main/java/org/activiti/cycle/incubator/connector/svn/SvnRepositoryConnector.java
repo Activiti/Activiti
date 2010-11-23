@@ -629,7 +629,7 @@ public class SvnRepositoryConnector extends AbstractRepositoryConnector<SvnConne
 
     } catch (SVNClientException e) {
       log.log(Level.SEVERE, "Cannot create an SVN Client. No client library installed? This activiti-cycle connector is not usable.", e);
-      throw new RepositoryException("Could not initialize client adapter. No client library available? " + e.getMessage());
+      throw new RepositoryException("Could not initialize client adapter. No client library available? " + e.getMessage(),e);
     }
   }
 
