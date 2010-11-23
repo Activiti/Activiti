@@ -15,6 +15,8 @@ package org.activiti.cycle.impl.connector.signavio;
 import java.io.IOException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -297,7 +299,12 @@ public class SignavioConnector extends AbstractRepositoryConnector<SignavioConne
             RepositoryArtifact fileInfo = getArtifactInfoFromFolderLink(relObject);
             nodes.add(fileInfo);
           }
-        }    
+        }
+        Collections.sort(nodes, new Comparator<RepositoryNode>() {
+          public int compare(RepositoryNode arg0, RepositoryNode arg1) {
+            return arg0.getMetadata().getName().compareTo(arg1.getMetadata().getName());
+          }
+        });
       }
       return new RepositoryNodeCollectionImpl(nodes);
     } catch (Exception ex) {
