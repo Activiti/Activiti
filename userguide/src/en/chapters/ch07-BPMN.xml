@@ -1497,11 +1497,12 @@ public class FakeLdapService {
        <title>XML representation</title>
        
        <para>
-         There are 3 ways of declaring how to invoke Java logic:
+         There are 4 ways of declaring how to invoke Java logic:
        </para>
        
        <itemizedlist>
          <listitem><para>Specifying a class that implements ActivityBehavior</para></listitem>
+         <listitem><para>Evaluating an expression that resolves to a delegation object</para></listitem>
          <listitem><para>Invoking a method expression</para></listitem>
          <listitem><para>Evaluating a value expression</para></listitem>
        </itemizedlist>
@@ -1517,6 +1518,15 @@ public class FakeLdapService {
 </programlisting>
          See <link linkend="bpmnJavaServiceTaskImplementation">the <emphasis>implementation</emphasis> section</link>
          for more details on how to use such a class.
+       </para>
+       
+       <para>
+         It is also possible to use an expression that resolves to an object. This object must follow
+         the same rules as objects that are created when the <literal>activiti:class</literal>
+         attribute is used (see <link linkend="bpmnJavaServiceTaskImplementation">further</link>).
+         <programlisting> &lt;serviceTask id=&quot;serviceTask&quot; <emphasis role="bold">activiti:delegateExpression=&quot;${delegateExpressionBean}&quot;</emphasis> /&gt;</programlisting> 
+         Here, the <literal>delegateExpressionBean</literal> is a bean that implements the <literal>JavaDelegation</literal> interface,
+         defined in for example the Spring container.
        </para>
        
        <para>
@@ -1825,12 +1835,17 @@ public class ExampleExecutionListenerOne implements <emphasis role="bold">Execut
           As with other expressions, execution variables are resolved and can be used. Because the execution implementation object has a property that exposes the event name, it's
           possible to pass the event-name to your methods using <literal>execution.eventName</literal>.
         </para>
+        <para>
+          Execution listeners also support using a <literal>delegateExpression</literal>,
+          <link linkend="bpmnJavaServiceTaskXML">similar to a service task</link>.
+          <programlisting>&lt;activiti:executionListener event=&quot;start&quot; delegateExpression=&quot;${myExecutionListenerBean}&quot; /&gt;</programlisting>         
+        </para>
         
       <section id="executionListenerFieldInjection">
       
-        <title>Field injection on event listeners</title>
+        <title>Field injection on execution listeners</title>
         <para>
-         When using an executionListener that is configured with the <literal>class</literal> attribute, field injection can be applied. This is exactly the same
+         When using an execution listener that is configured with the <literal>class</literal> attribute, field injection can be applied. This is exactly the same
          mechanism as used <link linkend="serviceTaskFieldInjection">Service task field injection</link>, which contains an overview of the possibilities provided by field injection. 
         </para>
         <para>
@@ -1946,6 +1961,14 @@ public class MyTaskCreateListener implements TaskListener {
             <emphasis role="bold">expression</emphasis>: (cannot be used together with the <emphasis>class</emphasis> attribute):
             specifies an expression that will be executed when the event happens.
             <programlisting>&lt;activiti:taskListener event=&quot;create&quot; expression=&quot;${execution.setVariable('myVar', 'Hello from the task listener!')}&quot; /&gt;</programlisting>
+          </para>
+        </listitem>
+        <listitem>
+          <para>
+            <emphasis role="bold">delegateExpression</emphasis> allows to specify an expression
+            that resolves to an object implementing ther <literal>TaskListener</literal> interface,
+            <link linkend="bpmnJavaServiceTaskXML">similar to a service task</link>. 
+            <programlisting>&lt;activiti:taskListener event=&quot;create&quot; delegateExpression=&quot;${myTaskListenerBean}&quot; /&gt;</programlisting>        
           </para>
         </listitem>
       </itemizedlist>
