@@ -35,7 +35,12 @@ public class JSONRequestObject implements ActivitiRequestObject {
    * @throws java.io.IOException if json of correct format cannot be created
    */
   JSONRequestObject(WebScriptRequest req) throws IOException {
-    json = new JSONObject(req.getContent().getContent());
+    try {
+      json = new JSONObject(req.getContent().getContent());
+    }
+    catch(Throwable t) {
+      json = new JSONObject();
+    }
   }
 
   /**
