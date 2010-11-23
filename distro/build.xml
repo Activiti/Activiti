@@ -284,7 +284,6 @@
     </replace>
     <!-- fix line endings in patched plugins.xml -->
     <fixcrlf file="${modeler.patch.folder}/plugins.xml" eol="dos" />
-  	<!-- Update war with patched files -->
   	
   	<!-- Touch is required, see http://stackoverflow.com/questions/2210041/updating-files-inside-an-existing-war-file -->
   	<tstamp> <format property="touch.time" pattern="MM/dd/yyyy hh:mm aa"/></tstamp>
@@ -293,6 +292,7 @@
   	<touch datetime="${touch.time}" file="${modeler.patch.folder}/plugins.xml"/>
   	<touch datetime="${touch.time}" file="${modeler.src.files.folder}/activiti_logo_16x16.png"/>
   	
+  	<!-- Update war with patched files -->
   	<war destfile="${modeler.patch.folder}/activiti-modeler-${activiti.version}.war" update="true">
       <zipfileset file="${modeler.patch.folder}/oryx.debug.js"       fullpath="editor/oryx.debug.js" />
       <zipfileset file="${modeler.patch.folder}/oryx.js"             fullpath="editor/oryx.js" />
@@ -303,34 +303,13 @@
   </target>
 
   <target name="internal.modeler.stencilsets.patch" depends="internal.modeler.patches.init">
-    <!-- add plugin code -->
-    <concat destfile="${modeler.patch.folder}/oryx.debug.js" append="true">
-      <fileset file="${modeler.src.files.folder}/selectssperspective.js" />
-    </concat>
-    <concat destfile="${modeler.patch.folder}/oryx.js" append="true">
-      <fileset file="${modeler.src.files.folder}/selectssperspective.js" />
-    </concat>
-    <!-- register Stencilset Perspective Plugin -->
-    <replace file="${modeler.patch.folder}/plugins.xml">
-      <replacetoken><![CDATA[<plugin source="shaperepository.js"]]></replacetoken>
-    <replacevalue><![CDATA[<plugin source="selectssperspective.js" name="ORYX.Plugins.ActivitiSelectStencilSetPerspective" />
-    <plugin source="shaperepository.js"]]></replacevalue>
-    </replace>
-  	<!-- Update war with patched files --> 
-  	
   	<!-- Touch is required, see http://stackoverflow.com/questions/2210041/updating-files-inside-an-existing-war-file -->
   	<tstamp> <format property="touch.time" pattern="MM/dd/yyyy hh:mm aa"/></tstamp>
-  	<touch datetime="${touch.time}" file="${modeler.patch.folder}/oryx.debug.js"/>
-  	<touch datetime="${touch.time}" file="${modeler.patch.folder}/oryx.js"/>
-  	<touch datetime="${touch.time}" file="${modeler.patch.folder}/plugins.xml"/>
     <touch datetime="${touch.time}" file="${modeler.src.files.folder}/extensions.json"/>
     <touch datetime="${touch.time}" file="${modeler.src.files.folder}/bpmn2.0activiti.json"/>
   	
+  	<!-- Update war with patched files --> 
   	<war destfile="${modeler.patch.folder}/activiti-modeler-${activiti.version}.war" update="true">
-  	  <zipfileset file="${modeler.patch.folder}/oryx.debug.js"       fullpath="editor/oryx.debug.js" />
-  	  <zipfileset file="${modeler.patch.folder}/oryx.js"             fullpath="editor/oryx.js" />
-  	  <zipfileset file="${modeler.patch.folder}/plugins.xml"         fullpath="editor/plugins.xml" />
-  	  <zipfileset file="${modeler.patch.folder}/plugins.xml"         fullpath="WEB-INF/xml/editor/plugins.xml" />
   	  <zipfileset file="${modeler.src.files.folder}/extensions.json"         fullpath="WEB-INF/json/extensions.json" />
   	  <zipfileset file="${modeler.src.files.folder}/extensions.json"         fullpath="editor/stencilsets/extensions/extensions.json" />
   	  <zipfileset file="${modeler.src.files.folder}/bpmn2.0activiti.json"    fullpath="editor/stencilsets/extensions/bpmn2.0activiti/bpmn2.0activiti.json" />
