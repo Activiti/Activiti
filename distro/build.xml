@@ -242,7 +242,7 @@
 	<property name="modeler.src.files.folder" value="src/setup/files/cfg.modeler" />
 	
 	<target name="patch.activiti.modeler"
-		depends="internal.modeler.plugin.cycle.patch, internal.modeler.stencilsets.patch" />
+        depends="internal.modeler.stencilsets.patch" /><!-- internal.modeler.plugin.cycle.patch, -->
 		
   <target name="internal.modeler.patches.init">
   	<delete dir="${modeler.patch.folder}" />
