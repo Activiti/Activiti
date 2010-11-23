@@ -81,7 +81,6 @@ public class PluginFinder {
         logger.log(Level.INFO, "Activiti Cycle Plugin finder uses normal classpath");
       } else {
         urls = WarUrlFinder.findWebInfLibClasspaths(servletContext);
-        // TODO: Check if we have to include findWebInfClassesPath as well
       }
       db.scanArchives(urls);
 

@@ -23,7 +23,7 @@ import org.restlet.Response;
 
 public abstract class SignavioContentRepresentationProvider extends ContentProviderImpl {
 
-  public Response getJsonResponse(SignavioConnector connector, RepositoryArtifact artifact, String urlSuffix) throws IOException {
+  public static Response getJsonResponse(SignavioConnector connector, RepositoryArtifact artifact, String urlSuffix) throws IOException {
     String url = connector.getModelUrl(artifact) + urlSuffix;
     return connector.getJsonResponse(url);
   }
