@@ -36,14 +36,18 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
  */
 public class SpringAutoDeployTest extends PvmTestCase {
   
-  protected static final String CTX_NO_DROP = "org/activiti/spring/test/autodeployment/SpringAutoDeployTest-no-drop-context.xml";
+  protected static final String CTX_PATH 
+    = "org/activiti/spring/test/autodeployment/SpringAutoDeployTest-context.xml";
+  protected static final String CTX_NO_DROP_PATH 
+    = "org/activiti/spring/test/autodeployment/SpringAutoDeployTest-no-drop-context.xml";
+  protected static final String CTX_CREATE_DROP_CLEAN_DB 
+    = "org/activiti/spring/test/autodeployment/SpringAutoDeployTest-create-drop-clean-db-context.xml";
   
   protected ApplicationContext applicationContext;
   protected RepositoryService repositoryService;
   
-  protected void setUp() throws Exception {
-    super.setUp();
-    this.applicationContext = new ClassPathXmlApplicationContext("org/activiti/spring/test/autodeployment/SpringAutoDeployTest-context.xml");
+  protected void createAppContext(String path) {
+    this.applicationContext = new ClassPathXmlApplicationContext(path);
     this.repositoryService = applicationContext.getBean(RepositoryService.class);
   }
   
@@ -55,6 +59,7 @@ public class SpringAutoDeployTest extends PvmTestCase {
   }
   
   public void testBasicActivitiSpringIntegration() {
+    createAppContext("org/activiti/spring/test/autodeployment/SpringAutoDeployTest-context.xml");
     List<ProcessDefinition> processDefinitions = repositoryService
       .createProcessDefinitionQuery()
       .list();
@@ -73,19 +78,21 @@ public class SpringAutoDeployTest extends PvmTestCase {
   }
   
   public void testNoRedeploymentForSpringContainerRestart() throws Exception {
+    createAppContext(CTX_PATH);
     DeploymentQuery deploymentQuery = repositoryService.createDeploymentQuery();
     assertEquals(1, deploymentQuery.count());
     ProcessDefinitionQuery processDefinitionQuery = repositoryService.createProcessDefinitionQuery();
     assertEquals(3, processDefinitionQuery.count());
     
     // Creating a new app context with same resources doesn't lead to more deployments
-    new ClassPathXmlApplicationContext(CTX_NO_DROP);
+    new ClassPathXmlApplicationContext(CTX_NO_DROP_PATH);
     assertEquals(1, deploymentQuery.count());
     assertEquals(3, processDefinitionQuery.count());
   }
   
   // Updating the bpmn20 file should lead to a new deployment when restarting the Spring container
   public void testResourceRedeploymentAfterProcessDefinitionChange() throws Exception {
+    createAppContext(CTX_PATH);
     assertEquals(1, repositoryService.createDeploymentQuery().count());
     ((AbstractXmlApplicationContext)applicationContext).destroy();
     
@@ -101,7 +108,7 @@ public class SpringAutoDeployTest extends PvmTestCase {
     waitUntilFileIsWritten(filePath, updatedBpmnFileContent.length());
     
     try {
-      applicationContext = new ClassPathXmlApplicationContext(CTX_NO_DROP);
+      applicationContext = new ClassPathXmlApplicationContext(CTX_NO_DROP_PATH);
       repositoryService = (RepositoryService) applicationContext.getBean("repositoryService");
     } finally {
       // Reset file content such that future test are not seeing something funny
@@ -111,6 +118,12 @@ public class SpringAutoDeployTest extends PvmTestCase {
     // Assertions come AFTER the file write! Otherwise the process file is messed up if the assertions fail.
     assertEquals(2, repositoryService.createDeploymentQuery().count());
     assertEquals(6, repositoryService.createProcessDefinitionQuery().count());
+  }
+  
+  public void testAutoDeployWithCreateDropOnCleanDb() {
+    createAppContext(CTX_CREATE_DROP_CLEAN_DB);
+    assertEquals(1, repositoryService.createDeploymentQuery().count());
+    assertEquals(3, repositoryService.createProcessDefinitionQuery().count());
   }
   
   // --Helper methods ----------------------------------------------------------
