@@ -1,9 +1,12 @@
 package org.activiti.cycle.impl.connector.signavio.util;
 
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.TreeMap;
 
 import org.activiti.cycle.RepositoryArtifact;
 import org.activiti.cycle.RepositoryException;
@@ -33,12 +36,21 @@ public class SignavioSvgApiBuilder {
   // TODO: Remove the hard coded urls anyway!
   private boolean useLocalScripts = true;
   private static String svgApiScript = "";
-  
+
   /**
    * Map mapping a color for highlighting with a {@link Map} of node (ids) with
    * messages to show
    */
-  private Map<String, Map<String, List<String>>> nodesToHighlight = new HashMap<String, Map<String, List<String>>>();
+  private Map<String, Map<String, List<String>>> nodesToHighlight = new TreeMap<String, Map<String, List<String>>>(new Comparator<String>() {
+
+    public int compare(String o1, String o2) {
+      if (!o1.equals("red"))
+        return -1;
+      if (o1.equals(o2))
+        return 0;
+      return 1;
+    }
+  });
 
   /**
    * Constructor to create a SignavioSvgApiBuilder object.
@@ -93,7 +105,7 @@ public class SignavioSvgApiBuilder {
     this.useLocalScripts = useLocalScripts;
     return this;
   }
-  
+
   /**
    * use buildHtml instead
    * 
@@ -107,7 +119,7 @@ public class SignavioSvgApiBuilder {
   public String buildHtml() {
     return buildHtml(buildScript(), null);
   }
-  
+
   public static String buildHtml(String content) {
     return buildHtml(content, null);
   }
@@ -116,7 +128,7 @@ public class SignavioSvgApiBuilder {
     if (additionalContent == null) {
       additionalContent = "";
     }
-    return HEADER +"<div id=\"model\">" + content + "</div>" + additionalContent + svgApiScript + FOOTER;
+    return HEADER + "<div id=\"model\">" + content + "</div>" + additionalContent + svgApiScript + FOOTER;
   }
 
   public static String buildHtml(String content, String additionalContent, int height) {
@@ -125,7 +137,7 @@ public class SignavioSvgApiBuilder {
     }
     return HEADER + "<div id=\"model\" style=\"height: " + height + "px;\">" + content + "</div>" + additionalContent + svgApiScript + FOOTER;
   }
-  
+
   public String buildScript() {
     return buildScript(100);
   }
@@ -135,7 +147,7 @@ public class SignavioSvgApiBuilder {
       StringBuilder svgApiScriptBuilder = new StringBuilder();
       svgApiScriptBuilder.append("<script type=\"text/javascript\" src=\"");
       // if (useLocalScripts) {
-        svgApiScriptBuilder.append(SVGAPI_URL_LOCAL);
+      svgApiScriptBuilder.append(SVGAPI_URL_LOCAL);
       // } else {
       // svgApiScriptBuilder.append(SVGAPI_URL_REMOTE);
       // }
@@ -146,41 +158,40 @@ public class SignavioSvgApiBuilder {
       svgApiCall.append("<script type=\"text/plain\">");
       svgApiCall.append("{");
       svgApiCall.append("url: \"" + connector.getConfiguration().getModelUrl(artifact.getNodeId()) + "\"");
-  
+
       if (useLocalScripts) {
         // url to svgapi script
-        svgApiCall.append(", server: \"" + SERVER_SCRIPT_URL + "\"");
+        svgApiCall.append(", server: \"" + connector.getConfiguration().getSignavioUrl() + "\"");
       }
-  
+
       svgApiCall.append(", element: \"model\"");
-      
+
       // if authToken is available
       if (authToken != null && authToken.length() > 0) {
         svgApiCall.append(", authToken: \"" + authToken + "\",");
       }
-  
+
       // register mouseover event on callback function
-//      svgApiCall.append(", callback: " + registerMouseOverEvent());
-  
+      // svgApiCall.append(", callback: " + registerMouseOverEvent());
+
       // executed when click on a shape
       svgApiCall.append(", click: " + createClickFunction());
-  
+
       // highlight nodes
       svgApiCall.append(", focus: " + buildHighlightning());
-  
+
       // initial zoom
       svgApiCall.append(", zoom: " + zoom);
-  
+
       svgApiCall.append("}");
       svgApiCall.append("</script>");
-    
+
       return svgApiCall.toString();
-    }
-    catch (JSONException ex) {
+    } catch (JSONException ex) {
       throw new RepositoryException("Unexpected exception with JSON handling for " + artifact, ex);
     }
   }
-  
+
   public static String buildTable(String headline, Map<String, List<String>> nodesMap) {
     StringBuffer html = new StringBuffer();
     if (nodesMap != null && !nodesMap.isEmpty()) {
@@ -206,7 +217,7 @@ public class SignavioSvgApiBuilder {
       html.append("<br/>");
     }
     return html.toString();
-  }  
+  }
 
   private String registerMouseOverEvent() throws JSONException {
     if (nodesToHighlight == null || nodesToHighlight.isEmpty()) {
@@ -226,8 +237,8 @@ public class SignavioSvgApiBuilder {
     callbackFunc.append("alert(\"Sid: \" + node.resourceId + \"\\nMessages: \" + myNodeMessagesStr);");
     callbackFunc.append("}");
     // @TODO: doesn't work atm, unable to get variable 'me'
-//    callbackFunc.append("if (node instanceof me.ORYX.Core.Shape) {");
-//    callbackFunc.append("}");
+    // callbackFunc.append("if (node instanceof me.ORYX.Core.Shape) {");
+    // callbackFunc.append("}");
     callbackFunc.append("});");
 
     callbackFunc.append("}");
@@ -251,11 +262,11 @@ public class SignavioSvgApiBuilder {
       clickFunc.append("alert(\"Sid: \" + node.resourceId + \"\\nErrorMessages: \" + myNodeMessagesStr);");
       clickFunc.append("}");
 
-      
-      //clickFunc.append("var errorMessages = " + createJsonMessagesObject() + ";");
-//      clickFunc.append("if(node.properties[\"oryx-name\"] || node.properties[\"oryx-title\"] || node.resourceId) {");
-//      clickFunc.append("alert(\"Name: \" + node.properties[\"oryx-name\"] + \" (Sid: \" + node.resourceId + \")\");");
-//      clickFunc.append("}");
+      // clickFunc.append("var errorMessages = " + createJsonMessagesObject() +
+      // ";");
+      // clickFunc.append("if(node.properties[\"oryx-name\"] || node.properties[\"oryx-title\"] || node.resourceId) {");
+      // clickFunc.append("alert(\"Name: \" + node.properties[\"oryx-name\"] + \" (Sid: \" + node.resourceId + \")\");");
+      // clickFunc.append("}");
     }
     clickFunc.append("}");
 
@@ -270,7 +281,19 @@ public class SignavioSvgApiBuilder {
     if (color == null || color.length() == 0) {
       color = "red";
     }
+    
+    // hack for making sure that lanes do not 'overlap' everything else
     JSONObject highlightNodesObj = new JSONObject();
+    List<String> lanes = new ArrayList<String>();
+    for (Entry<String, List<String>> entry : map.entrySet()) {
+      for (String name : entry.getValue()) {
+        if (name.toLowerCase().contains("lane"))
+          lanes.add(entry.getKey());
+      }
+    }
+    for (String string : lanes) {
+      map.remove(string);
+    }
 
     highlightNodesObj.put("nodes", map.keySet());
     JSONObject attributes = new JSONObject();
@@ -284,12 +307,12 @@ public class SignavioSvgApiBuilder {
     if (nodesToHighlight == null || nodesToHighlight.isEmpty()) {
       return "[]";
     }
-    
+
     JSONArray focusArr = new JSONArray();
     for (Entry<String, Map<String, List<String>>> entry : nodesToHighlight.entrySet()) {
       focusArr.put(highlightNodesMap((String) entry.getKey(), (Map<String, List<String>>) entry.getValue()));
     }
-    
+
     return focusArr.toString();
   }
 
@@ -297,7 +320,7 @@ public class SignavioSvgApiBuilder {
     if (nodesToHighlight == null || nodesToHighlight.isEmpty()) {
       return "\"\"";
     }
-    
+
     JSONObject jsonMessageObj = new JSONObject();
     for (Entry<String, Map<String, List<String>>> entry : nodesToHighlight.entrySet()) {
       for (Entry<String, List<String>> mapEntry : entry.getValue().entrySet()) {
@@ -307,5 +330,5 @@ public class SignavioSvgApiBuilder {
 
     return jsonMessageObj.toString();
   }
-  
+
 }
