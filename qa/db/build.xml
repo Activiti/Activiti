@@ -37,7 +37,7 @@
 		</sql>
 	</target>
 	
-	<!-- target name="create.activiti.cfg">
+	<target name="create.activiti.cfg">
 		<echo message="creating activiti.cfg.xml in target environment"/>
 		<echo message="  basedir: ${basedir}"/>
 		<echo message="  database: ${database}"/>
@@ -50,23 +50,23 @@
 		<echo message="  jdbc.password: ${jdbc.password}"/>
 		
 		<replaceregexp file="./target/test-classes/activiti.cfg.xml" flags="s"
-		                match='database type=".*?"' 
-			              replace='database type="${database}"'/>
+		                match='databaseType=".*?"' 
+			              replace='databaseType="${database}"'/>
 		<replaceregexp file="./target/test-classes/activiti.cfg.xml" flags="s"
-		                    match='driver=".*?"' 
-		                    replace='driver="${jdbc.driver}"'/>
+		                    match='jdbcDriver=".*?"' 
+		                    replace='jdbcDriver="${jdbc.driver}"'/>
 		<replaceregexp file="./target/test-classes/activiti.cfg.xml" flags="s"
-		                        match='url=".*?"' 
-		                        replace='url="${jdbc.url}"'/>
+		                        match='jdbcUrl=".*?"' 
+		                        replace='jdbcUrl="${jdbc.url}"'/>
 		<replaceregexp file="./target/test-classes/activiti.cfg.xml" flags="s"
-		                        match='username=".*?"' 
-		                        replace='username="${jdbc.username}"'/>
+		                        match='jdbcUsername=".*?"' 
+		                        replace='jdbcUsername="${jdbc.username}"'/>
 		<replaceregexp file="./target/test-classes/activiti.cfg.xml" flags="s"
-		                        match='password=".*?"' 
-		                        replace='password="${jdbc.password}"'/>
+		                        match='jdbcPassword=".*?"' 
+		                        replace='jdbcPassword="${jdbc.password}"'/>
 		<replaceregexp file="./target/test-classes/activiti.cfg.xml" flags="s"
-		                        match='schema-strategy=".*?"' 
-		                        replace='schema-strategy="false"'/>
-	</target -->
+		                        match='databaseSchemaUpdate=".*?"' 
+		                        replace='databaseSchemaUpdate="false"'/>
+	</target>
 	
 </project>
