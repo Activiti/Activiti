@@ -349,6 +349,16 @@ public class CycleServiceImpl implements CycleService {
 		return artifactLinks;
 	}
 
+	public List<RepositoryArtifactLink> getIncomingArtifactLinks(String targetConnectorId, String targetArtifactId) {
+	  List<RepositoryArtifactLink> artifactLinks = new ArrayList<RepositoryArtifactLink>();
+    List<RepositoryArtifactLinkEntity> linkResultList = this.cycleDAO.getIncomingArtifactLinks(targetConnectorId, targetArtifactId);
+    for (RepositoryArtifactLinkEntity entity : linkResultList) {
+      entity.resolveArtifacts(this);
+      artifactLinks.add(entity);
+    }
+    return artifactLinks;
+	}
+
 	public void deleteLink(String linkId) {
 		cycleDAO.deleteArtifactLink(linkId);
 	}
@@ -416,5 +426,6 @@ public class CycleServiceImpl implements CycleService {
 		}
 		throw new RepositoryException("Couldn't find Repository Connector with id '" + connectorId + "'");
 	}
+
 
 }

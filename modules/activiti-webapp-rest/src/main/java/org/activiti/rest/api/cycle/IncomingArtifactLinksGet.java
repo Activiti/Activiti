@@ -24,13 +24,13 @@ import org.springframework.extensions.webscripts.Status;
  * 
  * @author Nils Preusker (nils.preusker@camunda.com)
  */
-public class ArtifactLinksGet extends ActivitiCycleWebScript {
+public class IncomingArtifactLinksGet extends ActivitiCycleWebScript {
 
   @Override
   protected void execute(ActivitiRequest req, Status status, Cache cache, Map<String, Object> model) {
     String connectorId = req.getMandatoryString("connectorId");
     String artifactId = req.getString("artifactId");
-    List<RepositoryArtifactLink> links = this.cycleService.getArtifactLinks(connectorId, artifactId);
+    List<RepositoryArtifactLink> links = this.cycleService.getIncomingArtifactLinks(connectorId, artifactId);
     model.put("links", links);
   }
 

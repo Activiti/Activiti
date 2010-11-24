@@ -19,7 +19,6 @@ import java.util.Map;
 import org.activiti.rest.util.ActivitiRequest;
 import org.springframework.extensions.webscripts.Cache;
 import org.springframework.extensions.webscripts.Status;
-import org.springframework.extensions.webscripts.WebScriptException;
 
 /**
  * @author Nils Preusker (nils.preusker@camunda.com)
@@ -39,37 +38,6 @@ public class TagsGet extends ActivitiCycleWebScript {
     } else {
       tags = this.cycleService.getSimiliarTagNames(tag != null ? tag : "");
     } 
-//    else {
-//      throw new WebScriptException(
-//              Status.STATUS_BAD_REQUEST,
-//              "Missing parameter, please provide either 'connectorId' and 'repositoryNodeId' to retrieve tags for an artifact or 'tag' to search for tags that contain the given string");
-//    }
     model.put("tags", tags);
   }
-
-//  /**
-//   * TODO: this method (or an equivalent with a more generic return type) should be moved to the API (CycleService)
-//   */
-//  private List<String> getTagsById(String id) {
-//    List<CycleTagContent> allTags = this.cycleService.getRootTags();
-//    List<String> tags = new ArrayList<String>();
-//    for (CycleTagContent tag : allTags) {
-//      if (tag.getName().contains(id)) {
-//        tags.add(tag.getName());
-//      }
-//    }
-//    return tags;
-//  }
-//  
-//  /**
-//   * TODO: this method (or an equivalent with a more generic return type) should be moved to the API (CycleService)
-//   */
-//  private List<String> getTagsByArtifact(String connectorId, String artifactId) {
-//    List<String> tags = new ArrayList<String>();
-//    for (RepositoryNodeTag repositoryNodeTag : this.cycleService.getRepositoryNodeTags(connectorId, artifactId)) {
-//      tags.add(repositoryNodeTag.getName());
-//    }
-//    return tags;
-//  }
-
 }

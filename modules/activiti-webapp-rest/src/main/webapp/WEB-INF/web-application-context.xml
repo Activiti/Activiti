@@ -335,6 +335,11 @@
         parent="activitiWebScript">
   </bean>
 
+  <bean id="webscript.org.activiti.rest.api.cycle.incoming-artifact-links.get"
+        class="org.activiti.rest.api.cycle.IncomingArtifactLinksGet"
+        parent="activitiWebScript">
+  </bean>
+
   <bean id="webscript.org.activiti.rest.api.cycle.artifact-link.post"
         class="org.activiti.rest.api.cycle.ArtifactLinkPost"
         parent="activitiWebScript">
