@@ -7,7 +7,7 @@
   <bean id="processEngineConfiguration" class="org.activiti.engine.impl.cfg.StandaloneInMemProcessEngineConfiguration">
   
     <!-- Database configurations -->
-    <property name="dbSchemaStrategy" value="true" />
+    <property name="databaseSchemaUpdate" value="true" />
     
   </bean>
 
