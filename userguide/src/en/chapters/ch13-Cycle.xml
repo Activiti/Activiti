@@ -127,11 +127,11 @@
     <programlisting>
 	...
 	&lt;org.activiti.cycle.incubator.connector.svn.SvnConnectorConfiguration&gt;
-		&lt;id&gt;RepositoryId (e.g. ProjectSVN)&lt;/id&gt;
-		&lt;name&gt;Repository Name (My Project SVN)&lt;/name&gt;
-		&lt;repositoryPath&gt;Path to your repository (e.g. http://mycompany.com/svn/projectName)&lt;/repositoryPath&gt;
+		&lt;id&gt;ActivitiPublicSVN&lt;/id&gt;
+		&lt;name&gt;Activiti Public SVN&lt;/name&gt;
+		&lt;repositoryPath&gt;http://svn.codehaus.org/activiti&lt;/repositoryPath&gt;
 		&lt;credentialsSaved&gt;true&lt;/credentialsSaved&gt;
-		&lt;user&gt;user name&lt;/user&gt;
+		&lt;user&gt;&lt;/user&gt;
 		&lt;password&gt;&lt;/password&gt;
 		&lt;temporaryFileStore&gt;where the connector creates temporary files between commits (e.g. /tmp)&lt;/temporaryFileStore&gt;
 	&lt;/org.activiti.cycle.incubator.connector.svn.SvnConnectorConfiguration&gt;
@@ -142,7 +142,8 @@
 	 <itemizedlist>
       <listitem><para>SVN is installed on the machine running Activiti and in the local PATH.</para></listitem>
       <listitem><para>You need to manually download the <ulink url="http://www.svnkit.org/">SVNKit</ulink> 
-      library and install it. To this end, download the <literal>svnkit.jar</literal> and copy it to the following location: 
+      library and install it. To this end, download the SVNKit library and copy both <literal>svnkit.jar</literal> 
+      and <literal>svnkit-javahl.jar</literal> to the following location: 
       <literal>${activiti.home}/apps/apache-tomcat-6.X.XX/lib/</literal>. (Tomcat restart required.) SVNKit cannot be bundled 
       with Activiti due to licensing restrictions.</para></listitem>
      </itemizedlist>	
