@@ -1,4 +1,6 @@
-<h1></h1><div id="options-div"></div>
+<h1></h1>
+<div id="tags-div"></div>
+<div id="options-div"></div>
 <div id="artifact-div"></div>
 
 <script type="text/javascript">//<![CDATA[

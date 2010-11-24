@@ -54,21 +54,3 @@ div .artifact-type {
   line-height:1.2em;
   color: #666;
 }
-
-#tags-div {
-  color:#777777;
-  position:relative;
-  top:-2.5em;
-}
-
-#tags-div span {
-  background: #EEEEEE;
-  color:#999999;
-  font-style:italic;
-  margin-right:0.25em;
-  padding:1px 3px;
-}
-
-#tags-div span:hover {
-/*  text-decoration: underline; */
-}

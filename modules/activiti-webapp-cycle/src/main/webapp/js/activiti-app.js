@@ -183,12 +183,28 @@
       return Activiti.service.REST_PROXY_URI_RELATIVE + "tag";
     },
     
-    loadTagsByArtifact: function RepositoryService_loadTagsByArtifact(connectorId, artifactId) {
-      this.jsonGet(this.loadTagsByArtifactUrl(connectorId, artifactId), null, "loadTagsByArtifact");
+    loadTagsByRepositoryNode: function RepositoryService_loadTagsByRepositoryNode(connectorId, repositoryNodeId) {
+      this.jsonGet(this.loadTagsByRepositoryNodeUrl(connectorId, repositoryNodeId), null, "loadTagsByRepositoryNode");
     },
     
-    loadTagsByArtifactUrl: function RepositoryService_loadTagsByArtifactUrl(connectorId, artifactId) {
-      return Activiti.service.REST_PROXY_URI_RELATIVE + "tags?connectorId=" + encodeURIComponent(connectorId) + "&artifactId=" + encodeURIComponent(artifactId);
+    loadTagsByRepositoryNodeUrl: function RepositoryService_loadTagsByRepositoryNodeUrl(connectorId, repositoryNodeId) {
+      return Activiti.service.REST_PROXY_URI_RELATIVE + "tags?connectorId=" + encodeURIComponent(connectorId) + "&repositoryNodeId=" + encodeURIComponent(repositoryNodeId);
+    },
+    
+    saveTags: function RepositoryService_saveTags(tagsLiteral) {
+      this.jsonPost(this.saveTagsUrl(), tagsLiteral, null, "saveTags");
+    },
+    
+    saveTagsUrl: function RepositoryService_saveTags() {
+      return Activiti.service.REST_PROXY_URI_RELATIVE + "tags";
+    },
+
+    deleteTag: function RepositoryService_deleteTag(tagLiteral) {
+      this.jsonDelete(this.deleteTagUrl(tagLiteral), null, "deleteTag");
+    },
+    
+    deleteTagUrl: function RepositoryService_deleteTagUrl(tagLiteral) {
+      return Activiti.service.REST_PROXY_URI_RELATIVE + "tag?connectorId=" + encodeURIComponent(tagLiteral.connectorId) + "&repositoryNodeId=" + encodeURIComponent(tagLiteral.repositoryNodeId) + "&tagName=" + encodeURIComponent(tagLiteral.tagName);
     }
     
   });
@@ -475,6 +491,193 @@
 
 })();
 
+(function()
+{
+	/**
+	 * Shortcuts
+	 */
+	var Dom = YAHOO.util.Dom,
+			Selector = YAHOO.util.Selector,
+			Event = YAHOO.util.Event,
+			Pagination = Activiti.util.Pagination,
+			$html = Activiti.util.decodeHTML;
+			
+	/**
+	 * TaggingComponent constructor.
+	 *
+	 * @param htmlId {String} The HTML id of the parent element
+	 * @param repositoryNodeLiteral An object literal that contains the connectorId, the repositoryNodeId and the repositoryNodeLabel of the repository node to be tagged
+	 * @param elId The id of the Dom element that the tagging-component should be appended to
+	 * @return {Activiti.component.TaggingComponent} The new component.TaggingComponent instance
+	 * @constructor
+	 */
+	Activiti.component.TaggingComponent = function TaggingComponent_constructor(htmlId, repositoryNodeLiteral, elId)
+  {
+    Activiti.component.TaggingComponent.superclass.constructor.call(this, "Activiti.component.TaggingComponent", htmlId);
+
+    this.service = new Activiti.service.RepositoryService(this);
+
+    this._repositoryNode = repositoryNodeLiteral;
+    this._el = document.getElementById(elId);
+    this._tags = [];
+
+    return this;
+  };
+
+  YAHOO.extend(Activiti.component.TaggingComponent, Activiti.component.Base,
+  {
+	
+		/**
+		* Fired by YUI when parent element is available for scripting.
+		* Template initialisation, including instantiation of YUI widgets and event listener binding.
+		*
+		* @method onReady
+		*/
+		onReady: function TagThisDialog_onReady()
+		{
+		  this.service.loadTagsByRepositoryNode(this._repositoryNode.connectorId, this._repositoryNode.repositoryNodeId);
+		},
+
+    onLoadTagsByRepositoryNodeSuccess: function TaggingComponent_RepositoryService_onloadTagsByRepositoryNodeSuccess(response, obj) {
+      this._el.innerHTML = "Tags: ";
+      this._tags = response.json;
+      // add tag spans if there are any tags
+      for(tag in this._tags) {
+        var tagSpan = document.createElement("span");
+        tagSpan.innerHTML = this._tags[tag];
+        var removeTagLink = document.createElement("a");
+        removeTagLink.setAttribute("href", "");
+        removeTagLink.setAttribute("title", "Remove Tag");
+        removeTagLink.setAttribute("id", this._tags[tag]);
+        removeTagLink.innerHTML = "x";
+        // add click listener to the link
+        YAHOO.util.Event.addListener(removeTagLink, "click", this.onRemoveTagLinkClick, this._tags[tag], this);
+        tagSpan.appendChild(removeTagLink);
+        this._el.appendChild(tagSpan);
+      }
+      
+      // create the edit link
+      var editLink = document.createElement('a');
+      editLink.setAttribute("href", "");
+      editLink.setAttribute("title", "Edit Tags");
+      editLink.setAttribute("id", this.id + "-add-tags-link");
+      // TODO: i18n
+      editLink.innerHTML = "edit";
+      // add click listener to the link
+      YAHOO.util.Event.addListener(editLink, "click", this.onEditLinkClick, this, true);
+      this._el.appendChild(editLink);
+    },
+
+    onEditLinkClick: function TaggingComponent_onEditLinkClick(event) {
+
+      this._el.innerHTML = "Tags: ";
+      
+      var taggingForm = document.createElement("form");
+      taggingForm.setAttribute("onsubmit", "javascript: return false;");
+      this._el.appendChild(taggingForm);
+      
+      // Create the text input for the tags and append it to the el
+      var tagInput = document.createElement("input");
+      tagInput.setAttribute("type", "text");
+      tagInput.setAttribute("id", this.id + "-tag-input");
+      var tagsString = "";
+      for(tag in this._tags) {
+        tagsString += this._tags[tag] + ",";
+      }
+      tagInput.setAttribute("value", tagsString);
+      taggingForm.appendChild(tagInput);
+      
+      // create the save link and append it to the el
+      var saveLink = document.createElement("a");
+      saveLink.setAttribute("href", "");
+      saveLink.setAttribute("title", "Save Tags");
+      saveLink.innerHTML = "save";
+      YAHOO.util.Event.addListener(saveLink, "click", this.onSaveLinkClick, this, true);
+      this._el.appendChild(saveLink);
+
+      // create the cancel link and append it to the el
+      var cancelLink = document.createElement("a");
+      cancelLink.setAttribute("href", "");
+      cancelLink.setAttribute("title", "Cancel");
+      cancelLink.innerHTML = "cancel";
+      YAHOO.util.Event.addListener(cancelLink, "click", this.onCancelLinkClick, this, true);
+      this._el.appendChild(cancelLink);
+      
+      // create a div for tag suggestions and append it to the el
+      var suggestionsDiv = document.createElement("div");
+      suggestionsDiv.setAttribute("id", this.id + "suggestions-div");
+      this._el.appendChild(suggestionsDiv);
+      
+      // create the datasource to load tag suggestions when the user starts typing 
+      var tagsDataSource = new YAHOO.util.XHRDataSource(Activiti.service.REST_PROXY_URI_RELATIVE + "tags");
+      tagsDataSource.responseSchema = {
+          fields : [ "name" ]
+        };
+      
+      tagsDataSource.responseType = YAHOO.util.XHRDataSource.TYPE_JSARRAY;
+      
+      // Instantiate the AutoComplete
+      var autoComplete = new YAHOO.widget.AutoComplete(this.id + "-tag-input", this.id + "suggestions-div", tagsDataSource);      
+      autoComplete.generateRequest = function(sQuery) {
+            return '?tag=' + sQuery;
+      };
+      
+      autoComplete.allowBrowserAutocomplete = false; // Disable the browser's built-in autocomplete caching mechanism
+      autoComplete.typeAhead = true; // Enable type ahead
+      autoComplete.alwaysShowContainer = false;
+      autoComplete.minQueryLength = 0; // Can be 0, which will return all results
+      autoComplete.maxResultsDisplayed = 10; // Show more results, scrolling is enabled via CSS
+      autoComplete.delimChar = [",",";"]; // Enable comma and semi-colon delimiters
+      autoComplete.autoHighlight = false; // Auto-highlighting interferes with adding new tags
+
+      // Populate list to start a new interaction
+      autoComplete.itemSelectEvent.subscribe(function(sType, aArgs) {
+          autoComplete.sendQuery("");
+      });
+      tagInput.focus();
+      
+      // prevent a full page reload by stopping the default event
+      YAHOO.util.Event.preventDefault(event);
+    },
+    
+    onSaveLinkClick: function TaggingComponent_onSaveLinkClick(event, obj) {
+      var rawTags = YAHOO.util.Dom.get(this.id + "-tag-input").value.split(",");
+      var tags = [];
+      for(var tag in rawTags) {
+        // Make sure the tag is not blank
+        if(!Activiti.util.blank(rawTags[tag])) {
+          // trim the string before adding the tag
+          tags.push(Activiti.util.trim(rawTags[tag]));
+        }
+      }
+      var tagsLiteral = YAHOO.lang.merge(this._repositoryNode, {tags: tags})
+      this.service.saveTags(tagsLiteral);
+      YAHOO.util.Event.preventDefault(event);
+    },
+
+    onCancelLinkClick: function TaggingComponent_onCancelLinkClick(event, obj) {
+      this.service.loadTagsByRepositoryNode(this._repositoryNode.connectorId, this._repositoryNode.repositoryNodeId);
+      YAHOO.util.Event.preventDefault(event);
+    },
+
+    onRemoveTagLinkClick: function TaggingComponent_onRemoveTagLinkClick(event, tag) {
+      var tagLiteral = YAHOO.lang.merge(this._repositoryNode, {tagName: tag})
+      this.service.deleteTag(tagLiteral);
+      YAHOO.util.Event.preventDefault(event);
+    },
+
+    onSaveTagsSuccess: function TaggingComponent_RepositoryService_onSaveTagsSuccess(response, obj) {
+      this.service.loadTagsByRepositoryNode(this._repositoryNode.connectorId, this._repositoryNode.repositoryNodeId);
+    },
+    
+    onDeleteTagSuccess: function TaggingComponent_RepositoryService_onDeleteTagSuccess(response, obj) {
+      // Make sure the view is updated after removing a tag.
+      this.service.loadTagsByRepositoryNode(this._repositoryNode.connectorId, this._repositoryNode.repositoryNodeId);
+    }
+
+	});
+
+})();
 
 (function()
 {
@@ -521,11 +724,21 @@
 		*/
 		onReady: function TagThisDialog_onReady()
 		{
-		  var content = document.createElement("div");
+		  this.service.loadTagsByRepositoryNode(this._connectorId, this._artifactId);
+		},
+
+    onLoadTagsByRepositoryNodeSuccess: function TagThisDialog_RepositoryService_onLoadTagsByArtifactSuccess(response, obj) {
+      
+      var commaSeparatedTags = "";
+      for(var tag in response.json.tags) {
+        commaSeparatedTags += response.json.tags[tag].alias + ", ";
+      }
+      
+      var content = document.createElement("div");
 
 	    // TODO: i18n
 
-      content.innerHTML = '<div class="bd"><form id="' + this.id + '-tag-this-form" accept-charset="utf-8"><h1>Tag "' + this._artifactLabel + '"</h1><table><tr><td><label>Tag Name:<br/><input type="text" name="tags" id="tag-input" value="" /></label><br/></td></tr><tr><td><label>Suggestions: <div id="tag-suggestions"> </div></label><td></tr></table></form></div>';
+      content.innerHTML = '<div class="bd"><form id="' + this.id + '-tag-this-form" accept-charset="utf-8"><h1>Tag "' + this._artifactLabel + '"</h1><table><tr><td><label>Tag Name:<br/><input type="text" name="tags" id="tag-input" value="' + commaSeparatedTags + '" /><div id="tag-suggestions"> </div></label><br/></td></tr></table></form></div>';
 
       this._dialog = new YAHOO.widget.Dialog(content, {
         fixedcenter: true,
@@ -546,14 +759,11 @@
 
       var tagsDataSource = new YAHOO.util.XHRDataSource(Activiti.service.REST_PROXY_URI_RELATIVE + "tags");
       tagsDataSource.responseSchema = {
-        resultsList: "tags",
-        fields : [
-          {
-            key:"id",
-            key:"alias"
-          }
-        ]};
-
+          fields : [ "name" ]
+        };
+      
+      tagsDataSource.responseType = YAHOO.util.XHRDataSource.TYPE_JSARRAY;
+      
       // Instantiate the AutoComplete
       var autoComplete = new YAHOO.widget.AutoComplete("tag-input", "tag-suggestions", tagsDataSource);      
       autoComplete.generateRequest = function(sQuery) {
@@ -564,9 +774,11 @@
       autoComplete.typeAhead = true; // Enable type ahead
       autoComplete.alwaysShowContainer = false;
       autoComplete.minQueryLength = 0; // Can be 0, which will return all results
-      autoComplete.maxResultsDisplayed = 4; // Show more results, scrolling is enabled via CSS
+      autoComplete.maxResultsDisplayed = 10; // Show more results, scrolling is enabled via CSS
       autoComplete.delimChar = [",",";"]; // Enable comma and semi-colon delimiters
       autoComplete.autoHighlight = false; // Auto-highlighting interferes with adding new tags
+
+      autoComplete.useShadow = true; 
 
       // Populate list to start a new interaction
       autoComplete.itemSelectEvent.subscribe(function(sType, aArgs) {
@@ -577,7 +789,7 @@
 
       // this._dialog.getButtons()[0].set("disabled", true);
 		  this._dialog.show();
-		},
+    },
 
     onSubmit: function TagThisDialog_onSubmit(event, dialog) {
       var tags = dialog.getData().tags.split(',');

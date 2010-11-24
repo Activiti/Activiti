@@ -104,11 +104,11 @@
           optionsDiv.innerHTML = "";
           optionsDiv.removeAttribute("class");
         }
+        // instantiate the tagging component
+        new Activiti.component.TaggingComponent(this.id, {connectorId: eventValue.connectorId, repositoryNodeId: eventValue.repositoryNodeId, repositoryNodeLabel: eventValue.name}, "tags-div");
         // Check whether the selected node is a file node. If so, load its data
         if(eventValue.isRepositoryArtifact ) {
           this.services.repositoryService.loadArtifact(eventValue.connectorId, eventValue.repositoryNodeId);
-        } else {
-          this.services.repositoryService.loadTagsByArtifact(eventValue.connectorId, eventValue.repositoryNodeId);
         }
         // Update the heading that displays the name of the selected node
         headerEl.id = "header-" + eventValue.repositoryNodeId;
@@ -128,12 +128,6 @@
     onLoadArtifactSuccess: function Artifact_RepositoryService_onLoadArtifactSuccess(response, obj)
     {
       var me = this;
-      
-      // remove folder tags from UI
-      var tagsDiv = document.getElementById("tags-div");
-      if(tagsDiv) {
-        tagsDiv.innerHTML = "";
-      }
       
       this._tabView = new YAHOO.widget.TabView(); 
       
@@ -209,32 +203,6 @@
       optionsDiv.setAttribute('class', 'active');
     },
 
-    onLoadTagsByArtifactSuccess: function Artifact_RepositoryService_onLoadTagsByArtifactSuccess(response, obj) {
-      var tagsDiv = document.getElementById("tags-div");
-      if(!tagsDiv) {
-        // create tags div
-        tagsDiv = document.createElement("div");
-        tagsDiv.setAttribute('id', 'tags-div');
-        // retrieve the header
-        var headerEl = Selector.query("h1", this.id, true);
-        // insert tagsDiv after the header
-        Dom.insertAfter(tagsDiv, headerEl);
-      }
-      
-      if(response.json.tags && response.json.tags.length > 0) {
-        tagsDiv.innerHTML = "Tags: ";
-      } else {
-        tagsDiv.innerHTML = "";
-      }
-      
-      for(tag in response.json.tags) {
-        var tagSpan = document.createElement("span");
-        tagSpan.innerHTML = response.json.tags[tag].alias;
-        tagsDiv.appendChild(tagSpan);
-      }
-      
-    },
-
     onLoadTabSuccess: function Artifact_onLoadTabSuccess(tab, response) {
       
       try {
@@ -303,7 +271,11 @@
             // Use white page as default icon for all other content types
             typeClass = "icon-blank";
           }
-          var row = {Name: '<a class="openArtifactLink" href="#?connectorId=' + encodeURIComponent(responseJson[i].artifact.targetConnectorId) + '&artifactId=' + encodeURIComponent(responseJson[i].artifact.targetArtifactId) + '&artifactName=' + encodeURIComponent(responseJson[i].artifact.label) + '">' + responseJson[i].artifact.label + '</a>', Revision: responseJson[i].artifact.targetArtifactRevision, Type: '<div class="artifact-type ' + typeClass + '">' + responseJson[i].artifact.targetContentType + '</div>' };
+          var row = {
+              Name: '<a class="openArtifactLink" href="#?connectorId=' + encodeURIComponent(responseJson[i].artifact.targetConnectorId) + '&artifactId=' + encodeURIComponent(responseJson[i].artifact.targetArtifactId) + '&artifactName=' + encodeURIComponent(responseJson[i].artifact.label) + '">' + responseJson[i].artifact.label + '</a>',
+              Revision: responseJson[i].artifact.targetArtifactRevision,
+              Type: '<div class="artifact-type ' + typeClass + '">' + responseJson[i].artifact.targetContentType + '</div>'
+            };
           rows.push(row);
         }
         var linksDataSource = new YAHOO.util.LocalDataSource(rows);

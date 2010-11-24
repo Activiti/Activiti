@@ -13,6 +13,7 @@
 
 package org.activiti.rest.api.cycle;
 
+import java.util.List;
 import java.util.Map;
 
 import org.activiti.rest.util.ActivitiRequest;
@@ -21,35 +22,17 @@ import org.springframework.extensions.webscripts.Cache;
 import org.springframework.extensions.webscripts.Status;
 
 /**
- * Creates a new Tag that is associated to the artifact (identified by
- * artifactId and connectorId).
- * 
  * @author Nils Preusker (nils.preusker@camunda.com)
  */
-public class TagPost extends ActivitiCycleWebScript {
+public class TagsPost extends ActivitiCycleWebScript {
 
-  /**
-   * Creates a new Tag that is associated to the artifact (identified by
-   * artifactId and connectorId).
-   * 
-   * @param req The webscripts request
-   * @param status The webscripts status
-   * @param cache The webscript cache
-   * @param model The webscripts template model
-   */
   @Override
   void execute(ActivitiRequest req, Status status, Cache cache, Map<String, Object> model) {
     ActivitiRequestObject obj = req.getBody();
-
     String connectorId = req.getMandatoryString(obj, "connectorId");
     String repositoryNodeId = req.getMandatoryString(obj, "repositoryNodeId");
-    String tagName = req.getMandatoryString(obj, "tagName");
-    String alias = req.getMandatoryString(obj, "alias");
-
-    this.cycleService.addTag(connectorId, repositoryNodeId, tagName, alias);
-    model.put("connectorId", connectorId);
-    model.put("repositoryNodeId", repositoryNodeId);
-    model.put("tagName", tagName);
-    model.put("alias", alias);
+    List<String> tags = req.getMandatoryList(obj, "tags", ActivitiRequestObject.STRING);
+    this.cycleService.setTags(connectorId, repositoryNodeId, tags);
   }
+
 }

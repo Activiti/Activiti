@@ -355,8 +355,18 @@
         parent="activitiWebScript">
   </bean>
   
+  <bean id="webscript.org.activiti.rest.api.cycle.tag.delete"
+        class="org.activiti.rest.api.cycle.TagDelete"
+        parent="activitiWebScript">
+  </bean>
+
+  <bean id="webscript.org.activiti.rest.api.cycle.tags.post"
+        class="org.activiti.rest.api.cycle.TagsPost"
+        parent="activitiWebScript">
+  </bean>
+
   <bean id="webscript.org.activiti.rest.api.cycle.tags.get"
         class="org.activiti.rest.api.cycle.TagsGet"
         parent="activitiWebScript">
-  </bean>
+  </bean>  
 </beans>

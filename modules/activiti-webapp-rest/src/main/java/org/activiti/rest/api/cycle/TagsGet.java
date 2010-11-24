@@ -13,12 +13,9 @@
 
 package org.activiti.rest.api.cycle;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.activiti.cycle.CycleTagContent;
-import org.activiti.cycle.RepositoryNodeTag;
 import org.activiti.rest.util.ActivitiRequest;
 import org.springframework.extensions.webscripts.Cache;
 import org.springframework.extensions.webscripts.Status;
@@ -33,45 +30,46 @@ public class TagsGet extends ActivitiCycleWebScript {
   void execute(ActivitiRequest req, Status status, Cache cache, Map<String, Object> model) {
 
     String connectorId = req.getString("connectorId");
-    String artifactId = req.getString("artifactId");
+    String repositoryNodeId = req.getString("repositoryNodeId");
     String tag = req.getString("tag");
 
-    Map<String, String> tags;
-    if (connectorId != null && artifactId != null) {
-      tags = getTagsByArtifact(connectorId, artifactId);
-    } else if (tag != null) {
-      tags = getTagsById(tag);
+    List<String> tags;
+    if (connectorId != null && repositoryNodeId != null) {
+      tags = this.cycleService.getTags(connectorId, repositoryNodeId);
     } else {
-      throw new WebScriptException(
-              Status.STATUS_BAD_REQUEST,
-              "Missing parameter, please provide either 'connectorId' and 'artifactId' to retrieve tags for an artifact or 'tag' to search for tags that contain the given string");
-    }
+      tags = this.cycleService.getSimiliarTagNames(tag != null ? tag : "");
+    } 
+//    else {
+//      throw new WebScriptException(
+//              Status.STATUS_BAD_REQUEST,
+//              "Missing parameter, please provide either 'connectorId' and 'repositoryNodeId' to retrieve tags for an artifact or 'tag' to search for tags that contain the given string");
+//    }
     model.put("tags", tags);
   }
 
-  /**
-   * TODO: this method (or an equivalent with a more generic return type) should be moved to the API (CycleService)
-   */
-  private Map<String, String> getTagsById(String id) {
-    List<CycleTagContent> allTags = this.cycleService.getRootTags();
-    Map<String, String> tags = new HashMap<String, String>();
-    for (CycleTagContent tag : allTags) {
-      if (tag.getName().contains(id)) {
-        tags.put(tag.getName(), tag.getName());
-      }
-    }
-    return tags;
-  }
-  
-  /**
-   * TODO: this method (or an equivalent with a more generic return type) should be moved to the API (CycleService)
-   */
-  private Map<String, String> getTagsByArtifact(String connectorId, String artifactId) {
-    Map<String, String> tags = new HashMap<String, String>();
-    for (RepositoryNodeTag repositoryNodeTag : this.cycleService.getRepositoryNodeTags(connectorId, artifactId)) {
-      tags.put(repositoryNodeTag.getName(), repositoryNodeTag.getAlias());
-    }
-    return tags;
-  }
+//  /**
+//   * TODO: this method (or an equivalent with a more generic return type) should be moved to the API (CycleService)
+//   */
+//  private List<String> getTagsById(String id) {
+//    List<CycleTagContent> allTags = this.cycleService.getRootTags();
+//    List<String> tags = new ArrayList<String>();
+//    for (CycleTagContent tag : allTags) {
+//      if (tag.getName().contains(id)) {
+//        tags.add(tag.getName());
+//      }
+//    }
+//    return tags;
+//  }
+//  
+//  /**
+//   * TODO: this method (or an equivalent with a more generic return type) should be moved to the API (CycleService)
+//   */
+//  private List<String> getTagsByArtifact(String connectorId, String artifactId) {
+//    List<String> tags = new ArrayList<String>();
+//    for (RepositoryNodeTag repositoryNodeTag : this.cycleService.getRepositoryNodeTags(connectorId, artifactId)) {
+//      tags.add(repositoryNodeTag.getName());
+//    }
+//    return tags;
+//  }
 
 }

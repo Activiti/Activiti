@@ -569,6 +569,35 @@ Activiti.util.toggleClass = function(els, toggleEl, cssClass)
 };
 
 /**
+ * Tests whether a given string is blank, i.e.:
+ * Activiti.util.blank(''); // return true
+ * Activiti.util.blank('  '); // returns true
+ * Activiti.util.blank(' a '); // returns false
+ *
+ * @method Activiti.util.blank
+ * @param string {String} The string to be tested
+ * @return {boolean} true if the string is blank, false otherwise
+ * @static
+ */
+Activiti.util.blank = function(string)
+{
+  return /^\s*$/.test(string);
+};
+
+/**
+ * Trims left and right spaces of the given string.
+ *
+ * @method Activiti.util.trim
+ * @param string {String} The string to be trimmed
+ * @return {String} The trimmed string
+ * @static
+ */
+Activiti.util.trim = function(string)
+{
+  return string.replace(/^\s+|\s+$/g, '');
+};
+
+/**
  * Add a component's messages to the central message store.
  *
  * @method Activiti.util.addMessages
