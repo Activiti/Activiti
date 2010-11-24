@@ -12,12 +12,16 @@
  */
 package org.activiti.examples.bpmn.tasklistener;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.activiti.engine.impl.test.ActivitiInternalTestCase;
 import org.activiti.engine.test.Deployment;
 
 
 /**
  * @author Joram Barrez
+ * @author Falko Menge <falko.menge@camunda.com>
  */
 public class CustomTaskAssignmentTest extends ActivitiInternalTestCase {
   
@@ -63,12 +67,34 @@ public class CustomTaskAssignmentTest extends ActivitiInternalTestCase {
   public void testAssigneeAssignment() {
     runtimeService.startProcessInstanceByKey("customTaskAssignment");
     assertNotNull(taskService.createTaskQuery().taskAssignee("kermit").singleResult());
+    assertEquals(0, taskService.createTaskQuery().taskAssignee("fozzie").count());
     assertEquals(0, taskService.createTaskQuery().taskAssignee("gonzo").count());
   }
   
   @Deployment
   public void testOverwriteExistingAssignments() {
+    runtimeService.startProcessInstanceByKey("customTaskAssignment");
+    assertNotNull(taskService.createTaskQuery().taskAssignee("kermit").singleResult());
+    assertEquals(0, taskService.createTaskQuery().taskAssignee("fozzie").count());
+    assertEquals(0, taskService.createTaskQuery().taskAssignee("gonzo").count());
+  }
+
+  @Deployment
+  public void testOverwriteExistingAssignmentsFromVariable() {
+    // prepare variables
+    Map<String, String> assigneeMappingTable = new HashMap<String, String>();
+    assigneeMappingTable.put("fozzie", "gonzo");
+   
+    Map<String, Object> variables = new HashMap<String, Object>();
+    variables.put("assigneeMappingTable", assigneeMappingTable);
+
+    // start process instance
+    runtimeService.startProcessInstanceByKey("customTaskAssignment", variables);
     
+    // check task lists
+    assertNotNull(taskService.createTaskQuery().taskAssignee("gonzo").singleResult());
+    assertEquals(0, taskService.createTaskQuery().taskAssignee("fozzie").count());
+    assertEquals(0, taskService.createTaskQuery().taskAssignee("kermit").count());
   }
 
 }
