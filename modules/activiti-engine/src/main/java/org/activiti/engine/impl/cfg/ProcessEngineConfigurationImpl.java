@@ -1089,8 +1089,8 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
   }
 
   @Override
-  public ProcessEngineConfigurationImpl setDbSchemaStrategy(String dbSchemaStrategy) {
-    super.setDbSchemaStrategy(dbSchemaStrategy);
+  public ProcessEngineConfigurationImpl setDatabaseSchemaStrategy(String databaseSchemaStrategy) {
+    super.setDatabaseSchemaStrategy(databaseSchemaStrategy);
     return this;
   }
 

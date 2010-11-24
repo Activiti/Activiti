@@ -7,7 +7,7 @@
   <bean id="processEngineConfiguration" class="org.activiti.engine.impl.cfg.StandaloneInMemProcessEngineConfiguration">
   
     <!-- Database configurations -->
-    <property name="dbSchemaStrategy" value="create-if-necessary" />
+    <property name="databaseSchemaStrategy" value="create-if-necessary" />
     <property name="jdbcUrl" value="jdbc:h2:mem:JpaVariableTest;DB_CLOSE_DELAY=1000" />
 
     <property name="jpaPersistenceUnitName" value="activiti-jpa-pu" />

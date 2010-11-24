@@ -17,7 +17,7 @@ import java.io.InputStream;
 
 import javax.sql.DataSource;
 
-import org.activiti.engine.impl.cfg.JtaProcessEngineConfiguration;
+import org.activiti.engine.impl.cfg.StandaloneInMemProcessEngineConfiguration;
 import org.activiti.engine.impl.cfg.StandaloneProcessEngineConfiguration;
 import org.springframework.beans.factory.support.DefaultListableBeanFactory;
 import org.springframework.beans.factory.xml.XmlBeanDefinitionReader;
@@ -26,25 +26,82 @@ import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
 
 
-/**
+/** Configuration information from which a process engine can be build.
+ * 
+ * <p>Most common is to create a process engine based on the default configuration file:
+ * <pre>ProcessEngine processEngine = ProcessEngineConfiguration
+ *   .createProcessEngineConfigurationFromResourceDefault()
+ *   .buildProcessEngine();
+ * </pre>
+ * </p>
+ * 
+ * <p>To create a process engine programatic, without a configuration file, 
+ * the first option is {@link #createStandaloneProcessEngineConfiguration()}
+ * <pre>ProcessEngine processEngine = ProcessEngineConfiguration
+ *   .createStandaloneProcessEngineConfiguration()
+ *   .buildProcessEngine();
+ * </pre>
+ * This creates a new process engine with all the defaults to connect to 
+ * a remote h2 database (jdbc:h2:tcp://localhost/activiti) in standalone 
+ * mode.  Standalone mode means that Activiti will manage the transactions 
+ * on the JDBC connections that it creates.  One transaction per 
+ * service method.
+ * For a description of how to write the configuration files, see the 
+ * userguide.
+ * </p>
+ * 
+ * <p>The second option is great for testing: {@link #createStandalonInMemeProcessEngineConfiguration()}
+ * <pre>ProcessEngine processEngine = ProcessEngineConfiguration
+ *   .createStandaloneInMemProcessEngineConfiguration()
+ *   .buildProcessEngine();
+ * </pre>
+ * This creates a new process engine with all the defaults to connect to 
+ * an memory h2 database (jdbc:h2:tcp://localhost/activiti) in standalone 
+ * mode.  The DB schema strategy default is in this case <code>create-drop</code>.  
+ * Standalone mode means that Activiti will manage the transactions 
+ * on the JDBC connections that it creates.  One transaction per 
+ * service method.
+ * </p>
+ * 
+ * <p>On all forms of creating a process engine, you can first customize the configuration 
+ * before calling the {@link #buildProcessEngine()} method by calling any of the 
+ * setters like this:
+ * <pre>ProcessEngine processEngine = ProcessEngineConfiguration
+ *   .createProcessEngineConfigurationFromResourceDefault()
+ *   .setMailServerHost("gmail.com")
+ *   .setJdbcUsername("mickey")
+ *   .setJdbcPassword("mouse")
+ *   .buildProcessEngine();
+ * </pre>
+ * </p>
+ * 
+ * @see ProcessEngines 
  * @author Tom Baeyens
  */
 public abstract class ProcessEngineConfiguration {
   
-  /** checks the version of the DB schema against the library when 
+  /** Checks the version of the DB schema against the library when 
    * the process engine is being created and throws an exception
    * if the versions don't match.
    */
   public static final String DB_SCHEMA_STRATEGY_CHECK_VERSION = "check-version";
   
-  /** creates the schema when the process engine is being created and 
+  /** Creates the schema when the process engine is being created and 
    * drops the schema when the process engine is being closed.
    */
   public static final String DB_SCHEMA_STRATEGY_CREATE_DROP = "create-drop";
 
+  /** Value for {@link #setHistoryLevel(int)} to ensure that no history is being recorded. */
   public static final int HISTORYLEVEL_NONE = 0;
+  /** Value for {@link #setHistoryLevel(int)} to ensure that only historic process instances and 
+   * historic activity instances are being recorded. 
+   * This means no details for those entities. */
   public static final int HISTORYLEVEL_ACTIVITY = 1;
+  /** Value for {@link #setHistoryLevel(int)} to ensure that only historic process instances, 
+   * historic activity instances and submitted form property values are being recorded. */ 
   public static final int HISTORYLEVEL_AUDIT = 2;
+  /** Value for {@link #setHistoryLevel(int)} to ensure that all historic information is 
+   * being recorded, including the variable updates. */ 
   public static final int HISTORYLEVEL_FULL = 3;
   
   protected String processEngineName = ProcessEngines.NAME_DEFAULT;
@@ -59,7 +116,7 @@ public abstract class ProcessEngineConfiguration {
   protected String mailServerDefaultFrom = "activiti@localhost";
 
   protected String databaseType = "h2";
-  protected String dbSchemaStrategy = DB_SCHEMA_STRATEGY_CHECK_VERSION;
+  protected String databaseSchemaStrategy = DB_SCHEMA_STRATEGY_CHECK_VERSION;
   protected String jdbcDriver = "org.h2.Driver";
   protected String jdbcUrl = "jdbc:h2:tcp://localhost/activiti";
   protected String jdbcUsername = "sa";
@@ -78,6 +135,7 @@ public abstract class ProcessEngineConfiguration {
   
   protected ClassLoader classLoader;
 
+  /** use one of the static createXxxx methods instead */
   protected ProcessEngineConfiguration() {
   }
 
@@ -117,10 +175,14 @@ public abstract class ProcessEngineConfiguration {
     return new StandaloneProcessEngineConfiguration();
   }
 
-  public static ProcessEngineConfiguration createJtaProcessEngineConfiguration() {
-    return new JtaProcessEngineConfiguration();
+  public static ProcessEngineConfiguration createStandaloneInMemProcessEngineConfiguration() {
+    return new StandaloneInMemProcessEngineConfiguration();
   }
 
+// TODO add later when we have test coverage for this
+//  public static ProcessEngineConfiguration createJtaProcessEngineConfiguration() {
+//    return new JtaProcessEngineConfiguration();
+//  }
   
 
   // getters and setters //////////////////////////////////////////////////////
@@ -223,13 +285,13 @@ public abstract class ProcessEngineConfiguration {
   }
 
   
-  public String getDbSchemaStrategy() {
-    return dbSchemaStrategy;
+  public String getDatabaseSchemaStrategy() {
+    return databaseSchemaStrategy;
   }
 
   
-  public ProcessEngineConfiguration setDbSchemaStrategy(String dbSchemaStrategy) {
-    this.dbSchemaStrategy = dbSchemaStrategy;
+  public ProcessEngineConfiguration setDatabaseSchemaStrategy(String databaseSchemaStrategy) {
+    this.databaseSchemaStrategy = databaseSchemaStrategy;
     return this;
   }
 

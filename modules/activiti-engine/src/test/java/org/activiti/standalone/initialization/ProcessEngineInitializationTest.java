@@ -47,7 +47,7 @@ public class ProcessEngineInitializationTest extends PvmTestCase {
     // first create the schema
     ProcessEngineImpl processEngine = (ProcessEngineImpl) ProcessEngineConfiguration
       .createProcessEngineConfigurationFromResource("org/activiti/standalone/initialization/notables.activiti.cfg.xml")
-      .setDbSchemaStrategy(ProcessEngineConfiguration.DB_SCHEMA_STRATEGY_CREATE_DROP)
+      .setDatabaseSchemaStrategy(ProcessEngineConfiguration.DB_SCHEMA_STRATEGY_CREATE_DROP)
       .buildProcessEngine();
 
     // then update the version to something that is different to the library
@@ -80,7 +80,7 @@ public class ProcessEngineInitializationTest extends PvmTestCase {
       // build with a version mismatch between library and db tables
       ProcessEngineConfiguration
         .createProcessEngineConfigurationFromResource("org/activiti/standalone/initialization/notables.activiti.cfg.xml")
-        .setDbSchemaStrategy(ProcessEngineConfiguration.DB_SCHEMA_STRATEGY_CHECK_VERSION)
+        .setDatabaseSchemaStrategy(ProcessEngineConfiguration.DB_SCHEMA_STRATEGY_CHECK_VERSION)
         .buildProcessEngine();
       
       fail("expected exception");

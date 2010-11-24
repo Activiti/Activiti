@@ -50,7 +50,7 @@ public class ProcessEngineImpl implements ProcessEngine {
   protected TaskService taskService;
   protected FormService formService;
   protected ManagementService managementService;
-  protected String dbSchemaStrategy;
+  protected String databaseSchemaStrategy;
   protected JobExecutor jobExecutor;
   protected CommandExecutor commandExecutor;
   protected Map<Class<?>, SessionFactory> sessionFactories;
@@ -72,7 +72,7 @@ public class ProcessEngineImpl implements ProcessEngine {
     this.taskService = processEngineConfiguration.getTaskService();
     this.formService = processEngineConfiguration.getFormService();
     this.managementService = processEngineConfiguration.getManagementService();
-    this.dbSchemaStrategy = processEngineConfiguration.getDbSchemaStrategy();
+    this.databaseSchemaStrategy = processEngineConfiguration.getDatabaseSchemaStrategy();
     this.jobExecutor = processEngineConfiguration.getJobExecutor();
     this.commandExecutor = processEngineConfiguration.getCommandExecutorTxRequired();
     this.sessionFactories = processEngineConfiguration.getSessionFactories();
@@ -100,23 +100,23 @@ public class ProcessEngineImpl implements ProcessEngine {
   }
 
   protected void performSchemaOperationsCreate() {
-    if (ProcessEngineConfigurationImpl.DB_SCHEMA_STRATEGY_DROP_CREATE.equals(dbSchemaStrategy)) {
+    if (ProcessEngineConfigurationImpl.DB_SCHEMA_STRATEGY_DROP_CREATE.equals(databaseSchemaStrategy)) {
       try {
         getDbSqlSessionFactory().dbSchemaDrop();
       } catch (RuntimeException e) {
         // ignore
       }
     }
-    if ( org.activiti.engine.ProcessEngineConfiguration.DB_SCHEMA_STRATEGY_CREATE_DROP.equals(dbSchemaStrategy) 
-         || ProcessEngineConfigurationImpl.DB_SCHEMA_STRATEGY_DROP_CREATE.equals(dbSchemaStrategy)
-         || ProcessEngineConfigurationImpl.DB_SCHEMA_STRATEGY_CREATE.equals(dbSchemaStrategy)
+    if ( org.activiti.engine.ProcessEngineConfiguration.DB_SCHEMA_STRATEGY_CREATE_DROP.equals(databaseSchemaStrategy) 
+         || ProcessEngineConfigurationImpl.DB_SCHEMA_STRATEGY_DROP_CREATE.equals(databaseSchemaStrategy)
+         || ProcessEngineConfigurationImpl.DB_SCHEMA_STRATEGY_CREATE.equals(databaseSchemaStrategy)
        ) {
       getDbSqlSessionFactory().dbSchemaCreate();
       
-    } else if (org.activiti.engine.ProcessEngineConfiguration.DB_SCHEMA_STRATEGY_CHECK_VERSION.equals(dbSchemaStrategy)) {
+    } else if (org.activiti.engine.ProcessEngineConfiguration.DB_SCHEMA_STRATEGY_CHECK_VERSION.equals(databaseSchemaStrategy)) {
       getDbSqlSessionFactory().dbSchemaCheckVersion();
       
-    } else if (ProcessEngineConfigurationImpl.DB_SCHEMA_STRATEGY_CREATE_IF_NECESSARY.equals(dbSchemaStrategy)) {
+    } else if (ProcessEngineConfigurationImpl.DB_SCHEMA_STRATEGY_CREATE_IF_NECESSARY.equals(databaseSchemaStrategy)) {
       try {
         getDbSqlSessionFactory().dbSchemaCheckVersion();
       } catch (Exception e) {
@@ -142,7 +142,7 @@ public class ProcessEngineImpl implements ProcessEngine {
   }
 
   private void performSchemaOperationsClose() {
-    if (org.activiti.engine.ProcessEngineConfiguration.DB_SCHEMA_STRATEGY_CREATE_DROP.equals(dbSchemaStrategy)) {
+    if (org.activiti.engine.ProcessEngineConfiguration.DB_SCHEMA_STRATEGY_CREATE_DROP.equals(databaseSchemaStrategy)) {
       getDbSqlSessionFactory().dbSchemaDrop();
     }
   }
@@ -181,8 +181,8 @@ public class ProcessEngineImpl implements ProcessEngine {
     return runtimeService;
   }
   
-  public String getDbSchemaStrategy() {
-    return dbSchemaStrategy;
+  public String getDatabaseSchemaStrategy() {
+    return databaseSchemaStrategy;
   }
   
   public RepositoryService getRepositoryService() {

@@ -54,7 +54,7 @@ public class EngineRebootProcessDefinitionCacheTest extends PvmTestCase {
     
     // Create process engine and deploy test process
      ProcessEngine processEngine = new StandaloneProcessEngineConfiguration()
-       .setDbSchemaStrategy(ProcessEngineConfiguration.DB_SCHEMA_STRATEGY_CHECK_VERSION)
+       .setDatabaseSchemaStrategy(ProcessEngineConfiguration.DB_SCHEMA_STRATEGY_CHECK_VERSION)
        .setJdbcUrl("jdbc:h2:mem:activiti-reboot-test;DB_CLOSE_DELAY=1000")
        .setJobExecutorActivate(false)
        .buildProcessEngine();
@@ -83,7 +83,7 @@ public class EngineRebootProcessDefinitionCacheTest extends PvmTestCase {
      
      // Reboot the process engine
      processEngine = new StandaloneProcessEngineConfiguration()
-       .setDbSchemaStrategy(org.activiti.engine.ProcessEngineConfiguration.DB_SCHEMA_STRATEGY_CHECK_VERSION)
+       .setDatabaseSchemaStrategy(org.activiti.engine.ProcessEngineConfiguration.DB_SCHEMA_STRATEGY_CHECK_VERSION)
        .setJdbcUrl("jdbc:h2:mem:activiti-reboot-test;DB_CLOSE_DELAY=1000")
        .setJobExecutorActivate(false)
        .buildProcessEngine();

@@ -99,7 +99,7 @@ public abstract class AbstractCycleDaoMyBatisImpl {
   }
   
   private void performDbSchemaCreation(CycleDbSqlSessionFactory dbSqlSessionFactory, ProcessEngineConfiguration processEngineConfiguration) {
-    String dbSchemaStrategy = processEngineConfiguration.getDbSchemaStrategy();
+    String dbSchemaStrategy = processEngineConfiguration.getDatabaseSchemaStrategy();
     
     if (ProcessEngineConfigurationImpl.DB_SCHEMA_STRATEGY_DROP_CREATE.equals(dbSchemaStrategy)) {
       try {

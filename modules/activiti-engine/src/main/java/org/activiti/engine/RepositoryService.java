@@ -16,7 +16,6 @@ package org.activiti.engine;
 import java.io.InputStream;
 import java.util.List;
 
-import org.activiti.engine.impl.pvm.ReadOnlyProcessDefinition;
 import org.activiti.engine.repository.DeploymentBuilder;
 import org.activiti.engine.repository.DeploymentQuery;
 import org.activiti.engine.repository.ProcessDefinitionQuery;
