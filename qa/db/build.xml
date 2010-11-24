@@ -37,7 +37,7 @@
 		</sql>
 	</target>
 	
-	<target name="create.activiti.cfg">
+	<!-- target name="create.activiti.cfg">
 		<echo message="creating activiti.cfg.xml in target environment"/>
 		<echo message="  basedir: ${basedir}"/>
 		<echo message="  database: ${database}"/>
@@ -66,6 +66,7 @@
 		                        replace='password="${jdbc.password}"'/>
 		<replaceregexp file="./target/test-classes/activiti.cfg.xml" flags="s"
 		                        match='schema-strategy=".*?"' 
-		                        replace='schema-strategy="check-version"'/>
-	</target>
+		                        replace='schema-strategy="false"'/>
+	</target -->
+	
 </project>

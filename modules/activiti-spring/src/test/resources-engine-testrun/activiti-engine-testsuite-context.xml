@@ -36,7 +36,7 @@
     <property name="databaseType" value="h2" />
     <property name="dataSource" ref="dataSource" />
     <property name="transactionManager" ref="transactionManager" />
-    <property name="databaseSchemaStrategy" value="create-if-necessary" />
+    <property name="databaseSchemaUpdate" value="true" />
     <property name="mailServerHost" value="localhost" />
     <property name="mailServerPort" value="5025" />
     <property name="jpaEntityManagerFactory" ref="entityManagerFactory" />

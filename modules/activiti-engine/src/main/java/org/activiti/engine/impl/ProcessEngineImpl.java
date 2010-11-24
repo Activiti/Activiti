@@ -20,6 +20,7 @@ import org.activiti.engine.HistoryService;
 import org.activiti.engine.IdentityService;
 import org.activiti.engine.ManagementService;
 import org.activiti.engine.ProcessEngine;
+import org.activiti.engine.ProcessEngineConfiguration;
 import org.activiti.engine.ProcessEngines;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.RuntimeService;
@@ -50,7 +51,7 @@ public class ProcessEngineImpl implements ProcessEngine {
   protected TaskService taskService;
   protected FormService formService;
   protected ManagementService managementService;
-  protected String databaseSchemaStrategy;
+  protected String databaseSchemaUpdate;
   protected JobExecutor jobExecutor;
   protected CommandExecutor commandExecutor;
   protected Map<Class<?>, SessionFactory> sessionFactories;
@@ -72,7 +73,7 @@ public class ProcessEngineImpl implements ProcessEngine {
     this.taskService = processEngineConfiguration.getTaskService();
     this.formService = processEngineConfiguration.getFormService();
     this.managementService = processEngineConfiguration.getManagementService();
-    this.databaseSchemaStrategy = processEngineConfiguration.getDatabaseSchemaStrategy();
+    this.databaseSchemaUpdate = processEngineConfiguration.getDatabaseSchemaUpdate();
     this.jobExecutor = processEngineConfiguration.getJobExecutor();
     this.commandExecutor = processEngineConfiguration.getCommandExecutorTxRequired();
     this.sessionFactories = processEngineConfiguration.getSessionFactories();
@@ -100,23 +101,23 @@ public class ProcessEngineImpl implements ProcessEngine {
   }
 
   protected void performSchemaOperationsCreate() {
-    if (ProcessEngineConfigurationImpl.DB_SCHEMA_STRATEGY_DROP_CREATE.equals(databaseSchemaStrategy)) {
+    if (ProcessEngineConfigurationImpl.DB_SCHEMA_UPDATE_DROP_CREATE.equals(databaseSchemaUpdate)) {
       try {
         getDbSqlSessionFactory().dbSchemaDrop();
       } catch (RuntimeException e) {
         // ignore
       }
     }
-    if ( org.activiti.engine.ProcessEngineConfiguration.DB_SCHEMA_STRATEGY_CREATE_DROP.equals(databaseSchemaStrategy) 
-         || ProcessEngineConfigurationImpl.DB_SCHEMA_STRATEGY_DROP_CREATE.equals(databaseSchemaStrategy)
-         || ProcessEngineConfigurationImpl.DB_SCHEMA_STRATEGY_CREATE.equals(databaseSchemaStrategy)
+    if ( org.activiti.engine.ProcessEngineConfiguration.DB_SCHEMA_UPDATE_CREATE_DROP.equals(databaseSchemaUpdate) 
+         || ProcessEngineConfigurationImpl.DB_SCHEMA_UPDATE_DROP_CREATE.equals(databaseSchemaUpdate)
+         || ProcessEngineConfigurationImpl.DB_SCHEMA_UPDATE_CREATE.equals(databaseSchemaUpdate)
        ) {
       getDbSqlSessionFactory().dbSchemaCreate();
       
-    } else if (org.activiti.engine.ProcessEngineConfiguration.DB_SCHEMA_STRATEGY_CHECK_VERSION.equals(databaseSchemaStrategy)) {
+    } else if (org.activiti.engine.ProcessEngineConfiguration.DB_SCHEMA_UPDATE_FALSE.equals(databaseSchemaUpdate)) {
       getDbSqlSessionFactory().dbSchemaCheckVersion();
       
-    } else if (ProcessEngineConfigurationImpl.DB_SCHEMA_STRATEGY_CREATE_IF_NECESSARY.equals(databaseSchemaStrategy)) {
+    } else if (ProcessEngineConfiguration.DB_SCHEMA_UPDATE_TRUE.equals(databaseSchemaUpdate)) {
       try {
         getDbSqlSessionFactory().dbSchemaCheckVersion();
       } catch (Exception e) {
@@ -142,7 +143,7 @@ public class ProcessEngineImpl implements ProcessEngine {
   }
 
   private void performSchemaOperationsClose() {
-    if (org.activiti.engine.ProcessEngineConfiguration.DB_SCHEMA_STRATEGY_CREATE_DROP.equals(databaseSchemaStrategy)) {
+    if (org.activiti.engine.ProcessEngineConfiguration.DB_SCHEMA_UPDATE_CREATE_DROP.equals(databaseSchemaUpdate)) {
       getDbSqlSessionFactory().dbSchemaDrop();
     }
   }
@@ -181,8 +182,8 @@ public class ProcessEngineImpl implements ProcessEngine {
     return runtimeService;
   }
   
-  public String getDatabaseSchemaStrategy() {
-    return databaseSchemaStrategy;
+  public String getDatabaseSchemaUpdate() {
+    return databaseSchemaUpdate;
   }
   
   public RepositoryService getRepositoryService() {

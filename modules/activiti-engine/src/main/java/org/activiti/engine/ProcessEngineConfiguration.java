@@ -82,14 +82,16 @@ public abstract class ProcessEngineConfiguration {
   
   /** Checks the version of the DB schema against the library when 
    * the process engine is being created and throws an exception
-   * if the versions don't match.
-   */
-  public static final String DB_SCHEMA_STRATEGY_CHECK_VERSION = "check-version";
+   * if the versions don't match. */
+  public static final String DB_SCHEMA_UPDATE_FALSE = "false";
   
   /** Creates the schema when the process engine is being created and 
-   * drops the schema when the process engine is being closed.
-   */
-  public static final String DB_SCHEMA_STRATEGY_CREATE_DROP = "create-drop";
+   * drops the schema when the process engine is being closed. */
+  public static final String DB_SCHEMA_UPDATE_CREATE_DROP = "create-drop";
+
+  /** Upon building of the process engine, a check is performed and 
+   * an update of the schema is performed if it is necessary. */
+  public static final String DB_SCHEMA_UPDATE_TRUE = "true";
 
   /** Value for {@link #setHistoryLevel(int)} to ensure that no history is being recorded. */
   public static final int HISTORYLEVEL_NONE = 0;
@@ -116,7 +118,7 @@ public abstract class ProcessEngineConfiguration {
   protected String mailServerDefaultFrom = "activiti@localhost";
 
   protected String databaseType = "h2";
-  protected String databaseSchemaStrategy = DB_SCHEMA_STRATEGY_CHECK_VERSION;
+  protected String databaseSchemaUpdate = DB_SCHEMA_UPDATE_FALSE;
   protected String jdbcDriver = "org.h2.Driver";
   protected String jdbcUrl = "jdbc:h2:tcp://localhost/activiti";
   protected String jdbcUsername = "sa";
@@ -285,13 +287,13 @@ public abstract class ProcessEngineConfiguration {
   }
 
   
-  public String getDatabaseSchemaStrategy() {
-    return databaseSchemaStrategy;
+  public String getDatabaseSchemaUpdate() {
+    return databaseSchemaUpdate;
   }
 
   
-  public ProcessEngineConfiguration setDatabaseSchemaStrategy(String databaseSchemaStrategy) {
-    this.databaseSchemaStrategy = databaseSchemaStrategy;
+  public ProcessEngineConfiguration setDatabaseSchemaUpdate(String databaseSchemaUpdate) {
+    this.databaseSchemaUpdate = databaseSchemaUpdate;
     return this;
   }
 

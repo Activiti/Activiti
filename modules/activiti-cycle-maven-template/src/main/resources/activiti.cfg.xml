@@ -1,16 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<activiti-cfg>
+
+<beans xmlns="http://www.springframework.org/schema/beans" 
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans   http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+  <bean id="processEngineConfiguration" class="org.activiti.engine.impl.cfg.StandaloneProcessEngineConfiguration">
   
-  <!-- YOur local RUNNING H2 database (not in memory) -->
-  <database type="h2" schema-strategy="check-version">
-    <jdbc url="jdbc:h2:tcp://localhost/activiti"
-          driver="org.h2.Driver"
-          username="sa"
-          password="" />
-  </database>
-  
-  <job-executor activate="on" />
-  
-  <mail server="localhost" port="5025" />
-  
-</activiti-cfg>
+    <!-- Database configurations -->
+    <property name="databaseSchemaUpdate" value="false" />
+    
+  </bean>
+
+</beans>

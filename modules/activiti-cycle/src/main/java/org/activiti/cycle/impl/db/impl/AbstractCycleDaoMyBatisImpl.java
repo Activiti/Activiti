@@ -99,24 +99,24 @@ public abstract class AbstractCycleDaoMyBatisImpl {
   }
   
   private void performDbSchemaCreation(CycleDbSqlSessionFactory dbSqlSessionFactory, ProcessEngineConfiguration processEngineConfiguration) {
-    String dbSchemaStrategy = processEngineConfiguration.getDatabaseSchemaStrategy();
+    String dbSchemaStrategy = processEngineConfiguration.getDatabaseSchemaUpdate();
     
-    if (ProcessEngineConfigurationImpl.DB_SCHEMA_STRATEGY_DROP_CREATE.equals(dbSchemaStrategy)) {
+    if (ProcessEngineConfigurationImpl.DB_SCHEMA_UPDATE_DROP_CREATE.equals(dbSchemaStrategy)) {
       try {
         dbSqlSessionFactory.dbSchemaDrop();
       } catch (RuntimeException e) {
         // ignore
       }
     }
-    if (org.activiti.engine.ProcessEngineConfiguration.DB_SCHEMA_STRATEGY_CREATE_DROP.equals(dbSchemaStrategy) || ProcessEngineConfigurationImpl.DB_SCHEMA_STRATEGY_DROP_CREATE.equals(dbSchemaStrategy)
-            || ProcessEngineConfigurationImpl.DB_SCHEMA_STRATEGY_CREATE.equals(dbSchemaStrategy)) {
+    if (org.activiti.engine.ProcessEngineConfiguration.DB_SCHEMA_UPDATE_CREATE_DROP.equals(dbSchemaStrategy) || ProcessEngineConfigurationImpl.DB_SCHEMA_UPDATE_DROP_CREATE.equals(dbSchemaStrategy)
+            || ProcessEngineConfigurationImpl.DB_SCHEMA_UPDATE_CREATE.equals(dbSchemaStrategy)) {
       dbSqlSessionFactory.dbSchemaCreate();
       
-    } else if (org.activiti.engine.ProcessEngineConfiguration.DB_SCHEMA_STRATEGY_CHECK_VERSION.equals(dbSchemaStrategy)) {
+    } else if (org.activiti.engine.ProcessEngineConfiguration.DB_SCHEMA_UPDATE_FALSE.equals(dbSchemaStrategy)) {
       dbSqlSessionFactory.dbSchemaCheckVersion();
       
-    } else if (ProcessEngineConfigurationImpl.DB_SCHEMA_STRATEGY_CREATE_IF_NECESSARY.equals(dbSchemaStrategy)) {
-      log.warning("Cycle doesn't support '" + ProcessEngineConfigurationImpl.DB_SCHEMA_STRATEGY_CREATE_IF_NECESSARY
+    } else if (ProcessEngineConfiguration.DB_SCHEMA_UPDATE_TRUE.equals(dbSchemaStrategy)) {
+      log.warning("Cycle doesn't support '" + ProcessEngineConfiguration.DB_SCHEMA_UPDATE_TRUE
               + "' DB strategy at the moment. Nothing is created!");
       // TODO: the check if necessary doesn't work, since the tables are alway created by the engine already!
 //      try {

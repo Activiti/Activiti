@@ -12,6 +12,8 @@
   
   <section id="configurationproperties">
     <title>XML configuration file</title>
+    <para>TODO REFACTOR THIS</para>
+    
     <para>
     The Activiti process engine is configured through a xml file, by convention in this
     documentation and in the examples called <literal>activiti.cfg.xml</literal>.
@@ -23,7 +25,7 @@
     <programlisting>
 &lt;activiti-cfg process-engine-name=&quot;myProcessEngine&quot;&gt;
 
-  &lt;database type=&quot;h2&quot; schema-strategy=&quot;create-if-necessary&quot;&gt;
+  &lt;database type=&quot;h2&quot; schema-strategy=&quot;true&quot;&gt;
     &lt;jdbc url=&quot;jdbc:h2:mem:activiti;DB_CLOSE_DELAY=1000&quot;
           driver=&quot;org.h2.Driver&quot;
           username=&quot;sa&quot;
@@ -85,14 +87,14 @@
         </listitem>
         <listitem>
           <para>
-            <emphasis role="bold">schema-strategy</emphasis>: { <literal>check-version</literal> | <literal>create-drop</literal> } <literal>check-version</literal> 
+            <emphasis role="bold">schema-strategy</emphasis>: { <literal>false</literal> | <literal>create-drop</literal> } <literal>false</literal> 
             is the default and it will check if the DB version is the same as the library version when the process engine is created.  <literal>create-drop</literal> is handy for 
             testing.  It creates the DB schema when the process engine is created and drops the schema when the engine is closed.
             Following values are <link linkend="experimental"><emphasis role="bold">[EXPERIMENTAL]</emphasis></link>:
             <itemizedlist>
               <listitem>
                 <para><literal>create</literal>: creates schema when process engine starts.</para>
-                <para><literal>create-if-necessary</literal>: creates schema when process engine starts, when the schema doesn't exist yet. Otherwise doesn't do anything.</para>
+                <para><literal>true</literal>: creates schema when process engine starts, when the schema doesn't exist yet. Otherwise doesn't do anything.</para>
                 <para><literal>drop-create</literal>: drops the schema when the process engine starts, and recreates a fresh schema. Useful in testing environments.</para>
               </listitem>
             </itemizedlist>
@@ -166,7 +168,7 @@
     <para>
       Example database configuration:
       <programlisting>
-&lt;database type=&quot;h2&quot; schema-strategy=&quot;create-if-necessary&quot;&gt;
+&lt;database type=&quot;h2&quot; schema-strategy=&quot;true&quot;&gt;
   &lt;jdbc url=&quot;jdbc:h2:mem:activiti;DB_CLOSE_DELAY=1000&quot;
         driver=&quot;org.h2.Driver&quot;
         username=&quot;sa&quot;

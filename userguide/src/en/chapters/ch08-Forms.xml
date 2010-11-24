@@ -40,7 +40,10 @@
 
        Or that can be done with an ant task by first building a business archive zip file that 
        contains the process and forms like above and then deploy it like this:
+       </para>
        
+       <para>TODO: REFACTOR THIS (configuration file updates)</para>
+       <para>
        <programlisting>&lt;taskdef name=&quot;deploy-bar&quot; classname=&quot;org.activiti.engine.impl.ant.DeployBarTask&quot;&gt;
   &lt;classpath&gt;
     &lt;pathelement path=&quot;files/demo&quot;/&gt;

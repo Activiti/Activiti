@@ -38,6 +38,7 @@ repositoryService.createDeployment()
   
   <section>
     <title>Deploying with ant</title>
+    <para>TODO REFACTOR THIS (configuration file updates)</para>
     <para>To deploy a business archive with ant, first the <literal>deploy-bar</literal> task 
     needs to be defined.  Make sure that the configuration jar is on the classpath, as well as the 
     Activiti jar and all its dependencies:</para>

@@ -32,7 +32,6 @@ import org.activiti.engine.IdentityService;
 import org.activiti.engine.ManagementService;
 import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.ProcessEngineConfiguration;
-import org.activiti.engine.ProcessEngines;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.RuntimeService;
 import org.activiti.engine.TaskService;
@@ -107,9 +106,8 @@ import org.apache.ibatis.type.JdbcType;
  */
 public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfiguration {
   
-  public static final String DB_SCHEMA_STRATEGY_CREATE = "create";
-  public static final String DB_SCHEMA_STRATEGY_CREATE_IF_NECESSARY = "create-if-necessary";
-  public static final String DB_SCHEMA_STRATEGY_DROP_CREATE = "drop-create";
+  public static final String DB_SCHEMA_UPDATE_CREATE = "create";
+  public static final String DB_SCHEMA_UPDATE_DROP_CREATE = "drop-create";
 
   public static final String DEFAULT_WS_SYNC_FACTORY = "org.activiti.engine.impl.webservice.CxfWebServiceClientFactory";
 
@@ -1089,8 +1087,8 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
   }
 
   @Override
-  public ProcessEngineConfigurationImpl setDatabaseSchemaStrategy(String databaseSchemaStrategy) {
-    super.setDatabaseSchemaStrategy(databaseSchemaStrategy);
+  public ProcessEngineConfigurationImpl setDatabaseSchemaUpdate(String databaseSchemaUpdate) {
+    super.setDatabaseSchemaUpdate(databaseSchemaUpdate);
     return this;
   }
 

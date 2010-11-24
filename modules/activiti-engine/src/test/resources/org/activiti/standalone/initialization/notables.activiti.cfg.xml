@@ -7,7 +7,7 @@
   <bean id="processEngineConfiguration" class="org.activiti.engine.impl.cfg.StandaloneInMemProcessEngineConfiguration">
   
     <!-- Database configurations -->
-    <property name="databaseSchemaStrategy" value="check-version" />
+    <property name="databaseSchemaUpdate" value="false" />
     <property name="jdbcUrl" value="jdbc:h2:mem:ProcessEngineInitializationTest;DB_CLOSE_DELAY=1000" />
     
     <!-- job executor configurations -->

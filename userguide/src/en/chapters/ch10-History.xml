@@ -31,6 +31,7 @@
 	  <para>In the activiti.cfg.xml configuration file, you can configure the level of history archiving 
 	  that needs to happen:
 	  </para>
+	  <para>TODO: REFACTOR THIS (configuration file updates)</para>
 	  
 	  <programlisting>&lt;activiti-cfg&gt;
   &lt;history level=&quot;audit&quot; /&gt;  

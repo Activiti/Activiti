@@ -20,7 +20,7 @@ package org.activiti.engine.impl.cfg;
 public class StandaloneInMemProcessEngineConfiguration extends StandaloneProcessEngineConfiguration {
 
   public StandaloneInMemProcessEngineConfiguration() {
-    this.databaseSchemaStrategy = DB_SCHEMA_STRATEGY_CREATE_DROP;
+    this.databaseSchemaUpdate = DB_SCHEMA_UPDATE_CREATE_DROP;
     this.jdbcUrl = "jdbc:h2:mem:activiti";
   }
 }
