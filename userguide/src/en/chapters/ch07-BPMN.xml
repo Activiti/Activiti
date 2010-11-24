@@ -1761,7 +1761,199 @@ public class ReverseStringsFieldInjected implements JavaDelegation {
   		
 		</section>
     
-    
+<section id="bpmnWebserviceTask">
+	<title>WebService Task</title><link linkend="experimental">
+		<emphasis role="bold">[EXPERIMENTAL]</emphasis>
+	</link>
+
+	<section id="bpmnWebserviceTaskDescription">
+
+		<title>Description</title>
+
+		<para>
+			A WebService task is used to synchronously invoke an external web service.
+		</para>
+
+	</section>
+
+	<section id="bpmnWebserviceTaskGraphicalNotation">
+
+		<title>Graphical Notation</title>
+
+		<para>
+			A WebService task is visualized ... TODO
+			<mediaobject>
+				<imageobject>
+					<imagedata align="center" fileref="images/bpmn.java.service.task.png" />
+				</imageobject>
+			</mediaobject>
+		</para>
+
+	</section>
+
+	<section id="bpmnWebserviceTaskXML">
+
+		<title>XML representation</title>
+
+		<para>
+			To use a WebService we need to import its operations and complex types. This can be done
+			automatically by using the import tag pointing to the WSDL of the WebService:
+       </para>
+
+		<programlisting>
+&lt;import importType=&quot;http://schemas.xmlsoap.org/wsdl/&quot;
+	location=&quot;http://localhost:63081/counter?wsdl&quot;
+	namespace=&quot;http://webservice.activiti.org/&quot; /&gt;</programlisting>
+		
+		<para>
+			The previous declaration tells Activiti to import the definitions but it doesn't create
+			the item definitions and messages for you. Let's suppose we want to invoke a specific method called
+			'prettyPrint', therefore we will need to create the corresponding message and item definitions for
+			the request and response messages:
+		</para>
+
+		<programlisting>
+&lt;message id=&quot;prettyPrintCountRequestMessage&quot; itemRef=&quot;tns:prettyPrintCountRequestItem&quot; /&gt;
+&lt;message id=&quot;prettyPrintCountResponseMessage&quot; itemRef=&quot;tns:prettyPrintCountResponseItem&quot; /&gt;
+  
+&lt;itemDefinition id=&quot;prettyPrintCountRequestItem&quot; structureRef=&quot;counter:prettyPrintCount&quot; /&gt;
+&lt;itemDefinition id=&quot;prettyPrintCountResponseItem&quot; structureRef=&quot;counter:prettyPrintCountResponse&quot; /&gt;</programlisting>
+		
+		<para>
+			Before declaring the service task, we have to define the BPMN interfaces and operations that actually reference the WebService ones.
+			Basically, we define and 'interface' and the required 'operation's'. For each operation we reuse the previous defined
+			message for in and out. For example, the following declaration defines the 'counter' interface and the 'prettyPrintCountOperation' operation:
+		</para>
+		
+		<programlisting>
+&lt;interface name=&quot;Counter Interface&quot; implementationRef=&quot;counter:Counter&quot;&gt;
+	&lt;operation id=&quot;prettyPrintCountOperation&quot; name=&quot;prettyPrintCount Operation&quot; 
+			implementationRef=&quot;counter:prettyPrintCount&quot;&gt;
+		&lt;inMessageRef&gt;tns:prettyPrintCountRequestMessage&lt;/inMessageRef&gt;
+		&lt;outMessageRef&gt;tns:prettyPrintCountResponseMessage&lt;/outMessageRef&gt;
+	&lt;/operation&gt;
+&lt;/interface&gt;</programlisting>
+		
+		<para>
+			Then we can declare a WebService task by using the ##WebService implementation 
+			and a reference to the WebService operation. 
+		</para>
+		
+		<programlisting>
+&lt;serviceTask id=&quot;webService&quot; 
+	name=&quot;Web service invocation&quot;
+	implementation=&quot;##WebService&quot;
+	operationRef=&quot;tns:prettyPrintCountOperation&quot;&gt;</programlisting>
+	</section>
+
+	<section id="bpmnWebserviceTaskIOSpecification">
+		<title>WebService task IO Specification</title>
+
+		<para>
+			Unless we are using the simplistic approach for data input and output associations (See below), each WebService task
+			needs to declare an IO Specification which states which are the inputs and outputs of the task. The approach is pretty
+			straightforward and BPMN 2.0 complaint, for our prettyPrint example we define the input and output sets according to
+			the previously declared item definitions:  
+		</para>
+		
+		<programlisting>
+&lt;ioSpecification&gt;
+	&lt;dataInput itemSubjectRef=&quot;tns:prettyPrintCountRequestItem&quot; id=&quot;dataInputOfServiceTask&quot; /&gt;
+	&lt;dataOutput itemSubjectRef=&quot;tns:prettyPrintCountResponseItem&quot; id=&quot;dataOutputOfServiceTask&quot; /&gt;
+	&lt;inputSet&gt;
+		&lt;dataInputRefs&gt;dataInputOfServiceTask&lt;/dataInputRefs&gt;
+	&lt;/inputSet&gt;
+	&lt;outputSet&gt;
+		&lt;dataOutputRefs&gt;dataOutputOfServiceTask&lt;/dataOutputRefs&gt;
+	&lt;/outputSet&gt;
+&lt;/ioSpecification&gt;</programlisting>
+	</section>
+
+	<section id="bpmnWebserviceTaskDataInputAssociation">
+		<title>WebService task data input associations</title>
+
+		<para>
+			There are 2 ways of specifying data input associations:
+		</para>
+		
+		<itemizedlist>
+         	<listitem><para>Using expressions</para></listitem>
+         	<listitem><para>Using the simplistic approach</para></listitem>
+        </itemizedlist>
+       
+       <para>
+       		To specify the data input association using expressions we need to define the source and target items
+       		and specify the corresponding assignments between the fields of each item. In the following example we assign
+       		prefix and suffix fields of the items:
+       </para>
+       
+       <programlisting>
+&lt;dataInputAssociation&gt;
+	&lt;sourceRef&gt;dataInputOfProcess&lt;/sourceRef&gt;
+	&lt;targetRef&gt;dataInputOfServiceTask&lt;/targetRef&gt;
+	&lt;assignment&gt;
+		&lt;from&gt;${dataInputOfProcess.prefix}&lt;/from&gt;
+		&lt;to&gt;${dataInputOfServiceTask.prefix}&lt;/to&gt;
+	&lt;/assignment&gt;
+	&lt;assignment&gt;
+		&lt;from&gt;${dataInputOfProcess.suffix}&lt;/from&gt;
+		&lt;to&gt;${dataInputOfServiceTask.suffix}&lt;/to&gt;
+	&lt;/assignment&gt;
+&lt;/dataInputAssociation&gt;</programlisting>
+       
+       <para>
+       		On the other hand we can use the simplistic approach which is much more simple. The 'sourceRef' element is an Activiti
+       		variable name and the 'targetRef' element is a property of the item definition. In the following example we assign to
+       		the 'prefix' field the value of the variable 'PrefixVariable' and to the 'suffix' field the value of the variable 'SuffixVariable'.
+       </para>
+       
+       <programlisting>
+&lt;dataInputAssociation&gt;
+	&lt;sourceRef&gt;PrefixVariable&lt;/sourceRef&gt;
+	&lt;targetRef&gt;prefix&lt;/targetRef&gt;
+&lt;/dataInputAssociation&gt;
+&lt;dataInputAssociation&gt;
+	&lt;sourceRef&gt;SuffixVariable&lt;/sourceRef&gt;
+	&lt;targetRef&gt;suffix&lt;/targetRef&gt;
+&lt;/dataInputAssociation&gt;</programlisting>
+	</section>
+
+	<section id="bpmnWebserviceTaskDataOutputAssociation">
+		<title>WebService task data output associations</title>
+
+		<para>
+			There are 2 ways of specifying data out associations:
+		</para>
+		
+		<itemizedlist>
+         	<listitem><para>Using expressions</para></listitem>
+         	<listitem><para>Using the simplistic approach</para></listitem>
+        </itemizedlist>
+        
+        <para>
+       		To specify the data out association using expressions we need to define the target variable and the source expression. The approach is pretty
+			straightforward and similar data input associations:
+       </para>
+       
+       <programlisting>
+&lt;dataOutputAssociation&gt;
+	&lt;targetRef&gt;dataOutputOfProcess&lt;/targetRef&gt;
+	&lt;transformation&gt;${dataOutputOfServiceTask.prettyPrint}&lt;/transformation&gt;
+&lt;/dataOutputAssociation&gt;</programlisting>
+       
+       <para>
+       		On the other hand we can use the simplistic approach which is much more simple. The 'sourceRef' element is a property
+       		of the item definition and the 'targetRef' element is an Activiti variable name. The approach is pretty
+			straightforward and similar data input associations: 
+       </para>
+       
+       <programlisting>
+&lt;dataOutputAssociation&gt;
+	&lt;sourceRef&gt;prettyPrint&lt;/sourceRef&gt;
+	&lt;targetRef&gt;OutputVariable&lt;/targetRef&gt;
+&lt;/dataOutputAssociation&gt;</programlisting>
+	</section>
+</section>    
     
     <section id="executionListeners">
       <title>Execution listener</title>
