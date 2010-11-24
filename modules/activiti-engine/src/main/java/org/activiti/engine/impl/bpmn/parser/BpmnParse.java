@@ -207,18 +207,23 @@ public class BpmnParse extends Parse {
   public BpmnParse execute() {
     super.execute(); // schema validation
 
-    parseDefinitionsAttributes();
-    parseImports();
-    parseItemDefinitions();
-    parseMessages();
-    parseInterfaces();
-    parseProcessDefinitions();
-    
-    if (hasWarnings()) {
-      logWarnings();
-    }
-    if (hasErrors()) {
-      throwActivitiExceptionForErrors();
+    try {
+      parseDefinitionsAttributes();
+      parseImports();
+      parseItemDefinitions();
+      parseMessages();
+      parseInterfaces();
+      parseProcessDefinitions();
+     
+    } catch(Exception e) {
+      LOG.log(Level.SEVERE, "Uknown exception", e);
+    } finally {
+      if (hasWarnings()) {
+        logWarnings();
+      }
+      if (hasErrors()) {
+        throwActivitiExceptionForErrors();
+      }
     }
     
     return this;

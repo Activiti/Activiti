@@ -510,6 +510,12 @@
       </modules>
     </profile>
     <profile>
+      <id>checkmule</id>
+      <modules>
+        <module>modules/activiti-mule</module>
+      </modules>
+    </profile>
+    <profile>
       <id>checkspring</id>
       <modules>
         <module>modules/activiti-spring</module>
