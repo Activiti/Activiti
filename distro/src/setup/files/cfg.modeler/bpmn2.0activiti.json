@@ -26,8 +26,7 @@
                 "FromEventbasedGateway",
                 "messageflow_start",
                 "messageflow_end",
-                "fromtoall",
-                "ActivitiesMorph"
+                "fromtoall"
             ],
             "properties": [
                 {
@@ -56,8 +55,7 @@
                 "FromEventbasedGateway",
                 "messageflow_start",
                 "messageflow_end",
-                "fromtoall",
-                "ActivitiesMorph"
+                "fromtoall"
             ],
             "properties": [
                 {
@@ -86,8 +84,7 @@
                 "FromEventbasedGateway",
                 "messageflow_start",
                 "messageflow_end",
-                "fromtoall",
-                "ActivitiesMorph"
+                "fromtoall"
             ],
             "properties": [
                 {
@@ -116,8 +113,7 @@
                 "FromEventbasedGateway",
                 "messageflow_start",
                 "messageflow_end",
-                "fromtoall",
-                "ActivitiesMorph"
+                "fromtoall"
             ],
             "properties": [
                 {
@@ -146,8 +142,7 @@
                 "FromEventbasedGateway",
                 "messageflow_start",
                 "messageflow_end",
-                "fromtoall",
-                "ActivitiesMorph"
+                "fromtoall"
             ],
             "properties": [
                 {
