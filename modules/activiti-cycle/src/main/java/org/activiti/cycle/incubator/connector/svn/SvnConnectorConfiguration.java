@@ -52,7 +52,7 @@ public class SvnConnectorConfiguration extends PasswordEnabledRepositoryConnecto
   }
 
   public ArtifactType getDefaultArtifactType() {
-    return getArtifactType(SvnConnectorPluginDefinition.ARTIFACT_TYPE_DEFAULT);
+    return SvnConnectorPluginDefinition.artifactTypeDefault;
   }
 
 }

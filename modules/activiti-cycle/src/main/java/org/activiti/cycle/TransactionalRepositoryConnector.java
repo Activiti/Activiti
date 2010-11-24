@@ -9,6 +9,9 @@ package org.activiti.cycle;
  * modifications to the repository and then try to commit them using
  * {@link #commitTransaction(String)}.
  * 
+ * NOTE: Connector-Transactions are meant to be "short" i.e. limited to a single
+ * HTTPRequest/-Response Cycle.
+ * 
  * @author daniel.meyer@camunda.com
  * @see TransactionalConnectorUtils
  */
@@ -21,8 +24,8 @@ public interface TransactionalRepositoryConnector extends RepositoryConnector {
    * <li>if a transaction is already running the method returns</li>
    * <li>if no transaction is running, the method starts a new transaction</li>
    * </ul>
-   * Contract: the user must either call {@link #commitTransaction(String)}
-   * or {@link #rollbackTransaction()}.
+   * Contract: the user must either call {@link #commitTransaction(String)} or
+   * {@link #rollbackTransaction()}.
    * 
    * @see TransactionalConnectorUtils#beginTransaction(RepositoryConnector)
    */

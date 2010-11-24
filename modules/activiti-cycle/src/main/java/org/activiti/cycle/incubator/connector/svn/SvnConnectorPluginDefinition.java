@@ -40,6 +40,7 @@ public class SvnConnectorPluginDefinition implements ActivitiCyclePluginDefiniti
   public static final String CONTENT_REPRESENTATION_ID_BINARY = "Binary";
   public static final String CONTENT_REPRESENTATION_ID_HTML = "HTML";
   public static final String CONTENT_REPRESENTATION_ID_HTML_SOURCE = "HTML source";
+  public static ArtifactTypeImpl artifactTypeDefault;
 
   // public static final String CONTENT_REPRESENTATION_ID_MS_WORD_X = "docx";
   // public static final String CONTENT_REPRESENTATION_ID_MS_PP = "ppt";
@@ -47,7 +48,7 @@ public class SvnConnectorPluginDefinition implements ActivitiCyclePluginDefiniti
   // public static final String CONTENT_REPRESENTATION_ID_PDF = "pdf";
 
   public void addArtifactTypes(List<ArtifactType> types) {
-    ArtifactTypeImpl artifactTypeDefault = new ArtifactTypeImpl(ARTIFACT_TYPE_DEFAULT, CycleDefaultMimeType.TEXT);
+     artifactTypeDefault = new ArtifactTypeImpl(ARTIFACT_TYPE_DEFAULT, CycleDefaultMimeType.TEXT);
     artifactTypeDefault.addDefaultContentRepresentation(new ContentRepresentationImpl(CONTENT_REPRESENTATION_ID_TEXT, CycleDefaultMimeType.TEXT,
             RenderInfo.TEXT_PLAIN), new SvnTextFileContentProvider());
     artifactTypeDefault.addDownloadContentAction(CONTENT_REPRESENTATION_ID_TEXT);
