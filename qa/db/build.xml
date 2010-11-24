@@ -50,23 +50,23 @@
 		<echo message="  jdbc.password: ${jdbc.password}"/>
 		
 		<replaceregexp file="./target/test-classes/activiti.cfg.xml" flags="s"
-		                match='databaseType=".*?"' 
-			              replace='databaseType="${database}"'/>
+		                match='databaseType" value=".*?"' 
+			              replace='databaseType" value="${database}"'/>
 		<replaceregexp file="./target/test-classes/activiti.cfg.xml" flags="s"
-		                    match='jdbcDriver=".*?"' 
-		                    replace='jdbcDriver="${jdbc.driver}"'/>
+		                    match='jdbcDriver" value=".*?"' 
+		                    replace='jdbcDriver" value="${jdbc.driver}"'/>
 		<replaceregexp file="./target/test-classes/activiti.cfg.xml" flags="s"
-		                        match='jdbcUrl=".*?"' 
-		                        replace='jdbcUrl="${jdbc.url}"'/>
+		                        match='jdbcUrl" value=".*?"' 
+		                        replace='jdbcUrl" value="${jdbc.url}"'/>
 		<replaceregexp file="./target/test-classes/activiti.cfg.xml" flags="s"
-		                        match='jdbcUsername=".*?"' 
-		                        replace='jdbcUsername="${jdbc.username}"'/>
+		                        match='jdbcUsername" value=".*?"' 
+		                        replace='jdbcUsername" value="${jdbc.username}"'/>
 		<replaceregexp file="./target/test-classes/activiti.cfg.xml" flags="s"
-		                        match='jdbcPassword=".*?"' 
-		                        replace='jdbcPassword="${jdbc.password}"'/>
+		                        match='jdbcPassword" value=".*?"' 
+		                        replace='jdbcPassword" value="${jdbc.password}"'/>
 		<replaceregexp file="./target/test-classes/activiti.cfg.xml" flags="s"
-		                        match='databaseSchemaUpdate=".*?"' 
-		                        replace='databaseSchemaUpdate="false"'/>
+		                        match='databaseSchemaUpdate" value=".*?"' 
+		                        replace='databaseSchemaUpdate" value="false"'/>
 	</target>
 	
 </project>
