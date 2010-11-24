@@ -26,7 +26,7 @@ import junit.framework.AssertionFailedError;
 
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ProcessEngine;
-import org.activiti.engine.ProcessEngineBuilder;
+import org.activiti.engine.ProcessEngineConfiguration;
 import org.activiti.engine.impl.ProcessEngineImpl;
 import org.activiti.engine.impl.bpmn.deployer.BpmnDeployer;
 import org.activiti.engine.impl.db.DbSqlSessionFactory;
@@ -197,8 +197,8 @@ public abstract class TestHelper {
     ProcessEngine processEngine = processEngines.get(configurationResource);
     if (processEngine==null) {
       log.fine("==== BUILDING PROCESS ENGINE ========================================================================");
-      processEngine = new ProcessEngineBuilder()
-        .configureFromResource(configurationResource)
+      processEngine = ProcessEngineConfiguration
+        .createProcessEngineConfigurationFromResource(configurationResource)
         .buildProcessEngine();
       log.fine("==== PROCESS ENGINE CREATED =========================================================================");
       processEngines.put(configurationResource, processEngine);

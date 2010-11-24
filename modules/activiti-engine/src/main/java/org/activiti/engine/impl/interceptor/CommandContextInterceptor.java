@@ -13,20 +13,14 @@
 
 package org.activiti.engine.impl.interceptor;
 
-import org.activiti.engine.impl.cfg.ProcessEngineConfiguration;
-import org.activiti.engine.impl.cfg.ProcessEngineConfigurationAware;
 
 
 /**
  * @author Tom Baeyens
  */
-public class CommandContextInterceptor extends CommandInterceptor implements ProcessEngineConfigurationAware {
+public class CommandContextInterceptor extends CommandInterceptor {
 
   protected CommandContextFactory commandContextFactory;
-
-  public void configurationCompleted(ProcessEngineConfiguration processEngineConfiguration) {
-    commandContextFactory = processEngineConfiguration.getCommandContextFactory();
-  }
 
   public <T> T execute(Command<T> command) {
     CommandContext context = commandContextFactory.createCommandContext(command);
@@ -47,5 +41,13 @@ public class CommandContextInterceptor extends CommandInterceptor implements Pro
     }
     
     return null;
+  }
+  
+  public CommandContextFactory getCommandContextFactory() {
+    return commandContextFactory;
+  }
+  
+  public void setCommandContextFactory(CommandContextFactory commandContextFactory) {
+    this.commandContextFactory = commandContextFactory;
   }
 }

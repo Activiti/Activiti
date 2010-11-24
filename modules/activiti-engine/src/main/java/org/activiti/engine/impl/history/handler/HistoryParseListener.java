@@ -13,9 +13,9 @@
 
 package org.activiti.engine.impl.history.handler;
 
+import org.activiti.engine.ProcessEngineConfiguration;
 import org.activiti.engine.impl.bpmn.UserTaskActivity;
 import org.activiti.engine.impl.bpmn.parser.BpmnParseListener;
-import org.activiti.engine.impl.cfg.ProcessEngineConfiguration;
 import org.activiti.engine.impl.pvm.delegate.ExecutionListener;
 import org.activiti.engine.impl.pvm.delegate.TaskListener;
 import org.activiti.engine.impl.pvm.process.ActivityImpl;

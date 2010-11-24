@@ -17,9 +17,8 @@ import java.util.Map;
 
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiWrongDbException;
-import org.activiti.engine.DbSchemaStrategy;
 import org.activiti.engine.ProcessEngine;
-import org.activiti.engine.ProcessEngineBuilder;
+import org.activiti.engine.ProcessEngineConfiguration;
 import org.activiti.engine.impl.ProcessEngineImpl;
 import org.activiti.engine.impl.db.DbSqlSession;
 import org.activiti.engine.impl.db.DbSqlSessionFactory;
@@ -34,8 +33,8 @@ public class ProcessEngineInitializationTest extends PvmTestCase {
 
   public void testNoTables() {
     try {
-      new ProcessEngineBuilder()
-        .configureFromResource("org/activiti/standalone/initialization/notables.activiti.cfg.xml")
+      ProcessEngineConfiguration
+      .createProcessEngineConfigurationFromResource("org/activiti/standalone/initialization/notables.activiti.cfg.xml")
         .buildProcessEngine();
       fail("expected exception");
     } catch (Exception e) {
@@ -46,9 +45,9 @@ public class ProcessEngineInitializationTest extends PvmTestCase {
 
   public void testVersionMismatch() {
     // first create the schema
-    ProcessEngineImpl processEngine = (ProcessEngineImpl) new ProcessEngineBuilder()
-      .configureFromResource("org/activiti/standalone/initialization/notables.activiti.cfg.xml")
-      .setDbSchemaStrategy(DbSchemaStrategy.CREATE_DROP)
+    ProcessEngineImpl processEngine = (ProcessEngineImpl) ProcessEngineConfiguration
+      .createProcessEngineConfigurationFromResource("org/activiti/standalone/initialization/notables.activiti.cfg.xml")
+      .setDbSchemaStrategy(ProcessEngineConfiguration.DB_SCHEMA_STRATEGY_CREATE_DROP)
       .buildProcessEngine();
 
     // then update the version to something that is different to the library
@@ -79,9 +78,9 @@ public class ProcessEngineInitializationTest extends PvmTestCase {
     try {
       // now we can see what happens if when a process engine is being
       // build with a version mismatch between library and db tables
-      new ProcessEngineBuilder()
-        .configureFromResource("org/activiti/standalone/initialization/notables.activiti.cfg.xml")
-        .setDbSchemaStrategy(DbSchemaStrategy.CHECK_VERSION)
+      ProcessEngineConfiguration
+        .createProcessEngineConfigurationFromResource("org/activiti/standalone/initialization/notables.activiti.cfg.xml")
+        .setDbSchemaStrategy(ProcessEngineConfiguration.DB_SCHEMA_STRATEGY_CHECK_VERSION)
         .buildProcessEngine();
       
       fail("expected exception");

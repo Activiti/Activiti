@@ -20,10 +20,7 @@ import java.util.logging.Logger;
 
 import org.activiti.engine.impl.bpmn.parser.BpmnParse;
 import org.activiti.engine.impl.bpmn.parser.BpmnParser;
-import org.activiti.engine.impl.cfg.ProcessEngineConfiguration;
-import org.activiti.engine.impl.cfg.ProcessEngineConfigurationAware;
 import org.activiti.engine.impl.el.ExpressionManager;
-import org.activiti.engine.impl.history.handler.HistoryParseListener;
 import org.activiti.engine.impl.repository.Deployer;
 import org.activiti.engine.impl.repository.DeploymentEntity;
 import org.activiti.engine.impl.repository.ProcessDefinitionEntity;
@@ -32,7 +29,7 @@ import org.activiti.engine.impl.repository.ResourceEntity;
 /**
  * @author Tom Baeyens
  */
-public class BpmnDeployer implements Deployer, ProcessEngineConfigurationAware {
+public class BpmnDeployer implements Deployer {
 
   private static final Logger LOG = Logger.getLogger(BpmnDeployer.class.getName());;
 
@@ -41,15 +38,6 @@ public class BpmnDeployer implements Deployer, ProcessEngineConfigurationAware {
 
   protected ExpressionManager expressionManager;
   protected BpmnParser bpmnParser;
-
-  public void configurationCompleted(ProcessEngineConfiguration processEngineConfiguration) {
-    this.expressionManager = processEngineConfiguration.getExpressionManager();
-    this.bpmnParser = new BpmnParser(expressionManager);
-    int historyLevel = processEngineConfiguration.getHistoryLevel();
-    if (historyLevel>=ProcessEngineConfiguration.HISTORYLEVEL_ACTIVITY) {
-      bpmnParser.getParseListeners().add(new HistoryParseListener(historyLevel));
-    }
-  }
 
   public List<ProcessDefinitionEntity> deploy(DeploymentEntity deployment) {
     List<ProcessDefinitionEntity> processDefinitions = new ArrayList<ProcessDefinitionEntity>();
@@ -101,5 +89,25 @@ public class BpmnDeployer implements Deployer, ProcessEngineConfigurationAware {
     }
     
     return null;
+  }
+
+  
+  public ExpressionManager getExpressionManager() {
+    return expressionManager;
+  }
+
+  
+  public void setExpressionManager(ExpressionManager expressionManager) {
+    this.expressionManager = expressionManager;
+  }
+
+  
+  public BpmnParser getBpmnParser() {
+    return bpmnParser;
+  }
+
+  
+  public void setBpmnParser(BpmnParser bpmnParser) {
+    this.bpmnParser = bpmnParser;
   }
 }

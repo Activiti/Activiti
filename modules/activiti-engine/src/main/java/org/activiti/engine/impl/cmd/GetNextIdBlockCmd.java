@@ -21,10 +21,16 @@ import org.activiti.engine.impl.interceptor.CommandContext;
  * @author Tom Baeyens
  */
 public class GetNextIdBlockCmd implements Command<IdBlock> {
+  
+  protected int idBlockSize;
+  
+  public GetNextIdBlockCmd(int idBlockSize) {
+    this.idBlockSize = idBlockSize;
+  }
 
   public IdBlock execute(CommandContext commandContext) {
     return commandContext
       .getManagementSession()
-      .getNextIdBlock();
+      .getNextIdBlock(idBlockSize);
   }
 }

@@ -19,11 +19,12 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.ProcessEngineConfiguration;
 import org.activiti.engine.impl.cfg.HistorySession;
 import org.activiti.engine.impl.cfg.IdentitySession;
 import org.activiti.engine.impl.cfg.ManagementSession;
 import org.activiti.engine.impl.cfg.MessageSession;
-import org.activiti.engine.impl.cfg.ProcessEngineConfiguration;
+import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.cfg.RepositorySession;
 import org.activiti.engine.impl.cfg.RuntimeSession;
 import org.activiti.engine.impl.cfg.TaskSession;
@@ -42,11 +43,10 @@ public class CommandContext {
   private static final ThreadLocal<Stack<CommandContext>> txContextStacks = new ThreadLocal<Stack<CommandContext>>();
 
   protected Command< ? > command;
-  protected ProcessEngineConfiguration processEngineConfiguration;
   protected TransactionContext transactionContext;
   protected Map<Class< ? >, Session> sessions = new HashMap<Class< ? >, Session>();
   protected Throwable exception = null;
-
+  protected ProcessEngineConfigurationImpl processEngineConfiguration;
 
   public static void setCurrentCommandContext(CommandContext commandContext) {
     getContextStack(true).push(commandContext);
@@ -77,12 +77,10 @@ public class CommandContext {
     return txContextStack;
   }
 
-  public CommandContext(Command<?> command, ProcessEngineConfiguration processEngineConfiguration) {
+  public CommandContext(Command<?> command, ProcessEngineConfigurationImpl processEngineConfiguration) {
     this.command = command;
     this.processEngineConfiguration = processEngineConfiguration;
-    this.transactionContext = processEngineConfiguration
-      .getTransactionContextFactory()
-      .openTransactionContext(this);
+    this.transactionContext = processEngineConfiguration.getTransactionContextFactory().openTransactionContext(this);
   }
 
   public void close() {
@@ -219,7 +217,7 @@ public class CommandContext {
   public Throwable getException() {
     return exception;
   }
-  public ProcessEngineConfiguration getProcessEngineConfiguration() {
+  public ProcessEngineConfigurationImpl getProcessEngineConfiguration() {
     return processEngineConfiguration;
   }
 }

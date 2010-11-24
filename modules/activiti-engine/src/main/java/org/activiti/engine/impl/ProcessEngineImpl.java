@@ -12,9 +12,9 @@
  */
 package org.activiti.engine.impl;
 
+import java.util.Map;
 import java.util.logging.Logger;
 
-import org.activiti.engine.DbSchemaStrategy;
 import org.activiti.engine.FormService;
 import org.activiti.engine.HistoryService;
 import org.activiti.engine.IdentityService;
@@ -24,11 +24,15 @@ import org.activiti.engine.ProcessEngines;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.RuntimeService;
 import org.activiti.engine.TaskService;
-import org.activiti.engine.impl.cfg.ProcessEngineConfiguration;
+import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
+import org.activiti.engine.impl.cfg.TransactionContextFactory;
+import org.activiti.engine.impl.db.DbSqlSession;
 import org.activiti.engine.impl.db.DbSqlSessionFactory;
+import org.activiti.engine.impl.el.ExpressionManager;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
+import org.activiti.engine.impl.interceptor.SessionFactory;
 import org.activiti.engine.impl.jobexecutor.JobExecutor;
 
 /**
@@ -38,7 +42,6 @@ public class ProcessEngineImpl implements ProcessEngine {
 
   private static Logger log = Logger.getLogger(ProcessEngineImpl.class.getName());
 
-  protected ProcessEngineConfiguration processEngineConfiguration;
   protected String name;
   protected RepositoryService repositoryService;
   protected RuntimeService runtimeService;
@@ -50,12 +53,20 @@ public class ProcessEngineImpl implements ProcessEngine {
   protected String dbSchemaStrategy;
   protected JobExecutor jobExecutor;
   protected CommandExecutor commandExecutor;
+  protected Map<Class<?>, SessionFactory> sessionFactories;
+  protected ExpressionManager expressionManager;
+  protected int historyLevel;
+  protected TransactionContextFactory transactionContextFactory;
+  
+  // TODO remove or refactor this
+  protected ProcessEngineConfigurationImpl processEngineConfiguration;
 
-  public ProcessEngineImpl(ProcessEngineConfiguration processEngineConfiguration) {
+  public ProcessEngineImpl(ProcessEngineConfigurationImpl processEngineConfiguration) {
     this.processEngineConfiguration = processEngineConfiguration;
+    
     this.name = processEngineConfiguration.getProcessEngineName();
     this.repositoryService = processEngineConfiguration.getRepositoryService();
-    this.runtimeService = processEngineConfiguration.getProcessService();
+    this.runtimeService = processEngineConfiguration.getRuntimeService();
     this.historicDataService = processEngineConfiguration.getHistoryService();
     this.identityService = processEngineConfiguration.getIdentityService();
     this.taskService = processEngineConfiguration.getTaskService();
@@ -64,6 +75,9 @@ public class ProcessEngineImpl implements ProcessEngine {
     this.dbSchemaStrategy = processEngineConfiguration.getDbSchemaStrategy();
     this.jobExecutor = processEngineConfiguration.getJobExecutor();
     this.commandExecutor = processEngineConfiguration.getCommandExecutorTxRequired();
+    this.sessionFactories = processEngineConfiguration.getSessionFactories();
+    this.historyLevel = processEngineConfiguration.getHistoryLevel();
+    this.transactionContextFactory = processEngineConfiguration.getTransactionContextFactory();
     
     commandExecutor.execute(new Command<Object>() {
       public Object execute(CommandContext commandContext) {
@@ -77,6 +91,8 @@ public class ProcessEngineImpl implements ProcessEngine {
     } else {
       log.info("ProcessEngine " + name + " created");
     }
+    
+    ProcessEngines.registerProcessEngine(this);
 
     if ((jobExecutor != null) && (jobExecutor.isAutoActivate())) {
       jobExecutor.start();
@@ -84,29 +100,28 @@ public class ProcessEngineImpl implements ProcessEngine {
   }
 
   protected void performSchemaOperationsCreate() {
-    DbSqlSessionFactory dbSqlSessionFactory = processEngineConfiguration.getDbSqlSessionFactory();
-    if (ProcessEngineConfiguration.DBSCHEMASTRATEGY_DROP_CREATE.equals(dbSchemaStrategy)) {
+    if (ProcessEngineConfigurationImpl.DB_SCHEMA_STRATEGY_DROP_CREATE.equals(dbSchemaStrategy)) {
       try {
-        dbSqlSessionFactory.dbSchemaDrop();
+        getDbSqlSessionFactory().dbSchemaDrop();
       } catch (RuntimeException e) {
         // ignore
       }
     }
-    if ( DbSchemaStrategy.CREATE_DROP.equals(dbSchemaStrategy) 
-         || ProcessEngineConfiguration.DBSCHEMASTRATEGY_DROP_CREATE.equals(dbSchemaStrategy)
-         || ProcessEngineConfiguration.DBSCHEMASTRATEGY_CREATE.equals(dbSchemaStrategy)
+    if ( org.activiti.engine.ProcessEngineConfiguration.DB_SCHEMA_STRATEGY_CREATE_DROP.equals(dbSchemaStrategy) 
+         || ProcessEngineConfigurationImpl.DB_SCHEMA_STRATEGY_DROP_CREATE.equals(dbSchemaStrategy)
+         || ProcessEngineConfigurationImpl.DB_SCHEMA_STRATEGY_CREATE.equals(dbSchemaStrategy)
        ) {
-      dbSqlSessionFactory.dbSchemaCreate();
+      getDbSqlSessionFactory().dbSchemaCreate();
       
-    } else if (DbSchemaStrategy.CHECK_VERSION.equals(dbSchemaStrategy)) {
-      dbSqlSessionFactory.dbSchemaCheckVersion();
+    } else if (org.activiti.engine.ProcessEngineConfiguration.DB_SCHEMA_STRATEGY_CHECK_VERSION.equals(dbSchemaStrategy)) {
+      getDbSqlSessionFactory().dbSchemaCheckVersion();
       
-    } else if (ProcessEngineConfiguration.DBSCHEMASTRATEGY_CREATE_IF_NECESSARY.equals(dbSchemaStrategy)) {
+    } else if (ProcessEngineConfigurationImpl.DB_SCHEMA_STRATEGY_CREATE_IF_NECESSARY.equals(dbSchemaStrategy)) {
       try {
-        dbSqlSessionFactory.dbSchemaCheckVersion();
+        getDbSqlSessionFactory().dbSchemaCheckVersion();
       } catch (Exception e) {
         if (e.getMessage().indexOf("no activiti tables in db")!=-1) {
-          dbSqlSessionFactory.dbSchemaCreate();
+          getDbSqlSessionFactory().dbSchemaCreate();
         }
       }
     }
@@ -127,11 +142,16 @@ public class ProcessEngineImpl implements ProcessEngine {
   }
 
   private void performSchemaOperationsClose() {
-    if (DbSchemaStrategy.CREATE_DROP.equals(dbSchemaStrategy)) {
-      DbSqlSessionFactory dbSqlSessionFactory = processEngineConfiguration.getDbSqlSessionFactory();
-      dbSqlSessionFactory.dbSchemaDrop();
+    if (org.activiti.engine.ProcessEngineConfiguration.DB_SCHEMA_STRATEGY_CREATE_DROP.equals(dbSchemaStrategy)) {
+      getDbSqlSessionFactory().dbSchemaDrop();
     }
   }
+  
+  public DbSqlSessionFactory getDbSqlSessionFactory() {
+    return (DbSqlSessionFactory) sessionFactories.get(DbSqlSession.class);
+  }
+  
+  // getters and setters //////////////////////////////////////////////////////
 
   public String getName() {
     return name;
@@ -165,15 +185,31 @@ public class ProcessEngineImpl implements ProcessEngine {
     return dbSchemaStrategy;
   }
   
-  public ProcessEngineConfiguration getProcessEngineConfiguration() {
-    return processEngineConfiguration;
-  }
-
   public RepositoryService getRepositoryService() {
     return repositoryService;
   }
   
   public FormService getFormService() {
     return formService;
+  }
+  
+  public Map<Class< ? >, SessionFactory> getSessionFactories() {
+    return sessionFactories;
+  }
+
+  public ExpressionManager getExpressionManager() {
+    return expressionManager;
+  }
+
+  public int getHistoryLevel() {
+    return historyLevel;
+  }
+  
+  public TransactionContextFactory getTransactionContextFactory() {
+    return transactionContextFactory;
+  }
+
+  public ProcessEngineConfigurationImpl getProcessEngineConfiguration() {
+    return processEngineConfiguration;
   }
 }

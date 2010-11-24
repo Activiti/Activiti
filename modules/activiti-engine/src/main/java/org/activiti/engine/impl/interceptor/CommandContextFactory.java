@@ -13,7 +13,7 @@
  */
 package org.activiti.engine.impl.interceptor;
 
-import org.activiti.engine.impl.cfg.ProcessEngineConfiguration;
+import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 
 
 /**
@@ -21,22 +21,19 @@ import org.activiti.engine.impl.cfg.ProcessEngineConfiguration;
  */
 public class CommandContextFactory {
 
-  protected ProcessEngineConfiguration processEngineConfiguration;
-
-  public CommandContextFactory(ProcessEngineConfiguration processEngineConfiguration) {
-    this.processEngineConfiguration = processEngineConfiguration;
-  }
-
+  protected ProcessEngineConfigurationImpl processEngineConfiguration;
+  
   public CommandContext createCommandContext(Command<?> cmd) {
     return new CommandContext(cmd, processEngineConfiguration);
   }
   
   // getters and setters //////////////////////////////////////////////////////
   
-  public ProcessEngineConfiguration getProcessEngineConfiguration() {
+  public ProcessEngineConfigurationImpl getProcessEngineConfiguration() {
     return processEngineConfiguration;
   }
-  public void setProcessEngineConfiguration(ProcessEngineConfiguration processEngineConfiguration) {
+
+  public void setProcessEngineConfiguration(ProcessEngineConfigurationImpl processEngineConfiguration) {
     this.processEngineConfiguration = processEngineConfiguration;
   }
 }

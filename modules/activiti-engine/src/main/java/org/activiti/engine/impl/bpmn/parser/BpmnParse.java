@@ -63,7 +63,7 @@ import org.activiti.engine.impl.bpmn.TaskActivity;
 import org.activiti.engine.impl.bpmn.TransformationDataOutputAssociation;
 import org.activiti.engine.impl.bpmn.UserTaskActivity;
 import org.activiti.engine.impl.bpmn.WebServiceActivityBehavior;
-import org.activiti.engine.impl.cfg.ProcessEngineConfiguration;
+import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.el.Expression;
 import org.activiti.engine.impl.el.ExpressionManager;
 import org.activiti.engine.impl.el.FixedValue;
@@ -447,7 +447,7 @@ public class BpmnParse extends Parse {
     
     String historyLevelText = processElement.attributeNS(BpmnParser.ACTIVITI_BPMN_EXTENSIONS_NS, "history");
     if (historyLevelText!=null) {
-      processDefinition.setHistoryLevel(ProcessEngineConfiguration.parseHistoryLevel(historyLevelText));
+      processDefinition.setHistoryLevel(ProcessEngineConfigurationImpl.parseHistoryLevel(historyLevelText));
     }
 
     if (LOG.isLoggable(Level.FINE)) {

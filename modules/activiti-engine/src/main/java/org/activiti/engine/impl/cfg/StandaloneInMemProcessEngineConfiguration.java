@@ -10,13 +10,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.activiti.engine;
+
+package org.activiti.engine.impl.cfg;
 
 
-/** specifies the strategy to synchronize between the 
- * library version and the database schema version. 
- * 
+/**
  * @author Tom Baeyens
  */
-public interface DbSchemaStrategy {
+public class StandaloneInMemProcessEngineConfiguration extends StandaloneProcessEngineConfiguration {
+
+  public StandaloneInMemProcessEngineConfiguration() {
+    this.dbSchemaStrategy = DB_SCHEMA_STRATEGY_CREATE_DROP;
+    this.jdbcUrl = "jdbc:h2:mem:activiti";
+  }
 }

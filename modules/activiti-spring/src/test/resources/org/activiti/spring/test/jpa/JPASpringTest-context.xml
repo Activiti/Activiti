@@ -55,7 +55,7 @@
   <bean id="loanRequestBean" class="org.activiti.spring.test.jpa.LoanRequestBean">
   </bean>
   
-  <bean id="processEngine" class="org.activiti.spring.ProcessEngineFactoryBean">
+  <bean id="processEngineConfiguration" class="org.activiti.spring.SpringProcessEngineConfiguration">
     <property name="databaseType" value="h2" />
     <property name="dataSource" ref="dataSource" />
     <property name="transactionManager" ref="transactionManager" />
@@ -65,7 +65,11 @@
     <property name="jpaCloseEntityManager" value="true" />
     <property name="jobExecutorActivate" value="false" />
   </bean>
-
+  
+  <bean id="processEngine" class="org.activiti.spring.ProcessEngineFactoryBean">
+    <property name="processEngineConfiguration" ref="processEngineConfiguration" />
+  </bean>
+  
   <bean id="repositoryService" factory-bean="processEngine" factory-method="getRepositoryService" />
   <bean id="runtimeService" factory-bean="processEngine" factory-method="getRuntimeService" />
   <bean id="taskService" factory-bean="processEngine" factory-method="getTaskService" />

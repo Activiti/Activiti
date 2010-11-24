@@ -10,13 +10,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.activiti.engine;
+
+package org.activiti.engine.impl.cfg;
 
 
-/** specifies the strategy to synchronize between the 
- * library version and the database schema version. 
- * 
+/**
  * @author Tom Baeyens
  */
-public interface DbSchemaStrategy {
+public interface ProcessEngineBuilder {
+
 }

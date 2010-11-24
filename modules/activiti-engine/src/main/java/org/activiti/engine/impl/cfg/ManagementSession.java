@@ -31,5 +31,5 @@ public interface ManagementSession {
   TablePage getTablePage(TablePageQueryImpl tablePageQuery, int firstResult, int maxResults);
   TableMetaData getTableMetaData(String tableName);
 
-  IdBlock getNextIdBlock();
+  IdBlock getNextIdBlock(int idBlockSize);
 }

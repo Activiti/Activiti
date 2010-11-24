@@ -14,7 +14,7 @@ package org.activiti.engine.runtime;
 
 import java.io.Serializable;
 
-import org.activiti.engine.impl.cfg.ProcessEngineConfiguration;
+import org.activiti.engine.ProcessEngineConfiguration;
 import org.activiti.engine.query.Query;
 
 

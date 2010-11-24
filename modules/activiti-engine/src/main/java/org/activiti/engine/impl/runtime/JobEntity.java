@@ -24,7 +24,6 @@ import org.activiti.engine.impl.db.DbSqlSession;
 import org.activiti.engine.impl.db.PersistentObject;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.jobexecutor.JobHandler;
-import org.activiti.engine.impl.jobexecutor.JobHandlers;
 import org.activiti.engine.runtime.Job;
 
 /**
@@ -74,8 +73,8 @@ public abstract class JobEntity implements Serializable, Job, PersistentObject {
       execution = runtimeSession.findExecutionById(executionId);
     }
 
-    JobHandlers jobHandlers = commandContext.getProcessEngineConfiguration().getJobHandlers();
-    JobHandler jobHandler = jobHandlers.getJobHandler(jobHandlerType);
+    Map<String, JobHandler> jobHandlers = commandContext.getProcessEngineConfiguration().getJobHandlers();
+    JobHandler jobHandler = jobHandlers.get(jobHandlerType);
 
     jobHandler.execute(jobHandlerConfiguration, execution, commandContext);
   }

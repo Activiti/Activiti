@@ -26,11 +26,11 @@ public class JobExecutorTestCase extends ActivitiInternalTestCase {
   protected TweetHandler tweetHandler = new TweetHandler();
 
   public void setUp() throws Exception {
-    processEngineConfiguration.getJobHandlers().addJobHandler(tweetHandler);
+    processEngineConfiguration.getJobHandlers().put(tweetHandler.getType(), tweetHandler);
   }
 
   public void tearDown() throws Exception {
-    processEngineConfiguration.getJobHandlers().removeJobHandler(tweetHandler);
+    processEngineConfiguration.getJobHandlers().remove(tweetHandler.getType());
   }
 
   protected MessageEntity createTweetMessage(String msg) {

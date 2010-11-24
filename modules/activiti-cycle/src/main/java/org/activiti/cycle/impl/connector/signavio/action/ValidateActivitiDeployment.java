@@ -9,7 +9,6 @@ import org.activiti.cycle.impl.connector.signavio.provider.ActivitiCompliantBpmn
 import org.activiti.engine.ProcessEngines;
 import org.activiti.engine.impl.ProcessEngineImpl;
 import org.activiti.engine.impl.bpmn.parser.BpmnParser;
-import org.activiti.engine.impl.cfg.ProcessEngineConfiguration;
 import org.activiti.engine.impl.el.ExpressionManager;
 import org.activiti.engine.impl.repository.DeploymentEntity;
 
@@ -31,9 +30,7 @@ public class ValidateActivitiDeployment extends CreateTechnicalBpmnXmlAction {
   public void execute(RepositoryConnector connector, RepositoryArtifact artifact, Map<String, Object> parameters) throws Exception {    
     // TODO: Okay, this needs more serious thiniking where we get the engine
     // from!
-    ProcessEngineConfiguration processEngineConfiguration = ((ProcessEngineImpl) ProcessEngines.getDefaultProcessEngine())
-            .getProcessEngineConfiguration();
-    ExpressionManager expressionManager = processEngineConfiguration.getExpressionManager();
+    ExpressionManager expressionManager = ((ProcessEngineImpl) ProcessEngines.getDefaultProcessEngine()).getExpressionManager();
     
     String bpmnXml = ActivitiCompliantBpmn20Provider.createBpmnXml((SignavioConnector) connector, artifact); 
     

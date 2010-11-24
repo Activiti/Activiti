@@ -20,13 +20,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 
+import org.activiti.engine.ProcessEngineConfiguration;
 import org.activiti.engine.impl.HistoricActivityInstanceQueryImpl;
 import org.activiti.engine.impl.JobQueryImpl;
 import org.activiti.engine.impl.TaskQueryImpl;
 import org.activiti.engine.impl.bpmn.parser.BpmnParse;
 import org.activiti.engine.impl.calendar.BusinessCalendar;
 import org.activiti.engine.impl.calendar.DurationBusinessCalendar;
-import org.activiti.engine.impl.cfg.ProcessEngineConfiguration;
 import org.activiti.engine.impl.db.DbSqlSession;
 import org.activiti.engine.impl.db.PersistentObject;
 import org.activiti.engine.impl.history.HistoricActivityInstanceEntity;

@@ -14,8 +14,6 @@
 package org.activiti.engine.impl.db;
 
 import org.activiti.engine.impl.cfg.IdGenerator;
-import org.activiti.engine.impl.cfg.ProcessEngineConfiguration;
-import org.activiti.engine.impl.cfg.ProcessEngineConfigurationAware;
 import org.activiti.engine.impl.cmd.GetNextIdBlockCmd;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
 
@@ -23,17 +21,14 @@ import org.activiti.engine.impl.interceptor.CommandExecutor;
 /**
  * @author Tom Baeyens
  */
-public class DbIdGenerator implements IdGenerator, ProcessEngineConfigurationAware  {
+public class DbIdGenerator implements IdGenerator {
 
+  protected int idBlockSize;
   protected long nextId = 0;
   protected long lastId = -1;
   
   protected CommandExecutor commandExecutor;
   
-  public void configurationCompleted(ProcessEngineConfiguration processEngineConfiguration) {
-    this.commandExecutor = processEngineConfiguration.getCommandExecutorTxRequiresNew();
-  }
-
   public synchronized long getNextId() {
     if (lastId<nextId) {
       getNewBlock();
@@ -43,8 +38,24 @@ public class DbIdGenerator implements IdGenerator, ProcessEngineConfigurationAwa
 
   protected synchronized void getNewBlock() {
     // TODO http://jira.codehaus.org/browse/ACT-45 use a separate 'requiresNew' command executor
-    IdBlock idBlock = commandExecutor.execute(new GetNextIdBlockCmd());
+    IdBlock idBlock = commandExecutor.execute(new GetNextIdBlockCmd(idBlockSize));
     this.nextId = idBlock.getNextId();
     this.lastId = idBlock.getLastId();
+  }
+
+  public int getIdBlockSize() {
+    return idBlockSize;
+  }
+
+  public void setIdBlockSize(int idBlockSize) {
+    this.idBlockSize = idBlockSize;
+  }
+  
+  public CommandExecutor getCommandExecutor() {
+    return commandExecutor;
+  }
+
+  public void setCommandExecutor(CommandExecutor commandExecutor) {
+    this.commandExecutor = commandExecutor;
   }
 }

@@ -12,6 +12,7 @@
  */
 package org.activiti.engine.impl.jobexecutor;
 
+import org.activiti.engine.impl.cfg.TimerSession;
 import org.activiti.engine.impl.interceptor.Session;
 import org.activiti.engine.impl.interceptor.SessionFactory;
 
@@ -20,8 +21,11 @@ import org.activiti.engine.impl.interceptor.SessionFactory;
  */
 public class JobExecutorTimerSessionFactory implements SessionFactory {
 
+  public Class< ? > getSessionType() {
+    return TimerSession.class;
+  }
+
   public Session openSession() {
     return new JobExecutorTimerSession();
   }
-
 }

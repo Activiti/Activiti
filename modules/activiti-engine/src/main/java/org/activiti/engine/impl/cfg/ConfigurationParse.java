@@ -172,7 +172,7 @@ public class ConfigurationParse extends Parse {
     if (historyElement != null) {
       String historyLevelString = historyElement.attribute("level");
       if (historyLevelString != null) {
-        this.historyLevel = ProcessEngineConfiguration.parseHistoryLevel(historyLevelString);
+        this.historyLevel = ProcessEngineConfigurationImpl.parseHistoryLevel(historyLevelString);
       }
     }
   }

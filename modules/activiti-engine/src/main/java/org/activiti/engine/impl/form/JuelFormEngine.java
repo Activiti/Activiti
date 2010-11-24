@@ -25,7 +25,11 @@ import org.activiti.engine.impl.task.TaskEntity;
  * @author Tom Baeyens
  */
 public class JuelFormEngine implements FormEngine {
-  
+
+  public String getName() {
+    return "juel";
+  }
+
   public Object renderStartForm(StartFormData startForm) {
     if (startForm.getFormKey()==null) {
       return null;

@@ -13,6 +13,7 @@
 
 package org.activiti.engine.impl.db;
 
+import org.activiti.engine.impl.cfg.IdentitySession;
 import org.activiti.engine.impl.interceptor.Session;
 import org.activiti.engine.impl.interceptor.SessionFactory;
 
@@ -24,6 +25,10 @@ public class DbIdentitySessionFactory implements SessionFactory {
 
   public Session openSession() {
     return new DbIdentitySession();
+  }
+
+  public Class< ? > getSessionType() {
+    return IdentitySession.class;
   }
 
 }

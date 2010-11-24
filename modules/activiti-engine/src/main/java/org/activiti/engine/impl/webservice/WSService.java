@@ -17,7 +17,7 @@ import java.util.Map;
 
 import org.activiti.engine.impl.bpmn.BpmnInterface;
 import org.activiti.engine.impl.bpmn.BpmnInterfaceImplementation;
-import org.activiti.engine.impl.cfg.ProcessEngineConfiguration;
+import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.util.ReflectUtil;
 
 /**
@@ -58,7 +58,7 @@ public class WSService implements BpmnInterfaceImplementation {
   SyncWebServiceClient getClient() {
     if (this.client == null) {
       //TODO refactor to use configuration
-      SyncWebServiceClientFactory factory = (SyncWebServiceClientFactory) ReflectUtil.instantiate(ProcessEngineConfiguration.DEFAULT_WS_SYNC_FACTORY);
+      SyncWebServiceClientFactory factory = (SyncWebServiceClientFactory) ReflectUtil.instantiate(ProcessEngineConfigurationImpl.DEFAULT_WS_SYNC_FACTORY);
       this.client = factory.create(this.wsdlLocation);
     }
     return this.client;

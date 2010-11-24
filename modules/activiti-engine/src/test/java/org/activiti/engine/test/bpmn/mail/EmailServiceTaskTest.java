@@ -62,7 +62,7 @@ public class EmailServiceTaskTest extends ActivitiInternalTestCase {
     assertEquals(1, messages.size());
     
     WiserMessage message = messages.get(0);
-    assertEmailSend(message, false, "Hello Kermit!", "This a text only e-mail.", "noreply@activiti.org",
+    assertEmailSend(message, false, "Hello Kermit!", "This a text only e-mail.", "activiti@localhost",
             Arrays.asList("kermit@activiti.org"), null);
   }
   
@@ -115,7 +115,7 @@ public class EmailServiceTaskTest extends ActivitiInternalTestCase {
     runtimeService.startProcessInstanceByKey("ccAndBcc");
     
     List<WiserMessage> messages = wiser.getMessages();
-    assertEmailSend(messages.get(0), false, "Hello world", "This is the content", "noreply@activiti.org", 
+    assertEmailSend(messages.get(0), false, "Hello world", "This is the content", "activiti@localhost", 
             Arrays.asList("kermit@activiti.org"), Arrays.asList("fozzie@activiti.org"));
     
     // Bcc is not stored in the header (obviously)
@@ -129,7 +129,7 @@ public class EmailServiceTaskTest extends ActivitiInternalTestCase {
     
     List<WiserMessage> messages = wiser.getMessages();
     assertEquals(1, messages.size());
-    assertEmailSend(messages.get(0), true, "Test", "Mr. <b>Kermit</b>", "noreply@activiti.org", Arrays.asList("kermit@activiti.org"), null);
+    assertEmailSend(messages.get(0), true, "Test", "Mr. <b>Kermit</b>", "activiti@localhost", Arrays.asList("kermit@activiti.org"), null);
   }
   
   // Helper 

@@ -21,7 +21,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.activiti.engine.ActivitiException;
-import org.activiti.engine.impl.cfg.ProcessEngineConfiguration;
+import org.activiti.engine.ProcessEngineConfiguration;
 import org.activiti.engine.impl.db.DbSqlSession;
 import org.activiti.engine.impl.history.HistoricVariableUpdateEntity;
 import org.activiti.engine.impl.interceptor.CommandContext;

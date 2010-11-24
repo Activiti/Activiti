@@ -140,15 +140,10 @@ public class DbManagementSession implements ManagementSession, Session {
     return result;
   }
 
-  public IdBlock getNextIdBlock() {
+  public IdBlock getNextIdBlock(int idBlockSize) {
     String statement = dbSqlSession.getDbSqlSessionFactory().mapStatement("selectProperty");
     PropertyEntity property = (PropertyEntity) dbSqlSession.selectOne(statement, "next.dbid");
     long oldValue = Long.parseLong(property.getValue());
-    
-    long idBlockSize = CommandContext
-      .getCurrent()
-      .getProcessEngineConfiguration()
-      .getIdBlockSize();
     
     long newValue = oldValue+idBlockSize;
     Map<String, Object> updateValues = new HashMap<String, Object>();

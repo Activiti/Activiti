@@ -1,19 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<activiti-cfg>
+
+<beans xmlns="http://www.springframework.org/schema/beans" 
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans   http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+  <bean id="processEngineConfiguration" class="org.activiti.engine.impl.cfg.StandaloneInMemProcessEngineConfiguration">
   
-  <database type="h2" schema-strategy="create-if-necessary">
-    <jdbc url="jdbc:h2:mem:activiti;DB_CLOSE_DELAY=1000"
-          driver="org.h2.Driver"
-          username="sa"
-          password="" 
-          max-active="25"
-          max-idle="10" 
-          max-checkout="30000"
-          max-wait="25000" /> 
-  </database>
-  
-  <job-executor activate="off" />
-  
-  <mail server="localhost" port="5025" />
-  
-</activiti-cfg>
+    <!-- Database configurations -->
+    <property name="dbSchemaStrategy" value="create-if-necessary" />
+
+    <property name="jdbcMaxActiveConnections" value="25" />
+    <property name="jdbcMaxIdleConnections" value="10" />
+    <property name="jdbcMaxCheckoutTime" value="30000" />
+    <property name="jdbcMaxWaitTime" value="25000" />
+    
+    <!-- job executor configurations -->
+    <property name="jobExecutorActivate" value="false" />
+    
+  </bean>
+
+</beans>

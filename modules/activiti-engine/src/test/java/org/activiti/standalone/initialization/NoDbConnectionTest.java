@@ -14,7 +14,7 @@ package org.activiti.standalone.initialization;
 
 import java.sql.SQLException;
 
-import org.activiti.engine.ProcessEngineBuilder;
+import org.activiti.engine.ProcessEngineConfiguration;
 import org.activiti.engine.impl.test.PvmTestCase;
 
 /**
@@ -24,7 +24,9 @@ public class NoDbConnectionTest extends PvmTestCase {
 
   public void testNoDbConnection() {
     try {
-      new ProcessEngineBuilder().configureFromResource("org/activiti/standalone/initialization/nodbconnection.activiti.cfg.xml").buildProcessEngine();
+      ProcessEngineConfiguration
+        .createProcessEngineConfigurationFromResource("org/activiti/standalone/initialization/nodbconnection.activiti.cfg.xml")
+        .buildProcessEngine();
       fail("expected exception");
     } catch (RuntimeException e) {
       assertTrue(containsSqlException(e));

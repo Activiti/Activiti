@@ -17,8 +17,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.activiti.engine.impl.cfg.ProcessEngineConfiguration;
-import org.activiti.engine.impl.cfg.ProcessEngineConfigurationAware;
+import org.activiti.engine.impl.cfg.RepositorySession;
 import org.activiti.engine.impl.interceptor.Session;
 import org.activiti.engine.impl.interceptor.SessionFactory;
 import org.activiti.engine.impl.repository.Deployer;
@@ -28,13 +27,13 @@ import org.activiti.engine.impl.repository.ProcessDefinitionEntity;
 /**
  * @author Tom Baeyens
  */
-public class DbRepositorySessionFactory implements SessionFactory, ProcessEngineConfigurationAware {
+public class DbRepositorySessionFactory implements SessionFactory {
   
   protected Map<String, ProcessDefinitionEntity> processDefinitionCache = new HashMap<String, ProcessDefinitionEntity>(); 
   protected List<Deployer> deployers;
 
-  public void configurationCompleted(ProcessEngineConfiguration processEngineConfiguration) {
-    deployers = processEngineConfiguration.getDeployers();
+  public Class< ? > getSessionType() {
+    return RepositorySession.class;
   }
 
   public Session openSession() {

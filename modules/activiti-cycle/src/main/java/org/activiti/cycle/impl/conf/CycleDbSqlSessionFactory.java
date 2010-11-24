@@ -37,31 +37,6 @@ public class CycleDbSqlSessionFactory extends DbSqlSessionFactory {
   }
 
   @Override
-  protected SqlSessionFactory createSessionFactory(DataSource dataSource, TransactionFactory transactionFactory) {
-    InputStream inputStream = null;
-    try {
-      ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
-      inputStream = classLoader.getResourceAsStream("org/activiti/db/cycle/ibatis/activiti.ibatis.mem.conf.xml");
-
-      // update the jdbc parameters to the configured ones...
-      Environment environment = new Environment("default", transactionFactory, dataSource);
-      Reader reader = new InputStreamReader(inputStream);
-      XMLConfigBuilder parser = new XMLConfigBuilder(reader);
-      Configuration configuration = parser.getConfiguration();
-      configuration.setEnvironment(environment);
-      configuration.getTypeHandlerRegistry().register(VariableType.class, JdbcType.VARCHAR, new IbatisVariableTypeHandler());
-      configuration = parser.parse();
-      
-      return new DefaultSqlSessionFactory(configuration);
-
-    } catch (Exception e) {
-      throw new ActivitiException("Error while building ibatis SqlSessionFactory: " + e.getMessage(), e);
-    } finally {
-      IoUtil.closeSilently(inputStream);
-    }
-  }
-  
-  @Override
   public void dbSchemaCreate() {
     executeSchemaResource("create", databaseType, sqlSessionFactory);
   }

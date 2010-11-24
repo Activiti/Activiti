@@ -23,13 +23,10 @@ import org.activiti.engine.impl.interceptor.Session;
  */
 public class JobExecutorMessageSessionFactory implements MessageSessionFactory {
 
-  private JobExecutor jobExecutor;
+  protected JobExecutor jobExecutor;
 
-  public JobExecutorMessageSessionFactory() {
-  }
-
-  public JobExecutorMessageSessionFactory(JobExecutor jobExecutor) {
-    this.jobExecutor = jobExecutor;
+  public Class< ? > getSessionType() {
+    return MessageSession.class;
   }
   
   public MessageSession openMessageSession(CommandContext commandContext) {
@@ -39,5 +36,12 @@ public class JobExecutorMessageSessionFactory implements MessageSessionFactory {
   public Session openSession() {
     return new JobExecutorMessageSession();
   }
-
+  
+  public JobExecutor getJobExecutor() {
+    return jobExecutor;
+  }
+  
+  public void setJobExecutor(JobExecutor jobExecutor) {
+    this.jobExecutor = jobExecutor;
+  }
 }

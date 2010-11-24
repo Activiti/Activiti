@@ -23,12 +23,12 @@ import java.util.Map;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
 
 import junit.framework.Assert;
 
 import org.activiti.engine.ActivitiException;
-import org.activiti.engine.impl.interceptor.SessionFactory;
+import org.activiti.engine.ProcessEngineConfiguration;
+import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.test.ActivitiInternalTestCase;
 import org.activiti.engine.impl.variable.EntityManagerSession;
 import org.activiti.engine.impl.variable.EntityManagerSessionFactory;
@@ -62,24 +62,33 @@ public class JPAVariableTest extends ActivitiInternalTestCase {
   
   private FieldAccessJPAEntity entityToQuery;
   private FieldAccessJPAEntity entityToUpdate;
-  
+
   private static EntityManagerFactory entityManagerFactory;
   
   
   @Override
-  protected void setUp() throws Exception {
-    super.setUp();
-    SessionFactory sessionFactory = processEngineConfiguration.getSessionFactories().get(EntityManagerSession.class);
-    if(sessionFactory == null) {
-      // We use OpenJPA as JPA provider, if no entityManagerFactory has been set by eg. Spring
-      entityManagerFactory = Persistence.createEntityManagerFactory("activiti-jpa-pu");
-      processEngineConfiguration.enableJPA(entityManagerFactory, true, true);     
-    } else {
-      // Use the entityManagerFactory that is defined on the EntityManagerSessionFactory
-      entityManagerFactory = ((EntityManagerSessionFactory)sessionFactory).getEntityManagerFactory();
+  public void runBare() throws Throwable {
+    if (processEngine!=null && entityManagerFactory==null) {
+      processEngine.close();
+      processEngine = null;
     }
+
+    super.runBare();
   }
-  
+
+  protected void initializeProcessEngine() {
+    ProcessEngineConfigurationImpl processEngineConfiguration = (ProcessEngineConfigurationImpl) ProcessEngineConfiguration
+      .createProcessEngineConfigurationFromResource("org/activiti/examples/variables/jpa/activiti.cfg.xml");
+    
+    processEngine = processEngineConfiguration.buildProcessEngine();
+    
+    EntityManagerSessionFactory entityManagerSessionFactory = (EntityManagerSessionFactory) processEngineConfiguration
+      .getSessionFactories()
+      .get(EntityManagerSession.class);
+    
+    entityManagerFactory = entityManagerSessionFactory.getEntityManagerFactory();
+  }
+
   public void setupJPAEntities() {
     
     EntityManager manager = entityManagerFactory.createEntityManager();

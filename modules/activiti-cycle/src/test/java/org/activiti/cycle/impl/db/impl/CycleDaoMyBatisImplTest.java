@@ -7,7 +7,6 @@ import org.activiti.cycle.impl.db.CycleDAO;
 import org.activiti.cycle.impl.db.entity.RepositoryArtifactLinkEntity;
 import org.activiti.cycle.impl.db.entity.RepositoryNodePeopleLinkEntity;
 import org.activiti.cycle.impl.db.entity.RepositoryNodeTagEntity;
-import org.activiti.engine.ProcessEngines;
 import org.activiti.engine.impl.test.ActivitiInternalTestCase;
 
 
@@ -18,10 +17,10 @@ public class CycleDaoMyBatisImplTest extends ActivitiInternalTestCase {
   @Override
   protected void setUp() throws Exception {
     super.setUp();
-    if (ProcessEngines.getDefaultProcessEngine() == null) {
-      initializeProcessEngine();
-      ProcessEngines.registerProcessEngine(processEngine);
-    }
+//    if (ProcessEngines.getDefaultProcessEngine() == null) {
+//      initializeProcessEngine();
+//      ProcessEngines.registerProcessEngine(processEngine);
+//    }
     dao = new CycleDaoMyBatisImpl();
   }
   

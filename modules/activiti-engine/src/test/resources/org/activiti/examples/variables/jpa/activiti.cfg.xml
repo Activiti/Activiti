@@ -7,12 +7,18 @@
   <bean id="processEngineConfiguration" class="org.activiti.engine.impl.cfg.StandaloneInMemProcessEngineConfiguration">
   
     <!-- Database configurations -->
-    <property name="dbSchemaStrategy" value="check-version" />
-    <property name="jdbcUrl" value="jdbc:h2:mem:ProcessEngineInitializationTest;DB_CLOSE_DELAY=1000" />
+    <property name="dbSchemaStrategy" value="create-if-necessary" />
+    <property name="jdbcUrl" value="jdbc:h2:mem:JpaVariableTest;DB_CLOSE_DELAY=1000" />
+
+    <property name="jpaPersistenceUnitName" value="activiti-jpa-pu" />
+    <property name="jpaHandleTransaction" value="true" />
+    <property name="jpaCloseEntityManager" value="true" />
     
     <!-- job executor configurations -->
     <property name="jobExecutorActivate" value="false" />
     
+    <!-- mail server configurations -->
+    <property name="mailServerPort" value="5025" />    
   </bean>
 
 </beans>

@@ -13,6 +13,7 @@
 
 package org.activiti.engine.impl.db;
 
+import org.activiti.engine.impl.cfg.ManagementSession;
 import org.activiti.engine.impl.interceptor.Session;
 import org.activiti.engine.impl.interceptor.SessionFactory;
 
@@ -24,6 +25,10 @@ public class DbManagementSessionFactory implements SessionFactory {
 
   public Session openSession() {
     return new DbManagementSession();
+  }
+
+  public Class< ? > getSessionType() {
+    return ManagementSession.class;
   }
 
 }

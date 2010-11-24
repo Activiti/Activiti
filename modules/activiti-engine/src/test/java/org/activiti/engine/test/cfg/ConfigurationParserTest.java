@@ -16,7 +16,7 @@ package org.activiti.engine.test.cfg;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.cfg.ConfigurationParse;
 import org.activiti.engine.impl.cfg.ConfigurationParser;
-import org.activiti.engine.impl.cfg.ProcessEngineConfiguration;
+import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.test.PvmTestCase;
 
 
@@ -99,7 +99,7 @@ public class ConfigurationParserTest extends PvmTestCase {
     
     assertTrue(parse.getJobExecutorActivate());
     
-    assertEquals(ProcessEngineConfiguration.parseHistoryLevel("audit"), parse.getHistoryLevel());
+    assertEquals(ProcessEngineConfigurationImpl.parseHistoryLevel("audit"), parse.getHistoryLevel());
   }
   
   public void testConfigurationWithSchemaLocations() {

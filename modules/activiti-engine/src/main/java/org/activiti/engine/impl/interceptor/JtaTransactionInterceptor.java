@@ -11,10 +11,8 @@
  * limitations under the License.
  */
 
-package org.activiti.osgi.blueprint;
+package org.activiti.engine.impl.interceptor;
 
-import org.activiti.engine.impl.interceptor.Command;
-import org.activiti.engine.impl.interceptor.CommandInterceptor;
 
 import javax.transaction.HeuristicMixedException;
 import javax.transaction.HeuristicRollbackException;

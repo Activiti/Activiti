@@ -16,7 +16,7 @@ package org.activiti.engine.impl.cmd;
 import java.util.Map;
 
 import org.activiti.engine.ActivitiException;
-import org.activiti.engine.impl.cfg.ProcessEngineConfiguration;
+import org.activiti.engine.ProcessEngineConfiguration;
 import org.activiti.engine.impl.cfg.RepositorySession;
 import org.activiti.engine.impl.db.DbSqlSession;
 import org.activiti.engine.impl.form.StartFormHandler;

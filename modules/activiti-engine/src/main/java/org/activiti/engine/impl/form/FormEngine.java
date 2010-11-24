@@ -21,6 +21,7 @@ import org.activiti.engine.form.TaskFormData;
  */
 public interface FormEngine {
 
+  String getName();
   Object renderStartForm(StartFormData startForm);
   Object renderTaskForm(TaskFormData taskForm);
 

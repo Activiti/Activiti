@@ -13,20 +13,15 @@
 
 package org.activiti.engine.test.api.testing;
 
+import static org.junit.Assert.assertEquals;
+
 import org.activiti.engine.RuntimeService;
 import org.activiti.engine.TaskService;
-import org.activiti.engine.impl.cfg.ProcessEngineConfiguration;
-import org.activiti.engine.impl.test.ActivitiInternalTestCase;
-import org.activiti.engine.impl.test.TestHelper;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.test.ActivitiRule;
 import org.activiti.engine.test.Deployment;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
-
-import static org.junit.Assert.*;
 
 
 /**

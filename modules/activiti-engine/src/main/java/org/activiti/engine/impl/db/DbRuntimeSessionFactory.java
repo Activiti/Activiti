@@ -13,6 +13,7 @@
 
 package org.activiti.engine.impl.db;
 
+import org.activiti.engine.impl.cfg.RuntimeSession;
 import org.activiti.engine.impl.interceptor.Session;
 import org.activiti.engine.impl.interceptor.SessionFactory;
 
@@ -22,8 +23,11 @@ import org.activiti.engine.impl.interceptor.SessionFactory;
  */
 public class DbRuntimeSessionFactory implements SessionFactory {
 
+  public Class< ? > getSessionType() {
+    return RuntimeSession.class;
+  }
+
   public Session openSession() {
     return new DbRuntimeSession();
   }
-
 }

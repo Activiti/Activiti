@@ -15,10 +15,8 @@ package org.activiti.engine.test.db;
 
 import javax.sql.DataSource;
 
-import org.activiti.engine.ProcessEngine;
-import org.activiti.engine.ProcessEngineBuilder;
-import org.activiti.engine.impl.ProcessEngineImpl;
-import org.activiti.engine.impl.cfg.ProcessEngineConfiguration;
+import org.activiti.engine.ProcessEngineConfiguration;
+import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.test.PvmTestCase;
 import org.apache.ibatis.datasource.pooled.PooledDataSource;
 
@@ -29,11 +27,10 @@ import org.apache.ibatis.datasource.pooled.PooledDataSource;
 public class ConnectionPoolTest extends PvmTestCase {
   
   public void testMyBatisConnectionPoolProperlyConfigured() {
-    ProcessEngine processEngine = new ProcessEngineBuilder()
-      .configureFromResource("org/activiti/engine/test/db/connection-pool.activiti.cfg.xml")
-      .buildProcessEngine();
-      
-    ProcessEngineConfiguration config = ((ProcessEngineImpl) processEngine).getProcessEngineConfiguration();
+    ProcessEngineConfigurationImpl config = (ProcessEngineConfigurationImpl) ProcessEngineConfiguration
+      .createProcessEngineConfigurationFromResource("org/activiti/engine/test/db/connection-pool.activiti.cfg.xml");
+    
+    config.buildProcessEngine();
     
     // Expected values
     int maxActive = 25;
@@ -41,10 +38,10 @@ public class ConnectionPoolTest extends PvmTestCase {
     int maxCheckoutTime = 30000;
     int maxWaitTime = 25000;
     
-    assertEquals(maxActive, config.getMaxActiveConnections());
-    assertEquals(maxIdle, config.getMaxIdleConnections());
-    assertEquals(maxCheckoutTime, config.getMaxCheckoutTime());
-    assertEquals(maxWaitTime, config.getMaxWaitTime());
+    assertEquals(maxActive, config.getJdbcMaxActiveConnections());
+    assertEquals(maxIdle, config.getJdbcMaxIdleConnections());
+    assertEquals(maxCheckoutTime, config.getJdbcMaxCheckoutTime());
+    assertEquals(maxWaitTime, config.getJdbcMaxWaitTime());
     
     // Verify that these properties are correctly set in the MyBatis datasource
     DataSource datasource = config.getDbSqlSessionFactory().getSqlSessionFactory().getConfiguration().getEnvironment().getDataSource();

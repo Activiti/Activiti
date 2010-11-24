@@ -147,10 +147,8 @@ public abstract class ProcessEngines {
     InputStream inputStream = null;
     try {
       inputStream = resource.openStream();
-      ProcessEngine processEngine = new ProcessEngineBuilder()
-          .configureFromInputStream(inputStream)
-          .buildProcessEngine();
-      return processEngine;
+      ProcessEngineConfiguration processEngineConfiguration = ProcessEngineConfiguration.createProcessEngineConfigurationFromInputStream(inputStream);
+      return processEngineConfiguration.buildProcessEngine();
       
     } catch (IOException e) {
       throw new ActivitiException("couldn't open resource stream: "+e.getMessage(), e);

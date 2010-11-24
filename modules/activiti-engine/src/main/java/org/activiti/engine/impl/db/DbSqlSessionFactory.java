@@ -14,8 +14,6 @@
 package org.activiti.engine.impl.db;
 
 import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
 import java.sql.Connection;
 import java.sql.Statement;
 import java.util.Collections;
@@ -25,38 +23,24 @@ import java.util.StringTokenizer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.sql.DataSource;
-
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiWrongDbException;
 import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.impl.cfg.IdGenerator;
-import org.activiti.engine.impl.cfg.ProcessEngineConfiguration;
-import org.activiti.engine.impl.cfg.ProcessEngineConfigurationAware;
 import org.activiti.engine.impl.interceptor.Session;
 import org.activiti.engine.impl.interceptor.SessionFactory;
 import org.activiti.engine.impl.util.ClassNameUtil;
 import org.activiti.engine.impl.util.IoUtil;
 import org.activiti.engine.impl.util.ReflectUtil;
-import org.activiti.engine.impl.variable.VariableType;
-import org.apache.ibatis.builder.xml.XMLConfigBuilder;
-import org.apache.ibatis.datasource.pooled.PooledDataSource;
-import org.apache.ibatis.mapping.Environment;
-import org.apache.ibatis.session.Configuration;
 import org.apache.ibatis.session.ExecutorType;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
-import org.apache.ibatis.session.defaults.DefaultSqlSessionFactory;
-import org.apache.ibatis.transaction.TransactionFactory;
-import org.apache.ibatis.transaction.jdbc.JdbcTransactionFactory;
-import org.apache.ibatis.transaction.managed.ManagedTransactionFactory;
-import org.apache.ibatis.type.JdbcType;
 
 
 /**
  * @author Tom Baeyens
  */
-public class DbSqlSessionFactory implements SessionFactory, ProcessEngineConfigurationAware {
+public class DbSqlSessionFactory implements SessionFactory {
 
   private static Logger log = Logger.getLogger(DbSqlSessionFactory.class.getName());
   protected static final Map<String, Map<String, String>> databaseSpecificStatements = new HashMap<String, Map<String,String>>();
@@ -86,85 +70,9 @@ public class DbSqlSessionFactory implements SessionFactory, ProcessEngineConfigu
   protected Map<Class<?>,String>  updateStatements = Collections.synchronizedMap(new HashMap<Class<?>, String>());
   protected Map<Class<?>,String>  deleteStatements = Collections.synchronizedMap(new HashMap<Class<?>, String>());
   protected Map<Class<?>,String>  selectStatements = Collections.synchronizedMap(new HashMap<Class<?>, String>());
-  
-  public void configurationCompleted(ProcessEngineConfiguration processEngineConfiguration) {
-    this.databaseType = processEngineConfiguration.getDatabaseType();
-    this.idGenerator = processEngineConfiguration.getIdGenerator();
-    this.statementMappings = databaseSpecificStatements.get(processEngineConfiguration.getDatabaseType());
 
-    DataSource dataSource = processEngineConfiguration.getDataSource();
-    if (dataSource==null) { // standalone usage
-      dataSource = createPooledDatasource(processEngineConfiguration);
-    }
-    
-    TransactionFactory transactionFactory = null;
-    if (processEngineConfiguration.isTransactionsExternallyManaged()) {
-      transactionFactory = new ManagedTransactionFactory();
-    } else {
-      transactionFactory = new JdbcTransactionFactory();
-    }
-    
-    this.sqlSessionFactory = createSessionFactory(dataSource, transactionFactory);
-  }
-
-  protected PooledDataSource createPooledDatasource(ProcessEngineConfiguration processEngineConfiguration) {
-    String jdbcDriver = processEngineConfiguration.getJdbcDriver(); 
-    String jdbcUrl = processEngineConfiguration.getJdbcUrl(); 
-    String jdbcUsername = processEngineConfiguration.getJdbcUsername();
-    String jdbcPassword = processEngineConfiguration.getJdbcPassword();
-
-    if ( (jdbcDriver==null) || (jdbcUrl==null) || (jdbcUsername==null) ) {
-      throw new ActivitiException("DataSource or JDBC properties have to be specified in a process engine configuration");
-    }
-    
-    PooledDataSource pooledDataSource = 
-      new PooledDataSource(ReflectUtil.getClassLoader(), jdbcDriver, jdbcUrl, jdbcUsername, jdbcPassword );
-    
-    // Update with connection pool settings
-    int maxActiveConnections = processEngineConfiguration.getMaxActiveConnections();
-    int maxIdleConnections = processEngineConfiguration.getMaxIdleConnections();
-    int maxCheckoutTime = processEngineConfiguration.getMaxCheckoutTime();
-    int maxWaitTime = processEngineConfiguration.getMaxWaitTime();
-    
-    if (maxActiveConnections > 0) {
-      pooledDataSource.setPoolMaximumActiveConnections(maxActiveConnections);
-    }
-    if (maxIdleConnections > 0) {
-      pooledDataSource.setPoolMaximumIdleConnections(maxIdleConnections);
-    }
-    if (maxCheckoutTime > 0) {
-      pooledDataSource.setPoolMaximumCheckoutTime(maxCheckoutTime);
-    }
-    if (maxWaitTime > 0) {
-      pooledDataSource.setPoolTimeToWait(maxWaitTime);
-    }
-    
-    // ACT-233: connection pool of Ibatis is not properely initialized if this is not called!
-    pooledDataSource.forceCloseAll();
-    return pooledDataSource;
-  }
-
-  protected SqlSessionFactory createSessionFactory(DataSource dataSource, TransactionFactory transactionFactory) {
-    InputStream inputStream = null;
-    try {
-      inputStream = ReflectUtil.getResourceAsStream("org/activiti/db/ibatis/activiti.ibatis.mem.conf.xml");
-
-      // update the jdbc parameters to the configured ones...
-      Environment environment = new Environment("default", transactionFactory, dataSource);
-      Reader reader = new InputStreamReader(inputStream);
-      XMLConfigBuilder parser = new XMLConfigBuilder(reader);
-      Configuration configuration = parser.getConfiguration();
-      configuration.setEnvironment(environment);
-      configuration.getTypeHandlerRegistry().register(VariableType.class, JdbcType.VARCHAR, new IbatisVariableTypeHandler());
-      configuration = parser.parse();
-
-      return new DefaultSqlSessionFactory(configuration);
-
-    } catch (Exception e) {
-      throw new ActivitiException("Error while building ibatis SqlSessionFactory: " + e.getMessage(), e);
-    } finally {
-      IoUtil.closeSilently(inputStream);
-    }
+  public Class< ? > getSessionType() {
+    return DbSqlSession.class;
   }
 
   public Session openSession() {
@@ -343,6 +251,13 @@ public class DbSqlSessionFactory implements SessionFactory, ProcessEngineConfigu
     }
     return false;
   }
+  
+  // customized getters and setters ///////////////////////////////////////////
+  
+  public void setDatabaseType(String databaseType) {
+    this.databaseType = databaseType;
+    this.statementMappings = databaseSpecificStatements.get(databaseType);
+  }
 
   // getters and setters //////////////////////////////////////////////////////
   
@@ -360,5 +275,60 @@ public class DbSqlSessionFactory implements SessionFactory, ProcessEngineConfigu
   
   public void setIdGenerator(IdGenerator idGenerator) {
     this.idGenerator = idGenerator;
+  }
+
+  
+  public String getDatabaseType() {
+    return databaseType;
+  }
+
+  
+  public Map<String, String> getStatementMappings() {
+    return statementMappings;
+  }
+
+  
+  public void setStatementMappings(Map<String, String> statementMappings) {
+    this.statementMappings = statementMappings;
+  }
+
+  
+  public Map<Class< ? >, String> getInsertStatements() {
+    return insertStatements;
+  }
+
+  
+  public void setInsertStatements(Map<Class< ? >, String> insertStatements) {
+    this.insertStatements = insertStatements;
+  }
+
+  
+  public Map<Class< ? >, String> getUpdateStatements() {
+    return updateStatements;
+  }
+
+  
+  public void setUpdateStatements(Map<Class< ? >, String> updateStatements) {
+    this.updateStatements = updateStatements;
+  }
+
+  
+  public Map<Class< ? >, String> getDeleteStatements() {
+    return deleteStatements;
+  }
+
+  
+  public void setDeleteStatements(Map<Class< ? >, String> deleteStatements) {
+    this.deleteStatements = deleteStatements;
+  }
+
+  
+  public Map<Class< ? >, String> getSelectStatements() {
+    return selectStatements;
+  }
+
+  
+  public void setSelectStatements(Map<Class< ? >, String> selectStatements) {
+    this.selectStatements = selectStatements;
   }
 }

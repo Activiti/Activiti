@@ -35,7 +35,7 @@ import org.activiti.engine.RepositoryService;
 import org.activiti.engine.RuntimeService;
 import org.activiti.engine.TaskService;
 import org.activiti.engine.impl.ProcessEngineImpl;
-import org.activiti.engine.impl.cfg.ProcessEngineConfiguration;
+import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.jobexecutor.JobExecutor;
 import org.activiti.engine.impl.util.ClockUtil;
 import org.activiti.engine.impl.util.IoUtil;
@@ -72,7 +72,7 @@ public class ActivitiInternalTestCase extends PvmTestCase {
   protected String deploymentId;
   protected Throwable exception;
 
-  protected ProcessEngineConfiguration processEngineConfiguration;
+  protected ProcessEngineConfigurationImpl processEngineConfiguration;
   protected RepositoryService repositoryService;
   protected RuntimeService runtimeService;
   protected TaskService taskService;

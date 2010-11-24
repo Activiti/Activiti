@@ -11,13 +11,25 @@
  * limitations under the License.
  */
 
-package org.activiti.engine.impl.cfg;
+package org.activiti.osgi.blueprint;
+
+import org.activiti.engine.impl.cfg.JtaProcessEngineConfiguration;
+import org.osgi.framework.Bundle;
 
 
 /**
  * @author Tom Baeyens
  */
-public interface ProcessEngineConfigurationAware {
+public class OsgiProcessEngineConfiguration extends JtaProcessEngineConfiguration {
 
-  void configurationCompleted(ProcessEngineConfiguration processEngineConfiguration);
+  protected Bundle bundle;
+
+  
+  public Bundle getBundle() {
+    return bundle;
+  }
+
+  public void setBundle(Bundle bundle) {
+    this.bundle = bundle;
+  }
 }

@@ -28,7 +28,6 @@ public class EntityManagerSessionFactory implements SessionFactory {
   private boolean handleTransactions;
   private boolean closeEntityManager;
 
-  
   public EntityManagerSessionFactory(Object entityManagerFactory, boolean handleTransactions, boolean closeEntityManager) {
     if(entityManagerFactory == null) {
       throw new ActivitiException("entityManagerFactory is null");
@@ -42,6 +41,10 @@ public class EntityManagerSessionFactory implements SessionFactory {
     this.closeEntityManager = closeEntityManager;
   }
 
+  public Class< ? > getSessionType() {
+    return EntityManagerSession.class;
+  }
+
   public Session openSession() {
     return new EntityManagerSessionImpl(entityManagerFactory, handleTransactions, closeEntityManager);
   }
@@ -49,5 +52,4 @@ public class EntityManagerSessionFactory implements SessionFactory {
   public EntityManagerFactory getEntityManagerFactory() {
     return entityManagerFactory;
   }
-
 }

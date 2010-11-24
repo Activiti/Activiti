@@ -21,8 +21,6 @@ import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
 
 import org.activiti.engine.ActivitiException;
-import org.activiti.engine.impl.cfg.ProcessEngineConfiguration;
-import org.activiti.engine.impl.cfg.ProcessEngineConfigurationAware;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
 
 /**
@@ -34,7 +32,7 @@ import org.activiti.engine.impl.interceptor.CommandExecutor;
  *  pending job list.
  * Uses a {@link ThreadPoolExecutor} internally.
  */
-public class JobExecutor implements ProcessEngineConfigurationAware {
+public class JobExecutor {
   
   private static Logger log = Logger.getLogger(JobExecutor.class.getName());
 
@@ -53,11 +51,6 @@ public class JobExecutor implements ProcessEngineConfigurationAware {
   protected BlockingQueue<Runnable> threadPoolQueue;
   protected ThreadPoolExecutor threadPoolExecutor;
   protected boolean isActive = false;
-
-  public void configurationCompleted(ProcessEngineConfiguration processEngineConfiguration) {
-    this.commandExecutor = processEngineConfiguration.getCommandExecutorTxRequired();
-    this.isAutoActivate = processEngineConfiguration.isJobExecutorAutoActivate();
-  }
 
   public synchronized void start() {
     if(isActive) {
@@ -227,4 +220,11 @@ public class JobExecutor implements ProcessEngineConfigurationAware {
     return isAutoActivate;
   }
   
+  public void setCommandExecutor(CommandExecutor commandExecutor) {
+    this.commandExecutor = commandExecutor;
+  }
+  
+  public void setAutoActivate(boolean isAutoActivate) {
+    this.isAutoActivate = isAutoActivate;
+  }
 }

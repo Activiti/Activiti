@@ -12,8 +12,6 @@
  */
 package org.activiti.engine.impl;
 
-import org.activiti.engine.impl.cfg.ProcessEngineConfiguration;
-import org.activiti.engine.impl.cfg.ProcessEngineConfigurationAware;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
 
 
@@ -21,14 +19,10 @@ import org.activiti.engine.impl.interceptor.CommandExecutor;
 /**
  * @author Tom Baeyens
  */
-public class ServiceImpl implements ProcessEngineConfigurationAware {
+public class ServiceImpl {
 
   protected CommandExecutor commandExecutor;
   
-  public void configurationCompleted(ProcessEngineConfiguration processEngineConfiguration) {
-    this.commandExecutor = processEngineConfiguration.getCommandExecutorTxRequired();
-  }
-
   public CommandExecutor getCommandExecutor() {
     return commandExecutor;
   }

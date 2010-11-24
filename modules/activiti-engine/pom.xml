@@ -23,47 +23,56 @@
 			<groupId>org.codehaus.groovy</groupId>
 			<artifactId>groovy</artifactId>
 		</dependency>
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-beans</artifactId>
+    </dependency>
 		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.ant</groupId>
-			<artifactId>ant</artifactId>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>com.h2database</groupId>
-			<artifactId>h2</artifactId>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.mockito</groupId>
-			<artifactId>mockito-core</artifactId>
-			<scope>test</scope>
-		</dependency>
-		<!-- required for building with JDK 5 -->
-		<dependency>
+      <!-- required for building with JDK 5 -->
 			<groupId>org.livetribe</groupId>
 			<artifactId>livetribe-jsr223</artifactId>
 		</dependency>
+    <dependency>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-email</artifactId>
+    </dependency>
 		
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.ant</groupId>
+      <artifactId>ant</artifactId>
+      <scope>provided</scope>
+    </dependency>
 		<dependency>
-		    <groupId>javax.persistence</groupId>
-		    <artifactId>persistence-api</artifactId>
-		    <scope>provided</scope>
+	    <groupId>javax.persistence</groupId>
+	    <artifactId>persistence-api</artifactId>
+	    <scope>provided</scope>
 		</dependency>
+    <dependency>
+      <groupId>org.apache.geronimo.specs</groupId>
+      <artifactId>geronimo-jta_1.1_spec</artifactId>
+      <scope>provided</scope>
+    </dependency>
+		
+    <dependency>
+      <groupId>com.h2database</groupId>
+      <artifactId>h2</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.mockito</groupId>
+      <artifactId>mockito-core</artifactId>
+      <scope>test</scope>
+    </dependency>
 		<dependency>
 	      <groupId>org.apache.openjpa</groupId>
 	      <artifactId>openjpa</artifactId>
 	      <scope>test</scope>
 	    </dependency>
-		<!-- EMAIL -->
-		<dependency>
-			<groupId>org.apache.commons</groupId>
-			<artifactId>commons-email</artifactId>
-		</dependency>
 		<dependency>
 			<groupId>org.subethamail</groupId>
 			<artifactId>subethasmtp-wiser</artifactId>
