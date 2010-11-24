@@ -110,7 +110,6 @@
           <excludes>
             <exclude>**/*TestCase.java</exclude>
             <exclude>**/CompetingJobAcquisitionTest.java</exclude> <!-- http://jira.codehaus.org/browse/ACT-234 -->
-            <exclude>**/JobQueryTest.java</exclude> <!-- http://jira.codehaus.org/browse/ACT-299 -->
             <exclude>**/WSDLImporterTest.java</exclude> <!-- http://jira.codehaus.org/browse/ACT-315 -->
           </excludes>
         </configuration>
