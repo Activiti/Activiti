@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
@@ -376,10 +377,18 @@ public class CycleServiceImpl implements CycleService {
     for (RepositoryNodeTagEntity tagEntity : tagsForNode) {
       cycleDAO.deleteTag(connectorId, nodeId, tagEntity.getName());
     }
+
+    HashSet<String> alreadyAddedTags = new HashSet<String>();
     for (String tag : tags) {
       // TODO: Add Alias to setTags method as soon as we have a UI concept for
       // it
-      addTag(connectorId, nodeId, tag, null);
+      if (tag != null) {
+        tag = tag.trim();
+      }
+      if (!alreadyAddedTags.contains(tag) && tag.length() > 0) {
+        addTag(connectorId, nodeId, tag, null);
+        alreadyAddedTags.add(tag);
+      }
     }
   }
 
