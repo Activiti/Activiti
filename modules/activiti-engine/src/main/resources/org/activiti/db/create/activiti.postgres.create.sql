@@ -94,6 +94,8 @@ create table ACT_RE_PROCDEF (
     VERSION_ integer,
     DEPLOYMENT_ID_ varchar(64),
     RESOURCE_NAME_ varchar(255),
+    DGRM_RESOURCE_NAME_ varchar(255),
+    HAS_START_FORM_KEY_ boolean,
     primary key (ID_)
 );
 
