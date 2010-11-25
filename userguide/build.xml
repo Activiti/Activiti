@@ -66,7 +66,7 @@
 	     Therefore, the xalan libs must be installed in user.home/.ant/lib, which 
 	     will make the xslt task use these jars instead of the internal JDK ones.
   -->
-	<target name="install.xalan.libs">
+	<target name="install.xalan.libs" depends="install.docbooktool">
     <mkdir dir="${user.home}/.ant/lib"/>
 	  <copy todir="${user.home}/.ant/lib">
 	    <fileset dir="${docbooktool.dir}/xalan">
