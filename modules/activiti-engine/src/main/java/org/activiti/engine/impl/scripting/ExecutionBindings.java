@@ -38,10 +38,10 @@ public class ExecutionBindings implements Bindings {
    * The script engine implementations put some key/value pairs into the binding.
    * This list contains those keys, such that they wouldn't be stored as process variable.
    * 
-   * This list contains the keywords for JUEL and Groovy.
+   * This list contains the keywords for JUEL, Javascript and Groovy.
    */
   protected static final Set<String> UNSTORED_KEYS = 
-    new HashSet<String>(Arrays.asList("out", "out:print", "lang:import", "context", "elcontext"));
+    new HashSet<String>(Arrays.asList("out", "out:print", "lang:import", "context", "elcontext", "print", "println"));
   
   protected ExecutionImpl execution;
   

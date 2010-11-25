@@ -589,7 +589,7 @@ public class ExecutionImpl implements
     }
   }
 
-  protected void setVariableLocally(String variableName, Object value) {
+  public void setVariableLocally(String variableName, Object value) {
     log.fine("setting variable '"+variableName+"' to value '"+value+"' on "+this);
     variables.put(variableName, value);
   }
