@@ -14,7 +14,9 @@ public class RemedyTemporarySignavioIncompatibilityTransformation {
     // set process id and name
     processName = ExchangeSignavioUuidWithNameTransformation.adjustNamesForEngine(processName);
     xml = setAttributeText(xml, "process", "id", processName);
-    xml = addAttribute(xml, "process", "name", processName);
+    if (!existAttribute(xml, "process", "name")) {
+      xml = addAttribute(xml, "process", "name", processName);
+    }
     
     return transformBpmn20Xml(xml);
   }
@@ -96,11 +98,22 @@ public class RemedyTemporarySignavioIncompatibilityTransformation {
     if (elementStartIndex == -1)
       return xml;
     int startIndex = xml.indexOf(attributeName + "=\"", elementStartIndex) + attributeName.length() + 2;
-    if (startIndex == -1)
+    if (startIndex == -1) {
       return xml;
+    }
     int endIndex = xml.indexOf("\"", startIndex);
     
     return xml.substring(0, startIndex) + newValue + xml.substring(endIndex);
+  }
+
+  private boolean existAttribute(String xml, String elementName, String attributeName) {
+    int elementStartIndex = xml.indexOf("<" + elementName);
+    if (elementStartIndex == -1)
+      return false;
+    int elementEndIndex = xml.indexOf(">", elementStartIndex);
+    xml = xml.substring(0, elementEndIndex);
+    int startIndex = xml.indexOf(attributeName + "=\"", elementStartIndex);
+    return (startIndex > -1);
   }
 
   private String exchangeAttributeText(String xml, String attributeName, String oldValue, String newValue) {
