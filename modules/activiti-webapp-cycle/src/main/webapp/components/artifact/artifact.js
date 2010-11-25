@@ -241,7 +241,7 @@
       
       var tabContent = "<h3>Java Stack Trace:</h3>";
       for(var line in responseJson.callstack) {
-        if( (responseJson.callstack[line].indexOf("org.activiti.cycle") != -1) || responseJson.callstack[line].indexOf("org.activiti.rest.api.cycle") != -1) {
+        if( line == 1 || (responseJson.callstack[line].indexOf("org.activiti.cycle") != -1) || responseJson.callstack[line].indexOf("org.activiti.rest.api.cycle") != -1) {
           tabContent += "<span class=\"cycle-stack-trace-highlight\">" + responseJson.callstack[line] + "</span>";
         } else {
           tabContent += "<span class=\"cycle-stack-trace\">" + responseJson.callstack[line] + "</span>";
