@@ -56,6 +56,5 @@ public class HistoryServiceTest extends ActivitiInternalTestCase {
     
     historicProcessInstance = historyService.createHistoricProcessInstanceQuery().singleResult();
     assertEquals("theEnd", historicProcessInstance.getEndActivityId());
-    
   }
 }

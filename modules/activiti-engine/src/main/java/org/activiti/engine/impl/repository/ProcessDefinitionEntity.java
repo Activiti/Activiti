@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.Map;
 
 import org.activiti.engine.ProcessEngineConfiguration;
+import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.db.DbSqlSession;
 import org.activiti.engine.impl.db.PersistentObject;
 import org.activiti.engine.impl.form.StartFormHandler;
@@ -82,7 +83,7 @@ public class ProcessDefinitionEntity extends ProcessDefinitionImpl implements Pr
 	    processInstance.setVariables(variableMap);
 
 	    int historyLevel = commandContext.getProcessEngineConfiguration().getHistoryLevel();
-	    if (historyLevel>=ProcessEngineConfiguration.HISTORYLEVEL_ACTIVITY) {
+	    if (historyLevel>=ProcessEngineConfigurationImpl.HISTORYLEVEL_ACTIVITY) {
 	      DbSqlSession dbSqlSession = commandContext.getSession(DbSqlSession.class);
 	      HistoricProcessInstanceEntity historicProcessInstance = new HistoricProcessInstanceEntity(processInstance);
 	      dbSqlSession.insert(historicProcessInstance);

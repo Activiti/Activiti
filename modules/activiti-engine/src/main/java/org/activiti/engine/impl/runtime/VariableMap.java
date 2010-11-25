@@ -22,6 +22,7 @@ import java.util.Set;
 
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ProcessEngineConfiguration;
+import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.db.DbSqlSession;
 import org.activiti.engine.impl.history.HistoricVariableUpdateEntity;
 import org.activiti.engine.impl.interceptor.CommandContext;
@@ -116,7 +117,7 @@ public class VariableMap implements Map<String, Object> , Serializable {
     variableInstance.setValue(value);
     
     int historyLevel = commandContext.getProcessEngineConfiguration().getHistoryLevel();
-    if (historyLevel==ProcessEngineConfiguration.HISTORYLEVEL_FULL) {
+    if (historyLevel==ProcessEngineConfigurationImpl.HISTORYLEVEL_FULL) {
       DbSqlSession dbSqlSession = commandContext.getDbSqlSession();
       HistoricVariableUpdateEntity historicVariableUpdate = new HistoricVariableUpdateEntity(variableInstance, dbSqlSession);
       dbSqlSession.insert(historicVariableUpdate);

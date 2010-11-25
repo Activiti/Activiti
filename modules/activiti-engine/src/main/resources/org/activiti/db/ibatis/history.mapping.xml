@@ -253,14 +253,15 @@
   </insert>
   
   <insert id="insertHistoricVariableUpdate" parameterType="org.activiti.engine.impl.history.HistoricVariableUpdateEntity">
-    insert into ACT_HI_DETAIL (ID_, TYPE_, PROC_INST_ID_, EXECUTION_ID_, NAME_, VAR_TYPE_, TIME_, BYTEARRAY_ID_, DOUBLE_, LONG_ , TEXT_, TEXT2_)
+    insert into ACT_HI_DETAIL (ID_, TYPE_, PROC_INST_ID_, EXECUTION_ID_, NAME_, REV_, VAR_TYPE_, TIME_, BYTEARRAY_ID_, DOUBLE_, LONG_ , TEXT_, TEXT2_)
     values (
       #{id, jdbcType=VARCHAR},
       'VariableUpdate',
       #{processInstanceId, jdbcType=VARCHAR},
       #{executionId, jdbcType=VARCHAR},
       #{variableName, jdbcType=VARCHAR},
-      #{variableType, jdbcType=VARCHAR },
+      #{revision, jdbcType=VARCHAR},
+      #{variableType, jdbcType=VARCHAR},
       #{time, jdbcType=TIMESTAMP },
       #{byteArrayValueId, jdbcType=VARCHAR},
       #{doubleValue, jdbcType=DOUBLE},
@@ -300,6 +301,7 @@
     <result property="textValue" column="TEXT_" jdbcType="VARCHAR" />
     <result property="textValue2" column="TEXT2_" jdbcType="VARCHAR" />
     <result property="longValue" column="LONG_" jdbcType="BIGINT" />
+    <association property="byteArrayValue" column="BYTEARRAY_ID_" javaType="org.activiti.engine.impl.runtime.ByteArrayEntity" />
   </resultMap>
 
   <resultMap id="historicFormPropertyResultMap" extends="historicDetailResultMap" type="org.activiti.engine.impl.history.HistoricFormPropertyEntity">

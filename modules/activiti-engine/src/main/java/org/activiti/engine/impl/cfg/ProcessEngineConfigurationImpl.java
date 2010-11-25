@@ -108,6 +108,11 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
   public static final String DB_SCHEMA_UPDATE_CREATE = "create";
   public static final String DB_SCHEMA_UPDATE_DROP_CREATE = "drop-create";
 
+  public static final int HISTORYLEVEL_NONE = 0;
+  public static final int HISTORYLEVEL_ACTIVITY = 1;
+  public static final int HISTORYLEVEL_AUDIT = 2;
+  public static final int HISTORYLEVEL_FULL = 3;
+
   public static final String DEFAULT_WS_SYNC_FACTORY = "org.activiti.engine.impl.webservice.CxfWebServiceClientFactory";
 
   // SERVICES /////////////////////////////////////////////////////////////////
@@ -196,6 +201,8 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
   protected CommandContextFactory commandContextFactory;
   protected TransactionContextFactory transactionContextFactory;
   
+  protected int historyLevel;
+  
   // buildProcessEngine ///////////////////////////////////////////////////////
   
   public ProcessEngine buildProcessEngine() {
@@ -206,6 +213,7 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
   // init /////////////////////////////////////////////////////////////////////
   
   protected void init() {
+    initHistoryLevel();
     initExpressionManager();
     initVariableTypes();
     initFormEngines();
@@ -442,7 +450,7 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
     BpmnDeployer bpmnDeployer = new BpmnDeployer();
     bpmnDeployer.setExpressionManager(expressionManager);
     BpmnParser bpmnParser = new BpmnParser(expressionManager);
-    if (historyLevel>=ProcessEngineConfiguration.HISTORYLEVEL_ACTIVITY) {
+    if (historyLevel>=ProcessEngineConfigurationImpl.HISTORYLEVEL_ACTIVITY) {
       bpmnParser.getParseListeners().add(new HistoryParseListener(historyLevel));
     }
     bpmnDeployer.setBpmnParser(bpmnParser);
@@ -494,20 +502,18 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
   
   // history //////////////////////////////////////////////////////////////////
   
-  public static Integer parseHistoryLevel(String historyLevelText) {
-    if ("none".equalsIgnoreCase(historyLevelText)) {
-      return HISTORYLEVEL_NONE;
+  public void initHistoryLevel() {
+    if (HISTORY_NONE.equalsIgnoreCase(history)) {
+      historyLevel = 0;
+    } else if (HISTORY_ACTIVITY.equalsIgnoreCase(history)) {
+      historyLevel = 1;
+    } else if (HISTORY_AUDIT.equalsIgnoreCase(history)) {
+      historyLevel = 2;
+    } else if (HISTORY_FULL.equalsIgnoreCase(history)) {
+      historyLevel = 3;
+    } else {
+      throw new ActivitiException("invalid history level: "+history);
     }
-    if ("activity".equalsIgnoreCase(historyLevelText)) {
-      return HISTORYLEVEL_ACTIVITY;
-    }
-    if ("audit".equalsIgnoreCase(historyLevelText)) {
-      return HISTORYLEVEL_AUDIT;
-    }
-    if ("full".equalsIgnoreCase(historyLevelText)) {
-      return HISTORYLEVEL_FULL;
-    }
-    throw new ActivitiException("invalid history level: "+historyLevelText);
   }
   
   // id generator /////////////////////////////////////////////////////////////
@@ -636,7 +642,15 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
   public String getProcessEngineName() {
     return processEngineName;
   }
+
+  public int getHistoryLevel() {
+    return historyLevel;
+  }
   
+  public void setHistoryLevel(int historyLevel) {
+    this.historyLevel = historyLevel;
+  }
+
   public ProcessEngineConfigurationImpl setProcessEngineName(String processEngineName) {
     this.processEngineName = processEngineName;
     return this;
@@ -1092,8 +1106,8 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
   }
 
   @Override
-  public ProcessEngineConfigurationImpl setHistoryLevel(int historyLevel) {
-    super.setHistoryLevel(historyLevel);
+  public ProcessEngineConfigurationImpl setHistory(String history) {
+    super.setHistory(history);
     return this;
   }
 

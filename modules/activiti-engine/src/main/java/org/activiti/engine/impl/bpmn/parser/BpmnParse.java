@@ -450,10 +450,10 @@ public class BpmnParse extends Parse {
     processDefinition.setTaskDefinitions(new HashMap<String, TaskDefinition>());
     processDefinition.setDeploymentId(deployment.getId());
     
-    String historyLevelText = processElement.attributeNS(BpmnParser.ACTIVITI_BPMN_EXTENSIONS_NS, "history");
-    if (historyLevelText!=null) {
-      processDefinition.setHistoryLevel(ProcessEngineConfigurationImpl.parseHistoryLevel(historyLevelText));
-    }
+//    String historyLevelText = processElement.attributeNS(BpmnParser.ACTIVITI_BPMN_EXTENSIONS_NS, "history");
+//    if (historyLevelText!=null) {
+//      processDefinition.setHistoryLevel(ProcessEngineConfigurationImpl.parseHistoryLevel(historyLevelText));
+//    }
 
     if (LOG.isLoggable(Level.FINE)) {
       LOG.fine("Parsing process " + processDefinition.getKey());

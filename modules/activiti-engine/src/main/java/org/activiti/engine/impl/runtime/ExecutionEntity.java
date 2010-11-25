@@ -27,6 +27,7 @@ import org.activiti.engine.impl.TaskQueryImpl;
 import org.activiti.engine.impl.bpmn.parser.BpmnParse;
 import org.activiti.engine.impl.calendar.BusinessCalendar;
 import org.activiti.engine.impl.calendar.DurationBusinessCalendar;
+import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.db.DbSqlSession;
 import org.activiti.engine.impl.db.PersistentObject;
 import org.activiti.engine.impl.history.HistoricActivityInstanceEntity;
@@ -119,7 +120,7 @@ public class ExecutionEntity extends ExecutionImpl implements PersistentObject, 
     
     CommandContext commandContext = CommandContext.getCurrent();
     int historyLevel = commandContext.getProcessEngineConfiguration().getHistoryLevel();
-    if (historyLevel>=ProcessEngineConfiguration.HISTORYLEVEL_ACTIVITY) {
+    if (historyLevel>=ProcessEngineConfigurationImpl.HISTORYLEVEL_ACTIVITY) {
       DbSqlSession dbSqlSession = commandContext.getSession(DbSqlSession.class);
       HistoricProcessInstanceEntity historicProcessInstance = new HistoricProcessInstanceEntity((ExecutionEntity) subProcessInstance);
       dbSqlSession.insert(historicProcessInstance);

@@ -93,22 +93,22 @@ public abstract class ProcessEngineConfiguration {
    * an update of the schema is performed if it is necessary. */
   public static final String DB_SCHEMA_UPDATE_TRUE = "true";
 
-  /** Value for {@link #setHistoryLevel(int)} to ensure that no history is being recorded. */
-  public static final int HISTORYLEVEL_NONE = 0;
-  /** Value for {@link #setHistoryLevel(int)} to ensure that only historic process instances and 
+  /** Value for {@link #setHistory(String)} to ensure that no history is being recorded. */
+  public static final String HISTORY_NONE = "none";
+  /** Value for {@link #setHistory(String)} to ensure that only historic process instances and 
    * historic activity instances are being recorded. 
    * This means no details for those entities. */
-  public static final int HISTORYLEVEL_ACTIVITY = 1;
-  /** Value for {@link #setHistoryLevel(int)} to ensure that only historic process instances, 
+  public static final String HISTORY_ACTIVITY = "activity";
+  /** Value for {@link #setHistory(String)} to ensure that only historic process instances, 
    * historic activity instances and submitted form property values are being recorded. */ 
-  public static final int HISTORYLEVEL_AUDIT = 2;
-  /** Value for {@link #setHistoryLevel(int)} to ensure that all historic information is 
+  public static final String HISTORY_AUDIT = "audit";
+  /** Value for {@link #setHistory(String)} to ensure that all historic information is 
    * being recorded, including the variable updates. */ 
-  public static final int HISTORYLEVEL_FULL = 3;
+  public static final String HISTORY_FULL = "full";
   
   protected String processEngineName = ProcessEngines.NAME_DEFAULT;
   protected int idBlockSize = 100;
-  protected int historyLevel = HISTORYLEVEL_AUDIT;
+  protected String history = HISTORY_AUDIT;
   protected boolean jobExecutorActivate;
 
   protected String mailServerHost = "localhost";
@@ -210,13 +210,13 @@ public abstract class ProcessEngineConfiguration {
   }
 
   
-  public int getHistoryLevel() {
-    return historyLevel;
+  public String getHistory() {
+    return history;
   }
 
   
-  public ProcessEngineConfiguration setHistoryLevel(int historyLevel) {
-    this.historyLevel = historyLevel;
+  public ProcessEngineConfiguration setHistory(String history) {
+    this.history = history;
     return this;
   }
 

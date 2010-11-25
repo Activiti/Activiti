@@ -13,9 +13,9 @@
 
 package org.activiti.engine.impl.history.handler;
 
-import org.activiti.engine.ProcessEngineConfiguration;
 import org.activiti.engine.impl.bpmn.UserTaskActivity;
 import org.activiti.engine.impl.bpmn.parser.BpmnParseListener;
+import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.pvm.delegate.ExecutionListener;
 import org.activiti.engine.impl.pvm.delegate.TaskListener;
 import org.activiti.engine.impl.pvm.process.ActivityImpl;
@@ -116,15 +116,15 @@ public class HistoryParseListener implements BpmnParseListener {
   }
   
   protected boolean fullHistoryEnabled(ScopeImpl scopeElement) {
-    return determineHistoryLevel(scopeElement) >= ProcessEngineConfiguration.HISTORYLEVEL_FULL;
+    return determineHistoryLevel(scopeElement) >= ProcessEngineConfigurationImpl.HISTORYLEVEL_FULL;
   }
   
   protected boolean auditHistoryEnabled(ScopeImpl scopeElement) {
-    return determineHistoryLevel(scopeElement) >= ProcessEngineConfiguration.HISTORYLEVEL_AUDIT;
+    return determineHistoryLevel(scopeElement) >= ProcessEngineConfigurationImpl.HISTORYLEVEL_AUDIT;
   }
   
   protected boolean activityHistoryEnabled(ScopeImpl scopeElement) {
-    return determineHistoryLevel(scopeElement) >= ProcessEngineConfiguration.HISTORYLEVEL_ACTIVITY;
+    return determineHistoryLevel(scopeElement) >= ProcessEngineConfigurationImpl.HISTORYLEVEL_ACTIVITY;
   }
   
   protected int determineHistoryLevel(ScopeImpl scopeElement) {

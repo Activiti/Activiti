@@ -25,6 +25,7 @@ import org.activiti.engine.impl.HistoricProcessInstanceQueryImpl;
 import org.activiti.engine.impl.Page;
 import org.activiti.engine.impl.ProcessDefinitionQueryImpl;
 import org.activiti.engine.impl.ProcessInstanceQueryImpl;
+import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.cfg.RepositorySession;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.interceptor.Session;
@@ -115,7 +116,7 @@ public class DbRepositorySession implements Session, RepositorySession {
         .executeList(commandContext, null);
 
       int historyLevel = commandContext.getProcessEngineConfiguration().getHistoryLevel();
-      boolean isHistoryEnabled = historyLevel >= ProcessEngineConfiguration.HISTORYLEVEL_ACTIVITY;
+      boolean isHistoryEnabled = historyLevel >= ProcessEngineConfigurationImpl.HISTORYLEVEL_ACTIVITY;
       
       for (ProcessDefinition processDefinition: processDefinitions) {
         if (isHistoryEnabled) {
