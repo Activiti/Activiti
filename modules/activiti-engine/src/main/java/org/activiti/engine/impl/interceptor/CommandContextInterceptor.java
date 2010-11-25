@@ -22,7 +22,14 @@ public class CommandContextInterceptor extends CommandInterceptor {
 
   protected CommandContextFactory commandContextFactory;
 
-  public <T> T execute(Command<T> command) {
+    public CommandContextInterceptor() {
+    }
+
+    public CommandContextInterceptor(CommandContextFactory commandContextFactory) {
+        this.commandContextFactory = commandContextFactory;
+    }
+
+    public <T> T execute(Command<T> command) {
     CommandContext context = commandContextFactory.createCommandContext(command);
 
     try {

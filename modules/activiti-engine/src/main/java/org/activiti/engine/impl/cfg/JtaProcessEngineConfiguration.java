@@ -38,7 +38,7 @@ public class JtaProcessEngineConfiguration extends ProcessEngineConfigurationImp
     List<CommandInterceptor> defaultCommandInterceptorsTxRequired = new ArrayList<CommandInterceptor>();
     defaultCommandInterceptorsTxRequired.add(new LogInterceptor());
     defaultCommandInterceptorsTxRequired.add(new JtaTransactionInterceptor(transactionManager, false));
-    defaultCommandInterceptorsTxRequired.add(new CommandContextInterceptor());
+    defaultCommandInterceptorsTxRequired.add(new CommandContextInterceptor(commandContextFactory));
     defaultCommandInterceptorsTxRequired.add(new CommandExecutorImpl());
     return defaultCommandInterceptorsTxRequired;
   }
@@ -48,7 +48,7 @@ public class JtaProcessEngineConfiguration extends ProcessEngineConfigurationImp
     List<CommandInterceptor> defaultCommandInterceptorsTxRequiresNew = new ArrayList<CommandInterceptor>();
     defaultCommandInterceptorsTxRequiresNew.add(new LogInterceptor());
     defaultCommandInterceptorsTxRequiresNew.add(new JtaTransactionInterceptor(transactionManager, true));
-    defaultCommandInterceptorsTxRequiresNew.add(new CommandContextInterceptor());
+    defaultCommandInterceptorsTxRequiresNew.add(new CommandContextInterceptor(commandContextFactory));
     defaultCommandInterceptorsTxRequiresNew.add(new CommandExecutorImpl());
     return defaultCommandInterceptorsTxRequiresNew;
   }

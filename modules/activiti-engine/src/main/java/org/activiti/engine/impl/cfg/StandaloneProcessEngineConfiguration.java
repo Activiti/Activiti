@@ -31,11 +31,7 @@ public class StandaloneProcessEngineConfiguration extends ProcessEngineConfigura
   protected Collection< ? extends CommandInterceptor> getDefaultCommandInterceptorsTxRequired() {
     List<CommandInterceptor> defaultCommandInterceptorsTxRequired = new ArrayList<CommandInterceptor>();
     defaultCommandInterceptorsTxRequired.add(new LogInterceptor());
-
-    CommandContextInterceptor commandContextInterceptor = new CommandContextInterceptor();
-    commandContextInterceptor.setCommandContextFactory(commandContextFactory);
-    defaultCommandInterceptorsTxRequired.add(commandContextInterceptor);
-    
+    defaultCommandInterceptorsTxRequired.add(new CommandContextInterceptor(commandContextFactory));
     defaultCommandInterceptorsTxRequired.add(new CommandExecutorImpl());
     return defaultCommandInterceptorsTxRequired;
   }

@@ -21,16 +21,17 @@ import org.osgi.framework.Bundle;
 /**
  * @author Guillaume Nodet
  */
-public class ProcessEngineFactory  {
+public class ProcessEngineFactory {
 
-    protected OsgiProcessEngineConfiguration processEngineConfiguration;
+    protected ProcessEngineConfiguration processEngineConfiguration;
+    protected Bundle bundle;
+
     protected ProcessEngineImpl processEngine;
 
     public void init() throws Exception {
         ClassLoader previous = Thread.currentThread().getContextClassLoader();
 
         try {
-            Bundle bundle = processEngineConfiguration.getBundle();
             ClassLoader cl = new BundleDelegatingClassLoader(bundle);
 
             Thread.currentThread().setContextClassLoader(new ClassLoaderWrapper(
@@ -59,11 +60,20 @@ public class ProcessEngineFactory  {
         return processEngine;
     }
 
-    public Class<?> getObjectType() {
-        return ProcessEngine.class;
+    public ProcessEngineConfiguration getProcessEngineConfiguration() {
+        return processEngineConfiguration;
     }
 
-    public boolean isSingleton() {
-        return true;
+    public void setProcessEngineConfiguration(ProcessEngineConfiguration processEngineConfiguration) {
+        this.processEngineConfiguration = processEngineConfiguration;
+    }
+
+
+    public Bundle getBundle() {
+        return bundle;
+    }
+
+    public void setBundle(Bundle bundle) {
+        this.bundle = bundle;
     }
 }
