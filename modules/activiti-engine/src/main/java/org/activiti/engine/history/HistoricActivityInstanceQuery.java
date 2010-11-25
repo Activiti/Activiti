@@ -13,7 +13,6 @@
 
 package org.activiti.engine.history;
 
-import org.activiti.engine.impl.HistoricActivityInstanceQueryImpl;
 import org.activiti.engine.query.Query;
 
 
@@ -35,25 +34,25 @@ public interface HistoricActivityInstanceQuery extends Query<HistoricActivityIns
   HistoricActivityInstanceQuery processDefinitionId(String processDefinitionId);
 
   /** Only select historic activity instances for the given execution */
-  HistoricActivityInstanceQueryImpl executionId(String executionId);
+  HistoricActivityInstanceQuery executionId(String executionId);
 
   /** Only select historic activity instances for the given activiti */
-  HistoricActivityInstanceQueryImpl activityId(String activityId);
+  HistoricActivityInstanceQuery activityId(String activityId);
 
   /** Only select historic activity instances for activities with the given name */
-  HistoricActivityInstanceQueryImpl activityName(String activityName);
+  HistoricActivityInstanceQuery activityName(String activityName);
 
   /** Only select historic activity instances for activities with the given activity type */
-  HistoricActivityInstanceQueryImpl activityType(String activityType);
+  HistoricActivityInstanceQuery activityType(String activityType);
 
   /** Only select historic activity instances for userTask activities assigned to the given user */
-  HistoricActivityInstanceQueryImpl taskAssignee(String userId);
+  HistoricActivityInstanceQuery taskAssignee(String userId);
   
   /** Only select historic activity instances that are finished. */
-  HistoricActivityInstanceQueryImpl finished();
+  HistoricActivityInstanceQuery finished();
 
   /** Only select historic activity instances that are not finished yet. */
-  HistoricActivityInstanceQueryImpl unfinished();
+  HistoricActivityInstanceQuery unfinished();
 
   // ordering /////////////////////////////////////////////////////////////////
   /** Order by id (needs to be followed by {@link #asc()} or {@link #desc()}). */

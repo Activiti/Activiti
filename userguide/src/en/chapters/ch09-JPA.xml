@@ -86,6 +86,15 @@
   &lt;property name=&quot;jobExecutorActivate&quot; value=&quot;false&quot; /&gt;
 &lt;/bean&gt;
         </programlisting>
+        The same configurations can also be done when building an engine programmatically, example:
+        <programlisting>
+ProcessEngine processEngine = ProcessEngineConfiguration
+  .createProcessEngineConfigurationFromResourceDefault()
+  <emphasis role="bold">.setJpaPersistenceUnitName("activiti-pu")</emphasis>
+  .buildProcessEngine();
+        </programlisting>
+        </para>
+        <para>
         Configuration properties:
         <itemizedlist>
           <listitem>

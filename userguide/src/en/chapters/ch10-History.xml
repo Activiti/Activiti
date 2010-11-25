@@ -14,10 +14,7 @@
   containing information about a single execution of an activity and <literal>HistoricDetail</literal> 
   containing various kinds of information related to either a historic process instances or an activity instance.
   </para>
-  <para>In the API, the HistoryService exposes this information by offering methods 
-  <literal>createHistoricProcessInstanceQuery</literal>, <literal>createHistoricActivityInstanceQuery</literal>
-  and <literal>createHistoricDetailQuery</literal>.
-  </para>
+  
   <para>Since the DB contains historic entities for past as well as ongoing instances, you might want to consider 
   querying these tables in order to minimize access to the runtime process instance data 
   and that way keeping the runtime execution performant.
@@ -26,23 +23,54 @@
   Also, it will be the information from which the reports will be generated.
   </para>
   
+  <section id="historyQuery">
+    <title>Querying history</title>
+  <para>In the API, the HistoryService exposes this information by offering methods 
+  <literal>createHistoricProcessInstanceQuery</literal>, <literal>createHistoricActivityInstanceQuery</literal>
+  and <literal>createHistoricDetailQuery</literal>.
+  </para>
+  <para>Below are a couple of examples that show some of the possibilities of the query API for history.</para>
+  <para>
+  Get 10 <literal>HistoricProcessInstances</literal> that are finished and which took the most time to complete (they have the longest duration).
+  <programlisting>
+historyService.createHistoricProcessInstanceQuery()
+  .finished()
+  .orderByProcessInstanceDuration().desc()
+  .listPage(0, 10);
+  </programlisting>
+  Get the last userTask that has been finished in any process that uses the processDefinition with id XXX.
+  <programlisting>
+historyService.createHistoricActivityInstanceQuery()
+  .activityType("userTask")
+  .processDefinitionId("XXX")
+  .finished()
+  .orderByHistoricActivityInstanceEndTime().desc()
+  .listPage(0, 1);
+  </programlisting>
+    Gets all variable-updates that have been done on activity with id 123. Only <literal>HistoricVariableUpdate</literal>s will be returned by this query.
+  <programlisting>
+historyService.createHistoricDetailQuery()
+  .variableUpdates()
+  .activityId("123")
+  .orderByVariableName().asc()
+  .list()
+  </programlisting>
+  </para>
+</section>
   <section id="historyConfig">
     <title>History configuration</title>
-	  <para>In the activiti.cfg.xml configuration file, you can configure the level of history archiving 
-	  that needs to happen:
-	  </para>
-	  <para>TODO: REFACTOR THIS (configuration file updates)</para>
+	  <para>The history level can be confugured programatically, using the <literal>HISTORYLEVEL_*</literal>constants defined on ProcessEngineConfiguration:</para>
+      <programlisting>
+ProcessEngine processEngine = ProcessEngineConfiguration
+  .createProcessEngineConfigurationFromResourceDefault()
+  <emphasis role="bold">.setHistoryLevel(ProcessEngineConfiguration.HISTORYLEVEL_AUDIT)</emphasis>
+  .buildProcessEngine();
+      </programlisting>
+      
+      <para>The level can also be configured in activiti.cfg.xml or in a spring-context:</para>
 	  
-	  <programlisting>&lt;activiti-cfg&gt;
-  &lt;history level=&quot;audit&quot; /&gt;  
-  ...
-&lt;/activiti-cfg&gt;
-	  </programlisting>
-	  
-	  <para>Or if you're using the spring style of configuration:</para>
-	  
-	  <programlisting>&lt;bean id=&quot;processEngine&quot; class=&quot;org.activiti.spring.ProcessEngineFactoryBean&quot;&gt;
-  &lt;property name=&quot;historyLevel&quot; value=&quot;audit&quot; /&gt;
+	  <programlisting>&lt;bean id=&quot;processEngineConfiguration&quot; class=&quot;org.activiti.engine.impl.cfg.StandaloneInMemProcessEngineConfiguration&quot;&gt;
+  &lt;property name=&quot;historyLevel&quot; value=&quot;2&quot; /&gt;
   ...
 &lt;/bean&gt;</programlisting>
 	  
@@ -50,14 +78,14 @@
 	  </para>
 	  
 	  <itemizedlist>
-	    <listitem><para><literal>none</literal>: skips all history archiving.  This is the most performant for runtime 
+	    <listitem><para><literal>none</literal> (0): skips all history archiving.  This is the most performant for runtime 
 	    process execution, but no historical information will be available. </para></listitem>
-	    <listitem><para><literal>activity</literal>: archives all process instances and activity instances. 
+	    <listitem><para><literal>activity</literal> (1): archives all process instances and activity instances. 
 	    No details will be archived</para></listitem>
-	    <listitem><para><literal>audit</literal>: This is the default.  It archives all process instances, 
+	    <listitem><para><literal>audit</literal> (2): This is the default.  It archives all process instances, 
 	    activity instances and all form properties that are submitted so that all user interaction 
 	    through forms is traceable and can be audited.</para></listitem>
-	    <listitem><para><literal>full</literal>: This is the highest level of history archiving and hence the 
+	    <listitem><para><literal>full</literal> (3): This is the highest level of history archiving and hence the 
 	    slowest.  This level stores all information as in the <literal>audit</literal> level 
 	    plus all other possible details like process variable updates.</para></listitem>
 	  </itemizedlist>
@@ -66,7 +94,7 @@
   <section id="historyFormAuditPurposes">
     <title>History for audit purposes</title>
     
-    <para>When <link linkend="historyConfiguration">configuring</link> at least <literal>audit</literal> level
+    <para>When <link linkend="historyConfig">configuring</link> at least <literal>audit</literal> level
     for configuration. Then all properties submitted through methods 
     <literal>FormService.submitStartFormData(String processDefinitionId, Map&lt;String, String&gt; properties)</literal>
     and <literal>FormService.submitTaskFormData(String taskId, Map&lt;String, String&gt; properties)</literal>
@@ -75,7 +103,7 @@
 
     <para><emphasis role="bold">[KNOWN LIMITATION]</emphasis> Currently the forms as worked out in Activiti Explorer
     do not yet use the <literal>submitStartFormData</literal> and <literal>submitTaskFormData</literal>.
-    So the form properties are not yet archived when using the forms in Activity Explorer.
+    So the form properties are not yet archived when using the forms in Activity Explorer. A workaround is to set the historyLevel to full and use the variableUpdates to see what values were set in userTasks.
     @see <ulink url="http://jira.codehaus.org/browse/ACT-294">ACT-294</ulink>
     </para>
     
