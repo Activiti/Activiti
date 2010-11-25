@@ -40,75 +40,64 @@
   
    <section id="jpaconfiguration">
     <title>Configuration</title>
-    <para>To be able to use JPA-entities, the engine must have a reference to an <literal>EntityManagerFactory</literal>. When JPA is enabled on the engine, JPA-entities used as variables
+    <para>To be able to use JPA-entities, the engine must have a reference to an <literal>EntityManagerFactory</literal>. This can be done by configuring a reference or by supplying a persistence-unit name. JPA-entities used as variables
     will be detected automatically and will be handled accordingly.</para>
-    <section>
-      <title>JPA using ProcessEngineBuilder</title>
-      <para>
-        When creating the <literal>ProcessEngine</literal> using the <literal>ProcessEngineBuilder</literal>, the method <literal>enableJPA</literal>
-        should be called.
+    
+    <para>
+        The example configuration below uses the jpaPersistenceUnitName:
         <programlisting>
-ProcessEngine engine = new ProcessEngineBuilder()
-  .configureFromPropertiesResource("activiti.properties")
-  .enableJPA(entityManagerFactory, true, true)
-  .buildProcessEngine();
-        </programlisting>
-        This method accepts the following parameters:
-        <itemizedlist>
-          <listitem>
-            <para>
-              <emphasis role="bold"><literal>entityManagerFactory: </literal></emphasis>An instance of <literal>javax.persistence.EntityManagerFactory</literal>
-              that will be used to load the Entities and flushing the updates.
-            </para>
-          </listitem>
-           <listitem>
-            <para>
-              <emphasis role="bold"><literal>handleTransaction: </literal></emphasis>Flag indicating that the engine should begin and commit/rollback the transaction
-              on the used <literal>EntityManager</literal> instances. Set to false when <literal>Java Transaction API (JTA)</literal> is used.
-            </para>
-          </listitem>
-          <listitem>
-            <para>
-              <emphasis role="bold"><literal>closeEntityManager: </literal></emphasis>Flag indicating that the engine should close the <literal>EntityManager</literal> instance
-              that was obtained from the <literal>EntityManagerFactory</literal>. Set to false when the <literal>EntityManager</literal> is container-managed
-              (e.g. when using an Extended Persistence Context which isn't scoped to a single transaction').
-            </para>
-          </listitem>
-        </itemizedlist>
-      </para>
-    </section>
-    <section id="jpaconfigurationspring">
-      <title>JPA using Spring</title>
-      <para>
-        The <literal>EntityManagerFactory</literal> should be set using the <literal>ProcessEngineFactoryBean</literal>, which is described in <xref linkend="springintegration"/>
-        As an example, we use OpenJPA as persistence-provider using a H2 datasource. The example below is only an extract from a spring configuration-file and only contains relevant beans.
+&lt;bean id=&quot;processEngineConfiguration&quot; class=&quot;org.activiti.engine.impl.cfg.StandaloneInMemProcessEngineConfiguration&quot;&gt;
+  
+    &lt;!-- Database configurations --&gt;
+    &lt;property name=&quot;databaseSchemaUpdate&quot; value=&quot;true&quot; /&gt;
+    &lt;property name=&quot;jdbcUrl&quot; value=&quot;jdbc:h2:mem:JpaVariableTest;DB_CLOSE_DELAY=1000&quot; /&gt;
+
+    <emphasis role="bold">&lt;property name=&quot;jpaPersistenceUnitName&quot; value=&quot;activiti-jpa-pu&quot; /&gt;
+    &lt;property name=&quot;jpaHandleTransaction&quot; value=&quot;true&quot; /&gt;
+    &lt;property name=&quot;jpaCloseEntityManager&quot; value=&quot;true&quot; /&gt;</emphasis>
+    
+    &lt;!-- job executor configurations --&gt;
+    &lt;property name=&quot;jobExecutorActivate&quot; value=&quot;false&quot; /&gt;
+    
+    &lt;!-- mail server configurations --&gt;
+    &lt;property name=&quot;mailServerPort&quot; value=&quot;5025&quot; /&gt;    
+&lt;/bean&gt;
+        </programlisting>  
+         The next example configuration below provides a <literal>EntityManagerFactory</literal> which we define ourselves (in this case, an open-jpa entity manager). 
+         Note that the snippet only contains the beans that are relevant for the example, the others are ommited. Full working example with open-jpa entitymanager can be found in the activiti-spring-examples (<literal>/activiti-spring/src/test/java/org/activiti/spring/test/jpa/JPASpringTest.java</literal>)
         <programlisting>
 &lt;bean id=&quot;entityManagerFactory&quot; class=&quot;org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean&quot;&gt;
-  &lt;property name=&quot;dataSource&quot; ref=&quot;dataSource&quot;/&gt;
+  &lt;property name=&quot;persistenceUnitManager&quot; ref=&quot;pum&quot;/&gt;
   &lt;property name=&quot;jpaVendorAdapter&quot;&gt;
     &lt;bean class=&quot;org.springframework.orm.jpa.vendor.OpenJpaVendorAdapter&quot;&gt;
       &lt;property name=&quot;databasePlatform&quot; value=&quot;org.apache.openjpa.jdbc.sql.H2Dictionary&quot; /&gt;
     &lt;/bean&gt;
   &lt;/property&gt;
 &lt;/bean&gt;
-  
-&lt;bean id=&quot;processEngine&quot; class=&quot;org.activiti.spring.ProcessEngineFactoryBean&quot;&gt;
-  &lt;property name=&quot;dataBaseType&quot; value=&quot;h2&quot; /&gt;
+
+&lt;bean id=&quot;processEngineConfiguration&quot; class=&quot;org.activiti.spring.SpringProcessEngineConfiguration&quot;&gt;
+  &lt;property name=&quot;databaseType&quot; value=&quot;h2&quot; /&gt;
   &lt;property name=&quot;dataSource&quot; ref=&quot;dataSource&quot; /&gt;
   &lt;property name=&quot;transactionManager&quot; ref=&quot;transactionManager&quot; /&gt;
-  &lt;property name=&quot;dbSchemaStrategy&quot; value=&quot;create-drop&quot; /&gt;
-  &lt;property name=&quot;mailServerHost&quot; value=&quot;localhost&quot; /&gt;
-  &lt;property name=&quot;mailServerPort&quot; value=&quot;5025&quot; /&gt;
-  &lt;property name=&quot;jpaEntityManagerFactory&quot; ref=&quot;entityManagerFactory&quot; /&gt;
+  &lt;property name=&quot;databaseSchemaUpdate&quot; value=&quot;true&quot; /&gt;
+  <emphasis role="bold">&lt;property name=&quot;jpaEntityManagerFactory&quot; ref=&quot;entityManagerFactory&quot; /&gt;
   &lt;property name=&quot;jpaHandleTransaction&quot; value=&quot;true&quot; /&gt;
-  &lt;property name=&quot;jpaCloseEntityManager&quot; value=&quot;true&quot; /&gt;
+  &lt;property name=&quot;jpaCloseEntityManager&quot; value=&quot;true&quot; /&gt;</emphasis>
+  &lt;property name=&quot;jobExecutorActivate&quot; value=&quot;false&quot; /&gt;
 &lt;/bean&gt;
-        </programlisting>  
+        </programlisting>
+        Configuration properties:
         <itemizedlist>
           <listitem>
             <para>
+              <emphasis role="bold"><literal>jpaPersistenceUnitName: </literal></emphasis>The name of the persistence-unit to use. (Make sure the persistence-unit is available on the classpath. According to the spec, the default
+              location is <literal>/META-INF/persistence.xml</literal>). Use either <literal>jpaEntityManagerFactory</literal> or <literal>jpaPersistenceUnitName</literal>.
+            </para>
+          </listitem>
+          <listitem>
+            <para>
               <emphasis role="bold"><literal>jpaEntityManagerFactory: </literal></emphasis>An reference to a bean implementing <literal>javax.persistence.EntityManagerFactory</literal>
-              that will be used to load the Entities and flushing the updates.
+              that will be used to load the Entities and flushing the updates. Use either <literal>jpaEntityManagerFactory</literal> or <literal>jpaPersistenceUnitName</literal>.
             </para>
           </listitem>
            <listitem>
@@ -120,13 +109,12 @@ ProcessEngine engine = new ProcessEngineBuilder()
           <listitem>
             <para>
               <emphasis role="bold"><literal>jpaCloseEntityManager: </literal></emphasis>Flag indicating that the engine should close the <literal>EntityManager</literal> instance
-              that was obtained from the <literal>jpaCloseEntityManager</literal>. Set to false when the <literal>EntityManager</literal> is container-managed
+              that was obtained from the <literal>EntityManagerFactory</literal>. Set to false when the <literal>EntityManager</literal> is container-managed
               (e.g. when using an Extended Persistence Context which isn't scoped to a single transaction').
             </para>
           </listitem>
         </itemizedlist>
       </para>
-    </section>
   </section>
   <section>
     <title>Usage</title>
@@ -138,9 +126,6 @@ ProcessEngine engine = new ProcessEngineBuilder()
       <para>
         First of all, we create a <literal>EntityManagerFactory</literal> for our persistence-unit, which is based on <literal>META-INF/persistence.xml</literal>. This contains classes which should be included in 
         the persistence unit and some vendor-specific configuration.
-      </para>
-      <para>
-        The <literal>EntityManagagerFactory</literal> is set on the engine to enable JPA support. Please note that this is done using a shortcut for testing purposes, and should actually be set properly using one of the methods described in <xref linkend="jpaconfiguration"/>.
       </para>
       <para>
         We are using a simple entity in the test, having an id and <literal>String</literal> value property, which is also persisted. Before running the test, we create an entity and save this.
