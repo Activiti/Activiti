@@ -373,6 +373,10 @@
 JAVA_OPTS=$JAVA_OPTS" @tomcat.java.opts@"
 ]]></replacevalue>
     </replace>
+    <replace file="${tomcat.home}/conf/server.xml">
+      <replacetoken><![CDATA[port="8080"]]></replacetoken>
+      <replacevalue><![CDATA[port="8080" URIEncoding="UTF-8"]]></replacevalue>
+    </replace>
     <replace file="${tomcat.home}/bin/catalina.sh" token="@tomcat.java.opts@" value="${tomcat.java.opts}" />
     <chmod perm="a+x" os="Linux, Mac OS X">
       <fileset dir="${tomcat.home}/bin">
@@ -388,7 +392,11 @@ JAVA_OPTS=$JAVA_OPTS" @tomcat.java.opts@"
 
 set JAVA_OPTS=%JAVA_OPTS% @tomcat.java.opts@
 ]]></replacevalue>
-    </replace>
+    </replace> 
+    <replace file="${tomcat.home}/conf/server.xml">
+      <replacetoken><![CDATA[port="8080"]]></replacetoken>
+      <replacevalue><![CDATA[port="8080" URIEncoding="UTF-8"]]></replacevalue>
+    </replace>    
     <replace file="${tomcat.home}/bin/catalina.bat" token="@tomcat.java.opts@" value="${tomcat.java.opts}"/>
   </target>
 
