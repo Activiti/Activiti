@@ -16,7 +16,6 @@ package org.activiti.engine.history;
 
 import java.util.Date;
 
-import org.activiti.engine.FormService;
 import org.activiti.engine.IdentityService;
 import org.activiti.engine.runtime.ProcessInstance;
 
@@ -47,10 +46,10 @@ public interface HistoricProcessInstance {
   /** Reference to the activity in which this process instance ended. */
   String getEndActivityId();
   
-  /** The authenticated user when a form was submitted with {@link FormService#submitStartFormData(String, java.util.Map)}. 
+  /** The authenticated user that started this process instance. 
    * @see IdentityService#setAuthenticatedUserId(String) */
-  String getStartFormUserId();
+  String getStartUserId();
   
-  /** The start activity used when submitting the start form. */
-  String getStartFormActivityId();
+  /** The start activity. */
+  String getStartActivityId();
 }

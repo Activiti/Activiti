@@ -15,6 +15,7 @@ package org.activiti.engine.test.api.history;
 
 import java.util.List;
 
+import org.activiti.engine.history.HistoricProcessInstance;
 import org.activiti.engine.impl.test.ActivitiInternalTestCase;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
@@ -29,7 +30,7 @@ public class HistoryServiceTest extends ActivitiInternalTestCase {
   public void testHistoricProcessInstanceQuery() {
     // With a clean ProcessEngine, no instances should be available
     assertTrue(historyService.createHistoricProcessInstanceQuery().count() == 0);
-    final ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("oneTaskProcess");
+    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("oneTaskProcess");
     assertTrue(historyService.createHistoricProcessInstanceQuery().count() == 1);
     
     // Complete the task and check if the size is count 1
@@ -38,5 +39,23 @@ public class HistoryServiceTest extends ActivitiInternalTestCase {
     taskService.complete(tasks.get(0).getId());
     assertTrue(historyService.createHistoricProcessInstanceQuery().count() == 1);
         
+  }
+
+  @Deployment(resources = {"org/activiti/engine/test/api/oneTaskProcess.bpmn20.xml"})
+  public void testHistoricProcessInstanceUserIdAndActivityId() {
+    // With a clean ProcessEngine, no instances should be available
+    identityService.setAuthenticatedUserId("johndoe");
+    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("oneTaskProcess");
+    HistoricProcessInstance historicProcessInstance = historyService.createHistoricProcessInstanceQuery().singleResult();
+    assertEquals("johndoe", historicProcessInstance.getStartUserId());
+    assertEquals("theStart", historicProcessInstance.getStartActivityId());
+    
+    List<Task> tasks = taskService.createTaskQuery().processInstanceId(processInstance.getId()).list();
+    assertEquals(1, tasks.size());
+    taskService.complete(tasks.get(0).getId());
+    
+    historicProcessInstance = historyService.createHistoricProcessInstanceQuery().singleResult();
+    assertEquals("theEnd", historicProcessInstance.getEndActivityId());
+    
   }
 }

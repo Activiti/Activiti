@@ -19,6 +19,7 @@ import org.activiti.engine.impl.history.HistoricProcessInstanceEntity;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.pvm.delegate.ExecutionListener;
 import org.activiti.engine.impl.pvm.delegate.ExecutionListenerExecution;
+import org.activiti.engine.impl.runtime.ExecutionEntity;
 import org.activiti.engine.impl.util.ClockUtil;
 
 
@@ -37,5 +38,6 @@ public class ProcessInstanceEndHandler implements ExecutionListener {
     long durationInMillis = endTime.getTime() - historicProcessInstance.getStartTime().getTime();
     historicProcessInstance.setEndTime(endTime);
     historicProcessInstance.setDurationInMillis(durationInMillis);
+    historicProcessInstance.setEndActivityId(((ExecutionEntity)execution).getActivityId());
   }
 }

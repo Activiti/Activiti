@@ -93,7 +93,7 @@
     <para>If you've set the authenticated user before calling the submit methods with
     <literal>IdentityService.setAuthenticatedUserId(String)</literal> then that authenticated user 
     who submitted the form will be accessible in the history as well with
-    <literal>HistoricProcessInstance.getStartFormUserId()</literal> for start forms and 
+    <literal>HistoricProcessInstance.getStartUserId()</literal> for start forms and 
     <literal>HistoricActivityInstance.getAssignee()</literal> for task forms.
     </para>
     

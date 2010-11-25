@@ -46,7 +46,6 @@ public class HistoryParseListener implements BpmnParseListener {
   
   public void parseProcess(Element processElement, ProcessDefinitionEntity processDefinition) {
     if (activityHistoryEnabled(processDefinition)) {
-      processDefinition.addExecutionListener(ExecutionListener.EVENTNAME_START, new ProcessInstanceStartHandler());
       processDefinition.addExecutionListener(ExecutionListener.EVENTNAME_END, new ProcessInstanceEndHandler());
     }
   }

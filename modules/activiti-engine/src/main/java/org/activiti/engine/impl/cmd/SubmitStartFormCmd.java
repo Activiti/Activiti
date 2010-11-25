@@ -58,11 +58,6 @@ public class SubmitStartFormCmd implements Command<ProcessInstance> {
       DbSqlSession dbSqlSession = commandContext.getSession(DbSqlSession.class);
 
       if (historyLevel>=ProcessEngineConfiguration.HISTORYLEVEL_AUDIT) {
-        String authenticatedUserId = Authentication.getAuthenticatedUserId();
-        HistoricProcessInstanceEntity historicProcessInstance = dbSqlSession.selectById(HistoricProcessInstanceEntity.class, processInstance.getId());
-        historicProcessInstance.setStartFormUserId(authenticatedUserId);
-        historicProcessInstance.setStartFormActivityId(processInstance.getActivityId());
-        
         for (String propertyId: properties.keySet()) {
           String propertyValue = properties.get(propertyId);
           HistoricFormPropertyEntity historicFormProperty = new HistoricFormPropertyEntity(processInstance, propertyId, propertyValue);

@@ -17,6 +17,7 @@ package org.activiti.engine.impl.history;
 import java.util.Map;
 
 import org.activiti.engine.history.HistoricProcessInstance;
+import org.activiti.engine.impl.identity.Authentication;
 import org.activiti.engine.impl.runtime.ExecutionEntity;
 import org.activiti.engine.impl.util.ClockUtil;
 
@@ -28,8 +29,8 @@ public class HistoricProcessInstanceEntity extends HistoricScopeInstanceEntity i
 
   protected String endActivityId;
   protected String businessKey;
-  protected String startFormUserId;
-  protected String startFormActivityId;
+  protected String startUserId;
+  protected String startActivityId;
 
   public HistoricProcessInstanceEntity() {
   }
@@ -40,6 +41,8 @@ public class HistoricProcessInstanceEntity extends HistoricScopeInstanceEntity i
     businessKey = processInstance.getBusinessKey();
     processDefinitionId = processInstance.getProcessDefinitionId();
     startTime = ClockUtil.getCurrentTime();
+    startUserId = Authentication.getAuthenticatedUserId();
+    startActivityId = processInstance.getActivityId();
   }
 
   @SuppressWarnings("unchecked")
@@ -65,16 +68,16 @@ public class HistoricProcessInstanceEntity extends HistoricScopeInstanceEntity i
   public void setEndActivityId(String endActivityId) {
     this.endActivityId = endActivityId;
   }
-  public String getStartFormUserId() {
-    return startFormUserId;
+  public String getStartUserId() {
+    return startUserId;
   }
-  public void setStartFormUserId(String startFormUserId) {
-    this.startFormUserId = startFormUserId;
+  public void setStartUserId(String startUserId) {
+    this.startUserId = startUserId;
   }
-  public String getStartFormActivityId() {
-    return startFormActivityId;
+  public String getStartActivityId() {
+    return startActivityId;
   }
-  public void setStartFormActivityId(String startFormActivityId) {
-    this.startFormActivityId = startFormActivityId;
+  public void setStartActivityId(String startUserId) {
+    this.startActivityId = startUserId;
   }
 }
