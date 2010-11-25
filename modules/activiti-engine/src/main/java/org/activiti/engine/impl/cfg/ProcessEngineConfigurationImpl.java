@@ -22,7 +22,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.persistence.Persistence;
 import javax.sql.DataSource;
 
 import org.activiti.engine.ActivitiException;
@@ -614,7 +613,7 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
   
   protected void initJpa() {
     if(jpaPersistenceUnitName!=null) {
-      jpaEntityManagerFactory = Persistence.createEntityManagerFactory(jpaPersistenceUnitName);
+      jpaEntityManagerFactory = JpaHelper.createEntityManagerFactory(jpaPersistenceUnitName);
     }
     if(jpaEntityManagerFactory!=null) {
       sessionFactories.put(EntityManagerSession.class, new EntityManagerSessionFactory(jpaEntityManagerFactory, jpaHandleTransaction, jpaCloseEntityManager));
