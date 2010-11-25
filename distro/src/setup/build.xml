@@ -486,30 +486,6 @@ set JAVA_OPTS=%JAVA_OPTS% @tomcat.java.opts@
     <antcall target="internal.download.activiti.modeler" /> <!-- Can't use depends for this, due to http://ant.apache.org/faq.html#stop-dependency -->
     
     <mkdir dir="${activiti.modeler.repository.home}"/>
-    
-    <!--ACT-177 Workaround for the Modeler not supporting relative paths -->
-        
-    <!-- covert slashes on windows to unix style slashes -->
-    <pathconvert property="model.repo.path" targetos="unix">
-      <map from="${basedir}/" to='' />
-      <map from="${basedir}\\" to='' />
-      <path location="${activiti.modeler.repository.home}"/>
-    </pathconvert>
-        
-    <!-- replace fileSystemRootDirectory with actual path -->
-    <replaceregexp file="files/cfg.modeler/configuration.properties" flags="s"
-                  match="model_repo"  replace="${model.repo.path}"/>
-        
-    <!-- Touch is required, see http://stackoverflow.com/questions/2210041/updating-files-inside-an-existing-war-file -->
-    <tstamp> <format property="touch.time" pattern="MM/dd/yyyy hh:mm aa"/>  </tstamp>
-    <touch datetime="${touch.time}" file="files/cfg.modeler/configuration.properties"/>
-
-    <war destfile="${downloads.dir}/activiti-modeler-${activiti.version}.war" update="true">
-      <zipfileset file="files/cfg.modeler/configuration.properties"  prefix="WEB-INF/classes/" />
-    </war>
-        
-    <!-- end of ACT-177 -->
-
     <copy file="${downloads.dir}/activiti-modeler-${activiti.version}.war"
           tofile="${tomcat.home}/webapps/activiti-modeler.war"/>
   </target>
