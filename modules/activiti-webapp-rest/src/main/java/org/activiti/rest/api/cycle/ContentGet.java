@@ -15,9 +15,13 @@ package org.activiti.rest.api.cycle;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.math.BigInteger;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.Date;
 import java.util.List;
 
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.activiti.cycle.ContentRepresentation;
@@ -30,6 +34,7 @@ import org.activiti.cycle.impl.transform.TransformationException;
 import org.activiti.engine.impl.util.IoUtil;
 import org.activiti.rest.util.ActivitiRequest;
 import org.activiti.rest.util.ActivitiStreamingWebScript;
+import org.springframework.extensions.webscripts.WebScriptException;
 import org.springframework.extensions.webscripts.WebScriptResponse;
 
 /**
@@ -45,7 +50,7 @@ public class ContentGet extends ActivitiStreamingWebScript {
 
     HttpSession session = req.getHttpServletRequest().getSession(true);
 
-    // Retrieve the list of configured connectors for the current user 
+    // Retrieve the list of configured connectors for the current user
     List<RepositoryConnector> connectors = CycleServiceImpl.getConfiguredRepositoryConnectors(cuid, session);
 
     // Initialize the cycleService
@@ -96,13 +101,40 @@ public class ContentGet extends ActivitiStreamingWebScript {
     InputStream contentInputStream = null;
     try {
       contentInputStream = this.cycleService.getContent(artifact.getConnectorId(), artifact.getNodeId(), contentRepresentation.getId()).asInputStream();
-      streamResponse(res, contentInputStream, new Date(0),
-      // TODO: what is a good way to determine the etag? Using a fake one...
-              "W/\"647-1281077702000\"", attach, attachmentFileName, contentType);
+
+      // Calculate an etag for the content using the MD5 algorithm
+      MessageDigest md = MessageDigest.getInstance("MD5");
+      byte[] messageDigest = md.digest(this.cycleService.getContent(artifact.getConnectorId(), artifact.getNodeId(), contentRepresentation.getId())
+              .asByteArray());
+      BigInteger number = new BigInteger(1, messageDigest);
+      String etag = number.toString(16);
+      while (etag.length() < 32) {
+        etag = "0" + etag;
+      }
+      String requestEtag = req.getHttpServletRequest().getHeader("If-None-Match");
+      if (requestEtag != null) {
+        // For some reason the etag (If-None-Match) parameter is always returned
+        // as a quoted string, remove the quotes before comparing it with the
+        // newly calculated etag
+        requestEtag = requestEtag.replace("\"", "");
+      }
+
+      // Check whether the file has been modified since it was last fetched by
+      // the client
+      if (etag.equals(requestEtag)) {
+        throw new WebScriptException(HttpServletResponse.SC_NOT_MODIFIED, "");
+      } else {
+        streamResponse(res, contentInputStream, new Date(0), etag, attach, attachmentFileName, contentType);
+      }
+
     } catch (TransformationException e) {
-      streamResponse(res, new ByteArrayInputStream(e.getRenderContent().getBytes()), new Date(0),
-      // TODO: what is a good way to determine the etag? Using a fake one...
-              "W/\"647-1281077702000\"", false, null, CycleDefaultMimeType.HTML.getContentType());
+      // Stream the contents of the exception as HTML, this is a workaround to
+      // display exceptions that occur during content transformations
+      streamResponse(res, new ByteArrayInputStream(e.getRenderContent().getBytes()), new Date(0), "", false, null, CycleDefaultMimeType.HTML.getContentType());
+    } catch (NoSuchAlgorithmException e) {
+      // This should never be reached... MessageDigest throws an exception if it
+      // is being instantiated with a wrong algorithm, but we know that MD5
+      // exists.
     } finally {
       IoUtil.closeSilently(contentInputStream);
     }

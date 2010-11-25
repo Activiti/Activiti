@@ -12,11 +12,7 @@
  */
 package org.activiti.rest.api.cycle;
 
-import java.io.PrintWriter;
-import java.io.StringWriter;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import org.activiti.cycle.ContentRepresentation;
 import org.activiti.cycle.CycleDefaultMimeType;
@@ -32,8 +28,6 @@ import org.springframework.extensions.webscripts.Status;
  * @author Nils Preusker (nils.preusker@camunda.com)
  */
 public class ContentRepresentationGet extends ActivitiCycleWebScript {
-
-  private static Logger log = Logger.getLogger(ContentRepresentationGet.class.getName());
 
   @Override
   protected void execute(ActivitiRequest req, Status status, Cache cache, Map<String, Object> model) {
@@ -72,13 +66,6 @@ public class ContentRepresentationGet extends ActivitiCycleWebScript {
       model.put("renderInfo", RenderInfo.HTML);
       model.put("contentRepresentationId", representationId);
       model.put("contentType", CycleDefaultMimeType.HTML.getContentType());
-    } catch (Exception ex) {
-      log.log(Level.WARNING, "Exception while loading content representation", ex);
-      // TODO:Better concept how this is handled in the GUI
-      StringWriter sw = new StringWriter();
-      ex.printStackTrace(new PrintWriter(sw));
-      String stackTrace = "Exception while accessing content. Details:\n\n" + sw.toString();
-      model.put("exception", stackTrace);
-    }
+    } 
   }
 }
