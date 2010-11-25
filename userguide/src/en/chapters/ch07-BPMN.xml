@@ -9,7 +9,7 @@
 		<title>What is BPMN?</title>
 
 		<para>
-		  See our <ulink url="http://activiti.org/faq.html#WhatIsBbpm20">FAQ entry on BPMN 2.0</ulink>
+		  See our <ulink url="http://activiti.org/faq.html#WhatIsBpmn20">FAQ entry on BPMN 2.0</ulink>.
 		</para>
 
 	</section>
@@ -20,7 +20,7 @@
 
 		<para>
 		  Examples for the BPMN 2.0 constructs described in the following sections can be 
-		  found in the <emphasis>docs/examples</emphasis> folder. 
+		  found in the <emphasis>workspace/activiti-x-examples</emphasis> folders of the Activiti distribution. 
 	  </para>
 	  
 	  <para>	  
@@ -35,11 +35,11 @@
 
 		<para>
       To create a new BPMN 2.0 process definition, it's best to have your Eclipse
-      <link linkend="examples">properly set up</link>.		  
+      <link linkend="eclipsesetup">properly set up</link>.		  
 		</para>
 		
 		<para>
-		  Create a new XML file (<emphasis>New->Other->XML-XML</emphasis>) and give it a name.
+		  Create a new XML file (<emphasis>rightclick on any project and select New->Other->XML-XML File</emphasis>) and give it a name.
 		  Make sure that the file <emphasis role="bold">ends with .bpmn20.xml</emphasis>, since
 		  otherwise the engine won't pick up this file for deployment.
 		  <mediaobject><imageobject><imagedata align="center" fileref="images/new.bpmn.procdef.png"/></imageobject></mediaobject>
@@ -51,15 +51,15 @@
 		  process definition in each file, since this simplifies maintenance later in the development process).
 		  An empty process definition looks as follows. Note that the minimal definitions element
 		  only needs the <emphasis>xmlns</emphasis> and <emphasis>targetNamespace</emphasis> declaration.
+		  The targetNamespace can be anything, and is useful for categorizing process definitions.
 		  <programlisting>
 &lt;definitions 
   xmlns=&quot;http://www.omg.org/spec/BPMN/20100524/MODEL&quot;
-  xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;
   xmlns:activiti=&quot;http://activiti.org/bpmn&quot;
-  targetNamespace=&quot;org.activiti.examples&quot;&gt;
+  targetNamespace=&quot;Examples&quot;&gt;
 
   &lt;process id=&quot;myProcess&quot; name=&quot;My First Process&quot;&gt;
-
+    ..
   &lt;/process&gt;
 
 &lt;/definitions&gt;</programlisting>
@@ -74,7 +74,7 @@
 		        and maps to the <emphasis role="bold">key</emphasis> property of an Activiti <emphasis>
 		        ProcessDefinition</emphasis> object.
 		        This id can then be used to start a new process instance of the process definition, through the 
-		        <emphasis>startProcessInstanceByKey</emphasis> method on the <emphasis>ProcessService</emphasis>.
+		        <emphasis>startProcessInstanceByKey</emphasis> method on the <literal>RuntimeService</literal>.
 		        This method will always take the <emphasis role="bold">latest deployed version</emphasis>
 		        of the process definition.
 		        <programlisting>ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("myProcess");</programlisting>
@@ -106,7 +106,7 @@
     <title>Getting started: 10 minute tutorial</title>
     
     <para>
-      In this section we will cover a (simple) business process that we will use to introduce
+      In this section we will cover a (very simple) business process that we will use to introduce
       some basic Activiti concepts and the Activiti API. 
     </para>
     
@@ -115,7 +115,7 @@
       <title>Use case</title>
       
       <para>
-				The use case is very simple: we have a company, let's call it BPMCorp.
+				The use case is straightfoward: we have a company, let's call it BPMCorp.
 				In BPMCorp, a financial report needs to be written every month for the
 				company shareholders. This is the responsibility of the accountancy
 				department. When the report is finished, one of the members of the
@@ -254,7 +254,7 @@
             </para>
           </listitem>
         </itemizedlist>
-        More information on deployment can be found <link linkend="chDeployment">in the dedicated deployment section</link>.
+        More information on deployment can be found <link linkend="chDeployment">in the dedicated section on deployment</link>.
       </para>
       
       <para>
@@ -281,7 +281,7 @@
       
       <para>
         After the task is created, the <emphasis>startProcessInstanceByKey</emphasis> will return
-        since the user task activity is a so-called <emphasis>'wait state'</emphasis>, which
+        since the user task activity is a so-called <emphasis>wait state</emphasis>, which
         means that the engine will continue the process instance only when some external trigger is 
         given. In this case, the task is assigned to a group, which means that the every
         member of the group is a <emphasis role="bold">candidate</emphasis> to perform the task.
@@ -295,7 +295,7 @@
       
       <para>
         We can now retrieve this newly created task through the <emphasis>taskService</emphasis>.
-        <programlisting>List&lt;Task&gt; tasks = taskService.findUnassignedTasks(&quot;fozzie&quot;);</programlisting>.
+        <programlisting>List&lt;Task&gt; tasks = taskService.createTaskQuery().taskCandidateUser(&quot;fozzie&quot;).list();</programlisting>
         Note that the user we pass to this operation needs to be a member of 
         the <emphasis>accountancy</emphasis> group, since that was declared in the process definition:
         <programlisting>
@@ -305,10 +305,8 @@
   &lt;/resourceAssignmentExpression&gt;
 &lt;/potentialOwner&gt;</programlisting>
      
-        We could also use the task query API to get the same results:
-        <programlisting>List&lt;Task&gt; tasks = taskService.createTaskQuery().candidateUser(&quot;fozzie&quot;).list();</programlisting>
-        or
-         <programlisting>List&lt;Task&gt; tasks = taskService.createTaskQuery().candidateGroup(&quot;accountancy&quot;).list();</programlisting>
+        We could also use the task query API to get the same results using the name of the group:
+         <programlisting>List&lt;Task&gt; tasks = taskService.createTaskQuery().taskCandidateGroup(&quot;accountancy&quot;).list();</programlisting>
       </para>
       
       <para>
@@ -343,7 +341,7 @@
         <programlisting>taskService.claim(task.getId(), &quot;fozzie&quot;);</programlisting>
         The task is now in the <emphasis role="bold">personal task list of the one
         that claimed the task</emphasis>.
-        <programlisting>List&lt;Task&gt; tasks = taskService.findAssignedTasks(&quot;fozzie&quot;);</programlisting>
+        <programlisting>List&lt;Task&gt; tasks = taskService.createTaskQuery().taskAssignee(&quot;fozzie&quot;);</programlisting>
       </para>
       
       <para>
@@ -369,7 +367,8 @@
       
       <para>
         For the Activiti engine, this is an external signal that the process instance execution
-        must be continued. The single outgoing transition out of the task is followed, bringing
+        must be continued. The task itself is removed from the runtime data.
+        The single outgoing transition out of the task is followed, bringing
         the execution in the second task (<emphasis>'verification of the report'</emphasis>). 
         The same mechanism as described for the first task will now
         happen, with the small difference that the task will be assigned to the 
@@ -433,8 +432,8 @@
           <listitem>
             <para>
               declaring and using <emphasis role="bold">variables</emphasis>,
-              such that we can store or reference the report such that it can 
-              be visualized while verifying it.
+              such that we can store or reference the report so that it can 
+              be visualized in the form.
             </para>
           </listitem>
           <listitem>
@@ -467,7 +466,7 @@
 	      The BPMN 2.0 standard is a good thing for all parties involved. End-users don't suffer
 	      from a vendor lock-in that comes by depending on a proprietary solution. Frameworks,
 	      and particularly open-source frameworks such as Activiti, can implement a solution
-	      that has the same (and often better implemented) features as those of a big vendor. 
+	      that has the same (and often better implemented ;-) features as those of a big vendor. 
 	      Due to the BPMN 2.0 standard, the transition from such a big vendor solution towards
 	      Activiti is an easy and smooth path.  
 	    </para>
@@ -580,8 +579,8 @@
 	   <itemizedlist>
        <listitem>
          <para>
-           <emphasis role="bold">form</emphasis>: references to a form template that users have to fill out to 
-           supply the information to start a new process instance.  More information can be found in 
+           <emphasis role="bold">formKey</emphasis>: references to a form template that users have to fill in
+           when starting a new process instance.  More information can be found in 
            <link linkend="forms">the forms section</link> Example:
            <programlisting>&lt;startEvent id=&quot;request&quot; activiti:formKey=&quot;org/activiti/examples/taskforms/request.form&quot; /&gt;</programlisting>
          </para>
@@ -627,8 +626,7 @@ ProcessInstance processInstance = runtimeService.startProcessInstanceByXXX();</p
         </para>
         
         <para>
-          <emphasis>Note: </emphasis> a subprocess (currently not yet implemented)
-          always has a none start event.
+          <emphasis>Note: </emphasis> a subprocess always has a none start event.
         </para>
        
       </section>
@@ -972,17 +970,17 @@ ProcessInstance processInstance = runtimeService.startProcessInstanceByXXX();</p
           <itemizedlist>
             <listitem>
               <para>
-                <emphasis role="bold">join:</emphasis>   
-                all concurrent executions arriving at the parallel gateway wait in the gateway
-                until an execution has arrived for each of the incoming sequence flow. Then the 
-                process continues past the joining gateway.
+                <emphasis role="bold">fork:</emphasis>
+                all outgoing sequence flow are followed in parallel, creating one concurrent
+                execution for each sequence flow.
               </para>
             </listitem>
             <listitem>
               <para>
-                <emphasis role="bold">fork:</emphasis>
-                all outgoing sequence flow are followed in parallel, creating one concurrent
-                execution for each sequence flow.
+                <emphasis role="bold">join:</emphasis>   
+                all concurrent executions arriving at the parallel gateway wait in the gateway
+                until an execution has arrived for each of the incoming sequence flow. Then the 
+                process continues past the joining gateway.
               </para>
             </listitem>
           </itemizedlist>
@@ -1054,7 +1052,8 @@ ProcessInstance processInstance = runtimeService.startProcessInstanceByXXX();</p
           <programlisting>ProcessInstance pi = runtimeService.startProcessInstanceByKey("forkJoin");
 TaskQuery query = taskService.createTaskQuery()
                          .processInstanceId(pi.getId())
-                         .orderAsc(TaskQuery.PROPERTY_NAME);
+                         .orderByTaskName()
+                         .asc();
 
 List&lt;Task&gt; tasks = query.list();
 assertEquals(2, tasks.size());
@@ -1124,11 +1123,8 @@ assertEquals("Ship Order", task2.getName());</programlisting>
 				
 				<para>
 			    A user task can have also a description. In fact any BPMN 2.0 element can have
-				  a description, but for the moment we've only implemented it for user tasks
-				  since it makes most sense there. A description is defined by adding
-				  the <emphasis role="bold">documentation</emphasis> element. Note that only one
-				  <emphasis>documentation</emphasis> element is supported at the moment
-				  (can be multiple according to the specification).
+				  a description. A description is defined by adding
+				  the <emphasis role="bold">documentation</emphasis> element.
 				  <programlisting>
 &lt;userTask id=&quot;theTask&quot; name=&quot;Schedule meeting&quot; &gt;
   &lt;documentation&gt;
@@ -1152,7 +1148,7 @@ assertEquals("Ship Order", task2.getName());</programlisting>
 				  <emphasis role="bold">resourceAssignmentExpression</emphasis> that actually defines
 				  the user. Currently, only <emphasis role="bold">formalExpressions</emphasis> are supported.
 				  <programlisting>
-&lt;process ...
+&lt;process ... &gt;
   
   ...
   
@@ -1174,13 +1170,7 @@ assertEquals("Ship Order", task2.getName());</programlisting>
 				
 				<para>
 				  Tasks directly assigned to users can be retrieved through the TaskService as follows:
-				  <programlisting>
-List&lt;Task&gt; tasks = taskService.findAssignedTasks(&quot;kermit&quot;);</programlisting>
-				  Or the TaskQuery API can be used:
-				  <programlisting>
-List&lt;Task&gt; tasks = taskService.createTaskQuery().assignee(&quot;kermit&quot;).list();</programlisting>
-          
-          Both code snippets will retrieve the tasks where the assignee currently is the given user.
+				  <programlisting>List&lt;Task&gt; tasks = taskService.createTaskQuery().taskAssignee(&quot;kermit&quot;).list();</programlisting>
 				</para>
 
         <para>
@@ -1190,7 +1180,7 @@ List&lt;Task&gt; tasks = taskService.createTaskQuery().assignee(&quot;kermit&quo
           required to define for each element in the formal expression to specify if it is
           a user or a group (the engine cannot guess this).
           <programlisting>
-&lt;process ...
+&lt;process ... &gt;
   
   ...
   
@@ -1207,13 +1197,14 @@ List&lt;Task&gt; tasks = taskService.createTaskQuery().assignee(&quot;kermit&quo
           Tasks defines with the <emphasis>potential owner</emphasis> construct, can be retrieved as follows
           (or a similar <emphasis>TaskQuery</emphasis> usage as for the tasks with an assignee):
           <programlisting>
- List&lt;Task&gt; tasks = taskService.findUnassignedTasks(&quot;kermit&quot;);</programlisting>
+ List&lt;Task&gt; tasks = taskService.createTaskQuery().taskCandidateUser(&quot;kermit&quot;);</programlisting>
           
           This will retrieve all tasks where kermit is a <emphasis role="bold">candidate user</emphasis>,
           i.e. the formal expression contains <emphasis>user(kermit)</emphasis>. This will also
           retrieve all tasks that are <emphasis role="bold">assigned to a group where kermit is
-          a member of</emphasis> (e.g. <emphasis>group(management)</emphasis>, if kermit is a member of that group).
-          Note that the groups of the user are resolved at runtime and these can be 
+          a member of</emphasis> (e.g. <emphasis>group(management)</emphasis>, if kermit is a member of that group
+          and the Activiti identity component is used).
+          The groups of the user are resolved at runtime and these can be 
           managed through the <emphasis>IdentityService</emphasis>.
         </para>
         
@@ -1486,7 +1477,7 @@ public class FakeLdapService {
        <title>Graphical Notation</title>
        
        <para>
-        A service task is visualized as a rounded rectangle with a small cogs icon in the top-left corner.
+        A service task is visualized as a rounded rectangle with a small gear icon in the top-left corner.
         <mediaobject><imageobject><imagedata align="center" fileref="images/bpmn.java.service.task.png"/></imageobject></mediaobject>
        </para>
      
@@ -1501,7 +1492,7 @@ public class FakeLdapService {
        </para>
        
        <itemizedlist>
-         <listitem><para>Specifying a class that implements ActivityBehavior</para></listitem>
+         <listitem><para>Specifying a class that implements JavaDelegate or ActivityBehavior</para></listitem>
          <listitem><para>Evaluating an expression that resolves to a delegation object</para></listitem>
          <listitem><para>Invoking a method expression</para></listitem>
          <listitem><para>Evaluating a value expression</para></listitem>
@@ -1514,7 +1505,7 @@ public class FakeLdapService {
 <programlisting>
 &lt;serviceTask id=&quot;javaService&quot; 
              name=&quot;My Java Service Task&quot; 
-             activiti:class=&quot;org.activiti.MyActivityBehavior&quot; /&gt;
+             activiti:class=&quot;org.activiti.MyJavaDelegate&quot; /&gt;
 </programlisting>
          See <link linkend="bpmnJavaServiceTaskImplementation">the <emphasis>implementation</emphasis> section</link>
          for more details on how to use such a class.
@@ -1539,8 +1530,6 @@ public class FakeLdapService {
 </programlisting>
          Method <literal>printMessage</literal> (without parameters) will 
          be called on the named object called <literal>printer</literal>.
-         The named objects are resolved in the execution's process variables and 
-         (if applicable) in the Spring context.
        </para>
        <para>
        	It's also possible to pass parameters with an method used in the expression.
@@ -1620,7 +1609,7 @@ public class ToUppercase implements JavaDelegate {
           This also influences the way <link linkend="serviceTaskFieldInjection">Field injection</link> is handled.
         </para>
         <para>
-          The classes that are referenced in the process definition are <emphasis role="bold">NOT
+          The classes that are referenced in the process definition (ie by using <literal>activiti:class</literal>) are <emphasis role="bold">NOT
           instantiated during deployment</emphasis>. Only when a process execution arrives 
           for the first time at the point in the process where the class is used, an instance
           of that class will be created. If the class cannot be found, an <literal>ActivitiException</literal>
@@ -1656,7 +1645,7 @@ public class ToUppercase implements JavaDelegate {
     name=&quot;Java service invocation&quot; 
     activiti:class=&quot;org.activiti.examples.bpmn.servicetask.ToUpperCaseFieldInjected&quot;&gt;
     <emphasis role="bold">&lt;extensionElements&gt;
-    &lt;activiti:field name=&quot;text&quot; stringValue=&quot;Hello World&quot; /&gt;
+      &lt;activiti:field name=&quot;text&quot; stringValue=&quot;Hello World&quot; /&gt;
   &lt;/extensionElements&gt;</emphasis>           
 &lt;/serviceTask&gt;        
           </programlisting>
@@ -1673,7 +1662,7 @@ public class ToUppercase implements JavaDelegate {
   &lt;extensionElements&gt;   
     &lt;activiti:field name=&quot;text&quot;&gt;
         <emphasis role="bold">&lt;activiti:string&gt;
-        Hello World
+          Hello World
       &lt;/activiti:string&gt;</emphasis>
     &lt;/activiti:field&gt;
   &lt;/extensionElements&gt;        
@@ -1699,7 +1688,6 @@ public class ToUppercase implements JavaDelegate {
     &lt;/activiti:field&gt;
   &lt;/ extensionElements&gt;
 &lt;/ serviceTask&gt;
-
 </programlisting>
   </para>
   <para>
@@ -1749,8 +1737,7 @@ public class ReverseStringsFieldInjected implements JavaDelegate {
 <programlisting>
 &lt;serviceTask id=&quot;aMethodExpressionServiceTask&quot;
     activiti:expression=&quot;#{myService.doSomething()}&quot;
-    activiti:resultVariableName=&quot;myVar&quot;
-/&gt;
+    activiti:resultVariableName=&quot;myVar&quot; /&gt;
 </programlisting>
              
            In the example above, the result of the service execution (the return value of the <emphasis>'doSomething()'</emphasis> method invocation on an object that is made available
@@ -1760,7 +1747,7 @@ public class ReverseStringsFieldInjected implements JavaDelegate {
      </section>
   		
 		</section>
-    
+ <!--  
 <section id="bpmnWebserviceTask">
 	<title>WebService Task</title><link linkend="experimental">
 		<emphasis role="bold">[EXPERIMENTAL]</emphasis>
@@ -1781,10 +1768,10 @@ public class ReverseStringsFieldInjected implements JavaDelegate {
 		<title>Graphical Notation</title>
 
 		<para>
-			A WebService task is visualized ... TODO
+			A WebService task is visualized the same as a Java service task.
 			<mediaobject>
 				<imageobject>
-					<imagedata align="center" fileref="images/bpmn.java.service.task.png" />
+					<imagedata align="center" fileref="images/bpmn.web.service.task.png" />
 				</imageobject>
 			</mediaobject>
 		</para>
@@ -1954,6 +1941,8 @@ public class ReverseStringsFieldInjected implements JavaDelegate {
 &lt;/dataOutputAssociation&gt;</programlisting>
 	</section>
 </section>    
+
+-->   
     
     <section id="executionListeners">
       <title>Execution listener</title>
@@ -1999,7 +1988,7 @@ public class ReverseStringsFieldInjected implements JavaDelegate {
   &lt;/process&gt;</programlisting>
         </para>
         <para>The first execution listener is notified when the process starts. The listener is an external Java-class (like <literal>ExampleExecutionListenerOne</literal>) 
-        and should implement <literal>org.activiti.engine.impl.pvm.delegate.ExecutionListener</literal>. When the event occurs (in this case <literal>end</literal> event)
+        and should implement <literal>org.activiti.engine.impl.pvm.delegate.ExecutionListener</literal> interface. When the event occurs (in this case <literal>end</literal> event)
         the method <literal>notify(ExecutionListenerExecution execution)</literal> is called.
         <programlisting>
 public class ExampleExecutionListenerOne implements <emphasis role="bold">ExecutionListener</emphasis> {
@@ -2188,7 +2177,7 @@ public class MyTaskCreateListener implements TaskListener {
 		    <para>
 		      The Activiti engine sends e-mails trough an external mail server with SMTP capabilities.
 		      To actually send e-mails, the engine needs to know how to reach the mail server.
-		      Following properties can be set in the <emphasis>activiti.properties</emphasis> 
+		      Following properties can be set in the <emphasis>activiti.cfg.xml</emphasis> 
 		      configuration file:
 		      <table>
 		        <title>Mail server configuration</title>
@@ -2202,27 +2191,27 @@ public class MyTaskCreateListener implements TaskListener {
             </thead>
             <tbody>
 		          <row>
-		            <entry>mail.smtp.host</entry>
+		            <entry>mailServerHost</entry>
 		            <entry>yes</entry>
 		            <entry>The hostname of your mail server (e.g. mail.mycorp.com)</entry>
 		          </row>
 		          <row>
-                <entry>mail.smtp.port</entry>
+                <entry>mailServerPort</entry>
                 <entry>yes, if not on the default port</entry>
                 <entry>The port for SMTP traffic on the mail server. The default is <emphasis>25</emphasis></entry>
               </row>
               <row>
-                <entry>mail.default.from</entry>
+                <entry>mailServerDefaultFrom</entry>
                 <entry>no</entry>
                 <entry>The default e-mail address of the sender of e-mails, when none is provided by the user. By default this is <emphasis>noreply@activiti.org</emphasis></entry>
               </row>
               <row>
-                <entry>mail.smtp.user</entry>
+                <entry>mailServerUsername</entry>
                 <entry>if applicable for your server</entry>
                 <entry>Some mail servers require credentials for sending e-mail.</entry>
               </row>
               <row>
-                <entry>mail.smtp.password</entry>
+                <entry>mailServerPassword</entry>
                 <entry>if applicable for your server</entry>
                 <entry>Some mail servers require credentials for sending e-mail.</entry>
               </row>
@@ -2357,7 +2346,7 @@ public class MyTaskCreateListener implements TaskListener {
 		    <para>
 		      A <emphasis>Manual Task</emphasis> defines a task that is external to the BPM engine.
 		      It is used to model work that is done by somebody, which the engine
-		      does not need to know of, nor is there a system of UI interface.
+		      does not need to know of, nor is there a system or UI interface.
 		      For the engine, a manual task is handled as a <emphasis role="bold">pass-through activity</emphasis>,
 		      automatically continuing the process from the moment process execution arrives into it.
 		    </para>
@@ -2770,19 +2759,15 @@ assertNotNull(execution);
           The process looks as follows:
 <programlisting>
 &lt;startEvent id=&quot;theStart&quot; /&gt;
-
 &lt;sequenceFlow id=&quot;flow1&quot; sourceRef=&quot;theStart&quot; targetRef=&quot;receiveOrder&quot; /&gt;
 
 &lt;manualTask id=&quot;receiveOrder&quot; name=&quot;Receive Order&quot; /&gt;
-    
 &lt;sequenceFlow id=&quot;flow2&quot; sourceRef=&quot;receiveOrder&quot; targetRef=&quot;callCheckCreditProcess&quot; /&gt;
     
 <emphasis role="bold">&lt;callActivity id=&quot;callCheckCreditProcess&quot; name=&quot;Check credit&quot; calledElement=&quot;checkCreditProcess&quot; /&gt;</emphasis>
-    
 &lt;sequenceFlow id=&quot;flow3&quot; sourceRef=&quot;callCheckCreditProcess&quot; targetRef=&quot;prepareAndShipTask&quot; /&gt;
    
 &lt;userTask id=&quot;prepareAndShipTask&quot; name=&quot;Prepare and Ship&quot; /&gt;
-    
 &lt;sequenceFlow id=&quot;flow4&quot; sourceRef=&quot;prepareAndShipTask&quot; targetRef=&quot;end&quot; /&gt;
     
 &lt;endEvent id=&quot;end&quot; /&gt;
