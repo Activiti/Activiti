@@ -25,6 +25,7 @@ import org.activiti.engine.impl.el.Expression;
 import org.activiti.engine.impl.el.ExpressionManager;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.repository.DeploymentEntity;
+import org.activiti.engine.impl.repository.ProcessDefinitionEntity;
 import org.activiti.engine.impl.runtime.ExecutionEntity;
 import org.activiti.engine.impl.util.xml.Element;
 
@@ -38,7 +39,7 @@ public class DefaultFormHandler implements FormHandler {
   protected String deploymentId;
   protected List<FormPropertyHandler> formPropertyHandlers = new ArrayList<FormPropertyHandler>();
   
-  public void parseConfiguration(Element activityElement, DeploymentEntity deployment, BpmnParse bpmnParse) {
+  public void parseConfiguration(Element activityElement, DeploymentEntity deployment, ProcessDefinitionEntity processDefinition, BpmnParse bpmnParse) {
     this.deploymentId = deployment.getId();
     this.formKey = activityElement.attributeNS(BpmnParser.ACTIVITI_BPMN_EXTENSIONS_NS, "formKey");
     Element extensionElement = activityElement.element("extensionElements");

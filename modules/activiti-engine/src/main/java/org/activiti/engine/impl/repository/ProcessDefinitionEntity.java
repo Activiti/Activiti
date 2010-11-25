@@ -46,6 +46,7 @@ public class ProcessDefinitionEntity extends ProcessDefinitionImpl implements Pr
   protected StartFormHandler startFormHandler;
   protected String diagramResourceName;
   protected Map<String, TaskDefinition> taskDefinitions;
+  protected boolean hasStartFormKey;
   
   public ProcessDefinitionEntity() {
     super(null);
@@ -184,5 +185,21 @@ public class ProcessDefinitionEntity extends ProcessDefinitionImpl implements Pr
 
   public void setDiagramResourceName(String diagramResourceName) {
     this.diagramResourceName = diagramResourceName;
+  }
+
+  public boolean hasStartFormKey() {
+    return hasStartFormKey;
+  }
+  
+  public boolean getHasStartFormKey() {
+    return hasStartFormKey;
+  }
+  
+  public void setStartFormKey(boolean hasStartFormKey) {
+    this.hasStartFormKey = hasStartFormKey;
+  }
+
+  public void setHasStartFormKey(boolean hasStartFormKey) {
+    this.hasStartFormKey = hasStartFormKey;
   }
 }

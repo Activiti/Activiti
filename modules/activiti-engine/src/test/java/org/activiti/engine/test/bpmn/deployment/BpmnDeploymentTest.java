@@ -13,10 +13,7 @@
 
 package org.activiti.engine.test.bpmn.deployment;
 
-import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.util.List;
 
 import org.activiti.engine.ActivitiException;
@@ -46,6 +43,8 @@ public class BpmnDeploymentTest extends ActivitiInternalTestCase {
     
     ProcessDefinition processDefinition = repositoryService.createProcessDefinitionQuery().singleResult();
     assertEquals(bpmnResourceName, processDefinition.getResourceName());
+    assertNull(processDefinition.getDiagramResourceName());
+    assertFalse(processDefinition.hasStartFormKey());
     
     ReadOnlyProcessDefinition readOnlyProcessDefinition = ((RepositoryServiceImpl)repositoryService).getDeployedProcessDefinition(processDefinition.getId());
     assertNull(readOnlyProcessDefinition.getDiagramResourceName());
@@ -85,8 +84,12 @@ public class BpmnDeploymentTest extends ActivitiInternalTestCase {
     "org/activiti/engine/test/bpmn/deployment/BpmnDeploymentTest.testProcessDiagramResource.jpg"
   })
   public void testProcessDiagramResource() {
-    String processDefinitionId = repositoryService.createProcessDefinitionQuery().singleResult().getId();
-    ReadOnlyProcessDefinition processDefinition = ((RepositoryServiceImpl)repositoryService).getDeployedProcessDefinition(processDefinitionId);
+    ProcessDefinition processDefinition = repositoryService.createProcessDefinitionQuery().singleResult();
+    
+    assertEquals("org/activiti/engine/test/bpmn/deployment/BpmnDeploymentTest.testProcessDiagramResource.bpmn20.xml", processDefinition.getResourceName());
+    assertEquals("org/activiti/engine/test/bpmn/deployment/BpmnDeploymentTest.testProcessDiagramResource.jpg", processDefinition.getDiagramResourceName());
+    assertTrue(processDefinition.hasStartFormKey());
+
     String diagramResourceName = processDefinition.getDiagramResourceName();
     assertEquals("org/activiti/engine/test/bpmn/deployment/BpmnDeploymentTest.testProcessDiagramResource.jpg", diagramResourceName);
     

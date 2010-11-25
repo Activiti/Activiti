@@ -73,12 +73,14 @@ public class DeploymentBuilderImpl implements DeploymentBuilder {
     try {
       ZipEntry entry = zipInputStream.getNextEntry();
       while (entry != null) {
-        String entryName = entry.getName();
-        byte[] bytes = IoUtil.readInputStream(zipInputStream, entryName);
-        ResourceEntity resource = new ResourceEntity();
-        resource.setName(entryName);
-        resource.setBytes(bytes);
-        deployment.addResource(resource);
+        if (!entry.isDirectory()) {
+          String entryName = entry.getName();
+          byte[] bytes = IoUtil.readInputStream(zipInputStream, entryName);
+          ResourceEntity resource = new ResourceEntity();
+          resource.setName(entryName);
+          resource.setBytes(bytes);
+          deployment.addResource(resource);
+        }
         entry = zipInputStream.getNextEntry();
       }
     } catch (Exception e) {

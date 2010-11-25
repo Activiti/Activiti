@@ -12,7 +12,9 @@
  */
 package org.activiti.engine.repository;
 
+import org.activiti.engine.FormService;
 import org.activiti.engine.RepositoryService;
+import org.activiti.engine.form.FormData;
 import org.activiti.engine.impl.bpmn.IOSpecification;
 import org.activiti.engine.runtime.ProcessInstance;
 
@@ -54,6 +56,9 @@ public interface ProcessDefinition {
   /** The deployment in which this process definition is contained. */
   String getDeploymentId();
   
-  /** the io specification of the process definition */
-  IOSpecification getIoSpecification();
+  /** The resource name in the deployment of the diagram image. */
+  String getDiagramResourceName();
+
+  /** Does this process definition has a {@link FormService#getStartFormData(String) start form key}. */
+  boolean hasStartFormKey();
 }

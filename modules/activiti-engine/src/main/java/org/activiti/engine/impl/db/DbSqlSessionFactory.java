@@ -148,7 +148,7 @@ public class DbSqlSessionFactory implements SessionFactory {
     } catch (Exception e) {
       if (isMissingTablesException(e)) {
         throw new ActivitiException(
-                "no activiti tables in db.  set databaseSchemaUpdate to 'true' or 'create-drop' in activiti.cfg.xml for automatic schema creation", e);
+                "no activiti tables in db.  set <property name=\"databaseSchemaUpdate\" to value=\"true\" or value=\"create-drop\" (use create-drop for testing only!) in bean processEngineConfiguration in activiti.cfg.xml for automatic schema creation", e);
       } else {
         if (e instanceof RuntimeException) {
           throw (RuntimeException) e;

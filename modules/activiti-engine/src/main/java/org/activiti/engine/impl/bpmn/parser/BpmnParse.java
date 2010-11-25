@@ -597,7 +597,8 @@ public class BpmnParse extends Parse {
         } else {
           startFormHandler = new DefaultStartFormHandler();
         }
-        startFormHandler.parseConfiguration(startEventElement, deployment, this);
+        startFormHandler.parseConfiguration(startEventElement, deployment, processDefinition, this);
+        
         processDefinition.setStartFormHandler(startFormHandler);
         
         String initiatorVariableName = startEventElement.attributeNS(BpmnParser.ACTIVITI_BPMN_EXTENSIONS_NS, "initiator");
@@ -1046,7 +1047,7 @@ public class BpmnParse extends Parse {
     } else {
       taskFormHandler = new DefaultTaskFormHandler();
     }
-    taskFormHandler.parseConfiguration(taskElement, deployment, this);
+    taskFormHandler.parseConfiguration(taskElement, deployment, processDefinition, this);
 
     TaskDefinition taskDefinition = new TaskDefinition(taskFormHandler);
     

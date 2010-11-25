@@ -17,6 +17,7 @@ import java.util.Map;
 
 import org.activiti.engine.impl.bpmn.parser.BpmnParse;
 import org.activiti.engine.impl.repository.DeploymentEntity;
+import org.activiti.engine.impl.repository.ProcessDefinitionEntity;
 import org.activiti.engine.impl.runtime.ExecutionEntity;
 import org.activiti.engine.impl.util.xml.Element;
 
@@ -28,7 +29,7 @@ public interface FormHandler {
 
   ThreadLocal<FormHandler> current = new ThreadLocal<FormHandler>();
 
-  void parseConfiguration(Element activityElement, DeploymentEntity deployment, BpmnParse bpmnParse);
+  void parseConfiguration(Element activityElement, DeploymentEntity deployment, ProcessDefinitionEntity processDefinition, BpmnParse bpmnParse);
 
   void submitFormProperties(Map<String, String> properties, ExecutionEntity execution);
 }

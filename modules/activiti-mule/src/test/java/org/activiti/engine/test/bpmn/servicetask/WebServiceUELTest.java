@@ -20,7 +20,7 @@ import org.activiti.engine.impl.bpmn.ItemDefinition;
 import org.activiti.engine.impl.bpmn.ItemInstance;
 import org.activiti.engine.impl.cfg.RepositorySession;
 import org.activiti.engine.impl.db.DbRepositorySessionFactory;
-import org.activiti.engine.repository.ProcessDefinition;
+import org.activiti.engine.impl.repository.ProcessDefinitionEntity;
 import org.activiti.engine.runtime.ProcessInstance;
 
 /**
@@ -29,9 +29,9 @@ import org.activiti.engine.runtime.ProcessInstance;
 public class WebServiceUELTest extends AbstractWebServiceTaskTest {
 
   public void testWebServiceInvocationWithDataFlowUEL() throws Exception {
-    DbRepositorySessionFactory dbRepositorySessionFactory = (DbRepositorySessionFactory) this.processEngineConfiguration.getSessionFactories().get(
-            RepositorySession.class);
-    ProcessDefinition processDefinition = dbRepositorySessionFactory.getProcessDefinitionCache().get("webServiceInvocationWithDataFlowUEL:1");
+    DbRepositorySessionFactory dbRepositorySessionFactory = (DbRepositorySessionFactory) 
+      this.processEngineConfiguration.getSessionFactories().get(RepositorySession.class);
+    ProcessDefinitionEntity processDefinition = dbRepositorySessionFactory.getProcessDefinitionCache().get("webServiceInvocationWithDataFlowUEL:1");
     ItemDefinition itemDefinition = processDefinition.getIoSpecification().getDataInputs().get(0).getDefinition();
 
     ItemInstance itemInstance = itemDefinition.createInstance();

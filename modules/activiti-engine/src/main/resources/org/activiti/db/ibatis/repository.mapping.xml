@@ -118,14 +118,16 @@
   <!-- PROCESSDEFINITION INSERT -->
 
   <insert id="insertProcessDefinition" parameterType="org.activiti.engine.impl.repository.ProcessDefinitionEntity">
-    insert into ACT_RE_PROCDEF(ID_, CATEGORY_, NAME_, KEY_, VERSION_, DEPLOYMENT_ID_, RESOURCE_NAME_)
+    insert into ACT_RE_PROCDEF(ID_, CATEGORY_, NAME_, KEY_, VERSION_, DEPLOYMENT_ID_, RESOURCE_NAME_, DGRM_RESOURCE_NAME_, HAS_START_FORM_KEY_)
     values (#{id, jdbcType=VARCHAR},
             #{category, jdbcType=VARCHAR},
             #{name, jdbcType=VARCHAR},
             #{key, jdbcType=VARCHAR}, 
             #{version, jdbcType=INTEGER},
             #{deploymentId, jdbcType=VARCHAR},
-            #{resourceName, jdbcType=VARCHAR})
+            #{resourceName, jdbcType=VARCHAR},
+            #{diagramResourceName, jdbcType=VARCHAR},
+            #{hasStartFormKey, jdbcType=BOOLEAN})
   </insert>
   
   <!-- PROCESSDEFINITION UPDATE -->
@@ -146,8 +148,10 @@
     <result property="version" column="VERSION_" jdbcType="INTEGER"/>
     <result property="deploymentId" column="DEPLOYMENT_ID_" jdbcType="VARCHAR"/>
     <result property="resourceName" column="RESOURCE_NAME_" jdbcType="VARCHAR"/>
+    <result property="diagramResourceName" column="DGRM_RESOURCE_NAME_" jdbcType="VARCHAR"/>
+    <result property="hasStartFormKey" column="HAS_START_FORM_KEY_" jdbcType="BOOLEAN"/>
   </resultMap>
-  
+
   <!-- PROCESSDEFINITION SELECT -->
   
   <select id="selectProcessDefinitionById" parameterType="string" resultMap="processDefinitionResultMap">

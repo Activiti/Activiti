@@ -16,14 +16,25 @@ package org.activiti.engine.impl.form;
 import java.util.Map;
 
 import org.activiti.engine.form.StartFormData;
+import org.activiti.engine.impl.bpmn.parser.BpmnParse;
+import org.activiti.engine.impl.repository.DeploymentEntity;
 import org.activiti.engine.impl.repository.ProcessDefinitionEntity;
 import org.activiti.engine.impl.runtime.ExecutionEntity;
+import org.activiti.engine.impl.util.xml.Element;
 
 
 /**
  * @author Tom Baeyens
  */
 public class DefaultStartFormHandler extends DefaultFormHandler implements StartFormHandler {
+  
+  @Override
+  public void parseConfiguration(Element activityElement, DeploymentEntity deployment, ProcessDefinitionEntity processDefinition, BpmnParse bpmnParse) {
+    super.parseConfiguration(activityElement, deployment, processDefinition, bpmnParse);
+    if (formKey!=null) {
+      processDefinition.setStartFormKey(true);
+    }
+  }
 
   public StartFormData createStartFormData(ProcessDefinitionEntity processDefinition) {
     StartFormDataImpl startFormData = new StartFormDataImpl();
