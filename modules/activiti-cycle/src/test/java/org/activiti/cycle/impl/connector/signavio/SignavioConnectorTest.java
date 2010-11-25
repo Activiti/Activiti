@@ -175,7 +175,7 @@ public class SignavioConnectorTest {
     SignavioConnector connector = (SignavioConnector) conf.createConnector();
     connector.login(conf.getUser(), conf.getPassword());
     
-    RepositoryFolder folder = connector.getRepositoryFolder(conf.getDirectoryUrl("/407c45d65cad48548f7b2dac5cfde5fe"));
+    RepositoryFolder folder = connector.getRepositoryFolder("/407c45d65cad48548f7b2dac5cfde5fe");
     Assert.assertNotNull(folder);
     System.out.println(folder);
   }
