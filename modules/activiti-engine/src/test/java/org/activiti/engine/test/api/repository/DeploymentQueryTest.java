@@ -16,7 +16,7 @@ package org.activiti.engine.test.api.repository;
 import java.util.List;
 
 import org.activiti.engine.ActivitiException;
-import org.activiti.engine.impl.test.ActivitiInternalTestCase;
+import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.repository.DeploymentQuery;
 
@@ -24,7 +24,7 @@ import org.activiti.engine.repository.DeploymentQuery;
 /**
  * @author Tom Baeyens
  */
-public class DeploymentQueryTest extends ActivitiInternalTestCase {
+public class DeploymentQueryTest extends PluggableActivitiTestCase {
   
   private String deploymentOneId;
   

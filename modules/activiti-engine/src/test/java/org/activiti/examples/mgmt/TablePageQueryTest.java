@@ -16,7 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import org.activiti.engine.impl.test.ActivitiInternalTestCase;
+import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.management.TablePage;
 import org.activiti.engine.task.Task;
 
@@ -24,7 +24,7 @@ import org.activiti.engine.task.Task;
 /**
  * @author Joram Barrez
  */
-public class TablePageQueryTest extends ActivitiInternalTestCase {
+public class TablePageQueryTest extends PluggableActivitiTestCase {
   
   public void testGetTablePage() {
     List<String> taskIds = generateDummyTasks(20);

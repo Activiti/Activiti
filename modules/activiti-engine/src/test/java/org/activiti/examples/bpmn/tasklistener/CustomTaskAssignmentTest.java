@@ -15,7 +15,7 @@ package org.activiti.examples.bpmn.tasklistener;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.activiti.engine.impl.test.ActivitiInternalTestCase;
+import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.test.Deployment;
 
 
@@ -23,7 +23,7 @@ import org.activiti.engine.test.Deployment;
  * @author Joram Barrez
  * @author Falko Menge <falko.menge@camunda.com>
  */
-public class CustomTaskAssignmentTest extends ActivitiInternalTestCase {
+public class CustomTaskAssignmentTest extends PluggableActivitiTestCase {
   
   @Override
   protected void setUp() throws Exception {

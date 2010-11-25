@@ -13,11 +13,9 @@
 
 package org.activiti.engine.impl.test;
 
-import java.io.InputStream;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-import java.util.Properties;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.logging.Level;
@@ -38,35 +36,23 @@ import org.activiti.engine.impl.ProcessEngineImpl;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.jobexecutor.JobExecutor;
 import org.activiti.engine.impl.util.ClockUtil;
-import org.activiti.engine.impl.util.IoUtil;
-import org.activiti.engine.impl.util.ReflectUtil;
 import org.activiti.engine.impl.util.LogUtil.ThreadLogMode;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.junit.Assert;
 
 
-/** Base class for the activiti test cases.
- * 
- * The main reason not to use our own test support classes is that we need to 
- * run our test suite with various configurations, e.g. with and without spring,
- * standalone or on a server etc.  Those requirements create some complications 
- * so we think it's best to use a separate base class.  That way it is much easier 
- * for us to maintain our own codebase and at the same time provide stability 
- * on the test support classes that we offer as part of our api (in org.activiti.engine.test).
- * 
+/**
  * @author Tom Baeyens
  */
-public class ActivitiInternalTestCase extends PvmTestCase {
+public abstract class AbstractActivitiTestCase extends PvmTestCase {
 
-  private static Logger log = Logger.getLogger(ActivitiInternalTestCase.class.getName());
+  private static Logger log = Logger.getLogger(PluggableActivitiTestCase.class.getName());
   
-  private static final ProcessEngineInitializer processEngineInitializer = getProcessEngineInitializer();
-
   private static final List<String> TABLENAMES_EXCLUDED_FROM_DB_CLEAN_CHECK = Arrays.asList(
     "ACT_GE_PROPERTY"
   );
 
-  protected static ProcessEngine processEngine; 
+  protected ProcessEngine processEngine; 
   
   protected ThreadLogMode threadRenderingMode = DEFAULT_THREAD_LOG_MODE;
   protected String deploymentId;
@@ -81,44 +67,11 @@ public class ActivitiInternalTestCase extends PvmTestCase {
   protected IdentityService identityService;
   protected ManagementService managementService;
   
-  private static ProcessEngineInitializer getProcessEngineInitializer() {
-    String processEngineInitializerClassName = null;
-    InputStream initializersInputStream = ReflectUtil.getResourceAsStream("activiti.initializer.properties");
-    if (initializersInputStream!=null) {
-      Properties properties = new Properties();
-      try {
-        properties.load(initializersInputStream);
-        processEngineInitializerClassName = properties.getProperty("process.engine.initializer");
-        if (processEngineInitializerClassName!=null) {
-          return (ProcessEngineInitializer) ReflectUtil.instantiate(processEngineInitializerClassName);
-        }
-    
-      } catch (Exception e) {
-        throw new RuntimeException("couldn't instantiate process engine initializer "+properties+": "+e, e);
-      } finally {
-        IoUtil.closeSilently(initializersInputStream);
-      }
-    }
-    return new DefaultProcessEngineInitializer();
-  }
-
-  public void assertProcessEnded(final String processInstanceId) {
-    ProcessInstance processInstance = processEngine
-      .getRuntimeService()
-      .createProcessInstanceQuery()
-      .processInstanceId(processInstanceId)
-      .singleResult();
-    
-    if (processInstance!=null) {
-      throw new AssertionFailedError("expected finished process instance '"+processInstanceId+"' but it was still in the db"); 
-    }
-  }
-
+  protected abstract void initializeProcessEngine();
+  
   @Override
   public void runBare() throws Throwable {
-    if (processEngine==null) {
-      initializeProcessEngine();
-    }
+    initializeProcessEngine();
     if (repositoryService==null) {
       initializeServices();
     }
@@ -150,10 +103,6 @@ public class ActivitiInternalTestCase extends PvmTestCase {
     }
   }
 
-  protected void initializeProcessEngine() {
-    processEngine = processEngineInitializer.getProcessEngine();
-  }
-  
   /** Each test is assumed to clean up all DB content it entered.
    * After a test method executed, this method scans all tables to see if the DB is completely clean. 
    * It throws AssertionFailed in case the DB is not clean.
@@ -191,7 +140,7 @@ public class ActivitiInternalTestCase extends PvmTestCase {
   }
 
 
-  private void initializeServices() {
+  protected void initializeServices() {
     processEngineConfiguration = ((ProcessEngineImpl) processEngine).getProcessEngineConfiguration();
     repositoryService = processEngine.getRepositoryService();
     runtimeService = processEngine.getRuntimeService();
@@ -202,6 +151,18 @@ public class ActivitiInternalTestCase extends PvmTestCase {
     managementService = processEngine.getManagementService();
   }
   
+  public void assertProcessEnded(final String processInstanceId) {
+    ProcessInstance processInstance = processEngine
+      .getRuntimeService()
+      .createProcessInstanceQuery()
+      .processInstanceId(processInstanceId)
+      .singleResult();
+    
+    if (processInstance!=null) {
+      throw new AssertionFailedError("expected finished process instance '"+processInstanceId+"' but it was still in the db"); 
+    }
+  }
+
   public void waitForJobExecutorToProcessAllJobs(long maxMillisToWait, long intervalMillis) {
     JobExecutor jobExecutor = ((ProcessEngineImpl)processEngine).getJobExecutor();
     jobExecutor.start();
@@ -252,10 +213,8 @@ public class ActivitiInternalTestCase extends PvmTestCase {
     }
   }
 
-  public static void closeProcessEngine() {
-    if (processEngine!=null) {
-      processEngine.close();
-      processEngine = null;
-    }
+  public static void closeCachedProcessEngines() {
+    PluggableActivitiTestCase.closeCachedProcessEngines();
+    ResourceActivitiTestCase.closeCachedProcessEngines();
   }
 }

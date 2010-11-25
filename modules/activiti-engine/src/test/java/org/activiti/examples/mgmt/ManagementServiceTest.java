@@ -16,7 +16,7 @@ import java.util.Arrays;
 import java.util.Map;
 
 import org.activiti.engine.ManagementService;
-import org.activiti.engine.impl.test.ActivitiInternalTestCase;
+import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.management.TableMetaData;
 
 /**
@@ -25,7 +25,7 @@ import org.activiti.engine.management.TableMetaData;
  * @author Tom Baeyens
  * @author Joram Barrez
  */
-public class ManagementServiceTest extends ActivitiInternalTestCase {
+public class ManagementServiceTest extends PluggableActivitiTestCase {
 
   public void testTableCount() {
     Map<String, Long> tableCount = managementService.getTableCount();

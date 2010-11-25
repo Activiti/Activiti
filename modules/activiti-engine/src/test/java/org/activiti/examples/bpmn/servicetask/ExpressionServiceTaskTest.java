@@ -3,14 +3,14 @@ package org.activiti.examples.bpmn.servicetask;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.activiti.engine.impl.test.ActivitiInternalTestCase;
+import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.test.Deployment;
 
 /**
  * @author Christian Stettler
  */
-public class ExpressionServiceTaskTest extends ActivitiInternalTestCase {
+public class ExpressionServiceTaskTest extends PluggableActivitiTestCase {
 
   @Deployment
   public void testSetServiceResultToProcessVariables() {

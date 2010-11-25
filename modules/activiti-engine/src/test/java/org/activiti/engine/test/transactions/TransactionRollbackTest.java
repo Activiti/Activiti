@@ -15,14 +15,14 @@ package org.activiti.engine.test.transactions;
 
 import org.activiti.engine.impl.pvm.delegate.ActivityBehavior;
 import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
-import org.activiti.engine.impl.test.ActivitiInternalTestCase;
+import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.test.Deployment;
 
 
 /**
  * @author Tom Baeyens
  */
-public class TransactionRollbackTest extends ActivitiInternalTestCase {
+public class TransactionRollbackTest extends PluggableActivitiTestCase {
   
   public static class Buzzz implements ActivityBehavior {
     public void execute(ActivityExecution execution) throws Exception {

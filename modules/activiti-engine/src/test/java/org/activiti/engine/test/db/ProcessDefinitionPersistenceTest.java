@@ -21,14 +21,14 @@ import org.activiti.engine.impl.bpmn.parser.BpmnParse;
 import org.activiti.engine.impl.pvm.PvmActivity;
 import org.activiti.engine.impl.pvm.PvmTransition;
 import org.activiti.engine.impl.pvm.ReadOnlyProcessDefinition;
-import org.activiti.engine.impl.test.ActivitiInternalTestCase;
+import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.repository.ProcessDefinition;
 
 
 /**
  * @author Tom Baeyens
  */
-public class ProcessDefinitionPersistenceTest extends ActivitiInternalTestCase {
+public class ProcessDefinitionPersistenceTest extends PluggableActivitiTestCase {
 
   public void testProcessDefinitionPersistence() {
     String deploymentId = repositoryService

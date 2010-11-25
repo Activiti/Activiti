@@ -20,7 +20,7 @@ import java.util.Map;
 
 import javax.mail.internet.MimeMessage;
 
-import org.activiti.engine.impl.test.ActivitiInternalTestCase;
+import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.test.Deployment;
 import org.subethamail.wiser.Wiser;
 import org.subethamail.wiser.WiserMessage;
@@ -29,7 +29,7 @@ import org.subethamail.wiser.WiserMessage;
 /**
  * @author Joram Barrez
  */
-public class EmailServiceTaskTest extends ActivitiInternalTestCase {
+public class EmailServiceTaskTest extends PluggableActivitiTestCase {
   
   /* Wiser is a fake email server for unit testing */
   private Wiser wiser;

@@ -19,7 +19,7 @@ import java.util.Map;
 
 import org.activiti.engine.impl.repository.DeploymentBuilderImpl;
 import org.activiti.engine.impl.repository.ResourceEntity;
-import org.activiti.engine.impl.test.ActivitiInternalTestCase;
+import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.impl.test.TestHelper;
 import org.activiti.engine.impl.util.ClassNameUtil;
 import org.activiti.engine.repository.DeploymentBuilder;
@@ -34,7 +34,7 @@ import org.mule.context.DefaultMuleContextFactory;
 /**
  * @author Esteban Robles Luna
  */
-public abstract class AbstractWebServiceTaskTest extends ActivitiInternalTestCase {
+public abstract class AbstractWebServiceTaskTest extends PluggableActivitiTestCase {
 
   protected MuleContext context;
   

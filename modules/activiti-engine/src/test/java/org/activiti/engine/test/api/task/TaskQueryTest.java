@@ -18,7 +18,7 @@ import java.util.Date;
 import java.util.List;
 
 import org.activiti.engine.ActivitiException;
-import org.activiti.engine.impl.test.ActivitiInternalTestCase;
+import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.impl.util.ClockUtil;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.task.TaskQuery;
@@ -27,7 +27,7 @@ import org.activiti.engine.task.TaskQuery;
  * @author Joram Barrez
  * @author Frederik Heremans
  */
-public class TaskQueryTest extends ActivitiInternalTestCase {
+public class TaskQueryTest extends PluggableActivitiTestCase {
 
   private List<String> taskIds;
 

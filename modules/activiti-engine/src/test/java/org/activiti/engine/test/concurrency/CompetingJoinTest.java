@@ -17,7 +17,7 @@ import java.util.logging.Logger;
 
 import org.activiti.engine.ActivitiOptimisticLockingException;
 import org.activiti.engine.impl.cmd.SignalCmd;
-import org.activiti.engine.impl.test.ActivitiInternalTestCase;
+import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.runtime.Execution;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.test.Deployment;
@@ -26,7 +26,7 @@ import org.activiti.engine.test.Deployment;
 /**
  * @author Tom Baeyens
  */
-public class CompetingJoinTest extends ActivitiInternalTestCase {
+public class CompetingJoinTest extends PluggableActivitiTestCase {
 
   private static Logger log = Logger.getLogger(CompetingSignalsTest.class.getName());
   

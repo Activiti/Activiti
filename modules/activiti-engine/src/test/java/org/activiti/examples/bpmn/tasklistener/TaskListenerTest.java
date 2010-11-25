@@ -12,7 +12,7 @@
  */
 package org.activiti.examples.bpmn.tasklistener;
 
-import org.activiti.engine.impl.test.ActivitiInternalTestCase;
+import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
@@ -21,7 +21,7 @@ import org.activiti.engine.test.Deployment;
 /**
  * @author Joram Barrez
  */
-public class TaskListenerTest extends ActivitiInternalTestCase {
+public class TaskListenerTest extends PluggableActivitiTestCase {
   
   @Deployment(resources = {"org/activiti/examples/bpmn/tasklistener/TaskListenerTest.bpmn20.xml"})
   public void testTaskCreateListener() {

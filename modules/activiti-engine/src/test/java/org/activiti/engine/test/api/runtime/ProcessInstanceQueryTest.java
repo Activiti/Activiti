@@ -24,7 +24,7 @@ import java.util.Map;
 import junit.framework.Assert;
 
 import org.activiti.engine.ActivitiException;
-import org.activiti.engine.impl.test.ActivitiInternalTestCase;
+import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.runtime.Execution;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.runtime.ProcessInstanceQuery;
@@ -34,7 +34,7 @@ import org.activiti.engine.test.Deployment;
  * @author Joram Barrez
  * @author Frederik Heremans
  */
-public class ProcessInstanceQueryTest extends ActivitiInternalTestCase {
+public class ProcessInstanceQueryTest extends PluggableActivitiTestCase {
 
   private static String PROCESS_DEFINITION_KEY = "oneTaskProcess";
   private static String PROCESS_DEFINITION_KEY_2 = "oneTaskProcess2";

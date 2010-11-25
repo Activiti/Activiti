@@ -19,14 +19,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.activiti.engine.impl.test.ActivitiInternalTestCase;
+import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.test.Deployment;
 
 /**
  * @author Tom Baeyens
  */
-public class VariablesTest extends ActivitiInternalTestCase {
+public class VariablesTest extends PluggableActivitiTestCase {
 
   @Deployment
   public void testBasicVariableOperations() {

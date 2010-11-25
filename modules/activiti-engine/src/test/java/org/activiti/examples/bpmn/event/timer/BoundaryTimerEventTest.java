@@ -12,7 +12,7 @@
  */
 package org.activiti.examples.bpmn.event.timer;
 
-import org.activiti.engine.impl.test.ActivitiInternalTestCase;
+import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.runtime.Job;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
@@ -21,7 +21,7 @@ import org.activiti.engine.test.Deployment;
 /**
  * @author Joram Barrez
  */
-public class BoundaryTimerEventTest extends ActivitiInternalTestCase {
+public class BoundaryTimerEventTest extends PluggableActivitiTestCase {
 
   @Deployment
   public void testInterruptingTimerDuration() {

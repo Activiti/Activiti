@@ -13,7 +13,7 @@
 package org.activiti.spring.impl.test;
 
 import org.activiti.engine.ProcessEngine;
-import org.activiti.engine.impl.test.ActivitiInternalTestCase;
+import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
@@ -26,7 +26,7 @@ import org.springframework.test.context.support.DependencyInjectionTestExecution
  * @author Joram Barrez
  */
 @TestExecutionListeners(DependencyInjectionTestExecutionListener.class)
-public class ActivitiInternalSpringTestCase extends ActivitiInternalTestCase implements ApplicationContextAware {
+public class ActivitiInternalSpringTestCase extends PluggableActivitiTestCase implements ApplicationContextAware {
   
   protected TestContextManager testContextManager;
   
@@ -42,10 +42,10 @@ public class ActivitiInternalSpringTestCase extends ActivitiInternalTestCase imp
   public void runBare() throws Throwable {
     testContextManager.prepareTestInstance(this); // this will initialize all dependencies
     try {
-      ActivitiInternalTestCase.processEngine = applicationContext.getBean(ProcessEngine.class);
+      PluggableActivitiTestCase.cachedProcessEngine = applicationContext.getBean(ProcessEngine.class);
       super.runBare();
     } finally {
-      ActivitiInternalTestCase.processEngine = null;
+      PluggableActivitiTestCase.cachedProcessEngine = null;
     }
   }
   

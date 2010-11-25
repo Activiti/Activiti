@@ -18,13 +18,13 @@ import java.util.List;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.identity.User;
 import org.activiti.engine.identity.UserQuery;
-import org.activiti.engine.impl.test.ActivitiInternalTestCase;
+import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 
 
 /**
  * @author Joram Barrez
  */
-public class UserQueryTest extends ActivitiInternalTestCase {
+public class UserQueryTest extends PluggableActivitiTestCase {
   
   protected void setUp() throws Exception {
     super.setUp();

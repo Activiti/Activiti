@@ -22,7 +22,7 @@ import org.activiti.engine.ActivitiException;
 import org.activiti.engine.form.FormProperty;
 import org.activiti.engine.form.StartFormData;
 import org.activiti.engine.form.TaskFormData;
-import org.activiti.engine.impl.test.ActivitiInternalTestCase;
+import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
 
@@ -30,7 +30,7 @@ import org.activiti.engine.test.Deployment;
 /**
  * @author Tom Baeyens
  */
-public class FormsTest extends ActivitiInternalTestCase {
+public class FormsTest extends PluggableActivitiTestCase {
 
   @Deployment(resources = { 
     "org/activiti/engine/test/forms/FormsProcess.bpmn20.xml", 

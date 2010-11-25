@@ -17,10 +17,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.activiti.engine.ProcessEngineConfiguration;
 import org.activiti.engine.history.HistoricDetail;
 import org.activiti.engine.history.HistoricVariableUpdate;
-import org.activiti.engine.impl.test.ActivitiInternalTestCase;
+import org.activiti.engine.impl.test.ResourceActivitiTestCase;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.test.Deployment;
 
@@ -28,23 +27,10 @@ import org.activiti.engine.test.Deployment;
 /**
  * @author Tom Baeyens
  */
-public class FullHistoryTest extends ActivitiInternalTestCase {
+public class FullHistoryTest extends ResourceActivitiTestCase {
 
-  @Override
-  public void runBare() throws Throwable {
-    if (processEngine!=null) {
-      processEngine.close();
-      processEngine = null;
-    }
-
-    super.runBare();
-  }
-
-  @Override
-  protected void initializeProcessEngine() {
-    processEngine = ProcessEngineConfiguration
-      .createProcessEngineConfigurationFromResource("org/activiti/standalone/history/fullhistory.activiti.cfg.xml")
-      .buildProcessEngine();
+  public FullHistoryTest() {
+    super("org/activiti/standalone/history/fullhistory.activiti.cfg.xml");
   }
 
   @Deployment

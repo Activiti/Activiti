@@ -18,13 +18,13 @@ import java.util.List;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.identity.Group;
 import org.activiti.engine.identity.GroupQuery;
-import org.activiti.engine.impl.test.ActivitiInternalTestCase;
+import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 
 
 /**
  * @author Joram Barrez
  */
-public class GroupQueryTest extends ActivitiInternalTestCase {
+public class GroupQueryTest extends PluggableActivitiTestCase {
   
   protected void setUp() throws Exception {
     super.setUp();

@@ -19,14 +19,14 @@ import java.util.Map;
 
 import org.activiti.engine.history.HistoricDetail;
 import org.activiti.engine.history.HistoricFormProperty;
-import org.activiti.engine.impl.test.ActivitiInternalTestCase;
+import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.test.Deployment;
 
 
 /**
  * @author Tom Baeyens
  */
-public class HistoricVariableUpdateTest extends ActivitiInternalTestCase {
+public class HistoricVariableUpdateTest extends PluggableActivitiTestCase {
 
   @Deployment
   public void testHistoricVariableUpdates() {

@@ -18,14 +18,14 @@ import java.util.logging.Logger;
 import org.activiti.engine.ActivitiOptimisticLockingException;
 import org.activiti.engine.impl.cmd.AcquireJobsCmd;
 import org.activiti.engine.impl.jobexecutor.JobExecutor;
-import org.activiti.engine.impl.test.ActivitiInternalTestCase;
+import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.test.Deployment;
 
 
 /**
  * @author Tom Baeyens
  */
-public class CompetingJobAcquisitionTest extends ActivitiInternalTestCase {
+public class CompetingJobAcquisitionTest extends PluggableActivitiTestCase {
 
   private static Logger log = Logger.getLogger(CompetingSignalsTest.class.getName());
   

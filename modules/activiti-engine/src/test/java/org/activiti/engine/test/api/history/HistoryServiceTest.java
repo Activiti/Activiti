@@ -16,7 +16,7 @@ package org.activiti.engine.test.api.history;
 import java.util.List;
 
 import org.activiti.engine.history.HistoricProcessInstance;
-import org.activiti.engine.impl.test.ActivitiInternalTestCase;
+import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
@@ -24,7 +24,7 @@ import org.activiti.engine.test.Deployment;
 /**
  * @author Frederik Heremans
  */
-public class HistoryServiceTest extends ActivitiInternalTestCase {
+public class HistoryServiceTest extends PluggableActivitiTestCase {
   
   @Deployment(resources = {"org/activiti/engine/test/api/oneTaskProcess.bpmn20.xml"})
   public void testHistoricProcessInstanceQuery() {

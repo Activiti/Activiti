@@ -19,7 +19,7 @@ import java.util.List;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.RepositoryServiceImpl;
 import org.activiti.engine.impl.pvm.ReadOnlyProcessDefinition;
-import org.activiti.engine.impl.test.ActivitiInternalTestCase;
+import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.impl.util.IoUtil;
 import org.activiti.engine.impl.util.ReflectUtil;
 import org.activiti.engine.repository.ProcessDefinition;
@@ -29,7 +29,7 @@ import org.activiti.engine.test.Deployment;
 /**
  * @author Joram Barrez
  */
-public class BpmnDeploymentTest extends ActivitiInternalTestCase {
+public class BpmnDeploymentTest extends PluggableActivitiTestCase {
   
   @Deployment
   public void testGetBpmnXmlFileThroughService() {

@@ -13,7 +13,7 @@
 package org.activiti.engine.test.bpmn.parse;
 
 import org.activiti.engine.ActivitiException;
-import org.activiti.engine.impl.test.ActivitiInternalTestCase;
+import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.impl.test.TestHelper;
 
 /**
@@ -22,7 +22,7 @@ import org.activiti.engine.impl.test.TestHelper;
  * 
  * @author Joram Barrez
  */
-public class InvalidProcessTest extends ActivitiInternalTestCase {
+public class InvalidProcessTest extends PluggableActivitiTestCase {
 
   public void testInvalidProcessDefinition() {
     try {

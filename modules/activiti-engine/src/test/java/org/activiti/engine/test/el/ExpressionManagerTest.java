@@ -16,14 +16,14 @@ package org.activiti.engine.test.el;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.activiti.engine.impl.test.ActivitiInternalTestCase;
+import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.test.Deployment;
 
 /**
  * @author Frederik Heremans
  */
-public class ExpressionManagerTest extends ActivitiInternalTestCase {
+public class ExpressionManagerTest extends PluggableActivitiTestCase {
   
   @Override
   protected void setUp() throws Exception {

@@ -16,7 +16,7 @@ package org.activiti.engine.test.api.mgmt;
 import junit.framework.Assert;
 
 import org.activiti.engine.ActivitiException;
-import org.activiti.engine.impl.test.ActivitiInternalTestCase;
+import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.management.TableMetaData;
 import org.activiti.engine.runtime.Job;
 import org.activiti.engine.runtime.ProcessInstance;
@@ -26,7 +26,7 @@ import org.activiti.engine.test.Deployment;
 /**
  * @author Frederik Heremans
  */
-public class ManagementServiceTest extends ActivitiInternalTestCase {
+public class ManagementServiceTest extends PluggableActivitiTestCase {
 
   public void testGetMetaDataForUnexistingTable() {
     TableMetaData metaData = managementService.getTableMetaData("unexistingtable");

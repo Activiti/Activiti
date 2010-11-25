@@ -12,7 +12,7 @@
  */
 package org.activiti.engine.impl.webservice;
 
-import org.activiti.engine.impl.test.ActivitiInternalTestCase;
+import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.test.Deployment;
 import org.apache.cxf.endpoint.Server;
 import org.apache.cxf.interceptor.LoggingInInterceptor;
@@ -24,7 +24,7 @@ import org.apache.cxf.jaxws.JaxWsServerFactoryBean;
  *
  * @author <a href="mailto:gnodet@gmail.com">Guillaume Nodet</a>
  */
-public class WebServiceTaskTest extends ActivitiInternalTestCase {
+public class WebServiceTaskTest extends PluggableActivitiTestCase {
 
     private Counter counter;
     private Server server;

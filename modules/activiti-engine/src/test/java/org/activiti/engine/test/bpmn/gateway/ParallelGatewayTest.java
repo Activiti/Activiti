@@ -13,14 +13,14 @@
 
 package org.activiti.engine.test.bpmn.gateway;
 
-import org.activiti.engine.impl.test.ActivitiInternalTestCase;
+import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.test.Deployment;
 
 /**
  * @author Joram Barrez
  */
-public class ParallelGatewayTest extends ActivitiInternalTestCase {
+public class ParallelGatewayTest extends PluggableActivitiTestCase {
 
   /**
    * Case where there is a parallel gateway that splits into 3 paths of

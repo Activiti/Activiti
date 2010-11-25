@@ -15,7 +15,7 @@ package org.activiti.engine.test.history;
 
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.history.HistoricActivityInstance;
-import org.activiti.engine.impl.test.ActivitiInternalTestCase;
+import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.test.Deployment;
 
@@ -24,7 +24,7 @@ import org.activiti.engine.test.Deployment;
  * @author Tom Baeyens
  * @author Joram Barrez
  */
-public class HistoricActivityInstanceTest extends ActivitiInternalTestCase {
+public class HistoricActivityInstanceTest extends PluggableActivitiTestCase {
   
   @Deployment
   public void testHistoricActivityInstanceNoop() {

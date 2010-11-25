@@ -16,7 +16,7 @@ package org.activiti.engine.test.api.repository;
 import java.util.List;
 
 import org.activiti.engine.ActivitiException;
-import org.activiti.engine.impl.test.ActivitiInternalTestCase;
+import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.repository.ProcessDefinitionQuery;
 
@@ -24,7 +24,7 @@ import org.activiti.engine.repository.ProcessDefinitionQuery;
 /**
  * @author Joram Barrez
  */
-public class ProcessDefinitionQueryTest extends ActivitiInternalTestCase {
+public class ProcessDefinitionQueryTest extends PluggableActivitiTestCase {
   
   private String deploymentOneId;
   private String deploymentTwoId;

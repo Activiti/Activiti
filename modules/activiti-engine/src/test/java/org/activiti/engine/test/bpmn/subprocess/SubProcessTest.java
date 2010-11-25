@@ -16,7 +16,7 @@ package org.activiti.engine.test.bpmn.subprocess;
 import java.util.Date;
 import java.util.List;
 
-import org.activiti.engine.impl.test.ActivitiInternalTestCase;
+import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.impl.util.ClockUtil;
 import org.activiti.engine.runtime.Job;
 import org.activiti.engine.runtime.ProcessInstance;
@@ -28,7 +28,7 @@ import org.activiti.engine.test.Deployment;
 /**
  * @author Joram Barrez
  */
-public class SubProcessTest extends ActivitiInternalTestCase {
+public class SubProcessTest extends PluggableActivitiTestCase {
   
   @Deployment
   public void testSimpleSubProcess() {

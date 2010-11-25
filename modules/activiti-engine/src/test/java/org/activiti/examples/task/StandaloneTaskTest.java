@@ -14,13 +14,13 @@ package org.activiti.examples.task;
 
 import java.util.List;
 
-import org.activiti.engine.impl.test.ActivitiInternalTestCase;
+import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.task.Task;
 
 /**
  * @author Joram Barrez
  */
-public class StandaloneTaskTest extends ActivitiInternalTestCase {
+public class StandaloneTaskTest extends PluggableActivitiTestCase {
 
   public void setUp() throws Exception {
     super.setUp();

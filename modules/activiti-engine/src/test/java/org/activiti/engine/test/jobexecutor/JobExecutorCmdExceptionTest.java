@@ -8,12 +8,12 @@ import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
 import org.activiti.engine.impl.runtime.MessageEntity;
-import org.activiti.engine.impl.test.ActivitiInternalTestCase;
+import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 
 /**
  * @author Tom Baeyens
  */
-public class JobExecutorCmdExceptionTest extends ActivitiInternalTestCase {
+public class JobExecutorCmdExceptionTest extends PluggableActivitiTestCase {
 
   protected TweetExceptionHandler tweetExceptionHandler = new TweetExceptionHandler();
 

@@ -13,7 +13,7 @@
 
 package org.activiti.examples.bpmn.receivetask;
 
-import org.activiti.engine.impl.test.ActivitiInternalTestCase;
+import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.runtime.Execution;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.test.Deployment;
@@ -22,7 +22,7 @@ import org.activiti.engine.test.Deployment;
 /**
  * @author Joram Barrez
  */
-public class ReceiveTaskTest extends ActivitiInternalTestCase {
+public class ReceiveTaskTest extends PluggableActivitiTestCase {
 
   @Deployment
   public void testWaitStateBehavior() {

@@ -27,9 +27,10 @@ import javax.persistence.EntityManagerFactory;
 import junit.framework.Assert;
 
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.ProcessEngineConfiguration;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
-import org.activiti.engine.impl.test.ActivitiInternalTestCase;
+import org.activiti.engine.impl.test.AbstractActivitiTestCase;
 import org.activiti.engine.impl.variable.EntityManagerSession;
 import org.activiti.engine.impl.variable.EntityManagerSessionFactory;
 import org.activiti.engine.runtime.ProcessInstance;
@@ -39,7 +40,9 @@ import org.activiti.engine.test.Deployment;
 /**
  * @author Frederik Heremans
  */
-public class JPAVariableTest extends ActivitiInternalTestCase {
+public class JPAVariableTest extends AbstractActivitiTestCase {
+
+  protected static ProcessEngine cachedProcessEngine;
 
   private FieldAccessJPAEntity simpleEntityFieldAccess;
   private PropertyAccessJPAEntity simpleEntityPropertyAccess;
@@ -65,28 +68,19 @@ public class JPAVariableTest extends ActivitiInternalTestCase {
 
   private static EntityManagerFactory entityManagerFactory;
   
-  
-  @Override
-  public void runBare() throws Throwable {
-    if (processEngine!=null && entityManagerFactory==null) {
-      processEngine.close();
-      processEngine = null;
-    }
-
-    super.runBare();
-  }
-
   protected void initializeProcessEngine() {
-    ProcessEngineConfigurationImpl processEngineConfiguration = (ProcessEngineConfigurationImpl) ProcessEngineConfiguration
-      .createProcessEngineConfigurationFromResource("org/activiti/examples/variables/jpa/activiti.cfg.xml");
-    
-    processEngine = processEngineConfiguration.buildProcessEngine();
-    
-    EntityManagerSessionFactory entityManagerSessionFactory = (EntityManagerSessionFactory) processEngineConfiguration
-      .getSessionFactories()
-      .get(EntityManagerSession.class);
-    
-    entityManagerFactory = entityManagerSessionFactory.getEntityManagerFactory();
+    if (cachedProcessEngine==null) {
+      ProcessEngineConfigurationImpl processEngineConfiguration = (ProcessEngineConfigurationImpl) ProcessEngineConfiguration
+        .createProcessEngineConfigurationFromResource("org/activiti/examples/variables/jpa/activiti.cfg.xml");
+      
+      processEngine = processEngineConfiguration.buildProcessEngine();
+      
+      EntityManagerSessionFactory entityManagerSessionFactory = (EntityManagerSessionFactory) processEngineConfiguration
+        .getSessionFactories()
+        .get(EntityManagerSession.class);
+      
+      entityManagerFactory = entityManagerSessionFactory.getEntityManagerFactory();
+    }
   }
 
   public void setupJPAEntities() {

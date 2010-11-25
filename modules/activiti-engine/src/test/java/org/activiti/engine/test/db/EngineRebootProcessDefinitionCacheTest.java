@@ -21,7 +21,7 @@ import org.activiti.engine.TaskService;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.cfg.StandaloneInMemProcessEngineConfiguration;
 import org.activiti.engine.impl.cfg.StandaloneProcessEngineConfiguration;
-import org.activiti.engine.impl.test.ActivitiInternalTestCase;
+import org.activiti.engine.impl.test.AbstractActivitiTestCase;
 import org.activiti.engine.impl.test.PvmTestCase;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.runtime.ProcessInstance;
@@ -45,7 +45,7 @@ public class EngineRebootProcessDefinitionCacheTest extends PvmTestCase {
     // have been initialized and cached.  First we close the 
     // existing process engines to make sure that the db is clean
     // and that there are no existing process engines involved.
-    ActivitiInternalTestCase.closeProcessEngine();
+    AbstractActivitiTestCase.closeCachedProcessEngines();
 
     // Creating the DB schema (without building a process engine)
     ProcessEngineConfigurationImpl processEngineConfiguration = new StandaloneInMemProcessEngineConfiguration();

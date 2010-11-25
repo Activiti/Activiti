@@ -12,14 +12,14 @@
  */
 package org.activiti.engine.test.bpmn;
 
-import org.activiti.engine.impl.test.ActivitiInternalTestCase;
+import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.test.Deployment;
 
 /**
  * @author Joram Barrez
  */
-public class StartToEndTest extends ActivitiInternalTestCase {
+public class StartToEndTest extends PluggableActivitiTestCase {
 
   @Deployment
   public void testStartToEnd() {

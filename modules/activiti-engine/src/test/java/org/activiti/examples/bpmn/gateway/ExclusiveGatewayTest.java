@@ -16,7 +16,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.activiti.engine.ActivitiException;
-import org.activiti.engine.impl.test.ActivitiInternalTestCase;
+import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
@@ -26,7 +26,7 @@ import org.activiti.engine.test.Deployment;
  * 
  * @author Joram Barrez
  */
-public class ExclusiveGatewayTest extends ActivitiInternalTestCase {
+public class ExclusiveGatewayTest extends PluggableActivitiTestCase {
 
   /**
    * The test process has an XOR gateway where, the 'input' variable is used to

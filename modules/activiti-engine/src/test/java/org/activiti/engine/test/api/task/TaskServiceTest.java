@@ -22,7 +22,7 @@ import java.util.Map;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.identity.Group;
 import org.activiti.engine.identity.User;
-import org.activiti.engine.impl.test.ActivitiInternalTestCase;
+import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.IdentityLink;
 import org.activiti.engine.task.Task;
@@ -33,7 +33,7 @@ import org.activiti.engine.test.Deployment;
  * @author Frederik Heremans
  * @author Joram Barrez
  */
-public class TaskServiceTest extends ActivitiInternalTestCase {
+public class TaskServiceTest extends PluggableActivitiTestCase {
 
   public void testSaveTaskUpdate() {
     Task task = taskService.newTask();

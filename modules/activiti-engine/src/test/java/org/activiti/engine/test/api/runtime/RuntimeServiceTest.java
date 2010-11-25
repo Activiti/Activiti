@@ -19,7 +19,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.activiti.engine.ActivitiException;
-import org.activiti.engine.impl.test.ActivitiInternalTestCase;
+import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.impl.util.CollectionUtil;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.runtime.ProcessInstance;
@@ -30,7 +30,7 @@ import org.activiti.engine.test.Deployment;
  * @author Frederik Heremans
  * @author Joram Barrez
  */
-public class RuntimeServiceTest extends ActivitiInternalTestCase {
+public class RuntimeServiceTest extends PluggableActivitiTestCase {
 
   public void testStartProcessInstanceByKeyNullKey() {
     try {

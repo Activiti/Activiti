@@ -18,12 +18,12 @@ import java.util.List;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.identity.Group;
 import org.activiti.engine.identity.User;
-import org.activiti.engine.impl.test.ActivitiInternalTestCase;
+import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 
 /**
  * @author Frederik Heremans
  */
-public class IdentityServiceTest extends ActivitiInternalTestCase {
+public class IdentityServiceTest extends PluggableActivitiTestCase {
 
   public void testCreateExistingUser() {
     User user = identityService.newUser("testuser");

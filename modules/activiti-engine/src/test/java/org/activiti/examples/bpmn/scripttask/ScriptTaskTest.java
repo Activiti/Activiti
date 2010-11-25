@@ -15,7 +15,7 @@ package org.activiti.examples.bpmn.scripttask;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.activiti.engine.impl.test.ActivitiInternalTestCase;
+import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.impl.util.CollectionUtil;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.test.Deployment;
@@ -24,7 +24,7 @@ import org.activiti.engine.test.Deployment;
  * @author Joram Barrez
  * @author Christian Stettler
  */
-public class ScriptTaskTest extends ActivitiInternalTestCase {
+public class ScriptTaskTest extends PluggableActivitiTestCase {
 
   @Deployment
   public void testScriptExecution() {

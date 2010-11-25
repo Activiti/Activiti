@@ -15,7 +15,7 @@ package org.activiti.engine.test.bpmn.usertask;
 
 import java.util.Date;
 
-import org.activiti.engine.impl.test.ActivitiInternalTestCase;
+import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
@@ -24,7 +24,7 @@ import org.activiti.engine.test.Deployment;
 /**
  * @author Joram Barrez
  */
-public class UserTaskTest extends ActivitiInternalTestCase {
+public class UserTaskTest extends PluggableActivitiTestCase {
   
   @Deployment
   public void testTaskPropertiesNotNull() {

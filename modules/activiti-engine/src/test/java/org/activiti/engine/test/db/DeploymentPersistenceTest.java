@@ -19,7 +19,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.activiti.engine.impl.test.ActivitiInternalTestCase;
+import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.impl.util.IoUtil;
 import org.activiti.engine.repository.Deployment;
 
@@ -28,7 +28,7 @@ import org.activiti.engine.repository.Deployment;
 /**
  * @author Tom Baeyens
  */
-public class DeploymentPersistenceTest extends ActivitiInternalTestCase {
+public class DeploymentPersistenceTest extends PluggableActivitiTestCase {
 
   public void testDeploymentPersistence() {
     Deployment deployment = repositoryService

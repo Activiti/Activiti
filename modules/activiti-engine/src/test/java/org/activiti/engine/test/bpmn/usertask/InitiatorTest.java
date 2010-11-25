@@ -13,14 +13,14 @@
 
 package org.activiti.engine.test.bpmn.usertask;
 
-import org.activiti.engine.impl.test.ActivitiInternalTestCase;
+import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.test.Deployment;
 
 
 /**
  * @author Tom Baeyens
  */
-public class InitiatorTest extends ActivitiInternalTestCase {
+public class InitiatorTest extends PluggableActivitiTestCase {
 
   @Deployment
   public void testInitiator() {

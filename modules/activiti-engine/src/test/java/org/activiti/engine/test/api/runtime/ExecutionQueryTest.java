@@ -38,7 +38,7 @@ import java.util.Map;
 import junit.framework.Assert;
 
 import org.activiti.engine.ActivitiException;
-import org.activiti.engine.impl.test.ActivitiInternalTestCase;
+import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.runtime.Execution;
 import org.activiti.engine.runtime.ExecutionQuery;
 import org.activiti.engine.runtime.ProcessInstance;
@@ -49,7 +49,7 @@ import org.activiti.engine.test.Deployment;
  * @author Joram Barrez
  * @author Frederik Heremans
  */
-public class ExecutionQueryTest extends ActivitiInternalTestCase {
+public class ExecutionQueryTest extends PluggableActivitiTestCase {
   
   private static String CONCURRENT_PROCESS_KEY = "concurrent";
   private static String SEQUENTIAL_PROCESS_KEY = "oneTaskProcess";

@@ -23,7 +23,7 @@ import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
 import org.activiti.engine.impl.runtime.JobEntity;
 import org.activiti.engine.impl.runtime.MessageEntity;
-import org.activiti.engine.impl.test.ActivitiInternalTestCase;
+import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.impl.util.ClockUtil;
 import org.activiti.engine.runtime.Job;
 import org.activiti.engine.runtime.JobQuery;
@@ -32,7 +32,7 @@ import org.activiti.engine.runtime.JobQuery;
 /**
  * @author Joram Barrez
  */
-public class JobQueryTest extends ActivitiInternalTestCase {
+public class JobQueryTest extends PluggableActivitiTestCase {
   
   private String deploymentId;
   private String messageId;

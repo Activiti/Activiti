@@ -13,7 +13,7 @@
 
 package org.activiti.examples.bpmn.callactivity;
 
-import org.activiti.engine.impl.test.ActivitiInternalTestCase;
+import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.impl.util.CollectionUtil;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
@@ -23,7 +23,7 @@ import org.activiti.engine.test.Deployment;
 /**
  * @author Joram Barrez
  */
-public class CallActivityTest extends ActivitiInternalTestCase {
+public class CallActivityTest extends PluggableActivitiTestCase {
 
   @Deployment(resources={
     "org/activiti/examples/bpmn/callactivity/orderProcess.bpmn20.xml",

@@ -26,7 +26,7 @@ import javax.activation.DataHandler;
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 
-import org.activiti.engine.impl.test.ActivitiInternalTestCase;
+import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.impl.util.CollectionUtil;
 import org.activiti.engine.test.Deployment;
 import org.subethamail.wiser.Wiser;
@@ -36,7 +36,7 @@ import org.subethamail.wiser.WiserMessage;
 /**
  * @author Joram Barrez
  */
-public class EmailServiceTaskTest extends ActivitiInternalTestCase {
+public class EmailServiceTaskTest extends PluggableActivitiTestCase {
   
   private Wiser wiser;
   
