@@ -13,7 +13,7 @@
 package org.activiti.engine.impl.bpmn;
 
 import org.activiti.engine.ActivitiException;
-import org.activiti.engine.delegate.JavaDelegation;
+import org.activiti.engine.delegate.JavaDelegate;
 import org.activiti.engine.impl.el.Expression;
 import org.activiti.engine.impl.pvm.delegate.ActivityBehavior;
 import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
@@ -38,12 +38,12 @@ public class ServiceTaskDelegateExpressionActivityBehavior extends AbstractBpmnA
     
     if (delegate instanceof ActivityBehavior) {
       ((ActivityBehavior) delegate).execute(execution);
-    } else if (delegate instanceof JavaDelegation) {
-      ((JavaDelegation) delegate).execute(execution);
+    } else if (delegate instanceof JavaDelegate) {
+      ((JavaDelegate) delegate).execute(execution);
     } else {
       throw new ActivitiException("Delegate expression " + expression 
               + " did not resolve to an implementation of " + ActivityBehavior.class 
-              + " nor " + JavaDelegation.class);
+              + " nor " + JavaDelegate.class);
     }
     
     leave(execution);

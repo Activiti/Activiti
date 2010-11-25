@@ -13,13 +13,13 @@
 package org.activiti.spring.test.servicetask;
 
 import org.activiti.engine.delegate.DelegateExecution;
-import org.activiti.engine.delegate.JavaDelegation;
+import org.activiti.engine.delegate.JavaDelegate;
 
 
 /**
  * @author Joram Barrez
  */
-public class DelegateExpressionBean implements JavaDelegation {
+public class DelegateExpressionBean implements JavaDelegate {
   
   private SentenceGenerator sentenceGenerator;
   

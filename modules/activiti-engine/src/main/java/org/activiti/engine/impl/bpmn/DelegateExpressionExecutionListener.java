@@ -13,7 +13,7 @@
 package org.activiti.engine.impl.bpmn;
 
 import org.activiti.engine.ActivitiException;
-import org.activiti.engine.delegate.JavaDelegation;
+import org.activiti.engine.delegate.JavaDelegate;
 import org.activiti.engine.impl.el.Expression;
 import org.activiti.engine.impl.pvm.delegate.ExecutionListener;
 import org.activiti.engine.impl.pvm.delegate.ExecutionListenerExecution;
@@ -37,12 +37,12 @@ public class DelegateExpressionExecutionListener implements ExecutionListener {
     
     if (delegate instanceof ExecutionListener) {
       ((ExecutionListener) delegate).notify(execution);
-    } else if (delegate instanceof JavaDelegation) {
-      ((JavaDelegation) delegate).execute(execution);
+    } else if (delegate instanceof JavaDelegate) {
+      ((JavaDelegate) delegate).execute(execution);
     } else {
       throw new ActivitiException("Delegate expression " + expression 
               + " did not resolve to an implementation of " + ExecutionListener.class 
-              + " nor " + JavaDelegation.class);
+              + " nor " + JavaDelegate.class);
     }
   }
 

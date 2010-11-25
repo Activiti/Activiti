@@ -18,7 +18,7 @@ import java.util.List;
 
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.delegate.DelegateTask;
-import org.activiti.engine.delegate.JavaDelegation;
+import org.activiti.engine.delegate.JavaDelegate;
 import org.activiti.engine.impl.bpmn.parser.FieldDeclaration;
 import org.activiti.engine.impl.pvm.delegate.ActivityBehavior;
 import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
@@ -64,10 +64,10 @@ public class ClassDelegate implements ActivityBehavior, TaskListener, ExecutionL
     Object delegateInstance = instantiateDelegate(className, fieldDeclarations);
     if (delegateInstance instanceof ExecutionListener) {
       return (ExecutionListener) delegateInstance; 
-    } else if (delegateInstance instanceof JavaDelegation) {
-      return new JavaDelegationDelegate((JavaDelegation) delegateInstance);
+    } else if (delegateInstance instanceof JavaDelegate) {
+      return new JavaDelegateDelegate((JavaDelegate) delegateInstance);
     } else {
-      throw new ActivitiException(delegateInstance.getClass().getName()+" doesn't implement "+ExecutionListener.class+" nor "+JavaDelegation.class);
+      throw new ActivitiException(delegateInstance.getClass().getName()+" doesn't implement "+ExecutionListener.class+" nor "+JavaDelegate.class);
     }
   }
   
@@ -100,10 +100,10 @@ public class ClassDelegate implements ActivityBehavior, TaskListener, ExecutionL
     Object delegateInstance = instantiateDelegate(className, fieldDeclarations);
     if (delegateInstance instanceof ActivityBehavior) {
       return (ActivityBehavior) delegateInstance;
-    } else if (delegateInstance instanceof JavaDelegation) {
-      return new JavaDelegationDelegate((JavaDelegation) delegateInstance);
+    } else if (delegateInstance instanceof JavaDelegate) {
+      return new JavaDelegateDelegate((JavaDelegate) delegateInstance);
     } else {
-      throw new ActivitiException(delegateInstance.getClass().getName()+" doesn't implement "+JavaDelegation.class.getName()+" nor "+ActivityBehavior.class.getName());
+      throw new ActivitiException(delegateInstance.getClass().getName()+" doesn't implement "+JavaDelegate.class.getName()+" nor "+ActivityBehavior.class.getName());
     }
   }
   

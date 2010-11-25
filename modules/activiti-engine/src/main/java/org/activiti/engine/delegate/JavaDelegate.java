@@ -28,7 +28,7 @@ package org.activiti.engine.delegate;
  * 
  * @author Joram Barrez
  */
-public interface JavaDelegation {
+public interface JavaDelegate {
   
   void execute(DelegateExecution execution) throws Exception;
 

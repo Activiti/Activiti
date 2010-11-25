@@ -56,7 +56,7 @@
       <documentation>
         Service Task attribute for specifying a fully qualified Java class
         name. The Java class must implement either
-        org.activiti.engine.delegate.JavaDelegation or
+        org.activiti.engine.delegate.JavaDelegate or
         org.activiti.engine.impl.pvm.delegate.ActivityBehavior
       </documentation>
     </annotation>
@@ -104,7 +104,7 @@
       <documentation>
         Allows to specify an expression on a service task, taskListener or executionListener
         that at runtime must resolve to an object that implements the corresponsing
-        interface (JavaDelegation, ActivityBehavior, TaskListener, ExecutionListener, etc.)
+        interface (JavaDelegate, ActivityBehavior, TaskListener, ExecutionListener, etc.)
       </documentation>
     </annotation>
   </attribute>

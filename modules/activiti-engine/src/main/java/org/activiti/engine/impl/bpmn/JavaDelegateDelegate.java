@@ -13,7 +13,7 @@
 
 package org.activiti.engine.impl.bpmn;
 
-import org.activiti.engine.delegate.JavaDelegation;
+import org.activiti.engine.delegate.JavaDelegate;
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.impl.pvm.delegate.ActivityBehavior;
 import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
@@ -24,15 +24,15 @@ import org.activiti.engine.impl.pvm.delegate.ExecutionListenerExecution;
 /**
  * @author Tom Baeyens
  */
-public class JavaDelegationDelegate extends BpmnActivityBehavior implements ActivityBehavior, ExecutionListener {
+public class JavaDelegateDelegate extends BpmnActivityBehavior implements ActivityBehavior, ExecutionListener {
   
-  protected JavaDelegation javaDelegation;
+  protected JavaDelegate javaDelegate;
   
-  protected JavaDelegationDelegate() {
+  protected JavaDelegateDelegate() {
   }
 
-  public JavaDelegationDelegate(JavaDelegation javaDelegation) {
-    this.javaDelegation = javaDelegation;
+  public JavaDelegateDelegate(JavaDelegate javaDelegate) {
+    this.javaDelegate = javaDelegate;
   }
 
   public void execute(ActivityExecution execution) throws Exception {
@@ -45,6 +45,6 @@ public class JavaDelegationDelegate extends BpmnActivityBehavior implements Acti
   }
   
   public void execute(DelegateExecution execution) throws Exception {
-    javaDelegation.execute(execution);
+    javaDelegate.execute(execution);
   }
 }

@@ -1525,7 +1525,7 @@ public class FakeLdapService {
          the same rules as objects that are created when the <literal>activiti:class</literal>
          attribute is used (see <link linkend="bpmnJavaServiceTaskImplementation">further</link>).
          <programlisting> &lt;serviceTask id=&quot;serviceTask&quot; <emphasis role="bold">activiti:delegateExpression=&quot;${delegateExpressionBean}&quot;</emphasis> /&gt;</programlisting> 
-         Here, the <literal>delegateExpressionBean</literal> is a bean that implements the <literal>JavaDelegation</literal> interface,
+         Here, the <literal>delegateExpressionBean</literal> is a bean that implements the <literal>JavaDelegate</literal> interface,
          defined in for example the Spring container.
        </para>
        
@@ -1577,7 +1577,7 @@ public class FakeLdapService {
       
       <para>
         To implement a class that can be called during process execution, this class needs to
-        implement the <emphasis>org.activiti.engine.delegate.JavaDelegation</emphasis> interface and provide the required
+        implement the <emphasis>org.activiti.engine.delegate.JavaDelegate</emphasis> interface and provide the required
         logic in the <emphasis>execute</emphasis> method. When process execution arrives
         at this particular step, it will execute this logic defined in that method and leave 
         the activity in the default BPMN 2.0 way.
@@ -1594,7 +1594,7 @@ public class FakeLdapService {
       
       <para>
         Let's create for example a Java class that can be used to change a process variable String
-        to uppercase. This class needs to implement the <emphasis>org.activiti.engine.delegate.JavaDelegation</emphasis>
+        to uppercase. This class needs to implement the <emphasis>org.activiti.engine.delegate.JavaDelegate</emphasis>
         interface, which requires us to implement the <emphasis>execute(DelegateExecution)</emphasis>
         method. It's this operation that will be called by the engine and which needs to contain
         the business logic. Process instance information such as process variables  and other
@@ -1602,7 +1602,7 @@ public class FakeLdapService {
         <ulink url="http://activiti.org/javadocs/org/activiti/engine/delegate/DelegateExecution.html">DelegateExecution</ulink>
         interface (click on the link for a detailed Javadoc of its operations).
 <programlisting>
-public class ToUppercase implements JavaDelegation {
+public class ToUppercase implements JavaDelegate {
   
   public void execute(DelegateExecution execution) throws Exception {
     String var = (String) execution.getVariable(&quot;input&quot;);
@@ -1707,7 +1707,7 @@ public class ToUppercase implements JavaDelegation {
   Full code and test can be found in <literal>org.activiti.examples.bpmn.servicetask.JavaServiceTaskTest.testExpressionFieldInjection</literal>
 <programlisting>
 
-public class ReverseStringsFieldInjected implements JavaDelegation {
+public class ReverseStringsFieldInjected implements JavaDelegate {
 
   private Expression text1;
   private Expression text2;
@@ -2009,7 +2009,7 @@ public class ExampleExecutionListenerOne implements <emphasis role="bold">Execut
     execution.setVariable("eventReceived", execution.getevent());
   }
 }</programlisting>
-        It is also possible to use a delegation class that implements the <literal>org.activiti.engine.delegate.JavaDelegation</literal>
+        It is also possible to use a delegation class that implements the <literal>org.activiti.engine.delegate.JavaDelegate</literal>
         interface. These delegation classes can then be reused in other constructs, such as a delegation for a serviceTask.
         </para>
         <para>

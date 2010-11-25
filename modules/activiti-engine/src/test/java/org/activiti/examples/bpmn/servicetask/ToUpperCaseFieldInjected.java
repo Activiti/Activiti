@@ -13,7 +13,7 @@
  */
 package org.activiti.examples.bpmn.servicetask;
 
-import org.activiti.engine.delegate.JavaDelegation;
+import org.activiti.engine.delegate.JavaDelegate;
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.impl.el.Expression;
 
@@ -21,7 +21,7 @@ import org.activiti.engine.impl.el.Expression;
 /**
  * @author Joram Barrez
  */
-public class ToUpperCaseFieldInjected implements JavaDelegation {
+public class ToUpperCaseFieldInjected implements JavaDelegate {
   
   private Expression text;
   
