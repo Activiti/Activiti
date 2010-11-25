@@ -58,7 +58,24 @@
 					<groupId>org.slf4j</groupId>
 					<artifactId>slf4j-log4j12</artifactId>
 				</exclusion>
+				<exclusion>
+					<groupId>opensaml</groupId>
+					<artifactId>opensaml</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.safehaus.jug</groupId>
+					<artifactId>jug</artifactId>
+				</exclusion>
 			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>org.opensaml</groupId>
+			<artifactId>opensaml</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.safehaus.jug</groupId>
+			<artifactId>jug</artifactId>
+			<classifier>lgpl</classifier>
 		</dependency>
 		<dependency>
 			<groupId>org.mule.tests</groupId>
@@ -79,6 +96,10 @@
 				<exclusion>
 					<groupId>org.slf4j</groupId>
 					<artifactId>slf4j-log4j12</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.safehaus.jug</groupId>
+					<artifactId>jug</artifactId>
 				</exclusion>
 			</exclusions>
 		</dependency>
