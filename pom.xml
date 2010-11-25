@@ -82,7 +82,7 @@
       <dependency>
         <groupId>com.signavio</groupId>
         <artifactId>signavio-core-components</artifactId>
-        <version>1.0.beta2-SNAPSHOT</version>
+        <version>1.0</version>
       </dependency>
       <dependency>
         <groupId>com.sun.xml.bind</groupId>
