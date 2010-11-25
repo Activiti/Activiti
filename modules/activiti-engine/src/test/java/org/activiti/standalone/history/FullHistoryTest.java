@@ -19,6 +19,7 @@ import java.util.Map;
 
 import org.activiti.engine.ProcessEngineConfiguration;
 import org.activiti.engine.history.HistoricDetail;
+import org.activiti.engine.history.HistoricVariableUpdate;
 import org.activiti.engine.impl.test.ActivitiInternalTestCase;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.test.Deployment;
@@ -28,6 +29,16 @@ import org.activiti.engine.test.Deployment;
  * @author Tom Baeyens
  */
 public class FullHistoryTest extends ActivitiInternalTestCase {
+
+  @Override
+  public void runBare() throws Throwable {
+    if (processEngine!=null) {
+      processEngine.close();
+      processEngine = null;
+    }
+
+    super.runBare();
+  }
 
   @Override
   protected void initializeProcessEngine() {
@@ -52,6 +63,29 @@ public class FullHistoryTest extends ActivitiInternalTestCase {
       .orderByVariableRevision().asc()
       .list();
     
-    System.out.println(historicDetails);
+    HistoricVariableUpdate historicVariableUpdate = (HistoricVariableUpdate) historicDetails.get(0);
+    assertEquals("bytes", historicVariableUpdate.getVariableName());
+    assertEquals(":-(", new String((byte[])historicVariableUpdate.getValue()));
+    assertEquals(0, historicVariableUpdate.getRevision());
+    
+    historicVariableUpdate = (HistoricVariableUpdate) historicDetails.get(1);
+    assertEquals("bytes", historicVariableUpdate.getVariableName());
+    assertEquals(":-)", new String((byte[])historicVariableUpdate.getValue()));
+    assertEquals(1, historicVariableUpdate.getRevision());
+    
+    historicVariableUpdate = (HistoricVariableUpdate) historicDetails.get(2);
+    assertEquals("character", historicVariableUpdate.getVariableName());
+    assertEquals("a", historicVariableUpdate.getValue());
+    assertEquals(0, historicVariableUpdate.getRevision());
+    
+    historicVariableUpdate = (HistoricVariableUpdate) historicDetails.get(3);
+    assertEquals("number", historicVariableUpdate.getVariableName());
+    assertEquals("one", historicVariableUpdate.getValue());
+    assertEquals(0, historicVariableUpdate.getRevision());
+    
+    historicVariableUpdate = (HistoricVariableUpdate) historicDetails.get(4);
+    assertEquals("number", historicVariableUpdate.getVariableName());
+    assertEquals("two", historicVariableUpdate.getValue());
+    assertEquals(1, historicVariableUpdate.getRevision());
   }
 }

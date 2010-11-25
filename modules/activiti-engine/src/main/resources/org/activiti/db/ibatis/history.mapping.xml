@@ -301,7 +301,10 @@
     <result property="textValue" column="TEXT_" jdbcType="VARCHAR" />
     <result property="textValue2" column="TEXT2_" jdbcType="VARCHAR" />
     <result property="longValue" column="LONG_" jdbcType="BIGINT" />
-    <association property="byteArrayValue" column="BYTEARRAY_ID_" javaType="org.activiti.engine.impl.runtime.ByteArrayEntity" />
+    <association property="byteArrayValue" 
+                 column="BYTEARRAY_ID_" 
+                 javaType="org.activiti.engine.impl.runtime.ByteArrayEntity" 
+                 select="selectByteArrayById" />
   </resultMap>
 
   <resultMap id="historicFormPropertyResultMap" extends="historicDetailResultMap" type="org.activiti.engine.impl.history.HistoricFormPropertyEntity">
