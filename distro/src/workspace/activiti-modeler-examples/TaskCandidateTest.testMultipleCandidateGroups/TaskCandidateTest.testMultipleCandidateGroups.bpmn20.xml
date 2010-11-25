@@ -1,33 +1,52 @@
-<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<definitions id="oryx_6e9e52e8-1f08-47d3-afa3-04dc543b94c3" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://www.omg.org/bpmn20" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://schema.omg.org/spec/BPMN/2.0" xmlns:bpmndi="http://bpmndi.org">
-    <process id="oryx_6cccecf4-d3a2-4141-b85f-be0538dd74e8" name="Multiple candidate groups example">
-        <laneSet id="oryx_e1c63f98-4c3a-4d04-bc30-a675ecac8c6a">
-            <lane name="DefaultLane" id="oryx_bacd7ab5-a0d9-46ca-99cc-8f259383c9ca">
-                <flowElementRef>oryx_4670019D-0BB0-4355-93E0-3F2E0E9E5A01</flowElementRef>
-                <flowElementRef>oryx_5B790FCC-C8C4-44D8-9DD2-3935EA223BB7</flowElementRef>
-                <flowElementRef>oryx_D607CFCF-4C28-4144-BB25-E82269B5CD9D</flowElementRef>
-            </lane>
-        </laneSet>
-        <startEvent name="" id="oryx_4670019D-0BB0-4355-93E0-3F2E0E9E5A01"/>
-        <userTask implementation="unspecified" completionQuantity="1" startQuantity="1" isForCompensation="false" name="Approve expenses" id="oryx_5B790FCC-C8C4-44D8-9DD2-3935EA223BB7">
-            <documentation id="oryx_db0ded94-a253-4079-a0a4-c20692af2ac8">Judge expenses of employees before end of fiscal quarter.</documentation>
-            <potentialOwner>
-                <resourceAssignmentExpression>
-                    <formalExpression>group(accountancy), group(management)</formalExpression>
-                </resourceAssignmentExpression>
-            </potentialOwner>
-        </userTask>
-        <endEvent name="" id="oryx_D607CFCF-4C28-4144-BB25-E82269B5CD9D"/>
-        <sequenceFlow targetRef="oryx_5B790FCC-C8C4-44D8-9DD2-3935EA223BB7" sourceRef="oryx_4670019D-0BB0-4355-93E0-3F2E0E9E5A01" name="" id="oryx_861670C4-BF71-4497-98CE-6C57922E082A"/>
-        <sequenceFlow targetRef="oryx_D607CFCF-4C28-4144-BB25-E82269B5CD9D" sourceRef="oryx_5B790FCC-C8C4-44D8-9DD2-3935EA223BB7" name="" id="oryx_3BE99AB9-4596-444E-8AFE-3B7D369C4252"/>
-    </process>
-    <bpmndi:processDiagram processRef="oryx_6cccecf4-d3a2-4141-b85f-be0538dd74e8" id="oryx_6cccecf4-d3a2-4141-b85f-be0538dd74e8_gui">
-        <bpmndi:laneCompartment isVisible="false" height="0.0" width="0.0" y="0.0" x="0.0" name="DefaultLane" id="oryx_bacd7ab5-a0d9-46ca-99cc-8f259383c9ca_gui">
-            <bpmndi:eventShape eventRef="oryx_4670019D-0BB0-4355-93E0-3F2E0E9E5A01" height="30.0" width="30.0" y="120.0" x="225.0" name="" id="oryx_4670019D-0BB0-4355-93E0-3F2E0E9E5A01_gui"/>
-            <bpmndi:activityShape activityRef="oryx_5B790FCC-C8C4-44D8-9DD2-3935EA223BB7" height="80.0" width="100.0" y="95.0" x="300.0" name="Approve expenses" id="oryx_5B790FCC-C8C4-44D8-9DD2-3935EA223BB7_gui"/>
-            <bpmndi:eventShape eventRef="oryx_D607CFCF-4C28-4144-BB25-E82269B5CD9D" height="28.0" width="28.0" y="121.0" x="445.0" name="" id="oryx_D607CFCF-4C28-4144-BB25-E82269B5CD9D_gui"/>
-        </bpmndi:laneCompartment>
-        <bpmndi:sequenceFlowConnector sequenceFlowRef="oryx_861670C4-BF71-4497-98CE-6C57922E082A" label="" targetRef="oryx_5B790FCC-C8C4-44D8-9DD2-3935EA223BB7_gui" sourceRef="oryx_4670019D-0BB0-4355-93E0-3F2E0E9E5A01_gui" id="oryx_861670C4-BF71-4497-98CE-6C57922E082A_gui"/>
-        <bpmndi:sequenceFlowConnector sequenceFlowRef="oryx_3BE99AB9-4596-444E-8AFE-3B7D369C4252" label="" targetRef="oryx_D607CFCF-4C28-4144-BB25-E82269B5CD9D_gui" sourceRef="oryx_5B790FCC-C8C4-44D8-9DD2-3935EA223BB7_gui" id="oryx_3BE99AB9-4596-444E-8AFE-3B7D369C4252_gui"/>
-    </bpmndi:processDiagram>
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" xmlns:signavio="http://www.signavio.com" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" exporter="Signavio Process Editor, http://www.signavio.com" exporterVersion="" expressionLanguage="http://www.w3.org/1999/XPath" id="sid-24f7aab4-494f-40ca-bb32-cd4cd8aac628" targetNamespace="http://www.signavio.com/bpmn20" typeLanguage="http://www.w3.org/2001/XMLSchema" xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL http://www.omg.org/spec/BPMN/2.0/20100501/BPMN20.xsd">
+   <process id="sid-fade78af-60e9-4c20-a93f-b0c6e010973a" isExecutable="false">
+      <startEvent id="sid-5A8FFE10-8161-49B6-8BEF-98778796C8D5" name="">
+         <extensionElements>
+            <signavio:signavioMetaData metaKey="bgcolor" metaValue="#ffffff"/>
+         </extensionElements>
+         <outgoing>sid-31C51B53-6886-4E36-999D-70546CC04F41</outgoing>
+      </startEvent>
+      <userTask completionQuantity="1" id="sid-9A71807A-C281-47CA-AB8F-E6D49BB05710" implementation="unspecified" isForCompensation="false" name="Approve expenses" startQuantity="1">
+         <extensionElements>
+            <signavio:signavioMetaData metaKey="bgcolor" metaValue="#ffffcc"/>
+         </extensionElements>
+         <incoming>sid-31C51B53-6886-4E36-999D-70546CC04F41</incoming>
+         <outgoing>sid-E32E81F1-5897-4B31-9FDB-42F4C0826DF6</outgoing>
+         <potentialOwner id="sid-254e4c2a-e43b-4c90-bd90-1c897f169252" resourceRef="">
+            <resourceAssignmentExpression id="sid-803a31b7-ddde-46bc-8ece-cec7c7ecc7f0">
+               <formalExpression id="sid-5a59ca6c-25b8-4bf5-bd20-3e6c1e31e3f9">group(accountancy), group(management)</formalExpression>
+            </resourceAssignmentExpression>
+         </potentialOwner>
+      </userTask>
+      <endEvent id="sid-A9828677-54A1-4FB9-BD59-805BFE89743D" name="">
+         <extensionElements>
+            <signavio:signavioMetaData metaKey="bgcolor" metaValue="#ffffff"/>
+         </extensionElements>
+         <incoming>sid-E32E81F1-5897-4B31-9FDB-42F4C0826DF6</incoming>
+      </endEvent>
+      <sequenceFlow id="sid-31C51B53-6886-4E36-999D-70546CC04F41" name="" sourceRef="sid-5A8FFE10-8161-49B6-8BEF-98778796C8D5" targetRef="sid-9A71807A-C281-47CA-AB8F-E6D49BB05710"/>
+      <sequenceFlow id="sid-E32E81F1-5897-4B31-9FDB-42F4C0826DF6" name="" sourceRef="sid-9A71807A-C281-47CA-AB8F-E6D49BB05710" targetRef="sid-A9828677-54A1-4FB9-BD59-805BFE89743D"/>
+   </process>
+   <bpmndi:BPMNDiagram id="sid-7f48f8db-0f4f-4284-8fd6-0d0cd5b36f00">
+      <bpmndi:BPMNPlane bpmnElement="sid-fade78af-60e9-4c20-a93f-b0c6e010973a" id="sid-41144d2f-7d61-45a9-a34b-3d6dba3394dd">
+         <bpmndi:BPMNShape bpmnElement="sid-5A8FFE10-8161-49B6-8BEF-98778796C8D5" id="sid-5A8FFE10-8161-49B6-8BEF-98778796C8D5_gui">
+            <omgdc:Bounds height="30.0" width="30.0" x="285.0" y="190.0"/>
+         </bpmndi:BPMNShape>
+         <bpmndi:BPMNShape bpmnElement="sid-9A71807A-C281-47CA-AB8F-E6D49BB05710" id="sid-9A71807A-C281-47CA-AB8F-E6D49BB05710_gui">
+            <omgdc:Bounds height="80.0" width="100.0" x="370.0" y="165.0"/>
+         </bpmndi:BPMNShape>
+         <bpmndi:BPMNShape bpmnElement="sid-A9828677-54A1-4FB9-BD59-805BFE89743D" id="sid-A9828677-54A1-4FB9-BD59-805BFE89743D_gui">
+            <omgdc:Bounds height="28.0" width="28.0" x="530.0" y="191.0"/>
+         </bpmndi:BPMNShape>
+         <bpmndi:BPMNEdge bpmnElement="sid-E32E81F1-5897-4B31-9FDB-42F4C0826DF6" id="sid-E32E81F1-5897-4B31-9FDB-42F4C0826DF6_gui">
+            <omgdi:waypoint x="470.0" y="205.0"/>
+            <omgdi:waypoint x="530.0" y="205.0"/>
+         </bpmndi:BPMNEdge>
+         <bpmndi:BPMNEdge bpmnElement="sid-31C51B53-6886-4E36-999D-70546CC04F41" id="sid-31C51B53-6886-4E36-999D-70546CC04F41_gui">
+            <omgdi:waypoint x="315.0" y="205.0"/>
+            <omgdi:waypoint x="370.0" y="205.0"/>
+         </bpmndi:BPMNEdge>
+      </bpmndi:BPMNPlane>
+   </bpmndi:BPMNDiagram>
 </definitions>

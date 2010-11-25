@@ -1,33 +1,52 @@
-<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<definitions id="oryx_513b45f3-f35e-4a20-ad0d-f94eeee5225c" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://www.omg.org/bpmn20" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:schemaLocation="http://schema.omg.org/spec/BPMN/2.0 BPMN20.xsd" xmlns="http://schema.omg.org/spec/BPMN/2.0" xmlns:bpmndi="http://bpmndi.org">
-    <process id="oryx_77c62be5-953d-4704-983e-c074802a57d7"  name="Mixed candidate user and group example">
-        <laneSet id="oryx_0f8c7873-1edc-4646-ba86-5882139d376a">
-            <lane name="DefaultLane" id="oryx_1127af6d-111a-4784-87df-306af5f0a0a1">
-                <flowElementRef>oryx_E8781290-5011-4A22-A563-9C0B24048A96</flowElementRef>
-                <flowElementRef>oryx_8933AC72-DAF7-4180-969D-3F08D85B7B06</flowElementRef>
-                <flowElementRef>oryx_D42D2647-C3C5-4FC3-9684-DE6A035CA2CE</flowElementRef>
-            </lane>
-        </laneSet>
-        <startEvent name="" id="oryx_E8781290-5011-4A22-A563-9C0B24048A96"/>
-        <userTask implementation="unspecified" completionQuantity="1" startQuantity="1" isForCompensation="false" name="Write financial report" id="oryx_8933AC72-DAF7-4180-969D-3F08D85B7B06">
-            <documentation id="oryx_314a78ff-cf0a-4c06-a859-9427b64eb0dd">Write the bi-monthly financial report for the shareholders newsletter.</documentation>
-            <potentialOwner>
-                <resourceAssignmentExpression>
-                    <formalExpression>user(kermit), group(sales)</formalExpression>
-                </resourceAssignmentExpression>
-            </potentialOwner>
-        </userTask>
-        <endEvent name="" id="oryx_D42D2647-C3C5-4FC3-9684-DE6A035CA2CE"/>
-        <sequenceFlow targetRef="oryx_8933AC72-DAF7-4180-969D-3F08D85B7B06" sourceRef="oryx_E8781290-5011-4A22-A563-9C0B24048A96" name="" id="oryx_4D7BA7FE-AABC-4B76-9F7C-37D8CA8A10DB"/>
-        <sequenceFlow targetRef="oryx_D42D2647-C3C5-4FC3-9684-DE6A035CA2CE" sourceRef="oryx_8933AC72-DAF7-4180-969D-3F08D85B7B06" name="" id="oryx_538ED348-875B-4509-99F6-D3CCB91303ED"/>
-    </process>
-    <bpmndi:processDiagram processRef="oryx_77c62be5-953d-4704-983e-c074802a57d7" id="oryx_77c62be5-953d-4704-983e-c074802a57d7_gui">
-        <bpmndi:laneCompartment isVisible="false" height="0.0" width="0.0" y="0.0" x="0.0" name="DefaultLane" id="oryx_1127af6d-111a-4784-87df-306af5f0a0a1_gui">
-            <bpmndi:eventShape eventRef="oryx_E8781290-5011-4A22-A563-9C0B24048A96" height="30.0" width="30.0" y="165.0" x="180.0" name="" id="oryx_E8781290-5011-4A22-A563-9C0B24048A96_gui"/>
-            <bpmndi:activityShape activityRef="oryx_8933AC72-DAF7-4180-969D-3F08D85B7B06" height="80.0" width="100.0" y="140.0" x="255.0" name="Write financial report" id="oryx_8933AC72-DAF7-4180-969D-3F08D85B7B06_gui"/>
-            <bpmndi:eventShape eventRef="oryx_D42D2647-C3C5-4FC3-9684-DE6A035CA2CE" height="28.0" width="28.0" y="166.0" x="400.0" name="" id="oryx_D42D2647-C3C5-4FC3-9684-DE6A035CA2CE_gui"/>
-        </bpmndi:laneCompartment>
-        <bpmndi:sequenceFlowConnector sequenceFlowRef="oryx_4D7BA7FE-AABC-4B76-9F7C-37D8CA8A10DB" label="" targetRef="oryx_8933AC72-DAF7-4180-969D-3F08D85B7B06_gui" sourceRef="oryx_E8781290-5011-4A22-A563-9C0B24048A96_gui" id="oryx_4D7BA7FE-AABC-4B76-9F7C-37D8CA8A10DB_gui"/>
-        <bpmndi:sequenceFlowConnector sequenceFlowRef="oryx_538ED348-875B-4509-99F6-D3CCB91303ED" label="" targetRef="oryx_D42D2647-C3C5-4FC3-9684-DE6A035CA2CE_gui" sourceRef="oryx_8933AC72-DAF7-4180-969D-3F08D85B7B06_gui" id="oryx_538ED348-875B-4509-99F6-D3CCB91303ED_gui"/>
-    </bpmndi:processDiagram>
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" xmlns:signavio="http://www.signavio.com" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" exporter="Signavio Process Editor, http://www.signavio.com" exporterVersion="" expressionLanguage="http://www.w3.org/1999/XPath" id="sid-ea27abf0-6661-4a01-a3a5-d7094218fe9d" targetNamespace="http://www.signavio.com/bpmn20" typeLanguage="http://www.w3.org/2001/XMLSchema" xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL http://www.omg.org/spec/BPMN/2.0/20100501/BPMN20.xsd">
+   <process id="sid-eb969009-5071-4a8a-beaa-a9a8dcee43cc" isExecutable="false">
+      <startEvent id="sid-1D6B6E4E-68C7-4F7D-8BB3-179127B1FE81" name="">
+         <extensionElements>
+            <signavio:signavioMetaData metaKey="bgcolor" metaValue="#ffffff"/>
+         </extensionElements>
+         <outgoing>sid-4599C078-2FBC-4DF4-95E7-41866C3C3B6E</outgoing>
+      </startEvent>
+      <userTask completionQuantity="1" id="sid-D59A0F9E-9056-4785-8990-BA4AA5C9C71D" implementation="unspecified" isForCompensation="false" name="Write financial report" startQuantity="1">
+         <extensionElements>
+            <signavio:signavioMetaData metaKey="bgcolor" metaValue="#ffffcc"/>
+         </extensionElements>
+         <incoming>sid-4599C078-2FBC-4DF4-95E7-41866C3C3B6E</incoming>
+         <outgoing>sid-EBC10BC8-0132-4288-8657-3B413BCE6F9C</outgoing>
+         <potentialOwner id="sid-853554b7-6c1e-4bf8-b762-b2b4dc99c9ec" resourceRef="">
+            <resourceAssignmentExpression id="sid-8d2b0399-2151-49c5-bba5-040fc6965b8f">
+               <formalExpression id="sid-f18ae72c-a9e6-4ac4-84ea-93cec18dd5c5">user(kermit), group(sales)</formalExpression>
+            </resourceAssignmentExpression>
+         </potentialOwner>
+      </userTask>
+      <endEvent id="sid-6DF02214-3B1A-4C72-859E-50B3B50A7191" name="">
+         <extensionElements>
+            <signavio:signavioMetaData metaKey="bgcolor" metaValue="#ffffff"/>
+         </extensionElements>
+         <incoming>sid-EBC10BC8-0132-4288-8657-3B413BCE6F9C</incoming>
+      </endEvent>
+      <sequenceFlow id="sid-4599C078-2FBC-4DF4-95E7-41866C3C3B6E" name="" sourceRef="sid-1D6B6E4E-68C7-4F7D-8BB3-179127B1FE81" targetRef="sid-D59A0F9E-9056-4785-8990-BA4AA5C9C71D"/>
+      <sequenceFlow id="sid-EBC10BC8-0132-4288-8657-3B413BCE6F9C" name="" sourceRef="sid-D59A0F9E-9056-4785-8990-BA4AA5C9C71D" targetRef="sid-6DF02214-3B1A-4C72-859E-50B3B50A7191"/>
+   </process>
+   <bpmndi:BPMNDiagram id="sid-c33c7889-09b4-42e4-985c-0b7f788f0749">
+      <bpmndi:BPMNPlane bpmnElement="sid-eb969009-5071-4a8a-beaa-a9a8dcee43cc" id="sid-70708967-634f-42d1-a666-5e4ef387220e">
+         <bpmndi:BPMNShape bpmnElement="sid-1D6B6E4E-68C7-4F7D-8BB3-179127B1FE81" id="sid-1D6B6E4E-68C7-4F7D-8BB3-179127B1FE81_gui">
+            <omgdc:Bounds height="30.0" width="30.0" x="240.0" y="220.0"/>
+         </bpmndi:BPMNShape>
+         <bpmndi:BPMNShape bpmnElement="sid-D59A0F9E-9056-4785-8990-BA4AA5C9C71D" id="sid-D59A0F9E-9056-4785-8990-BA4AA5C9C71D_gui">
+            <omgdc:Bounds height="80.0" width="100.0" x="320.0" y="195.0"/>
+         </bpmndi:BPMNShape>
+         <bpmndi:BPMNShape bpmnElement="sid-6DF02214-3B1A-4C72-859E-50B3B50A7191" id="sid-6DF02214-3B1A-4C72-859E-50B3B50A7191_gui">
+            <omgdc:Bounds height="28.0" width="28.0" x="462.0" y="221.0"/>
+         </bpmndi:BPMNShape>
+         <bpmndi:BPMNEdge bpmnElement="sid-4599C078-2FBC-4DF4-95E7-41866C3C3B6E" id="sid-4599C078-2FBC-4DF4-95E7-41866C3C3B6E_gui">
+            <omgdi:waypoint x="270.0" y="235.0"/>
+            <omgdi:waypoint x="320.0" y="235.0"/>
+         </bpmndi:BPMNEdge>
+         <bpmndi:BPMNEdge bpmnElement="sid-EBC10BC8-0132-4288-8657-3B413BCE6F9C" id="sid-EBC10BC8-0132-4288-8657-3B413BCE6F9C_gui">
+            <omgdi:waypoint x="420.0" y="235.0"/>
+            <omgdi:waypoint x="462.0" y="235.0"/>
+         </bpmndi:BPMNEdge>
+      </bpmndi:BPMNPlane>
+   </bpmndi:BPMNDiagram>
 </definitions>

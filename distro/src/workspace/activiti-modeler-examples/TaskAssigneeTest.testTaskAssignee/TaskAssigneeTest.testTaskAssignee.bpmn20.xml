@@ -1,33 +1,53 @@
-<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<definitions id="oryx_01b7c238-510d-4647-9c6e-f2d87495b0b6" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://www.omg.org/bpmn20" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://schema.omg.org/spec/BPMN/2.0" xmlns:bpmndi="http://bpmndi.org">
-    <process id="oryx_35c92b76-5d55-4024-94d2-d1c1e8735f8b" name="Task Assignee example">
-        <laneSet id="oryx_1001f49a-3837-472d-9a58-f0c1428f16ff">
-            <lane name="DefaultLane" id="oryx_e1aaac83-2925-4472-9df7-cdee0e1f4d67">
-                <flowElementRef>oryx_14F84FFA-EF10-4A44-BE59-B9190F8C69A2</flowElementRef>
-                <flowElementRef>oryx_22B830DC-DDBA-4CE0-B0C6-AD8FB0B70B76</flowElementRef>
-                <flowElementRef>oryx_F7B06356-93E9-4429-BC57-E0B5A1DCF3DF</flowElementRef>
-            </lane>
-        </laneSet>
-        <startEvent name="" id="oryx_14F84FFA-EF10-4A44-BE59-B9190F8C69A2"/>
-        <userTask implementation="unspecified" completionQuantity="1" startQuantity="1" isForCompensation="false" name="Schedule meeting" id="oryx_22B830DC-DDBA-4CE0-B0C6-AD8FB0B70B76">
-            <documentation id="oryx_0542c4f8-0d86-437c-92fd-82adc02aecdb">Schedule an engineering meeting for next week with the new hire.</documentation>
-            <humanPerformer>
-                <resourceAssignmentExpression>
-                    <formalExpression>kermit</formalExpression>
-                </resourceAssignmentExpression>
-            </humanPerformer>
-        </userTask>
-        <endEvent name="" id="oryx_F7B06356-93E9-4429-BC57-E0B5A1DCF3DF"/>
-        <sequenceFlow targetRef="oryx_22B830DC-DDBA-4CE0-B0C6-AD8FB0B70B76" sourceRef="oryx_14F84FFA-EF10-4A44-BE59-B9190F8C69A2" name="" id="oryx_AFAFFDDB-1163-47CE-8FF3-EAF51809A912"/>
-        <sequenceFlow targetRef="oryx_F7B06356-93E9-4429-BC57-E0B5A1DCF3DF" sourceRef="oryx_22B830DC-DDBA-4CE0-B0C6-AD8FB0B70B76" name="" id="oryx_94E5CC52-3D80-4C79-9246-1A1036525E6E"/>
-    </process>
-    <bpmndi:processDiagram processRef="oryx_35c92b76-5d55-4024-94d2-d1c1e8735f8b" id="oryx_35c92b76-5d55-4024-94d2-d1c1e8735f8b_gui">
-        <bpmndi:laneCompartment isVisible="false" height="0.0" width="0.0" y="0.0" x="0.0" name="DefaultLane" id="oryx_e1aaac83-2925-4472-9df7-cdee0e1f4d67_gui">
-            <bpmndi:eventShape eventRef="oryx_14F84FFA-EF10-4A44-BE59-B9190F8C69A2" height="30.0" width="30.0" y="135.0" x="195.0" name="" id="oryx_14F84FFA-EF10-4A44-BE59-B9190F8C69A2_gui"/>
-            <bpmndi:activityShape activityRef="oryx_22B830DC-DDBA-4CE0-B0C6-AD8FB0B70B76" height="80.0" width="100.0" y="110.0" x="270.0" name="Schedule meeting" id="oryx_22B830DC-DDBA-4CE0-B0C6-AD8FB0B70B76_gui"/>
-            <bpmndi:eventShape eventRef="oryx_F7B06356-93E9-4429-BC57-E0B5A1DCF3DF" height="28.0" width="28.0" y="136.0" x="415.0" name="" id="oryx_F7B06356-93E9-4429-BC57-E0B5A1DCF3DF_gui"/>
-        </bpmndi:laneCompartment>
-        <bpmndi:sequenceFlowConnector sequenceFlowRef="oryx_AFAFFDDB-1163-47CE-8FF3-EAF51809A912" label="" targetRef="oryx_22B830DC-DDBA-4CE0-B0C6-AD8FB0B70B76_gui" sourceRef="oryx_14F84FFA-EF10-4A44-BE59-B9190F8C69A2_gui" id="oryx_AFAFFDDB-1163-47CE-8FF3-EAF51809A912_gui"/>
-        <bpmndi:sequenceFlowConnector sequenceFlowRef="oryx_94E5CC52-3D80-4C79-9246-1A1036525E6E" label="" targetRef="oryx_F7B06356-93E9-4429-BC57-E0B5A1DCF3DF_gui" sourceRef="oryx_22B830DC-DDBA-4CE0-B0C6-AD8FB0B70B76_gui" id="oryx_94E5CC52-3D80-4C79-9246-1A1036525E6E_gui"/>
-    </bpmndi:processDiagram>
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" xmlns:signavio="http://www.signavio.com" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" exporter="Signavio Process Editor, http://www.signavio.com" exporterVersion="" expressionLanguage="http://www.w3.org/1999/XPath" id="sid-6b683f76-02fb-4dbd-b677-6e4171b360b1" targetNamespace="http://www.signavio.com/bpmn20" typeLanguage="http://www.w3.org/2001/XMLSchema" xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL http://www.omg.org/spec/BPMN/2.0/20100501/BPMN20.xsd">
+   <process id="sid-e6b83f39-07e6-404b-8a65-184c72aa20e5" isExecutable="false">
+      <startEvent id="sid-CB746B53-1762-40BE-B00C-C3598982F84A" name="">
+         <extensionElements>
+            <signavio:signavioMetaData metaKey="bgcolor" metaValue="#ffffff"/>
+         </extensionElements>
+         <outgoing>sid-7033747D-1702-437C-BB3D-4519E40CBE8C</outgoing>
+      </startEvent>
+      <userTask completionQuantity="1" id="sid-E705C0E0-603F-4B76-92EF-77AD669A157E" implementation="unspecified" isForCompensation="false" name="Schedule meeting" startQuantity="1">
+         <documentation id="sid-5942e360-441c-4396-a807-0be6191ee48a">Schedule an engineering meeting for next week with the new hire.</documentation>
+         <extensionElements>
+            <signavio:signavioMetaData metaKey="bgcolor" metaValue="#ffffcc"/>
+         </extensionElements>
+         <incoming>sid-7033747D-1702-437C-BB3D-4519E40CBE8C</incoming>
+         <outgoing>sid-51E9BCEF-A523-42C8-A23B-81097EB5020A</outgoing>
+         <humanPerformer id="sid-a9d97d5c-f776-450f-98b4-47d25f90bbdf" resourceRef="">
+            <resourceAssignmentExpression id="sid-1d62100d-6157-4312-af58-c9804ff2bf0e">
+               <formalExpression id="sid-4b8e4131-1069-4d63-83e5-f61bdb06981e">kermit</formalExpression>
+            </resourceAssignmentExpression>
+         </humanPerformer>
+      </userTask>
+      <endEvent id="sid-82B7B2F7-E2F1-4354-81E0-8CCDA763A362" name="">
+         <extensionElements>
+            <signavio:signavioMetaData metaKey="bgcolor" metaValue="#ffffff"/>
+         </extensionElements>
+         <incoming>sid-51E9BCEF-A523-42C8-A23B-81097EB5020A</incoming>
+      </endEvent>
+      <sequenceFlow id="sid-7033747D-1702-437C-BB3D-4519E40CBE8C" name="" sourceRef="sid-CB746B53-1762-40BE-B00C-C3598982F84A" targetRef="sid-E705C0E0-603F-4B76-92EF-77AD669A157E"/>
+      <sequenceFlow id="sid-51E9BCEF-A523-42C8-A23B-81097EB5020A" name="" sourceRef="sid-E705C0E0-603F-4B76-92EF-77AD669A157E" targetRef="sid-82B7B2F7-E2F1-4354-81E0-8CCDA763A362"/>
+   </process>
+   <bpmndi:BPMNDiagram id="sid-76c3a8bc-58da-4d96-818e-16e885db8188">
+      <bpmndi:BPMNPlane bpmnElement="sid-e6b83f39-07e6-404b-8a65-184c72aa20e5" id="sid-f0471e11-a5f3-4d76-80a6-6cc24a65addf">
+         <bpmndi:BPMNShape bpmnElement="sid-CB746B53-1762-40BE-B00C-C3598982F84A" id="sid-CB746B53-1762-40BE-B00C-C3598982F84A_gui">
+            <omgdc:Bounds height="30.0" width="30.0" x="120.0" y="212.0"/>
+         </bpmndi:BPMNShape>
+         <bpmndi:BPMNShape bpmnElement="sid-E705C0E0-603F-4B76-92EF-77AD669A157E" id="sid-E705C0E0-603F-4B76-92EF-77AD669A157E_gui">
+            <omgdc:Bounds height="80.0" width="100.0" x="193.0" y="187.0"/>
+         </bpmndi:BPMNShape>
+         <bpmndi:BPMNShape bpmnElement="sid-82B7B2F7-E2F1-4354-81E0-8CCDA763A362" id="sid-82B7B2F7-E2F1-4354-81E0-8CCDA763A362_gui">
+            <omgdc:Bounds height="28.0" width="28.0" x="344.0" y="213.0"/>
+         </bpmndi:BPMNShape>
+         <bpmndi:BPMNEdge bpmnElement="sid-51E9BCEF-A523-42C8-A23B-81097EB5020A" id="sid-51E9BCEF-A523-42C8-A23B-81097EB5020A_gui">
+            <omgdi:waypoint x="293.0" y="227.0"/>
+            <omgdi:waypoint x="344.0" y="227.0"/>
+         </bpmndi:BPMNEdge>
+         <bpmndi:BPMNEdge bpmnElement="sid-7033747D-1702-437C-BB3D-4519E40CBE8C" id="sid-7033747D-1702-437C-BB3D-4519E40CBE8C_gui">
+            <omgdi:waypoint x="150.0" y="227.0"/>
+            <omgdi:waypoint x="193.0" y="227.0"/>
+         </bpmndi:BPMNEdge>
+      </bpmndi:BPMNPlane>
+   </bpmndi:BPMNDiagram>
 </definitions>

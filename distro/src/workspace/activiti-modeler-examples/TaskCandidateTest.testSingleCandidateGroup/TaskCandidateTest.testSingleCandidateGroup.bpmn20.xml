@@ -1,33 +1,53 @@
-<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<definitions id="oryx_04121f1b-403f-4034-a6f9-7adf3dc159b3" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://www.omg.org/bpmn20" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://schema.omg.org/spec/BPMN/2.0" xmlns:bpmndi="http://bpmndi.org">
-    <process id="oryx_a3703d29-53c4-4efc-913d-d20d737201a7" name="Single candidate group example">
-        <laneSet id="oryx_7029c696-8bb5-4475-bcec-419c599e4d66">
-            <lane name="DefaultLane" id="oryx_dd380803-71f7-4b0d-ab54-4e0c71b95836">
-                <flowElementRef>oryx_53830E5F-F687-4564-AB2C-81A0D462ED0D</flowElementRef>
-                <flowElementRef>oryx_25701702-0FB5-40D0-BA2B-25E55F444D14</flowElementRef>
-                <flowElementRef>oryx_FC58C7AF-F7D4-41CF-86FC-8ED9623B2C1E</flowElementRef>
-            </lane>
-        </laneSet>
-        <startEvent name="" id="oryx_53830E5F-F687-4564-AB2C-81A0D462ED0D"/>
-        <userTask implementation="unspecified" completionQuantity="1" startQuantity="1" isForCompensation="false" name="Pay out expenses" id="oryx_25701702-0FB5-40D0-BA2B-25E55F444D14">
-            <documentation id="oryx_f6215776-d202-4190-bae9-ac52d64241c0">Transfer money for approved expenses to employee.</documentation>
-            <potentialOwner>
-                <resourceAssignmentExpression>
-                    <formalExpression>accountancy</formalExpression>
-                </resourceAssignmentExpression>
-            </potentialOwner>
-        </userTask>
-        <endEvent name="" id="oryx_FC58C7AF-F7D4-41CF-86FC-8ED9623B2C1E"/>
-        <sequenceFlow targetRef="oryx_25701702-0FB5-40D0-BA2B-25E55F444D14" sourceRef="oryx_53830E5F-F687-4564-AB2C-81A0D462ED0D" name="" id="oryx_05B99B7B-6293-4DDA-B5A6-3826C969F404"/>
-        <sequenceFlow targetRef="oryx_FC58C7AF-F7D4-41CF-86FC-8ED9623B2C1E" sourceRef="oryx_25701702-0FB5-40D0-BA2B-25E55F444D14" name="" id="oryx_490C8E09-7FFB-490F-AAC2-096AA3355695"/>
-    </process>
-    <bpmndi:processDiagram processRef="oryx_a3703d29-53c4-4efc-913d-d20d737201a7" id="oryx_a3703d29-53c4-4efc-913d-d20d737201a7_gui">
-        <bpmndi:laneCompartment isVisible="false" height="0.0" width="0.0" y="0.0" x="0.0" name="DefaultLane" id="oryx_dd380803-71f7-4b0d-ab54-4e0c71b95836_gui">
-            <bpmndi:eventShape eventRef="oryx_53830E5F-F687-4564-AB2C-81A0D462ED0D" height="30.0" width="30.0" y="135.0" x="240.0" name="" id="oryx_53830E5F-F687-4564-AB2C-81A0D462ED0D_gui"/>
-            <bpmndi:activityShape activityRef="oryx_25701702-0FB5-40D0-BA2B-25E55F444D14" height="80.0" width="100.0" y="110.0" x="315.0" name="Pay out expenses" id="oryx_25701702-0FB5-40D0-BA2B-25E55F444D14_gui"/>
-            <bpmndi:eventShape eventRef="oryx_FC58C7AF-F7D4-41CF-86FC-8ED9623B2C1E" height="28.0" width="28.0" y="136.0" x="460.0" name="" id="oryx_FC58C7AF-F7D4-41CF-86FC-8ED9623B2C1E_gui"/>
-        </bpmndi:laneCompartment>
-        <bpmndi:sequenceFlowConnector sequenceFlowRef="oryx_05B99B7B-6293-4DDA-B5A6-3826C969F404" label="" targetRef="oryx_25701702-0FB5-40D0-BA2B-25E55F444D14_gui" sourceRef="oryx_53830E5F-F687-4564-AB2C-81A0D462ED0D_gui" id="oryx_05B99B7B-6293-4DDA-B5A6-3826C969F404_gui"/>
-        <bpmndi:sequenceFlowConnector sequenceFlowRef="oryx_490C8E09-7FFB-490F-AAC2-096AA3355695" label="" targetRef="oryx_FC58C7AF-F7D4-41CF-86FC-8ED9623B2C1E_gui" sourceRef="oryx_25701702-0FB5-40D0-BA2B-25E55F444D14_gui" id="oryx_490C8E09-7FFB-490F-AAC2-096AA3355695_gui"/>
-    </bpmndi:processDiagram>
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" xmlns:signavio="http://www.signavio.com" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" exporter="Signavio Process Editor, http://www.signavio.com" exporterVersion="" expressionLanguage="http://www.w3.org/1999/XPath" id="sid-1056644a-deff-4221-b926-b96857d19331" targetNamespace="http://www.signavio.com/bpmn20" typeLanguage="http://www.w3.org/2001/XMLSchema" xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL http://www.omg.org/spec/BPMN/2.0/20100501/BPMN20.xsd">
+   <process id="sid-1078f764-9bce-4525-9020-b10385f63254" isExecutable="false">
+      <startEvent id="sid-34506B63-6680-49A5-A4E0-4575FFC74728" name="">
+         <extensionElements>
+            <signavio:signavioMetaData metaKey="bgcolor" metaValue="#ffffff"/>
+         </extensionElements>
+         <outgoing>sid-98285B47-7683-40B4-8079-21706FBD8B22</outgoing>
+      </startEvent>
+      <userTask completionQuantity="1" id="sid-9E8B7B5E-82FF-4E92-9390-44CF546B3A00" implementation="unspecified" isForCompensation="false" name="Pay out expenses" startQuantity="1">
+         <documentation id="sid-81e946fb-0e61-4498-b17e-3d4e71e67d0d">Transfer money for approved expenses to employee.</documentation>
+         <extensionElements>
+            <signavio:signavioMetaData metaKey="bgcolor" metaValue="#ffffcc"/>
+         </extensionElements>
+         <incoming>sid-98285B47-7683-40B4-8079-21706FBD8B22</incoming>
+         <outgoing>sid-3ACB4945-F443-454B-B517-1F49A44EE383</outgoing>
+         <potentialOwner id="sid-0ac9a0b0-04de-4947-bfe7-1b72a8e04f63" resourceRef="">
+            <resourceAssignmentExpression id="sid-cbab346f-dbb8-443d-a65a-063d10274eb9">
+               <formalExpression id="sid-977f7233-9d73-42db-a29f-7eac81f716ec">accountancy</formalExpression>
+            </resourceAssignmentExpression>
+         </potentialOwner>
+      </userTask>
+      <endEvent id="sid-72386F9F-1C1D-45A3-8D92-7D97996A00D6" name="">
+         <extensionElements>
+            <signavio:signavioMetaData metaKey="bgcolor" metaValue="#ffffff"/>
+         </extensionElements>
+         <incoming>sid-3ACB4945-F443-454B-B517-1F49A44EE383</incoming>
+      </endEvent>
+      <sequenceFlow id="sid-98285B47-7683-40B4-8079-21706FBD8B22" name="" sourceRef="sid-34506B63-6680-49A5-A4E0-4575FFC74728" targetRef="sid-9E8B7B5E-82FF-4E92-9390-44CF546B3A00"/>
+      <sequenceFlow id="sid-3ACB4945-F443-454B-B517-1F49A44EE383" name="" sourceRef="sid-9E8B7B5E-82FF-4E92-9390-44CF546B3A00" targetRef="sid-72386F9F-1C1D-45A3-8D92-7D97996A00D6"/>
+   </process>
+   <bpmndi:BPMNDiagram id="sid-ea0c1090-268c-4f68-95b6-3273991cd238">
+      <bpmndi:BPMNPlane bpmnElement="sid-1078f764-9bce-4525-9020-b10385f63254" id="sid-91ce2a88-fa4c-4fdd-8f92-600cc884c9da">
+         <bpmndi:BPMNShape bpmnElement="sid-34506B63-6680-49A5-A4E0-4575FFC74728" id="sid-34506B63-6680-49A5-A4E0-4575FFC74728_gui">
+            <omgdc:Bounds height="30.0" width="30.0" x="255.0" y="175.0"/>
+         </bpmndi:BPMNShape>
+         <bpmndi:BPMNShape bpmnElement="sid-9E8B7B5E-82FF-4E92-9390-44CF546B3A00" id="sid-9E8B7B5E-82FF-4E92-9390-44CF546B3A00_gui">
+            <omgdc:Bounds height="80.0" width="100.0" x="348.0" y="150.0"/>
+         </bpmndi:BPMNShape>
+         <bpmndi:BPMNShape bpmnElement="sid-72386F9F-1C1D-45A3-8D92-7D97996A00D6" id="sid-72386F9F-1C1D-45A3-8D92-7D97996A00D6_gui">
+            <omgdc:Bounds height="28.0" width="28.0" x="506.0" y="176.0"/>
+         </bpmndi:BPMNShape>
+         <bpmndi:BPMNEdge bpmnElement="sid-98285B47-7683-40B4-8079-21706FBD8B22" id="sid-98285B47-7683-40B4-8079-21706FBD8B22_gui">
+            <omgdi:waypoint x="285.0" y="190.0"/>
+            <omgdi:waypoint x="348.0" y="190.0"/>
+         </bpmndi:BPMNEdge>
+         <bpmndi:BPMNEdge bpmnElement="sid-3ACB4945-F443-454B-B517-1F49A44EE383" id="sid-3ACB4945-F443-454B-B517-1F49A44EE383_gui">
+            <omgdi:waypoint x="448.0" y="190.0"/>
+            <omgdi:waypoint x="506.0" y="190.0"/>
+         </bpmndi:BPMNEdge>
+      </bpmndi:BPMNPlane>
+   </bpmndi:BPMNDiagram>
 </definitions>
