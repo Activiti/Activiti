@@ -38,6 +38,10 @@
   </para>
 
   <para>
+    All rest calls use "application/json", except for upload request which uses a normal multipart/form-data.
+  </para>
+
+  <para>
     The base URL for invoking a REST call is http://localhost:8080/activiti-rest/service/.
     So for example to list the process definitions in the engine point your browser to:
     http://localhost:8080/activiti-rest/service/process-engine
@@ -53,6 +57,45 @@
     <!-- REPOSITORY -->
 
     <title>Repository</title>
+
+    <section>
+      <title>Upload Deployment</title>
+      <para>
+        Uploads and installs a deployment of format .bpmn20.xml, .bar or .zip using normal "html form upload"
+        (enctype=multipart/form-data) in other words not a json-request. To make it possible for the ui to react when
+        the upload is complete it is possible to submit success/failure callbacks as parameters.
+        I.e. Sending "success=alert" will result in that the string alert will be placed inside a js script block with
+        "();" appended to the end. Sending "failure=alert" will result in "('&lt;error message&gt;');"
+        inside a script block. The actual deployment file shall be placed in a parameter named "deployment".
+      </para>
+      <itemizedlist>
+        <listitem>
+          <para>
+            <emphasis role="bold">Request: </emphasis>
+            <literal>POST /deployments</literal>
+            <programlisting>
+success={success}&amp;failure={success}&amp;deployment={file}</programlisting>
+          </para>
+        </listitem>
+        <listitem>
+          <para>
+            <emphasis role="bold">API: </emphasis>
+            <literal>ProcessEngines.getProcessEngine(configuredProcessEngineName).getRepositoryService().createDeployment().name(fileName).deploymentBuilder.deploy()</literal>
+          </para>
+        </listitem>
+        <listitem>
+          <para>
+            <emphasis role="bold">Response:</emphasis>
+            <programlisting>
+&lt;html&gt;
+  &lt;script type="text/javascript"&gt;
+      alert();
+  &lt;/script&gt;
+&lt;/html&gt;</programlisting>
+          </para>
+        </listitem>
+      </itemizedlist>
+    </section>
 
     <section>
       <title>Get Deployments</title>
@@ -378,8 +421,7 @@
           variables that are required and what type they have, but this is a temporary solution to enable simple form
           handling.
           We are currently looking for more proper solutions for forms, containing real meta models that can be used on
-          the server to avoid using meta data fields like above. I.e. X-forms or Alfresco Forms.
-          Please feel free to give suggestions or tips in the Activiti Forum.
+          the server to avoid using meta data fields like above. Please feel free to give suggestions or tips in the Activiti Forum.
         </para>
         <itemizedlist>
           <listitem>
