@@ -25,8 +25,9 @@ import org.activiti.engine.impl.interceptor.CommandExecutor;
  * @author Tom Baeyens
  */
 public class HistoricActivityInstanceQueryImpl extends AbstractQuery<HistoricActivityInstanceQuery, HistoricActivityInstance> 
-  implements HistoricActivityInstanceQuery {
+    implements HistoricActivityInstanceQuery {
   
+  protected String activityInstanceId;
   protected String processInstanceId;
   protected String executionId;
   protected String processDefinitionId;
@@ -147,16 +148,21 @@ public class HistoricActivityInstanceQueryImpl extends AbstractQuery<HistoricAct
     return this;
   }
 
-  public HistoricActivityInstanceQuery orderByActivityName() {
+  public HistoricActivityInstanceQueryImpl orderByActivityName() {
     orderBy(HistoricActivityInstanceQueryProperty.ACTIVITY_NAME);
     return this;
   }
 
-  public HistoricActivityInstanceQuery orderByActivityType() {
+  public HistoricActivityInstanceQueryImpl orderByActivityType() {
     orderBy(HistoricActivityInstanceQueryProperty.ACTIVITY_TYPE);
     return this;
   }
 
+  public HistoricActivityInstanceQueryImpl activityInstanceId(String activityInstanceId) {
+    this.activityInstanceId = activityInstanceId;
+    return this;
+  }
+  
 
   // getters and setters //////////////////////////////////////////////////////
   
@@ -190,5 +196,7 @@ public class HistoricActivityInstanceQueryImpl extends AbstractQuery<HistoricAct
   public boolean isUnfinished() {
     return unfinished;
   }
-  
+  public String getActivityInstanceId() {
+    return activityInstanceId;
+  }
 }

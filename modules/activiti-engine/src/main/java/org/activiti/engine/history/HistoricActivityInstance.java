@@ -23,6 +23,9 @@ import java.util.Date;
  */
 public interface HistoricActivityInstance {
 
+  /** The unique identifier of the execution. */
+  String getId();
+
   /** The unique identifier of the activity in the process */
   String getActivityId();
 

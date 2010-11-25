@@ -206,6 +206,9 @@
       <if test="processInstanceId != null">
         HAI.PROC_INST_ID_ = #{processInstanceId}
       </if>
+      <if test="activityInstanceId != null">
+        and HAI.ID_ = #{activityInstanceId}
+      </if>
       <if test="executionId != null">
         and HAI.EXECUTION_ID_ = #{executionId}
       </if>
