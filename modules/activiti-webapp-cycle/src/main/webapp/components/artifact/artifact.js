@@ -145,6 +145,11 @@
         tab.loadHandler.success = function(response) {
           me.onLoadTabSuccess(this /* the tab */, response);
         };
+        
+        tab.loadHandler.failure = function(response) {
+          me.onLoadTabFailure(this /* the tab */, response);
+        };
+        
         this._tabView.addTab(tab);
       }
 
@@ -229,6 +234,24 @@
       catch (e) {
           alert("Invalid response for tab data");
       }
+    },
+
+    onLoadTabFailure: function Artifact_onLoadTabFailure(tab, response) {
+      var responseJson = YAHOO.lang.JSON.parse(response.responseText);
+      
+      var tabContent = "<h3>Java Stack Trace:</h3>";
+      for(var line in responseJson.callstack) {
+        if( (responseJson.callstack[line].indexOf("org.activiti.cycle") != -1) || responseJson.callstack[line].indexOf("org.activiti.rest.api.cycle") != -1) {
+          tabContent += "<span class=\"cycle-stack-trace-highlight\">" + responseJson.callstack[line] + "</span>";
+        } else {
+          tabContent += "<span class=\"cycle-stack-trace\">" + responseJson.callstack[line] + "</span>";
+        }
+      }
+      
+      tab.set('content', tabContent);
+      
+      
+      Activiti.widget.PopupManager.displayError(responseJson.message);
     },
 
     onLodLinksSuccess: function Artifact_onLodLinksSuccess(tab, response) {

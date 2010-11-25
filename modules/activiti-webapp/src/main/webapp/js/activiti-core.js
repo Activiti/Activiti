@@ -68,6 +68,29 @@ Activiti.thirdparty = Activiti.thirdparty || {};
 Activiti.support = Activiti.support || {}
 
 /**
+ * Bind a function to a specific context.
+ *
+ * @method bind
+ * @param fn {function} Function to be bound.
+ * @param context {object} Context to bind function to.
+ * @param arguments {object} Optional arguments to prepend to arguments passed-in when function is actually called
+ * @return {function} Function wrapper.
+ * @static
+ */
+Activiti.util.bind = function(fn, context)
+{
+   if (!YAHOO.lang.isObject(context))
+   {
+      return fn;
+   }
+   var args = Array.prototype.slice.call(arguments).slice(2);
+   return (function()
+   {
+      return fn.apply(context, args.concat(Array.prototype.slice.call(arguments)));
+   });
+};
+
+/**
  * Copies the values in an object into a new instance.
  *
  * Note 1. This method ONLY copy values of type object, array, date, boolean, string or number.
@@ -1822,6 +1845,18 @@ Activiti.support.inputDate = function()
     msg: function Base_msg(messageId)
     {
       return Activiti.i18n.getMessage.call(this, messageId, this.name, Array.prototype.slice.call(arguments).slice(1));
+    },
+
+    /**
+     * Asserts a method always is called with this component's scope
+     *
+     * @method bind
+     * @param method {function} The function to bind to the scope of this component
+     * @return {function} The function bound to a different scope
+     */
+    bind: function Base_bind(method)
+    {
+       return Activiti.util.bind(method, this);
     },
 
     /**

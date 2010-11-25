@@ -132,7 +132,6 @@
           if(node.data.file) {
             // this.addItems([]);
           } else if(node.data.folder) {
-            this.addItem({ text: "Tag this...", value: {connectorId: node.data.connectorId, artifactId: node.data.artifactId}, onclick: { fn: me.onTagThisFolderContextMenuClick, obj: node, scope: me } });
             this.addItem({ text: "New artifact...", value: {connectorId: node.data.connectorId, artifactId: node.data.artifactId}, onclick: { fn: me.onCreateArtifactContextMenuClick, obj: node, scope: me } });
             this.addItem({ text: "New folder...", value: {connectorId: node.data.connectorId, artifactId: node.data.artifactId}, onclick: { fn: me.onCreateFolderContextMenuClick, obj: node, scope: me } });
           }
@@ -171,11 +170,6 @@
       }
       this.services.repositoryService.loadTree(data);
       this._dialog.cancel();
-    },
-
-    onTagThisFolderContextMenuClick: function RepoTree_onTagThisFolderContextMenuClick(eventName, params, node)
-    {
-      return new Activiti.component.TagThisDialog(this.id, node.data.connectorId, node.data.artifactId, node.label);
     },
 
     /**

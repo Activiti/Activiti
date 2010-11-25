@@ -75,22 +75,6 @@ public class ActivitiWebScript extends DeclarativeWebScript {
       // Let implementing webscript do something useful
       executeWebScript(ar, status, cache, model);
     }
-    catch (Exception e) {
-      String failure = ar.getString("failure", null);
-      if (failure == null) {
-        failure = ar.getBody().getString("failure");
-      }
-      if (failure != null) {
-        model.put("failure", failure);
-        model.put("error", e.getMessage());
-      }
-      else if (e instanceof WebScriptException) {
-        throw (WebScriptException) e;
-      }
-      else {
-        throw new WebScriptException(Status.STATUS_INTERNAL_SERVER_ERROR, e.getMessage(), e);
-      }
-    }
     finally {
       // Reset the current engine api user
       getIdentityService().setAuthenticatedUserId(null);

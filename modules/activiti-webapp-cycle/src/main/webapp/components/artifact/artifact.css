@@ -54,3 +54,25 @@ div .artifact-type {
   line-height:1.2em;
   color: #666;
 }
+
+/* formatting of stack traces */
+
+.cycle-stack-trace {
+  color: #999;
+  display: block;
+}
+
+.cycle-stack-trace:hover {
+  color: #333;
+  display: block;
+}
+
+.cycle-stack-trace-highlight {
+  color: #333;
+  display: block;
+}
+
+.cycle-stack-trace-highlight:hover {
+  background: #666;
+  color: #fff;
+}
