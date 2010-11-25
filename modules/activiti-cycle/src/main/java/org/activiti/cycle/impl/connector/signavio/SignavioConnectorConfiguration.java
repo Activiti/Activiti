@@ -111,6 +111,13 @@ public class SignavioConnectorConfiguration extends PasswordEnabledRepositoryCon
     return getSignavioUrl() + getEditorBackendUrlSuffix();
   }
 
+  public String getDirectoryIdFromInfoUrl(String href) {
+    String url = getDirectoryIdFromUrl(href);
+    // to remove '/info' from url end
+    url = url.substring(0, url.length() - 5);
+    return url;
+  }
+  
   public String getDirectoryIdFromUrl(String href) {
     return retrieveIdFromUrl(href, "/" + DIRECTORY_URL_SUFFIX);
   }

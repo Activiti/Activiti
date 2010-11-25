@@ -183,19 +183,19 @@ public class SignavioConnector extends AbstractRepositoryConnector<SignavioConne
   }
 
   private RepositoryFolder getFolderInfo(JSONObject jsonDirectoryObject) throws JSONException {
-    if (!"dir".equals(jsonDirectoryObject.getString("rel"))) {
+    if (!"dir".equals(jsonDirectoryObject.getString("rel")) && !"info".equals(jsonDirectoryObject.getString("rel"))) {
       // TODO: Think about that!
       throw new RepositoryException(jsonDirectoryObject + " is not a directory");
     }
     String directoryName = jsonDirectoryObject.getJSONObject("rep").getString("name");
-    
+
     if (jsonDirectoryObject.getJSONObject("rep").has("type")) {
       // need hard coded translation of some special folders with special
       // treatment by signavio
       // see https://app.camunda.com/jira/browse/HEMERA-328
       String type = jsonDirectoryObject.getJSONObject("rep").optString("type");
-       if ("public".equals(type)) {
-         // TODO: Think about what to show here (I18n?)
+      if ("public".equals(type)) {
+        // TODO: Think about what to show here (I18n?)
         directoryName = "Public";
       }
       if ("private".equals(type)) {
@@ -209,7 +209,13 @@ public class SignavioConnector extends AbstractRepositoryConnector<SignavioConne
     String href = jsonDirectoryObject.getString("href");
 
     // TODO: Check where we get the real ID from!
-    String id = getConfiguration().getDirectoryIdFromUrl(href);
+    String id = null;
+    if (href.endsWith("/info")) {
+      // checking for '/info' at url end and remove it
+      id = getConfiguration().getDirectoryIdFromInfoUrl(href);
+    } else {
+      id = getConfiguration().getDirectoryIdFromUrl(href);
+    }
     RepositoryFolderImpl folderInfo = new RepositoryFolderImpl(getConfiguration().getId(), id);
 
     folderInfo.getMetadata().setName(directoryName);
@@ -241,7 +247,7 @@ public class SignavioConnector extends AbstractRepositoryConnector<SignavioConne
     fileInfo.getMetadata().setLastAuthor(json.optString("author"));
     fileInfo.getMetadata().setCreated(SignavioJsonHelper.getDateValueIfExists(json, "created"));
     fileInfo.getMetadata().setLastChanged(SignavioJsonHelper.getDateValueIfExists(json, "updated"));
-    
+
     // relObject.getJSONObject("rep").getString("revision"); --> UUID of
     // revision
     // relObject.getJSONObject("rep").getString("description");
@@ -267,8 +273,7 @@ public class SignavioConnector extends AbstractRepositoryConnector<SignavioConne
       String type = json.getString("type");
       if (SignavioPluginDefinition.ORYX_TYPE_ATTRIBUTE_FOR_BPMN_20.equals(type)) {
         artifactTypeID = SignavioPluginDefinition.ARTIFACT_TYPE_BPMN_20;
-      }
-      else if (SignavioPluginDefinition.SIGNAVIO_NAMESPACE_FOR_BPMN_2_0.equals(type)) {
+      } else if (SignavioPluginDefinition.SIGNAVIO_NAMESPACE_FOR_BPMN_2_0.equals(type)) {
         artifactTypeID = SignavioPluginDefinition.ARTIFACT_TYPE_BPMN_20;
       }
     }
@@ -284,14 +289,14 @@ public class SignavioConnector extends AbstractRepositoryConnector<SignavioConne
         Response directoryResponse = getJsonResponse(getConfiguration().getDirectoryUrl(id));
         JsonRepresentation jsonData = new JsonRepresentation(directoryResponse.getEntity());
         JSONArray relJsonArray = jsonData.getJsonArray();
-  
+
         if (log.isLoggable(Level.FINEST)) {
           RestClientLogHelper.logJSONArray(log, Level.FINEST, relJsonArray);
         }
-  
+
         for (int i = 0; i < relJsonArray.length(); i++) {
           JSONObject relObject = relJsonArray.getJSONObject(i);
-  
+
           if ("dir".equals(relObject.getString("rel"))) {
             RepositoryFolder folderInfo = getFolderInfo(relObject);
             nodes.add(folderInfo);
@@ -301,6 +306,7 @@ public class SignavioConnector extends AbstractRepositoryConnector<SignavioConne
           }
         }
         Collections.sort(nodes, new Comparator<RepositoryNode>() {
+
           public int compare(RepositoryNode arg0, RepositoryNode arg1) {
             return arg0.getMetadata().getName().compareTo(arg1.getMetadata().getName());
           }
@@ -314,7 +320,8 @@ public class SignavioConnector extends AbstractRepositoryConnector<SignavioConne
 
   private ArrayList<RepositoryNode> getChildrenFromOryxBackend(String id) throws IOException, JSONException {
     ArrayList<RepositoryNode> nodes = new ArrayList<RepositoryNode>();
-    // extracts only BPMN 2.0 models, since everything else is more or less unsupported
+    // extracts only BPMN 2.0 models, since everything else is more or less
+    // unsupported
     SignavioConnectorConfiguration connectorConfiguration = getConfiguration();
     String connectorId = connectorConfiguration.getId();
     int pageSize = 10;
@@ -324,9 +331,11 @@ public class SignavioConnector extends AbstractRepositoryConnector<SignavioConne
         JSONObject stencilsetInfo = stencilsets.getJSONObject(i);
         String stencilsetName = stencilsetInfo.getString("title");
         String stencilsetNamespace = stencilsetInfo.getString("namespace");
-        // takes too long: JSONArray modelRefs = getModelIdsFromOryxBackend(stencilsetNamespace);
+        // takes too long: JSONArray modelRefs =
+        // getModelIdsFromOryxBackend(stencilsetNamespace);
         String folderId = stencilsetNamespace;
-        String folderName = stencilsetName; // takes too long: + " (" + modelRefs.length() + ")";
+        String folderName = stencilsetName; // takes too long: + " (" +
+                                            // modelRefs.length() + ")";
         RepositoryFolder virtualFolder = new RepositoryFolderImpl(connectorId, folderId);
         virtualFolder.getMetadata().setName(folderName);
         nodes.add(virtualFolder);
@@ -395,8 +404,20 @@ public class SignavioConnector extends AbstractRepositoryConnector<SignavioConne
     try {
       Response directoryResponse = getJsonResponse(getConfiguration().getDirectoryUrl(id));
       JsonRepresentation jsonData = new JsonRepresentation(directoryResponse.getEntity());
-      JSONObject jsonObject = jsonData.getJsonObject();
-      return getFolderInfo(jsonObject);
+      JSONArray jsonArray = jsonData.getJsonArray();
+
+      // search for rel: "info" in jsonArray to get directory specified by id;
+      // FIXME: possible to throw npe
+      JSONObject jsonDir = null;
+      for (int i = 0; i < jsonArray.length(); i++) {
+        jsonDir = jsonArray.getJSONObject(i);
+        if ("info".equals(jsonDir.get("rel"))) {
+          break;
+        }
+        jsonDir = null;
+      }
+
+      return getFolderInfo(jsonDir);
     } catch (Exception ex) {
       throw new RepositoryNodeNotFoundException(getConfiguration().getName(), RepositoryArtifact.class, id, ex);
     }
@@ -409,7 +430,7 @@ public class SignavioConnector extends AbstractRepositoryConnector<SignavioConne
     try {
       Response modelResponse = getJsonResponse(getConfiguration().getModelUrl(id) + "/info");
       jsonData = new JsonRepresentation(modelResponse.getEntity());
-      jsonObject = jsonData.getJsonObject(); 
+      jsonObject = jsonData.getJsonObject();
       return getArtifactInfoFromFile(id, jsonObject);
     } catch (Exception ex) {
       throw new RepositoryNodeNotFoundException(getConfiguration().getName(), RepositoryArtifact.class, id, ex);
@@ -526,31 +547,29 @@ public class SignavioConnector extends AbstractRepositoryConnector<SignavioConne
           throws RepositoryNodeNotFoundException {
 
     // TODO: Add check if model already exists (overwrite or throw exception?)
-    
+
     String revisionComment = null;
     String description = null;
-    
+
     try {
       // do this to check if jsonString is valid
       JSONObject jsonModel = new JSONObject(jsonContent);
 
-      Form modelForm = new Form(); 
+      Form modelForm = new Form();
       if (revisionComment != null) {
         modelForm.add("comment", revisionComment);
-      }
-      else {
+      } else {
         modelForm.add("comment", "");
       }
       if (description != null) {
         modelForm.add("description", description);
-      }
-      else {
+      } else {
         modelForm.add("description", "");
       }
       modelForm.add("glossary_xml", new JSONArray().toString());
       modelForm.add("json_xml", jsonModel.toString());
       modelForm.add("name", artifactName);
-      
+
       // TODO: Check ArtifactType here correctly
       modelForm.add("namespace", SignavioPluginDefinition.SIGNAVIO_NAMESPACE_FOR_BPMN_2_0);
       // Important: Don't set the type attribute here, otherwise it will not
@@ -564,22 +583,23 @@ public class SignavioConnector extends AbstractRepositoryConnector<SignavioConne
                       "svg_xml", //
                       "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:oryx=\"http://oryx-editor.org\" id=\"sid-80D82B67-3B30-4B35-A6CB-16EEE17A719F\" width=\"50\" height=\"50\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" xmlns:svg=\"http://www.w3.org/2000/svg\"><defs/><g stroke=\"black\" font-family=\"Verdana, sans-serif\" font-size-adjust=\"none\" font-style=\"normal\" font-variant=\"normal\" font-weight=\"normal\" line-heigth=\"normal\" font-size=\"12\"><g class=\"stencils\" transform=\"translate(25, 25)\"><g class=\"me\"/><g class=\"children\"/><g class=\"edge\"/></g></g></svg>");
       modelForm.add("type", "BPMN 2.0");
-      
+
       // Signavio generates a new id for POSTed models, so we don't have to set
       // this ID ourself.
       // But anyway, then we don't know the id and cannot load the artifact down
       // to return it correctly, so we generate one ourself
-      // Christian: We need to remove the hypen in the generated uuid, otherwise signavio is unable to create a model
+      // Christian: We need to remove the hypen in the generated uuid, otherwise
+      // signavio is unable to create a model
       String id = UUID.randomUUID().toString().replace("-", "");
       modelForm.add("id", id);
-      
+
       // modelForm.add("views", new JSONArray().toString());
       Representation modelRep = modelForm.getWebRepresentation();
 
       Request jsonRequest = new Request(Method.POST, new Reference(getConfiguration().getModelRootUrl()), modelRep);
       jsonRequest.getClientInfo().getAcceptedMediaTypes().add(new Preference<MediaType>(MediaType.APPLICATION_JSON));
       sendRequest(jsonRequest);
-      
+
       // TODO: return the object
       return getRepositoryArtifact(id);
     } catch (Exception je) {
@@ -606,7 +626,8 @@ public class SignavioConnector extends AbstractRepositoryConnector<SignavioConne
   public String transformJsonToBpmn20Xml(String jsonData) {
     try {
       JSONObject json = new JSONObject(jsonData);
-      Json2XmlConverter converter = new Json2XmlConverter(json.toString(), this.getClass().getClassLoader().getResource("META-INF/validation/xsd/BPMN20.xsd").toString());
+      Json2XmlConverter converter = new Json2XmlConverter(json.toString(), this.getClass().getClassLoader().getResource("META-INF/validation/xsd/BPMN20.xsd")
+              .toString());
       return converter.getXml().toString();
     } catch (Exception ex) {
       throw new RepositoryException("Error while transforming BPMN2_0_JSON to BPMN2_0_XML", ex);

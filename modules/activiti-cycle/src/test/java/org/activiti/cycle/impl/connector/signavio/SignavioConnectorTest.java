@@ -14,15 +14,20 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.activiti.cycle.RepositoryFolder;
 import org.activiti.cycle.RepositoryNode;
 import org.activiti.cycle.impl.transform.JsonTransformation;
 import org.activiti.cycle.impl.transform.signavio.AdjustShapeNamesTransformation;
 import org.activiti.cycle.impl.transform.signavio.BpmnPoolExtraction;
 import org.activiti.cycle.impl.transform.signavio.ExchangeSignavioUuidWithNameTransformation;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.restlet.Response;
+import org.restlet.ext.json.JsonRepresentation;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -160,4 +165,18 @@ public class SignavioConnectorTest {
     assertTrue(childNodes.size() > 0);
   }
 
+  @Ignore
+  @Test
+  public void testGetFolderInfo() throws IOException, JSONException {
+    SignavioConnectorConfiguration conf = new SignavioConnectorConfiguration("https://editor.signavio.com/");
+    conf.setLoginRequired(true);
+    conf.setUser("user");
+    conf.setPassword("pw");
+    SignavioConnector connector = (SignavioConnector) conf.createConnector();
+    connector.login(conf.getUser(), conf.getPassword());
+    
+    RepositoryFolder folder = connector.getRepositoryFolder(conf.getDirectoryUrl("/407c45d65cad48548f7b2dac5cfde5fe"));
+    Assert.assertNotNull(folder);
+    System.out.println(folder);
+  }
 }
