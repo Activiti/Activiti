@@ -20,26 +20,36 @@
     and <literal>build.{your-database}.properties</literal> .  Check those files for more information on 
     configurable properties and potential values.
     </para>
-    <para>The easiest target to get started is <literal>demo.setup</literal>. That target will 
+    <para>The easiest target to get started is open a command prompt in de <literal>setup</literal> folder 
+    and type:
+    </para>
+    <programlisting>ant demo.start</programlisting>
+    <para>This target will start tomcat and if you're using h2, it will also start the h2 database.
+    The first time when that is executed, it will also perform the installation:  
     </para>
     <itemizedlist>
-      <listitem><para>Fetch the library dependencies for the examples</para></listitem>
-      <listitem><para>Install the H2 in ${activiti.home}/apps/h2</para></listitem>
-      <listitem><para>Start the H2 database</para></listitem>
-      <listitem><para>Create the Activiti tables in the database</para></listitem>
-      <listitem><para>Download Tomcat if not available in the ${downloads.dir}</para></listitem>
-      <listitem><para>Install Tomcat in ${activiti.home}/apps/apache-tomcat-${tomcat.version}</para></listitem>
-      <listitem><para>Create an Activiti configuration jar</para></listitem>
-      <listitem><para>Install Activiti Engine into Tomcat, which includes libraries and configurations</para></listitem>
-      <listitem><para>Insert the demo users and groups in the Activiti identity tables (see below)</para></listitem>
-      <listitem><para>Deploy the example processes to the Activiti Engine DB</para></listitem>
-      <listitem><para>Deploy the REST interface webapp into tomcat</para></listitem>
-      <listitem><para>Download the Activiti Modeler webapp to ${activiti.home}/webapps</para></listitem>
-      <listitem><para>Deploy the Probe, Explorer and Modeler webapps into tomcat.</para></listitem>
+      <listitem><para>(*) Build the webapps.  All libraries are stored in <literal>${actviti.home}/setup/files/dependencies/libs</literal>
+        The webapps without the libs are stored in <literal>${actviti.home}/setup/files/webapps</literal>. Building the webapps means that
+        webapps are combined with the necessary libraries in <literal>${actviti.home}/setup/build/webapps</literal> 
+      </para></listitem>
+      <listitem><para>(*) Install the H2 in ${activiti.home}/apps/h2.  This only happens if you're using h2 as your database.  
+        H2 is the default database.</para></listitem>
+      <listitem><para>Start the H2 database.  Again, this is only done if using h2 as the database.  If you're using 
+        a different database it is assumed that it is already up and running.</para></listitem>
+      <listitem><para>(*) Create the Activiti tables in the database</para></listitem>
+      <listitem><para>(*) Insert the demo users and groups in the Activiti identity tables (see below)</para></listitem>
+      <listitem><para>(*) Deploy the example processes to the Activiti Engine DB</para></listitem>
+      <listitem><para>(*) Download Tomcat if not available in the ${downloads.dir}</para></listitem>
+      <listitem><para>(*) Install Tomcat in ${activiti.home}/apps/apache-tomcat-${tomcat.version}</para></listitem>
+      <listitem><para>(*) Create an Activiti configuration jar</para></listitem>
+      <listitem><para>(*) Deploy the REST interface webapp into tomcat</para></listitem>
+      <listitem><para>(*) Download the Activiti Modeler webapp to ${activiti.home}/webapps</para></listitem>
+      <listitem><para>(*) Deploy the Probe, Explorer and Modeler webapps into tomcat.</para></listitem>
       <listitem><para>Start tomcat</para></listitem>
     </itemizedlist>
+    <para>(*) only performed the first time when running <literal>ant demo.start</literal> </para>
     <para>After running this target H2 and Tomcat will be running in the background.  To stop those 
-    processes run <literal>ant demo.teardown</literal>. Note that if you start Tomcat manually with the <literal>startup</literal> and <literal>shutdown</literal> scripts in tomcats <literal>bin</literal> directory, on some platforms Activiti Cycle will currently store configuration files in the working directory (which is the directory you start the script in).</para>
+    processes run <literal>ant demo.stop</literal>.</para>
     <para>The other targets in that build script can also be called individually and they will take the 
     configurable properties into account. Run <literal>ant -p</literal> for more details.
     </para>
@@ -127,68 +137,38 @@
   </section>
   
   <section id="examples">
-    <title>Examples</title>
-    <para>The distribution contains example source code that show different types of 
-    usages of Activiti and their library dependencies. The examples are grouped according 
-    to their dependencies.
-    </para>
-    <para>The distribution doesn't contain the library dependencies out-of-the-box, 
-    but <link linkend="librarydependencies">the next section</link> shows how the setup script can automatically 
-    download and organize the library dependencies.
-    The <literal>examples</literal> directory in the root of the distribution
-    contains these types of examples:
+    <title>Examples, workspace and library dependencies</title>
+    <para>The distribution contains a workspace directory containing a couple of example java projects:
     </para>
     <itemizedlist>
-      <listitem><para><emphasis role="bold">activiti-engine</emphasis>: This set of 
+      <listitem><para><emphasis role="bold">activiti-engine-examples</emphasis>: This set of 
       examples show the most common usage of Activiti: BPMN process definitions 
       and process executions are stored in a DB and the examples make use of 
       the persistent API.</para></listitem>
-      <listitem><para><emphasis role="bold">activiti-spring</emphasis>: These examples
+      <listitem><para><emphasis role="bold">activiti-spring-examples</emphasis>: These examples
       show how you can use the Activiti Engine in a Spring environment.    
       </para></listitem>
-      <listitem><para><emphasis role="bold">activiti-pvm</emphasis> These examples 
-      show the bare bones Process Virtual Machine.  No persistence, no process 
-      language.  This is the basis for building your own process language and engine.
+      <listitem><para><emphasis role="bold">activiti-cycle-examples</emphasis>: This is a 
+      project containing an demo example project for Activiti Cycle 
+      </para></listitem>
+      <listitem><para><emphasis role="bold">activiti-modeler-examples</emphasis>: This is a 
+      file based model repository to which the Activiti Modeler is configured in the 
+      demo setup. 
       </para></listitem>
     </itemizedlist>
-  </section>
-  
-  <section id="librarydependencies">
-    <title>Library dependencies</title>
-    <para>Activiti takes great care in minimizing library dependencies.  
-    The 3rd party library dependencies are not included in the Activiti 
-    download to reduce the download size, but the setup script can download 
-    and organize the library dependencies for <link linkend="examples">those examples</link> 
-    that you want to explore.      
+    <para>To put all the appropriate library dependencies in place in those example projects, 
+    run this command in the setup:
     </para>
-    <para>Fetching the library dependencies is included in the 
-    <literal>demo.setup</literal></para>
-    <para>To download the library dependencies, use one of these targets
-    in the ant <literal>setup/build.xml</literal> file:
-    </para>
-    <itemizedlist>
-      <listitem><para>examples.get.libs.all</para></listitem>
-      <listitem><para>examples.get.libs.engine</para></listitem>
-      <listitem><para>examples.get.libs.spring</para></listitem>
-      <listitem><para>examples.get.libs.pvm</para></listitem>
-    </itemizedlist>
-    <para>Those targets will create following directories in the
-    respective example modules and put the libraries in there:
-    </para>
-    <itemizedlist>
-      <listitem><para>examples/activiti-engine-examples/libs-runtime</para></listitem>
-      <listitem><para>examples/activiti-engine-examples/libs-test</para></listitem>
-    </itemizedlist>
-    <itemizedlist>
-      <listitem><para>examples/activiti-spring-examples/libs-runtime</para></listitem>
-      <listitem><para>examples/activiti-spring-examples/libs-test</para></listitem>
-    </itemizedlist>
-    <itemizedlist>
-      <listitem><para>examples/activiti-pvm-examples/libs-runtime</para></listitem>
-      <listitem><para>examples/activiti-pvm-examples/libs-test</para></listitem>
-    </itemizedlist>
-    <para>That gives a clear indication of which libraries you need at runtime and 
-    which extra libraries that are needed to run the example tests.
+    <programlisting>ant build.examples</programlisting>
+    <para>Once you've done that the <literal>activiti-engine-examples</literal> and 
+    <literal>activiti-spring-examples</literal> will contain <literal>libs-runtime</literal>
+    and <literal>libs-test</literal> directories containing the runtime dependency jars and 
+    test time dependency jars respectively.</para>
+    <para>All the libs are located in <literal>setup/files/dependencies/libs</literal> 
+    And the files <literal>setup/files/dependencies/libs.*.txt</literal> document 
+    which libraries you need in different situations.  The <literal>build.dependencies</literal>
+    ant target uses these files to put the right libraries in place in the workspace 
+    example projects.
     </para>
   </section>
   

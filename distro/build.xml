@@ -76,6 +76,12 @@
     <exec executable="${mvn.executable}" dir="../modules/activiti-webapp">
       <arg line="dependency:unpack-dependencies -DoutputDirectory=../../distro/target/spring-surf-application-war -DincludeArtifactIds=spring-surf-application"/>
     </exec>
+    <!-- ADD ACTIVITI JARS -->
+		<copy todir="target/libs-engine-runtime">
+			<fileset dir="../modules/activiti-engine/target">
+				<include name="activiti-engine-*.jar" />
+			</fileset>
+		</copy>
     <!-- DELETE UNNECESSARY ANT JARS -->
     <delete>
        <fileset dir="target/libs-engine-runtime">
@@ -124,6 +130,7 @@
       <arg line="${ls.executable.options} target${ls.executable.path.seperator}spring-surf-application-war${ls.executable.path.seperator}WEB-INF${ls.executable.path.seperator}lib"/>
     </exec>
     <!-- MOVE ALL LIBS TO setup/files/dependencies/libs -->
+		<mkdir dir="${target.distro.root}/setup/files/dependencies/libs" />
     <move todir="${target.distro.root}/setup/files/dependencies/libs">
       <fileset dir="target/libs-engine-runtime" />
       <fileset dir="target/libs-engine-test" />
@@ -169,16 +176,13 @@
         <include name="org/activiti/examples/**" />
         <include name="activiti.cfg.xml" />
         <include name="logging.properties" />
+        <include name="META-INF/persistence.xml" />
       </fileset>
     </copy>
     <mkdir dir="${target.distro.root}/workspace/activiti-spring-examples/src" />
     <copy todir="${target.distro.root}/workspace/activiti-spring-examples/src">
-      <fileset dir="../modules/activiti-spring/src/test/java">
-        <include name="org/activiti/examples/**" />
-      </fileset>
-      <fileset dir="../modules/activiti-spring/src/test/resources">
-        <include name="org/activiti/examples/**" />
-      </fileset>
+      <fileset dir="../modules/activiti-spring/src/test/java" />
+      <fileset dir="../modules/activiti-spring/src/test/resources" />
     </copy>
 	</target>
 
