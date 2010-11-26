@@ -27,7 +27,8 @@
     <delete dir="target" />
   </target>
   
-  <target name="distro" depends="build.modules, 
+  <target name="distro" depends="internal.build.cycle.mvn.project.template,
+                                 build.modules, 
   	                             copy.static.resources,
   	                             copy.dependencies,
                                  copy.webapps,
@@ -319,5 +320,20 @@
   	  <zipfileset file="${modeler.src.files.folder}/bpmn2.0activiti.json"    fullpath="editor/stencilsets/extensions/bpmn2.0activiti/bpmn2.0activiti.json" />
   	</war>
   </target>
+  
+	<target name="internal.build.cycle.mvn.project.template">
+		<zip destfile="../modules/activiti-cycle/src/main/resources/org/activiti/cycle/impl/connector/signavio/action/activiti-cycle-maven-template.zip">
+			<fileset dir="../modules">
+				<include name="activiti-cycle-maven-template/**/*" />
+				<exclude name="activiti-cycle-maven-template/bin/**/*" />
+				<exclude name="activiti-cycle-maven-template/bin" />
+				<exclude name="activiti-cycle-maven-template/target/**/*" />
+				<exclude name="activiti-cycle-maven-template/target" />
+				<exclude name="activiti-cycle-maven-template/.svn/**/*" />
+				<exclude name="activiti-cycle-maven-template/.svn" />
+			</fileset>
+		</zip>
+	</target>
+  
 	
 </project>
