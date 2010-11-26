@@ -90,21 +90,21 @@
     </annotation>
     <complexType>
       <!-- TODO: activiti:value -->
-      <attribute name="id" use="required" type="string"">
+      <attribute name="id" use="required" type="string">
         <annotation>
           <documentation>
             The key used to submit the property through the API.
           </documentation>
         </annotation>
       </attribute>
-      <attribute name="name" type="string"">
+      <attribute name="name" type="string">
         <annotation>
           <documentation>
             The display label of the property.
           </documentation>
         </annotation>
       </attribute>
-      <attribute name="type" type="string"">
+      <attribute name="type" type="string">
         <annotation>
           <documentation>
             The type of the property (see documentation for supported types). 
@@ -112,35 +112,35 @@
           </documentation>
         </annotation>
       </attribute>
-      <attribute name="readable" type="string"">
+      <attribute name="readable" type="string">
         <annotation>
           <documentation>
             Specifies if the property can be read and displayed in the form.
           </documentation>
         </annotation>
       </attribute>
-      <attribute name="writable" type="string"">
+      <attribute name="writable" type="string">
         <annotation>
           <documentation>
             Specifies if the property is expected when the form is submitted.
           </documentation>
         </annotation>
       </attribute>
-      <attribute name="required" type="string"">
+      <attribute name="required" type="string">
         <annotation>
           <documentation>
             Specifies if the property is a required field.
           </documentation>
         </annotation>
       </attribute>
-      <attribute name="variable" type="string"">
+      <attribute name="variable" type="string">
         <annotation>
           <documentation>
             Specifies the process variable on which the variable is mapped.
           </documentation>
         </annotation>
       </attribute>
-      <attribute name="expression" type="string"">
+      <attribute name="expression" type="string">
         <annotation>
           <documentation>
             Specifies an expression that maps the property, eg. ${street.address}
