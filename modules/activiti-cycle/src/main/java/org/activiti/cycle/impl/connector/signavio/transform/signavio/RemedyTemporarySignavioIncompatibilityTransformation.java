@@ -17,6 +17,11 @@ public class RemedyTemporarySignavioIncompatibilityTransformation {
     if (!existAttribute(xml, "process", "name")) {
       xml = addAttribute(xml, "process", "name", processName);
     }
+ else {
+      // change the name to the process name (much more intuitive for the
+      // moment)
+      xml = setAttributeText(xml, "process", "name", processName);
+    }
     
     return transformBpmn20Xml(xml);
   }
