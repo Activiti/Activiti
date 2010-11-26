@@ -59,18 +59,18 @@ historyService.createHistoricDetailQuery()
 </section>
   <section id="historyConfig">
     <title>History configuration</title>
-	  <para>The history level can be confugured programatically, using the <literal>HISTORYLEVEL_*</literal>constants defined on ProcessEngineConfiguration:</para>
+	  <para>The history level can be confugured programatically, using the <literal>HISTORY_*</literal>constants defined on <literal>ProcessEngineConfiguration</literal>:</para>
       <programlisting>
 ProcessEngine processEngine = ProcessEngineConfiguration
   .createProcessEngineConfigurationFromResourceDefault()
-  <emphasis role="bold">.setHistoryLevel(ProcessEngineConfiguration.HISTORYLEVEL_AUDIT)</emphasis>
+  <emphasis role="bold">.setHistory(ProcessEngineConfiguration.HISTORY_AUDIT)</emphasis>
   .buildProcessEngine();
       </programlisting>
       
       <para>The level can also be configured in activiti.cfg.xml or in a spring-context:</para>
 	  
 	  <programlisting>&lt;bean id=&quot;processEngineConfiguration&quot; class=&quot;org.activiti.engine.impl.cfg.StandaloneInMemProcessEngineConfiguration&quot;&gt;
-  &lt;property name=&quot;historyLevel&quot; value=&quot;2&quot; /&gt;
+  &lt;property name=&quot;history&quot; value=&quot;audit&quot; /&gt;
   ...
 &lt;/bean&gt;</programlisting>
 	  
@@ -78,14 +78,14 @@ ProcessEngine processEngine = ProcessEngineConfiguration
 	  </para>
 	  
 	  <itemizedlist>
-	    <listitem><para><literal>none</literal> (0): skips all history archiving.  This is the most performant for runtime 
+	    <listitem><para><literal>none</literal>: skips all history archiving.  This is the most performant for runtime 
 	    process execution, but no historical information will be available. </para></listitem>
-	    <listitem><para><literal>activity</literal> (1): archives all process instances and activity instances. 
+	    <listitem><para><literal>activity</literal>: archives all process instances and activity instances. 
 	    No details will be archived</para></listitem>
-	    <listitem><para><literal>audit</literal> (2): This is the default.  It archives all process instances, 
+	    <listitem><para><literal>audit</literal>: This is the default.  It archives all process instances, 
 	    activity instances and all form properties that are submitted so that all user interaction 
 	    through forms is traceable and can be audited.</para></listitem>
-	    <listitem><para><literal>full</literal> (3): This is the highest level of history archiving and hence the 
+	    <listitem><para><literal>full</literal>: This is the highest level of history archiving and hence the 
 	    slowest.  This level stores all information as in the <literal>audit</literal> level 
 	    plus all other possible details like process variable updates.</para></listitem>
 	  </itemizedlist>

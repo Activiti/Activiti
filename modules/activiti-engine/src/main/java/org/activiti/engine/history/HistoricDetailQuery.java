@@ -40,6 +40,8 @@ public interface HistoricDetailQuery extends Query<HistoricDetailQuery, Historic
   
   HistoricDetailQuery orderByVariableName();
   
+  HistoricDetailQuery orderByFormPropertyId();
+  
   HistoricDetailQuery orderByVariableType();
   
   HistoricDetailQuery orderByVariableRevision();

@@ -91,6 +91,11 @@ public class HistoricDetailQueryImpl extends AbstractQuery<HistoricDetailQuery, 
     orderBy(HistoricDetailQueryProperty.VARIABLE_NAME);
     return this;
   }
+  
+  public HistoricDetailQuery orderByFormPropertyId() {
+    orderBy(HistoricDetailQueryProperty.VARIABLE_NAME);
+    return this;
+  }
 
   public HistoricDetailQuery orderByVariableRevision() {
     orderBy(HistoricDetailQueryProperty.VARIABLE_REVISION);

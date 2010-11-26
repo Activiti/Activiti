@@ -10,7 +10,7 @@
     <startEvent id="start" />
     <sequenceFlow id="flow1" sourceRef="start" targetRef="setVariables" />
 
-    <serviceTask id="setVariables" activiti:class="org.activiti.engine.test.history.VariableSetter" />
+    <serviceTask id="setVariables" activiti:class="org.activiti.standalone.history.VariableSetter" />
     <sequenceFlow id="flow2" sourceRef="setVariables" targetRef="task" />
     
     <userTask id="task" name="Schedule meeting" activiti:assignee="kermit" />

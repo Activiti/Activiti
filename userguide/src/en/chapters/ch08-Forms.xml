@@ -37,25 +37,10 @@
   .addClasspathResource("org/activiti/examples/taskforms/adjustRequest.form")
   .deploy();
 </programlisting>
-
-       Or that can be done with an ant task by first building a business archive zip file that 
-       contains the process and forms like above and then deploy it like this:
-       </para>
-       
-       <para>TODO: REFACTOR THIS (configuration file updates)</para>
-       <para>
-       <programlisting>&lt;taskdef name=&quot;deploy-bar&quot; classname=&quot;org.activiti.engine.impl.ant.DeployBarTask&quot;&gt;
-  &lt;classpath&gt;
-    &lt;pathelement path=&quot;files/demo&quot;/&gt;
-    &lt;fileset dir=&quot;build&quot;&gt;
-      &lt;include name=&quot;activiti-cfg.jar&quot;/&gt;
-    &lt;/fileset&gt;
-    &lt;fileset dir=&quot;${activiti.home}/examples/activiti-engine-examples/libs-runtime&quot; /&gt;
-    &lt;fileset dir=&quot;${activiti.home}/examples/activiti-engine-examples/libs-test&quot; /&gt;
-  &lt;/classpath&gt;
-&lt;/taskdef&gt;
-&lt;deploy-bar file=&quot;${activiti.home}/setup/build/activiti-examples.bar&quot; /&gt;</programlisting>
-       
+      
+      Other ways of deploying your processes/forms, can be found in chapter <link linkend="chDeployment">Deployment</link>.
+      </para>
+      <para> 
       The BPMN 2.0 specification does not specify how tasks or task forms should be rendered, 
       as such forms are defined using Activiti specific constructs.  
       There is the attribute <literal>activiti:formKey</literal> that can be specified on 
@@ -77,7 +62,8 @@
       The <literal>activiti:formKey</literal> attribute can contain any text value which you use to identify your form in case 
       you do your own form rendering.  But the build-in form rendering 
       expects the <literal>activiti:formKey</literal> to be a reference to a resource in the 
-      same business archive (= deployment).
+      same business archive (= deployment). The resource is identify by it's full path within the deployment. In our case,
+      the form <literal>request.form</literal> was deployed within a Business-acrhive, in folder <literal>org/activiti/examples/taskforms/</literal>.
     </para>
       
     <para>
@@ -171,7 +157,7 @@ Motivation:&lt;br/&gt;
     </para>
     
     
-    <para>Use <literal>FormService.getRenderedStartForm</literal> to get the rendered form string with the API:</para>
+    <para>Use <literal>FormService.getRenderedStartForm</literal> to get the rendered form string with the API, using the default form engine (JUEL):</para>
     
     <programlisting>String FormService.getRenderedStartForm(String processDefinitionId)</programlisting>
   
@@ -268,26 +254,27 @@ Motivation:&lt;br/&gt;
     
     <para>To learn about how form properties map to process variables, see <xref linkend="formProperties"/> </para>
     
-    <para>You can just stick any form template resource inside the business archives that you deploy (in case 
-    you want to store them versioned with the process).  It will be available as a resource in the deployment.
-    You can use the <literal>String ProcessDefinition.getDeploymentId()</literal> and 
+    <para>You can place any form template resource inside the business archives that you deploy (in case 
+    you want to store them versioned with the process).  It will be available as a resource in the deployment, which you can retrieve using: <literal>String ProcessDefinition.getDeploymentId()</literal> and 
     <literal>InputStream RepositoryService.getResourceAsStream(String deploymentId, String resourceName);</literal>
-    to obtain the file that you included in the deployments.  That could be your form template definition file.  
+    This could be your template definition file, which you can use to render/show the form in your
+    own application.
     </para>
     
-    <para>Btw, you can use this capability of accessing the deployment resources beyond task forms for any other 
+    <para>You can use this capability of accessing the deployment resources beyond task forms for any other 
     purposes as well. </para>
     
     <para>The attribute <literal>&lt;userTask activiti:formKey=&quot;...&quot;</literal> is exposed by the API through 
     <literal>String FormService.getStartFormData(String processDefinitionId).getFormKey()</literal>
-    and <literal>String FormService.getTaskFormData(String taskId).getFormKey()</literal>. 
-    You could for instance store a generic key in the form 
+    and <literal>String FormService.getTaskFormData(String taskId).getFormKey()</literal>. You could use this to
+    store the full name of the template within your deployment (eg. <literal>org/activiti/example/form/my-custom-form.xml</literal>), but this is not required at all.
+    For instance, you could also store a generic key in the form 
     attribute and apply an algorithm or transformation to get to the actual template that needs to be used.
     This might be handy when you want to render different forms for different UI technologies like e.g. 
     one form for usage in a web app of normal screen size, one form for mobile phone's small screens and 
     maybe even a template for a IM form or an email form.
     </para>
-
+    
   </section>
   
   <section id="formProperties">
