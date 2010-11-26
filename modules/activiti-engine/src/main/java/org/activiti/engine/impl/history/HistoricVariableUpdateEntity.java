@@ -101,7 +101,10 @@ public class HistoricVariableUpdateEntity extends HistoricDetailEntity implement
     // HistoricVariableUpdateEntity is immutable, so always the same object is returned
     return HistoricVariableUpdateEntity.class;
   }
-
+  
+  public String getVariableTypeName() {
+    return (variableType!=null ? variableType.getTypeName() : null);
+  }
 
   public Date getTime() {
     return time;

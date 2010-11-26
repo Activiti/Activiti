@@ -13,7 +13,6 @@
 
 package org.activiti.engine.history;
 
-import org.activiti.engine.impl.variable.VariableType;
 
 
 /** Update of a process variable.  This is only available if history 
@@ -24,7 +23,7 @@ import org.activiti.engine.impl.variable.VariableType;
 public interface HistoricVariableUpdate extends HistoricDetail {
 
   String getVariableName();
-  VariableType getVariableType();
+  String getVariableTypeName();
   Object getValue();
   int getRevision();
 }

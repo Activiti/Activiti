@@ -26,10 +26,10 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.activiti.engine.impl.ProcessEngineImpl;
 import org.activiti.engine.impl.ProcessEngineInfoImpl;
 import org.activiti.engine.impl.util.IoUtil;
 import org.activiti.engine.impl.util.ReflectUtil;
+
 
 
 /** Helper for initializing and closing process engines in server environments.
@@ -100,7 +100,7 @@ public abstract class ProcessEngines {
   /**
    * Unregisters the given process engine.
    */
-  public static void unregister(ProcessEngineImpl processEngine) {
+  public static void unregister(ProcessEngine processEngine) {
     processEngines.remove(processEngine.getName());
   }
 

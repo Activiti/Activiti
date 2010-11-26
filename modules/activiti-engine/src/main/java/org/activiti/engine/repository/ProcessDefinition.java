@@ -14,8 +14,6 @@ package org.activiti.engine.repository;
 
 import org.activiti.engine.FormService;
 import org.activiti.engine.RepositoryService;
-import org.activiti.engine.form.FormData;
-import org.activiti.engine.impl.bpmn.IOSpecification;
 import org.activiti.engine.runtime.ProcessInstance;
 
 /** Is an object structure representing an executable process composed of 
