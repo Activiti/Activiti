@@ -1,4 +1,4 @@
-package org.activiti.cycle.impl.transform.signavio;
+package org.activiti.cycle.impl.connector.signavio.transform.signavio;
 
 import static org.junit.Assert.*;
 
@@ -12,7 +12,7 @@ import org.activiti.cycle.impl.connector.fs.FileSystemConnector;
 import org.activiti.cycle.impl.connector.fs.FileSystemConnectorConfiguration;
 import org.activiti.cycle.impl.connector.fs.SignavioFileSystemConnector;
 import org.activiti.cycle.impl.plugin.PluginFinder;
-import org.activiti.cycle.impl.transform.JsonTransformer;
+import org.activiti.cycle.impl.connector.signavio.transform.JsonTransformer;
 import org.activiti.cycle.impl.util.IoUtils;
 import org.json.JSONException;
 import org.junit.Test;

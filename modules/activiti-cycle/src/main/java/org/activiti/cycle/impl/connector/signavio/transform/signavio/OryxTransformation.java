@@ -1,8 +1,8 @@
-package org.activiti.cycle.impl.transform.signavio;
+package org.activiti.cycle.impl.connector.signavio.transform.signavio;
 
 import java.util.logging.Logger;
 
-import org.activiti.cycle.impl.transform.JsonTransformation;
+import org.activiti.cycle.impl.connector.signavio.transform.JsonTransformation;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.oryxeditor.server.diagram.Diagram;

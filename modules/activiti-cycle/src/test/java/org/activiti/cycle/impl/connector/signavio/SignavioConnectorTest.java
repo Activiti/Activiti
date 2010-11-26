@@ -16,10 +16,10 @@ import javax.xml.parsers.ParserConfigurationException;
 
 import org.activiti.cycle.RepositoryFolder;
 import org.activiti.cycle.RepositoryNode;
-import org.activiti.cycle.impl.transform.JsonTransformation;
-import org.activiti.cycle.impl.transform.signavio.AdjustShapeNamesTransformation;
-import org.activiti.cycle.impl.transform.signavio.BpmnPoolExtraction;
-import org.activiti.cycle.impl.transform.signavio.ExchangeSignavioUuidWithNameTransformation;
+import org.activiti.cycle.impl.connector.signavio.transform.JsonTransformation;
+import org.activiti.cycle.impl.connector.signavio.transform.signavio.AdjustShapeNamesTransformation;
+import org.activiti.cycle.impl.connector.signavio.transform.signavio.BpmnPoolExtraction;
+import org.activiti.cycle.impl.connector.signavio.transform.signavio.ExchangeSignavioUuidWithNameTransformation;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.Assert;
@@ -43,7 +43,7 @@ public class SignavioConnectorTest {
     // NArf, we need a running signavio for this :-( So skipped for the moment
     
      InputStream is =
-     this.getClass().getResourceAsStream("/org/activiti/cycle/impl/transform/signavio/engine-pool.json");
+     this.getClass().getResourceAsStream("/org.activiti.cycle.impl.connector.signavio.transform/signavio/engine-pool.json");
      BufferedReader reader = new BufferedReader(new InputStreamReader(is));
      StringBuilder sb = new StringBuilder();
      String line = null;

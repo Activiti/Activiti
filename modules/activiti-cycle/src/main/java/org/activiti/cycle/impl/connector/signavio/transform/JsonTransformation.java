@@ -1,4 +1,4 @@
-package org.activiti.cycle.impl.transform;
+package org.activiti.cycle.impl.connector.signavio.transform;
 
 import org.json.JSONException;
 import org.json.JSONObject;

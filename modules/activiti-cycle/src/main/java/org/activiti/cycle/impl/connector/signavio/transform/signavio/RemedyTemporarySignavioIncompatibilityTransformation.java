@@ -1,4 +1,4 @@
-package org.activiti.cycle.impl.transform.signavio;
+package org.activiti.cycle.impl.connector.signavio.transform.signavio;
 
 /**
  * Temporary transformation to adjust BPMN 2.0 XML to the version Activiti

@@ -1,4 +1,4 @@
-package org.activiti.cycle.impl.transform.signavio;
+package org.activiti.cycle.impl.connector.signavio.transform.signavio;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
@@ -9,7 +9,7 @@ import java.util.regex.Pattern;
 
 import org.activiti.cycle.RepositoryConnector;
 import org.activiti.cycle.impl.connector.signavio.SignavioPluginDefinition;
-import org.activiti.cycle.impl.transform.JsonTransformationException;
+import org.activiti.cycle.impl.connector.signavio.transform.JsonTransformationException;
 import org.oryxeditor.server.diagram.Diagram;
 import org.oryxeditor.server.diagram.DiagramBuilder;
 import org.oryxeditor.server.diagram.Shape;

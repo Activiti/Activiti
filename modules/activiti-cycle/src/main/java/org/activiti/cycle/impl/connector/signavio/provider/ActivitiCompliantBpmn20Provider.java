@@ -19,7 +19,7 @@ import org.activiti.cycle.RepositoryException;
 import org.activiti.cycle.impl.connector.signavio.SignavioConnector;
 import org.activiti.cycle.impl.connector.signavio.SignavioPluginDefinition;
 import org.activiti.cycle.impl.connector.signavio.util.SignavioTransformationHelper;
-import org.activiti.cycle.impl.transform.signavio.RemedyTemporarySignavioIncompatibilityTransformation;
+import org.activiti.cycle.impl.connector.signavio.transform.signavio.RemedyTemporarySignavioIncompatibilityTransformation;
 
 public class ActivitiCompliantBpmn20Provider extends SignavioContentRepresentationProvider {
 

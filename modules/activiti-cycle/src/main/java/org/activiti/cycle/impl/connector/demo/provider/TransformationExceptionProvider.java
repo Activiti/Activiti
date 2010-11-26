@@ -5,7 +5,7 @@ import org.activiti.cycle.RepositoryArtifact;
 import org.activiti.cycle.RepositoryConnector;
 import org.activiti.cycle.impl.ContentProviderImpl;
 import org.activiti.cycle.impl.connector.signavio.util.SignavioSvgApiBuilder;
-import org.activiti.cycle.impl.transform.TransformationException;
+import org.activiti.cycle.impl.connector.signavio.transform.TransformationException;
 
 public class TransformationExceptionProvider extends ContentProviderImpl {
 
