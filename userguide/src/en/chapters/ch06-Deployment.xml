@@ -21,6 +21,20 @@
   </section>
   
   <section>
+    <title>Java classes</title>
+    <para>All custom classes that are used in your process (eg. JavaDelegates used in servicetaks or event-listeners, TaskListeners, ...) should be present on the engine's classpath when an instance of the process is started.
+    It's not nessecairy to have those classes on the classpath when deploying the process-definition into the engine.
+    </para>
+    <para>
+    When you are using the demo setup and you want to add your custom classes, you should add a jar containing your classes to the activiti-rest webapp lib. Don't forget to include the dependencies of your custom classes (if any) as wel. 
+    This is the same location where the activiti-engine jar is located. You can find this folder inside your distro at the folowing location: 
+    </para>
+    <para>
+    <programlisting>${activiti distro}/apps/apache-tomcat-6.0.29/webapps/activiti-rest/lib/</programlisting>
+    </para>
+  </section>
+  
+  <section>
     <title>Deploying programmatically</title>
     <para>Deploying a business archive from a zip file can be done like this: 
     </para>
@@ -38,7 +52,6 @@ repositoryService.createDeployment()
   
   <section>
     <title>Deploying with ant</title>
-    <para>TODO REFACTOR THIS (configuration file updates)</para>
     <para>To deploy a business archive with ant, first the <literal>deploy-bar</literal> task 
     needs to be defined.  Make sure that the configuration jar is on the classpath, as well as the 
     Activiti jar and all its dependencies:</para>
@@ -55,6 +68,10 @@ repositoryService.createDeployment()
   &lt;/classpath&gt;
 &lt;/taskdef&gt;
 &lt;deploy-bar file=&quot;.../yourprocess.bar&quot; /&gt;</programlisting>
+  </section>
+  <section>
+    <title>Deploying with Activiti Probe</title>
+    <para>It's possible to deploy process definitions through probe, this is described in <link linkend="probeDeployments">Activiti Probe - Deployments</link>.</para>  
   </section>
   
   <section id="versioningOfProcessDefinitions">

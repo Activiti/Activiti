@@ -61,7 +61,7 @@
     <mediaobject><imageobject><imagedata align="center" fileref="images/activiti.probe.jobs.exception.png"/></imageobject></mediaobject>
   </section>
   
-  <section>
+  <section id="probeDeployments">
     <title>Deployments</title>
     <para>
       On the deployments management page you can see each deployment that has been made into the Activiti Engine and when it was made.
@@ -73,6 +73,11 @@
       The data table can be sorted by Id, Name or Deployment Time.
     </para>
     <mediaobject><imageobject><imagedata align="center" fileref="images/activiti.probe.deployments.png"/></imageobject></mediaobject>
+    
+    <para>
+      You can also upload new deployments from your browser using probe. When clicking the upload-button you can select a file to upload, this must be either a <emphasis role="bold">.bpmn20.xml, .zip or .bar</emphasis> file. 
+      Once the deployment is performed successfully, the deployment appears in the list and the process(es) are ready to be used.
+    </para>
   </section>
   
   <section>
