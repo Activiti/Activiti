@@ -639,6 +639,7 @@ public class SignavioConnector extends AbstractRepositoryConnector<SignavioConne
   public String transformJsonToBpmn20Xml(String jsonData) {
     try {
       JSONObject json = new JSONObject(jsonData);
+      de.hpi.bpmn2_0.factory.configuration.Configuration.ensureSignavioStyle = false; // disable regeneration of IDs that don't match Signavio's ID pattern
       Json2XmlConverter converter = new Json2XmlConverter(json.toString(), this.getClass().getClassLoader().getResource("META-INF/validation/xsd/BPMN20.xsd")
               .toString());
       return converter.getXml().toString();
