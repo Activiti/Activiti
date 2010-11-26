@@ -23,12 +23,12 @@ public class ValidateActivitiDeployment extends CreateTechnicalBpmnXmlAction {
   }
   
   public String getFormResourceName() {
-    // we donn't need any form here
+    // we don't need any form here
     return null;
   }
 
   public void execute(RepositoryConnector connector, RepositoryArtifact artifact, Map<String, Object> parameters) throws Exception {    
-    // TODO: Okay, this needs more serious thiniking where we get the engine
+    // TODO: Okay, this needs more serious thinking where we get the engine
     // from!
     ExpressionManager expressionManager = ((ProcessEngineImpl) ProcessEngines.getDefaultProcessEngine()).getExpressionManager();
     
@@ -37,13 +37,13 @@ public class ValidateActivitiDeployment extends CreateTechnicalBpmnXmlAction {
     BpmnParser bpmnParser = new BpmnParser(expressionManager);
     
     // Unfortunately the deployment id is requested while parsing, so we have to
-    // set a DeploymentEntity to avoid a NPE
+    // set a DeploymentEntity to avoid an NPE
     DeploymentEntity deployment = new DeploymentEntity();
     deployment.setId("VALIDATION_DEPLOYMENT");
     
     // parse to validate
     bpmnParser.createParse().deployment(deployment).sourceString(bpmnXml).name(artifact.getNodeId()).execute();    
-    // That's it, now we get an exception is the file is invalid
+    // That's it, now we get an exception if the file is invalid
   }
 
 
