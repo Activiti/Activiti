@@ -15,7 +15,7 @@ package org.activiti.spring.test.transaction;
 
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.test.Deployment;
-import org.activiti.spring.impl.test.ActivitiInternalSpringTestCase;
+import org.activiti.spring.impl.test.SpringActivitiTestCase;
 import org.springframework.test.context.ContextConfiguration;
 
 
@@ -23,7 +23,7 @@ import org.springframework.test.context.ContextConfiguration;
  * @author Tom Baeyens
  */
 @ContextConfiguration("classpath:org/activiti/spring/test/transaction/SpringTransactionIntegrationTest-context.xml")
-public class SpringTransactionIntegrationTest extends ActivitiInternalSpringTestCase {
+public class SpringTransactionIntegrationTest extends SpringActivitiTestCase {
 
   @Deployment
   public void testBasicActivitiSpringIntegration() {

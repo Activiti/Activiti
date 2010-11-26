@@ -48,16 +48,19 @@
       <filterset filtersfile="build.${db}.properties" />
       <fileset dir="files/cfg.activiti/${tx}" />
     </copy>
-    <jar destfile="${activiti.home}/setup/build/activiti-cfg.jar">
+    <zip destfile="${activiti.home}/setup/build/activiti-cfg.jar">
       <fileset dir="${activiti.home}/setup/build/activiti-cfg" />
-    </jar>
+    </zip>
   </target>
 
 
   <!-- ### EXAMPLES #################################################################### -->
 
-  <target name="build.examples"
-          description="Inflates the ${activiti.home}/workspace example projects with the required dependency libs">
+  <target name="inflate.examples"
+          description="Inflates the ${activiti.home}/workspace example projects with the required dependency libs"
+          depends="cfg.create">
+    <mkdir dir="${activiti.home}/workspace/activiti-engine-examples/src/main/config" />
+    <unzip src="${activiti.home}/setup/build/activiti-cfg.jar" dest="${activiti.home}/workspace/activiti-engine-examples/src/main/config" /> 
     <mkdir dir="${activiti.home}/workspace/activiti-engine-examples/libs-runtime" />
     <copy todir="${activiti.home}/workspace/activiti-engine-examples/libs-runtime">
       <fileset dir="files/dependencies/libs" includesfile="${activiti.home}/setup/files/dependencies/libs.engine.runtime.txt" />
@@ -66,20 +69,48 @@
     <copy todir="${activiti.home}/workspace/activiti-engine-examples/libs-test">
       <fileset dir="files/dependencies/libs" includesfile="${activiti.home}/setup/files/dependencies/libs.engine.test.txt" />
     </copy>
+    
+    <mkdir dir="${activiti.home}/workspace/activiti-groovy-examples/libs-runtime" />
+    <copy todir="${activiti.home}/workspace/activiti-groovy-examples/libs-runtime">
+      <fileset dir="files/dependencies/libs" includesfile="${activiti.home}/setup/files/dependencies/libs.engine.runtime.txt" />
+    </copy>
+    <mkdir dir="${activiti.home}/workspace/activiti-groovy-examples/libs-test" />
+    <copy todir="${activiti.home}/workspace/activiti-groovy-examples/libs-test">
+      <fileset dir="files/dependencies/libs" includesfile="${activiti.home}/setup/files/dependencies/libs.engine.test.txt" />
+      <fileset dir="files/dependencies/libs" includesfile="${activiti.home}/setup/files/dependencies/libs.engine.runtime.feature.groovy.txt" />
+    </copy>
+
+    <mkdir dir="${activiti.home}/workspace/activiti-jpa-examples/libs-runtime" />
+    <copy todir="${activiti.home}/workspace/activiti-jpa-examples/libs-runtime">
+      <fileset dir="files/dependencies/libs" includesfile="${activiti.home}/setup/files/dependencies/libs.engine.runtime.txt" />
+    </copy>
+    <mkdir dir="${activiti.home}/workspace/activiti-jpa-examples/libs-test" />
+    <copy todir="${activiti.home}/workspace/activiti-jpa-examples/libs-test">
+      <fileset dir="files/dependencies/libs" includesfile="${activiti.home}/setup/files/dependencies/libs.engine.test.txt" />
+      <fileset dir="files/dependencies/libs" includesfile="${activiti.home}/setup/files/dependencies/libs.engine.runtime.feature.jpa.txt" />
+    </copy>
+    <move todir="${activiti.home}/workspace/activiti-jpa-examples/libs-runtime">
+      <fileset dir="${activiti.home}/workspace/activiti-jpa-examples/libs-test">
+        <include name="persistence-api-*.jar" />
+      </fileset>
+    </move>
+
     <mkdir dir="${activiti.home}/workspace/activiti-spring-examples/libs-runtime" />
     <copy todir="${activiti.home}/workspace/activiti-spring-examples/libs-runtime">
       <fileset dir="files/dependencies/libs" includesfile="${activiti.home}/setup/files/dependencies/libs.spring.runtime.txt" />
-    </copy>
-    <copy todir="${activiti.home}/workspace/activiti-spring-examples/libs-runtime">
       <fileset dir="files/dependencies/libs" includesfile="${activiti.home}/setup/files/dependencies/libs.engine.runtime.txt" />
     </copy>
     <mkdir dir="${activiti.home}/workspace/activiti-spring-examples/libs-test" />
     <copy todir="${activiti.home}/workspace/activiti-spring-examples/libs-test">
       <fileset dir="files/dependencies/libs" includesfile="${activiti.home}/setup/files/dependencies/libs.engine.test.txt" />
-    </copy>
-    <copy todir="${activiti.home}/workspace/activiti-spring-examples/libs-test">
+      <fileset dir="files/dependencies/libs" includesfile="${activiti.home}/setup/files/dependencies/libs.engine.runtime.feature.jpa.txt" />
       <fileset dir="files/dependencies/libs" includesfile="${activiti.home}/setup/files/dependencies/libs.spring.test.txt" />
     </copy>
+    <move todir="${activiti.home}/workspace/activiti-spring-examples/libs-runtime">
+      <fileset dir="${activiti.home}/workspace/activiti-spring-examples/libs-test">
+        <include name="persistence-api-*.jar" />
+      </fileset>
+    </move>
   </target>
   
   <!-- ### DEMO #################################################################### -->
@@ -218,15 +249,16 @@
          userid="${jdbc.username}"
          classpathref="classpath.libs" 
          src="build/demo/${db}.data.sql"/>
-         
-    <zip destfile="${activiti.home}/setup/build/activiti-examples.bar">
+
+    <ant antfile="../workspace/activiti-engine-examples/build.xml" target="deploy" inheritall="false" />
+    <!-- zip destfile="${activiti.home}/setup/build/activiti-examples.bar">
       <fileset dir="${activiti.home}/workspace/activiti-engine-examples/src">
         <include name="org/activiti/examples/bpmn/usertask/taskassignee/TaskAssigneeTest.testTaskAssignee.bpmn20.xml"/>
         <include name="org/activiti/examples/bpmn/usertask/taskcandidate/TaskCandidateTest.testMixedCandidateUserAndGroup.bpmn20.xml"/>
         <include name="org/activiti/examples/bpmn/usertask/taskcandidate/TaskCandidateTest.testMultipleCandidateGroups.bpmn20.xml"/>
         <include name="org/activiti/examples/bpmn/usertasktaskcandidate/TaskCandidateTest.testMultipleCandidateUsers.bpmn20.xml"/>
         <include name="org/activiti/examples/bpmn/usertask/taskcandidate/TaskCandidateTest.testSingleCandidateGroup.bpmn20.xml"/>
-      	<include name="org/activiti/examples/bpmn/usertask/FinancialReportProcess.bpmn20.xml"/>
+        <include name="org/activiti/examples/bpmn/usertask/FinancialReportProcess.bpmn20.xml"/>
         <include name="org/activiti/examples/bpmn/subprocess/SubProcessTest.fixSystemFailureProcess.bpmn20.xml"/>
         <include name="org/activiti/examples/bpmn/subprocess/SubProcessTest.fixSystemFailureProcess.png"/>
         <include name="org/activiti/examples/taskforms/VacationRequest.bpmn20.xml"/>
@@ -245,7 +277,7 @@
         <fileset dir="${activiti.home}/setup/files/dependencies/libs" />
       </classpath>
     </taskdef>
-    <deploy-bar file="${activiti.home}/setup/build/activiti-examples.bar" />
+    <deploy-bar file="${activiti.home}/setup/build/activiti-examples.bar" / -->
   </target>
 
   <!-- ### H2 #################################################################### -->
@@ -314,7 +346,7 @@
   <property name="tomcat.download.url" value="${apache.mirror.url}tomcat/tomcat-6/v${tomcat.version}/bin/${tomcat.filename}" />    
   <property name="tomcat.java.opts" value="-server -Xms128m -Xmx512m -XX:NewSize=64m -XX:MaxNewSize=64m -XX:PermSize=256m -XX:MaxPermSize=512m -Dfile.encoding=UTF-8" /> 
   <property name="tomcat.distro" value="${downloads.dir}/${tomcat.filename}" />
-  <available property="is.tomcat.installed" file="${tomcat.home}" />
+  <available property="is.tomcat.installed" file="${tomcat.home}/bin" />
   <available property="is.tomcat.available" file="${tomcat.distro}" />
   <available file="${user.home}/.activiti/tomcat-users.xml" property="tomcat.users.available" />
 
@@ -501,8 +533,8 @@ set JAVA_OPTS=%JAVA_OPTS% @tomcat.java.opts@
   </target>
   
   <target name="internal.deploy.activiti.cycle.into.tomcat" 
-  	      depends="build.webapps" 
-  	      if="cycle.is.enabled">   
+          depends="build.webapps" 
+          if="cycle.is.enabled">   
     <mkdir dir="${tomcat.home}/webapps/activiti-cycle" />
     <copy todir="${tomcat.home}/webapps/activiti-cycle">
       <fileset dir="${activiti.home}/setup/build/webapps/activiti-cycle.war" />

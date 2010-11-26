@@ -14,7 +14,7 @@ package org.activiti.spring.test.taskassignment;
 
 import org.activiti.engine.impl.util.CollectionUtil;
 import org.activiti.engine.test.Deployment;
-import org.activiti.spring.impl.test.ActivitiInternalSpringTestCase;
+import org.activiti.spring.impl.test.SpringActivitiTestCase;
 import org.springframework.test.context.ContextConfiguration;
 
 
@@ -22,7 +22,7 @@ import org.springframework.test.context.ContextConfiguration;
  * @author Joram Barrez
  */
 @ContextConfiguration("classpath:org/activiti/spring/test/taskassignment/taskassignment-context.xml")
-public class CustomTaskAssignmentTest extends ActivitiInternalSpringTestCase {
+public class CustomTaskAssignmentTest extends SpringActivitiTestCase {
   
   @Deployment
   public void testSetAssigneeThroughSpringService() {

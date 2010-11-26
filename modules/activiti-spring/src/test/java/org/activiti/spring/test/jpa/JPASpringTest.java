@@ -19,7 +19,7 @@ import java.util.Map;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
-import org.activiti.spring.impl.test.ActivitiInternalSpringTestCase;
+import org.activiti.spring.impl.test.SpringActivitiTestCase;
 import org.springframework.test.context.ContextConfiguration;
 
 
@@ -29,7 +29,7 @@ import org.springframework.test.context.ContextConfiguration;
  * @author Frederik Heremans
  */
 @ContextConfiguration("classpath:org/activiti/spring/test/jpa/JPASpringTest-context.xml")
-public class JPASpringTest extends ActivitiInternalSpringTestCase {
+public class JPASpringTest extends SpringActivitiTestCase {
   
   @Deployment(resources = {"org/activiti/spring/test/jpa/JPASpringTest.bpmn20.xml"})
   public void testJpaVariableHappyPath() {

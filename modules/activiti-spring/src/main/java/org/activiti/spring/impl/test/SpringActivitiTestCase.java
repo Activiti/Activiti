@@ -12,11 +12,16 @@
  */
 package org.activiti.spring.impl.test;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ProcessEngine;
-import org.activiti.engine.impl.test.PluggableActivitiTestCase;
+import org.activiti.engine.impl.test.AbstractActivitiTestCase;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
+import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestContextManager;
 import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
@@ -26,14 +31,16 @@ import org.springframework.test.context.support.DependencyInjectionTestExecution
  * @author Joram Barrez
  */
 @TestExecutionListeners(DependencyInjectionTestExecutionListener.class)
-public class ActivitiInternalSpringTestCase extends PluggableActivitiTestCase implements ApplicationContextAware {
+public class SpringActivitiTestCase extends AbstractActivitiTestCase implements ApplicationContextAware {
+
+  protected static Map<String, ProcessEngine> cachedProcessEngines = new HashMap<String, ProcessEngine>();
   
   protected TestContextManager testContextManager;
   
   @Autowired
   protected ApplicationContext applicationContext;
   
-  public ActivitiInternalSpringTestCase() {
+  public SpringActivitiTestCase() {
     super();
     this.testContextManager = new TestContextManager(getClass());
   }
@@ -41,16 +48,28 @@ public class ActivitiInternalSpringTestCase extends PluggableActivitiTestCase im
   @Override
   public void runBare() throws Throwable {
     testContextManager.prepareTestInstance(this); // this will initialize all dependencies
-    try {
-      PluggableActivitiTestCase.cachedProcessEngine = applicationContext.getBean(ProcessEngine.class);
-      super.runBare();
-    } finally {
-      PluggableActivitiTestCase.cachedProcessEngine = null;
+    super.runBare();
+  }
+
+  @Override
+  protected void initializeProcessEngine() {
+    ContextConfiguration contextConfiguration = getClass().getAnnotation(ContextConfiguration.class);
+    String[] value = contextConfiguration.value();
+    if (value==null) {
+      throw new ActivitiException("value is mandatory in ContextConfiguration");
+    }
+    if (value.length!=1) {
+      throw new ActivitiException("SpringActivitiTestCase requires exactly one value in annotation ContextConfiguration");
+    }
+    String configurationFile = value[0];
+    processEngine = cachedProcessEngines.get(configurationFile);
+    if (processEngine==null) {
+      processEngine = applicationContext.getBean(ProcessEngine.class);
+      cachedProcessEngines.put(configurationFile, processEngine);
     }
   }
   
   public void setApplicationContext(ApplicationContext applicationContext) {
     this.applicationContext = applicationContext;
   }
-  
 }

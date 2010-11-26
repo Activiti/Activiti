@@ -16,7 +16,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
-import org.activiti.engine.impl.util.CollectionUtil;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.test.Deployment;
 
@@ -25,25 +24,6 @@ import org.activiti.engine.test.Deployment;
  * @author Christian Stettler
  */
 public class ScriptTaskTest extends PluggableActivitiTestCase {
-
-  @Deployment
-  public void testScriptExecution() {
-    int[] inputArray = new int[] {1, 2, 3, 4, 5};
-    ProcessInstance pi = runtimeService.startProcessInstanceByKey("scriptExecution", CollectionUtil.singletonMap("inputArray", inputArray));
-
-    Integer result = (Integer) runtimeService.getVariable(pi.getId(), "sum");
-    assertEquals(15, result.intValue());
-  }
-
-  @Deployment
-  public void testSetVariableThroughExecutionInScript() {
-    ProcessInstance pi = runtimeService.startProcessInstanceByKey("setScriptVariableThroughExecution");
-
-    // Since 'def' is used, the 'scriptVar' will be script local
-    // and not automatically stored as a process variable.
-    assertNull(runtimeService.getVariable(pi.getId(), "scriptVar"));
-    assertEquals("test123", runtimeService.getVariable(pi.getId(), "myVar"));
-  }
 
   @Deployment
   public void testSetScriptResultToProcessVariable() {

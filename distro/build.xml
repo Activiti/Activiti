@@ -83,6 +83,11 @@
 				<include name="activiti-engine-*.jar" />
 			</fileset>
 		</copy>
+    <copy todir="target/libs-spring-runtime">
+      <fileset dir="../modules/activiti-spring/target">
+        <include name="activiti-spring-*.jar" />
+      </fileset>
+    </copy>
     <!-- DELETE UNNECESSARY ANT JARS -->
     <delete>
        <fileset dir="target/libs-engine-runtime">
@@ -92,14 +97,45 @@
         <include name="ant-*.jar" />
       </fileset>
      </delete>
+    <mkdir dir="target/libs-engine-runtime-feature-groovy" />
+		<move todir="target/libs-engine-runtime-feature-groovy">
+			<fileset dir="target/libs-engine-test">
+				<include name="groovy-*.jar" />
+        <include name="asm-*.jar" />
+			</fileset>
+	  </move>
+    <mkdir dir="target/libs-engine-runtime-feature-jpa" />
+    <move todir="target/libs-engine-runtime-feature-jpa">
+      <fileset dir="target/libs-engine-test">
+        <include name="persistence-api-*.jar" />
+        <include name="openjpa-*.jar" />
+        <include name="serp-*.jar" />
+        <include name="commons-lang-*.jar" />
+        <include name="commons-collections-*.jar" />
+        <include name="commons-pool-*.jar" />
+        <include name="geronimo-jms*.jar" />
+        <include name="geronimo-jpa*.jar" />
+      </fileset>
+    </move>
+    
 		<!-- CREATE DEPENDENCY LIST FILES -->
     <mkdir dir="${target.distro.root}/setup/files/dependencies/libs" />
     <exec output="${target.distro.root}/setup/files/dependencies/libs.engine.test.txt" executable="${ls.executable}">
       <arg line="${ls.executable.options} target${ls.executable.path.seperator}libs-engine-test"/>
     </exec>
+    <exec output="${target.distro.root}/setup/files/dependencies/libs.engine.runtime.feature.groovy.txt" executable="${ls.executable}">
+      <arg line="${ls.executable.options} target${ls.executable.path.seperator}libs-engine-runtime-feature-groovy"/>
+    </exec>
+    <exec output="${target.distro.root}/setup/files/dependencies/libs.engine.runtime.feature.jpa.txt" executable="${ls.executable}">
+      <arg line="${ls.executable.options} target${ls.executable.path.seperator}libs-engine-runtime-feature-jpa"/>
+    </exec>
     <delete>
       <fileset dir="target/libs-engine-runtime" 
                includesfile="${target.distro.root}/setup/files/dependencies/libs.engine.test.txt" />
+      <fileset dir="target/libs-engine-runtime" 
+               includesfile="${target.distro.root}/setup/files/dependencies/libs.engine.runtime.feature.groovy.txt" />
+      <fileset dir="target/libs-engine-runtime" 
+               includesfile="${target.distro.root}/setup/files/dependencies/libs.engine.runtime.feature.jpa.txt" />
     </delete>
     <exec output="${target.distro.root}/setup/files/dependencies/libs.engine.runtime.txt" executable="${ls.executable}">
       <arg line="${ls.executable.options} target${ls.executable.path.seperator}libs-engine-runtime"/>
@@ -134,6 +170,8 @@
 		<mkdir dir="${target.distro.root}/setup/files/dependencies/libs" />
     <move todir="${target.distro.root}/setup/files/dependencies/libs">
       <fileset dir="target/libs-engine-runtime" />
+      <fileset dir="target/libs-engine-runtime-feature-groovy" />
+      <fileset dir="target/libs-engine-runtime-feature-jpa" />
       <fileset dir="target/libs-engine-test" />
       <fileset dir="target/libs-spring-runtime" />
       <fileset dir="target/libs-spring-test" />
@@ -168,22 +206,117 @@
 	</target>
 	
 	<target name="copy.examples">
-    <mkdir dir="${target.distro.root}/workspace/activiti-engine-examples/src" />
-    <copy todir="${target.distro.root}/workspace/activiti-engine-examples/src">
+		<!-- ENGINE EXAMPLES -->
+    <mkdir dir="${target.distro.root}/workspace/activiti-engine-examples/src/main/java" />
+    <copy todir="${target.distro.root}/workspace/activiti-engine-examples/src/main/java" includeEmptyDirs="false">
       <fileset dir="../modules/activiti-engine/src/test/java">
         <include name="org/activiti/examples/**" />
+        <exclude name="**/*Test.java" />
+        <exclude name="org/activiti/examples/variables/jpa/**" />
       </fileset>
+    </copy>
+    <mkdir dir="${target.distro.root}/workspace/activiti-engine-examples/src/main/process" />
+    <copy todir="${target.distro.root}/workspace/activiti-engine-examples/src/main/process" includeEmptyDirs="false">
       <fileset dir="../modules/activiti-engine/src/test/resources">
-        <include name="org/activiti/examples/**" />
+        <include name="org/activiti/examples/**/*.bpmn20.xml" />
+        <include name="org/activiti/examples/**/*.form" />
+        <exclude name="org/activiti/examples/groovy/*.bpmn20.xml" />
+        <exclude name="org/activiti/examples/variables/jpa/*.bpmn20.xml" />
+      </fileset>
+    </copy>
+    <mkdir dir="${target.distro.root}/workspace/activiti-engine-examples/src/test/java" />
+    <copy todir="${target.distro.root}/workspace/activiti-engine-examples/src/test/java" includeEmptyDirs="false">
+      <fileset dir="../modules/activiti-engine/src/test/java">
+        <include name="org/activiti/examples/**/*Test.java" />
+        <exclude name="org/activiti/examples/groovy/*Test.java" />
+        <exclude name="org/activiti/examples/variables/jpa/*Test.java" />
+      </fileset>
+    </copy>
+    <mkdir dir="${target.distro.root}/workspace/activiti-engine-examples/src/test/resources" />
+    <copy todir="${target.distro.root}/workspace/activiti-engine-examples/src/test/resources" includeEmptyDirs="false">
+      <fileset dir="../modules/activiti-engine/src/test/resources">
+        <include name="activiti.cfg.xml" />
+        <include name="logging.properties" />
+      </fileset>
+    </copy>
+    <!-- GROOVY EXAMPLES -->
+    <mkdir dir="${target.distro.root}/workspace/activiti-engine-examples/src/main/process" />
+    <copy todir="${target.distro.root}/workspace/activiti-engine-examples/src/main/process" includeEmptyDirs="false">
+      <fileset dir="../modules/activiti-engine/src/test/resources">
+        <include name="org/activiti/examples/groovy/*.bpmn20.xml" />
+      </fileset>
+    </copy>
+    <mkdir dir="${target.distro.root}/workspace/activiti-groovy-examples/src/test/java" />
+    <copy todir="${target.distro.root}/workspace/activiti-groovy-examples/src/test/java" includeEmptyDirs="false">
+      <fileset dir="../modules/activiti-engine/src/test/java">
+        <include name="org/activiti/examples/groovy/*Test.java" />
+      </fileset>
+    </copy>
+    <mkdir dir="${target.distro.root}/workspace/activiti-groovy-examples/src/test/resources" />
+    <copy todir="${target.distro.root}/workspace/activiti-groovy-examples/src/test/resources" includeEmptyDirs="false">
+      <fileset dir="../modules/activiti-engine/src/test/resources">
+        <include name="activiti.cfg.xml" />
+        <include name="logging.properties" />
+      </fileset>
+    </copy>
+    <!-- JPA EXAMPLES -->
+    <mkdir dir="${target.distro.root}/workspace/activiti-jpa-examples/src/main/java" />
+    <copy todir="${target.distro.root}/workspace/activiti-jpa-examples/src/main/java" includeEmptyDirs="false">
+      <fileset dir="../modules/activiti-engine/src/test/java">
+        <include name="org/activiti/examples/variables/jpa/**" />
+        <exclude name="**/*Test.java" />
+      </fileset>
+    </copy>
+    <mkdir dir="${target.distro.root}/workspace/activiti-jpa-examples/src/main/process" />
+    <copy todir="${target.distro.root}/workspace/activiti-jpa-examples/src/main/process" includeEmptyDirs="false">
+      <fileset dir="../modules/activiti-engine/src/test/resources">
+        <include name="org/activiti/examples/variables/jpa/*.bpmn20.xml" />
+      </fileset>
+    </copy>
+    <mkdir dir="${target.distro.root}/workspace/activiti-jpa-examples/src/test/java" />
+    <copy todir="${target.distro.root}/workspace/activiti-jpa-examples/src/test/java" includeEmptyDirs="false">
+      <fileset dir="../modules/activiti-engine/src/test/java">
+        <include name="org/activiti/examples/variables/jpa/*Test.java" />
+      </fileset>
+    </copy>
+    <mkdir dir="${target.distro.root}/workspace/activiti-jpa-examples/src/test/resources" />
+    <copy todir="${target.distro.root}/workspace/activiti-jpa-examples/src/test/resources" includeEmptyDirs="false">
+      <fileset dir="../modules/activiti-engine/src/test/resources">
         <include name="activiti.cfg.xml" />
         <include name="logging.properties" />
         <include name="META-INF/persistence.xml" />
       </fileset>
     </copy>
-    <mkdir dir="${target.distro.root}/workspace/activiti-spring-examples/src" />
-    <copy todir="${target.distro.root}/workspace/activiti-spring-examples/src">
-      <fileset dir="../modules/activiti-spring/src/test/java" />
-      <fileset dir="../modules/activiti-spring/src/test/resources" />
+    <!-- SPRING EXAMPLES -->
+    <mkdir dir="${target.distro.root}/workspace/activiti-spring-examples/src/main/java" />
+    <copy todir="${target.distro.root}/workspace/activiti-spring-examples/src/main/java" includeEmptyDirs="false">
+      <fileset dir="../modules/activiti-spring/src/test/java">
+        <exclude name="**/*Test.java" />
+      </fileset>
+    </copy>
+    <mkdir dir="${target.distro.root}/workspace/activiti-spring-examples/src/main/process" />
+    <copy todir="${target.distro.root}/workspace/activiti-spring-examples/src/main/process" includeEmptyDirs="false">
+      <fileset dir="../modules/activiti-spring/src/test/resources">
+        <include name="**/*.bpmn20.xml" />
+        <include name="**/*.form" />
+        <exclude name="**/custom-persistence.xml" />
+        <exclude name="**/*-context.xml" />
+        <exclude name="logging.properties" />
+      </fileset>
+    </copy>
+    <mkdir dir="${target.distro.root}/workspace/activiti-spring-examples/src/test/java" />
+    <copy todir="${target.distro.root}/workspace/activiti-spring-examples/src/test/java" includeEmptyDirs="false">
+      <fileset dir="../modules/activiti-spring/src/test/java">
+        <include name="**/*Test.java" />
+      </fileset>
+    </copy>
+    <mkdir dir="${target.distro.root}/workspace/activiti-spring-examples/src/test/resources" />
+    <copy todir="${target.distro.root}/workspace/activiti-spring-examples/src/test/resources" includeEmptyDirs="false">
+      <fileset dir="../modules/activiti-spring/src/test/resources">
+        <include name="**/custom-persistence.xml" />
+        <include name="**/*-context.xml" />
+        <include name="logging.properties" />
+      </fileset>
     </copy>
 	</target>
 

@@ -14,7 +14,7 @@ package org.activiti.spring.test.servicetask;
 
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.test.Deployment;
-import org.activiti.spring.impl.test.ActivitiInternalSpringTestCase;
+import org.activiti.spring.impl.test.SpringActivitiTestCase;
 import org.springframework.test.context.ContextConfiguration;
 
 
@@ -22,7 +22,7 @@ import org.springframework.test.context.ContextConfiguration;
  * @author Joram Barrez
  */
 @ContextConfiguration("classpath:org/activiti/spring/test/servicetask/servicetaskSpringTest-context.xml")
-public class ServiceTaskSpringDelegationTest extends ActivitiInternalSpringTestCase {
+public class ServiceTaskSpringDelegationTest extends SpringActivitiTestCase {
   
   @Deployment
   public void testDelegateExpression() {
