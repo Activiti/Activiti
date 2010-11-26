@@ -40,7 +40,7 @@ public interface Query<T extends Query< ? , ? >, U extends Object> {
   /**
    * Executes the query and returns the resulting entity.
    * @throws ActivitiException when the query results in more than one
-   * entities.. Ê
+   * entities.
    */
   U singleResult();
 

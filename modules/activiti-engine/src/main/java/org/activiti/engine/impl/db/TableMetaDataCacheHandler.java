@@ -16,7 +16,7 @@ import java.sql.DatabaseMetaData;
 import java.sql.SQLException;
 
 /**
- * @author Christian Mülder
+ * @author Christian Muelder
  */
 public class TableMetaDataCacheHandler {
 	

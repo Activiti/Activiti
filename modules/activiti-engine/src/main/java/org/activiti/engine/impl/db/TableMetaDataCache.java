@@ -16,7 +16,7 @@ import java.util.HashMap;
 
 import org.activiti.engine.management.TableMetaData;
 /**
- * @author Christian Mülder
+ * @author Christian Muelder
  */
 public class TableMetaDataCache extends HashMap<String, TableMetaData> {
 

@@ -17,7 +17,7 @@ import java.util.List;
 
 import org.activiti.engine.management.TableMetaData;
 /**
- * @author Christian Mülder
+ * @author Christian Muelder
  */
 public class PostgresDbMetaDataHandler extends StdDbMetaDataHandler implements DbMetaDataHandler {
 

@@ -14,7 +14,7 @@ package org.activiti.engine.impl.db;
 
 import org.activiti.engine.management.TableMetaData;
 /**
- * @author Christian Mülder
+ * @author Christian Muelder
  */
 public class StdDbMetaDataHandler implements DbMetaDataHandler {
 
