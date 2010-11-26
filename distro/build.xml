@@ -240,8 +240,8 @@
       </fileset>
     </copy>
     <!-- GROOVY EXAMPLES -->
-    <mkdir dir="${target.distro.root}/workspace/activiti-engine-examples/src/main/process" />
-    <copy todir="${target.distro.root}/workspace/activiti-engine-examples/src/main/process" includeEmptyDirs="false">
+    <mkdir dir="${target.distro.root}/workspace/activiti-groovy-examples/src/main/process" />
+    <copy todir="${target.distro.root}/workspace/activiti-groovy-examples/src/main/process" includeEmptyDirs="false">
       <fileset dir="../modules/activiti-engine/src/test/resources">
         <include name="org/activiti/examples/groovy/*.bpmn20.xml" />
       </fileset>
@@ -282,6 +282,7 @@
     <mkdir dir="${target.distro.root}/workspace/activiti-jpa-examples/src/test/resources" />
     <copy todir="${target.distro.root}/workspace/activiti-jpa-examples/src/test/resources" includeEmptyDirs="false">
       <fileset dir="../modules/activiti-engine/src/test/resources">
+        <include name="org/activiti/examples/variables/jpa/activiti.cfg.xml" />
         <include name="activiti.cfg.xml" />
         <include name="logging.properties" />
         <include name="META-INF/persistence.xml" />

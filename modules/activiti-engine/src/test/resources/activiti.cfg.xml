@@ -12,9 +12,6 @@
     <property name="jdbcUsername" value="sa" />
     <property name="jdbcPassword" value="" />
     
-    <!-- History level should be full to enable testing of HistoricDetail features -->
-    <property name="history" value="full" />
-    
     <!-- Database configurations -->
     <property name="databaseSchemaUpdate" value="true" />
     
