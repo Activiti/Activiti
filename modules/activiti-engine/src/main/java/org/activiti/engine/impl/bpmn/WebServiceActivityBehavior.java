@@ -22,6 +22,7 @@ import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
  * An activity behavior that allows calling Web services
  * 
  * @author Esteban Robles Luna
+ * @author Falko Menge
  */
 public class WebServiceActivityBehavior implements ActivityBehavior {
   
@@ -72,8 +73,11 @@ public class WebServiceActivityBehavior implements ActivityBehavior {
     execution.setVariable(CURRENT_MESSAGE, receivedMessage);
 
     if (ioSpecification != null) {
-      ItemInstance outputItem = (ItemInstance) execution.getVariable(this.ioSpecification.getFirstDataOutputName());
-      outputItem.getStructureInstance().loadFrom(receivedMessage.getStructureInstance().toArray());
+      String firstDataOutputName = this.ioSpecification.getFirstDataOutputName();
+      if (firstDataOutputName != null) {
+        ItemInstance outputItem = (ItemInstance) execution.getVariable(firstDataOutputName);
+        outputItem.getStructureInstance().loadFrom(receivedMessage.getStructureInstance().toArray());
+      }
     }
     
     this.returnMessage(receivedMessage, execution);

@@ -31,6 +31,7 @@ import org.activiti.engine.impl.variable.VariableDeclaration;
 /**
  * @author Tom Baeyens
  * @author Joram Barrez
+ * @author Falko Menge
  */
 public class HistoryParseListener implements BpmnParseListener {
   
@@ -136,6 +137,10 @@ public class HistoryParseListener implements BpmnParseListener {
       }
     }
     return configurationhistoryLevel;
+  }
+
+  public void parseSendTask(Element sendTaskElement, ScopeImpl scope, ActivityImpl activity) {
+    addActivityHandlers(sendTaskElement, activity);
   }
   
 }

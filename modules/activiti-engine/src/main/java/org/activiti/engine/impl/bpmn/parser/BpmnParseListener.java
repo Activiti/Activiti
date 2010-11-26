@@ -23,6 +23,7 @@ import org.activiti.engine.impl.variable.VariableDeclaration;
 
 /**
  * @author Tom Baeyens
+ * @author Falko Menge
  */
 public interface BpmnParseListener {
 
@@ -41,5 +42,6 @@ public interface BpmnParseListener {
   void parseCallActivity(Element callActivityElement, ScopeImpl scope, ActivityImpl activity);
   void parseProperty(Element propertyElement, VariableDeclaration variableDeclaration, ActivityImpl activity);
   void parseSequenceFlow(Element sequenceFlowElement, ScopeImpl scopeElement, TransitionImpl transition);
+  void parseSendTask(Element sendTaskElement, ScopeImpl scope, ActivityImpl activity);
 
 }

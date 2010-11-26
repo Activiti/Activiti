@@ -13,12 +13,9 @@
 package org.activiti.engine.test.bpmn.servicetask;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.activiti.engine.impl.repository.DeploymentBuilderImpl;
-import org.activiti.engine.impl.repository.ResourceEntity;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.impl.test.TestHelper;
 import org.activiti.engine.impl.util.ClassNameUtil;

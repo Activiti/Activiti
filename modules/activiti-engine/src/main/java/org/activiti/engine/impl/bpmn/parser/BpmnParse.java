@@ -63,7 +63,6 @@ import org.activiti.engine.impl.bpmn.TaskActivity;
 import org.activiti.engine.impl.bpmn.TransformationDataOutputAssociation;
 import org.activiti.engine.impl.bpmn.UserTaskActivity;
 import org.activiti.engine.impl.bpmn.WebServiceActivityBehavior;
-import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.el.Expression;
 import org.activiti.engine.impl.el.ExpressionManager;
 import org.activiti.engine.impl.el.FixedValue;
@@ -97,6 +96,7 @@ import org.activiti.engine.impl.variable.VariableDeclaration;
  * @author Joram Barrez
  * @author Christian Stettler
  * @author Frederik Heremans
+ * @author Falko Menge
  */
 public class BpmnParse extends Parse {
 
@@ -650,6 +650,8 @@ public class BpmnParse extends Parse {
         parseManualTask(activityElement, scopeElement);
       } else if (activityElement.getTagName().equals("userTask")) {
         parseUserTask(activityElement, scopeElement);
+      } else if (activityElement.getTagName().equals("sendTask")) {
+        parseSendTask(activityElement, scopeElement);
       } else if (activityElement.getTagName().equals("receiveTask")) {
         parseReceiveTask(activityElement, scopeElement);
       } else if (activityElement.getTagName().equals("subProcess")) {
@@ -821,13 +823,71 @@ public class BpmnParse extends Parse {
         activity.setActivityBehavior(webServiceActivityBehavior);
       }
     } else {
-      addError("'class', 'delegateExpression', type', or 'expression' attribute is mandatory on serviceTask", serviceTaskElement);
+      addError("One of the attributes 'class', 'delegateExpression', 'type', 'operation', or 'expression' is mandatory on serviceTask.", serviceTaskElement);
     }
     
     parseExecutionListenersOnScope(serviceTaskElement, activity);
 
     for (BpmnParseListener parseListener: parseListeners) {
       parseListener.parseServiceTask(serviceTaskElement, scope, activity);
+    }
+  }
+
+  /**
+   * Parses a sendTask declaration.
+   */
+  public void parseSendTask(Element sendTaskElement, ScopeImpl scope) {
+    ActivityImpl activity = parseAndCreateActivityOnScopeElement(sendTaskElement, scope);
+
+    // for e-mail
+    String type = null; //sendTaskElement.attributeNS(BpmnParser.ACTIVITI_BPMN_EXTENSIONS_NS, "type");
+
+    // for web service
+    String implementation = sendTaskElement.attribute("implementation");
+    String operationRef = this.resolveName(sendTaskElement.attribute("operationRef"));
+
+    // for e-mail
+    if (type != null) {
+//      if (type.equalsIgnoreCase("mail")) {
+//        parseEmailServiceTask(activity, sendTaskElement, parseFieldDeclarations(sendTaskElement));
+//      } else {
+//        addError("Invalid usage of type attribute: '" + type + "'", sendTaskElement);
+//      }
+    
+    // for web service
+    } else if (implementation != null && operationRef != null && implementation.equalsIgnoreCase("##WebService")) {
+      if (!this.operations.containsKey(operationRef)) {
+        addError(operationRef + " does not exist" , sendTaskElement);
+      } else {
+        Operation operation = this.operations.get(operationRef);
+        WebServiceActivityBehavior webServiceActivityBehavior = new WebServiceActivityBehavior(operation);
+        
+        Element ioSpecificationElement = sendTaskElement.element("ioSpecification");
+        if (ioSpecificationElement != null) {
+          IOSpecification ioSpecification = this.parseIOSpecification(ioSpecificationElement);
+          webServiceActivityBehavior.setIoSpecification(ioSpecification);
+        }
+        
+        for (Element dataAssociationElement : sendTaskElement.elements("dataInputAssociation")) {
+          AbstractDataInputAssociation dataAssociation = this.parseDataInputAssociation(dataAssociationElement);
+          webServiceActivityBehavior.addDataInputAssociation(dataAssociation);
+        }
+        
+        for (Element dataAssociationElement : sendTaskElement.elements("dataOutputAssociation")) {
+          AbstractDataOutputAssociation dataAssociation = this.parseDataOutputAssociation(dataAssociationElement);
+          webServiceActivityBehavior.addDataOutputAssociation(dataAssociation);
+        }
+
+        activity.setActivityBehavior(webServiceActivityBehavior);
+      }
+    } else {
+      addError("One of the attributes 'type' or 'operation' is mandatory on sendTask.", sendTaskElement);
+    }
+    
+    parseExecutionListenersOnScope(sendTaskElement, activity);
+
+    for (BpmnParseListener parseListener: parseListeners) {
+      parseListener.parseSendTask(sendTaskElement, scope, activity);
     }
   }
 

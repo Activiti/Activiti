@@ -22,6 +22,7 @@ import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
  * Implementation of the BPMN 2.0 'ioSpecification'
  * 
  * @author Esteban Robles Luna
+ * @author Falko Menge
  */
 public class IOSpecification {
   
@@ -79,6 +80,10 @@ public class IOSpecification {
   }
 
   public String getFirstDataOutputName() {
-    return this.dataOutputs.get(0).getName();
+    if (this.dataOutputs != null && !this.dataOutputs.isEmpty()) {
+      return this.dataOutputs.get(0).getName();
+    } else {
+      return null;
+    }
   }
 }
