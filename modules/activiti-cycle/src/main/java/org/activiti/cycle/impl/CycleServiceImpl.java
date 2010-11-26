@@ -366,12 +366,16 @@ public class CycleServiceImpl implements CycleService {
 
 
   public void addTag(String connectorId, String artifactId, String tagName, String alias) {
+    checkValidConnector(connectorId);
+
     RepositoryNodeTagEntity tagEntity = new RepositoryNodeTagEntity(tagName, connectorId, artifactId);
     tagEntity.setAlias(alias);
     cycleDAO.insertTag(tagEntity);
   }
 
   public void setTags(String connectorId, String nodeId, List<String> tags) {
+    checkValidConnector(connectorId);
+
     // TODO: Improve method to really just update changes!
     List<RepositoryNodeTagEntity> tagsForNode = cycleDAO.getTagsForNode(connectorId, nodeId);
     for (RepositoryNodeTagEntity tagEntity : tagsForNode) {
@@ -389,6 +393,13 @@ public class CycleServiceImpl implements CycleService {
         addTag(connectorId, nodeId, tag, null);
         alreadyAddedTags.add(tag);
       }
+    }
+  }
+
+  private void checkValidConnector(String connectorId) {
+    if (TagConnectorConfiguration.TAG_CONNECTOR_ID.equals(connectorId)) {
+      // we doin't want to have recursions in tags
+      throw new RepositoryException("Cannot tag a tag");
     }
   }
 

@@ -60,17 +60,28 @@ public class TagConnector implements RepositoryConnector {
     }
   }
 
+  public RepositoryFolder getRepositoryFolder(String id) throws RepositoryNodeNotFoundException {
+    // we try to access an TAG directly (may be represented as a folder), so
+    // return an empty folder object
+    CycleTagContent tag = getConfiguration().getCycleService().getTagContent(id);
+    return createFolderObject(tag);
+  }
+
   private List<RepositoryNode> createRootFolders() {
     List<RepositoryNode> tagFolderList = new ArrayList<RepositoryNode>();
 
     List<CycleTagContent> rootTags = getConfiguration().getCycleService().getRootTags();
     for (CycleTagContent tag : rootTags) {
-      RepositoryFolderImpl folder = new RepositoryFolderImpl(getConfiguration().getId(), tag.getName());
-      folder.getMetadata().setName(tag.getName() + " [" + tag.getUsageCount() + "]");
-      tagFolderList.add(folder);
+      tagFolderList.add(createFolderObject(tag));
     }
 
     return tagFolderList;
+  }
+
+  private RepositoryFolderImpl createFolderObject(CycleTagContent tag) {
+    RepositoryFolderImpl folder = new RepositoryFolderImpl(getConfiguration().getId(), tag.getName());
+    folder.getMetadata().setName(tag.getName() + " [" + tag.getUsageCount() + "]");
+    return folder;
   }
   
   public RepositoryArtifact createArtifact(String parentFolderId, String artifactName, String artifactType, Content artifactContent)
@@ -109,10 +120,6 @@ public class TagConnector implements RepositoryConnector {
 
   public Content getRepositoryArtifactPreview(String artifactId) throws RepositoryNodeNotFoundException {
     throw new UnsupportedOperationException("Cannot get artifact in TagConnector, use real RepositoryConnector istead.");
-  }
-
-  public RepositoryFolder getRepositoryFolder(String id) throws RepositoryNodeNotFoundException {
-    throw new UnsupportedOperationException("Cannot get folder in TagConnector, use real RepositoryConnector istead.");
   }
 
   public void updateContent(String artifactId, Content content) throws RepositoryNodeNotFoundException {
