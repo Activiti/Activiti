@@ -76,3 +76,14 @@ div .artifact-type {
   background: #666;
   color: #fff;
 }
+
+/* styling for links and backlinks tables */
+
+#links-wrapper {
+  float:left;
+  margin-right: 10px;
+}
+
+#backlinks-wrapper {
+  float: left;
+}

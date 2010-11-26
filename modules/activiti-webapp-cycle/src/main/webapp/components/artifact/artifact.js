@@ -34,6 +34,8 @@
 
     this._fileChooserDialog = {};
     this._linksDataTable = {};
+    this._linksDataSource = {};
+    this._backlinksDataTable = {};
 
     return this;
   };
@@ -133,7 +135,7 @@
       
       // Retrieve rest api response
       var artifactJson = response.json;
-
+      // create a tab for each content representation
       for(var i = 0; i<artifactJson.contentRepresentations.length; i++) {
         var tab = new YAHOO.widget.Tab({ 
           label: artifactJson.contentRepresentations[i], 
@@ -141,34 +143,95 @@
           cacheData: true
         });
         tab.addListener("contentChange", this.onTabDataLoaded);
-        
         tab.loadHandler.success = function(response) {
           me.onLoadTabSuccess(this /* the tab */, response);
         };
-        
         tab.loadHandler.failure = function(response) {
           me.onLoadTabFailure(this /* the tab */, response);
         };
-        
         this._tabView.addTab(tab);
       }
 
-      // Add artifact links tab
+      // Add links tab
 			var linksTab = new YAHOO.widget.Tab({ 
 				label: "Links", 
-				dataSrc: Activiti.service.REST_PROXY_URI_RELATIVE + "artifact-links?connectorId=" + encodeURIComponent(artifactJson.connectorId) + "&artifactId=" + encodeURIComponent(artifactJson.artifactId),
-				cacheData: true
+				content: '<div id="links-wrapper"><h3>Links</h3><div id="links-div"></div><span id="addLink" class="yui-button"><span class="first-child"><button type="button">Add link</button></span></span></div><div id="backlinks-wrapper"><h3>Backlinks</h3><div id="backlinks-div"></div></div>'
 			});
 
-			linksTab.loadHandler.success = function(response) {
-				me.onLodLinksSuccess(this /* the tab */, response);
-			};
-
 			this._tabView.addTab(linksTab);
-
       this._tabView.appendTo('artifact-div');
 
-      // replace the tabViews onActiveTabCHange evnet handler with our own one
+      // instantiate a data source for the links data table
+      this._linksDataSource = new YAHOO.util.XHRDataSource(Activiti.service.REST_PROXY_URI_RELATIVE + "artifact-links?connectorId=" + encodeURIComponent(artifactJson.connectorId) + "&artifactId=" + encodeURIComponent(artifactJson.artifactId));
+      this._linksDataSource.responseType = YAHOO.util.XHRDataSource.TYPE_JSARRAY;
+
+      // TODO: i18n
+      var linksColumnDefs = [
+          {key: "Name", sortable:true},
+          {key: "Revision", sortable:true},
+          {key: "Type"}
+        ];
+
+      // instantiate the links data table
+      this._linksDataTable = new YAHOO.widget.DataTable("links-div", linksColumnDefs, this._linksDataSource, {scrollable:true});
+      // parse the response of the request that loaded the links from the server and 
+      // transform it into a format that is easily consumed by the YUI dataTable component
+      this._linksDataTable.doBeforeLoadData = function (sRequest, oResponse, oPayload) {
+          var jsonArray = oResponse.results;
+          var rows = [];
+          for(var i=0; i<jsonArray.length; i++) {
+            var row = {
+              Name: '<a class="openArtifactLink" href="#?connectorId=' + encodeURIComponent(jsonArray[i].artifact.targetConnectorId) + '&artifactId=' + encodeURIComponent(jsonArray[i].artifact.targetArtifactId) + '&artifactName=' + encodeURIComponent(jsonArray[i].artifact.label) + '">' + jsonArray[i].artifact.label + '</a>',
+              Revision: jsonArray[i].artifact.targetArtifactRevision,
+              Type: '<div class="artifact-type ' + me.getClassForContentType(jsonArray[i].artifact.targetContentType) + '">' + jsonArray[i].artifact.targetContentType + '</div>'
+            };
+            rows.push(row);
+          }          
+          oResponse.results = rows;
+          return true;
+      };   
+      // make sure we add click listeners to the links once they are loaded and rendered in the data table
+      this._linksDataTable.addListener('initEvent', function(e) {
+          var linkElements = Dom.getElementsByClassName("openArtifactLink", "a");
+          for (var i = 0; i < linkElements.length; i++) {
+            YAHOO.util.Event.addListener(linkElements[i], "click", me.onArtifactLinkClick, me, true);
+          }
+        });
+
+      var addLinkButton = new YAHOO.widget.Button("addLink", { label:"Add link", id:"addLinkButton" });
+      addLinkButton.addListener("click", this.onClickAddLinkButton, null, this);
+
+      // instantiate the datasource for the backlinks data table
+      var backlinksDataSource = new YAHOO.util.XHRDataSource(Activiti.service.REST_PROXY_URI_RELATIVE + "incoming-artifact-links?connectorId=" + encodeURIComponent(artifactJson.connectorId) + "&artifactId=" + encodeURIComponent(artifactJson.artifactId));
+      backlinksDataSource.responseType = YAHOO.util.XHRDataSource.TYPE_JSARRAY;
+
+      // instantiate the links data table
+      this._backlinksDataTable = new YAHOO.widget.DataTable("backlinks-div", linksColumnDefs, backlinksDataSource, {scrollable:true});
+      // parse the response of the request that loaded the backlinks from the server and 
+      // transform it into a format that is easily consumed by the YUI dataTable component
+      this._backlinksDataTable.doBeforeLoadData = function (sRequest, oResponse, oPayload) {
+          var jsonArray = oResponse.results;
+          var rows = [];
+          for(var i=0; i<jsonArray.length; i++) {
+            var row = {
+              Name: '<a class="openArtifactLink" href="#?connectorId=' + encodeURIComponent(jsonArray[i].artifact.sourceConnectorId) + '&artifactId=' + encodeURIComponent(jsonArray[i].artifact.sourceArtifactId) + '&artifactName=' + encodeURIComponent(jsonArray[i].artifact.label) + '">' + jsonArray[i].artifact.label + '</a>',
+              Revision: jsonArray[i].artifact.sourceArtifactRevision,
+              Type: '<div class="artifact-type ' + me.getClassForContentType(jsonArray[i].artifact.sourceContentType) + '">' + jsonArray[i].artifact.sourceContentType + '</div>'
+            };
+            rows.push(row);
+          }          
+          oResponse.results = rows;
+          return true;
+      };   
+      // make sure we add click listeners to the links once they are loaded and rendered in the data table
+      this._backlinksDataTable.addListener('initEvent', function(e) {
+          var linkElements = Dom.getElementsByClassName("openArtifactLink", "a");
+          for (var i = 0; i < linkElements.length; i++) {
+            YAHOO.util.Event.addListener(linkElements[i], "click", me.onArtifactLinkClick, me, true);
+          }
+        });
+
+      // replace the tabViews onActiveTabChange evnet handler with our own one
       this._tabView.unsubscribe("activeTabChange", this._tabView._onActiveTabChange);
       this._tabView.subscribe("activeTabChange", this.onActiveTabChange, null, this);
 
@@ -238,7 +301,6 @@
 
     onLoadTabFailure: function Artifact_onLoadTabFailure(tab, response) {
       var responseJson = YAHOO.lang.JSON.parse(response.responseText);
-      
       var tabContent = "<h3>Java Stack Trace:</h3>";
       for(var line in responseJson.callstack) {
         if( line == 1 || (responseJson.callstack[line].indexOf("org.activiti.cycle") != -1) || responseJson.callstack[line].indexOf("org.activiti.rest.api.cycle") != -1) {
@@ -247,80 +309,8 @@
           tabContent += "<span class=\"cycle-stack-trace\">" + responseJson.callstack[line] + "</span>";
         }
       }
-      
       tab.set('content', tabContent);
-      
-      
       Activiti.widget.PopupManager.displayError(responseJson.message);
-    },
-
-    onLodLinksSuccess: function Artifact_onLodLinksSuccess(tab, response) {
-      try{
-        var responseJson = YAHOO.lang.JSON.parse(response.responseText);
-
-        tab.set('content', '<div id="linksTable"></div><span id="addLink" class="yui-button"><span class="first-child"><button type="button">Add link</button></span></span>');
-
-        // TODO: i18n
-        var linksColumnDefs = [
-            {key:"Name", sortable:true},
-            {key:"Revision", sortable:true},
-            {key:"Type"}
-          ];
-        
-        var rows = [];
-        for(var i=0; i<responseJson.length; i++) {
-          var typeClass;
-          if(responseJson[i].artifact.targetContentType === "image/png" || responseJson[i].artifact.targetContentType === "image/gif" || responseJson[i].artifact.targetContentType === "image/jpeg") {
-            typeClass = "icon-img";
-          } else if(responseJson[i].artifact.targetContentType === "application/xml") {
-            typeClass = "icon-code-red";
-          } else if(responseJson[i].artifact.targetContentType === "text/html") {
-            typeClass = "icon-www";
-          } else if(responseJson[i].artifact.targetContentType === "text/plain") {
-            typeClass = "icon-txt";
-          } else if(responseJson[i].artifact.targetContentType === "application/pdf") {
-            typeClass = "icon-pdf";
-          } else if(responseJson[i].artifact.targetContentType === "application/json;charset=UTF-8") {
-            typeClass = "icon-code-blue";
-          } else if(responseJson[i].artifact.targetContentType === "application/msword") {
-            typeClass = "icon-doc";
-          } else if(responseJson[i].artifact.targetContentType === "application/powerpoint") {
-            typeClass = "icon-ppt";
-          } else if(responseJson[i].artifact.targetContentType === "application/excel") {
-            typeClass = "icon-xls";
-          } else if(responseJson[i].artifact.targetContentType === "application/javascript") {
-            typeClass = "icon-code-blue";
-          } else {
-            // Use white page as default icon for all other content types
-            typeClass = "icon-blank";
-          }
-          var row = {
-              Name: '<a class="openArtifactLink" href="#?connectorId=' + encodeURIComponent(responseJson[i].artifact.targetConnectorId) + '&artifactId=' + encodeURIComponent(responseJson[i].artifact.targetArtifactId) + '&artifactName=' + encodeURIComponent(responseJson[i].artifact.label) + '">' + responseJson[i].artifact.label + '</a>',
-              Revision: responseJson[i].artifact.targetArtifactRevision,
-              Type: '<div class="artifact-type ' + typeClass + '">' + responseJson[i].artifact.targetContentType + '</div>'
-            };
-          rows.push(row);
-        }
-        var linksDataSource = new YAHOO.util.LocalDataSource(rows);
-
-        linksDataSource.responseSchema = {
-            fields: ["Name","Revision","Type"]
-          };
-
-        this._linksDataTable = new YAHOO.widget.DataTable("linksTable", linksColumnDefs, linksDataSource, {scrollable:true});
-
-        var linkElements = Dom.getElementsByClassName("openArtifactLink", "a");
-        for (var i = 0; i < linkElements.length; i++) {
-				  YAHOO.util.Event.addListener(linkElements[i], "click", this.onArtifactLinkClick, this, true);
-        }
-
-        var addLinkButton = new YAHOO.widget.Button("addLink", { label:"Add link", id:"addLinkButton" });
-        
-        addLinkButton.addListener("click", this.onClickAddLinkButton, null, this);
-      }
-      catch (e) {
-          alert("Invalid response for tab data");
-      }
     },
 
     onExecuteActionClick: function Artifact_onExecuteActionClick(e)
@@ -373,15 +363,51 @@
 
     /**
      * This method is called when the service method createArtifactLink returns and reloads 
-     * the links-tab so the new row in the links-table becomes visible.
+     * the links data table so the newly added link becomes visible.
      *
      * @param args object that contains three attributes: config, json and serverResponse
      */
     onCreateArtifactLinkSuccess: function Artifact_onCreateArtifactLinkSuccess(args)
     {
-      this._tabView.getTab(this._activeTabIndex).set( 'cacheData', false );
-      this._tabView.selectTab( this._activeTabIndex );
-      this._tabView.getTab(this._activeTabIndex).set( 'cacheData', true );
+      var oCallback = {
+          success : this._linksDataTable.onDataReturnInitializeTable,
+          failure : this._linksDataTable.onDataReturnInitializeTable,
+          scope : this._linksDataTable,
+          argument: this._linksDataTable.getState() // data payload that will be returned to the callback function
+      };
+      this._linksDataSource.sendRequest("", oCallback);
+    },
+    
+    /**
+     * Convenience method to retrieve css class attributes for content types.
+     *
+     * @param contentType the content type to retrieve the css class for
+     * @return {string} the content type class name
+     */
+    getClassForContentType: function Artifact_getClassForContentType(contentType) {
+      if(contentType === "image/png" || contentType === "image/gif" || contentType === "image/jpeg") {
+        return "icon-img";
+      } else if(contentType === "application/xml") {
+        return "icon-code-red";
+      } else if(contentType === "text/html") {
+        return "icon-www";
+      } else if(contentType === "text/plain") {
+        return "icon-txt";
+      } else if(contentType === "application/pdf") {
+        return "icon-pdf";
+      } else if(contentType === "application/json;charset=UTF-8") {
+        return "icon-code-blue";
+      } else if(contentType === "application/msword") {
+        return "icon-doc";
+      } else if(contentType === "application/powerpoint") {
+        return "icon-ppt";
+      } else if(contentType === "application/excel") {
+        return "icon-xls";
+      } else if(contentType === "application/javascript") {
+        return "icon-code-blue";
+      }
+      // Use white page as default icon for all other content types
+      return "icon-blank";
     }
 
   });

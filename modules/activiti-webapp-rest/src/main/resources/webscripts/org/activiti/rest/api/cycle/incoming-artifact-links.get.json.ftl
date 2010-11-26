@@ -9,9 +9,9 @@
 <#escape x as jsonUtils.encodeJSONString(x)>
 {
   "artifact": {
-  	<@printArtifact link.targetArtifact/>,
-  	"targetElementId": "${link.targetElementId!''}",
-  	"targetElementName": "${link.targetElementName!''}",
+  	<@printArtifact link.sourceArtifact/>,
+  	"sourceElementId": "${link.sourceElementId!''}",
+  	"sourceElementName": "${link.sourceElementName!''}",
   	"linkType": "${link.linkType!''}",
   	"comment": "${link.comment!''}"
   }
@@ -21,10 +21,10 @@
 
 <#macro printArtifact artifact>
 <#escape x as jsonUtils.encodeJSONString(x)>
-	"targetConnectorId": "${artifact.connectorId!''}",
-  	"targetArtifactId": "${artifact.nodeId!''}",
-	"targetArtifactRevision": "${artifact.artifactType.revision!''}",
-	"targetContentType": "${artifact.artifactType.mimeType.contentType!''}",
+	"sourceConnectorId": "${artifact.connectorId!''}",
+  	"sourceArtifactId": "${artifact.nodeId!''}",
+	"sourceArtifactRevision": "${artifact.artifactType.revision!''}",
+	"sourceContentType": "${artifact.artifactType.mimeType.contentType!''}",
 	"label": "${artifact.metadata.name!''}"
 </#escape>
 </#macro>
