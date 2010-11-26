@@ -1,4 +1,4 @@
-package org.activiti.cycle.impl.connector.signavio.transform.signavio;
+package org.activiti.cycle.impl.connector.signavio.transform.pattern;
 
 import java.util.HashSet;
 import java.util.List;

@@ -11,30 +11,22 @@
  * limitations under the License.
  */
 
-package org.activiti.cycle.impl.connector.signavio.transform.signavio;
-
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
+package org.activiti.cycle.impl.connector.signavio.transform.pattern;
 
 /**
- * Removes Signavio glossary links
+ * Adjusts names of Oryx shapes for use as names for jPDL3 Nodes
  * 
- * Example: glossary://fe916161287140b09dae4203537a7dea/Anschlussadresse\nextrahieren;;
+ * '\' is forbidden by Node.setName() in jBPM 3.2.6.SP1
+ * '"' is converted into '&quot;', which is hard to read in the XML source code
+ * '\n' is problematic for referencing and also hard to read
  * 
  * @author Falko Menge <falko.menge@camunda.com>
  */
-public class GlossaryLinkRemoval extends OryxShapeNameTransformation {
+public class AdjustShapeNamesForJpdl3Transformation extends OryxShapeNameTransformation {
 
-  public static final Pattern GLOSSARY_LINK_PATTERN = Pattern.compile("glossary://[a-z0-9]+/([^;]+);;");
-
+  @Override
   public String transformName(String name) {
-    String newName = name;
-    Matcher matcher = GLOSSARY_LINK_PATTERN.matcher(name);
-    if (matcher.matches()) {
-      newName = matcher.group(1);
-    }
-    return newName;
+    return name.replaceAll("\n", " ").replaceAll("/", "|").replaceAll("\"", "");
   }
 
 }

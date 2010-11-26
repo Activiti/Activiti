@@ -11,22 +11,19 @@
  * limitations under the License.
  */
 
-package org.activiti.cycle.impl.connector.signavio.transform.signavio;
+package org.activiti.cycle.impl.connector.signavio.transform.pattern;
 
 /**
- * Adjusts names of Oryx shapes for use as names for jPDL3 Nodes
+ * Adjusts names from Signavio (remove new lines, ' and maybe add more in future)
+ * See https://app.camunda.com/jira/browse/HEMERA-164.
  * 
- * '\' is forbidden by Node.setName() in jBPM 3.2.6.SP1
- * '"' is converted into '&quot;', which is hard to read in the XML source code
- * '\n' is problematic for referencing and also hard to read
- * 
- * @author Falko Menge <falko.menge@camunda.com>
+ * @author bernd.ruecker@camunda.com
  */
-public class AdjustShapeNamesForJpdl3Transformation extends OryxShapeNameTransformation {
+public class AdjustShapeNamesTransformation extends OryxShapeNameTransformation {
 
   @Override
   public String transformName(String name) {
-    return name.replaceAll("\n", " ").replaceAll("/", "|").replaceAll("\"", "");
+    return name.replaceAll("\n", " ").replaceAll("'", "").replaceAll("\"", "");
   }
 
 }

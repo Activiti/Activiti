@@ -15,7 +15,7 @@ package org.activiti.cycle.impl.connector.fs;
 
 import org.activiti.cycle.Content;
 import org.activiti.cycle.RepositoryNodeNotFoundException;
-import org.activiti.cycle.impl.connector.signavio.transform.signavio.SubProcessExpansion;
+import org.activiti.cycle.impl.connector.signavio.transform.pattern.SubProcessExpansion;
 
 /**
  * Connector for testing {@link SubProcessExpansion}

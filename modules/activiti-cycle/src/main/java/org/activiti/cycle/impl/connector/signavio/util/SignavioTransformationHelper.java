@@ -5,9 +5,9 @@ import java.util.List;
 
 import org.activiti.cycle.RepositoryException;
 import org.activiti.cycle.impl.connector.signavio.transform.JsonTransformation;
-import org.activiti.cycle.impl.connector.signavio.transform.signavio.AdjustShapeNamesTransformation;
-import org.activiti.cycle.impl.connector.signavio.transform.signavio.BpmnPoolExtraction;
-import org.activiti.cycle.impl.connector.signavio.transform.signavio.ExchangeSignavioUuidWithNameTransformation;
+import org.activiti.cycle.impl.connector.signavio.transform.pattern.AdjustShapeNamesTransformation;
+import org.activiti.cycle.impl.connector.signavio.transform.pattern.BpmnPoolExtraction;
+import org.activiti.cycle.impl.connector.signavio.transform.pattern.ExchangeSignavioUuidWithNameTransformation;
 import org.json.JSONObject;
 
 
