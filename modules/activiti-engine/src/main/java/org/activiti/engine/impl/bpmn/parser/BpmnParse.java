@@ -402,10 +402,12 @@ public class BpmnParse extends Parse {
       operation.setImplementation(this.operationImplementations.get(implementationRef));
 
       Element outMessageRefElement = operationElement.element("outMessageRef");
-      String outMessageRef = this.resolveName(outMessageRefElement.getText());
-      if (this.messages.containsKey(outMessageRef)) {
-        MessageDefinition outMessage = this.messages.get(outMessageRef);
-        operation.setOutMessage(outMessage);
+      if (outMessageRefElement != null) {
+        String outMessageRef = this.resolveName(outMessageRefElement.getText());
+        if (this.messages.containsKey(outMessageRef)) {
+          MessageDefinition outMessage = this.messages.get(outMessageRef);
+          operation.setOutMessage(outMessage);
+        }
       }
       
       operations.put(operation.getId(), operation);
