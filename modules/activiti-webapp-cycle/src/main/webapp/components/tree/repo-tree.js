@@ -65,7 +65,7 @@
       if(response.json.authenticationError) {
         var content = document.createElement("div");
   	    // TODO: i18n
-        var formHtml = '<div class="bd"><form id="' + this.id + '-repo-authentication-dialog" ><h1>Authentication required</h1><p>Please provide your username and password for the following repositories:</p>';
+        var formHtml = '<div class="bd"><form id="' + this.id + '-repo-authentication-dialog" ><h1>Authentication required</h1><p style="color: red; font-weight: bold; max-width:400px">' + response.json.authenticationError + '</p>';
         for(var index in response.json.reposInError) {
           var id, name;
           for (attr in response.json.reposInError[index]) {

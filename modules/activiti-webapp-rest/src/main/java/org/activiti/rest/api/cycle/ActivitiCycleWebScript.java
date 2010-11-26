@@ -55,9 +55,16 @@ public abstract class ActivitiCycleWebScript extends ActivitiWebScript {
       PasswordEnabledRepositoryConnectorConfiguration conf = (PasswordEnabledRepositoryConnectorConfiguration) connector.getConfiguration();
       String username = req.getString(conf.getId() + "_username");
       String password = req.getString(conf.getId() + "_password");
+
       if (username != null && password != null) {
-        conf.setUser(username);
-        conf.setPassword(password);
+        // Remove the connector from the configuration for this session since
+        // the user pressed cancel in the authentication dialog.
+        if (username.equals("\"\"") && password.equals("\"\"")) {
+          connectors.remove(connector);
+        } else {
+          conf.setUser(username);
+          conf.setPassword(password);
+        }
       } else if (conf.getUser() == null || conf.getPassword() == null) {
         connectorsWithoutLoginMap.put(conf.getId(), conf.getName());
       }
@@ -67,7 +74,8 @@ public abstract class ActivitiCycleWebScript extends ActivitiWebScript {
       // information
     }
     if (connectorsWithoutLoginMap.size() > 0) {
-      throw new RepositoryAuthenticationException("Repository authentication error: missing login", connectorsWithoutLoginMap);
+      // TODO: i18n
+      throw new RepositoryAuthenticationException("Please provide your username and password for the following repositories:", connectorsWithoutLoginMap);
     }
     // Initialize the cycleService
     this.cycleService = CycleServiceImpl.getCycleService(cuid, session, connectors);
