@@ -2192,8 +2192,8 @@ public class MyTaskCreateListener implements TaskListener {
             <tbody>
 		          <row>
 		            <entry>mailServerHost</entry>
-		            <entry>yes</entry>
-		            <entry>The hostname of your mail server (e.g. mail.mycorp.com)</entry>
+		            <entry>no</entry>
+		            <entry>The hostname of your mail server (e.g. mail.mycorp.com). Default is <literal>localhost</literal></entry>
 		          </row>
 		          <row>
                 <entry>mailServerPort</entry>
@@ -2203,17 +2203,17 @@ public class MyTaskCreateListener implements TaskListener {
               <row>
                 <entry>mailServerDefaultFrom</entry>
                 <entry>no</entry>
-                <entry>The default e-mail address of the sender of e-mails, when none is provided by the user. By default this is <emphasis>noreply@activiti.org</emphasis></entry>
+                <entry>The default e-mail address of the sender of e-mails, when none is provided by the user. By default this is <emphasis>activiti@activiti.org</emphasis></entry>
               </row>
               <row>
                 <entry>mailServerUsername</entry>
                 <entry>if applicable for your server</entry>
-                <entry>Some mail servers require credentials for sending e-mail.</entry>
+                <entry>Some mail servers require credentials for sending e-mail. Default is <literal>activiti</literal>.</entry>
               </row>
               <row>
                 <entry>mailServerPassword</entry>
                 <entry>if applicable for your server</entry>
-                <entry>Some mail servers require credentials for sending e-mail.</entry>
+                <entry>Some mail servers require credentials for sending e-mail. Default is <literal>activiti</literal>.</entry>
               </row>
             </tbody>
             </tgroup>

@@ -4,59 +4,51 @@
 <chapter id="springintegration">
   <title>Spring integration</title>
 
-  <para>While you can use Activiti without Spring, we've provided some very nice integration features
+  <para>While you definitely can use Activiti without Spring, we've provided some very nice integration features
   that are explained in this chapter.  
   </para>
 
   <section>
     <title>ProcessEngineFactoryBean</title>
-    <para>The starting point of the integration is the class
-	  <literal>org.activiti.engine.impl.cfg.spring.ProcessEngineFactoryBean</literal>.  That bean
-	  implements <literal>ProcessEngine</literal> and takes care of building the process 
-	  engine whenever Spring instantiates it.</para>
+    
+    <para>
+      The <literal>ProcessEngine</literal> can be configured as a regular Spring bean.
+      The starting point of the integration is the class
+	    <literal>org.activiti.spring.ProcessEngineFactoryBean</literal>. That bean
+	    takes a process engine configuration and creates the process engine. 
+	    This means that the way and all configuration properties documented in the <link linkend="configuration">configuration section</link>
+	    are exactly the same as for Spring:    
     <programlisting>
-&lt;bean id=&quot;processEngine&quot; class=&quot;org.activiti.engine.impl.cfg.spring.ProcessEngineFactoryBean&quot;&gt;
-  ...
-&lt;/bean&gt;</programlisting>
-    <para>Properties that you can configure on the ProcessEngineFactoryBean:</para>
-    <itemizedlist>
-      <listitem><para><literal>processEngineName</literal> (String) see <xref linkend="configurationproperties"/></para> </listitem>
-      <listitem><para><literal>transactionManager</literal> (PlatformTransactionManager)</para> </listitem>
-      <listitem><para><literal>dataSource</literal> (DataSource)</para> </listitem>
-      <listitem><para><literal>databaseType</literal> (databaseType) see <xref linkend="supporteddatabases"/></para></listitem>
-      <listitem><para><literal>databaseSchemaUpdate</literal> (String) see <xref linkend="configurationproperties"/></para></listitem>
-      <listitem><para><literal>deploymentName</literal> (String)</para> </listitem>
-      <listitem><para><literal>deploymentResources</literal> (Resource[])</para> </listitem>
-      <listitem><para><literal>jobExecutorActivate</literal> (boolean) see <xref linkend="configurationproperties"/></para> </listitem>
-      <listitem><para><literal>mailServerHost</literal> (String) see <xref linkend="configurationproperties"/></para> </listitem>
-      <listitem><para><literal>mailServerPort</literal> (String) see <xref linkend="configurationproperties"/></para> </listitem>
-      <listitem><para><literal>mailServerUsername</literal> (String) see <xref linkend="configurationproperties"/></para> </listitem>
-      <listitem><para><literal>mailServerPassword</literal> (String) see <xref linkend="configurationproperties"/></para> </listitem>
-      <listitem><para><literal>mailServerDefaultFromAddress</literal> (String) see <xref linkend="configurationproperties"/></para> </listitem>
-      <listitem><para><literal>jpaEntityManagerFactory</literal> (javax.persistence.EntityManagerFactory) see <xref linkend="jpaconfigurationspring"/></para> </listitem>
-      <listitem><para><literal>jpaHandleTransaction</literal> (boolean) see <xref linkend="jpaconfigurationspring"/></para> </listitem>
-      <listitem><para><literal>jpaCloseEntityManager</literal> (boolean) see <xref linkend="jpaconfigurationspring"/></para> </listitem>
-    </itemizedlist>
+&lt;bean id=&quot;processEngineConfiguration&quot; class=&quot;org.activiti.spring.SpringProcessEngineConfiguration&quot;&gt;
+    ...
+&lt;/bean&gt;
+  
+&lt;bean id=&quot;processEngine&quot; class=&quot;org.activiti.spring.ProcessEngineFactoryBean&quot;&gt;
+  &lt;property name=&quot;processEngineConfiguration&quot; ref=&quot;processEngineConfiguration&quot; /&gt;
+&lt;/bean&gt;
+  </programlisting>
+      Do note that the <literal>processEngineConfiguration</literal> bean now uses the 
+      <literal>org.activiti.spring.SpringProcessEngineConfiguration</literal> class.
+    </para>
   </section>
 
   <section>
     <title>Transactions</title>
-    <para>We'll explain the <literal>SpringTransactionIntegrationTest</literal> here step by step.  
+    <para>We'll explain the <literal>SpringTransactionIntegrationTest</literal> found in the spring examples
+    of the distribution step by step.  
     Here is the spring configuration file that we use in this example 
     (located in SpringTransactionIntegrationTest-context.xml).  The quoted section 
     contains the dataSource, transactionManager, processEngine and the Activiti
     Engine services.
     </para>
-    <programlisting>&lt;beans xmlns=&quot;http://www.springframework.org/schema/beans&quot; 
+    <programlisting>
+&lt;beans xmlns=&quot;http://www.springframework.org/schema/beans&quot; 
        xmlns:context=&quot;http://www.springframework.org/schema/context&quot;
        xmlns:tx=&quot;http://www.springframework.org/schema/tx&quot;
        xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;
-       xsi:schemaLocation=&quot;http://www.springframework.org/schema/beans   
-                           http://www.springframework.org/schema/beans/spring-beans.xsd
-                           http://www.springframework.org/schema/context 
-                           http://www.springframework.org/schema/context/spring-context-2.5.xsd
-                           http://www.springframework.org/schema/tx      
-                           http://www.springframework.org/schema/tx/spring-tx-3.0.xsd&quot;&gt;
+       xsi:schemaLocation=&quot;http://www.springframework.org/schema/beans   http://www.springframework.org/schema/beans/spring-beans.xsd
+                           http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-2.5.xsd
+                           http://www.springframework.org/schema/tx      http://www.springframework.org/schema/tx/spring-tx-3.0.xsd&quot;&gt;
 
   &lt;bean id=&quot;dataSource&quot; class=&quot;org.springframework.jdbc.datasource.TransactionAwareDataSourceProxy&quot;&gt;
     &lt;property name=&quot;targetDataSource&quot;&gt;
@@ -73,11 +65,16 @@
     &lt;property name=&quot;dataSource&quot; ref=&quot;dataSource&quot; /&gt;
   &lt;/bean&gt;
   
-  &lt;bean id=&quot;processEngine&quot; class=&quot;org.activiti.spring.ProcessEngineFactoryBean&quot;&gt;
+  &lt;bean id=&quot;processEngineConfiguration&quot; class=&quot;org.activiti.spring.SpringProcessEngineConfiguration&quot;&gt;
     &lt;property name=&quot;databaseType&quot; value=&quot;h2&quot; /&gt;
     &lt;property name=&quot;dataSource&quot; ref=&quot;dataSource&quot; /&gt;
     &lt;property name=&quot;transactionManager&quot; ref=&quot;transactionManager&quot; /&gt;
-    &lt;property name=&quot;databaseSchemaUpdate&quot; value=&quot;false&quot; /&gt;
+    &lt;property name=&quot;databaseSchemaUpdate&quot; value=&quot;true&quot; /&gt;
+    &lt;property name=&quot;jobExecutorActivate&quot; value=&quot;false&quot; /&gt;
+  &lt;/bean&gt;
+  
+  &lt;bean id=&quot;processEngine&quot; class=&quot;org.activiti.spring.ProcessEngineFactoryBean&quot;&gt;
+    &lt;property name=&quot;processEngineConfiguration&quot; ref=&quot;processEngineConfiguration&quot; /&gt;
   &lt;/bean&gt;
   
   &lt;bean id=&quot;repositoryService&quot; factory-bean=&quot;processEngine&quot; factory-method=&quot;getRepositoryService&quot; /&gt;
@@ -85,10 +82,12 @@
   &lt;bean id=&quot;taskService&quot; factory-bean=&quot;processEngine&quot; factory-method=&quot;getTaskService&quot; /&gt;
   &lt;bean id=&quot;historyService&quot; factory-bean=&quot;processEngine&quot; factory-method=&quot;getHistoryService&quot; /&gt;
   &lt;bean id=&quot;managementService&quot; factory-bean=&quot;processEngine&quot; factory-method=&quot;getManagementService&quot; /&gt;
-  ...</programlisting>
+
+...</programlisting>
   <para>The remainder of that spring configuration file contains the beans and configuration that we'll use in this particular
   example:</para>
   <programlisting>
+&lt;beans&gt;  
   ...
   &lt;tx:annotation-driven transaction-manager=&quot;transactionManager&quot;/&gt;
 
@@ -100,10 +99,12 @@
 
 &lt;/beans&gt;</programlisting>
     <para>First the application context is created with any of the Spring ways to do that.  In this 
-    example we're using a classpath XML resource to configure our Spring application context:
-    </para>
+    example you could use a classpath XML resource to configure our Spring application context:
     <programlisting>ClassPathXmlApplicationContext applicationContext = 
     new ClassPathXmlApplicationContext(&quot;org/activiti/examples/spring/SpringTransactionIntegrationTest-context.xml&quot;);</programlisting>
+    or since it is a test:
+    <programlisting>@ContextConfiguration(&quot;classpath:org/activiti/spring/test/transaction/SpringTransactionIntegrationTest-context.xml&quot;)</programlisting>
+    </para>
     <para>Then we can get the service beans and invoke methods on them.  The ProcessEngineFactoryBean will have 
     added an extra interceptor to the services that applies Propagation.REQUIRED transaction semantics on 
     the Activiti service methods.  So we can use for example the repositoryService to deploy
@@ -116,7 +117,7 @@ String deploymentId = repositoryService
   .deploy()
   .getId();
     </programlisting>
-    <para>The next section shows how invocation of the userBean.  In this case, the Spring transaction will 
+    <para>The other way around also works.  In this case, the Spring transaction will 
     be around the userBean.hello() method and the Activiti service method invocation will join that 
     same transaction. 
     </para>
@@ -156,8 +157,7 @@ userBean.hello();</programlisting>
     &lt;startEvent id=&quot;start&quot; /&gt;
     &lt;sequenceFlow id=&quot;flow1&quot; sourceRef=&quot;start&quot; targetRef=&quot;print&quot; /&gt;
     
-    &lt;serviceTask id=&quot;print&quot; 
-                 <emphasis role="bold">activiti:expression=&quot;#{printer.printMessage()}&quot;</emphasis> /&gt;
+    &lt;serviceTask id=&quot;print&quot; <emphasis role="bold">activiti:expression=&quot;#{printer.printMessage()}&quot;</emphasis> /&gt;
     &lt;sequenceFlow id=&quot;flow2&quot; sourceRef=&quot;print&quot; targetRef=&quot;end&quot; /&gt;
     
     &lt;endEvent id=&quot;end&quot; /&gt;
@@ -183,21 +183,23 @@ userBean.hello();</programlisting>
 
   <section>
     <title>Automatic resource deployment</title>
-    <para>Spring integration also has a special feature for deploying resources.  In the configuration
-    of the ProcessEngineFactoryBean, you can specify a set of resources.  When the ProcessEngineFactoryBean
-    is initialized, all those resources will be scanned and deployed.  There is filtering
+    <para>Spring integration also has a special feature for deploying resources.  In the process engine
+    configuration, you can specify a set of resources. When the process engine is created,
+    all those resources will be scanned and deployed.  There is filtering
     in place that prevents duplicate deployments.  Only when the resources actually have changed, 
-    will new deployments be deployed to the Activiti DB.   
+    will new deployments be deployed to the Activiti DB. This makes sense in a lot of use case,
+    where the Spring container is rebooted often (eg testing).
     </para>
     <para>Here's an example</para>
-    <programlisting>&lt;beans ...&gt;
+    <programlisting>
+&lt;bean id=&quot;processEngineConfiguration&quot; class=&quot;org.activiti.spring.SpringProcessEngineConfiguration&quot;&gt;
   ...
-  &lt;bean id=&quot;processEngine&quot; class=&quot;org.activiti.engine.impl.cfg.spring.ProcessEngineFactoryBean&quot;&gt;
-    ...
-    &lt;property name=&quot;deploymentResources&quot; value=&quot;classpath*:/org/activiti/examples/spring/autodeploy.*.bpmn20.xml&quot; /&gt;
-  &lt;/bean&gt;
-
-&lt;/beans&gt;</programlisting>
+  <emphasis role="bold">&lt;property name=&quot;deploymentResources&quot; value=&quot;classpath*:/org/activiti/spring/test/autodeployment/autodeploy.*.bpmn20.xml&quot; /&gt;</emphasis>
+&lt;/bean&gt;
+  
+&lt;bean id=&quot;processEngine&quot; class=&quot;org.activiti.spring.ProcessEngineFactoryBean&quot;&gt;
+  &lt;property name=&quot;processEngineConfiguration&quot; ref=&quot;processEngineConfiguration&quot; /&gt;
+&lt;/bean&gt;</programlisting>
   </section>
   
   <section id="springUnitTest">

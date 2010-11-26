@@ -4,7 +4,7 @@
 <chapter>
   <title>API</title>
 
-  <section>
+  <section id="apiEngine">
     <title>Engine API</title>
     <para>The engine API is the most common way of interacting with
     Activiti.  You need a configuration file to get started.  Then you can
