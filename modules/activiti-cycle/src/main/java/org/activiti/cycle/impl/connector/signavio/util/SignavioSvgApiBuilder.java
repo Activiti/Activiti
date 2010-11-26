@@ -310,7 +310,10 @@ public class SignavioSvgApiBuilder {
 
     JSONArray focusArr = new JSONArray();
     for (Entry<String, Map<String, List<String>>> entry : nodesToHighlight.entrySet()) {
-      focusArr.put(highlightNodesMap((String) entry.getKey(), (Map<String, List<String>>) entry.getValue()));
+      Map<String, List<String>> value = (Map<String, List<String>>) entry.getValue();
+      if (!value.isEmpty()) {
+        focusArr.put(highlightNodesMap((String) entry.getKey(), value));
+      }
     }
 
     return focusArr.toString();
