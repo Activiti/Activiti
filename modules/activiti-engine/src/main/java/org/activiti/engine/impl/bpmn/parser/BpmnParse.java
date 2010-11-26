@@ -840,7 +840,7 @@ public class BpmnParse extends Parse {
     ActivityImpl activity = parseAndCreateActivityOnScopeElement(sendTaskElement, scope);
 
     // for e-mail
-    String type = null; //sendTaskElement.attributeNS(BpmnParser.ACTIVITI_BPMN_EXTENSIONS_NS, "type");
+    String type = sendTaskElement.attributeNS(BpmnParser.ACTIVITI_BPMN_EXTENSIONS_NS, "type");
 
     // for web service
     String implementation = sendTaskElement.attribute("implementation");
@@ -848,11 +848,11 @@ public class BpmnParse extends Parse {
 
     // for e-mail
     if (type != null) {
-//      if (type.equalsIgnoreCase("mail")) {
-//        parseEmailServiceTask(activity, sendTaskElement, parseFieldDeclarations(sendTaskElement));
-//      } else {
-//        addError("Invalid usage of type attribute: '" + type + "'", sendTaskElement);
-//      }
+      if (type.equalsIgnoreCase("mail")) {
+        parseEmailServiceTask(activity, sendTaskElement, parseFieldDeclarations(sendTaskElement));
+      } else {
+        addError("Invalid usage of type attribute: '" + type + "'", sendTaskElement);
+      }
     
     // for web service
     } else if (implementation != null && operationRef != null && implementation.equalsIgnoreCase("##WebService")) {
