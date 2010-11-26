@@ -8,7 +8,7 @@
   <section>
     <title>Overview</title>  
     <para>
-      Activiti Explorer is a web application that provides access to the Activiti Engine runtime for all users of the system. It includes task management and process instance inspection.
+      Activiti Explorer is a web application that is used for task management of business processes.
     </para>
   </section>
 
@@ -25,7 +25,7 @@
   </section>
 
   <section>
-    <title>Process Instance Inspection</title>
+    <title>Starting processes</title>
     <para>
       The Processes tab enables users to view all deployed process definitions and provides the ability to start new process instances. Upon starting a process, any associated forms will automatically be displayed. As with the tasks, it is possible to directly start a process directly from a URL. That URL takes the form:
       <literal>http://localhost:8080/activiti-explorer/processes#start?id=financialReport:1</literal>, where <literal>financialReport:1</literal> is the ID of the process you want to start. The process will be started immediately and confirmation displayed on screen.
