@@ -176,9 +176,6 @@
     <title>Eclipse setup</title>
     <para>To run the examples in your eclipse, follow these simple instructions.
     We'll start with creating the <literal>activiti-engine-examples</literal></para>
-    <para>First, make sure that you have downloaded the library dependencies as 
-    explained in <xref linkend="librarydependencies"/>.  
-    </para>
     <para>Create a new Java project</para>
     <mediaobject><imageobject><imagedata align="center" fileref="images/eclipsesetup.create.new.java.project.png"/></imageobject></mediaobject>
     <para>Select <literal>Create project from existing source</literal> and click <literal>Browse</literal> </para>
