@@ -15,7 +15,7 @@ package org.activiti.cycle.impl.transform.signavio;
 
 import java.util.Map;
 
-import org.activiti.cycle.impl.transform.util.CustomProperty;
+import org.activiti.cycle.impl.connector.signavio.util.CustomProperty;
 import org.oryxeditor.server.diagram.Diagram;
 import org.oryxeditor.server.diagram.Shape;
 

@@ -11,7 +11,7 @@
  * limitations under the License.
  */
 
-package org.activiti.cycle.impl.transform.util;
+package org.activiti.cycle.impl.connector.signavio.util;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;

@@ -1,4 +1,4 @@
-package org.activiti.cycle.impl.transform.util;
+package org.activiti.cycle.impl.connector.signavio.util;
 
 import static org.junit.Assert.*;
 
