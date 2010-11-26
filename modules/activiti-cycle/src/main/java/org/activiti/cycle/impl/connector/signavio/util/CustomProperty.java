@@ -22,14 +22,15 @@ import java.util.regex.Pattern;
 public enum CustomProperty {
 
 	ORIGINAL_NAME("Original Name"),
-	ORIGINAL_ID("Original ID");
+	ORIGINAL_ID("Original ID"),
+	ORIGINAL_TYPE("Original Type");
 
 	private final String name;
 	private final Pattern pattern;
 
 	private CustomProperty(String name) {
 		this.name = name;
-		this.pattern = Pattern.compile("(.*)(" + name + ":\\s+\"((?:[^\"]|\"\")+)\")(.*)", Pattern.DOTALL);
+		this.pattern = Pattern.compile("(.*)(" + name + ":\\s+\"((?:[^\"]|\"\")*)\")(.*)", Pattern.DOTALL);
 	}
 
   public String getValue(String propertyContainer) {

@@ -18,6 +18,24 @@ public class CustomPropertyTest {
     propertyContainer = "Original Name: \"Do\\n\"\"Something\"\"\"\nOriginal ID: \"sid-910BF305-8A75-4319-A3A9-23C5B2828944\"";
     actual = CustomProperty.ORIGINAL_NAME.getValue(propertyContainer);
     assertEquals(expected, actual);
+
+    expected = "";
+    propertyContainer = "Original Name: \"\" Original ID: \"sid-910BF305-8A75-4319-A3A9-23C5B2828944\"";
+    actual = CustomProperty.ORIGINAL_NAME.getValue(propertyContainer);
+    assertEquals(expected, actual);
+
+    propertyContainer = "Original Name: \"\"\nOriginal ID: \"sid-910BF305-8A75-4319-A3A9-23C5B2828944\"";
+    actual = CustomProperty.ORIGINAL_NAME.getValue(propertyContainer);
+    assertEquals(expected, actual);
+
+    expected = "\"";
+    propertyContainer = "Original Name: \"\"\"\" Original ID: \"sid-910BF305-8A75-4319-A3A9-23C5B2828944\"";
+    actual = CustomProperty.ORIGINAL_NAME.getValue(propertyContainer);
+    assertEquals(expected, actual);
+
+    propertyContainer = "Original Name: \"\"\"\"\nOriginal ID: \"sid-910BF305-8A75-4319-A3A9-23C5B2828944\"";
+    actual = CustomProperty.ORIGINAL_NAME.getValue(propertyContainer);
+    assertEquals(expected, actual);
   }
 
 }
