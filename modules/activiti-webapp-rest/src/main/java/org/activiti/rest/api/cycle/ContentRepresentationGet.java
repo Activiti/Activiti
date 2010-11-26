@@ -18,7 +18,7 @@ import org.activiti.cycle.ContentRepresentation;
 import org.activiti.cycle.CycleDefaultMimeType;
 import org.activiti.cycle.RenderInfo;
 import org.activiti.cycle.RepositoryArtifact;
-import org.activiti.cycle.impl.transform.TransformationException;
+import org.activiti.cycle.impl.connector.signavio.transform.TransformationException;
 import org.activiti.rest.util.ActivitiRequest;
 import org.springframework.extensions.webscripts.Cache;
 import org.springframework.extensions.webscripts.Status;

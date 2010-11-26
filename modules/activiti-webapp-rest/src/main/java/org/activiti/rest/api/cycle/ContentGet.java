@@ -30,7 +30,7 @@ import org.activiti.cycle.CycleService;
 import org.activiti.cycle.RepositoryArtifact;
 import org.activiti.cycle.RepositoryConnector;
 import org.activiti.cycle.impl.CycleServiceImpl;
-import org.activiti.cycle.impl.transform.TransformationException;
+import org.activiti.cycle.impl.connector.signavio.transform.TransformationException;
 import org.activiti.engine.impl.util.IoUtil;
 import org.activiti.rest.util.ActivitiRequest;
 import org.activiti.rest.util.ActivitiStreamingWebScript;
