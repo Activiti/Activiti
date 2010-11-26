@@ -34,7 +34,6 @@ import org.activiti.engine.ProcessEngineConfiguration;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.RuntimeService;
 import org.activiti.engine.TaskService;
-import org.activiti.engine.form.FormType;
 import org.activiti.engine.impl.FormServiceImpl;
 import org.activiti.engine.impl.HistoryServiceImpl;
 import org.activiti.engine.impl.IdentityServiceImpl;
@@ -44,6 +43,8 @@ import org.activiti.engine.impl.RepositoryServiceImpl;
 import org.activiti.engine.impl.RuntimeServiceImpl;
 import org.activiti.engine.impl.ServiceImpl;
 import org.activiti.engine.impl.TaskServiceImpl;
+import org.activiti.engine.impl.bpmn.ItemInstance;
+import org.activiti.engine.impl.bpmn.MessageInstance;
 import org.activiti.engine.impl.bpmn.deployer.BpmnDeployer;
 import org.activiti.engine.impl.bpmn.parser.BpmnParser;
 import org.activiti.engine.impl.calendar.BusinessCalendarManager;
@@ -81,11 +82,21 @@ import org.activiti.engine.impl.repository.Deployer;
 import org.activiti.engine.impl.scripting.ScriptingEngines;
 import org.activiti.engine.impl.util.IoUtil;
 import org.activiti.engine.impl.util.ReflectUtil;
+import org.activiti.engine.impl.variable.BooleanType;
+import org.activiti.engine.impl.variable.ByteArrayType;
+import org.activiti.engine.impl.variable.CustomObjectType;
+import org.activiti.engine.impl.variable.DateType;
 import org.activiti.engine.impl.variable.DefaultVariableTypes;
+import org.activiti.engine.impl.variable.DoubleType;
 import org.activiti.engine.impl.variable.EntityManagerSession;
 import org.activiti.engine.impl.variable.EntityManagerSessionFactory;
+import org.activiti.engine.impl.variable.IntegerType;
 import org.activiti.engine.impl.variable.JPAEntityVariableType;
+import org.activiti.engine.impl.variable.LongType;
+import org.activiti.engine.impl.variable.NullType;
 import org.activiti.engine.impl.variable.SerializableType;
+import org.activiti.engine.impl.variable.ShortType;
+import org.activiti.engine.impl.variable.StringType;
 import org.activiti.engine.impl.variable.VariableType;
 import org.activiti.engine.impl.variable.VariableTypes;
 import org.apache.ibatis.builder.xml.XMLConfigBuilder;
@@ -129,9 +140,6 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
   
   // Command executor and interceptor stack
   /** the configurable list which will be {@link #initializeInterceptorChain(List) processed} to build the {@link #commandExecutorTxRequired} */
-  protected List<Class<?>> customPreCommandInterceptorsTxRequiredClasses;
-  protected List<Class<?>> customPostCommandInterceptorsTxRequiredClasses;
-
   protected List<CommandInterceptor> customPreCommandInterceptorsTxRequired;
   protected List<CommandInterceptor> customPostCommandInterceptorsTxRequired;
   
@@ -151,23 +159,19 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
 
   // SESSIOB FACTORIES ////////////////////////////////////////////////////////
 
-  protected List<Class<?>> customSessionFactoryClasses;
+  protected List<SessionFactory> customSessionFactories;
   protected DbSqlSessionFactory dbSqlSessionFactory;
   protected Map<Class<?>, SessionFactory> sessionFactories;
   
   // DEPLOYERS ////////////////////////////////////////////////////////////////
 
-  protected List<Class<?>> customPreDeployerClasses;
-  protected List<Class<?>> customPostDeployerClasses;
-
   protected List<Deployer> customPreDeployers;
   protected List<Deployer> customPostDeployers;
-
   protected List<Deployer> deployers;
 
   // JOB EXECUTOR /////////////////////////////////////////////////////////////
   
-  protected List<Class<?>> customJobHandlerClasses;
+  protected List<JobHandler> customJobHandlers;
   protected Map<String, JobHandler> jobHandlers;
   protected JobExecutor jobExecutor;
 
@@ -181,16 +185,17 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
   protected IdGenerator idGenerator;
   
   // OTHER ////////////////////////////////////////////////////////////////////
-  protected List<Class<?>> customFormEngineClasses;
+  protected List<FormEngine> customFormEngines;
   protected Map<String, FormEngine> formEngines;
 
-  protected List<Class<?>> customFormTypeClasses;
+  protected List<AbstractFormType> customFormTypes;
   protected FormTypes formTypes;
 
-  protected List<Class<?>> customScriptingEngineClasses;
+  protected List<String> customScriptingEngineClasses;
   protected ScriptingEngines scriptingEngines;
   
-  protected List<Class<?>> customVariableTypeClasses;
+  protected List<VariableType> customPreVariableTypes;
+  protected List<VariableType> customPostVariableTypes;
   protected VariableTypes variableTypes;
   
   protected ExpressionManager expressionManager;
@@ -410,14 +415,9 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
       dbSqlSessionFactory.setSqlSessionFactory(sqlSessionFactory);
       addSessionFactory(dbSqlSessionFactory);
     }
-    if (customSessionFactoryClasses!=null) {
-      for (Class<?> customSessionFactoryClass: customSessionFactoryClasses) {
-        try {
-          SessionFactory sessionFactory = (SessionFactory) customSessionFactoryClass.newInstance();
-          addSessionFactory(sessionFactory);
-        } catch (Exception e) {
-          throw new ActivitiException("problem instantiating new custom session factory for class+ "+customSessionFactoryClass+": "+e.getMessage(), e);
-        }
+    if (customSessionFactories!=null) {
+      for (SessionFactory sessionFactory: customSessionFactories) {
+        addSessionFactory(sessionFactory);
       }
     }
   }
@@ -430,9 +430,6 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
   
   protected void initDeployers() {
     if (deployers==null) {
-      initCustomPreDeployers();
-      initCustomPostDeployers();
-
       deployers = new ArrayList<Deployer>();
       if (customPreDeployers!=null) {
         deployers.addAll(customPreDeployers);
@@ -459,32 +456,6 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
     return defaultDeployers;
   }
 
-  protected void initCustomPreDeployers() {
-    if (customPreDeployers==null && customPreDeployerClasses!=null) {
-      customPreDeployers = new ArrayList<Deployer>();
-      for (Class<?> customPreDeployerClass: customPreDeployerClasses) {
-        try {
-          customPreDeployers.add((Deployer) customPreDeployerClass.newInstance());
-        } catch (Exception e) {
-          new ActivitiException("problem instantiating custom deployer "+customPreDeployerClass+": "+e.getMessage(), e);
-        }
-      }
-    }
-  }
-  
-  protected void initCustomPostDeployers() {
-    if (customPostDeployers==null && customPostDeployerClasses!=null) {
-      customPostDeployers = new ArrayList<Deployer>();
-      for (Class<?> customPostDeployerClass: customPostDeployerClasses) {
-        try {
-          customPostDeployers.add((Deployer) customPostDeployerClass.newInstance());
-        } catch (Exception e) {
-          new ActivitiException("problem instantiating custom deployer "+customPostDeployerClass+": "+e.getMessage(), e);
-        }
-      }
-    }
-  }
-  
   // job executor /////////////////////////////////////////////////////////////
   
   protected void initJobExecutor() {
@@ -545,13 +516,26 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
   protected void initVariableTypes() {
     if (variableTypes==null) {
       variableTypes = new DefaultVariableTypes();
-    }
-    if (customVariableTypeClasses!=null) {
-      for (Class<?> customVariableTypeClass: customVariableTypeClasses) {
-        try {
-          variableTypes.addType((VariableType) customVariableTypeClass.newInstance());
-        } catch (Exception e) {
-          new ActivitiException("problem instantiating custom variable type "+customVariableTypeClass+": "+e.getMessage(), e);
+      if (customPreVariableTypes!=null) {
+        for (VariableType customVariableType: customPreVariableTypes) {
+          variableTypes.addType(customVariableType);
+        }
+      }
+      variableTypes.addType(new NullType());
+      variableTypes.addType(new StringType());
+      variableTypes.addType(new BooleanType());
+      variableTypes.addType(new ShortType());
+      variableTypes.addType(new IntegerType());
+      variableTypes.addType(new LongType());
+      variableTypes.addType(new DateType());
+      variableTypes.addType(new DoubleType());
+      variableTypes.addType(new ByteArrayType());
+      variableTypes.addType(new SerializableType());
+      variableTypes.addType(new CustomObjectType("item", ItemInstance.class));
+      variableTypes.addType(new CustomObjectType("message", MessageInstance.class));
+      if (customPostVariableTypes!=null) {
+        for (VariableType customVariableType: customPostVariableTypes) {
+          variableTypes.addType(customVariableType);
         }
       }
     }
@@ -564,14 +548,9 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
       formEngines.put(null, defaultFormEngine); // default form engine is looked up with null
       formEngines.put(defaultFormEngine.getName(), defaultFormEngine);
     }
-    if (customFormEngineClasses!=null) {
-      for (Class<?> customFormEngineClass: customFormEngineClasses) {
-        try {
-          FormEngine formEngine = (FormEngine) customFormEngineClass.newInstance();
-          formEngines.put(formEngine.getName(), formEngine);
-        } catch (Exception e) {
-          new ActivitiException("problem instantiating custom form engine "+customFormEngineClass+": "+e.getMessage(), e);
-        }
+    if (customFormEngines!=null) {
+      for (FormEngine formEngine: customFormEngines) {
+        formEngines.put(formEngine.getName(), formEngine);
       }
     }
   }
@@ -583,14 +562,9 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
       formTypes.addFormType(new LongFormType());
       formTypes.addFormType(new DateFormType("dd/MM/yyyy"));
     }
-    if (customFormTypeClasses!=null) {
-      for (Class<?> customFormTypeClass: customFormTypeClasses) {
-        try {
-          FormType formType = (FormType) customFormTypeClass.newInstance();
-          formTypes.addFormType((AbstractFormType) formType);
-        } catch (Exception e) {
-          new ActivitiException("problem instantiating custom form type "+customFormTypeClass+": "+e.getMessage(), e);
-        }
+    if (customFormTypes!=null) {
+      for (AbstractFormType customFormType: customFormTypes) {
+        formTypes.addFormType(customFormType);
       }
     }
   }
@@ -909,61 +883,6 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
   }
 
   
-  public List<Class< ? >> getCustomPreCommandInterceptorsTxRequiredClasses() {
-    return customPreCommandInterceptorsTxRequiredClasses;
-  }
-
-  
-  public ProcessEngineConfigurationImpl setCustomPreCommandInterceptorsTxRequiredClasses(List<Class< ? >> customPreCommandInterceptorsTxRequiredClasses) {
-    this.customPreCommandInterceptorsTxRequiredClasses = customPreCommandInterceptorsTxRequiredClasses;
-    return this;
-  }
-
-  
-  public List<Class< ? >> getCustomPostCommandInterceptorsTxRequiredClasses() {
-    return customPostCommandInterceptorsTxRequiredClasses;
-  }
-
-  
-  public ProcessEngineConfigurationImpl setCustomPostCommandInterceptorsTxRequiredClasses(List<Class< ? >> customPostCommandInterceptorsTxRequiredClasses) {
-    this.customPostCommandInterceptorsTxRequiredClasses = customPostCommandInterceptorsTxRequiredClasses;
-    return this;
-  }
-
-  
-  public List<Class< ? >> getCustomSessionFactoryClasses() {
-    return customSessionFactoryClasses;
-  }
-
-  
-  public ProcessEngineConfigurationImpl setCustomSessionFactoryClasses(List<Class< ? >> customSessionFactoryClasses) {
-    this.customSessionFactoryClasses = customSessionFactoryClasses;
-    return this;
-  }
-
-  
-  public List<Class< ? >> getCustomPreDeployerClasses() {
-    return customPreDeployerClasses;
-  }
-
-  
-  public ProcessEngineConfigurationImpl setCustomPreDeployerClasses(List<Class< ? >> customPreDeployerClasses) {
-    this.customPreDeployerClasses = customPreDeployerClasses;
-    return this;
-  }
-
-  
-  public List<Class< ? >> getCustomPostDeployerClasses() {
-    return customPostDeployerClasses;
-  }
-
-  
-  public ProcessEngineConfigurationImpl setCustomPostDeployerClasses(List<Class< ? >> customPostDeployerClasses) {
-    this.customPostDeployerClasses = customPostDeployerClasses;
-    return this;
-  }
-
-  
   public List<Deployer> getCustomPreDeployers() {
     return customPreDeployers;
   }
@@ -982,17 +901,6 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
   
   public ProcessEngineConfigurationImpl setCustomPostDeployers(List<Deployer> customPostDeployers) {
     this.customPostDeployers = customPostDeployers;
-    return this;
-  }
-
-  
-  public List<Class< ? >> getCustomJobHandlerClasses() {
-    return customJobHandlerClasses;
-  }
-
-  
-  public ProcessEngineConfigurationImpl setCustomJobHandlerClasses(List<Class< ? >> customJobHandlerClasses) {
-    this.customJobHandlerClasses = customJobHandlerClasses;
     return this;
   }
 
@@ -1019,49 +927,6 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
   }
 
   
-  public List<Class< ? >> getCustomFormEngineClasses() {
-    return customFormEngineClasses;
-  }
-
-  
-  public ProcessEngineConfigurationImpl setCustomFormEngineClasses(List<Class< ? >> customFormEngineClasses) {
-    this.customFormEngineClasses = customFormEngineClasses;
-    return this;
-  }
-
-  
-  public List<Class< ? >> getCustomFormTypeClasses() {
-    return customFormTypeClasses;
-  }
-
-  
-  public ProcessEngineConfigurationImpl setCustomFormTypeClasses(List<Class< ? >> customFormTypeClasses) {
-    this.customFormTypeClasses = customFormTypeClasses;
-    return this;
-  }
-
-  
-  public List<Class< ? >> getCustomScriptingEngineClasses() {
-    return customScriptingEngineClasses;
-  }
-
-  
-  public ProcessEngineConfigurationImpl setCustomScriptingEngineClasses(List<Class< ? >> customScriptingEngineClasses) {
-    this.customScriptingEngineClasses = customScriptingEngineClasses;
-    return this;
-  }
-
-  
-  public List<Class< ? >> getCustomVariableTypeClasses() {
-    return customVariableTypeClasses;
-  }
-
-  
-  public ProcessEngineConfigurationImpl setCustomVariableTypeClasses(List<Class< ? >> customVariableTypeClasses) {
-    this.customVariableTypeClasses = customVariableTypeClasses;
-    return this;
-  }
-
   public DbSqlSessionFactory getDbSqlSessionFactory() {
     return dbSqlSessionFactory;
   }
@@ -1077,6 +942,75 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
 
   public ProcessEngineConfigurationImpl setTransactionFactory(TransactionFactory transactionFactory) {
     this.transactionFactory = transactionFactory;
+    return this;
+  }
+
+  public List<SessionFactory> getCustomSessionFactories() {
+    return customSessionFactories;
+  }
+  
+  public ProcessEngineConfigurationImpl setCustomSessionFactories(List<SessionFactory> customSessionFactories) {
+    this.customSessionFactories = customSessionFactories;
+    return this;
+  }
+  
+  public List<JobHandler> getCustomJobHandlers() {
+    return customJobHandlers;
+  }
+  
+  public ProcessEngineConfigurationImpl setCustomJobHandlers(List<JobHandler> customJobHandlers) {
+    this.customJobHandlers = customJobHandlers;
+    return this;
+  }
+  
+  public List<FormEngine> getCustomFormEngines() {
+    return customFormEngines;
+  }
+  
+  public ProcessEngineConfigurationImpl setCustomFormEngines(List<FormEngine> customFormEngines) {
+    this.customFormEngines = customFormEngines;
+    return this;
+  }
+
+  public List<AbstractFormType> getCustomFormTypes() {
+    return customFormTypes;
+  }
+
+  
+  public ProcessEngineConfigurationImpl setCustomFormTypes(List<AbstractFormType> customFormTypes) {
+    this.customFormTypes = customFormTypes;
+    return this;
+  }
+
+  
+  public List<String> getCustomScriptingEngineClasses() {
+    return customScriptingEngineClasses;
+  }
+
+  
+  public ProcessEngineConfigurationImpl setCustomScriptingEngineClasses(List<String> customScriptingEngineClasses) {
+    this.customScriptingEngineClasses = customScriptingEngineClasses;
+    return this;
+  }
+
+  public List<VariableType> getCustomPreVariableTypes() {
+    return customPreVariableTypes;
+  }
+
+  
+  public ProcessEngineConfigurationImpl setCustomPreVariableTypes(List<VariableType> customPreVariableTypes) {
+    this.customPreVariableTypes = customPreVariableTypes;
+    return this;
+  }
+
+  
+  public List<VariableType> getCustomPostVariableTypes() {
+    return customPostVariableTypes;
+  }
+
+  
+  public ProcessEngineConfigurationImpl setCustomPostVariableTypes(List<VariableType> customPostVariableTypes) {
+    this.customPostVariableTypes = customPostVariableTypes;
     return this;
   }
 
