@@ -15,6 +15,7 @@ package org.activiti.engine.impl.webservice;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.activiti.engine.impl.bpmn.MessageDefinition;
 import org.activiti.engine.impl.bpmn.MessageInstance;
 import org.activiti.engine.impl.bpmn.Operation;
 import org.activiti.engine.impl.bpmn.OperationImplementation;
@@ -83,8 +84,12 @@ public class WSOperation implements OperationImplementation {
   }
   
   private MessageInstance createResponseMessage(Object[] results, Operation operation) {
-    MessageInstance message = operation.getOutMessage().createInstance();
-    message.getStructureInstance().loadFrom(results);
+    MessageInstance message = null;
+    MessageDefinition outMessage = operation.getOutMessage();
+    if (outMessage != null) {
+      message = outMessage.createInstance();
+      message.getStructureInstance().loadFrom(results);
+    }
     return message;
   }
 
