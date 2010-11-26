@@ -2542,8 +2542,8 @@ assertNotNull(execution);
         
         <para>
           <emphasis role="bold">Note:</emphasis> boundary timer events are only fired when 
-          the job executor is enabled (i.e. <emphasis>job.executor.auto.activate=off</emphasis>
-          needs to be removed from the <emphasis>activiti.properties</emphasis>, since the job
+          the job executor is enabled (i.e. <emphasis>jobExecutorActivate</emphasis>
+          needs to be set to <literal>true</literal> in the <literal>activiti.cfg.xml</literal>, since the job
           executor is disabled by default). 
         </para>
       

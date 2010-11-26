@@ -202,8 +202,8 @@
     is the <literal>docs/xsd/activiti-cfg-5.0.xsd</literal></para>
   </section>
   
-  <section id="checking.database">
-    <title>Checking the database</title>
+  <section id="inspecting.database">
+    <title>Inspecting the database</title>
     <para>
       To check out the database while trying out the demo setup, run the following Ant target 
       in the <emphasis>setup</emphasis> folder:
