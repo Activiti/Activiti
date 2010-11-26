@@ -60,7 +60,7 @@
           todir="${webapp.rest.dir}/WEB-INF/lib" 
           overwrite="true" />
   	<!-- the touch redeploys the rest webapp so that the new classes are picked up -->
-  	<touch file="${webapp.rest.dir}/WEB-INF/web.xml" />
+  	<!-- copy file="../../setup/build/webapps/activiti-explorer.war/WEB-INF/web.xml" tofile="${webapp.rest.dir}/WEB-INF/web.xml" overwrite="true"/ -->
     <taskdef name="deploy-bar" classname="org.activiti.engine.impl.ant.DeployBarTask">
       <classpath>
         <pathelement path="src/main/config"/>

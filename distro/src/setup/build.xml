@@ -491,6 +491,8 @@ set JAVA_OPTS=%JAVA_OPTS% @tomcat.java.opts@
     <copy todir="${activiti.home}/setup/build/webapps/activiti-rest.war/WEB-INF/lib">
       <fileset dir="${activiti.home}/setup/files/dependencies/libs" 
                includesfile="${activiti.home}/setup/files/dependencies/libs.webapp.rest.txt" />
+      <fileset dir="${activiti.home}/setup/files/dependencies/libs" 
+               includesfile="${activiti.home}/setup/files/dependencies/libs.engine.runtime.feature.groovy.txt" />
       <fileset refid="jdbc.driver.libs" />
     </copy>
   </target>
@@ -597,21 +599,25 @@ set JAVA_OPTS=%JAVA_OPTS% @tomcat.java.opts@
   <target name="explorer.browser.open">
     <!-- Sleep for 5 second to be sure tomcat coyote http-connector is ready to accept connections -->
     <sleep seconds="5"/>
-    <property name="url" value="http://localhost:8080/activiti-explorer" />
-    <antcall target="open.html.page"/>
+    <open-html-page url="http://localhost:8080/activiti-explorer" />
+    <open-html-page url="http://localhost:8080/activiti-probe" />
+    <open-html-page url="http://localhost:8080/activiti-modeler" />
+    <open-html-page url="http://localhost:8080/activiti-cycle" />
   </target>
+	
+	<macrodef name="open-html-page">
+		<attribute name="url" />
+		<sequential>
+	    <exec executable="${macos.browser}" os="Mac OS X" failifexecutionfails="false" failonerror="false">
+	      <arg value="@{url}" />
+	    </exec>
+	    <exec executable="cmd" os="Windows Vista, Windows XP,Windows 2000,Windows 98" failifexecutionfails="false" failonerror="false">
+	      <arg value="/C start &quot;${windows.browser}&quot; &quot;@{url}&quot;" />
+	    </exec>
+	      <exec executable="${linux.browser}" os="Linux" failifexecutionfails="false" failonerror="false">
+	      <arg value="@{url}" />
+	    </exec>
+		</sequential>
+	</macrodef>
 
-  <target name="open.html.page">
-    <fail message="property url has to be specified to use this target" unless="url" />
-    <exec executable="${macos.browser}" os="Mac OS X" failifexecutionfails="false" failonerror="false">
-      <arg value="${url}" />
-    </exec>
-    <exec executable="cmd" os="Windows Vista, Windows XP,Windows 2000,Windows 98" failifexecutionfails="false" failonerror="false">
-      <arg value="/C start &quot;${windows.browser}&quot; &quot;${url}&quot;" />
-    </exec>
-      <exec executable="${linux.browser}" os="Linux" failifexecutionfails="false" failonerror="false">
-      <arg value="${url}" />
-    </exec>
-  </target>
-  
 </project>

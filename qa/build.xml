@@ -27,9 +27,6 @@
          inheritall="false">
     	<property name="nodocs" value="true" />
     </ant>
-  	<sleep seconds="1"/>
-  	<property name="url" value="http://localhost:8080/activiti-probe" />
-    <antcall target="open.html.page"/>
   </target>
 	
   <target name="test.demo.stop">
