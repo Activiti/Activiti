@@ -29,7 +29,7 @@ public enum CustomProperty {
 
 	private CustomProperty(String name) {
 		this.name = name;
-		this.pattern = Pattern.compile("(.*)(" + name + ":\\s+\"((?:[^\"]|\"\")+)\")(.*)");
+		this.pattern = Pattern.compile("(.*)(" + name + ":\\s+\"((?:[^\"]|\"\")+)\")(.*)", Pattern.DOTALL);
 	}
 
   public String getValue(String propertyContainer) {
