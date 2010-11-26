@@ -1,6 +1,6 @@
 package org.activiti.cycle.impl.connector.signavio;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 import java.io.BufferedReader;
 import java.io.FileInputStream;
@@ -20,14 +20,11 @@ import org.activiti.cycle.impl.transform.JsonTransformation;
 import org.activiti.cycle.impl.transform.signavio.AdjustShapeNamesTransformation;
 import org.activiti.cycle.impl.transform.signavio.BpmnPoolExtraction;
 import org.activiti.cycle.impl.transform.signavio.ExchangeSignavioUuidWithNameTransformation;
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
-import org.restlet.Response;
-import org.restlet.ext.json.JsonRepresentation;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;

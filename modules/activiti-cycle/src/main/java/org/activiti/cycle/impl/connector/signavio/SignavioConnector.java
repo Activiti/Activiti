@@ -20,6 +20,8 @@ import java.util.Comparator;
 import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.activiti.cycle.ArtifactType;
 import org.activiti.cycle.Content;
@@ -160,6 +162,7 @@ public class SignavioConnector extends AbstractRepositoryConnector<SignavioConne
       username = getConfiguration().getUser();
       password = getConfiguration().getPassword();
     }
+    String token = null;
     try {
       log.info("Logging into Signavio on url: " + getConfiguration().getLoginUrl());
 
@@ -174,12 +177,22 @@ public class SignavioConnector extends AbstractRepositoryConnector<SignavioConne
       Response loginResponse = sendRequest(loginRequest);
 
       Representation representation = loginResponse.getEntity();
-      setSecurityToken(representation.getText());
-      log.fine("SecurityToken: " + getSecurityToken());
-      return true;
+      token = representation.getText();
     } catch (Exception ex) {
       throw new RepositoryException("Error during login to connector '" + getConfiguration().getName() + "'", ex);
     }
+    if (token.matches("[a-f0-9]{32}")) {
+      setSecurityToken(token);
+      log.fine("SecurityToken: " + getSecurityToken());
+    } else {
+      Matcher matcher = Pattern.compile("<div id=\"warning\">([^<]+)</div>").matcher(token);
+      if (matcher.find()) {
+        String errorMessage = matcher.group(1);
+        throw new RepositoryException(errorMessage);
+      }
+      throw new RepositoryException("No Security Token received. The user name and/or password might be incorrect.");
+    }
+    return true;
   }
 
   private RepositoryFolder getFolderInfo(JSONObject jsonDirectoryObject) throws JSONException {
