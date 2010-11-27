@@ -153,12 +153,12 @@
       }
 
       // Add links tab
-			var linksTab = new YAHOO.widget.Tab({ 
-				label: "Links", 
-				content: '<div id="links-wrapper"><h3>Links</h3><div id="links-div"></div><span id="addLink" class="yui-button"><span class="first-child"><button type="button">Add link</button></span></span></div><div id="backlinks-wrapper"><h3>Backlinks</h3><div id="backlinks-div"></div></div>'
-			});
+            var linksTab = new YAHOO.widget.Tab({ 
+                label: "Links", 
+                content: '<div id="links-wrapper"><h3>Links</h3><div id="links-div"></div><span id="addLink" class="yui-button"><span class="first-child"><button type="button">Add link</button></span></span></div><div id="backlinks-wrapper"><h3>Backlinks</h3><div id="backlinks-div"></div></div>'
+            });
 
-			this._tabView.addTab(linksTab);
+            this._tabView.addTab(linksTab);
       this._tabView.appendTo('artifact-div');
 
       // instantiate a data source for the links data table
@@ -166,11 +166,10 @@
       this._linksDataSource.responseType = YAHOO.util.XHRDataSource.TYPE_JSARRAY;
 
       // TODO: i18n
-      // TODO: Reintroduce Revision, removed because of unresolved https://app.camunda.com/jira/browse/HEMERA-368
-      // {key: "Revision", sortable:true},
       var linksColumnDefs = [
           {key: "Name", sortable:true},
-          {key: "Artifacttype"}
+          {key: "Revision", sortable:true},
+          {key: "Type"}
         ];
 
       // instantiate the links data table
@@ -181,10 +180,9 @@
           var jsonArray = oResponse.results;
           var rows = [];
           for(var i=0; i<jsonArray.length; i++) {
-              // TODO: Reintroduce Revision, removed because of unresolved https://app.camunda.com/jira/browse/HEMERA-368
-              // Revision: jsonArray[i].artifact.targetArtifactRevision,
             var row = {
               Name: '<a class="openArtifactLink" href="#?connectorId=' + encodeURIComponent(jsonArray[i].artifact.targetConnectorId) + '&artifactId=' + encodeURIComponent(jsonArray[i].artifact.targetArtifactId) + '&artifactName=' + encodeURIComponent(jsonArray[i].artifact.label) + '">' + jsonArray[i].artifact.label + '</a>',
+              Revision: jsonArray[i].artifact.targetArtifactRevision,
               Type: '<div class="artifact-type ' + me.getClassForContentType(jsonArray[i].artifact.targetContentType) + '">' + jsonArray[i].artifact.targetContentType + '</div>'
             };
             rows.push(row);
@@ -214,11 +212,10 @@
       this._backlinksDataTable.doBeforeLoadData = function (sRequest, oResponse, oPayload) {
           var jsonArray = oResponse.results;
           var rows = [];
-          // TODO: Reintroduce Revision, removed because of unresolved https://app.camunda.com/jira/browse/HEMERA-368
-          // Revision: jsonArray[i].artifact.sourceArtifactRevision,
           for(var i=0; i<jsonArray.length; i++) {
             var row = {
               Name: '<a class="openArtifactLink" href="#?connectorId=' + encodeURIComponent(jsonArray[i].artifact.sourceConnectorId) + '&artifactId=' + encodeURIComponent(jsonArray[i].artifact.sourceArtifactId) + '&artifactName=' + encodeURIComponent(jsonArray[i].artifact.label) + '">' + jsonArray[i].artifact.label + '</a>',
+              Revision: jsonArray[i].artifact.sourceArtifactRevision,
               Type: '<div class="artifact-type ' + me.getClassForContentType(jsonArray[i].artifact.sourceContentType) + '">' + jsonArray[i].artifact.sourceContentType + '</div>'
             };
             rows.push(row);
