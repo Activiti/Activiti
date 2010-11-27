@@ -166,10 +166,11 @@
       this._linksDataSource.responseType = YAHOO.util.XHRDataSource.TYPE_JSARRAY;
 
       // TODO: i18n
+      // TODO: Reintroduce Revision, removed because of unresolved https://app.camunda.com/jira/browse/HEMERA-368
+      // {key: "Revision", sortable:true},
       var linksColumnDefs = [
           {key: "Name", sortable:true},
-          {key: "Revision", sortable:true},
-          {key: "Type"}
+          {key: "Artifacttype"}
         ];
 
       // instantiate the links data table
@@ -180,9 +181,10 @@
           var jsonArray = oResponse.results;
           var rows = [];
           for(var i=0; i<jsonArray.length; i++) {
+              // TODO: Reintroduce Revision, removed because of unresolved https://app.camunda.com/jira/browse/HEMERA-368
+              // Revision: jsonArray[i].artifact.targetArtifactRevision,
             var row = {
               Name: '<a class="openArtifactLink" href="#?connectorId=' + encodeURIComponent(jsonArray[i].artifact.targetConnectorId) + '&artifactId=' + encodeURIComponent(jsonArray[i].artifact.targetArtifactId) + '&artifactName=' + encodeURIComponent(jsonArray[i].artifact.label) + '">' + jsonArray[i].artifact.label + '</a>',
-              Revision: jsonArray[i].artifact.targetArtifactRevision,
               Type: '<div class="artifact-type ' + me.getClassForContentType(jsonArray[i].artifact.targetContentType) + '">' + jsonArray[i].artifact.targetContentType + '</div>'
             };
             rows.push(row);
@@ -212,10 +214,11 @@
       this._backlinksDataTable.doBeforeLoadData = function (sRequest, oResponse, oPayload) {
           var jsonArray = oResponse.results;
           var rows = [];
+          // TODO: Reintroduce Revision, removed because of unresolved https://app.camunda.com/jira/browse/HEMERA-368
+          // Revision: jsonArray[i].artifact.sourceArtifactRevision,
           for(var i=0; i<jsonArray.length; i++) {
             var row = {
               Name: '<a class="openArtifactLink" href="#?connectorId=' + encodeURIComponent(jsonArray[i].artifact.sourceConnectorId) + '&artifactId=' + encodeURIComponent(jsonArray[i].artifact.sourceArtifactId) + '&artifactName=' + encodeURIComponent(jsonArray[i].artifact.label) + '">' + jsonArray[i].artifact.label + '</a>',
-              Revision: jsonArray[i].artifact.sourceArtifactRevision,
               Type: '<div class="artifact-type ' + me.getClassForContentType(jsonArray[i].artifact.sourceContentType) + '">' + jsonArray[i].artifact.sourceContentType + '</div>'
             };
             rows.push(row);
