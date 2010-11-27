@@ -1,0 +1,284 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+	<modelVersion>4.0.0</modelVersion>
+
+	<name>Activiti - Engine</name>
+	<groupId>org.activiti</groupId>
+	<artifactId>activiti-engine</artifactId>
+
+	<parent>
+		<groupId>org.activiti</groupId>
+		<artifactId>activiti-root</artifactId>
+		<relativePath>../..</relativePath>
+		<version>5.0-SNAPSHOT</version>
+	</parent>
+
+	<dependencies>
+    <dependency>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-email</artifactId>
+    </dependency>
+    <dependency>
+      <!-- required for building with JDK 5 -->
+      <groupId>org.livetribe</groupId>
+      <artifactId>livetribe-jsr223</artifactId>
+    </dependency>
+		<dependency>
+			<groupId>org.mybatis</groupId>
+			<artifactId>mybatis</artifactId>
+		</dependency>
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-beans</artifactId>
+    </dependency>
+		
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.ant</groupId>
+      <artifactId>ant</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.codehaus.groovy</groupId>
+      <artifactId>groovy</artifactId>
+      <scope>provided</scope>
+    </dependency>
+		<dependency>
+	    <groupId>javax.persistence</groupId>
+	    <artifactId>persistence-api</artifactId>
+	    <scope>provided</scope>
+		</dependency>
+    <dependency>
+      <groupId>org.apache.geronimo.specs</groupId>
+      <artifactId>geronimo-jta_1.1_spec</artifactId>
+      <scope>provided</scope>
+    </dependency>
+		
+    <dependency>
+      <groupId>com.h2database</groupId>
+      <artifactId>h2</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.mockito</groupId>
+      <artifactId>mockito-core</artifactId>
+      <scope>test</scope>
+    </dependency>
+		<dependency>
+	      <groupId>org.apache.openjpa</groupId>
+	      <artifactId>openjpa</artifactId>
+	      <scope>test</scope>
+	    </dependency>
+		<dependency>
+			<groupId>org.subethamail</groupId>
+			<artifactId>subethasmtp-wiser</artifactId>
+			<scope>test</scope>
+		</dependency>
+
+</dependencies>
+
+
+    <properties>
+        <activiti.artifact>org.activiti.engine</activiti.artifact>
+        <activiti.osgi.import.additional>
+            junit*;resolution:=optional,
+            org.junit*;resolution:=optional,
+            com.sun*;resolution:=optional,
+            javax.persistence*;resolution:=optional,
+            org.apache.commons.mail;resolution:=optional,
+            org.apache.tools.ant*;resolution:=optional,
+            org.apache.xerces*;resolution:=optional,
+        </activiti.osgi.import.additional>
+    </properties>
+
+    <repositories>
+		<repository>
+			<id>alfresco</id>
+			<url>http://maven.alfresco.com/nexus/content/groups/public</url>
+		</repository>
+	</repositories>
+
+  <build>
+    <plugins>      
+      <plugin>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <configuration>
+          <excludes>
+            <exclude>**/*TestCase.java</exclude>
+            <exclude>**/CompetingJobAcquisitionTest.java</exclude> <!-- http://jira.codehaus.org/browse/ACT-234 -->
+            <exclude>**/WSDLImporterTest.java</exclude> <!-- http://jira.codehaus.org/browse/ACT-315 -->
+          </excludes>
+        </configuration>
+      </plugin>
+      <plugin>
+        <artifactId>maven-jar-plugin</artifactId>
+        <configuration>
+          <archive>
+            <manifestFile>${project.build.outputDirectory}/META-INF/MANIFEST.MF</manifestFile>
+          </archive>
+        </configuration>
+      </plugin>
+      <plugin>
+         <groupId>org.apache.felix</groupId>
+         <artifactId>maven-bundle-plugin</artifactId>
+          <executions>
+              <execution>
+                  <phase>generate-sources</phase>
+                  <goals>
+                      <goal>cleanVersions</goal>
+                  </goals>
+              </execution>
+		    <execution>
+		      <id>bundle-manifest</id>
+		      <phase>process-classes</phase>
+		      <goals>
+		        <goal>manifest</goal>
+		      </goals>
+		    </execution>
+		  </executions>
+		</plugin>
+    </plugins>
+  </build>
+
+	<profiles>
+	
+		<profile>
+			<id>checkspring</id>
+			<properties>
+				<skipTests>true</skipTests>
+			</properties>
+		</profile>
+		<profile>
+			<id>distro</id>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-source-plugin</artifactId>
+						<version>2.1.1</version>
+						<executions>
+							<execution>
+								<id>attach-sources</id>
+								<phase>package</phase>
+								<goals>
+									<goal>jar-no-fork</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+
+		<!--  database qa profile -->
+		<profile>
+			<id>database</id>
+			<activation>
+				<property>
+					<name>database</name>
+				</property>
+			</activation>
+			<dependencies>
+				<dependency>
+					<groupId>mysql</groupId>
+					<artifactId>mysql-connector-java</artifactId>
+					<scope>test</scope>
+				</dependency>
+				<dependency>
+					<groupId>postgresql</groupId>
+					<artifactId>postgresql</artifactId>
+          <scope>test</scope>
+				</dependency>
+			</dependencies>
+			<build>
+				<plugins>
+					<plugin>
+						<artifactId>maven-antrun-plugin</artifactId>
+						<!--
+							only worked with this version, there might be a bug with antrun
+							see http://jira.codehaus.org/browse/MANTRUN-109
+						-->
+						<version>1.4</version>
+						<executions>
+							<execution>
+								<id>database-test-create-schema</id>
+								<phase>process-test-classes</phase>
+								<goals>
+									<goal>run</goal>
+								</goals>
+								<configuration>
+									<tasks>
+										<echo
+											message="CREATING SCHEMA AND UPDATING PROPERTIES ${database} #{database} @{database} " />
+										<ant antfile="${basedir}/../../qa/db/build.xml" target="create.db.schema"
+											inheritAll="false">
+											<property name="test_classpath" refid="maven.test.classpath" />
+											<property name="database" value="${database}" />
+										</ant>
+										<ant antfile="${basedir}/../../qa/db/build.xml" target="create.activiti.cfg">
+											<property name="database" value="${database}" />
+										</ant>
+									</tasks>
+								</configuration>
+							</execution>
+							<execution>
+								<id>database-test-drop-schema</id>
+								<phase>prepare-package</phase>
+								<goals>
+									<goal>run</goal>
+								</goals>
+								<configuration>
+									<tasks>
+										<echo message="DROPPING SCHEMA ${database} #{database} @{database} " />
+										<ant antfile="${basedir}/../../qa/db/build.xml" target="drop.db.schema"
+											inheritAll="false">
+											<property name="test_classpath" refid="maven.test.classpath" />
+											<property name="database" value="${database}" />
+										</ant>
+									</tasks>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+
+		<profile>
+			<id>oracle</id>
+			<activation>
+				<property>
+					<name>database</name>
+					<value>oracle</value>
+				</property>
+			</activation>
+			<dependencies>
+				<dependency>
+					<groupId>com.oracle.jdbc</groupId>
+					<artifactId>ojdbc5</artifactId>
+					<scope>test</scope>
+				</dependency>
+			</dependencies>
+		</profile>
+	</profiles>
+	
+	
+
+	<reporting>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-javadoc-plugin</artifactId>
+				<configuration>
+					<excludePackageNames>org.activiti.impl*,org.activiti.engine.impl*</excludePackageNames>
+				</configuration>
+			</plugin>
+		</plugins>
+	</reporting>
+
+</project>

@@ -1,0 +1,46 @@
+/* STYLING */
+
+#Activiti a.current,
+#Activiti .yui-pg-current-page,
+#Activiti .activiti-form.bd h1,
+#Activiti .activiti-form.bd h2,
+#Activiti .activiti-form.bd h3,
+h1 {
+  color: #007dc3;
+}
+
+/* STRUCTURE */
+/* Override Core style for long DB table names */
+.yui-gf div.yui-u.first {
+  min-width:18em;
+}
+
+#Activiti .deployments,
+#Activiti .jobs {
+  padding-bottom:10px;
+}
+
+#Activiti .jobs .activiti-datatable table,
+#Activiti .deployments .activiti-datatable table {
+  width:auto;
+}
+
+#Activiti .jobAction {
+   display:block;
+   padding-left:20px;
+} 
+
+#Activiti .executeJob {
+   background: url("../images/process-start-icon.png") no-repeat 0 3px;
+}
+#Activiti .viewException{
+   background: url("../images/process-view-icon.png") no-repeat 0 3px;
+}
+#Activiti .viewException .exception{
+  display:none;
+}
+
+/* Bug fix for close button overlapping text */
+.yui-skin-sam #prompt.yui-panel .bd {
+padding-top:25px;
+}

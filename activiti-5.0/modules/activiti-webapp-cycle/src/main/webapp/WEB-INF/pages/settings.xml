@@ -1,0 +1,13 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<page>
+  <id>settings</id>
+  <title>Settings</title>
+  <template-instance>standard</template-instance>
+  <authentication>admin</authentication>
+  <components>
+    <component>
+      <region-id>main1</region-id>
+      <url>/component/settings</url>
+    </component>
+  </components>
+</page>

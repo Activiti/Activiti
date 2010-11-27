@@ -1,0 +1,109 @@
+body {
+  font-family: Arial, helvetica, sans serif;
+  font-size:12px;
+  max-width:60%;
+  margin:0 auto;
+  padding:0em 3em;
+  line-height:150%;
+}
+
+.title {
+  margin-top: 1.0em;
+  margin-bottom: 0.5em;
+}
+
+.titlepage {
+  margin-bottom: 2.0em; 
+}
+
+li p {
+  margin: 0px;
+}
+
+table {
+  border:0px;
+  font-size: 12px;
+  text-align: left;
+  border-collapse: collapse;
+  border-color: #fff;
+}
+
+table th
+{
+  font-size: 13px;
+  font-weight: normal;
+  padding: 3px;
+  background: #b9c9fe;
+  color: #039;
+}
+
+table td {
+  padding: 2px;
+  background: #e8edff; 
+  border-left:0px;
+  border-top: 1px solid #fff;
+  color: #669;
+}
+
+table tr:hover td {
+  background: #d0dafd;
+  color: #339;
+}
+
+/* Headers */
+
+h1, h2, h3, h4, h5, h6 {
+    margin-top: 15px;
+    color:#027dc0;
+    margin-top:0em;
+}
+
+/* Links */
+
+a:link {color:#124b94;}
+
+/* Images */
+
+img {
+    display:block;
+    margin:2em 0;
+}
+
+pre {
+  padding: 3px;
+  background-color:#eee;
+  display:block;
+  overflow:auto;
+  line-height:135%;
+}
+
+/* 
+  Pretty printing styles. Used with prettify.js.
+  http://code.google.com/p/google-code-prettify/
+ */
+
+.str { color: #080; }
+.kwd { color: #008; }
+.com { color: #800; }
+.typ { color: #606; }
+.lit { color: #066; }
+.pun { color: #660; }
+.pln { color: #000; }
+.tag { color: #008; }
+.atn { color: #606; }
+.atv { color: #080; }
+.dec { color: #606; }
+pre.prettyprint { padding: 2px; border: 1px solid #888; }
+
+@media print {
+  .str { color: #060; }
+  .kwd { color: #006; font-weight: bold; }
+  .com { color: #600; font-style: italic; }
+  .typ { color: #404; font-weight: bold; }
+  .lit { color: #044; }
+  .pun { color: #440; }
+  .pln { color: #000; }
+  .tag { color: #006; font-weight: bold; }
+  .atn { color: #404; }
+  .atv { color: #060; }
+}

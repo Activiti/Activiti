@@ -1,0 +1,13 @@
+<webscript>
+  <shortname>Tasks</shortname>
+  <description>
+    Returns tasks by using one of the following filters:
+    assigne (returns task asssigned to the assignee),
+    candidate (returns unassigned tasks that the candidate may claim)
+     and candidate-group (returns unassigned tasks that members of the candidate-group may claim).
+    Result will be paginated using start (index to start from, default 0) and size (the number of tasks to return in the request, default 10).
+  </description>
+  <url>/tasks?assignee={assignee}&amp;candidate={candidate}&amp;candidate-group={candidateGroup}&amp;start={startIndex}&amp;size={pageSize}</url>
+  <authentication>user</authentication>
+  <format default="json">argument</format>
+</webscript>

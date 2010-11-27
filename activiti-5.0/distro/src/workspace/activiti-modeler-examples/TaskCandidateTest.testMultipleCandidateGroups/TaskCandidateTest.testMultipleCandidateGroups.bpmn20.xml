@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" xmlns:signavio="http://www.signavio.com" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" exporter="Signavio Process Editor, http://www.signavio.com" exporterVersion="" expressionLanguage="http://www.w3.org/1999/XPath" id="sid-24f7aab4-494f-40ca-bb32-cd4cd8aac628" targetNamespace="http://www.signavio.com/bpmn20" typeLanguage="http://www.w3.org/2001/XMLSchema" xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL http://www.omg.org/spec/BPMN/2.0/20100501/BPMN20.xsd">
+   <process id="sid-fade78af-60e9-4c20-a93f-b0c6e010973a" isExecutable="false">
+      <startEvent id="sid-5A8FFE10-8161-49B6-8BEF-98778796C8D5" name="">
+         <extensionElements>
+            <signavio:signavioMetaData metaKey="bgcolor" metaValue="#ffffff"/>
+         </extensionElements>
+         <outgoing>sid-31C51B53-6886-4E36-999D-70546CC04F41</outgoing>
+      </startEvent>
+      <userTask completionQuantity="1" id="sid-9A71807A-C281-47CA-AB8F-E6D49BB05710" implementation="unspecified" isForCompensation="false" name="Approve expenses" startQuantity="1">
+         <extensionElements>
+            <signavio:signavioMetaData metaKey="bgcolor" metaValue="#ffffcc"/>
+         </extensionElements>
+         <incoming>sid-31C51B53-6886-4E36-999D-70546CC04F41</incoming>
+         <outgoing>sid-E32E81F1-5897-4B31-9FDB-42F4C0826DF6</outgoing>
+         <potentialOwner id="sid-254e4c2a-e43b-4c90-bd90-1c897f169252" resourceRef="">
+            <resourceAssignmentExpression id="sid-803a31b7-ddde-46bc-8ece-cec7c7ecc7f0">
+               <formalExpression id="sid-5a59ca6c-25b8-4bf5-bd20-3e6c1e31e3f9">group(accountancy), group(management)</formalExpression>
+            </resourceAssignmentExpression>
+         </potentialOwner>
+      </userTask>
+      <endEvent id="sid-A9828677-54A1-4FB9-BD59-805BFE89743D" name="">
+         <extensionElements>
+            <signavio:signavioMetaData metaKey="bgcolor" metaValue="#ffffff"/>
+         </extensionElements>
+         <incoming>sid-E32E81F1-5897-4B31-9FDB-42F4C0826DF6</incoming>
+      </endEvent>
+      <sequenceFlow id="sid-31C51B53-6886-4E36-999D-70546CC04F41" name="" sourceRef="sid-5A8FFE10-8161-49B6-8BEF-98778796C8D5" targetRef="sid-9A71807A-C281-47CA-AB8F-E6D49BB05710"/>
+      <sequenceFlow id="sid-E32E81F1-5897-4B31-9FDB-42F4C0826DF6" name="" sourceRef="sid-9A71807A-C281-47CA-AB8F-E6D49BB05710" targetRef="sid-A9828677-54A1-4FB9-BD59-805BFE89743D"/>
+   </process>
+   <bpmndi:BPMNDiagram id="sid-7f48f8db-0f4f-4284-8fd6-0d0cd5b36f00">
+      <bpmndi:BPMNPlane bpmnElement="sid-fade78af-60e9-4c20-a93f-b0c6e010973a" id="sid-41144d2f-7d61-45a9-a34b-3d6dba3394dd">
+         <bpmndi:BPMNShape bpmnElement="sid-5A8FFE10-8161-49B6-8BEF-98778796C8D5" id="sid-5A8FFE10-8161-49B6-8BEF-98778796C8D5_gui">
+            <omgdc:Bounds height="30.0" width="30.0" x="285.0" y="190.0"/>
+         </bpmndi:BPMNShape>
+         <bpmndi:BPMNShape bpmnElement="sid-9A71807A-C281-47CA-AB8F-E6D49BB05710" id="sid-9A71807A-C281-47CA-AB8F-E6D49BB05710_gui">
+            <omgdc:Bounds height="80.0" width="100.0" x="370.0" y="165.0"/>
+         </bpmndi:BPMNShape>
+         <bpmndi:BPMNShape bpmnElement="sid-A9828677-54A1-4FB9-BD59-805BFE89743D" id="sid-A9828677-54A1-4FB9-BD59-805BFE89743D_gui">
+            <omgdc:Bounds height="28.0" width="28.0" x="530.0" y="191.0"/>
+         </bpmndi:BPMNShape>
+         <bpmndi:BPMNEdge bpmnElement="sid-E32E81F1-5897-4B31-9FDB-42F4C0826DF6" id="sid-E32E81F1-5897-4B31-9FDB-42F4C0826DF6_gui">
+            <omgdi:waypoint x="470.0" y="205.0"/>
+            <omgdi:waypoint x="530.0" y="205.0"/>
+         </bpmndi:BPMNEdge>
+         <bpmndi:BPMNEdge bpmnElement="sid-31C51B53-6886-4E36-999D-70546CC04F41" id="sid-31C51B53-6886-4E36-999D-70546CC04F41_gui">
+            <omgdi:waypoint x="315.0" y="205.0"/>
+            <omgdi:waypoint x="370.0" y="205.0"/>
+         </bpmndi:BPMNEdge>
+      </bpmndi:BPMNPlane>
+   </bpmndi:BPMNDiagram>
+</definitions>

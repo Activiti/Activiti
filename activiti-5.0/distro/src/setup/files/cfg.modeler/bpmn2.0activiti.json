@@ -1,0 +1,299 @@
+{
+	"title" : "Activiti",
+	"title_de":"Activiti",
+	"namespace":"http://oryx-editor.org/stencilsets/extensions/bpmn2.0activiti#",
+	"description":"The subset of BPMN 2.0 supported by Activiti.",
+	"description":"Die von Activiti unterstützte Untermenge von BPMN 2.0.",
+	"extends":"http://b3mn.org/stencilset/bpmn2.0#",
+	"stencils":[
+        {
+            "type": "node",
+            "id":"UserTask",
+            "superId":"Task",
+            "title":"User Task",
+            "title_de":"Benutzeraufgabe",
+            "groups":["Activities"],
+            "groups_de":["Aktivitäten"],
+            "description":"A User Task is used to model work that needs to be done by a human actor. When the process execution arrives at such a user task, a new task is created in the task list of the user(s) or group(s) assigned to that task.",
+            "view":"activity/node.task.svg",
+            "icon":"activity/list/type.user.png",
+            "roles": [ 
+                "all",
+                "sequence_start",
+                "sequence_end",
+                "from_task_event",
+                "to_task_event",
+                "FromEventbasedGateway",
+                "messageflow_start",
+                "messageflow_end",
+                "fromtoall"
+            ],
+            "properties": [
+                {
+                    "id":"tasktype",
+                    "value":"User"
+                }
+            ]
+        },
+        {
+            "type": "node",
+            "id":"ServiceTask",
+            "superId":"Task",
+            "title":"Service Task",
+            "title_de":"Serviceaufgabe",
+            "groups":["Activities"],
+            "groups_de":["Aktivitäten"],
+            "description":"A Service Task is a Task that uses some sort of service, which could be a Web service or an automated application.",
+            "view":"activity/node.task.svg",
+            "icon":"activity/list/type.service.png",
+            "roles": [ 
+                "all",
+                "sequence_start",
+                "sequence_end",
+                "from_task_event",
+                "to_task_event",
+                "FromEventbasedGateway",
+                "messageflow_start",
+                "messageflow_end",
+                "fromtoall"
+            ],
+            "properties": [
+                {
+                    "id":"tasktype",
+                    "value":"Service"
+                }
+            ]
+        },
+        {
+            "type": "node",
+            "id":"ScriptTask",
+            "superId":"Task",
+            "title":"Script Task",
+            "title_de":"Skriptaufgabe",
+            "groups":["Activities"],
+            "groups_de":["Aktivitäten"],
+            "description":"A Script Task is executed by a business process engine. The modeler or implementer defines a script in a language that the engine can interpret. When the Task is ready to start, the engine will execute the script. When the script is completed, the Task will also be completed.",
+            "view":"activity/node.task.svg",
+            "icon":"activity/list/type.script.png",
+            "roles": [ 
+                "all",
+                "sequence_start",
+                "sequence_end",
+                "from_task_event",
+                "to_task_event",
+                "FromEventbasedGateway",
+                "messageflow_start",
+                "messageflow_end",
+                "fromtoall"
+            ],
+            "properties": [
+                {
+                    "id":"tasktype",
+                    "value":"Script"
+                }
+            ]
+        },
+        {
+            "type": "node",
+            "id":"ManualTask",
+            "superId":"Task",
+            "title":"Manual Task",
+            "title_de":"Manuelle Aufgabe",
+            "groups":["Activities"],
+            "groups_de":["Aktivitäten"],
+            "description":"A Manual Task defines a task that is external to the BPM engine. It is used to model work that is done by somebody, which the engine does not need to know of, nor is there a system of UI interface. For the engine, a manual task is handled as a pass-through activity, automatically continuing the process from the moment process execution arrives into it.",
+            "view":"activity/node.task.svg",
+            "icon":"activity/list/type.manual.png",
+            "roles": [ 
+                "all",
+                "sequence_start",
+                "sequence_end",
+                "from_task_event",
+                "to_task_event",
+                "FromEventbasedGateway",
+                "messageflow_start",
+                "messageflow_end",
+                "fromtoall"
+            ],
+            "properties": [
+                {
+                    "id":"tasktype",
+                    "value":"Manual"
+                }
+            ]
+        },
+        {
+            "type": "node",
+            "id":"SendTask",
+            "superId":"Task",
+            "title":"Send Task",
+            "title_de":"Sendeaufgabe",
+            "groups":["Activities"],
+            "groups_de":["Aktivitäten"],
+            "description":"A Send Task is a simple Task that is designed to send a Message to an external Participant (relative to the Process). Once the Message has been sent, the Task is completed.",
+            "view":"activity/node.task.svg",
+            "icon":"activity/list/type.send.png",
+            "roles": [ 
+                "all",
+                "sequence_start",
+                "sequence_end",
+                "from_task_event",
+                "to_task_event",
+                "FromEventbasedGateway",
+                "messageflow_start",
+                "messageflow_end",
+                "fromtoall"
+            ],
+            "properties": [
+                {
+                    "id":"tasktype",
+                    "value":"Send"
+                }
+            ]
+        },
+        {
+            "type": "node",
+            "id":"ReceiveTask",
+            "superId":"Task",
+            "title":"Receive Task",
+            "title_de":"Empfangsaufgabe",
+            "groups":["Activities"],
+            "groups_de":["Aktivitäten"],
+            "description":"A Receive Task is a simple Task that is designed to wait for a Message to arrive from an external Participant (relative to the Process). Once the Message has been received, the Task is completed.",
+            "view":"activity/node.task.svg",
+            "icon":"activity/list/type.receive.png",
+            "roles": [ 
+                "all",
+                "sequence_start",
+                "sequence_end",
+                "from_task_event",
+                "to_task_event",
+                "FromEventbasedGateway",
+                "messageflow_start",
+                "messageflow_end",
+                "fromtoall"
+            ],
+            "properties": [
+                {
+                    "id":"tasktype",
+                    "value":"Receive"
+                }
+            ]
+        },
+        {
+            "type": "node",
+            "id":"CallActivity",
+            "superId":"CollapsedSubprocess",
+            "title":"Call Activity",
+            "title_de":"Aufrufaufgabe",
+            "groups":["Activities"],
+            "groups_de":["Aktivitäten"],
+            "description":"A Call Activity acts as a ‘wrapper’ for the invocation of a global Process or Global Task within the execution.",
+            "view":"activity/subprocess.collapsed.svg",
+            "icon":"activity/subprocess.png",
+            "roles": [ 
+                "all",
+                "sequence_start",
+                "sequence_end",
+                "messageflow_start",
+                "messageflow_end",
+                "to_task_event",
+                "from_task_event",
+                "fromtoall",
+                "ActivitiesMorph"
+            ],
+            "properties": [
+                {
+                    "id":"callacitivity",
+                    "value":"true"
+                }
+            ]
+        },
+        {
+            "type": "node",
+            "id":"ExpandedSubProcess",
+            "superId":"Subprocess",
+			"title" :			"Expanded Subprocess",
+			"title_de" :		"Aufgeklappter Unterprozess",
+			"groups" :			["Activities"],
+			"groups_de" :		["Aktivitäten"],
+			"description" :		"A subprocess is a decomposable activity. An expanded subprocess contains a valid BPMN diagram.",
+			"description_de" :	"Ein Unterprozess ist eine verfeinerte Aktivität. Ein aufgeklappter Unterprozess enthält in sich ein eigenes BPMN Diagramm, welches direkt innerhalb modelliert wird.",
+			"view" :			"activity/subprocess.expanded.svg",
+			"icon" :			"activity/expanded.subprocess.png",
+			"roles"	:			[
+				"all",
+				"sequence_start",
+				"sequence_end",
+				"messageflow_start",
+				"messageflow_end",
+				"to_task_event",
+				"from_task_event",
+				"fromtoall",
+				"canContainArtifacts",
+				"ActivitiesMorph"
+            ],
+            "properties": [
+            ]
+        }
+	],
+	"properties":[],
+	"rules": {
+		"connectionRules": [],
+        "cardinalityRules": [],
+		"containmentRules": []
+	},
+	"removestencils": [
+		"Subprocess",
+		"CollapsedSubprocess",
+		"ITSystem",
+		"EventSubprocess",
+		"CollapsedEventSubprocess",
+		"DataStore",
+		"Message",
+		"StartErrorEvent",
+		"StartCompensationEvent",
+		"StartParallelMultipleEvent",
+		"StartEscalationEvent",
+		"IntermediateParallelMultipleEventCatching",
+		"IntermediateEscalationEvent",
+		"EndEscalationEvent",
+		"IntermediateEscalationEventThrowing",
+		"EventbasedGateway",
+		"InclusiveGateway",
+		"ComplexGateway",
+		"CollapsedPool",
+		"processparticipant",
+		"DataObject",
+		"StartConditionalEvent",
+		"StartSignalEvent",
+		"StartTimerEvent",
+		"StartMultipleEvent",
+		"StartMessageEvent",
+		"IntermediateEvent",
+		"IntermediateMessageEventCatching",
+		"IntermediateMessageEventThrowing",
+		"IntermediateErrorEvent",
+		"IntermediateCancelEvent",
+		"IntermediateCompensationEventCatching",
+		"IntermediateCompensationEventThrowing",
+		"IntermediateConditionalEvent",
+		"IntermediateSignalEventCatching",
+		"IntermediateSignalEventThrowing",
+		"IntermediateMultipleEventCatching",
+		"IntermediateMultipleEventThrowing",
+		"IntermediateLinkEventCatching",
+		"IntermediateLinkEventThrowing",
+		"EndMessageEvent",
+		"EndErrorEvent",
+		"EndCancelEvent",
+		"EndCompensationEvent",
+		"EndSignalEvent",
+		"EndMultipleEvent",
+		"EndTerminateEvent",
+		"Association_Unidirectional",
+		"Association_Bidirectional",
+		"MessageFlow"
+	],
+	"removeproperties": []
+}

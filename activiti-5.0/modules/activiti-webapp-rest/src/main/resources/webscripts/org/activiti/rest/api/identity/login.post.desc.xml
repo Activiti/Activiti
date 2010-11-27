@@ -1,0 +1,8 @@
+<webscript>
+  <shortname>Authenticate</shortname>
+  <description>Lets a client authenticate a user</description>
+  <url>/login</url>
+  <format default="json"/>
+  <authentication>none</authentication>
+  <transaction allow="readonly">required</transaction>
+</webscript>
