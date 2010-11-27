@@ -157,12 +157,14 @@
       }
 
       // Add links tab
-            var linksTab = new YAHOO.widget.Tab({ 
-                label: "Links", 
-                content: '<div id="links-wrapper"><h3>Links</h3><div id="links-div"></div><span id="addLink" class="yui-button"><span class="first-child"><button type="button">Add link</button></span></span></div><div id="backlinks-wrapper"><h3>Backlinks</h3><div id="backlinks-div"></div></div>'
-            });
+      var linksTab = new YAHOO.widget.Tab({ 
+        // TODO: i18n
+        label: "Links", 
+        // TODO: i18n
+        content: '<div id="links-wrapper"><h3>Outgoing Links</h3><div id="links-div"></div><span id="addLink" class="yui-button"><span class="first-child"><button type="button">Add link</button></span></span></div><div id="backlinks-wrapper"><h3>Incoming Links</h3><div id="backlinks-div"></div></div>'
+      });
 
-            this._tabView.addTab(linksTab);
+      this._tabView.addTab(linksTab);
       this._tabView.appendTo('artifact-div');
 
       // instantiate a data source for the links data table
@@ -172,7 +174,7 @@
       // TODO: i18n
       var linksColumnDefs = [
           {key: "Name", sortable:true},
-          {key: "Revision", sortable:true},
+          // {key: "Revision", sortable:true},
           {key: "Type"}
         ];
 
