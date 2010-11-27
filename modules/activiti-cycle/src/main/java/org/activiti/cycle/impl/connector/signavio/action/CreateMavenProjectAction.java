@@ -1,9 +1,11 @@
 package org.activiti.cycle.impl.connector.signavio.action;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Map;
 import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
@@ -29,9 +31,21 @@ public class CreateMavenProjectAction extends CreateTechnicalBpmnXmlAction {
 
   private static final String REPLACE_STRING = "activiti.project.template";
 
+  public static String ACTIVITI_HOME_PATH;
+
+  private static Logger log = Logger.getLogger(CreateMavenProjectAction.class.getName());
+
   public CreateMavenProjectAction() {
     // TODO: remove when real labels are introduced in the GUI
     super("Create default maven project");
+    try {
+      ACTIVITI_HOME_PATH = new File("../../../").getCanonicalPath();
+    } catch (IOException e) {      
+      ACTIVITI_HOME_PATH = new File(".").getAbsolutePath();
+      log.log(Level.WARNING, "Couldn't set Activiti Home path (see nested exception for the cause), using '" + ACTIVITI_HOME_PATH + "' instead.", e);
+    }
+    // change backslashed on windows to forward slashes for ant
+    ACTIVITI_HOME_PATH = ACTIVITI_HOME_PATH.replace("\\", "/");
   }
 
   public void execute(RepositoryConnector connector, RepositoryArtifact artifact, Map<String, Object> parameters) throws Exception {
@@ -126,7 +140,7 @@ public class CreateMavenProjectAction extends CreateTechnicalBpmnXmlAction {
             log.log(Level.INFO, "Create processdefinition from Signavio process model " + projectName);
           } else {
             byte[] bytes = IoUtil.readInputStream(projectTemplateInputStream, "ZIP entry '" + zipName + "'");
-            String txtContent = new String(bytes).replaceAll(REPLACE_STRING, projectName);
+            String txtContent = new String(bytes).replaceAll(REPLACE_STRING, projectName).replaceAll("@@ACTIVITI.HOME@@", ACTIVITI_HOME_PATH);
             content.setValue(txtContent);
           }
           log.log(Level.INFO, "Create new artifact from zip entry '" + zipEntry.getName() + "' in folder '" + absolutePath + "' with name '" + name + "'");
