@@ -39,6 +39,7 @@ public class CycleDaoMyBatisImplTest extends PluggableActivitiTestCase {
     List<RepositoryArtifactLinkEntity> links1 = dao.getOutgoingArtifactLinks("connector1", "artifact1");
     assertEquals(1, links1.size());
     assertEquals("Created in test case", links1.get(0).getComment());
+    assertNull(links1.get(0).getSourceRevision());
     assertNotNull(links1.get(0).getId());
 
     List<RepositoryArtifactLinkEntity> links2 = dao.getOutgoingArtifactLinks("connector2", "artifact2");
