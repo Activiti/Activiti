@@ -137,16 +137,29 @@
   </section>
   
   <section id="examples">
-    <title>Examples, workspace and library dependencies</title>
+    <title>Example projects in the workspace</title>
     <para>The distribution contains a workspace directory containing a couple of example java projects:
     </para>
     <itemizedlist>
-      <listitem><para><emphasis role="bold">activiti-engine-examples</emphasis>: This set of 
-      examples show the most common usage of Activiti: BPMN process definitions 
-      and process executions are stored in a DB and the examples make use of 
-      the persistent API.</para></listitem>
+      <listitem>
+	      <para><emphasis role="bold">activiti-engine-examples</emphasis>: This set of 
+	      examples show the most common usage of Activiti: BPMN process definitions 
+	      and process executions are stored in a DB and the examples make use of 
+	      the persistent API.</para>
+	      <para>This project contains the eclipse project files, an ant build file 
+	      and a maven pom file.  The ant build file is independent of the maven pom.  Both
+	      are there to show how you can use ant and maven respectively for building and deploying processes
+	      as part of your build.
+	      </para>
+      </listitem>
       <listitem><para><emphasis role="bold">activiti-spring-examples</emphasis>: These examples
       show how you can use the Activiti Engine in a Spring environment.    
+      </para></listitem>
+      <listitem><para><emphasis role="bold">activiti-groovy-examples</emphasis>: These examples
+      show the library dependencies for groovy and an example process with groovy scripting.    
+      </para></listitem>
+      <listitem><para><emphasis role="bold">activiti-jpa-examples</emphasis>: These examples
+      show library dependencies and how you can work with JPA in Activiti.    
       </para></listitem>
       <listitem><para><emphasis role="bold">activiti-cycle-examples</emphasis>: This is a 
       project containing an demo example project for Activiti Cycle 
@@ -170,6 +183,10 @@
     ant target uses these files to put the right libraries in place in the workspace 
     example projects.
     </para>
+  </section>
+  
+  <section id="librarydependencies">
+    <title>Library dependencies</title>
   </section>
   
   <section id="eclipsesetup">
