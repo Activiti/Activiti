@@ -124,6 +124,35 @@
         },
         {
             "type": "node",
+            "id":"SendTask",
+            "superId":"Task",
+            "title":"Send Task",
+            "title_de":"Sendeaufgabe",
+            "groups":["Activities"],
+            "groups_de":["Aktivitäten"],
+            "description":"A Send Task is a simple Task that is designed to send a Message to an external Participant (relative to the Process). Once the Message has been sent, the Task is completed.",
+            "view":"activity/node.task.svg",
+            "icon":"activity/list/type.send.png",
+            "roles": [ 
+                "all",
+                "sequence_start",
+                "sequence_end",
+                "from_task_event",
+                "to_task_event",
+                "FromEventbasedGateway",
+                "messageflow_start",
+                "messageflow_end",
+                "fromtoall"
+            ],
+            "properties": [
+                {
+                    "id":"tasktype",
+                    "value":"Send"
+                }
+            ]
+        },
+        {
+            "type": "node",
             "id":"ReceiveTask",
             "superId":"Task",
             "title":"Receive Task",
