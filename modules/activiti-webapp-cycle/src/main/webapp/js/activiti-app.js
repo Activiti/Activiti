@@ -93,9 +93,9 @@
      * @param artifactid {string} The id of the artifact to be loaded
      * @param obj {Object} Helper object to be sent to the callback
      */
-    loadArtifact: function RepositoryService_loadArtifact(connectorId, artifactid, obj)
+    loadArtifact: function RepositoryService_loadArtifact(connectorId, artifactid)
     {
-      this.jsonGet(this.loadArtifactURL(connectorId, artifactid), obj, "loadArtifact");
+      this.jsonGet(this.loadArtifactURL(connectorId, artifactid), null, "loadArtifact");
     },
 
     /**
@@ -539,6 +539,11 @@
 		},
 
     onLoadTagsByRepositoryNodeSuccess: function TaggingComponent_RepositoryService_onloadTagsByRepositoryNodeSuccess(response, obj) {
+      
+      if(response.json.authenticationError) {
+        return;
+      }
+      
       this._el.innerHTML = "Tags: ";
       this._tags = response.json;
       // add tag spans if there are any tags
@@ -890,6 +895,116 @@
       } else {
         Activiti.widget.PopupManager.displayError("Unable to create artifact");
       }
+    }
+
+	});
+
+})();
+
+(function()
+{
+	/**
+	 * Shortcuts
+	 */
+	var Dom = YAHOO.util.Dom,
+			Selector = YAHOO.util.Selector,
+			Event = YAHOO.util.Event,
+			Pagination = Activiti.util.Pagination,
+			$html = Activiti.util.decodeHTML;
+			
+	/**
+	 * CreateArtifactDialog constructor.
+	 *
+	 * @param htmlId {String} The HTML id of the parent element
+	 * @param reposInError {Array} Array of repository IDs
+	 * @param authenticationError The authentication error message for the first repository
+	 * @return {Activiti.component.AuthenticationDialog} The new component.AuthenticationDialog instance
+	 * @constructor
+	 */
+	Activiti.component.AuthenticationDialog = function AuthenticationDialog_constructor(htmlId, reposInError, authenticationError)
+  {
+    Activiti.component.AuthenticationDialog.superclass.constructor.call(this, "Activiti.component.AuthenticationDialog", htmlId);
+
+    this.service = new Activiti.service.RepositoryService(this);
+
+    this._dialog = {};
+		this._reposInError = reposInError;
+		this._authenticationError = authenticationError;
+
+    return this;
+  };
+
+  YAHOO.extend(Activiti.component.AuthenticationDialog, Activiti.component.Base,
+  {
+	
+		/**
+		* Fired by YUI when parent element is available for scripting.
+		* Template initialisation, including instantiation of YUI widgets and event listener binding.
+		*
+		* @method onReady
+		*/
+		onReady: function AuthenticationDialog_onReady()
+		{
+		  var content = document.createElement("div");
+      // TODO: i18n
+      var formHtml = '<div class="bd"><form id="' + this.id + '-repo-authentication-dialog" ><h1>Authentication required</h1><p style="color: red; font-weight: bold; max-width:400px">' + this._authenticationError + '</p>';
+      for(var index in this._reposInError) {
+        var id, name;
+        for (attr in this._reposInError[index]) {
+          if(this._reposInError[index].hasOwnProperty(attr)) {
+            id = attr;
+            name = this._reposInError[index][id];
+          }
+        }
+        formHtml += '<h2>' + name + '</h2><table><tr><td><label>Username:<br/><input type="text" name="' + id + '_username" value="" /></label><br/></td></tr><tr><td><label>Password:<br/><input type="password" name="' + id + '_password" value="" /></label><br/></td></tr></table>';
+      }
+      formHtml += "</form></div>";
+      content.innerHTML = formHtml;        
+      this._dialog = new YAHOO.widget.Dialog(content, {
+        fixedcenter: true,
+        visible: false,
+        constraintoviewport: true,
+        modal: true,
+        buttons: [
+          // TODO: i18n
+          { text: "Login" , handler: { fn: this.onSubmit, scope: this }, isDefault:true },
+          { text: "Cancel", handler: { fn: this.onCancel, scope: this } }
+        ]
+      });
+      this._dialog.render(document.body);
+      this._dialog.show();
+		},
+
+    /**
+     * This method is invoked when the authentication dialog for the repositories is submitted.
+     * We pass the data from the dialog (usernames and passwords for the repositories that are
+     * missing login information) to the loadTree method so it can be added as parameters to the URL.
+     *
+     * @param event the click event that caused the invokation of this method
+     * @param dialog the authentication dialog that is being submitted
+     */
+    onSubmit: function AuthenticationDialog_onSubmit(event, dialog) {
+      this.service.loadTree(dialog.getData());
+      if (this._dialog) {
+        this._dialog.destroy();
+      }
+      location.reload();
+    },
+
+    /**
+     * This method is invoked when the authentication dialog for the repositories is canceled. 
+     * Usernames and passwords from the dialog are replaced with empty strings in order to send these to the server.
+     */
+    onCancel: function AuthenticationDialog_onCancel() {
+      var data = {};      
+      for (attr in this._dialog.getData()) {
+        if(this._dialog.getData().hasOwnProperty(attr)) {
+          data[attr] = '""';
+        }
+      }
+      this.service.loadTree(data);
+      this._dialog.cancel();
+      location.reload();
     }
 
 	});

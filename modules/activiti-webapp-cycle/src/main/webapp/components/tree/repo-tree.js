@@ -63,35 +63,7 @@
       // If the server reports that there are repositories in the users configuration that need a username and password to log in,
       // we'll show a dialog that prompts the user to provide his username and password for each of these repositories.
       if(response.json.authenticationError) {
-        var content = document.createElement("div");
-  	    // TODO: i18n
-        var formHtml = '<div class="bd"><form id="' + this.id + '-repo-authentication-dialog" ><h1>Authentication required</h1><p style="color: red; font-weight: bold; max-width:400px">' + response.json.authenticationError + '</p>';
-        for(var index in response.json.reposInError) {
-          var id, name;
-          for (attr in response.json.reposInError[index]) {
-            if(response.json.reposInError[index].hasOwnProperty(attr)) {
-              id = attr;
-              name = response.json.reposInError[index][id];
-            }
-          }
-          formHtml += '<h2>' + name + '</h2><table><tr><td><label>Username:<br/><input type="text" name="' + id + '_username" value="" /></label><br/></td></tr><tr><td><label>Password:<br/><input type="password" name="' + id + '_password" value="" /></label><br/></td></tr></table>';
-        }
-        formHtml += "</form></div>";
-        content.innerHTML = formHtml;        
-        this._dialog = new YAHOO.widget.Dialog(content, {
-          fixedcenter: true,
-          visible: false,
-          constraintoviewport: true,
-          modal: true,
-          buttons: [
-            // TODO: i18n
-            { text: "Login" , handler: { fn: this.onSubmit, scope: this }, isDefault:true },
-            { text: "Cancel", handler: { fn: this.onCancel, scope: this } }
-          ]
-        });
-  		  this._dialog.render(document.body);
-  		  this._dialog.show();
-        return;
+        return new Activiti.component.AuthenticationDialog(this.id, response.json.reposInError, response.json.authenticationError);
       }
 
       // Login is OK, we can get on with drawing the tree...
@@ -143,36 +115,6 @@
     },
 
     /**
-     * This method is invoked when the authentication dialog for the repositories is submitted.
-     * We pass the data from the dialog (usernames and passwords for the repositories that are
-     * missing login information) to the loadTree method so it can be added as parameters to the URL.
-     *
-     * @param event the click event that caused the invokation of this method
-     * @param dialog the authentication dialog that is being submitted
-     */
-    onSubmit: function RepoTree_onSubmit(event, dialog) {
-      this.services.repositoryService.loadTree(dialog.getData());
-      if (this._dialog) {
-        this._dialog.destroy();
-      }
-    },
-
-    /**
-     * This method is invoked when the authentication dialog for the repositories is canceled. 
-     * Usernames and passwords from the dialog are replaced with empty strings in order to send these to the server.
-     */
-    onCancel: function RepoTree_onCancel() {
-      var data = {};      
-      for (attr in this._dialog.getData()) {
-        if(this._dialog.getData().hasOwnProperty(attr)) {
-          data[attr] = '""';
-        }
-      }
-      this.services.repositoryService.loadTree(data);
-      this._dialog.cancel();
-    },
-
-    /**
      * This method is invoked when the "Create artifact here..." context menu item is clicked. It returns a new dialog component to
      * provide details for the new artifact.
      *
@@ -213,6 +155,10 @@
      */
     onLoadNodeDataSuccess: function RepoTree_RepositoryService_onLoadNodeDataSuccess(response, obj)
     {
+      var me = this;
+      if(response.json.authenticationError) {
+        return new Activiti.component.AuthenticationDialog(this.id, response.json.reposInError, response.json.authenticationError);
+      }
       // Retrieve rest api response
       var treeNodesJson = response.json;
 
