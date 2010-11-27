@@ -12,8 +12,6 @@
   <property name="activiti.version" value="5.0-SNAPSHOT" />   
   <property name="apache.mirror.url" value="http://mirrors.enquira.co.uk/apache/" />
   
-  <!-- TODO: move that to the standalone profile? -->
-  <property file="files/cfg.cycle/cycle.properties" />
   <property name="cycle.workspace" location="${activiti.home}/workspace/activiti-cycle-examples"/>
 
   <!-- ### OS PROPERTIES #################################################################### -->
