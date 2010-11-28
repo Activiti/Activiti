@@ -31,13 +31,13 @@ public class UserConfigGet extends ActivitiCycleWebScript {
   @Override
   void execute(ActivitiRequest req, Status status, Cache cache, Map<String, Object> model) {
     
-    Map<String, List<String>> connectors = this.cycleService.getConfiguredConnectors(req.getCurrentUserId());
+    Map<String, List<String>> connectors = this.cycleService.getConfiguredRepositoryConnectors(req.getCurrentUserId());
     Map<String, List<Map<String,String>>> connectorsForJson = new HashMap<String, List<Map<String, String>>>();
     
     for(String key : connectors.keySet()) {
       List <Map<String, String>> configs = new ArrayList<Map<String, String>>();
       for(String configId : connectors.get(key)) {
-        configs.add(this.cycleService.getConfigurationValues(configId, req.getCurrentUserId()));
+        configs.add(this.cycleService.getRepositoryConnectorConfiguration(configId, req.getCurrentUserId()));
       }
       connectorsForJson.put(key, configs);
     }

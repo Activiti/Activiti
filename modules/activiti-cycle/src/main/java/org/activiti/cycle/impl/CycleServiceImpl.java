@@ -2,13 +2,11 @@ package org.activiti.cycle.impl;
 
 import java.io.File;
 import java.io.Serializable;
-import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 
 import javax.servlet.http.HttpSession;
 
@@ -42,7 +40,6 @@ import org.activiti.cycle.impl.db.entity.RepositoryNodeTagEntity;
 import org.activiti.cycle.impl.db.impl.CycleConfigurationServiceImpl;
 import org.activiti.cycle.impl.db.impl.CycleDaoMyBatisImpl;
 import org.activiti.cycle.impl.plugin.PluginFinder;
-import org.apache.commons.codec.binary.Base64;
 
 /**
  * Connector to represent customized view for a user of cycle to hide all the
@@ -448,15 +445,22 @@ public class CycleServiceImpl implements CycleService {
     throw new RepositoryException("Couldn't find Repository Connector with id '" + connectorId + "'");
   }
 
-  public Map<String, String> getAvailableConnectorConfiguatations() {
+  public Map<String, String> getAvailableRepositoryConnectorConfiguatationClasses() {
     return PluginFinder.getInstance().getAvailableConnectorConfigurations();
   }
 
-  public Map<String, String> getConfigurationValues(String connectorConfigurationId, String currentUserId) {
+  public Map<String, String> getRepositoryConnectorConfiguration(String connectorConfigurationId, String currentUserId) {
+    // check params
+    if (currentUserId == null)
+      throw new IllegalArgumentException("currentUserId must not be null");
+    if (connectorConfigurationId == null)
+      throw new IllegalArgumentException("connectorConfigurationId must not be null");
+
     ConfigurationContainer configuration = getConfigurationContainer(currentUserId);
 
     List<RepositoryConnectorConfiguration> configurationList = configuration.getConnectorConfigurations();
     RepositoryConnectorConfiguration repoConfiguration = null;
+    // look for the connector with id 'connectorConfigurationId'
     for (RepositoryConnectorConfiguration repositoryConnectorConfiguration : configurationList) {
       if (!repositoryConnectorConfiguration.getId().equals(connectorConfigurationId))
         continue;
@@ -476,11 +480,18 @@ public class CycleServiceImpl implements CycleService {
     return configuration;
   }
 
-  public Map<String, List<String>> getConfiguredConnectors(String currentUserId) {
+  public Map<String, List<String>> getConfiguredRepositoryConnectors(String currentUserId) {
+    // check params
+    if (currentUserId == null)
+      throw new IllegalArgumentException("currentUserId must not be null");
+
+    // retrieve the container for the current user
     ConfigurationContainer configuration = getConfigurationContainer(currentUserId);
 
     Map<String, List<String>> result = new HashMap<String, List<String>>();
     List<RepositoryConnectorConfiguration> configurationList = configuration.getConnectorConfigurations();
+
+    // iterate the list of configured connectors
     for (RepositoryConnectorConfiguration repositoryConnectorConfiguration : configurationList) {
       String className = repositoryConnectorConfiguration.getClass().getCanonicalName();
       List<String> configuredConnectorsForThisClass = result.get(className);
@@ -498,36 +509,51 @@ public class CycleServiceImpl implements CycleService {
     return RepositoryConfigurationHandler.getConfigurationFields(configurationClazzName);
   }
 
-  public void updateConfiguration(Map<String, List<Map<String, String>>> connectorConfigMap, String currentUserId) {
+  public void updateRepositoryConnectorConfiguration(String configurationClass, String configurationId, Map<String, String> values, String currentUserId) {
+    // check params
+    if (configurationClass == null)
+      throw new IllegalArgumentException("configurationClass must not be null");
+    if (configurationId == null)
+      throw new IllegalArgumentException("configurationId must not be null");
+    if (values == null)
+      throw new IllegalArgumentException("values must not be null");
+    if (currentUserId == null)
+      throw new IllegalArgumentException("currentUserId must not be null");
+
     try {
+      // Retrieve the configuration container for the current user
       ConfigurationContainer configurationContainer = getConfigurationContainer(currentUserId);
 
-      Map<String, RepositoryConnectorConfiguration> currentConfigMap = new HashMap<String, RepositoryConnectorConfiguration>();
-
-      for (RepositoryConnectorConfiguration configuration : configurationContainer.getConnectorConfigurations()) {
-        currentConfigMap.put(configuration.getId(), configuration);
-      }
-      
-      for (RepositoryConnectorConfiguration config : currentConfigMap.values()) {
-        configurationContainer.removeRepositoryConnectorConfiguration(config);
-      }
-
-      for (Entry<String, List<Map<String, String>>> configsForThisClass : connectorConfigMap.entrySet()) {
-        for (Map<String, String> valueMap : configsForThisClass.getValue()) {
-          RepositoryConnectorConfiguration configurationObject = currentConfigMap.get(valueMap.get("id"));
-          if (configurationObject == null) {
-            // create new instance
-            Class< ? extends RepositoryConnectorConfiguration> clazz = (Class< ? extends RepositoryConnectorConfiguration>) Class.forName(configsForThisClass
-                    .getKey());
-            configurationObject = clazz.newInstance();
-
-          }
-          RepositoryConfigurationHandler.setConfigurationfields(valueMap, configurationObject);
-          configurationContainer.addRepositoryConnectorConfiguration(configurationObject);
-
-        }
+      // look for the configuration with the id 'configurationId'
+      RepositoryConnectorConfiguration repositoryConnectorConfiguration = null;
+      for (RepositoryConnectorConfiguration thisConfiguration : configurationContainer.getConnectorConfigurations()) {
+        if (!configurationId.equals(thisConfiguration.getId()))
+          continue;
+        repositoryConnectorConfiguration = thisConfiguration;
+        break;
       }
 
+      // if we found a configuration but it is of the wrong type, throw
+      // exception:
+      if (repositoryConnectorConfiguration != null && !repositoryConnectorConfiguration.getClass().getCanonicalName().equals(configurationClass)) {
+        throw new RepositoryException("Cannot store connectorconfiguration of type '" + configurationClass + "' with id '" + configurationId
+                + "'. A connector with this id and of type '" + repositoryConnectorConfiguration.getClass().getCanonicalName().equals(configurationClass)
+                + "' already exists.");
+      }
+
+      // if no configuration is found, create a new one:
+      if (repositoryConnectorConfiguration == null) {
+        @SuppressWarnings("unchecked")
+        Class< ? extends RepositoryConnectorConfiguration> clazz = (Class< ? extends RepositoryConnectorConfiguration>) Class.forName(configurationClass);
+        repositoryConnectorConfiguration = clazz.newInstance();
+        // add configuration to the configuration container
+        configurationContainer.addRepositoryConnectorConfiguration(repositoryConnectorConfiguration);
+      }
+
+      // update configuration:
+      RepositoryConfigurationHandler.setConfigurationfields(values, repositoryConnectorConfiguration);
+
+      // store configuration container
       CycleConfigurationService configService = new CycleConfigurationServiceImpl(null);
       configService.saveConfiguration(configurationContainer);
 
@@ -535,5 +561,44 @@ public class CycleServiceImpl implements CycleService {
       throw new RepositoryException("Error while storing config for user " + e.getMessage(), e);
     }
   }
+
+  public void deleteRepositoryConnectorConfiguration(String connectorConfigurationId, String currentUserId) {
+    // check params
+    if (connectorConfigurationId == null)
+      throw new IllegalArgumentException("values must not be null");
+    if (currentUserId == null)
+      throw new IllegalArgumentException("currentUserId must not be null");
+
+    try {
+      // Retrieve the configuration container for the current user
+      ConfigurationContainer configurationContainer = getConfigurationContainer(currentUserId);
+
+      // look for the configuration with the id 'configurationId'
+      RepositoryConnectorConfiguration repositoryConnectorConfiguration = null;
+      for (RepositoryConnectorConfiguration thisConfiguration : configurationContainer.getConnectorConfigurations()) {
+        if (!connectorConfigurationId.equals(thisConfiguration.getId()))
+          continue;
+        repositoryConnectorConfiguration = thisConfiguration;
+        break;
+      }
+
+      // if no configuration is found, throw exception
+      if (repositoryConnectorConfiguration == null) {
+        throw new RepositoryException("Could not locate connectorConfiguration with id '" + connectorConfigurationId + "' for user '" + currentUserId + "'.");
+      }
+
+      // remove configuration from container:
+      configurationContainer.removeRepositoryConnectorConfiguration(repositoryConnectorConfiguration);
+
+      // store configuration container
+      CycleConfigurationService configService = new CycleConfigurationServiceImpl(null);
+      configService.saveConfiguration(configurationContainer);
+
+    } catch (Exception e) {
+      throw new RepositoryException("Error while deleting config for user " + e.getMessage(), e);
+    }
+  }
+  
+  
 
 }

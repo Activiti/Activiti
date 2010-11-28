@@ -27,7 +27,7 @@ public class AvailableConnectorConfigsGet extends ActivitiCycleWebScript {
 
   @Override
   void execute(ActivitiRequest req, Status status, Cache cache, Map<String, Object> model) {
-    model.put("configs", this.cycleService.getAvailableConnectorConfiguatations());
+    model.put("configs", this.cycleService.getAvailableRepositoryConnectorConfiguatationClasses());
   }
 
 }

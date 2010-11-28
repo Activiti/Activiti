@@ -15,6 +15,8 @@ package org.activiti.cycle;
 import java.util.List;
 import java.util.Map;
 
+import org.activiti.cycle.impl.conf.RepositoryConnectorConfiguration;
+
 /**
  * This is the central entry point for Activiti Cycle. The service provides the
  * possibility to store and load user configurations (which then contains
@@ -161,20 +163,91 @@ public interface CycleService {
   public List<CycleTagContent> getRootTags();
 
   /**
-   * returns a list of available connector configurations
+   * Returns all available {@link RepositoryConnectorConfiguration}
+   * implementations.
+   * 
+   * @return a map such that each key is a canonical classname of a
+   *         {@link RepositoryConnectorConfiguration} and the corresponding
+   *         value is a human-readable name for this connector-type.
    */
-  public Map<String, String> getAvailableConnectorConfiguatations();
+  public Map<String, String> getAvailableRepositoryConnectorConfiguatationClasses();
 
   /**
-   * stores a new configuration
+   * Creates / Updates the {@link RepositoryConnectorConfiguration} designated
+   * by the provided 'configurationId' and owned by the provided
+   * 'currentUserId'. If no such configuration exists, a new configuration is
+   * created, as an instance of the provided 'configurationClass'.
+   * 
+   * @param configurationClass
+   *          the canonical classname of the
+   *          {@link RepositoryConnectorConfiguration} implementation we want to
+   *          create / update.
+   * @param configurationId
+   *          the id as returned by
+   *          {@link RepositoryConnectorConfiguration#getId()}.
+   * @param values
+   *          the configuration values for this configuration as am map of
+   *          fieldname / value pairs.
+   * @param currentUserId
+   *          the user we want to update the configuration for.
    */
-  public void updateConfiguration(Map<String, List<Map<String, String>>> connectorConfigMap, String currentUserId);
+  public void updateRepositoryConnectorConfiguration(String configurationClass, String configurationId, Map<String, String> values, String currentUserId);
 
+  /**
+   * Returns a map of available configuration fields for the given class.
+   * <p>
+   * TODO: at the moment we recognize a field if we find a setter-method which
+   * takes a single parameter of type String. A better solution would be IMO to
+   * use annotations and annotate setters with sth. like
+   * "@ConnectorConfigurationField".
+   * 
+   * @param configurationClazzName
+   *          . the name of the {@link RepositoryConnectorConfiguration}
+   * @return a map of field-type mappings.
+   * 
+   */
   public Map<String, String> getConfigurationFields(String configurationClazzName);
 
-  public Map<String, List<String>> getConfiguredConnectors(String currentUserId);
+  /**
+   * Returns a map of {@link RepositoryConnectorConfiguration}s for the provided
+   * user.
+   * 
+   * @param currentUserId
+   *          the user to retrieve the connectors for.
+   * @return a map of lists, such that each key represents the canonical
+   *         classname of a {@link RepositoryConnectorConfiguration}
+   *         implementation and the corresponding value is a list of Ids, as
+   *         returned by {@link RepositoryConnectorConfiguration#getId()}.
+   */
+  public Map<String, List<String>> getConfiguredRepositoryConnectors(String currentUserId);
 
-  public Map<String, String> getConfigurationValues(String connectorConfigurationId, String currentUserId);
+  /**
+   * Returns a field-value map of the current configuration settings represented
+   * by 'repoConfiguration'.
+   * <p />
+   * Note: this method returns values for the fields returned by
+   * {@link #getConfigurationFields(String)}
+   * 
+   * @param repoConfiguration
+   *          the {@link RepositoryConnectorConfiguration} instance to extract
+   *          the values from.
+   * @param currentUserId
+   *          the user to retrieve the {@link RepositoryConnectorConfiguration}
+   *          for.
+   * @return a map of field-name / value pairs.
+   */
+  public Map<String, String> getRepositoryConnectorConfiguration(String connectorConfigurationId, String currentUserId);
 
+  /**
+   * Deletes the {@link RepositoryConnectorConfiguration} designated by
+   * 'connectorConfigurationId'.
+   * 
+   * @param connectorConfigurationId
+   *          the of the connector we want to delete, as returned by
+   *          {@link RepositoryConnectorConfiguration#getId()}.
+   * @param currentUserId
+   *          the user we want to delete the configuration for.
+   */
+  public void deleteRepositoryConnectorConfiguration(String connectorConfigurationId, String currentUserId);
 
 }

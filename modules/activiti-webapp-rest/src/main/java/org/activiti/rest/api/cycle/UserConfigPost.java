@@ -39,6 +39,7 @@ public class UserConfigPost extends ActivitiCycleWebScript {
     // connectorConfigMap, String currentUserId)
     Map<String, List<Map<String, String>>> connectorConfigMap = new HashMap<String, List<Map<String, String>>>();
 
+    
     for (String key : json.getFormVariables().keySet()) {
       List<Map<String, String>> configs;
       Object value = json.getFormVariables().get(key);
@@ -54,7 +55,7 @@ public class UserConfigPost extends ActivitiCycleWebScript {
         }
       }
     }
-    this.cycleService.updateConfiguration(connectorConfigMap, req.getCurrentUserId());
+//    this.cycleService.updateConfiguration(connectorConfigMap, req.getCurrentUserId());
   }
 
   private Map<String, String> getConfigParams(JSONObject config) {
