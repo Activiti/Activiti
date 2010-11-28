@@ -1,0 +1,47 @@
+.connector-type-div {
+  background-color:#F9F9F9;
+  border:1px solid #E1DFDF;
+  padding:1em;
+  margin-bottom:1em;
+}
+
+.config-span {
+  float: left;
+  border:1px solid transparent;
+  padding: 1em;
+  display: block;
+}
+
+.config-span:hover {
+  background: #FFF8AF;
+  border:1px solid #E1DFDF;
+}
+
+.attribute-label {
+  font-weight: bold;
+  width: 130px;
+  display: block;
+  float: left;
+}
+
+.attribute-value {
+  display: block;
+  float: left;
+}
+
+.config-span ul li {
+  border-bottom: 1px dashed #E1DFDF;
+  overflow: hidden;
+  clear: both;
+}
+
+/*
+.config-span .buttons {
+  text-align: right;
+  visibility: hidden;
+}
+
+.config-span:hover .buttons {
+  visibility: visible;
+}
+*/

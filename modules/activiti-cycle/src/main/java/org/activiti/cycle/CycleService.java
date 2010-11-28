@@ -112,7 +112,7 @@ public interface CycleService {
   public void addArtifactLink(RepositoryArtifactLink link);
 
   public List<RepositoryArtifactLink> getArtifactLinks(String sourceConnectorId, String sourceArtifactId);
-  
+
   public List<RepositoryArtifactLink> getIncomingArtifactLinks(String targetConnectorId, String targetArtifactId);
 
   public void deleteLink(String linkId);
@@ -159,5 +159,22 @@ public interface CycleService {
   public CycleTagContent getTagContent(String name);
 
   public List<CycleTagContent> getRootTags();
+
+  /**
+   * returns a list of available connector configurations
+   */
+  public Map<String, String> getAvailableConnectorConfiguatations();
+
+  /**
+   * stores a new configuration
+   */
+  public void updateConfiguration(Map<String, List<Map<String, String>>> connectorConfigMap, String currentUserId);
+
+  public Map<String, String> getConfigurationFields(String configurationClazzName);
+
+  public Map<String, List<String>> getConfiguredConnectors(String currentUserId);
+
+  public Map<String, String> getConfigurationValues(String connectorConfigurationId, String currentUserId);
+
 
 }

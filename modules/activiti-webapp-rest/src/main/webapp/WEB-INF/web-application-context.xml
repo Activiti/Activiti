@@ -373,5 +373,20 @@
   <bean id="webscript.org.activiti.rest.api.cycle.tags.get"
         class="org.activiti.rest.api.cycle.TagsGet"
         parent="activitiWebScript">
-  </bean>  
+  </bean>
+  
+  <bean id="webscript.org.activiti.rest.api.cycle.user-config.post"
+        class="org.activiti.rest.api.cycle.UserConfigPost"
+        parent="activitiWebScript">
+  </bean>
+  
+  <bean id="webscript.org.activiti.rest.api.cycle.user-config.get"
+        class="org.activiti.rest.api.cycle.UserConfigGet"
+        parent="activitiWebScript">
+  </bean>
+  
+  <bean id="webscript.org.activiti.rest.api.cycle.available-connector-configs.get"
+        class="org.activiti.rest.api.cycle.AvailableConnectorConfigsGet"
+        parent="activitiWebScript">
+  </bean>
 </beans>

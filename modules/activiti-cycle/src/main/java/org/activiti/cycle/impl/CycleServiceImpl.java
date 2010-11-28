@@ -2,11 +2,13 @@ package org.activiti.cycle.impl;
 
 import java.io.File;
 import java.io.Serializable;
+import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import javax.servlet.http.HttpSession;
 
@@ -26,6 +28,8 @@ import org.activiti.cycle.RepositoryNodeNotFoundException;
 import org.activiti.cycle.RepositoryNodeTag;
 import org.activiti.cycle.impl.conf.ConfigurationContainer;
 import org.activiti.cycle.impl.conf.PasswordEnabledRepositoryConnectorConfiguration;
+import org.activiti.cycle.impl.conf.RepositoryConfigurationHandler;
+import org.activiti.cycle.impl.conf.RepositoryConnectorConfiguration;
 import org.activiti.cycle.impl.connector.demo.DemoConnectorConfiguration;
 import org.activiti.cycle.impl.connector.fs.FileSystemConnectorConfiguration;
 import org.activiti.cycle.impl.connector.signavio.SignavioConnectorConfiguration;
@@ -38,6 +42,7 @@ import org.activiti.cycle.impl.db.entity.RepositoryNodeTagEntity;
 import org.activiti.cycle.impl.db.impl.CycleConfigurationServiceImpl;
 import org.activiti.cycle.impl.db.impl.CycleDaoMyBatisImpl;
 import org.activiti.cycle.impl.plugin.PluginFinder;
+import org.apache.commons.codec.binary.Base64;
 
 /**
  * Connector to represent customized view for a user of cycle to hide all the
@@ -50,320 +55,316 @@ import org.activiti.cycle.impl.plugin.PluginFinder;
 public class CycleServiceImpl implements CycleService {
 
   protected static class ConnectorList implements Serializable {
+
     private static final long serialVersionUID = 1L;
-    // the transient field keeps the servlet container from serializing the connectors in the session
-    // TODO: needs testing: When do servlet containers serialize/deserialize? Tomcat seems to do it 
-    // between shutdowns / startups. At the moment I would qualify this as a 'hack' - Daniel Meyer
-    private transient List<RepositoryConnector> connectors;           
+    // the transient field keeps the servlet container from serializing the
+    // connectors in the session
+    // TODO: needs testing: When do servlet containers serialize/deserialize?
+    // Tomcat seems to do it
+    // between shutdowns / startups. At the moment I would qualify this as a
+    // 'hack' - Daniel Meyer
+    private transient List<RepositoryConnector> connectors;
   }
-  
-	private CycleDAO cycleDAO;
 
-	private List<RepositoryConnector> repositoryConnectors;
-	
-	
+  private CycleDAO cycleDAO;
 
-	// private static ThreadLocal<CycleService> currentCycleService = new
-	// ThreadLocal<CycleService>();
+  private List<RepositoryConnector> repositoryConnectors;
 
-	public CycleServiceImpl(List<RepositoryConnector> repositoryConnectors) {
+  // private static ThreadLocal<CycleService> currentCycleService = new
+  // ThreadLocal<CycleService>();
 
-		PluginFinder.checkPluginInitialization();
-		this.cycleDAO = new CycleDaoMyBatisImpl();
+  public CycleServiceImpl(List<RepositoryConnector> repositoryConnectors) {
 
-		this.repositoryConnectors = repositoryConnectors;
+    PluginFinder.checkPluginInitialization();
+    this.cycleDAO = new CycleDaoMyBatisImpl();
 
-		for (RepositoryConnector repositoryConnector : repositoryConnectors) {
-			repositoryConnector.getConfiguration().setCycleService(this);
-		}
+    this.repositoryConnectors = repositoryConnectors;
 
-		// If we get here we can assume that all the required logins are
-		// available
-		// and we can now perform the login for those connectors that require it
+    for (RepositoryConnector repositoryConnector : repositoryConnectors) {
+      repositoryConnector.getConfiguration().setCycleService(this);
+    }
 
-		for (RepositoryConnector connector : this.repositoryConnectors) {
-			if (PasswordEnabledRepositoryConnectorConfiguration.class.isInstance(connector.getConfiguration())) {
-				PasswordEnabledRepositoryConnectorConfiguration conf = (PasswordEnabledRepositoryConnectorConfiguration) connector
-						.getConfiguration();
-				String username = conf.getUser();
-				String password = conf.getPassword();
-				try {
-					this.login(username, password, conf.getId());
-				} catch (RepositoryException e) {
-					Map<String, String> connectorMap = new HashMap<String, String>();
-					connectorMap.put(conf.getId(), conf.getName());
-					throw new RepositoryAuthenticationException("Repository authentication error: couldn't login to " + conf.getName(),
-							connectorMap, e);
-				}
-			}
-		}
+    // If we get here we can assume that all the required logins are
+    // available
+    // and we can now perform the login for those connectors that require it
 
-		// add tag connector hard coded for the moment (at the first node in the
-		// tree)
-		this.repositoryConnectors.add(0, new TagConnectorConfiguration(this).createConnector());
-	}
+    for (RepositoryConnector connector : this.repositoryConnectors) {
+      if (PasswordEnabledRepositoryConnectorConfiguration.class.isInstance(connector.getConfiguration())) {
+        PasswordEnabledRepositoryConnectorConfiguration conf = (PasswordEnabledRepositoryConnectorConfiguration) connector.getConfiguration();
+        String username = conf.getUser();
+        String password = conf.getPassword();
+        try {
+          this.login(username, password, conf.getId());
+        } catch (RepositoryException e) {
+          Map<String, String> connectorMap = new HashMap<String, String>();
+          connectorMap.put(conf.getId(), conf.getName());
+          throw new RepositoryAuthenticationException("Repository authentication error: couldn't login to " + conf.getName(), connectorMap, e);
+        }
+      }
+    }
 
-	// bootstrapping for cycle
+    // add tag connector hard coded for the moment (at the first node in the
+    // tree)
+    this.repositoryConnectors.add(0, new TagConnectorConfiguration(this).createConnector());
+  }
 
-	/**
-	 * Provides a static factory method for CycleService instances. Checks
-	 * whether the HttpSession contains an instance for the specified user name
-	 * and creates a new instance if none is found.
-	 * 
-	 * @param currentUserId
-	 *            the user id of the currently logged in user
-	 * @param session
-	 *            the HttpSession object from the currently logged in user
-	 * @return the CycleService instance for the currently logged in user
-	 */
-	public static CycleService getCycleService(String currentUserId, HttpSession session, List<RepositoryConnector> connectors) {
-		String key = currentUserId + "_cycleService";
-		CycleService cycleService = (CycleService) session.getAttribute(key);
-		if (cycleService == null) {
-			cycleService = new CycleServiceImpl(connectors);
-			session.setAttribute(key, cycleService);
-		}
-		return cycleService;
-	}
+  // bootstrapping for cycle
 
-	/**
-	 * Provides access to the list of configured repository connectors for the
-	 * current user. If the list is not yet present as a session attribute, it
-	 * will be loaded from the database and persisted on the session.
-	 * 
-	 * @param currentUserId
-	 *            the user id of the currently logged in user
-	 * @param session
-	 *            the HttpSession object from the currently logged in user
-	 * @return list of configured repository connectors for the current user
-	 */
-	public static List<RepositoryConnector> getConfiguredRepositoryConnectors(String currentUserId, HttpSession session) {
-		String key = currentUserId + "_cycleConfiguredRepositoryConnectors";
-		
-		ConnectorList connectorList = (ConnectorList) session.getAttribute(key);		
-		List<RepositoryConnector> connectors =null;
-		if(connectorList != null) {
-		  connectors = connectorList.connectors;
-		}
-		if (connectors == null) {
-			PluginFinder.registerServletContext(session.getServletContext());
-			ConfigurationContainer container = loadUserConfiguration(currentUserId);			
-			connectors = container.getConnectorList();
-			connectorList = new ConnectorList();
-			connectorList.connectors = connectors;
-			session.setAttribute(key, connectorList);
-		}
-		return connectors;
-	}
+  /**
+   * Provides a static factory method for CycleService instances. Checks whether
+   * the HttpSession contains an instance for the specified user name and
+   * creates a new instance if none is found.
+   * 
+   * @param currentUserId
+   *          the user id of the currently logged in user
+   * @param session
+   *          the HttpSession object from the currently logged in user
+   * @return the CycleService instance for the currently logged in user
+   */
+  public static CycleService getCycleService(String currentUserId, HttpSession session, List<RepositoryConnector> connectors) {
+    String key = currentUserId + "_cycleService";
+    CycleService cycleService = (CycleService) session.getAttribute(key);
+    if (cycleService == null) {
+      cycleService = new CycleServiceImpl(connectors);
+      session.setAttribute(key, cycleService);
+    }
+    return cycleService;
+  }
 
-	/**
-	 * Loads the configuration for this user. If no configuration exists, a demo
-	 * configuration is created and stored in the database.
-	 * 
-	 * @param currentUserId
-	 *            the id of the currently logged in user
-	 */
-	private static ConfigurationContainer loadUserConfiguration(String currentUserId) {
-		PluginFinder.checkPluginInitialization();
-		CycleConfigurationService configService = new CycleConfigurationServiceImpl(null);
-		ConfigurationContainer configuration;
-		try {
-			configuration = configService.getConfiguration(currentUserId);
-		} catch (RepositoryException e) {
-			configuration = createDefaultDemoConfiguration(currentUserId);
-			configService.saveConfiguration(configuration);
-		}
-		return configuration;
-	}
+  /**
+   * Provides access to the list of configured repository connectors for the
+   * current user. If the list is not yet present as a session attribute, it
+   * will be loaded from the database and persisted on the session.
+   * 
+   * @param currentUserId
+   *          the user id of the currently logged in user
+   * @param session
+   *          the HttpSession object from the currently logged in user
+   * @return list of configured repository connectors for the current user
+   */
+  public static List<RepositoryConnector> getConfiguredRepositoryConnectors(String currentUserId, HttpSession session) {
+    String key = currentUserId + "_cycleConfiguredRepositoryConnectors";
 
-	private static ConfigurationContainer createDefaultDemoConfiguration(String currentUserId) {
-		ConfigurationContainer configuration = new ConfigurationContainer(currentUserId);
-		configuration.addRepositoryConnectorConfiguration(new DemoConnectorConfiguration("demo"));
-		configuration.addRepositoryConnectorConfiguration(new SignavioConnectorConfiguration("signavio",
-				"http://localhost:8080/activiti-modeler/"));
-		configuration.addRepositoryConnectorConfiguration(new FileSystemConnectorConfiguration("files", File.listRoots()[0]));
-		return configuration;
-	}
+    ConnectorList connectorList = (ConnectorList) session.getAttribute(key);
+    List<RepositoryConnector> connectors = null;
+    if (connectorList != null) {
+      connectors = connectorList.connectors;
+    }
+    if (connectors == null) {
+      PluginFinder.registerServletContext(session.getServletContext());
+      ConfigurationContainer container = loadUserConfiguration(currentUserId);
+      connectors = container.getConnectorList();
+      connectorList = new ConnectorList();
+      connectorList.connectors = connectors;
+      session.setAttribute(key, connectorList);
+    }
+    return connectors;
+  }
 
-	// implementation of CycleService methods
+  /**
+   * Loads the configuration for this user. If no configuration exists, a demo
+   * configuration is created and stored in the database.
+   * 
+   * @param currentUserId
+   *          the id of the currently logged in user
+   */
+  private static ConfigurationContainer loadUserConfiguration(String currentUserId) {
+    PluginFinder.checkPluginInitialization();
+    CycleConfigurationService configService = new CycleConfigurationServiceImpl(null);
+    ConfigurationContainer configuration;
+    try {
+      configuration = configService.getConfiguration(currentUserId);
+    } catch (RepositoryException e) {
+      configuration = createDefaultDemoConfiguration(currentUserId);
+      configService.saveConfiguration(configuration);
+    }
+    return configuration;
+  }
 
-	public boolean login(String username, String password, String connectorId) {
-		RepositoryConnector conn = getRepositoryConnector(connectorId);
-		if (conn != null) {
-			conn.login(username, password);
-			return true;
-		}
-		return false;
-	}
+  private static ConfigurationContainer createDefaultDemoConfiguration(String currentUserId) {
+    ConfigurationContainer configuration = new ConfigurationContainer(currentUserId);
+    configuration.addRepositoryConnectorConfiguration(new DemoConnectorConfiguration("demo"));
+    configuration.addRepositoryConnectorConfiguration(new SignavioConnectorConfiguration("signavio", "http://localhost:8080/activiti-modeler/"));
+    configuration.addRepositoryConnectorConfiguration(new FileSystemConnectorConfiguration("files", File.listRoots()[0]));
+    return configuration;
+  }
 
-	/**
-	 * commit pending changes in all repository connectors configured
-	 */
-	public void commitPendingChanges(String comment) {
-		for (RepositoryConnector connector : this.repositoryConnectors) {
-			TransactionalConnectorUtils.commitTransaction(connector, comment);
-		}
-	}
+  // implementation of CycleService methods
 
-	public RepositoryNodeCollection getChildren(String connectorId, String nodeId) {
-		// special handling for root
-		if ("/".equals(connectorId)) {
-			return getRepoRootFolders();
-		}
+  public boolean login(String username, String password, String connectorId) {
+    RepositoryConnector conn = getRepositoryConnector(connectorId);
+    if (conn != null) {
+      conn.login(username, password);
+      return true;
+    }
+    return false;
+  }
 
-		RepositoryConnector connector = getRepositoryConnector(connectorId);
-		return connector.getChildren(nodeId);
-	}
+  /**
+   * commit pending changes in all repository connectors configured
+   */
+  public void commitPendingChanges(String comment) {
+    for (RepositoryConnector connector : this.repositoryConnectors) {
+      TransactionalConnectorUtils.commitTransaction(connector, comment);
+    }
+  }
 
-	public RepositoryNodeCollection getRepoRootFolders() {
-		ArrayList<RepositoryNode> nodes = new ArrayList<RepositoryNode>();
-		for (RepositoryConnector connector : this.repositoryConnectors) {
+  public RepositoryNodeCollection getChildren(String connectorId, String nodeId) {
+    // special handling for root
+    if ("/".equals(connectorId)) {
+      return getRepoRootFolders();
+    }
 
-			RepositoryFolderImpl folder = new RepositoryFolderImpl(connector.getConfiguration().getId(), "/");
-			folder.getMetadata().setName(connector.getConfiguration().getName());
-			folder.getMetadata().setParentFolderId("/");
-			nodes.add(folder);
+    RepositoryConnector connector = getRepositoryConnector(connectorId);
+    return connector.getChildren(nodeId);
+  }
 
-		}
-		return new RepositoryNodeCollectionImpl(nodes);
-	}
+  public RepositoryNodeCollection getRepoRootFolders() {
+    ArrayList<RepositoryNode> nodes = new ArrayList<RepositoryNode>();
+    for (RepositoryConnector connector : this.repositoryConnectors) {
 
-	public RepositoryArtifact getRepositoryArtifact(String connectorId, String artifactId) {
-		RepositoryConnector connector = getRepositoryConnector(connectorId);
-		RepositoryArtifact repositoryArtifact = connector.getRepositoryArtifact(artifactId);
-		return repositoryArtifact;
-	}
+      RepositoryFolderImpl folder = new RepositoryFolderImpl(connector.getConfiguration().getId(), "/");
+      folder.getMetadata().setName(connector.getConfiguration().getName());
+      folder.getMetadata().setParentFolderId("/");
+      nodes.add(folder);
 
-	public Content getRepositoryArtifactPreview(String connectorId, String artifactId) throws RepositoryNodeNotFoundException {
-		RepositoryConnector connector = getRepositoryConnector(connectorId);
-		return connector.getRepositoryArtifactPreview(artifactId);
-	}
+    }
+    return new RepositoryNodeCollectionImpl(nodes);
+  }
 
-	public RepositoryFolder getRepositoryFolder(String connectorId, String artifactId) {
-		RepositoryConnector connector = getRepositoryConnector(connectorId);
-		RepositoryFolder repositoryFolder = connector.getRepositoryFolder(artifactId);
-		return repositoryFolder;
-	}
+  public RepositoryArtifact getRepositoryArtifact(String connectorId, String artifactId) {
+    RepositoryConnector connector = getRepositoryConnector(connectorId);
+    RepositoryArtifact repositoryArtifact = connector.getRepositoryArtifact(artifactId);
+    return repositoryArtifact;
+  }
 
-	public RepositoryArtifact createArtifact(String connectorId, String parentFolderId, String artifactName, String artifactType,
-			Content artifactContent) throws RepositoryNodeNotFoundException {
-		return getRepositoryConnector(connectorId).createArtifact(parentFolderId, artifactName, artifactType, artifactContent);
-	}
+  public Content getRepositoryArtifactPreview(String connectorId, String artifactId) throws RepositoryNodeNotFoundException {
+    RepositoryConnector connector = getRepositoryConnector(connectorId);
+    return connector.getRepositoryArtifactPreview(artifactId);
+  }
 
-	public RepositoryArtifact createArtifactFromContentRepresentation(String connectorId, String parentFolderId, String artifactName,
-			String artifactType, String contentRepresentationName, Content artifactContent) throws RepositoryNodeNotFoundException {
-		return getRepositoryConnector(connectorId).createArtifactFromContentRepresentation(parentFolderId, artifactName, artifactType,
-				contentRepresentationName, artifactContent);
-	}
+  public RepositoryFolder getRepositoryFolder(String connectorId, String artifactId) {
+    RepositoryConnector connector = getRepositoryConnector(connectorId);
+    RepositoryFolder repositoryFolder = connector.getRepositoryFolder(artifactId);
+    return repositoryFolder;
+  }
 
-	public void updateContent(String connectorId, String artifactId, Content content) throws RepositoryNodeNotFoundException {
-		RepositoryConnector connector = getRepositoryConnector(connectorId);
-		connector.updateContent(artifactId, content);
-	}
+  public RepositoryArtifact createArtifact(String connectorId, String parentFolderId, String artifactName, String artifactType, Content artifactContent)
+          throws RepositoryNodeNotFoundException {
+    return getRepositoryConnector(connectorId).createArtifact(parentFolderId, artifactName, artifactType, artifactContent);
+  }
 
-	public void updateContent(String connectorId, String artifactId, String contentRepresentationName, Content content)
-			throws RepositoryNodeNotFoundException {
-		RepositoryConnector connector = getRepositoryConnector(artifactId);
-		connector.updateContent(artifactId, contentRepresentationName, content);
-	}
+  public RepositoryArtifact createArtifactFromContentRepresentation(String connectorId, String parentFolderId, String artifactName, String artifactType,
+          String contentRepresentationName, Content artifactContent) throws RepositoryNodeNotFoundException {
+    return getRepositoryConnector(connectorId).createArtifactFromContentRepresentation(parentFolderId, artifactName, artifactType, contentRepresentationName,
+            artifactContent);
+  }
 
-	public RepositoryFolder createFolder(String connectorId, String parentFolderId, String name) throws RepositoryNodeNotFoundException {
-		return getRepositoryConnector(connectorId).createFolder(parentFolderId, name);
-	}
+  public void updateContent(String connectorId, String artifactId, Content content) throws RepositoryNodeNotFoundException {
+    RepositoryConnector connector = getRepositoryConnector(connectorId);
+    connector.updateContent(artifactId, content);
+  }
 
-	public void deleteArtifact(String connectorId, String artifactId) {
-		getRepositoryConnector(connectorId).deleteArtifact(artifactId);
-	}
+  public void updateContent(String connectorId, String artifactId, String contentRepresentationName, Content content) throws RepositoryNodeNotFoundException {
+    RepositoryConnector connector = getRepositoryConnector(artifactId);
+    connector.updateContent(artifactId, contentRepresentationName, content);
+  }
 
-	public void deleteFolder(String connectorId, String folderId) {
-		getRepositoryConnector(connectorId).deleteFolder(folderId);
-	}
+  public RepositoryFolder createFolder(String connectorId, String parentFolderId, String name) throws RepositoryNodeNotFoundException {
+    return getRepositoryConnector(connectorId).createFolder(parentFolderId, name);
+  }
 
-	public Content getContent(String connectorId, String artifactId, String representationName) throws RepositoryNodeNotFoundException {
-		return getRepositoryConnector(connectorId).getContent(artifactId, representationName);
-	}
+  public void deleteArtifact(String connectorId, String artifactId) {
+    getRepositoryConnector(connectorId).deleteArtifact(artifactId);
+  }
 
-	public void executeParameterizedAction(String connectorId, String artifactId, String actionId, Map<String, Object> parameters)
-			throws Exception {
-		RepositoryConnector connector = getRepositoryConnector(connectorId);
+  public void deleteFolder(String connectorId, String folderId) {
+    getRepositoryConnector(connectorId).deleteFolder(folderId);
+  }
 
-		// TODO: (Nils Preusker, 20.10.2010), find a better way to solve this!
-		for (String key : parameters.keySet()) {
-			if (key.equals("targetConnectorId")) {
-				RepositoryConnector targetConnector = getRepositoryConnector((String) parameters.get(key));
-				parameters.put(key, targetConnector);
-			}
-		}
+  public Content getContent(String connectorId, String artifactId, String representationName) throws RepositoryNodeNotFoundException {
+    return getRepositoryConnector(connectorId).getContent(artifactId, representationName);
+  }
 
-		connector.executeParameterizedAction(artifactId, actionId, parameters);
-	}
+  public void executeParameterizedAction(String connectorId, String artifactId, String actionId, Map<String, Object> parameters) throws Exception {
+    RepositoryConnector connector = getRepositoryConnector(connectorId);
 
-	public List<ArtifactType> getSupportedArtifactTypes(String connectorId, String folderId) {
-		if (folderId == null || folderId.length() <= 1) {
-			// "virtual" root folder doesn't support any artifact types
-			return new ArrayList<ArtifactType>();
-		}
-		return getRepositoryConnector(connectorId).getSupportedArtifactTypes(folderId);
-	}
+    // TODO: (Nils Preusker, 20.10.2010), find a better way to solve this!
+    for (String key : parameters.keySet()) {
+      if (key.equals("targetConnectorId")) {
+        RepositoryConnector targetConnector = getRepositoryConnector((String) parameters.get(key));
+        parameters.put(key, targetConnector);
+      }
+    }
 
-	// RepositoryArtifactLink specific methods
+    connector.executeParameterizedAction(artifactId, actionId, parameters);
+  }
 
-	public void addArtifactLink(RepositoryArtifactLink repositoryArtifactLink) {
-		if (repositoryArtifactLink instanceof RepositoryArtifactLinkEntity) {
-			cycleDAO.insertArtifactLink((RepositoryArtifactLinkEntity) repositoryArtifactLink);
-		} else {
-			RepositoryArtifactLinkEntity cycleLink = new RepositoryArtifactLinkEntity();
+  public List<ArtifactType> getSupportedArtifactTypes(String connectorId, String folderId) {
+    if (folderId == null || folderId.length() <= 1) {
+      // "virtual" root folder doesn't support any artifact types
+      return new ArrayList<ArtifactType>();
+    }
+    return getRepositoryConnector(connectorId).getSupportedArtifactTypes(folderId);
+  }
 
-			cycleLink.setId(repositoryArtifactLink.getId());
+  // RepositoryArtifactLink specific methods
 
-			// set source artifact attributes
-			cycleLink.setSourceConnectorId(repositoryArtifactLink.getSourceArtifact().getConnectorId());
-			cycleLink.setSourceArtifactId(repositoryArtifactLink.getSourceArtifact().getNodeId());
-			cycleLink.setSourceElementId(repositoryArtifactLink.getSourceElementId());
-			cycleLink.setSourceElementName(repositoryArtifactLink.getSourceElementName());
-			cycleLink.setSourceRevision(repositoryArtifactLink.getSourceArtifact().getArtifactType().getRevision());
+  public void addArtifactLink(RepositoryArtifactLink repositoryArtifactLink) {
+    if (repositoryArtifactLink instanceof RepositoryArtifactLinkEntity) {
+      cycleDAO.insertArtifactLink((RepositoryArtifactLinkEntity) repositoryArtifactLink);
+    } else {
+      RepositoryArtifactLinkEntity cycleLink = new RepositoryArtifactLinkEntity();
 
-			// set target artifact attributes
-			cycleLink.setTargetConnectorId(repositoryArtifactLink.getTargetArtifact().getConnectorId());
-			cycleLink.setTargetArtifactId(repositoryArtifactLink.getTargetArtifact().getNodeId());
-			cycleLink.setTargetElementId(repositoryArtifactLink.getTargetElementId());
-			cycleLink.setTargetElementName(repositoryArtifactLink.getTargetElementName());
-			cycleLink.setTargetRevision(repositoryArtifactLink.getTargetArtifact().getArtifactType().getRevision());
+      cycleLink.setId(repositoryArtifactLink.getId());
 
-			cycleLink.setLinkType(repositoryArtifactLink.getLinkType());
-			cycleLink.setComment(repositoryArtifactLink.getComment());
-			cycleLink.setLinkedBothWays(false);
+      // set source artifact attributes
+      cycleLink.setSourceConnectorId(repositoryArtifactLink.getSourceArtifact().getConnectorId());
+      cycleLink.setSourceArtifactId(repositoryArtifactLink.getSourceArtifact().getNodeId());
+      cycleLink.setSourceElementId(repositoryArtifactLink.getSourceElementId());
+      cycleLink.setSourceElementName(repositoryArtifactLink.getSourceElementName());
+      cycleLink.setSourceRevision(repositoryArtifactLink.getSourceArtifact().getArtifactType().getRevision());
 
-			cycleDAO.insertArtifactLink(cycleLink);
-		}
-	}
+      // set target artifact attributes
+      cycleLink.setTargetConnectorId(repositoryArtifactLink.getTargetArtifact().getConnectorId());
+      cycleLink.setTargetArtifactId(repositoryArtifactLink.getTargetArtifact().getNodeId());
+      cycleLink.setTargetElementId(repositoryArtifactLink.getTargetElementId());
+      cycleLink.setTargetElementName(repositoryArtifactLink.getTargetElementName());
+      cycleLink.setTargetRevision(repositoryArtifactLink.getTargetArtifact().getArtifactType().getRevision());
 
-	public List<RepositoryArtifactLink> getArtifactLinks(String sourceConnectorId, String sourceArtifactId) {
-		List<RepositoryArtifactLink> artifactLinks = new ArrayList<RepositoryArtifactLink>();
+      cycleLink.setLinkType(repositoryArtifactLink.getLinkType());
+      cycleLink.setComment(repositoryArtifactLink.getComment());
+      cycleLink.setLinkedBothWays(false);
 
-		List<RepositoryArtifactLinkEntity> linkResultList = cycleDAO.getOutgoingArtifactLinks(sourceConnectorId, sourceArtifactId);
-		for (RepositoryArtifactLinkEntity entity : linkResultList) {
-			entity.resolveArtifacts(this);
-			artifactLinks.add(entity);
-		}
+      cycleDAO.insertArtifactLink(cycleLink);
+    }
+  }
 
-		return artifactLinks;
-	}
+  public List<RepositoryArtifactLink> getArtifactLinks(String sourceConnectorId, String sourceArtifactId) {
+    List<RepositoryArtifactLink> artifactLinks = new ArrayList<RepositoryArtifactLink>();
 
-	public List<RepositoryArtifactLink> getIncomingArtifactLinks(String targetConnectorId, String targetArtifactId) {
-	  List<RepositoryArtifactLink> artifactLinks = new ArrayList<RepositoryArtifactLink>();
+    List<RepositoryArtifactLinkEntity> linkResultList = cycleDAO.getOutgoingArtifactLinks(sourceConnectorId, sourceArtifactId);
+    for (RepositoryArtifactLinkEntity entity : linkResultList) {
+      entity.resolveArtifacts(this);
+      artifactLinks.add(entity);
+    }
+
+    return artifactLinks;
+  }
+
+  public List<RepositoryArtifactLink> getIncomingArtifactLinks(String targetConnectorId, String targetArtifactId) {
+    List<RepositoryArtifactLink> artifactLinks = new ArrayList<RepositoryArtifactLink>();
     List<RepositoryArtifactLinkEntity> linkResultList = this.cycleDAO.getIncomingArtifactLinks(targetConnectorId, targetArtifactId);
     for (RepositoryArtifactLinkEntity entity : linkResultList) {
       entity.resolveArtifacts(this);
       artifactLinks.add(entity);
     }
     return artifactLinks;
-	}
+  }
 
-	public void deleteLink(String linkId) {
-		cycleDAO.deleteArtifactLink(linkId);
-	}
-
+  public void deleteLink(String linkId) {
+    cycleDAO.deleteArtifactLink(linkId);
+  }
 
   public void addTag(String connectorId, String artifactId, String tagName, String alias) {
     checkValidConnector(connectorId);
@@ -438,14 +439,101 @@ public class CycleServiceImpl implements CycleService {
     return tagContent;
   }
 
-	private RepositoryConnector getRepositoryConnector(String connectorId) {
-		for (RepositoryConnector connector : this.repositoryConnectors) {
-			if (connector.getConfiguration().getId().equals(connectorId)) {
-				return connector;
-			}
-		}
-		throw new RepositoryException("Couldn't find Repository Connector with id '" + connectorId + "'");
-	}
+  private RepositoryConnector getRepositoryConnector(String connectorId) {
+    for (RepositoryConnector connector : this.repositoryConnectors) {
+      if (connector.getConfiguration().getId().equals(connectorId)) {
+        return connector;
+      }
+    }
+    throw new RepositoryException("Couldn't find Repository Connector with id '" + connectorId + "'");
+  }
 
+  public Map<String, String> getAvailableConnectorConfiguatations() {
+    return PluginFinder.getInstance().getAvailableConnectorConfigurations();
+  }
+
+  public Map<String, String> getConfigurationValues(String connectorConfigurationId, String currentUserId) {
+    ConfigurationContainer configuration = getConfigurationContainer(currentUserId);
+
+    List<RepositoryConnectorConfiguration> configurationList = configuration.getConnectorConfigurations();
+    RepositoryConnectorConfiguration repoConfiguration = null;
+    for (RepositoryConnectorConfiguration repositoryConnectorConfiguration : configurationList) {
+      if (!repositoryConnectorConfiguration.getId().equals(connectorConfigurationId))
+        continue;
+      repoConfiguration = repositoryConnectorConfiguration;
+    }
+    if (repoConfiguration == null)
+      throw new RepositoryException("Cannot find Connector with id '" + connectorConfigurationId + "' for user '" + currentUserId + "'");
+
+    return RepositoryConfigurationHandler.getValueMap(repoConfiguration);
+
+  }
+
+  private ConfigurationContainer getConfigurationContainer(String currentUserId) {
+    PluginFinder.checkPluginInitialization();
+    CycleConfigurationService configService = new CycleConfigurationServiceImpl(null);
+    ConfigurationContainer configuration = configService.getConfiguration(currentUserId);
+    return configuration;
+  }
+
+  public Map<String, List<String>> getConfiguredConnectors(String currentUserId) {
+    ConfigurationContainer configuration = getConfigurationContainer(currentUserId);
+
+    Map<String, List<String>> result = new HashMap<String, List<String>>();
+    List<RepositoryConnectorConfiguration> configurationList = configuration.getConnectorConfigurations();
+    for (RepositoryConnectorConfiguration repositoryConnectorConfiguration : configurationList) {
+      String className = repositoryConnectorConfiguration.getClass().getCanonicalName();
+      List<String> configuredConnectorsForThisClass = result.get(className);
+      if (configuredConnectorsForThisClass == null) {
+        configuredConnectorsForThisClass = new ArrayList<String>();
+        result.put(className, configuredConnectorsForThisClass);
+      }
+      configuredConnectorsForThisClass.add(repositoryConnectorConfiguration.getId());
+    }
+    return result;
+
+  }
+
+  public Map<String, String> getConfigurationFields(String configurationClazzName) {
+    return RepositoryConfigurationHandler.getConfigurationFields(configurationClazzName);
+  }
+
+  public void updateConfiguration(Map<String, List<Map<String, String>>> connectorConfigMap, String currentUserId) {
+    try {
+      ConfigurationContainer configurationContainer = getConfigurationContainer(currentUserId);
+
+      Map<String, RepositoryConnectorConfiguration> currentConfigMap = new HashMap<String, RepositoryConnectorConfiguration>();
+
+      for (RepositoryConnectorConfiguration configuration : configurationContainer.getConnectorConfigurations()) {
+        currentConfigMap.put(configuration.getId(), configuration);
+      }
+      
+      for (RepositoryConnectorConfiguration config : currentConfigMap.values()) {
+        configurationContainer.removeRepositoryConnectorConfiguration(config);
+      }
+
+      for (Entry<String, List<Map<String, String>>> configsForThisClass : connectorConfigMap.entrySet()) {
+        for (Map<String, String> valueMap : configsForThisClass.getValue()) {
+          RepositoryConnectorConfiguration configurationObject = currentConfigMap.get(valueMap.get("id"));
+          if (configurationObject == null) {
+            // create new instance
+            Class< ? extends RepositoryConnectorConfiguration> clazz = (Class< ? extends RepositoryConnectorConfiguration>) Class.forName(configsForThisClass
+                    .getKey());
+            configurationObject = clazz.newInstance();
+
+          }
+          RepositoryConfigurationHandler.setConfigurationfields(valueMap, configurationObject);
+          configurationContainer.addRepositoryConnectorConfiguration(configurationObject);
+
+        }
+      }
+
+      CycleConfigurationService configService = new CycleConfigurationServiceImpl(null);
+      configService.saveConfiguration(configurationContainer);
+
+    } catch (Exception e) {
+      throw new RepositoryException("Error while storing config for user " + e.getMessage(), e);
+    }
+  }
 
 }

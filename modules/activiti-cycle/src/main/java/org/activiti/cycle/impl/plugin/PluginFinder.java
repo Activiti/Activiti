@@ -2,7 +2,9 @@ package org.activiti.cycle.impl.plugin;
 
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -25,31 +27,33 @@ import org.scannotation.WarUrlFinder;
  * @author ruecker
  */
 public class PluginFinder {
-  
+
   protected Logger logger = Logger.getLogger(this.getClass().getName());
-  
+
+  private List<Class< ? extends ActivitiCyclePluginDefinition>> pluginDefinitionRegistry;
+
   /**
    * Servlet context is needed in wars to access classpath
    */
   private static ServletContext servletContext = null;
 
-  private static Boolean initialized = Boolean.FALSE;
+  private static PluginFinder instance;
 
   /**
    * current place to load plugins, should be moved to a correct bootstrapping
    * later
    */
   public static void checkPluginInitialization() {
-    if (!initialized) {
-      synchronized (initialized) {
-        if (!initialized) {
-          new PluginFinder().publishAllPluginsToRegistry();
-          initialized = Boolean.TRUE;
+    if (instance == null) {
+      synchronized (PluginFinder.class) {
+        if (instance == null) {
+          instance = new PluginFinder();
+          instance.publishAllPluginsToRegistry();
         }
       }
     }
   }
-  
+
   /**
    * main method to find all existing plugins in the classpath and register them
    * in the {@link ActivitiCyclePluginRegistry}
@@ -57,8 +61,10 @@ public class PluginFinder {
   public void publishAllPluginsToRegistry() {
     List<Class< ? extends ActivitiCyclePluginDefinition>> definitions = findPluginDefinitionClasses();
     eliminateOverwrittenPlugins(definitions);
-    
+
     publishDefinitionsToRegistry(definitions);
+
+    pluginDefinitionRegistry = definitions;
   }
 
   /**
@@ -69,10 +75,10 @@ public class PluginFinder {
   public static void registerServletContext(ServletContext ctx) {
     servletContext = ctx;
   }
-  
+
   @SuppressWarnings("unchecked")
   private List<Class< ? extends ActivitiCyclePluginDefinition>> findPluginDefinitionClasses() {
-    List<Class<? extends ActivitiCyclePluginDefinition>> result = new ArrayList<Class<? extends ActivitiCyclePluginDefinition>>();
+    List<Class< ? extends ActivitiCyclePluginDefinition>> result = new ArrayList<Class< ? extends ActivitiCyclePluginDefinition>>();
     try {
       AnnotationDB db = new AnnotationDB();
       URL[] urls = null;
@@ -85,7 +91,7 @@ public class PluginFinder {
       db.scanArchives(urls);
 
       Set<String> connectors = db.getAnnotationIndex().get(ActivitiCyclePlugin.class.getName());
-      
+
       if (connectors == null) {
         // seems we currently have a classloading problem in the webapp (or
         // other environments?)
@@ -125,7 +131,7 @@ public class PluginFinder {
         }
       }
     }
-    
+
     for (Class< ? extends ActivitiCyclePluginDefinition> pluginClass : definitionsForRemoval) {
       definitions.remove(pluginClass);
     }
@@ -144,6 +150,30 @@ public class PluginFinder {
 
   public static void main(String[] args) {
     new PluginFinder().findPluginDefinitionClasses();
+  }
+
+  public static PluginFinder getInstance() {
+    checkPluginInitialization();
+    return instance;
+  }
+
+  public List<Class< ? extends ActivitiCyclePluginDefinition>> getPluginDefinitionRegistry() {
+    return pluginDefinitionRegistry;
+  }
+
+  public Map<String, String> getAvailableConnectorConfigurations() {
+    Map<String, String> result = new HashMap<String, String>();
+    for (Class< ? extends ActivitiCyclePluginDefinition> pluginDefinitionClazz : pluginDefinitionRegistry) {
+      try {
+        ActivitiCyclePluginDefinition definitionInstance = pluginDefinitionClazz.newInstance();
+        Class< ? extends RepositoryConnectorConfiguration> configurationClazz = definitionInstance.getRepositoryConnectorConfigurationType();
+        String name = configurationClazz.getSimpleName().replace("Configuration", "");
+        result.put(name, configurationClazz.getCanonicalName());
+      } catch (Exception e) {
+        logger.log(Level.WARNING, "Error while getting the configuration for class " + pluginDefinitionClazz, e);
+      }
+    }
+    return result;
   }
 
 }

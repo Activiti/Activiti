@@ -205,8 +205,16 @@
     
     deleteTagUrl: function RepositoryService_deleteTagUrl(tagLiteral) {
       return Activiti.service.REST_PROXY_URI_RELATIVE + "tag?connectorId=" + encodeURIComponent(tagLiteral.connectorId) + "&repositoryNodeId=" + encodeURIComponent(tagLiteral.repositoryNodeId) + "&tagName=" + encodeURIComponent(tagLiteral.tagName);
-    }
+    },
     
+    loadUserConfig: function RepsositoryService_loadUserConfig() {
+      this.jsonGet(Activiti.service.REST_PROXY_URI_RELATIVE + "user-config", null, "loadUserConfig");
+    },
+    
+    loadAvailableConnectorConfigs: function RepositoryService_loadAvailableConnectorConfigs() {
+      this.jsonGet(Activiti.service.REST_PROXY_URI_RELATIVE + "available-connector-configs", null, "loadAvailableConnectorConfigs");
+    }
+
   });
 })();
 
