@@ -6,8 +6,8 @@
   <title>Eclipse Designer</title>
   
   <para>
-    Activiti comes with an Eclipse plugin that can be used to graphically model BPMN 2.0 processes 
-    Eclipse. This initiative is started and currently maintained by Tijs Rademakers, Tiese Barrell, 
+    Activiti comes with an Eclipse plugin, the Activiti Eclipse Designer, that can be used to graphically model, test and deploy BPMN 2.0 processes 
+    Eclipse. The Activiti Eclipse Designer is started and maintained by Tijs Rademakers, Tiese Barrell, 
     Ron van Liempd and Yvo Swillens.
   </para>
   
@@ -16,8 +16,8 @@
     <title>Installation</title>
     
     <para>
-      The following installation instructions are verified on a 
-      <ulink url="http://www.eclipse.org/downloads/">classic Eclipse Helios</ulink> environment.
+      The following installation instructions are verified on  
+      <ulink url="http://www.eclipse.org/downloads/">Eclipse Classic Helios</ulink>.
     </para>
     
     <para>
@@ -32,13 +32,15 @@
         </listitem>
       </itemizedlist> 
       <mediaobject><imageobject><imagedata align="center" fileref="images/designer.add.update.site.png"/></imageobject></mediaobject>
+      Make sure the <emphasis role="bold">"Contact all updates sites.."</emphasis> checkbox is not checked, because all the necessary plugins
+      can be downloaded from the Activiti update site.
     </para>
     
   </section>
   
-  <section id="eclipseDesignerFeatures">
+  <section id="eclipseDesignerEditorFeatures">
   
-    <title>Features</title>
+    <title>Activiti Designer editor features</title>
     
     <para>
       <itemizedlist>
@@ -50,26 +52,81 @@
         </listitem>
         <listitem>
           <para>
+            The Activiti project is generated as a Maven project. To configure the dependencies you need to run <emphasis>mvn eclipse:eclipse</emphasis>
+            and the project dependencies will be configured as expected.
+            <mediaobject><imageobject><imagedata align="center" fileref="images/designer.project.maven.png"/></imageobject></mediaobject>
+          </para>
+        </listitem>
+        <listitem>
+          <para>
+            A BPMN 2.0 XML file and an image of the process are automatically generated after each save of the Activiti diagram 
+            (the automatic generation can be switched of in the Eclipse preferences in the Activiti tab).
+            <mediaobject><imageobject><imagedata align="center" fileref="images/designer.export.to.bpmn20.png"/></imageobject></mediaobject>
+          </para>
+        </listitem> 
+        <listitem>
+          <para>
+            Generate a unit test (right click on a BPMN 2.0 XML file in the package explorer and select <emphasis>generate unit test</emphasis>)
+            A unit test is generated with an Activiti configuration that runs on an embedded H2 database. You can now run the unit test to test
+            your process definition.
+             <mediaobject><imageobject><imagedata align="center" fileref="images/designer.unittest.generate.png"/></imageobject></mediaobject>
+          </para>
+        </listitem>
+        <listitem>
+          <para>
+            The BPMN 2.0 XML is opened in a Activiti XML editor which provides content assist. Note that there are 2 main XSDs configured, the
+            BPMN 2.0 spec XSD and the Activiti extensions XSD. These two XSDs are not yet alligned in a good manneer.
+             <mediaobject><imageobject><imagedata align="center" fileref="images/designer.xml.contentassist.png"/></imageobject></mediaobject>
+          </para>
+        </listitem>
+        <listitem>
+          <para>
+            A basic validation is performed after each save of the Activiti diagram and the errors are mentioned in the Eclipse problem view.
+            <mediaobject><imageobject><imagedata align="center" fileref="images/designer.problem.view.png"/></imageobject></mediaobject>
+          </para>
+        </listitem> 
+        <listitem>
+          <para>
+            A basic deployment editor is available when right-clicking on an Activiti diagram in the package explorer. You see a Deployment property
+            at the end of the pop-up items. The deployment editor currently supports saving a BAR file, and will be extended in the next release
+            to also deploy the BAR file to the Activiti engine.
+            <mediaobject><imageobject><imagedata align="center" fileref="images/designer.deployment.editor.png"/></imageobject></mediaobject>
+          </para>
+        </listitem>     
+      </itemizedlist>
+    </para>
+  
+  </section>
+  
+  <section id="eclipseDesignerBPMNFeatures">
+  
+    <title>Activiti Designer BPMN features</title>
+    
+    <para>
+      <itemizedlist>
+        <listitem>
+          <para>
             Support for start event, end event, sequence flow, parallel gateway, exclusive gateway, 
-            embedded subprocess, script task, user task and service task.
+            embedded subprocess, script task, user task, service task, mail task and manual tasks.
             <mediaobject><imageobject><imagedata align="center" fileref="images/designer.model.process.png"/></imageobject></mediaobject>
           </para>
         </listitem>
         <listitem>
           <para>
-            Export the graphical model to BPMN 2.0 XML
-            <mediaobject><imageobject><imagedata align="center" fileref="images/designer.export.to.bpmn20.png"/></imageobject></mediaobject>
+            Java class or expression configuration is supported for the Java service task. In addition field extensions can be configured.
+            <mediaobject><imageobject><imagedata align="center" fileref="images/designer.servicetask.property.png"/></imageobject></mediaobject>
           </para>
         </listitem>
         <listitem>
           <para>
-            Support for the Activiti extensions: Java class configuration, assignee and candidate user/group.
+            Support for additional Activiti extensions like the Mail task, the candidate configuration of User tasks and Script task configuration.
+            <mediaobject><imageobject><imagedata align="center" fileref="images/designer.mailtask.property.png"/></imageobject></mediaobject>
           </para>
-        </listitem>  
+        </listitem>
         <listitem>
           <para>
-            Generate a unit test (right click on an XML file in the package explorer and select <emphasis>generate test handler</emphasis>)
-            and run it on an embedded h2 database.
+            Support for conditions on sequence flows.
+            <mediaobject><imageobject><imagedata align="center" fileref="images/designer.sequence.condition.png"/></imageobject></mediaobject>
           </para>
         </listitem>              
       </itemizedlist>
