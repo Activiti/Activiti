@@ -13,8 +13,12 @@
 }
 
 .config-span:hover {
+
+}
+
+.highlightable:hover, .highlight {
   background: #FFF8AF;
-  border:1px solid #E1DFDF;
+  border:1px solid #E1DFDF;  
 }
 
 .attribute-label {
@@ -33,6 +37,20 @@
   border-bottom: 1px dashed #E1DFDF;
   overflow: hidden;
   clear: both;
+}
+
+.config-span ul li input {
+  overflow: auto;
+}
+
+.button-panel {
+  display:block;
+  padding-top:1em;
+  text-align:right;
+}
+
+.hidden {
+  visibility: hidden;
 }
 
 /*

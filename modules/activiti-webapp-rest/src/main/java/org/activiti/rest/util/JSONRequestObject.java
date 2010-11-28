@@ -30,32 +30,35 @@ public class JSONRequestObject implements ActivitiRequestObject {
 
   /**
    * Constructor
-   *
-   * @param req The webscript request
-   * @throws java.io.IOException if json of correct format cannot be created
+   * 
+   * @param req
+   *          The webscript request
+   * @throws java.io.IOException
+   *           if json of correct format cannot be created
    */
   JSONRequestObject(WebScriptRequest req) throws IOException {
     try {
       json = new JSONObject(req.getContent().getContent());
-    }
-    catch(Throwable t) {
+    } catch (Throwable t) {
       json = new JSONObject();
     }
   }
 
   /**
    * Constructor
-   *
-   * @param jsonObject The webscript request
+   * 
+   * @param jsonObject
+   *          The webscript request
    */
-  JSONRequestObject(JSONObject jsonObject){
+  JSONRequestObject(JSONObject jsonObject) {
     json = jsonObject;
   }
 
   /**
    * Gets a json parameter string value.
-   *
-   * @param param The name of the parameter
+   * 
+   * @param param
+   *          The name of the parameter
    * @return The string value of the parameter
    */
   public String getString(String param) {
@@ -63,7 +66,7 @@ public class JSONRequestObject implements ActivitiRequestObject {
     if (value == null) {
       return null;
     }
-    if(value instanceof String) {
+    if (value instanceof String) {
       return json.getString(param);
     }
     throw ActivitiRequest.getInvalidTypeException(param, value.toString(), STRING);
@@ -71,8 +74,9 @@ public class JSONRequestObject implements ActivitiRequestObject {
 
   /**
    * Gets a json parameter string value.
-   *
-   * @param param The name of the parameter
+   * 
+   * @param param
+   *          The name of the parameter
    * @return The string value of the parameter
    */
   public Integer getInt(String param) {
@@ -80,7 +84,7 @@ public class JSONRequestObject implements ActivitiRequestObject {
     if (value == null) {
       return null;
     }
-    if(value instanceof String) {
+    if (value instanceof String) {
       return json.getInt(param);
     }
     throw ActivitiRequest.getInvalidTypeException(param, value.toString(), INTEGER);
@@ -88,8 +92,9 @@ public class JSONRequestObject implements ActivitiRequestObject {
 
   /**
    * Gets a json parameter boolean value.
-   *
-   * @param param The name of the parameter
+   * 
+   * @param param
+   *          The name of the parameter
    * @return The boolean value of the parameter
    */
   public Boolean getBoolean(String param) {
@@ -97,7 +102,7 @@ public class JSONRequestObject implements ActivitiRequestObject {
     if (value == null) {
       return null;
     }
-    if(value instanceof Boolean) {
+    if (value instanceof Boolean) {
       return json.getBoolean(param);
     }
     throw ActivitiRequest.getInvalidTypeException(param, value.toString(), BOOLEAN);
@@ -105,8 +110,9 @@ public class JSONRequestObject implements ActivitiRequestObject {
 
   /**
    * Gets a json parameter boolean value.
-   *
-   * @param param The name of the parameter
+   * 
+   * @param param
+   *          The name of the parameter
    * @return The boolean value of the parameter
    */
   public Date getDate(String param) {
@@ -114,7 +120,7 @@ public class JSONRequestObject implements ActivitiRequestObject {
     if (value == null) {
       return null;
     }
-    if(value instanceof String) {
+    if (value instanceof String) {
       return ActivitiRequest.parseDate(json.getString(param), param);
     }
     throw ActivitiRequest.getInvalidTypeException(param, value.toString(), DATE);
@@ -122,8 +128,9 @@ public class JSONRequestObject implements ActivitiRequestObject {
 
   /**
    * Gets a json parameter string value.
-   *
-   * @param param The name of the parameter
+   * 
+   * @param param
+   *          The name of the parameter
    * @return The string value of the parameter
    */
   public JSONRequestObject getBodyObject(String param) {
@@ -131,7 +138,7 @@ public class JSONRequestObject implements ActivitiRequestObject {
     if (value == null) {
       return null;
     }
-    if(value instanceof JSONObject) {
+    if (value instanceof JSONObject) {
       return new JSONRequestObject(json.getJSONObject(param));
     }
     throw ActivitiRequest.getInvalidTypeException(param, value.toString(), OBJECT);
@@ -139,8 +146,9 @@ public class JSONRequestObject implements ActivitiRequestObject {
 
   /**
    * Gets a json parameter string value.
-   *
-   * @param param The name of the parameter
+   * 
+   * @param param
+   *          The name of the parameter
    * @return The string value of the parameter
    */
   public List getList(String param) {
@@ -148,7 +156,7 @@ public class JSONRequestObject implements ActivitiRequestObject {
     if (value == null) {
       return null;
     }
-    if(value instanceof JSONArray) {
+    if (value instanceof JSONArray) {
       return toList(json.getJSONArray(param));
     }
     throw ActivitiRequest.getInvalidTypeException(param, value.toString(), ARRAY);
@@ -156,7 +164,7 @@ public class JSONRequestObject implements ActivitiRequestObject {
 
   /**
    * Converts a JSONArray to a List
-   *
+   * 
    * @param jsonArray
    * @return
    */
@@ -170,8 +178,7 @@ public class JSONRequestObject implements ActivitiRequestObject {
       }
       if (obj instanceof JSONObject) {
         list.add(new JSONRequestObject((JSONObject) obj));
-      }
-      else {
+      } else {
         list.add(obj);
       }
     }
@@ -180,7 +187,7 @@ public class JSONRequestObject implements ActivitiRequestObject {
 
   /**
    * Gets the json as a map.
-   *
+   * 
    * @return The json as a map
    */
   public Map<String, Object> getFormVariables() {
@@ -222,5 +229,31 @@ public class JSONRequestObject implements ActivitiRequestObject {
       }
     }
     return map;
+  }
+
+  /**
+   * Returns the portion of the json identified by param as a
+   * java.util.Map<String,String> or null if no match is found for param.
+   * 
+   * @param param
+   *          the key of the requested map
+   * @return the portion of the json String identified by param as a
+   *         java.util.Map<String,String> instance
+   */
+  public Map<String, String> getMap(String param) {
+    Object obj = json.optJSONObject(param);
+    if (obj == null) {
+      return null;
+    }
+    if (obj instanceof JSONObject) {
+      Map<String, String> map = new HashMap<String, String>();
+      for (int i = 0; i < ((JSONObject) obj).names().length(); i++) {
+        String key = String.valueOf(((JSONObject) obj).names().get(i));
+        String value = String.valueOf(((JSONObject) obj).get(key));
+        map.put(key, value);
+      }
+      return map;
+    }
+    throw ActivitiRequest.getInvalidTypeException(param, obj.toString(), OBJECT);
   }
 }

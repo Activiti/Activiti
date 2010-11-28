@@ -213,6 +213,10 @@
     
     loadAvailableConnectorConfigs: function RepositoryService_loadAvailableConnectorConfigs() {
       this.jsonGet(Activiti.service.REST_PROXY_URI_RELATIVE + "available-connector-configs", null, "loadAvailableConnectorConfigs");
+    },
+    
+    saveRepositoryConnectorConfiguration: function RepositoryService_saveRepositoryConnectorConfiguration(configuration) {
+      this.jsonPost(Activiti.service.REST_PROXY_URI_RELATIVE + "user-config", configuration, null, "saveRepositoryConnectorConfiguration");
     }
 
   });
