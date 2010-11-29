@@ -26,7 +26,12 @@
   <section>
     <title>Overview</title>  
     <para>
-      Since Activiti Cycle is meant to be used by people with entirely different roles, backgrounds and requirements, it was build with customization and extensibility in mind. However, the plug-in infrastructure which is already present in the current release is just a first step to make it possible to tailor Cycle to your specific needs. Future versions will provide a revised plug-in mechanism, a user interface to configure and plug in repositories, tags to dynamically add meta data to artifacts and a commenting function to directly collaborate on an artifact level. You can find a brief introduction to the initial version of Activiti Cycle and the vision behind it in the article <ulink url="http://www.bpm-guide.de/2010/08/27/activiti-cycle-explained/">Activiti Cycle explained</ulink>.
+      Since Activiti Cycle is meant to be used by people with entirely different roles, backgrounds and requirements, it was build 
+      with customization and extensibility in mind. However, the plug-in infrastructure which is already present in the current release
+       is just a first step to make it possible to tailor Cycle to your specific needs. Future versions will provide a revised plug-in mechanism, 
+       a user interface to configure and plug in repositories, tags to dynamically add meta data to artifacts and a commenting function to 
+       directly collaborate on an artifact level. You can find a brief introduction to the initial version of Activiti Cycle and the vision 
+       behind it in the article <ulink url="http://www.bpm-guide.de/2010/08/27/activiti-cycle-explained/">Activiti Cycle explained</ulink>.
     </para>
   </section>
 
@@ -144,8 +149,8 @@
       <listitem><para>You need to manually download the <ulink url="http://www.svnkit.org/">SVNKit</ulink> 
       library and install it. To this end, download the SVNKit library and copy both <literal>svnkit.jar</literal> 
       and <literal>svnkit-javahl.jar</literal> to the following location: 
-      <literal>${activiti.home}/apps/apache-tomcat-6.X.XX/lib/</literal>. (Tomcat restart required.) SVNKit cannot be bundled 
-      with Activiti due to licensing restrictions.</para></listitem>
+      <literal>${activiti.home}/apps/apache-tomcat-6.X.XX/webapps/activiti-rest/WEB-INF/lib</literal>. (Tomcat restart required.) 
+      SVNKit cannot be bundled with Activiti due to licensing restrictions.</para></listitem>
      </itemizedlist>	
      Please note that the SVN Connector is still in incubation and considered experimental.
     </para> 
@@ -155,9 +160,15 @@
   <section>
     <title>Artifacts and Actions</title>
     <para>
-      When you click an item in the repository tree — in Activiti Cycle we refer to them as artifacts — the details are displayed on the right side. Currently, not all files are supported, but we aim to provide useful default views for the most common file types. In addition to the views, there is a set of actions that can be executed on the artifact. We currently distinguish between download links for different content representations, links that open external resources (e.g. the Signavio Modeler) and actions that require input properties.   
+      When you click an item in the repository tree — in Activiti Cycle we refer to them as artifacts — the details are displayed on the right side. 
+      Currently, not all files are supported, but we aim to provide useful default views for the most common file types. 
+      In addition to the views, there is a set of actions that can be executed on the artifact.      
     </para>
     <mediaobject><imageobject><imagedata align="center" fileref="images/activiti.cycle.action.forms.png"/></imageobject></mediaobject>
+    <para>
+      The actions can be seen as examples what Cycle can do for you, will be extended in future and can be a starting point for your additional actions
+      written in your own plugin.
+    </para>
   </section>
   
 </chapter>
