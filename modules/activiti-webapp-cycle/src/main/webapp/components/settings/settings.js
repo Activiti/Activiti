@@ -26,6 +26,7 @@
     // this.onEvent(Activiti.event.updateArtifactView, this.onUpdateArtifactView);
 
     this._availableConnectorConfigs = {};
+    this._currentConfigElId;
     
     return this;
   };
@@ -58,7 +59,7 @@
         var configs = response.json.userConfig[repoConfig].configs;
         content += '<div class="connector-type-div"><h2>' + this._availableConnectorConfigs[configClassName] + '</h2>';
         for(var config in configs) {
-          content += '<span class="config-span highlightable"><span class="hidden">' + configClassName + '</span><ul><li><span id="' + this.id + '-name-label" class="attribute-label">Name:</span><span id="' + this.id + '-name-value" class="attribute-value">' + configs[config]["name"] + '</span></li><li><span id="' + this.id + '-id-label" class="attribute-label">ID:</span><span id="' + this.id + '-id-value" class="attribute-value">' + configs[config]["id"] + '</span></li>';
+          content += '<span id="' + this.id + '-' + configs[config]["id"] + '" title="click to edit" class="config-span highlightable"><span class="hidden">' + configClassName + '</span><ul><li><span id="' + this.id + '-name-label" class="attribute-label">Name:</span><span id="' + this.id + '-name-value" class="attribute-value">' + configs[config]["name"] + '</span></li><li><span id="' + this.id + '-id-label" class="attribute-label">ID:</span><span id="' + this.id + '-id-value" class="attribute-value">' + configs[config]["id"] + '</span></li>';
           for (attr in configs[config]) {
             if(configs[config].hasOwnProperty(attr) && attr != "name" && attr != "id") {
               content += '<li><span id="' + this.id + '-' + attr + '-label" class="attribute-label">' + attr + ':</span><span id="' + this.id + '-' + attr + '-value" class="attribute-value">' + configs[config][attr] + "</span></li>";
@@ -77,13 +78,20 @@
           YAHOO.util.Event.addListener(configEls[configEl], "click", this.onConfigElClick, configEls[configEl], this);
         }
       }
-      
+
+      if(this._currentConfigElId) {
+        Activiti.util.Anim.pulse(this._currentConfigElId);
+      }
     },
     
     onConfigElClick: function Settings_onConfigElClick(event, configEl) {
+      this._currentConfigElId = configEl.id;
+      
       // Disable the editing of other configs while the current one is editable
       var configEls = Dom.getElementsByClassName("config-span", "span");
       Dom.removeClass(configEls, 'highlightable');
+      Dom.setAttribute(configEls, 'title', '');
+      
       Dom.addClass(configEl, 'highlight');
       for(var el in configEls) {
         if(configEls[el]) {
@@ -143,12 +151,13 @@
     },
     
     onClickCancelButton: function Settings_onClickCancelButton(event) {
+      this._currentConfigElId = null;
       this.service.loadAvailableConnectorConfigs();
     },
     
     onSaveRepositoryConnectorConfigurationSuccess: function RepositoryService_Settings_onSaveRepositoryConnectorConfigurationSuccess(response) {
       Activiti.widget.PopupManager.displayMessage({
-        text: "Successfully updated configuration"
+        text: "Configuration Updated"
       });
       this.service.loadAvailableConnectorConfigs();
     }

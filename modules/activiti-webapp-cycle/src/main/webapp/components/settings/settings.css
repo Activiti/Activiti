@@ -10,6 +10,7 @@
   border:1px solid transparent;
   padding: 1em;
   display: block;
+  background-color: #F9F9F9;
 }
 
 .config-span:hover {
@@ -17,8 +18,8 @@
 }
 
 .highlightable:hover, .highlight {
-  background: #FFF8AF;
-  border:1px solid #E1DFDF;  
+  background-color: #E1DFDF;
+  border:1px solid #BFBFBF;
 }
 
 .attribute-label {
