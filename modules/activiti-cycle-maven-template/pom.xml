@@ -5,14 +5,14 @@
 	<name>activiti.project.template</name>
 	<groupId>org.activiti</groupId>
 	<artifactId>activiti.project.template</artifactId>
-	<version>5.0-SNAPSHOT</version>
+	<version>5.1-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
 	<parent>
 	  <!-- use the parent for correct dependency versions -->
 		<groupId>org.activiti</groupId>
 		<artifactId>activiti-root</artifactId>
-		<version>5.0-SNAPSHOT</version>
+		<version>5.1-SNAPSHOT</version>
 	</parent>
 	
 	<properties>
@@ -32,7 +32,7 @@
 			<groupId>org.activiti</groupId>
 			<artifactId>activiti-engine</artifactId>
 			<!--
-			<version>5.0-SNAPSHOT</version>
+			<version>5.1-SNAPSHOT</version>
 			-->
 			<scope>compile</scope>
 		</dependency>

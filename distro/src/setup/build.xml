@@ -9,7 +9,7 @@
   <property file="build.${db}.properties" />
 
   <property name="activiti.home" value=".." /> 
-  <property name="activiti.version" value="5.0-SNAPSHOT" />   
+  <property name="activiti.version" value="5.1-SNAPSHOT" />   
   <property name="apache.mirror.url" value="http://mirrors.enquira.co.uk/apache/" />
   
   <property name="cycle.workspace" location="${activiti.home}/workspace/activiti-cycle-examples"/>
@@ -36,11 +36,8 @@
   
   <!-- ### CFG #################################################################### -->
 
-  <available property="is.cfg.available" file="${activiti.home}/setup/build/activiti-cfg.jar" />
-
   <target name="cfg.create"
-          description="Creates a build/activiti-cfg/activiti.cfg.xml and build/activiti-cfg.jar as specified by the build.properties"
-          unless="is.cfg.available">
+          description="Creates a build/activiti-cfg/activiti.cfg.xml and build/activiti-cfg.jar as specified by the build.properties">
     <mkdir dir="${activiti.home}/setup/build/activiti-cfg" />
     <copy todir="${activiti.home}/setup/build/activiti-cfg" overwrite="true">
       <filterset filtersfile="build.${db}.properties" />
@@ -451,7 +448,7 @@ set JAVA_OPTS=%JAVA_OPTS% @tomcat.java.opts@
   
   <target name="deploy.activiti.cfg.into.tomcat" 
           depends="cfg.create, internal.define.jdbc.driver.libs">
-    <copy todir="${tomcat.home}/lib">
+    <copy todir="${tomcat.home}/webapps/activiti-rest/WEB-INF/lib">
       <fileset dir="build">
         <include name="activiti-cfg.jar"/>
       </fileset>

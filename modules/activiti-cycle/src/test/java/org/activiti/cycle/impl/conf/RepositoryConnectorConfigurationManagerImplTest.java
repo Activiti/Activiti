@@ -135,7 +135,7 @@ public class RepositoryConnectorConfigurationManagerImplTest {
   // + "<org.activiti.cycle.impl.connector.fs.FileSystemConnectorConfiguration>"
   // + "<name>Eclipse Workspace (File System)</name>"
   // +
-  // "<baseFilePath>C:/Dokumente+und+Einstellungen/polenz/workspace/activiti/distro/target/activiti-5.0-SNAPSHOT/apps/eclipse-workspace</baseFilePath>"
+  // "<baseFilePath>C:/Dokumente+und+Einstellungen/polenz/workspace/activiti/distro/target/activiti-5.1-SNAPSHOT/apps/eclipse-workspace</baseFilePath>"
   // +
   // "</org.activiti.cycle.impl.connector.fs.FileSystemConnectorConfiguration>"
   // + "<org.activiti.cycle.impl.connector.signavio.OryxConnectorConfiguration>"
@@ -171,7 +171,7 @@ public class RepositoryConnectorConfigurationManagerImplTest {
   // + "<org.activiti.cycle.impl.connector.fs.FileSystemConnectorConfiguration>"
   // + "<name>Eclipse Workspace (File System)</name>"
   // +
-  // "<baseFilePath>C:/Dokumente+und+Einstellungen/polenz/workspace/activiti/distro/target/activiti-5.0-SNAPSHOT/apps/eclipse-workspace</baseFilePath>"
+  // "<baseFilePath>C:/Dokumente+und+Einstellungen/polenz/workspace/activiti/distro/target/activiti-5.1-SNAPSHOT/apps/eclipse-workspace</baseFilePath>"
   // +
   // "</org.activiti.cycle.impl.connector.fs.FileSystemConnectorConfiguration>"
   // + "<org.activiti.cycle.impl.connector.signavio.OryxConnectorConfiguration>"
