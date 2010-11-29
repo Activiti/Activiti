@@ -30,7 +30,7 @@ public class TagDelete extends ActivitiCycleWebScript {
     String connectorId = req.getMandatoryString("connectorId");
     String repositoryNodeId = req.getMandatoryString("repositoryNodeId");
     String tagName = req.getMandatoryString("tagName");
-    this.cycleService.deleteTag(connectorId, repositoryNodeId, tagName);
+    tagService.deleteTag(connectorId, repositoryNodeId, tagName);
   }
 
 }

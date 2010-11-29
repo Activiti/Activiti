@@ -30,7 +30,7 @@ public class IncomingArtifactLinksGet extends ActivitiCycleWebScript {
   protected void execute(ActivitiRequest req, Status status, Cache cache, Map<String, Object> model) {
     String connectorId = req.getMandatoryString("connectorId");
     String artifactId = req.getString("artifactId");
-    List<RepositoryArtifactLink> links = this.cycleService.getIncomingArtifactLinks(connectorId, artifactId);
+    List<RepositoryArtifactLink> links = repositoryService.getIncomingArtifactLinks(connectorId, artifactId);
     model.put("links", links);
   }
 

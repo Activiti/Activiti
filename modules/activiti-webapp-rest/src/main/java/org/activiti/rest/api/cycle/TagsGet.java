@@ -34,9 +34,9 @@ public class TagsGet extends ActivitiCycleWebScript {
 
     List<String> tags;
     if (connectorId != null && repositoryNodeId != null) {
-      tags = this.cycleService.getTags(connectorId, repositoryNodeId);
+      tags = tagService.getTags(connectorId, repositoryNodeId);
     } else {
-      tags = this.cycleService.getSimiliarTagNames(tag != null ? tag : "");
+      tags = tagService.getSimiliarTagNames(tag != null ? tag : "");
     } 
     model.put("tags", tags);
   }

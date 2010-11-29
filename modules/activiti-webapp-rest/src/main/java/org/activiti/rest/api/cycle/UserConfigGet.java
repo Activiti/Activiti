@@ -22,7 +22,6 @@ import org.activiti.rest.util.ActivitiRequest;
 import org.springframework.extensions.webscripts.Cache;
 import org.springframework.extensions.webscripts.Status;
 
-
 /**
  * @author Nils Preusker (nils.preusker@camunda.com)
  */
@@ -30,19 +29,18 @@ public class UserConfigGet extends ActivitiCycleWebScript {
 
   @Override
   void execute(ActivitiRequest req, Status status, Cache cache, Map<String, Object> model) {
-    
-    Map<String, List<String>> connectors = this.cycleService.getConfiguredRepositoryConnectors(req.getCurrentUserId());
-    Map<String, List<Map<String,String>>> connectorsForJson = new HashMap<String, List<Map<String, String>>>();
-    
-    for(String key : connectors.keySet()) {
-      List <Map<String, String>> configs = new ArrayList<Map<String, String>>();
-      for(String configId : connectors.get(key)) {
-        configs.add(this.cycleService.getRepositoryConnectorConfiguration(configId, req.getCurrentUserId()));
+
+    Map<String, List<String>> connectors = configurationService.getConfiguredRepositoryConnectors();
+    Map<String, List<Map<String, String>>> connectorsForJson = new HashMap<String, List<Map<String, String>>>();
+
+    for (String key : connectors.keySet()) {
+      List<Map<String, String>> configs = new ArrayList<Map<String, String>>();
+      for (String configId : connectors.get(key)) {
+        configs.add(configurationService.getRepositoryConnectorConfiguration(configId));
       }
       connectorsForJson.put(key, configs);
     }
-    
-    
+
     model.put("userConfig", connectorsForJson);
   }
 }

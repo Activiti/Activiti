@@ -19,19 +19,20 @@ import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Date;
-import java.util.List;
 
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
 import org.activiti.cycle.ContentRepresentation;
 import org.activiti.cycle.CycleDefaultMimeType;
-import org.activiti.cycle.CycleService;
 import org.activiti.cycle.RepositoryArtifact;
-import org.activiti.cycle.RepositoryConnector;
-import org.activiti.cycle.impl.CycleServiceImpl;
 import org.activiti.cycle.impl.connector.signavio.transform.TransformationException;
+import org.activiti.cycle.impl.service.CycleServiceImpl;
+import org.activiti.cycle.service.CycleConfigurationService;
+import org.activiti.cycle.service.CycleRepositoryService;
+import org.activiti.cycle.service.CycleService;
+import org.activiti.cycle.service.CycleTagService;
 import org.activiti.engine.impl.util.IoUtil;
+import org.activiti.rest.api.cycle.session.CycleHttpSession;
 import org.activiti.rest.util.ActivitiRequest;
 import org.activiti.rest.util.ActivitiStreamingWebScript;
 import org.springframework.extensions.webscripts.WebScriptException;
@@ -43,23 +44,34 @@ import org.springframework.extensions.webscripts.WebScriptResponse;
  */
 public class ContentGet extends ActivitiStreamingWebScript {
 
-  private CycleService cycleService;
+  protected CycleService cycleService;
 
-  private void init(ActivitiRequest req) {
-    String cuid = req.getCurrentUserId();
+  protected CycleRepositoryService repositoryService;
 
-    HttpSession session = req.getHttpServletRequest().getSession(true);
+  protected CycleTagService cycleTagService;
 
-    // Retrieve the list of configured connectors for the current user
-    List<RepositoryConnector> connectors = CycleServiceImpl.getConfiguredRepositoryConnectors(cuid, session);
+  protected CycleConfigurationService configurationService;
 
-    // Initialize the cycleService
-    this.cycleService = CycleServiceImpl.getCycleService(cuid, session, connectors);
+  public ContentGet() {
+    cycleService = CycleServiceImpl.getInstance();
+    configurationService = cycleService.getConfigurationService();
+    repositoryService = cycleService.getRepositoryService();
+    cycleTagService = cycleService.getTagService();
   }
 
   @Override
   protected void executeStreamingWebScript(ActivitiRequest req, WebScriptResponse res) throws IOException {
-    init(req);
+
+    try {
+      CycleHttpSession.openSession(req);
+      getContent(req, res);
+    } finally {
+      CycleHttpSession.closeSession();
+    }
+
+  }
+
+  private void getContent(ActivitiRequest req, WebScriptResponse res) throws IOException {
 
     // Retrieve the artifactId from the request
     String cnonectorId = req.getMandatoryString("connectorId");
@@ -67,7 +79,7 @@ public class ContentGet extends ActivitiStreamingWebScript {
     String contentRepresentationId = req.getMandatoryString("contentRepresentationId");
 
     // Retrieve the artifact from the repository
-    RepositoryArtifact artifact = cycleService.getRepositoryArtifact(cnonectorId, artifactId);
+    RepositoryArtifact artifact = repositoryService.getRepositoryArtifact(cnonectorId, artifactId);
 
     ContentRepresentation contentRepresentation = artifact.getArtifactType().getContentRepresentation(contentRepresentationId);
 
@@ -100,11 +112,11 @@ public class ContentGet extends ActivitiStreamingWebScript {
 
     InputStream contentInputStream = null;
     try {
-      contentInputStream = this.cycleService.getContent(artifact.getConnectorId(), artifact.getNodeId(), contentRepresentation.getId()).asInputStream();
+      contentInputStream = repositoryService.getContent(artifact.getConnectorId(), artifact.getNodeId(), contentRepresentation.getId()).asInputStream();
 
       // Calculate an etag for the content using the MD5 algorithm
       MessageDigest md = MessageDigest.getInstance("MD5");
-      byte[] messageDigest = md.digest(this.cycleService.getContent(artifact.getConnectorId(), artifact.getNodeId(), contentRepresentation.getId())
+      byte[] messageDigest = md.digest(repositoryService.getContent(artifact.getConnectorId(), artifact.getNodeId(), contentRepresentation.getId())
               .asByteArray());
       BigInteger number = new BigInteger(1, messageDigest);
       String etag = number.toString(16);
@@ -138,7 +150,6 @@ public class ContentGet extends ActivitiStreamingWebScript {
     } finally {
       IoUtil.closeSilently(contentInputStream);
     }
-
   }
 
 }

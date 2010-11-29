@@ -16,8 +16,8 @@ package org.activiti.rest.api.cycle;
 import java.util.Map;
 
 import org.activiti.cycle.Content;
-import org.activiti.cycle.CycleService;
 import org.activiti.cycle.RepositoryArtifact;
+import org.activiti.cycle.service.CycleService;
 import org.activiti.rest.util.ActivitiRequest;
 import org.activiti.rest.util.ActivitiRequestObject;
 import org.springframework.extensions.webscripts.Cache;
@@ -48,7 +48,7 @@ public class ArtifactPost extends ActivitiCycleWebScript {
     Content artifactContent = new Content();
     artifactContent.setValue(file.getInputStream());
     try {
-      this.cycleService.createArtifact(connectorId, parentFolderId, artifactName, artifactType, artifactContent);
+      repositoryService.createArtifact(connectorId, parentFolderId, artifactName, artifactType, artifactContent);
       model.put("result", true);
     } catch (Exception e) {
       model.put("result", false);

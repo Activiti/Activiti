@@ -32,7 +32,7 @@ public class ActionExecutionPut extends ActivitiCycleWebScript {
     
     Map<String, Object> parameters = req.getFormVariables();    
     try {
-      this.cycleService.executeParameterizedAction(connectorId, artifactId, actionId, parameters);
+      repositoryService.executeParameterizedAction(connectorId, artifactId, actionId, parameters);
       model.put("result", true);
     } catch (Exception e) {
       // TODO: see whether this makes sense, probably either exception or negative result.

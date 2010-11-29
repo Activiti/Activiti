@@ -16,7 +16,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.activiti.cycle.impl.conf.RepositoryConnectorConfiguration;
-import org.activiti.cycle.incubator.connector.svn.SvnRepositoryConnector;
 
 /**
  * 

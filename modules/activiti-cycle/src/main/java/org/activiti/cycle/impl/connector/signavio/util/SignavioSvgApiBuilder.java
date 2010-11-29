@@ -2,7 +2,6 @@ package org.activiti.cycle.impl.connector.signavio.util;
 
 import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -281,7 +280,7 @@ public class SignavioSvgApiBuilder {
     if (color == null || color.length() == 0) {
       color = "red";
     }
-    
+
     // hack for making sure that lanes do not 'overlap' everything else
     JSONObject highlightNodesObj = new JSONObject();
     List<String> lanes = new ArrayList<String>();

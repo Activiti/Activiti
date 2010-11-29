@@ -7,14 +7,22 @@ import java.util.TreeSet;
 import java.util.UUID;
 
 import org.activiti.cycle.impl.CycleTagContentImpl;
-import org.activiti.cycle.impl.db.CycleDAO;
+import org.activiti.cycle.impl.conf.ConfigurationContainer;
+import org.activiti.cycle.impl.db.CycleCommentDao;
+import org.activiti.cycle.impl.db.CycleConfigurationDao;
+import org.activiti.cycle.impl.db.CycleLinkDao;
+import org.activiti.cycle.impl.db.CyclePeopleLinkDao;
+import org.activiti.cycle.impl.db.CycleTagDao;
+import org.activiti.cycle.impl.db.entity.CycleConfigEntity;
 import org.activiti.cycle.impl.db.entity.RepositoryArtifactLinkEntity;
 import org.activiti.cycle.impl.db.entity.RepositoryNodeCommentEntity;
 import org.activiti.cycle.impl.db.entity.RepositoryNodePeopleLinkEntity;
 import org.activiti.cycle.impl.db.entity.RepositoryNodeTagEntity;
+import org.activiti.cycle.impl.util.XmlSerializer;
 import org.apache.ibatis.session.SqlSession;
 
-public class CycleDaoMyBatisImpl extends AbstractCycleDaoMyBatisImpl implements CycleDAO {
+public class CycleDaoMyBatisImpl extends AbstractCycleDaoMyBatisImpl implements CycleCommentDao, CycleConfigurationDao, CycleLinkDao, CyclePeopleLinkDao,
+        CycleTagDao {
 
   /**
    * LINKS
@@ -237,6 +245,70 @@ public class CycleDaoMyBatisImpl extends AbstractCycleDaoMyBatisImpl implements 
       parameters.put("artifactId", artifactId);
 
       return session.selectList("selectCycleCommentForSourceArtifact", parameters);
+    } finally {
+      session.close();
+    }
+  }
+  
+  public void saveConfiguration(ConfigurationContainer container) {
+    if (null != getConfiguration(container.getName())) {     
+      updateConfiguration(container);
+    } else {
+      createAndInsertConfiguration(container, container.getName());
+    }
+  }
+
+  public ConfigurationContainer getConfiguration(String name) {
+    CycleConfigEntity cycleConfig = selectConfigurationById(name);
+    Object configXML = XmlSerializer.unSerializeObject(cycleConfig.getConfigXML());
+    return (ConfigurationContainer) configXML;
+  }
+  
+  
+  private CycleConfigEntity selectConfigurationById(String id) {
+    SqlSession session = openSession();
+    try {
+      return (CycleConfigEntity) session.selectOne("selectCycleConfigById", id);
+
+    } finally {
+      session.close();
+    }
+  }
+
+  private void createAndInsertConfiguration(Object o, String id) {
+    CycleConfigEntity cycleConfig = new CycleConfigEntity();
+    cycleConfig.setId(id);
+    String configXML = XmlSerializer.serializeObject(o);
+    cycleConfig.setConfigXML(configXML);
+
+    SqlSession session = openSession();
+    try {
+      session.insert("insertCycleConfig", cycleConfig);
+      session.commit();
+    } finally {
+      session.close();
+    }
+  }
+
+  private void updateConfiguration(ConfigurationContainer container) {
+    CycleConfigEntity cycleConfig = new CycleConfigEntity();
+    cycleConfig.setId(container.getName());
+    String configXML = XmlSerializer.serializeObject(container);
+    cycleConfig.setConfigXML(configXML);
+    SqlSession session = openSession();
+    try {
+      session.update("updateCycleConfigById", cycleConfig);
+      session.commit();
+    } finally {
+      session.close();
+    }
+  }
+
+  private void deleteConfigurationById(String id) {
+    SqlSession session = openSession();
+    try {
+      session.delete("deleteCycleConfigById", id);
+      session.commit();
     } finally {
       session.close();
     }

@@ -6,7 +6,7 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.activiti.cycle.CycleService;
+import org.activiti.cycle.service.CycleService;
 
 /**
  * Helper-class for handling {@link RepositoryConnectorConfiguration}s in a

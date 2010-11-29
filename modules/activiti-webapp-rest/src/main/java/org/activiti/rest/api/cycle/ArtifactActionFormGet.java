@@ -44,7 +44,7 @@ public class ArtifactActionFormGet extends ActivitiCycleWebScript {
     String actionId = req.getMandatoryString("actionName");
 
     // Retrieve the artifact from the repository
-    RepositoryArtifact artifact = this.cycleService.getRepositoryArtifact(connectorId, artifactId);
+    RepositoryArtifact artifact = repositoryService.getRepositoryArtifact(connectorId, artifactId);
 
     if (artifact == null) {
       throw new WebScriptException(Status.STATUS_NOT_FOUND, "There is no artifact with id '" + artifactId + "' for connector with id '" + connectorId + "'.");

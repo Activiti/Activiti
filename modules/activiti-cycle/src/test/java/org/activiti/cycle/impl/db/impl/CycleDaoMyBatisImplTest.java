@@ -3,7 +3,6 @@ package org.activiti.cycle.impl.db.impl;
 import java.util.List;
 
 import org.activiti.cycle.impl.CycleTagContentImpl;
-import org.activiti.cycle.impl.db.CycleDAO;
 import org.activiti.cycle.impl.db.entity.RepositoryArtifactLinkEntity;
 import org.activiti.cycle.impl.db.entity.RepositoryNodePeopleLinkEntity;
 import org.activiti.cycle.impl.db.entity.RepositoryNodeTagEntity;
@@ -12,7 +11,7 @@ import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 
 public class CycleDaoMyBatisImplTest extends PluggableActivitiTestCase {
   
-  private CycleDAO dao;
+  private CycleDaoMyBatisImpl dao;
 
   @Override
   protected void setUp() throws Exception {

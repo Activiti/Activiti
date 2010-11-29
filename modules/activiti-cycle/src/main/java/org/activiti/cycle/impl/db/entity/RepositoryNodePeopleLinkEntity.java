@@ -3,10 +3,12 @@ package org.activiti.cycle.impl.db.entity;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.activiti.cycle.CycleService;
 import org.activiti.cycle.RepositoryArtifact;
 import org.activiti.cycle.RepositoryNode;
 import org.activiti.cycle.RepositoryNodePeopleLink;
+import org.activiti.cycle.impl.service.CycleServiceImpl;
+import org.activiti.cycle.service.CycleRepositoryService;
+import org.activiti.cycle.service.CycleService;
 import org.activiti.engine.impl.db.PersistentObject;
 
 /**
@@ -63,7 +65,8 @@ public class RepositoryNodePeopleLinkEntity implements PersistentObject, Reposit
 
 
   public void resolveArtifacts(CycleService service) {
-    this.sourceRepositoryArtifact = service.getRepositoryArtifact(sourceConnectorId, sourceArtifactId);   
+    CycleRepositoryService repositoryService = CycleServiceImpl.getInstance().getRepositoryService();
+    this.sourceRepositoryArtifact = repositoryService.getRepositoryArtifact(sourceConnectorId, sourceArtifactId);   
   }
   
   public void setSourceArtifact(RepositoryArtifact sourceArtifact) {

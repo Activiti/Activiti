@@ -50,7 +50,7 @@ public class ArtifactLinkPost extends ActivitiCycleWebScript {
     link.setTargetArtifactId(targetArtifactId);    
 
     try {
-      cycleService.addArtifactLink(link);
+      repositoryService.addArtifactLink(link);
       model.put("result", true);
     } catch (Exception e) {
       // TODO: see whether this makes sense, probably either exception or

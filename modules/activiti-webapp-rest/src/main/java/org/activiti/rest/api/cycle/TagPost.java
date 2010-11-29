@@ -46,7 +46,7 @@ public class TagPost extends ActivitiCycleWebScript {
     String tagName = req.getMandatoryString(obj, "tagName");
     String alias = req.getMandatoryString(obj, "alias");
 
-    this.cycleService.addTag(connectorId, repositoryNodeId, tagName, alias);
+    tagService.addTag(connectorId, repositoryNodeId, tagName, alias);
     model.put("connectorId", connectorId);
     model.put("repositoryNodeId", repositoryNodeId);
     model.put("tagName", tagName);

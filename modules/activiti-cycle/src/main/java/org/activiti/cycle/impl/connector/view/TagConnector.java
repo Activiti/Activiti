@@ -15,6 +15,8 @@ import org.activiti.cycle.RepositoryNodeCollection;
 import org.activiti.cycle.RepositoryNodeNotFoundException;
 import org.activiti.cycle.impl.RepositoryFolderImpl;
 import org.activiti.cycle.impl.RepositoryNodeCollectionImpl;
+import org.activiti.cycle.impl.service.CycleServiceImpl;
+import org.activiti.cycle.service.CycleTagService;
 
 /**
  * Connector to represent customized view for a user of cycle to hide all the
@@ -26,7 +28,9 @@ import org.activiti.cycle.impl.RepositoryNodeCollectionImpl;
 public class TagConnector implements RepositoryConnector {
 
   private TagConnectorConfiguration configuration;
-
+    
+  private CycleTagService tagService = CycleServiceImpl.getInstance().getTagService();
+  
   public TagConnector(TagConnectorConfiguration customizedViewConfiguration) {
     configuration = customizedViewConfiguration;
   }
@@ -54,8 +58,8 @@ public class TagConnector implements RepositoryConnector {
     if ("/".equals(id)) {
       return new RepositoryNodeCollectionImpl(createRootFolders());
     } else {
-      String name = id.substring(id.lastIndexOf("/") + 1);
-      CycleTagContent tagContent = getConfiguration().getCycleService().getTagContent(name);
+      String name = id.substring(id.lastIndexOf("/") + 1);      
+      CycleTagContent tagContent = tagService.getTagContent(name);
       return new RepositoryNodeCollectionImpl(tagContent.getTaggedRepositoryNodes());
     }
   }
@@ -63,14 +67,14 @@ public class TagConnector implements RepositoryConnector {
   public RepositoryFolder getRepositoryFolder(String id) throws RepositoryNodeNotFoundException {
     // we try to access an TAG directly (may be represented as a folder), so
     // return an empty folder object
-    CycleTagContent tag = getConfiguration().getCycleService().getTagContent(id);
+    CycleTagContent tag = tagService.getTagContent(id);
     return createFolderObject(tag);
   }
 
   private List<RepositoryNode> createRootFolders() {
     List<RepositoryNode> tagFolderList = new ArrayList<RepositoryNode>();
 
-    List<CycleTagContent> rootTags = getConfiguration().getCycleService().getRootTags();
+    List<CycleTagContent> rootTags = tagService.getRootTags();
     for (CycleTagContent tag : rootTags) {
       tagFolderList.add(createFolderObject(tag));
     }

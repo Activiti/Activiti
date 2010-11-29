@@ -3,12 +3,12 @@ package org.activiti.cycle.impl;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.activiti.cycle.CycleService;
 import org.activiti.cycle.CycleTagContent;
 import org.activiti.cycle.RepositoryArtifact;
 import org.activiti.cycle.RepositoryNode;
 import org.activiti.cycle.RepositoryNodeNotFoundException;
 import org.activiti.cycle.impl.db.entity.RepositoryNodeTagEntity;
+import org.activiti.cycle.service.CycleService;
 
 /**
  * 
@@ -49,9 +49,9 @@ public class CycleTagContentImpl implements CycleTagContent {
       // But this implementation obviously sucks. Improve!
       RepositoryNode node = null;
       try {
-        node = service.getRepositoryFolder(tag.getConnectorId(), tag.getNodeId());
+        node = service.getRepositoryService().getRepositoryFolder(tag.getConnectorId(), tag.getNodeId());
       } catch (RepositoryNodeNotFoundException ex) {
-        node = service.getRepositoryArtifact(tag.getConnectorId(), tag.getNodeId());
+        node = service.getRepositoryService().getRepositoryArtifact(tag.getConnectorId(), tag.getNodeId());
       }
 
       if (tag.hasAlias()) {

@@ -13,19 +13,15 @@
 
 package org.activiti.rest.api.cycle;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
-import javax.servlet.http.HttpSession;
-
-import org.activiti.cycle.CycleService;
 import org.activiti.cycle.RepositoryAuthenticationException;
-import org.activiti.cycle.RepositoryConnector;
-import org.activiti.cycle.impl.CycleServiceImpl;
-import org.activiti.cycle.impl.conf.PasswordEnabledRepositoryConnectorConfiguration;
-import org.activiti.cycle.impl.conf.RepositoryConnectorConfiguration;
+import org.activiti.cycle.impl.service.CycleServiceImpl;
+import org.activiti.cycle.service.CycleConfigurationService;
+import org.activiti.cycle.service.CycleRepositoryService;
+import org.activiti.cycle.service.CycleService;
+import org.activiti.cycle.service.CycleTagService;
+import org.activiti.rest.api.cycle.session.CycleHttpSession;
 import org.activiti.rest.util.ActivitiRequest;
 import org.activiti.rest.util.ActivitiWebScript;
 import org.springframework.extensions.webscripts.Cache;
@@ -38,67 +34,31 @@ public abstract class ActivitiCycleWebScript extends ActivitiWebScript {
 
   protected CycleService cycleService;
 
-  private void init(ActivitiRequest req) {
-    String cuid = req.getCurrentUserId();
+  protected CycleRepositoryService repositoryService;
 
-    HttpSession session = req.getHttpServletRequest().getSession(true);
+  protected CycleTagService tagService;
 
-    // Retrieve the list of configured connectors for the current user (either
-    // from the session or, if not present, from the database
-    List<RepositoryConnector> connectors = CycleServiceImpl.getConfiguredRepositoryConnectors(cuid, session);
+  protected CycleConfigurationService configurationService;
 
-    // Make sure we know username and password for all connectors that require
-    // login. If it is not stored in the users configuration it should be
-    // provided as a parameter in the request.
-    Map<String, String> connectorsWithoutLoginMap = new HashMap<String, String>();
-    for (RepositoryConnector connector : getPasswordEnabledConnectors(connectors)) {
-      PasswordEnabledRepositoryConnectorConfiguration conf = (PasswordEnabledRepositoryConnectorConfiguration) connector.getConfiguration();
-      String username = req.getString(conf.getId() + "_username");
-      String password = req.getString(conf.getId() + "_password");
-
-      if (username != null && password != null) {
-        // Remove the connector from the configuration for this session since
-        // the user pressed cancel in the authentication dialog.
-        if (username.equals("\"\"") && password.equals("\"\"")) {
-          connectors.remove(connector);
-        } else {
-          conf.setUser(username);
-          conf.setPassword(password);
-        }
-      } else if (conf.getUser() == null || conf.getPassword() == null) {
-        connectorsWithoutLoginMap.put(conf.getId(), conf.getName());
-      }
-      // If one or more logins are missing (not provided in either the
-      // configuration or as HTTP parameter) we'll throw an authentication
-      // exception with the list of connectors that are missing login
-      // information
-    }
-    if (connectorsWithoutLoginMap.size() > 0) {
-      // TODO: i18n
-      throw new RepositoryAuthenticationException("Please provide your username and password for the following repositories:", connectorsWithoutLoginMap);
-    }
-    // Initialize the cycleService
-    this.cycleService = CycleServiceImpl.getCycleService(cuid, session, connectors);
-  }
-
-  private List<RepositoryConnector> getPasswordEnabledConnectors(List<RepositoryConnector> connectors) {
-    List<RepositoryConnector> LoginEnabledconnectors = new ArrayList<RepositoryConnector>();
-    for (RepositoryConnector connector : connectors) {
-      RepositoryConnectorConfiguration conf = connector.getConfiguration();
-      if (PasswordEnabledRepositoryConnectorConfiguration.class.isInstance(conf)) {
-        LoginEnabledconnectors.add(connector);
-      }
-    }
-    return LoginEnabledconnectors;
+  public ActivitiCycleWebScript() {
+    cycleService = CycleServiceImpl.getInstance();
+    configurationService = cycleService.getConfigurationService();
+    repositoryService = cycleService.getRepositoryService();
+    tagService = cycleService.getTagService();
   }
 
   @Override
   protected void executeWebScript(ActivitiRequest req, Status status, Cache cache, Map<String, Object> model) {
     try {
-      init(req);
+      // open cycle ui-session
+      CycleHttpSession.openSession(req);
+      // execute the request in the context of a CycleHttpSession
       execute(req, status, cache, model);
     } catch (RepositoryAuthenticationException e) {
       model.put("authenticationException", e);
+    } finally {
+      // close the CycleHttpSession
+      CycleHttpSession.closeSession();
     }
   }
 

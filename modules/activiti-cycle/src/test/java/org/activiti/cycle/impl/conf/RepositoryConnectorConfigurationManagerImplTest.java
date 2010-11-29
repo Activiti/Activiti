@@ -1,6 +1,6 @@
 package org.activiti.cycle.impl.conf;
 
-import org.activiti.cycle.CycleService;
+import org.activiti.cycle.service.CycleService;
 import org.activiti.engine.ProcessEngines;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;

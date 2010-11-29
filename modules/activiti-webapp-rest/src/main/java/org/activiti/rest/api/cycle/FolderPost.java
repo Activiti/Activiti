@@ -15,8 +15,8 @@ package org.activiti.rest.api.cycle;
 
 import java.util.Map;
 
-import org.activiti.cycle.CycleService;
 import org.activiti.cycle.RepositoryFolder;
+import org.activiti.cycle.service.CycleService;
 import org.activiti.rest.util.ActivitiRequest;
 import org.activiti.rest.util.ActivitiRequestObject;
 import org.springframework.extensions.webscripts.Cache;
@@ -39,7 +39,7 @@ public class FolderPost extends ActivitiCycleWebScript {
     String name = req.getMandatoryString(obj, "name");
 
     try {
-      this.cycleService.createFolder(connectorId, parentFolderId, name);
+      repositoryService.createFolder(connectorId, parentFolderId, name);
       model.put("result", true);
     } catch (Exception e) {
       model.put("result", false);

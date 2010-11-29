@@ -3,10 +3,10 @@ package org.activiti.cycle.impl.db.entity;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.activiti.cycle.CycleService;
 import org.activiti.cycle.RepositoryArtifact;
 import org.activiti.cycle.RepositoryArtifactLink;
 import org.activiti.cycle.RepositoryNode;
+import org.activiti.cycle.service.CycleRepositoryService;
 import org.activiti.engine.impl.db.PersistentObject;
 
 /**
@@ -77,7 +77,7 @@ public class RepositoryArtifactLinkEntity implements PersistentObject, Repositor
    */
   private boolean linkedBothWays = true;  
 
-  public void resolveArtifacts(CycleService service) {
+  public void resolveArtifacts(CycleRepositoryService service) {
     this.sourceRepositoryArtifact = service.getRepositoryArtifact(sourceConnectorId, sourceArtifactId);
     this.targetRepositoryArtifact = service.getRepositoryArtifact(targetConnectorId, targetArtifactId);
   }

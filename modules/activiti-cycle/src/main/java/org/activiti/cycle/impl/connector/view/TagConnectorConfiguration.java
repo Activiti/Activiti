@@ -1,9 +1,9 @@
 package org.activiti.cycle.impl.connector.view;
 
-import org.activiti.cycle.CycleService;
 import org.activiti.cycle.RepositoryConnector;
 import org.activiti.cycle.impl.conf.ConfigurationContainer;
 import org.activiti.cycle.impl.conf.RepositoryConnectorConfiguration;
+import org.activiti.cycle.service.CycleService;
 
 public class TagConnectorConfiguration extends RepositoryConnectorConfiguration {
 

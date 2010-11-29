@@ -34,7 +34,7 @@ public class UserConfigPost extends ActivitiCycleWebScript {
     String configurationId = json.getString("configurationId");
     Map<String, String> values = json.getMap("values");
 
-    this.cycleService.updateRepositoryConnectorConfiguration(configurationClass, configurationId, values, req.getCurrentUserId());
+    configurationService.updateRepositoryConnectorConfiguration(configurationClass, configurationId, values);
 
   }
 

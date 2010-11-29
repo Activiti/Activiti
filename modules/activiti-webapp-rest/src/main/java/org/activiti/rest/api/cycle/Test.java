@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.activiti.rest.api.cycle.dto.ArtifactLinkDto;
-import org.activiti.rest.api.cycle.dto.ContentView;
 
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.json.JettisonMappedXmlDriver;

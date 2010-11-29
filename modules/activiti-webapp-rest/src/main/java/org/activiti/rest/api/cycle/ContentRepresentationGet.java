@@ -36,7 +36,7 @@ public class ContentRepresentationGet extends ActivitiCycleWebScript {
     String artifactId = req.getString("artifactId");
     String representationId = req.getString("representationId");
 
-    RepositoryArtifact artifact = this.cycleService.getRepositoryArtifact(connectorId, artifactId);
+    RepositoryArtifact artifact = repositoryService.getRepositoryArtifact(connectorId, artifactId);
 
     // Get representation by id to determine whether it is an image...
     try {
@@ -55,7 +55,7 @@ public class ContentRepresentationGet extends ActivitiCycleWebScript {
       case BINARY:
       case CODE:
       case TEXT_PLAIN:
-        String content = this.cycleService.getContent(connectorId, artifactId, contentRepresentation.getId()).asString();
+        String content = repositoryService.getContent(connectorId, artifactId, contentRepresentation.getId()).asString();
         model.put("content", content);
       }
       model.put("renderInfo", contentRepresentation.getRenderInfo().name());

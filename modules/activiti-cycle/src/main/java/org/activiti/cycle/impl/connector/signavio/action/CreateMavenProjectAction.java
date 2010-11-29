@@ -17,6 +17,8 @@ import org.activiti.cycle.RepositoryException;
 import org.activiti.cycle.impl.connector.signavio.provider.ActivitiCompliantBpmn20Provider;
 import org.activiti.cycle.impl.connector.util.TransactionalConnectorUtils;
 import org.activiti.cycle.impl.db.entity.RepositoryArtifactLinkEntity;
+import org.activiti.cycle.impl.service.CycleServiceImpl;
+import org.activiti.cycle.service.CycleRepositoryService;
 import org.activiti.engine.impl.util.IoUtil;
 
 public class CreateMavenProjectAction extends CreateTechnicalBpmnXmlAction {
@@ -78,7 +80,8 @@ public class CreateMavenProjectAction extends CreateTechnicalBpmnXmlAction {
       link.setTargetArtifact(bpmnArtifact);
       link.setComment(comment);
       link.setLinkType(getLinkType());
-      connector.getConfiguration().getCycleService().addArtifactLink(link);
+      CycleRepositoryService repositoryService = CycleServiceImpl.getInstance().getRepositoryService();
+      repositoryService.addArtifactLink(link);
     }
   }
 

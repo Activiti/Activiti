@@ -32,7 +32,7 @@ public class TagsPost extends ActivitiCycleWebScript {
     String connectorId = req.getMandatoryString(obj, "connectorId");
     String repositoryNodeId = req.getMandatoryString(obj, "repositoryNodeId");
     List<String> tags = req.getMandatoryList(obj, "tags", ActivitiRequestObject.STRING);
-    this.cycleService.setTags(connectorId, repositoryNodeId, tags);
+    tagService.setTags(connectorId, repositoryNodeId, tags);
   }
 
 }

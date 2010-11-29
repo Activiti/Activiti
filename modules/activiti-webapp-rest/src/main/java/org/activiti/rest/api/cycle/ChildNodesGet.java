@@ -39,7 +39,7 @@ public class ChildNodesGet extends ActivitiCycleWebScript {
     String artifactId = req.getMandatoryString("artifactId");
     String connectorId = req.getMandatoryString("connectorId");
     try {
-      RepositoryNodeCollection children = this.cycleService.getChildren(connectorId, artifactId);
+      RepositoryNodeCollection children = repositoryService.getChildren(connectorId, artifactId);
 
       model.put("files", children.getArtifactList());
       model.put("folders", children.getFolderList());

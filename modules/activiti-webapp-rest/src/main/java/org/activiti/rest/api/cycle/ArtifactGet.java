@@ -30,7 +30,7 @@ import org.springframework.extensions.webscripts.Status;
 /**
  * 
  * @author Nils Preusker (nils.preusker@camunda.com)
- * @author Bernd RŸcker
+ * @author Bernd Rï¿½cker
  */
 public class ArtifactGet extends ActivitiCycleWebScript {
 
@@ -45,7 +45,7 @@ public class ArtifactGet extends ActivitiCycleWebScript {
     String restProxyUri = req.getString("restProxyUri");
 
     // Retrieve the artifact from the repository
-    RepositoryArtifact artifact = this.cycleService.getRepositoryArtifact(connectorId, artifactId);
+    RepositoryArtifact artifact = repositoryService.getRepositoryArtifact(connectorId, artifactId);
 
     List<String> contentRepresentations = new ArrayList<String>();
     for (ContentRepresentation representation : artifact.getArtifactType().getContentRepresentations()) {
