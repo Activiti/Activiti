@@ -69,16 +69,26 @@
       <artifactId>mockito-core</artifactId>
       <scope>test</scope>
     </dependency>
-		<dependency>
-	      <groupId>org.apache.openjpa</groupId>
-	      <artifactId>openjpa</artifactId>
-	      <scope>test</scope>
-	    </dependency>
-		<dependency>
-			<groupId>org.subethamail</groupId>
-			<artifactId>subethasmtp-wiser</artifactId>
-			<scope>test</scope>
-		</dependency>
+	<dependency>
+      <groupId>org.apache.openjpa</groupId>
+      <artifactId>openjpa</artifactId>
+      <scope>test</scope>
+    </dependency>
+	<dependency>
+      <groupId>org.subethamail</groupId>
+	  <artifactId>subethasmtp-wiser</artifactId>
+	  <scope>test</scope>
+	</dependency>
+	<dependency>
+	  <groupId>mysql</groupId>
+	  <artifactId>mysql-connector-java</artifactId>
+	  <scope>test</scope>
+	</dependency>
+	<dependency>
+	  <groupId>postgresql</groupId>
+	  <artifactId>postgresql</artifactId>
+      <scope>test</scope>
+	</dependency>
 
 </dependencies>
 
@@ -183,18 +193,6 @@
 					<name>database</name>
 				</property>
 			</activation>
-			<dependencies>
-				<dependency>
-					<groupId>mysql</groupId>
-					<artifactId>mysql-connector-java</artifactId>
-					<scope>test</scope>
-				</dependency>
-				<dependency>
-					<groupId>postgresql</groupId>
-					<artifactId>postgresql</artifactId>
-          <scope>test</scope>
-				</dependency>
-			</dependencies>
 			<build>
 				<plugins>
 					<plugin>

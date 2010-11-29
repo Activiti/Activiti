@@ -123,6 +123,9 @@
     <exec output="${target.distro.root}/setup/files/dependencies/libs.engine.test.txt" executable="${ls.executable}">
       <arg line="${ls.executable.options} target${ls.executable.path.seperator}libs-engine-test"/>
     </exec>
+	<!-- Add manual entry for oracle driver jar in libs.engine.test,  so it can be added by the user and will be picked-up in the demo -->
+	<echo file="${target.distro.root}/setup/files/dependencies/libs.engine.test.txt" append="true">ojdbc5.jar</echo>
+		
     <exec output="${target.distro.root}/setup/files/dependencies/libs.engine.runtime.feature.groovy.txt" executable="${ls.executable}">
       <arg line="${ls.executable.options} target${ls.executable.path.seperator}libs-engine-runtime-feature-groovy"/>
     </exec>
