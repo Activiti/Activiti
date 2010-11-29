@@ -6,7 +6,7 @@ create table ACT_GE_PROPERTY (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE utf8_bin;
 
 insert into ACT_GE_PROPERTY
-values ('schema.version', '5.0-SNAPSHOT', 1);
+values ('schema.version', '5.0', 1);
 
 insert into ACT_GE_PROPERTY
 values ('next.dbid', '1', 1);
