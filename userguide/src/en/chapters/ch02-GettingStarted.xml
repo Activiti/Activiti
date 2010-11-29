@@ -302,29 +302,18 @@
   
    <section>
       <title>Using Oracle in the demo setup</title>
-      <para>When you want to run the demo setup using oracle as datasource, an extra step is required BEFORE you call the ant target <literal>demo.setup</literal>. 
+      <para>When you want to run the demo setup using oracle as datasource, an extra step is required BEFORE you call the ant target <literal>demo.start</literal>. 
         <itemizedlist>
           <listitem>
             <para>
             Since we cannot redistribute the Oracle JDBC driver due to its licence, you should download it manually: 
           <ulink url="http://www.oracle.com/technetwork/database/enterprise-edition/jdbc-112010-090769.html">http://www.oracle.com/technetwork/database/enterprise-edition/jdbc-112010-090769.html</ulink>.
-          Make sure you download ojdbc5.jar, version 11.2.0.1.
+          Make sure you download ojdbc5.jar (our tests run against 10g ojdbc using version 11.2.0.1).
             </para>
           </listitem>
           <listitem>
             <para>
-              Copy the jar to <literal>lib/provided/</literal>
-            </para>
-          </listitem>
-          <listitem>
-            <para>
-              The only thing left to do is calling the following ant target, in the build-file located in <literal>/setup</literal>: 
-              <programlisting>db.oracle.install.driver</programlisting>  
-              The ant-target will actually install the jdbc-driver in the maven repository to be able to use it afterward, using the command:
-              <programlisting>
-install:install-file -Dfile=ojdbc5.jar -DgroupId=com.oracle.jdbc -DartifactId=ojdbc5 
-   -Dpackaging=jar -Dversion=11.2.0.1.0 -DcreateChecksum=true -DgeneratePom=true
-          </programlisting>
+              Copy the downloaded ojdbc5.jar to <literal>setup/files/dependencies/libs/</literal>
             </para>
           </listitem>
         </itemizedlist>
