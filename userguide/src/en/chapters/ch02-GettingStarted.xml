@@ -172,8 +172,8 @@
     <para><xref linkend="eclipsesetup" /> shows how you can set up your eclipse environment to 
     play with these example projects.
     </para>
-    <para>As part of the <literal>setup.start</literal>, the examples will be inflated.  This 
-    means that all the libs and configuration files will be put in place.  If you don't run the <literal>setup.start</literal> 
+    <para>As part of the <literal>demo.start</literal>, the examples will be inflated.  This 
+    means that all the libs and configuration files will be put in place.  If you don't run the <literal>demo.start</literal> 
     and you want to inflate the examples with libs in the appropriate place,  
     run this command in the setup directory:
     </para>
