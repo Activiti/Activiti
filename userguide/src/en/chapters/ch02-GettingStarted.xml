@@ -241,9 +241,6 @@
       and select the XML Schema from the file system in the folder <literal>docs/xsd/BPMN20.xsd</literal>.
       <mediaobject><imageobject><imagedata align="center" fileref="images/eclipse.setup.xml.catalog.png"/></imageobject></mediaobject>
     </para>
-    <para>TODO: REFACTOR THIS! Similarly, it is possible to add the XSD schema for the Activiti configuration file
-    to the Eclipse XML catalog in the exact same way. The file that should be referenced
-    is the <literal>docs/xsd/activiti-cfg-5.0.xsd</literal></para>
   </section>
   
   <section id="inspecting.database">
