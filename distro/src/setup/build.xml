@@ -7,12 +7,14 @@
   <property file="${user.home}/.activiti/build.properties" />
   <property file="build.properties" />
   <property file="build.${db}.properties" />
+  <property file="${activiti.home}/setup/files/cfg.cycle/cycle.properties" />
 
   <property name="activiti.home" value=".." /> 
   <property name="activiti.version" value="5.0" />   
   <property name="apache.mirror.url" value="http://mirrors.enquira.co.uk/apache/" />
   
   <property name="cycle.workspace" location="${activiti.home}/workspace/activiti-cycle-examples"/>
+  <property name="activiti.modeler.base.url" value="http://localhost:8080/activiti-modeler/" />
 
   <!-- ### OS PROPERTIES #################################################################### -->
   
