@@ -397,7 +397,7 @@
           the classes that will be used by the Activiti engine during runtime. In your extension you
           describe the properties that can be set in Activiti Designer for each shape. From these
           shapes, your refer to the runtime class that should be used by the engine. This class
-          should implement JavaDelegation as for any ServiceTask in Activiti.</para>
+          should implement JavaDelegate as for any ServiceTask in Activiti.</para>
         <para>A shape's class is a simple Java class, to which a number of annotations are added.
           The class should implement the <literal>CustomServiceTask</literal> interface, but you
           shouldn't implement this interface yourself. Extend the
