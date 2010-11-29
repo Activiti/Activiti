@@ -20,10 +20,12 @@ import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.impl.test.TestHelper;
 import org.activiti.engine.impl.util.ClassNameUtil;
 import org.activiti.engine.repository.DeploymentBuilder;
+import org.activiti.test.mule.Counter;
 import org.mule.api.MuleContext;
 import org.mule.api.config.ConfigurationBuilder;
 import org.mule.api.context.MuleContextBuilder;
 import org.mule.api.context.MuleContextFactory;
+import org.mule.component.DefaultJavaComponent;
 import org.mule.config.spring.SpringXmlConfigurationBuilder;
 import org.mule.context.DefaultMuleContextBuilder;
 import org.mule.context.DefaultMuleContextFactory;
@@ -34,6 +36,7 @@ import org.mule.context.DefaultMuleContextFactory;
 public abstract class AbstractWebServiceTaskTest extends PluggableActivitiTestCase {
 
   protected MuleContext context;
+  protected Counter counter;
   
   @Override
   protected void setUp() throws Exception {
@@ -56,6 +59,11 @@ public abstract class AbstractWebServiceTaskTest extends PluggableActivitiTestCa
     impl.getDeployment().setValidatingSchema(this.isValidating());
     
     deploymentId = deploymentBuilder.deploy().getId();
+    
+    counter = (Counter) ((DefaultJavaComponent) context.getRegistry().lookupService("counterService").getComponent())
+      .getObjectFactory().getInstance();
+    
+    counter.initialize();
   }
 
   protected boolean isValidating() {

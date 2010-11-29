@@ -58,4 +58,10 @@ public interface Counter {
    */
   @WebResult(name="prettyPrint")
   String prettyPrintCount(@WebParam(name="prefix") String prefix, @WebParam(name="suffix") String suffix);
+  
+  
+  /**
+   * Initialize this counter to -1
+   */
+  void initialize();
 }

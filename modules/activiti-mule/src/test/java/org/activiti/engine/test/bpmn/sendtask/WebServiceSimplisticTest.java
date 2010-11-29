@@ -16,8 +16,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.activiti.engine.test.bpmn.servicetask.AbstractWebServiceTaskTest;
-import org.activiti.test.mule.Counter;
-import org.mule.component.DefaultJavaComponent;
 
 /**
  * @author Esteban Robles Luna
@@ -30,9 +28,6 @@ public class WebServiceSimplisticTest extends AbstractWebServiceTaskTest {
   }
   
   public void testAsyncInvocationWithSimplisticDataFlow() throws Exception {
-    Counter counter = (Counter) ((DefaultJavaComponent) context.getRegistry().lookupService("counterService").getComponent())
-      .getObjectFactory().getInstance();
-
     assertEquals(-1, counter.getCount());
 
     Map<String, Object> variables = new HashMap<String, Object>();

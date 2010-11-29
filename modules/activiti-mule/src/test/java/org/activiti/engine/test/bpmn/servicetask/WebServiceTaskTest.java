@@ -12,19 +12,12 @@
  */
 package org.activiti.engine.test.bpmn.servicetask;
 
-import org.activiti.test.mule.Counter;
-import org.mule.component.DefaultJavaComponent;
-
-
 /**
  * @author Esteban Robles Luna
  */
 public class WebServiceTaskTest extends AbstractWebServiceTaskTest {
 
   public void testWebServiceInvocationWithoutDataFlow() throws Exception {
-    Counter counter = (Counter) ((DefaultJavaComponent) context.getRegistry().lookupService("counterService").getComponent())
-      .getObjectFactory().getInstance();
-
     assertEquals(-1, counter.getCount());
     
     processEngine.getRuntimeService().startProcessInstanceByKey("webServiceInvocationWithoutDataFlow");

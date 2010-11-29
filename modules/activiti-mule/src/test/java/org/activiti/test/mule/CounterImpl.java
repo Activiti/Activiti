@@ -26,7 +26,7 @@ public class CounterImpl implements Counter {
   protected int count;
   
   public CounterImpl() {
-    this.count = -1;
+    this.initialize();
   }
   
   /**
@@ -62,5 +62,12 @@ public class CounterImpl implements Counter {
    */
   public String prettyPrintCount(String prefix, String suffix) {
     return prefix + this.getCount() + suffix;
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  public void initialize() {
+    this.count = -1;
   }
 }

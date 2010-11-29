@@ -13,8 +13,6 @@
 package org.activiti.engine.test.bpmn.sendtask;
 
 import org.activiti.engine.test.bpmn.servicetask.AbstractWebServiceTaskTest;
-import org.activiti.test.mule.Counter;
-import org.mule.component.DefaultJavaComponent;
 
 
 /**
@@ -24,9 +22,6 @@ import org.mule.component.DefaultJavaComponent;
 public class WebServiceTest extends AbstractWebServiceTaskTest {
 
   public void testAsyncInvocationWithoutDataFlow() throws Exception {
-    Counter counter = (Counter) ((DefaultJavaComponent) context.getRegistry().lookupService("counterService").getComponent())
-      .getObjectFactory().getInstance();
-
     assertEquals(-1, counter.getCount());
     
     processEngine.getRuntimeService().startProcessInstanceByKey("asyncWebServiceInvocationWithoutDataFlow");

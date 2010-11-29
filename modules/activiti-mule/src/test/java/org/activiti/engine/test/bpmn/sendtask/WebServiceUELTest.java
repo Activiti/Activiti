@@ -22,8 +22,6 @@ import org.activiti.engine.impl.cfg.RepositorySession;
 import org.activiti.engine.impl.db.DbRepositorySessionFactory;
 import org.activiti.engine.impl.repository.ProcessDefinitionEntity;
 import org.activiti.engine.test.bpmn.servicetask.AbstractWebServiceTaskTest;
-import org.activiti.test.mule.Counter;
-import org.mule.component.DefaultJavaComponent;
 
 /**
  * @author Esteban Robles Luna
@@ -32,9 +30,6 @@ import org.mule.component.DefaultJavaComponent;
 public class WebServiceUELTest extends AbstractWebServiceTaskTest {
 
   public void testAsyncInvocationWithDataFlowUEL() throws Exception {
-    Counter counter = (Counter) ((DefaultJavaComponent) context.getRegistry().lookupService("counterService").getComponent())
-      .getObjectFactory().getInstance();
-
     assertEquals(-1, counter.getCount());
 
     DbRepositorySessionFactory dbRepositorySessionFactory = (DbRepositorySessionFactory) 
