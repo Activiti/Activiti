@@ -25,5 +25,5 @@
 	<classpathentry kind="lib" path="libs-test/subethasmtp-wiser-1.2.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="lib" path="libs-test/antlr-2.7.7.jar"/>
-	<classpathentry kind="output" path="bin"/>
+  <classpathentry kind="output" path="target/classes"/>
 </classpath>

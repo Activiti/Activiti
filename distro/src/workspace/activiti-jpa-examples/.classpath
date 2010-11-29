@@ -33,5 +33,5 @@
 	<classpathentry kind="lib" path="libs-test/geronimo-jpa_3.0_spec-1.0.jar"/>
 	<classpathentry kind="lib" path="libs-test/openjpa-1.2.2.jar"/>
 	<classpathentry kind="lib" path="libs-test/serp-1.13.1.jar"/>
-	<classpathentry kind="output" path="bin"/>
+  <classpathentry kind="output" path="target/classes"/>
 </classpath>
