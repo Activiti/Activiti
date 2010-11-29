@@ -523,6 +523,7 @@
     <profile>
       <id>checkmule</id>
       <modules>
+        <module>modules/activiti-cxf</module>
         <module>modules/activiti-mule</module>
       </modules>
     </profile>
