@@ -13,6 +13,7 @@
   <property name="apache.mirror.url" value="http://mirrors.enquira.co.uk/apache/" />
   
   <property name="cycle.workspace" location="${activiti.home}/workspace/activiti-cycle-examples"/>
+  <property name="activiti.modeler.base.url" value="http://localhost:8080/activiti-modeler/" />
 
   <!-- ### OS PROPERTIES #################################################################### -->
   
