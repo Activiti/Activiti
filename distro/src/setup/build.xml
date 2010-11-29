@@ -7,7 +7,6 @@
   <property file="${user.home}/.activiti/build.properties" />
   <property file="build.properties" />
   <property file="build.${db}.properties" />
-  <property file="${activiti.home}/setup/files/cfg.cycle/cycle.properties" />
 
   <property name="activiti.home" value=".." /> 
   <property name="activiti.version" value="5.0" />   
