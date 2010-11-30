@@ -35,6 +35,13 @@
   </section>
   
   <section>
+    <title>Deploying with Activiti Probe</title>
+    <para>In <link linkend="probeDeployments">page 'Deployments' in Activiti Probe</link>, you can upload a
+    business archive to deploy it in the Activiti Engine.  
+    </para>
+  </section>
+  
+  <section>
     <title>Deploying programmatically</title>
     <para>Deploying a business archive from a zip file can be done like this: 
     </para>
