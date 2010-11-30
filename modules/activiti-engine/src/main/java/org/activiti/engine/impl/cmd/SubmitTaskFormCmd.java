@@ -16,15 +16,20 @@ package org.activiti.engine.impl.cmd;
 import java.util.Map;
 
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.cfg.TaskSession;
+import org.activiti.engine.impl.db.DbSqlSession;
 import org.activiti.engine.impl.form.TaskFormHandler;
+import org.activiti.engine.impl.history.HistoricFormPropertyEntity;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
+import org.activiti.engine.impl.runtime.ExecutionEntity;
 import org.activiti.engine.impl.task.TaskEntity;
 
 
 /**
  * @author Tom Baeyens
+ * @author Joram Barrez
  */
 public class SubmitTaskFormCmd implements Command<Object> {
 
@@ -47,6 +52,17 @@ public class SubmitTaskFormCmd implements Command<Object> {
 
     if (task == null) {
       throw new ActivitiException("Cannot find task with id " + taskId);
+    }
+    
+    int historyLevel = commandContext.getProcessEngineConfiguration().getHistoryLevel();
+    ExecutionEntity execution = task.getExecution();
+    if (historyLevel>=ProcessEngineConfigurationImpl.HISTORYLEVEL_AUDIT && execution != null) {
+      DbSqlSession dbSqlSession = commandContext.getSession(DbSqlSession.class);
+      for (String propertyId: properties.keySet()) {
+        String propertyValue = properties.get(propertyId);
+        HistoricFormPropertyEntity historicFormProperty = new HistoricFormPropertyEntity(execution, propertyId, propertyValue);
+        dbSqlSession.insert(historicFormProperty);
+      }
     }
     
     TaskFormHandler taskFormHandler = task.getTaskDefinition().getTaskFormHandler();
