@@ -257,67 +257,8 @@
       <mediaobject><imageobject><imagedata align="center" fileref="images/h2.console.login.png"/></imageobject></mediaobject>
       You are now able to browse the Activiti database schema and check the content of the tables.
     </para>
-  </section>
-  
-  <section>
-    <title>Changing the database</title>
-    <para>
-      One of the things you probably want to do, is configuring the demo setup to
-      use a different database. To do this, follow these steps
-      <itemizedlist>
-        <listitem>
-          <para>
-            Edit <literal>setup/build.properties</literal> and change the <literal>db</literal>
-            parameter to your type of database (e.g. mysql).
-          </para>
-        </listitem>
-        <listitem>
-          <para>
-            Edit <literal>setup/build.${db}.properties</literal> and change the 
-            JDBC connection parameters to those of your database installation.
-          </para>
-        </listitem>
-        <listitem>
-          <para>
-            Run <literal>'ant cfg.create'</literal> from within the <literal>setup</literal>
-            folder.
-          </para>
-        </listitem>
-        <listitem>
-          <para>
-            The generate configuration file can now be found in <literal>setup/build/activiti-cfg</literal>.
-            Also, for convenience, a jar called <literal>activiti-cfg.jar</literal> containing the configuration file can be found in
-            <literal>setup/build</literal> 
-          </para>
-        </listitem>
-        <listitem>
-          <para>
-            This file must now be copied to <literal>/apps/apache-tomcat-6.x.x/webapps/activiti-rest/WEB-INF/lib</literal>.
-            A reboot of Tomcat is required (<literal>ant demo.stop</literal> and <literal>ant demo.start</literal> in the <literal>setup</literal> folder).
-          </para>
-        </listitem>
-      </itemizedlist>
+    <para>To change the database, see <xref linkend="changingTheDatabase" />
     </para>
   </section>
   
-   <section>
-      <title>Using Oracle in the demo setup</title>
-      <para>When you want to run the demo setup using oracle as datasource, an extra step is required BEFORE you call the ant target <literal>demo.start</literal>. 
-        <itemizedlist>
-          <listitem>
-            <para>
-            Since we cannot redistribute the Oracle JDBC driver due to its licence, you should download it manually: 
-          <ulink url="http://www.oracle.com/technetwork/database/enterprise-edition/jdbc-112010-090769.html">http://www.oracle.com/technetwork/database/enterprise-edition/jdbc-112010-090769.html</ulink>.
-          Make sure you download ojdbc5.jar (our tests run against 10g ojdbc using version 11.2.0.1).
-            </para>
-          </listitem>
-          <listitem>
-            <para>
-              Copy the downloaded ojdbc5.jar to <literal>setup/files/dependencies/libs/</literal>
-            </para>
-          </listitem>
-        </itemizedlist>
-      </para>
-    </section>
-
 </chapter>
