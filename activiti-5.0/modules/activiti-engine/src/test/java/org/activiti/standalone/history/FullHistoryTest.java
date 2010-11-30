@@ -27,12 +27,15 @@ import org.activiti.engine.impl.test.ResourceActivitiTestCase;
 import org.activiti.engine.impl.util.ClockUtil;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.runtime.ProcessInstance;
+import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
 import org.activiti.engine.test.history.SerializableVariable;
 
 
 /**
  * @author Tom Baeyens
+ * @author Frederik Heremans
+ * @author Joram Barrez
  */
 public class FullHistoryTest extends ResourceActivitiTestCase {
 
@@ -240,6 +243,15 @@ public class FullHistoryTest extends ResourceActivitiTestCase {
     
     // Query on process-instance
     assertEquals(2, historyService.createHistoricDetailQuery().formProperties().processInstanceId(processInstance.getId()).count());
+    assertEquals(0, historyService.createHistoricDetailQuery().formProperties().processInstanceId("unexisting").count());
+
+    // Complete the task by submitting the task properties
+    Task task = taskService.createTaskQuery().singleResult();
+    formProperties = new HashMap<String, String>();
+    formProperties.put("taskVar", "task form property");
+    formService.submitTaskFormData(task.getId(), formProperties);
+
+    assertEquals(3, historyService.createHistoricDetailQuery().formProperties().processInstanceId(processInstance.getId()).count());
     assertEquals(0, historyService.createHistoricDetailQuery().formProperties().processInstanceId("unexisting").count());
   }
   
