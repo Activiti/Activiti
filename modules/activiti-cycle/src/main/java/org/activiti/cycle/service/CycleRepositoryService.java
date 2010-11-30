@@ -30,12 +30,11 @@ import org.activiti.cycle.RepositoryNodeNotFoundException;
  * Cycle service used for accessing repositories.
  * <p />
  * Get an instance of this service by
- * {@link CycleService#getRepositoryService()}
+ * {@link CycleServiceFactory#getRepositoryService()}
  * 
- *  @see CycleService 
  */
 public interface CycleRepositoryService {
-  
+
   public static class RuntimeConnectorList implements Serializable {
 
     private static final long serialVersionUID = 1L;

@@ -20,7 +20,7 @@ import org.activiti.cycle.RepositoryNodeTag;
 /**
  * Cycle service used for managing tags.
  * <p />
- * Get an instance of this service by {@link CycleService#getCycleTagService()}
+ * Get an instance of this service by {@link CycleServiceFactory#getCycleTagService()}
  * 
  * @see CycleService
  */

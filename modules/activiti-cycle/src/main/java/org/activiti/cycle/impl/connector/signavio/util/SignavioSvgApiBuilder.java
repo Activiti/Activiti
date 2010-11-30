@@ -1,193 +1,111 @@
 package org.activiti.cycle.impl.connector.signavio.util;
 
-import java.util.ArrayList;
-import java.util.Comparator;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.StringWriter;
+import java.nio.charset.Charset;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.TreeMap;
-
 import org.activiti.cycle.RepositoryArtifact;
-import org.activiti.cycle.RepositoryException;
 import org.activiti.cycle.impl.connector.signavio.SignavioConnector;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 public class SignavioSvgApiBuilder {
 
-  public static final String HEADER = "<html><head><link href=\"../../res/css/activiti-core.css\" type=\"text/css\" rel=\"stylesheet\"></head><body>";
-  public static final String FOOTER = "</body></html>";
-  // public static final String SVGAPI_URL_REMOTE =
-  // "http://signavio-core-components.googlecode.com/svn/trunk/api/api/signavio-svg.js";
-  // TODO: Should that be configurable and point to a SaaS Signavio if that is
-  // used? Or is the local URL the best?
+  public static String SIGNAVIO_SVG_API_SCRIPT_TEMPLATE = "SignavioSvgApiScriptTemplate.xml";
+  public static String SIGNAVIO_SVG_API_HTML_TEMPLATE = "SignavioSvgApiHtmlTemplate.xml";
+  // TODO: fix absolute paths
   public static final String SVGAPI_URL_LOCAL = "http://localhost:8080/activiti-modeler/api/signavio-svg.js";
-  // maybe make this changable?
+  // TODO: fix absolute paths
   public static final String SERVER_SCRIPT_URL = "http://localhost:8080/activiti-modeler";
 
   private SignavioConnector connector;
+
   private RepositoryArtifact artifact;
 
-  private String authToken;
-  private String clickFunction;
+  private SignavioModelHighlighter modelHighlighter = new SignavioModelHighlighter();
 
-  // TODO: Remove the hard coded urls anyway!
-  private boolean useLocalScripts = true;
-  private static String svgApiScript = "";
+  private String htmlContent = "";
 
-  /**
-   * Map mapping a color for highlighting with a {@link Map} of node (ids) with
-   * messages to show
-   */
-  private Map<String, Map<String, List<String>>> nodesToHighlight = new TreeMap<String, Map<String, List<String>>>(new Comparator<String>() {
+  private String zoomLevel = "100";
 
-    public int compare(String o1, String o2) {
-      if (!o1.equals("red"))
-        return -1;
-      if (o1.equals(o2))
-        return 0;
-      return 1;
-    }
-  });
+  private String script;
 
-  /**
-   * Constructor to create a SignavioSvgApiBuilder object.
-   * 
-   * @param connector
-   *          required for constructing correct model url
-   * @param artifact
-   *          required for constructing correct model url
-   */
   public SignavioSvgApiBuilder(SignavioConnector connector, RepositoryArtifact artifact) {
     this.connector = connector;
     this.artifact = artifact;
   }
 
-  /**
-   * Submit a map containing the nodes to be highlighted and in which color.
-   * Key: Signavio ID, Value: Message to show
-   */
-  public SignavioSvgApiBuilder highlightNodes(Map<String, List<String>> nodes, String color) {
-    nodesToHighlight.put(color, nodes);
-    return this;
-  }
-
-  /**
-   * Maybe required to get access to models in saas/enterprise signavio.
-   * 
-   * @param authToken
-   *          authtoken for saas / enterprise signavio
-   */
-  public SignavioSvgApiBuilder authToken(String authToken) {
-    this.authToken = authToken;
-    return this;
-  }
-
-  /**
-   * A javascript function submitted as string. You have the javascript
-   * variables 'node' and 'editor' to your disposal.
-   * 
-   * @param clickFunction
-   *          a string representation of a javascript function, e.g.
-   *          'if(node.properties["oryx-name"]||node.properties["oryx-title"]) {
-   *          alert("Name: " + node.properties["oryx-name"] + "\n(Sid: " +
-   *          node.resourceId + ")"); };'
-   * @return
-   */
-  public SignavioSvgApiBuilder clickFunction(String clickFunction) {
-    this.clickFunction = clickFunction;
-    return this;
-  }
-
-  public SignavioSvgApiBuilder useLocalScripts(boolean useLocalScripts) {
-    this.useLocalScripts = useLocalScripts;
-    return this;
-  }
-
-  /**
-   * use buildHtml instead
-   * 
-   * @throws JSONException
-   */
-  @Deprecated
-  public String build() {
+  public String buildHtml(String script, String htmlContent) {
+    this.script = script;
+    this.htmlContent = htmlContent;
     return buildHtml();
   }
 
   public String buildHtml() {
-    return buildHtml(buildScript(), null);
+    // load template
+    String template = loadTemplate(SIGNAVIO_SVG_API_HTML_TEMPLATE);
+    if (template == null)
+      return "";
+
+    // add script
+    template = template.replace("SCRIPT", buildScript());
+
+    // add additional HTML content:
+    template = template.replaceAll("HTML_CONTENT", htmlContent);
+
+    return template;
   }
 
-  public static String buildHtml(String content) {
-    return buildHtml(content, null);
-  }
-
-  public static String buildHtml(String content, String additionalContent) {
-    if (additionalContent == null) {
-      additionalContent = "";
-    }
-    return HEADER + "<div id=\"model\">" + content + "</div>" + additionalContent + svgApiScript + FOOTER;
-  }
-
-  public static String buildHtml(String content, String additionalContent, int height) {
-    if (additionalContent == null) {
-      additionalContent = "";
-    }
-    return HEADER + "<div id=\"model\" style=\"height: " + height + "px;\">" + content + "</div>" + additionalContent + svgApiScript + FOOTER;
+  public String buildScript(int zoomLevel) {
+    this.zoomLevel = String.valueOf(zoomLevel);
+    return buildScript();
   }
 
   public String buildScript() {
-    return buildScript(100);
+    if (script != null)
+      return script;
+
+    String template = loadTemplate(SIGNAVIO_SVG_API_SCRIPT_TEMPLATE);
+    if (template == null)
+      return "";
+    // set properties
+    template = template.replaceAll("SIGNAVIO_EDITOR_SRC", SVGAPI_URL_LOCAL);
+    template = template.replaceAll("SIGNAVIO_MODEL_URL", connector.getConfiguration().getModelUrl(artifact.getNodeId()));
+    template = template.replaceAll("SIGNAVIO_SERVER_URL", connector.getConfiguration().getSignavioUrl());
+    template = template.replaceAll("SIGNAVIO_ZOOM", zoomLevel);
+
+    // build highlights:
+    StringWriter extensionsWriter = new StringWriter();
+    modelHighlighter.participateInBuilder(extensionsWriter);
+    template = template.replaceAll("HIGHLIGHTS", extensionsWriter.toString());
+
+    return template;
   }
 
-  public String buildScript(Integer zoom) {
+  private String loadTemplate(String template) {
+    BufferedReader reader = null;
     try {
-      StringBuilder svgApiScriptBuilder = new StringBuilder();
-      svgApiScriptBuilder.append("<script type=\"text/javascript\" src=\"");
-      // if (useLocalScripts) {
-      svgApiScriptBuilder.append(SVGAPI_URL_LOCAL);
-      // } else {
-      // svgApiScriptBuilder.append(SVGAPI_URL_REMOTE);
-      // }
-      svgApiScriptBuilder.append("\"></script>");
-      svgApiScript = svgApiScriptBuilder.toString();
-
-      StringBuilder svgApiCall = new StringBuilder();
-      svgApiCall.append("<script type=\"text/plain\">");
-      svgApiCall.append("{");
-      svgApiCall.append("url: \"" + connector.getConfiguration().getModelUrl(artifact.getNodeId()) + "\"");
-
-      if (useLocalScripts) {
-        // url to svgapi script
-        svgApiCall.append(", server: \"" + connector.getConfiguration().getSignavioUrl() + "\"");
+      InputStream is = this.getClass().getResourceAsStream(template);
+      reader = new BufferedReader(new InputStreamReader(is, Charset.forName("UTF-8")));
+      StringWriter resultWriter = new StringWriter();
+      String line;
+      while ((line = reader.readLine()) != null) {
+        resultWriter.append(line);
       }
+      reader.close();
+      return resultWriter.toString();
+    } catch (IOException e) {
+      if (reader == null)
+        return null;
+      try {
+        reader.close();
+      } catch (IOException ex) {
 
-      svgApiCall.append(", element: \"model\"");
-
-      // if authToken is available
-      if (authToken != null && authToken.length() > 0) {
-        svgApiCall.append(", authToken: \"" + authToken + "\",");
       }
-
-      // register mouseover event on callback function
-      // svgApiCall.append(", callback: " + registerMouseOverEvent());
-
-      // executed when click on a shape
-      svgApiCall.append(", click: " + createClickFunction());
-
-      // highlight nodes
-      svgApiCall.append(", focus: " + buildHighlightning());
-
-      // initial zoom
-      svgApiCall.append(", zoom: " + zoom);
-
-      svgApiCall.append("}");
-      svgApiCall.append("</script>");
-
-      return svgApiCall.toString();
-    } catch (JSONException ex) {
-      throw new RepositoryException("Unexpected exception with JSON handling for " + artifact, ex);
+      return null;
     }
   }
 
@@ -218,119 +136,21 @@ public class SignavioSvgApiBuilder {
     return html.toString();
   }
 
-  private String registerMouseOverEvent() throws JSONException {
-    if (nodesToHighlight == null || nodesToHighlight.isEmpty()) {
-      return "function(editor) {}";
-    }
-
-    StringBuilder callbackFunc = new StringBuilder();
-    callbackFunc.append("function(editor) {");
-    callbackFunc.append("editor.registerOnEvent(\"mouseover\", function(evt, node) {");
-    callbackFunc.append("var errorMessages = " + createJsonMessagesObject() + ";");
-    callbackFunc.append("var myNodeMessages = errorMessages[node.resourceId];");
-    callbackFunc.append("if (myNodeMessages != '' && myNodeMessages != 'undefined' && myNodeMessages != undefined) {");
-    callbackFunc.append("var myNodeMessagesStr = \"\";");
-    callbackFunc.append("for (msg in myNodeMessages) {");
-    callbackFunc.append("myNodeMessagesStr += myNodeMessages[msg] + \"\\n\";");
-    callbackFunc.append("}");
-    callbackFunc.append("alert(\"Sid: \" + node.resourceId + \"\\nMessages: \" + myNodeMessagesStr);");
-    callbackFunc.append("}");
-    // @TODO: doesn't work atm, unable to get variable 'me'
-    // callbackFunc.append("if (node instanceof me.ORYX.Core.Shape) {");
-    // callbackFunc.append("}");
-    callbackFunc.append("});");
-
-    callbackFunc.append("}");
-    return callbackFunc.toString();
+  public SignavioSvgApiBuilder addHighlight(SignavioSvgHighlight highlight) {
+    modelHighlighter.addHighlight(highlight);
+    return this;
   }
 
-  private String createClickFunction() throws JSONException {
-    StringBuilder clickFunc = new StringBuilder();
-    clickFunc.append("function(node, editor) {");
-    if (clickFunction != null && clickFunction.length() > 0) {
-      clickFunc.append(clickFunction);
-    } else {
-      // create default click function
-      clickFunc.append("var errorMessages = " + createJsonMessagesObject() + ";");
-      clickFunc.append("var myNodeMessages = errorMessages[node.resourceId];");
-      clickFunc.append("if (myNodeMessages != '' && myNodeMessages != 'undefined' && myNodeMessages != undefined) {");
-      clickFunc.append("var myNodeMessagesStr = \"\";");
-      clickFunc.append("for (msg in myNodeMessages) {");
-      clickFunc.append("myNodeMessagesStr += myNodeMessages[msg] + \"\\n\";");
-      clickFunc.append("}");
-      clickFunc.append("alert(\"Sid: \" + node.resourceId + \"\\nErrorMessages: \" + myNodeMessagesStr);");
-      clickFunc.append("}");
-
-      // clickFunc.append("var errorMessages = " + createJsonMessagesObject() +
-      // ";");
-      // clickFunc.append("if(node.properties[\"oryx-name\"] || node.properties[\"oryx-title\"] || node.resourceId) {");
-      // clickFunc.append("alert(\"Name: \" + node.properties[\"oryx-name\"] + \" (Sid: \" + node.resourceId + \")\");");
-      // clickFunc.append("}");
-    }
-    clickFunc.append("}");
-
-    return clickFunc.toString();
+  public SignavioSvgApiBuilder addHtmlContent(String additionalContent) {
+    htmlContent = additionalContent;
+    return this;
   }
 
-  private JSONObject highlightNodesMap(String color, Map<String, List<String>> map) throws JSONException {
-    if (map == null || map.isEmpty()) {
-      return null;
+  public SignavioSvgApiBuilder highlightNodes(List<SignavioSvgHighlight> nodes) {
+    for (SignavioSvgHighlight signavioSvgHighlight : nodes) {
+      addHighlight(signavioSvgHighlight);
     }
-    // set default color if not provided
-    if (color == null || color.length() == 0) {
-      color = "red";
-    }
-
-    // hack for making sure that lanes do not 'overlap' everything else
-    JSONObject highlightNodesObj = new JSONObject();
-    List<String> lanes = new ArrayList<String>();
-    for (Entry<String, List<String>> entry : map.entrySet()) {
-      for (String name : entry.getValue()) {
-        if (name.toLowerCase().contains("lane"))
-          lanes.add(entry.getKey());
-      }
-    }
-    for (String string : lanes) {
-      map.remove(string);
-    }
-
-    highlightNodesObj.put("nodes", map.keySet());
-    JSONObject attributes = new JSONObject();
-    attributes.put("fill", color);
-    highlightNodesObj.put("attributes", attributes);
-
-    return highlightNodesObj;
-  }
-
-  private String buildHighlightning() throws JSONException {
-    if (nodesToHighlight == null || nodesToHighlight.isEmpty()) {
-      return "[]";
-    }
-
-    JSONArray focusArr = new JSONArray();
-    for (Entry<String, Map<String, List<String>>> entry : nodesToHighlight.entrySet()) {
-      Map<String, List<String>> value = (Map<String, List<String>>) entry.getValue();
-      if (!value.isEmpty()) {
-        focusArr.put(highlightNodesMap((String) entry.getKey(), value));
-      }
-    }
-
-    return focusArr.toString();
-  }
-
-  private String createJsonMessagesObject() throws JSONException {
-    if (nodesToHighlight == null || nodesToHighlight.isEmpty()) {
-      return "\"\"";
-    }
-
-    JSONObject jsonMessageObj = new JSONObject();
-    for (Entry<String, Map<String, List<String>>> entry : nodesToHighlight.entrySet()) {
-      for (Entry<String, List<String>> mapEntry : entry.getValue().entrySet()) {
-        jsonMessageObj.put(mapEntry.getKey(), mapEntry.getValue());
-      }
-    }
-
-    return jsonMessageObj.toString();
+    return this;
   }
 
 }

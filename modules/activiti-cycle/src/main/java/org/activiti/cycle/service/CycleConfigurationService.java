@@ -24,7 +24,7 @@ import org.activiti.cycle.impl.conf.RepositoryConnectorConfiguration;
  * String-based interface.
  * <p />
  * Retreive an instance of this Service by
- * {@link CycleService#getConfigurationService()}
+ * {@link CycleServiceFactory#getConfigurationService()}
  * 
  * @see CycleService
  * @author daniel.meyer@camunda.com

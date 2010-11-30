@@ -11,6 +11,9 @@ import org.activiti.cycle.RepositoryException;
 import org.activiti.cycle.impl.connector.signavio.SignavioConnector;
 import org.activiti.cycle.impl.connector.signavio.SignavioPluginDefinition;
 import org.activiti.cycle.impl.connector.signavio.util.SignavioSvgApiBuilder;
+import org.activiti.cycle.impl.connector.signavio.util.SignavioSvgHighlight;
+import org.activiti.cycle.impl.connector.signavio.util.SignavioSvgHighlightType;
+import org.activiti.cycle.impl.connector.signavio.util.SignavioSvgNodeType;
 import org.oryxeditor.server.diagram.Diagram;
 import org.oryxeditor.server.diagram.DiagramBuilder;
 import org.oryxeditor.server.diagram.Shape;
@@ -36,17 +39,17 @@ public class SignavioDiffProvider extends SignavioContentRepresentationProvider 
       diffTarget = artifact;
     }
 
-    Map<String, List<String>> missingSourceElements = new HashMap<String, List<String>>();
-    Map<String, List<String>> missingTargetElements = new HashMap<String, List<String>>();
-    
+    List<SignavioSvgHighlight> missingSourceElements = new ArrayList<SignavioSvgHighlight>();
+    List<SignavioSvgHighlight> missingTargetElements = new ArrayList<SignavioSvgHighlight>();
+
     // create DIFF
     String sourceJson = connector.getContent(artifact.getNodeId(), SignavioPluginDefinition.CONTENT_REPRESENTATION_ID_JSON).asString();
     String targetJson = connector.getContent(diffTarget.getNodeId(), SignavioPluginDefinition.CONTENT_REPRESENTATION_ID_JSON).asString();
-    
+
     try {
       Diagram sourceDiagram = DiagramBuilder.parseJson(sourceJson);
       Diagram targetDiagram = DiagramBuilder.parseJson(targetJson);
-    
+
       // First quick HACKY way to find missing elements on the top level
       for (Shape sourceShape : sourceDiagram.getShapes()) {
         String sourceId = sourceShape.getResourceId();
@@ -58,10 +61,8 @@ public class SignavioDiffProvider extends SignavioContentRepresentationProvider 
           }
         }
         if (!existant) {
-          // add to missing nodes in target artifact
-          ArrayList<String> messages = new ArrayList<String>();
-          messages.add("MISSING");
-          missingSourceElements.put(sourceId, messages);
+          // add to missing nodes in target artifact          
+          missingSourceElements.add(new SignavioSvgHighlight(SignavioSvgNodeType.NODE, SignavioSvgHighlightType.INFO, sourceId, "MISSING"));
         }
       }
       for (Shape targetShape : targetDiagram.getShapes()) {
@@ -74,10 +75,8 @@ public class SignavioDiffProvider extends SignavioContentRepresentationProvider 
           }
         }
         if (!existant) {
-          // add to missing nodes in target artifact
-          ArrayList<String> messages = new ArrayList<String>();
-          messages.add("MISSING");
-          missingTargetElements.put(targetId, messages);
+          // add to missing nodes in target artifact          
+          missingTargetElements.add(new SignavioSvgHighlight(SignavioSvgNodeType.NODE, SignavioSvgHighlightType.INFO, targetId, "MISSING"));
         }
       }
     } catch (Exception e) {
@@ -85,20 +84,20 @@ public class SignavioDiffProvider extends SignavioContentRepresentationProvider 
     }
 
     // and create resulting HTML
-    String script1 = new SignavioSvgApiBuilder(connector, artifact).highlightNodes(missingSourceElements, INFO_COLOR).buildScript(75);
-    String script2 = new SignavioSvgApiBuilder(connector, diffTarget).highlightNodes(missingTargetElements, INFO_COLOR).buildScript(75);
+    String script1 = new SignavioSvgApiBuilder(connector, artifact).highlightNodes(missingSourceElements).buildScript(75);
+    String script2 = new SignavioSvgApiBuilder(connector, diffTarget).highlightNodes(missingTargetElements).buildScript(75);
 
     Integer height = 200;
     String htmlContent = "<p><b>Expertimental</b> feature to play around with Signavio diffing.<br/>Currently, showing diff against artifact "
             + diffTarget.getGlobalUniqueId() + ".<br/>Use the Actions menu to select another diff target.</p>";
-    
+
     String additionalContent = "<p>Changes from " + diffTarget.getMetadata().getName() + " in " + artifact.getMetadata().getName();
     additionalContent += "<div id=\"model1\" style=\"height: " + height + "px;\">" + script1 + "</div>";
     additionalContent += "Changes from " + artifact.getMetadata().getName() + " in " + diffTarget.getMetadata().getName();
     additionalContent += "<div id=\"model2\" style=\"height: " + height + "px;\">" + script2 + "</div>";
 
-    String html = SignavioSvgApiBuilder.buildHtml(htmlContent, additionalContent);
+    String html = new SignavioSvgApiBuilder(connector, artifact).buildHtml(htmlContent, additionalContent);
     content.setValue(html);
-    
+
   }
 }
