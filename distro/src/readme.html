@@ -49,7 +49,207 @@
 
   <h1>Activiti Release Notes</h1>
   
-    <h3>5.0.rc1 (November 1, 2010)</h3>
+
+  <h3>Release Notes - Activiti - Version 5.0</h3>
+
+  <h4>Highlights</h4>
+  <ul>
+    <li>Various bug fixes</li>
+    <li>Activiti Engine: Added more configuration options and synced standalone with Spring configuration</li>
+    <li>Activiti Engine: Added task listeners</li>
+    <li>Activiti Probe: Deployment through file upload</li>
+    <li>Activiti Designer: Possibility to add your own developed nodes to the Designer with the Designer extension functionality</li>
+    <li>Activiti Designer: BPMN 2.0 XML editor with content assist</li>
+    <li>Activiti Designer: Deployment editor with support to generate a BAR file</li>
+    <li>Activiti Designer: Support for e-mail and manual tasks</li>
+    <li>Activiti Designer: Field extensions editor for the Service task and support for expressions</li>
+    <li>Activiti Designer: Support for Formkey attribute for User tasks</li>
+    <li>Activiti Designer: Automatic generation of the BPMN 2.0 XML and a process image after each save of the editor diagram (no need to for an explicit export).</li>
+  </ul>
+
+<h4>        Bug
+</h4>
+<ul>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-194'>ACT-194</a>] -         Business model is not persisted when reconnecting SequenceFlow
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-215'>ACT-215</a>] -         TaskEntity does not populate processInstanceId
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-217'>ACT-217</a>] -         Review documentation
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-225'>ACT-225</a>] -         Cannot see database view in Probe
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-255'>ACT-255</a>] -         Access via url to Explorer lose url after authentication.
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-295'>ACT-295</a>] -         Sorting processes on name doesn&#39;t work
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-297'>ACT-297</a>] -         Error when creating link in activiti-cycle on postgres DB
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-306'>ACT-306</a>] -         Nullpointer exception when sequence flow has invalid destination
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-308'>ACT-308</a>] -         Review DeployBarTask handling when no ProcessEngine is found
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-314'>ACT-314</a>] -         REST-call task get doesn&#39;t return valid JSON
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-318'>ACT-318</a>] -         Cannot open PNG picture in Activiti-Cycle if the model name has whitespaces in the name
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-320'>ACT-320</a>] -         Replace of JAVA_OPTS in demo setup not working on Windows
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-323'>ACT-323</a>] -         Business key not persisted in HistoricProcessInstance
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-329'>ACT-329</a>] -         HistoricProcessInstance startActivityId() and endActivityId() is always null
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-334'>ACT-334</a>] -         Remove check whether user/group exists when claim/addCandidateXX/etc.
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-338'>ACT-338</a>] -         Pagination Links in Processes List in Activiti Explorer doesn&#39;t work
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-347'>ACT-347</a>] -         Fix Spring bean usage in ServiceTask
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-351'>ACT-351</a>] -         Possible illegal query results when querying ProcessInstances by date/long variable value
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-352'>ACT-352</a>] -         HistoricVariableUpdate of type byteArray/serializable throws NPE when calling getValue()
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-353'>ACT-353</a>] -         Boolean variables are stored as bytearray
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-366'>ACT-366</a>] -         Problems with Umlauts in Modeler
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-369'>ACT-369</a>] -         Modeler requires Java 6 to run
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-371'>ACT-371</a>] -         Latest SVG API doesn&#39;t work with Activiti Modeler examples
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-377'>ACT-377</a>] -         Empty diagrams have no Process entity by default
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-379'>ACT-379</a>] -         Methode getLabels() is missing in Shape
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-391'>ACT-391</a>] -         Exception with BPMN 2.0 XML Export of examples in Modeler.
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-403'>ACT-403</a>] -         Cycle in demo-setup throws exception when opening &#39;Activiti Modeler&#39; node in tree
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-405'>ACT-405</a>] -         Cycle create-scripts for oracle contain errors
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-409'>ACT-409</a>] -         Task form properties not persisted on history level audit
+</li>
+</ul>
+    
+<h4>        Improvement
+</h4>
+<ul>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-162'>ACT-162</a>] -         Simplify extensibility of identity component
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-212'>ACT-212</a>] -         Prefix foreign keys with FK_ACT_* instead of FK_*
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-252'>ACT-252</a>] -         Typo in warning message is misleading: &quot;XPath currently not supported as typeLanguage&quot;
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-274'>ACT-274</a>] -         Switch to Spring Surf/Webscripts 1.0 for all web applications &amp; rest api (and use its new abstract authenticator base class)
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-292'>ACT-292</a>] -         Stop making default event being bookmarked
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-327'>ACT-327</a>] -         Add finished() to the HistoricActivityInstanceQuery to be able find all completed activities
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-328'>ACT-328</a>] -         add getId() into HisctoricActivitiInstance and add search by id into HistoricActivitiInstanceQuery
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-359'>ACT-359</a>] -         Invoke export to BPMN 2.0 automatically via ExportMarshaller extension point
+</li>
+</ul>
+    
+<h4>        New Feature
+</h4>
+<ul>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-211'>ACT-211</a>] -         BPMN: assignment handler
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-222'>ACT-222</a>] -         Make activiti jars valid OSGi bundles
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-235'>ACT-235</a>] -         Add an OSGi extender to deploy activiti processes as osgi bundles along with the needed URL handlers and fileinstall deployers
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-278'>ACT-278</a>] -         Add support for extending designer&#39;s functionality with custom service tasks
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-290'>ACT-290</a>] -         SVG API should not peform access to Signavio Academic Version in the Internet
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-300'>ACT-300</a>] -         Deploy business archive with Activiti Probe
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-301'>ACT-301</a>] -         Expose getFormService() for ActivitiRule
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-360'>ACT-360</a>] -         Provide an osgi web bundle for the rest api
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-363'>ACT-363</a>] -         Bug with relative paths in Modler Backend
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-364'>ACT-364</a>] -         The BPMN 2.0 serialization isn&#39;t the latest version
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-365'>ACT-365</a>] -         The BPMN 2.0 DI is still the early draft, not the spec version
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-367'>ACT-367</a>] -         Release a new Maven version of the Signavio core components and upload them to the alfresco repository
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-396'>ACT-396</a>] -         activiti.cfg.jar should go in webapps\activiti-rest\WEB-INF\lib as well
+</li>
+</ul>
+    
+<h4>        Task
+</h4>
+<ul>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-123'>ACT-123</a>] -         Review the user guide for experimental features
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-163'>ACT-163</a>] -         Investigate if smaller groovy jar is sufficient
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-171'>ACT-171</a>] -         Remove model repository workaround in demo.setup
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-180'>ACT-180</a>] -         Fix forced downloads in mule build
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-205'>ACT-205</a>] -         Create Ant script to assemble update site
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-256'>ACT-256</a>] -         Changed config param dbSchemaStrategy to databaseSchemaUpdate
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-296'>ACT-296</a>] -         Fix date picker in safari
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-299'>ACT-299</a>] -         Fix JobQuery test
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-311'>ACT-311</a>] -         Rename JavaDelegation to JavaDelegate
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-315'>ACT-315</a>] -         fix wsdl importer parsing
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-317'>ACT-317</a>] -         Improve lib dependency management in distribution
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-321'>ACT-321</a>] -         Add orderByCreateTime() to TaskQuery
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-332'>ACT-332</a>] -         Make variable types configurable
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-335'>ACT-335</a>] -         Move modeler patching from demo setup to a dedicated build
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-337'>ACT-337</a>] -         Refactor distribution to remove maven and include the libs in the distro
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-340'>ACT-340</a>] -         Add process definition diagram resource property
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-342'>ACT-342</a>] -         Make sessions configurable
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-348'>ACT-348</a>] -         Make handling of process definition resource name and other resource names consistent
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-349'>ACT-349</a>] -         Delete rest 2 webapp
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-355'>ACT-355</a>] -         Test java delegations in demo setup after distro refactoring
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-358'>ACT-358</a>] -         Lazy initialization of delegation classes
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-378'>ACT-378</a>] -         Unify and simplify configuration
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-381'>ACT-381</a>] -         Verify history level configuration
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-383'>ACT-383</a>] -         Fix exception message
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-393'>ACT-393</a>] -         Create build file for example projects to deploy business archives and classes
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-394'>ACT-394</a>] -         Review setup target cfg.create
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-395'>ACT-395</a>] -         Doc URIEncoding for Activiti Modeler
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-399'>ACT-399</a>] -         Check driver jars and setup demo.start with other dbs
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-400'>ACT-400</a>] -         Add release notes to the readme.html
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-401'>ACT-401</a>] -         Add cxf module to the checkmule profile
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-402'>ACT-402</a>] -         Add version number to userguide title
+</li>
+</ul>
+        
+            <h3>5.0.rc1 (November 1, 2010)</h3>
 
     <h4>Highlights</h4>
     
