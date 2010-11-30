@@ -109,7 +109,13 @@ Motivation:&lt;br/&gt;
 &lt;textarea name=&quot;vacationMotivation&quot; value=&quot;&quot;&gt;&lt;/textarea&gt;</programlisting>
     </para>
     
-    <para><link linkend="experimental"><emphasis role="bold">&lt;EXPERIMENTAL&gt;</emphasis></link> The hidden 
+    <para><link linkend="experimental"><emphasis role="bold">&lt;EXPERIMENTAL&gt;</emphasis></link>
+    The mechanism of using hidden fields to provide extra information such as type and required
+    will be changed in one of the subsequent releases.  In the future this type of metadata will 
+    be based on <literal>FormService.getStartFormData</literal> and <literal>FormService.getTaskFormData</literal> 
+    </para>
+    <para> 
+      The hidden 
 	    fields provide extra information to the Activiti Explorer client application.
 	    So the Javascript in the browser will use the hidden fields and enhance the corresponding 
 	    input fields.  For example, it's possible to specify that a certain text field is a date 
