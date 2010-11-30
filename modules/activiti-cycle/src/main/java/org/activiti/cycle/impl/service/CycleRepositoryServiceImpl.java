@@ -21,15 +21,14 @@ import org.activiti.cycle.impl.connector.util.TransactionalConnectorUtils;
 import org.activiti.cycle.impl.db.CycleLinkDao;
 import org.activiti.cycle.impl.db.entity.RepositoryArtifactLinkEntity;
 import org.activiti.cycle.service.CycleRepositoryService;
-import org.activiti.cycle.service.CycleService;
 
 /**
- * @author bernd.ruecker@camunda.com  
+ * @author bernd.ruecker@camunda.com
  * @author Nils Preusker (nils.preusker@camunda.com)
  */
 public class CycleRepositoryServiceImpl implements CycleRepositoryService {
 
-  private CycleService cycleService;
+  private CycleServiceConfiguration cycleServiceConfiguration;
 
   private CycleLinkDao linkDao;
 
@@ -43,8 +42,8 @@ public class CycleRepositoryServiceImpl implements CycleRepositoryService {
     // perform initialization
   }
 
-  public void setCycleService(CycleService cycleService) {
-    this.cycleService = cycleService;
+  public void setCycleServiceConfiguration(CycleServiceConfiguration cycleServiceConfiguration) {
+    this.cycleServiceConfiguration = cycleServiceConfiguration;
   }
 
   public void setLinkDao(CycleLinkDao linkDao) {

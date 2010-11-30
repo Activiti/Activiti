@@ -16,7 +16,6 @@ package org.activiti.rest.api.cycle;
 import java.util.Map;
 
 import org.activiti.cycle.RepositoryFolder;
-import org.activiti.cycle.service.CycleService;
 import org.activiti.rest.util.ActivitiRequest;
 import org.activiti.rest.util.ActivitiRequestObject;
 import org.springframework.extensions.webscripts.Cache;

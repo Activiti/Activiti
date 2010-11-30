@@ -18,8 +18,6 @@ import org.activiti.cycle.impl.conf.ConfigurationContainer;
 import org.activiti.cycle.impl.conf.RepositoryConnectorConfiguration;
 import org.activiti.cycle.impl.connector.demo.action.CopyArtifactAction;
 import org.activiti.cycle.impl.plugin.PluginFinder;
-import org.activiti.cycle.impl.service.CycleServiceImpl;
-import org.activiti.cycle.service.CycleService;
 import org.junit.Before;
 import org.junit.Test;
 

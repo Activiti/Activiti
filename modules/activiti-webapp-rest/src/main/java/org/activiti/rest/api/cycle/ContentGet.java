@@ -26,10 +26,9 @@ import org.activiti.cycle.ContentRepresentation;
 import org.activiti.cycle.CycleDefaultMimeType;
 import org.activiti.cycle.RepositoryArtifact;
 import org.activiti.cycle.impl.connector.signavio.transform.TransformationException;
-import org.activiti.cycle.impl.service.CycleServiceImpl;
 import org.activiti.cycle.service.CycleConfigurationService;
 import org.activiti.cycle.service.CycleRepositoryService;
-import org.activiti.cycle.service.CycleService;
+import org.activiti.cycle.service.CycleServiceFactory;
 import org.activiti.cycle.service.CycleTagService;
 import org.activiti.engine.impl.util.IoUtil;
 import org.activiti.rest.api.cycle.session.CycleHttpSession;
@@ -44,7 +43,6 @@ import org.springframework.extensions.webscripts.WebScriptResponse;
  */
 public class ContentGet extends ActivitiStreamingWebScript {
 
-  protected CycleService cycleService;
 
   protected CycleRepositoryService repositoryService;
 
@@ -53,10 +51,9 @@ public class ContentGet extends ActivitiStreamingWebScript {
   protected CycleConfigurationService configurationService;
 
   public ContentGet() {
-    cycleService = CycleServiceImpl.getInstance();
-    configurationService = cycleService.getConfigurationService();
-    repositoryService = cycleService.getRepositoryService();
-    cycleTagService = cycleService.getTagService();
+    configurationService = CycleServiceFactory.getConfigurationService();
+    repositoryService = CycleServiceFactory.getRepositoryService();
+    cycleTagService = CycleServiceFactory.getTagService();
   }
 
   @Override

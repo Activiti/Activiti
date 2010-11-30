@@ -12,7 +12,6 @@ import org.activiti.cycle.impl.CycleTagContentImpl;
 import org.activiti.cycle.impl.connector.view.TagConnectorConfiguration;
 import org.activiti.cycle.impl.db.CycleTagDao;
 import org.activiti.cycle.impl.db.entity.RepositoryNodeTagEntity;
-import org.activiti.cycle.service.CycleService;
 import org.activiti.cycle.service.CycleTagService;
 
 /**
@@ -23,13 +22,13 @@ public class CycleTagServiceImpl implements CycleTagService {
 
   private CycleTagDao tagDao;
 
-  private CycleService cycleService;
+  private CycleServiceConfiguration cycleServiceConfiguration;
 
   public CycleTagServiceImpl() {
   }
 
-  public void setCycleService(CycleService cycleService) {
-    this.cycleService = cycleService;
+  public void setCycleServiceConfiguration(CycleServiceConfiguration cycleServiceConfiguration) {
+    this.cycleServiceConfiguration = cycleServiceConfiguration;
   }
 
   public void setTagDao(CycleTagDao tagDao) {
@@ -105,7 +104,7 @@ public class CycleTagServiceImpl implements CycleTagService {
 
   public CycleTagContent getTagContent(String name) {
     CycleTagContentImpl tagContent = tagDao.getTagContent(name);
-    tagContent.resolveRepositoryArtifacts(cycleService);
+    tagContent.resolveRepositoryArtifacts();
     return tagContent;
   }
 

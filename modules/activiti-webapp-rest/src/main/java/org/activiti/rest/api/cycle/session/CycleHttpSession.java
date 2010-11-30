@@ -15,8 +15,8 @@ import org.activiti.cycle.impl.conf.ConfigurationContainer;
 import org.activiti.cycle.impl.conf.PasswordEnabledRepositoryConnectorConfiguration;
 import org.activiti.cycle.impl.connector.view.TagConnectorConfiguration;
 import org.activiti.cycle.impl.plugin.PluginFinder;
-import org.activiti.cycle.impl.service.CycleServiceImpl;
 import org.activiti.cycle.service.CycleRepositoryService;
+import org.activiti.cycle.service.CycleServiceFactory;
 import org.activiti.cycle.service.CycleRepositoryService.RuntimeConnectorList;
 import org.activiti.rest.util.ActivitiRequest;
 
@@ -51,7 +51,7 @@ public class CycleHttpSession {
     }
     if (connectorList.connectors == null) {
       // populate list of connectors if empty
-      ConfigurationContainer container = CycleServiceImpl.getInstance().getConfigurationService().getConfigurationContainer();
+      ConfigurationContainer container = CycleServiceFactory.getConfigurationService().getConfigurationContainer();
       List<RepositoryConnector> connectors = container.getConnectorList();
       connectorList.connectors = connectors;
     } else {
@@ -103,7 +103,7 @@ public class CycleHttpSession {
     // this is guaranteed to be initialized now
     RuntimeConnectorList connectorList = CycleSessionContext.getFromCurrentContext(RuntimeConnectorList.class);
 
-    CycleRepositoryService repositoryService = CycleServiceImpl.getInstance().getRepositoryService();
+    CycleRepositoryService repositoryService = CycleServiceFactory.getRepositoryService();
 
     // If we get here we can assume that all the required logins are
     // available
@@ -126,7 +126,7 @@ public class CycleHttpSession {
     // add tag connector hard coded for the moment (at the first node in the
     // tree)
     // TODO: move to better place !!!
-    connectorList.connectors.add(0, new TagConnectorConfiguration(CycleServiceImpl.getInstance()).createConnector());
+    connectorList.connectors.add(0, new TagConnectorConfiguration().createConnector());
 
   }
 

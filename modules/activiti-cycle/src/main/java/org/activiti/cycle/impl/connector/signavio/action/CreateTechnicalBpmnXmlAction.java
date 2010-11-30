@@ -11,8 +11,8 @@ import org.activiti.cycle.impl.ParameterizedHtmlFormTemplateAction;
 import org.activiti.cycle.impl.connector.fs.FileSystemPluginDefinition;
 import org.activiti.cycle.impl.connector.signavio.provider.ActivitiCompliantBpmn20Provider;
 import org.activiti.cycle.impl.db.entity.RepositoryArtifactLinkEntity;
-import org.activiti.cycle.impl.service.CycleServiceImpl;
 import org.activiti.cycle.service.CycleRepositoryService;
+import org.activiti.cycle.service.CycleServiceFactory;
 
 /**
  * This action creates a technical BPMN 2.0 XML for the process engines. It
@@ -61,7 +61,7 @@ public class CreateTechnicalBpmnXmlAction extends ParameterizedHtmlFormTemplateA
       link.setTargetArtifact(targetArtifact);
       link.setComment(comment);
       link.setLinkType(getLinkType());
-      CycleRepositoryService repositoryService = CycleServiceImpl.getInstance().getRepositoryService();
+      CycleRepositoryService repositoryService = CycleServiceFactory.getRepositoryService();
       repositoryService.addArtifactLink(link);
     }
   }

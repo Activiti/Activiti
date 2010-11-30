@@ -12,19 +12,26 @@
  */
 package org.activiti.cycle.service;
 
+import org.activiti.cycle.impl.service.CycleServiceConfiguration;
+
 /**
  * This is the central entry point for Activiti Cycle and provides access to the
  * {@link CycleRepositoryService}, the {@link CycleTagService} and the
  * {@link CycleConfigurationService}.
  * 
  */
-public interface CycleService {
+public class CycleServiceFactory {
 
-  public CycleRepositoryService getRepositoryService();
+  public static CycleRepositoryService getRepositoryService() {
+    return CycleServiceConfiguration.getInstance().getRepositoryService();
+  }
 
-  public CycleTagService getTagService();
+  public static CycleTagService getTagService() {
+    return CycleServiceConfiguration.getInstance().getTagService();
+  }
 
-  public CycleConfigurationService getConfigurationService();
-
+  public static CycleConfigurationService getConfigurationService() {
+    return CycleServiceConfiguration.getInstance().getConfigurationService();
+  }
 
 }

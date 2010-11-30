@@ -35,7 +35,7 @@ public class PluginFinder {
   /**
    * Servlet context is needed in wars to access classpath
    */
-  private static ServletContext servletContext = null;
+  public static ServletContext servletContext = null;
 
   private static PluginFinder instance;
 

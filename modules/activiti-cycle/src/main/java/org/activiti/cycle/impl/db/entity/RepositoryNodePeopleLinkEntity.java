@@ -6,9 +6,8 @@ import java.util.Map;
 import org.activiti.cycle.RepositoryArtifact;
 import org.activiti.cycle.RepositoryNode;
 import org.activiti.cycle.RepositoryNodePeopleLink;
-import org.activiti.cycle.impl.service.CycleServiceImpl;
 import org.activiti.cycle.service.CycleRepositoryService;
-import org.activiti.cycle.service.CycleService;
+import org.activiti.cycle.service.CycleServiceFactory;
 import org.activiti.engine.impl.db.PersistentObject;
 
 /**
@@ -18,7 +17,7 @@ import org.activiti.engine.impl.db.PersistentObject;
  * @author ruecker
  */
 public class RepositoryNodePeopleLinkEntity implements PersistentObject, RepositoryNodePeopleLink {
-  
+
   /**
    * TODO: Add own mini repository for types incling names for forward and
    * reverse direction (like "is implemented by" in this case)
@@ -28,18 +27,18 @@ public class RepositoryNodePeopleLinkEntity implements PersistentObject, Reposit
   public static final String TYPE_INVOLVED = "involved";
   public static final String TYPE_INFORMED = "informed";
   public static final String TYPE_WATCH = "watching";
-  
+
   /**
-   * artificial id used as primary key to identify this link
-   * auto generated primary key
+   * artificial id used as primary key to identify this link auto generated
+   * primary key
    */
   public String id;
-  
+
   public String sourceConnectorId;
   public String sourceArtifactId;
-  
+
   public transient RepositoryArtifact sourceRepositoryArtifact;
-  
+
   public Long sourceRevision;
 
   /**
@@ -63,12 +62,11 @@ public class RepositoryNodePeopleLinkEntity implements PersistentObject, Reposit
    */
   public String comment;
 
-
-  public void resolveArtifacts(CycleService service) {
-    CycleRepositoryService repositoryService = CycleServiceImpl.getInstance().getRepositoryService();
-    this.sourceRepositoryArtifact = repositoryService.getRepositoryArtifact(sourceConnectorId, sourceArtifactId);   
+  public void resolveArtifacts() {
+    CycleRepositoryService repositoryService = CycleServiceFactory.getRepositoryService();
+    this.sourceRepositoryArtifact = repositoryService.getRepositoryArtifact(sourceConnectorId, sourceArtifactId);
   }
-  
+
   public void setSourceArtifact(RepositoryArtifact sourceArtifact) {
     sourceRepositoryArtifact = sourceArtifact;
     sourceConnectorId = sourceArtifact.getConnectorId();
@@ -87,7 +85,7 @@ public class RepositoryNodePeopleLinkEntity implements PersistentObject, Reposit
     persistentState.put("comment", comment);
     return persistentState;
   }
-  
+
   public String getId() {
     return id;
   }

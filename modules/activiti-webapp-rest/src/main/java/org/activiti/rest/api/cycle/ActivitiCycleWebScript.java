@@ -16,10 +16,9 @@ package org.activiti.rest.api.cycle;
 import java.util.Map;
 
 import org.activiti.cycle.RepositoryAuthenticationException;
-import org.activiti.cycle.impl.service.CycleServiceImpl;
 import org.activiti.cycle.service.CycleConfigurationService;
 import org.activiti.cycle.service.CycleRepositoryService;
-import org.activiti.cycle.service.CycleService;
+import org.activiti.cycle.service.CycleServiceFactory;
 import org.activiti.cycle.service.CycleTagService;
 import org.activiti.rest.api.cycle.session.CycleHttpSession;
 import org.activiti.rest.util.ActivitiRequest;
@@ -32,7 +31,6 @@ import org.springframework.extensions.webscripts.Status;
  */
 public abstract class ActivitiCycleWebScript extends ActivitiWebScript {
 
-  protected CycleService cycleService;
 
   protected CycleRepositoryService repositoryService;
 
@@ -41,10 +39,9 @@ public abstract class ActivitiCycleWebScript extends ActivitiWebScript {
   protected CycleConfigurationService configurationService;
 
   public ActivitiCycleWebScript() {
-    cycleService = CycleServiceImpl.getInstance();
-    configurationService = cycleService.getConfigurationService();
-    repositoryService = cycleService.getRepositoryService();
-    tagService = cycleService.getTagService();
+    configurationService = CycleServiceFactory.getConfigurationService();
+    repositoryService = CycleServiceFactory.getRepositoryService();
+    tagService = CycleServiceFactory.getTagService();
   }
 
   @Override

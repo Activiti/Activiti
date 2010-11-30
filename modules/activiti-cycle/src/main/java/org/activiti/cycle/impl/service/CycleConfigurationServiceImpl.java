@@ -28,6 +28,8 @@ public class CycleConfigurationServiceImpl implements CycleConfigurationService 
 
   private CycleConfigurationDao cycleConfigurationDao;
 
+  private CycleServiceConfiguration cycleServiceConfiguration;
+
   public CycleConfigurationServiceImpl() {
   }
 
@@ -36,6 +38,10 @@ public class CycleConfigurationServiceImpl implements CycleConfigurationService 
    */
   public void initialize() {
     // perform initialization
+  }
+
+  public void setCycleServiceConfiguration(CycleServiceConfiguration cycleServiceConfiguration) {
+    this.cycleServiceConfiguration = cycleServiceConfiguration;
   }
 
   public void setCycleConfigurationDao(CycleConfigurationDao cycleConfigurationDao) {
@@ -173,11 +179,11 @@ public class CycleConfigurationServiceImpl implements CycleConfigurationService 
 
       // store configuration container
       cycleConfigurationDao.saveConfiguration(configurationContainer);
-      
+
       // update runtime connectors:
       RuntimeConnectorList runtimeConnectorList = CycleSessionContext.getFromCurrentContext(RuntimeConnectorList.class);
       runtimeConnectorList.connectors = null;
-      
+
     } catch (Exception e) {
       throw new RepositoryException("Error while storing config for user " + e.getMessage(), e);
     }
@@ -218,7 +224,7 @@ public class CycleConfigurationServiceImpl implements CycleConfigurationService 
       // update runtime connectors:
       RuntimeConnectorList runtimeConnectorList = CycleSessionContext.getFromCurrentContext(RuntimeConnectorList.class);
       runtimeConnectorList.connectors = null;
-      
+
     } catch (Exception e) {
       throw new RepositoryException("Error while deleting config for user " + e.getMessage(), e);
     }

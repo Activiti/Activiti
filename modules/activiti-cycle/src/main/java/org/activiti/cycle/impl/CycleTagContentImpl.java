@@ -8,7 +8,7 @@ import org.activiti.cycle.RepositoryArtifact;
 import org.activiti.cycle.RepositoryNode;
 import org.activiti.cycle.RepositoryNodeNotFoundException;
 import org.activiti.cycle.impl.db.entity.RepositoryNodeTagEntity;
-import org.activiti.cycle.service.CycleService;
+import org.activiti.cycle.service.CycleServiceFactory;
 
 /**
  * 
@@ -19,7 +19,7 @@ public class CycleTagContentImpl implements CycleTagContent {
   private String tagName;
 
   private long usageCount;
-  
+
   private List<RepositoryNodeTagEntity> containedArtifactIds = new ArrayList<RepositoryNodeTagEntity>();
   private List<RepositoryNode> containedNodes = new ArrayList<RepositoryNode>();
 
@@ -33,25 +33,25 @@ public class CycleTagContentImpl implements CycleTagContent {
   public CycleTagContentImpl(String tagName) {
     this.tagName = tagName;
   }
-  
+
   public void addArtifact(RepositoryNodeTagEntity tagEntity) {
     containedArtifactIds.add(tagEntity);
     usageCount = containedArtifactIds.size();
   }
-  
+
   /**
    * resolve the correct {@link RepositoryArtifact}s from the id's loaded from
    * the database
    */
-  public void resolveRepositoryArtifacts(CycleService service) {
+  public void resolveRepositoryArtifacts() {
     for (RepositoryNodeTagEntity tag : containedArtifactIds) {
       // TODO: FUCK, now we need a getRepositoryNode which is hard for Signavio.
       // But this implementation obviously sucks. Improve!
       RepositoryNode node = null;
       try {
-        node = service.getRepositoryService().getRepositoryFolder(tag.getConnectorId(), tag.getNodeId());
+        node = CycleServiceFactory.getRepositoryService().getRepositoryFolder(tag.getConnectorId(), tag.getNodeId());
       } catch (RepositoryNodeNotFoundException ex) {
-        node = service.getRepositoryService().getRepositoryArtifact(tag.getConnectorId(), tag.getNodeId());
+        node = CycleServiceFactory.getRepositoryService().getRepositoryArtifact(tag.getConnectorId(), tag.getNodeId());
       }
 
       if (tag.hasAlias()) {
@@ -72,7 +72,7 @@ public class CycleTagContentImpl implements CycleTagContent {
   public List<RepositoryNode> getTaggedRepositoryNodes() {
     return containedNodes;
   }
-  
+
   public void setUsageCount(long usageCount) {
     this.usageCount = usageCount;
   }
