@@ -264,17 +264,19 @@ ProcessEngine processEngine = ProcessEngineConfiguration.createStandaloneInMemPr
         </listitem>
       </itemizedlist>
     </para>
-    
   </section>
   
   <section id="jobExecutorConfiguration">
     <title>Job executor activation</title>
+    <para>The JobExecutor is a component that manages a couple of threads to fire timers (and later also asynchronous messages).
+    For unit testing scenarios, it is cumbersome to work with multiple threads.  Therefor the API allows to query for 
+    (<literal>ManagementService.createJobQuery</literal>) and execute jobs (<literal>ManagementService.executeJob</literal>) through 
+    the API so that job execution can be controlled from within a unit test.  To avoid that the job executor interferes, it can be turned off. 
+    </para>
     <para> 
-      Optional configuration property. Allows to specify if the job executor must be activated when the process engine boots (true or false):
-      <programlisting>&lt;property name=&quot;jobExecutorActivate&quot; value=&quot;false&quot; /></programlisting>
-      Default is <literal>false</literal>. This setting also makes sense while testing:
-      the job executor won't be activated and the test can manually search for jobs with <literal>ManagementService.createJobQuery</literal> and execute them 
-      with <literal>ManagementService.executeJob</literal>.
+    By default, the JobExecutor is activated when the process engine boots.  Specify
+    <programlisting>&lt;property name=&quot;jobExecutorActivate&quot; value=&quot;false&quot; /></programlisting>
+    when you don't want the JobExecutor to be activated upon process engine boot.  
     </para>
   </section>
   
@@ -292,9 +294,8 @@ ProcessEngine processEngine = ProcessEngineConfiguration.createStandaloneInMemPr
     <para>
       Optional. Allows to tweak settings that influence the <link linkend="history">history capabilities</link>
       of the engine. See <link linkend="historyConfig">history configuration</link> for more details.
-      <programlisting>&lt;property name=&quot;history&quot; value=&quot;audit&quot;</programlisting>
+      <programlisting>&lt;property name=&quot;history&quot; value=&quot;audit&quot; /&gt;</programlisting>
     </para>
-    
   </section>
   
   <section id="supporteddatabases">
@@ -314,7 +315,7 @@ ProcessEngine processEngine = ProcessEngineConfiguration.createStandaloneInMemPr
           <row>
             <entry>h2</entry>
             <entry>1.2.132</entry>
-            <entry></entry>
+            <entry>Default configured database</entry>
           </row>
           <row>
             <entry>mysql</entry>
@@ -337,7 +338,7 @@ ProcessEngine processEngine = ProcessEngineConfiguration.createStandaloneInMemPr
             <entry>not yet supported (coming soon, see <ulink url="http://jira.codehaus.org/browse/ACT-330">ACT-330</ulink>)</entry>
           </row>
           <row>
-            <entry>Mssql</entry>
+            <entry>mssql</entry>
             <entry></entry>
             <entry>not yet supported (coming soon)</entry>
           </row>
@@ -346,42 +347,63 @@ ProcessEngine processEngine = ProcessEngineConfiguration.createStandaloneInMemPr
     </table>
   </section>
     
-  <section>
+  <section id="changingTheDatabase">
     <title>Changing the database</title>
     
     <para>
-      One of the things you probably want to do fairly soon, is configuring Activiti to
-      use a different database. To generate a configuration file that can be used
-      to configure the engine, following steps need to be done:
-      <itemizedlist>
-        <listitem>
-          <para>
-            Edit <literal>setup/build.properties</literal> and change the <literal>db</literal>
-            parameter to your type of database (e.g. mysql).
-          </para>
-        </listitem>
-        <listitem>
-          <para>
-            Edit <literal>setup/build.${db}.properties</literal> and change the 
-            JDBC connection parameters to those of your database installation.
-          </para>
-        </listitem>
-        <listitem>
-          <para>
-            Run <literal>'ant cfg.create'</literal> from within the <literal>setup</literal>
-            folder.
-          </para>
-        </listitem>
-        <listitem>
-          <para>
-            The generate configuration file can now be found in <literal>setup/build/activiti-cfg</literal>.
-            Also, for convenience, a jar called <literal>activiti-cfg.jar</literal> containing the configuration file can be found in
-            <literal>setup/build</literal> 
-          </para>
-        </listitem>
-      </itemizedlist>
+    One of the things you probably want to do at some point, is configuring Activiti to
+    use a different database. To configure the demo setup or to generate a configuration 
+    file for a different database, follow these steps:
+    <itemizedlist>
+      <listitem>
+        <para>
+          Edit <literal>setup/build.properties</literal> and change the <literal>db</literal>
+          parameter to your type of database {<literal>oracle | mysql | postgresql | h2</literal>}.
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+          Edit <literal>setup/build.${db}.properties</literal> and change the 
+          JDBC connection parameters to those of your database installation.
+        </para>
+      </listitem>
+    </itemizedlist>
+    To create a configuration file for your database based on the properties you've specified in 
+    the build.*.properties files run 
     </para>
-    
+    <programlisting>ant cfg.create</programlisting>
+    <para>from within the <literal>setup</literal> folder.  The generate configuration file can 
+    now be found in <literal>setup/build/activiti-cfg</literal>.
+    Also, for convenience, a jar called <literal>activiti-cfg.jar</literal> containing the configuration file 
+    can be found in <literal>setup/build</literal>
+    </para>
+    <para>If you want to run the demo setup on another database, first stop the demo setup with 
+    </para>
+    <programlisting>ant demo.stop demo.clean demo.start</programlisting>
+    <para>Then clean and re-start the demo setup with 
+    </para>
+    <programlisting>ant demo.clean demo.start</programlisting> 
   </section>
+  
+  <section id="downloadingTheOracleDriver">
+     <title>Downloading the Oracle driver</title>
+     <para>When you want to run the demo setup using oracle as datasource, an extra step is required BEFORE you call the ant target <literal>demo.start</literal>. 
+       <itemizedlist>
+         <listitem>
+           <para>
+           Since we cannot redistribute the Oracle JDBC driver due to its licence, you should download it manually: 
+         <ulink url="http://www.oracle.com/technetwork/database/enterprise-edition/jdbc-112010-090769.html">http://www.oracle.com/technetwork/database/enterprise-edition/jdbc-112010-090769.html</ulink>.
+         Make sure you download ojdbc5.jar (our tests run against 10g ojdbc using version 11.2.0.1).
+           </para>
+         </listitem>
+         <listitem>
+           <para>
+             Copy the downloaded ojdbc5.jar to <literal>setup/files/dependencies/libs/</literal>
+             This filename is 
+           </para>
+         </listitem>
+       </itemizedlist>
+     </para>
+   </section>
   
 </chapter>

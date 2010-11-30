@@ -38,12 +38,12 @@ FormService formService = processEngine.getFormService();</programlisting>
     <para>The base exception in Activiti is the <literal>org.activiti.engine.ActivitiException</literal>, an unchecked exception. This exception can be thrown at all times by the API, but 'expected' exceptions that 
     happen in specific methods are documented in the <ulink url="../javadocs/index.html"> the javadocs</ulink>.
     For example, an extract from <literal>TaskService</literal>:
-    <programlisting> /**
-	* Called when the task is successfully executed.
-	* @param taskId the id of the task to complete, cannot be null.
-	* @throws ActivitiException when no task exists with the given id.
-	*/
-	void complete(String taskId);
+    <programlisting>/**
+ * Called when the task is successfully executed.
+ * @param taskId the id of the task to complete, cannot be null.
+ * @throws ActivitiException when no task exists with the given id.
+ */
+ void complete(String taskId);
     </programlisting>
     
     In the example above, when an id is passed for which no task exists, an exception will be thrown. Also, since the javadoc <emphasis role="bold">explicitly states that taskId cannot be null, an <literal>ActivitiException</literal> will be thrown when <literal>null</literal> is passed</emphasis>.
@@ -189,6 +189,9 @@ public class ProcessEnginesServletContextListener implements ServletContextListe
 
   <section>
     <title>Process Virtual Machine API</title>
+    <para><link linkend="experimental"><emphasis role="bold">[EXPERIMENTAL]</emphasis></link>
+    This API is probably going to change in subsequent releases.
+    </para>
     <para>The Process Virtual Machine API exposes the POJO core of the Process Virtual Machine.
     Reading and playing with it is interesting for education purposes to understand
     the internal workings of Activiti.  And the POJO API can also be used to build
