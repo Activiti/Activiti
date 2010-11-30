@@ -13,9 +13,6 @@
 
 package org.activiti.cycle;
 
-import java.util.HashMap;
-import java.util.Map;
-
 /**
  * @author Nils Preusker (nils.preusker@camunda.com)
  */
@@ -23,20 +20,19 @@ public class RepositoryAuthenticationException extends RuntimeException {
 
   private static final long serialVersionUID = 1L;
 
-  private HashMap<String, String> connectors;
+  private String connectorId;
 
-  public RepositoryAuthenticationException(String message, Map<String, String> connectors, Throwable cause) {
+  public RepositoryAuthenticationException(String message, String connectorId, Throwable cause) {
     super(message, cause);
-    this.connectors = new HashMap<String, String>(connectors);
+    this.connectorId = connectorId;
   }
 
-  public RepositoryAuthenticationException(String message, Map<String, String> connectors) {
+  public RepositoryAuthenticationException(String message, String connectorId) {
     super(message);
-    this.connectors = new HashMap<String, String>(connectors);
+    this.connectorId = connectorId;
   }
 
-  public HashMap<String, String> getConnectors() {
-    return connectors;
+  public String getConnectorId() {
+    return connectorId;
   }
-
 }

@@ -10,6 +10,7 @@ import java.util.logging.Logger;
 import org.activiti.cycle.ArtifactType;
 import org.activiti.cycle.Content;
 import org.activiti.cycle.RepositoryArtifact;
+import org.activiti.cycle.RepositoryAuthenticationException;
 import org.activiti.cycle.RepositoryException;
 import org.activiti.cycle.RepositoryFolder;
 import org.activiti.cycle.RepositoryNode;
@@ -47,6 +48,14 @@ public abstract class VfsConnector extends AbstractRepositoryConnector<VfsConnec
   protected String connectionString;
 
   protected FileSystemOptions fileSystemOptions;
+
+  protected boolean loggedIn;
+
+  protected void checkLoggedIn() {
+    if (!loggedIn) {
+      throw new RepositoryAuthenticationException("Not logged in.", getConfiguration().getId());
+    }
+  }
 
   public VfsConnector(VfsConnectorConfiguration configuration) {
     super(configuration);
@@ -284,6 +293,7 @@ public abstract class VfsConnector extends AbstractRepositoryConnector<VfsConnec
   }
 
   private void checkRepository() {
+    checkLoggedIn();
     getFileSystemManager();
     if (connectionString == null)
       throw new RepositoryException("You need to login first.");

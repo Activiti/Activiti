@@ -31,7 +31,6 @@ import org.springframework.extensions.webscripts.Status;
  */
 public abstract class ActivitiCycleWebScript extends ActivitiWebScript {
 
-
   protected CycleRepositoryService repositoryService;
 
   protected CycleTagService tagService;
@@ -52,7 +51,16 @@ public abstract class ActivitiCycleWebScript extends ActivitiWebScript {
       // execute the request in the context of a CycleHttpSession
       execute(req, status, cache, model);
     } catch (RepositoryAuthenticationException e) {
-      model.put("authenticationException", e);
+      try {
+        // try to login
+        CycleHttpSession.tryConnectorLogin(req, e.getConnectorId());
+        // retry to execute the request
+        execute(req, status, cache, model);
+      } catch (RepositoryAuthenticationException e2) {
+        // throw exception
+        model.put("authenticationException", e2);
+      }
+
     } finally {
       // close the CycleHttpSession
       CycleHttpSession.closeSession();

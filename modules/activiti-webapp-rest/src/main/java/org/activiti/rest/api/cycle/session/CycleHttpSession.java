@@ -1,9 +1,6 @@
 package org.activiti.rest.api.cycle.session;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.servlet.http.HttpSession;
 
@@ -15,7 +12,6 @@ import org.activiti.cycle.impl.conf.ConfigurationContainer;
 import org.activiti.cycle.impl.conf.PasswordEnabledRepositoryConnectorConfiguration;
 import org.activiti.cycle.impl.connector.view.TagConnectorConfiguration;
 import org.activiti.cycle.impl.plugin.PluginFinder;
-import org.activiti.cycle.service.CycleRepositoryService;
 import org.activiti.cycle.service.CycleServiceFactory;
 import org.activiti.cycle.service.CycleRepositoryService.RuntimeConnectorList;
 import org.activiti.rest.util.ActivitiRequest;
@@ -33,15 +29,7 @@ public class CycleHttpSession {
     CycleSessionContext.setCurrentContext(new HttpSessionContext(httpSession));
     CycleSessionContext.setInCurrentContext("cuid", cuid);
 
-    boolean couldRestoreConnectors = loadRuntimeRepositoryConnectors();
-    checkPasswordEnabledConnectors(req);
-    if (!couldRestoreConnectors) {
-      performLogin();
-    }
-  }
-
-  private static boolean loadRuntimeRepositoryConnectors() {
-    boolean couldRestore = false;
+    // load list of runtime connectors
     // try to retrieve list of connectors form the session
     RuntimeConnectorList connectorList = CycleSessionContext.getFromCurrentContext(RuntimeConnectorList.class);
     if (connectorList == null) {
@@ -53,91 +41,59 @@ public class CycleHttpSession {
       // populate list of connectors if empty
       ConfigurationContainer container = CycleServiceFactory.getConfigurationService().getConfigurationContainer();
       List<RepositoryConnector> connectors = container.getConnectorList();
+      // add tag connector hard coded for the moment (at the first node in the
+      // tree)
+      connectors.add(0, new TagConnectorConfiguration().createConnector());
       connectorList.connectors = connectors;
-    } else {
-      // connectors could be restored
-      couldRestore = true;
     }
-    return couldRestore;
   }
 
-  private static void checkPasswordEnabledConnectors(ActivitiRequest req) {
-
-    // this is guaranteed to be initialized now
+  public static void tryConnectorLogin(ActivitiRequest req, String connectorId) {
+    RepositoryConnector connector = null;
+    // locate connector-instance:
     RuntimeConnectorList connectorList = CycleSessionContext.getFromCurrentContext(RuntimeConnectorList.class);
-
-    // Make sure we know username and password for all connectors that require
-    // login. If it is not stored in the users configuration it should be
-    // provided as a parameter in the request.
-    Map<String, String> connectorsWithoutLoginMap = new HashMap<String, String>();
-    for (RepositoryConnector connector : getPasswordEnabledConnectors(connectorList.connectors)) {
-      PasswordEnabledRepositoryConnectorConfiguration conf = (PasswordEnabledRepositoryConnectorConfiguration) connector.getConfiguration();
-      String username = req.getString(conf.getId() + "_username");
-      String password = req.getString(conf.getId() + "_password");
-
-      if (username != null && password != null) {
-        // Remove the connector from the configuration for this session since
-        // the user pressed cancel in the authentication dialog.
-        if (username.equals("\"\"") && password.equals("\"\"")) {
-          connectorList.connectors.remove(connector);
-        } else {
-          conf.setUser(username);
-          conf.setPassword(password);
-        }
-      } else if (conf.getUser() == null || conf.getPassword() == null) {
-        connectorsWithoutLoginMap.put(conf.getId(), conf.getName());
+    for (RepositoryConnector thisConnector : connectorList.connectors) {
+      if (!thisConnector.getConfiguration().getId().equals(connectorId)) {
+        continue;
       }
-      // If one or more logins are missing (not provided in either the
-      // configuration or as HTTP parameter) we'll throw an authentication
-      // exception with the list of connectors that are missing login
-      // information
+      connector = thisConnector;
     }
-    if (connectorsWithoutLoginMap.size() > 0) {
-      // TODO: i18n
-      throw new RepositoryAuthenticationException("Please provide your username and password for the following repositories:", connectorsWithoutLoginMap);
-    }
-  }
-
-  private static void performLogin() {
-
-    // this is guaranteed to be initialized now
-    RuntimeConnectorList connectorList = CycleSessionContext.getFromCurrentContext(RuntimeConnectorList.class);
-
-    CycleRepositoryService repositoryService = CycleServiceFactory.getRepositoryService();
-
-    // If we get here we can assume that all the required logins are
-    // available
-    // and we can now perform the login for those connectors that require it
-    for (RepositoryConnector connector : connectorList.connectors) {
-      if (PasswordEnabledRepositoryConnectorConfiguration.class.isInstance(connector.getConfiguration())) {
-        PasswordEnabledRepositoryConnectorConfiguration conf = (PasswordEnabledRepositoryConnectorConfiguration) connector.getConfiguration();
-        String username = conf.getUser();
-        String password = conf.getPassword();
-        try {
-          repositoryService.login(username, password, conf.getId());
-        } catch (RepositoryException e) {
-          Map<String, String> connectorMap = new HashMap<String, String>();
-          connectorMap.put(conf.getId(), conf.getName());
-          throw new RepositoryAuthenticationException("Repository authentication error: couldn't login to " + conf.getName(), connectorMap, e);
-        }
-      }
+    if (connector == null) {
+      throw new RuntimeException("Cannot login to repository with id '" + connectorId + "', no such repository.");
     }
 
-    // add tag connector hard coded for the moment (at the first node in the
-    // tree)
-    // TODO: move to better place !!!
-    connectorList.connectors.add(0, new TagConnectorConfiguration().createConnector());
+    String username = null;
+    String password = null;
 
-  }
-
-  private static List<RepositoryConnector> getPasswordEnabledConnectors(List<RepositoryConnector> connectors) {
-    List<RepositoryConnector> loginEnabledconnectors = new ArrayList<RepositoryConnector>();
-    for (RepositoryConnector connector : connectors) {
-      if (connector.getConfiguration() instanceof PasswordEnabledRepositoryConnectorConfiguration) {
-        loginEnabledconnectors.add(connector);
-      }
+    // try to read credentials from configuration
+    if (connector.getConfiguration() instanceof PasswordEnabledRepositoryConnectorConfiguration) {
+      PasswordEnabledRepositoryConnectorConfiguration passwordEnabledRepositoryConnectorConfiguration = (PasswordEnabledRepositoryConnectorConfiguration) connector
+              .getConfiguration();
+      username = passwordEnabledRepositoryConnectorConfiguration.getUser();
+      password = passwordEnabledRepositoryConnectorConfiguration.getPassword();
     }
-    return loginEnabledconnectors;
+
+    // TODO : get from cookie
+
+    // try to read credentials from request
+    String req_username = req.getString(connectorId + "_username");
+    String req_password = req.getString(connectorId + "_password");
+
+    if (req_username != null) {
+      username = req_username;
+    }
+
+    if (req_password != null) {
+      password = req_password;
+    }
+
+    // try to login:
+    try {
+      CycleServiceFactory.getRepositoryService().login(username, password, connectorId);
+    } catch (RepositoryException ex) {
+      // wrap in Authentication exception:
+      throw new RepositoryAuthenticationException("Cannot login to repository '" + connectorId + "'.", connectorId, ex);
+    }
   }
 
   public static void closeSession() {

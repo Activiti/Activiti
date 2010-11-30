@@ -25,6 +25,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.activiti.cycle.ContentRepresentation;
 import org.activiti.cycle.CycleDefaultMimeType;
 import org.activiti.cycle.RepositoryArtifact;
+import org.activiti.cycle.RepositoryAuthenticationException;
 import org.activiti.cycle.impl.connector.signavio.transform.TransformationException;
 import org.activiti.cycle.service.CycleConfigurationService;
 import org.activiti.cycle.service.CycleRepositoryService;
@@ -43,7 +44,6 @@ import org.springframework.extensions.webscripts.WebScriptResponse;
  */
 public class ContentGet extends ActivitiStreamingWebScript {
 
-
   protected CycleRepositoryService repositoryService;
 
   protected CycleTagService cycleTagService;
@@ -58,14 +58,20 @@ public class ContentGet extends ActivitiStreamingWebScript {
 
   @Override
   protected void executeStreamingWebScript(ActivitiRequest req, WebScriptResponse res) throws IOException {
-
     try {
+      // open cycle ui-session
       CycleHttpSession.openSession(req);
+      // execute the request in the context of a CycleHttpSession
+      getContent(req, res);
+    } catch (RepositoryAuthenticationException e) {
+      // try to login
+      CycleHttpSession.tryConnectorLogin(req, e.getConnectorId());
+      // retry to execute the request
       getContent(req, res);
     } finally {
+      // close the CycleHttpSession
       CycleHttpSession.closeSession();
     }
-
   }
 
   private void getContent(ActivitiRequest req, WebScriptResponse res) throws IOException {
