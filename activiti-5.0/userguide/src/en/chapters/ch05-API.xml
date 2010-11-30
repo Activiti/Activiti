@@ -158,8 +158,8 @@ public class MyBusinessProcessTest {
     </para>
     
     <para>
-      The following code snippet how this is done in a regular Servlet environment,
-      using a ServletContextListener:
+      The following code snippet how you can write a simple ServletContextListener
+      to initialize and destroy process engines in a plain Servlet environment:
       <programlisting>
 public class ProcessEnginesServletContextListener implements ServletContextListener {
   
