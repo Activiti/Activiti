@@ -23,6 +23,7 @@ public class SubProcessExpansion extends OryxTransformation {
 
   public static final String PROPERTY_NAME = "name";
   public static final String PROPERTY_ENTRY = "entry";
+  public static final String PROPERTY_IS_CALL_ACTIVITY = "callacitivity";
 
   private RepositoryConnector connector;
   
@@ -39,7 +40,7 @@ public class SubProcessExpansion extends OryxTransformation {
   private void expandSubProcesses(Diagram diagram) {
     List<Shape> shapes = diagram.getShapes();
     for (Shape shape : shapes) {
-      if (STENCIL_COLLAPSED_SUBPROCESS.equals(shape.getStencilId())) {
+      if (STENCIL_COLLAPSED_SUBPROCESS.equals(shape.getStencilId()) && !"true".equals(shape.getProperty(PROPERTY_IS_CALL_ACTIVITY))) {
         String subProcessUrl = shape.getProperty(PROPERTY_ENTRY);
         if (subProcessUrl != null && subProcessUrl.length() > 0) {
           String subProcessName = shape.getProperty(PROPERTY_NAME);
