@@ -19,7 +19,7 @@ import org.oryxeditor.server.diagram.Shape;
  * Adjusts names from Signavio (remove new lines, ' and maybe add more in future)
  * See https://app.camunda.com/jira/browse/HEMERA-164.
  * 
- * @deprecated because it doesn't state its target. Use {@link AdjustShapeNamesForJpdl3Transformation} instead.
+ * @deprecated because it doesn't state its target. Use {@link AdjustShapeNamesForJpdl3} instead.
  * 
  * @author bernd.ruecker@camunda.com
  */

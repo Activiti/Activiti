@@ -24,7 +24,7 @@ import org.oryxeditor.server.diagram.Shape;
  * 
  * @author Falko Menge <falko.menge@camunda.com>
  */
-public class AdjustShapeNamesForJpdl3Transformation extends OryxShapeNameTransformation {
+public class AdjustShapeNamesForJpdl3 extends OryxShapeNameTransformation {
 
   @Override
   public String transformName(String name, Shape shape) {

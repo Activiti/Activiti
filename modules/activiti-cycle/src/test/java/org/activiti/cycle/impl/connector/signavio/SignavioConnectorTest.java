@@ -20,7 +20,7 @@ import org.activiti.cycle.impl.connector.signavio.transform.JsonTransformation;
 import org.activiti.cycle.impl.connector.signavio.transform.pattern.AdjustShapeNamesForXmlNCName;
 import org.activiti.cycle.impl.connector.signavio.transform.pattern.AdjustShapeNamesTransformation;
 import org.activiti.cycle.impl.connector.signavio.transform.pattern.BpmnPoolExtraction;
-import org.activiti.cycle.impl.connector.signavio.transform.pattern.ExchangeSignavioUuidWithNameTransformation;
+import org.activiti.cycle.impl.connector.signavio.transform.pattern.ExchangeSignavioUuidWithName;
 import org.activiti.cycle.impl.connector.signavio.transform.pattern.MakeNamesUnique;
 import org.activiti.cycle.impl.connector.signavio.transform.pattern.ReplaceEmptyShapeNamesWithTypes;
 import org.json.JSONException;
@@ -56,7 +56,7 @@ public class SignavioConnectorTest {
      is.close();
     
      String json = new SignavioConnector(null).transformJsonToBpmn20Xml(sb.toString());
-     String transformedJson = new ExchangeSignavioUuidWithNameTransformation().transform(new JSONObject(json)).toString();
+     String transformedJson = new ExchangeSignavioUuidWithName().transform(new JSONObject(json)).toString();
         
      System.out.println(json);
      System.out.println(transformedJson);
@@ -69,7 +69,7 @@ public class SignavioConnectorTest {
     List<JsonTransformation> transformations = new ArrayList<JsonTransformation>();
     transformations.add(new BpmnPoolExtraction("Process Engine"));
     transformations.add(new ReplaceEmptyShapeNamesWithTypes());
-    transformations.add(new ExchangeSignavioUuidWithNameTransformation());
+    transformations.add(new ExchangeSignavioUuidWithName());
     
     // read file to xml document
     String file = "c:/Process Engine Pool.oryx.xml";
@@ -114,7 +114,7 @@ public class SignavioConnectorTest {
     List<JsonTransformation> transformations = new ArrayList<JsonTransformation>();
     transformations.add(new BpmnPoolExtraction("Process Engine"));
     transformations.add(new AdjustShapeNamesTransformation());
-//    transformations.add(new ExchangeSignavioUuidWithNameTransformation());
+//    transformations.add(new ExchangeSignavioUuidWithName());
     
     // create signavio conf + connector
     SignavioConnectorConfiguration conf = new SignavioConnectorConfiguration("editor-url with ending slash");

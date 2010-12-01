@@ -8,7 +8,7 @@ package org.activiti.cycle.impl.connector.signavio.transform.pattern;
  * 
  * @author ruecker
  */
-public class RemedyTemporarySignavioIncompatibilityTransformation {
+public class RemedyTemporarySignavioIncompatibility {
 
   public String transformBpmn20Xml(String xml, String processName) {
     // set process id and name
@@ -67,23 +67,23 @@ public class RemedyTemporarySignavioIncompatibilityTransformation {
 
   // public static void main(String[] args) {
   // System.out.println(new
-  // RemedyTemporarySignavioIncompatibilityTransformation().removeAttribute("<process test=\"hallo\" />",
+  // RemedyTemporarySignavioIncompatibility().removeAttribute("<process test=\"hallo\" />",
   // "process", "test"));
   // System.out.println(new
-  // RemedyTemporarySignavioIncompatibilityTransformation().setAttributeText("<process test=\"hallo\" />",
+  // RemedyTemporarySignavioIncompatibility().setAttributeText("<process test=\"hallo\" />",
   // "process", "test", "bernd"));
   // System.out
   // .println(new
-  // RemedyTemporarySignavioIncompatibilityTransformation().exchangeAttributeText("<process test=\"hallo\" />",
+  // RemedyTemporarySignavioIncompatibility().exchangeAttributeText("<process test=\"hallo\" />",
   // "test", "hallo", "bernd"));
   // System.out.println(new
-  // RemedyTemporarySignavioIncompatibilityTransformation().addAttribute("<process test=\"hallo\" />",
+  // RemedyTemporarySignavioIncompatibility().addAttribute("<process test=\"hallo\" />",
   // "process", "new", "bernd"));
   // System.out.println(new
-  // RemedyTemporarySignavioIncompatibilityTransformation().removeElement("<process><test /></process>",
+  // RemedyTemporarySignavioIncompatibility().removeElement("<process><test /></process>",
   // "test"));
   // System.out.println(new
-  // RemedyTemporarySignavioIncompatibilityTransformation().removeElement("<process><test><hallo /></test>></process>",
+  // RemedyTemporarySignavioIncompatibility().removeElement("<process><test><hallo /></test>></process>",
   // "test"));
   // }
 

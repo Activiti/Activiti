@@ -2,7 +2,6 @@ package org.activiti.cycle.impl.connector.signavio.transform.pattern;
 
 import java.util.List;
 
-import org.activiti.cycle.impl.connector.signavio.transform.JsonTransformationException;
 import org.activiti.cycle.impl.connector.signavio.util.CustomProperty;
 import org.oryxeditor.server.diagram.Diagram;
 import org.oryxeditor.server.diagram.Shape;
@@ -21,7 +20,7 @@ import org.oryxeditor.server.diagram.Shape;
  * @author bernd.ruecker@camunda.com
  * @author Falko Menge
  */
-public class ExchangeSignavioUuidWithNameTransformation extends OryxTransformation {
+public class ExchangeSignavioUuidWithName extends OryxTransformation {
 
   private MakeNamesUnique makeNamesUnique = new MakeNamesUnique("_", "");
 

@@ -19,7 +19,7 @@ import org.activiti.cycle.RepositoryException;
 import org.activiti.cycle.impl.connector.signavio.SignavioConnector;
 import org.activiti.cycle.impl.connector.signavio.SignavioPluginDefinition;
 import org.activiti.cycle.impl.connector.signavio.util.SignavioTransformationHelper;
-import org.activiti.cycle.impl.connector.signavio.transform.pattern.RemedyTemporarySignavioIncompatibilityTransformation;
+import org.activiti.cycle.impl.connector.signavio.transform.pattern.RemedyTemporarySignavioIncompatibility;
 
 public class ActivitiCompliantBpmn20Provider extends SignavioContentRepresentationProvider {
 
@@ -48,7 +48,7 @@ public class ActivitiCompliantBpmn20Provider extends SignavioContentRepresentati
 
   public static String transformToBpmn20(SignavioConnector connector, String transformedJson, String name) {
     String bpmnXml = connector.transformJsonToBpmn20Xml(transformedJson);
-    bpmnXml = new RemedyTemporarySignavioIncompatibilityTransformation().transformBpmn20Xml(bpmnXml, name);
+    bpmnXml = new RemedyTemporarySignavioIncompatibility().transformBpmn20Xml(bpmnXml, name);
     return bpmnXml;
   }
 
