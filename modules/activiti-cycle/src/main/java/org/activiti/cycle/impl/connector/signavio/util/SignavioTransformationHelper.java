@@ -22,7 +22,7 @@ public class SignavioTransformationHelper {
     // TODO: How to register JSON-Transformations
 
     // example with cutting out just the Engine Pool
-    addTransformation(new BpmnPoolExtraction("Process Engine"));
+    addTransformation(new BpmnPoolExtraction(BpmnPoolExtraction.DEFAULT_ENGINE_POOL_NAME));
     addTransformation(new ReplaceEmptyShapeNamesWithTypes());
     addTransformation(new ExchangeSignavioUuidWithName());
   }

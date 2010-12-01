@@ -9,6 +9,8 @@ import org.oryxeditor.server.diagram.Shape;
 
 public class BpmnPoolExtraction extends OryxTransformation {
 
+  public static final String DEFAULT_ENGINE_POOL_NAME = "Process Engine";
+  
   protected final String poolName;
 
   public BpmnPoolExtraction(String poolName) {

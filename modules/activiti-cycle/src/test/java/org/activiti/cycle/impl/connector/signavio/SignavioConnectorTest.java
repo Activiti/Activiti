@@ -67,7 +67,7 @@ public class SignavioConnectorTest {
   public void testSignavioTransformations() throws IOException, JSONException, ParserConfigurationException, SAXException {
     // define transformations
     List<JsonTransformation> transformations = new ArrayList<JsonTransformation>();
-    transformations.add(new BpmnPoolExtraction("Process Engine"));
+    transformations.add(new BpmnPoolExtraction(BpmnPoolExtraction.DEFAULT_ENGINE_POOL_NAME));
     transformations.add(new ReplaceEmptyShapeNamesWithTypes());
     transformations.add(new ExchangeSignavioUuidWithName());
     
@@ -112,7 +112,7 @@ public class SignavioConnectorTest {
   public void testActivitiCompliantBpmn20() throws Exception {
     // define transformations
     List<JsonTransformation> transformations = new ArrayList<JsonTransformation>();
-    transformations.add(new BpmnPoolExtraction("Process Engine"));
+    transformations.add(new BpmnPoolExtraction(BpmnPoolExtraction.DEFAULT_ENGINE_POOL_NAME));
     transformations.add(new AdjustShapeNamesTransformation());
 //    transformations.add(new ExchangeSignavioUuidWithName());
     
