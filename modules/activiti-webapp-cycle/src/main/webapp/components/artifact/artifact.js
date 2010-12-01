@@ -132,7 +132,7 @@
       var me = this;
       
       if(response.json.authenticationError) {
-        return new Activiti.component.AuthenticationDialog(this.id, response.json.reposInError, response.json.authenticationError);
+        return new Activiti.component.AuthenticationDialog(this.id, response.json.repoInError, response.json.authenticationError);
       }
 
       this._tabView = new YAHOO.widget.TabView(); 

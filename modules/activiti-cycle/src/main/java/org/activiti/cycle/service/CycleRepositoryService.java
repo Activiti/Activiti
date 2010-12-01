@@ -45,6 +45,15 @@ public interface CycleRepositoryService {
     // between shutdowns / startups. At the moment I would qualify this as a
     // 'hack' - Daniel Meyer
     public transient List<RepositoryConnector> connectors;
+
+    public RepositoryConnector getConnectorById(String id) {
+      for (RepositoryConnector connector : connectors) {
+        if (connector.getConfiguration().getId().equals(id))
+          return connector;
+      }
+      return null;
+    }
+
   }
 
   public void addArtifactLink(RepositoryArtifactLink link);

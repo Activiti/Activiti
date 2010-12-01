@@ -1,6 +1,8 @@
 package org.activiti.rest.api.cycle.session;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.servlet.http.HttpSession;
 
@@ -17,6 +19,16 @@ import org.activiti.cycle.service.CycleRepositoryService.RuntimeConnectorList;
 import org.activiti.rest.util.ActivitiRequest;
 
 public class CycleHttpSession {
+  
+  public static interface CycleRequestFilter {
+    public void doFilter(ActivitiRequest req);
+  }
+  
+  public static Set<CycleRequestFilter> requestFilters = new HashSet<CycleRequestFilter>();
+  
+  static {
+    requestFilters.add(new ConnectorLoginRequestFilter());
+  }
 
   public static void openSession(ActivitiRequest req) {
     HttpSession httpSession = req.getHttpServletRequest().getSession(true);
@@ -46,18 +58,18 @@ public class CycleHttpSession {
       connectors.add(0, new TagConnectorConfiguration().createConnector());
       connectorList.connectors = connectors;
     }
+    
+    // invoke request filters
+    for (CycleRequestFilter requestFilter : requestFilters) {
+      requestFilter.doFilter(req);
+    }
   }
 
   public static void tryConnectorLogin(ActivitiRequest req, String connectorId) {
     RepositoryConnector connector = null;
     // locate connector-instance:
     RuntimeConnectorList connectorList = CycleSessionContext.getFromCurrentContext(RuntimeConnectorList.class);
-    for (RepositoryConnector thisConnector : connectorList.connectors) {
-      if (!thisConnector.getConfiguration().getId().equals(connectorId)) {
-        continue;
-      }
-      connector = thisConnector;
-    }
+    connector = connectorList.getConnectorById(connectorId);
     if (connector == null) {
       throw new RuntimeException("Cannot login to repository with id '" + connectorId + "', no such repository.");
     }
@@ -74,19 +86,7 @@ public class CycleHttpSession {
     }
 
     // TODO : get from cookie
-
-    // try to read credentials from request
-    String req_username = req.getString(connectorId + "_username");
-    String req_password = req.getString(connectorId + "_password");
-
-    if (req_username != null) {
-      username = req_username;
-    }
-
-    if (req_password != null) {
-      password = req_password;
-    }
-
+ 
     // try to login:
     try {
       CycleServiceFactory.getRepositoryService().login(username, password, connectorId);

@@ -17,6 +17,7 @@ import org.activiti.cycle.RepositoryNodeCollection;
 import org.activiti.cycle.RepositoryNodeNotFoundException;
 import org.activiti.cycle.impl.RepositoryFolderImpl;
 import org.activiti.cycle.impl.RepositoryNodeCollectionImpl;
+import org.activiti.cycle.impl.conf.PasswordEnabledRepositoryConnectorConfiguration;
 import org.activiti.cycle.impl.connector.util.TransactionalConnectorUtils;
 import org.activiti.cycle.impl.db.CycleLinkDao;
 import org.activiti.cycle.impl.db.entity.RepositoryArtifactLinkEntity;
@@ -55,6 +56,13 @@ public class CycleRepositoryServiceImpl implements CycleRepositoryService {
   public boolean login(String username, String password, String connectorId) {
     RepositoryConnector conn = getRepositoryConnector(connectorId);
     if (conn != null) {
+      
+      if (conn.getConfiguration() instanceof PasswordEnabledRepositoryConnectorConfiguration) {
+        PasswordEnabledRepositoryConnectorConfiguration configuration = (PasswordEnabledRepositoryConnectorConfiguration) conn.getConfiguration();
+        configuration.setUser(username);
+        configuration.setPassword(password);        
+      }
+      
       conn.login(username, password);
       return true;
     }

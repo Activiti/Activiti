@@ -928,19 +928,19 @@
 	 * CreateArtifactDialog constructor.
 	 *
 	 * @param htmlId {String} The HTML id of the parent element
-	 * @param reposInError {Array} Array of repository IDs
+	 * @param repoInError {String} connectorId of the connector 
 	 * @param authenticationError The authentication error message for the first repository
 	 * @return {Activiti.component.AuthenticationDialog} The new component.AuthenticationDialog instance
 	 * @constructor
 	 */
-	Activiti.component.AuthenticationDialog = function AuthenticationDialog_constructor(htmlId, reposInError, authenticationError)
+	Activiti.component.AuthenticationDialog = function AuthenticationDialog_constructor(htmlId, repoInError, authenticationError)
   {
     Activiti.component.AuthenticationDialog.superclass.constructor.call(this, "Activiti.component.AuthenticationDialog", htmlId);
 
     this.service = new Activiti.service.RepositoryService(this);
 
     this._dialog = {};
-		this._reposInError = reposInError;
+		this._repoId = repoInError;
 		this._authenticationError = authenticationError;
 
     return this;
@@ -960,16 +960,9 @@
 		  var content = document.createElement("div");
       // TODO: i18n
       var formHtml = '<div class="bd"><form id="' + this.id + '-repo-authentication-dialog" ><h1>Authentication required</h1><p style="color: red; font-weight: bold; max-width:400px">' + this._authenticationError + '</p>';
-      for(var index in this._reposInError) {
-        var id, name;
-        for (attr in this._reposInError[index]) {
-          if(this._reposInError[index].hasOwnProperty(attr)) {
-            id = attr;
-            name = this._reposInError[index][id];
-          }
-        }
-        formHtml += '<h2>' + name + '</h2><table><tr><td><label>Username:<br/><input type="text" name="' + id + '_username" value="" /></label><br/></td></tr><tr><td><label>Password:<br/><input type="password" name="' + id + '_password" value="" /></label><br/></td></tr></table>';
-      }
+      formHtml += '<input type="hidden" name="connector-login-request" value="'+ this._repoId +'" />'
+      formHtml += '<h2>' + name + '</h2><table><tr><td><label>Username:<br/><input type="text" name="' + this._repoId + '_username" value="" /></label><br/></td></tr><tr><td><label>Password:<br/><input type="password" name="' + this._repoId + '_password" value="" /></label><br/></td></tr></table>';
+      
       formHtml += "</form></div>";
       content.innerHTML = formHtml;        
       this._dialog = new YAHOO.widget.Dialog(content, {

@@ -63,7 +63,7 @@
       // If the server reports that there are repositories in the users configuration that need a username and password to log in,
       // we'll show a dialog that prompts the user to provide his username and password for each of these repositories.
       if(response.json.authenticationError) {
-        return new Activiti.component.AuthenticationDialog(this.id, response.json.reposInError, response.json.authenticationError);
+        return new Activiti.component.AuthenticationDialog(this.id, response.json.repoInError, response.json.authenticationError);
       }
 
       // Login is OK, we can get on with drawing the tree...
@@ -157,7 +157,7 @@
     {
       var me = this;
       if(response.json.authenticationError) {
-        return new Activiti.component.AuthenticationDialog(this.id, response.json.reposInError, response.json.authenticationError);
+        return new Activiti.component.AuthenticationDialog(this.id, response.json.repoInError, response.json.authenticationError);
       }
       // Retrieve rest api response
       var treeNodesJson = response.json;
