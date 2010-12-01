@@ -71,7 +71,7 @@ public class SignavioPluginDefinition implements ActivitiCyclePluginDefinition {
     artifactType1.addContentRepresentation(new ContentRepresentationImpl(CONTENT_REPRESENTATION_ID_BPMN_20_DEVELOPER, CycleDefaultMimeType.XML, RenderInfo.CODE),
             new ActivitiCompliantBpmn20Provider());
     artifactType1.addContentRepresentation(new ContentRepresentationImpl(CONTENT_REPRESENTATION_ID_BPMN_20_RAW, CycleDefaultMimeType.XML, RenderInfo.CODE), new Bpmn20Provider());
-    artifactType1.addContentRepresentation(new ContentRepresentationImpl(CONTENT_REPRESENTATION_ID_JSON, CycleDefaultMimeType.XML, RenderInfo.CODE), new JsonProvider());
+    artifactType1.addContentRepresentation(new ContentRepresentationImpl(CONTENT_REPRESENTATION_ID_JSON, CycleDefaultMimeType.JSON, RenderInfo.CODE), new JsonProvider());
     artifactType1.addContentRepresentation(new ContentRepresentationImpl(CONTENT_REPRESENTATION_ID_SVGAPI, CycleDefaultMimeType.HTML, RenderInfo.HTML), new SvgApiProvider());
     // artifactType1.addContentRepresentation(new
     // ContentRepresentationImpl(CONTENT_REPRESENTATION_ID_DIFF,
@@ -93,7 +93,7 @@ public class SignavioPluginDefinition implements ActivitiCyclePluginDefinition {
     ArtifactTypeImpl artifactType2 = new ArtifactTypeImpl(ARTIFACT_TYPE_BPMN_FOR_JPDL4, CycleDefaultMimeType.XML);
     artifactType2.addDefaultContentRepresentation(new ContentRepresentationImpl(CONTENT_REPRESENTATION_ID_PNG, CycleDefaultMimeType.PNG, RenderInfo.IMAGE), new PngProvider());
     artifactType2.addContentRepresentation(new ContentRepresentationImpl(CONTENT_REPRESENTATION_ID_JPDL4, CycleDefaultMimeType.XML, RenderInfo.CODE), new Jpdl4Provider());
-    artifactType2.addContentRepresentation(new ContentRepresentationImpl(CONTENT_REPRESENTATION_ID_JSON, CycleDefaultMimeType.XML, RenderInfo.CODE), new JsonProvider());
+    artifactType2.addContentRepresentation(new ContentRepresentationImpl(CONTENT_REPRESENTATION_ID_JSON, CycleDefaultMimeType.JSON, RenderInfo.CODE), new JsonProvider());
 
     artifactType2.addOpenUrlAction(new OpenModelerAction());
     artifactType2.addDownloadContentAction(CONTENT_REPRESENTATION_ID_JPDL4);
