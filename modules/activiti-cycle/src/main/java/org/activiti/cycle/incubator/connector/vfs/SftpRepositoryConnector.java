@@ -53,7 +53,7 @@ public class SftpRepositoryConnector extends VfsConnector {
       log.log(Level.WARNING, "Could not login to " + getConfiguration().getHostname(), e);
       return false;
     }
-
+    loggedIn = true;
     return true;
   }
 

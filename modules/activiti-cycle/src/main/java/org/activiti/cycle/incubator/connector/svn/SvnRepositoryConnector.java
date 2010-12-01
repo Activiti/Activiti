@@ -118,8 +118,7 @@ public class SvnRepositoryConnector extends AbstractRepositoryConnector<SvnConne
 
   }
 
-  public boolean login(String username, String password) {
-    checkLoggedIn();
+  public boolean login(String username, String password) {    
     ISVNClientAdapter clientAdapter = getSvnClientAdapter();
 
     clientAdapter.setUsername(username);
