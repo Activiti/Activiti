@@ -236,7 +236,7 @@
   &lt;dependency&gt;
     &lt;groupId&gt;org.activiti&lt;/groupId&gt;
     &lt;artifactId&gt;activiti-designer-integration&lt;/artifactId&gt;
-    &lt;version&gt;0.6.0/version&gt; &lt;!-- Current Activiti Designer Version --&gt;
+    &lt;version&gt;0.6.0&lt;/version&gt; &lt;!-- Current Activiti Designer Version --&gt;
     &lt;scope&gt;compile&lt;/scope&gt;
   &lt;/dependency&gt;
 &lt;/dependencies&gt;
