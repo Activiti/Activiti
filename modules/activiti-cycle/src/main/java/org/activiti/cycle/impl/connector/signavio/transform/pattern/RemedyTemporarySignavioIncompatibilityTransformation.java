@@ -12,7 +12,7 @@ public class RemedyTemporarySignavioIncompatibilityTransformation {
 
   public String transformBpmn20Xml(String xml, String processName) {
     // set process id and name
-    processName = ExchangeSignavioUuidWithNameTransformation.adjustNamesForEngine(processName);
+    processName = AdjustShapeNamesForXmlNCName.adjustForXmlNCName(processName);
     xml = setAttributeText(xml, "process", "id", processName);
     if (!existAttribute(xml, "process", "name")) {
       xml = addAttribute(xml, "process", "name", processName);

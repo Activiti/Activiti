@@ -5,12 +5,16 @@ import java.util.List;
 
 import org.activiti.cycle.RepositoryException;
 import org.activiti.cycle.impl.connector.signavio.transform.JsonTransformation;
-import org.activiti.cycle.impl.connector.signavio.transform.pattern.AdjustShapeNamesTransformation;
+import org.activiti.cycle.impl.connector.signavio.transform.JsonTransformer;
 import org.activiti.cycle.impl.connector.signavio.transform.pattern.BpmnPoolExtraction;
 import org.activiti.cycle.impl.connector.signavio.transform.pattern.ExchangeSignavioUuidWithNameTransformation;
+import org.activiti.cycle.impl.connector.signavio.transform.pattern.MakeNamesUnique;
+import org.activiti.cycle.impl.connector.signavio.transform.pattern.ReplaceEmptyShapeNamesWithTypes;
 import org.json.JSONObject;
 
-
+/**
+ * @deprecated use {@link JsonTransformer} instead. 
+ */
 public class SignavioTransformationHelper {
 
   static {
@@ -19,8 +23,8 @@ public class SignavioTransformationHelper {
 
     // example with cutting out just the Engine Pool
     addTransformation(new BpmnPoolExtraction("Process Engine"));
+    addTransformation(new ReplaceEmptyShapeNamesWithTypes());
     addTransformation(new ExchangeSignavioUuidWithNameTransformation());
-    addTransformation(new AdjustShapeNamesTransformation());
   }
   
   /**

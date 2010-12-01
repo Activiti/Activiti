@@ -17,9 +17,12 @@ import javax.xml.parsers.ParserConfigurationException;
 import org.activiti.cycle.RepositoryFolder;
 import org.activiti.cycle.RepositoryNode;
 import org.activiti.cycle.impl.connector.signavio.transform.JsonTransformation;
+import org.activiti.cycle.impl.connector.signavio.transform.pattern.AdjustShapeNamesForXmlNCName;
 import org.activiti.cycle.impl.connector.signavio.transform.pattern.AdjustShapeNamesTransformation;
 import org.activiti.cycle.impl.connector.signavio.transform.pattern.BpmnPoolExtraction;
 import org.activiti.cycle.impl.connector.signavio.transform.pattern.ExchangeSignavioUuidWithNameTransformation;
+import org.activiti.cycle.impl.connector.signavio.transform.pattern.MakeNamesUnique;
+import org.activiti.cycle.impl.connector.signavio.transform.pattern.ReplaceEmptyShapeNamesWithTypes;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.Assert;
@@ -65,8 +68,8 @@ public class SignavioConnectorTest {
     // define transformations
     List<JsonTransformation> transformations = new ArrayList<JsonTransformation>();
     transformations.add(new BpmnPoolExtraction("Process Engine"));
+    transformations.add(new ReplaceEmptyShapeNamesWithTypes());
     transformations.add(new ExchangeSignavioUuidWithNameTransformation());
-    transformations.add(new AdjustShapeNamesTransformation());
     
     // read file to xml document
     String file = "c:/Process Engine Pool.oryx.xml";

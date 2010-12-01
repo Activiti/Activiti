@@ -13,16 +13,20 @@
 
 package org.activiti.cycle.impl.connector.signavio.transform.pattern;
 
+import org.oryxeditor.server.diagram.Shape;
+
 /**
  * Adjusts names from Signavio (remove new lines, ' and maybe add more in future)
  * See https://app.camunda.com/jira/browse/HEMERA-164.
+ * 
+ * @deprecated because it doesn't state its target. Use {@link AdjustShapeNamesForJpdl3Transformation} instead.
  * 
  * @author bernd.ruecker@camunda.com
  */
 public class AdjustShapeNamesTransformation extends OryxShapeNameTransformation {
 
   @Override
-  public String transformName(String name) {
+  public String transformName(String name, Shape shape) {
     return name.replaceAll("\n", " ").replaceAll("'", "").replaceAll("\"", "");
   }
 

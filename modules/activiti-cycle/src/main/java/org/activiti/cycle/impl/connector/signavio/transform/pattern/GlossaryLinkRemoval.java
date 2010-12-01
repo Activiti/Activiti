@@ -16,6 +16,8 @@ package org.activiti.cycle.impl.connector.signavio.transform.pattern;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.oryxeditor.server.diagram.Shape;
+
 
 /**
  * Removes Signavio glossary links
@@ -28,7 +30,7 @@ public class GlossaryLinkRemoval extends OryxShapeNameTransformation {
 
   public static final Pattern GLOSSARY_LINK_PATTERN = Pattern.compile("glossary://[a-z0-9]+/([^;]+);;");
 
-  public String transformName(String name) {
+  public String transformName(String name, Shape shape) {
     String newName = name;
     Matcher matcher = GLOSSARY_LINK_PATTERN.matcher(name);
     if (matcher.matches()) {

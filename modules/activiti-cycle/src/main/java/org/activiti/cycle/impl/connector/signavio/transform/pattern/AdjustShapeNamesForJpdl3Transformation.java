@@ -13,6 +13,8 @@
 
 package org.activiti.cycle.impl.connector.signavio.transform.pattern;
 
+import org.oryxeditor.server.diagram.Shape;
+
 /**
  * Adjusts names of Oryx shapes for use as names for jPDL3 Nodes
  * 
@@ -25,7 +27,7 @@ package org.activiti.cycle.impl.connector.signavio.transform.pattern;
 public class AdjustShapeNamesForJpdl3Transformation extends OryxShapeNameTransformation {
 
   @Override
-  public String transformName(String name) {
+  public String transformName(String name, Shape shape) {
     return name.replaceAll("\n", " ").replaceAll("/", "|").replaceAll("\"", "");
   }
 

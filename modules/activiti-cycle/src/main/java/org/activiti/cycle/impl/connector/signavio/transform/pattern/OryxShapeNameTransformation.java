@@ -35,7 +35,7 @@ public abstract class OryxShapeNameTransformation extends OryxTransformation {
       if (properties.containsKey("name")) {
         String oldName = properties.get("name");
   
-        String newName = transformName(oldName);
+        String newName = transformName(oldName, shape);
   
         if (!newName.equals(oldName)) {
           setOriginalName(shape, oldName);
@@ -48,7 +48,7 @@ public abstract class OryxShapeNameTransformation extends OryxTransformation {
     return diagram;
   }
 
-  public abstract String transformName(String name);
+  public abstract String transformName(String name, Shape shape);
 
   public static void setOriginalName(Shape shape, String oldName) {
     String oldDocumentation = shape.getProperty("documentation");
