@@ -15,7 +15,9 @@ import org.oryxeditor.server.diagram.DiagramBuilder;
 import org.oryxeditor.server.diagram.Shape;
 import org.oryxeditor.server.diagram.StencilType;
 
-
+/**
+ * @author Falko Menge
+ */
 public class SubProcessExpansion extends OryxTransformation {
 
   public static final String STENCIL_SUBPROCESS = "Subprocess";
@@ -51,6 +53,9 @@ public class SubProcessExpansion extends OryxTransformation {
             String subProcessJson = connector.getContent(subProcessId, representationName).asString();
             
             Diagram subProcess = DiagramBuilder.parseJson(subProcessJson);
+
+            // FIXME subProcess = new ExtractProcessOfParticipant("Process Engine").transform(subProcess); 
+            
             expandSubProcesses(subProcess);
             
             shape.setStencil(new StencilType(STENCIL_SUBPROCESS));
