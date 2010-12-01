@@ -215,13 +215,13 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
-	&lt;modelVersion>4.0.0&lt;/modelVersion>
+  &lt;modelVersion>4.0.0&lt;/modelVersion>
 
-	&lt;groupId>org.acme&lt;/groupId>
-	&lt;artifactId>money-tasks&lt;/artifactId>
-	&lt;version>1.0.0&lt;/version>
-	&lt;packaging>jar&lt;/packaging>
-	&lt;name>Acme Corporation Money Tasks&lt;/name>
+  &lt;groupId>org.acme&lt;/groupId>
+  &lt;artifactId>money-tasks&lt;/artifactId>
+  &lt;version>1.0.0&lt;/version>
+  &lt;packaging>jar&lt;/packaging>
+  &lt;name>Acme Corporation Money Tasks&lt;/name>
 ...
 &lt;/pom></programlisting>
         </para>
@@ -233,13 +233,20 @@
           dependency in your <literal>pom.xml</literal> file:</para>
         <para>
           <programlisting>&lt;dependencies&gt;
-	&lt;dependency&gt;
-		&lt;groupId&gt;org.activiti&lt;/groupId&gt;
-		&lt;artifactId&gt;activiti-designer-integration&lt;/artifactId&gt;
-		&lt;version&gt;0.6.0/version&gt; &lt;!-- Current Activiti Designer Version --&lt;
-		&lt;scope&gt;compile&lt;/scope&gt;
-	&lt;/dependency&gt;
-&lt;/dependencies&gt;</programlisting>
+  &lt;dependency&gt;
+    &lt;groupId&gt;org.activiti&lt;/groupId&gt;
+    &lt;artifactId&gt;activiti-designer-integration&lt;/artifactId&gt;
+    &lt;version&gt;0.6.0/version&gt; &lt;!-- Current Activiti Designer Version --&gt;
+    &lt;scope&gt;compile&lt;/scope&gt;
+  &lt;/dependency&gt;
+&lt;/dependencies&gt;
+...
+&lt;repositories&gt;
+  &lt;repository&gt;
+      &lt;id&gt;Activiti&lt;/id&gt;
+      &lt;url&gt;http://maven.alfresco.com/nexus/content/repositories/activiti/&lt;/url&gt;
+   &lt;/repository&gt;
+&lt;/repositories&gt;</programlisting>
         </para>
         <para>Finally, in the<literal> pom.xml</literal> file, add the configuration for the
             <literal>maven-compiler-plugin</literal> so the Java source level is at least 1.5 (see
@@ -251,35 +258,35 @@
           so, include the following snippet in <literal>pom.xml</literal>: </para>
         <para>
           <programlisting>&lt;build>
-	&lt;plugins>
+  &lt;plugins>
         &lt;plugin>
-			&lt;artifactId>maven-compiler-plugin&lt;/artifactId>
-			&lt;configuration>
-				&lt;source>1.5&lt;/source>
-				&lt;target>1.5&lt;/target>
-				&lt;showDeprecation>true&lt;/showDeprecation>
-				&lt;showWarnings>true&lt;/showWarnings>
-				&lt;optimize>true&lt;/optimize>
-			&lt;/configuration>
-		&lt;/plugin>
-		&lt;plugin>
-			&lt;groupId>org.apache.maven.plugins&lt;/groupId>
-			&lt;artifactId>maven-jar-plugin&lt;/artifactId>
-			&lt;version>2.3.1&lt;/version>
-			&lt;configuration>
-				&lt;archive>
-					&lt;index>true&lt;/index>
-					&lt;manifest>
-						&lt;addClasspath>false&lt;/addClasspath>
-						&lt;addDefaultImplementationEntries>true&lt;/addDefaultImplementationEntries>
-					&lt;/manifest>
-					&lt;manifestEntries>
-						&lt;ActivitiDesigner-Extension-Name>Acme Money&lt;/ActivitiDesigner-Extension-Name>
-					&lt;/manifestEntries>
-				&lt;/archive>
-			&lt;/configuration>
-		&lt;/plugin>
-	&lt;/plugins>
+      &lt;artifactId>maven-compiler-plugin&lt;/artifactId>
+      &lt;configuration>
+        &lt;source>1.5&lt;/source>
+        &lt;target>1.5&lt;/target>
+        &lt;showDeprecation>true&lt;/showDeprecation>
+        &lt;showWarnings>true&lt;/showWarnings>
+        &lt;optimize>true&lt;/optimize>
+      &lt;/configuration>
+    &lt;/plugin>
+    &lt;plugin>
+      &lt;groupId>org.apache.maven.plugins&lt;/groupId>
+      &lt;artifactId>maven-jar-plugin&lt;/artifactId>
+      &lt;version>2.3.1&lt;/version>
+      &lt;configuration>
+        &lt;archive>
+          &lt;index>true&lt;/index>
+          &lt;manifest>
+            &lt;addClasspath>false&lt;/addClasspath>
+            &lt;addDefaultImplementationEntries>true&lt;/addDefaultImplementationEntries>
+          &lt;/manifest>
+          &lt;manifestEntries>
+            &lt;ActivitiDesigner-Extension-Name>Acme Money&lt;/ActivitiDesigner-Extension-Name>
+          &lt;/manifestEntries>
+        &lt;/archive>
+      &lt;/configuration>
+    &lt;/plugin>
+  &lt;/plugins>
 &lt;/build></programlisting>
         </para>
         <para>The name for the extension is described by the
@@ -443,40 +450,40 @@ private String accountNumber;</programlisting>
 @Help(displayHelpShort = "Creates a new account", displayHelpLong = "Creates a new account using the account number specified")
 public class AcmeMoneyTask extends AbstractCustomServiceTask {
 
-	private static final String HELP_ACCOUNT_NUMBER_LONG = "Provide a number that is suitable as an account number.";
+  private static final String HELP_ACCOUNT_NUMBER_LONG = "Provide a number that is suitable as an account number.";
 
-	@Property(type = PropertyType.TEXT, displayName = "Account Number", required = true)
-	@Help(displayHelpShort = "Provide an account number", displayHelpLong = HELP_ACCOUNT_NUMBER_LONG)
-	private String accountNumber;
+  @Property(type = PropertyType.TEXT, displayName = "Account Number", required = true)
+  @Help(displayHelpShort = "Provide an account number", displayHelpLong = HELP_ACCOUNT_NUMBER_LONG)
+  private String accountNumber;
 
-	@Property(type = PropertyType.MULTILINE_TEXT, displayName = "Comments")
-	@Help(displayHelpShort = "Provide comments", displayHelpLong = "You can add comments to the node to provide a brief description.")
-	private String comments;
+  @Property(type = PropertyType.MULTILINE_TEXT, displayName = "Comments")
+  @Help(displayHelpShort = "Provide comments", displayHelpLong = "You can add comments to the node to provide a brief description.")
+  private String comments;
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.activiti.designer.integration.servicetask.AbstractCustomServiceTask #contributeToPaletteDrawer()
-	 */
-	@Override
-	public String contributeToPaletteDrawer() {
-		return "Acme Corporation";
-	}
+  /*
+   * (non-Javadoc)
+   * 
+   * @see org.activiti.designer.integration.servicetask.AbstractCustomServiceTask #contributeToPaletteDrawer()
+   */
+  @Override
+  public String contributeToPaletteDrawer() {
+    return "Acme Corporation";
+  }
 
-	@Override
-	public String getName() {
-		return "Money node";
-	}
+  @Override
+  public String getName() {
+    return "Money node";
+  }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.activiti.designer.integration.servicetask.AbstractCustomServiceTask #getSmallIconPath()
-	 */
-	@Override
-	public String getSmallIconPath() {
-		return "icons/coins.png";
-	}
+  /*
+   * (non-Javadoc)
+   * 
+   * @see org.activiti.designer.integration.servicetask.AbstractCustomServiceTask #getSmallIconPath()
+   */
+  @Override
+  public String getSmallIconPath() {
+    return "icons/coins.png";
+  }
 }</programlisting>
         </para>
         <para>If you extend Activiti Designer with this shape, The palette and corresponding node
@@ -538,18 +545,18 @@ public class AcmeMoneyTask extends AbstractCustomServiceTask {
         <para>
           <programlisting>public class MyPaletteCustomizer extends AbstractDefaultPaletteCustomizer {
 
-	/*
-	 * (non-Javadoc)
-	 *
-	 * @see org.activiti.designer.integration.palette.DefaultPaletteCustomizer#disablePaletteEntries()
-	 */
-	@Override
-	public List&lt;PaletteEntry> disablePaletteEntries() {
-		List&lt;PaletteEntry> result = new ArrayList&lt;PaletteEntry>();
-		result.add(PaletteEntry.MANUAL_TASK);
-		result.add(PaletteEntry.SCRIPT_TASK);
-		return result;
-	}
+  /*
+   * (non-Javadoc)
+   *
+   * @see org.activiti.designer.integration.palette.DefaultPaletteCustomizer#disablePaletteEntries()
+   */
+  @Override
+  public List&lt;PaletteEntry> disablePaletteEntries() {
+    List&lt;PaletteEntry> result = new ArrayList&lt;PaletteEntry>();
+    result.add(PaletteEntry.MANUAL_TASK);
+    result.add(PaletteEntry.SCRIPT_TASK);
+    return result;
+  }
 
 }</programlisting>
         </para>
@@ -569,17 +576,17 @@ public class AcmeMoneyTask extends AbstractCustomServiceTask {
         <para>
           <programlisting>public class MyPaletteCustomizer extends AbstractDefaultPaletteCustomizer {
 
-	/*
-	 * (non-Javadoc)
-	 *
-	 * @see org.activiti.designer.integration.palette.DefaultPaletteCustomizer#disablePaletteEntries()
-	 */
-	@Override
-	public List&lt;PaletteEntry> disablePaletteEntries() {
-		List&lt;PaletteEntry> result = new ArrayList&lt;PaletteEntry>();
-		result.add(PaletteEntry.ALL);
-		return result;
-	}
+  /*
+   * (non-Javadoc)
+   *
+   * @see org.activiti.designer.integration.palette.DefaultPaletteCustomizer#disablePaletteEntries()
+   */
+  @Override
+  public List&lt;PaletteEntry> disablePaletteEntries() {
+    List&lt;PaletteEntry> result = new ArrayList&lt;PaletteEntry>();
+    result.add(PaletteEntry.ALL);
+    return result;
+  }
 
 }</programlisting>
         </para>
