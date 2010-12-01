@@ -232,21 +232,15 @@
         <para>Add the integration library to your project's dependencies by including this
           dependency in your <literal>pom.xml</literal> file:</para>
         <para>
-          <programlisting>&lt;dependencies>
-	&lt;dependency>
-		&lt;groupId>org.activiti.designer&lt;/groupId>
-		&lt;artifactId>org.activiti.designer.integration&lt;/artifactId>
-		&lt;version>&lt;!-- Current Activiti Designer Version -->&lt;/version>
-		&lt;scope>compile&lt;/scope>
-	&lt;/dependency>
-&lt;/dependencies></programlisting>
+          <programlisting>&lt;dependencies&gt;
+	&lt;dependency&gt;
+		&lt;groupId&gt;org.activiti&lt;/groupId&gt;
+		&lt;artifactId&gt;activiti-designer-integration&lt;/artifactId&gt;
+		&lt;version&gt;0.6.0/version&gt; &lt;!-- Current Activiti Designer Version --&lt;
+		&lt;scope&gt;compile&lt;/scope&gt;
+	&lt;/dependency&gt;
+&lt;/dependencies&gt;</programlisting>
         </para>
-        <warning>
-          <para>At the moment, the dependency is not available from the Activiti Maven repository.
-            To use it, you should download it <ulink
-              url="images/org.activiti.designer.integration-0.6.0.jar">from here</ulink> and place
-            it in your local Maven repository.</para>
-        </warning>
         <para>Finally, in the<literal> pom.xml</literal> file, add the configuration for the
             <literal>maven-compiler-plugin</literal> so the Java source level is at least 1.5 (see
           snippet below). You will need this in order to use annotations. You can also include
