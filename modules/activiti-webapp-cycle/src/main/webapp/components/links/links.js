@@ -74,6 +74,7 @@
       var linksColumnDefs = [
         {key: "Name", sortable:true, resizeable:true},
         // {key: "Revision", sortable:true},
+        {key: "Element", resizeable:true},
         {key: "Type", resizeable:true}
       ];
 
@@ -89,6 +90,7 @@
             var row = {
               Name: '<a class="openArtifactLink" ' + ((me.id.indexOf('links-widget')  != -1) ? 'target="blank"' : '') + ' href="' + Activiti.constants.URL_CONTEXT + "start#event=" + Activiti.util.eventDescriptorToState('updateArtifactView', {"connectorId": encodeURIComponent(jsonArray[i].artifact.targetConnectorId), "repositoryNodeId": encodeURIComponent(jsonArray[i].artifact.targetArtifactId), "isRepositoryArtifact": true, "name": encodeURIComponent(jsonArray[i].artifact.label), "activeTabIndex": 0}) + '">' + jsonArray[i].artifact.label + '</a>',
               Revision: jsonArray[i].artifact.targetArtifactRevision,
+              Element: jsonArray[i].artifact.targetElementName,
               Type: '<div class="artifact-type ' + me.getClassForContentType(jsonArray[i].artifact.targetContentType) + '">' + jsonArray[i].artifact.targetContentType + '</div>'
             };
             rows.push(row);
@@ -111,6 +113,7 @@
             var row = {
               Name: '<a class="openArtifactLink" href="' + Activiti.constants.URL_CONTEXT + "start#event=" + Activiti.util.eventDescriptorToState('updateArtifactView', {"connectorId": encodeURIComponent(jsonArray[i].artifact.sourceConnectorId), "repositoryNodeId": encodeURIComponent(jsonArray[i].artifact.sourceArtifactId), "isRepositoryArtifact": true, "name": encodeURIComponent(jsonArray[i].artifact.label), "activeTabIndex": 0}) + '">' + jsonArray[i].artifact.label + '</a>',
               Revision: jsonArray[i].artifact.sourceArtifactRevision,
+              Element: jsonArray[i].artifact.sourceElementName,
               Type: '<div class="artifact-type ' + me.getClassForContentType(jsonArray[i].artifact.sourceContentType) + '">' + jsonArray[i].artifact.sourceContentType + '</div>'
             };
             rows.push(row);
