@@ -45,16 +45,6 @@
   height:8em;
 }
 
-#artifact-div .yui-push-button {
-  margin-top: 10px;
-  margin-left: 1px;
-}
-
-div .artifact-type {
-  line-height:1.2em;
-  color: #666;
-}
-
 /* formatting of stack traces */
 
 .cycle-stack-trace {
@@ -75,15 +65,4 @@ div .artifact-type {
 .cycle-stack-trace-highlight:hover {
   background: #666;
   color: #fff;
-}
-
-/* styling for links and backlinks tables */
-
-#links-wrapper {
-  float:left;
-  margin-right: 10px;
-}
-
-#backlinks-wrapper {
-  float: left;
 }

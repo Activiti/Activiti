@@ -620,6 +620,63 @@ Activiti.util.trim = function(string)
   return string.replace(/^\s+|\s+$/g, '');
 };
 
+Activiti.util.eventDescriptorToState = function(event, value) {
+  var state = encodeURIComponent(event);
+  for (var name in value) {
+		if (value.hasOwnProperty(name)) {
+			var val = value[name];
+			if (!YAHOO.lang.isBoolean(val) && !YAHOO.lang.isNumber(val) && !val) {
+ 								val = "";
+			}
+		state += "/" + encodeURIComponent(name) + "/" + encodeURIComponent(val);
+		}
+  }
+  return state;
+};
+
+/**
+ * Determines whether a possible owner actually is the owner of the bubbling event
+ *
+ * @method _stateToEventDescriptor
+ * @param state {string} The event modules state
+ * @return {Array} An event descriptor with the event name in index 0 and the event value in index 1
+ * @private
+ */
+Activiti.util.stateToEventDescriptor = function(state) {
+  var event, value, name;
+  if (state && state.length > 0) {
+    var tokens = state.split("/");
+    if (tokens.length > 0) {
+      event = decodeURIComponent(tokens[0]);
+      value = {};
+      for (var i = 1, il = tokens.length; i < il;) {
+        if (i < il) {
+          name = decodeURIComponent(tokens[i]);
+          value[name] = null;
+        }
+        i++;
+        if (i < il) {
+					var val = decodeURIComponent(tokens[i]);
+					if (val == "true") {
+						val = true;
+					}
+					else if (val == "false") {
+						val = false
+					}
+					else if (val.match(/^\d+$/)) {
+						val = parseInt(val);
+					}	else if (val == "") {
+						val = undefined;
+					}
+					value[name] = val;
+				}
+        i++;
+      }
+    }
+  }
+  return [event, value];
+};
+
 /**
  * Add a component's messages to the central message store.
  *
@@ -1222,7 +1279,7 @@ Activiti.event = function() {
 
       // See if there is an event defined in the url
       var initialState = History.getBookmarkedState(module) || "";
-      this._mainEventDescriptor = this._stateToEventDescriptor(initialState);
+      this._mainEventDescriptor = Activiti.util.stateToEventDescriptor(initialState);
 
       // Register the module
       History.register(module, initialState, Activiti.event._onHistoryEvent, null, Activiti.event);
@@ -1272,18 +1329,8 @@ Activiti.event = function() {
     fire: function fire(event, value, originalEvent, bookmark) {
       if (this._initialized) {
         if (bookmark) {
-
           // Navigate with url history first which will make _onHistoryEvent get called so it can fire event
-          var state = encodeURIComponent(event);
-          for (var name in value) {
-						if (value.hasOwnProperty(name)) {
-							var val = value[name];
-							if (!YAHOO.lang.isBoolean(val) && !YAHOO.lang.isNumber(val) && !val) {
- 								val = "";
-							}
-						state += "|" + encodeURIComponent(name) + "|" + encodeURIComponent(val);
-						}
-          }
+          var state = Activiti.util.eventDescriptorToState(event, value);
           YAHOO.util.History.navigate("event", state);
         }
         else {
@@ -1351,57 +1398,13 @@ Activiti.event = function() {
     /**
      * Determines whether a possible owner actually is the owner of the bubbling event
      *
-     * @method _stateToEventDescriptor
-     * @param state {string} The event modules state
-     * @return {Array} An event descriptor with the event name in index 0 and the event value in index 1
-     * @private
-     */
-    _stateToEventDescriptor: function(state)
-    {
-      var event, value, name;
-      if (state && state.length > 0) {
-        var tokens = state.split("|");
-        if (tokens.length > 0) {
-          event = decodeURIComponent(tokens[0]);
-          value = {};
-          for (var i = 1, il = tokens.length; i < il;) {
-            if (i < il) {
-              name = decodeURIComponent(tokens[i]);
-              value[name] = null;
-            }
-            i++;
-            if (i < il) {
-							var val = decodeURIComponent(tokens[i]);
-							if (val == "true") {
-								val = true;
-							}
-							else if (val == "false") {
-								val = false
-							}
-							else if (val.match(/^\d+$/)) {
-								val = parseInt(val);
-							}	else if (val == "") {
-								val = undefined;
-							}
-							value[name] = val;
-						}
-            i++;
-          }
-        }
-      }
-      return [event, value];
-    },
-
-    /**
-     * Determines whether a possible owner actually is the owner of the bubbling event
-     *
      * @method isOwner
      * @param state {string} The event moduels state
      * @private
      */
     _onHistoryEvent: function(state)
     {
-      var eventDescriptor = this._stateToEventDescriptor(state);
+      var eventDescriptor = Activiti.util.stateToEventDescriptor(state);
       if (eventDescriptor[0]) {
         Activiti.event.fire(eventDescriptor[0], eventDescriptor[1], null, false);
       }

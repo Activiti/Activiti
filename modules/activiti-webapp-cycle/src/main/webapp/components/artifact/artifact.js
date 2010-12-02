@@ -156,86 +156,35 @@
         this._tabView.addTab(tab);
       }
 
-      // Add links tab
       var linksTab = new YAHOO.widget.Tab({ 
-        // TODO: i18n
         label: "Links", 
-        // TODO: i18n
-        content: '<div id="links-wrapper"><h3>Outgoing Links</h3><div id="links-div"></div><span id="addLink" class="yui-button"><span class="first-child"><button type="button">Add link</button></span></span></div><div id="backlinks-wrapper"><h3>Incoming Links</h3><div id="backlinks-div"></div></div>'
+        dataSrc: Activiti.constants.URL_CONTEXT + 'component/links?htmlid=' + this.id + '_links_tab&connectorId=' + artifactJson.connectorId + '&artifactId=' + artifactJson.artifactId,
+        cacheData: true
       });
+      linksTab.addListener("contentChange", this.onTabDataLoaded);
+      linksTab.loadHandler.success = function(response) {
+        
+        this.set('content', response.responseText);
+        
+        var scripts = [];
+        var script = null;
+        var regexp = /<script[^>]*>([\s\S]*?)<\/script>/gi;
+        while ((script = regexp.exec(response.responseText)))
+        {
+          scripts.push(script[1]);
+        }
+        scripts = scripts.join("\n");
 
+        // Remove the script from the responseText so it doesn't get executed twice
+        response.responseText = response.responseText.replace(regexp, "");
+
+        // Use setTimeout to execute the script. Note scope will always be "window"
+        window.setTimeout(scripts, 0);
+
+      };
       this._tabView.addTab(linksTab);
+
       this._tabView.appendTo('artifact-div');
-
-      // instantiate a data source for the links data table
-      this._linksDataSource = new YAHOO.util.XHRDataSource(Activiti.service.REST_PROXY_URI_RELATIVE + "artifact-links?connectorId=" + encodeURIComponent(artifactJson.connectorId) + "&artifactId=" + encodeURIComponent(artifactJson.artifactId));
-      this._linksDataSource.responseType = YAHOO.util.XHRDataSource.TYPE_JSARRAY;
-
-      // TODO: i18n
-      var linksColumnDefs = [
-          {key: "Name", sortable:true},
-          // {key: "Revision", sortable:true},
-          {key: "Type"}
-        ];
-
-      // instantiate the links data table
-      this._linksDataTable = new YAHOO.widget.DataTable("links-div", linksColumnDefs, this._linksDataSource, {scrollable:true});
-      // parse the response of the request that loaded the links from the server and 
-      // transform it into a format that is easily consumed by the YUI dataTable component
-      this._linksDataTable.doBeforeLoadData = function (sRequest, oResponse, oPayload) {
-          var jsonArray = oResponse.results;
-          var rows = [];
-          for(var i=0; i<jsonArray.length; i++) {
-            var row = {
-              Name: '<a class="openArtifactLink" href="#?connectorId=' + encodeURIComponent(jsonArray[i].artifact.targetConnectorId) + '&artifactId=' + encodeURIComponent(jsonArray[i].artifact.targetArtifactId) + '&artifactName=' + encodeURIComponent(jsonArray[i].artifact.label) + '">' + jsonArray[i].artifact.label + '</a>',
-              Revision: jsonArray[i].artifact.targetArtifactRevision,
-              Type: '<div class="artifact-type ' + me.getClassForContentType(jsonArray[i].artifact.targetContentType) + '">' + jsonArray[i].artifact.targetContentType + '</div>'
-            };
-            rows.push(row);
-          }          
-          oResponse.results = rows;
-          return true;
-      };   
-      // make sure we add click listeners to the links once they are loaded and rendered in the data table
-      this._linksDataTable.addListener('initEvent', function(e) {
-          var linkElements = Dom.getElementsByClassName("openArtifactLink", "a");
-          for (var i = 0; i < linkElements.length; i++) {
-            YAHOO.util.Event.addListener(linkElements[i], "click", me.onArtifactLinkClick, me, true);
-          }
-        });
-
-      var addLinkButton = new YAHOO.widget.Button("addLink", { label:"Add link", id:"addLinkButton" });
-      addLinkButton.addListener("click", this.onClickAddLinkButton, null, this);
-
-      // instantiate the datasource for the backlinks data table
-      var backlinksDataSource = new YAHOO.util.XHRDataSource(Activiti.service.REST_PROXY_URI_RELATIVE + "incoming-artifact-links?connectorId=" + encodeURIComponent(artifactJson.connectorId) + "&artifactId=" + encodeURIComponent(artifactJson.artifactId));
-      backlinksDataSource.responseType = YAHOO.util.XHRDataSource.TYPE_JSARRAY;
-
-      // instantiate the links data table
-      this._backlinksDataTable = new YAHOO.widget.DataTable("backlinks-div", linksColumnDefs, backlinksDataSource, {scrollable:true});
-      // parse the response of the request that loaded the backlinks from the server and 
-      // transform it into a format that is easily consumed by the YUI dataTable component
-      this._backlinksDataTable.doBeforeLoadData = function (sRequest, oResponse, oPayload) {
-          var jsonArray = oResponse.results;
-          var rows = [];
-          for(var i=0; i<jsonArray.length; i++) {
-            var row = {
-              Name: '<a class="openArtifactLink" href="#?connectorId=' + encodeURIComponent(jsonArray[i].artifact.sourceConnectorId) + '&artifactId=' + encodeURIComponent(jsonArray[i].artifact.sourceArtifactId) + '&artifactName=' + encodeURIComponent(jsonArray[i].artifact.label) + '">' + jsonArray[i].artifact.label + '</a>',
-              Revision: jsonArray[i].artifact.sourceArtifactRevision,
-              Type: '<div class="artifact-type ' + me.getClassForContentType(jsonArray[i].artifact.sourceContentType) + '">' + jsonArray[i].artifact.sourceContentType + '</div>'
-            };
-            rows.push(row);
-          }          
-          oResponse.results = rows;
-          return true;
-      };   
-      // make sure we add click listeners to the links once they are loaded and rendered in the data table
-      this._backlinksDataTable.addListener('initEvent', function(e) {
-          var linkElements = Dom.getElementsByClassName("openArtifactLink", "a");
-          for (var i = 0; i < linkElements.length; i++) {
-            YAHOO.util.Event.addListener(linkElements[i], "click", me.onArtifactLinkClick, me, true);
-          }
-        });
 
       // replace the tabViews onActiveTabChange evnet handler with our own one
       this._tabView.unsubscribe("activeTabChange", this._tabView._onActiveTabChange);
@@ -340,80 +289,10 @@
       this.fireEvent(Activiti.event.updateArtifactView, {"connectorId": this._connectorId, "repositoryNodeId": this._repositoryNodeId, "isRepositoryArtifact": this._isRepositoryArtifact, "name": this._name, "activeTabIndex": newActiveTabIndex}, null, true);
       YAHOO.util.Event.preventDefault(event);
     },
-    
-    onArtifactLinkClick: function Artifact_onArtifactLinkClick(event)
-    {
-      var params = event.target.href.split("?")[1].split("&");
-      
-      var connectorId = decodeURIComponent(params[0].split("=")[1]);
-      var artifactId = decodeURIComponent(params[1].split("=")[1]);
-      var artifactName = decodeURIComponent(params[2].split("=")[1]);
 
-      this.fireEvent(Activiti.event.updateArtifactView, {"connectorId": connectorId, "repositoryNodeId": artifactId, "isRepositoryArtifact": true, "name": artifactName, "activeTabIndex": 0}, null, true);
-      YAHOO.util.Event.preventDefault(event);
-    },
-    
     onClickFormEventButton: function Artifact_onClickFormEventButton(event, args)
     {
       return new Activiti.component.FileChooserDialog(this.id, args[1].value.callback, false, null, true, false);
-    },
-    
-    onClickAddLinkButton: function Artifact_onClickAddLinkButton(event, args)
-    {
-      return new Activiti.component.FileChooserDialog(this.id, "onAddLinkSubmit", true, this, false, true);
-    },
-
-    onAddLinkSubmit: function Artifact_onAddLinkSubmit(obj) {
-      this.services.repositoryService.createArtifactLink({"connectorId": this._connectorId, "artifactId": this._repositoryNodeId, "targetConnectorId": obj.connectorId,"targetArtifactId": obj.nodeId});
-    },
-
-    /**
-     * This method is called when the service method createArtifactLink returns and reloads 
-     * the links data table so the newly added link becomes visible.
-     *
-     * @param args object that contains three attributes: config, json and serverResponse
-     */
-    onCreateArtifactLinkSuccess: function Artifact_onCreateArtifactLinkSuccess(args)
-    {
-      var oCallback = {
-          success : this._linksDataTable.onDataReturnInitializeTable,
-          failure : this._linksDataTable.onDataReturnInitializeTable,
-          scope : this._linksDataTable,
-          argument: this._linksDataTable.getState() // data payload that will be returned to the callback function
-      };
-      this._linksDataSource.sendRequest("", oCallback);
-    },
-    
-    /**
-     * Convenience method to retrieve css class attributes for content types.
-     *
-     * @param contentType the content type to retrieve the css class for
-     * @return {string} the content type class name
-     */
-    getClassForContentType: function Artifact_getClassForContentType(contentType) {
-      if(contentType === "image/png" || contentType === "image/gif" || contentType === "image/jpeg") {
-        return "icon-img";
-      } else if(contentType === "application/xml") {
-        return "icon-code-red";
-      } else if(contentType === "text/html") {
-        return "icon-www";
-      } else if(contentType === "text/plain") {
-        return "icon-txt";
-      } else if(contentType === "application/pdf") {
-        return "icon-pdf";
-      } else if(contentType === "application/json;charset=UTF-8") {
-        return "icon-code-blue";
-      } else if(contentType === "application/msword") {
-        return "icon-doc";
-      } else if(contentType === "application/powerpoint") {
-        return "icon-ppt";
-      } else if(contentType === "application/excel") {
-        return "icon-xls";
-      } else if(contentType === "application/javascript") {
-        return "icon-code-blue";
-      }
-      // Use white page as default icon for all other content types
-      return "icon-blank";
     }
 
   });
