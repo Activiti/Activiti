@@ -42,7 +42,12 @@
 <section id="experimental">
   <title>Experimental features</title>
   <para>Sections marked with <emphasis role="bold">[EXPERIMENTAL]</emphasis> should 
-  not be considered stable.</para>
+  not be considered stable.
+  </para>
+  <para>All classes that have <literal>.impl.</literal> in the package name are internal implementation classes 
+  and can not be considered stable.  However, if the userguide mentions those classes as configuration
+  values, they are supported and can be considered stable. 
+  </para>
 </section>
 
 </chapter>

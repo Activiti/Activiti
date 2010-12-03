@@ -44,6 +44,22 @@
 
   <h1>Activiti Release Notes</h1>
   
+  <h3>Release Notes - Activiti - Version 5.1</h3>
+  
+  <h4>Changes</h4>
+  <ul>
+    <li>In attribute &lt;serviceTask delegateExpression="..."&gt; previously always performed a leave after 
+    calling the delegate that was obtained by evaluating the expression.  Which means that it's always an automatic 
+    activity.  Now the leave is only performed only when the delegate object implements JavaDelegate.  In case the 
+    delegate object implements ActivityBehavior the leave will not be called.  In that case, the ActivityBehavior is 
+    responsible for calling leave if it wants to be an automatic activity. 
+    </li>
+  </ul>
+
+  <h4>Highlights</h4>
+  <ul>
+    <li></li>
+  </ul>
 
   <h3>Release Notes - Activiti - Version 5.0</h3>
 

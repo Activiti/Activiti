@@ -39,7 +39,8 @@
 						<exclude>**/RepositoryConnectorConfigurationManagerImplTest.java</exclude>
 						<exclude>**/TestSvnRepositoryConnector.java</exclude>
 						<exclude>**/SubProcessExpansionTest.java</exclude>
-						<exclude>**/SftpConnectorTest.java</exclude>						
+            <exclude>**/SftpConnectorTest.java</exclude>
+            <exclude>**/AdjustShapeNamesForXmlNCNameTest.java</exclude>
 					</excludes>
 				</configuration>
 			</plugin>

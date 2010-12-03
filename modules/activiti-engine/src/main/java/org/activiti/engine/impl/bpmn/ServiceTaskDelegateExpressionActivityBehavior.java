@@ -38,15 +38,16 @@ public class ServiceTaskDelegateExpressionActivityBehavior extends AbstractBpmnA
     
     if (delegate instanceof ActivityBehavior) {
       ((ActivityBehavior) delegate).execute(execution);
+
     } else if (delegate instanceof JavaDelegate) {
       ((JavaDelegate) delegate).execute(execution);
+      leave(execution);
+    
     } else {
       throw new ActivitiException("Delegate expression " + expression 
               + " did not resolve to an implementation of " + ActivityBehavior.class 
               + " nor " + JavaDelegate.class);
     }
-    
-    leave(execution);
   }
 
 }
