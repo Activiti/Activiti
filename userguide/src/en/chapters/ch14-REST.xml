@@ -72,7 +72,7 @@
         <listitem>
           <para>
             <emphasis role="bold">Request: </emphasis>
-            <literal>POST /deployments</literal>
+            <literal>POST /deployment</literal>
             <programlisting>
 success={success}&amp;failure={success}&amp;deployment={file}</programlisting>
           </para>
