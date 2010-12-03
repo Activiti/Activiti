@@ -17,10 +17,12 @@ import org.activiti.engine.delegate.JavaDelegate;
 import org.activiti.engine.impl.el.Expression;
 import org.activiti.engine.impl.pvm.delegate.ActivityBehavior;
 import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
+import org.activiti.engine.impl.pvm.delegate.SignallableActivityBehavior;
 
 
 /**
  * @author Joram Barrez
+ * @author Josh Long 
  */
 public class ServiceTaskDelegateExpressionActivityBehavior extends AbstractBpmnActivity {
   
@@ -29,8 +31,16 @@ public class ServiceTaskDelegateExpressionActivityBehavior extends AbstractBpmnA
   public ServiceTaskDelegateExpressionActivityBehavior(Expression expression) {
     this.expression = expression;
   }
-  
-  public void execute(ActivityExecution execution) throws Exception {
+
+  @Override
+  public void signal(ActivityExecution execution, String signalName, Object signalData) throws Exception {
+    Object delegate = expression.getValue(execution);
+    if( delegate instanceof SignallableActivityBehavior){
+      ((SignallableActivityBehavior) delegate).signal( execution , signalName , signalData);
+    }
+  }
+
+	public void execute(ActivityExecution execution) throws Exception {
     
     // Note: we can't cache the result of the expression, because the
     // execution can change: eg. delegateExpression='${mySpringBeanFactory.randomSpringBean()}'
