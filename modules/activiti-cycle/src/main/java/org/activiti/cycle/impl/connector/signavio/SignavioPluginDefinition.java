@@ -81,7 +81,7 @@ public class SignavioPluginDefinition implements ActivitiCyclePluginDefinition {
     artifactType1.addParameterizedAction(new CreateTechnicalBpmnXmlAction());
     artifactType1.addParameterizedAction(new ValidateActivitiDeployment());
     artifactType1.addParameterizedAction(new CopySignavioModelAction());
-    artifactType1.addParameterizedAction(new SelectDiffTargetAction());
+//    artifactType1.addParameterizedAction(new SelectDiffTargetAction());
     artifactType1.addParameterizedAction(new CreateMavenProjectAction());
     artifactType1.addOpenUrlAction(new OpenModelerAction());
     artifactType1.addDownloadContentAction(CONTENT_REPRESENTATION_ID_BPMN_20_DEVELOPER);
