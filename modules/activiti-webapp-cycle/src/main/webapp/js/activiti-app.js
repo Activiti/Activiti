@@ -332,7 +332,7 @@
 		  var content = document.createElement("div");
 	    // TODO: i18n
 	    // TODO: make heading depend on configuration: "folder/ file" etc. ...
-      content.innerHTML = '<div class="bd"><h1>Select folder</h1><div id="fileChooserTree" class="ygtv-checkbox"/></div>';
+      content.innerHTML = '<div class="bd"><h1>Select ' + (this._highlightFolders ? 'folder' : 'file') + '</h1><div id="fileChooserTree" class="ygtv-checkbox"/></div>';
 
       this._dialog = new YAHOO.widget.Dialog(content, {
         fixedcenter: true,

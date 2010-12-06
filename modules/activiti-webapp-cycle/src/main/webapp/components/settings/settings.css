@@ -7,19 +7,19 @@
 
 .config-span {
   float: left;
-  border:1px solid transparent;
+  border:4px solid transparent;
   padding: 1em;
   display: block;
   background-color: #F9F9F9;
 }
 
-.config-span:hover {
+.highlightable:hover, .highlight {
 
+  border:4px solid #BFBFBF;
 }
 
-.highlightable:hover, .highlight {
-  background-color: #E1DFDF;
-  border:1px solid #BFBFBF;
+form .highlight ul li {
+  border-bottom: 1px solid transparent;
 }
 
 .attribute-label {
