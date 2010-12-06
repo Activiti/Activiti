@@ -32,10 +32,13 @@ import org.activiti.cycle.RepositoryFolder;
 import org.activiti.cycle.RepositoryNode;
 import org.activiti.cycle.RepositoryNodeCollection;
 import org.activiti.cycle.RepositoryNodeNotFoundException;
+import org.activiti.cycle.annotations.CycleComponent;
+import org.activiti.cycle.annotations.Interceptors;
 import org.activiti.cycle.impl.RepositoryArtifactImpl;
 import org.activiti.cycle.impl.RepositoryFolderImpl;
 import org.activiti.cycle.impl.RepositoryNodeCollectionImpl;
 import org.activiti.cycle.impl.connector.AbstractRepositoryConnector;
+import org.activiti.cycle.impl.connector.ConnectorLoginInterceptor;
 import org.activiti.cycle.impl.connector.signavio.util.SignavioJsonHelper;
 import org.activiti.cycle.impl.connector.util.RestClientLogHelper;
 import org.json.JSONArray;
@@ -64,6 +67,8 @@ import de.hpi.bpmn2_0.transformation.Json2XmlConverter;
  * @author christian.lipphardt@camunda.com
  * @author ruecker
  */
+@CycleComponent
+@Interceptors({ConnectorLoginInterceptor.class})
 public class SignavioConnector extends AbstractRepositoryConnector<SignavioConnectorConfiguration> {
 
   private static Logger log = Logger.getLogger(SignavioConnector.class.getName());
@@ -82,14 +87,11 @@ public class SignavioConnector extends AbstractRepositoryConnector<SignavioConne
 
   private boolean loggedIn = false;
 
+  public SignavioConnector() {    
+  }
+  
   public SignavioConnector(SignavioConnectorConfiguration signavioConfiguration) {
     super(signavioConfiguration);
-  }
-
-  protected void checkLoggedIn() {
-    if (!loggedIn && getConfiguration().isLoginRequired()) {
-      throw new RepositoryAuthenticationException("Not logged in.", getConfiguration().getId());
-    }
   }
 
   public Client initClient() {
@@ -304,7 +306,6 @@ public class SignavioConnector extends AbstractRepositoryConnector<SignavioConne
   }
 
   public RepositoryNodeCollection getChildren(String id) throws RepositoryNodeNotFoundException {
-    checkLoggedIn();
     try {
       ArrayList<RepositoryNode> nodes = new ArrayList<RepositoryNode>();
       if (getConfiguration() instanceof OryxConnectorConfiguration) {
@@ -425,7 +426,6 @@ public class SignavioConnector extends AbstractRepositoryConnector<SignavioConne
   }
 
   public RepositoryFolder getRepositoryFolder(String id) {
-    checkLoggedIn();
     try {
       Response directoryResponse = getJsonResponse(getConfiguration().getDirectoryUrl(id));
       JsonRepresentation jsonData = new JsonRepresentation(directoryResponse.getEntity());
@@ -449,7 +449,6 @@ public class SignavioConnector extends AbstractRepositoryConnector<SignavioConne
   }
 
   public RepositoryArtifact getRepositoryArtifact(String id) {
-    checkLoggedIn();
     JsonRepresentation jsonData = null;
     JSONObject jsonObject = null;
 
@@ -472,7 +471,6 @@ public class SignavioConnector extends AbstractRepositoryConnector<SignavioConne
   }
 
   public RepositoryFolder createFolder(String parentFolderId, String name) throws RepositoryNodeNotFoundException {
-    checkLoggedIn();
     try {
       Form createFolderForm = new Form();
       createFolderForm.add("name", name);
@@ -496,7 +494,6 @@ public class SignavioConnector extends AbstractRepositoryConnector<SignavioConne
   }
 
   public void deleteArtifact(String artifactId) {
-    checkLoggedIn();
     try {
       Request jsonRequest = new Request(Method.DELETE, new Reference(getConfiguration().getModelUrl(artifactId)));
       jsonRequest.getClientInfo().getAcceptedMediaTypes().add(new Preference<MediaType>(MediaType.APPLICATION_JSON));
@@ -510,7 +507,6 @@ public class SignavioConnector extends AbstractRepositoryConnector<SignavioConne
   }
 
   public void deleteFolder(String subFolderId) {
-    checkLoggedIn();
     try {
       Request jsonRequest = new Request(Method.DELETE, new Reference(getConfiguration().getDirectoryUrl(subFolderId)));
       jsonRequest.getClientInfo().getAcceptedMediaTypes().add(new Preference<MediaType>(MediaType.APPLICATION_JSON));
@@ -561,14 +557,12 @@ public class SignavioConnector extends AbstractRepositoryConnector<SignavioConne
 
   public RepositoryArtifact createArtifact(String parentFolderId, String artifactName, String artifactType, Content artifactContent)
           throws RepositoryNodeNotFoundException {
-    checkLoggedIn();
     // TODO: Add handling of different artifact types!
     return createArtifactFromJSON(parentFolderId, artifactName, artifactType, artifactContent.asString());
   }
 
   public RepositoryArtifact createArtifactFromContentRepresentation(String parentFolderId, String artifactName, String artifactType,
           String contentRepresentationName, Content artifactContent) throws RepositoryNodeNotFoundException {
-    checkLoggedIn();
     // TODO: Add handling of different content representations, e.g. BPMN 2.0
     // Import
     return createArtifactFromJSON(parentFolderId, artifactName, artifactType, artifactContent.asString());
@@ -696,13 +690,15 @@ public class SignavioConnector extends AbstractRepositoryConnector<SignavioConne
   }
 
   public void updateContent(String artifactId, Content content) throws RepositoryNodeNotFoundException {
-    checkLoggedIn();
     throw new RepositoryException("Moving artifacts is not (yet) supported by the Signavio Connector");
   }
 
   public void updateContent(String artifactId, String contentRepresentationName, Content content) throws RepositoryNodeNotFoundException {
-    checkLoggedIn();
     throw new RepositoryException("Moving artifacts is not (yet) supported by the Signavio Connector");
   }
 
+  public boolean isLoggedIn() {
+    return loggedIn || !getConfiguration().isLoginRequired();
+  }
+  
 }

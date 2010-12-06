@@ -19,6 +19,7 @@ import org.activiti.cycle.RepositoryNodeNotFoundException;
 import org.activiti.cycle.impl.RepositoryArtifactImpl;
 import org.activiti.cycle.impl.RepositoryFolderImpl;
 import org.activiti.cycle.impl.RepositoryNodeCollectionImpl;
+import org.activiti.cycle.impl.conf.RepositoryConnectorConfiguration;
 import org.activiti.cycle.impl.connector.AbstractRepositoryConnector;
 import org.activiti.cycle.impl.connector.util.ConnectorPathUtils;
 import org.activiti.cycle.impl.connector.util.ConnectorStreamUtils;
@@ -51,15 +52,13 @@ public abstract class VfsConnector extends AbstractRepositoryConnector<VfsConnec
 
   protected boolean loggedIn;
 
-  protected void checkLoggedIn() {
-    if (!loggedIn) {
-      throw new RepositoryAuthenticationException("Not logged in.", getConfiguration().getId());
-    }
-  }
-
   public VfsConnector(VfsConnectorConfiguration configuration) {
     super(configuration);
     validateConfiguration();
+  }
+
+  public VfsConnector() {
+
   }
 
   public RepositoryArtifact getRepositoryArtifact(String id) throws RepositoryNodeNotFoundException {
@@ -293,7 +292,6 @@ public abstract class VfsConnector extends AbstractRepositoryConnector<VfsConnec
   }
 
   private void checkRepository() {
-    checkLoggedIn();
     getFileSystemManager();
     if (connectionString == null)
       throw new RepositoryException("You need to login first.");
@@ -307,6 +305,16 @@ public abstract class VfsConnector extends AbstractRepositoryConnector<VfsConnec
     } catch (FileSystemException e) {
       log.log(Level.WARNING, "cannot close  " + fileObject.getName(), e);
     }
+  }
+
+  public boolean isLoggedIn() {
+    return loggedIn;
+  }
+
+  @Override
+  public void setConfiguration(RepositoryConnectorConfiguration configuration) {
+    super.setConfiguration(configuration);
+    validateConfiguration();
   }
 
   protected abstract void validateConfiguration();

@@ -4,6 +4,9 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.activiti.cycle.RepositoryException;
+import org.activiti.cycle.annotations.CycleComponent;
+import org.activiti.cycle.annotations.Interceptors;
+import org.activiti.cycle.impl.connector.ConnectorLoginInterceptor;
 import org.apache.commons.vfs.FileSystemManager;
 import org.apache.commons.vfs.FileSystemOptions;
 import org.apache.commons.vfs.VFS;
@@ -14,12 +17,17 @@ import org.apache.commons.vfs.provider.sftp.SftpFileSystemConfigBuilder;
  * 
  * @author daniel.meyer@camunda.com
  */
+@CycleComponent
+@Interceptors({ ConnectorLoginInterceptor.class })
 public class SftpRepositoryConnector extends VfsConnector {
 
   private static Logger log = Logger.getLogger(SftpRepositoryConnector.class.getName());
 
   public SftpRepositoryConnector(VfsConnectorConfiguration configuration) {
     super(configuration);
+  }
+
+  public SftpRepositoryConnector() {
   }
 
   protected void validateConfiguration() {

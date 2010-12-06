@@ -16,6 +16,7 @@ import org.activiti.cycle.RepositoryFolder;
 import org.activiti.cycle.RepositoryNode;
 import org.activiti.cycle.RepositoryNodeCollection;
 import org.activiti.cycle.RepositoryNodeNotFoundException;
+import org.activiti.cycle.annotations.CycleComponent;
 import org.activiti.cycle.impl.RepositoryArtifactImpl;
 import org.activiti.cycle.impl.RepositoryFolderImpl;
 import org.activiti.cycle.impl.RepositoryNodeCollectionImpl;
@@ -28,10 +29,15 @@ import eu.medsea.mimeutil.MimeUtil;
  * 
  * @author ruecker
  */
+@CycleComponent
 public class FileSystemConnector extends AbstractRepositoryConnector<FileSystemConnectorConfiguration> {
   
   public FileSystemConnector(FileSystemConnectorConfiguration conf) {
     super(conf);
+  }
+  
+  
+  public FileSystemConnector() {
   }
 
   public boolean login(String username, String password) {
@@ -262,5 +268,9 @@ public class FileSystemConnector extends AbstractRepositoryConnector<FileSystemC
       return path;
     }
     throw new RepositoryException("Unable to determine local path! ('" + path + "')");
+  }
+  
+  public boolean isLoggedIn() {
+    return true;
   }
 }

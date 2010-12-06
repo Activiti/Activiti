@@ -9,6 +9,7 @@ import org.activiti.cycle.RepositoryFolder;
 import org.activiti.cycle.RepositoryNode;
 import org.activiti.cycle.RepositoryNodeCollection;
 import org.activiti.cycle.RepositoryNodeNotFoundException;
+import org.activiti.cycle.TransactionalRepositoryConnector;
 import org.activiti.cycle.impl.conf.ConfigurationContainer;
 import org.activiti.cycle.impl.plugin.PluginFinder;
 import org.activiti.cycle.incubator.connector.svn.SvnConnectorConfiguration;
@@ -31,18 +32,18 @@ public class TestSvnRepositoryConnector {
 
 	private static ConfigurationContainer userConfiguration;
 
-	private static SvnRepositoryConnector connector;
+	private static TransactionalRepositoryConnector connector;
 
 	@BeforeClass
 	public static void createConnector() {
 		userConfiguration = new ConfigurationContainer("daniel");
 		userConfiguration.addRepositoryConnectorConfiguration(new SvnConnectorConfiguration("svn", REPO_LOCATION, "/tmp"));
-		connector = (SvnRepositoryConnector) userConfiguration.getConnector("svn");
+		connector = (TransactionalRepositoryConnector) userConfiguration.getConnector("svn");
 
 		// TODO: Should be done in Bootstrapping
 		PluginFinder.checkPluginInitialization();
 
-		// connector.login("guest", "");
+		 connector.login("guest", "");
 	}
 
 	@Test
@@ -52,7 +53,6 @@ public class TestSvnRepositoryConnector {
 		for (RepositoryNode node : result.asList()) {
 			System.out.println(node.getNodeId());
 		}
-
 		try {
 			result = connector.getChildren("nonExistentPath");
 			Assert.fail();

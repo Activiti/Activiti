@@ -23,91 +23,97 @@ import org.activiti.cycle.impl.conf.RepositoryConnectorConfiguration;
  */
 public interface RepositoryConnector {
 
-	public RepositoryConnectorConfiguration getConfiguration();
+  public RepositoryConnectorConfiguration getConfiguration();
 
-	/**
-	 * log in given user and return true, if login was successful and false, if
-	 * the user couldn't be logged in
-	 */
-	public boolean login(String username, String password);
+  /**
+   * log in given user and return true, if login was successful and false, if
+   * the user couldn't be logged in
+   */
+  public boolean login(String username, String password);
 
+  // /**
+  // * get all child nodes of a node with the given url, independent if the
+  // * children are folders or artifacts.
+  // */
+  // public List<RepositoryNode> getChildNodes(String parentId) throws
+  // RepositoryNodeNotFoundException;
 
+  /**
+   * load the {@link RepositoryArtifact} including details
+   */
+  public RepositoryArtifact getRepositoryArtifact(String id) throws RepositoryNodeNotFoundException;
 
-	// /**
-	// * get all child nodes of a node with the given url, independent if the
-	// * children are folders or artifacts.
-	// */
-	// public List<RepositoryNode> getChildNodes(String parentId) throws
-	// RepositoryNodeNotFoundException;
+  /**
+   * returns a preview for the artifact if available, otherwiese null is
+   * returned. Not every connector must provide a preview for all
+   * {@link ArtifactType}s.
+   */
+  public Content getRepositoryArtifactPreview(String artifactId) throws RepositoryNodeNotFoundException;
 
-	/**
-	 * load the {@link RepositoryArtifact} including details
-	 */
-	public RepositoryArtifact getRepositoryArtifact(String id) throws RepositoryNodeNotFoundException;
+  public RepositoryFolder getRepositoryFolder(String id) throws RepositoryNodeNotFoundException;
 
-	/**
-	 * returns a preview for the artifact if available, otherwiese null is
-	 * returned. Not every connector must provide a preview for all
-	 * {@link ArtifactType}s.
-	 */
-	public Content getRepositoryArtifactPreview(String artifactId) throws RepositoryNodeNotFoundException;
+  /**
+   * gets all elements
+   */
+  public RepositoryNodeCollection getChildren(String id) throws RepositoryNodeNotFoundException;
 
-	public RepositoryFolder getRepositoryFolder(String id) throws RepositoryNodeNotFoundException;
+  /**
+   * return the list of supported {@link ArtifactType}s of this
+   * {@link RepositoryConnector} for the given folder. Most conenctors doesn't
+   * make any difference between the folders, but some may do.
+   */
+  public List<ArtifactType> getSupportedArtifactTypes(String folderId);
 
-	/**
-	 * gets all elements
-	 */
-	public RepositoryNodeCollection getChildren(String id) throws RepositoryNodeNotFoundException;
+  /**
+   * create a new file in the given folder with the default
+   * {@link ContentRepresentation}
+   * 
+   * @param artifactId
+   */
+  public RepositoryArtifact createArtifact(String parentFolderId, String artifactName, String artifactType, Content artifactContent)
+          throws RepositoryNodeNotFoundException;
 
-	/**
-	 * return the list of supported {@link ArtifactType}s of this
-	 * {@link RepositoryConnector} for the given folder. Most conenctors doesn't
-	 * make any difference between the folders, but some may do.
-	 */
-	public List<ArtifactType> getSupportedArtifactTypes(String folderId);
+  public RepositoryArtifact createArtifactFromContentRepresentation(String parentFolderId, String artifactName, String artifactType,
+          String contentRepresentationName, Content artifactContent) throws RepositoryNodeNotFoundException;
 
-	/**
-	 * create a new file in the given folder with the default
-	 * {@link ContentRepresentation}
-	 * 
-	 * @param artifactId
-	 */
-	public RepositoryArtifact createArtifact(String parentFolderId, String artifactName, String artifactType, Content artifactContent)
-			throws RepositoryNodeNotFoundException;
+  /**
+   * create a new subfolder in the given folder
+   */
+  public RepositoryFolder createFolder(String parentFolderId, String name) throws RepositoryNodeNotFoundException;
 
-	public RepositoryArtifact createArtifactFromContentRepresentation(String parentFolderId, String artifactName, String artifactType,
-			String contentRepresentationName, Content artifactContent) throws RepositoryNodeNotFoundException;
+  public Content getContent(String artifactId, String representationName) throws RepositoryNodeNotFoundException;
 
-	/**
-	 * create a new subfolder in the given folder
-	 */
-	public RepositoryFolder createFolder(String parentFolderId, String name) throws RepositoryNodeNotFoundException;
+  /**
+   * update artifact content with default {@link ContentRepresentation}
+   */
+  public void updateContent(String artifactId, Content content) throws RepositoryNodeNotFoundException;
 
-	public Content getContent(String artifactId, String representationName) throws RepositoryNodeNotFoundException;
+  public void updateContent(String artifactId, String contentRepresentationName, Content content) throws RepositoryNodeNotFoundException;
 
-	/**
-	 * update artifact content with default {@link ContentRepresentation}
-	 */
-	public void updateContent(String artifactId, Content content) throws RepositoryNodeNotFoundException;
+  /**
+   * deletes the given file from the folder
+   */
+  public void deleteArtifact(String artifactId) throws RepositoryNodeNotFoundException;
 
-	public void updateContent(String artifactId, String contentRepresentationName, Content content) throws RepositoryNodeNotFoundException;
+  /**
+   * deletes the given subfolder of the parent folder.
+   * 
+   * TODO: Think about if we need the parent folder as argument of this API
+   */
+  public void deleteFolder(String folderId) throws RepositoryNodeNotFoundException;
 
-	/**
-	 * deletes the given file from the folder
-	 */
-	public void deleteArtifact(String artifactId) throws RepositoryNodeNotFoundException;
+  /**
+   * TODO double check the signature
+   */
+  public void executeParameterizedAction(String artifactId, String actionId, Map<String, Object> parameters) throws Exception;
 
-	/**
-	 * deletes the given subfolder of the parent folder.
-	 * 
-	 * TODO: Think about if we need the parent folder as argument of this API
-	 */
-	public void deleteFolder(String folderId) throws RepositoryNodeNotFoundException;
+  /**
+   * return true if the connector is currently logged in, returns false,
+   * otherwise.
+   */
+  public boolean isLoggedIn();
 
-	/**
-	 * TODO double check the signature
-	 */
-	public void executeParameterizedAction(String artifactId, String actionId, Map<String, Object> parameters) throws Exception;
+  public void setConfiguration(RepositoryConnectorConfiguration configuration);
 
-	// public String getGlobalId(RepositoryNode node);
+  // public String getGlobalId(RepositoryNode node);
 }

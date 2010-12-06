@@ -15,6 +15,7 @@ import org.activiti.cycle.RepositoryNodeCollection;
 import org.activiti.cycle.RepositoryNodeNotFoundException;
 import org.activiti.cycle.impl.RepositoryFolderImpl;
 import org.activiti.cycle.impl.RepositoryNodeCollectionImpl;
+import org.activiti.cycle.impl.conf.RepositoryConnectorConfiguration;
 import org.activiti.cycle.service.CycleServiceFactory;
 import org.activiti.cycle.service.CycleTagService;
 
@@ -136,5 +137,14 @@ public class TagConnector implements RepositoryConnector {
 
   public void beginTransaction() {
   } 
+  
+  public boolean isLoggedIn() {
+    return true;
+  }
+
+  public void setConfiguration(RepositoryConnectorConfiguration configuration) {
+    
+    // does not need configuration
+  }
   
 }

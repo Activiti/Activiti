@@ -32,7 +32,7 @@ public class DemoConnector extends AbstractRepositoryConnector<DemoConnectorConf
     rootNodes = new ArrayList<RepositoryNode>();
     content = new HashMap<String, Map<String, byte[]>>();
 
-    createDemoData(); 
+    createDemoData();
   }
 
   private String loggedInUser;
@@ -54,8 +54,7 @@ public class DemoConnector extends AbstractRepositoryConnector<DemoConnectorConf
     RepositoryArtifact file2 = createArtifact("/minutes", "InitialMindmap.mm", DemoConnectorPluginDefinition.ARTIFACT_TYPE_MINDMAP,
             createContent("/org/activiti/cycle/impl/connector/demo/mindmap.html"));
     addContentToInternalMap(file2.getNodeId(), DemoConnectorPluginDefinition.CONTENT_REPRESENTATION_ID_PNG,
-            createContent(
-            "/org/activiti/cycle/impl/connector/demo/mindmap.jpg").asByteArray());
+            createContent("/org/activiti/cycle/impl/connector/demo/mindmap.jpg").asByteArray());
 
     rootNodes.add(folder1);
 
@@ -65,10 +64,9 @@ public class DemoConnector extends AbstractRepositoryConnector<DemoConnectorConf
     RepositoryFolder folder3 = createFolder("/BPMN", "Level3");
 
     RepositoryArtifact file3 = createArtifactFromContentRepresentation("/BPMN/Level3", "InitialBpmnModel", DemoConnectorPluginDefinition.ARTIFACT_TYPE_BPMN_20,
-            DemoConnectorPluginDefinition.CONTENT_REPRESENTATION_ID_XML,
-            createContent("/org/activiti/cycle/impl/connector/demo/engine-pool.xml"));
-    addContentToInternalMap(file3.getNodeId(), DemoConnectorPluginDefinition.CONTENT_REPRESENTATION_ID_PNG, createContent(
-            "/org/activiti/cycle/impl/connector/demo/bpmn.png").asByteArray());
+            DemoConnectorPluginDefinition.CONTENT_REPRESENTATION_ID_XML, createContent("/org/activiti/cycle/impl/connector/demo/engine-pool.xml"));
+    addContentToInternalMap(file3.getNodeId(), DemoConnectorPluginDefinition.CONTENT_REPRESENTATION_ID_PNG,
+            createContent("/org/activiti/cycle/impl/connector/demo/bpmn.png").asByteArray());
 
     rootNodes.add(folder2);
     // nodes.add(folder2);
@@ -86,9 +84,9 @@ public class DemoConnector extends AbstractRepositoryConnector<DemoConnectorConf
 
   public void copyArtifact(RepositoryArtifact artifact, String targetName) {
     RepositoryArtifact copy = new RepositoryArtifactImpl(getConfiguration().getId(), targetName, artifact.getArtifactType(), this);
-    
+
     nodes.add(copy);
-    
+
     Collection<ContentRepresentation> contentRepresentationDefinitions = artifact.getArtifactType().getContentRepresentations();
     for (ContentRepresentation def : contentRepresentationDefinitions) {
       def.getId();
@@ -108,7 +106,7 @@ public class DemoConnector extends AbstractRepositoryConnector<DemoConnectorConf
   public static RepositoryFolderImpl clone(RepositoryFolder folder) {
     // TODO: Maybe make deep copy?
     RepositoryFolderImpl newFolder = new RepositoryFolderImpl(folder.getConnectorId(), folder.getNodeId());
-    
+
     newFolder.getMetadata().setName(folder.getMetadata().getName());
     newFolder.getMetadata().setParentFolderId(folder.getMetadata().setParentFolderId());
     return newFolder;
@@ -123,10 +121,9 @@ public class DemoConnector extends AbstractRepositoryConnector<DemoConnectorConf
 
     newArtifact.getMetadata().setName(artifact.getMetadata().getName());
     newArtifact.getMetadata().setParentFolderId(artifact.getMetadata().setParentFolderId());
-    
+
     return newArtifact;
   }
-  
 
   private void addContentToInternalMap(String artifactId, String name, byte[] byteArray) {
     Map<String, byte[]> map = content.get(artifactId);
@@ -137,15 +134,15 @@ public class DemoConnector extends AbstractRepositoryConnector<DemoConnectorConf
 
     map.put(name, byteArray);
   }
-  
+
   public Content getContent(String artifactId, String representationName) throws RepositoryNodeNotFoundException {
     Map<String, byte[]> map = content.get(artifactId);
     byte[] bs = map.get(representationName);
     Content c = new Content();
     c.setValue(bs);
     return c;
-  }  
-  
+  }
+
   private Content createContent(String contentSourceUrl) {
     Content result = new Content();
     InputStream in = null;
@@ -172,11 +169,11 @@ public class DemoConnector extends AbstractRepositoryConnector<DemoConnectorConf
     } catch (Exception ex) {
       throw new RepositoryException("couldn't create content from URL " + contentSourceUrl, ex);
     } finally {
-      IoUtil.closeSilently(in); 
+      IoUtil.closeSilently(in);
     }
-    return result;      
-  }  
-  
+    return result;
+  }
+
   public RepositoryNodeCollection getChildren(String parentUrl) throws RepositoryNodeNotFoundException {
     ArrayList<RepositoryNode> list = new ArrayList<RepositoryNode>();
     if ("/".equals(parentUrl)) {
@@ -189,7 +186,7 @@ public class DemoConnector extends AbstractRepositoryConnector<DemoConnectorConf
           // remove / at the end
           String remainingUrl = node.getNodeId().substring(parentUrl.length() + 1);
           remainingUrl = remainingUrl.substring(0, remainingUrl.length() - 1);
-          
+
           if (!remainingUrl.contains("/")) {
             list.add(clone(node));
           }
@@ -211,7 +208,7 @@ public class DemoConnector extends AbstractRepositoryConnector<DemoConnectorConf
     }
     throw new RepositoryNodeNotFoundException(getConfiguration().getName(), RepositoryArtifact.class, id);
   }
-  
+
   public RepositoryFolder getRepositoryFolder(String id) {
     for (RepositoryNode node : nodes) {
       if (node.getNodeId().equals(id) && node instanceof RepositoryFolder) {
@@ -219,22 +216,21 @@ public class DemoConnector extends AbstractRepositoryConnector<DemoConnectorConf
       }
     }
     throw new RepositoryNodeNotFoundException(getConfiguration().getName(), RepositoryFolder.class, id);
-  }  
+  }
 
   public boolean login(String username, String password) {
     log.fine("login called with user " + username + " and password " + password);
     loggedInUser = username;
     return true;
   }
-  
+
   public void commitPendingChanges(String comment) {
   }
 
   public RepositoryArtifact createArtifact(String parentFolderId, String artifactName, String artifactType, Content artifactContent)
           throws RepositoryNodeNotFoundException {
-    return createArtifactFromContentRepresentation(parentFolderId, artifactName, artifactType, getArtifactType(artifactType)
-            .getDefaultContentRepresentation().getId(),
-            artifactContent);
+    return createArtifactFromContentRepresentation(parentFolderId, artifactName, artifactType, getArtifactType(artifactType).getDefaultContentRepresentation()
+            .getId(), artifactContent);
   }
 
   public RepositoryArtifact createArtifactFromContentRepresentation(String parentFolderId, String artifactName, String artifactType,
@@ -243,12 +239,12 @@ public class DemoConnector extends AbstractRepositoryConnector<DemoConnectorConf
     if (!id.startsWith("/")) {
       id = "/" + id;
     }
-    if (id.length()>1) {
+    if (id.length() > 1) {
       // all but root folder
       id = id + "/";
     }
     id = id + artifactName;
-    
+
     RepositoryArtifact newArtifact = new RepositoryArtifactImpl(getConfiguration().getId(), id, getArtifactType(artifactType), this);
     newArtifact.getMetadata().setName(artifactName);
     newArtifact.getMetadata().setParentFolderId(parentFolderId);
@@ -264,8 +260,8 @@ public class DemoConnector extends AbstractRepositoryConnector<DemoConnectorConf
 
   public void updateContent(String artifactId, String contentRepresentationId, Content artifactContent) {
     addContentToInternalMap(artifactId, contentRepresentationId, artifactContent.asByteArray());
-  }  
-  
+  }
+
   public RepositoryFolder createFolder(String parentFolderId, String name) throws RepositoryNodeNotFoundException {
     String id = parentFolderId;
     if (!id.startsWith("/")) {
@@ -294,5 +290,9 @@ public class DemoConnector extends AbstractRepositoryConnector<DemoConnectorConf
   }
 
   public void exceuteAction(String artifactId, String actionId, Map<String, Object> parameters) {
+  }
+
+  public boolean isLoggedIn() {
+    return loggedInUser != null;
   }
 }

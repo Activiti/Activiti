@@ -17,7 +17,6 @@ import java.util.logging.Logger;
 import org.activiti.cycle.ArtifactType;
 import org.activiti.cycle.Content;
 import org.activiti.cycle.RepositoryArtifact;
-import org.activiti.cycle.RepositoryAuthenticationException;
 import org.activiti.cycle.RepositoryConnector;
 import org.activiti.cycle.RepositoryException;
 import org.activiti.cycle.RepositoryFolder;
@@ -25,10 +24,13 @@ import org.activiti.cycle.RepositoryNode;
 import org.activiti.cycle.RepositoryNodeCollection;
 import org.activiti.cycle.RepositoryNodeNotFoundException;
 import org.activiti.cycle.TransactionalRepositoryConnector;
+import org.activiti.cycle.annotations.CycleComponent;
+import org.activiti.cycle.annotations.Interceptors;
 import org.activiti.cycle.impl.RepositoryArtifactImpl;
 import org.activiti.cycle.impl.RepositoryFolderImpl;
 import org.activiti.cycle.impl.RepositoryNodeCollectionImpl;
 import org.activiti.cycle.impl.connector.AbstractRepositoryConnector;
+import org.activiti.cycle.impl.connector.ConnectorLoginInterceptor;
 import org.activiti.cycle.impl.connector.util.ConnectorPathUtils;
 import org.tigris.subversion.svnclientadapter.ISVNClientAdapter;
 import org.tigris.subversion.svnclientadapter.ISVNDirEntry;
@@ -52,6 +54,8 @@ import org.tigris.subversion.svnclientadapter.svnkit.SvnKitClientAdapterFactory;
  * IMPLEMENTATION NOTE: we perform lazy-initialization of the actual client
  * adapter. Make sure to always call getSvnClientAdapter().
  */
+@CycleComponent
+@Interceptors({ ConnectorLoginInterceptor.class })
 public class SvnRepositoryConnector extends AbstractRepositoryConnector<SvnConnectorConfiguration> implements TransactionalRepositoryConnector {
 
   private static Logger log = Logger.getLogger(SvnRepositoryConnector.class.getName());
@@ -66,18 +70,17 @@ public class SvnRepositoryConnector extends AbstractRepositoryConnector<SvnConne
   private boolean autocommit = false;
 
   private final ReentrantLock transactionLock = new ReentrantLock();
-  
+
   private boolean loggedIn;
 
   static {
     setupFactories();
   }
-
-  public SvnRepositoryConnector(SvnConnectorConfiguration configuration) {
-    super(configuration);
-    validateConfig();
+    
+  public SvnRepositoryConnector() {
+      
   }
-
+ 
   protected void validateConfig() {
     String repositoryPath = getConfiguration().getRepositoryPath();
     if (repositoryPath == null) {
@@ -88,12 +91,6 @@ public class SvnRepositoryConnector extends AbstractRepositoryConnector<SvnConne
       throw new RuntimeException("Cannot initialize SvnRepositoryConnector: temporaryFileStore not set.");
     }
 
-  }
-  
-  protected void checkLoggedIn() {
-    if (!loggedIn) {
-      throw new RepositoryAuthenticationException("Not logged in.", getConfiguration().getId());
-    }
   }
 
   protected static void setupFactories() {
@@ -118,7 +115,7 @@ public class SvnRepositoryConnector extends AbstractRepositoryConnector<SvnConne
 
   }
 
-  public boolean login(String username, String password) {    
+  public boolean login(String username, String password) {
     ISVNClientAdapter clientAdapter = getSvnClientAdapter();
 
     clientAdapter.setUsername(username);
@@ -134,7 +131,6 @@ public class SvnRepositoryConnector extends AbstractRepositoryConnector<SvnConne
   }
 
   public RepositoryArtifact getRepositoryArtifact(String id) throws RepositoryNodeNotFoundException {
-    checkLoggedIn();
     ISVNClientAdapter clientAdapter = getSvnClientAdapter();
 
     try {
@@ -155,7 +151,6 @@ public class SvnRepositoryConnector extends AbstractRepositoryConnector<SvnConne
   }
 
   public RepositoryFolder getRepositoryFolder(String id) throws RepositoryNodeNotFoundException {
-    checkLoggedIn();
     ISVNClientAdapter clientAdapter = getSvnClientAdapter();
 
     try {
@@ -175,7 +170,6 @@ public class SvnRepositoryConnector extends AbstractRepositoryConnector<SvnConne
   }
 
   public RepositoryNodeCollection getChildren(String id) throws RepositoryNodeNotFoundException {
-    checkLoggedIn();
     ISVNClientAdapter clientAdapter = getSvnClientAdapter();
 
     List<RepositoryNode> nodeList = new ArrayList<RepositoryNode>();
@@ -220,7 +214,6 @@ public class SvnRepositoryConnector extends AbstractRepositoryConnector<SvnConne
 
   public RepositoryArtifact createArtifact(String parentFolderId, String artifactName, String artifactType, Content artifactContent)
           throws RepositoryNodeNotFoundException {
-    checkLoggedIn();
     ISVNClientAdapter clientAdapter = getSvnClientAdapter();
     File temporaryFileStrore = null;
     // begin transaction if not active
@@ -256,12 +249,10 @@ public class SvnRepositoryConnector extends AbstractRepositoryConnector<SvnConne
 
   public RepositoryArtifact createArtifactFromContentRepresentation(String parentFolderId, String artifactName, String artifactType,
           String contentRepresentationName, Content artifactContent) throws RepositoryNodeNotFoundException {
-    checkLoggedIn();
     return createArtifact(parentFolderId, artifactName, artifactType, artifactContent);
   }
 
   public RepositoryFolder createFolder(String parentFolderId, String name) throws RepositoryNodeNotFoundException {
-    checkLoggedIn();
     ISVNClientAdapter clientAdapter = getSvnClientAdapter();
     File temporaryFileStrore = null;
     // begin transaction if not active
@@ -298,7 +289,6 @@ public class SvnRepositoryConnector extends AbstractRepositoryConnector<SvnConne
   }
 
   public void updateContent(String artifactId, Content content) throws RepositoryNodeNotFoundException {
-    checkLoggedIn();
     // assure that clientadapter is properly initialized
     getSvnClientAdapter();
     File temporaryFileStrore = null;
@@ -339,12 +329,10 @@ public class SvnRepositoryConnector extends AbstractRepositoryConnector<SvnConne
   }
 
   public void updateContent(String artifactId, String contentRepresentationName, Content content) throws RepositoryNodeNotFoundException {
-    checkLoggedIn();
     updateContent(artifactId, content);
   }
 
   public void deleteArtifact(String artifactId) throws RepositoryNodeNotFoundException {
-    checkLoggedIn();
 
     ISVNClientAdapter clientAdapter = getSvnClientAdapter();
 
@@ -361,7 +349,6 @@ public class SvnRepositoryConnector extends AbstractRepositoryConnector<SvnConne
   }
 
   public void deleteFolder(String folderId) throws RepositoryNodeNotFoundException {
-    checkLoggedIn();
     ISVNClientAdapter clientAdapter = getSvnClientAdapter();
 
     try {
@@ -614,8 +601,6 @@ public class SvnRepositoryConnector extends AbstractRepositoryConnector<SvnConne
   }
 
   public void commitTransaction(String comment) {
-    checkLoggedIn();
-
     transactionLock.lock();
 
     if (!transactionActive) {
@@ -645,7 +630,6 @@ public class SvnRepositoryConnector extends AbstractRepositoryConnector<SvnConne
   }
 
   public void rollbackTransaction() {
-    checkLoggedIn();
     transactionLock.lock();
     if (!transactionActive)
       return;
@@ -673,7 +657,6 @@ public class SvnRepositoryConnector extends AbstractRepositoryConnector<SvnConne
   }
 
   public void beginTransaction() {
-    checkLoggedIn();
     // do not autocommit on transactions coming in via the public API.
     beginTransaction(false);
   }
@@ -709,6 +692,10 @@ public class SvnRepositoryConnector extends AbstractRepositoryConnector<SvnConne
       log.log(Level.SEVERE, "Cannot create an SVN Client. No client library installed? This activiti-cycle connector is not usable.", e);
       throw new RepositoryException("Could not initialize client adapter. No client library available? " + e.getMessage(), e);
     }
+  }
+
+  public boolean isLoggedIn() {
+    return loggedIn;
   }
 
 }

@@ -23,11 +23,19 @@ public abstract class AbstractRepositoryConnector<T extends RepositoryConnectorC
 	public AbstractRepositoryConnector(T configuration) {
 		this.configuration = configuration;
 	}
+		
+  public AbstractRepositoryConnector() {
+  }
 
 	public T getConfiguration() {
 		return configuration;
 	}
 
+	
+  public void setConfiguration(RepositoryConnectorConfiguration configuration) {
+    this.configuration = (T) configuration;
+  }
+  
 	/**
 	 * Typical basic implementation to query {@link Content} from
 	 * {@link ContentProvider} obtained by the {@link ArtifactType} of the

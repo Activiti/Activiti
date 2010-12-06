@@ -6,7 +6,6 @@ import java.util.Map;
 
 import org.activiti.cycle.ArtifactType;
 import org.activiti.cycle.Content;
-import org.activiti.cycle.CycleSessionContext;
 import org.activiti.cycle.RepositoryArtifact;
 import org.activiti.cycle.RepositoryArtifactLink;
 import org.activiti.cycle.RepositoryConnector;
@@ -15,6 +14,8 @@ import org.activiti.cycle.RepositoryFolder;
 import org.activiti.cycle.RepositoryNode;
 import org.activiti.cycle.RepositoryNodeCollection;
 import org.activiti.cycle.RepositoryNodeNotFoundException;
+import org.activiti.cycle.components.RuntimeConnectorList;
+import org.activiti.cycle.context.CycleSessionContext;
 import org.activiti.cycle.impl.RepositoryFolderImpl;
 import org.activiti.cycle.impl.RepositoryNodeCollectionImpl;
 import org.activiti.cycle.impl.conf.PasswordEnabledRepositoryConnectorConfiguration;
@@ -70,8 +71,8 @@ public class CycleRepositoryServiceImpl implements CycleRepositoryService {
   }
 
   protected List<RepositoryConnector> getRuntimeRepositoryConnectors() {
-    RuntimeConnectorList connectorList = CycleSessionContext.getFromCurrentContext(RuntimeConnectorList.class);
-    return connectorList.connectors;
+    RuntimeConnectorList connectorList = CycleSessionContext.get(RuntimeConnectorList.class);
+    return connectorList.getConnectors();
   }
 
   /**

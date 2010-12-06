@@ -16,6 +16,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 
 import org.activiti.cycle.ArtifactType;
+import org.activiti.cycle.CycleComponentFactory;
 import org.activiti.cycle.RepositoryConnector;
 import org.activiti.cycle.RepositoryException;
 import org.activiti.cycle.impl.conf.PasswordEnabledRepositoryConnectorConfiguration;
@@ -117,7 +118,7 @@ public class SignavioConnectorConfiguration extends PasswordEnabledRepositoryCon
     url = url.substring(0, url.length() - 5);
     return url;
   }
-  
+
   public String getDirectoryIdFromUrl(String href) {
     return retrieveIdFromUrl(href, "/" + DIRECTORY_URL_SUFFIX);
   }
@@ -139,7 +140,7 @@ public class SignavioConnectorConfiguration extends PasswordEnabledRepositoryCon
     if (id.startsWith("/")) {
       // don't encode this one!
       id = id.substring(1);
-    }    
+    }
     return getRepositoryBackendUrl() + MODEL_URL_SUFFIX + "/" + encode(id);
   }
 
@@ -166,7 +167,6 @@ public class SignavioConnectorConfiguration extends PasswordEnabledRepositoryCon
   // IllegalStateException("Unexpected excpetion while encoding the URL to UTF-8 for model id '"
   // + id + "'", ex);
   // }
-
 
   public String getDirectoryUrl(String id) {
     if (id.startsWith("/")) {
@@ -227,7 +227,9 @@ public class SignavioConnectorConfiguration extends PasswordEnabledRepositoryCon
 
   @Override
   public RepositoryConnector createConnector() {
-    return new SignavioConnector(this);
+    RepositoryConnector connector = CycleComponentFactory.getCycleComponentInstance(SignavioConnector.class, RepositoryConnector.class);
+    connector.setConfiguration(this);
+    return connector;
   }
 
   public boolean isLoginRequired() {

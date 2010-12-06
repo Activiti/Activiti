@@ -1,6 +1,7 @@
 package org.activiti.cycle.incubator.connector.vfs;
 
 import org.activiti.cycle.ArtifactType;
+import org.activiti.cycle.CycleComponentFactory;
 import org.activiti.cycle.RepositoryConnector;
 import org.activiti.cycle.RepositoryException;
 import org.activiti.cycle.impl.conf.PasswordEnabledRepositoryConnectorConfiguration;
@@ -33,7 +34,9 @@ public class VfsConnectorConfiguration extends PasswordEnabledRepositoryConnecto
 
   public RepositoryConnector createConnector() {
     if (protocol.equals("sftp")) {
-      return new SftpRepositoryConnector(this);
+      RepositoryConnector connectorInstance =  CycleComponentFactory.getCycleComponentInstance(SftpRepositoryConnector.class, RepositoryConnector.class);
+      connectorInstance.setConfiguration(this);
+      return connectorInstance;
     }
 
     throw new RepositoryException("No connector found for protocol " + protocol);

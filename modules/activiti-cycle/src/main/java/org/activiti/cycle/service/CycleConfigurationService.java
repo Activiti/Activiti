@@ -23,7 +23,7 @@ import org.activiti.cycle.impl.conf.RepositoryConnectorConfiguration;
  * manipulation of RepositoryConnectorConfiguraitons is supported, using a
  * String-based interface.
  * <p />
- * Retreive an instance of this Service by
+ * Retrieve an instance of this Service by
  * {@link CycleServiceFactory#getConfigurationService()}
  * 
  * @see CycleService
@@ -78,8 +78,7 @@ public interface CycleConfigurationService {
   public Map<String, List<String>> getConfiguredRepositoryConnectors();
 
   /**
-   * Returns the {@link ConfigurationContainer} for the user with
-   * 'currentUserId'.
+   * Returns the {@link ConfigurationContainer} for the current user.
    */
   public ConfigurationContainer getConfigurationContainer();
 

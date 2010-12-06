@@ -1,6 +1,7 @@
 package org.activiti.cycle.incubator.connector.svn;
 
 import org.activiti.cycle.ArtifactType;
+import org.activiti.cycle.CycleComponentFactory;
 import org.activiti.cycle.RepositoryConnector;
 import org.activiti.cycle.impl.conf.PasswordEnabledRepositoryConnectorConfiguration;
 
@@ -31,7 +32,8 @@ public class SvnConnectorConfiguration extends PasswordEnabledRepositoryConnecto
    * @return
    */
   public RepositoryConnector createConnector() {
-    SvnRepositoryConnector theConnector = new SvnRepositoryConnector(this);
+    RepositoryConnector theConnector =  CycleComponentFactory.getCycleComponentInstance(SvnRepositoryConnector.class, RepositoryConnector.class);
+    theConnector.setConfiguration(this);
     return theConnector;
   }
 

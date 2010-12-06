@@ -35,26 +35,6 @@ import org.activiti.cycle.RepositoryNodeNotFoundException;
  */
 public interface CycleRepositoryService {
 
-  public static class RuntimeConnectorList implements Serializable {
-
-    private static final long serialVersionUID = 1L;
-    // the transient field keeps the servlet container from serializing the
-    // connectors in the session
-    // TODO: needs testing: When do servlet containers serialize/deserialize?
-    // Tomcat seems to do it
-    // between shutdowns / startups. At the moment I would qualify this as a
-    // 'hack' - Daniel Meyer
-    public transient List<RepositoryConnector> connectors;
-
-    public RepositoryConnector getConnectorById(String id) {
-      for (RepositoryConnector connector : connectors) {
-        if (connector.getConfiguration().getId().equals(id))
-          return connector;
-      }
-      return null;
-    }
-
-  }
 
   public void addArtifactLink(RepositoryArtifactLink link);
 

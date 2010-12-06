@@ -16,6 +16,7 @@ import java.io.File;
 import java.io.IOException;
 
 import org.activiti.cycle.ArtifactType;
+import org.activiti.cycle.CycleComponentFactory;
 import org.activiti.cycle.RepositoryConnector;
 import org.activiti.cycle.RepositoryException;
 import org.activiti.cycle.impl.conf.RepositoryConnectorConfiguration;
@@ -81,7 +82,9 @@ public class FileSystemConnectorConfiguration extends RepositoryConnectorConfigu
 
   @Override
   public RepositoryConnector createConnector() {
-    return new FileSystemConnector(this);
+    RepositoryConnector connector = CycleComponentFactory.getCycleComponentInstance(FileSystemConnector.class, RepositoryConnector.class);
+    connector.setConfiguration(this);
+    return connector;
   }
 
 }

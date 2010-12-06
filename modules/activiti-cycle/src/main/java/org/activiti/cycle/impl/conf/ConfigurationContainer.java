@@ -22,7 +22,7 @@ public class ConfigurationContainer {
    * Signavio, department wide SVN, team shared folders and special user
    * specific stuff for e.g. local file system
    * 
-   * We allowed multiple parent {@link ConfigurationContainer}s too be flexible.
+   * We allowed multiple parent {@link ConfigurationContainer}s to be flexible.
    * Maybe that is not the best idea for complexity?
    */
   private List<ConfigurationContainer> parentContainers = new ArrayList<ConfigurationContainer>();

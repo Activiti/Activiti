@@ -6,8 +6,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.activiti.cycle.CycleSessionContext;
 import org.activiti.cycle.RepositoryException;
+import org.activiti.cycle.components.RuntimeConnectorList;
+import org.activiti.cycle.context.CycleSessionContext;
 import org.activiti.cycle.impl.conf.ConfigurationContainer;
 import org.activiti.cycle.impl.conf.RepositoryConfigurationHandler;
 import org.activiti.cycle.impl.conf.RepositoryConnectorConfiguration;
@@ -17,7 +18,6 @@ import org.activiti.cycle.impl.connector.signavio.SignavioConnectorConfiguration
 import org.activiti.cycle.impl.db.CycleConfigurationDao;
 import org.activiti.cycle.impl.plugin.PluginFinder;
 import org.activiti.cycle.service.CycleConfigurationService;
-import org.activiti.cycle.service.CycleRepositoryService.RuntimeConnectorList;
 
 /**
  * Default implementation of the {@link CycleConfigurationService}.
@@ -49,7 +49,7 @@ public class CycleConfigurationServiceImpl implements CycleConfigurationService 
   }
 
   protected String getCurrentUserId() {
-    return CycleSessionContext.getFromCurrentContext("cuid", String.class);
+    return CycleSessionContext.get("cuid", String.class);
   }
 
   public Map<String, String> getRepositoryConnectorConfiguration(String connectorConfigurationId) {
@@ -181,8 +181,8 @@ public class CycleConfigurationServiceImpl implements CycleConfigurationService 
       cycleConfigurationDao.saveConfiguration(configurationContainer);
 
       // update runtime connectors:
-      RuntimeConnectorList runtimeConnectorList = CycleSessionContext.getFromCurrentContext(RuntimeConnectorList.class);
-      runtimeConnectorList.connectors = null;
+      RuntimeConnectorList runtimeConnectorList = CycleSessionContext.get(RuntimeConnectorList.class);
+      runtimeConnectorList.discardConnectors();
 
     } catch (Exception e) {
       throw new RepositoryException("Error while storing config for user " + e.getMessage(), e);
@@ -222,8 +222,8 @@ public class CycleConfigurationServiceImpl implements CycleConfigurationService 
       cycleConfigurationDao.saveConfiguration(configurationContainer);
 
       // update runtime connectors:
-      RuntimeConnectorList runtimeConnectorList = CycleSessionContext.getFromCurrentContext(RuntimeConnectorList.class);
-      runtimeConnectorList.connectors = null;
+      RuntimeConnectorList runtimeConnectorList = CycleSessionContext.get(RuntimeConnectorList.class);
+      runtimeConnectorList.discardConnectors();
 
     } catch (Exception e) {
       throw new RepositoryException("Error while deleting config for user " + e.getMessage(), e);
