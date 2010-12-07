@@ -182,6 +182,7 @@
                 <exclude>**/ActivitiRuleJunit4Test.java</exclude><!-- Can't run in Spring since ActivitiRule must be used different in Spring -->
 		            <exclude>**/CompetingJobAcquisitionTest.java</exclude> <!-- http://jira.codehaus.org/browse/ACT-234 -->
                 <exclude>**/WSDLImporterTest.java</exclude> <!-- http://jira.codehaus.org/browse/ACT-315 -->
+                <exclude>**/JobExecutorTest.java</exclude> <!-- http://jira.codehaus.org/browse/ACT-427 -->
               </excludes>
             </configuration>
           </plugin>
