@@ -84,6 +84,7 @@ public class SignavioPluginDefinition implements ActivitiCyclePluginDefinition {
 //    artifactType1.addParameterizedAction(new SelectDiffTargetAction());
     artifactType1.addParameterizedAction(new CreateMavenProjectAction());
     artifactType1.addOpenUrlAction(new OpenModelerAction());
+    artifactType1.addDownloadContentAction(CONTENT_REPRESENTATION_ID_PNG);
     artifactType1.addDownloadContentAction(CONTENT_REPRESENTATION_ID_BPMN_20_DEVELOPER);
     artifactType1.addDownloadContentAction(CONTENT_REPRESENTATION_ID_BPMN_20_RAW);
     artifactType1.addDownloadContentAction(CONTENT_REPRESENTATION_ID_JSON);
@@ -96,6 +97,7 @@ public class SignavioPluginDefinition implements ActivitiCyclePluginDefinition {
     artifactType2.addContentRepresentation(new ContentRepresentationImpl(CONTENT_REPRESENTATION_ID_JSON, CycleDefaultMimeType.JSON, RenderInfo.CODE), new JsonProvider());
 
     artifactType2.addOpenUrlAction(new OpenModelerAction());
+    artifactType2.addDownloadContentAction(CONTENT_REPRESENTATION_ID_PNG);
     artifactType2.addDownloadContentAction(CONTENT_REPRESENTATION_ID_JPDL4);
     artifactType2.addDownloadContentAction(CONTENT_REPRESENTATION_ID_JSON);
     types.add(artifactType2);
