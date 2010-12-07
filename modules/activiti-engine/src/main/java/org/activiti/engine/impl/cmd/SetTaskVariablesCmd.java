@@ -10,6 +10,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.activiti.engine.impl.cmd;
 
 import java.util.Map;
@@ -17,39 +18,43 @@ import java.util.Map;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
-import org.activiti.engine.impl.runtime.ExecutionEntity;
-import org.activiti.engine.impl.runtime.VariableScopeImpl;
+import org.activiti.engine.impl.task.TaskEntity;
 
 
 /**
  * @author Tom Baeyens
  */
-public class SetVariablesCmd implements Command<Object> {
+public class SetTaskVariablesCmd implements Command<Object> {
 
-  protected String executionId;
-  protected Map<String, Object> variables;
+  protected String taskId;
+  protected Map<String, ? extends Object> variables;
+  protected boolean isLocal;
   
-  public SetVariablesCmd(String executionId, Map<String, Object> variables) {
-    this.executionId = executionId;
+  public SetTaskVariablesCmd(String taskId, Map<String, ? extends Object> variables, boolean isLocal) {
+    this.taskId = taskId;
     this.variables = variables;
+    this.isLocal = isLocal;
   }
 
   public Object execute(CommandContext commandContext) {
-    if(executionId == null) {
-      throw new ActivitiException("executionId is null");
+    if(taskId == null) {
+      throw new ActivitiException("taskId is null");
     }
     
-    ExecutionEntity execution = commandContext
-      .getRuntimeSession()
-      .findExecutionById(executionId);
+    TaskEntity task = commandContext
+      .getTaskSession()
+      .findTaskById(taskId);
     
-    if (execution==null) {
-      throw new ActivitiException("execution "+executionId+" doesn't exist");
+    if (task==null) {
+      throw new ActivitiException("task "+taskId+" doesn't exist");
     }
     
-    execution.setVariables(variables);
+    if (isLocal) {
+      task.setVariablesLocal(variables);
+    } else {
+      task.setVariables(variables);
+    }
     
     return null;
   }
 }
-

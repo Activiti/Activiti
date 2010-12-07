@@ -36,6 +36,7 @@ public class VariableInstanceEntity implements ValueFields, PersistentObject, Se
 
   protected String processInstanceId;
   protected String executionId;
+  protected String taskId;
 
   protected Long longValue;
   protected Double doubleValue; 
@@ -225,5 +226,11 @@ public class VariableInstanceEntity implements ValueFields, PersistentObject, Se
   }
   public void setTextValue2(String textValue2) {
     this.textValue2 = textValue2;
+  }
+  public String getTaskId() {
+    return taskId;
+  }
+  public void setTaskId(String taskId) {
+    this.taskId = taskId;
   }
 }

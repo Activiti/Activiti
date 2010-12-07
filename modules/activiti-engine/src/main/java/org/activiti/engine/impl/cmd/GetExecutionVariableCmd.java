@@ -21,21 +21,23 @@ import org.activiti.engine.impl.runtime.ExecutionEntity;
 /**
  * @author Tom Baeyens
  */
-public class GetVariableCmd implements Command<Object> {
+public class GetExecutionVariableCmd implements Command<Object> {
 
   protected String executionId;
   protected String variableName;
+  protected boolean isLocal;
 
-  public GetVariableCmd(String executionId, String variableName) {
+  public GetExecutionVariableCmd(String executionId, String variableName, boolean isLocal) {
     this.executionId = executionId;
     this.variableName = variableName;
+    this.isLocal = isLocal;
   }
 
   public Object execute(CommandContext commandContext) {
     if(executionId == null) {
       throw new ActivitiException("executionId is null");
     }
-    if(executionId == null) {
+    if(variableName == null) {
       throw new ActivitiException("variableName is null");
     }
     
@@ -47,6 +49,14 @@ public class GetVariableCmd implements Command<Object> {
       throw new ActivitiException("execution "+executionId+" doesn't exist");
     }
     
-    return execution.getVariable(variableName);
+    Object value;
+    
+    if (isLocal) {
+      value = execution.getVariableLocal(variableName);
+    } else {
+      value = execution.getVariable(variableName);
+    }
+    
+    return value;
   }
 }

@@ -18,7 +18,7 @@ import java.util.Date;
 /**
  * @author Joram Barrez
  */
-public interface DelegateTask {
+public interface DelegateTask extends VariableScope {
 
   /** DB id of the task. */
   String getId();
@@ -77,7 +77,7 @@ public interface DelegateTask {
   /** Adds the given group as candidate group to this task */
   void addCandidateGroup(String groupId);
   
-  /** Adds multiple groups as candidate group to this task.
+  /** Adds multiple groups as candidate group to this task. */
   void addCandidateGroups(Collection<String> candidateGroups);
 
   /** Sets the current assignee of this task to the given user */

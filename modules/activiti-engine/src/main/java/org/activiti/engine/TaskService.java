@@ -17,8 +17,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.activiti.engine.task.IdentityLink;
-import org.activiti.engine.task.Task;
 import org.activiti.engine.task.IdentityLinkType;
+import org.activiti.engine.task.Task;
 import org.activiti.engine.task.TaskQuery;
 
 /** Service which provides access to {@link Task} and form related operations.
@@ -154,4 +154,44 @@ public interface TaskService {
    * Returns a new {@link TaskQuery} that can be used to dynamically query tasks.
    */
   TaskQuery createTaskQuery();
+
+  /** set variable on a task.  If the variable is not already existing, it will be created in the 
+   * most outer scope.  This means the process instance in case this task is related to an 
+   * execution. */
+  void setVariable(String taskId, String variableName, Object value);
+
+  /** set variables on a task.  If the variable is not already existing, it will be created in the 
+   * most outer scope.  This means the process instance in case this task is related to an 
+   * execution. */
+  void setVariables(String taskId, Map<String, ? extends Object> variables);
+
+  /** set variable on a task.  If the variable is not already existing, it will be created in the 
+   * task.  */
+  void setVariableLocal(String taskId, String variableName, Object value);
+
+  /** set variables on a task.  If the variable is not already existing, it will be created in the 
+   * task.  */
+  void setVariablesLocal(String taskId, Map<String, ? extends Object> variables);
+
+  /** get a variables and search in the task scope and if available also the execution scopes. */
+  Object getVariable(String taskId, String variableName);
+
+  /** get a variables and only search in the task scope.  */
+  Object getVariableLocal(String taskId, String variableName);
+
+  /** get all variables and search in the task scope and if available also the execution scopes. 
+   * If you have many variables and you only need a few, consider using {@link #getVariables(String, Collection)} 
+   * for better performance.*/
+  Map<String, Object> getVariables(String taskId);
+
+  /** get all variables and search only in the task scope.
+  * If you have many task local variables and you only need a few, consider using {@link #getVariablesLocal(String, Collection)} 
+  * for better performance.*/
+  Map<String, Object> getVariablesLocal(String taskId);
+
+  /** get values for all given variableNames and search only in the task scope. */
+  Map<String, Object> getVariables(String taskId, Collection<String> variableNames);
+
+  /** get a variable on a task */
+  Map<String, Object> getVariablesLocal(String taskId, Collection<String> variableNames);
 }

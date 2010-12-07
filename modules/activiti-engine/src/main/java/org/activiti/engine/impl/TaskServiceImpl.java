@@ -13,17 +13,22 @@
 package org.activiti.engine.impl;
 
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.activiti.engine.ActivitiException;
 import org.activiti.engine.TaskService;
 import org.activiti.engine.impl.cmd.AddIdentityLinkCmd;
 import org.activiti.engine.impl.cmd.ClaimTaskCmd;
 import org.activiti.engine.impl.cmd.CompleteTaskCmd;
 import org.activiti.engine.impl.cmd.DeleteTaskCmd;
 import org.activiti.engine.impl.cmd.GetIdentityLinksForTaskCmd;
+import org.activiti.engine.impl.cmd.GetTaskVariableCmd;
+import org.activiti.engine.impl.cmd.GetTaskVariablesCmd;
 import org.activiti.engine.impl.cmd.SaveTaskCmd;
 import org.activiti.engine.impl.cmd.SetTaskPriorityCmd;
+import org.activiti.engine.impl.cmd.SetTaskVariablesCmd;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
 import org.activiti.engine.impl.task.TaskEntity;
 import org.activiti.engine.task.IdentityLink;
@@ -106,6 +111,56 @@ public class TaskServiceImpl extends ServiceImpl implements TaskService {
   
   public TaskQuery createTaskQuery() {
     return new TaskQueryImpl(commandExecutor);
+  }
+  
+  public Map<String, Object> getVariables(String executionId) {
+    return commandExecutor.execute(new GetTaskVariablesCmd(executionId, null, false));
+  }
+
+  public Map<String, Object> getVariablesLocal(String executionId) {
+    return commandExecutor.execute(new GetTaskVariablesCmd(executionId, null, true));
+  }
+
+  public Map<String, Object> getVariables(String executionId, Collection<String> variableNames) {
+    return commandExecutor.execute(new GetTaskVariablesCmd(executionId, variableNames, false));
+  }
+
+  public Map<String, Object> getVariablesLocal(String executionId, Collection<String> variableNames) {
+    return commandExecutor.execute(new GetTaskVariablesCmd(executionId, variableNames, true));
+  }
+
+  public Object getVariable(String executionId, String variableName) {
+    return commandExecutor.execute(new GetTaskVariableCmd(executionId, variableName, false));
+  }
+  
+  public Object getVariableLocal(String executionId, String variableName) {
+    return commandExecutor.execute(new GetTaskVariableCmd(executionId, variableName, true));
+  }
+  
+  public void setVariable(String executionId, String variableName, Object value) {
+    if(variableName == null) {
+      throw new ActivitiException("variableName is null");
+    }
+    Map<String, Object> variables = new HashMap<String, Object>();
+    variables.put(variableName, value);
+    commandExecutor.execute(new SetTaskVariablesCmd(executionId, variables, false));
+  }
+  
+  public void setVariableLocal(String executionId, String variableName, Object value) {
+    if(variableName == null) {
+      throw new ActivitiException("variableName is null");
+    }
+    Map<String, Object> variables = new HashMap<String, Object>();
+    variables.put(variableName, value);
+    commandExecutor.execute(new SetTaskVariablesCmd(executionId, variables, true));
+  }
+
+  public void setVariables(String executionId, Map<String, ? extends Object> variables) {
+    commandExecutor.execute(new SetTaskVariablesCmd(executionId, variables, false));
+  }
+
+  public void setVariablesLocal(String executionId, Map<String, ? extends Object> variables) {
+    commandExecutor.execute(new SetTaskVariablesCmd(executionId, variables, true));
   }
 
   // getters and setters //////////////////////////////////////////////////////

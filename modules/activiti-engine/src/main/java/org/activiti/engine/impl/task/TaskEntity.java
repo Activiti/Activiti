@@ -26,11 +26,14 @@ import java.util.Set;
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.DelegateTask;
 import org.activiti.engine.impl.cfg.RepositorySession;
+import org.activiti.engine.impl.cfg.RuntimeSession;
 import org.activiti.engine.impl.db.PersistentObject;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.pvm.delegate.TaskListener;
 import org.activiti.engine.impl.repository.ProcessDefinitionEntity;
 import org.activiti.engine.impl.runtime.ExecutionEntity;
+import org.activiti.engine.impl.runtime.VariableInstanceEntity;
+import org.activiti.engine.impl.runtime.VariableScopeImpl;
 import org.activiti.engine.impl.util.ClockUtil;
 import org.activiti.engine.task.IdentityLink;
 import org.activiti.engine.task.IdentityLinkType;
@@ -40,7 +43,7 @@ import org.activiti.engine.task.Task;
  * @author Tom Baeyens
  * @author Joram Barrez
  */ 
-public class TaskEntity implements Task, DelegateTask, Serializable, PersistentObject {
+public class TaskEntity extends VariableScopeImpl implements Task, DelegateTask, Serializable, PersistentObject {
 
   private static final long serialVersionUID = 1L;
 
@@ -104,7 +107,12 @@ public class TaskEntity implements Task, DelegateTask, Serializable, PersistentO
     for (IdentityLinkEntity identityLinkEntities: getIdentityLinks()) {
       identityLinkEntities.delete();
     }
-    
+
+    ensureVariableInstancesInitialized();
+    for (VariableInstanceEntity variableInstance: variableInstances.values()) {
+      variableInstance.delete();
+    }
+
     CommandContext
         .getCurrent()
         .getDbSqlSession()
@@ -117,6 +125,14 @@ public class TaskEntity implements Task, DelegateTask, Serializable, PersistentO
     this.priority = task.getPriority();
     this.createTime = task.getCreateTime();
     this.description = task.getDescription();
+  }
+
+  public void complete() {
+    fireEvent(TaskListener.EVENTNAME_COMPLETE);
+    delete();
+    if (executionId!=null) {
+      getExecution().signal(null, null);
+    }
   }
 
   public Object getPersistentState() {
@@ -140,6 +156,29 @@ public class TaskEntity implements Task, DelegateTask, Serializable, PersistentO
     return revision+1;
   }
 
+  // variables ////////////////////////////////////////////////////////////////
+  
+  @Override
+  protected VariableScopeImpl getParentVariableScope() {
+    if (getExecution()!=null) {
+      return execution;
+    }
+    return null;
+  }
+
+  @Override
+  protected void initializeVariableInstanceBackPointer(VariableInstanceEntity variableInstance) {
+    variableInstance.setTaskId(id);
+  }
+
+  @Override
+  protected List<VariableInstanceEntity> loadVariableInstances() {
+    return CommandContext
+      .getCurrentSession(RuntimeSession.class)
+      .findVariablesByTaskId(id);
+  }
+
+  // execution ////////////////////////////////////////////////////////////////
 
   public ExecutionEntity getExecution() {
     if ( (execution==null) && (executionId!=null) ) {
@@ -165,17 +204,8 @@ public class TaskEntity implements Task, DelegateTask, Serializable, PersistentO
     }
   }
     
-  public void complete() {
-    fireEvent(TaskListener.EVENTNAME_COMPLETE);
-    delete();
-    if (executionId!=null) {
-      getExecution().signal(null, null);
-    }
-  }
-
-  /*
-   * TASK ASSIGNMENT
-   */
+  // task assignment //////////////////////////////////////////////////////////
+  
   public IdentityLinkEntity createIdentityLink(String userId, String groupId, String type) {
     IdentityLinkEntity identityLinkEntity = IdentityLinkEntity.createAndInsert();
     getIdentityLinks().add(identityLinkEntity);

@@ -12,6 +12,7 @@
  */
 package org.activiti.engine.impl;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -22,9 +23,9 @@ import org.activiti.engine.form.FormData;
 import org.activiti.engine.impl.cmd.DeleteProcessInstanceCmd;
 import org.activiti.engine.impl.cmd.FindActiveActivityIdsCmd;
 import org.activiti.engine.impl.cmd.GetStartFormCmd;
-import org.activiti.engine.impl.cmd.GetVariableCmd;
-import org.activiti.engine.impl.cmd.GetVariablesCmd;
-import org.activiti.engine.impl.cmd.SetVariablesCmd;
+import org.activiti.engine.impl.cmd.GetExecutionVariableCmd;
+import org.activiti.engine.impl.cmd.GetExecutionVariablesCmd;
+import org.activiti.engine.impl.cmd.SetExecutionVariablesCmd;
 import org.activiti.engine.impl.cmd.SignalCmd;
 import org.activiti.engine.impl.cmd.StartProcessInstanceCmd;
 import org.activiti.engine.runtime.ExecutionQuery;
@@ -77,24 +78,53 @@ public class RuntimeServiceImpl extends ServiceImpl implements RuntimeService {
   }
 
   public Map<String, Object> getVariables(String executionId) {
-    return commandExecutor.execute(new GetVariablesCmd(executionId));
+    return commandExecutor.execute(new GetExecutionVariablesCmd(executionId, null, false));
+  }
+
+  public Map<String, Object> getVariablesLocal(String executionId) {
+    return commandExecutor.execute(new GetExecutionVariablesCmd(executionId, null, true));
+  }
+
+  public Map<String, Object> getVariables(String executionId, Collection<String> variableNames) {
+    return commandExecutor.execute(new GetExecutionVariablesCmd(executionId, variableNames, false));
+  }
+
+  public Map<String, Object> getVariablesLocal(String executionId, Collection<String> variableNames) {
+    return commandExecutor.execute(new GetExecutionVariablesCmd(executionId, variableNames, true));
   }
 
   public Object getVariable(String executionId, String variableName) {
-    return commandExecutor.execute(new GetVariableCmd(executionId, variableName));
+    return commandExecutor.execute(new GetExecutionVariableCmd(executionId, variableName, false));
   }
-
+  
+  public Object getVariableLocal(String executionId, String variableName) {
+    return commandExecutor.execute(new GetExecutionVariableCmd(executionId, variableName, true));
+  }
+  
   public void setVariable(String executionId, String variableName, Object value) {
     if(variableName == null) {
       throw new ActivitiException("variableName is null");
     }
     Map<String, Object> variables = new HashMap<String, Object>();
     variables.put(variableName, value);
-    commandExecutor.execute(new SetVariablesCmd(executionId, variables));
+    commandExecutor.execute(new SetExecutionVariablesCmd(executionId, variables, false));
+  }
+  
+  public void setVariableLocal(String executionId, String variableName, Object value) {
+    if(variableName == null) {
+      throw new ActivitiException("variableName is null");
+    }
+    Map<String, Object> variables = new HashMap<String, Object>();
+    variables.put(variableName, value);
+    commandExecutor.execute(new SetExecutionVariablesCmd(executionId, variables, true));
   }
 
-  public void setVariables(String executionId, Map<String, Object> variables) {
-    commandExecutor.execute(new SetVariablesCmd(executionId, variables));
+  public void setVariables(String executionId, Map<String, ? extends Object> variables) {
+    commandExecutor.execute(new SetExecutionVariablesCmd(executionId, variables, false));
+  }
+
+  public void setVariablesLocal(String executionId, Map<String, ? extends Object> variables) {
+    commandExecutor.execute(new SetExecutionVariablesCmd(executionId, variables, true));
   }
 
   public void signal(String activityInstanceId) {

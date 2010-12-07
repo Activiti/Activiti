@@ -12,6 +12,7 @@
  */
 package org.activiti.engine.impl.cmd;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -24,12 +25,16 @@ import org.activiti.engine.impl.runtime.ExecutionEntity;
 /**
  * @author Tom Baeyens
  */
-public class GetVariablesCmd implements Command<Map<String, Object>> {
+public class GetExecutionVariablesCmd implements Command<Map<String, Object>> {
 
   protected String executionId;
+  protected Collection<String> variableNames;
+  protected boolean isLocal;
 
-  public GetVariablesCmd(String executionId) {
+  public GetExecutionVariablesCmd(String executionId, Collection<String> variableNames, boolean isLocal) {
     this.executionId = executionId;
+    this.variableNames = variableNames;
+    this.isLocal = isLocal;
   }
 
   public Map<String, Object> execute(CommandContext commandContext) {
@@ -45,13 +50,23 @@ public class GetVariablesCmd implements Command<Map<String, Object>> {
       throw new ActivitiException("execution "+executionId+" doesn't exist");
     }
 
+    Map<String, Object> executionVariables;
+    if (isLocal) {
+      executionVariables = execution.getVariablesLocal();
+    } else {
+      executionVariables = execution.getVariables();
+    }
+    
+    if (variableNames==null) {
+      variableNames = executionVariables.keySet();
+    }
+    
     // this copy is made to avoid lazy initialization outside a command context
     Map<String, Object> variables = new HashMap<String, Object>();
-    for (String variableName: execution.getVariables().keySet()) {
+    for (String variableName: variableNames) {
       variables.put(variableName, execution.getVariable(variableName));
     }
     
     return variables;
   }
-
 }
