@@ -18,6 +18,7 @@ import java.util.List;
 import org.activiti.engine.impl.pvm.PvmTransition;
 import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
 import org.activiti.engine.impl.pvm.runtime.ExecutionImpl;
+import org.activiti.engine.impl.runtime.ExecutionEntity;
 
 
 /**
@@ -32,16 +33,16 @@ public class BoundaryTimerEventActivity extends AbstractBpmnActivity {
   @SuppressWarnings("unchecked")
   public void execute(ActivityExecution execution) throws Exception {
     List<PvmTransition> outgoingTransitions = execution.getActivity().getOutgoingTransitions();
-    List<ExecutionImpl> interruptedExecutions = null;
+    List<ExecutionEntity> interruptedExecutions = null;
     
     if (interrupting) {
-      ExecutionImpl executionImpl = (ExecutionImpl) execution;
+      ExecutionEntity executionImpl = (ExecutionEntity) execution;
       if (executionImpl.getSubProcessInstance()!=null) {
         executionImpl.getSubProcessInstance().deleteCascade(executionImpl.getDeleteReason());
       }
       
-      interruptedExecutions = new ArrayList<ExecutionImpl>(executionImpl.getExecutions());
-      for (ExecutionImpl interruptedExecution: interruptedExecutions) {
+      interruptedExecutions = new ArrayList<ExecutionEntity>(executionImpl.getExecutions());
+      for (ExecutionEntity interruptedExecution: interruptedExecutions) {
         interruptedExecution.deleteCascade("interrupting timer event '"+execution.getActivity().getId()+"' fired");
       }
     }

@@ -24,8 +24,8 @@ import org.activiti.engine.impl.pvm.process.TransitionImpl;
 public class AtomicOperationTransitionNotifyListenerStart extends AbstractEventAtomicOperation {
 
   @Override
-  protected ScopeImpl getScope(ExecutionImpl execution) {
-    return execution.getActivity();
+  protected ScopeImpl getScope(InterpretableExecution execution) {
+    return (ScopeImpl) execution.getActivity();
   }
 
   @Override
@@ -34,10 +34,10 @@ public class AtomicOperationTransitionNotifyListenerStart extends AbstractEventA
   }
 
   @Override
-  protected void eventNotificationsCompleted(ExecutionImpl execution) {
+  protected void eventNotificationsCompleted(InterpretableExecution execution) {
     TransitionImpl transition = execution.getTransition();
     ActivityImpl destination = transition.getDestination();
-    ActivityImpl activity = execution.getActivity();
+    ActivityImpl activity = (ActivityImpl) execution.getActivity();
     if (activity!=destination) {
       ActivityImpl nextScope = AtomicOperationTransitionNotifyListenerTake.findNextScope(activity, destination);
       execution.setActivity(nextScope);

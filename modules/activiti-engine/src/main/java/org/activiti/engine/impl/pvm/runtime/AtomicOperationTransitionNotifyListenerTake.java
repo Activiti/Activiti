@@ -29,7 +29,7 @@ public class AtomicOperationTransitionNotifyListenerTake implements AtomicOperat
   
   private static Logger log = Logger.getLogger(AtomicOperationTransitionNotifyListenerTake.class.getName());
 
-  public void execute(ExecutionImpl execution) {
+  public void execute(InterpretableExecution execution) {
     TransitionImpl transition = execution.getTransition();
     
     List<ExecutionListener> executionListeners = transition.getExecutionListeners();
@@ -55,7 +55,7 @@ public class AtomicOperationTransitionNotifyListenerTake implements AtomicOperat
       execution.setEventName(null);
       execution.setEventSource(null);
 
-      ActivityImpl activity = execution.getActivity();
+      ActivityImpl activity = (ActivityImpl) execution.getActivity();
       ActivityImpl nextScope = findNextScope(activity.getParent(), transition.getDestination());
       execution.setActivity(nextScope);
       execution.performOperation(TRANSITION_CREATE_SCOPE);

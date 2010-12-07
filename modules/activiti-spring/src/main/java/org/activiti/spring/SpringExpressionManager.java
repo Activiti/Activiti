@@ -13,15 +13,15 @@
 
 package org.activiti.spring;
 
-import org.activiti.engine.impl.el.ExecutionVariableElResolver;
+import org.activiti.engine.delegate.VariableScope;
 import org.activiti.engine.impl.el.ExpressionManager;
+import org.activiti.engine.impl.el.VariableScopeElResolver;
 import org.activiti.engine.impl.javax.el.ArrayELResolver;
 import org.activiti.engine.impl.javax.el.BeanELResolver;
 import org.activiti.engine.impl.javax.el.CompositeELResolver;
 import org.activiti.engine.impl.javax.el.ELResolver;
 import org.activiti.engine.impl.javax.el.ListELResolver;
 import org.activiti.engine.impl.javax.el.MapELResolver;
-import org.activiti.engine.impl.pvm.runtime.ExecutionImpl;
 import org.springframework.context.ApplicationContext;
 
 
@@ -37,9 +37,9 @@ public class SpringExpressionManager extends ExpressionManager {
   }
 
   @Override
-  protected ELResolver createElResolver(ExecutionImpl execution) {
+  protected ELResolver createElResolver(VariableScope variableScope) {
     CompositeELResolver compositeElResolver = new CompositeELResolver();
-    compositeElResolver.add(new ExecutionVariableElResolver(execution));
+    compositeElResolver.add(new VariableScopeElResolver(variableScope));
     compositeElResolver.add(new ApplicationContextElResolver(applicationContext));
     compositeElResolver.add(new ArrayELResolver());
     compositeElResolver.add(new ListELResolver());

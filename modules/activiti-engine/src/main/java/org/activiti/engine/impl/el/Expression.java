@@ -13,7 +13,7 @@
 
 package org.activiti.engine.impl.el;
 
-import org.activiti.engine.delegate.DelegateExecution;
+import org.activiti.engine.delegate.VariableScope;
 
 
 /**
@@ -21,8 +21,8 @@ import org.activiti.engine.delegate.DelegateExecution;
  */
 public interface Expression {
 
-   Object getValue(DelegateExecution execution);
+   Object getValue(VariableScope variableScope);
    
-   void setValue(Object value, DelegateExecution execution);
+   void setValue(Object value, VariableScope variableScope);
    
 }

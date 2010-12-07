@@ -14,7 +14,7 @@
 package org.activiti.engine.impl.el;
 
 import org.activiti.engine.ActivitiException;
-import org.activiti.engine.delegate.DelegateExecution;
+import org.activiti.engine.delegate.VariableScope;
 
 /**
  * Expression that always returns the same value when <code>getValue</code> is
@@ -30,11 +30,11 @@ public class FixedValue implements Expression {
     this.value = value;
   }
 
-  public Object getValue(DelegateExecution execution) {
+  public Object getValue(VariableScope variableScope) {
     return value;
   }
 
-  public void setValue(Object value, DelegateExecution execution) {
+  public void setValue(Object value, VariableScope variableScope) {
     throw new ActivitiException("Cannot change fixed value");
   }
 

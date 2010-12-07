@@ -25,7 +25,7 @@ import org.activiti.engine.impl.pvm.process.ScopeImpl;
  */
 public abstract class AbstractEventAtomicOperation implements AtomicOperation {
 
-  public void execute(ExecutionImpl execution) {
+  public void execute(InterpretableExecution execution) {
     ScopeImpl scope = getScope(execution);
     List<ExecutionListener> exectionListeners = scope.getExecutionListeners(getEventName());
     int executionListenerIndex = execution.getExecutionListenerIndex();
@@ -53,7 +53,7 @@ public abstract class AbstractEventAtomicOperation implements AtomicOperation {
     }
   }
 
-  protected abstract ScopeImpl getScope(ExecutionImpl execution);
+  protected abstract ScopeImpl getScope(InterpretableExecution execution);
   protected abstract String getEventName();
-  protected abstract void eventNotificationsCompleted(ExecutionImpl execution);
+  protected abstract void eventNotificationsCompleted(InterpretableExecution execution);
 }

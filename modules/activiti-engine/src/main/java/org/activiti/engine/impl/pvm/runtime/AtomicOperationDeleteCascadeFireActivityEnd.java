@@ -24,15 +24,15 @@ import org.activiti.engine.impl.pvm.process.ScopeImpl;
 public class AtomicOperationDeleteCascadeFireActivityEnd extends AbstractEventAtomicOperation {
 
   @Override
-  protected ScopeImpl getScope(ExecutionImpl execution) {
-    ActivityImpl activity = execution.getActivity();
+  protected ScopeImpl getScope(InterpretableExecution execution) {
+    ActivityImpl activity = (ActivityImpl) execution.getActivity();
 
     if (activity!=null) {
       return activity;
     } else {
-      ExecutionImpl parent = execution.getParent();
+      InterpretableExecution parent = (InterpretableExecution) execution.getParent();
       if (parent != null) {
-        return getScope(execution.getParent());
+        return getScope((InterpretableExecution) execution.getParent());
       }
       return execution.getProcessDefinition();
     }
@@ -44,8 +44,8 @@ public class AtomicOperationDeleteCascadeFireActivityEnd extends AbstractEventAt
   }
 
   @Override
-  protected void eventNotificationsCompleted(ExecutionImpl execution) {
-    ActivityImpl activity = execution.getActivity();
+  protected void eventNotificationsCompleted(InterpretableExecution execution) {
+    ActivityImpl activity = (ActivityImpl) execution.getActivity();
     if ( (execution.isScope())
             && (activity!=null)
             && (!activity.isScope())
@@ -60,8 +60,8 @@ public class AtomicOperationDeleteCascadeFireActivityEnd extends AbstractEventAt
  
       execution.remove();
 
-      if (!execution.deleteRoot) {
-        ExecutionImpl parent = execution.getParent();
+      if (!execution.isDeleteRoot()) {
+        InterpretableExecution parent = (InterpretableExecution) execution.getParent();
         if (parent!=null) {
           parent.performOperation(AtomicOperation.DELETE_CASCADE);
         }

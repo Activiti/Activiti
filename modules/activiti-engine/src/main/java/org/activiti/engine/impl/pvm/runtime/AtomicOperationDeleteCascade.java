@@ -21,8 +21,8 @@ import java.util.List;
  */
 public class AtomicOperationDeleteCascade implements AtomicOperation {
 
-  public void execute(ExecutionImpl execution) {
-    ExecutionImpl firstLeaf = findFirstLeaf(execution);
+  public void execute(InterpretableExecution execution) {
+    InterpretableExecution firstLeaf = findFirstLeaf(execution);
     
     if (firstLeaf.getSubProcessInstance()!=null) {
       firstLeaf.getSubProcessInstance().deleteCascade(execution.getDeleteReason());
@@ -31,8 +31,9 @@ public class AtomicOperationDeleteCascade implements AtomicOperation {
     firstLeaf.performOperation(AtomicOperation.DELETE_CASCADE_FIRE_ACTIVITY_END);
   }
 
-  protected ExecutionImpl findFirstLeaf(ExecutionImpl execution) {
-    List<ExecutionImpl> executions = execution.getExecutions();
+  @SuppressWarnings("unchecked")
+  protected InterpretableExecution findFirstLeaf(InterpretableExecution execution) {
+    List<InterpretableExecution> executions = (List<InterpretableExecution>) execution.getExecutions();
     if (executions.size()>0) {
       return findFirstLeaf(executions.get(0));
     }

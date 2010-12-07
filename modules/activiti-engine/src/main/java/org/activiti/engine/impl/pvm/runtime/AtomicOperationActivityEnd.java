@@ -13,6 +13,8 @@
 
 package org.activiti.engine.impl.pvm.runtime;
 
+import java.util.List;
+
 import org.activiti.engine.impl.pvm.delegate.ActivityBehavior;
 import org.activiti.engine.impl.pvm.delegate.CompositeActivityBehavior;
 import org.activiti.engine.impl.pvm.delegate.ExecutionListener;
@@ -26,8 +28,8 @@ import org.activiti.engine.impl.pvm.process.ScopeImpl;
 public class AtomicOperationActivityEnd extends AbstractEventAtomicOperation {
 
   @Override
-  protected ScopeImpl getScope(ExecutionImpl execution) {
-    return execution.getActivity();
+  protected ScopeImpl getScope(InterpretableExecution execution) {
+    return (ScopeImpl) execution.getActivity();
   }
 
   @Override
@@ -36,8 +38,8 @@ public class AtomicOperationActivityEnd extends AbstractEventAtomicOperation {
   }
 
   @Override
-  protected void eventNotificationsCompleted(ExecutionImpl execution) {
-    ActivityImpl activity = execution.getActivity();
+  protected void eventNotificationsCompleted(InterpretableExecution execution) {
+    ActivityImpl activity = (ActivityImpl) execution.getActivity();
     ActivityImpl parentActivity = activity.getParentActivity();
 
     // if the execution is a single path of execution inside the process definition scope
@@ -59,7 +61,7 @@ public class AtomicOperationActivityEnd extends AbstractEventAtomicOperation {
         compositeActivityBehavior.lastExecutionEnded(execution);
       } else {
         // default destroy scope behavior
-        ExecutionImpl parentScopeExecution = execution.getParent();
+        InterpretableExecution parentScopeExecution = (InterpretableExecution) execution.getParent();
         execution.destroy();
         execution.remove();
         parentScopeExecution.setActivity(parentActivity);
@@ -72,11 +74,11 @@ public class AtomicOperationActivityEnd extends AbstractEventAtomicOperation {
       execution.remove();
 
       // prune if necessary
-      ExecutionImpl concurrentRoot = execution.getParent();
+      InterpretableExecution concurrentRoot = (InterpretableExecution) execution.getParent();
       if (concurrentRoot.getExecutions().size()==1) {
-        ExecutionImpl lastConcurrent = concurrentRoot.getExecutions().get(0);
+        InterpretableExecution lastConcurrent = (InterpretableExecution) concurrentRoot.getExecutions().get(0);
         if (!lastConcurrent.isScope()) {
-          concurrentRoot.setActivity(lastConcurrent.getActivity());
+          concurrentRoot.setActivity((ActivityImpl) lastConcurrent.getActivity());
           lastConcurrent.setReplacedBy(concurrentRoot);
           lastConcurrent.remove();
         } else {
@@ -86,10 +88,11 @@ public class AtomicOperationActivityEnd extends AbstractEventAtomicOperation {
     }
   }
 
-  protected boolean isExecutionAloneInParent(ExecutionImpl execution) {
-    ScopeImpl parentScope = execution.getActivity().getParent();
-    for (ExecutionImpl other: execution.getParent().getExecutions()) {
-      if (other!=execution && parentScope.contains(other.getActivity())) {
+  @SuppressWarnings("unchecked")
+  protected boolean isExecutionAloneInParent(InterpretableExecution execution) {
+    ScopeImpl parentScope = (ScopeImpl) execution.getActivity().getParent();
+    for (InterpretableExecution other: (List<InterpretableExecution>) execution.getParent().getExecutions()) {
+      if (other!=execution && parentScope.contains((ActivityImpl) other.getActivity())) {
         return false;
       }
     }

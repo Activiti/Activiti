@@ -12,6 +12,7 @@
  */
 package org.activiti.engine.impl.el;
 
+import org.activiti.engine.delegate.VariableScope;
 import org.activiti.engine.impl.bpmn.ItemInstance;
 import org.activiti.engine.impl.javax.el.ArrayELResolver;
 import org.activiti.engine.impl.javax.el.BeanELResolver;
@@ -24,8 +25,7 @@ import org.activiti.engine.impl.javax.el.ListELResolver;
 import org.activiti.engine.impl.javax.el.MapELResolver;
 import org.activiti.engine.impl.javax.el.ValueExpression;
 import org.activiti.engine.impl.juel.ExpressionFactoryImpl;
-import org.activiti.engine.impl.pvm.runtime.ExecutionImpl;
-import org.activiti.engine.impl.runtime.ExecutionEntity;
+import org.activiti.engine.impl.runtime.VariableScopeImpl;
 
 
 /**
@@ -69,31 +69,28 @@ public class ExpressionManager {
     this.expressionFactory = expressionFactory;
   }
 
-  public ELContext getElContext(ExecutionImpl execution) {
-    if (! (execution instanceof ExecutionEntity)) {
-      return createElContext(execution);
-    }
-    ExecutionEntity executionEntity = (ExecutionEntity) execution;
+  public ELContext getElContext(VariableScope variableScope) {
     ELContext elContext = null;
-    synchronized (execution) {
-      elContext = (ELContext) executionEntity.getCachedElContext();
-      if (elContext != null) {
-        return elContext;
-      }
-      elContext = createElContext(execution);
-      executionEntity.setCachedElContext(elContext);
+    if (variableScope instanceof VariableScopeImpl) {
+      VariableScopeImpl variableScopeImpl = (VariableScopeImpl) variableScope;
+      elContext = variableScopeImpl.getCachedElContext();
     }
+    
+    if (elContext==null) {
+      elContext = createElContext(variableScope);
+    }
+
     return elContext;
   }
 
-  protected ActivitiElContext createElContext(ExecutionImpl execution) {
-    ELResolver elResolver = createElResolver(execution);
+  protected ActivitiElContext createElContext(VariableScope variableScope) {
+    ELResolver elResolver = createElResolver(variableScope);
     return new ActivitiElContext(elResolver);
   }
 
-  protected ELResolver createElResolver(ExecutionImpl execution) {
+  protected ELResolver createElResolver(VariableScope variableScope) {
     CompositeELResolver elResolver = new CompositeELResolver();
-    elResolver.add(new ExecutionVariableElResolver(execution));
+    elResolver.add(new VariableScopeElResolver(variableScope));
     elResolver.add(new ArrayELResolver());
     elResolver.add(new ListELResolver());
     elResolver.add(new MapELResolver());

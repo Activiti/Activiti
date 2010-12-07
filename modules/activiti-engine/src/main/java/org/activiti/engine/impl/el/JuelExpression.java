@@ -14,13 +14,12 @@
 package org.activiti.engine.impl.el;
 
 import org.activiti.engine.ActivitiException;
-import org.activiti.engine.delegate.DelegateExecution;
+import org.activiti.engine.delegate.VariableScope;
 import org.activiti.engine.impl.javax.el.ELContext;
 import org.activiti.engine.impl.javax.el.ELException;
 import org.activiti.engine.impl.javax.el.MethodNotFoundException;
 import org.activiti.engine.impl.javax.el.PropertyNotFoundException;
 import org.activiti.engine.impl.javax.el.ValueExpression;
-import org.activiti.engine.impl.pvm.runtime.ExecutionImpl;
 
 
 /**
@@ -38,8 +37,8 @@ public class JuelExpression implements Expression {
     this.expressionManager = expressionManager;
   }
 
-  public Object getValue(DelegateExecution execution) {
-    ELContext elContext = expressionManager.getElContext((ExecutionImpl) execution);
+  public Object getValue(VariableScope variableScope) {
+    ELContext elContext = expressionManager.getElContext(variableScope);
     try {
       return valueExpression.getValue(elContext);
     } catch (PropertyNotFoundException pnfe) {
@@ -51,8 +50,8 @@ public class JuelExpression implements Expression {
     }
   }
 
-  public void setValue(Object value, DelegateExecution execution) {
-    ELContext elContext = expressionManager.getElContext((ExecutionImpl) execution);
+  public void setValue(Object value, VariableScope variableScope) {
+    ELContext elContext = expressionManager.getElContext(variableScope);
     valueExpression.setValue(elContext, value);
   }
   

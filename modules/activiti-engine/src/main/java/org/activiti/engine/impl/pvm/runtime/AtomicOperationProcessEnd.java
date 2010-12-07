@@ -15,6 +15,7 @@ package org.activiti.engine.impl.pvm.runtime;
 
 import org.activiti.engine.impl.pvm.delegate.ExecutionListener;
 import org.activiti.engine.impl.pvm.delegate.SubProcessActivityBehavior;
+import org.activiti.engine.impl.pvm.process.ActivityImpl;
 import org.activiti.engine.impl.pvm.process.ScopeImpl;
 
 
@@ -24,7 +25,7 @@ import org.activiti.engine.impl.pvm.process.ScopeImpl;
 public class AtomicOperationProcessEnd extends AbstractEventAtomicOperation {
 
   @Override
-  protected ScopeImpl getScope(ExecutionImpl execution) {
+  protected ScopeImpl getScope(InterpretableExecution execution) {
     return execution.getProcessDefinition();
   }
 
@@ -34,14 +35,15 @@ public class AtomicOperationProcessEnd extends AbstractEventAtomicOperation {
   }
 
   @Override
-  protected void eventNotificationsCompleted(ExecutionImpl execution) {
+  protected void eventNotificationsCompleted(InterpretableExecution execution) {
     execution.destroy();
     execution.remove();
 
-    ExecutionImpl superExecution = execution.getSuperExecution();
+    InterpretableExecution superExecution = execution.getSuperExecution();
     if (superExecution!=null) {
       superExecution.setSubProcessInstance(null);
-      SubProcessActivityBehavior subProcessActivityBehavior = (SubProcessActivityBehavior) superExecution.getActivity().getActivityBehavior();
+      ActivityImpl activity = (ActivityImpl) superExecution.getActivity();
+      SubProcessActivityBehavior subProcessActivityBehavior = (SubProcessActivityBehavior) activity.getActivityBehavior();
       try {
         subProcessActivityBehavior.completed(superExecution);
       } catch (Exception e) {

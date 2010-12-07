@@ -21,6 +21,7 @@ import java.util.Set;
 import javax.script.Bindings;
 
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.delegate.VariableScope;
 import org.activiti.engine.impl.pvm.runtime.ExecutionImpl;
 
 
@@ -43,49 +44,49 @@ public class ExecutionBindings implements Bindings {
   protected static final Set<String> UNSTORED_KEYS = 
     new HashSet<String>(Arrays.asList("out", "out:print", "lang:import", "context", "elcontext", "print", "println"));
   
-  protected ExecutionImpl execution;
+  protected VariableScope variableScope;
   
-  public ExecutionBindings(ExecutionImpl execution) {
-    if (execution==null) {
-      throw new ActivitiException("execution cannot be null");
+  public ExecutionBindings(VariableScope variableScope) {
+    if (variableScope==null) {
+      throw new ActivitiException("variableScope cannot be null");
     }
-    this.execution = execution;
+    this.variableScope = variableScope;
   }
 
   public boolean containsKey(Object key) {
-    return EXECUTION_KEY.equals(key) || execution.hasVariable((String) key);
+    return EXECUTION_KEY.equals(key) || variableScope.hasVariable((String) key);
   }
 
   public Object get(Object key) {
     if (EXECUTION_KEY.equals(key)) {
-      return execution;
+      return variableScope;
     }
-    return execution.getVariable((String) key);
+    return variableScope.getVariable((String) key);
   }
 
   public Object put(String name, Object value) {
     Object oldValue = null;
     if (!UNSTORED_KEYS.contains(name)) {
-      oldValue = execution.getVariable(name);
-      execution.setVariable(name, value);
+      oldValue = variableScope.getVariable(name);
+      variableScope.setVariable(name, value);
     }
     return oldValue;
   }
 
   public Set<java.util.Map.Entry<String, Object>> entrySet() {
-    return execution.getVariables().entrySet();
+    return variableScope.getVariables().entrySet();
   }
 
   public Set<String> keySet() {
-    return execution.getVariables().keySet();
+    return variableScope.getVariables().keySet();
   }
 
   public int size() {
-    return execution.getVariables().size();
+    return variableScope.getVariables().size();
   }
 
   public Collection<Object> values() {
-    return execution.getVariables().values();
+    return variableScope.getVariables().values();
   }
 
   public void putAll(Map< ? extends String, ? extends Object> toMerge) {

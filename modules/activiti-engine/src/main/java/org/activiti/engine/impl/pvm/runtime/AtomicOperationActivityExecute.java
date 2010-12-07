@@ -26,8 +26,8 @@ public class AtomicOperationActivityExecute implements AtomicOperation {
   
   private static Logger log = Logger.getLogger(AtomicOperationActivityExecute.class.getName());
   
-  public void execute(ExecutionImpl execution) {
-    ActivityImpl activity = execution.getActivity();
+  public void execute(InterpretableExecution execution) {
+    ActivityImpl activity = (ActivityImpl) execution.getActivity();
     
     ActivityBehavior activityBehavior = activity.getActivityBehavior();
     if (activityBehavior==null) {

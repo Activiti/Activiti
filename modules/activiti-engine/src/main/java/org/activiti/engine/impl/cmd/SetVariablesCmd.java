@@ -18,7 +18,7 @@ import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.runtime.ExecutionEntity;
-import org.activiti.engine.impl.runtime.VariableMap;
+import org.activiti.engine.impl.runtime.VariableScopeImpl;
 
 
 /**

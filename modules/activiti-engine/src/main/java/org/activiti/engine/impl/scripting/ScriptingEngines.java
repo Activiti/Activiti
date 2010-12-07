@@ -73,7 +73,7 @@ public class ScriptingEngines {
   /** override to build a spring aware ScriptingEngines */
   protected Bindings createBindings(DelegateExecution execution) {
     if (execution != null) {
-      return new ExecutionBindings((ExecutionImpl) execution);
+      return new ExecutionBindings(execution);
     }
     return new SimpleBindings();
   }

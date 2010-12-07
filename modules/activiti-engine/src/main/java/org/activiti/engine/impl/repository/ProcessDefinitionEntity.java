@@ -25,8 +25,9 @@ import org.activiti.engine.impl.identity.Authentication;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.pvm.process.ProcessDefinitionImpl;
 import org.activiti.engine.impl.pvm.runtime.ExecutionImpl;
+import org.activiti.engine.impl.pvm.runtime.InterpretableExecution;
 import org.activiti.engine.impl.runtime.ExecutionEntity;
-import org.activiti.engine.impl.runtime.VariableMap;
+import org.activiti.engine.impl.runtime.VariableScopeImpl;
 import org.activiti.engine.impl.task.TaskDefinition;
 import org.activiti.engine.repository.ProcessDefinition;
 
@@ -62,7 +63,7 @@ public class ProcessDefinitionEntity extends ProcessDefinitionImpl implements Pr
 	      .getDbSqlSession()
 	      .insert(processInstance);
 	  
-	    processInstance.setExecutions(new ArrayList<ExecutionImpl>());
+	    processInstance.setExecutions(new ArrayList<ExecutionEntity>());
 	    processInstance.setProcessDefinition(processDefinition);
 	    // Do not initialize variable map (let it happen lazily)
 
@@ -79,9 +80,6 @@ public class ProcessDefinitionEntity extends ProcessDefinitionImpl implements Pr
 	      processInstance.setVariable(initiatorVariableName, authenticatedUserId);
 	    }
 	    
-	    VariableMap variableMap = VariableMap.createNewInitialized(processInstance.getId(), processInstance.getId());
-	    processInstance.setVariables(variableMap);
-
 	    int historyLevel = commandContext.getProcessEngineConfiguration().getHistoryLevel();
 	    if (historyLevel>=ProcessEngineConfigurationImpl.HISTORYLEVEL_ACTIVITY) {
 	      DbSqlSession dbSqlSession = commandContext.getSession(DbSqlSession.class);
@@ -97,7 +95,7 @@ public class ProcessDefinitionEntity extends ProcessDefinitionImpl implements Pr
   }
   
   @Override
-  protected ExecutionImpl newProcessInstance() {
+  protected InterpretableExecution newProcessInstance() {
     return new ExecutionEntity();
   }
 

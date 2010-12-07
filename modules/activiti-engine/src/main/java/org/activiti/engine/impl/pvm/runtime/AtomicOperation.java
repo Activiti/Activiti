@@ -34,5 +34,5 @@ public interface AtomicOperation {
   AtomicOperation DELETE_CASCADE = new AtomicOperationDeleteCascade();
   AtomicOperation DELETE_CASCADE_FIRE_ACTIVITY_END = new AtomicOperationDeleteCascadeFireActivityEnd();
 
-  void execute(ExecutionImpl execution);
+  void execute(InterpretableExecution execution);
 }

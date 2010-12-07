@@ -27,23 +27,24 @@ public class AtomicOperationTransitionDestroyScope implements AtomicOperation {
   
   private static Logger log = Logger.getLogger(AtomicOperationTransitionDestroyScope.class.getName());
 
-  public void execute(ExecutionImpl execution) {
-    ExecutionImpl propagatingExecution = null;
+  @SuppressWarnings("unchecked")
+  public void execute(InterpretableExecution execution) {
+    InterpretableExecution propagatingExecution = null;
 
-    ActivityImpl activity = execution.getActivity();
+    ActivityImpl activity = (ActivityImpl) execution.getActivity();
     // if this transition is crossing a scope boundary
     if (activity.isScope()) {
       
-      ExecutionImpl parentScopeInstance = null;
+      InterpretableExecution parentScopeInstance = null;
       // if this is a concurrent execution crossing a scope boundary
       if (execution.isConcurrent() && !execution.isScope()) {
         // first remove the execution from the current root
-        ExecutionImpl concurrentRoot = execution.getParent();
-        parentScopeInstance = execution.getParent().getParent();
+        InterpretableExecution concurrentRoot = (InterpretableExecution) execution.getParent();
+        parentScopeInstance = (InterpretableExecution) execution.getParent().getParent();
 
         log.fine("moving concurrent "+execution+" one scope up under "+parentScopeInstance);
-        List<ExecutionImpl> parentScopeInstanceExecutions = parentScopeInstance.getExecutions();
-        List<ExecutionImpl> concurrentRootExecutions = concurrentRoot.getExecutions();
+        List<InterpretableExecution> parentScopeInstanceExecutions = (List<InterpretableExecution>) parentScopeInstance.getExecutions();
+        List<InterpretableExecution> concurrentRootExecutions = (List<InterpretableExecution>) concurrentRoot.getExecutions();
         // if the parent scope had only one single scope child
         if (parentScopeInstanceExecutions.size()==1) {
           // it now becomes a concurrent execution
@@ -61,7 +62,7 @@ public class AtomicOperationTransitionDestroyScope implements AtomicOperation {
         // last concurrent child execution data should be cloned into
         // the concurrent root.   
         if (concurrentRootExecutions.size()==1) {
-          ExecutionImpl lastConcurrent = concurrentRootExecutions.get(0);
+          InterpretableExecution lastConcurrent = concurrentRootExecutions.get(0);
           if (lastConcurrent.isScope()) {
             lastConcurrent.setConcurrent(false);
             
@@ -71,7 +72,7 @@ public class AtomicOperationTransitionDestroyScope implements AtomicOperation {
             // We can't just merge the data of the lastConcurrent into the concurrentRoot.
             // This is because the concurrent root might be in a takeAll-loop.  So the 
             // concurrent execution is the one that will be receiveing the take
-            concurrentRoot.setActivity(lastConcurrent.getActivity());
+            concurrentRoot.setActivity((ActivityImpl) lastConcurrent.getActivity());
             concurrentRoot.setActive(lastConcurrent.isActive());
             lastConcurrent.setReplacedBy(concurrentRoot);
             lastConcurrent.remove();
@@ -86,8 +87,8 @@ public class AtomicOperationTransitionDestroyScope implements AtomicOperation {
         propagatingExecution = execution;
         
       } else {
-        propagatingExecution = execution.getParent();
-        propagatingExecution.setActivity(execution.getActivity());
+        propagatingExecution = (InterpretableExecution) execution.getParent();
+        propagatingExecution.setActivity((ActivityImpl) execution.getActivity());
         propagatingExecution.setTransition(execution.getTransition());
         propagatingExecution.setActive(true);
         log.fine("destroy scope: scoped "+execution+" continues as parent scope "+propagatingExecution);

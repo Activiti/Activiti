@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -42,8 +43,8 @@ public class ExecutionImpl implements
         Serializable,
         ActivityExecution, 
         ExecutionListenerExecution, 
-        PvmProcessInstance,
-        PvmExecution {
+        PvmExecution,
+        InterpretableExecution {
   
   private static final long serialVersionUID = 1L;
   
@@ -187,8 +188,8 @@ public class ExecutionImpl implements
   }
 
   /** all updates need to go through this setter as subclasses can override this method */
-  protected void setParent(ExecutionImpl parent) {
-    this.parent = parent;
+  public void setParent(InterpretableExecution parent) {
+    this.parent = (ExecutionImpl) parent;
   }
 
   /** must be called before memberfield parent is used. 
@@ -225,8 +226,8 @@ public class ExecutionImpl implements
     return subProcessInstance;
   }
   
-  public void setSubProcessInstance(ExecutionImpl subProcessInstance) {
-    this.subProcessInstance = subProcessInstance;
+  public void setSubProcessInstance(InterpretableExecution subProcessInstance) {
+    this.subProcessInstance = (ExecutionImpl) subProcessInstance;
   }
 
   // Meant to be overridden by persistent subclasses
@@ -317,8 +318,8 @@ public class ExecutionImpl implements
   }
   
   /** for setting the process instance, this setter must be used as subclasses can override */  
-  public void setProcessInstance(ExecutionImpl processInstance) {
-    this.processInstance = processInstance;
+  public void setProcessInstance(InterpretableExecution processInstance) {
+    this.processInstance = (ExecutionImpl) processInstance;
   }
 
   /** must be called before memberfield processInstance is used. 
@@ -508,7 +509,7 @@ public class ExecutionImpl implements
     }
   }
   
-  protected void performOperation(AtomicOperation executionOperation) {
+  public void performOperation(AtomicOperation executionOperation) {
     this.nextOperation = executionOperation;
     if (!isOperating) {
       isOperating = true;
@@ -566,7 +567,7 @@ public class ExecutionImpl implements
     }
   }
 
-  public void setVariables(Map<String, Object> variables) {
+  public void setVariables(Map<String, ? extends Object> variables) {
     ensureVariablesInitialized();
     if (variables!=null) {
       for (String variableName: variables.keySet()) {
@@ -696,10 +697,81 @@ public class ExecutionImpl implements
   public ExecutionImpl getReplacedBy() {
     return replacedBy;
   }
-  public void setReplacedBy(ExecutionImpl replacedBy) {
-    this.replacedBy = replacedBy;
+  public void setReplacedBy(InterpretableExecution replacedBy) {
+    this.replacedBy = (ExecutionImpl) replacedBy;
   }
   public void setExecutions(List<ExecutionImpl> executions) {
     this.executions = executions;
+  }
+  public boolean isDeleteRoot() {
+    return deleteRoot;
+  }
+
+  @Override
+  public void createVariableLocal(String variableName, Object value) {
+  }
+
+  @Override
+  public void createVariablesLocal(Map<String, ? extends Object> variables) {
+  }
+
+  @Override
+  public Object getVariableLocal(Object variableName) {
+    return null;
+  }
+
+  @Override
+  public Set<String> getVariableNames() {
+    return null;
+  }
+
+  @Override
+  public Set<String> getVariableNamesLocal() {
+    return null;
+  }
+
+  @Override
+  public Map<String, Object> getVariablesLocal() {
+    return null;
+  }
+
+  @Override
+  public boolean hasVariableLocal(String variableName) {
+    return false;
+  }
+
+  @Override
+  public boolean hasVariables() {
+    return false;
+  }
+
+  @Override
+  public boolean hasVariablesLocal() {
+    return false;
+  }
+
+  @Override
+  public void removeVariable(String variableName) {
+  }
+
+  @Override
+  public void removeVariableLocal(String variableName) {
+  }
+
+  @Override
+  public void removeVariables() {
+  }
+
+  @Override
+  public void removeVariablesLocal() {
+  }
+
+  @Override
+  public Object setVariableLocal(String variableName, Object value) {
+    return null;
+  }
+
+  @Override
+  public void setVariablesLocal(Map<String, ? extends Object> variables) {
   }
 }

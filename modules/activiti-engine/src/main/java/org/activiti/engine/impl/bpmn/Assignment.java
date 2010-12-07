@@ -12,6 +12,7 @@
  */
 package org.activiti.engine.impl.bpmn;
 
+import org.activiti.engine.delegate.VariableScope;
 import org.activiti.engine.impl.el.Expression;
 import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
 
@@ -32,7 +33,8 @@ public class Assignment {
   }
   
   public void evaluate(ActivityExecution execution) {
-    Object value = this.fromExpression.getValue(execution);
-    this.toExpression.setValue(value, execution);
+    VariableScope variableScope = (VariableScope) execution;
+    Object value = this.fromExpression.getValue(variableScope);
+    this.toExpression.setValue(value, variableScope);
   }
 }

@@ -22,8 +22,8 @@ import org.activiti.engine.impl.pvm.process.ScopeImpl;
 public class AtomicOperationTransitionNotifyListenerEnd extends AbstractEventAtomicOperation {
 
   @Override
-  protected ScopeImpl getScope(ExecutionImpl execution) {
-    return execution.getActivity();
+  protected ScopeImpl getScope(InterpretableExecution execution) {
+    return (ScopeImpl) execution.getActivity();
   }
 
   @Override
@@ -32,7 +32,7 @@ public class AtomicOperationTransitionNotifyListenerEnd extends AbstractEventAto
   }
 
   @Override
-  protected void eventNotificationsCompleted(ExecutionImpl execution) {
+  protected void eventNotificationsCompleted(InterpretableExecution execution) {
     execution.performOperation(TRANSITION_DESTROY_SCOPE);
   }
 }

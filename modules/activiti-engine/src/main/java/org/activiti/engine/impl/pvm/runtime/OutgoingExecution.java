@@ -21,11 +21,11 @@ import org.activiti.engine.impl.pvm.PvmTransition;
  */
 public class OutgoingExecution {
   
-  protected ExecutionImpl outgoingExecution;
+  protected InterpretableExecution outgoingExecution;
   protected PvmTransition outgoingTransition;
   protected boolean isNew;
 
-  public OutgoingExecution(ExecutionImpl outgoingExecution, PvmTransition outgoingTransition, boolean isNew) {
+  public OutgoingExecution(InterpretableExecution outgoingExecution, PvmTransition outgoingTransition, boolean isNew) {
     this.outgoingExecution = outgoingExecution;
     this.outgoingTransition = outgoingTransition;
     this.isNew = isNew;

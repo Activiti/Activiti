@@ -19,6 +19,7 @@ import java.util.List;
 import org.activiti.engine.impl.pvm.PvmProcessDefinition;
 import org.activiti.engine.impl.pvm.PvmProcessInstance;
 import org.activiti.engine.impl.pvm.runtime.ExecutionImpl;
+import org.activiti.engine.impl.pvm.runtime.InterpretableExecution;
 
 
 
@@ -39,16 +40,16 @@ public class ProcessDefinitionImpl extends ScopeImpl implements PvmProcessDefini
   }
 
   public PvmProcessInstance createProcessInstance() {
-    ExecutionImpl processInstance = newProcessInstance();
+    InterpretableExecution processInstance = newProcessInstance();
     processInstance.setProcessDefinition(this);
     processInstance.setProcessInstance(processInstance);
     processInstance.initialize();
 
-    ExecutionImpl scopeInstance = processInstance;
+    InterpretableExecution scopeInstance = processInstance;
     List<ActivityImpl> initialActivities = getInitialActivityStack();
     for (ActivityImpl initialActivity: initialActivities) {
       if (initialActivity.isScope()) {
-        scopeInstance = scopeInstance.createExecution();
+        scopeInstance = (InterpretableExecution) scopeInstance.createExecution();
         scopeInstance.setActivity(initialActivity);
         if (initialActivity.isScope()) {
           scopeInstance.initialize();
@@ -73,7 +74,7 @@ public class ProcessDefinitionImpl extends ScopeImpl implements PvmProcessDefini
     return initialActivityStack;
   }
 
-  protected ExecutionImpl newProcessInstance() {
+  protected InterpretableExecution newProcessInstance() {
     return new ExecutionImpl();
   }
 

@@ -13,7 +13,6 @@
 
 package org.activiti.engine.delegate;
 
-import java.util.Map;
 
 
 /**
@@ -21,13 +20,8 @@ import java.util.Map;
  * 
  * @author Tom Baeyens
  */
-public interface DelegateExecution {
+public interface DelegateExecution extends VariableScope {
 
   String getId();
   
-  boolean hasVariable(String variableName);
-  void setVariable(String variableName, Object value);
-  Object getVariable(String variableName);
-  Map<String, Object> getVariables();
-
 }

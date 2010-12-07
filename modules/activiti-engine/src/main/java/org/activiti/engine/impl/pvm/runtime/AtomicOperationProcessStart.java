@@ -27,7 +27,7 @@ import org.activiti.engine.impl.pvm.process.ScopeImpl;
 public class AtomicOperationProcessStart extends AbstractEventAtomicOperation {
 
   @Override
-  protected ScopeImpl getScope(ExecutionImpl execution) {
+  protected ScopeImpl getScope(InterpretableExecution execution) {
     return execution.getProcessDefinition();
   }
 
@@ -37,7 +37,7 @@ public class AtomicOperationProcessStart extends AbstractEventAtomicOperation {
   }
 
   @Override
-  protected void eventNotificationsCompleted(ExecutionImpl execution) {
+  protected void eventNotificationsCompleted(InterpretableExecution execution) {
     ProcessDefinitionImpl processDefinition = execution.getProcessDefinition();
     List<ActivityImpl> initialActivityStack = processDefinition.getInitialActivityStack();
     execution.setActivity(initialActivityStack.get(0));

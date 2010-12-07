@@ -24,11 +24,11 @@ public class AtomicOperationTransitionCreateScope implements AtomicOperation {
   
   private static Logger log = Logger.getLogger(AtomicOperationTransitionCreateScope.class.getName());
 
-  public void execute(ExecutionImpl execution) {
-    ExecutionImpl propagatingExecution = null;
-    ActivityImpl activity = execution.getActivity();
+  public void execute(InterpretableExecution execution) {
+    InterpretableExecution propagatingExecution = null;
+    ActivityImpl activity = (ActivityImpl) execution.getActivity();
     if (activity.isScope()) {
-      propagatingExecution = (ExecutionImpl) execution.createExecution();
+      propagatingExecution = (InterpretableExecution) execution.createExecution();
       propagatingExecution.setActivity(activity);
       propagatingExecution.setTransition(execution.getTransition());
       execution.setTransition(null);

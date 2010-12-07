@@ -15,6 +15,7 @@ package org.activiti.engine.impl.el;
 import java.beans.FeatureDescriptor;
 import java.util.Iterator;
 
+import org.activiti.engine.delegate.VariableScope;
 import org.activiti.engine.impl.javax.el.ELContext;
 import org.activiti.engine.impl.javax.el.ELResolver;
 import org.activiti.engine.impl.pvm.runtime.ExecutionImpl;
@@ -26,14 +27,14 @@ import org.activiti.engine.impl.pvm.runtime.ExecutionImpl;
  * 
  * @author Joram Barrez
  */
-public class ExecutionVariableElResolver extends ELResolver {
+public class VariableScopeElResolver extends ELResolver {
   
   public static final String EXECUTION_KEY = "execution";
   
-  protected ExecutionImpl execution;
+  protected VariableScope variableScope;
   
-  public ExecutionVariableElResolver(ExecutionImpl execution) {
-    this.execution = execution;
+  public VariableScopeElResolver(VariableScope variableScope) {
+    this.variableScope = variableScope;
   }
 
   public Object getValue(ELContext context, Object base, Object property)  {
@@ -43,11 +44,11 @@ public class ExecutionVariableElResolver extends ELResolver {
       String variable = (String) property; // according to javadoc, can only be a String
       if(EXECUTION_KEY.equals(property)) {
         context.setPropertyResolved(true);
-        return execution;
+        return variableScope;
       } else {
-        if (execution.hasVariable(variable)) {
+        if (variableScope.hasVariable(variable)) {
           context.setPropertyResolved(true); // if not set, the next elResolver in the CompositeElResolver will be called
-          return execution.getVariable(variable);
+          return variableScope.getVariable(variable);
         }        
       }
     }
@@ -61,7 +62,7 @@ public class ExecutionVariableElResolver extends ELResolver {
   public boolean isReadOnly(ELContext context, Object base, Object property) {
     if (base == null) {
       String variable = (String) property;
-      return !execution.hasVariable(variable);
+      return !variableScope.hasVariable(variable);
     }
     return true;
   }
@@ -69,8 +70,8 @@ public class ExecutionVariableElResolver extends ELResolver {
   public void setValue(ELContext context, Object base, Object property, Object value) {
     if (base == null) {
       String variable = (String) property;
-      if (execution.hasVariable(variable)) {
-        execution.setVariable(variable, value);
+      if (variableScope.hasVariable(variable)) {
+        variableScope.setVariable(variable, value);
       }
     }
   }
