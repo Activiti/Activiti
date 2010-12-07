@@ -28,6 +28,8 @@ public class BPMN12 {
   public static String SIGNAL_START_EVENT = "StartSignalEvent";
   public static String MULTIPLE_START_EVENT = "StartMultipleEvent";
 
+  public static String NONE_INTERMEDIATE_EVENT = "IntermediateEvent";
+
   public static boolean isStartEvent(Shape shape) {
     return isStartEvent(shape.getStencilId());
   }
