@@ -579,7 +579,7 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
   }
 
   public String getProcessDefinitionId() {
-    return getProcessDefinition().getId();
+    return processDefinitionId;
   }
 
   /** for setting the process definition, this setter must be used as subclasses can override */  
