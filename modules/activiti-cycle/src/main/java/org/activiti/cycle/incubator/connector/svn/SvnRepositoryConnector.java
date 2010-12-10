@@ -94,16 +94,20 @@ public class SvnRepositoryConnector extends AbstractRepositoryConnector<SvnConne
   }
 
   protected static void setupFactories() {
+    boolean initialized = false;
     try {
       SvnKitClientAdapterFactory.setup();
+      initialized = true;
     } catch (SVNClientException e) {
-      log.log(Level.FINEST, "cannot initialize the SvnKitClientAdapterFactory.");
+      log.log(Level.INFO, "cannot initialize the SvnKitClientAdapterFactory.");
     }
 
-    try {
-      CmdLineClientAdapterFactory.setup();
-    } catch (SVNClientException e) {
-      log.log(Level.FINEST, "cannot initialize the CmdLineClientAdapterFactory.");
+    if (!initialized) {
+      try {
+        CmdLineClientAdapterFactory.setup();
+      } catch (SVNClientException e) {
+        log.log(Level.INFO, "cannot initialize the CmdLineClientAdapterFactory.");
+      }
     }
 
     // try {
@@ -114,7 +118,6 @@ public class SvnRepositoryConnector extends AbstractRepositoryConnector<SvnConne
     // }
 
   }
-
   public boolean login(String username, String password) {
     ISVNClientAdapter clientAdapter = getSvnClientAdapter();
 
