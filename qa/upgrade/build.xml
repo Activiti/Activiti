@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="activiti.qa.upgrade" default="upgrade">
+	
+  <property file="${user.home}/.activiti/build.properties" />
+  <property name="activiti.version" value="5.1-SNAPSHOT" />
+  <property name="db" value="h2" />
+  <property name="activiti.old.version" value="5.0" />
+  <property name="downloads.dir" value="${user.home}/.activiti/downloads" />
+  <property name="download.old.distro.url" value="http://activiti.org/downloads/activiti-${activiti.old.version}.zip" />
+
+	<condition property="mvn.executable" value="mvn.bat" else="mvn">
+     <os family="windows"/>
+  </condition>
+
+	<target name="clean">
+		<delete dir="target" />
+	</target>
+	
+	<target name="upgrade" depends="get.old.distro,
+		                              install.old.distro">
+    <ant antfile="target/activiti-${activiti.old.version}/setup/build.xml" target="h2.start" inheritall="false" />
+    <ant antfile="target/activiti-${activiti.old.version}/setup/build.xml" target="db.create" inheritall="false" />
+    <copy file="activiti.cfg.xml" todir="target/activiti-${activiti.old.version}-upgrade-before-classes" overwrite="true">
+      <filterset filtersfile="${user.home}/.activiti/upgrade/build.${db}.properties" />
+    </copy>
+		<mkdir dir="target/test-results-before" />
+		<junit>
+			<classpath>
+				<pathelement location="target/activiti-${activiti.old.version}-upgrade-before-classes" />
+				<fileset dir="target/activiti-${activiti.old.version}/workspace/activiti-engine-examples/libs-runtime" />
+        <fileset dir="target/activiti-${activiti.old.version}/workspace/activiti-engine-examples/libs-test" />
+			</classpath>
+			<batchtest todir="target/test-results-before" fork="yes">
+				<fileset dir="target/activiti-${activiti.old.version}-upgrade-before-classes">
+					<include name="**/*BeforeTest.class"/>
+			  </fileset>
+				<formatter type="xml" />
+			</batchtest>
+		</junit>
+    <exec executable="${mvn.executable}" dir="../..">
+      <arg line="-DupgradeDatabase=${db} clean install" />
+    </exec>
+    <unjar src="../../modules/activiti-upgrade/target/activiti-upgrade-${activiti.version}.jar" dest="target/activiti-upgrade-after-classes" />
+    <copy file="activiti.cfg.xml" todir="target/activiti-upgrade-after-classes" overwrite="true">
+      <filterset filtersfile="${user.home}/.activiti/upgrade/build.${db}.properties" />
+    </copy>
+    <mkdir dir="target/test-results-after" />
+    <junit>
+      <classpath>
+        <pathelement location="target/activiti-upgrade-after-classes" />
+        <fileset dir="../../modules/activiti-upgrade/target/test-libs" />
+      </classpath>
+      <batchtest todir="target/test-results-after" fork="yes">
+        <fileset dir="target/activiti-upgrade-after-classes">
+          <include name="**/*AfterTest.class"/>
+        </fileset>
+        <formatter type="xml" />
+      </batchtest>
+    </junit>
+    <ant antfile="target/activiti-${activiti.old.version}/setup/build.xml" target="h2.stop" inheritall="false" />
+	</target>
+
+	<available property="old.distro.available" file="${downloads.dir}/activiti-${activiti.old.version}.zip"/>
+	<target name="get.old.distro" unless="old.distro.available">
+		<get src="${download.old.distro.url}" dest="${downloads.dir}/activiti-${activiti.old.version}.zip" />
+	</target>
+
+	<available property="old.installation.available" file="target/activiti-${activiti.old.version}"/>
+  <target name="install.old.distro" unless="old.installation.available">
+    <unzip src="${downloads.dir}/activiti-${activiti.old.version}.zip" dest="target" />
+  	<copy file="${user.home}/.activiti/upgrade/build.${db}.properties" todir="target/activiti-${activiti.old.version}/setup" overwrite="true" />
+    <ant antfile="target/activiti-${activiti.old.version}/setup/build.xml" target="inflate.examples" inheritall="false" />
+    <ant antfile="target/activiti-${activiti.old.version}/setup/build.xml" target="h2.install" inheritall="false" />
+    <exec executable="${mvn.executable}">
+      <arg line="dependency:unpack-dependencies -Dactiviti.upgrade.version=5.0 -DoutputDirectory=target/activiti-${activiti.old.version}-upgrade-before-classes -DexcludeTransitive=true" />
+    </exec>
+  </target>
+
+</project>
