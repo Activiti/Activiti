@@ -35,7 +35,9 @@
   	                             copy.examples,
   	                             copy.docs">
   	<zip destfile="${target.distro.root}.zip">
-  		<fileset dir="${target.distro.root}" />
+      <fileset dir="target">
+        <include name="activiti-${activiti.version}/**" />
+  		</fileset>
   	</zip>
   </target>
   
