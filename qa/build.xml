@@ -10,6 +10,7 @@
   <property name="windows.browser" value="C:/Program Files/Mozilla Firefox/firefox.exe" />
   <property name="linux.browser" value="firefox" />
   <property name="tomcat.home" value="${activiti.home}/apps/apache-tomcat-${tomcat.version}" />
+  <property name="downloads.dir" value="${user.home}/.activiti/downloads" />
   
   <condition property="mvn.executable" value="mvn.bat" else="mvn">
      <os family="windows"/>
@@ -33,6 +34,11 @@
     <ant antfile="../distro/target/activiti-${activiti.version}/setup/build.xml"
          target="demo.stop"
          inheritall="false" />
+  </target>
+	
+  <target name="test.upgrade" depends="build.clean.distro">
+    <copy file="../distro/target/activiti-${activiti.version}.zip" todir="${downloads.dir}" />
+  	<ant antfile="upgrade/build.xml" target="upgrade" inheritall="false" />
   </target>
   
   <target name="build.userguide">

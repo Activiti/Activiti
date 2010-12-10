@@ -164,6 +164,17 @@
 				<skipTests>true</skipTests>
 			</properties>
 		</profile>
+    <profile>
+      <id>upgradeDatabase</id>
+      <activation>
+        <property>
+          <name>upgradeDatabase</name>
+        </property>
+      </activation>
+      <properties>
+        <skipTests>true</skipTests>
+      </properties>
+    </profile>
 		<profile>
 			<id>distro</id>
 			<build>

@@ -35,7 +35,9 @@
   	                             copy.examples,
   	                             copy.docs">
   	<zip destfile="${target.distro.root}.zip">
-  		<fileset dir="${target.distro.root}" />
+      <fileset dir="target">
+        <include name="activiti-${activiti.version}/**" />
+      </fileset>
   	</zip>
   </target>
   
@@ -44,6 +46,7 @@
   		<equals arg1="${nodocs}" arg2="true" />
   	</condition>
     <exec executable="${mvn.executable}" dir=".." failonerror="true">
+    	<env key="MAVEN_OPTS" value="-Xmx1024m -Xms512m"/>
       <arg line="-Pdistro${nodocs.profile} clean install" />
     </exec>
   </target>

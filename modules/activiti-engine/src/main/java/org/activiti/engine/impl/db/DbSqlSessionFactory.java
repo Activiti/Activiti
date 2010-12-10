@@ -27,12 +27,12 @@ import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiWrongDbException;
 import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.impl.cfg.IdGenerator;
+import org.activiti.engine.impl.db.upgrade.DbUpgradeStep;
 import org.activiti.engine.impl.interceptor.Session;
 import org.activiti.engine.impl.interceptor.SessionFactory;
 import org.activiti.engine.impl.util.ClassNameUtil;
 import org.activiti.engine.impl.util.IoUtil;
 import org.activiti.engine.impl.util.ReflectUtil;
-import org.apache.ibatis.session.ExecutorType;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 
@@ -130,15 +130,10 @@ public class DbSqlSessionFactory implements SessionFactory {
   // db operations ////////////////////////////////////////////////////////////
   
   public void dbSchemaCheckVersion() {
-    /*
-     * Not quite sure if this is the right setting? We do want multiple updates
-     * to be batched for performance ...
-     */
-    SqlSession sqlSession = sqlSessionFactory.openSession(ExecutorType.BATCH);
+    SqlSession sqlSession = sqlSessionFactory.openSession();
     boolean success = false;
     try {
-      String selectSchemaVersionStatement = mapStatement("selectDbSchemaVersion");
-      String dbVersion = (String) sqlSession.selectOne(selectSchemaVersionStatement);
+      String dbVersion = getDbVersion(sqlSession);
       if (!ProcessEngine.VERSION.equals(dbVersion)) {
         throw new ActivitiWrongDbException(ProcessEngine.VERSION, dbVersion);
       }
@@ -168,21 +163,95 @@ public class DbSqlSessionFactory implements SessionFactory {
     log.fine("activiti db schema check successful");
   }
 
+  protected String getDbVersion(SqlSession sqlSession) {
+    String selectSchemaVersionStatement = mapStatement("selectDbSchemaVersion");
+    return (String) sqlSession.selectOne(selectSchemaVersionStatement);
+  }
+
   public void dbSchemaCreate() {
-    executeSchemaResource("create", databaseType, sqlSessionFactory);
+    executeSchemaResource("create", "create", databaseType, sqlSessionFactory);
   }
 
   public void dbSchemaDrop() {
-    executeSchemaResource("drop", databaseType, sqlSessionFactory);
+    executeSchemaResource("drop", "drop", databaseType, sqlSessionFactory);
   }
-
-  public static void executeSchemaResource(String operation, String databaseType, SqlSessionFactory sqlSessionFactory) {
+  
+  public void dbSchemaUpgrade() {
     SqlSession sqlSession = sqlSessionFactory.openSession();
     boolean success = false;
+    try {
+      // the next piece assumes both DB version and library versions are formatted 5.x
+      String dbVersion = getDbVersion(sqlSession);
+      
+      if (!ProcessEngine.VERSION.equals(dbVersion)) {
+        int minorDbVersionNumber = Integer.parseInt(dbVersion.substring(2));
+        String libraryVersion = ProcessEngine.VERSION;
+        if (ProcessEngine.VERSION.endsWith("-SNAPSHOT")) {
+          libraryVersion = ProcessEngine.VERSION.substring(0, ProcessEngine.VERSION.length()-"-SNAPSHOT".length());
+        }
+        int minorLibraryVersionNumber = Integer.parseInt(libraryVersion.substring(2));
+        
+        while (minorDbVersionNumber<minorLibraryVersionNumber) {
+          try {
+            DbUpgradeStep dbUpgradeStep = (DbUpgradeStep) ReflectUtil.instantiate("org.activiti.engine.impl.db.upgrade.DbUpgradeStep5"+minorDbVersionNumber);
+            dbUpgradeStep.execute(sqlSession, this);
+          } catch (ActivitiException e) {
+            log.fine("no upgrade step necessary for 5."+minorDbVersionNumber);
+          }
+          minorDbVersionNumber++;
+        }
+      }
+
+      success = true;
+
+    } catch (Exception e) {
+      if (isMissingTablesException(e)) {
+        throw new ActivitiException(
+                "no activiti tables in db.  set <property name=\"databaseSchemaUpdate\" to value=\"true\" or value=\"create-drop\" (use create-drop for testing only!) in bean processEngineConfiguration in activiti.cfg.xml for automatic schema creation", e);
+      } else {
+        if (e instanceof RuntimeException) {
+          throw (RuntimeException) e;
+        } else {
+          throw new ActivitiException("couldn't get db schema version", e);
+        }
+      }
+    } finally {
+      if (success) {
+        sqlSession.commit(true);
+      } else {
+        sqlSession.rollback(true);
+      }
+      sqlSession.close();
+    }
+  }
+
+  public static void executeSchemaResource(String directory, String operation, String databaseType, SqlSessionFactory sqlSessionFactory) {
+    SqlSession sqlSession = sqlSessionFactory.openSession();
+    boolean success = false;
+    try {
+      executeSchemaResource(directory, operation, databaseType, sqlSession);
+      success = true;
+
+    } catch (Exception e) {
+      throw new ActivitiException("couldn't create or drop db schema", e);
+
+    } finally {
+      if (success) {
+        sqlSession.commit(true);
+      } else {
+        sqlSession.rollback(true);
+      }
+      sqlSession.close();
+    }
+
+    log.fine("activiti db schema " + operation + " successful");
+  }
+
+  public static void executeSchemaResource(String directory, String operation, String databaseType, SqlSession sqlSession) throws Exception {
     InputStream inputStream = null;
     try {
       Connection connection = sqlSession.getConnection();
-      String resource = "org/activiti/db/" + operation + "/activiti." + databaseType + "." + operation + ".sql";
+      String resource = "org/activiti/db/" + directory + "/activiti." + databaseType + "." + operation + ".sql";
       inputStream = ReflectUtil.getResourceAsStream(resource);
       if (inputStream == null) {
         throw new ActivitiException("resource '" + resource + "' is not available for creating the schema");
@@ -212,23 +281,10 @@ public class DbSqlSessionFactory implements SessionFactory {
       if (exception != null) {
         throw exception;
       }
-
-      success = true;
-
-    } catch (Exception e) {
-      throw new ActivitiException("couldn't create or drop db schema", e);
-
+      
     } finally {
       IoUtil.closeSilently(inputStream);
-      if (success) {
-        sqlSession.commit(true);
-      } else {
-        sqlSession.rollback(true);
-      }
-      sqlSession.close();
     }
-
-    log.fine("activiti db schema " + operation + " successful");
   }
   
   protected boolean isMissingTablesException(Exception e) {
@@ -331,4 +387,5 @@ public class DbSqlSessionFactory implements SessionFactory {
   public void setSelectStatements(Map<Class< ? >, String> selectStatements) {
     this.selectStatements = selectStatements;
   }
+
 }

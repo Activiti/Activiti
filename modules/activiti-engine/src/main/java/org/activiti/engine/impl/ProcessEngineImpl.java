@@ -123,6 +123,8 @@ public class ProcessEngineImpl implements ProcessEngine {
       } catch (Exception e) {
         if (e.getMessage().indexOf("no activiti tables in db")!=-1) {
           getDbSqlSessionFactory().dbSchemaCreate();
+        } else {
+          getDbSqlSessionFactory().dbSchemaUpgrade();
         }
       }
     }

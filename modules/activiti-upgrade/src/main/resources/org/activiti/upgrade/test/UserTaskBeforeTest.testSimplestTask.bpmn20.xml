@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<definitions id="taskAssigneeExample" 
+             xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+             xmlns:activiti="http://activiti.org/bpmn">
+  
+  <process id="simpleTaskProcess">
+  
+    <startEvent id="start"/>
+    
+    <sequenceFlow id="flow1" sourceRef="start" targetRef="simpleTask" />
+
+    <userTask id="simpleTask" />
+    
+    <sequenceFlow id="flow2" sourceRef="simpleTask" targetRef="end" />
+    
+    <endEvent id="end" />
+    
+  </process>
+
+</definitions>

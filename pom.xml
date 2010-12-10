@@ -534,6 +534,17 @@
       </modules>
     </profile>    
     <profile>
+      <id>upgradeDatabase</id>
+      <activation>
+        <property>
+          <name>upgradeDatabase</name>
+        </property>
+      </activation>
+      <modules>
+        <module>modules/activiti-upgrade</module>
+      </modules>
+    </profile>    
+    <profile>
       <!-- this profile prevents that tests are executed while running the qa/build.xml test.demo.setup target -->
       <id>nodocs</id>
       <activation>
