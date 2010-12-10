@@ -1,0 +1,100 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+	<modelVersion>4.0.0</modelVersion>
+
+	<name>Activiti - Upgrade</name>
+	<groupId>org.activiti</groupId>
+	<artifactId>activiti-upgrade</artifactId>
+
+	<parent>
+		<groupId>org.activiti</groupId>
+		<artifactId>activiti-root</artifactId>
+		<relativePath>../..</relativePath>
+		<version>5.1-SNAPSHOT</version>
+	</parent>
+
+  <properties>
+    <skipTests>true</skipTests>
+  </properties>
+  
+	<dependencies>
+    <dependency>
+      <groupId>org.activiti</groupId>
+      <artifactId>activiti-engine</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+    </dependency>
+  </dependencies>
+  
+  <profiles>
+    <!--  database qa profile -->
+    <profile>
+      <id>upgradeDatabase</id>
+      <activation>
+        <property>
+          <name>upgradeDatabase</name>
+        </property>
+      </activation>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+		        <artifactId>maven-dependency-plugin</artifactId>
+		        <executions>
+		          <execution>
+		            <id>copy-dependencies</id>
+		            <phase>package</phase>
+		            <goals>
+		              <goal>copy-dependencies</goal>
+		            </goals>
+		            <configuration>
+		              <outputDirectory>${project.build.directory}/test-libs</outputDirectory>
+		              <includeScope>test</includeScope>
+		            </configuration>
+		          </execution>
+		        </executions>
+		      </plugin>
+        </plugins>
+      </build>
+    </profile>
+    
+    <profile>
+      <id>oracle</id>
+      <activation>
+        <property>
+          <name>upgradeDatabase</name>
+          <value>oracle</value>
+        </property>
+      </activation>
+      <dependencies>
+        <dependency>
+          <groupId>com.oracle.jdbc</groupId>
+          <artifactId>ojdbc5</artifactId>
+          <scope>test</scope>
+        </dependency>
+      </dependencies>
+    </profile>
+
+    <profile>
+      <id>h2</id>
+      <activation>
+        <property>
+          <name>upgradeDatabase</name>
+          <value>h2</value>
+        </property>
+      </activation>
+      <dependencies>
+        <dependency>
+		      <groupId>com.h2database</groupId>
+		      <artifactId>h2</artifactId>
+          <scope>test</scope>
+        </dependency>
+      </dependencies>
+    </profile>
+    
+  </profiles>
+
+</project>
