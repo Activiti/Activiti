@@ -29,5 +29,5 @@ public interface ParameterizedAction {
   public String getFormAsHtml();
 
   public void execute(RepositoryConnector connector, RepositoryArtifact artifact, Map<String, Object> parameters) throws Exception;
-  
+    
 }

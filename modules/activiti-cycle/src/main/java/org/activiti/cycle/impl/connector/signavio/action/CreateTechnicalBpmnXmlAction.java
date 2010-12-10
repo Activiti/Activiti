@@ -23,7 +23,7 @@ import org.activiti.cycle.service.CycleServiceFactory;
  * 
  * @author bernd.ruecker@camunda.com
  */
-public class CreateTechnicalBpmnXmlAction extends ParameterizedHtmlFormTemplateAction {
+public class CreateTechnicalBpmnXmlAction extends AbstractTechnicalBpmnXmlAction {
 
   private static final long serialVersionUID = 1L;
 
@@ -65,33 +65,18 @@ public class CreateTechnicalBpmnXmlAction extends ParameterizedHtmlFormTemplateA
       repositoryService.addArtifactLink(link);
     }
   }
-
   public String getLinkType() {
     return RepositoryArtifactLinkEntity.TYPE_IMPLEMENTS;
   }
 
-  public RepositoryArtifact createArtifact(RepositoryConnector connector, RepositoryArtifact artifact, String targetFolderId, String targetName,
+  public RepositoryArtifact createArtifact(RepositoryConnector sourceConnector, RepositoryArtifact sourceArtifact, String targetFolderId, String targetName,
           RepositoryConnector targetConnector) throws Exception {
-    String bpmnXml = ActivitiCompliantBpmn20Provider.createBpmnXml(connector, artifact);
-    RepositoryArtifact targetArtifact = createTargetArtifact(targetConnector, targetFolderId, targetName + ".bpmn20.xml", bpmnXml,
-            FileSystemPluginDefinition.ARTIFACT_TYPE_BPMN_20_XML);
-    return targetArtifact;
-  }
 
-  public RepositoryArtifact createTargetArtifact(RepositoryConnector targetConnector, String targetFolderId, String artifactId, String bpmnXml,
-          String artifactTypeId) {
-    Content content = new Content();
-    content.setValue(bpmnXml);
-    return targetConnector.createArtifact(targetFolderId, artifactId, artifactTypeId, content);
-  }
+    String targetArtifactId = targetName + ".bpmn20.xml";
+    String targetArtifactTypeId = FileSystemPluginDefinition.ARTIFACT_TYPE_BPMN_20_XML;
+    Content content = createContent(sourceConnector, sourceArtifact);
 
-  public String getProcessName(RepositoryArtifact artifact) {
-    return artifact.getMetadata().getName();
-  }
-
-  @Override
-  public String getFormResourceName() {
-    return getDefaultFormName();
+    return targetConnector.createArtifact(targetFolderId, targetArtifactId, targetArtifactTypeId, content);
   }
 
 }

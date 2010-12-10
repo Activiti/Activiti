@@ -19,6 +19,10 @@ public class ConnectorLoginRequestFilter implements CycleRequestFilter {
       return;
 
     String connectorId = (String) connectorIdObject;
+    
+    if(connectorId.length() == 0)
+      return;
+    
     // read credentials from request
     String username = req.getString(connectorId + "_username");
     String password = req.getString(connectorId + "_password");

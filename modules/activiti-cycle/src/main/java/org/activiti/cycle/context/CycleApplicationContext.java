@@ -28,6 +28,7 @@ public class CycleApplicationContext {
   }
 
   public static Object get(String key) {
+    // TODO: restore discarded or un-initialized instances. 
     return wrappedContext.get(key);
   }
 

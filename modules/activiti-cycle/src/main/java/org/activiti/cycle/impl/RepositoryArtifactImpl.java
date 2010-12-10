@@ -12,9 +12,12 @@
  */
 package org.activiti.cycle.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import org.activiti.cycle.ArtifactAwareParameterizedAction;
 import org.activiti.cycle.ArtifactType;
+import org.activiti.cycle.ParameterizedAction;
 import org.activiti.cycle.RepositoryArtifact;
 import org.activiti.cycle.RepositoryArtifactOpenLinkAction;
 import org.activiti.cycle.RepositoryConnector;
@@ -44,12 +47,28 @@ public class RepositoryArtifactImpl extends RepositoryNodeImpl implements Reposi
             + getMetadata() + "]";
   }
 
-
   public ArtifactType getArtifactType() {
     return artifactType;
   }
 
   public List<RepositoryArtifactOpenLinkAction> getOpenLinkActions() {
     return openLinkActions;
+  }
+
+  public List<ParameterizedAction> getParameterizedActions() {
+    List<ParameterizedAction> actions = getArtifactType().getParameterizedActions();
+    List<ParameterizedAction> filteredActions = new ArrayList<ParameterizedAction>();
+    // filter actions not applicable to this artifact.
+    for (ParameterizedAction parameterizedAction : actions) {
+      if (parameterizedAction instanceof ArtifactAwareParameterizedAction) {
+        ArtifactAwareParameterizedAction artifactAwareAction = (ArtifactAwareParameterizedAction) parameterizedAction;
+        if (artifactAwareAction.isApplicable(this)) {
+          filteredActions.add(parameterizedAction);
+        }
+      } else {
+        filteredActions.add(parameterizedAction);
+      }
+    }
+    return filteredActions;
   }
 }

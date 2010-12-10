@@ -76,11 +76,11 @@ public class SvnRepositoryConnector extends AbstractRepositoryConnector<SvnConne
   static {
     setupFactories();
   }
-    
+
   public SvnRepositoryConnector() {
-      
+
   }
- 
+
   protected void validateConfig() {
     String repositoryPath = getConfiguration().getRepositoryPath();
     if (repositoryPath == null) {
@@ -651,11 +651,15 @@ public class SvnRepositoryConnector extends AbstractRepositoryConnector<SvnConne
   }
 
   private void unlock() {
-    for (int i = 0; i < transactionLock.getHoldCount(); i++) {
-      transactionLock.unlock();
+    // TODO: <!> hack, find a better way to do this properly:
+    while (true) {
+      try {
+        transactionLock.unlock();
+      } catch (Exception e) {
+        break;
+      }
     }
   }
-
   public void beginTransaction() {
     // do not autocommit on transactions coming in via the public API.
     beginTransaction(false);

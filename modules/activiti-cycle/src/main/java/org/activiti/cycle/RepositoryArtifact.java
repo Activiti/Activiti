@@ -27,4 +27,6 @@ public interface RepositoryArtifact extends RepositoryNode {
   
   public List<RepositoryArtifactOpenLinkAction> getOpenLinkActions();
 
+  public List<ParameterizedAction> getParameterizedActions();
+
 }

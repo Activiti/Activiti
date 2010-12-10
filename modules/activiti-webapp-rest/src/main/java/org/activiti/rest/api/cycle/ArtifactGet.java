@@ -54,7 +54,7 @@ public class ArtifactGet extends ActivitiCycleWebScript {
 
     model.put("contentRepresentations", contentRepresentations);
 
-    model.put("actions", artifact.getArtifactType().getParameterizedActions());
+    model.put("actions", artifact.getParameterizedActions());
 
     // Create downloadContentView DTOs
     List<DownloadActionView> downloads = new ArrayList<DownloadActionView>();
