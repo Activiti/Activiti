@@ -11,11 +11,8 @@
     <exclude-unlisted-classes>true</exclude-unlisted-classes>
     
      <properties>
-      <property name="openjpa.ConnectionURL" value="jdbc:h2:mem:activiti-jpa;DB_CLOSE_DELAY=1000"/>
-      <property name="openjpa.ConnectionDriverName" value="org.h2.Driver"/>
-      <property name="openjpa.ConnectionUserName" value="sa"/>
-      <property name="openjpa.ConnectionPassword" value=""/>
       <property name="openjpa.Log" value="DefaultLevel=WARN, Tool=INFO"/>
+      <property name="openjpa.LockTimeout " value="30000"/>
       <property name="openjpa.jdbc.SynchronizeMappings" value="buildSchema(SchemaAction='add,deleteTableContents')"/>
     </properties>
     

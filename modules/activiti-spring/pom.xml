@@ -60,11 +60,9 @@
       <artifactId>groovy</artifactId>
       <scope>provided</scope>
     </dependency>
-
     <dependency>
       <groupId>org.springframework</groupId>
       <artifactId>spring-orm</artifactId>
-      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>com.h2database</groupId>
@@ -81,10 +79,15 @@
       <artifactId>subethasmtp-wiser</artifactId>
       <scope>test</scope>
     </dependency>
-	<dependency>
+	  <dependency>
       <groupId>org.apache.openjpa</groupId>
       <artifactId>openjpa</artifactId>
       <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>commons-dbcp</groupId>
+      <artifactId>commons-dbcp</artifactId>
+      <version>1.4</version>
     </dependency>
 	</dependencies>
 

@@ -92,9 +92,9 @@ public class CycleDbSqlSessionFactory extends DbSqlSessionFactory {
     } finally {
       IoUtil.closeSilently(inputStream);
       if (success) {
-        sqlSession.commit(true);
+        sqlSession.commit();
       } else {
-        sqlSession.rollback(true);
+        sqlSession.rollback();
       }
       sqlSession.close();
     }

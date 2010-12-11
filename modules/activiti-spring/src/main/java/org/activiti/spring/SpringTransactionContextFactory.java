@@ -10,19 +10,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.activiti.engine.impl.cfg.standalone;
+
+package org.activiti.spring;
 
 import org.activiti.engine.impl.cfg.TransactionContext;
 import org.activiti.engine.impl.cfg.TransactionContextFactory;
 import org.activiti.engine.impl.interceptor.CommandContext;
+import org.springframework.transaction.PlatformTransactionManager;
 
 
 /**
- * @author Tom Baeyens
+ * @author Frederik Heremans
  */
-public class StandaloneIbatisTransactionContextFactory implements TransactionContextFactory {
+public class SpringTransactionContextFactory implements TransactionContextFactory {
+  
+  protected PlatformTransactionManager transactionManager;
+  
+  public SpringTransactionContextFactory(PlatformTransactionManager transactionManager) {
+    this.transactionManager = transactionManager;
+  }
 
   public TransactionContext openTransactionContext(CommandContext commandContext) {
-    return new StandaloneIbatisTransactionContext(commandContext);
+    return new SpringTransactionContext(transactionManager, commandContext);
   }
+
 }

@@ -46,7 +46,7 @@ public class ProcessEngineFactoryBean implements FactoryBean<ProcessEngine>, Dis
 
   public ProcessEngine getObject() throws Exception {
     initializeExpressionManager();
-
+    initializeTransactionExternallyManaged();
     processEngine = (ProcessEngineImpl) processEngineConfiguration.buildProcessEngine();
 
     return processEngine;
@@ -55,6 +55,15 @@ public class ProcessEngineFactoryBean implements FactoryBean<ProcessEngine>, Dis
   protected void initializeExpressionManager() {
     if (applicationContext != null) {
       processEngineConfiguration.setExpressionManager(new SpringExpressionManager(applicationContext));
+    }
+  }
+  
+  protected void initializeTransactionExternallyManaged() {
+    if (processEngineConfiguration instanceof SpringProcessEngineConfiguration) { // remark: any config can be injected, so we cannot have SpringConfiguration as member
+      SpringProcessEngineConfiguration engineConfiguration = (SpringProcessEngineConfiguration) processEngineConfiguration;
+      if (engineConfiguration.getTransactionManager() != null) {
+        processEngineConfiguration.setTransactionsExternallyManaged(true);
+      }
     }
   }
   

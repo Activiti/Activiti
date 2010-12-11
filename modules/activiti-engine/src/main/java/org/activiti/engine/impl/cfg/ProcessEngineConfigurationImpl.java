@@ -50,7 +50,7 @@ import org.activiti.engine.impl.bpmn.parser.BpmnParser;
 import org.activiti.engine.impl.calendar.BusinessCalendarManager;
 import org.activiti.engine.impl.calendar.DurationBusinessCalendar;
 import org.activiti.engine.impl.calendar.MapBusinessCalendarManager;
-import org.activiti.engine.impl.cfg.standalone.StandaloneIbatisTransactionContextFactory;
+import org.activiti.engine.impl.cfg.standalone.StandaloneMybatisTransactionContextFactory;
 import org.activiti.engine.impl.db.DbHistorySessionFactory;
 import org.activiti.engine.impl.db.DbIdGenerator;
 import org.activiti.engine.impl.db.DbIdentitySessionFactory;
@@ -509,7 +509,7 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
 
   protected void initTransactionContextFactory() {
     if (transactionContextFactory==null) {
-      transactionContextFactory = new StandaloneIbatisTransactionContextFactory();
+      transactionContextFactory = new StandaloneMybatisTransactionContextFactory();
     }
   }
 

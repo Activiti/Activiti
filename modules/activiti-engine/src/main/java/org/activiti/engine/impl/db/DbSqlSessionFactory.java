@@ -237,9 +237,9 @@ public class DbSqlSessionFactory implements SessionFactory {
 
     } finally {
       if (success) {
-        sqlSession.commit(true);
+        sqlSession.commit();
       } else {
-        sqlSession.rollback(true);
+        sqlSession.rollback();
       }
       sqlSession.close();
     }

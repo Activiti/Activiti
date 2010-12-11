@@ -68,9 +68,9 @@ public class ProcessEngineInitializationTest extends PvmTestCase {
       throw new ActivitiException("couldn't update db schema version", e);
     } finally {
       if (success) {
-        sqlSession.commit(true);
+        sqlSession.commit();
       } else {
-        sqlSession.rollback(true);
+        sqlSession.rollback();
       }
       sqlSession.close();
     }

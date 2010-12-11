@@ -32,6 +32,11 @@ import org.activiti.engine.impl.util.xml.Parser;
 public class BpmnParser extends Parser {
   
   /**
+   * The BPMN 2.0 namespace
+   */
+  public static final String BPMN20_NS = "http://www.omg.org/spec/BPMN/20100524/MODEL";
+  
+  /**
    * The location of the BPMN 2.0 XML schema
    */
   public static final String SCHEMA_RESOURCE = "org/activiti/impl/bpmn/parser/BPMN20.xsd";

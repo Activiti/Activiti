@@ -63,6 +63,11 @@
         <version>1.2.132</version>
       </dependency>
       <dependency>
+        <groupId>commons-dbcp</groupId>
+        <artifactId>commons-dbcp</artifactId>
+        <version>1.4</version>
+      </dependency>
+      <dependency>
         <!-- required by Apache commons httpclient, required by restlet -->
         <groupId>commons-logging</groupId>
         <artifactId>commons-logging</artifactId>
@@ -486,6 +491,17 @@
                     </versions>
                 </configuration>
             </plugin>
+            <plugin>
+              <groupId>org.apache.maven.plugins</groupId>
+              <artifactId>maven-source-plugin</artifactId>
+              <executions>
+                  <execution>
+                      <goals>
+                          <goal>jar</goal>
+                      </goals>
+                  </execution>
+              </executions>
+          </plugin>
     </plugins>
   </build>
 

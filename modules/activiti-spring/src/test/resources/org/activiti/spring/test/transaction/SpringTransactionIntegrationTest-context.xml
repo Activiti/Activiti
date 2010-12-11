@@ -45,6 +45,8 @@
 
   <bean id="userBean" class="org.activiti.spring.test.transaction.UserBean">
     <property name="runtimeService" ref="runtimeService" />
+    <property name="taskService" ref="taskService" />
+    <property name="dataSource" ref="dataSource" />
   </bean>
 
   <bean id="printer" class="org.activiti.spring.test.transaction.Printer" />

@@ -28,14 +28,14 @@ import org.activiti.engine.impl.interceptor.CommandContext;
 /**
  * @author Tom Baeyens
  */
-public class StandaloneIbatisTransactionContext implements TransactionContext {
+public class StandaloneMybatisTransactionContext implements TransactionContext {
   
-  private static Logger log = Logger.getLogger(StandaloneIbatisTransactionContext.class.getName());
+  private static Logger log = Logger.getLogger(StandaloneMybatisTransactionContext.class.getName());
 
   protected CommandContext commandContext;
   protected Map<TransactionState,List<TransactionListener>> stateTransactionListeners = null;
   
-  public StandaloneIbatisTransactionContext(CommandContext commandContext) {
+  public StandaloneMybatisTransactionContext(CommandContext commandContext) {
     this.commandContext = commandContext;
   }
 

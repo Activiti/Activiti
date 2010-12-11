@@ -24,9 +24,9 @@ import org.activiti.engine.impl.interceptor.SessionFactory;
  */
 public class EntityManagerSessionFactory implements SessionFactory {
 
-  private EntityManagerFactory entityManagerFactory;
-  private boolean handleTransactions;
-  private boolean closeEntityManager;
+  protected EntityManagerFactory entityManagerFactory;
+  protected boolean handleTransactions;
+  protected boolean closeEntityManager;
 
   public EntityManagerSessionFactory(Object entityManagerFactory, boolean handleTransactions, boolean closeEntityManager) {
     if(entityManagerFactory == null) {

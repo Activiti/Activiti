@@ -13,6 +13,9 @@
 
 package org.activiti.engine.impl.variable;
 
+import org.activiti.engine.ActivitiException;
+import org.activiti.engine.impl.interceptor.CommandContext;
+
 
 /**
  * Variable type capable of storing reference to JPA-entities. Only JPA-Entities which
@@ -46,6 +49,17 @@ public class JPAEntityVariableType implements VariableType {
   }
 
   public void setValue(Object value, ValueFields valueFields) {
+    EntityManagerSession entityManagerSession = 
+      CommandContext.getCurrent().getSession(EntityManagerSession.class);
+    if (entityManagerSession == null) {
+      throw new ActivitiException("Cannot set JPA variable: " + EntityManagerSession.class + " not configured");
+    } else {
+      // Before we set the value we must flush all pending changes from the entitymanager
+      // If we don't do this, in some cases the primary key will not yet be set in the object
+      // which will cause exceptions down the road.
+      entityManagerSession.flush();
+    }
+    
     if(value != null) {
       String className = mappings.getJPAClassString(value);
       String idString = mappings.getJPAIdString(value);

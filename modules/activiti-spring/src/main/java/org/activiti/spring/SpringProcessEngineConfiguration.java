@@ -28,6 +28,7 @@ import org.activiti.engine.impl.interceptor.CommandContextInterceptor;
 import org.activiti.engine.impl.interceptor.CommandExecutorImpl;
 import org.activiti.engine.impl.interceptor.CommandInterceptor;
 import org.activiti.engine.impl.interceptor.LogInterceptor;
+import org.activiti.engine.impl.variable.EntityManagerSession;
 import org.activiti.engine.repository.DeploymentBuilder;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.ContextResource;
@@ -39,12 +40,18 @@ import org.springframework.transaction.support.TransactionTemplate;
 /**
  * @author Tom Baeyens
  * @author David Syer
+ * @author Joram Barrez
  */
 public class SpringProcessEngineConfiguration extends ProcessEngineConfigurationImpl {
 
   protected PlatformTransactionManager transactionManager;
   protected String deploymentName = "SpringAutoDeployment";
   protected Resource[] deploymentResources = new Resource[0];
+  
+  
+  public SpringProcessEngineConfiguration() {
+    transactionsExternallyManaged = true;
+  }
   
   @Override
   public ProcessEngine buildProcessEngine() {
@@ -77,6 +84,22 @@ public class SpringProcessEngineConfiguration extends ProcessEngineConfiguration
     defaultCommandInterceptorsTxRequiresNew.add(commandContextInterceptor);
     defaultCommandInterceptorsTxRequiresNew.add(new CommandExecutorImpl());
     return defaultCommandInterceptorsTxRequiresNew;
+  }
+  
+  @Override
+  protected void initTransactionContextFactory() {
+    if(transactionContextFactory == null && transactionManager != null) {
+      transactionContextFactory = new SpringTransactionContextFactory(transactionManager);
+    }
+  }
+  
+  @Override
+  protected void initJpa() {
+    super.initJpa();
+    if (jpaEntityManagerFactory != null) {
+      sessionFactories.put(EntityManagerSession.class, 
+              new SpringEntityManagerSessionFactory(jpaEntityManagerFactory, jpaHandleTransaction, jpaCloseEntityManager));
+    }
   }
 
   protected void autoDeployResources(ProcessEngine processEngine) {
@@ -121,7 +144,7 @@ public class SpringProcessEngineConfiguration extends ProcessEngineConfiguration
       deploymentBuilder.deploy();
     }
   }
-
+  
   public PlatformTransactionManager getTransactionManager() {
     return transactionManager;
   }

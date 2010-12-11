@@ -29,6 +29,7 @@ public class ParseHandler extends DefaultHandler {
   
   private static Logger log = Logger.getLogger(ParseHandler.class.getName());
 
+  protected String defaultNamespace;
   protected Parse parse;
   protected Locator locator;
   protected Stack<Element> elementStack = new Stack<Element>();
@@ -66,6 +67,10 @@ public class ParseHandler extends DefaultHandler {
   }
   public void setDocumentLocator(Locator locator) {
     this.locator = locator;
+  }
+  
+  public void setDefaultNamespace(String defaultNamespace) {
+    this.defaultNamespace = defaultNamespace;
   }
 
 
