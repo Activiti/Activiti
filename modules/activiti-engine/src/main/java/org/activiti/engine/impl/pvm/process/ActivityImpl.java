@@ -37,6 +37,12 @@ public class ActivityImpl extends ScopeImpl implements PvmActivity {
   protected ScopeImpl parent;
   protected boolean isScope;
   
+  // Graphical information
+  protected int x = -1;
+  protected int y = -1;
+  protected int width = -1;
+  protected int height = -1;
+  
   public ActivityImpl(String id, ProcessDefinitionImpl processDefinition) {
     super(id, processDefinition);
   }
@@ -121,4 +127,37 @@ public class ActivityImpl extends ScopeImpl implements PvmActivity {
   public void setScope(boolean isScope) {
     this.isScope = isScope;
   }
+
+  public int getX() {
+    return x;
+  }
+  
+  public void setX(int x) {
+    this.x = x;
+  }
+
+  public int getY() {
+    return y;
+  }
+
+  public void setY(int y) {
+    this.y = y;
+  }
+
+  public int getWidth() {
+    return width;
+  }
+
+  public void setWidth(int width) {
+    this.width = width;
+  }
+
+  public int getHeight() {
+    return height;
+  }
+
+  public void setHeight(int height) {
+    this.height = height;
+  }
+  
 }

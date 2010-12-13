@@ -33,6 +33,9 @@ public class TransitionImpl extends ProcessElementImpl implements PvmTransition 
   protected ActivityImpl source;
   protected ActivityImpl destination;
   protected List<ExecutionListener> executionListeners;
+  
+  /** Graphical information: a list of waypoints: x1, y1, x2, y2, x3, y3, .. */
+  protected List<Integer> waypoints = new ArrayList<Integer>();
 
   public TransitionImpl(String id, ProcessDefinitionImpl processDefinition) {
     super(id, processDefinition);
@@ -79,4 +82,13 @@ public class TransitionImpl extends ProcessElementImpl implements PvmTransition 
   public void setExecutionListeners(List<ExecutionListener> executionListeners) {
     this.executionListeners = executionListeners;
   }
+
+  public List<Integer> getWaypoints() {
+    return waypoints;
+  }
+  
+  public void setWaypoints(List<Integer> waypoints) {
+    this.waypoints = waypoints;
+  }
+  
 }

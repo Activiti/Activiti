@@ -107,7 +107,7 @@ public class BpmnParse extends Parse {
   public static final String PROPERTYNAME_INITIAL = "initial";
   public static final String PROPERTYNAME_INITIATOR_VARIABLE_NAME = "initiatorVariableName";
 
-  private static final Logger LOG = Logger.getLogger(BpmnParse.class.getName());
+  protected static final Logger LOG = Logger.getLogger(BpmnParse.class.getName());
   
   protected DeploymentEntity deployment;
   
@@ -115,6 +115,11 @@ public class BpmnParse extends Parse {
    * The end result of the parsing: a list of process definition.
    */
   protected List<ProcessDefinitionEntity> processDefinitions = new ArrayList<ProcessDefinitionEntity>();
+  
+  /**
+   * A map for storing sequence flow based on their id during parsing.
+   */
+  protected Map<String, TransitionImpl> sequenceFlows = new HashMap<String, TransitionImpl>();
 
   /**
    * Map containing the BPMN 2.0 messages, stored during the first phase
@@ -182,18 +187,18 @@ public class BpmnParse extends Parse {
   /**
    * Constructor to be called by the {@link BpmnParser}.
    * 
-   * Note the package modifier here: only the {@link BpmnParser} is allowed to
-   * create instances.
+   * Note the package modifier here: only the {@link BpmnParser} 
+   * is allowed to create instances.
    */
   BpmnParse(BpmnParser parser) {
     super(parser);
     this.expressionManager = parser.getExpressionManager();
     this.parseListeners = parser.getParseListeners();
-    setSchemaResource(ReflectUtil.getResource(BpmnParser.SCHEMA_RESOURCE).toString());
+    setSchemaResource(ReflectUtil.getResource(BpmnParser.BPMN_20_SCHEMA_LOCATION).toString());
     this.initializeXSDItemDefinitions();
   }
   
-  private void initializeXSDItemDefinitions() {
+  protected void initializeXSDItemDefinitions() {
     this.itemDefinitions.put("http://www.w3.org/2001/XMLSchema:string", 
             new ItemDefinition("http://www.w3.org/2001/XMLSchema:string", new ClassStructureDefinition(String.class)));
   }
@@ -208,12 +213,7 @@ public class BpmnParse extends Parse {
     super.execute(); // schema validation
 
     try {
-      parseDefinitionsAttributes();
-      parseImports();
-      parseItemDefinitions();
-      parseMessages();
-      parseInterfaces();
-      parseProcessDefinitions();
+      parseRootElement();
      
     } catch(Exception e) {
       LOG.log(Level.SEVERE, "Uknown exception", e);
@@ -228,8 +228,23 @@ public class BpmnParse extends Parse {
     
     return this;
   }
+
+  /**
+   * Parses the 'definitions' root element
+   */
+  protected void parseRootElement() {
+    parseDefinitionsAttributes();
+    parseImports();
+    parseItemDefinitions();
+    parseMessages();
+    parseInterfaces();
+    parseProcessDefinitions();
+    // Diagram intercgange parsing must be after parseProcessDefinitions, 
+    // since it depends on existing process definition objects
+    parseDiagramInterchangeElements(); 
+  }
   
-  private void parseDefinitionsAttributes() {
+  protected void parseDefinitionsAttributes() {
     String typeLanguage = rootElement.attribute("typeLanguage");
     String expressionLanguage = rootElement.attribute("expressionLanguage");
     this.targetNamespace = rootElement.attribute("targetNamespace");
@@ -273,7 +288,7 @@ public class BpmnParse extends Parse {
    * @param rootElement
    *          The root element of the XML file.
    */
-  private void parseImports() {
+  protected void parseImports() {
     List<Element> imports = rootElement.elements("import");
     for (Element theImport : imports) {
       String importType = theImport.attribute("importType");
@@ -286,7 +301,7 @@ public class BpmnParse extends Parse {
     }
   }
   
-  private XMLImporter getImporter(String importType, Element theImport) {
+  protected XMLImporter getImporter(String importType, Element theImport) {
     if (this.importers.containsKey(importType)) {
       return this.importers.get(importType);
     } else {
@@ -423,7 +438,6 @@ public class BpmnParse extends Parse {
    *          The root element of the XML file.
    */
   public void parseProcessDefinitions() {
-    // TODO: parse specific definitions signalData (id, imports, etc)
     for (Element processElement : rootElement.elements("process")) {
       processDefinitions.add(parseProcess(processElement));
     }
@@ -890,7 +904,7 @@ public class BpmnParse extends Parse {
     }
   }
 
-  private AbstractDataOutputAssociation parseDataOutputAssociation(Element dataAssociationElement) {
+  protected AbstractDataOutputAssociation parseDataOutputAssociation(Element dataAssociationElement) {
     String targetRef = dataAssociationElement.element("targetRef").getText();
 
     if (dataAssociationElement.element("sourceRef") != null) {
@@ -1599,6 +1613,7 @@ public class BpmnParse extends Parse {
       if (sourceActivity != null && destinationActivity != null) {
         
         TransitionImpl transition = sourceActivity.createOutgoingTransition(id);
+        sequenceFlows.put(id, transition);
         transition.setProperty("name", sequenceFlowElement.attribute("name"));
         transition.setProperty("documentation", parseDocumentation(sequenceFlowElement));
         transition.setDestination(destinationActivity);
@@ -1725,11 +1740,110 @@ public class BpmnParse extends Parse {
   public Operation getOperation(String operationId) {
     return operations.get(operationId);
   }
+  
+  // Diagram interchange /////////////////////////////////////////////////////////////////
+  
+  public void parseDiagramInterchangeElements() {
+    // Multiple BPMNDiagram possible
+    List<Element> diagrams = rootElement.elementsNS(BpmnParser.BPMN_DI_NS, "BPMNDiagram");
+    if (!diagrams.isEmpty()) {
+      for (Element diagramElement : diagrams) {
+        parseBPMNDiagram(diagramElement);
+      }
+    }
+  }
+  
+  public void parseBPMNDiagram(Element bpmndiagramElement) {
+    // Each BPMNdiagram needs to have exactly one BPMNPlane
+    Element bpmnPlane = bpmndiagramElement.elementNS(BpmnParser.BPMN_DI_NS, "BPMNPlane");
+    if (bpmnPlane != null) {
+      parseBPMNPlane(bpmnPlane);
+    }
+  }
+  
+  public void parseBPMNPlane(Element bpmnPlaneElement) {
+    String processId = bpmnPlaneElement.attribute("bpmnElement");
+    if (processId != null && !"".equals(processId)) {
+      ProcessDefinitionEntity processDefinition = getProcessDefinition(processId);
+      if (processDefinition != null) {
+        
+         List<Element> shapes = bpmnPlaneElement.elementsNS(BpmnParser.BPMN_DI_NS, "BPMNShape");
+         for (Element shape : shapes) {
+           parseBPMNShape(shape, processDefinition);
+         }
+         
+         List<Element> edges = bpmnPlaneElement.elementsNS(BpmnParser.BPMN_DI_NS, "BPMNEdge");
+         for (Element edge : edges) {
+           parseBPMNEdge(edge, processDefinition);
+         }
+         
+      } else {
+        addError("Invalid reference in 'bpmnElement' attribute, process " + processId + " not found", bpmnPlaneElement);
+      }
+    } else {
+      addError("'bpmnElement' attribute is required on BPMNPlane ", bpmnPlaneElement);
+    }
+  }
+  
+  public void parseBPMNShape(Element bpmnShapeElement, ProcessDefinitionEntity processDefinition) {
+    String activityId = bpmnShapeElement.attribute("bpmnElement");
+    if (activityId != null && !"".equals(activityId)) {
+      ActivityImpl activity = processDefinition.findActivity(activityId);
+      if (activity != null) {
+        Element bounds = bpmnShapeElement.elementNS(BpmnParser.BPMN_DC_NS, "Bounds");
+        if (bounds != null) {
+          activity.setX(parseDoubleAttribute(bpmnShapeElement, "x", bounds.attribute("x"), true).intValue());
+          activity.setY(parseDoubleAttribute(bpmnShapeElement, "y", bounds.attribute("y"), true).intValue());
+          activity.setWidth(parseDoubleAttribute(bpmnShapeElement, "width", bounds.attribute("width"), true).intValue());
+          activity.setHeight(parseDoubleAttribute(bpmnShapeElement, "height", bounds.attribute("height"), true).intValue());
+        } else {
+          addError("'Bounds' element is required", bpmnShapeElement);
+        }
+      } else {
+         addError("Invalid reference in 'bpmnElement' attribute, activity " + activityId + "not found", bpmnShapeElement);
+       }
+    } else {
+      addError("'bpmnElement' attribute is required on BPMNShape", bpmnShapeElement);
+    }
+  }
+  
+  public void parseBPMNEdge(Element bpmnEdgeElement, ProcessDefinitionEntity processDefinition) {
+    String sequenceFlowId = bpmnEdgeElement.attribute("bpmnElement");
+    if (sequenceFlowId != null && !"".equals(sequenceFlowId)) {
+      TransitionImpl sequenceFlow = sequenceFlows.get(sequenceFlowId);
+      if (sequenceFlow != null) {
+        List<Element> waypointElements = bpmnEdgeElement.elementsNS(BpmnParser.OMG_DI_NS, "waypoint");
+        if (waypointElements.size() >= 2) {
+          List<Integer> waypoints = new ArrayList<Integer>();
+          for (Element waypointElement : waypointElements){
+            waypoints.add(parseDoubleAttribute(waypointElement, "x", waypointElement.attribute("x"), true).intValue());
+            waypoints.add(parseDoubleAttribute(waypointElement, "y", waypointElement.attribute("y"), true).intValue());
+          }
+          sequenceFlow.setWaypoints(waypoints);
+        } else {
+          addError("Minimum 2 waypoint elements must be definted for a 'BPMNEdge'", bpmnEdgeElement);
+        }
+      } else {
+         addError("Invalid reference in 'bpmnElement' attribute, sequenceFlow " + sequenceFlowId + "not found", bpmnEdgeElement);
+       }
+    } else {
+      addError("'bpmnElement' attribute is required on BPMNEdge", bpmnEdgeElement);
+    }
+  }
 
-  /* Getters, setters and Parser overriden operations */
+  // Getters, setters and Parser overriden operations ////////////////////////////////////////
 
   public List<ProcessDefinitionEntity> getProcessDefinitions() {
     return processDefinitions;
+  }
+  
+  public ProcessDefinitionEntity getProcessDefinition(String processDefinitionKey) {
+    for (ProcessDefinitionEntity processDefinition : processDefinitions) {
+      if (processDefinition.getKey().equals(processDefinitionKey)) {
+        return processDefinition;
+      }
+    }
+    return null;
   }
 
   public BpmnParse name(String name) {
@@ -1797,6 +1911,19 @@ public class BpmnParse extends Parse {
       return Boolean.FALSE;
     }
     return null;
+  }
+  
+  public Double parseDoubleAttribute(Element element, String attributename, String doubleText, boolean required) {
+    if (required && (doubleText == null || "".equals(doubleText) )) {
+      addError(attributename + " is required", element);
+    } else {
+      try {
+        return Double.parseDouble(doubleText);
+      } catch (NumberFormatException e) {
+        addError("Cannot parse " + attributename + ": " + e.getMessage(), element);
+      }
+    }
+    return -1.0;
   }
   
 }
