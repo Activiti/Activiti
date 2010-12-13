@@ -141,20 +141,10 @@ public class DbManagementSession implements ManagementSession, Session {
   }
 
   public IdBlock getNextIdBlock(int idBlockSize) {
-    String statement = dbSqlSession.getDbSqlSessionFactory().mapStatement("selectProperty");
-    PropertyEntity property = (PropertyEntity) dbSqlSession.selectOne(statement, "next.dbid");
+    PropertyEntity property = (PropertyEntity) dbSqlSession.selectById(PropertyEntity.class, "next.dbid");
     long oldValue = Long.parseLong(property.getValue());
-    
     long newValue = oldValue+idBlockSize;
-    Map<String, Object> updateValues = new HashMap<String, Object>();
-    updateValues.put("name", property.getName());
-    updateValues.put("revision", property.getDbversion());
-    updateValues.put("newRevision", property.getDbversion()+1);
-    updateValues.put("value", Long.toString(newValue));
-    int rowsUpdated = dbSqlSession.getSqlSession().update("updateProperty", updateValues);
-    if (rowsUpdated!=1) {
-      throw new ActivitiOptimisticLockingException("couldn't get next block of dbids");
-    }
+    property.setValue(Long.toString(newValue));
     return new IdBlock(oldValue, newValue-1);
   }
 

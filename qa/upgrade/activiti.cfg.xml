@@ -13,7 +13,7 @@
     <property name="jdbcUsername" value="@jdbc.username@" />
     <property name="jdbcPassword" value="@jdbc.password@" />
 
-    <property name="dbSchemaUpgrade" value="true" />
+    <property name="databaseSchemaUpdate" value="true" />
     
   </bean>
 

@@ -29,7 +29,10 @@ import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.ProcessEngineConfiguration;
 import org.activiti.engine.impl.ProcessEngineImpl;
 import org.activiti.engine.impl.bpmn.deployer.BpmnDeployer;
+import org.activiti.engine.impl.db.DbSqlSession;
 import org.activiti.engine.impl.db.DbSqlSessionFactory;
+import org.activiti.engine.impl.interceptor.Command;
+import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.jobexecutor.JobExecutor;
 import org.activiti.engine.impl.util.ClassNameUtil;
 import org.activiti.engine.repository.DeploymentBuilder;
@@ -133,10 +136,18 @@ public abstract class TestHelper {
       outputMessage.insert(0, "DB NOT CLEAN: \n");
       log.severe(EMPTY_LINE);
       log.severe(outputMessage.toString());
-      
-      DbSqlSessionFactory dbSqlSessionFactory = ((ProcessEngineImpl)processEngine).getProcessEngineConfiguration().getDbSqlSessionFactory();
-      dbSqlSessionFactory.dbSchemaDrop();
-      dbSqlSessionFactory.dbSchemaCreate();
+
+      ((ProcessEngineImpl)processEngine)
+        .getProcessEngineConfiguration()
+        .getCommandExecutorTxRequired()
+        .execute(new Command<Object>() {
+          public Object execute(CommandContext commandContext) {
+            DbSqlSession dbSqlSession = commandContext.getSession(DbSqlSession.class);
+            dbSqlSession.dbSchemaDrop();
+            dbSqlSession.dbSchemaCreate();
+            return null;
+          }
+        });
       
       throw new AssertionError(outputMessage.toString());
     }

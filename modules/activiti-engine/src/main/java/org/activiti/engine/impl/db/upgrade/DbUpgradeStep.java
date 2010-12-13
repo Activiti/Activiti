@@ -13,8 +13,7 @@
 
 package org.activiti.engine.impl.db.upgrade;
 
-import org.activiti.engine.impl.db.DbSqlSessionFactory;
-import org.apache.ibatis.session.SqlSession;
+import org.activiti.engine.impl.db.DbSqlSession;
 
 
 /**
@@ -22,6 +21,6 @@ import org.apache.ibatis.session.SqlSession;
  */
 public interface DbUpgradeStep {
 
-  void execute(SqlSession sqlSession, DbSqlSessionFactory dbSessionFactory) throws Exception;
+  void execute(DbSqlSession dbSqlSession) throws Exception;
 
 }

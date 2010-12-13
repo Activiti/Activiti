@@ -13,27 +13,14 @@
 
 package org.activiti.engine.impl.db;
 
-import java.io.InputStream;
-import java.sql.Connection;
-import java.sql.Statement;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.StringTokenizer;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
-import org.activiti.engine.ActivitiException;
-import org.activiti.engine.ActivitiWrongDbException;
-import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.impl.cfg.IdGenerator;
-import org.activiti.engine.impl.db.upgrade.DbUpgradeStep;
 import org.activiti.engine.impl.interceptor.Session;
 import org.activiti.engine.impl.interceptor.SessionFactory;
 import org.activiti.engine.impl.util.ClassNameUtil;
-import org.activiti.engine.impl.util.IoUtil;
-import org.activiti.engine.impl.util.ReflectUtil;
-import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 
 
@@ -42,7 +29,6 @@ import org.apache.ibatis.session.SqlSessionFactory;
  */
 public class DbSqlSessionFactory implements SessionFactory {
 
-  private static Logger log = Logger.getLogger(DbSqlSessionFactory.class.getName());
   protected static final Map<String, Map<String, String>> databaseSpecificStatements = new HashMap<String, Map<String,String>>();
 
   static {
@@ -125,187 +111,6 @@ public class DbSqlSessionFactory implements SessionFactory {
     }
     String mappedStatement = statementMappings.get(statement);
     return (mappedStatement!=null ? mappedStatement : statement);
-  }
-  
-  // db operations ////////////////////////////////////////////////////////////
-  
-  public void dbSchemaCheckVersion() {
-    SqlSession sqlSession = sqlSessionFactory.openSession();
-    boolean success = false;
-    try {
-      String dbVersion = getDbVersion(sqlSession);
-      if (!ProcessEngine.VERSION.equals(dbVersion)) {
-        throw new ActivitiWrongDbException(ProcessEngine.VERSION, dbVersion);
-      }
-
-      success = true;
-
-    } catch (Exception e) {
-      if (isMissingTablesException(e)) {
-        throw new ActivitiException(
-                "no activiti tables in db.  set <property name=\"databaseSchemaUpdate\" to value=\"true\" or value=\"create-drop\" (use create-drop for testing only!) in bean processEngineConfiguration in activiti.cfg.xml for automatic schema creation", e);
-      } else {
-        if (e instanceof RuntimeException) {
-          throw (RuntimeException) e;
-        } else {
-          throw new ActivitiException("couldn't get db schema version", e);
-        }
-      }
-    } finally {
-      if (success) {
-        sqlSession.commit(true);
-      } else {
-        sqlSession.rollback(true);
-      }
-      sqlSession.close();
-    }
-
-    log.fine("activiti db schema check successful");
-  }
-
-  protected String getDbVersion(SqlSession sqlSession) {
-    String selectSchemaVersionStatement = mapStatement("selectDbSchemaVersion");
-    return (String) sqlSession.selectOne(selectSchemaVersionStatement);
-  }
-
-  public void dbSchemaCreate() {
-    executeSchemaResource("create", "create", databaseType, sqlSessionFactory);
-  }
-
-  public void dbSchemaDrop() {
-    executeSchemaResource("drop", "drop", databaseType, sqlSessionFactory);
-  }
-  
-  public void dbSchemaUpgrade() {
-    SqlSession sqlSession = sqlSessionFactory.openSession();
-    boolean success = false;
-    try {
-      // the next piece assumes both DB version and library versions are formatted 5.x
-      String dbVersion = getDbVersion(sqlSession);
-      
-      if (!ProcessEngine.VERSION.equals(dbVersion)) {
-        int minorDbVersionNumber = Integer.parseInt(dbVersion.substring(2));
-        String libraryVersion = ProcessEngine.VERSION;
-        if (ProcessEngine.VERSION.endsWith("-SNAPSHOT")) {
-          libraryVersion = ProcessEngine.VERSION.substring(0, ProcessEngine.VERSION.length()-"-SNAPSHOT".length());
-        }
-        int minorLibraryVersionNumber = Integer.parseInt(libraryVersion.substring(2));
-        
-        while (minorDbVersionNumber<minorLibraryVersionNumber) {
-          try {
-            DbUpgradeStep dbUpgradeStep = (DbUpgradeStep) ReflectUtil.instantiate("org.activiti.engine.impl.db.upgrade.DbUpgradeStep5"+minorDbVersionNumber);
-            dbUpgradeStep.execute(sqlSession, this);
-          } catch (ActivitiException e) {
-            log.fine("no upgrade step necessary for 5."+minorDbVersionNumber);
-          }
-          minorDbVersionNumber++;
-        }
-      }
-
-      success = true;
-
-    } catch (Exception e) {
-      if (isMissingTablesException(e)) {
-        throw new ActivitiException(
-                "no activiti tables in db.  set <property name=\"databaseSchemaUpdate\" to value=\"true\" or value=\"create-drop\" (use create-drop for testing only!) in bean processEngineConfiguration in activiti.cfg.xml for automatic schema creation", e);
-      } else {
-        if (e instanceof RuntimeException) {
-          throw (RuntimeException) e;
-        } else {
-          throw new ActivitiException("couldn't get db schema version", e);
-        }
-      }
-    } finally {
-      if (success) {
-        sqlSession.commit(true);
-      } else {
-        sqlSession.rollback(true);
-      }
-      sqlSession.close();
-    }
-  }
-
-  public static void executeSchemaResource(String directory, String operation, String databaseType, SqlSessionFactory sqlSessionFactory) {
-    SqlSession sqlSession = sqlSessionFactory.openSession();
-    boolean success = false;
-    try {
-      executeSchemaResource(directory, operation, databaseType, sqlSession);
-      success = true;
-
-    } catch (Exception e) {
-      throw new ActivitiException("couldn't create or drop db schema", e);
-
-    } finally {
-      if (success) {
-        sqlSession.commit();
-      } else {
-        sqlSession.rollback();
-      }
-      sqlSession.close();
-    }
-
-    log.fine("activiti db schema " + operation + " successful");
-  }
-
-  public static void executeSchemaResource(String directory, String operation, String databaseType, SqlSession sqlSession) throws Exception {
-    InputStream inputStream = null;
-    try {
-      Connection connection = sqlSession.getConnection();
-      String resource = "org/activiti/db/" + directory + "/activiti." + databaseType + "." + operation + ".sql";
-      inputStream = ReflectUtil.getResourceAsStream(resource);
-      if (inputStream == null) {
-        throw new ActivitiException("resource '" + resource + "' is not available for creating the schema");
-      }
-
-      Exception exception = null;
-      byte[] bytes = IoUtil.readInputStream(inputStream, resource);
-      String ddlStatements = new String(bytes);
-      StringTokenizer tokenizer = new StringTokenizer(ddlStatements, ";");
-      while (tokenizer.hasMoreTokens()) {
-        String ddlStatement = tokenizer.nextToken().trim();
-        if (!ddlStatement.startsWith("#")) {
-          Statement jdbcStatement = connection.createStatement();
-          try {
-            log.finest("\n" + ddlStatement);
-            jdbcStatement.execute(ddlStatement);
-            jdbcStatement.close();
-          } catch (Exception e) {
-            if (exception == null) {
-              exception = e;
-            }
-            log.log(Level.SEVERE, "problem during schema " + operation + ", statement '" + ddlStatement, e);
-          }
-        }
-      }
-
-      if (exception != null) {
-        throw exception;
-      }
-      
-    } finally {
-      IoUtil.closeSilently(inputStream);
-    }
-  }
-  
-  protected boolean isMissingTablesException(Exception e) {
-    String exceptionMessage = e.getMessage();
-    if(e.getMessage() != null) {      
-      // Matches message returned from H2
-      if ((exceptionMessage.indexOf("Table") != -1) && (exceptionMessage.indexOf("not found") != -1)) {
-        return true;
-      }
-      
-      // Message returned from MySQL and Oracle
-      if (((exceptionMessage.indexOf("Table") != -1 || exceptionMessage.indexOf("table") != -1)) && (exceptionMessage.indexOf("doesn't exist") != -1)) {
-        return true;
-      }
-      
-      // Message returned from Postgres
-      if (((exceptionMessage.indexOf("relation") != -1 || exceptionMessage.indexOf("table") != -1)) && (exceptionMessage.indexOf("does not exist") != -1)) {
-        return true;
-      }
-    }
-    return false;
   }
   
   // customized getters and setters ///////////////////////////////////////////

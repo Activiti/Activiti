@@ -20,7 +20,6 @@ import org.activiti.engine.HistoryService;
 import org.activiti.engine.IdentityService;
 import org.activiti.engine.ManagementService;
 import org.activiti.engine.ProcessEngine;
-import org.activiti.engine.ProcessEngineConfiguration;
 import org.activiti.engine.ProcessEngines;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.RuntimeService;
@@ -82,7 +81,9 @@ public class ProcessEngineImpl implements ProcessEngine {
     
     commandExecutor.execute(new Command<Object>() {
       public Object execute(CommandContext commandContext) {
-        performSchemaOperationsCreate();
+        commandContext
+          .getSession(DbSqlSession.class)
+          .performSchemaOperationsProcessEngineBuild(databaseSchemaUpdate);
         return null;
       }
     });
@@ -99,37 +100,7 @@ public class ProcessEngineImpl implements ProcessEngine {
       jobExecutor.start();
     }
   }
-
-  protected void performSchemaOperationsCreate() {
-    if (ProcessEngineConfigurationImpl.DB_SCHEMA_UPDATE_DROP_CREATE.equals(databaseSchemaUpdate)) {
-      try {
-        getDbSqlSessionFactory().dbSchemaDrop();
-      } catch (RuntimeException e) {
-        // ignore
-      }
-    }
-    if ( org.activiti.engine.ProcessEngineConfiguration.DB_SCHEMA_UPDATE_CREATE_DROP.equals(databaseSchemaUpdate) 
-         || ProcessEngineConfigurationImpl.DB_SCHEMA_UPDATE_DROP_CREATE.equals(databaseSchemaUpdate)
-         || ProcessEngineConfigurationImpl.DB_SCHEMA_UPDATE_CREATE.equals(databaseSchemaUpdate)
-       ) {
-      getDbSqlSessionFactory().dbSchemaCreate();
-      
-    } else if (org.activiti.engine.ProcessEngineConfiguration.DB_SCHEMA_UPDATE_FALSE.equals(databaseSchemaUpdate)) {
-      getDbSqlSessionFactory().dbSchemaCheckVersion();
-      
-    } else if (ProcessEngineConfiguration.DB_SCHEMA_UPDATE_TRUE.equals(databaseSchemaUpdate)) {
-      try {
-        getDbSqlSessionFactory().dbSchemaCheckVersion();
-      } catch (Exception e) {
-        if (e.getMessage().indexOf("no activiti tables in db")!=-1) {
-          getDbSqlSessionFactory().dbSchemaCreate();
-        } else {
-          getDbSqlSessionFactory().dbSchemaUpgrade();
-        }
-      }
-    }
-  }
-
+  
   public void close() {
     ProcessEngines.unregister(this);
     if ((jobExecutor != null) && (jobExecutor.isActive())) {
@@ -138,18 +109,14 @@ public class ProcessEngineImpl implements ProcessEngine {
 
     commandExecutor.execute(new Command<Object>() {
       public Object execute(CommandContext commandContext) {
-        performSchemaOperationsClose();
+        commandContext
+          .getSession(DbSqlSession.class)
+          .performSchemaOperationsProcessEngineClose(databaseSchemaUpdate);
         return null;
       }
     });
   }
 
-  private void performSchemaOperationsClose() {
-    if (org.activiti.engine.ProcessEngineConfiguration.DB_SCHEMA_UPDATE_CREATE_DROP.equals(databaseSchemaUpdate)) {
-      getDbSqlSessionFactory().dbSchemaDrop();
-    }
-  }
-  
   public DbSqlSessionFactory getDbSqlSessionFactory() {
     return (DbSqlSessionFactory) sessionFactories.get(DbSqlSession.class);
   }

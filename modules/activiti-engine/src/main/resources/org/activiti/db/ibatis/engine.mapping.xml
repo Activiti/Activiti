@@ -4,12 +4,45 @@
   
 <mapper namespace="org.activiti.persistence">
 
-  <!-- PROPERTY -->
+  <!-- PROPERTY INSERT -->
+  
+  <insert id="insertProperty" parameterType="org.activiti.engine.impl.repository.PropertyEntity">
+      insert into ACT_GE_PROPERTY (
+        NAME_,
+        VALUE_,
+        REV_
+      ) values (
+        #{name ,jdbcType=VARCHAR},
+        #{value, jdbcType=VARCHAR},
+        1
+      )
+  </insert>
+
+  <!-- PROPERTY UPDATE -->
+  
+  <update id="updateProperty" parameterType="org.activiti.engine.impl.repository.PropertyEntity">
+    update ACT_GE_PROPERTY
+    <set>
+      REV_ = #{revisionNext, jdbcType=INTEGER},
+      VALUE_ = #{value, jdbcType=VARCHAR}
+    </set>
+    where NAME_ = #{name, jdbcType=VARCHAR}
+      and REV_ = #{revision, jdbcType=INTEGER}
+  </update>
+
+  <!-- PROPERTY DELETE -->
+  
+  <delete id="deleteProperty">
+    delete from ACT_GE_PROPERTY where NAME_ = #{propertyName}
+  </delete>
+
+
+  <!-- PROPERTY SELECT -->
   
   <resultMap id="propertyResultMap" type="org.activiti.engine.impl.repository.PropertyEntity">
     <id property="name" column="NAME_" jdbcType="VARCHAR" />
-    <result property="dbversion" column="REV_" jdbcType="INTEGER" />
     <result property="value" column="VALUE_" jdbcType="VARCHAR" />
+    <result property="revision" column="REV_" jdbcType="INTEGER" />
   </resultMap>
   
   <select id="selectDbSchemaVersion" resultType="string">
@@ -20,16 +53,6 @@
     select * from ACT_GE_PROPERTY where NAME_ = #{name}
   </select>
   
-  <update id="updateProperty" parameterType="org.activiti.engine.impl.repository.PropertyEntity">
-    update ACT_GE_PROPERTY
-    <set>
-      REV_ = #{newRevision, jdbcType=INTEGER},
-      VALUE_ = #{value, jdbcType=VARCHAR},
-    </set>
-    where NAME_ = #{name, jdbcType=VARCHAR}
-      and REV_ = #{revision, jdbcType=INTEGER}
-  </update>
-
   <!-- TABLE DATA -->
   
   <!-- The property passing doesn't seem to work with parameterType='string', so we are forced to use a map here -->

@@ -12,15 +12,18 @@
  */
 package org.activiti.engine.impl.repository;
 
+import org.activiti.engine.ActivitiException;
+import org.activiti.engine.impl.db.PersistentObject;
+
 
 
 /**
  * @author Tom Baeyens
  */
-public class PropertyEntity {
+public class PropertyEntity implements PersistentObject {
 
   String name;
-  int dbversion;
+  int revision;
   String value;
 
   public PropertyEntity() {
@@ -34,18 +37,37 @@ public class PropertyEntity {
   public String getName() {
     return name;
   }
-  
-  public int getDbversion() {
-    return dbversion;
+  public int getRevision() {
+    return revision;
   }
-
-  public void setDbversion(int dbversion) {
-    this.dbversion = dbversion;
+  public void setRevision(int revision) {
+    this.revision = revision;
   }
   public String getValue() {
     return value;
   }
   public void setValue(String value) {
     this.value = value;
+  }
+  
+  // persistent object methods ////////////////////////////////////////////////
+
+  @Override
+  public String getId() {
+    return name;
+  }
+
+  @Override
+  public Object getPersistentState() {
+    return value;
+  }
+
+  @Override
+  public void setId(String id) {
+    throw new ActivitiException("only provided id generation allowed for properties");
+  }
+  
+  public int getRevisionNext() {
+    return revision+1;
   }
 }

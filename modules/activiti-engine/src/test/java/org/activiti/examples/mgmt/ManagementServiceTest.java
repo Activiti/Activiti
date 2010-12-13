@@ -30,7 +30,7 @@ public class ManagementServiceTest extends PluggableActivitiTestCase {
   public void testTableCount() {
     Map<String, Long> tableCount = managementService.getTableCount();
 
-    assertEquals(new Long(2), tableCount.get("ACT_GE_PROPERTY"));
+    assertEquals(new Long(3), tableCount.get("ACT_GE_PROPERTY"));
     assertEquals(new Long(0), tableCount.get("ACT_GE_BYTEARRAY"));
     assertEquals(new Long(0), tableCount.get("ACT_RE_DEPLOYMENT"));
     assertEquals(new Long(0), tableCount.get("ACT_RU_EXECUTION"));

@@ -13,20 +13,32 @@
 
 package org.activiti.engine.impl.db;
 
+import java.io.InputStream;
+import java.sql.Connection;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.StringTokenizer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiOptimisticLockingException;
+import org.activiti.engine.ActivitiWrongDbException;
+import org.activiti.engine.ProcessEngine;
+import org.activiti.engine.ProcessEngineConfiguration;
 import org.activiti.engine.impl.Page;
+import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
+import org.activiti.engine.impl.db.upgrade.DbUpgradeStep;
 import org.activiti.engine.impl.interceptor.Session;
+import org.activiti.engine.impl.repository.PropertyEntity;
 import org.activiti.engine.impl.runtime.VariableInstanceEntity;
 import org.activiti.engine.impl.util.ClassNameUtil;
+import org.activiti.engine.impl.util.IoUtil;
+import org.activiti.engine.impl.util.ReflectUtil;
 import org.activiti.engine.impl.variable.DeserializedObject;
 import org.apache.ibatis.session.RowBounds;
 import org.apache.ibatis.session.SqlSession;
@@ -419,6 +431,225 @@ public class DbSqlSession implements Session {
     }
     return ClassNameUtil.getClassNameWithoutPackage(persistentObject)+"["+persistentObject.getId()+"]";
   }
+  
+  // schema operations ////////////////////////////////////////////////////////
+  
+  
+  public void dbSchemaCheckVersion() {
+    try {
+      String dbVersion = getDbVersion(sqlSession);
+      if (!ProcessEngine.VERSION.equals(dbVersion)) {
+        throw new ActivitiWrongDbException(ProcessEngine.VERSION, dbVersion);
+      }
+
+    } catch (Exception e) {
+      if (isMissingTablesException(e)) {
+        throw new ActivitiException(
+                "no activiti tables in db.  set <property name=\"databaseSchemaUpdate\" to value=\"true\" or value=\"create-drop\" (use create-drop for testing only!) in bean processEngineConfiguration in activiti.cfg.xml for automatic schema creation", e);
+      } else {
+        if (e instanceof RuntimeException) {
+          throw (RuntimeException) e;
+        } else {
+          throw new ActivitiException("couldn't get db schema version", e);
+        }
+      }
+    }
+
+    log.fine("activiti db schema check successful");
+  }
+
+  protected String getDbVersion(SqlSession sqlSession) {
+    String selectSchemaVersionStatement = dbSqlSessionFactory.mapStatement("selectDbSchemaVersion");
+    return (String) sqlSession.selectOne(selectSchemaVersionStatement);
+  }
+
+  public void dbSchemaCreate() {
+    executeSchemaResourceOperation("create", "create");
+  }
+
+  public void dbSchemaDrop() {
+    executeSchemaResourceOperation("drop", "drop");
+  }
+  
+  public void dbSchemaUpgrade() {
+    // the next piece assumes both DB version and library versions are formatted 5.x
+    PropertyEntity dbVersionProperty = selectById(PropertyEntity.class, "schema.version");
+    String dbVersion = dbVersionProperty.getValue();
+    
+    if (!ProcessEngine.VERSION.equals(dbVersion)) {
+      PropertyEntity dbHistoryProperty;
+      if ("5.0".equals(dbVersion)) {
+        dbHistoryProperty = new PropertyEntity("schema.history", "create(5.0)");
+        insert(dbHistoryProperty);
+      } else {
+        dbHistoryProperty = selectById(PropertyEntity.class, "schema.history");
+      }
+      
+      String dbHistoryValue = dbHistoryProperty.getValue()+" upgrade("+dbVersion+"->"+ProcessEngine.VERSION+")";
+      dbHistoryProperty.setValue(dbHistoryValue);
+      
+      
+      int minorDbVersionNumber = Integer.parseInt(dbVersion.substring(2));
+      String libraryVersion = ProcessEngine.VERSION;
+      if (ProcessEngine.VERSION.endsWith("-SNAPSHOT")) {
+        libraryVersion = ProcessEngine.VERSION.substring(0, ProcessEngine.VERSION.length()-"-SNAPSHOT".length());
+      }
+      int minorLibraryVersionNumber = Integer.parseInt(libraryVersion.substring(2));
+      
+      while (minorDbVersionNumber<minorLibraryVersionNumber) {
+        try {
+          upgradeStepStaticResource(minorDbVersionNumber);
+          upgradeStepJavaClass(minorDbVersionNumber);
+        } catch (Exception e) {
+          log.fine("no upgrade step necessary for 5."+minorDbVersionNumber);
+        }
+        minorDbVersionNumber++;
+      }
+    }
+  }
+
+  protected void upgradeStepJavaClass(int minorDbVersionNumber) throws Exception {
+    DbUpgradeStep dbUpgradeStep = null;
+    try {
+      dbUpgradeStep = (DbUpgradeStep) ReflectUtil.instantiate("org.activiti.engine.impl.db.upgrade.DbUpgradeStep5"+minorDbVersionNumber);
+    } catch (ActivitiException e) {
+      // OK
+    }
+    if (dbUpgradeStep!=null) {
+      dbUpgradeStep.execute(this);
+    }
+  }
+
+  protected void upgradeStepStaticResource(int minorDbVersionNumber) {
+    String resourceName = getResourceForDbOperation("upgrade", "upgradestep5"+minorDbVersionNumber);
+    InputStream inputStream = ReflectUtil.getResourceAsStream(resourceName);
+    if (inputStream!=null) {
+      try {
+        executeSchemaResource("upgrade", resourceName, inputStream);
+        
+      } finally {
+        IoUtil.closeSilently(inputStream);
+      }
+    }
+  }
+
+  public void executeSchemaResourceOperation(String directory, String operation) {
+    executeSchemaResource(operation, getResourceForDbOperation(directory, operation));
+  }
+
+  public String getResourceForDbOperation(String directory, String operation) {
+    String databaseType = dbSqlSessionFactory.getDatabaseType();
+    return "org/activiti/db/" + directory + "/activiti." + databaseType + "." + operation + ".sql";
+  }
+
+  public void executeSchemaResource(String operation, String resourceName) {
+    InputStream inputStream = null;
+    try {
+      inputStream = ReflectUtil.getResourceAsStream(resourceName);
+      if (inputStream == null) {
+        throw new ActivitiException("resource '" + resourceName + "' is not available");
+      }
+
+      executeSchemaResource(operation, resourceName, inputStream);
+
+    } finally {
+      IoUtil.closeSilently(inputStream);
+    }
+  }
+
+  private void executeSchemaResource(String operation, String resourceName, InputStream inputStream) {
+    try {
+      Connection connection = sqlSession.getConnection();
+      Exception exception = null;
+      byte[] bytes = IoUtil.readInputStream(inputStream, resourceName);
+      String ddlStatements = new String(bytes);
+      StringTokenizer tokenizer = new StringTokenizer(ddlStatements, ";");
+      while (tokenizer.hasMoreTokens()) {
+        String ddlStatement = tokenizer.nextToken().trim();
+        if (!ddlStatement.startsWith("#")) {
+          Statement jdbcStatement = connection.createStatement();
+          try {
+            log.finest("\n" + ddlStatement);
+            jdbcStatement.execute(ddlStatement);
+            jdbcStatement.close();
+          } catch (Exception e) {
+            if (exception == null) {
+              exception = e;
+            }
+            log.log(Level.SEVERE, "problem during schema " + operation + ", statement '" + ddlStatement, e);
+          }
+        }
+      }
+
+      if (exception != null) {
+        throw exception;
+      }
+      
+      log.fine("activiti db schema " + operation + " successful");
+      
+    } catch (Exception e) {
+      throw new ActivitiException("couldn't "+operation+" db schema", e);
+    }
+  }
+  
+  protected boolean isMissingTablesException(Exception e) {
+    String exceptionMessage = e.getMessage();
+    if(e.getMessage() != null) {      
+      // Matches message returned from H2
+      if ((exceptionMessage.indexOf("Table") != -1) && (exceptionMessage.indexOf("not found") != -1)) {
+        return true;
+      }
+      
+      // Message returned from MySQL and Oracle
+      if (((exceptionMessage.indexOf("Table") != -1 || exceptionMessage.indexOf("table") != -1)) && (exceptionMessage.indexOf("doesn't exist") != -1)) {
+        return true;
+      }
+      
+      // Message returned from Postgres
+      if (((exceptionMessage.indexOf("relation") != -1 || exceptionMessage.indexOf("table") != -1)) && (exceptionMessage.indexOf("does not exist") != -1)) {
+        return true;
+      }
+    }
+    return false;
+  }
+  
+  public void performSchemaOperationsProcessEngineBuild(String databaseSchemaUpdate) {
+    if (ProcessEngineConfigurationImpl.DB_SCHEMA_UPDATE_DROP_CREATE.equals(databaseSchemaUpdate)) {
+      try {
+        dbSchemaDrop();
+      } catch (RuntimeException e) {
+        // ignore
+      }
+    }
+    if ( org.activiti.engine.ProcessEngineConfiguration.DB_SCHEMA_UPDATE_CREATE_DROP.equals(databaseSchemaUpdate) 
+         || ProcessEngineConfigurationImpl.DB_SCHEMA_UPDATE_DROP_CREATE.equals(databaseSchemaUpdate)
+         || ProcessEngineConfigurationImpl.DB_SCHEMA_UPDATE_CREATE.equals(databaseSchemaUpdate)
+       ) {
+      dbSchemaCreate();
+      
+    } else if (org.activiti.engine.ProcessEngineConfiguration.DB_SCHEMA_UPDATE_FALSE.equals(databaseSchemaUpdate)) {
+      dbSchemaCheckVersion();
+      
+    } else if (ProcessEngineConfiguration.DB_SCHEMA_UPDATE_TRUE.equals(databaseSchemaUpdate)) {
+      try {
+        dbSchemaCheckVersion();
+      } catch (Exception e) {
+        if (e.getMessage().indexOf("no activiti tables in db")!=-1) {
+          dbSchemaCreate();
+        } else {
+          dbSchemaUpgrade();
+        }
+      }
+    }
+  }
+
+  public void performSchemaOperationsProcessEngineClose(String databaseSchemaUpdate) {
+    if (org.activiti.engine.ProcessEngineConfiguration.DB_SCHEMA_UPDATE_CREATE_DROP.equals(databaseSchemaUpdate)) {
+      dbSchemaDrop();
+    }
+  }
+
+  
 
   // getters and setters //////////////////////////////////////////////////////
   

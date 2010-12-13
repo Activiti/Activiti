@@ -18,7 +18,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.activiti.engine.ActivitiException;
-import org.activiti.engine.ProcessEngineConfiguration;
 import org.activiti.engine.history.HistoricProcessInstance;
 import org.activiti.engine.impl.DeploymentQueryImpl;
 import org.activiti.engine.impl.HistoricProcessInstanceQueryImpl;
