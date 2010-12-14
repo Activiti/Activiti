@@ -47,6 +47,10 @@
 	
   <repositories>
        <repository>
+                  <id>Alfresco</id>
+                  <url>http://maven.alfresco.com/nexus/content/groups/public/</url>
+       </repository>
+       <repository>
                   <id>camunda</id>
                   <url>http://fox.camunda.com/mvn/</url>
        </repository>
