@@ -13,6 +13,8 @@
 package org.activiti.surf;
 
 import java.util.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -38,6 +40,8 @@ import org.springframework.extensions.webscripts.connector.*;
  */
 public class ActivitiUserFactory extends AbstractUserFactory
 {
+
+  private static Logger log = Logger.getLogger(ActivitiUserFactory.class.getName());
 
   /**
    * The endpoint to retrieve the user info from.
@@ -138,8 +142,7 @@ public class ActivitiUserFactory extends AbstractUserFactory
     }
     catch (Throwable ex)
     {
-      // Log the authentication failure
-      ex.printStackTrace();
+      log.log(Level.SEVERE, "Exception while authenticatication", ex);
     }
 
     return authenticated;
