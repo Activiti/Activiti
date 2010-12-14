@@ -12,21 +12,15 @@
  */
 package org.activiti.cycle;
 
-import java.util.List;
-
 
 /**
- * Information about an artifact contained in the repository
- * (e.g. a file, signavio model, ...)
+ * Information about an artifact contained in the repository (e.g. a file,
+ * signavio model, ...)
  * 
  * @author bernd.ruecker@camunda.com
  */
-public interface RepositoryArtifact extends RepositoryNode { 
-  
-  public ArtifactType getArtifactType();
-  
-  public List<RepositoryArtifactOpenLinkAction> getOpenLinkActions();
+public interface RepositoryArtifact extends RepositoryNode {
 
-  public List<ParameterizedAction> getParameterizedActions();
+  public RepositoryArtifactType getArtifactType();
 
 }

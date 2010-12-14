@@ -38,9 +38,9 @@ public class SignavioFileSystemConnector extends FileSystemConnector {
    * Takes a Signavio model id and obtains an according JSON file from the file
    * system.
    */
-  public Content getContent(String artifactId, String representationName) throws RepositoryNodeNotFoundException {
+  public Content getContent(String artifactId) throws RepositoryNodeNotFoundException {
     artifactId = (String) artifactId.subSequence(15, artifactId.lastIndexOf(".signavio.xml"));
-    artifactId = "/" + artifactId + "." + representationName.toLowerCase();
-    return super.getContent(artifactId, representationName);
+    artifactId = "/" + artifactId + ".json";
+    return super.getContent(artifactId);
   }
 }

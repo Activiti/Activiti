@@ -19,8 +19,11 @@ import java.util.List;
 import java.util.Map;
 
 import org.activiti.cycle.ContentRepresentation;
-import org.activiti.cycle.DownloadContentAction;
 import org.activiti.cycle.RepositoryArtifact;
+import org.activiti.cycle.action.DownloadContentAction;
+import org.activiti.cycle.service.CycleContentService;
+import org.activiti.cycle.service.CyclePluginService;
+import org.activiti.cycle.service.CycleServiceFactory;
 import org.activiti.rest.api.cycle.dto.DownloadActionView;
 import org.activiti.rest.util.ActivitiRequest;
 import org.springframework.extensions.webscripts.Cache;
@@ -30,7 +33,7 @@ import org.springframework.extensions.webscripts.Status;
 /**
  * 
  * @author Nils Preusker (nils.preusker@camunda.com)
- * @author Bernd R�cker
+ * @author Bernd Rücker
  */
 public class ArtifactGet extends ActivitiCycleWebScript {
 
@@ -48,21 +51,21 @@ public class ArtifactGet extends ActivitiCycleWebScript {
     RepositoryArtifact artifact = repositoryService.getRepositoryArtifact(connectorId, artifactId);
 
     List<String> contentRepresentations = new ArrayList<String>();
-    for (ContentRepresentation representation : artifact.getArtifactType().getContentRepresentations()) {
+    for (ContentRepresentation representation : contentService.getcontentRepresentations(artifact)) {
       contentRepresentations.add(representation.getId());
     }
 
     model.put("contentRepresentations", contentRepresentations);
 
-    model.put("actions", artifact.getParameterizedActions());
+    model.put("actions", pluginService.getParameterizedActions(artifact));
 
     // Create downloadContentView DTOs
     List<DownloadActionView> downloads = new ArrayList<DownloadActionView>();
-    for (DownloadContentAction action : artifact.getArtifactType().getDownloadContentActions()) {
+    for (DownloadContentAction action : pluginService.getDownloadContentActions(artifact)) {
       try {
         String url = restProxyUri + "content?connectorId=" + URLEncoder.encode(connectorId, "UTF-8") + "&artifactId=" + URLEncoder.encode(artifactId, "UTF-8")
                 + "&contentRepresentationId=" + URLEncoder.encode(action.getContentRepresentation().getId(), "UTF-8");
-        downloads.add(new DownloadActionView(action.getId(), url, action.getContentRepresentation().getMimeType().getContentType(), action
+        downloads.add(new DownloadActionView(action.getId(), url, action.getContentRepresentation().getRepositoryArtifactType().getMimeType().getName(), action
                 .getContentRepresentation().getId()));
       } catch (UnsupportedEncodingException e) {
         // should never be reached as long as we use UTF-8, which is valid in
@@ -72,7 +75,7 @@ public class ArtifactGet extends ActivitiCycleWebScript {
     }
 
     model.put("downloads", downloads);
-    model.put("links", artifact.getOpenLinkActions());
+    model.put("links", pluginService.getArtifactOpenLinkActions(artifact));
     model.put("artifactId", artifact.getNodeId());
     model.put("connectorId", artifact.getConnectorId());
   }

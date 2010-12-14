@@ -1,15 +1,8 @@
 package org.activiti.cycle.impl.conf;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import java.util.Properties;
 
-import org.activiti.cycle.ArtifactType;
 import org.activiti.cycle.RepositoryConnector;
-import org.activiti.cycle.RepositoryException;
-import org.activiti.cycle.impl.plugin.ActivitiCyclePluginDefinition;
 
 /**
  * 
@@ -22,7 +15,7 @@ public abstract class RepositoryConnectorConfiguration {
    * TODO: Use this default? Hmm....
    */
   private String id = this.getClass().getSimpleName().replace("Configuration", "");
-  
+
   private String name = this.getClass().getSimpleName().replace("Configuration", "");
 
   private String description;
@@ -38,8 +31,6 @@ public abstract class RepositoryConnectorConfiguration {
    * Can be - Global - Department X - User Y
    */
   private String configurationScope;
-  
-  private static Map<Class< ? extends RepositoryConnectorConfiguration>, List<ArtifactType>> registeredArtifactTypesPerConnector = new HashMap<Class< ? extends RepositoryConnectorConfiguration>, List<ArtifactType>>();
 
   /**
    * TODO: Decide if we want to keep that here
@@ -47,60 +38,6 @@ public abstract class RepositoryConnectorConfiguration {
    * @param cycleService
    */
   public abstract RepositoryConnector createConnector();
-
-  public static void addPluginDefinition(ActivitiCyclePluginDefinition definition) {
-    List<ArtifactType> registeredArtifactTypes = new ArrayList<ArtifactType>();
-    definition.addArtifactTypes(registeredArtifactTypes);
-    registeredArtifactTypesPerConnector.put(definition.getRepositoryConnectorConfigurationType(), registeredArtifactTypes);
-  }
-  
-  public List<ArtifactType> getArtifactTypes() {
-    return getArtifactType(this.getClass());
-  }
-  
-  private List<ArtifactType> getArtifactType(Class confClass) {
-    List<ArtifactType> list = registeredArtifactTypesPerConnector.get(confClass);
-    if (list == null && RepositoryConnectorConfiguration.class.isAssignableFrom(confClass.getSuperclass())) {
-      return getArtifactType(confClass.getSuperclass());
-    } else if (list == null) {
-      return new ArrayList<ArtifactType>();
-    } else {
-      return list;
-    }
-  }
-  
-  public boolean hasArtifactType(String id) {
-    for (ArtifactType type : getArtifactTypes()) {
-      if (type.getId().equals(id)) {
-        return true;
-      }
-    }
-    return false;
-  }
-  
-  public ArtifactType getArtifactType(String id) {
-    for (ArtifactType type : getArtifactTypes()) {
-      if (type.getId().equals(id)) {
-        return type;
-      }
-    }
-    // check if we have a default
-    if (getDefaultArtifactType() != null) {
-      return getDefaultArtifactType();
-    }
-    // otherwise throw exception
-    throw new RepositoryException("ArtifactType with id '" + id + "' doesn't exist. Possible types: " + getArtifactTypes());
-  }
-
-  /**
-   * TODO: THink about that a bit more when refactoring the ARtifactTypes /
-   * MimeTypes
-   * 
-   * Overwrite to set defaulot ArtifactType
-   */
-  public ArtifactType getDefaultArtifactType() {
-    return null;
-  }
 
   public Properties getProperties() {
     Properties properties = new Properties();
@@ -121,24 +58,23 @@ public abstract class RepositoryConnectorConfiguration {
   public void setProperties(Properties properties) {
     // TODO: Change properties via reflection
   }
-  
+
   public String getName() {
     return name;
   }
-  
+
   public void setName(String name) {
     this.name = name;
   }
-  
+
   public String getDescription() {
     return description;
   }
-  
+
   public void setDescription(String description) {
     this.description = description;
   }
 
-  
   public String getId() {
     return id;
   }
@@ -147,7 +83,6 @@ public abstract class RepositoryConnectorConfiguration {
     this.id = id;
   }
 
-  
   public String getLoginHelp() {
     return loginHelp;
   }
@@ -155,8 +90,6 @@ public abstract class RepositoryConnectorConfiguration {
   public void setLoginHelp(String loginHelp) {
     this.loginHelp = loginHelp;
   }
-
-
 
   // @Override
   // public String toString() {

@@ -14,6 +14,10 @@ package org.activiti.cycle;
 
 import java.util.List;
 
+import org.activiti.cycle.action.DownloadContentAction;
+import org.activiti.cycle.action.ParameterizedAction;
+import org.activiti.cycle.action.RepositoryArtifactOpenLinkAction;
+
 /**
  * The type specifies the type of an artifact, e.g. Signavio model, jpdl process
  * model, text file, word document, ...

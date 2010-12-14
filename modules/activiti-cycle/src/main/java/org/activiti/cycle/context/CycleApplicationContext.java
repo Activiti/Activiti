@@ -2,6 +2,9 @@ package org.activiti.cycle.context;
 
 import java.util.HashMap;
 
+import org.activiti.cycle.CycleComponentFactory;
+import org.activiti.cycle.CycleComponentFactory.CycleComponentDescriptor;
+
 /**
  * The cycle application context, holds objects of scope
  * {@link CycleContextType#APPLICATION}.
@@ -28,12 +31,38 @@ public class CycleApplicationContext {
   }
 
   public static Object get(String key) {
-    // TODO: restore discarded or un-initialized instances. 
-    return wrappedContext.get(key);
+    Object obj = wrappedContext.get(key);
+    if (obj == null) {
+      // try to restore component instance using the
+      CycleComponentDescriptor descriptor = CycleComponentFactory.getCycleComponentDescriptor(key);
+      if (descriptor != null)
+        if (descriptor.contextType.equals(CycleContextType.APPLICATION)) {
+          // note: adds obj to ApplicationContext
+          obj = CycleComponentFactory.getCycleComponentInstance(key);
+        }
+    }
+    return obj;
+  }
+
+  @SuppressWarnings("unchecked")
+  public static <T> T get(String key, Class<T> clazz) {
+    Object obj = get(key);
+    if (obj == null) {
+      return null;
+    }
+    return (T) obj;
+  }
+
+  public static <T> T get(Class<T> key) {
+    return get(key.getCanonicalName(), key);
   }
 
   public static void setWrappedContext(CycleContext context) {
     wrappedContext = context;
+  }
+
+  public static CycleContext getWrappedContext() {
+    return wrappedContext;
   }
 
 }

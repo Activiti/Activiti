@@ -23,11 +23,22 @@ import java.util.Date;
 import javax.servlet.http.HttpServletResponse;
 
 import org.activiti.cycle.ContentRepresentation;
-import org.activiti.cycle.CycleDefaultMimeType;
+import org.activiti.cycle.MimeType;
 import org.activiti.cycle.RepositoryArtifact;
 import org.activiti.cycle.RepositoryAuthenticationException;
+import org.activiti.cycle.context.CycleApplicationContext;
 import org.activiti.cycle.impl.connector.signavio.transform.TransformationException;
+import org.activiti.cycle.impl.mimetype.HtmlMimeType;
+import org.activiti.cycle.impl.mimetype.JsonMimeType;
+import org.activiti.cycle.impl.mimetype.MsExcelMimeType;
+import org.activiti.cycle.impl.mimetype.MsPowerpointMimeType;
+import org.activiti.cycle.impl.mimetype.MsWordMimeType;
+import org.activiti.cycle.impl.mimetype.PdfMimeType;
+import org.activiti.cycle.impl.mimetype.TextMimeType;
+import org.activiti.cycle.impl.mimetype.XmlMimeType;
 import org.activiti.cycle.service.CycleConfigurationService;
+import org.activiti.cycle.service.CycleContentService;
+import org.activiti.cycle.service.CyclePluginService;
 import org.activiti.cycle.service.CycleRepositoryService;
 import org.activiti.cycle.service.CycleServiceFactory;
 import org.activiti.cycle.service.CycleTagService;
@@ -45,15 +56,17 @@ import org.springframework.extensions.webscripts.WebScriptResponse;
 public class ContentGet extends ActivitiStreamingWebScript {
 
   protected CycleRepositoryService repositoryService;
-
-  protected CycleTagService cycleTagService;
-
+  protected CycleTagService tagService;
   protected CycleConfigurationService configurationService;
+  protected CycleContentService contentService;
+  protected CyclePluginService pluginService;
 
   public ContentGet() {
     configurationService = CycleServiceFactory.getConfigurationService();
     repositoryService = CycleServiceFactory.getRepositoryService();
-    cycleTagService = CycleServiceFactory.getTagService();
+    tagService = CycleServiceFactory.getTagService();
+    contentService = CycleServiceFactory.getContentService();
+    pluginService = CycleServiceFactory.getCyclePluginService();
   }
 
   @Override
@@ -75,6 +88,7 @@ public class ContentGet extends ActivitiStreamingWebScript {
   }
 
   private void getContent(ActivitiRequest req, WebScriptResponse res) throws IOException {
+    CycleContentService contentService = CycleServiceFactory.getContentService();
 
     // Retrieve the artifactId from the request
     String cnonectorId = req.getMandatoryString("connectorId");
@@ -84,11 +98,11 @@ public class ContentGet extends ActivitiStreamingWebScript {
     // Retrieve the artifact from the repository
     RepositoryArtifact artifact = repositoryService.getRepositoryArtifact(cnonectorId, artifactId);
 
-    ContentRepresentation contentRepresentation = artifact.getArtifactType().getContentRepresentation(contentRepresentationId);
+    ContentRepresentation contentRepresentation = contentService.getContentRepresentation(artifact, contentRepresentationId);
 
-    String contentType = contentRepresentation.getMimeType().getContentType();
+    MimeType contentType = contentRepresentation.getRepresentationMimeType();
     // assuming we want to create an attachment for binary data...
-    boolean attach = contentType.startsWith("application/") ? true : false;
+    boolean attach = contentType.getName().startsWith("application/") ? true : false;
 
     // TODO: This code should become obsolete when the connectors store the file
     // names properly with suffix.
@@ -96,36 +110,39 @@ public class ContentGet extends ActivitiStreamingWebScript {
     if (attach) {
       attachmentFileName = artifact.getMetadata().getName();
 
-      if (contentType.equals(CycleDefaultMimeType.XML) && !attachmentFileName.endsWith(".xml")) {
+      if (contentType.equals(CycleApplicationContext.get(XmlMimeType.class)) && !attachmentFileName.endsWith(".xml")) {
         attachmentFileName += ".xml";
-      } else if (contentType.equals(CycleDefaultMimeType.JSON) && !attachmentFileName.endsWith(".json")) {
+      } else if (contentType.equals(CycleApplicationContext.get(JsonMimeType.class)) && !attachmentFileName.endsWith(".json")) {
         attachmentFileName += ".json";
-      } else if (contentType.equals(CycleDefaultMimeType.TEXT) && !attachmentFileName.endsWith(".txt")) {
+      } else if (contentType.equals(CycleApplicationContext.get(TextMimeType.class)) && !attachmentFileName.endsWith(".txt")) {
         attachmentFileName += ".txt";
-      } else if (contentType.equals(CycleDefaultMimeType.PDF) && !attachmentFileName.endsWith(".pdf")) {
+      } else if (contentType.equals(CycleApplicationContext.get(PdfMimeType.class)) && !attachmentFileName.endsWith(".pdf")) {
         attachmentFileName += ".pdf";
-      } else if (contentType.equals(CycleDefaultMimeType.MS_EXCEL) && !attachmentFileName.endsWith(".xls")) {
+      } else if (contentType.equals(CycleApplicationContext.get(MsExcelMimeType.class)) && !attachmentFileName.endsWith(".xls")) {
         attachmentFileName += ".xls";
-      } else if (contentType.equals(CycleDefaultMimeType.MS_POWERPOINT) && !attachmentFileName.endsWith(".ppt")) {
+      } else if (contentType.equals(CycleApplicationContext.get(MsPowerpointMimeType.class)) && !attachmentFileName.endsWith(".ppt")) {
         attachmentFileName += ".ppt";
-      } else if (contentType.equals(CycleDefaultMimeType.MS_WORD) && !attachmentFileName.endsWith(".doc")) {
+      } else if (contentType.equals(CycleApplicationContext.get(MsWordMimeType.class)) && !attachmentFileName.endsWith(".doc")) {
         attachmentFileName += ".doc";
       }
     }
 
     InputStream contentInputStream = null;
     try {
-      contentInputStream = repositoryService.getContent(artifact.getConnectorId(), artifact.getNodeId(), contentRepresentation.getId()).asInputStream();
+      contentInputStream = contentRepresentation.getContent(artifact).asInputStream();
+
+      // TODO: this is broken for SignavioPNG
 
       // Calculate an etag for the content using the MD5 algorithm
       MessageDigest md = MessageDigest.getInstance("MD5");
-      byte[] messageDigest = md.digest(repositoryService.getContent(artifact.getConnectorId(), artifact.getNodeId(), contentRepresentation.getId())
-              .asByteArray());
+      byte[] messageDigest = md.digest(contentRepresentation.getContent(artifact).asByteArray());
+
       BigInteger number = new BigInteger(1, messageDigest);
       String etag = number.toString(16);
       while (etag.length() < 32) {
         etag = "0" + etag;
       }
+      // String etag ="";
       String requestEtag = req.getHttpServletRequest().getHeader("If-None-Match");
       if (requestEtag != null) {
         // For some reason the etag (If-None-Match) parameter is always returned
@@ -139,13 +156,14 @@ public class ContentGet extends ActivitiStreamingWebScript {
       if (etag.equals(requestEtag)) {
         throw new WebScriptException(HttpServletResponse.SC_NOT_MODIFIED, "");
       } else {
-        streamResponse(res, contentInputStream, new Date(0), etag, attach, attachmentFileName, contentType);
+        streamResponse(res, contentInputStream, new Date(0), etag, attach, attachmentFileName, contentType.getName());
       }
 
     } catch (TransformationException e) {
       // Stream the contents of the exception as HTML, this is a workaround to
       // display exceptions that occur during content transformations
-      streamResponse(res, new ByteArrayInputStream(e.getRenderContent().getBytes()), new Date(0), "", false, null, CycleDefaultMimeType.HTML.getContentType());
+      streamResponse(res, new ByteArrayInputStream(e.getRenderContent().getBytes()), new Date(0), "", false, null,
+              CycleApplicationContext.get(HtmlMimeType.class).getName());
     } catch (NoSuchAlgorithmException e) {
       // This should never be reached... MessageDigest throws an exception if it
       // is being instantiated with a wrong algorithm, but we know that MD5

@@ -57,12 +57,12 @@ public interface RepositoryConnector {
    */
   public RepositoryNodeCollection getChildren(String id) throws RepositoryNodeNotFoundException;
 
-  /**
-   * return the list of supported {@link ArtifactType}s of this
-   * {@link RepositoryConnector} for the given folder. Most conenctors doesn't
-   * make any difference between the folders, but some may do.
-   */
-  public List<ArtifactType> getSupportedArtifactTypes(String folderId);
+//  /**
+//   * return the list of supported {@link ArtifactType}s of this
+//   * {@link RepositoryConnector} for the given folder. Most conenctors doesn't
+//   * make any difference between the folders, but some may do.
+//   */
+//  public List<ArtifactType> getSupportedArtifactTypes(String folderId);
 
   /**
    * create a new file in the given folder with the default
@@ -81,7 +81,8 @@ public interface RepositoryConnector {
    */
   public RepositoryFolder createFolder(String parentFolderId, String name) throws RepositoryNodeNotFoundException;
 
-  public Content getContent(String artifactId, String representationName) throws RepositoryNodeNotFoundException;
+//  public Content getContent(String artifactId, String representationName) throws RepositoryNodeNotFoundException;
+  public Content getContent(String artifactId) throws RepositoryNodeNotFoundException;
 
   /**
    * update artifact content with default {@link ContentRepresentation}

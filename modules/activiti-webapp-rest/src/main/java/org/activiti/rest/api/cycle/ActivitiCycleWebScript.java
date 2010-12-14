@@ -17,6 +17,8 @@ import java.util.Map;
 
 import org.activiti.cycle.RepositoryAuthenticationException;
 import org.activiti.cycle.service.CycleConfigurationService;
+import org.activiti.cycle.service.CycleContentService;
+import org.activiti.cycle.service.CyclePluginService;
 import org.activiti.cycle.service.CycleRepositoryService;
 import org.activiti.cycle.service.CycleServiceFactory;
 import org.activiti.cycle.service.CycleTagService;
@@ -32,15 +34,17 @@ import org.springframework.extensions.webscripts.Status;
 public abstract class ActivitiCycleWebScript extends ActivitiWebScript {
 
   protected CycleRepositoryService repositoryService;
-
   protected CycleTagService tagService;
-
   protected CycleConfigurationService configurationService;
+  protected CycleContentService contentService;
+  protected CyclePluginService pluginService;
 
   public ActivitiCycleWebScript() {
     configurationService = CycleServiceFactory.getConfigurationService();
     repositoryService = CycleServiceFactory.getRepositoryService();
     tagService = CycleServiceFactory.getTagService();
+    contentService = CycleServiceFactory.getContentService();
+    pluginService = CycleServiceFactory.getCyclePluginService();
   }
 
   @Override

@@ -15,10 +15,11 @@ package org.activiti.rest.api.cycle;
 import java.util.Map;
 
 import org.activiti.cycle.ContentRepresentation;
-import org.activiti.cycle.CycleDefaultMimeType;
 import org.activiti.cycle.RenderInfo;
 import org.activiti.cycle.RepositoryArtifact;
+import org.activiti.cycle.context.CycleApplicationContext;
 import org.activiti.cycle.impl.connector.signavio.transform.TransformationException;
+import org.activiti.cycle.impl.mimetype.HtmlMimeType;
 import org.activiti.rest.util.ActivitiRequest;
 import org.springframework.extensions.webscripts.Cache;
 import org.springframework.extensions.webscripts.Status;
@@ -31,7 +32,6 @@ public class ContentRepresentationGet extends ActivitiCycleWebScript {
 
   @Override
   protected void execute(ActivitiRequest req, Status status, Cache cache, Map<String, Object> model) {
-
     String connectorId = req.getMandatoryString("connectorId");
     String artifactId = req.getString("artifactId");
     String representationId = req.getString("representationId");
@@ -43,7 +43,7 @@ public class ContentRepresentationGet extends ActivitiCycleWebScript {
       model.put("connectorId", connectorId);
       model.put("artifactId", artifactId);
 
-      ContentRepresentation contentRepresentation = artifact.getArtifactType().getContentRepresentation(representationId);
+      ContentRepresentation contentRepresentation = contentService.getContentRepresentation(artifact, representationId);
       switch (contentRepresentation.getRenderInfo()) {
       case IMAGE:
       case HTML:
@@ -55,17 +55,17 @@ public class ContentRepresentationGet extends ActivitiCycleWebScript {
       case BINARY:
       case CODE:
       case TEXT_PLAIN:
-        String content = repositoryService.getContent(connectorId, artifactId, contentRepresentation.getId()).asString();
+        String content = contentRepresentation.getContent(artifact).asString();
         model.put("content", content);
       }
       model.put("renderInfo", contentRepresentation.getRenderInfo().name());
       model.put("contentRepresentationId", contentRepresentation.getId());
-      model.put("contentType", contentRepresentation.getMimeType().getContentType());
+      model.put("contentType", contentRepresentation.getRepresentationMimeType().getName());
     } catch (TransformationException e) {
       // Show errors that occur during transformations as HTML in the UI
       model.put("renderInfo", RenderInfo.HTML);
       model.put("contentRepresentationId", representationId);
-      model.put("contentType", CycleDefaultMimeType.HTML.getContentType());
+      model.put("contentType", CycleApplicationContext.get(HtmlMimeType.class).getName());
     } 
   }
 }

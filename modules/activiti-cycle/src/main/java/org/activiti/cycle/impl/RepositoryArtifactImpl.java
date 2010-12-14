@@ -12,14 +12,8 @@
  */
 package org.activiti.cycle.impl;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.activiti.cycle.ArtifactAwareParameterizedAction;
-import org.activiti.cycle.ArtifactType;
-import org.activiti.cycle.ParameterizedAction;
 import org.activiti.cycle.RepositoryArtifact;
-import org.activiti.cycle.RepositoryArtifactOpenLinkAction;
+import org.activiti.cycle.RepositoryArtifactType;
 import org.activiti.cycle.RepositoryConnector;
 
 /**
@@ -32,14 +26,11 @@ public class RepositoryArtifactImpl extends RepositoryNodeImpl implements Reposi
 
   private static final long serialVersionUID = 1L;
 
-  private final ArtifactType artifactType;
+  private final RepositoryArtifactType artifactType;
 
-  private final List<RepositoryArtifactOpenLinkAction> openLinkActions;
-
-  public RepositoryArtifactImpl(String connectorId, String nodeId, ArtifactType artifactType, RepositoryConnector connector) {
+  public RepositoryArtifactImpl(String connectorId, String nodeId, RepositoryArtifactType artifactType, RepositoryConnector connector) {
     super(connectorId, nodeId);
     this.artifactType = artifactType;
-    this.openLinkActions = artifactType.createOpenLinkActions(connector, this);
   }
 
   public String toString() {
@@ -47,28 +38,24 @@ public class RepositoryArtifactImpl extends RepositoryNodeImpl implements Reposi
             + getMetadata() + "]";
   }
 
-  public ArtifactType getArtifactType() {
+  public RepositoryArtifactType getArtifactType() {
     return artifactType;
   }
 
-  public List<RepositoryArtifactOpenLinkAction> getOpenLinkActions() {
-    return openLinkActions;
-  }
-
-  public List<ParameterizedAction> getParameterizedActions() {
-    List<ParameterizedAction> actions = getArtifactType().getParameterizedActions();
-    List<ParameterizedAction> filteredActions = new ArrayList<ParameterizedAction>();
-    // filter actions not applicable to this artifact.
-    for (ParameterizedAction parameterizedAction : actions) {
-      if (parameterizedAction instanceof ArtifactAwareParameterizedAction) {
-        ArtifactAwareParameterizedAction artifactAwareAction = (ArtifactAwareParameterizedAction) parameterizedAction;
-        if (artifactAwareAction.isApplicable(this)) {
-          filteredActions.add(parameterizedAction);
-        }
-      } else {
-        filteredActions.add(parameterizedAction);
-      }
-    }
-    return filteredActions;
-  }
+//  public List<ParameterizedAction> getParameterizedActions() {
+//    List<ParameterizedAction> actions = getArtifactType().getParameterizedActions();
+//    List<ParameterizedAction> filteredActions = new ArrayList<ParameterizedAction>();
+//    // filter actions not applicable to this artifact.
+//    for (ParameterizedAction parameterizedAction : actions) {
+//      if (parameterizedAction instanceof ArtifactAwareParameterizedAction) {
+//        ArtifactAwareParameterizedAction artifactAwareAction = (ArtifactAwareParameterizedAction) parameterizedAction;
+//        if (artifactAwareAction.isApplicable(this)) {
+//          filteredActions.add(parameterizedAction);
+//        }
+//      } else {
+//        filteredActions.add(parameterizedAction);
+//      }
+//    }
+//    return filteredActions;
+//  }
 }

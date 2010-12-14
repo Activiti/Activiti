@@ -146,5 +146,9 @@ public class TagConnector implements RepositoryConnector {
     
     // does not need configuration
   }
+
+  public Content getContent(String artifactId) throws RepositoryNodeNotFoundException {
+    return null;
+  }
   
 }

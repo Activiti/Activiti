@@ -12,19 +12,24 @@
  */
 package org.activiti.cycle.service;
 
-import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.activiti.cycle.ArtifactType;
 import org.activiti.cycle.Content;
 import org.activiti.cycle.ContentRepresentation;
+import org.activiti.cycle.MimeType;
 import org.activiti.cycle.RepositoryArtifact;
 import org.activiti.cycle.RepositoryArtifactLink;
+import org.activiti.cycle.RepositoryArtifactType;
 import org.activiti.cycle.RepositoryConnector;
 import org.activiti.cycle.RepositoryFolder;
 import org.activiti.cycle.RepositoryNodeCollection;
 import org.activiti.cycle.RepositoryNodeNotFoundException;
+import org.activiti.cycle.impl.mimetype.Mimetypes;
+import org.activiti.cycle.impl.repositoryartifacttype.RepositoryArtifactTypes;
+import org.activiti.cycle.transform.ContentTransformationException;
 
 /**
  * Cycle service used for accessing repositories.
@@ -34,7 +39,6 @@ import org.activiti.cycle.RepositoryNodeNotFoundException;
  * 
  */
 public interface CycleRepositoryService {
-
 
   public void addArtifactLink(RepositoryArtifactLink link);
 
@@ -76,7 +80,7 @@ public interface CycleRepositoryService {
    */
   public RepositoryNodeCollection getChildren(String connectorId, String folderId) throws RepositoryNodeNotFoundException;
 
-  public Content getContent(String connectorId, String artifactId, String representationName) throws RepositoryNodeNotFoundException;
+  public Content getContent(String connectorId, String artifactId) throws RepositoryNodeNotFoundException;
 
   public List<RepositoryArtifactLink> getIncomingArtifactLinks(String targetConnectorId, String targetArtifactId);
 
@@ -94,12 +98,12 @@ public interface CycleRepositoryService {
 
   public RepositoryFolder getRepositoryFolder(String connectorId, String folderId) throws RepositoryNodeNotFoundException;
 
-  /**
-   * return the list of supported {@link ArtifactType}s of this
-   * {@link RepositoryConnector} for the given folder. Most conenctors doesn't
-   * make any difference between the folders, but some may do.
-   */
-  public List<ArtifactType> getSupportedArtifactTypes(String connectorId, String folderId);
+//  /**
+//   * return the list of supported {@link ArtifactType}s of this
+//   * {@link RepositoryConnector} for the given folder. Most conenctors doesn't
+//   * make any difference between the folders, but some may do.
+//   */
+//  public List<ArtifactType> getSupportedArtifactTypes(String connectorId, String folderId);
 
   /**
    * update artifact content with default {@link ContentRepresentation}

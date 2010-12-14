@@ -1,5 +1,6 @@
 package org.activiti.cycle;
 
+
 /**
  * A content provider can create content, normaly nevessary for a
  * {@link ContentRepresentation} for a special {@link RepositoryArtifact}

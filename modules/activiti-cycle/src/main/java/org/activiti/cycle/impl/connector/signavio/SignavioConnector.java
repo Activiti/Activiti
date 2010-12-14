@@ -26,6 +26,7 @@ import java.util.regex.Pattern;
 import org.activiti.cycle.ArtifactType;
 import org.activiti.cycle.Content;
 import org.activiti.cycle.RepositoryArtifact;
+import org.activiti.cycle.RepositoryArtifactType;
 import org.activiti.cycle.RepositoryAuthenticationException;
 import org.activiti.cycle.RepositoryException;
 import org.activiti.cycle.RepositoryFolder;
@@ -34,11 +35,15 @@ import org.activiti.cycle.RepositoryNodeCollection;
 import org.activiti.cycle.RepositoryNodeNotFoundException;
 import org.activiti.cycle.annotations.CycleComponent;
 import org.activiti.cycle.annotations.Interceptors;
+import org.activiti.cycle.context.CycleApplicationContext;
 import org.activiti.cycle.impl.RepositoryArtifactImpl;
 import org.activiti.cycle.impl.RepositoryFolderImpl;
 import org.activiti.cycle.impl.RepositoryNodeCollectionImpl;
 import org.activiti.cycle.impl.connector.AbstractRepositoryConnector;
 import org.activiti.cycle.impl.connector.ConnectorLoginInterceptor;
+import org.activiti.cycle.impl.connector.signavio.provider.JsonProvider;
+import org.activiti.cycle.impl.connector.signavio.repositoryartifacttype.SignavioBpmn20ArtifactType;
+import org.activiti.cycle.impl.connector.signavio.repositoryartifacttype.SignavioJpdl4ArtifactType;
 import org.activiti.cycle.impl.connector.signavio.util.SignavioJsonHelper;
 import org.activiti.cycle.impl.connector.util.RestClientLogHelper;
 import org.json.JSONArray;
@@ -68,8 +73,8 @@ import de.hpi.bpmn2_0.transformation.Json2XmlConverter;
  * @author ruecker
  */
 @CycleComponent
-@Interceptors({ConnectorLoginInterceptor.class})
-public class SignavioConnector extends AbstractRepositoryConnector<SignavioConnectorConfiguration> {
+@Interceptors({ ConnectorLoginInterceptor.class })
+public class SignavioConnector extends AbstractRepositoryConnector<SignavioConnectorConfiguration> implements SignavioConnectorInterface {
 
   private static Logger log = Logger.getLogger(SignavioConnector.class.getName());
 
@@ -87,9 +92,9 @@ public class SignavioConnector extends AbstractRepositoryConnector<SignavioConne
 
   private boolean loggedIn = false;
 
-  public SignavioConnector() {    
+  public SignavioConnector() {
   }
-  
+
   public SignavioConnector(SignavioConnectorConfiguration signavioConfiguration) {
     super(signavioConfiguration);
   }
@@ -142,7 +147,7 @@ public class SignavioConnector extends AbstractRepositoryConnector<SignavioConne
     return sendRequest(jsonRequest);
   }
 
-  public boolean registerUserWithSignavio(String firstname, String lastname, String email, String password) throws IOException {
+  protected boolean registerUserWithSignavio(String firstname, String lastname, String email, String password) throws IOException {
     // Create the Post Parameters for registering a new user
     Form registrationForm = new Form();
     registrationForm.add("mode", "external");
@@ -256,7 +261,7 @@ public class SignavioConnector extends AbstractRepositoryConnector<SignavioConne
   }
 
   private RepositoryArtifact getArtifactInfoFromFile(String id, JSONObject json) throws JSONException {
-    ArtifactType artifactType = getArtifactTypeForSignavioArtifact(json);
+    RepositoryArtifactType artifactType = getArtifactTypeForSignavioArtifact(json);
     RepositoryArtifactImpl fileInfo = new RepositoryArtifactImpl(getConfiguration().getId(), id, artifactType, this);
 
     if (json.has("name")) {
@@ -283,26 +288,27 @@ public class SignavioConnector extends AbstractRepositoryConnector<SignavioConne
     // factory which produces the concrete actions?
   }
 
-  private ArtifactType getArtifactTypeForSignavioArtifact(JSONObject json) throws JSONException {
-    String artifactTypeID = null;
+  private RepositoryArtifactType getArtifactTypeForSignavioArtifact(JSONObject json) throws JSONException {
+    RepositoryArtifactType artifactType = null;
+
     if (json.has("namespace")) {
       // Commercial Signavio way of doing it
       String namespace = json.getString("namespace");
-      if (SignavioPluginDefinition.SIGNAVIO_NAMESPACE_FOR_BPMN_2_0.equals(namespace)) {
-        artifactTypeID = SignavioPluginDefinition.ARTIFACT_TYPE_BPMN_20;
-      } else if (SignavioPluginDefinition.SIGNAVIO_NAMESPACE_FOR_BPMN_JBPM4.equals(namespace)) {
-        artifactTypeID = SignavioPluginDefinition.ARTIFACT_TYPE_BPMN_FOR_JPDL4;
+      if (SignavioBpmn20ArtifactType.SIGNAVIO_NAMESPACE_FOR_BPMN_2_0.equals(namespace)) {
+        artifactType = CycleApplicationContext.get(SignavioBpmn20ArtifactType.class);
+      } else if (SignavioJpdl4ArtifactType.SIGNAVIO_NAMESPACE_FOR_BPMN_JBPM4.equals(namespace)) {
+        artifactType = CycleApplicationContext.get(SignavioJpdl4ArtifactType.class);
       }
     } else {
       // Oryx/Signavio OSS = Activiti Modeler way of doing it
       String type = json.getString("type");
-      if (SignavioPluginDefinition.ORYX_TYPE_ATTRIBUTE_FOR_BPMN_20.equals(type)) {
-        artifactTypeID = SignavioPluginDefinition.ARTIFACT_TYPE_BPMN_20;
+      if (SignavioBpmn20ArtifactType.ORYX_TYPE_ATTRIBUTE_FOR_BPMN_20.equals(type)) {
+        artifactType = CycleApplicationContext.get(SignavioBpmn20ArtifactType.class);
       } else if (SignavioPluginDefinition.SIGNAVIO_NAMESPACE_FOR_BPMN_2_0.equals(type)) {
-        artifactTypeID = SignavioPluginDefinition.ARTIFACT_TYPE_BPMN_20;
+        artifactType = CycleApplicationContext.get(SignavioBpmn20ArtifactType.class);
       }
     }
-    return getConfiguration().getArtifactType(artifactTypeID);
+    return artifactType;
   }
 
   public RepositoryNodeCollection getChildren(String id) throws RepositoryNodeNotFoundException {
@@ -466,7 +472,7 @@ public class SignavioConnector extends AbstractRepositoryConnector<SignavioConne
     return securityToken;
   }
 
-  public void setSecurityToken(String securityToken) {
+  protected void setSecurityToken(String securityToken) {
     this.securityToken = securityToken;
   }
 
@@ -523,7 +529,7 @@ public class SignavioConnector extends AbstractRepositoryConnector<SignavioConne
     return getConfiguration().getModelUrl(artifact.getNodeId());
   }
 
-  public void moveModel(String targetFolderId, String modelId) throws IOException {
+  protected void moveModel(String targetFolderId, String modelId) throws IOException {
     try {
       Form bodyForm = new Form();
       bodyForm.add("parent", "/directory/" + targetFolderId);
@@ -539,7 +545,7 @@ public class SignavioConnector extends AbstractRepositoryConnector<SignavioConne
     }
   }
 
-  public void moveDirectory(String targetFolderId, String directoryId) throws IOException {
+  protected void moveDirectory(String targetFolderId, String directoryId) throws IOException {
     try {
       Form bodyForm = new Form();
       bodyForm.add("parent", "/directory/" + targetFolderId);
@@ -568,7 +574,7 @@ public class SignavioConnector extends AbstractRepositoryConnector<SignavioConne
     return createArtifactFromJSON(parentFolderId, artifactName, artifactType, artifactContent.asString());
   }
 
-  public RepositoryArtifact createArtifactFromJSON(String parentFolderId, String artifactName, String artifactType, String jsonContent)
+  protected RepositoryArtifact createArtifactFromJSON(String parentFolderId, String artifactName, String artifactType, String jsonContent)
           throws RepositoryNodeNotFoundException {
 
     // TODO: Add check if model already exists (overwrite or throw exception?)
@@ -631,7 +637,7 @@ public class SignavioConnector extends AbstractRepositoryConnector<SignavioConne
     }
   }
 
-  public void restoreRevisionOfModel(String parentFolderId, String modelId, String revisionId, String comment) throws IOException {
+  protected void restoreRevisionOfModel(String parentFolderId, String modelId, String revisionId, String comment) throws IOException {
     try {
       Form reivisionForm = new Form();
       reivisionForm.add("comment", comment);
@@ -700,5 +706,12 @@ public class SignavioConnector extends AbstractRepositoryConnector<SignavioConne
   public boolean isLoggedIn() {
     return loggedIn || !getConfiguration().isLoginRequired();
   }
-  
+
+  public Content getContent(String artifactId) throws RepositoryNodeNotFoundException {
+    // return JSON as default:
+    // TODO: good idea?
+    RepositoryArtifact artifact = getRepositoryArtifact(artifactId);
+    return CycleApplicationContext.get(JsonProvider.class).getContent(artifact);
+  }
+
 }

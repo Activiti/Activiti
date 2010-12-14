@@ -2,15 +2,17 @@ package org.activiti.cycle.impl.connector.fs;
 
 import java.io.BufferedOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import org.activiti.cycle.ArtifactType;
 import org.activiti.cycle.Content;
 import org.activiti.cycle.RepositoryArtifact;
+import org.activiti.cycle.RepositoryArtifactType;
 import org.activiti.cycle.RepositoryException;
 import org.activiti.cycle.RepositoryFolder;
 import org.activiti.cycle.RepositoryNode;
@@ -21,8 +23,8 @@ import org.activiti.cycle.impl.RepositoryArtifactImpl;
 import org.activiti.cycle.impl.RepositoryFolderImpl;
 import org.activiti.cycle.impl.RepositoryNodeCollectionImpl;
 import org.activiti.cycle.impl.connector.AbstractRepositoryConnector;
+import org.activiti.cycle.impl.connector.util.ConnectorPathUtils;
 
-import eu.medsea.mimeutil.MimeUtil;
 
 /**
  * TODO: Use correct {@link RepositoryNodeNotFoundException}.
@@ -158,13 +160,7 @@ public class FileSystemConnector extends AbstractRepositoryConnector<FileSystemC
   private RepositoryArtifact getArtifactInfo(File file) throws IOException {
     String id = getLocalPath(file.getCanonicalPath());
 
-    // TODO: Better way to check for mimetypes or file extensions.
-    // See http://www.rgagnon.com/javadetails/java-0487.html or Alfresco Remote
-    // Api (org.alfresco.repo.content.MimetypeMap)
-    String mimeType = getMimeType(file);
-    
-    // TODO: We should have an extension to ArtifactType mapping somewhere
-    ArtifactType artifactType = getConfiguration().getArtifactType(mimeType);
+    RepositoryArtifactType artifactType = ConnectorPathUtils.getRepositoryArtifactType(file.getName());
 
     RepositoryArtifactImpl artifact = new RepositoryArtifactImpl(getConfiguration().getId(), id, artifactType, this);
     artifact.getMetadata().setName(file.getName());
@@ -174,31 +170,6 @@ public class FileSystemConnector extends AbstractRepositoryConnector<FileSystemC
     
     artifact.getMetadata().setLastChanged(new Date(file.lastModified()));
     return artifact;
-  }
-
-  /**
-   * TODO: Find a better way for mimetype, related to issue above. Version below
-   * return whole string after first dot
-   */
-  private String getMimeType(File file) {
-    
-    // so we overwrite it with a temporary hack
-    // But this cannot recognize *.bpmn20.xml :-/
-    String name = file.getName();
-    if (name.indexOf(".") > 0) {
-      return name.substring(name.lastIndexOf(".") + 1);
-    }
-    
-    // TODO: This has problems with e.g. "*.bpmn.xml"
-    String extension = MimeUtil.getExtension(file);
-    
-    return extension;
-
-    // MimeUtil.registerMimeDetector("eu.medsea.mimeutil.detector.MagicMimeMimeDetector");
-    // MimeType m =
-    // MimeUtil.getMostSpecificMimeType(MimeUtil.getMimeTypes(file));
-    // MimeUtil.unregisterMimeDetector("eu.medsea.mimeutil.detector.MagicMimeMimeDetector");
-
   }
 
   private RepositoryFolder getFolderInfo(File file) throws IOException {
@@ -254,6 +225,19 @@ public class FileSystemConnector extends AbstractRepositoryConnector<FileSystemC
 
   public void updateContent(String artifactId, String contentRepresentationName, Content content) throws RepositoryNodeNotFoundException {
     throw new UnsupportedOperationException("FileSystemConnector does not support modifying files!");   
+  }
+
+  public Content getContent(String artifactId) throws RepositoryNodeNotFoundException {
+    RepositoryArtifact artifact = getRepositoryArtifact(artifactId);
+    Content content = new Content();
+    String fileName = getConfiguration().getBasePath() + artifact.getNodeId();
+    File file = new File(fileName);
+    try {
+      content.setValue(new FileInputStream(file));
+      return content;
+    } catch (FileNotFoundException fnfe) {
+      throw new RepositoryException("Unable to find artifact " + artifact, fnfe);
+    }
   }
 
   private String getLocalPath(String path) {    

@@ -16,21 +16,54 @@ import java.io.InputStream;
 import java.net.URL;
 
 import org.activiti.cycle.Content;
+import org.activiti.cycle.MimeType;
+import org.activiti.cycle.RenderInfo;
 import org.activiti.cycle.RepositoryArtifact;
+import org.activiti.cycle.RepositoryArtifactType;
 import org.activiti.cycle.RepositoryException;
-import org.activiti.cycle.impl.connector.signavio.SignavioConnector;
+import org.activiti.cycle.annotations.CycleComponent;
+import org.activiti.cycle.components.RuntimeConnectorList;
+import org.activiti.cycle.context.CycleApplicationContext;
+import org.activiti.cycle.context.CycleContextType;
+import org.activiti.cycle.context.CycleSessionContext;
+import org.activiti.cycle.impl.connector.signavio.SignavioConnectorConfiguration;
+import org.activiti.cycle.impl.connector.signavio.SignavioConnectorInterface;
+import org.activiti.cycle.impl.connector.signavio.repositoryartifacttype.SignavioBpmn20ArtifactType;
+import org.activiti.cycle.impl.mimetype.PngMimeType;
 
+@CycleComponent(context = CycleContextType.APPLICATION)
 public class PngProvider extends SignavioContentRepresentationProvider {
 
-  @Override
-  public void addValueToContent(Content content, SignavioConnector connector, RepositoryArtifact artifact) {
+  private static final long serialVersionUID = 1L;
+
+  public Content getContent(RepositoryArtifact artifact) {
     try {
-      String modelAsPngUrl = connector.getConfiguration().getPngUrl(artifact.getNodeId(), connector.getSecurityToken());
+      SignavioConnectorInterface signavioConnector = (SignavioConnectorInterface) CycleSessionContext.get(RuntimeConnectorList.class).getConnectorById(artifact.getConnectorId());
+      Content content = new Content();
+      SignavioConnectorConfiguration configuration = (SignavioConnectorConfiguration) signavioConnector.getConfiguration();
+      String modelAsPngUrl = configuration.getPngUrl(artifact.getNodeId(), signavioConnector.getSecurityToken());
       InputStream is = new URL(modelAsPngUrl).openStream();
       content.setValue(is);
+      return content;
     } catch (Exception ex) {
       throw new RepositoryException("Exception while accessing Signavio repository", ex);
     }
+  }
+
+  public String getId() {
+    return "PNG";
+  }
+  
+  public MimeType getRepresentationMimeType() {
+    return CycleApplicationContext.get(PngMimeType.class);
+  }
+
+  public RenderInfo getRenderInfo() {
+    return RenderInfo.IMAGE;
+  }
+
+  public RepositoryArtifactType getRepositoryArtifactType() {
+    return CycleApplicationContext.get(SignavioBpmn20ArtifactType.class);
   }
 
 }

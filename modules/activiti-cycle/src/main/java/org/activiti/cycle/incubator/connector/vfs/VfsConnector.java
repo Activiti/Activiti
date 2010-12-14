@@ -10,6 +10,7 @@ import java.util.logging.Logger;
 import org.activiti.cycle.ArtifactType;
 import org.activiti.cycle.Content;
 import org.activiti.cycle.RepositoryArtifact;
+import org.activiti.cycle.RepositoryArtifactType;
 import org.activiti.cycle.RepositoryAuthenticationException;
 import org.activiti.cycle.RepositoryException;
 import org.activiti.cycle.RepositoryFolder;
@@ -23,6 +24,7 @@ import org.activiti.cycle.impl.conf.RepositoryConnectorConfiguration;
 import org.activiti.cycle.impl.connector.AbstractRepositoryConnector;
 import org.activiti.cycle.impl.connector.util.ConnectorPathUtils;
 import org.activiti.cycle.impl.connector.util.ConnectorStreamUtils;
+import org.apache.commons.vfs.FileContent;
 import org.apache.commons.vfs.FileObject;
 import org.apache.commons.vfs.FileSelectInfo;
 import org.apache.commons.vfs.FileSelector;
@@ -243,6 +245,28 @@ public abstract class VfsConnector extends AbstractRepositoryConnector<VfsConnec
     }
   }
 
+  public Content getContent(String artifactId) throws RepositoryNodeNotFoundException {
+    checkRepository();
+    RepositoryArtifact artifact = getRepositoryArtifact(artifactId);
+    Content content = new Content();
+    String id = artifact.getNodeId();
+    FileObject fileObject = null;
+    try {
+
+      FileSystemManager manager = getFileSystemManager();
+      fileObject = manager.resolveFile(buildFilename(id));
+      FileContent fileContent = fileObject.getContent();
+      content.setValue(fileContent.getInputStream());
+
+      // TODO: when do we close the file?
+
+      return content;
+
+    } catch (FileSystemException e) {
+      throw new RepositoryException("Error while getting content of " + id, e);
+    }
+  }
+
   protected RepositoryNode initRepositoryNode(FileObject child, String id) {
     FileType type = null;
     try {
@@ -269,9 +293,7 @@ public abstract class VfsConnector extends AbstractRepositoryConnector<VfsConnec
     if (name.equals(".") || name.equals(".."))
       return null;
 
-    ArtifactType type = ConnectorPathUtils.getMimeType(child.getName().getBaseName(), getConfiguration());
-    if (type == null)
-      return null;
+    RepositoryArtifactType type = ConnectorPathUtils.getRepositoryArtifactType(child.getName().getBaseName());
 
     RepositoryArtifact newArtifact = new RepositoryArtifactImpl(getConfiguration().getId(), id, type, this);
     newArtifact.getMetadata().setName(name);

@@ -34,4 +34,12 @@ public class CycleServiceFactory {
     return CycleServiceConfiguration.getInstance().getConfigurationService();
   }
 
+  public static CyclePluginService getCyclePluginService() {
+    return CycleServiceConfiguration.getInstance().getCyclePluginService();
+  }
+
+  public static CycleContentService getContentService() {
+    return CycleServiceConfiguration.getInstance().getCycleContentServiceImpl();
+  }
+
 }

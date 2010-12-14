@@ -12,12 +12,13 @@ import org.activiti.cycle.RepositoryException;
 import org.activiti.cycle.components.RuntimeConnectorList;
 import org.activiti.cycle.context.CycleSessionContext;
 import org.activiti.cycle.impl.conf.PasswordEnabledRepositoryConnectorConfiguration;
-import org.activiti.cycle.impl.plugin.PluginFinder;
 import org.activiti.cycle.service.CycleServiceFactory;
 import org.activiti.rest.util.ActivitiRequest;
 
 /**
- * Initializes the Cycle Http-Session.
+ * Initializes the Cycle Http-Session. 
+ * 
+ * TODO: find a better place for this, a ServletFilter?
  * 
  * @author daniel.meyer@camunda.com
  */
@@ -39,7 +40,6 @@ public class CycleHttpSession {
     String cuid = req.getCurrentUserId();
 
     // TODO: find a better place for this ?
-    PluginFinder.registerServletContext(httpSession.getServletContext());
     CycleComponentFactory.registerServletContext(httpSession.getServletContext());
 
     // Makes the HttpSession available as CycleSessionContext

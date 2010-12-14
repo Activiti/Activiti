@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 import java.util.logging.Logger;
 
 import org.activiti.cycle.Content;
@@ -12,7 +13,8 @@ import org.activiti.cycle.RepositoryArtifact;
 import org.activiti.cycle.RepositoryConnector;
 import org.activiti.cycle.RepositoryNode;
 import org.activiti.cycle.impl.conf.ConfigurationContainer;
-import org.activiti.cycle.impl.plugin.PluginFinder;
+import org.activiti.cycle.service.CycleContentService;
+import org.activiti.cycle.service.CycleServiceFactory;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -23,17 +25,17 @@ public class FileSystemConnectorTest {
 
   private ConfigurationContainer userConfiguration;
   private RepositoryConnector conn;
+  private CycleContentService contentService;
 
   @Before
   public void initialize() throws IOException {
     userConfiguration = new ConfigurationContainer("christian");
     userConfiguration.addRepositoryConnectorConfiguration(new FileSystemConnectorConfiguration("filesystem", new File(".")));
     conn = userConfiguration.getConnector("filesystem");
-    
-      // TODO: Should be done in Bootstrapping
-    PluginFinder.checkPluginInitialization();
+
+    contentService = CycleServiceFactory.getContentService();
   }
-  
+
   @After
   public void cleanUp() {
     userConfiguration = null;
@@ -50,9 +52,9 @@ public class FileSystemConnectorTest {
       if (repositoryNode instanceof RepositoryArtifact) {
         RepositoryArtifact artifact = (RepositoryArtifact) repositoryNode;
 
-        Collection<ContentRepresentation> contentRepresentations = artifact.getArtifactType().getContentRepresentations();
+        List<ContentRepresentation> contentRepresentations = contentService.getcontentRepresentations(artifact);
         for (ContentRepresentation contentRepresentation : contentRepresentations) {
-          Content content = conn.getContent(artifact.getNodeId(), contentRepresentation.getId());
+          Content content = conn.getContent(artifact.getNodeId());
           System.out.println(contentRepresentation.getId() + " -> " + content.asString());
         }
       }

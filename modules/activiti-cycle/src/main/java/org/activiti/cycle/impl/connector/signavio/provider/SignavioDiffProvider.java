@@ -6,14 +6,26 @@ import java.util.List;
 import java.util.Map;
 
 import org.activiti.cycle.Content;
+import org.activiti.cycle.MimeType;
+import org.activiti.cycle.RenderInfo;
 import org.activiti.cycle.RepositoryArtifact;
+import org.activiti.cycle.RepositoryArtifactType;
 import org.activiti.cycle.RepositoryException;
+import org.activiti.cycle.annotations.CycleComponent;
+import org.activiti.cycle.components.RuntimeConnectorList;
+import org.activiti.cycle.context.CycleApplicationContext;
+import org.activiti.cycle.context.CycleContextType;
+import org.activiti.cycle.context.CycleSessionContext;
 import org.activiti.cycle.impl.connector.signavio.SignavioConnector;
+import org.activiti.cycle.impl.connector.signavio.SignavioConnectorInterface;
 import org.activiti.cycle.impl.connector.signavio.SignavioPluginDefinition;
+import org.activiti.cycle.impl.connector.signavio.repositoryartifacttype.SignavioBpmn20ArtifactType;
 import org.activiti.cycle.impl.connector.signavio.util.SignavioSvgApiBuilder;
 import org.activiti.cycle.impl.connector.signavio.util.SignavioSvgHighlight;
 import org.activiti.cycle.impl.connector.signavio.util.SignavioSvgHighlightType;
 import org.activiti.cycle.impl.connector.signavio.util.SignavioSvgNodeType;
+import org.activiti.cycle.impl.mimetype.HtmlMimeType;
+import org.activiti.cycle.impl.mimetype.PngMimeType;
 import org.oryxeditor.server.diagram.Diagram;
 import org.oryxeditor.server.diagram.DiagramBuilder;
 import org.oryxeditor.server.diagram.Shape;
@@ -24,6 +36,8 @@ import org.oryxeditor.server.diagram.Shape;
  * 
  * @author ruecker
  */
+// un-comment to "turn on.
+// @CycleComponent(context = CycleContextType.APPLICATION)
 public class SignavioDiffProvider extends SignavioContentRepresentationProvider {
 
   // private static final String ERROR_COLOR = "red";
@@ -32,7 +46,27 @@ public class SignavioDiffProvider extends SignavioContentRepresentationProvider 
 
   public static RepositoryArtifact targetArtifact;
 
-  public void addValueToContent(Content content, SignavioConnector connector, RepositoryArtifact artifact) {
+  public String getId() {
+    return "Diff";
+  }
+
+  public RenderInfo getRenderInfo() {
+    return RenderInfo.HTML;
+  }
+  
+  public MimeType getRepresentationMimeType() {
+    return CycleApplicationContext.get(HtmlMimeType.class);
+  }
+
+  public RepositoryArtifactType getRepositoryArtifactType() {
+    return CycleApplicationContext.get(SignavioBpmn20ArtifactType.class);
+  }
+
+  public Content getContent(RepositoryArtifact artifact) {
+
+    SignavioConnectorInterface connector = (SignavioConnectorInterface) CycleSessionContext.get(RuntimeConnectorList.class).getConnectorById(artifact.getConnectorId());
+    Content content = new Content();
+
     RepositoryArtifact diffTarget = targetArtifact;
     if (targetArtifact == null) {
       // if nothing is selected we diff against ourself (boooring ;-))
@@ -43,8 +77,8 @@ public class SignavioDiffProvider extends SignavioContentRepresentationProvider 
     List<SignavioSvgHighlight> missingTargetElements = new ArrayList<SignavioSvgHighlight>();
 
     // create DIFF
-    String sourceJson = connector.getContent(artifact.getNodeId(), SignavioPluginDefinition.CONTENT_REPRESENTATION_ID_JSON).asString();
-    String targetJson = connector.getContent(diffTarget.getNodeId(), SignavioPluginDefinition.CONTENT_REPRESENTATION_ID_JSON).asString();
+    String sourceJson = CycleApplicationContext.get(JsonProvider.class).getContent(artifact).asString();
+    String targetJson = CycleApplicationContext.get(JsonProvider.class).getContent(diffTarget).asString();
 
     try {
       Diagram sourceDiagram = DiagramBuilder.parseJson(sourceJson);
@@ -61,7 +95,7 @@ public class SignavioDiffProvider extends SignavioContentRepresentationProvider 
           }
         }
         if (!existant) {
-          // add to missing nodes in target artifact          
+          // add to missing nodes in target artifact
           missingSourceElements.add(new SignavioSvgHighlight(SignavioSvgNodeType.NODE, SignavioSvgHighlightType.INFO, sourceId, "MISSING"));
         }
       }
@@ -75,7 +109,7 @@ public class SignavioDiffProvider extends SignavioContentRepresentationProvider 
           }
         }
         if (!existant) {
-          // add to missing nodes in target artifact          
+          // add to missing nodes in target artifact
           missingTargetElements.add(new SignavioSvgHighlight(SignavioSvgNodeType.NODE, SignavioSvgHighlightType.INFO, targetId, "MISSING"));
         }
       }
@@ -98,6 +132,7 @@ public class SignavioDiffProvider extends SignavioContentRepresentationProvider 
 
     String html = new SignavioSvgApiBuilder(connector, artifact).buildHtml(htmlContent, additionalContent);
     content.setValue(html);
+    return content;
 
   }
 }

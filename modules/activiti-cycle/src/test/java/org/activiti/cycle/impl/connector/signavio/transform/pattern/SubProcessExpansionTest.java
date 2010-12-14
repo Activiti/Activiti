@@ -11,7 +11,6 @@ import java.io.UnsupportedEncodingException;
 import org.activiti.cycle.impl.connector.fs.FileSystemConnector;
 import org.activiti.cycle.impl.connector.fs.FileSystemConnectorConfiguration;
 import org.activiti.cycle.impl.connector.fs.SignavioFileSystemConnector;
-import org.activiti.cycle.impl.plugin.PluginFinder;
 import org.activiti.cycle.impl.connector.signavio.transform.JsonTransformer;
 import org.activiti.cycle.impl.util.IoUtils;
 import org.json.JSONException;
@@ -36,7 +35,6 @@ public class SubProcessExpansionTest {
     String input = IoUtils.readText(new FileInputStream(inputFileName));
     String expected = IoUtils.readText(new FileInputStream(expectedFileName));
 
-    PluginFinder.checkPluginInitialization(); // needed for registering artifact types
     FileSystemConnector repositoryConnector = new SignavioFileSystemConnector(new FileSystemConnectorConfiguration("filesystem", new File(path)));
 
     JsonTransformer jsonTransformer = new JsonTransformer();

@@ -81,18 +81,6 @@ public class SignavioConnectorConfiguration extends PasswordEnabledRepositoryCon
     this.signavioBaseUrl = signavioBaseUrl;
   }
 
-  /**
-   * TODO: Think about a better concept to handle this
-   */
-  @Override
-  public ArtifactType getDefaultArtifactType() {
-    if (hasArtifactType(SignavioPluginDefinition.ARTIFACT_TYPE_DEFAULT)) {
-      return getArtifactType(SignavioPluginDefinition.ARTIFACT_TYPE_DEFAULT);
-    } else {
-      return null;
-    }
-  }
-
   public String getSignavioUrl() {
     return signavioBaseUrl;
   }

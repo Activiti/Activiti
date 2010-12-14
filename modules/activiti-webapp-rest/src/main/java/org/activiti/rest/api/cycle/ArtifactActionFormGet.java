@@ -14,8 +14,10 @@ package org.activiti.rest.api.cycle;
 
 import java.util.Map;
 
-import org.activiti.cycle.ParameterizedAction;
 import org.activiti.cycle.RepositoryArtifact;
+import org.activiti.cycle.action.ParameterizedAction;
+import org.activiti.cycle.service.CyclePluginService;
+import org.activiti.cycle.service.CycleServiceFactory;
 import org.activiti.rest.util.ActivitiRequest;
 import org.springframework.extensions.webscripts.Cache;
 import org.springframework.extensions.webscripts.Status;
@@ -36,8 +38,7 @@ public class ArtifactActionFormGet extends ActivitiCycleWebScript {
    * @param model The webscripts template model
    */
   @Override
-  protected void execute(ActivitiRequest req, Status status, Cache cache, Map<String, Object> model) {
-    
+  protected void execute(ActivitiRequest req, Status status, Cache cache, Map<String, Object> model) {    
     // Retrieve the artifactId from the request
     String connectorId = req.getMandatoryString("connectorId");
     String artifactId = req.getMandatoryString("artifactId");
@@ -52,7 +53,7 @@ public class ArtifactActionFormGet extends ActivitiCycleWebScript {
 
     // Retrieve the action and its form
     String form = null;
-    for (ParameterizedAction action : artifact.getArtifactType().getParameterizedActions()) {
+    for (ParameterizedAction action : pluginService.getParameterizedActions(artifact)) {
       if (action.getId().equals(actionId)) {
         form = action.getFormAsHtml();
         break;

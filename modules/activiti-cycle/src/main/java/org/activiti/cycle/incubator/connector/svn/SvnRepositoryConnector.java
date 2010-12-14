@@ -1,9 +1,11 @@
 package org.activiti.cycle.incubator.connector.svn;
 
+import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -17,6 +19,7 @@ import java.util.logging.Logger;
 import org.activiti.cycle.ArtifactType;
 import org.activiti.cycle.Content;
 import org.activiti.cycle.RepositoryArtifact;
+import org.activiti.cycle.RepositoryArtifactType;
 import org.activiti.cycle.RepositoryConnector;
 import org.activiti.cycle.RepositoryException;
 import org.activiti.cycle.RepositoryFolder;
@@ -255,6 +258,33 @@ public class SvnRepositoryConnector extends AbstractRepositoryConnector<SvnConne
     return createArtifact(parentFolderId, artifactName, artifactType, artifactContent);
   }
 
+  public Content getContent(String artifactId) throws RepositoryNodeNotFoundException {
+    ISVNClientAdapter clientAdapter = getSvnClientAdapter();
+    RepositoryArtifact artifact = getRepositoryArtifact(artifactId);
+    Content content = new Content();
+
+    SVNUrl url;
+    try {
+      url = buildSVNURL(artifact.getNodeId());
+    } catch (MalformedURLException e) {
+      throw new RepositoryException("Error while retreiving content of " + artifact.getNodeId() + " malformed URL.", e);
+    }
+
+    InputStream is;
+    try {
+      is = clientAdapter.getContent(url, SVNRevision.HEAD);
+    } catch (SVNClientException e) {
+      throw new RepositoryException("Error while retreiving content of " + artifact.getNodeId(), e);
+    }
+
+    // wrap in BufferedInputStream
+    is = new BufferedInputStream(is);
+
+    content.setValue(is);
+    return content;
+
+  }
+
   public RepositoryFolder createFolder(String parentFolderId, String name) throws RepositoryNodeNotFoundException {
     ISVNClientAdapter clientAdapter = getSvnClientAdapter();
     File temporaryFileStrore = null;
@@ -456,13 +486,13 @@ public class SvnRepositoryConnector extends AbstractRepositoryConnector<SvnConne
   protected RepositoryNode createArtifactNode(Object svnEntry, String id) {
     String filename = getFilename(svnEntry);
 
-    // TODO: ignore hidden files?
+    // TODO: ignore hidden files? Maybe make this configurable
     if (filename.startsWith(".")) {
       return null;
     }
 
     // get mimetype
-    ArtifactType artifactType = ConnectorPathUtils.getMimeType(filename, getConfiguration());
+    RepositoryArtifactType artifactType = ConnectorPathUtils.getRepositoryArtifactType(filename);
 
     RepositoryArtifactImpl artifact = new RepositoryArtifactImpl(getConfiguration().getId(), id, artifactType, this);
     artifact.getMetadata().setName(filename);

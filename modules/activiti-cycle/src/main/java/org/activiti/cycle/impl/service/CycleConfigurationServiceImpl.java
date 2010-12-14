@@ -1,6 +1,5 @@
 package org.activiti.cycle.impl.service;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -12,11 +11,7 @@ import org.activiti.cycle.context.CycleSessionContext;
 import org.activiti.cycle.impl.conf.ConfigurationContainer;
 import org.activiti.cycle.impl.conf.RepositoryConfigurationHandler;
 import org.activiti.cycle.impl.conf.RepositoryConnectorConfiguration;
-import org.activiti.cycle.impl.connector.demo.DemoConnectorConfiguration;
-import org.activiti.cycle.impl.connector.fs.FileSystemConnectorConfiguration;
-import org.activiti.cycle.impl.connector.signavio.SignavioConnectorConfiguration;
 import org.activiti.cycle.impl.db.CycleConfigurationDao;
-import org.activiti.cycle.impl.plugin.PluginFinder;
 import org.activiti.cycle.service.CycleConfigurationService;
 
 /**
@@ -86,7 +81,6 @@ public class CycleConfigurationServiceImpl implements CycleConfigurationService 
    */
   public ConfigurationContainer getConfigurationContainer() {
     String currentUserId = getCurrentUserId();
-    PluginFinder.checkPluginInitialization();
     ConfigurationContainer configuration;
     try {
       configuration = cycleConfigurationDao.getConfiguration(currentUserId);
@@ -104,9 +98,9 @@ public class CycleConfigurationServiceImpl implements CycleConfigurationService 
    */
   private ConfigurationContainer createDefaultDemoConfiguration(String currentUserId) {
     ConfigurationContainer configuration = new ConfigurationContainer(currentUserId);
-    configuration.addRepositoryConnectorConfiguration(new DemoConnectorConfiguration("demo"));
-    configuration.addRepositoryConnectorConfiguration(new SignavioConnectorConfiguration("signavio", "http://localhost:8080/activiti-modeler/"));
-    configuration.addRepositoryConnectorConfiguration(new FileSystemConnectorConfiguration("files", File.listRoots()[0]));
+//    configuration.addRepositoryConnectorConfiguration(new DemoConnectorConfiguration("demo"));
+//    configuration.addRepositoryConnectorConfiguration(new SignavioConnectorConfiguration("signavio", "http://localhost:8080/activiti-modeler/"));
+//    configuration.addRepositoryConnectorConfiguration(new FileSystemConnectorConfiguration("files", File.listRoots()[0]));
     return configuration;
   }
 
@@ -231,7 +225,9 @@ public class CycleConfigurationServiceImpl implements CycleConfigurationService 
   }
 
   public Map<String, String> getAvailableRepositoryConnectorConfiguatationClasses() {
-    return PluginFinder.getInstance().getAvailableConnectorConfigurations();
+//    return PluginFinder.getInstance().getAvailableConnectorConfigurations();
+    //TODO: fix after configuration-infrastructure has changed
+    return new HashMap<String, String>();
   }
 
 }

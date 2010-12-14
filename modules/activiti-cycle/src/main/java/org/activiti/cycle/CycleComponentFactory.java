@@ -5,6 +5,7 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Proxy;
 import java.net.URL;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -14,7 +15,12 @@ import java.util.logging.Logger;
 
 import javax.servlet.ServletContext;
 
+import org.activiti.cycle.action.Action;
+import org.activiti.cycle.action.CreateUrlAction;
+import org.activiti.cycle.action.DownloadContentAction;
+import org.activiti.cycle.action.ParameterizedAction;
 import org.activiti.cycle.annotations.CycleComponent;
+import org.activiti.cycle.annotations.ExcludesCycleComponents;
 import org.activiti.cycle.annotations.Interceptors;
 import org.activiti.cycle.context.CycleApplicationContext;
 import org.activiti.cycle.context.CycleContext;
@@ -22,6 +28,8 @@ import org.activiti.cycle.context.CycleContextType;
 import org.activiti.cycle.context.CycleSessionContext;
 import org.activiti.cycle.impl.CycleComponentInvocationHandler;
 import org.activiti.cycle.impl.Interceptor;
+import org.activiti.cycle.transform.ContentArtifactTypeTransformation;
+import org.activiti.cycle.transform.ContentMimeTypeTransformation;
 import org.scannotation.AnnotationDB;
 import org.scannotation.ClasspathUrlFinder;
 import org.scannotation.WarUrlFinder;
@@ -60,24 +68,28 @@ public abstract class CycleComponentFactory {
   private Map<String, CycleComponentDescriptor> descriptorRegistry = new HashMap<String, CycleComponentFactory.CycleComponentDescriptor>();
 
   /**
-   * List of {@link RepositoryConnector}s
+   * map of component types as e.g. {@link Action}, {@link RepositoryConnector}
+   * 
+   * @see CycleComponentFactory#componentTypes
    */
-  private Set<String> repositoryConnectors = new HashSet<String>();
+  private Map<Class< ? >, Set<String>> componentTypeMap = new HashMap<Class< ? >, Set<String>>();
 
   /**
-   * List of Actions
+   * Set of recognized component types. Used as potential keys in
+   * {@link #componentTypeMap}
    */
-  private Set<String> actions = new HashSet<String>();
+  private Set<Class< ? >> componentTypes = new HashSet<Class< ? >>();
 
   private boolean initialized = false;
 
   private void guaranteeInitialization() {
-    if (!initialized)
+    if (!initialized){
       synchronized (this) {
         if (!initialized) {
           init();
         }
       }
+    }
   }
 
   @SuppressWarnings("unchecked")
@@ -128,11 +140,15 @@ public abstract class CycleComponentFactory {
     case SESSION:
       CycleContext sessionContext = CycleSessionContext.getLocalContext();
       if (sessionContext != null) {
-        sessionContext.get(descriptor.name);
+        return sessionContext.get(descriptor.name);
       }
       break;
     case APPLICATION:
-      return CycleApplicationContext.get(descriptor.name);
+      CycleContext applicationContext = CycleApplicationContext.getWrappedContext();
+      if (applicationContext != null) {
+        return applicationContext.get(descriptor.name);
+      }
+      break;
     }
     return null;
   }
@@ -176,7 +192,8 @@ public abstract class CycleComponentFactory {
     Class< ? > superClass = instanceToDecorate.getClass();
     // collect implemented interfaces of this instance
     while (superClass != null && !superClass.equals(Object.class)) {
-      interfaces.addAll(Arrays.asList(superClass.getInterfaces()));
+      // TODO: cast necessary?
+      interfaces.addAll((Collection<Class< ? >>) Arrays.asList(superClass.getInterfaces()));
       superClass = superClass.getSuperclass();
     }
 
@@ -197,6 +214,20 @@ public abstract class CycleComponentFactory {
   }
 
   private void init() {
+    // register component types:
+    componentTypes.add(RepositoryConnector.class);
+    componentTypes.add(Action.class);
+    componentTypes.add(CreateUrlAction.class);
+    componentTypes.add(ParameterizedAction.class);
+    componentTypes.add(DownloadContentAction.class);
+    componentTypes.add(ContentProvider.class);
+    componentTypes.add(ContentRepresentation.class);
+    componentTypes.add(ContentArtifactTypeTransformation.class);
+    componentTypes.add(ContentMimeTypeTransformation.class);
+    componentTypes.add(MimeType.class);
+    componentTypes.add(RepositoryArtifactType.class);
+
+    // scan for components
     scanForComponents();
     initialized = true;
   }
@@ -247,7 +278,27 @@ public abstract class CycleComponentFactory {
     // init component descriptor:
     CycleComponentDescriptor componentDescriptor = new CycleComponentDescriptor(name, componentAnnotation.context(), cycleComponentClass);
     descriptorRegistry.put(name, componentDescriptor);
+
+    // put into type-map
+    for (Class< ? > componentType : componentTypes) {
+      if (componentType.isAssignableFrom(cycleComponentClass)) {
+        Set<String> componentNamesForThisTypeList = componentTypeMap.get(componentType);
+        if (componentNamesForThisTypeList == null) {
+          componentNamesForThisTypeList = new HashSet<String>();
+          componentTypeMap.put(componentType, componentNamesForThisTypeList);
+        }
+        componentNamesForThisTypeList.add(name);
+      }
+    }
     return name;
+  }
+
+  public String[] getComponentsForType(Class< ? > type) {
+    Set<String> componentSet = componentTypeMap.get(type);
+    if (componentSet == null) {
+      return new String[0];
+    }
+    return componentSet.toArray(new String[componentSet.size()]);
   }
 
   private static CycleComponentFactory getInstance() {
@@ -299,4 +350,44 @@ public abstract class CycleComponentFactory {
     return getInstance().getComponentDescriptor(clazz);
   }
 
+  public static String[] getAvailableComponentsForType(Class< ? > type) {
+    return getInstance().getComponentsForType(type);
+  }
+
+  @SuppressWarnings("unchecked")
+  public static <T> Set<Class<T>> getAllImplementations(Class<T> componentType) {
+    String[] componentnames = getAvailableComponentsForType(componentType);
+    Set<Class<T>> resultSet = new HashSet<Class<T>>();
+    for (String string : componentnames) {
+      resultSet.add((Class<T>) getCycleComponentDescriptor(string).clazz);
+    }
+    return resultSet;
+  }
+
+  /**
+   * Note: Q&D-implementation. Only works with
+   * {@link CycleContextType#APPLICATION}-scoped components.
+   */
+  @SuppressWarnings({ "rawtypes", "unchecked" })
+  public static void removeExcludedComponents(Set components) {
+    // TODO: do this more generally
+    Set<Object> excludedComponents = new HashSet<Object>();
+    for (Object object : components) {
+      ExcludesCycleComponents excludesAnnotation = object.getClass().getAnnotation(ExcludesCycleComponents.class);
+      if (excludesAnnotation == null) {
+        continue;
+      }
+      String[] componentNames = excludesAnnotation.value();
+      if (componentNames == null) {
+        continue;
+      }
+      for (String componentName : componentNames) {
+        Object excludedComponentInstance = getCycleComponentInstance(componentName);
+        if (excludedComponentInstance != null) {
+          excludedComponents.add(excludedComponentInstance);
+        }
+      }
+    }
+    components.removeAll(excludedComponents);
+  }
 }

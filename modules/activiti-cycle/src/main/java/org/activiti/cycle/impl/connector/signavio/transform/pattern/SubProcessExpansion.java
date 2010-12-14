@@ -7,8 +7,11 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.activiti.cycle.RepositoryArtifact;
 import org.activiti.cycle.RepositoryConnector;
+import org.activiti.cycle.context.CycleApplicationContext;
 import org.activiti.cycle.impl.connector.signavio.SignavioPluginDefinition;
+import org.activiti.cycle.impl.connector.signavio.provider.JsonProvider;
 import org.activiti.cycle.impl.connector.signavio.transform.JsonTransformationException;
 import org.oryxeditor.server.diagram.Diagram;
 import org.oryxeditor.server.diagram.DiagramBuilder;
@@ -49,8 +52,8 @@ public class SubProcessExpansion extends OryxTransformation {
           try {
             String subProcessId = getModelIdFromSignavioUrl(subProcessUrl);
 
-            String representationName = SignavioPluginDefinition.CONTENT_REPRESENTATION_ID_JSON;
-            String subProcessJson = connector.getContent(subProcessId, representationName).asString();
+//            RepositoryArtifact artifact = connector.getRepositoryArtifact(subProcessId);
+            String subProcessJson = connector.getContent(subProcessId).asString();
             
             Diagram subProcess = DiagramBuilder.parseJson(subProcessJson);
 

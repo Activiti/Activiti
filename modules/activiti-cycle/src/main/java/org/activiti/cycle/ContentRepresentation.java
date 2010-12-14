@@ -2,17 +2,13 @@ package org.activiti.cycle;
 
 import java.io.Serializable;
 
+import org.activiti.cycle.impl.mimetype.Mimetypes;
+
 /**
- * Data structure for link to content, including the URL to the content, the
- * type (see {@link CycleDefaultMimeType}) and a name (which is shown in the GUI).
- * 
- * The client URL should be normally set by the infrastructure, so a
- * {@link ContentRepresentationProvider} can concentrate on really providing the
- * content itself (as byte array). If that is an expensive operation (maybe slow
- * or big content), then this should only be done if the
- * {@link ContentRepresentationProvider} is asked to create the content as well.
+ * TODO: javadoc
  * 
  * @author bernd.ruecker@camunda.com
+ * @author daniel.meyer@camunda.com
  */
 public interface ContentRepresentation extends Serializable {
 
@@ -24,17 +20,29 @@ public interface ContentRepresentation extends Serializable {
   public String getId();
 
   /**
-   * Type of content (e.g. text file, image, ...). Information for the client to
-   * render the content correctly.
-   */
-  public MimeType getMimeType();
-
-  /**
    * The renderInfo property is used by the user interface to determine how to
    * render a content-representation, the supported formats are defined in
    * {@link RenderInfo}.
    */
   public RenderInfo getRenderInfo();
+
+  /**
+   * Returns the content provided by this {@link ContentRepresentation}
+   */
+  public Content getContent(RepositoryArtifact artifact);
+
+  /**
+   * The {@link MimeType} of the returned content. Note: this is not necesarily
+   * the same mimetype as {@link #getRepositoryArtifactType().getMimeType()}.
+   */
+  public MimeType getRepresentationMimeType();
+
+  /**
+   * The {@link RepositoryArtifactType} of the artifacts this
+   * {@link ContentRepresentation} can provide content for. Note: this is not
+   * the type of the returned representation.
+   */
+  public RepositoryArtifactType getRepositoryArtifactType();
 
   // TODO: Think about that, maybe as annotation in the Plugin-Config
   // public boolean isDownloadable();

@@ -1,7 +1,10 @@
 package org.activiti.cycle.impl.connector.util;
 
-import org.activiti.cycle.ArtifactType;
-import org.activiti.cycle.impl.conf.RepositoryConnectorConfiguration;
+import org.activiti.cycle.RepositoryArtifactType;
+import org.activiti.cycle.context.CycleApplicationContext;
+import org.activiti.cycle.impl.mimetype.UnknownMimeType;
+import org.activiti.cycle.impl.repositoryartifacttype.BasicRepositoryArtifactType;
+import org.activiti.cycle.impl.repositoryartifacttype.RepositoryArtifactTypes;
 
 /**
  * Utility methods for connectors
@@ -35,32 +38,27 @@ public class ConnectorPathUtils {
     return result;
   }
 
-  public static ArtifactType getMimeType(String path, RepositoryConnectorConfiguration configuration) {
+  public static RepositoryArtifactType getRepositoryArtifactType(String path) {
     // try to find artifact type
-    ArtifactType artifactType = null;
+    RepositoryArtifactType artifactType = null;
     String extension = path;
+    RepositoryArtifactTypes artifactTypes = CycleApplicationContext.get(RepositoryArtifactTypes.class);
 
-    // TODO: figure out a better way to do this
-    // problem exists with extensions like .bpmn20.xml
     while (extension.contains(".")) {
       extension = extension.substring(extension.indexOf(".") + 1);
-      try {
-        // throws exception if it cannot find an artifact type.
-        artifactType = configuration.getArtifactType(extension);
-      } catch (Exception e) {
-        // let the exception pass
-      }
-      if (artifactType != null) {
+      artifactType = artifactTypes.getTypeForFilename(extension);
+
+      // if we find something, keep it.
+      if (artifactType != null && !artifactType.getMimeType().equals(new UnknownMimeType())) {
         break;
       }
 
     }
-    if (artifactType == null) {
-      return configuration.getDefaultArtifactType();
+    if(artifactType == null) {
+      return new BasicRepositoryArtifactType(CycleApplicationContext.get(UnknownMimeType.class));
     }
 
     return artifactType;
 
   }
-
 }

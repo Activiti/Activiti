@@ -2,8 +2,8 @@ package org.activiti.cycle.impl;
 
 import java.util.Map;
 
-import org.activiti.cycle.ParameterizedAction;
 import org.activiti.cycle.RepositoryException;
+import org.activiti.cycle.action.ParameterizedAction;
 
 /**
  * Base class for actions requiring paremeters which must be displayed in an own

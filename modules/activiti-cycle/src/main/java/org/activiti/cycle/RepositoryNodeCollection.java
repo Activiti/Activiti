@@ -2,6 +2,7 @@ package org.activiti.cycle;
 
 import java.util.List;
 
+
 public interface RepositoryNodeCollection {
 
   /**

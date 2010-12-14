@@ -10,7 +10,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import org.activiti.cycle.RepositoryArtifact;
-import org.activiti.cycle.impl.connector.signavio.SignavioConnector;
+import org.activiti.cycle.impl.connector.signavio.SignavioConnectorConfiguration;
+import org.activiti.cycle.impl.connector.signavio.SignavioConnectorInterface;
 
 public class SignavioSvgApiBuilder {
 
@@ -21,7 +22,9 @@ public class SignavioSvgApiBuilder {
   // TODO: fix absolute paths
   public static final String SERVER_SCRIPT_URL = "http://localhost:8080/activiti-modeler";
 
-  private SignavioConnector connector;
+  private SignavioConnectorInterface connector;
+  
+  private SignavioConnectorConfiguration connectorConfiguration;
 
   private RepositoryArtifact artifact;
 
@@ -33,8 +36,9 @@ public class SignavioSvgApiBuilder {
 
   private String script;
 
-  public SignavioSvgApiBuilder(SignavioConnector connector, RepositoryArtifact artifact) {
+  public SignavioSvgApiBuilder(SignavioConnectorInterface connector, RepositoryArtifact artifact) {
     this.connector = connector;
+    this.connectorConfiguration = (SignavioConnectorConfiguration) connector.getConfiguration();
     this.artifact = artifact;
   }
 
@@ -73,8 +77,8 @@ public class SignavioSvgApiBuilder {
       return "";
     // set properties
     template = template.replaceAll("SIGNAVIO_EDITOR_SRC", SVGAPI_URL_LOCAL);
-    template = template.replaceAll("SIGNAVIO_MODEL_URL", connector.getConfiguration().getModelUrl(artifact.getNodeId()));
-    template = template.replaceAll("SIGNAVIO_SERVER_URL", connector.getConfiguration().getSignavioUrl());
+    template = template.replaceAll("SIGNAVIO_MODEL_URL", connectorConfiguration.getModelUrl(artifact.getNodeId()));
+    template = template.replaceAll("SIGNAVIO_SERVER_URL", connectorConfiguration.getSignavioUrl());
     template = template.replaceAll("SIGNAVIO_ZOOM", zoomLevel);
 
     // build highlights:

@@ -4,16 +4,15 @@ import java.util.UUID;
 
 import org.activiti.cycle.Content;
 import org.activiti.cycle.RepositoryArtifact;
-import org.activiti.cycle.RepositoryConnector;
 import org.activiti.cycle.RepositoryFolder;
 import org.activiti.cycle.RepositoryNode;
 import org.activiti.cycle.RepositoryNodeCollection;
 import org.activiti.cycle.RepositoryNodeNotFoundException;
 import org.activiti.cycle.TransactionalRepositoryConnector;
+import org.activiti.cycle.context.CycleApplicationContext;
 import org.activiti.cycle.impl.conf.ConfigurationContainer;
-import org.activiti.cycle.impl.plugin.PluginFinder;
+import org.activiti.cycle.impl.representation.DefaultXmlContentRepresentation;
 import org.activiti.cycle.incubator.connector.svn.SvnConnectorConfiguration;
-import org.activiti.cycle.incubator.connector.svn.SvnRepositoryConnector;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.Assert;
@@ -26,154 +25,149 @@ import org.junit.Assert;
  */
 public class TestSvnRepositoryConnector {
 
-	// public final static String REPO_LOCATION =
-	// "http://svn.codehaus.org/activiti/";
-	public final static String REPO_LOCATION = "file:///home/meyerd/tmp/svn-tmp/";
+  // public final static String REPO_LOCATION =
+  // "http://svn.codehaus.org/activiti/";
+  public final static String REPO_LOCATION = "file:///home/meyerd/tmp/svn-tmp/";
 
-	private static ConfigurationContainer userConfiguration;
+  private static ConfigurationContainer userConfiguration;
 
-	private static TransactionalRepositoryConnector connector;
+  private static TransactionalRepositoryConnector connector;
 
-	@BeforeClass
-	public static void createConnector() {
-		userConfiguration = new ConfigurationContainer("daniel");
-		userConfiguration.addRepositoryConnectorConfiguration(new SvnConnectorConfiguration("svn", REPO_LOCATION, "/tmp"));
-		connector = (TransactionalRepositoryConnector) userConfiguration.getConnector("svn");
+  @BeforeClass
+  public static void createConnector() {
+    userConfiguration = new ConfigurationContainer("daniel");
+    userConfiguration.addRepositoryConnectorConfiguration(new SvnConnectorConfiguration("svn", REPO_LOCATION, "/tmp"));
+    connector = (TransactionalRepositoryConnector) userConfiguration.getConnector("svn");
+    connector.login("guest", "");
+  }
 
-		// TODO: Should be done in Bootstrapping
-		PluginFinder.checkPluginInitialization();
+  @Test
+  public void testGetChildrenRoot() {
+    RepositoryNodeCollection result = connector.getChildren("");
+    Assert.assertTrue(result.asList().size() > 0);
+    for (RepositoryNode node : result.asList()) {
+      System.out.println(node.getNodeId());
+    }
+    try {
+      result = connector.getChildren("nonExistentPath");
+      Assert.fail();
+    } catch (RepositoryNodeNotFoundException e) {
+      // this should happen
+    }
 
-		 connector.login("guest", "");
-	}
+  }
 
-	@Test
-	public void testGetChildrenRoot() {
-		RepositoryNodeCollection result = connector.getChildren("");
-		Assert.assertTrue(result.asList().size() > 0);
-		for (RepositoryNode node : result.asList()) {
-			System.out.println(node.getNodeId());
-		}
-		try {
-			result = connector.getChildren("nonExistentPath");
-			Assert.fail();
-		} catch (RepositoryNodeNotFoundException e) {
-			// this should happen
-		}
+  @Test
+  public void testGetArtifact() {
+    RepositoryArtifact artifact = connector.getRepositoryArtifact("activiti/trunk/pom.xml");
+    Assert.assertEquals("pom.xml", artifact.getMetadata().getName());
+    try {
+      connector.getRepositoryArtifact("nonExistentArtifact");
+      Assert.fail();
+    } catch (RepositoryNodeNotFoundException e) {
+      // this should happen
+    }
+  }
 
-	}
+  @Test
+  public void testGetFolder() {
+    RepositoryFolder folder = connector.getRepositoryFolder("activiti/trunk");
+    Assert.assertEquals("trunk", folder.getMetadata().getName());
+    try {
+      connector.getRepositoryArtifact("nonExistentFolder");
+      Assert.fail();
+    } catch (RepositoryNodeNotFoundException e) {
+      // this should happen
+    }
+  }
 
-	@Test
-	public void testGetArtifact() {
-		RepositoryArtifact artifact = connector.getRepositoryArtifact("activiti/trunk/pom.xml");
-		Assert.assertEquals("pom.xml", artifact.getMetadata().getName());
-		try {
-			connector.getRepositoryArtifact("nonExistentArtifact");
-			Assert.fail();
-		} catch (RepositoryNodeNotFoundException e) {
-			// this should happen
-		}
-	}
+  @Test
+  public void testGetXmlContent() {
+    RepositoryArtifact artifact = connector.getRepositoryArtifact("activiti/trunk/pom.xml");
+    Content content = CycleApplicationContext.get(DefaultXmlContentRepresentation.class).getContent(artifact);
+    Assert.assertTrue(content.asByteArray().length > 0);
+  }
 
-	@Test
-	public void testGetFolder() {
-		RepositoryFolder folder = connector.getRepositoryFolder("activiti/trunk");
-		Assert.assertEquals("trunk", folder.getMetadata().getName());
-		try {
-			connector.getRepositoryArtifact("nonExistentFolder");
-			Assert.fail();
-		} catch (RepositoryNodeNotFoundException e) {
-			// this should happen
-		}
-	}
+  @Test
+  public void testCreateArtifact() {
+    RepositoryArtifact artifact = connector.getRepositoryArtifact("test.txt");
 
-	@Test
-	public void testGetXmlContent() {
-		RepositoryArtifact artifact = connector.getRepositoryArtifact("activiti/trunk/pom.xml");
+    Content content = connector.getContent(artifact.getNodeId());
 
-		Content content = connector.getContent(artifact.getNodeId(), artifact.getArtifactType().getContentRepresentations().get(0).getId());
-		Assert.assertTrue(content.asByteArray().length > 0);
-	}
+    RepositoryArtifact newArtifact = connector.createArtifact("", UUID.randomUUID() + ".txt", "Text", content);
 
-	@Test
-	public void testCreateArtifact() {
-		RepositoryArtifact artifact = connector.getRepositoryArtifact("test.txt");
+  }
 
-		Content content = connector.getContent(artifact.getNodeId(), "Text");
+  @Test
+  public void testTransactionalCreateArtifact() {
 
-		RepositoryArtifact newArtifact = connector.createArtifact("", UUID.randomUUID() + ".txt", "Text", content);
+    RepositoryArtifact artifact = connector.getRepositoryArtifact("test.txt");
 
-	}
+    Content content = connector.getContent(artifact.getNodeId());
 
-	@Test
-	public void testTransactionalCreateArtifact() {
-		
-		RepositoryArtifact artifact = connector.getRepositoryArtifact("test.txt");
+    connector.beginTransaction();
 
-		Content content = connector.getContent(artifact.getNodeId(), "Text");
+    RepositoryFolder folder = connector.createFolder("//", UUID.randomUUID().toString());
 
-		connector.beginTransaction();
+    RepositoryFolder folder2 = connector.createFolder(folder.getNodeId(), UUID.randomUUID().toString());
+    System.out.println(folder2);
 
-		RepositoryFolder folder = connector.createFolder("//", UUID.randomUUID().toString());
+    String filename = UUID.randomUUID() + ".txt";
+    RepositoryArtifact newArtifact = connector.createArtifact(folder2.getNodeId(), filename, "Text", content);
+    Assert.assertNotNull(newArtifact);
 
-		RepositoryFolder folder2 = connector.createFolder(folder.getNodeId(), UUID.randomUUID().toString());
-		System.out.println(folder2);
+    RepositoryNodeCollection nodeCollection = connector.getChildren(folder2.getNodeId());
+    Assert.assertTrue(nodeCollection.containsArtifact(newArtifact.getGlobalUniqueId()));
 
-		String filename = UUID.randomUUID() + ".txt";
-		RepositoryArtifact newArtifact = connector.createArtifact(folder2.getNodeId(), filename, "Text", content);
-		Assert.assertNotNull(newArtifact);
+    connector.commitTransaction("");
 
-		RepositoryNodeCollection nodeCollection = connector.getChildren(folder2.getNodeId());
-		Assert.assertTrue(nodeCollection.containsArtifact(newArtifact.getGlobalUniqueId()));
+    nodeCollection = connector.getChildren(folder2.getNodeId());
+    Assert.assertTrue(nodeCollection.containsArtifact(newArtifact.getGlobalUniqueId()));
 
-		connector.commitTransaction("");
+  }
 
-		nodeCollection = connector.getChildren(folder2.getNodeId());
-		Assert.assertTrue(nodeCollection.containsArtifact(newArtifact.getGlobalUniqueId()));
+  @Test
+  public void testCreateFolder() {
+    RepositoryFolder folder = connector.createFolder("", UUID.randomUUID().toString());
+  }
 
-	}
+  @Test
+  public void testUpdateContent() {
+    RepositoryArtifact test1 = connector.getRepositoryArtifact("test.txt");
+    RepositoryArtifact test2 = connector.getRepositoryArtifact("test2.txt");
 
-	@Test
-	public void testCreateFolder() {
-		RepositoryFolder folder = connector.createFolder("", UUID.randomUUID().toString());
-	}
+    Content contentTest1 = connector.getContent(test1.getNodeId());
+    Content contentTest2 = connector.getContent(test2.getNodeId());
 
-	@Test
-	public void testUpdateContent() {
-		RepositoryArtifact test1 = connector.getRepositoryArtifact("test.txt");
-		RepositoryArtifact test2 = connector.getRepositoryArtifact("test2.txt");
+    connector.updateContent(test1.getNodeId(), contentTest2);
+    connector.updateContent(test2.getNodeId(), contentTest1);
+  }
 
-		Content contentTest1 = connector.getContent(test1.getNodeId(), "Text");
-		Content contentTest2 = connector.getContent(test2.getNodeId(), "Text");
+  @Test
+  public void testDeleteArtifact() {
+    connector.deleteArtifact("test_delete.txt");
+  }
 
-		connector.updateContent(test1.getNodeId(), contentTest2);
-		connector.updateContent(test2.getNodeId(), contentTest1);
-	}
+  @Test
+  public void testDeleteFolder() {
+    connector.deleteFolder("trunk");
+  }
 
-	@Test
-	public void testDeleteArtifact() {
-		connector.deleteArtifact("test_delete.txt");
-	}
+  @Test
+  public void testTransaction() {
 
-	@Test
-	public void testDeleteFolder() {
-		connector.deleteFolder("trunk");
-	}
+    connector.beginTransaction();
 
-	@Test
-	public void testTransaction() {
+    RepositoryArtifact test1 = connector.getRepositoryArtifact("test.txt");
+    RepositoryArtifact test2 = connector.getRepositoryArtifact("test2.txt");
 
-		connector.beginTransaction();
+    Content contentTest1 = connector.getContent(test1.getNodeId());
+    Content contentTest2 = connector.getContent(test2.getNodeId());
 
-		RepositoryArtifact test1 = connector.getRepositoryArtifact("test.txt");
-		RepositoryArtifact test2 = connector.getRepositoryArtifact("test2.txt");
+    connector.updateContent(test1.getNodeId(), contentTest2);
+    connector.updateContent(test2.getNodeId(), contentTest1);
 
-		Content contentTest1 = connector.getContent(test1.getNodeId(), "Text");
-		Content contentTest2 = connector.getContent(test2.getNodeId(), "Text");
-
-		connector.updateContent(test1.getNodeId(), contentTest2);
-		connector.updateContent(test2.getNodeId(), contentTest1);
-
-		connector.commitTransaction("commit");
-	}
+    connector.commitTransaction("commit");
+  }
 
 }

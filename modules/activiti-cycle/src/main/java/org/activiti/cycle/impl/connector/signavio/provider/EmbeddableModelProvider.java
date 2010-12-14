@@ -15,9 +15,19 @@ package org.activiti.cycle.impl.connector.signavio.provider;
 import java.io.IOException;
 
 import org.activiti.cycle.Content;
+import org.activiti.cycle.MimeType;
+import org.activiti.cycle.RenderInfo;
 import org.activiti.cycle.RepositoryArtifact;
+import org.activiti.cycle.RepositoryArtifactType;
 import org.activiti.cycle.RepositoryException;
+import org.activiti.cycle.components.RuntimeConnectorList;
+import org.activiti.cycle.context.CycleApplicationContext;
+import org.activiti.cycle.context.CycleSessionContext;
 import org.activiti.cycle.impl.connector.signavio.SignavioConnector;
+import org.activiti.cycle.impl.connector.signavio.SignavioConnectorConfiguration;
+import org.activiti.cycle.impl.connector.signavio.SignavioConnectorInterface;
+import org.activiti.cycle.impl.connector.signavio.repositoryartifacttype.SignavioBpmn20ArtifactType;
+import org.activiti.cycle.impl.mimetype.HtmlMimeType;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -36,24 +46,49 @@ import org.restlet.representation.Representation;
  * TODO: Clarify what this does exactly and improve!
  * 
  * Embedebale Model still has problems in the OSS version (usable there at all?)
+ * 
+ * 
  */
 public class EmbeddableModelProvider extends SignavioContentRepresentationProvider {
+  
+  // !!! WARNING: this might be broken. - meyerd !!!
+  
+  public String getId() {
+    return "EmbeddableModelProvider";
+  }
 
-  @Override
-  public void addValueToContent(Content content, SignavioConnector connector, RepositoryArtifact artifact) {
+
+  public RenderInfo getRenderInfo() {
+    // TODO: ?
+    return RenderInfo.HTML;
+  }
+
+  public MimeType getRepresentationMimeType() {
+    return CycleApplicationContext.get(HtmlMimeType.class);
+  }
+
+  public RepositoryArtifactType getRepositoryArtifactType() {
+    return CycleApplicationContext.get(SignavioBpmn20ArtifactType.class);
+  }
+  
+  public Content getContent(RepositoryArtifact artifact) {
     try {
+      Content content = new Content();
+      SignavioConnectorInterface connector = (SignavioConnectorInterface) CycleSessionContext.get(RuntimeConnectorList.class).getConnectorById(artifact.getConnectorId());      
       JSONArray embeddedModel = getEmbeddedModel(connector, artifact);
       String hmtlSnippet = getHmtlSnippet(connector, artifact, embeddedModel);
       content.setValue(hmtlSnippet);
+      return content;
     } catch (Exception ex) {
       throw new RepositoryException("Exception while retrieving embeddedModel from Signavio", ex);
     }
   }
 
-  public JSONArray getEmbeddedModel(SignavioConnector connector, RepositoryArtifact artifact) throws IOException, JSONException {
+
+  public JSONArray getEmbeddedModel(SignavioConnectorInterface connector, RepositoryArtifact artifact) throws IOException, JSONException {
     Client client = connector.initClient();
     
-    Reference embeddedModelRef = new Reference(connector.getConfiguration().getPurl());
+    Reference embeddedModelRef = new Reference(((SignavioConnectorConfiguration)connector.getConfiguration()).getPurl());
 
     // Create POST parameters
     Form embeddedModelForm = new Form();
@@ -163,15 +198,17 @@ public class EmbeddableModelProvider extends SignavioContentRepresentationProvid
     return jsonArray;
   }
 
-  public String getHmtlSnippet(SignavioConnector connector, RepositoryArtifact artifact, JSONArray embeddedModelJSONArray) throws JSONException {
+  public String getHmtlSnippet(SignavioConnectorInterface connector, RepositoryArtifact artifact, JSONArray embeddedModelJSONArray) throws JSONException {
 
     // String htmlSnippet =
     // getHTMLSnippetForPublishingProcessModell(getFile());
 
     // Creating the JSON Object for the Snippet
     JSONObject resultJsonObject = new JSONObject();
+    
+    SignavioConnectorConfiguration connectorConfiguration = (SignavioConnectorConfiguration)connector.getConfiguration();
 
-    resultJsonObject.put("url", connector.getConfiguration().getModelUrl(artifact.getNodeId()));
+    resultJsonObject.put("url", connectorConfiguration.getModelUrl(artifact.getNodeId()));
     resultJsonObject.put("overflowX", "fit");
     resultJsonObject.put("overflowY", "fit");
     resultJsonObject.put("zoomSlider", true);
@@ -222,7 +259,7 @@ public class EmbeddableModelProvider extends SignavioContentRepresentationProvid
     // 2) + "mashup/signavio.js";
     // Letzteres um das 'p' in SERVER_URL wegzukriegen
 
-    String firstScriptTag = "<script type=\"text/javascript\" src=\"" + connector.getConfiguration().getMashupUrl() + "signavio.js"
+    String firstScriptTag = "<script type=\"text/javascript\" src=\"" + connectorConfiguration.getMashupUrl() + "signavio.js"
             + "\"></script>";
     String secondScriptTag = "<script type=\"text/plain\">" + resultJsonObject.toString() + "</script>";
 
@@ -261,4 +298,7 @@ public class EmbeddableModelProvider extends SignavioContentRepresentationProvid
       throw new RepositoryException("Exception while accessing Signavio repository", ex);
     }
   }
+
+
+
 }

@@ -2,6 +2,8 @@ package org.activiti.cycle.impl.service;
 
 import org.activiti.cycle.impl.db.impl.CycleDaoMyBatisImpl;
 import org.activiti.cycle.service.CycleConfigurationService;
+import org.activiti.cycle.service.CycleContentService;
+import org.activiti.cycle.service.CyclePluginService;
 import org.activiti.cycle.service.CycleRepositoryService;
 import org.activiti.cycle.service.CycleTagService;
 
@@ -19,17 +21,23 @@ public class CycleServiceConfiguration {
 
   private CycleConfigurationServiceImpl configurationService;
 
+  private CyclePluginServiceImpl cyclePluginServiceImpl;
+
+  private CycleContentServiceImpl cycleContentServiceImpl;
+
   private CycleServiceConfiguration() {
     wireServices();
     initializeServices();
   }
 
-  public void wireServices() {
+  private void wireServices() {
     // instantiate dependencies:
     CycleDaoMyBatisImpl dao = new CycleDaoMyBatisImpl();
     repositoryService = new CycleRepositoryServiceImpl();
     configurationService = new CycleConfigurationServiceImpl();
     tagService = new CycleTagServiceImpl();
+    cyclePluginServiceImpl = new CyclePluginServiceImpl();
+    cycleContentServiceImpl = new CycleContentServiceImpl();
 
     // wire-up
     repositoryService.setLinkDao(dao);
@@ -40,7 +48,7 @@ public class CycleServiceConfiguration {
     configurationService.setCycleServiceConfiguration(this);
   }
 
-  public void initializeServices() {
+  private void initializeServices() {
     // initialize
     tagService.initialize();
     repositoryService.initialize();
@@ -57,6 +65,14 @@ public class CycleServiceConfiguration {
 
   public CycleConfigurationService getConfigurationService() {
     return configurationService;
+  }
+
+  public CyclePluginService getCyclePluginService() {
+    return cyclePluginServiceImpl;
+  }
+
+  public CycleContentServiceImpl getCycleContentServiceImpl() {
+    return cycleContentServiceImpl;
   }
 
   public static CycleServiceConfiguration getInstance() {

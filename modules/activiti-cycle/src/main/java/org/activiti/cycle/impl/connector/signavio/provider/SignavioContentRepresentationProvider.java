@@ -14,24 +14,18 @@ package org.activiti.cycle.impl.connector.signavio.provider;
 
 import java.io.IOException;
 
-import org.activiti.cycle.Content;
+import org.activiti.cycle.ContentRepresentation;
 import org.activiti.cycle.RepositoryArtifact;
-import org.activiti.cycle.RepositoryConnector;
-import org.activiti.cycle.impl.ContentProviderImpl;
-import org.activiti.cycle.impl.connector.signavio.SignavioConnector;
+import org.activiti.cycle.impl.connector.signavio.SignavioConnectorInterface;
 import org.restlet.Response;
 
-public abstract class SignavioContentRepresentationProvider extends ContentProviderImpl {
+public abstract class SignavioContentRepresentationProvider implements ContentRepresentation {
 
-  public static Response getJsonResponse(SignavioConnector connector, RepositoryArtifact artifact, String urlSuffix) throws IOException {
+  private static final long serialVersionUID = 1L;
+
+  public static Response getJsonResponse(SignavioConnectorInterface connector, RepositoryArtifact artifact, String urlSuffix) throws IOException {
     String url = connector.getModelUrl(artifact) + urlSuffix;
     return connector.getJsonResponse(url);
   }
 
-  @Override
-  public void addValueToContent(Content content, RepositoryConnector connector, RepositoryArtifact artifact) {
-    addValueToContent(content, (SignavioConnector) connector, artifact);
-  }
-  
-  public abstract void addValueToContent(Content content, SignavioConnector connector, RepositoryArtifact artifact);  
 }

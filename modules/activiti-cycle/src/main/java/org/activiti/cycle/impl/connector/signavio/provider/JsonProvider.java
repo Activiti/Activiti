@@ -13,25 +13,58 @@
 package org.activiti.cycle.impl.connector.signavio.provider;
 
 import org.activiti.cycle.Content;
+import org.activiti.cycle.MimeType;
+import org.activiti.cycle.RenderInfo;
 import org.activiti.cycle.RepositoryArtifact;
+import org.activiti.cycle.RepositoryArtifactType;
 import org.activiti.cycle.RepositoryException;
+import org.activiti.cycle.annotations.CycleComponent;
+import org.activiti.cycle.components.RuntimeConnectorList;
+import org.activiti.cycle.context.CycleApplicationContext;
+import org.activiti.cycle.context.CycleContextType;
+import org.activiti.cycle.context.CycleSessionContext;
 import org.activiti.cycle.impl.connector.signavio.SignavioConnector;
+import org.activiti.cycle.impl.connector.signavio.SignavioConnectorInterface;
+import org.activiti.cycle.impl.connector.signavio.repositoryartifacttype.SignavioBpmn20ArtifactType;
+import org.activiti.cycle.impl.mimetype.JsonMimeType;
+import org.activiti.cycle.impl.mimetype.XmlMimeType;
 import org.json.JSONObject;
 import org.restlet.Response;
 
+@CycleComponent(context = CycleContextType.APPLICATION)
 public class JsonProvider extends SignavioContentRepresentationProvider {
-  
-  @Override
-  public void addValueToContent(Content content, SignavioConnector connector, RepositoryArtifact artifact) {
+
+  private static final long serialVersionUID = 1L;
+
+  public Content getContent(RepositoryArtifact artifact) {
     try {
-      Response jsonResponse = getJsonResponse(connector, artifact, "/json");
-      
+      SignavioConnectorInterface signavioConnector = (SignavioConnectorInterface) CycleSessionContext.get(RuntimeConnectorList.class).getConnectorById(artifact.getConnectorId());
+      Content content = new Content();
+      Response jsonResponse = getJsonResponse(signavioConnector, artifact, "/json");
+
       String jsonString = jsonResponse.getEntity().getText();
       JSONObject jsonObj = new JSONObject(jsonString);
       content.setValue(jsonObj.toString(2));
+      return content;
     } catch (Exception ex) {
       throw new RepositoryException("Error while accessing Signavio repository", ex);
     }
+  }
+
+  public String getId() {
+    return "JSON";
+  }
+  
+  public MimeType getRepresentationMimeType() {
+    return CycleApplicationContext.get(JsonMimeType.class);
+  }
+
+  public RenderInfo getRenderInfo() {
+    return RenderInfo.CODE;
+  }
+
+  public RepositoryArtifactType getRepositoryArtifactType() {
+    return CycleApplicationContext.get(SignavioBpmn20ArtifactType.class);
   }
 
 }

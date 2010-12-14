@@ -13,27 +13,63 @@
 package org.activiti.cycle.impl.connector.signavio.provider;
 
 import org.activiti.cycle.Content;
+import org.activiti.cycle.MimeType;
+import org.activiti.cycle.RenderInfo;
 import org.activiti.cycle.RepositoryArtifact;
+import org.activiti.cycle.RepositoryArtifactType;
 import org.activiti.cycle.RepositoryException;
+import org.activiti.cycle.annotations.CycleComponent;
+import org.activiti.cycle.components.RuntimeConnectorList;
+import org.activiti.cycle.context.CycleApplicationContext;
+import org.activiti.cycle.context.CycleContextType;
+import org.activiti.cycle.context.CycleSessionContext;
 import org.activiti.cycle.impl.connector.signavio.SignavioConnector;
+import org.activiti.cycle.impl.connector.signavio.SignavioConnectorInterface;
+import org.activiti.cycle.impl.connector.signavio.repositoryartifacttype.SignavioJpdl4ArtifactType;
+import org.activiti.cycle.impl.mimetype.HtmlMimeType;
+import org.activiti.cycle.impl.mimetype.XmlMimeType;
+import org.activiti.cycle.impl.transform.XmlToTextTransformation;
 import org.restlet.Response;
 import org.restlet.ext.xml.DomRepresentation;
 
+@CycleComponent(context = CycleContextType.APPLICATION)
 public class Jpdl4Provider extends SignavioContentRepresentationProvider {
+
+  private static final long serialVersionUID = 1L;
 
   public static final String NAME = "jpdl4";
 
-  @Override
-  public void addValueToContent(Content content, SignavioConnector connector, RepositoryArtifact artifact) {
+  public Content getContent(RepositoryArtifact artifact) {
     try {
-      Response jpdlResponse = getJsonResponse(connector, artifact, "/jpdl4");
+      SignavioConnectorInterface signavioConnector = (SignavioConnectorInterface) CycleSessionContext.get(RuntimeConnectorList.class).getConnectorById(artifact.getConnectorId());
+      Content content = new Content();
+
+      Response jpdlResponse = getJsonResponse(signavioConnector, artifact, "/jpdl4");
       DomRepresentation xmlData = new DomRepresentation(jpdlResponse.getEntity());
-      String jpdl4AsString = getXmlAsString(xmlData);
-      log.finest("JPDL4 String: " + jpdl4AsString);
+      XmlToTextTransformation transformation = CycleApplicationContext.get(XmlToTextTransformation.class);
+      String jpdl4AsString = transformation.getXmlAsString(xmlData.getDomSource());
+      // log.finest("JPDL4 String: " + jpdl4AsString);
       content.setValue(jpdl4AsString);
+      return content;
     } catch (Exception ex) {
       throw new RepositoryException("Exception while accessing Signavio repository", ex);
     }
+  }
+
+  public String getId() {
+    return NAME;
+  }
+
+  public MimeType getRepresentationMimeType() {
+    return CycleApplicationContext.get(XmlMimeType.class);
+  }
+  
+  public RenderInfo getRenderInfo() {
+    return RenderInfo.CODE;
+  }
+
+  public RepositoryArtifactType getRepositoryArtifactType() {
+    return CycleApplicationContext.get(SignavioJpdl4ArtifactType.class);
   }
 
 }

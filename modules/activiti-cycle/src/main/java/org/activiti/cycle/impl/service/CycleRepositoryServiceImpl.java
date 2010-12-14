@@ -3,11 +3,14 @@ package org.activiti.cycle.impl.service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.activiti.cycle.ArtifactType;
 import org.activiti.cycle.Content;
+import org.activiti.cycle.MimeType;
 import org.activiti.cycle.RepositoryArtifact;
 import org.activiti.cycle.RepositoryArtifactLink;
+import org.activiti.cycle.RepositoryArtifactType;
 import org.activiti.cycle.RepositoryConnector;
 import org.activiti.cycle.RepositoryException;
 import org.activiti.cycle.RepositoryFolder;
@@ -15,6 +18,7 @@ import org.activiti.cycle.RepositoryNode;
 import org.activiti.cycle.RepositoryNodeCollection;
 import org.activiti.cycle.RepositoryNodeNotFoundException;
 import org.activiti.cycle.components.RuntimeConnectorList;
+import org.activiti.cycle.context.CycleApplicationContext;
 import org.activiti.cycle.context.CycleSessionContext;
 import org.activiti.cycle.impl.RepositoryFolderImpl;
 import org.activiti.cycle.impl.RepositoryNodeCollectionImpl;
@@ -22,7 +26,11 @@ import org.activiti.cycle.impl.conf.PasswordEnabledRepositoryConnectorConfigurat
 import org.activiti.cycle.impl.connector.util.TransactionalConnectorUtils;
 import org.activiti.cycle.impl.db.CycleLinkDao;
 import org.activiti.cycle.impl.db.entity.RepositoryArtifactLinkEntity;
+import org.activiti.cycle.impl.mimetype.Mimetypes;
+import org.activiti.cycle.impl.repositoryartifacttype.RepositoryArtifactTypes;
+import org.activiti.cycle.impl.transform.Transformations;
 import org.activiti.cycle.service.CycleRepositoryService;
+import org.activiti.cycle.transform.ContentTransformationException;
 
 /**
  * @author bernd.ruecker@camunda.com
@@ -57,13 +65,13 @@ public class CycleRepositoryServiceImpl implements CycleRepositoryService {
   public boolean login(String username, String password, String connectorId) {
     RepositoryConnector conn = getRepositoryConnector(connectorId);
     if (conn != null) {
-      
+
       if (conn.getConfiguration() instanceof PasswordEnabledRepositoryConnectorConfiguration) {
         PasswordEnabledRepositoryConnectorConfiguration configuration = (PasswordEnabledRepositoryConnectorConfiguration) conn.getConfiguration();
         configuration.setUser(username);
-        configuration.setPassword(password);        
+        configuration.setPassword(password);
       }
-      
+
       conn.login(username, password);
       return true;
     }
@@ -157,8 +165,8 @@ public class CycleRepositoryServiceImpl implements CycleRepositoryService {
     getRepositoryConnector(connectorId).deleteFolder(folderId);
   }
 
-  public Content getContent(String connectorId, String artifactId, String representationName) throws RepositoryNodeNotFoundException {
-    return getRepositoryConnector(connectorId).getContent(artifactId, representationName);
+  public Content getContent(String connectorId, String artifactId) throws RepositoryNodeNotFoundException {
+    return getRepositoryConnector(connectorId).getContent(artifactId);
   }
 
   public void executeParameterizedAction(String connectorId, String artifactId, String actionId, Map<String, Object> parameters) throws Exception {
@@ -175,13 +183,13 @@ public class CycleRepositoryServiceImpl implements CycleRepositoryService {
     connector.executeParameterizedAction(artifactId, actionId, parameters);
   }
 
-  public List<ArtifactType> getSupportedArtifactTypes(String connectorId, String folderId) {
-    if (folderId == null || folderId.length() <= 1) {
-      // "virtual" root folder doesn't support any artifact types
-      return new ArrayList<ArtifactType>();
-    }
-    return getRepositoryConnector(connectorId).getSupportedArtifactTypes(folderId);
-  }
+//  public List<ArtifactType> getSupportedArtifactTypes(String connectorId, String folderId) {
+//    if (folderId == null || folderId.length() <= 1) {
+//      // "virtual" root folder doesn't support any artifact types
+//      return new ArrayList<ArtifactType>();
+//    }
+//    return getRepositoryConnector(connectorId).getSupportedArtifactTypes(folderId);
+//  }
 
   // RepositoryArtifactLink specific methods
 
@@ -198,14 +206,14 @@ public class CycleRepositoryServiceImpl implements CycleRepositoryService {
       cycleLink.setSourceArtifactId(repositoryArtifactLink.getSourceArtifact().getNodeId());
       cycleLink.setSourceElementId(repositoryArtifactLink.getSourceElementId());
       cycleLink.setSourceElementName(repositoryArtifactLink.getSourceElementName());
-      cycleLink.setSourceRevision(repositoryArtifactLink.getSourceArtifact().getArtifactType().getRevision());
+      // cycleLink.setSourceRevision(repositoryArtifactLink.getSourceArtifact().getArtifactType().getRevision());
 
       // set target artifact attributes
       cycleLink.setTargetConnectorId(repositoryArtifactLink.getTargetArtifact().getConnectorId());
       cycleLink.setTargetArtifactId(repositoryArtifactLink.getTargetArtifact().getNodeId());
       cycleLink.setTargetElementId(repositoryArtifactLink.getTargetElementId());
       cycleLink.setTargetElementName(repositoryArtifactLink.getTargetElementName());
-      cycleLink.setTargetRevision(repositoryArtifactLink.getTargetArtifact().getArtifactType().getRevision());
+      // cycleLink.setTargetRevision(repositoryArtifactLink.getTargetArtifact().getArtifactType().getRevision());
 
       cycleLink.setLinkType(repositoryArtifactLink.getLinkType());
       cycleLink.setComment(repositoryArtifactLink.getComment());

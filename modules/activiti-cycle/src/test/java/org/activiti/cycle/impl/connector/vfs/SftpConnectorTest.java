@@ -7,11 +7,11 @@ import org.activiti.cycle.RepositoryArtifact;
 import org.activiti.cycle.RepositoryFolder;
 import org.activiti.cycle.RepositoryNode;
 import org.activiti.cycle.RepositoryNodeCollection;
+import org.activiti.cycle.context.CycleApplicationContext;
 import org.activiti.cycle.impl.conf.ConfigurationContainer;
-import org.activiti.cycle.impl.plugin.PluginFinder;
+import org.activiti.cycle.impl.representation.DefaultXmlContentRepresentation;
 import org.activiti.cycle.incubator.connector.vfs.VfsConnector;
 import org.activiti.cycle.incubator.connector.vfs.VfsConnectorConfiguration;
-import org.activiti.cycle.incubator.connector.vfs.VfsConnectorPluginDefinition;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -27,8 +27,6 @@ public class SftpConnectorTest {
     userConfiguration.addRepositoryConnectorConfiguration(new VfsConnectorConfiguration("sftp", "localhost", "/home/guest/", "sftp"));
     connector = (VfsConnector) userConfiguration.getConnector("sftp");
 
-    // TODO: Should be done in Bootstrapping
-    PluginFinder.checkPluginInitialization();
     connector.login("guest", "guestlogin");
   }
 
@@ -44,7 +42,7 @@ public class SftpConnectorTest {
   public void testCreateArtifact() {
     RepositoryArtifact artifact = connector.getRepositoryArtifact("build.xml");
 
-    Content content = connector.getContent(artifact.getNodeId(), VfsConnectorPluginDefinition.CONTENT_REPRESENTATION_ID_XML);
+    Content content = CycleApplicationContext.get(DefaultXmlContentRepresentation.class).getContent(artifact);
 
     RepositoryArtifact newArtifact = connector.createArtifact("tmp/", UUID.randomUUID() + ".xml", "Text", content);
 
@@ -61,7 +59,7 @@ public class SftpConnectorTest {
   public void testDeleteArtifact() {
     RepositoryArtifact artifact = connector.getRepositoryArtifact("build.xml");
 
-    Content content = connector.getContent(artifact.getNodeId(), VfsConnectorPluginDefinition.CONTENT_REPRESENTATION_ID_XML);
+    Content content = CycleApplicationContext.get(DefaultXmlContentRepresentation.class).getContent(artifact);
 
     RepositoryArtifact newArtifact = connector.createArtifact("tmp/", UUID.randomUUID() + ".xml", "Text", content);
 
