@@ -37,6 +37,8 @@ public class ProcessDefinitionQueryImpl extends AbstractQuery<ProcessDefinitionQ
   protected String deploymentId;
   protected String key;
   protected String keyLike;
+  protected String resourceName;
+  protected String resourceNameLike;
   protected Integer version;
   protected boolean latest = false;
 
@@ -105,6 +107,22 @@ public class ProcessDefinitionQueryImpl extends AbstractQuery<ProcessDefinitionQ
       throw new ActivitiException("keyLike is null");
     }
     this.keyLike = keyLike;
+    return this;
+  }
+  
+  public ProcessDefinitionQueryImpl processDefinitionResourceName(String resourceName) {
+    if (resourceName == null) {
+      throw new ActivitiException("resourceName is null");
+    }
+    this.resourceName = resourceName;
+    return this;
+  }
+  
+  public ProcessDefinitionQueryImpl processDefinitionResourceNameLike(String resourceNameLike) {
+    if (resourceNameLike == null) {
+      throw new ActivitiException("resourceNameLike is null");
+    }
+    this.resourceNameLike = resourceNameLike;
     return this;
   }
   
@@ -205,5 +223,11 @@ public class ProcessDefinitionQueryImpl extends AbstractQuery<ProcessDefinitionQ
   }
   public String getCategoryLike() {
     return categoryLike;
+  }
+  public String getResourceName() {
+    return resourceName;
+  }
+  public String getResourceNameLike() {
+    return resourceNameLike;
   }
 }

@@ -521,7 +521,7 @@ public class DbSqlSession implements Session {
   }
 
   protected void upgradeStepStaticResource(int minorDbVersionNumber) {
-    String resourceName = getResourceForDbOperation("upgrade", "upgradestep5"+minorDbVersionNumber);
+    String resourceName = getResourceForDbOperation("upgrade", "upgradestep.5"+minorDbVersionNumber);
     InputStream inputStream = ReflectUtil.getResourceAsStream(resourceName);
     if (inputStream!=null) {
       try {
@@ -569,7 +569,6 @@ public class DbSqlSession implements Session {
         if (!ddlStatement.startsWith("#")) {
           Statement jdbcStatement = connection.createStatement();
           try {
-            log.finest("\n" + ddlStatement);
             jdbcStatement.execute(ddlStatement);
             jdbcStatement.close();
           } catch (Exception e) {

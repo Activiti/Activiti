@@ -84,16 +84,8 @@ public class UpgradeTestCase extends AbstractActivitiTestCase {
       throw e;
       
     } finally {
-      if (isAfterTest()) {
-        TestHelper.annotationDeploymentTearDown(processEngine, deploymentId, getClass(), getName());
-        assertAndEnsureCleanDb();
-      }
       ClockUtil.reset();
     }
-  }
-
-  protected boolean isAfterTest() {
-    return getClass().getName().endsWith("AfterTest");
   }
 
   protected boolean isBeforeTest() {

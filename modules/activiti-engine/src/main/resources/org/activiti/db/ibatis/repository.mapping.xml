@@ -192,6 +192,12 @@
       <if test="keyLike != null">
         and PD.KEY_ like #{keyLike}
       </if>
+      <if test="resourceName != null">
+        and PD.RESOURCE_NAME_ = #{resourceName}
+      </if>
+      <if test="resourceNameLike != null">
+        and PD.RESOURCE_NAME_ like #{resourceNameLike}
+      </if>
       <if test="version != null">
         and PD.VERSION_ = #{version}
       </if>

@@ -21,6 +21,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Logger;
 
 import javax.sql.DataSource;
 
@@ -115,6 +116,8 @@ import org.apache.ibatis.type.JdbcType;
  * @author Tom Baeyens
  */
 public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfiguration {
+  
+  private static Logger log = Logger.getLogger(ProcessEngineConfigurationImpl.class.getName());
   
   public static final String DB_SCHEMA_UPDATE_CREATE = "create";
   public static final String DB_SCHEMA_UPDATE_DROP_CREATE = "drop-create";
@@ -326,6 +329,8 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
       if ( (jdbcDriver==null) || (jdbcUrl==null) || (jdbcUsername==null) ) {
         throw new ActivitiException("DataSource or JDBC properties have to be specified in a process engine configuration");
       }
+      
+      log.fine("initializing datasource to db: "+jdbcUrl);
       
       PooledDataSource pooledDataSource = 
         new PooledDataSource(ReflectUtil.getClassLoader(), jdbcDriver, jdbcUrl, jdbcUsername, jdbcPassword );

@@ -117,6 +117,7 @@
     <plugins>      
       <plugin>
         <artifactId>maven-surefire-plugin</artifactId>
+        <!-- version>2.7-SNAPSHOT</version -->
         <configuration>
           <excludes>
             <exclude>**/*TestCase.java</exclude>

@@ -45,11 +45,15 @@
       <filterset filtersfile="${user.home}/.activiti/upgrade/build.${db}.properties" />
     </copy>
     <mkdir dir="target/test-results-after" />
+		<condition property="debug.args" value="-Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=5005 -Xdebug" else="">
+			<equals arg1="${debug}" arg2="true"/>
+		</condition>
     <junit>
       <classpath>
         <pathelement location="target/activiti-upgrade-after-classes" />
         <fileset dir="../../modules/activiti-upgrade/target/test-libs" />
       </classpath>
+    	<jvmarg line="${debug.args}" />
       <batchtest todir="target/test-results-after" fork="yes">
         <fileset dir="target/activiti-upgrade-after-classes">
           <include name="**/*AfterTest.class"/>

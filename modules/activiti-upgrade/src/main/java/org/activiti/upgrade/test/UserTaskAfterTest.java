@@ -17,7 +17,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.activiti.engine.task.Task;
-import org.activiti.engine.test.Deployment;
 
 
 /**
@@ -25,7 +24,6 @@ import org.activiti.engine.test.Deployment;
  */
 public class UserTaskAfterTest extends UpgradeTestCase {
 
-  @Deployment
   public void testSimplestTask() {
     Task task = taskService
       .createTaskQuery()
@@ -45,8 +43,7 @@ public class UserTaskAfterTest extends UpgradeTestCase {
       .size());
   }
 
-  @Deployment
-  public void testTaskWithProcessVariables() {
+  public void testTaskWithExecutionVariables() {
     Task task = taskService
       .createTaskQuery()
       .taskName("taskWithExecutionVariables")

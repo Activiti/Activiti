@@ -40,7 +40,7 @@ public interface DeploymentQuery extends Query<DeploymentQuery, Deployment>{
   
   /** Only select deployments with a name like the given string. */
   DeploymentQuery deploymentNameLike(String nameLike);
-  
+
   //sorting ////////////////////////////////////////////////////////
   
   /** Order by deployment id (needs to be followed by {@link #asc()} or {@link #desc()}). */

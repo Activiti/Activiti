@@ -80,6 +80,12 @@ public interface ProcessDefinitionQuery extends Query<ProcessDefinitionQuery, Pr
    *                           or {@link #deploymentId(String)}
    */
   ProcessDefinitionQuery latestVersion();
+  
+  /** Only select process definition with the given resource name. */
+  ProcessDefinitionQuery processDefinitionResourceName(String resourceName);
+
+  /** Only select process definition with a resource name like the given . */
+  ProcessDefinitionQuery processDefinitionResourceNameLike(String resourceNameLike);
 
   // ordering ////////////////////////////////////////////////////////////
   
