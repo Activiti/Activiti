@@ -55,6 +55,11 @@ form .highlight ul li {
   visibility: hidden;
 }
 
+input[disabled] {
+  background: none;
+  border: 0;
+}
+
 /*
 .config-span .buttons {
   text-align: right;

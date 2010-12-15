@@ -59,11 +59,14 @@
         var configs = response.json.userConfig[repoConfig].configs;
         content += '<div class="connector-type-div"><h2>' + this._availableConnectorConfigs[configClassName] + '</h2>';
         for(var config in configs) {
-          content += '<span id="' + this.id + '-' + configs[config]["id"] + '" title="click to edit" class="config-span highlightable"><span class="hidden">' + configClassName + '</span><ul><li><span id="' + this.id + '-name-label" class="attribute-label">Name:</span><span id="' + this.id + '-name-value" class="attribute-value">' + configs[config]["name"] + '</span></li><li><span id="' + this.id + '-id-label" class="attribute-label">ID:</span><span id="' + this.id + '-id-value" class="attribute-value">' + configs[config]["id"] + '</span></li>';
+          content += '<span id="' + this.id + '-' + configs[config]["id"] + '" title="click to edit" class="config-span highlightable"><span class="hidden">' + configClassName + '</span><ul><li><span id="' + configs[config]["id"] + '-name-label" class="attribute-label">Name:</span><span id="' + configs[config]["id"] + '-name-value" class="attribute-value">' + configs[config]["name"] + '</span></li><li><span id="' + configs[config]["id"] + '-id-label" class="attribute-label">ID:</span><span id="' + configs[config]["id"] + '-id-value" class="attribute-value">' + configs[config]["id"] + '</span></li>';
           for (attr in configs[config]) {
-            if(configs[config].hasOwnProperty(attr) && attr != "name" && attr != "id") {
-              content += '<li><span id="' + this.id + '-' + attr + '-label" class="attribute-label">' + attr + ':</span><span id="' + this.id + '-' + attr + '-value" class="attribute-value">' + configs[config][attr] + "</span></li>";
+            if(configs[config].hasOwnProperty(attr) && attr != "name" && attr != "id" && attr != "password") {
+              content += '<li><span id="' + configs[config]["id"] + '-' + attr + '-label" class="attribute-label">' + attr + ':</span><span id="' + configs[config]["id"] + '-' + attr + '-value" class="attribute-value">' + configs[config][attr] + "</span></li>";
             }
+          }
+          if(configs[config].hasOwnProperty("password")) {
+            content += '<li><span id="' + configs[config]["id"] + '-password-label" class="attribute-label">Password:</span><input id="' + configs[config]["id"] + '-password-value"disabled="true" name="password" type="password" value="' + configs[config]["password"] + '"/></li>';
           }
           content += '</ul></span>';
         }
@@ -107,14 +110,18 @@
       form.appendChild(configEl);
 
       var configClassName = configEl.childNodes[0].innerHTML;
-      configEl.childNodes[0].innerHTML = '<input type="hidden" value="' + configClassName + '"/>';
+      configEl.childNodes[0].innerHTML = '<input name="configClassName" type="hidden" value="' + configClassName + '"/>';
 
       var liEls = configEl.childNodes[1].childNodes;
       for(var liEl in liEls) {
         if(liEl && liEls[liEl].childNodes) {
           var tmp = liEls[liEl].childNodes[1].innerHTML;
           var name = liEls[liEl].childNodes[1].getAttribute('id').split('-')[1];
-          liEls[liEl].childNodes[1].innerHTML = '<input type="text" name="' + name + '" value="' + tmp + '"/>';  
+          if(name == "password") {
+            liEls[liEl].childNodes[1].removeAttribute("disabled");
+          } else {
+            liEls[liEl].childNodes[1].innerHTML = '<input type="text" name="' + name + '" value="' + tmp + '"/>';
+          }
         }
       }
       
@@ -140,7 +147,7 @@
           if(formEls[el].name == 'id') {
             newConfig.configurationId = formEls[el].value;
           }
-          if(formEls[el].type == 'hidden') {
+          if(formEls[el].name == 'configClassName') {
             newConfig.configurationClass = formEls[el].value;
           } else {
             newConfig.values[formEls[el].name] = formEls[el].value;  
