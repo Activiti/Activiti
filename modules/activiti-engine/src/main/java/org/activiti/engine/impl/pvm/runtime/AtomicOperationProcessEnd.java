@@ -13,6 +13,9 @@
 
 package org.activiti.engine.impl.pvm.runtime;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import org.activiti.engine.impl.pvm.delegate.ExecutionListener;
 import org.activiti.engine.impl.pvm.delegate.SubProcessActivityBehavior;
 import org.activiti.engine.impl.pvm.process.ActivityImpl;
@@ -23,6 +26,8 @@ import org.activiti.engine.impl.pvm.process.ScopeImpl;
  * @author Tom Baeyens
  */
 public class AtomicOperationProcessEnd extends AbstractEventAtomicOperation {
+  
+  private static Logger log = Logger.getLogger(AtomicOperationProcessEnd.class.getName());
 
   @Override
   protected ScopeImpl getScope(InterpretableExecution execution) {
@@ -47,7 +52,7 @@ public class AtomicOperationProcessEnd extends AbstractEventAtomicOperation {
       try {
         subProcessActivityBehavior.completed(superExecution);
       } catch (Exception e) {
-        e.printStackTrace();
+        log.log(Level.SEVERE, "Error while completing sub process of execution " + execution, e);
       }
     }
   }

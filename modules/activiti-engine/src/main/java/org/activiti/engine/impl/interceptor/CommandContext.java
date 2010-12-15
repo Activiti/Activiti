@@ -110,7 +110,7 @@ public class CommandContext {
           }
 
           if (exception != null) {
-            exception.printStackTrace();
+            log.log(Level.SEVERE, "Error while closing command context", exception);
             transactionContext.rollback();
           }
         }

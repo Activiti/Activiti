@@ -126,7 +126,7 @@ public class JobAcquisitionThread extends Thread {
       try {
         join();
       } catch (InterruptedException e) {
-        e.printStackTrace();
+        log.log(Level.WARNING, "Interruption while shutting down " + this.getClass().getName(), e);
       }
     }
   }
