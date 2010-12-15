@@ -11,7 +11,7 @@
     
     <sequenceFlow id="flow1" sourceRef="start" targetRef="simpleTask" />
 
-    <userTask id="simpleTask" />
+    <userTask id="simpleTask" name="simpleTask" />
     
     <sequenceFlow id="flow2" sourceRef="simpleTask" targetRef="end" />
     
