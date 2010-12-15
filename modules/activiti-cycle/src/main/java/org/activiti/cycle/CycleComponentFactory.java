@@ -83,7 +83,7 @@ public abstract class CycleComponentFactory {
   private boolean initialized = false;
 
   private void guaranteeInitialization() {
-    if (!initialized){
+    if (!initialized) {
       synchronized (this) {
         if (!initialized) {
           init();
@@ -92,7 +92,6 @@ public abstract class CycleComponentFactory {
     }
   }
 
-  @SuppressWarnings("unchecked")
   private Object getComponentInstance(Class< ? > clazz) {
     Object obj = getComponentInstance(clazz.getCanonicalName());
     return obj;
@@ -370,7 +369,6 @@ public abstract class CycleComponentFactory {
    */
   @SuppressWarnings({ "rawtypes", "unchecked" })
   public static void removeExcludedComponents(Set components) {
-    // TODO: do this more generally
     Set<Object> excludedComponents = new HashSet<Object>();
     for (Object object : components) {
       ExcludesCycleComponents excludesAnnotation = object.getClass().getAnnotation(ExcludesCycleComponents.class);
@@ -378,13 +376,21 @@ public abstract class CycleComponentFactory {
         continue;
       }
       String[] componentNames = excludesAnnotation.value();
-      if (componentNames == null) {
-        continue;
+      if (componentNames != null) {
+        for (String componentName : componentNames) {
+          Object excludedComponentInstance = getCycleComponentInstance(componentName);
+          if (excludedComponentInstance != null) {
+            excludedComponents.add(excludedComponentInstance);
+          }
+        }
       }
-      for (String componentName : componentNames) {
-        Object excludedComponentInstance = getCycleComponentInstance(componentName);
-        if (excludedComponentInstance != null) {
-          excludedComponents.add(excludedComponentInstance);
+      Class[] classes = excludesAnnotation.classes();
+      if (classes != null) {
+        for (Class excludedComponentClass : classes) {
+          Object excludedComponentInstance = getCycleComponentInstance(excludedComponentClass);
+          if (object != null) {
+            excludedComponents.add(excludedComponentInstance);
+          }
         }
       }
     }

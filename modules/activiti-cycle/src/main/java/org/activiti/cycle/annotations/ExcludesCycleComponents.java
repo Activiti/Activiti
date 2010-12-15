@@ -31,19 +31,21 @@ import org.activiti.cycle.action.ParameterizedAction;
  * </ul>
  * On other component types (i.e. connectors) it is ignored.
  * 
- * TODO: This annotation should be able to work with classes as well, to avoid
- * having hard coded class names in the annotation IF the component we try to
- * disable available on the classpath.
  * 
  * @author daniel.meyer@camunda.com
  */
 @Retention(RetentionPolicy.RUNTIME)
-@Target( { ElementType.TYPE })
+@Target({ ElementType.TYPE })
 public @interface ExcludesCycleComponents {
 
   /**
    * The name of the component to exclude.
    */
-  String[] value();
+  String[] value() default {};
+
+  /**
+   * Classes of the components to exclude
+   */
+  Class[] classes() default {};
 
 }

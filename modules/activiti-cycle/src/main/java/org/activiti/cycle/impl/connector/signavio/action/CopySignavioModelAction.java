@@ -12,6 +12,7 @@ import org.activiti.cycle.annotations.ExcludesCycleComponents;
 import org.activiti.cycle.context.CycleApplicationContext;
 import org.activiti.cycle.context.CycleContextType;
 import org.activiti.cycle.impl.action.AbstractCopyBaseAction;
+import org.activiti.cycle.impl.action.DefaultCopyArtifactAction;
 import org.activiti.cycle.impl.connector.signavio.provider.JsonProvider;
 import org.activiti.cycle.impl.connector.signavio.repositoryartifacttype.SignavioBpmn20ArtifactType;
 
@@ -22,7 +23,7 @@ import org.activiti.cycle.impl.connector.signavio.repositoryartifacttype.Signavi
  * @author bernd.ruecker@camunda.com
  */
 @CycleComponent(context = CycleContextType.APPLICATION)
-@ExcludesCycleComponents("org.activiti.cycle.impl.action.DefaultCopyArtifactAction")
+@ExcludesCycleComponents(classes = { DefaultCopyArtifactAction.class })
 public class CopySignavioModelAction extends AbstractCopyBaseAction {
 
   private static final long serialVersionUID = 1L;
