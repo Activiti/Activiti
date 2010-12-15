@@ -382,6 +382,43 @@ Activiti.widget.PopupManager = function()
     },
 
     /**
+     * Displays an error message
+     *
+     * @method displayError
+     * @param url {String} The url to the image to display
+     */
+    displayImage: function(url, parent) {
+      var imgEl = document.createElement("img");
+      imgEl.onload = function() {
+        var p = new YAHOO.widget.Panel(Activiti.util.generateDomId(), {
+          close:true,
+          visible:false,
+          draggable:true,
+          modal: true,
+          constraintoviewport: true,
+          fixedcenter: true,
+          effect:
+          {
+            effect:YAHOO.widget.ContainerEffect.FADE,
+            duration: 1
+          }
+        });
+        var kl = new YAHOO.util.KeyListener(document, {
+          keys: YAHOO.util.KeyListener.KEY.ESCAPE
+        }, {
+          fn: p.hide,
+          scope: p,
+          correctScope:true
+        });
+        p.cfg.queueProperty('keylisteners', kl);
+        p.setBody('<img src="' + url + '"/>');
+        p.render(document.body);
+        p.show();
+      };
+      imgEl.setAttribute('src', url);
+    },
+
+    /**
      * The default config for the getting user input, can be overriden
      * when calling getUserInput()
      *
@@ -587,7 +624,11 @@ Activiti.widget.PopupManager = function()
    * The Activiti datatable constructor
    *
    * @param id {string} The components id
-   * @param callbackHandler The object that shall implement the callbacks
+   * @param callbackHandler The object that shall implement the callbacks:
+   *        onDataTableCreateURL       - Called to get the url to use when loading the data
+   *        onDataTableRenderCell<Key> - (Optional) Called to render the column with key <Key> (defined in listColumnDefs)
+   *        onDataTableRenderCell      - (Optional) Called if there is no specific renderer for the column's key
+   *        onAction<Name>             - (Optional) Called if a link with a 'class' with name onAction<Name>, i.e. onActionDelete
    * @param events {Array} The names of the events to listen for that shall contain filter attributes
    * @param dataTableElId {string} The id of the HTMLElement in which to create the data table
    * @param paginationElIds {Array} The ids of the HTMLElements in which to create paginators
@@ -802,16 +843,13 @@ Activiti.widget.PopupManager = function()
       // Now that we are ready we may handle events
       for (var ei = 0, eil = events.length; ei < eil; ei++) 
       {
-        //Subscribe to events bubbled up to the YAHOO.widget.dataTable object
-        if (events[ei].subscribe && events[ei].subscribe === true) 
-        {
-          me._dataTable.subscribe(events[ei].event, me.trigger, {event: events[ei].trigger}); 
-        } else // Listen for the event
-        {
-          this._eventPatterns[events[ei].event] = events[ei].value;
-          Activiti.event.on(events[ei].event, this.onEvent, this)          
-        }
+        // Listen for events that shall trigger reloads
+        this._eventPatterns[events[ei].event] = events[ei].value;
+        Activiti.event.on(events[ei].event, this.onEvent, this)
       }
+
+      //Subscribe to events bubbled up to the YAHOO.widget.DataTable object
+      this._dataTable.subscribe("linkClickEvent", this.onLinkClickEvent, null, this);
     },
 
     /**
@@ -862,16 +900,37 @@ Activiti.widget.PopupManager = function()
     },
 
     /**
-     * Triggers a non Filter/Pagination event
+     * Called when a link inside the data table has been clicked.
+     * Will look at the clicked link and see if it has a class of name "onAction<Name>".
+     * If so it will call the callbackHandler if it has such a callback and pass in the row's data as value.
      * 
-     * @param {Object} e Event Object
+     * @param {Object} event Event Object
      * @param {Object} args Object of arguments
-     * @param {String} args.event Name of event to trigger
      */
-    trigger: function(e, args)
+    onLinkClickEvent: function(event, args)
     {
-      args.e = e; // Ensure the event object is passed through to the listening function
-      YAHOO.Bubbling.fire(args.event, args);
+      if (event.target.tagName.toLowerCase() == "a")
+      {
+        var classNames = event.target.getAttribute("class").split(" "),
+          className,
+          data,
+          stopEvent = 0;
+        for (var i = 0, il = classNames.length; i < il; i++)
+        {
+          className = classNames[i];
+          if (className.match(/^onAction.*$/))
+          {
+
+            if (YAHOO.lang.isFunction(this._callbackHandler[className]))
+            {
+              data = this._dataTable.getRecord(event.target.offsetParent).getData();
+              this._callbackHandler[className].call(this._callbackHandler, data, this);
+            }
+          }
+        }
+        YAHOO.util.Event.stopEvent(event.event || window.event);
+        return false;
+      }
     },
 
     /**

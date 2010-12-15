@@ -44,3 +44,18 @@ h1 {
 .yui-skin-sam #prompt.yui-panel .bd {
 padding-top:25px;
 }
+
+/* JOBS */
+
+#Activiti .jobs tbody a {
+  background: transparent no-repeat scroll center center;
+  padding: 0.5em 1em;
+  text-decoration: none;
+}
+
+#Activiti .jobs tbody a.onActionViewException {
+  background-image: url("../images/error-icon.png");
+}
+
+#Activiti .jobs tbody a.onActionExecuteJob {
+  background-image: url("../images/process-start-icon.png");

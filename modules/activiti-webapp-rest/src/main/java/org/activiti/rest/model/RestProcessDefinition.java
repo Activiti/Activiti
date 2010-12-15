@@ -32,6 +32,7 @@ public class RestProcessDefinition extends ProcessDefinitionEntity {
     this.setVersion(processDefinition.getVersion());
     this.setDeploymentId(processDefinition.getDeploymentId());
     this.setResourceName(processDefinition.getResourceName());
+    this.setDiagramResourceName(processDefinition.getDiagramResourceName());
   }
 
   protected String startFormResourceKey;

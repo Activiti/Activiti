@@ -40,12 +40,7 @@
   Activiti.component.Deployments = function Deployments_constructor(htmlId)
   {
     Activiti.component.Deployments.superclass.constructor.call(this, "Activiti.component.Deployments", htmlId);
-
     this.services.managementService = new Activiti.service.ManagementService(this);
-
-    // Listen for events that interest us
-    this.onEvent(Activiti.event.deleteDeployment, this.onDeleteClick);
-
     return this;
   };
 
@@ -64,16 +59,15 @@
         this.id + "-deployments",
         this,
         [
-          { event: Activiti.event.displayDeployments, value: {} },
-          { event: "linkClickEvent", subscribe: true, trigger: Activiti.event.deleteDeployment}
+          { event: Activiti.event.displayDeployments, value: {} }
         ],
         this.id + "-datatable",
         [ this.id + "-paginator" ],
         [
+          { key: "select", label: this.msg("label.select") },
           { key: "id", label: this.msg("label.id"), sortable:true },
           { key: "name", label: this.msg("label.name"), sortable:true },
-          { key: "deploymentTime", label: this.msg("label.deploymentTime"), sortable:true },
-          { key: "action", label: this.msg("label.action") }
+          { key: "deploymentTime", label: this.msg("label.deploymentTime"), sortable:true }
         ]
       );
 
@@ -136,12 +130,12 @@
     },
 
     /**
-    * Prompts user for confirmation and then makes the REST api call to delete service.
-    *
-    * @method deleteDeployment
-    * @param {Array} deploymentIds - the id of the deployment to be deleted
-    * @param {Boolean} cascade - Should the Delete cascade to related resources?
-    */
+     * Prompts user for confirmation and then makes the REST api call to delete service.
+     *
+     * @method deleteDeployment
+     * @param {Array} deploymentIds - the id of the deployment to be deleted
+     * @param {Boolean} cascade - Should the Delete cascade to related resources?
+     */
     deleteDeployment: function Deployments_deleteDeployment(deploymentIds, cascade)
     {
       // Set up message string & helper object
@@ -209,9 +203,6 @@
      */
     onDeleteDeploymentSuccess: function Deployments_onDeleteDeploymentSuccess(result)
     {
-      Activiti.widget.PopupManager.displayMessage({
-        text: this.msg("message.delete.success")
-      });
       this.widgets.dataTable.reload();
     },
 
@@ -223,9 +214,7 @@
      */
     onDeleteDeploymentFailure: function Deployments_onDeleteDeploymentFailure(result)
     {
-      Activiti.widget.PopupManager.displayMessage({
-        text: this.msg("message.delete.failure")
-      });
+      this.widgets.dataTable.reload();
     },
 
     /**
@@ -270,14 +259,14 @@
      *
      * Activiti.widget.DataTable-callback that is called to render the content of each cell in the Actions row
      *
-     * @method onDataTableRenderCellAction
+     * @method onDataTableRenderCellSelect
      * @param {Object} dataTable
      * @param {Object} el
      * @param {Object} oRecord
      * @param {Object} oColumn
      * @param {Object} oData
      */
-    onDataTableRenderCellAction: function Processes_onDataTableRenderCellAssignee(dataTable, el, oRecord, oColumn, oData)
+    onDataTableRenderCellSelect: function Processes_onDataTableRenderCellSelect(dataTable, el, oRecord, oColumn, oData)
     {
       el.innerHTML = "<input type='checkbox' value='"+ oRecord.getData().id +"' class='deleteSelect' />";
     },
@@ -295,7 +284,7 @@
      * @param {Object} oColumn
      * @param {Object} oData
      */
-    onDataTableRenderCellDeploymentTime: function Processes_onDataTableRenderCellAssignee(dataTable, el, oRecord, oColumn, oData)
+    onDataTableRenderCellDeploymentTime: function Processes_onDataTableRenderCellDeploymentTime(dataTable, el, oRecord, oColumn, oData)
     {
       el.innerHTML = Activiti.thirdparty.dateFormat(Activiti.thirdparty.fromISO8601(oRecord.getData().deploymentTime), this.msg("Activiti.date-format.default"));
     }

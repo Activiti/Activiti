@@ -19,6 +19,10 @@ h1 {
 
 /* Activiti data tables */
 
+#Activiti .activiti-datatable table {
+  width:auto;
+}
+
 #Activiti tr.yui-dt-odd { 
    background-color:#E4FFE0;
 }
@@ -32,20 +36,23 @@ h1 {
 #Activiti tr.yui-dt-odd td.yui-dt-desc {
    background-color:#CFE7CB;
 }
- 
-#Activiti .processAction {
-   display:block;
-   padding-left:20px;
+
+/* PROCESSES */
+
+#Activiti .processes tbody a {
+  background: transparent no-repeat scroll center center;
+  padding: 0.5em 1em;
+  text-decoration: none;
+}
+
+#Activiti .processes tbody a.onActionStartProcess {
+  background-image: url("../images/process-start-icon.png");
 } 
 
-#Activiti .startProcess {
-   background: url("../images/process-start-icon.png") no-repeat 0 3px;
-}
-#Activiti .viewProcess, 
-#Activiti .viewXML {
-   background: url("../images/process-view-icon.png") no-repeat 0 3px;
+#Activiti .processes tbody a.onActionShowProcessStartForm {
+  background-image: url("../images/process-view-icon.png");
 }
 
-#Activiti .activiti-datatable table {
-  width:auto;
+#Activiti .processes tbody a.onActionShowProcessDiagram {
+  background-image: url("../images/process-view-icon.png");
 }

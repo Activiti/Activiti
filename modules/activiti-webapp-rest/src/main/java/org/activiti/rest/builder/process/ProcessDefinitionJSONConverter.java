@@ -35,6 +35,7 @@ public class ProcessDefinitionJSONConverter implements JSONConverter<ProcessDefi
     JSONUtil.putRetainNull(json, "version", processDefinition.getVersion());
     JSONUtil.putRetainNull(json, "deploymentId", processDefinition.getDeploymentId());
     JSONUtil.putRetainNull(json, "resourceName", processDefinition.getResourceName());
+    JSONUtil.putRetainNull(json, "diagramResourceName", processDefinition.getDiagramResourceName());
     // TODO: custom handling, review when ACT-160 is fixed
     if(processDefinition instanceof RestProcessDefinition) {      
       JSONUtil.putRetainNull(json, "startFormResourceKey", ((RestProcessDefinition) processDefinition).getStartFormResourceKey());

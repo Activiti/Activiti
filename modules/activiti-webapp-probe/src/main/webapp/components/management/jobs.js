@@ -40,12 +40,7 @@
   Activiti.component.Jobs = function Jobs_constructor(htmlId)
   {
     Activiti.component.Jobs.superclass.constructor.call(this, "Activiti.component.Jobs", htmlId);
-           
     this.services.managementService = new Activiti.service.ManagementService(this);
-    
-    // Listen for events that interest us
-    this.onEvent(Activiti.event.jobAction, this.onJobAction);
-    
     return this;
   };
   
@@ -63,21 +58,18 @@
       this.widgets.dataTable = new Activiti.widget.DataTable(
         this.id + "-jobs",
         this,
-        [
-          { event: Activiti.event.displayJobs, value: {} },
-          { event: "linkClickEvent", subscribe: true, trigger: Activiti.event.jobAction}
-        ],
+        [ { event: Activiti.event.displayJobs, value: {} } ],
         this.id + "-datatable",
         [ this.id + "-paginator" ],
         [
-          {key:"exceptionMessage", label: this.msg("jobs.label.status")},
-          {key:"id", label: this.msg("jobs.label.id"), sortable:true},
-          {key:"executionId", label: this.msg("jobs.label.executionId"), sortable:true},
-          {key:"retries", label: this.msg("jobs.label.retries"), sortable:true},
-          {key:"processInstanceId", label: this.msg("jobs.label.processInstanceId"), sortable:true},
-          {key:"dueDate", label: this.msg("jobs.label.dueDate"), sortable:true},
-          {key:"action", label: this.msg("jobs.label.actions")},
-          {key:"select", label: this.msg("jobs.label.select")}
+          { key:"select", label: this.msg("jobs.label.select") },
+          { key:"exceptionMessage", label: this.msg("jobs.label.status") },
+          { key:"id", label: this.msg("jobs.label.id"), sortable:true },
+          { key:"executionId", label: this.msg("jobs.label.executionId"), sortable:true },
+          { key:"retries", label: this.msg("jobs.label.retries"), sortable:true },
+          { key:"processInstanceId", label: this.msg("jobs.label.processInstanceId"), sortable:true },
+          { key:"dueDate", label: this.msg("jobs.label.dueDate"), sortable:true },
+          { key:"action", label: this.msg("jobs.label.actions") }
         ]
       );
       
@@ -88,36 +80,9 @@
       }   
       
       // Set up button events
-      this.executeButton = new YAHOO.widget.Button(this.id + "-execute", 
-      {
-        onclick: 
-        {
-          fn: this.onMultiExecuteClick,
-          obj:{},
-          scope: this
-        }
-      });
+      this.widgets.executeButton = Activiti.widget.createButton(this, "execute", this.onMultiExecuteClick);
+    },
 
-    },
-    
-    onJobAction: function Jobs_onJobAction(event, args, me)
-    {
-     var el = args[1].e.target, 
-        commonClasses = "jobAction ",
-        jobId = el.rel;
-      switch (el.className.replace(commonClasses, ""))
-      {
-        case "executeJob":
-          me.executeJob(jobId)
-          break;
-        case "viewException":
-          var exception = Dom.getElementsByClassName("exception", "span", el)[0].innerHTML
-          me.onViewException(exception);
-          break;
-        default:
-      }
-    },
-        
     /**
      * Activiti.widget.DataTable-callback to construct the url to use to load data into the data table.
      *
@@ -167,10 +132,10 @@
         actions = [];
       if (data.exceptionMessage !== null)
       {
-       actions.push('<a href="#exception?jobId='+data.id+'" rel="' + data.id + '" class="jobAction viewException">' + this.msg("jobs.link.view-exception") + '<span class="exception">' + data.exceptionMessage + '</span></a>'); 
-      };
-      actions.push('<a href="#execute?jobId='+data.id+'" rel="' + data.id + '" class="jobAction executeJob">' + this.msg("jobs.link.execute") + '</a>');
-      el.innerHTML = actions.join("")
+        actions.push('<a href="#" class="onActionViewException" title="' + this.msg("jobs.link.view-exception") + '" tabindex="0">&nbsp;</a>');
+      }
+      actions.push('<a href="#" class="onActionExecuteJob" title="' + this.msg("jobs.link.execute") + '" tabindex="0">&nbsp;</a>');
+      el.innerHTML = actions.join("<br/>")
     },
 
     /**
@@ -236,17 +201,18 @@
     {
       var selectEls = Dom.getElementsByClassName("jobSelect"),
         selectIds = [];
-      for (var i = 0; i < selectEls.length ;i++) 
+      for (var i = 0; i < selectEls.length ;i++)
       {
-        if (selectEls[i].checked === true) 
+        if (selectEls[i].checked === true)
         {
           selectIds.push(selectEls[i].value);
         }
       }
-       if (selectIds.length >= 1) 
+      if (selectIds.length >= 1)
       {
-        this.executeJobs(selectIds)
-      } else 
+        this.services.managementService.executeJobs(selectIds);
+      }
+      else
       {
         Activiti.widget.PopupManager.displayMessage({
           text: this.msg("jobs.message.none-selected")
@@ -255,46 +221,31 @@
     },
 
     /**
-     * 
-     * Send a single job to the execution queue
+     * Called when a execute job link has been clicked in the datatable, will execute the job.
      * 
      * @method executeJob
-     * @param {String} jobId
+     * @param {Object} data
      */
-    executeJob: function Jobs_executeJob(jobId) 
+    onActionExecuteJob: function Jobs_onActionExecuteJob(data)
     {
-      this.services.managementService.executeJob(jobId);
+      this.services.managementService.executeJob(data.id);
     },
-    
-    /**
-     * 
-     * Send Multiple Jobs to the execution queue
-     * 
-     * @method executeJobs
-     * @param {Array} selectedIds - an array of JobIds as strings.
-     */
-    executeJobs: function Jobs_executeJobs(selectedIds) 
-    {
-      this.services.managementService.executeJobs(selectedIds);
-    },
-    
+
     onExecuteJobSuccess: function Jobs_onExecuteJobSuccess(result)
     {      
-      Activiti.widget.PopupManager.displayMessage({
-        text: this.msg("jobs.message.execute.success")
-      });
+      // Success message will be automatically displayed by service but reload to update status
       this.widgets.dataTable.reload();
     },
     
     onExecuteJobFailure: function Jobs_onExecuteJobFailure(result)
     {      
-      //Failure message automatically displayed.
+      // Failure message will be automatically displayed by service  but reload to update status
       this.widgets.dataTable.reload();
     },
     
-    onViewException: function Jobs_onViewException(exception)
+    onViewException: function Jobs_onViewException(data)
     {
-      Activiti.widget.PopupManager.displayError(exception);
+      Activiti.widget.PopupManager.displayError(data.exceptionMessage);
     }
     
   });
