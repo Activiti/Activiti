@@ -249,14 +249,20 @@ public abstract class CycleComponentFactory {
 
     // look for cycle components
     Set<String> componentClassNames = db.getAnnotationIndex().get(CycleComponent.class.getName());
-
-    for (String componentClassName : componentClassNames) {
-      Class< ? > cycleComponentClass;
-      try {
-        cycleComponentClass = this.getClass().getClassLoader().loadClass(componentClassName);
-        registerComponent(cycleComponentClass);
-      } catch (ClassNotFoundException e) {
-        logger.log(Level.WARNING, "Cannot find class for '" + componentClassName + "': " + e.getMessage(), e);
+    
+    // TODO: check correct classpath handling
+    if (componentClassNames==null || componentClassNames.size()==0) {
+      logger.log(Level.WARNING, "Cannot find any Cycle plugins having annotation " + CycleComponent.class.getName());      
+    }
+    else {
+      for (String componentClassName : componentClassNames) {
+        Class< ? > cycleComponentClass;
+        try {
+          cycleComponentClass = this.getClass().getClassLoader().loadClass(componentClassName);
+          registerComponent(cycleComponentClass);
+        } catch (ClassNotFoundException e) {
+          logger.log(Level.WARNING, "Cannot find class for '" + componentClassName + "': " + e.getMessage(), e);
+        }
       }
     }
   }

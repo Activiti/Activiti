@@ -22,6 +22,7 @@ public class ConnectorLoginInterceptor implements Interceptor {
       return;
     }
     if ("login".equals(m.getName())) {
+      // TODO: Why always return true? When is it really logged in?
       return;
     }
     if (!connector.isLoggedIn()) {
