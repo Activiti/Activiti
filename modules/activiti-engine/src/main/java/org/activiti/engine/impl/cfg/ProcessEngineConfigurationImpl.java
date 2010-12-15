@@ -47,6 +47,7 @@ import org.activiti.engine.impl.TaskServiceImpl;
 import org.activiti.engine.impl.bpmn.ItemInstance;
 import org.activiti.engine.impl.bpmn.MessageInstance;
 import org.activiti.engine.impl.bpmn.deployer.BpmnDeployer;
+import org.activiti.engine.impl.bpmn.parser.BpmnParseListener;
 import org.activiti.engine.impl.bpmn.parser.BpmnParser;
 import org.activiti.engine.impl.calendar.BusinessCalendarManager;
 import org.activiti.engine.impl.calendar.DurationBusinessCalendar;
@@ -210,6 +211,9 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
   protected TransactionContextFactory transactionContextFactory;
   
   protected int historyLevel;
+  
+  protected List<BpmnParseListener> preParseListeners;
+  protected List<BpmnParseListener> postParseListeners;
   
   // buildProcessEngine ///////////////////////////////////////////////////////
   
@@ -452,13 +456,27 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
     BpmnDeployer bpmnDeployer = new BpmnDeployer();
     bpmnDeployer.setExpressionManager(expressionManager);
     BpmnParser bpmnParser = new BpmnParser(expressionManager);
-    if (historyLevel>=ProcessEngineConfigurationImpl.HISTORYLEVEL_ACTIVITY) {
-      bpmnParser.getParseListeners().add(new HistoryParseListener(historyLevel));
+    
+    if(preParseListeners != null) {
+      bpmnParser.getParseListeners().addAll(preParseListeners);
     }
+    bpmnParser.getParseListeners().addAll(getDefaultBPMNParseListeners());
+    if(postParseListeners != null) {
+      bpmnParser.getParseListeners().addAll(postParseListeners);
+    }
+    
     bpmnDeployer.setBpmnParser(bpmnParser);
     
     defaultDeployers.add(bpmnDeployer);
     return defaultDeployers;
+  }
+  
+  protected List<BpmnParseListener> getDefaultBPMNParseListeners() {
+    List<BpmnParseListener> defaultListeners = new ArrayList<BpmnParseListener>();
+        if (historyLevel>=ProcessEngineConfigurationImpl.HISTORYLEVEL_ACTIVITY) {
+      defaultListeners.add(new HistoryParseListener(historyLevel));
+    }
+    return defaultListeners;
   }
 
   // job executor /////////////////////////////////////////////////////////////
@@ -1017,6 +1035,22 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
   public ProcessEngineConfigurationImpl setCustomPostVariableTypes(List<VariableType> customPostVariableTypes) {
     this.customPostVariableTypes = customPostVariableTypes;
     return this;
+  }
+  
+  public List<BpmnParseListener> getCustomPreBPMNParseListeners() {
+    return preParseListeners;
+  }
+
+  public void setCustomPreBPMNParseListeners(List<BpmnParseListener> preParseListeners) {
+    this.preParseListeners = preParseListeners;
+  }
+
+  public List<BpmnParseListener> getCustomPostBPMNParseListeners() {
+    return postParseListeners;
+  }
+
+  public void setCustomPostBPMNParseListeners(List<BpmnParseListener> postParseListeners) {
+    this.postParseListeners = postParseListeners;
   }
 
 
