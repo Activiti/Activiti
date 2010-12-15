@@ -12,9 +12,9 @@ import org.activiti.cycle.action.DownloadContentAction;
 import org.activiti.cycle.action.ParameterizedAction;
 
 /**
- * {@link CycleComponent}s can be annotated with the {@link ExcludesCycleComponents}
- * -Annotation. The {@link ExcludesCycleComponents}-Annotaion allows to disable other
- * components.
+ * {@link CycleComponent}s can be annotated with the
+ * {@link ExcludesCycleComponents} -Annotation. The
+ * {@link ExcludesCycleComponents}-Annotaion allows to disable other components.
  * 
  * <p/>
  * <strong>EXAMPLE:</strong> An {@link Action} for a special
@@ -31,10 +31,14 @@ import org.activiti.cycle.action.ParameterizedAction;
  * </ul>
  * On other component types (i.e. connectors) it is ignored.
  * 
+ * TODO: This annotation should be able to work with classes as well, to avoid
+ * having hard coded class names in the annotation IF the component we try to
+ * disable available on the classpath.
+ * 
  * @author daniel.meyer@camunda.com
  */
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ ElementType.TYPE })
+@Target( { ElementType.TYPE })
 public @interface ExcludesCycleComponents {
 
   /**
