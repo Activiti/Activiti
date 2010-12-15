@@ -73,6 +73,21 @@ public interface TaskQuery extends Query<TaskQuery, Task>{
   /** Only select tasks that are created after the given date. **/
   TaskQuery taskCreatedAfter(Date after);
   
+  /** 
+   * Only select tasks with the given taskDefinitionKey.
+   * The task definition key is the id of the userTask:
+   * &lt;userTask id="xxx" .../&gt;
+   **/
+  TaskQuery taskDefinitionKey(String key);
+  
+  /** 
+   * Only select tasks with a taskDefinitionKey that match the given parameter.
+   *  The syntax is that of SQL: for example usage: taskDefinitionKeyLike("%activiti%").
+   * The task definition key is the id of the userTask:
+   * &lt;userTask id="xxx" .../&gt;
+   **/
+  TaskQuery taskDefinitionKeyLike(String keyLike);
+  
   // ordering ////////////////////////////////////////////////////////////
   
   /** Order by task id (needs to be followed by {@link #asc()} or {@link #desc()}). */

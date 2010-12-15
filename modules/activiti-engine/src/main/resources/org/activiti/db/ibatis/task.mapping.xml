@@ -149,6 +149,12 @@
       <if test="createTimeAfter != null">
         and T.CREATE_TIME_ &gt; #{createTimeAfter}
       </if>
+      <if test="key != null">
+        and T.TASK_DEF_KEY_ = #{key}
+      </if>
+      <if test="keyLike != null">
+        and T.TASK_DEF_KEY_ like #{keyLike}
+      </if>
       <if test="candidateUser != null || candidateGroups != null">
         and T.ASSIGNEE_ is null
         and I.TYPE_ = 'candidate'

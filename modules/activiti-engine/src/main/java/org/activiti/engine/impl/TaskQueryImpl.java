@@ -45,6 +45,8 @@ public class TaskQueryImpl extends AbstractQuery<TaskQuery, Task> implements Tas
   protected Date createTime;
   protected Date createTimeBefore;
   protected Date createTimeAfter;
+  protected String key;
+  protected String keyLike;
   
   public TaskQueryImpl() {
   }
@@ -155,6 +157,16 @@ public class TaskQueryImpl extends AbstractQuery<TaskQuery, Task> implements Tas
   
   public TaskQuery taskCreatedAfter(Date after) {
     this.createTimeAfter = after;
+    return this;
+  }
+  
+  public TaskQuery taskDefinitionKey(String key) {
+    this.key = key;
+    return this;
+  }
+  
+  public TaskQuery taskDefinitionKeyLike(String keyLike) {
+    this.keyLike = keyLike;
     return this;
   }
   
@@ -275,5 +287,11 @@ public class TaskQueryImpl extends AbstractQuery<TaskQuery, Task> implements Tas
   }
   public Date getCreateTimeAfter() {
     return createTimeAfter;
+  }
+  public String getKey() {
+    return key;
+  }
+  public String getKeyLike() {
+    return keyLike;
   }
 }

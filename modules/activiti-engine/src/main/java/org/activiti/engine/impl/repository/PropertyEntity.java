@@ -52,17 +52,14 @@ public class PropertyEntity implements PersistentObject {
   
   // persistent object methods ////////////////////////////////////////////////
 
-  @Override
   public String getId() {
     return name;
   }
 
-  @Override
   public Object getPersistentState() {
     return value;
   }
 
-  @Override
   public void setId(String id) {
     throw new ActivitiException("only provided id generation allowed for properties");
   }

@@ -22,6 +22,7 @@ import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.impl.util.ClockUtil;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.task.TaskQuery;
+import org.activiti.engine.test.Deployment;
 
 /**
  * @author Joram Barrez
@@ -336,6 +337,58 @@ public class TaskQueryTest extends PluggableActivitiTestCase {
     query = taskService.createTaskQuery().taskCreatedAfter(after);
     assertEquals(0, query.count());
     assertEquals(0, query.list().size());
+  }
+  
+  @Deployment(resources="org/activiti/engine/test/api/task/taskDefinitionProcess.bpmn20.xml")
+  public void testTaskDefinitionKey() throws Exception {
+    
+    // Start process instance, 2 tasks will be available
+    runtimeService.startProcessInstanceByKey("taskDefinitionKeyProcess");
+    
+    // 1 task should exist with key "taskKey1"
+    List<Task> tasks = taskService.createTaskQuery().taskDefinitionKey("taskKey1").list();
+    assertNotNull(tasks);
+    assertEquals(1, tasks.size());
+
+    assertEquals("taskKey1", tasks.get(0).getTaskDefinitionKey());
+
+    // No task should be found with unexisting key
+    Long count = taskService.createTaskQuery().taskDefinitionKey("unexistingKey").count();
+    assertEquals(0L, count.longValue());
+  }
+  
+  @Deployment(resources="org/activiti/engine/test/api/task/taskDefinitionProcess.bpmn20.xml")
+  public void testTaskDefinitionKeyLike() throws Exception {
+    
+    // Start process instance, 2 tasks will be available
+    runtimeService.startProcessInstanceByKey("taskDefinitionKeyProcess");
+    
+    // Ends with matching, TaskKey1 and TaskKey123 match
+    List<Task> tasks = taskService.createTaskQuery().taskDefinitionKeyLike("taskKey1%").orderByTaskName().asc().list();
+    assertNotNull(tasks);
+    assertEquals(2, tasks.size());
+
+    assertEquals("taskKey1", tasks.get(0).getTaskDefinitionKey());
+    assertEquals("taskKey123", tasks.get(1).getTaskDefinitionKey());
+    
+    // Starts with matching, TaskKey123 matches
+    tasks = taskService.createTaskQuery().taskDefinitionKeyLike("%123").orderByTaskName().asc().list();
+    assertNotNull(tasks);
+    assertEquals(1, tasks.size());
+    
+    assertEquals("taskKey123", tasks.get(0).getTaskDefinitionKey());
+    
+    // Contains matching, TaskKey123 matches
+    tasks = taskService.createTaskQuery().taskDefinitionKeyLike("%Key12%").orderByTaskName().asc().list();
+    assertNotNull(tasks);
+    assertEquals(1, tasks.size());
+    
+    assertEquals("taskKey123", tasks.get(0).getTaskDefinitionKey());
+    
+
+    // No task should be found with unexisting key
+    Long count = taskService.createTaskQuery().taskDefinitionKeyLike("%unexistingKey%").count();
+    assertEquals(0L, count.longValue());
   }
   
   public void testQueryPaging() {
