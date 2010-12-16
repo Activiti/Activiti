@@ -41,6 +41,7 @@
 						<exclude>**/SubProcessExpansionTest.java</exclude>
             <exclude>**/SftpConnectorTest.java</exclude>
             <exclude>**/AdjustShapeNamesForXmlNCNameTest.java</exclude>
+            <exclude>**/FileSystemConnectorTest.java</exclude>
 					</excludes>
 				</configuration>
 			</plugin>
@@ -78,12 +79,8 @@
 		<dependency>
 			<groupId>org.activiti</groupId>
 			<artifactId>activiti-engine</artifactId>
-			<scope>provided</scope>
+<!-- 			<scope>provided</scope> -->
 		</dependency>
-
-		<!-- <dependency> <groupId>org.activiti</groupId> <artifactId>activiti-pvm</artifactId> 
-			</dependency> <dependency> <groupId>org.activiti</groupId> <artifactId>activiti-engine</artifactId> 
-			</dependency> -->
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
