@@ -115,4 +115,9 @@ h1 {
   color:#FFF;
 }
 
+#action-waiting-dialog {
+  height: 15px;
+  background: url("/activiti-cycle/res/images/loading-bar.gif") no-repeat center;
+}
+
 /* STRUCTURE */

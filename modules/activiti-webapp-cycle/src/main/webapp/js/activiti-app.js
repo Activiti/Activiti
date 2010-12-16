@@ -241,7 +241,9 @@
    * ExecuteArtifactActionForm constructor.
    *
    * @param id {string} The components id
-   * @parameter handler {object} The response handler object
+   * @param connectorId {string} the connector id of the artifact
+   * @param artifactId {string} the id of the artifact
+   * @param artifactActionName {string} the name of the action
    * @return {Activiti.widget.ExecuteArtifactActionForm} The new Activiti.widget.ExecuteArtifactActionForm instance
    * @constructor
    */
@@ -254,20 +256,49 @@
     this.service = new Activiti.service.RepositoryService(this);
     this.service.setCallback("loadArtifactActionForm", { fn: this.onLoadFormSuccess, scope: this }, {fn: this.onLoadFormFailure, scope: this });
     this.service.loadArtifactActionForm(this.connectorId, this.artifactId, this.artifactActionName);
+    
+    // Initialize the temporary Panel to display while waiting for external content to load
+    this.waitDialog = 
+    		new YAHOO.widget.Panel("wait",  
+    			{ width:"200px", 
+    			  fixedcenter:true, 
+    			  close:false, 
+    			  draggable:false, 
+    			  zindex:4,
+    			  modal:true,
+    			  visible:false
+    			} 
+    		);
+
+    this.waitDialog.setBody('<div id="action-waiting-dialog"/>');
+    this.waitDialog.render(document.body);
+    
     return this;
   };
 
   YAHOO.extend(Activiti.widget.ExecuteArtifactActionForm, Activiti.widget.Form,
   {
 
-     /**
-     * Start a process instance
+    /**
+     * Submit the form
      *
      * @method doSubmit
      */
     doSubmit: function ExecuteArtifactActionForm__doSubmit(variables)
     {
+      this.waitDialog.show();
       this.service.executeArtifactAction(this.connectorId, this.artifactId, this.artifactActionName, variables);
+      if (this.dialog) {
+        this.dialog.destroy();
+      }
+    },
+    
+    onExecuteArtifactActionSuccess: function ExecuteArtifactActionForm_onExecuteArtifactActionSuccess(response, object) {
+      this.waitDialog.hide();
+      // TODO: i18n
+      Activiti.widget.PopupManager.displayMessage({
+        text: 'Successfully executed "' + this.artifactActionName + '"'
+      });
     }
 
   });
