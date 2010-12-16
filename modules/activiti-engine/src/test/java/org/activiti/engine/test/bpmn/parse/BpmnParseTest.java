@@ -23,7 +23,6 @@ import org.activiti.engine.impl.pvm.process.TransitionImpl;
 import org.activiti.engine.impl.repository.ProcessDefinitionEntity;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.impl.test.TestHelper;
-import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.test.Deployment;
 
 
@@ -55,7 +54,7 @@ public class BpmnParseTest extends PluggableActivitiTestCase {
   @Deployment
   public void testParseDiagramInterchangeElements() {
     
-    // Graphical information is not yet exposed, so we need to do some internal plumbing
+    // Graphical information is not yet exposed publicly, so we need to do some plumbing
     CommandExecutor commandExecutor = processEngineConfiguration.getCommandExecutorTxRequired();
     ProcessDefinitionEntity processDefinitionEntity = commandExecutor.execute(new Command<ProcessDefinitionEntity>() {
       public ProcessDefinitionEntity execute(CommandContext commandContext) {

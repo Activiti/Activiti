@@ -106,6 +106,7 @@ public class BpmnParse extends Parse {
   public static final String PROPERTYNAME_TIMER_DECLARATION = "timerDeclarations";
   public static final String PROPERTYNAME_INITIAL = "initial";
   public static final String PROPERTYNAME_INITIATOR_VARIABLE_NAME = "initiatorVariableName";
+  public static final String PROPERTYNAME_ISEXPANDED = "isExpanded";
 
   protected static final Logger LOG = Logger.getLogger(BpmnParse.class.getName());
   
@@ -587,15 +588,8 @@ public class BpmnParse extends Parse {
     } else if (startEventElements.size() > 0) {
 
       Element startEventElement = startEventElements.get(0);
+      ActivityImpl startEventActivity = parseAndCreateActivityOnScopeElement(startEventElement, scope);
 
-      String id = startEventElement.attribute("id");
-      String name = startEventElement.attribute("name");
-      String documentation = parseDocumentation(startEventElement);
-
-      ActivityImpl startEventActivity = scope.createActivity(id);
-      startEventActivity.setProperty("name", name);
-      startEventActivity.setProperty("documentation", documentation);
-      
       if (scope instanceof ProcessDefinitionEntity) {
         ProcessDefinitionEntity processDefinition = (ProcessDefinitionEntity) scope;
         if (processDefinition.getInitial()!=null) {
@@ -1301,13 +1295,7 @@ public class BpmnParse extends Parse {
    */
   public void parseEndEvents(Element parentElement, ScopeImpl scope) {
     for (Element endEventElement : parentElement.elements("endEvent")) {
-      String id = endEventElement.attribute("id");
-      String name = endEventElement.attribute("name");
-      String documentation = parseDocumentation(endEventElement);
-
-      ActivityImpl activity = scope.createActivity(id);
-      activity.setProperty("name", name);
-      activity.setProperty("documentation", documentation);
+      ActivityImpl activity = parseAndCreateActivityOnScopeElement(endEventElement, scope);
 
       // Only none end events are currently supported
       activity.setActivityBehavior(new NoneEndEventActivity());
@@ -1355,15 +1343,12 @@ public class BpmnParse extends Parse {
         addError("Invalid reference in boundary event. Make sure that the referenced activity is " 
                 + "defined in the same scope as the boundary event", boundaryEventElement);
       }
-      ActivityImpl nestedActivity = parentActivity.createActivity(id);
-      nestedActivity.setProperty("name", boundaryEventElement.attribute("name"));
-      nestedActivity.setProperty("documentation", parseDocumentation(boundaryEventElement));
+      ActivityImpl nestedActivity = parseAndCreateActivityOnScopeElement(boundaryEventElement, parentActivity); 
 
       String cancelActivity = boundaryEventElement.attribute("cancelActivity", "true");
       boolean interrupting = cancelActivity.equals("true") ? true : false;
 
-      // Depending on the sub-element definition, the correct activityBehavior
-      // parsing is selected
+      // Depending on the sub-element definition, the correct activityBehavior parsing is selected
       Element timerEventDefinition = boundaryEventElement.element("timerEventDefinition");
       if (timerEventDefinition != null) {
         parseBoundaryTimerEventDefinition(timerEventDefinition, interrupting, nestedActivity);
@@ -1388,6 +1373,7 @@ public class BpmnParse extends Parse {
    *          inside this activity, specifically created for this event.
    */
   public void parseBoundaryTimerEventDefinition(Element timerEventDefinition, boolean interrupting, ActivityImpl timerActivity) {
+    timerActivity.setProperty("type", "boundaryTimer");
     BoundaryTimerEventActivity boundaryTimerEventActivity = new BoundaryTimerEventActivity();
     boundaryTimerEventActivity.setInterrupting(interrupting);
 
@@ -1765,6 +1751,7 @@ public class BpmnParse extends Parse {
     String processId = bpmnPlaneElement.attribute("bpmnElement");
     if (processId != null && !"".equals(processId)) {
       ProcessDefinitionEntity processDefinition = getProcessDefinition(processId);
+      processDefinition.setGraphicalNotationDefined(true);
       if (processDefinition != null) {
         
          List<Element> shapes = bpmnPlaneElement.elementsNS(BpmnParser.BPMN_DI_NS, "BPMNShape");
@@ -1789,6 +1776,8 @@ public class BpmnParse extends Parse {
     String activityId = bpmnShapeElement.attribute("bpmnElement");
     if (activityId != null && !"".equals(activityId)) {
       ActivityImpl activity = processDefinition.findActivity(activityId);
+      
+      // bounds
       if (activity != null) {
         Element bounds = bpmnShapeElement.elementNS(BpmnParser.BPMN_DC_NS, "Bounds");
         if (bounds != null) {
@@ -1798,6 +1787,12 @@ public class BpmnParse extends Parse {
           activity.setHeight(parseDoubleAttribute(bpmnShapeElement, "height", bounds.attribute("height"), true).intValue());
         } else {
           addError("'Bounds' element is required", bpmnShapeElement);
+        }
+        
+        // collapsed or expanded
+        String isExpanded = bpmnShapeElement.attribute("isExpanded");
+        if (isExpanded != null) {
+          activity.setProperty(PROPERTYNAME_ISEXPANDED, parseBooleanAttribute(isExpanded));
         }
       } else {
          addError("Invalid reference in 'bpmnElement' attribute, activity " + activityId + "not found", bpmnShapeElement);

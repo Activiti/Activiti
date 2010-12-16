@@ -47,6 +47,7 @@ public class ProcessDefinitionEntity extends ProcessDefinitionImpl implements Pr
   protected Integer historyLevel;
   protected StartFormHandler startFormHandler;
   protected String diagramResourceName;
+  protected boolean isGraphicalNotationDefined;
   protected Map<String, TaskDefinition> taskDefinitions;
   protected boolean hasStartFormKey;
   
@@ -201,4 +202,13 @@ public class ProcessDefinitionEntity extends ProcessDefinitionImpl implements Pr
   public void setHasStartFormKey(boolean hasStartFormKey) {
     this.hasStartFormKey = hasStartFormKey;
   }
+  
+  public boolean isGraphicalNotationDefined() {
+    return isGraphicalNotationDefined;
+  }
+  
+  public void setGraphicalNotationDefined(boolean isGraphicalNotationDefined) {
+    this.isGraphicalNotationDefined = isGraphicalNotationDefined;
+  }
+  
 }
