@@ -13,6 +13,10 @@
 
 package org.activiti.engine.test.bpmn.deployment;
 
+import java.awt.GraphicsConfiguration;
+import java.awt.GraphicsDevice;
+import java.awt.GraphicsEnvironment;
+import java.awt.Transparency;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 
@@ -33,6 +37,15 @@ public class DiagramGenerationTest extends PluggableActivitiTestCase {
   public void testGeneratedDiagramMatchesExpected() throws IOException {
     String imageLocation = "org/activiti/engine/test/bpmn/deployment/DiagramGenerationTest.testGeneratedDiagramMatchesExpected.png";
     BufferedImage expectedImage = ImageIO.read(ReflectUtil.getResourceAsStream(imageLocation));
+
+    // Need to to this crap, because the expected image was created on a mac,
+    // and QA runs on Windows and apparantly pixels are stored differently on each os ... 
+    GraphicsEnvironment environment = GraphicsEnvironment.getLocalGraphicsEnvironment();
+    GraphicsDevice device = environment.getDefaultScreenDevice();
+    GraphicsConfiguration config = device.getDefaultConfiguration();
+    BufferedImage compatibleImage = config.createCompatibleImage(expectedImage.getWidth(), expectedImage.getHeight(), Transparency.TRANSLUCENT);
+    compatibleImage.createGraphics().drawImage(expectedImage, 0, 0, null);
+    compatibleImage.flush();
     
     ProcessDefinition processDefinition = repositoryService.createProcessDefinitionQuery().singleResult();
     BufferedImage imageInRepo = ImageIO.read(repositoryService.getResourceAsStream(
@@ -40,9 +53,9 @@ public class DiagramGenerationTest extends PluggableActivitiTestCase {
     assertNotNull(imageInRepo);
     
     // Pixel wise comparison
-    for (int x = 0; x < expectedImage.getWidth(); x++) {
-      for (int y = 0; y < expectedImage.getHeight(); y++) {
-        assertEquals(expectedImage.getRGB(x, y), imageInRepo.getRGB(x, y));
+    for (int x = 0; x < compatibleImage.getWidth(); x++) {
+      for (int y = 0; y < compatibleImage.getHeight(); y++) {
+        assertEquals(compatibleImage.getRGB(x, y), imageInRepo.getRGB(x, y));
       }
     }
   }
