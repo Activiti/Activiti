@@ -112,8 +112,8 @@ public abstract class ProcessEngineConfiguration {
   protected boolean jobExecutorActivate;
 
   protected String mailServerHost = "localhost";
-  protected String mailServerUsername = "activiti";
-  protected String mailServerPassword = "activiti";
+  protected String mailServerUsername; // by default no name and password are provided, which 
+  protected String mailServerPassword; // means no authentication for mail server
   protected int mailServerPort = 25;
   protected String mailServerDefaultFrom = "activiti@localhost";
 

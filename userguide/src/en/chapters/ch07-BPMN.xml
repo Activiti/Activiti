@@ -2208,12 +2208,12 @@ public class MyTaskCreateListener implements TaskListener {
               <row>
                 <entry>mailServerUsername</entry>
                 <entry>if applicable for your server</entry>
-                <entry>Some mail servers require credentials for sending e-mail. Default is <literal>activiti</literal>.</entry>
+                <entry>Some mail servers require credentials for sending e-mail. By default not set.</entry>
               </row>
               <row>
                 <entry>mailServerPassword</entry>
                 <entry>if applicable for your server</entry>
-                <entry>Some mail servers require credentials for sending e-mail. Default is <literal>activiti</literal>.</entry>
+                <entry>Some mail servers require credentials for sending e-mail. By default not set.</entry>
               </row>
             </tbody>
             </tgroup>
