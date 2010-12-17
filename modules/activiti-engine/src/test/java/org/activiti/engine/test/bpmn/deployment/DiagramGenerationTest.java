@@ -14,13 +14,14 @@
 package org.activiti.engine.test.bpmn.deployment;
 
 import java.awt.image.BufferedImage;
-import java.awt.image.DataBuffer;
-import java.awt.image.Raster;
 import java.io.BufferedOutputStream;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Arrays;
 
 import javax.imageio.ImageIO;
 
@@ -42,31 +43,38 @@ public class DiagramGenerationTest extends PluggableActivitiTestCase {
     String imageLocation = "org/activiti/engine/test/bpmn/deployment/DiagramGenerationTest.testGeneratedDiagramMatchesExpected.png";
     BufferedImage expectedImage = ImageIO.read(ReflectUtil.getResourceAsStream(imageLocation));
 
-    Raster expectedRaster = expectedImage.getData();
-    DataBuffer expectedDataBuffer = expectedRaster.getDataBuffer();
-    
     ProcessDefinition processDefinition = repositoryService.createProcessDefinitionQuery().singleResult();
     BufferedImage imageInRepo = ImageIO.read(repositoryService.getResourceAsStream(
             processDefinition.getDeploymentId(), processDefinition.getDiagramResourceName()));
     assertNotNull(imageInRepo);
+
+    assertTrue(expectedImage.getWidth() > 0);
+    assertTrue(expectedImage.getHeight() > 0);
     
-    write(repositoryService.getResourceAsStream(
-            processDefinition.getDeploymentId(), processDefinition.getDiagramResourceName()));
-    
-    Raster rasterFromRepo = imageInRepo.getData();
-    DataBuffer dataBufferFromRepo = rasterFromRepo.getDataBuffer();
-    assertEquals(dataBufferFromRepo.getSize(), expectedDataBuffer.getSize());
-    
-    for (int i=0; i<expectedDataBuffer.getSize(); i++) {
-      assertEquals(expectedDataBuffer.getElem(i), dataBufferFromRepo.getElem(i));
+    assertEquals(expectedImage.getWidth(), imageInRepo.getWidth());
+    assertEquals(expectedImage.getHeight(), imageInRepo.getHeight());
+    for (int i=0; i<expectedImage.getWidth(); i++) {
+      for (int j=0; j<expectedImage.getHeight(); j++) {
+        setAlphaToWhite(expectedImage, i, j);
+        setAlphaToWhite(imageInRepo, i, j);
+        assertEquals(expectedImage.getRGB(i, j), imageInRepo.getRGB(i, j));
+      }
     }
     
+  }
+  
+  protected void setAlphaToWhite(BufferedImage image, int x, int y) {
+    int rgb = image.getRGB(x, y);
+    int alpha = (rgb >> 24) & 0xff;
+    if(alpha != 255) {
+        image.setRGB(x, y,-1); //set white
+    } 
   }
   
   public static void write(InputStream inputStream) {
     BufferedOutputStream outputStream = null;
     try {
-      outputStream = new BufferedOutputStream(new FileOutputStream(new File("test.png")));
+      outputStream = new BufferedOutputStream(new FileOutputStream(new File("test.jpg")));
       outputStream.write(IoUtil.readInputStream(inputStream, null));
       outputStream.flush();
     } catch(Exception e) {
@@ -75,5 +83,5 @@ public class DiagramGenerationTest extends PluggableActivitiTestCase {
       IoUtil.closeSilently(outputStream);
     }
   }
-
+  
 }
