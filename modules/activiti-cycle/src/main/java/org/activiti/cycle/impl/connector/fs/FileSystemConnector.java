@@ -219,12 +219,34 @@ public class FileSystemConnector extends AbstractRepositoryConnector<FileSystemC
     return createArtifact(parentFolderId, artifactName, artifactType, artifactContent);
   }
 
-  public void updateContent(String artifactId, Content content) throws RepositoryNodeNotFoundException {
-    throw new UnsupportedOperationException("FileSystemConnector does not support modifying files!");
+  public void updateContent(String artifactId, Content content) throws RepositoryNodeNotFoundException {    
+    RepositoryArtifact artifact = getRepositoryArtifact(artifactId);
+    String fileName = getConfiguration().getBasePath() + artifact.getNodeId();
+    File newFile = new File(fileName);
+    BufferedOutputStream bos = null;
+
+    try {
+      if (newFile.exists()) {
+        bos = new BufferedOutputStream(new FileOutputStream(newFile));
+        bos.write(content.asByteArray());
+      }else {
+        throw new RepositoryException("File '" + fileName + "' does not exist.");
+      }
+    } catch (IOException ioe) {
+      throw new RepositoryException("Unable to update content of file '" + artifactId + "'", ioe);
+    } finally {
+      if (bos != null) {
+        try {
+          bos.close();
+        } catch (IOException e) {
+          throw new RepositoryException("Unable to update content of file '" + artifactId + "'", e);
+        }
+      }
+    }
   }
 
   public void updateContent(String artifactId, String contentRepresentationName, Content content) throws RepositoryNodeNotFoundException {
-    throw new UnsupportedOperationException("FileSystemConnector does not support modifying files!");   
+    updateContent(artifactId, content);
   }
 
   public Content getContent(String artifactId) throws RepositoryNodeNotFoundException {
