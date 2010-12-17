@@ -54,7 +54,7 @@ public class TaskQueryTest extends PluggableActivitiTestCase {
     identityService.deleteUser("fozzie");
     identityService.deleteUser("gonzo");
     identityService.deleteUser("kermit");
-    taskService.deleteTasks(taskIds);
+    taskService.deleteTasks(taskIds, true);
   }
   
   public void tesBasicTaskPropertiesNotNull() {

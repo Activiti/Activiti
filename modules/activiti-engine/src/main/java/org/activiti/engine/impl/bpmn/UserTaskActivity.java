@@ -38,7 +38,7 @@ public class UserTaskActivity extends TaskActivity {
   }
 
   public void execute(ActivityExecution execution) throws Exception {
-    TaskEntity task = TaskEntity.createAndInsert();
+    TaskEntity task = TaskEntity.createAndInsert(execution);
     task.setExecution(execution);
     task.setTaskDefinition(taskDefinition);
 

@@ -10,42 +10,31 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.activiti.engine.impl.cmd;
 
-import org.activiti.engine.ActivitiException;
+import org.activiti.engine.impl.history.HistoricTaskInstanceEntity;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
-import org.activiti.engine.impl.task.TaskEntity;
-import org.activiti.engine.task.Task;
+
 
 /**
- * @author Joram Barrez
+ * @author Tom Baeyens
  */
-public class SaveTaskCmd implements Command<Void> {
-	
-	protected TaskEntity task;
-	
-	public SaveTaskCmd(Task task) {
-		this.task = (TaskEntity) task;
-	}
-	
-	public Void execute(CommandContext commandContext) {
-	  if(task == null) {
-	    throw new ActivitiException("task is null");
-	  }
-	  
-    if (task.getRevision()==0) {
-      task.insert(null);
-      
-    } else {
-      TaskEntity persistentTask = commandContext
-        .getTaskSession()
-        .findTaskById(task.getId());
-      
-      persistentTask.update(task);
-    }
+public class DeleteHistoricTaskInstance implements Command<Object> {
 
+  protected String taskId;
+  
+  public DeleteHistoricTaskInstance(String taskId) {
+    this.taskId = taskId;
+  }
+
+  public Object execute(CommandContext commandContext) {
+    commandContext
+      .getDbSqlSession()
+      .delete(HistoricTaskInstanceEntity.class, taskId);
+    
     return null;
-	}
+  }
 
 }

@@ -48,7 +48,7 @@ public class BpmnParseTest extends PluggableActivitiTestCase {
         .deploy();
       assertEquals(1, repositoryService.createProcessDefinitionQuery().count());
       
-      repositoryService.deleteDeploymentCascade(repositoryService.createDeploymentQuery().singleResult().getId());
+      repositoryService.deleteDeployment(repositoryService.createDeploymentQuery().singleResult().getId(), true);
   }
   
   @Deployment

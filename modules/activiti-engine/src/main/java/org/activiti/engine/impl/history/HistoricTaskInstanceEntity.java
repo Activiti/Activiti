@@ -13,26 +13,41 @@
 
 package org.activiti.engine.impl.history;
 
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.activiti.engine.history.HistoricTaskInstance;
 import org.activiti.engine.impl.db.PersistentObject;
+import org.activiti.engine.impl.runtime.ExecutionEntity;
+import org.activiti.engine.impl.task.TaskEntity;
+import org.activiti.engine.impl.util.ClockUtil;
 
 
 /**
  * @author Tom Baeyens
  */
-public class HistoricTaskInstanceEntity implements PersistentObject {
+public class HistoricTaskInstanceEntity extends HistoricScopeInstanceEntity implements HistoricTaskInstance, PersistentObject {
 
-  protected String id; // == task.getId()
+  protected String executionId;
   protected String name;
+  protected String description;
   protected String assignee;
-  protected String processInstanceId;
-  protected String activityInstanceId;
-  protected Date startTime;
-  protected Date endTime;
-  protected Long durationInMillis;
+
+  public HistoricTaskInstanceEntity() {
+  }
+
+  public HistoricTaskInstanceEntity(TaskEntity task, ExecutionEntity execution) {
+    this.id = task.getId();
+    if (execution!=null) {
+      this.processDefinitionId = execution.getProcessDefinitionId();
+      this.processInstanceId = execution.getProcessInstanceId();
+      this.executionId = execution.getId();
+    }
+    this.name = task.getName();
+    this.description = task.getDescription();
+    this.assignee = task.getAssignee();
+    this.startTime = ClockUtil.getCurrentTime();
+  }
 
   // persistence //////////////////////////////////////////////////////////////
   
@@ -42,16 +57,17 @@ public class HistoricTaskInstanceEntity implements PersistentObject {
     persistentState.put("assignee", assignee);
     persistentState.put("endTime", endTime);
     persistentState.put("durationInMillis", durationInMillis);
+    persistentState.put("deleteReason", deleteReason);
     return persistentState;
   }
-  
+
   // getters and setters //////////////////////////////////////////////////////
   
-  public String getId() {
-    return id;
+  public String getExecutionId() {
+    return executionId;
   }
-  public void setId(String id) {
-    this.id = id;
+  public void setExecutionId(String executionId) {
+    this.executionId = executionId;
   }
   public String getName() {
     return name;
@@ -59,40 +75,17 @@ public class HistoricTaskInstanceEntity implements PersistentObject {
   public void setName(String name) {
     this.name = name;
   }
+  public String getDescription() {
+    return description;
+  }
+  public void setDescription(String description) {
+    this.description = description;
+  }
   public String getAssignee() {
     return assignee;
   }
   public void setAssignee(String assignee) {
     this.assignee = assignee;
   }
-  public Date getStartTime() {
-    return startTime;
-  }
-  public void setStartTime(Date startTime) {
-    this.startTime = startTime;
-  }
-  public Date getEndTime() {
-    return endTime;
-  }
-  public void setEndTime(Date endTime) {
-    this.endTime = endTime;
-  }
-  public Long getDurationInMillis() {
-    return durationInMillis;
-  }
-  public void setDurationInMillis(Long durationInMillis) {
-    this.durationInMillis = durationInMillis;
-  }
-  public String getProcessInstanceId() {
-    return processInstanceId;
-  }
-  public String getActivityInstanceId() {
-    return activityInstanceId;
-  }
-  public void setProcessInstanceId(String processInstanceId) {
-    this.processInstanceId = processInstanceId;
-  }
-  public void setActivityInstanceId(String activityInstanceId) {
-    this.activityInstanceId = activityInstanceId;
-  }
+  
 }

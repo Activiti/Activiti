@@ -20,7 +20,6 @@ import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
 import org.activiti.engine.query.Query;
 import org.activiti.engine.query.QueryProperty;
-import org.activiti.engine.repository.DeploymentQuery;
 
 
 /**
@@ -53,6 +52,7 @@ public abstract class AbstractQuery<T extends Query<?,?>, U> implements Command<
   
   protected QueryProperty orderProperty;
 
+  @SuppressWarnings("unchecked")
   public T orderBy(QueryProperty property) {
     this.orderProperty = property;
     return (T) this;
@@ -66,6 +66,7 @@ public abstract class AbstractQuery<T extends Query<?,?>, U> implements Command<
     return direction(Direction.DESCENDING);
   }
   
+  @SuppressWarnings("unchecked")
   public T direction(Direction direction) {
     if (orderProperty==null) {
       throw new ActivitiException("You should call any of the orderBy methods first before specifying a direction");

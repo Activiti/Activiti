@@ -24,8 +24,7 @@ import org.activiti.engine.impl.interceptor.CommandExecutor;
 /**
  * @author Tom Baeyens
  */
-public class HistoricProcessInstanceQueryImpl extends AbstractQuery<HistoricProcessInstanceQuery, HistoricProcessInstance>
-  implements HistoricProcessInstanceQuery {
+public class HistoricProcessInstanceQueryImpl extends AbstractQuery<HistoricProcessInstanceQuery, HistoricProcessInstance> implements HistoricProcessInstanceQuery {
 
   protected String processInstanceId;
   protected String processDefinitionId;

@@ -13,7 +13,6 @@
 
 package org.activiti.engine.impl.history.handler;
 
-import java.util.Date;
 import java.util.List;
 
 import org.activiti.engine.ActivitiException;
@@ -26,7 +25,6 @@ import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.pvm.delegate.ExecutionListener;
 import org.activiti.engine.impl.pvm.delegate.ExecutionListenerExecution;
 import org.activiti.engine.impl.runtime.ExecutionEntity;
-import org.activiti.engine.impl.util.ClockUtil;
 
 
 /**
@@ -37,11 +35,7 @@ public class ActivityInstanceEndHandler implements ExecutionListener {
   public void notify(ExecutionListenerExecution execution) {
     ExecutionEntity executionEntity = (ExecutionEntity) execution;
     HistoricActivityInstanceEntity historicActivityInstance = findActivityInstance(executionEntity);
-
-    Date endTime = ClockUtil.getCurrentTime();
-    long durationInMillis = endTime.getTime() - historicActivityInstance.getStartTime().getTime();
-    historicActivityInstance.setEndTime(endTime);
-    historicActivityInstance.setDurationInMillis(durationInMillis);
+    historicActivityInstance.markEnded(null);
   }
 
   public static HistoricActivityInstanceEntity findActivityInstance(ExecutionEntity execution) {

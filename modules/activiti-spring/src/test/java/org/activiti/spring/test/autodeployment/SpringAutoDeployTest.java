@@ -130,7 +130,7 @@ public class SpringAutoDeployTest extends PvmTestCase {
   
   private void removeAllDeployments() {
     for (Deployment deployment : repositoryService.createDeploymentQuery().list()) {
-      repositoryService.deleteDeploymentCascade(deployment.getId());
+      repositoryService.deleteDeployment(deployment.getId(), true);
     }
   }
   

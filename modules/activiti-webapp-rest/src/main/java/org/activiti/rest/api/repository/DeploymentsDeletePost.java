@@ -43,7 +43,7 @@ public class DeploymentsDeletePost extends ActivitiWebScript {
     List deploymentIds = req.getMandatoryList(obj, "deploymentIds", ActivitiRequestObject.STRING);
     for (Object deploymentId : deploymentIds) {
       if (cascade) {
-        getRepositoryService().deleteDeploymentCascade((String) deploymentId);
+        getRepositoryService().deleteDeployment((String) deploymentId, true);
       }
       else {
         getRepositoryService().deleteDeployment((String) deploymentId);

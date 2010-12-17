@@ -23,7 +23,7 @@ import java.util.Date;
  */
 public interface HistoricActivityInstance {
 
-  /** The unique identifier of the execution. */
+  /** The unique identifier of this historic activity instance. */
   String getId();
 
   /** The unique identifier of the activity in the process */

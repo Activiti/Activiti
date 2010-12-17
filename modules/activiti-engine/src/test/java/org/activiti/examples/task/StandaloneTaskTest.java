@@ -64,7 +64,7 @@ public class StandaloneTaskTest extends PluggableActivitiTestCase {
     assertTrue(taskService.createTaskQuery().taskCandidateUser("gonzo").list().isEmpty());
 
     // Complete task
-    taskService.complete(taskId);
+    taskService.deleteTask(taskId, true);
 
     // Task should be removed from runtime data
     // TODO: check for historic data when implemented!

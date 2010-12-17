@@ -4,13 +4,13 @@
   xmlns:activiti="http://activiti.org/bpmn"
   targetNamespace="Examples">
   
-  <process id="taskAssigneeProcess" name="Task Assignee example">
+  <process id="HistoricTaskInstanceTest">
   
-    <startEvent id="theStart" />
+    <startEvent id="start" />
     
-    <sequenceFlow id="flow1" sourceRef="theStart" targetRef="theTask" />
+    <sequenceFlow id="flow1" sourceRef="start" targetRef="task" />
 
-    <userTask id="theTask" name="Schedule meeting" >
+    <userTask id="task" name="Clean up">
       <documentation>
         Schedule an engineering meeting for next week with the new hire.
       </documentation>
@@ -21,9 +21,9 @@
       </humanPerformer>
     </userTask>
     
-    <sequenceFlow id="flow2" sourceRef="theTask" targetRef="theEnd" />
+    <sequenceFlow id="flow2" sourceRef="task" targetRef="end" />
     
-    <endEvent id="theEnd" />
+    <endEvent id="end" />
     
   </process>
 

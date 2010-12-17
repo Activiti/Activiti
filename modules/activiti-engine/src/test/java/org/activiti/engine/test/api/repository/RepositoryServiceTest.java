@@ -77,7 +77,7 @@ public class RepositoryServiceTest extends PluggableActivitiTestCase {
   
   public void testDeleteDeploymentCascadeNullDeploymentId() {
     try {
-      repositoryService.deleteDeploymentCascade(null);    
+      repositoryService.deleteDeployment(null, true);    
       fail("ActivitiException expected");
     } catch (ActivitiException ae) {
       assertTextPresent("deploymentId is null", ae.getMessage());
@@ -93,7 +93,7 @@ public class RepositoryServiceTest extends PluggableActivitiTestCase {
     runtimeService.startProcessInstanceById(processDefinition.getId());
 
     // Try to delete the deployment, no exception should be thrown
-    repositoryService.deleteDeploymentCascade(processDefinition.getDeploymentId());
+    repositoryService.deleteDeployment(processDefinition.getDeploymentId(), true);
   }
   
   @Deployment(resources = { 

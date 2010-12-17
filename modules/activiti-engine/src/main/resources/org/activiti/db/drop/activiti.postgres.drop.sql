@@ -82,4 +82,5 @@ drop table ACT_RU_IDENTITYLINK;
 drop table ACT_RU_VARIABLE;
 drop table ACT_HI_PROCINST;
 drop table ACT_HI_ACTINST;
+drop table ACT_HI_TASKINST;
 drop table ACT_HI_DETAIL;

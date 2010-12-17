@@ -51,8 +51,11 @@ public interface Task {
    * [80..100] highest */
 	void setPriority(int priority);
 	
-  /** Refers to a {@link User.getId() user} which is the owner or person responsible for completing this task. */
+  /** The {@link User.getId() userId} of the person that is responsible for this task. */
 	String getAssignee();
+	
+	/** The {@link User.getId() userId} of the person that is responsible for this task. */
+	void setAssignee(String assignee);
 	
   /** Reference to the process instance or null if it is not related to a process instance. */
 	String getProcessInstanceId();

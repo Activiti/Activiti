@@ -51,7 +51,7 @@ import org.junit.runners.model.FrameworkMethod;
  * 
  * <p>You can declare a deployment with the {@link Deployment} annotation.
  * This base class will make sure that this deployment gets deployed before the
- * setUp and {@link RepositoryService#deleteDeploymentCascade(String) cascade deleted}
+ * setUp and {@link RepositoryService#deleteDeployment(String, boolean) cascade deleted}
  * after the tearDown.
  * </p>
  * 

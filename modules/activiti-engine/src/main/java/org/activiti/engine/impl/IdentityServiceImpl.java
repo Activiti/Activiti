@@ -30,7 +30,6 @@ import org.activiti.engine.impl.cmd.SaveGroupCmd;
 import org.activiti.engine.impl.cmd.SaveUserCmd;
 import org.activiti.engine.impl.identity.Authentication;
 import org.activiti.engine.impl.identity.GroupEntity;
-import org.activiti.engine.impl.identity.UserEntity;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
 
 

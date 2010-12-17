@@ -47,7 +47,7 @@ public class TablePageQueryTest extends PluggableActivitiTestCase {
     assertEquals(6, tablePage.getRows().size());
     assertEquals(20, tablePage.getTotal());
 
-    taskService.deleteTasks(taskIds);
+    taskService.deleteTasks(taskIds, true);
   }
   
   public void testGetSortedTablePage() {
@@ -69,7 +69,7 @@ public class TablePageQueryTest extends PluggableActivitiTestCase {
     expectedTaskNames = new String[] {"I", "H", "G", "F", "E", "D", "C", "B"} ;
     verifyTaskNames(expectedTaskNames, tablePage.getRows());
     
-    taskService.deleteTasks(taskIds);
+    taskService.deleteTasks(taskIds, true);
   }
   
   private void verifyTaskNames(String[] expectedTaskNames, List<Map<String, Object>> rowData) {

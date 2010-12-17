@@ -57,7 +57,7 @@ public class DbRuntimeSession implements Session, RuntimeSession {
       .processInstanceId(processInstanceId)
       .executeList(CommandContext.getCurrent(), null);
     for (TaskEntity task: tasks) {
-      task.delete();
+      task.delete(TaskEntity.DELETE_REASON_DELETED);
     }
     
     execution.deleteCascade(deleteReason);

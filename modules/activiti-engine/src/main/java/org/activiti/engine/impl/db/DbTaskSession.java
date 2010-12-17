@@ -16,13 +16,15 @@ package org.activiti.engine.impl.db;
 import java.util.List;
 
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.history.HistoricTaskInstance;
+import org.activiti.engine.impl.HistoricTaskInstanceQueryImpl;
 import org.activiti.engine.impl.Page;
 import org.activiti.engine.impl.TaskQueryImpl;
 import org.activiti.engine.impl.cfg.TaskSession;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.interceptor.Session;
-import org.activiti.engine.impl.task.TaskEntity;
 import org.activiti.engine.impl.task.IdentityLinkEntity;
+import org.activiti.engine.impl.task.TaskEntity;
 import org.activiti.engine.task.Task;
 
 
@@ -57,6 +59,15 @@ public class DbTaskSession implements TaskSession, Session {
   @SuppressWarnings("unchecked")
   public List<IdentityLinkEntity> findIdentityLinksByTaskId(String taskId) {
     return dbSqlSession.selectList("selectIdentityLinksByTask", taskId);
+  }
+
+  public long findHistoricTaskInstanceCountByQueryCriteria(HistoricTaskInstanceQueryImpl historicTaskInstanceQuery) {
+    return (Long) dbSqlSession.selectOne("selectHistoricTaskInstanceCountByQueryCriteria", historicTaskInstanceQuery);
+  }
+
+  @SuppressWarnings("unchecked")
+  public List<HistoricTaskInstance> findHistoricTaskInstancesByQueryCriteria(HistoricTaskInstanceQueryImpl historicTaskInstanceQuery, Page page) {
+    return dbSqlSession.selectList("selectHistoricTaskInstancesByQueryCriteria", historicTaskInstanceQuery, page);
   }
 
   public void close() {

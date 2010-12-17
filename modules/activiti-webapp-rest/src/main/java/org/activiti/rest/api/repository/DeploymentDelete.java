@@ -40,7 +40,7 @@ public class DeploymentDelete extends ActivitiWebScript {
     String deploymentId = req.getMandatoryPathParameter("deploymentId");
     Boolean cascade = req.getBoolean("cascade", false);
     if (cascade) {
-      getRepositoryService().deleteDeploymentCascade(deploymentId);
+      getRepositoryService().deleteDeployment(deploymentId, true);
     }
     else {
       getRepositoryService().deleteDeployment(deploymentId);

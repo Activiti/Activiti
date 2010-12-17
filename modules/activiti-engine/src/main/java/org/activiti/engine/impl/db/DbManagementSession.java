@@ -56,6 +56,7 @@ public class DbManagementSession implements ManagementSession, Session {
     "ACT_RU_VARIABLE",
     "ACT_HI_PROCINST",
     "ACT_HI_ACTINST",
+    "ACT_HI_TASKINST",
     "ACT_HI_DETAIL"
   };
 

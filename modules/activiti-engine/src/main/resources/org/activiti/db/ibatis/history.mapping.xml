@@ -236,7 +236,140 @@
     </where>
   </sql>
   
-    <!-- HISTORIC DETAILS INSERT -->
+  <!-- HISTORIC TASK INSTANCE INSERT -->
+  
+  <insert id="insertHistoricTaskInstance" parameterType="org.activiti.engine.impl.history.HistoricTaskInstanceEntity">
+      insert into ACT_HI_TASKINST (
+        ID_,
+        PROC_DEF_ID_,
+        PROC_INST_ID_,
+        EXECUTION_ID_,
+        NAME_,
+        DESCRIPTION_,
+        ASSIGNEE_,
+        START_TIME_,
+        END_TIME_,
+        DURATION_,
+        DELETE_REASON_
+      ) values (
+        #{id ,jdbcType=VARCHAR},
+        #{processDefinitionId, jdbcType=VARCHAR},
+        #{processInstanceId, jdbcType=VARCHAR},
+        #{executionId, jdbcType=VARCHAR},
+        #{name ,jdbcType=VARCHAR},
+        #{description ,jdbcType=VARCHAR},
+        #{assignee ,jdbcType=VARCHAR},
+        #{startTime, jdbcType=TIMESTAMP},
+        #{endTime, jdbcType=TIMESTAMP},
+        #{durationInMillis ,jdbcType=BIGINT},
+        #{deleteReason ,jdbcType=BIGINT}
+      )
+  </insert>
+
+  <!-- HISTORIC TASK INSTANCE UPDATE -->
+  
+  <update id="updateHistoricTaskInstance" parameterType="org.activiti.engine.impl.history.HistoricTaskInstanceEntity">
+    update ACT_HI_TASKINST set
+      EXECUTION_ID_ = #{executionId, jdbcType=VARCHAR},
+      ASSIGNEE_ = #{assignee, jdbcType=VARCHAR},
+      END_TIME_ = #{endTime, jdbcType=TIMESTAMP},
+      DURATION_ = #{durationInMillis ,jdbcType=BIGINT},
+      DELETE_REASON_ = #{deleteReason ,jdbcType=VARCHAR}
+    where ID_ = #{id}
+  </update>
+
+  <!-- HISTORIC TASK INSTANCE DELETE -->
+  
+  <delete id="deleteHistoricTaskInstancesByProcessInstanceId">
+    delete from ACT_HI_TASKINST where PROC_INST_ID_ = #{processInstanceId}
+  </delete>
+
+  <delete id="deleteHistoricTaskInstance">
+    delete from ACT_HI_TASKINST where ID_ = #{historicTaskInstanceId}
+  </delete>
+
+  <!-- HISTORIC TASK INSTANCE RESULT MAP -->
+
+  <resultMap id="historicTaskInstanceResultMap" type="org.activiti.engine.impl.history.HistoricTaskInstanceEntity">
+    <id property="id" column="ID_" jdbcType="VARCHAR" />
+    <result property="processDefinitionId" column="PROC_DEF_ID_" jdbcType="VARCHAR" />
+    <result property="processInstanceId" column="PROC_INST_ID_" jdbcType="VARCHAR" />
+    <result property="executionId" column="EXECUTION_ID_" jdbcType="VARCHAR" />
+    <result property="name" column="NAME_" jdbcType="VARCHAR" />
+    <result property="description" column="DESCRIPTION_" jdbcType="VARCHAR" />
+    <result property="assignee" column="ASSIGNEE_" jdbcType="VARCHAR" />
+    <result property="startTime" column="START_TIME_" jdbcType="TIMESTAMP" />
+    <result property="endTime" column="END_TIME_" jdbcType="TIMESTAMP" />
+    <result property="durationInMillis" column="DURATION_" jdbcType="BIGINT" />
+    <result property="deleteReason" column="DELETE_REASON_" jdbcType="VARCHAR" />
+  </resultMap>
+
+  <!-- HISTORIC TASK INSTANCE SELECT -->
+  
+  <select id="selectHistoricTaskInstance" resultMap="historicTaskInstanceResultMap">
+    select * from ACT_HI_TASKINST where ID_ = #{historicTaskInstanceId}
+  </select>
+
+  <select id="selectHistoricTaskInstancesByQueryCriteria" parameterType="org.activiti.engine.impl.HistoricTaskInstanceQueryImpl" resultMap="historicTaskInstanceResultMap">
+    select *
+    <include refid="selectHistoricTaskInstancesByQueryCriteriaSql"/>
+    <if test="orderBy != null">
+      order by ${orderBy}
+    </if>
+  </select>
+  
+  <select id="selectHistoricTaskInstanceCountByQueryCriteria" parameterType="org.activiti.engine.impl.HistoricTaskInstanceQueryImpl" resultType="long">
+    select count(*)
+    <include refid="selectHistoricTaskInstancesByQueryCriteriaSql"/>
+  </select>
+  
+  <sql id="selectHistoricTaskInstancesByQueryCriteriaSql">
+    from ACT_HI_TASKINST HTI
+    <where>
+      <if test="processDefinitionId != null">
+        HTI.PROC_DEF_ID_ = #{processDefinitionId}
+      </if>
+      <if test="processInstanceId != null">
+        and HTI.PROC_INST_ID_ = #{processInstanceId}
+      </if>
+      <if test="executionId != null">
+        and HTI.EXECUTION_ID_ = #{executionId}
+      </if>
+      <if test="taskName != null">
+        and HTI.NAME_ = #{taskName}
+      </if>
+      <if test="taskNameLike != null">
+        and HTI.NAME_ like #{taskNameLike}
+      </if>
+      <if test="taskDescription != null">
+        and HTI.DESCRIPTION_ = #{taskDescription}
+      </if>
+      <if test="taskDescriptionLike != null">
+        and HTI.DESCRIPTION_ like #{taskDescriptionLike}
+      </if>
+      <if test="taskDeleteReason != null">
+        and HTI.DELETE_REASON_ = #{taskDeleteReason}
+      </if>
+      <if test="taskDeleteReasonLike != null">
+        and HTI.DELETE_REASON_ like #{taskDeleteReasonLike}
+      </if>
+      <if test="taskAssignee != null">
+        and HTI.ASSIGNEE_ = #{taskAssignee}
+      </if>
+      <if test="taskAssigneeLike != null">
+        and HTI.ASSIGNEE_ like #{taskAssigneeLike}
+      </if>
+      <if test="unfinished">
+        and HTI.END_TIME_ is null
+      </if>
+      <if test="finished">
+       and HTI.END_TIME_ is not null
+      </if>
+    </where>
+  </sql>
+  
+
+  <!-- HISTORIC DETAILS INSERT -->
   
   <insert id="insertHistoricFormProperty" parameterType="org.activiti.engine.impl.history.HistoricFormPropertyEntity">
     insert into ACT_HI_DETAIL (ID_, TYPE_, PROC_INST_ID_, ACT_INST_ID_, EXECUTION_ID_, TIME_, NAME_, TEXT_)

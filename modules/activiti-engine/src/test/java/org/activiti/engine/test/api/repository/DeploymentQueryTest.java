@@ -52,8 +52,8 @@ public class DeploymentQueryTest extends PluggableActivitiTestCase {
   @Override
   protected void tearDown() throws Exception {
     super.tearDown();
-    repositoryService.deleteDeploymentCascade(deploymentOneId);
-    repositoryService.deleteDeploymentCascade(deploymentTwoId);
+    repositoryService.deleteDeployment(deploymentOneId, true);
+    repositoryService.deleteDeployment(deploymentTwoId, true);
   }
   
   public void testQueryNoCriteria() {

@@ -23,12 +23,17 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.activiti.engine.ActivitiException;
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.DelegateTask;
+import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.cfg.RepositorySession;
 import org.activiti.engine.impl.cfg.RuntimeSession;
+import org.activiti.engine.impl.db.DbSqlSession;
 import org.activiti.engine.impl.db.PersistentObject;
+import org.activiti.engine.impl.history.HistoricTaskInstanceEntity;
 import org.activiti.engine.impl.interceptor.CommandContext;
+import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
 import org.activiti.engine.impl.pvm.delegate.TaskListener;
 import org.activiti.engine.impl.repository.ProcessDefinitionEntity;
 import org.activiti.engine.impl.runtime.ExecutionEntity;
@@ -44,6 +49,9 @@ import org.activiti.engine.task.Task;
  * @author Joram Barrez
  */ 
 public class TaskEntity extends VariableScopeImpl implements Task, DelegateTask, Serializable, PersistentObject {
+
+  public static final String DELETE_REASON_COMPLETED = "completed";
+  public static final String DELETE_REASON_DELETED = "deleted";
 
   private static final long serialVersionUID = 1L;
 
@@ -70,6 +78,8 @@ public class TaskEntity extends VariableScopeImpl implements Task, DelegateTask,
   protected TaskDefinition taskDefinition;
   protected String taskDefinitionKey;
   
+  protected boolean isDeleted;
+  
   public TaskEntity() {
   }
 
@@ -78,14 +88,22 @@ public class TaskEntity extends VariableScopeImpl implements Task, DelegateTask,
   }
   
   /** creates and initializes a new persistent task. */
-  public static TaskEntity createAndInsert() {
+  public static TaskEntity createAndInsert(ActivityExecution execution) {
     TaskEntity task = create();
-    
-    CommandContext
-        .getCurrent()
-        .getDbSqlSession()
-        .insert(task);
+    task.insert((ExecutionEntity) execution);
     return task;
+  }
+
+  public void insert(ExecutionEntity execution) {
+    CommandContext commandContext = CommandContext.getCurrent();
+    DbSqlSession dbSqlSession = commandContext.getDbSqlSession();
+    dbSqlSession.insert(this);
+    
+    int historyLevel = commandContext.getProcessEngineConfiguration().getHistoryLevel();
+    if (historyLevel>=ProcessEngineConfigurationImpl.HISTORYLEVEL_AUDIT) {
+      HistoricTaskInstanceEntity historicTaskInstance = new HistoricTaskInstanceEntity(this, execution);
+      dbSqlSession.insert(historicTaskInstance);
+    }
   }
   
   /** new task.  Embedded state and create time will be initialized.
@@ -102,34 +120,44 @@ public class TaskEntity extends VariableScopeImpl implements Task, DelegateTask,
     return task;
   }
 
-  public void delete() {
-    // cascade deletion to task assignments
-    for (IdentityLinkEntity identityLinkEntities: getIdentityLinks()) {
-      identityLinkEntities.delete();
-    }
+  public void delete(String deleteReason) {
+    if (!isDeleted) {
+      isDeleted = true;
+      
+      // cascade deletion to task assignments
+      for (IdentityLinkEntity identityLinkEntities: getIdentityLinks()) {
+        identityLinkEntities.delete();
+      }
 
-    ensureVariableInstancesInitialized();
-    for (VariableInstanceEntity variableInstance: variableInstances.values()) {
-      variableInstance.delete();
-    }
+      ensureVariableInstancesInitialized();
+      for (VariableInstanceEntity variableInstance: variableInstances.values()) {
+        variableInstance.delete();
+      }
 
-    CommandContext
-        .getCurrent()
-        .getDbSqlSession()
-        .delete(TaskEntity.class, id);
+      CommandContext commandContext = CommandContext.getCurrent();
+      DbSqlSession dbSqlSession = commandContext.getDbSqlSession();
+      int historyLevel = commandContext.getProcessEngineConfiguration().getHistoryLevel();
+      if (historyLevel>=ProcessEngineConfigurationImpl.HISTORYLEVEL_AUDIT) {
+        HistoricTaskInstanceEntity historicTaskInstance = dbSqlSession
+          .selectById(HistoricTaskInstanceEntity.class, id);
+        historicTaskInstance.markEnded(deleteReason);
+      }
+
+      dbSqlSession.delete(TaskEntity.class, id);
+    }
   }
 
   public void update(TaskEntity task) {
-    this.assignee = task.getAssignee();
-    this.name = task.getName();
-    this.priority = task.getPriority();
-    this.createTime = task.getCreateTime();
-    this.description = task.getDescription();
+    setAssignee(task.getAssignee());
+    setName(task.getName());
+    setDescription(task.getDescription());
+    setPriority(task.getPriority());
+    setCreateTime(task.getCreateTime());
   }
 
   public void complete() {
     fireEvent(TaskListener.EVENTNAME_COMPLETE);
-    delete();
+    delete(DELETE_REASON_COMPLETED);
     if (executionId!=null) {
       getExecution().signal(null, null);
     }
@@ -196,11 +224,23 @@ public class TaskEntity extends VariableScopeImpl implements Task, DelegateTask,
       this.executionId = this.execution.getId();
       this.processInstanceId = this.execution.getProcessInstanceId();
       this.processDefinitionId = this.execution.getProcessDefinitionId();
+      
+      CommandContext commandContext = CommandContext.getCurrent();
+      int historyLevel = commandContext.getProcessEngineConfiguration().getHistoryLevel();
+      if (historyLevel>=ProcessEngineConfigurationImpl.HISTORYLEVEL_AUDIT) {
+        HistoricTaskInstanceEntity historicTaskInstance = commandContext
+          .getDbSqlSession()
+          .selectById(HistoricTaskInstanceEntity.class, id);
+        historicTaskInstance.setExecutionId(executionId);
+      }
+      
     } else {
       this.execution = null;
       this.executionId = null;
       this.processInstanceId = null;
       this.processDefinitionId = null;
+      
+      throw new ActivitiException("huh?");
     }
   }
     
@@ -276,11 +316,61 @@ public class TaskEntity extends VariableScopeImpl implements Task, DelegateTask,
     return "Task["+id+"]";
   }
   
-  // methods with event notification dispatching //////////////////////////////
+  // special setters //////////////////////////////////////////////////////////
   
+  public void setName(String name) {
+    this.name = name;
+
+    CommandContext commandContext = CommandContext.getCurrent();
+    // if there is no command context, then it means that the user is calling the 
+    // setAssignee outside a service method.  E.g. while creating a new task.
+    if (commandContext!=null) {
+      int historyLevel = commandContext.getProcessEngineConfiguration().getHistoryLevel();
+      if (historyLevel >= ProcessEngineConfigurationImpl.HISTORYLEVEL_AUDIT) {
+        HistoricTaskInstanceEntity historicTaskInstance = commandContext.getDbSqlSession().selectById(HistoricTaskInstanceEntity.class, id);
+        historicTaskInstance.setName(name);
+      }
+    }
+  }
+  
+  public void setDescription(String description) {
+    this.description = description;
+
+    CommandContext commandContext = CommandContext.getCurrent();
+    // if there is no command context, then it means that the user is calling the 
+    // setAssignee outside a service method.  E.g. while creating a new task.
+    if (commandContext!=null) {
+      int historyLevel = commandContext.getProcessEngineConfiguration().getHistoryLevel();
+      if (historyLevel >= ProcessEngineConfigurationImpl.HISTORYLEVEL_AUDIT) {
+        HistoricTaskInstanceEntity historicTaskInstance = commandContext.getDbSqlSession().selectById(HistoricTaskInstanceEntity.class, id);
+        historicTaskInstance.setDescription(description);
+      }
+    }
+  }
+
   public void setAssignee(String assignee) {
+    if (assignee==null && this.assignee==null) {
+      return;
+    }
+    if (assignee!=null && assignee.equals(this.assignee)) {
+      return;
+    }
+    
     this.assignee = assignee;
-    fireEvent(TaskListener.EVENTNAME_ASSIGNMENT);
+
+    CommandContext commandContext = CommandContext.getCurrent();
+    // if there is no command context, then it means that the user is calling the 
+    // setAssignee outside a service method.  E.g. while creating a new task.
+    if (commandContext!=null) {
+      fireEvent(TaskListener.EVENTNAME_ASSIGNMENT);
+      
+      int historyLevel = commandContext.getProcessEngineConfiguration().getHistoryLevel();
+      if (historyLevel >= ProcessEngineConfigurationImpl.HISTORYLEVEL_AUDIT) {
+
+        HistoricTaskInstanceEntity historicTaskInstance = commandContext.getDbSqlSession().selectById(HistoricTaskInstanceEntity.class, id);
+        historicTaskInstance.setAssignee(assignee);
+      }
+    }
   }
   
   public void fireEvent(String taskEventName) {
@@ -337,18 +427,10 @@ public class TaskEntity extends VariableScopeImpl implements Task, DelegateTask,
     return name;
   }
 
-  public void setName(String name) {
-    this.name = name;
-  }
-  
   public String getDescription() {
     return description;
   }
   
-  public void setDescription(String description) {
-    this.description = description;
-  }
-
   public int getPriority() {
     return priority;
   }
@@ -384,7 +466,7 @@ public class TaskEntity extends VariableScopeImpl implements Task, DelegateTask,
   // used in MyBatis mapping: no need to fire event every time the task is fetched from db and assignee is set by reflection
   // MyBatis usage:  <result property="assigneeWithoutFireEvent" column="ASSIGNEE_" jdbcType="VARCHAR"/>
   public void setAssigneeWithoutFireEvent(String assignee) {
-    setAssignee(assignee);
+    this.assignee = assignee;
   }
   
   public String getAssignee() {

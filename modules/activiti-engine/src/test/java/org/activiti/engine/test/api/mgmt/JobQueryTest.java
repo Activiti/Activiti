@@ -96,7 +96,7 @@ public class JobQueryTest extends PluggableActivitiTestCase {
   
   @Override
   protected void tearDown() throws Exception {
-    repositoryService.deleteDeploymentCascade(deploymentId);
+    repositoryService.deleteDeployment(deploymentId, true);
     commandExecutor.execute(new DeleteJobsCmd(messageId));
     super.tearDown();
   }

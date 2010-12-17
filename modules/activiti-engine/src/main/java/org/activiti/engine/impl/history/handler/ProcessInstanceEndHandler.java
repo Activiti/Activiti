@@ -13,14 +13,11 @@
 
 package org.activiti.engine.impl.history.handler;
 
-import java.util.Date;
-
 import org.activiti.engine.impl.history.HistoricProcessInstanceEntity;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.pvm.delegate.ExecutionListener;
 import org.activiti.engine.impl.pvm.delegate.ExecutionListenerExecution;
 import org.activiti.engine.impl.runtime.ExecutionEntity;
-import org.activiti.engine.impl.util.ClockUtil;
 
 
 /**
@@ -34,10 +31,8 @@ public class ProcessInstanceEndHandler implements ExecutionListener {
       .getHistorySession()
       .findHistoricProcessInstance(execution.getId());
     
-    Date endTime = ClockUtil.getCurrentTime();
-    long durationInMillis = endTime.getTime() - historicProcessInstance.getStartTime().getTime();
-    historicProcessInstance.setEndTime(endTime);
-    historicProcessInstance.setDurationInMillis(durationInMillis);
+    String deleteReason = ((ExecutionEntity)execution).getDeleteReason();
+    historicProcessInstance.markEnded(deleteReason);
     historicProcessInstance.setEndActivityId(((ExecutionEntity)execution).getActivityId());
   }
 }

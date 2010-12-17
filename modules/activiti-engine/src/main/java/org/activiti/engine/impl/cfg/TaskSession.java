@@ -15,6 +15,8 @@ package org.activiti.engine.impl.cfg;
 
 import java.util.List;
 
+import org.activiti.engine.history.HistoricTaskInstance;
+import org.activiti.engine.impl.HistoricTaskInstanceQueryImpl;
 import org.activiti.engine.impl.Page;
 import org.activiti.engine.impl.TaskQueryImpl;
 import org.activiti.engine.impl.task.IdentityLinkEntity;
@@ -33,4 +35,7 @@ public interface TaskSession {
   long findTaskCountByQueryCriteria(TaskQueryImpl taskQuery);
 
   List<IdentityLinkEntity> findIdentityLinksByTaskId(String taskId);
+
+  long findHistoricTaskInstanceCountByQueryCriteria(HistoricTaskInstanceQueryImpl historicTaskInstanceQueryImpl);
+  List<HistoricTaskInstance> findHistoricTaskInstancesByQueryCriteria(HistoricTaskInstanceQueryImpl historicTaskInstanceQueryImpl, Page page);
 }

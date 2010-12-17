@@ -28,7 +28,6 @@ import org.activiti.engine.impl.cfg.HistorySession;
 import org.activiti.engine.impl.history.HistoricActivityInstanceEntity;
 import org.activiti.engine.impl.history.HistoricDetailEntity;
 import org.activiti.engine.impl.history.HistoricProcessInstanceEntity;
-import org.activiti.engine.impl.history.HistoricVariableUpdateEntity;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.interceptor.Session;
 
@@ -53,6 +52,7 @@ public class DbHistorySession extends AbstractDbSession implements HistorySessio
     }
     
     dbSqlSession.delete("deleteHistoricActivityInstancesByProcessInstanceId", historicProcessInstanceId);
+    dbSqlSession.delete("deleteHistoricTaskInstancesByProcessInstanceId", historicProcessInstanceId);
     dbSqlSession.delete(HistoricProcessInstanceEntity.class, historicProcessInstanceId);
   }
 

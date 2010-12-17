@@ -20,6 +20,8 @@ import org.activiti.engine.history.HistoricProcessInstance;
 import org.activiti.engine.history.HistoricProcessInstanceQuery;
 import org.activiti.engine.history.HistoricDetail;
 import org.activiti.engine.history.HistoricDetailQuery;
+import org.activiti.engine.history.HistoricTaskInstance;
+import org.activiti.engine.history.HistoricTaskInstanceQuery;
 
 /** 
  * Service exposing information about ongoing and past process instances.  This is different
@@ -40,6 +42,14 @@ public interface HistoryService {
   /** Creates a new programmatic query to search for {@link HistoricActivityInstance}s. */
   HistoricActivityInstanceQuery createHistoricActivityInstanceQuery();
   
+  /** Creates a new programmatic query to search for {@link HistoricTaskInstance}s. */
+  HistoricTaskInstanceQuery createHistoricTaskInstanceQuery();
+
   /** Creates a new programmatic query to search for {@link HistoricDetail}s. */
   HistoricDetailQuery createHistoricDetailQuery();
+
+  /** Deletes historic task isntance.  This might be useful for tasks that are 
+   * {@link TaskService#newTask() dynamically created} and then {@link TaskService#complete(String) completed}. */
+  void deleteHistoricTaskInstance(String taskId);
+
 }

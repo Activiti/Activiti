@@ -82,4 +82,5 @@ drop table  ACT_ID_USER;
 drop table  ACT_RU_JOB;
 drop table  ACT_HI_PROCINST;
 drop table  ACT_HI_ACTINST;
+drop table  ACT_HI_TASKINST;
 drop table  ACT_HI_DETAIL;

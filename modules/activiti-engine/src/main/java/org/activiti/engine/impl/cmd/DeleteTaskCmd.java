@@ -15,6 +15,8 @@ package org.activiti.engine.impl.cmd;
 import java.util.Collection;
 
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.impl.db.DbSqlSession;
+import org.activiti.engine.impl.history.HistoricTaskInstanceEntity;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.task.TaskEntity;
@@ -26,15 +28,17 @@ import org.activiti.engine.impl.task.TaskEntity;
 public class DeleteTaskCmd implements Command<Void> {
   
   protected String taskId;
-  
   protected Collection<String> taskIds;
+  protected boolean cascade;
   
-  public DeleteTaskCmd(String taskId) {
+  public DeleteTaskCmd(String taskId, boolean cascade) {
     this.taskId = taskId;
+    this.cascade = cascade;
   }
   
-  public DeleteTaskCmd(Collection<String> taskIds) {
+  public DeleteTaskCmd(Collection<String> taskIds, boolean cascade) {
     this.taskIds = taskIds;
+    this.cascade = cascade;
   }
 
   public Void execute(CommandContext commandContext) {
@@ -57,7 +61,11 @@ public class DeleteTaskCmd implements Command<Void> {
       .getTaskSession()
       .findTaskById(taskId);
     if (task!=null) {
-      task.delete();
+      task.delete(TaskEntity.DELETE_REASON_DELETED);
+    }
+    if (cascade) {
+      DbSqlSession dbSqlSession = commandContext.getDbSqlSession();
+      dbSqlSession.delete(HistoricTaskInstanceEntity.class, taskId);
     }
   }
 }

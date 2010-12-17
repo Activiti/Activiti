@@ -35,7 +35,7 @@ public class TaskVariablesTest extends PluggableActivitiTestCase {
     taskService.setVariable(taskId, "instrument", "trumpet");
     assertEquals("trumpet", taskService.getVariable(taskId, "instrument"));
     
-    taskService.deleteTask(taskId);
+    taskService.deleteTask(taskId, true);
   }
   
   @Deployment

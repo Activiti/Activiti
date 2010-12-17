@@ -59,6 +59,20 @@ public interface TaskService {
 	 */
 	void deleteTasks(Collection<String> taskIds);
 	
+  /**
+   * Deletes the given task.
+   * @param taskId The id of the task that will be deleted, cannot be null. If no task
+   * exists with the given taskId, the operation is ignored.
+   */
+  void deleteTask(String taskId, boolean cascade);
+  
+  /**
+   * Deletes all tasks of the given collection.
+   * @param taskIds The id's of the tasks that will be deleted, cannot be null. All
+   * id's in the list that don't have an existing task will be ignored.
+   */
+  void deleteTasks(Collection<String> taskIds, boolean cascade);
+  
 	 /**
    * Claim responsibility for a task: the given user is made assignee for the task.
    * The difference with {@link #setAssignee(String, String)} is that here 

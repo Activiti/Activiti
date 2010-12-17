@@ -59,7 +59,26 @@ public class TaskServiceTest extends PluggableActivitiTestCase {
     assertEquals(1, task.getPriority());
 
     // Finally, delete task
-    taskService.deleteTask(task.getId());
+    taskService.deleteTask(task.getId(), true);
+  }
+
+  public void testTaskAssignee() {
+    Task task = taskService.newTask();
+    task.setAssignee("johndoe");
+    taskService.saveTask(task);
+
+    // Fetch the task again and update
+    task = taskService.createTaskQuery().taskId(task.getId()).singleResult();
+    assertEquals("johndoe", task.getAssignee());
+
+    task.setAssignee("joesmoe");
+    taskService.saveTask(task);
+
+    task = taskService.createTaskQuery().taskId(task.getId()).singleResult();
+    assertEquals("joesmoe", task.getAssignee());
+
+    // Finally, delete task
+    taskService.deleteTask(task.getId(), true);
   }
 
   public void testSaveTaskNullTask() {
@@ -101,7 +120,7 @@ public class TaskServiceTest extends PluggableActivitiTestCase {
 
     // The unexisting taskId's should be silently ignored. Existing task should
     // have been deleted.
-    taskService.deleteTasks(Arrays.asList("unexistingtaskid1", existingTask.getId()));
+    taskService.deleteTasks(Arrays.asList("unexistingtaskid1", existingTask.getId()), true);
 
     existingTask = taskService.createTaskQuery().taskId(existingTask.getId()).singleResult();
     assertNull(existingTask);
@@ -148,7 +167,7 @@ public class TaskServiceTest extends PluggableActivitiTestCase {
       assertTextPresent("Task " + task.getId() + " is already claimed by someone else", ae.getMessage());
     }
 
-    taskService.deleteTask(task.getId());
+    taskService.deleteTask(task.getId(), true);
     identityService.deleteUser(user.getId());
     identityService.deleteUser(secondUser.getId());
   }
@@ -166,7 +185,7 @@ public class TaskServiceTest extends PluggableActivitiTestCase {
     // Claim the task again with the same user. No exception should be thrown
     taskService.claim(task.getId(), user.getId());
 
-    taskService.deleteTask(task.getId());
+    taskService.deleteTask(task.getId(), true);
     identityService.deleteUser(user.getId());
   }
   
@@ -187,7 +206,7 @@ public class TaskServiceTest extends PluggableActivitiTestCase {
     task = taskService.createTaskQuery().taskId(task.getId()).singleResult();
     assertNull(task.getAssignee());
     
-    taskService.deleteTask(task.getId());
+    taskService.deleteTask(task.getId(), true);
     identityService.deleteUser(user.getId());
   }
 
@@ -249,10 +268,12 @@ public class TaskServiceTest extends PluggableActivitiTestCase {
     Task task = taskService.newTask();
     taskService.saveTask(task);
     
-    taskService.complete(task.getId(), null);
+    String taskId = task.getId();
+    taskService.complete(taskId, null);
+    historyService.deleteHistoricTaskInstance(taskId);
     
     // Fetch the task again
-    task = taskService.createTaskQuery().taskId(task.getId()).singleResult();
+    task = taskService.createTaskQuery().taskId(taskId).singleResult();
     assertNull(task);
   }
   
@@ -261,10 +282,12 @@ public class TaskServiceTest extends PluggableActivitiTestCase {
     Task task = taskService.newTask();
     taskService.saveTask(task);
     
-    taskService.complete(task.getId(), Collections.EMPTY_MAP);
+    String taskId = task.getId();
+    taskService.complete(taskId, Collections.EMPTY_MAP);
+    historyService.deleteHistoricTaskInstance(taskId);
     
     // Fetch the task again
-    task = taskService.createTaskQuery().taskId(task.getId()).singleResult();
+    task = taskService.createTaskQuery().taskId(taskId).singleResult();
     assertNull(task);
   }
   
@@ -292,7 +315,7 @@ public class TaskServiceTest extends PluggableActivitiTestCase {
     assertEquals(1, variables.size());
     assertEquals("myValue", variables.get("myParam"));
 
-    taskService.deleteTask(task.getId());
+    taskService.deleteTask(task.getId(), true);
   }
   
   public void testSetAssignee() {
@@ -311,7 +334,7 @@ public class TaskServiceTest extends PluggableActivitiTestCase {
     assertEquals(user.getId(), task.getAssignee());
     
     identityService.deleteUser(user.getId());
-    taskService.deleteTask(task.getId());
+    taskService.deleteTask(task.getId(), true);
   }
   
   public void testSetAssigneeNullTaskId() {
@@ -351,7 +374,7 @@ public class TaskServiceTest extends PluggableActivitiTestCase {
     taskService.addCandidateUser(task.getId(), user.getId());
     
     identityService.deleteUser(user.getId());
-    taskService.deleteTask(task.getId());
+    taskService.deleteTask(task.getId(), true);
   }
   
   public void testAddCandidateUserNullTaskId() {
@@ -495,7 +518,7 @@ public class TaskServiceTest extends PluggableActivitiTestCase {
     assertEquals(IdentityLinkType.CANDIDATE, identityLinks.get(0).getType());
     
     //cleanup
-    taskService.deleteTask(taskId);
+    taskService.deleteTask(taskId, true);
     identityService.deleteUser("kermit");
   }
   
@@ -514,7 +537,7 @@ public class TaskServiceTest extends PluggableActivitiTestCase {
     assertEquals(IdentityLinkType.CANDIDATE, identityLinks.get(0).getType());
     
     //cleanup
-    taskService.deleteTask(taskId);
+    taskService.deleteTask(taskId, true);
     identityService.deleteGroup("muppets");
   }
   
@@ -533,7 +556,7 @@ public class TaskServiceTest extends PluggableActivitiTestCase {
     assertEquals(IdentityLinkType.ASSIGNEE, identityLinks.get(0).getType());
     
     //cleanup
-    taskService.deleteTask(taskId);
+    taskService.deleteTask(taskId, true);
     identityService.deleteUser("kermit");
   }
   
@@ -547,7 +570,7 @@ public class TaskServiceTest extends PluggableActivitiTestCase {
     task = taskService.createTaskQuery().taskId(task.getId()).singleResult();
     assertEquals(12345, task.getPriority());
     
-    taskService.deleteTask(task.getId());
+    taskService.deleteTask(task.getId(), true);
   }
   
   public void testSetPriorityUnexistingTaskId() {

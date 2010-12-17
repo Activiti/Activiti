@@ -60,7 +60,7 @@ public class SubProcessTest extends PluggableActivitiTestCase {
     assertEquals("Write report", writeReportTask.getName());
     
     // Clean up
-    repositoryService.deleteDeploymentCascade(deployment.getId());
+    repositoryService.deleteDeployment(deployment.getId(), true);
   }
 
 }

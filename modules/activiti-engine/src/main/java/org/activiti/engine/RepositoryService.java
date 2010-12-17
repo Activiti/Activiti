@@ -41,9 +41,17 @@ public interface RepositoryService {
    * Deletes the given deployment and cascade deletion to process instances, 
    * history process instances and jobs.
    * @param deploymentId id of the deployment, cannot be null.
+   * @deprecated use {@link #deleteDeployment(String, boolean)}.  This methods may be deleted from 5.3. 
    */
   void deleteDeploymentCascade(String deploymentId);
-  
+
+  /**
+   * Deletes the given deployment and cascade deletion to process instances, 
+   * history process instances and jobs.
+   * @param deploymentId id of the deployment, cannot be null.
+   */
+  void deleteDeployment(String deploymentId, boolean cascade);
+
   /**
    * Retrieves a list of deployment resources for the given deployment, 
    * ordered alphabetically.

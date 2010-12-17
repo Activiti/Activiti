@@ -58,13 +58,21 @@ public class TaskServiceImpl extends ServiceImpl implements TaskService {
   }
   
   public void deleteTask(String taskId) {
-    commandExecutor.execute(new DeleteTaskCmd(taskId));
+    commandExecutor.execute(new DeleteTaskCmd(taskId, false));
   }
   
   public void deleteTasks(Collection<String> taskIds) {
-    commandExecutor.execute(new DeleteTaskCmd(taskIds));
+    commandExecutor.execute(new DeleteTaskCmd(taskIds, false));
   }
   
+  public void deleteTask(String taskId, boolean cascade) {
+    commandExecutor.execute(new DeleteTaskCmd(taskId, cascade));
+  }
+
+  public void deleteTasks(Collection<String> taskIds, boolean cascade) {
+    commandExecutor.execute(new DeleteTaskCmd(taskIds, cascade));
+  }
+
   public void setAssignee(String taskId, String userId) {
     commandExecutor.execute(new AddIdentityLinkCmd(taskId, userId, null, 
             IdentityLinkType.ASSIGNEE));
@@ -168,5 +176,4 @@ public class TaskServiceImpl extends ServiceImpl implements TaskService {
   public CommandExecutor getCommandExecutor() {
     return commandExecutor;
   }
-
 }

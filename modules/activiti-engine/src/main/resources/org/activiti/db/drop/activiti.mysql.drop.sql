@@ -68,5 +68,6 @@ alter table ACT_RU_JOB
  drop table if exists ACT_RU_JOB;
  drop table if exists ACT_HI_PROCINST;
  drop table if exists ACT_HI_ACTINST;
+ drop table if exists ACT_HI_TASKINST;
  drop table if exists ACT_HI_DETAIL;
  

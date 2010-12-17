@@ -14,6 +14,7 @@
 
 package org.activiti.engine.impl.history;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import org.activiti.engine.history.HistoricProcessInstance;
@@ -45,10 +46,12 @@ public class HistoricProcessInstanceEntity extends HistoricScopeInstanceEntity i
     startActivityId = processInstance.getActivityId();
   }
 
-  @SuppressWarnings("unchecked")
   @Override
   public Object getPersistentState() {
-    Map<String, Object> persistentState = (Map<String, Object>) super.getPersistentState();
+    Map<String, Object> persistentState = (Map<String, Object>) new HashMap<String, Object>();
+    persistentState.put("endTime", endTime);
+    persistentState.put("durationInMillis", durationInMillis);
+    persistentState.put("deleteReason", deleteReason);
     persistentState.put("endStateName", endActivityId);
     return persistentState;
   }

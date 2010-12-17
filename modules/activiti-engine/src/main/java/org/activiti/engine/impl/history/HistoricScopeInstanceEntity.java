@@ -15,10 +15,9 @@
 package org.activiti.engine.impl.history;
 
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 
 import org.activiti.engine.impl.db.PersistentObject;
+import org.activiti.engine.impl.util.ClockUtil;
 
 /**
  * @author Christian Stettler
@@ -31,24 +30,12 @@ public abstract class HistoricScopeInstanceEntity implements PersistentObject {
   protected Date startTime;
   protected Date endTime;
   protected Long durationInMillis;
+  protected String deleteReason;
 
-  public Object getPersistentState() {
-    Map<String, Object> persistentState = new HashMap<String, Object>();
-    persistentState.put("endTime", endTime);
-    persistentState.put("durationInMillis", durationInMillis);
-    return persistentState;
-  }
-
-  protected void internalMarkEnded(Date endTime) {
-    if (endTime == null) {
-      throw new IllegalArgumentException("End time must not be null");
-    }
-    if (endTime.getTime() < startTime.getTime()) {
-      throw new IllegalArgumentException("end time must not be before start time");
-    }
-
-    this.endTime = endTime;
-    durationInMillis = endTime.getTime() - startTime.getTime();
+  public void markEnded(String deleteReason) {
+    this.deleteReason = deleteReason;
+    this.endTime = ClockUtil.getCurrentTime();
+    this.durationInMillis = endTime.getTime() - startTime.getTime();
   }
   
   // getters and setters //////////////////////////////////////////////////////
@@ -88,5 +75,11 @@ public abstract class HistoricScopeInstanceEntity implements PersistentObject {
   }
   public void setDurationInMillis(Long durationInMillis) {
     this.durationInMillis = durationInMillis;
+  }
+  public String getDeleteReason() {
+    return deleteReason;
+  }
+  public void setDeleteReason(String deleteReason) {
+    this.deleteReason = deleteReason;
   }
 }
