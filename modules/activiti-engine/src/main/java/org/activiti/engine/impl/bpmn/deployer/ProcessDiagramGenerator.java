@@ -163,11 +163,23 @@ public class ProcessDiagramGenerator {
    *  using the diagram interchange information of the process.
    */
   public static InputStream generatePngDiagram(ProcessDefinitionEntity processDefinition) {
+    return generateDiagram(processDefinition, "png");
+  }
+  
+  /**
+   *  Generates a JPG diagram image of the given process definition,
+   *  using the diagram interchange information of the process.
+   */
+  public static InputStream generateJpgDiagram(ProcessDefinitionEntity processDefinition) {
+    return generateDiagram(processDefinition, "jpg");
+  }
+    
+  public static InputStream generateDiagram(ProcessDefinitionEntity processDefinition, String imageType) {
     ProcessDiagramCanvas processDiagramCanvas = initProcessDiagramCanvas(processDefinition);
     for (ActivityImpl activity : processDefinition.getActivities()) {
      drawActivity(processDiagramCanvas, activity);
     }
-    return processDiagramCanvas.generateImage("png");
+    return processDiagramCanvas.generateImage(imageType);
   }
   
   protected static void drawActivity(ProcessDiagramCanvas processDiagramCanvas, ActivityImpl activity) {
