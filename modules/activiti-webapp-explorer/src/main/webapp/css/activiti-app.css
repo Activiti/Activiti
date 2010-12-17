@@ -49,10 +49,10 @@ h1 {
   background-image: url("../images/process-start-icon.png");
 } 
 
-#Activiti .processes tbody a.onActionShowProcessStartForm {
-  background-image: url("../images/process-view-icon.png");
+#Activiti .processes tbody a.onActionStartProcessUsingForm {
+  background-image: url("../images/process-start-form-icon.png");
 }
 
-#Activiti .processes tbody a.onActionShowProcessDiagram {
+#Activiti .processes tbody a.onActionViewProcessDiagram {
   background-image: url("../images/process-view-icon.png");
 }

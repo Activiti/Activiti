@@ -25,24 +25,9 @@ h1 {
   width:auto;
 }
 
-#Activiti .jobAction {
-   display:block;
-   padding-left:20px;
-} 
-
-#Activiti .executeJob {
-   background: url("../images/process-start-icon.png") no-repeat 0 3px;
-}
-#Activiti .viewException{
-   background: url("../images/process-view-icon.png") no-repeat 0 3px;
-}
-#Activiti .viewException .exception{
-  display:none;
-}
-
 /* Bug fix for close button overlapping text */
 .yui-skin-sam #prompt.yui-panel .bd {
-padding-top:25px;
+  padding-top:25px;
 }
 
 /* JOBS */
@@ -53,9 +38,10 @@ padding-top:25px;
   text-decoration: none;
 }
 
-#Activiti .jobs tbody a.onActionViewException {
-  background-image: url("../images/error-icon.png");
+#Activiti .jobs tbody a.onActionExecuteJob {
+  background-image: url("../images/job-execute-icon.png");
 }
 
-#Activiti .jobs tbody a.onActionExecuteJob {
-  background-image: url("../images/process-start-icon.png");
+#Activiti .jobs tbody a.onActionViewException {
+  background-image: url("../images/job-view-exception-icon.png");
+}

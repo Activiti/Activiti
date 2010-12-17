@@ -62,14 +62,14 @@
         this.id + "-datatable",
         [ this.id + "-paginator" ],
         [
-          { key:"select", label: this.msg("jobs.label.select") },
-          { key:"exceptionMessage", label: this.msg("jobs.label.status") },
-          { key:"id", label: this.msg("jobs.label.id"), sortable:true },
-          { key:"executionId", label: this.msg("jobs.label.executionId"), sortable:true },
-          { key:"retries", label: this.msg("jobs.label.retries"), sortable:true },
-          { key:"processInstanceId", label: this.msg("jobs.label.processInstanceId"), sortable:true },
-          { key:"dueDate", label: this.msg("jobs.label.dueDate"), sortable:true },
-          { key:"action", label: this.msg("jobs.label.actions") }
+          { key:"select", label: this.msg("label.select") },
+          { key:"exceptionMessage", label: this.msg("label.status") },
+          { key:"id", label: this.msg("label.id"), sortable:true },
+          { key:"executionId", label: this.msg("label.executionId"), sortable:true },
+          { key:"retries", label: this.msg("label.retries"), sortable:true },
+          { key:"processInstanceId", label: this.msg("label.processInstanceId"), sortable:true },
+          { key:"dueDate", label: this.msg("label.dueDate"), sortable:true },
+          { key:"action", label: this.msg("label.actions") }
         ]
       );
       
@@ -112,7 +112,7 @@
     {
       var data = oRecord.getData(),
         status = (data.exceptionMessage === null)? "pending": "failed";
-      el.innerHTML = "<span class='statusMessage " + status + "'>"+this.msg("jobs.status."+status)+"</span>";
+      el.innerHTML = "<span class='statusMessage " + status + "'>"+this.msg("status."+status)+"</span>";
     },
     
     /**
@@ -132,10 +132,10 @@
         actions = [];
       if (data.exceptionMessage !== null)
       {
-        actions.push('<a href="#" class="onActionViewException" title="' + this.msg("jobs.link.view-exception") + '" tabindex="0">&nbsp;</a>');
+        actions.push('<a href="#" class="onActionViewJobException" title="' + this.msg("action.viewJobException") + '" tabindex="0">&nbsp;</a>');
       }
-      actions.push('<a href="#" class="onActionExecuteJob" title="' + this.msg("jobs.link.execute") + '" tabindex="0">&nbsp;</a>');
-      el.innerHTML = actions.join("<br/>")
+      actions.push('<a href="#" class="onActionExecuteJob" title="' + this.msg("action.executeJob") + '" tabindex="0">&nbsp;</a>');
+      el.innerHTML = actions.join("")
     },
 
     /**
@@ -215,7 +215,7 @@
       else
       {
         Activiti.widget.PopupManager.displayMessage({
-          text: this.msg("jobs.message.none-selected")
+          text: this.msg("jobs.message.noneSelected")
         })
       } 
     },
@@ -243,7 +243,7 @@
       this.widgets.dataTable.reload();
     },
     
-    onViewException: function Jobs_onViewException(data)
+    onViewJobException: function Jobs_onViewJobException(data)
     {
       Activiti.widget.PopupManager.displayError(data.exceptionMessage);
     }

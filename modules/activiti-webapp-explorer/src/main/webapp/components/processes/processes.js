@@ -106,13 +106,13 @@
       var actions = [],
           data = oRecord.getData();
       if (data.startFormResourceKey != null) {
-        actions.push('<a href="#" class="onActionShowProcessStartForm" title="' + this.msg("process.action.showProcessStartForm") + '" tabindex="0">&nbsp;</a>');
+        actions.push('<a href="#" class="onActionStartProcessUsingForm" title="' + this.msg("action.startProcessUsingForm") + '" tabindex="0">&nbsp;</a>');
       }
       else {
-        actions.push('<a href="#" class="onActionStartProcess" title="' + this.msg("process.action.startProcess") + '" tabindex="0">&nbsp;</a>');
+        actions.push('<a href="#" class="onActionStartProcess" title="' + this.msg("action.startProcess") + '" tabindex="0">&nbsp;</a>');
       }
       if (data.diagramResourceName != null) {
-        actions.push('<a href="#" class="onActionShowProcessDiagram" title="' + this.msg("process.action.showProcessDiagram") + '" tabindex="0">&nbsp;</a>');
+        actions.push('<a href="#" class="onActionViewProcessDiagram" title="' + this.msg("action.viewProcessDiagram") + '" tabindex="0">&nbsp;</a>');
       }
       el.innerHTML = actions.join("");
     },
@@ -120,11 +120,11 @@
     /**
      * Called when the start process link has been clicked and will display a start form
      *
-     * @method onActionShowProcessStartForm
+     * @method onActionStartProcessUsingForm
      * @param data {Object} The process definition data
      * @param datatable {Activiti.widget.DataTable} The data table in which the link was clicked
      */
-    onActionShowProcessStartForm: function Processes_onActionShowProcessStartForm(data, datatable)
+    onActionStartProcessUsingForm: function Processes_onActionStartProcessUsingForm(data, datatable)
     {
       new Activiti.widget.StartProcessInstanceForm(this.id + "-startProcessInstanceForm", data.id);
     },
@@ -145,11 +145,11 @@
      * Called when a process start link has been clicked
      * Will start new process based on the element
      *
-     * @method onActionShowProcessDiagram
+     * @method onActionViewProcessDiagram
      * @param data {Object} The process definition data
      * @param datatable {Activiti.widget.DataTable} The data table in which the link was clicked
      */
-    onActionShowProcessDiagram: function Processes_onActionShowProcessDiagram(data, datatable)
+    onActionViewProcessDiagram: function Processes_onActionViewProcessDiagram(data, datatable)
     {
       var url = Activiti.service.REST_PROXY_URI_RELATIVE + '/deployment/' + $html(data.deploymentId) + '/resource/' + $html(data.diagramResourceName);
       Activiti.widget.PopupManager.displayImage(url);

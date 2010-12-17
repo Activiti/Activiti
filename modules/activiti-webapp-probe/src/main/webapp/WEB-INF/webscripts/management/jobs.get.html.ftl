@@ -5,7 +5,7 @@
   <div id="${el}-datatable"></div>
 </div>
 
-<button type="button" id="${el}-execute">${msg("jobs.button.execute-selected")}</button>
+<button type="button" id="${el}-execute">${msg("button.executeSelectedJobs")}</button>
 
 <script type="text/javascript">//<![CDATA[
    new Activiti.component.Jobs("${el}").setMessages(${messages});
