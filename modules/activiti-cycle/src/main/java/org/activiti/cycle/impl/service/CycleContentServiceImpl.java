@@ -13,7 +13,7 @@ import org.activiti.cycle.MimeType;
 import org.activiti.cycle.RepositoryArtifact;
 import org.activiti.cycle.RepositoryArtifactType;
 import org.activiti.cycle.context.CycleApplicationContext;
-import org.activiti.cycle.impl.connector.signavio.provider.PngProvider;
+import org.activiti.cycle.impl.connector.signavio.provider.AbstractPngProvider;
 import org.activiti.cycle.impl.mimetype.Mimetypes;
 import org.activiti.cycle.impl.repositoryartifacttype.RepositoryArtifactTypes;
 import org.activiti.cycle.impl.representation.ContentRepresentations;
@@ -71,10 +71,10 @@ public class CycleContentServiceImpl implements CycleContentService {
         if (o1.equals(o2)) {
           return 0;
         }
-        if (o1.getClass().equals(PngProvider.class)) {
+        if (AbstractPngProvider.class.isAssignableFrom(o1.getClass())) {
           return -1;
         }
-        if (o2.getClass().equals(PngProvider.class)) {
+        if (AbstractPngProvider.class.isAssignableFrom(o2.getClass())) {
           return 1;
         }
         return o1.getId().compareTo(o2.getId());

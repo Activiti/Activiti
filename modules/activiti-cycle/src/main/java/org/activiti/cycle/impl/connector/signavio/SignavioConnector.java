@@ -23,11 +23,9 @@ import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.activiti.cycle.ArtifactType;
 import org.activiti.cycle.Content;
 import org.activiti.cycle.RepositoryArtifact;
 import org.activiti.cycle.RepositoryArtifactType;
-import org.activiti.cycle.RepositoryAuthenticationException;
 import org.activiti.cycle.RepositoryException;
 import org.activiti.cycle.RepositoryFolder;
 import org.activiti.cycle.RepositoryNode;
@@ -43,9 +41,12 @@ import org.activiti.cycle.impl.connector.AbstractRepositoryConnector;
 import org.activiti.cycle.impl.connector.ConnectorLoginInterceptor;
 import org.activiti.cycle.impl.connector.signavio.provider.JsonProvider;
 import org.activiti.cycle.impl.connector.signavio.repositoryartifacttype.SignavioBpmn20ArtifactType;
+import org.activiti.cycle.impl.connector.signavio.repositoryartifacttype.SignavioDefaultArtifactType;
 import org.activiti.cycle.impl.connector.signavio.repositoryartifacttype.SignavioJpdl4ArtifactType;
 import org.activiti.cycle.impl.connector.signavio.util.SignavioJsonHelper;
 import org.activiti.cycle.impl.connector.util.RestClientLogHelper;
+import org.activiti.cycle.impl.mimetype.UnknownMimeType;
+import org.activiti.cycle.impl.repositoryartifacttype.BasicRepositoryArtifactType;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -289,22 +290,24 @@ public class SignavioConnector extends AbstractRepositoryConnector<SignavioConne
   }
 
   private RepositoryArtifactType getArtifactTypeForSignavioArtifact(JSONObject json) throws JSONException {
-    RepositoryArtifactType artifactType = null;
+    RepositoryArtifactType artifactType = CycleApplicationContext.get(SignavioDefaultArtifactType.class);
 
     if (json.has("namespace")) {
       // Commercial Signavio way of doing it
       String namespace = json.getString("namespace");
       if (SignavioBpmn20ArtifactType.SIGNAVIO_NAMESPACE_FOR_BPMN_2_0.equals(namespace)) {
         artifactType = CycleApplicationContext.get(SignavioBpmn20ArtifactType.class);
-      } else if (SignavioJpdl4ArtifactType.SIGNAVIO_NAMESPACE_FOR_BPMN_JBPM4.equals(namespace)) {
-        artifactType = CycleApplicationContext.get(SignavioJpdl4ArtifactType.class);
       }
+//      else if (SignavioJpdl4ArtifactType.SIGNAVIO_NAMESPACE_FOR_BPMN_JBPM4.equals(namespace)) {
+//        artifactType = CycleApplicationContext.get(SignavioJpdl4ArtifactType.class);
+//      }
     } else {
       // Oryx/Signavio OSS = Activiti Modeler way of doing it
       String type = json.getString("type");
       if (SignavioBpmn20ArtifactType.ORYX_TYPE_ATTRIBUTE_FOR_BPMN_20.equals(type)) {
         artifactType = CycleApplicationContext.get(SignavioBpmn20ArtifactType.class);
-      } else if (SignavioPluginDefinition.SIGNAVIO_NAMESPACE_FOR_BPMN_2_0.equals(type)) {
+      }
+      else if (SignavioPluginDefinition.SIGNAVIO_NAMESPACE_FOR_BPMN_2_0.equals(type)) {
         artifactType = CycleApplicationContext.get(SignavioBpmn20ArtifactType.class);
       }
     }

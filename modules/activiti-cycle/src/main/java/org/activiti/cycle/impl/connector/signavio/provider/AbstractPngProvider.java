@@ -31,14 +31,14 @@ import org.activiti.cycle.impl.connector.signavio.SignavioConnectorInterface;
 import org.activiti.cycle.impl.connector.signavio.repositoryartifacttype.SignavioBpmn20ArtifactType;
 import org.activiti.cycle.impl.mimetype.PngMimeType;
 
-@CycleComponent(context = CycleContextType.APPLICATION)
-public class PngProvider extends SignavioContentRepresentationProvider {
+public abstract class AbstractPngProvider extends SignavioContentRepresentationProvider {
 
   private static final long serialVersionUID = 1L;
 
   public Content getContent(RepositoryArtifact artifact) {
     try {
-      SignavioConnectorInterface signavioConnector = (SignavioConnectorInterface) CycleSessionContext.get(RuntimeConnectorList.class).getConnectorById(artifact.getConnectorId());
+      SignavioConnectorInterface signavioConnector = (SignavioConnectorInterface) CycleSessionContext.get(RuntimeConnectorList.class).getConnectorById(
+              artifact.getConnectorId());
       Content content = new Content();
       SignavioConnectorConfiguration configuration = (SignavioConnectorConfiguration) signavioConnector.getConfiguration();
       String modelAsPngUrl = configuration.getPngUrl(artifact.getNodeId(), signavioConnector.getSecurityToken());
@@ -53,17 +53,13 @@ public class PngProvider extends SignavioContentRepresentationProvider {
   public String getId() {
     return "PNG";
   }
-  
+
   public MimeType getRepresentationMimeType() {
     return CycleApplicationContext.get(PngMimeType.class);
   }
 
   public RenderInfo getRenderInfo() {
     return RenderInfo.IMAGE;
-  }
-
-  public RepositoryArtifactType getRepositoryArtifactType() {
-    return CycleApplicationContext.get(SignavioBpmn20ArtifactType.class);
   }
 
 }

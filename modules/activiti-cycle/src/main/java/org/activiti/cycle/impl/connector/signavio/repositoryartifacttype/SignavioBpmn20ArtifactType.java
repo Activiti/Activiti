@@ -3,6 +3,7 @@ package org.activiti.cycle.impl.connector.signavio.repositoryartifacttype;
 import org.activiti.cycle.MimeType;
 import org.activiti.cycle.RepositoryArtifactType;
 import org.activiti.cycle.annotations.CycleComponent;
+import org.activiti.cycle.context.CycleApplicationContext;
 import org.activiti.cycle.context.CycleContextType;
 import org.activiti.cycle.impl.mimetype.XmlMimeType;
 import org.activiti.cycle.impl.repositoryartifacttype.AbstractBPMN20ProcessModel;
@@ -21,7 +22,7 @@ public class SignavioBpmn20ArtifactType extends AbstractBPMN20ProcessModel {
 
   public MimeType getMimeType() {
     // TODO: which mimetype is this?
-    return new XmlMimeType();
+    return CycleApplicationContext.get(XmlMimeType.class);
   }
 
   public String[] getCommonFileExtensions() {
