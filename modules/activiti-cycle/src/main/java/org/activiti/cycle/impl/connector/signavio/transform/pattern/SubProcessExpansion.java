@@ -10,7 +10,6 @@ import java.util.regex.Pattern;
 import org.activiti.cycle.RepositoryArtifact;
 import org.activiti.cycle.RepositoryConnector;
 import org.activiti.cycle.context.CycleApplicationContext;
-import org.activiti.cycle.impl.connector.signavio.SignavioPluginDefinition;
 import org.activiti.cycle.impl.connector.signavio.provider.JsonProvider;
 import org.activiti.cycle.impl.connector.signavio.transform.JsonTransformationException;
 import org.oryxeditor.server.diagram.Diagram;

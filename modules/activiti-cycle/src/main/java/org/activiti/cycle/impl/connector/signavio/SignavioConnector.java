@@ -307,7 +307,7 @@ public class SignavioConnector extends AbstractRepositoryConnector<SignavioConne
       if (SignavioBpmn20ArtifactType.ORYX_TYPE_ATTRIBUTE_FOR_BPMN_20.equals(type)) {
         artifactType = CycleApplicationContext.get(SignavioBpmn20ArtifactType.class);
       }
-      else if (SignavioPluginDefinition.SIGNAVIO_NAMESPACE_FOR_BPMN_2_0.equals(type)) {
+      else if (SignavioBpmn20ArtifactType.SIGNAVIO_NAMESPACE_FOR_BPMN_2_0.equals(type)) {
         artifactType = CycleApplicationContext.get(SignavioBpmn20ArtifactType.class);
       }
     }
@@ -605,7 +605,7 @@ public class SignavioConnector extends AbstractRepositoryConnector<SignavioConne
       modelForm.add("name", artifactName);
 
       // TODO: Check ArtifactType here correctly
-      modelForm.add("namespace", SignavioPluginDefinition.SIGNAVIO_NAMESPACE_FOR_BPMN_2_0);
+      modelForm.add("namespace", SignavioBpmn20ArtifactType.SIGNAVIO_NAMESPACE_FOR_BPMN_2_0);
       // Important: Don't set the type attribute here, otherwise it will not
       // work!
 

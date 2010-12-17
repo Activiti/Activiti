@@ -18,7 +18,6 @@ import org.activiti.cycle.context.CycleContextType;
 import org.activiti.cycle.context.CycleSessionContext;
 import org.activiti.cycle.impl.connector.signavio.SignavioConnector;
 import org.activiti.cycle.impl.connector.signavio.SignavioConnectorInterface;
-import org.activiti.cycle.impl.connector.signavio.SignavioPluginDefinition;
 import org.activiti.cycle.impl.connector.signavio.repositoryartifacttype.SignavioBpmn20ArtifactType;
 import org.activiti.cycle.impl.connector.signavio.util.SignavioSvgApiBuilder;
 import org.activiti.cycle.impl.connector.signavio.util.SignavioSvgHighlight;
