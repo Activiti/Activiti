@@ -8,6 +8,7 @@ import org.activiti.cycle.RepositoryArtifact;
 import org.activiti.cycle.RepositoryArtifactType;
 import org.activiti.cycle.RepositoryConnector;
 import org.activiti.cycle.action.Action;
+import org.activiti.cycle.action.ArtifactAwareParameterizedAction;
 import org.activiti.cycle.action.CreateUrlAction;
 import org.activiti.cycle.action.DownloadContentAction;
 import org.activiti.cycle.action.ParameterizedAction;
@@ -43,6 +44,7 @@ public class CyclePluginServiceImpl implements CyclePluginService {
 
   public Set<ParameterizedAction> getParameterizedActions(RepositoryArtifact artifact) {
     Set<ParameterizedAction> actions = getParameterizedActions(artifact.getArtifactType());
+    removeNonApplicableActions(actions, artifact);
     removeExcludedActions(actions);
     sortActions(actions, artifact);
     return actions;
@@ -60,6 +62,19 @@ public class CyclePluginServiceImpl implements CyclePluginService {
     removeExcludedActions(actions);
     sortActions(actions, artifact);
     return actions;
+  }
+
+  private void removeNonApplicableActions(Set<ParameterizedAction> actions, RepositoryArtifact forArtifact) {
+    Set<ParameterizedAction> nonApplicableActions = new HashSet<ParameterizedAction>();
+    for (ParameterizedAction parameterizedAction : actions) {
+      if (parameterizedAction instanceof ArtifactAwareParameterizedAction) {
+        ArtifactAwareParameterizedAction artifactAwareAction = (ArtifactAwareParameterizedAction) parameterizedAction;
+        if (artifactAwareAction.isApplicable(forArtifact) == false) {
+          nonApplicableActions.add(parameterizedAction);
+        }
+      }
+    }
+    actions.removeAll(nonApplicableActions);
   }
 
   private void sortActions(Set actions, RepositoryArtifact artifact) {
