@@ -156,14 +156,14 @@ public class ContentGet extends ActivitiStreamingWebScript {
       if (etag.equals(requestEtag)) {
         throw new WebScriptException(HttpServletResponse.SC_NOT_MODIFIED, "");
       } else {
-        streamResponse(res, contentInputStream, new Date(0), etag, attach, attachmentFileName, contentType.getName());
+        streamResponse(res, contentInputStream, new Date(0), etag, attach, attachmentFileName, contentType.getContentType());
       }
 
     } catch (TransformationException e) {
       // Stream the contents of the exception as HTML, this is a workaround to
       // display exceptions that occur during content transformations
       streamResponse(res, new ByteArrayInputStream(e.getRenderContent().getBytes()), new Date(0), "", false, null,
-              CycleApplicationContext.get(HtmlMimeType.class).getName());
+              CycleApplicationContext.get(HtmlMimeType.class).getContentType());
     } catch (NoSuchAlgorithmException e) {
       // This should never be reached... MessageDigest throws an exception if it
       // is being instantiated with a wrong algorithm, but we know that MD5

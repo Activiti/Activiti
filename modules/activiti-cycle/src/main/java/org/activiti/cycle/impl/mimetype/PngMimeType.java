@@ -12,6 +12,10 @@ import org.activiti.cycle.context.CycleContextType;
 public class PngMimeType extends AbstractMimeType {
 
   public String getName() {
+    return "Png";
+  }
+
+  public String getContentType() {
     return "image/png";
   }
 

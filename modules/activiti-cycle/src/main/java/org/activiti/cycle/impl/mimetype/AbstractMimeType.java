@@ -8,7 +8,7 @@ public abstract class AbstractMimeType implements MimeType {
   public int hashCode() {
     final int prime = 31;
     int result = 1;
-    result = prime * result + ((getName() == null) ? 0 : getName().hashCode());
+    result = prime * result + ((getContentType() == null) ? 0 : getContentType().hashCode());
     return result;
   }
 
@@ -21,17 +21,17 @@ public abstract class AbstractMimeType implements MimeType {
     if (getClass() != obj.getClass())
       return false;
     MimeType other = (MimeType) obj;
-    if (getName() == null) {
-      if (other.getName() != null)
+    if (getContentType() == null) {
+      if (other.getContentType() != null)
         return false;
-    } else if (!getName().equals(other.getName()))
+    } else if (!getContentType().equals(other.getContentType()))
       return false;
     return true;
   }
-  
+
   @Override
   public String toString() {
-    return getClass().getName();    
+    return getClass().getName();
   }
 
 }

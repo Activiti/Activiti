@@ -60,12 +60,12 @@ public class ContentRepresentationGet extends ActivitiCycleWebScript {
       }
       model.put("renderInfo", contentRepresentation.getRenderInfo().name());
       model.put("contentRepresentationId", contentRepresentation.getId());
-      model.put("contentType", contentRepresentation.getRepresentationMimeType().getName());
+      model.put("contentType", contentRepresentation.getRepresentationMimeType().getContentType());
     } catch (TransformationException e) {
       // Show errors that occur during transformations as HTML in the UI
       model.put("renderInfo", RenderInfo.HTML);
       model.put("contentRepresentationId", representationId);
-      model.put("contentType", CycleApplicationContext.get(HtmlMimeType.class).getName());
+      model.put("contentType", CycleApplicationContext.get(HtmlMimeType.class).getContentType());
     } 
   }
 }

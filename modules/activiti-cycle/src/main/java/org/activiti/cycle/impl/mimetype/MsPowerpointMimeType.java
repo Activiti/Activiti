@@ -12,8 +12,13 @@ import org.activiti.cycle.context.CycleContextType;
 public class MsPowerpointMimeType extends AbstractMimeType {
 
   public String getName() {
+    return "Powerpoint";
+  }
+
+  public String getContentType() {
     return "application/powerpoint";
   }
+
   public String[] getCommonFileExtensions() {
     return new String[] { "ppt", "pptx" };
   }

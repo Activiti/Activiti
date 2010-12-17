@@ -12,6 +12,10 @@ import org.activiti.cycle.context.CycleContextType;
 public class HtmlMimeType extends AbstractMimeType {
 
   public String getName() {
+    return "Html";
+  }
+
+  public String getContentType() {
     return "text/html";
   }
 

@@ -8,10 +8,14 @@ import org.activiti.cycle.context.CycleContextType;
  * 
  * @author daniel.meyer@camunda.com
  */
-@CycleComponent(context=CycleContextType.APPLICATION)
+@CycleComponent(context = CycleContextType.APPLICATION)
 public class UnknownMimeType extends AbstractMimeType {
 
   public String getName() {
+    return "unknown";
+  }
+
+  public String getContentType() {
     return "unknown";
   }
 

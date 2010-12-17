@@ -12,6 +12,10 @@ import org.activiti.cycle.context.CycleContextType;
 public class JsonMimeType extends AbstractMimeType {
 
   public String getName() {
+    return "Json";
+  }
+  
+  public String getContentType() {
     return "application/json;charset=UTF-8";
   }
 

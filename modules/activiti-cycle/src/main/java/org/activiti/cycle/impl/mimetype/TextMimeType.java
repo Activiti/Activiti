@@ -12,9 +12,13 @@ import org.activiti.cycle.context.CycleContextType;
 public class TextMimeType extends AbstractMimeType {
 
   public String getName() {
+    return "Text";
+  }
+
+  public String getContentType() {
     return "text/plain";
   }
-  
+
   public String[] getCommonFileExtensions() {
     return new String[] { "txt" };
   }

@@ -65,7 +65,7 @@ public class ArtifactGet extends ActivitiCycleWebScript {
       try {
         String url = restProxyUri + "content?connectorId=" + URLEncoder.encode(connectorId, "UTF-8") + "&artifactId=" + URLEncoder.encode(artifactId, "UTF-8")
                 + "&contentRepresentationId=" + URLEncoder.encode(action.getContentRepresentation().getId(), "UTF-8");
-        downloads.add(new DownloadActionView(action.getId(), url, action.getContentRepresentation().getRepositoryArtifactType().getMimeType().getName(), action
+        downloads.add(new DownloadActionView(action.getId(), url, action.getContentRepresentation().getRepositoryArtifactType().getMimeType().getContentType(), action
                 .getContentRepresentation().getId()));
       } catch (UnsupportedEncodingException e) {
         // should never be reached as long as we use UTF-8, which is valid in

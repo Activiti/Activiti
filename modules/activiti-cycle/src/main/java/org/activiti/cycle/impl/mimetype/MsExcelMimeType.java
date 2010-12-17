@@ -12,6 +12,10 @@ import org.activiti.cycle.context.CycleContextType;
 public class MsExcelMimeType extends AbstractMimeType {
 
   public String getName() {
+    return "Excel";
+  }
+
+  public String getContentType() {
     return "application/excel";
   }
 

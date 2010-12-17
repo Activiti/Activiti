@@ -12,6 +12,10 @@ import org.activiti.cycle.context.CycleContextType;
 public class PdfMimeType extends AbstractMimeType {
 
   public String getName() {
+    return "Pdf";
+  }
+
+  public String getContentType() {
     return "application/pdf";
   }
 

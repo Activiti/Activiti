@@ -12,6 +12,10 @@ import org.activiti.cycle.context.CycleContextType;
 public class GifMimeType extends AbstractMimeType {
 
   public String getName() {
+    return "Gif";
+  }
+  
+  public String getContentType() {
     return "image/gif";
   }
 

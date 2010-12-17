@@ -22,6 +22,8 @@ package org.activiti.cycle;
 public interface MimeType {
 
   public String getName();
+  
+  public String getContentType();
 
   public String[] getCommonFileExtensions();
 

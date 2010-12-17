@@ -12,6 +12,10 @@ import org.activiti.cycle.context.CycleContextType;
 public class XmlMimeType extends AbstractMimeType {
 
   public String getName() {
+    return "Xml";
+  }
+
+  public String getContentType() {
     return "application/xml";
   }
 

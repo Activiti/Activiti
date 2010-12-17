@@ -12,6 +12,10 @@ import org.activiti.cycle.context.CycleContextType;
 public class MsWordMimeType extends AbstractMimeType {
 
   public String getName() {
+    return "Word";
+  }
+
+  public String getContentType() {
     return "application/msword";
   }
 

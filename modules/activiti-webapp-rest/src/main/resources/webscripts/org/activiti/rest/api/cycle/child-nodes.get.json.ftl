@@ -26,7 +26,7 @@
   "artifactId": "${file.nodeId}",
   "expanded": "true",
   "file": "true",
-  "contentType": "${file.artifactType.mimeType.name}"
+  "contentType": "${file.artifactType.mimeType.contentType}"
 }
 </#escape>
 </#macro>

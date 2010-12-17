@@ -12,6 +12,10 @@ import org.activiti.cycle.context.CycleContextType;
 public class JavaScriptMimeType extends AbstractMimeType {
 
   public String getName() {
+    return "Java Script";
+  }
+  
+  public String getContentType() {
     return "application/javascript";
   }
   
