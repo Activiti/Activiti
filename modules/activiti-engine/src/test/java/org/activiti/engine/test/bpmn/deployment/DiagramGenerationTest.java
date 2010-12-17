@@ -16,11 +16,17 @@ package org.activiti.engine.test.bpmn.deployment;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBuffer;
 import java.awt.image.Raster;
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 
 import javax.imageio.ImageIO;
 
+import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
+import org.activiti.engine.impl.util.IoUtil;
 import org.activiti.engine.impl.util.ReflectUtil;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.test.Deployment;
@@ -44,15 +50,30 @@ public class DiagramGenerationTest extends PluggableActivitiTestCase {
             processDefinition.getDeploymentId(), processDefinition.getDiagramResourceName()));
     assertNotNull(imageInRepo);
     
+    write(repositoryService.getResourceAsStream(
+            processDefinition.getDeploymentId(), processDefinition.getDiagramResourceName()));
+    
     Raster rasterFromRepo = imageInRepo.getData();
     DataBuffer dataBufferFromRepo = rasterFromRepo.getDataBuffer();
-    
     assertEquals(dataBufferFromRepo.getSize(), expectedDataBuffer.getSize());
     
     for (int i=0; i<expectedDataBuffer.getSize(); i++) {
       assertEquals(expectedDataBuffer.getElem(i), dataBufferFromRepo.getElem(i));
     }
     
+  }
+  
+  public static void write(InputStream inputStream) {
+    BufferedOutputStream outputStream = null;
+    try {
+      outputStream = new BufferedOutputStream(new FileOutputStream(new File("test.png")));
+      outputStream.write(IoUtil.readInputStream(inputStream, null));
+      outputStream.flush();
+    } catch(Exception e) {
+      throw new ActivitiException("Couldn't write file : " + e.getMessage());
+    } finally {
+      IoUtil.closeSilently(outputStream);
+    }
   }
 
 }
