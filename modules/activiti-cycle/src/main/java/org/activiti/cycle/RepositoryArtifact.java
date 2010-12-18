@@ -12,7 +12,6 @@
  */
 package org.activiti.cycle;
 
-
 /**
  * Information about an artifact contained in the repository (e.g. a file,
  * signavio model, ...)
@@ -21,6 +20,11 @@ package org.activiti.cycle;
  */
 public interface RepositoryArtifact extends RepositoryNode {
 
+  /**
+   * @return the {@link RepositoryArtifactType} of this
+   *         {@link RepositoryArtifact}.
+   * 
+   */
   public RepositoryArtifactType getArtifactType();
 
 }

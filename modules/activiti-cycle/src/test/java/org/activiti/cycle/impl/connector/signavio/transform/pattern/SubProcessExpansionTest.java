@@ -35,7 +35,8 @@ public class SubProcessExpansionTest {
     String input = IoUtils.readText(new FileInputStream(inputFileName));
     String expected = IoUtils.readText(new FileInputStream(expectedFileName));
 
-    FileSystemConnector repositoryConnector = new SignavioFileSystemConnector(new FileSystemConnectorConfiguration("filesystem", new File(path)));
+    FileSystemConnector repositoryConnector = new SignavioFileSystemConnector();
+    repositoryConnector.setConfiguration(new FileSystemConnectorConfiguration("filesystem", new File(path)));
 
     JsonTransformer jsonTransformer = new JsonTransformer();
     jsonTransformer.addJsonTransformation(new SubProcessExpansion(repositoryConnector));

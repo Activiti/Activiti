@@ -6,7 +6,7 @@ import org.activiti.cycle.MimeType;
 import org.activiti.cycle.RepositoryArtifact;
 import org.activiti.cycle.RepositoryArtifactType;
 import org.activiti.cycle.context.CycleApplicationContext;
-import org.activiti.cycle.impl.repositoryartifacttype.BasicRepositoryArtifactType;
+import org.activiti.cycle.impl.artifacttype.BasicRepositoryArtifactType;
 import org.activiti.cycle.service.CycleServiceFactory;
 
 /**
@@ -20,7 +20,7 @@ public abstract class AbstractBasicArtifactTypeContentRepresentation implements 
   private static final long serialVersionUID = 1L;
 
   public String getId() {
-    return getRepositoryArtifactType().getMimeType().getName();
+    return getRepresentationMimeType().getName();
   }
 
   public Content getContent(RepositoryArtifact artifact) {
@@ -36,6 +36,10 @@ public abstract class AbstractBasicArtifactTypeContentRepresentation implements 
 
   public MimeType getRepresentationMimeType() {
     return CycleApplicationContext.get(getMimeType());
+  }
+
+  public boolean isDefaultRepresentation() {
+    return true;
   }
 
 }

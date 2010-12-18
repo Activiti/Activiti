@@ -24,7 +24,7 @@
 	"sourceConnectorId": "${artifact.connectorId!''}",
   	"sourceArtifactId": "${artifact.nodeId!''}",
 	"sourceArtifactRevision": "${artifact.artifactType.revision!''}",
-	"sourceContentType": "${artifact.artifactType.mimeType.contentType!''}",
+	"sourceContentType": "${artifact.artifactType.name!''}",
 	"label": "${artifact.metadata.name!''}"
 </#escape>
 </#macro>

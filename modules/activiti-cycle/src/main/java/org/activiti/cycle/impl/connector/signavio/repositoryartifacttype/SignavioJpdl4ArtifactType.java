@@ -3,8 +3,8 @@ package org.activiti.cycle.impl.connector.signavio.repositoryartifacttype;
 import org.activiti.cycle.MimeType;
 import org.activiti.cycle.RepositoryArtifactType;
 import org.activiti.cycle.annotations.CycleComponent;
+import org.activiti.cycle.impl.artifacttype.AbstractProcessModel;
 import org.activiti.cycle.impl.mimetype.UnknownMimeType;
-import org.activiti.cycle.impl.repositoryartifacttype.AbstractProcessModel;
 
 /**
  * {@link RepositoryArtifactType} for representing Signavio jBPM 4 models

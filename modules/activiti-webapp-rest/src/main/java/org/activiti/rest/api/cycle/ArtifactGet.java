@@ -61,18 +61,18 @@ public class ArtifactGet extends ActivitiCycleWebScript {
 
     // Create downloadContentView DTOs
     List<DownloadActionView> downloads = new ArrayList<DownloadActionView>();
-    for (DownloadContentAction action : pluginService.getDownloadContentActions(artifact)) {
-      try {
-        String url = restProxyUri + "content?connectorId=" + URLEncoder.encode(connectorId, "UTF-8") + "&artifactId=" + URLEncoder.encode(artifactId, "UTF-8")
-                + "&contentRepresentationId=" + URLEncoder.encode(action.getContentRepresentation().getId(), "UTF-8");
-        downloads.add(new DownloadActionView(action.getId(), url, action.getContentRepresentation().getRepositoryArtifactType().getMimeType().getContentType(), action
-                .getContentRepresentation().getId()));
-      } catch (UnsupportedEncodingException e) {
-        // should never be reached as long as we use UTF-8, which is valid in
-        // java on all platforms
-        throw new RuntimeException(e);
-      }
-    }
+//    for (DownloadContentAction action : pluginService.getDownloadContentActions(artifact)) {
+//      try {
+//        String url = restProxyUri + "content?connectorId=" + URLEncoder.encode(connectorId, "UTF-8") + "&artifactId=" + URLEncoder.encode(artifactId, "UTF-8")
+//                + "&contentRepresentationId=" + URLEncoder.encode(action.getContentRepresentation().getId(), "UTF-8");
+//        downloads.add(new DownloadActionView(action.getId(), url, action.getContentRepresentation().getMimeType().getContentType(), action
+//                .getContentRepresentation().getId()));
+//      } catch (UnsupportedEncodingException e) {
+//        // should never be reached as long as we use UTF-8, which is valid in
+//        // java on all platforms
+//        throw new RuntimeException(e);
+//      }
+//    }
 
     model.put("downloads", downloads);
     model.put("links", pluginService.getArtifactOpenLinkActions(artifact));

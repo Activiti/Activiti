@@ -42,20 +42,4 @@ public class RepositoryArtifactImpl extends RepositoryNodeImpl implements Reposi
     return artifactType;
   }
 
-//  public List<ParameterizedAction> getParameterizedActions() {
-//    List<ParameterizedAction> actions = getArtifactType().getParameterizedActions();
-//    List<ParameterizedAction> filteredActions = new ArrayList<ParameterizedAction>();
-//    // filter actions not applicable to this artifact.
-//    for (ParameterizedAction parameterizedAction : actions) {
-//      if (parameterizedAction instanceof ArtifactAwareParameterizedAction) {
-//        ArtifactAwareParameterizedAction artifactAwareAction = (ArtifactAwareParameterizedAction) parameterizedAction;
-//        if (artifactAwareAction.isApplicable(this)) {
-//          filteredActions.add(parameterizedAction);
-//        }
-//      } else {
-//        filteredActions.add(parameterizedAction);
-//      }
-//    }
-//    return filteredActions;
-//  }
 }

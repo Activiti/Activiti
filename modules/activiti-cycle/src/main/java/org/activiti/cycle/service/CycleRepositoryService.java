@@ -27,8 +27,8 @@ import org.activiti.cycle.RepositoryConnector;
 import org.activiti.cycle.RepositoryFolder;
 import org.activiti.cycle.RepositoryNodeCollection;
 import org.activiti.cycle.RepositoryNodeNotFoundException;
+import org.activiti.cycle.impl.artifacttype.RepositoryArtifactTypes;
 import org.activiti.cycle.impl.mimetype.Mimetypes;
-import org.activiti.cycle.impl.repositoryartifacttype.RepositoryArtifactTypes;
 import org.activiti.cycle.transform.ContentTransformationException;
 
 /**

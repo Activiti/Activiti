@@ -5,8 +5,8 @@ import org.activiti.cycle.annotations.CycleComponent;
 import org.activiti.cycle.context.CycleApplicationContext;
 import org.activiti.cycle.context.CycleContextType;
 import org.activiti.cycle.context.CycleSessionContext;
+import org.activiti.cycle.impl.artifacttype.AbstractRepositoryArtifactType;
 import org.activiti.cycle.impl.mimetype.JsonMimeType;
-import org.activiti.cycle.impl.repositoryartifacttype.AbstractRepositoryArtifactType;
 
 /**
  * Artifact type for Signavio Artifact, which are not

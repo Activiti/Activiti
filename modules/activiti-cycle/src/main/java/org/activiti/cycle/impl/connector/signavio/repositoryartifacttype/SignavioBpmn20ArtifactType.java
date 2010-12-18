@@ -5,8 +5,8 @@ import org.activiti.cycle.RepositoryArtifactType;
 import org.activiti.cycle.annotations.CycleComponent;
 import org.activiti.cycle.context.CycleApplicationContext;
 import org.activiti.cycle.context.CycleContextType;
+import org.activiti.cycle.impl.artifacttype.AbstractBPMN20ProcessModel;
 import org.activiti.cycle.impl.mimetype.XmlMimeType;
-import org.activiti.cycle.impl.repositoryartifacttype.AbstractBPMN20ProcessModel;
 
 /**
  * {@link RepositoryArtifactType} for representing Signavio (or Oryx/Activiti

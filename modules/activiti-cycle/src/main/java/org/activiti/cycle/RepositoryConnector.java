@@ -12,7 +12,6 @@
  */
 package org.activiti.cycle;
 
-import java.util.List;
 import java.util.Map;
 
 import org.activiti.cycle.impl.conf.RepositoryConnectorConfiguration;
@@ -57,12 +56,12 @@ public interface RepositoryConnector {
    */
   public RepositoryNodeCollection getChildren(String id) throws RepositoryNodeNotFoundException;
 
-//  /**
-//   * return the list of supported {@link ArtifactType}s of this
-//   * {@link RepositoryConnector} for the given folder. Most conenctors doesn't
-//   * make any difference between the folders, but some may do.
-//   */
-//  public List<ArtifactType> getSupportedArtifactTypes(String folderId);
+  // /**
+  // * return the list of supported {@link ArtifactType}s of this
+  // * {@link RepositoryConnector} for the given folder. Most conenctors doesn't
+  // * make any difference between the folders, but some may do.
+  // */
+  // public List<ArtifactType> getSupportedArtifactTypes(String folderId);
 
   /**
    * create a new file in the given folder with the default
@@ -81,7 +80,18 @@ public interface RepositoryConnector {
    */
   public RepositoryFolder createFolder(String parentFolderId, String name) throws RepositoryNodeNotFoundException;
 
-//  public Content getContent(String artifactId, String representationName) throws RepositoryNodeNotFoundException;
+  /**
+   * Retunrs the {@link Content} for the provided {@link RepositoryArtifact}-id
+   * using the default {@link ContentRepresentation} as returned by
+   * {@link #getDefaultContentRepresentation(String)}.
+   * 
+   * @param artifactId
+   *          the id of the {@link RepositoryArtifact} to retreive the
+   *          {@link Content} for.
+   * @return the {@link Content} for the provided {@link RepositoryArtifact}-id
+   * @throws RepositoryNodeNotFoundException
+   *           if no {@link RepositoryArtifact} for the provided id exists.
+   */
   public Content getContent(String artifactId) throws RepositoryNodeNotFoundException;
 
   /**
@@ -115,6 +125,27 @@ public interface RepositoryConnector {
   public boolean isLoggedIn();
 
   public void setConfiguration(RepositoryConnectorConfiguration configuration);
+
+  /**
+   * Returns the default {@link ContentRepresentation} for a provided
+   * {@link RepositoryArtifact}-id.
+   * <p />
+   * NOTE: The connector implementation must ensure that
+   * {@link #getContent(String)} =
+   * {@link #getDefaultContentRepresentation(String)}.getContent(String)
+   * <p />
+   * 
+   * @param the
+   *          {@link RepositoryArtifact}-id to return the default
+   *          {@link ContentRepresentation} for.
+   * 
+   * @return the default {@link ContentRepresentation} for the provided
+   *         {@link RepositoryArtifact}-id
+   * 
+   * @throws RepositoryNodeNotFoundException
+   *           if no {@link RepositoryArtifact} for the provided id exists.
+   */
+  public ContentRepresentation getDefaultContentRepresentation(String artifactId) throws RepositoryNodeNotFoundException;
 
   // public String getGlobalId(RepositoryNode node);
 }

@@ -1,13 +1,12 @@
 package org.activiti.cycle.impl.connector.util;
 
-import org.activiti.cycle.RepositoryArtifactType;
+import org.activiti.cycle.MimeType;
 import org.activiti.cycle.context.CycleApplicationContext;
+import org.activiti.cycle.impl.mimetype.Mimetypes;
 import org.activiti.cycle.impl.mimetype.UnknownMimeType;
-import org.activiti.cycle.impl.repositoryartifacttype.BasicRepositoryArtifactType;
-import org.activiti.cycle.impl.repositoryartifacttype.RepositoryArtifactTypes;
 
 /**
- * Utility methods for connectors
+ * Utility methods for filesystem-based connectors
  * 
  * @author daniel.meyer@camunda.com
  * 
@@ -38,27 +37,24 @@ public class ConnectorPathUtils {
     return result;
   }
 
-  public static RepositoryArtifactType getRepositoryArtifactType(String path) {
-    // try to find artifact type
-    RepositoryArtifactType artifactType = null;
+  public static MimeType getMimeType(String path) {
+    MimeType mimeType = null;
     String extension = path;
-    RepositoryArtifactTypes artifactTypes = CycleApplicationContext.get(RepositoryArtifactTypes.class);
+    Mimetypes mimeTypes = CycleApplicationContext.get(Mimetypes.class);
+    MimeType unknownMimeType = CycleApplicationContext.get(UnknownMimeType.class);
 
     while (extension.contains(".")) {
       extension = extension.substring(extension.indexOf(".") + 1);
-      artifactType = artifactTypes.getTypeForFilename(extension);
-
+      mimeType = mimeTypes.getTypeForFilename(extension);
       // if we find something, keep it.
-      if (artifactType != null && !artifactType.getMimeType().equals(new UnknownMimeType())) {
+      if (mimeType != null && !mimeType.equals(unknownMimeType)) {
         break;
       }
-
     }
-    if(artifactType == null) {
-      return new BasicRepositoryArtifactType(CycleApplicationContext.get(UnknownMimeType.class));
+    if (mimeType == null) {
+      return unknownMimeType;
     }
-
-    return artifactType;
+    return mimeType;
 
   }
 }

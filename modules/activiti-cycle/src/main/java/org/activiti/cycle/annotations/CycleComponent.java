@@ -22,7 +22,7 @@ public @interface CycleComponent {
   String name() default "";
 
   /**
-   * optional parameter: if a {@link CycleContextType} is set, cycle will store
+   * Optional parameter: if a {@link CycleContextType} is set, cycle will store
    * instances of the corresponding component in the corresponding context.
    */
   CycleContextType context() default CycleContextType.NONE;

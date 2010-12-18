@@ -1,4 +1,4 @@
-package org.activiti.cycle.impl.repositoryartifacttype;
+package org.activiti.cycle.impl.artifacttype;
 
 import org.activiti.cycle.RepositoryArtifactType;
 

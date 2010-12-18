@@ -8,7 +8,7 @@ import org.activiti.cycle.ContentRepresentation;
 import org.activiti.cycle.MimeType;
 import org.activiti.cycle.RepositoryArtifact;
 import org.activiti.cycle.RepositoryArtifactType;
-import org.activiti.cycle.impl.repositoryartifacttype.RepositoryArtifactTypes;
+import org.activiti.cycle.impl.artifacttype.RepositoryArtifactTypes;
 import org.activiti.cycle.transform.ContentTransformationException;
 
 /**

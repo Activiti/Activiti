@@ -13,9 +13,9 @@ import org.activiti.cycle.MimeType;
 import org.activiti.cycle.RepositoryArtifact;
 import org.activiti.cycle.RepositoryArtifactType;
 import org.activiti.cycle.context.CycleApplicationContext;
+import org.activiti.cycle.impl.artifacttype.RepositoryArtifactTypes;
 import org.activiti.cycle.impl.connector.signavio.provider.AbstractPngProvider;
 import org.activiti.cycle.impl.mimetype.Mimetypes;
-import org.activiti.cycle.impl.repositoryartifacttype.RepositoryArtifactTypes;
 import org.activiti.cycle.impl.representation.ContentRepresentations;
 import org.activiti.cycle.impl.transform.Transformations;
 import org.activiti.cycle.service.CycleContentService;
@@ -67,6 +67,7 @@ public class CycleContentServiceImpl implements CycleContentService {
     // for the moment: sort alphabetically and make sure that "PNG" is the first
     // tab:
     Collections.sort(sortedList, new Comparator<ContentRepresentation>() {
+
       public int compare(ContentRepresentation o1, ContentRepresentation o2) {
         if (o1.equals(o2)) {
           return 0;

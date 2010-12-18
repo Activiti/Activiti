@@ -6,6 +6,7 @@ import java.util.Map;
 
 import org.activiti.cycle.ArtifactType;
 import org.activiti.cycle.Content;
+import org.activiti.cycle.ContentRepresentation;
 import org.activiti.cycle.CycleTagContent;
 import org.activiti.cycle.RepositoryArtifact;
 import org.activiti.cycle.RepositoryConnector;
@@ -150,5 +151,7 @@ public class TagConnector implements RepositoryConnector {
   public Content getContent(String artifactId) throws RepositoryNodeNotFoundException {
     return null;
   }
-  
+  public ContentRepresentation getDefaultContentRepresentation(String artifactId) throws RepositoryNodeNotFoundException {
+    return null;
+  }
 }

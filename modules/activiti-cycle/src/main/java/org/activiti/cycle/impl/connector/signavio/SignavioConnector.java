@@ -24,6 +24,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.activiti.cycle.Content;
+import org.activiti.cycle.ContentRepresentation;
 import org.activiti.cycle.RepositoryArtifact;
 import org.activiti.cycle.RepositoryArtifactType;
 import org.activiti.cycle.RepositoryException;
@@ -42,11 +43,8 @@ import org.activiti.cycle.impl.connector.ConnectorLoginInterceptor;
 import org.activiti.cycle.impl.connector.signavio.provider.JsonProvider;
 import org.activiti.cycle.impl.connector.signavio.repositoryartifacttype.SignavioBpmn20ArtifactType;
 import org.activiti.cycle.impl.connector.signavio.repositoryartifacttype.SignavioDefaultArtifactType;
-import org.activiti.cycle.impl.connector.signavio.repositoryartifacttype.SignavioJpdl4ArtifactType;
 import org.activiti.cycle.impl.connector.signavio.util.SignavioJsonHelper;
 import org.activiti.cycle.impl.connector.util.RestClientLogHelper;
-import org.activiti.cycle.impl.mimetype.UnknownMimeType;
-import org.activiti.cycle.impl.repositoryartifacttype.BasicRepositoryArtifactType;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -711,10 +709,14 @@ public class SignavioConnector extends AbstractRepositoryConnector<SignavioConne
   }
 
   public Content getContent(String artifactId) throws RepositoryNodeNotFoundException {
-    // return JSON as default:
-    // TODO: good idea?
     RepositoryArtifact artifact = getRepositoryArtifact(artifactId);
-    return CycleApplicationContext.get(JsonProvider.class).getContent(artifact);
+    return getDefaultContentRepresentation(artifactId).getContent(artifact);
+  }
+
+  public ContentRepresentation getDefaultContentRepresentation(String artifactId) throws RepositoryNodeNotFoundException {
+    // always use the Json-representation:
+    // TODO: good idea?
+    return CycleApplicationContext.get(JsonProvider.class);
   }
 
 }

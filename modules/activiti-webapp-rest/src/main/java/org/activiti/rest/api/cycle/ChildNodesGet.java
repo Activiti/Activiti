@@ -52,7 +52,6 @@ public class ChildNodesGet extends ActivitiCycleWebScript {
       // throwing a HTTP 500 here will cause the tree to load the node for ever.
       // throw new WebScriptException(Status.STATUS_INTERNAL_SERVER_ERROR,
       // "exception.message");
-
     }
 
     // provide empty list as default

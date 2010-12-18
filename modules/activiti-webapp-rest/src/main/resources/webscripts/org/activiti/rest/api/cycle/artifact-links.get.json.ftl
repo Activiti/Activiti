@@ -24,7 +24,7 @@
 	"targetConnectorId": "${artifact.connectorId!''}",
   	"targetArtifactId": "${artifact.nodeId!''}",
 	"targetArtifactRevision": "${artifact.artifactType.revision!''}",
-	"targetContentType": "${artifact.artifactType.mimeType.contentType!''}",
+	"targetContentType": "${artifact.artifactType.name!''}",
 	"label": "${artifact.metadata.name!''}"
 </#escape>
 </#macro>

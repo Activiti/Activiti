@@ -1,4 +1,4 @@
-package org.activiti.cycle.impl.repositoryartifacttype;
+package org.activiti.cycle.impl.artifacttype;
 
 import org.activiti.cycle.RepositoryArtifactType;
 
@@ -14,7 +14,6 @@ public abstract class AbstractRepositoryArtifactType implements RepositoryArtifa
   public int hashCode() {
     final int prime = 31;
     int result = 1;
-    result = prime * result + ((getMimeType() == null) ? 0 : getMimeType().hashCode());
     result = prime * result + ((getName() == null) ? 0 : getName().hashCode());
     return result;
   }
@@ -27,11 +26,6 @@ public abstract class AbstractRepositoryArtifactType implements RepositoryArtifa
     if (getClass() != obj.getClass())
       return false;
     RepositoryArtifactType other = (RepositoryArtifactType) obj;
-    if (getMimeType() == null) {
-      if (other.getMimeType() != null)
-        return false;
-    } else if (!getMimeType().equals(other.getMimeType()))
-      return false;
     if (getName() == null) {
       if (other.getName() != null)
         return false;
@@ -42,7 +36,7 @@ public abstract class AbstractRepositoryArtifactType implements RepositoryArtifa
 
   @Override
   public String toString() {
-    return getClass().getName() + "(of '" + getMimeType() + "')";
+    return getClass().getName() + "')";
   }
 
 }

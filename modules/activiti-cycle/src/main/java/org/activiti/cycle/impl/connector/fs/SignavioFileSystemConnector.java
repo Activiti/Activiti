@@ -30,10 +30,6 @@ import org.activiti.cycle.impl.connector.signavio.transform.pattern.SubProcessEx
  */
 public class SignavioFileSystemConnector extends FileSystemConnector {
 
-  public SignavioFileSystemConnector(FileSystemConnectorConfiguration conf) {
-    super(conf);
-  }
-
   /**
    * Takes a Signavio model id and obtains an according JSON file from the file
    * system.
