@@ -21,7 +21,8 @@ public class SvgApiProvider extends SignavioContentRepresentationProvider {
   private static final long serialVersionUID = 1L;
 
   public Content getContent(RepositoryArtifact artifact) {
-    SignavioConnectorInterface signavioConnector = (SignavioConnectorInterface) CycleSessionContext.get(RuntimeConnectorList.class).getConnectorById(artifact.getConnectorId());
+    SignavioConnectorInterface signavioConnector = (SignavioConnectorInterface) CycleSessionContext.get(RuntimeConnectorList.class).getConnectorById(
+            artifact.getConnectorId());
     Content content = new Content();
     String text = new SignavioSvgApiBuilder(signavioConnector, artifact).buildHtml();
     content.setValue(text);
@@ -31,7 +32,7 @@ public class SvgApiProvider extends SignavioContentRepresentationProvider {
   public String getId() {
     return "SvgApi";
   }
-  
+
   public MimeType getRepresentationMimeType() {
     return CycleApplicationContext.get(HtmlMimeType.class);
   }
@@ -42,6 +43,10 @@ public class SvgApiProvider extends SignavioContentRepresentationProvider {
 
   public RepositoryArtifactType getRepositoryArtifactType() {
     return CycleApplicationContext.get(SignavioBpmn20ArtifactType.class);
+  }
+
+  public boolean isForDownload() {
+    return false;
   }
 
 }

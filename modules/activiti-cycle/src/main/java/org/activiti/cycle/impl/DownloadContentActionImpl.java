@@ -11,21 +11,16 @@ import org.activiti.cycle.action.DownloadContentAction;
  * 
  * @author ruecker
  */
-//@CycleComponent(context = CycleContextType.APPLICATION)
+// not a @CycleComponent, instantiated by the cycle plugin service for each
+// ContentRepresentation
 public class DownloadContentActionImpl extends AbstractArtifactActionImpl implements DownloadContentAction {
 
   private static final long serialVersionUID = 1L;
 
   private final ContentRepresentation contentRepresentation;
 
-  // public DownloadContentActionImpl(ContentRepresentation
-  // contentRepresentation) {
-  // this.contentRepresentation = contentRepresentation;
-  // }
-
-  public DownloadContentActionImpl() {
-    super("Download");
-    this.contentRepresentation = null;
+  public DownloadContentActionImpl(ContentRepresentation contentRepresentation) {
+    this("Download " + contentRepresentation.getId(), contentRepresentation);
   }
 
   public DownloadContentActionImpl(String actionId, ContentRepresentation contentRepresentation) {

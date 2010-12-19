@@ -23,7 +23,7 @@ public interface CyclePluginService {
 
   public Set<CreateUrlAction> getCreateUrlActions(RepositoryArtifactType type);
 
-  public Set<DownloadContentAction> getDownloadContentActions(RepositoryArtifactType type);
+  public List<DownloadContentAction> getDownloadContentActions(RepositoryArtifactType type);
 
   public List<ParameterizedAction> getParameterizedActions(RepositoryArtifact artifact);
 

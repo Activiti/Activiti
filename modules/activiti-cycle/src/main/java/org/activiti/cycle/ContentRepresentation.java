@@ -2,6 +2,7 @@ package org.activiti.cycle;
 
 import java.io.Serializable;
 
+import org.activiti.cycle.action.DownloadContentAction;
 
 /**
  * TODO: javadoc
@@ -41,6 +42,12 @@ public interface ContentRepresentation extends Serializable {
    * the type of the returned representation.
    */
   public RepositoryArtifactType getRepositoryArtifactType();
+
+  /**
+   * Indicates whether cycle should create a {@link DownloadContentAction} for
+   * this content representation.
+   */
+  public boolean isForDownload();
 
   // TODO: Think about that, maybe as annotation in the Plugin-Config
   // public boolean isDownloadable();

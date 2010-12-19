@@ -52,8 +52,7 @@ public class CycleContentServiceImpl implements CycleContentService {
     return CycleApplicationContext.get(Transformations.class).transformContent(content, fromType, toType);
   }
 
-  public List<ContentRepresentation> getcontentRepresentations(RepositoryArtifact artifact) {
-    RepositoryArtifactType type = artifact.getArtifactType();
+  public List<ContentRepresentation> getContentRepresentations(RepositoryArtifactType type) {
     Set<ContentRepresentation> representations = CycleApplicationContext.get(ContentRepresentations.class).getContentRepresentations(type);
     removeExcludedContentRepresentations(representations);
     List<ContentRepresentation> sortedList = new ArrayList<ContentRepresentation>(representations);
@@ -61,16 +60,20 @@ public class CycleContentServiceImpl implements CycleContentService {
     return sortedList;
   }
 
+  public List<ContentRepresentation> getContentRepresentations(RepositoryArtifact artifact) {
+    return getContentRepresentations(artifact.getArtifactType());
+  }
+
   private void sortContentReprsentations(List<ContentRepresentation> sortedList) {
     Collections.sort(sortedList, new CycleComponentComparator());
   }
 
-  private void removeExcludedContentRepresentations(Set<?> represenations) {
+  private void removeExcludedContentRepresentations(Set< ? > represenations) {
     CycleComponentFactory.removeExcludedComponents(represenations);
   }
 
   public ContentRepresentation getContentRepresentation(RepositoryArtifact artifact, String contentRepresentationId) {
-    List<ContentRepresentation> representations = getcontentRepresentations(artifact);
+    List<ContentRepresentation> representations = getContentRepresentations(artifact);
     for (ContentRepresentation contentRepresentation : representations) {
       if (!contentRepresentation.getId().equals(contentRepresentationId)) {
         continue;

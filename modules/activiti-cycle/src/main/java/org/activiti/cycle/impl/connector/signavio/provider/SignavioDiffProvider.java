@@ -60,6 +60,10 @@ public class SignavioDiffProvider extends SignavioContentRepresentationProvider 
   public RepositoryArtifactType getRepositoryArtifactType() {
     return CycleApplicationContext.get(SignavioBpmn20ArtifactType.class);
   }
+  
+  public boolean isForDownload() {
+    return false;
+  }
 
   public Content getContent(RepositoryArtifact artifact) {
 

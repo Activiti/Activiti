@@ -31,22 +31,34 @@ public interface CycleContentService {
   public Set<RepositoryArtifactType> getAvailableArtifactTypes();
 
   /**
-   * Returns a set of available content representations for the provided
+   * Returns a List of available content representations for the provided
    * {@link RepositoryArtifact}
    * 
-   * @param type
-   * @return a {@link Set} of {@link ContentRepresentation}s for the provided
+   * @param artifact
+   * @return a {@link List} of {@link ContentRepresentation}s for the provided
    *         {@link RepositoryArtifact}. Returns an empty {@link Set} if no
    *         {@link ContentRepresentation}s are available.
    */
-  public List<ContentRepresentation> getcontentRepresentations(RepositoryArtifact artifact);
+  public List<ContentRepresentation> getContentRepresentations(RepositoryArtifact artifact);
 
   /**
-   * Return the {@link ContentRepresentation} for a provided {@link RepositoryArtifact} and a
-   * contentRepresentationId.
+   * Returns a List of available content representations for the provided
+   * {@link RepositoryArtifactType}
+   * 
+   * @param type
+   * @return a {@link List} of {@link ContentRepresentation}s for the provided
+   *         {@link RepositoryArtifactType}. Returns an empty {@link List} if no
+   *         {@link ContentRepresentation}s are available.
+   */
+  public List<ContentRepresentation> getContentRepresentations(RepositoryArtifactType type);
+
+  /**
+   * Return the {@link ContentRepresentation} for a provided
+   * {@link RepositoryArtifact} and a contentRepresentationId.
    * 
    * @param artifact
-   *          the {@link RepositoryArtifact} to retrieve the {@link ContentRepresentation} for
+   *          the {@link RepositoryArtifact} to retrieve the
+   *          {@link ContentRepresentation} for
    * @param contentRepresentationId
    *          the string of the corresponding {@link ContentRepresentation}
    * @return {@link ContentRepresentation}

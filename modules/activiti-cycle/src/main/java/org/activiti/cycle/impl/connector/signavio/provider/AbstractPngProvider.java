@@ -57,5 +57,9 @@ public abstract class AbstractPngProvider extends SignavioContentRepresentationP
   public RenderInfo getRenderInfo() {
     return RenderInfo.IMAGE;
   }
+  
+  public boolean isForDownload() {
+    return true;
+  }
 
 }

@@ -42,4 +42,8 @@ public abstract class AbstractBasicArtifactTypeContentRepresentation implements 
     return true;
   }
 
+  public boolean isForDownload() {
+    return true;
+  }
+
 }

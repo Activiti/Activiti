@@ -2,9 +2,7 @@ package org.activiti.cycle.impl.connector.fs;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Collection;
 import java.util.List;
-import java.util.Set;
 import java.util.logging.Logger;
 
 import org.activiti.cycle.Content;
@@ -52,7 +50,7 @@ public class FileSystemConnectorTest {
       if (repositoryNode instanceof RepositoryArtifact) {
         RepositoryArtifact artifact = (RepositoryArtifact) repositoryNode;
 
-        List<ContentRepresentation> contentRepresentations = contentService.getcontentRepresentations(artifact);
+        List<ContentRepresentation> contentRepresentations = contentService.getContentRepresentations(artifact);
         for (ContentRepresentation contentRepresentation : contentRepresentations) {
           Content content = conn.getContent(artifact.getNodeId());
           System.out.println(contentRepresentation.getId() + " -> " + content.asString());

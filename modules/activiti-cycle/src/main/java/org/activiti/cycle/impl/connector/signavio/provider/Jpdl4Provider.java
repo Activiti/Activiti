@@ -67,6 +67,10 @@ public class Jpdl4Provider extends SignavioContentRepresentationProvider {
   public RenderInfo getRenderInfo() {
     return RenderInfo.CODE;
   }
+  
+  public boolean isForDownload() {
+    return true;
+  }
 
   public RepositoryArtifactType getRepositoryArtifactType() {
     return CycleApplicationContext.get(SignavioJpdl4ArtifactType.class);

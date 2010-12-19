@@ -62,6 +62,10 @@ public class Bpmn20Provider extends SignavioContentRepresentationProvider {
       throw new RepositoryException("Error while accessing Signavio repository", ex);
     }
   }
+  
+  public boolean isForDownload() {
+    return true;
+  }
 
   public String getId() {
     return NAME;

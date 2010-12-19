@@ -7,6 +7,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.activiti.cycle.ContentRepresentation;
 import org.activiti.cycle.CycleComponentFactory;
 import org.activiti.cycle.RepositoryArtifact;
 import org.activiti.cycle.RepositoryArtifactType;
@@ -20,8 +21,10 @@ import org.activiti.cycle.components.RuntimeConnectorList;
 import org.activiti.cycle.context.CycleApplicationContext;
 import org.activiti.cycle.context.CycleSessionContext;
 import org.activiti.cycle.impl.CycleComponentComparator;
+import org.activiti.cycle.impl.DownloadContentActionImpl;
 import org.activiti.cycle.impl.action.Actions;
 import org.activiti.cycle.service.CyclePluginService;
+import org.activiti.cycle.service.CycleServiceFactory;
 
 /**
  * Default Implementation of the {@link CyclePluginService}
@@ -39,8 +42,17 @@ public class CyclePluginServiceImpl implements CyclePluginService {
 
   }
 
-  public Set<DownloadContentAction> getDownloadContentActions(RepositoryArtifactType type) {
-    return CycleApplicationContext.get(Actions.class).getDownloadContentActions(type);
+  public List<DownloadContentAction> getDownloadContentActions(RepositoryArtifactType type) {
+    List<DownloadContentAction> actions = new ArrayList<DownloadContentAction>();
+    List<ContentRepresentation> contentRepresentations = CycleServiceFactory.getContentService().getContentRepresentations(type);
+
+    // will be sorted according to the sort on the represenations
+    for (ContentRepresentation representation : contentRepresentations) {
+      if (representation.isForDownload()) {
+        actions.add(new DownloadContentActionImpl(representation));
+      }
+    }
+    return actions;
   }
 
   public List<ParameterizedAction> getParameterizedActions(RepositoryArtifact artifact) {
@@ -57,9 +69,8 @@ public class CyclePluginServiceImpl implements CyclePluginService {
   }
 
   public List<DownloadContentAction> getDownloadContentActions(RepositoryArtifact artifact) {
-    Set<DownloadContentAction> actions = getDownloadContentActions(artifact.getArtifactType());
-    removeExcludedActions(actions);
-    return sortActions(actions, artifact);
+    List<DownloadContentAction> actions = getDownloadContentActions(artifact.getArtifactType());
+    return actions;
   }
 
   private void removeNonApplicableActions(Set<ParameterizedAction> actions, RepositoryArtifact forArtifact) {

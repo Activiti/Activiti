@@ -68,6 +68,10 @@ public class ActivitiCompliantBpmn20Provider extends SignavioContentRepresentati
   public RepositoryArtifactType getRepositoryArtifactType() {
     return CycleApplicationContext.get(SignavioBpmn20ArtifactType.class);
   }
+  
+  public boolean isForDownload() {
+    return true;
+  }
 
   public static String createBpmnXml(RepositoryConnector connector, RepositoryArtifact artifact) {
     String sourceJson = getBpmn20Json(artifact);

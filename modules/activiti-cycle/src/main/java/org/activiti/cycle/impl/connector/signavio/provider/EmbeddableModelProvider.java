@@ -62,6 +62,10 @@ public class EmbeddableModelProvider extends SignavioContentRepresentationProvid
     // TODO: ?
     return RenderInfo.HTML;
   }
+  
+  public boolean isForDownload() {
+    return false;
+  }
 
   public MimeType getRepresentationMimeType() {
     return CycleApplicationContext.get(HtmlMimeType.class);

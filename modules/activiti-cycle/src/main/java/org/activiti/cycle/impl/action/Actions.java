@@ -9,7 +9,6 @@ import org.activiti.cycle.CycleComponentFactory;
 import org.activiti.cycle.RepositoryArtifactType;
 import org.activiti.cycle.action.Action;
 import org.activiti.cycle.action.CreateUrlAction;
-import org.activiti.cycle.action.DownloadContentAction;
 import org.activiti.cycle.action.ParameterizedAction;
 import org.activiti.cycle.annotations.CycleComponent;
 import org.activiti.cycle.context.CycleApplicationContext;
@@ -27,25 +26,13 @@ public class Actions {
 
   private Set<ParameterizedAction> globalParameterizedActions = new HashSet<ParameterizedAction>();
   private Set<CreateUrlAction> globalCreateUrlActions = new HashSet<CreateUrlAction>();
-  private Set<DownloadContentAction> globalDownloadContentActions = new HashSet<DownloadContentAction>();
   private Map<RepositoryArtifactType, Set<ParameterizedAction>> parameterizedActionsMap = new HashMap<RepositoryArtifactType, Set<ParameterizedAction>>();
   private Map<RepositoryArtifactType, Set<CreateUrlAction>> createUrlActionsMap = new HashMap<RepositoryArtifactType, Set<CreateUrlAction>>();
-  private Map<RepositoryArtifactType, Set<DownloadContentAction>> downloadContentActionsMap = new HashMap<RepositoryArtifactType, Set<DownloadContentAction>>();
 
   public Set<ParameterizedAction> getParameterizedActions(RepositoryArtifactType forType) {
     ensureMapInitialized();
     Set<ParameterizedAction> resultSet = new HashSet<ParameterizedAction>(globalParameterizedActions);
     Set<ParameterizedAction> actionsForThisType = parameterizedActionsMap.get(forType);
-    if (actionsForThisType != null) {
-      resultSet.addAll(actionsForThisType);
-    }
-    return resultSet;
-  }
-
-  public Set<DownloadContentAction> getDownloadContentActions(RepositoryArtifactType forType) {
-    ensureMapInitialized();
-    Set<DownloadContentAction> resultSet = new HashSet<DownloadContentAction>(globalDownloadContentActions);
-    Set<DownloadContentAction> actionsForThisType = downloadContentActionsMap.get(forType);
     if (actionsForThisType != null) {
       resultSet.addAll(actionsForThisType);
     }
@@ -70,10 +57,8 @@ public class Actions {
         }
         parameterizedActionsMap = new HashMap<RepositoryArtifactType, Set<ParameterizedAction>>();
         createUrlActionsMap = new HashMap<RepositoryArtifactType, Set<CreateUrlAction>>();
-        downloadContentActionsMap = new HashMap<RepositoryArtifactType, Set<DownloadContentAction>>();
         loadMap(parameterizedActionsMap, globalParameterizedActions, ParameterizedAction.class);
         loadMap(createUrlActionsMap, globalCreateUrlActions, CreateUrlAction.class);
-        loadMap(downloadContentActionsMap, globalDownloadContentActions, DownloadContentAction.class);
         initialized = true;
       }
     }
