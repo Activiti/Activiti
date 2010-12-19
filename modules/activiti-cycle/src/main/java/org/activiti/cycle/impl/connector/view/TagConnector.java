@@ -49,7 +49,7 @@ public class TagConnector implements RepositoryConnector {
   }
   
   /**
-   * only operation making sense, since the tag connector "just" introduces tga
+   * only operation making sense, since the tag connector "just" introduces tag
    * folders
    */
   public RepositoryNodeCollection getChildren(String id) throws RepositoryNodeNotFoundException {

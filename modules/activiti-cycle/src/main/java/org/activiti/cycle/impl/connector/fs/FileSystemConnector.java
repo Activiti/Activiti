@@ -75,7 +75,11 @@ public class FileSystemConnector extends AbstractFileSystemBasedRepositoryConnec
 
   public RepositoryArtifact getRepositoryArtifact(String id) {
     try {
-      return getArtifactInfo(getFileFromId(id));
+      File file = getFileFromId(id);
+      if (file.isDirectory()) {
+        throw new RepositoryNodeNotFoundException(id + " is a directory");
+      }
+      return getArtifactInfo(file);
     } catch (IOException ex) {
       throw new RepositoryNodeNotFoundException(getConfiguration().getName(), RepositoryArtifact.class, id, ex);
     }
@@ -83,7 +87,11 @@ public class FileSystemConnector extends AbstractFileSystemBasedRepositoryConnec
 
   public RepositoryFolder getRepositoryFolder(String id) {
     try {
-      return getFolderInfo(getFileFromId(id));
+      File file = getFileFromId(id);
+      if (!file.isDirectory()) {
+        throw new RepositoryNodeNotFoundException(id + " is not a directory");
+      }
+      return getFolderInfo(file);
     } catch (IOException ex) {
       throw new RepositoryNodeNotFoundException(getConfiguration().getName(), RepositoryFolder.class, id, ex);
     }
