@@ -54,4 +54,8 @@ public abstract class ParameterizedActionImpl extends AbstractArtifactActionImpl
     return value;
   }
   
+  @Override
+  public String toString() {
+   return getId();
+  }
 }

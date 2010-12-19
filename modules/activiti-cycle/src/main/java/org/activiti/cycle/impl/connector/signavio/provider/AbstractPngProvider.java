@@ -19,16 +19,12 @@ import org.activiti.cycle.Content;
 import org.activiti.cycle.MimeType;
 import org.activiti.cycle.RenderInfo;
 import org.activiti.cycle.RepositoryArtifact;
-import org.activiti.cycle.RepositoryArtifactType;
 import org.activiti.cycle.RepositoryException;
-import org.activiti.cycle.annotations.CycleComponent;
 import org.activiti.cycle.components.RuntimeConnectorList;
 import org.activiti.cycle.context.CycleApplicationContext;
-import org.activiti.cycle.context.CycleContextType;
 import org.activiti.cycle.context.CycleSessionContext;
 import org.activiti.cycle.impl.connector.signavio.SignavioConnectorConfiguration;
 import org.activiti.cycle.impl.connector.signavio.SignavioConnectorInterface;
-import org.activiti.cycle.impl.connector.signavio.repositoryartifacttype.SignavioBpmn20ArtifactType;
 import org.activiti.cycle.impl.mimetype.PngMimeType;
 
 public abstract class AbstractPngProvider extends SignavioContentRepresentationProvider {

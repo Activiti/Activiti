@@ -2,7 +2,6 @@ package org.activiti.cycle.impl.service;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
 
@@ -13,8 +12,8 @@ import org.activiti.cycle.MimeType;
 import org.activiti.cycle.RepositoryArtifact;
 import org.activiti.cycle.RepositoryArtifactType;
 import org.activiti.cycle.context.CycleApplicationContext;
+import org.activiti.cycle.impl.CycleComponentComparator;
 import org.activiti.cycle.impl.artifacttype.RepositoryArtifactTypes;
-import org.activiti.cycle.impl.connector.signavio.provider.AbstractPngProvider;
 import org.activiti.cycle.impl.mimetype.Mimetypes;
 import org.activiti.cycle.impl.representation.ContentRepresentations;
 import org.activiti.cycle.impl.transform.Transformations;
@@ -26,6 +25,7 @@ import org.activiti.cycle.transform.ContentTransformationException;
  * 
  * @author daniel.meyer@camunda.com
  */
+@SuppressWarnings("unchecked")
 public class CycleContentServiceImpl implements CycleContentService {
 
   public Set<MimeType> getAvailableMimeTypes() {
@@ -62,28 +62,10 @@ public class CycleContentServiceImpl implements CycleContentService {
   }
 
   private void sortContentReprsentations(List<ContentRepresentation> sortedList) {
-    // TODO: sort contentRepresentations according to name AND annotations
-    // TODO: move to better suited place
-    // for the moment: sort alphabetically and make sure that "PNG" is the first
-    // tab:
-    Collections.sort(sortedList, new Comparator<ContentRepresentation>() {
-
-      public int compare(ContentRepresentation o1, ContentRepresentation o2) {
-        if (o1.equals(o2)) {
-          return 0;
-        }
-        if (AbstractPngProvider.class.isAssignableFrom(o1.getClass())) {
-          return -1;
-        }
-        if (AbstractPngProvider.class.isAssignableFrom(o2.getClass())) {
-          return 1;
-        }
-        return o1.getId().compareTo(o2.getId());
-      }
-    });
+    Collections.sort(sortedList, new CycleComponentComparator());
   }
 
-  private void removeExcludedContentRepresentations(Set represenations) {
+  private void removeExcludedContentRepresentations(Set<?> represenations) {
     CycleComponentFactory.removeExcludedComponents(represenations);
   }
 

@@ -15,7 +15,6 @@ package org.activiti.cycle.impl.connector.fs;
 import java.io.File;
 import java.io.IOException;
 
-import org.activiti.cycle.ArtifactType;
 import org.activiti.cycle.CycleComponentFactory;
 import org.activiti.cycle.RepositoryConnector;
 import org.activiti.cycle.RepositoryException;

@@ -13,23 +13,31 @@ import org.activiti.cycle.impl.Interceptor;
  */
 public class ConnectorLoginInterceptor implements Interceptor {
 
-  public void interceptMethodCall(Method m, Object object, Object... args) {
+  public void beforeInvoke(Method m, Object object, Object... args) {
     RepositoryConnector connector = (RepositoryConnector) object;
     if ("setConfiguration".equals(m.getName())) {
+      // let the invocation of the "setConfiguration"-method pass
       return;
     }
     if ("getConfiguration".equals(m.getName())) {
+      // let the invocation of the "getConfiguration"-method pass
       return;
     }
     if ("login".equals(m.getName())) {
-      // TODO: Why always return true? When is it really logged in?
+      // let the invocation of the "login"-method pass
       return;
     }
+    // for all other methods, check whether the connector is logged in.
     if (!connector.isLoggedIn()) {
+      // the connector is not logged in, block invocation
       throw new RepositoryAuthenticationException("Connector '" + connector.getConfiguration().getName() + "' is not logged in ", connector.getConfiguration()
               .getId());
     }
 
+  }
+
+  public void afterInvoke(Method m, Object object, Object invocationResult, Object... args) {
+    // do nothing
   }
 
 }

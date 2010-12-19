@@ -2,7 +2,6 @@ package org.activiti.cycle;
 
 import java.io.Serializable;
 
-import org.activiti.cycle.impl.mimetype.Mimetypes;
 
 /**
  * TODO: javadoc
@@ -32,8 +31,7 @@ public interface ContentRepresentation extends Serializable {
   public Content getContent(RepositoryArtifact artifact);
 
   /**
-   * The {@link MimeType} of the returned content. Note: this is not necesarily
-   * the same mimetype as {@link #getRepositoryArtifactType().getMimeType()}.
+   * The {@link MimeType} of the returned content.
    */
   public MimeType getRepresentationMimeType();
 

@@ -25,18 +25,28 @@ public class CycleComponentInvocationHandler implements InvocationHandler {
   }
 
   public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-
+    // before method invocation
     for (Interceptor interceptor : interceptorInstances) {
-      interceptor.interceptMethodCall(method, instance, args);
+      interceptor.beforeInvoke(method, instance, args); // throws exception
     }
+
+    Object invocationResult = null;
     try {
-      return method.invoke(instance, args);
+      invocationResult = method.invoke(instance, args);
     } catch (Exception e) {
+      // catch the InvocationTargetException and throw the actual exception
+      // instead.
       if (e instanceof InvocationTargetException) {
         throw ((InvocationTargetException) e).getTargetException();
       }
       throw e;
     }
+
+    // after method invocation
+    for (Interceptor interceptor : interceptorInstances) {
+      interceptor.afterInvoke(method, instance, invocationResult, args);
+    }
+    return invocationResult;
 
   }
 }

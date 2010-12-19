@@ -1,8 +1,8 @@
 package org.activiti.cycle.service;
 
+import java.util.List;
 import java.util.Set;
 
-import org.activiti.cycle.ContentProvider;
 import org.activiti.cycle.RepositoryArtifact;
 import org.activiti.cycle.RepositoryArtifactType;
 import org.activiti.cycle.action.Action;
@@ -25,12 +25,12 @@ public interface CyclePluginService {
 
   public Set<DownloadContentAction> getDownloadContentActions(RepositoryArtifactType type);
 
-  public Set<ParameterizedAction> getParameterizedActions(RepositoryArtifact artifact);
+  public List<ParameterizedAction> getParameterizedActions(RepositoryArtifact artifact);
 
-  public Set<CreateUrlAction> getCreateUrlActions(RepositoryArtifact artifact);
+  public List<CreateUrlAction> getCreateUrlActions(RepositoryArtifact artifact);
 
-  public Set<DownloadContentAction> getDownloadContentActions(RepositoryArtifact artifact);
+  public List<DownloadContentAction> getDownloadContentActions(RepositoryArtifact artifact);
 
-   public Set<RepositoryArtifactOpenLinkAction> getArtifactOpenLinkActions(RepositoryArtifact artifact);
+  public Set<RepositoryArtifactOpenLinkAction> getArtifactOpenLinkActions(RepositoryArtifact artifact);
 
 }

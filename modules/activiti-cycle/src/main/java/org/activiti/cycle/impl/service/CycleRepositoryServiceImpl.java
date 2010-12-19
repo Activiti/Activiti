@@ -3,14 +3,10 @@ package org.activiti.cycle.impl.service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
-import org.activiti.cycle.ArtifactType;
 import org.activiti.cycle.Content;
-import org.activiti.cycle.MimeType;
 import org.activiti.cycle.RepositoryArtifact;
 import org.activiti.cycle.RepositoryArtifactLink;
-import org.activiti.cycle.RepositoryArtifactType;
 import org.activiti.cycle.RepositoryConnector;
 import org.activiti.cycle.RepositoryException;
 import org.activiti.cycle.RepositoryFolder;
@@ -18,19 +14,14 @@ import org.activiti.cycle.RepositoryNode;
 import org.activiti.cycle.RepositoryNodeCollection;
 import org.activiti.cycle.RepositoryNodeNotFoundException;
 import org.activiti.cycle.components.RuntimeConnectorList;
-import org.activiti.cycle.context.CycleApplicationContext;
 import org.activiti.cycle.context.CycleSessionContext;
 import org.activiti.cycle.impl.RepositoryFolderImpl;
 import org.activiti.cycle.impl.RepositoryNodeCollectionImpl;
-import org.activiti.cycle.impl.artifacttype.RepositoryArtifactTypes;
 import org.activiti.cycle.impl.conf.PasswordEnabledRepositoryConnectorConfiguration;
 import org.activiti.cycle.impl.connector.util.TransactionalConnectorUtils;
 import org.activiti.cycle.impl.db.CycleLinkDao;
 import org.activiti.cycle.impl.db.entity.RepositoryArtifactLinkEntity;
-import org.activiti.cycle.impl.mimetype.Mimetypes;
-import org.activiti.cycle.impl.transform.Transformations;
 import org.activiti.cycle.service.CycleRepositoryService;
-import org.activiti.cycle.transform.ContentTransformationException;
 
 /**
  * @author bernd.ruecker@camunda.com

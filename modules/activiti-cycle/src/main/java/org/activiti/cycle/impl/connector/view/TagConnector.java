@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import org.activiti.cycle.ArtifactType;
 import org.activiti.cycle.Content;
 import org.activiti.cycle.ContentRepresentation;
 import org.activiti.cycle.CycleTagContent;
@@ -44,9 +43,6 @@ public class TagConnector implements RepositoryConnector {
   public void commitPendingChanges(String comment) {
   }
 
-  public List<ArtifactType> getSupportedArtifactTypes(String folderId) {
-    return new ArrayList<ArtifactType>();
-  }
 
   public boolean login(String username, String password) {
     return true;

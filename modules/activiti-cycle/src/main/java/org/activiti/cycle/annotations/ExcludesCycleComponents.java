@@ -46,6 +46,7 @@ public @interface ExcludesCycleComponents {
   /**
    * Classes of the components to exclude
    */
+  @SuppressWarnings("rawtypes")
   Class[] classes() default {};
 
 }

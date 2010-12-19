@@ -4,10 +4,14 @@ import java.io.IOException;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Proxy;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
@@ -22,6 +26,8 @@ import org.activiti.cycle.action.ParameterizedAction;
 import org.activiti.cycle.annotations.CycleComponent;
 import org.activiti.cycle.annotations.ExcludesCycleComponents;
 import org.activiti.cycle.annotations.Interceptors;
+import org.activiti.cycle.annotations.ListAfterComponents;
+import org.activiti.cycle.annotations.ListBeforeComponents;
 import org.activiti.cycle.context.CycleApplicationContext;
 import org.activiti.cycle.context.CycleContext;
 import org.activiti.cycle.context.CycleContextType;
@@ -37,6 +43,8 @@ import org.scannotation.WarUrlFinder;
 /**
  * Factory for cycle components. Components are classes annotated by
  * {@link CycleComponent}.
+ * 
+ * @author daniel.meyer@camunda.com
  */
 public abstract class CycleComponentFactory {
 
@@ -108,8 +116,9 @@ public abstract class CycleComponentFactory {
 
   private Object getComponentInstance(CycleComponentDescriptor descriptor) {
     guaranteeInitialization();
-    if (descriptor == null)
+    if (descriptor == null) {
       throw new IllegalArgumentException("Descriptor must not be null");
+    }
 
     // try to restore from context:
     Object instance = restoreFormContext(descriptor);
@@ -173,8 +182,9 @@ public abstract class CycleComponentFactory {
 
   private Object decorateInstance(Object instanceToDecorate, Class< ? > type) {
     Interceptors interceptors = type.getAnnotation(Interceptors.class);
-    if (interceptors == null)
+    if (interceptors == null) {
       return instanceToDecorate;
+    }
     Class< ? extends Interceptor>[] interceptorClasses = interceptors.value();
     if (interceptorClasses.length == 0) {
       return instanceToDecorate;
@@ -185,7 +195,6 @@ public abstract class CycleComponentFactory {
       throw new RuntimeException("Cannot decorate instance '" + instanceToDecorate + "' with decorators: '" + e.getMessage() + "'.", e);
     }
   }
-
   private Object decorateInstance(Object instanceToDecorate, Class< ? extends Interceptor>[] interceptorClasses) throws Exception {
     Set<Class< ? >> interfaces = new HashSet<Class< ? >>();
     Class< ? > superClass = instanceToDecorate.getClass();
@@ -219,7 +228,6 @@ public abstract class CycleComponentFactory {
     componentTypes.add(CreateUrlAction.class);
     componentTypes.add(ParameterizedAction.class);
     componentTypes.add(DownloadContentAction.class);
-    componentTypes.add(ContentProvider.class);
     componentTypes.add(ContentRepresentation.class);
     componentTypes.add(ContentArtifactTypeTransformation.class);
     componentTypes.add(ContentMimeTypeTransformation.class);
@@ -249,12 +257,11 @@ public abstract class CycleComponentFactory {
 
     // look for cycle components
     Set<String> componentClassNames = db.getAnnotationIndex().get(CycleComponent.class.getName());
-    
+
     // TODO: check correct classpath handling
-    if (componentClassNames==null || componentClassNames.size()==0) {
-      logger.log(Level.WARNING, "Cannot find any Cycle plugins having annotation " + CycleComponent.class.getName());      
-    }
-    else {
+    if (componentClassNames == null || componentClassNames.size() == 0) {
+      logger.log(Level.WARNING, "Cannot find any Cycle plugins having annotation " + CycleComponent.class.getName());
+    } else {
       for (String componentClassName : componentClassNames) {
         Class< ? > cycleComponentClass;
         try {
@@ -267,19 +274,26 @@ public abstract class CycleComponentFactory {
     }
   }
 
-  private String registerComponent(Class< ? > cycleComponentClass) {
+  public static String getComponentName(Class< ? > cycleComponentClass) {
     CycleComponent componentAnnotation = cycleComponentClass.getAnnotation(CycleComponent.class);
     String name = componentAnnotation.value();
-    if (name == null)
+    if (name == null) {
       name = componentAnnotation.name();
+    }
     if (name == null || name.length() == 0) {
       name = cycleComponentClass.getCanonicalName();
     }
+    return name;
+  }
+
+  private String registerComponent(Class< ? > cycleComponentClass) {
+    String name = getComponentName(cycleComponentClass);
     if (descriptorRegistry.containsKey(name)) {
       logger.log(Level.SEVERE,
               "Cannot register component of type '" + cycleComponentClass + "', name '" + name + "', copmonent of type '" + descriptorRegistry.get(name)
                       + "', has same name.");
     }
+    CycleComponent componentAnnotation = cycleComponentClass.getAnnotation(CycleComponent.class);
     // init component descriptor:
     CycleComponentDescriptor componentDescriptor = new CycleComponentDescriptor(name, componentAnnotation.context(), cycleComponentClass);
     descriptorRegistry.put(name, componentDescriptor);
@@ -402,4 +416,5 @@ public abstract class CycleComponentFactory {
     }
     components.removeAll(excludedComponents);
   }
+
 }

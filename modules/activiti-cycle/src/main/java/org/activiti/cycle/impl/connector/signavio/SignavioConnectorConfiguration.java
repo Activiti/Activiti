@@ -15,7 +15,6 @@ package org.activiti.cycle.impl.connector.signavio;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 
-import org.activiti.cycle.ArtifactType;
 import org.activiti.cycle.CycleComponentFactory;
 import org.activiti.cycle.RepositoryConnector;
 import org.activiti.cycle.RepositoryException;

@@ -15,7 +15,6 @@ package org.activiti.cycle.impl;
 import java.io.Serializable;
 import java.util.logging.Logger;
 
-import org.activiti.cycle.ArtifactType;
 
 /**
  * The file action defines an action you can execute upon a file / artifact

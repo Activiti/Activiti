@@ -14,22 +14,14 @@ package org.activiti.cycle.service;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
-import org.activiti.cycle.ArtifactType;
 import org.activiti.cycle.Content;
 import org.activiti.cycle.ContentRepresentation;
-import org.activiti.cycle.MimeType;
 import org.activiti.cycle.RepositoryArtifact;
 import org.activiti.cycle.RepositoryArtifactLink;
-import org.activiti.cycle.RepositoryArtifactType;
-import org.activiti.cycle.RepositoryConnector;
 import org.activiti.cycle.RepositoryFolder;
 import org.activiti.cycle.RepositoryNodeCollection;
 import org.activiti.cycle.RepositoryNodeNotFoundException;
-import org.activiti.cycle.impl.artifacttype.RepositoryArtifactTypes;
-import org.activiti.cycle.impl.mimetype.Mimetypes;
-import org.activiti.cycle.transform.ContentTransformationException;
 
 /**
  * Cycle service used for accessing repositories.
