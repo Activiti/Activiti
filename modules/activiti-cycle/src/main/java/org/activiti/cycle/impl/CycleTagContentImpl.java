@@ -45,15 +45,7 @@ public class CycleTagContentImpl implements CycleTagContent {
    */
   public void resolveRepositoryArtifacts() {
     for (RepositoryNodeTagEntity tag : containedArtifactIds) {
-      // TODO: FUCK, now we need a getRepositoryNode which is hard for Signavio.
-      // But this implementation obviously sucks. Improve!
-      RepositoryNode node = null;
-      try {
-        node = CycleServiceFactory.getRepositoryService().getRepositoryFolder(tag.getConnectorId(), tag.getNodeId());
-      } catch (RepositoryNodeNotFoundException ex) {
-        node = CycleServiceFactory.getRepositoryService().getRepositoryArtifact(tag.getConnectorId(), tag.getNodeId());
-      }
-
+      RepositoryNode node = CycleServiceFactory.getRepositoryService().getRepositoryNode(tag.getConnectorId(), tag.getNodeId());
       if (tag.hasAlias()) {
         node.getMetadata().setName(tag.getAlias());
       }

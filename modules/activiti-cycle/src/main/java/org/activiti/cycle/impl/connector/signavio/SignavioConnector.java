@@ -454,6 +454,15 @@ public class SignavioConnector extends AbstractRepositoryConnector<SignavioConne
       throw new RepositoryNodeNotFoundException(getConfiguration().getName(), RepositoryArtifact.class, id, ex);
     }
   }
+  
+  public RepositoryNode getRepositoryNode(String id) throws RepositoryNodeNotFoundException {
+    // <!> HACK: improve!
+    try {
+      return getRepositoryFolder(id);      
+    }catch(RepositoryNodeNotFoundException e) {
+      return getRepositoryArtifact(id);
+    }
+  }
 
   public RepositoryArtifact getRepositoryArtifact(String id) {
     JsonRepresentation jsonData = null;

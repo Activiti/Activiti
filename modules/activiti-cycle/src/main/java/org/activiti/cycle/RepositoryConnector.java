@@ -38,6 +38,14 @@ public interface RepositoryConnector {
   // RepositoryNodeNotFoundException;
 
   /**
+   * Return the repository node represented by the provided id.
+   * 
+   * Consider using {@link #getRepositoryArtifact(String)} or
+   * {@link #getRepositoryFolder(String)} if the type of the node is known.
+   */
+  public RepositoryNode getRepositoryNode(String id) throws RepositoryNodeNotFoundException;
+
+  /**
    * load the {@link RepositoryArtifact} including details
    */
   public RepositoryArtifact getRepositoryArtifact(String id) throws RepositoryNodeNotFoundException;

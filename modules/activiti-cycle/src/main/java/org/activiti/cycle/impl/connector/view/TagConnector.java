@@ -79,6 +79,10 @@ public class TagConnector implements RepositoryConnector {
 
     return tagFolderList;
   }
+  
+  public RepositoryNode getRepositoryNode(String id) throws RepositoryNodeNotFoundException {
+    return getRepositoryFolder(id);
+  }
 
   private RepositoryFolderImpl createFolderObject(CycleTagContent tag) {
     RepositoryFolderImpl folder = new RepositoryFolderImpl(getConfiguration().getId(), tag.getName());

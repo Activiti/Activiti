@@ -105,6 +105,12 @@ public class CycleRepositoryServiceImpl implements CycleRepositoryService {
     }
     return new RepositoryNodeCollectionImpl(nodes);
   }
+  
+  public RepositoryNode getRepositoryNode(String connectorId, String nodeId) {
+    RepositoryConnector connector = getRepositoryConnector(connectorId);
+    RepositoryNode repositoryNode = connector.getRepositoryNode(nodeId);
+    return repositoryNode;
+  }
 
   public RepositoryArtifact getRepositoryArtifact(String connectorId, String artifactId) {
     RepositoryConnector connector = getRepositoryConnector(connectorId);

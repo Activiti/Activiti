@@ -20,6 +20,7 @@ import org.activiti.cycle.ContentRepresentation;
 import org.activiti.cycle.RepositoryArtifact;
 import org.activiti.cycle.RepositoryArtifactLink;
 import org.activiti.cycle.RepositoryFolder;
+import org.activiti.cycle.RepositoryNode;
 import org.activiti.cycle.RepositoryNodeCollection;
 import org.activiti.cycle.RepositoryNodeNotFoundException;
 
@@ -75,7 +76,9 @@ public interface CycleRepositoryService {
   public Content getContent(String connectorId, String artifactId) throws RepositoryNodeNotFoundException;
 
   public List<RepositoryArtifactLink> getIncomingArtifactLinks(String targetConnectorId, String targetArtifactId);
-
+  
+  public RepositoryNode getRepositoryNode(String connectorId, String nodeId);
+  
   /**
    * load the {@link RepositoryArtifact} including details
    */
@@ -126,5 +129,7 @@ public interface CycleRepositoryService {
    *          the id of the repository-connector to use
    */
   public boolean login(String username, String password, String connectorId);
+
+  
 
 }
