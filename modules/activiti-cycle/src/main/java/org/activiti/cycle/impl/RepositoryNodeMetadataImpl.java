@@ -72,7 +72,7 @@ public class RepositoryNodeMetadataImpl implements RepositoryNodeMetadata {
 		this.name = name;
 	}
 
-	public String setParentFolderId() {
+	public String getParentFolderId() {
     return folderId;
 	}
 

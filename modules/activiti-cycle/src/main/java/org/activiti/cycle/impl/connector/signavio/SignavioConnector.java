@@ -249,6 +249,13 @@ public class SignavioConnector extends AbstractRepositoryConnector<SignavioConne
 
     folderInfo.getMetadata().setName(directoryName);
 
+    String parent = jsonDirectoryObject.getJSONObject("rep").optString("parent");
+    if (parent != null) {
+      String parentId = getConfiguration().getDirectoryIdFromUrl(parent);
+      folderInfo.getMetadata().setParentFolderId(parentId);
+    }
+    
+
     // TODO: Where do we get the path from?
     // folderInfo.getMetadata().setPath();
     return folderInfo;
@@ -276,6 +283,12 @@ public class SignavioConnector extends AbstractRepositoryConnector<SignavioConne
     fileInfo.getMetadata().setLastAuthor(json.optString("author"));
     fileInfo.getMetadata().setCreated(SignavioJsonHelper.getDateValueIfExists(json, "created"));
     fileInfo.getMetadata().setLastChanged(SignavioJsonHelper.getDateValueIfExists(json, "updated"));
+    
+    String parent = json.getJSONObject("rep").optString("parent");
+    if (parent != null) {
+      String parentId = getConfiguration().getModelIdFromUrl(parent);
+      fileInfo.getMetadata().setParentFolderId(parentId);
+    }
 
     // relObject.getJSONObject("rep").getString("revision"); --> UUID of
     // revision

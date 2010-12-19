@@ -15,15 +15,12 @@ public interface RepositoryNodeMetadata {
 	 */
 	public String getName();
 	
-	/**
-   * String information on path (important e.g. in Signavio, since the path is
-   * not contained in the URL).
-   * 
-   * Note that this is as default a read-only property provided as additional
-   * information for the GUI.
-   */
-  public String setParentFolderId();  
 
+	/**
+	 * The id of the parent {@link RepositoryFolder}
+	 */
+  public String getParentFolderId();
+  
 	public Date getCreated();
   public Date getLastChanged();
   public String getAuthor();

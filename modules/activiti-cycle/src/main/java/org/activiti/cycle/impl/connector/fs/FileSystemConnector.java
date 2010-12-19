@@ -76,8 +76,8 @@ public class FileSystemConnector extends AbstractFileSystemBasedRepositoryConnec
   public RepositoryArtifact getRepositoryArtifact(String id) {
     try {
       File file = getFileFromId(id);
-      if (file.isDirectory()) {
-        throw new RepositoryNodeNotFoundException(id + " is a directory");
+      if (!file.isFile()) {
+        throw new RepositoryNodeNotFoundException(id + " is not a file");
       }
       return getArtifactInfo(file);
     } catch (IOException ex) {
@@ -186,11 +186,10 @@ public class FileSystemConnector extends AbstractFileSystemBasedRepositoryConnec
     }
     RepositoryFolderImpl folder = new RepositoryFolderImpl(getConfiguration().getId(), id);
     folder.getMetadata().setName(file.getName());
-    // TODO: Implement
-    // folder.getMetadata().setParentFolderId();
-
     folder.getMetadata().setLastChanged(new Date(file.lastModified()));
-
+    if (!"/".equals(id)) {
+      folder.getMetadata().setParentFolderId(getLocalPath(file.getParent()));
+    }
     return folder;
   }
 
