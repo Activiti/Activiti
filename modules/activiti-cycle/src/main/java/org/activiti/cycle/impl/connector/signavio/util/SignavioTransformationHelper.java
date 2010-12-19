@@ -8,7 +8,6 @@ import org.activiti.cycle.impl.connector.signavio.transform.JsonTransformation;
 import org.activiti.cycle.impl.connector.signavio.transform.JsonTransformer;
 import org.activiti.cycle.impl.connector.signavio.transform.pattern.BpmnPoolExtraction;
 import org.activiti.cycle.impl.connector.signavio.transform.pattern.ExchangeSignavioUuidWithName;
-import org.activiti.cycle.impl.connector.signavio.transform.pattern.MakeNamesUnique;
 import org.activiti.cycle.impl.connector.signavio.transform.pattern.ReplaceEmptyShapeNamesWithTypes;
 import org.json.JSONObject;
 

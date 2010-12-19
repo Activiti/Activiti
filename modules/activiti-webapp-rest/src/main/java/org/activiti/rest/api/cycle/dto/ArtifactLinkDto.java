@@ -1,7 +1,5 @@
 package org.activiti.rest.api.cycle.dto;
 
-import java.util.List;
-
 public class ArtifactLinkDto {
 
 	String targetId;

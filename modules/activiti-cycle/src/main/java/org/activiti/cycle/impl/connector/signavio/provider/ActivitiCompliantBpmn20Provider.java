@@ -28,7 +28,6 @@ import org.activiti.cycle.impl.connector.signavio.SignavioConnectorInterface;
 import org.activiti.cycle.impl.connector.signavio.util.SignavioTransformationHelper;
 import org.activiti.cycle.impl.connector.signavio.repositoryartifacttype.SignavioBpmn20ArtifactType;
 import org.activiti.cycle.impl.connector.signavio.transform.pattern.RemedyTemporarySignavioIncompatibility;
-import org.activiti.cycle.impl.mimetype.Mimetypes;
 import org.activiti.cycle.impl.mimetype.XmlMimeType;
 
 @CycleComponent(context = CycleContextType.APPLICATION)

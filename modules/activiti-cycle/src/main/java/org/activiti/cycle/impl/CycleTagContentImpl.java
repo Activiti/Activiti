@@ -6,7 +6,6 @@ import java.util.List;
 import org.activiti.cycle.CycleTagContent;
 import org.activiti.cycle.RepositoryArtifact;
 import org.activiti.cycle.RepositoryNode;
-import org.activiti.cycle.RepositoryNodeNotFoundException;
 import org.activiti.cycle.impl.db.entity.RepositoryNodeTagEntity;
 import org.activiti.cycle.service.CycleServiceFactory;
 

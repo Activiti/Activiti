@@ -284,7 +284,7 @@ public class SignavioConnector extends AbstractRepositoryConnector<SignavioConne
     fileInfo.getMetadata().setCreated(SignavioJsonHelper.getDateValueIfExists(json, "created"));
     fileInfo.getMetadata().setLastChanged(SignavioJsonHelper.getDateValueIfExists(json, "updated"));
     
-    String parent = json.getJSONObject("rep").optString("parent");
+    String parent = json.optString("parent");
     if (parent != null) {
       String parentId = getConfiguration().getModelIdFromUrl(parent);
       fileInfo.getMetadata().setParentFolderId(parentId);

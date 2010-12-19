@@ -23,11 +23,9 @@ import org.activiti.cycle.components.RuntimeConnectorList;
 import org.activiti.cycle.context.CycleApplicationContext;
 import org.activiti.cycle.context.CycleContextType;
 import org.activiti.cycle.context.CycleSessionContext;
-import org.activiti.cycle.impl.connector.signavio.SignavioConnector;
 import org.activiti.cycle.impl.connector.signavio.SignavioConnectorInterface;
 import org.activiti.cycle.impl.connector.signavio.repositoryartifacttype.SignavioBpmn20ArtifactType;
 import org.activiti.cycle.impl.mimetype.JsonMimeType;
-import org.activiti.cycle.impl.mimetype.XmlMimeType;
 import org.json.JSONObject;
 import org.restlet.Response;
 

@@ -16,8 +16,6 @@ import java.util.Map;
 
 import org.activiti.cycle.RepositoryArtifact;
 import org.activiti.cycle.action.ParameterizedAction;
-import org.activiti.cycle.service.CyclePluginService;
-import org.activiti.cycle.service.CycleServiceFactory;
 import org.activiti.rest.util.ActivitiRequest;
 import org.springframework.extensions.webscripts.Cache;
 import org.springframework.extensions.webscripts.Status;

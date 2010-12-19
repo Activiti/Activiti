@@ -4,7 +4,6 @@ import org.activiti.cycle.MimeType;
 import org.activiti.cycle.annotations.CycleComponent;
 import org.activiti.cycle.context.CycleApplicationContext;
 import org.activiti.cycle.context.CycleContextType;
-import org.activiti.cycle.context.CycleSessionContext;
 import org.activiti.cycle.impl.artifacttype.AbstractRepositoryArtifactType;
 import org.activiti.cycle.impl.mimetype.JsonMimeType;
 

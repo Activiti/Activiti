@@ -1,9 +1,7 @@
 package org.activiti.cycle.impl.connector.signavio.provider;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.activiti.cycle.Content;
 import org.activiti.cycle.MimeType;
@@ -11,12 +9,9 @@ import org.activiti.cycle.RenderInfo;
 import org.activiti.cycle.RepositoryArtifact;
 import org.activiti.cycle.RepositoryArtifactType;
 import org.activiti.cycle.RepositoryException;
-import org.activiti.cycle.annotations.CycleComponent;
 import org.activiti.cycle.components.RuntimeConnectorList;
 import org.activiti.cycle.context.CycleApplicationContext;
-import org.activiti.cycle.context.CycleContextType;
 import org.activiti.cycle.context.CycleSessionContext;
-import org.activiti.cycle.impl.connector.signavio.SignavioConnector;
 import org.activiti.cycle.impl.connector.signavio.SignavioConnectorInterface;
 import org.activiti.cycle.impl.connector.signavio.repositoryartifacttype.SignavioBpmn20ArtifactType;
 import org.activiti.cycle.impl.connector.signavio.util.SignavioSvgApiBuilder;
@@ -24,7 +19,6 @@ import org.activiti.cycle.impl.connector.signavio.util.SignavioSvgHighlight;
 import org.activiti.cycle.impl.connector.signavio.util.SignavioSvgHighlightType;
 import org.activiti.cycle.impl.connector.signavio.util.SignavioSvgNodeType;
 import org.activiti.cycle.impl.mimetype.HtmlMimeType;
-import org.activiti.cycle.impl.mimetype.PngMimeType;
 import org.oryxeditor.server.diagram.Diagram;
 import org.oryxeditor.server.diagram.DiagramBuilder;
 import org.oryxeditor.server.diagram.Shape;
