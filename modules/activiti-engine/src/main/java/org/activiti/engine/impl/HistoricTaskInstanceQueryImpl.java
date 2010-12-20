@@ -29,6 +29,7 @@ public class HistoricTaskInstanceQueryImpl extends AbstractQuery<HistoricTaskIns
   protected String processDefinitionId;
   protected String processInstanceId;
   protected String executionId;
+  protected String taskId;
   protected String taskName;
   protected String taskNameLike;
   protected String taskDescription;
@@ -60,6 +61,7 @@ public class HistoricTaskInstanceQueryImpl extends AbstractQuery<HistoricTaskIns
       .findHistoricTaskInstancesByQueryCriteria(this, page);
   }
 
+
   public HistoricTaskInstanceQueryImpl processInstanceId(String processInstanceId) {
     this.processInstanceId = processInstanceId;
     return this;
@@ -75,6 +77,10 @@ public class HistoricTaskInstanceQueryImpl extends AbstractQuery<HistoricTaskIns
     return this;
   }
 
+  public HistoricTaskInstanceQuery taskId(String taskId) {
+    this.taskId = taskId;
+    return this;
+  }
   public HistoricTaskInstanceQueryImpl taskName(String taskName) {
     this.taskName = taskName;
     return this;
@@ -220,5 +226,8 @@ public class HistoricTaskInstanceQueryImpl extends AbstractQuery<HistoricTaskIns
   }
   public String getTaskAssigneeLike() {
     return taskAssigneeLike;
+  }
+  public String getTaskId() {
+    return taskId;
   }
 }

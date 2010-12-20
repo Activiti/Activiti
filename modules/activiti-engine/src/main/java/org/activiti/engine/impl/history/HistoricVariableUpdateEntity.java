@@ -15,7 +15,6 @@ package org.activiti.engine.impl.history;
 
 import java.util.Date;
 
-import org.activiti.engine.ActivitiException;
 import org.activiti.engine.history.HistoricVariableUpdate;
 import org.activiti.engine.impl.db.DbSqlSession;
 import org.activiti.engine.impl.db.PersistentObject;
@@ -53,13 +52,8 @@ public class HistoricVariableUpdateEntity extends HistoricDetailEntity implement
 
   public HistoricVariableUpdateEntity(VariableInstanceEntity variableInstance, DbSqlSession dbSqlSession) {
     this.processInstanceId = variableInstance.getProcessInstanceId();
-    if (processInstanceId==null) {
-      throw new ActivitiException("bug");
-    }
     this.executionId = variableInstance.getExecutionId();
-    if (executionId==null) {
-      throw new ActivitiException("bug");
-    }
+    this.taskId = variableInstance.getTaskId();
     this.revision = variableInstance.getRevision();
     this.name = variableInstance.getName();
     this.variableType = variableInstance.getType();

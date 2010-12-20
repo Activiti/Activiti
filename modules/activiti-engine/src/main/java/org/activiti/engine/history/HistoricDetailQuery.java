@@ -30,6 +30,9 @@ public interface HistoricDetailQuery extends Query<HistoricDetailQuery, Historic
   /** Only select historic variable updates associated to the given {@link HistoricActivityInstance activity instance}. */
   HistoricDetailQuery activityId(String activityId);
 
+  /** Only select historic variable updates associated to the given {@link HistoricTaskInstance historic task instance}. */
+  HistoricDetailQuery taskId(String taskId);
+
   /** Only select {@link HistoricFormProperty}s. */
   HistoricDetailQuery formProperties();
 

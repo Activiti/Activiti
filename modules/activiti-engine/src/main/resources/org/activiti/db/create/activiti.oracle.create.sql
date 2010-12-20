@@ -193,6 +193,7 @@ create table ACT_HI_DETAIL (
     TYPE_ NVARCHAR2(255) not null,
     PROC_INST_ID_ NVARCHAR2(64) not null,
     EXECUTION_ID_ NVARCHAR2(64) not null,
+    ASK_ID_ NVARCHAR2(64),
     ACT_INST_ID_ NVARCHAR2(64),
     NAME_ NVARCHAR2(255) not null,
     VAR_TYPE_ NVARCHAR2(64),

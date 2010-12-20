@@ -13,6 +13,9 @@
 
 package org.activiti.engine.test.history;
 
+import java.util.List;
+
+import org.activiti.engine.history.HistoricDetail;
 import org.activiti.engine.history.HistoricTaskInstance;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.test.Deployment;
@@ -25,7 +28,7 @@ public class HistoricTaskInstanceTest extends PluggableActivitiTestCase {
 
   @Deployment
   public void testHistoricTaskInstance() {
-    runtimeService.startProcessInstanceByKey("HistoricTaskInstanceTest");
+    String processInstanceId = runtimeService.startProcessInstanceByKey("HistoricTaskInstanceTest").getId();
     
     String taskId = taskService.createTaskQuery().singleResult().getId();
     
@@ -37,10 +40,12 @@ public class HistoricTaskInstanceTest extends PluggableActivitiTestCase {
     assertNull(historicTaskInstance.getEndTime());
     assertNull(historicTaskInstance.getDurationInMillis());
     
+    runtimeService.setVariable(processInstanceId, "deadline", "yesterday");
+    
     taskService.complete(taskId);
     
     assertEquals(1, historyService.createHistoricTaskInstanceQuery().count());
-    
+
     historicTaskInstance = historyService.createHistoricTaskInstanceQuery().singleResult();
     assertEquals("completed", historicTaskInstance.getDeleteReason());
     assertNotNull(historicTaskInstance.getEndTime());

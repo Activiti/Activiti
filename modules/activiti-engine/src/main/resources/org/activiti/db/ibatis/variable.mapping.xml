@@ -72,8 +72,9 @@
   </select>
 
 	<select id="selectVariablesByExecutionId" parameterType="string" resultMap="variableInstanceResultMap">
-		select * from ACT_RU_VARIABLE where
-		EXECUTION_ID_ = #{executionId, jdbcType=VARCHAR}
+		select * from ACT_RU_VARIABLE 
+		where EXECUTION_ID_ = #{executionId, jdbcType=VARCHAR}
+		  and TASK_ID_ is null
   </select>
 
   <select id="selectVariablesByTaskId" parameterType="string" resultMap="variableInstanceResultMap">

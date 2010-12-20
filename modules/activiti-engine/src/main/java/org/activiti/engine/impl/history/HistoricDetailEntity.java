@@ -19,8 +19,6 @@ import org.activiti.engine.history.HistoricDetail;
 import org.activiti.engine.impl.db.DbSqlSession;
 import org.activiti.engine.impl.db.PersistentObject;
 import org.activiti.engine.impl.interceptor.CommandContext;
-import org.activiti.engine.impl.runtime.ByteArrayEntity;
-import org.activiti.engine.impl.runtime.JobEntity;
 
 
 /**
@@ -31,6 +29,7 @@ public class HistoricDetailEntity implements HistoricDetail, PersistentObject {
   protected String id;
   protected String processInstanceId;
   protected String activityInstanceId;
+  protected String taskId;
   protected String executionId;
   protected Date time;
 
@@ -92,5 +91,14 @@ public class HistoricDetailEntity implements HistoricDetail, PersistentObject {
   
   public void setTime(Date time) {
     this.time = time;
+  }
+
+  
+  public String getTaskId() {
+    return taskId;
+  }
+
+  public void setTaskId(String taskId) {
+    this.taskId = taskId;
   }
 }

@@ -26,6 +26,7 @@ import org.activiti.engine.impl.interceptor.CommandExecutor;
  */
 public class HistoricDetailQueryImpl extends AbstractQuery<HistoricDetailQuery, HistoricDetail> implements HistoricDetailQuery {
 
+  protected String taskId;
   protected String processInstanceId;
   protected String activityId;
   protected String type;
@@ -44,6 +45,11 @@ public class HistoricDetailQueryImpl extends AbstractQuery<HistoricDetailQuery, 
 
   public HistoricDetailQuery activityId(String activityId) {
     this.activityId = activityId;
+    return this;
+  }
+
+  public HistoricDetailQuery taskId(String taskId) {
+    this.taskId = taskId;
     return this;
   }
 
@@ -71,12 +77,8 @@ public class HistoricDetailQueryImpl extends AbstractQuery<HistoricDetailQuery, 
       .findHistoricDetailsByQueryCriteria(this, page);
   }
   
-  // getters and setters //////////////////////////////////////////////////////
+  // order by /////////////////////////////////////////////////////////////////
   
-  public String getProcessInstanceId() {
-    return processInstanceId;
-  }
-
   public HistoricDetailQuery orderByProcessInstanceId() {
     orderBy(HistoricDetailQueryProperty.PROCESS_INSTANCE_ID);
     return this;
@@ -105,5 +107,23 @@ public class HistoricDetailQueryImpl extends AbstractQuery<HistoricDetailQuery, 
   public HistoricDetailQuery orderByVariableType() {
     orderBy(HistoricDetailQueryProperty.VARIABLE_TYPE);
     return this;
+  }
+  
+  // getters and setters //////////////////////////////////////////////////////
+  
+  public String getProcessInstanceId() {
+    return processInstanceId;
+  }
+  
+  public String getTaskId() {
+    return taskId;
+  }
+  
+  public String getActivityId() {
+    return activityId;
+  }
+  
+  public String getType() {
+    return type;
   }
 }

@@ -21,7 +21,9 @@ import org.activiti.engine.query.Query;
  */
 public interface HistoricTaskInstanceQuery  extends Query<HistoricTaskInstanceQuery, HistoricTaskInstance> {
 
-  HistoricTaskInstanceQuery processInstanceId(String processInstanceId) ;
+  HistoricTaskInstanceQuery taskId(String taskId);
+  
+  HistoricTaskInstanceQuery processInstanceId(String processInstanceId);
   
   HistoricTaskInstanceQuery executionId(String executionId);
   

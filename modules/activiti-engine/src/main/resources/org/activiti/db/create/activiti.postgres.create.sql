@@ -195,6 +195,7 @@ create table ACT_HI_DETAIL (
     TYPE_ varchar(255) not null,
     PROC_INST_ID_ varchar(64) not null,
     EXECUTION_ID_ varchar(64) not null,
+    TASK_ID_ varchar(64),
     ACT_INST_ID_ varchar(64),
     NAME_ varchar(255) not null,
     VAR_TYPE_ varchar(64),
