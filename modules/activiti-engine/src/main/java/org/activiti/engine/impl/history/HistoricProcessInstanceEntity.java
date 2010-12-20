@@ -46,7 +46,7 @@ public class HistoricProcessInstanceEntity extends HistoricScopeInstanceEntity i
     startActivityId = processInstance.getActivityId();
   }
 
-  @Override
+  
   public Object getPersistentState() {
     Map<String, Object> persistentState = (Map<String, Object>) new HashMap<String, Object>();
     persistentState.put("endTime", endTime);
