@@ -1,6 +1,5 @@
 package org.activiti.cycle.annotations;
 
-import java.awt.Desktop.Action;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -11,6 +10,7 @@ import org.activiti.cycle.CycleComponentFactory;
 import org.activiti.cycle.MimeType;
 import org.activiti.cycle.RepositoryArtifactType;
 import org.activiti.cycle.RepositoryConnector;
+import org.activiti.cycle.action.Action;
 import org.activiti.cycle.action.CreateUrlAction;
 import org.activiti.cycle.action.DownloadContentAction;
 import org.activiti.cycle.action.ParameterizedAction;
