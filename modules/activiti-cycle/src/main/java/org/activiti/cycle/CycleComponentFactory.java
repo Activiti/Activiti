@@ -189,13 +189,15 @@ public abstract class CycleComponentFactory {
       throw new RuntimeException("Cannot decorate instance '" + instanceToDecorate + "' with decorators: '" + e.getMessage() + "'.", e);
     }
   }
+
+  @SuppressWarnings("unchecked") // JDK method Class.getInterfaces() already returns the raw type Class[]
   private Object decorateInstance(Object instanceToDecorate, Class< ? extends Interceptor>[] interceptorClasses) throws Exception {
-    Set<Class< ? >> interfaces = new HashSet<Class< ? >>();
+    Set<Class> interfaces = new HashSet<Class>();
     Class< ? > superClass = instanceToDecorate.getClass();
     // collect implemented interfaces of this instance
     while (superClass != null && !superClass.equals(Object.class)) {
       // TODO: cast necessary?
-      interfaces.addAll((Collection<Class< ? >>) Arrays.asList(superClass.getInterfaces()));
+      interfaces.addAll(Arrays.asList(superClass.getInterfaces()));
       superClass = superClass.getSuperclass();
     }
 
