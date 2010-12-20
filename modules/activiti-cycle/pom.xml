@@ -140,27 +140,6 @@
 			<groupId>com.signavio</groupId>
 			<artifactId>signavio-core-components</artifactId>
 		</dependency>
-
-		<!-- required by the Activiti Cycle svnconnector plugin -->
-		<dependency>
-			<groupId>org.tigris.subversion</groupId>
-			<artifactId>svnclientadapter</artifactId>
-			<version>0.9.100</version>
-		</dependency>
-
-		<dependency>
-			<groupId>commons-vfs</groupId>
-			<artifactId>commons-vfs</artifactId>
-			<version>1.0</version>
-		</dependency>
-		
-		<!-- required for sftp support -->
-		<dependency>
-			<groupId>jsch</groupId>
-			<artifactId>jsch</artifactId>
-			<version>0.1.29</version>
-		</dependency>
-
 	</dependencies>
 
 	<profiles>
