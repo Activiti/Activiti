@@ -16,7 +16,7 @@
     <emphasis role="bold">Please note: Activiti Cycle is still in a "beta" state.</emphasis>
     With collaborative tools like Activiti Cycle we dont have years of experience yet, like we have with the core engine. Currently
     most features are already stable, but with adding more use cases and features, we still have to do some tuning of the APIs or database tables. 
-    This means, that for example the Plugin-API is still subject to change, which you have to know when you start writing own plugins. 
+    This means, that for example the Plugin-API is still subject to change, which you have to know when you start writing own Plug-Ins. 
     Or the database might change without having out-of-the-box database migration scripts ready. But be sure: We work hard on removing the beta status,
     meaning you will get a stable API and database schema.
   </para>
@@ -128,33 +128,7 @@
     	Activiti Cycle also has the capabilities to connect to SVN (Subversion) repositories. 
     	The following is an example configuration for the SVN Connector:    
     </para>
-    
-    <programlisting>
-	...
-	&lt;org.activiti.cycle.incubator.connector.svn.SvnConnectorConfiguration&gt;
-		&lt;id&gt;ActivitiPublicSVN&lt;/id&gt;
-		&lt;name&gt;Activiti Public SVN&lt;/name&gt;
-		&lt;repositoryPath&gt;http://svn.codehaus.org/activiti&lt;/repositoryPath&gt;
-		&lt;credentialsSaved&gt;true&lt;/credentialsSaved&gt;
-		&lt;user&gt;&lt;/user&gt;
-		&lt;password&gt;&lt;/password&gt;
-		&lt;temporaryFileStore&gt;where the connector creates temporary files between commits (e.g. /tmp)&lt;/temporaryFileStore&gt;
-	&lt;/org.activiti.cycle.incubator.connector.svn.SvnConnectorConfiguration&gt;
-	...
-	</programlisting>   
-	<para> 
-	Note: there are currently two configuration options for the Activiti Cycle SVN Connector:
-	 <itemizedlist>
-      <listitem><para>SVN is installed on the machine running Activiti and in the local PATH.</para></listitem>
-      <listitem><para>You need to manually download the <ulink url="http://www.svnkit.org/">SVNKit</ulink> 
-      library and install it. To this end, download the SVNKit library and copy both <literal>svnkit.jar</literal> 
-      and <literal>svnkit-javahl.jar</literal> to the following location: 
-      <literal>${activiti.home}/apps/apache-tomcat-6.X.XX/webapps/activiti-rest/WEB-INF/lib</literal>. (Tomcat restart required.) 
-      SVNKit cannot be bundled with Activiti due to licensing restrictions.</para></listitem>
-     </itemizedlist>	
-     Please note that the SVN Connector is still in incubation and considered experimental.
-    </para> 
-	
+    	
   </section>
   
   <section>
@@ -170,5 +144,16 @@
       written in your own plugin.
     </para>
   </section>
+
+  <section>
+    <title>More Plug-Ins</title>
+    <para>
+      More Cycle Plug-Ins are available, for example SVN and SFTP Connectors or a Maven Project Wizard. These Plug-Ins are available
+      as seperate download to keep the Cycle core small, the dependencies manageable and to allow creating Plug-Ins requiring 
+      dependencies with non Apache compatible licenses.
+     You can find additional Plug-Ins ready for download on this 
+      <ulink url="http://fox.camunda.com/cycle-plugins/">Cycle Plug-In Page</ulink>.
+    </para>
+  </section>  
   
 </chapter>
