@@ -153,6 +153,40 @@
       return Activiti.service.REST_PROXY_URI_RELATIVE + "artifact-link";
     },
     
+    deleteArtifactLink: function RepositoryService_deleteArtifactLink(linkId) {
+      this.jsonDelete(this.deleteArtifactLinkURL(linkId), null, "deleteArtifactLink");
+    },
+    
+    deleteArtifactLinkURL: function RepositoryService_deleteArtifactLinkURL(linkId) {
+      return Activiti.service.REST_PROXY_URI_RELATIVE + "artifact-link?linkId=" + linkId;
+    },
+
+    /**
+     * Returns the url to load the links for a given artifact from the server
+     * 
+     * @method loadArtifactLinksURL
+     * @param {Object} eventValue an object of URL parameters
+     * @return {string} the URL
+     */
+    loadArtifactLinksURL: function RepositoryService_loadArtifactLinksURL(eventValue) {
+      var url = Activiti.service.REST_PROXY_URI_RELATIVE + "artifact-links", 
+      params = Activiti.util.objectToArgumentString(eventValue);
+      return (params) ? url + "?" + params : url;
+    },
+    
+    /**
+     * Returns the url to load the links for a given artifact from the server
+     * 
+     * @method loadIncomingArtifactLinksURL
+     * @param {Object} eventValue an object of URL parameters
+     * @return {string} the URL
+     */
+    loadIncomingArtifactLinksURL: function RepositoryService_loadIncomingArtifactLinksURL(eventValue) {
+      var url = Activiti.service.REST_PROXY_URI_RELATIVE + "incoming-artifact-links",
+      params = Activiti.util.objectToArgumentString(eventValue);
+      return (params) ? url + "?" + params : url;
+    },
+
     /**
      * Creates a new folder by posting the provided object literal parameter to the
      * REST API. The 'folderLiteral' is an object literal that should contain the following

@@ -1183,6 +1183,8 @@ Activiti.event = function() {
      expandTreeNode: "expandTreeNode",
 
      collapseTreeNode: "collapseTreeNode",
+     
+     displayLinks: "displayLinks",
 
     /**
      * Fires when the Processes Table is ready

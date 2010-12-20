@@ -345,6 +345,11 @@
         parent="activitiWebScript">
   </bean>
 
+  <bean id="webscript.org.activiti.rest.api.cycle.artifact-link.delete"
+        class="org.activiti.rest.api.cycle.ArtifactLinkDelete"
+        parent="activitiWebScript">
+  </bean>
+
   <bean id="webscript.org.activiti.rest.api.cycle.artifact.post"
         class="org.activiti.rest.api.cycle.ArtifactPost"
         parent="activitiWebScript">

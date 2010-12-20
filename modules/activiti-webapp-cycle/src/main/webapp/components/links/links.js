@@ -24,16 +24,6 @@
     this._connectorId = connectorId;
     this._artifactId = artifactId;
 
-    this._linksDataSource = new YAHOO.util.XHRDataSource(Activiti.service.REST_PROXY_URI_RELATIVE + "artifact-links?connectorId=" + encodeURIComponent(this._connectorId) + "&artifactId=" + encodeURIComponent(this._artifactId));
-    this._linksDataSource.responseType = YAHOO.util.XHRDataSource.TYPE_JSARRAY;
-
-    // this._linksDataSource.doBeforeParseData = function(oRequest, oFullResponse, oCallback) {
-    //   // check the response to deal with potential authentication errors
-    // };
-
-    this._incomingLinksDataSource = new YAHOO.util.XHRDataSource(Activiti.service.REST_PROXY_URI_RELATIVE + "incoming-artifact-links?connectorId=" + encodeURIComponent(this._connectorId) + "&artifactId=" + encodeURIComponent(this._artifactId));
-    this._incomingLinksDataSource.responseType = YAHOO.util.XHRDataSource.TYPE_JSARRAY;
-
     this._linksDataTable = {};
     this._incomingLinksDataTable = {};
 
@@ -52,82 +42,236 @@
     {
       var me = this;
 
-      var linksElId = this.id + '-links-div';
-      var addLinkElId = this.id + 'add-link';
-      var incomingLinksElId = this.id + 'incoming-links-div';
+      var linksElId = this.id + '-links-div',
+      linksPaginationElId = this.id + '-links-pagination-div',
+      incomingLinksPaginationElId = this.id + '-incoming-links-pagination-div',
+      addLinkElId = this.id + 'add-link',
+      incomingLinksElId = this.id + 'incoming-links-div';
 
       var el = document.getElementById(this.id);
 
       var linksWrapperEl = document.createElement("div");
       linksWrapperEl.setAttribute('class', 'links-wrapper');
-      linksWrapperEl.innerHTML = '<h3>Outgoing Links</h3><div id="' + linksElId + '"></div><span id="' + addLinkElId + '" class="yui-button"><span class="first-child"><button type="button">Add link</button></span></span>';
+      linksWrapperEl.innerHTML = '<h3>Outgoing Links</h3><div id="' + linksElId + '"></div><span id="' + linksPaginationElId + '"></span><span id="' + addLinkElId + '" class="yui-button"><span class="first-child"><button type="button">Add link</button></span></span>';
 
       el.appendChild(linksWrapperEl);
 
       var incomingLinksWrapperEl = document.createElement('div');
       incomingLinksWrapperEl.setAttribute('class', 'incoming-links-wrapper');
-      incomingLinksWrapperEl.innerHTML = '<h3>Incoming Links</h3><div id="' + incomingLinksElId + '"></div>';
+      incomingLinksWrapperEl.innerHTML = '<h3>Incoming Links</h3><div id="' + incomingLinksElId + '"></div><span id="' + incomingLinksPaginationElId + '"></span>';
 
       el.appendChild(incomingLinksWrapperEl);
 
-      // TODO: i18n
-      var linksColumnDefs = [
-        {key: "Name", sortable:true, resizeable:true},
-        // {key: "Revision", sortable:true},
-        {key: "Element", resizeable:true},
-        {key: "Type", resizeable:true}
-      ];
+      this._linksDataTable = new Activiti.widget.DataTable(
+        this.id + "-links",
+        {
+          /**
+           * Activiti.widget.DataTable-callback to construct the url to use to load data into the data table.
+           *
+           * @method onDataTableCreateURL
+           * @param dataTable {Activiti.widget.DataTable} The data table that is invoking the callback
+           * @param eventName The name of the event to create a url from
+           * @param eventValue The event values to create a url from
+           * @return A url, based on the event, to use when loading data into the data table
+           */
+          onDataTableCreateURL: function onDataTableCreateURL(dataTable, eventName, eventValue)
+          {
+            return me.service.loadArtifactLinksURL(eventValue);
+          },
+          
+          /**
+           * Activiti.widget.DataTable-callback that is called to render the content of each cell in the Actions collumn
+           *
+           * @method onDataTableRenderCellAction
+           * @param {Object} dataTable
+           * @param {Object} el
+           * @param {Object} oRecord
+           * @param {Object} oColumn
+           * @param {Object} oData
+           */
+          onDataTableRenderCellAction: function onDataTableRenderCellAction(dataTable, el, oRecord, oColumn, oData) {
+            var actions = [],
+            data = oRecord.getData();
+            // TODO: i18n
+            actions.push('<a href="#" class="onActionGoToArtifact" title="Go to ' + data["targetArtifact.label"] + '" tabindex="0">&nbsp;</a>');
+            actions.push('<a href="#" class="onActionDeleteLink" title="Delete Link" tabindex="0">&nbsp;</a>');
+            el.innerHTML = actions.join("");
+          },
 
-      // instantiate the links data table
-      this._linksDataTable = new YAHOO.widget.DataTable(linksElId, linksColumnDefs, this._linksDataSource, {scrollable:true});
+          /**
+           * Activiti.widget.DataTable-callback that is called to render the content of each cell in the Name collumn
+           *
+           * @method onDataTableRenderCellAction
+           * @param {Object} dataTable
+           * @param {Object} el
+           * @param {Object} oRecord
+           * @param {Object} oColumn
+           * @param {Object} oData
+           */
+          onDataTableRenderCellName: function onDataTableRenderCellName(dataTable, el, oRecord, oColumn, oData) {
+            var data = oRecord.getData();
+            el.innerHTML = '<span class="' + me.getClassForContentType(data["targetArtifact.contentType"]) + ' artifact-name" title="' + data["targetArtifact.contentType"] + '">' + data["targetArtifact.label"] + '</span>';
+          },
 
-      // parse the response of the request that loaded the links from the server and 
-      // transform it into a format that is easily consumed by the YUI dataTable component
-      this._linksDataTable.doBeforeLoadData = function (sRequest, oResponse, oPayload) {
-          var jsonArray = oResponse.results;
-          var rows = [];
-          for(var i=0; i<jsonArray.length; i++) {
-            var row = {
-              Name: '<a class="openArtifactLink" ' + ((me.id.indexOf('links-widget')  != -1) ? 'target="blank"' : '') + ' href="' + Activiti.constants.URL_CONTEXT + "start#event=" + Activiti.util.eventDescriptorToState('updateArtifactView', {"connectorId": encodeURIComponent(jsonArray[i].artifact.targetConnectorId), "repositoryNodeId": encodeURIComponent(jsonArray[i].artifact.targetArtifactId), "isRepositoryArtifact": true, "name": encodeURIComponent(jsonArray[i].artifact.label), "activeTabIndex": 0}) + '">' + jsonArray[i].artifact.label + '</a>',
-              Revision: jsonArray[i].artifact.targetArtifactRevision,
-              Element: jsonArray[i].artifact.targetElementName,
-              Type: '<div class="artifact-type ' + me.getClassForContentType(jsonArray[i].artifact.targetContentType) + '">' + jsonArray[i].artifact.targetContentType + '</div>'
-            };
-            rows.push(row);
-          }          
-          oResponse.results = rows;
-          return true;
-      };   
+          /**
+           * Event Listener for the delete link action.
+           *
+           * @param data {Object} The artifact link data
+           * @param datatable {Activiti.widget.DataTable} The data table in which the link was clicked
+           */
+          onActionDeleteLink: function onActionDeleteLink(data, datatable) {
+            me.service.deleteArtifactLink(data.id);
+          },
+          
+          onActionGoToArtifact: function onActionGoToArtifact(data, datatable) {
+            var connectorId = data["targetArtifact.connectorId"],
+            artifactId = data["targetArtifact.artifactId"],
+            artifactName = data["targetArtifact.label"];
 
+            if(datatable.id.indexOf('links-widget')  != -1) {
+              var url = Activiti.constants.URL_CONTEXT + "start#event=" + Activiti.util.eventDescriptorToState('updateArtifactView', {"connectorId": encodeURIComponent(connectorId), "repositoryNodeId": encodeURIComponent(artifactId), "isRepositoryArtifact": true, "name": encodeURIComponent(artifactName), "activeTabIndex": 0});
+              window.open(url);
+            } else {
+              me.fireEvent(Activiti.event.updateArtifactView, {"connectorId": connectorId, "repositoryNodeId": artifactId, "isRepositoryArtifact": true, "name": artifactName, "activeTabIndex": 0}, null, true);
+            }
+          }
+        },
+        [ { event: Activiti.event.displayLinks, value: {} } ],
+        linksElId,
+        [ linksPaginationElId ],
+        [
+          { key:"name", label: "Name", sortable:true },
+          { key:"targetElementName", label: "Element", sortable:true },
+          { key:"linkType",  label: "Type", sortable:true },
+          { key:"action",  label: "Action", sortable:true }
+        ],
+        [
+          { key:"id" },
+          { key:"targetArtifact.connectorId" },
+          { key:"targetArtifact.artifactId" },
+          { key:"targetArtifact.label" },
+          { key:"targetArtifact.contentType"},
+          { key:"targetElementName" },
+          { key:"linkType" }
+        ]
+      );
+
+      this._incomingLinksDataTable = new Activiti.widget.DataTable(
+        this.id + "-incoming-links",
+        {
+          /**
+           * Activiti.widget.DataTable-callback to construct the url to use to load data into the data table.
+           *
+           * @method onDataTableCreateURL
+           * @param dataTable {Activiti.widget.DataTable} The data table that is invoking the callback
+           * @param eventName The name of the event to create a url from
+           * @param eventValue The event values to create a url from
+           * @return A url, based on the event, to use when loading data into the data table
+           */
+          onDataTableCreateURL: function onDataTableCreateURL(dataTable, eventName, eventValue)
+          {
+            return me.service.loadIncomingArtifactLinksURL(eventValue);
+          },
+          
+          /**
+           * Activiti.widget.DataTable-callback that is called to render the content of each cell in the Actions collumn
+           *
+           * @method onDataTableRenderCellAction
+           * @param {Object} dataTable
+           * @param {Object} el
+           * @param {Object} oRecord
+           * @param {Object} oColumn
+           * @param {Object} oData
+           */
+          onDataTableRenderCellAction: function onDataTableRenderCellAction(dataTable, el, oRecord, oColumn, oData) {
+            var actions = [],
+            data = oRecord.getData();
+            // TODO: i18n
+            actions.push('<a href="#" class="onActionGoToArtifact" title="Go to ' + data["sourceArtifact.label"] + '" tabindex="0">&nbsp;</a>');
+            el.innerHTML = actions.join("");
+          },
+
+          /**
+           * Activiti.widget.DataTable-callback that is called to render the content of each cell in the Name collumn
+           *
+           * @method onDataTableRenderCellAction
+           * @param {Object} dataTable
+           * @param {Object} el
+           * @param {Object} oRecord
+           * @param {Object} oColumn
+           * @param {Object} oData
+           */
+          onDataTableRenderCellName: function onDataTableRenderCellName(dataTable, el, oRecord, oColumn, oData) {
+            var data = oRecord.getData();
+            el.innerHTML = '<span class="' + me.getClassForContentType(data["sourceArtifact.contentType"]) + ' artifact-name" title="' + data["sourceArtifact.contentType"] + '">' + data["sourceArtifact.label"] + '</span>';
+          },
+          
+          onActionGoToArtifact: function onActionGoToArtifact(data, datatable) {
+            var connectorId = data["sourceArtifact.connectorId"],
+            artifactId = data["sourceArtifact.artifactId"],
+            artifactName = data["sourceArtifact.label"];
+            
+            if(datatable.id.indexOf('links-widget')  != -1) {
+              var url = Activiti.constants.URL_CONTEXT + "start#event=" + Activiti.util.eventDescriptorToState('updateArtifactView', {"connectorId": encodeURIComponent(connectorId), "repositoryNodeId": encodeURIComponent(artifactId), "isRepositoryArtifact": true, "name": encodeURIComponent(artifactName), "activeTabIndex": 0});
+              window.open(url);
+            } else {
+              me.fireEvent(Activiti.event.updateArtifactView, {"connectorId": connectorId, "repositoryNodeId": artifactId, "isRepositoryArtifact": true, "name": artifactName, "activeTabIndex": 0}, null, true);
+            }
+          }
+        },
+        [ { event: Activiti.event.displayLinks, value: {} } ],
+        incomingLinksElId,
+        [ incomingLinksPaginationElId ],
+        [
+          { key:"name", label: "Name", sortable:true },
+          { key:"sourceElementName", label: "Element", sortable:true },
+          { key:"linkType",  label: "Type", sortable:true },
+          { key:"action",  label: "Action", sortable:true }
+        ],
+        [
+          { key:"id" },
+          { key:"sourceArtifact.connectorId" },
+          { key:"sourceArtifact.artifactId" },
+          { key:"sourceArtifact.label" },
+          { key:"sourceArtifact.contentType"},
+          { key:"sourceElementName" },
+          { key:"linkType" }
+        ]
+      );
+
+      // Needed to load data and set up other events
+      if (!Activiti.event.isInitEvent(Activiti.event.displayLinks)) {
+        this.fireEvent(Activiti.event.displayLinks, {connectorId: this._connectorId, artifactId: this._artifactId}, null);
+      }
+      
       var addLinkButton = new YAHOO.widget.Button(addLinkElId, { label:"Add link", id:"addLinkButton" });
       addLinkButton.addListener("click", this.onClickAddLinkButton, null, this);
-
-      // instantiate the links data table
-      this._incomingLinksDataTable = new YAHOO.widget.DataTable(incomingLinksElId, linksColumnDefs, this._incomingLinksDataSource, {scrollable:true});
-      // parse the response of the request that loaded the backlinks from the server and 
-      // transform it into a format that is easily consumed by the YUI dataTable component
-      this._incomingLinksDataTable.doBeforeLoadData = function (sRequest, oResponse, oPayload) {
-          var jsonArray = oResponse.results;
-          var rows = [];
-          for(var i=0; i<jsonArray.length; i++) {
-            var row = {
-              Name: '<a class="openArtifactLink" href="' + Activiti.constants.URL_CONTEXT + "start#event=" + Activiti.util.eventDescriptorToState('updateArtifactView', {"connectorId": encodeURIComponent(jsonArray[i].artifact.sourceConnectorId), "repositoryNodeId": encodeURIComponent(jsonArray[i].artifact.sourceArtifactId), "isRepositoryArtifact": true, "name": encodeURIComponent(jsonArray[i].artifact.label), "activeTabIndex": 0}) + '">' + jsonArray[i].artifact.label + '</a>',
-              Revision: jsonArray[i].artifact.sourceArtifactRevision,
-              Element: jsonArray[i].artifact.sourceElementName,
-              Type: '<div class="artifact-type ' + me.getClassForContentType(jsonArray[i].artifact.sourceContentType) + '">' + jsonArray[i].artifact.sourceContentType + '</div>'
-            };
-            rows.push(row);
-          }          
-          oResponse.results = rows;
-          return true;
-      };
     },
 
+    /**
+     * This method is involed when the deleteArtifactLink method returns successfully. 
+     * It fires a displayLinks event which will cause the links table to reload its data.
+     */
+    onDeleteArtifactLinkSuccess: function Links_onDeleteArtifactLinkSuccess(args) {
+      this.fireEvent(Activiti.event.displayLinks, {connectorId: this._connectorId, artifactId: this._artifactId}, null);
+    },
+
+    /**
+     * Click event listener for the "Add Link" button, instantiates a FileChooserDialog.
+     * 
+     * @param event {object} The event that was triggered
+     * @param args {Array} The event values     
+     */
     onClickAddLinkButton: function Links_onClickAddLinkButton(event, args)
     {
       return new Activiti.component.FileChooserDialog(this.id, "onAddLinkSubmit", true, this, false, true);
     },
 
+    /**
+     * Listener method for the submit button of the FileChooserDialog.
+     *
+     * @param obj {object} An object that contains the connector id and the id of the target artifact
+     */
     onAddLinkSubmit: function Links_onAddLinkSubmit(obj) {
       this.service.createArtifactLink({"connectorId": this._connectorId, "artifactId": this._artifactId, "targetConnectorId": obj.connectorId,"targetArtifactId": obj.nodeId});
     },
@@ -140,13 +284,7 @@
      */
     onCreateArtifactLinkSuccess: function Links_onCreateArtifactLinkSuccess(args)
     {
-      var oCallback = {
-          success : this._linksDataTable.onDataReturnInitializeTable,
-          failure : this._linksDataTable.onDataReturnInitializeTable,
-          scope : this._linksDataTable,
-          argument: this._linksDataTable.getState() // data payload that will be returned to the callback function
-      };
-      this._linksDataSource.sendRequest("", oCallback);
+      this.fireEvent(Activiti.event.displayLinks, {connectorId: this._connectorId, artifactId: this._artifactId}, null);
     },
 
     /**

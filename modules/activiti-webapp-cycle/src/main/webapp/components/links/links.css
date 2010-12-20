@@ -1,8 +1,23 @@
 /* styling for links and backlinks tables */
 
-.links-wrapper .yui-push-button {
-  margin-left:1px;
-  margin-top:10px;
+#Activiti .links-wrapper tbody a, #Activiti .incoming-links-wrapper tbody a {
+  display: block;
+  width: 16px;
+  height: 16px;
+  float: left;
+  margin-right:6px;
+}
+
+#Activiti .links-wrapper tbody a:hover, #Activiti .incoming-links-wrapper tbody a:hover {
+  text-decoration: none;
+}
+
+tbody a.onActionDeleteLink {
+  background-image: url("/activiti-cycle/res/images/bin_closed.png");
+}
+
+tbody a.onActionGoToArtifact {
+  background-image: url("/activiti-cycle/res/images/link_go.png");
 }
 
 .links-wrapper {
@@ -17,6 +32,10 @@
 div .artifact-type {
   line-height:1.2em;
   color: #666;
+}
+
+.artifact-name {
+  line-height:1.3em;
 }
 
 /* File type icons for tree nodes */
