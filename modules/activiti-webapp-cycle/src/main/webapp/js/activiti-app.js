@@ -251,6 +251,22 @@
     
     saveRepositoryConnectorConfiguration: function RepositoryService_saveRepositoryConnectorConfiguration(configuration) {
       this.jsonPost(Activiti.service.REST_PROXY_URI_RELATIVE + "user-config", configuration, null, "saveRepositoryConnectorConfiguration");
+    },
+    
+    // {connectorId: "...", nodeId: "..."}
+    loadComments: function RepositoryService_loadComments(obj) {
+      this.jsonGet(this.loadCommentsURL(obj), null, "loadComments");
+    },
+    
+    loadCommentsURL: function RepositoryService_loadCommentsURL(obj) {
+      var url = Activiti.service.REST_PROXY_URI_RELATIVE + "comment",
+      params = Activiti.util.objectToArgumentString(obj);
+      return (params) ? url + "?" + params : url;
+    },
+
+    // {connectorId: "...", nodeId: "...", content: "..."}  
+    saveComment: function RepositoryService_saveComment(obj) {
+      this.jsonPost(Activiti.service.REST_PROXY_URI_RELATIVE + "comment", obj, null, "saveComment");
     }
 
   });
@@ -290,8 +306,7 @@
     this.service = new Activiti.service.RepositoryService(this);
     this.service.setCallback("loadArtifactActionForm", { fn: this.onLoadFormSuccess, scope: this }, {fn: this.onLoadFormFailure, scope: this });
     this.service.loadArtifactActionForm(this.connectorId, this.artifactId, this.artifactActionName);
-    
-    // Initialize the temporary Panel to display while waiting for external content to load
+
     this.waitDialog = 
     		new YAHOO.widget.Panel("wait",  
     			{ width:"200px", 

@@ -66,3 +66,32 @@
   background: #666;
   color: #fff;
 }
+
+#Activiti div .comments {
+  margin-top: 20px;
+}
+
+#Activiti div.comment {
+  width: 50%;
+  margin-bottom: 6px;
+  border-bottom: 4px solid transparent;
+}
+
+#Activiti div.comment:hover {
+  background: #EEE;
+  border-bottom: 4px solid #AAA;
+}
+
+#Activiti span.comment-content {
+ display: block;
+}
+
+#Activiti span.comment-author, #Activiti span.comment-date {
+  color:#999999;
+  font-style:italic;
+  margin-right: 7px;
+}
+
+#Activiti textarea#comment-input {
+  width: 50%;
+}

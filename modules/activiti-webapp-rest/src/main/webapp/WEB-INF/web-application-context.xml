@@ -394,4 +394,19 @@
         class="org.activiti.rest.api.cycle.AvailableConnectorConfigsGet"
         parent="activitiWebScript">
   </bean>
+  
+  <bean id="webscript.org.activiti.rest.api.cycle.comment.post"
+        class="org.activiti.rest.api.cycle.CommentPost"
+        parent="activitiWebScript">
+  </bean>
+  
+  <bean id="webscript.org.activiti.rest.api.cycle.comment.get"
+        class="org.activiti.rest.api.cycle.CommentGet"
+        parent="activitiWebScript">
+  </bean>
+  
+  <bean id="webscript.org.activiti.rest.api.cycle.comment.delete"
+        class="org.activiti.rest.api.cycle.CommentDelete"
+        parent="activitiWebScript">
+  </bean>
 </beans>

@@ -16,6 +16,7 @@ package org.activiti.rest.api.cycle;
 import java.util.Map;
 
 import org.activiti.cycle.RepositoryAuthenticationException;
+import org.activiti.cycle.service.CycleCommentService;
 import org.activiti.cycle.service.CycleConfigurationService;
 import org.activiti.cycle.service.CycleContentService;
 import org.activiti.cycle.service.CyclePluginService;
@@ -35,6 +36,7 @@ public abstract class ActivitiCycleWebScript extends ActivitiWebScript {
 
   protected CycleRepositoryService repositoryService;
   protected CycleTagService tagService;
+  protected CycleCommentService commentService;
   protected CycleConfigurationService configurationService;
   protected CycleContentService contentService;
   protected CyclePluginService pluginService;
@@ -43,6 +45,7 @@ public abstract class ActivitiCycleWebScript extends ActivitiWebScript {
     configurationService = CycleServiceFactory.getConfigurationService();
     repositoryService = CycleServiceFactory.getRepositoryService();
     tagService = CycleServiceFactory.getTagService();
+    commentService = CycleServiceFactory.getCommentService();
     contentService = CycleServiceFactory.getContentService();
     pluginService = CycleServiceFactory.getCyclePluginService();
   }

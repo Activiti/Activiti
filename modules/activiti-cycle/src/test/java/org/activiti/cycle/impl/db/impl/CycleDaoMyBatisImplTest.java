@@ -1,9 +1,12 @@
 package org.activiti.cycle.impl.db.impl;
 
+import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 
 import org.activiti.cycle.impl.CycleTagContentImpl;
 import org.activiti.cycle.impl.db.entity.RepositoryArtifactLinkEntity;
+import org.activiti.cycle.impl.db.entity.RepositoryNodeCommentEntity;
 import org.activiti.cycle.impl.db.entity.RepositoryNodePeopleLinkEntity;
 import org.activiti.cycle.impl.db.entity.RepositoryNodeTagEntity;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
@@ -166,7 +169,19 @@ public class CycleDaoMyBatisImplTest extends PluggableActivitiTestCase {
   }
   
   public void testComment() {
-
+    RepositoryNodeCommentEntity comment = new RepositoryNodeCommentEntity();
+    String id = UUID.randomUUID().toString();
+    comment.setId(id);
+    comment.setAuthor("Me");
+    comment.setConnectorId("testConnectorId");
+    comment.setNodeId("testNodeId");
+    comment.setContent("Test Comment...");
+    comment.setDate(new Date());
+    comment.setElementId("");
+    dao.insertComment(comment);
+    assertEquals(1, dao.getCommentsForNode("testConnectorId", "testNodeId").size());
+    dao.deleteComment(id);
+    assertEquals(0, dao.getCommentsForNode("testConnectorId", "testNodeId").size());
   }
 
 }

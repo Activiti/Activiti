@@ -237,12 +237,12 @@ public class CycleDaoMyBatisImpl extends AbstractCycleDaoMyBatisImpl implements 
   }
   
   @SuppressWarnings("unchecked")
-  public List<RepositoryNodeCommentEntity> getCommentsForNode(String connectorId, String artifactId) {
+  public List<RepositoryNodeCommentEntity> getCommentsForNode(String connectorId, String nodeId) {
     SqlSession session = openSession();
     try {
       HashMap<String, Object> parameters = new HashMap<String, Object>();
       parameters.put("connectorId", connectorId);
-      parameters.put("artifactId", artifactId);
+      parameters.put("nodeId", nodeId);
 
       return session.selectList("selectCycleCommentForSourceArtifact", parameters);
     } finally {

@@ -17,6 +17,8 @@ public class CycleServiceConfiguration {
   private CycleRepositoryServiceImpl repositoryService;
 
   private CycleTagServiceImpl tagService;
+  
+  private CycleCommentServiceImpl commentService;
 
   private CycleConfigurationServiceImpl configurationService;
 
@@ -35,6 +37,7 @@ public class CycleServiceConfiguration {
     repositoryService = new CycleRepositoryServiceImpl();
     configurationService = new CycleConfigurationServiceImpl();
     tagService = new CycleTagServiceImpl();
+    commentService = new CycleCommentServiceImpl();
     cyclePluginServiceImpl = new CyclePluginServiceImpl();
     cycleContentServiceImpl = new CycleContentServiceImpl();
 
@@ -42,6 +45,7 @@ public class CycleServiceConfiguration {
     repositoryService.setLinkDao(dao);
     configurationService.setCycleConfigurationDao(dao);
     tagService.setTagDao(dao);
+    commentService.setTagDao(dao);
     repositoryService.setCycleServiceConfiguration(this);
     tagService.setCycleServiceConfiguration(this);
     configurationService.setCycleServiceConfiguration(this);
@@ -50,6 +54,7 @@ public class CycleServiceConfiguration {
   private void initializeServices() {
     // initialize
     tagService.initialize();
+    commentService.initialize();
     repositoryService.initialize();
     configurationService.initialize();
   }
@@ -58,6 +63,10 @@ public class CycleServiceConfiguration {
     return tagService;
   }
 
+  public CycleCommentServiceImpl getCommentService() {
+    return commentService;
+  }
+  
   public CycleRepositoryService getRepositoryService() {
     return repositoryService;
   }

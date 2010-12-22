@@ -21,8 +21,8 @@
   
   <select id="selectCycleCommentForSourceArtifact" parameterType="map" resultType="list" resultMap="resultMapCycleComment"> 
   	select * from ACT_CY_COMMENT 
-  	         where SOURCE_CONNECTOR_ID_ = #{connectorId} and SOURCE_ARTIFACT_ID_ = #{artifactId}
-  	         order DATE_ ASC 
+  	         where CONNECTOR_ID_ = #{connectorId} and NODE_ID_ = #{nodeId}
+  	         order by DATE_ ASC 
   </select>
   
   <delete id="deleteCycleCommentById" parameterType="string">

@@ -41,5 +41,9 @@ public class CycleServiceFactory {
   public static CycleContentService getContentService() {
     return CycleServiceConfiguration.getInstance().getCycleContentServiceImpl();
   }
+  
+  public static CycleCommentService getCommentService() {
+    return CycleServiceConfiguration.getInstance().getCommentService();
+  }
 
 }

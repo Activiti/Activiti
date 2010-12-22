@@ -24,7 +24,21 @@
     // Listen for events that interest this component
     this.onEvent(Activiti.event.updateArtifactView, this.onUpdateArtifactView);
     this.onEvent(Activiti.event.clickFormEventButton, this.onClickFormEventButton);
-    
+
+    this.waitDialog = 
+    		new YAHOO.widget.Panel("wait",  
+    			{ width:"200px", 
+    			  fixedcenter:true, 
+    			  close:false, 
+    			  draggable:false, 
+    			  zindex:4,
+    			  modal:true,
+    			  visible:false
+    			} 
+    		);
+    this.waitDialog.setBody('<div id="action-waiting-dialog"/>');
+    this.waitDialog.render(document.body);
+
     this._tabView = {};
     this._connectorId = "";
     this._repositoryNodeId = "";
@@ -115,6 +129,11 @@
         // Update the heading that displays the name of the selected node
         headerEl.id = "header-" + eventValue.repositoryNodeId;
         headerEl.innerHTML = eventValue.name;
+        // Remove the comments
+        var commentsDiv = YAHOO.util.Dom.get(this.id + '-comments');
+        if(commentsDiv) {
+          commentsDiv.innerHTML = '';
+        }
       }
     },
     
@@ -224,6 +243,9 @@
         var optionsMenu = new YAHOO.widget.Button({ type: "menu", label: "Actions", name: "options", menu: actionsMenuItems, container: optionsDiv });
       }
       optionsDiv.setAttribute('class', 'active');
+      
+      this.services.repositoryService.loadComments({connectorId: this._connectorId, nodeId: this._repositoryNodeId});
+      
     },
 
     onLoadTabSuccess: function Artifact_onLoadTabSuccess(tab, response) {
@@ -266,6 +288,66 @@
       }
       tab.set('content', tabContent);
       Activiti.widget.PopupManager.displayError(responseJson.message);
+    },
+
+    onLoadCommentsSuccess: function Artifact_onLoadCommentSuccess(response, obj) {      
+      var commentsDiv = YAHOO.util.Dom.get(this.id + '-comments');
+      
+      if(commentsDiv) {
+        commentsDiv.innerHTML = '';
+      } else {
+        commentsDiv = document.createElement('div');  
+      }
+      
+      if(response.json.authenticationError) {
+        return new Activiti.component.AuthenticationDialog(this.id, response.json.repoInError, response.json.authenticationError);
+      }
+      // Retrieve rest api response
+      var commentsJson = response.json;
+
+      var artifactEl = document.getElementById("artifact-div");
+
+      commentsDiv.setAttribute('class', 'comments');
+      commentsDiv.setAttribute('id', this.id + '-comments');
+      commentsDiv.innerHTML += "<h2>Comments</h2>"
+      
+      for(var item in commentsJson) {
+        commentsDiv.innerHTML += '<div class="comment"><span class="comment-author">' + commentsJson[item].RepositoryNodeComment.author + '</span><span class="comment-date">' + commentsJson[item].RepositoryNodeComment.creationDate + '</span><span class="comment-content">' + decodeURIComponent(commentsJson[item].RepositoryNodeComment.content) + '</span></div>';
+      }
+      
+      commentsDiv.innerHTML += '<form><textarea id="comment-input" name="comment" value=""></textarea></form><span id="addCommentButton" class="yui-button"><span class="first-child"><button type="button">Add Comment</button></span></span>';
+      
+      artifactEl.appendChild(commentsDiv);
+      
+      var addCommentButton = new YAHOO.widget.Button("addCommentButton", { label:"Add comment", id:"addCommentButton" });
+      addCommentButton.addListener("click", this.onClickAddCommentButton, null, this);
+      
+      this.waitDialog.hide();
+    },
+
+
+    /**
+     * Click event listener for the "Add Comment" button.
+     * 
+     * @param event {object} The event that was triggered
+     * @param args {Array} The event values     
+     */
+    onClickAddCommentButton: function Links_onClickAddLinkButton(event, args)
+    {
+      var comment = YAHOO.util.Dom.get("comment-input");
+      if(comment.value) {
+        this.waitDialog.show();
+        this.services.repositoryService.saveComment({connectorId: this._connectorId, nodeId: this._repositoryNodeId, content: encodeURIComponent(comment.value)}); 
+      }
+    },
+    
+    onSaveCommentSuccess: function Artifact_onSaveCommentSuccess(response, obj)
+    {
+      this.services.repositoryService.loadComments({connectorId: this._connectorId, nodeId: this._repositoryNodeId});
+      // TODO: i18n
+      Activiti.widget.PopupManager.displayMessage({
+        text: 'Successfully added comment'
+      });
     },
 
     onExecuteActionClick: function Artifact_onExecuteActionClick(e)

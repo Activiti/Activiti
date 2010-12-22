@@ -47,9 +47,9 @@ create table ACT_CY_TAG (
 create table ACT_CY_COMMENT (
 	ID_ varchar NOT NULL,
 	CONNECTOR_ID_ varchar NOT NULL,
-	ARTIFACT_ID_ varchar NOT NULL,
+	NODE_ID_ varchar NOT NULL,
 	ELEMENT_ID_ varchar DEFAULT NULL,
-	CONENT_ varchar NOT NULL,
+	CONTENT_ varchar NOT NULL,
 	AUTHOR_ varchar,
 	DATE_ timestamp NOT NULL,
 	ANSWERED_COMMENT_ID_ varchar DEFAULT NULL,

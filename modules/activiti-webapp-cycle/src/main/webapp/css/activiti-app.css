@@ -70,6 +70,7 @@ h1 {
 
 #Activiti #tags-div a:hover {
   color:#666;
+  text-decoration: underline;
 }
 
 #Activiti #tags-div .yui-ac-content {
