@@ -14,6 +14,8 @@
 package org.activiti.engine.impl.history;
 
 import org.activiti.engine.history.HistoricFormProperty;
+import org.activiti.engine.impl.cfg.HistorySession;
+import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.runtime.ExecutionEntity;
 import org.activiti.engine.impl.util.ClockUtil;
 
@@ -35,6 +37,13 @@ public class HistoricFormPropertyEntity extends HistoricDetailEntity implements 
     this.propertyId = propertyId;
     this.propertyValue = propertyValue;
     this.time = ClockUtil.getCurrentTime();
+    
+    HistoricActivityInstanceEntity historicActivityInstance = CommandContext
+      .getCurrentSession(HistorySession.class)
+      .findHistoricActivityInstance(execution.getActivityId(), processInstanceId);
+    if (historicActivityInstance!=null) {
+      this.activityInstanceId = historicActivityInstance.getId();
+    }
   }
 
   public String getPropertyId() {

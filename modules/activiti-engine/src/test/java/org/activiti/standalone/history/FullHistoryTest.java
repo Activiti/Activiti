@@ -20,9 +20,9 @@ import java.util.List;
 import java.util.Map;
 
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.history.HistoricActivityInstance;
 import org.activiti.engine.history.HistoricDetail;
 import org.activiti.engine.history.HistoricFormProperty;
-import org.activiti.engine.history.HistoricTaskInstance;
 import org.activiti.engine.history.HistoricVariableUpdate;
 import org.activiti.engine.impl.test.ResourceActivitiTestCase;
 import org.activiti.engine.impl.util.ClockUtil;
@@ -186,8 +186,24 @@ public class FullHistoryTest extends ResourceActivitiTestCase {
     
     ProcessInstance processInstance = formService.submitStartFormData(procDef.getId() , formProperties);
     
-    // 2 historic form properties should be created
+    // Submit form-properties on the created task
+    Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
+    assertNotNull(task);
     
+    // Out execution only has a single activity waiting, the task
+    List<String> activityIds = runtimeService.getActiveActivityIds(task.getExecutionId());
+    assertNotNull(activityIds);
+    assertEquals(1, activityIds.size());
+    
+    String taskActivityId = activityIds.get(0);
+   
+    // Submit form properties
+    formProperties = new HashMap<String, String>();
+    formProperties.put("formProp3", "Activiti still rocks!!!");
+    formProperties.put("formProp4", "54321");
+    formService.submitTaskFormData(task.getId(), formProperties);
+    
+    // 4 historic form properties should be created. 2 when process started, 2 when task completed
     List<HistoricDetail> props = historyService.createHistoricDetailQuery()
       .formProperties()
       .processInstanceId(processInstance.getId())
@@ -207,6 +223,32 @@ public class FullHistoryTest extends ResourceActivitiTestCase {
     assertEquals(startedDate, historicProperty2.getTime());
     assertEquals(processInstance.getId(), historicProperty2.getProcessInstanceId());
     assertNull(historicProperty2.getActivityInstanceId());
+    
+    assertEquals(4, props.size());
+    
+    HistoricFormProperty historicProperty3 = (HistoricFormProperty) props.get(2);
+    assertEquals("formProp3", historicProperty3.getPropertyId());
+    assertEquals("Activiti still rocks!!!", historicProperty3.getPropertyValue());
+    assertEquals(startedDate, historicProperty3.getTime());
+    assertEquals(processInstance.getId(), historicProperty3.getProcessInstanceId());
+    String activityInstanceId = historicProperty3.getActivityInstanceId();
+    
+    HistoricActivityInstance historicActivityInstance = historyService.createHistoricActivityInstanceQuery().activityInstanceId(activityInstanceId).singleResult();
+    assertNotNull(historicActivityInstance);
+    assertEquals(taskActivityId, historicActivityInstance.getActivityId());
+    
+    HistoricFormProperty historicProperty4 = (HistoricFormProperty) props.get(3);
+    assertEquals("formProp4", historicProperty4.getPropertyId());
+    assertEquals("54321", historicProperty4.getPropertyValue());
+    assertEquals(startedDate, historicProperty4.getTime());
+    assertEquals(processInstance.getId(), historicProperty4.getProcessInstanceId());
+    activityInstanceId = historicProperty4.getActivityInstanceId();
+    
+    historicActivityInstance = historyService.createHistoricActivityInstanceQuery().activityInstanceId(activityInstanceId).singleResult();
+    assertNotNull(historicActivityInstance);
+    assertEquals(taskActivityId, historicActivityInstance.getActivityId());
+    
+    
   }
   
   @Deployment(
