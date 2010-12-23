@@ -478,6 +478,7 @@ set JAVA_OPTS=%JAVA_OPTS% @tomcat.java.opts@
                    internal.deploy.activiti.explorer.into.tomcat,
                    internal.deploy.activiti.probe.into.tomcat,
                    internal.deploy.activiti.cycle.into.tomcat,
+                   internal.deploy.activiti.kickstart.into.tomcat,
                    internal.deploy.activiti.modeler.into.tomcat" />
 
   <target name="build.webapps"
@@ -499,6 +500,10 @@ set JAVA_OPTS=%JAVA_OPTS% @tomcat.java.opts@
       <fileset dir="${activiti.home}/setup/files/dependencies/libs" 
                includesfile="${activiti.home}/setup/files/dependencies/libs.webapp.ui.txt" />
     </copy>
+  	<copy todir="${activiti.home}/setup/build/webapps/activiti-kickstart.war/WEB-INF/lib">
+  	  <fileset dir="${activiti.home}/setup/files/dependencies/libs" 
+  	           includesfile="${activiti.home}/setup/files/dependencies/libs.webapp.kickstart.txt" />
+  	</copy>
     <copy todir="${activiti.home}/setup/build/webapps/activiti-rest.war/WEB-INF/lib">
       <fileset dir="${activiti.home}/setup/files/dependencies/libs" 
                includesfile="${activiti.home}/setup/files/dependencies/libs.webapp.rest.txt" />
@@ -553,6 +558,13 @@ set JAVA_OPTS=%JAVA_OPTS% @tomcat.java.opts@
       <fileset dir="${activiti.home}/setup/build/webapps/activiti-cycle.war" />
     </copy>
   </target>
+	
+	<target name="internal.deploy.activiti.kickstart.into.tomcat">
+    <mkdir dir="${tomcat.home}/webapps/activiti-kickstart" />
+		<copy todir="${tomcat.home}/webapps/activiti-kickstart">
+		  <fileset dir="${activiti.home}/setup/build/webapps/activiti-kickstart.war" />
+		 </copy>
+	</target>
 
   
   <!-- ### LAUNCH TASKDEF AND CLASSPATH #################################################################### -->

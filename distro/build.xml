@@ -80,6 +80,9 @@
     <exec executable="${mvn.executable}" dir="../modules/activiti-webapp">
       <arg line="dependency:unpack-dependencies -DoutputDirectory=../../distro/target/spring-surf-application-war -DincludeArtifactIds=spring-surf-application"/>
     </exec>
+		<exec executable="${mvn.executable}" dir="../modules/activiti-webapp-kickstart">
+		  <arg line="dependency:copy-dependencies -DoutputDirectory=../../distro/target/libs-webapp-kickstart"/>
+		</exec>
     <!-- ADD ACTIVITI JARS -->
 		<copy todir="target/libs-engine-runtime">
 			<fileset dir="../modules/activiti-engine/target">
@@ -169,6 +172,9 @@
     <exec output="${target.distro.root}/setup/files/dependencies/libs.webapp.rest.txt" executable="${ls.executable}">
       <arg line="${ls.executable.options} target${ls.executable.path.seperator}libs-webapp-rest"/>
     </exec>
+		<exec output="${target.distro.root}/setup/files/dependencies/libs.webapp.kickstart.txt" executable="${ls.executable}">
+		  <arg line="${ls.executable.options} target${ls.executable.path.seperator}libs-webapp-kickstart"/>
+		</exec>
     <exec output="${target.distro.root}/setup/files/dependencies/libs.webapp.ui.txt" executable="${ls.executable}">
       <arg line="${ls.executable.options} target${ls.executable.path.seperator}spring-surf-application-war${ls.executable.path.seperator}WEB-INF${ls.executable.path.seperator}lib"/>
     </exec>
@@ -183,6 +189,7 @@
       <fileset dir="target/libs-spring-test" />
       <fileset dir="target/libs-cycle-runtime" />
       <fileset dir="target/libs-webapp-rest" />
+    	<fileset dir="target/libs-webapp-kickstart" />
       <fileset dir="target/spring-surf-application-war/WEB-INF/lib" />
     </move>
 	</target>
@@ -200,6 +207,9 @@
     <mkdir dir="${target.distro.root}/setup/files/webapps/activiti-rest.war" />
     <unzip dest="${target.distro.root}/setup/files/webapps/activiti-rest.war" 
            src="../modules/activiti-webapp-rest/target/activiti-webapp-rest-${activiti.version}.war"/>
+		<mkdir dir="${target.distro.root}/setup/files/webapps/activiti-kickstart.war" />
+	  <unzip dest="${target.distro.root}/setup/files/webapps/activiti-kickstart.war" 
+		       src="../modules/activiti-webapp-kickstart/target/activiti-webapp-kickstart-${activiti.version}.war"/>
     <mkdir dir="${target.distro.root}/setup/files/webapps/activiti-init.war" />
     <unzip dest="${target.distro.root}/setup/files/webapps/activiti-init.war" 
            src="../modules/activiti-webapp-init/target/activiti-webapp-init-${activiti.version}.war"/>
@@ -207,6 +217,9 @@
       <fileset dir="${target.distro.root}/setup/files/webapps/activiti-cycle.war/WEB-INF/lib" />
       <fileset dir="${target.distro.root}/setup/files/webapps/activiti-explorer.war/WEB-INF/lib" />
       <fileset dir="${target.distro.root}/setup/files/webapps/activiti-rest.war/WEB-INF/lib" />
+			<fileset dir="${target.distro.root}/setup/files/webapps/activiti-kickstart.war/WEB-INF/lib">
+			  <exclude name="activiti-cfg.jar"/>	
+			</fileset>
       <fileset dir="${target.distro.root}/setup/files/webapps/activiti-probe.war/WEB-INF/lib" />
     </delete>
 	</target>
