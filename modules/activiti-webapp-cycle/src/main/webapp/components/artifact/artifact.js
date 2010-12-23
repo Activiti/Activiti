@@ -312,7 +312,7 @@
       commentsDiv.innerHTML += "<h2>Comments</h2>"
       
       for(var item in commentsJson) {
-        commentsDiv.innerHTML += '<div class="comment"><span class="comment-author">' + commentsJson[item].RepositoryNodeComment.author + '</span><span class="comment-date">' + commentsJson[item].RepositoryNodeComment.creationDate + '</span><span class="comment-content">' + decodeURIComponent(commentsJson[item].RepositoryNodeComment.content) + '</span></div>';
+        commentsDiv.innerHTML += '<div class="comment"><span class="comment-author">' + Activiti.util.encodeHTML(commentsJson[item].RepositoryNodeComment.author) + '</span><span class="comment-date">' + Activiti.util.encodeHTML(commentsJson[item].RepositoryNodeComment.creationDate) + '</span><span class="comment-content">' + Activiti.util.encodeHTML(commentsJson[item].RepositoryNodeComment.content) + '</span></div>';
       }
       
       commentsDiv.innerHTML += '<form><textarea id="comment-input" name="comment" value=""></textarea></form><span id="addCommentButton" class="yui-button"><span class="first-child"><button type="button">Add Comment</button></span></span>';
@@ -337,7 +337,7 @@
       var comment = YAHOO.util.Dom.get("comment-input");
       if(comment.value) {
         this.waitDialog.show();
-        this.services.repositoryService.saveComment({connectorId: this._connectorId, nodeId: this._repositoryNodeId, content: encodeURIComponent(comment.value)}); 
+        this.services.repositoryService.saveComment({connectorId: this._connectorId, nodeId: this._repositoryNodeId, content: comment.value}); 
       }
     },
     
