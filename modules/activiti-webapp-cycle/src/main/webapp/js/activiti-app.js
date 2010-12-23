@@ -348,6 +348,10 @@
       Activiti.widget.PopupManager.displayMessage({
         text: 'Successfully executed "' + this.artifactActionName + '"'
       });
+    },
+    
+    onExecuteArtifactActionFailure: function ExecuteArtifactActionForm_onExecuteArtifactActionFailure(response, object) {
+      this.waitDialog.hide();
     }
 
   });
