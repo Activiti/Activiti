@@ -48,7 +48,7 @@ public interface HistoryService {
   /** Creates a new programmatic query to search for {@link HistoricDetail}s. */
   HistoricDetailQuery createHistoricDetailQuery();
 
-  /** Deletes historic task isntance.  This might be useful for tasks that are 
+  /** Deletes historic task instance.  This might be useful for tasks that are 
    * {@link TaskService#newTask() dynamically created} and then {@link TaskService#complete(String) completed}. */
   void deleteHistoricTaskInstance(String taskId);
 

@@ -9,10 +9,23 @@
   during process execution and stores it permanently.  In contrast to the runtime data, 
   the history data will remain present in the DB also after process instances have completed.
   </para>
-  <para>There are 3 history entities: <literal>HistoricProcessInstance</literal>s containing 
-  information about current and past process instances, <literal>HistoricActivityInstance</literal>s 
-  containing information about a single execution of an activity and <literal>HistoricDetail</literal> 
-  containing various kinds of information related to either a historic process instances or an activity instance.
+  
+  <para>There are 4 history entities:
+  
+    <itemizedlist>
+      <listitem>
+        <para><literal>HistoricProcessInstance</literal>s containing information about current and past process instances.</para>
+      </listitem>
+      <listitem>
+        <para><literal>HistoricActivityInstance</literal>s containing information about a single execution of an activity.</para>
+      </listitem>
+      <listitem>
+        <para><literal>HistoricTaskInstance</literal>s containing information about current and past (completed and deleted) task instances.</para>
+      </listitem>
+      <listitem>
+        <para><literal>HistoricDetail</literal>s containing various kinds of information related to either a historic process instances, an activity instance or a task instance.</para>
+      </listitem>
+    </itemizedlist>
   </para>
   
   <para>Since the DB contains historic entities for past as well as ongoing instances, you might want to consider 
@@ -25,37 +38,94 @@
   
   <section id="historyQuery">
     <title>Querying history</title>
-  <para>In the API, the HistoryService exposes this information by offering methods 
-  <literal>createHistoricProcessInstanceQuery</literal>, <literal>createHistoricActivityInstanceQuery</literal>
-  and <literal>createHistoricDetailQuery</literal>.
-  </para>
-  <para>Below are a couple of examples that show some of the possibilities of the query API for history.</para>
-  <para>
-  Get 10 <literal>HistoricProcessInstances</literal> that are finished and which took the most time to complete (they have the longest duration).
-  <programlisting>
+    <para>In the API, it's possible to query all 4 of the History entities. The HistoryService exposes the the methods 
+      <literal>createHistoricProcessInstanceQuery()</literal>, <literal>createHistoricActivityInstanceQuery()</literal>, 
+      <literal>createHistoricDetailQuery()</literal> and <literal>createHistoricTaskInstanceQuery()</literal>.
+    </para>
+    
+  
+  <para>Below are a couple of examples that show some of the possibilities of the query API for history. Full description of the possibilities can be found in the <ulink url="../javadocs/index.html">the javadocs</ulink>, in the <literal>org.activiti.engine.history</literal> package.</para>
+  <section id="historyQueryProcessInstance">
+      <title>HistoricProcessInstanceQuery</title>
+       <para>Get 10 <literal>HistoricProcessInstances</literal> that are finished and which took the most time to complete (the longest duration) of all finished processes with definition 'XXX'.
+          <programlisting>
 historyService.createHistoricProcessInstanceQuery()
   .finished()
+  .processDefinitionId("XXX")
   .orderByProcessInstanceDuration().desc()
-  .listPage(0, 10);
-  </programlisting>
-  Get the last userTask that has been finished in any process that uses the processDefinition with id XXX.
+  .listPage(0, 10);</programlisting>
+      </para>
+    </section>  
+    
+    <section id="historyQueryActivityInstance">
+      <title>HistoricActivityInstanceQuery</title>
+       <para>Get the last <literal>HistoricActivityInstance</literal> of type 'serviceTask' that has been finished in any process that uses the processDefinition with id XXX.
   <programlisting>
 historyService.createHistoricActivityInstanceQuery()
-  .activityType("userTask")
+  .activityType("serviceTask")
   .processDefinitionId("XXX")
   .finished()
   .orderByHistoricActivityInstanceEndTime().desc()
-  .listPage(0, 1);
-  </programlisting>
-    Gets all variable-updates that have been done on activity with id 123. Only <literal>HistoricVariableUpdate</literal>s will be returned by this query.
+  .listPage(0, 1);</programlisting>
+      </para>
+    </section>  
+    <section id="historyQueryDetail">
+      <title>HistoricDetailQuery</title>
+       <para>The next example, gets all variable-updates that have been done in process with id 123. Only <literal>HistoricVariableUpdate</literal>s will be returned by this query. Note that it's possible that a certain variable name has multiple <literal>HistoricVariableUpdate</literal>
+    entries, for each time the variable was updated in the process. You can use <literal>orderByTime</literal> (the time the variable update was done) or <literal>orderByVariableRevision</literal> (revision of runtime variable at the time of updating) to find out in what order they occured.
   <programlisting>
 historyService.createHistoricDetailQuery()
   .variableUpdates()
-  .activityId("123")
+  .processInstanceId("123")
+  .orderByVariableName().asc()
+  .list()</programlisting>
+    </para>
+   <para>This example gets all <link linkend="formProperties">form-properties</link> that were submitted in any task or when starting the process with id "123". Only <literal>HistoricFormProperties</literal>s will be returned by this query.
+  <programlisting>
+historyService.createHistoricDetailQuery()
+  .formProperties()
+  .processInstanceId("123")
+  .orderByVariableName().asc()
+  .list()</programlisting>
+  </para>
+  
+  <para>The last example gets all variable updates that were performed on the task with id "123". This returns all <literal>HistoricVariableUpdates</literal> for variables that were set on the task (task local variables), and NOT on the process instance.</para>
+<programlisting>
+historyService.createHistoricDetailQuery()
+  .variableUpdates()
+  .taskId("123")
   .orderByVariableName().asc()
   .list()
   </programlisting>
-  </para>
+  <para>
+  Task local variables can be set using the <literal>TaskService</literal> or on a <literal>DelegateTask</literal>, inside <literal>TaskListener</literal>:
+  <programlisting>
+taskService.setVariableLocal("123", "myVariable", "Variable value");</programlisting>
+  <programlisting>
+public void notify(DelegateTask delegateTask) {
+  delegateTask.setVariableLocal("myVariable", "Variable value");
+}</programlisting>
+</para>
+    </section>  
+<section id="historyQueryTaskInstance">
+      <title>HistoricTaskInstanceQuery</title>
+       <para>Get 10 <literal>HistoricTaskInstance</literal>s that are finished and which took the most time to complete (the longest duration) of all tasks.
+          <programlisting>
+historyService.createHistoricTaskInstanceQuery()
+  .finished()
+  .orderByHistoricTaskInstanceDuration().desc()
+  .listPage(0, 10);</programlisting>
+      </para>
+      
+       <para>Get <literal>HistoricTaskInstance</literal>s that are deleted with a delete reason that contains "invalid", which were last assigned to user 'kermit'.
+          <programlisting>
+historyService.createHistoricTaskInstanceQuery()
+  .finished()
+  .taskDeleteReasonLike("%invalid%")
+  .taskAssignee("kermit")
+  .listPage(0, 10);</programlisting>
+      </para>
+    </section>      
 </section>
   <section id="historyConfig">
     <title>History configuration</title>

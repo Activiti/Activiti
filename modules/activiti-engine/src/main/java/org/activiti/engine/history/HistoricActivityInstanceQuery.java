@@ -36,7 +36,7 @@ public interface HistoricActivityInstanceQuery extends Query<HistoricActivityIns
   /** Only select historic activity instances for the given execution */
   HistoricActivityInstanceQuery executionId(String executionId);
 
-  /** Only select historic activity instances for the given activiti */
+  /** Only select historic activity instances for the given activity */
   HistoricActivityInstanceQuery activityId(String activityId);
 
   /** Only select historic activity instances for activities with the given name */

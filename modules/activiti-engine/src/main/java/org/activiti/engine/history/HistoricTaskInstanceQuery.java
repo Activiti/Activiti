@@ -17,55 +17,111 @@ import org.activiti.engine.query.Query;
 
 
 /**
+ * Allows programmatic querying for {@link HistoricTaskInstance}s.
+ * 
  * @author Tom Baeyens
  */
 public interface HistoricTaskInstanceQuery  extends Query<HistoricTaskInstanceQuery, HistoricTaskInstance> {
 
+  /** Only select historic task instances for the given task id. */
   HistoricTaskInstanceQuery taskId(String taskId);
   
+  /** Only select historic task instances for the given process instance. */
   HistoricTaskInstanceQuery processInstanceId(String processInstanceId);
   
+  /** Only select historic task instances for the given execution. */
   HistoricTaskInstanceQuery executionId(String executionId);
   
+  /** Only select historic task instances for the given process definition. */
   HistoricTaskInstanceQuery processDefinitionId(String processDefinitionId);
   
+  /** 
+   * Only select historic task instances with the given task name.
+   * This is the last name given to the task. 
+   */
   HistoricTaskInstanceQuery taskName(String taskName);
   
+  /** 
+   * Only select historic task instances with a task name like the given value.
+   * This is the last name given to the task.
+   * The syntax that should be used is the same as in SQL, eg. %activiti%.
+   */
   HistoricTaskInstanceQuery taskNameLike(String taskNameLike);
   
+  /** 
+   * Only select historic task instances with the given task description.
+   * This is the last description given to the task.  
+   */
   HistoricTaskInstanceQuery taskDescription(String taskDescription);
   
+  /** 
+   * Only select historic task instances with a task description like the given value.
+   * This is the last description given to the task.
+   * The syntax that should be used is the same as in SQL, eg. %activiti%.
+   */
   HistoricTaskInstanceQuery taskDescriptionLike(String taskDescriptionLike);
   
+  /** Only select historic task instances with the given task delete reason. */
   HistoricTaskInstanceQuery taskDeleteReason(String taskDeleteReason);
   
+  /** 
+   * Only select historic task instances with a task description like the given value.
+   * The syntax that should be used is the same as in SQL, eg. %activiti%.
+   */
   HistoricTaskInstanceQuery taskDeleteReasonLike(String taskDeleteReasonLike);
   
+  /** 
+   * Only select historic task instances which were last assigned to the given assignee.
+   */
   HistoricTaskInstanceQuery taskAssignee(String taskAssignee);
   
+  /** 
+   * Only select historic task instances which were last assigned to an assignee like
+   * the given value.
+   * The syntax that should be used is the same as in SQL, eg. %activiti%.
+   */
   HistoricTaskInstanceQuery taskAssigneeLike(String taskAssigneeLike);
   
+  /** 
+   * Only select historic task instances which are finished.
+   */
   HistoricTaskInstanceQuery finished();
   
+  /** 
+   * Only select historic task instances which aren't finished yet.
+   */
   HistoricTaskInstanceQuery unfinished();
   
+  /** 
+   * Order by the historic activity instance id this task was used in
+   * (needs to be followed by {@link #asc()} or {@link #desc()}). 
+   */
   HistoricTaskInstanceQuery orderByHistoricActivityInstanceId();
   
+  /** Order by process definition id (needs to be followed by {@link #asc()} or {@link #desc()}). */
   HistoricTaskInstanceQuery orderByProcessDefinitionId();
   
+  /** Order by process instance id (needs to be followed by {@link #asc()} or {@link #desc()}). */
   HistoricTaskInstanceQuery orderByProcessInstanceId();
 
+  /** Order by execution id (needs to be followed by {@link #asc()} or {@link #desc()}). */
   HistoricTaskInstanceQuery orderByExecutionId();
   
+  /** Order by duration (needs to be followed by {@link #asc()} or {@link #desc()}). */
   HistoricTaskInstanceQuery orderByHistoricTaskInstanceDuration();
   
+  /** Order by end time (needs to be followed by {@link #asc()} or {@link #desc()}). */
   HistoricTaskInstanceQuery orderByHistoricTaskInstanceEndTime();
   
+  /** Order by start time (needs to be followed by {@link #asc()} or {@link #desc()}). */
   HistoricTaskInstanceQuery orderByHistoricActivityInstanceStartTime();
   
+  /** Order by task name (needs to be followed by {@link #asc()} or {@link #desc()}). */
   HistoricTaskInstanceQuery orderByTaskName();
   
+  /** Order by task description (needs to be followed by {@link #asc()} or {@link #desc()}). */
   HistoricTaskInstanceQuery orderByTaskDescription();
   
+  /** Order by task delete reason (needs to be followed by {@link #asc()} or {@link #desc()}). */
   HistoricTaskInstanceQuery orderByDeleteReason();
 }

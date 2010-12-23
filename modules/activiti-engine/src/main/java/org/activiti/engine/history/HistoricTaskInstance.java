@@ -17,20 +17,26 @@ import java.util.Date;
 
 
 /**
+ * Represents a historic task instance (waiting, finished or deleted) that is stored permanent for 
+ * statistics, audit and other business intelligence purposes.
+ * 
  * @author Tom Baeyens
  */
 public interface HistoricTaskInstance {
 
-  /** The unique identifier of this historic task instance. */
+  /** 
+   * The unique identifier of this historic task instance. This is the same identifier as the
+   * runtime Task instance.
+   */
   String getId();
 
-  /** Process definition reference */
+  /** Process definition reference. */
   String getProcessDefinitionId();
 
-  /** Process instance reference */
+  /** Process instance reference. */
   String getProcessInstanceId();
 
-  /** Execution reference */
+  /** Execution reference. */
   String getExecutionId();
 
   /** The latest name given to this task. */
@@ -39,18 +45,18 @@ public interface HistoricTaskInstance {
   /** The latest description given to this task. */
   String getDescription();
 
-  /** The reason why this task was completed {'completed' | 'deleted' | any other user defined string }. */
+  /** The reason why this task was deleted {'completed' | 'deleted' | any other user defined string }. */
   String getDeleteReason();
 
   /** The latest assignee given to this task. */
   String getAssignee();
 
-  /** Time when the task started */
+  /** Time when the task started. */
   Date getStartTime();
 
-  /** Time when the task was deleted */
+  /** Time when the task was deleted or completed. */
   Date getEndTime();
 
-  /** Difference between {@link #getEndTime()} and {@link #getStartTime()}.  */
+  /** Difference between {@link #getEndTime()} and {@link #getStartTime()} in milliseconds.  */
   Long getDurationInMillis();
 }
