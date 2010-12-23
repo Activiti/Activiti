@@ -79,7 +79,7 @@ public class BpmnDeployer implements Deployer {
             } catch (Exception e) { // if anything goes wrong, we don't store the image (the process will still be executable).
               LOG.log(Level.WARNING, "Error while generating process diagram, image will not be stored in repository", e);
             }
-          }
+          } 
           
           processDefinition.setDiagramResourceName(diagramResourceName);
           processDefinitions.add(processDefinition);

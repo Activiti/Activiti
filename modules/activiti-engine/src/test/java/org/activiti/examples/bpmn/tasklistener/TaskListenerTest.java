@@ -54,7 +54,7 @@ public class TaskListenerTest extends PluggableActivitiTestCase {
     Task task = taskService.createTaskQuery().singleResult();
     taskService.complete(task.getId());
     
-    assertEquals("Hello from second task", runtimeService.getVariable(processInstance.getId(), "greeting2"));
+    assertEquals("Write meeting notes", runtimeService.getVariable(processInstance.getId(), "greeting2"));
   }
 
 }

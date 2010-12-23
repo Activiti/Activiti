@@ -7,11 +7,9 @@
 	<process id="checkCreditProcess">
 
 		<startEvent id="theStart" />
-
 		<sequenceFlow id="flow1" sourceRef="theStart" targetRef="verifyCreditHistoryTask" />
 		
 		<userTask id="verifyCreditHistoryTask" name="Verify credit history" />
-
     <sequenceFlow id="flow2" sourceRef="verifyCreditHistoryTask" targetRef="approvalDecision" />
     
     <exclusiveGateway id="approvalDecision" />

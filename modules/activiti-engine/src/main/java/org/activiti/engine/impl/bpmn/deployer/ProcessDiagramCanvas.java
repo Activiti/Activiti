@@ -149,6 +149,8 @@ public class ProcessDiagramCanvas {
     
     ByteArrayOutputStream out = new ByteArrayOutputStream();
     try {
+      minX = (minX <= 5) ? 5 : minX;
+      minY = (minY <= 5) ? 5 : minY;
       BufferedImage imageToSerialize = processDiagram;
       if (minX >= 0 && minY >= 0) {
         imageToSerialize = processDiagram.getSubimage(minX - 5, minY - 5, 

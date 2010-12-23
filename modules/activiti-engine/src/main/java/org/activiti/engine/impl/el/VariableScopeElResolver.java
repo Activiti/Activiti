@@ -18,18 +18,20 @@ import java.util.Iterator;
 import org.activiti.engine.delegate.VariableScope;
 import org.activiti.engine.impl.javax.el.ELContext;
 import org.activiti.engine.impl.javax.el.ELResolver;
-import org.activiti.engine.impl.pvm.runtime.ExecutionImpl;
+import org.activiti.engine.impl.runtime.ExecutionEntity;
+import org.activiti.engine.impl.task.TaskEntity;
 
 
 /**
  * Implementation of an {@link ELResolver} that resolves expressions 
- * with the process variables of a given {@link ExecutionImpl} as context.
+ * with the process variables of a given {@link VariableScope} as context.
  * 
  * @author Joram Barrez
  */
 public class VariableScopeElResolver extends ELResolver {
   
   public static final String EXECUTION_KEY = "execution";
+  public static final String TASK_KEY = "task";
   
   protected VariableScope variableScope;
   
@@ -39,12 +41,16 @@ public class VariableScopeElResolver extends ELResolver {
 
   public Object getValue(ELContext context, Object base, Object property)  {
     
-    // Variable resolution
     if (base == null) {
       String variable = (String) property; // according to javadoc, can only be a String
-      if(EXECUTION_KEY.equals(property)) {
+      
+      if( (EXECUTION_KEY.equals(property) && variableScope instanceof ExecutionEntity)
+              || (TASK_KEY.equals(property) && variableScope instanceof TaskEntity) ) {
         context.setPropertyResolved(true);
         return variableScope;
+      } else if (EXECUTION_KEY.equals(property) && variableScope instanceof TaskEntity) {
+        context.setPropertyResolved(true);
+        return ((TaskEntity) variableScope).getExecution();
       } else {
         if (variableScope.hasVariable(variable)) {
           context.setPropertyResolved(true); // if not set, the next elResolver in the CompositeElResolver will be called

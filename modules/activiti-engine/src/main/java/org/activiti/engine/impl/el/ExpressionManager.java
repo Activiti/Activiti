@@ -78,6 +78,9 @@ public class ExpressionManager {
     
     if (elContext==null) {
       elContext = createElContext(variableScope);
+      if (variableScope instanceof VariableScopeImpl) {
+        ((VariableScopeImpl)variableScope).setCachedElContext(elContext);
+      }
     }
 
     return elContext;
@@ -94,7 +97,7 @@ public class ExpressionManager {
     elResolver.add(new ArrayELResolver());
     elResolver.add(new ListELResolver());
     elResolver.add(new MapELResolver());
-    elResolver.add(new DynamicBeanPropertyELResolver(ItemInstance.class, "getFieldValue", "setFieldValue"));
+    elResolver.add(new DynamicBeanPropertyELResolver(ItemInstance.class, "getFieldValue", "setFieldValue")); //TODO: needs verification
     elResolver.add(new BeanELResolver());
     return elResolver;
   }

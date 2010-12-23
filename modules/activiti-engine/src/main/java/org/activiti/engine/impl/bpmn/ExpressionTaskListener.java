@@ -13,13 +13,9 @@
 
 package org.activiti.engine.impl.bpmn;
 
-import org.activiti.engine.ActivitiException;
-import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.DelegateTask;
 import org.activiti.engine.impl.el.Expression;
 import org.activiti.engine.impl.pvm.delegate.TaskListener;
-import org.activiti.engine.impl.runtime.ExecutionEntity;
-import org.activiti.engine.impl.task.TaskEntity;
 
 
 /**
@@ -34,12 +30,7 @@ public class ExpressionTaskListener implements TaskListener {
   }
   
   public void notify(DelegateTask delegateTask) {
-    DelegateExecution execution = delegateTask.getExecution();
-    if (execution != null) {
-      expression.getValue(execution);
-    } else {
-      throw new ActivitiException("Expressions are not usable outside a execution context");
-    }
+      expression.getValue(delegateTask);
   }
 
 }

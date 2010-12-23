@@ -30,7 +30,7 @@
         Write meeting notes after meeting with management.
       </documentation>
       <extensionElements>
-        <activiti:taskListener event="create" expression="${execution.setVariable('greeting2', 'Hello from second task')}" />
+        <activiti:taskListener event="create" expression="${execution.setVariable('greeting2', task.name)}" />
       </extensionElements>
     </userTask>
     
