@@ -387,6 +387,11 @@
       });
     },
 
+    onSaveCommentFailure: function Artifact_onSaveCommentFailure(response, obj)
+    {
+      this.waitDialog.hide();
+    },
+
     onExecuteActionClick: function Artifact_onExecuteActionClick(e)
     {
       return new Activiti.widget.ExecuteArtifactActionForm(this.id + "-executeArtifactActionForm", this.value.connectorId, this.value.artifactId, this.value.actionName);
