@@ -29,6 +29,7 @@ public class BPMN12 {
   public static String MULTIPLE_START_EVENT = "StartMultipleEvent";
 
   public static String NONE_INTERMEDIATE_EVENT = "IntermediateEvent";
+  public static String ERROR_INTERMEDIATE_EVENT = "IntermediateErrorEvent";
 
   public static boolean isStartEvent(Shape shape) {
     return isStartEvent(shape.getStencilId());
