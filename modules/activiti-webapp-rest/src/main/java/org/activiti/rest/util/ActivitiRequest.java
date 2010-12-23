@@ -292,6 +292,17 @@ public class ActivitiRequest {
   }
 
   /**
+   * Gets an optional string parameter from the obj
+   *
+   * @param obj The activiti webscript request obj
+   * @param param The name of the string parameter
+   * @return The value of the string obj parameter
+   */
+  public String getOptionalString(ActivitiRequestObject obj, String param) {
+    return checkString(obj.getString(param), param, false);
+  }
+  
+  /**
    * Gets a string parameter from the obj
    *
    * @param obj The activiti webscript request obj

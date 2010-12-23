@@ -33,8 +33,8 @@ public class CommentPost extends ActivitiCycleWebScript {
     String nodeId = req.getMandatoryString(obj, "nodeId");
     String content = req.getMandatoryString(obj, "content");
 
-    String elementId = req.getString("elementId");
-    String answeredCommentId = req.getString("answeredCommentId");
+    String elementId = req.getOptionalString(obj, "elementId");
+    String answeredCommentId = req.getOptionalString(obj, "answeredCommentId");
 
     String author = req.getCurrentUserId();
     Date date = new Date();

@@ -312,12 +312,17 @@
       commentsDiv.innerHTML += "<h2>Comments</h2>"
       
       for(var item in commentsJson) {
-        commentsDiv.innerHTML += '<div class="comment"><span class="comment-author">' + Activiti.util.encodeHTML(commentsJson[item].RepositoryNodeComment.author) + '</span><span class="comment-date">' + Activiti.util.encodeHTML(commentsJson[item].RepositoryNodeComment.creationDate) + '</span><span class="comment-content">' + Activiti.util.encodeHTML(commentsJson[item].RepositoryNodeComment.content) + '</span></div>';
+        if(!commentsJson[item].RepositoryNodeComment.answeredCommentId) {
+          this.composeCommentHtml(commentsDiv, commentsJson[item].RepositoryNodeComment, commentsJson);
+        }
       }
       
       commentsDiv.innerHTML += '<form><textarea id="comment-input" name="comment" value=""></textarea></form><span id="addCommentButton" class="yui-button"><span class="first-child"><button type="button">Add Comment</button></span></span>';
       
       artifactEl.appendChild(commentsDiv);
+      
+      var replyLinks = Dom.getElementsByClassName("comment-reply-link", 'a', commentsDiv);
+      YAHOO.util.Event.addListener(replyLinks, "click", this.onReplyLinkClick, null, this);
       
       var addCommentButton = new YAHOO.widget.Button("addCommentButton", { label:"Add comment", id:"addCommentButton" });
       addCommentButton.addListener("click", this.onClickAddCommentButton, null, this);
@@ -325,6 +330,38 @@
       this.waitDialog.hide();
     },
 
+    onReplyLinkClick: function Artifact_onReplyLinkClick(event, obj)
+    {
+      var replyDiv = document.createElement('div');
+      replyDiv.innerHTML = '<form id="comment-reply-form-' + event.target.id + '" class="comment-reply"><input type="hidden" name="comment-id" value="' + event.target.id + '" /><textarea id="comment-reply-input" name="comment-reply" value=""></textarea></form><span id="reply-button' + event.target.id + '" class="yui-button"><span class="first-child"><button type="button">Reply</button></span></span>';
+      Dom.insertAfter(replyDiv, event.target);
+      
+      var replyButton = new YAHOO.widget.Button("reply-button" + event.target.id, { label:"Reply" });
+      replyButton.addListener("click", this.onReplyButtonClick, 'comment-reply-form-' + event.target.id, this);
+      
+      // remove the 'reply' link
+      event.target.parentNode.removeChild(event.target);
+      
+      YAHOO.util.Event.preventDefault(event);
+    },
+
+    onReplyButtonClick: function Artifact_onReplyButtonClick(event, id)
+    {
+      var replyForm = YAHOO.util.Dom.get(id);
+      var data = {connectorId: this._connectorId, nodeId: this._repositoryNodeId};
+      for(var prop in replyForm.childNodes) {
+        if(replyForm.childNodes[prop] && replyForm.childNodes[prop].name == "comment-id") {
+          data['answeredCommentId'] = replyForm.childNodes[prop].value;
+        }
+        if(replyForm.childNodes[prop] && replyForm.childNodes[prop].name == "comment-reply") {
+          data['content'] = replyForm.childNodes[prop].value;
+        }
+      }
+      if(data.content) {
+        this.waitDialog.show();
+        this.services.repositoryService.saveComment(data); 
+      }
+    },
 
     /**
      * Click event listener for the "Add Comment" button.
@@ -332,7 +369,7 @@
      * @param event {object} The event that was triggered
      * @param args {Array} The event values     
      */
-    onClickAddCommentButton: function Links_onClickAddLinkButton(event, args)
+    onClickAddCommentButton: function Artifact_onClickAddLinkButton(event, args)
     {
       var comment = YAHOO.util.Dom.get("comment-input");
       if(comment.value) {
@@ -375,8 +412,21 @@
     onClickFormEventButton: function Artifact_onClickFormEventButton(event, args)
     {
       return new Activiti.component.FileChooserDialog(this.id, args[1].value.callback, false, null, true, false);
+    },
+    
+    composeCommentHtml: function Artifact_composeCommentHtml(commentEl, comment, comments) {
+      var replyEl = document.createElement('div');
+      replyEl.setAttribute('class', 'comment');
+      replyEl.innerHTML = '<span class="comment-author">' + Activiti.util.encodeHTML(comment.author) + '</span><span class="comment-date">' + Activiti.util.encodeHTML(comment.creationDate) + '</span><span class="comment-content">' + Activiti.util.encodeHTML(comment.content) + '</span><a href="#" id="' + comment.id + '" class="comment-reply-link">reply</a>';
+      var currentId = comment.id;
+      for(var reply in comments) {
+        if(comments[reply].RepositoryNodeComment.answeredCommentId == currentId) {
+          this.composeCommentHtml(replyEl, comments[reply].RepositoryNodeComment, comments);
+        }  
+      }
+      commentEl.appendChild(replyEl);
     }
-
+    
   });
 
 })();
