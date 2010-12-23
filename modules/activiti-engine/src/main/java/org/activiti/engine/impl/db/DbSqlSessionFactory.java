@@ -33,7 +33,6 @@ public class DbSqlSessionFactory implements SessionFactory {
 
   static {
 	  //mysql specific  
-    addDatabaseSpecificStatement("mysql", "selectTaskByQueryCriteria", "selectTaskByQueryCriteria_mysql");
     addDatabaseSpecificStatement("mysql", "selectNextJobsToExecute", "selectNextJobsToExecute_mysql");
     addDatabaseSpecificStatement("mysql", "selectProcessDefinitionsByQueryCriteria", "selectProcessDefinitionsByQueryCriteria_mysql");
     addDatabaseSpecificStatement("mysql", "selectProcessDefinitionCountByQueryCriteria", "selectProcessDefinitionCountByQueryCriteria_mysql");
