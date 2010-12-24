@@ -32,8 +32,12 @@ public class HistoricFormPropertyEntity extends HistoricDetailEntity implements 
   }
 
   public HistoricFormPropertyEntity(ExecutionEntity execution, String propertyId, String propertyValue) {
+    this(execution, propertyId, propertyValue, null);
+  }
+  public HistoricFormPropertyEntity(ExecutionEntity execution, String propertyId, String propertyValue, String taskId) {
     this.processInstanceId = execution.getProcessInstanceId();
     this.executionId = execution.getId();
+    this.taskId = taskId;
     this.propertyId = propertyId;
     this.propertyValue = propertyValue;
     this.time = ClockUtil.getCurrentTime();

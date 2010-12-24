@@ -36,6 +36,9 @@ public interface HistoricDetail {
   /** The identifier for the path of execution. */
   String getExecutionId();
   
+  /** The identifier for the task. */
+  String getTaskId();
+  
   /** The time when this detail occurred */
   Date getTime();
 }

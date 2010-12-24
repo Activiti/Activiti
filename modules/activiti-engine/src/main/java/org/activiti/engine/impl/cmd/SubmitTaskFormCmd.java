@@ -60,7 +60,7 @@ public class SubmitTaskFormCmd implements Command<Object> {
       DbSqlSession dbSqlSession = commandContext.getSession(DbSqlSession.class);
       for (String propertyId: properties.keySet()) {
         String propertyValue = properties.get(propertyId);
-        HistoricFormPropertyEntity historicFormProperty = new HistoricFormPropertyEntity(execution, propertyId, propertyValue);
+        HistoricFormPropertyEntity historicFormProperty = new HistoricFormPropertyEntity(execution, propertyId, propertyValue, taskId);
         dbSqlSession.insert(historicFormProperty);
       }
     }

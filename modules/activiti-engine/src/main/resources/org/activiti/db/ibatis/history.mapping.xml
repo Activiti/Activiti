@@ -375,13 +375,14 @@
   <!-- HISTORIC DETAILS INSERT -->
   
   <insert id="insertHistoricFormProperty" parameterType="org.activiti.engine.impl.history.HistoricFormPropertyEntity">
-    insert into ACT_HI_DETAIL (ID_, TYPE_, PROC_INST_ID_, ACT_INST_ID_, EXECUTION_ID_, TIME_, NAME_, TEXT_)
+    insert into ACT_HI_DETAIL (ID_, TYPE_, PROC_INST_ID_, ACT_INST_ID_, EXECUTION_ID_, TASK_ID_, TIME_, NAME_, TEXT_)
     values (
       #{id, jdbcType=VARCHAR},
       'FormProperty',
       #{processInstanceId, jdbcType=VARCHAR},
       #{activityInstanceId, jdbcType=VARCHAR},
       #{executionId, jdbcType=VARCHAR},
+      #{taskId, jdbcType=VARCHAR},
       #{time, jdbcType=TIMESTAMP},
       #{propertyId, jdbcType=VARCHAR},
       #{propertyValue, jdbcType=VARCHAR}
