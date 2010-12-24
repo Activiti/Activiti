@@ -68,7 +68,7 @@
   </select>
   
   <select id="selectCandidateTasks" parameterType="map" resultMap="taskResultMap">
-    select T.* from ACT_RU_TASK T inner join ACT_RU_IDENTITYLINK I ON T.ID_ = I.TASK_ID_
+    select T.* from ACT_RU_TASK T inner join ACT_RU_IDENTITYLINK I ON T.ID_ = I.TSK_ID_
     where T.ASSIGNEE_ IS NULL
           AND I.TYPE_ = 'candidate'
     <choose>
@@ -107,7 +107,7 @@
   <sql id="selectTaskByQueryCriteriaSql">  
     from ACT_RU_TASK T
     <if test="candidateUser != null || candidateGroups != null">
-      inner join ACT_RU_IDENTITYLINK I on I.TASK_ID_ = T.ID_
+      inner join ACT_RU_IDENTITYLINK I on I.TSK_ID_ = T.ID_
     </if>
     <where>
       <if test="taskId != null">
@@ -181,7 +181,7 @@
   <!-- INSERT IDENTITY LINK -->
   
   <insert id="insertIdentityLink" parameterType="org.activiti.engine.impl.task.IdentityLinkEntity">
-    insert into ACT_RU_IDENTITYLINK (ID_, REV_, TYPE_, USER_ID_, GROUP_ID_, TASK_ID_)
+    insert into ACT_RU_IDENTITYLINK (ID_, REV_, TYPE_, USER_ID_, GROUP_ID_, TSK_ID_)
     values (#{id, jdbcType=VARCHAR},
             1,
             #{type, jdbcType=VARCHAR},
@@ -203,7 +203,7 @@
     <result property="type" column="TYPE_" jdbcType="VARCHAR" />
     <result property="userId" column="USER_ID_" jdbcType="VARCHAR" />
     <result property="groupId" column="GROUP_ID_" jdbcType="VARCHAR" />
-    <result property="taskId" column="TASK_ID_" jdbcType="VARCHAR" />
+    <result property="taskId" column="TSK_ID_" jdbcType="VARCHAR" />
   </resultMap>
 
   <!-- IDENTITY LINK SELECT -->
@@ -213,7 +213,7 @@
   </select>
   
   <select id="selectIdentityLinksByTask" parameterType="string" resultMap="identityLinkResultMap">
-    select * from ACT_RU_IDENTITYLINK where TASK_ID_ = #{taskId}
+    select * from ACT_RU_IDENTITYLINK where TSK_ID_ = #{taskId}
   </select>
 
 </mapper>

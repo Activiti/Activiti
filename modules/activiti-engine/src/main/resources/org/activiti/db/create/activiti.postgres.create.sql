@@ -123,7 +123,7 @@ create table ACT_RU_IDENTITYLINK (
     GROUP_ID_ varchar(64),
     TYPE_ varchar(255),
     USER_ID_ varchar(64),
-    TASK_ID_ varchar(64),
+    TSK_ID_ varchar(64),
     primary key (ID_)
 );
 
@@ -134,7 +134,7 @@ create table ACT_RU_VARIABLE (
     NAME_ varchar(255) not null,
     EXECUTION_ID_ varchar(64),
 	  PROC_INST_ID_ varchar(64),
-    TASK_ID_ varchar(64),
+    TSK_ID_ varchar(64),
     BYTEARRAY_ID_ varchar(64),
     DOUBLE_ double precision,
     LONG_ bigint,
@@ -195,7 +195,7 @@ create table ACT_HI_DETAIL (
     TYPE_ varchar(255) not null,
     PROC_INST_ID_ varchar(64) not null,
     EXECUTION_ID_ varchar(64) not null,
-    TASK_ID_ varchar(64),
+    TSK_ID_ varchar(64),
     ACT_INST_ID_ varchar(64),
     NAME_ varchar(255) not null,
     VAR_TYPE_ varchar(64),
@@ -258,10 +258,10 @@ alter table ACT_ID_MEMBERSHIP
     foreign key (USER_ID_) 
     references ACT_ID_USER (ID_);
 
-create index ACT_IDX_TSKASS_TASK on ACT_RU_IDENTITYLINK(TASK_ID_);
+create index ACT_IDX_TSKASS_TASK on ACT_RU_IDENTITYLINK(TSK_ID_);
 alter table ACT_RU_IDENTITYLINK
     add constraint ACT_FK_TSKASS_TASK
-    foreign key (TASK_ID_) 
+    foreign key (TSK_ID_) 
     references ACT_RU_TASK (ID_);
     
 create index ACT_IDX_TASK_EXEC on ACT_RU_TASK(EXECUTION_ID_);
