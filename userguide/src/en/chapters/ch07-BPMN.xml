@@ -2140,8 +2140,10 @@ public class MyTaskCreateListener implements TaskListener {
         <listitem>
           <para>
             <emphasis role="bold">expression</emphasis>: (cannot be used together with the <emphasis>class</emphasis> attribute):
-            specifies an expression that will be executed when the event happens.
-            <programlisting>&lt;activiti:taskListener event=&quot;create&quot; expression=&quot;${execution.setVariable('myVar', 'Hello from the task listener!')}&quot; /&gt;</programlisting>
+            specifies an expression that will be executed when the event happens. 
+            It is possible to pass the <literal>DelegateTask</literal> object and the name
+            of the event (using <literal>task.eventName</literal>) as parameter to the called object. 
+            <programlisting>&lt;activiti:taskListener event=&quot;create&quot; expression=&quot;${myObject.callMethod(task, task.eventName)}&quot; /&gt;</programlisting>
           </para>
         </listitem>
         <listitem>

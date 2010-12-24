@@ -33,6 +33,7 @@ import org.activiti.engine.impl.db.DbSqlSession;
 import org.activiti.engine.impl.db.PersistentObject;
 import org.activiti.engine.impl.history.HistoricTaskInstanceEntity;
 import org.activiti.engine.impl.interceptor.CommandContext;
+import org.activiti.engine.impl.pvm.PvmProcessElement;
 import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
 import org.activiti.engine.impl.pvm.delegate.TaskListener;
 import org.activiti.engine.impl.repository.ProcessDefinitionEntity;
@@ -79,6 +80,8 @@ public class TaskEntity extends VariableScopeImpl implements Task, DelegateTask,
   protected String taskDefinitionKey;
   
   protected boolean isDeleted;
+  
+  protected String eventName;
   
   public TaskEntity() {
   }
@@ -383,7 +386,7 @@ public class TaskEntity extends VariableScopeImpl implements Task, DelegateTask,
         for (TaskListener taskListener : taskEventListeners) {
           ExecutionEntity execution = getExecution();
           if (execution != null) {
-            execution.setEventName(taskEventName);
+            setEventName(taskEventName);
           }
           taskListener.notify(this);
         }
@@ -482,4 +485,13 @@ public class TaskEntity extends VariableScopeImpl implements Task, DelegateTask,
   public void setTaskDefinitionKey(String taskDefinitionKey) {
     this.taskDefinitionKey = taskDefinitionKey;
   }
+
+  public String getEventName() {
+    return eventName;
+  }
+  
+  public void setEventName(String eventName) {
+    this.eventName = eventName;
+  }
+  
 }
