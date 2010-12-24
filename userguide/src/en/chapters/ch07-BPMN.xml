@@ -1993,7 +1993,7 @@ public class ReverseStringsFieldInjected implements JavaDelegate {
         <programlisting>
 public class ExampleExecutionListenerOne implements <emphasis role="bold">ExecutionListener</emphasis> {
 
-  <emphasis role="bold">public void notify(DelegateExecution execution) throws Exception {</emphasis>
+  <emphasis role="bold">public void notify(ExecutionListenerExecution execution) throws Exception {</emphasis>
     execution.setVariable("variableSetInExecutionListener", "firstValue");
     execution.setVariable("eventReceived", execution.getevent());
   }
