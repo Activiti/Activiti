@@ -123,7 +123,7 @@ create table ACT_RU_IDENTITYLINK (
     GROUP_ID_ varchar(64),
     TYPE_ varchar(255),
     USER_ID_ varchar(64),
-    TSK_ID_ varchar(64),
+    TASK_ID_ varchar(64),
     primary key (ID_)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE utf8_bin;
 
@@ -134,7 +134,7 @@ create table ACT_RU_VARIABLE (
     NAME_ varchar(255) not null,
     EXECUTION_ID_ varchar(64),
 	  PROC_INST_ID_ varchar(64),
-    TSK_ID_ varchar(64),
+    TASK_ID_ varchar(64),
     BYTEARRAY_ID_ varchar(64),
     DOUBLE_ double,
     LONG_ bigint,
@@ -195,7 +195,7 @@ create table ACT_HI_DETAIL (
     TYPE_ varchar(255) not null,
     PROC_INST_ID_ varchar(64) not null,
     EXECUTION_ID_ varchar(64) not null,
-    TSK_ID_ varchar(64),
+    TASK_ID_ varchar(64),
     ACT_INST_ID_ varchar(64),
     NAME_ varchar(255) not null,
     VAR_TYPE_ varchar(255),
@@ -254,7 +254,7 @@ alter table ACT_ID_MEMBERSHIP
 
 alter table ACT_RU_IDENTITYLINK
     add constraint ACT_FK_TSKASS_TASK 
-    foreign key (TSK_ID_) 
+    foreign key (TASK_ID_) 
     references ACT_RU_TASK (ID_);
     
 alter table ACT_RU_TASK

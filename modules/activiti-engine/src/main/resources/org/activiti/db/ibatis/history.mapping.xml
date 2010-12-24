@@ -375,7 +375,7 @@
   <!-- HISTORIC DETAILS INSERT -->
   
   <insert id="insertHistoricFormProperty" parameterType="org.activiti.engine.impl.history.HistoricFormPropertyEntity">
-    insert into ACT_HI_DETAIL (ID_, TYPE_, PROC_INST_ID_, ACT_INST_ID_, EXECUTION_ID_, TSK_ID_, TIME_, NAME_, TEXT_)
+    insert into ACT_HI_DETAIL (ID_, TYPE_, PROC_INST_ID_, ACT_INST_ID_, EXECUTION_ID_, TASK_ID_, TIME_, NAME_, TEXT_)
     values (
       #{id, jdbcType=VARCHAR},
       'FormProperty',
@@ -390,7 +390,7 @@
   </insert>
   
   <insert id="insertHistoricVariableUpdate" parameterType="org.activiti.engine.impl.history.HistoricVariableUpdateEntity">
-    insert into ACT_HI_DETAIL (ID_, TYPE_, PROC_INST_ID_, EXECUTION_ID_, TSK_ID_, NAME_, REV_, VAR_TYPE_, TIME_, BYTEARRAY_ID_, DOUBLE_, LONG_ , TEXT_, TEXT2_)
+    insert into ACT_HI_DETAIL (ID_, TYPE_, PROC_INST_ID_, EXECUTION_ID_, TASK_ID_, NAME_, REV_, VAR_TYPE_, TIME_, BYTEARRAY_ID_, DOUBLE_, LONG_ , TEXT_, TEXT2_)
     values (
       #{id, jdbcType=VARCHAR},
       'VariableUpdate',
@@ -422,7 +422,7 @@
     <result property="processInstanceId" column="PROC_INST_ID_" jdbcType="VARCHAR" />
     <result property="activityInstanceId" column="ACT_INST_ID_" jdbcType="VARCHAR" />
     <result property="executionId" column="EXECUTION_ID_" jdbcType="VARCHAR" />
-    <result property="taskId" column="TSK_ID_" jdbcType="VARCHAR" />
+    <result property="taskId" column="TASK_ID_" jdbcType="VARCHAR" />
     <result property="time" column="TIME_" jdbcType="TIMESTAMP" />
     <discriminator javaType="string" column="TYPE_">
       <case value="VariableUpdate" resultMap="historicVariableUpdateResultMap"/> 
@@ -476,7 +476,7 @@
         HD.ACT_INST_ID_ = #{activityId}
       </if>
       <if test="taskId != null">
-        HD.TSK_ID_ = #{taskId}
+        HD.TASK_ID_ = #{taskId}
       </if>
       <if test="type != null">
         and HD.TYPE_ = #{type}

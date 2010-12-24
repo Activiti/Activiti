@@ -1,5 +1,5 @@
 alter table ACT_RU_VARIABLE 
-add TSK_ID_ varchar(64);
+add TASK_ID_ varchar(64);
 
 update ACT_GE_PROPERTY
 set 

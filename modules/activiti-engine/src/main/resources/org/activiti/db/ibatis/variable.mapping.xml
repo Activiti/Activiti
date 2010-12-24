@@ -7,7 +7,7 @@
   <!-- VARIABLE INSTANCE INSERT -->
   
   <insert id="insertVariableInstance" parameterType="org.activiti.engine.impl.runtime.VariableInstanceEntity">
-    insert into ACT_RU_VARIABLE (ID_, REV_, TYPE_, NAME_, PROC_INST_ID_, EXECUTION_ID_, TSK_ID_, BYTEARRAY_ID_, DOUBLE_, LONG_ , TEXT_, TEXT2_)
+    insert into ACT_RU_VARIABLE (ID_, REV_, TYPE_, NAME_, PROC_INST_ID_, EXECUTION_ID_, TASK_ID_, BYTEARRAY_ID_, DOUBLE_, LONG_ , TEXT_, TEXT2_)
     values (
 	    #{id, jdbcType=VARCHAR},
 	    1,
@@ -54,7 +54,7 @@
 		<result property="name" column="NAME_" javaType="String" jdbcType="VARCHAR" />
     <result property="processInstanceId" column="PROC_INST_ID_" jdbcType="VARCHAR" />
     <result property="executionId" column="EXECUTION_ID_" jdbcType="VARCHAR" />
-    <result property="taskId" column="TSK_ID_" jdbcType="VARCHAR" />
+    <result property="taskId" column="TASK_ID_" jdbcType="VARCHAR" />
 		<result property="activityId" column="ACTIVITY_ID_" jdbcType="VARCHAR" />
 		<result property="isActive" column="IS_ACTIVE_" jdbcType="BOOLEAN" />
 		<result property="isConcurrencyScope" column="IS_CONCURRENCY_SCOPE_" jdbcType="BOOLEAN" />
@@ -74,12 +74,12 @@
 	<select id="selectVariablesByExecutionId" parameterType="string" resultMap="variableInstanceResultMap">
 		select * from ACT_RU_VARIABLE 
 		where EXECUTION_ID_ = #{executionId, jdbcType=VARCHAR}
-		  and TSK_ID_ is null
+		  and TASK_ID_ is null
   </select>
 
   <select id="selectVariablesByTaskId" parameterType="string" resultMap="variableInstanceResultMap">
     select * from ACT_RU_VARIABLE where
-    TSK_ID_ = #{taskId, jdbcType=VARCHAR}
+    TASK_ID_ = #{taskId, jdbcType=VARCHAR}
   </select>
 
   <!-- BYTE ARRAY INSERT -->
