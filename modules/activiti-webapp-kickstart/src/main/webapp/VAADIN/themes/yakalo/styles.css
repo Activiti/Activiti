@@ -2,19 +2,14 @@
   
 #header {
   background: repeat-x left url(images/header-bg.png);
-  height: 3.4em;
+  height: 44px;
 }
 
 #header #activiti-component {
   background: top right no-repeat url(images/header-bg-right.png);
-  height: 3.4em;
+  height: 44px;
 }
 
-#header #application-info {
-  float: left;
-  padding-left: 2em;
-  padding-top: 0.6em;
-}
 
 #content {
   float:bottom;
