@@ -24,6 +24,7 @@ import org.activiti.kickstart.ui.table.TaskTable;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
 import com.vaadin.terminal.ClassResource;
+import com.vaadin.terminal.Resource;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.GridLayout;
@@ -51,6 +52,8 @@ public class AdhocWorkflowPanel extends Panel {
   protected TextField nameField;
   protected TextField descriptionField;
   protected TaskTable taskTable;
+  protected Resource saveImage;
+  protected Resource generateImageImage;
 
   // dependencies
   protected ViewManager viewManager;
@@ -60,12 +63,13 @@ public class AdhocWorkflowPanel extends Panel {
   public AdhocWorkflowPanel(ViewManager viewManager, AdhocWorkflowDto existingAdhocWorkflow) {
     this.viewManager = viewManager;
     this.existingAdhocWorkflow = existingAdhocWorkflow;
+    this.saveImage = new ClassResource("images/page_save.png", viewManager.getApplication());
+    this.generateImageImage = new ClassResource("images/image.png", viewManager.getApplication());
     init();
   }
 
   public AdhocWorkflowPanel(ViewManager viewManager) {
-    this.viewManager = viewManager;
-    init();
+    this(viewManager, null);
   }
 
   protected void init() {
@@ -146,7 +150,7 @@ public class AdhocWorkflowPanel extends Panel {
   protected void initButtons(GridLayout layout) {
     final Button saveButton = new Button("Save");
     saveButton.setEnabled(nameField.getValue() != null && !"".equals((String) nameField.getValue()));
-    saveButton.setIcon(new ClassResource("images/page_save.png", viewManager.getApplication()));
+    saveButton.setIcon(saveImage);
     saveButton.addListener(new Button.ClickListener() {
 
       private static final long serialVersionUID = 3546324122090420533L;
@@ -180,7 +184,7 @@ public class AdhocWorkflowPanel extends Panel {
       });
 
     Button generateImageButton = new Button("View image");
-    generateImageButton.setIcon(new ClassResource("images/image.png", viewManager.getApplication()));
+    generateImageButton.setIcon(generateImageImage);
     generateImageButton.addListener(new Button.ClickListener() {
 
       private static final long serialVersionUID = 5671158538486627690L;
