@@ -57,8 +57,8 @@ public class FormDto {
 
   public String toString() {
     StringBuilder strb = new StringBuilder();
-    strb.append(title + ",");
-    strb.append(description + ",");
+    strb.append(title + "___");
+    strb.append(description + "___");
     for (FormPropertyDto property : formProperties) {
       strb.append(property.getProperty() + ";");
       strb.append(property.getType() + ";");
@@ -99,7 +99,7 @@ public class FormDto {
   }
 
   public static FormDto createFromSerialized(String serialized) {
-    String[] content = serialized.split(",");
+    String[] content = serialized.split("___");
 
     FormDto form = new FormDto();
     form.setTitle(content[0].trim());
