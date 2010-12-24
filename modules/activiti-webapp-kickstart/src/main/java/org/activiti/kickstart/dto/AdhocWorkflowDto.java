@@ -24,6 +24,7 @@ import org.activiti.kickstart.bpmn20.model.FlowElement;
 import org.activiti.kickstart.bpmn20.model.FormalExpression;
 import org.activiti.kickstart.bpmn20.model.Process;
 import org.activiti.kickstart.bpmn20.model.activity.resource.HumanPerformer;
+import org.activiti.kickstart.bpmn20.model.activity.resource.PotentialOwner;
 import org.activiti.kickstart.bpmn20.model.activity.resource.ResourceAssignmentExpression;
 import org.activiti.kickstart.bpmn20.model.activity.type.UserTask;
 import org.activiti.kickstart.bpmn20.model.bpmndi.BPMNDiagram;
@@ -168,15 +169,37 @@ public class AdhocWorkflowDto {
         }
 
         // assignee
-        HumanPerformer humanPerformer = new HumanPerformer();
-        humanPerformer.setId(userTask.getId() + "_humanPerformer");
-        ResourceAssignmentExpression assignmentExpression = new ResourceAssignmentExpression();
-        assignmentExpression.setId(userTask.getId() + "_assignmentExpression");
-        FormalExpression formalExpression = new FormalExpression(task.getAssignee());
-        formalExpression.setId(userTask.getId() + "_formalExpressions");
-        assignmentExpression.setExpression(formalExpression);
-        humanPerformer.setResourceAssignmentExpression(assignmentExpression);
-        userTask.getActivityResource().add(humanPerformer);
+        if (task.getAssignee() != null && !"".equals(task.getAssignee())) {
+          HumanPerformer humanPerformer = new HumanPerformer();
+          humanPerformer.setId(userTask.getId() + "_humanPerformer");
+          ResourceAssignmentExpression assignmentExpression = new ResourceAssignmentExpression();
+          assignmentExpression.setId(userTask.getId() + "_humanPerformer_assignmentExpression");
+          FormalExpression formalExpression = new FormalExpression(task.getAssignee());
+          formalExpression.setId(userTask.getId() + "_humanPerformer_formalExpressions");
+          assignmentExpression.setExpression(formalExpression);
+          humanPerformer.setResourceAssignmentExpression(assignmentExpression);
+          userTask.getActivityResource().add(humanPerformer);
+        }
+        
+        // groups
+        if (task.getGroups() != null && !"".equals(task.getGroups()) ) {
+          PotentialOwner potentialOwner = new PotentialOwner();
+          potentialOwner.setId(userTask.getId() + "_potentialOwner");
+          ResourceAssignmentExpression assignmentExpression = new ResourceAssignmentExpression();
+          assignmentExpression.setId(userTask.getId() + "_potentialOwner_assignmentExpression");
+          
+          StringBuilder groups = new StringBuilder();
+          for (String group : task.getGroups().split(",")) {
+            groups.append(group + ",");
+          }
+          groups.deleteCharAt(groups.length() - 1);
+          FormalExpression formalExpression = new FormalExpression(groups.toString());
+          
+          formalExpression.setId(userTask.getId() + "_potentialOwner_formalExpressions");
+          assignmentExpression.setExpression(formalExpression);
+          potentialOwner.setResourceAssignmentExpression(assignmentExpression);
+          userTask.getActivityResource().add(potentialOwner);
+        }
 
         // Description
         Documentation taskDocumentation = new Documentation(ExpressionUtil.replaceWhiteSpaces(task.getDescription()));

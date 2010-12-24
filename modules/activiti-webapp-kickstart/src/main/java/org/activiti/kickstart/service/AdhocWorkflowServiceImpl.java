@@ -36,6 +36,7 @@ import org.activiti.kickstart.bpmn20.model.Definitions;
 import org.activiti.kickstart.bpmn20.model.FlowElement;
 import org.activiti.kickstart.bpmn20.model.activity.resource.ActivityResource;
 import org.activiti.kickstart.bpmn20.model.activity.resource.HumanPerformer;
+import org.activiti.kickstart.bpmn20.model.activity.resource.PotentialOwner;
 import org.activiti.kickstart.bpmn20.model.activity.type.UserTask;
 import org.activiti.kickstart.bpmn20.model.connector.SequenceFlow;
 import org.activiti.kickstart.bpmn20.model.gateway.ParallelGateway;
@@ -44,7 +45,6 @@ import org.activiti.kickstart.dto.AdhocWorkflowDto;
 import org.activiti.kickstart.dto.AdhocWorkflowInfo;
 import org.activiti.kickstart.dto.FormDto;
 import org.activiti.kickstart.dto.TaskDto;
-import org.activiti.kickstart.util.ExpressionUtil;
 
 /**
  * @author Joram Barrez
@@ -254,36 +254,42 @@ public class AdhocWorkflowServiceImpl implements AdhocWorkflowService {
   }
 
   protected TaskDto convertUserTaskToTaskDto(String deploymentId, UserTask userTask) {
-    TaskDto taskDto = new TaskDto();
+    TaskDto task = new TaskDto();
 
     // task name
-    taskDto.setName(userTask.getName());
+    task.setName(userTask.getName());
 
     // task description
     if (!userTask.getDocumentation().isEmpty()) {
-      taskDto.setDescription(userTask.getDocumentation().get(0).getText());
+      task.setDescription(userTask.getDocumentation().get(0).getText());
     }
 
-    // task assignee
+    // Assignment
     for (ActivityResource activityResource : userTask.getActivityResource()) {
       if (activityResource instanceof HumanPerformer) {
         HumanPerformer humanPerformer = (HumanPerformer) activityResource;
         List<String> content = humanPerformer.getResourceAssignmentExpression().getExpression().getContent();
         if (!content.isEmpty()) {
-          taskDto.setAssignee(content.get(0));
+          task.setAssignee(content.get(0));
+        }
+      } else if (activityResource instanceof PotentialOwner) {
+        PotentialOwner potentialOwner = (PotentialOwner) activityResource;
+        List<String> content = potentialOwner.getResourceAssignmentExpression().getExpression().getContent();
+        if (!content.isEmpty()) {
+          task.setGroups(content.get(0));
         }
       }
     }
-
+    
     // Task form
     if (userTask.getFormKey() != null) {
       InputStream is = repositoryService.getResourceAsStream(deploymentId, userTask.getFormKey() + ".internal");
       String serializedForm = new String(IoUtil.readInputStream(is, ""));
       IoUtil.closeSilently(is);
-      taskDto.setForm(FormDto.createFromSerialized(serializedForm));
+      task.setForm(FormDto.createFromSerialized(serializedForm));
     }
 
-    return taskDto;
+    return task;
   }
 
 }

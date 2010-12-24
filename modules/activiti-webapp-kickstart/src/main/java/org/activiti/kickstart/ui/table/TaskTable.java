@@ -52,18 +52,21 @@ public class TaskTable extends Table implements TaskFormModelListener {
 
     addContainerProperty("name", String.class, null);
     addContainerProperty("assignee", String.class, null);
+    addContainerProperty("groups", String.class, null);
     addContainerProperty("description", TextField.class, null);
     addContainerProperty("startWithPrevious", CheckBox.class, null);
     addContainerProperty("actions", HorizontalLayout.class, null);
 
     setColumnHeader("name", "Name");
     setColumnHeader("assignee", "Assignee");
+    setColumnHeader("groups", "Group(s)");
     setColumnHeader("description", "Description");
     setColumnHeader("startWithPrevious", "Concurrency");
     setColumnHeader("actions", "Actions");
 
     setColumnAlignment("name", ALIGN_CENTER);
     setColumnAlignment("assignee", ALIGN_CENTER);
+    setColumnAlignment("groups", ALIGN_CENTER);
     setColumnAlignment("description", ALIGN_CENTER);
     setColumnAlignment("startsWithPrevious", ALIGN_CENTER);
 
@@ -71,7 +74,7 @@ public class TaskTable extends Table implements TaskFormModelListener {
   }
 
   public void addTaskRow(TaskDto task) {
-    Object taskItemId = addTaskRow(null, task.getName(), task.getAssignee(), task.getDescription(), task.getStartsWithPrevious());
+    Object taskItemId = addTaskRow(null, task.getName(), task.getAssignee(), task.getGroups(), task.getDescription(), task.getStartsWithPrevious());
     if (task.getForm() != null) {
       taskFormModel.addForm(taskItemId, task.getForm());
     }
@@ -82,10 +85,12 @@ public class TaskTable extends Table implements TaskFormModelListener {
   }
 
   public void addDefaultTaskRowAfter(Object itemId) {
-    addTaskRow(itemId, null, null, null, null);
+    addTaskRow(itemId, null, null, null, null, null);
   }
 
-  protected Object addTaskRow(Object previousTaskItemId, String taskName, String taskAssignee, String taskDescription, Boolean startWithPrevious) {
+  protected Object addTaskRow(Object previousTaskItemId, String taskName, String taskAssignee, 
+          String taskGroups, String taskDescription, Boolean startWithPrevious) {
+    
     Object newItemId = null;
     if (previousTaskItemId == null) { // add at the end of list
       newItemId = addItem();
@@ -99,6 +104,9 @@ public class TaskTable extends Table implements TaskFormModelListener {
 
     // assignee
     newItem.getItemProperty("assignee").setValue(taskAssignee == null ? "kermit" : taskAssignee);
+    
+    // groups
+    newItem.getItemProperty("groups").setValue(taskGroups == null ? "" : taskGroups);
 
     // description
     TextField descriptionTextField = new TextField();
@@ -150,6 +158,7 @@ public class TaskTable extends Table implements TaskFormModelListener {
       TaskDto task = new TaskDto();
       task.setName((String) item.getItemProperty("name").getValue());
       task.setAssignee((String) item.getItemProperty("assignee").getValue());
+      task.setGroups((String) item.getItemProperty("groups").getValue());
       task.setDescription((String) ((TextField) item.getItemProperty("description").getValue()).getValue());
       task.setStartWithPrevious((boolean) ((CheckBox) item.getItemProperty("startWithPrevious").getValue()).booleanValue());
       task.setForm(taskFormModel.getForm(itemId));

@@ -12,6 +12,7 @@
  */
 package org.activiti.kickstart.dto;
 
+
 /**
  * @author Joram Barrez
  */
@@ -20,6 +21,7 @@ public class TaskDto {
   protected String id;
   protected String name;
   protected String assignee;
+  protected String groups;
   protected String description;
   protected FormDto form;
   protected boolean startWithPrevious;
@@ -41,6 +43,12 @@ public class TaskDto {
   }
   public void setAssignee(String assignee) {
     this.assignee = assignee;
+  }
+  public String getGroups() {
+    return groups;
+  }
+  public void setGroups(String groups) {
+    this.groups = groups;
   }
   public String getDescription() {
     return description;

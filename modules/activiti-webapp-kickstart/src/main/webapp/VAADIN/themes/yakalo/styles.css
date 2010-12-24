@@ -10,6 +10,11 @@
   height: 44px;
 }
 
+#header #application-info {
+  float: left;
+  padding-left: 2em;
+  padding-top: 0.6em;
+}
 
 #content {
   float:bottom;

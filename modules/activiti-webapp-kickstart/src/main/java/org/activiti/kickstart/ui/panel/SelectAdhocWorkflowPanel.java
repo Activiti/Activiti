@@ -48,8 +48,8 @@ public class SelectAdhocWorkflowPanel extends Panel {
 
   protected Label titleLabel;
   protected Table workflowTable;
-  protected Resource editImage;
-  protected Resource xmlImage;
+//  protected Resource editImage;
+//  protected Resource xmlImage;
 
   protected ViewManager viewManager;
   protected AdhocWorkflowService adhocWorkflowService;
@@ -57,8 +57,8 @@ public class SelectAdhocWorkflowPanel extends Panel {
   public SelectAdhocWorkflowPanel(ViewManager viewManager) {
     this.viewManager = viewManager;
     this.adhocWorkflowService = ServiceLocator.getAdhocWorkflowService();
-    this.editImage = new ClassResource("images/edit.png", viewManager.getApplication());
-    this.xmlImage = new ClassResource("images/xml.png", viewManager.getApplication());
+//    this.editImage = new ClassResource("images/edit.png", viewManager.getApplication());
+//    this.xmlImage = new ClassResource("images/xml.png", viewManager.getApplication());
 
     setStyleName(Reindeer.PANEL_LIGHT);
     initTitle();
@@ -132,7 +132,7 @@ public class SelectAdhocWorkflowPanel extends Panel {
 
       Button editButton = new Button("edit");
       editButton.setStyleName("link");
-      editButton.setIcon(editImage);
+//      editButton.setIcon(editImage);
       editButton.setData(infoDto.getKey());
       editButton.addListener(new EditExistingAdhocWorkflowClickListener(viewManager, adhocWorkflowService));
       actions.addComponent(editButton);
@@ -146,7 +146,7 @@ public class SelectAdhocWorkflowPanel extends Panel {
         }
       };
       Link bpmnXmlLink = new Link("get xml", new StreamResource(streamSource, infoDto.getKey() + ".bpmn20.xml", viewManager.getApplication()));
-      bpmnXmlLink.setIcon(xmlImage);
+//      bpmnXmlLink.setIcon(xmlImage);
       actions.addComponent(bpmnXmlLink);
 
       workflowItem.getItemProperty("actions").setValue(actions);
