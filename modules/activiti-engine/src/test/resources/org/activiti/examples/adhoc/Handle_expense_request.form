@@ -1,0 +1,1 @@
+<h1>Expense refund requested</h1><p>${Employeename} has requested the refund of ${Amount} Euro.</p><table><tr><label><td>Agreed?:</td><td><input type='text' name='Agreed?' value='' /><input type='hidden' name='Agreed?_required' value='true' </td></label></tr></table>

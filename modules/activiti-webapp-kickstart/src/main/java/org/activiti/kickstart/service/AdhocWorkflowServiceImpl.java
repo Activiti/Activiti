@@ -125,11 +125,10 @@ public class AdhocWorkflowServiceImpl implements AdhocWorkflowService {
     return dtos;
   }
 
-  public AdhocWorkflowDto findAdhocWorkflowByKey(String key) throws JAXBException {
+  public AdhocWorkflowDto findAdhocWorkflowById(String id) throws JAXBException {
     // Get process definition for key
     ProcessDefinition processDefinition = repositoryService.createProcessDefinitionQuery()
-      .processDefinitionKey(key)
-      .latestVersion()
+      .processDefinitionId(id)
       .singleResult();
 
     // Get BPMN 2.0 XML file from database and parse it with JAXB
@@ -137,7 +136,7 @@ public class AdhocWorkflowServiceImpl implements AdhocWorkflowService {
     Definitions definitions = null;
     try {
       is = repositoryService.getResourceAsStream(processDefinition.getDeploymentId(), 
-              generateBpmnResourceName(processDefinition.getName()));
+              processDefinition.getResourceName());
 
       JAXBContext jc = JAXBContext.newInstance(Definitions.class);
       Unmarshaller um = jc.createUnmarshaller();
@@ -266,17 +265,17 @@ public class AdhocWorkflowServiceImpl implements AdhocWorkflowService {
 
     // Assignment
     for (ActivityResource activityResource : userTask.getActivityResource()) {
-      if (activityResource instanceof HumanPerformer) {
-        HumanPerformer humanPerformer = (HumanPerformer) activityResource;
-        List<String> content = humanPerformer.getResourceAssignmentExpression().getExpression().getContent();
-        if (!content.isEmpty()) {
-          task.setAssignee(content.get(0));
-        }
-      } else if (activityResource instanceof PotentialOwner) {
+     if (activityResource instanceof PotentialOwner) {
         PotentialOwner potentialOwner = (PotentialOwner) activityResource;
         List<String> content = potentialOwner.getResourceAssignmentExpression().getExpression().getContent();
         if (!content.isEmpty()) {
           task.setGroups(content.get(0));
+        }
+      } else if (activityResource instanceof HumanPerformer) {
+        HumanPerformer humanPerformer = (HumanPerformer) activityResource;
+        List<String> content = humanPerformer.getResourceAssignmentExpression().getExpression().getContent();
+        if (!content.isEmpty()) {
+          task.setAssignee(content.get(0));
         }
       }
     }

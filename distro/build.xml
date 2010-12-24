@@ -240,6 +240,7 @@
         <include name="org/activiti/examples/**/*.bpmn20.xml" />
         <include name="org/activiti/examples/**/*.form" />
       	<include name="org/activiti/examples/**/*.png" />
+      	<include name="org/activiti/examples/**/*.internal" /> <!-- needed for KickStart examples -->
         <exclude name="org/activiti/examples/groovy/*.bpmn20.xml" />
         <exclude name="org/activiti/examples/variables/jpa/*.bpmn20.xml" />
       </fileset>

@@ -29,7 +29,7 @@ public interface AdhocWorkflowService {
 
   List<AdhocWorkflowInfo> findAdhocWorkflowInformation();
 
-  AdhocWorkflowDto findAdhocWorkflowByKey(String key) throws JAXBException;
+  AdhocWorkflowDto findAdhocWorkflowById(String id) throws JAXBException;
 
   InputStream getProcessImage(String processDefinitionId);
 

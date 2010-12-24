@@ -24,8 +24,6 @@ import org.activiti.kickstart.ui.listener.EditExistingAdhocWorkflowClickListener
 import org.activiti.kickstart.ui.popup.ProcessImagePopupWindow;
 
 import com.vaadin.data.Item;
-import com.vaadin.terminal.ClassResource;
-import com.vaadin.terminal.Resource;
 import com.vaadin.terminal.StreamResource;
 import com.vaadin.terminal.StreamResource.StreamSource;
 import com.vaadin.ui.Button;
@@ -133,7 +131,7 @@ public class SelectAdhocWorkflowPanel extends Panel {
       Button editButton = new Button("edit");
       editButton.setStyleName("link");
 //      editButton.setIcon(editImage);
-      editButton.setData(infoDto.getKey());
+      editButton.setData(infoDto.getId());
       editButton.addListener(new EditExistingAdhocWorkflowClickListener(viewManager, adhocWorkflowService));
       actions.addComponent(editButton);
 

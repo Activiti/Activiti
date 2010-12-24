@@ -38,7 +38,7 @@ public class EditExistingAdhocWorkflowClickListener implements Button.ClickListe
 
   public void buttonClick(ClickEvent event) {
     try {
-      AdhocWorkflowDto adhocWorkflow = adhocWorkflowService.findAdhocWorkflowByKey((String) event.getButton().getData());
+      AdhocWorkflowDto adhocWorkflow = adhocWorkflowService.findAdhocWorkflowById((String) event.getButton().getData());
       viewManager.switchWorkArea(ViewManager.EDIT_ADHOC_WORKFLOW, new AdhocWorkflowPanel(viewManager, adhocWorkflow));
     } catch (Exception e) {
       e.printStackTrace();
