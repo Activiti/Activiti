@@ -158,7 +158,7 @@ public class TaskCandidateTest extends PluggableActivitiTestCase {
 
   @Deployment
   public void testMultipleCandidateUsers() {
-    runtimeService.startProcessInstanceByKey("multipleCandidateUsers");
+    runtimeService.startProcessInstanceByKey("multipleCandidateUsersExample");
 
     assertEquals(1, taskService.createTaskQuery().taskCandidateUser(GONZO).list().size());
     assertEquals(1, taskService.createTaskQuery().taskCandidateUser(KERMIT).list().size());
@@ -166,7 +166,7 @@ public class TaskCandidateTest extends PluggableActivitiTestCase {
 
   @Deployment
   public void testMixedCandidateUserAndGroup() {
-    runtimeService.startProcessInstanceByKey("mixedCandidateUserAndGroup");
+    runtimeService.startProcessInstanceByKey("mixedCandidateUserAndGroupExample");
 
     assertEquals(1, taskService.createTaskQuery().taskCandidateUser(GONZO).list().size());
     assertEquals(1, taskService.createTaskQuery().taskCandidateUser(KERMIT).list().size());

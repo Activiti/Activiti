@@ -19,10 +19,10 @@
       <sequenceFlow id="flow3" sourceRef="subProcessFork" targetRef="task1" />
       <sequenceFlow id="flow4" sourceRef="subProcessFork" targetRef="task2" />
       
-      <userTask id="task1" name="Investigate hardware" activiti:assignee="kermit" />
+      <userTask id="task1" name="Investigate hardware" activiti:candidateGroups="engineering" />
       <sequenceFlow id="flow5" sourceRef="task1" targetRef="subProcessJoin" />
       
-      <userTask id="task2" name="Investigate software" activiti:assignee="kermit" />
+      <userTask id="task2" name="Investigate software" activiti:candidateGroups="engineering" />
       <sequenceFlow id="flow6" sourceRef="task2" targetRef="subProcessJoin" />
       
       <parallelGateway id="subProcessJoin" />
@@ -38,12 +38,12 @@
       </timerEventDefinition>
     </boundaryEvent>
     <sequenceFlow id="flow8" sourceRef="timer" targetRef="taskAfterTimer" />
-    <userTask id="taskAfterTimer" name="Hand over to Level 2 support" activiti:assignee="kermit" />
+    <userTask id="taskAfterTimer" name="Hand over to Level 2 support" activiti:candidateGroups="management" />
     <sequenceFlow id="flow9" sourceRef="taskAfterTimer" targetRef="theEnd1" />
     <endEvent id="theEnd1" />
     
     <sequenceFlow id="flow10" sourceRef="subProcess" targetRef="taskAfterSubProcess" />
-    <userTask id="taskAfterSubProcess" name="Write report" activiti:assignee="kermit" />
+    <userTask id="taskAfterSubProcess" name="Write report" activiti:candidateGroups="engineering" />
     <sequenceFlow id="flow11" sourceRef="taskAfterSubProcess" targetRef="theEnd" />
     <endEvent id="theEnd" />
     

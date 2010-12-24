@@ -4,7 +4,7 @@
   xmlns:activiti="http://activiti.org/bpmn"
   targetNamespace="Examples">
 	
-	<process id="mixedCandidateUserAndGroup" name="Mixed candidate user and group example">
+	<process id="mixedCandidateUserAndGroupExample" name="Write bi-monthly financial report">
 	
 		<startEvent id="theStart" />
 		

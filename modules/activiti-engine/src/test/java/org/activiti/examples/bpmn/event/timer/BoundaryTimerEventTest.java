@@ -39,7 +39,7 @@ public class BoundaryTimerEventTest extends PluggableActivitiTestCase {
 
     // The timer has fired, and the second task (secondlinesupport) now exists
     task = taskService.createTaskQuery().processInstanceId(pi.getId()).singleResult();
-    assertEquals("Second line support", task.getName());
+    assertEquals("Handle escalated issue", task.getName());
   }
 
 }

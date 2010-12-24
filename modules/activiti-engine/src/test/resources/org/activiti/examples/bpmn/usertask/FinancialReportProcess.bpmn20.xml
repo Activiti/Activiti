@@ -4,7 +4,7 @@
     xmlns:activiti="http://activiti.org/bpmn"
 	xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL">
 	
-	<process id="financialReport" name="Monthly financial report">
+	<process id="financialReport" name="Monthly financial report process">
 	
 		<startEvent id="theStart" />
 		

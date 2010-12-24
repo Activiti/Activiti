@@ -31,19 +31,32 @@
     <mkdir dir="target"/>
     <zip destfile="target/activiti-engine-examples.bar">
       <fileset dir="src/main/process">
+      	
         <include name="org/activiti/examples/bpmn/usertask/taskassignee/TaskAssigneeTest.testTaskAssignee.bpmn20.xml"/>
+      	<include name="org/activiti/examples/bpmn/usertask/taskassignee/TaskAssigneeTest.testTaskAssignee.png"/>
+      	
         <include name="org/activiti/examples/bpmn/usertask/taskcandidate/TaskCandidateTest.testMixedCandidateUserAndGroup.bpmn20.xml"/>
-        <include name="org/activiti/examples/bpmn/usertask/taskcandidate/TaskCandidateTest.testMultipleCandidateGroups.bpmn20.xml"/>
+      	<include name="org/activiti/examples/bpmn/usertask/taskcandidate/TaskCandidateTest.testMixedCandidateUserAndGroup.png"/>
+      	
         <include name="org/activiti/examples/bpmn/usertasktaskcandidate/TaskCandidateTest.testMultipleCandidateUsers.bpmn20.xml"/>
+        <include name="org/activiti/examples/bpmn/usertasktaskcandidate/TaskCandidateTest.testMultipleCandidateUsers.png"/>
+      	
         <include name="org/activiti/examples/bpmn/usertask/taskcandidate/TaskCandidateTest.testSingleCandidateGroup.bpmn20.xml"/>
+      	
         <include name="org/activiti/examples/bpmn/usertask/FinancialReportProcess.bpmn20.xml"/>
+      	<include name="org/activiti/examples/bpmn/usertask/FinancialReportProcess.png"/>
+      	
         <include name="org/activiti/examples/bpmn/subprocess/SubProcessTest.fixSystemFailureProcess.bpmn20.xml"/>
         <include name="org/activiti/examples/bpmn/subprocess/SubProcessTest.fixSystemFailureProcess.png"/>
+      	
         <include name="org/activiti/examples/taskforms/VacationRequest.bpmn20.xml"/>
+      	<include name="org/activiti/examples/taskforms/VacationRequest.png"/>
         <include name="org/activiti/examples/taskforms/request.form"/>
         <include name="org/activiti/examples/taskforms/approve.form"/>
         <include name="org/activiti/examples/taskforms/adjustRequest.form"/>
+      	
         <include name="org/activiti/examples/bpmn/event/timer/BoundaryTimerEventTest.testInterruptingTimerDuration.bpmn20.xml" />
+      	<include name="org/activiti/examples/bpmn/event/timer/BoundaryTimerEventTest.testInterruptingTimerDuration.png" />
       </fileset>
     </zip>
   </target>

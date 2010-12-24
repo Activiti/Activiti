@@ -4,13 +4,13 @@
   xmlns:activiti="http://activiti.org/bpmn"
   targetNamespace="Examples">
 	
-	<process id="multipleCandidateUsers" name="Multiple candidate users example">
+	<process id="multipleCandidateUsersExample" name="Book flight for attending conference">
 	
 		<startEvent id="theStart" />
 		
 		<sequenceFlow id="flow1" sourceRef="theStart" targetRef="theTask" />
 
-		<userTask id="theTask" name="Book flight" >
+		<userTask id="theTask" name="Book flight for Activiti conference" >
 		  <documentation>
 		    Book flight Brussels-Rome for Activiti BPM conference.
 		  </documentation>

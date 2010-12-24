@@ -239,6 +239,7 @@
       <fileset dir="../modules/activiti-engine/src/test/resources">
         <include name="org/activiti/examples/**/*.bpmn20.xml" />
         <include name="org/activiti/examples/**/*.form" />
+      	<include name="org/activiti/examples/**/*.png" />
         <exclude name="org/activiti/examples/groovy/*.bpmn20.xml" />
         <exclude name="org/activiti/examples/variables/jpa/*.bpmn20.xml" />
       </fileset>

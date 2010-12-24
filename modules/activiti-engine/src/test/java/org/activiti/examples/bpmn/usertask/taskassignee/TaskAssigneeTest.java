@@ -31,7 +31,7 @@ public class TaskAssigneeTest extends PluggableActivitiTestCase {
   public void testTaskAssignee() {    
     
     // Start process instance
-    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("taskAssigneeProcess");
+    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("taskAssigneeExampleProcess");
 
     // Get task list
     List<Task> tasks = taskService

@@ -4,7 +4,7 @@
   xmlns:activiti="http://activiti.org/bpmn"
   targetNamespace="Examples">
   
-  <process id="taskAssigneeProcess" name="Task Assignee example">
+  <process id="taskAssigneeExampleProcess" name="Schedule meeting reminder">
   
     <startEvent id="theStart" />
     
