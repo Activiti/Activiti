@@ -98,9 +98,6 @@ public class CycleConfigurationServiceImpl implements CycleConfigurationService 
    */
   private ConfigurationContainer createDefaultDemoConfiguration(String currentUserId) {
     ConfigurationContainer configuration = new ConfigurationContainer(currentUserId);
-//    configuration.addRepositoryConnectorConfiguration(new DemoConnectorConfiguration("demo"));
-//    configuration.addRepositoryConnectorConfiguration(new SignavioConnectorConfiguration("signavio", "http://localhost:8080/activiti-modeler/"));
-//    configuration.addRepositoryConnectorConfiguration(new FileSystemConnectorConfiguration("files", File.listRoots()[0]));
     return configuration;
   }
 
@@ -225,9 +222,12 @@ public class CycleConfigurationServiceImpl implements CycleConfigurationService 
   }
 
   public Map<String, String> getAvailableRepositoryConnectorConfiguatationClasses() {
-//    return PluginFinder.getInstance().getAvailableConnectorConfigurations();
-    //TODO: fix after configuration-infrastructure has changed
-    return new HashMap<String, String>();
+    //TODO: fix after configuration-infrastructure has changed !
+    Map<String, String> result = new HashMap<String, String>();
+    for (String classname : getConfiguredRepositoryConnectors().keySet()) {
+      result.put(classname.substring(classname.lastIndexOf(".")+1),classname);
+    }
+    return result;
   }
 
 }
