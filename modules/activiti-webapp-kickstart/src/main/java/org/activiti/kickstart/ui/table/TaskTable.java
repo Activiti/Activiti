@@ -103,7 +103,7 @@ public class TaskTable extends Table implements TaskFormModelListener {
     newItem.getItemProperty("name").setValue(taskName == null ? "my task" : taskName);
 
     // assignee
-    newItem.getItemProperty("assignee").setValue(taskAssignee == null ? "kermit" : taskAssignee);
+    newItem.getItemProperty("assignee").setValue(taskAssignee == null ? "" : taskAssignee);
     
     // groups
     newItem.getItemProperty("groups").setValue(taskGroups == null ? "" : taskGroups);
