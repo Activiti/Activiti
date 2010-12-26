@@ -16,6 +16,7 @@
   <!ENTITY ch14 SYSTEM "chapters/ch14-REST.xml">
   <!ENTITY ch15 SYSTEM "chapters/ch15-Explorer.xml">
   <!ENTITY ch16 SYSTEM "chapters/ch16-Probe.xml">
+  <!ENTITY ch17 SYSTEM "chapters/ch17-KickStart.xml">
 ]>
 
 <book>
@@ -40,5 +41,6 @@
 &ch14;
 &ch15;
 &ch16;
+&ch17;
   
 </book>

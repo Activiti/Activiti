@@ -6,7 +6,8 @@
   
   <section id="demo.setup">
     <title>Demo setup</title>
-    <para>Setup is an ant script located in directory <literal>setup</literal> that helps you get up and running with Activiti quickly.
+    <para>'Demo Setup' is an ant script located in directory <literal>setup</literal> that
+    sets up an Activiti environment in no time.
     </para>
     <para>To run the script, you'll need a working 
     <ulink url="http://java.sun.com/javase/downloads/index.jsp">Java runtime</ulink> and
@@ -14,18 +15,19 @@
     Also make sure that the <emphasis>JAVA_HOME</emphasis> and <emphasis>ANT_HOME</emphasis> system
     variables are correctly set. The way to do this depends on your operating system, but the
     <ulink url="http://ant.apache.org/manual/install.html">manual of ant</ulink> gives a description
-    on how to do this. The demo setup script is tested with Ant 1.7.1.
+    on how to do this. The demo setup script is tested with Ant 1.7.1+.
     </para>
-    <para>To configure setup for your environment, update property files <literal>build.properties</literal> 
+    <para>If you don't provide any parameters, the demo setup will boot using default settings.
+    To configure the setup for your environment, update the property files <literal>build.properties</literal> 
     and <literal>build.{your-database}.properties</literal> .  Check those files for more information on 
-    configurable properties and potential values.
+    configurable properties and potential values. 
     </para>
-    <para>The easiest target to get started is open a command prompt in de <literal>setup</literal> folder 
+    <para>The easiest way to get started is open a command prompt in de <literal>setup</literal> folder 
     and type:
     </para>
     <programlisting>ant demo.start</programlisting>
-    <para>This target will start tomcat and if you're using h2, it will also start the h2 database.
-    The first time when that is executed, it will also perform the installation:  
+    <para>This ant target will start a tomcat and a H2 database if you didn't change the default seetings.
+    The first time when the script is executed, it will also perform following installations:  
     </para>
     <itemizedlist>
       <listitem><para>(*) Build the webapps.  All libraries are stored in <literal>${actviti.home}/setup/files/dependencies/libs</literal>
@@ -87,7 +89,7 @@
     <para>Now you can access following web applications:</para>
     <table>
       <title>The webapp tools</title>
-      <tgroup cols='3'>
+      <tgroup cols='4'>
         <thead>
           <row>
             <entry>Webapp Name</entry>
@@ -113,7 +115,7 @@
           <row>
             <entry>Activiti Cycle</entry>
             <entry><ulink url="http://localhost:8080/activiti-cycle">http://localhost:8080/activiti-cycle</ulink> </entry>
-            <entry>The process cycle layer. Use this to browse repositories, execute transformations between model formats.
+            <entry>The Activiti collabotation tool. Use this to browse repositories and execute transformations between model formats.
             </entry>
           </row>
           <row>
@@ -121,6 +123,12 @@
             <entry><ulink url="http://localhost:8080/activiti-modeler">http://localhost:8080/activiti-modeler</ulink></entry>
             <entry>The web based process designer tool.  Use this tool to graphically author BPMN 2.0 compliant process definitions 
             files.</entry>
+          </row>
+           <row>
+            <entry>Activiti KickStart</entry>
+            <entry><ulink url="http://localhost:8080/activiti-kickstart">http://localhost:8080/activiti-kickstart</ulink></entry>
+            <entry>Allows to specify processes quickly and efficiently in an adhoc way.
+            Simple processes, quick prototypes and adhoc workflow are created in no time using KickStart.</entry>
           </row>
         </tbody>
       </tgroup>
