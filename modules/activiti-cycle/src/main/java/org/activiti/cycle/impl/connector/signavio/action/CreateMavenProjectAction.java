@@ -14,6 +14,10 @@ import org.activiti.cycle.RepositoryArtifact;
 import org.activiti.cycle.RepositoryArtifactLink;
 import org.activiti.cycle.RepositoryConnector;
 import org.activiti.cycle.RepositoryException;
+import org.activiti.cycle.annotations.CycleComponent;
+import org.activiti.cycle.annotations.ExcludesCycleComponents;
+import org.activiti.cycle.context.CycleContextType;
+import org.activiti.cycle.impl.action.DefaultCopyArtifactAction;
 import org.activiti.cycle.impl.connector.signavio.provider.ActivitiCompliantBpmn20Provider;
 import org.activiti.cycle.impl.connector.util.TransactionalConnectorUtils;
 import org.activiti.cycle.impl.db.entity.RepositoryArtifactLinkEntity;
@@ -21,6 +25,7 @@ import org.activiti.cycle.service.CycleRepositoryService;
 import org.activiti.cycle.service.CycleServiceFactory;
 import org.activiti.engine.impl.util.IoUtil;
 
+@CycleComponent(context = CycleContextType.APPLICATION)
 public class CreateMavenProjectAction extends CreateTechnicalBpmnXmlAction {
 
   private static final long serialVersionUID = 1L;
