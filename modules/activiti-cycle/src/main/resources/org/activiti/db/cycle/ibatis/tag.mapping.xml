@@ -52,7 +52,7 @@
   </resultMap>
   
   <select id="selectTagsGroupedByName" resultType="list" resultMap="resultMapCycleArtifactTagContent"> 
-  	select NAME_, count(*) as COUNT_ from ACT_CY_TAG GROUP BY NAME_
+  	select NAME_, count(*) as COUNT_ from ACT_CY_TAG GROUP BY NAME_ ORDER BY NAME_
   </select>
 
   </mapper>
