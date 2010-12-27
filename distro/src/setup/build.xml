@@ -509,6 +509,8 @@ set JAVA_OPTS=%JAVA_OPTS% @tomcat.java.opts@
                includesfile="${activiti.home}/setup/files/dependencies/libs.webapp.rest.txt" />
       <fileset dir="${activiti.home}/setup/files/dependencies/libs" 
                includesfile="${activiti.home}/setup/files/dependencies/libs.engine.runtime.feature.groovy.txt" />
+      <fileset dir="${activiti.home}/setup/files/dependencies/libs" 
+               includesfile="${activiti.home}/setup/files/dependencies/libs.engine.runtime.feature.cxf.txt" />
       <fileset refid="jdbc.driver.libs" />
     </copy>
   </target>

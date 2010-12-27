@@ -62,6 +62,9 @@
     <exec executable="${mvn.executable}" dir="../modules/activiti-engine">
       <arg line="dependency:copy-dependencies -DoutputDirectory=../../distro/target/libs-engine-runtime"/>
     </exec>
+    <exec executable="${mvn.executable}" dir="../modules/activiti-cxf">
+      <arg line="dependency:copy-dependencies -DoutputDirectory=../../distro/target/libs-engine-runtime-feature-cxf"/>
+    </exec>
     <exec executable="${mvn.executable}" dir="../modules/activiti-engine">
       <arg line="dependency:copy-dependencies -DoutputDirectory=../../distro/target/libs-engine-test -DexcludeScope=runtime"/>
     </exec>
@@ -149,6 +152,9 @@
     <exec output="${target.distro.root}/setup/files/dependencies/libs.engine.runtime.txt" executable="${ls.executable}">
       <arg line="${ls.executable.options} target${ls.executable.path.seperator}libs-engine-runtime"/>
     </exec>
+    <exec output="${target.distro.root}/setup/files/dependencies/libs.engine.runtime.feature.cxf.txt" executable="${ls.executable}">
+      <arg line="${ls.executable.options} target${ls.executable.path.seperator}libs-engine-runtime-feature-cxf"/>
+    </exec>
     <exec output="${target.distro.root}/setup/files/dependencies/libs.spring.test.txt" executable="${ls.executable}">
       <arg line="${ls.executable.options} target${ls.executable.path.seperator}libs-spring-test"/>
     </exec>
@@ -184,6 +190,7 @@
       <fileset dir="target/libs-engine-runtime" />
       <fileset dir="target/libs-engine-runtime-feature-groovy" />
       <fileset dir="target/libs-engine-runtime-feature-jpa" />
+      <fileset dir="target/libs-engine-runtime-feature-cxf" />
       <fileset dir="target/libs-engine-test" />
       <fileset dir="target/libs-spring-runtime" />
       <fileset dir="target/libs-spring-test" />
