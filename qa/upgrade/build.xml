@@ -17,7 +17,10 @@
 	</target>
 	
 	<target name="upgrade" depends="get.old.distro,
-		                              install.old.distro">
+		                              install.old.distro,
+		                              build.engine.module,
+		                              clean.db">
+		
     <ant antfile="target/activiti-${activiti.old.version}/setup/build.xml" target="h2.start" inheritall="false">
     	<property name="db" value="${database}" />
     </ant>
@@ -50,20 +53,28 @@
     </condition>
     <echo message="running after tests" />
     <exec executable="${mvn.executable}" dir="../../modules/activiti-upgrade">
-      <arg line="-Ddatabase=${database} ${optional.debug.property} clean test" />
+      <arg line="-Ddatabase=${database} ${optional.debug.property} clean prepare-package" />
     </exec>
     <ant antfile="target/activiti-${activiti.old.version}/setup/build.xml" target="h2.stop" inheritall="false">
       <property name="db" value="${database}" />
     </ant>
 	</target>
 
-	<available property="old.distro.available" file="${downloads.dir}/activiti-${activiti.old.version}.zip"/>
-	<target name="get.old.distro" unless="old.distro.available">
+	<target name="get.old.distro">
+	  <available property="old.distro.available" file="${downloads.dir}/activiti-${activiti.old.version}.zip"/>
+    <antcall target="internal.get.old.distro" />
+  </target>
+	
+  <target name="internal.get.old.distro" unless="old.distro.available">
 		<get src="${download.old.distro.url}" dest="${downloads.dir}/activiti-${activiti.old.version}.zip" />
 	</target>
 
-	<available property="old.installation.available" file="target/activiti-${activiti.old.version}"/>
-  <target name="install.old.distro" unless="old.installation.available">
+  <target name="install.old.distro">
+    <available property="old.installation.available" file="target/activiti-${activiti.old.version}"/>
+  	<antcall target="internal.install.old.distro" />
+  </target>
+	
+  <target name="internal.install.old.distro" unless="old.installation.available">
     <unzip src="${downloads.dir}/activiti-${activiti.old.version}.zip" dest="target" />
   	<copy file="${user.home}/.activiti/upgrade/build.${database}.properties" todir="target/activiti-${activiti.old.version}/setup" overwrite="true" />
     <ant antfile="target/activiti-${activiti.old.version}/setup/build.xml" target="inflate.examples" inheritall="false" />
@@ -75,5 +86,24 @@
       <arg line="dependency:unpack-dependencies -Dactiviti.upgrade.version=5.0 -DoutputDirectory=target/activiti-${activiti.old.version}-upgrade-before-classes -DexcludeTransitive=true" />
     </exec>
   </target>
+	
+	<target name="build.engine.module">
+    <exec executable="${mvn.executable}" dir="../..">
+      <arg line="-DskipTests clean install" />
+    </exec>
+	</target>
+
+  <condition property="is.database.mysql">
+	 	 <equals arg1="${database}" arg2="mysql" />
+	</condition>
+	<target name="clean.db" if="is.database.mysql" depends="install.old.distro">
+	  <property file="${user.home}/.activiti/upgrade/build.${database}.properties" />
+	    <sql driver="${jdbc.driver}" password="${jdbc.password}" url="${jdbc.url}" userid="${jdbc.username}">
+      <classpath>
+        <fileset dir="target/activiti-${activiti.old.version}/workspace/activiti-engine-examples/libs-test" />
+      </classpath>
+	 	  <transaction src="clean.mysql.sql" />
+	 	</sql>
+	</target>
 
 </project>

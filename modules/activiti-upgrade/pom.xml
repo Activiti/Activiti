@@ -145,11 +145,12 @@
                 <configuration>
                   <tasks>
                     <echo message="dropping schema in ${database}" />
-                    <ant antfile="${basedir}/../../qa/db/build.xml" target="drop.db.schema"
-                      inheritAll="false">
-                      <property name="test_classpath" refid="maven.test.classpath" />
-                      <property name="database" value="${database}" />
-                    </ant>
+                    <property name="test_classpath" refid="maven.test.classpath" />
+								    <java classname="org.activiti.engine.impl.db.DbSchemaDrop">
+								      <classpath>
+								        <path path="${test_classpath}"/>
+								      </classpath>
+								    </java>
                   </tasks>
                 </configuration>
               </execution>
