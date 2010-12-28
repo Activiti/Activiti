@@ -224,13 +224,13 @@
 								</goals>
 								<configuration>
 									<tasks>
-										<echo
-											message="CREATING SCHEMA AND UPDATING PROPERTIES ${database} #{database} @{database} " />
+										<echo message="creating db schema in ${database}" />
 										<ant antfile="${basedir}/../../qa/db/build.xml" target="create.db.schema"
 											inheritAll="false">
 											<property name="test_classpath" refid="maven.test.classpath" />
 											<property name="database" value="${database}" />
 										</ant>
+                    <echo message="updating activiti cfg to ${database}" />
 										<ant antfile="${basedir}/../../qa/db/build.xml" target="create.activiti.cfg">
 											<property name="database" value="${database}" />
 										</ant>
@@ -245,7 +245,7 @@
 								</goals>
 								<configuration>
 									<tasks>
-										<echo message="DROPPING SCHEMA ${database} #{database} @{database} " />
+										<echo message="dropping schema in ${database}" />
 										<ant antfile="${basedir}/../../qa/db/build.xml" target="drop.db.schema"
 											inheritAll="false">
 											<property name="test_classpath" refid="maven.test.classpath" />

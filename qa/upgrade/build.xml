@@ -3,7 +3,7 @@
 	
   <property file="${user.home}/.activiti/build.properties" />
   <property name="activiti.version" value="5.1-SNAPSHOT" />
-  <property name="db" value="h2" />
+  <property name="database" value="h2" />
   <property name="activiti.old.version" value="5.0" />
   <property name="downloads.dir" value="${user.home}/.activiti/downloads" />
   <property name="download.old.distro.url" value="http://activiti.org/downloads/activiti-${activiti.old.version}.zip" />
@@ -18,12 +18,16 @@
 	
 	<target name="upgrade" depends="get.old.distro,
 		                              install.old.distro">
-    <ant antfile="target/activiti-${activiti.old.version}/setup/build.xml" target="h2.start" inheritall="false" />
-    <ant antfile="target/activiti-${activiti.old.version}/setup/build.xml" target="db.create" inheritall="false" />
-    <copy file="activiti.cfg.xml" todir="target/activiti-${activiti.old.version}-upgrade-before-classes" overwrite="true">
-      <filterset filtersfile="${user.home}/.activiti/upgrade/build.${db}.properties" />
-    </copy>
+    <ant antfile="target/activiti-${activiti.old.version}/setup/build.xml" target="h2.start" inheritall="false">
+    	<property name="db" value="${database}" />
+    </ant>
+    <ant antfile="target/activiti-${activiti.old.version}/setup/build.xml" target="db.create" inheritall="false">
+      <property name="db" value="${database}" />
+     </ant>
 		<mkdir dir="target/test-results-before" />
+    <copy file="activiti.cfg.xml" todir="target/activiti-${activiti.old.version}-upgrade-before-classes" overwrite="true">
+      <filterset filtersfile="${user.home}/.activiti/upgrade/build.${database}.properties" />
+    </copy>
 		<junit>
 			<classpath>
 				<pathelement location="target/activiti-${activiti.old.version}-upgrade-before-classes" />
@@ -37,30 +41,12 @@
 				<formatter type="xml" />
 			</batchtest>
 		</junit>
+    <condition property="optional.debug.property" value="-Dmaven.surefire.debug" else="">
+      <equals arg1="${debug}" arg2="true"/>
+    </condition>
     <exec executable="${mvn.executable}" dir="../..">
-      <arg line="-DupgradeDatabase=${db} clean install" />
+      <arg line="-Pafter -Ddatabase=${database} ${optional.debug.property} clean install" />
     </exec>
-    <unjar src="../../modules/activiti-upgrade/target/activiti-upgrade-${activiti.version}.jar" dest="target/activiti-upgrade-after-classes" />
-    <copy file="activiti.cfg.xml" todir="target/activiti-upgrade-after-classes" overwrite="true">
-      <filterset filtersfile="${user.home}/.activiti/upgrade/build.${db}.properties" />
-    </copy>
-    <mkdir dir="target/test-results-after" />
-		<condition property="debug.args" value="-Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=5005 -Xdebug" else="">
-			<equals arg1="${debug}" arg2="true"/>
-		</condition>
-    <junit>
-      <classpath>
-        <pathelement location="target/activiti-upgrade-after-classes" />
-        <fileset dir="../../modules/activiti-upgrade/target/test-libs" />
-      </classpath>
-    	<jvmarg line="${debug.args}" />
-      <batchtest todir="target/test-results-after" fork="yes">
-        <fileset dir="target/activiti-upgrade-after-classes">
-          <include name="**/*AfterTest.class"/>
-        </fileset>
-        <formatter type="xml" />
-      </batchtest>
-    </junit>
     <ant antfile="target/activiti-${activiti.old.version}/setup/build.xml" target="h2.stop" inheritall="false" />
 	</target>
 
@@ -72,9 +58,11 @@
 	<available property="old.installation.available" file="target/activiti-${activiti.old.version}"/>
   <target name="install.old.distro" unless="old.installation.available">
     <unzip src="${downloads.dir}/activiti-${activiti.old.version}.zip" dest="target" />
-  	<copy file="${user.home}/.activiti/upgrade/build.${db}.properties" todir="target/activiti-${activiti.old.version}/setup" overwrite="true" />
+  	<copy file="${user.home}/.activiti/upgrade/build.${database}.properties" todir="target/activiti-${activiti.old.version}/setup" overwrite="true" />
     <ant antfile="target/activiti-${activiti.old.version}/setup/build.xml" target="inflate.examples" inheritall="false" />
-    <ant antfile="target/activiti-${activiti.old.version}/setup/build.xml" target="h2.install" inheritall="false" />
+    <ant antfile="target/activiti-${activiti.old.version}/setup/build.xml" target="h2.install" inheritall="false">
+      <property name="db" value="${database}" />
+    </ant>
     <exec executable="${mvn.executable}">
       <arg line="dependency:unpack-dependencies -Dactiviti.upgrade.version=5.0 -DoutputDirectory=target/activiti-${activiti.old.version}-upgrade-before-classes -DexcludeTransitive=true" />
     </exec>
