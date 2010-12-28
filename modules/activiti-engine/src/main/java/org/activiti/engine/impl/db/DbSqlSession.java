@@ -561,7 +561,7 @@ public class DbSqlSession implements Session {
   }
 
   private void executeSchemaResource(String operation, String resourceName, InputStream inputStream) {
-    String ddlStatement = null;
+    String sqlStatement = null;
     try {
       Connection connection = sqlSession.getConnection();
       Exception exception = null;
@@ -569,17 +569,17 @@ public class DbSqlSession implements Session {
       String ddlStatements = new String(bytes);
       StringTokenizer tokenizer = new StringTokenizer(ddlStatements, ";");
       while (tokenizer.hasMoreTokens()) {
-        ddlStatement = tokenizer.nextToken().trim();
-        if (!ddlStatement.startsWith("#")) {
+        sqlStatement = tokenizer.nextToken().trim();
+        if (!sqlStatement.startsWith("#") && !"".equals(sqlStatement)) {
           Statement jdbcStatement = connection.createStatement();
           try {
-            jdbcStatement.execute(ddlStatement);
+            jdbcStatement.execute(sqlStatement);
             jdbcStatement.close();
           } catch (Exception e) {
             if (exception == null) {
               exception = e;
             }
-            log.log(Level.SEVERE, "problem during schema " + operation + ", statement '" + ddlStatement, e);
+            log.log(Level.SEVERE, "problem during schema " + operation + ", statement '" + sqlStatement, e);
           }
         }
       }
@@ -591,7 +591,7 @@ public class DbSqlSession implements Session {
       log.fine("activiti db schema " + operation + " successful");
       
     } catch (Exception e) {
-      throw new ActivitiException("couldn't "+operation+" db schema: "+ddlStatement, e);
+      throw new ActivitiException("couldn't "+operation+" db schema: "+sqlStatement, e);
     }
   }
   

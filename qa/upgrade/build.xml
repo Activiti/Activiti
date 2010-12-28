@@ -21,13 +21,17 @@
     <ant antfile="target/activiti-${activiti.old.version}/setup/build.xml" target="h2.start" inheritall="false">
     	<property name="db" value="${database}" />
     </ant>
+		<echo message="creating activiti tables" />
     <ant antfile="target/activiti-${activiti.old.version}/setup/build.xml" target="db.create" inheritall="false">
       <property name="db" value="${database}" />
      </ant>
 		<mkdir dir="target/test-results-before" />
+    <echo message="updating activiti cfg fir the tests before migration" />
+    <mkdir dir="target/test-results-before" />
     <copy file="activiti.cfg.xml" todir="target/activiti-${activiti.old.version}-upgrade-before-classes" overwrite="true">
       <filterset filtersfile="${user.home}/.activiti/upgrade/build.${database}.properties" />
     </copy>
+    <echo message="running before tests" />
 		<junit>
 			<classpath>
 				<pathelement location="target/activiti-${activiti.old.version}-upgrade-before-classes" />
@@ -44,10 +48,13 @@
     <condition property="optional.debug.property" value="-Dmaven.surefire.debug" else="">
       <equals arg1="${debug}" arg2="true"/>
     </condition>
-    <exec executable="${mvn.executable}" dir="../..">
-      <arg line="-Pafter -Ddatabase=${database} ${optional.debug.property} clean install" />
+    <echo message="running after tests" />
+    <exec executable="${mvn.executable}" dir="../../modules/activiti-upgrade">
+      <arg line="-Ddatabase=${database} ${optional.debug.property} clean test" />
     </exec>
-    <ant antfile="target/activiti-${activiti.old.version}/setup/build.xml" target="h2.stop" inheritall="false" />
+    <ant antfile="target/activiti-${activiti.old.version}/setup/build.xml" target="h2.stop" inheritall="false">
+      <property name="db" value="${database}" />
+    </ant>
 	</target>
 
 	<available property="old.distro.available" file="${downloads.dir}/activiti-${activiti.old.version}.zip"/>
@@ -63,6 +70,7 @@
     <ant antfile="target/activiti-${activiti.old.version}/setup/build.xml" target="h2.install" inheritall="false">
       <property name="db" value="${database}" />
     </ant>
+    <echo message="unpacking upgrade before test classes" />
     <exec executable="${mvn.executable}">
       <arg line="dependency:unpack-dependencies -Dactiviti.upgrade.version=5.0 -DoutputDirectory=target/activiti-${activiti.old.version}-upgrade-before-classes -DexcludeTransitive=true" />
     </exec>

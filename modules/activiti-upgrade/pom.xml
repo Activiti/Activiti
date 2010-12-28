@@ -97,9 +97,14 @@
   
   <profiles>
     <profile>
-      <id>after</id>
+      <id>upgrade.database</id>
+      <activation>
+        <property>
+          <name>database</name>
+        </property>
+      </activation>
       <build>
-        <plugins>      
+        <plugins>
           <plugin>
             <artifactId>maven-surefire-plugin</artifactId>
             <configuration>
@@ -108,18 +113,6 @@
               </includes>
             </configuration>
           </plugin>
-        </plugins>
-      </build>
-    </profile>
-    <profile>
-      <id>upgrade.database</id>
-      <activation>
-        <property>
-          <name>upgradeDatabase</name>
-        </property>
-      </activation>
-      <build>
-        <plugins>
           <plugin>
             <artifactId>maven-antrun-plugin</artifactId>
             <!--
