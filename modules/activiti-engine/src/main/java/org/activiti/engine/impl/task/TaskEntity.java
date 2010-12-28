@@ -33,7 +33,6 @@ import org.activiti.engine.impl.db.DbSqlSession;
 import org.activiti.engine.impl.db.PersistentObject;
 import org.activiti.engine.impl.history.HistoricTaskInstanceEntity;
 import org.activiti.engine.impl.interceptor.CommandContext;
-import org.activiti.engine.impl.pvm.PvmProcessElement;
 import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
 import org.activiti.engine.impl.pvm.delegate.TaskListener;
 import org.activiti.engine.impl.repository.ProcessDefinitionEntity;
@@ -143,7 +142,9 @@ public class TaskEntity extends VariableScopeImpl implements Task, DelegateTask,
       if (historyLevel>=ProcessEngineConfigurationImpl.HISTORYLEVEL_AUDIT) {
         HistoricTaskInstanceEntity historicTaskInstance = dbSqlSession
           .selectById(HistoricTaskInstanceEntity.class, id);
-        historicTaskInstance.markEnded(deleteReason);
+        if (historicTaskInstance!=null) {
+          historicTaskInstance.markEnded(deleteReason);
+        }
       }
 
       dbSqlSession.delete(TaskEntity.class, id);
@@ -333,7 +334,9 @@ public class TaskEntity extends VariableScopeImpl implements Task, DelegateTask,
       int historyLevel = commandContext.getProcessEngineConfiguration().getHistoryLevel();
       if (historyLevel >= ProcessEngineConfigurationImpl.HISTORYLEVEL_AUDIT) {
         HistoricTaskInstanceEntity historicTaskInstance = commandContext.getDbSqlSession().selectById(HistoricTaskInstanceEntity.class, id);
-        historicTaskInstance.setName(name);
+        if (historicTaskInstance!=null) {
+          historicTaskInstance.setName(name);
+        }
       }
     }
   }
@@ -348,7 +351,9 @@ public class TaskEntity extends VariableScopeImpl implements Task, DelegateTask,
       int historyLevel = commandContext.getProcessEngineConfiguration().getHistoryLevel();
       if (historyLevel >= ProcessEngineConfigurationImpl.HISTORYLEVEL_AUDIT) {
         HistoricTaskInstanceEntity historicTaskInstance = commandContext.getDbSqlSession().selectById(HistoricTaskInstanceEntity.class, id);
-        historicTaskInstance.setDescription(description);
+        if (historicTaskInstance!=null) {
+          historicTaskInstance.setDescription(description);
+        }
       }
     }
   }
@@ -371,9 +376,10 @@ public class TaskEntity extends VariableScopeImpl implements Task, DelegateTask,
       
       int historyLevel = commandContext.getProcessEngineConfiguration().getHistoryLevel();
       if (historyLevel >= ProcessEngineConfigurationImpl.HISTORYLEVEL_AUDIT) {
-
         HistoricTaskInstanceEntity historicTaskInstance = commandContext.getDbSqlSession().selectById(HistoricTaskInstanceEntity.class, id);
-        historicTaskInstance.setAssignee(assignee);
+        if (historicTaskInstance!=null) {
+          historicTaskInstance.setAssignee(assignee);
+        }
       }
     }
   }

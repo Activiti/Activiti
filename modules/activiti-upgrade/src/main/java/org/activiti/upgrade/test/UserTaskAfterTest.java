@@ -27,20 +27,49 @@ public class UserTaskAfterTest extends UpgradeTestCase {
   public void testSimplestTask() {
     Task task = taskService
       .createTaskQuery()
-      .taskName("simpleTask")
+      .taskName("simpleTask2")
       .singleResult();
-    
-    assertNotNull(task);
     
     String processInstanceId = task.getProcessInstanceId();
     
+    assertEquals(0, 
+      historyService.createHistoricTaskInstanceQuery()
+        .processInstanceId(processInstanceId)
+        .orderByTaskName().asc()
+        .count());
+      
     taskService.complete(task.getId());
     
+    assertEquals(1, runtimeService
+            .createExecutionQuery()
+            .processInstanceId(processInstanceId)
+            .list()
+            .size());
+
+    assertEquals(1, 
+            historyService.createHistoricTaskInstanceQuery()
+              .processInstanceId(processInstanceId)
+              .orderByTaskName().asc()
+              .count());
+            
+    task = taskService
+      .createTaskQuery()
+      .taskName("simpleTask3")
+      .singleResult();
+
+    taskService.complete(task.getId());
+
     assertEquals(0, runtimeService
-      .createExecutionQuery()
-      .processInstanceId(processInstanceId)
-      .list()
-      .size());
+            .createExecutionQuery()
+            .processInstanceId(processInstanceId)
+            .list()
+            .size());
+
+    assertEquals(1, 
+            historyService.createHistoricTaskInstanceQuery()
+              .processInstanceId(processInstanceId)
+              .orderByTaskName().asc()
+              .count());
   }
 
   public void testTaskWithExecutionVariables() {

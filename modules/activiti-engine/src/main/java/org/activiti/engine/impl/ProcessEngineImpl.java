@@ -29,8 +29,6 @@ import org.activiti.engine.impl.cfg.TransactionContextFactory;
 import org.activiti.engine.impl.db.DbSqlSession;
 import org.activiti.engine.impl.db.DbSqlSessionFactory;
 import org.activiti.engine.impl.el.ExpressionManager;
-import org.activiti.engine.impl.interceptor.Command;
-import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
 import org.activiti.engine.impl.interceptor.SessionFactory;
 import org.activiti.engine.impl.jobexecutor.JobExecutor;
@@ -79,14 +77,7 @@ public class ProcessEngineImpl implements ProcessEngine {
     this.historyLevel = processEngineConfiguration.getHistoryLevel();
     this.transactionContextFactory = processEngineConfiguration.getTransactionContextFactory();
     
-    commandExecutor.execute(new Command<Object>() {
-      public Object execute(CommandContext commandContext) {
-        commandContext
-          .getSession(DbSqlSession.class)
-          .performSchemaOperationsProcessEngineBuild(databaseSchemaUpdate);
-        return null;
-      }
-    });
+    commandExecutor.execute(new SchemaOperationsProcessEngineBuild());
 
     if (name == null) {
       log.info("default activiti ProcessEngine created");
@@ -107,14 +98,7 @@ public class ProcessEngineImpl implements ProcessEngine {
       jobExecutor.shutdown();
     }
 
-    commandExecutor.execute(new Command<Object>() {
-      public Object execute(CommandContext commandContext) {
-        commandContext
-          .getSession(DbSqlSession.class)
-          .performSchemaOperationsProcessEngineClose(databaseSchemaUpdate);
-        return null;
-      }
-    });
+    commandExecutor.execute(new SchemaOperationProcessEngineClose());
   }
 
   public DbSqlSessionFactory getDbSqlSessionFactory() {

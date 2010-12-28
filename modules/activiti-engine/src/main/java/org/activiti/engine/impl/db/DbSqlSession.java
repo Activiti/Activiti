@@ -33,6 +33,7 @@ import org.activiti.engine.ProcessEngineConfiguration;
 import org.activiti.engine.impl.Page;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.db.upgrade.DbUpgradeStep;
+import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.interceptor.Session;
 import org.activiti.engine.impl.repository.PropertyEntity;
 import org.activiti.engine.impl.runtime.VariableInstanceEntity;
@@ -497,26 +498,28 @@ public class DbSqlSession implements Session {
       int minorLibraryVersionNumber = Integer.parseInt(libraryVersion.substring(2));
       
       while (minorDbVersionNumber<minorLibraryVersionNumber) {
-        try {
-          upgradeStepStaticResource(minorDbVersionNumber);
-          upgradeStepJavaClass(minorDbVersionNumber);
-        } catch (Exception e) {
-          log.fine("no upgrade step necessary for 5."+minorDbVersionNumber);
-        }
+        upgradeStepStaticResource(minorDbVersionNumber);
+        upgradeStepJavaClass(minorDbVersionNumber);
         minorDbVersionNumber++;
       }
     }
   }
 
-  protected void upgradeStepJavaClass(int minorDbVersionNumber) throws Exception {
+  protected void upgradeStepJavaClass(int minorDbVersionNumber) {
+    String upgradestepClassName = "org.activiti.engine.impl.db.upgrade.DbUpgradeStep5"+minorDbVersionNumber;
     DbUpgradeStep dbUpgradeStep = null;
     try {
-      dbUpgradeStep = (DbUpgradeStep) ReflectUtil.instantiate("org.activiti.engine.impl.db.upgrade.DbUpgradeStep5"+minorDbVersionNumber);
+      dbUpgradeStep = (DbUpgradeStep) ReflectUtil.instantiate(upgradestepClassName);
     } catch (ActivitiException e) {
-      // OK
     }
     if (dbUpgradeStep!=null) {
-      dbUpgradeStep.execute(this);
+      try {
+        dbUpgradeStep.execute(this);
+      } catch (Exception e) {
+        throw new ActivitiException("Error during "+upgradestepClassName+": "+e, e);
+      }
+    } else {
+      log.fine("no upgrade class "+upgradestepClassName+" for upgrade step from 5."+minorDbVersionNumber+" to 5."+(minorDbVersionNumber+1));
     }
   }
 
@@ -558,6 +561,7 @@ public class DbSqlSession implements Session {
   }
 
   private void executeSchemaResource(String operation, String resourceName, InputStream inputStream) {
+    String ddlStatement = null;
     try {
       Connection connection = sqlSession.getConnection();
       Exception exception = null;
@@ -565,7 +569,7 @@ public class DbSqlSession implements Session {
       String ddlStatements = new String(bytes);
       StringTokenizer tokenizer = new StringTokenizer(ddlStatements, ";");
       while (tokenizer.hasMoreTokens()) {
-        String ddlStatement = tokenizer.nextToken().trim();
+        ddlStatement = tokenizer.nextToken().trim();
         if (!ddlStatement.startsWith("#")) {
           Statement jdbcStatement = connection.createStatement();
           try {
@@ -587,7 +591,7 @@ public class DbSqlSession implements Session {
       log.fine("activiti db schema " + operation + " successful");
       
     } catch (Exception e) {
-      throw new ActivitiException("couldn't "+operation+" db schema", e);
+      throw new ActivitiException("couldn't "+operation+" db schema: "+ddlStatement, e);
     }
   }
   
@@ -612,7 +616,8 @@ public class DbSqlSession implements Session {
     return false;
   }
   
-  public void performSchemaOperationsProcessEngineBuild(String databaseSchemaUpdate) {
+  public void performSchemaOperationsProcessEngineBuild() {
+    String databaseSchemaUpdate = CommandContext.getCurrent().getProcessEngineConfiguration().getDatabaseSchemaUpdate();
     if (ProcessEngineConfigurationImpl.DB_SCHEMA_UPDATE_DROP_CREATE.equals(databaseSchemaUpdate)) {
       try {
         dbSchemaDrop();
@@ -642,7 +647,8 @@ public class DbSqlSession implements Session {
     }
   }
 
-  public void performSchemaOperationsProcessEngineClose(String databaseSchemaUpdate) {
+  public void performSchemaOperationsProcessEngineClose() {
+    String databaseSchemaUpdate = CommandContext.getCurrent().getProcessEngineConfiguration().getDatabaseSchemaUpdate();
     if (org.activiti.engine.ProcessEngineConfiguration.DB_SCHEMA_UPDATE_CREATE_DROP.equals(databaseSchemaUpdate)) {
       dbSchemaDrop();
     }

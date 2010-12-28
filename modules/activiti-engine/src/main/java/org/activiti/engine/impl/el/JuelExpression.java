@@ -29,10 +29,11 @@ import org.activiti.engine.impl.javax.el.ValueExpression;
  */
 public class JuelExpression implements Expression {
 
-  private ValueExpression valueExpression;
-  private ExpressionManager expressionManager;
+  protected String expressionText;
+  protected ValueExpression valueExpression;
+  protected ExpressionManager expressionManager;
   
-  public JuelExpression(ValueExpression valueExpression, ExpressionManager expressionManager) {
+  public JuelExpression(ValueExpression valueExpression, ExpressionManager expressionManager, String expressionText) {
     this.valueExpression = valueExpression;
     this.expressionManager = expressionManager;
   }
@@ -62,5 +63,8 @@ public class JuelExpression implements Expression {
     }
     return super.toString();
   }
-
+  
+  public String getExpressionText() {
+    return expressionText;
+  }
 }
