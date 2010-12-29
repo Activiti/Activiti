@@ -27,6 +27,8 @@ public class UserTaskBeforeTest extends UpgradeTestCase {
   @Deployment
   public void testSimplestTask() {
     runtimeService.startProcessInstanceByKey("simpleTaskProcess");
+    String taskId = taskService.createTaskQuery().singleResult().getId();
+    taskService.complete(taskId);
   }
 
   @Deployment
