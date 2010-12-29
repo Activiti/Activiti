@@ -6,30 +6,181 @@
 	<name>Activiti - Upgrade</name>
 	<groupId>org.activiti</groupId>
 	<artifactId>activiti-upgrade</artifactId>
-
-	<parent>
-		<groupId>org.activiti</groupId>
-		<artifactId>activiti-root</artifactId>
-		<relativePath>../..</relativePath>
-		<version>5.0</version>
-	</parent>
-
-  <properties>
-    <skipTests>true</skipTests>
-  </properties>
+	<version>5.0-ALWAYS-SNAPSHOT</version>
+	
+	<properties>
+	  <skipTests>true</skipTests>
+	</properties>
 
 	<dependencies>
-
-    <dependency>
-      <groupId>org.activiti</groupId>
-      <artifactId>activiti-engine</artifactId>
-    </dependency>
-		
+		<dependency>
+			<groupId>org.activiti</groupId>
+			<artifactId>activiti-engine</artifactId>
+			<version>5.0</version>
+		</dependency>
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
+      <version>4.8.1</version>
     </dependency>
-
+    
+    <dependency>
+      <groupId>com.h2database</groupId>
+      <artifactId>h2</artifactId>
+      <version>1.2.132</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>mysql</groupId>
+      <artifactId>mysql-connector-java</artifactId>
+      <version>5.1.6</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>postgresql</groupId>
+      <artifactId>postgresql</artifactId>
+      <version>8.4-701.jdbc4</version>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
+
+  <repositories>
+    <repository>
+      <id>Activiti third party</id>
+      <url>http://maven.alfresco.com/nexus/content/repositories/activiti-thirdparty/</url>
+    </repository>
+    <repository>
+      <id>alfresco</id>
+      <url>http://maven.alfresco.com/nexus/content/groups/public</url>
+    </repository>
+    <repository>
+      <id>alfresco-snapshots</id>
+      <url>http://maven.alfresco.com/nexus/content/groups/public-snapshots</url>
+    </repository>
+    <repository>
+      <id>spring-extensions-milestone</id>
+      <name>Spring Extensions Milestone Repository</name>
+      <url>http://extensions.springframework.org/milestone</url>
+    </repository>
+  </repositories>
+
+  <pluginRepositories>
+    <pluginRepository>
+      <id>maven2.java.net</id>
+      <name>Java.net Repository for Maven 2</name>
+      <url>http://download.java.net/maven/2/</url>
+    </pluginRepository>
+  </pluginRepositories>
+
+  <build>
+    <plugins>
+      <plugin>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <configuration>
+          <source>1.5</source>
+          <target>1.5</target>
+          <showDeprecation>true</showDeprecation>
+          <showWarnings>true</showWarnings>
+          <optimize>true</optimize>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jar-plugin</artifactId>
+        <version>2.2</version>
+        <executions>
+          <execution>
+            <goals>
+              <goal>test-jar</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+
+  <profiles>
+    <profile>
+      <id>upgrade.database</id>
+      <activation>
+        <property>
+          <name>database</name>
+        </property>
+      </activation>
+		  <properties>
+		    <skipTests>false</skipTests>
+		  </properties>
+      <build>
+        <plugins>
+          <plugin>
+            <artifactId>maven-surefire-plugin</artifactId>
+            <configuration>
+              <failIfNoTests>false</failIfNoTests>
+              <trimStackTrace>false</trimStackTrace>
+              <redirectTestOutputToFile>true</redirectTestOutputToFile>
+              <includes>
+                <include>**/*AfterTest.java</include>
+              </includes>
+            </configuration>
+          </plugin>
+          <plugin>
+            <artifactId>maven-antrun-plugin</artifactId>
+            <!--
+              only worked with this version, there might be a bug with antrun
+              see http://jira.codehaus.org/browse/MANTRUN-109
+            -->
+            <version>1.4</version>
+            <executions>
+              <execution>
+                <id>customized.config.for.db</id>
+                <phase>process-test-classes</phase>
+                <goals>
+                  <goal>run</goal>
+                </goals>
+                <configuration>
+                  <tasks>
+                    <echo message="updating activiti configuration for ${database}" />
+                    <copy file="../../qa/upgrade/activiti.cfg.xml" todir="target/test-classes" overwrite="true">
+                      <filterset filtersfile="${user.home}/.activiti/upgrade/build.${database}.properties" />
+                    </copy>
+                  </tasks>
+                </configuration>
+              </execution>
+              <execution>
+                <id>database-test-drop-schema</id>
+                <phase>prepare-package</phase>
+                <goals>
+                  <goal>run</goal>
+                </goals>
+                <configuration>
+                  <tasks>
+                    <echo message="dropping schema in ${database}" />
+                    <property name="test_classpath" refid="maven.test.classpath" />
+                    <java classname="org.activiti.engine.impl.db.DbSchemaDrop">
+                      <classpath>
+                        <path path="${test_classpath}"/>
+                      </classpath>
+                    </java>
+                  </tasks>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>    
+
+  <distributionManagement>
+    <snapshotRepository>
+      <id>alfresco.snapshot.repo</id>
+      <url>http://maven.alfresco.com/nexus/content/repositories/activiti-snapshots/</url>
+      <uniqueVersion>false</uniqueVersion>
+    </snapshotRepository>
+    <repository>
+      <id>alfresco.release.repo</id>
+      <url>http://maven.alfresco.com/nexus/content/repositories/activiti/</url>
+    </repository>
+  </distributionManagement>
 
 </project>
