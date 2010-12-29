@@ -21,8 +21,7 @@
     construct an engine based on the configuration in that file.
     The following snippet shows an example configuration. 
     The following sections will give a detailed overview of the configuration properties.
-    <programlisting>
-&lt;beans xmlns=&quot;http://www.springframework.org/schema/beans&quot; 
+    <programlisting>&lt;beans xmlns=&quot;http://www.springframework.org/schema/beans&quot; 
        xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;
        xsi:schemaLocation=&quot;http://www.springframework.org/schema/beans   http://www.springframework.org/schema/beans/spring-beans.xsd&quot;&gt;
 
@@ -406,4 +405,34 @@ ProcessEngine processEngine = ProcessEngineConfiguration.createStandaloneInMemPr
      </para>
    </section>
   
+  <section id="databaseUpgrade">
+     <title>Database upgrade</title>
+     <para><link linkend="experimental"><emphasis role="bold">[EXPERIMENTAL]</emphasis></link></para>
+     <para>We don't yet have enough coverage testing of upgrade to have full confidence in it.  
+     That is why we still marked it as experimental.  Make sure you make a backup of your database 
+     (using your database backup capabilities) before you run an upgrade.
+     </para>
+     <para>By default, a version check will be performed each time a process engine is created.
+     This typically happens once at boot time of your application or of the Activiti webapps.
+     If the Activiti library notices a difference between the library version and the version  
+     of the Activiti database tables, then an exception is thrown.
+     </para> 
+     <para>To upgrade, you have to start with putting the following configuration property in your 
+     activiti.cfg.xml configuration file:
+     </para>
+    <programlisting>&lt;beans ... &gt;
+
+  &lt;bean id=&quot;processEngineConfiguration&quot; class=&quot;org.activiti.engine.impl.cfg.StandaloneProcessEngineConfiguration&quot;&gt;
+    &lt;!-- ... --&gt;
+    &lt;property name=&quot;databaseSchemaUpdate&quot; value=&quot;true&quot; /&gt;    
+    &lt;!-- ... --&gt;
+  &lt;/bean&gt;
+
+&lt;/beans&gt;</programlisting>
+     <para>Then just upgrade the Activiti libraries in your application.  Or start up a new version 
+     of Activiti and point it to an database that contains an older version.  With <literal>databaseSchemaUpdate</literal>
+     set to <literal>true</literal>, Activiti will automatically upgrade the DB schema to the newer version
+     the first time when it notices that libraries and DB schema are out of sync.
+     </para>
+   </section>
 </chapter>
