@@ -75,7 +75,8 @@
   </target>
 	
   <target name="internal.install.old.distro" unless="old.installation.available">
-    <unzip src="${downloads.dir}/activiti-${activiti.old.version}.zip" dest="target" />
+  	<mkdir dir="target/activiti-${activiti.old.version}" />
+    <unzip src="${downloads.dir}/activiti-${activiti.old.version}.zip" dest="target/activiti-${activiti.old.version}" />
   	<copy file="${user.home}/.activiti/upgrade/build.${database}.properties" todir="target/activiti-${activiti.old.version}/setup" overwrite="true" />
     <ant antfile="target/activiti-${activiti.old.version}/setup/build.xml" target="inflate.examples" inheritall="false" />
     <ant antfile="target/activiti-${activiti.old.version}/setup/build.xml" target="h2.install" inheritall="false">
