@@ -83,7 +83,7 @@
     </ant>
     <echo message="unpacking upgrade before test classes" />
     <exec executable="${mvn.executable}">
-      <arg line="dependency:unpack-dependencies -Dactiviti.upgrade.version=5.0 -DoutputDirectory=target/activiti-${activiti.old.version}-upgrade-before-classes -DexcludeTransitive=true" />
+      <arg line="dependency:unpack-dependencies -Dactiviti.upgrade.version=${activiti.old.version}-ALWAYS-SNAPSHOT -DoutputDirectory=target/activiti-${activiti.old.version}-upgrade-before-classes -DexcludeTransitive=true" />
     </exec>
   </target>
 	
