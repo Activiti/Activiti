@@ -20,7 +20,7 @@
 		                              install.old.distro,
 		                              build.engine.module,
 		                              clean.db">
-		
+    <copy file="${user.home}/.activiti/upgrade/build.${database}.properties" todir="target/activiti-${activiti.old.version}/setup" overwrite="true" />
     <ant antfile="target/activiti-${activiti.old.version}/setup/build.xml" target="h2.start" inheritall="false">
     	<property name="db" value="${database}" />
     </ant>
@@ -66,6 +66,7 @@
   </target>
 	
   <target name="internal.get.old.distro" unless="old.distro.available">
+  	<mkdir dir="${downloads.dir}" />
 		<get src="${download.old.distro.url}" dest="${downloads.dir}/activiti-${activiti.old.version}.zip" />
 	</target>
 
