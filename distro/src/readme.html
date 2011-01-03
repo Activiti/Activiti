@@ -63,9 +63,87 @@
 
   <h4>Highlights</h4>
   <ul>
-    <li></li>
+    <li>Added Activiti KickStart making the creation of new BPMN process models as easy as 1, 2, 3</li>
+    <li>Added automatic upgrade of the DB schema from 5.0 to 5.1</li>
+    <li>Added generation of process definition diagram based on DI information</li>
+    <li>Added display of process definition diagram</li>
+    <li>Added historic task instances</li>
+    <li>Fixed various bugs</li>
   </ul>
 
+<h4>        Sub-task
+</h4>
+<ul>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-386'>ACT-386</a>] -         Split the BPMN 2.0 marshalling into marshalling and validation parts
+</li>
+</ul>
+    
+<h4>        Bug
+</h4>
+<ul>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-418'>ACT-418</a>] -         Missing groovy dependency in demo setup
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-419'>ACT-419</a>] -         Remove automatic leave when using delegateExpression in serviceTask
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-424'>ACT-424</a>] -         BPMN Export differs between manual and automatic and causes unnecessary exceptions
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-430'>ACT-430</a>] -         SequenceFlows are only deleted for Task elements
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-434'>ACT-434</a>] -         SaveHandler is only invoked from key combination
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-443'>ACT-443</a>] -         HistoricDetail doesn&#39;t use activitiyInstanceId
+</li>
+</ul>
+    
+<h4>        Improvement
+</h4>
+<ul>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-18'>ACT-18</a>] -         Show process definition diagram
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-226'>ACT-226</a>] -         Retrieve the expression from the PvmTransition
+</li>
+</ul>
+    
+<h4>        New Feature
+</h4>
+<ul>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-336'>ACT-336</a>] -         Create email service task node
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-385'>ACT-385</a>] -         Create extension point to validate diagrams
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-408'>ACT-408</a>] -         Allow usage of lists as property of CustomServiceTask
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-413'>ACT-413</a>] -         Allow parametrization of PropertyTypes
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-421'>ACT-421</a>] -         Introduce task-local variables
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-455'>ACT-455</a>] -         Make parselisteners configurable on ProcessEngineConfiguration
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-464'>ACT-464</a>] -         Introduce HistoricTaskInstance
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-470'>ACT-470</a>] -         Create and include Activiti KickStart in the distribution
+</li>
+</ul>
+    
+<h4>        Task
+</h4>
+<ul>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-293'>ACT-293</a>] -         Refactor variable map
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-420'>ACT-420</a>] -         Automatic upgrade
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-439'>ACT-439</a>] -         Extract image generation in code in module activiti-engine
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-440'>ACT-440</a>] -         Add process image generation to bpmn deployer
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-444'>ACT-444</a>] -         Add task query criteria for taskDefinitionKey and -Like
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-458'>ACT-458</a>] -         Check if seperate selectTaskByQueryCriteria is needed for MySQL in task.mapping.xml
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-471'>ACT-471</a>] -         Add taskId ref to HistoricDetail
+</li>
+</ul>
+        
   <h3>Release Notes - Activiti - Version 5.0</h3>
 
   <h4>Highlights</h4>
