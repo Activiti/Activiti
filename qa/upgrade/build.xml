@@ -29,18 +29,22 @@
       <property name="db" value="${database}" />
     	<property name="feature.cycle" value="disabled" />
      </ant>
-		<mkdir dir="target/test-results-before" />
+    <echo message="unpacking upgrade before test classes" />
+    <exec executable="${mvn.executable}">
+      <arg line="dependency:unpack-dependencies -Dactiviti.upgrade.version=${activiti.old.version}-ALWAYS-SNAPSHOT -DoutputDirectory=target/activiti-${activiti.old.version}-upgrade-before-classes -DexcludeTransitive=true" />
+    </exec>
     <echo message="updating activiti cfg fir the tests before migration" />
-    <mkdir dir="target/test-results-before" />
     <copy file="activiti.cfg.xml" todir="target/activiti-${activiti.old.version}-upgrade-before-classes" overwrite="true">
       <filterset filtersfile="${user.home}/.activiti/upgrade/build.${database}.properties" />
     </copy>
+    <mkdir dir="target/test-results-before" />
     <echo message="running before tests" />
 		<junit>
 			<classpath>
 				<pathelement location="target/activiti-${activiti.old.version}-upgrade-before-classes" />
 				<fileset dir="target/activiti-${activiti.old.version}/workspace/activiti-engine-examples/libs-runtime" />
         <fileset dir="target/activiti-${activiti.old.version}/workspace/activiti-engine-examples/libs-test" />
+        <pathelement location="${oracle.driver.path}" />
 			</classpath>
 			<batchtest todir="target/test-results-before" fork="yes">
 				<fileset dir="target/activiti-${activiti.old.version}-upgrade-before-classes">
@@ -84,10 +88,6 @@
     <ant antfile="target/activiti-${activiti.old.version}/setup/build.xml" target="h2.install" inheritall="false">
       <property name="db" value="${database}" />
     </ant>
-    <echo message="unpacking upgrade before test classes" />
-    <exec executable="${mvn.executable}">
-      <arg line="dependency:unpack-dependencies -Dactiviti.upgrade.version=${activiti.old.version}-ALWAYS-SNAPSHOT -DoutputDirectory=target/activiti-${activiti.old.version}-upgrade-before-classes -DexcludeTransitive=true" />
-    </exec>
   </target>
 	
 	<target name="build.engine.module">
