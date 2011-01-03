@@ -109,8 +109,9 @@
     <mkdir dir="target/libs-engine-runtime-feature-groovy" />
 		<move todir="target/libs-engine-runtime-feature-groovy">
 			<fileset dir="target/libs-engine-test">
-				<include name="groovy-*.jar" />
+        <include name="antlr-*.jar" />
         <include name="asm-*.jar" />
+				<include name="groovy-*.jar" />
 			</fileset>
 	  </move>
     <mkdir dir="target/libs-engine-runtime-feature-jpa" />
