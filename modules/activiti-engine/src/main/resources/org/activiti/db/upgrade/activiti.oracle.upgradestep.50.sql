@@ -15,7 +15,7 @@ create table ACT_HI_TASKINST (
 );
 
 alter table ACT_HI_DETAIL 
-add column TASK_ID_ NVARCHAR2(64);
+add TASK_ID_ NVARCHAR2(64);
 
 update ACT_GE_PROPERTY
 set 
