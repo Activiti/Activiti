@@ -27,6 +27,7 @@
 		<echo message="creating activiti tables" />
     <ant antfile="target/activiti-${activiti.old.version}/setup/build.xml" target="db.create" inheritall="false">
       <property name="db" value="${database}" />
+    	<property name="feature.cycle" value="disabled" />
      </ant>
 		<mkdir dir="target/test-results-before" />
     <echo message="updating activiti cfg fir the tests before migration" />

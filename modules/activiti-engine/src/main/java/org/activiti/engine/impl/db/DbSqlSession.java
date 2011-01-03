@@ -533,6 +533,8 @@ public class DbSqlSession implements Session {
       } finally {
         IoUtil.closeSilently(inputStream);
       }
+    } else {
+      log.fine("no upgrade script "+resourceName+" for upgrade step from 5."+minorDbVersionNumber+" to 5."+(minorDbVersionNumber+1));
     }
   }
 
