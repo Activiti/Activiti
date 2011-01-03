@@ -19,7 +19,7 @@ add TASK_ID_ NVARCHAR2(64);
 
 update ACT_GE_PROPERTY
 set 
-  VALUE_ = '5.1-SNAPSHOT',
+  VALUE_ = '5.1',
   REV_ = 2
 where
   NAME_ = 'schema.version';
