@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="activiti.qa.server">
 	<property file="${user.home}/.activiti/build.properties" />
-	<property name="activiti.version" value="5.1-SNAPSHOT" />
+	<property name="activiti.version" value="5.2-SNAPSHOT" />
 	<property name="activiti.home" value="../../distro/target/activiti-${activiti.version}/" />
 
 	<condition property="mvn.executable" value="mvn.bat" else="mvn">

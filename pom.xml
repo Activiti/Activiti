@@ -8,7 +8,7 @@
   <artifactId>activiti-root</artifactId>
 
   <packaging>pom</packaging>
-  <version>5.1-SNAPSHOT</version>
+  <version>5.2-SNAPSHOT</version>
   <properties>
     <spring.framework.version>3.0.3.RELEASE</spring.framework.version>
     <spring.surf.version>1.0.0-RC2</spring.surf.version>
