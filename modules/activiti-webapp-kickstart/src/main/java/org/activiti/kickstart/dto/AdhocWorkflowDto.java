@@ -14,7 +14,6 @@ package org.activiti.kickstart.dto;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -215,7 +214,7 @@ public class AdhocWorkflowDto {
     // Sequence flow generation
     AtomicInteger flowIndex = new AtomicInteger(1); // Hacky hacky, Integer doesnt have an increment() function ... lazy me
     AtomicInteger gatewayIndex = new AtomicInteger(1);
-    LinkedList<FlowElement> lastFlowElementOfBlockStack = new LinkedList<FlowElement>();
+    List<FlowElement> lastFlowElementOfBlockStack = new ArrayList<FlowElement>();
     lastFlowElementOfBlockStack.add(startEvent);
 
     // All tasks blocks
@@ -229,9 +228,16 @@ public class AdhocWorkflowDto {
     process.getFlowElement().add(endEvent);
 
     // Seq flow lastTask -> end
-    createSequenceFlow(process, flowIndex, lastFlowElementOfBlockStack.peekLast(), endEvent);
+    createSequenceFlow(process, flowIndex, getLast(lastFlowElementOfBlockStack), endEvent);
 
     return definitions;
+  }
+  
+  protected FlowElement getLast(List<FlowElement> elements) {
+    if (elements.size() > 0) {
+      return elements.get(elements.size() - 1);
+    }
+    return null;
   }
 
   protected SequenceFlow createSequenceFlow(Process process, AtomicInteger flowIndex, 
@@ -246,10 +252,10 @@ public class AdhocWorkflowDto {
 
   protected void convertTaskBlockToBpmn20(Process process, AtomicInteger flowIndex, 
           AtomicInteger gatewayIndex, List<UserTask> taskBlock,
-          LinkedList<FlowElement> lastFlowElementOfBlockStack) {
+          List<FlowElement> lastFlowElementOfBlockStack) {
 
     SequenceFlow sequenceFlow = createSequenceFlow(process, flowIndex, 
-            lastFlowElementOfBlockStack.peekLast(), null);
+            getLast(lastFlowElementOfBlockStack), null);
     if (taskBlock.size() == 1) {
       UserTask userTask = taskBlock.get(0);
       sequenceFlow.setTargetRef(userTask);
