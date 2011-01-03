@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<ns4:definitions targetNamespace="adhoc"
+	xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:ns4="http://www.omg.org/spec/BPMN/20100524/MODEL"
+	xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:ns5="http://www.signavio.com"
+	xmlns:ns6="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI">
+	<ns4:process isExecutable="false" name="Expense process"
+		id="adhoc_Expense_process">
+		<ns4:documentation id="adhoc_Expense_process_documentation">Example process created using Activiti KickStart</ns4:documentation>
+		<ns4:startEvent id="theStart" />
+		<ns4:sequenceFlow sourceRef="theStart" targetRef="task_1" id="flow_1" />
+		<ns4:userTask ns6:formKey="org/activiti/examples/adhoc/Request_expense_refund.form" name="Request expense refund" id="task_1">
+			<ns4:documentation id="task_1_documentation">Request the refund of anexpense done for company business.</ns4:documentation>
+			<ns4:humanPerformer id="task_1_humanPerformer">
+				<ns4:resourceAssignmentExpression id="task_1_humanPerformer_assignmentExpression">
+					<ns4:formalExpression id="task_1_humanPerformer_formalExpressions">kermit</ns4:formalExpression>
+				</ns4:resourceAssignmentExpression>
+			</ns4:humanPerformer>
+		</ns4:userTask>
+		<ns4:sequenceFlow sourceRef="task_1" targetRef="task_2" id="flow_2" />
+		<ns4:userTask ns6:formKey="org/activiti/examples/adhoc/Handle_expense_request.form" name="Handle expense request" id="task_2">
+			<ns4:documentation id="task_2_documentation">${Employeename} has filed an expense refund request.</ns4:documentation>
+			<ns4:potentialOwner id="task_2_potentialOwner">
+				<ns4:resourceAssignmentExpression id="task_2_potentialOwner_assignmentExpression">
+					<ns4:formalExpression id="task_2_potentialOwner_formalExpressions">management</ns4:formalExpression>
+				</ns4:resourceAssignmentExpression>
+			</ns4:potentialOwner>
+		</ns4:userTask>
+		<ns4:endEvent id="theEnd" />
+		<ns4:sequenceFlow sourceRef="task_2" targetRef="theEnd" id="flow_3" />
+	</ns4:process>
+	<bpmndi:BPMNDiagram id="Expense_process_diagram">
+		<bpmndi:BPMNPlane bpmnElement="adhoc_Expense_process"
+			id="Expense_process_plane">
+			<bpmndi:BPMNShape bpmnElement="theStart" id="theStart_shape">
+				<dc:Bounds x="0.0" y="45.0" width="20.0" height="20.0" />
+			</bpmndi:BPMNShape>
+			<bpmndi:BPMNEdge bpmnElement="flow_1" id="flow_1_edge">
+				<di:waypoint x="20.0" y="55.0" />
+				<di:waypoint x="70.0" y="55.0" />
+			</bpmndi:BPMNEdge>
+			<bpmndi:BPMNShape bpmnElement="task_1" id="task_1_shape">
+				<dc:Bounds x="70.0" y="25.0" width="130.0" height="60.0" />
+			</bpmndi:BPMNShape>
+			<bpmndi:BPMNEdge bpmnElement="flow_2" id="flow_2_edge">
+				<di:waypoint x="200.0" y="55.0" />
+				<di:waypoint x="250.0" y="55.0" />
+			</bpmndi:BPMNEdge>
+			<bpmndi:BPMNShape bpmnElement="task_2" id="task_2_shape">
+				<dc:Bounds x="250.0" y="25.0" width="130.0" height="60.0" />
+			</bpmndi:BPMNShape>
+			<bpmndi:BPMNEdge bpmnElement="flow_3" id="flow_3_edge">
+				<di:waypoint x="380.0" y="55.0" />
+				<di:waypoint x="430.0" y="55.0" />
+			</bpmndi:BPMNEdge>
+			<bpmndi:BPMNShape bpmnElement="theEnd" id="theEnd_shape">
+				<dc:Bounds x="430.0" y="45.0" width="20.0" height="20.0" />
+			</bpmndi:BPMNShape>
+		</bpmndi:BPMNPlane>
+	</bpmndi:BPMNDiagram>
+</ns4:definitions>

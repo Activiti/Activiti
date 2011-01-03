@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions id="definitions" 
+  xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+  xmlns:activiti="http://activiti.org/bpmn"
+  targetNamespace="Examples">
+  
+  <process id="nestedSimpleSubProcess">
+  
+    <startEvent id="theStart" />
+    <sequenceFlow id="flow1" sourceRef="theStart" targetRef="firstSubProcess" />
+    
+    <subProcess id="firstSubProcess">
+    
+      <startEvent id="firstSubProcessStart" />
+      <sequenceFlow id="flow2" sourceRef="firstSubProcessStart" targetRef="secondSubProcess" />
+      
+      <subProcess id="secondSubProcess">
+      
+        <startEvent id="secondSubProcessStart" />
+        <sequenceFlow id="flow3" sourceRef="secondSubProcessStart" targetRef="thirdSubProcess" />
+        
+        <subProcess id="thirdSubProcess">
+          
+          <startEvent id="thirdSubProcessStart" />
+          <sequenceFlow id="flow4" sourceRef="thirdSubProcessStart" targetRef="thirdSubProcessTask" />
+          <userTask id="thirdSubProcessTask" name="Task in subprocess" />
+          <sequenceFlow id="flow5" sourceRef="thirdSubProcessTask" targetRef="thirdSubProcessEnd" />
+          <endEvent id="thirdSubProcessEnd" />    
+        
+        </subProcess>
+        
+        <sequenceFlow id="flow6" sourceRef="thirdSubProcess" targetRef="secondSubProcessEnd" />
+        <endEvent id="secondSubProcessEnd" />
+      
+      </subProcess>
+      
+      <sequenceFlow id="flow7" sourceRef="secondSubProcess" targetRef="firstSubProcessEnd" />
+      <endEvent id="firstSubProcessEnd" />
+    
+    </subProcess>
+    
+    <sequenceFlow id="flow8" sourceRef="firstSubProcess" targetRef="afterSubProcessTask" />
+    <userTask id="afterSubProcessTask" name="Task after subprocesses" />
+    <sequenceFlow id="flow9" sourceRef="afterSubProcessTask" targetRef="theEnd" />
+    
+    <endEvent id="theEnd" />
+    
+  </process>
+
+</definitions>

@@ -1,0 +1,5 @@
+<webscript>
+  <shortname>Activiti - Cycle Settings</shortname>
+  <description>Provides access to settings for Activiti Cycle</description>
+  <url>/component/settings</url>
+</webscript>

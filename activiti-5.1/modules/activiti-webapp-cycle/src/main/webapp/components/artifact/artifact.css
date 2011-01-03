@@ -1,0 +1,133 @@
+.yui-skin-sam .yui-navset .yui-nav a, .yui-skin-sam .yui-navset .yui-navset-top .yui-nav a {
+  border-left: 1px solid !important;
+  border-right: 1px solid !important;
+  border-color: #A3A3A3 !important;
+}
+.yui-skin-sam .yui-navset .yui-nav .selected a, .yui-skin-sam .yui-navset .yui-nav .selected a em {
+  border-color: #A3A3A3 !important;
+}
+.yui-skin-sam .yui-navset .yui-nav .selected a, .yui-skin-sam .yui-navset .yui-nav .selected a:focus, .yui-skin-sam .yui-navset .yui-nav .selected a:hover {
+  color: #FFFFFF !important;
+}
+.yui-skin-sam .yui-navset .yui-content {
+  background: none repeat scroll 0 0 #F9F9F9;
+}
+
+.artifact-image, .artifact-html, .artifact-html-reference, .artifact-binary, .artifact-code, .artifact-text-plain {
+  overflow: auto;
+}
+
+.artifact-code, .artifact-text-plain, .artifact-html {
+  background-color:#FFFFFF;
+  margin:0.5em;
+  padding:1.2em;
+}
+
+.artifact-html iframe, .artifact-html-reference iframe {
+  border: 0;
+  width: 100%;
+  min-height: 600px;
+}
+
+#options-div.active {
+  float:right;
+  position:relative;
+  z-index:2;
+}
+
+#artifact-actions, #artifact-links, #artifact-downloads {
+  float: left;
+  margin-right: 15px;
+}
+
+#artifact-div .yui-navset div.loading {
+  background:url("/activiti-cycle/res/images/loading.gif") no-repeat scroll center center transparent;
+  height:8em;
+}
+
+/* formatting of stack traces */
+
+.cycle-stack-trace {
+  color: #999;
+  display: block;
+}
+
+.cycle-stack-trace:hover {
+  color: #333;
+  display: block;
+}
+
+.cycle-stack-trace-highlight {
+  color: #333;
+  display: block;
+}
+
+.cycle-stack-trace-highlight:hover {
+  background: #666;
+  color: #fff;
+}
+
+/* Comments */
+
+#Activiti div .comments {
+  margin-top: 20px;
+}
+
+#Activiti div.comment {
+  padding: 17px 47px 15px 0;
+  border-bottom: 1px solid transparent;
+  background-image:url("/activiti-cycle/res/images/comments_48.png");
+  background-position:right top;
+  background-repeat:no-repeat;
+}
+
+#Activiti div.comment div.comment {
+  background-image:url("/activiti-cycle/res/images/arrow_response.png");
+  background-position:right top;
+  background-repeat:no-repeat;
+  padding: 0 0 11px 17px;
+}
+
+#Activiti span.comment-content {
+ display: block;
+ margin:7px 0 10px 0;
+ padding: 7px;
+ background: #EFEFEF;
+ border-bottom: 1px solid #AAA;
+}
+
+#Activiti span.comment-content:hover {
+  background: #EFEFEF;
+  border-bottom: 1px solid #AAA;
+}
+
+#Activiti span.comment-author {
+  background:url("/activiti-cycle/res/images/user-icon.png") no-repeat scroll left center transparent;
+  color:#007DC3;
+  font-size:1.6em;
+  padding-left:20px;
+}
+
+#Activiti span.comment-date {
+  color:#999999;
+  margin-left: 7px;
+}
+
+#Activiti textarea#comment-input {
+  width: 100%;
+  margin-bottom: 3px;
+}
+
+#Activiti form.comment-reply textarea {
+  margin-bottom: 3px;
+  width: 100%;
+}
+
+#Activiti div.comment a.comment-reply-link {
+  position: inherit;
+  background: url("/activiti-cycle/res/images/comments_add.png") no-repeat;
+  padding-left: 20px;
+  margin: 0 7px 13px 0;
+  line-height:1.3em;
+  display: block;
+}

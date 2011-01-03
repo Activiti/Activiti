@@ -1,0 +1,32 @@
+<h1>Sample form for User Task</h1>
+
+<p>
+  <b>Just show the process variable:</b> ${test}
+<p>
+
+<p>
+  <b>Mandatory input: </b>
+  <input type="text" name="inputText" value="" />
+  <input type="hidden" name="inputText_required" value="true" />
+<p>
+
+<p>
+  <b>Decide something!</b><br/>
+  <input type="radio" name="decisionResult" value="true" checked="true"/> Yes <br/>
+  <input type="radio" name="decisionResult" value="false"/> No <br/> 
+  <input type="hidden" name="decisionResult_type" value="Boolean"/>
+</p>
+
+<p>
+  <b>Comments:</b><br/>
+  <textarea name="comments" value=""></textarea>
+</p>
+
+<p>
+  <b>Select from Drodownbox:</b><br/>
+  <select id="classificationBox" name="websiteName">
+    <option value="Value1">Value1</option>
+    <option value="Value2">Value2</option>
+    <option value="Value3">Value3</option>
+  </select>
+</p>

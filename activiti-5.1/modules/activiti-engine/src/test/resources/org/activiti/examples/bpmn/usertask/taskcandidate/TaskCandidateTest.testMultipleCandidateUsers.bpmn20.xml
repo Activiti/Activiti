@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions id="taskAssigneeExample" 
+  xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+  xmlns:activiti="http://activiti.org/bpmn"
+  targetNamespace="Examples">
+	
+	<process id="multipleCandidateUsersExample" name="Book flight for attending conference">
+	
+		<startEvent id="theStart" />
+		
+		<sequenceFlow id="flow1" sourceRef="theStart" targetRef="theTask" />
+
+		<userTask id="theTask" name="Book flight for Activiti conference" >
+		  <documentation>
+		    Book flight Brussels-Rome for Activiti BPM conference.
+		  </documentation>
+		  <potentialOwner>
+		    <resourceAssignmentExpression>
+		      <formalExpression>user(gonzo), user(kermit)</formalExpression>
+		    </resourceAssignmentExpression>
+		  </potentialOwner>
+		</userTask>
+		
+		<sequenceFlow id="flow2" sourceRef="theTask" targetRef="theEnd" />
+		
+		<endEvent id="theEnd" />
+		
+	</process>
+
+</definitions>

@@ -1,0 +1,7 @@
+<webscript>
+  <shortname>Retrieve a list of available repository connector configurations</shortname>
+  <description>Returns a list of available repository connector configurations as a JSON String, containing the class name and the display name of the configurations.</description>
+  <url>/available-connector-configs</url>
+  <authentication>user</authentication>
+  <format default="json">argument</format>
+</webscript>
