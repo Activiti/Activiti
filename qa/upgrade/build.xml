@@ -101,7 +101,8 @@
 	</condition>
 	<target name="clean.db" if="is.database.mysql" depends="install.old.distro">
 	  <property file="${user.home}/.activiti/upgrade/build.${database}.properties" />
-	    <sql driver="${jdbc.driver}" password="${jdbc.password}" url="${jdbc.url}" userid="${jdbc.username}">
+		<echo message="cleaning db ${jdbc.url}" />
+	  <sql driver="${jdbc.driver}" password="${jdbc.password}" url="${jdbc.url}" userid="${jdbc.username}">
       <classpath>
         <fileset dir="target/activiti-${activiti.old.version}/workspace/activiti-engine-examples/libs-test" />
       </classpath>
