@@ -15,8 +15,7 @@ package org.activiti.rest.builder.process;
 
 import java.util.List;
 
-import org.activiti.engine.impl.pvm.runtime.ExecutionImpl;
-import org.activiti.engine.impl.runtime.ExecutionEntity;
+import org.activiti.engine.impl.pvm.PvmProcessInstance;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.rest.builder.JSONConverter;
 import org.activiti.rest.util.JSONUtil;
@@ -41,8 +40,8 @@ public class ProcessInstanceJSONConverter implements JSONConverter<ProcessInstan
   }
   
   private void addActiveActivityNames(ProcessInstance processInstance, JSONObject object) throws JSONException {
-    if(processInstance instanceof ExecutionEntity) {      
-      List<String> activeActivities = ((ExecutionImpl) processInstance).findActiveActivityIds();
+    if(processInstance instanceof PvmProcessInstance) {      
+      List<String> activeActivities = ((PvmProcessInstance) processInstance).findActiveActivityIds();
       JSONArray activityNames =JSONUtil.putNewArray(object, "activityNames");
       for (String activity : activeActivities) {
         activityNames.put(activity);
