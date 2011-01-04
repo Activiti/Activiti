@@ -53,12 +53,12 @@
   </bean>
   
   <!-- Plug in custom template processor based on JSONObjects -->
-  <bean id="jsonObjectTemplateProcessor" class="org.activiti.rest.builder.JSONTemplateProcessor">
+  <!--bean id="jsonObjectTemplateProcessor" class="org.activiti.rest.builder.JSONTemplateProcessor">
       <property name="templateProcessorRegistry" ref="webscripts.web.templateregistry" />
       <property name="defaultEncoding" value="UTF-8" />
       <property name="templateNamePrefix" value="org/activiti/rest/api/" />
       <property name="indentFactor" value="2" />
-  </bean>
+  </bean-->
 
   <!--
     Java backed webscripts needs to be registered.
