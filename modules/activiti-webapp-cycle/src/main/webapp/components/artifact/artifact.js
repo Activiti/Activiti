@@ -120,15 +120,17 @@
           optionsDiv.innerHTML = "";
           optionsDiv.removeAttribute("class");
         }
-        // instantiate the tagging component
-        new Activiti.component.TaggingComponent(this.id, {connectorId: eventValue.connectorId, repositoryNodeId: eventValue.repositoryNodeId, repositoryNodeLabel: eventValue.name}, "tags-div");
+        if(eventValue.repositoryNodeId) {
+          // instantiate the tagging component
+          new Activiti.component.TaggingComponent(this.id, {connectorId: eventValue.connectorId, repositoryNodeId: eventValue.repositoryNodeId, repositoryNodeLabel: eventValue.name}, "tags-div");
+        }
         // Check whether the selected node is a file node. If so, load its data
         if(eventValue.isRepositoryArtifact ) {
           this.services.repositoryService.loadArtifact(eventValue.connectorId, eventValue.repositoryNodeId);
         }
         // Update the heading that displays the name of the selected node
         headerEl.id = "header-" + eventValue.repositoryNodeId;
-        headerEl.innerHTML = eventValue.name;
+        headerEl.innerHTML = eventValue.name||'';
         // Remove the comments
         var commentsDiv = YAHOO.util.Dom.get(this.id + '-comments');
         if(commentsDiv) {

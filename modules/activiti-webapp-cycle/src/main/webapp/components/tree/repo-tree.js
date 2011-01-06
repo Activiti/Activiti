@@ -28,6 +28,11 @@
 
     this._treeView = {};
     this._dialog = {};
+    
+    this._contextMenu = {};
+    
+    this._connectorId = "";
+    this._repositoryNodeId = "";
 
     return this;
   };
@@ -43,8 +48,10 @@
     */
     onReady: function RepoTree_onReady()
     {
-      // load the json representation of the tree, onLoadTreeSuccess will be called due to naming convention
-      this.services.repositoryService.loadTree();
+      if (!Activiti.event.isInitEvent(Activiti.event.updateArtifactView))
+      {
+        this.fireEvent(Activiti.event.updateArtifactView, {connectorId: "/", repositoryNodeId: ""}, null);
+      }
     },
     
     /**
@@ -58,7 +65,7 @@
     onLoadTreeSuccess: function RepoTree_RepositoryService_onLoadTreeSuccess(response)
     {
       var me = this;
-  
+
       // Handle authentication errors:
       // If the server reports that there are repositories in the users configuration that need a username and password to log in,
       // we'll show a dialog that prompts the user to provide his username and password for each of these repositories.
@@ -69,7 +76,10 @@
       // Login is OK, we can get on with drawing the tree...
       var treeNodesJson = response.json;
       var loadTreeNodes = function (node, fnLoadComplete) {
-        if(node.data.file) {
+        if(node.data.connectorId && node.data.artifactId && node.data.connectorId == me._connectorId && node.data.artifactId == me._repositoryNodeId) {
+          me.highlightCurrentNode();
+        }
+        if(node.data.file || node.children.length > 0) {
           // Don't attempt to load child nodes for artifacts
           fnLoadComplete();
         } else {
@@ -88,13 +98,18 @@
       me._treeView.render();
 
       me._treeView.subscribe("clickEvent", this.onLabelClick, null, this);
-		  
-		  this._contextMenu = new YAHOO.widget.ContextMenu("mycontextmenu", {
+
+      var contextMenuDiv = document.getElementById("cycle-tree-context-menu-div");
+      if(contextMenuDiv) {
+        contextMenuDiv.parentNode.removeChild(contextMenuDiv);
+      }
+
+		  me._contextMenu = new YAHOO.widget.ContextMenu("cycle-tree-context-menu-div", {
 		      trigger: "treeDiv1"
 		    });
 
-      this._contextMenu.render(document.body);
-      this._contextMenu.subscribe("triggerContextMenu", function (event, menu) {
+      me._contextMenu.render(document.body);
+      me._contextMenu.subscribe("triggerContextMenu", function (event, menu) {
           // retrieve the node the context menu was triggered on
           var oTarget = this.contextEventTarget;
           var node = me._treeView.getNodeByElement(oTarget);
@@ -109,9 +124,12 @@
           }
           this.render();
         });
-              
-      // me._treeView.subscribe("expand", this.onNodeExpand, null, this);
-      // me._treeView.subscribe("collapse", this.onNodeCollapse, null, this);
+        
+      var reloadLink = document.createElement('a');
+      reloadLink.setAttribute('id', 'tree-refresh-link')
+      reloadLink.setAttribute('href', "javascript:location.reload();")
+      reloadLink.innerHTML = "refresh tree";
+      document.getElementById("treeDiv1").appendChild(reloadLink);
     },
 
     /**
@@ -223,22 +241,6 @@
       this.fireEvent(Activiti.event.updateArtifactView, {"connectorId": event.node.data.connectorId, "repositoryNodeId": event.node.data.artifactId, "isRepositoryArtifact": event.node.data.file, "name": event.node.label, "activeTabIndex": 0}, null, true);
     },
 
-    // onNodeExpand: function RepoTree_onNodeExpand (node)
-    //    {
-    // 
-    //      // TODO
-    //      // do the cookie processing to store the expand/collapse state of the tree
-    // 
-    //    },
-    //    
-    //    onNodeCollapse: function RepoTree_onNodeCollapse (node)
-    //    {
-    // 
-    //      // TODO
-    //      // do the cookie processing to store the expand/collapse state of the tree
-    // 
-    //    },
-
     /**
      * Event listener for "Activiti.event.updateArtifactView" event, sets the focus to the currently active node in the tree.
      *
@@ -246,27 +248,38 @@
      * @param event {Object} the event that triggered the invokation of this method
      * @param args {array} an array of arguments containing the object literal of the event at index 1
      */
-    onUpdateArtifactView: function Artifact_onUpdateArtifactView(event, args)
+    onUpdateArtifactView: function RepoTree_onUpdateArtifactView(event, args)
     {
-      if(!this._treeView._nodes) {
+      this._connectorId = args[1].value.connectorId;
+      this._repositoryNodeId = args[1].value.repositoryNodeId;
+      if(!this._treeView._nodes || !this.getNodeByConnectorAndId(this._connectorId, this._repositoryNodeId)) {
         // tree is not yet initialized, we are coming from an external URL
-        // TODO: load the tree up to the currently selected node
+        this.services.repositoryService.loadTree({connectorId: this._connectorId, nodeId: this._repositoryNodeId});
       } else {
         // tree is initialized, this is either a regular click on the tree or an event from the browser history manager
-        var connectorId = args[1].value.connectorId;
-        var repositoryNodeId = args[1].value.repositoryNodeId;
-        var nodes = this._treeView.getNodesBy( function(node) {
-          if(node.data.connectorId && node.data.artifactId && node.data.connectorId === connectorId && node.data.artifactId === repositoryNodeId) {
-            return true;
-          }
-          return false;
-        });
+        this.highlightCurrentNode();
+      }
+    },
 
-        if(nodes && nodes[0] && (nodes[0] != this._treeView.currentFocus) ) {
-          // if the node isn't already focused this is a browser history event and we manually set focus to the current node
-          nodes[0].focus();
+    highlightCurrentNode: function RepoTree_highlightCurrentNode() {
+      var me = this;
+      var node = this.getNodeByConnectorAndId(this._connectorId, this._repositoryNodeId);
+      if(node && (node != this._treeView.currentFocus) ) {
+        // if the node isn't already focused this is a browser history event and we manually set focus to the current node
+        if(node) {
+          node.focus();
         }
       }
+    },
+
+    getNodeByConnectorAndId: function TreeView_getNodeByConnectorAndId(connectorId, id) {
+      var nodes = this._treeView.getNodesBy( function(node) {
+        if(node.data.connectorId && node.data.artifactId && node.data.connectorId === connectorId && node.data.artifactId === id) {
+          return true;
+        }
+        return false;
+      });
+      return nodes ? nodes[0] : null;
     }
 
   });

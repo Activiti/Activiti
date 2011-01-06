@@ -57,9 +57,9 @@
      */
     loadTreeURL: function RepositoryService_loadTreeURL(data)
     {
-      var url = Activiti.service.REST_PROXY_URI_RELATIVE + "child-nodes?connectorId=/&artifactId=''";
+      var url = Activiti.service.REST_PROXY_URI_RELATIVE + "tree";
       if(data) {
-        url += "&" + Activiti.service.Ajax.jsonToParamString(data);
+        url += "?" + Activiti.service.Ajax.jsonToParamString(data);
       }
       return url;
     },

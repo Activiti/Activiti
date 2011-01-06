@@ -119,3 +119,14 @@
 #Activiti .yui-panel .bd p {
   margin:0.5em 0.25em 1em;
 }
+
+#Activiti a#tree-refresh-link {
+  position:absolute;
+  right:10px;
+  top:5px;
+  color: #007DC3;
+}
+
+#Activiti a#tree-refresh-link:hover {
+  text-decoration: underline;
+}
