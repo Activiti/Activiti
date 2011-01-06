@@ -65,6 +65,16 @@
             <artifactId>cxf-rt-transports-http-jetty</artifactId>
             <scope>test</scope>
         </dependency>
+        <dependency>
+        	<groupId>org.apache.cxf</groupId>
+        	<artifactId>cxf-rt-transports-http</artifactId>
+        	<scope>compile</scope>
+        </dependency>
+        <dependency>
+        	<groupId>javax.servlet</groupId>
+        	<artifactId>servlet-api</artifactId>
+        	<scope>provided</scope>
+        </dependency>
 	</dependencies>
 			
 	<profiles>
