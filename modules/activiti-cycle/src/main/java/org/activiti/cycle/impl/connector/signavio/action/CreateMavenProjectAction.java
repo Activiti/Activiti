@@ -94,11 +94,6 @@ public class CreateMavenProjectAction extends CreateTechnicalBpmnXmlAction {
     return artifact.getMetadata().getName();
   }
 
-  @Override
-  public String getFormResourceName() {
-    return getFormNameForClass(CreateTechnicalBpmnXmlAction.class);
-  }
-
   /**
    * create a project from the Maven template and return the RepositoryArtifact
    * representing the bpmn process model
