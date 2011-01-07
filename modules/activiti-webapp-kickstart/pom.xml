@@ -77,10 +77,6 @@
 				<enabled>true</enabled>
 			</snapshots>
 		</repository>
-		<repository>
-			<id>alfresco</id>
-			<url>http://maven.alfresco.com/nexus/content/groups/public</url>
-		</repository>
 	</repositories>
 
 	<dependencies>
