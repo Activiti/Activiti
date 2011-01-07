@@ -30,6 +30,7 @@ import org.activiti.engine.impl.repository.ProcessDefinitionEntity;
 public class DbRepositorySessionFactory implements SessionFactory {
   
   protected Map<String, ProcessDefinitionEntity> processDefinitionCache = new HashMap<String, ProcessDefinitionEntity>(); 
+  protected Map<String, Object> knowledgeBaseCache = new HashMap<String, Object>(); 
   protected List<Deployer> deployers;
 
   public Class< ? > getSessionType() {
@@ -56,5 +57,13 @@ public class DbRepositorySessionFactory implements SessionFactory {
   
   public void setDeployers(List<Deployer> deployers) {
     this.deployers = deployers;
+  }
+  
+  public Map<String, Object> getKnowledgeBaseCache() {
+    return knowledgeBaseCache;
+  }
+  
+  public void setKnowledgeBaseCache(Map<String, Object> knowledgeBaseCache) {
+    this.knowledgeBaseCache = knowledgeBaseCache;
   }
 }
