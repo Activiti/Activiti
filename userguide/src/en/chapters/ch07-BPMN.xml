@@ -1540,7 +1540,7 @@ public class FakeLdapService {
 </programlisting>
 		Method <literal>printMessage</literal> will be called on the object named <literal>printer</literal>. The first
 		parameter passed is the <literal>DelegateExecution</literal>, which is available in the expression context by default
-		available as <literal>expression</literal>. The second parameter passed, is the value of the variable with name <literal>myVar</literal>
+		available as <literal>execution</literal>. The second parameter passed, is the value of the variable with name <literal>myVar</literal>
 		in the current execution. 
        </para>
        
