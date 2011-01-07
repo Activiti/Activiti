@@ -47,7 +47,7 @@ public class BpmnDeployer implements Deployer {
   protected ExpressionManager expressionManager;
   protected BpmnParser bpmnParser;
 
-  public List<ProcessDefinitionEntity> deploy(DeploymentEntity deployment) {
+  public void deploy(DeploymentEntity deployment) {
     List<ProcessDefinitionEntity> processDefinitions = new ArrayList<ProcessDefinitionEntity>();
     Map<String, ResourceEntity> resources = deployment.getResources();
 
@@ -126,8 +126,6 @@ public class BpmnDeployer implements Deployer {
         dbRepositorySession.addToProcessDefinitionCache(processDefinition);
       }
     }
-    
-    return processDefinitions;
   }
   
   /**

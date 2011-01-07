@@ -12,7 +12,6 @@
  */
 package org.activiti.engine.impl.repository;
 
-import java.util.List;
 
 
 
@@ -22,5 +21,5 @@ import java.util.List;
  */
 public interface Deployer {
 
-  List<ProcessDefinitionEntity> deploy(DeploymentEntity deployment);
+  void deploy(DeploymentEntity deployment);
 }
