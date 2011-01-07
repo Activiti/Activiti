@@ -52,56 +52,20 @@ public class DbRepositorySession implements Session, RepositorySession {
       .getSession(DbSqlSession.class);
   }
 
-  public void deployNew(DeploymentEntity deployment) {
-    dbSqlSession.insert(deployment);
-    for (ResourceEntity resource: deployment.getResources().values()) {
-      resource.setDeploymentId(deployment.getId());
-      dbSqlSession.insert(resource);
+  public void deploy(DeploymentEntity deployment) {
+    if (deployment.isNew()) {
+      dbSqlSession.insert(deployment);
+      for (ResourceEntity resource : deployment.getResources().values()) {
+        resource.setDeploymentId(deployment.getId());
+        dbSqlSession.insert(resource);
+      }
     }
     for (Deployer deployer: dbRepositorySessionFactory.getDeployers()) {
-      List<ProcessDefinitionEntity> processDefinitions = deployer.deploy(deployment);
-      for (ProcessDefinitionEntity processDefinition : processDefinitions) {
-        int processDefinitionVersion;
-
-        ProcessDefinitionEntity latestProcessDefinition = findLatestProcessDefinitionByKey(processDefinition.getKey());
-        if (latestProcessDefinition!=null) {
-          processDefinitionVersion = latestProcessDefinition.getVersion()+1;
-        } else {
-          processDefinitionVersion = 1;
-        }
-
-        processDefinition.setVersion(processDefinitionVersion);
-        processDefinition.setDeploymentId(deployment.getId());
-        
-        String processDefinitionId = processDefinition.getKey()+":"+processDefinition.getVersion();
-        // ACT-115: maximum id length is 64 charcaters
-        if (processDefinitionId.length() > 64) {
-          throw new ActivitiException("Invalid process definition id: '" + processDefinitionId 
-                  + "': id can be maximum 64 characters");
-        }
-        processDefinition.setId(processDefinitionId);
-
-        dbSqlSession.insert(processDefinition);
-        addToProcessDefinitionCache(processDefinition);
-      }
+      deployer.deploy(deployment);
     }
   }
 
-  public void deployExisting(DeploymentEntity deployment) {
-    for (Deployer deployer: dbRepositorySessionFactory.getDeployers()) {
-      List<ProcessDefinitionEntity> processDefinitions = deployer.deploy(deployment);
-      for (ProcessDefinitionEntity processDefinition : processDefinitions) {
-        String deploymentId = deployment.getId();
-        processDefinition.setDeploymentId(deploymentId);
-        ProcessDefinitionEntity persistedProcessDefinition = findProcessDefinitionByDeploymentAndKey(deploymentId, processDefinition.getKey());
-        processDefinition.setId(persistedProcessDefinition.getId());
-        processDefinition.setVersion(persistedProcessDefinition.getVersion());
-        addToProcessDefinitionCache(processDefinition);
-      }
-    }
-  }
-
-  protected void addToProcessDefinitionCache(ProcessDefinitionEntity processDefinition) {
+  public void addToProcessDefinitionCache(ProcessDefinitionEntity processDefinition) {
     Map<String, ProcessDefinitionEntity> processDefinitionCache = dbRepositorySessionFactory.getProcessDefinitionCache();
     String processDefinitionId = processDefinition.getId();
     processDefinitionCache.put(processDefinitionId, processDefinition);
@@ -188,14 +152,14 @@ public class DbRepositorySession implements Session, RepositorySession {
     return null;
   }
 
-  protected ProcessDefinitionEntity findProcessDefinitionByDeploymentAndKey(String deploymentId, String processDefinitionKey) {
+  public ProcessDefinitionEntity findProcessDefinitionByDeploymentAndKey(String deploymentId, String processDefinitionKey) {
     Map<String, Object> parameters = new HashMap<String, Object>();
     parameters.put("deploymentId", deploymentId);
     parameters.put("processDefinitionKey", processDefinitionKey);
     return (ProcessDefinitionEntity) dbSqlSession.selectOne("selectProcessDefinitionByDeploymentAndKey", parameters);
   }
 
-  protected ProcessDefinitionEntity findLatestProcessDefinitionByKey(String processDefinitionKey) {
+  public ProcessDefinitionEntity findLatestProcessDefinitionByKey(String processDefinitionKey) {
     return (ProcessDefinitionEntity) dbSqlSession.selectOne("selectLatestProcessDefinitionByKey", processDefinitionKey);
   }
 
@@ -226,7 +190,8 @@ public class DbRepositorySession implements Session, RepositorySession {
     processDefinition = dbRepositorySessionFactory.getProcessDefinitionCache().get(processDefinitionId);
     if (processDefinition==null) {
       DeploymentEntity deployment = findDeploymentById(deploymentId);
-      deployExisting(deployment);
+      deployment.setNew(false);
+      deploy(deployment);
       processDefinition = dbRepositorySessionFactory.getProcessDefinitionCache().get(processDefinitionId);
     }
     return processDefinition;

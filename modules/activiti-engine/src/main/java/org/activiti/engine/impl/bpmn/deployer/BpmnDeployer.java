@@ -19,8 +19,12 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.bpmn.parser.BpmnParse;
 import org.activiti.engine.impl.bpmn.parser.BpmnParser;
+import org.activiti.engine.impl.cfg.RepositorySession;
+import org.activiti.engine.impl.db.DbRepositorySession;
+import org.activiti.engine.impl.db.DbSqlSession;
 import org.activiti.engine.impl.el.ExpressionManager;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.repository.Deployer;
@@ -84,6 +88,42 @@ public class BpmnDeployer implements Deployer {
           processDefinition.setDiagramResourceName(diagramResourceName);
           processDefinitions.add(processDefinition);
         }
+      }
+    }
+    
+    DbRepositorySession dbRepositorySession = (DbRepositorySession) CommandContext.getCurrentSession(RepositorySession.class);
+    DbSqlSession dbSqlSession = CommandContext.getCurrentSession(DbSqlSession.class);
+    for (ProcessDefinitionEntity processDefinition : processDefinitions) {
+      if (deployment.isNew()) {
+        int processDefinitionVersion;
+
+        ProcessDefinitionEntity latestProcessDefinition = dbRepositorySession.findLatestProcessDefinitionByKey(processDefinition.getKey());
+        if (latestProcessDefinition != null) {
+          processDefinitionVersion = latestProcessDefinition.getVersion() + 1;
+        } else {
+          processDefinitionVersion = 1;
+        }
+
+        processDefinition.setVersion(processDefinitionVersion);
+        processDefinition.setDeploymentId(deployment.getId());
+
+        String processDefinitionId = processDefinition.getKey() + ":" + processDefinition.getVersion();
+        // ACT-115: maximum id length is 64 charcaters
+        if (processDefinitionId.length() > 64) {
+          throw new ActivitiException("Invalid process definition id: '" + processDefinitionId + "': id can be maximum 64 characters");
+        }
+        processDefinition.setId(processDefinitionId);
+
+        dbSqlSession.insert(processDefinition);
+        dbRepositorySession.addToProcessDefinitionCache(processDefinition);
+
+      } else {
+        String deploymentId = deployment.getId();
+        processDefinition.setDeploymentId(deploymentId);
+        ProcessDefinitionEntity persistedProcessDefinition = dbRepositorySession.findProcessDefinitionByDeploymentAndKey(deploymentId, processDefinition.getKey());
+        processDefinition.setId(persistedProcessDefinition.getId());
+        processDefinition.setVersion(persistedProcessDefinition.getVersion());
+        dbRepositorySession.addToProcessDefinitionCache(processDefinition);
       }
     }
     

@@ -49,7 +49,8 @@ public class DeployCmd<T> implements Command<Deployment> {
       }
     }
 
-    repositorySession.deployNew(deployment);
+    deployment.setNew(true);
+    repositorySession.deploy(deployment);
     
     return deployment;
   }

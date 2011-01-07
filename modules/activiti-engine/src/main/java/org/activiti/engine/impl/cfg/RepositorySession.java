@@ -35,7 +35,7 @@ public interface RepositorySession {
   /** inserts the deployment and contained resources in the persistent 
    * storage and runs the deployers on the deployment and those 
    * should {@link #insertProcessDefinition(ProcessDefinitionImpl) insert the process definitions}. */
-  void deployNew(DeploymentEntity deployment);
+  void deploy(DeploymentEntity deployment);
   
   /** deletes the deployment and cascades deletion to the contained resources
    * and process definitions */
