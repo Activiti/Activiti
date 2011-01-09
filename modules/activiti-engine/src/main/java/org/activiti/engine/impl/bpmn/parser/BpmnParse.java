@@ -28,6 +28,7 @@ import org.activiti.engine.impl.bpmn.Assignment;
 import org.activiti.engine.impl.bpmn.BoundaryTimerEventActivity;
 import org.activiti.engine.impl.bpmn.BpmnInterface;
 import org.activiti.engine.impl.bpmn.BpmnInterfaceImplementation;
+import org.activiti.engine.impl.bpmn.BusinessRuleTaskActivity;
 import org.activiti.engine.impl.bpmn.CallActivityBehaviour;
 import org.activiti.engine.impl.bpmn.ClassDelegate;
 import org.activiti.engine.impl.bpmn.ClassStructureDefinition;
@@ -63,6 +64,8 @@ import org.activiti.engine.impl.bpmn.TaskActivity;
 import org.activiti.engine.impl.bpmn.TransformationDataOutputAssociation;
 import org.activiti.engine.impl.bpmn.UserTaskActivity;
 import org.activiti.engine.impl.bpmn.WebServiceActivityBehavior;
+import org.activiti.engine.impl.bpmn.parser.BpmnParseListener;
+import org.activiti.engine.impl.bpmn.parser.BpmnParser;
 import org.activiti.engine.impl.el.Expression;
 import org.activiti.engine.impl.el.ExpressionManager;
 import org.activiti.engine.impl.el.FixedValue;
@@ -652,6 +655,8 @@ public class BpmnParse extends Parse {
         parseScriptTask(activityElement, scopeElement);
       } else if (activityElement.getTagName().equals("serviceTask")) {
         parseServiceTask(activityElement, scopeElement);
+      } else if (activityElement.getTagName().equals("businessRuleTask")) {
+        parseBusinessRuleTask(activityElement, scopeElement);
       } else if (activityElement.getTagName().equals("task")) {
         parseTask(activityElement, scopeElement);
       } else if (activityElement.getTagName().equals("manualTask")) {
@@ -837,6 +842,67 @@ public class BpmnParse extends Parse {
 
     for (BpmnParseListener parseListener: parseListeners) {
       parseListener.parseServiceTask(serviceTaskElement, scope, activity);
+    }
+  }
+  
+  /**
+   * Parses a businessRuleTask declaration.
+   */
+  public void parseBusinessRuleTask(Element businessRuleTaskElement, ScopeImpl scope) {
+    ActivityImpl activity = parseAndCreateActivityOnScopeElement(businessRuleTaskElement, scope);
+
+    BusinessRuleTaskActivity ruleActivity = new BusinessRuleTaskActivity();
+    
+    String ruleInputString = businessRuleTaskElement.attributeNS(BpmnParser.ACTIVITI_BPMN_EXTENSIONS_NS, "ruleVariablesInput");
+    String rulesString = businessRuleTaskElement.attributeNS(BpmnParser.ACTIVITI_BPMN_EXTENSIONS_NS, "rules");
+    String excludeString = businessRuleTaskElement.attributeNS(BpmnParser.ACTIVITI_BPMN_EXTENSIONS_NS, "exclude");
+    String resultVariableNameString = businessRuleTaskElement.attributeNS(BpmnParser.ACTIVITI_BPMN_EXTENSIONS_NS, "resultVariableName");
+    
+    if (ruleInputString != null) {
+      String[] ruleInputObjects = ruleInputString.split(",");
+      for (String ruleInputObject : ruleInputObjects) {
+        ruleActivity.addRuleVariableInputIdExpression(expressionManager.createExpression(ruleInputObject.trim()));
+      }
+    }
+    
+    if (rulesString != null) {
+      String[] rules = ruleInputString.split(",");
+      for (String rule : rules) {
+        ruleActivity.addRuleIdExpression(expressionManager.createExpression(rule.trim()));
+      }
+      
+      if (excludeString != null) {
+        excludeString = excludeString.trim();
+        if ("true".equalsIgnoreCase(excludeString) == false && "false".equalsIgnoreCase(excludeString) == false) {
+          addError("'exclude' only supports true or false for business rule tasks", businessRuleTaskElement);
+        
+        } else {
+          ruleActivity.setExclude(Boolean.valueOf(excludeString.toLowerCase()));
+        }
+      }
+      
+    } else if (excludeString != null) {
+      addError("'exclude' not supported for business rule tasks not defining 'rules'", businessRuleTaskElement);
+    }
+    
+    if (resultVariableNameString != null) {
+      resultVariableNameString = resultVariableNameString.trim();
+      if (resultVariableNameString.length() > 0 == false) {
+        addError("'resultVariableName' must contain a text value for business rule tasks", businessRuleTaskElement);
+      
+      } else {
+        ruleActivity.setResultVariableName(resultVariableNameString);
+      }
+    } else {
+      ruleActivity.setResultVariableName("org.activiti.engine.rules.OUTPUT");
+    }
+    
+    activity.setActivityBehavior(ruleActivity);
+    
+    parseExecutionListenersOnScope(businessRuleTaskElement, activity);
+
+    for (BpmnParseListener parseListener: parseListeners) {
+      parseListener.parseBusinessRuleTask(businessRuleTaskElement, scope, activity);
     }
   }
 

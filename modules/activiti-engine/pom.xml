@@ -53,6 +53,11 @@
       <artifactId>drools-core</artifactId>
       <scope>provided</scope>
     </dependency>
+    <dependency>
+	  <groupId>org.drools</groupId>
+	  <artifactId>drools-compiler</artifactId>
+	  <scope>provided</scope>
+	</dependency>
 		<dependency>
 	    <groupId>javax.persistence</groupId>
 	    <artifactId>persistence-api</artifactId>

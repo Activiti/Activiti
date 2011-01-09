@@ -33,6 +33,7 @@ public interface BpmnParseListener {
   void parseParallelGateway(Element parallelGwElement, ScopeImpl scope, ActivityImpl activity);
   void parseScriptTask(Element scriptTaskElement, ScopeImpl scope, ActivityImpl activity);
   void parseServiceTask(Element serviceTaskElement, ScopeImpl scope, ActivityImpl activity);
+  void parseBusinessRuleTask(Element businessRuleTaskElement, ScopeImpl scope, ActivityImpl activity);
   void parseTask(Element taskElement, ScopeImpl scope, ActivityImpl activity);
   void parseManualTask(Element manualTaskElement, ScopeImpl scope, ActivityImpl activity);
   void parseUserTask(Element userTaskElement, ScopeImpl scope, ActivityImpl activity);

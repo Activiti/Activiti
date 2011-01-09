@@ -83,6 +83,10 @@ public class HistoryParseListener implements BpmnParseListener {
   public void parseServiceTask(Element serviceTaskElement, ScopeImpl scope, ActivityImpl activity) {
     addActivityHandlers(serviceTaskElement, activity);
   }
+  
+  public void parseBusinessRuleTask(Element businessRuleTaskElement, ScopeImpl scope, ActivityImpl activity) {
+    addActivityHandlers(businessRuleTaskElement, activity);
+  }
 
   public void parseSubProcess(Element subProcessElement, ScopeImpl scope, ActivityImpl activity) {
     addActivityHandlers(subProcessElement, activity);
