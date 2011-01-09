@@ -17,6 +17,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.activiti.engine.impl.test.ResourceActivitiTestCase;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.test.Deployment;
 
@@ -24,7 +25,7 @@ import org.activiti.engine.test.Deployment;
 /**
  * @author Tijs Rademakers
  */
-public class RulesDeployerTest extends RulesActivitiTestCase {
+public class RulesDeployerTest extends ResourceActivitiTestCase {
 
   public RulesDeployerTest() {
     super("org/activiti/standalone/rules/rules.activiti.cfg.xml");

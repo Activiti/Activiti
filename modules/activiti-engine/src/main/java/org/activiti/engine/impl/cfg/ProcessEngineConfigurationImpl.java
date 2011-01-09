@@ -444,8 +444,8 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
         deployers.addAll(customPreDeployers);
       }
       deployers.addAll(getDefaultDeployers());
-      if (customPreDeployers!=null) {
-        deployers.addAll(customPreDeployers);
+      if (customPostDeployers!=null) {
+        deployers.addAll(customPostDeployers);
       }
     }
   }
