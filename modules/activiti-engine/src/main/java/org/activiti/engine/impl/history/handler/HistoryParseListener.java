@@ -52,7 +52,7 @@ public class HistoryParseListener implements BpmnParseListener {
   }
   
   public void parseProcess(Element processElement, ProcessDefinitionEntity processDefinition) {
-    if (activityHistoryEnabled(processDefinition, historyLevel)) {
+    if (activityHistoryEnabled(processDefinition)) {
       processDefinition.addExecutionListener(ExecutionListener.EVENTNAME_END, new ProcessInstanceEndHandler());
     }
   }
@@ -80,7 +80,7 @@ public class HistoryParseListener implements BpmnParseListener {
   public void parseUserTask(Element userTaskElement, ScopeImpl scope, ActivityImpl activity) {
     addActivityHandlers(userTaskElement, activity);
     
-    if (activityHistoryEnabled(scope, historyLevel)) {
+    if (activityHistoryEnabled(scope)) {
       TaskDefinition taskDefinition = ((UserTaskActivity) activity.getActivityBehavior()).getTaskDefinition();
       taskDefinition.addTaskListener(TaskListener.EVENTNAME_ASSIGNMENT, USER_TASK_ASSIGNMENT_HANDLER);
     }
@@ -99,13 +99,13 @@ public class HistoryParseListener implements BpmnParseListener {
   }
 
   public void parseStartEvent(Element startEventElement, ScopeImpl scope, ActivityImpl activity) {
-    if (determineHistoryLevel(activity, historyLevel) >= ProcessEngineConfigurationImpl.HISTORYLEVEL_FULL) {
+    if (determineHistoryLevel(activity) >= ProcessEngineConfigurationImpl.HISTORYLEVEL_FULL) {
       activity.addExecutionListener(ExecutionListener.EVENTNAME_END, AUTOMATIC_ACTIVITY_INSTANCE_HANDLER);
     }
   }
 
   public void parseEndEvent(Element endEventElement, ScopeImpl scope, ActivityImpl activity) {
-    if (determineHistoryLevel(activity, historyLevel) >= ProcessEngineConfigurationImpl.HISTORYLEVEL_FULL) {
+    if (determineHistoryLevel(activity) >= ProcessEngineConfigurationImpl.HISTORYLEVEL_FULL) {
       activity.addExecutionListener(ExecutionListener.EVENTNAME_START, AUTOMATIC_ACTIVITY_INSTANCE_HANDLER);
     }
   }
@@ -125,25 +125,25 @@ public class HistoryParseListener implements BpmnParseListener {
   // helper methods ///////////////////////////////////////////////////////////
   
   protected void addActivityHandlers(Element activityElement, ActivityImpl activity) {
-    if (activityHistoryEnabled(activity, historyLevel)) {
+    if (activityHistoryEnabled(activity)) {
       activity.addExecutionListener(ExecutionListener.EVENTNAME_START, ACTIVITY_INSTANCE_START_LISTENER);
       activity.addExecutionListener(ExecutionListener.EVENTNAME_END, ACTIVITI_INSTANCE_END_LISTENER);
     }
   }
   
-  public static boolean fullHistoryEnabled(ScopeImpl scopeElement, int historyLevel) {
-    return determineHistoryLevel(scopeElement, historyLevel) >= ProcessEngineConfigurationImpl.HISTORYLEVEL_FULL;
+  protected boolean fullHistoryEnabled(ScopeImpl scopeElement) {
+    return determineHistoryLevel(scopeElement) >= ProcessEngineConfigurationImpl.HISTORYLEVEL_FULL;
   }
   
-  public static boolean auditHistoryEnabled(ScopeImpl scopeElement, int historyLevel) {
-    return determineHistoryLevel(scopeElement, historyLevel) >= ProcessEngineConfigurationImpl.HISTORYLEVEL_AUDIT;
+  protected boolean auditHistoryEnabled(ScopeImpl scopeElement) {
+    return determineHistoryLevel(scopeElement) >= ProcessEngineConfigurationImpl.HISTORYLEVEL_AUDIT;
   }
   
-  public static boolean activityHistoryEnabled(ScopeImpl scopeElement, int historyLevel) {
-    return determineHistoryLevel(scopeElement, historyLevel) >= ProcessEngineConfigurationImpl.HISTORYLEVEL_ACTIVITY;
+  protected boolean activityHistoryEnabled(ScopeImpl scopeElement) {
+    return determineHistoryLevel(scopeElement) >= ProcessEngineConfigurationImpl.HISTORYLEVEL_ACTIVITY;
   }
   
-  public static int determineHistoryLevel(ScopeImpl scopeElement, int historyLevel) {
+  protected int determineHistoryLevel(ScopeImpl scopeElement) {
     ProcessDefinitionImpl processDefinition = scopeElement.getProcessDefinition();
     if (processDefinition != null) {
       Integer processHistoryLevel = ((ProcessDefinitionEntity) processDefinition).getHistoryLevel();

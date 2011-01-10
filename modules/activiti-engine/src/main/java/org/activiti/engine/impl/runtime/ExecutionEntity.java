@@ -33,9 +33,6 @@ import org.activiti.engine.impl.db.DbSqlSession;
 import org.activiti.engine.impl.db.PersistentObject;
 import org.activiti.engine.impl.history.HistoricActivityInstanceEntity;
 import org.activiti.engine.impl.history.HistoricProcessInstanceEntity;
-import org.activiti.engine.impl.history.HistoricVariableUpdateEntity;
-import org.activiti.engine.impl.history.handler.ActivityInstanceEndHandler;
-import org.activiti.engine.impl.history.handler.HistoryParseListener;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.jobexecutor.TimerDeclarationImpl;
 import org.activiti.engine.impl.pvm.PvmActivity;
@@ -841,17 +838,6 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
   @Override
   protected VariableScopeImpl getParentVariableScope() {
     return getParent();
-  }
-  
-  @Override
-  protected void initializeActivityInstanceId(HistoricVariableUpdateEntity historicVariableUpdate) {
-    int historyLevel = CommandContext.getCurrent().getProcessEngineConfiguration().getHistoryLevel();
-    if (HistoryParseListener.fullHistoryEnabled(getActivity(), historyLevel)) {
-      HistoricActivityInstanceEntity historicActivityInstance = ActivityInstanceEndHandler.findActivityInstance(this);
-      if (historicActivityInstance!=null) {
-        historicVariableUpdate.setActivityInstanceId(historicActivityInstance.getId());
-      }
-    }
   }
 
   // persistent state /////////////////////////////////////////////////////////
