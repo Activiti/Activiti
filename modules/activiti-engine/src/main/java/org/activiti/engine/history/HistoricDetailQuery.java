@@ -27,8 +27,12 @@ public interface HistoricDetailQuery extends Query<HistoricDetailQuery, Historic
    * {@link ProcessInstance) ids and {@link HistoricProcessInstance} ids match. */
   HistoricDetailQuery processInstanceId(String processInstanceId);
 
-  /** Only select historic variable updates associated to the given {@link HistoricActivityInstance activity instance}. */
+  /** Only select historic variable updates associated to the given {@link HistoricActivityInstance activity instance}. 
+   * @deprecated since 5.2, use {@link #activityInstanceId(String)} instead */
   HistoricDetailQuery activityId(String activityId);
+
+  /** Only select historic variable updates associated to the given {@link HistoricActivityInstance activity instance}. */
+  HistoricDetailQuery activityInstanceId(String activityInstanceId);
 
   /** Only select historic variable updates associated to the given {@link HistoricTaskInstance historic task instance}. */
   HistoricDetailQuery taskId(String taskId);

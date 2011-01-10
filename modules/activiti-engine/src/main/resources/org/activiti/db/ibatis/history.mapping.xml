@@ -390,12 +390,13 @@
   </insert>
   
   <insert id="insertHistoricVariableUpdate" parameterType="org.activiti.engine.impl.history.HistoricVariableUpdateEntity">
-    insert into ACT_HI_DETAIL (ID_, TYPE_, PROC_INST_ID_, EXECUTION_ID_, TASK_ID_, NAME_, REV_, VAR_TYPE_, TIME_, BYTEARRAY_ID_, DOUBLE_, LONG_ , TEXT_, TEXT2_)
+    insert into ACT_HI_DETAIL (ID_, TYPE_, PROC_INST_ID_, EXECUTION_ID_, ACT_INST_ID_, TASK_ID_, NAME_, REV_, VAR_TYPE_, TIME_, BYTEARRAY_ID_, DOUBLE_, LONG_ , TEXT_, TEXT2_)
     values (
       #{id, jdbcType=VARCHAR},
       'VariableUpdate',
       #{processInstanceId, jdbcType=VARCHAR},
       #{executionId, jdbcType=VARCHAR},
+      #{activityInstanceId, jdbcType=VARCHAR},
       #{taskId, jdbcType=VARCHAR},
       #{variableName, jdbcType=VARCHAR},
       #{revision, jdbcType=VARCHAR},
@@ -474,6 +475,9 @@
       </if>
       <if test="activityId != null">
         HD.ACT_INST_ID_ = #{activityId}
+      </if>
+      <if test="activityInstanceId != null">
+        HD.ACT_INST_ID_ = #{activityInstanceId}
       </if>
       <if test="taskId != null">
         HD.TASK_ID_ = #{taskId}

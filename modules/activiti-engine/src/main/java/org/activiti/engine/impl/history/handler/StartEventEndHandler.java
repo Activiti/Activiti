@@ -15,10 +15,6 @@ package org.activiti.engine.impl.history.handler;
 
 import java.util.List;
 
-import org.activiti.engine.ActivitiException;
-import org.activiti.engine.history.HistoricActivityInstance;
-import org.activiti.engine.impl.HistoricActivityInstanceQueryImpl;
-import org.activiti.engine.impl.Page;
 import org.activiti.engine.impl.db.DbSqlSession;
 import org.activiti.engine.impl.history.HistoricActivityInstanceEntity;
 import org.activiti.engine.impl.interceptor.CommandContext;
@@ -30,24 +26,13 @@ import org.activiti.engine.impl.runtime.ExecutionEntity;
 /**
  * @author Tom Baeyens
  */
-public class ActivityInstanceEndHandler implements ExecutionListener {
+public class StartEventEndHandler implements ExecutionListener {
 
-  public void notify(ExecutionListenerExecution execution) {
-    ExecutionEntity executionEntity = (ExecutionEntity) execution;
-    HistoricActivityInstanceEntity historicActivityInstance = findActivityInstance(executionEntity);
-    historicActivityInstance.markEnded(null);
-  }
-
-  public static HistoricActivityInstanceEntity findActivityInstance(ExecutionEntity execution) {
-    return findActivityInstance(execution, false);
-  }
-
-  public static HistoricActivityInstanceEntity findActivityInstance(ExecutionEntity execution, boolean isNullAllowed) {
-    CommandContext commandContext = CommandContext.getCurrent();
-
+  public void notify(ExecutionListenerExecution execution) throws Exception {
     String executionId = execution.getId();
-    String activityId = execution.getActivityId();
+    String activityId = ((ExecutionEntity)execution).getActivityId();
 
+    CommandContext commandContext = CommandContext.getCurrent();
     // search for the historic activity instance in the dbsqlsession cache
     DbSqlSession dbSqlSession = commandContext.getDbSqlSession();
     List<HistoricActivityInstanceEntity> cachedHistoricActivityInstances = dbSqlSession.findInCache(HistoricActivityInstanceEntity.class);
@@ -56,28 +41,10 @@ public class ActivityInstanceEndHandler implements ExecutionListener {
            && (activityId.equals(cachedHistoricActivityInstance.getActivityId()))
            && (cachedHistoricActivityInstance.getEndTime()==null)
          ) {
-        return cachedHistoricActivityInstance;
+        cachedHistoricActivityInstance.markEnded(null);
+        return;
       }
     }
-    
-    List<HistoricActivityInstance> historicActivityInstances = new HistoricActivityInstanceQueryImpl()
-      .executionId(executionId)
-      .activityId(activityId)
-      .unfinished()
-      .executeList(commandContext, new Page(0, 1));
-    
-    if (!historicActivityInstances.isEmpty()) {
-      return (HistoricActivityInstanceEntity) historicActivityInstances.get(0);
-    }
-    
-    if (execution.getParentId()!=null) {
-      return findActivityInstance((ExecutionEntity) execution.getParent());
-    }
-    
-    if (isNullAllowed) {
-      return null;
-    }
-     
-    throw new ActivitiException("no existing history activity entity found for execution "+executionId+" in activity "+activityId);
   }
+
 }

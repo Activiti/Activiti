@@ -29,6 +29,7 @@ public class HistoricDetailQueryImpl extends AbstractQuery<HistoricDetailQuery, 
   protected String taskId;
   protected String processInstanceId;
   protected String activityId;
+  protected String activityInstanceId;
   protected String type;
 
   public HistoricDetailQueryImpl() {
@@ -45,6 +46,11 @@ public class HistoricDetailQueryImpl extends AbstractQuery<HistoricDetailQuery, 
 
   public HistoricDetailQuery activityId(String activityId) {
     this.activityId = activityId;
+    return this;
+  }
+
+  public HistoricDetailQuery activityInstanceId(String activityInstanceId) {
+    this.activityInstanceId = activityInstanceId;
     return this;
   }
 

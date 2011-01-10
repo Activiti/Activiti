@@ -13,22 +13,23 @@
 package org.activiti.engine.impl.repository;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Map;
 
-import org.activiti.engine.ProcessEngineConfiguration;
+import org.activiti.engine.impl.cfg.IdGenerator;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.db.DbSqlSession;
 import org.activiti.engine.impl.db.PersistentObject;
 import org.activiti.engine.impl.form.StartFormHandler;
+import org.activiti.engine.impl.history.HistoricActivityInstanceEntity;
 import org.activiti.engine.impl.history.HistoricProcessInstanceEntity;
 import org.activiti.engine.impl.identity.Authentication;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.pvm.process.ProcessDefinitionImpl;
-import org.activiti.engine.impl.pvm.runtime.ExecutionImpl;
 import org.activiti.engine.impl.pvm.runtime.InterpretableExecution;
 import org.activiti.engine.impl.runtime.ExecutionEntity;
-import org.activiti.engine.impl.runtime.VariableScopeImpl;
 import org.activiti.engine.impl.task.TaskDefinition;
+import org.activiti.engine.impl.util.ClockUtil;
 import org.activiti.engine.repository.ProcessDefinition;
 
 
@@ -83,9 +84,34 @@ public class ProcessDefinitionEntity extends ProcessDefinitionImpl implements Pr
 	    
 	    int historyLevel = commandContext.getProcessEngineConfiguration().getHistoryLevel();
 	    if (historyLevel>=ProcessEngineConfigurationImpl.HISTORYLEVEL_ACTIVITY) {
-	      DbSqlSession dbSqlSession = commandContext.getSession(DbSqlSession.class);
 	      HistoricProcessInstanceEntity historicProcessInstance = new HistoricProcessInstanceEntity(processInstance);
-	      dbSqlSession.insert(historicProcessInstance);
+
+	      commandContext
+	        .getSession(DbSqlSession.class)
+	        .insert(historicProcessInstance);
+	    }
+	    
+	    if (historyLevel>=ProcessEngineConfigurationImpl.HISTORYLEVEL_FULL) {
+	      IdGenerator idGenerator = commandContext.getProcessEngineConfiguration().getIdGenerator();
+	      
+	      String processDefinitionId = processInstance.getProcessDefinitionId();
+	      String processInstanceId = processInstance.getProcessInstanceId();
+	      String executionId = processInstance.getId();
+
+	      HistoricActivityInstanceEntity historicActivityInstance = new HistoricActivityInstanceEntity();
+	      historicActivityInstance.setId(Long.toString(idGenerator.getNextId()));
+	      historicActivityInstance.setProcessDefinitionId(processDefinitionId);
+	      historicActivityInstance.setProcessInstanceId(processInstanceId);
+	      historicActivityInstance.setExecutionId(executionId);
+	      historicActivityInstance.setActivityId(processInstance.getActivityId());
+	      historicActivityInstance.setActivityName((String) processInstance.getActivity().getProperty("name"));
+	      historicActivityInstance.setActivityType((String) processInstance.getActivity().getProperty("type"));
+	      Date now = ClockUtil.getCurrentTime();
+	      historicActivityInstance.setStartTime(now);
+	      
+	      commandContext
+	        .getDbSqlSession()
+	        .insert(historicActivityInstance);
 	    }
 
 	    return processInstance;
