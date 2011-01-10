@@ -35,14 +35,20 @@ import org.activiti.engine.impl.variable.VariableDeclaration;
  */
 public class HistoryParseListener implements BpmnParseListener {
   
+  private static final AutomaticActivityInstanceHandler AUTOMATIC_ACTIVITY_INSTANCE_HANDLER = new AutomaticActivityInstanceHandler();
+
+  private static final ActivityInstanceEndHandler ACTIVITI_INSTANCE_END_LISTENER = new ActivityInstanceEndHandler();
+
+  private static final ActivityInstanceStartHandler ACTIVITY_INSTANCE_START_LISTENER = new ActivityInstanceStartHandler();
+
   // Statically created handlers
   protected static final UserTaskAssignmentHandler USER_TASK_ASSIGNMENT_HANDLER = new UserTaskAssignmentHandler();
 
   // The history level set in the Activiti configuration
-  protected int configurationhistoryLevel;
+  protected int historyLevel;
   
   public HistoryParseListener(int historyLevel) {
-    this.configurationhistoryLevel = historyLevel;
+    this.historyLevel = historyLevel;
   }
   
   public void parseProcess(Element processElement, ProcessDefinitionEntity processDefinition) {
@@ -92,10 +98,16 @@ public class HistoryParseListener implements BpmnParseListener {
     addActivityHandlers(subProcessElement, activity);
   }
 
-  public void parseStartEvent(Element startEventElement, ScopeImpl scope, ActivityImpl startEventActivity) {
+  public void parseStartEvent(Element startEventElement, ScopeImpl scope, ActivityImpl activity) {
+    if (determineHistoryLevel(activity) >= ProcessEngineConfigurationImpl.HISTORYLEVEL_FULL) {
+      activity.addExecutionListener(ExecutionListener.EVENTNAME_END, AUTOMATIC_ACTIVITY_INSTANCE_HANDLER);
+    }
   }
 
   public void parseEndEvent(Element endEventElement, ScopeImpl scope, ActivityImpl activity) {
+    if (determineHistoryLevel(activity) >= ProcessEngineConfigurationImpl.HISTORYLEVEL_FULL) {
+      activity.addExecutionListener(ExecutionListener.EVENTNAME_START, AUTOMATIC_ACTIVITY_INSTANCE_HANDLER);
+    }
   }
 
   public void parseParallelGateway(Element parallelGwElement, ScopeImpl scope, ActivityImpl activity) {
@@ -114,9 +126,8 @@ public class HistoryParseListener implements BpmnParseListener {
   
   protected void addActivityHandlers(Element activityElement, ActivityImpl activity) {
     if (activityHistoryEnabled(activity)) {
-      String activityType = activityElement.getTagName();
-      activity.addExecutionListener(ExecutionListener.EVENTNAME_START, new ActivityInstanceStartHandler(activityType));
-      activity.addExecutionListener(ExecutionListener.EVENTNAME_END, new ActivityInstanceEndHandler());
+      activity.addExecutionListener(ExecutionListener.EVENTNAME_START, ACTIVITY_INSTANCE_START_LISTENER);
+      activity.addExecutionListener(ExecutionListener.EVENTNAME_END, ACTIVITI_INSTANCE_END_LISTENER);
     }
   }
   
@@ -137,10 +148,10 @@ public class HistoryParseListener implements BpmnParseListener {
     if (processDefinition != null) {
       Integer processHistoryLevel = ((ProcessDefinitionEntity) processDefinition).getHistoryLevel();
       if (processHistoryLevel != null) {
-        return Math.min(configurationhistoryLevel, ((ProcessDefinitionEntity) scopeElement.getProcessDefinition()).getHistoryLevel());
+        return Math.min(historyLevel, ((ProcessDefinitionEntity) scopeElement.getProcessDefinition()).getHistoryLevel());
       }
     }
-    return configurationhistoryLevel;
+    return historyLevel;
   }
 
   public void parseSendTask(Element sendTaskElement, ScopeImpl scope, ActivityImpl activity) {

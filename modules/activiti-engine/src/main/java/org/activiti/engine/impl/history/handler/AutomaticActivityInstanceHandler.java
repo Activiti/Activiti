@@ -13,6 +13,8 @@
 
 package org.activiti.engine.impl.history.handler;
 
+import java.util.Date;
+
 import org.activiti.engine.impl.cfg.IdGenerator;
 import org.activiti.engine.impl.history.HistoricActivityInstanceEntity;
 import org.activiti.engine.impl.interceptor.CommandContext;
@@ -25,9 +27,10 @@ import org.activiti.engine.impl.util.ClockUtil;
 /**
  * @author Tom Baeyens
  */
-public class ActivityInstanceStartHandler implements ExecutionListener {
+public class AutomaticActivityInstanceHandler implements ExecutionListener {
 
-  public void notify(ExecutionListenerExecution execution) {
+  @Override
+  public void notify(ExecutionListenerExecution execution) throws Exception {
     CommandContext commandContext = CommandContext.getCurrent();
     IdGenerator idGenerator = commandContext.getProcessEngineConfiguration().getIdGenerator();
     
@@ -44,10 +47,14 @@ public class ActivityInstanceStartHandler implements ExecutionListener {
     historicActivityInstance.setActivityId(executionEntity.getActivityId());
     historicActivityInstance.setActivityName((String) executionEntity.getActivity().getProperty("name"));
     historicActivityInstance.setActivityType((String) executionEntity.getActivity().getProperty("type"));
-    historicActivityInstance.setStartTime(ClockUtil.getCurrentTime());
+    Date now = ClockUtil.getCurrentTime();
+    historicActivityInstance.setStartTime(now);
+    historicActivityInstance.setEndTime(now);
+    historicActivityInstance.setDurationInMillis(0L);
     
     commandContext
       .getDbSqlSession()
       .insert(historicActivityInstance);
   }
+
 }
