@@ -269,4 +269,50 @@
     </para>
   </section>
   
+  <section id="database.tables.explained">
+    <title>Database table names</title>
+    <para>
+      The database names of Activiti all start with <emphasis role="bold">ACT_</emphasis>. The 
+      second part is a two-character identification of use case of the table. This use case 
+      will also roughly match the service API.
+      <itemizedlist>
+        <listitem>
+          <para>
+            <emphasis role="bold">ACT_RE_*</emphasis>: 'RE' stands for <literal>repository</literal>. 
+            Tables with this prefix will contain 'static'' information such as process definitions and,
+            process resources (images, rules, etc.).
+          </para>
+        </listitem>
+         <listitem>
+          <para>
+            <emphasis role="bold">ACT_RU_*</emphasis>: 'RE' stands for <literal>runtime</literal>.
+            These are the runtime tables, that contain the runtime data of process instances,
+            user tasks,variables, jobs, etc. Activiti only stores the runtime data during process instance
+            execution, and removes the records when a process instance ends. This keeps 
+            the runtime tables small and fast.
+          </para>
+        </listitem>
+         <listitem>
+          <para>
+            <emphasis role="bold">ACT_ID_*</emphasis>: 'ID' stands for <literal>identity</literal>.
+            These tables contain identity information, suchas users, groups, etc.
+          </para>
+        </listitem>
+         <listitem>
+          <para>
+            <emphasis role="bold">ACT_HI_*</emphasis>: 'HI' stands for <literal>history</literal>.
+            These are the tables that contain historic data, such as past process instances,
+            variables, tasks, etc.
+          </para>
+        </listitem>
+         <listitem>
+          <para>
+            <emphasis role="bold">ACT_GE_*</emphasis>: <literal>general</literal> data, which is used
+            in various use cases.
+          </para>
+        </listitem>
+      </itemizedlist>
+    </para>
+  </section>
+  
 </chapter>
