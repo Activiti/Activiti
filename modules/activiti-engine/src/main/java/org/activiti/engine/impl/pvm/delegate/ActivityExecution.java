@@ -98,11 +98,26 @@ public interface ActivityExecution extends DelegateExecution {
    */
   boolean isProcessInstance();
 
+  /**
+   * Inactivates this execution.
+   * This is useful for example in a join: the execution
+   * still exists, but it is not longer active.
+   */
   void inactivate();
 
+  /**
+   * Retrieves all executions which are concurrent and inactive at the given activity.
+   */
   List<ActivityExecution> findInactiveConcurrentExecutions(PvmActivity activity);
 
+  /**
+   * Takes the given outgoing transitions, and potentially reusing
+   * the given list of executions that were previously joined.
+   */
   void takeAll(List<PvmTransition> outgoingTransitions, List<ActivityExecution> joinedExecutions);
 
+  /**
+   * Executes the {@link ActivityBehavior} associated with the given activity.
+   */
   void executeActivity(PvmActivity activity);
 }

@@ -1727,6 +1727,7 @@ public class ReverseStringsFieldInjected implements JavaDelegate {
      </section>
 
      <section id="serviceTaskResultValue">
+         
          <title>Service task results</title>
 
          <para>
@@ -1744,6 +1745,46 @@ public class ReverseStringsFieldInjected implements JavaDelegate {
            under the name <emphasis>'myService'</emphasis> either in the process variables or as a Spring bean) is set to the process variable named <emphasis>'myVar'</emphasis> after the service execution completes.
          </para>
 
+     </section>
+     
+     <section id="serviceTaskExceptionHandling">
+      
+      <title>Handling exceptions</title>
+      
+       <para>
+        When custom logic is executed, it is often required to catch certain exceptions.
+        One common use case is to route process execution through another path
+        in case some exception occurs. The following example shows how this is done.
+        <programlisting>
+&lt;serviceTask id=&quot;javaService&quot; 
+  name=&quot;Java service invocation&quot; 
+  activiti:class=&quot;org.activiti.ThrowsExceptionBehavior&quot;&gt;            
+&lt;/serviceTask&gt;
+    
+&lt;sequenceFlow id=&quot;no-exception&quot; sourceRef=&quot;javaService&quot; targetRef=&quot;theEnd&quot; /&gt;
+&lt;sequenceFlow id=&quot;exception&quot; sourceRef=&quot;javaService&quot; targetRef=&quot;fixException&quot; /&gt;</programlisting>
+        Here, the service task has two outgoing sequence flow, called <literal>exception</literal>
+        and <literal>no-exception</literal>. This sequence flow id will be used to direct
+        process flow in case of an exception:
+        <programlisting>
+public class ThrowsExceptionBehavior implements ActivityBehavior {
+
+  public void execute(ActivityExecution execution) throws Exception {
+    String var = (String) execution.getVariable(&quot;var&quot;);
+
+    PvmTransition transition = null;
+    try {
+      executeLogic(var);
+      transition = execution.getActivity().findOutgoingTransition(&quot;no-exception&quot;);
+    } catch (Exception e) {
+      transition = execution.getActivity().findOutgoingTransition(&quot;exception&quot;);
+    }
+    execution.take(transition);
+  }
+  
+}</programlisting>
+       </para>
+      
      </section>
   		
 		</section>

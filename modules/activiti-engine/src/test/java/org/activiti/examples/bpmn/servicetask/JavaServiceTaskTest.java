@@ -20,6 +20,7 @@ import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.impl.util.CollectionUtil;
 import org.activiti.engine.runtime.Execution;
 import org.activiti.engine.runtime.ProcessInstance;
+import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
 
 /**
@@ -81,6 +82,25 @@ public class JavaServiceTaskTest extends PluggableActivitiTestCase {
     } catch (ActivitiException e) {
       assertTrue(e.getMessage().contains("resultVariableName"));
     }
+  }
+  
+  @Deployment
+  public void testExceptionHandling() {
+    
+    // If variable value is != 'throw-exception', process goes 
+    // through service task and ends immidiately
+    Map<String, Object> vars = new HashMap<String, Object>();
+    vars.put("var", "no-exception");
+    runtimeService.startProcessInstanceByKey("exceptionHandling", vars);
+    assertEquals(0, runtimeService.createProcessInstanceQuery().count());
+    
+    // If variable value == 'throw-exception', process executes
+    // service task, which generates and catches exception,
+    // and takes sequence flow to user task
+    vars.put("var", "throw-exception");
+    runtimeService.startProcessInstanceByKey("exceptionHandling", vars);
+    Task task = taskService.createTaskQuery().singleResult();
+    assertEquals("Fix Exception", task.getName());
   }
 
 }
