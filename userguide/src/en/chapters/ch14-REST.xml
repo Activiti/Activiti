@@ -430,13 +430,14 @@ success={success}&amp;failure={success}&amp;deployment={file}</programlisting>
               <literal>POST /process-instance</literal>
               <programlisting>
 {
-  "processDefinitionId":"financialReport:1"
+  "processDefinitionId":"financialReport:1",
+  "businessKey":"order-4711"
 }</programlisting>
             </para>
           </listitem>
           <listitem>
             <para><emphasis role="bold">API:</emphasis>
-              <literal>ProcessEngines.getProcessEngine(configuredProcessEngineName).getProcessService().startProcessInstanceById(processDefinitionId[, variables])</literal>
+              <literal>ProcessEngines.getProcessEngine(configuredProcessEngineName).getProcessService().startProcessInstanceById(processDefinitionId[, businessKey][, variables])</literal>
             </para>
           </listitem>
           <listitem>
