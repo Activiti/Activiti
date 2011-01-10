@@ -388,7 +388,7 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
     }
     return inactiveConcurrentExecutionsInActivity;
   }
-
+  
   @SuppressWarnings("unchecked")
   public void takeAll(List<PvmTransition> transitions, List<ActivityExecution> recyclableExecutions) {
     transitions = new ArrayList<PvmTransition>(transitions);
@@ -404,9 +404,12 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
 
     ExecutionEntity concurrentRoot = ((isConcurrent && !isScope) ? getParent() : this);
     List<ExecutionEntity> concurrentActiveExecutions = new ArrayList<ExecutionEntity>();
+    List<ExecutionEntity> concurrentInActiveExecutions = new ArrayList<ExecutionEntity>();
     for (ExecutionEntity execution: concurrentRoot.getExecutions()) {
       if (execution.isActive()) {
         concurrentActiveExecutions.add(execution);
+      } else {
+        concurrentInActiveExecutions.add(execution);
       }
     }
 
@@ -414,9 +417,20 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
       log.fine("transitions to take concurrent: " + transitions);
       log.fine("active concurrent executions: " + concurrentActiveExecutions);
     }
+    
+    boolean allInSameActivity = true;
+    if (concurrentInActiveExecutions.size() > 1) {
+      String activityId = concurrentInActiveExecutions.get(0).getActivityId();
+      for (ExecutionEntity execution: concurrentInActiveExecutions) {
+        if (!execution.isEnded && !execution.getActivityId().equals(activityId)) {
+          allInSameActivity = false;
+        }
+      }
+    }
 
     if ( (transitions.size()==1)
          && (concurrentActiveExecutions.isEmpty())
+         && allInSameActivity
        ) {
 
       List<ExecutionEntity> recyclableExecutionImpls = (List) recyclableExecutions;
@@ -442,7 +456,7 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
 
       recyclableExecutions.remove(concurrentRoot);
   
-      log.fine("recyclable executions for reused: " + recyclableExecutions);
+      log.fine("recyclable executions for reuse: " + recyclableExecutions);
       
       // first create the concurrent executions
       while (!transitions.isEmpty()) {

@@ -13,8 +13,12 @@
 
 package org.activiti.engine.test.bpmn.gateway;
 
+import java.util.List;
+
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.runtime.ProcessInstance;
+import org.activiti.engine.task.Task;
+import org.activiti.engine.task.TaskQuery;
 import org.activiti.engine.test.Deployment;
 
 /**
@@ -60,6 +64,46 @@ public class ParallelGatewayTest extends PluggableActivitiTestCase {
     ProcessInstance processInstance = 
       runtimeService.startProcessInstanceByKey("nestedForksFollowedByEndEvents");
     assertTrue(processInstance.isEnded());
+  }
+  
+  // ACT-482
+  @Deployment
+  public void testNestedForkJoin() {
+    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("nestedForkJoin");
+   
+   // After process startm, only task 0 should be active
+   TaskQuery query = taskService.createTaskQuery().orderByTaskName().asc(); 
+   List<Task> tasks = query.list();
+   assertEquals(1, tasks.size());
+   assertEquals("Task 0", tasks.get(0).getName());
+   
+   // Completing task 0 will create Task A and B
+   taskService.complete(tasks.get(0).getId());
+   tasks = query.list();
+   assertEquals(2, tasks.size());
+   assertEquals("Task A", tasks.get(0).getName());
+   assertEquals("Task B", tasks.get(1).getName());
+   
+   // Completing task A should not trigger any new tasks
+   taskService.complete(tasks.get(0).getId());
+   tasks = query.list();
+   assertEquals(1, tasks.size());
+   assertEquals("Task B", tasks.get(0).getName());
+
+   // Completing task B creates tasks B1 and B2
+   taskService.complete(tasks.get(0).getId());
+   tasks = query.list();
+   assertEquals(2, tasks.size());
+   assertEquals("Task B1", tasks.get(0).getName());
+   assertEquals("Task B2", tasks.get(1).getName());
+   
+   // Completing B1 and B2 will activate both joins, and process reaches task C
+   taskService.complete(tasks.get(0).getId());
+   taskService.complete(tasks.get(1).getId());
+   tasks = query.list();
+   assertEquals(1, tasks.size());
+   assertEquals("Task C", tasks.get(0).getName());
+   
   }
   
 }
