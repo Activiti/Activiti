@@ -14,6 +14,7 @@ package org.activiti.engine.impl.bpmn.parser;
 
 import java.io.InputStream;
 import java.net.URL;
+import java.text.StringCharacterIterator;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -64,8 +65,6 @@ import org.activiti.engine.impl.bpmn.TaskActivity;
 import org.activiti.engine.impl.bpmn.TransformationDataOutputAssociation;
 import org.activiti.engine.impl.bpmn.UserTaskActivity;
 import org.activiti.engine.impl.bpmn.WebServiceActivityBehavior;
-import org.activiti.engine.impl.bpmn.parser.BpmnParseListener;
-import org.activiti.engine.impl.bpmn.parser.BpmnParser;
 import org.activiti.engine.impl.el.Expression;
 import org.activiti.engine.impl.el.ExpressionManager;
 import org.activiti.engine.impl.el.FixedValue;
@@ -1244,7 +1243,7 @@ public class BpmnParse extends Parse {
     if (raeElement != null) {
       Element feElement = raeElement.element(FORMAL_EXPRESSION);
       if (feElement != null) {
-        String[] assignmentExpressions = splitCommaSeparatedExpression(feElement.getText());
+        List<String> assignmentExpressions = parseCommaSeparatedList(feElement.getText());
         for (String assignmentExpression : assignmentExpressions) {
           assignmentExpression = assignmentExpression.trim();
           if (assignmentExpression.startsWith(USER_PREFIX)) {
@@ -1259,13 +1258,6 @@ public class BpmnParse extends Parse {
         }
       }
     }
-  }
-
-  protected String[] splitCommaSeparatedExpression(String expression) {
-    if (expression == null) {
-      addError("Invalid: no content for " + FORMAL_EXPRESSION + " provided", rootElement);
-    }
-    return expression.split(",");
   }
 
   protected String getAssignmentId(String expression, String prefix) {
@@ -1288,7 +1280,7 @@ public class BpmnParse extends Parse {
     // Candidate users
     String candidateUsersString = taskElement.attributeNS(BpmnParser.ACTIVITI_BPMN_EXTENSIONS_NS, CANDIDATE_USERS_EXTENSION);
     if (candidateUsersString != null) {
-      String[] candidateUsers = candidateUsersString.split(",");
+      List<String> candidateUsers = parseCommaSeparatedList(candidateUsersString);
       for (String candidateUser : candidateUsers) {
         taskDefinition.addCandidateUserIdExpression(expressionManager.createExpression(candidateUser.trim()));
       }
@@ -1297,7 +1289,7 @@ public class BpmnParse extends Parse {
     // Candidate groups
     String candidateGroupsString = taskElement.attributeNS(BpmnParser.ACTIVITI_BPMN_EXTENSIONS_NS, CANDIDATE_GROUPS_EXTENSION);
     if (candidateGroupsString != null) {
-      String[] candidateGroups = candidateGroupsString.split(",");
+      List<String> candidateGroups = parseCommaSeparatedList(candidateGroupsString);
       for (String candidateGroup : candidateGroups) {
         taskDefinition.addCandidateGroupIdExpression(expressionManager.createExpression(candidateGroup.trim()));
       }
@@ -1305,6 +1297,50 @@ public class BpmnParse extends Parse {
     
     // Task listeners
     parseTaskListeners(taskElement, taskDefinition);
+  }
+  
+  /**
+   * Parses the given String as a list of comma separated entries,
+   * where an entry can possibly be an expression that has comma's.
+   * 
+   * If somebody is smart enough to write a regex for this,
+   * please let us know.
+   * 
+   * @return the entries of the comma separated list, trimmed.
+   */
+  protected List<String> parseCommaSeparatedList(String s) {
+    List<String> result = new ArrayList<String>();
+    if (s != null && !"".equals(s)) {
+      
+      StringCharacterIterator iterator = new StringCharacterIterator(s);
+      char c = iterator.first();
+      
+      StringBuilder strb = new StringBuilder();
+      boolean insideExpression = false;
+      
+      while (c != StringCharacterIterator.DONE) {
+        if (c == '{' || c == '$') {
+          insideExpression = true;
+        } else if (c == '}'){
+          insideExpression = false;
+        } else if (c == ',' && !insideExpression) {
+          result.add(strb.toString().trim());
+          strb.delete(0, strb.length());
+        } 
+        
+        if (c != ',' || (insideExpression) ) {
+          strb.append(c);
+        }
+        
+        c = iterator.next();
+      }
+    
+      if (strb.length() > 0) {
+        result.add(strb.toString().trim());
+      }
+      
+    }
+    return result;
   }
   
   protected void parseTaskListeners(Element userTaskElement, TaskDefinition taskDefinition) {

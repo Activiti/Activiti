@@ -15,6 +15,8 @@ package org.activiti.spring.test.taskassignment;
 import java.util.Arrays;
 import java.util.List;
 
+import org.activiti.engine.delegate.DelegateExecution;
+
 
 /**
  * @author Joram Barrez
@@ -28,6 +30,18 @@ public class FakeLdapService {
   
   public List<String> findAllSales() {
     return Arrays.asList("kermit", "gonzo", "fozzie");
+  }
+  
+  public List<String> findManagers(DelegateExecution execution, String emp) {
+    if (execution == null) {
+      throw new RuntimeException("Execution parameter is null");
+    }
+    
+    if (emp == null || "".equals(emp)) {
+      throw new RuntimeException("emp parameter is null or empty");
+    }
+    
+    return Arrays.asList("management", "directors");
   }
 
 }
