@@ -45,7 +45,8 @@ public class TaskFormsTest extends PluggableActivitiTestCase {
   public void testTaskFormsWithVacationRequestProcess() {
 
     // Get start form
-    Object startForm = formService.getRenderedStartForm("vacationRequest:1");
+    String procDefId = repositoryService.createProcessDefinitionQuery().singleResult().getId();
+    Object startForm = formService.getRenderedStartForm(procDefId);
     assertNotNull(startForm);
     
     ProcessDefinition processDefinition = repositoryService.createProcessDefinitionQuery().singleResult();
@@ -57,7 +58,7 @@ public class TaskFormsTest extends PluggableActivitiTestCase {
     formProperties.put("employeeName", "kermit");
     formProperties.put("numberOfDays", "4");
     formProperties.put("vacationMotivation", "I'm tired");
-    formService.submitStartFormData("vacationRequest:1", formProperties);
+    formService.submitStartFormData(procDefId, formProperties);
 
     // Management should now have a task assigned to them
     Task task = taskService.createTaskQuery().taskCandidateGroup("management").singleResult();
@@ -69,7 +70,8 @@ public class TaskFormsTest extends PluggableActivitiTestCase {
 
   @Deployment
   public void testTaskFormUnavailable() {
-    assertNull(formService.getRenderedStartForm("noStartOrTaskForm:1"));
+    String procDefId = repositoryService.createProcessDefinitionQuery().singleResult().getId();
+    assertNull(formService.getRenderedStartForm(procDefId));
 
     runtimeService.startProcessInstanceByKey("noStartOrTaskForm");
     Task task = taskService.createTaskQuery().singleResult();

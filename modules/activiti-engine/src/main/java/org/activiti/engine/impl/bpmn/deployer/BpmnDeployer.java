@@ -22,6 +22,7 @@ import java.util.logging.Logger;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.bpmn.parser.BpmnParse;
 import org.activiti.engine.impl.bpmn.parser.BpmnParser;
+import org.activiti.engine.impl.cfg.IdGenerator;
 import org.activiti.engine.impl.cfg.RepositorySession;
 import org.activiti.engine.impl.db.DbRepositorySession;
 import org.activiti.engine.impl.db.DbSqlSession;
@@ -46,6 +47,7 @@ public class BpmnDeployer implements Deployer {
 
   protected ExpressionManager expressionManager;
   protected BpmnParser bpmnParser;
+  protected IdGenerator idGenerator;
 
   public void deploy(DeploymentEntity deployment) {
     List<ProcessDefinitionEntity> processDefinitions = new ArrayList<ProcessDefinitionEntity>();
@@ -107,7 +109,10 @@ public class BpmnDeployer implements Deployer {
         processDefinition.setVersion(processDefinitionVersion);
         processDefinition.setDeploymentId(deployment.getId());
 
-        String processDefinitionId = processDefinition.getKey() + ":" + processDefinition.getVersion();
+        String processDefinitionId = processDefinition.getKey() 
+          + ":" + processDefinition.getVersion()
+          + ":" + idGenerator.getNextId(); // ACT-505
+          
         // ACT-115: maximum id length is 64 charcaters
         if (processDefinitionId.length() > 64) {
           throw new ActivitiException("Invalid process definition id: '" + processDefinitionId + "': id can be maximum 64 characters");
@@ -129,7 +134,7 @@ public class BpmnDeployer implements Deployer {
   }
   
   /**
-   * Retrieves the name of the image resource for a certain process.
+   * Returns the default name of the image resource for a certain process.
    * 
    * It will first look for an image resource which matches the process
    * specifically, before resorting to an image resource which matches the BPMN
@@ -195,6 +200,14 @@ public class BpmnDeployer implements Deployer {
   
   public void setBpmnParser(BpmnParser bpmnParser) {
     this.bpmnParser = bpmnParser;
+  }
+  
+  public IdGenerator getIdGenerator() {
+    return idGenerator;
+  }
+  
+  public void setIdGenerator(IdGenerator idGenerator) {
+    this.idGenerator = idGenerator;
   }
   
 }

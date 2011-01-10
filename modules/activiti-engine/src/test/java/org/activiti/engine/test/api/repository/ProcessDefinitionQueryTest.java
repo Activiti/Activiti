@@ -67,19 +67,19 @@ public class ProcessDefinitionQueryTest extends PluggableActivitiTestCase {
     ProcessDefinition processDefinition = processDefinitions.get(0);
     assertEquals("one", processDefinition.getKey());
     assertEquals("One", processDefinition.getName());
-    assertEquals("one:1", processDefinition.getId());
+    assertTrue(processDefinition.getId().startsWith("one:1"));
     assertEquals("Examples", processDefinition.getCategory());
 
     processDefinition = processDefinitions.get(1);
     assertEquals("one", processDefinition.getKey());
     assertEquals("One", processDefinition.getName());
-    assertEquals("one:2", processDefinition.getId());
+    assertTrue(processDefinition.getId().startsWith("one:2"));
     assertEquals("Examples", processDefinition.getCategory());
 
     processDefinition = processDefinitions.get(2);
     assertEquals("two", processDefinition.getKey());
     assertEquals("Two", processDefinition.getName());
-    assertEquals("two:1", processDefinition.getId());
+    assertTrue(processDefinition.getId().startsWith("two:1"));
     assertEquals("Examples", processDefinition.getCategory());
   }
   

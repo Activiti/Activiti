@@ -50,31 +50,31 @@ public class ProcessDefinitionsTest extends PluggableActivitiTestCase {
     ProcessDefinition processDefinition = processDefinitions.get(0);
     assertEquals("EN", processDefinition.getKey());
     assertEquals("Expense Note 2", processDefinition.getName());
-    assertEquals("EN:2", processDefinition.getId());
+    assertTrue(processDefinition.getId().startsWith("EN:2"));
     assertEquals(2, processDefinition.getVersion());
 
     processDefinition = processDefinitions.get(1);
     assertEquals("EN", processDefinition.getKey());
     assertEquals("Expense Note 1", processDefinition.getName());
-    assertEquals("EN:1", processDefinition.getId());
+    assertTrue(processDefinition.getId().startsWith("EN:1"));
     assertEquals(1, processDefinition.getVersion());
 
     processDefinition = processDefinitions.get(2);
     assertEquals("IDR", processDefinition.getKey());
     assertEquals("Insurance Damage Report 3", processDefinition.getName());
-    assertEquals("IDR:3", processDefinition.getId());
+    assertTrue(processDefinition.getId().startsWith("IDR:3"));
     assertEquals(3, processDefinition.getVersion());
 
     processDefinition = processDefinitions.get(3);
     assertEquals("IDR", processDefinition.getKey());
     assertEquals("Insurance Damage Report 2", processDefinition.getName());
-    assertEquals("IDR:2", processDefinition.getId());
+    assertTrue(processDefinition.getId().startsWith("IDR:2"));
     assertEquals(2, processDefinition.getVersion());
 
     processDefinition = processDefinitions.get(4);
     assertEquals("IDR", processDefinition.getKey());
     assertEquals("Insurance Damage Report 1", processDefinition.getName());
-    assertEquals("IDR:1", processDefinition.getId());
+    assertTrue(processDefinition.getId().startsWith("IDR:1"));
     assertEquals(1, processDefinition.getVersion());
 
     deleteDeployments(deploymentIds);
@@ -97,13 +97,13 @@ public class ProcessDefinitionsTest extends PluggableActivitiTestCase {
     ProcessDefinition processDefinition = processDefinitions.get(0);
     assertEquals("IDR", processDefinition.getKey());
     assertEquals("Insurance Damage Report", processDefinition.getName());
-    assertEquals("IDR:2", processDefinition.getId());
+    assertTrue(processDefinition.getId().startsWith("IDR:2"));
     assertEquals(2, processDefinition.getVersion());
 
     processDefinition = processDefinitions.get(1);
     assertEquals("IDR", processDefinition.getKey());
     assertEquals("Insurance Damage Report", processDefinition.getName());
-    assertEquals("IDR:1", processDefinition.getId());
+    assertTrue(processDefinition.getId().startsWith("IDR:1"));
     assertEquals(1, processDefinition.getVersion());
     
     deleteDeployments(deploymentIds);

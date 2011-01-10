@@ -43,7 +43,7 @@ public class RulesDeployerTest extends ResourceActivitiTestCase {
     
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("rulesDeployment", variableMap);
     assertNotNull(processInstance);
-    assertEquals("rulesDeployment:1", processInstance.getProcessDefinitionId());
+    assertTrue(processInstance.getProcessDefinitionId().startsWith("rulesDeployment:1"));
     
     Collection<Object> ruleOutputList = (Collection<Object>)
         runtimeService.getVariable(processInstance.getId(), "rulesOutput");

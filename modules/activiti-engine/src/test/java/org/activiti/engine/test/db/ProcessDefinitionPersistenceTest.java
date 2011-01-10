@@ -54,9 +54,10 @@ public class ProcessDefinitionPersistenceTest extends PluggableActivitiTestCase 
       .deploy()
       .getId();
   
-    ReadOnlyProcessDefinition processDefinition = ((RepositoryServiceImpl)repositoryService).getDeployedProcessDefinition("processOne:1");
+    String procDefId = repositoryService.createProcessDefinitionQuery().singleResult().getId();
+    ReadOnlyProcessDefinition processDefinition = ((RepositoryServiceImpl)repositoryService).getDeployedProcessDefinition(procDefId);
     
-    assertEquals("processOne:1", processDefinition.getId());
+    assertEquals(procDefId, processDefinition.getId());
     assertEquals("Process One", processDefinition.getName());
     assertEquals("the first process", processDefinition.getProperty("documentation"));
     

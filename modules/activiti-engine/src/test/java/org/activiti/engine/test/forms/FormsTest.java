@@ -37,20 +37,21 @@ public class FormsTest extends PluggableActivitiTestCase {
     "org/activiti/engine/test/forms/start.form", 
     "org/activiti/engine/test/forms/task.form" })
   public void testTaskFormPropertyDefaultsAndFormRendering() {
-    StartFormData startForm = formService.getStartFormData("FormsProcess:1");
+    String procDefId = repositoryService.createProcessDefinitionQuery().singleResult().getId();
+    StartFormData startForm = formService.getStartFormData(procDefId);
     assertNotNull(startForm);
     assertEquals(deploymentId, startForm.getDeploymentId());
     assertEquals("org/activiti/engine/test/forms/start.form", startForm.getFormKey());
     assertEquals(new ArrayList<FormProperty>(), startForm.getFormProperties());
-    assertEquals("FormsProcess:1", startForm.getProcessDefinition().getId());
+    assertEquals(procDefId, startForm.getProcessDefinition().getId());
     
-    Object renderedStartForm = formService.getRenderedStartForm("FormsProcess:1");
+    Object renderedStartForm = formService.getRenderedStartForm(procDefId);
     assertEquals("start form content", renderedStartForm);
     
     Map<String, String> properties = new HashMap<String, String>();
     properties.put("room", "5b");
     properties.put("speaker", "Mike");
-    String processInstanceId = formService.submitStartFormData("FormsProcess:1", properties).getId();
+    String processInstanceId = formService.submitStartFormData(procDefId, properties).getId();
     
     Map<String, Object> expectedVariables = new HashMap<String, Object>();
     expectedVariables.put("room", "5b");
@@ -87,7 +88,9 @@ public class FormsTest extends PluggableActivitiTestCase {
     properties.put("room", "5b"); // default
     properties.put("speaker", "Mike"); // variable name mapping
     properties.put("duration", "45"); // type conversion
-    String processInstanceId = formService.submitStartFormData("FormPropertyHandlingProcess:1", properties).getId();
+    
+    String procDefId = repositoryService.createProcessDefinitionQuery().singleResult().getId();
+    String processInstanceId = formService.submitStartFormData(procDefId, properties).getId();
 
     Map<String, Object> expectedVariables = new HashMap<String, Object>();
     expectedVariables.put("room", "5b");
@@ -157,7 +160,8 @@ public class FormsTest extends PluggableActivitiTestCase {
   @SuppressWarnings("unchecked")
   @Deployment
   public void testFormPropertyDetails() {
-    StartFormData startFormData = formService.getStartFormData("FormPropertyDetails:1");
+    String procDefId = repositoryService.createProcessDefinitionQuery().singleResult().getId();
+    StartFormData startFormData = formService.getStartFormData(procDefId);
     FormProperty property = startFormData.getFormProperties().get(0);
     assertEquals("speaker", property.getId());
     assertNull(property.getValue());

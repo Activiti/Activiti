@@ -11,12 +11,14 @@
  * limitations under the License.
  */
 
-package org.activiti.engine.test.db;
+package org.activiti.engine.test.cache;
 
 import java.util.List;
 
 import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.ProcessEngineConfiguration;
+import org.activiti.engine.RepositoryService;
+import org.activiti.engine.RuntimeService;
 import org.activiti.engine.TaskService;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.cfg.StandaloneInMemProcessEngineConfiguration;
@@ -33,7 +35,7 @@ import org.activiti.engine.task.Task;
  * 
  * @author Joram Barrez
  */
-public class EngineRebootProcessDefinitionCacheTest extends PvmTestCase {
+public class ProcessDefinitionCacheTest extends PvmTestCase {
   
   // Test for a bug: when the process engine is rebooted the
   // cache is cleaned and the deployed process definition is
@@ -61,7 +63,7 @@ public class EngineRebootProcessDefinitionCacheTest extends PvmTestCase {
      
      processEngine.getRepositoryService()
        .createDeployment()
-       .addClasspathResource("org/activiti/engine/test/db/EngineRebootProcessDefinitionCacheTest.bpmn20.xml")
+       .addClasspathResource("org/activiti/engine/test/cache/originalProcess.bpmn20.xml")
        .deploy();
   
      // verify existance of process definiton
@@ -125,4 +127,65 @@ public class EngineRebootProcessDefinitionCacheTest extends PvmTestCase {
      // Cleanup schema
      schemaProcessEngine.close();
    }
+  
+  
+  public void testDeployRevisedProcessAfterDeleteOnOtherProcessEngine() {
+    
+    // Setup both process engines
+    ProcessEngine processEngine1 = new StandaloneProcessEngineConfiguration()
+      .setDatabaseSchemaUpdate(org.activiti.engine.ProcessEngineConfiguration.DB_SCHEMA_UPDATE_TRUE)
+      .setJdbcUrl("jdbc:h2:mem:activiti-process-cache-test;DB_CLOSE_DELAY=1000")
+      .setJobExecutorActivate(false)
+      .buildProcessEngine();
+    RepositoryService repositoryService1 = processEngine1.getRepositoryService();
+    
+    ProcessEngine processEngine2 = new StandaloneProcessEngineConfiguration()
+      .setDatabaseSchemaUpdate(org.activiti.engine.ProcessEngineConfiguration.DB_SCHEMA_UPDATE_FALSE)
+      .setJdbcUrl("jdbc:h2:mem:activiti-process-cache-test;DB_CLOSE_DELAY=1000")
+      .setJobExecutorActivate(false)
+      .buildProcessEngine();
+    RepositoryService repositoryService2 = processEngine2.getRepositoryService();
+    RuntimeService runtimeService2 = processEngine2.getRuntimeService();
+    TaskService taskService2 = processEngine2.getTaskService();
+    
+    // Deploy first version of process: start->originalTask->end on first process engine
+    String deploymentId = repositoryService1.createDeployment()
+      .addClasspathResource("org/activiti/engine/test/cache/originalProcess.bpmn20.xml")
+      .deploy()
+      .getId();
+    
+    // Start process instance on second engine
+    String processDefinitionId = repositoryService2.createProcessDefinitionQuery().singleResult().getId();
+    runtimeService2.startProcessInstanceById(processDefinitionId);
+    Task task = taskService2.createTaskQuery().singleResult();
+    assertEquals("original task", task.getName());
+    
+    // Delete the deployment on second process engine
+    repositoryService2.deleteDeployment(deploymentId, true);
+    assertEquals(0, repositoryService2.createDeploymentQuery().count());
+    assertEquals(0, runtimeService2.createProcessInstanceQuery().count());
+    
+    // deploy a revised version of the process: start->revisedTask->end on first process engine
+    //
+    // Before the bugfix, this would set the cache on the first process engine,
+    // but the second process engine still has the original process definition in his cache.
+    // Since there is a deployment delete in between, the new generated process definition id is the same 
+    // as in the original deployment, making the second process engine using the old cached process definition.
+    deploymentId = repositoryService1.createDeployment()
+      .addClasspathResource("org/activiti/engine/test/cache/revisedProcess.bpmn20.xml")
+      .deploy()
+      .getId();
+    
+    // Start process instance on second process engine -> must use revised process definition
+    processDefinitionId = repositoryService2.createProcessDefinitionQuery().singleResult().getId();
+    runtimeService2.startProcessInstanceByKey("oneTaskProcess");
+    task = taskService2.createTaskQuery().singleResult();
+    assertEquals("revised task", task.getName());
+    
+    // cleanup
+    repositoryService1.deleteDeployment(deploymentId, true);
+    processEngine1.close();
+    processEngine2.close();
+  }
+ 
 }

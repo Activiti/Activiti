@@ -236,10 +236,10 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
     initTransactionContextFactory();
     initCommandExecutors();
     initServices();
+    initIdGenerator();
     initDeployers();
     initJobExecutor();
     initDataSource();
-    initIdGenerator();
     initTransactionFactory();
     initSqlSessionFactory();
     initSessionFactories();
@@ -455,6 +455,7 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
 
     BpmnDeployer bpmnDeployer = new BpmnDeployer();
     bpmnDeployer.setExpressionManager(expressionManager);
+    bpmnDeployer.setIdGenerator(idGenerator);
     BpmnParser bpmnParser = new BpmnParser(expressionManager);
     
     if(preParseListeners != null) {
