@@ -29,7 +29,6 @@ import org.activiti.engine.impl.util.ClockUtil;
  */
 public class AutomaticActivityInstanceHandler implements ExecutionListener {
 
-  @Override
   public void notify(ExecutionListenerExecution execution) throws Exception {
     CommandContext commandContext = CommandContext.getCurrent();
     IdGenerator idGenerator = commandContext.getProcessEngineConfiguration().getIdGenerator();
