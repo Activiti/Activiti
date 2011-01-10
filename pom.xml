@@ -16,7 +16,7 @@
 
       <!-- OSGi bundles properties -->
       <activiti.artifact/>
-      <activiti.osgi.import.activiti.version>version="[$(version;==;${activiti.osgi.version.clean}),$(version;=+;${activiti.osgi.version.clean}))"</activiti.osgi.import.activiti.version>
+      <activiti.osgi.import.activiti.version>version="[$(version;==;${activiti.osgi.version.clean}),$(version;=+;${activiti.wosgi.version.clean}))"</activiti.osgi.import.activiti.version>
       <activiti.osgi.import.strict.version>version="[$(version;===;${activiti.osgi.version.clean}),$(version;==+;${activiti.osgi.version.clean}))"</activiti.osgi.import.strict.version>
       <activiti.osgi.import.default.version>[$(version;==;$(@)),$(version;+;$(@)))</activiti.osgi.import.default.version>
       <activiti.osgi.import.defaults>
@@ -414,6 +414,12 @@
         <artifactId>vaadin</artifactId>
         <version>6.4.8</version>
       </dependency>
+      <!-- Camel integration -->
+      <dependency>
+        <groupId>org.apache.camel</groupId>
+        <artifactId>camel-spring</artifactId>
+        <version>2.5.0</version>
+      </dependency>
     </dependencies>
   </dependencyManagement>
 
@@ -616,6 +622,7 @@
         <module>modules/activiti-mule</module>
         <module>modules/activiti-osgi</module>
         <module>modules/activiti-osgi-rest</module>
+	<module>modules/activiti-camel</module>
       </modules>
     </profile>
     <profile>
