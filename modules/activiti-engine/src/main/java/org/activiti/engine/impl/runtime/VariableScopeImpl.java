@@ -182,7 +182,7 @@ public abstract class VariableScopeImpl implements Serializable, VariableScope {
     return null;
   }
 
-  private void setVariableInstanceValue(Object value, VariableInstanceEntity variableInstance) {
+  protected void setVariableInstanceValue(Object value, VariableInstanceEntity variableInstance) {
     variableInstance.setValue(value);
     
     CommandContext commandContext = CommandContext.getCurrent();
@@ -190,8 +190,12 @@ public abstract class VariableScopeImpl implements Serializable, VariableScope {
     if (historyLevel==ProcessEngineConfigurationImpl.HISTORYLEVEL_FULL) {
       DbSqlSession dbSqlSession = commandContext.getDbSqlSession();
       HistoricVariableUpdateEntity historicVariableUpdate = new HistoricVariableUpdateEntity(variableInstance, dbSqlSession);
+      initializeActivityInstanceId(historicVariableUpdate);
       dbSqlSession.insert(historicVariableUpdate);
     }
+  }
+  
+  protected void initializeActivityInstanceId(HistoricVariableUpdateEntity historicVariableUpdate) {
   }
 
   public void createVariableLocal(String variableName, Object value) {
