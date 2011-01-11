@@ -490,7 +490,11 @@ public class DbSqlSession implements Session {
       dbHistoryProperty.setValue(dbHistoryValue);
       
       
+      if (dbVersion.endsWith("-SNAPSHOT")) {
+        dbVersion = dbVersion.substring(0, dbVersion.length()-"-SNAPSHOT".length());
+      }
       int minorDbVersionNumber = Integer.parseInt(dbVersion.substring(2));
+      
       String libraryVersion = ProcessEngine.VERSION;
       if (ProcessEngine.VERSION.endsWith("-SNAPSHOT")) {
         libraryVersion = ProcessEngine.VERSION.substring(0, ProcessEngine.VERSION.length()-"-SNAPSHOT".length());
