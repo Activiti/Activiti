@@ -49,7 +49,7 @@
      */
     onReady: function Processes_onReady()
     {
-      this.widgets.dataTable = new Activiti.widget.DataTable(
+      this.widgets.dataTable = new Activiti.widget.DataList(
         this.id + "-processes",
         this,
         [ { event: Activiti.event.displayProcesses, value: {} } ],
@@ -57,11 +57,10 @@
         [ this.id + "-paginator" ],
         [
           { key:"name", label: this.msg("label.name"), sortable:true },
-          { key:"key", label: this.msg("label.key"), sortable:true },
-          { key:"version",  label: this.msg("label.version"), sortable:true },
           { key:"action", label: this.msg("label.action") }
         ]
       );
+      Dom.addClass(this.id + "-processes", "activiti-list");
 
       // Needed to load data and set up other events
       if (!Activiti.event.isInitEvent(Activiti.event.displayProcesses))
@@ -92,6 +91,21 @@
     },
 
     /**
+     * Activiti.widget.DataTable-callback to render the name & description.
+     *
+     * @method onDataTableRenderCellName
+     * @param dataTable {Activiti.widget.DataTable} The data table that is invoking the callback
+     * @param el The cell element
+     * @param oRecord The data record
+     * @param oColumn the data table column
+     * @param oData the cell data
+     */
+    onDataTableRenderCellName: function TaskList_onDataTableRenderCellName(dataTable, el, oRecord, oColumn, oData) {
+      var task = oRecord.getData();
+      el.innerHTML = '<h3 title="' + this.msg('tooltip.key', task.key) + '">' + $html(task.name) + '  <sup class="version">' + this.msg('label.version', task.version) + '</sup></h3>';
+    },
+
+    /**
      *
      * Activiti.widget.DataTable-callback that is called to render the content of each cell in the Actions row
      *
@@ -103,18 +117,16 @@
      * @param {Object} oData
      */
     onDataTableRenderCellAction: function Processes_onDataTableRenderCellAssignee(dataTable, el, oRecord, oColumn, oData) {
-      var actions = [],
-          data = oRecord.getData();
+      var data = oRecord.getData();
+      if (data.diagramResourceName != null) {
+        Activiti.widget.createCellButton(this, el, this.msg("action.viewProcessDiagram"), "view-process-diagram", this.onActionViewProcessDiagram, data, dataTable);
+      }
       if (data.startFormResourceKey != null) {
-        actions.push('<a href="#" class="onActionStartProcessUsingForm" title="' + this.msg("action.startProcessUsingForm") + '" tabindex="0">&nbsp;</a>');
+        Activiti.widget.createCellButton(this, el, this.msg("action.startProcessUsingForm"), "start-process-using-form", this.onActionStartProcessUsingForm, data, dataTable)
       }
       else {
-        actions.push('<a href="#" class="onActionStartProcess" title="' + this.msg("action.startProcess") + '" tabindex="0">&nbsp;</a>');
+        Activiti.widget.createCellButton(this, el, this.msg("action.startProcess"), "start-process", this.onActionStartProcess, data, dataTable);
       }
-      if (data.diagramResourceName != null) {
-        actions.push('<a href="#" class="onActionViewProcessDiagram" title="' + this.msg("action.viewProcessDiagram") + '" tabindex="0">&nbsp;</a>');
-      }
-      el.innerHTML = actions.join("");
     },
 
     /**

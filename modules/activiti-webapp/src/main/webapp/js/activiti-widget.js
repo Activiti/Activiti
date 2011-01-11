@@ -11,7 +11,7 @@ Activiti.widget = Activiti.widget || {};
  * All supplied object parameters are passed to the button constructor
  * e.g. Alfresco.util.createButton(this, "OK", this.onOK, {type: "submit"});
  *
- * @method Alfresco.util.createYUIButton
+ * @method Alfresco.util.createButton
  * @param component {object} Component containing button; must have "id" parameter
  * @param name {string} Dom element ID of markup that button is created from {p_scope.id}-{name}
  * @param callback {function} If supplied, registered with the button's click event
@@ -89,6 +89,36 @@ Activiti.widget.createButton = function(component, name, callback, obj, el)
   return button;
 };
 
+/**
+ * Wrapper to create a YUI Button with common attributes.
+ * All supplied object parameters are passed to the button constructor
+ * e.g. Alfresco.util.createButton(this, "OK", this.onOK, {type: "submit"});
+ *
+ * @method Alfresco.util.createCellButton
+ * @return {YAHOO.widget.Button} New Button instance
+ * @static
+ */
+Activiti.widget.createCellButton = function(component, cell, label, css, method, data, dataTable)
+{
+  var cellButton = new YAHOO.widget.Button({
+    label: label,
+    id: Activiti.util.generateDomId(),
+    container: cell
+  });
+  cellButton.addClass(css);
+  cellButton.on("click", function(e, obj)
+  {
+    obj.method.call(this, obj.data, obj.dataTable, obj.button, obj.cell);
+  },
+  {
+    cell: cell, 
+    data: data,
+    dataTable: dataTable,
+    button: cellButton,
+    method: method
+  }, component);
+  return cellButton;
+};
 
 /**
  * Wrapper to create a YUI Dialog with common attributes.

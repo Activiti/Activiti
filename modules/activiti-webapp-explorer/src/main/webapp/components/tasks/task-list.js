@@ -80,7 +80,7 @@
           { key:"id", width: 30 },
           { key:"assignee", width: 30 },
           { key:"name" },
-          { key:"priority", width: 200 }
+          { key:"action", width: 200 }
         ]
       );
       Dom.addClass(taskListId, "activiti-list");
@@ -201,44 +201,51 @@
     /**
      * Activiti.widget.DataTable-callback to render the assignee actions.
      *
-     * @method onDataTableRenderCellPriority
+     * @method onDataTableRenderCellAction
      * @param dataTable {Activiti.widget.DataTable} The data table that is invoking the callback
      * @param el The cell element
      * @param oRecord The data record
      * @param oColumn the data table column
      * @param oData the cell data
      */
-    onDataTableRenderCellPriority: function TaskList_onDataTableRenderCellPriority(dataTable, el, oRecord, oColumn, oData) {
-      var task = oRecord.getData(),
-          action = (task.assignee == Activiti.constants.USERNAME ? "complete" : "claim"),
-			 labelString = (action === "complete" && task.formResourceKey !== null ? "completeForm" : action);
-      var actionButton = new YAHOO.widget.Button({
-        label: this.msg("task.action." + labelString),
-        id: Activiti.util.generateDomId(),
-        container: el
-      });
-      actionButton.on("click", this.onTaskActionClick, {
-        action: action,
-        taskId: task.id,
-        button: actionButton
-      }, this);
+    onDataTableRenderCellAction: function TaskList_onDataTableRenderCellAction(dataTable, el, oRecord, oColumn, oData) {
+      var data = oRecord.getData();
+      if (data.assignee == Activiti.constants.USERNAME) {
+        if (data.formResourceKey !== null) {
+          Activiti.widget.createCellButton(this, el, this.msg("task.action.completeForm"), "complete-form", this.onActionCompleteForm, data, dataTable);
+        }
+        else {
+          Activiti.widget.createCellButton(this, el, this.msg("task.action.complete"), "complete", this.onActionComplete, data, dataTable);
+        }
+      }
+      else {
+        Activiti.widget.createCellButton(this, el, this.msg("task.action.claim"), "claim", this.onActionClaim, data, dataTable);
+      }
     },
 
     /**
-     * Called when an task action button has been clicked
+     * Called when the complete task action button has been clicked
      *
-     * @method onTaskActionClick
-     * @param e The click event
-     * @param obj The callback object with task information
+     * @method onActionComplete
      */
-    onTaskActionClick: function TaskList_onTaskActionClick(e, obj) {
-		if (obj.action == "complete") {
-        new Activiti.widget.CompleteTaskForm(this.id + "-completeTaskForm", obj.taskId, obj.button);
-      }
-      else if (obj.action == "claim") {
-        obj.button.set("disabled", true);
-        this.services.taskService.claimTask(obj.taskId);
-      }
+    onActionComplete: function TaskList_onActionComplete(data, dataTable, button) {
+      button.set("disabled", true);
+      this.services.taskService.completeTask(data.id, {}, {});
+    },
+
+    /**
+     * Called when a complete task form action button has been clicked
+     */
+    onActionCompleteForm: function TaskList_onActionCompleteForm(data, dataTable, button) {
+      new Activiti.widget.CompleteTaskForm(this.id + "-completeTaskForm", data.id, button);
+    },
+
+    /**
+     * Called when a claim task action button has been clicked
+     */
+    onActionClaim: function TaskList_onActionClaim(data, dataTable, button) {
+      button.set("disabled", true);
+      this.services.taskService.claimTask(data.id);
     }
   });
 

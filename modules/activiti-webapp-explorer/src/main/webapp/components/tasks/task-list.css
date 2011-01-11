@@ -10,6 +10,11 @@
   clear: both;
 }
 
+
+.task-list .activiti-datalist table tbody tr {
+  height: 4.5em;
+}
+
 /* COLUMN WIDTHS */
 
 /* ICON */
@@ -51,7 +56,31 @@
 
 /* ACTIONS */
 
-.task-list .activiti-datalist.yui-dt .yui-dt-col-priority {
+.task-list .activiti-datalist.yui-dt .yui-dt-col-action {
   text-align: right;  
 }
+
+.task-list .activiti-datalist.yui-dt .yui-dt-col-action span.first-child {
+  background: no-repeat scroll 12px 4px transparent;
+  padding-left: 22px;
+}
+
+.task-list .activiti-datalist.yui-dt .yui-dt-col-action .complete-form span.first-child
+{
+  background-image: url("../../images/process-start-form-icon.png");
+}
+
+.task-list .activiti-datalist.yui-dt .yui-dt-col-action .complete span.first-child
+{
+  background-image: url("../../images/process-start-icon.png");
+}
+
+.task-list .activiti-datalist.yui-dt .yui-dt-col-action .claim span.first-child
+{
+  background-image: url("../../images/user-icon.png");
+}
+
+
+
+
 

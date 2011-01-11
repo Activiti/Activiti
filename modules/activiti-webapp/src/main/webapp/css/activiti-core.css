@@ -80,6 +80,13 @@ label,
   display: none;
 }
 
+sup.version {
+  background-color: #CCCCCC;
+  border: 1px solid #AAAAAA;
+  font-size: 0.65em;
+  padding: 0 0.3em;
+  margin-left: 0.4em;
+}
 /* LOGIN */
 
 #login label {
@@ -329,13 +336,16 @@ li.filter, li.table {
   border: none;
 }
 
-#Activiti .activiti-datalist table thead {
-  display: none;
+#Activiti .activiti-datalist table tbody tr {
+  min-height: 3.4em;
 }
 
-#Activiti .activiti-datalist table tbody tr
-{
-  height: 4.5em;  
+#Activiti .activiti-datalist table tbody td .yui-dt-liner {
+  margin-top: 0.2em;
+}
+
+#Activiti .activiti-datalist table thead {
+  display: none;
 }
 
 #Activiti .activiti-datalist table tbody tr td,
@@ -351,6 +361,10 @@ li.filter, li.table {
   border: none;
   border-top: 1px solid #d4d4d4;
 }  
+
+#Activiti .activiti-datalist table tbody tr td .yui-button {
+  margin: auto 0.25em auto 0.5em;
+}
 
 /* ACTIVITI FORMS */
 
