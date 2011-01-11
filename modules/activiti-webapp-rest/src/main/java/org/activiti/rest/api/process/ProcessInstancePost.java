@@ -46,7 +46,7 @@ public class ProcessInstancePost extends ActivitiWebScript {
     variables.remove("processDefinitionId");
     variables.remove("businessKey");
     
-    model.put("processInstance", getRuntimeService().startProcessInstanceByKey(processDefinitionId, businessKey, variables));
+    model.put("processInstance", getRuntimeService().startProcessInstanceById(processDefinitionId, businessKey, variables));
   }
 
 }
