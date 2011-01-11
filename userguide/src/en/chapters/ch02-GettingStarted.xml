@@ -4,6 +4,31 @@
 <chapter>
   <title>Getting Started</title>
   
+  <section id="demo.setup.one.minute.version">
+    <title>One minute version</title>
+    <para>
+      After downloading the Activiti distribution zip file from the Activiti website,
+      follow these steps to get the demo setup running with default settings:
+      <itemizedlist>
+        <listitem>
+          <para>Unzip the Activiti distribution zip file.</para>
+        </listitem>
+        <listitem>
+          <para>Open up a terminal window and navigate to the <literal>setup</literal>
+          folder in the unzipped folder.</para>
+        </listitem>
+        <listitem>
+          <para>Type <emphasis role="bold">ant demo.start</emphasis> and hit enter.</para>
+        </listitem>
+        <listitem>
+          <para>When the script finishes, it starts up all the Activiti webapps in your
+          browser. Login with kermit/kermit.</para>
+        </listitem>
+      </itemizedlist>
+      That's it! If you want to know more, than read the <link linkend="demo.setup">longer version</link>.
+    </para>
+  </section>
+  
   <section id="demo.setup">
     <title>Demo setup</title>
     <para>'Demo Setup' is an ant script located in directory <literal>setup</literal> that
