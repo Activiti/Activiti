@@ -96,12 +96,20 @@ public abstract class ScopeImpl extends ProcessElementImpl implements PvmScope {
   }
   
   public void addExecutionListener(String eventName, ExecutionListener executionListener) {
+    addExecutionListener(eventName, executionListener, -1);
+  }
+  
+  public void addExecutionListener(String eventName, ExecutionListener executionListener, int index) {
     List<ExecutionListener> listeners = executionListeners.get(eventName);
     if (listeners==null) {
       listeners = new ArrayList<ExecutionListener>();
       executionListeners.put(eventName, listeners);
     }
-    listeners.add(executionListener);
+    if (index<0) {
+      listeners.add(executionListener);
+    } else {
+      listeners.add(index, executionListener);
+    }
   }
   
   public Map<String, List<ExecutionListener>> getExecutionListeners() {

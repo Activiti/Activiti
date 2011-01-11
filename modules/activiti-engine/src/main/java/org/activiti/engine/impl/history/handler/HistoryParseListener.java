@@ -123,7 +123,7 @@ public class HistoryParseListener implements BpmnParseListener {
   
   protected void addActivityHandlers(Element activityElement, ActivityImpl activity) {
     if (activityHistoryEnabled(activity, historyLevel)) {
-      activity.addExecutionListener(ExecutionListener.EVENTNAME_START, ACTIVITY_INSTANCE_START_LISTENER);
+      activity.addExecutionListener(ExecutionListener.EVENTNAME_START, ACTIVITY_INSTANCE_START_LISTENER, 0);
       activity.addExecutionListener(ExecutionListener.EVENTNAME_END, ACTIVITI_INSTANCE_END_LISTENER);
     }
   }
