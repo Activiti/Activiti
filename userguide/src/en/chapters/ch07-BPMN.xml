@@ -66,6 +66,15 @@
 		</para>
 		
 		<para>
+		  Optionally you can also add the online schemalocation of the BPMN 2.0 xsd schema,
+		  as an alternative to the  <link linkend="eclipsesetup">XML catalog configuration in Eclipse</link>.
+		  <programlisting>
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL 
+                    http://www.omg.org/spec/BPMN/2.0/20100501/BPMN20.xsd</programlisting>
+		</para>
+		
+		<para>
 		  The process element has two attributes:
 		  <itemizedlist>
 		    <listitem>
