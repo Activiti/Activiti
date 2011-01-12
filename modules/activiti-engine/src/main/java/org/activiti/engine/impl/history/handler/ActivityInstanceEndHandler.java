@@ -52,7 +52,8 @@ public class ActivityInstanceEndHandler implements ExecutionListener {
     DbSqlSession dbSqlSession = commandContext.getDbSqlSession();
     List<HistoricActivityInstanceEntity> cachedHistoricActivityInstances = dbSqlSession.findInCache(HistoricActivityInstanceEntity.class);
     for (HistoricActivityInstanceEntity cachedHistoricActivityInstance: cachedHistoricActivityInstances) {
-      if ( executionId.equals(cachedHistoricActivityInstance.getExecutionId())
+      if (executionId.equals(cachedHistoricActivityInstance.getExecutionId())
+           && activityId != null
            && (activityId.equals(cachedHistoricActivityInstance.getActivityId()))
            && (cachedHistoricActivityInstance.getEndTime()==null)
          ) {

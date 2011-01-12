@@ -26,7 +26,7 @@ import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.bpmn.AbstractDataInputAssociation;
 import org.activiti.engine.impl.bpmn.AbstractDataOutputAssociation;
 import org.activiti.engine.impl.bpmn.Assignment;
-import org.activiti.engine.impl.bpmn.BoundaryTimerEventActivity;
+import org.activiti.engine.impl.bpmn.BoundaryEventActivityBehavior;
 import org.activiti.engine.impl.bpmn.BpmnInterface;
 import org.activiti.engine.impl.bpmn.BpmnInterfaceImplementation;
 import org.activiti.engine.impl.bpmn.BusinessRuleTaskActivity;
@@ -38,6 +38,7 @@ import org.activiti.engine.impl.bpmn.Data;
 import org.activiti.engine.impl.bpmn.DataRef;
 import org.activiti.engine.impl.bpmn.DelegateExpressionExecutionListener;
 import org.activiti.engine.impl.bpmn.DelegateExpressionTaskListener;
+import org.activiti.engine.impl.bpmn.ErrorEndEventActivityBehavior;
 import org.activiti.engine.impl.bpmn.ExclusiveGatewayActivity;
 import org.activiti.engine.impl.bpmn.ExpressionExecutionListener;
 import org.activiti.engine.impl.bpmn.ExpressionTaskListener;
@@ -176,6 +177,11 @@ public class BpmnParse extends Parse {
    * this map doesn't need to be re-initialized for each new process definition.
    */
   protected Map<String, Operation> operations = new HashMap<String, Operation>();
+  
+  /**
+   * Mapping of defined errors in BPMN 2.0 file
+   */
+  protected Map<String, Error> errors = new HashMap<String, Error>();
 
   protected ExpressionManager expressionManager;
   
@@ -241,6 +247,7 @@ public class BpmnParse extends Parse {
     parseItemDefinitions();
     parseMessages();
     parseInterfaces();
+    parseErrors();
     parseProcessDefinitions();
     // Diagram intercgange parsing must be after parseProcessDefinitions, 
     // since it depends on existing process definition objects
@@ -443,6 +450,26 @@ public class BpmnParse extends Parse {
   public void parseProcessDefinitions() {
     for (Element processElement : rootElement.elements("process")) {
       processDefinitions.add(parseProcess(processElement));
+    }
+  }
+  
+  public void parseErrors() {
+    for (Element errorElement : rootElement.elements("error")) {
+      Error error = new Error();
+     
+      String id = errorElement.attribute("id");
+      if (id == null) {
+        addError("'id' is mandatory on error definition", errorElement);
+      }
+      error.setId(id);
+      
+      String errorCode = errorElement.attribute("errorCode");
+      if (errorCode == null) {
+        addError("'errorCode' is mandatory on error definition", errorElement);
+      }
+      error.setErrorCode(errorCode);
+      
+      errors.put(id, error);
     }
   }
 
@@ -1399,8 +1426,22 @@ public class BpmnParse extends Parse {
     for (Element endEventElement : parentElement.elements("endEvent")) {
       ActivityImpl activity = parseAndCreateActivityOnScopeElement(endEventElement, scope);
 
-      // Only none end events are currently supported
-      activity.setActivityBehavior(new NoneEndEventActivity());
+      Element errorEventDefinition = endEventElement.element("errorEventDefinition");
+      if (errorEventDefinition != null) { // error end event
+        String errorRef = errorEventDefinition.attribute("errorRef");
+        if (errorRef == null || "".equals(errorRef)) {
+          addError("'errorRef' attribute is mandatory on error end event", errorEventDefinition);
+        } else {
+          Error error = errors.get(errorRef);
+          if (error == null) {
+            addError("Invalid 'errorRef' " + errorRef + ": error is not defined", errorEventDefinition);
+          }
+          activity.setProperty("type", "errorEndEvent");
+          activity.setActivityBehavior(new ErrorEndEventActivityBehavior(error.getErrorCode()));
+        }
+      } else { // default: none end event
+        activity.setActivityBehavior(new NoneEndEventActivity());
+      }
 
       for (BpmnParseListener parseListener: parseListeners) {
         parseListener.parseEndEvent(endEventElement, scope, activity);
@@ -1426,15 +1467,13 @@ public class BpmnParse extends Parse {
   public void parseBoundaryEvents(Element parentElement, ScopeImpl scopeElement) {
     for (Element boundaryEventElement : parentElement.elements("boundaryEvent")) {
 
-      // The boundary event is attached to an activity, reference by the
-      // 'attachedToRef' attribute
+      // The boundary event is attached to an activity, reference by the 'attachedToRef' attribute
       String attachedToRef = boundaryEventElement.attribute("attachedToRef");
       if (attachedToRef == null || attachedToRef.equals("")) {
         addError("AttachedToRef is required when using a timerEventDefinition", boundaryEventElement);
       }
 
-      // Representation structure-wise is a nested activity in the activity to
-      // which its attached
+      // Representation structure-wise is a nested activity in the activity to which its attached
       String id = boundaryEventElement.attribute("id");
       if (LOG.isLoggable(Level.FINE)) {
         LOG.fine("Parsing boundary event " + id);
@@ -1449,11 +1488,18 @@ public class BpmnParse extends Parse {
 
       String cancelActivity = boundaryEventElement.attribute("cancelActivity", "true");
       boolean interrupting = cancelActivity.equals("true") ? true : false;
+      
+      // Catch event behavior is the same for all types
+      BoundaryEventActivityBehavior behavior = new BoundaryEventActivityBehavior(interrupting);
+      nestedActivity.setActivityBehavior(behavior);
 
       // Depending on the sub-element definition, the correct activityBehavior parsing is selected
       Element timerEventDefinition = boundaryEventElement.element("timerEventDefinition");
+      Element errorEventDefinition = boundaryEventElement.element("errorEventDefinition");
       if (timerEventDefinition != null) {
         parseBoundaryTimerEventDefinition(timerEventDefinition, interrupting, nestedActivity);
+      } else if (errorEventDefinition != null) {
+        parseBoundaryErrorEventDefinition(errorEventDefinition, interrupting, parentActivity, nestedActivity);
       } else {
         addError("Unsupported boundary event type", boundaryEventElement);
       }
@@ -1476,8 +1522,6 @@ public class BpmnParse extends Parse {
    */
   public void parseBoundaryTimerEventDefinition(Element timerEventDefinition, boolean interrupting, ActivityImpl timerActivity) {
     timerActivity.setProperty("type", "boundaryTimer");
-    BoundaryTimerEventActivity boundaryTimerEventActivity = new BoundaryTimerEventActivity();
-    boundaryTimerEventActivity.setInterrupting(interrupting);
 
     // TimeDate
 
@@ -1499,11 +1543,61 @@ public class BpmnParse extends Parse {
       ((ActivityImpl)timerActivity.getParent()).setScope(true);
     }
     
-    timerActivity.setActivityBehavior(boundaryTimerEventActivity);
-    
     for (BpmnParseListener parseListener: parseListeners) {
       parseListener.parseBoundaryTimerEventDefinition(timerEventDefinition, interrupting, timerActivity);
     }
+  }
+  
+  public void parseBoundaryErrorEventDefinition(Element errorEventDefinition, boolean interrupting,
+          ActivityImpl activity, ActivityImpl nestedErrorEventActivity) {
+    
+    nestedErrorEventActivity.setProperty("type", "boundaryError");
+    String errorRef = errorEventDefinition.attribute("errorRef");
+    Error error = errors.get(errorRef);
+    
+    // TODO: this can probably be made generic for all throw/catch ?
+    List<ActivityImpl> childErrorEndEvents = getAllChildActivitiesOfType("errorEndEvent", activity);
+    for (ActivityImpl errorEndEvent : childErrorEndEvents) {
+      ErrorEndEventActivityBehavior behavior = (ErrorEndEventActivityBehavior) errorEndEvent.getActivityBehavior();
+      if (error == null || error.getErrorCode().equals(behavior.getErrorCode())) {
+        ActivityImpl catchingActivity = null;
+        if (behavior.getCatchingActivityId() != null) {
+          catchingActivity = activity.getProcessDefinition().findActivity(behavior.getCatchingActivityId());
+        }
+        
+        // If the error end event doesnt have a catching activity assigned yet, we can just set it
+        // If the error end event already has a catching activity event, we can only set it
+        // if the current activity is a child of the previous defined one
+        // (ie. the current activity will catch and consume it, and it will never reach the previous one)
+        if (catchingActivity == null || isChildActivity(activity, catchingActivity)) {
+          behavior.setCatchingActivityId(nestedErrorEventActivity.getId());
+        }
+      }
+    }
+  }
+  
+  protected List<ActivityImpl> getAllChildActivitiesOfType(String type, ScopeImpl scope) {
+    List<ActivityImpl> children = new ArrayList<ActivityImpl>();
+    for (ActivityImpl childActivity : scope.getActivities()) {
+      if (type.equals(childActivity.getProperty("type"))) {
+        children.add(childActivity);
+      }
+      children.addAll(getAllChildActivitiesOfType(type, childActivity));
+    }
+    return children;
+  }
+  
+  /**
+   * Checks if the given activity is a child activity of the possibleParentActivity.
+   */
+  protected boolean isChildActivity(ActivityImpl activityToCheck, ActivityImpl possibleParentActivity) {
+    for (ActivityImpl child : possibleParentActivity.getActivities()) {
+      if (child.getId().equals(activityToCheck.getId())
+              || isChildActivity(activityToCheck, child)) {
+        return true;
+      }
+    }
+    return false;
   }
 
   @SuppressWarnings("unchecked")

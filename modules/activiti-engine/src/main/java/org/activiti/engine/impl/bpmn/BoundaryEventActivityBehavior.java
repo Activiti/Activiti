@@ -17,19 +17,24 @@ import java.util.List;
 
 import org.activiti.engine.impl.pvm.PvmTransition;
 import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
-import org.activiti.engine.impl.pvm.runtime.ExecutionImpl;
 import org.activiti.engine.impl.runtime.ExecutionEntity;
 
 
 /**
- * implementation of the boundary timer event logic.
- * 
  * @author Joram Barrez
  */
-public class BoundaryTimerEventActivity extends AbstractBpmnActivity {
+public class BoundaryEventActivityBehavior extends AbstractBpmnActivity {
   
   protected boolean interrupting;
+  
+  public BoundaryEventActivityBehavior() {
     
+  }
+  
+  public BoundaryEventActivityBehavior(boolean interrupting) {
+    this.interrupting = interrupting;
+  }
+  
   @SuppressWarnings("unchecked")
   public void execute(ActivityExecution execution) throws Exception {
     List<PvmTransition> outgoingTransitions = execution.getActivity().getOutgoingTransitions();
@@ -43,7 +48,7 @@ public class BoundaryTimerEventActivity extends AbstractBpmnActivity {
       
       interruptedExecutions = new ArrayList<ExecutionEntity>(executionImpl.getExecutions());
       for (ExecutionEntity interruptedExecution: interruptedExecutions) {
-        interruptedExecution.deleteCascade("interrupting timer event '"+execution.getActivity().getId()+"' fired");
+        interruptedExecution.deleteCascade("interrupting boundary event '"+execution.getActivity().getId()+"' fired");
       }
     }
 
@@ -57,5 +62,5 @@ public class BoundaryTimerEventActivity extends AbstractBpmnActivity {
   public void setInterrupting(boolean interrupting) {
     this.interrupting = interrupting;
   }
-  
+
 }
