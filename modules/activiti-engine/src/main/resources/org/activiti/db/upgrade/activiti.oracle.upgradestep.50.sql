@@ -13,13 +13,3 @@ create table ACT_HI_TASKINST (
     DELETE_REASON_ NVARCHAR2(255),
     primary key (ID_)
 );
-
-alter table ACT_HI_DETAIL 
-add TASK_ID_ NVARCHAR2(64);
-
-update ACT_GE_PROPERTY
-set 
-  VALUE_ = '5.2-SNAPSHOT',
-  REV_ = 2
-where
-  NAME_ = 'schema.version';

@@ -506,6 +506,8 @@ public class DbSqlSession implements Session {
         upgradeStepJavaClass(minorDbVersionNumber);
         minorDbVersionNumber++;
       }
+      
+      dbVersionProperty.setValue(ProcessEngine.VERSION);
     }
   }
 

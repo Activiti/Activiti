@@ -19,10 +19,3 @@ create table ACT_HI_TASKINST (
     DELETE_REASON_ varchar(255),
     primary key (ID_)
 );
-
-update ACT_GE_PROPERTY
-set 
-  VALUE_ = '5.2-SNAPSHOT',
-  REV_ = 2
-where
-  NAME_ = 'schema.version';
