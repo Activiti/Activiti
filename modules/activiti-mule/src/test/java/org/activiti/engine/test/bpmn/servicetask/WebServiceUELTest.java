@@ -31,7 +31,8 @@ public class WebServiceUELTest extends AbstractWebServiceTaskTest {
   public void testWebServiceInvocationWithDataFlowUEL() throws Exception {
     DbRepositorySessionFactory dbRepositorySessionFactory = (DbRepositorySessionFactory) 
       this.processEngineConfiguration.getSessionFactories().get(RepositorySession.class);
-    ProcessDefinitionEntity processDefinition = dbRepositorySessionFactory.getProcessDefinitionCache().get("webServiceInvocationWithDataFlowUEL:1");
+    String processDefinitionId = repositoryService.createProcessDefinitionQuery().processDefinitionKey("webServiceInvocationWithDataFlowUEL").singleResult().getId();
+    ProcessDefinitionEntity processDefinition = dbRepositorySessionFactory.getProcessDefinitionCache().get(processDefinitionId);
     ItemDefinition itemDefinition = processDefinition.getIoSpecification().getDataInputs().get(0).getDefinition();
 
     ItemInstance itemInstance = itemDefinition.createInstance();

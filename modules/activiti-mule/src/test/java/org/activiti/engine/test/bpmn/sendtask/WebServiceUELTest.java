@@ -34,7 +34,9 @@ public class WebServiceUELTest extends AbstractWebServiceTaskTest {
 
     DbRepositorySessionFactory dbRepositorySessionFactory = (DbRepositorySessionFactory) 
       this.processEngineConfiguration.getSessionFactories().get(RepositorySession.class);
-    ProcessDefinitionEntity processDefinition = dbRepositorySessionFactory.getProcessDefinitionCache().get("asyncWebServiceInvocationWithDataFlowUEL:1");
+    
+    String processDefinitionId = repositoryService.createProcessDefinitionQuery().processDefinitionKey("asyncWebServiceInvocationWithDataFlowUEL").singleResult().getId();
+    ProcessDefinitionEntity processDefinition = dbRepositorySessionFactory.getProcessDefinitionCache().get(processDefinitionId);
     ItemDefinition itemDefinition = processDefinition.getIoSpecification().getDataInputs().get(0).getDefinition();
 
     ItemInstance itemInstance = itemDefinition.createInstance();
