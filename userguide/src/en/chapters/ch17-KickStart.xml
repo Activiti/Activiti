@@ -91,7 +91,7 @@
     
   </section>
   
-  <section>
+  <section id="kickstart.change.database">
     <title>Changing the database</title>  
     <para>
       Activiti KickStart is currently not yet using the REST API, but uses the service API by including the Activiti engine
@@ -103,6 +103,39 @@
       in the <literal>apps/apache-tomcat-6.x/webapps/activiti-kickstart/WEB-INF/lib</literal> folder.
       Likewise, you must also place your database driver in the same folder. You can find
       the driver for your database (except Oracle) in <literal>setup/files/dependencies/libs/</literal>.
+    </para>
+  </section>
+  
+  <section id="kickstart.referencing.properties">
+    <title>Referencing form properties</title>
+    <para>
+      The value that users fill in for the form properties can easily be used by referencing the 
+      form property name. Take for example the following form:
+      <mediaobject><imageobject><imagedata align="center" fileref="images/kickstart.form.png"/></imageobject></mediaobject>
+      This form has three form properties: <literal>Employee name, Amount and Motivation</literal>,
+      which value can be used to populate the assignment, description and form title/description fields
+      in following steps. For example, the <literal>Employee name</literal> property is used
+      in the description of the following task:
+      <mediaobject><imageobject><imagedata align="center" fileref="images/kickstart.reference.form.properties.png"/></imageobject></mediaobject>
+      Note that, in case the property has spaces, you can reference it by either keeping or 
+      omitting the spaces.
+    </para>
+  </section>
+  
+  <section id="kickstart.capture.process.initiator">
+    <title>Capture the process initiator</title>
+    <para>
+      Business processes get really useful when you can capture the initiator of a 
+      process instance. Take for example the expense process that is shipped with the distribution.
+      When somebody starts a process instance to reimburse his expenses, we want to know who 
+      this was, so we can for example assign the first task to this person. 
+    </para>
+    <para>
+      All processes generated with KickStart capture the initiator of the process in a property
+      called <literal>initiator</literal>. Just <link linkend="kickstart.referencing.properties">reference the 'initiator' property</link>,
+      as shown in the following picture. In this example, the 'Request expense refund' task
+      will be assigned to whoever started the process instance.
+      <mediaobject><imageobject><imagedata align="center" fileref="images/kickstart.capture.initiator.png"/></imageobject></mediaobject>
     </para>
   </section>
 
