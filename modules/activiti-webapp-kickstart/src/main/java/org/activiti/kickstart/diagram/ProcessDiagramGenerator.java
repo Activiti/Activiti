@@ -89,7 +89,7 @@ public class ProcessDiagramGenerator {
     int height = calculateMaximumHeight() + 50;
     processDiagramCanvas = new ProcessDiagramCanvas(width, height);
 
-    Definitions definitions = adhocWorkflow.convertToBpmn20();
+    Definitions definitions = adhocWorkflow.toBpmn20Xml();
     Process process = getProcess(definitions);
     this.plane = getPlane(definitions);
 

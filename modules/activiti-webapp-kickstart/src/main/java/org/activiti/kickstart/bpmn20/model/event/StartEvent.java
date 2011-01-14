@@ -58,6 +58,9 @@ public class StartEvent
 
     @XmlAttribute
     protected Boolean isInterrupting;
+    
+    @XmlAttribute(name = "initiator", namespace = "http://activiti.org/bpmn")
+    protected String initiator;
 
     /* Getter & Setter */
     
@@ -87,6 +90,10 @@ public class StartEvent
      */
     public void setIsInterrupting(Boolean value) {
         this.isInterrupting = value;
+    }
+    
+    public void setInitiator(String initiator) {
+      this.initiator = initiator;
     }
 
 }

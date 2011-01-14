@@ -115,7 +115,7 @@ public class AdhocWorkflowDto {
    * Extremely important: the flowelements are added in topological order, from
    * left to right and top to bottom.
    */
-  public Definitions convertToBpmn20() {
+  public Definitions toBpmn20Xml() {
 
     if (definitions != null) {
       return definitions;
@@ -147,6 +147,7 @@ public class AdhocWorkflowDto {
     // Start
     StartEvent startEvent = new StartEvent();
     startEvent.setId(START_NAME);
+    startEvent.setInitiator("initiator");
     process.getFlowElement().add(startEvent);
 
     // We'll group tasks by each 'task block' that is to be executed in parallel

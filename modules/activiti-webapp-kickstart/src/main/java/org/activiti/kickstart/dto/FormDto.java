@@ -69,7 +69,7 @@ public class FormDto {
     return strb.toString();
   }
   
-  public String convertToHtml() {
+  public String toHtml() {
     StringBuilder strb = new StringBuilder();
     strb.append("<h1>" + ExpressionUtil.replaceWhiteSpaces(getTitle()) + "</h1>");
     strb.append("<p>" + ExpressionUtil.replaceWhiteSpaces(getDescription()) + "</p>");

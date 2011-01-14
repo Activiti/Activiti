@@ -75,7 +75,7 @@ public class AdhocWorkflowServiceImpl implements AdhocWorkflowService {
     for (TaskDto task : adhocWorkflow.getTasks()) {
       FormDto form = task.getForm();
       if (form != null) {
-        deploymentBuilder.addString(task.generateDefaultFormName(), form.convertToHtml());
+        deploymentBuilder.addString(task.generateDefaultFormName(), form.toHtml());
         deploymentBuilder.addString(task.generateDefaultFormName() + ".internal", form.toString());
       }
     }
@@ -175,7 +175,7 @@ public class AdhocWorkflowServiceImpl implements AdhocWorkflowService {
     JAXBContext jaxbContext = JAXBContext.newInstance(Definitions.class);
     Marshaller marshaller = jaxbContext.createMarshaller();
     StringWriter writer = new StringWriter();
-    marshaller.marshal(adhocWorkflow.convertToBpmn20(), writer);
+    marshaller.marshal(adhocWorkflow.toBpmn20Xml(), writer);
     return writer.toString();
   }
 

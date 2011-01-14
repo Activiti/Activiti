@@ -6,10 +6,10 @@
 	<ns4:process isExecutable="false" name="Expense process"
 		id="adhoc_Expense_process">
 		<ns4:documentation id="adhoc_Expense_process_documentation">Example process created using Activiti KickStart</ns4:documentation>
-		<ns4:startEvent id="theStart" />
+		<ns4:startEvent id="theStart" ns6:initiator="initiator"/>
 		<ns4:sequenceFlow sourceRef="theStart" targetRef="task_1" id="flow_1" />
 		<ns4:userTask ns6:formKey="org/activiti/examples/adhoc/Request_expense_refund.form" name="Request expense refund" id="task_1">
-			<ns4:documentation id="task_1_documentation">Request the refund of anexpense done for company business.</ns4:documentation>
+			<ns4:documentation id="task_1_documentation">Request the refund of an expense related to company business.</ns4:documentation>
 			<ns4:humanPerformer id="task_1_humanPerformer">
 				<ns4:resourceAssignmentExpression id="task_1_humanPerformer_assignmentExpression">
 					<ns4:formalExpression id="task_1_humanPerformer_formalExpressions">kermit</ns4:formalExpression>
