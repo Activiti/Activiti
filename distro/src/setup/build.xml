@@ -129,7 +129,7 @@
   <target name="demo.start"
           description="Starts the demo setup and installs things if necessary"
           depends="demo.install,
-                   h2.start,
+                   db.start,
                    tomcat.start,
                    explorer.browser.open" />
 
@@ -140,11 +140,11 @@
           unless="demo.is.installed">
     <echo message="installing demo" />
     <antcall target="build.webapps" />
-    <antcall target="h2.install" />
-    <antcall target="h2.start" />
+    <antcall target="db.install" />
+    <antcall target="db.start" />
     <antcall target="db.create" />
     <antcall target="db.demo.data" />
-    <antcall target="h2.stop" />
+    <antcall target="db.stop" />
     <antcall target="tomcat.install" />
     <antcall target="deploy.activiti.cfg.into.tomcat" />
     <antcall target="deploy.activiti.webapps.into.tomcat" />
@@ -158,7 +158,7 @@
 
   <target name="demo.stop" 
           description="Stops tomcat and h2 database" 
-          depends="tomcat.stop, h2.stop"/>
+          depends="tomcat.stop, db.stop"/>
 
   <!-- ### DB #################################################################### -->
   
@@ -291,18 +291,26 @@
     <deploy-bar file="${activiti.home}/setup/build/activiti-examples.bar" / -->
   </target>
 
-  <!-- ### H2 #################################################################### -->
+  <!-- ### DB #################################################################### -->
   
-  <condition property="h2.must.be.installed">
+  <condition property="h2.not.installed">
     <and>
       <equals arg1="${db.is.h2}" arg2="true" />
       <not><available file="${activiti.home}/apps/h2"/></not>
     </and>
   </condition>
   
-  <target name="h2.install"
+  <condition property="db.install.supported">
+    <equals arg1="${db}" arg2="h2" />
+  </condition>
+
+	<target name="db.install"
           description="Installs the H2 db in the ${activiti.home}/apps/h2 directory"
-          if="h2.must.be.installed">
+  	      depends="internal.db.install.h2, internal.db.install.h2.unnecessary, internal.db.install.unsupported" />
+
+	<target name="internal.db.install.h2"
+          if="h2.not.installed">
+		<echo message="Installing H2 adtabase in ${activiti.home}/apps/h2" />
     <mkdir dir="${activiti.home}/apps/h2" />
     <copy todir="${activiti.home}/apps/h2">
       <fileset dir="${activiti.home}/setup/files/dependencies/libs">
@@ -317,21 +325,31 @@
     </chmod>
   </target>
 
-  <target name="h2.start"
+  <target name="internal.db.install.h2.unnecessary"
+	        unless="h2.not.installed">
+  	<echo message="H2 is already installed" />
+  </target>
+
+  <target name="internal.db.install.unsupported"
+          unless="db.install.supported">
+    <echo message="Automatic installation of ${db} DB not supported.  It is assumed to be installed and running" />
+  </target>
+
+  <target name="db.start"
           description="Starts the H2 server"
           depends="internal.taskdef.launch" 
           if="db.is.h2">
     <launch dir="${activiti.home}/apps/h2"
-            script="h2.start"
+            script="db.start"
             msg="TCP server running on"/>
   </target>
   
-  <target name="h2.stop"
+  <target name="db.stop"
           description="Stops the H2 server"
           depends="internal.taskdef.launch" 
           if="db.is.h2">
     <launch dir="${activiti.home}/apps/h2"
-            script="h2.stop"/>
+            script="db.stop"/>
   </target>
 
   <target name="h2.console.start"

@@ -1,123 +1,140 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="activiti.qa.server">
+	
 	<property file="${user.home}/.activiti/build.properties" />
 	<property name="activiti.version" value="5.2-SNAPSHOT" />
 	<property name="activiti.home" value="../../distro/target/activiti-${activiti.version}/" />
+  <property name="server" value="tomcat" />
 
 	<condition property="mvn.executable" value="mvn.bat" else="mvn">
 		<os family="windows" />
 	</condition>
 
-	<property name="war.target" location="target/war" />
-	<property name="cactus.libs" location="target/cactus/lib" />
-
 	<target name="clean">
 		<delete dir="target" />
 	</target>
 
-	<target name="server.test" depends="war.prepare, cactus.build, tests.list, war.build, war.cactify">
+	<target name="server.test">
+    <echo message="Building distribution..." />
+    <ant antfile="../../distro/build.xml" inheritall="false">
+      <target name="clean" />
+      <target name="distro" />
+      <property name="nodocs" value="true" />
+    </ant>
 
-	</target>
+    <echo message="Installing ${server}..." />
+    <ant antfile="${activiti.home}/setup/build.xml" inheritall="false">
+      <target name="db.install" />
+      <target name="db.install" />
+      <target name="server.install" />
+      <property name="db" value="${database}" />
+      <property name="server" value="${server}" />
+    </ant>
 
-	<target name="war.prepare" depends="war.libs.copy, war.classes.copy, war.resources.copy, war.cfg.copy">
+		<echo message="Building the activiti-cactus module..." />
+    <exec executable="${mvn.executable}" dir="../../modules/activiti-cactus/">
+      <arg line="clean install" />
+    </exec>
 
-	</target>
+		<echo message="Gathtering activiti-cactus dependency libs in target/war/lib..."/>
+    <mkdir dir="target/war/lib" />
+    <copy todir="target/war/lib">
+      <fileset dir="${activiti.home}/setup/files/dependencies/libs" includesfile="${activiti.home}/setup/files/dependencies/libs.engine.runtime.txt" />
+      <fileset dir="${activiti.home}/setup/files/dependencies/libs" includesfile="${activiti.home}/setup/files/dependencies/libs.engine.runtime.feature.jpa.txt" />
+      <fileset dir="${activiti.home}/setup/files/dependencies/libs" includesfile="${activiti.home}/setup/files/dependencies/libs.engine.runtime.feature.groovy.txt" />
+      <fileset dir="${activiti.home}/setup/files/dependencies/libs" includesfile="${activiti.home}/setup/files/dependencies/libs.engine.test.txt" />
+    </copy>
 
-	<target name="war.build">
-		<!-- Build the war-file -->
+		<echo message="Adding test classes and resources..." />
+    <mkdir dir="target/war/classes" />
+    <javac destdir="target/war/classes" target="1.5" srcdir="../../modules/activiti-engine/src/test/java">
+      <exclude name="**/org/activiti/standalone/" />
+      <classpath>
+        <fileset dir="target/war/lib" id="id">
+          <include name="*.jar" />
+        </fileset>
+      </classpath>
+    </javac>
+
+		<echo message="Adding test-resources..." />
+    <copy todir="target/war/classes">
+      <fileset dir="../../modules/activiti-engine/src/test/resources">
+        <exclude name="**/META-INF/" />
+        <exclude name="**/org/activiti/standalone/" />
+        <exclude name="**/activiti.cfg.xml" />
+      </fileset>
+    </copy>
+		
+		<echo message="Adding META-INF..." />
+    <mkdir dir="target/war/META-INF" />
+    <copy todir="target/war/META-INF">
+      <fileset dir="../../modules/activiti-engine/src/test/resources/META-INF" />
+    </copy>
+    
+		<echo message="Creating activiti.cfg.xml..." />
+    <!-- TODO: Use DB.properties to populate the config?? -->
+    <copy todir="target/war/classes" filtering="true" file="activiti.cfg.xml" />
+
+		<echo message="Building the war-file..." />
 		<war destfile="target/activiti-server-${activiti.version}.war" needxmlfile="false">
-			<lib dir="${war.target}/lib" />
-			<classes dir="${war.target}/classes" />
-			<metainf dir="${war.target}/META-INF" />
+			<lib dir="target/war/lib" />
+			<classes dir="target/war/classes" />
+			<metainf dir="target/war/META-INF" />
 		</war>
-	</target>
+		
+		<echo message="Generating txt-file containing all tests using task in the activiti-cactus jar..." />
+    <taskdef name="list-tests" classname="org.activiti.test.cactus.ant.ListTestsTask">
+      <classpath>
+        <fileset dir="target/cactus/lib" />
+        <fileset file="target/war/lib/activiti-cactus-${activiti.version}.jar" />
+      </classpath>
+    </taskdef>
+    <list-tests targetfile="target/war/classes/activiti.cactus.tests.txt">
+      <testfileset dir="target/war/classes" />
+    </list-tests>
+    <echo message="Created 'target/war/classes/activiti.cactus.tests.txt', containing test-class names" />
 
-	<target name="war.libs.copy">
-		<mkdir dir="${war.target}/lib" />
-		<!-- Gathter all required libs, including all features  -->
-		<copy todir="${war.target}/lib">
-			<fileset dir="${activiti.home}/setup/files/dependencies/libs" includesfile="${activiti.home}/setup/files/dependencies/libs.engine.runtime.txt" />
-			<fileset dir="${activiti.home}/setup/files/dependencies/libs" includesfile="${activiti.home}/setup/files/dependencies/libs.engine.runtime.feature.jpa.txt" />
-			<fileset dir="${activiti.home}/setup/files/dependencies/libs" includesfile="${activiti.home}/setup/files/dependencies/libs.engine.runtime.feature.groovy.txt" />
-			<fileset dir="${activiti.home}/setup/files/dependencies/libs" includesfile="${activiti.home}/setup/files/dependencies/libs.engine.test.txt" />
-		</copy>
-	</target>
+		<echo message="Copying the activiti-cactus jar to libs..." />
+    <copy file="../../modules/activiti-cactus/target/activiti-cactus-${activiti.version}.jar" todir="target/war/lib" description="Copying the activiti-cactus-${activiti.version}.jar to WAR lib" />
+  	<mkdir dir="target/cactus/lib" />
+    <!-- Copy all dependencies from activiti-cactus, this will also be used for running the actual cactus tests -->
+    <exec executable="${mvn.executable}" dir="../../modules/activiti-cactus/">
+      <arg line="dependency:copy-dependencies -DoutputDirectory=target/cactus/lib" />
+    </exec>
 
-	<target name="war.classes.copy">
-		<!-- Add test classes and resources -->
-		<mkdir dir="${war.target}/classes" />
-		<javac destdir="target/war/classes" target="1.5" srcdir="../../modules/activiti-engine/src/test/java">
-			<exclude name="**/org/activiti/standalone/" />
-			<classpath>
-				<fileset dir="${war.target}/lib" id="id">
-					<include name="*.jar" />
-				</fileset>
-			</classpath>
-		</javac>
-	</target>
+    <echo message="Defining cactus ant tasks..." />
+    <taskdef resource="cactus.tasks">
+      <classpath>
+        <fileset dir="target/cactus/lib" />
+      </classpath>
+    </taskdef>
 
-	<target name="war.resources.copy">
-		<!-- Add test-resources -->
-		<copy todir="${war.target}/classes">
-			<fileset dir="../../modules/activiti-engine/src/test/resources">
-				<exclude name="**/META-INF/" />
-				<exclude name="**/org/activiti/standalone/" />
-				<exclude name="**/activiti.cfg.xml" />
-			</fileset>
-		</copy>
-
-		<!-- Add META-INF -->
-		<mkdir dir="${war.target}/META-INF" />
-		<copy todir="${war.target}/META-INF">
-			<fileset dir="../../modules/activiti-engine/src/test/resources/META-INF" />
-		</copy>
-	</target>
-
-	<target name="war.cfg.copy">
-		<!-- Create activiti.cfg.xml -->
-		<!-- TODO: Use DB.properties to populate the config?? -->
-		<copy todir="${war.target}/classes" filtering="true" file="activiti.cfg.xml" />
-	</target>
-
-	<target name="cactus.build" depends="activiti.cactus.build, cactus.copy.dependencies, war.classes.copy">
-
-	</target>
-
-	<target name="tests.list" depends="cactus.build">
-		<!-- Based on test-classes, generate txt-file containing all tests using task in the activiti-cactus jar -->
-		<taskdef name="list-tests" classname="org.activiti.test.cactus.ant.ListTestsTask">
-			<classpath>
-				<fileset dir="${cactus.libs}" />
-				<fileset file="${war.target}/lib/activiti-cactus-${activiti.version}.jar" />
-			</classpath>
-		</taskdef>
-
-		<list-tests targetfile="${war.target}/classes/activiti.cactus.tests.txt">
-			<testfileset dir="${war.target}/classes" />
-		</list-tests>
-		<echo message="Created '${war.target}/classes/activiti.cactus.tests.txt', containing test-class names" />
-	</target>
-
-	<target name="activiti.cactus.build">
-		<!-- Build the activiti-cactus module -->
-		<exec executable="${mvn.executable}" dir="../../modules/activiti-cactus/">
-			<arg line="clean install" />
-		</exec>
-		<!-- Copy the activiti-cactus jar to libs. No other jars are required, since the war will be cactified anyway -->
-		<copy file="../../modules/activiti-cactus/target/activiti-cactus-${activiti.version}.jar" todir="${war.target}/lib" description="Copying the activiti-cactus-${activiti.version}.jar to WAR lib" />
-	</target>
-
-	<target name="cactus.copy.dependencies">
-		<mkdir dir="${cactus.libs}" />
-		<!-- Copy all dependencies from activiti-cactus, this will also be used for running the actual cactus tests -->
-		<exec executable="${mvn.executable}" dir="../../modules/activiti-cactus/">
-			<arg line="dependency:copy-dependencies -DoutputDirectory=${cactus.libs}" />
-		</exec>
-	</target>
-
-
-	<target name="war.cactify" depends="cactus.build">
-		<!-- TODO: Run cactus ant-task from ${cactus.libs} -->
+    <echo message="Cactifying war..." />
+		<cactifywar srcfile="target/activiti-server-${activiti.version}.war" destfile="target/activiti-server-cactified.war">
+	    <lib dir="target/cactus/lib" />
+	  </cactifywar>
+		
+    <echo message="Running server tests..." />
+    <cactus warfile="target/activiti-server-cactified.war" fork="yes" failureproperty="tests.failed">
+      <classpath>
+        <fileset dir="target/war/lib" />
+        <fileset dir="target/cactus/lib" />
+      </classpath>
+      <containerset timeout="180000">
+        <tomcat6x if="cactus.home.tomcat4x"
+            dir="${cactus.home.tomcat4x}" port="${cactus.port}"
+            output="${target.testreports.dir}/tomcat4x.out"
+            todir="${target.testreports.dir}/tomcat4x"/>
+      </containerset>
+      <formatter type="brief" usefile="false"/>
+      <formatter type="xml"/>
+      <batchtest>
+        <fileset dir="${src.cactus.dir}">
+          <include name="**/Test*.java"/>
+          <exclude name="**/Test*All.java"/>
+        </fileset>
+      </batchtest>
+    </cactus>
 	</target>
 
 </project>
