@@ -86,7 +86,10 @@
   	<copy file="${user.home}/.activiti/upgrade/build.${database}.properties" todir="target/activiti-${activiti.old.version}/setup" overwrite="true" />
     <copy file="${oracle.driver.path}" todir="target/activiti-${activiti.old.version}/setup/files/dependencies/libs" />
     <ant antfile="target/activiti-${activiti.old.version}/setup/build.xml" target="inflate.examples" inheritall="false" />
-    <ant antfile="target/activiti-${activiti.old.version}/setup/build.xml" target="db.install" inheritall="false">
+  	<condition property="old.version.db.install.target" value="h2.install" else="db.install">
+  		<equals arg1="${activiti.old.version}" arg2="5.0" />
+  	</condition>
+    <ant antfile="target/activiti-${activiti.old.version}/setup/build.xml" target="${old.version.db.install.target}" inheritall="false">
       <property name="db" value="${database}" />
     </ant>
   </target>
