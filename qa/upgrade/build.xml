@@ -11,7 +11,7 @@
 	<condition property="mvn.executable" value="mvn.bat" else="mvn">
      <os family="windows"/>
   </condition>
-
+	
 	<target name="clean">
 		<delete dir="target" />
 	</target>
@@ -21,7 +21,7 @@
 		                              build.engine.module,
 		                              clean.db">
     <copy file="${user.home}/.activiti/upgrade/build.${database}.properties" todir="target/activiti-${activiti.old.version}/setup" overwrite="true" />
-    <ant antfile="target/activiti-${activiti.old.version}/setup/build.xml" target="db.start" inheritall="false">
+    <ant antfile="target/activiti-${activiti.old.version}/setup/build.xml" target="h2.start" inheritall="false">
     	<property name="db" value="${database}" />
     </ant>
 		<echo message="creating activiti tables" />
@@ -60,7 +60,7 @@
     <exec executable="${mvn.executable}" dir="../../modules/activiti-upgrade">
       <arg line="-Ddatabase=${database} ${optional.debug.property} clean prepare-package" />
     </exec>
-    <ant antfile="target/activiti-${activiti.old.version}/setup/build.xml" target="db.stop" inheritall="false">
+    <ant antfile="target/activiti-${activiti.old.version}/setup/build.xml" target="h2.stop" inheritall="false">
       <property name="db" value="${database}" />
     </ant>
 	</target>
@@ -86,10 +86,7 @@
   	<copy file="${user.home}/.activiti/upgrade/build.${database}.properties" todir="target/activiti-${activiti.old.version}/setup" overwrite="true" />
     <copy file="${oracle.driver.path}" todir="target/activiti-${activiti.old.version}/setup/files/dependencies/libs" />
     <ant antfile="target/activiti-${activiti.old.version}/setup/build.xml" target="inflate.examples" inheritall="false" />
-  	<condition property="old.version.db.install.target" value="h2.install" else="db.install">
-  		<equals arg1="${activiti.old.version}" arg2="5.0" />
-  	</condition>
-    <ant antfile="target/activiti-${activiti.old.version}/setup/build.xml" target="${old.version.db.install.target}" inheritall="false">
+    <ant antfile="target/activiti-${activiti.old.version}/setup/build.xml" target="h2.install" inheritall="false">
       <property name="db" value="${database}" />
     </ant>
   </target>

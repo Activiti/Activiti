@@ -129,7 +129,7 @@
   <target name="demo.start"
           description="Starts the demo setup and installs things if necessary"
           depends="demo.install,
-                   db.start,
+                   h2.start,
                    tomcat.start,
                    explorer.browser.open" />
 
@@ -140,11 +140,11 @@
           unless="demo.is.installed">
     <echo message="installing demo" />
     <antcall target="build.webapps" />
-    <antcall target="db.install" />
-    <antcall target="db.start" />
+    <antcall target="h2.install" />
+    <antcall target="h2.start" />
     <antcall target="db.create" />
     <antcall target="db.demo.data" />
-    <antcall target="db.stop" />
+    <antcall target="h2.stop" />
     <antcall target="tomcat.install" />
     <antcall target="deploy.activiti.cfg.into.tomcat" />
     <antcall target="deploy.activiti.webapps.into.tomcat" />
@@ -158,7 +158,7 @@
 
   <target name="demo.stop" 
           description="Stops tomcat and h2 database" 
-          depends="tomcat.stop, db.stop"/>
+          depends="tomcat.stop, h2.stop"/>
 
   <!-- ### DB #################################################################### -->
   
@@ -304,7 +304,7 @@
     <equals arg1="${db}" arg2="h2" />
   </condition>
 
-	<target name="db.install"
+	<target name="h2.install"
           description="Installs the H2 db in the ${activiti.home}/apps/h2 directory"
   	      depends="internal.db.install.h2, internal.db.install.h2.unnecessary, internal.db.install.unsupported" />
 
@@ -335,21 +335,21 @@
     <echo message="Automatic installation of ${db} DB not supported.  It is assumed to be installed and running" />
   </target>
 
-  <target name="db.start"
+  <target name="h2.start"
           description="Starts the H2 server"
           depends="internal.taskdef.launch" 
           if="db.is.h2">
     <launch dir="${activiti.home}/apps/h2"
-            script="db.start"
+            script="h2.start"
             msg="TCP server running on"/>
   </target>
   
-  <target name="db.stop"
+  <target name="h2.stop"
           description="Stops the H2 server"
           depends="internal.taskdef.launch" 
           if="db.is.h2">
     <launch dir="${activiti.home}/apps/h2"
-            script="db.stop"/>
+            script="h2.stop"/>
   </target>
 
   <target name="h2.console.start"
