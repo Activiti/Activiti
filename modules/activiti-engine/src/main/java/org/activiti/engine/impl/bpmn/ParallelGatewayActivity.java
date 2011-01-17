@@ -49,7 +49,7 @@ import org.activiti.engine.impl.runtime.ExecutionEntity;
  * @author Joram Barrez
  * @author Tom Baeyens
  */
-public class ParallelGatewayActivity extends GatewayActivity {
+public class ParallelGatewayActivity extends GatewayActivityBehavior {
   
   private static Logger log = Logger.getLogger(ParallelGatewayActivity.class.getName());
 

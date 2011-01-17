@@ -23,6 +23,7 @@ import org.activiti.engine.impl.runtime.ExecutionEntity;
 
 /**
  * @author Tom Baeyens
+ * @author Joram Barrez
  */
 public class TimerExecuteNestedActivityJobHandler implements JobHandler {
   
@@ -35,8 +36,7 @@ public class TimerExecuteNestedActivityJobHandler implements JobHandler {
   }
 
   public void execute(String configuration, ExecutionEntity execution, CommandContext commandContext) {
-    ActivityImpl activity = execution.getActivity();
-    ActivityImpl borderEventActivity = activity.getProcessDefinition().findActivity(configuration);
+    ActivityImpl borderEventActivity = execution.getProcessDefinition().findActivity(configuration);
 
     if (borderEventActivity == null) {
       throw new ActivitiException("Error while firing timer: border event activity " + configuration + " not found");

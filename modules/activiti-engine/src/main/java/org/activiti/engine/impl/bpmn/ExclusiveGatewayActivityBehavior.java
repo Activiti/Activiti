@@ -23,14 +23,16 @@ import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
 
 
 /**
- * implementation of the Exclusive Gateway/XOR gateway/exclusive signalData=based gateway
+ * implementation of the Exclusive Gateway/XOR gateway/exclusive data-based gateway
  * as defined in the BPMN specification.
  * 
  * @author Joram Barrez
  */
-public class ExclusiveGatewayActivity extends GatewayActivity {
+public class ExclusiveGatewayActivityBehavior extends GatewayActivityBehavior {
   
-  private static Logger log = Logger.getLogger(ExclusiveGatewayActivity.class.getName());
+  private static Logger log = Logger.getLogger(ExclusiveGatewayActivityBehavior.class.getName());
+  
+  protected String defaultSequenceFlow;
   
   /**
    * The default behaviour of BPMN, taking every outgoing sequence flow
@@ -41,6 +43,9 @@ public class ExclusiveGatewayActivity extends GatewayActivity {
    * selecting the first sequence flow which condition evaluates to true
    * (or which hasn't got a condition) and leaving the activity through that
    * sequence flow. 
+   * 
+   * If no sequence flow is selected (ie all conditions evaluate to false),
+   * then the default sequence flow is taken (if defined).
    */
   @Override
   protected void leave(ActivityExecution execution) {
@@ -54,9 +59,11 @@ public class ExclusiveGatewayActivity extends GatewayActivity {
     while (outgoingSeqFlow == null && transitionIterator.hasNext()) {
       PvmTransition seqFlow = transitionIterator.next();
       
-      // TODO conditions should go into the activity behaviour configuration (probably base BpmnActivity as all activities need conditions)
+      // TODO conditions should go into the activity behaviour configuration 
+      // (probably BpmnActivity as all activities need conditions)
       Condition condition = (Condition) seqFlow.getProperty(BpmnParse.PROPERTYNAME_CONDITION);
-      if ( condition==null || condition.evaluate(execution) ) {
+      if ( (condition == null && !seqFlow.getId().equals(defaultSequenceFlow)) 
+              || (condition != null && condition.evaluate(execution)) ) {
         if (log.isLoggable(Level.FINE)) {
           log.fine("Sequence flow '" + seqFlow.getId() + " '"
                   + "selected as outgoing sequence flow.");
@@ -68,10 +75,28 @@ public class ExclusiveGatewayActivity extends GatewayActivity {
     if (outgoingSeqFlow != null) {
       execution.take(outgoingSeqFlow);
     } else {
-      //No sequence flow could be found
-      throw new ActivitiException("No outgoing sequence flow of the exclusive gateway '"
+      
+      if (defaultSequenceFlow != null) {
+        PvmTransition defaultTransition = execution.getActivity().findOutgoingTransition(defaultSequenceFlow);
+        if (defaultTransition != null) {
+          execution.take(defaultTransition);
+        } else {
+          throw new ActivitiException("Default sequence flow '" + defaultSequenceFlow + "' not found");
+        }
+      } else {
+        //No sequence flow could be found, not even a default one
+        throw new ActivitiException("No outgoing sequence flow of the exclusive gateway '"
               + execution.getActivity().getId() + "' could be selected for continuing the process");
+      }
     }
   }
 
+  public String getDefaultSequenceFlow() {
+    return defaultSequenceFlow;
+  }
+  
+  public void setDefaultSequenceFlow(String defaultSequenceFlow) {
+    this.defaultSequenceFlow = defaultSequenceFlow;
+  }
+  
 }

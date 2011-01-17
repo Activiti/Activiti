@@ -59,5 +59,25 @@ public class BoundaryTimerEventTest extends PluggableActivitiTestCase {
     Task task = taskService.createTaskQuery().singleResult();
     assertEquals("Third Task", task.getName());
   }
+  
+  @Deployment
+  public void testTimerOnNestingOfSubprocesses() {
+    
+    Date testStartTime = ClockUtil.getCurrentTime();
+    
+    runtimeService.startProcessInstanceByKey("timerOnNestedSubprocesses");
+    List<Task> tasks = taskService.createTaskQuery().orderByTaskName().asc().list();
+    assertEquals(2, tasks.size());
+    assertEquals("Inner subprocess task 1", tasks.get(0).getName());
+    assertEquals("Inner subprocess task 2", tasks.get(1).getName());
+    
+    // Timer will fire in 2 hours
+    ClockUtil.setCurrentTime(new Date(testStartTime.getTime() + ((2 * 60 * 60 *1000) + 5000)));
+    Job timer = managementService.createJobQuery().timers().singleResult();
+    managementService.executeJob(timer.getId());
+    
+    Task task = taskService.createTaskQuery().singleResult();
+    assertEquals("task outside subprocess", task.getName());
+  }
 
 }

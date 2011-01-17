@@ -104,6 +104,11 @@ public interface ActivityExecution extends DelegateExecution {
    * still exists, but it is not longer active.
    */
   void inactivate();
+  
+  /**
+   * Returns whether this execution is a scope.
+   */
+  boolean isScope();
 
   /**
    * Retrieves all executions which are concurrent and inactive at the given activity.

@@ -27,7 +27,7 @@ import org.activiti.engine.impl.runtime.ExecutionEntity;
 public class ErrorEndEventActivityBehavior extends AbstractBpmnActivity {
   
   protected static final Logger LOG = Logger.getLogger(ErrorEndEventActivityBehavior.class.getName());
-  protected String catchingActivityId;
+  protected String borderEventActivityId; // the nested activity representing the structure of the boundary event
   protected String errorCode;
   
   public ErrorEndEventActivityBehavior(String errorCode) {
@@ -36,31 +36,63 @@ public class ErrorEndEventActivityBehavior extends AbstractBpmnActivity {
   
   public void execute(ActivityExecution execution) throws Exception {
     
-    if (catchingActivityId == null) {
+    if (borderEventActivityId == null) {
       LOG.info(execution.getActivity().getId() + " throws error event with errorCode '"
               + errorCode + "', but no catching boundary event was defined. "
               +		"Execution will simply be ended (none end event semantics).");
       execution.end();
     } else {
+      
       ProcessDefinitionImpl processDefinition = ((ExecutionEntity) execution).getProcessDefinition();
-      ActivityImpl catchingActivity = processDefinition.findActivity(catchingActivityId);
-      if (catchingActivity == null) {
-        throw new ActivitiException(catchingActivityId + " not found in process definition");
+      ActivityImpl borderEventActivity = processDefinition.findActivity(borderEventActivityId);
+      if (borderEventActivity == null) {
+        throw new ActivitiException(borderEventActivityId + " not found in process definition");
       }
-      execution.executeActivity(catchingActivity);
+      
+      ActivityImpl catchingScope = borderEventActivity.getParentActivity();
+      if (catchingScope == null) {
+        throw new ActivitiException(borderEventActivityId + " is suppossed to be a nested activity, " 
+                + "but no parent activity can be found.");
+      }
+      
+      boolean matchingParentFound = false;
+      ActivityExecution parentExecution = execution;
+      ActivityImpl parentActivity = (ActivityImpl) execution.getActivity().getParent();
+      
+      // Traverse parents until one is found that is a scope 
+      // and matches the activity the boundary event is defined on
+      while(!matchingParentFound && parentExecution != null && parentActivity != null) {
+        if (parentExecution.isScope() 
+                && !parentExecution.isConcurrent() 
+                && parentActivity.getId().equals(catchingScope.getId())) {
+          matchingParentFound = true;
+        } else if (parentExecution.isConcurrent()) {
+          parentExecution = parentExecution.getParent();
+        } else if (parentExecution.isScope()) {
+          parentActivity = parentActivity.getParentActivity();
+          parentExecution = parentExecution.getParent();
+        } 
+        
+      }
+      
+      // Execute the nested activity (== boundary event) in the parent execution
+      if (matchingParentFound && parentExecution != null) {
+        parentExecution.executeActivity(borderEventActivity);
+      } else {
+        throw new ActivitiException("No matching parent execution for activity " + borderEventActivityId + " found");
+      }
     }
     
   }
 
-  
-  public String getCatchingActivityId() {
-    return catchingActivityId;
+  public String getBorderEventActivityId() {
+    return borderEventActivityId;
   }
 
-  public void setCatchingActivityId(String catchingActivityId) {
-    this.catchingActivityId = catchingActivityId;
+  public void setBorderEventActivityId(String borderEventActivityId) {
+    this.borderEventActivityId = borderEventActivityId;
   }
-  
+
   public String getErrorCode() {
     return errorCode;
   }

@@ -39,7 +39,7 @@ import org.activiti.engine.impl.bpmn.DataRef;
 import org.activiti.engine.impl.bpmn.DelegateExpressionExecutionListener;
 import org.activiti.engine.impl.bpmn.DelegateExpressionTaskListener;
 import org.activiti.engine.impl.bpmn.ErrorEndEventActivityBehavior;
-import org.activiti.engine.impl.bpmn.ExclusiveGatewayActivity;
+import org.activiti.engine.impl.bpmn.ExclusiveGatewayActivityBehavior;
 import org.activiti.engine.impl.bpmn.ExpressionExecutionListener;
 import org.activiti.engine.impl.bpmn.ExpressionTaskListener;
 import org.activiti.engine.impl.bpmn.IOSpecification;
@@ -743,7 +743,10 @@ public class BpmnParse extends Parse {
    */
   public void parseExclusiveGateway(Element exclusiveGwElement, ScopeImpl scope) {
     ActivityImpl activity = parseAndCreateActivityOnScopeElement(exclusiveGwElement, scope);
-    activity.setActivityBehavior(new ExclusiveGatewayActivity());
+    
+    ExclusiveGatewayActivityBehavior behavior = new ExclusiveGatewayActivityBehavior();
+    behavior.setDefaultSequenceFlow(exclusiveGwElement.attribute("default"));
+    activity.setActivityBehavior(behavior);
     
     parseExecutionListenersOnScope(exclusiveGwElement, activity);
     
@@ -1552,6 +1555,7 @@ public class BpmnParse extends Parse {
           ActivityImpl activity, ActivityImpl nestedErrorEventActivity) {
     
     nestedErrorEventActivity.setProperty("type", "boundaryError");
+    ((ActivityImpl)nestedErrorEventActivity.getParent()).setScope(true);
     String errorRef = errorEventDefinition.attribute("errorRef");
     Error error = errors.get(errorRef);
     
@@ -1561,8 +1565,8 @@ public class BpmnParse extends Parse {
       ErrorEndEventActivityBehavior behavior = (ErrorEndEventActivityBehavior) errorEndEvent.getActivityBehavior();
       if (error == null || error.getErrorCode().equals(behavior.getErrorCode())) {
         ActivityImpl catchingActivity = null;
-        if (behavior.getCatchingActivityId() != null) {
-          catchingActivity = activity.getProcessDefinition().findActivity(behavior.getCatchingActivityId());
+        if (behavior.getBorderEventActivityId() != null) {
+          catchingActivity = activity.getProcessDefinition().findActivity(behavior.getBorderEventActivityId());
         }
         
         // If the error end event doesnt have a catching activity assigned yet, we can just set it
@@ -1570,7 +1574,7 @@ public class BpmnParse extends Parse {
         // if the current activity is a child of the previous defined one
         // (ie. the current activity will catch and consume it, and it will never reach the previous one)
         if (catchingActivity == null || isChildActivity(activity, catchingActivity)) {
-          behavior.setCatchingActivityId(nestedErrorEventActivity.getId());
+          behavior.setBorderEventActivityId(nestedErrorEventActivity.getId());
         }
       }
     }

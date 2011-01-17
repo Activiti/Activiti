@@ -13,6 +13,7 @@
 package org.activiti.engine.impl.interceptor;
 
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.Map;
 import java.util.Stack;
 import java.util.logging.Level;
@@ -30,6 +31,8 @@ import org.activiti.engine.impl.cfg.TaskSession;
 import org.activiti.engine.impl.cfg.TimerSession;
 import org.activiti.engine.impl.cfg.TransactionContext;
 import org.activiti.engine.impl.db.DbSqlSession;
+import org.activiti.engine.impl.pvm.runtime.AtomicOperation;
+import org.activiti.engine.impl.pvm.runtime.InterpretableExecution;
 
 /**
  * @author Tom Baeyens
@@ -46,6 +49,20 @@ public class CommandContext {
   protected Map<Class< ? >, Session> sessions = new HashMap<Class< ? >, Session>();
   protected Throwable exception = null;
   protected ProcessEngineConfigurationImpl processEngineConfiguration;
+  protected LinkedList<AtomicOperation> nextOperations = new LinkedList<AtomicOperation>();
+  
+  public void performOperation(AtomicOperation executionOperation, InterpretableExecution execution) {
+    nextOperations.add(executionOperation);
+    if (nextOperations.size()==1) {
+      while (!nextOperations.isEmpty()) {
+        AtomicOperation currentOperation = nextOperations.removeFirst();
+        if (log.isLoggable(Level.FINEST)) {
+          log.finest("AtomicOperation: " + currentOperation + " on " + this);
+        }
+        currentOperation.execute(execution);
+      }
+    }
+  }
 
   public static void setCurrentCommandContext(CommandContext commandContext) {
     getContextStack(true).push(commandContext);

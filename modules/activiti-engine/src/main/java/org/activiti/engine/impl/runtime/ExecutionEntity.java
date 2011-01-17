@@ -53,6 +53,8 @@ import org.activiti.engine.impl.pvm.process.ProcessDefinitionImpl;
 import org.activiti.engine.impl.pvm.process.ScopeImpl;
 import org.activiti.engine.impl.pvm.process.TransitionImpl;
 import org.activiti.engine.impl.pvm.runtime.AtomicOperation;
+import org.activiti.engine.impl.pvm.runtime.AtomicOperationDeleteCascade;
+import org.activiti.engine.impl.pvm.runtime.AtomicOperationDeleteCascadeFireActivityEnd;
 import org.activiti.engine.impl.pvm.runtime.InterpretableExecution;
 import org.activiti.engine.impl.pvm.runtime.OutgoingExecution;
 import org.activiti.engine.impl.task.TaskEntity;
@@ -60,6 +62,7 @@ import org.activiti.engine.impl.variable.VariableDeclaration;
 import org.activiti.engine.runtime.Execution;
 import org.activiti.engine.runtime.Job;
 import org.activiti.engine.runtime.ProcessInstance;
+import org.apache.tools.ant.filters.TokenFilter.DeleteCharacters;
 
 
 /**
@@ -494,19 +497,12 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
   }
   
   public void performOperation(AtomicOperation executionOperation) {
-    this.nextOperation = executionOperation;
-    if (!isOperating) {
-      isOperating = true;
-      while (nextOperation!=null) {
-        AtomicOperation currentOperation = this.nextOperation;
-        this.nextOperation = null;
-        if (log.isLoggable(Level.FINEST)) {
-          log.finest("AtomicOperation: " + currentOperation + " on " + this);
-        }
-        currentOperation.execute(this);
-      }
-      isOperating = false;
-    }
+//    if (executionOperation instanceof AtomicOperationDeleteCascade
+//            || executionOperation instanceof AtomicOperationDeleteCascadeFireActivityEnd) {
+//      executionOperation.execute(this);
+//      return;
+//    }
+    CommandContext.getCurrent().performOperation(executionOperation, this);
   }
   
   public boolean isActive(String activityId) {
@@ -905,7 +901,7 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
   }
 
   protected String getToStringIdentity() {
-    return Integer.toString(System.identityHashCode(this));
+    return id;
   }
 
   // getters and setters //////////////////////////////////////////////////////

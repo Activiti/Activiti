@@ -139,4 +139,20 @@ public class ExclusiveGatewayTest extends PluggableActivitiTestCase {
     }
   }
   
+  @Deployment
+  public void testDefaultSequenceFlow() {
+    
+    // Input == 1 -> default is not selected
+    String procId = runtimeService.startProcessInstanceByKey("exclusiveGwDefaultSequenceFlow", 
+            CollectionUtil.singletonMap("input", 1)).getId();
+    Task task = taskService.createTaskQuery().singleResult();
+    assertEquals("Input is one", task.getName());
+    runtimeService.deleteProcessInstance(procId, null);
+    
+    procId = runtimeService.startProcessInstanceByKey("exclusiveGwDefaultSequenceFlow", 
+            CollectionUtil.singletonMap("input", 5)).getId();
+    task = taskService.createTaskQuery().singleResult();
+    assertEquals("Default input", task.getName());
+  }
+  
 }

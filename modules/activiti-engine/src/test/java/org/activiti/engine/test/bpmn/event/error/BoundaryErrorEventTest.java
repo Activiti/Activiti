@@ -38,22 +38,20 @@ public class BoundaryErrorEventTest extends PluggableActivitiTestCase {
     assertEquals("task after catching the error", task.getName());
   }
   
-//  @Deployment
-//  public void testCatchErrorOfInnerSubprocessOnOuterSubprocess() {
-//    runtimeService.startProcessInstanceByKey("boundaryErrorTest");
-//
-//    List<Task> tasks = taskService.createTaskQuery().orderByTaskName().asc().list();
-//    assertEquals(2, tasks.size());
-//    assertEquals("Inner subprocess task 1", tasks.get(0).getName());
-//    assertEquals("Inner subprocess task 2", tasks.get(1).getName());
-//    
-//    // Completing task 2, will cause the end error event to throw error with code 123
-//    taskService.complete(tasks.get(1).getId());
-//    tasks = taskService.createTaskQuery().list();
-//    Task taskAfterError = taskService.createTaskQuery().singleResult();
-//    assertEquals("task outside subprocess", taskAfterError.getName());
-//    
-//    System.out.println("iek");
-//  }
+  @Deployment
+  public void testCatchErrorOfInnerSubprocessOnOuterSubprocess() {
+    runtimeService.startProcessInstanceByKey("boundaryErrorTest");
+
+    List<Task> tasks = taskService.createTaskQuery().orderByTaskName().asc().list();
+    assertEquals(2, tasks.size());
+    assertEquals("Inner subprocess task 1", tasks.get(0).getName());
+    assertEquals("Inner subprocess task 2", tasks.get(1).getName());
+    
+    // Completing task 2, will cause the end error event to throw error with code 123
+    taskService.complete(tasks.get(1).getId());
+    tasks = taskService.createTaskQuery().list();
+    Task taskAfterError = taskService.createTaskQuery().singleResult();
+    assertEquals("task outside subprocess", taskAfterError.getName());
+  }
 
 }
