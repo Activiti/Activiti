@@ -179,7 +179,7 @@ public class Extender implements BundleTrackerCustomizer, ServiceTrackerCustomiz
                         throw new IOException("Error opening url: " + url);
                     }
                     try {
-                        builder.addInputStream(url.toExternalForm(), is);
+                        builder.addInputStream(getPath(url), is);
                     } finally {
                         is.close();
                     }
@@ -255,5 +255,12 @@ public class Extender implements BundleTrackerCustomizer, ServiceTrackerCustomiz
         String cachePath = cachePath(bundle, basePath + getFilePart(path));
         return getOverrideURLForCachePath(cachePath);
     }
+
+    //remove bundle protocol specific part, so that resource can be accessed by path relative to bundle root
+    private static String getPath(URL url) {
+        String path = url.toExternalForm();
+        return path.replaceAll("bundle://[^/]*/","");
+    }
+
 
 }
