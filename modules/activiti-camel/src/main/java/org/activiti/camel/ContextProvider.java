@@ -17,7 +17,6 @@ import org.apache.camel.CamelContext;
 
 public interface ContextProvider {
 
-    CamelContext getContext(String processName); 
-
+  CamelContext getContext(String processName);
 
 }

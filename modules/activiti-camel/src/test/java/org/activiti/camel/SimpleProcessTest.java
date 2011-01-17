@@ -21,51 +21,63 @@ import org.apache.camel.component.mock.MockEndpoint;
 import org.springframework.test.context.ContextConfiguration;
 
 import java.util.Collections;
+import java.util.Map;
 
 @ContextConfiguration("classpath:camel-activiti-context.xml")
 public class SimpleProcessTest extends SpringActivitiTestCase {
 
-    public void setUp() {
-        CamelContext ctx = applicationContext.getBean(CamelContext.class);
-        MockEndpoint me = (MockEndpoint) ctx.getEndpoint("mock:service1");
-        me.reset();
-    }
+  MockEndpoint service1;
 
-    @Deployment(resources = {"process/example.bpmn20.xml"})
-    public void testRunProcess() throws Exception {
-        CamelContext ctx = applicationContext.getBean(CamelContext.class);
-        ProducerTemplate tpl = ctx.createProducerTemplate();
-        MockEndpoint me = (MockEndpoint) ctx.getEndpoint("mock:service1");
-        me.expectedBodiesReceived("ala");
+  MockEndpoint service2;
 
+  public void setUp() {
 
-        String instanceId = (String) tpl.requestBody("direct:start", Collections.singletonMap("var1", "ala"));
+    CamelContext ctx = applicationContext.getBean(CamelContext.class);
+    service1 = (MockEndpoint) ctx.getEndpoint("mock:service1");
+    service1.reset();
+    service2 = (MockEndpoint) ctx.getEndpoint("mock:service2");
+    service2.reset();
 
-        tpl.sendBodyAndProperty("direct:receive", null, ActivitiProducer.PROCESS_ID_PROPERTY, instanceId);
+  }
 
-        assertProcessEnded(instanceId);
+  @Deployment(resources = {"process/example.bpmn20.xml"})
+  public void testRunProcess() throws Exception {
+    CamelContext ctx = applicationContext.getBean(CamelContext.class);
+    ProducerTemplate tpl = ctx.createProducerTemplate();
+    service1.expectedBodiesReceived("ala");
 
-        me.assertIsSatisfied();
-    }
-
-
-    @Deployment(resources = {"process/example.bpmn20.xml"})
-    public void testRunProcessByKey() throws Exception {
-        CamelContext ctx = applicationContext.getBean(CamelContext.class);
-        ProducerTemplate tpl = ctx.createProducerTemplate();
-        MockEndpoint me = (MockEndpoint) ctx.getEndpoint("mock:service1");
-        me.expectedBodiesReceived("ala");
+    String instanceId = (String) tpl.requestBody("direct:start", Collections.singletonMap("var1", "ala"));
 
 
-        tpl.sendBodyAndProperty("direct:start", Collections.singletonMap("var1", "ala"), ActivitiProducer.PROCESS_KEY_PROPERTY, "key1");
+    tpl.sendBodyAndProperty("direct:receive", null, ActivitiProducer.PROCESS_ID_PROPERTY, instanceId);
 
-        String instanceId = runtimeService.createProcessInstanceQuery().processInstanceBusinessKey("key1")
-                .singleResult().getProcessInstanceId();
-        tpl.sendBodyAndProperty("direct:receive", null, ActivitiProducer.PROCESS_KEY_PROPERTY, "key1");
+    assertProcessEnded(instanceId);
 
-        assertProcessEnded(instanceId);
+    service1.assertIsSatisfied();
+    Map m = service2.getExchanges().get(0).getIn().getBody(Map.class);
+    assertEquals("ala", m.get("var1"));
+    assertEquals("var2", m.get("var2"));
 
-        me.assertIsSatisfied();
-    }
+  }
+
+
+  @Deployment(resources = {"process/example.bpmn20.xml"})
+  public void testRunProcessByKey() throws Exception {
+    CamelContext ctx = applicationContext.getBean(CamelContext.class);
+    ProducerTemplate tpl = ctx.createProducerTemplate();
+    MockEndpoint me = (MockEndpoint) ctx.getEndpoint("mock:service1");
+    me.expectedBodiesReceived("ala");
+
+
+    tpl.sendBodyAndProperty("direct:start", Collections.singletonMap("var1", "ala"), ActivitiProducer.PROCESS_KEY_PROPERTY, "key1");
+
+    String instanceId = runtimeService.createProcessInstanceQuery().processInstanceBusinessKey("key1")
+        .singleResult().getProcessInstanceId();
+    tpl.sendBodyAndProperty("direct:receive", null, ActivitiProducer.PROCESS_KEY_PROPERTY, "key1");
+
+    assertProcessEnded(instanceId);
+
+    me.assertIsSatisfied();
+  }
 
 }

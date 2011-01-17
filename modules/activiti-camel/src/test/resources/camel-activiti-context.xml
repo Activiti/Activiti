@@ -55,5 +55,11 @@
         </constructor-arg>
     </bean>
 
+    <!-- this has to be done this way in this module, because of classloading issues coming from using same module for test and camel component
+        (see ObjectHelper#loadResourceAsStream
+    -->
+    <bean id="activiti" class="org.activiti.camel.ActivitiComponent">
+        <constructor-arg ref="camelProcess"/>
+    </bean>
 
 </beans>

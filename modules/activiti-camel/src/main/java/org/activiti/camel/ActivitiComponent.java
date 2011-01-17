@@ -21,25 +21,26 @@ import java.util.Map;
 
 public class ActivitiComponent extends DefaultComponent {
 
-    private RuntimeService runtimeService;
+  private RuntimeService runtimeService;
 
-    public ActivitiComponent(CamelContext context) {
-        super(context);
-        runtimeService = getByType(context, RuntimeService.class);
+  public ActivitiComponent(CamelContext context) {
+    super(context);
+    runtimeService = getByType(context, RuntimeService.class);
+  }
+
+  private <T> T getByType(CamelContext ctx, Class<T> kls) {
+    Map<String, T> looked = ctx.getRegistry().lookupByType(kls);
+    if (looked.isEmpty()) {
+      return null;
     }
+    return looked.values().iterator().next();
 
-    private <T> T getByType(CamelContext ctx, Class<T> kls) {
-        Map<String, T> looked = ctx.getRegistry().lookupByType(kls);
-        if (looked.isEmpty()) {
-            return null;
-        }
-        return looked.values().iterator().next();
+  }
 
-    }
-
-    @Override
-    protected Endpoint createEndpoint(String s, String s1, Map<String, Object> stringObjectMap) throws Exception {
-
-        return new ActivitiEndpoint(s, getCamelContext(), runtimeService);
-    }
+  @Override
+  protected Endpoint createEndpoint(String s, String s1, Map<String, Object> stringObjectMap) throws Exception {
+    ActivitiEndpoint ae = new ActivitiEndpoint(s, getCamelContext(), runtimeService);
+    //setProperties(ae, stringObjectMap);
+    return ae;
+  }
 }

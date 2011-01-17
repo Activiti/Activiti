@@ -19,40 +19,75 @@ import org.apache.camel.impl.DefaultEndpoint;
 
 public class ActivitiEndpoint extends DefaultEndpoint {
 
-    private RuntimeService runtimeService;
+  private RuntimeService runtimeService;
 
-    private ActivitiConsumer activitiConsumer;
+  private ActivitiConsumer activitiConsumer;
 
-    public ActivitiEndpoint(String uri, CamelContext camelContext, RuntimeService runtimeService) {
-        super(uri, camelContext);
-        this.runtimeService = runtimeService;
+  private boolean copyVariablesToProperties = true;
+
+  private boolean copyVariablesToBody = false;
+
+  private boolean copyVariablesFromProperties = false;
+
+  public ActivitiEndpoint(String uri, CamelContext camelContext, RuntimeService runtimeService) {
+    super(uri, camelContext);
+    this.runtimeService = runtimeService;
+  }
+
+  void addConsumer(ActivitiConsumer consumer) {
+    if (activitiConsumer != null) {
+      throw new RuntimeException("Activit consumer already defined for " + getEndpointUri() + "!");
     }
+    activitiConsumer = consumer;
+  }
 
-    void addConsumer(ActivitiConsumer consumer) {
-        if (activitiConsumer != null) {
-            throw new RuntimeException("Activit consumer already defined for "+getEndpointUri()+"!");
-        }
-        activitiConsumer = consumer;
+  public void process(Exchange ex) throws Exception {
+    if (activitiConsumer == null) {
+      throw new RuntimeException("Activiti consumer not defined for " + getEndpointUri());
     }
+    activitiConsumer.getProcessor().process(ex);
 
-    public void process(Exchange ex) throws Exception {
-        if (activitiConsumer == null) {
-            throw new RuntimeException("Activiti consumer not defined"+getEndpointUri()+"!");
-        }
-        activitiConsumer.getProcessor().process(ex);
-
-    }
+  }
 
 
-    public Producer createProducer() throws Exception {
-        return new ActivitiProducer(this, runtimeService);
-    }
+  public Producer createProducer() throws Exception {
+    return new ActivitiProducer(this, runtimeService);
+  }
 
-    public Consumer createConsumer(Processor processor) throws Exception {
-        return new ActivitiConsumer(this, processor);
-    }
+  public Consumer createConsumer(Processor processor) throws Exception {
+    return new ActivitiConsumer(this, processor);
+  }
 
-    public boolean isSingleton() {
-        return true;
-    }
+  public boolean isSingleton() {
+    return true;
+  }
+
+  public boolean isCopyVariablesToProperties() {
+    return copyVariablesToProperties;
+  }
+
+  public void setCopyVariablesToProperties(boolean copyVariablesToProperties) {
+    this.copyVariablesToProperties = copyVariablesToProperties;
+  }
+
+  public boolean isCopyVariablesToBody() {
+    return copyVariablesToBody;
+  }
+
+  public void setCopyVariablesToBody(boolean copyVariablesToBody) {
+    this.copyVariablesToBody = copyVariablesToBody;
+  }
+
+  public boolean isCopyVariablesFromProperties() {
+    return copyVariablesFromProperties;
+  }
+
+  public void setCopyVariablesFromProperties(boolean copyVariablesFromProperties) {
+    this.copyVariablesFromProperties = copyVariablesFromProperties;
+  }
+
+  @Override
+  public boolean isLenientProperties() {
+    return true;
+  }
 }

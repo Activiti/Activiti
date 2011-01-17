@@ -12,26 +12,24 @@
  */
 package org.activiti.camel;
 
-import org.apache.camel.CamelContext;
+import org.apache.camel.Exchange;
 
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
+public class ExchangeUtils {
 
-public class SimpleContextProvider implements ContextProvider {
-
-  private Map<String, CamelContext> contexts = new HashMap<String, CamelContext>();
-
-  public SimpleContextProvider(Map<String, CamelContext> contexts) {
-    this.contexts = contexts;
-  }
-
-  public SimpleContextProvider(String processName, CamelContext ctx) {
-    this(Collections.singletonMap(processName, ctx));
-  }
-
-  public CamelContext getContext(String processName) {
-    return contexts.get(processName);
+  static Map<String, Object> prepareVariables(Exchange exchange, ActivitiEndpoint activitiEndpoint) {
+    Map<String, Object> ret = new HashMap<String, Object>();
+    boolean shouldReadFromProperties = activitiEndpoint.isCopyVariablesFromProperties();
+    Map<?, ?> m = shouldReadFromProperties ? exchange.getProperties() : exchange.getIn().getBody(Map.class);
+    if (m != null) {
+      for (Map.Entry e : m.entrySet()) {
+        if (e.getKey() instanceof String) {
+          ret.put((String) e.getKey(), e.getValue());
+        }
+      }
+    }
+    return ret;
   }
 }
