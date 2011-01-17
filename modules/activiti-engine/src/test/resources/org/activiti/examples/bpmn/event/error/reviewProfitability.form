@@ -1,0 +1,19 @@
+<h1>Review profitability</h1>
+<p>
+<b>${initiator}</b> has published a new sales lead: <b>${customerName}</b>.<br/><br/>
+Following information was provided: <br/><br/>
+<i>${details}</i>
+<br/>
+</p>
+<br/>Do you believe this customer is profitable?<br/><br/>
+<table>
+  <tr>  
+    <td>
+      <label>
+        <input type="radio" name="notEnoughInformation" value="false" checked="true"/> Yes <br/>
+        <input type="radio" name="notEnoughInformation" value="true"/> No (= request more info) <br/> 
+        <input type="hidden" name="notEnoughInformation_type" value="Boolean"/>
+      </label>
+    </td>
+  </tr>
+</table>

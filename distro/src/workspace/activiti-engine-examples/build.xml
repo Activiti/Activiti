@@ -58,6 +58,11 @@
         <include name="org/activiti/examples/bpmn/event/timer/BoundaryTimerEventTest.testInterruptingTimerDuration.bpmn20.xml" />
       	<include name="org/activiti/examples/bpmn/event/timer/BoundaryTimerEventTest.testInterruptingTimerDuration.png" />
       	
+        <include name="org/activiti/examples/bpmn/event/error/reviewSalesLead.bpmn20.xml" />
+        <include name="org/activiti/examples/bpmn/event/error/provideSalesLead.form" />
+        <include name="org/activiti/examples/bpmn/event/error/reviewProfitability.form" />
+      	<include name="org/activiti/examples/bpmn/event/error/provideAdditionalDetails.form" />
+      	
         <include name="org/activiti/examples/adhoc/Expense_process.bpmn20.xml"/>
       	<include name="org/activiti/examples/adhoc/Expense_process.png"/>
       	<include name="org/activiti/examples/adhoc/Handle_expense_request.form"/>

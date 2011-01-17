@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Map;
 
+import org.activiti.engine.impl.bpmn.parser.BpmnParse;
 import org.activiti.engine.impl.cfg.IdGenerator;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.db.DbSqlSession;
@@ -76,7 +77,7 @@ public class ProcessDefinitionEntity extends ProcessDefinitionImpl implements Pr
 	    // reset the process instance in order to have the db-generated process instance id available
 	    processInstance.setProcessInstance(processInstance);
 	    
-	    String initiatorVariableName = (String) getProperty("initiatorVariableName");
+	    String initiatorVariableName = (String) getProperty(BpmnParse.PROPERTYNAME_INITIATOR_VARIABLE_NAME);
 	    if (initiatorVariableName!=null) {
 	      String authenticatedUserId = Authentication.getAuthenticatedUserId();
 	      processInstance.setVariable(initiatorVariableName, authenticatedUserId);

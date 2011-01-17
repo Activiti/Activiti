@@ -112,6 +112,9 @@ public class HistoryParseListener implements BpmnParseListener {
 
   public void parseBoundaryTimerEventDefinition(Element timerEventDefinition, boolean interrupting, ActivityImpl timerActivity) {
   }
+  
+  public void parseBoundaryErrorEventDefinition(Element errorEventDefinition, boolean interrupting, ActivityImpl activity, ActivityImpl nestedErrorEventActivity) {
+  }
 
   public void parseProperty(Element propertyElement, VariableDeclaration variableDeclaration, ActivityImpl activity) {
   }

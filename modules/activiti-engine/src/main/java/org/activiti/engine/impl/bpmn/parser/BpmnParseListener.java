@@ -24,6 +24,7 @@ import org.activiti.engine.impl.variable.VariableDeclaration;
 /**
  * @author Tom Baeyens
  * @author Falko Menge
+ * @author Joram Barrez
  */
 public interface BpmnParseListener {
 
@@ -39,6 +40,7 @@ public interface BpmnParseListener {
   void parseUserTask(Element userTaskElement, ScopeImpl scope, ActivityImpl activity);
   void parseEndEvent(Element endEventElement, ScopeImpl scope, ActivityImpl activity);
   void parseBoundaryTimerEventDefinition(Element timerEventDefinition, boolean interrupting, ActivityImpl timerActivity);
+  void parseBoundaryErrorEventDefinition(Element errorEventDefinition, boolean interrupting, ActivityImpl activity, ActivityImpl nestedErrorEventActivity);
   void parseSubProcess(Element subProcessElement, ScopeImpl scope, ActivityImpl activity);
   void parseCallActivity(Element callActivityElement, ScopeImpl scope, ActivityImpl activity);
   void parseProperty(Element propertyElement, VariableDeclaration variableDeclaration, ActivityImpl activity);

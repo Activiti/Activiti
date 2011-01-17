@@ -53,6 +53,15 @@ public class ProcessDiagramGenerator {
       }
     });
     
+    // error end event
+    activityDrawInstructions.put("errorEndEvent", new DrawInstruction() {
+      public void draw(ProcessDiagramCanvas processDiagramCreator, ActivityImpl activityImpl) {
+        processDiagramCreator.drawErrorEndEvent(activityImpl.getX(), activityImpl.getY(), 
+                activityImpl.getWidth(), activityImpl.getHeight());
+      }
+    });
+    
+    
     // task
     activityDrawInstructions.put("task", new DrawInstruction() {
       public void draw(ProcessDiagramCanvas processDiagramCreator, ActivityImpl activityImpl) {
@@ -129,6 +138,14 @@ public class ProcessDiagramGenerator {
     activityDrawInstructions.put("boundaryTimer", new DrawInstruction() {
       public void draw(ProcessDiagramCanvas processDiagramCreator, ActivityImpl activityImpl) {
         processDiagramCreator.drawCatchingTimerEvent(activityImpl.getX(), activityImpl.getY(), 
+                activityImpl.getWidth(), activityImpl.getHeight());
+      }
+    });
+    
+    // Boundary catch error
+    activityDrawInstructions.put("boundaryError", new DrawInstruction() {
+      public void draw(ProcessDiagramCanvas processDiagramCreator, ActivityImpl activityImpl) {
+        processDiagramCreator.drawCatchingErroEvent(activityImpl.getX(), activityImpl.getY(), 
                 activityImpl.getWidth(), activityImpl.getHeight());
       }
     });

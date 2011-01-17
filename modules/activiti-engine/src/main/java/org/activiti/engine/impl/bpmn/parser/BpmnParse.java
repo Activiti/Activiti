@@ -1586,6 +1586,11 @@ public class BpmnParse extends Parse {
         }
       }
     }
+    
+    for (BpmnParseListener parseListener: parseListeners) {
+      parseListener.parseBoundaryErrorEventDefinition(errorEventDefinition, interrupting, 
+              activity, nestedErrorEventActivity);
+    }
   }
   
   protected List<ActivityImpl> getAllChildActivitiesOfType(String type, ScopeImpl scope) {
