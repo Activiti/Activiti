@@ -21,9 +21,7 @@ import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
 public class NoneEndEventActivity extends AbstractBpmnActivity {
   
   public void execute(ActivityExecution execution) throws Exception {
-    
     execution.end();
-    
   }
 
 }

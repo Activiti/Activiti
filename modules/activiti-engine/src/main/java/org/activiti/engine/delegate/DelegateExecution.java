@@ -24,4 +24,6 @@ public interface DelegateExecution extends VariableScope {
 
   String getId();
   
+  String getProcessInstanceId();
+  
 }

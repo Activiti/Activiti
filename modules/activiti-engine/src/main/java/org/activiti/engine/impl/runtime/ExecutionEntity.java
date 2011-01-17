@@ -291,32 +291,13 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
     performOperation(AtomicOperation.PROCESS_START);
   }
 
-  @SuppressWarnings("unchecked")
   public void destroy() {
     log.fine("destroying "+this);
     
-    ScopeImpl scope = getScope();
     ensureParentInitialized();
+    removeVariablesLocal();
+    removeVariables();
 
-    List<VariableDeclaration> variableDeclarations = (List<VariableDeclaration>) scope.getProperty(BpmnParse.PROPERTYNAME_VARIABLE_DECLARATIONS);
-    if (variableDeclarations!=null) {
-      for (VariableDeclaration variableDeclaration: variableDeclarations) {
-        variableDeclaration.destroy(this, parent);
-      }
-    }
-
-    if (variableInstances!=null) {
-      removeVariablesLocal();
-    }
-
-    List<TimerDeclarationImpl> timerDeclarations = (List<TimerDeclarationImpl>) scope.getProperty(BpmnParse.PROPERTYNAME_TIMER_DECLARATION);
-    if (timerDeclarations!=null) {
-      CommandContext
-        .getCurrent()
-        .getTimerSession()
-        .cancelTimers(this);
-    }
-    
     setScope(false);
   }
 
@@ -497,11 +478,6 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
   }
   
   public void performOperation(AtomicOperation executionOperation) {
-//    if (executionOperation instanceof AtomicOperationDeleteCascade
-//            || executionOperation instanceof AtomicOperationDeleteCascadeFireActivityEnd) {
-//      executionOperation.execute(this);
-//      return;
-//    }
     CommandContext.getCurrent().performOperation(executionOperation, this);
   }
   

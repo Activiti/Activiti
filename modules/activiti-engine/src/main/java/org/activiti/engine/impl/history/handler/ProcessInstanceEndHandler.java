@@ -15,6 +15,7 @@ package org.activiti.engine.impl.history.handler;
 
 import org.activiti.engine.impl.history.HistoricProcessInstanceEntity;
 import org.activiti.engine.impl.interceptor.CommandContext;
+import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
 import org.activiti.engine.impl.pvm.delegate.ExecutionListener;
 import org.activiti.engine.impl.pvm.delegate.ExecutionListenerExecution;
 import org.activiti.engine.impl.runtime.ExecutionEntity;
@@ -29,7 +30,7 @@ public class ProcessInstanceEndHandler implements ExecutionListener {
     HistoricProcessInstanceEntity historicProcessInstance = CommandContext
       .getCurrent()
       .getHistorySession()
-      .findHistoricProcessInstance(execution.getId());
+      .findHistoricProcessInstance(execution.getProcessInstanceId());
     
     String deleteReason = ((ExecutionEntity)execution).getDeleteReason();
     historicProcessInstance.markEnded(deleteReason);

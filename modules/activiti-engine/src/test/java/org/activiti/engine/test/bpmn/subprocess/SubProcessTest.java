@@ -18,6 +18,7 @@ import java.util.List;
 
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.impl.util.ClockUtil;
+import org.activiti.engine.impl.util.CollectionUtil;
 import org.activiti.engine.runtime.Job;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
@@ -123,8 +124,12 @@ public class SubProcessTest extends PluggableActivitiTestCase {
   @Deployment
   public void testNestedSimpleSubProcess() {
     
+    // Start and delete a process with a nested subprocess when it is not yet ended
+    ProcessInstance pi = runtimeService.startProcessInstanceByKey("nestedSimpleSubProcess", CollectionUtil.singletonMap("someVar", "abc"));
+    runtimeService.deleteProcessInstance(pi.getId(), "deleted");
+    
     // After staring the process, the task in the inner subprocess must be active
-    ProcessInstance pi = runtimeService.startProcessInstanceByKey("nestedSimpleSubProcess");
+    pi = runtimeService.startProcessInstanceByKey("nestedSimpleSubProcess");
     Task subProcessTask = taskService.createTaskQuery().processInstanceId(pi.getId()).singleResult();
     assertEquals("Task in subprocess", subProcessTask.getName());
     

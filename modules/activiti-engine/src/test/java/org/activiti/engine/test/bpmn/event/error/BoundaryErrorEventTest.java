@@ -14,7 +14,9 @@ package org.activiti.engine.test.bpmn.event.error;
 
 import java.util.List;
 
+import org.activiti.engine.history.HistoricProcessInstance;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
+import org.activiti.engine.impl.util.CollectionUtil;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
 
@@ -52,6 +54,88 @@ public class BoundaryErrorEventTest extends PluggableActivitiTestCase {
     tasks = taskService.createTaskQuery().list();
     Task taskAfterError = taskService.createTaskQuery().singleResult();
     assertEquals("task outside subprocess", taskAfterError.getName());
+  }
+  
+  @Deployment
+  public void testCatchErrorInConcurrentEmbeddedSubprocesses() {
+    
+    // Completing task A will lead to task D
+    String procId = runtimeService.startProcessInstanceByKey("boundaryEventTestConcurrentSubprocesses").getId();
+    List<Task> tasks = taskService.createTaskQuery().orderByTaskName().asc().list();
+    assertEquals(2, tasks.size());
+    assertEquals("task A", tasks.get(0).getName());
+    assertEquals("task B", tasks.get(1).getName());
+    taskService.complete(tasks.get(0).getId());
+    Task task = taskService.createTaskQuery().singleResult();
+    assertEquals("task D", task.getName());
+    taskService.complete(task.getId());
+    assertProcessEnded(procId);
+    
+    // Completing task B will lead to task C
+    procId = runtimeService.startProcessInstanceByKey("boundaryEventTestConcurrentSubprocesses").getId();
+    tasks = taskService.createTaskQuery().orderByTaskName().asc().list();
+    assertEquals(2, tasks.size());
+    assertEquals("task A", tasks.get(0).getName());
+    assertEquals("task B", tasks.get(1).getName());
+    taskService.complete(tasks.get(1).getId());
+    
+    tasks = taskService.createTaskQuery().orderByTaskName().asc().list();
+    assertEquals(2, tasks.size());
+    assertEquals("task A", tasks.get(0).getName());
+    assertEquals("task C", tasks.get(1).getName());
+    taskService.complete(tasks.get(1).getId());
+    task = taskService.createTaskQuery().singleResult();
+    assertEquals("task A", task.getName());
+    
+    taskService.complete(task.getId());
+    task = taskService.createTaskQuery().singleResult();
+    assertEquals("task D", task.getName());
+  }
+  
+  @Deployment
+  public void testDeeplyNestedErrorThrown() {
+    
+    // Input = 1 -> error1 will be thrown, which will destroy ALL BUT ONE 
+    // subprocess, which leads to an end event, which ultimately leads to ending the process instance
+    String procId = runtimeService.startProcessInstanceByKey("deeplyNestedErrorThrown").getId();
+    Task task = taskService.createTaskQuery().singleResult();
+    assertEquals("Nested task", task.getName());
+    taskService.complete(task.getId(), CollectionUtil.singletonMap("input", 1));
+    assertProcessEnded(procId);
+    
+    // Input == 2 -> error2 will be thrown, leading to a userTask outside all subprocesses
+    procId = runtimeService.startProcessInstanceByKey("deeplyNestedErrorThrown").getId();
+    task = taskService.createTaskQuery().singleResult();
+    assertEquals("Nested task", task.getName());
+    taskService.complete(task.getId(), CollectionUtil.singletonMap("input", 2));
+    task = taskService.createTaskQuery().singleResult();
+    assertEquals("task after catch", task.getName());
+    taskService.complete(task.getId());
+    assertProcessEnded(procId);
+  }
+  
+  @Deployment
+  public void testDeeplyNestedErrorThrownOnlyAutomaticSteps() {
+    // input == 1 -> error2 is thrown -> catched on subprocess2 -> end event in subprocess -> proc inst end 1
+    String procId = runtimeService.startProcessInstanceByKey("deeplyNestedErrorThrown", 
+            CollectionUtil.singletonMap("input", 1)).getId();
+    assertProcessEnded(procId);
+    
+    HistoricProcessInstance hip = historyService.createHistoricProcessInstanceQuery()
+      .processInstanceId(procId)
+      .singleResult();
+    assertEquals("processEnd1", hip.getEndActivityId());
+    
+    // input == 2 -> error2 is thrown -> catched on subprocess1 -> proc inst end 2
+    procId = runtimeService.startProcessInstanceByKey("deeplyNestedErrorThrown", 
+            CollectionUtil.singletonMap("input", 1)).getId();
+    assertProcessEnded(procId);
+    
+    hip = historyService.createHistoricProcessInstanceQuery()
+      .processInstanceId(procId)
+      .singleResult();
+    assertEquals("processEnd1", hip.getEndActivityId());
+    
   }
 
 }

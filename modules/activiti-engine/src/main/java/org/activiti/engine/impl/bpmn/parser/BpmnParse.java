@@ -1436,11 +1436,8 @@ public class BpmnParse extends Parse {
           addError("'errorRef' attribute is mandatory on error end event", errorEventDefinition);
         } else {
           Error error = errors.get(errorRef);
-          if (error == null) {
-            addError("Invalid 'errorRef' " + errorRef + ": error is not defined", errorEventDefinition);
-          }
           activity.setProperty("type", "errorEndEvent");
-          activity.setActivityBehavior(new ErrorEndEventActivityBehavior(error.getErrorCode()));
+          activity.setActivityBehavior(new ErrorEndEventActivityBehavior(error != null ? error.getErrorCode() : errorRef));
         }
       } else { // default: none end event
         activity.setActivityBehavior(new NoneEndEventActivity());
@@ -1556,14 +1553,24 @@ public class BpmnParse extends Parse {
     
     nestedErrorEventActivity.setProperty("type", "boundaryError");
     ((ActivityImpl)nestedErrorEventActivity.getParent()).setScope(true);
+    
     String errorRef = errorEventDefinition.attribute("errorRef");
-    Error error = errors.get(errorRef);
+    Error error = null;
+    if (errorRef != null) {
+      error = errors.get(errorRef);
+    }
     
     // TODO: this can probably be made generic for all throw/catch ?
+    
+    // Search for all errorEvents that can throw the exception
     List<ActivityImpl> childErrorEndEvents = getAllChildActivitiesOfType("errorEndEvent", activity);
     for (ActivityImpl errorEndEvent : childErrorEndEvents) {
       ErrorEndEventActivityBehavior behavior = (ErrorEndEventActivityBehavior) errorEndEvent.getActivityBehavior();
-      if (error == null || error.getErrorCode().equals(behavior.getErrorCode())) {
+      if (errorRef == null 
+              || errorRef.equals(behavior.getErrorCode()) 
+              || (error != null && error.getErrorCode().equals(behavior.getErrorCode())) 
+          ) {
+        
         ActivityImpl catchingActivity = null;
         if (behavior.getBorderEventActivityId() != null) {
           catchingActivity = activity.getProcessDefinition().findActivity(behavior.getBorderEventActivityId());
@@ -1572,7 +1579,8 @@ public class BpmnParse extends Parse {
         // If the error end event doesnt have a catching activity assigned yet, we can just set it
         // If the error end event already has a catching activity event, we can only set it
         // if the current activity is a child of the previous defined one
-        // (ie. the current activity will catch and consume it, and it will never reach the previous one)
+        // (ie. the current activity will catch and consume it, and it will never reach the previous one,
+        // since the previous one set is an activity which is a parent of the more narrow catching activity)
         if (catchingActivity == null || isChildActivity(activity, catchingActivity)) {
           behavior.setBorderEventActivityId(nestedErrorEventActivity.getId());
         }

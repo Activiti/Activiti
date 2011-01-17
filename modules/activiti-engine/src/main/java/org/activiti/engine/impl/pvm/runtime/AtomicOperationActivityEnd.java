@@ -16,6 +16,7 @@ package org.activiti.engine.impl.pvm.runtime;
 import java.util.List;
 
 import org.activiti.engine.impl.pvm.delegate.ActivityBehavior;
+import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
 import org.activiti.engine.impl.pvm.delegate.CompositeActivityBehavior;
 import org.activiti.engine.impl.pvm.delegate.ExecutionListener;
 import org.activiti.engine.impl.pvm.process.ActivityImpl;
@@ -80,6 +81,18 @@ public class AtomicOperationActivityEnd extends AbstractEventAtomicOperation {
         if (!lastConcurrent.isScope()) {
           concurrentRoot.setActivity((ActivityImpl) lastConcurrent.getActivity());
           lastConcurrent.setReplacedBy(concurrentRoot);
+          
+          // Move children of lastConcurrent one level up
+          if (lastConcurrent.getExecutions().size() > 0) {
+            concurrentRoot.getExecutions().clear();
+            for (ActivityExecution childExecution : lastConcurrent.getExecutions()) {
+              InterpretableExecution childInterpretableExecution = (InterpretableExecution) childExecution;
+              ((List)concurrentRoot.getExecutions()).add(childExecution); // casting ... damn generics
+              childInterpretableExecution.setParent(concurrentRoot);
+            }
+            lastConcurrent.getExecutions().clear();
+          }
+          
           lastConcurrent.remove();
         } else {
           lastConcurrent.setConcurrent(false);
