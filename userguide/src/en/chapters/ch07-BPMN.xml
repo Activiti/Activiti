@@ -724,6 +724,81 @@ ProcessInstance processInstance = runtimeService.startProcessInstanceByXXX();</p
 
 		</section>
 		
+		<section id="bpmnErrorEndEvent">
+		  
+		  <title>Error end event</title>
+		  
+		  <section id="bpmnErrorEndEventDescription">
+		    <title>Description</title>
+		    <para>
+		      When process execution arrives in an <emphasis role="bold">error end event</emphasis>, 
+		      the, the current path of execution is ended and an error is thrown. This error
+		      can <link linkend="bpmnBoundaryErrorEvent">catched by a matching intermediate boundary error event</link>.
+		      In case no matching boundary error event is found, the execution semantics default to the 
+		      <link linkend="bpmnNoneEndEvent">none end event</link> semantics.
+		    </para>
+		    
+		    <para>
+		      <emphasis role="bold">Important note:</emphasis> a BPMN error is NOT the same as a 
+		      Java exception. In fact, the two have nothing in common. BPMN error events are a way
+		      of modeling <emphasis>business exceptions</emphasis>. Java exceptions are handled 
+		      in <link linkend="serviceTaskExceptionHandling">their own specific way</link>.
+		    </para>
+		  </section>
+		  
+		  <section id="bpmnErrorEndEventGraphicalNotation">
+        <title>Graphical notation</title>
+        <para>
+          An error end event is visualized as a typical end event (circle with thick border), with the
+          error icon inside. The error icon is completely black, to indicate the throwing semantics.
+          <mediaobject><imageobject><imagedata align="center" fileref="images/bpmn.error.end.event.png"/></imageobject></mediaobject>
+        </para>
+      </section>
+      
+      <section id="bpmnErrorEndEventXml">
+        <title>XML representation</title>
+        <para>
+          And error end event is represented as an end event, with a <emphasis>errorEventDefinition</emphasis>
+          child element.
+          <programlisting>
+&lt;endEvent id=&quot;myErrorEndEvent&quot;&gt;
+  &lt;errorEventDefinition errorRef=&quot;myError&quot; /&gt;
+&lt;/endEvent&gt;          
+          </programlisting>
+          The <emphasis>errorRef</emphasis> attribute can reference an <emphasis>error</emphasis>
+          element that is defined outside the process:
+          <programlisting>
+&lt;error id=&quot;myError&quot; errorCode=&quot;123&quot; /&gt;
+...
+&lt;process id=&quot;myProcess&quot;&gt;  
+...        
+          </programlisting>
+          The <emphasis role="bold">errorCode</emphasis> of the <emphasis>error</emphasis>
+          will be used to find the matching catching boundary error event.
+          If the <emphasis>errorRef</emphasis> does not match any defined <emphasis>error</emphasis>,
+          then the <emphasis>errorRef</emphasis> is used as a shortcut for the <emphasis>errorCode</emphasis>.
+          This is an Activiti specific shortcut.
+          More concretely, following snippets are equivalent in functionality. 
+                    <programlisting>
+&lt;error id=&quot;myError&quot; errorCode=&quot;123&quot; /&gt;
+...
+&lt;process id=&quot;myProcess&quot;&gt;  
+...  
+  &lt;endEvent id=&quot;myErrorEndEvent&quot;&gt;
+    &lt;errorEventDefinition errorRef=&quot;myError&quot; /&gt;
+  &lt;/endEvent&gt;          
+          </programlisting>
+          is equivalent with
+                    <programlisting>
+&lt;endEvent id=&quot;myErrorEndEvent&quot;&gt;
+  &lt;errorEventDefinition errorRef=&quot;123&quot; /&gt;
+&lt;/endEvent&gt;          
+          </programlisting>
+        </para>
+      </section>
+		  
+		</section>
+		
 	  <section id="bpmnSequenceFlow">
     
       <title>Sequence flow</title>
@@ -2664,6 +2739,109 @@ assertNotNull(execution);
     </section>
 		
 		</section> 
+		
+		<section id="bpmnBoundaryErrorEvent">
+		  <title>Error Boundary event</title>
+		  
+		  <section id="bpmnBoundaryErrorEventDescription">
+		    <title>Description</title>
+		    <para>
+		      An intermediate <emphasis>catching</emphasis> error on the boundary of an activity,
+		      or <emphasis role="bold">boundary error event</emphasis> for short, catches errors that are thrown within the scope
+		      of the activity on which it is defined.
+		    </para>
+		    
+		    <para>
+		      Defining a boundary error event makes most sense on an <link linkend="bpmnSubProcess">embedded subprocess</link>,
+		      or a <link linkend="bpmnCallActivity">call activity</link>, as a subprocess creates a scope for all activities inside the subprocess. 
+		      Errors are thrown by <link linkend="bpmnErrorEndEvent">error end events</link>. Such an error will propagate its
+		      parent scopes upwards until a scope is found on which a boundary error event is defined
+		      that matches the error event definition.
+		    </para>
+		    
+		    <para>
+		      When an error event is caught, the activity on which the boundary event is defined
+		      is destroyed, also destroying all current executions within
+		      (eg. concurrent activities, nested subprocesses, etc.). Process execution continues
+		      following the outgoing sequence flow of the boundary event. 
+		    </para>
+		    
+		  </section>
+		  
+		  <section id="bpmnBoundaryErrorEventgraphicalNotation">
+        <title>Graphical notation</title>
+        <para>
+          A boundary error event is visualized as a typical intermediate event (Circle with smaller circle inside)
+          on the boundary, with the error icon inside. The error icon is white, to indicate
+          the <emphasis>catch</emphasis> semantics.
+          <mediaobject><imageobject><imagedata align="center" fileref="images/bpmn.boundary.error.event.png"/></imageobject></mediaobject>
+        </para>
+      </section>
+      
+      <section id="bpmnBoundaryErrorEventXml">
+        <title>Xml representation</title>
+        <para>
+          A boundary error event is defined as a typical <link linkend="bpmnBoundaryEvent">boundary event</link>:
+          <programlisting>
+&lt;boundaryEvent id=&quot;catchError&quot; attachedToRef=&quot;mySubProcess&quot;&gt;
+  &lt;errorEventDefinition errorRef=&quot;myError&quot;/&gt;
+&lt;/boundaryEvent&gt;
+          </programlisting>
+          As with the <link linkend="bpmnErrorEndEvent">error end event</link>, the <emphasis>errorRef</emphasis>
+          references an error defined outside the process element:
+          <programlisting>
+&lt;error id=&quot;myError&quot; errorCode=&quot;123&quot; /&gt;
+...
+&lt;process id=&quot;myProcess&quot;&gt;  
+...              
+          </programlisting>
+        </para>
+        
+        <para>
+          The <emphasis role="bold">errorCode</emphasis> is used to match the errors that are catched:
+          <itemizedlist>
+            <listitem>
+              <para>
+                If <emphasis>errorRef</emphasis> is omitted, the boundary error event will catch
+                <emphasis role="bold">any error event</emphasis>, regardless of the errorCode of the <emphasis>error</emphasis>.
+              </para>
+            </listitem>
+            <listitem>
+              <para>
+                In case an <emphasis>errorRef</emphasis> is provided and it references an existing <emphasis>error</emphasis>,
+                the boundary event will <emphasis role="bold">only catch errors with the same error code</emphasis>.
+              </para>
+            </listitem>
+            <listitem>
+              <para>
+                In case an <emphasis>errorRef</emphasis> is provided, but no <emphasis>error</emphasis>
+                is defined in the BPMN 2.0 file, then the <emphasis role="bold">errorRef is used
+                as errorCode</emphasis> (similar for with error end events).
+              </para>
+            </listitem>
+          </itemizedlist>
+        </para>
+      </section>
+      
+      <section id="bpmnBoundaryErrorEventExample">
+        <title>Example</title>
+        <para>
+          Following example process shows how an error end event can be used. When the 
+          <emphasis>'Review profitability'</emphasis> user task is completed by stating that
+          not enough information is provided, an error is thrown. When this error is catched on
+          the boundary of the subprocess, all active activities within the <emphasis>'Review sales lead'</emphasis>
+          subprocess are destroyed (even if <emphasis>'Review customer rating'</emphasis> was not yet completed),
+          and the <emphasis>'Provide additional details'</emphasis> user task is created.
+          <mediaobject><imageobject><imagedata align="center" fileref="images/bpmn.boundary.error.example.png"/></imageobject></mediaobject>
+        </para>
+        
+        <para>
+          This process is shipped as example in the demo setup. The process XML and unit test can
+          be found in the <emphasis>org.activiti.examples.bpmn.event.error</emphasis> package.
+        </para>
+      </section>
+		  
+		</section>
 		
 		<section id="bpmnSubProcess">
 		

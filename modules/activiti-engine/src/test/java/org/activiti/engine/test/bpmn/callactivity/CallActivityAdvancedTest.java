@@ -98,7 +98,6 @@ public class CallActivityAdvancedTest extends PluggableActivitiTestCase {
     // Completing the first task should not end the subprocess
     taskService.complete(taskA.getId());
     assertEquals(1, taskQuery.list().size());
-    assertEquals(2, runtimeService.createExecutionQuery().count());
     
     // Completing the second task should end the subprocess and end the whole process instance
     taskService.complete(taskB.getId());

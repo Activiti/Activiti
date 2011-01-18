@@ -135,7 +135,46 @@ public class BoundaryErrorEventTest extends PluggableActivitiTestCase {
       .processInstanceId(procId)
       .singleResult();
     assertEquals("processEnd1", hip.getEndActivityId());
+  }
+  
+  @Deployment(resources = {
+          "org/activiti/engine/test/bpmn/event/error/BoundaryErrorEventTest.testCatchErrorOnCallActivity-parent.bpmn20.xml",
+          "org/activiti/engine/test/bpmn/event/error/BoundaryErrorEventTest.subprocess.bpmn20.xml"
+  })
+  public void testCatchErrorOnCallActivity() {
+    String procId = runtimeService.startProcessInstanceByKey("catchErrorOnCallActivity").getId();
+    Task task = taskService.createTaskQuery().singleResult();
+    assertEquals("Task in subprocess", task.getName());
     
+    // Completing the task will reach the end error event,
+    // which is catched on the call activity boundary
+    taskService.complete(task.getId());
+    task = taskService.createTaskQuery().singleResult();
+    assertEquals("Escalated Task", task.getName());
+    
+    // Completing the task will end the process instance
+    taskService.complete(task.getId());
+    assertProcessEnded(procId);
+  }
+  
+  @Deployment(resources = {
+          "org/activiti/engine/test/bpmn/event/error/BoundaryErrorEventTest.testCatchErrorThrownByCallActivityOnSubprocess.bpmn20.xml",
+          "org/activiti/engine/test/bpmn/event/error/BoundaryErrorEventTest.subprocess.bpmn20.xml"
+  })
+  public void testCatchErrorThrownByCallActivityOnSubprocess() {
+    String procId = runtimeService.startProcessInstanceByKey("catchErrorOnSubprocess").getId();
+    Task task = taskService.createTaskQuery().singleResult();
+    assertEquals("Task in subprocess", task.getName());
+    
+    // Completing the task will reach the end error event,
+    // which is catched on the call activity boundary
+    taskService.complete(task.getId());
+    task = taskService.createTaskQuery().singleResult();
+    assertEquals("Escalated Task", task.getName());
+    
+    // Completing the task will end the process instance
+    taskService.complete(task.getId());
+    assertProcessEnded(procId);
   }
 
 }

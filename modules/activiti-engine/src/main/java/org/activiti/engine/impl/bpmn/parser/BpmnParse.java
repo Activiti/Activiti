@@ -1486,7 +1486,8 @@ public class BpmnParse extends Parse {
       ActivityImpl nestedActivity = parseAndCreateActivityOnScopeElement(boundaryEventElement, parentActivity); 
 
       String cancelActivity = boundaryEventElement.attribute("cancelActivity", "true");
-      boolean interrupting = cancelActivity.equals("true") ? true : false;
+//      boolean interrupting = cancelActivity.equals("true") ? true : false;
+      boolean interrupting = true; // non-interrupting not yet supported
       
       // Catch event behavior is the same for all types
       BoundaryEventActivityBehavior behavior = new BoundaryEventActivityBehavior(interrupting);
@@ -1557,6 +1558,7 @@ public class BpmnParse extends Parse {
     Error error = null;
     if (errorRef != null) {
       error = errors.get(errorRef);
+      nestedErrorEventActivity.setProperty("errorCode", error == null ? errorRef : error.getErrorCode());
     }
     
     // TODO: this can probably be made generic for all throw/catch ?
@@ -1666,6 +1668,8 @@ public class BpmnParse extends Parse {
     if (calledElement == null) {
       addError("Missing attribute 'calledElement'", callActivityElement);
     }
+    
+    activity.setScope(true);
     activity.setActivityBehavior(new CallActivityBehaviour(calledElement));
     
     parseExecutionListenersOnScope(callActivityElement, activity);
