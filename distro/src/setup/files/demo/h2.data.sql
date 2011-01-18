@@ -15,20 +15,15 @@ insert into ACT_ID_MEMBERSHIP values ('kermit', 'engineering');
 insert into ACT_ID_MEMBERSHIP values ('kermit', 'sales');
 
 insert into ACT_ID_USER values ('fozzie', 1, 'Fozzie', 'Bear', 'fozzie@localhost', 'fozzie');
-insert into ACT_ID_MEMBERSHIP values ('fozzie', 'admin');
-insert into ACT_ID_MEMBERSHIP values ('fozzie', 'manager');
-insert into ACT_ID_MEMBERSHIP values ('fozzie', 'management');
+insert into ACT_ID_MEMBERSHIP values ('fozzie', 'user');
 insert into ACT_ID_MEMBERSHIP values ('fozzie', 'accountancy');
-insert into ACT_ID_MEMBERSHIP values ('fozzie', 'engineering');
-insert into ACT_ID_MEMBERSHIP values ('fozzie', 'sales');
 
 insert into ACT_ID_USER values ('gonzo', 1, 'Gonzo', 'the Great', 'gonzo@localhost', 'gonzo');
-insert into ACT_ID_MEMBERSHIP values ('gonzo', 'admin');
 insert into ACT_ID_MEMBERSHIP values ('gonzo', 'manager');
 insert into ACT_ID_MEMBERSHIP values ('gonzo', 'management');
 insert into ACT_ID_MEMBERSHIP values ('gonzo', 'accountancy');
-insert into ACT_ID_MEMBERSHIP values ('gonzo', 'engineering');
 insert into ACT_ID_MEMBERSHIP values ('gonzo', 'sales');
+
 
 update ACT_GE_PROPERTY
 set VALUE_ = '10'
