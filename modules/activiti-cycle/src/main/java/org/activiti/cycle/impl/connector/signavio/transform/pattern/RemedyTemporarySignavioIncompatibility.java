@@ -38,7 +38,9 @@ public class RemedyTemporarySignavioIncompatibility {
     xml = addAttribute(xml, "definitions", "xmlns:activiti", "http://activiti.org/bpmn");
 
     // remove BPMN-DI
-    xml = removeElement(xml, "bpmndi:BPMNDiagram");
+    // DI now is used in the webapps to visualize the process and used in the designer, so we want to keep 
+    // the DI (https://app.camunda.com/jira/browse/HEMERA-543)
+    //    xml = removeElement(xml, "bpmndi:BPMNDiagram");
     
     // remove Signavio extensions
     xml = removeElement(xml, "signavio:signavioMetaData");
