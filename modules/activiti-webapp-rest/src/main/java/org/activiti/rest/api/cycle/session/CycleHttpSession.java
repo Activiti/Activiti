@@ -9,9 +9,9 @@ import org.activiti.cycle.CycleComponentFactory;
 import org.activiti.cycle.RepositoryAuthenticationException;
 import org.activiti.cycle.RepositoryConnector;
 import org.activiti.cycle.RepositoryException;
-import org.activiti.cycle.components.RuntimeConnectorList;
 import org.activiti.cycle.context.CycleSessionContext;
-import org.activiti.cycle.impl.conf.PasswordEnabledRepositoryConnectorConfiguration;
+import org.activiti.cycle.impl.components.RuntimeConnectorList;
+import org.activiti.cycle.impl.connector.PasswordEnabledRepositoryConnector;
 import org.activiti.cycle.service.CycleServiceFactory;
 import org.activiti.rest.util.ActivitiRequest;
 
@@ -66,11 +66,9 @@ public class CycleHttpSession {
     String password = null;
 
     // try to read credentials from configuration
-    if (connector.getConfiguration() instanceof PasswordEnabledRepositoryConnectorConfiguration) {
-      PasswordEnabledRepositoryConnectorConfiguration passwordEnabledRepositoryConnectorConfiguration = (PasswordEnabledRepositoryConnectorConfiguration) connector
-              .getConfiguration();
-      username = passwordEnabledRepositoryConnectorConfiguration.getUser();
-      password = passwordEnabledRepositoryConnectorConfiguration.getPassword();
+    if (connector instanceof PasswordEnabledRepositoryConnector) {     
+      username = ((PasswordEnabledRepositoryConnector) connector).getUsername();
+      password = ((PasswordEnabledRepositoryConnector) connector).getPassword();
     }
 
     // TODO : get from cookie

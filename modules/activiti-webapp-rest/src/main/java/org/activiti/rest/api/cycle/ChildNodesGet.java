@@ -49,7 +49,7 @@ public class ChildNodesGet extends ActivitiCycleWebScript {
       log.log(Level.SEVERE, "Cannot load children for id '" + artifactId + "'", e);
       // TODO: how can we let the user know what went wrong without breaking the
       // tree?
-      // throwing a HTTP 500 here will cause the tree to load the node for ever.
+      // throwing a HTTP 500 here will cause the tree to load the node forever.
       // throw new WebScriptException(Status.STATUS_INTERNAL_SERVER_ERROR,
       // "exception.message");
     }
