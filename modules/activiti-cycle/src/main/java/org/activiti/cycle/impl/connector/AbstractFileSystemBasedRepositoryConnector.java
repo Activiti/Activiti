@@ -8,7 +8,6 @@ import org.activiti.cycle.RepositoryNodeNotFoundException;
 import org.activiti.cycle.annotations.CycleComponent;
 import org.activiti.cycle.impl.RepositoryArtifactImpl;
 import org.activiti.cycle.impl.artifacttype.BasicRepositoryArtifactType;
-import org.activiti.cycle.impl.conf.RepositoryConnectorConfiguration;
 import org.activiti.cycle.impl.connector.util.ConnectorPathUtils;
 import org.activiti.cycle.impl.mimetype.UnknownMimeType;
 import org.activiti.cycle.impl.representation.AbstractBasicArtifactTypeContentRepresentation;
@@ -24,7 +23,7 @@ import org.activiti.cycle.impl.representation.AbstractBasicArtifactTypeContentRe
  * 
  * @author daniel.meyer@camunda.com
  */
-public abstract class AbstractFileSystemBasedRepositoryConnector<T extends RepositoryConnectorConfiguration> extends AbstractRepositoryConnector<T> {
+public abstract class AbstractFileSystemBasedRepositoryConnector extends AbstractRepositoryConnector {
 
   /**
    * Tries to resolve am {@link MimeType} for the provided filename. If no
@@ -72,7 +71,7 @@ public abstract class AbstractFileSystemBasedRepositoryConnector<T extends Repos
   protected RepositoryArtifactImpl getRepositoryArtifactForFileName(String filename, String nodeId) {
     MimeType mimeType = getMimeType(filename);
     RepositoryArtifactType artifactType = getRepositoryArtifactType(mimeType, filename);
-    RepositoryArtifactImpl artifact = new RepositoryArtifactImpl(getConfiguration().getId(), nodeId, artifactType, this);
+    RepositoryArtifactImpl artifact = new RepositoryArtifactImpl(getId(), nodeId, artifactType, this);
     artifact.getMetadata().setName(filename);
     return artifact;
   }

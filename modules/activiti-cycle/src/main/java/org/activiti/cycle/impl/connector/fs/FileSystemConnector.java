@@ -28,7 +28,15 @@ import org.activiti.cycle.impl.connector.AbstractFileSystemBasedRepositoryConnec
  * @author ruecker
  */
 @CycleComponent
-public class FileSystemConnector extends AbstractFileSystemBasedRepositoryConnector<FileSystemConnectorConfiguration> {
+public class FileSystemConnector extends AbstractFileSystemBasedRepositoryConnector {
+
+  public final static String CONFIG_KEY_BASE_PATH = "basePath";
+
+  private static String[] CONFIG_KEYS = {
+  //
+  CONFIG_KEY_BASE_PATH,
+  //
+  };
 
   public FileSystemConnector() {
   }
@@ -50,7 +58,7 @@ public class FileSystemConnector extends AbstractFileSystemBasedRepositoryConnec
         // Go to root!
         // we need a trailing slash because otherwise it is considered to be a
         // relative path if you just provider "" on unix or "c:" on windows
-        path = getConfiguration().getBasePath() + "/";
+        path = getBasePath() + "/";
         children = new File(path).listFiles();
       } else {
         // Use base path!
@@ -67,7 +75,7 @@ public class FileSystemConnector extends AbstractFileSystemBasedRepositoryConnec
         }
       }
     } catch (Exception ex) {
-      throw new RepositoryNodeNotFoundException(getConfiguration().getName(), RepositoryFolder.class, parentId, ex);
+      throw new RepositoryNodeNotFoundException(getName(), RepositoryFolder.class, parentId, ex);
     }
 
     return new RepositoryNodeCollectionImpl(childNodes);
@@ -81,7 +89,7 @@ public class FileSystemConnector extends AbstractFileSystemBasedRepositoryConnec
       }
       return getArtifactInfo(file);
     } catch (IOException ex) {
-      throw new RepositoryNodeNotFoundException(getConfiguration().getName(), RepositoryArtifact.class, id, ex);
+      throw new RepositoryNodeNotFoundException(getName(), RepositoryArtifact.class, id, ex);
     }
   }
 
@@ -93,7 +101,7 @@ public class FileSystemConnector extends AbstractFileSystemBasedRepositoryConnec
       }
       return getFolderInfo(file);
     } catch (IOException ex) {
-      throw new RepositoryNodeNotFoundException(getConfiguration().getName(), RepositoryFolder.class, id, ex);
+      throw new RepositoryNodeNotFoundException(getName(), RepositoryFolder.class, id, ex);
     }
   }
 
@@ -105,12 +113,12 @@ public class FileSystemConnector extends AbstractFileSystemBasedRepositoryConnec
       }
       return getArtifactInfo(file);
     } catch (IOException ex) {
-      throw new RepositoryNodeNotFoundException(getConfiguration().getName(), RepositoryNode.class, id, ex);
+      throw new RepositoryNodeNotFoundException(getName(), RepositoryNode.class, id, ex);
     }
   }
 
   private File getFileFromId(String id) {
-    return new File(getConfiguration().getBasePath() + id);
+    return new File(getBasePath() + id);
   }
 
   public void deleteArtifact(String artifactId) throws RepositoryNodeNotFoundException {
@@ -184,7 +192,7 @@ public class FileSystemConnector extends AbstractFileSystemBasedRepositoryConnec
       // root folder is again a special case
       id = "/";
     }
-    RepositoryFolderImpl folder = new RepositoryFolderImpl(getConfiguration().getId(), id);
+    RepositoryFolderImpl folder = new RepositoryFolderImpl(getId(), id);
     folder.getMetadata().setName(file.getName());
     folder.getMetadata().setLastChanged(new Date(file.lastModified()));
     if (!"/".equals(id)) {
@@ -225,7 +233,7 @@ public class FileSystemConnector extends AbstractFileSystemBasedRepositoryConnec
 
   public void updateContent(String artifactId, Content content) throws RepositoryNodeNotFoundException {
     RepositoryArtifact artifact = getRepositoryArtifact(artifactId);
-    String fileName = getConfiguration().getBasePath() + artifact.getNodeId();
+    String fileName = getBasePath() + artifact.getNodeId();
     File newFile = new File(fileName);
     BufferedOutputStream bos = null;
 
@@ -256,7 +264,7 @@ public class FileSystemConnector extends AbstractFileSystemBasedRepositoryConnec
   public Content getContent(String artifactId) throws RepositoryNodeNotFoundException {
     RepositoryArtifact artifact = getRepositoryArtifact(artifactId);
     Content content = new Content();
-    String fileName = getConfiguration().getBasePath() + artifact.getNodeId();
+    String fileName = getBasePath() + artifact.getNodeId();
     File file = new File(fileName);
     try {
       content.setValue(new FileInputStream(file));
@@ -267,11 +275,11 @@ public class FileSystemConnector extends AbstractFileSystemBasedRepositoryConnec
   }
 
   private String getLocalPath(String path) {
-    if ("".equals(getConfiguration().getBasePath())) {
+    if ("".equals(getBasePath())) {
       // if root is configured in Unix ("/" without trailing slash = "")
       return path;
-    } else if (path.startsWith(getConfiguration().getBasePath())) {
-      path = path.replace(getConfiguration().getBasePath(), "");
+    } else if (path.startsWith(getBasePath())) {
+      path = path.replace(getBasePath(), "");
       // replace windows style slashes
       path = path.replace("\\", "/");
       return path;
@@ -279,8 +287,34 @@ public class FileSystemConnector extends AbstractFileSystemBasedRepositoryConnec
     throw new RepositoryException("Unable to determine local path! ('" + path + "')");
   }
 
+  public String[] getConfigurationKeys() {
+    return CONFIG_KEYS;
+  }
+
+  protected String getBasePath() {
+    return getConfigValue(CONFIG_KEY_BASE_PATH, String.class);
+  }
+
   public boolean isLoggedIn() {
     return true;
+  }
+
+  protected void validateConfiguration() {
+    if (null == getBasePath()) {
+      throw new RuntimeException();
+    }
+    String basePath = normalizePath(getBasePath());
+    setConfigValue(CONFIG_KEY_BASE_PATH, basePath);
+  }
+
+  private String normalizePath(String path) {
+    // exchange it from windows to Java style
+    path.replace("\\", "/");
+    if (path != null && path.endsWith("/")) {
+      // remove trailing / to have the ids starting with a slash
+      path = path.substring(0, path.length() - 1);
+    }
+    return path;
   }
 
 }

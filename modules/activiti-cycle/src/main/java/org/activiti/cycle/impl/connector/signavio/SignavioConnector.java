@@ -40,6 +40,7 @@ import org.activiti.cycle.impl.RepositoryFolderImpl;
 import org.activiti.cycle.impl.RepositoryNodeCollectionImpl;
 import org.activiti.cycle.impl.connector.AbstractRepositoryConnector;
 import org.activiti.cycle.impl.connector.ConnectorLoginInterceptor;
+import org.activiti.cycle.impl.connector.PasswordEnabledRepositoryConnector;
 import org.activiti.cycle.impl.connector.signavio.provider.JsonProvider;
 import org.activiti.cycle.impl.connector.signavio.repositoryartifacttype.SignavioBpmn20ArtifactType;
 import org.activiti.cycle.impl.connector.signavio.repositoryartifacttype.SignavioDefaultArtifactType;
@@ -73,7 +74,31 @@ import de.hpi.bpmn2_0.transformation.Json2XmlConverter;
  */
 @CycleComponent
 @Interceptors({ ConnectorLoginInterceptor.class })
-public class SignavioConnector extends AbstractRepositoryConnector<SignavioConnectorConfiguration> implements SignavioConnectorInterface {
+public class SignavioConnector extends AbstractRepositoryConnector implements SignavioConnectorInterface, PasswordEnabledRepositoryConnector {
+
+  // TODO: use it or not?
+  public final static String CONFIG_KEY_FOLDER_ROOT_URL = "folderRootUrl";
+  public final static String CONFIG_KEY_SIGNAVIO_BASE_URL = "signavioBaseUrl";
+  public final static String CONFIG_KEY_USERNAME = "username";
+  public final static String CONFIG_KEY_PASSWORD = "password";
+  // signavio | oryx
+  public final static String CONFIG_KEY_TYPE = "type";
+  /**
+   * indicates if the {@link SignavioConnector}needs to login into Signavio,
+   * which is the case for the enterprise/saas version of Signavio, but not the
+   * OSS version (where trying to login leads to an exception)
+   */
+  public final static String CONFIG_KEY_LOGIN_REQUIRED = "loginRequired";
+
+  protected final static String[] CONFIG_KEYS = { //
+  CONFIG_KEY_FOLDER_ROOT_URL, //
+      CONFIG_KEY_SIGNAVIO_BASE_URL, //
+      CONFIG_KEY_LOGIN_REQUIRED, //
+      CONFIG_KEY_USERNAME, //
+      CONFIG_KEY_PASSWORD //
+  };
+
+  private SignavioConnectorConfiguration configuration;
 
   private static Logger log = Logger.getLogger(SignavioConnector.class.getName());
 
@@ -94,13 +119,8 @@ public class SignavioConnector extends AbstractRepositoryConnector<SignavioConne
   public SignavioConnector() {
   }
 
-  public SignavioConnector(SignavioConnectorConfiguration signavioConfiguration) {
-    super(signavioConfiguration);
-  }
-
   public Client initClient() {
     // TODO: Check timeout on client and re-create it
-
     if (restletClient == null) {
       // Create and initialize HTTP client for HTTP REST API calls
       restletClient = new Client(new Context(), Protocol.HTTP);
@@ -168,14 +188,9 @@ public class SignavioConnector extends AbstractRepositoryConnector<SignavioConne
   }
 
   public boolean login(String username, String password) {
-    if (!getConfiguration().isLoginRequired()) {
+    if (!getConfigValue(CONFIG_KEY_LOGIN_REQUIRED, Boolean.class)) {
       // skip login if configured to do so
       return true;
-    }
-    if (getConfiguration().isCredentialsSaved()) {
-      // TODO: Should we do that more generically?
-      username = getConfiguration().getUser();
-      password = getConfiguration().getPassword();
     }
     String token = null;
     try {
@@ -194,7 +209,7 @@ public class SignavioConnector extends AbstractRepositoryConnector<SignavioConne
       Representation representation = loginResponse.getEntity();
       token = representation.getText();
     } catch (Exception ex) {
-      throw new RepositoryException("Error during login to connector '" + getConfiguration().getName() + "'", ex);
+      throw new RepositoryException("Error during login to connector '" + getName() + "'", ex);
     }
     if (token.matches("[a-f0-9]{32}")) {
       setSecurityToken(token);
@@ -245,7 +260,7 @@ public class SignavioConnector extends AbstractRepositoryConnector<SignavioConne
     } else {
       id = getConfiguration().getDirectoryIdFromUrl(href);
     }
-    RepositoryFolderImpl folderInfo = new RepositoryFolderImpl(getConfiguration().getId(), id);
+    RepositoryFolderImpl folderInfo = new RepositoryFolderImpl(getId(), id);
 
     folderInfo.getMetadata().setName(directoryName);
 
@@ -254,7 +269,6 @@ public class SignavioConnector extends AbstractRepositoryConnector<SignavioConne
       String parentId = getConfiguration().getDirectoryIdFromUrl(parent);
       folderInfo.getMetadata().setParentFolderId(parentId);
     }
-    
 
     // TODO: Where do we get the path from?
     // folderInfo.getMetadata().setPath();
@@ -268,7 +282,7 @@ public class SignavioConnector extends AbstractRepositoryConnector<SignavioConne
 
   private RepositoryArtifact getArtifactInfoFromFile(String id, JSONObject json) throws JSONException {
     RepositoryArtifactType artifactType = getArtifactTypeForSignavioArtifact(json);
-    RepositoryArtifactImpl fileInfo = new RepositoryArtifactImpl(getConfiguration().getId(), id, artifactType, this);
+    RepositoryArtifactImpl fileInfo = new RepositoryArtifactImpl(getId(), id, artifactType, this);
 
     if (json.has("name")) {
       fileInfo.getMetadata().setName(json.optString("name"));
@@ -283,7 +297,7 @@ public class SignavioConnector extends AbstractRepositoryConnector<SignavioConne
     fileInfo.getMetadata().setLastAuthor(json.optString("author"));
     fileInfo.getMetadata().setCreated(SignavioJsonHelper.getDateValueIfExists(json, "created"));
     fileInfo.getMetadata().setLastChanged(SignavioJsonHelper.getDateValueIfExists(json, "updated"));
-    
+
     String parent = json.optString("parent");
     if (parent != null) {
       String parentId = getConfiguration().getModelIdFromUrl(parent);
@@ -309,16 +323,18 @@ public class SignavioConnector extends AbstractRepositoryConnector<SignavioConne
       if (SignavioBpmn20ArtifactType.SIGNAVIO_NAMESPACE_FOR_BPMN_2_0.equals(namespace)) {
         artifactType = CycleApplicationContext.get(SignavioBpmn20ArtifactType.class);
       }
-//      else if (SignavioJpdl4ArtifactType.SIGNAVIO_NAMESPACE_FOR_BPMN_JBPM4.equals(namespace)) {
-//        artifactType = CycleApplicationContext.get(SignavioJpdl4ArtifactType.class);
-//      }
+      // else if
+      // (SignavioJpdl4ArtifactType.SIGNAVIO_NAMESPACE_FOR_BPMN_JBPM4.equals(namespace))
+      // {
+      // artifactType =
+      // CycleApplicationContext.get(SignavioJpdl4ArtifactType.class);
+      // }
     } else {
       // Oryx/Signavio OSS = Activiti Modeler way of doing it
       String type = json.getString("type");
       if (SignavioBpmn20ArtifactType.ORYX_TYPE_ATTRIBUTE_FOR_BPMN_20.equals(type)) {
         artifactType = CycleApplicationContext.get(SignavioBpmn20ArtifactType.class);
-      }
-      else if (SignavioBpmn20ArtifactType.SIGNAVIO_NAMESPACE_FOR_BPMN_2_0.equals(type)) {
+      } else if (SignavioBpmn20ArtifactType.SIGNAVIO_NAMESPACE_FOR_BPMN_2_0.equals(type)) {
         artifactType = CycleApplicationContext.get(SignavioBpmn20ArtifactType.class);
       }
     }
@@ -359,7 +375,7 @@ public class SignavioConnector extends AbstractRepositoryConnector<SignavioConne
       }
       return new RepositoryNodeCollectionImpl(nodes);
     } catch (Exception ex) {
-      throw new RepositoryNodeNotFoundException(getConfiguration().getName(), RepositoryFolder.class, id, ex);
+      throw new RepositoryNodeNotFoundException(getName(), RepositoryFolder.class, id, ex);
     }
   }
 
@@ -368,7 +384,7 @@ public class SignavioConnector extends AbstractRepositoryConnector<SignavioConne
     // extracts only BPMN 2.0 models, since everything else is more or less
     // unsupported
     SignavioConnectorConfiguration connectorConfiguration = getConfiguration();
-    String connectorId = connectorConfiguration.getId();
+    String connectorId = getId();
     int pageSize = 10;
     if ("/".equals(id)) {
       JSONArray stencilsets = getStencilsets();
@@ -464,15 +480,15 @@ public class SignavioConnector extends AbstractRepositoryConnector<SignavioConne
 
       return getFolderInfo(jsonDir);
     } catch (Exception ex) {
-      throw new RepositoryNodeNotFoundException(getConfiguration().getName(), RepositoryArtifact.class, id, ex);
+      throw new RepositoryNodeNotFoundException(getName(), RepositoryArtifact.class, id, ex);
     }
   }
-  
+
   public RepositoryNode getRepositoryNode(String id) throws RepositoryNodeNotFoundException {
     // <!> HACK: improve!
     try {
-      return getRepositoryFolder(id);      
-    }catch(RepositoryNodeNotFoundException e) {
+      return getRepositoryFolder(id);
+    } catch (RepositoryNodeNotFoundException e) {
       return getRepositoryArtifact(id);
     }
   }
@@ -487,7 +503,7 @@ public class SignavioConnector extends AbstractRepositoryConnector<SignavioConne
       jsonObject = jsonData.getJsonObject();
       return getArtifactInfoFromFile(id, jsonObject);
     } catch (Exception ex) {
-      throw new RepositoryNodeNotFoundException(getConfiguration().getName(), RepositoryArtifact.class, id, ex);
+      throw new RepositoryNodeNotFoundException(getName(), RepositoryArtifact.class, id, ex);
     }
   }
 
@@ -679,16 +695,8 @@ public class SignavioConnector extends AbstractRepositoryConnector<SignavioConne
   public String transformJsonToBpmn20Xml(String jsonData) {
     try {
       JSONObject json = new JSONObject(jsonData);
-      de.hpi.bpmn2_0.factory.configuration.Configuration.ensureSignavioStyle = false; // disable
-                                                                                      // regeneration
-                                                                                      // of
-                                                                                      // IDs
-                                                                                      // that
-                                                                                      // don't
-                                                                                      // match
-                                                                                      // Signavio's
-                                                                                      // ID
-                                                                                      // pattern
+      // disable regeneration of IDs that don't match signavio's ID pattern
+      de.hpi.bpmn2_0.factory.configuration.Configuration.ensureSignavioStyle = false;
       Json2XmlConverter converter = new Json2XmlConverter(json.toString(), this.getClass().getClassLoader().getResource("META-INF/validation/xsd/BPMN20.xsd")
               .toString());
       return converter.getXml().toString();
@@ -727,7 +735,7 @@ public class SignavioConnector extends AbstractRepositoryConnector<SignavioConne
   }
 
   public boolean isLoggedIn() {
-    return loggedIn || !getConfiguration().isLoginRequired();
+    return loggedIn || !getConfigValue(CONFIG_KEY_LOGIN_REQUIRED, Boolean.class);
   }
 
   public Content getContent(String artifactId) throws RepositoryNodeNotFoundException {
@@ -736,9 +744,44 @@ public class SignavioConnector extends AbstractRepositoryConnector<SignavioConne
   }
 
   public ContentRepresentation getDefaultContentRepresentation(String artifactId) throws RepositoryNodeNotFoundException {
-    // always use the Json-representation:
+    // use the JSON-representation as default.
     // TODO: good idea?
     return CycleApplicationContext.get(JsonProvider.class);
+  }
+
+  public String[] getConfigurationKeys() {
+    return CONFIG_KEYS;
+  }
+
+  public String getPassword() {
+    return getConfigValue(CONFIG_KEY_PASSWORD, String.class);
+  }
+
+  public String getUsername() {
+    return getConfigValue(CONFIG_KEY_USERNAME, String.class);
+  }
+
+  protected String getSignavioUrl() {
+    return getConfigValue(CONFIG_KEY_SIGNAVIO_BASE_URL, String.class);
+  }
+
+  @Override
+  protected void validateConfiguration() {
+    String path = (String) getConfigValue(CONFIG_KEY_SIGNAVIO_BASE_URL);
+    if (path != null && !path.endsWith("/")) {
+      path = path + "/";
+    }
+    setConfigValue(CONFIG_KEY_SIGNAVIO_BASE_URL, path);
+    String type = getConfigValue(CONFIG_KEY_TYPE,String.class);
+    if ("oryx".equals(type)) {
+      configuration = new OryxConnectorConfiguration(this);
+    } else {
+      configuration = new SignavioConnectorConfiguration(this);
+    }
+  }
+
+  public SignavioConnectorConfiguration getConfiguration() {
+    return configuration;
   }
 
 }

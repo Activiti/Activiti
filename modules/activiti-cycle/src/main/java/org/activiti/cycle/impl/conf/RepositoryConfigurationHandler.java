@@ -1,10 +1,14 @@
 package org.activiti.cycle.impl.conf;
 
-import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import org.activiti.cycle.CycleComponentFactory;
+import org.activiti.cycle.RepositoryConnector;
+import org.activiti.cycle.RepositoryConnectorConfiguration;
 
 /**
  * Helper-class for handling {@link RepositoryConnectorConfiguration}s in a
@@ -24,6 +28,9 @@ public class RepositoryConfigurationHandler {
 
   static Logger log = Logger.getLogger(RepositoryConfigurationHandler.class.getCanonicalName());
 
+  private static String KEY_NAME = "name";
+  private static String KEY_ID = "id";
+
   /**
    * Sets the values of 'fields' on 'repositoryConnectorInstance'.
    * 
@@ -34,18 +41,17 @@ public class RepositoryConfigurationHandler {
    *          the {@link RepositoryConnectorConfiguration} instance to set the
    *          values on.
    */
-  public static void setConfigurationfields(Map<String, String> fields, Object repositoryConnectorInstance) {
+  public static void setConfigurationfields(Map<String, String> fields, RepositoryConnectorConfiguration configuration) {
     try {
-      for (String fieldName : fields.keySet()) {
-        String methodname = "set";
-        methodname += fieldName.substring(0, 1).toUpperCase();
-        methodname += fieldName.substring(1);
-        // TODO: at the moment we only support strings
-        @SuppressWarnings("rawtypes")
-        Class clazz = String.class;
-        Method method = repositoryConnectorInstance.getClass().getMethod(methodname, clazz);
-        method.invoke(repositoryConnectorInstance, fields.get(fieldName));
-      }
+
+      RepositoryConnectorConfigurationImpl configurationImpl = (RepositoryConnectorConfigurationImpl) configuration;
+      configurationImpl.setConnectorId(fields.get(KEY_ID));
+      configurationImpl.setInstanceName(fields.get(KEY_NAME));
+      fields.remove(KEY_ID);
+      fields.remove(KEY_NAME);
+      
+      configuration.getConfigurationValues().putAll(fields);
+
     } catch (Exception e) {
       log.log(Level.WARNING, "could not set fieldvalues " + e.getMessage(), e);
       throw new RuntimeException(e);
@@ -55,59 +61,32 @@ public class RepositoryConfigurationHandler {
   /**
    * @see CycleService#getConfigurationFields(String)
    */
-  public static Map<String, String> getConfigurationFields(String configurationClazzName) {
+  public static Map<String, String> getConfigurationFields(String connectorPluginName) {
     Map<String, String> result = new HashMap<String, String>();
-
-    try {
-      Class< ? extends RepositoryConnectorConfiguration> configuration = (Class< ? extends RepositoryConnectorConfiguration>) Class
-              .forName(configurationClazzName);
-
-      addFields(result, configuration);
-
-    } catch (ClassNotFoundException e) {
-      log.log(Level.WARNING, "could not get configuration fields " + e.getMessage(), e);
-      throw new RuntimeException(e);
+    RepositoryConnector connector = CycleComponentFactory.getCycleComponentInstance(connectorPluginName, RepositoryConnector.class);
+    for (String key : connector.getConfigurationKeys()) {
+      result.put(key, "");
     }
+    result.put(KEY_NAME, "");
+    result.put(KEY_ID, "");
     return result;
-  }
-
-  private static void addFields(Map<String, String> result, Class< ? extends RepositoryConnectorConfiguration> configuration) {
-
-    for (Method method : configuration.getMethods()) {
-      // todo find a better way to detect setters, maybe annotations?
-      if (!method.getName().startsWith("set") || method.getParameterTypes().length != 1
-              || !method.getParameterTypes()[0].getCanonicalName().equals(String.class.getCanonicalName())) {
-        continue;
-      }
-      String fieldName = method.getName();
-      fieldName = fieldName.replace("set", "");
-      fieldName = fieldName.substring(0, 1).toLowerCase().concat(fieldName.substring(1));
-      result.put(fieldName, String.class.getCanonicalName());
-    }
   }
 
   /**
    * @see CycleService#getRepositoryConnectorConfiguration(String, String)
    */
-  public static Map<String, String> getValueMap(RepositoryConnectorConfiguration repoConfiguration) {
+  public static Map<String, String> getValueMap(RepositoryConnectorConfiguration repositoryConnectorConfiguration, String connectorPluginName) {
     try {
-      Map<String, String> result = new HashMap<String, String>();
-      Map<String, String> fieldNames = new HashMap<String, String>();
-      addFields(fieldNames, repoConfiguration.getClass());
-
-      for (String fieldName : fieldNames.keySet()) {
-        String methodname = "get";
-        methodname += fieldName.substring(0, 1).toUpperCase();
-        methodname += fieldName.substring(1);
-        Method getter = repoConfiguration.getClass().getMethod(methodname);
-        Object value = getter.invoke(repoConfiguration);
-        if (value != null) {
-          result.put(fieldName, value.toString());
+      Map<String, String> result = getConfigurationFields(connectorPluginName);
+      for (Entry<String, Object> entry : repositoryConnectorConfiguration.getConfigurationValues().entrySet()) {
+        if (entry.getValue() != null) {
+          result.put(entry.getKey(), entry.getValue().toString());
         } else {
-          result.put(fieldName, "");
+          result.put(entry.getKey(), "");
         }
       }
-
+      result.put(KEY_NAME, repositoryConnectorConfiguration.getInstanceName());
+      result.put(KEY_ID, repositoryConnectorConfiguration.getConnectorId());
       return result;
     } catch (Exception e) {
       log.log(Level.WARNING, "could not set fieldvalues " + e.getMessage(), e);

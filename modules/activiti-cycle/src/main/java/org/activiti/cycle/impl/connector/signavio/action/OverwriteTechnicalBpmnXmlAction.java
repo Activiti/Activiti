@@ -54,10 +54,10 @@ public class OverwriteTechnicalBpmnXmlAction extends AbstractTechnicalBpmnXmlAct
   }
 
   /**
-   * TODO: dedicated query? might be too in-efficient if we have a huge ammount
+   * TODO: dedicated query? What we do here might be too in-efficient if we have a huge amount
    * of links...
    */
-  private List<RepositoryArtifactLink> getImplementationLinks(RepositoryArtifact forArtifact) {
+  protected List<RepositoryArtifactLink> getImplementationLinks(RepositoryArtifact forArtifact) {
 
     CycleRepositoryService cycleRepositoryService = CycleServiceFactory.getRepositoryService();
     List<RepositoryArtifactLink> links = cycleRepositoryService.getArtifactLinks(forArtifact.getConnectorId(), forArtifact.getNodeId());

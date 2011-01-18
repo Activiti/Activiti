@@ -12,8 +12,6 @@ import org.activiti.cycle.RepositoryArtifactType;
 import org.activiti.cycle.RepositoryConnector;
 import org.activiti.cycle.action.Action;
 import org.activiti.cycle.action.CreateUrlAction;
-import org.activiti.cycle.action.DownloadContentAction;
-import org.activiti.cycle.action.ParameterizedAction;
 import org.activiti.cycle.context.CycleApplicationContext;
 import org.activiti.cycle.context.CycleContext;
 import org.activiti.cycle.context.CycleContextType;
@@ -29,7 +27,7 @@ import org.activiti.cycle.transform.ContentMimeTypeTransformation;
  * <strong>Component Name</strong> <br>
  * A component has a name, which is added as a parameter to this annotation, see
  * {@link #name()}. If no name is provided, the class name of the component is
- * used.
+ * used. Needs to be unique.
  * </p>
  * <p>
  * <strong>Component Type</strong> <br>
@@ -40,8 +38,7 @@ import org.activiti.cycle.transform.ContentMimeTypeTransformation;
  * is a list of supported component types:
  * <ul>
  * <li> {@link RepositoryConnector}</li>
- * <li> {@link Action} ( {@link CreateUrlAction}, {@link ParameterizedAction},
- * {@link DownloadContentAction})</li>
+ * <li> {@link Action} ( {@link CreateUrlAction})</li>
  * <li> {@link ContentRepresentation}</li>
  * <li> {@link ContentArtifactTypeTransformation}</li>
  * <li> {@link ContentMimeTypeTransformation}</li>
@@ -85,7 +82,7 @@ public @interface CycleComponent {
 
   /**
    * The name of a component. If left blank, the classname of the annotated
-   * class is used.
+   * class is used. Needs to be unique.
    */
   String name() default "";
 

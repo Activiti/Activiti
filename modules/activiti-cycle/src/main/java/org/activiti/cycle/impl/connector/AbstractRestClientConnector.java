@@ -5,7 +5,6 @@ import java.util.Map;
 import java.util.logging.Level;
 
 import org.activiti.cycle.RepositoryException;
-import org.activiti.cycle.impl.conf.PasswordEnabledRepositoryConnectorConfiguration;
 import org.activiti.cycle.impl.connector.util.RestClientLogHelper;
 import org.apache.http.auth.AuthenticationException;
 import org.restlet.Client;
@@ -23,15 +22,16 @@ import org.restlet.data.Reference;
 import org.restlet.data.Status;
 import org.restlet.representation.Representation;
 
-
-public abstract class AbstractRestClientConnector<T extends PasswordEnabledRepositoryConnectorConfiguration> extends AbstractRepositoryConnector<T> {
+/**
+ * unused ? 
+ */
+public abstract class AbstractRestClientConnector extends AbstractRepositoryConnector implements PasswordEnabledRepositoryConnector {
 
   protected Map<String, Object> properties;
   protected transient Client restletClient;
   protected Context context;
-
-  public AbstractRestClientConnector(T configuration) {
-    super(configuration);
+  
+  public AbstractRestClientConnector() {
   }
 
   public Client initClient() {
@@ -90,7 +90,7 @@ public abstract class AbstractRestClientConnector<T extends PasswordEnabledRepos
         if (log.isLoggable(Level.INFO)) {
           log.info("Received 401 Error -> retrying request with HTTP_BASIC AUTH now!");
         }
-        cResponse = new ChallengeResponse(ChallengeScheme.HTTP_BASIC, getConfiguration().getUser(), getConfiguration().getPassword());
+        cResponse = new ChallengeResponse(ChallengeScheme.HTTP_BASIC, getUsername(), getPassword());
         break;
       }
     }

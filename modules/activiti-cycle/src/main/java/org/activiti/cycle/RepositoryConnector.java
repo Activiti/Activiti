@@ -14,15 +14,11 @@ package org.activiti.cycle;
 
 import java.util.Map;
 
-import org.activiti.cycle.impl.conf.RepositoryConnectorConfiguration;
-
 /**
  * 
  * @author bernd.ruecker@camunda.com
  */
 public interface RepositoryConnector {
-
-  public RepositoryConnectorConfiguration getConfiguration();
 
   /**
    * log in given user and return true, if login was successful and false, if
@@ -132,8 +128,6 @@ public interface RepositoryConnector {
    */
   public boolean isLoggedIn();
 
-  public void setConfiguration(RepositoryConnectorConfiguration configuration);
-
   /**
    * Returns the default {@link ContentRepresentation} for a provided
    * {@link RepositoryArtifact}-id.
@@ -155,5 +149,71 @@ public interface RepositoryConnector {
    */
   public ContentRepresentation getDefaultContentRepresentation(String artifactId) throws RepositoryNodeNotFoundException;
 
+  /**
+   * must be called before a {@link RepositoryConnector} is configured.
+   * 
+   * @see #addConfiguration(Map)
+   * @see #configurationFinished()
+   * 
+   */
+  public void startConfiguration();
+
+  /**
+   * Can be used to configure this {@link RepositoryConnector}. Call
+   * {@link #startConfiguration()} before. Can be called multiple times. Call
+   * {@link #configurationFinished()} after you are done configuring this
+   * connector.
+   * 
+   * @param configurationValues
+   *          a map of configuration values for this connector. Can be called
+   *          multiple times.
+   * 
+   * @see #startConfiguration()
+   * @see #configurationFinished()
+   */
+  public void addConfiguration(Map<String, Object> configurationValues);
+  
+  /**
+   * Add a single configuration entry
+   */
+  public void addConfigurationEntry(String key, Object value);
+
+  /**
+   * called after the configuration of a connector is finished.
+   * 
+   * @see #startConfiguration()
+   * @see #addConfiguration(Map)
+   */
+  public void configurationFinished();
+
+  /**
+   * @return an array of Strings representing the keys allowed in
+   *         {@link #addConfiguration(Map)}
+   */
+  public String[] getConfigurationKeys();
+
+  /**
+   * @param connectorId
+   *          the id associated with this {@link RepositoryConnector} instance
+   */
+  public void setId(String connectorId);
+
+  /**
+   * returns the id for this {@link RepositoryConnector}
+   */
+  public String getId();
+
+  /**
+   * returns the name for this {@link RepositoryConnector}
+   */
+  public String getName();
+
+  /**
+   * @param name
+   *          set the name for this {@link RepositoryConnector}
+   */
+  public void setName(String name);
+
   // public String getGlobalId(RepositoryNode node);
+
 }

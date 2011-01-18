@@ -17,12 +17,12 @@ import org.activiti.cycle.action.CreateUrlAction;
 import org.activiti.cycle.action.DownloadContentAction;
 import org.activiti.cycle.action.ParameterizedAction;
 import org.activiti.cycle.action.RepositoryArtifactOpenLinkAction;
-import org.activiti.cycle.components.RuntimeConnectorList;
 import org.activiti.cycle.context.CycleApplicationContext;
 import org.activiti.cycle.context.CycleSessionContext;
 import org.activiti.cycle.impl.CycleComponentComparator;
 import org.activiti.cycle.impl.DownloadContentActionImpl;
 import org.activiti.cycle.impl.action.Actions;
+import org.activiti.cycle.impl.components.RuntimeConnectorList;
 import org.activiti.cycle.service.CyclePluginService;
 import org.activiti.cycle.service.CycleServiceFactory;
 

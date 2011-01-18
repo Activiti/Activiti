@@ -9,7 +9,6 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 
 import org.activiti.cycle.impl.connector.fs.FileSystemConnector;
-import org.activiti.cycle.impl.connector.fs.FileSystemConnectorConfiguration;
 import org.activiti.cycle.impl.connector.fs.SignavioFileSystemConnector;
 import org.activiti.cycle.impl.connector.signavio.transform.JsonTransformer;
 import org.activiti.cycle.impl.util.IoUtils;
@@ -36,8 +35,10 @@ public class SubProcessExpansionTest {
     String expected = IoUtils.readText(new FileInputStream(expectedFileName));
 
     FileSystemConnector repositoryConnector = new SignavioFileSystemConnector();
-    repositoryConnector.setConfiguration(new FileSystemConnectorConfiguration("filesystem", new File(path)));
-
+    repositoryConnector.startConfiguration();
+    repositoryConnector.addConfigurationEntry(FileSystemConnector.CONFIG_KEY_BASE_PATH, new File(path).getAbsolutePath());
+    repositoryConnector.configurationFinished();
+    
     JsonTransformer jsonTransformer = new JsonTransformer();
     jsonTransformer.addJsonTransformation(new SubProcessExpansion(repositoryConnector));
     

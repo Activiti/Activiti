@@ -1,7 +1,6 @@
-package org.activiti.cycle.components;
+package org.activiti.cycle.impl.components;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -10,10 +9,9 @@ import java.util.Map;
 
 import org.activiti.cycle.RepositoryConnector;
 import org.activiti.cycle.annotations.CycleComponent;
+import org.activiti.cycle.context.CycleApplicationContext;
 import org.activiti.cycle.context.CycleContextType;
-import org.activiti.cycle.impl.conf.ConfigurationContainer;
-import org.activiti.cycle.impl.connector.view.TagConnectorConfiguration;
-import org.activiti.cycle.service.CycleServiceFactory;
+import org.activiti.cycle.impl.connector.view.TagConnector;
 
 @CycleComponent(context = CycleContextType.SESSION)
 public class RuntimeConnectorList implements Serializable {
@@ -22,9 +20,8 @@ public class RuntimeConnectorList implements Serializable {
   // the transient field keeps the servlet container from serializing the
   // connectors in the session
   // TODO: needs testing: When do servlet containers serialize/deserialize?
-  // Tomcat seems to do it
-  // between shutdowns / startups. At the moment I would qualify this as a
-  // 'hack' - Daniel Meyer
+  // Tomcat seems to do it between shutdowns / startups. At the moment I would
+  // qualify this as a 'hack' - Daniel Meyer
   private transient Map<String, RepositoryConnector> connectors;
 
   private transient List<RepositoryConnector> connectorList;
@@ -50,27 +47,26 @@ public class RuntimeConnectorList implements Serializable {
 
     // load connectors
     connectors = new HashMap<String, RepositoryConnector>();
-    ConfigurationContainer container = CycleServiceFactory.getConfigurationService().getConfigurationContainer();
-    for (RepositoryConnector connector : container.getConnectorList()) {
-      connectors.put(connector.getConfiguration().getId(), connector);
+
+    RepositoryConnectorFactory factory = CycleApplicationContext.get(RepositoryConnectorFactory.class);
+    connectorList = factory.getConnectors();
+    for (RepositoryConnector connector : connectorList) {
+      connectors.put(connector.getId(), connector);
     }
 
-    // create sorted connector-list
-    connectorList = new ArrayList<RepositoryConnector>(connectors.values());
+    // sort connector-list
     Collections.sort(connectorList, new Comparator<RepositoryConnector>() {
-
       public int compare(RepositoryConnector o1, RepositoryConnector o2) {
-        String name1 = o1.getConfiguration().getName();
-        String name2 = o2.getConfiguration().getName();
+        String name1 = o1.getName();
+        String name2 = o2.getName();
         return name1.compareTo(name2);
-
       }
     });
 
     // add tag connector hard coded for the moment (at the first node in the
     // tree)
-    RepositoryConnector tagConnector = new TagConnectorConfiguration().createConnector();
-    connectors.put(tagConnector.getConfiguration().getId(), tagConnector);
+    RepositoryConnector tagConnector = new TagConnector();
+    connectors.put(tagConnector.getId(), tagConnector);
     connectorList.add(0, tagConnector);
 
   }

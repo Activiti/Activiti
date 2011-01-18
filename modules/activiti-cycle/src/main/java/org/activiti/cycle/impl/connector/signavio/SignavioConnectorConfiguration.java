@@ -15,10 +15,7 @@ package org.activiti.cycle.impl.connector.signavio;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 
-import org.activiti.cycle.CycleComponentFactory;
-import org.activiti.cycle.RepositoryConnector;
 import org.activiti.cycle.RepositoryException;
-import org.activiti.cycle.impl.conf.PasswordEnabledRepositoryConnectorConfiguration;
 
 /**
  * Object used to configure signavio connector. Candidate for Entity to save
@@ -28,19 +25,7 @@ import org.activiti.cycle.impl.conf.PasswordEnabledRepositoryConnectorConfigurat
  * 
  * @author bernd.ruecker@camunda.com
  */
-public class SignavioConnectorConfiguration extends PasswordEnabledRepositoryConnectorConfiguration {
-
-  // TODO: use it or not?
-  private String folderRootUrl;
-
-  private String signavioBaseUrl;
-
-  /**
-   * indicates if the {@link SignavioConnector}needs to login into Signavio,
-   * which is the case for the enterprise/saas version of Signavio, but not the
-   * OSS version (where trying to login leads to an exception)
-   */
-  private boolean loginRequired = false;
+public class SignavioConnectorConfiguration  {
 
   // these values differ between Oryx and Signavio
   protected static String REPOSITORY_BACKEND_URL_SUFFIX = "p/";
@@ -59,44 +44,22 @@ public class SignavioConnectorConfiguration extends PasswordEnabledRepositoryCon
   public static String BPMN_20_EXPORT_SERVLET = "bpmn2_0serialization";
   public static String BPMN_20_IMPORT_SERVLET = "bpmn2_0deserialization";
 
-  public SignavioConnectorConfiguration() {
-    signavioBaseUrl = "http://127.0.0.1:8080/";
+  protected SignavioConnector connector;
+    
+  public SignavioConnectorConfiguration(SignavioConnector connector) {
+    this.connector = connector;
   }
-
-  public SignavioConnectorConfiguration(String signavioUrl) {
-    signavioBaseUrl = signavioUrl;
-  }
-
-  public SignavioConnectorConfiguration(String name, String signavioBaseUrl, String folderRootUrl, String password, String user) {
-    setName(name);
-    this.signavioBaseUrl = signavioBaseUrl;
-    this.folderRootUrl = folderRootUrl;
-    setPassword(password);
-    setUser(user);
-  }
-
-  public SignavioConnectorConfiguration(String name, String signavioBaseUrl) {
-    setName(name);
-    this.signavioBaseUrl = signavioBaseUrl;
-  }
-
+  
   public String getSignavioUrl() {
-    return signavioBaseUrl;
-  }
-
-  public void setSignavioUrl(String path) {
-    if (path != null && !path.endsWith("/")) {
-      path = path + "/";
-    }
-    this.signavioBaseUrl = path;
+    return connector.getSignavioUrl();
   }
 
   public String getRepositoryBackendUrl() {
-    return getSignavioUrl() + getRepositoryBackendUrlSuffix();
+    return connector.getSignavioUrl() + getRepositoryBackendUrlSuffix();
   }
 
   public String getEditorBackendUrl() {
-    return getSignavioUrl() + getEditorBackendUrlSuffix();
+    return connector.getSignavioUrl() + getEditorBackendUrlSuffix();
   }
 
   public String getDirectoryIdFromInfoUrl(String href) {
@@ -212,26 +175,11 @@ public class SignavioConnectorConfiguration extends PasswordEnabledRepositoryCon
     return getEditorBackendUrl() + BPMN_20_IMPORT_SERVLET;
   }
 
-  @Override
-  public RepositoryConnector createConnector() {
-    RepositoryConnector connector = CycleComponentFactory.getCycleComponentInstance(SignavioConnector.class, RepositoryConnector.class);
-    connector.setConfiguration(this);
-    return connector;
-  }
-
-  public boolean isLoginRequired() {
-    return loginRequired;
-  }
-
-  public void setLoginRequired(boolean loginRequired) {
-    this.loginRequired = loginRequired;
-  }
-
   /**
    * TODO: What is that and why it is needed?
    */
   public String getPurl() {
-    return getSignavioUrl() + "purl";
+    return connector.getSignavioUrl() + "purl";
   }
 
   public String getModelInfoUrl(String modelId) {

@@ -1,5 +1,6 @@
 package org.activiti.cycle.impl.connector;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
@@ -9,29 +10,85 @@ import org.activiti.cycle.RepositoryArtifact;
 import org.activiti.cycle.RepositoryConnector;
 import org.activiti.cycle.RepositoryNodeNotFoundException;
 import org.activiti.cycle.action.ParameterizedAction;
-import org.activiti.cycle.impl.conf.RepositoryConnectorConfiguration;
 import org.activiti.cycle.service.CyclePluginService;
 import org.activiti.cycle.service.CycleServiceFactory;
 
-public abstract class AbstractRepositoryConnector<T extends RepositoryConnectorConfiguration> implements RepositoryConnector {
+public abstract class AbstractRepositoryConnector implements RepositoryConnector {
 
   protected Logger log = Logger.getLogger(this.getClass().getName());
 
-  private T configuration;
+  private String id;
 
-  public AbstractRepositoryConnector(T configuration) {
-    this.configuration = configuration;
-  }
+  private String name;
+
+  private Map<String, Object> configurationValues;
 
   public AbstractRepositoryConnector() {
+
   }
 
-  public T getConfiguration() {
-    return configuration;
+  public void startConfiguration() {
+    configurationValues = new HashMap<String, Object>();
   }
 
-  public void setConfiguration(RepositoryConnectorConfiguration configuration) {
-    this.configuration = (T) configuration;
+  public void addConfiguration(Map<String, Object> configurationValues) {
+    if (configurationValues == null) {
+      throw new IllegalStateException("Call 'startConfiguration() first.");
+    }
+    // add all configuration values to the map. Possibly overwrites
+    // configuration values which are already present.
+    if (this.configurationValues != null) {
+      this.configurationValues.putAll(configurationValues);
+    }
+  }
+
+  public void addConfigurationEntry(String key, Object value) {
+    if (this.configurationValues != null) {
+      this.configurationValues.put(key, value);
+    }
+  }
+
+  public void configurationFinished() {
+    validateConfiguration();
+  }
+
+  /**
+   * Validate the connector configuration. Throw exception if the configuration
+   * is invalid.
+   */
+  protected abstract void validateConfiguration();
+
+  public String getId() {
+    return id;
+  }
+
+  public void setId(String id) {
+    this.id = id;
+  }
+
+  public String getName() {
+    return name;
+  }
+
+  public void setName(String name) {
+    this.name = name;
+  }
+
+  protected Object getConfigValue(String key) {
+    return configurationValues.get(key);
+  }
+
+  @SuppressWarnings("unchecked")
+  protected <T> T getConfigValue(String key, Class<T> castTo) {
+    Object value = configurationValues.get(key);
+    if (value == null) {
+      return null;
+    }
+    return (T) value;
+  }
+
+  protected void setConfigValue(String key, String value) {
+    configurationValues.put(key, value);
   }
 
   /**

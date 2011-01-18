@@ -32,4 +32,6 @@ public interface SignavioConnectorInterface extends RepositoryConnector {
 
   public Response sendRequest(Request request) throws IOException;
 
+  public abstract SignavioConnectorConfiguration getConfiguration();
+
 }

@@ -10,7 +10,6 @@ import org.activiti.cycle.ContentRepresentation;
 import org.activiti.cycle.RepositoryArtifact;
 import org.activiti.cycle.RepositoryConnector;
 import org.activiti.cycle.RepositoryNode;
-import org.activiti.cycle.impl.conf.ConfigurationContainer;
 import org.activiti.cycle.service.CycleContentService;
 import org.activiti.cycle.service.CycleServiceFactory;
 import org.junit.After;
@@ -21,22 +20,20 @@ public class FileSystemConnectorTest {
 
   private static Logger log = Logger.getLogger(FileSystemConnectorTest.class.getName());
 
-  private ConfigurationContainer userConfiguration;
   private RepositoryConnector conn;
   private CycleContentService contentService;
 
   @Before
   public void initialize() throws IOException {
-    userConfiguration = new ConfigurationContainer("christian");
-    userConfiguration.addRepositoryConnectorConfiguration(new FileSystemConnectorConfiguration("filesystem", new File(".")));
-    conn = userConfiguration.getConnector("filesystem");
+//    userConfiguration = new ConfigurationContainer("christian");
+//    userConfiguration.addRepositoryConnectorConfiguration(new FileSystemConnectorConfiguration("filesystem", new File(".")));
+//    conn = userConfiguration.getConnector("filesystem");
 
     contentService = CycleServiceFactory.getContentService();
   }
 
   @After
   public void cleanUp() {
-    userConfiguration = null;
     conn = null;
   }
 

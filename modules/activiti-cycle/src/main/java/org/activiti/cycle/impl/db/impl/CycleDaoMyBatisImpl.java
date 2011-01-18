@@ -3,31 +3,38 @@ package org.activiti.cycle.impl.db.impl;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.TreeSet;
 import java.util.UUID;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
+import org.activiti.cycle.RepositoryConnectorConfiguration;
 import org.activiti.cycle.impl.CycleTagContentImpl;
-import org.activiti.cycle.impl.conf.ConfigurationContainer;
+import org.activiti.cycle.impl.conf.RepositoryConnectorConfigurationImpl;
 import org.activiti.cycle.impl.db.CycleCommentDao;
-import org.activiti.cycle.impl.db.CycleConfigurationDao;
+import org.activiti.cycle.impl.db.CycleRepositoryConnectorConfigurationDao;
 import org.activiti.cycle.impl.db.CycleLinkDao;
 import org.activiti.cycle.impl.db.CyclePeopleLinkDao;
 import org.activiti.cycle.impl.db.CycleTagDao;
-import org.activiti.cycle.impl.db.entity.CycleConfigEntity;
+import org.activiti.cycle.impl.db.entity.CycleRepositoryConnectorConfigurationEntity;
 import org.activiti.cycle.impl.db.entity.RepositoryArtifactLinkEntity;
 import org.activiti.cycle.impl.db.entity.RepositoryNodeCommentEntity;
 import org.activiti.cycle.impl.db.entity.RepositoryNodePeopleLinkEntity;
 import org.activiti.cycle.impl.db.entity.RepositoryNodeTagEntity;
-import org.activiti.cycle.impl.util.XmlSerializer;
+import org.activiti.engine.ProcessEngines;
+import org.activiti.engine.identity.Group;
 import org.apache.ibatis.session.SqlSession;
 
-public class CycleDaoMyBatisImpl extends AbstractCycleDaoMyBatisImpl implements CycleCommentDao, CycleConfigurationDao, CycleLinkDao, CyclePeopleLinkDao,
-        CycleTagDao {
+public class CycleDaoMyBatisImpl extends AbstractCycleDaoMyBatisImpl implements CycleCommentDao, CycleRepositoryConnectorConfigurationDao, CycleLinkDao,
+        CyclePeopleLinkDao, CycleTagDao {
+
+  private static Logger log = Logger.getLogger(CycleDaoMyBatisImpl.class.getName());
 
   /**
    * LINKS
    */
-  
+
   @SuppressWarnings("unchecked")
   public List<RepositoryArtifactLinkEntity> getOutgoingArtifactLinks(String sourceConnectorId, String sourceArtifactId) {
     SqlSession session = openSession();
@@ -57,7 +64,7 @@ public class CycleDaoMyBatisImpl extends AbstractCycleDaoMyBatisImpl implements 
       session.close();
     }
   }
-  
+
   public void insertArtifactLink(RepositoryArtifactLinkEntity cycleLink) {
     cycleLink.setId(UUID.randomUUID().toString());
     SqlSession session = openSession();
@@ -68,7 +75,7 @@ public class CycleDaoMyBatisImpl extends AbstractCycleDaoMyBatisImpl implements 
       session.close();
     }
   }
-  
+
   public void deleteArtifactLink(String id) {
     SqlSession session = openSession();
     try {
@@ -78,11 +85,11 @@ public class CycleDaoMyBatisImpl extends AbstractCycleDaoMyBatisImpl implements 
       session.close();
     }
   }
-  
+
   /**
    * People-Links
    */
-  
+
   public void insertPeopleLink(RepositoryNodePeopleLinkEntity link) {
     link.setId(UUID.randomUUID().toString());
     SqlSession session = openSession();
@@ -93,7 +100,7 @@ public class CycleDaoMyBatisImpl extends AbstractCycleDaoMyBatisImpl implements 
       session.close();
     }
   }
-  
+
   public void deletePeopleLink(String id) {
     SqlSession session = openSession();
     try {
@@ -102,7 +109,7 @@ public class CycleDaoMyBatisImpl extends AbstractCycleDaoMyBatisImpl implements 
     } finally {
       session.close();
     }
-  }  
+  }
 
   @SuppressWarnings("unchecked")
   public List<RepositoryNodePeopleLinkEntity> getPeopleLinks(String connectorId, String artifactId) {
@@ -120,7 +127,7 @@ public class CycleDaoMyBatisImpl extends AbstractCycleDaoMyBatisImpl implements 
   /**
    * TAGS
    */
-  
+
   public void insertTag(RepositoryNodeTagEntity tag) {
     tag.createId();
     SqlSession session = openSession();
@@ -129,9 +136,9 @@ public class CycleDaoMyBatisImpl extends AbstractCycleDaoMyBatisImpl implements 
       session.commit();
     } finally {
       session.close();
-    }    
+    }
   }
-  
+
   public void deleteTag(String connectorId, String artifactId, String tagName) {
     SqlSession session = openSession();
     try {
@@ -139,7 +146,7 @@ public class CycleDaoMyBatisImpl extends AbstractCycleDaoMyBatisImpl implements 
       parameters.put("connectorId", connectorId);
       parameters.put("artifactId", artifactId);
       parameters.put("name", tagName);
-      
+
       session.delete("deleteArtifactTag", parameters);
       session.commit();
     } finally {
@@ -202,9 +209,9 @@ public class CycleDaoMyBatisImpl extends AbstractCycleDaoMyBatisImpl implements 
     try {
       CycleTagContentImpl tagContent = new CycleTagContentImpl(name);
 
-      List<RepositoryNodeTagEntity> tags = session.selectList("selectTagsByName", name);      
+      List<RepositoryNodeTagEntity> tags = session.selectList("selectTagsByName", name);
       for (RepositoryNodeTagEntity tag : tags) {
-          tagContent.addArtifact(tag);
+        tagContent.addArtifact(tag);
       }
       return tagContent;
     } finally {
@@ -235,7 +242,7 @@ public class CycleDaoMyBatisImpl extends AbstractCycleDaoMyBatisImpl implements 
       session.close();
     }
   }
-  
+
   @SuppressWarnings("unchecked")
   public List<RepositoryNodeCommentEntity> getCommentsForNode(String connectorId, String nodeId) {
     SqlSession session = openSession();
@@ -249,66 +256,70 @@ public class CycleDaoMyBatisImpl extends AbstractCycleDaoMyBatisImpl implements 
       session.close();
     }
   }
-  
-  public void saveConfiguration(ConfigurationContainer container) {
-    if (null != getConfiguration(container.getName())) {     
-      updateConfiguration(container);
-    } else {
-      createAndInsertConfiguration(container, container.getName());
+
+  public List<RepositoryConnectorConfiguration> getRepositoryConnectorConfigurationsForUser(String user) {
+    List<RepositoryConnectorConfiguration> resultList = new ArrayList<RepositoryConnectorConfiguration>();
+    List<Group> groups = ProcessEngines.getDefaultProcessEngine().getIdentityService().createGroupQuery().groupMember(user).list();
+    List<CycleRepositoryConnectorConfigurationEntity> entityList = new ArrayList<CycleRepositoryConnectorConfigurationEntity>();
+    // select entities for the groups, this user is a member of
+    for (Group group : groups) {
+      entityList.addAll(selectRepositoryConnectorConfigurationByGroup(group.getId()));
     }
+    // select entities for this user
+    entityList.addAll(selectRepositoryConnectorConfigurationByUser(user));
+    // convert entities into configurations
+    for (CycleRepositoryConnectorConfigurationEntity cycleRepositoryConnectorConfigurationEntity : entityList) {
+      resultList.add(cycleRepositoryConnectorConfigurationEntity.asRepositoryConnectorConfiguration());
+    }
+    return resultList;
   }
 
-  public ConfigurationContainer getConfiguration(String name) {
-    CycleConfigEntity cycleConfig = selectConfigurationById(name);
-    Object configXML = XmlSerializer.unSerializeObject(cycleConfig.getConfigXML());
-    return (ConfigurationContainer) configXML;
-  }
-  
-  
-  private CycleConfigEntity selectConfigurationById(String id) {
+  public void saveConfiguration(RepositoryConnectorConfiguration configuration) {
     SqlSession session = openSession();
     try {
-      return (CycleConfigEntity) session.selectOne("selectCycleConfigById", id);
-
+      CycleRepositoryConnectorConfigurationEntity entity = CycleRepositoryConnectorConfigurationEntity
+              .fromRepositoryConnectorConfiguration((RepositoryConnectorConfigurationImpl) configuration);
+      if (null != entity.getId()) {
+        session.update("updateCycleRepositoryConnectorConfigurationById", entity);
+      } else {
+        entity.setId(UUID.randomUUID().toString());
+        session.insert("insertRepositoryConnectorConfiguration", entity);
+      }
+      session.commit();
+    } catch (Exception e) {
+      log.log(Level.WARNING, "Could not update " + configuration, e);
+      session.rollback();
+      throw new RuntimeException(e);
     } finally {
       session.close();
     }
   }
 
-  private void createAndInsertConfiguration(Object o, String id) {
-    CycleConfigEntity cycleConfig = new CycleConfigEntity();
-    cycleConfig.setId(id);
-    String configXML = XmlSerializer.serializeObject(o);
-    cycleConfig.setConfigXML(configXML);
-
+  @SuppressWarnings("unchecked")
+  private List<CycleRepositoryConnectorConfigurationEntity> selectRepositoryConnectorConfigurationByUser(String id) {
     SqlSession session = openSession();
     try {
-      session.insert("insertCycleConfig", cycleConfig);
-      session.commit();
+      return (List<CycleRepositoryConnectorConfigurationEntity>) session.selectList("selectRepositoryConnectorConfigurationByUser", id);
     } finally {
       session.close();
     }
   }
 
-  private void updateConfiguration(ConfigurationContainer container) {
-    CycleConfigEntity cycleConfig = new CycleConfigEntity();
-    cycleConfig.setId(container.getName());
-    String configXML = XmlSerializer.serializeObject(container);
-    cycleConfig.setConfigXML(configXML);
+  @SuppressWarnings("unchecked")
+  private List<CycleRepositoryConnectorConfigurationEntity> selectRepositoryConnectorConfiguration(RepositoryConnectorConfiguration configuration) {
     SqlSession session = openSession();
     try {
-      session.update("updateCycleConfigById", cycleConfig);
-      session.commit();
+      return (List<CycleRepositoryConnectorConfigurationEntity>) session.selectList("selectRepositoryConnectorConfigurationByUser", configuration);
     } finally {
       session.close();
     }
   }
 
-  private void deleteConfigurationById(String id) {
+  @SuppressWarnings("unchecked")
+  private List<CycleRepositoryConnectorConfigurationEntity> selectRepositoryConnectorConfigurationByGroup(String id) {
     SqlSession session = openSession();
     try {
-      session.delete("deleteCycleConfigById", id);
-      session.commit();
+      return (List<CycleRepositoryConnectorConfigurationEntity>) session.selectList("selectRepositoryConnectorConfigurationByGroup", id);
     } finally {
       session.close();
     }

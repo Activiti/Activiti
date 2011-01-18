@@ -9,7 +9,7 @@ import org.activiti.cycle.CycleTagContent;
 import org.activiti.cycle.RepositoryException;
 import org.activiti.cycle.RepositoryNodeTag;
 import org.activiti.cycle.impl.CycleTagContentImpl;
-import org.activiti.cycle.impl.connector.view.TagConnectorConfiguration;
+import org.activiti.cycle.impl.connector.view.TagConnector;
 import org.activiti.cycle.impl.db.CycleTagDao;
 import org.activiti.cycle.impl.db.entity.RepositoryNodeTagEntity;
 import org.activiti.cycle.service.CycleTagService;
@@ -109,7 +109,7 @@ public class CycleTagServiceImpl implements CycleTagService {
   }
 
   private void checkValidConnector(String connectorId) {
-    if (TagConnectorConfiguration.TAG_CONNECTOR_ID.equals(connectorId)) {
+    if (TagConnector.TAG_CONNECTOR_ID.equals(connectorId)) {
       // we do not want to have recursions in tags
       throw new RepositoryException("Cannot tag a tag");
     }

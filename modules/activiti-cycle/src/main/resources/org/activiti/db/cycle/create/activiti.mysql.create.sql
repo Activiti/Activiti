@@ -1,8 +1,13 @@
-create table ACT_CY_CONFIG (
-	ID_ varchar(64),
-    VALUE_ text,
-    REV_ integer,
-    primary key (ID_)
+
+create table ACT_CY_CONN_CONFIG (
+	ID_ varchar(255) NOT NULL,
+	PLUGIN_ID_ varchar(255) NOT NULL,
+	INSTANCE_NAME_ varchar(255) NOT NULL, 
+	INSTANCE_ID_ varchar(255) NOT NULL,  
+	USER_ varchar(255),
+	GROUP_ varchar(255),
+	VALUES_ text,	
+	primary key (ID_)
 ) TYPE=InnoDB DEFAULT CHARSET=utf8 COLLATE utf8_bin;
 
 create table ACT_CY_LINK (

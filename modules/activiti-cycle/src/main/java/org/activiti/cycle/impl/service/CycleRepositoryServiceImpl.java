@@ -13,11 +13,10 @@ import org.activiti.cycle.RepositoryFolder;
 import org.activiti.cycle.RepositoryNode;
 import org.activiti.cycle.RepositoryNodeCollection;
 import org.activiti.cycle.RepositoryNodeNotFoundException;
-import org.activiti.cycle.components.RuntimeConnectorList;
 import org.activiti.cycle.context.CycleSessionContext;
 import org.activiti.cycle.impl.RepositoryFolderImpl;
 import org.activiti.cycle.impl.RepositoryNodeCollectionImpl;
-import org.activiti.cycle.impl.conf.PasswordEnabledRepositoryConnectorConfiguration;
+import org.activiti.cycle.impl.components.RuntimeConnectorList;
 import org.activiti.cycle.impl.connector.util.TransactionalConnectorUtils;
 import org.activiti.cycle.impl.db.CycleLinkDao;
 import org.activiti.cycle.impl.db.entity.RepositoryArtifactLinkEntity;
@@ -56,15 +55,7 @@ public class CycleRepositoryServiceImpl implements CycleRepositoryService {
   public boolean login(String username, String password, String connectorId) {
     RepositoryConnector conn = getRepositoryConnector(connectorId);
     if (conn != null) {
-
-      if (conn.getConfiguration() instanceof PasswordEnabledRepositoryConnectorConfiguration) {
-        PasswordEnabledRepositoryConnectorConfiguration configuration = (PasswordEnabledRepositoryConnectorConfiguration) conn.getConfiguration();
-        configuration.setUser(username);
-        configuration.setPassword(password);
-      }
-
-      conn.login(username, password);
-      return true;
+      return conn.login(username, password);
     }
     return false;
   }
@@ -97,15 +88,15 @@ public class CycleRepositoryServiceImpl implements CycleRepositoryService {
     ArrayList<RepositoryNode> nodes = new ArrayList<RepositoryNode>();
     for (RepositoryConnector connector : getRuntimeRepositoryConnectors()) {
 
-      RepositoryFolderImpl folder = new RepositoryFolderImpl(connector.getConfiguration().getId(), "/");
-      folder.getMetadata().setName(connector.getConfiguration().getName());
+      RepositoryFolderImpl folder = new RepositoryFolderImpl(connector.getId(), "/");
+      folder.getMetadata().setName(connector.getName());
       folder.getMetadata().setParentFolderId("/");
       nodes.add(folder);
 
     }
     return new RepositoryNodeCollectionImpl(nodes);
   }
-  
+
   public RepositoryNode getRepositoryNode(String connectorId, String nodeId) {
     RepositoryConnector connector = getRepositoryConnector(connectorId);
     RepositoryNode repositoryArtifact = connector.getRepositoryNode(nodeId);
@@ -180,13 +171,15 @@ public class CycleRepositoryServiceImpl implements CycleRepositoryService {
     connector.executeParameterizedAction(artifactId, actionId, parameters);
   }
 
-//  public List<ArtifactType> getSupportedArtifactTypes(String connectorId, String folderId) {
-//    if (folderId == null || folderId.length() <= 1) {
-//      // "virtual" root folder doesn't support any artifact types
-//      return new ArrayList<ArtifactType>();
-//    }
-//    return getRepositoryConnector(connectorId).getSupportedArtifactTypes(folderId);
-//  }
+  // public List<ArtifactType> getSupportedArtifactTypes(String connectorId,
+  // String folderId) {
+  // if (folderId == null || folderId.length() <= 1) {
+  // // "virtual" root folder doesn't support any artifact types
+  // return new ArrayList<ArtifactType>();
+  // }
+  // return
+  // getRepositoryConnector(connectorId).getSupportedArtifactTypes(folderId);
+  // }
 
   // RepositoryArtifactLink specific methods
 
@@ -247,12 +240,12 @@ public class CycleRepositoryServiceImpl implements CycleRepositoryService {
   }
 
   private RepositoryConnector getRepositoryConnector(String connectorId) {
-    for (RepositoryConnector connector : getRuntimeRepositoryConnectors()) {
-      if (connector.getConfiguration().getId().equals(connectorId)) {
-        return connector;
-      }
+    RuntimeConnectorList list = CycleSessionContext.get(RuntimeConnectorList.class);
+    RepositoryConnector connector = list.getConnectorById(connectorId);
+    if (connector == null) {
+      throw new RepositoryException("Couldn't find Repository Connector with id '" + connectorId + "'");
     }
-    throw new RepositoryException("Couldn't find Repository Connector with id '" + connectorId + "'");
+    return connector;
   }
 
 }

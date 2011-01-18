@@ -1,8 +1,14 @@
-create table ACT_CY_CONFIG (
-	ID_ NVARCHAR2(64),
-    VALUE_ clob,
-    REV_ INTEGER,
-    primary key (ID_)
+
+
+create table ACT_CY_CONN_CONFIG (
+	ID_ NVARCHAR2(255) NOT NULL,
+	PLUGIN_ID_ NVARCHAR2(255) NOT NULL,
+	INSTANCE_NAME_ NVARCHAR2(255) NOT NULL, 
+	INSTANCE_ID_ NVARCHAR2(255) NOT NULL,  
+	USER_ NVARCHAR2(255),
+	GROUP_ NVARCHAR2(255),
+	VALUES_ clob,	
+	primary key (ID_)
 );
 
 create table ACT_CY_LINK (

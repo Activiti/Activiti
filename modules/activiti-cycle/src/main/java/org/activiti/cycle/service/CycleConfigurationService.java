@@ -15,8 +15,7 @@ package org.activiti.cycle.service;
 import java.util.List;
 import java.util.Map;
 
-import org.activiti.cycle.impl.conf.ConfigurationContainer;
-import org.activiti.cycle.impl.conf.RepositoryConnectorConfiguration;
+import org.activiti.cycle.RepositoryConnectorConfiguration;
 
 /**
  * Cycle service used for manipulating the configuration settings. ATM,
@@ -80,7 +79,7 @@ public interface CycleConfigurationService {
   /**
    * Returns the {@link ConfigurationContainer} for the current user.
    */
-  public ConfigurationContainer getConfigurationContainer();
+  public List<RepositoryConnectorConfiguration> getConnectorConfigurations();
 
   /**
    * Returns a field-value map of the current configuration settings represented

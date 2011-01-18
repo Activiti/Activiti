@@ -1,11 +1,11 @@
 package org.activiti.cycle;
 
 import java.io.IOException;
+import java.io.StringWriter;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Proxy;
 import java.net.URL;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -47,11 +47,27 @@ public abstract class CycleComponentFactory {
     public final String name;
     public final CycleContextType contextType;
     public final Class< ? > clazz;
+    public final Set<Class<?>> types;
 
     private CycleComponentDescriptor(String name, CycleContextType type, Class< ? > clazz) {
       this.name = name;
       this.contextType = type;
       this.clazz = clazz;
+      this.types = new HashSet<Class<?>>();
+    }
+    @Override
+    public String toString() {
+      StringWriter result = new StringWriter();
+      result.write(name);
+      result.write("{");
+      result.write("context: ");
+      result.write(contextType.name());
+      result.write(", class: ");
+      result.write(clazz.getName());
+      result.write(", types: ");
+      result.write(types.toString());
+      result.write("}");
+      return result.toString();
     }
   }
 
@@ -190,7 +206,7 @@ public abstract class CycleComponentFactory {
     }
   }
 
-  @SuppressWarnings("unchecked") // JDK method Class.getInterfaces() already returns the raw type Class[]
+ 
   private Object decorateInstance(Object instanceToDecorate, Class< ? extends Interceptor>[] interceptorClasses) throws Exception {
     Set<Class> interfaces = new HashSet<Class>();
     Class< ? > superClass = instanceToDecorate.getClass();
@@ -218,6 +234,7 @@ public abstract class CycleComponentFactory {
   }
 
   private void init() {
+    logger.log(Level.INFO, "Cycle Component Factory initializing");
     // register component types:
     componentTypes.add(RepositoryConnector.class);
     componentTypes.add(Action.class);
@@ -233,6 +250,7 @@ public abstract class CycleComponentFactory {
     // scan for components
     scanForComponents();
     initialized = true;
+    logger.log(Level.INFO, "Cycle Component Factory initialized");
   }
 
   private void scanForComponents() {
@@ -303,8 +321,10 @@ public abstract class CycleComponentFactory {
           componentTypeMap.put(componentType, componentNamesForThisTypeList);
         }
         componentNamesForThisTypeList.add(name);
+        componentDescriptor.types.add(componentType);
       }
     }
+    logger.log(Level.INFO, "Registered component  "+componentDescriptor);
     return name;
   }
 
