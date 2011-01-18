@@ -860,6 +860,54 @@ ProcessInstance processInstance = runtimeService.startProcessInstanceByXXX();</p
       
     </section>
     
+    <section id="bpmnDefaultSequenceFlow">
+      
+      <title>Default sequence flow</title>
+      
+      <section id="bpmnDefaultSequenceFlowDescription">
+        <title>Description</title>
+        <para>
+          All BPMN 2.0 tasks and gateways can have a <emphasis role="bold">default sequence flow</emphasis>.
+          This sequence flow is only selected as the outgoing sequence flow for that activity 
+          if and only if none of the other sequence flow could be selected. Conditions
+          on a default sequence flow are always ignored.
+        </para>
+      </section>
+      
+      <section id="bpmnDefaultSequenceFlowGraphicalNotation">
+        <title>Graphical notation</title>
+        <para>
+          A default sequence flow is visualized as a regular sequence flow, with a 'slash' marker
+          at the beginning.
+          <mediaobject><imageobject><imagedata align="center" fileref="images/bpmn.default.sequence.flow.png"/></imageobject></mediaobject>
+        </para>
+      </section>
+      
+      <section id="bpmnDefaultSequenceFlowXmlRepresentation">
+        <title>XML representation</title>
+        <para>
+          A default sequence flow for a certain activity is defined by the <emphasis role="bold">default attribute</emphasis>
+          on that activity. The following XML snippet shows for example an exclusive gateway that
+          has as default sequence flow <emphasis>flow 2</emphasis>. Only when <emphasis>conditionA</emphasis>
+          and <emphasis>conditionB</emphasis> both evaluate to false, will it be chosen as outgoing 
+          sequence flow for the gateway.
+          <programlisting>
+&lt;exclusiveGateway id=&quot;exclusiveGw&quot; name=&quot;Exclusive Gateway&quot; <emphasis role="bold">default=&quot;flow2&quot;</emphasis> /&gt;
+&lt;sequenceFlow id=&quot;flow1&quot; sourceRef=&quot;exclusiveGw&quot; targetRef=&quot;task1&quot;&gt;
+  &lt;conditionExpression xsi:type=&quot;tFormalExpression&quot;&gt;${conditionA}&lt;/conditionExpression&gt;
+&lt;/sequenceFlow&gt;
+&lt;sequenceFlow id=&quot;flow2&quot; sourceRef=&quot;exclusiveGw&quot; targetRef=&quot;task2&quot;/&gt;
+&lt;sequenceFlow id=&quot;flow3&quot; sourceRef=&quot;exclusiveGw&quot; targetRef=&quot;task3&quot;&gt;
+  &lt;conditionExpression xsi:type=&quot;tFormalExpression&quot;&gt;${conditionB}&lt;/conditionExpression&gt;
+&lt;/sequenceFlow&gt;          
+          </programlisting>
+          Which corresponds with the following graphical representation:
+          <mediaobject><imageobject><imagedata align="center" fileref="images/bpmn.default.sequence.flow.example.png"/></imageobject></mediaobject>
+        </para>
+      </section>
+      
+    </section>
+    
     <section id="bpmnGateways">
     
       <title>Gateways</title>
@@ -873,7 +921,7 @@ ProcessInstance processInstance = runtimeService.startProcessInstanceByXXX();</p
       <para>  
         A gateway is graphically visualized as a diamond shape, with an icon inside. 
         The icon shows the type of gateway.
-         <mediaobject><imageobject><imagedata align="center" fileref="images/bpmn.gateway.png"/></imageobject></mediaobject>
+        <mediaobject><imageobject><imagedata align="center" fileref="images/bpmn.gateway.png"/></imageobject></mediaobject>
       </para>
     
     </section>

@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.bpmn.parser.BpmnParse;
 import org.activiti.engine.impl.pvm.PvmTransition;
 import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
@@ -69,16 +70,20 @@ public class BpmnActivityBehavior {
     if (log.isLoggable(Level.FINE)) {
         log.fine("Leaving activity '" + execution.getActivity().getId() + "'");
       }
-      
+
+      String defaultSequenceFlow = (String) execution.getActivity().getProperty("default");
       List<PvmTransition> transitionsToTake = new ArrayList<PvmTransition>();
 
       List<PvmTransition> outgoingTransitions = execution.getActivity().getOutgoingTransitions();   
       for (PvmTransition outgoingTransition: outgoingTransitions) {
-        Condition condition = (Condition) outgoingTransition.getProperty(BpmnParse.PROPERTYNAME_CONDITION);
-        if (condition == null 
-                || !checkConditions 
-                || condition.evaluate(execution)) {
-          transitionsToTake.add(outgoingTransition);
+        if (defaultSequenceFlow == null 
+                || !outgoingTransition.getId().equals(defaultSequenceFlow) ) {
+          Condition condition = (Condition) outgoingTransition.getProperty(BpmnParse.PROPERTYNAME_CONDITION);
+          if (condition == null 
+                  || !checkConditions 
+                  || condition.evaluate(execution)) {
+            transitionsToTake.add(outgoingTransition);
+          }
         }
       }
       
@@ -94,11 +99,21 @@ public class BpmnActivityBehavior {
         execution.takeAll(transitionsToTake, joinedExecutions);
           
       } else {
-        if (log.isLoggable(Level.FINE)) {
-          log.fine("No outgoing sequence flow found for " + execution.getActivity().getId() 
-                  + ". Ending execution.");
-        }
+        
+        if (defaultSequenceFlow != null) {
+          PvmTransition defaultTransition = execution.getActivity().findOutgoingTransition(defaultSequenceFlow);
+          if (defaultTransition != null) {
+            execution.take(defaultTransition);
+          } else {
+            throw new ActivitiException("Default sequence flow '" + defaultSequenceFlow + "' could not be not found");
+          }
+        } else {
+          if (log.isLoggable(Level.FINE)) {
+            log.fine("No outgoing sequence flow found for " + execution.getActivity().getId() 
+                    + ". Ending execution.");
+          }
         execution.end();
+        }
       }
    }
 }

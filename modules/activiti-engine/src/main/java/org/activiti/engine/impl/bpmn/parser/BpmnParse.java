@@ -706,7 +706,7 @@ public class BpmnParse extends Parse {
       }
     }
   }
-
+  
   /**
    * Generic parsing method for most flow elements: parsing of the documentation
    * sub-element.
@@ -727,12 +727,14 @@ public class BpmnParse extends Parse {
     String id = activityElement.attribute("id");
     String name = activityElement.attribute("name");
     String documentation = parseDocumentation(activityElement);
+    String defaultSequenceFlow = activityElement.attribute("default");
     if (LOG.isLoggable(Level.FINE)) {
       LOG.fine("Parsing activity " + id);
     }
     ActivityImpl activity = scopeElement.createActivity(id);
     activity.setProperty("name", name);
     activity.setProperty("documentation", documentation);
+    activity.setProperty("default", defaultSequenceFlow);
     activity.setProperty("type", activityElement.getTagName());
     activity.setProperty("line", activityElement.getLine());
     return activity;
@@ -743,11 +745,8 @@ public class BpmnParse extends Parse {
    */
   public void parseExclusiveGateway(Element exclusiveGwElement, ScopeImpl scope) {
     ActivityImpl activity = parseAndCreateActivityOnScopeElement(exclusiveGwElement, scope);
-    
-    ExclusiveGatewayActivityBehavior behavior = new ExclusiveGatewayActivityBehavior();
-    behavior.setDefaultSequenceFlow(exclusiveGwElement.attribute("default"));
-    activity.setActivityBehavior(behavior);
-    
+    activity.setActivityBehavior(new ExclusiveGatewayActivityBehavior());
+
     parseExecutionListenersOnScope(exclusiveGwElement, activity);
     
     for (BpmnParseListener parseListener: parseListeners) {

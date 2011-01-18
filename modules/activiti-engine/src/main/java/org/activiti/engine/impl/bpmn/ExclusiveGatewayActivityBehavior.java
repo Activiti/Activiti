@@ -32,8 +32,6 @@ public class ExclusiveGatewayActivityBehavior extends GatewayActivityBehavior {
   
   private static Logger log = Logger.getLogger(ExclusiveGatewayActivityBehavior.class.getName());
   
-  protected String defaultSequenceFlow;
-  
   /**
    * The default behaviour of BPMN, taking every outgoing sequence flow
    * (where the condition evaluates to true), is not valid for an exclusive
@@ -55,12 +53,11 @@ public class ExclusiveGatewayActivityBehavior extends GatewayActivityBehavior {
     }
     
     PvmTransition outgoingSeqFlow = null;
+    String defaultSequenceFlow = (String) execution.getActivity().getProperty("default");
     Iterator<PvmTransition> transitionIterator = execution.getActivity().getOutgoingTransitions().iterator();
     while (outgoingSeqFlow == null && transitionIterator.hasNext()) {
       PvmTransition seqFlow = transitionIterator.next();
       
-      // TODO conditions should go into the activity behaviour configuration 
-      // (probably BpmnActivity as all activities need conditions)
       Condition condition = (Condition) seqFlow.getProperty(BpmnParse.PROPERTYNAME_CONDITION);
       if ( (condition == null && !seqFlow.getId().equals(defaultSequenceFlow)) 
               || (condition != null && condition.evaluate(execution)) ) {
@@ -91,12 +88,4 @@ public class ExclusiveGatewayActivityBehavior extends GatewayActivityBehavior {
     }
   }
 
-  public String getDefaultSequenceFlow() {
-    return defaultSequenceFlow;
-  }
-  
-  public void setDefaultSequenceFlow(String defaultSequenceFlow) {
-    this.defaultSequenceFlow = defaultSequenceFlow;
-  }
-  
 }

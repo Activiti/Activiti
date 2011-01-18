@@ -29,6 +29,7 @@ public class ReceiveTaskActivity extends TaskActivity {
 
   public void execute(ActivityExecution execution) throws Exception {
     // Do nothing: waitstate behavior
+    System.out.println("iep");
   }
   
   public void signal(ActivityExecution execution, String signalName, Object data) throws Exception {

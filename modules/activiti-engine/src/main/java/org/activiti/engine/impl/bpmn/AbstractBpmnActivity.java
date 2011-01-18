@@ -52,5 +52,5 @@ public abstract class AbstractBpmnActivity implements SignallableActivityBehavio
     // concrete activity behaviours that do accept signals should override this method;
     throw new ActivitiException("this activity doesn't accept signals");
   }
-
+  
 }
