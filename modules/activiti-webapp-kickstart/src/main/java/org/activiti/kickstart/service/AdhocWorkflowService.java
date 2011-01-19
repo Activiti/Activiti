@@ -17,6 +17,7 @@ import java.util.List;
 
 import javax.xml.bind.JAXBException;
 
+import org.activiti.engine.repository.Deployment;
 import org.activiti.kickstart.dto.AdhocWorkflowDto;
 import org.activiti.kickstart.dto.AdhocWorkflowInfo;
 
@@ -25,7 +26,10 @@ import org.activiti.kickstart.dto.AdhocWorkflowInfo;
  */
 public interface AdhocWorkflowService {
 
-  void deployAdhocWorkflow(AdhocWorkflowDto adhocWorkflow) throws JAXBException;
+  /**
+   * deploys the Workflow and returns the deployment id
+   */
+  String deployAdhocWorkflow(AdhocWorkflowDto adhocWorkflow) throws JAXBException;
 
   List<AdhocWorkflowInfo> findAdhocWorkflowInformation();
 

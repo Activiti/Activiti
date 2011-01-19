@@ -29,6 +29,7 @@ import org.activiti.engine.HistoryService;
 import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.impl.util.IoUtil;
+import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.repository.DeploymentBuilder;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.kickstart.bpmn20.model.BaseElement;
@@ -59,7 +60,7 @@ public class AdhocWorkflowServiceImpl implements AdhocWorkflowService {
     this.historyService = processEngine.getHistoryService();
   }
 
-  public void deployAdhocWorkflow(AdhocWorkflowDto adhocWorkflow) throws JAXBException {
+  public String deployAdhocWorkflow(AdhocWorkflowDto adhocWorkflow) throws JAXBException {
     String deploymentName = "Process " + adhocWorkflow.getName();
     String bpmn20XmlResourceName = generateBpmnResourceName(adhocWorkflow.getName());
     DeploymentBuilder deploymentBuilder = repositoryService.createDeployment().name(deploymentName);
@@ -81,7 +82,8 @@ public class AdhocWorkflowServiceImpl implements AdhocWorkflowService {
     }
 
     // deploy the whole package
-    deploymentBuilder.deploy();
+    Deployment deployment = deploymentBuilder.deploy();
+    return deployment.getId();
   }
 
   public List<AdhocWorkflowInfo> findAdhocWorkflowInformation() {
