@@ -6,7 +6,7 @@
 	<name>Activiti - Camel</name>
 	<groupId>org.activiti</groupId>
 	<artifactId>activiti-camel</artifactId>
-    <packaging>bundle</packaging>
+        <packaging>bundle</packaging>
 
 	<parent>
 		<groupId>org.activiti</groupId>
@@ -15,16 +15,6 @@
         <version>5.2-SNAPSHOT</version>
 	</parent>
 
-	<build>
-		<resources>
-			<resource>
-				<directory>src/main/resources</directory>
-				<includes>
-					<include>**/*.*</include>
-				</includes>
-			</resource>
-		</resources>
-	</build>
 
     <dependencies>
         <dependency>
@@ -52,9 +42,7 @@
 
 
     <properties>
-        <activiti.osgi.import.pkg>
-            org.apache.felix.fileinstall*;resolution:=optional,*
-        </activiti.osgi.import.pkg>
+        <activiti.osgi.import.pkg>*</activiti.osgi.import.pkg>
         <activiti.artifact>
             org.activiti.camel
         </activiti.artifact>
